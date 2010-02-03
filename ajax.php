@@ -151,9 +151,9 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 	$username_row = false;
 	if (($mode == 'checkusername_pm') || (($mode == 'search_user') && !$has_wildcards))
 	{
-		$sql = 'SELECT user_id
-						FROM '. USERS_TABLE ."
-						WHERE username = '$username'
+		$sql = "SELECT user_id
+						FROM " . USERS_TABLE . "
+						WHERE username = '" . $username . "'
 						AND user_id <> " . ANONYMOUS;
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);

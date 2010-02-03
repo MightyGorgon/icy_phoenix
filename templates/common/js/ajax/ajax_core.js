@@ -82,7 +82,7 @@ function loadXMLDoc(url, params, submitmethod, changehandler)
 	{
 		submitmethod = 'GET';
 	}
-	
+
 	//Use the native object available in all browsers (IE >= 7)
 	if (window.XMLHttpRequest)
 	{
@@ -95,12 +95,12 @@ function loadXMLDoc(url, params, submitmethod, changehandler)
 		request = new ActiveXObject("Microsoft.XMLHTTP");
 		var is_activex = true;
 	}
-	
+
 	if (!request)
 	{
 		return false;
 	}
-	
+
 	eval("request.onreadystatechange = " + changehandler);
 	if (submitmethod == 'POST')
 	{
@@ -123,7 +123,7 @@ function loadXMLDoc(url, params, submitmethod, changehandler)
 			request.send(null);
 		}
 	}
-	
+
 	return true;
 }
 
@@ -198,14 +198,14 @@ function sprintf(text, replacements)
 	{
 		var repl = replacements;
 	}
-	
+
 	while (((charindex = text.indexOf('%s')) >= 0) && (i < repl.length))
 	{
 		var temptext = text.substr(0, charindex);
 		text = temptext + repl[i] + text.substr(charindex+2, text.length);
 		i++;
 	}
-	
+
 	return text;
 }
 
@@ -227,7 +227,7 @@ function rtrim(text)
 	{
 		return '';
 	}
-	
+
 	var part = '';
 	var i = text.length;
 	do
@@ -236,17 +236,17 @@ function rtrim(text)
 		i--;
 	} while ((part == ' ') || (part == '\n') || (part == '\r'));
 	text = text.substring(0, i+1);
-	
+
 	return text;
 }
-	
+
 function ltrim(text)
 {
 	if (text == '')
 	{
 		return '';
 	}
-	
+
 	var part = '';
 	var i = 0;
 	do
@@ -255,7 +255,7 @@ function ltrim(text)
 		i++;
 	} while ((part == ' ') || (part == '\n') || (part == '\r'));
 	text = text.substring(i-1, text.length);
-	
+
 	return text;
 }
 
@@ -282,7 +282,7 @@ function setInnerText(obj, newtext)
 	{
 		newtext = '&nbsp;';
 	}
-	
+
 	if (obj.innerText)
 	{
 		obj.innerText = newtext;
@@ -317,7 +317,7 @@ function parseResult(response)
 		{
 			return fields;
 		}
-		
+
 		for (var i = 0; i < res.length; i++)
 		{
 			var field = new Array();
@@ -325,11 +325,11 @@ function parseResult(response)
 			field[0] = RegExp.$1;
 			res[i].match(/\<.+?\>((.|\s)+)\<\/.+?\>/gm);
 			field[1] = unhtmlspecialchars(RegExp.$1);
-			
+
 			fields[i] = field;
 		}
 	}
-	
+
 	return fields;
 }
 
@@ -359,9 +359,9 @@ function utf8_decode(text)
 		{
 			return text;
 		}
-		
+
 		text = text.substring(0, pos) + unescape('%u' + parseInt(num.substring(2, num.length-1)).toString(16)) + text.substring(pos+num.length, text.length);
 	}
-	
+
 	return text;
 }

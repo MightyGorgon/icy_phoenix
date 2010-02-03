@@ -50,7 +50,10 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 		$i = 0;
 		do
 		{
+			$posts[$i]['enable_bbcode'] = $row['enable_bbcode'];
+			$posts[$i]['enable_html'] = $row['enable_html'];
 			$posts[$i]['enable_smilies'] = $row['enable_smilies'];
+			$posts[$i]['enable_autolinks_acronyms'] = $row['enable_autolinks_acronyms'];
 			$posts[$i]['post_text'] = $row['post_text'];
 			$posts[$i]['forum_id'] = $row['forum_id'];
 			$posts[$i]['topic_id'] = $row['topic_id'];
@@ -65,16 +68,9 @@ function phpbb_fetch_posts($forum_sql, $number_of_posts, $text_length)
 
 			$message_compiled = empty($posts[$i]['post_text_compiled']) ? false : $posts[$i]['post_text_compiled'];
 
-			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['allow_bbcode']);
-			$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html'];
-			if ($config['allow_smilies'] && !$lofi)
-			{
-				$bbcode->allow_smilies = $config['allow_smilies'];
-			}
-			else
-			{
-				$bbcode->allow_smilies = false;
-			}
+			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
+			$bbcode->allow_html = ((($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
+			$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
 
 			$clean_tags = false;
 			if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))
@@ -190,6 +186,8 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 		$i = 0;
 		do
 		{
+			$posts[$i]['enable_bbcode'] = $row['enable_bbcode'];
+			$posts[$i]['enable_html'] = $row['enable_html'];
 			$posts[$i]['enable_smilies'] = $row['enable_smilies'];
 			$posts[$i]['enable_autolinks_acronyms'] = $row['enable_autolinks_acronyms'];
 			$posts[$i]['post_text'] = $row['post_text'];
@@ -209,9 +207,9 @@ function phpbb_fetch_posts_attach($forum_sql, $number_of_posts, $text_length, $s
 
 			$message_compiled = empty($posts[$i]['post_text_compiled']) ? false : $posts[$i]['post_text_compiled'];
 
-			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['allow_bbcode']);
-			$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html'];
-			$bbcode->allow_smilies = ($config['allow_smilies'] && !$lofi) ? $config['allow_smilies'] : false;
+			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
+			$bbcode->allow_html = ((($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
+			$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
 
 			$clean_tags = false;
 			if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))

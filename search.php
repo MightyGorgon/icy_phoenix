@@ -1856,7 +1856,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$s_hidden_fields = '';
 		$s_hidden_fields .= '<input type="hidden" name="search_id" value="' . $search_id . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="search_mode" value="' . $search_mode . '" />';
-		$l_forum = (($show_results == 'topics') ? ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_id . $search_url_add . '&amp;psort=cat') . '">' . $lang['Forum'] . '</a>') : $lang['Forum']);
+		//$l_forum = (($show_results == 'topics') ? ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_id . $search_url_add . '&amp;psort=cat') . '">' . $lang['Forum'] . '</a>') : $lang['Forum']);
+		$l_forum = $lang['Forum'];
 
 		$template->assign_vars(array(
 			'PAGINATION' => generate_pagination($base_url, $total_match_count, $per_page, $start),

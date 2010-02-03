@@ -23,13 +23,19 @@
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{css_include.CSS_FILE}" type="text/css" />
 <!-- END css_include -->
 
+<!-- IF IS_PROSILVER -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_TPL_PATH}style_css.{PHP_EXT}?color={CSS_COLOR}&amp;lang={CURRENT_TPL_LANG}" type="text/css" />
+<!-- ENDIF -->
+
 <!-- INCLUDE overall_inc_header_js.tpl -->
 
+<!-- IF S_NIFTY -->
 <!-- Nifty Start -->
 <!-- <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}nifty/nifty_corners.css" type="text/css" /> -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}nifty/nifty_cube.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}nifty/nifty_layout.js"></script>
 <!-- Nifty End -->
+<!-- ENDIF -->
 
 </head>
 <body <!-- IF S_SLIDESHOW_SCRIPT -->onload="runSlideShow()"<!-- ENDIF -->>

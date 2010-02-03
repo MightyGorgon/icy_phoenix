@@ -2135,7 +2135,7 @@ class bbcode
 				elseif ($tag === 'youtube')
 				{
 					$color_append = '';
-					if ($color_1 || $color_1)
+					if ($color_1 || $color_2)
 					{
 						$color_append .= ($color_1 ? ('&amp;color1=0x' . str_replace('#', '', $color_1)) : '');
 						$color_append .= ($color_2 ? ('&amp;color2=0x' . str_replace('#', '', $color_2)) : '');

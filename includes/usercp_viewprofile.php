@@ -465,21 +465,16 @@ else
 display_upload_attach_box_limits($profiledata['user_id']);
 
 // Mighty Gorgon - Feedbacks - BEGIN
-if (!empty($config['plugins']['feedbacks']['enabled']))
+$feedbacks_received = '';
+if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugins']['feedbacks']['dir']))
 {
-	define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
-	include_once(MG_ROOT_PATH . 'includes/functions_feedbacks.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'common.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_mg.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_feedbacks.' . PHP_EXT);
-
-	$feedbacks_received = '';
+	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['feedbacks']['dir'] . 'common.' . PHP_EXT);
 	$feedbacks_details = get_user_feedbacks_received($profiledata['user_id']);
 	if ($feedbacks_details['feedbacks_count'] > 0)
 	{
 		$feedbacks_average = (($feedbacks_details['feedbacks_count'] > 0) ? (round($feedbacks_details['feedbacks_sum'] / $feedbacks_details['feedbacks_count'], 1)) : 0);
 		$feedbacks_average_img = IP_ROOT_PATH . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
-		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid(MG_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align:middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
+		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid(PLUGINS_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align:middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
 	}
 }
 // Mighty Gorgon - Feedbacks - END

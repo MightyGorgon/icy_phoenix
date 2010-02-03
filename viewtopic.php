@@ -1433,14 +1433,11 @@ $this_year = create_date('Y', time(), $config['board_timezone']);
 $this_date = create_date('md', time(), $config['board_timezone']);
 
 // Mighty Gorgon - Feedbacks - BEGIN
-if (!empty($config['plugins']['feedbacks']['enabled']))
+$feedback_disabled = true;
+if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugins']['feedbacks']['dir']))
 {
-	define('MG_ROOT_PATH', IP_ROOT_PATH . 'mg/');
-	include_once(MG_ROOT_PATH . 'includes/functions_feedbacks.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'common.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_mg.' . PHP_EXT);
-	include_once(MG_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_feedbacks.' . PHP_EXT);
-	$feedbacks_allowed_forums = explode(',', MG_FEEDBACKS_FORUMS);
+	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['feedbacks']['dir'] . 'common.' . PHP_EXT);
+	$feedbacks_allowed_forums = explode(',', PLUGINS_FEEDBACKS_FORUMS);
 	$feedback_disabled = false;
 	if (!in_array($forum_id, $feedbacks_allowed_forums))
 	{
@@ -2207,11 +2204,11 @@ for($i = 0; $i < $total_posts; $i++)
 		{
 			$feedbacks_average = (($feedbacks_details['feedbacks_count'] > 0) ? (round($feedbacks_details['feedbacks_sum'] / $feedbacks_details['feedbacks_count'], 1)) : 0);
 			$feedbacks_average_img = IP_ROOT_PATH . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
-			$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ($lang['FEEDBACKS_RECEIVED'] . ': [ <a href="' . append_sid(MG_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]<br /><img src="' . $feedbacks_average_img . '" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" /><br />') : '');
+			$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ($lang['FEEDBACKS_RECEIVED'] . ': [ <a href="' . append_sid(PLUGINS_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]<br /><img src="' . $feedbacks_average_img . '" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" /><br />') : '');
 		}
 		if (can_user_give_feedbacks_topic($userdata['user_id'], $topic_id) && can_user_give_feedbacks_global($userdata['user_id'], $topic_id) && ($userdata['user_id'] != $postrow[$i]['user_id']))
 		{
-			$feedback_add = '&nbsp;&nbsp;<a href="' . append_sid(MG_FEEDBACKS_FILE . '?mode=input&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $lang['FEEDBACK_ADD'] . '</a><br />';
+			$feedback_add = '&nbsp;&nbsp;<a href="' . append_sid(PLUGINS_FEEDBACKS_FILE . '?mode=input&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $lang['FEEDBACK_ADD'] . '</a><br />';
 		}
 	}
 	// Mighty Gorgon - Feedbacks - END

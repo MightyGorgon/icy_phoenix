@@ -398,12 +398,17 @@ while ($row = $db->sql_fetchrow($result))
 				$this_msg = preg_replace('/\\n/', '<br />', $this_msg);
 				$msg .= $this_msg . $line_break;
 				*/
-				$bbcode->allow_html = ($config['allow_html'] ? $config['allow_html'] : false);
-				$bbcode->allow_bbcode = ($config['allow_bbcode'] ? $config['allow_bbcode'] : true);
-				$bbcode->allow_smilies = ($config['allow_smilies'] ? $config['allow_smilies'] : true);
+				if (empty($bbcode) && class_exists('bbcode'))
+				{
+					unset($bbcode);
+					$bbcode = new bbcode();
+				}
+				$bbcode->allow_html = (isset($config['allow_html']) ? $config['allow_html'] : false);
+				$bbcode->allow_bbcode = (isset($config['allow_bbcode']) ? $config['allow_bbcode'] : true);
+				$bbcode->allow_smilies = (isset($config['allow_smilies']) ? $config['allow_smilies'] : true);
 				$post_text = $bbcode->parse($post_text);
 				$this_msg = '<td class="row1"><div class="post-text">' . $post_text . '</div></td>';
-				if ($bbcode->allow_bbcode == false)
+				if (empty($bbcode->allow_bbcode))
 				{
 					$this_msg = str_replace("\n", "<br />", preg_replace("/\r\n/", "\n", $this_msg));
 				}

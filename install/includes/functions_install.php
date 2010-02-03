@@ -2274,6 +2274,7 @@ class ip_page
 			define('FORUM_CAT', 0);
 		}
 
+		/*
 		$sql = 'SHOW TABLES LIKE ' . CATEGORIES_TABLE;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
@@ -2281,6 +2282,7 @@ class ip_page
 		{
 			return false;
 		}
+		*/
 
 		// Determine the highest id used within the old forums table (we add the categories after the forum ids)
 		$sql = 'SELECT MAX(forum_id) AS max_forum_id

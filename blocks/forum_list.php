@@ -46,7 +46,7 @@ if(!function_exists('cms_block_forum_list'))
 			}
 			else
 			{
-				$sql_where = '';
+				$sql_where = 'AND f.main_type = \'c\'';
 			}
 			$sql = "SELECT f.* FROM " . FORUMS_TABLE . " f
 				WHERE f.auth_view = " . AUTH_ALL . "
@@ -91,7 +91,7 @@ if(!function_exists('cms_block_forum_list'))
 				{
 					$forum_name = stripslashes($menu_cat_item_data['forum_name']);
 					$forum_link = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $menu_cat_item_data['forum_id']);
-					$forum_icon = '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />';
+					$forum_icon = '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />';
 
 					$template->assign_block_vars('cat_row.forum_row', array(
 						'FORUM_ITEM' => $forum_name,
