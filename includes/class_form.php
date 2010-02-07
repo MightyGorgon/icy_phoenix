@@ -24,7 +24,7 @@ class class_form
 	*/
 	function create_input($name, $properties)
 	{
-		global $config;
+		global $config, $lang;
 
 		$input = '';
 		$default = !empty($properties['default']) ? (is_array($properties['default']) ? array_map('htmlspecialchars', array_map('stripslashes', $properties['default'])) : htmlspecialchars(stripslashes($properties['default']))) : '';
@@ -86,6 +86,11 @@ class class_form
 				$tf = $this->explode_unix_time($input_time);
 				$input = $this->date_input($name, $tf['year'], $tf['month'], $tf['day']);
 				$input .= $this->time_input($name, $tf['hour'], $tf['minute'], $tf['second']);
+				break;
+
+			case 'USERNAME_INPUT':
+				$input = '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="45" class="post" value="' . $default . '" />';
+				$input .= '<input type="submit" name="' . $name . '_search_button" value="' . $lang['Find_username'] . '" class="mainoption" onclick="window.open(\'' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser&amp;target_form_name=input_form&amp;target_element_name=' . $name) . '\', \'_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
 				break;
 
 			case 'TINYINT':
@@ -346,10 +351,17 @@ class class_form
 					$value = create_date_ip($config['default_dateformat'], $inputs_array[$k], $config['board_timezone']);
 				}
 
-				// Create user link
+				// Create user link (with user_id)
 				if ($v['is_user_id'])
 				{
 					$value = colorize_username($inputs_array[$k]);
+				}
+
+				// Create user link (with user_name)
+				if ($v['is_username'])
+				{
+					$target_userid = $this->get_user_id($inputs_array[$k]);
+					$value = colorize_username($target_userid);
 				}
 
 				// Create thumbnails for images
@@ -438,6 +450,38 @@ class class_form
 		}
 
 		return $radio_box;
+	}
+
+	/*
+	* Get user_id from username or validate user_id
+	*/
+	function get_user_id($user)
+	{
+		global $db;
+
+		$target_userdata = array();
+		$target_userdata = get_userdata($user, true);
+		if (empty($target_userdata))
+		{
+			$target_userdata = get_userdata($user);
+		}
+		$target_user_id = empty($target_userdata) ? ANONYMOUS : $target_userdata['user_id'];
+
+		return $target_user_id;
+	}
+
+	/*
+	* Get username from user_id
+	*/
+	function get_username($user_id)
+	{
+		global $db;
+
+		$target_userdata = array();
+		$target_userdata = get_userdata($user_id);
+		$target_username = empty($target_userdata) ? '' : $target_userdata['username'];
+
+		return $target_username;
 	}
 
 	/*
@@ -598,6 +642,7 @@ class class_form
 		$rating_level = round(($rating / $rating_scale) * 10, 0) / 2;
 		$rating_img_suffix = strval(number_format($rating_level, 1, '.', ''));
 		$rating_image = $rating_img_path . 'rate_' . $rating_img_suffix . '.' . $rating_img_extension;
+
 		return $rating_image;
 	}
 

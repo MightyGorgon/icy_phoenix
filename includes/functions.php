@@ -624,13 +624,11 @@ function get_userdata($user, $force_str = false)
 	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" .  str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
 	$result = $db->sql_query($sql);
 
-	// Start Advanced IP Tools Pack MOD
 	if ($db->sql_affectedrows() == 0)
 	{
 		//message_die(GENERAL_ERROR, 'User does not exist.');
 		return false;
 	}
-	// End Advanced IP Tools Pack MOD
 
 	if ($row = $db->sql_fetchrow($result))
 	{

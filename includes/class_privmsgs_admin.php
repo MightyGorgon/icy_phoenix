@@ -231,7 +231,7 @@ class aprvmUtils
 				{
 					return $nameCache['reverse'][$id];
 				}
-				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE username = " . $id;
+				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE username = '" . $id . "'";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				if (empty($row['user_id']))

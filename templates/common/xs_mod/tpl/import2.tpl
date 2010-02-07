@@ -1,17 +1,14 @@
 <!-- BEGIN xs_file_version -->
-/***************************************************************************
- *                               import2.tpl
- *                               -----------
- *   copyright            : (C) 2003 - 2007 Vjacheslav Trushkin
- *   support              : http://www.stsoftware.biz/forum
- *
- *   version              : 2.4.1
- *
- *   file revision        : 80
- *   project revision     : 83
- *   last modified        : 12 Mar 2007  13:54:54
- *
- ***************************************************************************/
+/**
+*
+* @package Icy Phoenix eXtreme Style 2.4.1
+* @file $Id import2.tpl
+* @author Vjacheslav Trushkin
+* @copyright (C) 2003 - 2007
+* @support http://www.stsoftware.biz/forum
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*
+**/
 <!-- END xs_file_version -->
 
 <form action="{FORM_ACTION}" method="post">{S_RETURN}<input type="hidden" name="import" value="{IMPORT_FILENAME}" /><table width="100%" cellpadding="4" cellspacing="1" border="0" align="center" class="forumline">

@@ -1109,6 +1109,9 @@ if(($mode == 'blocks'))
 	}
 	elseif(($id_var_value != 0) || ($action == 'editglobal'))
 	{
+		// To be removed when it is fixed...
+		$cms_ajax = false;
+
 		if(isset($_POST['action_update']))
 		{
 			$blocks_upd = array();

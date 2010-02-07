@@ -374,6 +374,9 @@ function username_search($search_match, $ajax_search = false)
 		'L_SEARCH_EXPLAIN' => $lang['Search_author_explain'],
 		'L_CLOSE_WINDOW' => $lang['Close_window'],
 
+		'S_TARGET_FORM_NAME' => preg_replace('/[^A-Za-z0-9-_]+/', '', request_var('target_form_name', 'post')),
+		'S_TARGET_ELEMENT_NAME' => preg_replace('/[^A-Za-z0-9-_]+/', '', request_var('target_element_name', 'username')),
+
 		'S_USERNAME_OPTIONS' => $username_list,
 		'S_SEARCH_ACTION' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser')
 		)
@@ -383,7 +386,7 @@ function username_search($search_match, $ajax_search = false)
 	{
 		if ($username_list == '')
 		{
-			$template->assign_var('USERNAME_LIST_VIS', 'style="display:none;"');
+			$template->assign_var('USERNAME_LIST_VIS', 'style="display: none;"');
 		}
 	}
 	else

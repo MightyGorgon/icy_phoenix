@@ -1,17 +1,14 @@
 <!-- BEGIN xs_file_version -->
-/***************************************************************************
- *                                clone.tpl
- *                                ---------
- *   copyright            : (C) 2003 - 2007 Vjacheslav Trushkin
- *   support              : http://www.stsoftware.biz/forum
- *
- *   version              : 2.4.1
- *
- *   file revision        : 55
- *   project revision     : 83
- *   last modified        : 12 Mar 2007  13:54:54
- *
- ***************************************************************************/
+/**
+*
+* @package Icy Phoenix eXtreme Style 2.4.1
+* @file $Id clone.tpl
+* @author Vjacheslav Trushkin
+* @copyright (C) 2003 - 2007
+* @support http://www.stsoftware.biz/forum
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*
+**/
 <!-- END xs_file_version -->
 
 <h1>{L_XS_CLONE_STYLES}</h1>

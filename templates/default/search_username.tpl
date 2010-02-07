@@ -5,18 +5,36 @@
 <!-- ENDIF -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function refresh_username(selected_username)
 {
+	target_form_name = '{S_TARGET_FORM_NAME}';
+	target_element_name = '{S_TARGET_ELEMENT_NAME}';
+
+	var doc;
+
+	if (document.forms[target_form_name])
+	{
+		doc = document;
+	}
+	else
+	{
+		doc = opener.document;
+	}
+
+	var target_element = doc.forms[target_form_name].elements[target_element_name];
+
+
 	if (selected_username == '-1')
 	{
 		return;
 	}
-	opener.document.forms['post'].username.value = selected_username;
+	//opener.document.forms['post'].username.value = selected_username;
+	target_element.value = selected_username;
 	opener.focus();
 	window.close();
 }
-//-->
+// ]]>
 </script>
 
 <form method="post" name="search" action="{S_SEARCH_ACTION}">
@@ -32,7 +50,7 @@ function refresh_username(selected_username)
 		<span class="genmed" id="username_list" {USERNAME_LIST_VIS}>
 			{L_UPDATE_USERNAME}<br />
 			<span id="username_select"><select name="username_list">{S_USERNAME_OPTIONS}</select></span>&nbsp;
-			<input type="submit" class="liteoption" onclick="refresh_username(this.form.username_list.options[this.form.username_list.selectedIndex].value);return false;" name="use" value="{L_SELECT}" />
+			<input type="submit" class="liteoption" onclick="refresh_username(this.form.username_list.options[this.form.username_list.selectedIndex].value); return false;" name="use" value="{L_SELECT}" />
 		</span><br />
 		<br /><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span>
 	</td>

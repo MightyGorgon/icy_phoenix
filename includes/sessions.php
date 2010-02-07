@@ -322,6 +322,8 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	}
 //<!-- END Unread Post Information to Database Mod -->
 
+	$userdata['page'] = $page_array;
+
 	setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
 	setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
 

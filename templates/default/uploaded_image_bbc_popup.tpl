@@ -1,7 +1,7 @@
 <!-- INCLUDE simple_header.tpl -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 
 function bbcb_ui_vars_reassign_start()
 {
@@ -59,7 +59,7 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 	txtarea.focus();
 }
 
-//-->
+// ]]>
 </script>
 
 <form action="{S_ACTION}" name="select_all" method="post" enctype="multipart/form-data">
