@@ -177,7 +177,7 @@ $lang = array_merge($lang, array(
 	'item_c_p_f' => 'Custom Profile Fields',
 	'item_u_p_s' => 'User Posting Stats',
 	'item_u_i_m' => 'User Instant Messengers',
-	'item_u_p_d' => 'User Profile details',
+	'item_u_p_d' => 'User Profile Details',
 	'item_m_list_search' => 'Memberlist Searching',
 	'item_u_m_v' => 'Disallow Non-Registered User Memberlist Viewing',
 
@@ -187,10 +187,10 @@ $lang = array_merge($lang, array(
 	'item_ft_n' => 'Fulltext Native',
 	'item_c_t_s' => 'Customised Topic Search',
 	'item_c_f_s' => 'Customised Forum Search',
-	'item_my_sql_text' => 'MySQL fulltext',
+	'item_my_sql_text' => 'MySQL Fulltext',
 	'item_a_s' => 'Author Search',
 	'item_a_search' => 'Advanced Search',
-	'item_v_a_post' => 'View unanswered posts',
+	'item_v_a_post' => 'View Unanswered Posts',
 	'item_a_n_t' => 'Active / New Topics',
 	'item_p_s_l_v' => 'Posts Since Last Visit',
 	'item_s_f_l' => 'Search Flood Control',
@@ -306,7 +306,7 @@ $lang = array_merge($lang, array(
 	'item_manage_attach_setting' => 'Manage Attachments and Settings',
 	'item_manage_user_attachment' => 'Manage User Attachments',
 	'item_user_editing' => 'User Editing',
-	'item_list_group_index' => 'List Groups on Index',
+	'item_list_group_index' => 'List Groups On Index',
 	'item_topic_icons' => 'Topic Icons',
 	'item_mass_e_mail' => 'Mass e-mail',
 	'item_manage_report_reasons' => 'Manage Report / Denial Reasons',
@@ -356,12 +356,12 @@ $lang = array_merge($lang, array(
 /*********/
 	'cat_localisations' => 'Localisations',
 
-	'item_s_m_l_p' => 'Support for Multiple Language Packs',
+	'item_s_m_l_p' => 'Support For Multiple Language Packs',
 	'item_language' => 'Languages',
 	'bb2_language' => '50+',
 	'ip_language' => '6',
 	'bb3_language' => '61',
-	'item_right_t_left' => 'Right to Left Support',
+	'item_right_t_left' => 'Right To Left Support',
 	'item_l_p_w_edit' => 'Language Pack Web-Editor',
 
 /*********/
@@ -384,6 +384,7 @@ $lang = array_merge($lang, array(
 	'item_auth_plug' => 'Auth Plugins',
 	'item_search_plug' => 'Search Plugins',
 	'item_cache_plug' => 'Cache Plugins',
+	'item_captcha_plug' => 'CAPTCHA Plugins',
 	'item_hooks_sys' => 'Hooks System',
 	'item_expand_module' => 'Expandable Modules',
 
@@ -401,7 +402,7 @@ $lang = array_merge($lang, array(
 	'item_feat_lofi' => 'LoFi View',
 	'item_feat_ajax_shoutbox' => 'AJAX Shoutbox',
 	'item_feat_shoutbox' => 'Standard Shoutbox',
-	'item_feat_calendar' => 'Calendar and Events System',
+	'item_feat_calendar' => 'Calendar And Events System',
 	'item_feat_pm_notifications' => 'PM On New Registration And Birthday',
 
 /*********/
@@ -410,7 +411,7 @@ $lang = array_merge($lang, array(
 	'item_feat_info' => 'Server Information In ACP',
 	'item_feat_db_mntnc' => 'Database Maintenance',
 	'item_feat_mysqladmin' => 'MySQL Admin',
-	'item_feat_editable_f_r' => 'Multilanguage Editable FAQs and Rules',
+	'item_feat_editable_f_r' => 'Multilanguage Editable FAQs And Rules',
 	'item_feat_multiple_ranks' => 'Multiple Ranks',
 
 /*********/
@@ -419,7 +420,7 @@ $lang = array_merge($lang, array(
 	'item_feat_ajax_checks' => 'AJAX Checks On Registration',
 	'item_feat_upi2db' => 'Unread Posts In DB',
 	'item_feat_custom_avatar' => 'Custom Avatar Creation',
-	'item_feat_profile_stats' => 'Profile Statistics and Extra Users Info',
+	'item_feat_profile_stats' => 'Profile Statistics And Extra Users Info',
 	'item_feat_user_self_deactivation' => 'User Self Deactivation',
 	'item_feat_login_archive' => 'Login History',
 
@@ -430,7 +431,7 @@ $lang = array_merge($lang, array(
 	'item_feat_bbcodes' => 'Integrated BBCodes Box',
 	'item_feat_acronyms' => 'Acronyms',
 	'item_feat_autolinks' => 'Autolinks',
-	'item_feat_smiley_creator' => 'Smiley Creator',
+	'item_feat_smiley_creator' => 'Smileys Creator',
 
 /*********/
 	'cat_features_seo' => 'Extra Features SEO',
@@ -439,8 +440,8 @@ $lang = array_merge($lang, array(
 	'item_feat_rss' => 'RSS Feed',
 	'item_feat_referrers' => 'Referrers Tracking',
 	'item_feat_referrers' => 'Bots Tracking',
-	'item_feat_referrers' => 'Browsers and OS Detection',
-	'item_feat_banners' => 'Banners and Ads Management',
+	'item_feat_referrers' => 'Browsers And OS Detection',
+	'item_feat_banners' => 'Banners And Ads Management',
 
 /*********/
 	'cat_features_forum' => 'Extra Features Forum and Posting',

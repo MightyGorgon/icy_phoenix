@@ -323,6 +323,7 @@ $features_array = array(
 		'auth_plug' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
 		'search_plug' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
 		'cache_plug' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'captcha_plug' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
 		'hooks_sys' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
 		'expand_module' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 	),

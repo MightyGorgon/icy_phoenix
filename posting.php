@@ -1185,6 +1185,10 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					$topic_tags = (empty($_POST['topic_tags']) ? '' : trim($_POST['topic_tags']));
 					if (!empty($topic_tags))
 					{
+						while(substr($topic_tags, -1) == ',')
+						{
+							$topic_tags = trim(substr($topic_tags, 0, -1));
+						}
 						$topic_tags_array = $class_topics_tags->create_tags_array($topic_tags);
 						$topic_tags = implode(', ', $topic_tags_array);
 					}
@@ -1340,6 +1344,10 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	$topic_tags = (empty($_POST['topic_tags']) ? '' : htmlspecialchars(trim(stripslashes($_POST['topic_tags']))));
 	if (!empty($topic_tags))
 	{
+		while(substr($topic_tags, -1) == ',')
+		{
+			$topic_tags = trim(substr($topic_tags, 0, -1));
+		}
 		$topic_tags_array = $class_topics_tags->create_tags_array($topic_tags);
 		$topic_tags = implode(', ', $topic_tags_array);
 	}

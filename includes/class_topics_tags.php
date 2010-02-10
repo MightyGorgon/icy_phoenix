@@ -27,16 +27,21 @@ class class_topics_tags
 		global $lang;
 
 		$topic_tags_array = array();
+		$topic_tags_array_output = array();
 		if (!empty($topic_tags))
 		{
 			$topic_tags_array = explode(',', $topic_tags);
 			for ($i = 0; $i < sizeof($topic_tags_array); $i++)
 			{
-				$topic_tags_array[$i] = substr(ip_clean_string(trim($topic_tags_array[$i]), $lang['ENCODING'], true), 0, 50);
+				$test_tag = trim($topic_tags_array[$i]);
+				if (!empty($test_tag))
+				{
+					$topic_tags_array_output[] = substr(ip_clean_string($test_tag, $lang['ENCODING'], true), 0, 50);
+				}
 			}
 		}
 
-		return $topic_tags_array;
+		return $topic_tags_array_output;
 	}
 
 	/*
