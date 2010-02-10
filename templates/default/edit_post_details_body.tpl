@@ -1,4 +1,4 @@
-<!-- INCLUDE overall_header.tpl -->
+<!-- INCLUDE simple_header.tpl -->
 
 <!-- IF S_AJAX_FEATURES -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
@@ -49,4 +49,4 @@ setTimeout('close_window();', 3000);
 </script>
 <!-- ENDIF -->
 
-<!-- INCLUDE overall_footer.tpl -->
+<!-- INCLUDE simple_footer.tpl -->

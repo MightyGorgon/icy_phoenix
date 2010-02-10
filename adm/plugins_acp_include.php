@@ -8,32 +8,10 @@
 *
 */
 
-/**
-*
-* @Extra credits for this file
-* Ptirhiik (admin@rpgnet-fr.com)
-*
-*/
-
-define('IN_ICYPHOENIX', true);
-
-if(!empty($setmodules))
+if (!defined('IN_ICYPHOENIX'))
 {
-	$file = basename(__FILE__);
-	$module['1000_Configuration']['120_MG_Configuration'] = $file;
-	//$module['1000_Configuration']['170_Configuration_extend'] = $file;
-	return;
+	die('Hacking attempt');
 }
-
-// Load default Header
-if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
-if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('pagestart.' . PHP_EXT);
-
-// Get all the mods settings
-define('BOARD_CONFIG', true);
-setup_mods();
-
 
 // menu_id
 $menu_id = 0;
@@ -69,8 +47,8 @@ $sub_keys = array();
 $sub_sort = array();
 
 // process
-@reset($mods);
-while (list($menu_name, $menu) = each($mods))
+@reset($class_plugins->modules);
+while (list($menu_name, $menu) = each($class_plugins->modules))
 {
 	// check if there is some config fields in the mods under this menu
 	$found = false;
@@ -199,7 +177,7 @@ $submit = isset($_POST['submit']);
 
 // get the real value of board_config
 $default_config = array();
-$default_config = get_config(false);
+$default_config = $plugin_config;
 
 // validate
 if ($submit)
@@ -209,21 +187,22 @@ if ($submit)
 	$error_msg = '';
 
 	// format and verify data
-	@reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+	@reset($class_plugins->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
+	while (list($field_name, $field) = @each($class_plugins->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
 	{
 		if (isset($_POST[$field_name]))
 		{
+			$config_name = $field_name;
+			$config_value = $_POST[$field_name];
 			switch ($field['type'])
 			{
 				case 'LIST_RADIO_BR':
 				case 'LIST_RADIO':
 				case 'LIST_DROP':
-					$$field_name = $_POST[$field_name];
-					if (!in_array($$field_name, $mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$field_name]['values']))
+					if (!in_array($config_value, $class_plugins->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$field_name]['values']))
 					{
 						$error = true;
-						$msg = mods_settings_get_lang($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$field_name]['lang_key']);
+						$msg = $class_plugins->get_lang($class_plugins->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$field_name]['lang_key']);
 						$error_msg = (empty($error_msg) ? '' : '<br />') . $lang['Error'] . ':&nbsp;' . $msg;
 					}
 					break;
@@ -231,24 +210,22 @@ if ($submit)
 				case 'SMALLINT':
 				case 'MEDIUMINT':
 				case 'INT':
-					$$field_name = intval($_POST[$field_name]);
+					$config_value = intval($config_value);
 					break;
 				case 'VARCHAR':
 				case 'TEXT':
 				case 'DATEFMT':
-					//$$field_name = trim(str_replace("\'", "''", htmlspecialchars($_POST[$field_name])));
-					$$field_name = trim(htmlspecialchars($_POST[$field_name]));
+					$config_value = trim(htmlspecialchars($config_value));
 					break;
 				case 'HTMLVARCHAR':
 				case 'HTMLTEXT':
-					//$$field_name = trim(str_replace("\'", "''", $_POST[$field_name]));
-					$$field_name = trim($_POST[$field_name]);
+					$config_value = trim($config_value);
 					break;
 				default:
-					$$field_name = '';
+					$config_value = '';
 					if (!empty($field['chk_func']) && function_exists($field['chk_func']))
 					{
-						$$field_name = $field['chk_func']($field_name, $_POST[$field_name]);
+						$config_value = $field['chk_func']($field_name, $config_value);
 					}
 					else
 					{
@@ -258,30 +235,20 @@ if ($submit)
 			}
 			if ($error)
 			{
-				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid($acp_file . '?menu=' . $menu_id . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
+
+			// save data
+			//$config_value = addslashes($config_value);
+			$class_plugins->set_plugin_config($config_name, $config_value, false, false);
 		}
 	}
 
-	// save data
-	@reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
-	{
-		if (isset($$field_name))
-		{
-			set_config($field_name, $$field_name, false);
-			//set_config($field_name, addslashes($$field_name), false);
-		}
-		if (isset($_POST[$field_name . '_over']) && !empty($field['user']) && isset($userdata[$field['user']]))
-		{
-			set_config(($field_name . '_over'), intval($_POST[$field_name . '_over']), false);
-		}
-	}
-	$cache->destroy('config');
+	$class_plugins->cache_clear();
 
 	// send an update message
-	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $menu_id . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid($acp_file . '?menu=' . $menu_id . '&amp;mod=' . $mod_id . '&amp;msub=' . $sub_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('./index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -290,13 +257,9 @@ $template->set_filenames(array('body' => ADM_TPL . 'board_config_extend_body.tpl
 
 // header
 $template->assign_vars(array(
-	'L_TITLE' => $lang['MG_Configuration'],
-	'L_TITLE_EXPLAIN' => $lang['MG_Configuration_Explain'],
-	/*
-	'L_TITLE' => $lang['Configuration_extend'],
-	'L_TITLE_EXPLAIN' => $lang['Config_explain2'],
-	*/
-	'L_MOD_NAME' => mods_settings_get_lang($menu_name) . ' - ' . mods_settings_get_lang($mod_name) . (!empty($sub_name) ? ' - ' . mods_settings_get_lang($sub_name) : ''),
+	'L_TITLE' => $acp_module_title,
+	'L_TITLE_EXPLAIN' => $acp_module_title_explain,
+	'L_MOD_NAME' => $class_plugins->get_lang($menu_name) . ' - ' . $class_plugins->get_lang($mod_name) . (!empty($sub_name) ? ' - ' . $class_plugins->get_lang($sub_name) : ''),
 	'L_SUBMIT' => $lang['Submit'],
 	'L_RESET' => $lang['Reset'],
 	)
@@ -315,9 +278,9 @@ for ($i = 0; $i < sizeof($menu_keys); $i++)
 		}
 	}
 	$template->assign_block_vars('menu', array(
-		'CLASS'		=> ($menu_id == $i) ? ((sizeof($mod_keys[$i]) > 1) ? 'row3' : 'row1') : 'row2',
-		'U_MENU'	=> append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i),
-		'L_MENU'	=> sprintf((($menu_id == $i) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($l_menu)),
+		'CLASS' => ($menu_id == $i) ? ((sizeof($mod_keys[$i]) > 1) ? 'row3' : 'row1') : 'row2',
+		'U_MENU' => append_sid($acp_file . '?menu=' . $i),
+		'L_MENU' => sprintf((($menu_id == $i) ? '<b>%s</b>' : '%s'), $class_plugins->get_lang($l_menu)),
 		)
 	);
 	if ($menu_id == $i)
@@ -343,8 +306,8 @@ for ($i = 0; $i < sizeof($menu_keys); $i++)
 			$template->assign_block_vars('menu.mod', array(
 				'CLASS' => (($menu_id == $i) && ($mod_id == $j)) ? 'row1' : 'row2',
 				'ALIGN' => (($menu_id == $i) && ($mod_id == $j) && (sizeof($sub_keys[$i][$j]) > 1)) ? 'left' : 'center',
-				'U_MOD' => append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j),
-				'L_MOD' => sprintf(((($menu_id == $i) && ($mod_id == $j)) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($l_mod)),
+				'U_MOD' => append_sid($acp_file . '?menu=' . $i . '&amp;mod=' . $j),
+				'L_MOD' => sprintf(((($menu_id == $i) && ($mod_id == $j)) ? '<b>%s</b>' : '%s'), $class_plugins->get_lang($l_mod)),
 				)
 			);
 			if (($menu_id == $i) && ($mod_id == $j))
@@ -356,8 +319,8 @@ for ($i = 0; $i < sizeof($menu_keys); $i++)
 					{
 						$template->assign_block_vars('menu.mod.sub.row', array(
 							'CLASS' => (($menu_id == $i) && ($mod_id == $j) && ($sub_id == $k)) ? 'row1' : 'row2',
-							'U_MOD' => append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i . '&amp;mod=' . $j . '&amp;msub=' . $k),
-							'L_MOD' => sprintf((($sub_id == $k) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($sub_keys[$i][$j][$k])),
+							'U_MOD' => append_sid($acp_file . '?menu=' . $i . '&amp;mod=' . $j . '&amp;msub=' . $k),
+							'L_MOD' => sprintf((($sub_id == $k) ? '<b>%s</b>' : '%s'), $class_plugins->get_lang($sub_keys[$i][$j][$k])),
 							)
 						);
 					}
@@ -368,8 +331,8 @@ for ($i = 0; $i < sizeof($menu_keys); $i++)
 }
 
 // send items
-@reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+@reset($class_plugins->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
+while (list($field_name, $field) = @each($class_plugins->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
 {
 	// get the field input statement
 	$input = '';
@@ -382,7 +345,7 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 			while (list($key, $val) = @each($field['values']))
 			{
 				$selected = ($default_config[$field_name] == $val) ? ' checked="checked"' : '';
-				$l_key = mods_settings_get_lang($key);
+				$l_key = $class_plugins->get_lang($key);
 				$input .= '<input type="radio" name="' . $field_name . '" value="' . $val . '"' . $selected . ' />' . $l_key . $field_break;
 			}
 			break;
@@ -391,7 +354,7 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 			while (list($key, $val) = @each($field['values']))
 			{
 				$selected = ($default_config[$field_name] == $val) ? ' selected="selected"' : '';
-				$l_key = mods_settings_get_lang($key);
+				$l_key = $class_plugins->get_lang($key);
 				$input .= '<option value="' . $val . '"' . $selected . '>' . $l_key . '</option>';
 			}
 			$input = '<select name="' . $field_name . '">' . $input . '</select>';
@@ -434,7 +397,7 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 		while (list($key, $val) = @each($list_yes_no))
 		{
 			$selected = ($default_config[$field_name . '_over'] == $val) ? ' checked="checked"' : '';
-			$l_key = mods_settings_get_lang($key);
+			$l_key = $class_plugins->get_lang($key);
 			$override .= '<input type="radio" name="' . $field_name . '_over' . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
 		}
 		$override = '<hr />' . $lang['Override_user_choices'] . ':&nbsp;'. $override;
@@ -442,8 +405,8 @@ while (list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['d
 
 	// dump to template
 	$template->assign_block_vars('field', array(
-		'L_NAME' => mods_settings_get_lang($field['lang_key']),
-		'L_EXPLAIN' => !empty($field['explain']) ? '<br />' . mods_settings_get_lang($field['explain']) : '',
+		'L_NAME' => $class_plugins->get_lang($field['lang_key']),
+		'L_EXPLAIN' => !empty($field['explain']) ? '<br />' . $class_plugins->get_lang($field['explain']) : '',
 		'INPUT' => $input,
 		'OVERRIDE' => $override,
 		)
@@ -456,13 +419,9 @@ $s_hidden_fields .= '<input type="hidden" name="menu_id" value="' . $menu_id . '
 $s_hidden_fields .= '<input type="hidden" name="mod_id" value="' . $mod_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="sub_id" value="' . $sub_id . '" />';
 $template->assign_vars(array(
-	'S_ACTION' => append_sid('admin_board_extend.' . PHP_EXT),
+	'S_ACTION' => append_sid($acp_file),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	)
 );
-
-// footer
-$template->pparse('body');
-include('./page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -3734,6 +3734,11 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.5.58 */
 		case '1.3.5.58':
+		$sql[] = "CREATE TABLE `" . $table_prefix . "plugins_config` (
+			`config_name` varchar(255) NOT NULL DEFAULT '',
+			`config_value` TEXT NOT NULL,
+			PRIMARY KEY (`config_name`)
+		)";
 
 		/* Updating from IP 1.3.6.59 */
 		case '1.3.6.59':

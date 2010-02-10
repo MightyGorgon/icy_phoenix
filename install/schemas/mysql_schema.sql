@@ -1294,6 +1294,19 @@ CREATE TABLE phpbb_plugins (
 
 ## --------------------------------------------------------
 
+## `phpbb_plugins_config`
+
+CREATE TABLE `phpbb_plugins_config` (
+	`config_name` varchar(255) NOT NULL DEFAULT '',
+	`config_value` TEXT NOT NULL,
+	PRIMARY KEY (`config_name`)
+);
+
+## `phpbb_plugins_config`
+
+
+## --------------------------------------------------------
+
 ## `phpbb_posts`
 
 CREATE TABLE `phpbb_posts` (

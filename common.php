@@ -395,7 +395,7 @@ if (!$config['disable_referrers'])
 
 // Mighty Gorgon - Change Lang/Style - BEGIN
 $test_language = request_var(LANG_URL, '');
-if ($test_language != '')
+if (!empty($test_language))
 {
 	$test_language = str_replace(array('.', '/'), '', urldecode($test_language));
 	$config['default_lang'] = is_dir(IP_ROOT_PATH . 'language/lang_' . $test_language) ? $test_language : $config['default_lang'];
@@ -403,7 +403,7 @@ if ($test_language != '')
 }
 else
 {
-	if (isset($_COOKIE[$config['cookie_name'] . '_lang']))
+	if (isset($_COOKIE[$config['cookie_name'] . '_lang']) && is_dir(IP_ROOT_PATH . 'language/lang_' . basename($_COOKIE[$config['cookie_name'] . '_lang'])))
 	{
 		$config['default_lang'] = $_COOKIE[$config['cookie_name'] . '_lang'];
 	}

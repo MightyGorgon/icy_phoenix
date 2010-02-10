@@ -112,6 +112,7 @@ $tables = array(
 	'pa_mirrors',
 	'pa_votes',
 	'plugins',
+	'plugins_config',
 	'posts',
 	'privmsgs',
 	'privmsgs_archive',

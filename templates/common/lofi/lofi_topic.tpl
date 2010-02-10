@@ -82,6 +82,8 @@ if($can_reply)
 
 <h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2>
 
+<!-- IF S_TOPIC_TAGS and TOPIC_TAGS --><div><span class="gensmall"><b>{L_TOPIC_TAGS}</b>:&nbsp;{TOPIC_TAGS}</span></div><br /><!-- ENDIF -->
+
 <div class="index">
 	<div class="bottom">
 		<div class="bottom-left"><a href="{U_POST_REPLY_TOPIC}" class="nav">{L_POST_REPLY_TOPIC}</a> {LOFI_QUICK_REPLY}</div>

@@ -199,7 +199,7 @@ function jr_admin_check_file_hashes($file)
 
 function jr_admin_get_module_list($user_module_list = false)
 {
-	global $db, $config, $userdata, $lang;
+	global $db, $cache, $config, $userdata, $lang;
 
 	/* Debugging for this function. Debugging in this function causes changes to the way ADMIN users
 	are interpreted.  You are warned */

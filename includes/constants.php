@@ -399,6 +399,7 @@ define('MODULES_TABLE', $table_prefix . 'stats_modules');
 define('NEWS_TABLE', $table_prefix . 'news');
 define('NOTES_ADMIN_TABLE',$table_prefix . 'notes');
 define('PLUGINS_TABLE', $table_prefix . 'plugins');
+define('PLUGINS_CONFIG_TABLE', $table_prefix . 'plugins_config');
 define('POSTS_TABLE', $table_prefix . 'posts');
 define('PRIVMSGS_TABLE', $table_prefix . 'privmsgs');
 define('PROFILE_FIELDS_TABLE', $table_prefix . 'profile_fields');

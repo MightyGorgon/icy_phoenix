@@ -33,7 +33,6 @@ $template->assign_vars(array(
 );
 
 $template->pparse('page_footer');
-
 garbage_collection();
 
 // Compress buffered output if required and send to browser

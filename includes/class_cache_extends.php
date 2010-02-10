@@ -526,14 +526,14 @@ class ip_cache extends acm
 
 			if ($dir)
 			{
-				while (($file = readdir($dir)) !== false)
+				while (($file = @readdir($dir)) !== false)
 				{
 					if ((strpos($file, 'mod_') === 0) && (substr($file, -(strlen(PHP_EXT) + 1)) === '.' . PHP_EXT))
 					{
 						$mods_files[] = substr($file, 0, -(strlen(PHP_EXT) + 1));
 					}
 				}
-				closedir($dir);
+				@closedir($dir);
 			}
 
 			$this->put('_mods', $mods_files);
@@ -558,14 +558,14 @@ class ip_cache extends acm
 
 			if ($dir)
 			{
-				while (($file = readdir($dir)) !== false)
+				while (($file = @readdir($dir)) !== false)
 				{
 					if ((strpos($file, 'lang_extend_') === 0) && (substr($file, -(strlen(PHP_EXT) + 1)) === '.' . PHP_EXT))
 					{
 						$lang_files[] = substr($file, 0, -(strlen(PHP_EXT) + 1));
 					}
 				}
-				closedir($dir);
+				@closedir($dir);
 			}
 
 			$this->put('_lang_' . $config['default_lang'], $lang_files);
@@ -588,14 +588,14 @@ class ip_cache extends acm
 
 			if ($dh)
 			{
-				while (($file = readdir($dh)) !== false)
+				while (($file = @readdir($dh)) !== false)
 				{
 					if ((strpos($file, 'hook_') === 0) && (substr($file, -(strlen(PHP_EXT) + 1)) === '.' . PHP_EXT))
 					{
 						$hook_files[] = substr($file, 0, -(strlen(PHP_EXT) + 1));
 					}
 				}
-				closedir($dh);
+				@closedir($dh);
 			}
 
 			$this->put('_hooks', $hook_files);

@@ -3,7 +3,7 @@
 	<div class="nav-links">
 		<div class="nav-links-left">{CURRENT_TIME}&nbsp;&bull;&nbsp;{S_TIMEZONE}</div>
 		<!-- IF S_SHOW_ICONS -->
-		<a href="{{FULL_SITE_PATH}U_VIEW_OLDER_TOPIC}"><img src="{IMG_LEFT}" alt="{L_VIEW_PREVIOUS_TOPIC}" title="{L_VIEW_PREVIOUS_TOPIC}" /></a>
+		<a href="{FULL_SITE_PATH}{U_VIEW_OLDER_TOPIC}"><img src="{IMG_LEFT}" alt="{L_VIEW_PREVIOUS_TOPIC}" title="{L_VIEW_PREVIOUS_TOPIC}" /></a>
 		<a href="{FULL_SITE_PATH}{U_RECENT}"><img src="{IMG_RECENT_TOPICS}" alt="{L_RECENT}" title="{L_RECENT}" /></a>
 		{S_WATCH_TOPIC_IMG}
 		{S_MARK_AR_IMG}

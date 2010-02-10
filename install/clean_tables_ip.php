@@ -245,6 +245,7 @@ $valid_fields = array(
 	$table_prefix . 'pa_mirrors' => array('mirror_id', 'file_id', 'unique_name', 'file_dir', 'file_dlurl', 'mirror_location'),
 	$table_prefix . 'pa_votes' => array('user_id', 'votes_ip', 'votes_file', 'rate_point', 'voter_os', 'voter_browser', 'browser_version'),
 	$table_prefix . 'plugins' => array('plugin_name', 'plugin_folder', 'plugin_enabled'),
+	$table_prefix . 'plugins_config' => array('config_name', 'config_value'),
 	$table_prefix . 'posts' => array('post_id', 'topic_id', 'forum_id', 'poster_id', 'post_time', 'poster_ip', 'post_username', 'post_subject', 'post_text', 'post_text_compiled', 'enable_bbcode', 'enable_html', 'enable_smilies', 'enable_autolinks_acronyms', 'enable_sig', 'edit_notes', 'post_edit_time', 'post_edit_count', 'post_edit_id', 'post_attachment', 'post_bluecard'),
 	$table_prefix . 'privmsgs' => array('privmsgs_id', 'privmsgs_type', 'privmsgs_subject', 'privmsgs_from_userid', 'privmsgs_to_userid', 'privmsgs_date', 'privmsgs_ip', 'privmsgs_enable_bbcode', 'privmsgs_enable_html', 'privmsgs_enable_smilies', 'privmsgs_enable_autolinks_acronyms', 'privmsgs_attach_sig', 'privmsgs_attachment'),
 	$table_prefix . 'privmsgs_archive' => array('privmsgs_id', 'privmsgs_type', 'privmsgs_subject', 'privmsgs_from_userid', 'privmsgs_to_userid', 'privmsgs_date', 'privmsgs_ip', 'privmsgs_enable_bbcode', 'privmsgs_enable_html', 'privmsgs_enable_smilies', 'privmsgs_enable_autolinks_acronyms', 'privmsgs_attach_sig', 'privmsgs_attachment'),

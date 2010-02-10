@@ -27,7 +27,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 // MG CMS - BEGIN
-	'CMS_WELCOME' => 'Welcome in Icy Phoenix',
+	'CMS_WELCOME' => 'Welcome to Icy Phoenix',
 	'BP_Title' => 'Blocks Position Tag',
 	'BP_Explain' => 'Add, edit or delete blocks position that can be used in site pages. The default positions are \'header\', \'footer\', \'right\', \'left\' and \'centre\'. These positions correspond to the layout being used for a specific site page. Only existing positions per site page must be added here. Position keys that are not existing in the specified layout will not appear in the site page. Each position tag key and character must be unique per site page.',
 	'BP_Position' => 'Position character',

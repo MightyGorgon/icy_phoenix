@@ -832,7 +832,6 @@ else
 {
 	$template->assign_var('S_SHOW_LINKS', true);
 }
-$cms_page['page_nav'] = false;
 
 if ($similar_topics_enabled)
 {
@@ -2540,6 +2539,8 @@ if($can_reply)
 	generate_smilies_row();
 }
 
+// Force to false page_nav because viewtopic has its own breadcrumbs...
+$cms_page['page_nav'] = false;
 full_page_generation($template_to_parse, $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 
 ?>
