@@ -1,5 +1,5 @@
 <h1>{L_DATABASE_RESTORE}</h1>
-<P>{L_RESTORE_EXPLAIN}</p>
+<p>{L_RESTORE_EXPLAIN}</p>
 <form enctype="multipart/form-data" method="post" action="{S_DBUTILS_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th>{L_SELECT_FILE}</th></tr>

@@ -1,5 +1,5 @@
 <h1>{L_DBMTNC_TITLE}</h1>
-<P>{L_DBMTNC_TEXT}</p>
+<p>{L_DBMTNC_TEXT}</p>
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>

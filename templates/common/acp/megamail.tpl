@@ -50,7 +50,7 @@ function compileForm(m_id)
 </script>
 
 <h1>{L_MAIL_SESSION_HEADER}</h1>
-<form method="post" name="post" action="{S_USER_ACTION}" onSubmit="return disableForm(this);">
+<form method="post" name="post" action="{S_USER_ACTION}" onsubmit="return disableForm(this);">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<th>{L_ID}</th>

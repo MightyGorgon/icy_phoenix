@@ -115,7 +115,7 @@ if (defined('INSTALLING_ICYPHOENIX'))
 	$ftp_pass = $ip_functions->request_var('ftp_pass', '');
 
 	$board_email = $ip_functions->request_var('board_email', '');
-	$script_path = $ip_functions->request_var('script_path', str_replace('install', '', dirname($_SERVER['PHP_SELF'])));
+	$script_path = $ip_functions->request_var('script_path', str_replace('install', '', dirname($_SERVER['SCRIPT_NAME'])));
 
 	if (!empty($_POST['server_name']))
 	{

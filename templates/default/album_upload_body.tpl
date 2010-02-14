@@ -224,7 +224,7 @@ function InitForm()
 // -->
 </script>
 
-<form name="upload" action="{S_ALBUM_ACTION}" method="post" enctype="multipart/form-data" onSubmit="{S_ON_SUBMIT}">
+<form name="upload" action="{S_ALBUM_ACTION}" method="post" enctype="multipart/form-data" onsubmit="{S_ON_SUBMIT}">
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_PIC}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- IF not S_LOGGED_IN -->

@@ -81,9 +81,9 @@ if($mode != '')
 
 		$template->assign_vars(array(
 			'TITLE_INFO' => str_replace("\"", "'", $title_info['title_info']),
-			'ADMIN_CHECKED' => ($title_info['admin_auth']==1) ? 'CHECKED' : '',
-			'MOD_CHECKED' => ($title_info['mod_auth']==1) ? 'CHECKED' : '',
-			'POSTER_CHECKED' => ($title_info['poster_auth']==1) ? 'CHECKED' : '',
+			'ADMIN_CHECKED' => ($title_info['admin_auth'] == 1) ? ' checked="checked"' : '',
+			'MOD_CHECKED' => ($title_info['mod_auth'] == 1) ? ' checked="checked"' : '',
+			'POSTER_CHECKED' => ($title_info['poster_auth'] == 1) ? ' checked="checked"' : '',
 			'ADMIN_TITLE' => $lang['Title_infos'],
 			'ADMIN_TITLE_EXPLAIN' => $lang['Quick_title_explain'],
 			'S_TITLE_ACTION' => append_sid('admin_quick_title.' . PHP_EXT),
@@ -197,8 +197,8 @@ if($mode != '')
 		{
 			$title_id=$title_rows[$i]['id'];
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-			$perm = ($title_rows[$i]['admin_auth'] == 1) ? $lang['Administrator'].'</br>' : '';
-			$perm .= ($title_rows[$i]['mod_auth'] == 1) ? $lang['Moderator'].'</br>' : '';
+			$perm = ($title_rows[$i]['admin_auth'] == 1) ? $lang['Administrator'] . '<br />' : '';
+			$perm .= ($title_rows[$i]['mod_auth'] == 1) ? $lang['Moderator'] . '<br />' : '';
 			$perm .= ($title_rows[$i]['poster_auth'] == 1) ? $lang['Topic_poster'] : '';
 			$template->assign_block_vars('title', array(
 				'ROW_CLASS' => $row_class,

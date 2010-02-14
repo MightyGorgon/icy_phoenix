@@ -140,9 +140,6 @@ else
 	define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
 }
 
-// Is this safe?
-@date_default_timezone_set(@date_default_timezone_get());
-
 // CrackerTracker v5.x
 // Comment the following define to enable CT GET and POST parsing.
 define('GLOBAL_CTRACKER_DISABLED', true);
@@ -297,10 +294,8 @@ unset($sql);
 //
 // Obtain and encode users IP
 //
-// I'm removing HTTP_X_FORWARDED_FOR ... this may well cause other problems such as
-// private range IP's appearing instead of the guilty routable IP, tough, don't
-// even bother complaining ... go scream and shout at the idiots out there who feel
-// "clever" is doing harm rather than good ... karma is a great thing ... :)
+// I'm removing HTTP_X_FORWARDED_FOR ... this may well cause other problems such as private range IP's appearing instead of the guilty routable IP, tough, don't
+// even bother complaining ... go scream and shout at the idiots out there who feel "clever" is doing harm rather than good ... karma is a great thing ... :)
 //
 $client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
 $user_ip = encode_ip($client_ip);

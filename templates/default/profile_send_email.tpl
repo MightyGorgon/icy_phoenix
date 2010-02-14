@@ -22,7 +22,7 @@ function checkForm(formObj)
 //-->
 </script>
 
-<form action="{S_POST_ACTION}" method="post" name="post" onSubmit="return checkForm(this)">
+<form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this)">
 
 {ERROR_BOX}
 

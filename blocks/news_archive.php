@@ -41,7 +41,7 @@ if(!function_exists('cms_block_news_archive'))
 		$img_width = ($cms_config_vars['md_news_images_width'][$block_id] < 20) ? '' : ('width="' . $cms_config_vars['md_news_images_width'][$block_id] . '"');
 
 		//$index_file = CMS_PAGE_HOME;
-		$index_file = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
+		$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
 		//$page_query = $_SERVER['QUERY_STRING'];
 		//$page_query = (!empty($_SERVER['QUERY_STRING'])) ? explode('&', $_SERVER['QUERY_STRING']) : explode('&', getenv('QUERY_STRING'));
 		$portal_page_id = '';

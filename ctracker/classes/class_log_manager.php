@@ -83,7 +83,7 @@ class log_manager
 	{
 		$this->ct_type_msg      = 0;
 		$this->ct_timestamp     = time();
-		$this->ct_request       = $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING'];
+		$this->ct_request       = $_SERVER['SCRIPT_NAME'] . '?' . $_SERVER['QUERY_STRING'];
 		$this->ct_referer       = $_SERVER['HTTP_REFERER'];
 		$this->ct_user_agent    = $_SERVER['HTTP_USER_AGENT'];
 		$this->ct_remote_addr   = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));

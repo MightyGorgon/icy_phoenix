@@ -1,5 +1,5 @@
 <h1>{L_PROFILE_FIELD_LIST_TITLE}</h1>
-<P>{L_PROFILE_FIELD_LIST_EXPLAIN}</p>
+<p>{L_PROFILE_FIELD_LIST_EXPLAIN}</p>
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>

@@ -44,7 +44,7 @@ if(!function_exists('cms_block_news_posters'))
 
 		$quick_list = request_var('quick_list', '');
 
-		$index_file = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
+		$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
 		$base_url = htmlspecialchars(urldecode($index_file));
 		$base_url .= '?list_sort=' . (($list_sort == 1) ? POST_TOPIC_URL : POST_USERS_URL);
 		$base_url .= '&amp;per_page=' . $per_page;

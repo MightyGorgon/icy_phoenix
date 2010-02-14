@@ -1421,7 +1421,7 @@ function success_message($text)
 
 ?>
 	<p><?php echo $text; ?></p>
-	<p style="text-align: center;"><a href="<?php echo $_SERVER['PHP_SELF'] . '?lg=' . $lg; ?>"><?php echo $lang['Return_ERC']; ?></a></p>
+	<p style="text-align: center;"><a href="<?php echo $_SERVER['SCRIPT_NAME'] . '?lg=' . $lg; ?>"><?php echo $lang['Return_ERC']; ?></a></p>
 <?php
 }
 

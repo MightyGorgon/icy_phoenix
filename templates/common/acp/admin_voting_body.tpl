@@ -108,4 +108,4 @@
 </table>
 <br />
 
-<div align="center"><span class="copyright">Admin Voting v1.1.8 &copy 2002 <a href="mailto:ErDrRon@aol.com">ErDrRon</a></span></div>
+<div align="center"><span class="copyright">Admin Voting v1.1.8 &copy; 2002 <a href="mailto:ErDrRon@aol.com">ErDrRon</a></span></div>

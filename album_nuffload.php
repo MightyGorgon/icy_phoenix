@@ -409,7 +409,7 @@ else
 	$album_user_id = intval($_REQUEST['user_id']);
 	if($album_config['perl_uploader'])
 	{
-		$uploader = (function_exists(album_append_uid))? album_append_uid($path_to_bin . "nuffload.cgi?psid=$psid&cat_id=$cat_id") . "&redirect=http://" . $_SERVER["HTTP_HOST"] . $_SERVER['PHP_SELF'] : $path_to_bin . "nuffload.cgi?psid=$psid&cat_id=$cat_id&redirect=http://" . $_SERVER["HTTP_HOST"] . $_SERVER['PHP_SELF'];
+		$uploader = (function_exists(album_append_uid))? album_append_uid($path_to_bin . "nuffload.cgi?psid=$psid&cat_id=$cat_id") . "&redirect=http://" . $_SERVER["HTTP_HOST"] . $_SERVER['SCRIPT_NAME'] : $path_to_bin . "nuffload.cgi?psid=$psid&cat_id=$cat_id&redirect=http://" . $_SERVER["HTTP_HOST"] . $_SERVER['SCRIPT_NAME'];
 	}
 	else
 	{

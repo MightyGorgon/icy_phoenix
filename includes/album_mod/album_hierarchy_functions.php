@@ -1163,7 +1163,7 @@ function album_build_jumpbox($cat_id, $user_id = ALBUM_PUBLIC_GALLERY, $auth_key
 	$user_ref = (($user_id == ALBUM_PUBLIC_GALLERY) ? "" : "?user_id=$user_id");
 
 	$javascript = "<script type=\"text/JavaScript\"><!-- \n";
-	$javascript .= "function onChangeCheck() {\n";
+	$javascript .= "function onchangeCheck() {\n";
 	$javascript .= "    if(document.jumpbox.cat_id.value != " . ALBUM_JUMPBOX_SEPERATOR . ") {\n";
 	$javascript .= "        document.jumpbox.submit();";
 	$javascript .= "    }\n";
@@ -1174,7 +1174,7 @@ function album_build_jumpbox($cat_id, $user_id = ALBUM_PUBLIC_GALLERY, $auth_key
 	$res = $javascript;
 
 	$res .= '<form name="jumpbox" action="'. append_sid(album_append_uid("album_cat." . PHP_EXT)) .'" method="get">';
-	$res .= $lang['Jump_to'] . ':&nbsp;<select name="cat_id" onChange="onChangeCheck()">';
+	$res .= $lang['Jump_to'] . ':&nbsp;<select name="cat_id" onchange="onChangeCheck()">';
 	$res .= album_get_tree_option($cat_id, $auth_key, ALBUM_SELECTBOX_INCLUDE_ROOT);
 	$res .= '</select>';
 	$res .= '&nbsp;<input type="submit" class="liteoption" value="'. $lang['Go'] .'" />';

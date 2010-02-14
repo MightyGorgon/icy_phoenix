@@ -191,7 +191,7 @@ $template->assign_vars(array(
 	'S_ORDER' => $order,
 	'S_MODE_SELECT' => topic_shadow_make_drop_box('mode'),
 	'S_ORDER_SELECT' => topic_shadow_make_drop_box('order'),
-	'S_MODE_ACTION' => append_sid($_SERVER['PHP_SELF'])
+	'S_MODE_ACTION' => append_sid($_SERVER['SCRIPT_NAME'])
 	)
 );
 

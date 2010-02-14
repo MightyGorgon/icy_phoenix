@@ -30,7 +30,7 @@ function extract_current_page($root_path)
 	$page_array = array();
 
 	// First of all, get the request uri...
-	$script_name = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
+	$script_name = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
 	$args = (!empty($_SERVER['QUERY_STRING'])) ? explode('&', $_SERVER['QUERY_STRING']) : explode('&', getenv('QUERY_STRING'));
 
 	// If we are unable to get the script name we use REQUEST_URI as a failover and note it within the page array for easier support...
@@ -211,6 +211,10 @@ function set_var(&$result, $var, $type, $multibyte = false)
 					$result = preg_replace('/[\x80-\xFF]/', '?', $result);
 				}
 			}
+		}
+		else
+		{
+			//$result = trim(htmlspecialchars(str_replace(array("\r\n", "\r"), array("\n", "\n"), $result), ENT_COMPAT));
 		}
 
 		$result = (STRIP) ? stripslashes($result) : $result;
@@ -654,7 +658,7 @@ function get_founder_id($clear_cache = false)
 	{
 		$db->clear_cache('founder_id_');
 	}
-	$founder_id = (intval($config['main_admin_id']) >= 2) ? $config['main_admin_id'] : 2;
+	$founder_id = (intval($config['main_admin_id']) >= 2) ? (int) $config['main_admin_id'] : 2;
 	if ($founder_id != 2)
 	{
 		$sql = "SELECT user_id
@@ -2422,10 +2426,10 @@ function bots_table_update($bot_id)
 	{
 		if (eregi('googlebot', $_SERVER['HTTP_USER_AGENT']))
 		{
-			$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . (($_SERVER['QUERY_STRING'] != '') ? '?' . $_SERVER['QUERY_STRING'] : '');
+			$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'] . (($_SERVER['QUERY_STRING'] != '') ? '?' . $_SERVER['QUERY_STRING'] : '');
 			$now = time();
 
-			$sql = "INSERT INTO " . GOOGLE_BOT_DETECTOR_TABLE . "(detect_time, detect_url) VALUES('$now', '$url')";
+			$sql = "INSERT INTO " . GOOGLE_BOT_DETECTOR_TABLE . "(detect_time, detect_url) VALUES('$now', '" . $db->sql_escape($url) . "')";
 			$result = $db->sql_query($sql);
 		}
 	}
@@ -3105,7 +3109,7 @@ function page_header($title = '', $parse_template = false)
 	}
 
 	//$server_url = create_server_url();
-	$page_url = pathinfo($_SERVER['PHP_SELF']);
+	$page_url = pathinfo($_SERVER['SCRIPT_NAME']);
 	$page_query = $_SERVER['QUERY_STRING'];
 
 	$meta_content['page_title'] = !empty($title) ? $title : $meta_content['page_title'];
@@ -3334,7 +3338,7 @@ function page_header($title = '', $parse_template = false)
 			$template->assign_block_vars('switch_allow_autologin', array());
 		}
 
-		$smart_redirect = strrchr($_SERVER['PHP_SELF'], '/');
+		$smart_redirect = strrchr($_SERVER['SCRIPT_NAME'], '/');
 		$smart_redirect = substr($smart_redirect, 1, strlen($smart_redirect));
 
 		if(($smart_redirect == (CMS_PAGE_PROFILE)) || ($smart_redirect == (CMS_PAGE_LOGIN)))
@@ -3744,7 +3748,7 @@ function page_header($title = '', $parse_template = false)
 
 		if ($config['show_calendar_box_index'])
 		{
-			$path_parts = pathinfo($_SERVER['PHP_SELF']);
+			$path_parts = pathinfo($_SERVER['SCRIPT_NAME']);
 			if ($path_parts['basename'] != CMS_PAGE_LOGIN)
 			{
 				if (!defined('IN_CALENDAR'))
@@ -4215,7 +4219,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	$admin_link = jr_admin_make_admin_link();
 
 	//Begin Lo-Fi Mod
-	$path_parts = pathinfo($_SERVER['PHP_SELF']);
+	$path_parts = pathinfo($_SERVER['SCRIPT_NAME']);
 	$lofi = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars($_SERVER['QUERY_STRING']) . '&amp;lofi=' . (empty($_COOKIE['lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE['lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a>';
 	$template->assign_vars(array(
 		'L_LOFI' => $lang['Lofi'],

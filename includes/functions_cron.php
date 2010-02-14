@@ -43,7 +43,7 @@ function process_digests()
 		$is_allowed = true;
 		// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
 		$is_allowed = (!$userdata['session_logged_in']) ? true : false;
-		$page_url = pathinfo($_SERVER['PHP_SELF']);
+		$page_url = pathinfo($_SERVER['SCRIPT_NAME']);
 		$digests_pages_array = array(CMS_PAGE_PROFILE, CMS_PAGE_POSTING);
 		if ($config['digests_php_cron'] && $is_allowed && !in_array($page_url['basename'], $digests_pages_array))
 		//if ($config['digests_php_cron'] && ($config['digests_php_cron_lock'] == false) && (!$userdata['session_logged_in']) && !in_array($page_url['basename'], $digests_pages_array))

@@ -1321,7 +1321,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 		// Build the html select statement
 		$flag_start_image = 'blank.gif' ;
 		$selected = (isset($user_flag)) ? '' : ' selected="selected"'  ;
-		$flag_select = "<select name=\"user_flag\" onChange=\"document.images['user_flag'].src = 'images/flags/' + this.value;\" >";
+		$flag_select = "<select name=\"user_flag\" onchange=\"document.images['user_flag'].src = 'images/flags/' + this.value;\" >";
 		$flag_select .= "<option value=\"blank.gif\"$selected>" . $lang['Select_Country'] . "</option>";
 		for ($i = 0; $i < $num_flags; $i++)
 		{

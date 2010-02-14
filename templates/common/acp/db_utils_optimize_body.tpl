@@ -1,6 +1,6 @@
 {SELECT_SCRIPT}
 <h1>{L_DATABASE_OPTIMIZE}</h1>
-<P>{L_OPTIMIZE_EXPLAIN}</p>
+<p>{L_OPTIMIZE_EXPLAIN}</p>
 
 <form method="post" action="{S_DBUTILS_ACTION}" name="tablesForm">
 <div align="center">

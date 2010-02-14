@@ -26,7 +26,7 @@ $topic_title = request_var('topic_title', '');
 $topic_id = request_var('topic_id', 0);
 $friendname = request_var('friendname', '');
 $message = request_var('message', '');
-$PHP_SELF = $_SERVER['PHP_SELF'];
+$PHP_SELF = $_SERVER['SCRIPT_NAME'];
 
 if (!$userdata['session_logged_in'])
 {

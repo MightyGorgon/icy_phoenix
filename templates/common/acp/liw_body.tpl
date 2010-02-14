@@ -55,7 +55,7 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="center">
-		<span class="copyright">Limit Image Width MOD &copy; 2004 Vic D'Elfant<br />[ <a href="http://www.phpbb.com/phpBB/profile.php?mode=viewprofile&u=118634" class="copyright" target="_blank">phpBB.com Profile</a> :: <a href="http://www.pythago.nl" class="copyright" target="_blank">Website</a> ]</span>
+		<span class="copyright">Limit Image Width MOD &copy; 2004 Vic D'Elfant<br />[ <a href="http://www.phpbb.com/phpBB/profile.php?mode=viewprofile&amp;u=118634" class="copyright" target="_blank">phpBB.com Profile</a> :: <a href="http://www.pythago.nl" class="copyright" target="_blank">Website</a> ]</span>
 	</td>
 </tr>
 </table>

@@ -179,7 +179,7 @@ function update_icon(newimage)
 					<td align="right" nowrap="nowrap">
 						<span class="genmed"><input type="hidden" name="preset_choice" value="0" />
 							&nbsp;<b>{L_PRESET}:&nbsp;</b>
-							<select name="forum_preset" onChange="this.form.preset_choice.value=1; this.form.submit();">{S_PRESET_OPT}</select>
+							<select name="forum_preset" onchange="this.form.preset_choice.value=1; this.form.submit();">{S_PRESET_OPT}</select>
 						</span>
 					</td>
 					<!-- END no_link -->

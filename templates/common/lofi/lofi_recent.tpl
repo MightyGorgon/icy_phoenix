@@ -22,8 +22,7 @@
 	<div style="padding-left: 5px; padding-right: 5px;">
 		{recent.TOPIC_TYPE}<a href="{recent.U_VIEW_TOPIC}">{recent.TOPIC_TITLE}</a>
 		<!-- IF recent.GOTO_PAGE --><span class="gotopage">{recent.GOTO_PAGE}</span><!-- ENDIF -->
-		<span class="desc">({L_REPLIES}: {recent.REPLIES}
-		{L_VIEWS}: {recent.VIEWS})</span>
+		<span class="desc">({L_REPLIES}: {recent.REPLIES} {L_VIEWS}: {recent.VIEWS}) {recent.LAST_URL}</span>
 	</div>
 	<!-- END recent -->
 	<br />

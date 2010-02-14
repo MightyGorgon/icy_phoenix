@@ -116,7 +116,7 @@ if(!function_exists('cms_block_kb'))
 						'POSTER_CG' => colorize_username($fetchposts[$i]['user_id'], $fetchposts[$i]['username'], $fetchposts[$i]['user_color'], $fetchposts[$i]['user_active']),
 						'TIME' => $fetchposts[$i]['topic_time'],
 						'REPLIES' => $fetchposts[$i]['topic_replies'],
-						'U_VIEW_ARTICLE' => append_sid($_SERVER['PHP_SELF'] . '?kb=article&f=' . $forum_id . '&' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'], true),
+						'U_VIEW_ARTICLE' => append_sid($_SERVER['SCRIPT_NAME'] . '?kb=article&f=' . $forum_id . '&' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'], true),
 
 						'U_VIEW_COMMENTS' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'], true),
 						'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),

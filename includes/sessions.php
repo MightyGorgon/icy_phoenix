@@ -568,7 +568,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 function session_end($session_id, $user_id)
 {
 	global $db, $config, $userdata, $lang;
-	global $_COOKIE, $SID;
+	global $SID;
 
 	$cookiename = $config['cookie_name'];
 	$cookiepath = $config['cookie_path'];

@@ -140,7 +140,7 @@ for($i = 0; $i < $mini_cal_month_days;)
 // output our general calendar bits
 $prev_qs = setQueryStringVal('month', (int) $mini_cal_month - 1);
 $next_qs = setQueryStringVal('month', (int) $mini_cal_month + 1);
-$index_file = htmlspecialchars(urldecode($_SERVER['PHP_SELF']));
+$index_file = htmlspecialchars(urldecode($_SERVER['SCRIPT_NAME']));
 $prev_month = '<a href="' . append_sid($index_file . $prev_qs) . '" class="gen"><b>&laquo;</b></a>';
 $next_month = '<a href="' . append_sid($index_file . $next_qs) . '" class="gen"><b>&raquo;</b></a>';
 $template->assign_vars(array(

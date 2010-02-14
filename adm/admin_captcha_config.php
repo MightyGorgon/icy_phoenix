@@ -110,7 +110,7 @@ $template->assign_vars(array(
 	'GAMMACORRECT' => $new['gammacorrect'],
 	'JPEG_QUALITY' => $new['jpeg_quality'],
 
-	'CAPTCHA_IMG' => '<img src="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=confirm&amp;id=Admin') . '">',
+	'CAPTCHA_IMG' => '<img src="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=confirm&amp;id=Admin') . '" alt="">',
 
 	'S_GREAT_PRE_LETTERS_YES' => ($new['pre_letters_great'] == 1) ? 'checked="checked"' : '',
 	'S_GREAT_PRE_LETTERS_NO' => ($new['pre_letters_great'] == 0) ? 'checked="checked"' : '',

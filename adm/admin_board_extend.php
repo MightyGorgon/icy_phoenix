@@ -315,9 +315,9 @@ for ($i = 0; $i < sizeof($menu_keys); $i++)
 		}
 	}
 	$template->assign_block_vars('menu', array(
-		'CLASS'		=> ($menu_id == $i) ? ((sizeof($mod_keys[$i]) > 1) ? 'row3' : 'row1') : 'row2',
-		'U_MENU'	=> append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i),
-		'L_MENU'	=> sprintf((($menu_id == $i) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($l_menu)),
+		'CLASS' => ($menu_id == $i) ? ((sizeof($mod_keys[$i]) > 1) ? 'row3' : 'row1') : 'row2',
+		'U_MENU' => append_sid('admin_board_extend.' . PHP_EXT . '?menu=' . $i),
+		'L_MENU' => sprintf((($menu_id == $i) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($l_menu)),
 		)
 	);
 	if ($menu_id == $i)

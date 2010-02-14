@@ -44,7 +44,7 @@ if (defined('IN_CMS_PAGE_INDEX'))
 }
 else
 {
-	$page_filename = $db->sql_escape(basename($_SERVER['PHP_SELF']));
+	$page_filename = $db->sql_escape(basename($_SERVER['SCRIPT_NAME']));
 
 	$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE filename = '" . $page_filename . "'";
 	$layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);

@@ -805,8 +805,8 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 	get_event_topics($events, $number, $start_date, $end_date, false, 0, -1, $fid);
 
 	$pages_array = array('calendar.' . PHP_EXT, CMS_PAGE_FORUM, CMS_PAGE_VIEWFORUM);
-	//$current_page = $_SERVER['PHP_SELF'];
-	$current_page = basename($_SERVER['PHP_SELF']);
+	//$current_page = $_SERVER['SCRIPT_NAME'];
+	$current_page = basename($_SERVER['SCRIPT_NAME']);
 
 	// No limits in calendar
 	$day_end = 0;

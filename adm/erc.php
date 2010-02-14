@@ -243,7 +243,7 @@ switch($mode)
 {
 	case 'select_lang':
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" method="post">
 <table border="0" cellspacing="0" cellpadding="10">
 	<tr>
 		<td><table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -260,7 +260,7 @@ switch($mode)
 		break;
 	case 'start':
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" method="post">
 <table border="0" cellspacing="0" cellpadding="10">
 	<tr>
 		<td><table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -310,7 +310,7 @@ switch($mode)
 		if ($option != 'rcp')
 		{
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" method="post">
 <table border="0" cellspacing="0" cellpadding="10">
 <?php
 			if ($option != 'rld' && $option != 'rtd')
@@ -400,7 +400,7 @@ switch($mode)
 		else
 		{
 ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<form action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" method="post">
 <table border="0" cellspacing="0" cellpadding="10">
 <?php
 		}
@@ -461,7 +461,7 @@ switch($mode)
 					$port_rec = '80';
 				}
 				$path_cur = get_config_data('script_path');
-				$path_rec = str_replace('admin', '', dirname($_SERVER['PHP_SELF']));
+				$path_rec = str_replace('admin', '', dirname($_SERVER['SCRIPT_NAME']));
 ?>
 	<tr>
 		<td>
@@ -700,7 +700,7 @@ switch($mode)
 			<input type="hidden" name="mode" value="execute" />
 			<input type="hidden" name="lg" value="<?php echo $lg ?>" />
 			<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" />
-			- <a href="<?php echo $_SERVER['PHP_SELF'] . '?lg=' . $lg; ?>"><?php echo $lang['Cancel']; ?></a>
+			- <a href="<?php echo $_SERVER['SCRIPT_NAME'] . '?lg=' . $lg; ?>"><?php echo $lang['Cancel']; ?></a>
 		</td>
 	</tr>
 </table>
@@ -838,7 +838,7 @@ switch($mode)
 				{
 					$default_config['server_port'] = (!empty($_SERVER['SERVER_PORT'])) ? $_SERVER['SERVER_PORT'] : $_ENV['SERVER_PORT'];
 				}
-				$default_config['script_path'] = str_replace('admin', '', dirname($_SERVER['PHP_SELF']));
+				$default_config['script_path'] = str_replace('admin', '', dirname($_SERVER['SCRIPT_NAME']));
 				$sql = "SELECT Min(topic_time) as startdate FROM " . TOPICS_TABLE;
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
@@ -1281,7 +1281,7 @@ switch($mode)
 				$ndbu = urlencode($new_dbuser);
 				$ndbp = urlencode($new_dbpasswd);
 				$ntp = urlencode($new_table_prefix);
-				success_message(sprintf($lang['rcp_success'], '<a href="' . $_SERVER['PHP_SELF'] . '?mode=download&amp;ndbms=' . $ndbms . '&amp;ndbh=' . $ndbh . '&amp;ndbn=' . $ndbn . '&amp;ndbu=' . $ndbu . '&amp;ndbp=' . $ndbp . '&amp;ntp=' . $ntp . '">', '</a>'));
+				success_message(sprintf($lang['rcp_success'], '<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=download&amp;ndbms=' . $ndbms . '&amp;ndbh=' . $ndbh . '&amp;ndbn=' . $ndbn . '&amp;ndbu=' . $ndbu . '&amp;ndbp=' . $ndbp . '&amp;ntp=' . $ntp . '">', '</a>'));
 				break;
 			default:
 ?>

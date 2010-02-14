@@ -1,5 +1,5 @@
 <h1>{L_REPLACE_TITLE}</h1>
-<P>{L_REPLACE_TEXT}</p>
+<p>{L_REPLACE_TEXT}</p>
 
 <!-- BEGIN switch_forum_sent -->
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">

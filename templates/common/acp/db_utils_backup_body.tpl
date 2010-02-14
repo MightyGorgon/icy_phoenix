@@ -1,5 +1,5 @@
 <h1>{L_DATABASE_BACKUP}</h1>
-<P>{L_BACKUP_EXPLAIN}</p>
+<p>{L_BACKUP_EXPLAIN}</p>
 
 <form method="post" action="{S_DBUTILS_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">

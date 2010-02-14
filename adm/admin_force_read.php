@@ -139,7 +139,7 @@ if($mode == 'users')
 		echo "	<tr>";
 		echo "		<td class=\"row2\" width=\"50%\" valign=\"middle\">";
 		echo "			<span class=\"genmed\">";
-		echo "				" . colorize_username($user, $name, $row['user_color'], $row['user_active']) . "&nbsp;[<a href=\"" . append_sid($_SERVER['PHP_SELF'] . "?mode=delete_user&amp;user=" . $user) ."\">" . $lang['Delete'] . "</a>]";
+		echo "				" . colorize_username($user, $name, $row['user_color'], $row['user_active']) . "&nbsp;[<a href=\"" . append_sid($_SERVER['SCRIPT_NAME'] . "?mode=delete_user&amp;user=" . $user) ."\">" . $lang['Delete'] . "</a>]";
 		echo "			</span>";
 		echo "		</td>";
 		echo "		<td class=\"row2\" width=\"50%\" valign=\"middle\">";

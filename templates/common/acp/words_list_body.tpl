@@ -1,5 +1,5 @@
 <h1>{L_WORDS_TITLE}</h1>
-<P>{L_WORDS_TEXT}</p>
+<p>{L_WORDS_TEXT}</p>
 
 <form method="post" action="{S_WORDS_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">

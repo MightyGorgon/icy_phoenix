@@ -98,7 +98,7 @@ function checkForm(tab,subtab)
 </tr>
 <tr>
 	<td colspan="{HEADER_COL_SPAN}">
-		<form name="config" action="{S_ALBUM_CONFIG_ACTION}" method="post" onSubmit="return confirmSubmit();">
+		<form name="config" action="{S_ALBUM_CONFIG_ACTION}" method="post" onsubmit="return confirmSubmit();">
 			<input type="hidden" name="tab" value="{H_SELECTED_TAB}" />
 			<input type="hidden" name="subtab" value="{V_SELECTED_TAB}" />
 			<input type="hidden" name="config_table" value="{CONFIG_TABLE}" />

@@ -2808,7 +2808,7 @@ switch($mode_id)
 				{
 					$default_config['server_port'] = (!empty($_SERVER['SERVER_PORT'])) ? $_SERVER['SERVER_PORT'] : $_ENV['SERVER_PORT'];
 				}
-				$default_config['script_path'] = str_replace('admin', '', dirname($_SERVER['PHP_SELF']));
+				$default_config['script_path'] = str_replace('admin', '', dirname($_SERVER['SCRIPT_NAME']));
 				$sql = "SELECT Min(topic_time) as startdate FROM " . TOPICS_TABLE;
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);

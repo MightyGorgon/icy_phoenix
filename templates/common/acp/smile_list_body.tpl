@@ -1,5 +1,5 @@
 <h1>{L_SMILEY_TITLE}</h1>
-<P>{L_SMILEY_TEXT}</p>
+<p>{L_SMILEY_TEXT}</p>
 
 <form method="post" action="{S_SMILEY_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">

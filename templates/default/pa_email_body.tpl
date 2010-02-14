@@ -23,7 +23,7 @@ function checkForm(formObj) {
 //-->
 </script>
 
-<form action="{S_EMAIL_ACTION}" method="post" onSubmit="return checkForm(this)" name="post">
+<form action="{S_EMAIL_ACTION}" method="post" onsubmit="return checkForm(this)" name="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_EMAIL}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row2" colspan="2"><span class="genmed">{L_EMAILINFO}</span></td></tr>
 <tr>

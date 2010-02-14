@@ -41,7 +41,7 @@ if(isset($_GET['url']) && !defined('DEMO_MODE'))
 	$import_data = array(
 		'host'		=> $_SERVER['HTTP_HOST'],
 		'port'		=> $_SERVER['SERVER_PORT'],
-		'url'		=> str_replace('xs_download.', 'xs_frameset.', $_SERVER['PHP_SELF']),
+		'url'		=> str_replace('xs_download.', 'xs_frameset.', $_SERVER['SCRIPT_NAME']),
 		'session'	=> $userdata['session_id'],
 		'xs'		=> $template->xs_versiontxt,
 		'style'		=> STYLE_HEADER_VERSION,

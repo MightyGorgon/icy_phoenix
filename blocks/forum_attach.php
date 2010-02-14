@@ -30,7 +30,7 @@ if(!function_exists('cms_block_forum_attach'))
 
 		$template->_tpldata['articles_fp.'] = array();
 
-		$index_file = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : getenv('PHP_SELF');
+		$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
 		$index_file = htmlspecialchars(urldecode($index_file));
 
 		$template->set_filenames(array('forum_attach_block' => 'blocks/forum_attach_block.tpl'));

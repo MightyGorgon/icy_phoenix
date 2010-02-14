@@ -23,7 +23,7 @@ function checkCategoryID()
 }
 // -->
 </script>
-<form name="acp" action="{S_ALBUM_ACTION}" method="post" onSubmit="return checkCategoryID()">
+<form name="acp" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkCategoryID()">
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 	<td class="nav" width="100%">

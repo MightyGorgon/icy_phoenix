@@ -45,7 +45,7 @@ class ct_userfunctions
 	{
 		global $userdata, $db, $ctracker_config, $lang, $is_ajax;
 
-		if ( ($ctracker_config->settings['search_feature_enabled'] == 0) || ($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD) )
+		if (($ctracker_config->settings['search_feature_enabled'] == 0) || ($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 		{
 			// Search feature function was disabled
 			return;
@@ -55,7 +55,7 @@ class ct_userfunctions
 		$max_searches = 0;
 		$wait_time    = 0;
 
-		if ( $userdata['user_id'] == ANONYMOUS )
+		if ($userdata['user_id'] == ANONYMOUS)
 		{
 			$max_searches = $ctracker_config->settings['search_count_guest'];
 			$wait_time    = $ctracker_config->settings['search_time_guest'];
@@ -72,7 +72,7 @@ class ct_userfunctions
 		 */
 		if (($userdata['user_level'] != ADMIN) || !$is_ajax)
 		{
-			if ( $userdata['ct_search_time'] < time() )
+			if ($userdata['ct_search_time'] < time())
 			{
 				/*
 				 * Block-Time is not there, so reset the values in Usertable
@@ -82,13 +82,13 @@ class ct_userfunctions
 				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_time = ' . $search_time_new . ', ct_search_count = 1 WHERE user_id = ' . $userdata['user_id'];
 
 				// Execute SQL Command in database
-				if ( !$result = $db->sql_query($sql) )
+				if (!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 				}
 
 			}
-			elseif ( $userdata['ct_search_count'] < $max_searches )
+			elseif ($userdata['ct_search_count'] < $max_searches)
 			{
 				/*
 				 * We're still in the time limitations, but the user has
@@ -98,7 +98,7 @@ class ct_userfunctions
 				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_count = ct_search_count + 1 WHERE user_id = ' . $userdata['user_id'];
 
 				// Execute SQL Command in database
-				if ( !$result = $db->sql_query($sql) )
+				if (!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 				}
@@ -114,7 +114,7 @@ class ct_userfunctions
 				 * Also we increment the Search counter one time that no new search
 				 * wait time will be set if someone tries AGAIN to search.
 				 */
-				if ( $userdata['ct_search_count'] == $max_searches )
+				if ($userdata['ct_search_count'] == $max_searches)
 				{
 					$search_time_new = time() + $wait_time;
 					$real_wait_time  = $search_time_new - time();
@@ -122,7 +122,7 @@ class ct_userfunctions
 					$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_time = ' . $search_time_new . ', ct_search_count = ct_search_count + 1 WHERE user_id = ' . $userdata['user_id'] . ';';
 
 					// Execute SQL Command in database
-					if ( !$result = $db->sql_query($sql) )
+					if (!$result = $db->sql_query($sql))
 					{
 						message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 					}
@@ -166,7 +166,7 @@ class ct_userfunctions
 	{
 		global $userdata, $lang;
 
-		if ( $userdata['ct_last_ip'] == '0.0.0.0' || $userdata['ct_last_used_ip'] == '0.0.0.0')
+		if ($userdata['ct_last_ip'] == '0.0.0.0' || $userdata['ct_last_used_ip'] == '0.0.0.0')
 		{
 			return 'allclear'; // not yet initialized
 		}
@@ -177,7 +177,7 @@ class ct_userfunctions
 		$first_ip_range  = explode('.', $userdata['ct_last_used_ip']);
 		$second_ip_range = explode('.', $userdata['ct_last_ip']);
 
-		if ( $first_ip_range[0] == $second_ip_range[0] && $first_ip_range[1] == $second_ip_range[1])
+		if ($first_ip_range[0] == $second_ip_range[0] && $first_ip_range[1] == $second_ip_range[1])
 		{
 			return 'allclear';
 		}
@@ -222,7 +222,7 @@ class ct_userfunctions
 		global $lang, $db, $ctracker_config, $userdata;
 
 		// MOD or ADMIN? - No Action please.
-		if ( $userdata['user_level'] > 0 )
+		if ($userdata['user_level'] > 0)
 		{
 			return;
 		}
@@ -230,26 +230,26 @@ class ct_userfunctions
 
 		// Standard Spammer detection system
 		// Why String and Int Check? Well some servers have problems to cast values from an Object so we make here little compatibility tricks
-		if ( $ctracker_config->settings['spammer_blockmode'] != '0' || intval($ctracker_config->settings['spammer_blockmode']) > 0 )
+		if ($ctracker_config->settings['spammer_blockmode'] != '0' || intval($ctracker_config->settings['spammer_blockmode']) > 0)
 		{
-			if ( time() >= $userdata['ct_last_post'] )
+			if (time() >= $userdata['ct_last_post'])
 			{
 				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_post_counter = 1, ct_last_post = ' . time() . '+' . $ctracker_config->settings['spammer_time'] . ' WHERE user_id = ' . $userdata['user_id'];
-				if ( !$result = $db->sql_query($sql) )
+				if (!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 				}
 			}
-			else if ( $userdata['ct_post_counter'] < intval($ctracker_config->settings['spammer_postcount']) )
+			else if ($userdata['ct_post_counter'] < intval($ctracker_config->settings['spammer_postcount']))
 			{
 				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_post_counter = ct_post_counter + 1 WHERE user_id = ' . $userdata['user_id'];
-				if ( !$result = $db->sql_query($sql) )
+				if (!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 				}
 
 				$userdata['ct_post_counter']++;
-				if ( $userdata['ct_post_counter'] == intval($ctracker_config->settings['spammer_postcount']) )
+				if ($userdata['ct_post_counter'] == intval($ctracker_config->settings['spammer_postcount']))
 				{
 					message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_binf_spammer'], $ctracker_config->settings['spammer_time'], $ctracker_config->settings['spammer_time']));
 				}
@@ -262,9 +262,9 @@ class ct_userfunctions
 
 
 		// Spammer Boost
-		if ( $ctracker_config->settings['spam_attack_boost'] == '1' || intval($ctracker_config->settings['spam_attack_boost']) == 1 )
+		if ($ctracker_config->settings['spam_attack_boost'] == '1' || intval($ctracker_config->settings['spam_attack_boost']) == 1)
 		{
-			if ( $userdata['user_posts'] >= 2 )
+			if ($userdata['user_posts'] >= 2)
 			{
 				return;
 			}
@@ -283,12 +283,12 @@ class ct_userfunctions
 			$match2     = preg_split('/US|\\$|€/m', $_POST['subject']);
 			$eur_count  = sizeof($match1) + sizeof($match2) - 2;
 
-			if ( $url_count > 6 || $eur_count > 6 )
+			if ($url_count > 6 || $eur_count > 6)
 			{
 				$this->block_handler();
 			}
 
-			if ( $ctracker_config->settings['spam_keyword_det'] == '2' || intval($ctracker_config->settings['spam_keyword_det']) == 2 )
+			if ($ctracker_config->settings['spam_keyword_det'] == '2' || intval($ctracker_config->settings['spam_keyword_det']) == 2)
 			{
 				// Did this that Eclipse does not output warning message because
 				// the IDE doesn't know that we initialize this in the included
@@ -305,7 +305,7 @@ class ct_userfunctions
 					$clean_message = str_replace("\xAD", '', $_POST['message']);
 					$clean_title   = str_replace("\xAD", '', $_POST['subject']);
 
-					if ( preg_match('/^' . $current_value . '$/is', $clean_message) || preg_match('/^' . $current_value . '$/is', $clean_title) )
+					if (preg_match('/^' . $current_value . '$/is', $clean_message) || preg_match('/^' . $current_value . '$/is', $clean_title))
 					{
 						$this->block_handler();
 					} // if
@@ -332,7 +332,7 @@ class ct_userfunctions
 		{
 			// Ban user
 			$sql = "INSERT INTO " . BANLIST_TABLE . "(`ban_id` , `ban_userid` , `ban_ip` , `ban_email`) VALUES ('', '" . $userdata['user_id'] . "', '', NULL);";
-			if( !$db->sql_query($sql))
+			if(!$db->sql_query($sql))
 			{
 				message_die(CRITICAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 			}
@@ -356,7 +356,7 @@ class ct_userfunctions
 
 		// Remove Profile data
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allowavatar = 0, user_email=\'info@example.com\', user_icq = \'\', user_website=\'\', user_from=\'\', user_sig=\'\', user_aim=\'\', user_yim=\'\', user_msnm=\'\', user_occ=\'\', user_interests=\'\' WHERE user_id = ' . $userdata['user_id'];
-		if ( !$result = $db->sql_query($sql) )
+		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 		}
@@ -369,7 +369,7 @@ class ct_userfunctions
 		unset($logfile);
 
 		// Log out user
-		if( $userdata['session_logged_in'] )
+		if($userdata['session_logged_in'])
 		{
 			session_end($userdata['session_id'], $userdata['user_id']);
 		}
@@ -409,9 +409,9 @@ class ct_userfunctions
 		include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
 
 		// Register Protection (TIME)
-		if ( intval($ctracker_config->settings['reg_protection']) == 1 && $mode == 'register')
+		if (intval($ctracker_config->settings['reg_protection']) == 1 && $mode == 'register')
 		{
-			if ( time() <= intval($ctracker_config->settings['reg_last_reg']) )
+			if (time() <= intval($ctracker_config->settings['reg_last_reg']))
 			{
 				$waittime_new = intval($ctracker_config->settings['reg_last_reg']) - time();
 				message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_info_regist_time'], $ctracker_config->settings['reg_blocktime'], $waittime_new, $waittime_new));
@@ -419,20 +419,20 @@ class ct_userfunctions
 		}
 
 		// Register IP Feature
-		if ( intval($ctracker_config->settings['reg_ip_scan']) == 1 && $mode == 'register' )
+		if (intval($ctracker_config->settings['reg_ip_scan']) == 1 && $mode == 'register')
 		{
-			if ( $ctracker_config->user_ip_value == $ctracker_config->settings['reg_lastip'] )
+			if ($ctracker_config->user_ip_value == $ctracker_config->settings['reg_lastip'])
 			{
 				message_die(GENERAL_MESSAGE, $lang['ctracker_info_regip_double']);
 			}
 		}
 
 		// Registration Scan blocked Mails
-		if ( isset($_POST['submit']) && intval($ctracker_config->settings['autoban_mails']) == 1 && $mode == 'register' )
+		if (isset($_POST['submit']) && intval($ctracker_config->settings['autoban_mails']) == 1 && $mode == 'register')
 		{
 			for($i = 0; $i < sizeof($ct_userspm_def); $i++)
 			{
-				if ( $_POST['username'] == $ct_userspm_def[$i] )
+				if ($_POST['username'] == $ct_userspm_def[$i])
 				{
 					message_die(GENERAL_MESSAGE, $lang['ctracker_info_profile_spammer']);
 				}
@@ -443,7 +443,7 @@ class ct_userfunctions
 				$current_value = preg_quote($ct_mailscn_def[$i]);
 		 		$current_value = str_replace('\*', '.*?', $current_value);
 
-				if ( preg_match('/^' . $current_value . '$/is', $_POST['email']) )
+				if (preg_match('/^' . $current_value . '$/is', $_POST['email']))
 				{
 					message_die(GENERAL_MESSAGE, $lang['ctracker_info_profile_spammer']);
 				}
@@ -451,7 +451,7 @@ class ct_userfunctions
 		}
 
 		// Registration Scan blocked Words
-		if ( isset($_POST['submit']) && intval($ctracker_config->settings['spam_keyword_det']) >= 1 )
+		if (isset($_POST['submit']) && intval($ctracker_config->settings['spam_keyword_det']) >= 1)
 		{
 			for($i = 0; $i < sizeof($ct_spammer_def); $i++)
 			{
@@ -467,7 +467,7 @@ class ct_userfunctions
 				$clean_interests   = str_replace("\xAD", '', $_POST['interests']);
 				$clean_signature   = str_replace("\xAD", '', $_POST['signature']);
 
-				if ( preg_match('/^' . $current_value . '$/is', $clean_aim) || preg_match('/^' . $current_value . '$/is', $clean_msn) || preg_match('/^' . $current_value . '$/is', $clean_yim) || preg_match('/^' . $current_value . '$/is', $clean_website) || preg_match('/^' . $current_value . '$/is', $clean_location) || preg_match('/^' . $current_value . '$/is', $clean_occupation) || preg_match('/^' . $current_value . '$/is', $clean_interests) || preg_match('/^' . $current_value . '$/is', $clean_signature))
+				if (preg_match('/^' . $current_value . '$/is', $clean_aim) || preg_match('/^' . $current_value . '$/is', $clean_msn) || preg_match('/^' . $current_value . '$/is', $clean_yim) || preg_match('/^' . $current_value . '$/is', $clean_website) || preg_match('/^' . $current_value . '$/is', $clean_location) || preg_match('/^' . $current_value . '$/is', $clean_occupation) || preg_match('/^' . $current_value . '$/is', $clean_interests) || preg_match('/^' . $current_value . '$/is', $clean_signature))
 				{
 					(($mode != 'register') && ($userdata['user_level'] == 0)) ? $this->block_handler() : null;
 					message_die(GENERAL_MESSAGE, $lang['ctracker_info_profile_spammer']);
@@ -506,19 +506,19 @@ class ct_userfunctions
 
 		// Password length check
 		$pw_length = strlen($_POST['new_password']);
-		if ( $pw_length < $ctracker_config->settings['pw_complex_min'] && !empty($_POST['new_password']) )
+		if ($pw_length < $ctracker_config->settings['pw_complex_min'] && !empty($_POST['new_password']))
 		{
 			message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_info_password_minlng'], $ctracker_config->settings['pw_complex_min'], $pw_length));
 		}
 
 		// Password complexity
-		if ( intval($ctracker_config->settings['pw_complex']) == 1 && !empty($_POST['new_password']) )
+		if (intval($ctracker_config->settings['pw_complex']) == 1 && !empty($_POST['new_password']))
 		{
 			$p_patterns     = '';
 			$active_pw_prot = '';
 			$p_pass         = $_POST['new_password'];
 
-			switch ( intval($ctracker_config->settings['pw_complex_mode']) )
+			switch (intval($ctracker_config->settings['pw_complex_mode']))
 			{
 				case 1: $p_patterns 	= '/^.*(?=.+)(?=.*\\d).*$/'; // [0-9]
 						$active_pw_prot = $lang['ctracker_info_password_cmplx_1'];
@@ -557,7 +557,7 @@ class ct_userfunctions
 						break;
 			}
 
-			if ( !preg_match($p_patterns, $p_pass) )
+			if (!preg_match($p_patterns, $p_pass))
 			{
 				message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_info_password_cmplx'], $active_pw_prot));
 			}
@@ -584,7 +584,7 @@ class ct_userfunctions
 		$user_id = intval($user_id);
 
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_last_pw_reset = ' . $exp_time_stamp . ' WHERE user_id = ' . $user_id;
-		if ( !$result = $db->sql_query($sql) )
+		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 		}

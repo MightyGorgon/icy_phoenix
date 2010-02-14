@@ -101,7 +101,7 @@ else
 	$cookie_name = substr($cookie_domain, 1, 4) . substr($cookie_path, 1, 4) . '_ip';
 	echo('<span class="nav">' . $lang['Cookie_settings_explain']);
 	echo('<table class="genmed">');
-	echo('<form method="post" action="' . $_SERVER['PHP_SELF'] . '">');
+	echo('<form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '">');
 	echo('<tr><td>' . $lang['Cookie_domain'] . ' </td><td><input type="text" name="cookie_domain" value="' . $cookie_domain . '"></td></tr>');
 	echo('<tr><td>' . $lang['Cookie_path'] . ' </td><td><input type="text" name="cookie_path" value="' . $cookie_path . '"></td></tr>');
 	echo('<tr><td>' . $lang['Cookie_name'] . ' </td><td><input type="text" name="cookie_name" value="' . $cookie_name . '"></td></tr>');

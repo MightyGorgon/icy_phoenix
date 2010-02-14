@@ -90,7 +90,7 @@ function checkForm(tab,subtab)
 </div>
 <div class="center-block-text">
 <table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
-<form name="config" action="{S_ALBUM_CONFIG_ACTION}" method="post" onSubmit="return confirmSubmit();">
+<form name="config" action="{S_ALBUM_CONFIG_ACTION}" method="post" onsubmit="return confirmSubmit();">
 <input type="hidden" name="tab" value="{H_SELECTED_TAB}" />
 <input type="hidden" name="subtab" value="{V_SELECTED_TAB}" />
 <input type="hidden" name="config_table" value="{CONFIG_TABLE}" />

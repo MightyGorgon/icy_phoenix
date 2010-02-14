@@ -1,5 +1,5 @@
 <h1>{L_NEWS_TITLE}</h1>
-<P>{L_NEWS_TEXT}</p>
+<p>{L_NEWS_TEXT}</p>
 
 <form method="post" action="{S_NEWS_ACTION}">
 <table class="forumline" align="center" cellspacing="0" cellpadding="0" border="0">
