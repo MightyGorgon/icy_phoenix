@@ -35,20 +35,20 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
 
-if (!intval($attach_config['allow_ftp_upload']))
+if (!intval($config['allow_ftp_upload']))
 {
-	if (($attach_config['upload_dir'][0] == '/') || (($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':')))
+	if (($config['upload_dir'][0] == '/') || (($config['upload_dir'][0] != '/') && ($config['upload_dir'][1] == ':')))
 	{
-		$upload_dir = $attach_config['upload_dir'];
+		$upload_dir = $config['upload_dir'];
 	}
 	else
 	{
-		$upload_dir = '../' . $attach_config['upload_dir'];
+		$upload_dir = '../' . $config['upload_dir'];
 	}
 }
 else
 {
-	$upload_dir = $attach_config['download_path'];
+	$upload_dir = $config['download_path'];
 }
 
 // Init Vars
@@ -63,35 +63,30 @@ $check_upload = (isset($_POST['settings'])) ? true : false;
 $check_image_cat = (isset($_POST['cat_settings'])) ? true : false;
 $search_imagick = (isset($_POST['search_imagick'])) ? true : false;
 
-$cache->destroy('config_attach');
+$attachments_config_array = array('upload_dir', 'upload_img', 'topic_icon', 'display_order', 'max_filesize', 'attachment_quota', 'max_filesize_pm', 'max_attachments', 'max_attachments_pm', 'disable_attachments_mod', 'allow_pm_attach', 'attachment_topic_review', 'allow_ftp_upload', 'show_apcp', 'attach_version', 'default_upload_quota', 'default_pm_quota', 'ftp_server', 'ftp_path', 'download_path', 'ftp_user', 'ftp_pass', 'ftp_pasv_mode', 'img_display_inlined', 'img_max_width', 'img_max_height', 'img_link_width', 'img_link_height', 'img_create_thumbnail', 'img_min_thumb_filesize', 'img_imagick', 'use_gd2', 'wma_autoplay', 'flash_autoplay');
 
-// Re-evaluate the Attachment Configuration
-$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
-$result = $db->sql_query($sql);
-
-while ($row = $db->sql_fetchrow($result))
+for($i = 0; $i < sizeof($attachments_config_array); $i++)
 {
-	$config_name = $row['config_name'];
-	$config_value = $row['config_value'];
-
-	$new_attach[$config_name] = request_var($config_name, trim($attach_config[$config_name]));
+	$config_name = $attachments_config_array[$i];
+	$config_value = trim($config[$attachments_config_array[$i]]);
+	$new_attach[$config_name] = request_var($config_name, $config_value);
 
 	if (!$size && !$submit && ($config_name == 'max_filesize'))
 	{
-		$size = ($attach_config[$config_name] >= 1048576) ? 'mb' : (($attach_config[$config_name] >= 1024) ? 'kb' : 'b');
+		$size = ($config[$config_name] >= 1048576) ? 'mb' : (($config[$config_name] >= 1024) ? 'kb' : 'b');
 	}
 
-	if (!$quota_size && !$submit && $config_name == 'attachment_quota')
+	if (!$quota_size && !$submit && ($config_name == 'attachment_quota'))
 	{
-		$quota_size = ($attach_config[$config_name] >= 1048576) ? 'mb' : (($attach_config[$config_name] >= 1024) ? 'kb' : 'b');
+		$quota_size = ($config[$config_name] >= 1048576) ? 'mb' : (($config[$config_name] >= 1024) ? 'kb' : 'b');
 	}
 
-	if (!$pm_size && !$submit && $config_name == 'max_filesize_pm')
+	if (!$pm_size && !$submit && ($config_name == 'max_filesize_pm'))
 	{
-		$pm_size = ($attach_config[$config_name] >= 1048576) ? 'mb' : (($attach_config[$config_name] >= 1024) ? 'kb' : 'b');
+		$pm_size = ($config[$config_name] >= 1048576) ? 'mb' : (($config[$config_name] >= 1024) ? 'kb' : 'b');
 	}
 
-	if (!$submit && ($config_name == 'max_filesize' || $config_name == 'attachment_quota' || $config_name == 'max_filesize_pm'))
+	if (!$submit && (($config_name == 'max_filesize') || ($config_name == 'attachment_quota') || ($config_name == 'max_filesize_pm')))
 	{
 		if ($new_attach[$config_name] >= 1048576)
 		{
@@ -103,7 +98,7 @@ while ($row = $db->sql_fetchrow($result))
 		}
 	}
 
-	if ($submit && ($mode == 'manage' || $mode == 'cats'))
+	if ($submit && (($mode == 'manage') || ($mode == 'cats')))
 	{
 		if ($config_name == 'max_filesize')
 		{
@@ -123,7 +118,7 @@ while ($row = $db->sql_fetchrow($result))
 			$new_attach[$config_name] = ($pm_size == 'kb') ? round($new_attach[$config_name] * 1024) : (($pm_size == 'mb') ? round($new_attach[$config_name] * 1048576) : $new_attach[$config_name]);
 		}
 
-		if ($config_name == 'ftp_server' || $config_name == 'ftp_path' || $config_name == 'download_path')
+		if (($config_name == 'ftp_server') || ($config_name == 'ftp_path') || ($config_name == 'download_path'))
 		{
 			$value = trim($new_attach[$config_name]);
 
@@ -137,7 +132,7 @@ while ($row = $db->sql_fetchrow($result))
 
 		if ($config_name == 'max_filesize')
 		{
-			$old_size = $attach_config[$config_name];
+			$old_size = $config[$config_name];
 			$new_size = $new_attach[$config_name];
 
 			if ($old_size != $new_size)
@@ -148,17 +143,9 @@ while ($row = $db->sql_fetchrow($result))
 					WHERE max_filesize = ' . (int) $old_size;
 				$result_2 = $db->sql_query($sql);
 			}
+		}
 
-			$sql = "UPDATE " . ATTACH_CONFIG_TABLE . "
-				SET config_value = '" . $db->sql_escape($new_attach[$config_name]) . "'
-				WHERE config_name = '" . $db->sql_escape($config_name) . "'";
-		}
-		else
-		{
-			$sql = "UPDATE " . ATTACH_CONFIG_TABLE . "
-				SET config_value = '" . $db->sql_escape($new_attach[$config_name]) . "'
-				WHERE config_name = '" . $db->sql_escape($config_name) . "'";
-		}
+		set_config($config_name, $new_attach[$config_name], false);
 		$db->sql_query($sql);
 
 		if (($config_name == 'max_filesize') || ($config_name == 'attachment_quota') || ($config_name == 'max_filesize_pm'))
@@ -167,8 +154,7 @@ while ($row = $db->sql_fetchrow($result))
 		}
 	}
 }
-$db->sql_freeresult($result);
-$cache->destroy('config_attach');
+$cache->destroy('config');
 
 $select_size_mode = size_select('size', $size);
 $select_quota_size_mode = size_select('quota_size', $quota_size);
@@ -227,44 +213,30 @@ if ($search_imagick)
 // Check Settings
 if ($check_upload)
 {
-	// Some tests...
-	$attach_config = array();
-
-	$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrowset($result);
-	$num_rows = $db->sql_numrows($result);
-	$db->sql_freeresult($result);
-
-	for ($i = 0; $i < $num_rows; $i++)
+	if ($config['upload_dir'][0] == '/' || ($config['upload_dir'][0] != '/' && $config['upload_dir'][1] == ':'))
 	{
-		$attach_config[$row[$i]['config_name']] = trim($row[$i]['config_value']);
-	}
-
-	if ($attach_config['upload_dir'][0] == '/' || ($attach_config['upload_dir'][0] != '/' && $attach_config['upload_dir'][1] == ':'))
-	{
-		$upload_dir = $attach_config['upload_dir'];
+		$upload_dir = $config['upload_dir'];
 	}
 	else
 	{
-		$upload_dir = IP_ROOT_PATH . $attach_config['upload_dir'];
+		$upload_dir = IP_ROOT_PATH . $config['upload_dir'];
 	}
 
 	$error = false;
 
 	// Does the target directory exist, is it a directory and writeable. (only test if ftp upload is disabled)
-	if (intval($attach_config['allow_ftp_upload']) == 0)
+	if (intval($config['allow_ftp_upload']) == 0)
 	{
 		if (!@file_exists(@amod_realpath($upload_dir)))
 		{
 			$error = true;
-			$error_msg = sprintf($lang['Directory_does_not_exist'], $attach_config['upload_dir']) . '<br />';
+			$error_msg = sprintf($lang['Directory_does_not_exist'], $config['upload_dir']) . '<br />';
 		}
 
 		if (!$error && !is_dir($upload_dir))
 		{
 			$error = true;
-			$error_msg = sprintf($lang['Directory_is_not_a_dir'], $attach_config['upload_dir']) . '<br />';
+			$error_msg = sprintf($lang['Directory_is_not_a_dir'], $config['upload_dir']) . '<br />';
 		}
 
 		if (!$error)
@@ -272,7 +244,7 @@ if ($check_upload)
 			if (!($fp = @fopen($upload_dir . '/0_000000.000', 'w')))
 			{
 				$error = true;
-				$error_msg = sprintf($lang['Directory_not_writeable'], $attach_config['upload_dir']) . '<br />';
+				$error_msg = sprintf($lang['Directory_not_writeable'], $config['upload_dir']) . '<br />';
 			}
 			else
 			{
@@ -284,7 +256,7 @@ if ($check_upload)
 	else
 	{
 		// Check FTP Settings
-		$server = (empty($attach_config['ftp_server'])) ? 'localhost' : $attach_config['ftp_server'];
+		$server = (empty($config['ftp_server'])) ? 'localhost' : $config['ftp_server'];
 
 		$conn_id = @ftp_connect($server);
 
@@ -294,15 +266,15 @@ if ($check_upload)
 			$error_msg = sprintf($lang['Ftp_error_connect'], $server) . '<br />';
 		}
 
-		$login_result = @ftp_login($conn_id, $attach_config['ftp_user'], $attach_config['ftp_pass']);
+		$login_result = @ftp_login($conn_id, $config['ftp_user'], $config['ftp_pass']);
 
 		if ((!$login_result) && (!$error))
 		{
 			$error = true;
-			$error_msg = sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']) . '<br />';
+			$error_msg = sprintf($lang['Ftp_error_login'], $config['ftp_user']) . '<br />';
 		}
 
-		if (!@ftp_pasv($conn_id, intval($attach_config['ftp_pasv_mode'])))
+		if (!@ftp_pasv($conn_id, intval($config['ftp_pasv_mode'])))
 		{
 			$error = true;
 			$error_msg = $lang['Ftp_error_pasv_mode'];
@@ -321,12 +293,12 @@ if ($check_upload)
 
 			@fclose($fp);
 
-			$result = @ftp_chdir($conn_id, $attach_config['ftp_path']);
+			$result = @ftp_chdir($conn_id, $config['ftp_path']);
 
 			if (!$result)
 			{
 				$error = true;
-				$error_msg = sprintf($lang['Ftp_error_path'], $attach_config['ftp_path']) . '<br />';
+				$error_msg = sprintf($lang['Ftp_error_path'], $config['ftp_path']) . '<br />';
 			}
 			else
 			{
@@ -335,7 +307,7 @@ if ($check_upload)
 				if (!$res)
 				{
 					$error = true;
-					$error_msg = sprintf($lang['Ftp_error_upload'], $attach_config['ftp_path']) . '<br />';
+					$error_msg = sprintf($lang['Ftp_error_upload'], $config['ftp_path']) . '<br />';
 				}
 				else
 				{
@@ -344,7 +316,7 @@ if ($check_upload)
 					if (!$res)
 					{
 						$error = true;
-						$error_msg = sprintf($lang['Ftp_error_delete'], $attach_config['ftp_path']) . '<br />';
+						$error_msg = sprintf($lang['Ftp_error_delete'], $config['ftp_path']) . '<br />';
 					}
 				}
 			}
@@ -357,7 +329,7 @@ if ($check_upload)
 
 	if (!$error)
 	{
-		$cache->destroy('config_attach');
+		$cache->destroy('config');
 		message_die(GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=manage') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
 }
@@ -375,7 +347,7 @@ if ($mode == 'manage')
 {
 	$template->set_filenames(array('body' => ADM_TPL . 'attach_manage_body.tpl'));
 
-	$yes_no_switches = array('disable_mod', 'allow_pm_attach', 'allow_ftp_upload', 'attachment_topic_review', 'display_order', 'show_apcp', 'ftp_pasv_mode');
+	$yes_no_switches = array('disable_attachments_mod', 'allow_pm_attach', 'allow_ftp_upload', 'attachment_topic_review', 'display_order', 'show_apcp', 'ftp_pasv_mode');
 
 	for ($i = 0; $i < sizeof($yes_no_switches); $i++)
 	{
@@ -393,98 +365,99 @@ if ($mode == 'manage')
 	}
 
 	$template->assign_vars(array(
-		'L_MANAGE_TITLE'				=> $lang['Attach_settings'],
-		'L_MANAGE_EXPLAIN'				=> $lang['Manage_attachments_explain'],
-		'L_ATTACHMENT_SETTINGS'			=> $lang['Attach_settings'],
+		'L_MANAGE_TITLE' => $lang['Attach_settings'],
+		'L_MANAGE_EXPLAIN' => $lang['Manage_attachments_explain'],
+		'L_ATTACHMENT_SETTINGS' => $lang['Attach_settings'],
 		'L_ATTACHMENT_FILESIZE_SETTINGS'=> $lang['Attach_filesize_settings'],
-		'L_ATTACHMENT_NUMBER_SETTINGS'	=> $lang['Attach_number_settings'],
-		'L_ATTACHMENT_OPTIONS_SETTINGS'	=> $lang['Attach_options_settings'],
-		'L_ATTACHMENT_FTP_SETTINGS'		=> $lang['ftp_info'],
-		'L_NO_FTP_EXTENSIONS'			=> $lang['No_ftp_extensions_installed'],
-		'L_UPLOAD_DIR'					=> $lang['Upload_directory'],
-		'L_UPLOAD_DIR_EXPLAIN'			=> $lang['Upload_directory_explain'],
-		'L_ATTACHMENT_IMG_PATH'			=> $lang['Attach_img_path'],
-		'L_IMG_PATH_EXPLAIN'			=> $lang['Attach_img_path_explain'],
-		'L_ATTACHMENT_TOPIC_ICON'		=> $lang['Attach_topic_icon'],
-		'L_TOPIC_ICON_EXPLAIN'			=> $lang['Attach_topic_icon_explain'],
-		'L_DISPLAY_ORDER'				=> $lang['Attach_display_order'],
-		'L_DISPLAY_ORDER_EXPLAIN'		=> $lang['Attach_display_order_explain'],
-		'L_YES'							=> $lang['Yes'],
-		'L_NO'							=> $lang['No'],
-		'L_DESC'						=> $lang['Sort_Descending'],
-		'L_ASC'							=> $lang['Sort_Ascending'],
-		'L_SUBMIT'						=> $lang['Submit'],
-		'L_RESET'						=> $lang['Reset'],
-		'L_MAX_FILESIZE'				=> $lang['Max_filesize_attach'],
-		'L_MAX_FILESIZE_EXPLAIN'		=> $lang['Max_filesize_attach_explain'],
-		'L_ATTACH_QUOTA'				=> $lang['Attach_quota'],
-		'L_ATTACH_QUOTA_EXPLAIN'		=> $lang['Attach_quota_explain'],
-		'L_DEFAULT_QUOTA_LIMIT'			=> $lang['Default_quota_limit'],
-		'L_DEFAULT_QUOTA_LIMIT_EXPLAIN'	=> $lang['Default_quota_limit_explain'],
-		'L_MAX_FILESIZE_PM'				=> $lang['Max_filesize_pm'],
-		'L_MAX_FILESIZE_PM_EXPLAIN'		=> $lang['Max_filesize_pm_explain'],
-		'L_MAX_ATTACHMENTS'				=> $lang['Max_attachments'],
-		'L_MAX_ATTACHMENTS_EXPLAIN'		=> $lang['Max_attachments_explain'],
-		'L_MAX_ATTACHMENTS_PM'			=> $lang['Max_attachments_pm'],
-		'L_MAX_ATTACHMENTS_PM_EXPLAIN'	=> $lang['Max_attachments_pm_explain'],
-		'L_DISABLE_MOD'					=> $lang['Disable_mod'],
-		'L_DISABLE_MOD_EXPLAIN'			=> $lang['Disable_mod_explain'],
-		'L_PM_ATTACH'					=> $lang['PM_Attachments'],
-		'L_PM_ATTACH_EXPLAIN'			=> $lang['PM_Attachments_explain'],
-		'L_FTP_UPLOAD'					=> $lang['Ftp_upload'],
-		'L_FTP_UPLOAD_EXPLAIN'			=> $lang['Ftp_upload_explain'],
-		'L_ATTACHMENT_TOPIC_REVIEW'		=> $lang['Attachment_topic_review'],
-		'L_ATTACHMENT_TOPIC_REVIEW_EXPLAIN'	=> $lang['Attachment_topic_review_explain'],
-		'L_ATTACHMENT_FTP_PATH'			=> $lang['Attach_ftp_path'],
-		'L_ATTACHMENT_FTP_USER'			=> $lang['ftp_username'],
-		'L_ATTACHMENT_FTP_PASS'			=> $lang['ftp_password'],
-		'L_ATTACHMENT_FTP_PATH_EXPLAIN'	=> $lang['Attach_ftp_path_explain'],
-		'L_ATTACHMENT_FTP_SERVER'		=> $lang['Ftp_server'],
-		'L_ATTACHMENT_FTP_SERVER_EXPLAIN'	=> $lang['Ftp_server_explain'],
-		'L_FTP_PASSIVE_MODE'			=> $lang['Ftp_passive_mode'],
-		'L_FTP_PASSIVE_MODE_EXPLAIN'	=> $lang['Ftp_passive_mode_explain'],
-		'L_DOWNLOAD_PATH'				=> $lang['Ftp_download_path'],
-		'L_DOWNLOAD_PATH_EXPLAIN'		=> $lang['Ftp_download_path_explain'],
-		'L_SHOW_APCP'					=> $lang['Show_apcp'],
-		'L_SHOW_APCP_EXPLAIN'			=> $lang['Show_apcp_explain'],
-		'L_TEST_SETTINGS'				=> $lang['Test_settings'],
+		'L_ATTACHMENT_NUMBER_SETTINGS' => $lang['Attach_number_settings'],
+		'L_ATTACHMENT_OPTIONS_SETTINGS' => $lang['Attach_options_settings'],
+		'L_ATTACHMENT_FTP_SETTINGS' => $lang['ftp_info'],
+		'L_NO_FTP_EXTENSIONS' => $lang['No_ftp_extensions_installed'],
+		'L_UPLOAD_DIR' => $lang['Upload_directory'],
+		'L_UPLOAD_DIR_EXPLAIN' => $lang['Upload_directory_explain'],
+		'L_ATTACHMENT_IMG_PATH' => $lang['Attach_img_path'],
+		'L_IMG_PATH_EXPLAIN' => $lang['Attach_img_path_explain'],
+		'L_ATTACHMENT_TOPIC_ICON' => $lang['Attach_topic_icon'],
+		'L_TOPIC_ICON_EXPLAIN' => $lang['Attach_topic_icon_explain'],
+		'L_DISPLAY_ORDER' => $lang['Attach_display_order'],
+		'L_DISPLAY_ORDER_EXPLAIN' => $lang['Attach_display_order_explain'],
+		'L_YES' => $lang['Yes'],
+		'L_NO' => $lang['No'],
+		'L_DESC' => $lang['Sort_Descending'],
+		'L_ASC' => $lang['Sort_Ascending'],
+		'L_SUBMIT' => $lang['Submit'],
+		'L_RESET' => $lang['Reset'],
+		'L_MAX_FILESIZE' => $lang['Max_filesize_attach'],
+		'L_MAX_FILESIZE_EXPLAIN' => $lang['Max_filesize_attach_explain'],
+		'L_ATTACH_QUOTA' => $lang['Attach_quota'],
+		'L_ATTACH_QUOTA_EXPLAIN' => $lang['Attach_quota_explain'],
+		'L_DEFAULT_QUOTA_LIMIT' => $lang['Default_quota_limit'],
+		'L_DEFAULT_QUOTA_LIMIT_EXPLAIN' => $lang['Default_quota_limit_explain'],
+		'L_MAX_FILESIZE_PM' => $lang['Max_filesize_pm'],
+		'L_MAX_FILESIZE_PM_EXPLAIN' => $lang['Max_filesize_pm_explain'],
+		'L_MAX_ATTACHMENTS' => $lang['Max_attachments'],
+		'L_MAX_ATTACHMENTS_EXPLAIN' => $lang['Max_attachments_explain'],
+		'L_MAX_ATTACHMENTS_PM' => $lang['Max_attachments_pm'],
+		'L_MAX_ATTACHMENTS_PM_EXPLAIN' => $lang['Max_attachments_pm_explain'],
+		'L_DISABLE_MOD' => $lang['Disable_mod'],
+		'L_DISABLE_MOD_EXPLAIN' => $lang['Disable_mod_explain'],
+		'L_PM_ATTACH' => $lang['PM_Attachments'],
+		'L_PM_ATTACH_EXPLAIN' => $lang['PM_Attachments_explain'],
+		'L_FTP_UPLOAD' => $lang['Ftp_upload'],
+		'L_FTP_UPLOAD_EXPLAIN' => $lang['Ftp_upload_explain'],
+		'L_ATTACHMENT_TOPIC_REVIEW' => $lang['Attachment_topic_review'],
+		'L_ATTACHMENT_TOPIC_REVIEW_EXPLAIN' => $lang['Attachment_topic_review_explain'],
+		'L_ATTACHMENT_FTP_PATH' => $lang['Attach_ftp_path'],
+		'L_ATTACHMENT_FTP_USER' => $lang['ftp_username'],
+		'L_ATTACHMENT_FTP_PASS' => $lang['ftp_password'],
+		'L_ATTACHMENT_FTP_PATH_EXPLAIN' => $lang['Attach_ftp_path_explain'],
+		'L_ATTACHMENT_FTP_SERVER' => $lang['Ftp_server'],
+		'L_ATTACHMENT_FTP_SERVER_EXPLAIN' => $lang['Ftp_server_explain'],
+		'L_FTP_PASSIVE_MODE' => $lang['Ftp_passive_mode'],
+		'L_FTP_PASSIVE_MODE_EXPLAIN' => $lang['Ftp_passive_mode_explain'],
+		'L_DOWNLOAD_PATH' => $lang['Ftp_download_path'],
+		'L_DOWNLOAD_PATH_EXPLAIN' => $lang['Ftp_download_path_explain'],
+		'L_SHOW_APCP' => $lang['Show_apcp'],
+		'L_SHOW_APCP_EXPLAIN' => $lang['Show_apcp_explain'],
+		'L_TEST_SETTINGS' => $lang['Test_settings'],
 
-		'S_ATTACH_ACTION'		=> append_sid('admin_attachments.' . PHP_EXT . '?mode=manage'),
-		'S_FILESIZE'			=> $select_size_mode,
-		'S_FILESIZE_QUOTA'		=> $select_quota_size_mode,
-		'S_FILESIZE_PM'			=> $select_pm_size_mode,
+		'S_ATTACH_ACTION' => append_sid('admin_attachments.' . PHP_EXT . '?mode=manage'),
+		'S_FILESIZE' => $select_size_mode,
+		'S_FILESIZE_QUOTA' => $select_quota_size_mode,
+		'S_FILESIZE_PM' => $select_pm_size_mode,
 		'S_DEFAULT_UPLOAD_LIMIT'=> default_quota_limit_select('default_upload_quota', intval(trim($new_attach['default_upload_quota']))),
-		'S_DEFAULT_PM_LIMIT'	=> default_quota_limit_select('default_pm_quota', intval(trim($new_attach['default_pm_quota']))),
-		'L_UPLOAD_QUOTA'		=> $lang['Upload_quota'],
-		'L_PM_QUOTA'			=> $lang['Pm_quota'],
+		'S_DEFAULT_PM_LIMIT' => default_quota_limit_select('default_pm_quota', intval(trim($new_attach['default_pm_quota']))),
+		'L_UPLOAD_QUOTA' => $lang['Upload_quota'],
+		'L_PM_QUOTA' => $lang['Pm_quota'],
 
-		'UPLOAD_DIR'			=> $new_attach['upload_dir'],
-		'ATTACHMENT_IMG_PATH'	=> $new_attach['upload_img'],
-		'TOPIC_ICON'			=> $new_attach['topic_icon'],
-		'MAX_FILESIZE'			=> $new_attach['max_filesize'],
-		'ATTACHMENT_QUOTA'		=> $new_attach['attachment_quota'],
-		'MAX_FILESIZE_PM'		=> $new_attach['max_filesize_pm'],
-		'MAX_ATTACHMENTS'		=> $new_attach['max_attachments'],
-		'MAX_ATTACHMENTS_PM'	=> $new_attach['max_attachments_pm'],
-		'FTP_SERVER'			=> $new_attach['ftp_server'],
-		'FTP_PATH'				=> $new_attach['ftp_path'],
-		'FTP_USER'				=> $new_attach['ftp_user'],
-		'FTP_PASS'				=> $new_attach['ftp_pass'],
-		'DOWNLOAD_PATH'			=> $new_attach['download_path'],
-		'DISABLE_MOD_YES'		=> $disable_mod_yes,
-		'DISABLE_MOD_NO'		=> $disable_mod_no,
-		'PM_ATTACH_YES'			=> $allow_pm_attach_yes,
-		'PM_ATTACH_NO'			=> $allow_pm_attach_no,
-		'FTP_UPLOAD_YES'		=> $allow_ftp_upload_yes,
-		'FTP_UPLOAD_NO'			=> $allow_ftp_upload_no,
-		'FTP_PASV_MODE_YES'		=> $ftp_pasv_mode_yes,
-		'FTP_PASV_MODE_NO'		=> $ftp_pasv_mode_no,
-		'TOPIC_REVIEW_YES'		=> $attachment_topic_review_yes,
-		'TOPIC_REVIEW_NO'		=> $attachment_topic_review_no,
-		'DISPLAY_ORDER_ASC'		=> $display_order_yes,
-		'DISPLAY_ORDER_DESC'	=> $display_order_no,
-		'SHOW_APCP_YES'			=> $show_apcp_yes,
-		'SHOW_APCP_NO'			=> $show_apcp_no)
+		'UPLOAD_DIR' => $new_attach['upload_dir'],
+		'ATTACHMENT_IMG_PATH' => $new_attach['upload_img'],
+		'TOPIC_ICON' => $new_attach['topic_icon'],
+		'MAX_FILESIZE' => $new_attach['max_filesize'],
+		'ATTACHMENT_QUOTA' => $new_attach['attachment_quota'],
+		'MAX_FILESIZE_PM' => $new_attach['max_filesize_pm'],
+		'MAX_ATTACHMENTS' => $new_attach['max_attachments'],
+		'MAX_ATTACHMENTS_PM' => $new_attach['max_attachments_pm'],
+		'FTP_SERVER' => $new_attach['ftp_server'],
+		'FTP_PATH' => $new_attach['ftp_path'],
+		'FTP_USER' => $new_attach['ftp_user'],
+		'FTP_PASS' => $new_attach['ftp_pass'],
+		'DOWNLOAD_PATH' => $new_attach['download_path'],
+		'DISABLE_MOD_YES' => $disable_attachments_mod_yes,
+		'DISABLE_MOD_NO' => $disable_attachments_mod_no,
+		'PM_ATTACH_YES' => $allow_pm_attach_yes,
+		'PM_ATTACH_NO' => $allow_pm_attach_no,
+		'FTP_UPLOAD_YES' => $allow_ftp_upload_yes,
+		'FTP_UPLOAD_NO' => $allow_ftp_upload_no,
+		'FTP_PASV_MODE_YES' => $ftp_pasv_mode_yes,
+		'FTP_PASV_MODE_NO' => $ftp_pasv_mode_no,
+		'TOPIC_REVIEW_YES' => $attachment_topic_review_yes,
+		'TOPIC_REVIEW_NO' => $attachment_topic_review_no,
+		'DISPLAY_ORDER_ASC' => $display_order_yes,
+		'DISPLAY_ORDER_DESC' => $display_order_no,
+		'SHOW_APCP_YES' => $show_apcp_yes,
+		'SHOW_APCP_NO' => $show_apcp_no
+		)
 	);
 }
 
@@ -518,7 +491,7 @@ if ($submit && ($mode == 'shadow'))
 		$result = $db->sql_query($sql);
 	}
 
-	$cache->destroy('config_attach');
+	$cache->destroy('config');
 
 	$message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=shadow') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -536,19 +509,19 @@ if ($mode == 'shadow')
 	$shadow_row = array();
 
 	$template->assign_vars(array(
-		'L_SHADOW_TITLE'	=> $lang['Shadow_attachments'],
-		'L_SHADOW_EXPLAIN'	=> $lang['Shadow_attachments_explain'],
-		'L_EXPLAIN_FILE'	=> $lang['Shadow_attachments_file_explain'],
-		'L_EXPLAIN_ROW'		=> $lang['Shadow_attachments_row_explain'],
-		'L_ATTACHMENT'		=> $lang['Attachment'],
-		'L_COMMENT'			=> $lang['File_comment'],
-		'L_DELETE'			=> $lang['Delete'],
-		'L_DELETE_MARKED'	=> $lang['Delete_marked'],
-		'L_MARK_ALL'		=> $lang['Mark_all'],
-		'L_UNMARK_ALL'		=> $lang['Unmark_all'],
+		'L_SHADOW_TITLE' => $lang['Shadow_attachments'],
+		'L_SHADOW_EXPLAIN' => $lang['Shadow_attachments_explain'],
+		'L_EXPLAIN_FILE' => $lang['Shadow_attachments_file_explain'],
+		'L_EXPLAIN_ROW' => $lang['Shadow_attachments_row_explain'],
+		'L_ATTACHMENT' => $lang['Attachment'],
+		'L_COMMENT' => $lang['File_comment'],
+		'L_DELETE' => $lang['Delete'],
+		'L_DELETE_MARKED' => $lang['Delete_marked'],
+		'L_MARK_ALL' => $lang['Mark_all'],
+		'L_UNMARK_ALL' => $lang['Unmark_all'],
 
-		'S_HIDDEN'			=> $hidden,
-		'S_ATTACH_ACTION'	=> append_sid('admin_attachments.' . PHP_EXT . '?mode=shadow')
+		'S_HIDDEN' => $hidden,
+		'S_ATTACH_ACTION' => append_sid('admin_attachments.' . PHP_EXT . '?mode=shadow')
 		)
 	);
 
@@ -663,19 +636,21 @@ if ($mode == 'shadow')
 	for ($i = 0; $i < sizeof($shadow_attachments); $i++)
 	{
 		$template->assign_block_vars('file_shadow_row', array(
-			'ATTACH_ID'			=> $shadow_attachments[$i],
-			'ATTACH_FILENAME'	=> $shadow_attachments[$i],
-			'ATTACH_COMMENT'	=> $lang['No_file_comment_available'],
-			'U_ATTACHMENT'		=> $upload_dir . '/' . basename($shadow_attachments[$i]))
+			'ATTACH_ID' => $shadow_attachments[$i],
+			'ATTACH_FILENAME' => $shadow_attachments[$i],
+			'ATTACH_COMMENT' => $lang['No_file_comment_available'],
+			'U_ATTACHMENT' => $upload_dir . '/' . basename($shadow_attachments[$i])
+			)
 		);
 	}
 
 	for ($i = 0; $i < sizeof($shadow_row['attach_id']); $i++)
 	{
 		$template->assign_block_vars('table_shadow_row', array(
-			'ATTACH_ID'			=> $shadow_row['attach_id'][$i],
-			'ATTACH_FILENAME'	=> basename($shadow_row['physical_filename'][$i]),
-			'ATTACH_COMMENT'	=> (trim($shadow_row['comment'][$i]) == '') ? $lang['No_file_comment_available'] : trim($shadow_row['comment'][$i]))
+			'ATTACH_ID' => $shadow_row['attach_id'][$i],
+			'ATTACH_FILENAME' => basename($shadow_row['physical_filename'][$i]),
+			'ATTACH_COMMENT' => (trim($shadow_row['comment'][$i]) == '') ? $lang['No_file_comment_available'] : trim($shadow_row['comment'][$i])
+			)
 		);
 	}
 }
@@ -684,7 +659,7 @@ if ($submit && ($mode == 'cats'))
 {
 	if (!$error)
 	{
-		$cache->destroy('config_attach');
+		$cache->destroy('config');
 
 		message_die(GENERAL_MESSAGE, $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=cats') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
@@ -746,54 +721,54 @@ if ($mode == 'cats')
 	}
 
 	$template->assign_vars(array(
-		'L_MANAGE_CAT_TITLE'	=> $lang['Manage_categories'],
-		'L_MANAGE_CAT_EXPLAIN'	=> $lang['Manage_categories_explain'],
-		'L_SETTINGS_CAT_IMAGES'	=> $lang['Settings_cat_images'],
-		'L_SETTINGS_CAT_STREAM'	=> $lang['Settings_cat_streams'],
-		'L_SETTINGS_CAT_FLASH'	=> $lang['Settings_cat_flash'],
-		'L_ASSIGNED_GROUP'		=> $lang['Assigned_group'],
+		'L_MANAGE_CAT_TITLE' => $lang['Manage_categories'],
+		'L_MANAGE_CAT_EXPLAIN' => $lang['Manage_categories_explain'],
+		'L_SETTINGS_CAT_IMAGES' => $lang['Settings_cat_images'],
+		'L_SETTINGS_CAT_STREAM' => $lang['Settings_cat_streams'],
+		'L_SETTINGS_CAT_FLASH' => $lang['Settings_cat_flash'],
+		'L_ASSIGNED_GROUP' => $lang['Assigned_group'],
 
-		'L_DISPLAY_INLINED'				=> $lang['Display_inlined'],
-		'L_DISPLAY_INLINED_EXPLAIN'		=> $lang['Display_inlined_explain'],
-		'L_MAX_IMAGE_SIZE'				=> $lang['Max_image_size'],
-		'L_MAX_IMAGE_SIZE_EXPLAIN'		=> $lang['Max_image_size_explain'],
-		'L_IMAGE_LINK_SIZE'				=> $lang['Image_link_size'],
-		'L_IMAGE_LINK_SIZE_EXPLAIN'		=> $lang['Image_link_size_explain'],
-		'L_CREATE_THUMBNAIL'			=> $lang['Image_create_thumbnail'],
-		'L_CREATE_THUMBNAIL_EXPLAIN'	=> $lang['Image_create_thumbnail_explain'],
-		'L_MIN_THUMB_FILESIZE'			=> $lang['Image_min_thumb_filesize'],
-		'L_MIN_THUMB_FILESIZE_EXPLAIN'	=> $lang['Image_min_thumb_filesize_explain'],
-		'L_IMAGICK_PATH'				=> $lang['Image_imagick_path'],
-		'L_IMAGICK_PATH_EXPLAIN'		=> $lang['Image_imagick_path_explain'],
-		'L_SEARCH_IMAGICK'				=> $lang['Image_search_imagick'],
-		'L_BYTES'						=> $lang['Bytes'],
-		'L_TEST_SETTINGS'				=> $lang['Test_settings'],
-		'L_YES'							=> $lang['Yes'],
-		'L_NO'							=> $lang['No'],
-		'L_SUBMIT'						=> $lang['Submit'],
-		'L_RESET'						=> $lang['Reset'],
-		'L_USE_GD2'						=> $lang['Use_gd2'],
-		'L_USE_GD2_EXPLAIN'				=> $lang['Use_gd2_explain'],
+		'L_DISPLAY_INLINED' => $lang['Display_inlined'],
+		'L_DISPLAY_INLINED_EXPLAIN' => $lang['Display_inlined_explain'],
+		'L_MAX_IMAGE_SIZE' => $lang['Max_image_size'],
+		'L_MAX_IMAGE_SIZE_EXPLAIN' => $lang['Max_image_size_explain'],
+		'L_IMAGE_LINK_SIZE' => $lang['Image_link_size'],
+		'L_IMAGE_LINK_SIZE_EXPLAIN' => $lang['Image_link_size_explain'],
+		'L_CREATE_THUMBNAIL' => $lang['Image_create_thumbnail'],
+		'L_CREATE_THUMBNAIL_EXPLAIN' => $lang['Image_create_thumbnail_explain'],
+		'L_MIN_THUMB_FILESIZE' => $lang['Image_min_thumb_filesize'],
+		'L_MIN_THUMB_FILESIZE_EXPLAIN' => $lang['Image_min_thumb_filesize_explain'],
+		'L_IMAGICK_PATH' => $lang['Image_imagick_path'],
+		'L_IMAGICK_PATH_EXPLAIN' => $lang['Image_imagick_path_explain'],
+		'L_SEARCH_IMAGICK' => $lang['Image_search_imagick'],
+		'L_BYTES' => $lang['Bytes'],
+		'L_TEST_SETTINGS' => $lang['Test_settings'],
+		'L_YES' => $lang['Yes'],
+		'L_NO' => $lang['No'],
+		'L_SUBMIT' => $lang['Submit'],
+		'L_RESET' => $lang['Reset'],
+		'L_USE_GD2' => $lang['Use_gd2'],
+		'L_USE_GD2_EXPLAIN' => $lang['Use_gd2_explain'],
 
-		'IMAGE_MAX_HEIGHT'			=> $new_attach['img_max_height'],
-		'IMAGE_MAX_WIDTH'			=> $new_attach['img_max_width'],
+		'IMAGE_MAX_HEIGHT' => $new_attach['img_max_height'],
+		'IMAGE_MAX_WIDTH' => $new_attach['img_max_width'],
 
-		'IMAGE_LINK_HEIGHT'			=> $new_attach['img_link_height'],
-		'IMAGE_LINK_WIDTH'			=> $new_attach['img_link_width'],
-		'IMAGE_MIN_THUMB_FILESIZE'	=> $new_attach['img_min_thumb_filesize'],
-		'IMAGE_IMAGICK_PATH'		=> $new_attach['img_imagick'],
+		'IMAGE_LINK_HEIGHT' => $new_attach['img_link_height'],
+		'IMAGE_LINK_WIDTH' => $new_attach['img_link_width'],
+		'IMAGE_MIN_THUMB_FILESIZE' => $new_attach['img_min_thumb_filesize'],
+		'IMAGE_IMAGICK_PATH' => $new_attach['img_imagick'],
 
-		'DISPLAY_INLINED_YES'	=> $display_inlined_yes,
-		'DISPLAY_INLINED_NO'	=> $display_inlined_no,
+		'DISPLAY_INLINED_YES' => $display_inlined_yes,
+		'DISPLAY_INLINED_NO' => $display_inlined_no,
 
-		'CREATE_THUMBNAIL_YES'	=> $create_thumbnail_yes,
-		'CREATE_THUMBNAIL_NO'	=> $create_thumbnail_no,
+		'CREATE_THUMBNAIL_YES' => $create_thumbnail_yes,
+		'CREATE_THUMBNAIL_NO' => $create_thumbnail_no,
 
-		'USE_GD2_YES'	=> $use_gd2_yes,
-		'USE_GD2_NO'	=> $use_gd2_no,
+		'USE_GD2_YES' => $use_gd2_yes,
+		'USE_GD2_NO' => $use_gd2_no,
 
-		'S_ASSIGNED_GROUP_IMAGES'	=> implode(', ', $s_assigned_group_images),
-		'S_ATTACH_ACTION'			=> append_sid('admin_attachments.' . PHP_EXT . '?mode=cats')
+		'S_ASSIGNED_GROUP_IMAGES' => implode(', ', $s_assigned_group_images),
+		'S_ATTACH_ACTION' => append_sid('admin_attachments.' . PHP_EXT . '?mode=cats')
 		)
 	);
 }
@@ -801,27 +776,13 @@ if ($mode == 'cats')
 // Check Cat Settings
 if ($check_image_cat)
 {
-	// Some tests...
-	$attach_config = array();
-
-	$sql = 'SELECT * FROM ' . ATTACH_CONFIG_TABLE;
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrowset($result);
-	$num_rows = $db->sql_numrows($result);
-	$db->sql_freeresult($result);
-
-	for ($i = 0; $i < $num_rows; $i++)
+	if (($config['upload_dir'][0] == '/') || (($config['upload_dir'][0] != '/') && ($config['upload_dir'][1] == ':')))
 	{
-		$attach_config[$row[$i]['config_name']] = trim($row[$i]['config_value']);
-	}
-
-	if ($attach_config['upload_dir'][0] == '/' || ($attach_config['upload_dir'][0] != '/' && $attach_config['upload_dir'][1] == ':'))
-	{
-		$upload_dir = $attach_config['upload_dir'];
+		$upload_dir = $config['upload_dir'];
 	}
 	else
 	{
-		$upload_dir = IP_ROOT_PATH . $attach_config['upload_dir'];
+		$upload_dir = IP_ROOT_PATH . $config['upload_dir'];
 	}
 
 	$upload_dir = $upload_dir . '/' . THUMB_DIR;
@@ -829,7 +790,7 @@ if ($check_image_cat)
 	$error = false;
 
 	// Does the target directory exist, is it a directory and writeable. (only test if ftp upload is disabled)
-	if (intval($attach_config['allow_ftp_upload']) == 0 && intval($attach_config['img_create_thumbnail']) == 1)
+	if (intval($config['allow_ftp_upload']) == 0 && intval($config['img_create_thumbnail']) == 1)
 	{
 		if (!@file_exists(@amod_realpath($upload_dir)))
 		{
@@ -864,10 +825,10 @@ if ($check_image_cat)
 			}
 		}
 	}
-	elseif (intval($attach_config['allow_ftp_upload']) && intval($attach_config['img_create_thumbnail']))
+	elseif (intval($config['allow_ftp_upload']) && intval($config['img_create_thumbnail']))
 	{
 		// Check FTP Settings
-		$server = (empty($attach_config['ftp_server'])) ? 'localhost' : $attach_config['ftp_server'];
+		$server = (empty($config['ftp_server'])) ? 'localhost' : $config['ftp_server'];
 
 		$conn_id = @ftp_connect($server);
 
@@ -877,15 +838,15 @@ if ($check_image_cat)
 			$error_msg = sprintf($lang['Ftp_error_connect'], $server) . '<br />';
 		}
 
-		$login_result = @ftp_login($conn_id, $attach_config['ftp_user'], $attach_config['ftp_pass']);
+		$login_result = @ftp_login($conn_id, $config['ftp_user'], $config['ftp_pass']);
 
 		if (!$login_result && !$error)
 		{
 			$error = true;
-			$error_msg = sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']) . '<br />';
+			$error_msg = sprintf($lang['Ftp_error_login'], $config['ftp_user']) . '<br />';
 		}
 
-		if (!@ftp_pasv($conn_id, intval($attach_config['ftp_pasv_mode'])))
+		if (!@ftp_pasv($conn_id, intval($config['ftp_pasv_mode'])))
 		{
 			$error = true;
 			$error_msg = $lang['Ftp_error_pasv_mode'];
@@ -904,19 +865,19 @@ if ($check_image_cat)
 
 			@fclose($fp);
 
-			$result = @ftp_chdir($conn_id, $attach_config['ftp_path'] . '/' . THUMB_DIR);
+			$result = @ftp_chdir($conn_id, $config['ftp_path'] . '/' . THUMB_DIR);
 
 			if (!$result)
 			{
-				@ftp_mkdir($conn_id, $attach_config['ftp_path'] . '/' . THUMB_DIR);
+				@ftp_mkdir($conn_id, $config['ftp_path'] . '/' . THUMB_DIR);
 			}
 
-			$result = @ftp_chdir($conn_id, $attach_config['ftp_path'] . '/' . THUMB_DIR);
+			$result = @ftp_chdir($conn_id, $config['ftp_path'] . '/' . THUMB_DIR);
 
 			if (!$result)
 			{
 				$error = true;
-				$error_msg = sprintf($lang['Ftp_error_path'], $attach_config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
+				$error_msg = sprintf($lang['Ftp_error_path'], $config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
 			}
 			else
 			{
@@ -925,7 +886,7 @@ if ($check_image_cat)
 				if (!$res)
 				{
 					$error = true;
-					$error_msg = sprintf($lang['Ftp_error_upload'], $attach_config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
+					$error_msg = sprintf($lang['Ftp_error_upload'], $config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
 				}
 				else
 				{
@@ -934,7 +895,7 @@ if ($check_image_cat)
 					if (!$res)
 					{
 						$error = true;
-						$error_msg = sprintf($lang['Ftp_error_delete'], $attach_config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
+						$error_msg = sprintf($lang['Ftp_error_delete'], $config['ftp_path'] . '/' . THUMB_DIR) . '<br />';
 					}
 				}
 			}
@@ -947,7 +908,7 @@ if ($check_image_cat)
 
 	if (!$error)
 	{
-		$cache->destroy('config_attach');
+		$cache->destroy('config');
 
 		message_die(GENERAL_MESSAGE, $lang['Test_settings_successful'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=cats') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 	}
@@ -1034,7 +995,7 @@ if ($mode == 'sync')
 
 		if (!thumbnail_exists(basename($row['physical_filename'])))
 		{
-			if (!intval($attach_config['allow_ftp_upload']))
+			if (!intval($config['allow_ftp_upload']))
 			{
 				$source = $upload_dir . '/' . basename($row['physical_filename']);
 				$dest_file = @amod_realpath($upload_dir);
@@ -1090,7 +1051,7 @@ if ($mode == 'sync')
 	}
 	$db->sql_freeresult($result);
 
-	$cache->destroy('config_attach');
+	$cache->destroy('config');
 	@flush();
 	die('<br /><br /><br />' . $lang['Attach_sync_finished'] . '<br /><br />' . $info);
 
@@ -1182,7 +1143,7 @@ if ($submit && $mode == 'quota')
 
 	if (!$error)
 	{
-		$cache->destroy('config_attach');
+		$cache->destroy('config');
 
 		$message = $lang['Attach_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_attach_config'], '<a href="' . append_sid('admin_attachments.' . PHP_EXT . '?mode=quota') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
@@ -1195,7 +1156,7 @@ if ($mode == 'quota')
 {
 	$template->set_filenames(array('body' => ADM_TPL . 'attach_quota_body.tpl'));
 
-	$max_add_filesize = $attach_config['max_filesize'];
+	$max_add_filesize = $config['max_filesize'];
 	$size = ($max_add_filesize >= 1048576) ? 'mb' : (($max_add_filesize >= 1024) ? 'kb' : 'b');
 
 	if ($max_add_filesize >= 1048576)
@@ -1208,22 +1169,23 @@ if ($mode == 'quota')
 	}
 
 	$template->assign_vars(array(
-		'L_MANAGE_QUOTAS_TITLE'		=> $lang['Manage_quotas'],
-		'L_MANAGE_QUOTAS_EXPLAIN'	=> $lang['Manage_quotas_explain'],
-		'L_SUBMIT'					=> $lang['Submit'],
-		'L_RESET'					=> $lang['Reset'],
-		'L_EDIT'					=> $lang['Edit'],
-		'L_VIEW'					=> $lang['View'],
-		'L_DESCRIPTION'				=> $lang['Description'],
-		'L_SIZE'					=> $lang['Max_filesize_attach'],
-		'L_ADD_NEW'					=> $lang['Add_new'],
-		'L_DELETE'					=> $lang['Delete'],
-		'MAX_FILESIZE'				=> $max_add_filesize,
+		'L_MANAGE_QUOTAS_TITLE' => $lang['Manage_quotas'],
+		'L_MANAGE_QUOTAS_EXPLAIN' => $lang['Manage_quotas_explain'],
+		'L_SUBMIT' => $lang['Submit'],
+		'L_RESET' => $lang['Reset'],
+		'L_EDIT' => $lang['Edit'],
+		'L_VIEW' => $lang['View'],
+		'L_DESCRIPTION' => $lang['Description'],
+		'L_SIZE' => $lang['Max_filesize_attach'],
+		'L_ADD_NEW' => $lang['Add_new'],
+		'L_DELETE' => $lang['Delete'],
+		'MAX_FILESIZE' => $max_add_filesize,
 
-		'S_FILESIZE'			=> size_select('add_size_select', $size),
-		'L_REMOVE_SELECTED'		=> $lang['Remove_selected'],
+		'S_FILESIZE' => size_select('add_size_select', $size),
+		'L_REMOVE_SELECTED' => $lang['Remove_selected'],
 
-		'S_ATTACH_ACTION'		=> append_sid('admin_attachments.' . PHP_EXT . '?mode=quota'))
+		'S_ATTACH_ACTION' => append_sid('admin_attachments.' . PHP_EXT . '?mode=quota')
+		)
 	);
 
 	$sql = "SELECT * FROM " . QUOTA_LIMITS_TABLE . " ORDER BY quota_limit DESC";
@@ -1245,11 +1207,11 @@ if ($mode == 'quota')
 		}
 
 		$template->assign_block_vars('limit_row', array(
-			'QUOTA_NAME'		=> $rows[$i]['quota_desc'],
-			'QUOTA_ID'			=> $rows[$i]['quota_limit_id'],
-			'S_FILESIZE'		=> size_select('size_select_list[]', $size_format),
-			'U_VIEW'			=> append_sid('admin_attachments.' . PHP_EXT . '?mode=' . $mode . '&amp;e_mode=view_quota&amp;quota_id=' . $rows[$i]['quota_limit_id']),
-			'MAX_FILESIZE'		=> $rows[$i]['quota_limit']
+			'QUOTA_NAME' => $rows[$i]['quota_desc'],
+			'QUOTA_ID' => $rows[$i]['quota_limit_id'],
+			'S_FILESIZE' => size_select('size_select_list[]', $size_format),
+			'U_VIEW' => append_sid('admin_attachments.' . PHP_EXT . '?mode=' . $mode . '&amp;e_mode=view_quota&amp;quota_id=' . $rows[$i]['quota_limit_id']),
+			'MAX_FILESIZE' => $rows[$i]['quota_limit']
 			)
 		);
 	}
@@ -1272,11 +1234,12 @@ if (($mode == 'quota') && ($e_mode == 'view_quota'))
 	$db->sql_freeresult($result);
 
 	$template->assign_vars(array(
-		'L_QUOTA_LIMIT_DESC'	=> $row['quota_desc'],
-		'L_ASSIGNED_USERS'		=> $lang['Assigned_users'],
-		'L_ASSIGNED_GROUPS'		=> $lang['Assigned_groups'],
-		'L_UPLOAD_QUOTA'		=> $lang['Upload_quota'],
-		'L_PM_QUOTA'			=> $lang['Pm_quota'])
+		'L_QUOTA_LIMIT_DESC' => $row['quota_desc'],
+		'L_ASSIGNED_USERS' => $lang['Assigned_users'],
+		'L_ASSIGNED_GROUPS' => $lang['Assigned_groups'],
+		'L_UPLOAD_QUOTA' => $lang['Upload_quota'],
+		'L_PM_QUOTA' => $lang['Pm_quota']
+		)
 	);
 
 	$sql = 'SELECT q.user_id, u.username, q.quota_type
@@ -1294,15 +1257,17 @@ if (($mode == 'quota') && ($e_mode == 'view_quota'))
 		if ($rows[$i]['quota_type'] == QUOTA_UPLOAD_LIMIT)
 		{
 			$template->assign_block_vars('users_upload_row', array(
-				'USER_ID'		=> $rows[$i]['user_id'],
-				'USERNAME'		=> $rows[$i]['username'])
+				'USER_ID' => $rows[$i]['user_id'],
+				'USERNAME' => $rows[$i]['username']
+				)
 			);
 		}
-		else if ($rows[$i]['quota_type'] == QUOTA_PM_LIMIT)
+		elseif ($rows[$i]['quota_type'] == QUOTA_PM_LIMIT)
 		{
 			$template->assign_block_vars('users_pm_row', array(
-				'USER_ID'		=> $rows[$i]['user_id'],
-				'USERNAME'		=> $rows[$i]['username'])
+				'USER_ID' => $rows[$i]['user_id'],
+				'USERNAME' => $rows[$i]['username']
+				)
 			);
 		}
 	}
@@ -1322,15 +1287,17 @@ if (($mode == 'quota') && ($e_mode == 'view_quota'))
 		if ($rows[$i]['quota_type'] == QUOTA_UPLOAD_LIMIT)
 		{
 			$template->assign_block_vars('groups_upload_row', array(
-				'GROUP_ID'		=> $rows[$i]['group_id'],
-				'GROUPNAME'		=> $rows[$i]['group_name'])
+				'GROUP_ID' => $rows[$i]['group_id'],
+				'GROUPNAME' => $rows[$i]['group_name']
+				)
 			);
 		}
-		else if ($rows[$i]['quota_type'] == QUOTA_PM_LIMIT)
+		elseif ($rows[$i]['quota_type'] == QUOTA_PM_LIMIT)
 		{
 			$template->assign_block_vars('groups_pm_row', array(
-				'GROUP_ID'		=> $rows[$i]['group_id'],
-				'GROUPNAME'		=> $rows[$i]['group_name'])
+				'GROUP_ID' => $rows[$i]['group_id'],
+				'GROUPNAME' => $rows[$i]['group_name']
+				)
 			);
 		}
 	}
@@ -1350,7 +1317,7 @@ if ($error)
 }
 
 $template->assign_vars(array(
-	'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $attach_config['attach_version'])
+	'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $config['attach_version'])
 	)
 );
 

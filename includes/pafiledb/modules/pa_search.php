@@ -19,11 +19,11 @@ class pafiledb_search extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
+		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
 
 		if(!$this->auth_global['auth_search'])
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
@@ -34,121 +34,56 @@ class pafiledb_search extends pafiledb_public
 
 		include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
-		if ( isset($_REQUEST['search_keywords']) )
-		{
-			$search_keywords = htmlspecialchars($_REQUEST['search_keywords']);
-		}
-		else
-		{
-			$search_keywords = '';
-		}
+		$search_keywords = request_var('search_keywords', '', true);
+		$search_keywords = htmlspecialchars_decode($search_keywords, ENT_COMPAT);
+		$search_author = request_var('search_author', '', true);
+		$search_author = htmlspecialchars_decode($search_author, ENT_COMPAT);
+		$search_id = request_var('search_id', 0);
+		$search_terms = request_var('search_terms', '');
+		$search_terms = ($search_terms == 'all') ? 1 : 0;
+		$cat_id = request_var('cat_id', 0);
+		$comments_search = request_var('comments_search', '');
+		$comments_search = ($comments_search == 'YES') ? 1 : 0;
 
-		$search_author = ( isset($_REQUEST['search_author']) ) ? htmlspecialchars($_REQUEST['search_author']) : '';
-
-		$search_id = ( isset($_REQUEST['search_id']) ) ? intval($_REQUEST['search_id']) : 0;
-
-		if ( isset($_REQUEST['search_terms']) )
-		{
-			$search_terms = ( $_REQUEST['search_terms'] == 'all' ) ? 1 : 0;
-		}
-		else
-		{
-			$search_terms = 0;
-		}
-
-		$cat_id = ( isset($_REQUEST['cat_id']) ) ? intval($_REQUEST['cat_id']) : 0;
-
-
-		if ( isset($_REQUEST['comments_search']) )
-		{
-			$comments_search = ( $_REQUEST['comments_search'] == 'YES' ) ? 1 : 0;
-		}
-		else
-		{
-			$comments_search =  0;
-		}
-
-		$start = ( isset($_REQUEST['start']) ) ? intval($_REQUEST['start']) : 0;
+		$start = request_var('start', 0);
 		$start = ($start < 0) ? 0 : $start;
 
-		if( isset($_REQUEST['sort_method']) )
-		{
-			switch ($_REQUEST['sort_method'])
-			{
-				case 'file_name':
-					$sort_method = 'file_name';
-					break;
-				case 'file_time':
-					$sort_method = 'file_time';
-					break;
-				case 'file_dls':
-					$sort_method = 'file_dls';
-					break;
-				case 'file_rating':
-					$sort_method = 'rating';
-					break;
-				case 'file_update_time':
-					$sort_method = 'file_update_time';
-					break;
-				default:
-					$sort_method = $pafiledb_config['sort_method'];
-			}
-		}
-		else
-		{
-			$sort_method = $pafiledb_config['sort_method'];
-		}
+		$sort_method = request_var('sort_method', $pafiledb_config['sort_method']);
+		$sort_method = check_var_value($sort_method, array('file_name', 'file_time', 'file_dls', 'file_rating', 'file_update_time'));
+		$sort_method = ($sort_method == 'file_rating') ? 'rating' : $sort_method;
 
-		if( isset($_REQUEST['sort_order']) )
-		{
-			switch ($_REQUEST['sort_order'])
-			{
-				case 'ASC':
-					$sort_order = 'ASC';
-					break;
-				case 'DESC':
-					$sort_order = 'DESC';
-					break;
-				default:
-					$sort_order = $pafiledb_config['sort_order'];
-			}
-		}
-		else
-		{
-			$sort_order = $pafiledb_config['sort_order'];
-		}
-
+		$sort_order = request_var('order', $pafiledb_config['sort_order']);
+		$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 		$limit_sql = ($start == 0) ? $pafiledb_config['settings_file_page'] : $start . ',' . $pafiledb_config['settings_file_page'];
-		//
+
 		// encoding match for workaround
-		//
 		$multibyte_charset = 'utf-8, big5, shift_jis, euc-kr, gb2312';
 
 
-		if ( isset($_POST['submit']) ||  $search_author != '' || $search_keywords != '' || $search_id )
+		if (isset($_POST['submit']) || ($search_author != '') || ($search_keywords != '') || $search_id)
 		{
 			$store_vars = array('search_results', 'total_match_count', 'split_search', 'sort_method', 'sort_order');
 
-			if($search_author != '' || $search_keywords != '')
+			if(($search_author != '') || ($search_keywords != ''))
 			{
-				if ( $search_author != '' && $search_keywords == '' )
+				if (($search_author != '') && ($search_keywords == ''))
 				{
 					$search_author = str_replace('*', '%', trim($search_author));
 
 					$sql = "SELECT user_id
 						FROM " . USERS_TABLE . "
-						WHERE username LIKE '" . str_replace("\'", "''", $search_author) . "'";
+						WHERE username LIKE '" . $db->sql_escape($search_author) . "'";
 					$result = $db->sql_query($sql);
 
 					$matching_userids = '';
-					if ( $row = $db->sql_fetchrow($result) )
+					if ($row = $db->sql_fetchrow($result))
 					{
 						do
 						{
-							$matching_userids .= ( ( $matching_userids != '' ) ? ', ' : '' ) . $row['user_id'];
+							$matching_userids .= (($matching_userids != '') ? ', ' : '') . $row['user_id'];
 						}
-						while( $row = $db->sql_fetchrow($result) );
+						while($row = $db->sql_fetchrow($result));
 					}
 					else
 					{
@@ -161,7 +96,7 @@ class pafiledb_search extends pafiledb_public
 					$result = $db->sql_query($sql);
 
 					$search_ids = array();
-					while( $row = $db->sql_fetchrow($result) )
+					while($row = $db->sql_fetchrow($result))
 					{
 						if($this->auth[$row['file_catid']]['auth_view'])
 						{
@@ -172,13 +107,13 @@ class pafiledb_search extends pafiledb_public
 
 					$total_match_count = sizeof($search_ids);
 				}
-				else if ( $search_keywords != '' )
+				elseif ($search_keywords != '')
 				{
 					$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
 					$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
 
 					$split_search = array();
-					$split_search = ( !strstr($multibyte_charset, $lang['ENCODING']) ) ?  split_words(clean_words('search', stripslashes($search_keywords), $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
+					$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', stripslashes($search_keywords), $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
 
 					$word_count = 0;
 					$current_match_type = 'or';
@@ -188,7 +123,7 @@ class pafiledb_search extends pafiledb_public
 
 					for($i = 0; $i < sizeof($split_search); $i++)
 					{
-						switch ( $split_search[$i] )
+						switch ($split_search[$i])
 						{
 							case 'and':
 								$current_match_type = 'and';
@@ -203,7 +138,7 @@ class pafiledb_search extends pafiledb_public
 								break;
 
 							default:
-								if ( !empty($search_terms) )
+								if (!empty($search_terms))
 								{
 									$current_match_type = 'and';
 								}
@@ -218,30 +153,30 @@ class pafiledb_search extends pafiledb_public
 								$result = $db->sql_query($sql);
 
 							$row = array();
-							while( $temp_row = $db->sql_fetchrow($result) )
+							while($temp_row = $db->sql_fetchrow($result))
 							{
 								$row[$temp_row['file_id']] = 1;
 
-								if ( !$word_count )
+								if (!$word_count)
 								{
 									$result_list[$temp_row['file_id']] = 1;
 								}
-								else if ( $current_match_type == 'or' )
+								elseif ($current_match_type == 'or')
 								{
 									$result_list[$temp_row['file_id']] = 1;
 								}
-								else if ( $current_match_type == 'not' )
+								elseif ($current_match_type == 'not')
 								{
 									$result_list[$temp_row['file_id']] = 0;
 								}
 							}
 
-							if ( $current_match_type == 'and' && $word_count )
+							if ($current_match_type == 'and' && $word_count)
 							{
 								@reset($result_list);
-								while( list($file_id, $match_count) = @each($result_list) )
+								while(list($file_id, $match_count) = @each($result_list))
 								{
-									if ( !$row[$file_id] )
+									if (!$row[$file_id])
 									{
 										$result_list[$file_id] = 0;
 									}
@@ -257,30 +192,30 @@ class pafiledb_search extends pafiledb_public
 								$result = $db->sql_query($sql);
 
 								$row = array();
-								while( $temp_row = $db->sql_fetchrow($result) )
+								while($temp_row = $db->sql_fetchrow($result))
 								{
 									$row[$temp_row['file_id']] = 1;
 
-									if ( !$word_count )
+									if (!$word_count)
 									{
 										$result_list[$temp_row['file_id']] = 1;
 									}
-									else if ( $current_match_type == 'or' )
+									else if ($current_match_type == 'or')
 									{
 										$result_list[$temp_row['file_id']] = 1;
 									}
-									else if ( $current_match_type == 'not' )
+									else if ($current_match_type == 'not')
 									{
 										$result_list[$temp_row['file_id']] = 0;
 									}
 								}
 
-								if ( $current_match_type == 'and' && $word_count )
+								if ($current_match_type == 'and' && $word_count)
 								{
 									@reset($result_list);
-									while( list($file_id, $match_count) = @each($result_list) )
+									while(list($file_id, $match_count) = @each($result_list))
 									{
-										if ( !$row[$file_id] )
+										if (!$row[$file_id])
 										{
 											$result_list[$file_id] = 0;
 										}
@@ -296,9 +231,9 @@ class pafiledb_search extends pafiledb_public
 					@reset($result_list);
 
 					$search_ids = array();
-					while( list($file_id, $matches) = each($result_list) )
+					while(list($file_id, $matches) = each($result_list))
 					{
-						if ( $matches )
+						if ($matches)
 						{
 							$search_ids[] = $file_id;
 						}
@@ -307,19 +242,17 @@ class pafiledb_search extends pafiledb_public
 					unset($result_list);
 					$total_match_count = sizeof($search_ids);
 				}
-			//
-			// Author name search
-			//
-				if ( $search_author != '' )
+				// Author name search
+				if ($search_author != '')
 				{
-					$search_author = str_replace('*', '%', trim(str_replace("\'", "''", $search_author)));
+					$search_author = str_replace('*', '%', trim($db->sql_escape($search_author)));
 				}
 
-				if ( $total_match_count )
+				if ($total_match_count)
 				{
 					$where_sql = ($cat_id) ? 'AND file_catid IN (' . $this->gen_cat_ids($cat_id, '') . ')' : '';
 
-					if ( $search_author == '')
+					if ($search_author == '')
 					{
 						$sql = "SELECT file_id, file_catid
 							FROM " . PA_FILES_TABLE . "
@@ -330,7 +263,7 @@ class pafiledb_search extends pafiledb_public
 					else
 					{
 						$from_sql = PA_FILES_TABLE . " f";
-						if ( $search_author != '' )
+						if ($search_author != '')
 						{
 							$from_sql .= ", " . USERS_TABLE . " u";
 							$where_sql .= " AND u.user_id = f.user_id AND u.username LIKE '$search_author' ";
@@ -347,7 +280,7 @@ class pafiledb_search extends pafiledb_public
 					$result = $db->sql_query($sql);
 
 					$search_ids = array();
-					while( $row = $db->sql_fetchrow($result) )
+					while($row = $db->sql_fetchrow($result))
 					{
 						if($this->auth[$row['file_catid']]['auth_view'])
 						{
@@ -376,12 +309,12 @@ class pafiledb_search extends pafiledb_public
 				if ($result)
 				{
 					$delete_search_ids = array();
-					while( $row = $db->sql_fetchrow($result) )
+					while($row = $db->sql_fetchrow($result))
 					{
 						$delete_search_ids[] = "'" . $row['session_id'] . "'";
 					}
 
-					if ( sizeof($delete_search_ids) )
+					if (sizeof($delete_search_ids))
 					{
 						$sql = "DELETE FROM " . SEARCH_TABLE . "
 							WHERE session_id NOT IN (" . implode(", ", $delete_search_ids) . ")";
@@ -389,9 +322,7 @@ class pafiledb_search extends pafiledb_public
 					}
 				}
 
-				//
 				// Store new result data
-				//
 				$search_results = implode(', ', $search_ids);
 
 				$store_search_data = array();
@@ -408,7 +339,7 @@ class pafiledb_search extends pafiledb_public
 				$search_id = mt_rand();
 
 				$sql = "UPDATE " . SEARCH_TABLE . "
-					SET search_id = $search_id, search_array = '" . str_replace("\'", "''", $result_array) . "'
+					SET search_id = $search_id, search_array = '" . $db->sql_escape($result_array) . "'
 					WHERE session_id = '" . $userdata['session_id'] . "'";
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
@@ -416,14 +347,14 @@ class pafiledb_search extends pafiledb_public
 				if (!$result || !$db->sql_affectedrows())
 				{
 					$sql = "INSERT INTO " . SEARCH_TABLE . " (search_id, session_id, search_array)
-						VALUES($search_id, '" . $userdata['session_id'] . "', '" . str_replace("\'", "''", $result_array) . "')";
+						VALUES($search_id, '" . $userdata['session_id'] . "', '" . $db->sql_escape($result_array) . "')";
 					$result = $db->sql_query($sql);
 				}
 			}
 			else
 			{
 				$search_id = intval($search_id);
-				if ( $search_id )
+				if ($search_id)
 				{
 					$sql = "SELECT search_array
 						FROM " . SEARCH_TABLE . "
@@ -431,7 +362,7 @@ class pafiledb_search extends pafiledb_public
 						AND session_id = '" . $userdata['session_id'] . "'";
 					$result = $db->sql_query($sql);
 
-					if ( $row = $db->sql_fetchrow($result) )
+					if ($row = $db->sql_fetchrow($result))
 					{
 						$search_data = unserialize($row['search_array']);
 						for($i = 0; $i < sizeof($store_vars); $i++)
@@ -443,7 +374,7 @@ class pafiledb_search extends pafiledb_public
 			}
 
 
-			if ( $search_results != '' )
+			if ($search_results != '')
 			{
 				$sql = "SELECT f1.*, AVG(r.rate_point) AS rating, COUNT(r.votes_file) AS total_votes, u.user_id, u.username, u.user_active, u.user_color, c.cat_id, c.cat_name, COUNT(cm.comments_id) AS total_comments
 					FROM (" . PA_FILES_TABLE . " AS f1, " . PA_CATEGORY_TABLE . " AS c)
@@ -466,9 +397,9 @@ class pafiledb_search extends pafiledb_public
 
 				$db->sql_freeresult($result);
 
-				$l_search_matches = ( $total_match_count == 1 ) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
+				$l_search_matches = ($total_match_count == 1) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
 
-				$pafiledb_template->assign_vars(array(
+				$template->assign_vars(array(
 					'L_SEARCH_MATCHES' => $l_search_matches
 					)
 				);
@@ -488,8 +419,8 @@ class pafiledb_search extends pafiledb_public
 					//===================================================
 
 					//$rating = ($searchset[$i]['rating'] != 0) ? round($searchset[$i]['rating'], 2) . ' / 10' : $lang['Not_rated'];
-					//$rating2 = ($searchset[$i]['rating'] != 0) ? sprintf("%.1f", round(($searchset[$i]['rating']), 2)/2) : '0.0';
-					$rating2 = ($searchset[$i]['rating'] != 0) ? sprintf("%.1f", round(($searchset[$i]['rating']), 0)/2) : '0.0';
+					//$rating2 = ($searchset[$i]['rating'] != 0) ? sprintf("%.1f", round(($searchset[$i]['rating']), 2) / 2) : '0.0';
+					$rating2 = ($searchset[$i]['rating'] != 0) ? sprintf("%.1f", round(($searchset[$i]['rating']), 0) / 2) : '0.0';
 					//===================================================
 					// If the file is new then put a new image in front of it
 					//===================================================
@@ -521,7 +452,7 @@ class pafiledb_search extends pafiledb_public
 					}
 
 					$poster = ($searchset[$i]['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']);
-					$pafiledb_template->assign_block_vars('searchresults', array(
+					$template->assign_block_vars('searchresults', array(
 						'CAT_NAME' => $searchset[$i]['cat_name'],
 						'FILE_NEW_IMAGE' => $images['pa_file_new'],
 						'PIN_IMAGE' => $posticon,
@@ -541,15 +472,15 @@ class pafiledb_search extends pafiledb_public
 				}
 				$base_url = append_sid('dload.' . PHP_EXT . '?action=search&amp;search_id=' . $search_id);
 
-				$pafiledb_template->assign_vars(array(
+				$template->assign_vars(array(
 					'PAGINATION' => generate_pagination($base_url, $total_match_count, $pafiledb_config['settings_file_page'], $start),
-					'PAGE_NUMBER' => sprintf($lang['Page_of'], ( floor( $start / $pafiledb_config['settings_file_page'] ) + 1 ), ceil( $total_match_count / $pafiledb_config['settings_file_page'] )),
+					'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pafiledb_config['settings_file_page']) + 1), ceil($total_match_count / $pafiledb_config['settings_file_page'])),
 					'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 					'L_HOME' => $lang['Home'],
 					'U_INDEX' => append_sid(CMS_PAGE_HOME),
 					'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 					'L_HOME' => $lang['Home'],
-   				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
+					'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 					'XS_NEW' => $xs_new,
 					'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 					'L_RATE' => $lang['DlRating'],
@@ -559,7 +490,8 @@ class pafiledb_search extends pafiledb_public
 					'L_FILE' => $lang['File'],
 					'L_SUBMITER' => $lang['Submiter'],
 					'L_CATEGORY' => $lang['Category'],
-					'L_NEW_FILE' => $lang['New_file'])
+					'L_NEW_FILE' => $lang['New_file']
+					)
 				);
 
 				$this->display($lang['Download'], 'pa_search_result.tpl');
@@ -569,11 +501,11 @@ class pafiledb_search extends pafiledb_public
 				message_die(GENERAL_MESSAGE, $lang['No_search_match']);
 			}
 		}
-		if ( !isset($_POST['submit']) || ($search_author == '' && $search_keywords == '' && !$search_id)  )
+		if (!isset($_POST['submit']) || (($search_author == '') && ($search_keywords == '') && !$search_id) )
 		{
 			$dropmenu = $this->jumpmenu_option();
 
-			$pafiledb_template->assign_vars(array(
+			$template->assign_vars(array(
 				'S_SEARCH_ACTION' => append_sid('dload.php'),
 				'S_CAT_MENU' => $dropmenu,
 
@@ -582,7 +514,7 @@ class pafiledb_search extends pafiledb_public
 				'U_INDEX' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 				'L_HOME' => $lang['Home'],
-   			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
+				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 				'XS_NEW' => $xs_new,
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
@@ -607,7 +539,8 @@ class pafiledb_search extends pafiledb_public
 				'L_SEARCH' => $lang['Search'],
 				'L_SEARCH_FOR' => $lang['Search_for'],
 				'L_ALL' => $lang['All'],
-				'L_CHOOSE_CAT' => $lang['Choose_cat'])
+				'L_CHOOSE_CAT' => $lang['Choose_cat']
+				)
 			);
 			$this->display($lang['Download'], 'pa_search_body.tpl');
 		}

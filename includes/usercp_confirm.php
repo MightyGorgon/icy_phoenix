@@ -30,7 +30,7 @@ if (empty($_GET['id']))
 $confirm_id = htmlspecialchars($_GET['id']);
 
 // Define available charset
-$chars = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',  'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',  'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+$chars = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 
 //if (!preg_match('/^[A-Za-z0-9]+$/', $confirm_id))
 if (!preg_match('/^[[:alnum:]]+$/', $confirm_id))
@@ -40,7 +40,7 @@ if (!preg_match('/^[[:alnum:]]+$/', $confirm_id))
 
 if ($confirm_id === 'Admin')
 {
-	if ( !$userdata['session_logged_in'] )
+	if (!$userdata['session_logged_in'])
 	{
 		die('Hacking attempt');
 		exit;
@@ -80,9 +80,9 @@ else
 }
 
 //$config['use_captcha'] = true;
-if ( $config['use_captcha'] == true )
+if ($config['use_captcha'] == true)
 {
-	srand((double)microtime()*1000000);
+	srand((double) microtime() * 1000000);
 	//include(IP_ROOT_PATH . 'includes/functions_captcha.' . PHP_EXT);
 
 	// Read the config table
@@ -134,7 +134,7 @@ if ( $config['use_captcha'] == true )
 	if ($image)
 	{
 		$bg_imgs = array();
-		if ($img_dir = opendir(IP_ROOT_PATH . 'images/captcha/pics/'))
+		if ($img_dir = @opendir(IP_ROOT_PATH . 'images/captcha/pics/'))
 		{
 			while (true == ($file = @readdir($img_dir)))
 			{
@@ -143,14 +143,14 @@ if ( $config['use_captcha'] == true )
 					$bg_imgs[] = $file;
 				}
 			}
-			closedir($img_dir);
+			@closedir($img_dir);
 		}
 		// Grab a random Background Image or set FALSE if none was found
 		$bg_img = ( sizeof($bg_imgs) ) ? rand(0, (sizeof($bg_imgs)-1)) : false;
 	}
 
 	$fonts = array();
-	if ($fonts_dir = opendir(IP_ROOT_PATH . 'images/captcha/fonts/'))
+	if ($fonts_dir = @opendir(IP_ROOT_PATH . 'images/captcha/fonts/'))
 	{
 		while (true == ($file = @readdir($fonts_dir)))
 		{
@@ -159,7 +159,7 @@ if ( $config['use_captcha'] == true )
 				$fonts[] = $file;
 			}
 		}
-		closedir($fonts_dir);
+		@closedir($fonts_dir);
 	}
 	$font = rand(0, (sizeof($fonts)-1));
 
@@ -170,15 +170,15 @@ if ( $config['use_captcha'] == true )
 	#imagecolortransparent($image, $background_color);
 
 	// Generate backgrund
-	if ($chess == '1' || $chess == '2' && rand(0,1))
+	if (($chess == '1') || ($chess == '2') && rand(0, 1))
 	{
 		// Draw rectangles
 		for($i = 0; $i <= 8; $i++)
 		{
-			$rectanglecolor = imagecolorallocate($image, rand(100,200),rand(100,200),rand(100,200));
-			imagefilledrectangle($image, 0, 0, round($total_width-($total_width/8*$i)), round($total_height), $rectanglecolor);
-			$rectanglecolor = imagecolorallocate($image, rand(100,200),rand(100,200),rand(100,200));
-			imagefilledrectangle($image, 0, 0, round($total_width-($total_width/8*$i)), round($total_height/2), $rectanglecolor);
+			$rectanglecolor = imagecolorallocate($image, rand(100, 200), rand(100, 200), rand(100, 200));
+			imagefilledrectangle($image, 0, 0, round($total_width - ($total_width / 8 * $i)), round($total_height), $rectanglecolor);
+			$rectanglecolor = imagecolorallocate($image, rand(100, 200), rand(100,200), rand(100, 200));
+			imagefilledrectangle($image, 0, 0, round($total_width - ($total_width / 8 * $i)), round($total_height / 2), $rectanglecolor);
 		}
 	}
 	if ($ellipses == '1' || $ellipses == '2' && rand(0,1))
@@ -186,31 +186,31 @@ if ( $config['use_captcha'] == true )
 		// Draw random ellipses
 		for ($i = 1; $i <= 60; $i++)
 		{
-			$ellipsecolor = imagecolorallocate($image, rand(100,250),rand(100,250),rand(100,250));
-			imagefilledellipse($image, round(rand(0, $total_width)), round(rand(0, $total_height)), round(rand(0, $total_width/8)), round(rand(0, $total_height/4)), $ellipsecolor);
+			$ellipsecolor = imagecolorallocate($image, rand(100, 250),rand(100, 250),rand(100, 250));
+			imagefilledellipse($image, round(rand(0, $total_width)), round(rand(0, $total_height)), round(rand(0, $total_width / 8)), round(rand(0, $total_height / 4)), $ellipsecolor);
 		}
 	}
-	if ($arcs == '1' || $arcs == '2' && rand(0,1))
+	if (($arcs == '1') || ($arcs == '2') && rand(0, 1))
 	{
 		// Draw random partial ellipses
 		for ($i = 0; $i <= 30; $i++)
 		{
-			$linecolor = imagecolorallocate($image, rand(120,255),rand(120,255),rand(120,255));
+			$linecolor = imagecolorallocate($image, rand(120, 255),rand(120, 255),rand(120, 255));
 			$cx = round(rand(1, $total_width));
 			$cy = round(rand(1, $total_height));
-			$int_w = round(rand(1, $total_width/2));
+			$int_w = round(rand(1, $total_width / 2));
 			$int_h = round(rand(1, $total_height));
 			imagearc($image, $cx, $cy, $int_w, $int_h, round(rand(0, 190)), round(rand(191, 360)), $linecolor);
 			imagearc($image, $cx-1, $cy-1, $int_w, $int_h, round(rand(0, 190)), round(rand(191, 360)), $linecolor);
 		}
 	}
-	if ($lines == '1' || $lines == '2' && rand(0,1))
+	if (($lines == '1') || ($lines == '2') && rand(0, 1))
 	{
 		// Draw random lines
 		for ($i = 0; $i <= 50; $i++)
 		{
-			$linecolor = imagecolorallocate($image, rand(120,255),rand(120,255),rand(120,255));
-			imageline($image, round(rand(1, $total_width*3)), round(rand(1, $total_height*5)), round(rand(1, $total_width/2)), round(rand(1, $total_height*2)), $linecolor);
+			$linecolor = imagecolorallocate($image, rand(120, 255),rand(120, 255),rand(120, 255));
+			imageline($image, round(rand(1, $total_width * 3)), round(rand(1, $total_height * 5)), round(rand(1, $total_width / 2)), round(rand(1, $total_height * 2)), $linecolor);
 		}
 	}
 	//
@@ -230,7 +230,7 @@ if ( $config['use_captcha'] == true )
 
 	for ($i = 0; $i < strlen($code); $i++)
 	{
-		mt_srand((double)microtime()*1000000);
+		mt_srand((double) microtime() * 1000000);
 
 		$char = $code{$i};
 		//$size = mt_rand(18, ceil($total_height / 2.8));

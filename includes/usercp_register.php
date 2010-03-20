@@ -38,6 +38,7 @@ if (!defined('PARSE_CPL_NAV'))
 	define('PARSE_CPL_NAV', true);
 }
 
+include_once(IP_ROOT_PATH . 'includes/auth_db.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
@@ -63,7 +64,7 @@ if($config['registration_status'] && !$userdata['session_logged_in'])
 
 // CrackerTracker v5.x
 // BEGIN CrackerTracker v5.x
-include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 $profile_security = new ct_userfunctions();
 $profile_security->handle_profile();
 (isset($_POST['submit']))? $profile_security->password_functions() : null;
@@ -111,7 +112,6 @@ function show_coppa()
 			$counter = 0;
 		}
 	}
-
 
 	$template->set_filenames(array('body' => 'agreement.tpl'));
 
@@ -171,9 +171,7 @@ function show_coppa()
 			}
 		}
 	}
-
 	$template->pparse('body');
-
 }
 
 $error = false;
@@ -246,53 +244,63 @@ if ($mode != 'register')
 }
 
 // Check and initialize some variables if needed
-if (
-	isset($_POST['submit']) ||
-	isset($_POST['avatargallery']) ||
-	isset($_POST['submitavatar']) ||
-	isset($_POST['avatargenerator']) ||
-	isset($_POST['submitgenava']) ||
-	isset($_POST['cancelavatar']) ||
-	$mode == 'register')
+if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['submitavatar']) || isset($_POST['avatargenerator']) || isset($_POST['submitgenava']) || isset($_POST['cancelavatar']) || $mode == 'register')
 {
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-	if ($mode == 'editprofile')
-	{
-		$user_id = intval($_POST['user_id']);
-		$current_email = trim(htmlspecialchars($_POST['current_email']));
-		$email_confirm = trim(htmlspecialchars($_POST['current_email']));
-	}
+	$sid = request_var('sid', '');
 
-	$strip_var_list = array('email' => 'email', 'email_confirm' => 'email_confirm', 'icq' => 'icq', 'aim' => 'aim', 'msn' => 'msn', 'yim' => 'yim', 'skype' => 'skype', 'website' => 'website', 'location' => 'location', 'occupation' => 'occupation', 'interests' => 'interests', 'phone' => 'phone', 'confirm_code' => 'confirm_code');
+	$strip_var_list = array(
+		'email' => 'email',
+		'email_confirm' => 'email_confirm',
+		'icq' => 'icq',
+		'aim' => 'aim',
+		'msn' => 'msn',
+		'yim' => 'yim',
+		'skype' => 'skype',
+		'website' => 'website',
+		'location' => 'location',
+		'occupation' => 'occupation',
+		'interests' => 'interests',
+		'phone' => 'phone',
+		'confirm_code' => 'confirm_code'
+	);
 
 	// Strip all tags from data ... may p**s some people off, bah, strip_tags is
 	// doing the job but can still break HTML output ... have no choice, have
 	// to use htmlspecialchars ... be prepared to be moaned at.
 	while(list($var, $param) = @each($strip_var_list))
 	{
-		if (!empty($_POST[$param]))
-		{
-			$$var = trim(htmlspecialchars($_POST[$param]));
-		}
+		$$var = request_post_var($param, '', true);
 	}
-	$username = (!empty($_POST['username'])) ? phpbb_clean_username($_POST['username']) : '';
-	$trim_var_list = array('cur_password' => 'cur_password', 'new_password' => 'new_password', 'password_confirm' => 'password_confirm', 'signature' => 'signature', 'selfdes' => 'selfdes');
 
+	if ($mode == 'editprofile')
+	{
+		$user_id = request_post_var('user_id', 0);
+		$current_email = request_post_var('current_email', '', true);
+		$email_confirm = request_post_var('current_email', '', true);
+	}
+
+	$trim_var_list = array(
+		'cur_password' => 'cur_password',
+		'new_password' => 'new_password',
+		'password_confirm' => 'password_confirm',
+		'signature' => 'signature',
+		'selfdes' => 'selfdes',
+		'username' => 'username'
+	);
 	while(list($var, $param) = @each($trim_var_list))
 	{
-		if (!empty($_POST[$param]))
-		{
-			$$var = trim($_POST[$param]);
-		}
+		$$var = request_post_var($param, '', true);
+		$$var = htmlspecialchars_decode($$var, ENT_COMPAT);
 	}
-
-	$signature = (isset($signature)) ? str_replace('<br />', "\n", $signature) : '';
-
-	$gender = (isset($_POST['gender'])) ? intval($_POST['gender']) : 0;
+	$signature = str_replace('<br />', "\n", $signature);
 	$selfdes = str_replace('<br />', "\n", $selfdes);
+	$username = phpbb_clean_username($username);
+
+	$gender = request_post_var('gender', 0);
 
 	// Birthday - BEGIN
 	if (isset($_POST['birthday']))
@@ -307,9 +315,9 @@ if (
 	}
 	else
 	{
-		$birthday_day = (isset($_POST['b_day'])) ? intval($_POST['b_day']) : 0;
-		$birthday_month = (isset($_POST['b_md'])) ? intval($_POST['b_md']) : 0;
-		$birthday_year = (isset($_POST['b_year'])) ? intval($_POST['b_year']) : 0;
+		$birthday_day = request_post_var('b_day', 0);
+		$birthday_month = request_post_var('b_md', 0);
+		$birthday_year = request_post_var('b_year', 0);
 		if ($birthday_day && $birthday_month && $birthday_year)
 		{
 			$birthday = mkrealdate($birthday_day, $birthday_month, $birthday_year);
@@ -326,69 +334,61 @@ if (
 	validate_optional_fields($icq, $aim, $msn, $yim, $skype, $website, $location, $occupation, $interests, $phone, $selfdes, $signature);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-	$upi2db_which_system = (isset($_POST['upi2db_which_system'])) ? (($_POST['upi2db_which_system']) ? true : 0) : 0;
-	$upi2db_new_word = (isset($_POST['upi2db_new_word'])) ? (($_POST['upi2db_new_word']) ? true : 0) : 0;
-	$upi2db_edit_word = (isset($_POST['upi2db_edit_word'])) ? (($_POST['upi2db_edit_word']) ? true : 0) : 0;
-	$upi2db_unread_color = (isset($_POST['upi2db_unread_color'])) ? (($_POST['upi2db_unread_color']) ? true : 0) : 0;
+	$upi2db_which_system = request_post_var('upi2db_which_system', 0);
+	$upi2db_new_word = request_post_var('upi2db_new_word', 0);
+	$upi2db_edit_word = request_post_var('upi2db_edit_word', 0);
+	$upi2db_unread_color = request_post_var('upi2db_unread_color', 0);
 //<!-- END Unread Post Information to Database Mod -->
 
-	$allowviewonline = (isset($_POST['hideonline'])) ? (($_POST['hideonline']) ? 0 : true) : true;
-	$profile_view_popup = (isset($_POST['profile_view_popup'])) ? (($_POST['profile_view_popup']) ? true : 0) : 0;
-	$viewemail = (isset($_POST['viewemail'])) ? (($_POST['viewemail']) ? true : 0) : 0;
-	$allowmassemail = (isset($_POST['allowmassemail'])) ? (($_POST['allowmassemail']) ? true : 0) : true;
-	$allowpmin = (isset($_POST['allowpmin'])) ? (($_POST['allowpmin']) ? true : 0) : true;
-	$notifyreply = (isset($_POST['notifyreply'])) ? (($_POST['notifyreply']) ? true : 0) : 0;
-	$notifypm = (isset($_POST['notifypm'])) ? (($_POST['notifypm']) ? true : 0) : true;
-	$popup_pm = (isset($_POST['popup_pm'])) ? (($_POST['popup_pm']) ? true : 0) : true;
-	$setbm = (isset($_POST['setbm'])) ? (($_POST['setbm']) ? true : 0) : 0;
-	$sid = (isset($_POST['sid'])) ? $_POST['sid'] : 0;
-
+	$allowviewonline = request_post_var('hideonline', 1);
+	$allowviewonline = !empty($allowviewonline) ? 0 : 1;
+	$profile_view_popup = request_post_var('profile_view_popup', 0);
+	$viewemail = request_post_var('viewemail', 0);
+	$allowmassemail = request_post_var('allowmassemail', 1);
+	$allowpmin = request_post_var('allowpmin', 1);
+	$notifyreply = request_post_var('notifyreply', 0);
+	$notifypm = request_post_var('notifypm', 1);
+	$popup_pm = request_post_var('popup_pm', 1);
+	$setbm = request_post_var('setbm', 0);
 
 	if ($mode == 'register')
 	{
-		$attachsig = (isset($_POST['attachsig'])) ? (($_POST['attachsig']) ? true : 0) : $userdata['user_attachsig'];
-
-		$allowhtml = (isset($_POST['allowhtml'])) ? (($_POST['allowhtml']) ? true : 0) : $config['allow_html'];
-		$allowbbcode = (isset($_POST['allowbbcode'])) ? (($_POST['allowbbcode']) ? true : 0) : $config['allow_bbcode'];
-		$allowsmilies = (isset($_POST['allowsmilies'])) ? (($_POST['allowsmilies']) ? true : 0) : $config['allow_smilies'];
-		$allowswearywords = (isset($_POST['allowswearywords'])) ? (($_POST['allowswearywords']) ? true : 0) : 0;
-		$showavatars = (isset($_POST['showavatars'])) ? (($_POST['showavatars']) ? true : 0) : true;
-		$showsignatures = (isset($_POST['showsignatures'])) ? (($_POST['showsignatures']) ? true : 0) : true;
-
-		$user_topics_per_page = (isset($_POST['user_topics_per_page'])) ? $_POST['user_topics_per_page'] : $config['topics_per_page'];
-		$user_posts_per_page = (isset($_POST['user_posts_per_page'])) ? $_POST['user_posts_per_page'] : $config['posts_per_page'];
-		$user_hot_threshold = (isset($_POST['user_hot_threshold'])) ? $_POST['user_hot_threshold'] : $config['hot_threshold'];
+		$attachsig = request_post_var('attachsig', 0);
+		$allowhtml = request_post_var('allowhtml', $config['allow_html']);
+		$allowbbcode = request_post_var('allowbbcode', $config['allow_bbcode']);
+		$allowsmilies = request_post_var('allowsmilies', $config['allow_smilies']);
+		$allowswearywords = request_post_var('allowswearywords', 0);
+		$showavatars = request_post_var('showavatars', 1);
+		$showsignatures = request_post_var('showsignatures', 1);
+		$user_topics_per_page = request_post_var('user_topics_per_page', $config['topics_per_page']);
+		$user_posts_per_page = request_post_var('user_posts_per_page', $config['posts_per_page']);
+		$user_hot_threshold = request_post_var('user_hot_threshold', $config['hot_threshold']);
 	}
 	else
 	{
-		$attachsig = (isset($_POST['attachsig'])) ? (($_POST['attachsig']) ? true : 0) : 0;
-		$retrosig = (isset($_POST['retrosig'])) ? (($_POST['retrosig']) ? true : 0) : 0;
-
-		$allowhtml = (isset($_POST['allowhtml'])) ? (($_POST['allowhtml']) ? true : 0) : $userdata['user_allowhtml'];
-		$allowbbcode = (isset($_POST['allowbbcode'])) ? (($_POST['allowbbcode']) ? true : 0) : $userdata['user_allowbbcode'];
-		$allowsmilies = (isset($_POST['allowsmilies'])) ? (($_POST['allowsmilies']) ? true : 0) : $userdata['user_allowsmile'];
-		$allowswearywords = (isset($_POST['allowswearywords'])) ? (($_POST['allowswearywords']) ? true : 0) : $userdata['user_allowswearywords'];
-		$showavatars = (isset($_POST['showavatars'])) ? (($_POST['showavatars']) ? true : 0) : $userdata['user_showavatars'];
-		$showsignatures = (isset($_POST['showsignatures'])) ? (($_POST['showsignatures']) ? true : 0) : $userdata['user_showsignatures'];
-
-		$user_topics_per_page = (isset($_POST['user_topics_per_page'])) ? $_POST['user_topics_per_page'] : $userdata['topics_per_page'];
-		$user_posts_per_page = (isset($_POST['user_posts_per_page'])) ? $_POST['user_posts_per_page'] : $userdata['posts_per_page'];
-		$user_hot_threshold = (isset($_POST['user_hot_threshold'])) ? $_POST['user_hot_threshold'] : $userdata['hot_threshold'];
+		$attachsig = request_post_var('attachsig', $userdata['user_attachsig']);
+		$retrosig = request_post_var('retrosig', 0);
+		$allowhtml = request_post_var('allowhtml', $userdata['user_allowhtml']);
+		$allowbbcode = request_post_var('allowbbcode', $userdata['user_allowbbcode']);
+		$allowsmilies = request_post_var('allowsmilies', $userdata['user_allowsmile']);
+		$allowswearywords = request_post_var('allowswearywords', $userdata['user_allowswearywords']);
+		$showavatars = request_post_var('showavatars', $userdata['user_showavatars']);
+		$showsignatures = request_post_var('showsignatures', $userdata['user_showsignatures']);
+		$user_topics_per_page = request_post_var('user_topics_per_page', $userdata['topics_per_page']);
+		$user_posts_per_page = request_post_var('user_posts_per_page', $userdata['posts_per_page']);
+		$user_hot_threshold = request_post_var('user_hot_threshold', $userdata['hot_threshold']);
 	}
 
 	$user_topics_per_page = ($user_topics_per_page > 100) ? 100 : $user_topics_per_page;
 	$user_posts_per_page = ($user_posts_per_page > 50) ? 50 : $user_posts_per_page;
 	$user_hot_threshold = ($user_hot_threshold > 50) ? 50 : $user_hot_threshold;
 
-	$user_style = (isset($_POST['style'])) ? intval($_POST['style']) : $config['default_style'];
+	$user_style = request_post_var('style', $config['default_style']);
 
-	if (!empty($_POST['language']))
+	$user_lang = request_post_var('language', $config['default_lang']);
+	if (!empty($user_lang))
 	{
-		if (preg_match('/^[a-z_]+$/i', $_POST['language']))
-		{
-			$user_lang = htmlspecialchars($_POST['language']);
-		}
-		else
+		if (!preg_match('/^[a-z_]+$/i', $user_lang))
 		{
 			$error = true;
 			$error_msg = $lang['Fields_empty'];
@@ -399,19 +399,16 @@ if (
 		$user_lang = $config['default_lang'];
 	}
 
-	$user_flag = (!empty($_POST['user_flag'])) ? $_POST['user_flag'] : '';
-	$user_timezone = (isset($_POST['timezone'])) ? doubleval($_POST['timezone']) : $config['board_timezone'];
+	$user_flag = request_post_var('user_flag', '');
+	$user_timezone = request_post_var('timezone', $config['board_timezone']);
+	$time_mode = request_post_var('time_mode', $config['default_time_mode']);
 
-	$time_mode = (isset($_POST['time_mode'])) ? intval($_POST['time_mode']) : $config['default_time_mode'];
+	$dst_time_lag = request_post_var('dst_time_lag', $config['default_dst_time_lag']);
 
-	if (eregi("[^0-9]",$_POST['dst_time_lag']) || ($dst_time_lag < 0) || ($dst_time_lag > 120))
+	if (eregi("[^0-9]", $dst_time_lag) || ($dst_time_lag < 0) || ($dst_time_lag > 120))
 	{
 		$error = true;
 		$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['dst_time_lag_error'];
-	}
-	else
-	{
-		$dst_time_lag = (isset($_POST['dst_time_lag'])) ? intval($_POST['dst_time_lag']) : $config['default_dst_time_lag'];
 	}
 
 	$sql = "SELECT config_value
@@ -420,47 +417,40 @@ if (
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$config['default_dateformat'] = $row['config_value'];
-	$user_dateformat = (!empty($_POST['dateformat'])) ? trim(htmlspecialchars($_POST['dateformat'])) : $config['default_dateformat'];
+	$user_dateformat = request_post_var('dateformat', $config['default_dateformat']);
 
-	$user_avatar_local = (isset($_POST['avatarselect']) && !empty($_POST['submitavatar']) && $config['allow_avatar_local']) ? htmlspecialchars($_POST['avatarselect']) : ((isset($_POST['avatarlocal']) ) ? htmlspecialchars($_POST['avatarlocal']) : '');
-	$user_avatar_category = (isset($_POST['avatarcatname']) && $config['allow_avatar_local']) ? htmlspecialchars($_POST['avatarcatname']) : '' ;
-	$user_avatar_generator = (isset($_POST['avatarimage']) && isset($_POST['avatartext']) && !empty($_POST['submitgenava']) && $config['allow_avatar_generator']) ? htmlspecialchars($_POST['avatar_filename']) : ((isset($_POST['avatargenerator']) ) ? htmlspecialchars($_POST['avatargenerator']) : '');
+	$user_avatarselect = request_post_var('avatarselect', '');
+	$user_avatarlocal = request_post_var('avatarlocal', '');
+	$user_avatarcatname = request_post_var('avatarcatname', '');
+	$user_avatarimage = request_post_var('avatarimage', '');
+	$user_avatartext = request_post_var('avatartext', '');
+	$user_avatar_filename = request_post_var('avatar_filename', '');
+	$user_avatargenerator = request_post_var('avatargenerator', '');
+	$user_avatar_remoteurl = request_post_var('avatarremoteurl', '');
+	$user_avatarurl = request_post_var('avatarurl', '');
+	$user_gravatar = request_post_var('gravatar', '');
 
-	$user_avatar_remoteurl = (!empty($_POST['avatarremoteurl'])) ? trim(htmlspecialchars($_POST['avatarremoteurl'])) : '';
-	$user_avatar_upload = (!empty($_POST['avatarurl'])) ? trim($_POST['avatarurl']) : (($_FILES['avatar']['tmp_name'] != 'none') ? $_FILES['avatar']['tmp_name'] : '');
-	$user_avatar_name = (!empty($_FILES['avatar']['name'])) ? $_FILES['avatar']['name'] : '';
-	$user_avatar_size = (!empty($_FILES['avatar']['size'])) ? $_FILES['avatar']['size'] : 0;
-	$user_avatar_filetype = (!empty($_FILES['avatar']['type'])) ? $_FILES['avatar']['type'] : '';
-	$user_gravatar = (!empty($_POST['gravatar'])) ? trim(htmlspecialchars($_POST['gravatar'])) : '';
+	$user_avatar_local = (!empty($user_avatarselect) && !empty($_POST['submitavatar']) && $config['allow_avatar_local']) ? $user_avatarselect : ((!empty($user_avatarlocal) ? $user_avatarlocal : ''));
+	$user_avatar_category = (!empty($user_avatarcatname) && $config['allow_avatar_local']) ? $user_avatarcatname : '' ;
+	$user_avatar_generator = (!empty($user_avatarimage) && !empty($user_avatartext) && !empty($_POST['submitgenava']) && $config['allow_avatar_generator']) ? $user_avatar_filename : (!empty($user_avatargenerator) ? $user_avatargenerator : '');
+
+	$user_avatar_remoteurl = (!empty($user_avatar_remoteurl) ? $user_avatar_remoteurl : '');
+	$user_avatar_upload = (!empty($user_avatarurl) ? $user_avatarurl : (($_FILES['avatar']['tmp_name'] != 'none') ? $_FILES['avatar']['tmp_name'] : ''));
+	$user_avatar_name = (!empty($_FILES['avatar']['name']) ? $_FILES['avatar']['name'] : '');
+	$user_avatar_size = (!empty($_FILES['avatar']['size']) ? $_FILES['avatar']['size'] : 0);
+	$user_avatar_filetype = (!empty($_FILES['avatar']['type']) ? $_FILES['avatar']['type'] : '');
+	$user_gravatar = (!empty($user_gravatar) ? $user_gravatar : '');
 
 	$user_avatar = (empty($user_avatar_local) && $mode == 'editprofile') ? $userdata['user_avatar'] : '';
 	$user_avatar_type = (empty($user_avatar_local) && $mode == 'editprofile') ? $userdata['user_avatar_type'] : '';
 
 	if ((isset($_POST['avatargallery']) || isset($_POST['submitavatar'])|| isset($_POST['avatargenerator']) || isset($_POST['submitgenava']) || isset($_POST['cancelavatar'])) && (!isset($_POST['submit'])))
 	{
-		$username = stripslashes($username);
-		$email = stripslashes($email);
-		$email_confirm = stripslashes($email_confirm);
-		$cur_password = htmlspecialchars(stripslashes($cur_password));
-		$new_password = htmlspecialchars(stripslashes($new_password));
-		$password_confirm = htmlspecialchars(stripslashes($password_confirm));
-
-		$icq = stripslashes($icq);
-		$aim = stripslashes($aim);
-		$msn = stripslashes($msn);
-		$yim = stripslashes($yim);
-		$skype = stripslashes($skype);
-
-		$website = stripslashes($website);
-		$location = stripslashes($location);
-		$occupation = stripslashes($occupation);
-		$interests = stripslashes($interests);
-		$phone = stripslashes($phone);
-		$selfdes = htmlspecialchars(stripslashes($selfdes));
-		$signature = htmlspecialchars(stripslashes($signature));
-
-		$user_lang = stripslashes($user_lang);
-		$user_dateformat = stripslashes($user_dateformat);
+		$cur_password = htmlspecialchars($cur_password);
+		$new_password = htmlspecialchars($new_password);
+		$password_confirm = htmlspecialchars($password_confirm);
+		$selfdes = htmlspecialchars($selfdes);
+		$signature = htmlspecialchars($signature);
 
 		if (!isset($_POST['cancelavatar']))
 		{
@@ -538,7 +528,8 @@ if (isset($_POST['submit']))
 			$type = $fields['field_type'];
 			$required = ($fields['is_required'] == REQUIRED) ? true : false;
 
-			//$temp = $_POST[$name];
+			// Mighty Gorgon: maybe better using the old way instead of request_var... unless we decide to rewrite the way this mod works
+			//$temp = request_post_var($name, '', true);
 			$temp = (isset($_POST[$name])) ? $_POST[$name] : array();
 			if($type == CHECKBOX)
 			{
@@ -630,13 +621,8 @@ if (isset($_POST['submit']))
 		{
 			if ($mode == 'editprofile')
 			{
-				$sql = "SELECT user_password
-					FROM " . USERS_TABLE . "
-					WHERE user_id = $user_id";
-				$result = $db->sql_query($sql);
-				$row = $db->sql_fetchrow($result);
-
-				if ($row['user_password'] != md5($cur_password))
+				$login_result = login_db($username, $cur_password, $user_id, false);
+				if ($login_result['status'] !== LOGIN_SUCCESS)
 				{
 					$error = true;
 					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Current_password_mismatch'];
@@ -648,8 +634,9 @@ if (isset($_POST['submit']))
 				// CrackerTracker v5.x
 				$profile_security->pw_create_date($user_id);
 				// CrackerTracker v5.x
-				$new_password = md5($new_password);
-				$passwd_sql = "user_password = '$new_password', ";
+				//$new_password = md5($new_password);
+				$new_password = phpbb_hash($new_password);
+				$passwd_sql = "user_password = '" . $db->sql_escape($new_password) . "', ";
 			}
 		}
 	}
@@ -682,13 +669,8 @@ if (isset($_POST['submit']))
 
 		if ($mode == 'editprofile')
 		{
-			$sql = "SELECT user_password
-				FROM " . USERS_TABLE . "
-				WHERE user_id = $user_id";
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-
-			if ($row['user_password'] != md5($cur_password))
+			$login_result = login_db($username, $cur_password, $user_id, false);
+			if ($login_result['status'] !== LOGIN_SUCCESS)
 			{
 				$email = $userdata['user_email'];
 				$email_confirm = $userdata['user_email'];
@@ -722,7 +704,7 @@ if (isset($_POST['submit']))
 
 			if (!$error)
 			{
-				$username_sql = "username = '" . str_replace("\'", "''", $username) . "', ";
+				$username_sql = "username = '" . $db->sql_escape($username) . "', ";
 			}
 		}
 	}
@@ -808,7 +790,7 @@ if (isset($_POST['submit']))
 	}
 	elseif ($user_gravatar != '' && $config['enable_gravatars'])
 	{
-		$avatar_sql = ($mode == 'editprofile') ? ", user_avatar = '" . str_replace("\'", "''", $user_gravatar) . "', user_avatar_type = " . USER_GRAVATAR : '';
+		$avatar_sql = ($mode == 'editprofile') ? ", user_avatar = '" . $db->sql_escape($user_gravatar) . "', user_avatar_type = " . USER_GRAVATAR : '';
 	}
 
 	// Start add - Gender Mod
@@ -891,7 +873,7 @@ if (isset($_POST['submit']))
 			{
 				$user_active = 0;
 
-				$user_actkey = gen_rand_string(true);
+				$user_actkey = gen_rand_string();
 				//$key_len = 54 - (strlen($server_url));
 				$key_len = 54 - (strlen($profile_server_url));
 				$key_len = ($key_len > 6) ? $key_len : 6;
@@ -911,7 +893,7 @@ if (isset($_POST['submit']))
 // IN LINE ADD
 // , user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) ."', user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color, user_icq = '" . str_replace("\'", "''", $icq) . "', user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_from = '" . str_replace("\'", "''", $location) . "', user_from_flag = '$user_flag', user_interests = '" . str_replace("\'", "''", $interests) . "', user_phone = '" . str_replace("\'", "''", $phone) . "', user_selfdes = '" . str_replace("\'", "''", $selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = '$next_birthday_greeting', user_viewemail = $viewemail, user_aim = '" . str_replace("\'", "''", str_replace(' ', '+', $aim)) . "', user_yim = '" . str_replace("\'", "''", $yim) . "', user_msnm = '" . str_replace("\'", "''", $msn) . "', user_skype = '" . str_replace("\'", "''", $skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowsmile = $allowsmilies, user_showavatars = $showavatars, user_showsignatures = $showsignatures, user_allowswearywords = $allowswearywords, user_allowhtml = $allowhtml, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_timezone = $user_timezone, user_time_mode = $time_mode, user_dst_time_lag = $dst_time_lag, user_dateformat = '" . str_replace("\'", "''", $user_dateformat) . "', user_posts_per_page = '" . str_replace("\'", "''", $user_posts_per_page) . "', user_topics_per_page = '" . str_replace("\'", "''", $user_topics_per_page) . "', user_hot_threshold = '" . str_replace("\'", "''", $user_hot_threshold) . "', user_lang = '" . str_replace("\'", "''", $user_lang) . "', user_style = $user_style, user_active = $user_active, user_actkey = '$user_actkey'" . $avatar_sql . ", user_gender = '" . $gender . "'
+				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) ."', user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color, user_icq = '" . $db->sql_escape($icq) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = '$next_birthday_greeting', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', $aim)) . "', user_yim = '" . $db->sql_escape($yim) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowsmile = $allowsmilies, user_showavatars = $showavatars, user_showsignatures = $showsignatures, user_allowswearywords = $allowswearywords, user_allowhtml = $allowhtml, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_timezone = $user_timezone, user_time_mode = $time_mode, user_dst_time_lag = $dst_time_lag, user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_active = $user_active, user_actkey = '$user_actkey'" . $avatar_sql . ", user_gender = '" . $gender . "'
 				WHERE user_id = " . $user_id;
 			$result = $db->sql_query($sql);
 
@@ -959,7 +941,7 @@ if (isset($_POST['submit']))
 								$temp = is_numeric($temp) ? intval($temp) : (is_array($temp) ? array_map('htmlspecialchars', $temp) : htmlspecialchars($temp));
 							}
 							$profile_names[$name] = $temp;
-							$sql2 .= $name . " = '" . str_replace("\'", "''", $profile_names[$name]) . "', ";
+							$sql2 .= $name . " = '" . $db->sql_escape($profile_names[$name]) . "', ";
 						}
 						else
 						{
@@ -1088,15 +1070,15 @@ if (isset($_POST['submit']))
 // , user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color
 // , $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color
 			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_from_flag, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color, user_aim, user_yim, user_msnm, user_skype, user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_birthday_y, user_birthday_m, user_birthday_d, user_next_birthday_greeting, user_active, user_actkey)
-				VALUES ('" . str_replace("\'", "''", $user_registered_ip) . "', '" . str_replace("\'", "''", $user_registered_hostname) . "', $user_id, '" . str_replace("\'", "''", $username) . "', " . time() . ", '" . str_replace("\'", "''", $new_password) . "', '" . str_replace("\'", "''", $email) . "', '" . str_replace("\'", "''", $icq) . "', '" . str_replace("\'", "''", $website) . "', '" . str_replace("\'", "''", $occupation) . "', '" . str_replace("\'", "''", $location) . "', '$user_flag', '" . str_replace("\'", "''", $interests) . "', '" . str_replace("\'", "''", $phone) . "', '" . str_replace("\'", "''", $selfdes) . "', $profile_view_popup, '" . str_replace("\'", "''", $signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . str_replace("\'", "''", str_replace(' ', '+', $aim)) . "', '" . str_replace("\'", "''", $yim) . "', '" . str_replace("\'", "''", $msn) . "', '" . str_replace("\'", "''", $skype) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . str_replace("\'", "''", $user_dateformat) . "', '" . str_replace("\'", "''", $user_posts_per_page) . "', '" . str_replace("\'", "''", $user_topics_per_page) . "', '" . str_replace("\'", "''", $user_hot_threshold) . "', '" . str_replace("\'", "''", $user_lang) . "', $user_style, '$gender', 0, 1, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', ";
+				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', " . time() . ", '" . $db->sql_escape($new_password) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape($icq) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . $db->sql_escape(str_replace(' ', '+', $aim)) . "', '" . $db->sql_escape($yim) . "', '" . $db->sql_escape($msn) . "', '" . $db->sql_escape($skype) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, 1, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', ";
 			if (($config['require_activation'] == USER_ACTIVATION_SELF) || ($config['require_activation'] == USER_ACTIVATION_ADMIN) || $coppa)
 			{
-				$user_actkey = gen_rand_string(true);
+				$user_actkey = gen_rand_string();
 				//$key_len = 54 - (strlen($server_url));
 				$key_len = 54 - (strlen($profile_server_url));
 				$key_len = ($key_len > 6) ? $key_len : 6;
 				$user_actkey = substr($user_actkey, 0, $key_len);
-				$sql .= "0, '" . str_replace("\'", "''", $user_actkey) . "')";
+				$sql .= "0, '" . $db->sql_escape($user_actkey) . "')";
 			}
 			else
 			{
@@ -1286,7 +1268,7 @@ if (isset($_POST['submit']))
 						$temp = htmlspecialchars($temp);
 					}
 					$profile_names[$name] = $temp;
-					$sql2 .= $name . " = '" . str_replace("\'", "''", $profile_names[$name]) . "', ";
+					$sql2 .= $name . " = '" . $db->sql_escape($profile_names[$name]) . "', ";
 				}
 				else
 				{
@@ -1314,32 +1296,12 @@ if (isset($_POST['submit']))
 
 if ($error)
 {
-	//
-	// If an error occured we need to stripslashes on returned data
-	//
-	$username = stripslashes($username);
-	$email = stripslashes($email);
-	$email_confirm = stripslashes($email_confirm);
 	$cur_password = '';
 	$new_password = '';
 	$password_confirm = '';
 
-	$icq = stripslashes($icq);
-	$aim = str_replace('+', ' ', stripslashes($aim));
-	$msn = stripslashes($msn);
-	$yim = stripslashes($yim);
-	$skype = stripslashes($skype);
-	$website = stripslashes($website);
-	$location = stripslashes($location);
-	$occupation = stripslashes($occupation);
-	$interests = stripslashes($interests);
-	$phone = htmlspecialchars(stripslashes($phone));
-	$selfdes = stripslashes($selfdes);
-	$signature = stripslashes($signature);
-
-	$user_lang = stripslashes($user_lang);
-	$user_dateformat = stripslashes($user_dateformat);
-	$user_gravatar = stripslashes($user_gravatar);
+	$aim = str_replace('+', ' ', $aim);
+	$phone = htmlspecialchars($phone);
 }
 elseif ($mode == 'editprofile' && !isset($_POST['avatargallery']) && !isset($_POST['submitavatar']) && !isset($_POST['avatargenerator']) && !isset($_POST['submitgenava']) && !isset($_POST['cancelavatar']))
 {
@@ -1437,7 +1399,7 @@ else
 $link_name = (($cp_section == '') ? '' : $cp_section);
 $link_url = (($cp_section == '') ? '#' : append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=' . $cpl_mode));
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $main_nav . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="' . $link_url . '">' . $link_name . '</a>') : '');
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $main_nav . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="' . $link_url . '">' . $link_name . '</a>') : '');
 
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 
@@ -1454,7 +1416,7 @@ if(isset($_POST['avatargallery']) && !$error)
 {
 	include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
 
-	$avatar_category = (!empty($_POST['avatarcategory'])) ? htmlspecialchars($_POST['avatarcategory']) : '';
+	$avatar_category = request_post_var('avatarcategory', '');
 
 	$template_to_parse = 'profile_avatar_gallery.tpl';
 
@@ -1470,16 +1432,20 @@ elseif(isset($_POST['avatargenerator']) && !$error)
 	}
 	include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
 
-	$avatar_filename = (isset($_POST['avatar_filename'])) ? htmlspecialchars($_POST['avatar_filename']) : POSTED_IMAGES_THUMBS_PATH . uniqid(rand()) . '.gif';
-	//$avatar_filename = (isset($_POST['avatar_filename'])) ? htmlspecialchars($_POST['avatar_filename']) : $config['avatar_path'] . '/' . uniqid(rand()) . '.gif';
+	$avatar_filename = request_post_var('avatar_filename', '');
+	$avatar_filename = (!empty($avatar_filename) ? $avatar_filename : POSTED_IMAGES_THUMBS_PATH . uniqid(rand()) . '.gif');
+	//$avatar_filename = (!empty($avatar_filename) ? $avatar_filename : $config['avatar_path'] . '/' . uniqid(rand()) . '.gif');
 
 	if (file_exists(@phpbb_realpath('./' . $avatar_filename)))
 	{
 		@unlink('./' . $avatar_filename);
 	}
 
-	$avatar_image = (!empty($_POST['avatarimage'])) ? htmlspecialchars($_POST['avatarimage']) : 'Random';
-	$avatar_text = (!empty($_POST['avatartext'])) ? htmlspecialchars($_POST['avatartext']) : $username;
+	$avatar_image = request_post_var('avatarimage', '');
+	$avatar_text = request_post_var('avatartext', '');
+
+	$avatar_image = (!empty($avatar_image) ? $avatar_image : 'Random');
+	$avatar_text = (!empty($avatar_text) ? $avatar_text : $username);
 
 	$template_to_parse = 'profile_avatar_generator.tpl';
 
@@ -1666,12 +1632,7 @@ else
 			);
 
 			// Include Language
-			$language = $config['default_lang'];
-			if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT))
-			{
-				$language = 'english';
-			}
-			include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT);
+			setup_extra_lang(array('lang_profile_fields'));
 
 			foreach($profile_data as $field)
 			{
@@ -2316,15 +2277,15 @@ else
 		'AVATAR' => $avatar_img,
 		'AVATAR_SIZE' => $config['avatar_filesize'],
 		'GRAVATAR' => ($userdata['user_avatar_type'] == USER_GRAVATAR) ? $userdata['user_avatar'] : '',
-		'LANGUAGE_SELECT' => language_select($user_lang, 'language'),
-		'STYLE_SELECT' => style_select($user_style, 'style'),
-		'TIMEZONE_SELECT' => tz_select($user_timezone, 'timezone'),
+		'LANGUAGE_SELECT' => language_select('language', $user_lang),
+		'STYLE_SELECT' => style_select('style', $user_style),
+		'TIMEZONE_SELECT' => tz_select('timezone', $user_timezone),
+		'DATE_FORMAT' => date_select('dateformat', $user_dateformat),
 		'TIME_MODE' => $time_mode,
 		'TIME_MODE_MANUAL_CHECKED' => $time_mode_manual_checked,
 		'TIME_MODE_MANUAL_DST_CHECKED' => $time_mode_manual_dst_checked,
 		'TIME_MODE_SERVER_SWITCH_CHECKED' => $time_mode_server_switch_checked,
 		'DST_TIME_LAG' => $dst_time_lag,
-		'DATE_FORMAT' => date_select($user_dateformat,'dateformat'),
 		'HTML_STATUS' => $html_status,
 		'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 		'SMILIES_STATUS' => $smilies_status,

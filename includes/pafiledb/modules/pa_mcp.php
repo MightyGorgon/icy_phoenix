@@ -19,35 +19,35 @@ class pafiledb_mcp extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $debug, $userdata, $pafiledb_functions;
+		global $db, $config, $lang, $images, $userdata, $debug;
+		global $pafiledb_config, $template, $pafiledb_functions;
 
-//		$custom_field = new custom_field();
-//		$custom_field->init();
 		$this->init();
 
-		$file_id = (isset($_REQUEST['file_id'])) ? intval($_REQUEST['file_id']) : 0;
-		$file_ids = (isset($_POST['file_ids'])) ? array_map('intval', $_POST['file_ids']) : array();
-		$start = (isset($_REQUEST['start'])) ? intval($_REQUEST['start']) : 0;
+		$file_id = request_var('file_id', 0);
+		$file_ids = request_var('file_ids', array(0));
+		$start = request_var('start', 0);
 		$start = ($start < 0) ? 0 : $start;
 
-		$mode = (isset($_REQUEST['mode'])) ? htmlspecialchars($_REQUEST['mode']) : '';
-		$mode_js = (isset($_REQUEST['mode_js'])) ? htmlspecialchars($_REQUEST['mode_js']) : '';
-//		$mode = (isset($_POST['addfile'])) ? 'add' : $mode;
-//		$mode = (isset($_POST['delete'])) ? 'delete' : $mode;
+		$mode = request_var('mode', '');
+		$mode_js = request_var('mode_js', '');
+		/*
+		$mode = (isset($_POST['addfile'])) ? 'add' : $mode;
+		$mode = (isset($_POST['delete'])) ? 'delete' : $mode;
+		*/
 		$mode = (isset($_POST['approve'])) ? 'do_approve' : $mode;
 		$mode = (isset($_POST['unapprove'])) ? 'do_unapprove' : $mode;
-
 
 		if (empty($mode))
 		{
 			$mode = $mode_js;
-			$cat_id = (isset($_REQUEST['cat_js_id'])) ? intval($_REQUEST['cat_js_id']) : intval($_REQUEST['cat_id']);
+			$cat_id = request_var('cat_js_id', 0);
+			$cat_id = !empty($cat_id) : $cat_id : request_var('cat_id', 0);
 		}
 		else
 		{
-			$cat_id = (isset($_REQUEST['cat_id'])) ? intval($_REQUEST['cat_id']) : 0;
+			$cat_id = request_var('cat_id', 0);
 		}
-
 
 		$mirrors = (isset($_POST['mirrors'])) ? true : 0;
 
@@ -67,52 +67,12 @@ class pafiledb_mcp extends pafiledb_public
 		}
 
 
-		if(isset($_REQUEST['sort_method']))
-		{
-			switch ($_REQUEST['sort_method'])
-			{
-				case 'file_name':
-					$sort_method = 'file_name';
-					break;
-				case 'file_time':
-					$sort_method = 'file_time';
-					break;
-				case 'file_dls':
-					$sort_method = 'file_dls';
-					break;
-				case 'file_rating':
-					$sort_method = 'rating';
-					break;
-				case 'file_update_time':
-					$sort_method = 'file_update_time';
-					break;
-				default:
-					$sort_method = $pafiledb_config['sort_method'];
-			}
-		}
-		else
-		{
-			$sort_method = $pafiledb_config['sort_method'];
-		}
+		$sort_method = request_var('sort_method', $pafiledb_config['sort_method']);
+		$sort_method = check_var_value($sort_method, array('file_name', 'file_time', 'file_dls', 'file_rating', 'file_update_time'));
+		$sort_method = ($sort_method == 'file_rating') ? 'rating' : $sort_method;
 
-		if(isset($_REQUEST['sort_order']))
-		{
-			switch ($_REQUEST['sort_order'])
-			{
-				case 'ASC':
-					$sort_order = 'ASC';
-					break;
-				case 'DESC':
-					$sort_order = 'DESC';
-					break;
-				default:
-					$sort_order = $pafiledb_config['sort_order'];
-			}
-		}
-		else
-		{
-			$sort_order = $pafiledb_config['sort_order'];
-		}
+		$sort_order = request_var('order', $pafiledb_config['sort_order']);
+		$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 		$s_file_actions = array(
 			'approved' => $lang['Approved_files'],
@@ -165,11 +125,11 @@ class pafiledb_mcp extends pafiledb_public
 			}
 		}
 
-		$pafiledb_template->set_filenames(array('admin' => $template_file));
+		$template->set_filenames(array('admin' => $template_file));
 
 		$s_hidden_fields = '<input type="hidden" name="cat_id" value="' . $cat_id . '" />';
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 				'L_INDEX' => $lang['Home'],
 				'L_HOME' => $lang['Home'],
 				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
@@ -217,8 +177,7 @@ class pafiledb_mcp extends pafiledb_public
 				}
 			}
 
-
-			if($mode == '' || $mode == 'approved' || $mode == 'broken' || $mode == 'file_cat' || $mode == 'all_file')
+			if(($mode == '') || ($mode == 'approved') || ($mode == 'broken') || ($mode == 'file_cat') || ($mode == 'all_file'))
 			{
 				if($mode == '')
 				{
@@ -231,7 +190,7 @@ class pafiledb_mcp extends pafiledb_public
 					$temp_start = $start;
 				}
 
-				if($mode == '' || $mode == 'approved')
+				if(($mode == '') || ($mode == 'approved'))
 				{
 					$sql = "SELECT file_name, file_approved, file_id, file_broken
 						FROM " . PA_FILES_TABLE . "
@@ -256,7 +215,7 @@ class pafiledb_mcp extends pafiledb_public
 					}
 				}
 
-				if($mode == '' || $mode == 'broken')
+				if(($mode == '') || ($mode == 'broken'))
 				{
 					$sql = "SELECT file_name, file_approved, file_id, file_broken
 						FROM " . PA_FILES_TABLE . "
@@ -376,7 +335,7 @@ class pafiledb_mcp extends pafiledb_public
 			$cat_list .= $this->jumpmenu_option(0, 0, array($cat_id => 1), true);
 			$cat_list .= '</select>';
 
-			$pafiledb_template->assign_vars(array(
+			$template->assign_vars(array(
 				'L_EDIT' => $lang['Editfile'],
 				'L_DELETE' => $lang['Delete'],
 				'L_CATEGORY' => $lang['Category'],
@@ -414,7 +373,7 @@ class pafiledb_mcp extends pafiledb_public
 					$unapprove = true;
 				}
 
-				$pafiledb_template->assign_block_vars('file_mode', array(
+				$template->assign_block_vars('file_mode', array(
 					'L_FILE_MODE' => $files_data['lang_var'],
 					'DATA' => (isset($files_data['row_set'])) ? true : false,
 					'APPROVE' => $approve,
@@ -428,32 +387,32 @@ class pafiledb_mcp extends pafiledb_public
 					foreach($files_data['row_set'] as $file_data)
 					{
 						$approve_mode = ($file_data['file_approved']) ? 'do_unapprove' : 'do_approve';
-						$pafiledb_template->assign_block_vars('file_mode.file_row', array(
+						$template->assign_block_vars('file_mode.file_row', array(
 							'FILE_NAME' => $file_data['file_name'],
 							'FILE_NUMBER' => $i++,
 							'FILE_ID' => $file_data['file_id'],
 							'U_FILE_EDIT' => append_sid("dload.php?action=user_upload&amp;mode=edit&amp;file_id={$file_data['file_id']}"),
 							'U_FILE_DELETE' => append_sid("dload.php?action=user_upload&amp;do=delete&amp;file_id={$file_data['file_id']}"),
 							'U_FILE_APPROVE' => append_sid("dload.php?action=mcp&amp;mode=$approve_mode&amp;cat_id=$cat_id&amp;file_id={$file_data['file_id']}"),
-							'L_APPROVE' => ($file_data['file_approved']) ? $lang['Unapprove'] : $lang['Approve'])
+							'L_APPROVE' => ($file_data['file_approved']) ? $lang['Unapprove'] : $lang['Approve']
+							)
 						);
-
 					}
 				}
 			}
 		}
 
-		$pafiledb_template->assign_vars(array(
-			'ERROR' => (sizeof($this->error)) ? implode('<br />', $this->error) : '')
+		$template->assign_vars(array(
+			'ERROR' => (sizeof($this->error)) ? implode('<br />', $this->error) : ''
+			)
 		);
 
 
 		$this->display($lang['MCP'], $template_file);
 
-		// $pafiledb_template->display('admin');
+		// $template->display('admin');
 
 		$this->_pafiledb();
-		//$pa_cache->unload();
 
 		/* Original
 		include('./page_footer_admin.' . PHP_EXT);

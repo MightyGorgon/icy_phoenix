@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_SUDOKU', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
@@ -42,23 +41,24 @@ if (!$userdata['session_logged_in'])
 }
 
 $sql = " SELECT game_pack FROM " . SUDOKU_STARTS . "
-ORDER BY game_pack DESC LIMIT 1";
+	ORDER BY game_pack DESC LIMIT 1";
 $result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
 $latest_pack = $row['game_pack'];
 
 // set standard vars
-$mode=htmlspecialchars($_GET['mode']);
-$type=htmlspecialchars($_GET['type']);
-$co_ord=explode('_', htmlspecialchars($_GET['tile']));
-$pack=intval($_GET['p']);
-$num=intval($_GET['n']);
-$level=intval($_GET['l']);
-$num_insert=intval($_POST['num_input']);
-$redirect='<meta http-equiv="refresh" content="3;url=' . append_sid('sudoku.' . PHP_EXT) . '">';
-$games=array();
-$points=array();
-$admin_tools=($userdata['user_level'] == ADMIN) ? '|| <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=resynch') . '" class="nav">' . $lang['sudoku_resynch'] . '</a> || <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=reset_game') . '" class="nav">' . $lang['sudoku_reset_game'] . '</a>' : '';
+$mode = request_var('mode', '');
+$type = request_var('type', '');
+$pack = request_var('p', 0);
+$num = request_var('n', 0);
+$level = request_var('l', 0);
+$num_insert = request_post_var('num_input', 0);
+$co_ord = explode('_', htmlspecialchars($_GET['tile']));
+
+$redirect = '<meta http-equiv = "refresh" content = "3;url = ' . append_sid('sudoku.' . PHP_EXT) . '">';
+$games = array();
+$points = array();
+$admin_tools = ($userdata['user_level'] == ADMIN) ? '|| <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=resynch') . '" class="nav">' . $lang['sudoku_resynch'] . '</a> || <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=reset_game') . '" class="nav">' . $lang['sudoku_reset_game'] . '</a>' : '';
 // Set template Vars
 $template->assign_vars(array(
 	'SUDOKU_VERSION' => sprintf($lang['Sudoku_Version'], $config['sudoku_version'], $latest_pack),

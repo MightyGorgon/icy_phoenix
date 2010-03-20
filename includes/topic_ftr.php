@@ -21,7 +21,7 @@ if (empty($ftr_install_time))
 	set_config('ftr_install_time', $ftr_install_time);
 }
 
-$ftr_view_mode = $_GET['mode'];
+$ftr_view_mode = request_var('mode', '');
 $ftr_user_viewed = ftr_get_users_view($userdata['user_id']);
 $ftr_all_users = $config['ftr_all_users'];
 

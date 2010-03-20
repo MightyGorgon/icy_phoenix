@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
@@ -25,7 +24,7 @@ $sm_fontcolor = request_var('fontcolor', '#000000');
 $sm_shadowcolor = request_var('shadowcolor', '#000000');
 $sm_shadow = request_var('shieldshadow', 0);
 $smilie = request_var('smilie', 1);
-$text = urldecode(request_var('text', ''));
+$text = urldecode(request_var('text', '', true));
 
 $anz_smilie = -1;
 $hdl = opendir($smiley_creator_path);
@@ -38,17 +37,7 @@ while($res = readdir($hdl))
 }
 closedir($hdl);
 
-
-if($phpversion_nr >= 4.30)
-{
-	$gd_info = gd_info();
-}
-else
-{
-	$gd_info['FreeType Support'] = 1;
-}
-
-if((!$gd_info['FreeType Support']) || (!file_exists($schriftdatei)))
+if(!file_exists($schriftdatei))
 {
 	$schriftwidth = 6;
 	$schriftheight = 8;

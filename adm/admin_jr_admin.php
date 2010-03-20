@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 // Tell the Security Scanner that reachable code in this file is not a security issue
 
 define('IN_ICYPHOENIX', true);
@@ -35,7 +34,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_jr_admin_acp.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once('pagestart.' . PHP_EXT);
-find_lang_file_nivisec('lang_jr_admin');
+
+setup_extra_lang(array('lang_jr_admin'));
+
 /****************************************************************************
 /** Module Actual Start
 /***************************************************************************/
@@ -58,7 +59,6 @@ $update_find_pattern = "/^.+_" . UPDATE_MODULE_PREFIX . "/";
 /*******************************************************************************************
 /** Get parameters.  'var_name' => 'default'
 /******************************************************************************************/
-$params = array('mode' => '', 'user_id' => '', 'color_group_id' => '', 'order' => 'ASC', 'sort_item' => 'username', 'start' => '0', 'alphanum' => '');
 if ($debug)
 {
 	//Dump out the get and post vars if in debug mode
@@ -70,18 +70,22 @@ if ($debug)
 	echo '</span><br /></div></pre>';
 }
 
+$user_search = request_var('user_search', '', true);
+$alphanum = request_var('alphanum', '', true);
+$params = array(
+	'mode' => '',
+	'user_id' => '',
+	'color_group_id' => '',
+	'order' => 'ASC',
+	'sort_item' => 'username',
+	'start' => 0,
+);
 foreach($params as $var => $default)
 {
-	$$var = $default;
-	if(isset($_POST[$var]) || isset($_GET[$var]))
-	{
-		$$var = (isset($_POST[$var])) ? $_POST[$var] : $_GET[$var];
-	}
+	$$var = request_var($var, $default);
 }
 
-//*******************************************************************************************
-/** Check for edit user
-/******************************************************************************************/
+// Check for edit user
 if (sizeof($_POST))
 {
 	foreach ($_POST as $key => $val)
@@ -111,7 +115,7 @@ if (!empty($user_id) && !isset($_POST['update_user']))
 	}
 	$jr_admin_row = jr_admin_get_user_info($user_id);
 	$module_list = jr_admin_get_module_list();
-	$user_module_list = explode(EXPLODE_SEPERATOR_CHAR, $jr_admin_row['user_jr_admin']);
+	$user_module_list = explode(EXPLODE_SEPARATOR_CHAR, $jr_admin_row['user_jr_admin']);
 	if ($debug)
 	{
 		//Dump out the get and post vars if in debug mode
@@ -185,7 +189,7 @@ else
 		{
 			if (preg_match($update_find_pattern, $key))
 			{
-				$user_update_list .= (!empty($user_update_list)) ? EXPLODE_SEPERATOR_CHAR : '';
+				$user_update_list .= (!empty($user_update_list)) ? EXPLODE_SEPARATOR_CHAR : '';
 				$user_update_list .= preg_replace($update_find_pattern, '', $key);
 			}
 		}
@@ -208,7 +212,7 @@ else
 		$sql = 'UPDATE ' . JR_ADMIN_TABLE . "
 			SET user_jr_admin = '$user_update_list',
 			update_date = " . time() . ",
-			admin_notes = '$admin_notes',
+			admin_notes = '" . $db->sql_escape($admin_notes) . "',
 			notes_view = $notes_view
 			WHERE user_id = $user_id";
 		$db->sql_query($sql);
@@ -224,9 +228,9 @@ else
 	{
 		$proof .= " AND u.username NOT LIKE '" . chr($i) . "%' ";
 	}
-	$alpha_where = ($alphanum == '0') ? $proof : (($alphanum != '') ? "AND u.username LIKE '$alphanum%'" : '');
+	$alpha_where = ($alphanum == '0') ? $proof : (($alphanum != '') ? "AND u.username LIKE '" . $db->sql_escape($alphanum) . "%'" : '');
 
-	$user_where = (isset($_POST['user_search'])) ? " AND u.username LIKE ('".$_POST['user_search']."')" : '';
+	$user_where = !empty($user_search) ? " AND u.username LIKE ('" . $db->sql_escape($user_search) . "'%)" : '';
 
 	$per_page = $config['topics_per_page'];
 	if ($sort_item == 'user_modules')
@@ -255,7 +259,7 @@ else
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$jr_admin_row = jr_admin_get_user_info($row['user_id']);
-		$module_count = (!empty($jr_admin_row['user_jr_admin'])) ? sizeof(explode(EXPLODE_SEPERATOR_CHAR, $jr_admin_row['user_jr_admin'])) : 0;
+		$module_count = (!empty($jr_admin_row['user_jr_admin'])) ? sizeof(explode(EXPLODE_SEPARATOR_CHAR, $jr_admin_row['user_jr_admin'])) : 0;
 		$block_text = 'userrow';
 
 		$template->assign_block_vars($block_text, array(
@@ -307,8 +311,8 @@ else
 	//Make sort image choice and sorting links
 	$base_order = ($order == 'ASC') ? 'order=DESC' : 'order=ASC';
 	$base_filename = append_sid(basename(__FILE__) . '?' . $base_order);
-	$desc_img = '<img src="' . IP_ROOT_PATH . $lang['DESC_Image'] . '" border="0" />';
-	$asc_img = '<img src="' . IP_ROOT_PATH . $lang['ASC_Image'] . '" border="0" />';
+	$desc_img = '<img src="' . IP_ROOT_PATH . $lang['DESC_Image'] . '" alt="" />';
+	$asc_img = '<img src="' . IP_ROOT_PATH . $lang['ASC_Image'] . '" alt="" />';
 	$template->assign_vars(array(
 		'IMG_USERNAME' => ($sort_item == 'username') ? ($order == 'ASC') ? $asc_img : $desc_img : '',
 		'IMG_MODULES' => ($sort_item == 'user_modules') ? ($order == 'ASC') ? $asc_img : $desc_img : '',
@@ -316,12 +320,12 @@ else
 		'IMG_ACTIVE' => ($sort_item == 'user_active') ? ($order == 'ASC') ? $asc_img : $desc_img : '',
 		'IMG_AVATAR' => ($sort_item == 'user_allowavatar') ? ($order == 'ASC') ? $asc_img : $desc_img : '',
 		'IMG_PM' => ($sort_item == 'user_allow_pm') ? ($order == 'ASC') ? $asc_img : $desc_img : '',
-		'S_USERNAME' => $base_filename . '&sort_item=username&alphanum=' . $alphanum,
-		'S_MODULES' => $base_filename . '&sort_item=user_modules&alphanum=' . $alphanum,
-		'S_RANK' => $base_filename . '&sort_item=user_rank&alphanum=' . $alphanum,
-		'S_ACTIVE' => $base_filename . '&sort_item=user_active&alphanum=' . $alphanum,
-		'S_AVATAR' => $base_filename . '&sort_item=user_allowavatar&alphanum=' . $alphanum,
-		'S_PM' => $base_filename . '&sort_item=user_allow_pm&alphanum=' . $alphanum
+		'S_USERNAME' => $base_filename . '&amp;sort_item=username&amp;alphanum=' . $alphanum,
+		'S_MODULES' => $base_filename . '&amp;sort_item=user_modules&amp;alphanum=' . $alphanum,
+		'S_RANK' => $base_filename . '&amp;sort_item=user_rank&amp;alphanum=' . $alphanum,
+		'S_ACTIVE' => $base_filename . '&amp;sort_item=user_active&amp;alphanum=' . $alphanum,
+		'S_AVATAR' => $base_filename . '&amp;sort_item=user_allowavatar&amp;alphanum=' . $alphanum,
+		'S_PM' => $base_filename . '&amp;sort_item=user_allow_pm&amp;alphanum=' . $alphanum
 		)
 	);
 

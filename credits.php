@@ -27,19 +27,7 @@ init_userprefs($userdata);
 
 include(IP_ROOT_PATH . 'includes/functions_credits.' . PHP_EXT);
 
-/*******************************************************************************************
-/** Get parameters.  'var_name' => 'default'
-/******************************************************************************************/
-$params = array('mode' => '');
-
-foreach($params as $var => $default)
-{
-	$$var = $default;
-	if( isset($_POST[$var]) || isset($_GET[$var]) )
-	{
-		$$var = ( isset($_POST[$var]) ) ? $_POST[$var] : $_GET[$var];
-	}
-}
+$mode = request_var('mode', '', true);
 
 /*******************************************************************************************
 /** Parse for modes...

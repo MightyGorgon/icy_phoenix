@@ -1,6 +1,4 @@
 <?php
-// CTracker_Ignore: File Checked By Human
-
 $folder = '.';
 $extList = array();
 $extList['gif'] = 'image/gif';

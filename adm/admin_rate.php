@@ -31,23 +31,8 @@ require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_rate.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions_rate.php');
 
-if( isset($_POST['mode']) || isset($_GET['mode']) )
-{
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-}
-else
-{
-	$mode = "";
-}
-
-if( isset($_POST['admin_message']) || isset($_GET['admin_message']) )
-{
-	$admin_message = ( isset($_POST['admin_message']) ) ? $_POST['admin_message'] : $_GET['admin_message'];
-}
-else
-{
-	$admin_message = "";
-}
+$mode = request_var('mode', '');
+$admin_message = request_var('admin_message', '', true);
 
 //Begin Config Mode
 if ($mode == 'config')
@@ -77,20 +62,15 @@ if ($mode == 'config')
 	//Update config values if needed
 	for($i = 0; $i < sizeof($configs_name); $i++)
 	{
-		if( isset($_POST[$configs_name[$i]]) || isset($_GET[$configs_name[$i]]) )
+		$config_name = $configs_name[$i];
+		$config_value = request_var($configs_name[$i], '', true);
+		if(check_http_var_exists($config_name, false))
 		{
-			$var_value = ( isset($_POST[$configs_name[$i]]) ) ? $_POST[$configs_name[$i]] : $_GET[$configs_name[$i]];
-			if ($var_value != $config[$configs_name[$i]])
-			{
-				$sql = "UPDATE " . CONFIG_TABLE . "
-				SET config_value =" . $var_value . "
-				WHERE config_name ='" . $configs_name[$i] . "'";
-				$result = $db->sql_query($sql);
-				$admin_message .= '<br />' . $lang['Update'] . ':&nbsp;&nbsp;&nbsp;' . $configs_desc[$i];
-				$config[$configs_name[$i]] = $var_value;
-			}
+			set_config($config_name, $new[$config_name], false);
+			$admin_message .= '<br />' . $lang['Update'] . ':&nbsp;&nbsp;&nbsp;' . $configs_desc[$i];
 		}
 	}
+	$cache->destroy('config');
 
 	//$allow_disable_yes = ( $config['allow_disable'] != '0' ) ? 'checked="checked"' : '';
 	//$allow_disable_no  = ( $config['allow_disable'] == '0' ) ? 'checked="checked"' : '';
@@ -157,7 +137,7 @@ elseif ($mode == 'auth')
 	$hidden_submits = '<input type="hidden" name="mode" value="auth" />';
 
 	//Purge if option selected
-	if( isset($_POST['forum_purge']) || isset($_GET['forum_purge']) )
+	if(check_http_var_exists('forum_purge', false))
 	{
 		//Compare each topic to see if it exists in DB
 		for($i = 0; $i < sizeof($topics_row); $i++)
@@ -183,12 +163,12 @@ elseif ($mode == 'auth')
 	}
 
 	//Clear all the data if option selected
-	if( isset($_POST['ratings_clear']) || isset($_GET['ratings_clear']) )
+	if(check_http_var_exists('ratings_clear', false))
 	{
-		if( isset($_POST['ratings_clear_confirm']) || isset($_GET['ratings_clear_confirm']) )
+		$clear_confirm = request_var('ratings_clear_confirm', '');
+		if(!empty($clear_confirm))
 		{
-			$clear_confirm = ( isset($_POST['ratings_clear_confirm']) ) ? $_POST['ratings_clear_confirm'] : $_GET['ratings_clear_confirm'];
-			if ( strtoupper($clear_confirm) == 'YES' )
+			if(strtoupper($clear_confirm) == 'YES')
 			{
 				$sql = "DELETE
 				FROM " . RATINGS_TABLE;
@@ -204,11 +184,11 @@ elseif ($mode == 'auth')
 	{
 		$current_auth = $forum_row[$x]['auth_rate'];
 
-		if( isset($_POST['forum_update_id_'. $forum_row[$x]['forum_id']]) || isset($_GET['forum_update_id_'. $forum_row[$x]['forum_id']]) )
+		if(isset($_POST['forum_update_id_' . $forum_row[$x]['forum_id']]) || isset($_GET['forum_update_id_' . $forum_row[$x]['forum_id']]))
 		{
-			$id_value = ( isset($_POST['forum_update_id_'. $forum_row[$x]['forum_id']]) ) ? $_POST['forum_update_id_'. $forum_row[$x]['forum_id']] : $_GET['forum_update_id_'. $forum_row[$x]['forum_id']];
-			$name_value = ( isset($_POST['forum_update_name_'. $forum_row[$x]['forum_id']]) ) ? $_POST['forum_update_name_'. $forum_row[$x]['forum_id']] : $_GET['forum_update_name_'. $forum_row[$x]['forum_id']];
-			$update_value = ( isset($_POST['forum_update_value_'. $forum_row[$x]['forum_id']]) ) ? $_POST['forum_update_value_'. $forum_row[$x]['forum_id']] : $_GET['forum_update_value_'. $forum_row[$x]['forum_id']];
+			$id_value = request_var('forum_update_id_' . $forum_row[$x]['forum_id'], 0);
+			$name_value = request_var('forum_update_name_' . $forum_row[$x]['forum_id'], '', true);
+			$update_value = request_var('forum_update_value_' . $forum_row[$x]['forum_id'], 0);
 			if ($update_value != $current_auth)
 			{
 				$sql = "UPDATE " . FORUMS_TABLE . "
@@ -220,7 +200,7 @@ elseif ($mode == 'auth')
 			}
 		}
 
-		$hidden_submits .= '<input type="hidden" name="forum_update_id_'. $forum_row[$x]['forum_id'] . '" value="' . $forum_row[$x]['forum_id'] . '" /><input type="hidden" name="forum_update_name_'. $forum_row[$x]['forum_id'] . '" value="' . strip_tags($forum_row[$x]['forum_name']) . '" />';
+		$hidden_submits .= '<input type="hidden" name="forum_update_id_' . $forum_row[$x]['forum_id'] . '" value="' . $forum_row[$x]['forum_id'] . '" /><input type="hidden" name="forum_update_name_' . $forum_row[$x]['forum_id'] . '" value="' . strip_tags($forum_row[$x]['forum_name']) . '" />';
 
 		$select_auth_mode = '<select name="forum_update_value_' . $forum_row[$x]['forum_id'] . '">';
 		for($i = 0; $i < sizeof($forum_auth_levels); $i++)

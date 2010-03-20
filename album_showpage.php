@@ -32,12 +32,13 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-if (isset($_POST['message']))
-{
-	$_POST['comment'] = $_POST['message'];
-}
 
-if(isset($_GET['mode']) && ($_GET['mode'] == 'smilies'))
+$comment_text_message = request_var('message', '', true);
+$comment_text = request_var('comment', '', true);
+$comment_text = (!empty($comment_text_message) ? $comment_text_message : $comment_text);
+
+$mode = request_var('mode', '');
+if($mode == 'smilies')
 {
 	generate_smilies('window');
 	exit;
@@ -46,23 +47,14 @@ if(isset($_GET['mode']) && ($_GET['mode'] == 'smilies'))
 // ------------------------------------
 // Check the request
 // ------------------------------------
+$pic_id = request_var('pic_id', 0);
+if ($pic_id <= 0)
+{
+	message_die(GENERAL_MESSAGE, 'No pics specified');
+}
 
-if(isset($_GET['pic_id']) || isset($_POST['pic_id']))
-{
-	$pic_id = (isset($_GET['pic_id'])) ? intval($_GET['pic_id']) : intval($_POST['pic_id']);
-}
-else
-{
-	if(isset($_GET['comment_id']) || isset($_POST['comment_id']))
-	{
-		$pic_id = (isset($_GET['pic_id'])) ? intval($_GET['pic_id']) : intval($_POST['pic_id']);
-		$comment_id = (isset($_GET['comment_id'])) ? intval($_GET['comment_id']) : intval($_POST['comment_id']);
-	}
-	else
-	{
-		message_die(GENERAL_ERROR, 'Bad request');
-	}
-}
+$comment_id = request_var('comment_id', 0);
+$comment_id = ($comment_id < 0) ? 0 : $comment_id;
 
 // Midthumb & Full Pic
 if(isset($_GET['full']) || isset($_POST['full']))
@@ -84,34 +76,20 @@ else
 	}
 }
 
-if(isset($_GET['sort_method']) || isset($_POST['sort_method']))
-{
-	$sort_method = (isset($_GET['sort_method'])) ? $_GET['sort_method'] : $_POST['sort_method'];
-	$sort_method = (($sort_method == 'comments') || ($sort_method == 'rating')) ? $album_config['sort_method'] : $sort_method;
-}
-else
-{
-	$sort_method = $album_config['sort_method'];
-}
+$sort_method = request_var('sort_method', $album_config['sort_method']);
+$sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'pic_view_count'));
 
-if(isset($_GET['sort_order']) || isset($_POST['sort_order']))
-{
-	$sort_order = (isset($_GET['sort_order'])) ? $_GET['sort_order'] : $_POST['sort_order'];
-}
-else
-{
-	$sort_order = $album_config['sort_order'];
-}
-
-$sort_order = (strtoupper($sort_order) == 'DESC') ? 'DESC' : 'ASC';
+$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = check_var_value(strtoupper($sort_order), array('ASC', 'DESC'));
 
 $sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
+$is_slideshow = request_var('slideshow', 0);
+$is_slideshow = !empty($is_slideshow) ? true : false;
 
 // ------------------------------------
 // TEMPLATE ASSIGNEMENT
 // ------------------------------------
-$is_slideshow = ((isset($_GET['slideshow']) && (intval($_GET['slideshow']) > 0)) || (isset($_POST['slideshow']) && (intval($_POST['slideshow']) > 0))) ? true : false;
 if ($is_slideshow)
 {
 	$gen_simple_header = true;
@@ -194,8 +172,8 @@ if ($album_config['slideshow_script'])
 			$pic_array_id = $i;
 		}
 		$pic_list .= 'Pic[' . $i . '] = \'' . append_sid(album_append_uid($pic_link . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']), true) . '\'; ' . "\n";
-		$tit_list .= 'Tit[' . $i . '] = \'' . str_replace("'", "\'", htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\'; ' . "\n";
-		$des_list .= 'Des[' . $i . '] = \'' . str_replace(array("\r\n", "\n", "\r"), array('\n', '\n', '\n'), str_replace("'", "\'", htmlspecialchars($total_pic_rows[$i]['pic_desc']))) . '\'; ' . "\n";
+		$tit_list .= 'Tit[' . $i . '] = \'' . str_replace("'", "\'", $total_pic_rows[$i]['pic_title']) . '\'; ' . "\n";
+		$des_list .= 'Des[' . $i . '] = \'' . str_replace(array("\r\n", "\n", "\r"), array('\n', '\n', '\n'), str_replace("'", "\'", $total_pic_rows[$i]['pic_desc'])) . '\'; ' . "\n";
 		/*
 		$pic_list .= 'Pic[' . $i . '] = \'' . ALBUM_UPLOAD_PATH . $total_pic_rows[$i]['pic_filename'] . '\'; ' . "\n";
 		*/
@@ -320,7 +298,7 @@ if (!$album_config['invert_nav_arrows'])
 			$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
 			$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
 
-			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes(htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes($total_pic_rows[$i]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 		}
 
 		if ($album_config['show_pics_nav'])
@@ -329,7 +307,7 @@ if (!$album_config['invert_nav_arrows'])
 				'U_PIC_THUMB' => $thumbnail_file,
 				'U_PIC_LINK' => ($i == $new_pic_array_id) ? '#' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append)),
 				'U_PIC_LINK_HS' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])),
-				'PIC_TITLE' => htmlspecialchars($total_pic_rows[$i]['pic_title']),
+				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
@@ -358,7 +336,7 @@ else
 			$slideshow = !empty($slideshow_cat) ? ', { slideshowGroup: \'' . $slideshow_cat . '\' } ' : '';
 			$pic_preview_hs = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ');"';
 
-			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes(htmlspecialchars($total_pic_rows[$i]['pic_title'])) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
+			$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])) . '\',\'' . addslashes($total_pic_rows[$i]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 		}
 
 		if ($album_config['show_pics_nav'] == 1)
@@ -367,7 +345,7 @@ else
 				'U_PIC_THUMB' => $thumbnail_file,
 				'U_PIC_LINK' => ($i == $new_pic_array_id) ? '#' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append)),
 				'U_PIC_LINK_HS' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])),
-				'PIC_TITLE' => htmlspecialchars($total_pic_rows[$i]['pic_title']),
+				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
@@ -397,7 +375,7 @@ else
 // Get $pic_id from $comment_id
 // ------------------------------------
 
-if(isset($comment_id) && $album_config['comment'] == 1)
+if(!empty($comment_id) && $album_config['comment'] == 1)
 {
 	$sql = "SELECT comment_id, comment_pic_id
 			FROM ". ALBUM_COMMENT_TABLE ."
@@ -570,7 +548,7 @@ if ($album_nav_cat_desc != '')
 	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 }
 
-if(!isset($_POST['comment']) && !isset($_POST['rating']))
+if(empty($comment_text) && !isset($_POST['rating']))
 {
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -583,9 +561,9 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	// ------------------------------------
 	if ($album_config['comment'])
 	{
-		if(!isset($comment_id))
+		if(empty($comment_id))
 		{
-			$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
+			$start = request_var('start', 0);
 			$start = ($start < 0) ? 0 : $start;
 		}
 		else
@@ -664,8 +642,8 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 				$bbcode->allow_bbcode = $bbcode_on;
 				$bbcode->allow_smilies = $smilies_on;
 
-				$commentrow[$i]['comment_text'] = $bbcode->parse($commentrow[$i]['comment_text']);
 				$commentrow[$i]['comment_text'] = strtr($commentrow[$i]['comment_text'], array_flip(get_html_translation_table(HTML_ENTITIES)));
+				$commentrow[$i]['comment_text'] = $bbcode->parse($commentrow[$i]['comment_text']);
 
 				$commentrow[$i]['comment_text'] = $bbcode->acronym_pass($commentrow[$i]['comment_text']);
 				$commentrow[$i]['comment_text'] = $bbcode->autolink_text($commentrow[$i]['comment_text'], '999999');
@@ -805,7 +783,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 		}
 		unset($css_temp);
 
-		$slideshow_delay = (isset($_GET['slideshow']) ? intval($_GET['slideshow']) : intval($_POST['slideshow']));
+		$slideshow_delay = request_var('slideshow', 0);
 		$slideshow_select = '';
 		$slideshow_onoff = $lang['Slideshow_Off'];
 		$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id));
@@ -897,9 +875,9 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	// Mighty Gorgon - Slideshow - END
 
 	// Start output of page
-	$meta_content['page_title'] = $lang['Album'] . ' - ' . htmlspecialchars($thispic['pic_title']);
-	$meta_content['description'] = $lang['Album'] . ' - ' . strip_tags($thispic['cat_title']) . ' - ' . htmlspecialchars($thispic['pic_title']) . ' - ' . htmlspecialchars($thispic['pic_desc']);
-	$meta_content['keywords'] = $lang['Album'] . ', ' . strip_tags($thispic['cat_title']) . ', ' . htmlspecialchars($thispic['pic_title']) . ', ' . htmlspecialchars($thispic['pic_desc']) . ', ';
+	$meta_content['page_title'] = $lang['Album'] . ' - ' . $thispic['pic_title'];
+	$meta_content['description'] = $lang['Album'] . ' - ' . strip_tags($thispic['cat_title']) . ' - ' . $thispic['pic_title'] . ' - ' . $thispic['pic_desc'];
+	$meta_content['keywords'] = $lang['Album'] . ', ' . strip_tags($thispic['cat_title']) . ', ' . $thispic['pic_title'] . ', ' . $thispic['pic_desc'] . ', ';
 
 	$poster = ($thispic['username'] == '') ? $lang['Guest'] : colorize_username($thispic['user_id'], $thispic['username'], $thispic['user_color'], $thispic['user_active']);
 
@@ -944,7 +922,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	$pic_filesize = @filesize($pic_fullpath);
 	// Mighty Gorgon - Pic Size - END
 
-	if (($album_config['show_exif'] == 1) && (function_exists(exif_read_data)))
+	if (($album_config['show_exif'] == 1) && (function_exists('exif_read_data')))
 	{
 		//echo(function_exists(exif_read_data));
 		$template->assign_block_vars('switch_exif_enabled', array());
@@ -1051,7 +1029,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 
 		'PIC_ID' => $pic_id,
 		'PIC_BBCODE' => '[albumimg]' . $pic_id . '[/albumimg]',
-		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
+		'PIC_TITLE' => $thispic['pic_title'],
 		'PIC_DESC' => $pic_desc,
 
 		'POSTER' => $poster,
@@ -1118,7 +1096,7 @@ if(!isset($_POST['comment']) && !isset($_POST['rating']))
 	{
 		$template->assign_block_vars('social_bookmarks', array());
 	}
-	$topic_title_enc = urlencode(ip_utf8_decode(htmlspecialchars($thispic['pic_title'])));
+	$topic_title_enc = urlencode(ip_utf8_decode($thispic['pic_title']));
 	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append));
 	$template->assign_vars(array(
 		// Social Bookmarks - BEGIN
@@ -1164,11 +1142,11 @@ else
 	// Check the permissions: COMMENT
 	// ------------------------------------
 
-	if ($album_config['comment'] == 0 && $album_config['rate'] == 0)
+	if (($album_config['comment'] == 0) && ($album_config['rate'] == 0))
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
-	if ($auth_data['comment'] == 0 && $auth_data['rate'] == 0)
+	if (($auth_data['comment'] == 0) && ($auth_data['rate'] == 0))
 	{
 		if (!$userdata['session_logged_in'])
 		{
@@ -1181,11 +1159,13 @@ else
 	}
 
 	// Comment System
-	if ($album_config['comment'] == 1 && $auth_data['comment'] == 1)
+	if (($album_config['comment'] == 1) && ($auth_data['comment'] == 1))
 	{
-		$comment_text = str_replace("\'", "''", htmlspecialchars(substr(trim($_POST['comment']), 0, $album_config['desc_length'])));
+		$comment_text = substr($comment_text, 0, $album_config['desc_length']);
 
-		$comment_username = (!$userdata['session_logged_in']) ? str_replace("\'", "''", substr(htmlspecialchars(trim($_POST['comment_username'])), 0, 32)) : str_replace("'", "''", htmlspecialchars(trim($userdata['username'])));
+		$comment_username = request_var('comment_username', '', true);
+		$comment_username = substr($comment_username, 0, 32);
+		$comment_username = !$userdata['session_logged_in'] ? $comment_username : htmlspecialchars($userdata['username']);
 
 		// Check Pic Locked
 		if(($thispic['pic_lock'] == 1) && (!$auth_data['moderator']))
@@ -1224,7 +1204,7 @@ else
 		if ($comment_text != '')
 		{
 			$sql = "INSERT INTO " . ALBUM_COMMENT_TABLE ." (comment_id, comment_pic_id, comment_cat_id, comment_user_id, comment_username, comment_user_ip, comment_time, comment_text)
-					VALUES ('$comment_id', '$pic_id', '$cat_id', '$comment_user_id', '$comment_username', '$comment_user_ip', '$comment_time', '$comment_text')";
+					VALUES ('$comment_id', '$pic_id', '$cat_id', '$comment_user_id', '" . $db->sql_escape($comment_username) . "', '$comment_user_ip', '$comment_time', '" . $db->sql_escape($comment_text) . "')";
 			$result = $db->sql_query($sql);
 			// Watch pic for comments - BEGIN
 			// Here we send email notification
@@ -1243,20 +1223,7 @@ else
 			message_die(GENERAL_ERROR, $lang['Pic_Locked']);
 		}
 
-		//$rate_point = intval($_POST['rating']);
-
-		if (isset($_POST['rating']))
-		{
-			$rate_point = intval($_POST['rating']);
-		}
-		elseif (isset($_GET['rating']))
-		{
-			$rate_point = intval($_GET['rating']);
-		}
-		else
-		{
-			$rate_point = -1;
-		}
+		$rate_point = request_var('rating', -1);
 
 		if ($rate_point != -1)//if user didnt vote, dont update database
 		{

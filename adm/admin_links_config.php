@@ -31,27 +31,19 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
+include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
+$links_config = get_links_config(true);
 
-// Pull all config data
-$sql = "SELECT * FROM " . LINK_CONFIG_TABLE;
-$result = $db->sql_query($sql);
-
-while($row = $db->sql_fetchrow($result))
+foreach ($links_config as $config_name => $config_value)
 {
-	$config_name = $row['config_name'];
-	$config_value = $row['config_value'];
 	$default_config[$config_name] = $config_value;
-
 	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
-
 	if(isset($_POST['submit']))
 	{
-		$sql = "UPDATE " . LINK_CONFIG_TABLE . " SET
-			config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-			WHERE config_name = '$config_name'";
-		$db->sql_query($sql);
+		set_links_config($config_name, $new[$config_name], false);
 	}
 }
+$db->clear_cache('links_config_');
 
 if(isset($_POST['submit']))
 {
@@ -63,18 +55,18 @@ if(isset($_POST['submit']))
 
 $template->set_filenames(array('body' => ADM_TPL . 'admin_link_config_body.tpl'));
 
-$lock_submit_site_yes = ($new['lock_submit_site']) ? "checked=\"checked\"" : "";
-$lock_submit_site_no = (!$new['lock_submit_site']) ? "checked=\"checked\"" : "";
-// $allow_guest_submit_site_yes = ($new['allow_guest_submit_site']) ? "checked=\"checked\"" : "";
-// $allow_guest_submit_site_no = (!$new['allow_guest_submit_site']) ? "checked=\"checked\"" : "";
-$allow_no_logo_yes = ($new['allow_no_logo']) ? "checked=\"checked\"" : "";
-$allow_no_logo_no = (!$new['allow_no_logo']) ? "checked=\"checked\"" : "";
-$display_links_logo_yes = ($new['display_links_logo']) ? "checked=\"checked\"" : "";
-$display_links_logo_no = (!$new['display_links_logo']) ? "checked=\"checked\"" : "";
-$email_yes = ($new['email_notify']) ? "checked=\"checked\"" : "";
-$email_no = (!$new['email_notify']) ? "checked=\"checked\"" : "";
-$pm_yes = ($new['pm_notify']) ? "checked=\"checked\"" : "";
-$pm_no = (!$new['pm_notify']) ? "checked=\"checked\"" : "";
+$lock_submit_site_yes = ($new['lock_submit_site']) ? 'checked="checked"' : '';
+$lock_submit_site_no = (!$new['lock_submit_site']) ? 'checked="checked"' : '';
+// $allow_guest_submit_site_yes = ($new['allow_guest_submit_site']) ? 'checked="checked"' : '';
+// $allow_guest_submit_site_no = (!$new['allow_guest_submit_site']) ? 'checked="checked"' : '';
+$allow_no_logo_yes = ($new['allow_no_logo']) ? 'checked="checked"' : '';
+$allow_no_logo_no = (!$new['allow_no_logo']) ? 'checked="checked"' : '';
+$display_links_logo_yes = ($new['display_links_logo']) ? 'checked="checked"' : '';
+$display_links_logo_no = (!$new['display_links_logo']) ? 'checked="checked"' : '';
+$email_yes = ($new['email_notify']) ? 'checked="checked"' : '';
+$email_no = (!$new['email_notify']) ? 'checked="checked"' : '';
+$pm_yes = ($new['pm_notify']) ? 'checked="checked"' : '';
+$pm_no = (!$new['pm_notify']) ? 'checked="checked"' : '';
 
 $template->assign_vars(array(
 	'L_LINK_CONFIG' => $lang['Link_Config'],
@@ -117,7 +109,8 @@ $template->assign_vars(array(
 	'L_YES' => $lang['Yes'],
 	'L_NO' => $lang['No'],
 	'L_SUBMIT' => $lang['Submit'],
-	'L_RESET' => $lang['Reset'])
+	'L_RESET' => $lang['Reset']
+	)
 );
 
 $template->pparse('body');

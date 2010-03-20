@@ -32,7 +32,7 @@ class aprvmUtils
 	{
 		global $lang, $mode, $config;
 
-		$this->modName = ($config['aprvmArchive'] && $mode == 'archive') ? $lang['Private_Messages_Archive'] : $lang['Private_Messages'];
+		$this->modName = ($config['aprvmArchive'] && ($mode == 'archive')) ? $lang['Private_Messages_Archive'] : $lang['Private_Messages'];
 		$this->setupConfig();
 		$this->makeURLStart();
 		$this->inArchiveText = ($mode == 'archive') ? '_archive' : '';
@@ -55,21 +55,23 @@ class aprvmUtils
 		global $config, $db, $status_message, $lang;
 
 		$configList = array('aprvmArchive', 'aprvmVersion', 'aprvmView', 'aprvmRows', 'aprvmIP');
-		$configLangs = array('aprvmArchive' => $lang['Archive_Feature'],
-							'aprvmVersion' => $lang['Version'],
-							'aprvmView' => $lang['PM_View_Type'],
-							'aprvmRows' => $lang['Rows_Per_Page'],
-							'aprvmIP' => $lang['Show_IP']);
+		$configLangs = array(
+			'aprvmArchive' => $lang['Archive_Feature'],
+			'aprvmVersion' => $lang['Version'],
+			'aprvmView' => $lang['PM_View_Type'],
+			'aprvmRows' => $lang['Rows_Per_Page'],
+			'aprvmIP' => $lang['Show_IP']
+		);
 		$configDefaults = array('0', $this->modVersion, '0', '25', '1');
-								//off, version, inline, 25, yes
+													//off, version, inline, 25, yes
 		//Check for an update config command
 		//Also do an array check to make sure our config is in our config list array to update
-		if (isset($_GET['config_name']) && in_array($_GET['config_name'], $configList))
+		$config_name = request_get_var('config_name', '');
+		$config_value = request_get_var('config_value', '');
+		if (!empty($config_name) && in_array($config_name, $configList))
 		{
-			$sql = "UPDATE " . CONFIG_TABLE . " set config_value = '{$_GET['config_value']}' WHERE config_name = '{$_GET['config_name']}'";
-			$db->sql_query($sql);
-			$config[$_GET['config_name']] = $_GET['config_value'];
-			$status_message .= sprintf($lang['Updated_Config'], $configLangs[$_GET['config_name']]);
+			set_config($config_name, $config_value);
+			$status_message .= sprintf($lang['Updated_Config'], $configLangs[$config_name]);
 		}
 
 		//Loop through and see if a config name is set, if not set up a default
@@ -77,10 +79,8 @@ class aprvmUtils
 		{
 			if (!isset($config[$val]))
 			{
-				$sql = 'INSERT INTO '. CONFIG_TABLE . " (config_name, config_value) VALUES ('$val', '{$configDefaults[$num]}')";
-				$db->sql_query($sql);
-				$config[$val] = $configDefaults[$num];
-				$status_message .= sprintf($lang['Inserted_Default_Value'], $configLangs[$_GET['config_name']]);
+				set_config($val, $configDefaults[$num]);
+				$status_message .= sprintf($lang['Inserted_Default_Value'], $configLangs[$val]);
 			}
 		}
 
@@ -177,10 +177,11 @@ class aprvmUtils
 	{
 		global $db;
 
-		static $nameCache; //Stores names we've already sent a query for
-						   //Has array sections ['user'] and ['reverse']
-						   //['user']['user_id'] => ['username']
-						   //['reverse']['username'] => ['user_id']
+		static $nameCache;
+		//Stores names we've already sent a query for
+		//Has array sections ['user'] and ['reverse']
+		//['user']['user_id'] => ['username']
+		//['reverse']['username'] => ['user_id']
 
 		if ($id == '')
 		{
@@ -196,7 +197,7 @@ class aprvmUtils
 					return $nameCache['user_formatted'][$id];
 				}
 
-				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE user_id = " . $id;
+				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE username = '" . $db->sql_escape($id) . "'";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				//Setupcache
@@ -231,7 +232,7 @@ class aprvmUtils
 				{
 					return $nameCache['reverse'][$id];
 				}
-				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE username = '" . $id . "'";
+				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE username = '" . $db->sql_escape($id) . "'";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				if (empty($row['user_id']))
@@ -257,7 +258,7 @@ class aprvmUtils
 		global $db, $template, $lang, $filter_from_text, $filter_to_text, $filter_from, $filter_to, $order;
 		global $mode, $pmtype, $sort, $pmtype_text, $archive_text, $start, $archive_start, $topics_per_pg;
 
-		$sql = 'SELECT count(*) AS total FROM ' . PRIVMSGS_TABLE . $this->inArchiveText." pm
+		$sql = 'SELECT count(*) AS total FROM ' . PRIVMSGS_TABLE . $this->inArchiveText . " pm
 			WHERE 1
 			$pmtype_text
 			$filter_from_text
@@ -390,7 +391,7 @@ class aprvmManager
 		{
 			$sql = 'INSERT INTO ' . PRIVMSGS_TABLE . $aprvmUtil->archiveText . ' (privmsgs_id, privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_bbcode, privmsgs_enable_html, privmsgs_enable_smilies, privmsgs_enable_autolinks_acronyms, privmsgs_attach_sig, privmsgs_attachment)
 			VALUES
-				(' . $row['privmsgs_id'] . ', ' . $row['privmsgs_type'] . ", '" . addslashes($row['privmsgs_subject']) . "', '" . addslashes($row['privmsgs_text']) . "', " .
+				(' . $row['privmsgs_id'] . ', ' . $row['privmsgs_type'] . ", '" . $db->sql_escape($row['privmsgs_subject']) . "', '" . $db->sql_escape($row['privmsgs_text']) . "', " .
 				$row['privmsgs_from_userid'] . ', ' . $row['privmsgs_to_userid'] . ', ' . $row['privmsgs_date'] . ", '" .
 				$row['privmsgs_ip'] . "', " . $row['privmsgs_enable_bbcode'] . ', ' . $row['privmsgs_enable_html'] . ', ' .
 				$row['privmsgs_enable_smilies'] . ', ' . $row['privmsgs_enable_autolinks_acronyms'] . ', ' . $row['privmsgs_attach_sig'] . ', ' . $row['privmsgs_attachment'] . ')';

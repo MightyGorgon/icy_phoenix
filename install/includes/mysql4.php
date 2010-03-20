@@ -15,8 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
-
 if(!defined('SQL_LAYER'))
 {
 

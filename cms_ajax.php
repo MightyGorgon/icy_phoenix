@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
@@ -35,8 +34,7 @@ setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks'));
 // Define constant to keep page_header.php from sending headers
 define('AJAX_HEADERS', true);
 $useragent = (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : getenv('HTTP_USER_AGENT'));
-$encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT']);
-$encoding_charset = !empty($encoding_charset) ? $encoding_charset : 'UTF-8';
+$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 
 // Send AJAX headers - this is to prevent browsers from caching possible error pages
 AJAX_headers();

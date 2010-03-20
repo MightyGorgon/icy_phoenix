@@ -1,6 +1,6 @@
 <!-- The javascript presents here comes from MyCalendar 2.2.6 from MojavLinux -->
 <script type="text/javascript">
-<!--
+// <![CDATA[
 var agt = navigator.userAgent.toLowerCase();
 var originalFirstChild;
 
@@ -24,6 +24,7 @@ function createTitle(which, string, x, y)
 		excessWidth = 50;
 	}
 	excessHeight = 20;
+	string = string;
 	element.innerHTML = '<div class="bodyline"><table width="300" cellspacing="0" cellpadding="0" border="0"><tr><td><table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span class="gen">' + string + '<\/span><\/td><\/tr><\/table><\/td><\/tr><\/table><\/div>';
 	renderedElement = document.body.insertBefore(element, document.body.firstChild);
 	renderedWidth = renderedElement.offsetWidth;
@@ -59,7 +60,7 @@ function destroyTitle()
 		document.body.removeChild(document.body.firstChild);
 	}
 }
-//-->
+// ]]>
 </script>
 
 <!-- BEGIN _calendar_box -->

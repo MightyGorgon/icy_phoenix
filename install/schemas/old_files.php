@@ -53,6 +53,7 @@ $files_array = array(
 	'changestyle.php',
 	'cpl_menu.php',
 	'cms_auth.php',
+	'ctracker_login.php'
 	'db_generator.php',
 	'edit_post_time.php',
 	'site_hist.php',
@@ -64,6 +65,7 @@ $files_array = array(
 	'adm/admin_board_main.php',
 	'adm/admin_board_posting.php',
 	'adm/admin_board_queries.php',
+	'adm/admin_board_server.php',
 	'adm/admin_color_groups.php',
 	'adm/admin_db_generator.php',
 	'adm/admin_forums.php',
@@ -94,6 +96,7 @@ $files_array = array(
 	'includes/def_themes.php',
 	'includes/def_tree.php',
 	'includes/def_words.php',
+	'includes/digest_emailer.php',
 	'includes/functions_admin_extra.php',
 	'includes/functions_archives.php',
 	'includes/functions_cache.php',
@@ -103,6 +106,7 @@ $files_array = array(
 	'includes/functions_mg_files.php',
 	'includes/functions_mg_ranks.php',
 	'includes/functions_mg_users.php',
+	'includes/functions_mods_settings.php',
 	'includes/functions_module.php',
 	'includes/functions_portal.php',
 	'includes/functions_privmsgs.php',
@@ -168,6 +172,10 @@ $files_array = array(
 
 	'includes/db/mysql4.php',
 
+	'includes/pafiledb/functions_cache.php',
+	'includes/pafiledb/functions_field.php',
+	'includes/pafiledb/template.php',
+
 	'includes/upi2db/upi2db_orig_all.php',
 	'includes/upi2db/upi2db_orig_full.php',
 	'includes/upi2db/upi2db_orig_ip.php',
@@ -179,6 +187,7 @@ $files_array = array(
 	'templates/common/acp/board_config_main_body.tpl',
 	'templates/common/acp/board_config_posting_body.tpl',
 	'templates/common/acp/board_config_queries.tpl',
+	'templates/common/acp/board_config_server_body.tpl',
 	'templates/common/acp/category_edit_body.tpl',
 	'templates/common/acp/color_groups_manager.tpl',
 	'templates/common/acp/color_groups_user_list.tpl',
@@ -228,6 +237,7 @@ for ($i = 0; $i < sizeof($templates_array); $i++)
 	$files_array[] = 'templates/' . $templates_array[$i] . '/breadcrumbs_a.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/breadcrumbs_i.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/cms_block_inc_nav.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/ctracker_login.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/db_generator_body.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/edit_post_time_body.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/faq_dhtml.tpl';

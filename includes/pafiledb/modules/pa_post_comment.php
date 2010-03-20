@@ -21,16 +21,13 @@ class pafiledb_post_comment extends pafiledb_public
 	{
 		global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $bbcode, $user_ip, $bbcode_tpl;
 		global $html_entities_match, $html_entities_replace, $unhtml_specialchars_match, $unhtml_specialchars_replace;
-		global $pafiledb_functions, $pafiledb_config, $pafiledb_template, $view_pic_upload, $session_length, $starttime, $post_image_lang;
+		global $pafiledb_functions, $pafiledb_config, $view_pic_upload, $session_length, $starttime, $post_image_lang;
 
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_comment.' . PHP_EXT);
-		if (isset($_REQUEST['file_id']))
-		{
-			$file_id = intval($_REQUEST['file_id']);
-		}
-		else
+		$file_id = request_var('file_id', 0);
+		if (empty($file_id))
 		{
 			message_die(GENERAL_MESSAGE, $lang['File_not_exist']);
 		}
@@ -45,20 +42,14 @@ class pafiledb_post_comment extends pafiledb_public
 		include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 		// BBCBMG SMILEYS - END
 
-// MX Addon
-		if (isset($_REQUEST['cid']))
-		{
-			$cid = intval($_REQUEST['cid']);
-		}
+		// MX Addon
+		$cid = request_var('cid', 0);
+		$delete = request_var('delete', '');
+		$submit = (isset($_POST['submit'])) ? true : false;
+		$preview = (isset($_POST['preview'])) ? true : false;
 
-		$delete = (isset($_REQUEST['delete'])) ? intval($_REQUEST['delete']) : '';
-
-		$submit = (isset($_POST['submit'])) ? true : 0;
-		$preview = (isset($_POST['preview'])) ? true : 0;
-
-		$subject = (!empty($_POST['subject'])) ? htmlspecialchars(trim(stripslashes($_POST['subject']))) : '';
-		$message = (!empty($_POST['message'])) ? htmlspecialchars(trim(stripslashes($_POST['message']))) : '';
-
+		$subject = request_post_var('subject', '', true);
+		$message = request_post_var('message', '', true);
 
 		$sql = "SELECT file_name, file_catid
 			FROM " . PA_FILES_TABLE . "
@@ -101,14 +92,13 @@ class pafiledb_post_comment extends pafiledb_public
 
 			if (($this->auth[$file_info['file_catid']]['auth_delete_comment'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'])
 			{
+				$sql = 'DELETE FROM ' . PA_COMMENTS_TABLE . "
+					WHERE comments_id = $cid";
+				$db->sql_query($sql);
+				$this->_pafiledb();
 
-			$sql = 'DELETE FROM ' . PA_COMMENTS_TABLE . "
-				WHERE comments_id = $cid";
-			$db->sql_query($sql);
-			$this->_pafiledb();
-
-			$message = $lang['Comment_deleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
-			message_die(GENERAL_MESSAGE, $message);
+				$message = $lang['Comment_deleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
+				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
 			{
@@ -133,7 +123,7 @@ class pafiledb_post_comment extends pafiledb_public
 			// Output the data to the template
 			$this->generate_category_nav($file_data['file_catid']);
 
-			$pafiledb_template->assign_vars(array(
+			$template->assign_vars(array(
 				'HTML_STATUS' => $html_status,
 				'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),
 				'SMILIES_STATUS' => $smilies_status,
@@ -189,7 +179,7 @@ class pafiledb_post_comment extends pafiledb_public
 
 				$comments_text = str_replace("\n", '<br />', $comments_text);
 
-				$pafiledb_template->assign_vars(array(
+				$template->assign_vars(array(
 					'PREVIEW' => true,
 					'COMMENT' => stripslashes($_POST['message']),
 					'SUBJECT' => stripslashes($_POST['subject']),
@@ -201,11 +191,16 @@ class pafiledb_post_comment extends pafiledb_public
 
 		if($submit)
 		{
-			$length = strlen($_POST['message']);
-			$comments_text = str_replace('<br />', "\n", $_POST['message']);
+			$subject = request_post_var('subject', '', true);
+			$message = request_post_var('message', '', true);
+			$message = htmlspecialchars_decode($message, ENT_COMPAT);
+			$length = strlen($message);
+
+			//$comments_text = str_replace('<br />', "\n", $message);
+			$comments_text = $message;
 
 			$poster_id = intval($userdata['user_id']);
-			$title = stripslashes($_POST['subject']);
+			$title = $subject;
 			$time = time();
 			if($length > $pafiledb_config['max_comment_chars'])
 			{
@@ -213,7 +208,7 @@ class pafiledb_post_comment extends pafiledb_public
 			}
 
 			$sql = 'INSERT INTO ' . PA_COMMENTS_TABLE . "(file_id, comments_text, comments_title, comments_time, poster_id)
-				VALUES($file_id, '" . str_replace("\'", "''", $comments_text) . "','" . str_replace("\'", "''", $title) . "', $time, $poster_id)";
+				VALUES($file_id, '" . $db->sql_escape($comments_text) . "','" . $db->sql_escape($title) . "', $time, $poster_id)";
 			$db->sql_query($sql);
 
 			$message = $lang['Comment_posted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');

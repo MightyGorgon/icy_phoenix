@@ -31,15 +31,8 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 // ------------------------------------
 // Check the request
 // ------------------------------------
-if( isset($_GET['pic_id']) )
-{
-	$pic_id = intval($_GET['pic_id']);
-}
-elseif( isset($_POST['pic_id']) )
-{
-	$pic_id = intval($_POST['pic_id']);
-}
-else
+$pic_id = request_var('pic_id', 0);
+if ($pic_id <= 0)
 {
 	message_die(GENERAL_ERROR, 'No pics specified');
 }
@@ -92,14 +85,17 @@ else
 	}
 }
 
-
 /*
 +----------------------------------------------------------
 | Main work here...
 +----------------------------------------------------------
 */
 
-if( !isset($_POST['pic_title']) )
+$pic_title = request_post_var('pic_title', '', true);
+$pic_desc = request_post_var('pic_desc', '', true);
+$pic_desc = substr($pic_desc, 0, $album_config['desc_length']);
+
+if(empty($pic_title))
 {
 	$html_status = ($config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
 	$bbcode_status = ($config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
@@ -116,8 +112,8 @@ if( !isset($_POST['pic_title']) )
 		'L_PIC_ID' => $lang['Pic_ID'],
 		'L_PIC_TITLE' => $lang['Pic_Image'],
 		'PIC_ID' => $pic_id,
-		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
-		'PIC_DESC' => htmlspecialchars($thispic['pic_desc']),
+		'PIC_TITLE' => $thispic['pic_title'],
+		'PIC_DESC' => $thispic['pic_desc'],
 
 		'L_PIC_DESC' => $lang['Pic_Desc'],
 		//'L_PLAIN_TEXT_ONLY' => $lang['Plain_text_only'],
@@ -141,10 +137,7 @@ else
 	// --------------------------------
 	// Check posted info
 	// --------------------------------
-	$pic_title = str_replace("\'", "''", trim($_POST['pic_title']));
-	$pic_desc = str_replace("\'", "''", substr(trim($_POST['pic_desc']), 0, $album_config['desc_length']));
-
-	if( empty($pic_title) )
+	if(empty($pic_title))
 	{
 		message_die(GENERAL_ERROR, $lang['Missed_pic_title']);
 	}
@@ -153,7 +146,7 @@ else
 	// Update the DB
 	// --------------------------------
 	$sql = "UPDATE ". ALBUM_TABLE ."
-			SET pic_title = '" . $pic_title . "', pic_desc= '" . $pic_desc . "'
+			SET pic_title = '" . $db->sql_escape($pic_title) . "', pic_desc= '" . $db->sql_escape($pic_desc) . "'
 			WHERE pic_id = '" . $pic_id . "'";
 	$result = $db->sql_query($sql);
 

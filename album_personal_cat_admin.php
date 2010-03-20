@@ -40,25 +40,17 @@ $meta_content['keywords'] = '';
 // ------------------------------------------------------------------------
 // Get $album_user_id
 // ------------------------------------------------------------------------
-if(isset($_POST['user_id']))
+if(isset($_POST['user_id']) || isset($_GET['user_id']))
 {
-	$album_user_id = intval($_POST['user_id']);
-}
-elseif(isset($_GET['user_id']))
-{
-	$album_user_id = intval($_GET['user_id']);
+	$album_user_id = request_var('user_id', 0);
 }
 
 // ------------------------------------------------------------------------
 // Get $cat_id
 // ------------------------------------------------------------------------
-if(isset($_POST['cat_id']))
+if(isset($_POST['cat_id']) || isset($_GET['cat_id']))
 {
-	$cat_id = intval($_POST['cat_id']);
-}
-elseif(isset($_GET['cat_id']))
-{
-	$cat_id = intval($_GET['cat_id']);
+	$cat_id = request_var('cat_id', 0);
 }
 
 // ------------------------------------------------------------------------
@@ -73,7 +65,6 @@ if (empty($username))
 // ------------------------------------------------------------------------
 // Check the actual personal gallery exists, if not there is nothing to manage
 // ------------------------------------------------------------------------
-
 if (album_get_personal_root_id($album_user_id) == ALBUM_ROOT_CATEGORY)
 {
 	if(!isset($_POST['submit']))
@@ -332,7 +323,7 @@ if(!isset($_POST['mode']))
 				'ALBUM_PUBLIC_GALLERY' => intval(ALBUM_JUMPBOX_PUBLIC_GALLERY),
 				'ALBUM_ROOT_CATEGORY' => intval(ALBUM_ROOT_CATEGORY),
 				'ALBUM_USERS_GALLERY' => intval(ALBUM_JUMPBOX_USERS_GALLERY),
-				'ALBUM_JUMPBOX_SEPERATOR' => intval(ALBUM_JUMPBOX_SEPERATOR),
+				'ALBUM_JUMPBOX_SEPARATOR' => intval(ALBUM_JUMPBOX_SEPARATOR),
 				'L_NO_SELF_REFERING' => $lang['No_Self_Refering_Cat'],
 				'L_NO_VALID_CAT_SELECTED' => $lang['No_valid_category_selected'],
 
@@ -477,7 +468,7 @@ else
 				'ALBUM_PUBLIC_GALLERY' => intval(ALBUM_JUMPBOX_PUBLIC_GALLERY),
 				'ALBUM_ROOT_CATEGORY' => intval(ALBUM_ROOT_CATEGORY),
 				'ALBUM_USERS_GALLERY' => intval(ALBUM_JUMPBOX_USERS_GALLERY),
-				'ALBUM_JUMPBOX_SEPERATOR' => intval(ALBUM_JUMPBOX_SEPERATOR),
+				'ALBUM_JUMPBOX_SEPARATOR' => intval(ALBUM_JUMPBOX_SEPARATOR),
 				'L_NO_VALID_CAT_SELECTED' => $lang['No_valid_category_selected'],
 
 				'S_MODE' => 'new',
@@ -495,17 +486,9 @@ else
 		}
 		else
 		{
-			// Get posting variables
-			if(!get_magic_quotes_gpc())
-			{
-				$cat_title = addslashes(htmlspecialchars(trim($_POST['cat_title'])));
-				$cat_desc = addslashes(trim($_POST['cat_desc']));
-			}
-			else
-			{
-				$cat_title = htmlspecialchars(trim($_POST['cat_title']));
-				$cat_desc = trim($_POST['cat_desc']);
-			}
+			$cat_title = request_var('cat_title', '', true);
+			$cat_desc = request_var('cat_desc', '', true);
+
 			$view_level = intval($_POST['cat_view_level']);
 			$upload_level = intval($_POST['cat_upload_level']);
 			$rate_level = intval($_POST['cat_rate_level']);
@@ -527,7 +510,7 @@ else
 			// Here we insert a new row into the db
 
 			$sql = "INSERT INTO " . ALBUM_CAT_TABLE . " (cat_title, cat_desc, cat_order, cat_view_level, cat_upload_level, cat_rate_level, cat_comment_level, cat_edit_level, cat_delete_level, cat_approval, cat_parent, cat_user_id)
-					VALUES ('$cat_title', '$cat_desc', '$cat_order', '$view_level', '$upload_level', '$rate_level', '$comment_level', '" . ALBUM_PRIVATE . "', '" . ALBUM_PRIVATE . "', '0', '$cat_parent', '$album_user_id')";
+					VALUES ('" . $db->sql_escape($cat_title) . "', '" . $db->sql_escape($cat_desc) . "', '$cat_order', '$view_level', '$upload_level', '$rate_level', '$comment_level', '" . ALBUM_PRIVATE . "', '" . ALBUM_PRIVATE . "', '0', '$cat_parent', '$album_user_id')";
 			$result = $db->sql_query($sql);
 
 			// Return a message...
@@ -537,17 +520,9 @@ else
 	elseif($_POST['mode'] == 'edit')
 	{
 		// Get posting variables
-		$cat_id = intval($_GET['cat_id']);
-		if(!get_magic_quotes_gpc())
-		{
-			$cat_title = addslashes(htmlspecialchars(trim($_POST['cat_title'])));
-			$cat_desc = addslashes(trim($_POST['cat_desc']));
-		}
-		else
-		{
-			$cat_title = htmlspecialchars(trim($_POST['cat_title']));
-			$cat_desc = trim($_POST['cat_desc']);
-		}
+		$cat_id = request_var('cat_id', 0);
+		$cat_title = request_var('cat_title', '', true);
+		$cat_desc = request_var('cat_desc', '', true);
 		$view_level = intval($_POST['cat_view_level']);
 		$upload_level = intval($_POST['cat_upload_level']);
 		$rate_level = intval($_POST['cat_rate_level']);
@@ -557,7 +532,7 @@ else
 		$cat_approval = intval($_POST['cat_approval']);
 		$cat_parent = ($_POST['cat_parent_id'] == ALBUM_ROOT_CATEGORY) ? 0 : intval($_POST['cat_parent_id']);
 
-		if (($cat_id == $cat_parent) && (album_get_personal_root_id($album_user_id) != $cat_id) )
+		if (($cat_id == $cat_parent) && (album_get_personal_root_id($album_user_id) != $cat_id))
 		{
 			showResultMessage($lang['No_Self_Refering_Cat']);
 		}
@@ -570,7 +545,7 @@ else
 		// Now we update this row
 
 		$sql = "UPDATE " . ALBUM_CAT_TABLE . "
-				SET cat_title = '$cat_title', cat_desc = '$cat_desc', cat_view_level = '$view_level', cat_upload_level = '$upload_level', cat_rate_level = '$rate_level', cat_comment_level = '$comment_level', cat_edit_level = '" . ALBUM_PRIVATE . "', cat_delete_level = '" . ALBUM_PRIVATE . "', cat_approval = '0', cat_parent = '$cat_parent', cat_user_id = '$album_user_id'
+				SET cat_title = '" . $db->sql_escape($cat_title) . "', cat_desc = '" . $db->sql_escape($cat_desc) . "', cat_view_level = '$view_level', cat_upload_level = '$upload_level', cat_rate_level = '$rate_level', cat_comment_level = '$comment_level', cat_edit_level = '" . ALBUM_PRIVATE . "', cat_delete_level = '" . ALBUM_PRIVATE . "', cat_approval = '0', cat_parent = '$cat_parent', cat_user_id = '$album_user_id'
 				WHERE cat_id = '$cat_id'";
 		$result = $db->sql_query($sql);
 
@@ -580,11 +555,11 @@ else
 	elseif($_POST['mode'] == 'delete')
 	{
 		$parent_cat_id = 0;
-		$parent_cat_title = "";
+		$parent_cat_title = '';
 		$parent_cat_deleted = false;
 
-		$source_cat_id = intval($_GET['cat_id']);
-		$target_cat_id = intval($_POST['target']);
+		$source_cat_id = request_var('cat_id', 0);
+		$target_cat_id = request_var('target', 0);
 
 		if($target_cat_id == ALBUM_JUMPBOX_DELETE) // Delete All
 		{

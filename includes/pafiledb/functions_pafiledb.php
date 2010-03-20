@@ -62,11 +62,11 @@ class pafiledb_public extends pafiledb
 
 	function display($page_title, $tpl_name)
 	{
-		global $pafiledb_template;
+		global $template;
 
 		pafiledb_page_header($page_title);
 
-		$pafiledb_template->set_filenames(array('body' => $tpl_name));
+		$template->set_filenames(array('body' => $tpl_name));
 
 		pafiledb_page_footer();
 	}
@@ -266,7 +266,7 @@ class pafiledb
 			{
 				$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 					SET cat_last_file_id = " . intval($file_info['file_id']) . ",
-					cat_last_file_name = '" . addslashes($file_info['file_name']) . "',
+					cat_last_file_name = '" . $db->sql_escape($file_info['file_name']) . "',
 					cat_last_file_time = " . intval($file_info['file_time']) . "
 					WHERE cat_id = $cat_id";
 				$db->sql_query($sql);
@@ -282,7 +282,7 @@ class pafiledb
 
 	function generate_category_nav($cat_id)
 	{
-		global $pafiledb_template, $db;
+		global $template, $db;
 
 		if($this->cat_rowset[$cat_id]['parents_data'] == '')
 		{
@@ -303,7 +303,7 @@ class pafiledb
 		{
 			foreach ($cat_nav as $parent_cat_id => $parent_name)
 			{
-				$pafiledb_template->assign_block_vars('navlinks', array(
+				$template->assign_block_vars('navlinks', array(
 					'CLASS' => 'nav',
 					'CAT_NAME' => $parent_name,
 					'U_VIEW_CAT' => append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $parent_cat_id)
@@ -312,7 +312,7 @@ class pafiledb
 			}
 		}
 
-		$pafiledb_template->assign_block_vars('navlinks', array(
+		$template->assign_block_vars('navlinks', array(
 			'CLASS' => 'nav-current',
 			'CAT_NAME' => $this->cat_rowset[$cat_id]['cat_name'],
 			'U_VIEW_CAT' => append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $this->cat_rowset[$cat_id]['cat_id'])
@@ -336,7 +336,7 @@ class pafiledb
 				LIMIT 1';
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
-			$file_name = htmlspecialchars(stripslashes($row['file_name']));
+			$file_name = $row['file_name'];
 			$cat_id = $row['file_catid'];
 			$db->sql_freeresult($result);
 		}
@@ -382,7 +382,7 @@ class pafiledb
 		if(!empty($this->cat_rowset[$parent_id]))
 		{
 			$this->category_nav($this->cat_rowset[$parent_id]['cat_parent'], &$cat_nav);
-			$cat_nav[$parent_id] = htmlspecialchars(stripslashes($this->cat_rowset[$parent_id]['cat_name']));
+			$cat_nav[$parent_id] = $this->cat_rowset[$parent_id]['cat_name'];
 		}
 		return;
 	}
@@ -724,8 +724,8 @@ class pafiledb
 
 	function category_display($cat_id = PA_ROOT_CAT)
 	{
-		global $db, $pafiledb_template, $userdata, $lang, $images;
-		global $pafiledb_config, $config, $debug;
+		global $db, $config, $template, $images, $lang, $userdata, $debug;
+		global $pafiledb_config;
 
 		if($this->cat_empty())
 		{
@@ -737,7 +737,7 @@ class pafiledb
 			message_die(GENERAL_ERROR, 'Either you are not allowed to view any category, or there is no category in the database');
 		}
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'CAT_PARENT' => true,
 			'L_SUB_CAT' => $lang['Sub_category'],
 			'L_CATEGORY' => $lang['Category'],
@@ -787,7 +787,7 @@ class pafiledb
 						$url_cat = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $subcat_id);
 					}
 
-					$pafiledb_template->assign_block_vars('no_cat_parent', array(
+					$template->assign_block_vars('no_cat_parent', array(
 						'IS_HIGHER_CAT' => false,
 						'U_CAT' => $url_cat,
 						'SUB_CAT' => (!empty($sub_cat)) ? $sub_cat : '',
@@ -833,7 +833,7 @@ class pafiledb
 							$url_cat = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $subcat_id);
 						}
 
-						$pafiledb_template->assign_block_vars('no_cat_parent', array(
+						$template->assign_block_vars('no_cat_parent', array(
 							'IS_HIGHER_CAT' => true,
 							'U_CAT' => $url_cat,
 							'CAT_NAME' => $subcat_row['cat_name']
@@ -878,7 +878,7 @@ class pafiledb
 								$url_cat = append_sid('dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $sub_cat_rowset[$k]['cat_id']);
 							}
 
-							$pafiledb_template->assign_block_vars('no_cat_parent', array(
+							$template->assign_block_vars('no_cat_parent', array(
 								'IS_HIGER_CAT' => false,
 								'U_CAT' => $url_cat,
 								'SUB_CAT' => (!empty($sub_cat)) ? $sub_cat : '',
@@ -889,7 +889,8 @@ class pafiledb
 								'CAT_NAME' => $sub_cat_rowset[$k]['cat_name'],
 								'FILECAT' => $this->file_in_cat($sub_cat_rowset[$k]['cat_id']),
 								'LAST_FILE' => $last_file,
-								'CAT_DESC' => $sub_cat_rowset[$k]['cat_desc'])
+								'CAT_DESC' => $sub_cat_rowset[$k]['cat_desc']
+								)
 							);
 						} // Have a permission to view the category
 					} // It is not parent category
@@ -900,8 +901,8 @@ class pafiledb
 
 	function display_files($sort_method, $sort_order, $start, $show_file_message, $cat_id = false)
 	{
-		global $db, $pafiledb_config, $pafiledb_template, $config;
-		global $images, $lang, $pafiledb_functions, $config;
+		global $db, $config, $template, $images, $lang;
+		global $pafiledb_config, $pafiledb_functions;
 
 		$filelist = false;
 
@@ -1040,7 +1041,7 @@ class pafiledb
 			}
 
 			//$url_file = append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
-			$pafiledb_template->assign_block_vars('file_rows', array(
+			$template->assign_block_vars('file_rows', array(
 				'L_NEW_FILE' => $lang['New_file'],
 				'PIN_IMAGE' => $posticon,
 				'FILE_NEW_IMAGE' => IP_ROOT_PATH . $images['pa_file_new'],
@@ -1066,7 +1067,7 @@ class pafiledb
 		if ($filelist)
 		{
 			$action = (empty($cat_id)) ? 'viewall' : 'category&amp;cat_id=' . $cat_id;
-			$pafiledb_template->assign_vars(array(
+			$template->assign_vars(array(
 				'L_CATEGORY' => $lang['Category'],
 				'L_RATING' => $lang['DlRating'],
 				'L_DOWNLOADS' => $lang['Dls'],
@@ -1103,10 +1104,11 @@ class pafiledb
 		}
 		else
 		{
-			$pafiledb_template->assign_vars(array(
+			$template->assign_vars(array(
 				'NO_FILE' => $show_file_message,
 				'L_NO_FILES' => $lang['No_files'],
-				'L_NO_FILES_CAT' => $lang['No_files_cat'])
+				'L_NO_FILES_CAT' => $lang['No_files_cat']
+				)
 			);
 		}
 	}
@@ -1119,13 +1121,13 @@ class pafiledb
 	{
 		global $db, $lang;
 
-		$cat_name = (isset($_POST['cat_name'])) ? htmlspecialchars($_POST['cat_name']) : '';
-		$cat_desc = (isset($_POST['cat_desc'])) ? htmlspecialchars($_POST['cat_desc']) : '';
-		$cat_parent = (isset($_POST['cat_parent'])) ? intval($_POST['cat_parent']) : 0;
-		$cat_allow_file = (isset($_POST['cat_allow_file'])) ? intval($_POST['cat_allow_file']) : 0;
-// MX Addon
-		$cat_allow_ratings = (isset($_POST['cat_allow_ratings'])) ? intval($_POST['cat_allow_ratings']) : 0;
-		$cat_allow_comments = (isset($_POST['cat_allow_comments'])) ? intval($_POST['cat_allow_comments']) : 0;
+		$cat_name = request_post_var('cat_name', '');
+		$cat_desc = request_post_var('cat_desc', '');
+		$cat_parent = request_post_var('cat_parent', 0);
+		$cat_allow_file = request_post_var('cat_allow_file', 0);
+		// MX Addon
+		$cat_allow_ratings = request_post_var('cat_allow_ratings', 0);
+		$cat_allow_comments = request_post_var('cat_allow_comments', 0);
 
 		if(empty($cat_name))
 		{
@@ -1145,9 +1147,6 @@ class pafiledb
 			return;
 		}
 
-		$cat_name = str_replace("\'", "''", $cat_name);
-		$cat_desc = str_replace("\'", "''", $cat_desc);
-
 		if(!$cat_id)
 		{
 			$cat_order = 0;
@@ -1165,13 +1164,13 @@ class pafiledb
 			$cat_order += 10;
 
 			$sql = 'INSERT INTO ' . PA_CATEGORY_TABLE . " (cat_name, cat_desc, cat_parent, cat_order, cat_allow_file, cat_allow_ratings, cat_allow_comments)
-				VALUES('$cat_name', '$cat_desc', $cat_parent, $cat_order, $cat_allow_file, $cat_allow_ratings, $cat_allow_comments)";
+				VALUES('" . $db->sql_escape($cat_name) . "', '" . $db->sql_escape($cat_desc) . "', $cat_parent, $cat_order, $cat_allow_file, $cat_allow_ratings, $cat_allow_comments)";
 			$db->sql_query($sql);
 		}
 		else
 		{
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
-				SET cat_name = '$cat_name', cat_desc = '$cat_desc', cat_parent = $cat_parent, cat_allow_file = $cat_allow_file, cat_allow_ratings = $cat_allow_ratings, cat_allow_comments = $cat_allow_comments
+				SET cat_name = '" . $db->sql_escape($cat_name) . "', cat_desc = '" . $db->sql_escape($cat_desc) . "', cat_parent = $cat_parent, cat_allow_file = $cat_allow_file, cat_allow_ratings = $cat_allow_ratings, cat_allow_comments = $cat_allow_comments
 				WHERE cat_id = $cat_id";
 			$db->sql_query($sql);
 
@@ -1197,10 +1196,10 @@ class pafiledb
 	{
 		global $db, $lang;
 
-		$file_to_cat_id = (isset($_POST['file_to_cat_id'])) ? intval($_POST['file_to_cat_id']) : '';
-		$subcat_to_cat_id = (isset($_POST['subcat_to_cat_id'])) ? intval($_POST['subcat_to_cat_id']) : '';
-		$file_mode = (isset($_POST['file_mode'])) ? htmlspecialchars($_POST['file_mode']) : 'move';
-		$subcat_mode = (isset($_POST['subcat_mode'])) ? htmlspecialchars($_POST['subcat_mode']) : 'move';
+		$file_mode = request_post_var('file_mode', 'move');
+		$subcat_mode = request_post_var('subcat_mode', 'move');
+		$file_to_cat_id = request_post_var('file_to_cat_id', 0);
+		$subcat_to_cat_id = request_post_var('subcat_to_cat_id', 0);
 
 		if (empty($cat_id))
 		{
@@ -1399,7 +1398,7 @@ class pafiledb
 	{
 		global $db;
 
-		$move = (isset($_GET['move'])) ? intval($_GET['move']) : 15;
+		$move = request_var('move', 15);
 		$cat_parent = $this->cat_rowset[$cat_id]['cat_parent'];
 
 		$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
@@ -1448,18 +1447,19 @@ class pafiledb
 
 	function update_add_file($file_id = false)
 	{
-		global $db, $config, $userdata, $pafiledb_config, $pafiledb_functions, $user_ip;
+		global $db, $config, $userdata, $user_ip, $pafiledb_config, $pafiledb_functions;
 
-		$ss_upload = empty($_POST['screen_shot_url']) ? true : false;
-		$ss_remote_url = !empty($_POST['screen_shot_url']) ? $_POST['screen_shot_url'] : '';
+		$ss_upload = request_post_var('screen_shot_url', '');
+		$ss_upload = empty($ss_upload) ? true : false;
+		$ss_remote_url = request_post_var('screen_shot_url', '');
 		$ss_local = ($_FILES['screen_shot']['tmp_name'] !== 'none') ? $_FILES['screen_shot']['tmp_name'] : '';
 		$ss_name = ($_FILES['screen_shot']['name'] !== 'none') ? $_FILES['screen_shot']['name'] : '';
 		$ss_size = !empty($_FILES['screen_shot']['size']) ? $_FILES['screen_shot']['size'] : '';
 
-		$file_upload = (empty($_POST['download_url'])) ? true : false;
-		//$file_remote_url = (!empty($_POST['download_url']) ? urlencode(ip_utf8_decode($_POST['download_url'])) : '');
-		//$file_remote_url = (!empty($_POST['download_url']) ? str_replace(' ', '%20', $_POST['download_url']) : '');
-		$file_remote_url = (!empty($_POST['download_url']) ? $_POST['download_url'] : '');
+		$file_upload = request_post_var('download_url', '');
+		$file_upload = empty($file_upload) ? true : false;
+		$file_remote_url = request_post_var('download_url', '');
+		$file_remote_url = str_replace(array(' '), array('%20'), $file_remote_url);
 		$file_local = ($_FILES['userfile']['tmp_name'] !== 'none') ? $_FILES['userfile']['tmp_name'] : '';
 		$file_realname = ($_FILES['userfile']['name'] !== 'none') ? $_FILES['userfile']['name'] : '';
 		$file_size = (!empty($_FILES['userfile']['size'])) ? $_FILES['userfile']['size'] : '';
@@ -1473,27 +1473,27 @@ class pafiledb
 		}
 
 		$file_type = !empty($_FILES['userfile']['type']) ? $_FILES['userfile']['type'] : '';
-		$cat_id = isset($_REQUEST['cat_id']) ? intval($_REQUEST['cat_id']) : 0;
-		$file_name = isset($_POST['name']) ? $_POST['name'] : '';
-		$file_long_desc = isset($_POST['long_desc']) ? $_POST['long_desc'] : '';
-		$file_short_desc = isset($_POST['short_desc']) ? $_POST['short_desc'] : (!empty($_POST['long_desc']) ? substr($_POST['long_desc'], 0, 50) . '...' : '');
-		$file_author = isset($_POST['author']) ? $_POST['author'] : (($userdata['user_id'] != ANONYMOUS) ? $userdata['username'] : '');
-		$file_version = isset($_POST['version']) ? $_POST['version'] : '';
+		$cat_id = request_var('cat_id', 0);
+		$file_name = request_post_var('name', '', true);
+		$file_long_desc = request_post_var('long_desc', '', true);
+		$file_short_desc = request_post_var('short_desc', '', true);
+		$file_short_desc = !empty($file_short_desc) ? $file_short_desc : (!empty($file_long_desc) ? substr($file_long_desc, 0, 50) . '...' : '');
+		$file_author = request_post_var('author', '', true);
+		$file_author = !empty($file_author) ? $file_author : (($userdata['user_id'] != ANONYMOUS) ? $userdata['username'] : '');
+		$file_version = request_post_var('version', '', true);
 
-		$file_website = isset($_POST['website']) ? $_POST['website'] : '';
+		$file_website = request_post_var('website', '', true);
 		if(!empty($file_website))
 		{
 			$file_website = (!preg_match('#^http[s]?:\/\/#i', $file_website)) ? 'http://' . $file_website : $file_website;
 			$file_website = (preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $file_website)) ? $file_website : '';
 		}
 
-		$file_posticon = isset($_POST['posticon']) ? $_POST['posticon'] : '';
-
-		$file_license = isset($_POST['license']) ? intval($_POST['license']) : 0;
-		$file_pin = isset($_POST['pin']) ? intval($_POST['pin']) : 0;
-		$file_ss_link = isset($_POST['sshot_link']) ? intval($_POST['sshot_link']) : 0;
-// MX		$file_approved = isset($_POST['approved']) ? intval($_POST['approved']) : 0;
-		$file_dls = isset($_POST['file_download']) ? intval($_POST['file_download']) : 0;
+		$file_posticon = request_post_var('posticon', '');
+		$file_license = request_post_var('license', 0);
+		$file_pin = request_post_var('pin', 0);
+		$file_ss_link = request_post_var('sshot_link', 0);
+		$file_dls = request_post_var('file_download', 0);
 
 		$file_time = time();
 		$file_time_sql = '';
@@ -1581,8 +1581,9 @@ class pafiledb
 			}
 		}
 
-		$ss_upload = empty($_POST['screen_shot_url']) ? true : false;
-		$ss_remote_url = !empty($_POST['screen_shot_url']) ? $_POST['screen_shot_url'] : '';
+		$ss_upload = request_post_var('screen_shot_url', '');
+		$ss_upload = empty($ss_upload) ? true : false;
+		$ss_remote_url = request_post_var('screen_shot_url', '');
 		$ss_local = ($_FILES['screen_shot']['tmp_name'] !== 'none') ? $_FILES['screen_shot']['tmp_name'] : '';
 		$ss_name = ($_FILES['screen_shot']['name'] !== 'none') ? $_FILES['screen_shot']['name'] : '';
 		$ss_size = !empty($_FILES['screen_shot']['size']) ? $_FILES['screen_shot']['size'] : '';
@@ -1656,20 +1657,20 @@ class pafiledb
 		if(!$file_id)
 		{
 			$sql = 'INSERT INTO ' . PA_FILES_TABLE . " (user_id, poster_ip, file_name, file_size, unique_name, real_name, file_dir, file_desc, file_creator, file_version, file_longdesc, file_ssurl, file_sshot_link, file_dlurl, file_time, file_update_time, file_catid, file_posticon, file_license, file_dls, file_last, file_pin, file_docsurl, file_approved)
-					VALUES('{$userdata['user_id']}', '$user_ip', '" . str_replace("\'", "''", $file_name) . "', '$file_size', '$physical_file_name', '$file_realname', '{$pafiledb_config['upload_dir']}', '" . str_replace("\'", "''", $file_short_desc) . "', '" . str_replace("\'", "''", $file_author) . "', '" . str_replace("\'", "''", $file_version) . "', '" . str_replace("\'", "''", $file_long_desc) . "', '$screen_shot_url', '$file_ss_link', '$file_remote_url', '$file_time', '$file_time', '$cat_id', '$file_posticon', '$file_license', '$file_dls', '0', '$file_pin', '$file_website', '$file_approved')";
+					VALUES('{$userdata['user_id']}', '$user_ip', '" . $db->sql_escape($file_name) . "', '$file_size', '$physical_file_name', '$file_realname', '{$pafiledb_config['upload_dir']}', '" . $db->sql_escape($file_short_desc) . "', '" . $db->sql_escape($file_author) . "', '" . $db->sql_escape($file_version) . "', '" . $db->sql_escape($file_long_desc) . "', '$screen_shot_url', '$file_ss_link', '$file_remote_url', '$file_time', '$file_time', '$cat_id', '$file_posticon', '$file_license', '$file_dls', '0', '$file_pin', '$file_website', '$file_approved')";
 		}
 		else
 		{
 			$sql = "UPDATE " . PA_FILES_TABLE . "
-				SET file_name = '" . str_replace("\'", "''", $file_name) . "',
+				SET file_name = '" . $db->sql_escape($file_name) . "',
 				file_size = '$file_size',
 				unique_name = '$physical_file_name',
 				real_name = '$file_realname',
 				file_dir = '{$pafiledb_config['upload_dir']}',
-				file_desc = '" . str_replace("\'", "''", $file_short_desc) . "',
-				file_longdesc = '" . str_replace("\'", "''", $file_long_desc) . "',
-				file_creator = '" . str_replace("\'", "''", $file_author) . "',
-				file_version = '" . str_replace("\'", "''", $file_version) . "',
+				file_desc = '" . $db->sql_escape($file_short_desc) . "',
+				file_longdesc = '" . $db->sql_escape($file_long_desc) . "',
+				file_creator = '" . $db->sql_escape($file_author) . "',
+				file_version = '" . $db->sql_escape($file_version) . "',
 				file_ssurl = '$screen_shot_url',
 				file_sshot_link = '$file_ss_link',
 				file_dlurl = '$file_remote_url',
@@ -1769,16 +1770,16 @@ class pafiledb
 		if(!$mirror_id)
 		{
 			$sql = 'INSERT INTO ' . PA_MIRRORS_TABLE . " (file_id, unique_name, file_dir, file_dlurl, mirror_location)
-					VALUES($file_id, '$physical_file_name', '{$pafiledb_config['upload_dir']}', '$file_remote_url', '" . str_replace("\'", "''", $mirror_location) . "')";
+					VALUES($file_id, '" . $db->sql_escape($physical_file_name) . "', '" . $db->sql_escape($pafiledb_config['upload_dir']) . "', '" . $db->sql_escape($file_remote_url) . "', '" . $db->sql_escape($mirror_location) . "')";
 		}
 		else
 		{
 			$sql = "UPDATE " . PA_MIRRORS_TABLE . "
 				SET file_id = $file_id,
-				unique_name = '$physical_file_name',
-				file_dir = '{$pafiledb_config['upload_dir']}',
-				file_dlurl = '$file_remote_url',
-				mirror_location = '" . str_replace("\'", "''", $mirror_location) . "'
+				unique_name = '" . $db->sql_escape($physical_file_name) . "',
+				file_dir = '" . $db->sql_escape($pafiledb_config['upload_dir']) . "',
+				file_dlurl = '" . $db->sql_escape($file_remote_url) . "',
+				mirror_location = '" . $db->sql_escape($mirror_location) . "'
 				WHERE mirror_id = '$mirror_id'";
 		}
 		$db->sql_query($sql);
@@ -1816,20 +1817,20 @@ class pafiledb
 	function remote_filesize($url)
 	{
 		$sch = parse_url($url, PHP_URL_SCHEME);
-		if (($sch != "http") && ($sch != "https") && ($sch != "ftp") && ($sch != "ftps"))
+		if (($sch != 'http') && ($sch != 'https') && ($sch != 'ftp') && ($sch != 'ftps'))
 		{
 				return false;
 		}
-		if (($sch == "http") || ($sch == "https"))
+		if (($sch == 'http') || ($sch == 'https'))
 		{
 			$headers = get_headers($url, 1);
-			if ((!array_key_exists("Content-Length", $headers)))
+			if ((!array_key_exists('Content-Length', $headers)))
 			{
 				return false;
 			}
-			return $headers["Content-Length"];
+			return $headers['Content-Length'];
 		}
-		if (($sch == "ftp") || ($sch == "ftps"))
+		if (($sch == 'ftp') || ($sch == 'ftps'))
 		{
 			$server = parse_url($url, PHP_URL_HOST);
 			$port = parse_url($url, PHP_URL_PORT);
@@ -1846,18 +1847,18 @@ class pafiledb
 			}
 			if (!$user)
 			{
-				$user = "anonymous";
+				$user = 'anonymous';
 			}
 			if (!$pass)
 			{
-				$pass = "phpos@";
+				$pass = 'phpos@';
 			}
 			switch ($sch)
 			{
-				case "ftp":
+				case 'ftp':
 					$ftpid = ftp_connect($server, $port);
 					break;
-				case "ftps":
+				case 'ftps':
 					$ftpid = ftp_ssl_connect($server, $port);
 					break;
 			}

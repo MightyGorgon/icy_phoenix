@@ -140,19 +140,14 @@ function make_hours($base_time)
 }
 // LAST VISIT - END
 
-function get_forum_most_active($user)
+function get_forum_most_active($user_id)
 {
 	global $db, $userdata;
 
-	if ( intval($user) == 0 )
+	$user_id = (int) $user_id;
+	if (empty($user_id))
 	{
-		$user = trim(htmlspecialchars($user));
-		$user = substr(str_replace("\\'", "'", $user), 0, 25);
-		$user = str_replace("'", "\\'", $user);
-	}
-	else
-	{
-		$user = intval($user);
+		message_die(GENERAL_MESSAGE, $lang['User_not_exist']);
 	}
 
 	$most_active_id = array();
@@ -176,7 +171,7 @@ function get_forum_most_active($user)
 		{
 			$sql_most = "SELECT *
 				FROM " . POSTS_TABLE . "
-				WHERE forum_id = $i AND poster_id = $user";
+				WHERE forum_id = $i AND poster_id = $user_id";
 			$result = $db->sql_query($sql_most);
 
 			if ( $db->sql_numrows($result) > $most_active_posts )

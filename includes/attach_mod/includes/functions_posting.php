@@ -26,7 +26,7 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function ftp_file($source_file, $dest_file, $mimetype, $disable_error_mode = false)
 {
-	global $attach_config, $lang, $error, $error_msg;
+	global $config, $lang, $error, $error_msg;
 
 	$conn_id = attach_init_ftp();
 
@@ -46,7 +46,7 @@ function ftp_file($source_file, $dest_file, $mimetype, $disable_error_mode = fal
 		{
 			$error_msg .= '<br />';
 		}
-		$error_msg = sprintf($lang['Ftp_error_upload'], $attach_config['ftp_path']) . '<br />';
+		$error_msg = sprintf($lang['Ftp_error_upload'], $config['ftp_path']) . '<br />';
 		@ftp_quit($conn_id);
 		return false;
 	}

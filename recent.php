@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
 define('IN_ICYPHOENIX', true);
@@ -24,13 +23,13 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
-$page_number = ($page_number < 1) ? false : $page_number;
+$page_number = request_var('page_number', 0);
+$page_number = ($page_number < 1) ? 0 : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
+$start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
 // ############         Edit below         ########################################
 $topic_length = '60'; // length of topic title
@@ -67,45 +66,25 @@ if ($userdata['user_level'] == ADMIN)
 	$mode_types = array_merge($mode_types, array('utview'));
 }
 
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_GET['mode'])) ? htmlspecialchars($_GET['mode']) : htmlspecialchars($_POST['mode']);
-}
-else
-{
-	$mode = $set_mode;
-}
+$mode = request_var('mode', $set_mode);
+$mode = check_var_value($mode, $mode_types, $set_mode);
 
-if (!in_array($mode, $mode_types))
-{
-	$mode = $set_mode;
-}
+$amount_days = request_var('amount_days', 0);
+$amount_days = ($amount_days <= 0) ? $set_days : $amount_days;
 
-$amount_days = 0;
-if(isset($_GET['amount_days']) || isset($_POST['amount_days']))
+$user_id = request_var(POST_USERS_URL, 0);
+if(!empty($user_id))
 {
-	$amount_days = (isset($_GET['amount_days'])) ? intval($_GET['amount_days']) : intval($_POST['amount_days']);
-}
-
-if ($amount_days <= 0)
-{
-	$amount_days = $set_days;
-}
-
-if(isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL]))
-{
-	$user_id = (isset($_GET[POST_USERS_URL])) ? intval($_GET[POST_USERS_URL]) : intval($_POST[POST_USERS_URL]);
 	$user_id = ($user_id < 2) ? false : $user_id;
 
-	if ($user_id != false)
+	if (!empty($user_id))
 	{
 		$sql = "SELECT username
 			FROM " . USERS_TABLE . "
 			WHERE user_id = '" . $user_id . "'";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
-		$username = $row['username'];
-		if ($username == '')
+		if (empty($row['username']))
 		{
 			$mode = $set_mode;
 		}
@@ -117,17 +96,8 @@ if(isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL]))
 }
 
 $psort_types = array('time', 'cat');
-$psort = $psort_types[0];
-
-if(isset($_GET['psort']) || isset($_POST['psort']))
-{
-	$psort = (isset($_GET['psort'])) ? htmlspecialchars($_GET['psort']) : htmlspecialchars($_POST['psort']);
-}
-
-if (!in_array($psort, $psort_types))
-{
-	$psort = $psort_types[0];
-}
+$psort = request_var('psort', $psort_types[0]);
+$psort = check_var_value($psort, $psort_types);
 
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('recent.' . PHP_EXT) . '" class="nav-current">' . $lang['Recent_topics'] . '</a>';

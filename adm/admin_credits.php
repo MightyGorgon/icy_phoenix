@@ -57,18 +57,8 @@ $insert_val_sql = '';
 /*******************************************************************************************
 /** Get parameters.  'var_name' => 'default'
 /******************************************************************************************/
-$params = array('mode' => '', 'hack_id' => '');
-
-foreach($params as $var => $default)
-{
-	$$var = $default;
-	if( isset($_POST[$var]) || isset($_GET[$var]) )
-	{
-		$$var = ( isset($_POST[$var]) ) ? $_POST[$var] : $_GET[$var];
-	}
-}
-
-$hack_id = intval($hack_id);
+$mode = request_var('mode', '');
+$hack_id = request_var('hack_id', 0);
 
 if (sizeof($_POST))
 {
@@ -81,21 +71,20 @@ if (sizeof($_POST))
 		{
 			$hack_id = substr($key, 10);
 
-			$sql = 'SELECT hack_name FROM ' . HACKS_LIST_TABLE . "
-				WHERE hack_id = $hack_id";
+			$sql = "SELECT hack_name FROM " . HACKS_LIST_TABLE . "
+				WHERE hack_id = '" . $db->sql_escape($hack_id) . "'";
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 
-			$neat_bc_name = addslashes(str_replace(" ", "_", $row['hack_name'])) . '_list_info';
-			$sql = 'DELETE FROM ' . CONFIG_TABLE . " WHERE config_name = '$neat_bc_name'";
+			$neat_bc_name = str_replace(" ", "_", $row['hack_name']) . '_list_info';
+			$sql = "DELETE FROM " . CONFIG_TABLE . " WHERE config_name = '" . $db->sql_escape($neat_bc_name) . "'";
 			$db->sql_query($sql);
 
-			$sql = "DELETE FROM " . HACKS_LIST_TABLE . " WHERE hack_id = $hack_id";
+			$sql = "DELETE FROM " . HACKS_LIST_TABLE . " WHERE hack_id = '" . $db->sql_escape($hack_id) . "'";
 			$db->sql_query($sql);
 
-			$status_message .= sprintf($lang['Deleted_Hack'], stripslashes($row['hack_name']));
+			$status_message .= sprintf($lang['Deleted_Hack'], htmlspecialchars($row['hack_name']));
 		}
-
 		/*******************************************************************************************
 		/** Check for update items
 		/******************************************************************************************/
@@ -106,21 +95,21 @@ if (sizeof($_POST))
 			foreach ($dbase_fields as $val)
 			{
 				/* Check for required items */
-				if (in_array($val, $required_fields) && $_POST[$val] == '')
+				if (in_array($val, $required_fields) && ($_POST[$val] == ''))
 				{
 					message_die(GENERAL_ERROR, $lang['Required_Field_Missing'], '', __LINE__, __FILE__);
 				}
 
 				/* Compile the SQL Lists */
-				$update_sql .= ($update_sql != '') ? ", $val = '" . addslashes($_POST[$val]) . "'" : "$val = '" . addslashes($_POST[$val]) . "'";
+				$update_sql .= ($update_sql != '') ? ", $val = '" . $db->sql_escape($_POST[$val]) . "'" : "$val = '" . $db->sql_escape($_POST[$val]) . "'";
 			}
 
-			$sql = 'UPDATE ' . HACKS_LIST_TABLE . "
+			$sql = "UPDATE " . HACKS_LIST_TABLE . "
 				SET $update_sql
-				WHERE hack_id = '$hack_id'";
+				WHERE hack_id = '" . $db->sql_escape($hack_id) . "'";
 			$db->sql_query($sql);
 
-			$status_message .= sprintf($lang['Updated_Hack'], stripslashes($_POST['hack_name']));
+			$status_message .= sprintf($lang['Updated_Hack'], htmlspecialchars($_POST['hack_name']));
 		}
 
 		/*******************************************************************************************
@@ -133,23 +122,23 @@ if (sizeof($_POST))
 			foreach ($dbase_fields as $val)
 			{
 				/* Check for required items */
-				if (in_array($val, $required_fields) && $_POST[$val] == '')
+				if (in_array($val, $required_fields) && ($_POST[$val] == ''))
 				{
 					message_die(GENERAL_ERROR, $lang['Required_Field_Missing'], '', __LINE__, __FILE__);
 				}
 
 				/* Compile the SQL Lists */
 				$insert_sql .= ($insert_sql != '') ? ", $val" : $val;
-				$insert_val_sql .= ($insert_val_sql != '') ? ", '" . addslashes($_POST[$val]) . "'" : "'" . addslashes($_POST[$val]) . "'";
+				$insert_val_sql .= ($insert_val_sql != '') ? ", '" . $db->sql_escape($_POST[$val]) . "'" : "'" . $db->sql_escape($_POST[$val]) . "'";
 			}
 
-			$sql = 'INSERT INTO ' . HACKS_LIST_TABLE . "
+			$sql = "INSERT INTO " . HACKS_LIST_TABLE . "
 				($insert_sql)
 				VALUES
 				($insert_val_sql)";
 			$db->sql_query($sql);
 
-			$status_message .= sprintf($lang['Added_Hack'], stripslashes($_POST['hack_name']));
+			$status_message .= sprintf($lang['Added_Hack'], htmlspecialchars($_POST['hack_name']));
 		}
 	}
 }
@@ -163,23 +152,25 @@ switch($mode)
 	case 'edit':
 	{
 		/* Fetch the data for the specified ID in edit mode, then do the same thing as add */
-		$sql = 'SELECT * FROM ' . HACKS_LIST_TABLE . "
-			WHERE hack_id = $hack_id";
+		$sql = "SELECT * FROM " . HACKS_LIST_TABLE . "
+			WHERE hack_id = '" . $db->sql_escape($hack_id) . "'";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 
 		$template->assign_vars(array(
-		'S_HACK_ID' => $row['hack_id'],
-		'S_HIDDEN' => 'update_id_' . $row['hack_id'],
-		'S_HACK_NAME' => stripslashes($row['hack_name']),
-		'S_HACK_DESC' => stripslashes($row['hack_desc']),
-		'S_HACK_DOWNLOAD' => $row['hack_download_url'],
-		'S_HACK_AUTHOR' => stripslashes($row['hack_author']),
-		'S_HACK_AUTHOR_EMAIL' => stripslashes($row['hack_author_email']),
-		'S_HACK_WEBSITE' => stripslashes($row['hack_author_website']),
-		'S_HACK_HIDE_NO' => ($row['hack_hide'] == 'No') ? 'checked="checked"' : '',
-		'S_HACK_HIDE_YES' => ($row['hack_hide'] == 'Yes') ? 'checked="checked"' : '',
-		'S_HACK_VERSION' => stripslashes($row['hack_version'])));
+			'S_HACK_ID' => $row['hack_id'],
+			'S_HIDDEN' => 'update_id_' . $row['hack_id'],
+			'S_HACK_NAME' => $row['hack_name'],
+			'S_HACK_DESC' => $row['hack_desc'],
+			'S_HACK_DOWNLOAD' => $row['hack_download_url'],
+			'S_HACK_AUTHOR' => $row['hack_author'],
+			'S_HACK_AUTHOR_EMAIL' => $row['hack_author_email'],
+			'S_HACK_WEBSITE' => $row['hack_author_website'],
+			'S_HACK_HIDE_NO' => ($row['hack_hide'] == 'No') ? 'checked="checked"' : '',
+			'S_HACK_HIDE_YES' => ($row['hack_hide'] == 'Yes') ? 'checked="checked"' : '',
+			'S_HACK_VERSION' => $row['hack_version']
+			)
+		);
 
 	}
 	case 'add':
@@ -187,8 +178,10 @@ switch($mode)
 		if ($mode != 'edit')
 		{
 			$template->assign_vars(array(
-			'S_HIDDEN' => 'add_id_' . $row['hack_id'],
-			'S_HACK_HIDE_NO' => 'checked="checked"'));
+				'S_HIDDEN' => 'add_id_' . $row['hack_id'],
+				'S_HACK_HIDE_NO' => 'checked="checked"'
+				)
+			);
 		}
 
 		$template->set_filenames(array('body' => ADM_TPL . 'admin_credits_add.tpl'));
@@ -206,19 +199,21 @@ switch($mode)
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$template->assign_block_vars('listrow', array(
-			'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
-			'HACK_ID' => $row['hack_id'],
-			'HACK_AUTHOR' => ($row['hack_author_email'] != '') ? '<a href="mailto:' . stripslashes($row['hack_author_email']) . '">' . stripslashes($row['hack_author']) . '</a>' : stripslashes($row['hack_author']),
-			'HACK_WEBSITE' => ($row['hack_author_website'] != '') ? '<a target="blank" href="' . stripslashes($row['hack_author_website']) . '">' . stripslashes($row['hack_author_website']) . '</a>' : $lang['No_Website'],
-			'HACK_NAME' => ($row['hack_download_url'] != '') ? '<a href="' . stripslashes($row['hack_download_url']) . '">' . stripslashes($row['hack_name']) . '</a>' : stripslashes($row['hack_name']),
-			'HACK_DESC' => stripslashes($row['hack_desc']),
-			'HACK_VERSION' => ($row['hack_version'] != '') ? ' v' . stripslashes($row['hack_version']) : '',
-			'S_ACTION_EDIT' => '<a href="' . append_sid(basename(__FILE__) . '?mode=edit&hack_id=' . $row['hack_id']) . '">' . $lang['Edit'] . '</a>',
-			'HACK_DISPLAY' => $lang[$row['hack_hide']],
-			'ADD_DATE' => create_date($lang['DATE_FORMAT'], $row['log_time'], $config['board_timezone'])));
+				'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
+				'HACK_ID' => $row['hack_id'],
+				'HACK_AUTHOR' => ($row['hack_author_email'] != '') ? '<a href="mailto:' . $row['hack_author_email'] . '">' . $row['hack_author'] . '</a>' : $row['hack_author'],
+				'HACK_WEBSITE' => ($row['hack_author_website'] != '') ? '<a target="blank" href="' . $row['hack_author_website'] . '">' . $row['hack_author_website'] . '</a>' : $lang['No_Website'],
+				'HACK_NAME' => ($row['hack_download_url'] != '') ? '<a href="' . $row['hack_download_url'] . '">' . $row['hack_name'] . '</a>' : $row['hack_name'],
+				'HACK_DESC' => $row['hack_desc'],
+				'HACK_VERSION' => ($row['hack_version'] != '') ? ' v' . $row['hack_version'] : '',
+				'S_ACTION_EDIT' => '<a href="' . append_sid(basename(__FILE__) . '?mode=edit&amp;hack_id=' . $row['hack_id']) . '">' . $lang['Edit'] . '</a>',
+				'HACK_DISPLAY' => $lang[$row['hack_hide']],
+				'ADD_DATE' => create_date($lang['DATE_FORMAT'], $row['log_time'], $config['board_timezone'])
+				)
+			);
 		}
 
-		if ($i == 0 || !isset($i))
+		if (($i == 0) || !isset($i))
 		{
 			$template->assign_block_vars('empty_switch', array());
 			$template->assign_var('L_NO_HACKS', $lang['No_Hacks']);

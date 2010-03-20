@@ -157,7 +157,7 @@ if (isset($_POST['submit']))
 
 		if (!$error)
 		{
-			$username_sql = "username = '" . str_replace("\'", "''", $username) . "', ";
+			$username_sql = "username = '" . $db->sql_escape($username) . "', ";
 		}
 	}
 
@@ -176,7 +176,7 @@ if (isset($_POST['submit']))
 		$new_password = md5($new_password);
 
 		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_regdate, user_password, user_email, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
-			VALUES ($user_id, '" . str_replace("\'", "''", $username) . "', " . time() . ", '" . str_replace("\'", "''", $new_password) . "', '" . str_replace("\'", "''", $email) . "', $user_style, $user_timezone, '" . str_replace("\'", "''", $user_dateformat) . "', '" . str_replace("\'", "''", $user_lang) . "', 0, 1, 'user_actkey')";
+			VALUES ($user_id, '" . $db->sql_escape($username) . "', " . time() . ", '" . $db->sql_escape($new_password) . "', '" . $db->sql_escape($email) . "', $user_style, $user_timezone, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_lang) . "', 0, 1, 'user_actkey')";
 		$db->sql_transaction('begin');
 		$result = $db->sql_query($sql);
 
@@ -200,9 +200,7 @@ if (isset($_POST['submit']))
 
 if ($error)
 {
-	//
 	// If an error occured we need to stripslashes on returned data
-	//
 	$username = stripslashes($username);
 	$email = stripslashes($email);
 	$new_password = '';
@@ -210,11 +208,10 @@ if ($error)
 
 	$user_lang = stripslashes($user_lang);
 	$user_dateformat = stripslashes($user_dateformat);
-
 }
 
 // Default pages
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 $coppa = false;
 
@@ -237,20 +234,17 @@ if ($error)
 
 $template->set_filenames(array('body' => ADM_TPL . 'admin_add_user_body.tpl'));
 
-//
-// Let's do an overall check for settings/versions which would prevent
-// us from doing file uploads....
-//
+// Let's do an overall check for settings/versions which would prevent us from doing file uploads....
 $template->assign_vars(array(
 	'USERNAME' => $username,
 	'CUR_PASSWORD' => $cur_password,
 	'NEW_PASSWORD' => $new_password,
 	'PASSWORD_CONFIRM' => $password_confirm,
 	'EMAIL' => $email,
-	'LANGUAGE_SELECT' => language_select($config['default_lang'], 'language'),
-	'STYLE_SELECT' => style_select($config['default_style'], 'style'),
-	'TIMEZONE_SELECT' => tz_select($config['board_timezone'], 'timezone'),
-	'DATE_FORMAT_SELECT' => date_select($config['default_dateformat'], 'dateformat'),
+	'LANGUAGE_SELECT' => language_select('language', $config['default_lang']),
+	'STYLE_SELECT' => style_select('style', $config['default_style']),
+	'TIMEZONE_SELECT' => tz_select('timezone', $config['board_timezone']),
+	'DATE_FORMAT_SELECT' => date_select('dateformat', $config['default_dateformat']),
 
 	'L_USERNAME' => $lang['Username'],
 	'L_CURRENT_PASSWORD' => $lang['Current_password'],

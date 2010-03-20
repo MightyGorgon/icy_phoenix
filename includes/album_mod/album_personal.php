@@ -401,7 +401,7 @@ $template->assign_vars(array(
 	'L_ALBUM' => $lang['Album'],
 
 	'U_VIEW_CAT' => append_sid(album_append_uid($album_page_url . '?cat_id=' . intval($cat_id))),
-	'CAT_TITLE' => ($is_root_cat || $album_view_mode == ALBUM_VIEW_ALL) ? sprintf($lang['Personal_Gallery_Of_User'], $username) : $thiscat['cat_title'],
+	'CAT_TITLE' => ($is_root_cat || $album_view_mode == ALBUM_VIEW_ALL) ? htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User'], $username)) : $thiscat['cat_title'],
 	'ALBUM_NAVIGATION_ARROW' => ALBUM_NAV_ARROW,
 	'NAV_CAT_DESC' => $album_nav_cat_desc,
 
@@ -446,12 +446,12 @@ $template->assign_vars(array(
 	'TOGGLE_VIEW_ALL_IMG' => $image_toggle_button,
 	'L_TOGGLE_VIEW_ALL' => $view_mode_text,
 
-	'L_CATEGORY' => sprintf($lang['Personal_Gallery_Of_User'], $username),
+	'L_CATEGORY' => htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User'], $username)),
 
 	'L_NO_PICS' => $no_picture_message,
-	'L_PERSONAL_GALLERY_NOT_CREATED' => sprintf($lang['Personal_gallery_not_created'], $username),
+	'L_PERSONAL_GALLERY_NOT_CREATED' => htmlspecialchars(sprintf($lang['Personal_gallery_not_created'], $username)),
 
-	'L_RECENT_PUBLIC_PICS' => sprintf($lang['Recent_Personal_Pics'], $username),
+	'L_RECENT_PUBLIC_PICS' => htmlspecialchars(sprintf($lang['Recent_Personal_Pics'], $username)),
 
 	'S_COLS' => $album_config['cols_per_page'],
 	'S_COL_WIDTH' => (100 / $album_config['cols_per_page']) . '%',

@@ -35,24 +35,27 @@ $mode = (isset($_POST['report_x'])) ? 'report' :
 			)
 		);
 
-$forum_id = !empty($_GET[POST_FORUM_URL]) ? intval($_GET[POST_FORUM_URL]) : (!empty($_POST[POST_FORUM_URL]) ? intval($_POST[POST_FORUM_URL]) : '0');
-$topic_id = !empty($_GET[POST_TOPIC_URL]) ? intval($_GET[POST_TOPIC_URL]) : (!empty($_POST[POST_TOPIC_URL]) ? intval($_POST[POST_TOPIC_URL]) : '0');
-$post_id = !empty($_GET[POST_POST_URL]) ? intval($_GET[POST_POST_URL]) : (!empty($_POST[POST_POST_URL]) ? intval($_POST[POST_POST_URL]) : '0');
-$post_id = empty($post_id) ? ((isset($_POST['post_id'])) ? intval ($_POST['post_id']) : ((isset($_GET['post_id'])) ? intval($_GET['post_id']) : '')) : $post_id;
-$user_id = (isset($_POST[POST_USERS_URL])) ? intval ($_POST[POST_USERS_URL]) : ((isset($_GET[POST_USERS_URL])) ? intval($_GET[POST_USERS_URL]) : '');
+if (empty($mode))
+{
+	message_die(GENERAL_ERROR, "No action specified", "", __LINE__, __FILE__, 'mode="' . $mode . '"');
+}
+
+$forum_id = request_var(POST_FORUM_URL, 0);
+$topic_id = request_var(POST_TOPIC_URL, 0);
+$post_id = request_var(POST_POST_URL, 0);
+$post_id = empty($post_id) ? request_var('post_id', 0) : $post_id;
+
+$user_id = request_var(POST_USERS_URL, 0);
+$user_id = ($user_id < 2) ? ANONYMOUS : $user_id;
 
 $forum_id_append = (!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id . '&amp;') : '');
 $topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id . '&amp;') : '');
 $post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
 
 // check that we have all what is needed to know
-if (!($post_id + $user_id))
+if (empty($post_id) && ($user_id == ANONYMOUS))
 {
 	message_die(GENERAL_ERROR, "No user/post specified", "", __LINE__, __FILE__, 'post_id="' . $post_id . '", user_id="' . $user_id . '"');
-}
-if (empty($mode))
-{
-	message_die(GENERAL_ERROR, "No action specified", "", __LINE__, __FILE__, 'mode="' . $mode . '"');
 }
 
 $sql = 'SELECT DISTINCT forum_id, poster_id, post_bluecard FROM ' . POSTS_TABLE . ' WHERE post_id = "' . $post_id . '"';
@@ -100,7 +103,7 @@ if ($mode == 'report_reset')
 	$post_subject = $subject['post_subject'];
 	$forum_name = $subject['forum_name'];
 
-	$sql = 'UPDATE ' . POSTS_TABLE . ' SET post_bluecard="0" WHERE post_id="' . $post_id . '"';
+	$sql = 'UPDATE ' . POSTS_TABLE . ' SET post_bluecard = "0" WHERE post_id = "' . $post_id . '"';
 	$result = $db->sql_query($sql);
 	message_die(GENERAL_MESSAGE, $lang['Post_reset'].'<br /><br />'.
 	sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>'));
@@ -227,14 +230,14 @@ elseif ($mode == 'unban')
 	$the_user = $db->sql_fetchrow($result);
 
 	// remove the user from ban list
-	$sql = 'DELETE FROM ' . BANLIST_TABLE . ' WHERE ban_userid="' . $poster_id . '"';
+	$sql = 'DELETE FROM ' . BANLIST_TABLE . ' WHERE ban_userid = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
 	// update the user table with new status
-	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings="0" WHERE user_id="' . $poster_id . '"';
+	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "0" WHERE user_id = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
-	$message = $lang['Ban_update_green'] . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?mode=post&u=' . $poster_id) . '">', '</a>');
+	$message = $lang['Ban_update_green'] . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?mode=post&u=' . $poster_id) . '">', '</a>');
 	$e_temp = 'ban_reactivated';
 	//$e_subj = $lang['Ban_reactivate'];
 }
@@ -262,9 +265,9 @@ elseif ($mode == 'ban')
 		$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ($poster_id)";
 		$result = $db->sql_query($sql);
 		// update the user table with new status
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings="' . $config['max_user_bancard'] . '" WHERE user_id="' . $poster_id . '"';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '" WHERE user_id="' . $poster_id . '"';
 		$result = $db->sql_query($sql);
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET session_logged_in="0" WHERE session_user_id="' . $poster_id . '"';
+		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET session_logged_in = "0" WHERE session_user_id="' . $poster_id . '"';
 		$result = $db->sql_query($sql);
 		$message = $lang['Ban_update_red'];
 		$e_temp = 'ban_block';
@@ -272,7 +275,10 @@ elseif ($mode == 'ban')
 	}
 	else
 	{
-		$message = $lang['user_already_banned'];
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '" WHERE user_id="' . $poster_id . '"';
+		$result = $db->sql_query($sql);
+		$no_error = false;
+		$already_banned = true;
 	}
 }
 elseif ($mode == 'block')
@@ -301,7 +307,7 @@ elseif ($mode == 'block')
 	$result = $db->sql_query($sql);
 
 	$block_time = make_time_text ($config['RY_block_time']);
-	$message = sprintf($lang['Block_update'],$block_time) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id) . '">', '</a>');
+	$message = sprintf($lang['Block_update'],$block_time) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id) . '">', '</a>');
 	$e_temp = 'card_block';
 	//$e_subj = sprintf($lang['Card_blocked'], $block_time);
 }
@@ -343,13 +349,14 @@ elseif ($mode == 'warn')
 		}
 		else
 		{
+			$no_error = false;
 			$already_banned = true;
 		}
 	}
 	else
 	{
 		// the user shall not be baned this time, update the counter
-		$message = sprintf($lang['Ban_update_yellow'], ($the_user['user_warnings'] + 1), $config['max_user_bancard']) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid('privmsg.' . PHP_EXT . '?mode=post&u=' . $poster_id) . '">', '</a>');
+		$message = sprintf($lang['Ban_update_yellow'], ($the_user['user_warnings'] + 1), $config['max_user_bancard']) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?mode=post&u=' . $poster_id) . '">', '</a>');
 		$e_temp = 'ban_warning';
 		// $e_subj = $lang['Ban_warning'];
 	}

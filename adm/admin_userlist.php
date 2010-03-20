@@ -22,21 +22,11 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 
-// Set mode
-$mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : '');
+$mode = request_var('mode', '');
 
-// confirm
-if(isset($_POST['confirm']) || isset($_GET['confirm']))
-{
-	$confirm = true;
-}
-else
-{
-	$confirm = false;
-}
+$confirm = check_http_var_exists('confirm', false);
 
-// cancel
-if(isset($_POST['cancel']) || isset($_GET['cancel']))
+if(check_http_var_exists('cancel', false))
 {
 	$cancel = true;
 	$mode = '';
@@ -46,55 +36,22 @@ else
 	$cancel = false;
 }
 
-// get starting position
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-// get show amount
-if (isset($_GET['show']) || isset($_POST['show']))
-{
-	$show = (isset($_POST['show'])) ? intval($_POST['show']) : intval($_GET['show']);
-}
-else
-{
-	$show = $config['topics_per_page'];
-}
-	//Prevent zero or negative show number
-if ($show < 1)
-{
-	$show = $config['topics_per_page'];
-}
+$show = request_var('show', $config['topics_per_page']);
+$show = ($show < 1) ? $config['topics_per_page'] : $show;
 
-// sort method
-if (isset($_GET['sort']) || isset($_POST['sort']))
-{
-	$sort = (isset($_POST['sort'])) ? htmlspecialchars($_POST['sort']) : htmlspecialchars($_GET['sort']);
-	$sort = str_replace("\'", "''", $sort);
-}
-else
-{
-	$sort = 'user_regdate';
-}
+$sort_method = request_var('sort_method', 'user_regdate');
 
-// sort order
-if(isset($_POST['order']))
-{
-	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-elseif(isset($_GET['order']))
-{
-	$sort_order = ($_GET['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-else
-{
-	$sort_order = 'ASC';
-}
+$sort_order = request_var('order', 'ASC');
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 // alphanumeric stuff
-if (isset($_GET['alphanum']) || isset($_POST['alphanum']))
+$alphanum = request_var('alphanum', '');
+if (!empty($alphanum))
 {
-	$alphanum = (isset($_POST['alphanum'])) ? htmlspecialchars($_POST['alphanum']) : htmlspecialchars($_GET['alphanum']);
-	$alphanum = str_replace("\'", "''", $alphanum);
+	$alphanum = $db->sql_escape($alphanum);
 	switch($dbms)
 	{
 		case 'postgres':
@@ -112,29 +69,13 @@ else
 	$alpha_where = '';
 }
 
-$user_ids = array();
-
-// users id
-// because it is an array we will intval() it when we use it
-if (isset($_POST[POST_USERS_URL]) || isset($_GET[POST_USERS_URL]))
-{
-	$user_ids = (isset($_POST[POST_USERS_URL])) ? $_POST[POST_USERS_URL] : $_GET[POST_USERS_URL];
-}
-else
-{
-	unset($user_ids);
-}
-
+$user_ids = request_var(POST_USERS_URL, array(0));
 
 switch($mode)
 {
 	case 'delete':
 
-		//
-		// see if cancel has been hit and redirect if it has
-		// shouldn't get to this point if it has been hit but
-		// do this just in case
-		//
+		// see if cancel has been hit and redirect if it has shouldn't get to this point if it has been hit but do this just in case
 		if ($cancel)
 		{
 			redirect(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT);
@@ -197,19 +138,13 @@ switch($mode)
 
 	case 'ban':
 
-		//
-		// see if cancel has been hit and redirect if it has
-		// shouldn't get to this point if it has been hit but
-		// do this just in case
-		//
+		// see if cancel has been hit and redirect if it has shouldn't get to this point if it has been hit but do this just in case
 		if ($cancel)
 		{
 			redirect(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT);
 		}
 
-		//
 		// check confirm and either ban or show confirm message
-		//
 		if (!$confirm)
 		{
 			$i = 0;
@@ -235,7 +170,8 @@ switch($mode)
 				'L_NO' => $lang['No'],
 
 				'S_CONFIRM_ACTION' => append_sid('admin_userlist.' . PHP_EXT . '?mode=ban'),
-				'S_HIDDEN_FIELDS' => $hidden_fields)
+				'S_HIDDEN_FIELDS' => $hidden_fields
+				)
 			);
 		}
 		else
@@ -306,9 +242,7 @@ switch($mode)
 
 	case 'group':
 
-		//
 		// add users to a group
-		//
 		if (!$confirm)
 		{
 			// show form to select which group to add users to
@@ -350,7 +284,8 @@ switch($mode)
 			{
 				$template->assign_block_vars('grouprow',array(
 					'GROUP_NAME' => $row['group_name'],
-					'GROUP_ID' => $row['group_id'])
+					'GROUP_ID' => $row['group_id']
+					)
 				);
 			}
 		}
@@ -453,9 +388,7 @@ switch($mode)
 		// get and display all of the users
 		$template->set_filenames(array('body' => ADM_TPL . 'userlist_body.tpl'));
 
-		//
 		// gets for alphanum
-		//
 		$alpha_range = array();
 		$alpha_letters = array();
 		$alpha_letters = range('A','Z');
@@ -637,7 +570,7 @@ switch($mode)
 				'USER_LANG' => $row['user_lang'],
 				'USER_STYLE' => $row['user_style'],
 				'EMAIL' => $row['user_email'],
-				'U_PM' => append_sid(IP_ROOT_PATH . 'privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '='. $row['user_id']),
+				'U_PM' => append_sid(IP_ROOT_PATH . CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '='. $row['user_id']),
 				'U_MANAGE' => append_sid(IP_ROOT_PATH . ADM . '/admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 				'U_PERMISSIONS' => append_sid(IP_ROOT_PATH . ADM . '/admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $row['user_id'])
 				)

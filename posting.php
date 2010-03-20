@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_POSTING', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
@@ -45,37 +44,30 @@ $class_topics = new class_topics();
 $class_topics->var_init(true);
 
 // Check and set various parameters
-// UI2DB ADD
-//, 'mark_edit' => 'mark_edit'
-$params = array('submit' => 'post', 'news_category' => 'news_category', 'preview' => 'preview', 'draft' => 'draft', 'draft_mode' => 'draft_mode', 'delete' => 'delete', 'poll_delete' => 'poll_delete', 'poll_add' => 'add_poll_option', 'poll_edit' => 'edit_poll_option', 'mode' => 'mode', 'mark_edit' => 'mark_edit');
-while(list($var, $param) = @each($params))
-{
-	if (!empty($_POST[$param]) || !empty($_GET[$param]))
-	{
-		$$var = (!empty($_POST[$param])) ? htmlspecialchars($_POST[$param]) : htmlspecialchars($_GET[$param]);
-	}
-	else
-	{
-		$$var = '';
-	}
-}
+$sid = request_var('sid', '');
+
+$mode = request_var('mode', '');
+$submit = request_var('post', '');
+$news_category = request_var('news_category', '');
+$preview = request_var('preview', '');
+$draft = request_var('draft', '');
+$draft_mode = request_var('draft_mode', '');
+$delete = request_var('delete', '');
+$poll_delete = request_var('poll_delete', '');
+$poll_add = request_var('add_poll_option', '');
+$poll_edit = request_var('edit_poll_option', '');
+// UPI2DB - BEGIN
+$mark_edit = request_var('mark_edit', '');
+// UPI2DB - END
 
 $confirm = isset($_POST['confirm']) ? true : false;
-$sid = (isset($_POST['sid'])) ? $_POST['sid'] : 0;
-$draft_confirm = false;
-if(!empty($_POST['draft_confirm']))
-{
-	$draft_confirm = (($_POST['draft_confirm'] == true) ? true : false);
-}
-$draft = (!empty($draft) || ($draft_confirm == true)) ? true : false;
+$draft_confirm = !empty($_POST['draft_confirm']) ? true : false;
+$draft = (!empty($draft) || $draft_confirm) ? true : false;
 
-$params = array('lock_subject' => 'lock_subject');
-while(list($var, $param) = @each($params))
-{
-	$$var = request_var($param, 0);
-	$$var = (($$var < 0) ? 0 : $$var);
-}
+$lock_subject = request_var('lock_subject', 0);
 
+$draft_subject = '';
+$draft_message = '';
 if ($config['allow_drafts'] && ($draft_mode == 'draft_load') && ($draft_id > 0))
 {
 	$sql = "SELECT d.*
@@ -98,16 +90,14 @@ if ($config['allow_drafts'] && ($draft_mode == 'draft_load') && ($draft_id > 0))
 			{
 				$topic_id = '';
 			}
-			//$_POST['subject'] = stripslashes($draft_row['draft_subject']);
-			//$_POST['message'] = stripslashes($draft_row['draft_message']);
-			$_POST['subject'] = htmlspecialchars_decode($draft_row['draft_subject'], ENT_COMPAT);
-			$_POST['message'] = htmlspecialchars_decode($draft_row['draft_message'], ENT_COMPAT);
+			$draft_subject = $draft_row['draft_subject'];
+			$draft_message = htmlspecialchars_decode($draft_row['draft_message'], ENT_COMPAT);
 			$preview = true;
 		}
 		else
 		{
-			$_POST['subject'] = stripslashes($draft_row['draft_subject']);
-			$_POST['message'] = stripslashes($draft_row['draft_message']);
+			$draft_subject = $draft_row['draft_subject'];
+			$draft_message = $draft_row['draft_message'];
 			$preview = true;
 		}
 	}
@@ -127,19 +117,21 @@ $refresh = $preview || $poll_add || $poll_edit || $poll_delete || ($draft && !$d
 //echo $topic_type;
 //$topic_type = (in_array($topic_type, array(0, 1, 2, 3, 4))) ? $topic_type : POST_NORMAL;
 $topic_show_portal = (!empty($_POST['topic_show_portal'])) ? true : false;
-$topic_type = (!empty($_POST['topictype'])) ? intval($_POST['topictype']) : POST_NORMAL;
+$topic_type = request_var('topictype', POST_NORMAL);
 if (!$topic_type)
 {
 	$topic_type = POST_NORMAL;
 }
-$year = (!empty($_POST['topic_calendar_year'])) ? intval($_POST['topic_calendar_year']) : '';
-$month = (!empty($_POST['topic_calendar_month'])) ? intval($_POST['topic_calendar_month']) : '';
-$day = (!empty($_POST['topic_calendar_day'])) ? intval($_POST['topic_calendar_day']) : '';
-$hour = (!empty($_POST['topic_calendar_hour'])) ? intval($_POST['topic_calendar_hour']) : '';
-$min = (!empty($_POST['topic_calendar_min'])) ? intval($_POST['topic_calendar_min']) : '';
-$d_day = (!empty($_POST['topic_calendar_duration_day'])) ? intval($_POST['topic_calendar_duration_day']) : '';
-$d_hour = (!empty($_POST['topic_calendar_duration_hour'])) ? intval($_POST['topic_calendar_duration_hour']) : '';
-$d_min = (!empty($_POST['topic_calendar_duration_min'])) ? intval($_POST['topic_calendar_duration_min']) : '';
+
+// Maybe better do not replace these $_POST with request_var, or we may have further problems later
+$year = request_post_var('topic_calendar_year', 0);
+$month = request_post_var('topic_calendar_month', 0);
+$day = request_post_var('topic_calendar_day', 0);
+$hour = request_post_var('topic_calendar_hour', 0);
+$min = request_post_var('topic_calendar_min', 0);
+$d_day = request_post_var('topic_calendar_duration_day', 0);
+$d_hour = request_post_var('topic_calendar_duration_hour', 0);
+$d_min = request_post_var('topic_calendar_duration_min', 0);
 if (empty($year) || empty($month) || empty($day))
 {
 	$year = '';
@@ -521,11 +513,11 @@ if ($result && $post_info)
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
-		elseif (!$post_data['last_post'] && !$is_auth['auth_mod'] && ($mode == 'delete' || $delete))
+		elseif (!$post_data['last_post'] && !$is_auth['auth_mod'] && (($mode == 'delete') || $delete))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Cannot_delete_replied']);
 		}
-		elseif (!$post_data['edit_poll'] && !$is_auth['auth_mod'] && ($mode == 'poll_delete' || $poll_delete))
+		elseif (!$post_data['edit_poll'] && !$is_auth['auth_mod'] && (($mode == 'poll_delete') || $poll_delete))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Cannot_delete_poll']);
 		}
@@ -580,7 +572,7 @@ if ($result && $post_info)
 		$post_data['edit_poll'] = false;
 	}
 
-	if (($mode == 'poll_delete') && !isset($poll_id))
+	if (($mode == 'poll_delete') && empty($poll_id))
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_such_post']);
 	}
@@ -747,8 +739,8 @@ else
 	}
 }
 
-$attach_sig = ($submit || $refresh) ? ((!empty($_POST['attach_sig'])) ? true : 0) : (($userdata['user_id'] == ANONYMOUS) ? 0 : $userdata['user_attachsig']);
-$setbm = ($submit || $refresh) ? ((!empty($_POST['setbm'])) ? true : 0) : (($userdata['user_id'] == ANONYMOUS) ? 0 : $userdata['user_setbm']);
+$attach_sig = ($submit || $refresh) ? ((!empty($_POST['attach_sig'])) ? 1 : 0) : (($userdata['user_id'] == ANONYMOUS) ? 0 : $userdata['user_attachsig']);
+$setbm = ($submit || $refresh) ? ((!empty($_POST['setbm'])) ? 1 : 0) : (($userdata['user_id'] == ANONYMOUS) ? 0 : $userdata['user_setbm']);
 execute_posting_attachment_handling();
 
 // What shall we do?
@@ -768,8 +760,7 @@ if($userdata['session_logged_in'] && $post_data['disp_news'])
 	$news_cat = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
-		if(($news_category > 0 && $news_category == $row['news_id']) ||
-		($post_data['news_id'] > 0 && $post_data['news_id'] == $row['news_id']))
+		if(($news_category > 0 && $news_category == $row['news_id']) || ($post_data['news_id'] > 0 && $post_data['news_id'] == $row['news_id']))
 		{
 			$news_sel = $row;
 		}
@@ -835,24 +826,23 @@ if (($delete || $poll_delete || ($mode == 'delete')) && !$confirm)
 }
 elseif ($mode == 'thank')
 {
-	$topic_id = intval($_GET[POST_TOPIC_URL]);
-	$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
+	if (empty($topic_id))
+	{
+		message_die(GENERAL_MESSAGE, 'No topic Selected');
+	}
+
 	if (!($userdata['session_logged_in']))
 	{
 		$message = $lang['thanks_not_logged'];
 		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
-	if (empty($topic_id))
-	{
-		message_die(GENERAL_MESSAGE, 'No topic Selected');
-	}
 
 	$userid = $userdata['user_id'];
 	$thanks_date = time();
 
 	// Check if user is the topic starter
-	$sql = "SELECT `topic_poster`
+	$sql = "SELECT topic_poster
 			FROM " . TOPICS_TABLE . "
 			WHERE topic_id = '" . $topic_id . "'";
 	$result = $db->sql_query($sql);
@@ -870,7 +860,7 @@ elseif ($mode == 'thank')
 	}
 
 	// Check if user had thanked before
-	$sql = "SELECT `topic_id`
+	$sql = "SELECT topic_id
 			FROM " . THANKS_TABLE . "
 			WHERE topic_id = '" . $topic_id . "'
 			AND user_id = '" . $userid . "'";
@@ -880,7 +870,7 @@ elseif ($mode == 'thank')
 	{
 		// Insert thanks
 		$sql = "INSERT INTO " . THANKS_TABLE . " (topic_id, user_id, thanks_time)
-		VALUES ('" . $topic_id . "', '" . $userid . "', " . $thanks_date . ") ";
+		VALUES ('" . $topic_id . "', '" . $userid . "', " . $thanks_date . ")";
 		$result = $db->sql_query($sql);
 		$message = $lang['thanks_add'];
 		// MG Cash MOD For IP - BEGIN
@@ -1055,17 +1045,24 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		case 'newtopic':
 		case 'reply':
 			// CrackerTracker v5.x
-			if (($ctracker_config->settings['vconfirm_guest'] == 1) && !$userdata['session_logged_in'])
+			if (($config['ctracker_vconfirm_guest'] == 1) && !$userdata['session_logged_in'])
 			{
 				define('CRACKER_TRACKER_VCONFIRM', true);
 				define('POST_CONFIRM_CHECK', true);
-				include_once(IP_ROOT_PATH . 'ctracker/engines/ct_visual_confirm.' . PHP_EXT);
+				include_once(IP_ROOT_PATH . 'includes/ctracker/engines/ct_visual_confirm.' . PHP_EXT);
 			}
 			// CrackerTracker v5.x
-			$username = (!empty($_POST['username'])) ? $_POST['username'] : '';
-			$subject = (!empty($_POST['subject'])) ? trim($_POST['subject']) : '';
-			$topic_desc = (!empty($_POST['topic_desc'])) ? trim($_POST['topic_desc']) : '';
-			$message = (!empty($_POST['message'])) ? trim($_POST['message']) : '';
+
+			$username = htmlspecialchars_decode(request_post_var('username', '', true), ENT_COMPAT);
+			$subject = !empty($draft_subject) ? $draft_subject : request_post_var('subject', '', true);
+			$topic_desc = request_post_var('topic_desc', '', true);
+			$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+			$notes = htmlspecialchars_decode(request_post_var('notes', '', true), ENT_COMPAT);
+
+			$poll_title = (isset($_POST['poll_title']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_title', '', true) : '';
+			$poll_options = (isset($_POST['poll_option_text']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_option_text', array(0 => ''), true) : '';
+			$poll_length = (isset($_POST['poll_length']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_length', 0) : 0;
+
 			$topic_calendar_time = ($topic_calendar_time != $post_data['topic_calendar_time'] && !$is_auth['auth_cal']) ? $post_data['topic_calendar_time'] : $topic_calendar_time;
 			if (empty($topic_calendar_time)) $topic_calendar_time = 0;
 			$topic_calendar_duration = ($topic_calendar_duration != $post_data['topic_calendar_duration'] && !$is_auth['auth_cal']) ? $post_data['topic_calendar_duration'] : $topic_calendar_duration;
@@ -1077,9 +1074,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			{
 				$topic_calendar_duration = 0;
 			}
-			$poll_title = (isset($_POST['poll_title']) && $is_auth['auth_pollcreate']) ? $_POST['poll_title'] : '';
-			$poll_options = (isset($_POST['poll_option_text']) && $is_auth['auth_pollcreate']) ? $_POST['poll_option_text'] : '';
-			$poll_length = (isset($_POST['poll_length']) && $is_auth['auth_pollcreate']) ? $_POST['poll_length'] : '';
+
 			// Event Registration - BEGIN
 			$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['start_registration'] : '';
 			$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reset_registration'] : '';
@@ -1088,15 +1083,14 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option3'] : '';
 			$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_length'] : '';
 			// Event Registration - END
-			$notes = empty($_POST['notes']) ? '' : trim(stripslashes($_POST['notes']));
 
 			prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $subject, $message, $poll_title, $poll_options, $poll_length, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
 
 			// MG Drafts - BEGIN
 			if (($config['allow_drafts'] == true) && $draft && $draft_confirm && $userdata['session_logged_in'] && (($mode == 'reply') || ($mode == 'newtopic')))
 			{
-				save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, addslashes(strip_tags($subject)), addslashes($message));
-				//save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, str_replace("\'", "''", strip_tags($subject)), str_replace("\'", "''", $message));
+				save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, strip_tags($subject), $message);
+				//save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, $db->sql_escape(strip_tags($subject)), $db->sql_escape($message));
 				$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 
 				$redirect_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id);
@@ -1116,6 +1110,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 				{
 					$topic_type = (($topic_type != $post_data['topic_type']) && !$is_auth['auth_sticky'] && !$is_auth['auth_announce'] && !$is_auth['auth_globalannounce']) ? $post_data['topic_type'] : $topic_type;
 				}
+
 				if(($mode == 'editpost') && $config['edit_notes'] && (strlen($notes) > 2))
 				{
 					$sql = "SELECT edit_notes FROM " . POSTS_TABLE . " WHERE post_id='" . $post_id . "'";
@@ -1154,7 +1149,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 						'text' => $notes
 					);
 					empty_cache_folders(POSTS_CACHE_FOLDER);
-					$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes='" . addslashes(serialize($notes_list)) . "' WHERE post_id='" . $post_id . "'";
+					$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes = '" . $db->sql_escape(serialize($notes_list)) . "' WHERE post_id = '" . $post_id . "'";
 					$db->sql_query($sql);
 
 					// We need this, otherwise editing for normal users will be account twice!
@@ -1167,22 +1162,23 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					$sql = "UPDATE " . POSTS_TABLE . " SET " . $edited_sql . " WHERE post_id='" . $post_id . "'";
 					$db->sql_query($sql);
 				}
+
 				if ($lock_subject)
 				{
 					$url = '[url="' . CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . (!empty($topic_id_append) ? ($topic_id_append . '&amp;') : '') . POST_POST_URL . '=' . $lock_subject . '#p' . $lock_subject . '"]';
-					$message = addslashes(sprintf($lang['Link_to_post'], $url, '[/url]')) . $message;
+					$message = sprintf($lang['Link_to_post'], $url, '[/url]') . $message;
 				}
 
 				$topic_title_clean = '';
 				$topic_tags = '';
 				if ($post_data['first_post'])
 				{
-					$topic_title_clean = (empty($_POST['topic_title_clean']) ? $subject : trim($_POST['topic_title_clean']));
+					$topic_title_clean = request_var('topic_title_clean', $subject, true);
 					$topic_title_clean = substr(ip_clean_string($topic_title_clean, $lang['ENCODING']), 0, 254);
 
 					@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
 					$class_topics_tags = new class_topics_tags();
-					$topic_tags = (empty($_POST['topic_tags']) ? '' : trim($_POST['topic_tags']));
+					$topic_tags = request_var('topic_tags', '', true);
 					if (!empty($topic_tags))
 					{
 						while(substr($topic_tags, -1) == ',')
@@ -1196,7 +1192,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					unset($class_topics_tags);
 				}
 
-				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, str_replace("\'", "''", $username), str_replace("\'", "''", $subject), $topic_title_clean, $topic_tags, str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, str_replace("\'", "''", $topic_desc), $topic_calendar_time, $topic_calendar_duration);
+				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, $username, $subject, $topic_title_clean, $topic_tags, $message, $poll_title, $poll_options, $poll_length, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
 			}
 			break;
 
@@ -1331,17 +1327,18 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 $notes = '';
 if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 {
-	$username = (!empty($_POST['username'])) ? htmlspecialchars(trim(stripslashes($_POST['username']))) : '';
-	$subject = (!empty($_POST['subject'])) ? htmlspecialchars(trim(stripslashes($_POST['subject']))) : '';
-	$message = (!empty($_POST['message'])) ? htmlspecialchars(trim(stripslashes($_POST['message']))) : '';
-	$topic_desc = (!empty($_POST['topic_desc'])) ? htmlspecialchars(trim(stripslashes($_POST['topic_desc']))) : '';
+	$username = htmlspecialchars_decode(request_post_var('username', '', true), ENT_COMPAT);
+	$subject = !empty($draft_subject) ? $draft_subject : request_post_var('subject', '', true);
+	$topic_desc = request_post_var('topic_desc', '', true);
+	$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+	$notes = htmlspecialchars_decode(request_post_var('notes', '', true), ENT_COMPAT);
 
-	$topic_title_clean = (empty($_POST['topic_title_clean']) ? $subject : htmlspecialchars(trim(stripslashes($_POST['topic_title_clean']))));
+	$topic_title_clean = (empty($_POST['topic_title_clean']) ? $subject : request_post_var('topic_title_clean', '', true));
 	$topic_title_clean = substr(ip_clean_string($topic_title_clean, $lang['ENCODING']), 0, 254);
 
 	@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
 	$class_topics_tags = new class_topics_tags();
-	$topic_tags = (empty($_POST['topic_tags']) ? '' : htmlspecialchars(trim(stripslashes($_POST['topic_tags']))));
+	$topic_tags = request_post_var('topic_tags', '', true);
 	if (!empty($topic_tags))
 	{
 		while(substr($topic_tags, -1) == ',')
@@ -1354,15 +1351,15 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	$topic_tags = substr($topic_tags, 0, 254);
 	unset($class_topics_tags);
 
-	$notes = empty($_POST['notes']) ? '' : trim(stripslashes($_POST['notes']));
+	$poll_title = (!empty($_POST['poll_title'])) ? request_post_var('poll_title', '', true) : '';
+	$poll_length = (isset($_POST['poll_length'])) ? request_post_var('poll_length', 0) : 0;
+	$poll_length =  max(0, $poll_length);
 
-	$poll_title = (!empty($_POST['poll_title'])) ? htmlspecialchars(trim(stripslashes($_POST['poll_title']))) : '';
-	$poll_length = (isset($_POST['poll_length'])) ? max(0, intval($_POST['poll_length'])) : 0;
-
-	$poll_options = array();
-	if (!empty($_POST['poll_option_text']))
+	$poll_options = request_post_var('poll_option_text', array(0 => ''), true);
+	if (!empty($poll_options))
 	{
-		while(list($option_id, $option_text) = @each($_POST['poll_option_text']))
+		@reset($poll_options);
+		while(list($option_id, $option_text) = @each($poll_options))
 		{
 			if(isset($_POST['del_poll_option'][$option_id]))
 			{
@@ -1370,14 +1367,14 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 			}
 			elseif (!empty($option_text))
 			{
-				$poll_options[intval($option_id)] = htmlspecialchars(trim(stripslashes($option_text)));
+				$poll_options[$option_id] = $option_text;
 			}
 		}
 	}
 
-	if (isset($poll_add) && !empty($_POST['add_poll_option_text']))
+	if (!empty($poll_add) && !empty($_POST['add_poll_option_text']))
 	{
-		$poll_options[] = htmlspecialchars(trim(stripslashes($_POST['add_poll_option_text'])));
+		$poll_options[] = request_post_var('add_poll_option_text', '', true);
 	}
 
 	// Event Registration - BEGIN
@@ -1389,7 +1386,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_length']) : '';
 	// Event Registration - END
 
-	if ($mode == 'newtopic' || $mode == 'reply')
+	if (($mode == 'newtopic') || ($mode == 'reply'))
 	{
 		$user_sig = ($userdata['user_sig'] != '' && $config['allow_sig']) ? $userdata['user_sig'] : '';
 	}
@@ -1400,9 +1397,9 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 
 	if($preview)
 	{
-
-		$preview_message = stripslashes(prepare_message(addslashes(unprepare_message($message)), $html_on, $bbcode_on, $smilies_on));
 		$preview_subject = $subject;
+		//$preview_message = prepare_message(unprepare_message($message), $html_on, $bbcode_on, $smilies_on);
+		$preview_message = htmlspecialchars($message);
 		$preview_username = $username;
 
 		// Finalise processing as per viewtopic
@@ -1450,8 +1447,8 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 
 		//$preview_message = str_replace("\n", '<br />', $preview_message);
 		$url = '[url="' . CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . (!empty($topic_id_append) ? ($topic_id_append . '&') : '') . POST_POST_URL . '=' . $lock_subject . '#p' . $lock_subject . '"]';
-		$extra_message_body = addslashes(sprintf($lang['Link_to_post'], $url, '[/url]')) . $message;
-		$preview_message = ($lock_subject) ? stripslashes($extra_message_body) . $preview_message : $preview_message;
+		$extra_message_body = sprintf($lang['Link_to_post'], $url, '[/url]') . $message;
+		$preview_message = ($lock_subject) ? ($extra_message_body . $preview_message) : $preview_message;
 
 		$template->set_filenames(array('preview' => 'posting_preview.tpl'));
 		if (!empty($topic_calendar_time))
@@ -1465,7 +1462,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		}
 		$attachment_mod['posting']->preview_attachments();
 
-		$preview_subject = strtr($preview_subject, array_flip(get_html_translation_table(HTML_ENTITIES)));
+		//$preview_subject = strtr($preview_subject, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		$template->assign_vars(array(
 			'TOPIC_TITLE' => $preview_subject,
 			'POST_SUBJECT' => $preview_subject,
@@ -1495,7 +1492,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 else
 {
 	// User default entry point
-	$postreport=(isset($_GET['postreport']))? intval($_GET['postreport']) : 0;
+	$postreport = request_var('postreport', 0);
 	if ($postreport)
 	{
 		$sql = 'SELECT topic_id FROM ' . POSTS_TABLE . ' WHERE post_id = ' . $postreport;
@@ -1983,11 +1980,11 @@ if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post'])
 
 // CrackerTracker v5.x
 $confirm_image = '';
-if (($ctracker_config->settings['vconfirm_guest'] == 1) && !$userdata['session_logged_in'])
+if (($config['ctracker_vconfirm_guest'] == 1) && !$userdata['session_logged_in'])
 {
 	define('CRACKER_TRACKER_VCONFIRM', true);
 	$template->assign_block_vars('switch_confirm', array());
-	include_once(IP_ROOT_PATH . 'ctracker/engines/ct_visual_confirm.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/ctracker/engines/ct_visual_confirm.' . PHP_EXT);
 }
 // CrackerTracker v5.x
 
@@ -2161,11 +2158,13 @@ if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll']))
 
 	if(!empty($poll_options))
 	{
+		@reset($poll_options);
 		while(list($option_id, $option_text) = each($poll_options))
 		{
 			$template->assign_block_vars('poll_option_rows', array(
-				'POLL_OPTION' => str_replace('"', '&quot;', $option_text),
-				'S_POLL_OPTION_NUM' => $option_id)
+				'POLL_OPTION' => $option_text,
+				'S_POLL_OPTION_NUM' => $option_id
+				)
 			);
 		}
 	}
@@ -2175,7 +2174,7 @@ if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll']))
 
 // Event Registration - BEGIN
 // Registration entry switch/output
-if(($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post'])) && $is_auth['auth_cal'])
+if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post'])) && $is_auth['auth_cal'])
 {
 	if($preview)
 	{

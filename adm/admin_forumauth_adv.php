@@ -23,8 +23,9 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . './includes/def_auth.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if( isset($_POST['submit']) )
+if(isset($_POST['submit']))
 {
 
 	$var_ary = array(
@@ -46,15 +47,15 @@ if( isset($_POST['submit']) )
 		{
 			$value = intval($_POST[$forum_auth_fields[$i]]);
 
-			if ( $forum_auth_fields[$i] == 'auth_vote' )
+			if ($forum_auth_fields[$i] == 'auth_vote')
 			{
-				if ( $_POST['auth_vote'] == AUTH_ALL )
+				if ($_POST['auth_vote'] == AUTH_ALL)
 				{
 					$value = AUTH_REG;
 				}
 			}
 
-			$sql .= ( ( $sql != '' ) ? ', ' : '' ) .$forum_auth_fields[$i] . ' = ' . $value;
+			$sql .= (($sql != '') ? ', ' : '') .$forum_auth_fields[$i] . ' = ' . $value;
 		}
 
 		$sql = "UPDATE " . FORUMS_TABLE . "
@@ -87,7 +88,7 @@ for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 
 	for($k = 0; $k < sizeof($forum_auth_levels); $k++)
 	{
-		$selected = ( $simple_auth_ary[0][$j] == $forum_auth_const[$k] ) ? ' selected="selected"' : '';
+		$selected = ($simple_auth_ary[0][$j] == $forum_auth_const[$k]) ? ' selected="selected"' : '';
 		$custom_auth[$j] .= '<option value="' . $forum_auth_const[$k] . '"' . $selected . '>' . $lang['Forum_' . $forum_auth_levels[$k]] . '</option>';
 	}
 	$custom_auth[$j] .= '</select>&nbsp;';

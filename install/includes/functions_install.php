@@ -143,7 +143,6 @@ class ip_functions
 		$content .= '*' . "\n";
 		$content .= '*/' . "\n";
 		$content .= '' . "\n";
-		$content .= '// CTracker_Ignore: File Checked By Human' . "\n";
 		$content .= 'define(\'IN_CMS_PAGE\', true);' . "\n";
 		$content .= 'define(\'IN_ICYPHOENIX\', true);' . "\n";
 		$content .= 'if (!defined(\'IP_ROOT_PATH\')) define(\'IP_ROOT_PATH\', \'./\');' . "\n";

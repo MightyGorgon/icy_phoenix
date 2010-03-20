@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_VIEWFORUM', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
@@ -34,9 +33,9 @@ define('VIEWFORUMLIST_PER_PAGE', 1000);
 // CONFIG - END
 
 // Start initial var setup
-if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
+$selected_id = request_var('selected_id', '');
+if (!empty($selected_id))
 {
-	$selected_id = isset($_POST['selected_id']) ? $_POST['selected_id'] : $_GET['selected_id'];
 	$type = substr($selected_id, 0, 1);
 	$id = intval(substr($selected_id, 1));
 	if ($type == POST_FORUM_URL)
@@ -65,13 +64,13 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-$start = isset($_GET['start']) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
-$page_number = ($page_number < 1) ? false : $page_number;
+$page_number = request_var('page_number', 0);
+$page_number = ($page_number < 1) ? 0 : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
+$start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
 // Topics Sorting - BEGIN
 $letters_array = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
@@ -127,7 +126,7 @@ else // we have a single letter, so let's sort alphabetically...
 {
 	$sort_dir = 'ASC';
 	$sort_order_sql = "t.topic_title " . $sort_dir;
-	$start_letter_sql = "AND t.topic_title LIKE '" . $start_letter . "%'";
+	$start_letter_sql = "AND t.topic_title LIKE '" . $db->sql_escape($start_letter) . "%'";
 }
 // Topics Sorting - END
 

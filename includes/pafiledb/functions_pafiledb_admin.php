@@ -24,14 +24,14 @@ if(!function_exists('admin_display_category_auth'))
 {
 	function admin_display_category_auth($cat_parent = 0, $depth = 0)
 	{
-		global $pafiledb, $pafiledb_template;
+		global $pafiledb, $template;
 		global $cat_auth_fields, $optionlist_mod, $optionlist_acl_adv;
 		$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
 		if(isset($pafiledb->subcat_rowset[$cat_parent]))
 		{
 			foreach($pafiledb->subcat_rowset[$cat_parent] as $sub_cat_id => $cat_data)
 			{
-				$pafiledb_template->assign_block_vars('cat_row', array(
+				$template->assign_block_vars('cat_row', array(
 					'CAT_NAME' => $cat_data['cat_name'],
 					'IS_HIGHER_CAT' => ($cat_data['cat_allow_file']) ? false : true,
 					'PRE' => $pre,
@@ -42,8 +42,9 @@ if(!function_exists('admin_display_category_auth'))
 
 				for($j = 0; $j < sizeof($cat_auth_fields); $j++)
 				{
-					$pafiledb_template->assign_block_vars('cat_row.aclvalues', array(
-						'S_ACL_SELECT' => $optionlist_acl_adv[$sub_cat_id][$j])
+					$template->assign_block_vars('cat_row.aclvalues', array(
+						'S_ACL_SELECT' => $optionlist_acl_adv[$sub_cat_id][$j]
+						)
 					);
 				}
 				admin_display_category_auth($sub_cat_id, $depth + 1);
@@ -138,14 +139,14 @@ if(!function_exists('admin_cat_main'))
 {
 	function admin_cat_main($cat_parent = 0, $depth = 0)
 	{
-		global $pafiledb, $pafiledb_template;
+		global $pafiledb, $template;
 
 		$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
 		if(isset($pafiledb->subcat_rowset[$cat_parent]))
 		{
 			foreach($pafiledb->subcat_rowset[$cat_parent] as $subcat_id => $cat_data)
 			{
-				$pafiledb_template->assign_block_vars('cat_row', array(
+				$template->assign_block_vars('cat_row', array(
 					'IS_HIGHER_CAT' => ($cat_data['cat_allow_file'] == PA_CAT_ALLOW_FILE) ? false : true,
 					'U_CAT' => append_sid('admin_pa_category.php?cat_id=' . $subcat_id),
 					'U_CAT_EDIT' => append_sid('admin_pa_category.' . PHP_EXT . '?mode=edit&amp;cat_id=' . $subcat_id),
@@ -169,14 +170,14 @@ if (!function_exists('admin_display_cat_auth'))
 {
 	function admin_display_cat_auth($cat_parent = 0, $depth = 0)
 	{
-		global $pafiledb, $pafiledb_template;
+		global $pafiledb, $template;
 		global $cat_auth_fields, $cat_auth_const, $cat_auth_levels, $lang;
 		$pre = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $depth);
 		if(isset($pafiledb->subcat_rowset[$cat_parent]))
 		{
 			foreach($pafiledb->subcat_rowset[$cat_parent] as $sub_cat_id => $cat_data)
 			{
-				$pafiledb_template->assign_block_vars('cat_row', array(
+				$template->assign_block_vars('cat_row', array(
 					'CATEGORY_NAME' => $cat_data['cat_name'],
 					'IS_HIGHER_CAT' => ($cat_data['cat_allow_file']) ? false : true,
 					'PRE' => $pre,
@@ -194,7 +195,7 @@ if (!function_exists('admin_display_cat_auth'))
 					}
 					$custom_auth[$j] .= '</select>&nbsp;';
 
-					$pafiledb_template->assign_block_vars('cat_row.cat_auth_data', array(
+					$template->assign_block_vars('cat_row.cat_auth_data', array(
 						'S_AUTH_LEVELS_SELECT' => $custom_auth[$j])
 					);
 				}

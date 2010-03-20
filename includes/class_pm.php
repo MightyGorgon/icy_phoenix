@@ -91,10 +91,9 @@ class class_pm
 		// Let's do some checking to make sure that mass mail functions are working in win32 versions of php.
 		if (preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$config['smtp_delivery'])
 		{
-			$ini_val = (@phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 			// We are running on windows, force delivery to use our smtp functions since php's are broken by default
 			$config['smtp_delivery'] = 1;
-			$config['smtp_host'] = @$ini_val('SMTP');
+			$config['smtp_host'] = @ini_get('SMTP');
 		}
 
 		$emailer = new emailer($config['smtp_delivery']);
@@ -133,7 +132,7 @@ class class_pm
 		else
 		{
 			$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path']));
-			$script_name = ($script_name != '') ? $script_name . '/privmsg.' . PHP_EXT : 'privmsg.' . PHP_EXT;
+			$script_name = ($script_name != '') ? $script_name . '/privmsg.' . PHP_EXT : CMS_PAGE_PRIVMSG;
 			$server_name = trim($config['server_name']);
 			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
 			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';

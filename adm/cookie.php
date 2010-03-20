@@ -14,7 +14,6 @@
 * geocator(geocator@gmail.com)
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_ADMIN', true);
 
@@ -30,28 +29,19 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if (htmlspecialchars($_POST['action']) == "write")
+$action = request_var('action', '');
+if ($action == 'write')
 {
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . str_replace("\'", "''", htmlspecialchars($_POST['cookie_domain'])) . "' WHERE config_name = '" . cookie_domain . "'";
-	$db->sql_query($sql);
-
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . str_replace("\'", "''", htmlspecialchars($_POST['cookie_path'])) . "' WHERE config_name = '" . cookie_path . "'";
-	$db->sql_query($sql);
-
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . str_replace("\'", "''", htmlspecialchars($_POST['cookie_name'])) . "' WHERE config_name = '" . cookie_name . "'";
-	$db->sql_query($sql);
-
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . str_replace("\'", "''", htmlspecialchars($_POST['domain_name'])) . "' WHERE config_name = '" . server_name . "'";
-	$db->sql_query($sql);
-
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . str_replace("\'", "''", htmlspecialchars($_POST['script_path'])) . "' WHERE config_name = '" . script_path . "'";
-	$db->sql_query($sql);
-
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = " . intval($_POST['server_port']) . " WHERE config_name = '" . server_port . "'";
-	$db->sql_query($sql);
-
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = " . intval($_POST['cookie_secure']) . " WHERE config_name = '" . cookie_secure . "'";
-	$db->sql_query($sql);
+	$configs_array = array('cookie_domain', 'cookie_path', 'cookie_name', 'domain_name', 'script_path', 'server_port', 'cookie_secure');
+	foreach ($configs_array as $k)
+	{
+		$tmp_value = fix_config_values($k, request_post_var($k, '', true));
+		if(isset($_POST[$k]))
+		{
+			set_config($k, $tmp_value, false);
+		}
+	}
+	$cache->destroy('config');
 
 	echo ('<p><b>' . $lang['Config_updated'] . '</b></p>');
 	echo ('<p><b>' . $lang['Clear_browser'] . '</b></p>');
@@ -61,9 +51,9 @@ else
 {
 	$file_path = $_SERVER['SCRIPT_NAME'];
 	$dirs = explode('/', $file_path);
-	$dir_count = sizeof( $dirs ) - 1;
-	unset( $dirs[$dir_count] );
-	unset( $dirs[$dir_count-1] );
+	$dir_count = sizeof($dirs) - 1;
+	unset($dirs[$dir_count]);
+	unset($dirs[$dir_count - 1]);
 	$script_path = implode( '/', $dirs) . '/';
 
 	$server_port = $_SERVER['SERVER_PORT'];
@@ -88,8 +78,6 @@ else
 	{
 		$cookie_domain = $server_name;
 	}
-
-
 
 	$cookie_path = substr($script_path, 0, -1);
 

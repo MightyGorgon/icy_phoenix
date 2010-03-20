@@ -23,69 +23,38 @@ $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END
 */
 
-@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+setup_extra_lang(array('lang_bbcb_mg'));
 
 // This page is not in layout special...
 $cms_page_id_tmp = 'pic_upload';
 $cms_auth_level_tmp = (isset($config['auth_view_pic_upload']) ? $config['auth_view_pic_upload'] : AUTH_ALL);
 $view_pic_upload = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 
-if (defined('IN_PA_POSTING'))
+if (defined('BBCB_MG_SMALL'))
 {
-	if (defined('BBCB_MG_SMALL'))
-	{
-		$pafiledb_template->set_filenames(array('bbcb_mg' => 'bbcb_mg_small.tpl'));
-	}
-	elseif (defined('BBCB_MG_CUSTOM'))
-	{
-		$pafiledb_template->set_filenames(array('bbcb_mg' => 'bbcb_mg_custom.tpl'));
-	}
-	else
-	{
-		$pafiledb_template->set_filenames(array('bbcb_mg' => 'bbcb_mg.tpl'));
-	}
+	$template->set_filenames(array('bbcb_mg' => 'bbcb_mg_small.tpl'));
+}
+elseif (defined('BBCB_MG_CUSTOM'))
+{
+	$template->set_filenames(array('bbcb_mg' => 'bbcb_mg_custom.tpl'));
 }
 else
 {
-	if (defined('BBCB_MG_SMALL'))
-	{
-		$template->set_filenames(array('bbcb_mg' => 'bbcb_mg_small.tpl'));
-	}
-	elseif (defined('BBCB_MG_CUSTOM'))
-	{
-		$template->set_filenames(array('bbcb_mg' => 'bbcb_mg_custom.tpl'));
-	}
-	else
-	{
-		$template->set_filenames(array('bbcb_mg' => 'bbcb_mg.tpl'));
-	}
+	$template->set_filenames(array('bbcb_mg' => 'bbcb_mg.tpl'));
 }
 
 if ($config['enable_postimage_org'] == true)
 {
-	if (defined('IN_PA_POSTING'))
-	{
-		$pafiledb_template->assign_var('S_POSTIMAGE_ORG', true);
-	}
-	else
-	{
-		$template->assign_var('S_POSTIMAGE_ORG', true);
-	}
+	$template->assign_var('S_POSTIMAGE_ORG', true);
 }
 
 if ($config['enable_colorpicker'] == true)
 {
-	if (defined('IN_PA_POSTING'))
-	{
-		$pafiledb_template->assign_var('S_COLORPICKER', true);
-	}
-	else
-	{
-		$template->assign_var('S_COLORPICKER', true);
-	}
+	$template->assign_var('S_COLORPICKER', true);
 }
 
-if ($config['default_lang'] === 'catalan' || $config['default_lang'] === 'italian' || $config['default_lang'] === 'german' || $config['default_lang'] === 'spanish')
+$allowed_langs = array('dutch', 'german', 'italian', 'spanish');
+if (in_array($config['default_lang'], $allowed_langs))
 {
 	$post_image_lang = 'javascript:void(0);" onclick="window.open(\'http://www.postimage.org/index.php?mode=phpbb&lang=' . $config['default_lang'] . '&tpl=.&forumurl=\' + escape(document.location.href),\'_imagehost\',\'width=500,height=400,resizable=yes\');';
 }
@@ -96,26 +65,12 @@ else
 
 if ($config['switch_bbcb_active_content'] == true)
 {
-	if (defined('IN_PA_POSTING'))
-	{
-		$pafiledb_template->assign_var('S_ACTIVE_CONTENT', true);
-	}
-	else
-	{
-		$template->assign_var('S_ACTIVE_CONTENT', true);
-	}
+	$template->assign_var('S_ACTIVE_CONTENT', true);
 }
 
 if ($view_pic_upload == true)
 {
-	if (defined('IN_PA_POSTING'))
-	{
-		$pafiledb_template->assign_var('S_PIC_UPLOAD', true);
-	}
-	else
-	{
-		$template->assign_var('S_PIC_UPLOAD', true);
-	}
+	$template->assign_var('S_PIC_UPLOAD', true);
 }
 
 $bbcbmg_path_prefix = '';
@@ -124,7 +79,7 @@ if (isset($bbcbmg_in_acp))
 	$bbcbmg_path_prefix = ($bbcbmg_in_acp == true) ? '../' : '';
 }
 
-$parsing_template = array(
+$template->assign_vars(array(
 	'JAVASCRIPT_LANG_VARS' => $lang['JAVASCRIPT_LANG_VARS'],
 	'BBCB_MG_PATH_PREFIX' => $bbcbmg_path_prefix,
 	//'BBCB_MG_IMG_PATH' => $bbcbmg_path_prefix . 'images/bbcb_mg/images/',
@@ -364,16 +319,8 @@ $parsing_template = array(
 
 	'L_BBCODE_CLOSE_TAGS' => $lang['Close_Tags'],
 	'L_STYLES_TIP' => $lang['Styles_tip']
+	)
 );
-
-if (defined('IN_PA_POSTING'))
-{
-	$pafiledb_template->assign_vars($parsing_template);
-}
-else
-{
-	$template->assign_vars($parsing_template);
-}
 
 if (defined('BBCB_MG_SMALL'))
 {

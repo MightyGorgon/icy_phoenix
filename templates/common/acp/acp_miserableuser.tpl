@@ -19,7 +19,7 @@
 <tr>
 	<td class="row1 row-center">
 		<input type="text" class="post" name="username" maxlength="50" size="20" />
-		<input type="Submit" name="submit" value="{L_LOOK_UP}" class="mainoption" />
+		<input type="submit" name="submit" value="{L_LOOK_UP}" class="mainoption" />
 		<input type="button" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}', '_search', 'width=400,height=250,resizable=yes');" />
 	</td>
 </tr>

@@ -63,9 +63,9 @@ if($mode != 'list')
 		}
 
 		$template->assign_vars(array(
-			'TICKET_TITLE' => htmlspecialchars(stripslashes($ticket_info['ticket_cat_title'])),
-			'TICKET_DESCRIPTION' => htmlspecialchars(stripslashes($ticket_info['ticket_cat_des'])),
-			'TICKET_EMAILS' => htmlspecialchars(stripslashes($ticket_info['ticket_cat_emails'])),
+			'TICKET_TITLE' => $ticket_info['ticket_cat_title'],
+			'TICKET_DESCRIPTION' => $ticket_info['ticket_cat_des'],
+			'TICKET_EMAILS' => $ticket_info['ticket_cat_emails'],
 
 			'L_SUBMIT' => $lang['Submit'],
 
@@ -86,9 +86,9 @@ if($mode != 'list')
 		}
 
 		$inputs_array = array(
-			'ticket_cat_title' => addslashes($ticket_cat_title),
-			'ticket_cat_des' => addslashes($ticket_cat_des),
-			'ticket_cat_emails' => addslashes($ticket_cat_emails),
+			'ticket_cat_title' => $ticket_cat_title,
+			'ticket_cat_des' => $ticket_cat_des,
+			'ticket_cat_emails' => $ticket_cat_emails,
 		);
 
 		if ($ticket_cat_id > 0)
@@ -152,9 +152,9 @@ else
 
 			$template->assign_block_vars('ticket', array(
 				'ROW_CLASS' => $row_class,
-				'TICKET_TITLE' => htmlspecialchars(stripslashes($ticket_rows[$i]['ticket_cat_title'])),
-				'TICKET_DESCRIPTION' => htmlspecialchars(stripslashes($ticket_rows[$i]['ticket_cat_des'])),
-				'TICKET_EMAILS' => htmlspecialchars(stripslashes($ticket_rows[$i]['ticket_cat_emails'])),
+				'TICKET_TITLE' => $ticket_rows[$i]['ticket_cat_title'],
+				'TICKET_DESCRIPTION' => $ticket_rows[$i]['ticket_cat_des'],
+				'TICKET_EMAILS' => $ticket_rows[$i]['ticket_cat_emails'],
 
 				'U_EDIT' => append_sid('admin_tickets.' . PHP_EXT . '?mode=edit&amp;ticket_cat_id=' . $ticket_rows[$i]['ticket_cat_id']),
 				'U_DELETE' => append_sid('admin_tickets.' . PHP_EXT . '?mode=delete&amp;ticket_cat_id=' . $ticket_rows[$i]['ticket_cat_id'])

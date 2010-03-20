@@ -34,7 +34,7 @@ if (empty($profiledata['user_id']))
 
 // Update the profile view list
 $user = $profiledata['user_id'];
-$viewer = addslashes($userdata['username']);
+$viewer = $userdata['username'];
 $viewer_id = $userdata['user_id'];
 $current_time = time();
 if ($user != $viewer_id)
@@ -55,7 +55,7 @@ if ($user != $viewer_id)
 		if (!$row = $db->sql_fetchrow($result))
 		$sql = "INSERT INTO " . PROFILE_VIEW_TABLE . "
 			(user_id, viewername, viewer_id, view_stamp, counter)
-			VALUES ('$user', '$viewer', '$viewer_id', '$current_time', '1')";
+			VALUES ('$user', '" . $db->sql_escape($viewer) . "', '$viewer_id', '$current_time', '1')";
 		$db->sql_query($sql);
 		$count = $row['counter'] + 1;
 
@@ -117,7 +117,7 @@ $cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $c
 $show_latest_pics = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 if ($show_latest_pics)
 {
-	include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
+	setup_extra_lang(array('lang_album_main'));
 
 	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
 	$album_rate_pic_url = $album_show_pic_url;
@@ -156,9 +156,9 @@ if ($show_latest_pics)
 
 	if ($totalpicrow > 0)
 	{
-		$temp_url = append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']);
-		$album_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_album'] . '" alt="' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '" title="' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '" /></a>';
-		$album = '<a href="' . $temp_url . '">' . sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username']) . '</a>';
+		$temp_url = append_sid(CMS_PAGE_ALBUM . '?user_id=' . $profiledata['user_id']);
+		$album_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_album'] . '" alt="' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username'])) . '" /></a>';
+		$album = '<a href="' . $temp_url . '">' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User'], $profiledata['username'])) . '</a>';
 
 		$template->assign_block_vars('recent_pics_block', array());
 		for ($i = 0; $i < (($totalpicrow < $limit_sql) ? $totalpicrow : $limit_sql); $i += $cols_per_page)
@@ -200,8 +200,8 @@ if ($show_latest_pics)
 
 				$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
 				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
-					'PIC_TITLE' => htmlspecialchars($recentrow[$j]['pic_title']),
-					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . htmlspecialchars($recentrow[$j]['pic_title']) . '</a>',
+					'PIC_TITLE' => $recentrow[$j]['pic_title'],
+					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $recentrow[$j]['pic_title'] . '</a>',
 					'POSTER' => $recent_poster,
 					'TIME' => create_date($config['default_dateformat'], $recentrow[$j]['pic_time'], $config['board_timezone']),
 
@@ -240,7 +240,7 @@ $user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . 
 $user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
 // Mighty Gorgon - Multiple Ranks - END
 
-$pm_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
+$pm_url = append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
 $pm_img = '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 $pm = '<a href="' . $pm_url . '">' . $lang['Send_private_message'] . '</a>';
 
@@ -426,40 +426,33 @@ if (!empty($config['plugins']['activity']['enabled']))
 }
 // Activity - END
 
-if (function_exists('get_html_translation_table'))
-{
-	$u_search_author = urlencode(strtr($profiledata['username'], array_flip(get_html_translation_table(HTML_ENTITIES))));
-}
-else
-{
-	$u_search_author = urlencode(str_replace(array('&amp;', '&#039;', '&quot;', '&lt;', '&gt;'), array('&', "'", '"', '<', '>'), $profiledata['username']));
-}
+$u_search_author = urlencode(strtr($profiledata['username'], array_flip(get_html_translation_table(HTML_ENTITIES))));
 
 // Generate page
-$link_name = htmlspecialchars(stripslashes($profiledata['username']));
+$link_name = htmlspecialchars($profiledata['username']);
 $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
-$breadcrumbs_links_right = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . sprintf($lang['Search_user_topics_started'], $profiledata['username']) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author) . '">' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
+$breadcrumbs_links_right = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author) . '">' . htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow)) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
 
 // Start add - Online/Offline/Hidden Mod
 if ($profiledata['user_session_time'] >= (time() - $config['online_time']))
 {
 	if ($profiledata['user_allow_viewonline'])
 	{
-		$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online'] . '" alt="' . sprintf($lang['is_online'], $profiledata['username']) . '" title="' . sprintf($lang['is_online'], $profiledata['username']) . '" /></a>';
+		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_online'] . '" alt="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" /></a>';
 	}
 	elseif ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $profiledata['user_id'])
 	{
-		$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden'] . '" alt="' . sprintf($lang['is_hidden'], $profiledata['username']) . '" title="' . sprintf($lang['is_hidden'], $profiledata['username']) . '" /></a>';
+		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_hidden'] . '" alt="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" /></a>';
 	}
 	else
 	{
-		$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . sprintf($lang['is_offline'], $profiledata['username']) . '" title="' . sprintf($lang['is_offline'], $profiledata['username']) . '" />';
+		$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" />';
 	}
 }
 else
 {
-	$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . sprintf($lang['is_offline'], $profiledata['username']) . '" title="' . sprintf($lang['is_offline'], $profiledata['username']) . '" />';
+	$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" />';
 }
 // End add - Online/Offline/Hidden Mod
 display_upload_attach_box_limits($profiledata['user_id']);
@@ -488,7 +481,7 @@ $template->assign_vars(array(
 
 	// Start add - Last visit MOD
 	'L_LOGON' => $lang['Last_logon'],
-	'LAST_LOGON' => ($userdata['user_level'] == ADMIN || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastlogon'])? create_date($config['default_dateformat'], $profiledata['user_lastlogon'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
+	'LAST_LOGON' => (($userdata['user_level'] == ADMIN) || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastlogon'])? create_date($config['default_dateformat'], $profiledata['user_lastlogon'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
 	'L_TOTAL_ONLINE_TIME' => $lang['Total_online_time'],
 	'TOTAL_ONLINE_TIME' => make_hours($profiledata['user_totaltime']),
 	'L_LAST_ONLINE_TIME' => $lang['Last_online_time'],
@@ -574,14 +567,14 @@ $template->assign_vars(array(
 
 	'AVATAR_IMG' => $avatar_img,
 
-	'L_VIEWING_PROFILE' => sprintf($lang['Viewing_user_profile'], $profiledata['username']),
-	'L_ABOUT_USER' => sprintf($lang['About_user'], $profiledata['username']),
+	'L_VIEWING_PROFILE' => htmlspecialchars(sprintf($lang['Viewing_user_profile'], $profiledata['username'])),
+	'L_ABOUT_USER' => htmlspecialchars(sprintf($lang['About_user'], $profiledata['username'])),
 	'L_AVATAR' => $lang['Avatar'],
 	'L_POSTER_RANK' => $lang['Poster_rank'],
 	'L_JOINED' => $lang['Joined'],
 	'L_TOTAL_POSTS' => $lang['Total_posts'],
-	'L_SEARCH_USER_POSTS' => sprintf($lang['Search_user_posts'], $profiledata['username']),
-	'L_SEARCH_USER_TOPICS' => sprintf($lang['Search_user_topics_started'], $profiledata['username']),
+	'L_SEARCH_USER_POSTS' => htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])),
+	'L_SEARCH_USER_TOPICS' => htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])),
 	'L_CONTACT' => $lang['Contact'],
 	'L_EMAIL_ADDRESS' => $lang['Email_address'],
 	'L_EMAIL' => $lang['Email'],
@@ -608,12 +601,12 @@ $template->assign_vars(array(
 	'ALBUM_IMG' => $album_img,
 	'ALBUM' => $album,
 	'U_PERSONAL_GALLERY' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']),
-	'L_PERSONAL_GALLERY' => sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow),
+	'L_PERSONAL_GALLERY' => htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow)),
 	'U_TOGGLE_VIEW_ALL' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_ALL),
 	'TOGGLE_VIEW_ALL_IMG' => $images['icon_tiny_search'],
-	'L_TOGGLE_VIEW_ALL' => sprintf($lang['Show_All_Pic_View_Mode_Profile'], $profiledata['username']),
+	'L_TOGGLE_VIEW_ALL' => htmlspecialchars(sprintf($lang['Show_All_Pic_View_Mode_Profile'], $profiledata['username'])),
 	'U_ALL_IMAGES_BY_USER' => append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST),
-	'L_ALL_IMAGES_BY_USER' => sprintf($lang['Picture_List_Of_User'], $profiledata['username']),
+	'L_ALL_IMAGES_BY_USER' => htmlspecialchars(sprintf($lang['Picture_List_Of_User'], $profiledata['username'])),
 	'L_PERSONAL_ALBUM' => $lang['Your_Personal_Gallery'],
 	'L_PIC_TITLE' => $lang['Pic_Image'],
 	'L_POSTER' => $lang['Pic_Poster'],
@@ -623,7 +616,7 @@ $template->assign_vars(array(
 	'L_NO_PICS' => $lang['No_Pics'],
 	'L_RECENT_PUBLIC_PICS' => $lang['Recent_Public_Pics'],
 	'S_COLS' => $album_config['cols_per_page'],
-	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100/$album_config['cols_per_page']) . '%',
+	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100 / $album_config['cols_per_page']) . '%',
 	//'S_COL_WIDTH' => (100/$album_config['cols_per_page']) . '%',
 	// Mighty Gorgon - Full Album Pack - END
 	// Start add - Online/Offline/Hidden Mod
@@ -646,7 +639,7 @@ $template->assign_vars(array(
 	'L_INVISION_PPD_STATS' => $lang['Invision_PPD_Stats'],
 	'L_INVISION_SIGNATURE' => $lang['Invision_Signature'],
 	'L_INVISION_WEBSITE' => $lang['Invision_Website'],
-	'L_INVISION_VIEWING_PROFILE' => sprintf($lang['Invision_View_Profile'], $profiledata['username']),
+	'L_INVISION_VIEWING_PROFILE' => htmlspecialchars(sprintf($lang['Invision_View_Profile'], $profiledata['username'])),
 //====
 //==== Author: Disturbed One [http://anthonycoy.com] =================== |
 //==== End Invision View Profile ======================================= |
@@ -684,12 +677,7 @@ $template->assign_vars(array(
 
 // Custom Profile Fields - BEGIN
 // Include Language
-$language = $config['default_lang'];
-if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT))
-{
-	$language = 'english';
-}
-include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_profile_fields.' . PHP_EXT);
+setup_extra_lang(array('lang_profile_fields'));
 
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 $profile_data = get_fields('WHERE view_in_profile = ' . VIEW_IN_PROFILE . ' AND users_can_view = ' . ALLOW_VIEW);
@@ -782,7 +770,7 @@ if (sizeof($groups) > 0)
 	$template->assign_block_vars('switch_groups_on', array());
 }
 {
-	for ($i=0; $i < sizeof($groups); $i++)
+	for ($i = 0; $i < sizeof($groups); $i++)
 	{
 		$is_ok = false;
 		// groupe invisible ?
@@ -895,7 +883,8 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 
 	if ($total_ips > 0)
 	{
-		$i_start = (isset($_GET['i_start'])) ? intval($_GET['i_start']) : 0;
+		$i_start = request_var('i_start', 0);
+		$i_start = ($i_start < 0) ? 0 : $i_start;
 
 		$sql = 'SELECT poster_ip, COUNT(*) AS postings FROM ' . POSTS_TABLE . ' WHERE poster_id = "' . $profiledata['user_id'] . '" GROUP BY poster_ip ORDER BY ' . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . " DESC LIMIT $i_start, " . $config['topics_per_page'];
 		$result = $db->sql_query($sql);
@@ -910,12 +899,13 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 				'U_POSTER_IP' => 'http://whois.sc/' . $poster_ip,
 				'POSTER_IP' => $poster_ip,
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
-				'U_POSTS_LINK' => append_sid(CMS_PAGE_SEARCH . '?mode=results&amp;search_author=' . urlencode($profiledata['username']) . '&amp;search_ip=' . $poster_ip),
-			));
+				'U_POSTS_LINK' => append_sid(CMS_PAGE_SEARCH . '?mode=results&amp;search_author=' . urlencode(htmlspecialchars($profiledata['username'])) . '&amp;search_ip=' . $poster_ip),
+				)
+			);
 		}
 
 		$base_url = CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'];
-		$pagination = generate_pagination($base_url, $total_ips, $config['topics_per_page'], $i_start, TRUE, 'i_start');
+		$pagination = generate_pagination($base_url, $total_ips, $config['topics_per_page'], $i_start, true, 'i_start');
 
 		$template->assign_vars(array(
 			'IPS_PAGINATION' => $pagination,
@@ -1010,7 +1000,7 @@ if ($userdata['user_level'] == ADMIN)
 	$template->assign_block_vars('switch_user_admin',array());
 }
 
-$sql = "SELECT * FROM " . BANLIST_TABLE . " WHERE ban_userid = " . $profiledata['user_id'] . " OR ban_email = '" . $profiledata['user_email'] . "'";
+$sql = "SELECT * FROM " . BANLIST_TABLE . " WHERE ban_userid = " . $profiledata['user_id'] . " OR ban_email = '" . $db->sql_escape($profiledata['user_email']) . "'";
 $result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
@@ -1027,7 +1017,7 @@ $template->assign_vars(array(
 	'L_ADMIN_EDIT_PERMISSIONS' => $lang['Admin_edit_permissions'],
 	'L_USER_ACTIVE_INACTIVE' => ($profiledata['user_active'] == 1) ? $lang['User_active'] : $lang['User_not_active'],
 	'L_BANNED_USERNAME' => ($banned_username == '') ? $lang['Username_not_banned'] : $lang['Username_banned'],
-	'L_BANNED_EMAIL' => ($banned_email == '') ? $lang['User_email_not_banned'] : sprintf($lang['User_email_banned'], $profiledata['user_email']),
+	'L_BANNED_EMAIL' => ($banned_email == '') ? $lang['User_email_not_banned'] : htmlspecialchars(sprintf($lang['User_email_banned'], $profiledata['user_email'])),
 
 	'U_ADMIN_EDIT_PROFILE' => ADM . '/admin_users.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=edit&amp;redirect=yes',
 	'U_ADMIN_EDIT_PERMISSIONS' => ADM . '/admin_ug_auth.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=user'

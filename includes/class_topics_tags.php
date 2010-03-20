@@ -285,11 +285,11 @@ class class_topics_tags
 	/*
 	* Get topics from tag
 	*/
-	function get_topics_with_tags($tags, $start, $limit)
+	function get_topics_with_tags($tags, $start, $n_items)
 	{
 		global $db, $lang;
 
-		$limit_sql = (!empty($start) ? (" LIMIT " . $start . (!empty($limit) ? (", " . $limit) : '')) : '');
+		$limit_sql = (!empty($n_items) ? (" LIMIT " . (!empty($start) ? ($start . ", " . $n_items) : ($n_items . " "))) : "");
 
 		$topics = array();
 		$sql = "SELECT t.*, f.forum_name
@@ -320,7 +320,7 @@ class class_topics_tags
 		{
 			foreach ($topic_tags as $tag)
 			{
-				$topic_tags_links .= (!empty($topic_tags_links) ? ', ' : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($tag))) . '">' . htmlspecialchars($tag) . '</a>';
+				$topic_tags_links .= (!empty($topic_tags_links) ? ', ' : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . urlencode($tag)) . '">' . $tag . '</a>';
 			}
 		}
 

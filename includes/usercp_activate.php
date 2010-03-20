@@ -21,9 +21,11 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
+$user_id = request_var(POST_USERS_URL, 0);
+
 $sql = "SELECT user_active, user_id, username, user_email, user_newpasswd, user_lang, user_actkey
 	FROM " . USERS_TABLE . "
-	WHERE user_id = " . intval($_GET[POST_USERS_URL]);
+	WHERE user_id = '" . $db->sql_escape($user_id) . "'";
 $result = $db->sql_query($sql);
 
 if ($row = $db->sql_fetchrow($result))
@@ -49,7 +51,7 @@ if ($row = $db->sql_fetchrow($result))
 			}
 		}
 
-		$sql_update_pass = ($row['user_newpasswd'] != '') ? ", user_password = '" . str_replace("\'", "''", $row['user_newpasswd']) . "', user_newpasswd = ''" : '';
+		$sql_update_pass = ($row['user_newpasswd'] != '') ? ", user_password = '" . $db->sql_escape($row['user_newpasswd']) . "', user_newpasswd = ''" : '';
 
 		$sql = "UPDATE " . USERS_TABLE . "
 			SET user_active = 1, user_actkey = ''" . $sql_update_pass . "

@@ -37,18 +37,7 @@ if (!$userdata['session_logged_in'])
 $album_config['hon_rate_sep'] = false;
 // Force to use the same table for backward compatibility - END
 
-if (isset($_POST['hon_rating']))
-{
-	$rate_point = intval($_POST['hon_rating']);
-}
-elseif (isset($_GET['hon_rating']))
-{
-	$rate_point = intval($_GET['hon_rating']);
-}
-else
-{
-	$rate_point = 0;
-}
+$rate_point = request_var('hon_rating', 0);
 
 //if user havent rated a picture, show page, else update database
 if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
@@ -196,8 +185,8 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 		'U_COMMENT' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id)),
 		'S_ACTION' => append_sid(album_append_uid('album_hotornot.' . PHP_EXT)),
 
-		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
-		'PIC_DESC' => nl2br(htmlspecialchars($thispic['pic_desc'])),
+		'PIC_TITLE' => $thispic['pic_title'],
+		'PIC_DESC' => nl2br($thispic['pic_desc']),
 		'POSTER' => $poster,
 		'PIC_TIME' => create_date($config['default_dateformat'], $thispic['pic_time'], $config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],
@@ -230,8 +219,8 @@ else
 
 	$rate_user_id = $userdata['user_id'];
 	$rate_user_ip = $userdata['session_ip'];
-	$pic_id = (isset($_POST['pic_id']) || isset($_GET['pic_id'])) ? (isset($_POST['pic_id'])) ? $_POST['pic_id'] : $_GET['pic_id'] : 0;
-	if($pic_id == 0)
+	$pic_id = request_var('pic_id', 0);
+	if($pic_id <= 0)
 	{
 		message_die(GENERAL_ERROR, 'Wrong Pic ID');
 	}

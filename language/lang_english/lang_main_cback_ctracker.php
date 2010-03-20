@@ -116,7 +116,7 @@ $lang = array_merge($lang, array(
 	'ctracker_code_count' => 'The number of entries of Visual Confirmation has exceeded the limit for this session.',
 
 /*
-* Language Strings used in ctracker_login.php
+* Language Strings used in login_captcha.php
 */
 	'ctracker_login_title' => 'CrackerTracker Account Activation',
 	'ctracker_login_logged' => 'Logged In Users cannot access the site.',

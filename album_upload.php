@@ -51,30 +51,15 @@ else
 // Check the request
 // for this Upload script, we prefer POST to GET
 // ------------------------------------
-
-if(isset($_POST['user_id']))
+$album_user_id = request_var('user_id', 0);
+if (empty($album_user_id))
 {
-	$album_user_id = intval($_POST['user_id']);
-}
-elseif(isset($_GET['user_id']))
-{
-	$album_user_id = intval($_GET['user_id']);
-}
-else
-{
-	// it's a public category we are uploading too
+	// if no user_id was supplied then it's a public category
 	$album_user_id = ALBUM_PUBLIC_GALLERY;
 }
 
-if(isset($_POST['cat_id']))
-{
-	$cat_id = intval($_POST['cat_id']);
-}
-elseif(isset($_GET['cat_id']))
-{
-	$cat_id = intval($_GET['cat_id']);
-}
-else
+$cat_id = request_var('cat_id', 0);
+if ($cat_id <= 0)
 {
 	message_die(GENERAL_ERROR, 'No categories specified');
 }
@@ -262,10 +247,10 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		// build fake list of personal galleries (these will get created when needed later automatically
 		$userinfo = album_get_nonexisting_personal_gallery_info();
 
-		//for($idx=0; $idx < sizeof($userinfo); $idx++)
+		//for($idx = 0; $idx < sizeof($userinfo); $idx++)
 		//Replaced to fix slowdown
 		$count = sizeof($userinfo);
-		for($idx=0; $idx < count; $idx++)
+		for($idx = 0; $idx < count; $idx++)
 		//End Replace
 		{
 			// Is user allowed to create this personal gallery?
@@ -283,7 +268,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 
 		if (!empty($personal_gallery_list))
 		{
-			$personal_gallery_list = '<option value="' . ALBUM_JUMPBOX_SEPERATOR . '">------------------------------</option>' . $personal_gallery_list;
+			$personal_gallery_list = '<option value="' . ALBUM_JUMPBOX_SEPARATOR . '">------------------------------</option>' . $personal_gallery_list;
 		}
 	}
 
@@ -368,7 +353,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 
 		'S_ALBUM_JUMPBOX_PUBLIC_GALLERY' => intval(ALBUM_JUMPBOX_PUBLIC_GALLERY),
 		'S_ALBUM_JUMPBOX_USERS_GALLERY' => intval(ALBUM_JUMPBOX_USERS_GALLERY),
-		'S_ALBUM_JUMPBOX_SEPERATOR' => intval(ALBUM_JUMPBOX_SEPERATOR),
+		'S_ALBUM_JUMPBOX_SEPARATOR' => intval(ALBUM_JUMPBOX_SEPARATOR),
 		'S_ALBUM_ROOT_CATEGORY' => intval(ALBUM_ROOT_CATEGORY),
 		'L_NO_VALID_CAT_SELECTED' => $lang['No_valid_category_selected'],
 
@@ -439,10 +424,12 @@ else
 	// --------------------------------
 	// Check posted info
 	// --------------------------------
-
-	$pic_title = addslashes(str_replace("\'", "''", trim($_POST['pic_title'])));
-	$pic_desc = addslashes(str_replace("\'", "''", substr(trim($_POST['pic_desc']), 0, $album_config['desc_length'])));
-	$pic_username = (!$userdata['session_logged_in']) ? addslashes(substr(str_replace("\'", "''", htmlspecialchars(trim($_POST['pic_username']))), 0, 32)) : addslashes(str_replace("'", "''", $userdata['username']));
+	$pic_title = request_var('pic_title', '', true);
+	$pic_desc = request_var('pic_desc', '', true);
+	$pic_desc = substr($pic_desc, 0, $album_config['desc_length']);
+	$pic_username = request_var('pic_username', '', true);
+	$pic_username = substr($pic_username, 0, 32);
+	$pic_username = (!$userdata['session_logged_in']) ? $pic_username : $userdata['username'];
 
 	if(!isset($_FILES['pic_file']))
 	{
@@ -1201,7 +1188,7 @@ else
 		// --------------------------------
 
 		$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_thumbnail, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
-				VALUES ('" . $pic_extra_path . $pic_filename . "', '" . $pic_thumbnail . "', '" . $pic_title . "', '" . $pic_desc . "', '" . $pic_user_id . "', '" . $pic_user_ip . "', '" . $pic_username . "', '" . $pic_time . "', '" . $cat_id . "', '" . $pic_approval . "')";
+				VALUES ('" . $pic_extra_path . $pic_filename . "', '" . $pic_thumbnail . "', '" . $db->sql_escape($pic_title) . "', '" . $db->sql_escape($pic_desc) . "', '" . $pic_user_id . "', '" . $pic_user_ip . "', '" . $db->sql_escape($pic_username) . "', '" . $pic_time . "', '" . $cat_id . "', '" . $pic_approval . "')";
 		$result = $db->sql_query($sql);
 
 		if ($is_personal_gallery == true)
@@ -1378,8 +1365,8 @@ else
 
 function getmicrotime()
 {
-	list($usec, $sec) = explode(" ", microtime());
-	return ((float)$usec + (float)$sec);
+	list($usec, $sec) = explode(' ', microtime());
+	return ((float) $usec + (float) $sec);
 }
 
 ?>

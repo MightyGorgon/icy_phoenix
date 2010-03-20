@@ -44,54 +44,27 @@ if(!function_exists('period'))
 	}
 }
 
-$submit_wait = (isset($_POST['submit_wait'])) ? true : 0;
-$confirm = (isset($_POST['confirm'])) ? true : 0;
-$delete = (isset($_POST['delete'])) ? true : 0;
-$activate = (isset($_POST['activate'])) ? true : 0;
+$submit_wait = (isset($_POST['submit_wait'])) ? true : false;
+$confirm = (isset($_POST['confirm'])) ? true : false;
+$delete = (isset($_POST['delete'])) ? true : false;
+$activate = (isset($_POST['activate'])) ? true : false;
 $mark_list = (!empty($_POST['mark'])) ? $_POST['mark'] : 0;
 
-if(isset($_POST['letter']))
+if(check_http_var_exists('letter', false))
 {
-	$by_letter = ($_POST['letter']) ? $_POST['letter'] : 'all';
-}
-elseif(isset($_GET['letter']))
-{
-	$by_letter = ($_GET['letter']) ? $_GET['letter'] : 'all';
+	$by_letter = request_var('letter', 'all');
 }
 
-if(isset($_POST['action']) || isset($_GET['action']))
-{
-	$action = (isset($_POST['action'])) ? $_POST['action'] : $_GET['action'];
-	if($action != 'inactive' && $action != 'active')
-	{
-		$action = 'inactive';
-	}
-}
-else
-{
-	$action = 'inactive';
-}
+$action = request_var('action', 'inactive');
+$action = check_var_value($action, array('inactive', 'active'));
 
-if(!empty($_POST['mode']) || !empty($_GET['mode']))
-{
-	$mode = (!empty($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-}
-else
-{
-	$mode = '';
-}
+$mode = request_var('mode', '');
 
-$start = (!empty($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if(isset($_POST[POST_USERS_URL]) || isset($_GET[POST_USERS_URL]))
-{
-	$user_id = (isset($_POST[POST_USERS_URL])) ? intval($_POST[POST_USERS_URL]) : intval($_GET[POST_USERS_URL]);
-}
-else
-{
-	$user_id = '';
-}
+$user_id = request_var(POST_USERS_URL, 0);
+$user_id = ($user_id < 2) ? ANONYMOUS : $user_id;
 
 if((($delete && $confirm) || $activate) && $mark_list)
 {
@@ -267,7 +240,7 @@ elseif($by_letter == 'others')
 }
 else
 {
-	$letter_sql = " AND username LIKE '$by_letter%' ";
+	$letter_sql = " AND username LIKE '" . $db->sql_escape($by_letter) . "%' ";
 }
 
 $sql_count = "SELECT COUNT(user_id) AS total_users FROM " . USERS_TABLE . " ";
@@ -289,7 +262,7 @@ switch($action)
 
 if($submit_wait && (!empty($_POST['days']) || !empty($_GET['days'])))
 {
-	$days = (!empty($_POST['days'])) ? intval($_POST['days']) : intval($_GET['days']);
+	$days = request_var('days', 0);
 	$awaits = time() - ($days * 86400);
 
 	$limit_awaits_count = " AND user_regdate > $awaits";

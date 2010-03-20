@@ -8,11 +8,11 @@
 <div style="height: 30px; margin-bottom: 5px;">
 
 <!-- IF S_INPUT_ALLOWED -->
-<div class="forumline" style="float: left; margin-right: 5px;"><div class="row1h" onclick="window.location.href='{U_ITEM_ADD}'" style="cursor: pointer; background-image: none; padding: 2px; white-space: nowrap;"><img src="images/cms/b_add.png" alt="{L_DB_ITEM_ADD}" title="{L_DB_ITEM_ADD}" style="vertical-align: middle" />&nbsp;<b>{L_DB_ITEM_ADD}</b>&nbsp;</div></div>
+<div class="forumline" style="float: left; margin-right: 5px;"><div class="row1h" onclick="window.location.href='{U_ITEM_ADD}'" style="cursor: pointer; background-image: none; padding: 2px; white-space: nowrap;"><img src="images/cms/b_add.png" alt="{L_DB_ITEM_ADD}" title="{L_DB_ITEM_ADD}" style="vertical-align: middle;" />&nbsp;<b>{L_DB_ITEM_ADD}</b>&nbsp;</div></div>
 <!-- ENDIF -->
 
 <!-- IF S_EDIT_ALLOWED -->
-<div class="forumline" style="float: left; margin-right: 5px;"><div class="row1h" onclick="window.location.href='{U_ITEM_EDIT}'" style="cursor: pointer; background-image: none; padding: 2px; white-space: nowrap;"><img src="images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" style="vertical-align: middle" />&nbsp;<b>{L_EDIT}</b>&nbsp;</div></div>
+<div class="forumline" style="float: left; margin-right: 5px;"><div class="row1h" onclick="window.location.href='{U_ITEM_EDIT}'" style="cursor: pointer; background-image: none; padding: 2px; white-space: nowrap;"><img src="images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" style="vertical-align: middle;" />&nbsp;<b>{L_EDIT}</b>&nbsp;</div></div>
 <!-- ENDIF -->
 
 &nbsp;
@@ -37,11 +37,11 @@
 <div style="height: 30px; margin-bottom: 5px;">
 
 <!-- IF S_INPUT_ALLOWED -->
-<div class="forumline" style="float: left; margin-right: 5px;"><div class="row1h" onclick="window.location.href='{U_ITEM_ADD}'" style="cursor: pointer; background-image: none; padding: 2px; white-space: nowrap;"><img src="images/cms/b_add.png" alt="{L_DB_ITEM_ADD}" title="{L_DB_ITEM_ADD}" style="vertical-align: middle" />&nbsp;<b>{L_DB_ITEM_ADD}</b>&nbsp;</div></div>
+<div class="forumline" style="float: left; margin-right: 5px;"><div class="row1h" onclick="window.location.href='{U_ITEM_ADD}'" style="cursor: pointer; background-image: none; padding: 2px; white-space: nowrap;"><img src="images/cms/b_add.png" alt="{L_DB_ITEM_ADD}" title="{L_DB_ITEM_ADD}" style="vertical-align: middle;" />&nbsp;<b>{L_DB_ITEM_ADD}</b>&nbsp;</div></div>
 <!-- ENDIF -->
 
 <!-- IF S_EDIT_ALLOWED -->
-<div class="forumline" style="float: left; margin-right: 5px;"><div class="row1h" onclick="window.location.href='{U_ITEM_EDIT}'" style="cursor: pointer; background-image: none; padding: 2px; white-space: nowrap;"><img src="images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" style="vertical-align: middle" />&nbsp;<b>{L_EDIT}</b>&nbsp;</div></div>
+<div class="forumline" style="float: left; margin-right: 5px;"><div class="row1h" onclick="window.location.href='{U_ITEM_EDIT}'" style="cursor: pointer; background-image: none; padding: 2px; white-space: nowrap;"><img src="images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" style="vertical-align: middle;" />&nbsp;<b>{L_EDIT}</b>&nbsp;</div></div>
 <!-- ENDIF -->
 
 &nbsp;

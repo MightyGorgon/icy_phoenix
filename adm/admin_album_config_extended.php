@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 if (!defined('IN_ADMIN'))
 {
@@ -143,7 +142,7 @@ while( $config_file = @readdir($dir) )
 		// valid_selections is the actual selection key, value is just set to 0
 		// NOTE : $album_config_tabs is included in each loaded config file!!!
 		//------------------------------------------------------------------------
-		if ( array_key_exists('selection', $album_config_tabs[$config_tabs_index]) )
+		if (array_key_exists('selection', $album_config_tabs[$config_tabs_index]))
 		{
 			$valid_subtab_selections = array();
 
@@ -151,11 +150,11 @@ while( $config_file = @readdir($dir) )
 			// now find all the valid sub tabs for this valid tab
 			// (anyone knowing what I'm talking about?)
 			//------------------------------------------------------------------------
-			for ($i = 0; $i < sizeof($album_config_tabs[$config_tabs_index]['sub_config']); $i++ )
+			for ($i = 0; $i < sizeof($album_config_tabs[$config_tabs_index]['sub_config']); $i++)
 			{
-				if ( array_key_exists('selection', $album_config_tabs[$config_tabs_index]['sub_config'][$i]) )
+				if (array_key_exists('selection', $album_config_tabs[$config_tabs_index]['sub_config'][$i]))
 				{
-					$valid_subtab_selections[ strval($album_config_tabs[$config_tabs_index]['sub_config'][$i]['selection']) ] = $i;
+					$valid_subtab_selections[strval($album_config_tabs[$config_tabs_index]['sub_config'][$i]['selection'])] = $i;
 				}
 			}
 
@@ -179,11 +178,11 @@ usort($album_config_tabs, sort_cmp);
 //------------------------------------------------------------------------
 // get the selected tab selection from the submitted form
 //------------------------------------------------------------------------
-if (isset ($_POST['tab']))
+if (isset($_POST['tab']))
 {
 	$selected_tab = strtolower($_POST['tab']);
 }
-elseif (isset ($_GET['tab']))
+elseif (isset($_GET['tab']))
 {
 	$selected_tab = strtolower($_GET['tab']);
 }
@@ -193,11 +192,11 @@ elseif (isset ($_GET['tab']))
 // NOTE : a sub tab, is a tab in the left or right side of a configuration
 // for alittle hint see the template file ADM_TPL . 'album_config_sub_body.tpl'
 //------------------------------------------------------------------------
-if (isset ($_POST['subtab']))
+if (isset($_POST['subtab']))
 {
 	$selected_subtab = strtolower($_POST['subtab']);
 }
-elseif (isset ($_GET['subtab']))
+elseif (isset($_GET['subtab']))
 {
 	$selected_subtab = strtolower($_GET['subtab']);
 }
@@ -210,11 +209,11 @@ elseif (isset ($_GET['subtab']))
 //
 // We don't post the actual table name for security reasons !!!
 //------------------------------------------------------------------------
-if (isset ($_POST['config_table']))
+if (isset($_POST['config_table']))
 {
 	$config_table = get_config_table($_POST['config_table']);
 }
-elseif (isset ($_GET['config_table']))
+elseif (isset($_GET['config_table']))
 {
 	$config_table = get_config_table($_GET['config_table']);
 }
@@ -225,7 +224,7 @@ elseif (isset ($_GET['config_table']))
 // list if it can't then set the selected tab to the first in the sorted
 // album config tabs (it will always exists)
 //------------------------------------------------------------------------
-if ( @!array_key_exists($selected_tab,$valid_tab_selections) )
+if (@!array_key_exists($selected_tab,$valid_tab_selections))
 {
 	$selected_tab = $album_config_tabs[0]['selection'];
 }
@@ -235,7 +234,7 @@ if ( @!array_key_exists($selected_tab,$valid_tab_selections) )
 //------------------------------------------------------------------------
 if (is_array($valid_tab_selections) && (sizeof($valid_tab_selections) > 0))
 {
-	if ( @!array_key_exists($selected_subtab,$valid_tab_selections[$selected_tab]) )
+	if (@!array_key_exists($selected_subtab,$valid_tab_selections[$selected_tab]))
 	{
 		$tmp_array = array_flip($valid_tab_selections[$selected_tab]);
 
@@ -279,7 +278,7 @@ for ($outer = 0; $outer < sizeof($album_config_tabs); $outer++)
 	//------------------------------------------------------------------------
 	// find the selected tab and gets the data for that tab; template file...
 	//------------------------------------------------------------------------
-	if ( strcasecmp($selected_tab, $album_config_tabs[$outer]['selection']) == 0)
+	if (strcasecmp($selected_tab, $album_config_tabs[$outer]['selection']) == 0)
 	{
 		//------------------------------------------------------------------------
 		// now find the selected sub tab..if there are any sub tabs at all
@@ -295,7 +294,7 @@ for ($outer = 0; $outer < sizeof($album_config_tabs); $outer++)
 			//------------------------------------------------------------------------
 			// did we find the selected sub tab ?
 			//------------------------------------------------------------------------
-			if ( strcasecmp($selected_subtab, $album_config_tabs[$outer]['sub_config'][$inner]['selection']) == 0)
+			if (strcasecmp($selected_subtab, $album_config_tabs[$outer]['sub_config'][$inner]['selection']) == 0)
 			{
 				$selected_subtab_data = $album_config_tabs[$outer]['sub_config'][$inner];
 			}
@@ -318,7 +317,7 @@ if (empty($selected_tab_data['config_table_name']))
 //------------------------------------------------------------------------
 // save the data from the requested tab (or tab that we are 'leaving')
 //------------------------------------------------------------------------
-if( strcmp($_POST['save_config'], 'true') == 0 )
+if(strcmp($_POST['save_config'], 'true') == 0)
 {
 	if (empty($config_table))
 	{
@@ -328,13 +327,13 @@ if( strcmp($_POST['save_config'], 'true') == 0 )
 	$sql = "SELECT * FROM " . $config_table;
 	$result = $db->sql_query($sql);
 
-	while( $row = $db->sql_fetchrow($result) )
+	while($row = $db->sql_fetchrow($result))
 	{
 		$config_name = $row['config_name'];
-		$config_value = ( isset($_POST[$config_name]) ) ? $_POST[$config_name] : $row['config_value'];
+		$config_value = (isset($_POST[$config_name])) ? $_POST[$config_name] : $row['config_value'];
 
 		$sql = "UPDATE " . $config_table . " SET
-			config_value = '" . str_replace("\'", "''", $config_value) . "'
+			config_value = '" . $db->sql_escape($config_value) . "'
 			WHERE config_name = '$config_name'";
 		$db->sql_query($sql);
 	}
@@ -343,7 +342,7 @@ if( strcmp($_POST['save_config'], 'true') == 0 )
 	//------------------------------------------------------------------------
 	// did the user click 'submit' then display the standard confirmation page
 	//------------------------------------------------------------------------
-	if( isset($_POST['submitted']) )
+	if(isset($_POST['submitted']))
 	{
 		if (isset($_POST['personal_gallery_view']))
 		{
@@ -417,7 +416,8 @@ $template->assign_vars(array(
 	'L_SETTINGS_SAVED' => $saved_info_message,
 
 	'L_SUBMIT' => $lang['Submit'],
-	'L_RESET' => $lang['Reset'])
+	'L_RESET' => $lang['Reset']
+	)
 );
 
 $template->pparse('body');

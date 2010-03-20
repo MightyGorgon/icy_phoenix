@@ -70,52 +70,26 @@ if (!function_exists('check_auth'))
 }
 // FUNCTIONS - END
 
-$params = array('mode' => 'mode', 'user_id' => POST_USERS_URL, 'group_id' => POST_GROUPS_URL, 'adv' => 'adv');
+$mode = request_var('mode', '');
+$user_id = request_var(POST_USERS_URL, 0);
+$group_id = request_var(POST_GROUPS_URL, 0);
+$adv = request_var('adv', 0);
+$redirect = request_var('redirect', '');
+$user_level_new = request_var('userlevel', '');
 
-while(list($var, $param) = @each($params))
-{
-	if (!empty($_POST[$param]) || !empty($_GET[$param]))
-	{
-		$$var = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param];
-	}
-	else
-	{
-		$$var = '';
-	}
-}
-
-$user_id = intval($user_id);
-$group_id = intval($group_id);
 // Disallow other admins to delete or edit the first admin - BEGIN
 $founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 if (($user_id == $founder_id) && ($userdata['user_id'] != $founder_id))
 {
 	$edituser = $userdata['username'];
 	$editok = $userdata['user_id'];
-	$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . str_replace("\'", "''", $edituser) . "','" . $editok . "')";
+	$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . $db->sql_escape($edituser) . "','" . $editok . "')";
 	$result = $db->sql_query($sql);
 	message_die(GENERAL_MESSAGE, $lang['L_ADMINEDITMSG']);
 }
 // Disallow other admins to delete or edit the first admin - END
 
-$adv = intval($adv);
-$mode = htmlspecialchars($mode);
-
-//Start Quick Administrator User Options and Information MOD
-if(isset($_POST['redirect']) || isset($_GET['redirect']))
-{
-	$redirect = (isset($_POST['redirect'])) ? $_POST['redirect'] : $_GET['redirect'];
-	$redirect = htmlspecialchars($redirect);
-}
-else
-{
-	$redirect = '';
-}
-//End Quick Administrator User Options and Information MOD
-
-//
 // Start program - define vars
-//
 include(IP_ROOT_PATH . './includes/def_auth.' . PHP_EXT);
 
 // build an indexed array on field names
@@ -150,12 +124,12 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 
 	// Carry out requests
 	// We are making an admin / jadmin
-	if (($mode == 'user') && ((($_POST['userlevel'] == 'admin') && ($user_level != ADMIN)) || (($_POST['userlevel'] == 'jadmin') && ($user_level != JUNIOR_ADMIN))))
+	if (($mode == 'user') && ((($user_level_new == 'admin') && ($user_level != ADMIN)) || (($user_level_new == 'jadmin') && ($user_level != JUNIOR_ADMIN))))
 	{
 		// Make user an admin (if already user)
 		// The user already had or it has been set an admin level...
 		$current_level = $user_level;
-		$new_level = (($_POST['userlevel'] == 'admin') ? ADMIN : JUNIOR_ADMIN);
+		$new_level = (($user_level_new == 'admin') ? ADMIN : JUNIOR_ADMIN);
 		$level_changed = false;
 		if ($userdata['user_id'] != $user_id)
 		{
@@ -175,7 +149,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 	else
 	{
 		// We are changing a user level from admin / jadmin to normal user
-		if (($mode == 'user') && ($_POST['userlevel'] == 'user') && (($user_level == ADMIN) || ($user_level == JUNIOR_ADMIN)))
+		if (($mode == 'user') && ($user_level_new == 'user') && (($user_level == ADMIN) || ($user_level == JUNIOR_ADMIN)))
 		{
 			// Make admin a user (if already admin) ... ignore if you're trying to change yourself from an admin to user!
 			if ($userdata['user_id'] != $user_id)
@@ -289,7 +263,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				}
 			}
 
-			$sql = ($mode == 'user') ? "SELECT aa.* FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = " . TRUE : "SELECT * FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = $group_id";
+			$sql = ($mode == 'user') ? ("SELECT aa.* FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id AND g.group_single_user = " . true) : ("SELECT * FROM " . AUTH_ACCESS_TABLE . " WHERE group_id = $group_id");
 			$result = $db->sql_query($sql);
 
 			$auth_access = array();
@@ -551,9 +525,11 @@ if($redirect != '')
 //End Quick Administrator User Options and Information MOD
 elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode == 'group') && $group_id))
 {
-	if (isset($_POST['username']))
+	$username = request_var('username', '', true);
+	$username = htmlspecialchars_decode($username, ENT_COMPAT);
+	if (!empty($username))
 	{
-		$this_userdata = get_userdata($_POST['username'], true);
+		$this_userdata = get_userdata($username, true);
 		if (!is_array($this_userdata))
 		{
 			message_die(GENERAL_MESSAGE, $lang['No_such_user']);
@@ -821,7 +797,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 				'INC_SPAN' => $max_level - $level+1,
 				'ROW_CLASS' => $row_class,
 				'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $tree['data'][ $keys['idx'][$i] ]['forum_id'], 'name'),
-				'U_FORUM_AUTH' => append_sid('admin_forumauth.' . PHP_EXT . '?f=' . $tree['data'][ $keys['idx'][$i] ]['forum_id']),
+				'U_FORUM_AUTH' => append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $tree['data'][ $keys['idx'][$i] ]['forum_id']),
 				'S_MOD_SELECT' => $optionlist_mod
 				)
 			);
@@ -984,7 +960,7 @@ else
 	// Select a user/group
 	include('./page_header_admin.' . PHP_EXT);
 
-	$template->set_filenames(array('body' => ($mode == 'user') ? ADM_TPL . 'user_select_body.tpl' : ADM_TPL . 'auth_select_body.tpl'));
+	$template->set_filenames(array('body' => ADM_TPL . (($mode == 'user') ? 'user_select_body.tpl' : 'auth_select_body.tpl')));
 
 	if ($mode == 'user')
 	{
@@ -998,7 +974,7 @@ else
 	{
 		$sql = "SELECT group_id, group_name
 			FROM " . GROUPS_TABLE . "
-			WHERE group_single_user <> " . TRUE . "
+			WHERE group_single_user <> " . true . "
 			ORDER BY group_name";
 		$result = $db->sql_query($sql);
 
@@ -1030,7 +1006,8 @@ else
 		'L_LOOK_UP' => ($mode == 'user') ? $lang['Look_up_User'] : $lang['Look_up_Group'],
 
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_' . $l_type . '_ACTION' => append_sid('admin_ug_auth.' . PHP_EXT))
+		'S_' . $l_type . '_ACTION' => append_sid('admin_ug_auth.' . PHP_EXT)
+		)
 	);
 
 }

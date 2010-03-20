@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
@@ -34,7 +33,7 @@ $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $c
 // Skip page auth... we are in GSearch baby!
 //check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-$google_q = request_var('q', '');
+$google_q = request_var('q', '', true);
 if (!empty($google_q))
 {
 	$template->assign_vars(array('GSEARCH_RESULTS' => true));

@@ -704,10 +704,10 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 
 	$u_move = '<img class="handle" src="' . $images['block_move'] . '" alt="' . $lang['Block_Move'] . '" title="' . $lang['BLOCK_MOVE'] . '" style="vertical-align: middle; cursor: move"/>&nbsp;';
 
-	$u_active = '<img src="' . $img_active . '" alt="' . $lang['TURN_ACTIVE'] . '" title="' . $lang['TURN_ACTIVE'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 0, ' . $b_id . ', ' . $cms_type_id . ')"/>';
-	$u_border = '<img src="' . $img_border . '" alt="' . $lang['TURN_BORDER'] . '" title="' . $lang['TURN_BORDER'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 1, ' . $b_id . ', ' . $cms_type_id . ')"/>';
-	$u_titlebar = '<img src="' . $img_titlebar . '" alt="' . $lang['TURN_TITLEBAR'] . '" title="' . $lang['TURN_TITLEBAR'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 2, ' . $b_id . ', ' . $cms_type_id . ')"/>';
-	$u_local = '<img src="' . $img_local . '" alt="' . $lang['TURN_LOCAL'] . '" title="' . $lang['TURN_LOCAL'] . '" style="cursor:pointer" onclick="ChangeStatus(this, 3, ' . $b_id . ', ' . $cms_type_id . ')"/>';
+	$u_active = '<img src="' . $img_active . '" alt="' . $lang['TURN_ACTIVE'] . '" title="' . $lang['TURN_ACTIVE'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 0, ' . $b_id . ', ' . $cms_type_id . ')"/>';
+	$u_border = '<img src="' . $img_border . '" alt="' . $lang['TURN_BORDER'] . '" title="' . $lang['TURN_BORDER'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 1, ' . $b_id . ', ' . $cms_type_id . ')"/>';
+	$u_titlebar = '<img src="' . $img_titlebar . '" alt="' . $lang['TURN_TITLEBAR'] . '" title="' . $lang['TURN_TITLEBAR'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 2, ' . $b_id . ', ' . $cms_type_id . ')"/>';
+	$u_local = '<img src="' . $img_local . '" alt="' . $lang['TURN_LOCAL'] . '" title="' . $lang['TURN_LOCAL'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 3, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 	$u_background = '<img src="' . $img_background . '" alt="' . $lang['TURN_BACKGROUND'] . '" title="' . $lang['TURN_BACKGROUND'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 4, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 
 	$u_edit = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=edit&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['Block_Edit'] . '" title="' . $lang['Block_Edit'] . '"/></a>';

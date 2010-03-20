@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 // Added to optimize memory for attachments
 define('ATTACH_POSTING', true);
 define('IN_ICYPHOENIX', true);
@@ -32,15 +31,14 @@ init_userprefs($userdata);
 // End session management
 
 // session id check
-if ($sid == '' || $sid != $userdata['session_id'])
+if (($sid == '') || ($sid != $userdata['session_id']))
 {
 	message_die(GENERAL_ERROR, 'Invalid_session');
 }
 
 // Obtain initial var settings
 $user_id = request_var(POST_USERS_URL, 0);
-
-if (!$user_id)
+if (empty($user_id))
 {
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
@@ -52,18 +50,14 @@ if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] !
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
 
-$language = $config['default_lang'];
-
-if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT))
-{
-	$language = $attach_config['board_lang'];
-}
-
-include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT);
+setup_extra_lang(array('lang_admin_attach'));
 
 $start = request_var('start', 0);
-$sort_order = request_var('order', 'ASC');
-$sort_order = ($sort_order == 'ASC') ? 'ASC' : 'DESC';
+$start = ($start < 0) ? 0 : $start;
+
+$sort_order = request_var('order', 'DESC');
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+
 $mode = request_var('mode', '');
 
 $mode_types_text = array($lang['Sort_Filename'], $lang['Sort_Comment'], $lang['Sort_Extension'], $lang['Sort_Size'], $lang['Sort_Downloads'], $lang['Sort_Posttime'], /* $lang['Sort_Posts'] */);
@@ -115,7 +109,8 @@ switch ($mode)
 }
 
 // Set select fields
-$select_sort_mode = $select_sort_order = '';
+$select_sort_mode = '';
+$select_sort_order = '';
 
 if (sizeof($mode_types_text) > 0)
 {

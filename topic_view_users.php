@@ -25,12 +25,10 @@ if ($config['disable_topic_view'])
 }
 
 $topic_id = request_var(POST_TOPIC_URL, 0);
-
 if (empty($topic_id))
 {
 	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
 }
-
 
 if (!$userdata['session_logged_in'])
 {
@@ -65,30 +63,13 @@ if ($userdata['user_level'] != ADMIN)
 /*
 */
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if (isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? htmlspecialchars($_POST['mode']) : htmlspecialchars($_GET['mode']);
-}
-else
-{
-	$mode = 'joined';
-}
+$mode = request_var('mode', 'joined');
 
-if(isset($_POST['order']))
-{
-	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-else if(isset($_GET['order']))
-{
-	$sort_order = ($_GET['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-else
-{
-	$sort_order = 'ASC';
-}
+$sort_order = request_var('order', 'DESC');
+$sort_order = check_var_value($sort_order, array('ASC', 'DESC'));
 
 $mode_types_text = array($lang['Sort_Username'], $lang['Sort_Email'], $lang['Sort_Joined'], $lang['Topic_time'], $lang['Topic_count'], $lang['Sort_Website'], $lang['Sort_Top_Ten']);
 $mode_types = array('username', 'email', 'joindate', 'topic_time', 'topic_count', 'website', 'topten');

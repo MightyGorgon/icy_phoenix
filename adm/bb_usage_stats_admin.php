@@ -72,7 +72,7 @@ function specialgrp_select($select_name, $selected_group)
 if(is_null($new[BBUS_CONFIGPROP_VIEWLEVEL_NAME]))
 {
 	$viewlevel = BBUS_CONFIGPROP_VIEWLEVEL_DEFAULT;
-	set_bb_usage_stats_property(BBUS_CONFIGPROP_VIEWLEVEL_NAME, $viewlevel);
+	set_config(BBUS_CONFIGPROP_VIEWLEVEL_NAME, $viewlevel);
 	$new[BBUS_CONFIGPROP_VIEWLEVEL_NAME] = $viewlevel;
 }
 /* Otherwise, evaluate the viewlevel to determine which check boxes will be checked.
@@ -88,7 +88,7 @@ else
 if(is_null($new[BBUS_CONFIGPROP_VIEWOPTIONS_NAME]))
 {
 	$viewoptions = BBUS_CONFIGPROP_VIEWOPTIONS_DEFAULT;
-	set_bb_usage_stats_property(BBUS_CONFIGPROP_VIEWOPTIONS_NAME, $viewoptions);
+	set_config(BBUS_CONFIGPROP_VIEWOPTIONS_NAME, $viewoptions);
 	$new[BBUS_CONFIGPROP_VIEWOPTIONS_NAME] = $viewoptions;
 }
 /* Otherwise, evaluate the viewlevel to determine which check boxes will be checked.
@@ -103,7 +103,7 @@ else
  * list. */
 if (is_null($new[BBUS_CONFIGPROP_SPECIALGRP_NAME]))
 {
-	create_property(BBUS_CONFIGPROP_SPECIALGRP_NAME, BBUS_CONFIGPROP_SPECIALGRP_DEFAULT);
+	set_config(BBUS_CONFIGPROP_SPECIALGRP_NAME, BBUS_CONFIGPROP_SPECIALGRP_DEFAULT);
 	$specialgrp = specialgrp_select(BBUS_CONFIGPROP_SPECIALGRP_NAME, BBUS_CONFIGPROP_SPECIALGRP_DEFAULT);
 }
 else
@@ -116,7 +116,7 @@ else
  * list. */
 if (is_null($new[BBUS_CONFIGPROP_PRSCALE_NAME]))
 {
-	create_property(BBUS_CONFIGPROP_PRSCALE_NAME, BBUS_CONFIGPROP_PRSCALE_DEFAULT);
+	set_config(BBUS_CONFIGPROP_PRSCALE_NAME, BBUS_CONFIGPROP_PRSCALE_DEFAULT);
 	$prscale_select = scaleby_select('', BBUS_CONFIGPROP_PRSCALE_NAME, BBUS_SCALING_MIN, BBUS_SCALING_MAX, BBUS_CONFIGPROP_PRSCALE_DEFAULT);
 }
 else
@@ -129,7 +129,7 @@ else
  * list. */
 if (is_null($new[BBUS_CONFIGPROP_TRSCALE_NAME]))
 {
-	create_property(BBUS_CONFIGPROP_TRSCALE_NAME, BBUS_CONFIGPROP_TRSCALE_DEFAULT);
+	set_config(BBUS_CONFIGPROP_TRSCALE_NAME, BBUS_CONFIGPROP_TRSCALE_DEFAULT);
 	$trscale_select = scaleby_select('', BBUS_CONFIGPROP_TRSCALE_NAME, BBUS_SCALING_MIN, BBUS_SCALING_MAX, BBUS_CONFIGPROP_TRSCALE_DEFAULT);
 }
 else
@@ -138,7 +138,7 @@ else
 }
 
 /* Check checkboxes for the view level */
-$checkedOn = 'checked="on"';
+$checkedOn = 'checked="checked"';
 $chkVLAnonymous = (($viewlevel & BBUS_VIEWLEVEL_ANONYMOUS) != 0) ? $checkedOn : '';
 $chkVLSelf = (($viewlevel & BBUS_VIEWLEVEL_SELF) != 0) ? $checkedOn : '';
 $chkVLUsers = (($viewlevel & BBUS_VIEWLEVEL_USERS) != 0) ? $checkedOn : '';

@@ -65,7 +65,7 @@
 <tr><th colspan="2">{L_ATTACHMENT_OPTIONS_SETTINGS}</th></tr>
 <tr>
 	<td class="row1" width="80%"><strong>{L_DISABLE_MOD}</strong><br /><span class="gensmall">{L_DISABLE_MOD_EXPLAIN}</span></td>
-	<td class="row2"><input type="radio" name="disable_mod" value="1" {DISABLE_MOD_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="disable_mod" value="0" {DISABLE_MOD_NO} /> {L_NO}</td>
+	<td class="row2"><input type="radio" name="disable_attachments_mod" value="1" {DISABLE_MOD_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="disable_mod" value="0" {DISABLE_MOD_NO} /> {L_NO}</td>
 </tr>
 <tr>
 	<td class="row1" width="80%"><strong>{L_PM_ATTACH}</strong><br /><span class="gensmall">{L_PM_ATTACH_EXPLAIN}</span></td>

@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
@@ -35,12 +34,8 @@ if ($cancel)
 	redirect(ADM . '/' . append_sid('admin_words.' . PHP_EXT, true));
 }
 
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_GET['mode'])) ? $_GET['mode'] : $_POST['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
+$mode = request_var('mode', '');
+if(empty($mode))
 {
 	// These could be entered via a form button
 	if(isset($_POST['add']))
@@ -51,19 +46,16 @@ else
 	{
 		$mode = 'save';
 	}
-	else
-	{
-		$mode = '';
-	}
 }
+
 // Restrict mode input to valid options
 $mode = (in_array($mode, array('add', 'edit', 'save', 'delete'))) ? $mode : '';
 
 if($mode != '')
 {
-	if($mode == 'edit' || $mode == 'add')
+	if(($mode == 'edit') || ($mode == 'add'))
 	{
-		$word_id = (isset($_GET['id'])) ? intval($_GET['id']) : 0;
+		$word_id = request_var('id', 0);
 
 		$template->set_filenames(array('body' => ADM_TPL . 'words_edit_body.tpl'));
 		$word_info = array('word' => '', 'replacement' => '');
@@ -71,7 +63,7 @@ if($mode != '')
 
 		if($mode == 'edit')
 		{
-			if($word_id)
+			if(!empty($word_id))
 			{
 				$sql = "SELECT *
 					FROM " . WORDS_TABLE . "
@@ -108,26 +100,28 @@ if($mode != '')
 	}
 	elseif($mode == 'save')
 	{
-		$word_id = (isset($_POST['id'])) ? intval($_POST['id']) : 0;
-		$word = (isset($_POST['word'])) ? trim($_POST['word']) : "";
-		$replacement = (isset($_POST['replacement'])) ? trim($_POST['replacement']) : "";
+		$word_id = request_post_var('id', 0);
+		$word = request_post_var('word', '', true);
+		$word = htmlspecialchars_decode($word, ENT_COMPAT);
+		$replacement = request_post_var('replacement', '', true);
+		$replacement = htmlspecialchars_decode($replacement, ENT_COMPAT);
 
-		if($word == "" || $replacement == "")
+		if(empty($word) || empty($replacement))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_enter_word']);
 		}
 
-		if($word_id)
+		if(!empty($word_id))
 		{
 			$sql = "UPDATE " . WORDS_TABLE . "
-				SET word = '" . str_replace("\'", "''", $word) . "', replacement = '" . str_replace("\'", "''", $replacement) . "'
+				SET word = '" . $db->sql_escape($word) . "', replacement = '" . $db->sql_escape($replacement) . "'
 				WHERE word_id = $word_id";
 			$message = $lang['Word_updated'];
 		}
 		else
 		{
 			$sql = "INSERT INTO " . WORDS_TABLE . " (word, replacement)
-				VALUES ('" . str_replace("\'", "''", $word) . "', '" . str_replace("\'", "''", $replacement) . "')";
+				VALUES ('" . $db->sql_escape($word) . "', '" . $db->sql_escape($replacement) . "')";
 			$message = $lang['Word_added'];
 		}
 		$result = $db->sql_query($sql);
@@ -139,15 +133,7 @@ if($mode != '')
 	}
 	elseif($mode == 'delete')
 	{
-		if(isset($_POST['id']) || isset($_GET['id']))
-		{
-			$word_id = (isset($_POST['id'])) ? $_POST['id'] : $_GET['id'];
-			$word_id = intval($word_id);
-		}
-		else
-		{
-			$word_id = 0;
-		}
+		$word_id = request_var('id', 0);
 
 		$confirm = isset($_POST['confirm']);
 
@@ -177,7 +163,8 @@ if($mode != '')
 				'L_NO' => $lang['No'],
 
 				'S_CONFIRM_ACTION' => append_sid('admin_words.' . PHP_EXT),
-				'S_HIDDEN_FIELDS' => $hidden_fields)
+				'S_HIDDEN_FIELDS' => $hidden_fields
+				)
 			);
 		}
 		else

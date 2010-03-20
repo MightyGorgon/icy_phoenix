@@ -197,7 +197,7 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			{
 				$menu_url = '';
 				include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
-				$lang_installed = language_select($config['default_lang'], LANG_URL, 'language', true);
+				$lang_installed = language_select(LANG_URL, $config['default_lang'], 'language', true);
 				while ( list($displayname) = @each($lang_installed) )
 				{
 					$lang_value = $displayname;

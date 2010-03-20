@@ -212,19 +212,6 @@ CREATE TABLE `phpbb_attachments` (
 
 ## --------------------------------------------------------
 
-## `phpbb_attachments_config`
-
-CREATE TABLE `phpbb_attachments_config` (
-	`config_name` varchar(255) NOT NULL DEFAULT '',
-	`config_value` varchar(255) NOT NULL DEFAULT '',
-	PRIMARY KEY (`config_name`)
-);
-
-## `phpbb_attachments_config`
-
-
-## --------------------------------------------------------
-
 ## `phpbb_attachments_desc`
 
 CREATE TABLE `phpbb_attachments_desc` (
@@ -2026,7 +2013,11 @@ CREATE TABLE `phpbb_users` (
 	`user_active` tinyint(1) DEFAULT '1',
 	`username` varchar(36) NOT NULL DEFAULT '',
 	`username_clean` varchar(255) NOT NULL DEFAULT '',
-	`user_password` varchar(32) NOT NULL DEFAULT '',
+	`user_password` varchar(40) NOT NULL DEFAULT '',
+	`user_newpasswd` varchar(40) NOT NULL DEFAULT '',
+	`user_passchg` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`user_pass_convert` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+	`user_form_salt` varchar(32) DEFAULT '' NOT NULL,
 	`user_session_time` int(11) NOT NULL DEFAULT '0',
 	`user_session_page` varchar(255) NOT NULL DEFAULT '',
 	`user_http_agents` varchar(255) NOT NULL DEFAULT '',
@@ -2048,6 +2039,7 @@ CREATE TABLE `phpbb_users` (
 	`user_profile_view_popup` tinyint(1) DEFAULT '0',
 	`user_attachsig` tinyint(1) NOT NULL DEFAULT '1',
 	`user_setbm` tinyint(1) NOT NULL DEFAULT '0',
+	`user_options` int(11) UNSIGNED DEFAULT '895' NOT NULL,
 	`user_allowhtml` tinyint(1) DEFAULT '1',
 	`user_allowbbcode` tinyint(1) DEFAULT '1',
 	`user_allowsmile` tinyint(1) DEFAULT '1',
@@ -2067,6 +2059,7 @@ CREATE TABLE `phpbb_users` (
 	`user_avatar` varchar(100) DEFAULT NULL,
 	`user_avatar_type` tinyint(4) NOT NULL DEFAULT '0',
 	`user_email` varchar(255) DEFAULT NULL,
+	`user_email_hash` bigint(20) DEFAULT '0' NOT NULL,
 	`user_icq` varchar(15) DEFAULT NULL,
 	`user_website` varchar(100) DEFAULT NULL,
 	`user_from` varchar(100) DEFAULT NULL,
@@ -2077,7 +2070,6 @@ CREATE TABLE `phpbb_users` (
 	`user_occ` varchar(100) DEFAULT NULL,
 	`user_interests` varchar(255) DEFAULT NULL,
 	`user_actkey` varchar(32) DEFAULT NULL,
-	`user_newpasswd` varchar(32) DEFAULT NULL,
 	`user_birthday` int(11) NOT NULL DEFAULT '999999',
 	`user_birthday_y` varchar(4) NOT NULL DEFAULT '',
 	`user_birthday_m` varchar(2) NOT NULL DEFAULT '',
@@ -2116,8 +2108,8 @@ CREATE TABLE `phpbb_users` (
 	`user_allowswearywords` tinyint(1) NOT NULL DEFAULT '0',
 	`user_showavatars` tinyint(1) DEFAULT '1',
 	`user_showsignatures` tinyint(1) DEFAULT '1',
-	`user_login_tries` smallint(5) unsigned NOT NULL DEFAULT '0',
-	`user_last_login_try` int(11) NOT NULL DEFAULT '0',
+	`user_login_attempts` tinyint(4) DEFAULT '0' NOT NULL,
+	`user_last_login_attempt` int(11) NOT NULL DEFAULT '0',
 	`user_sudoku_playing` int(1) NOT NULL DEFAULT '0',
 	`user_from_flag` varchar(30) DEFAULT NULL,
 	`user_phone` varchar(255) DEFAULT NULL,
@@ -2247,21 +2239,11 @@ ALTER TABLE `phpbb_users` ADD `ct_search_count` MEDIUMINT( 8 ) NULL DEFAULT 1 AF
 ALTER TABLE `phpbb_users` ADD `ct_last_mail` INT( 11 ) NULL DEFAULT 1 AFTER `ct_search_count`;
 ALTER TABLE `phpbb_users` ADD `ct_last_post` INT( 11 ) NULL DEFAULT 1 AFTER `ct_last_mail`;
 ALTER TABLE `phpbb_users` ADD `ct_post_counter` MEDIUMINT( 8 ) NULL DEFAULT 1 AFTER `ct_last_post`;
-ALTER TABLE `phpbb_users` ADD `ct_last_pw_reset` INT( 11 ) NULL DEFAULT 1 AFTER `ct_post_counter`;
-ALTER TABLE `phpbb_users` ADD `ct_enable_ip_warn` TINYINT( 1 ) NULL DEFAULT 1 AFTER `ct_last_pw_reset`;
+ALTER TABLE `phpbb_users` ADD `ct_enable_ip_warn` TINYINT( 1 ) NULL DEFAULT 1 AFTER `ct_post_counter`;
 ALTER TABLE `phpbb_users` ADD `ct_last_used_ip` VARCHAR( 16 ) NULL DEFAULT '0.0.0.0' AFTER `ct_enable_ip_warn`;
 ALTER TABLE `phpbb_users` ADD `ct_last_ip` VARCHAR( 16 ) NULL DEFAULT '0.0.0.0' AFTER `ct_last_used_ip`;
-ALTER TABLE `phpbb_users` ADD `ct_login_count` MEDIUMINT( 8 ) NULL DEFAULT 1 AFTER `ct_last_used_ip`;
-ALTER TABLE `phpbb_users` ADD `ct_login_vconfirm` TINYINT( 1 ) NULL DEFAULT 0 AFTER `ct_login_count`;
-ALTER TABLE `phpbb_users` ADD `ct_last_pw_change` INT( 11 ) NULL DEFAULT 1 AFTER `ct_login_vconfirm`;
-ALTER TABLE `phpbb_users` ADD `ct_global_msg_read` TINYINT( 1 ) NULL DEFAULT 0 AFTER `ct_last_pw_change`;
+ALTER TABLE `phpbb_users` ADD `ct_global_msg_read` TINYINT( 1 ) NULL DEFAULT 0 AFTER `ct_last_ip`;
 ALTER TABLE `phpbb_users` ADD `ct_miserable_user` TINYINT( 1 ) NULL DEFAULT 0 AFTER `ct_global_msg_read`;
-
-CREATE TABLE `phpbb_ctracker_config` (
-	`ct_config_name` varchar(255) NOT NULL,
-	`ct_config_value` varchar(255) NOT NULL,
-	PRIMARY KEY (`ct_config_name`)
-	);
 
 CREATE TABLE `phpbb_ctracker_filechk` (
 	`filepath` TEXT NOT NULL,
@@ -2793,3 +2775,57 @@ CREATE TABLE phpbb_tickets_cat (
 	PRIMARY KEY (ticket_cat_id)
 );
 ## TICKETS - END
+
+## AUTH SYSTEM - BEGIN
+CREATE TABLE `phpbb_acl_groups` (
+	`group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+	KEY `group_id` (`group_id`),
+	KEY `auth_opt_id` (`auth_option_id`),
+	KEY `auth_role_id` (`auth_role_id`)
+);
+
+CREATE TABLE `phpbb_acl_options` (
+	`auth_option_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+	`auth_option` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`is_global` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	`is_local` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	`founder_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	PRIMARY KEY (`auth_option_id`),
+	UNIQUE KEY `auth_option` (`auth_option`)
+);
+
+CREATE TABLE `phpbb_acl_roles` (
+	`role_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+	`role_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`role_description` text COLLATE utf8_bin NOT NULL,
+	`role_type` varchar(10) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`role_order` smallint(4) unsigned NOT NULL DEFAULT '0',
+	PRIMARY KEY (`role_id`),
+	KEY `role_type` (`role_type`),
+	KEY `role_order` (`role_order`)
+);
+
+CREATE TABLE `phpbb_acl_roles_data` (
+	`role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`role_id`,`auth_option_id`),
+	KEY `ath_op_id` (`auth_option_id`)
+);
+
+CREATE TABLE `phpbb_acl_users` (
+	`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+	KEY `user_id` (`user_id`),
+	KEY `auth_option_id` (`auth_option_id`),
+	KEY `auth_role_id` (`auth_role_id`)
+);
+
+## AUTH SYSTEM - END

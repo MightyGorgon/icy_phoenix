@@ -35,14 +35,18 @@ if (!$userdata['session_logged_in'])
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-$pic_id = (isset($_GET['pic_id']) ? $_GET['pic_id'] : (isset($_POST['pic_id']) ? $_POST['pic_id'] : ''));
+$pic_id = request_var('pic_id', '');
+
 $mode_array = array('show', 'delete', 'full');
-$mode = (isset($_GET['mode']) ? $_GET['mode'] : (isset($_POST['mode']) ? $_POST['mode'] : ''));
+$mode = request_var('mode', '');
 $mode = (($userdata['user_level'] == ADMIN) && in_array($mode, $mode_array)) ? $mode : $mode_array[0];
+
+$start = request_var('start', 0);
+$start = ($start < 0) ? 0 : $start;
 
 if ($userdata['user_level'] == ADMIN)
 {
-	$pic_user_id = (isset($_GET['user']) ? $_GET['user'] : (isset($_POST['user']) ? $_POST['user'] : $userdata['user_id']));
+	$pic_user_id = request_var('user', $userdata['user_id']);
 }
 else
 {
@@ -68,9 +72,6 @@ if ($userdata['user_level'] == ADMIN)
 		}
 	}
 }
-
-$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
-$start = ($start < 0) ? 0 : $start;
 
 $server_path = create_server_url();
 

@@ -29,6 +29,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
 
 //--------------------------------
@@ -151,38 +152,32 @@ include(IP_ROOT_PATH . './includes/prune.' . PHP_EXT);
 // return message after update
 $return_msg .= '<br /><br />' . sprintf($lang['Click_return_forumadmin'], '<a href="' . append_sid('admin_forums_extend.' . PHP_EXT . '?selected_id=' . $selected_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
-//--------------------------------
-//	get parms
-//--------------------------------
-// mode
-$mode = '';
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode'];
-}
-if (!empty($mode) && !in_array($mode, array('edit', 'create', 'delete', 'moveup', 'movedw', 'resync')))
-{
-	$mode = '';
-}
+$mode = request_var('mode', '');
+$mode = check_var_value($mode, array('edit', 'create', 'delete', 'moveup', 'movedw', 'resync'), '');
+
+$cat_id = request_var(POST_CAT_URL, 0);
+$cat_id = ($cat_id < 0) ? 0 : $cat_id;
+
+$forum_id = request_var(POST_FORUM_URL, 0);
+$forum_id = ($forum_id < 0) ? 0 : $forum_id;
 
 // selected id : current displayed id
-$selected_id = '';
-if (isset($_POST['selected_id']) || isset($_GET['selected_id']))
-{
-	$selected_id = isset($_POST['selected_id']) ? $_POST['selected_id'] : $_GET['selected_id'];
-}
+$selected_id = request_var('selected_id', '');
 $type = substr($selected_id, 0, 1);
 $id = intval(substr($selected_id, 1));
-if (isset($_POST[POST_FORUM_URL]) || isset($_GET[POST_FORUM_URL]))
+
+if (!empty($forum_id))
 {
 	$type = POST_FORUM_URL;
-	$id = isset($_POST[POST_FORUM_URL]) ? intval($_POST[POST_FORUM_URL]) : intval($_GET[POST_FORUM_URL]);
+	$id = $forum_id;
 }
-if (isset($_POST[POST_CAT_URL]) || isset($_GET[POST_CAT_URL]))
+
+if (!empty($cat_id))
 {
 	$type = POST_CAT_URL;
-	$id = isset($_POST[POST_CAT_URL]) ? intval($_POST[POST_CAT_URL]) : intval($_GET[POST_CAT_URL]);
+	$id = $cat_id;
 }
+
 if (!in_array($type, array(POST_CAT_URL, POST_FORUM_URL)) || ($id == 0))
 {
 	$type = POST_CAT_URL;
@@ -197,11 +192,7 @@ if (!isset($tree['keys'][$selected_id]))
 }
 
 // work id
-$fid = '';
-if (isset($_POST['fid']) || isset($_GET['fid']))
-{
-	$fid = isset($_POST['fid']) ? $_POST['fid'] : $_GET['fid'];
-}
+$fid = request_var('fid', '');
 $type = substr($fid, 0, 1);
 $id = intval(substr($fid, 1));
 $fid = $type . $id;
@@ -528,17 +519,17 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		if (isset($_POST[$process_field]))
 		{
 			// get field from form
-			$form_field = $_POST[$process_field];
 			switch ($fields_type[$process_field])
 			{
 				case 'INTEGER':
-					$form_field = intval($form_field);
+					$form_field = request_var($process_field, 0);
 					break;
 				case 'HTML':
-					$form_field = trim(stripslashes($form_field));
+					$form_field = request_var($process_field, '', true);
+					$form_field = htmlspecialchars_decode($form_field, ENT_COMPAT);
 					break;
 				default:
-					$form_field = trim(stripslashes(htmlspecialchars($form_field)));
+					$form_field = request_var($process_field, '', true);
 					break;
 			}
 			// store
@@ -560,17 +551,17 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			if (isset($_POST[$process_field]))
 			{
 				// get field from form
-				$form_field = $_POST[$process_field];
-				switch ($rules_fields_type[$process_field])
+				switch ($fields_type[$process_field])
 				{
 					case 'INTEGER':
-						$form_field = intval($form_field);
+						$form_field = request_var($process_field, 0);
 						break;
 					case 'HTML':
-						$form_field = trim(stripslashes($form_field));
+						$form_field = request_var($process_field, '', true);
+						$form_field = htmlspecialchars_decode($form_field, ENT_COMPAT);
 						break;
 					default:
-						$form_field = trim(stripslashes(htmlspecialchars($form_field)));
+						$form_field = request_var($process_field, '', true);
 						break;
 				}
 				// store
@@ -905,7 +896,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 				@reset($$fields_list);
 				while (list($table_field, $process_field) = @each($$fields_list))
 				{
-					$table_value = ($rules_fields_type[$process_field] == 'INTEGER') ? intval($item[$process_field]) : sprintf("'%s'", str_replace("\'", "''", str_replace('\"', '"', addslashes($item[$process_field]))));
+					$table_value = ($rules_fields_type[$process_field] == 'INTEGER') ? intval($item[$process_field]) : sprintf("'%s'", $db->sql_escape(str_replace('\"', '"', $item[$process_field])));
 					$sql_fields .= (empty($sql_fields) ? '' : ', ') . $table_field;
 					$sql_values .= (empty($sql_values) ? '' : ', ') . $table_value;
 					$sql_update .= (empty($sql_update) ? '' : ', ') . $table_field . '=' . $table_value;
@@ -944,7 +935,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			@reset($$fields_list);
 			while (list($table_field, $process_field) = @each($$fields_list))
 			{
-				$table_value = ($fields_type[$process_field] == 'INTEGER') ? intval($item[$process_field]) : sprintf("'%s'", str_replace("\'", "''", str_replace('\"', '"', addslashes($item[$process_field]))));
+				$table_value = ($fields_type[$process_field] == 'INTEGER') ? intval($item[$process_field]) : sprintf("'%s'", $db->sql_escape(str_replace('\"', '"', $item[$process_field])));
 				$sql_fields .= (empty($sql_fields) ? '' : ', ') . $table_field;
 				$sql_values .= (empty($sql_values) ? '' : ', ') . $table_value;
 				$sql_update .= (empty($sql_update) ? '' : ', ') . $table_field . '=' . $table_value;
@@ -1163,9 +1154,9 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			'S_FORUM_LIST' => $forumlist,
 
 			'S_TYPE_OPT' => $s_type_opt,
-			'NAME' => htmlspecialchars(str_replace("''", "'", $item['name'])),
-			'NAME_CLEAN' => str_replace("''", "'", $item['name_clean']),
-			'DESC' => htmlspecialchars(str_replace("''", "'", $item['desc'])),
+			'NAME' => htmlspecialchars(stripslashes($item['name'])),
+			'NAME_CLEAN' => $item['name_clean'],
+			'DESC' => htmlspecialchars(stripslashes($item['desc'])),
 			'S_FORUMS_OPT' => get_tree_option($item['main'], true),
 			'S_POS_OPT' => $s_pos_opt,
 			'S_STATUS_OPT' => $s_status_opt,
@@ -1173,7 +1164,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			'ICON' => $item['icon'],
 			//'ICON_IMG' => $icon_img,
 			'ICON_LIST' => $icons_list,
-			'ICON_IMG' => ($icon != '') ? IP_ROOT_PATH . $icon : IP_ROOT_PATH . 'images/spacer.gif',
+			'ICON_IMG' => IP_ROOT_PATH . (($icon != '') ? $icon : 'images/spacer.gif'),
 
 			'PRUNE_DISPLAY' => $item['prune_enable'] ? '' : 'none',
 			'PRUNE_ENABLE_YES' => $item['prune_enable'] ? 'checked="checked"' : '',

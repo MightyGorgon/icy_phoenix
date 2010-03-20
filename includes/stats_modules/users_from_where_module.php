@@ -22,7 +22,6 @@ $template->assign_vars(array(
 	)
 );
 
-
 $sql = "SELECT user_from, COUNT(*) as number
 	FROM " . USERS_TABLE . "
 	WHERE user_from <> ''

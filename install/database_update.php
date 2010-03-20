@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 define('IN_INSTALL', true);
 define('IN_ICYPHOENIX', true);
 define('IP_DB_UPDATE', true);

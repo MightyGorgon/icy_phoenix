@@ -21,12 +21,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
@@ -42,7 +36,7 @@ function xs_get_vars($theme)
 	$vars_30 = array('style_name');
 	$vars_25 = array('tr_class', 'td_class');
 	$vars_6 = array('body_bgcolor');
-	$vars_4 = array('theme_public');
+	$vars_4 = array();
 	foreach($theme as $var => $value)
 	{
 		if(!is_integer($var) && $var !== 'themes_id' && $var !== 'template_name')
@@ -81,10 +75,10 @@ function xs_get_vars($theme)
 			if($len)
 			{
 				$item = array(
-					'var'		=> $var,
-					'len'		=> $len,
-					'color'		=> $len == 6 ? true : false,
-					'font'		=> $len == 25 ? true : false,
+					'var' => $var,
+					'len' => $len,
+					'color' => $len == 6 ? true : false,
+					'font' => $len == 25 ? true : false,
 					);
 				if($var === 'style_name' || $var === 'head_stylesheet' || $var === 'body_background')
 				{
@@ -99,23 +93,6 @@ function xs_get_vars($theme)
 	}
 	krsort($arr1);
 	ksort($arr2);
-	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
-	{
-		// force sort for the added fields
-		$added = array(
-			'style_name' => array(),
-			'images_pack' => array('var' => $item['images_pack'], 'len' => 100, 'color' => false, 'font' => false),
-			'custom_tpls' => array('var' => $item['custom_tpls'], 'len' => 100, 'color' => false, 'font' => false),
-			'head_stylesheet' => array(),
-		);
-		$arr1 = array_merge($added, $arr1);
-		// we need to add lang entries
-		global $lang;
-		$lang['xs_data_images_pack'] = $lang['Images_pack'];
-		$lang['xs_data_images_pack_explain'] = $lang['Images_pack_explain'];
-		$lang['xs_data_custom_tpls'] = $lang['Custom_tpls'];
-		$lang['xs_data_custom_tpls_explain'] = $lang['Custom_tpls_explain'];
-	}
 	return array_merge($arr1, $arr2);
 }
 
@@ -139,16 +116,16 @@ if(!empty($_POST['edit']) && !defined('DEMO_MODE'))
 			$var = substr($var, 5);
 			$value = stripslashes($value);
 			$data_item[$var] = $value;
-			$data_item_update[] = $var . "='" . xs_sql($value) . "'";
+			$data_item_update[] = $var . "='" . $db->sql_escape($value) . "'";
 		}
 		elseif(substr($var, 0, 5) === 'name_')
 		{
 			$var = substr($var, 5).'_name';
 			$value = stripslashes($value);
 			$data_name[$var] = $value;
-			$data_name_update[] = $var . "='" . xs_sql($value) . "'";
+			$data_name_update[] = $var . "='" . $db->sql_escape($value) . "'";
 			$data_name_insert_vars[] = $var;
-			$data_name_insert_values[] = xs_sql($value);
+			$data_name_insert_values[] = $db->sql_escape($value);
 		}
 	}
 	// update item
@@ -160,18 +137,7 @@ if(!empty($_POST['edit']) && !defined('DEMO_MODE'))
 	{
 		xs_error($lang['xs_edittpl_error_updating'] . '<br /><br />' . $lang['xs_edittpl_back_edit'] . '<br /><br />' . $lang['xs_edittpl_back_list'], __LINE__, __FILE__);
 	}
-	// regen themes cache
-	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
-	{
-		if ( empty($themes) )
-		{
-			$themes = new themes();
-		}
-		if ( !empty($themes) )
-		{
-			$themes->read(true);
-		}
-	}
+
 	xs_message($lang['Information'], $lang['xs_edittpl_style_updated'] . '<br /><br />' . $lang['xs_edittpl_back_edit'] . '<br /><br />' . $lang['xs_edittpl_back_list']);
 }
 
@@ -197,10 +163,10 @@ if(!empty($_GET['edit']))
 	$vars = xs_get_vars($item);
 	// show variables
 	$template->assign_vars(array(
-		'U_ACTION'	=> append_sid('xs_edit_data.' . PHP_EXT),
-		'TPL'		=> htmlspecialchars($item['template-name']),
-		'STYLE'		=> htmlspecialchars($item['style_name']),
-		'ID'		=> $id
+		'U_ACTION' => append_sid('xs_edit_data.' . PHP_EXT),
+		'TPL' => htmlspecialchars($item['template-name']),
+		'STYLE' => htmlspecialchars($item['style_name']),
+		'ID' => $id
 		)
 	);
 	// all variables
@@ -233,12 +199,12 @@ if(!empty($_GET['edit']))
 			}
 		}
 		$template->assign_block_vars('row', array(
-			'ROW_CLASS'	=> $row_class,
-			'VAR'	=> $var,
-			'VALUE'	=> isset($item[$var]) ? htmlspecialchars($item[$var]) : '',
-			'LEN'	=> $value['len'],
-			'SIZE'	=> $value['len'] < 10 ? 10 : 30,
-			'TEXT'	=> htmlspecialchars($text),
+			'ROW_CLASS' => $row_class,
+			'VAR' => $var,
+			'VALUE' => isset($item[$var]) ? htmlspecialchars($item[$var]) : '',
+			'LEN' => $value['len'],
+			'SIZE' => $value['len'] < 10 ? 10 : 30,
+			'TEXT' => htmlspecialchars($text),
 			'EXPLAIN' => isset($lang['xs_data_' . $var . '_explain']) ? $lang['xs_data_' . $var . '_explain'] : '',
 			)
 		);
@@ -253,7 +219,7 @@ if(!empty($_GET['edit']))
 		if(isset($item_name[$var.'_name']))
 		{
 			$template->assign_block_vars('row.name', array(
-				'DATA'	=> $item_name[$var.'_name']
+				'DATA' => $item_name[$var.'_name']
 				)
 			);
 		}
@@ -279,15 +245,15 @@ if(!$result)
 $style_rowset = $db->sql_fetchrowset($result);
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'edit_data_list.tpl'));
-for($i=0; $i< sizeof($style_rowset); $i++)
+for($i = 0; $i < sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	$row_class = $xs_row_class[$i % 2];
 	$template->assign_block_vars('styles', array(
-		'ROW_CLASS'		=> $row_class,
-		'TPL'			=> htmlspecialchars($item['template_name']),
-		'STYLE'			=> htmlspecialchars($item['style_name']),
-		'U_EDIT'		=> append_sid('xs_edit_data.' . PHP_EXT . '?edit='.$item['themes_id'])
+		'ROW_CLASS' => $row_class,
+		'TPL' => htmlspecialchars($item['template_name']),
+		'STYLE' => htmlspecialchars($item['style_name']),
+		'U_EDIT' => append_sid('xs_edit_data.' . PHP_EXT . '?edit='.$item['themes_id'])
 		)
 	);
 }

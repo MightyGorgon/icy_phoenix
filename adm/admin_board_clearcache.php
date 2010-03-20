@@ -23,7 +23,8 @@ require('pagestart.' . PHP_EXT);
 
 $confirmation = false;
 $meta_tag = '';
-if(isset($_POST['confirm_clear_cache_main']) || (isset($_GET['confirm_clear_cache_main']) && ($_GET['confirm_clear_cache_main'] == str_replace('sid=', '', $SID))))
+
+if(check_http_var_exists('confirm_clear_cache_main', false))
 {
 	$files_deleted = empty_cache_folders('', CACHE_FILES_PER_STEP);
 	$redirect_url = append_sid('admin_board_clearcache.' . PHP_EXT . '?confirm_clear_cache_main=' . str_replace('sid=', '', $SID));
@@ -39,7 +40,7 @@ if(isset($_POST['confirm_clear_cache_main']) || (isset($_GET['confirm_clear_cach
 	$confirmation = true;
 }
 
-if(isset($_POST['confirm_clear_cache_posts']))
+if(check_http_var_exists('confirm_clear_cache_posts', false))
 {
 	$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled = ''";
 	$db->sql_return_on_error(true);
@@ -55,7 +56,7 @@ if(isset($_POST['confirm_clear_cache_posts']))
 	$confirmation = true;
 }
 
-if(isset($_POST['confirm_clear_cache_thumbs']) || (isset($_GET['confirm_clear_cache_thumbs']) && ($_GET['confirm_clear_cache_thumbs'] == str_replace('sid=', '', $SID))))
+if(check_http_var_exists('confirm_clear_cache_thumbs', false))
 {
 	$files_deleted = empty_images_cache_folders(CACHE_FILES_PER_STEP);
 	$redirect_url = append_sid('admin_board_clearcache.' . PHP_EXT . '?confirm_clear_cache_thumbs=' . str_replace('sid=', '', $SID));

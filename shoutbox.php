@@ -33,7 +33,7 @@ check_page_auth($cms_page['page_id'], $cms_auth_level);
 switch ($userdata['user_level'])
 {
 	case ADMIN :
-	case MOD :	$is_auth['auth_mod'] = 1;
+	case MOD : $is_auth['auth_mod'] = 1;
 	default:
 		$is_auth['auth_read'] = 1;
 		$is_auth['auth_view'] = 1;
@@ -58,14 +58,7 @@ if(!$is_auth['auth_read'])
 //$refresh = (isset($_POST['auto_refresh']) || isset($_POST['refresh'])) ? 1 : 0;
 $refresh = (isset($_GET['auto_refresh']) || isset($_GET['refresh'])) ? 1 : 0;
 $submit = (isset($_POST['shout']) && isset($_POST['message'])) ? 1 : 0;
-if (!empty($_POST['mode']) || !empty($_GET['mode']))
-{
-	$mode = (!empty($_POST['mode'])) ? intval($_POST['mode']) : intval($_GET['mode']);
-}
-else
-{
-	$mode = '';
-}
+$mode = request_var('mode', '');
 
 // Set toggles for various options
 if (!$config['allow_html'])
@@ -106,7 +99,7 @@ else
 
 if ($refresh)
 {
-	$message = (!empty($_POST['message'])) ? htmlspecialchars(trim(stripslashes($_POST['message']))) : '';
+	$message = request_post_var('message', '', true);
 	if (!empty($message))
 	{
 		$template->assign_var('MESSAGE',$message);
@@ -135,21 +128,19 @@ elseif ($submit || isset($_POST['message']))
 		}
 	}
 	// Check username
-	if (!empty($username))
+	$username = $userdata['session_logged_in'] ? htmlspecialchars($userdata['username']) : request_post_var('username', '', true);
+	if (!$userdata['session_logged_in'] && !empty($username))
 	{
-		$username = htmlspecialchars(trim(strip_tags($username)));
-
-		if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && ($username != $userdata['username'])))
+		include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
+		$result = validate_username($username);
+		if ($result['error'])
 		{
-			include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-			$result = validate_username($username);
-			if ($result['error'])
-			{
-				$error_msg .= (!empty($error_msg)) ? '<br />' . $result['error_msg'] : $result['error_msg'];
-			}
+			$error_msg .= (!empty($error_msg)) ? '<br />' . $result['error_msg'] : $result['error_msg'];
 		}
 	}
-	$message = (isset($_POST['message'])) ? trim($_POST['message']) : '';
+
+	$message = request_post_var('message', '', true);
+	$message = htmlspecialchars_decode($message, ENT_COMPAT);
 	// insert shout !
 	if (!empty($message) && $is_auth['auth_post'] && !$error)
 	{
@@ -163,7 +154,7 @@ elseif ($submit || isset($_POST['message']))
 			$message = preg_replace ("#\[img align=right\](http://)([^ \"\n\r\t<]*)\[/img\]#i", '[url=\\1\\2]\\2[/url]', $message);
 		}
 		$sql = "INSERT INTO " . SHOUTBOX_TABLE . " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, enable_bbcode, enable_html, enable_smilies)
-				VALUES ('$message', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $username . "', $bbcode_on, $html_on, $smilies_on)";
+				VALUES ('" . $db->sql_escape($message) . "', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $db->sql_escape($username) . "', $bbcode_on, $html_on, $smilies_on)";
 		$result = $db->sql_query($sql);
 
 		// auto prune
@@ -176,12 +167,9 @@ elseif ($submit || isset($_POST['message']))
 }
 
 // see if we need offset
-if ((isset($_POST['start']) || isset($_GET['start'])) && !$submit)
-{
-	$start = (isset($_POST['start'])) ? intval($_POST['start']) : intval($_GET['start']);
-	$start = ($start < 0) ? 0 : $start;
-}
-else
+$start = request_var('start', 0);
+$start = ($start < 0) ? 0 : $start;
+if ($submit)
 {
 	$start = 0;
 }
@@ -230,7 +218,7 @@ if($error_msg != '')
 	$template->set_filenames(array('reg_header' => 'error_body.tpl'));
 	$template->assign_vars(array('ERROR_MESSAGE' => $error_msg));
 	$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
-	$message = (!empty($_POST['message'])) ? htmlspecialchars(trim(stripslashes($_POST['message']))) : '';
+	$message = request_var('message', '', true);
 	$template->assign_var('MESSAGE', $message);
 }
 

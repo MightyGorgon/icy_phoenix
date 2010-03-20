@@ -29,12 +29,6 @@ if ($is_allowed == false)
 }
 // Mighty Gorgon - ACP Privacy - END
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
@@ -44,10 +38,10 @@ $filter = isset($_GET['filter']) ? stripslashes($_GET['filter']) : (isset($_POST
 if(isset($_POST['filter_update']))
 {
 	$filter_data = array(
-		'ext'	=> trim(stripslashes($_POST['filter_ext'])),
-		'data'	=> trim(stripslashes($_POST['filter_data']))
-		);
-	 $filter = serialize($filter_data);
+		'ext' => trim(stripslashes($_POST['filter_ext'])),
+		'data' => trim(stripslashes($_POST['filter_data']))
+	);
+	$filter = serialize($filter_data);
 }
 else
 {
@@ -76,7 +70,7 @@ if(defined('DEMO_MODE') && substr($current_dir, 0, 9) !== 'templates')
 	$current_dir = 'templates';
 }
 $dirs = explode('/', $current_dir);
-for($i=0; $i< sizeof($dirs); $i++)
+for($i = 0; $i < sizeof($dirs); $i++)
 {
 	if(!$dirs[$i] || $dirs[$i] === '.')
 	{
@@ -87,19 +81,19 @@ $current_dir = implode('/', $dirs);
 $current_dir_full = $current_dir; //'templates' . ($current_dir ? '/' . $current_dir : '');
 $current_dir_root = $current_dir ? $current_dir . '/' : '';
 
-$return_dir = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir)), $lang['xs_edittpl_back_dir']);
+$return_dir = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT . $filter_str . '&dir=' . urlencode($current_dir)), $lang['xs_edittpl_back_dir']);
 $return_url = $return_dir;
-$return_url_root = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='), $lang['xs_edittpl_back_dir']);
+$return_url_root = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT . $filter_str . '&dir='), $lang['xs_edittpl_back_dir']);
 
 
 $template->assign_vars(array(
-	'FILTER_EXT'	=> htmlspecialchars($filter_data['ext']),
-	'FILTER_DATA'	=> htmlspecialchars($filter_data['data']),
-	'FILTER_URL'	=> append_sid('xs_edit.' . PHP_EXT),
-	'FILTER_DIR'	=> htmlspecialchars($current_dir),
-	'S_FILTER'		=> '<input type="hidden" name="filter" value="' . htmlspecialchars($filter) . '" />'
-	));
-
+	'FILTER_EXT' => htmlspecialchars($filter_data['ext']),
+	'FILTER_DATA' => htmlspecialchars($filter_data['data']),
+	'FILTER_URL' => append_sid('xs_edit.' . PHP_EXT),
+	'FILTER_DIR' => htmlspecialchars($current_dir),
+	'S_FILTER' => '<input type="hidden" name="filter" value="' . htmlspecialchars($filter) . '" />'
+	)
+);
 
 /*
 * show edit form
@@ -118,7 +112,7 @@ if(isset($_GET['edit']) && !empty($_GET['restore']))
 		$_POST['edit'] = $_GET['edit'];
 		$_POST['content'] = addslashes(implode('', @file($backup_name)));
 		unset($_GET['edit']);
-		$return_file = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file)), $lang['xs_edittpl_back_edit']);
+		$return_file = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir) . '&amp;edit=' . urlencode($file)), $lang['xs_edittpl_back_edit']);
 		$return_url = $return_file . '<br /><br />' . $return_dir;
 	}
 }
@@ -142,12 +136,12 @@ if(isset($_POST['edit']) && !defined('DEMO_MODE'))
 		$content = @implode('', @file($_FILES['upload']['tmp_name']));
 	}
 	$params = array(
-		'edit'		=> $file,
-		'dir'		=> $current_dir,
-		'content'	=> $content,
-		'filter'	=> $filter,
-		);
-	$return_file = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file)), $lang['xs_edittpl_back_edit']);
+		'edit' => $file,
+		'dir' => $current_dir,
+		'content' => $content,
+		'filter' => $filter,
+	);
+	$return_file = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir) . '&amp;edit=' . urlencode($file)), $lang['xs_edittpl_back_edit']);
 	$return_url = $return_file . '<br /><br />' . $return_dir;
 	// get ftp configuration
 	$write_local = false;
@@ -179,18 +173,18 @@ if(isset($_POST['edit']) && !defined('DEMO_MODE'))
 	// generate ftp actions
 	$actions = array();
 	// chdir to template directory
-	for($i=0; $i< sizeof($dirs); $i++)
+	for($i = 0; $i < sizeof($dirs); $i++)
 	{
 		$actions[] = array(
-				'command' => 'chdir',
-				'dir' => $dirs[$i]
+			'command' => 'chdir',
+			'dir' => $dirs[$i]
 		);
 	}
 	$actions[] = array(
-			'command' => 'upload',
-			'local' => $local_filename,
-			'remote' => $fullfile
-			);
+		'command' => 'upload',
+		'local' => $local_filename,
+		'remote' => $fullfile
+	);
 	$ftp_log = array();
 	$ftp_error = '';
 	$res = ftp_myexec($actions);
@@ -240,35 +234,35 @@ if(isset($_GET['edit']))
 		xs_download_file($file, implode('', @file($backup_name)));
 		xs_exit();
 	}
-	$return_file = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file)), $lang['xs_edittpl_back_edit']);
+	$return_file = str_replace('{URL}', append_sid('xs_edit.' . PHP_EXT.$filter_str.'&amp;dir=' . urlencode($current_dir).'&edit='.urlencode($file)), $lang['xs_edittpl_back_edit']);
 	$return_url = $return_file . '<br /><br />' . $return_dir;
 	$template->assign_vars(array(
-		'U_ACTION'		=> append_sid('xs_edit.' . PHP_EXT),
-		'U_BROWSE'		=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir)),
-		'U_EDIT'		=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file)),
-		'U_BACKUP'		=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dobackup=1&dir='.urlencode($current_dir).'&edit='.urlencode($file)),
-		'U_DOWNLOAD'	=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&download=1&dir='.urlencode($current_dir).'&edit='.urlencode($file)),
-		'CURRENT_DIR'	=> htmlspecialchars($current_dir_full),
-		'DIR'			=> htmlspecialchars($current_dir),
-		'FILE'			=> htmlspecialchars($file),
-		'FULLFILE'		=> htmlspecialchars($fullfile),
-		'CONTENT'		=> defined('DEMO_MODE') ? $lang['xs_error_demo_edit'] : htmlspecialchars($content),
+		'U_ACTION' => append_sid('xs_edit.' . PHP_EXT),
+		'U_BROWSE' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir)),
+		'U_EDIT' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir) . '&amp;edit=' . urlencode($file)),
+		'U_BACKUP' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&dobackup=1&amp;dir='.urlencode($current_dir) . '&amp;edit=' . urlencode($file)),
+		'U_DOWNLOAD' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&download=1&amp;dir='.urlencode($current_dir) . '&amp;edit=' . urlencode($file)),
+		'CURRENT_DIR' => htmlspecialchars($current_dir_full),
+		'DIR' => htmlspecialchars($current_dir),
+		'FILE' => htmlspecialchars($file),
+		'FULLFILE' => htmlspecialchars($fullfile),
+		'CONTENT' => defined('DEMO_MODE') ? $lang['xs_error_demo_edit'] : htmlspecialchars($content),
 		)
 	);
 	if($current_dir_full)
 	{
-		$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.$current_dir) . '">' . htmlspecialchars($current_dir_full) . '</a>'));
+		$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_edit.' . PHP_EXT . $filter_str . '&dir='.$current_dir) . '">' . htmlspecialchars($current_dir_full) . '</a>'));
 	}
 
 	// show tree
 	$arr = array();
 	$template->assign_block_vars('tree', array(
-		'ITEM'	=> 'Icy Phoenix',
-		'URL'	=> append_sid('xs_edit.' . PHP_EXT . $filter_str . '&dir='),
-		'SEPARATOR'	=> '',
+		'ITEM' => 'Icy Phoenix',
+		'URL' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&dir='),
+		'SEPARATOR' => '',
 		));
 	$back_dir = '';
-	for($i=0; $i< sizeof($dirs); $i++)
+	for($i = 0; $i < sizeof($dirs); $i++)
 	{
 		$arr[] = $dirs[$i];
 		$str = implode('/', $arr);
@@ -277,9 +271,9 @@ if(isset($_GET['edit']))
 			$back_dir = $str;
 		}
 		$template->assign_block_vars('tree', array(
-			'ITEM'	=> htmlspecialchars($dirs[$i]),
-			'URL'	=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($str)),
-			'SEPARATOR'	=> '/',
+			'ITEM' => htmlspecialchars($dirs[$i]),
+			'URL' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($str)),
+			'SEPARATOR' => '/',
 			));
 	}
 
@@ -288,7 +282,7 @@ if(isset($_GET['edit']))
 	{
 		$backup_name = XS_TEMP_DIR . XS_BACKUP_PREFIX . $hash . '.' . intval($_GET['viewbackup']) . XS_BACKUP_EXT;
 		$template->assign_vars(array(
-			'CONTENT'	=> implode('', @file($backup_name))
+			'CONTENT' => implode('', @file($backup_name))
 			)
 		);
 	}
@@ -332,14 +326,14 @@ if(isset($_GET['edit']))
 	}
 	closedir($res);
 	sort($backups);
-	for($i=0; $i< sizeof($backups); $i++)
+	for($i = 0; $i < sizeof($backups); $i++)
 	{
 		$template->assign_block_vars('backup', array(
-			'TIME'		=> create_date($config['default_dateformat'], $backups[$i], $config['board_timezone']),
-			'U_RESTORE'	=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file).'&restore='.$backups[$i]),
-			'U_DELETE'	=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file).'&delbackup='.$backups[$i]),
-			'U_DOWNLOAD' => append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file).'&downloadbackup='.$backups[$i]),
-			'U_VIEW'	=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file).'&viewbackup='.$backups[$i]),
+			'TIME' => create_date($config['default_dateformat'], $backups[$i], $config['board_timezone']),
+			'U_RESTORE' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir) . '&amp;edit=' . urlencode($file) . '&amp;restore=' . $backups[$i]),
+			'U_DELETE' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir) . '&amp;edit=' . urlencode($file) . '&amp;delbackup=' . $backups[$i]),
+			'U_DOWNLOAD' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir) . '&amp;edit=' . urlencode($file) . '&amp;downloadbackup=' . $backups[$i]),
+			'U_VIEW' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir) . '&amp;edit=' . urlencode($file) . '&amp;viewbackup=' . $backups[$i]),
 			)
 		);
 	}
@@ -350,7 +344,6 @@ if(isset($_GET['edit']))
 	xs_exit();
 }
 
-
 /*
 *  show file browser
 */
@@ -358,12 +351,12 @@ if(isset($_GET['edit']))
 // show tree
 $arr = array();
 $template->assign_block_vars('tree', array(
-	'ITEM'	=> 'Icy Phoenix',
-	'URL'	=> append_sid('xs_edit.' . PHP_EXT . $filter_str . '&dir='),
-	'SEPARATOR'	=> '',
+	'ITEM' => 'Icy Phoenix',
+	'URL' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&dir='),
+	'SEPARATOR' => '',
 	));
 $back_dir = '';
-for($i=0; $i< sizeof($dirs); $i++)
+for($i = 0; $i < sizeof($dirs); $i++)
 {
 	$arr[] = $dirs[$i];
 	$str = implode('/', $arr);
@@ -372,10 +365,11 @@ for($i=0; $i< sizeof($dirs); $i++)
 		$back_dir = $str;
 	}
 	$template->assign_block_vars('tree', array(
-		'ITEM'	=> htmlspecialchars($dirs[$i]),
-		'URL'	=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($str)),
-		'SEPARATOR'	=> '/',
-		));
+		'ITEM' => htmlspecialchars($dirs[$i]),
+		'URL' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($str)),
+		'SEPARATOR' => '/',
+		)
+	);
 }
 
 // get list of files/directories
@@ -435,8 +429,8 @@ $list_files_count = sizeof($list_files) + sizeof($list_files_editable);
 if($current_dir || sizeof($list_dirs))
 {
 	$template->assign_block_vars('begin_dirs', array(
-		'COUNT'		=> sizeof($list_dirs),
-		'L_COUNT'	=> str_replace('{COUNT}', sizeof($list_dirs), $lang['xs_fileman_dircount'])
+		'COUNT' => sizeof($list_dirs),
+		'L_COUNT' => str_replace('{COUNT}', sizeof($list_dirs), $lang['xs_fileman_dircount'])
 		));
 }
 else
@@ -446,23 +440,23 @@ else
 if($current_dir)
 {
 	$template->assign_block_vars('begin_dirs.dir', array(
-		'NAME'			=> '..',
-		'FULLNAME'		=> htmlspecialchars($back_dir ? $back_dir . '/' : ''),
-		'URL'			=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($back_dir)),
+		'NAME' => '..',
+		'FULLNAME' => htmlspecialchars($back_dir ? $back_dir . '/' : ''),
+		'URL' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($back_dir)),
 		)
 	);
 }
 
 // show subdirectories
 sort($list_dirs);
-for($i=0; $i< sizeof($list_dirs); $i++)
+for($i = 0; $i < sizeof($list_dirs); $i++)
 {
 	$dir = $list_dirs[$i];
 	$str = $current_dir_root . $dir;
 	$template->assign_block_vars('begin_dirs.dir', array(
-		'NAME'			=> htmlspecialchars($dir),
-		'FULLNAME'		=> htmlspecialchars($current_dir_root . $dir),
-		'URL'			=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($str)),
+		'NAME' => htmlspecialchars($dir),
+		'FULLNAME' => htmlspecialchars($current_dir_root . $dir),
+		'URL' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($str)),
 		)
 	);
 }
@@ -479,7 +473,7 @@ else
 sort($list_files_editable);
 // get today start
 $today = floor((time() + 3600 * $config['board_timezone']) / 86400) * 86400 - (3600 * $config['board_timezone']);
-for($i=0; $i< sizeof($list_files_editable); $i++)
+for($i = 0; $i < sizeof($list_files_editable); $i++)
 {
 	$file = $list_files_editable[$i];
 	$fullfile = $current_dir_root . $file;
@@ -488,12 +482,12 @@ for($i=0; $i< sizeof($list_files_editable); $i++)
 	$t = @filemtime($localfile);
 	$filetime = $t ? create_date($config['default_dateformat'], $t, $config['board_timezone']) : '&nbsp;';
 	$template->assign_block_vars('begin_files.file', array(
-		'ROW_CLASS'	=> $row_class,
-		'NAME'		=> htmlspecialchars($file),
-		'FULLNAME'	=> htmlspecialchars($fullfile),
-		'SIZE'		=> @filesize($localfile),
-		'TIME'		=> $filetime,
-		'URL'		=> append_sid('xs_edit.' . PHP_EXT.$filter_str.'&dir='.urlencode($current_dir).'&edit='.urlencode($file))
+		'ROW_CLASS' => $row_class,
+		'NAME' => htmlspecialchars($file),
+		'FULLNAME' => htmlspecialchars($fullfile),
+		'SIZE' => @filesize($localfile),
+		'TIME' => $filetime,
+		'URL' => append_sid('xs_edit.' . PHP_EXT . $filter_str . '&amp;dir=' . urlencode($current_dir) . '&amp;edit=' . urlencode($file))
 		)
 	);
 	if($t < $today)

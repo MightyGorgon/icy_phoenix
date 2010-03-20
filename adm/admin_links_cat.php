@@ -26,9 +26,7 @@ if(!empty($setmodules))
 	return;
 }
 
-//
 // Load default Header
-//
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
@@ -64,9 +62,12 @@ if(!function_exists('reorder_cat'))
 // END
 // --------------------------
 
-if(!isset($_POST['mode']))
+$mode = request_var('mode', '');
+$action = request_var('action', '');
+
+if(empty($mode))
 {
-	if(!isset($_GET['action']))
+	if(empty($action))
 	{
 		$template->set_filenames(array('body' => ADM_TPL . 'admin_link_cat_body.tpl'));
 
@@ -79,7 +80,8 @@ if(!isset($_POST['mode']))
 			'L_EDIT' => $lang['Edit'],
 			'L_DELETE' => $lang['Delete'],
 			'S_MODE' => 'new',
-			'L_CREATE_CATEGORY' => $lang['Create_category'])
+			'L_CREATE_CATEGORY' => $lang['Create_category']
+			)
 		);
 
 		$sql = "SELECT *
@@ -111,9 +113,9 @@ if(!isset($_POST['mode']))
 	}
 	else
 	{
-		if($_GET['action'] == 'edit')
+		if($action == 'edit')
 		{
-			$cat_id = intval($_GET['cat_id']);
+			$cat_id = request_var('cat_id', 0);
 
 			$sql = "SELECT *
 					FROM ". LINK_CATEGORIES_TABLE ."
@@ -145,9 +147,9 @@ if(!isset($_POST['mode']))
 
 			include('./page_footer_admin.' . PHP_EXT);
 		}
-		elseif($_GET['action'] == 'delete')
+		elseif($action == 'delete')
 		{
-			$cat_id = intval($_GET['cat_id']);
+			$cat_id = request_var('cat_id', 0);
 
 			$sql = "SELECT cat_id, cat_title, cat_order
 					FROM ". LINK_CATEGORIES_TABLE ."
@@ -179,9 +181,7 @@ if(!isset($_POST['mode']))
 			}
 			$select_to .= '</select>';
 
-			$template->set_filenames(array(
-				'body' => ADM_TPL . 'admin_link_cat_delete_body.tpl')
-			);
+			$template->set_filenames(array('body' => ADM_TPL . 'admin_link_cat_delete_body.tpl'));
 
 			$template->assign_vars(array(
 				'S_LINK_ACTION' => append_sid('admin_links_cat.' . PHP_EXT . '?cat_id=' . $cat_id),
@@ -198,10 +198,10 @@ if(!isset($_POST['mode']))
 
 			include('./page_footer_admin.' . PHP_EXT);
 		}
-		else if($_GET['action'] == 'move')
+		elseif($action == 'move')
 		{
-			$cat_id = intval($_GET['cat_id']);
-			$move = intval($_GET['move']);
+			$cat_id = request_var('cat_id', 0);
+			$move = request_var('move', 0);
 
 			$sql = "UPDATE ". LINK_CATEGORIES_TABLE ."
 					SET cat_order = cat_order + $move
@@ -218,7 +218,7 @@ if(!isset($_POST['mode']))
 }
 else
 {
-	if($_POST['mode'] == 'new')
+	if($move == 'new')
 	{
 		if(!isset($_POST['cat_title']))
 		{
@@ -227,7 +227,7 @@ else
 			$template->assign_vars(array(
 				'L_LINK_CAT_TITLE' => $lang['Link_Categories_Title'],
 				'L_LINK_CAT_EXPLAIN' => $lang['Link_Categories_Explain'],
-				'S_LINK_ACTION' => append_sid("admin_links_cat." . PHP_EXT),
+				'S_LINK_ACTION' => append_sid('admin_links_cat.' . PHP_EXT),
 				'L_CAT_TITLE' => $lang['Category_Title'],
 				'L_DISABLED' => $lang['Disabled'],
 				'S_MODE' => 'new',
@@ -241,7 +241,7 @@ else
 		else
 		{
 			// Get posting variables
-			$cat_title = str_replace("\'", "''", htmlspecialchars(trim($_POST['cat_title'])));
+			$cat_title = request_var('cat_title', '', true);
 
 			// Get the last ordered category
 			$sql = "SELECT cat_order FROM ". LINK_CATEGORIES_TABLE ."
@@ -254,7 +254,7 @@ else
 
 			// Here we insert a new row into the db
 			$sql = "INSERT INTO ". LINK_CATEGORIES_TABLE ." (cat_title, cat_order)
-					VALUES ('$cat_title', '$cat_order')";
+					VALUES ('" . $db->sql_escape($cat_title) . "', '$cat_order')";
 			$result = $db->sql_query($sql);
 
 			// Return a message...
@@ -263,16 +263,16 @@ else
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
-	elseif($_POST['mode'] == 'edit')
+	elseif($move == 'edit')
 	{
 		// Get posting variables
-		$cat_id = intval($_GET['cat_id']);
-		$cat_title = str_replace("\'", "''", htmlspecialchars(trim($_POST['cat_title'])));
+		$cat_id = request_var('cat_id', 0);
+		$cat_title = request_var('cat_title', '', true);
 
 
 		// Now we update this row
 		$sql = "UPDATE ". LINK_CATEGORIES_TABLE ."
-				SET cat_title = '$cat_title'
+				SET cat_title = '" . $db->sql_escape($cat_title) . "'
 				WHERE cat_id = '$cat_id'";
 		$result = $db->sql_query($sql);
 
@@ -281,10 +281,10 @@ else
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
-	elseif($_POST['mode'] == 'delete')
+	elseif($move == 'delete')
 	{
-		$cat_id = intval($_GET['cat_id']);
-		$target = intval($_POST['target']);
+		$cat_id = request_var('cat_id', 0);
+		$target = request_var('target', 0);
 
 		if($target == 0) // Delete All
 		{

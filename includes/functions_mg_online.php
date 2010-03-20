@@ -53,34 +53,34 @@ function get_online_page($page_id)
 		$location['url'] = CMS_PAGE_FORUM;
 		return $location;
 	}
-	elseif (strpos($page_id, 'viewonline.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_VIEWONLINE) !== false)
 	{
 		$location['lang'] = $lang['Viewing_online'];
-		$location['url'] = 'viewonline.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_VIEWONLINE;
 		return $location;
 	}
-	elseif (strpos($page_id, 'memberlist.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_MEMBERLIST) !== false)
 	{
 		$location['lang'] = $lang['Viewing_member_list'];
-		$location['url'] = 'memberlist.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_MEMBERLIST;
 		return $location;
 	}
-	elseif (strpos($page_id, 'privmsg.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_PRIVMSG) !== false)
 	{
 		$location['lang'] = $lang['Viewing_priv_msgs'];
-		$location['url'] = 'privmsg.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_PRIVMSG;
 		return $location;
 	}
-	elseif (strpos($page_id, 'credits.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_CREDITS) !== false)
 	{
 		$location['lang'] = $lang['Viewing_HACKSLIST'];
-		$location['url'] = 'credits.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_CREDITS;
 		return $location;
 	}
-	elseif (strpos($page_id, 'faq.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_FAQ) !== false)
 	{
 		$location['lang'] = $lang['Viewing_FAQ'];
-		$location['url'] = 'faq.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_FAQ;
 		return $location;
 	}
 	elseif (strpos($page_id, 'sudoku.' . PHP_EXT) !== false)
@@ -101,22 +101,22 @@ function get_online_page($page_id)
 		$location['url'] = 'shoutbox_max.' . PHP_EXT;
 		return $location;
 	}
-	elseif (strpos($page_id, 'recent.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_RECENT) !== false)
 	{
 		$location['lang'] = $lang['Recent_topics'];
-		$location['url'] = 'recent.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_RECENT;
 		return $location;
 	}
-	elseif (strpos($page_id, 'referrers.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_REFERRERS) !== false)
 	{
 		$location['lang'] = $lang['Viewing_Referrers'];
-		$location['url'] = 'referrers.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_REFERRERS;
 		return $location;
 	}
 	elseif (strpos($page_id, 'links') !== false)
 	{
 		$location['lang'] = $lang['Links'];
-		$location['url'] = 'links.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_LINKS;
 		return $location;
 	}
 	elseif (strpos($page_id, 'ranks.' . PHP_EXT) !== false)
@@ -128,13 +128,13 @@ function get_online_page($page_id)
 	elseif (strpos($page_id, 'staff.' . PHP_EXT) !== false)
 	{
 		$location['lang'] = $lang['Staff'];
-		$location['url'] = 'staff.' . PHP_EXT . PHP_EXT;
+		$location['url'] = 'staff.' . PHP_EXT;
 		return $location;
 	}
-	elseif (strpos($page_id, 'statistics.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_STATISTICS) !== false)
 	{
 		$location['lang'] = $lang['Statistics'];
-		$location['url'] = 'statistics.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_STATISTICS;
 		return $location;
 	}
 	elseif (strpos($page_id, 'attachments.' . PHP_EXT) !== false)
@@ -143,16 +143,16 @@ function get_online_page($page_id)
 		$location['url'] = 'attachments.' . PHP_EXT;
 		return $location;
 	}
-	elseif (strpos($page_id, 'dload.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_DL_DEFAULT) !== false)
 	{
 		$location['lang'] = $lang['Downloads'];
-		$location['url'] = 'dload.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_DL_DEFAULT;
 		return $location;
 	}
-	elseif (strpos($page_id, 'calendar.' . PHP_EXT) !== false)
+	elseif (strpos($page_id, CMS_PAGE_CALENDAR) !== false)
 	{
 		$location['lang'] = $lang['Calendar'];
-		$location['url'] = 'calendar.' . PHP_EXT;
+		$location['url'] = CMS_PAGE_CALENDAR;
 		return $location;
 	}
 	elseif (strpos($page_id, 'rating.' . PHP_EXT) !== false)
@@ -165,12 +165,6 @@ function get_online_page($page_id)
 	{
 		$location['lang'] = $lang['Ratings'];
 		$location['url'] = 'ratings.' . PHP_EXT;
-		return $location;
-	}
-	elseif (strpos($page_id, 'calendar.' . PHP_EXT) !== false)
-	{
-		$location['lang'] = $lang['Calendar'];
-		$location['url'] = 'calendar.' . PHP_EXT;
 		return $location;
 	}
 	elseif (strpos($page_id, 'kb.' . PHP_EXT) !== false)

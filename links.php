@@ -33,71 +33,49 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-require(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_link.' . PHP_EXT);
+setup_extra_lang(array('lang_main_link'));
+include(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
 
-// Count and forwrad
-if(($_GET['action'] == 'go') && ($_GET['link_id']))
-{
-	$link_id = intval($_GET['link_id']);
-	$link_id = ($link_id < 0) ? 0 : $link_id;
-	// Secure check
-	if(is_numeric($link_id))
-	{
-		$sql = "SELECT link_id, link_url, last_user_ip
-			FROM " . LINKS_TABLE . "
-			WHERE link_id = '" . $link_id . "'
-			AND link_active = 1";
-		$result = $db->sql_query($sql);
-		$row = $db->sql_fetchrow($result);
-		if($link_url = $row['link_url'])
-		{
-			if($user_ip != $row['last_user_ip'])
-			{
-				// Update
-				$sql = "UPDATE " . LINKS_TABLE . "
-					SET link_hits = link_hits + 1, last_user_ip = '" . $user_ip . "'
-					WHERE link_id = '" . $link_id . "'";
-				$result = $db->sql_query($sql);
-			}
+$links_config = get_links_config(true);
 
-			// Forward to website
-			// header("Location: $link_url");
-			echo '<script type="text/javascript">location.replace("' . $link_url . '")</script>';
-			exit;
-		}
-	}
-}
-
-// Define initial vars
-$start = isset($_GET['start']) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if (isset($_POST['t']) || isset($_GET['t']))
-{
-	$t = (isset($_POST['t'])) ? htmlspecialchars($_POST['t']) : htmlspecialchars($_GET['t']);
-}
-else
-{
-	$t = 'index';
-}
+$cat = request_var('cat', 0);
+$cat = ($cat < 1) ? 1 : $cat;
 
-if (isset($_POST['cat']) || isset($_GET['cat']))
-{
-	$cat = (isset($_POST['cat'])) ? $_POST['cat'] : $_GET['cat'];
-}
-else
-{
-	$cat = 1;
-}
-$cat = (intval($cat) > 0) ? intval($cat) : 1;
+$link_id = request_var('link_id', 0);
+$link_id = ($link_id < 0) ? 0 : $link_id;
 
-if (isset($_POST['search_keywords']) || isset($_GET['search_keywords']))
+$t = request_var('t', 'index', true);
+
+$search_keywords = request_var('search_keywords', '', true);
+
+// Count and forward
+if(($_GET['action'] == 'go') && !empty($link_id))
 {
-	$search_keywords = (isset($_POST['search_keywords'])) ? $_POST['search_keywords'] : $_GET['search_keywords'];
-}
-else
-{
-	$search_keywords = '';
+	$sql = "SELECT link_id, link_url, last_user_ip
+		FROM " . LINKS_TABLE . "
+		WHERE link_id = '" . $link_id . "'
+		AND link_active = 1";
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	if($link_url = $row['link_url'])
+	{
+		if($user_ip != $row['last_user_ip'])
+		{
+			// Update
+			$sql = "UPDATE " . LINKS_TABLE . "
+				SET link_hits = link_hits + 1, last_user_ip = '" . $user_ip . "'
+				WHERE link_id = '" . $link_id . "'";
+			$result = $db->sql_query($sql);
+		}
+
+		// Forward to website
+		// header("Location: $link_url");
+		echo '<script type="text/javascript">location.replace("' . $link_url . '")</script>';
+		exit;
+	}
 }
 
 // Grab link categories
@@ -130,19 +108,7 @@ switch($t)
 
 $template_to_parse = $tmp;
 
-// Get Link Config
-$sql = "SELECT * FROM " . LINK_CONFIG_TABLE;
-$result = $db->sql_query($sql, 0, 'links_config_');
-while($row = $db->sql_fetchrow($result))
-{
-	$link_config_name = $row['config_name'];
-	$link_config_value = $row['config_value'];
-	$link_config[$link_config_name] = $link_config_value;
-	$linkspp = $link_config['linkspp'];
-}
-$db->sql_freeresult($result);
-
-if($link_config['lock_submit_site'] == 0)
+if($links_config['lock_submit_site'] == 0)
 {
 	// display submit site
 	$template->assign_block_vars('lock', array());
@@ -158,7 +124,7 @@ if($link_config['lock_submit_site'] == 0)
 	}
 }
 
-if($link_config['allow_no_logo'])
+if($links_config['allow_no_logo'])
 {
 	$tmp = $lang['Link_logo_src'];
 }
@@ -181,14 +147,15 @@ $template->assign_vars(array(
 	'L_LINK_REGISTER' => $lang['Link_register'],
 	'L_SITE_LINKS' => $lang['Site_links'],
 	'L_LINK_US' => $lang['Link_us'] . htmlspecialchars($config['sitename']),
-	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], htmlspecialchars($config['sitename'])),'L_SUBMIT' => $lang['Submit'],
+	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], htmlspecialchars($config['sitename'])),
+	'L_SUBMIT' => $lang['Submit'],
 	'U_SITE_LINKS' => append_sid('links.' . PHP_EXT),
 	'L_LINK_CATEGORY' => $lang['Link_category'],
 	'U_SITE_SEARCH' => append_sid('links.' . PHP_EXT . '?t=search'),
 	'U_SITE_TOP' => append_sid('links.' . PHP_EXT . '?t=pop'),
 	'U_SITE_NEW' => append_sid('links.' . PHP_EXT . '?t=new'),
-	'U_SITE_LOGO' => $link_config['site_logo'],
-	'LINK_US_SYNTAX' => str_replace(' ', '&nbsp;', sprintf(htmlentities($lang['Link_us_syntax'], ENT_QUOTES), $link_config['site_url'], $link_config['site_logo'], $link_config['width'], $link_config['height'], htmlspecialchars(str_replace('"', '', $config['sitename'])))),
+	'U_SITE_LOGO' => $links_config['site_logo'],
+	'LINK_US_SYNTAX' => str_replace(' ', '&nbsp;', sprintf(htmlentities($lang['Link_us_syntax'], ENT_QUOTES), $links_config['site_url'], $links_config['site_logo'], $links_config['width'], $links_config['height'], htmlspecialchars(str_replace('"', '', $config['sitename'])))),
 	'LINKS_HOME' => $lang['Links_home'],
 	'L_SEARCH_SITE' => $lang['Search_site'],
 	'L_DESCEND_BY_HITS' => $lang['Descend_by_hits'],
@@ -230,13 +197,13 @@ if (($t == 'pop') || ($t == 'new'))
 	$sql = "SELECT * FROM " . LINKS_TABLE . "
 		WHERE link_active = 1
 		ORDER BY link_hits DESC, link_id DESC
-		LIMIT $start, $linkspp";
+		LIMIT $start, " . $db->sql_escape($links_config['linkspp']);
 	if ($t == 'new')
 	{
 		$sql = "SELECT * FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
 			ORDER BY link_joined DESC, link_id DESC
-			LIMIT $start, $linkspp";
+			LIMIT $start, " . $db->sql_escape($links_config['linkspp']);
 	}
 	$result = $db->sql_query($sql);
 
@@ -246,11 +213,11 @@ if (($t == 'pop') || ($t == 'new'))
 		do
 		{
 			// if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
-			if ($link_config['display_links_logo'])
+			if ($links_config['display_links_logo'])
 			{
 				if ($row['link_logo_src'])
 				{
-					$tmp = '<a href=' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
+					$tmp = '<a href=' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $links_config['width'] . '" height="' . $links_config['height'] . '" border="0" hspace="1" /></a>';
 				}
 				else
 				{
@@ -291,7 +258,7 @@ if (($t == 'pop') || ($t == 'new'))
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$total_links = $row['total'];
-		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t, $total_links, $linkspp, $start) . '&nbsp;';
+		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t, $total_links, $links_config['linkspp'], $start) . '&nbsp;';
 	}
 	else
 	{
@@ -309,7 +276,7 @@ if (($t == 'pop') || ($t == 'new'))
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $linkspp) + 1), ceil($total_links / $linkspp)),
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $links_config['linkspp']) + 1), ceil($total_links / $links_config['linkspp'])),
 		'L_GOTO_PAGE' => $lang['Goto_page'],
 		'LINK_CAT_OPTION' => $link_cat_option
 		)
@@ -318,32 +285,13 @@ if (($t == 'pop') || ($t == 'new'))
 
 if ($t == 'sub_pages')
 {
-	if (isset($_GET['mode']) || isset($_POST['mode']))
-	{
-		$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-	}
-	else
-	{
-		$mode = 'link_joined';
-	}
-
-	if(isset($_POST['order']))
-	{
-		$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
-	}
-	elseif(isset($_GET['order']))
-	{
-		$sort_order = ($_GET['order'] == 'ASC') ? 'ASC' : 'DESC';
-	}
-	else
-	{
-		$sort_order = 'DESC';
-	}
-
-	// Links sites sorting
+	$mode = request_var('mode', 'link_joined');
 	$mode_types_text = array($lang['Joined'], $lang['link_hits'], $lang['Link_title'], $lang['Link_desc']);
 	$mode_types = array('link_joined', 'link_hits', 'link_title', 'link_desc');
 	$mode = (in_array($mode, $mode_types) ? $mode : $mode_types[0]);
+
+	$sort_order = request_var('order', $album_config['sort_order']);
+	$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 	$select_sort_mode = '<select name="mode">';
 	for($i = 0; $i < sizeof($mode_types_text); $i++)
@@ -395,7 +343,7 @@ if ($t == 'sub_pages')
 			WHERE link_active = 1
 				AND link_category = '" . $cat . "'
 			ORDER BY $mode $sort_order, link_id DESC
-			LIMIT $start, $linkspp";
+			LIMIT $start, " . $db->sql_escape($links_config['linkspp']);
 	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
@@ -404,11 +352,11 @@ if ($t == 'sub_pages')
 		do
 		{
 			//if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
-			if ($link_config['display_links_logo'])
+			if ($links_config['display_links_logo'])
 			{
 				if ($row['link_logo_src'])
 				{
-					$tmp = '<a href="' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . '" alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
+					$tmp = '<a href="' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . '" alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $links_config['width'] . '" height="' . $links_config['height'] . '" /></a>';
 				}
 				else
 				{
@@ -447,15 +395,12 @@ if ($t == 'sub_pages')
 			AND link_category = '" . $cat . "'";
 	$result = $db->sql_query($sql);
 
+	$pagination = '&nbsp;';
+	$total_links = 10;
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$total_links = $row['total'];
-		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;cat=' . $cat . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_links, $linkspp, $start). '&nbsp;';
-	}
-	else
-	{
-		$pagination = '&nbsp;';
-		$total_links = 10;
+		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;cat=' . $cat . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_links, $links_config['linkspp'], $start). '&nbsp;';
 	}
 	$db->sql_freeresult($result);
 
@@ -467,7 +412,7 @@ if ($t == 'sub_pages')
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $linkspp) + 1), ceil($total_links / $linkspp)),
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $links_config['linkspp']) + 1), ceil($total_links / $links_config['linkspp'])),
 		'L_GOTO_PAGE' => $lang['Goto_page'],
 		'LINK_CAT_OPTION' => $link_cat_option
 		)
@@ -478,7 +423,6 @@ if ($t == 'search')
 {
 	if ($search_keywords)
 	{
-		$search_keywords = trim(stripslashes($search_keywords));
 		$link_title = $lang['Search_site'] . '&nbsp;&raquo;&nbsp;' . $search_keywords;
 		$template->assign_vars(array(
 			'L_LINK_TITLE1' => $link_title,
@@ -511,8 +455,8 @@ if ($t == 'search')
 	{
 		$sql = "SELECT * FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
-				AND (link_title LIKE '%$search_keywords%' OR link_desc LIKE '% $search_keywords%')
-			LIMIT $start, $linkspp";
+				AND (link_title LIKE '%" . $db->sql_escape($search_keywords) . "%' OR link_desc LIKE '%" . $db->sql_escape($search_keywords) . "%')
+			LIMIT $start, " . $db->sql_escape($links_config['linkspp']);
 		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))
@@ -521,11 +465,11 @@ if ($t == 'search')
 			do
 			{
 				//if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
-				if ($link_config['display_links_logo'])
+				if ($links_config['display_links_logo'])
 				{
 					if ($row['link_logo_src'])
 					{
-						$tmp = '<a href=' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $link_config['width'] . '" height="' . $link_config['height'] . '" border="0" hspace="1" /></a>';
+						$tmp = '<a href=' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $links_config['width'] . '" height="' . $links_config['height'] . '" /></a>';
 					}
 					else
 					{
@@ -561,13 +505,13 @@ if ($t == 'search')
 		$sql = "SELECT count(*) AS total
 			FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
-				AND (link_title LIKE '%$search_keywords%' OR link_desc LIKE '%$search_keywords %')";
+				AND (link_title LIKE '%" . $db->sql_escape($search_keywords) . "%' OR link_desc LIKE '%" . $db->sql_escape($search_keywords) . "%')";
 		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))
 		{
 			$total_links = $row['total'];
-			$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;search_keywords=' . $search_keywords, $total_links, $linkspp, $start). '&nbsp;';
+			$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;search_keywords=' . urlencode($search_keywords), $total_links, $links_config['linkspp'], $start). '&nbsp;';
 		}
 		else
 		{
@@ -585,7 +529,7 @@ if ($t == 'search')
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $linkspp) + 1), ceil($total_links / $linkspp)),
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $links_config['linkspp']) + 1), ceil($total_links / $links_config['linkspp'])),
 		'L_GOTO_PAGE' => $lang['Goto_page'],
 		'LINK_CAT_OPTION' => $link_cat_option
 		)

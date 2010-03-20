@@ -19,17 +19,21 @@ class pafiledb_category extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $pafiledb_config, $userdata, $config;
+		global $template, $lang, $pafiledb_config, $userdata, $config;
 
 		// =======================================================
 		// Get the id
 		// =======================================================
 
-		if ( isset($_REQUEST['cat_id']))
+		$cat_id = request_var('cat_id', 0);
+		$file_id = request_var('file_id', 0);
+		$action = request_var('action', '');
+
+		if (!empty($cat_id))
 		{
-			$cat_id = intval($_REQUEST['cat_id']);
+			$cat_id = $cat_id;
 		}
-		elseif ($file_id == 0 && $action != '')
+		elseif (($file_id == 0) && ($action != ''))
 		{
 			$cat_id_array = array();
 			$cat_id_array = explode('=', $action);
@@ -40,55 +44,15 @@ class pafiledb_category extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $lang['Cat_not_exist']);
 		}
 
-		$start = ( isset($_REQUEST['start']) ) ? intval($_REQUEST['start']) : 0;
+		$start = request_var('start', 0);
 		$start = ($start < 0) ? 0 : $start;
 
-		if(isset($_REQUEST['sort_method']))
-		{
-			switch ($_REQUEST['sort_method'])
-			{
-				case 'file_name':
-					$sort_method = 'file_name';
-					break;
-				case 'file_time':
-					$sort_method = 'file_time';
-					break;
-				case 'file_dls':
-					$sort_method = 'file_dls';
-					break;
-				case 'file_rating':
-					$sort_method = 'rating';
-					break;
-				case 'file_update_time':
-					$sort_method = 'file_update_time';
-					break;
-				default:
-					$sort_method = $pafiledb_config['sort_method'];
-			}
-		}
-		else
-		{
-			$sort_method = $pafiledb_config['sort_method'];
-		}
+		$sort_method = request_var('sort_method', $pafiledb_config['sort_method']);
+		$sort_method = check_var_value($sort_method, array('file_name', 'file_time', 'file_dls', 'file_rating', 'file_update_time'));
+		$sort_method = ($sort_method == 'file_rating') ? 'rating' : $sort_method;
 
-		if( isset($_REQUEST['sort_order']) )
-		{
-			switch ($_REQUEST['sort_order'])
-			{
-				case 'ASC':
-					$sort_order = 'ASC';
-					break;
-				case 'DESC':
-					$sort_order = 'DESC';
-					break;
-				default:
-					$sort_order = $pafiledb_config['sort_order'];
-			}
-		}
-		else
-		{
-			$sort_order = $pafiledb_config['sort_order'];
-		}
+		$sort_order = request_var('order', $pafiledb_config['sort_order']);
+		$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 		// =======================================================
 		// If user not allowed to view file listing (read) and there is no sub Category
@@ -129,7 +93,7 @@ class pafiledb_category extends pafiledb_public
 		//===================================================
 		$this->generate_category_nav($cat_id);
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 

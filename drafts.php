@@ -23,16 +23,15 @@ if (!$config['allow_drafts'])
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 
-$mode = (isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : ''));
-$mode_array = array('loadr', 'loadn', 'loadp', 'delete');
-$mode = (in_array($mode, $mode_array) ? $mode : '');
+$mode = request_var('mode', '', true);
+$mode = check_var_value($mode, array('loadr', 'loadn', 'loadp', 'delete'), '');
 
 if (!empty($_POST['kill_drafts']))
 {
 	$mode = 'delete';
 }
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 if (!$userdata['session_logged_in'])
@@ -41,7 +40,7 @@ if (!$userdata['session_logged_in'])
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=drafts.' . PHP_EXT . $redirect, true));
 }
 
-$draft_id = (isset($_POST['d']) ? intval($_POST['d']) : (isset($_GET['d']) ? intval($_GET['d']) : 0));
+$draft_id = request_var('d', 0);
 $draft_id = ($draft_id < 0) ? 0 : $draft_id;
 
 if (($draft_id > 0) || !empty($_POST['kill_drafts']))
@@ -56,7 +55,7 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 	}
 	elseif ($mode == 'loadp')
 	{
-		redirect(append_sid('privmsg.' . PHP_EXT . '?d=' . $draft_id . '&mode=post' . '&draft_mode=draft_load', true));
+		redirect(append_sid(CMS_PAGE_PRIVMSG . '?d=' . $draft_id . '&mode=post' . '&draft_mode=draft_load', true));
 	}
 	elseif ($mode == 'delete')
 	{
@@ -113,7 +112,7 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 
 // Generate the page
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
 $breadcrumbs_links_right = '<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', true); return false;">' . $lang['Mark_all'] . '</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', false); return false;">' . $lang['Unmark_all'] . '</a>';
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
@@ -205,7 +204,7 @@ if ($no_drafts == false)
 			$draft_image = '<img src="' . $images['topic_nor_read'] . '" alt="" />';
 			$draft_type = $lang['Drafts_NPM'];
 			$draft_load = 'loadp';
-			$draft_cat_link = append_sid(IP_ROOT_PATH . 'privmsg.' . PHP_EXT);
+			$draft_cat_link = append_sid(IP_ROOT_PATH . CMS_PAGE_PRIVMSG);
 			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']);
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $lang['Drafts_NPM'] . '</a>';
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row[$i]['draft_subject'] . '</a>';
@@ -220,7 +219,7 @@ if ($no_drafts == false)
 			'DRAFT_CAT_LINK' => $draft_cat_link,
 			'DRAFT_CAT' => $draft_row[$i]['draft_cat'],
 			'DRAFT_TITLE_LINK' => $draft_title_link,
-			'DRAFT_TITLE' => stripslashes($draft_row[$i]['draft_title']),
+			'DRAFT_TITLE' => $draft_row[$i]['draft_title'],
 			'DRAFT_TIME' => create_date_ip($config['default_dateformat'], $draft_row[$i]['save_time'], $config['board_timezone']),
 			'U_DRAFT_LOAD' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']),
 			'U_DRAFT_DELETE' => append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=delete&amp;d=' . $draft_row[$i]['draft_id']),

@@ -19,8 +19,8 @@ class pafiledb_main extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $pafiledb_config, $debug, $lang, $config, $theme, $images;
-		$pafiledb_template->assign_vars(array(
+		global $template, $pafiledb_config, $debug, $lang, $config, $theme, $images;
+		$template->assign_vars(array(
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 			'TPL_COLOR' => $theme['body_background'],

@@ -21,36 +21,33 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-// Mighty Gorgon: new attachments cache.
-$attach_config = $cache->obtain_attachments_config(false);
-
 // We assign the original default board language here, because it gets overwritten later with the users default language
-$attach_config['board_lang'] = trim($config['default_lang']);
+$config['board_lang'] = trim($config['default_lang']);
 
 // Needed to correctly process attachments!
 define('PAGE_PRIVMSGS', -10);
 
-include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/constants.' . PHP_EXT);
-include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_attach.' . PHP_EXT);
-include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . PHP_EXT);
+include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/constants.' . PHP_EXT);
+include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_attach.' . PHP_EXT);
+include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_filetypes.' . PHP_EXT);
 if(defined('IN_DOWNLOAD') || defined('IN_ADMIN') || defined('ATTACH_DISPLAY') || defined('ATTACH_PM') || defined('ATTACH_POSTING'))
 {
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_includes.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_includes.' . PHP_EXT);
 }
 if(defined('IN_DOWNLOAD') || defined('IN_ADMIN') || defined('ATTACH_PM') || defined('ATTACH_POSTING'))
 {
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_posting.' . PHP_EXT);
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_posting.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
 }
 if(defined('IN_ADMIN'))
 {
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_selects.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_selects.' . PHP_EXT);
 }
 if(defined('ATTACH_PROFILE'))
 {
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_profile.' . PHP_EXT);
+	include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_profile.' . PHP_EXT);
 }
 
 // Please do not change the include-order, it is valuable for proper execution.
@@ -74,13 +71,13 @@ if(defined('ATTACH_PM'))
 /*
 */
 
-if (!intval($attach_config['allow_ftp_upload']))
+if (!intval($config['allow_ftp_upload']))
 {
-	$upload_dir = $attach_config['upload_dir'];
+	$upload_dir = $config['upload_dir'];
 }
 else
 {
-	$upload_dir = $attach_config['download_path'];
+	$upload_dir = $config['download_path'];
 }
 
 ?>

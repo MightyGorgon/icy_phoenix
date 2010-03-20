@@ -30,7 +30,8 @@ $template->assign_vars(array(
 	'L_SEP' => $lang['Month_sep'],
 	'L_OCT' => $lang['Month_oct'],
 	'L_NOV' => $lang['Month_nov'],
-	'L_DEC' => $lang['Month_dec'])
+	'L_DEC' => $lang['Month_dec']
+	)
 );
 
 $sql = 'SELECT YEAR(FROM_UNIXTIME(topic_time)) as aar, MONTH(FROM_UNIXTIME(topic_time)) as mnd, COUNT(*) AS ant

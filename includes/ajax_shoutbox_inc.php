@@ -27,12 +27,8 @@ if (!defined('CTRACKER_DISABLE_OUTPUT'))
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-$action = false;
 // Lets see what we do, if nothing define show the shoutbox
-if (!empty($_POST['act']) || !empty($_GET['act']))
-{
-	$action = (!empty($_POST['act'])) ? htmlspecialchars($_POST['act']) : htmlspecialchars($_GET['act']);
-}
+$action = request_var('act', '');
 
 $private_chat = false;
 if (!defined('AJAX_CHAT_ROOM'))
@@ -51,7 +47,7 @@ if (!defined('AJAX_CHAT_ROOM'))
 	$private_chat = true;
 }
 
-if($action)
+if(!empty($action))
 {
 	define('AJAX_HEADERS', true);
 	// Headers are sent to prevent browsers from caching... IE is still resistent sometimes
@@ -131,7 +127,7 @@ if($action)
 		}
 
 		// If the request does not provide the id of the last know message the id is set to 0
-		$lastID = ($_GET['lastID']) ? intval($_GET['lastID']) : 0;
+		$lastID = request_var('lastID', 0);
 
 		$limit_sql = '';
 		// Check if there is a limit else, show all shouts
@@ -219,8 +215,10 @@ if($action)
 	// Code for sending data
 	elseif ($action == 'add')
 	{
-		$shouter = trim($_POST['nm']); //name from the form in index.html
-		$message = trim($_POST['co']); //comment from the form in index.html
+		$shouter = request_var('nm', '', true);
+		$shouter = htmlspecialchars_decode($shouter, ENT_COMPAT);
+		$message = request_var('co', '', true);
+		$message = htmlspecialchars_decode($message, ENT_COMPAT);
 		$shout_time = time();
 
 		// Flood Control
@@ -292,8 +290,7 @@ if($action)
 			}
 			else
 			{
-				$shouter = strip_tags(stripslashes($shouter));
-				$shouter = str_replace("'", "''", $shouter);
+				$shouter = strip_tags($shouter);
 
 				// The name is shortened to 30 letters
 				$shouter = substr($shouter, 0, 30);
@@ -310,8 +307,7 @@ if($action)
 			}
 		}
 
-		$message = strip_tags(stripslashes($message));
-		$message = str_replace("'", "''", $message);
+		$message = strip_tags($message);
 
 		// we don't want users shouting images so we take them out before parsing the bbcodes
 		//$message = @ereg_replace("\\[img\\]([^\[]*)\\[/img\\]", '', $message);
@@ -339,7 +335,7 @@ if($action)
 		if ($message != '')
 		{
 			// Add new data
-			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time, shout_room) VALUES (" . $userdata['user_id'] . ", '" . $shouter . "', '" . $message . "', '" . $user_ip . "', " . $shout_time . ", '" . $chat_room . "')";
+			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time, shout_room) VALUES (" . $userdata['user_id'] . ", '" . $db->sql_escape($shouter) . "', '" . $db->sql_escape($message) . "', '" . $user_ip . "', " . $shout_time . ", '" . $chat_room . "')";
 
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
@@ -387,7 +383,7 @@ if($action)
 	{
 		if(($userdata['user_level'] == ADMIN) && ($userdata['session_logged_in']))
 		{
-			$shout_id = intval($_POST['sh']);
+			$shout_id = request_var('sh', 0);
 
 			$sql = 'DELETE FROM ' . AJAX_SHOUTBOX_TABLE . ' WHERE shout_id =' . $shout_id;
 			$db->sql_return_on_error(true);
@@ -409,15 +405,12 @@ if (!$shoutbox_template_parse)
 }
 
 // Use special dimensions to the else use default.
-if(($_GET['width'] > 0) && ($_GET['height'] > 0))
+$shoutbox_width = request_var('width', 710);
+$shoutbox_height = request_var('height', 350);
+if(($shoutbox_width <= 0) || ($shoutbox_height <= 0))
 {
-	$shoutbox_width = intval($_GET['width']);
-	$shoutbox_height = intval($_GET['height']);
-}
-else
-{
-	$shoutbox_width = (!$shoutbox_width) ? 710 : intval($shoutbox_width);
-	$shoutbox_height = (!$shoutbox_height) ? 350 : intval($shoutbox_height);
+	$shoutbox_width = 710;
+	$shoutbox_height = 350;
 }
 
 /* Results need a fixed width a height for the overflow. */

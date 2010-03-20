@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
@@ -672,7 +671,7 @@ if(($mode == 'blocks'))
 			if(!empty($b_content))
 			{
 				//$b_content = prepare_message(trim($b_content), true, true, true);
-				//$b_content = str_replace("\'", "''", $b_content);
+				//$b_content = $db->sql_escape($b_content);
 			}
 		}
 
@@ -744,7 +743,7 @@ if(($mode == 'blocks'))
 						{
 							if ((!empty($_POST[$block_variables[$i][2]])) || ($_POST[$block_variables[$i][2]] == '0'))
 							{
-								$block_variables[$i][7] = str_replace("\'", "''", $_POST[$block_variables[$i][2]]);
+								$block_variables[$i][7] = $db->sql_escape($_POST[$block_variables[$i][2]]);
 							}
 
 							$existing = get_existing_block_var(CMS_BLOCK_VARIABLE_TABLE, $b_id, $block_variables[$i][2]);
@@ -752,17 +751,17 @@ if(($mode == 'blocks'))
 							if(!$existing)
 							{
 								$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
-									VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][0]) . "', '" . str_replace("\'", "''", $block_variables[$i][1]) . "', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . str_replace("\'", "''", $block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . str_replace("\'", "''", $block_variables[$i][6]) . "')";
+									VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][0]) . "', '" . $db->sql_escape($block_variables[$i][1]) . "', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . $db->sql_escape($block_variables[$i][6]) . "')";
 								$result = $db->sql_query($sql);
 
 								$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
-									VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
+									VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
 								$result = $db->sql_query($sql);
 							}
 							else
 							{
 								$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET config_value = '" . $block_variables[$i][7] . "'
-												WHERE config_name = '" . str_replace("\'", "''", $block_variables[$i][2]) . "'
+												WHERE config_name = '" . $db->sql_escape($block_variables[$i][2]) . "'
 													AND bid = " . $b_id;
 								$result = $db->sql_query($sql);
 							}
@@ -811,15 +810,15 @@ if(($mode == 'blocks'))
 					{
 						if ((!empty($_POST[$block_variables[$i][2]])) || ($_POST[$block_variables[$i][2]] == '0'))
 						{
-							$block_variables[$i][7] = str_replace("\'", "''", $_POST[$block_variables[$i][2]]);
+							$block_variables[$i][7] = $db->sql_escape($_POST[$block_variables[$i][2]]);
 						}
 
 						$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
-							VALUES ('" . $b_id . "', '" . str_replace("\'", "''", $block_variables[$i][0]) . "', '" . str_replace("\'", "''", $block_variables[$i][1]) . "', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . str_replace("\'", "''", $block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . str_replace("\'", "''", $block_variables[$i][6]) . "')";
+							VALUES ('" . $b_id . "', '" . $db->sql_escape($block_variables[$i][0]) . "', '" . $db->sql_escape($block_variables[$i][1]) . "', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . $db->sql_escape($block_variables[$i][6]) . "')";
 						$result = $db->sql_query($sql);
 
 						$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
-							VALUES ('" . $b_id ."', '" . str_replace("\'", "''", $block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
+							VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
 						$result = $db->sql_query($sql);
 					}
 				}
@@ -1700,7 +1699,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 			$edit_auth = '';
 			$group = '';
 			$default = empty($l_info['view']) ? 0 : $l_info['view'];
-			$view = auth_select($default, 'view');
+			$view = auth_select('view', $default);
 		}
 
 		$template->assign_vars(array(
@@ -1827,9 +1826,9 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 				}
 
 				$sql = "UPDATE " . $table_name . "
-					SET name = '" . str_replace("\'", "''", $l_name) . "',
-					filename = '" . str_replace("\'", "''", $l_filename) . "',
-					template = '" . str_replace("\'", "''", $l_template) . "',
+					SET name = '" . $db->sql_escape($l_name) . "',
+					filename = '" . $db->sql_escape($l_filename) . "',
+					template = '" . $db->sql_escape($l_template) . "',
 					global_blocks = " . $l_global_blocks . ",
 					page_nav = " . $l_page_nav . ",
 					view = " . $l_view . ",
@@ -1853,7 +1852,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 						$bp_found = false;
 						for($i = 0; $i < $layout_count_positions; $i++)
 						{
-							if (($row_test['bposition'] == str_replace("\'", "''", $layout_block_positions[$i][1])) && ($row_test['pkey'] == str_replace("\'", "''", $layout_block_positions[$i][0])))
+							if (($row_test['bposition'] == $db->sql_escape($layout_block_positions[$i][1])) && ($row_test['pkey'] == $db->sql_escape($layout_block_positions[$i][0])))
 							{
 								$bp_found = true;
 							}
@@ -1879,7 +1878,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 						if (!($db->sql_fetchrow($result_test)))
 						{
 							$sql = "INSERT INTO " . CMS_BLOCK_POSITION_TABLE . " (pkey, bposition, layout)
-								VALUES ('" . str_replace("\'", "''", $layout_block_positions[$i][0]) . "', '" . str_replace("\'", "''", $layout_block_positions[$i][1]) . "', '" . $id_var_value . "')";
+								VALUES ('" . $db->sql_escape($layout_block_positions[$i][0]) . "', '" . $db->sql_escape($layout_block_positions[$i][1]) . "', '" . $id_var_value . "')";
 							$result = $db->sql_query($sql);
 						}
 					}
@@ -1892,9 +1891,9 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 					message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 				}
 				$sql = "UPDATE " . $table_name . "
-					SET name = '" . str_replace("\'", "''", $l_name) . "',
-					page_id = '" . str_replace("\'", "''", $l_page_id) . "',
-					filename = '" . str_replace("\'", "''", $l_filename) . "',
+					SET name = '" . $db->sql_escape($l_name) . "',
+					page_id = '" . $db->sql_escape($l_page_id) . "',
+					filename = '" . $db->sql_escape($l_filename) . "',
 					global_blocks = " . $l_global_blocks . ",
 					page_nav = " . $l_page_nav . ",
 					view = " . $l_view . ",
@@ -1937,7 +1936,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 				}
 
 				$sql = "INSERT INTO " . $table_name . " (name, filename, template, global_blocks, page_nav, view, edit_auth, groups)
-					VALUES ('" . str_replace("\'", "''", $l_name) . "', '" . str_replace("\'", "''", $l_filename) . "', '" . str_replace("\'", "''", $l_template) . "', " . $l_global_blocks . ", " . $l_page_nav . ", " . $l_view . ", " . $l_edit_auth . ", '" . $l_group . "')";
+					VALUES ('" . $db->sql_escape($l_name) . "', '" . $db->sql_escape($l_filename) . "', '" . $db->sql_escape($l_template) . "', " . $l_global_blocks . ", " . $l_page_nav . ", " . $l_view . ", " . $l_edit_auth . ", '" . $l_group . "')";
 				$result = $db->sql_query($sql);
 				$message .= $lang['Layout_added'];
 
@@ -1952,7 +1951,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 					for($i = 0; $i < $layout_count_positions; $i++)
 					{
 						$sql = "INSERT INTO " . CMS_BLOCK_POSITION_TABLE . " (pkey, bposition, layout)
-							VALUES ('" . str_replace("\'", "''", $layout_block_positions[$i][0]) . "', '" . str_replace("\'", "''", $layout_block_positions[$i][1]) . "', '" . $layout_id . "')";
+							VALUES ('" . $db->sql_escape($layout_block_positions[$i][0]) . "', '" . $db->sql_escape($layout_block_positions[$i][1]) . "', '" . $layout_id . "')";
 						$result = $db->sql_query($sql);
 					}
 
@@ -1962,7 +1961,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 			else
 			{
 				$sql = "INSERT INTO " . $table_name . " (name, page_id, locked, filename, global_blocks, page_nav, view, edit_auth, groups)
-					VALUES ('" . str_replace("\'", "''", $l_name) . "', '" . str_replace("\'", "''", $l_page_id) . "', 0, '" . str_replace("\'", "''", $l_filename) . "', " . $l_global_blocks . ", " . $l_page_nav . ", " . $l_view . ", " . $l_edit_auth . ", '" . $l_group . "')";
+					VALUES ('" . $db->sql_escape($l_name) . "', '" . $db->sql_escape($l_page_id) . "', 0, '" . $db->sql_escape($l_filename) . "', " . $l_global_blocks . ", " . $l_page_nav . ", " . $l_view . ", " . $l_edit_auth . ", '" . $l_group . "')";
 				$result = $db->sql_query($sql);
 				$message .= $lang['Layout_added'];
 			}
@@ -2141,7 +2140,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 			if ($is_layout_special)
 			{
 				$layout_locked = !empty($l_rows[$i]['locked']) ? true : false;
-				$auth_view_select_box = auth_select($l_rows[$i]['view'], 'auth_view_' . $layout_id);
+				$auth_view_select_box = auth_select('auth_view_' . $layout_id, $l_rows[$i]['view']);
 			}
 
 			$template->assign_block_vars('layout.l_row', array(
@@ -2208,7 +2207,7 @@ if($mode == 'config')
 		if(isset($_POST['save']))
 		{
 			$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", $new[$cms_field[$row['config_name']]['name']]) . "'
+				config_value = '" . $db->sql_escape($new[$cms_field[$row['config_name']]['name']]) . "'
 				WHERE config_name = '" . $cms_field[$row['config_name']]['name'] . "'";
 			$result = $db->sql_query($sql);
 		}

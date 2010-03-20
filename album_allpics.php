@@ -21,14 +21,9 @@ init_userprefs($userdata);
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-if (isset ($_POST['mode']))
-{
-	$album_view_mode = strtolower($_POST['mode']);
-}
-elseif (isset ($_GET['mode']))
-{
-	$album_view_mode = strtolower($_GET['mode']);
-}
+$mode = request_var('mode', '');
+$album_view_mode = strtolower($mode);
+
 // make sure that it only contains some valid value
 switch ($album_view_mode)
 {
@@ -66,23 +61,30 @@ if ($allowed_cat == '')
 }
 
 // ------------------------------------
-// Build the sort method and sort order
-// information
+// Build the sort method and sort order information
 // ------------------------------------
-
-$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$sort_methods_array = array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment');
-if(isset($_GET['sort_method']) || isset($_POST['sort_method']))
+$type = request_var('type', '');
+$album_view_type = strtolower($type);
+
+	$sort_method_default = $album_config['sort_method'];
+switch ($album_view_type)
 {
-	$sort_method = isset($_GET['sort_method']) ? $_GET['sort_method'] : $_POST['sort_method'];
-	$sort_method = in_array($sort_method, $sort_methods_array) ? $sort_method : $album_config['sort_method'];
+	case ALBUM_LISTTYPE_RATINGS:
+		$sort_method_default = 'rating';
+		break;
+	case ALBUM_LISTTYPE_COMMENTS:
+		$sort_method_default = 'comments';
+		break;
 }
-else
-{
-	$sort_method = $album_config['sort_method'];
-}
+
+$sort_method = request_var('sort_method', $sort_method_default);
+$sort_method = check_var_value($sort_method, array('pic_id', 'pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment'));
+
+$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 switch ($sort_method)
 {
@@ -112,39 +114,6 @@ switch ($sort_method)
 		$sort_method_sql = 'p.pic_id';
 }
 
-if (isset($_GET['sort_order']))
-{
-	switch ($_GET['sort_order'])
-	{
-		case 'ASC' :
-			$sort_order = 'ASC';
-			break;
-		case 'DESC' :
-			$sort_order = 'DESC';
-			break;
-		default :
-			$sort_order = $album_config['sort_order'];
-	}
-}
-elseif (isset($_POST['sort_order']))
-{
-	switch ($_POST['sort_order'])
-	{
-		case 'ASC' :
-			$sort_order = 'ASC';
-			break;
-		case 'DESC' :
-			$sort_order = 'DESC';
-			break;
-		default :
-			$sort_order = $album_config['sort_order'];
-	}
-}
-else
-{
-	$sort_order = $album_config['sort_order'];
-}
-
 // ------------------------------------
 // additional sorting options
 // ------------------------------------
@@ -156,17 +125,17 @@ if ($album_config['rate'] == 1)
 {
 	$sort_rating_option = '<option value="rating" ';
 	$sort_rating_option .= ($sort_method == 'rating') ? 'selected="selected"' : '';
-	$sort_rating_option .= '>'.$lang['Rating'].'</option>';
+	$sort_rating_option .= '>' . $lang['Rating'] . '</option>';
 }
 if ($album_config['comment'] == 1)
 {
 	$sort_comments_option = '<option value="comments" ';
 	$sort_comments_option .= ($sort_method == 'comments') ? 'selected="selected"' : '';
-	$sort_comments_option .= '>'.$lang['Comments'].'</option>';
+	$sort_comments_option .= '>' . $lang['Comments'] . '</option>';
 
 	$sort_new_comment_option = '<option value="new_comment" ';
 	$sort_new_comment_option .= ($sort_method == 'new_comment') ? 'selected="selected"' : '';
-	$sort_new_comment_option .= '>'.$lang['New_Comment'].'</option>';
+	$sort_new_comment_option .= '>' . $lang['New_Comment'] . '</option>';
 }
 
 /*
@@ -190,28 +159,6 @@ if ($album_view_mode == ALBUM_VIEW_ALL_PICS)
 }
 */
 
-if (isset($_POST['type']))
-{
-	$album_view_type = $_POST['type'];
-}
-elseif (isset($_GET['type']))
-{
-	$album_view_type = $_GET['type'];
-}
-
-if(isset($_GET['start']))
-{
-	$start = intval($_GET['start']);
-}
-elseif(isset($_POST['start']))
-{
-	$start = intval($_POST['start']);
-}
-else
-{
-	$start = 0;
-}
-
 $pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
 $limit_sql = ($start == 0) ? $pics_per_page : $start .','. $pics_per_page;
 
@@ -220,7 +167,7 @@ $limit_sql = ($start == 0) ? $pics_per_page : $start .','. $pics_per_page;
 $list_sql = '';
 $count_sql = '';
 //$album_view_type = ALBUM_LISTTYPE_PICTURES;
-switch (strtolower($album_view_type))
+switch ($album_view_type)
 {
 	case ALBUM_LISTTYPE_RATINGS:
 		$album_view_type = ALBUM_LISTTYPE_RATINGS;
@@ -372,7 +319,7 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'THUMBNAIL' => $thumbnail_file,
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
-				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+				'PIC_TITLE' => $picrow[$j]['pic_title'],
 				'DESC' => $picrow[$j]['pic_desc']
 				)
 			);
@@ -400,8 +347,8 @@ if ($total_pics > 0 && !empty($allowed_cat))
 
 			$template->assign_block_vars('picrow.pic_detail', array(
 				'PIC_ID' => $picrow[$j]['pic_id'],
-				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-				'TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+				'PIC_TITLE' => $picrow[$j]['pic_title'],
+				'TITLE' => $picrow[$j]['pic_title'],
 
 				'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 				'U_PIC_SP' => $pic_sp_link,

@@ -36,10 +36,10 @@ $s_hours = '';
 $s_minutes = '';
 $s_seconds = '';
 $topic_post_time = '';
-$post_id = (!empty($_POST[POST_POST_URL])) ? intval($_POST[POST_POST_URL]) : intval($_GET[POST_POST_URL]);
-$post_id = ($post_id < 0) ? 0 : $post_id;
-$topic_id = (!empty($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : intval($_GET[POST_TOPIC_URL]);
+$topic_id = request_var(POST_TOPIC_URL, 0);
 $topic_id = ($topic_id < 0) ? 0 : $topic_id;
+$post_id = request_var(POST_POST_URL, 0);
+$post_id = ($post_id < 0) ? 0 : $post_id;
 
 // Get the submitted values, if a submit was send
 $submit = (!empty($_POST['submit'])) ? $_POST['submit'] : $_GET['submit'];
@@ -47,19 +47,20 @@ $submit = (!empty($_POST['submit'])) ? $_POST['submit'] : $_GET['submit'];
 // Submit if submit is given
 if ($submit)
 {
-	$new_poster = (!empty($_POST['username']) ? $_POST['username'] : $_GET['username']);
+	$new_poster = request_var('username', '', true);
 	$new_poster = (!empty($new_poster) ? phpbb_clean_username($new_poster) : '');
-	$topic_post = (!empty($_POST['topic_post'])) ? $_POST['topic_post'] : $_GET['topic_post'];
-	$twelve_hours = (!empty($_POST['twelve_hours'])) ? $_POST['twelve_hours'] : $_GET['twelve_hours'];
-	$new_day = (!empty($_POST[$topic_post . '_day'])) ? intval($_POST[$topic_post . '_day']) : intval($_GET[$topic_post . '_day']);
-	$month = (!empty($_POST[$topic_post . '_month'])) ? intval($_POST[$topic_post . '_month']) : intval($_GET[$topic_post . '_month']);
-	$year = (!empty($_POST[$topic_post . '_year'])) ? intval($_POST[$topic_post . '_year']) : intval($_GET[$topic_post . '_year']);
-	$hour = (!empty($_POST[$topic_post . '_hour'])) ? intval($_POST[$topic_post . '_hour']) : intval($_GET[$topic_post . '_hour']);
-	$minute = (!empty($_POST[$topic_post . '_minute'])) ? intval($_POST[$topic_post . '_minute']) : intval($_GET[$topic_post . '_minute']);
-	$second = (!empty($_POST[$topic_post . '_second'])) ? intval($_POST[$topic_post . '_second']) : intval($_GET[$topic_post . '_second']);
-	$am_pm_s = (!empty($_POST[$topic_post . '_ampm'])) ? $_POST[$topic_post . '_ampm'] : $_GET[$topic_post . '_ampm'];
+	$topic_post = request_var('topic_post', '');
+	$twelve_hours = request_var('twelve_hours', '');
 
-	if (($am_pm_s == 'pm') && ($twelve_hours == true))
+	$new_day = request_var($topic_post . '_day', 0);
+	$month = request_var($topic_post . '_month', 0);
+	$year = request_var($topic_post . '_year', 0);
+	$hour = request_var($topic_post . '_hour', 0);
+	$minute = request_var($topic_post . '_minute', 0);
+	$second = request_var($topic_post . '_second', 0);
+	$am_pm_s = request_var($topic_post . '_ampm', '');
+
+	if (($am_pm_s == 'pm') && !empty($twelve_hours))
 	{
 		$hour += 12;
 	}
@@ -167,7 +168,7 @@ else
 		$s_hours .= '<option value="'.$j.'">'.$j.'</option>';
 	}
 	$s_hours .= '</select>';
-	$s_hours = str_replace('value="' . create_date((($twelve_hours == true) ? 'h' : 'H'), $edit_post_time, $userdata['user_timezone']).'">', 'value="' . create_date((($twelve_hours == true) ? 'h' : 'H'), $edit_post_time, $userdata['user_timezone']) . '" selected="selected">', $s_hours);
+	$s_hours = str_replace('value="' . create_date((!empty($twelve_hours) ? 'h' : 'H'), $edit_post_time, $userdata['user_timezone']).'">', 'value="' . create_date((!empty($twelve_hours) ? 'h' : 'H'), $edit_post_time, $userdata['user_timezone']) . '" selected="selected">', $s_hours);
 
 	$s_minutes = '<select name="' . $topic_post_time . '_minute">';
 	$s_seconds = '<select name="' . $topic_post_time . '_second">';

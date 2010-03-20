@@ -329,7 +329,6 @@ $features_array = array(
 	),
 
 	'features' => array(
-		'auth_plug' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 		'feat_cms' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 		'feat_album' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 		'feat_downloads' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),

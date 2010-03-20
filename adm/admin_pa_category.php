@@ -31,11 +31,11 @@ include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $pafiledb->init();
 
-$mode = (isset($_REQUEST['mode'])) ? htmlspecialchars($_REQUEST['mode']) : '';
-$cat_id = (isset($_REQUEST['cat_id'])) ? intval($_REQUEST['cat_id']) : 0;
-$cat_id_other = (isset($_REQUEST['cat_id_other'])) ? intval($_REQUEST['cat_id_other']) : 0;
+$mode = request_var('mode', '');
+$cat_id = request_var('cat_id', 0);
+$cat_id_other = request_var('cat_id_other', 0);
 
-if($mode == 'do_add' && !$cat_id)
+if(($mode == 'do_add') && !$cat_id)
 {
 	$cat_id = $pafiledb->update_add_cat();
 	$mode = 'add';
@@ -111,9 +111,9 @@ switch($mode)
 		break;
 }
 
-$pafiledb_template->set_filenames(array('admin' => $template_file));
+$template->set_filenames(array('admin' => $template_file));
 
-$pafiledb_template->assign_vars(array(
+$template->assign_vars(array(
 	'L_CAT_TITLE' => $l_title,
 	'L_CAT_EXPLAIN' => $l_explain,
 	'ERROR' => (sizeof($pafiledb->error)) ? implode('<br />', $pafiledb->error) : '',
@@ -125,18 +125,19 @@ $pafiledb_template->assign_vars(array(
 
 if($mode == '' || ($mode == 'cat_order') || ($mode == 'sync') || ($mode == 'sync_all'))
 {
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'L_CREATE_CATEGORY' => $lang['Create_category'],
 		'L_EDIT' => $lang['Edit'],
 		'L_DELETE' => $lang['Delete'],
 		'L_MOVE_UP' => $lang['Move_up'],
 		'L_MOVE_DOWN' => $lang['Move_down'],
 		'L_SUB_CAT' => $lang['Sub_category'],
-		'L_RESYNC' => $lang['Resync'])
+		'L_RESYNC' => $lang['Resync']
+		)
 	);
 	admin_cat_main($cat_id);
 }
-elseif($mode == 'add' || $mode == 'edit')
+elseif(($mode == 'add') || ($mode == 'edit'))
 {
 	if($mode == 'add')
 	{
@@ -209,7 +210,7 @@ elseif($mode == 'add' || $mode == 'edit')
 		$cat_desc = $pafiledb->cat_rowset[$cat_id]['cat_desc'];
 	}
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'CAT_NAME' => $cat_name,
 		'CAT_DESC' => $cat_desc,
 		'CHECKED_YES' => $checked_yes,
@@ -238,7 +239,8 @@ elseif($mode == 'add' || $mode == 'edit')
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 		'L_CAT_NAME_FIELD_EMPTY' => $lang['Cat_name_missing'],
-		'S_CAT_LIST' => $cat_list)
+		'S_CAT_LIST' => $cat_list
+		)
 	);
 }
 elseif($mode == 'delete')
@@ -246,7 +248,7 @@ elseif($mode == 'delete')
 	$select_cat = $pafiledb->jumpmenu_option(0, 0, array($cat_id => 1));
 	$file_to_select_cat = $pafiledb->jumpmenu_option(0, 0, '', true);
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'S_SELECT_CAT' => $select_cat,
 		'S_FILE_SELECT_CAT' => $file_to_select_cat,
 
@@ -256,14 +258,14 @@ elseif($mode == 'delete')
 		'L_MOVE_TO' => $lang['Move_to'],
 		'L_SELECT_CAT' => $lang['Select_a_Category'],
 		'L_DELETE' => $lang['Delete'],
-		'L_MOVE' => $lang['Move'])
+		'L_MOVE' => $lang['Move']
+		)
 	);
 }
 
-$pafiledb_template->display('admin');
+$template->display('admin');
 
 $pafiledb->_pafiledb();
-$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

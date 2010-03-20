@@ -68,9 +68,9 @@ if ($row = $db->sql_fetchrow($result))
 	{
 
 		// CrackerTracker v5.x
-		if ($userdata['ct_last_mail'] >= time() && $ctracker_config->settings['massmail_protection'] == 1)
+		if ($userdata['ct_last_mail'] >= time() && $config['ctracker_massmail_protection'] == 1)
 		{
-			message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_sendmail_info'], $ctracker_config->settings['massmail_time']));
+			message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_sendmail_info'], $config['ctracker_massmail_time']));
 		}
 		// CrackerTracker v5.x
 
@@ -83,21 +83,18 @@ if ($row = $db->sql_fetchrow($result))
 		{
 			$error = false;
 
-			if (!empty($_POST['subject']))
-			{
-				$subject = trim(stripslashes($_POST['subject']));
-			}
-			else
+			$subject = request_var('subject', '', true);
+			$subject = htmlspecialchars_decode($subject, ENT_COMPAT);
+			$message = request_var('message', '', true);
+			$message = htmlspecialchars_decode($message, ENT_COMPAT);
+
+			if (empty($subject))
 			{
 				$error = true;
 				$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Empty_subject_email'] : $lang['Empty_subject_email'];
 			}
 
-			if (!empty($_POST['message']))
-			{
-				$message = trim(stripslashes($_POST['message']));
-			}
-			else
+			if (empty($message))
 			{
 				$error = true;
 				$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Empty_message_email'] : $lang['Empty_message_email'];
@@ -113,7 +110,7 @@ if ($row = $db->sql_fetchrow($result))
 				$db->sql_query($sql);
 				*/
 				// CrackerTracker v5.x
-				$new_mailtime = time() + $ctracker_config->settings['massmail_time'] * 60;
+				$new_mailtime = time() + $config['ctracker_massmail_time'] * 60;
 				$sql = 'UPDATE ' . USERS_TABLE . '
 					SET user_emailtime = ' . time() . ', ct_last_mail = ' . $new_mailtime . ' WHERE user_id = ' . $userdata['user_id'];
 				// CrackerTracker v5.x
@@ -182,7 +179,7 @@ if ($row = $db->sql_fetchrow($result))
 
 		$link_name = $lang['Send_email_msg'];
 		$nav_server_url = create_server_url();
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 
 		make_jumpbox(CMS_PAGE_VIEWFORUM);
 

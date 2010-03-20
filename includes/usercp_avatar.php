@@ -66,8 +66,8 @@ function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $ava
 {
 	global $config;
 
-	$avatar_filename = phpbb_ltrim(basename($avatar_filename), "'");
-	$avatar_category = phpbb_ltrim(basename($avatar_category), "'");
+	$avatar_filename = ltrim(basename($avatar_filename), "'");
+	$avatar_category = ltrim(basename($avatar_category), "'");
 
 	if(!preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $avatar_filename))
 	{
@@ -81,7 +81,7 @@ function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $ava
 
 	if (file_exists(@phpbb_realpath($config['avatar_gallery_path'] . '/' . $avatar_category . '/' . $avatar_filename)) && ($mode == 'editprofile'))
 	{
-		$return = ", user_avatar = '" . str_replace("\'", "''", $avatar_category . '/' . $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
+		$return = ", user_avatar = '" . $db->sql_escape($avatar_category . '/' . $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
 	}
 	else
 	{
@@ -99,7 +99,7 @@ function user_avatar_generator($mode, &$error, &$error_msg, $avatar_filename)
 	@copy($avatar_filename, './' . $config['avatar_path'] . '/' . $new_filename);
 	@unlink($avatar_filename);
 
-	$avatar_sql = ($mode == 'editprofile') ? ", user_avatar = '$new_filename', user_avatar_type = " . USER_AVATAR_UPLOAD : "'$new_filename', " . USER_AVATAR_UPLOAD;
+	$avatar_sql = ($mode == 'editprofile') ? ", user_avatar = '" . $db->sql_escape($new_filename) . "', user_avatar_type = " . USER_AVATAR_UPLOAD : "'" . $db->sql_escape($new_filename) . "', " . USER_AVATAR_UPLOAD;
 
 	return $avatar_sql;
 }
@@ -135,7 +135,7 @@ function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 	$user_avatar_size = 0;
 	do
 	{
-		if (strlen(@fread($remote_file, 1)) == 0 || $user_avatar_size > $config['avatar_filesize'])
+		if ((strlen(@fread($remote_file, 1)) == 0) || ($user_avatar_size > $config['avatar_filesize']))
 		{
 			break;
 		}
@@ -160,7 +160,7 @@ function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 		return;
 	}
 	// End Remote Avatar Check Mod
-	return ($mode == 'editprofile') ? ", user_avatar = '" . str_replace("\'", "''", $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_REMOTE : '';
+	return ($mode == 'editprofile') ? ", user_avatar = '" . $db->sql_escape($avatar_filename) . "', user_avatar_type = " . USER_AVATAR_REMOTE : '';
 
 }
 
@@ -385,7 +385,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 		*/
 		// Automatic Avatar Resize - END
 
-		$avatar_sql = ($mode == 'editprofile') ? ", user_avatar = '$new_filename', user_avatar_type = " . USER_AVATAR_UPLOAD : "'$new_filename', " . USER_AVATAR_UPLOAD;
+		$avatar_sql = ($mode == 'editprofile') ? ", user_avatar = '" . $db->sql_escape($new_filename) . "', user_avatar_type = " . USER_AVATAR_UPLOAD : "'" . $db->sql_escape($new_filename) . "', " . USER_AVATAR_UPLOAD;
 	}
 	else
 	{
@@ -422,7 +422,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 	$avatar_images = array();
 	while($file = @readdir($dir))
 	{
-		if($file != '.' && $file != '..' && !is_file($config['avatar_gallery_path'] . '/' . $file) && !is_link($config['avatar_gallery_path'] . '/' . $file))
+		if(($file != '.') && ($file != '..') && !is_file($config['avatar_gallery_path'] . '/' . $file) && !is_link($config['avatar_gallery_path'] . '/' . $file))
 		{
 			$sub_dir = @opendir($config['avatar_gallery_path'] . '/' . $file);
 
@@ -486,7 +486,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 	$s_colspan = 0;
 	for($i = 0; $i < sizeof($avatar_images[$category]); $i++)
 	{
-		$template->assign_block_vars("avatar_row", array());
+		$template->assign_block_vars('avatar_row', array());
 
 		$s_colspan = max($s_colspan, sizeof($avatar_images[$category][$i]));
 

@@ -51,7 +51,7 @@ class attach_parent
 		$this->add_attachment_body = request_var('add_attachment_body', 0);
 		$this->posted_attachments_body = request_var('posted_attachments_body', 0);
 
-		$this->file_comment = request_var('filecomment', '');
+		$this->file_comment = request_var('filecomment', '', true);
 		$this->attachment_id_list = request_var('attach_id_list', array(0));
 		$this->attachment_comment_list = request_var('comment_list', array(''), true);
 		$this->attachment_filesize_list = request_var('filesize_list', array(0));
@@ -71,7 +71,7 @@ class attach_parent
 	*/
 	function get_quota_limits($userdata_quota, $user_id = 0)
 	{
-		global $attach_config, $db;
+		global $config, $db;
 
 		//
 		// Define Filesize Limits (Prepare Quota Settings)
@@ -89,8 +89,8 @@ class attach_parent
 
 		if ($userdata_quota['user_level'] == ADMIN)
 		{
-			$attach_config['pm_filesize_limit'] = 0; // Unlimited
-			$attach_config['upload_filesize_limit'] = 0; // Unlimited
+			$config['pm_filesize_limit'] = 0; // Unlimited
+			$config['upload_filesize_limit'] = 0; // Unlimited
 			return;
 		}
 
@@ -152,7 +152,7 @@ class attach_parent
 					if ($db->sql_numrows($result) > 0)
 					{
 						$row = $db->sql_fetchrow($result);
-						$attach_config[$limit_type] = $row['quota_limit'];
+						$config[$limit_type] = $row['quota_limit'];
 						$found = true;
 					}
 					$db->sql_freeresult($result);
@@ -174,7 +174,7 @@ class attach_parent
 				if ($db->sql_numrows($result) > 0)
 				{
 					$row = $db->sql_fetchrow($result);
-					$attach_config[$limit_type] = $row['quota_limit'];
+					$config[$limit_type] = $row['quota_limit'];
 					$found = true;
 				}
 				$db->sql_freeresult($result);
@@ -184,11 +184,11 @@ class attach_parent
 		if (!$found)
 		{
 			// Set Default Quota Limit
-			$quota_id = ($quota_type == QUOTA_UPLOAD_LIMIT) ? $attach_config['default_upload_quota'] : $attach_config['default_pm_quota'];
+			$quota_id = ($quota_type == QUOTA_UPLOAD_LIMIT) ? $config['default_upload_quota'] : $config['default_pm_quota'];
 
 			if ($quota_id == 0)
 			{
-				$attach_config[$limit_type] = $attach_config[$default];
+				$config[$limit_type] = $config[$default];
 			}
 			else
 			{
@@ -201,11 +201,11 @@ class attach_parent
 				if ($db->sql_numrows($result) > 0)
 				{
 					$row = $db->sql_fetchrow($result);
-					$attach_config[$limit_type] = $row['quota_limit'];
+					$config[$limit_type] = $row['quota_limit'];
 				}
 				else
 				{
-					$attach_config[$limit_type] = $attach_config[$default];
+					$config[$limit_type] = $config[$default];
 				}
 				$db->sql_freeresult($result);
 			}
@@ -214,9 +214,9 @@ class attach_parent
 		// Never exceed the complete Attachment Upload Quota
 		if ($quota_type == QUOTA_UPLOAD_LIMIT)
 		{
-			if ($attach_config[$limit_type] > $attach_config[$default])
+			if ($config[$limit_type] > $config[$default])
 			{
-				$attach_config[$limit_type] = $attach_config[$default];
+				$config[$limit_type] = $config[$default];
 			}
 		}
 	}
@@ -227,7 +227,7 @@ class attach_parent
 	*/
 	function handle_attachments($mode)
 	{
-		global $is_auth, $attach_config, $refresh, $post_id, $submit, $preview, $error, $error_msg, $lang, $template, $userdata, $db;
+		global $is_auth, $config, $refresh, $post_id, $submit, $preview, $error, $error_msg, $lang, $template, $userdata, $db;
 
 		//
 		// ok, what shall we do ;)
@@ -256,8 +256,8 @@ class attach_parent
 			}
 			else
 			{
-				$is_auth['auth_attachments'] = intval($attach_config['allow_pm_attach']);
-				$max_attachments = intval($attach_config['max_attachments_pm']);
+				$is_auth['auth_attachments'] = intval($config['allow_pm_attach']);
+				$max_attachments = intval($config['max_attachments_pm']);
 			}
 		}
 		else
@@ -268,12 +268,12 @@ class attach_parent
 			}
 			else
 			{
-				$max_attachments = intval($attach_config['max_attachments']);
+				$max_attachments = intval($config['max_attachments']);
 			}
 		}
 
 		// nothing, if the user is not authorized or attachment mod disabled
-		if (intval($attach_config['disable_mod']) || !$is_auth['auth_attachments'])
+		if (intval($config['disable_attachments_mod']) || !$is_auth['auth_attachments'])
 		{
 			return false;
 		}
@@ -313,7 +313,7 @@ class attach_parent
 			}
 			else
 			{
-				$auth = (intval($attach_config['allow_pm_attach'])) ? true : false;
+				$auth = (intval($config['allow_pm_attach'])) ? true : false;
 			}
 
 			if (sizeof($attachments) == 1)
@@ -791,12 +791,12 @@ class attach_parent
 	*/
 	function display_attachment_bodies()
 	{
-		global $attach_config, $db, $is_auth, $lang, $mode, $template, $upload_dir, $userdata, $forum_id;
+		global $config, $db, $is_auth, $lang, $mode, $template, $upload_dir, $userdata, $forum_id;
 
 		// Choose what to display
 		$value_add = $value_posted = 0;
 
-		if (intval($attach_config['show_apcp']))
+		if (intval($config['show_apcp']))
 		{
 			if (!empty($_POST['add_attachment_box']))
 			{
@@ -859,7 +859,7 @@ class attach_parent
 
 		if (sizeof($this->attachment_list) > 0)
 		{
-			if (intval($attach_config['show_apcp']))
+			if (intval($config['show_apcp']))
 			{
 				$template->assign_block_vars('switch_posted_attachments', array());
 			}
@@ -898,7 +898,7 @@ class attach_parent
 				'L_ADD_ATTACHMENT' => $lang['Add_attachment'],
 
 				'FILE_COMMENT' => htmlspecialchars($this->file_comment),
-				'FILESIZE' => $attach_config['max_filesize'],
+				'FILESIZE' => $config['max_filesize'],
 				'FILENAME' => htmlspecialchars($this->filename),
 
 				'S_FORM_ENCTYPE' => $form_enctype
@@ -933,8 +933,8 @@ class attach_parent
 
 				$template->assign_block_vars('attach_row', array(
 					'FILE_NAME' => $this->attachment_filename_list[$i],
-					'ATTACH_FILENAME' => htmlspecialchars($this->attachment_list[$i]),
-					'FILE_COMMENT' => htmlspecialchars($this->attachment_comment_list[$i]),
+					'ATTACH_FILENAME' => $this->attachment_list[$i],
+					'FILE_COMMENT' => $this->attachment_comment_list[$i],
 					'ATTACH_ID' => $this->attachment_id_list[$i],
 
 					'U_VIEW_ATTACHMENT' => $download_link
@@ -962,7 +962,7 @@ class attach_parent
 	*/
 	function upload_attachment()
 	{
-		global $db, $userdata, $lang, $attach_config, $forum_id, $error, $error_msg, $upload_dir;
+		global $db, $userdata, $lang, $config, $forum_id, $error, $error_msg, $upload_dir;
 
 		$this->post_attach = ($this->filename != '') ? true : false;
 
@@ -994,7 +994,7 @@ class attach_parent
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
-			$allowed_filesize = ($row['max_filesize']) ? $row['max_filesize'] : $attach_config['max_filesize'];
+			$allowed_filesize = ($row['max_filesize']) ? $row['max_filesize'] : $config['max_filesize'];
 			$cat_id = intval($row['cat_id']);
 			$auth_cache = trim($row['forum_permissions']);
 
@@ -1106,7 +1106,7 @@ class attach_parent
 				}
 
 				// Do we have to create a thumbnail ?
-				if (($cat_id == IMAGE_CAT) && intval($attach_config['img_create_thumbnail']))
+				if (($cat_id == IMAGE_CAT) && intval($config['img_create_thumbnail']))
 				{
 					$this->thumbnail = 1;
 				}
@@ -1121,7 +1121,7 @@ class attach_parent
 			// Upload Attachment
 			if (!$error)
 			{
-				if (!(intval($attach_config['allow_ftp_upload'])))
+				if (!(intval($config['allow_ftp_upload'])))
 				{
 					// Descide the Upload method
 					$ini_val = ( phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
@@ -1187,16 +1187,16 @@ class attach_parent
 				{
 					list($width, $height) = $pic_size;
 
-					if ($width != 0 && $height != 0 && intval($attach_config['img_max_width']) != 0 && intval($attach_config['img_max_height']) != 0)
+					if ($width != 0 && $height != 0 && intval($config['img_max_width']) != 0 && intval($config['img_max_height']) != 0)
 					{
-						if ($width > intval($attach_config['img_max_width']) || $height > intval($attach_config['img_max_height']))
+						if ($width > intval($config['img_max_width']) || $height > intval($config['img_max_height']))
 						{
 							$error = true;
 							if(!empty($error_msg))
 							{
 								$error_msg .= '<br />';
 							}
-							$error_msg .= sprintf($lang['Error_imagesize'], intval($attach_config['img_max_width']), intval($attach_config['img_max_height']));
+							$error_msg .= sprintf($lang['Error_imagesize'], intval($config['img_max_width']), intval($config['img_max_height']));
 						}
 					}
 				}
@@ -1225,7 +1225,7 @@ class attach_parent
 			}
 
 			// Check our complete quota
-			if ($attach_config['attachment_quota'])
+			if ($config['attachment_quota'])
 			{
 				$sql = 'SELECT sum(filesize) as total FROM ' . ATTACHMENTS_DESC_TABLE;
 				$result = $db->sql_query($sql);
@@ -1234,7 +1234,7 @@ class attach_parent
 
 				$total_filesize = $row['total'];
 
-				if (($total_filesize + $this->filesize) > $attach_config['attachment_quota'])
+				if (($total_filesize + $this->filesize) > $config['attachment_quota'])
 				{
 					$error = true;
 					if(!empty($error_msg))
@@ -1251,7 +1251,7 @@ class attach_parent
 			// Check our user quota
 			if ($this->page != PAGE_PRIVMSGS)
 			{
-				if ($attach_config['upload_filesize_limit'])
+				if ($config['upload_filesize_limit'])
 				{
 					$sql = 'SELECT attach_id
 						FROM ' . ATTACHMENTS_TABLE . '
@@ -1286,9 +1286,9 @@ class attach_parent
 						$total_filesize = 0;
 					}
 
-					if (($total_filesize + $this->filesize) > $attach_config['upload_filesize_limit'])
+					if (($total_filesize + $this->filesize) > $config['upload_filesize_limit'])
 					{
-						$upload_filesize_limit = $attach_config['upload_filesize_limit'];
+						$upload_filesize_limit = $config['upload_filesize_limit'];
 						$size_lang = ($upload_filesize_limit >= 1048576) ? $lang['MB'] : ( ($upload_filesize_limit >= 1024) ? $lang['KB'] : $lang['Bytes'] );
 
 						if ($upload_filesize_limit >= 1048576)
@@ -1313,11 +1313,11 @@ class attach_parent
 			// If we are at Private Messaging, check our PM Quota
 			if ($this->page == PAGE_PRIVMSGS)
 			{
-				if ($attach_config['pm_filesize_limit'])
+				if ($config['pm_filesize_limit'])
 				{
 					$total_filesize = get_total_attach_pm_filesize('from_user', $userdata['user_id']);
 
-					if (($total_filesize + $this->filesize) > $attach_config['pm_filesize_limit'])
+					if (($total_filesize + $this->filesize) > $config['pm_filesize_limit'])
 					{
 						$error = true;
 						if(!empty($error_msg))
@@ -1338,11 +1338,11 @@ class attach_parent
 					$user_id = (int) $u_data['user_id'];
 					$this->get_quota_limits($u_data, $user_id);
 
-					if ($attach_config['pm_filesize_limit'])
+					if ($config['pm_filesize_limit'])
 					{
 						$total_filesize = get_total_attach_pm_filesize('to_user', $user_id);
 
-						if (($total_filesize + $this->filesize) > $attach_config['pm_filesize_limit'])
+						if (($total_filesize + $this->filesize) > $config['pm_filesize_limit'])
 						{
 							$error = true;
 							if(!empty($error_msg))
@@ -1464,9 +1464,9 @@ class attach_posting extends attach_parent
 	*/
 	function preview_attachments()
 	{
-		global $attach_config, $is_auth, $userdata;
+		global $config, $is_auth, $userdata;
 
-		if (intval($attach_config['disable_mod']) || !$is_auth['auth_attachments'])
+		if (intval($config['disable_attachments_mod']) || !$is_auth['auth_attachments'])
 		{
 			return false;
 		}

@@ -27,14 +27,14 @@ function generate_actions_files($dir)
 	$pos = strrpos($dir, '/');
 	$dir = $pos === strlen($dir) - 1 ? substr($dir, 0, $pos) : $dir;
 	$arr = array('processing: '.$dir);
-	for($i=0; $i< sizeof($items); $i++)
+	for($i = 0; $i < sizeof($items); $i++)
 	{
 		if($items[$i]['dir'] === $dir)
 		{
 			$arr[] = array(
-				'command'	=> 'upload',
-				'local'		=> $items[$i]['tmp'],
-				'remote'	=> $items[$i]['file']
+				'command' => 'upload',
+				'local' => $items[$i]['tmp'],
+				'remote' => $items[$i]['file']
 				);
 		}
 	}
@@ -58,22 +58,22 @@ function generate_actions_dirs($dir = '')
 		$pos = strrpos($str, '/');
 		$str = $pos ? substr($str, $pos + 1) : $str;
 		$arr[] = array(
-			'command'	=> 'mkdir',
-			'dir'		=> $str,
-			'ignore'	=> true
+			'command' => 'mkdir',
+			'dir' => $str,
+			'ignore' => true
 			);
 		$arr[] = array(
-			'command'	=> 'chdir',
-			'dir'		=> $str
+			'command' => 'chdir',
+			'dir' => $str
 			);
 	}
 	$arr[] = array(
-		'command'	=> 'exec',
-		'list'		=> generate_actions_files($dir)
+		'command' => 'exec',
+		'list' => generate_actions_files($dir)
 		);
 	// create subdirectories
 	$len = strlen($dir);
-	for($i=0; $i< sizeof($dirs); $i++)
+	for($i = 0; $i < sizeof($dirs); $i++)
 	{
 		$str = $dirs[$i];
 		if(substr($str, 0, $len) === $dir)
@@ -86,8 +86,8 @@ function generate_actions_dirs($dir = '')
 			if($pos == strlen($str) - 1)
 			{
 				$arr[] = array(
-						'command'	=> 'exec',
-						'list'		=> generate_actions_dirs($dirs[$i])
+						'command' => 'exec',
+						'list' => generate_actions_dirs($dirs[$i])
 					);
 			}
 		}
@@ -103,7 +103,7 @@ function generate_style_name($str)
 	while($found)
 	{
 		$filename = sprintf($str, $num);
-		$found = @file_exists(XS_TEMP_DIR.$filename);
+		$found = @file_exists(XS_TEMP_DIR . $filename);
 		$num++;
 	}
 	return $filename;

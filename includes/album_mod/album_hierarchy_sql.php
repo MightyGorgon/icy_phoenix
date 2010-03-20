@@ -167,12 +167,12 @@ function album_read_tree($user_id = ALBUM_PUBLIC_GALLERY, $options = ALBUM_AUTH_
 		{
 			$cat_id = $album_data['id'][$idx];
 
-			if (($album_data['auth'][$cat_id]["view"] >= $can_view) &&
-				($album_data['auth'][$cat_id]["upload"] >= $can_upload) &&
-				($album_data['auth'][$cat_id]["rate"] >= $can_rate) &&
-				($album_data['auth'][$cat_id]["comment"] >= $can_comment) &&
-				($album_data['auth'][$cat_id]["edit"] >= $can_edit) &&
-				($album_data['auth'][$cat_id]["delete"] >= $can_delete))
+			if (($album_data['auth'][$cat_id]['view'] >= $can_view) &&
+				($album_data['auth'][$cat_id]['upload'] >= $can_upload) &&
+				($album_data['auth'][$cat_id]['rate'] >= $can_rate) &&
+				($album_data['auth'][$cat_id]['comment'] >= $can_comment) &&
+				($album_data['auth'][$cat_id]['edit'] >= $can_edit) &&
+				($album_data['auth'][$cat_id]['delete'] >= $can_delete))
 			{
 				if (checkFlag($options, ALBUM_CREATE_CAT_ID_LIST))
 				{
@@ -355,7 +355,7 @@ function album_create_personal_gallery($user_id, $view_level, $upload_level, $op
 		// ------------------------------------------------------------------------
 		// Build the personal gallery root name (is not directly shown in the php pages)
 		// ------------------------------------------------------------------------
-		$root_cat_name = sprintf($lang['Personal_Gallery_Of_User'], str_replace("\'", "''", album_get_user_name($user_id)));
+		$root_cat_name = sprintf($lang['Personal_Gallery_Of_User'], $db->sql_escape(album_get_user_name($user_id)));
 
 		// ------------------------------------------------------------------------
 		// insert the personal gallery root category
@@ -369,7 +369,7 @@ function album_create_personal_gallery($user_id, $view_level, $upload_level, $op
 				cat_delete_level, cat_approval,
 				cat_parent, cat_user_id)
 				VALUES
-				('" . $root_cat_name . "', '" . $root_cat_name . "',
+				('" . $db->sql_escape($root_cat_name) . "', '" . $db->sql_escape($root_cat_name) . "',
 				'0', '" . $view_level . "',
 				'" . $upload_level . "', '0',
 				'0', '" . ALBUM_PRIVATE . "',
@@ -450,7 +450,7 @@ function album_move_tree($cat_id, $move, $user_id = ALBUM_PUBLIC_GALLERY)
 	$parents = array();
 
 	// for the nuber of rows read/categories do this loop
-	for ($i=0; $i < sizeof($album_data['data']); $i++)
+	for ($i = 0; $i < sizeof($album_data['data']); $i++)
 	{
 		// ------------------------------------------------------------------------
 		// if the current itetorated parent id is equal to the selected category's parent id then
@@ -573,7 +573,7 @@ function album_no_newest_pictures($check_date, $cats, $exclude_cat_id = 0)
 
 	$sql = 'SELECT c.cat_id, p.pic_id, COUNT(p.pic_id) AS pic_total
 			FROM ' . ALBUM_TABLE . ' AS p, ' . ALBUM_CAT_TABLE . ' AS c
-			WHERE c.cat_id IN ('. $sql_include  .')' .  $sql_exclude . '
+			WHERE c.cat_id IN (' . $sql_include . ')' . $sql_exclude . '
 			AND p.pic_cat_id = c.cat_id ' . $sql_time . '
 			GROUP BY c.cat_id';
 	$result = $db->sql_query($sql);
@@ -645,7 +645,7 @@ function album_get_user_name($user_id)
 
 	if ($user_id == ALBUM_PUBLIC_GALLERY)
 	{
-		return "";
+		return '';
 	}
 
 	$sql = "SELECT username
@@ -732,7 +732,7 @@ function album_get_last_pic_info($cats, &$last_pic_id)
 
 	$info .= '<br />' . $lang['Pic_Image'] . ': <a href="';
 	$info .= ($album_config['fullpic_popup']) ? append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) . '" target="_blank">' : append_sid(album_append_uid($album_pic_url . '?pic_id=' . $row['pic_id'])) . '">' ;
-	$info .= htmlspecialchars($row['pic_title']) . '</a>';
+	$info .= $row['pic_title'] . '</a>';
 
 	$last_pic_id = $row['pic_id'];
 
@@ -844,7 +844,7 @@ function album_get_last_comment_info($cats)
 		$info .= colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
 	}
 
-	$info .= '<br />' . $lang['Pic_Image'] . ': <a href="' . append_sid(album_append_uid($album_pic_url . '?pic_id=' . $row['pic_id'])) . '">' . htmlspecialchars($row['pic_title']) . '</a>';
+	$info .= '<br />' . $lang['Pic_Image'] . ': <a href="' . append_sid(album_append_uid($album_pic_url . '?pic_id=' . $row['pic_id'])) . '">' . $row['pic_title'] . '</a>';
 
 	return $info;
 }
@@ -992,7 +992,7 @@ function album_get_total_pics_old($cats)
 {
 	global $db;
 
-	$sql_where = " WHERE c.cat_id " . ((is_array($cats)) ? "IN (". implode(",", $cats) .")" : "= " . $cats);
+	$sql_where = " WHERE c.cat_id " . ((is_array($cats)) ? "IN (" . implode(",", $cats) . ")" : "= " . $cats);
 
 	$sql = "SELECT COUNT(p.pic_id) AS count
 			FROM " . ALBUM_CAT_TABLE . " AS c
@@ -1165,8 +1165,8 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 				'THUMBNAIL' => $thumbnail_file,
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
-				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-				'DESC' => htmlspecialchars($picrow[$j]['pic_desc']),
+				'PIC_TITLE' => $picrow[$j]['pic_title'],
+				'DESC' => $picrow[$j]['pic_desc'],
 				'APPROVAL' => $approval_link,
 				)
 			);
@@ -1191,9 +1191,9 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 			$template->assign_block_vars('index_pics_block.picrow.pic_detail', array(
 				'PIC_ID' => $picrow[$j]['pic_id'],
-				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+				'PIC_TITLE' => $picrow[$j]['pic_title'],
 				//'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'] . '">' . $picrow[$j]['pic_title'] . '</a>',
-				'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
+				'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $picrow[$j]['pic_title'] . '</a>',
 				'POSTER' => $pic_poster,
 				'TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
 
@@ -1357,8 +1357,8 @@ function album_build_recent_pics($cats)
 						'THUMBNAIL' => $thumbnail_file,
 						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
-						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-						'DESC' => htmlspecialchars($picrow[$j]['pic_desc'])
+						'PIC_TITLE' => $picrow[$j]['pic_title'],
+						'DESC' => $picrow[$j]['pic_desc']
 						)
 					);
 
@@ -1378,8 +1378,8 @@ function album_build_recent_pics($cats)
 
 					$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
 						'PIC_ID' => $picrow[$j]['pic_id'],
-						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
+						'PIC_TITLE' => $picrow[$j]['pic_title'],
+						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $picrow[$j]['pic_title'] . '</a>',
 						'POSTER' => $recent_poster,
 						'TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
 
@@ -1497,8 +1497,8 @@ function album_build_highest_rated_pics($cats)
 							'THUMBNAIL' => $thumbnail_file,
 							'PIC_PREVIEW_HS' => $pic_preview_hs,
 							'PIC_PREVIEW' => $pic_preview,
-							'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-							'DESC' => htmlspecialchars($picrow[$j]['pic_desc'])
+							'PIC_TITLE' => $picrow[$j]['pic_title'],
+							'DESC' => $picrow[$j]['pic_desc']
 							)
 						);
 					}
@@ -1522,8 +1522,8 @@ function album_build_highest_rated_pics($cats)
 						$rated_images++;
 						$template->assign_block_vars('highest_pics_block.highest_pics.highest_detail', array(
 							'PIC_ID' => $picrow[$j]['pic_id'],
-							'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-							'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
+							'PIC_TITLE' => $picrow[$j]['pic_title'],
+							'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $picrow[$j]['pic_title'] . '</a>',
 							'H_POSTER' => $highest_poster,
 							'H_TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
 
@@ -1643,8 +1643,8 @@ function album_build_most_viewed_pics($cats)
 						'THUMBNAIL' => $thumbnail_file,
 						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
-						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-						'DESC' => htmlspecialchars($picrow[$j]['pic_desc'])
+						'PIC_TITLE' => $picrow[$j]['pic_title'],
+						'DESC' => $picrow[$j]['pic_desc']
 						)
 					);
 
@@ -1664,7 +1664,7 @@ function album_build_most_viewed_pics($cats)
 
 					$template->assign_block_vars('mostviewed_pics_block.mostviewed_pics.mostviewed_detail', array(
 						'PIC_ID' => $picrow[$j]['pic_id'],
-						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+						'PIC_TITLE' => $picrow[$j]['pic_title'],
 						'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
 						'H_POSTER' => $picrow_poster,
 						'H_TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
@@ -1778,8 +1778,8 @@ function album_build_random_pics($cats)
 						'THUMBNAIL' => $thumbnail_file,
 						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
-						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-						'DESC' => htmlspecialchars($picrow[$j]['pic_desc'])
+						'PIC_TITLE' => $picrow[$j]['pic_title'],
+						'DESC' => $picrow[$j]['pic_desc']
 						)
 					);
 
@@ -1800,7 +1800,7 @@ function album_build_random_pics($cats)
 
 					$template->assign_block_vars('random_pics_block.rand_pics.rand_detail', array(
 						'PIC_ID' => $picrow[$j]['pic_id'],
-						'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+						'PIC_TITLE' => $picrow[$j]['pic_title'],
 						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
 						'POSTER' => $rand_poster,
 						'TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),

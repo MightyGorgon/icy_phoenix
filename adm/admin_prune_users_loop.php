@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_ADMIN', true);
 // to enable email notification to the user, after deletion, enable this
@@ -40,13 +39,13 @@ if ($userdata['user_level'] != ADMIN)
 	message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 }
 
-$del_user = isset($_POST['del_user']) ? intval($_POST['del_user']) : (isset($_GET['del_user']) ? intval($_GET['del_user']) : '');
-$mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : '');
-$days = isset($_POST['days']) ? intval($_POST['days']) : (isset($_GET['days']) ? intval($_GET['days']) : '');
+$mode = request_var('mode', '');
+$days = request_var('days', 0);
+$del_user = request_var('del_user', 0);
 
 if ($mode == 'prune_mg')
 {
-	$users_number = isset($_GET['users_number']) ? intval($_GET['users_number']) : intval($_POST['users_number']);
+	$users_number = request_var('users_number', 0);
 	$users_number = ($users_number == 0) ? '50' : $users_number;
 }
 

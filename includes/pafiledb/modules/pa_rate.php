@@ -19,20 +19,15 @@ class pafiledb_rate extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $userdata, $pafiledb_functions, $pafiledb_user;
+		global $template, $lang, $config, $pafiledb_config, $db, $userdata, $pafiledb_functions, $pafiledb_user;
 
-
-		if ( isset($_REQUEST['file_id']) )
-		{
-			$file_id = intval($_REQUEST['file_id']);
-		}
-		else
+		$file_id = request_var('file_id', 0);
+		if (empty($file_id))
 		{
 			message_die(GENERAL_MESSAGE, $lang['File_not_exist']);
 		}
 
-		$rating = ( isset($_POST['rating']) ) ? intval($_POST['rating']) : '';
-
+		$rating = request_post_var('rating', 0);
 
 		$sql = 'SELECT file_name, file_catid
 			FROM ' . PA_FILES_TABLE . "
@@ -46,9 +41,9 @@ class pafiledb_rate extends pafiledb_public
 
 		$db->sql_freeresult($result);
 
-		if( (!$this->auth[$file_data['file_catid']]['auth_rate']) )
+		if((!$this->auth[$file_data['file_catid']]['auth_rate']))
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=rate&file_id=' . $file_id, true));
 			}
@@ -58,7 +53,7 @@ class pafiledb_rate extends pafiledb_public
 		}
 
 		$this->generate_category_nav($file_data['file_catid']);
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'L_RATE' => $lang['Rate'],
 			'L_HOME' => $lang['Home'],
@@ -69,16 +64,17 @@ class pafiledb_rate extends pafiledb_public
 			'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 
 			'FILE_NAME' => $file_data['file_name'],
-			'DOWNLOAD' => $pafiledb_config['settings_dbname'])
+			'DOWNLOAD' => $pafiledb_config['settings_dbname']
+			)
 		);
 
-		if ( isset($_POST['submit']) )
+		if (isset($_POST['submit']))
 		{
 			$result_msg = str_replace("{filename}", $file_data['file_name'], $lang['Rconf']);
 
 			$result_msg = str_replace("{rate}", $rating, $result_msg);
 
-			if( ($rating <= 0) or ($rating > 10) )
+			if(($rating <= 0) or ($rating > 10))
 			{
 				message_die(GENERAL_ERROR, 'Bad submited value');
 			}
@@ -97,7 +93,7 @@ class pafiledb_rate extends pafiledb_public
 		{
 			$rate_info = str_replace("{filename}", $file_data['file_name'], $lang['Rateinfo']);
 
-			$pafiledb_template->assign_vars(array(
+			$template->assign_vars(array(
 				'S_RATE_ACTION' => append_sid('dload.' . PHP_EXT . '?action=rate&amp;file_id=' . $file_id),
 				'L_RATE' => $lang['Rate'],
 				'L_RERROR' => $lang['Rerror'],

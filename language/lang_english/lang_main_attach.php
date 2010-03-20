@@ -133,9 +133,6 @@ $lang = array_merge($lang, array(
 	'Upload_percent_profile' => '%d%% of total',
 
 // Common Variables
-	'Bytes' => 'Bytes',
-	'KB' => 'KB',
-	'MB' => 'MB',
 	'Attach_search_query' => 'Search Attachments',
 	'Test_settings' => 'Test Settings',
 	'Not_assigned' => 'Not Assigned',

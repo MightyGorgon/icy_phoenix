@@ -142,7 +142,7 @@ function checkAddForm()
 	<td class="row2"><input type="text" class="post" size="50" name="download_url" value="{FILE_DLURL}" /></td>
 </tr>
 <!-- IF CUSTOM_EXIST -->
-<tr><td class="cat" colspan="2" align="center"><span class="cattitle">{L_ADDTIONAL_FIELD}</span></td></tr>
+<tr><th colspan="2" align="center">{L_ADDTIONAL_FIELD}</th></tr>
 <!-- ENDIF -->
 
 <!-- INCLUDE pa_custom_field.tpl -->

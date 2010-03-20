@@ -77,8 +77,10 @@ function jr_admin_make_bookmark_heading($letters_list, $start)
 {
 	global $lang, $order;
 
-	$seperator = ' | ';
-	$startb = '[ <a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($first_link))) . '" class="nav">All</a> | ';
+	$sort_item = request_var('sort_item', 'username');
+
+	$separator = ' | ';
+	$startb = '[ <a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . $sort_item . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($first_link))) . '" class="nav">All</a> | ';
 	$end = ' ]';
 
 	$list = '';
@@ -107,13 +109,13 @@ function jr_admin_make_bookmark_heading($letters_list, $start)
 			}
 			if ($make_link)
 			{
-				$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=0') . '" class="nav">0 - 9</a>';
+				$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . $sort_item . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=0') . '" class="nav">0 - 9</a>';
 			}
 			else
 			{
 				$list .= strtoupper(chr($items[0])) . ' - ' . strtoupper(chr($items[1]));
 			}
-			$list .= $seperator;
+			$list .= $separator;
 		}
 		//Check for - now
 		elseif (preg_match("/^.+\-.+$/", $ord_value))
@@ -123,31 +125,31 @@ function jr_admin_make_bookmark_heading($letters_list, $start)
 			{
 				if (isset($letters_list[$i]))
 				{
-					$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($i))) . '" class="nav">' . strtoupper(chr($i)) . '</a>';
+					$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . $sort_item . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($i))) . '" class="nav">' . strtoupper(chr($i)) . '</a>';
 				}
 				else
 				{
 					$list .= strtoupper(chr($i));
 				}
-				$list .= $seperator;
+				$list .= $separator;
 			}
 		}
 		else
 		{
 			if (isset($letters_list[$ord_value]))
 			{
-				$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . ((isset($_GET['sort_item']) || isset($_POST['sort_item'])) ? $sort_item : 'username') . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($ord_value))) . '" class="nav">' . strtoupper(chr($ord_value)) . '</a>';
+				$list .= '<a href="' . append_sid('admin_jr_admin.' . PHP_EXT . '?sort_item=' . $sort_item . '&amp;start=0&amp;order=' . $order . '&amp;alphanum=' . strtoupper(chr($ord_value))) . '" class="nav">' . strtoupper(chr($ord_value)) . '</a>';
 			}
 			else
 			{
 				$list .= strtoupper(chr($ord_value));
 			}
-			$list .= $seperator;
+			$list .= $separator;
 		}
 	}
 
-	//Replace the last seperator with the ending item
-	$list = preg_replace('/'.addcslashes($seperator, '|').'$/', $end, $list);
+	//Replace the last separator with the ending item
+	$list = preg_replace('/' . addcslashes($separator, '|') . '$/', $end, $list);
 
 	return ($startb . $list);
 }

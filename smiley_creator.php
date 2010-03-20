@@ -20,10 +20,7 @@ init_userprefs($userdata);
 
 @include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
 
-if (isset($_GET['mode']))
-{
-	$mode = $_GET['mode'];
-}
+$mode = request_var('mode', '');
 
 if($mode == 'text2shield')
 {

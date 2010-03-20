@@ -106,8 +106,7 @@ function xsm_get_list($mode, $id, $select)
 			break;
 	}
 
-	$sql = "SELECT *
-		FROM $table";
+	$sql = "SELECT * FROM $table";
 	if( $select == 1 && $mode == 'menu')
 	{
 		$sql .= " WHERE menu_is_sub <> 1";
@@ -192,7 +191,7 @@ function bullet_picker($bullet_dir)
 		$fileinfo = pathinfo($file);
 		$file_ext = strtolower($fileinfo['extension']);
 
-		if($file !== '.' && $file !== '..' && !is_dir($file) && in_array($file_ext, $allowed_ext) )
+		if(($file !== '.') && ($file !== '..') && !is_dir($file) && in_array($file_ext, $allowed_ext))
 		{
 			$files[] = $file;
 			$tmp = substr($file, 0 , strrpos($file, "."));

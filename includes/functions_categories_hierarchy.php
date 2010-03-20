@@ -53,10 +53,10 @@ function get_object_lang($cur, $field, $all = false)
 		switch($field)
 		{
 			case 'name':
-				$res = sprintf($lang['Forum_Index'], isset($lang[htmlspecialchars($config['sitename'])]) ? $lang[htmlspecialchars($config['sitename'])] : htmlspecialchars($config['sitename']));
+				$res = sprintf($lang['Forum_Index'], isset($lang[$config['sitename']]) ? $lang[$config['sitename']] : $config['sitename']);
 				break;
 			case 'desc':
-				$res = isset($lang[htmlspecialchars($config['site_desc'])]) ? $lang[htmlspecialchars($config['site_desc'])] : htmlspecialchars($config['site_desc']);
+				$res = isset($lang[$config['site_desc']]) ? $lang[$config['site_desc']] : $config['site_desc'];
 				break;
 		}
 	}
@@ -71,8 +71,11 @@ function get_object_lang($cur, $field, $all = false)
 				$field = 'forum_desc';
 				break;
 		}
-		$res = ($tree['auth'][$cur]['auth_view'] || $all) ? $tree['data'][$CH_this][$field] : '';
-		if (isset($lang[$res])) $res = $lang[$res];
+		$res = ($tree['auth'][$cur]['auth_view'] || $all) ? stripslashes($tree['data'][$CH_this][$field]) : '';
+		if (isset($lang[$res]))
+		{
+			$res = $lang[$res];
+		}
 	}
 	return $res;
 }
@@ -155,7 +158,8 @@ function cache_tree_output()
 			{
 				$template->assign_block_vars('data.field', array(
 					'FIELD_NAME' => $key,
-					'FIELD_VALUE' => str_replace("\n", "' . \"\\n\" . '", str_replace("\r\n", "' . \"\\r\\n\" . '", str_replace("'", "\'", $value))),
+					//'FIELD_VALUE' => str_replace("\n", "' . \"\\n\" . '", str_replace("\r\n", "' . \"\\r\\n\" . '", str_replace("'", "\'", $value))),
+					'FIELD_VALUE' => str_replace("\n", "' . \"\\n\" . '", str_replace("\r\n", "' . \"\\r\\n\" . '", addslashes($value))),
 					)
 				);
 			}
@@ -726,7 +730,7 @@ function set_tree_user_auth()
 				$tree['data'][$i]['tree.post_user_id'] = isset($tree['data'][$i]['user_id']) ? $tree['data'][$i]['user_id'] : '';
 				if (isset($tree['data'][$i]['user_id']) && isset($tree['data'][$i]['username']))
 				{
-					$tree['data'][$i]['tree.post_username'] = ($tree['data'][$i]['user_id'] != ANONYMOUS) ? $tree['data'][$i]['username'] : ((!empty($tree['data'][$i]['post_username'])) ? $tree['data'][$i]['post_username'] :	$lang['Guest']);
+					$tree['data'][$i]['tree.post_username'] = ($tree['data'][$i]['user_id'] != ANONYMOUS) ? $tree['data'][$i]['username'] : ((!empty($tree['data'][$i]['post_username'])) ? $tree['data'][$i]['post_username'] : $lang['Guest']);
 				}
 				else
 				{

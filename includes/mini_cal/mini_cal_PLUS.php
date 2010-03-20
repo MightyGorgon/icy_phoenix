@@ -15,8 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
-
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -26,7 +24,6 @@ if (!defined('IN_MINI_CAL'))
 {
 	die('Hacking attempt');
 }
-
 
 /***************************************************************************
 	getMiniCalForumsAuth
@@ -116,7 +113,7 @@ function getMiniCalEventDays($auth_view_forums)
  ***************************************************************************/
 function getMiniCalEvents($mini_cal_auth)
 {
-	global $template, $db, $lang;
+	global $db, $template, $lang;
 
 	// initialise some sql bits
 	$mini_cal_auth_sql = ($mini_cal_auth['view'] != '') ? ' AND t.forum_id in (' . $mini_cal_auth['view'] . ') ' : '';
@@ -176,12 +173,11 @@ function getMiniCalEvents($mini_cal_auth)
 								$lang['Mini_Cal_date_format']
 							);
 
-
 				$template->assign_block_vars('mini_cal_events', array(
-						'MINI_CAL_EVENT_DATE' => $cal_date,
-						'S_MINI_CAL_EVENT' => $row['topic_title'],
-						'U_MINI_CAL_EVENT' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC ."?" . POST_TOPIC_URL . '=' . $row['topic_id'])
-						)
+					'MINI_CAL_EVENT_DATE' => $cal_date,
+					'S_MINI_CAL_EVENT' => $row['topic_title'],
+					'U_MINI_CAL_EVENT' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC ."?" . POST_TOPIC_URL . '=' . $row['topic_id'])
+					)
 				);
 			}
 		}

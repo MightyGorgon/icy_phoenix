@@ -22,13 +22,17 @@ class pafiledb_download extends pafiledb_public
 		global $db, $config, $template, $theme, $userdata, $lang;
 		global $gen_simple_header, $starttime, $debug;
 		global $cms_config_vars, $cms_page;
-		global $pafiledb_config, $pafiledb_template, $pafiledb_user, $pafiledb_functions;
+		global $pafiledb_config, $pafiledb_user, $pafiledb_functions;
 
-		if (isset($_REQUEST['file_id']))
+		$cat_id = request_var('cat_id', 0);
+		$file_id = request_var('file_id', 0);
+		$action = request_var('action', '');
+
+		if (!empty($file_id))
 		{
-			$file_id = intval($_REQUEST['file_id']);
+			$file_id = $file_id;
 		}
-		elseif ($file_id == 0 && $action != '')
+		elseif (($file_id == 0) && ($action != ''))
 		{
 			$file_id_array = array();
 			$file_id_array = explode('=', $action);
@@ -39,7 +43,7 @@ class pafiledb_download extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $lang['File_not_exist']);
 		}
 
-		$mirror_id = (isset($_REQUEST['mirror_id'])) ? intval($_REQUEST['mirror_id']) : false;
+		$mirror_id = request_var('mirror_id', 0);
 
 		$sql = 'SELECT *
 			FROM ' . PA_FILES_TABLE . " AS f
@@ -136,7 +140,7 @@ class pafiledb_download extends pafiledb_public
 
 			$this->generate_category_nav($file_data['file_catid']);
 
-			$pafiledb_template->assign_vars(array(
+			$template->assign_vars(array(
 				'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 				'L_MIRRORS' => $lang['Mirrors'],
 				'L_MIRROR_LOCATION' => $lang['Mirror_location'],
@@ -152,16 +156,18 @@ class pafiledb_download extends pafiledb_public
 				)
 			);
 
-			$pafiledb_template->assign_block_vars('mirror_row', array(
+			$template->assign_block_vars('mirror_row', array(
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id . '&amp;mirror_id=-1'),
-				'MIRROR_LOCATION' => $config['sitename'])
+				'MIRROR_LOCATION' => $config['sitename']
+				)
 			);
 
 			foreach($mirrors_data as $mir_id => $mirror_data)
 			{
-				$pafiledb_template->assign_block_vars('mirror_row', array(
+				$template->assign_block_vars('mirror_row', array(
 					'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id . '&amp;mirror_id=' . $mir_id),
-					'MIRROR_LOCATION' => $mirror_data['mirror_location'])
+					'MIRROR_LOCATION' => $mirror_data['mirror_location']
+					)
 				);
 			}
 
@@ -169,7 +175,7 @@ class pafiledb_download extends pafiledb_public
 			$this->display($lang['Download'], 'pa_mirrors_body.tpl');
 			page_footer(true, '', true);
 		}
-		elseif((!empty($mirrors_data) && $mirror_id == -1) || (empty($mirrors_data)))
+		elseif((!empty($mirrors_data) && ($mirror_id == -1)) || (empty($mirrors_data)))
 		{
 			$real_filename = $file_data['real_name'];
 			//$real_filename = '"' . $file_data['real_name'] . '"';
@@ -177,7 +183,7 @@ class pafiledb_download extends pafiledb_public
 			$upload_dir = (!empty($file_data['upload_dir'])) ? $file_data['upload_dir'] : $pafiledb_config['upload_dir'];
 			$file_url = $file_data['file_dlurl'];
 		}
-		elseif($mirror_id > 0 && !empty($mirrors_data[$mirror_id]))
+		elseif(($mirror_id > 0) && !empty($mirrors_data[$mirror_id]))
 		{
 			$real_filename = $mirrors_data[$mirror_id]['real_name'];
 			//$real_filename = '"' . $mirrors_data[$mirror_id]['real_name'] . '"';
@@ -387,18 +393,10 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 
 function pa_redirect($file_url)
 {
-	global $pa_cache, $db, $lang;
+	global $db, $cache, $lang;
 
-	// Close our DB connection.
-	if (!empty($db))
-	{
-		$db->sql_close();
-	}
-
-	if(isset($pa_cache))
-	{
-		$pa_cache->unload();
-	}
+	// Close our DB connection and do some cleanup...
+	garbage_collection();
 
 	// Make sure no &amp;'s are in, this will break the redirect
 	$file_url = str_replace('&amp;', '&', $file_url);

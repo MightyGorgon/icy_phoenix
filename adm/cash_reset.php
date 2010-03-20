@@ -15,14 +15,13 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (empty($config['plugins']['cash']['enabled']))
 {
@@ -40,7 +39,7 @@ if (!$cash->currency_count())
 	message_die(GENERAL_MESSAGE, $lang['Insufficient_currencies']);
 }
 
-$mode = isset($_POST['mode']) ? $_POST['mode'] : 'main';
+$mode = request_var('mode', 'main');
 
 switch ($mode)
 {
@@ -74,7 +73,7 @@ switch ($mode)
 			}
 		}
 		break;
-	case "submitted":
+	case 'submitted':
 		if (isset($_POST['submit']) && isset($_POST['cash_check']) && is_array($_POST['cash_check']))
 		{
 			switch($_POST['submit'])

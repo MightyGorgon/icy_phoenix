@@ -30,15 +30,8 @@ init_userprefs($userdata);
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // Load up pic_id.
-if( isset($_POST['pic_id']) )
-{
-	$pic_id = intval($_POST['pic_id']);
-}
-elseif( isset($_GET['pic_id']) )
-{
-	$pic_id = intval($_GET['pic_id']);
-}
-else
+$pic_id = request_var('pic_id', 0);
+if ($pic_id <= 0)
 {
 	message_die(GENERAL_ERROR, 'No pic specified');
 }
@@ -189,7 +182,7 @@ if($album_config['gd_version'] > 0)
 
 // Well that worked ok, lets update the users profile and tell 'em.
 $sql = "UPDATE ". USERS_TABLE ."
-		SET user_avatar = '$avatar_filename', user_avatar_type = '1'
+		SET user_avatar = '" . $db-sql_escape($avatar_filename) . "', user_avatar_type = '1'
 		WHERE user_id = '" . $userdata['user_id'] . "'";
 $result = $db->sql_query($sql);
 

@@ -81,7 +81,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	$user_info['profile_img'] = '<a href="' . $user_info['profile_url'] . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>';
 	$user_info['profile'] = '<a href="' . $user_info['profile_url'] . '">' . $lang['Read_profile'] . '</a>';
 
-	$user_info['pm_url'] = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $row['user_id']);
+	$user_info['pm_url'] = append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $row['user_id']);
 	$user_info['pm_img'] = '<a href="' . $user_info['pm_url'] . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 	$user_info['pm'] = '<a href="' . $user_info['pm_url'] . '">' . $lang['Send_private_message'] . '</a>';
 
@@ -115,7 +115,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	$user_info['yim_url'] = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], false, true) : '';
 
 	// ONLINE / OFFLINE - BEGIN
-	$user_info['online_status_url'] = append_sid('viewonline.' . PHP_EXT);
+	$user_info['online_status_url'] = append_sid(CMS_PAGE_VIEWONLINE);
 	$user_info['online_status_lang'] = $lang['Offline'];
 	$user_info['online_status_class'] = 'offline';
 	if (isset($row['user_allow_viewonline']) && ($row['user_session_time'] >= (time() - $config['online_time'])))

@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 define('IN_CRON', true);
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);

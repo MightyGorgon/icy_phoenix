@@ -87,9 +87,6 @@ $lang = array_merge($lang, array(
 	'Downloadfile' => 'Download File',
 	'File_size' => 'File Size',
 	'Not_available' => 'Not Available!',
-	'Bytes' => 'Bytes',
-	'KB' => 'Kilo Byte',
-	'MB' => 'Mega Byte',
 
 	'Mirrors' => 'Mirrors',
 	'Mirrors_explain' => 'Add or edit mirrors for this file, make sure to verify all the information because the file will be submitted to the database',

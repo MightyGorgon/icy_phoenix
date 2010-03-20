@@ -35,16 +35,16 @@ header ('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header ('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header ('Content-Type: text/xml');
 
-// Create main board url
-$fap_full_url = fap_create_server_url();
+// Create main site url
+$fap_full_url = create_server_url();
 
 $index_site = $fap_full_url . 'album.' . PHP_EXT;
 $index_url = $fap_full_url . 'album_showpage.' . PHP_EXT;
 $thumb_url = $fap_full_url . 'album_thumbnail.' . PHP_EXT;
 
-// If not set, set the output count to 50
-$count = ( isset($_GET['np']) ) ? intval($_GET['np']) : 25;
-$count = ( $count == 0 ) ? 25 : $count;
+// If not set, set the output count to 25
+$count = request_var('np', 25);
+$count = ($count <= 0) ? 25 : $count;
 
 // BEGIN Recent Photos
 // Start check permissions
@@ -53,7 +53,7 @@ $check_sel = ($admin_mode) ? 0 : 1;
 if($userdata['user_level'] != ADMIN)
 {
 	$album_user_access = personal_gallery_access(true, false);
-	$not_allowed_cat = ($album_user_access['view'] == 1 ) ? '' : '0';
+	$not_allowed_cat = ($album_user_access['view'] == 1) ? '' : '0';
 	$sql = "SELECT c.*
 		FROM ". ALBUM_CAT_TABLE ." AS c
 		WHERE cat_id <> 0";
@@ -63,7 +63,7 @@ if($userdata['user_level'] != ADMIN)
 		$album_user_access = album_user_access($row['cat_id'], $row, 1, 0, 0, 0, 0, 0); // VIEW
 		if($admin_mode)
 		{
-			if ( ($album_user_access['moderator'] != 1) || ($row['cat_approval'] != MOD) )
+			if (($album_user_access['moderator'] != 1) || ($row['cat_approval'] != MOD))
 			{
 				$not_allowed_cat .= ($not_allowed_cat == '') ? $row['cat_id'] : ',' . $row['cat_id'];
 			}
@@ -80,7 +80,7 @@ if($userdata['user_level'] != ADMIN)
 }
 // End check permissions
 $NotErrorFlag = false;
-$sql_limit_time = "";
+$sql_limit_time = '';
 if ( !$no_limit && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) )
 {
 	$NotErrorFlag = true;

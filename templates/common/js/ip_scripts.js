@@ -219,7 +219,7 @@ function IsIEMac()
 {
 	// Any better way to detect IEMac?
 	var ua = String(navigator.userAgent).toLowerCase();
-	if( document.all && ua.indexOf("mac") >= 0 )
+	if(document.all && ua.indexOf("mac") >= 0)
 	{
 		return true;
 	}
@@ -231,7 +231,7 @@ function select_text(obj)
 	var o = document.getElementById(obj)
 	if( !o ) return;
 	var r, s;
-	if( document.selection && !IsIEMac() )
+	if(document.selection && !IsIEMac())
 	{
 		// Works on: IE5+
 		// To be confirmed: IE4? / IEMac fails?
@@ -239,7 +239,7 @@ function select_text(obj)
 		r.moveToElementText(o);
 		r.select();
 	}
-	else if( document.createRange && (document.getSelection || window.getSelection) )
+	else if(document.createRange && (document.getSelection || window.getSelection))
 	{
 		// Works on: Netscape/Mozilla/Konqueror/Safari
 		// To be confirmed: Konqueror/Safari use window.getSelection ?
@@ -806,7 +806,7 @@ function submit_rate()
 
 // FADE - BEGIN
 
-//gestion des objets selon les navigateurs
+// Select the right object depending on user browser
 function ob(id)
 {
 	if (dom)
@@ -830,7 +830,7 @@ function ob(id)
 
 // Fade
 Array.prototype.inArray = function(str)
-{//on modifie l'objet Array
+{
 	for(i = 0; i < this.length; i++)
 	{
 		if(this[i].toString() == str)
@@ -841,7 +841,6 @@ Array.prototype.inArray = function(str)
 return -1;
 }
 
-// On modifie l'objet String
 String.prototype.exist = function()
 {
 	return (this == "undefined" ? false : true);
@@ -900,8 +899,8 @@ function getOpacity(id, isObj)
 }
 
 // Fading
-vit = 5; //temps entre chaque addition d'opacité(+ petit -> + de qualité -> + dur pour le navigateur)
-add = 4; //valeur à additionner (idem)
+vit = 5; // fading time -> lower value -> high quality -> higher CPU charge
+add = 4; // fading increment (same considerations as above)
 nObj = 0;
 
 fadeObjects = new Object();
@@ -934,9 +933,9 @@ function fade2(object, destOp)
 	direction = 1;
 	if (alpha > destOp)
 	{
-		direction = -1;//de - en - opaque
+		direction = -1; // de - en - opaque
 	}
-	alpha += direction * Math.min(direction * diff, add);//ajoute le + petit entre la diférence et add
+	alpha += direction * Math.min(direction * diff, add); // ajoute le + petit entre la diférence et add
 	setOpacity(object,alpha,true);
 	alpha = getOpacity(object,true);
 	object.offsetLeft;

@@ -15,14 +15,13 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (empty($config['plugins']['cash']['enabled']))
 {
@@ -74,7 +73,7 @@ while ($c_cur = &$cash->currency_next($cm_i))
 		$updates = array();
 		$settings = $c_cur->data('cash_settings');
 		$settings_update = false;
-		while (list($key, $type) = each ($update_set))
+		while (list($key, $type) = each($update_set))
 		{
 			if (isset($_POST[$varname][$key]))
 			{
@@ -98,7 +97,7 @@ while ($c_cur = &$cash->currency_next($cm_i))
 						}
 						break;
 					case 'text':
-						$updates[] = $key . ' = \'' . str_replace("\'", "''", $data) . '\'';
+						$updates[] = $key . ' = \'' . $db->sql_escape($data) . '\'';
 						break;
 					case 'int':
 						if (is_numeric($data))
@@ -123,7 +122,7 @@ while ($c_cur = &$cash->currency_next($cm_i))
 		if (sizeof($updates) > 0)
 		{
 			$sql = "UPDATE " . CASH_TABLE . "
-					SET " . implode(", ",$updates) . "
+					SET " . implode(", ", $updates) . "
 					WHERE cash_id = " . $c_cur->id();
 			$db->sql_query($sql);
 			$table_updated = true;

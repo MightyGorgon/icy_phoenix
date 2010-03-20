@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
@@ -74,7 +73,7 @@ if (isset($_POST['delete_sub']))
 				$log_id = substr($key, 10);
 
 				$sql = "DELETE FROM " . LOGS_TABLE . "
-								WHERE log_id = '" . $log_id . "'";
+								WHERE log_id = '" . $db->sql_escape($log_id) . "'";
 				$db->sql_query($sql);
 			}
 			$file_array[] = 'error_log_' . $log_id . '.txt';

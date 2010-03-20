@@ -21,12 +21,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
@@ -70,7 +64,7 @@ if(isset($_POST['submit']) && !defined('DEMO_MODE'))
 		}
 		if($config[$var] !== $new[$var])
 		{
-			$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . xs_sql($new[$var]) . "' WHERE config_name = '{$var}'";
+			$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . $db->sql_escape($new[$var]) . "' WHERE config_name = '{$var}'";
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
@@ -152,26 +146,27 @@ if(empty($xs_ftp_path))
 }
 
 $template->assign_vars(array(
-	'XS_USE_CACHE_0'			=> $config['xs_use_cache'] ? '' : ' checked="checked"',
-	'XS_USE_CACHE_1'			=> $config['xs_use_cache'] ? ' checked="checked"' : '',
-	'XS_AUTO_COMPILE_0'			=> $config['xs_auto_compile'] ? '' : ' checked="checked"',
-	'XS_AUTO_COMPILE_1'			=> $config['xs_auto_compile'] ? ' checked="checked"' : '',
-	'XS_AUTO_RECOMPILE_0'		=> $config['xs_auto_recompile'] ? '' : ' checked="checked"',
-	'XS_AUTO_RECOMPILE_1'		=> $config['xs_auto_recompile'] ? ' checked="checked"' : '',
-	'XS_PHP'					=> htmlspecialchars($config['xs_php']),
-	'XS_DEF_TEMPLATE'			=> htmlspecialchars($config['xs_def_template']),
-	'XS_CHECK_SWITCHES_0'		=> !$config['xs_check_switches'] ? ' checked="checked"' : '', // no check
-	'XS_CHECK_SWITCHES_1'		=> $config['xs_check_switches'] == 1 ? ' checked="checked"' : '', // smart check
-	'XS_CHECK_SWITCHES_2'		=> $config['xs_check_switches'] == 2 ? ' checked="checked"' : '', // simple check
-	'XS_WARN_INCLUDES_0'		=> $config['xs_warn_includes'] ? '' : ' checked="checked"',
-	'XS_WARN_INCLUDES_1'		=> $config['xs_warn_includes'] ? ' checked="checked"' : '',
-	'XS_ADD_COMMENTS_0'			=> $config['xs_add_comments'] ? '' : ' checked="checked"',
-	'XS_ADD_COMMENTS_1'			=> $config['xs_add_comments'] ? ' checked="checked"' : '',
-	'XS_FTP_HOST'				=> defined('DEMO_MODE') ? '' : $xs_ftp_host,
-	'XS_FTP_LOGIN'				=> defined('DEMO_MODE') ? '' : $xs_ftp_login,
-	'XS_FTP_PATH'				=> defined('DEMO_MODE') ? '' : $xs_ftp_path,
-	'FORM_ACTION'				=> append_sid('xs_config.' . PHP_EXT),
-	));
+	'XS_USE_CACHE_0' => $config['xs_use_cache'] ? '' : ' checked="checked"',
+	'XS_USE_CACHE_1' => $config['xs_use_cache'] ? ' checked="checked"' : '',
+	'XS_AUTO_COMPILE_0' => $config['xs_auto_compile'] ? '' : ' checked="checked"',
+	'XS_AUTO_COMPILE_1' => $config['xs_auto_compile'] ? ' checked="checked"' : '',
+	'XS_AUTO_RECOMPILE_0' => $config['xs_auto_recompile'] ? '' : ' checked="checked"',
+	'XS_AUTO_RECOMPILE_1' => $config['xs_auto_recompile'] ? ' checked="checked"' : '',
+	'XS_PHP' => htmlspecialchars($config['xs_php']),
+	'XS_DEF_TEMPLATE' => htmlspecialchars($config['xs_def_template']),
+	'XS_CHECK_SWITCHES_0' => !$config['xs_check_switches'] ? ' checked="checked"' : '', // no check
+	'XS_CHECK_SWITCHES_1' => $config['xs_check_switches'] == 1 ? ' checked="checked"' : '', // smart check
+	'XS_CHECK_SWITCHES_2' => $config['xs_check_switches'] == 2 ? ' checked="checked"' : '', // simple check
+	'XS_WARN_INCLUDES_0' => $config['xs_warn_includes'] ? '' : ' checked="checked"',
+	'XS_WARN_INCLUDES_1' => $config['xs_warn_includes'] ? ' checked="checked"' : '',
+	'XS_ADD_COMMENTS_0' => $config['xs_add_comments'] ? '' : ' checked="checked"',
+	'XS_ADD_COMMENTS_1' => $config['xs_add_comments'] ? ' checked="checked"' : '',
+	'XS_FTP_HOST' => defined('DEMO_MODE') ? '' : $xs_ftp_host,
+	'XS_FTP_LOGIN' => defined('DEMO_MODE') ? '' : $xs_ftp_login,
+	'XS_FTP_PATH' => defined('DEMO_MODE') ? '' : $xs_ftp_path,
+	'FORM_ACTION' => append_sid('xs_config.' . PHP_EXT),
+	)
+);
 
 for($i = 0; $i < XS_SHOWNAV_MAX; $i++)
 {
@@ -199,10 +194,10 @@ if(!xs_check_cache($cache_filename))
 @unlink($cache_filename);
 $debug_data = $str;
 $template->assign_vars(array(
-	'XS_DEBUG_HDR1'			=> sprintf($lang['xs_check_hdr'], '_xs_test.tpl'),
-	'XS_DEBUG_FILENAME1'	=> $tpl_filename,
-	'XS_DEBUG_FILENAME2'	=> $cache_filename,
-	'XS_DEBUG_DATA'			=> $debug_data,
+	'XS_DEBUG_HDR1' => sprintf($lang['xs_check_hdr'], '_xs_test.tpl'),
+	'XS_DEBUG_FILENAME1' => $tpl_filename,
+	'XS_DEBUG_FILENAME2' => $cache_filename,
+	'XS_DEBUG_DATA' => $debug_data,
 	)
 );
 

@@ -26,14 +26,7 @@ require('pagestart.' . PHP_EXT);
 include_once (IP_ROOT_PATH . 'includes/news_data.' . PHP_EXT);
 
 // Check to see what mode we should operate in.
-if(isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-}
-else
-{
-	$mode = "";
-}
+$mode = request_var('mode', '');
 
 $dir = @opendir(IP_ROOT_PATH . $config['news_path']);
 
@@ -62,7 +55,7 @@ if(is_array($category_images))
 	sort($category_images);
 }
 
-if(isset($_POST['add']) || isset($_GET['add']))
+if(check_http_var_exists('add', false))
 {
 	// Admin has selected to add a smiley.
 	$template->set_filenames(array('body' => ADM_TPL . 'news_cat_edit_body.tpl'));
@@ -101,7 +94,7 @@ elseif ($mode != '')
 	{
 		case 'delete':
 			// Admin has selected to delete a category.
-			$news_id = (!empty($_POST['id'])) ? $_POST['id'] : $_GET['id'];
+			$news_id = request_var('id', 0);
 
 			$sql = "DELETE FROM " . NEWS_TABLE . " WHERE news_id = " . $news_id;
 			$result = $db->sql_query($sql);
@@ -117,7 +110,7 @@ elseif ($mode != '')
 
 		case 'edit':
 			// Admin has selected to edit a smiley.
-			$news_id = (!empty($_POST['id'])) ? $_POST['id'] : $_GET['id'];
+			$news_id = request_var('id', 0);
 
 			$sql = "SELECT *
 				FROM " . NEWS_TABLE . "
@@ -170,25 +163,22 @@ elseif ($mode != '')
 			break;
 
 		case 'save':
-			// Admin has submitted changes while editing a smiley.
+			// Admin has submitted changes while editing a category
 
-			//
-			// Get the submitted data, being careful to ensure that we only
-			// accept the data we are looking for.
-			//
-			$news_category = (isset($_POST['category'])) ? trim($_POST['category']) : trim($_GET['category']);
-			$news_image = (isset($_POST['image_url'])) ? trim($_POST['image_url']) : trim($_GET['image_url']);
-			$news_id = (isset($_POST['news_id'])) ? intval($_POST['news_id']) : intval($_GET['news_id']);
+			// Get the submitted data, being careful to ensure that we only accept the data we are looking for.
+			$news_id = request_var('news_id', 0);
+			$news_category = request_var('category', '', true);
+			$news_image = request_var('image_url', '', true);
 
 			// If no code was entered complain ...
-			if ($news_category == '' || $news_image == '' || $news_id == '')
+			if (empty($news_category) || empty($news_image) || emtpy($news_id))
 			{
 				message_die(MESSAGE, $lang['Fields_empty']);
 			}
 
 			// Proceed with updating the news table.
 			$sql = "UPDATE " . NEWS_TABLE . "
-				SET  news_category = '$news_category', news_image = '$news_image'
+				SET  news_category = '" . $db->sql_escape($news_category) . "', news_image = '" . $db->sql_escape($news_image) . "'
 				WHERE news_id = $news_id";
 			$result = $db->sql_query($sql);
 			$db->clear_cache('news_');
@@ -199,24 +189,21 @@ elseif ($mode != '')
 			break;
 
 		case 'savenew':
-			// Admin has submitted changes while adding a new smiley.
+			// Admin has submitted changes while adding a new category
 
-			//
-			// Get the submitted data being careful to ensure the the data
-			// we recieve and process is only the data we are looking for.
-			//
-			$news_category = (isset($_POST['category'])) ? trim($_POST['category']) : trim($_GET['category']);
-			$news_image = (isset($_POST['image_url'])) ? trim($_POST['image_url']) : trim($_GET['image_url']);
+			// Get the submitted data being careful to ensure the the data we receive and process is only the data we are looking for.
+			$news_category = request_var('category', '', true);
+			$news_image = request_var('image_url', '', true);
 
 			// If no code was entered complain ...
-			if ($news_category == '' || $news_image == '')
+			if (empty($news_category) || empty($news_image))
 			{
 				message_die(MESSAGE, $lang['Fields_empty']);
 			}
 
 			// Save	the	data to	the	smiley table.
 			$sql = "INSERT INTO " . NEWS_TABLE . " (news_image, news_category)
-				VALUES ('$news_image', '$news_category')";
+				VALUES ('$news_image', '" . $db->sql_escape($news_category) . "')";
 			$result = $db->sql_query($sql);
 			$db->clear_cache('news_');
 

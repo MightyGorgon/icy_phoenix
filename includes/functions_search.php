@@ -107,8 +107,8 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 {
 	global $db, $config, $lang;
 
-	$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_stopwords.txt");
-	$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_synonyms.txt");
+	$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
+	$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
 
 	$search_raw_words = array();
 	$search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopword_array, $synonym_array));
@@ -344,7 +344,7 @@ function username_search($search_match, $ajax_search = false)
 
 		$sql = "SELECT username
 			FROM " . USERS_TABLE . "
-			WHERE username LIKE '" . str_replace("\'", "''", $username_search) . "' AND user_id <> " . ANONYMOUS . "
+			WHERE username LIKE '" . $db->sql_escape($username_search) . "' AND user_id <> " . ANONYMOUS . "
 			ORDER BY username";
 		$result = $db->sql_query($sql);
 
@@ -352,13 +352,13 @@ function username_search($search_match, $ajax_search = false)
 		{
 			do
 			{
-				$username_list .= '<option value="' . $row['username'] . '">' . $row['username'] . '</option>';
+				$username_list .= '<option value="' . htmlspecialchars($row['username']) . '">' . htmlspecialchars($row['username']) . '</option>';
 			}
 			while ($row = $db->sql_fetchrow($result));
 		}
 		else
 		{
-			$username_list .= '<option>' . $lang['No_match']. '</option>';
+			$username_list .= '<option>' . $lang['No_match'] . '</option>';
 		}
 		$db->sql_freeresult($result);
 	}

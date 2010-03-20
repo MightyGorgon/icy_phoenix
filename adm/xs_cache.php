@@ -21,12 +21,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
@@ -45,11 +39,11 @@ $skip_files = array(
 );
 
 // clear cache
+$clear = request_get_var('clear', '');
 if(isset($_GET['clear']) && !defined('DEMO_MODE'))
 {
 	@set_time_limit(XS_MAX_TIMEOUT);
-	$clear = $_GET['clear'];
-	if(!$clear)
+	if(empty($clear))
 	{
 		// clear all cache
 		$match = '';
@@ -96,7 +90,7 @@ if(isset($_GET['clear']) && !defined('DEMO_MODE'))
 		closedir($res);
 		if(!$num && !$num_error)
 		{
-			if($clear)
+			if(!empty($clear))
 			{
 				$data .= str_replace('{TPL}', $clear, $lang['xs_cache_log_nothing']) . "<br />\n";
 			}
@@ -117,13 +111,13 @@ if(isset($_GET['clear']) && !defined('DEMO_MODE'))
 }
 
 // compile cache
+$tpl = request_get_var('compile', '');
 if(isset($_GET['compile']) && !defined('DEMO_MODE'))
 {
-	$tpl = $_GET['compile'];
 	@set_time_limit(XS_MAX_TIMEOUT);
 	$num_errors = 0;
 	$num_compiled = 0;
-	if($tpl)
+	if(!empty($tpl))
 	{
 		$dir = $template->tpldir . $tpl . '/';
 		compile_cache($dir, '', $tpl);
@@ -196,7 +190,7 @@ $prev_id = -1;
 $prev_tpl = '';
 $style_names = array();
 $j = 0;
-for($i=0; $i< sizeof($style_rowset); $i++)
+for($i = 0; $i < sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	if($item['template_name'] === $prev_tpl)
@@ -212,11 +206,11 @@ for($i=0; $i< sizeof($style_rowset); $i++)
 			$row_class = $xs_row_class[$j % 2];
 			$j++;
 			$template->assign_block_vars('styles', array(
-					'ROW_CLASS'	=> $row_class,
-					'TPL'		=> $prev_tpl,
-					'STYLES'	=> $str,
-					'U_CLEAR'	=> "xs_cache." . PHP_EXT . "?clear={$str2}&sid={$userdata['session_id']}",
-					'U_COMPILE'	=> "xs_cache." . PHP_EXT . "?compile={$str2}&sid={$userdata['session_id']}",
+				'ROW_CLASS' => $row_class,
+				'TPL' => $prev_tpl,
+				'STYLES' => $str,
+				'U_CLEAR' => 'xs_cache.' . PHP_EXT . "?clear={$str2}&amp;sid={$userdata['session_id']}",
+				'U_COMPILE' => 'xs_cache.' . PHP_EXT . "?compile={$str2}&amp;sid={$userdata['session_id']}",
 				)
 			);
 		}
@@ -232,19 +226,19 @@ if($prev_id > 0)
 	$row_class = $xs_row_class[$j % 2];
 	$j++;
 	$template->assign_block_vars('styles', array(
-			'ROW_CLASS'	=> $row_class,
-			'TPL'		=> $prev_tpl,
-			'STYLES'	=> $str,
-			'U_CLEAR'	=> "xs_cache." . PHP_EXT . "?clear={$str2}&sid={$userdata['session_id']}",
-			'U_COMPILE'	=> "xs_cache." . PHP_EXT . "?compile={$str2}&sid={$userdata['session_id']}",
+		'ROW_CLASS' => $row_class,
+		'TPL' => $prev_tpl,
+		'STYLES' => $str,
+		'U_CLEAR' => 'xs_cache.' . PHP_EXT . "?clear={$str2}&amp;sid={$userdata['session_id']}",
+		'U_COMPILE' => 'xs_cache.' . PHP_EXT . "?compile={$str2}&amp;sid={$userdata['session_id']}",
 		)
 	);
 }
 
 $template->assign_vars(array(
-	'U_CLEAR_ALL'	=> "xs_cache." . PHP_EXT . "?clear=&sid={$userdata['session_id']}",
-	'U_COMPILE_ALL'	=> "xs_cache." . PHP_EXT . "?compile=&sid={$userdata['session_id']}",
-	'RESULT'		=> '<br /><br />' . $data
+	'U_CLEAR_ALL' => 'xs_cache.' . PHP_EXT . "?clear=&amp;sid={$userdata['session_id']}",
+	'U_COMPILE_ALL' => 'xs_cache.' . PHP_EXT . "?compile=&amp;sid={$userdata['session_id']}",
+	'RESULT' => '<br /><br />' . $data
 	)
 );
 

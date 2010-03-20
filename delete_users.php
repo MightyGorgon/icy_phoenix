@@ -43,7 +43,6 @@
 #########################################################
 */
 
-// CTracker_Ignore: File Checked By Human
 define('CTRACKER_DISABLED', true);
 // to enable email notification to the user, after deletion, enable this
 define('NOTIFY_USERS', true);
@@ -74,13 +73,15 @@ if ($user_row['user_level'] != ADMIN)
 	message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 }
 
-$del_user = isset($_POST['del_user']) ? intval($_POST['del_user']) : (isset($_GET['del_user']) ? intval($_GET['del_user']) : '');
-$mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : '');
-$days = isset($_POST['days']) ? intval($_POST['days']) : (isset($_GET['days']) ? intval($_GET['days']) : '');
+$del_user = request_var('del_user', 0);
+$del_user = ($del_user < 2) ? 0 : $del_user;
+
+$mode = request_var('mode', '');
+$days = request_var('days', 0);
 
 if ($mode == 'prune_mg')
 {
-	$users_number = isset($_GET['users_number']) ? intval($_GET['users_number']) : intval($_POST['users_number']);
+	$users_number = request_var('users_number', 0);
 	$users_number = ($users_number == 0) ? '50' : $users_number;
 }
 

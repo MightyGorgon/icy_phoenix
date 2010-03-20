@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
@@ -34,14 +33,9 @@ include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $pafiledb->init();
 
-$params = array('mode' => 'mode', 'user_id' => POST_USERS_URL, 'group_id' => POST_GROUPS_URL);
-
-foreach($params as $var => $param)
-{
-	$$var = (isset($_REQUEST[$param])) ? $_REQUEST[$param] : '';
-}
-$user_id = intval($user_id);
-$group_id = intval($group_id);
+$mode = request_var('mode', '');
+$user_id = request_var(POST_USERS_URL, 0);
+$group_id = request_var(POST_GROUPS_URL, 0);
 
 // MX Addon
 $cat_auth_fields = array('auth_view', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment');
@@ -82,7 +76,7 @@ $permissions_menu = array(
 
 foreach($permissions_menu as $url => $l_name)
 {
-	$pafiledb_template->assign_block_vars('pertype', array(
+	$template->assign_block_vars('pertype', array(
 		'U_NAME' => $url,
 		'L_NAME' => $l_name
 		)
@@ -90,7 +84,7 @@ foreach($permissions_menu as $url => $l_name)
 }
 
 
-if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'group' && $group_id)))
+if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'group') && $group_id)))
 {
 	if($mode == 'user')
 	{
@@ -105,7 +99,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 		$db->sql_freeresult($result);
 	}
 
-	$change_mod_list = (isset($_POST['moderator'])) ? $_POST['moderator'] : array();
+	$change_mod_list = request_post_var('moderator', array(''));
 
 	$change_acl_list = array();
 	for($j = 0; $j < sizeof($cat_auth_fields); $j++)
@@ -134,10 +128,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 
 	foreach($pafiledb->cat_rowset as $cat_id => $cat_data)
 	{
-		if (
-			(isset($auth_access[$cat_id]['auth_mod']) && $change_mod_list[$cat_id]['auth_mod'] != $auth_access[$cat_id]['auth_mod']) ||
-			(!isset($auth_access[$cat_id]['auth_mod']) && !empty($change_mod_list[$cat_id]['auth_mod']))
-		)
+		if ((isset($auth_access[$cat_id]['auth_mod']) && $change_mod_list[$cat_id]['auth_mod'] != $auth_access[$cat_id]['auth_mod']) || (!isset($auth_access[$cat_id]['auth_mod']) && !empty($change_mod_list[$cat_id]['auth_mod'])))
 		{
 			$update_mod_status[$cat_id] = $change_mod_list[$cat_id]['auth_mod'];
 
@@ -161,10 +152,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 
 			if($cat_data[$auth_field] == AUTH_ACL && isset($change_acl_list[$cat_id][$auth_field]))
 			{
-				if ((empty($auth_access[$cat_id]['auth_mod']) &&
-					(isset($auth_access[$cat_id][$auth_field]) && $change_acl_list[$cat_id][$auth_field] != $auth_access[$cat_id][$auth_field]) ||
-					(!isset($auth_access[$cat_id][$auth_field]) && !empty($change_acl_list[$cat_id][$auth_field]))) ||
-					!empty($update_mod_status[$cat_id])
+				if ((empty($auth_access[$cat_id]['auth_mod']) && (isset($auth_access[$cat_id][$auth_field]) && $change_acl_list[$cat_id][$auth_field] != $auth_access[$cat_id][$auth_field]) || (!isset($auth_access[$cat_id][$auth_field]) && !empty($change_acl_list[$cat_id][$auth_field]))) || !empty($update_mod_status[$cat_id])
 				)
 				{
 					$update_acl_status[$cat_id][$auth_field] = (!empty($update_mod_status[$cat_id])) ? 0 :  $change_acl_list[$cat_id][$auth_field];
@@ -182,8 +170,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 						$cat_auth_action[$cat_id] = 'update';
 					}
 				}
-				elseif ((empty($auth_access[$cat_id]['auth_mod']) &&
-					(isset($auth_access[$cat_id][$auth_field]) && $change_acl_list[$cat_id][$auth_field] == $auth_access[$cat_id][$auth_field])) && $cat_auth_action[$cat_id] == 'delete')
+				elseif ((empty($auth_access[$cat_id]['auth_mod']) && (isset($auth_access[$cat_id][$auth_field]) && $change_acl_list[$cat_id][$auth_field] == $auth_access[$cat_id][$auth_field])) && $cat_auth_action[$cat_id] == 'delete')
 				{
 					$cat_auth_action[$cat_id] = 'update';
 				}
@@ -191,9 +178,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 		}
 	}
 
-	//
 	// Checks complete, make updates to DB
-	//
 	$delete_sql = '';
 	while(list($cat_id, $action) = @each($cat_auth_action))
 	{
@@ -248,7 +233,7 @@ if (isset($_POST['submit']) && (($mode == 'user' && $user_id) || ($mode == 'grou
 	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=' . $mode) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
-elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode == 'glob_group' && $group_id)))
+elseif (isset($_POST['submit']) && ((($mode == 'glob_user') && $user_id) || (($mode == 'glob_group') && $group_id)))
 {
 	if($mode == 'glob_user')
 	{
@@ -290,10 +275,7 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 
 		if($pafiledb_config[$auth_field] == AUTH_ACL && isset($change_acl_list[$auth_field]))
 		{
-			if ((!is_moderator($group_id) &&
-				(isset($auth_access[$auth_field]) && $change_acl_list[$auth_field] != $auth_access[$auth_field]) ||
-				(!isset($auth_access[$cat_id][$auth_field]) && !empty($change_acl_list[$auth_field])))
-				)
+			if ((!is_moderator($group_id) && (isset($auth_access[$auth_field]) && $change_acl_list[$auth_field] != $auth_access[$auth_field]) || (!isset($auth_access[$cat_id][$auth_field]) && !empty($change_acl_list[$auth_field]))))
 			{
 				$update_acl_status[$auth_field] = $change_acl_list[$auth_field];
 
@@ -301,26 +283,23 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 				{
 					$global_auth_action = 'delete';
 				}
-				else if (!isset($auth_access[$auth_field]) && !($global_auth_action == 'delete' && empty($update_acl_status[$auth_field])))
+				elseif (!isset($auth_access[$auth_field]) && !($global_auth_action == 'delete' && empty($update_acl_status[$auth_field])))
 				{
 					$global_auth_action = 'insert';
 				}
-				else if (isset($auth_access[$auth_field]) && !empty($update_acl_status[$auth_field]))
+				elseif (isset($auth_access[$auth_field]) && !empty($update_acl_status[$auth_field]))
 				{
 					$global_auth_action = 'update';
 				}
 			}
-			else if ((!is_moderator($auth_access['group_id']) &&
-				(isset($auth_access[$auth_field]) && $change_acl_list[$auth_field] == $auth_access[$auth_field])) && $global_auth_action == 'delete')
+			elseif ((!is_moderator($auth_access['group_id']) && (isset($auth_access[$auth_field]) && $change_acl_list[$auth_field] == $auth_access[$auth_field])) && $global_auth_action == 'delete')
 			{
 				$global_auth_action = 'update';
 			}
 		}
 	}
 
-	//
 	// Checks complete, make updates to DB
-	//
 	$delete_sql = 0;
 
 
@@ -370,7 +349,7 @@ elseif (isset($_POST['submit']) && (($mode == 'glob_user' && $user_id) || ($mode
 	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid('admin_pa_ug_auth.' . PHP_EXT . '?mode=' . $mode) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
-elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode == 'group' && $group_id))
+elseif ((($mode == 'user') && (isset($_POST['username']) || $user_id)) || (($mode == 'group') && $group_id))
 {
 	if (isset($_POST['username']))
 	{
@@ -441,9 +420,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 			}
 		}
 
-		//
 		// Is user a moderator?
-		//
 		$auth_ug[$cat_id]['auth_mod'] = (!empty($auth_access_count[$cat_id])) ? $pafiledb->auth_check_user(AUTH_MOD, 'auth_mod', $auth_access[$cat_id], 0) : 0;
 	}
 
@@ -455,11 +432,9 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		for($k = 0; $k < sizeof($cat_auth_fields); $k++)
 		{
 			$field_name = $cat_auth_fields[$k];
-
 			if($pafiledb->cat_rowset[$cat_id][$field_name] == AUTH_ACL)
 			{
 				$optionlist_acl_adv[$cat_id][$k] = '<select name="private_' . $field_name . '[' . $cat_id . ']">';
-
 				if(isset($auth_field_acl[$cat_id][$field_name]) && !($is_admin || $user_ary['auth_mod']))
 				{
 					if(!$auth_field_acl[$cat_id][$field_name])
@@ -482,9 +457,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 						$optionlist_acl_adv[$cat_id][$k] .= '<option value="1">' . $lang['ON'] . '</option><option value="0" selected="selected">' . $lang['OFF'] . '</option>';
 					}
 				}
-
 				$optionlist_acl_adv[$cat_id][$k] .= '</select>';
-
 			}
 		}
 
@@ -533,7 +506,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 	{
 		$cell_title = $field_names[$cat_auth_fields[$i]];
 
-		$pafiledb_template->assign_block_vars('acltype', array(
+		$template->assign_block_vars('acltype', array(
 			'L_UG_ACL_TYPE' => $cell_title
 			)
 		);
@@ -546,11 +519,11 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 
 	include('./page_header_admin.' . PHP_EXT);
 
-	$pafiledb_template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
+	$template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
 
 	if ($mode == 'user')
 	{
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'USER' => TRUE,
 			'USERNAME' => $t_username,
 			'USER_LEVEL' => $lang['User_Level'],
@@ -560,7 +533,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 	}
 	else
 	{
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'USER' => FALSE,
 			'USERNAME' => $t_groupname,
 			'GROUP_MEMBERSHIP' => sprintf($lang['Usergroup_members'], sizeof($name)) . ': ' . $t_usergroup_list
@@ -568,7 +541,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 		);
 	}
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'SHOW_MOD' => true,
 
 		'L_USER_OR_GROUPNAME' => ($mode == 'user') ? $lang['Username'] : $lang['Group_name'],
@@ -585,10 +558,11 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || ($mode =
 
 		'S_COLUMN_SPAN' => $s_column_span + 2,
 		'S_AUTH_ACTION' => append_sid('admin_pa_ug_auth.' . PHP_EXT),
-		'S_HIDDEN_FIELDS' => $s_hidden_fields)
+		'S_HIDDEN_FIELDS' => $s_hidden_fields
+		)
 	);
 }
-elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mode == 'glob_group' && $group_id))
+elseif((($mode == 'glob_user') && (isset($_POST['username']) || $user_id)) || (($mode == 'glob_group') && $group_id))
 {
 	if (isset($_POST['username']))
 	{
@@ -600,10 +574,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		$user_id = $this_userdata['user_id'];
 	}
 
-	//
 	// Front end
-	//
-
 	if($mode == 'glob_user')
 	{
 		$sql = "SELECT g.group_id
@@ -710,17 +681,18 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		}
 	}
 
-	$pafiledb_template->assign_block_vars('cat_row', array(
+	$template->assign_block_vars('cat_row', array(
 		'CAT_NAME' => ($mode == 'glob_user') ? $lang['User_Global_Permissions'] : $lang['Group_Global_Permissions'],
 		'IS_HIGHER_CAT' => false,
 		'PRE' => '',
 
-		'U_CAT' => append_sid('admin_pa_settings.' . PHP_EXT))
+		'U_CAT' => append_sid('admin_pa_settings.' . PHP_EXT)
+		)
 	);
 
 	for($j = 0; $j < sizeof($global_auth_fields); $j++)
 	{
-		$pafiledb_template->assign_block_vars('cat_row.aclvalues', array(
+		$template->assign_block_vars('cat_row.aclvalues', array(
 			'S_ACL_SELECT' => $optionlist_acl_adv[$j]
 			)
 		);
@@ -765,7 +737,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 	{
 		$cell_title = $global_fields_names[$global_auth_fields[$i]];
 
-		$pafiledb_template->assign_block_vars('acltype', array(
+		$template->assign_block_vars('acltype', array(
 			'L_UG_ACL_TYPE' => $cell_title)
 		);
 		$s_column_span++;
@@ -777,11 +749,11 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 
 	include('./page_header_admin.' . PHP_EXT);
 
-	$pafiledb_template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
+	$template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
 
 	if ($mode == 'glob_user')
 	{
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'USER' => TRUE,
 			'USERNAME' => $t_username,
 			'USER_LEVEL' => $lang['User_Level'],
@@ -791,7 +763,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 	}
 	else
 	{
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'USER' => FALSE,
 			'USERNAME' => $t_groupname,
 			'GROUP_MEMBERSHIP' => sprintf($lang['Usergroup_members'], sizeof($name)) . ': ' . $t_usergroup_list
@@ -799,7 +771,7 @@ elseif(($mode == 'glob_user' && (isset($_POST['username']) || $user_id)) || ($mo
 		);
 	}
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'SHOW_MOD' => false,
 
 		'L_USER_OR_GROUPNAME' => ($mode == 'glob_user') ? $lang['Username'] : $lang['Group_name'],
@@ -824,11 +796,11 @@ else
 	// Select a user/group
 	include('./page_header_admin.' . PHP_EXT);
 
-	$pafiledb_template->set_filenames(array('body' => ($mode == 'user' || $mode == 'glob_user') ? ADM_TPL . 'user_select_body.tpl' : ADM_TPL . 'auth_select_body.tpl'));
+	$template->set_filenames(array('body' => ($mode == 'user' || $mode == 'glob_user') ? ADM_TPL . 'user_select_body.tpl' : ADM_TPL . 'auth_select_body.tpl'));
 
 	if ($mode == 'user' || $mode == 'glob_user')
 	{
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'L_FIND_USERNAME' => $lang['Find_username'],
 
 			'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser')
@@ -853,8 +825,9 @@ else
 			$select_list .= '</select>';
 		}
 
-		$pafiledb_template->assign_vars(array(
-			'S_AUTH_SELECT' => $select_list)
+		$template->assign_vars(array(
+			'S_AUTH_SELECT' => $select_list
+			)
 		);
 	}
 
@@ -862,7 +835,7 @@ else
 
 	$l_type = ($mode == 'user' || $mode == 'glob_user') ? 'USER' : 'AUTH';
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'L_' . $l_type . '_TITLE' => ($mode == 'user' || $mode == 'glob_user') ? $lang['Auth_Control_User'] : $lang['Auth_Control_Group'],
 		'L_' . $l_type . '_EXPLAIN' => ($mode == 'user' || $mode == 'glob_user') ? $lang['User_auth_explain'] : $lang['Group_auth_explain'],
 		'L_' . $l_type . '_SELECT' => ($mode == 'user' || $mode == 'glob_user') ? $lang['Select_a_User'] : $lang['Select_a_Group'],
@@ -872,15 +845,15 @@ else
 		// End add - Admin add user MOD
 
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_' . $l_type . '_ACTION' => append_sid('admin_pa_ug_auth.' . PHP_EXT))
+		'S_' . $l_type . '_ACTION' => append_sid('admin_pa_ug_auth.' . PHP_EXT)
+		)
 	);
 }
 
 
-$pafiledb_template->display('body');
+$template->display('body');
 
 $pafiledb->_pafiledb();
-$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

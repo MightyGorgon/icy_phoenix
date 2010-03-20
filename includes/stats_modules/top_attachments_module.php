@@ -54,14 +54,7 @@ else
 	$sql_query = FALSE;
 }
 
-$language = $config['default_lang'];
-
-if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT))
-{
-	$language = 'english';
-}
-
-include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_admin_attach.' . PHP_EXT);
+setup_extra_lang(array('lang_admin_attach'));
 
 $order_by = 'download_count DESC LIMIT ' . $return_limit;
 

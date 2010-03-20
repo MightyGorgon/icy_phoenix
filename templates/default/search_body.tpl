@@ -62,7 +62,7 @@
 <tr>
 	<td class="cat" colspan="4" align="center">
 		<input type="hidden" name="ctracker_validation" value="{CTVALID}" />{S_HIDDEN_FIELDS}
-		<input class="button" type="submit" value="{L_SEARCH}" />
+		<input class="mainoption" type="submit" value="{L_SEARCH}" />
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

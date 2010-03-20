@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
@@ -118,7 +117,8 @@ $template->assign_vars(array(
 	'CORNER_CLASS' => $theme['td_class1'],
 	'SIDE_CLASS' => 'row3',
 
-	'NUM_COLUMNS' => sizeof($exchange))
+	'NUM_COLUMNS' => sizeof($exchange)
+	)
 );
 
 for ($i = 0; $i < sizeof($exchange); $i++)

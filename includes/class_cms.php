@@ -19,6 +19,43 @@ if (!defined('IN_ICYPHOENIX'))
 class ip_cms
 {
 
+	var $tables = array();
+
+	/*
+	* Initialize variables
+	*/
+	function init_vars()
+	{
+		if (defined('IN_CMS_USERS'))
+		{
+			$this->tables = array(
+				'blocks_table' => CMS_USERS_BLOCKS_TABLE,
+				'block_settings_table' => CMS_USERS_BLOCK_SETTINGS_TABLE,
+				'block_position_table' => CMS_USERS_BLOCK_POSITION_TABLE,
+				'block_config_table' => CMS_USERS_CONFIG_TABLE,
+				'block_variable_table' => CMS_USERS_BLOCK_VARIABLE_TABLE,
+				'layout_table' => CMS_USERS_LAYOUT_TABLE,
+			);
+		}
+		else
+		{
+			$this->tables = array(
+				'blocks_table' => CMS_BLOCKS_TABLE,
+				'block_settings_table' => CMS_BLOCK_SETTINGS_TABLE,
+				'block_position_table' => CMS_BLOCK_POSITION_TABLE,
+				'block_config_table' => CMS_CONFIG_TABLE,
+				'block_variable_table' => CMS_BLOCK_VARIABLE_TABLE,
+				'layout_table' => CMS_LAYOUT_TABLE,
+				'layout_special_table' => CMS_LAYOUT_SPECIAL_TABLE,
+			);
+		}
+
+		return true;
+	}
+
+	/*
+	*
+	*/
 	function cms_assign_var_from_handle($template_var, $handle)
 	{
 		ob_start();
@@ -28,6 +65,9 @@ class ip_cms
 		return $str;
 	}
 
+	/*
+	*
+	*/
 	function cms_blocks_view()
 	{
 		global $userdata, $config;
@@ -58,6 +98,9 @@ class ip_cms
 		return $result;
 	}
 
+	/*
+	*
+	*/
 	function cms_groups($user_id)
 	{
 		global $db;
@@ -80,6 +123,9 @@ class ip_cms
 		return $layout_groups;
 	}
 
+	/*
+	*
+	*/
 	function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, $type = '')
 	{
 		global $db, $cache, $config, $template, $userdata, $lang, $bbcode;
@@ -88,14 +134,14 @@ class ip_cms
 		if(!$is_special)
 		{
 			$id_var_name = 'l_id';
-			$table_name = CMS_LAYOUT_TABLE;
+			$table_name = $this->tables['layout_table'];
 			$field_name = 'lid';
 			$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 		}
 		else
 		{
 			$id_var_name = 'ls_id';
-			$table_name = CMS_LAYOUT_SPECIAL_TABLE;
+			$table_name = $this->tables['layout_special_table'];
 			$field_name = 'lsid';
 			$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 			$layout = (isset($cms_config_layouts[$layout][$field_name]) ? $cms_config_layouts[$layout][$field_name] : 0);
@@ -115,7 +161,7 @@ class ip_cms
 		if(!$global_blocks && !$is_special)
 		{
 			$layout_pos = array();
-			$sql_pos = "SELECT * FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = " . $layout;
+			$sql_pos = "SELECT * FROM " . $this->tables['block_position_table'] . " WHERE layout = " . $layout;
 			$block_pos_result = $db->sql_query($sql_pos, 0, 'cms_bp_', CMS_CACHE_FOLDER);
 
 			while ($block_pos_row = $db->sql_fetchrow($block_pos_result))
@@ -139,8 +185,19 @@ class ip_cms
 		$is_gh_block = false;
 		if(!$is_special && !$global_blocks)
 		{
+			/*
+			$sql = "SELECT b.*, s.*
+				FROM " . $this->tables['blocks_table'] . " AS b,
+				" . $this->tables['block_settings_table'] . " AS s
+				WHERE b.layout = " . $layout . "
+				AND b.active = 1
+				AND " . $db->sql_in_set('s.view', $this->cms_blocks_view()) . "
+				AND b.bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
+				AND b.block_settings_id = s.bs_id
+				ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
+			*/
 			$sql = "SELECT *
-				FROM " . CMS_BLOCKS_TABLE . "
+				FROM " . $this->tables['blocks_table'] . "
 				WHERE layout = " . $layout . "
 				AND active = 1
 				AND " . $db->sql_in_set('view', $this->cms_blocks_view()) . "

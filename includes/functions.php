@@ -162,7 +162,7 @@ function extract_current_hostname()
 		{
 			$host = $config['server_name'];
 		}
-		else if (!empty($config['cookie_domain']))
+		elseif (!empty($config['cookie_domain']))
 		{
 			$host = (strpos($config['cookie_domain'], '.') === 0) ? substr($config['cookie_domain'], 1) : $config['cookie_domain'];
 		}
@@ -189,32 +189,29 @@ function set_var(&$result, $var, $type, $multibyte = false)
 
 	if ($type == 'string')
 	{
-		// Mighty Gorgon: I need to add this condition, because non UTF-8 lang will mess-up strings!!!
-		global $lang;
-		if (strtoupper($lang['ENCODING']) == 'UTF-8')
+		// normalize UTF-8 data
+		if ($multibyte)
 		{
-			$result = trim(htmlspecialchars(str_replace(array("\r\n", "\r"), array("\n", "\n"), $result), ENT_COMPAT, 'UTF-8'));
+			$result = utf8_normalize_nfc($result);
+		}
 
-			if (!empty($result))
+		$result = trim(htmlspecialchars(str_replace(array("\r\n", "\r"), array("\n", "\n"), $result), ENT_COMPAT, 'UTF-8'));
+
+		if (!empty($result))
+		{
+			// Make sure multibyte characters are wellformed
+			if ($multibyte)
 			{
-				// Make sure multibyte characters are wellformed
-				if ($multibyte)
+				if (!preg_match('/^./u', $result))
 				{
-					if (!preg_match('/^./u', $result))
-					{
-						$result = '';
-					}
-				}
-				else
-				{
-					// no multibyte, allow only ASCII (0-127)
-					$result = preg_replace('/[\x80-\xFF]/', '?', $result);
+					$result = '';
 				}
 			}
-		}
-		else
-		{
-			//$result = trim(htmlspecialchars(str_replace(array("\r\n", "\r"), array("\n", "\n"), $result), ENT_COMPAT));
+			else
+			{
+				// no multibyte, allow only ASCII (0-127)
+				$result = preg_replace('/[\x80-\xFF]/', '?', $result);
+			}
 		}
 
 		$result = (STRIP) ? stripslashes($result) : $result;
@@ -222,7 +219,7 @@ function set_var(&$result, $var, $type, $multibyte = false)
 }
 
 /**
-* Used to get passed variable
+* Get passed variable
 * function backported from phpBB3 - Olympus
 */
 function request_var($var_name, $default, $multibyte = false, $cookie = false)
@@ -298,6 +295,111 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 	}
 
 	return $var;
+}
+
+/**
+* Request the var value but returns only true of false, useful for forms validations
+*/
+function request_boolean_var($var_name, $default, $multibyte = false, $post_only = false)
+{
+	if ($post_only)
+	{
+		$return_value = request_post_var($var_name, $default, $multibyte);
+	}
+	else
+	{
+		$return_value = request_var($var_name, $default, $multibyte);
+	}
+	$return_value = !empty($return_value) ? true : false;
+	return $return;
+}
+
+/**
+* Gets only POST vars
+*/
+function request_post_var($var_name, $default, $multibyte = false)
+{
+	$return = $default;
+	if (isset($_POST[$var_name]))
+	{
+		$return = request_var($var_name, $default, $multibyte);
+	}
+	return $return;
+}
+
+/**
+* Get only GET vars
+*/
+function request_get_var($var_name, $default, $multibyte = false)
+{
+	$return = $default;
+	if (isset($_GET[$var_name]))
+	{
+		$temp_post_var = isset($_POST[$var_name]) ? $_POST[$var_name] : '';
+		$_POST[$var_name] = $_GET[$var_name];
+		$return = request_var($var_name, $default, $multibyte);
+		$_POST[$var_name] = $temp_post_var;
+	}
+	return $return;
+}
+
+/**
+* Check GET POST vars exists
+*/
+function check_http_var_exists($var_name, $empty_var = false)
+{
+	if ($empty_var)
+	{
+		if (isset($_GET[$var_name]) || isset($_POST[$var_name]))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (!empty($_GET[$var_name]) || !empty($_POST[$var_name]))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return $return;
+}
+
+/**
+* Check variable value against default array
+*/
+function check_var_value($var, $var_array, $var_default = false)
+{
+	if (!is_array($var_array) || empty($var_array))
+	{
+		return $var;
+	}
+	$var_default = (($var_default === false) ? $var_array[0] : $var_default);
+	$var = in_array($var, $var_array) ? $var : $var_default;
+	return $var;
+}
+
+/**
+* Function to add slashes to vars array, may be used to globally escape HTTP vars if needed
+*/
+function slash_data(&$data)
+{
+	if (is_array($data))
+	{
+		foreach ($data as $k => $v)
+		{
+			$data[$k] = (is_array($v)) ? slash_data($v) : addslashes($v);
+		}
+	}
+	return $data;
 }
 
 /**
@@ -452,7 +554,7 @@ function ip_stripslashes($string)
 */
 function ip_mysql_escape($string)
 {
-	return str_replace("\'", "''", $string);
+	return $db->sql_escape($string);
 }
 
 /**
@@ -469,24 +571,25 @@ function ip_utf8_decode($string)
 function init_userprefs($userdata)
 {
 	global $db, $cache, $template, $theme, $images, $lang, $config, $nav_separator;
-	global $tree;
-	global $unread;
+	global $class_settings, $tree, $unread;
 
-	// Get all the mods settings
-	setup_mods();
+	// Get all settings
+	$class_settings->setup_settings();
 
 	/*
-	if (isset($_GET[LANG_URL]) || isset($_POST[LANG_URL]))
+	$test_language = request_var(LANG_URL, '');
+	if (!empty($test_language))
 	{
-		$config['default_lang'] = urldecode((isset($_GET[LANG_URL])) ? $_GET[LANG_URL] : $_POST[LANG_URL]);
-		setcookie($config['cookie_name'] . '_lang', $config['default_lang'] , (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+		$test_language = str_replace(array('.', '/'), '', urldecode($test_language));
+		$config['default_lang'] = is_dir(IP_ROOT_PATH . 'language/lang_' . $test_language) ? $test_language : $config['default_lang'];
+		setcookie($config['cookie_name'] . '_lang', $config['default_lang'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
 	}
 	*/
 
-	$default_lang = phpbb_ltrim(basename(phpbb_rtrim($config['default_lang'])), "'");
+	$default_lang = ltrim(basename(rtrim($config['default_lang'])), "'");
 	if ($userdata['user_id'] != ANONYMOUS)
 	{
-		$default_lang = !empty($userdata['user_lang']) ? phpbb_ltrim(basename(phpbb_rtrim($userdata['user_lang'])), "'") : $default_lang;
+		$default_lang = !empty($userdata['user_lang']) ? ltrim(basename(rtrim($userdata['user_lang'])), "'") : $default_lang;
 
 		$config['board_timezone'] = !empty($userdata['user_timezone']) ? $userdata['user_timezone'] : $config['board_timezone'];
 		$config['default_dateformat'] = !empty($userdata['user_dateformat']) ? $userdata['user_dateformat'] : $config['default_dateformat'];
@@ -501,7 +604,7 @@ function init_userprefs($userdata)
 		if ($userdata['user_id'] != ANONYMOUS)
 		{
 			// For logged in users, try the board default language next
-			$default_lang = phpbb_ltrim(basename(phpbb_rtrim($config['default_lang'])), "'");
+			$default_lang = ltrim(basename(rtrim($config['default_lang'])), "'");
 		}
 		else
 		{
@@ -556,10 +659,11 @@ function init_userprefs($userdata)
 	$current_default_style = $config['default_style'];
 	if (!$config['override_user_style'])
 	{
-		if (isset($_GET[STYLE_URL]) || isset($_POST[STYLE_URL]))
+		$test_style = request_var(STYLE_URL, 0);
+		if ($test_style > 0)
 		{
 			$current_style = $config['default_style'];
-			$config['default_style'] = urldecode((isset($_GET[STYLE_URL])) ? intval($_GET[STYLE_URL]) : intval($_POST[STYLE_URL]));
+			$config['default_style'] = urldecode($test_style);
 			$config['default_style'] = ($config['default_style'] == 0) ? $current_style : $config['default_style'];
 			$style = $config['default_style'];
 			if ($theme = setup_style($style, $current_default_style, $current_style))
@@ -608,6 +712,40 @@ function init_userprefs($userdata)
 	return;
 }
 
+/**
+* Get option bitfield from custom data
+*
+* @param int $bitThe bit/value to get
+* @param int $data Current bitfield to check
+* @return bool Returns true if value of constant is set in bitfield, else false
+*/
+function phpbb_optionget($bit, $data)
+{
+	return ($data & 1 << (int) $bit) ? true : false;
+}
+
+/**
+* Set option bitfield
+*
+* @param int $bit The bit/value to set/unset
+* @param bool $set True if option should be set, false if option should be unset.
+* @param int $data Current bitfield to change
+* @return int The new bitfield
+*/
+function phpbb_optionset($bit, $set, $data)
+{
+	if ($set && !($data & 1 << $bit))
+	{
+		$data += 1 << $bit;
+	}
+	else if (!$set && ($data & 1 << $bit))
+	{
+		$data -= 1 << $bit;
+	}
+
+	return $data;
+}
+
 // Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
 function get_userdata($user, $force_str = false)
 {
@@ -625,7 +763,7 @@ function get_userdata($user, $force_str = false)
 	$sql = "SELECT *
 		FROM " . USERS_TABLE . "
 		WHERE ";
-	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" .  str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
+	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" .  $db->sql_escape($user) . "'") . " AND user_id <> " . ANONYMOUS;
 	$result = $db->sql_query($sql);
 
 	if ($db->sql_affectedrows() == 0)
@@ -699,94 +837,15 @@ function founder_protect($founder_id)
 	return true;
 }
 
-/*
-* Check auth level
-* Returns true in case the user has the requested level
-*/
-function check_auth_level($level_required)
-{
-	global $userdata, $config;
-
-	if ($level_required == AUTH_ALL)
-	{
-		return true;
-	}
-
-	if ($userdata['user_level'] == ADMIN)
-	{
-		if ($level_required == AUTH_ADMIN)
-		{
-			return true;
-		}
-
-		if ($level_required == AUTH_FOUNDER)
-		{
-			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-			return ($userdata['user_id'] == $founder_id) ? true : false;
-		}
-		elseif ($level_required == AUTH_MAIN_ADMIN)
-		{
-			if (defined('MAIN_ADMINS_ID'))
-			{
-				$allowed_admins = explode(',', MAIN_ADMINS_ID);
-				return (in_array($userdata['user_id'], $allowed_admins)) ? true : false;
-			}
-		}
-	}
-
-	// Force to AUTH_ADMIN since we already checked all cases for founder or main admins
-	if (($level_required == AUTH_FOUNDER) || ($level_required == AUTH_MAIN_ADMIN))
-	{
-		$level_required = AUTH_ADMIN;
-	}
-
-	// Access level required is at least REG and user is not an admin!
-	// Remember that Junior Admin has the ADMIN level while not in CMS or ACP
-	$not_auth = false;
-	// Check if the user is REG or a BOT
-	$is_reg = (($config['bots_reg_auth'] && $userdata['is_bot']) || $userdata['session_logged_in']) ? true : false;
-	$not_auth = (!$not_auth && ($level_required == AUTH_REG) && !$is_reg) ? true : $not_auth;
-	$not_auth = (!$not_auth && ($level_required == AUTH_MOD) && ($userdata['user_level'] != MOD) && ($userdata['user_level'] != ADMIN)) ? true : $not_auth;
-	$not_auth = (!$not_auth && ($level_required == AUTH_ADMIN)) ? true : $not_auth;
-	if ($not_auth)
-	{
-		return false;
-	}
-
-	return true;
-}
-
 /**
-* Check if the user is allowed to access a page
+* Generates an alphanumeric random string of given length
 */
-function check_page_auth($cms_page_id, $cms_auth_level, $return = false)
+function gen_rand_string($num_chars = 8)
 {
-	global $userdata, $lang;
+	$rand_str = unique_id();
+	$rand_str = str_replace('0', 'Z', strtoupper(base_convert($rand_str, 16, 35)));
 
-	$is_auth = check_auth_level($cms_auth_level);
-
-	if (!$is_auth)
-	{
-		if ($return)
-		{
-			return false;
-		}
-		else
-		{
-			if (!$userdata['is_bot'] && !$userdata['session_logged_in'])
-			{
-				$page_array = array();
-				$page_array = extract_current_page(IP_ROOT_PATH);
-				redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
-			}
-			else
-			{
-				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
-			}
-		}
-	}
-
-	return true;
+	return substr($rand_str, 0, $num_chars);
 }
 
 /**
@@ -795,13 +854,14 @@ function check_page_auth($cms_page_id, $cms_auth_level, $return = false)
 */
 function unique_id($extra = 'c')
 {
-	global $db, $config, $dss_seeded;
+	static $dss_seeded = false;
+	global $config;
 
 	$val = $config['rand_seed'] . microtime();
 	$val = md5($val);
 	$config['rand_seed'] = md5($config['rand_seed'] . $val . $extra);
 
-	if(($dss_seeded !== true) && ($config['rand_seed_last_update'] < (time() - rand(1,10))))
+	if(($dss_seeded !== true) && ($config['rand_seed_last_update'] < (time() - rand(1, 10))))
 	{
 		set_config('rand_seed', $config['rand_seed']);
 		set_config('rand_seed_last_update', time());
@@ -811,12 +871,329 @@ function unique_id($extra = 'c')
 	return substr($val, 4, 16);
 }
 
+/**
+*
+* @version Version 0.1 / slightly modified for phpBB 3.0.x (using $H$ as hash type identifier)
+*
+* Portable PHP password hashing framework.
+*
+* Written by Solar Designer <solar at openwall.com> in 2004-2006 and placed in
+* the public domain.
+*
+* There's absolutely no warranty.
+*
+* The homepage URL for this framework is:
+*
+*	http://www.openwall.com/phpass/
+*
+* Please be sure to update the Version line if you edit this file in any way.
+* It is suggested that you leave the main version number intact, but indicate
+* your project name (after the slash) and add your own revision information.
+*
+* Please do not change the "private" password hashing method implemented in
+* here, thereby making your hashes incompatible.  However, if you must, please
+* change the hash type identifier (the "$P$") to something different.
+*
+* Obviously, since this code is in the public domain, the above are not
+* requirements (there can be none), but merely suggestions.
+*
+*
+* Hash the password
+*/
+function phpbb_hash($password)
+{
+	$itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+	$random_state = unique_id();
+	$random = '';
+	$count = 6;
+
+	if (($fh = @fopen('/dev/urandom', 'rb')))
+	{
+		$random = fread($fh, $count);
+		fclose($fh);
+	}
+
+	if (strlen($random) < $count)
+	{
+		$random = '';
+
+		for ($i = 0; $i < $count; $i += 16)
+		{
+			$random_state = md5(unique_id() . $random_state);
+			$random .= pack('H*', md5($random_state));
+		}
+		$random = substr($random, 0, $count);
+	}
+
+	$hash = _hash_crypt_private($password, _hash_gensalt_private($random, $itoa64), $itoa64);
+
+	if (strlen($hash) == 34)
+	{
+		return $hash;
+	}
+
+	return md5($password);
+}
+
+/**
+* Check for correct password
+*
+* @param string $password The password in plain text
+* @param string $hash The stored password hash
+*
+* @return bool Returns true if the password is correct, false if not.
+*/
+function phpbb_check_hash($password, $hash)
+{
+	if (strlen($hash) == 34)
+	{
+		$itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+		return (_hash_crypt_private($password, $hash, $itoa64) === $hash) ? true : false;
+	}
+
+	return (md5($password) === $hash) ? true : false;
+}
+
+/**
+* Generate salt for hash generation
+*/
+function _hash_gensalt_private($input, &$itoa64, $iteration_count_log2 = 6)
+{
+	if ($iteration_count_log2 < 4 || $iteration_count_log2 > 31)
+	{
+		$iteration_count_log2 = 8;
+	}
+
+	$output = '$H$';
+	$output .= $itoa64[min($iteration_count_log2 + ((PHP_VERSION >= 5) ? 5 : 3), 30)];
+	$output .= _hash_encode64($input, 6, $itoa64);
+
+	return $output;
+}
+
+/**
+* Encode hash
+*/
+function _hash_encode64($input, $count, &$itoa64)
+{
+	$output = '';
+	$i = 0;
+
+	do
+	{
+		$value = ord($input[$i++]);
+		$output .= $itoa64[$value & 0x3f];
+
+		if ($i < $count)
+		{
+			$value |= ord($input[$i]) << 8;
+		}
+
+		$output .= $itoa64[($value >> 6) & 0x3f];
+
+		if ($i++ >= $count)
+		{
+			break;
+		}
+
+		if ($i < $count)
+		{
+			$value |= ord($input[$i]) << 16;
+		}
+
+		$output .= $itoa64[($value >> 12) & 0x3f];
+
+		if ($i++ >= $count)
+		{
+			break;
+		}
+
+		$output .= $itoa64[($value >> 18) & 0x3f];
+	}
+	while ($i < $count);
+
+	return $output;
+}
+
+/**
+* The crypt function/replacement
+*/
+function _hash_crypt_private($password, $setting, &$itoa64)
+{
+	$output = '*';
+
+	// Check for correct hash
+	if (substr($setting, 0, 3) != '$H$')
+	{
+		return $output;
+	}
+
+	$count_log2 = strpos($itoa64, $setting[3]);
+
+	if ($count_log2 < 7 || $count_log2 > 30)
+	{
+		return $output;
+	}
+
+	$count = 1 << $count_log2;
+	$salt = substr($setting, 4, 8);
+
+	if (strlen($salt) != 8)
+	{
+		return $output;
+	}
+
+	/**
+	* We're kind of forced to use MD5 here since it's the only
+	* cryptographic primitive available in all versions of PHP
+	* currently in use.  To implement our own low-level crypto
+	* in PHP would result in much worse performance and
+	* consequently in lower iteration counts and hashes that are
+	* quicker to crack (by non-PHP code).
+	*/
+	if (PHP_VERSION >= 5)
+	{
+		$hash = md5($salt . $password, true);
+		do
+		{
+			$hash = md5($hash . $password, true);
+		}
+		while (--$count);
+	}
+	else
+	{
+		$hash = pack('H*', md5($salt . $password));
+		do
+		{
+			$hash = pack('H*', md5($hash . $password));
+		}
+		while (--$count);
+	}
+
+	$output = substr($setting, 0, 12);
+	$output .= _hash_encode64($hash, 16, $itoa64);
+
+	return $output;
+}
+
+/**
+* Hashes an email address to a big integer
+*
+* @param string $email Email address
+* @return string Big Integer
+*/
+function phpbb_email_hash($email)
+{
+	return crc32(strtolower($email)) . strlen($email);
+}
+
+//Form validation
+
+
+/**
+* Add a secret hash for use in links/GET requests
+* @param string $link_name The name of the link; has to match the name used in check_link_hash, otherwise no restrictions apply
+* @return string the hash
+*/
+function generate_link_hash($link_name)
+{
+	global $userdata;
+
+	if (!isset($userdata["hash_$link_name"]))
+	{
+		$userdata["hash_$link_name"] = substr(sha1($userdata['user_form_salt'] . $link_name), 0, 8);
+	}
+
+	return $userdata["hash_$link_name"];
+}
+
+
+/**
+* checks a link hash - for GET requests
+* @param string $token the submitted token
+* @param string $link_name The name of the link
+* @return boolean true if all is fine
+*/
+function check_link_hash($token, $link_name)
+{
+	return $token === generate_link_hash($link_name);
+}
+
+/**
+* Add a secret token to the form (requires the S_FORM_TOKEN template variable)
+* @param string $form_name The name of the form; has to match the name used in check_form_key, otherwise no restrictions apply
+*/
+function add_form_key($form_name)
+{
+	global $config, $template, $userdata;
+
+	$now = time();
+	$token_sid = ($userdata['user_id'] == ANONYMOUS && !empty($config['form_token_sid_guests'])) ? $userdata['session_id'] : '';
+	$token = sha1($now . $userdata['user_form_salt'] . $form_name . $token_sid);
+
+	$s_fields = build_hidden_fields(array(
+		'creation_time' => $now,
+		'form_token' => $token,
+		)
+	);
+
+	$template->assign_vars(array(
+		'S_FORM_TOKEN' => $s_fields,
+		)
+	);
+}
+
+/**
+* Check the form key. Required for all altering actions not secured by confirm_box
+* @param string  $form_name The name of the form; has to match the name used in add_form_key, otherwise no restrictions apply
+* @param int $timespan The maximum acceptable age for a submitted form in seconds. Defaults to the config setting.
+* @param string $return_page The address for the return link
+* @param bool $trigger If true, the function will triger an error when encountering an invalid form
+*/
+function check_form_key($form_name, $timespan = false, $return_page = '', $trigger = false)
+{
+	global $config, $userdata, $lang;
+
+	if ($timespan === false)
+	{
+		// we enforce a minimum value of half a minute here.
+		$timespan = ($config['form_token_lifetime'] == -1) ? -1 : max(30, $config['form_token_lifetime']);
+	}
+
+	if (isset($_POST['creation_time']) && isset($_POST['form_token']))
+	{
+		$creation_time = abs(request_var('creation_time', 0));
+		$token = request_var('form_token', '');
+
+		$diff = time() - $creation_time;
+
+		// If creation_time and the time() now is zero we can assume it was not a human doing this (the check for if ($diff)...
+		if ($diff && (($diff <= $timespan) || ($timespan === -1)))
+		{
+			$token_sid = (($userdata['user_id'] == ANONYMOUS) && !empty($config['form_token_sid_guests'])) ? $userdata['session_id'] : '';
+			$key = sha1($creation_time . $userdata['user_form_salt'] . $form_name . $token_sid);
+
+			if ($key === $token)
+			{
+				return true;
+			}
+		}
+	}
+
+	if ($trigger)
+	{
+		trigger_error($lang['FORM_INVALID'] . $return_page);
+	}
+
+	return false;
+}
+
 // added at phpBB 2.0.11 to properly format the username
 function phpbb_clean_username($username)
 {
-	$username = substr(htmlspecialchars(str_replace("\'", "'", trim($username))), 0, 36);
-	$username = phpbb_rtrim($username, "\\");
-	$username = str_replace("'", "\'", $username);
+	$username = substr(htmlspecialchars(trim($username)), 0, 36);
+	$username = rtrim($username, "\\");
 
 	return $username;
 }
@@ -833,7 +1210,7 @@ function ip_clean_username($username)
 /*
 * Clean string
 */
-function ip_clean_string($text, $charset = false, $extra_chars = false)
+function ip_clean_string($text, $charset = false, $extra_chars = false, $is_filename = false)
 {
 	$charset = empty($charset) ? 'utf-8' : $charset;
 
@@ -902,10 +1279,14 @@ function ip_clean_string($text, $charset = false, $extra_chars = false)
 	$text = preg_replace('@\&\#\d+;@s', '', $text);
 
 	// Replace all illegal chars with '-'
-	if ($extra_chars)
+	if ($extra_chars || $is_filename)
 	{
 		// if $extra_chars is true then we will allow spaces, underscores and dots
 		$text = preg_replace('![^a-z0-9\-._ ]!s', '-', $text);
+		if ($is_filename)
+		{
+			$text = str_replace(' ', '_', $text);
+		}
 	}
 	else
 	{
@@ -923,61 +1304,6 @@ function ip_clean_string($text, $charset = false, $extra_chars = false)
 	$text = preg_replace('!^[-_]|[-_]$!s', '', $text);
 
 	return $text;
-}
-
-/**
-* This function is a wrapper for ltrim, as charlist is only supported in php >= 4.1.0
-* Added in phpBB 2.0.18
-*/
-function phpbb_ltrim($str, $charlist = false)
-{
-	if ($charlist === false)
-	{
-		return ltrim($str);
-	}
-
-	$php_version = explode('.', PHP_VERSION);
-
-	// php version < 4.1.0
-	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
-	{
-		while ($str{0} == $charlist)
-		{
-			$str = substr($str, 1);
-		}
-	}
-	else
-	{
-		$str = ltrim($str, $charlist);
-	}
-
-	return $str;
-}
-
-// added at phpBB 2.0.12 to fix a bug in PHP 4.3.10 (only supporting charlist in php >= 4.1.0)
-function phpbb_rtrim($str, $charlist = false)
-{
-	if ($charlist === false)
-	{
-		return rtrim($str);
-	}
-
-	$php_version = explode('.', PHP_VERSION);
-
-	// php version < 4.1.0
-	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
-	{
-		while ($str{strlen($str)-1} == $charlist)
-		{
-			$str = substr($str, 0, strlen($str)-1);
-		}
-	}
-	else
-	{
-		$str = rtrim($str, $charlist);
-	}
-
-	return $str;
 }
 
 /*
@@ -1484,23 +1810,6 @@ function meta_refresh($time, $url)
 }
 
 /**
-* Setup mods
-*/
-function setup_mods()
-{
-	global $cache, $db, $config, $lang;
-	global $mods, $list_yes_no, $list_time_intervals;
-
-	// Get all the mods settings
-	$mods = array();
-	foreach ($cache->obtain_mods_settings() as $mod_file)
-	{
-		@include(IP_ROOT_PATH . 'includes/mods_settings/' . $mod_file . '.' . PHP_EXT);
-	}
-	return true;
-}
-
-/**
 * Setup basic lang
 */
 function setup_basic_lang()
@@ -1866,90 +2175,39 @@ function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 // a input like a UNIX timestamp divided by 86400 is expected, so
 // calculation from the originate php date and mktime is easy.
 // e.g. realdate ("m d Y", 3) returns the string "1 3 1970"
-
-// UNIX users should replace this function with the below code, since this should be faster
-//
 function realdate($date_syntax = 'Ymd', $date = 0)
 {
 	return create_date($date_syntax, ($date * 86400) + 1, 0);
 }
+// Birthday - END
 
 /*
-function realdate($date_syntax = 'Ymd', $date = 0)
+* Format file size
+*/
+function format_file_size($filesize)
 {
 	global $lang;
-	$i = 2;
-	if ($date >= 0)
+
+	$filesize = (int) $filesize;
+	if($filesize >= 1073741824)
 	{
-		return create_date($date_syntax, $date * 86400 + 1,0);
+		$filesize = sprintf('%.2f ' . $lang['GB'], ($filesize / 1073741824));
+	}
+	elseif($filesize >= 1048576)
+	{
+		$filesize = sprintf('%.2f ' . $lang['MB'], ($filesize / 1048576));
+	}
+	elseif($filesize >= 1024)
+	{
+		$filesize = sprintf('%.2f ' . $lang['KB'], ($filesize / 1024));
 	}
 	else
 	{
-		$year = -(date % 1461);
-		$days = $date + $year * 1461;
-		while ($days < 0)
-		{
-			$year--;
-			$days += 365;
-			if ($i++ == 3)
-			{
-				$i = 0;
-				$days++;
-			}
-		}
-	}
-	$leap_year = ($i == 0) ? true : false;
-	$months_array = ($i == 0) ? array (0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366) : array (0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365);
-	for ($month = 1; $month < 12; $month++)
-	{
-		if ($days < $months_array[$month]) break;
+		$filesize = sprintf('%.2f ' . $lang['Bytes'], $filesize);
 	}
 
-	$day = $days - $months_array[$month - 1] + 1;
-	//you may gain speed performance by remove some of the below entry's if they are not needed/used
-	return strtr ($date_syntax, array(
-		'a' => '',
-		'A' => '',
-		'\\d' => 'd',
-		'd' => ($day > 9) ? $day : '0' . $day,
-		'\\D' => 'D',
-		'D' => $lang['day_short'][($date - 3) % 7],
-		'\\F' => 'F',
-		'F' => $lang['month_long'][$month - 1],
-		'g' => '',
-		'G' => '',
-		'H' => '',
-		'h' => '',
-		'i' => '',
-		'I' => '',
-		'\\j' => 'j',
-		'j' => $day,
-		'\\l' => 'l',
-		'l' => $lang['day_long'][($date - 3) % 7],
-		'\\L' => 'L',
-		'L' => $leap_year,
-		'\\m' => 'm',
-		'm' => ($month>9) ? $month : '0' . $month,
-		'\\M' => 'M',
-		'M' => $lang['month_short'][$month - 1],
-		'\\n' => 'n',
-		'n' => $month,
-		'O' => '',
-		's' => '',
-		'S' => '',
-		'\\t' => 't',
-		't' => $months_array[$month] - $months_array[$month - 1],
-		'w' => '',
-		'\\y' => 'y',
-		'y' => ($year > 29) ? $year - 30 : $year + 70,
-		'\\Y' => 'Y',
-		'Y' => $year + 1970,
-		'\\z' => 'z',
-		'z' => $days,
-		'\\W' => '',
-		'W' => ''));
-}*/
-// Birthday - END
+	return $filesize;
+}
 
 /*
 * Pagination get the page
@@ -2483,67 +2741,6 @@ function AJAX_message_die($data_ar)
 	}
 	exit;
 }
-
-/**
-* RFC1738 compliant replacement to PHP's rawurldecode - which actually works with unicode (using utf-8 encoding)
-* @author Ronen Botzer
-* @param $source [STRING]
-* @return unicode safe rawurldecoded string [STRING]
-* @access public
-*/
-function utf8_rawurldecode($source)
-{
-	// Strip slashes
-	$source = stripslashes($source);
-
-	$decodedStr = '';
-	$pos = 0;
-	$len = strlen ($source);
-
-	while ($pos < $len)
-	{
-		$charAt = substr($source, $pos, 1);
-		if ($charAt == '%')
-		{
-			$pos++;
-			$charAt = substr($source, $pos, 1);
-			if ($charAt == 'u')
-			{
-				// we got a unicode character
-				$pos++;
-				$unicodeHexVal = substr($source, $pos, 4);
-				$unicode = hexdec($unicodeHexVal);
-				$entity = "&#". $unicode .';';
-				$decodedStr .= utf8_encode($entity);
-				$pos += 4;
-			}
-			else
-			{
-				// we have an escaped ascii character
-				$hexVal = substr ($source, $pos, 2);
-				$decodedStr .= chr (hexdec ($hexVal));
-				$pos += 2;
-			}
-		}
-		else
-		{
-			$decodedStr .= $charAt;
-			$pos++;
-		}
-	}
-
-	// Add slashes before sending it back to the browser;
-	// this keeps people from trying to inject SQL with some malformed string like %2527
-	return addslashes($decodedStr);
-}
-
-// Used to escape AJAX data correctly.
-// functions_post.php must be included before calling this function
-function ajax_htmlspecialchars($text)
-{
-	global $html_entities_match, $html_entities_replace;
-	return preg_replace($html_entities_match, $html_entities_replace, $text);
-}
 // Ajaxed - END
 
 /**
@@ -3070,7 +3267,7 @@ function page_header($title = '', $parse_template = false)
 	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
 	global $table_prefix, $SID, $_SID, $user_ip;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $ctracker_config, $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $css_include, $css_style_include, $js_include;
@@ -3085,11 +3282,22 @@ function page_header($title = '', $parse_template = false)
 	define('HEADER_INC', true);
 
 	// gzip_compression
-	if ($config['gzip_compress'])
+	$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
+	$config['url_rw_runtime'] = ($config['url_rw'] || ($config['url_rw_guests'] && ($userdata['user_id'] == ANONYMOUS))) ? true : false;
+
+	if ($config['gzip_compress_runtime'])
 	{
 		if (@extension_loaded('zlib') && !headers_sent())
 		{
 			ob_start('ob_gzhandler');
+		}
+	}
+	else
+	{
+		// We need to enable this otherwise URL Rewrite will not work without output buffering
+		if ($config['url_rw_runtime'] && !headers_sent())
+		{
+			ob_start();
 		}
 	}
 
@@ -3104,7 +3312,8 @@ function page_header($title = '', $parse_template = false)
 	if (defined('IN_CMS'))
 	{
 		$config['cms_style'] = (!empty($_GET['cms_style']) ? ((intval($_GET['cms_style']) == 1) ? 1 : 0) : $config['cms_style']);
-		$cms_style_std = ($config['cms_style'] == 1) ? false : true;
+		//$cms_style_std = ($config['cms_style'] == 1) ? false : true;
+		$cms_style_std = ($config['cms_style'] == CMS_STD) ? true : false;
 		$template->assign_var('CMS_STD_TPL', $cms_style_std);
 	}
 
@@ -3120,12 +3329,12 @@ function page_header($title = '', $parse_template = false)
 	$meta_content_pages_array = array(CMS_PAGE_VIEWFORUM, CMS_PAGE_VIEWFORUMLIST, CMS_PAGE_VIEWTOPIC);
 	if (!in_array($page_url['basename'], $meta_content_pages_array))
 	{
-		$meta_content['cat_id'] = (!empty($_GET[POST_CAT_URL]) && (intval($_GET[POST_CAT_URL]) > 0)) ? intval($_GET[POST_CAT_URL]) : 0;
-		$meta_content['forum_id'] = (!empty($_GET[POST_FORUM_URL]) && (intval($_GET[POST_FORUM_URL]) > 0)) ? intval($_GET[POST_FORUM_URL]) : 0;
-		$meta_content['topic_id'] = (!empty($_GET[POST_TOPIC_URL]) && (intval($_GET[POST_TOPIC_URL]) > 0)) ? intval($_GET[POST_TOPIC_URL]) : 0;
-		$meta_content['post_id'] = (!empty($_GET[POST_POST_URL]) && (intval($_GET[POST_POST_URL]) > 0)) ? intval($_GET[POST_POST_URL]) : 0;
+		$meta_content['cat_id'] = request_var(POST_CAT_URL, 0);
+		$meta_content['forum_id'] = request_var(POST_FORUM_URL, 0);
+		$meta_content['topic_id'] = request_var(POST_TOPIC_URL, 0);
+		$meta_content['post_id'] = request_var(POST_POST_URL, 0);
 
-		$no_meta_pages_array = array(CMS_PAGE_LOGIN, 'privmsg.' . PHP_EXT, CMS_PAGE_POSTING, 'sudoku.' . PHP_EXT, 'kb.' . PHP_EXT);
+		$no_meta_pages_array = array(CMS_PAGE_LOGIN, CMS_PAGE_PRIVMSG, CMS_PAGE_POSTING, 'sudoku.' . PHP_EXT, 'kb.' . PHP_EXT);
 		if (!in_array($page_url['basename'], $no_meta_pages_array) && (!empty($meta_content['post_id']) || !empty($meta_content['topic_id']) || !empty($meta_content['forum_id']) || !empty($meta_content['cat_id'])))
 		{
 			@include_once(IP_ROOT_PATH . 'includes/functions_meta.' . PHP_EXT);
@@ -3189,7 +3398,7 @@ function page_header($title = '', $parse_template = false)
 	//$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' . "\n";
 	$doctype_html .= '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_XML_LANG'] . '">' . "\n";
 
-	if ($page_url['basename'] == 'viewonline.' . PHP_EXT)
+	if ($page_url['basename'] == CMS_PAGE_VIEWONLINE)
 	{
 		$phpbb_meta .= '<meta http-equiv="refresh" content="180;url=viewonline.' . PHP_EXT . '" />' . "\n";
 	}
@@ -3223,11 +3432,11 @@ function page_header($title = '', $parse_template = false)
 		'title' => $lang['Search']
 	);
 	$nav_links['help'] = array (
-		'url' => append_sid('faq.' . PHP_EXT),
+		'url' => append_sid(CMS_PAGE_FAQ),
 		'title' => $lang['FAQ']
 	);
 	$nav_links['author'] = array (
-		'url' => append_sid('memberlist.' . PHP_EXT),
+		'url' => append_sid(CMS_PAGE_MEMBERLIST),
 		'title' => $lang['Memberlist']
 	);
 
@@ -3250,7 +3459,7 @@ function page_header($title = '', $parse_template = false)
 
 	// RSS Autodiscovery - BEGIN
 	$rss_url = $nav_base_url . 'rss.' . PHP_EXT;
-	$rss_forum_id = (isset($_GET[POST_FORUM_URL]) ? intval($_GET[POST_FORUM_URL]) : 0);
+	$rss_forum_id = request_var(POST_FORUM_URL, 0);
 	$rss_url_append = '';
 	$rss_a_url_append = '';
 	if($rss_forum_id != 0)
@@ -3623,9 +3832,10 @@ function page_header($title = '', $parse_template = false)
 
 		// CrackerTracker v5.x
 		/*
-		 * CrackerTracker IP Range Scanner
-		 */
-		if (isset($_GET['marknow']) && ($_GET['marknow'] == 'ipfeature') && $userdata['session_logged_in'])
+		* CrackerTracker IP Range Scanner
+		*/
+		$marknow = request_var('marknow', '');
+		if (($marknow == 'ipfeature') && $userdata['session_logged_in'])
 		{
 			// Mark IP Feature Read
 			$userdata['ct_last_ip'] = $userdata['ct_last_used_ip'];
@@ -3639,9 +3849,9 @@ function page_header($title = '', $parse_template = false)
 			}
 		}
 
-		if (!empty($ctracker_config) && ($ctracker_config->settings['login_ip_check'] == 1) && ($userdata['ct_enable_ip_warn'] == 1) && $userdata['session_logged_in'])
+		if (($config['ctracker_login_ip_check'] == 1) && ($userdata['ct_enable_ip_warn'] == 1) && $userdata['session_logged_in'])
 		{
-			include_once(IP_ROOT_PATH . '/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
+			include_once(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 			$ctracker_user = new ct_userfunctions();
 			$check_ip_range = $ctracker_user->check_ip_range();
 
@@ -3661,7 +3871,7 @@ function page_header($title = '', $parse_template = false)
 		/*
 		* CrackerTracker Global Message Function
 		*/
-		if (isset($_GET['marknow']) && ($_GET['marknow'] == 'globmsg') && $userdata['session_logged_in'])
+		if (($marknow == 'globmsg') && $userdata['session_logged_in'])
 		{
 			// Mark Global Message as read
 			$userdata['ct_global_msg_read'] = 0;
@@ -3675,18 +3885,18 @@ function page_header($title = '', $parse_template = false)
 			}
 		}
 
-		if (!empty($ctracker_config) && ($userdata['ct_global_msg_read'] == 1) && $userdata['session_logged_in'] && ($ctracker_config->settings['global_message'] != ''))
+		if (($userdata['ct_global_msg_read'] == 1) && $userdata['session_logged_in'] && ($config['ctracker_global_message'] != ''))
 		{
 			// Output Global Message
 			$global_message_output = '';
 
-			if ($ctracker_config->settings['global_message_type'] == 1)
+			if ($config['ctracker_global_message_type'] == 1)
 			{
-				$global_message_output = $ctracker_config->settings['global_message'];
+				$global_message_output = $config['ctracker_global_message'];
 			}
 			else
 			{
-				$global_message_output = sprintf($lang['ctracker_gmb_link'], $ctracker_config->settings['global_message'], $ctracker_config->settings['global_message']);
+				$global_message_output = sprintf($lang['ctracker_gmb_link'], $config['ctracker_global_message'], $config['ctracker_global_message']);
 			}
 
 			$template->assign_block_vars('ctracker_message', array(
@@ -3699,22 +3909,23 @@ function page_header($title = '', $parse_template = false)
 			);
 		}
 
-		if (!empty($ctracker_config) && ((($ctracker_config->settings['login_history'] == 1) || ($ctracker_config->settings['login_ip_check'] == 1)) && ($userdata['session_logged_in'])))
+		if (((($config['login_history'] == 1) || ($config['login_ip_check'] == 1)) && ($userdata['session_logged_in'])))
 		{
 			$template->assign_block_vars('login_sec_link', array());
 		}
 
 		/*
-		* CrackerTracker Password Expirement Check
+		* CrackerTracker Password Expiry Check
 		*/
-		if ($userdata['session_logged_in'] && ($ctracker_config->settings['pw_control'] == 1))
+		if ($userdata['session_logged_in'] && ($config['ctracker_pw_control'] == 1))
 		{
-			if (time() > $userdata['ct_last_pw_reset'])
+			$pwd_expiry_time = $userdata['user_passchg'] + (!empty($config['ctracker_pw_validity']) ? (int) $config['ctracker_pw_validity'] : 365) * 24 * 60 * 60;
+			if (time() > $pwd_expiry_time)
 			{
 				$template->assign_block_vars('ctracker_message', array(
 					'ROW_COLOR' => 'ffdfdf',
 					'ICON_GLOB' => $images['ctracker_note'],
-					'L_MESSAGE_TEXT' => sprintf($lang['ctracker_info_pw_expired'], $ctracker_config->settings['pw_validity'], $userdata['user_id']),
+					'L_MESSAGE_TEXT' => sprintf($lang['ctracker_info_pw_expired'], $config['ctracker_pw_validity'], $userdata['user_id']),
 					'L_MARK_MESSAGE' => '',
 					'U_MARK_MESSAGE' => ''
 					)
@@ -3860,7 +4071,7 @@ function page_header($title = '', $parse_template = false)
 			'L_CPL_ZEBRA_EXPLAIN' => $lang['FRIENDS_EXPLAIN'],
 
 			'U_CPL_PROFILE_VIEWED' => append_sid('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $userdata['user_id']),
-			'U_CPL_NEWMSG' => append_sid('privmsg.' . PHP_EXT . '?mode=post'),
+			'U_CPL_NEWMSG' => append_sid(CMS_PAGE_PRIVMSG . '?mode=post'),
 			'U_CPL_REGISTRATION_INFO' => append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=reg_info'),
 			'U_CPL_DELETE_ACCOUNT' => append_sid('contact_us.' . PHP_EXT . '?account_delete=' . $userdata['user_id']),
 			'U_CPL_PROFILE_INFO' => append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=profile_info'),
@@ -3870,14 +4081,14 @@ function page_header($title = '', $parse_template = false)
 			'U_CPL_SIGNATURE' => append_sid(CMS_PAGE_PROFILE . '?mode=signature'),
 			'U_CPL_OWN_POSTS' => append_sid(CMS_PAGE_SEARCH. '?search_author=' . urlencode($userdata['username']) . '&amp;showresults=posts'),
 			'U_CPL_OWN_PICTURES' => append_sid('album.' . PHP_EXT . '?user_id=' . $userdata['user_id']),
-			'U_CPL_CALENDAR_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;mod=1&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
-			'U_CPL_SUBFORUM_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;mod=0&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
+			'U_CPL_CALENDAR_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;module=calendar_settings&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
+			'U_CPL_SUBFORUM_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;module=forums_settings&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
 			'U_CPL_SUBSCFORUMS' => append_sid('subsc_forums.' . PHP_EXT),
 			'U_CPL_BOOKMARKS' => append_sid(CMS_PAGE_SEARCH . '?search_id=bookmarks'),
-			'U_CPL_INBOX' => append_sid('privmsg.' . PHP_EXT . '?folder=inbox'),
-			'U_CPL_OUTBOX' => append_sid('privmsg.' . PHP_EXT . '?folder=outbox'),
-			'U_CPL_SAVEBOX' => append_sid('privmsg.' . PHP_EXT . '?folder=savebox'),
-			'U_CPL_SENTBOX' => append_sid('privmsg.' . PHP_EXT . '?folder=sentbox'),
+			'U_CPL_INBOX' => append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox'),
+			'U_CPL_OUTBOX' => append_sid(CMS_PAGE_PRIVMSG . '?folder=outbox'),
+			'U_CPL_SAVEBOX' => append_sid(CMS_PAGE_PRIVMSG . '?folder=savebox'),
+			'U_CPL_SENTBOX' => append_sid(CMS_PAGE_PRIVMSG . '?folder=sentbox'),
 			'U_CPL_DRAFTS' => append_sid('drafts.' . PHP_EXT),
 			'U_CPL_ZEBRA' => append_sid(CMS_PAGE_PROFILE . '?mode=zebra&amp;zmode=friends'),
 			// Mighty Gorgon - CPL - END
@@ -4158,12 +4369,15 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
 	global $table_prefix, $SID, $_SID, $user_ip;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $ctracker_config, $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $css_include, $css_style_include, $js_include;
 	global $cms_acp_url;
 	global $unread;
+
+	$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
+	$config['url_rw_runtime'] = (isset($config['url_rw_runtime']) ? $config['url_rw_runtime'] : (($config['url_rw'] || ($config['url_rw_guests'] && ($userdata['user_id'] == ANONYMOUS))) ? true : false));
 
 	if (!defined('IN_CMS'))
 	{
@@ -4202,17 +4416,17 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		$footer_banner_text = get_ad('glf');
 
 		// CrackerTracker v5.x
-		include_once(IP_ROOT_PATH . 'ctracker/engines/ct_footer.' . PHP_EXT);
+		/*
+		include_once(IP_ROOT_PATH . 'includes/ctracker/engines/ct_footer.' . PHP_EXT);
 		$output_login_status = ($userdata['ct_enable_ip_warn'] ? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off']);
-		// CrackerTracker v5.x
 
 		$template->assign_vars(array(
-			// CrackerTracker v5.x
-			'CRACKER_TRACKER_FOOTER' => create_footer_layout($ctracker_config->settings['footer_layout']),
-			'L_STATUS_LOGIN' => ($ctracker_config->settings['login_ip_check'] ? sprintf($lang['ctracker_ipwarn_info'], $output_login_status) : ''),
-			// CrackerTracker v5.x
+			'CRACKER_TRACKER_FOOTER' => create_footer_layout($config['ctracker_footer_layout']),
+			'L_STATUS_LOGIN' => ($config['ctracker_login_ip_check'] ? sprintf($lang['ctracker_ipwarn_info'], $output_login_status) : ''),
 			)
 		);
+		*/
+		// CrackerTracker v5.x
 	}
 
 	include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
@@ -4280,15 +4494,13 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		$page_gen_allowed = true;
 		if (($userdata['user_level'] == ADMIN) || $page_gen_allowed)
 		{
-			$gzip_text = ($config['gzip_compress']) ? 'GZIP ' . $lang['Enabled']: 'GZIP ' . $lang['Disabled'];
+			$gzip_text = ($config['gzip_compress_runtime']) ? 'GZIP ' . $lang['Enabled']: 'GZIP ' . $lang['Disabled'];
 			$debug_text = (DEBUG == true) ? $lang['Debug_On'] : $lang['Debug_Off'];
 			$memory_usage_text = '';
 			//$excuted_queries = $db->num_queries['total'];
 			$excuted_queries = $db->num_queries['normal'];
-			$mtime = microtime();
-			$mtime = explode(" ", $mtime);
-			$mtime = $mtime[1] + $mtime[0];
-			$endtime = $mtime;
+			$endtime = explode(' ', microtime());
+			$endtime = $endtime[1] + $endtime[0];
 			$gentime = round(($endtime - $starttime), 4); // You can adjust the number 6
 			$sql_time = round($db->sql_time, 4);
 
@@ -4366,26 +4578,21 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		// Compress buffered output if required and send to browser
 
 		// URL Rewrite - BEGIN
-		if ($config['url_rw'] || ($config['url_rw_guests'] && ($userdata['user_id'] == ANONYMOUS)))
+		if ($config['url_rw_runtime'])
 		{
 			$contents = rewrite_urls(ob_get_contents());
-		}
-		else
-		{
-			$contents = ob_get_contents();
-		}
-
-		if(@extension_loaded('zlib') && $config['gzip_compress'])
-		{
-			ob_end_clean();
-			ob_start('ob_gzhandler');
-			echo $contents;
-			ob_end_flush();
-		}
-		else
-		{
-			ob_end_clean();
-			echo $contents;
+			if(@extension_loaded('zlib') && $config['gzip_compress_runtime'])
+			{
+				ob_end_clean();
+				ob_start('ob_gzhandler');
+				echo $contents;
+			}
+			else
+			{
+				ob_end_clean();
+				echo $contents;
+				ob_start();
+			}
 		}
 		// URL Rewrite - END
 
@@ -4401,7 +4608,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 */
 function garbage_collection()
 {
-	global $cache, $db;
+	global $db, $cache;
 
 	// If we are in ACP it is better to clear some files in cache to make sure all options are updated
 	if (defined('IN_ADMIN') && !defined('ACP_MODULES'))
@@ -4446,7 +4653,7 @@ function exit_handler()
 	}
 
 	// As a pre-caution... some setups display a blank page if the flush() is not there.
-	(empty($config['gzip_compress'])) ? @flush() : @ob_flush();
+	(empty($config['gzip_compress_runtime']) && empty($config['url_rw_runtime'])) ? @flush() : @ob_flush();
 
 	exit;
 }
@@ -4575,7 +4782,8 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 				}
 
 				// Another quick fix for those having gzip compression enabled, but do not flush if the coder wants to catch "something". ;)
-				if (!empty($config['gzip_compress']))
+				$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
+				if (!empty($config['gzip_compress_runtime']))
 				{
 					if (@extension_loaded('zlib') && !headers_sent() && !ob_get_level())
 					{
@@ -4673,7 +4881,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 {
 	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
 	global $table_prefix, $SID, $_SID, $user_ip;
-	global $gen_simple_header, $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $ctracker_config;
+	global $gen_simple_header, $session_length, $starttime, $base_memory_usage, $do_gzip_compress;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $nav_separator, $nav_links;
 	// Global vars needed by page header, but since we are in message_die better use default values instead of the assigned ones in case we are dying before including page_header.php

@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 define('IN_SEARCH', true);
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
@@ -44,7 +43,7 @@ init_userprefs($userdata);
 
 if (($_GET['search_id'] != 'unanswered') && !$userdata['session_logged_in'] && $config['gsearch_guests'])
 {
-	$google_q = request_var('search_keywords', '');
+	$google_q = request_var('search_keywords', '', true);
 	$google_sitesearch = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
 	$google_cof = 'FORID:9';
 	$google_ie = 'ISO-8859-1';
@@ -53,9 +52,9 @@ if (($_GET['search_id'] != 'unanswered') && !$userdata['session_logged_in'] && $
 }
 
 // CrackerTracker v5.x
-if (isset($_POST['mode']) || isset($_GET['mode']) || !empty($_GET['search_id']) || isset($_POST['search_id']) || isset($_GET['search_keywords']) || isset($_POST['show_results']) || isset($_GET['show_results']))
+if (check_http_var_exists('mode', false) || check_http_var_exists('search_id', false) || check_http_var_exists('show_results', false) || isset($_GET['search_keywords']))
 {
-	include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 	$search_system = new ct_userfunctions();
 	$search_system->search_handler();
 	unset($search_system);
@@ -71,17 +70,22 @@ $is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
 //<!-- BEGIN Unread Post Information to Database Mod -->
 if($userdata['upi2db_access'])
 {
-	$params = array('always_read' => 'always_read', 't' => 't', 'f' => 'f', 'p' => 'p', 's2' => 's2', 'mar_topic_id' => 'mar_topic_id', 'mar' => 'mar', 'do' => 'do', 'search_id' => 'search_id', 'search_mode' => 'search_id', 'tt' => 'tt');
+	$params = array(
+		'always_read' => 'always_read',
+		POST_FORUM_URL => POST_FORUM_URL,
+		POST_TOPIC_URL => POST_TOPIC_URL,
+		POST_POST_URL => POST_POST_URL,
+		's2' => 's2',
+		'mar_topic_id' => 'mar_topic_id',
+		'mar' => 'mar',
+		'do' => 'do',
+		'search_id' => 'search_id',
+		'search_mode' => 'search_id',
+		'tt' => 'tt'
+	);
 	while(list($var, $param) = @each($params))
 	{
-		if (!empty($_POST[$param]) || !empty($_GET[$param]))
-		{
-			$$var = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param];
-		}
-		else
-		{
-			$$var = '';
-		}
+		$$var = request_var($param, '');
 	}
 
 	if (empty($unread))
@@ -124,31 +128,16 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-// Define initial vars
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode']);
-}
-else
-{
-	$mode = '';
-}
+$mode = request_var('mode', '');
+$only_bluecards = (!empty($_POST['only_bluecards']) ? 1 : 0);
+$search_keywords = request_var('search_keywords', '', true);
+$search_id = request_get_var('search_id', '');
+$search_author = request_var('search_author', '', true);
 
-$only_bluecards = (isset($_POST['only_bluecards'])) ? (($_POST['only_bluecards']) ? true : 0) : 0;
-if (isset($_POST['search_keywords']) || isset($_GET['search_keywords']))
+if (!empty($search_author))
 {
-	$search_keywords = (isset($_POST['search_keywords'])) ? $_POST['search_keywords'] : $_GET['search_keywords'];
-}
-else
-{
-	$search_keywords = '';
-}
-
-if (isset($_POST['search_author']) || isset($_GET['search_author']))
-{
-	$search_author = (isset($_POST['search_author'])) ? $_POST['search_author'] : $_GET['search_author'];
 	$search_author = phpbb_clean_username($search_author);
-	$search_topic_starter = (!empty($_GET['search_topic_starter']) ? true : (!empty($_POST['search_topic_starter']) ? true : false));
+	$search_topic_starter = check_http_var_exists('search_topic_starter', true);
 }
 else
 {
@@ -156,9 +145,7 @@ else
 	$search_topic_starter = false;
 }
 
-$search_id = (isset($_GET['search_id'])) ? $_GET['search_id'] : '';
 $search_mode = !empty($search_mode) ? $search_mode : $search_id;
-
 if (isset($search_mode) && ($search_mode == 'bookmarks'))
 {
 	// TO DO: force to false, and decide if we would like to overwrite it with Profile Global Blocks settings...
@@ -166,40 +153,55 @@ if (isset($search_mode) && ($search_mode == 'bookmarks'))
 	$cms_page['global_blocks'] = false;
 }
 
-if (isset($_POST['show_results']) || isset($_GET['show_results']))
-{
-	$show_results = (isset($_POST['show_results'])) ? $_POST['show_results'] : $_GET['show_results'];
-}
-else
-{
-	$show_results = 'posts';
-}
-$show_results = ($show_results == 'topics') ? 'topics' : 'posts';
+$search_terms = request_var('search_terms', '');
+$search_terms = ($search_terms == 'all') ? 1 : 0;
 
-if (isset($_POST['return_chars']) || isset($_GET['return_chars']))
+$search_fields_types = array('all', 'titleonly', 'msgonly');
+$search_fields = request_var('search_fields', '');
+$search_fields = check_var_value($search_fields, $search_fields_types);
+
+$search_cat = request_var('search_cat', -1);
+
+$search_thanks = request_var('search_thanks', 0);
+$search_thanks = (($search_thanks >= '2') && ($config['disable_thanks_topics'] == false)) ? $search_thanks : false;
+
+$search_where = request_post_var('search_where', 'Root');
+$search_where_topic = request_post_var('search_where_topic', 'Root');
+$search_where_topic = (!empty($search_where_topic) ? (str_replace(POST_TOPIC_URL, '', $search_where_topic)) : false);
+$search_where_topic = !empty($search_where_topic) ? intval($search_where_topic) : false;
+$search_where_topic = ($search_where_topic > 0) ? $search_where_topic : false;
+
+$sort_by = request_var('sort_by', 0);
+
+$sort_dir = request_var('sort_dir', 'DESC');
+$sort_dir = check_var_value($sort_dir, array('DESC', 'ASC'));
+
+$psort_types = array('time', 'cat');
+$psort = request_var('psort', 'time');
+$psort = check_var_value($psort, $psort_types);
+
+$topic_days = request_var('search_time', 0);
+if (!empty($topic_days))
 {
-	$return_chars = (isset($_POST['return_chars'])) ? intval($_POST['return_chars']) : intval($_GET['return_chars']);
+	$search_time = time() - ($topic_days * 86400);
 }
 else
 {
-	$return_chars = 200;
+	$search_time = 0;
+	$topic_days = 0;
 }
+
+$search_date = request_var('d', 0);
+
+$show_results = request_var('show_results', 'posts');
+$show_results = check_var_value($show_results, array('posts', 'topics'));
+
+$return_chars = request_var('return_chars', 200);
 $return_chars = ($return_chars >= -1) ? $return_chars : 200;
-
 // MG: if the users chooses to show no chars from posts, then we force topics view.
-if ($return_chars == 0)
-{
-	$show_results = 'topics';
-}
+$show_results = ($return_chars == 0) ? 'topics' : $show_results;
 
-if (isset($_POST['is_ajax']) || isset($_GET['is_ajax']))
-{
-	$is_ajax = (isset($_POST['is_ajax'])) ? intval($_POST['is_ajax']) : intval($_GET['is_ajax']);
-}
-else
-{
-	$is_ajax = 0;
-}
+$is_ajax = request_var('is_ajax', 0);
 
 if ($show_results == 'topics')
 {
@@ -210,132 +212,32 @@ if ($show_results == 'topics')
 	);
 }
 
-if (isset($_POST['search_terms']) || isset($_GET['search_terms']))
-{
-	$search_terms = (isset($_POST['search_terms'])) ? $_POST['search_terms'] : $_GET['search_terms'];
-}
-else
-{
-	//$search_terms = 'any';
-	$search_terms = 0;
-}
-$search_terms = ($search_terms == 'all') ? 1 : 0;
-
-$search_fields_types = array('all', 'titleonly', 'msgonly');
-$search_fields = $search_fields_types[0];
-
-if (isset($_POST['search_fields']) || isset($_GET['search_fields']))
-{
-	$search_fields = (isset($_POST['search_fields'])) ? htmlspecialchars($_POST['search_fields']) : htmlspecialchars($_GET['search_fields']);
-}
-
-if (!in_array($search_fields, $search_fields_types))
-{
-	$search_fields = $search_fields_types[0];
-}
-
-if (isset($_POST['search_cat']) || isset($_GET['search_cat']))
-{
-	$search_cat = (isset($_POST['search_cat'])) ? intval($_POST['search_cat']) : intval($_GET['search_cat']);
-}
-else
-{
-	$search_cat = -1;
-}
-
-if (isset($_POST['search_thanks']) || isset($_GET['search_thanks']))
-{
-	$search_thanks = (isset($_POST['search_thanks'])) ? intval($_POST['search_thanks']) : intval($_GET['search_thanks']);
-}
-else
-{
-	$search_thanks = '0';
-}
-
-$search_thanks = (($search_thanks >= '2') && ($config['disable_thanks_topics'] == false)) ? $search_thanks : false;
-
-$search_where = (isset($_POST['search_where'])) ? $_POST['search_where'] : 'Root';
-$search_where_topic = (isset($_POST['search_where_topic'])) ? (str_replace(POST_TOPIC_URL, '', $_POST['search_where_topic'])) : false;
-$search_where_topic = $search_where_topic ? intval($search_where_topic) : false;
-$search_where_topic = ($search_where_topic > 0) ? $search_where_topic : false;
-
-if (isset($_POST['sort_by']) || isset($_GET['sort_by']))
-{
-	$sort_by = (isset($_POST['sort_by'])) ? intval($_POST['sort_by']) : intval($_GET['sort_by']);
-}
-else
-{
-	$sort_by = 0;
-}
-
-if (isset($_POST['sort_dir']) || isset($_GET['sort_dir']))
-{
-	$sort_dir = (isset($_POST['sort_dir'])) ? $_POST['sort_dir'] : $_GET['sort_dir'];
-}
-else
-{
-	$sort_dir = 'DESC';
-}
-$sort_dir = ($sort_dir == 'ASC') ? 'ASC' : 'DESC';
-
-$psort_types = array('time', 'cat');
-$psort = $psort_types[0];
-if(isset($_GET['psort']) || isset($_POST['psort']))
-{
-	$psort = (isset($_GET['psort'])) ? $_GET['psort'] : $_POST['psort'];
-}
-
-if (!in_array($psort, $psort_types))
-{
-	$psort = $psort_types[0];
-}
-
-if (!empty($_POST['search_time']) || !empty($_GET['search_time']))
-{
-	$search_time = time() - (((!empty($_POST['search_time'])) ? intval($_POST['search_time']) : intval($_GET['search_time'])) * 86400);
-	$topic_days = (!empty($_POST['search_time'])) ? intval($_POST['search_time']) : intval($_GET['search_time']);
-}
-else
-{
-	$search_time = 0;
-	$topic_days = 0;
-}
-if (isset($_POST['d']) || isset($_GET['d']))
-{
-	$search_date = (isset($_POST['d'])) ? intval($_POST['d']) : intval($_GET['d']);
-}
-else
-{
-	$search_date = 0;
-}
-
-$start = isset($_POST['start']) ? intval($_POST['start']) : (isset($_GET['start']) ? intval($_GET['start']) : 0);
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
-$page_number = ($page_number < 1) ? false : $page_number;
+$page_number = request_var('page_number', 0);
+$page_number = ($page_number < 1) ? 0 : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
+$start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
 $sort_by_types = array($lang['Sort_Time'], $lang['Sort_Post_Subject'], $lang['Sort_Topic_Title'], $lang['Sort_Author'], $lang['Sort_Forum']);
-// Start Advanced IP Tools Pack MOD
-$search_ip = '';
 
+// Start Advanced IP Tools Pack MOD
 // For security reasons, we need to make sure the IP lookup is coming from an admin or mod.
+$search_ip = '';
 if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 {
-	if (!empty($_POST['search_ip']) || !empty($_GET['search_ip']))
+	$ip_address = request_var('search_ip', '');
+	if (!empty($ip_address))
 	{
-		$ip_address = (!empty($_POST['search_ip'])) ? $_POST['search_ip'] : $_GET['search_ip'];
-		$ip_address = htmlspecialchars($ip_address);
-		$ip_address = str_replace("\'", "''", $ip_address);
+		$ip_address = $db->sql_escape($ip_address);
 		$ip_pieces = explode('.', $ip_address);
 		$ip_pieces_count = sizeof($ip_pieces) - 1;
 
-			for ($i = 0; $i <= $ip_pieces_count; $i++)
-			{
-				$search_ip .= ($ip_pieces[$i] == '*') ? '%' : sprintf('%02x', $ip_pieces[$i]);
-			}
+		for ($i = 0; $i <= $ip_pieces_count; $i++)
+		{
+			$search_ip .= ($ip_pieces[$i] == '*') ? '%' : sprintf('%02x', $ip_pieces[$i]);
+		}
 	}
 	else
 	{
@@ -354,7 +256,7 @@ if (($search_mode == 'bookmarks') && ($mode == 'removebm'))
 	$delete = (isset($_POST['delete'])) ? true : false;
 	if ($delete && isset($_POST['topic_id_list']))
 	{
-		$topics = $_POST['topic_id_list'];
+		$topics = request_post_var('topic_id_list', 0);
 		for($i = 0; $i < sizeof($topics); $i++)
 		{
 			$topic_list .= (($topic_list != '') ? ', ' : '') . intval($topics[$i]);
@@ -375,14 +277,9 @@ if (($search_mode == 'bookmarks') && ($mode == 'removebm'))
 if ($mode == 'searchuser')
 {
 	// This handles the simple windowed user search functions called from various other scripts
-	if (isset($_POST['search_username']) || isset($_GET['search_username']))
-	{
-		username_search((!empty($_POST['search_username'])) ? $_POST['search_username'] : $_GET['search_username']);
-	}
-	else
-	{
-		username_search('');
-	}
+	$search_username = request_var('search_username', '', true);
+	$search_username = htmlspecialchars_decode($search_username, ENT_COMPAT);
+	username_search($search_username);
 	exit;
 }
 elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($search_ip != '') || ($search_thanks != false))
@@ -547,7 +444,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			}
 			else
 			{
-				$search_author = str_replace('*', '%', trim($search_author));
+				$search_author = str_replace('*', '%', trim($db->sql_escape($search_author)));
 				if(!$only_bluecards && (strpos($search_author, '%') !== false) && (strlen(str_replace('%', '', $search_author)) < $config['search_min_chars']))
 				{
 					$search_author = '';
@@ -555,7 +452,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				$sql = "SELECT user_id
 					FROM " . USERS_TABLE . "
-					WHERE username LIKE '" . str_replace("\'", "''", $search_author) . "'";
+					WHERE username LIKE '$search_author'";
 				$result = $db->sql_query($sql);
 
 				$matching_userids = '';
@@ -666,7 +563,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							$search_add_sql .= ($only_bluecards) ? " AND p.post_bluecard > 0 AND m.post_id = p.post_id " : '';
 							$sql = "SELECT m.post_id
 								FROM " . SEARCH_WORD_TABLE . " w, " . SEARCH_MATCH_TABLE . " m " . (($only_bluecards) ? ','.POSTS_TABLE . ' p ' : '') . "
-								WHERE w.word_text LIKE '$match_word'
+								WHERE w.word_text LIKE '" . $db->sql_escape($match_word) . "'
 									AND m.word_id = w.word_id
 									AND w.word_common <> 1
 									" . $search_add_sql;
@@ -677,15 +574,15 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							$search_add_sql = '';
 							if ($search_fields == 'msgonly')
 							{
-								$search_add_sql = "p.post_text LIKE '$match_word'";
+								$search_add_sql = "p.post_text LIKE '" . $db->sql_escape($match_word) . "'";
 							}
 							elseif ($search_fields == 'titleonly')
 							{
-								$search_add_sql = "p.post_subject LIKE '$match_word'";
+								$search_add_sql = "p.post_subject LIKE '" . $db->sql_escape($match_word) . "'";
 							}
 							else
 							{
-								$search_add_sql = "p.post_text LIKE '$match_word' OR p.post_subject LIKE '$match_word'";
+								$search_add_sql = "p.post_text LIKE '" . $db->sql_escape($match_word) . "' OR p.post_subject LIKE '" . $db->sql_escape($match_word) . "'";
 							}
 							$search_add_sql .= ($only_bluecards) ? " AND p.post_bluecard > 0" : '';
 							$sql = "SELECT p.post_id
@@ -783,7 +680,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			{
 				$search_author = '';
 			}
-			$search_author = str_replace('*', '%', trim(str_replace("\'", "''", $search_author)));
+			$search_author = str_replace('*', '%', trim($db->sql_escape($search_author)));
 		}
 
 		if ($total_match_count)
@@ -1111,7 +1008,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$search_id = mt_rand();
 
 		$sql = "UPDATE " . SEARCH_TABLE . "
-			SET search_id = $search_id, search_time = $current_time, search_array = '" . str_replace("\'", "''", $result_array) . "'
+			SET search_id = $search_id, search_time = $current_time, search_array = '" . $db->sql_escape($result_array) . "'
 			WHERE session_id = '" . $userdata['session_id'] . "'";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
@@ -1119,7 +1016,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		if (!$result || !$db->sql_affectedrows())
 		{
 			$sql = "INSERT INTO " . SEARCH_TABLE . " (search_id, session_id, search_time, search_array)
-				VALUES($search_id, '" . $userdata['session_id'] . "', $current_time, '" . str_replace("\'", "''", $result_array) . "')";
+				VALUES($search_id, '" . $userdata['session_id'] . "', $current_time, '" . $db->sql_escape($result_array) . "')";
 			$result = $db->sql_query($sql);
 		}
 	}
@@ -1421,7 +1318,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		{
 			$highlight_match_string .= (($highlight_match_string != '') ? '|' : '') . str_replace('*', '\w*', preg_quote($words[$i], '#'));
 		}
-		$highlight_match_string = phpbb_rtrim($highlight_match_string, "\\");
+		$highlight_match_string = rtrim($highlight_match_string, "\\");
 
 		$highlight_active = urlencode(trim($highlight_active));
 

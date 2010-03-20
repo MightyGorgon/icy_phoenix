@@ -24,34 +24,17 @@ $bbcode->allow_bbcode = $bbcode_on;
 $bbcode->allow_smilies = $smilies_on;
 $bbcode->is_sig = true;
 
-if (!empty($_POST['message']))
+$signature = request_var('message', '', true);
+if (empty($signature))
 {
-	$_POST['signature'] = $_POST['message'];
+	$signature = request_var('signature', '', true);
 }
-// check and set various parameters
-$params = array('submit' => 'save', 'preview' => 'preview', 'mode' => 'mode');
-while(list($var, $param) = @each($params))
-{
-	if (!empty($_POST[$param]) || !empty($_GET[$param]))
-	{
-		$$var = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param];
-	}
-	else
-	{
-		$$var = '';
-	}
-}
-
-$trim_var_list = array('signature' => 'signature');
-while(list($var, $param) = @each($trim_var_list))
-{
-	if (!empty($_POST[$param]))
-	{
-		$$var = trim($_POST[$param]);
-	}
-}
-
+$signature = htmlspecialchars_decode($signature, ENT_COMPAT);
 $signature = str_replace('<br />', "\n", $signature);
+
+$mode = request_var('mode', '');
+$submit = request_var('save', '');
+$preview = request_var('preview', '');
 
 // if cancel pressed then redirect to the index page
 if (isset($_POST['cancel']))
@@ -73,7 +56,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 $link_name = $lang['Signature'];
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 
 // save new signature
 if ($submit)
@@ -93,7 +76,7 @@ if ($submit)
 			$user_id =  $userdata['user_id'];
 
 			$sql = "UPDATE " . USERS_TABLE . "
-			SET user_sig = '" . str_replace("\'", "''", $signature) . "'
+			SET user_sig = '" . $db->sql_escape($signature) . "'
 			WHERE user_id = $user_id";
 			$result = $db->sql_query($sql);
 			$save_message = $lang['sig_save_message'];
@@ -120,7 +103,7 @@ elseif ($preview)
 		}
 		else
 		{
-			$preview_sig = htmlspecialchars(stripslashes($preview_sig));
+			$preview_sig = htmlspecialchars($preview_sig);
 			$preview_sig = stripslashes(prepare_message(addslashes(unprepare_message($preview_sig)), $html_on, $bbcode_on, $smilies_on));
 			if($preview_sig != '')
 			{

@@ -27,6 +27,11 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
+if (!class_exists('ct_database'))
+{
+	include(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_database.' . PHP_EXT);
+	$ctracker_config = new ct_database();
+}
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
@@ -44,7 +49,7 @@ if ((intval($_POST['id']) == $founder_id) && ($userdata['user_id'] != $founder_i
 {
 	$edituser = $userdata['username'];
 	$editok = $userdata['user_id'];
-	$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . str_replace("\'", "''", $edituser) . "','" . $editok . "')";
+	$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . $db->sql_escape($edituser) . "','" . $editok . "')";
 	$result = $db->sql_query($sql);
 	message_die(GENERAL_MESSAGE, $lang['L_ADMINEDITMSG']);
 }
@@ -277,7 +282,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 					$error = true;
 					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $result['error_msg'];
 				}
-				elseif (strtolower(str_replace("\\'", "''", $username)) == strtolower($userdata['username']))
+				elseif (strtolower($db->sql_escape($username)) == strtolower($userdata['username']))
 				{
 					$error = true;
 					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Username_taken'];
@@ -286,7 +291,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 
 			if (!$error)
 			{
-				$username_sql = "username = '" . str_replace("\\'", "''", $username) . "', ";
+				$username_sql = "username = '" . $db->sql_escape($username) . "', ";
 				$rename_user = $username; // Used for renaming usergroup
 			}
 		}
@@ -616,7 +621,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 
 			if(preg_match("#^(http:\/\/[a-z0-9\-]+?\.([a-z0-9\-]+\.)*[a-z]+\/.*?\.(gif|jpg|png)$)#is", $user_avatar_remoteurl))
 			{
-				$avatar_sql = ", user_avatar = '" . str_replace("\'", "''", $user_avatar_remoteurl) . "', user_avatar_type = " . USER_AVATAR_REMOTE;
+				$avatar_sql = ", user_avatar = '" . $db->sql_escape($user_avatar_remoteurl) . "', user_avatar_type = " . USER_AVATAR_REMOTE;
 			}
 			else
 			{
@@ -626,11 +631,11 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 		}
 		elseif($user_avatar_local != "" && $avatar_sql == "" && !$error)
 		{
-			$avatar_sql = ", user_avatar = '" . str_replace("\'", "''", phpbb_ltrim(basename($user_avatar_category), "'") . '/' . phpbb_ltrim(basename($user_avatar_local), "'")) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
+			$avatar_sql = ", user_avatar = '" . $db->sql_escape(ltrim(basename($user_avatar_category), "'") . '/' . ltrim(basename($user_avatar_local), "'")) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
 		}
 		elseif($user_gravatar != '' && $avatar_sql == '' && !$error)
 		{
-			$avatar_sql = ", user_avatar = '" . str_replace("\'", "''", $user_gravatar) . "', user_avatar_type = " . USER_GRAVATAR;
+			$avatar_sql = ", user_avatar = '" . $db->sql_escape($user_gravatar) . "', user_avatar_type = " . USER_GRAVATAR;
 		}
 
 		// Update users post count
@@ -702,14 +707,14 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			clear_user_color_cache($user_id);
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) . "', user_icq = '" . str_replace("\'", "''", $icq) . "', user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_from = '" . str_replace("\'", "''", $location) . "', user_from_flag = '$user_flag', user_interests = '" . str_replace("\'", "''", $interests) . "', user_phone = '" . str_replace("\'", "''", $phone) . "', user_selfdes = '" . str_replace("\'", "''", $selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting=$next_birthday_greeting, user_sig = '" . str_replace("\'", "''", $signature) . "', user_viewemail = $viewemail, user_aim = '" . str_replace("\'", "''", $aim) . "', user_yim = '" . str_replace("\'", "''", $yim) . "', user_msnm = '" . str_replace("\'", "''", $msn) . "', user_skype = '" . str_replace("\'", "''", $skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popuppm, user_lang = '" . str_replace("\'", "''", $user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = $user_timezone, user_time_mode = '$time_mode', user_dst_time_lag = '$dst_time_lag', user_dateformat = '" . str_replace("\'", "''", $user_dateformat) . "', user_posts_per_page = '" . str_replace("\'", "''", $user_posts_per_page) . "', user_topics_per_page = '" . str_replace("\'", "''", $user_topics_per_page) . "', user_hot_threshold = '" . str_replace("\'", "''", $user_hot_threshold) . "', user_active = $user_status, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
+				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_icq = '" . $db->sql_escape($icq) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting=$next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape($aim) . "', user_yim = '" . $db->sql_escape($yim) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popuppm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = $user_timezone, user_time_mode = '$time_mode', user_dst_time_lag = '$dst_time_lag', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_active = $user_status, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
 				WHERE user_id = '" . $user_id . "'";
 			$result = $db->sql_query($sql);
 
 			if(isset($rename_user))
 			{
 				$sql = "UPDATE " . GROUPS_TABLE . "
-					SET group_name = '" . str_replace("\'", "''", $rename_user) . "'
+					SET group_name = '" . $db->sql_escape($rename_user) . "'
 					WHERE group_name = '" . str_replace("'", "''", $this_userdata['username']) . "'";
 				$result = $db->sql_query($sql);
 			}
@@ -762,7 +767,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 					}
 					$profile_names[$name] = $temp;
 
-					$sql2 .= $name . " = '" . str_replace("\'", "''", $profile_names[$name]) . "', ";
+					$sql2 .= $name . " = '" . $db->sql_escape($profile_names[$name]) . "', ";
 				}
 				$sql2 = substr($sql2, 0, strlen($sql2) - 2) . " WHERE user_id = " . $this_userdata['user_id'];
 				$db->sql_query($sql2);
@@ -1543,8 +1548,10 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 
 			'AVATAR' => $avatar,
 			'GRAVATAR' => ($user_avatar_type == USER_GRAVATAR) ? $userdata['user_avatar'] : '',
-			'LANGUAGE_SELECT' => language_select($user_lang),
-			'TIMEZONE_SELECT' => tz_select($user_timezone),
+			'STYLE_SELECT' => style_select('style', $user_style),
+			'LANGUAGE_SELECT' => language_select('language', $user_lang),
+			'TIMEZONE_SELECT' => tz_select('timezone', $user_timezone),
+			'DATE_FORMAT' => date_select('dateformat', $user_dateformat),
 			'TIME_MODE' => $time_mode,
 			'TIME_MODE_MANUAL_CHECKED' => $time_mode_manual_checked,
 			'TIME_MODE_MANUAL_DST_CHECKED' => $time_mode_manual_dst_checked,
@@ -1553,9 +1560,6 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			'TIME_MODE_SERVER_PC_CHECKED' => $time_mode_server_pc_checked,
 			'TIME_MODE_FULL_PC_CHECKED' => $time_mode_full_pc_checked,
 			'DST_TIME_LAG' => $dst_time_lag,
-			'STYLE_SELECT' => style_select($user_style, 'style'),
-			//'DATE_FORMAT' => $user_dateformat, //OLD phpBB Format
-			'DATE_FORMAT' => date_select($user_dateformat,'dateformat'),
 			'ALLOW_PM_YES' => ($user_allowpm) ? 'checked="checked"' : '',
 			'ALLOW_PM_NO' => (!$user_allowpm) ? 'checked="checked"' : '',
 			'ALLOW_AVATAR_YES' => ($user_allowavatar) ? 'checked="checked"' : '',
@@ -1620,7 +1624,7 @@ if ($mode == 'edit' || $mode == 'save' && (isset($_POST['username']) || isset($_
 			'L_INTERESTS' => $lang['Interests'],
 			'L_BIRTHDAY' => $lang['Birthday'],
 			'L_NEXT_BIRTHDAY_GREETING' => $lang['Next_birthday_greeting'],
-			'L_NEXT_BIRTHDAY_GREETING_EXPLAIN' => $lang['Next_birthday_greeting_expain'],
+			'L_NEXT_BIRTHDAY_GREETING_EXPLAIN' => $lang['Next_birthday_greeting_explain'],
 			'L_GENDER' =>$lang['Gender'],
 			'L_GENDER_MALE' =>$lang['Male'],
 			'L_GENDER_FEMALE' =>$lang['Female'],

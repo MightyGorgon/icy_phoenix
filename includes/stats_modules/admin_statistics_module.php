@@ -179,36 +179,7 @@ $dbsize = intval($dbsize);
 
 if ($dbsize != 0)
 {
-	if ($attachment_mod_installed)
-	{
-		if($dbsize >= 1048576)
-		{
-			$dbsize = sprintf('%.2f ' . $lang['MB'], ($dbsize / 1048576));
-		}
-		elseif($dbsize >= 1024)
-		{
-			$dbsize = sprintf('%.2f ' . $lang['KB'], ($dbsize / 1024));
-		}
-		else
-		{
-			$dbsize = sprintf('%.2f ' . $lang['Bytes'], $dbsize);
-		}
-	}
-	else
-	{
-		if($dbsize >= 1048576)
-		{
-			$dbsize = sprintf('%.2f MB', ($dbsize / 1048576));
-		}
-		elseif($dbsize >= 1024)
-		{
-			$dbsize = sprintf('%.2f KB', ($dbsize / 1024));
-		}
-		else
-		{
-			$dbsize = sprintf('%.2f Bytes', $dbsize);
-		}
-	}
+	$dbsize = format_file_size($dbsize);
 }
 else
 {

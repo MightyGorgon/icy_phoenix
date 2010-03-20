@@ -21,16 +21,10 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
-$template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_install.' . PHP_EXT) . '">' . $lang['xs_install_styles'] . '</a>'));
+$template->assign_block_vars('nav_left', array('ITEM' => '&raquo; <a href="' . append_sid('xs_install.' . PHP_EXT) . '">' . $lang['xs_install_styles'] . '</a>'));
 
 $lang['xs_install_back'] = str_replace('{URL}', append_sid('xs_install.' . PHP_EXT), $lang['xs_install_back']);
 $lang['xs_goto_default'] = str_replace('{URL}', append_sid('xs_styles.' . PHP_EXT), $lang['xs_goto_default']);
@@ -39,10 +33,10 @@ $lang['xs_goto_default'] = str_replace('{URL}', append_sid('xs_styles.' . PHP_EX
 @set_time_limit(XS_MAX_TIMEOUT);
 
 // install style
-if(!empty($_GET['style']) && !defined('DEMO_MODE'))
+$style = request_var('style', '', true);
+$num = request_var('num', 0);
+if(!empty($style) && !defined('DEMO_MODE'))
 {
-	$style = stripslashes($_GET['style']);
-	$num = intval($_GET['num']);
 	$res = xs_install_style($style, $num);
 	if(defined('REFRESH_NAVBAR'))
 	{
@@ -60,17 +54,18 @@ if(!empty($_GET['style']) && !defined('DEMO_MODE'))
 }
 
 // install styles
-if(!empty($_POST['total']) && !defined('DEMO_MODE'))
+$total = request_var('total', 0);
+if(!empty($total) && !defined('DEMO_MODE'))
 {
 	$tpl = array();
 	$num = array();
-	$total = intval($_POST['total']);
 	for($i = 0; $i < $total; $i++)
 	{
-		if(!empty($_POST['install_'.$i]))
+		$install_switch = request_post_var('install_' . $i, 0);
+		if(!empty($install_switch))
 		{
-			$tpl[] = stripslashes($_POST['install_' . $i . '_style']);
-			$num[] = intval($_POST['install_' . $i . '_num']);
+			$tpl[] = request_post_var('install_' . $i . '_style', '', true);
+			$num[] = request_post_var('install_' . $i . '_num', 0);
 		}
 	}
 	if(sizeof($tpl))
@@ -82,7 +77,7 @@ if(!empty($_POST['total']) && !defined('DEMO_MODE'))
 		if(defined('REFRESH_NAVBAR'))
 		{
 			$template->assign_block_vars('left_refresh', array(
-				'ACTION'	=> append_sid('index.' . PHP_EXT . '?pane=left')
+				'ACTION' => append_sid('index.' . PHP_EXT . '?pane=left')
 				)
 			);
 		}
@@ -146,20 +141,20 @@ foreach($styles as $var => $value)
 {
 	$row_class = $xs_row_class[$j % 2];
 	$template->assign_block_vars('styles', array(
-			'ROW_CLASS'	=> $row_class,
-			'STYLE'		=> htmlspecialchars($value['template_name']),
-			'THEME'		=> htmlspecialchars($value['style_name']),
-			'U_INSTALL'	=> append_sid('xs_install.' . PHP_EXT . '?style='.urlencode($value['template_name']).'&num='.$value['num']),
-			'CB_NAME'	=> 'install_'.$j,
-			'NUM'		=> $value['num'],
+			'ROW_CLASS' => $row_class,
+			'STYLE' => htmlspecialchars($value['template_name']),
+			'THEME' => htmlspecialchars($value['style_name']),
+			'U_INSTALL' => append_sid('xs_install.' . PHP_EXT . '?style=' . urlencode($value['template_name']) . '&num=' . $value['num']),
+			'CB_NAME' => 'install_' . $j,
+			'NUM' => $value['num'],
 		)
 	);
 	$j++;
 }
 
 $template->assign_vars(array(
-	'U_INSTALL'		=> append_sid('xs_install.' . PHP_EXT),
-	'TOTAL'			=> sizeof($styles)
+	'U_INSTALL' => append_sid('xs_install.' . PHP_EXT),
+	'TOTAL' => sizeof($styles)
 	));
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'install.tpl'));

@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.6.59');
+define('ICYPHOENIX_VERSION', '1.3.7.60');
 
 // FOUNDER ID, this is the ID used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -56,7 +56,7 @@ define('TIME_LIMIT', 30); // Script Time Limit in seconds
 
 // Session Refresh Seconds
 define('SESSION_REFRESH', 120); // Session Refresh Time (Seconds)
-define('ONLINE_REFRESH', 600); // Online Refresh Time (Seconds)
+define('ONLINE_REFRESH', 300); // Online Refresh Time (Seconds)
 
 define('LAST_LOGIN_DAYS_NEW_POSTS_RESET', 30); // Number of days after which new posts are not count (to avoid high CPU SQL request)
 define('LAST_LOGIN_NEW_POSTS_LIMIT', 2000); // Maximum number of posts for new posts counter (to avoid high CPU SQL request)
@@ -75,9 +75,12 @@ define('CMS_PAGE_VIEWTOPIC', 'viewtopic.' . PHP_EXT);
 define('CMS_PAGE_VIEWONLINE', 'viewonline.' . PHP_EXT);
 define('CMS_PAGE_SEARCH', 'search.' . PHP_EXT);
 define('CMS_PAGE_PROFILE', 'profile.' . PHP_EXT);
+define('CMS_PAGE_PROFILE_MAIN', 'profile_main.' . PHP_EXT);
 define('CMS_PAGE_POSTING', 'posting.' . PHP_EXT);
+define('CMS_PAGE_DRAFTS', 'drafts.' . PHP_EXT);
 define('CMS_PAGE_MEMBERLIST', 'memberlist.' . PHP_EXT);
 define('CMS_PAGE_GROUP_CP', 'group_cp.' . PHP_EXT);
+define('CMS_PAGE_PRIVMSG', 'privmsg.' . PHP_EXT);
 define('CMS_PAGE_FAQ', 'faq.' . PHP_EXT);
 define('CMS_PAGE_RULES', 'rules.' . PHP_EXT);
 define('CMS_PAGE_DLOAD', 'dload.' . PHP_EXT);
@@ -96,12 +99,16 @@ define('CMS_PAGE_KB', 'kb.' . PHP_EXT);
 define('CMS_PAGE_CONTACT_US', 'contact_us.' . PHP_EXT);
 define('CMS_PAGE_CREDITS', 'credits.' . PHP_EXT);
 define('CMS_PAGE_TAGS', 'tags.' . PHP_EXT);
+
 // Paths
 define('ADM', 'adm');
 define('COMMON_TPL', '../common/');
 define('ADM_TPL', COMMON_TPL . 'acp/');
 //define('ADM_TPL', '../../' . ADM . '/templates/');
 define('CMS_TPL', COMMON_TPL . 'cms/');
+define('CMS_TPL_ABS_PATH', IP_ROOT_PATH . 'templates/common/cms/');
+define('BLOCKS_DIR', IP_ROOT_PATH . 'blocks/');
+define('BLOCKS_PREFIX', '');
 define('STATS_TPL', 'stats_modules/');
 define('STYLES_PATH', 'cms/styles/');
 define('ATTACH_MOD_PATH', 'includes/attach_mod/');
@@ -117,6 +124,7 @@ define('POSTS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'posts/');
 define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
 define('TOPICS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'topics/');
 define('USERS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'users/');
+define('SETTINGS_PATH', 'settings/');
 define('PLUGINS_PATH', 'plugins/');
 define('BACKUP_PATH', 'backup/');
 define('TPL_EXTENSION', 'tpl');
@@ -143,6 +151,11 @@ include_once(ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
 define('DELETED', -1);
 define('ANONYMOUS', -1);
 define('BOT', -2);
+
+define('USER_NORMAL', 0);
+define('USER_INACTIVE', 1);
+define('USER_IGNORE', 2);
+define('USER_FOUNDER', 3);
 
 define('USER', 0);
 define('ADMIN', 1);
@@ -181,6 +194,8 @@ define('AUTH_OWNER', 8);
 // Self AUTH - BEGIN
 define('AUTH_SELF', 9);
 // Self AUTH - END
+define('AUTH_GUEST_ONLY', 10);
+define('AUTH_GUEST_ONLY_STRICT', 11);
 
 // Auth settings - Methods
 define('AUTH_VIEW', 1);
@@ -205,6 +220,10 @@ define('AUTH_RATE', 19);
 
 define('HIDDEN_CAT', 0); // NOTE: change this value to the forum id, of the forum, witch you would like to be hidden
 
+// CMS Styles
+define('CMS_STD', 0);
+define('CMS_USERS', 1);
+
 // CMS Levels
 define('CMS_GUEST', 0);
 define('CMS_REG', 1);
@@ -226,6 +245,7 @@ define('CMS_AUTH_CONTENT_MANAGER', 5);
 define('USER_ACTIVATION_NONE', 0);
 define('USER_ACTIVATION_SELF', 1);
 define('USER_ACTIVATION_ADMIN', 2);
+define('USER_ACTIVATION_DISABLE', 3);
 
 define('USER_AVATAR_NONE', 0);
 define('USER_AVATAR_UPLOAD', 1);
@@ -234,12 +254,31 @@ define('USER_AVATAR_GALLERY', 3);
 define('USER_GRAVATAR', 4);
 define('USER_AVATAR_GENERATOR', 5);
 
+// Optional text flags
+define('OPTION_FLAG_BBCODE', 1);
+define('OPTION_FLAG_SMILIES', 2);
+define('OPTION_FLAG_LINKS', 4);
+define('OPTION_FLAG_HTML', 8);
+define('OPTION_FLAG_ACRO_AUTO', 16);
+
+// Login error codes
+define('LOGIN_CONTINUE', 1);
+define('LOGIN_BREAK', 2);
+define('LOGIN_SUCCESS', 3);
+define('LOGIN_SUCCESS_CREATE_PROFILE', 20);
+define('LOGIN_ERROR_USERNAME', 10);
+define('LOGIN_ERROR_PASSWORD', 11);
+define('LOGIN_ERROR_ACTIVE', 12);
+define('LOGIN_ERROR_ATTEMPTS', 13);
+define('LOGIN_ERROR_EXTERNAL_AUTH', 14);
+define('LOGIN_ERROR_PASSWORD_CONVERT', 15);
+
 // Group settings
 define('GROUP_OPEN', 0);
 define('GROUP_CLOSED', 1);
 define('GROUP_HIDDEN', 2);
 
-// Forum type
+// Forum types
 define('FORUM_CAT', 0);
 define('FORUM_POST', 1);
 define('FORUM_LINK', 2);
@@ -447,7 +486,6 @@ define('AJAX_SHOUTBOX_SESSIONS_TABLE', $table_prefix . 'ajax_shoutbox_sessions')
 // Ajax Shoutbox - END
 
 // Attachments - BEGIN
-define('ATTACH_CONFIG_TABLE', $table_prefix . 'attachments_config');
 define('EXTENSION_GROUPS_TABLE', $table_prefix . 'extension_groups');
 define('EXTENSIONS_TABLE', $table_prefix . 'extensions');
 define('FORBIDDEN_EXTENSIONS_TABLE', $table_prefix . 'forbidden_extensions');
@@ -458,8 +496,17 @@ define('QUOTA_TABLE', $table_prefix . 'attach_quota');
 define('QUOTA_LIMITS_TABLE', $table_prefix . 'quota_limits');
 // Attachments - END
 
+// ACL AUTH - BEGIN
+define('ACL_GROUPS_TABLE', $table_prefix . 'acl_groups');
+define('ACL_OPTIONS_TABLE', $table_prefix . 'acl_options');
+define('ACL_ROLES_DATA_TABLE', $table_prefix . 'acl_roles_data');
+define('ACL_ROLES_TABLE', $table_prefix . 'acl_roles');
+define('ACL_USERS_TABLE', $table_prefix . 'acl_users');
+// ACL AUTH - END
+
 // CMS - BEGIN
 define('CMS_BLOCK_POSITION_TABLE', $table_prefix . 'cms_block_position');
+define('CMS_BLOCK_SETTINGS_TABLE', $table_prefix . 'cms_block_settings');
 define('CMS_BLOCK_VARIABLE_TABLE', $table_prefix . 'cms_block_variable');
 define('CMS_BLOCKS_TABLE', $table_prefix . 'cms_blocks');
 define('CMS_CONFIG_TABLE', $table_prefix . 'cms_config');
@@ -478,7 +525,7 @@ define('CMS_ADV_USERS_TABLE', $table_prefix . 'cms_adv_users');
 // CMS ADV - END
 
 // BEGIN CrackerTracker v5.x
-define('CTRACKER_CONFIG', $table_prefix . 'ctracker_config');
+define('CTRACKER_VERSION', '5.0.6');
 define('CTRACKER_IPBLOCKER', $table_prefix . 'ctracker_ipblocker');
 define('CTRACKER_LOGINHISTORY', $table_prefix . 'ctracker_loginhistory');
 define('CTRACKER_FILECHK', $table_prefix . 'ctracker_filechk');

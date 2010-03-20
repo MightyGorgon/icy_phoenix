@@ -22,6 +22,11 @@ if (!defined('IN_ICYPHOENIX'))
 
 // List of tables used
 $tables = array(
+	'acl_groups',
+	'acl_options',
+	'acl_roles',
+	'acl_roles_data',
+	'acl_users',
 	'acronyms',
 	'adminedit',
 	'ajax_shoutbox',
@@ -33,7 +38,6 @@ $tables = array(
 	'album_config',
 	'album_rate',
 	'attachments',
-	'attachments_config',
 	'attachments_desc',
 	'attachments_stats',
 	'attach_quota',
@@ -60,7 +64,6 @@ $tables = array(
 	/*
 	'ctracker_backup',
 	*/
-	'ctracker_config',
 	'ctracker_filechk',
 	'ctracker_filescanner',
 	'ctracker_ipblocker',
@@ -189,6 +192,7 @@ if (!empty($config['plugins']['activity']['enabled']))
 
 // List of configuration data required
 $config_data = array('dbmtnc_disallow_postcounter', 'dbmtnc_disallow_rebuild', 'dbmtnc_rebuildcfg_maxmemory', 'dbmtnc_rebuildcfg_minposts', 'dbmtnc_rebuildcfg_php3only', 'dbmtnc_rebuildcfg_php3pps', 'dbmtnc_rebuildcfg_php4pps', 'dbmtnc_rebuildcfg_timeoverwrite', 'dbmtnc_rebuildcfg_timelimit', 'dbmtnc_rebuild_end', 'dbmtnc_rebuild_pos');
+
 // Default configuration records - from installation file
 $default_config = array(
 	'config_id' => '1',
@@ -600,6 +604,82 @@ $default_config = array(
 	'allow_moderators_edit_tags' => '0',
 	'enable_custom_bbcodes' => '0',
 	'forum_tags_type' => '0',
+	'ctracker_ipblock_enabled' => '0',
+	'ctracker_ipblock_logsize' => '100',
+	'ctracker_auto_recovery' => '0',
+	'ctracker_vconfirm_guest' => '1',
+	'ctracker_autoban_mails' => '1',
+	'ctracker_search_time_guest' => '30',
+	'ctracker_search_time_user' => '20',
+	'ctracker_search_count_guest' => '1',
+	'ctracker_search_count_user' => '4',
+	'ctracker_massmail_protection' => '0',
+	'ctracker_reg_protection' => '0',
+	'ctracker_reg_blocktime' => '30',
+	'ctracker_reg_lastip' => '0.0.0.0',
+	'ctracker_pwreset_time' => '20',
+	'ctracker_massmail_time' => '20',
+	'ctracker_spammer_time' => '30',
+	'ctracker_spammer_postcount' => '4',
+	'ctracker_spammer_blockmode' => '1',
+	'ctracker_loginfeature' => '0',
+	'ctracker_pw_reset_feature' => '0',
+	'ctracker_reg_last_reg' => '1155944976',
+	'ctracker_login_history' => '0',
+	'ctracker_login_history_count' => '10',
+	'ctracker_login_ip_check' => '0',
+	'ctracker_pw_validity' => '30',
+	'ctracker_pw_complex_min' => '4',
+	'ctracker_pw_complex_mode' => '1',
+	'ctracker_pw_control' => '0',
+	'ctracker_pw_complex' => '0',
+	'ctracker_last_file_scan' => '1156000091',
+	'ctracker_last_checksum_scan' => '1156000082',
+	'ctracker_logsize_logins' => '100',
+	'ctracker_logsize_spammer' => '100',
+	'ctracker_reg_ip_scan' => '1',
+	'ctracker_global_message' => 'Hello world!',
+	'ctracker_global_message_type' => '1',
+	'ctracker_search_feature_enabled' => '1',
+	'ctracker_spam_attack_boost' => '1',
+	'ctracker_spam_keyword_det' => '1',
+	'ctracker_footer_layout' => '6',
+	'upload_dir' => 'files',
+	'upload_img' => 'images/attach_post.png',
+	'topic_icon' => 'images/disk_multiple.png',
+	'display_order' => '0',
+	'max_filesize' => '262144',
+	'attachment_quota' => '52428800',
+	'max_filesize_pm' => '262144',
+	'max_attachments' => '3',
+	'max_attachments_pm' => '1',
+	'disable_attachments_mod' => '0',
+	'allow_pm_attach' => '1',
+	'attachment_topic_review' => '0',
+	'allow_ftp_upload' => '0',
+	'show_apcp' => '0',
+	'attach_version' => '2.4.5',
+	'default_upload_quota' => '0',
+	'default_pm_quota' => '0',
+	'ftp_server' => '',
+	'ftp_path' => '',
+	'download_path' => '',
+	'ftp_user' => '',
+	'ftp_pass' => '',
+	'ftp_pasv_mode' => '1',
+	'img_display_inlined' => '1',
+	'img_max_width' => '0',
+	'img_max_height' => '0',
+	'img_link_width' => '0',
+	'img_link_height' => '0',
+	'img_create_thumbnail' => '0',
+	'img_min_thumb_filesize' => '12000',
+	'img_imagick' => '',
+	'use_gd2' => '0',
+	'wma_autoplay' => '0',
+	'flash_autoplay' => '0',
+	'cron_site_history_interval' => '0',
+	'cron_site_history_last_run' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,
@@ -658,22 +738,6 @@ if (($phpbb_version[0] == 0) && ($phpbb_version[1] >= 19))
 }
 sort($tables);
 
-
-// Function for updating the config_table
-function update_config($name, $value)
-{
-	global $db, $config;
-
-	$sql = 'UPDATE ' . CONFIG_TABLE . " SET config_value = '$value' WHERE config_name = '$name'";
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-	if (!$result)
-	{
-		throw_error("Couldn't update forum configuration!", __LINE__, __FILE__, $sql);
-	}
-	$config[$name] = $value;
-}
 
 // This is the equivalent function for message_die. Since we do not use the template system when doing database work, message_die() will not work.
 function throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = '')
@@ -766,7 +830,7 @@ function lock_db($unlock = false, $delay = true, $ignore_default = false)
 	}
 
 	// OK, now we can update the settings
-	update_config('board_disable', ($unlock) ? '0' : '1');
+	set_config('board_disable', ($unlock) ? '0' : '1', true);
 	$db->clear_cache();
 	$db->clear_cache('', TOPICS_CACHE_FOLDER);
 
@@ -865,7 +929,7 @@ function check_condition($check)
 		case 7: // Rebuilding disabled
 			return ($config['dbmtnc_disallow_rebuild'] != 1) ? true : false;
 			break;
-		case 8: // Seperator for rebuilding
+		case 8: // Separator for rebuilding
 			return (check_condition(4) || check_condition(7)) ? true : false;
 			break;
 		default:
@@ -908,8 +972,8 @@ function check_mysql_version()
 // Gets the current time in microseconds
 function getmicrotime()
 {
-	list($usec, $sec) = explode(" ", microtime());
-	return ((float)$usec + (float)$sec);
+	list($usec, $sec) = explode(' ', microtime());
+	return ((float) $usec + (float) $sec);
 }
 
 // Gets table statistics
@@ -1008,7 +1072,7 @@ function create_cat()
 		$next_cat_order = $row['forum_order'] + 10;
 
 		$sql = "INSERT INTO " . FORUMS_TABLE . " (forum_id, parent_id, forum_type, main_type, forum_name, forum_desc, forum_order)
-			VALUES (" . $next_cat_id . ", 0, " . FORUM_CAT . ", '" . POST_CAT_URL . "', '" . $lang['New_cat_name'] . "', '" . $lang['New_cat_name'] . "', " . $next_cat_order . ")";
+			VALUES (" . $next_cat_id . ", 0, " . FORUM_CAT . ", '" . POST_CAT_URL . "', '" . $db->sql_escape($lang['New_cat_name']) . "', '" . $db->sql_escape($lang['New_cat_name']) . "', " . $next_cat_order . ")";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -1079,7 +1143,7 @@ function create_forum()
 
 		$forum_permission = AUTH_ADMIN;
 		$sql = 'INSERT INTO ' . FORUMS_TABLE . " (forum_id, forum_type, parent_id, forum_name, forum_desc, forum_status, forum_order, forum_posts, forum_topics, forum_last_post_id, prune_next, prune_enable, auth_view, auth_read, auth_post, auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, auth_pollcreate, auth_attachments)
-			VALUES ($next_forum_id, " . FORUM_POST . ", $cat_id, '" . $lang['New_forum_name'] . "', '', " . FORUM_LOCKED . ", $next_forum_order, 0, 0, 0, NULL, 0, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, 0)";
+			VALUES ($next_forum_id, " . FORUM_POST . ", $cat_id, '" . $db->sql_escape($lang['New_forum_name']) . "', '', " . FORUM_LOCKED . ", $next_forum_order, 0, 0, 0, NULL, 0, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, 0)";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -1105,7 +1169,7 @@ function create_topic()
 	if (!$topic_created)
 	{
 		$sql = 'INSERT INTO ' . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_vote, topic_type, topic_first_post_id, topic_last_post_id, topic_moved_id)
-			VALUES ($forum_id, '" . $lang['New_topic_name'] . "', -1, " . time() . ", 0, 0, " . TOPIC_UNLOCKED . ", 0, " . POST_NORMAL . ", 0, 0, 0)";
+			VALUES ($forum_id, '" . $db->sql_escape($lang['New_topic_name']) . "', -1, " . time() . ", 0, 0, " . TOPIC_UNLOCKED . ", 0, " . POST_NORMAL . ", 0, 0, 0)";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -1185,7 +1249,7 @@ function get_word_id($word)
 
 	$sql = "SELECT word_id, word_common
 		FROM " . SEARCH_WORD_TABLE . "
-		WHERE word_text = '$word'";
+		WHERE word_text = '" . $db->sql_escape($word) . "'";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -1207,7 +1271,7 @@ function get_word_id($word)
 	}
 	else // Word was not found
 	{
-		$sql = "INSERT INTO " . SEARCH_WORD_TABLE . " (word_text, word_common) VALUES ('$word', 0)";
+		$sql = "INSERT INTO " . SEARCH_WORD_TABLE . " (word_text, word_common) VALUES ('" . $db->sql_escape($word) . "', 0)";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -1323,13 +1387,16 @@ function check_authorization($die = true)
 {
 	global $db, $cache, $lang, $dbuser, $dbpasswd, $option;
 
-	$auth_method = (isset($_POST['auth_method'])) ? htmlspecialchars($_POST['auth_method']) : '';
-	$board_user = isset($_POST['board_user']) ? trim(htmlspecialchars($_POST['board_user'])) : '';
-	$board_user = substr(str_replace("\\'", "'", $board_user), 0, 25);
-	$board_user = str_replace("'", "\\'", $board_user);
-	$board_password = (isset($_POST['board_password'])) ? $_POST['board_password'] : '';
-	$db_user = (isset($_POST['db_user'])) ? $_POST['db_user'] : '';
-	$db_password = (isset($_POST['db_password'])) ? $_POST['db_password'] : '';
+	$auth_method = request_post_var('auth_method', '');
+	$board_user = request_post_var('board_user', '', true);
+	$board_user = htmlspecialchars_decode($board_user, ENT_COMPAT);
+	$board_password = request_post_var('board_password', '', true);
+	$board_password = htmlspecialchars_decode($board_password, ENT_COMPAT);
+	$db_user = request_post_var('db_user', '', true);
+	$db_user = htmlspecialchars_decode($db_user, ENT_COMPAT);
+	$db_password = request_post_var('db_password', '', true);
+	$db_password = htmlspecialchars_decode($db_password, ENT_COMPAT);
+
 	// Change authentication mode if selected option does not allow database authentication
 	if ($option == 'rld' || $option == 'rtd')
 	{
@@ -1341,7 +1408,7 @@ function check_authorization($die = true)
 		case 'board':
 			$sql = "SELECT user_id, username, user_password, user_active, user_level
 				FROM " . USERS_TABLE . "
-				WHERE username = '" . str_replace("\\'", "''", $board_user) . "'";
+				WHERE username = '" . $db->sql_escape($board_user) . "'";
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);

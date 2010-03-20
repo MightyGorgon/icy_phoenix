@@ -21,12 +21,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
@@ -66,7 +60,7 @@ function include_update_txt($filename, $dir = false)
 {
 	$update = array();
 	$list = @file($filename);
-	for($i=0; $i< sizeof($list); $i++)
+	for($i = 0; $i < sizeof($list); $i++)
 	{
 		if(substr($list[$i], 0, 10) === 'xs_update_')
 		{
@@ -186,22 +180,21 @@ if(!isset($_GET['doupdate']))
 		$type = isset($lang['xs_update_types'][$item['update_type']]) ? $item['update_type'] : 0;
 		$row_class = $xs_row_class[$counter % 2];
 		$name = htmlspecialchars($item['update_name']);
-		if(strpos($name, ' (') !== false && strpos($name, ')') !== false)
+		if((strpos($name, ' (') !== false) && (strpos($name, ')') !== false))
 		{
 			$name = str_replace(array(' (', ')'), array(' <span class="update-comment">(', ')</span>'), $name);
 		}
-		$template->assign_block_vars('row',
-			array(
-				'ROW_CLASS'	=> $row_class,
-				'NUM'		=> $counter,
-				'VAR'		=> 'item_'.$counter.'_',
-				'ITEM'		=> htmlspecialchars($var),
-				'NAME'		=> $name,
-				'TYPE'		=> $lang['xs_update_types'][$type],
-				'URL'		=> htmlspecialchars($item['update_url']),
-				'VERSION'	=> htmlspecialchars($item['update_version'])
-				)
-			);
+		$template->assign_block_vars('row', array(
+			'ROW_CLASS' => $row_class,
+			'NUM' => $counter,
+			'VAR' => 'item_'.$counter.'_',
+			'ITEM' => htmlspecialchars($var),
+			'NAME' => $name,
+			'TYPE' => $lang['xs_update_types'][$type],
+			'URL' => htmlspecialchars($item['update_url']),
+			'VERSION' => htmlspecialchars($item['update_version'])
+			)
+		);
 		$template->assign_block_vars('row.'.(empty($item['update_url']) ? 'nourl' : 'url'), array());
 	}
 	$template->pparse('body');
@@ -214,12 +207,12 @@ if(!isset($_GET['doupdate']))
 @reset($updates);
 $urls = array();
 $items = array();
-$i=0;
+$i = 0;
 foreach($updates as $var1 => $item)
 {
 	$i++;
-	$var = 'item_'.$i.'_';
-	if(!empty($_POST[$var . 'item']) && !empty($_POST[$var . 'checked']) && $_POST[$var . 'checked'])
+	$var = 'item_' . $i . '_';
+	if(!empty($_POST[$var . 'item']) && !empty($_POST[$var . 'checked']))
 	{
 		$item = $_POST[$var . 'item'];
 		if(!empty($updates[$item]['update_url']))
@@ -273,12 +266,13 @@ for($i = 0; $i < sizeof($urls); $i++)
 	}
 	else
 	{
-		for($j=0; $j< sizeof($arr); $j++)
-		{	// trim all lines and replace tab with space
+		for($j = 0; $j < sizeof($arr); $j++)
+		{
+			// trim all lines and replace tab with space
 			$arr[$j] = trim(str_replace("\t", ' ', $arr[$j]));
 		}
 		// checking all items to see which ones are for this url
-		for($j=0; $j< sizeof($items); $j++)
+		for($j = 0; $j < sizeof($items); $j++)
 		{
 			$item = $updates[$items[$j]];
 			if($item['update_url'] === $urls[$i])
@@ -346,12 +340,11 @@ foreach($updates as $var => $item)
 		$ver1 = htmlspecialchars($item['update_version']);
 		$row_class = $xs_row_class[$count_total % 2];
 		$name = str_replace(array(' (', ')'), array(' <span class="update-comment">(', ')</span>'), htmlspecialchars($item['update_name']));
-		$template->assign_block_vars('row',
-			array(
-				'ROW_CLASS'		=> $row_class,
-				'ITEM'			=> $name,
-				'TYPE'			=> $lang['xs_update_types'][$type],
-				'VERSION'		=> $ver1,
+		$template->assign_block_vars('row', array(
+			'ROW_CLASS' => $row_class,
+			'ITEM' => $name,
+			'TYPE' => $lang['xs_update_types'][$type],
+			'VERSION' => $ver1,
 			)
 		);
 		if(!empty($item['data']['version']))
@@ -362,13 +355,12 @@ foreach($updates as $var => $item)
 			{
 				$count_update++;
 				$u_import = (isset($item['data']['style']) && substr($item['data']['style'], 0, 7) === 'http://') ? append_sid('xs_import.' . PHP_EXT . '?get_web=' . urlencode($item['data']['style'])) : '';
-				$template->assign_block_vars('row.update',
-					array(
-						'NUM'			=> $count_total,
-						'VERSION'		=> $ver2,
-						'UPDATE'		=> isset($item['data']['update']) ? htmlspecialchars($item['data']['update']) : '',
-						'U_IMPORT'		=> $u_import,
-						'INFO'			=> htmlspecialchars($info),
+				$template->assign_block_vars('row.update', array(
+					'NUM' => $count_total,
+					'VERSION' => $ver2,
+					'UPDATE' => isset($item['data']['update']) ? htmlspecialchars($item['data']['update']) : '',
+					'U_IMPORT' => $u_import,
+					'INFO' => htmlspecialchars($info),
 					)
 				);
 				$template->assign_block_vars('row.update.' . (empty($item['data']['update']) ? 'noupdate' : 'updated'), array());
@@ -377,11 +369,10 @@ foreach($updates as $var => $item)
 			}
 			else
 			{
-				$template->assign_block_vars('row.noupdate',
-					array(
-						'VERSION'		=> $ver2,
-						'MESSAGE'		=> $lang['xs_update_noupdate'],
-						'INFO'			=> empty($info) ? '' : htmlspecialchars($info),
+				$template->assign_block_vars('row.noupdate', array(
+					'VERSION' => $ver2,
+					'MESSAGE' => $lang['xs_update_noupdate'],
+					'INFO' => empty($info) ? '' : htmlspecialchars($info),
 					)
 				);
 				$template->assign_block_vars('row.noupdate.' . (empty($item['data']['info']) ? 'noinfo' : 'info'), array());
@@ -399,11 +390,10 @@ foreach($updates as $var => $item)
 	}
 }
 
-$template->assign_vars(
-	array(
-		'COUNT_TOTAL'		=> str_replace('{NUM}', $count_total, $lang['xs_update_total1']),
-		'COUNT_ERROR'		=> str_replace('{NUM}', $count_error, $lang['xs_update_total2']),
-		'COUNT_UPDATE'		=> str_replace('{NUM}', $count_update, $lang['xs_update_total3'])
+$template->assign_vars(array(
+	'COUNT_TOTAL' => str_replace('{NUM}', $count_total, $lang['xs_update_total1']),
+	'COUNT_ERROR' => str_replace('{NUM}', $count_error, $lang['xs_update_total2']),
+	'COUNT_UPDATE' => str_replace('{NUM}', $count_update, $lang['xs_update_total3'])
 	)
 );
 

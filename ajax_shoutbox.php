@@ -14,7 +14,6 @@
 * Javier B (kinfule@lycos.es)
 */
 
-// CTracker_Ignore: File checked by human
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');

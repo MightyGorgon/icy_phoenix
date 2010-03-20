@@ -29,9 +29,11 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-if(isset($_POST['username']) || isset($_GET['username']))
+$username = request_var('username', '', true);
+$username = htmlspecialchars_decode($username, ENT_COMPAT);
+
+if(!empty($username))
 {
-	$username = (isset($_POST['username'])) ? $_POST['username'] : $_GET['username'];
 	if(!$this_userdata = get_userdata($username))
 	{
 		message_die(GENERAL_MESSAGE, $lang['User_not_exist']);
@@ -41,7 +43,7 @@ if(isset($_POST['username']) || isset($_GET['username']))
 
 	if($_POST['update'])
 	{
-		$posts = (isset($_POST['posts'])) ? intval($_POST['posts']) : 0;
+		$posts = request_var('posts', 0);
 
 		$sql = "UPDATE " . USERS_TABLE . "
 				SET user_posts = '$posts'
@@ -53,10 +55,9 @@ if(isset($_POST['username']) || isset($_GET['username']))
 	}
 
 
-	$s_hidden_fields = '<input type="hidden" name="username" value="' . $username . '" />';
+	$s_hidden_fields = '<input type="hidden" name="username" value="' . htmlspecialchars($username) . '" />';
 
-	$template->set_filenames(array('body' => ADM_TPL . 'postcount_body.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'postcount_body.tpl'));
 
 	$template->assign_vars(array(
 		'L_PC_TITLE' => $lang['Modify_post_counts'],

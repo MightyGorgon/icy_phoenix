@@ -58,30 +58,13 @@ $default_sort_order = 'DESC';
 // End user modifiable variables
 
 // Determine the variables we need for sorting and such
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$attach_id = (isset($_GET['attach_id'])) ? intval($_GET['attach_id']) : ((isset($_POST['attach_id'])) ? intval($_POST['attach_id']) : 0);
+$attach_id = request_var('attach_id', 0);
 $attach_id = (($attach_id > 0) && ($userdata['user_level'] == ADMIN)) ? $attach_id : 0;
 
-if(isset($_GET['order']) || isset($_POST['order']))
-{
-	$sort_order = (isset($_POST['order'])) ? $_POST['order'] : $_GET['order'];
-}
-else
-{
-	$sort_order = $default_sort_order;
-}
-$sort_order = ($sort_order == 'ASC') ? 'ASC' : 'DESC';
-
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-}
-else
-{
-	$mode = $default_sort_method;
-}
+$mode = request_var('mode', $default_sort_method);
 
 if ($attach_id > 0)
 {

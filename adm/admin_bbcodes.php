@@ -68,10 +68,10 @@ if($mode != 'list')
 		}
 
 		$template->assign_vars(array(
-			'BBCODE_TAG' => htmlspecialchars(stripslashes($bbcode_info['bbcode_tag'])),
-			'BBCODE_HELPLINE' => htmlspecialchars(stripslashes($bbcode_info['bbcode_helpline'])),
-			'BBCODE_MATCH' => htmlspecialchars(stripslashes($bbcode_info['bbcode_match'])),
-			'BBCODE_TPL' => htmlspecialchars(stripslashes($bbcode_info['bbcode_tpl'])),
+			'BBCODE_TAG' => htmlspecialchars($bbcode_info['bbcode_tag']),
+			'BBCODE_HELPLINE' => htmlspecialchars($bbcode_info['bbcode_helpline']),
+			'BBCODE_MATCH' => htmlspecialchars($bbcode_info['bbcode_match']),
+			'BBCODE_TPL' => htmlspecialchars($bbcode_info['bbcode_tpl']),
 
 			'L_BBCODE_USAGE_EXPLAIN' => sprintf($lang['BBCODE_USAGE_EXPLAIN'], '<a href="#down">', '</a>'),
 			'L_SUBMIT' => $lang['Submit'],
@@ -90,12 +90,14 @@ if($mode != 'list')
 		foreach ($inputs_array as $k => $v)
 		{
 			$inputs_array[$k] = request_var($k, $v);
+			$inputs_array[$k] = htmlspecialchars_decode($inputs_array[$k], ENT_COMPAT);
 		}
 
 		$data = $bbcode->build_regexp($inputs_array['bbcode_match'], $inputs_array['bbcode_tpl']);
 		foreach ($inputs_array as $k => $v)
 		{
-			$data[$k] = addslashes($v);
+			//$data[$k] = addslashes($v);
+			$data[$k] = $v;
 		}
 
 		if($data['bbcode_tag'] == '')
@@ -193,10 +195,10 @@ else
 
 			$template->assign_block_vars('bbcode', array(
 				'ROW_CLASS' => $row_class,
-				'BBCODE_TAG' => htmlspecialchars(stripslashes($bbcode_rows[$i]['bbcode_tag'])),
-				'BBCODE_HELPLINE' => htmlspecialchars(stripslashes($bbcode_rows[$i]['bbcode_helpline'])),
-				'BBCODE_MATCH' => htmlspecialchars(stripslashes($bbcode_rows[$i]['bbcode_match'])),
-				'BBCODE_TPL' => htmlspecialchars(stripslashes($bbcode_rows[$i]['bbcode_tpl'])),
+				'BBCODE_TAG' => htmlspecialchars($bbcode_rows[$i]['bbcode_tag']),
+				'BBCODE_HELPLINE' => htmlspecialchars($bbcode_rows[$i]['bbcode_helpline']),
+				'BBCODE_MATCH' => htmlspecialchars($bbcode_rows[$i]['bbcode_match']),
+				'BBCODE_TPL' => htmlspecialchars($bbcode_rows[$i]['bbcode_tpl']),
 
 				'U_EDIT' => append_sid(THIS_PAGE . '?mode=edit&amp;bbcode_id=' . $bbcode_rows[$i]['bbcode_id']),
 				'U_DELETE' => append_sid(THIS_PAGE . '?mode=delete&amp;bbcode_id=' . $bbcode_rows[$i]['bbcode_id'])

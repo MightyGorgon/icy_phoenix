@@ -28,9 +28,9 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function display_upload_attach_box_limits($user_id, $group_id = 0)
 {
-	global $attach_config, $config, $lang, $db, $template, $userdata, $profiledata, $images;
+	global $config, $lang, $db, $template, $userdata, $profiledata, $images;
 
-	if (intval($attach_config['disable_mod']))
+	if (intval($config['disable_attachments_mod']))
 	{
 		return;
 	}
@@ -74,7 +74,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 		if ($db->sql_numrows($result) > 0)
 		{
 			$row = $db->sql_fetchrow($result);
-			$attach_config['upload_filesize_limit'] = intval($row['quota_limit']);
+			$config['upload_filesize_limit'] = intval($row['quota_limit']);
 			$db->sql_freeresult($result);
 		}
 		else
@@ -82,11 +82,11 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 			$db->sql_freeresult($result);
 
 			// Set Default Quota Limit
-			$quota_id = intval($attach_config['default_upload_quota']);
+			$quota_id = intval($config['default_upload_quota']);
 
 			if ($quota_id == 0)
 			{
-				$attach_config['upload_filesize_limit'] = $attach_config['attachment_quota'];
+				$config['upload_filesize_limit'] = $config['attachment_quota'];
 			}
 			else
 			{
@@ -99,11 +99,11 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 				if ($db->sql_numrows($result) > 0)
 				{
 					$row = $db->sql_fetchrow($result);
-					$attach_config['upload_filesize_limit'] = $row['quota_limit'];
+					$config['upload_filesize_limit'] = $row['quota_limit'];
 				}
 				else
 				{
-					$attach_config['upload_filesize_limit'] = $attach_config['attachment_quota'];
+					$config['upload_filesize_limit'] = $config['attachment_quota'];
 				}
 				$db->sql_freeresult($result);
 			}
@@ -121,13 +121,13 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 		}
 	}
 
-	if (!$attach_config['upload_filesize_limit'])
+	if (!$config['upload_filesize_limit'])
 	{
-		$upload_filesize_limit = $attach_config['attachment_quota'];
+		$upload_filesize_limit = $config['attachment_quota'];
 	}
 	else
 	{
-		$upload_filesize_limit = $attach_config['upload_filesize_limit'];
+		$upload_filesize_limit = $config['upload_filesize_limit'];
 	}
 
 	if ($upload_filesize_limit == 0)

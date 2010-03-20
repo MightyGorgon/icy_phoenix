@@ -24,15 +24,15 @@ if (!defined('IN_ICYPHOENIX') || !defined('IN_XS'))
 
 Import style.
 
-$filename			= style filename. it should be in temporary directory.
-$write_local		= false if style should be uploaded via ftp, true if written directory to disk
-$write_local_dir	= directory where to write. only if $write_local = true.
-$list_only			= true if only list files
-$get_file			= filename to get. empty if do not return any files
+$filename						= style filename. it should be in temporary directory.
+$write_local				= false if style should be uploaded via ftp, true if written directory to disk
+$write_local_dir		= directory where to write. only if $write_local = true.
+$list_only					= true if only list files
+$get_file						= filename to get. empty if do not return any files
 
-$_POST['total']				= total number of themes
+$_POST['total']								= total number of themes
 $_POST['import_install_0']		= non-empty if install theme
-$_POST['import_default']		= number of default style or -1 or empty
+$_POST['import_default']			= number of default style or -1 or empty
 
 */
 
@@ -291,36 +291,38 @@ if(!$write_local)
 	$actions = array();
 	// chdir to template directory
 	$actions[] = array(
-			'command'	=> 'chdir',
-			'dir'		=> 'templates'
+			'command' => 'chdir',
+			'dir' => 'templates'
 		);
 	// create directory with template name
 	$actions[] = array(
-			'command'	=> 'mkdir',
-			'dir'		=> $header['template'],
-			'ignore'	=> true
+			'command' => 'mkdir',
+			'dir' => $header['template'],
+			'ignore' => true
 		);
 	// change directory
 	$actions[] = array(
-			'command'	=> 'chdir',
-			'dir'		=> $header['template']
+			'command' => 'chdir',
+			'dir' => $header['template']
 		);
 	// create all directories and upload all files
 	$actions[] = array(
-			'command'	=> 'exec',
-			'list'		=> generate_actions_dirs()
+			'command' => 'exec',
+			'list' => generate_actions_dirs()
 		);
 	$ftp_log = array();
 	$ftp_error = '';
 	$res = ftp_myexec($actions);
-/*	echo "<!--\n\n";
+	/*
+	echo "<!--\n\n";
 	echo "\$actions dump:\n\n";
 	print_r($actions);
 	echo "\n\n\$ftp_log dump:\n\n";
 	print_r($ftp_log);
-	echo "\n\n -->"; */
+	echo "\n\n -->";
+	*/
 	// remove temporary files
-	for($i=0; $i< sizeof($items); $i++)
+	for($i = 0; $i < sizeof($items); $i++)
 	{
 		if(!empty($items[$i]['tmp']))
 		{
@@ -344,7 +346,7 @@ $total = intval($_POST['total']);
 $default = isset($_POST['import_default']) && strlen($_POST['import_default']) ? intval($_POST['import_default']) : -1;
 $install = array();
 $default_name = '';
-for($i=0; $i<$total; $i++)
+for($i = 0; $i < $total; $i++)
 {
 	$tmp = empty($_POST['import_install_'.$i]) ? 0 : 1;
 	if($tmp)
@@ -372,7 +374,7 @@ if(!sizeof($install))
 
 // Get list of installed styles
 $tpl = $header['template'];
-$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " WHERE template_name='" . xs_sql($tpl) . "'";
+$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " WHERE template_name = '" . $db->sql_escape($tpl) . "'";
 $db->sql_return_on_error(true);
 $result = $db->sql_query($sql);
 $db->sql_return_on_error(false);
@@ -437,7 +439,7 @@ for($i = 0; $i < sizeof($install); $i++)
 			{
 				$sql .= ', ';
 			}
-			$sql .= xs_sql($var) . " = '" . xs_sql($value) . "'";
+			$sql .= $db->sql_escape($var) . " = '" . $db->sql_escape($value) . "'";
 		}
 		$sql = "UPDATE " . THEMES_TABLE . " SET " . $sql . " WHERE themes_id = '{$installed}'";
 	}
@@ -474,8 +476,8 @@ for($i = 0; $i < sizeof($install); $i++)
 				$sql1 .= ', ';
 				$sql2 .= ', ';
 			}
-			$sql1 .= xs_sql($var);
-			$sql2 .= "'" . xs_sql($value) . "'";
+			$sql1 .= $db->sql_escape($var);
+			$sql2 .= "'" . $db->sql_escape($value) . "'";
 		}
 		$sql = "INSERT INTO " . THEMES_TABLE . " (" . $sql1 . ") VALUES (" . $sql2 . ")";
 	}
@@ -492,7 +494,7 @@ for($i = 0; $i < sizeof($install); $i++)
 	}
 	if($default_name === $style_name)
 	{
-		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='{$installed}' WHERE config_name='default_style'";
+		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '{$installed}' WHERE config_name = 'default_style'";
 		$config['default_style'] = $installed;
 		$db->sql_query($sql);
 	}

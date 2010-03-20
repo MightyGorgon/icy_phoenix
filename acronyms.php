@@ -33,9 +33,9 @@ while($acronym_row = $db->sql_fetchrow($result))
 {
 	$acronym = $acronym_row['acronym'];
 	$description = $acronym_row['description'];
-	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+	$class = ($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
 	$template->assign_block_vars('acronym_row', array(
-		'ROW_CLASS' => $row_class,
+		'ROW_CLASS' => $class,
 		'ACRONYM' => $acronym,
 		'DESCRIPTION' => $description,
 		)

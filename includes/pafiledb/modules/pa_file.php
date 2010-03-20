@@ -19,13 +19,17 @@ class pafiledb_file extends pafiledb_public
 {
 	function main($action)
 	{
-		global $db, $cache, $config, $images, $userdata, $lang, $bbcode, $pafiledb_config, $pafiledb_template, $pafiledb_functions;
+		global $db, $cache, $config, $images, $userdata, $lang, $bbcode, $pafiledb_config, $template, $pafiledb_functions;
 
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
-		if (isset($_REQUEST['file_id']))
+		$cat_id = request_var('cat_id', 0);
+		$file_id = request_var('file_id', 0);
+		$action = request_var('action', '');
+
+		if (!empty($file_id))
 		{
-			$file_id = intval($_REQUEST['file_id']);
+			$file_id = $file_id;
 		}
 		elseif (($file_id == 0) && ($action != ''))
 		{
@@ -78,7 +82,7 @@ class pafiledb_file extends pafiledb_public
 
 		$this->generate_category_nav($file_data['file_catid']);
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
@@ -127,7 +131,7 @@ class pafiledb_file extends pafiledb_public
 		$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 		$file_long_desc = $bbcode->parse($file_data['file_longdesc']);
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'L_CLICK_HERE' => $lang['Click_here'],
 			'L_AUTHOR' => $lang['Creator'],
 			'L_VERSION' => $lang['Version'],
@@ -197,10 +201,11 @@ class pafiledb_file extends pafiledb_public
 			)
 		);
 
-		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_field.' . PHP_EXT);
-		$custom_field = new custom_field();
-		$custom_field->init();
-		$custom_field->display_data($file_id);
+		$custom_fields = new custom_fields();
+		$custom_fields->custom_table = PA_CUSTOM_TABLE;
+		$custom_fields->custom_data_table = PA_CUSTOM_DATA_TABLE;
+		$custom_fields->init();
+		$custom_fields->display_data($file_id);
 
 
 		if($this->auth[$file_data['file_catid']]['auth_view_comment'])

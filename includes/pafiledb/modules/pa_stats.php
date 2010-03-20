@@ -19,12 +19,12 @@ class pafiledb_stats extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
+		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
 
 
 		if(!$this->auth_global['auth_stats'])
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
@@ -168,12 +168,13 @@ class pafiledb_stats extends pafiledb_public
 			$os_graphic_img = $images['voting_graphic'][$os_graphic];
 			$os_graphic = ($os_graphic < $os_graphic_max - 1) ? $os_graphic + 1 : 0;
 
-			$pafiledb_template->assign_block_vars('downloads_os', array(
+			$template->assign_block_vars('downloads_os', array(
 				'OS_IMG' => 'images/http_agents/os/' . $os_image[$index],
 				'OS_NAME' => $os_lang[$index],
 				'OS_OPTION_RESULT' => $point,
 				'OS_OPTION_IMG' => $os_graphic_img,
-				'OS_OPTION_IMG_WIDTH' => $temp_point * 2)
+				'OS_OPTION_IMG_WIDTH' => $temp_point * 2
+				)
 			);
 		}
 
@@ -186,12 +187,13 @@ class pafiledb_stats extends pafiledb_public
 			$b_graphic_img = $images['voting_graphic'][$b_graphic];
 			$b_graphic = ($b_graphic < $b_graphic_max - 1) ? $b_graphic + 1 : 0;
 
-			$pafiledb_template->assign_block_vars('downloads_b', array(
+			$template->assign_block_vars('downloads_b', array(
 				'B_IMG' => 'images/http_agents/browsers/' . $agent_image[$index],
 				'B_NAME' => $agent_lang[$index],
 				'B_OPTION_RESULT' => $point,
 				'B_OPTION_IMG' => $b_graphic_img,
-				'B_OPTION_IMG_WIDTH' => $temp_point * 2)
+				'B_OPTION_IMG_WIDTH' => $temp_point * 2
+				)
 			);
 		}
 
@@ -219,12 +221,13 @@ class pafiledb_stats extends pafiledb_public
 			$os_graphic_img = $images['voting_graphic'][$os_graphic];
 			$os_graphic = ($os_graphic < $os_graphic_max - 1) ? $os_graphic + 1 : 0;
 
-			$pafiledb_template->assign_block_vars('rating_os', array(
+			$template->assign_block_vars('rating_os', array(
 				'OS_IMG' => 'images/http_agents/os/' . $os_image[$index],
 				'OS_NAME' => $os_lang[$index],
 				'OS_OPTION_RESULT' => $point,
 				'OS_OPTION_IMG' => $os_graphic_img,
-				'OS_OPTION_IMG_WIDTH' => $temp_point)
+				'OS_OPTION_IMG_WIDTH' => $temp_point
+				)
 			);
 		}
 
@@ -237,16 +240,17 @@ class pafiledb_stats extends pafiledb_public
 			$b_graphic_img = $images['voting_graphic'][$b_graphic];
 			$b_graphic = ($b_graphic < $b_graphic_max - 1) ? $b_graphic + 1 : 0;
 
-			$pafiledb_template->assign_block_vars('rating_b', array(
+			$template->assign_block_vars('rating_b', array(
 				'B_IMG' => 'images/http_agents/browsers/' . $agent_image[$index],
 				'B_NAME' => $agent_lang[$index],
 				'B_OPTION_RESULT' => $point,
 				'B_OPTION_IMG' => $b_graphic_img,
-				'B_OPTION_IMG_WIDTH' => $temp_point)
+				'B_OPTION_IMG_WIDTH' => $temp_point
+				)
 			);
 		}
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'S_ACTION_CHART' => append_sid('dload.' . PHP_EXT . '?action=stats'),
 
 			'L_STATISTICS' => $lang['Statistics'],

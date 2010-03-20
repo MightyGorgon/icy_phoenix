@@ -39,7 +39,8 @@ if(!function_exists('cms_block_forum'))
 			)
 		);
 
-		if(!isset($_GET['article']))
+		$article = request_var('article', 0);
+		if(empty($article))
 		{
 			$template->assign_block_vars('welcome_text', array());
 
@@ -81,7 +82,7 @@ if(!function_exists('cms_block_forum'))
 		{
 			$fetchposts = phpbb_fetch_posts($cms_config_vars['md_news_forum_id'][$block_id], $cms_config_vars['md_num_news'][$block_id], 0);
 
-			$i = intval($_GET['article']);
+			$i = $article;
 
 			// Convert and clean special chars!
 			$topic_title = htmlspecialchars_clean($fetchposts[$i]['topic_title']);

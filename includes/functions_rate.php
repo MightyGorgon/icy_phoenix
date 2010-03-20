@@ -180,7 +180,7 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 	if (!empty($_POST['thanks_user']))
 	{
 		// Check if user is the topic starter
-		$sql = "SELECT `topic_poster`
+		$sql = "SELECT topic_poster
 				FROM " . TOPICS_TABLE . "
 				WHERE topic_id = '" . $topic_id . "'";
 		$result = $db->sql_query($sql);
@@ -657,7 +657,7 @@ function ratings_index()
 	$top_rated_row = top_rated_topics($config['index_rating_return']);
 	if ( sizeof($top_rated_row) )
 	{
-		for ($i=0; $i < sizeof($top_rated_row); $i++)
+		for ($i = 0; $i < sizeof($top_rated_row); $i++)
 		{
 			$last_rating_info = last_rating_info($top_rated_row[$i]['topic_id']);
 			$template->assign_block_vars('ratingrow', array(
@@ -692,60 +692,6 @@ function ratings_index()
 	);
 	$template->set_filenames(array('rating_index_body' => 'rating_index_body.tpl'));
 	$template->assign_var_from_handle('RATING_INDEX', 'rating_index_body');
-}
-
-/**
-* @return void
-* @desc Compiles a var of {RATING_HEADER} to be inserted on a template page.
-*/
-function ratings_header()
-{
-	global $template, $db, $config, $theme, $lang;
-
-	$sql = "SELECT config_value FROM " . CONFIG_TABLE . "
-					WHERE config_name = 'header_rating_return_limit'";
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-
-	$rank = 0;
-	$top_rated_row = top_rated_topics($row['config_value']);
-	if ( sizeof($top_rated_row) )
-	{
-		for ($i=0; $i < sizeof($top_rated_row); $i++)
-		{
-			$last_rating_info = last_rating_info($top_rated_row[$i]['topic_id']);
-			$template->assign_block_vars('hratingrow', array(
-				'CLASS' => ( !($rank % 2) ) ? $theme['td_class2'] : $theme['td_class1'],
-				'RANK' => ++$rank,
-				'URL' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $top_rated_row[$i]['topic_id']),
-				'LAST_RATER' => id_to_value($last_rating_info['user_id'], 'user'),
-				'U_VIEWPROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $last_rating_info['user_id']),
-				'LAST_RATER_TIME' => create_date_ip($config['default_dateformat'], $last_rating_info['rate_time'], $config['board_timezone']),
-				'TITLE' => id_to_value($top_rated_row[$i]['topic_id'], 'topic'),
-				'FORUM' => id_to_value(id_to_value($top_rated_row[$i]['topic_id'], 'topictoforum'), 'forum'),
-				'RATING' => sprintf('%.2f', $top_rated_row[$i]['average']),
-				'MIN' => $top_rated_row[$i]['min'],
-				'MAX' => $top_rated_row[$i]['max'],
-				'L_VIEW_DETAILS' => ($config['allow_ext_rating']) ? sprintf($lang['View_Details_2'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $top_rated_row[$i]['topic_id'])) : '',
-				'NUMBER_OF_RATES' => $top_rated_row[$i]['rating_number']
-				)
-			);
-		}
-	}
-	else
-	{
-		$template->assign_block_vars('hnotopics', array(
-			'MESSAGE' => $lang['No_Topics_Rated']
-			)
-		);
-	}
-
-	$template->assign_vars( array(
-		'L_TOP_RATED' => sprintf($lang['Top_Topics'], $row['config_value'])
-		)
-	);
-	$template->set_filenames(array('rate_header' => 'rate_header.tpl'));
-	$template->assign_var_from_handle('RATING_HEADER', 'rate_header');
 }
 
 function ratings_large()

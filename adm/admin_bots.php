@@ -35,9 +35,9 @@ if ($update)
 
 $bot_id = request_var('bot_id', 0);
 $bot_active = request_var('bot_active', 0);
-$bot_name = request_var('bot_name', '');
+$bot_name = request_var('bot_name', '', true);
 $bot_color = request_var('bot_color', '');
-$bot_agent = request_var('bot_agent', '');
+$bot_agent = request_var('bot_agent', '', true);
 $bot_ip = request_var('bot_ip', '');
 $bot_last_visit = request_var('bot_last_visit', 0);
 $bot_visit_counter = request_var('bot_visit_counter', 0);
@@ -62,36 +62,27 @@ if($mode == 'save')
 	// htmlspecialchars_decode is supported only since PHP 5+ (an alias has been added into functions.php, if you want to use a PHP 4 default function you can use html_entity_decode instead)
 	$input_array = array(
 		'bot_active' => $bot_active,
-		'bot_name' => '\'' . addslashes($bot_name) . '\'',
-		'bot_color' => '\'' . htmlspecialchars_decode(addslashes($bot_color)) . '\'',
-		'bot_agent' => '\'' . addslashes($bot_agent) . '\'',
-		'bot_ip' => '\'' . addslashes($bot_ip) . '\'',
-		'bot_visit_counter' => addslashes($bot_visit_counter),
+		'bot_name' => $bot_name,
+		'bot_color' => htmlspecialchars_decode($bot_color),
+		'bot_agent' => $bot_agent,
+		'bot_ip' => $bot_ip,
+		'bot_visit_counter' => $bot_visit_counter,
 	);
 
-	$input_fields_sql = '';
-	$input_values_sql = '';
-	$update_sql = '';
-	foreach ($input_array as $k => $v)
-	{
-		$input_fields_sql .= (($input_fields_sql == '') ? ('(' . $k) : (', ' . $k));
-		$input_values_sql .= (($input_values_sql == '') ? ('(' . $v) : (', ' . $v));
-		$update_sql .= (($update_sql == '') ? ($k . ' = ' . $v) : (', ' . $k . ' = ' . $v));
-	}
-	$input_fields_sql .= (($input_fields_sql == '') ? '' : ')');
-	$input_values_sql .= (($input_values_sql == '') ? '' : ')');
+	$sql_insert = $db->sql_build_insert_update($input_array, true);
+	$sql_update = $db->sql_build_insert_update($input_array, false);
 
 	$where_sql = ' WHERE bot_id = ' . $bot_id;
 
 	if(($bot_id > 0) && !empty($update_sql))
 	{
 		$message = $lang['BOT_UPDATED'];
-		$sql = "UPDATE " . $input_table . " SET " . $update_sql . $where_sql;
+		$sql = "UPDATE " . $input_table . " SET " . $sql_update . $where_sql;
 	}
 	elseif(!empty($input_fields_sql))
 	{
 		$message = $lang['BOT_ADDED'];
-		$sql = "INSERT INTO " . $input_table . " " . $input_fields_sql . " VALUES " . $input_values_sql;
+		$sql = "INSERT INTO " . $input_table . " " . $sql_insert;
 	}
 	else
 	{
@@ -164,12 +155,12 @@ elseif ($mode == 'add')
 
 		$bot_id = $row['bot_id'];
 		$bot_active = $row['bot_active'];
-		$bot_name = stripslashes($row['bot_name']);
-		$bot_color = htmlspecialchars(stripslashes($row['bot_color']));
-		$bot_agent = stripslashes($row['bot_agent']);
-		$bot_ip = stripslashes($row['bot_ip']);
+		$bot_name = $row['bot_name'];
+		$bot_color = htmlspecialchars($row['bot_color']);
+		$bot_agent = $row['bot_agent'];
+		$bot_ip = $row['bot_ip'];
 		$bot_last_visit = $row['bot_last_visit'];
-		$bot_visit_counter = stripslashes($row['bot_visit_counter']);
+		$bot_visit_counter = $row['bot_visit_counter'];
 	}
 
 	$bot_active = ($bot_id > 0) ? $bot_active : true;

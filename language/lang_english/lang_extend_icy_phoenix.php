@@ -26,8 +26,11 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	'10_Main_Settings_Icy_Phoenix' => 'Icy Phoenix',
+	'05_Server_Settings' => 'Server',
+	'10_Site_Settings' => 'Site Defaults',
+	'15_Various_Settings' => 'Various Settings',
 	'20_SQL_Charge' => 'SQL Optimization',
+	'25_Users' => 'Users',
 	'30_Posting' => 'Posting And Messages',
 	'40_IMG_Posting' => 'Images In Posts',
 	'50_Hierarchy_setting' => 'Forum',
@@ -61,6 +64,8 @@ if ($lang_extend_admin)
 		'IP_emails_only_to_admins' => 'Emails Only To Admins',
 		'IP_emails_only_to_admins_explain' => 'Allow email system only for sending emails to admins',
 
+		'IP_ajax_features_title' => 'AJAX Features',
+
 		'IP_ajax_features' => 'Enable AJAX Features',
 		'IP_ajax_features_explain' => 'Some AJAX features integrated into the site',
 
@@ -88,7 +93,7 @@ if ($lang_extend_admin)
 		'IP_xmas_fx_explain' => 'This option enables Snow Effect.',
 
 		'IP_xmas_gfx' => 'Christmas Graphics',
-		'IP_xmas_gfx_explain' => 'By enabling this option Christmas Graphics will be applied.',
+		'IP_xmas_gfx_explain' => 'By enabling this option Christmas Graphics will be applied (please note that only some templates support this feature).',
 
 		'IP_select_theme' => 'Change Style',
 		'IP_select_theme_explain' => 'By enabling this option a select box with all the available styles will be added for fast style switching.',
@@ -103,10 +108,10 @@ if ($lang_extend_admin)
 
 		'IP_split_ga_ann_sticky' => 'Split Topic by Type',
 		'IP_split_ga_ann_sticky_explain' => 'Here you can choose a way to split Topics by Type on the viewforum page',
-		'IP_split_topic_0' => '<p>All Topic Types Together (no Split)</p>',
-		'IP_split_topic_1' => '<p>Global Announcements, Announcements and Stickies together, Normal Topics split</p>',
-		'IP_split_topic_2' => '<p>Global Announcements split, Announcements and Stickies joined together, Normal Topics split</p>',
-		'IP_split_topic_3' => '<p>All Topic Types Split</p>',
+		'IP_split_topic_0' => 'All Topic Types Together (no Split)',
+		'IP_split_topic_1' => 'Global Announcements, Announcements and Stickies together, Normal Topics split',
+		'IP_split_topic_2' => 'Global Announcements split, Announcements and Stickies joined together, Normal Topics split',
+		'IP_split_topic_3' => 'All Topic Types Split',
 
 // TAB - SQL Charge
 		'IP_fast_n_furious' => 'Fast And Furious',
@@ -470,8 +475,8 @@ if ($lang_extend_admin)
 		'30D' => '1 Month',
 
 
-// lang_extend_mods_settings.php
-		'Lang_extend_mods_settings' => 'Icy Phoenix Settings',
+// lang_extend_settings.php
+		'Lang_extend_settings' => 'Icy Phoenix Settings',
 		'Configuration_extend' => 'Icy Phoenix',
 		'Override_user_choices' => 'Override user choices',
 		)

@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 if (defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -103,13 +102,13 @@ $thumbnail = request_var('thumb', 0);
 // Send file to browser
 function send_file_to_browser($attachment, $upload_dir)
 {
-	global $HTTP_USER_AGENT, $lang, $db, $attach_config;
+	global $HTTP_USER_AGENT, $db, $config, $lang;
 
 	$filename = ($upload_dir == '') ? $attachment['physical_filename'] : $upload_dir . '/' . $attachment['physical_filename'];
 
 	$gotit = false;
 
-	if (!intval($attach_config['allow_ftp_upload']))
+	if (!intval($config['allow_ftp_upload']))
 	{
 		if (@!file_exists(@amod_realpath($filename)))
 		{
@@ -203,7 +202,7 @@ function send_file_to_browser($attachment, $upload_dir)
 		}
 		readfile($filename);
 	}
-	elseif (!$gotit && intval($attach_config['allow_ftp_upload']))
+	elseif (!$gotit && intval($config['allow_ftp_upload']))
 	{
 		$conn_id = attach_init_ftp();
 
@@ -258,7 +257,7 @@ if (!$download_id)
 	message_die(GENERAL_ERROR, $lang['No_attachment_selected']);
 }
 
-if ($attach_config['disable_mod'] && ($userdata['user_level'] != ADMIN))
+if ($config['disable_attachments_mod'] && ($userdata['user_level'] != ADMIN))
 {
 	message_die(GENERAL_MESSAGE, $lang['Attachment_feature_disabled']);
 }
@@ -308,7 +307,7 @@ for ($i = 0; $i < $num_auth_pages && $authorized == false; $i++)
 	}
 	else
 	{
-		if ((intval($attach_config['allow_pm_attach'])) && (($userdata['user_id'] == $auth_pages[$i]['user_id_2']) || ($userdata['user_id'] == $auth_pages[$i]['user_id_1'])) || ($userdata['user_level'] == ADMIN))
+		if ((intval($config['allow_pm_attach'])) && (($userdata['user_id'] == $auth_pages[$i]['user_id_2']) || ($userdata['user_id'] == $auth_pages[$i]['user_id_1'])) || ($userdata['user_level'] == ADMIN))
 		{
 			$authorized = true;
 		}
@@ -351,7 +350,7 @@ if ($thumbnail)
 	$thumbnail_path = THUMB_DIR . '/t_' . $attachment['physical_filename'];
 	if (!thumbnail_exists(basename($thumbnail_path)))
 	{
-		if (!intval($attach_config['allow_ftp_upload']))
+		if (!intval($config['allow_ftp_upload']))
 		{
 			$source = $upload_dir . '/' . basename($attachment['physical_filename']);
 			$dest_file = @amod_realpath($upload_dir);
@@ -393,14 +392,14 @@ if ($download_mode == PHYSICAL_LINK)
 		$script_name .= '/';
 	}
 
-	if (intval($attach_config['allow_ftp_upload']))
+	if (intval($config['allow_ftp_upload']))
 	{
-		if (trim($attach_config['download_path']) == '')
+		if (trim($config['download_path']) == '')
 		{
 			message_die(GENERAL_ERROR, 'Physical Download not possible with the current Attachment Setting');
 		}
 
-		$url = trim($attach_config['download_path']) . '/' . $attachment['physical_filename'];
+		$url = trim($config['download_path']) . '/' . $attachment['physical_filename'];
 		$redirect_path = $url;
 	}
 	else
@@ -424,7 +423,7 @@ if ($download_mode == PHYSICAL_LINK)
 }
 else
 {
-	if (intval($attach_config['allow_ftp_upload']))
+	if (intval($config['allow_ftp_upload']))
 	{
 		// We do not need a download path, we are not downloading physically
 		send_file_to_browser($attachment, '');

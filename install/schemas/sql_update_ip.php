@@ -61,6 +61,7 @@ switch ($req_version)
 	case '13558': $current_ip_version = '1.3.5.58'; break;
 	case '13659': $current_ip_version = '1.3.6.59'; break;
 	case '13760': $current_ip_version = '1.3.7.60'; break;
+	case '13861': $current_ip_version = '1.3.8.61'; break;
 }
 
 // Icy Phoenix Part...
@@ -172,12 +173,6 @@ if (substr($mode, 0, 6) == 'update')
 			KEY `rate_user_id` (`rate_user_id`),
 			KEY `rate_user_ip` (`rate_user_ip`),
 			KEY `rate_point` (`rate_point`)
-		)";
-
-		$sql[] = "CREATE TABLE " . $table_prefix . "attachments_config (
-			config_name varchar(255) NOT NULL,
-			config_value varchar(255) NOT NULL,
-			PRIMARY KEY (config_name)
 		)";
 
 		$sql[] = "CREATE TABLE " . $table_prefix . "forbidden_extensions (
@@ -1021,40 +1016,40 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('personal_allow_avatar_gallery', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('show_gif_mid_thumb', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('slideshow_script', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('upload_dir','files')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('upload_img','images/attach_post.png')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('topic_icon','images/disk_multiple.png')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('display_order','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('max_filesize','262144')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('attachment_quota','52428800')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('max_filesize_pm','262144')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('max_attachments','3')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('max_attachments_pm','1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('disable_mod','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('allow_pm_attach','1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('attachment_topic_review','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('allow_ftp_upload','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('show_apcp','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('attach_version','2.4.0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('default_upload_quota', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('default_pm_quota', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('ftp_server','')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('ftp_path','')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('download_path','')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('ftp_user','')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('ftp_pass','')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('ftp_pasv_mode','1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('img_display_inlined','1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('img_max_width','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('img_max_height','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('img_link_width','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('img_link_height','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('img_create_thumbnail','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('img_min_thumb_filesize','12000')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('img_imagick', '')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('use_gd2','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('wma_autoplay','0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "attachments_config (config_name, config_value) VALUES ('flash_autoplay','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('upload_dir','files')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('upload_img','images/attach_post.png')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('topic_icon','images/disk_multiple.png')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('display_order','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('max_filesize','262144')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('attachment_quota','52428800')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('max_filesize_pm','262144')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('max_attachments','3')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('max_attachments_pm','1')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_attachments_mod','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('allow_pm_attach','1')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('attachment_topic_review','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('allow_ftp_upload','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('show_apcp','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('attach_version','2.4.0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('default_upload_quota', '0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('default_pm_quota', '0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('ftp_server','')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('ftp_path','')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('download_path','')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('ftp_user','')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('ftp_pass','')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('ftp_pasv_mode','1')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('img_display_inlined','1')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('img_max_width','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('img_max_height','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('img_link_width','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('img_link_height','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('img_create_thumbnail','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('img_min_thumb_filesize','12000')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('img_imagick', '')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('use_gd2','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('wma_autoplay','0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('flash_autoplay','0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "forbidden_extensions (ext_id, extension) VALUES (1,'php')";
 		$sql[] = "INSERT INTO " . $table_prefix . "forbidden_extensions (ext_id, extension) VALUES (2,'php3')";
 		$sql[] = "INSERT INTO " . $table_prefix . "forbidden_extensions (ext_id, extension) VALUES (3,'php4')";
@@ -1944,64 +1939,52 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_mail` INT(11) NULL DEFAULT 1 AFTER `ct_search_count`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_post` INT(11) NULL DEFAULT 1 AFTER `ct_last_mail`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_post_counter` MEDIUMINT(8) NULL DEFAULT 1 AFTER `ct_last_post`;";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_pw_reset` INT(11) NULL DEFAULT 1 AFTER `ct_post_counter`;";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_enable_ip_warn` TINYINT(1) NULL DEFAULT 1 AFTER `ct_last_pw_reset`;";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_enable_ip_warn` TINYINT(1) NULL DEFAULT 1 AFTER `ct_post_counter`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_used_ip` VARCHAR(16) NULL DEFAULT '0.0.0.0' AFTER `ct_enable_ip_warn`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_ip` VARCHAR(16) NULL DEFAULT '0.0.0.0' AFTER `ct_last_used_ip`;";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_login_count` MEDIUMINT(8) NULL DEFAULT 1 AFTER `ct_last_used_ip`;";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_login_vconfirm` TINYINT(1) NULL DEFAULT 0 AFTER `ct_login_count`;";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_pw_change` INT(11) NULL DEFAULT 1 AFTER `ct_login_vconfirm`;";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_global_msg_read` TINYINT(1) NULL DEFAULT 0 AFTER `ct_last_pw_change`;";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_global_msg_read` TINYINT(1) NULL DEFAULT 0 AFTER `ct_last_ip`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_miserable_user` TINYINT(1) NULL DEFAULT 0 AFTER `ct_global_msg_read`;";
 
-		$sql[] = "CREATE TABLE `" . $table_prefix . "ctracker_config` (
-			`ct_config_name` varchar(255) NOT NULL,
-			`ct_config_value` varchar(255) NOT NULL,
-			PRIMARY KEY (`ct_config_name`)
-		);";
-
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('ipblock_enabled', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('ipblock_logsize', '100');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('auto_recovery', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('vconfirm_guest', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('autoban_mails', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('detect_misconfiguration', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('search_time_guest', '30');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('search_time_user', '20');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('search_count_guest', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('search_count_user', '4');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('massmail_protection', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('reg_protection', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('reg_blocktime', '30');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('reg_lastip', '0.0.0.0');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('pwreset_time', '20');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('massmail_time', '20');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('spammer_time', '30');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('spammer_postcount', '4');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('spammer_blockmode', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('loginfeature', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('pw_reset_feature', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('reg_last_reg', '1155944976');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('login_history', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('login_history_count', '10');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('login_ip_check', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('pw_validity', '30');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('pw_complex_min', '4');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('pw_complex_mode', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('pw_control', '0');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('pw_complex', '0');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('last_file_scan', '1156000091');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('last_checksum_scan', '1156000082');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('logsize_logins', '100');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('logsize_spammer', '100');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('reg_ip_scan', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('global_message', 'Hello world!');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('global_message_type', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('logincount', '2');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('search_feature_enabled', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('spam_attack_boost', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('spam_keyword_det', '1');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "ctracker_config` (`ct_config_name`, `ct_config_value`) VALUES ('footer_layout', '6');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_ipblock_enabled', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_ipblock_logsize', '100');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_auto_recovery', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_vconfirm_guest', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_autoban_mails', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_search_time_guest', '30');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_search_time_user', '20');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_search_count_guest', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_search_count_user', '4');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_massmail_protection', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_reg_protection', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_reg_blocktime', '30');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_reg_lastip', '0.0.0.0');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_pwreset_time', '20');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_massmail_time', '20');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_spammer_time', '30');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_spammer_postcount', '4');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_spammer_blockmode', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_loginfeature', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_pw_reset_feature', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_reg_last_reg', '1155944976');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_login_history', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_login_history_count', '10');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_login_ip_check', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_pw_validity', '30');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_pw_complex_min', '4');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_pw_complex_mode', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_pw_control', '0');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_pw_complex', '0');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_last_file_scan', '1156000091');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_last_checksum_scan', '1156000082');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_logsize_logins', '100');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_logsize_spammer', '100');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_reg_ip_scan', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_global_message', 'Hello world!');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_global_message_type', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_search_feature_enabled', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_spam_attack_boost', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_spam_keyword_det', '1');";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ctracker_footer_layout', '6');";
 
 		// Create File Check Table
 		$sql[] = "CREATE TABLE `" . $table_prefix . "ctracker_filechk` (
@@ -3116,7 +3099,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('YaCy', '', 'yacybot', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yanga WorldSearch', '', 'Yanga WorldSearch Bot', '')";
 
-		//$sql[] = "INSERT INTO `" . $table_prefix . "users` (`user_id`, `user_active`, `username`, `user_password`, `user_session_time`, `user_session_page`, `user_http_agents`, `user_lastvisit`, `user_regdate`, `user_level`, `user_cms_level`, `user_posts`, `user_timezone`, `user_style`, `user_lang`, `user_dateformat`, `user_new_privmsg`, `user_unread_privmsg`, `user_last_privmsg`, `user_emailtime`, `user_viewemail`, `user_profile_view_popup`, `user_attachsig`, `user_setbm`, `user_allowhtml`, `user_allowbbcode`, `user_allowsmile`, `user_allowavatar`, `user_allow_pm`, `user_allow_viewonline`, `user_notify`, `user_notify_pm`, `user_popup_pm`, `user_rank`, `user_rank2`, `user_rank3`, `user_rank4`, `user_rank5`, `user_avatar`, `user_avatar_type`, `user_email`, `user_icq`, `user_website`, `user_from`, `user_sig`, `user_aim`, `user_yim`, `user_msnm`, `user_occ`, `user_interests`, `user_actkey`, `user_newpasswd`, `user_birthday`, `user_next_birthday_greeting`, `user_sub_forum`, `user_split_cat`, `user_last_topic_title`, `user_sub_level_links`, `user_display_viewonline`, `user_color_group`, `user_color`, `user_gender`, `user_lastlogon`, `user_totaltime`, `user_totallogon`, `user_totalpages`, `user_calendar_display_open`, `user_calendar_header_cells`, `user_calendar_week_start`, `user_calendar_nb_row`, `user_calendar_birthday`, `user_calendar_forum`, `user_warnings`, `user_time_mode`, `user_dst_time_lag`, `user_pc_timeOffsets`, `user_skype`, `user_registered_ip`, `user_registered_hostname`, `user_profile_view`, `user_last_profile_view`, `user_topics_per_page`, `user_hot_threshold`, `user_posts_per_page`, `user_allowswearywords`, `user_showavatars`, `user_showsignatures`, `user_login_tries`, `user_last_login_try`, `user_sudoku_playing`, `user_from_flag`, `user_phone`, `user_selfdes`, `user_upi2db_which_system`, `user_upi2db_disable`, `user_upi2db_datasync`, `user_upi2db_new_word`, `user_upi2db_edit_word`, `user_upi2db_unread_color`, `user_personal_pics_count`) VALUES (-2, 0, 'Bot', '', 0, 0, '', 0, 0, 0, 0, 0, 0.00, NULL, '', '', 0, 0, 0, NULL, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, NULL, -1, -2, -2, -2, '', 0, '', '', '', '', '', '', '', '', '', '', '', '', 999999, 0, 1, 1, 1, 2, 2, 0, '', 0, 0, 0, 0, 0, 0, 0, 1, 5, 1, 1, 0, 2, 60, '0', NULL, NULL, NULL, 0, 0, '50', '15', '15', 0, 1, 1, 0, 0, 0, NULL, NULL, NULL, 1, 0, 0, 1, 1, 1, 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('bots_reg_auth', '0')";
 
 		/* Updating from IP 1.2.11.38 */
@@ -3182,6 +3164,10 @@ if (substr($mode, 0, 6) == 'update')
 				KEY `poster_id` (`poster_id`),
 				KEY `post_time` (`post_time`)
 			)";
+
+			// Needed for standard phpBB
+			$sql[] = "ALTER TABLE `" . $table_prefix . "posts_text` ADD `post_text_compiled` TEXT NOT NULL AFTER `post_text`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "posts_text` ADD `edit_notes` MEDIUMTEXT NOT NULL AFTER `post_text_compiled`";
 
 			$sql[] = "INSERT INTO `___posts___`
 				SELECT p.post_id, p.topic_id, p.forum_id, p.poster_id, p.post_time, p.poster_ip, p.post_username, t.post_subject, t.post_text, t.post_text_compiled, p.enable_bbcode, p.enable_html, p.enable_smilies, p.enable_autolinks_acronyms, p.enable_sig, t.edit_notes, p.post_edit_time, p.post_edit_count, p.post_edit_id, p.post_attachment, p.post_bluecard
@@ -3742,9 +3728,126 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.6.59 */
 		case '1.3.6.59':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_login_tries` `user_login_attempts` TINYINT(4) DEFAULT '0' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_last_login_try` `user_last_login_attempt` INT(11) NOT NULL DEFAULT '0'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_password` `user_password` VARCHAR(40) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_newpasswd` `user_newpasswd` VARCHAR(40) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_passchg` INT(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_password`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_passchg`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_form_salt` VARCHAR(32) DEFAULT '' NOT NULL AFTER `user_pass_convert`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_email_hash` BIGINT(20) DEFAULT '0' NOT NULL AFTER `user_email`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_options` INT(11) UNSIGNED DEFAULT '895' NOT NULL AFTER `user_setbm`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `ct_last_pw_reset`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `ct_last_pw_change`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `ct_login_count`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `ct_login_vconfirm`";
+
+		$sql_tmp = "SELECT * FROM " . $table_prefix . "ctracker_config";
+		$result_tmp = $db->sql_query($sql_tmp);
+		while ($row = $db->sql_fetchrow($result_tmp))
+		{
+			$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('ctracker_" . $row['ct_config_name'] . "', '" . $row['ct_config_value'] . "')";
+			$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '" . $row['ct_config_value'] . "' WHERE config_name = 'ctracker_" . $row['ct_config_name'] . "'";
+		}
+		$db->sql_freeresult($result_tmp);
+		$sql[] = "DROP TABLE `" . $table_prefix . "ctracker_config`";
+
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'ctracker_detect_misconfiguration'";
+
+		$sql_tmp = "SELECT * FROM " . $table_prefix . "attachments_config";
+		$result_tmp = $db->sql_query($sql_tmp);
+		while ($row = $db->sql_fetchrow($result_tmp))
+		{
+			$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('" . $row['config_name'] . "', '" . $row['config_value'] . "')";
+			$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '" . $row['config_value'] . "' WHERE config_name = '" . $row['config_name'] . "'";
+		}
+		$db->sql_freeresult($result_tmp);
+		$sql[] = "DROP TABLE `" . $table_prefix . "attachments_config`";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_site_history_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_site_history_last_run', '0')";
+
+		// New AUTH System - BEGIN
+		$sql[] = "CREATE TABLE `" . $table_prefix . "acl_groups` (
+			`group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`auth_role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+			KEY `group_id` (`group_id`),
+			KEY `auth_opt_id` (`auth_option_id`),
+			KEY `auth_role_id` (`auth_role_id`)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "acl_options` (
+			`auth_option_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`auth_option` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '',
+			`is_global` tinyint(1) unsigned NOT NULL DEFAULT '0',
+			`is_local` tinyint(1) unsigned NOT NULL DEFAULT '0',
+			`founder_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
+			PRIMARY KEY (`auth_option_id`),
+			UNIQUE KEY `auth_option` (`auth_option`)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "acl_roles` (
+			`role_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`role_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
+			`role_description` text COLLATE utf8_bin NOT NULL,
+			`role_type` varchar(10) COLLATE utf8_bin NOT NULL DEFAULT '',
+			`role_order` smallint(4) unsigned NOT NULL DEFAULT '0',
+			PRIMARY KEY (`role_id`),
+			KEY `role_type` (`role_type`),
+			KEY `role_order` (`role_order`)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "acl_roles_data` (
+			`role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+			PRIMARY KEY (`role_id`,`auth_option_id`),
+			KEY `ath_op_id` (`auth_option_id`)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "acl_users` (
+			`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`auth_role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+			KEY `user_id` (`user_id`),
+			KEY `auth_option_id` (`auth_option_id`),
+			KEY `auth_role_id` (`auth_role_id`)
+		)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (1, 'cms_', 0, 1, 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (2, 'cms_view', 0, 1, 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (3, 'cms_edit', 0, 1, 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (4, 'cms_l_new', 0, 1, 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (5, 'cms_l_edit', 0, 1, 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (6, 'cms_l_delete', 0, 1, 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (7, 'cms_b_new', 0, 1, 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (8, 'cms_b_edit', 0, 1, 0)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (9, 'cms_b_delete', 0, 1, 0)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (1, 'CMS_CONTENT_MANAGER', 'CMS_CONTENT_MANAGER_TEXT', 'cms_', 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (2, 'CMS_REVIEWER', 'CMS_REVIEWER_TEXT', 'cms_', 2)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (3, 'CMS_PUBLISHER', 'CMS_PUBLISHER_TEXT', 'cms_', 3)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 2, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 3, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 4, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 5, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 6, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 7, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 8, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 9, 1)";
+		// New AUTH System - END
 
 		/* Updating from IP 1.3.7.60 */
 		case '1.3.7.60':
+
+		/* Updating from IP 1.3.8.61 */
+		case '1.3.8.61':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

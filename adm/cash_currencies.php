@@ -15,14 +15,13 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (empty($config['plugins']['cash']['enabled']))
 {
@@ -35,15 +34,17 @@ if ($config['cash_adminnavbar'])
 	include('./admin_cash.' . PHP_EXT);
 }
 
-if (isset($_POST['submit']))
+$set = request_var('set', '');
+$submit = request_var('submit', '');
+if (1empty($submit)))
 {
-	switch($_POST['submit'])
+	switch($submit)
 	{
 		case $lang['Update']:
-			$_POST['set'] = 'updatecurrency';
+			$set = 'updatecurrency';
 			break;
 		case $lang['Delete']:
-			$_POST['set'] = 'deletecurrency';
+			$set = 'deletecurrency';
 			break;
 	}
 }
@@ -52,12 +53,13 @@ $num_currencies = 0;
 $good_order = true;
 
 // Pull all config data
-if (isset($_POST['set']))
+if (!empty($set))
 {
-	switch ($_POST['set'])
+	switch ($set)
 	{
 		case 'updatecurrency': // Change Currency Name
-			if (isset($_POST['cid']) && is_numeric($_POST['cid']) && $cash->currency_exists(intval($_POST['cid'])))
+			$cid = request_post_var('cid', 0);
+			if (!empty($cid) && $cash->currency_exists($cid))
 			{
 				/*
 					This update works on several levels. If it's just a name change, it's simple... update the value in the Cash Table.
@@ -66,10 +68,10 @@ if (isset($_POST['set']))
 					(by default, we want to _not_ run redundant updates on the system)
 					Note: if the DBMS doesn't use a decimal-specific float field, we don't need to update it.
 				*/
-				$c_cur = $cash->currency(intval($_POST['cid']));
-				$newname = $_POST['rename_value'];
-				$newdefault = intval($_POST['default_value']);
-				$newdecimal = intval($_POST['decimal_value']);
+				$c_cur = $cash->currency($cid);
+				$newname = request_post_var('rename_value', '', true);
+				$newdefault = request_post_var('default_value', 0);
+				$newdecimal = request_post_var('decimal_value', 0);
 				$update_name = ($c_cur->data('cash_name') != $newname);
 				$update_default = ($c_cur->data('cash_default') != $newdefault);
 				$update_decimal = ($c_cur->data('cash_decimal') != $newdecimal);
@@ -78,42 +80,18 @@ if (isset($_POST['set']))
 				if ($c_cur->db() == 'user_points')
 				{
 					$sql = "UPDATE " . CONFIG_TABLE . "
-							SET config_value = '" . str_replace("\'", "''", $new_name) . "'
+							SET config_value = '" . $db->sql_escape($new_name) . "'
 							WHERE config_name = 'points_name'";
 					$db->sql_query($sql);
 				}
 				$sql = array();
-				switch (SQL_LAYER)
+				if ($update_default || $update_decimal)
 				{
-					case 'postgresql':
-						if ($update_default)
-						{
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " ALTER COLUMN " . $c_cur->db() . " SET DEFAULT '$newdefault'";
-						}
-						break;
-					case 'mssql':
-					case 'mssql-odbc':
-						if ($update_default)
-						{
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP CONSTRAINT df_" . $c_cur->db();
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " ADD CONSTRAINT [df_" . $c_cur->db() . "] DEFAULT ($newdefault) FOR [" . $c_cur->db() . "]";
-						}
-						break;
-					case 'mysql':
-					case 'mysql4':
-						if ($update_default || $update_decimal)
-						{
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " MODIFY " . $c_cur->db() . " DECIMAL(11, $newdecimal) DEFAULT '$newdefault' NOT NULL";
-						}
-						break;
-					case 'msaccess':
-					case 'oracle':
-					default:
-						break;
+					$sql[] = "ALTER TABLE " . USERS_TABLE . " MODIFY " . $c_cur->db() . " DECIMAL(11, $newdecimal) DEFAULT '$newdefault' NOT NULL";
 				}
 				// Update the Cash Table
 				$sql[] = "UPDATE " . CASH_TABLE . "
-						SET cash_name = '" . str_replace("\'", "''", $newname) . "', cash_default = '" . $newdefault . "', cash_decimals = '" . $newdecimal . "'
+						SET cash_name = '" . $db->sql_escape($newname) . "', cash_default = '" . $newdefault . "', cash_decimals = '" . $newdecimal . "'
 						WHERE cash_id = " . $c_cur->id();
 				for($i = 0; $i < sizeof($sql); $i++)
 				{
@@ -128,15 +106,16 @@ if (isset($_POST['set']))
 								$c_cur->name(true),
 								$newname
 					);
-				cash_create_log(CASH_LOG_ADMIN_RENAME_CURRENCY , $action);
+				cash_create_log(CASH_LOG_ADMIN_RENAME_CURRENCY, $action);
 
 				$db->clear_cache('cash_');
 			}
 			break;
 		case 'deletecurrency': // Delete Currency
-			if (isset($_POST['cid']) && !isset($_POST['cancel']) && is_numeric($_POST['cid']) && $cash->currency_exists(intval($_POST['cid'])))
+			$cid = request_post_var('cid', 0);
+			if (!empty($cid) && !isset($_POST['cancel']) && $cash->currency_exists($cid))
 			{
-				$c_cur = $cash->currency(intval($_POST['cid']));
+				$c_cur = $cash->currency($cid);
 				if (!isset($_POST['confirm']))
 				{
 					$s_hidden_fields = '<input type="hidden" name="set" value="deletecurrency" />';
@@ -158,29 +137,7 @@ if (isset($_POST['set']))
 				{
 					// Delete the field
 					$sql = array();
-					switch (SQL_LAYER)
-					{
-						case 'msaccess':
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP " . $c_cur->db();
-							break;
-						// No drop column option available before Oracle8i v8.1
-						case 'oracle':
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP " . $c_cur->db();
-							break;
-						case 'postgresql':
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP COLUMN " . $c_cur->db();
-							break;
-						case 'mssql':
-						case 'mssql-odbc':
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP CONSTRAINT df_" . $c_cur->db();
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP COLUMN " . $c_cur->db();
-							break;
-						case 'mysql':
-						case 'mysql4':
-						default:
-							$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP " . $c_cur->db();
-							break;
-					}
+					$sql[] = "ALTER TABLE " . USERS_TABLE . " DROP " . $c_cur->db();
 					for ($i = 0; $i < sizeof($sql); $i++)
 					{
 						$db->sql_query($sql[$i]);
@@ -202,7 +159,7 @@ if (isset($_POST['set']))
 									$userdata['username'],
 									$c_cur->name(true)
 						);
-					cash_create_log(CASH_LOG_ADMIN_DELETE_CURRENCY , $action);
+					cash_create_log(CASH_LOG_ADMIN_DELETE_CURRENCY, $action);
 					$_POST['submit'] = true;
 
 					$db->clear_cache('cash_');
@@ -253,7 +210,7 @@ if (isset($_POST['set']))
 						$c_cur1->name(true),
 						$c_cur2->name(true)
 					);
-					cash_create_log(CASH_LOG_ADMIN_COPY_CURRENCY , $action);
+					cash_create_log(CASH_LOG_ADMIN_COPY_CURRENCY, $action);
 				}
 			}
 			break;
@@ -275,31 +232,8 @@ if (isset($_POST['set']))
 					message_die(GENERAL_ERROR, sprintf($lang['Bad_dbfield'],'$regex = \'/^user_[a-z]+$/\';'));
 				}
 
-				//
 				// Built insert query
-				//
-				$sql = "";
-				switch (SQL_LAYER)
-				{
-					case 'msaccess':
-						$sql = "ALTER TABLE " . USERS_TABLE . " ADD COLUMN $new_field float NOT NULL";
-						break;
-					case 'oracle':
-						$sql = "ALTER TABLE " . USERS_TABLE . " ADD ($new_field NUMBER(11,$new_decimals) DEFAULT $new_default NOT NULL)";
-						break;
-					case 'postgresql':
-						$sql = "ALTER TABLE " . USERS_TABLE . " ADD COLUMN $new_field float8 NOT NULL DEFAULT '$new_default'";
-						break;
-					case 'mssql':
-					case 'mssql-odbc':
-						$sql = "ALTER TABLE " . USERS_TABLE . " ADD $new_field float NOT NULL CONSTRAINT df_$new_field DEFAULT '$new_default'";
-						break;
-					case 'mysql':
-					case 'mysql4':
-					default:
-						$sql = "ALTER TABLE " . USERS_TABLE . " ADD $new_field DECIMAL(11,$new_decimals) NOT NULL DEFAULT '$new_default'";
-						break;
-				}
+				$sql = "ALTER TABLE " . USERS_TABLE . " ADD $new_field DECIMAL(11,$new_decimals) NOT NULL DEFAULT '$new_default'";
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
 				$db->sql_return_on_error(false);
@@ -324,7 +258,7 @@ if (isset($_POST['set']))
 				if ($new_field == "user_points")
 				{
 					$sql = "UPDATE " . CONFIG_TABLE . "
-							SET config_value = '" . str_replace("\'", "''", $new_name) . "'
+							SET config_value = '" . $db->sql_escape($new_name) . "'
 							WHERE config_name = 'points_name'";
 					$db->sql_query($sql);
 				}
@@ -333,7 +267,7 @@ if (isset($_POST['set']))
 				//
 				$sql = "INSERT INTO " . CASH_TABLE . "
 						(cash_name, cash_dbfield, cash_order, cash_decimals)
-						VALUES ('" . str_replace("\'", "''", $new_name) . "','" . $new_field . "'," . $new_order . "," . $new_decimals . ")";
+						VALUES ('" . $db->sql_escape($new_name) . "','" . $new_field . "'," . $new_order . "," . $new_decimals . ")";
 				$db->sql_query($sql);
 				$cid = $db->sql_nextid();
 
@@ -356,7 +290,7 @@ if (isset($_POST['set']))
 					$userdata['username'],
 					$new_name
 				);
-				cash_create_log(CASH_LOG_ADMIN_CREATE_CURRENCY , $action);
+				cash_create_log(CASH_LOG_ADMIN_CREATE_CURRENCY, $action);
 
 				$db->clear_cache('cash_');
 			}

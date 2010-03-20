@@ -22,11 +22,8 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = ($_GET['mode']) ? $_GET['mode'] : $_POST['mode'];
-}
-else
+$mode = request_var('mode', '');
+if(empty($mode))
 {
 	// These could be entered via a form button
 	if(isset($_POST['add']))
@@ -43,11 +40,11 @@ else
 	}
 }
 
-if($mode != '')
+if(!empty($mode))
 {
 	if(($mode == 'edit') || ($mode == 'add'))
 	{
-		$acronym_id = (isset($_GET['id'])) ? intval($_GET['id']) : 0;
+		$acronym_id = request_var('id', 0);
 
 		$template->set_filenames(array('body' => ADM_TPL . 'acronyms_edit_body.tpl'));
 
@@ -92,9 +89,9 @@ if($mode != '')
 	}
 	elseif($mode == 'save')
 	{
-		$acronym_id = (isset($_POST['id'])) ? intval($_POST['id']) : 0;
-		$acronym = (isset($_POST['acronym'])) ? trim($_POST['acronym']) : '';
-		$description = (isset($_POST['description'])) ? trim($_POST['description']) : '';
+		$acronym_id = request_post_var('id', 0);
+		$acronym = request_post_var('acronym', '', true);
+		$description = request_post_var('description', '', true);
 
 		if(($acronym == '') || ($description == ''))
 		{
@@ -104,13 +101,13 @@ if($mode != '')
 		if($acronym_id)
 		{
 			$sql = "UPDATE " . ACRONYMS_TABLE . "
-				SET acronym = '" . str_replace("\'", "''", htmlspecialchars($acronym)) . "', description = '" . str_replace("\'", "''", htmlspecialchars($description)) . "'
+				SET acronym = '" . $db->sql_escape($acronym) . "', description = '" . $db->sql_escape($description) . "'
 				WHERE acronym_id = $acronym_id";
 			$message = $lang['Acronym_updated'];
 		}
 		else
 		{
-			$sql = 'SELECT acronym FROM ' . ACRONYMS_TABLE . " WHERE acronym = '" . str_replace("\'", "''", htmlspecialchars($acronym)) . "'";
+			$sql = 'SELECT acronym FROM ' . ACRONYMS_TABLE . " WHERE acronym = '" . $db->sql_escape($acronym) . "'";
 			$result = $db->sql_query($sql);
 
 			if($db->sql_fetchrow($result))
@@ -126,7 +123,7 @@ if($mode != '')
 			$db->sql_freeresult($result);
 
 			$sql = "INSERT INTO " . ACRONYMS_TABLE . " (acronym, description)
-				VALUES ('" . str_replace("\'", "''", htmlspecialchars($acronym)) . "', '" . str_replace("\'", "''", htmlspecialchars($description)) . "')";
+				VALUES ('" . $db->sql_escape($acronym) . "', '" . $db->sql_escape($description) . "')";
 
 			$message = $lang['Acronym_added'];
 		}
@@ -140,16 +137,9 @@ if($mode != '')
 	}
 	elseif($mode == 'delete')
 	{
-		if(isset($_POST['id']) || isset($_GET['id']))
-		{
-			$acronym_id = (isset($_POST['id'])) ? intval($_POST['id']) : intval($_GET['id']);
-		}
-		else
-		{
-			$acronym_id = 0;
-		}
+		$acronym_id = request_post_var('id', 0);
 
-		if($acronym_id)
+		if(!empty($acronym_id))
 		{
 			$sql = "DELETE FROM " . ACRONYMS_TABLE . " WHERE acronym_id = $acronym_id";
 			$result = $db->sql_query($sql);

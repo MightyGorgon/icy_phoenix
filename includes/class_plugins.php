@@ -162,43 +162,102 @@ class class_plugins
 	}
 
 	/*
+	* Get the user config if defined
+	*/
+	function user_config_key($key, $user_field = '', $over_field = '')
+	{
+		global $config, $userdata;
+
+		// Get the user fields name if not given
+		if (empty($user_field))
+		{
+			$user_field = 'user_' . $key;
+		}
+
+		// Get the overwrite allowed switch name if not given
+		if (empty($over_field))
+		{
+			$over_field = $key . '_over';
+		}
+
+		// Does the key exists?
+		if (!isset($this->config[$key])) return;
+
+		// Does the user field exists ?
+		if (!isset($userdata[$user_field])) return;
+
+		// Does the overwrite switch exists?
+		if (!isset($this->config[$over_field]))
+		{
+			$this->config[$over_field] = 0; // no overwrite
+		}
+
+		// Overwrite with the user data only if not overwrite set, not anonymous, logged in
+		// If the user is admin we will not overwrite his setting either...
+		if ((!intval($this->config[$over_field]) && ($userdata['user_id'] != ANONYMOUS) && $userdata['session_logged_in']) || ($userdata['user_level'] == ADMIN))
+		{
+			$this->config[$key] = $userdata[$user_field];
+		}
+		else
+		{
+			$userdata[$user_field] = $this->config[$key];
+		}
+	}
+
+	/*
 	* Initialize plugins configuration
 	*/
-	function init_plugins_config($mod_name, $config_fields, $clear_cache = true, $sub_name = '', $sub_sort = 0, $mod_sort = 0, $menu_name = 'Configuration', $menu_sort = 0)
+	function init_plugins_config($settings_details, $settings_data)
 	{
 		global $db, $cache, $config, $lang;
 
-		foreach ($config_fields as $config_key => $config_data)
+		@reset($settings_data);
+		while (list($config_key, $config_data) = each($settings_data))
 		{
-			// create the key value
-			$config_value = (!empty($config_data['values']) ? $config_data['values'][$config_data['default']] : $config_data['default']);
-			if (!isset($this->config[$config_key]))
+			if (!isset($config_data['user_only']) || !$config_data['user_only'])
 			{
-				$this->set_plugin_config($config_key, $config_value, false, false);
+				// Create the key value
+				$config_value = (!empty($config_data['values']) ? $config_data['values'][$config_data['default']] : $config_data['default']);
+				if (!isset($this->config[$config_key]))
+				{
+					$this->set_plugin_config($config_key, $config_value, false, false);
+				}
+				if (!empty($config_data['user']))
+				{
+					$config_key_over = $config_key . '_over';
+					if (!isset($config[$config_key_over]))
+					{
+						// Create the "overwrite user choice" value
+						$this->set_plugin_config($config_key_over, 0, false, false);
+					}
+
+					// Get user choice value
+					$this->user_config_key($config_key, $config_data['user']);
+				}
 			}
 
-			// deliver it for input only if not hidden
+			// Deliver it for input only if not hidden
 			if (!isset($config_data['hide']) || !$config_data['hide'])
 			{
-				$this->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$config_key] = $config_data;
+				$this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['data'][$settings_details['sub_name']]['data'][$config_key] = $config_data;
 
-				// sort values : overwrite only if not yet provided
-				if (empty($this->modules[$menu_name]['sort']) || ($this->modules[$menu_name]['sort'] == 0))
+				// Sort values: overwrite only if not yet provided
+				if (empty($this->modules[$settings_details['menu_name']]['sort']) || ($this->modules[$settings_details['menu_name']]['sort'] == 0))
 				{
-					$this->modules[$menu_name]['sort'] = $menu_sort;
+					$this->modules[$settings_details['menu_name']]['sort'] = $settings_details['menu_sort'];
 				}
-				if (empty($this->modules[$menu_name]['data'][$mod_name]['sort']) || ($this->modules[$menu_name]['data'][$mod_name]['sort'] == 0))
+				if (empty($this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['sort']) || ($this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['sort'] == 0))
 				{
-					$this->modules[$menu_name]['data'][$mod_name]['sort'] = $mod_sort;
+					$this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['sort'] = $settings_details['sort'];
 				}
-				if (empty($this->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['sort']) || ($this->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['sort'] == 0))
+				if (empty($this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['data'][$settings_details['sub_name']]['sort']) || ($this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['data'][$settings_details['sub_name']]['sort'] == 0))
 				{
-					$this->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['sort'] = $sub_sort;
+					$this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['data'][$settings_details['sub_name']]['sort'] = $settings_details['sub_sort'];
 				}
 			}
 		}
 
-		if ($clear_cache)
+		if ($settings_details['clear_cache'])
 		{
 			$this->cache_clear();
 		}
@@ -237,7 +296,7 @@ class class_plugins
 		global $db, $cache, $config, $lang;
 
 		// Search for modules...
-		$plugin_path = IP_ROOT_PATH . PLUGINS_PATH . $plugin_dir . ADM . '/';
+		$plugin_path = IP_ROOT_PATH . PLUGINS_PATH . basename($plugin_dir) . '/' . ADM . '/';
 		$dir = @opendir($plugin_path);
 
 		if ($dir)

@@ -138,7 +138,7 @@ for($i = 0; $i < sizeof($level_cat); $i++)
 			$topic_percent = 0;
 		}
 
-		$pmto = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $staff[user_id]);
+		$pmto = append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $staff[user_id]);
 		$pm = '<a href="' . $pmto . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 		$mailto = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $staff['user_id']) : 'mailto:' . $staff['user_email'];
 		$mail = ($staff['user_email']) ? '<a href="' . $mailto . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>' : '';

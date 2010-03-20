@@ -22,25 +22,25 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+if (empty($userdata))
+{
+	$userdata = session_pagestart($user_ip);
+	init_userprefs($userdata);
+}
 // End session management
 
-define('CMS_INIT', true);
-$cms_config_vars = $cache->obtain_cms_config();
-$cms_config_global_blocks = $cache->obtain_cms_global_blocks_config(false);
+if (!defined('CMS_INIT'))
+{
+	define('CMS_INIT', true);
+}
+
+$cms_config_vars = (empty($cms_config_vars) ? $cache->obtain_cms_config() : $cms_config_vars);
+$cms_config_global_blocks = (empty($cms_config_global_blocks) ? $cache->obtain_cms_global_blocks_config(false) : $cms_config_global_blocks);
 
 if (defined('IN_CMS_PAGE_INDEX'))
 {
-	if(!empty($_GET['page']))
-	{
-		$layout = intval($_GET['page']);
-		$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
-	}
-	else
-	{
-		$layout = $cms_config_vars['default_portal'];
-	}
+	$layout = request_var('page', $cms_config_vars['default_portal']);
+	$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
 }
 else
 {

@@ -23,7 +23,7 @@ if (!defined('IN_ICYPHOENIX'))
 // Versioning
 $fap_version = '1.5.0';
 $phpbb_version = '.0.23';
-$ip_version = '1.3.6.59';
+$ip_version = '1.3.7.60';
 
 // CHMOD
 $chmod_777 = array();
@@ -35,12 +35,6 @@ $chmod_777[] = '../cache/posts';
 $chmod_777[] = '../cache/sql';
 $chmod_777[] = '../cache/topics';
 $chmod_777[] = '../cache/users';
-$chmod_777[] = '../ctracker/logfiles/logfile_attempt_counter.txt';
-$chmod_777[] = '../ctracker/logfiles/logfile_blocklist.txt';
-$chmod_777[] = '../ctracker/logfiles/logfile_debug_mode.txt';
-$chmod_777[] = '../ctracker/logfiles/logfile_malformed_logins.txt';
-$chmod_777[] = '../ctracker/logfiles/logfile_spammer.txt';
-$chmod_777[] = '../ctracker/logfiles/logfile_worms.txt';
 $chmod_777[] = '../downloads';
 $chmod_777[] = '../files';
 $chmod_777[] = '../files/album';
@@ -56,6 +50,12 @@ $chmod_777[] = '../images/avatars';
 $chmod_777[] = '../logs';
 
 $chmod_666 = array();
+$chmod_666[] = '../logs/logfile_attempt_counter.txt';
+$chmod_666[] = '../logs/logfile_blocklist.txt';
+$chmod_666[] = '../logs/logfile_debug_mode.txt';
+$chmod_666[] = '../logs/logfile_malformed_logins.txt';
+$chmod_666[] = '../logs/logfile_spammer.txt';
+$chmod_666[] = '../logs/logfile_worms.txt';
 //$chmod_666[] = '../language/lang_english/lang_extend.php';
 
 ?>

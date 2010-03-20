@@ -21,11 +21,9 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-//
 // Pull all news config data only
-//
 $sql = "SELECT *
 	FROM " . CONFIG_TABLE . ' as c ' .
 	" WHERE
@@ -58,12 +56,10 @@ while($row = $db->sql_fetchrow($result))
 
 	if(isset($_POST['submit']))
 	{
-		$sql = "UPDATE " . CONFIG_TABLE . " SET
-			config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-			WHERE config_name = '$config_name'";
-		$db->sql_query($sql);
+		set_config($config_name, $new[$config_name], false);
 	}
 }
+$cache->destroy('config');
 
 if(isset($_POST['submit']))
 {
@@ -72,23 +68,18 @@ if(isset($_POST['submit']))
 	message_die(GENERAL_MESSAGE, $message);
 }
 
-$news_yes = ($new['allow_news']) ? "checked=\"checked\"" : "";
-$news_no = (!$new['allow_news']) ? "checked=\"checked\"" : "";
+$news_yes = ($new['allow_news']) ? 'checked="checked"' : '';
+$news_no = (!$new['allow_news']) ? 'checked="checked"' : '';
 
-$rss_yes = ($new['allow_rss']) ? "checked=\"checked\"" : "";
-$rss_no = (!$new['allow_rss']) ? "checked=\"checked\"" : "";
+$rss_yes = ($new['allow_rss']) ? 'checked="checked"' : '';
+$rss_no = (!$new['allow_rss']) ? 'checked="checked"' : '';
 
-$rss_abstract_yes = ($new['news_rss_show_abstract']) ? "checked=\"checked\"" : "";
-$rss_abstract_no = (!$new['news_rss_show_abstract']) ? "checked=\"checked\"" : "";
+$rss_abstract_yes = ($new['news_rss_show_abstract']) ? 'checked="checked"' : '';
+$rss_abstract_no = (!$new['news_rss_show_abstract']) ? 'checked="checked"' : '';
 
-$template->set_filenames(array(
-	'body' => ADM_TPL . 'news_config_body.tpl')
-);
+$template->set_filenames(array('body' => ADM_TPL . 'news_config_body.tpl'));
 
-//
-// Escape any quotes in the site description for proper display in the text
-// box on the admin page
-//
+// Escape any quotes in the site description for proper display in the text box on the admin page
 $new['news_rss_name'] = str_replace('"', '&quot;', $new['news_rss_name']);
 $new['news_rss_desc'] = str_replace('"', '&quot;', strip_tags($new['news_rss_desc']));
 $new['news_rss_language'] = str_replace('"', '&quot;', $new['news_rss_language']);

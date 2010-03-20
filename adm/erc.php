@@ -14,7 +14,6 @@
 * Philipp Kordowich
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -31,74 +30,6 @@ include_once(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 $mem_limit = check_mem_limit();
 @ini_set('memory_limit', $mem_limit);
 
-//
-// addslashes to vars if magic_quotes_gpc is off
-// this is a security precaution to prevent someone
-// trying to break out of a SQL statement.
-//
-if(!get_magic_quotes_gpc())
-{
-	if(is_array($_GET))
-	{
-		while(list($k, $v) = each($_GET))
-		{
-			if(is_array($_GET[$k]))
-			{
-				while(list($k2, $v2) = each($_GET[$k]))
-				{
-					$_GET[$k][$k2] = addslashes($v2);
-				}
-				@reset($_GET[$k]);
-			}
-			else
-			{
-				$_GET[$k] = addslashes($v);
-			}
-		}
-		@reset($_GET);
-	}
-
-	if(is_array($_POST))
-	{
-		while(list($k, $v) = each($_POST))
-		{
-			if(is_array($_POST[$k]))
-			{
-				while(list($k2, $v2) = each($_POST[$k]))
-				{
-					$_POST[$k][$k2] = addslashes($v2);
-				}
-				@reset($_POST[$k]);
-			}
-			else
-			{
-				$_POST[$k] = addslashes($v);
-			}
-		}
-		@reset($_POST);
-	}
-
-	if(is_array($_COOKIE))
-	{
-		while(list($k, $v) = each($_COOKIE))
-		{
-			if(is_array($_COOKIE[$k]))
-			{
-				while(list($k2, $v2) = each($_COOKIE[$k]))
-				{
-					$_COOKIE[$k][$k2] = addslashes($v2);
-				}
-				@reset($_COOKIE[$k]);
-			}
-			else
-			{
-				$_COOKIE[$k] = addslashes($v);
-			}
-		}
-		@reset($_COOKIE);
-	}
-}
-
 $mode = (isset($_POST['mode'])) ? htmlspecialchars($_POST['mode']) : ((isset($_GET['mode'])) ? htmlspecialchars($_GET['mode']) : 'start');
 $option = (isset($_POST['option'])) ? htmlspecialchars($_POST['option']) : '';
 
@@ -106,18 +37,17 @@ $option = (isset($_POST['option'])) ? htmlspecialchars($_POST['option']) : '';
 if ($mode == 'download')
 {
 	// Get and convert Variables
-	$new_dbms = (isset($_GET['ndbms'])) ? $_GET['ndbms'] : '';
-	$new_dbhost = (isset($_GET['ndbh'])) ? $_GET['ndbh'] : '';
-	$new_dbname = (isset($_GET['ndbn'])) ? $_GET['ndbn'] : '';
-	$new_dbuser = (isset($_GET['ndbu'])) ? $_GET['ndbu'] : '';
-	$new_dbpasswd = (isset($_GET['ndbp'])) ? $_GET['ndbp'] : '';
-	$new_table_prefix = (isset($_GET['ntp'])) ? $_GET['ntp'] : '';
+	$new_dbms = request_var('ndbms', '', true);
+	$new_dbhost = request_var('ndbh', '', true);
+	$new_dbname = request_var('ndbn', '', true);
+	$new_dbuser = request_var('ndbu', '', true);
+	$new_dbpasswd = request_var('ndbp', '', true);
+	$new_table_prefix = request_var('ntp', '', true);
 
 	$var_array = array('new_dbms', 'new_dbhost', 'new_dbname', 'new_dbuser', 'new_dbpasswd', 'new_table_prefix');
 	reset($var_array);
 	while (list(, $var) = each ($var_array))
 	{
-		$$var = stripslashes($$var);
 		$$var = str_replace("'", "\\'", str_replace("\\", "\\\\", $$var));
 	}
 
@@ -250,7 +180,7 @@ switch($mode)
 			<tr>
 				<td><b><?php echo $lang['Select_Language']; ?>:</b></td>
 				<td width="10">&nbsp;</td>
-				<td><?php echo language_select('english', 'lg'); ?>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
+				<td><?php echo language_select('lg', 'english'); ?>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
 			</tr>
 		</table></td>
 	</tr>
@@ -548,7 +478,7 @@ switch($mode)
 			<table border="0" cellspacing="2" cellpadding="0">
 				<tr>
 					<td><b><?php echo $lang['select_language']; ?>:</b></td>
-					<td><?php echo language_select('english', 'new_lang'); ?></td>
+					<td><?php echo language_select('new_lang', 'english'); ?></td>
 				</tr>
 			</table>
 		</td>
@@ -588,7 +518,7 @@ switch($mode)
 				<tr>
 					<td><input type="radio" name="method" value="select_theme" checked="checked" /></td>
 					<td><?php echo $lang['select_theme']; ?></td>
-					<td><?php echo style_select('', 'new_style'); ?></td>
+					<td><?php echo style_select('new_style'); ?></td>
 				</tr>
 <?php
 				}
@@ -895,9 +825,9 @@ switch($mode)
 				$port_select = (isset($_POST['port_select'])) ? intval($_POST['port_select']) : 1;
 				$path_select = (isset($_POST['path_select'])) ? intval($_POST['path_select']) : 1;
 				$secure = (isset($_POST['secure'])) ? intval($_POST['secure']) : 0;
-				$domain = (isset($_POST['domain'])) ? str_replace("\\'", "''", $_POST['domain']) : '';
-				$port = (isset($_POST['port'])) ? str_replace("\\'", "''", $_POST['port']) : '';
-				$path = (isset($_POST['path'])) ? str_replace("\\'", "''", $_POST['path']) : '';
+				$domain = (isset($_POST['domain'])) ? $db->sql_escape($_POST['domain']) : '';
+				$port = (isset($_POST['port'])) ? $db->sql_escape($_POST['port']) : '';
+				$path = (isset($_POST['path'])) ? $db->sql_escape($_POST['path']) : '';
 
 				if ($secure_select == 1)
 				{
@@ -956,9 +886,9 @@ switch($mode)
 			case 'rcd': // Reset cookie data
 				check_authorization();
 				// Get variables
-				$cookie_domain = (isset($_POST['cookie_domain'])) ? str_replace("\\'", "''", $_POST['cookie_domain']) : '';
-				$cookie_name = (isset($_POST['cookie_name'])) ? str_replace("\\'", "''", $_POST['cookie_name']) : '';
-				$cookie_path = (isset($_POST['cookie_path'])) ? str_replace("\\'", "''", $_POST['cookie_path']) : '';
+				$cookie_domain = (isset($_POST['cookie_domain'])) ? $db->sql_escape($_POST['cookie_domain']) : '';
+				$cookie_name = (isset($_POST['cookie_name'])) ? $db->sql_escape($_POST['cookie_name']) : '';
+				$cookie_path = (isset($_POST['cookie_path'])) ? $db->sql_escape($_POST['cookie_path']) : '';
 
 				$sql = "UPDATE " . CONFIG_TABLE . "
 					SET config_value = '$cookie_domain'
@@ -994,7 +924,7 @@ switch($mode)
 				break;
 			case 'rld': // Reset language data
 				check_authorization();
-				$new_lang = (isset($_POST['new_lang'])) ? str_replace("\\'", "''", $_POST['new_lang']) : '';
+				$new_lang = (isset($_POST['new_lang'])) ? $db->sql_escape($_POST['new_lang']) : '';
 				$board_user = isset($_POST['board_user']) ? trim(htmlspecialchars($_POST['board_user'])) : '';
 				$board_user = substr(str_replace("\\'", "'", $board_user), 0, 25);
 				$board_user = str_replace("'", "\\'", $board_user);
@@ -1214,7 +1144,7 @@ switch($mode)
 				break;
 			case 'mua': // Grant user admin privileges
 				check_authorization();
-				$username = (isset($_POST['username'])) ? str_replace("\\'", "''", $_POST['username']) : '';
+				$username = (isset($_POST['username'])) ? $db->sql_escape($_POST['username']) : '';
 
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_active = 1, user_level = " . ADMIN . "

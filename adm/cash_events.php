@@ -15,14 +15,13 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (empty($config['plugins']['cash']['enabled']))
 {
@@ -40,7 +39,9 @@ if (!$cash->currency_count())
 	message_die(GENERAL_MESSAGE, $lang['Insufficient_currencies']);
 }
 
-$mode = isset($_POST['mode'])?$_POST['mode'] : 'main';
+$mode = request_var('mode', 'main');
+$event_name = request_var('event_name', '', true);
+$new_event_name = request_var('new_event_name', '', true);
 
 switch ($mode)
 {
@@ -49,9 +50,9 @@ switch ($mode)
 // ================= Add event (no data) ================================
 //
 	case 'add':
-		if (isset($_POST['new_event_name']))
+		if (!empty($new_event_name))
 		{
-			$sql = "INSERT INTO " . CASH_EVENTS_TABLE . " (event_name, event_data) VALUES ('" . str_replace("\'","''",$_POST['new_event_name']) . "', '')";
+			$sql = "INSERT INTO " . CASH_EVENTS_TABLE . " (event_name, event_data) VALUES ('" . $db->sql_escape($new_event_name) . "', '')";
 			$db->sql_query($sql);
 
 			message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />');
@@ -61,9 +62,8 @@ switch ($mode)
 // ================= Update board mode (submitted form) ================================
 //
 	case 'update':
-		if (isset($_POST['event_name']) && isset($_POST['cash']) && is_array($_POST['cash']))
+		if (!empty($event_name) && isset($_POST['cash']) && is_array($_POST['cash']))
 		{
-			$event_name = $_POST['event_name'];
 			$updates = array();
 			$updated_data = '';
 			while ($c_cur = &$cash->currency_next($cm_i))
@@ -83,7 +83,7 @@ switch ($mode)
 			}
 			$sql = "UPDATE " . CASH_EVENTS_TABLE . "
 					SET event_data = '" . $updated_data . "'
-					WHERE event_name = '" . str_replace("\'","''",$event_name) . "'";
+					WHERE event_name = '" . $db->sql_escape($event_name) . "'";
 			$db->sql_query($sql);
 
 			message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
@@ -93,24 +93,23 @@ switch ($mode)
 // ================= Edit board mode (or delete) ================================
 //
 	case 'edit':
-		if (isset($_POST['event_name']))
+		if (!empty($event_name))
 		{
-			$event_name = $_POST['event_name'];
 			if (isset($_POST['delete']))
 			{
-				$sql = "DELETE FROM " . CASH_EVENTS_TABLE . " WHERE event_name = '" . str_replace("\'","''",$event_name) . "'";
+				$sql = "DELETE FROM " . CASH_EVENTS_TABLE . " WHERE event_name = '" . $db->sql_escape($event_name) . "'";
 				$db->sql_query($sql);
 
 				message_die(GENERAL_MESSAGE, $lang['Cash_events_updated'] . '<br /><br />' . sprintf($lang['Click_return_cash_events'], '<a href="' . append_sid('cash_events.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>'));
 			}
 			$sql = "SELECT *
 					FROM " . CASH_EVENTS_TABLE . "
-					WHERE event_name = '" . str_replace("\'","''",$event_name) . "'";
+					WHERE event_name = '" . $db->sql_escape($event_name) . "'";
 			$result = $db->sql_query($sql);
 
 			if (!($row = $db->sql_fetchrow($result)))
 			{
-				message_die(CRITICAL_ERROR, "Event does not exist", "", __LINE__, __FILE__, $sql);
+				message_die(CRITICAL_ERROR, 'Event does not exist', '', __LINE__, __FILE__, $sql);
 			}
 
 			$cash_amounts = cash_event_unpack($row['event_data']);

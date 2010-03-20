@@ -34,25 +34,9 @@ require_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 // define the path to the admin news templates
 define('XS_TPL_PATH', '../../templates/common/xs_mod/tpl_news/');
 
-// check if ESM is installed
-if(empty($template->xs_version) || $template->xs_version < 6)
-{
-	message_die(GENERAL_ERROR, 'One of the following is probably true:<br /><br />1. eXtreme Styles mod is not installed<br />2. you forgot to upload includes/template.php<br />3. Your using an old version of eXtreme Styles mod');
-}
+setup_extra_lang(array('lang_xs_news'));
 
-// load the admin language file
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_xs_news.' . PHP_EXT);
-
-// Mode setting
-if(isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
-{
-	$mode = "";
-}
+$mode = request_var('mode', '');
 
 if (isset($_POST['cancel']))
 {
@@ -61,10 +45,13 @@ if (isset($_POST['cancel']))
 
 if(isset($_POST['addxml']))
 {
-	$mode = (isset($_POST['addxml'])) ? "addxml" : "";
+	$mode = 'addxml';
 }
 
 $confirm = (isset($_POST['confirm'])) ? true : 0;
+
+$xml_feed = request_var('xml_feed', '', true);
+$xml_feed = htmlspecialchars_decode($xml_feed, ENT_COMPAT);
 
 if(!empty($mode))
 {
@@ -73,9 +60,7 @@ if(!empty($mode))
 	{
 		case 'addxml':
 		case 'editxml':
-			//
 			// Show form to create/modify a news ticker
-			//
 			if ($mode == 'editxml')
 			{
 				// $newmode determines if we are going to INSERT or UPDATE after posting?
@@ -178,13 +163,13 @@ if(!empty($mode))
 
 		case 'createxml':
 			// Create a new news ticker in the DB
-			if(trim($_POST['xml_feed']) == "")
+			if(empty($xml_feed))
 			{
-				$message = $lang['n_xml_create_item_null'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = $lang['n_xml_create_item_null'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid('admin_xs_news_xml.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
-			$xml_feed = xsm_prepare_message(trim($_POST['xml_feed']));
+			$xml_feed = xsm_prepare_message($xml_feed);
 
 			$sql = "SELECT MAX(xml_id) AS max_id
 				FROM " . XS_NEWS_XML_TABLE;
@@ -194,11 +179,11 @@ if(!empty($mode))
 			$next_id = $max_id + 1;
 
 			$sql = "INSERT INTO " . XS_NEWS_XML_TABLE . " (xml_id, xml_title, xml_show, xml_feed, xml_is_feed, xml_width, xml_height, xml_font, xml_speed, xml_direction" . ")
-				VALUES ('" . $next_id . "', '" . str_replace("\'", "''", $_POST['xml_title']) . "', '" . intval($_POST['xml_show']) . "', '" . str_replace("\'", "''", $xml_feed) . "', '" . intval($_POST['xml_is_feed']) . "', '" . str_replace("\'", "''", $_POST['xml_width']) . "', '" . str_replace("\'", "''", $_POST['xml_height']) . "', '" . str_replace("\'", "''", $_POST['xml_font']) . "', '" . str_replace("\'", "''", $_POST['xml_speed']) . "', '" . intval($_POST['xml_direction']) . "')";
+				VALUES ('" . $next_id . "', '" . $db->sql_escape(request_post_var('xml_title', '', true)) . "', '" . intval($_POST['xml_show']) . "', '" . $db->sql_escape($xml_feed) . "', '" . intval($_POST['xml_is_feed']) . "', '" . $db->sql_escape(request_post_var($_POST['xml_width'], '')) . "', '" . $db->sql_escape(request_post_var($_POST['xml_height'], '')) . "', '" . $db->sql_escape(request_post_var($_POST['xml_font'], '')) . "', '" . $db->sql_escape(request_post_var($_POST['xml_speed'], '')) . "', '" . intval($_POST['xml_direction']) . "')";
 			$result = $db->sql_query($sql);
 			$db->clear_cache('xs_');
 
-			$message = $lang['n_xml_news_item_added'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['n_xml_news_item_added'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid('admin_xs_news_xml.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -206,15 +191,15 @@ if(!empty($mode))
 
 		case 'modxml':
 			// Modify a news ticker in the DB
-			$xml_feed = xsm_prepare_message(trim($_POST['xml_feed']));
+			$xml_feed = xsm_prepare_message($xml_feed);
 
 			$sql = "UPDATE " . XS_NEWS_XML_TABLE . "
-				SET xml_title = '" . str_replace("\'", "''", $_POST['xml_title']) . "', xml_show = " . intval($_POST['xml_show']) . ", xml_feed = '" . str_replace("\'", "''", $xml_feed) . "', xml_is_feed = '" . intval($_POST['xml_is_feed']) . "', xml_width = '" . str_replace("\'", "''", $_POST['xml_width']). "', xml_height = '" . str_replace("\'", "''", $_POST['xml_height']). "', xml_font = '" . str_replace("\'", "''", $_POST['xml_font']). "', xml_speed = '" . str_replace("\'", "''", $_POST['xml_speed']). "', xml_direction = " . intval($_POST['xml_direction']). "
+				SET xml_title = '" . $db->sql_escape(request_post_var($_POST['xml_title'], '', true)) . "', xml_show = " . intval($_POST['xml_show']) . ", xml_feed = '" . $db->sql_escape($xml_feed) . "', xml_is_feed = '" . intval($_POST['xml_is_feed']) . "', xml_width = '" . $db->sql_escape(request_post_var($_POST['xml_width'], '')). "', xml_height = '" . $db->sql_escape(request_post_var($_POST['xml_height'], '')). "', xml_font = '" . $db->sql_escape(request_post_var($_POST['xml_font'], '')). "', xml_speed = '" . $db->sql_escape(request_post_var($_POST['xml_speed'], '')). "', xml_direction = " . intval($_POST['xml_direction']). "
 				WHERE xml_id = " . intval($_POST['id']);
 			$result = $db->sql_query($sql);
 			$db->clear_cache('xs_');
 
-			$message = $lang['n_xml_news_updated'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['n_xml_news_updated'] . '<br /><br />' . sprintf($lang['n_xml_click_return_newslist'], '<a href="' . append_sid('admin_xs_news_xml.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -222,7 +207,7 @@ if(!empty($mode))
 
 		case 'deletexml':
 			// Show form to delete a news item
-			$xml_id = intval($_GET['id']);
+			$xml_id = request_var('id', 0);
 
 			$buttonvalue = $lang['Delete'];
 
@@ -238,7 +223,7 @@ if(!empty($mode))
 				$result = $db->sql_query($sql);
 				$db->clear_cache('xs_');
 
-				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news_xml." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid('admin_xs_news_xml.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -283,7 +268,7 @@ $template->set_filenames(array('body' => XS_TPL_PATH . 'news_ticker_list_body.tp
 $master_switch = (($config['xs_show_ticker'] == 1) ? true : false);
 
 $template->assign_vars(array(
-	'S_FORUM_ACTION' => append_sid("admin_xs_news_xml." . PHP_EXT),
+	'S_FORUM_ACTION' => append_sid('admin_xs_news_xml.' . PHP_EXT),
 	'L_MENU_TITLE' => $lang['n_xml_title'],
 	'L_MENU_EXPLAIN' => $lang['n_xml_title_explain'],
 	'L_MENU_EXPLAINS' => $lang['n_xml_title_explain_0'],

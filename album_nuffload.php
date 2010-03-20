@@ -88,10 +88,10 @@ if (isset($_REQUEST['psid']))
 			$qstr .= "&file[tmp_name][$a]=" . 'tmp/' . $psid . "_actualdata" . $a;
 			// Move this file to upload directory
 			// Inefficient but works at the moment
-			$ini_val = ( @phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
-			if ( @$ini_val('open_basedir') != '' )
+			$ini_val = (@phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
+			if (@$ini_val('open_basedir') != '')
 			{
-				if ( @phpversion() < '4.0.3' )
+				if (@phpversion() < '4.0.3')
 				{
 					message_die(GENERAL_ERROR, 'open_basedir is set and your PHP version does not allow move_uploaded_file<br /><br />Please contact your server admin', '', __LINE__, __FILE__);
 				}
@@ -113,7 +113,7 @@ if (isset($_REQUEST['psid']))
 	$qstr = @join("", @file($path_to_bin . 'tmp/' . $psid . '_qstring'));
 	parse_str($qstr);
 	$qstr_array = explode("&",$qstr);
-	for( $i = 0; $i < sizeof($qstr_array); $i++)
+	for($i = 0; $i < sizeof($qstr_array); $i++)
 	{
 		$temp = explode("=",$qstr_array[$i]);
 		if (!preg_match("/^file\[/", $qstr_array[$i]))
@@ -576,7 +576,7 @@ function gdVersion($user_ver = 0)
 		$gd_ver = 1;
 		return 1;
 	}
-	if ($user_ver !=2 && $gd_ver > 0 )
+	if ($user_ver !=2 && $gd_ver > 0)
 	{
 		return $gd_ver;
 	}
@@ -618,22 +618,22 @@ function gdVersion($user_ver = 0)
 function fix_magic_quotes ($var = NULL, $sybase = NULL)
 {
 	// if sybase style quoting isn't specified, use ini setting
-	if ( !isset ($sybase) )
+	if (!isset ($sybase))
 	{
 		$sybase = ini_get ('magic_quotes_sybase');
 	}
 
 	// if no var is specified, fix all affected superglobals
-	if ( !isset ($var) )
+	if (!isset ($var))
 	{
 		// if magic quotes is enabled
-		if ( get_magic_quotes_gpc () )
+		if (get_magic_quotes_gpc ())
 		{
 			// workaround because magic_quotes does not change $_SERVER['argv']
 			$argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : NULL;
 
 			// fix all affected arrays
-			foreach (array('_ENV', '_REQUEST', '_GET', '_POST', '_COOKIE', '_SERVER') as $var )
+			foreach (array('_ENV', '_REQUEST', '_GET', '_POST', '_COOKIE', '_SERVER') as $var)
 			{
 				$GLOBALS[$var] = fix_magic_quotes ($GLOBALS[$var], $sybase);
 			}
@@ -646,7 +646,7 @@ function fix_magic_quotes ($var = NULL, $sybase = NULL)
 		}
 
 		// disable magic_quotes_sybase
-		if ( $sybase )
+		if ($sybase)
 		{
 			ini_set ('magic_quotes_sybase', 0);
 		}
@@ -657,9 +657,9 @@ function fix_magic_quotes ($var = NULL, $sybase = NULL)
 	}
 
 	// if var is an array, fix each element
-	if ( is_array ($var) )
+	if (is_array ($var))
 	{
-		foreach ( $var as $key => $val )
+		foreach ($var as $key => $val)
 		{
 			$var[$key] = fix_magic_quotes ($val, $sybase);
 		}
@@ -668,7 +668,7 @@ function fix_magic_quotes ($var = NULL, $sybase = NULL)
 	}
 
 	// if var is a string, strip slashes
-	if ( is_string ($var) )
+	if (is_string ($var))
 	{
 		return $sybase ? str_replace ('\'\'', '\'', $var) : stripslashes ($var);
 	}
@@ -676,4 +676,5 @@ function fix_magic_quotes ($var = NULL, $sybase = NULL)
 	// otherwise ignore
 	return $var;
 }
+
 ?>

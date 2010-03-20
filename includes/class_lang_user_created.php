@@ -97,7 +97,7 @@ class lang_management
 
 	function read_one_pack($country_dir, $pack_file, &$entries)
 	{
-			global $countries, $packs;
+		global $countries, $packs;
 
 		// get filename
 		$file = IP_ROOT_PATH . 'language/' . $country_dir . '/' . $pack_file;

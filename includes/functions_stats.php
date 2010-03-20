@@ -42,13 +42,6 @@ function module_language_parse($lang_key, $lang_var)
 	$lang[$lang_key] = $lang_var;
 }
 
-function sql_quote($data)
-{
-	//$data = str_replace("'", "\'", $data);
-	$data = addslashes($data);
-	return ($data);
-}
-
 function generate_module_info($module_data, $install = false)
 {
 	global $db, $__stats_config;
@@ -125,7 +118,7 @@ function generate_module_info($module_data, $install = false)
 		}
 
 		$sql = "UPDATE " . MODULES_TABLE . "
-			SET module_info_cache = '" . addslashes(serialize($ret_array)) . "',
+			SET module_info_cache = '" . $db->sql_escape(serialize($ret_array)) . "',
 			module_info_time = " . filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '_info.txt') . "
 			WHERE module_id = " . intval($module_data['module_id']);
 		$db->sql_query($sql);
@@ -354,7 +347,7 @@ function module_auth_check($module_data, $userdata)
 // FUNCTIONS
 // sort multi-dimensional array - from File Attachment Mod
 // Used in TOP SMILEYS!
-function smilies_sort_multi_array_attachment ($sort_array, $key, $sort_order)
+function smilies_sort_multi_array_attachment($sort_array, $key, $sort_order)
 {
 	$last_element = sizeof($sort_array) - 1;
 

@@ -32,11 +32,11 @@
 <tr>
 	<td class="row1" width="130" height="20">&nbsp;</td>
 	<td class="row2" width="530" align="middle">
-		<input type="button" class="button" value="{L_PROFILE}" onclick="location='{U_PROFILE}'">
-		<input type="button" class="button" value="{SIG_CURRENT}" onclick="location='{SIG_LINK}'">
-		<input type="submit" class="button" value="{SIG_PREVIEW}" name="preview">
-		<input type="submit" class="button" value="{SIG_SAVE}" name="save">
-		<input type="submit" class="button" value="{SIG_CANCEL}" name="cancel">
+		<input type="button" class="liteoption" value="{L_PROFILE}" onclick="location='{U_PROFILE}'">
+		<input type="button" class="liteoption" value="{SIG_CURRENT}" onclick="location='{SIG_LINK}'">
+		<input type="submit" class="liteoption" value="{SIG_PREVIEW}" name="preview">
+		<input type="submit" class="mainoption" value="{SIG_SAVE}" name="save">
+		<input type="submit" class="liteoption" value="{SIG_CANCEL}" name="cancel">
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
@@ -75,11 +75,11 @@
 <tr>
 	<td class="row1" width="130" height="20">&nbsp;</td>
 	<td class="row2" width="530" align="middle">
-		<input type="button" class="button" value="{L_PROFILE}" onclick="location='{U_PROFILE}'" />
-		<input type="button" class="button" value="{SIG_CURRENT}" onclick="location='{SIG_LINK}'" />
-		<input type="submit" class="button" value="{SIG_PREVIEW}" name="preview" />
-		<input type="submit" class="button" value="{SIG_SAVE}" name="save" />
-		<input type="submit" class="button" value="{SIG_CANCEL}" name="cancel" />
+		<input type="button" class="liteoption" value="{L_PROFILE}" onclick="location='{U_PROFILE}'" />
+		<input type="button" class="liteoption" value="{SIG_CURRENT}" onclick="location='{SIG_LINK}'" />
+		<input type="submit" class="liteoption" value="{SIG_PREVIEW}" name="preview" />
+		<input type="submit" class="mainoption" value="{SIG_SAVE}" name="save" />
+		<input type="submit" class="liteoption" value="{SIG_CANCEL}" name="cancel" />
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
@@ -92,9 +92,9 @@
 <tr><td class="row1 row-center" valign="middle" height="100"><span class="gen">{SAVE_MESSAGE}</span></td></tr>
 <tr>
 	<td class="row2 row-center">
-		<input type="button" class="button" value="{L_PROFILE}" onclick="location='{U_PROFILE}'" />
-		<input type="button" class="button" value="{SIG_CURRENT}" onclick="location='{SIG_LINK}'" />
-		<input type="submit" class="button" value="{SIG_CANCEL}" name="cancel" />
+		<input type="button" class="liteoption" value="{L_PROFILE}" onclick="location='{U_PROFILE}'" />
+		<input type="button" class="liteoption" value="{SIG_CURRENT}" onclick="location='{SIG_LINK}'" />
+		<input type="submit" class="liteoption" value="{SIG_CANCEL}" name="cancel" />
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

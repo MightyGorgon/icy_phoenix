@@ -38,9 +38,12 @@ if(!isset($_GET['mode']) || !isset($_GET['pfid']))
 	message_die(GENERAL_ERROR, 'Required GET variables not set', 'Could not reach admin page; Insufficient data',__LINE__,__FILE__);
 }
 
-
-$mode = $_GET['mode'];
-$pfid = $_GET['pfid'];
+$mode = request_var('mode', '');
+$pfid = request_var('pfid', '');
+if ($pfid != 'x')
+{
+	$pfid = request_var('pfid', 0);
+}
 
 if($mode == 'add')
 {
@@ -67,24 +70,25 @@ elseif($mode == 'update')
 {
 	$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 
-	$name = htmlspecialchars($_POST['field_name']);
+	$name = request_post_var('field_name', '', true);
 	if(empty($name))
 	{
 		message_die(GENERAL_ERROR, $lang['enter_a_name']);
 	}
 
-	$description = htmlspecialchars($_POST['field_descrition']);
+	$description = request_post_var('field_descrition', '', true);
+	$type = request_post_var('field_type', 0);
 
-	$type = intval($_POST['field_type']);
-	$text_field_default = htmlspecialchars($_POST['text_field_default']);
-	$text_field_maxlen = empty($_POST['text_field_maxlen']) ? TEXT_FIELD_MAXLENGTH : intval($_POST['text_field_maxlen']);
+	$text_field_default = request_post_var('text_field_default', '', true);
+	$text_field_maxlen = request_post_var('text_field_maxlen', TEXT_FIELD_MAXLENGTH);
 	$text_field_maxlen = $text_field_maxlen > TEXT_FIELD_MAXLENGTH ? TEXT_FIELD_MAXLENGTH : $text_field_maxlen;
-	$text_area_default = htmlspecialchars($_POST['text_area_default']);
-	$text_area_maxlen = empty($_POST['text_area_maxlen']) ? TEXTAREA_MINLENGTH : intval($_POST['text_area_maxlen']);
+
+	$text_area_default = request_post_var('text_area_default', '', true);
+	$text_area_maxlen = request_post_var('text_area_maxlen', TEXTAREA_MINLENGTH);
 	$text_area_maxlen = $text_area_maxlen > TEXTAREA_MAXLENGTH ? TEXTAREA_MAXLENGTH : $text_area_maxlen;
 
-	$radio_values = htmlspecialchars($_POST['radio_values']);
-	$radio_default_value = htmlspecialchars($_POST['radio_default_value']);
+	$radio_values = request_post_var('radio_values', '', true);
+	$radio_default_value = request_post_var('radio_default_value', '', true);
 	$radio_values = explode("\n", str_replace("\r", '', $radio_values));
 	if(empty($radio_default_value))
 	{
@@ -95,10 +99,10 @@ elseif($mode == 'update')
 	{
 		$temp .= $val . ',';
 	}
-	$radio_values = substr($temp,0,strlen($temp)-1);
+	$radio_values = substr($temp, 0, strlen($temp) - 1);
 
-	$checkbox_values = htmlspecialchars($_POST['checkbox_values']);
-	$check_default_values = htmlspecialchars($_POST['check_default_values']);
+	$checkbox_values = request_post_var('checkbox_values', '', true);
+	$check_default_values = request_post_var('check_default_values', '', true);
 	$checkbox_values = explode("\n", str_replace("\r", '', $checkbox_values));
 	if(!empty($check_default_values))
 	{
@@ -117,13 +121,13 @@ elseif($mode == 'update')
 	}
 	$checkbox_values = substr($temp,0,strlen($temp) - 1);
 
-	$required = intval($_POST['required']);
-	$user_can_view = intval($_POST['user_can_view']);
-	$view_in_profile = intval($_POST['view_in_profile']);
-	$profile_location = intval($_POST['profile_location']);
-	$view_in_memberlist = intval($_POST['view_in_memberlist']);
-	$view_in_topic = intval($_POST['view_in_topic']);
-	$signature_wrap = intval($_POST['signature_wrap']);
+	$required = request_post_var('required', 0);
+	$user_can_view = request_post_var('user_can_view', 0);
+	$view_in_profile = request_post_var('view_in_profile', 0);
+	$profile_location = request_post_var('profile_location', 0);
+	$view_in_memberlist = request_post_var('view_in_memberlist', 0);
+	$view_in_topic = request_post_var('view_in_topic', 0);
+	$signature_wrap = request_post_var('signature_wrap', 0);
 
 	if($pfid == 'x')
 	{
@@ -156,15 +160,15 @@ elseif($mode == 'update')
 	}
 
 	$name_display = $name;
-	$name = str_replace("\'", "''", text_to_column($name));
-	$description = str_replace("\'", "''", $description);
-	$text_field_default = str_replace("\'", "''", $text_field_default);
-	$text_area_default = str_replace("\'", "''", $text_area_default);
-	$text_area_maxlen = str_replace("\'", "''", $text_area_maxlen);
-	$radio_default_value = str_replace("\'", "''", $radio_default_value);
-	$radio_values = str_replace("\'", "''", $radio_values);
-	$check_default_values = str_replace("\'", "''", $check_default_values);
-	$checkbox_values = str_replace("\'", "''", $checkbox_values);
+	$name = $db->sql_escape(text_to_column($name));
+	$description = $db->sql_escape($description);
+	$text_field_default = $db->sql_escape($text_field_default);
+	$text_area_default = $db->sql_escape($text_area_default);
+	$text_area_maxlen = $db->sql_escape($text_area_maxlen);
+	$radio_default_value = $db->sql_escape($radio_default_value);
+	$radio_values = $db->sql_escape($radio_values);
+	$check_default_values = $db->sql_escape($check_default_values);
+	$checkbox_values = $db->sql_escape($checkbox_values);
 
 	if($pfid == 'x')
 	{
@@ -343,7 +347,7 @@ elseif($mode == 'edit')
 	{
 		$template->set_filenames(array('body' => ADM_TPL . 'add_profile_field.tpl'));
 
-		$profile_rows = get_fields('WHERE field_id = ' . $pfid,false);
+		$profile_rows = get_fields('WHERE field_id = ' . $pfid, false);
 
 		$template->assign_vars(array(
 			'FIELD_NAME' => $profile_rows['field_name'],
@@ -386,7 +390,7 @@ elseif($mode == 'edit')
 }
 elseif($mode == 'delete')
 {
-	$field_name = get_fields('WHERE field_id = '.$pfid,false,'field_name');
+	$field_name = get_fields('WHERE field_id = ' . $pfid, false, 'field_name');
 	$name = text_to_column($field_name['field_name']);
 
 	$del_link = '<a href="' . append_sid($filename . '?mode=confirmdelete&amp;pfid=' . $pfid . '&amp;name=' . $name) . '">' . $lang['Yes'] . '</a>';

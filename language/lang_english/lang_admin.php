@@ -248,11 +248,11 @@ $lang = array_merge($lang, array(
 
 // Configuration
 	'General_Config' => 'General Configuration',
-	'Config_explain' => '<b>Customize all the general board options. For User and Forum configurations, use the related links on the left hand side.</b>',
+	'Config_explain' => '<b>Customize all the general site options. For User and Forum configurations, use the related links on the left hand side.</b>',
 
 	'Click_return_config' => 'Click %sHere%s to return to General Configuration',
 
-	'General_settings' => 'General Board Settings',
+	'General_settings' => 'General Site Settings',
 	'Server_name' => 'Domain Name',
 	'Server_name_explain' => 'The domain name from which this board runs',
 	'Script_path' => 'Script path',
@@ -306,10 +306,12 @@ $lang = array_merge($lang, array(
 	'Allow_remote' => 'Enable remote avatars',
 	'Allow_remote_explain' => 'Avatars linked to from another website',
 	'Allow_upload' => 'Enable avatar uploading',
-	'Max_filesize' => 'Maximum Avatar File Size',
-	'Max_filesize_explain' => 'For uploaded avatar files',
+	'Max_avatar_filesize' => 'Maximum Avatar File Size',
+	'Max_avatar_filesize_explain' => 'For uploaded avatar files (in bytes)',
 	'Max_avatar_size' => 'Maximum Avatar Dimensions',
-	'Max_avatar_size_explain' => '(Height x Width in pixels)',
+	'Max_avatar_size_width' => 'Maximum Avatar Width',
+	'Max_avatar_size_height' => 'Maximum Avatar Height',
+	'Max_avatar_size_explain' => 'Dimension in pixels',
 	'Avatar_storage_path' => 'Avatar Storage Path',
 	'Avatar_storage_path_explain' => 'Path under your Icy Phoenix root dir, e.g. images/avatars',
 	'Avatar_gallery_path' => 'Avatar Gallery Path',
@@ -365,7 +367,7 @@ $lang = array_merge($lang, array(
 	'Remove' => 'Remove',
 	'Action' => 'Action',
 	'Update_order' => 'Update Order',
-	'Config_updated' => 'Forum Configuration Updated Successfully',
+	'Config_updated' => 'Configuration Updated Successfully',
 	'Move_up' => 'Move up',
 	'Move_down' => 'Move down',
 	'Resync' => 'Resync',
@@ -421,7 +423,7 @@ $lang = array_merge($lang, array(
 
 // Smiley Management
 	'smiley_title' => 'Smiles Editing Utility',
-	'smile_desc' => 'Add, remove and edit the emoticons or smileys that your users can use in their posts and private messages.',
+	'smile_desc' => 'Add, remove and edit the emoticons or smileys that your users can use in their posts and private messages. Please note that if your browser supports it, you can also use Drag and Drop for a quick arrangement.',
 
 	'smiley_config' => 'Smiley Configuration',
 	'smiley_code' => 'Smiley Code',
@@ -720,9 +722,9 @@ $lang = array_merge($lang, array(
 // Start add - Birthday MOD
 	'Birthday_required' => 'Force users to submit a birthday',
 	'Enable_birthday_greeting' => 'Enable birthday greetings',
-	'Birthday_greeting_expain' => 'Enable Users who have submitted a date of birth to have a birthday greeting when they visit the board',
+	'Birthday_greeting_explain' => 'Enable Users who have submitted a date of birth to have a birthday greeting when they visit the board',
 	'Next_birthday_greeting' => 'Next birthday popup year',
-	'Next_birthday_greeting_expain' => 'This field keeps track of the next year the user will have a birthday greeting',
+	'Next_birthday_greeting_explain' => 'This field keeps track of the next year the user will have a birthday greeting',
 	'Wrong_next_birthday_greeting' => 'The supplied, next birthday popup year, was not valid, please try again',
 	'Max_user_age' => 'Maximum user age',
 	'Min_user_age' => 'Minimum user age',
@@ -745,8 +747,8 @@ $lang = array_merge($lang, array(
 	'Report_forum_explain' => 'Select the forum where users\' reports are to be posted. Users MUST have at least post/reply access to this forum',
 
 // Start add - Last visit MOD
-	'Hidde_last_logon' => 'Hidden last logon time',
-	'Hidde_last_logon_expain' => 'If this is set to yes, users last logon time is visible only to administrators',
+	'Hidde_last_logon' => 'Hide last logon time',
+	'Hidde_last_logon_explain' => 'If this is set to yes, users last logon time is visible only to administrators',
 // End add - Last visit MOD
 //
 // Start add - Online/Offline/Hidden Mod
@@ -773,6 +775,8 @@ $lang = array_merge($lang, array(
 	'Default_avatar_users' => 'Users',
 	'Default_avatar_both' => 'Both',
 	'Default_avatar_none' => 'None',
+	'Default_avatar_guests_url' => 'Path to the default avatar for Guests',
+	'Default_avatar_users_url' => 'Path to the default avatar for Users',
 
 // Start Optimize Database
 	'Optimize' => 'Optimize',
@@ -996,7 +1000,8 @@ $lang = array_merge($lang, array(
 	'Smilie_table_rows' => 'Smileys table rows',
 	'Smilie_window_columns' => 'Smileys window columns',
 	'Smilie_window_rows' => 'Smileys window rows',
-	'Smilie_single_row' => 'Smileys single row number<br /> (I.E.: Quick Reply smileys number)',
+	'Smilie_single_row' => 'Smileys single row number',
+	'Smilie_single_row_explain' => 'I.E.: Quick Reply smileys number',
 
 	'Auth_Rating' => 'Ratings',
 
@@ -2036,18 +2041,20 @@ $lang = array_merge($lang, array(
 	'PLUGINS_NO_PLUGINS' => 'No Plugins to be configured',
 	// PLUGINS - END
 
-// ####################### [ Icy Phoenix Options BEGIN ] #####################
-	'MG_Configuration' => 'Icy Phoenix Settings',
-	'MG_Configuration_Explain' => '<em><b>Advanced Icy Phoenix Settings</b></em>',
+	'BBCODE_SETTINGS' => 'BBCode, HTML And Smileys Settings',
+	'POSTING_SETTINGS' => 'Posting Settings',
 
-	'MG_Configuration_Headers_Banners' => 'Headers &amp; Banners',
-	'MG_Configuration_Queries' => 'SQL Optimization',
-	'MG_Configuration_Permissions' => 'Page Permissions',
-	'MG_Configuration_Posting' => 'Posting',
+	'POLL_INFINITE' => 'Infinite...',
+	'POLL_ONGOING' => ' (ongoing)',
+	'POLL_COMPLETED' => ' (completed))',
+
+// ####################### [ Icy Phoenix Options BEGIN ] #####################
+	'IP_CONFIGURATION' => 'Icy Phoenix Settings',
+	'IP_CONFIGURATION_EXPLAIN' => '<em><b>Advanced Icy Phoenix Settings</b></em>',
+
 	'MG_SW_Precompiled_Posts_Title' => 'Precompiled Posts',
 	'MG_SW_Logins_Title' => 'Logins Recording',
 	'MG_SW_Edit_Notes_Title' => 'Edit Notes',
-	'MG_Configuration_IMG_Posting' => 'Images In Posting',
 
 	'MG_SW_Header_Footer' => 'Header Table Message',
 	'MG_SW_Header_Table' => 'Header Table',
@@ -2101,19 +2108,17 @@ $lang['privmsgs_type'] = $lang['PM_Type'];
 // Numbers have to be changed in all /adm/*.php files too
 
 // Configuration
-$lang['1000_Configuration'] = 'Configuration'; // admin_board.php, admin_board_extend.php, admin_board_headers_banners.php, admin_board_main.php, admin_board_permissions.php, admin_board_server.php, admin_board_posting.php, admin_board_queries.php, admin_bots.php, admin_captcha_config.php, admin_google_bot_detector.php, admin_lang_user_created.php, admin_upi2db.php
-$lang['100_Server_Configuration'] = 'Server'; // admin_board_server.php
-$lang['110_Various_Configuration'] = 'Site'; // admin_board.php
-$lang['120_MG_Configuration'] = 'Icy Phoenix'; // admin_board.php
+$lang['1000_Configuration'] = 'Configuration'; // admin_board.php, admin_config_settings.php, admin_bots.php, admin_captcha_config.php, admin_google_bot_detector.php, admin_lang_user_created.php, admin_upi2db.php
+$lang['100_Main_Settings'] = 'Main Settings'; // admin_config_settings.php
+$lang['110_Various_Configuration'] = 'Various Settings'; // admin_board.php
 $lang['125_Language'] = 'Custom Lang Vars'; // admin_lang_user_created.php
 $lang['127_Clear_Cache'] = 'Clear Cache'; // admin_board_clearcache.php
 $lang['130_UPI2DB_Mod'] = 'Unread Posts'; // admin_upi2db.php
-$lang['140_MG_Configuration_Headers_Banners'] = 'Headers &amp; Banners'; // admin_board_headers_banners.php
+$lang['140_CAPTCHA'] = 'CAPTCHA'; // admin_captcha.php
 $lang['145_Captcha_Config'] = 'Visual Confirmation'; // admin_captcha_config.php
 $lang['150_Similar_topics'] = 'Similar Topics'; // admin_similar_topics.php
 $lang['160_Title_infos'] = 'Quick Title Management'; // admin_quick_title.php
 $lang['170_LIW'] = 'Limit Image Width'; // admin_liw.php
-$lang['180_MG_Configuration_Permissions'] = 'Page Permissions'; // admin_board_permissions.php
 $lang['190_Spider_Bots'] = 'Spider / Bots'; // admin_bots.php
 $lang['192_Google_BOT'] = 'Google Bot Detector'; // admin_google_bot_detector.php
 $lang['195_Yahoo_search'] = 'Yahoo Search'; // admin_yahoo_search.php

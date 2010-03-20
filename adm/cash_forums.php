@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
@@ -35,14 +34,7 @@ if (!$cash->currency_count())
 }
 
 // Mode setting
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-}
-else
-{
-	$mode = '';
-}
+$mode = request_var('mode', '');
 
 // Begin program proper
 if (isset($_POST['submit']))
@@ -60,8 +52,7 @@ if (isset($_POST['submit']))
 	while ($c_cur = &$cash->currency_next($cm_i))
 	{
 		$varname = 'cash_' . $c_cur->id();
-		if (isset($_POST[$varname]) &&
-			 is_array($_POST[$varname]))
+		if (isset($_POST[$varname]) && is_array($_POST[$varname]))
 		{
 			$activated = array(array(),array());
 			for ($i = 0; $i < sizeof($cash_forums); $i++)
@@ -71,7 +62,7 @@ if (isset($_POST['submit']))
 					$activated[intval($_POST[$varname][$cash_forums[$i]])][] = $cash_forums[$i];
 				}
 			}
-			$sql_list = "";
+			$sql_list = '';
 			$settings = $c_cur->data('cash_settings');
 			if (sizeof($activated[0]) > sizeof($activated[1]))
 			{
@@ -115,7 +106,8 @@ $boolean_forums = array();
 while ($c_cur = &$cash->currency_next($cm_i))
 {
 	$template->assign_block_vars('cashrow', array(
-		'CASH_NAME' => $c_cur->name())
+		'CASH_NAME' => $c_cur->name()
+		)
 	);
 }
 
@@ -179,7 +171,8 @@ if ($total_categories = $db->sql_numrows($q_categories))
 					$template->assign_block_vars('catrow.forumrow.cashrow', array(
 						'S_ON' => (($c_cur->forum_active($forum_id)) ? ' checked="checked"' : ''),
 						'S_OFF' => (($c_cur->forum_active($forum_id)) ? '' : ' checked="checked"'),
-						'S_NAME' => 'cash_' . $c_cur->id() . '[' . $forum_id . ']')
+						'S_NAME' => 'cash_' . $c_cur->id() . '[' . $forum_id . ']'
+						)
 					);
 				}
 

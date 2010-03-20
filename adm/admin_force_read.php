@@ -28,21 +28,14 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-if(isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-}
-else if(isset($_POST['config']))
+$mode = request_var('mode', '');
+if(isset($_POST['config']))
 {
 	$mode = 'config';
 }
-else if(isset($_POST['logs']))
+elseif(isset($_POST['logs']))
 {
 	$mode = 'users';
-}
-else
-{
-	$mode = '';
 }
 
 include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_ftr.' . PHP_EXT);
@@ -51,7 +44,7 @@ $update = $_POST['update'];
 
 if ($mode == 'delete_user')
 {
-	$who = $_GET['user'];
+	$who = request_var('user', 0);
 	$q = "DELETE FROM ". FORCE_READ_USERS_TABLE . " WHERE user = '" . $who . "'";
 	$r = $db->sql_query($q);
 	message_die(GENERAL_MESSAGE, $lang['Ftr_user_deleted'], $lang['Ftr_msg_success']);
@@ -59,7 +52,7 @@ if ($mode == 'delete_user')
 
 if($mode == 'users')
 {
-	$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+	$start = request_var('start', 0);
 	$start = ($start < 0) ? 0 : $start;
 	$show = $config['topics_per_page'];
 
@@ -174,7 +167,7 @@ elseif($mode == 'config')
 	{
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
-		echo "		<th class=\"thHead\" colspan=\"2\">";
+		echo "		<th colspan=\"2\">";
 		echo "			". $lang['Ftr_admin_user_delete'];
 		echo "		</th>";
 		echo "	</tr>";
@@ -192,7 +185,7 @@ elseif($mode == 'config')
 
 		echo "<table class=\"forumline\" width=\"100%\" valign=\"middle\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
 		echo "	<tr>";
-		echo "		<th class=\"thHead\" colspan=\"2\">";
+		echo "		<th colspan=\"2\">";
 		echo "			". $lang['Ftr_save_config'];
 		echo "		</th>";
 		echo "	</tr>";
@@ -207,7 +200,7 @@ elseif($mode == 'config')
 	{
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
-		echo "		<th class=\"thHead\" colspan=\"2\">";
+		echo "		<th colspan=\"2\">";
 		echo "			". $lang['Ftr_select_forum'];
 		echo "		</th>";
 		echo "	</tr>";
@@ -256,7 +249,7 @@ elseif($mode == 'config')
 	{
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
-		echo "		<th class=\"thHead\" colspan=\"2\">";
+		echo "		<th colspan=\"2\">";
 		echo "			". $lang['Ftr_set_config'];
 		echo "		</th>";
 		echo "	</tr>";
@@ -318,7 +311,7 @@ elseif($mode == 'config')
 	{
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
-		echo "		<th class=\"thHead\" colspan=\"2\">";
+		echo "		<th colspan=\"2\">";
 		echo "			". $lang['Ftr_config'];
 		echo "		</th>";
 		echo "	</tr>";

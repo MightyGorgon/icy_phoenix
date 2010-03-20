@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 if ((isset($_GET['mode']) && ($_GET['mode'] == 'viewprofile')) || (isset($_POST['mode']) && ($_POST['mode'] == 'viewprofile')))
 {
 	// MG Cash MOD For IP - BEGIN
@@ -44,45 +43,20 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-// session id check
-if (!empty($_POST['sid']) || !empty($_GET['sid']))
-{
-	$sid = (!empty($_POST['sid'])) ? $_POST['sid'] : $_GET['sid'];
-}
-else
-{
-	$sid = '';
-}
-
-// Set default email variables
-$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-$script_name = ($script_name != '') ? $script_name . '/' . CMS_PAGE_PROFILE : CMS_PAGE_PROFILE;
-$server_name = trim($config['server_name']);
-$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-$server_url = $server_protocol . $server_name . $server_port . $script_name;
-
-$server_url = create_server_url();
-$profile_server_url = $server_url . CMS_PAGE_PROFILE;
-
 $meta_content['page_title'] = $lang['Profile'];
 $meta_content['description'] = '';
 $meta_content['keywords'] = '';
 
-// Page specific functions
-function gen_rand_string($hash)
-{
-	$rand_str = unique_id();
-	return ($hash) ? md5($rand_str) : substr($rand_str, 0, 8);
-}
-// End page specific functions
+// Set default email variables
+$server_url = create_server_url();
+$profile_server_url = $server_url . CMS_PAGE_PROFILE;
+
+$sid = request_var('sid', '');
+$mode = request_var('mode', '');
 
 // Start of program proper
-if (isset($_GET['mode']) || isset($_POST['mode']))
+if (!empty($mode))
 {
-	$mode = (isset($_GET['mode']) ? $_GET['mode'] : $_POST['mode']);
-	$mode = htmlspecialchars($mode);
-
 	if ($mode != 'viewprofile')
 	{
 		include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);

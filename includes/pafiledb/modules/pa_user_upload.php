@@ -1,35 +1,35 @@
 <?php
 /*
-  paFileDB 3.0
-  ©2001/2002 PHP Arena
-  Written by Todd
-  todd@phparena.net
-  http://www.phparena.net
-  Keep all copyright links on the script visible
-  Please read the license included with this script for more information.
+* paFileDB 3.0
+* ©2001/2002 PHP Arena
+* Written by Todd
+* todd@phparena.net
+* http://www.phparena.net
+* Keep all copyright links on the script visible
+* Please read the license included with this script for more information.
 */
 
 class pafiledb_user_upload extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_config;
-		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $pafiledb_functions, $config;
+		global $pafiledb_config, $pafiledb_functions, $template;
+		global $db, $cache, $config, $lang, $userdata, $user_ip;
 
 		// =======================================================
 		// Get Vars
 		// =======================================================
 
-		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_field.' . PHP_EXT);
+		$custom_fields = new custom_fields();
+		$custom_fields->custom_table = PA_CUSTOM_TABLE;
+		$custom_fields->custom_data_table = PA_CUSTOM_DATA_TABLE;
+		$custom_fields->init();
 
-		$custom_field = new custom_field();
-		$custom_field->init();
-
-		$cat_id = (isset($_REQUEST['cat_id'])) ? intval($_REQUEST['cat_id']) : 0;
-// MX Addon
-		$do = (isset($_REQUEST['do'])) ? intval($_REQUEST['do']) : '';
-		$file_id = (isset($_REQUEST['file_id'])) ? intval($_REQUEST['file_id']) : 0;
-// END
+		$cat_id = request_var('cat_id', 0);
+		// MX Addon
+		$do = request_var('do', '');
+		$file_id = request_var('file_id', 0);
+		// END
 		$mirrors = (isset($_POST['mirrors'])) ? true : 0;
 
 		$dropmenu = (!$cat_id) ? $this->jumpmenu_option(0, 0, '', true, true) : $this->jumpmenu_option(0, 0, array($cat_id => 1), true, true);
@@ -72,10 +72,10 @@ class pafiledb_user_upload extends pafiledb_public
 
 			if (($this->auth[$file_info['file_catid']]['auth_delete_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'])
 			{
-			$this->delete_files($file_id);
-			$this->_pafiledb();
-			$message = $lang['Filedeleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.php') . '">', '</a>');
-			message_die(GENERAL_MESSAGE, $message);
+				$this->delete_files($file_id);
+				$this->_pafiledb();
+				$message = $lang['Filedeleted'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.php') . '">', '</a>');
+				message_die(GENERAL_MESSAGE, $message);
 			}
 			else
 			{
@@ -93,7 +93,7 @@ class pafiledb_user_upload extends pafiledb_public
 			if(!$file_id)
 			{
 				$temp_id = $this->update_add_file();
-				$custom_field->file_update_data($temp_id);
+				$custom_fields->file_update_data($temp_id);
 				$this->_pafiledb();
 				if ($pafiledb_config['need_validation'] == '0')
 				{
@@ -108,7 +108,7 @@ class pafiledb_user_upload extends pafiledb_public
 			elseif($file_id != '')
 			{
 				$file_id = $this->update_add_file($file_id);
-				$custom_field->file_update_data($file_id);
+				$custom_fields->file_update_data($file_id);
 				$this->_pafiledb();
 				$message = $lang['Fileedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id) . '">', '</a>');
 //				$mode = 'edit';
@@ -130,7 +130,7 @@ class pafiledb_user_upload extends pafiledb_public
 				$file_version = '';
 				$file_website = '';
 				$file_posticons = $pafiledb_functions->post_icons();
-// MX				$file_cat_list = $this->jumpmenu_option(0, 0, '', true);
+				//$file_cat_list = $this->jumpmenu_option(0, 0, '', true);
 				$file_cat_list = (!$cat_id) ? $this->jumpmenu_option(0, 0, '', true) : $this->jumpmenu_option(0, 0, array($cat_id => 1), true, true);
 				$file_license = $pafiledb_functions->license_list();
 				$pin_checked_yes = '';
@@ -142,7 +142,7 @@ class pafiledb_user_upload extends pafiledb_public
 				$ss_checked_yes = '';
 				$ss_checked_no = ' checked="checked"';
 				$file_url = '';
-				$custom_exist = $custom_field->display_edit();
+				$custom_exist = $custom_fields->display_edit();
 				$mode = 'ADD';
 				$l_title = $lang['Afiletitle'];
 			}
@@ -161,12 +161,12 @@ class pafiledb_user_upload extends pafiledb_public
 					message_die(GENERAL_MESSAGE, $message);
 				}
 
-				$file_name = htmlspecialchars($file_info['file_name']);
-				$file_desc = htmlspecialchars($file_info['file_desc']);
-				$file_long_desc =htmlspecialchars($file_info['file_longdesc']);
-				$file_author = htmlspecialchars($file_info['file_creator']);
-				$file_version = htmlspecialchars($file_info['file_version']);
-				$file_website = htmlspecialchars($file_info['file_docsurl']);
+				$file_name = $file_info['file_name'];
+				$file_desc = $file_info['file_desc'];
+				$file_long_desc = $file_info['file_longdesc'];
+				$file_author = $file_info['file_creator'];
+				$file_version = $file_info['file_version'];
+				$file_website = $file_info['file_docsurl'];
 				$file_posticons = $pafiledb_functions->post_icons($file_info['file_posticon']);
 				$file_cat_list = $this->jumpmenu_option(0, 0, array($file_info['file_catid'] => 1), true);
 				$file_license = $pafiledb_functions->license_list($file_info['file_license']);
@@ -183,7 +183,7 @@ class pafiledb_user_upload extends pafiledb_public
 				$file_url = $file_info['file_dlurl'];
 				$file_unique_name = $file_info['unique_name'];
 				$file_dir = $file_info['file_dir'];
-				$custom_exist = $custom_field->display_edit($file_id);
+				$custom_exist = $custom_fields->display_edit($file_id);
 				$mode = 'EDIT';
 				$l_title = $lang['Efiletitle'];
 				$s_hidden_fields = '<input type="hidden" name="file_id" value="' . $file_id . '" />';
@@ -191,8 +191,7 @@ class pafiledb_user_upload extends pafiledb_public
 
 			$s_hidden_fields .= '<input type="hidden" name="action" value="user_upload" />';
 
-
-			$pafiledb_template->assign_vars(array(
+			$template->assign_vars(array(
 				'S_ADD_FILE_ACTION' => append_sid('dload.' . PHP_EXT),
 				'L_HOME' => $lang['Home'],
 				'DOWNLOAD' => $pafiledb_config['settings_dbname'],

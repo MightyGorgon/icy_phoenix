@@ -51,17 +51,24 @@ define('MOD_COOKIE_PREF_NAME', 'nivisec_phpbb2_mod_preferences');
 /******************************************************************************************/
 $preference_cookie = (isset($_COOKIE[MOD_COOKIE_PREF_NAME])) ? unserialize(stripslashes($_COOKIE[MOD_COOKIE_PREF_NAME])) : array();
 $preference_cookie['test'] = true;
-$params = array('start' => 0, 'order' => 'DESC', 'mode' => 'topic_time', 'delete_all_before_date' => 0,
-'del_month' => 1, 'del_day' => 1, 'del_year' => 1970);
+$params = array(
+	'start' => 0,
+	'order' => 'DESC',
+	'mode' => 'topic_time',
+	'delete_all_before_date' => 0,
+	'del_month' => 1,
+	'del_day' => 1,
+	'del_year' => 1970
+);
 $params_ignore = array('delete_all_before_date');
 
 foreach($params as $var => $default)
 {
-	$$var = (isset($preference_cookie[MOD_CODE."_$var"]) && !in_array($var, $params_ignore)) ? $preference_cookie[MOD_CODE."_$var"] : $default;
+	$$var = (isset($preference_cookie[MOD_CODE . "_$var"]) && !in_array($var, $params_ignore)) ? $preference_cookie[MOD_CODE . "_$var"] : $default;
 	if(isset($_POST[$var]) || isset($_GET[$var]))
 	{
-		$preference_cookie[MOD_CODE."_$var"] = (isset($_POST[$var])) ? $_POST[$var] : $_GET[$var];
-		$$var = $preference_cookie[MOD_CODE."_$var"];
+		$preference_cookie[MOD_CODE . "_$var"] = (isset($_POST[$var])) ? $_POST[$var] : $_GET[$var];
+		$$var = $preference_cookie[MOD_CODE . "_$var"];
 	}
 }
 /****************************************************************************

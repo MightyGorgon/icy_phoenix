@@ -15,8 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
-
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -29,17 +27,11 @@ include_once(IP_ROOT_PATH . 'includes/mini_cal/mini_cal_common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/mini_cal/calendarSuite.' . PHP_EXT);
 
 // get the mode (if any)
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mini_cal_mode = isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode'];
-}
+$mini_cal_mode = request_var('mode', '');
 $mini_cal_mode = ($mini_cal_mode == 'personal') ? $mini_cal_mode : 'default';
 
 // get the user (for personal calendar)
-if(isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL]))
-{
-	$mini_cal_user = (isset($_POST[POST_USERS_URL])) ? intval($_POST[POST_USERS_URL]) : intval($_GET[POST_USERS_URL]);
-}
+$mini_cal_user = request_var(POST_USERS_URL, 0);
 
 // get the calendar month
 $mini_cal_month = request_var('month', 0);
@@ -48,10 +40,8 @@ $mini_cal_month = request_var('month', 0);
 $mini_cal = new calendarSuite();
 
 // initialise the mini_cal lang files
-// for maximum efficiency you might want to move the mini_cal lang variables into lang_main
-// and remove these lines
-$use_lang = (!@file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_mini_cal.' . PHP_EXT)) ? 'english' : $config['default_lang'];
-include(IP_ROOT_PATH . 'language/lang_' . $use_lang . '/lang_main_mini_cal.' . PHP_EXT);
+// for maximum efficiency you might want to move the mini_cal lang variables into lang_main and remove these lines
+setup_extra_lang(array('lang_main_mini_cal'));
 
 // setup our mini_cal template
 $template->set_filenames(array('mini_cal_body' => 'mini_cal_body.tpl'));
@@ -120,7 +110,8 @@ for($i = 0; $i < $mini_cal_month_days;)
 	else
 	{
 		$template->assign_block_vars('mini_cal_row.mini_cal_days', array(
-			'MINI_CAL_DAY' => '&nbsp;')
+			'MINI_CAL_DAY' => '&nbsp;'
+			)
 		);
 	}
 
@@ -158,10 +149,11 @@ $template->assign_vars(array(
 	'L_MINI_CAL_SUN' => $lang['mini_cal']['day'][7],
 	'U_PREV_MONTH' => $prev_month,
 	'U_NEXT_MONTH' => $next_month,
-	'L_WHOSBIRTHDAY_WEEK' => ($config['birthday_check_day'] >= 1) ? sprintf((($birthdays_list['xdays']) ? $lang['Birthday_week'] : $lang['Nobirthday_week']), $config['birthday_check_day']).$birthdays_list['xdays'] : '',
+	'L_WHOSBIRTHDAY_WEEK' => ($config['birthday_check_day'] >= 1) ? sprintf((($birthdays_list['xdays']) ? $lang['Birthday_week'] : $lang['Nobirthday_week']), $config['birthday_check_day']) . $birthdays_list['xdays'] : '',
 	'L_WHOSBIRTHDAY_TODAY' => ($birthdays_list['today']) ? $lang['Birthday_today'] . $birthdays_list['today'] : $lang['Nobirthday_today'],
 	)
 );
 
 $template->assign_var_from_handle('MINI_CAL_OUTPUT', 'mini_cal_body');
+
 ?>

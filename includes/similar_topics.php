@@ -96,7 +96,7 @@ for($i = 0; $i < $count_similar; $i++)
 				}
 				if(isset($_COOKIE[$config['cookie_name'] .'_f_all']))
 				{
-					if($_COOKIE[$config['cookie_name'] .'_f_all'] >= $similar['post_time'])
+					if(intval($_COOKIE[$config['cookie_name'] .'_f_all']) >= $similar['post_time'])
 					{
 						$unread_topics = false;
 					}

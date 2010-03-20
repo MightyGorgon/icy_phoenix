@@ -119,15 +119,15 @@ if (isset($_POST['submit']))
 				$out .= $protocol . $server_name . $server_port . $script_path . $viewtopic_url . "\r\n";
 			}
 
-			$out .= ($_POST['additional_urls']) ? trim($_POST['additional_urls']) : '';
+			$out .= request_var('additional_urls', '', true);
+			$search_savepath = request_var('search_savepath', '', true);
 
-			$filename = IP_ROOT_PATH . '/' . $_POST['search_savepath'] . '/urllist.txt.gz';
+			$filename = IP_ROOT_PATH . '/' . $search_savepath . '/urllist.txt.gz';
 
 			if (preg_match('#^[0-9]$#', $_POST['compression_level']))
 			{
 				$compression_level = $_POST['compression_level'];
 			}
-
 			else
 			{
 				$compression_level = 9;
@@ -149,30 +149,15 @@ if (isset($_POST['submit']))
 			}
 
 			// Update settings
-			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
-				config_value = "' . str_replace("\'", "''", $_POST['search_savepath']) . '"
-				WHERE config_name = "yahoo_search_savepath"';
-			$db->sql_query($sql);
-
-			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
-				config_value = "' . str_replace("\'", "''", $_POST['additional_urls']) . '"
-				WHERE config_name = "yahoo_search_additional_urls"';
-			$db->sql_query($sql);
-
-			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
-				config_value = "' . str_replace("\'", "''", $_POST['compress_file']) . '"
-				WHERE config_name = "yahoo_search_compress"';
-			$db->sql_query($sql);
-
-			$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
-				config_value = "' . str_replace("\'", "''", $_POST['compression_level']) . '"
-				WHERE config_name = "yahoo_search_compression_level"';
-			$db->sql_query($sql);
+			set_config('yahoo_search_savepath', request_post_var('search_savepath', '', true), false);
+			set_config('yahoo_search_additional_urls', request_post_var('additional_urls', '', true), false);
+			set_config('yahoo_search_compress', request_post_var('compress_file', '', true), false);
+			set_config('yahoo_search_compression_level', request_post_var('compression_level', '', true), false);
 
 			// It looks like everything worked okay....
 			if (file_exists($filename) && filesize($filename) > 1)
 			{
-				message_die(GENERAL_MESSAGE, sprintf($lang['Yahoo_search_file_done'], $protocol . $server_name . $server_port . $script_path . $_POST['search_savepath'] . '/urllist.txt.gz'));
+				message_die(GENERAL_MESSAGE, sprintf($lang['Yahoo_search_file_done'], $protocol . $server_name . $server_port . $script_path . $search_savepath . '/urllist.txt.gz'));
 			}
 
 			// Maybe not
@@ -220,9 +205,10 @@ if (isset($_POST['submit']))
 			$out .= $protocol . $server_name . $server_port . $script_path . $viewtopic_url . "\r\n";
 		}
 
-		$out .= ($_POST['additional_urls']) ? trim($_POST['additional_urls']) : '';
+		$out .= request_var('additional_urls', '', true);
+		$search_savepath = request_var('search_savepath', '', true);
 
-		$filename = IP_ROOT_PATH . $_POST['search_savepath'] . '/urllist.txt';
+		$filename = IP_ROOT_PATH . $search_savepath . '/urllist.txt';
 
 		if (!$file_handle = fopen($filename, 'w'))
 		{
@@ -234,36 +220,21 @@ if (isset($_POST['submit']))
 			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unwritable_file'], $filename));
 		}
 
-		if (fclose($file_handle) === FALSE)
+		if (fclose($file_handle) === false)
 		{
 			message_die(GENERAL_ERROR, sprintf($lang['Yahoo_search_error_unclosable_file'], $filename));
 		}
 
 		// Update settings
-		$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
-			config_value = "' . str_replace("\'", "''", $_POST['search_savepath']) . '"
-			WHERE config_name = "yahoo_search_savepath"';
-		$db->sql_query($sql);
-
-		$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
-			config_value = "' . str_replace("\'", "''", $_POST['additional_urls']) . '"
-			WHERE config_name = "yahoo_search_additional_urls"';
-		$db->sql_query($sql);
-
-		$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
-			config_value = "' . str_replace("\'", "''", $_POST['compress_file']) . '"
-			WHERE config_name = "yahoo_search_compress"';
-		$db->sql_query($sql);
-
-		$sql = 'UPDATE ' . CONFIG_TABLE . ' SET
-			config_value = "' . str_replace("\'", "''", $_POST['compression_level']) . '"
-			WHERE config_name = "yahoo_search_compression_level"';
-		$db->sql_query($sql);
+		set_config('yahoo_search_savepath', request_post_var('search_savepath', '', true), false);
+		set_config('yahoo_search_additional_urls', request_post_var('additional_urls', '', true), false);
+		set_config('yahoo_search_compress', request_post_var('compress_file', '', true), false);
+		set_config('yahoo_search_compression_level', request_post_var('compression_level', '', true), false);
 
 		// It looks like everything worked okay....
 		if (file_exists($filename) && filesize($filename) > 1)
 		{
-			message_die(GENERAL_MESSAGE, sprintf($lang['Yahoo_search_file_done'], $protocol . $server_name . $server_port . $script_path . $_POST['search_savepath'] . '/urllist.txt'));
+			message_die(GENERAL_MESSAGE, sprintf($lang['Yahoo_search_file_done'], $protocol . $server_name . $server_port . $script_path . $search_savepath . '/urllist.txt'));
 		}
 
 		// Maybe not
@@ -273,10 +244,9 @@ if (isset($_POST['submit']))
 		}
 	}
 }
-
-// Display the admin page
 else
 {
+	// Display the admin page
 	$sql = 'SELECT c.forum_id AS cat_id, c.forum_name AS cat_title, c.forum_order AS cat_order
 			FROM ' . FORUMS_TABLE . ' c
 			WHERE c.forum_type = ' . FORUM_CAT . '
@@ -362,7 +332,8 @@ else
 		'S_COMPRESS_FILE_YES' => ($default_config['yahoo_search_compress']) ? 'checked="checked"' : '',
 		'S_COMPRESS_FILE_NO' => (!$default_config['yahoo_search_compress']) ? 'checked="checked"' : '',
 		'COMPRESSION_LEVEL' => $default_config['yahoo_search_compression_level'],
-	));
+		)
+	);
 
 	$template->pparse('body');
 }

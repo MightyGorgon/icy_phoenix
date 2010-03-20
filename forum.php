@@ -66,14 +66,7 @@ require(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_
 $viewcat = (!empty($_GET[POST_CAT_URL]) ? intval($_GET[POST_CAT_URL]) : -1);
 $viewcat = (($viewcat <= 0) ? -1 : $viewcat);
 $viewcatkey = ($viewcat < 0) ? 'Root' : POST_CAT_URL . $viewcat;
-if(isset($_GET['mark']) || isset($_POST['mark']))
-{
-	$mark_read = (isset($_POST['mark'])) ? $_POST['mark'] : $_GET['mark'];
-}
-else
-{
-	$mark_read = '';
-}
+$mark_read = request_var('mode', '');
 
 // Handle marking posts
 if($mark_read == 'forums')
@@ -223,36 +216,26 @@ else
 	$avatar_img = '<img src="' . $config['default_avatar_guests_url'] . '" alt="Avatar" />';
 }
 
-if ($config['index_links'] == true)
+$link_self_img = '';
+$site_logo_height = '';
+$site_logo_width = '';
+if (!empty($config['index_links']))
 {
-	$sql = "SELECT * FROM " . LINK_CONFIG_TABLE;
-	$result = $db->sql_query($sql, 0, 'links_config_');
-	while($row = $db->sql_fetchrow($result))
-	{
-		$link_config_name = $row['config_name'];
-		$link_config_value = $row['config_value'];
-		$link_config[$link_config_name] = $link_config_value;
-		$link_self_img = $link_config['site_logo'];
-		$site_logo_height = $link_config['height'];
-		$site_logo_width = $link_config['width'];
-	}
+	include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
+	$links_config = get_links_config(true);
+	$link_self_img = $links_config['site_logo'];
+	$site_logo_height = $links_config['height'];
+	$site_logo_width = $links_config['width'];
 	$template->assign_vars(array('S_LINKS' => true));
-	$db->sql_freeresult($result);
-}
-else
-{
-	$link_self_img = '';
-	$site_logo_height = '';
-	$site_logo_width = '';
 }
 
-if ($config['site_history'])
+if ($config['site_history'] && ((time() - (int) $config['cron_site_history_last_run']) > ONLINE_REFRESH))
 {
 	$current_time = time();
 	$minutes = gmdate('is', $current_time);
 	$hour_now = $current_time - (60 * ($minutes[0] . $minutes[1])) - ($minutes[2] . $minutes[3]);
-	// change the number late in the next line, to what ever time zone your forum is located, this need to be hard coded in the release of this mod, the number is 1
-	$dato = create_date('H', $current_time,1);
+	// change the number late in the next line, to whatever timezone your forum is located, this need to be hard coded in the release of this mod, the number is 1
+	$dato = create_date('H', $current_time, 1);
 	$timetoday = $hour_now - (3600 * $dato);
 
 	$sql = 'SELECT COUNT(DISTINCT session_ip) as guests_today FROM ' . SESSIONS_TABLE . ' WHERE session_user_id="' . ANONYMOUS . '" AND session_time >= ' . $timetoday . ' AND session_time < ' . ($timetoday + 86399);
@@ -287,6 +270,7 @@ if ($config['site_history'])
 	{
 		$db->sql_freeresult($result);
 	}
+	set_config('cron_site_history_last_run', time());
 }
 
 // set the param of the mark read func

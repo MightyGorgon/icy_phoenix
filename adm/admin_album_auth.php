@@ -34,7 +34,7 @@ require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_
 require(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 $album_user_id = ALBUM_PUBLIC_GALLERY;
 
-if( !isset($_POST['submit']) )
+if(!isset($_POST['submit']))
 {
 	album_read_tree();
 	$s_album_cat_list = album_get_tree_option(ALBUM_ROOT_CATEGORY, ALBUM_AUTH_VIEW, ALBUM_SELECTBOX_INCLUDE_ALL | ALBUM_SELECTBOX_INCLUDE_ROOT);
@@ -154,7 +154,7 @@ else
 		$moderator_groups = @implode(',', $_POST['moderator']);
 
 		$sql = "UPDATE ". ALBUM_CAT_TABLE ."
-				SET cat_view_groups = '$view_groups', cat_upload_groups = '$upload_groups', cat_rate_groups = '$rate_groups', cat_comment_groups = '$comment_groups', cat_edit_groups = '$edit_groups', cat_delete_groups = '$delete_groups',	cat_moderator_groups = '$moderator_groups'
+				SET cat_view_groups = '$view_groups', cat_upload_groups = '$upload_groups', cat_rate_groups = '$rate_groups', cat_comment_groups = '$comment_groups', cat_edit_groups = '$edit_groups', cat_delete_groups = '$delete_groups', cat_moderator_groups = '$moderator_groups'
 				WHERE cat_id = '$cat_id'";
 		$result = $db->sql_query($sql);
 

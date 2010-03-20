@@ -23,24 +23,62 @@ if (!defined('IN_ICYPHOENIX'))
 
 class pafiledb_functions
 {
-	function set_config($config_name, $config_value)
+	function set_config($config_name, $config_value, $clear_cache = true)
 	{
-		global $pa_cache, $pafiledb_config, $db;
+		global $db, $cache;
+		global $pafiledb_config;
 
 		$sql = "UPDATE " . PA_CONFIG_TABLE . " SET
-			config_value = '" . str_replace("\'", "''", $config_value) . "'
-			WHERE config_name = '$config_name'";
+			config_value = '" . $db->sql_escape($config_value) . "'
+			WHERE config_name = '" . $db->sql_escape($config_name) . "'";
 		$db->sql_query($sql);
 
 		if (!$db->sql_affectedrows() && !isset($pafiledb_config[$config_name]))
 		{
-			$sql = 'INSERT INTO ' . PA_CONFIG_TABLE . " (config_name, config_value)
-				VALUES ('$config_name', '" . str_replace("\'", "''", $config_value) . "')";
+			$sql = "INSERT INTO " . PA_CONFIG_TABLE . " (config_name, config_value)
+				VALUES ('" . $db->sql_escape($config_name) . "', '" . $db->sql_escape($config_value) . "')";
 			$db->sql_query($sql);
 		}
 
 		$pafiledb_config[$config_name] = $config_value;
-		$pa_cache->destroy('config');
+
+		if ($clear_cache)
+		{
+			$cache->destroy('_config_pafiledb');
+			$db->clear_cache('config_pafiledb_');
+		}
+	}
+
+	function pafiledb_config($from_cache = true)
+	{
+		global $db, $cache;
+
+		$sql = "SELECT * FROM " . PA_CONFIG_TABLE;
+		$result = $from_cache ? $db->sql_query($sql, 0, 'config_pafiledb_') : $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$config[$row['config_name']] = trim($row['config_value']);
+		}
+		$db->sql_freeresult($result);
+
+		return $config;
+	}
+
+	/*
+	* Get config values
+	*/
+	function obtain_pafiledb_config()
+	{
+		global $db, $cache;
+
+		if (($config = $cache->get('_config_pafiledb')) === false)
+		{
+			$config = array();
+			$config = $this->pafiledb_config(false);
+			$cache->put('_config_pafiledb', $config);
+		}
+
+		return $config;
 	}
 
 	function post_icons($file_posticon = '')
@@ -67,11 +105,11 @@ class pafiledb_functions
 			{
 				if ($file_posticon == $icon)
 				{
-					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" checked="checked" /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" />&nbsp;';
+					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" checked="checked" /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" alt="" />&nbsp;';
 				}
 				else
 				{
-					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" />&nbsp;';
+					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" alt="" />&nbsp;';
 				}
 
 				$curicons++;
@@ -123,7 +161,7 @@ class pafiledb_functions
 	{
 		global $pafiledb_config;
 
-		srand((double)microtime()*1000000);	// for older than version 4.2.0 of PHP
+		srand((double) microtime() * 1000000);	// for older than version 4.2.0 of PHP
 
 		do
 		{
@@ -235,23 +273,6 @@ class pafiledb_functions
 		}
 
 		return;
-	}
-
-	function pafiledb_config()
-	{
-		global $db;
-
-		$sql = "SELECT * FROM " . PA_CONFIG_TABLE;
-		$result = $db->sql_query($sql);
-
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$pafiledb_config[$row['config_name']] = trim($row['config_value']);
-		}
-
-		$db->sql_freeresult($result);
-
-		return ($pafiledb_config);
 	}
 
 	function get_file_size($file_id, $file_data = '')
@@ -417,12 +438,12 @@ function pafiledb_page_header($page_title)
 	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
 	global $table_prefix, $SID, $_SID, $user_ip;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $ctracker_config, $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $css_include, $css_style_include, $js_include;
 
-	global $pa_cache, $pafiledb, $pafiledb_config, $pafiledb_template, $action;
+	global $pafiledb, $pafiledb_config, $action;
 	global $admin_level, $level_prior, $debug;
 
 	if($action != 'download')
@@ -491,7 +512,7 @@ function pafiledb_page_header($page_title)
 	$is_auth_upload = $upload_auth;
 	$show_top_links = (!$is_auth_viewall && !$is_auth_search && !$is_auth_stats && !$is_auth_toplist && !$is_auth_upload) ? false : true;
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'S_TOP_LINKS' => $show_top_links,
 		'IS_AUTH_VIEWALL' => $is_auth_viewall,
 		'IS_AUTH_SEARCH' => $is_auth_search,
@@ -535,15 +556,15 @@ function pafiledb_page_footer()
 	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
 	global $table_prefix, $SID, $_SID, $user_ip;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $ctracker_config, $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $css_include, $css_style_include, $js_include;
 
-	global $pa_cache, $pafiledb, $pafiledb_config, $pafiledb_template, $action;
+	global $pafiledb, $pafiledb_config, $action;
 	global $admin_level, $level_prior, $debug;
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'JUMPMENU' => $pafiledb->modules[$pafiledb->module_name]->jumpmenu_option(),
 		'L_JUMP' => $lang['jump'],
 		'S_JUMPBOX_ACTION' => append_sid('dload.' . PHP_EXT),
@@ -553,9 +574,9 @@ function pafiledb_page_footer()
 	$pafiledb->modules[$pafiledb->module_name]->_pafiledb();
 	if(!isset($_GET['explain']))
 	{
-		$pafiledb_template->display('body');
+		//$template->display('body');
+		$template->pparse('body');
 	}
-	$pa_cache->unload();
 
 	if($action != 'download')
 	{
@@ -700,7 +721,7 @@ class user_info
 		if(!$db->sql_numrows($result))
 		{
 			$sql = "INSERT INTO " . PA_DOWNLOAD_INFO_TABLE . " (file_id, user_id, download_time, downloader_ip, downloader_os, downloader_browser, browser_version)
-						VALUES('" . $file_id . "', '" . $userdata['user_id'] . "', '" . time() . "', '" . $user_ip . "', '" . $this->platform . "', '" . $this->agent . "', '" . $this->ver . "')";
+						VALUES('" . $file_id . "', '" . $userdata['user_id'] . "', '" . time() . "', '" . $user_ip . "', '" . $db->sql_escape($this->platform) . "', '" . $db->sql_escape($this->agent) . "', '" . $db->sql_escape($this->ver) . "')";
 			$db->sql_query($sql);
 		}
 
@@ -723,7 +744,7 @@ class user_info
 		if(!$db->sql_numrows($result))
 		{
 			$sql = "INSERT INTO " . PA_VOTES_TABLE . " (user_id, votes_ip, votes_file, rate_point, voter_os, voter_browser, browser_version)
-						VALUES('" . $userdata['user_id'] . "', '" . $user_ip . "', '" . $file_id . "','" . $rating ."', '" . $this->platform . "', '" . $this->agent . "', '" . $this->ver . "')";
+						VALUES('" . $userdata['user_id'] . "', '" . $user_ip . "', '" . $file_id . "','" . $rating ."', '" . $db->sql_escape($this->platform) . "', '" . $db->sql_escape($this->agent) . "', '" . $db->sql_escape($this->ver) . "')";
 			$db->sql_query($sql);
 		}
 		else

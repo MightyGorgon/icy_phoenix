@@ -34,18 +34,11 @@ $class_topics->var_init(true);
 $confirm = true;
 
 // Continue var definitions
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 // session id check
-if (!empty($_POST['sid']) || !empty($_GET['sid']))
-{
-	$sid = (!empty($_POST['sid'])) ? $_POST['sid'] : $_GET['sid'];
-}
-else
-{
-	$sid = '';
-}
+$sid = request_var('sid', '');
 
 // Obtain relevant data
 if (!empty($topic_id))

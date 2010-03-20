@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
@@ -65,10 +64,7 @@ $subject = array (
 
 
 //$result = $QUERY_STRING;
-if (isset($_GET['code']))
-{
-	$result = intval($_GET['code']);
-}
+$result = request_var('code', 0);
 
 switch($result)
 {

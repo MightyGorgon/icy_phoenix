@@ -28,7 +28,8 @@ include_once(IP_ROOT_PATH . 'includes/functions_mg_log_admin.' . PHP_EXT);
 setup_extra_lang(array('lang_admin_pafiledb'));
 
 // Generate relevant output
-if(isset($_GET['pane']) && ($_GET['pane'] == 'left'))
+$acp_pane = request_var('pane', '');
+if($acp_pane == 'left')
 {
 	//Needed to avoid emptying cache when generating ACP Modules... do not remove or change, unless you also change it in common.php
 	define('ACP_MODULES', true);
@@ -66,7 +67,7 @@ if(isset($_GET['pane']) && ($_GET['pane'] == 'left'))
 
 	include('./page_footer_admin.' . PHP_EXT);
 }
-elseif(isset($_GET['pane']) && ($_GET['pane'] == 'right'))
+elseif($acp_pane == 'right')
 {
 
 	include('./page_header_admin.' . PHP_EXT);

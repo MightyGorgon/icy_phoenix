@@ -13,7 +13,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('EXPLODE_SEPERATOR_CHAR', '|');
+define('EXPLODE_SEPARATOR_CHAR', '|');
 //define('JR_ADMIN_DIR', ADM .'/');
 define('COPYRIGHT_NIVISEC_FORMAT', '<br /><div class="copyright" style="text-align:center;"> %s &copy; %s <a href="http://www.nivisec.com">Nivisec.com</a></div>');
 
@@ -27,87 +27,6 @@ if (!function_exists('copyright_nivisec'))
 	function copyright_nivisec($name, $year)
 	{
 		printf(COPYRIGHT_NIVISEC_FORMAT, $name, $year);
-	}
-}
-
-if (!function_exists('find_lang_file_nivisec'))
-{
-	/**
-	* @return boolean
-	* @param filename string
-	* @desc Tries to locate and include the specified language file.  Do not include the .php extension!
-	*/
-	function find_lang_file_nivisec($filename)
-	{
-		global $lang, $config;
-
-		if (file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $filename . '.' . PHP_EXT))
-		{
-			include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $filename . '.' . PHP_EXT);
-		}
-		elseif (file_exists(IP_ROOT_PATH . "language/lang_english/$filename." . PHP_EXT))
-		{
-			include_once(IP_ROOT_PATH . "language/lang_english/$filename." . PHP_EXT);
-		}
-		else
-		{
-			message_die(GENERAL_ERROR, "Unable to find a suitable language file for $filename!", '');
-		}
-		return true;
-	}
-}
-
-if (!function_exists('config_update_nivisec'))
-{
-	/**
-	* @return boolean
-	* @param item string
-	* @param value string
-	* @param prefix [optional]string
-	* @desc Updates a configuration item.  If the 3rd param is specified, that text is cut off before insertion.  Assumes $status_message is predefined.
-	*/
-	function config_update_nivisec($item, $value, $prefix = '')
-	{
-		global $config, $db, $status_message, $lang;
-
-		if ($prefix != '') $item = preg_replace("/^$prefix/", '', $item);
-		//Only bother updating if the value is different
-		if ($config[$item] != $value)
-		{
-			$sql = 'UPDATE ' . CONFIG_TABLE . "
-				SET config_value = '$value'
-				WHERE config_name = '$item'";
-			$db->sql_return_on_error(true);
-			$result = $db->sql_query($sql);
-			$db->sql_return_on_error(false);
-			if (!$result)
-			{
-				return false;
-			}
-			$config[$item] = $value;
-			$status_message .= sprintf($lang['Updated_Config'], $lang[$item]);
-		}
-		return true;
-	}
-}
-if (!function_exists('set_filename_nivisec'))
-{
-	/**
-	* @return boolean
-	* @param filename string
-	* @param handle string
-	* @desc Sets the filename to handle in the $template class.  Saves typing for me :)
-	*/
-	function set_filename_nivisec($handle, $filename)
-	{
-		global $template;
-
-		$template->set_filenames(array(
-			$handle => $filename
-			)
-		);
-
-		return true;
 	}
 }
 
@@ -175,7 +94,7 @@ function jr_admin_check_file_hashes($file)
 
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 
-	$user_modules = explode(EXPLODE_SEPERATOR_CHAR, $jr_admin_userdata['user_jr_admin']);
+	$user_modules = explode(EXPLODE_SEPARATOR_CHAR, $jr_admin_userdata['user_jr_admin']);
 
 	foreach($module as $cat => $module_data)
 	{
@@ -274,7 +193,7 @@ function jr_admin_get_module_list($user_module_list = false)
 			if ($user_module_list && (($userdata['user_level'] != ADMIN) || $debug))
 			{
 				//If we were passed a list of valid modules, make sure we are sending the correct list back
-				$user_modules = explode(EXPLODE_SEPERATOR_CHAR, $user_module_list);
+				$user_modules = explode(EXPLODE_SEPARATOR_CHAR, $user_module_list);
 				if (in_array($file_hash, $user_modules))
 				{
 					$module_list[$cat][$module_name]['filename'] = $filename;
@@ -320,6 +239,8 @@ function jr_admin_secure($file)
 	$phpEx = PHP_EXT;
 
 	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
+	$selected_module = request_get_var('module', '');
+	$sid = request_var('sid', '');
 
 	if ($debug)
 	{
@@ -345,12 +266,12 @@ function jr_admin_secure($file)
 		//We are at the index file, which is already secure pretty much
 		return true;
 	}
-	elseif (isset($_GET['module']) && in_array($_GET['module'], explode(EXPLODE_SEPERATOR_CHAR, $jr_admin_userdata['user_jr_admin'])))
+	elseif (!empty($selected_module) && in_array($selected_module, explode(EXPLODE_SEPARATOR_CHAR, $jr_admin_userdata['user_jr_admin'])))
 	{
 		//The user has access for sure by module_id security from GET vars only
 		return true;
 	}
-	elseif (!isset($_GET['module']) && sizeof($_POST))
+	elseif (!!empty($selected_module) && sizeof($_POST))
 	{
 		//This user likely entered a post form, so let's use some checking logic
 		//to make sure they are doing it from where they should be!
@@ -360,10 +281,10 @@ function jr_admin_secure($file)
 		//Return the check to make sure the user has access to what they are submitting
 		return jr_admin_check_file_hashes($file);
 	}
-	elseif (!isset($_GET['module']) && isset($_GET['sid']))
+	elseif (!!empty($selected_module) && !empty($sid))
 	{
 		//This user has clicked on a url that specified items
-		if ($_GET['sid'] != $userdata['session_id'])
+		if ($sid != $userdata['session_id'])
 		{
 			return false;
 		}
@@ -418,7 +339,7 @@ function jr_admin_make_left_pane()
 	//-MOD: DHTML Menu for ACP
 	foreach ($module as $cat => $module_array)
 	{
-		$cat_icon = '<img src="' . (isset($acp_icon[$cat]) ? $acp_icon[$cat] : $acp_icon['default']) . '" alt="' . $cat_name . '" style="vertical-align:middle;" />&nbsp;';
+		$cat_icon = '<img src="' . (isset($acp_icon[$cat]) ? $acp_icon[$cat] : $acp_icon['default']) . '" alt="' . $cat_name . '" style="vertical-align: middle;" />&nbsp;';
 		$cat_name = ((isset($lang[$cat])) ? $lang[$cat] : preg_replace("/_/", ' ', $cat));
 		$template->assign_block_vars('catrow', array(
 			//+MOD: DHTML Menu for ACP
@@ -464,7 +385,7 @@ function jr_admin_make_info_box()
 
 	if (($userdata['user_level'] != ADMIN) || $debug)
 	{
-		find_lang_file_nivisec('lang_jr_admin');
+		setup_extra_lang(array('lang_jr_admin'));
 
 		$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 

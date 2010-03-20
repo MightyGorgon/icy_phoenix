@@ -23,12 +23,8 @@ if ($config['allow_zebra'] == false)
 
 $zmode = 'friends';
 $zmode_types = array('friends', 'foes');
-if (isset($_GET['zmode']) || isset($_POST['zmode']))
-{
-	$zmode = (isset($_GET['zmode'])) ? htmlspecialchars($_GET['zmode']) : htmlspecialchars($_POST['zmode']);
-	$zmode = htmlspecialchars($zmode);
-}
-$zmode = in_array($zmode, $zmode_types) ? $zmode : 'friends';
+$zmode = request_var('zmode', 'friends');
+$zmode = check_var_value($zmode, $zmode_types);
 
 // Forced to friends...
 $zmode = 'friends';
@@ -100,13 +96,13 @@ if (isset($_POST['submit']))
 				foreach ($data['add'] as $user_tmp)
 				{
 					$username_tmp = phpbb_clean_username($user_tmp);
-					$users_to_add .= (($users_to_add == '') ? '' : ', ') . '\'' . $username_tmp . '\'';
+					$users_to_add .= (($users_to_add == '') ? '' : ', ') . "'" . $db->sql_escape($username_tmp) . "'";
 				}
 				//$users_to_add = implode('\',\'', $data['add']);
-				$sql = 'SELECT user_id, user_level
-					FROM ' . USERS_TABLE . '
-					WHERE username IN (' . $users_to_add . ')
-						AND user_active = 1';
+				$sql = "SELECT user_id, user_level
+					FROM " . USERS_TABLE . "
+					WHERE username IN (" . $users_to_add . ")
+						AND user_active = 1";
 				//die($sql);
 				$result = $db->sql_query($sql);
 
@@ -144,7 +140,7 @@ if (isset($_POST['submit']))
 
 					if (sizeof($user_id_ary))
 					{
-						$sql_values = ($zmode == 'friends') ? '\'1\', \'0\'' : '\'0\', \'1\'';
+						$sql_values = ($zmode == 'friends') ? "'1', '0'" : "'0', '1'";
 
 						$sql_ary = array();
 						foreach ($user_id_ary as $zebra_id)
@@ -163,10 +159,10 @@ if (isset($_POST['submit']))
 		{
 			// Force integer values
 			$data['usernames'] = array_map('intval', $data['usernames']);
-			$users_to_del = implode('\',\'', $data['usernames']);
-			$sql = 'DELETE FROM ' . ZEBRA_TABLE . '
-				WHERE user_id = ' . $userdata['user_id'] . '
-					AND zebra_id IN (\'' . $users_to_del . '\')';
+			$users_to_del = implode("','", $data['usernames']);
+			$sql = "DELETE FROM " . ZEBRA_TABLE . "
+				WHERE user_id = " . $userdata['user_id'] . "
+					AND zebra_id IN ('" . $users_to_del . "')";
 			$result = $db->sql_query($sql);
 			$updated = true;
 		}
@@ -198,14 +194,14 @@ $username_count = 0;
 $s_username_options = '';
 while ($row = $db->sql_fetchrow($result))
 {
-	$s_username_options .= '<option value="' . $row['zebra_id'] . '">' . $row['username'] . '</option>';
+	$s_username_options .= '<option value="' . $row['zebra_id'] . '">' . htmlspecialchars($row['username']) . '</option>';
 	$username_count++;
 }
 $db->sql_freeresult($result);
 
 $link_name = $lang['UCP_ZEBRA_FRIENDS'];
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 
 if ($username_count > 0)
 {

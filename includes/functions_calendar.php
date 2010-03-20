@@ -477,7 +477,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		$new_row['event_link'] = $topic_link;
 		$new_row['event_birthday'] = false;
 		$new_row['event_txt_class'] = 'genmed';
-		$new_row['event_type_icon'] = '<img src="' . $images['icon_tiny_topic'] . '" style="vertical-align: bottom;" hspace="2" />';
+		$new_row['event_type_icon'] = '<img src="' . $images['icon_tiny_topic'] . '" style="vertical-align: bottom;" alt="" hspace="2" />';
 
 		$events[] = $new_row;
 	}
@@ -558,7 +558,7 @@ function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $y
 		$new_row['event_link'] = $username_link;
 		$new_row['event_birthday'] = true;
 		$new_row['event_txt_class'] = $txt_class;
-		$new_row['event_type_icon'] = '<img src="' . $images['icon_tiny_profile'] . '" border="0" hspace="2" />';
+		$new_row['event_type_icon'] = '<img src="' . $images['icon_tiny_profile'] . '" alt="" hspace="2" />';
 		$events[] = $new_row;
 	}
 }
@@ -929,7 +929,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 	$prec = (gmdate('Ym', $start_date) > 197101) ? gmdate('Ymd', gmmktime(0, 0, 0, gmdate('m', $start_date) - 1, 01, gmdate('Y', $start_date))) : gmdate('Ymd', $start_date);
 	$next = gmdate('Ymd', gmmktime(0, 0, 0, gmdate('m', $start_date)+1, 01, gmdate('Y', $start_date)));
 	$template->assign_block_vars('_calendar_box', array(
-		'L_CALENDAR' => '<a href="' . append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?start=' . gmdate('Ymd', cal_date(time(), $config['board_timezone']))) . '"><img src="' . $images['icon_calendar'] . '" hspace="3" border="0" style="vertical-align: top;" alt="' . $lang['Calendar_event'] . '" /></a>' . $lang['Calendar'],
+		'L_CALENDAR' => '<a href="' . append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT . '?start=' . gmdate('Ymd', cal_date(time(), $config['board_timezone']))) . '"><img src="' . $images['icon_calendar'] . '" hspace="3" style="vertical-align: top;" alt="' . $lang['Calendar_event'] . '" /></a>' . $lang['Calendar'],
 		'L_CALENDAR_TXT' => $lang['Calendar'],
 		'SPAN_ALL' => $nb_cells,
 		'S_MONTH' => $s_month,
@@ -1023,7 +1023,8 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 						'EVENT_TYPE' => $events[$ind]['event_type_icon'],
 						'EVENT_TITLE' => $events[$ind]['event_short_title'],
 						'EVENT_CLASS' => $events[$ind]['event_txt_class'],
-						'EVENT_MESSAGE' => str_replace(array('"', '\''), array('&quot;', '\\\''), $events[$ind]['event_message']),
+						//'EVENT_MESSAGE' => str_replace(array('"', '\'', '\\'), array('&quot;', '\\\'', '%5C'), $events[$ind]['event_message']),
+						'EVENT_MESSAGE' => str_replace(array('"'), array('&quot;'), addslashes($events[$ind]['event_message'])),
 						)
 					);
 					$flag = ($over && ($k == $nb_row_per_cell-1));

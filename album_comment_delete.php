@@ -41,15 +41,8 @@ if($album_config['comment'] == 0)
 // Check the request
 // ------------------------------------
 
-if(isset($_GET['comment_id']))
-{
-	$comment_id = intval($_GET['comment_id']);
-}
-elseif(isset($_POST['comment_id']))
-{
-	$comment_id = intval($_POST['comment_id']);
-}
-else
+$comment_id = request_var('comment_id', 0);
+if(empty($comment_id))
 {
 	message_die(GENERAL_ERROR, 'No comment_id specified');
 }

@@ -73,6 +73,42 @@ class ip_cache extends acm
 	}
 
 	/*
+	* Get CMS global blocks config values (New Version!)
+	*/
+	function obtain_cms_global_blocks_config_new($from_cache = false)
+	{
+		global $db, $ip_cms, $cms_config_vars;
+
+		$auth_level = $ip_cms->cms_blocks_view();
+		$auth_level_suffix = implode('', $auth_level);
+		if (($config = $this->get('_cms_global_blocks_config_' . $auth_level_suffix)) === false)
+		{
+			$cms_id = $cms_config_vars['id'] ? $cms_config_vars['id'] : 0;
+
+			$sql = "SELECT b.*, s.*
+				FROM " . $ip_cms->tables['blocks_table'] . " AS b,
+				" . $ip_cms->tables['block_settings_table'] . " AS s
+				WHERE b.layout = 0
+				AND b.active = 1
+				AND b.block_cms_id = '" . $cms_id . "'
+				AND " . $db->sql_in_set('s.view', $auth_level) . "
+				AND b.bposition IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
+				AND b.block_settings_id = s.bs_id
+				ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
+			$result = $from_cache ? $db->sql_query($sql, 0, 'cms_global_blocks_', CMS_CACHE_FOLDER) : $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$config[$row['bposition']][] = $row;
+			}
+			$db->sql_freeresult($result);
+			$this->put('_cms_global_blocks_config_' . $auth_level_suffix, $config);
+		}
+
+		return $config;
+	}
+
+	/*
 	* Get CMS global blocks config values
 	*/
 	function obtain_cms_global_blocks_config($from_cache = false)
@@ -122,58 +158,6 @@ class ip_cache extends acm
 		}
 
 		return $default_style;
-	}
-
-	/*
-	* Get attachments config values
-	*/
-	function obtain_attachments_config($from_cache = false)
-	{
-		global $db;
-
-		if (($config = $this->get('config_attach')) === false)
-		{
-			$config = array();
-
-			$sql = "SELECT * FROM " . ATTACH_CONFIG_TABLE;
-			$result = $from_cache ? $db->sql_query($sql, 0, 'attach_config_') : $db->sql_query($sql);
-
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$config[$row['config_name']] = trim($row['config_value']);
-			}
-			$db->sql_freeresult($result);
-
-			$this->put('config_attach', $config);
-		}
-
-		return $config;
-	}
-
-	/*
-	* Get CTracker config values
-	*/
-	function obtain_ctracker_config($from_cache = false)
-	{
-		global $db;
-
-		if (($config = $this->get('config_ctracker')) === false)
-		{
-			$config = array();
-
-			$sql = "SELECT * FROM " . CTRACKER_CONFIG;
-			$result = $from_cache ? $db->sql_query($sql, 0, 'ct_config_') : $db->sql_query($sql);
-
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$config[$row['ct_config_name']] = trim($row['ct_config_value']);
-			}
-			$db->sql_freeresult($result);
-
-			$this->put('config_ctracker', $config);
-		}
-
-		return $config;
 	}
 
 	/**
@@ -420,9 +404,9 @@ class ip_cache extends acm
 	*/
 	function obtain_today_visitors()
 	{
-		global $db, $config, $lang;
+		global $db, $config, $lang, $userdata;
 
-		if (($today_visitors = $this->get('_today_visitors_' . $config['board_timezone'])) === false)
+		if (($today_visitors = $this->get('_today_visitors_' . $config['board_timezone'] . '_' . $userdata['user_level'])) === false)
 		{
 
 			$today_visitors['admins'] = '';
@@ -506,40 +490,40 @@ class ip_cache extends acm
 			//You can set once per day... but that is too restrictive... better once every hour!
 			//$expiry = create_date_midnight(time(), $config['board_timezone']) - time() + 86400;
 			$expiry = 3600 - ((int) gmdate('i') * 60) - (int) gmdate('s');
-			$this->put('_today_visitors_' . $config['board_timezone'], $today_visitors, $expiry);
+			$this->put('_today_visitors_' . $config['board_timezone'] . '_' . $userdata['user_level'], $today_visitors, $expiry);
 		}
 
 		return $today_visitors;
 	}
 
 	/**
-	* Obtain mods settings files...
+	* Obtain settings files...
 	*/
-	function obtain_mods_settings()
+	function obtain_settings()
 	{
-		if (($mods_files = $this->get('_mods')) === false)
+		if (($settings_files = $this->get('_settings')) === false)
 		{
-			$mods_files = array();
+			$settings_files = array();
 
-			// Now search for mods...
-			$dir = @opendir(IP_ROOT_PATH . 'includes/mods_settings/');
+			// Now search for settings...
+			$dir = @opendir(IP_ROOT_PATH . 'includes/' . SETTINGS_PATH);
 
 			if ($dir)
 			{
 				while (($file = @readdir($dir)) !== false)
 				{
-					if ((strpos($file, 'mod_') === 0) && (substr($file, -(strlen(PHP_EXT) + 1)) === '.' . PHP_EXT))
+					if ((strpos($file, 'settings_') === 0) && (substr($file, -(strlen(PHP_EXT) + 1)) === '.' . PHP_EXT))
 					{
-						$mods_files[] = substr($file, 0, -(strlen(PHP_EXT) + 1));
+						$settings_files[] = substr($file, 0, -(strlen(PHP_EXT) + 1));
 					}
 				}
 				@closedir($dir);
 			}
 
-			$this->put('_mods', $mods_files);
+			$this->put('_settings', $settings_files);
 		}
 
-		return $mods_files;
+		return $settings_files;
 	}
 
 	/**

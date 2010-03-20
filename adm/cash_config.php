@@ -15,13 +15,12 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (empty($config['plugins']['cash']['enabled']))
 {
@@ -59,22 +58,16 @@ while ($row = $db->sql_fetchrow($result))
 	$config_value = $row['config_value'];
 	$default_config[$config_name] = $config_value;
 
-	$new[$config_name] = $default_config[$config_name];
+	$tmp_value = request_post_var($config_name, '', true);
+	$new[$config_name] = (isset($_POST[$config_name])) ? $tmp_value : $default_config[$config_name];
 
-	if ($allowed_array[$config_name] &&
-		 isset($_POST['submit']) &&
-		 isset($_POST['set']) &&
-		 ($_POST['set'] == "general") &&
-		 isset($_POST[$config_name]))
+	if ($allowed_array[$config_name] && isset($_POST['submit']) && isset($_POST['set']) && ($_POST['set'] == 'general') && isset($_POST[$config_name]))
 	{
-		if (($config_name == "cash_adminbig") && ($new[$config_name] != stripslashes($_POST[$config_name])))
+		if (($config_name == 'cash_adminbig') && ($new[$config_name] != stripslashes($_POST[$config_name])))
 		{
 			$reset_navbar = "\n<script language=\"JavaScript\" type=\"text/javascript\">\n<!--\nparent.nav.location.reload();\n//-->\n</script>";
 		}
-		$sql = "UPDATE " . CONFIG_TABLE . " SET
-			config_value = '" . str_replace("\'", "''", $_POST[$config_name]) . "'
-			WHERE config_name = '$config_name'";
-		$db->sql_query($sql);
+		set_config($config_name, $new[$config_name]);
 	}
 }
 

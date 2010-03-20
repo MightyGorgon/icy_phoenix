@@ -15,8 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
-
 // ----------------------------------------- WARNING ---------------------------------------------- //
 // THIS PROGRAM SHOULD BE INVOKED TO RUN AUTOMATICALLY EVERY HOUR BY THE OPERATING SYSTEM USING AN
 // OPERATING SYSTEM FEATURE LIKE CRONTAB. SEE BATCH_SCHEDULING.TXT!!!
@@ -66,14 +64,14 @@ if (empty($userdata))
 // Comment this if you run it outside Icy Phoenix
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/digest_emailer.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_digests.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+
 if (($config['url_rw'] || $config['url_rw_guests']) && !function_exists('make_url_friendly'))
 {
 	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
@@ -83,6 +81,8 @@ if (empty($bbcode) || !class_exists('bbcode'))
 {
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 }
+
+setup_extra_lang(array('lang_digests'));
 
 @set_time_limit(0);
 $mem_limit = check_mem_limit();
@@ -323,7 +323,7 @@ while ($row = $db->sql_fetchrow($result))
 		$post_text = (strlen($row2['post_text']) <= $row['text_length']) ? $row2['post_text'] : substr($row2['post_text'], 0, $row['text_length']) . '...';
 
 		// Close table if topic is changed
-		if (($row2['topic_title'] <> $last_topic) && ($html) && ($last_topic <> ''))
+		if (($row2['topic_title'] <> $last_topic) && $html && ($last_topic <> ''))
 		{
 			$msg .= '</table><br /><br />' . $line_break;
 		}
@@ -456,7 +456,7 @@ while ($row = $db->sql_fetchrow($result))
 
 	$db->sql_freeresult($result2);
 
-	if (($html) && ($last_topic <> ''))
+	if ($html && ($last_topic <> ''))
 	{
 		$msg .= '</table>' . $line_break;
 	}
@@ -472,13 +472,13 @@ while ($row = $db->sql_fetchrow($result))
 
 		if (!(is_object($emailer)))
 		{
-			$digest_emailer = new digest_emailer($config['smtp_delivery']);
+			$emailer = new emailer($config['smtp_delivery']);
 		}
 
 		if ($html)
 		{
 
-			$digest_emailer->use_template('mail_digests', $row['user_lang']);
+			$emailer->use_template('mail_digests', $row['user_lang']);
 
 			// Apply a style sheet if requested for HTML digest. If no style sheet is wanted then the
 			// link tag pointing to the style sheet is not displayed. A custom style sheet gets first priority.
@@ -513,27 +513,27 @@ while ($row = $db->sql_fetchrow($result))
 
 		else
 		{
-			$digest_emailer->use_template('mail_digests', $row['user_lang']);
+			$emailer->use_template('mail_digests', $row['user_lang']);
 		}
 
-		$digest_emailer->extra_headers('From: ' . $lang['digest_from_text_name'] . ' <' . $lang['digest_from_email_address'] . '>' . "\n");
+		$emailer->extra_headers('From: ' . $lang['digest_from_text_name'] . ' <' . $lang['digest_from_email_address'] . '>' . "\n");
 
 		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 		if ($html)
 		{
-			$digest_emailer->extra_headers('MIME-Version: 1.0');
-			$digest_emailer->extra_headers('Content-type: text/html; charset=' . $encoding_charset);
+			$emailer->extra_headers('MIME-Version: 1.0');
+			$emailer->extra_headers('Content-type: text/html; charset=' . $encoding_charset);
 		}
 		else
 		{
-			$digest_emailer->extra_headers('Content-Type: text/plain; charset=' . $encoding_charset);
+			$emailer->extra_headers('Content-Type: text/plain; charset=' . $encoding_charset);
 		}
 
-		$digest_emailer->email_address($to);
-		//$digest_emailer->from($config['board_email']);
-		//$digest_emailer->replyto($config['board_email']);
-		$digest_emailer->set_subject($lang['digest_subject_line']);
-		$digest_emailer->assign_vars(array(
+		$emailer->email_address($to);
+		//$emailer->from($config['board_email']);
+		//$emailer->replyto($config['board_email']);
+		$emailer->set_subject($lang['digest_subject_line']);
+		$emailer->assign_vars(array(
 			'BOARD_URL' => DIGEST_SITE_URL,
 			'LINK' => $link_tag,
 			'L_SITENAME' => $config['sitename'],
@@ -563,8 +563,9 @@ while ($row = $db->sql_fetchrow($result))
 			'VERSION' => DIGEST_VERSION
 			)
 		);
-		$digest_emailer->send($html);
-		$digest_emailer->reset();
+		$config['html_email'] = $html;
+		$emailer->send($html);
+		$emailer->reset();
 
 		$digests_sent++;
 

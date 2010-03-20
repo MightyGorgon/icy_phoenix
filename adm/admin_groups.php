@@ -30,39 +30,19 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 require('pagestart.' . PHP_EXT);
 
-if (isset($_POST[POST_GROUPS_URL]) || isset($_GET[POST_GROUPS_URL]))
-{
-	$group_id = (isset($_POST[POST_GROUPS_URL])) ? intval($_POST[POST_GROUPS_URL]) : intval($_GET[POST_GROUPS_URL]);
-}
-else
-{
-	$group_id = 0;
-}
-
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
-{
-	$mode = '';
-}
+$group_id = request_var(POST_GROUPS_URL, 0);
+$mode = request_var('mode', '');
 
 attachment_quota_settings('group', $_POST['group_update'], $mode);
 
-if (isset($_POST['edit']) || isset($_GET['edit']) || isset($_POST['new']))
+if (check_http_var_exists('edit', false) || isset($_POST['new']))
 {
-	//
 	// Ok they are editing a group or creating a new group
-	//
 	$template->set_filenames(array('body' => ADM_TPL . 'group_edit_body.tpl'));
 
-	if (isset($_POST['edit']) || isset($_GET['edit']))
+	if (check_http_var_exists('edit', false))
 	{
-		//
 		// They're editing. Grab the vars.
-		//
 		$sql = "SELECT *
 			FROM " . GROUPS_TABLE . "
 			WHERE group_single_user <> " . TRUE . "
@@ -97,9 +77,7 @@ if (isset($_POST['edit']) || isset($_GET['edit']) || isset($_POST['new']))
 		$mode = 'newgroup';
 	}
 
-	//
 	// Ok, now we know everything about them, let's show the page.
-	//
 	if ($group_info['group_moderator'] != '')
 	{
 		$sql = "SELECT user_id, username
@@ -260,17 +238,21 @@ elseif (isset($_POST['group_update']))
 	}
 	else
 	{
-		$group_type = isset($_POST['group_type']) ? intval($_POST['group_type']) : GROUP_OPEN;
-		$group_name = isset($_POST['group_name']) ? htmlspecialchars(trim($_POST['group_name'])) : '';
-		$group_description = isset($_POST['group_description']) ? trim($_POST['group_description']) : '';
-		$group_moderator = isset($_POST['username']) ? $_POST['username'] : '';
+		$username = request_var('username', '', true);
+		$username = htmlspecialchars_decode($username, ENT_COMPAT);
+
+		$group_type = request_var('group_type', GROUP_OPEN);
+		$group_name = request_var('group_name', '', true);
+		$group_description = request_var('group_description', '', true);
+		$group_description = htmlspecialchars_decode($group_description, ENT_COMPAT);
+		$group_moderator = request_var('username', '', true);
+		$group_moderator = htmlspecialchars_decode($group_moderator, ENT_COMPAT);
 		$delete_old_moderator = isset($_POST['delete_old_moderator']) ? true : false;
-		$group_rank = isset($_POST['group_rank']) ? $_POST['group_rank'] : '0';
-		$group_color = isset($_POST['group_color']) ? check_valid_color($_POST['group_color']) : false;
-		$group_color = ($group_color != false) ? $group_color : '';
+		$group_color = check_valid_color(request_var('group_color', '', true));
+		$group_color = ($group_color !== false) ? $group_color : '';
 		$group_legend = isset($_POST['group_legend']) ? $_POST['group_legend'] : '0';
-		$group_count = isset($_POST['group_count']) ? intval($_POST['group_count']) : 0;
-		$group_count_max = isset($_POST['group_count_max']) ? intval($_POST['group_count_max']) : 0;
+		$group_count = request_var('group_count', 0);
+		$group_count_max = request_var('group_count_max', 0);
 		$group_count_enable = isset($_POST['group_count_enable']) ? true : false;
 		$group_count_update = isset($_POST['group_count_update']) ? true : false;
 		$group_count_delete = isset($_POST['group_count_delete']) ? true : false;
@@ -315,7 +297,7 @@ elseif (isset($_POST['group_update']))
 					$db->sql_query($sql);
 
 					$sql_users = "UPDATE " . USERS_TABLE . "
-						SET user_color = '" . $config['active_users_color'] . "', user_color_group = '0'
+						SET user_color = '" . $db->sql_escape($config['active_users_color']) . "', user_color_group = '0'
 						WHERE user_id = " . $group_info['group_moderator'] . "
 							AND user_color_group = " . $group_id;
 					$db->sql_query($sql_users);
@@ -337,7 +319,7 @@ elseif (isset($_POST['group_update']))
 
 			$group_color = (check_valid_color($group_color) ? check_valid_color($group_color) : '');
 			$sql = "UPDATE " . GROUPS_TABLE . "
-				SET group_type = $group_type, group_name = '" . str_replace("\'", "''", $group_name) . "', group_description = '" . str_replace("\'", "''", $group_description) . "', group_moderator = $group_moderator, group_rank='$group_rank', group_color='$group_color', group_legend='$group_legend', group_count='$group_count', group_count_max='$group_count_max', group_count_enable='$group_count_enable'
+				SET group_type = $group_type, group_name = '" . $db->sql_escape($group_name) . "', group_description = '" . $db->sql_escape($group_description) . "', group_moderator = $group_moderator, group_rank='$group_rank', group_color='" . $db->sql_escape($group_color) . "', group_legend='$group_legend', group_count='$group_count', group_count_max='$group_count_max', group_count_enable='$group_count_enable'
 				WHERE group_id = $group_id";
 			$db->sql_query($sql);
 
@@ -355,7 +337,7 @@ elseif (isset($_POST['group_update']))
 				//finding new users
 				$sql = "SELECT u.user_id FROM " . USERS_TABLE . " u
 					LEFT JOIN " . USER_GROUP_TABLE ." ug ON u.user_id=ug.user_id AND ug.group_id='$group_id'
-					WHERE u.user_posts>='$group_count' AND u.user_posts<'$group_count_max'
+					WHERE u.user_posts >= '$group_count' AND u.user_posts < '$group_count_max'
 					AND ug.group_id is NULL
 					AND u.user_id NOT IN ('" . $group_moderator . "','" . ANONYMOUS . "')";
 				$result = $db->sql_query($sql);
@@ -390,7 +372,7 @@ elseif (isset($_POST['group_update']))
 			$group_legend_order = $row['max_legend_order'] + 1;
 
 			$sql = "INSERT INTO " . GROUPS_TABLE . " (group_type, group_name, group_description, group_moderator, group_rank, group_color, group_legend, group_legend_order, group_count, group_count_max, group_count_enable, group_single_user)
-				VALUES ($group_type, '" . str_replace("\'", "''", $group_name) . "', '" . str_replace("\'", "''", $group_description) . "', $group_moderator, '$group_rank', '$group_color', '$group_legend', '$group_legend_order', '$group_count', '$group_count_max', '$group_count_enable', '0')";
+				VALUES ($group_type, '" . $db->sql_escape($group_name) . "', '" . $db->sql_escape($group_description) . "', $group_moderator, '$group_rank', '" . $db->sql_escape($group_color) . "', '$group_legend', '$group_legend_order', '$group_count', '$group_count_max', '$group_count_enable', '0')";
 			$db->sql_query($sql);
 			$new_group_id = $db->sql_nextid();
 
@@ -414,7 +396,7 @@ elseif (isset($_POST['group_update']))
 				//finding new users
 				$sql = "SELECT u.user_id FROM " . USERS_TABLE . " u
 					LEFT JOIN " . USER_GROUP_TABLE ." ug ON u.user_id=ug.user_id AND ug.group_id='$new_group_id'
-					WHERE u.user_posts>='$group_count' AND u.user_posts<'$group_count_max'
+					WHERE u.user_posts >= '$group_count' AND u.user_posts < '$group_count_max'
 					AND ug.group_id is NULL
 					AND u.user_id NOT IN ('$group_moderator','" . ANONYMOUS . "')";
 				$result = $db->sql_query($sql);
@@ -454,23 +436,23 @@ elseif (isset($_POST['mass_update']))
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$group_id = $row['group_id'];
-		$group_color = isset($_POST['group_color_' . $group_id]) ? check_valid_color($_POST['group_color_' . $group_id]) : false;
-		$group_color = ($group_color != false) ? $group_color : '';
+		$group_color = check_valid_color(request_post_var('group_color_' . $group_id, '', true));
+		$group_color = ($group_color !== false) ? $group_color : '';
 		$group_legend = isset($_POST['group_legend_' . $group_id]) ? $_POST['group_legend_' . $group_id] : '0';
 
 		$sql_ug = "UPDATE " . GROUPS_TABLE . "
-			SET group_color = '$group_color', group_legend = '$group_legend'
+			SET group_color = '" . $db->sql_escape($group_color) . "', group_legend = '$group_legend'
 			WHERE group_id = $group_id";
 		$db->sql_query($sql_ug);
 
 		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_color = '$group_color'
+			SET user_color = '" . $db->sql_escape($group_color) . "'
 			WHERE user_color_group = $group_id";
 		$db->sql_query($sql_users);
 	}
 
-	$group_color = isset($_POST['active_users_color']) ? check_valid_color($_POST['active_users_color']) : false;
-	$group_color = ($group_color != false) ? $group_color : '';
+	$group_color = check_valid_color(request_post_var('active_users_color', '', true));
+	$group_color = ($group_color !== false) ? $group_color : '';
 	set_config('active_users_color', $group_color);
 
 	$sql_users = "UPDATE " . USERS_TABLE . "
@@ -483,8 +465,8 @@ elseif (isset($_POST['mass_update']))
 	$group_legend = isset($_POST['active_users_legend']) ? $_POST['active_users_legend'] : '0';
 	set_config('active_users_legend', $group_legend);
 
-	$group_color = isset($_POST['bots_color']) ? check_valid_color($_POST['bots_color']) : false;
-	$group_color = ($group_color != false) ? $group_color : '';
+	$group_color = check_valid_color(request_post_var('bots_color', '', true));
+	$group_color = ($group_color !== false) ? $group_color : '';
 	set_config('bots_color', $group_color);
 
 	$group_legend = isset($_POST['bots_legend']) ? $_POST['bots_legend'] : '0';

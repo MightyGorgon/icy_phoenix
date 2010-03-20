@@ -1,5 +1,3 @@
-<!-- INCLUDE overall_header.tpl -->
-
 <!-- BEGIN topics_list_box -->
 <!-- BEGIN row -->
 <!-- BEGIN header_table -->
@@ -120,5 +118,3 @@ function check_uncheck_all_{topics_list_box.row.header_table.BOX_ID}()
 <!-- END spacer -->
 <!-- END row -->
 <!-- END topics_list_box -->
-
-<!-- INCLUDE overall_footer.tpl -->

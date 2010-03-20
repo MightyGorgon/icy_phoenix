@@ -21,12 +21,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
@@ -104,7 +98,7 @@ if(isset($_GET['import']) || isset($_POST['import']))
 		$total = intval($_POST['total']);
 		$params['total'] = $total;
 		$params['import_default'] = isset($_POST['import_default']) && strlen($_POST['import_default']) ? intval($_POST['import_default']) : -1;
-		for($i=0; $i<$total; $i++)
+		for($i = 0; $i <$total; $i++)
 		{
 			$install = empty($_POST['import_install_'.$i]) ? 0 : 1;
 			$default = $install ? ($params['import_default'] == $i ? 1 : 0) : 0;
@@ -258,26 +252,26 @@ if(!empty($_GET['importstyle']))
 	}
 	$template->set_filenames(array('import' => XS_TPL_PATH . 'import2.tpl'));
 	$template->assign_vars(array(
-		'FORM_ACTION'			=> append_sid('xs_import.' . PHP_EXT),
-		'S_RETURN'				=> $return_url ? '<input type="hidden" name="return" value="' . htmlspecialchars($return_url) . '" />' : '',
-		'IMPORT_FILENAME'		=> htmlspecialchars($file),
-		'STYLE_TEMPLATE'		=> htmlspecialchars($header['template']),
-		'STYLE_FILENAME'		=> htmlspecialchars($file),
-		'STYLE_COMMENT'			=> htmlspecialchars($header['comment']),
-		'DATE'					=> create_date($config['default_dateformat'], $header['date'], $config['board_timezone']),
-		'STYLE_SIZE'			=> $header['filesize'],
-		'STYLE_NAME'			=> htmlspecialchars($header['styles'][0]),
-		'TOTAL'					=> sizeof($header['styles']),
-		'L_XS_IMPORT_TPL'		=> str_replace('{TPL}', htmlspecialchars($header['template']), $lang['xs_import_tpl'])
+		'FORM_ACTION' => append_sid('xs_import.' . PHP_EXT),
+		'S_RETURN' => $return_url ? '<input type="hidden" name="return" value="' . htmlspecialchars($return_url) . '" />' : '',
+		'IMPORT_FILENAME' => htmlspecialchars($file),
+		'STYLE_TEMPLATE' => htmlspecialchars($header['template']),
+		'STYLE_FILENAME' => htmlspecialchars($file),
+		'STYLE_COMMENT' => htmlspecialchars($header['comment']),
+		'DATE' => create_date($config['default_dateformat'], $header['date'], $config['board_timezone']),
+		'STYLE_SIZE' => $header['filesize'],
+		'STYLE_NAME' => htmlspecialchars($header['styles'][0]),
+		'TOTAL' => sizeof($header['styles']),
+		'L_XS_IMPORT_TPL' => str_replace('{TPL}', htmlspecialchars($header['template']), $lang['xs_import_tpl'])
 		));
 	if(sizeof($header['styles']) > 1)
 	{
 		$template->assign_block_vars('switch_select_style', array());
-		for($i=0; $i< sizeof($header['styles']); $i++)
+		for($i = 0; $i < sizeof($header['styles']); $i++)
 		{
 			$template->assign_block_vars('switch_select_style.style', array(
-				'NUM'		=> $i,
-				'NAME'		=> htmlspecialchars($header['styles'][$i]),
+				'NUM' => $i,
+				'NAME' => htmlspecialchars($header['styles'][$i]),
 				));
 		}
 	}
@@ -316,16 +310,16 @@ if($dir)
 			else
 			{
 				$items = array(
-					'filename'	=> XS_TEMP_DIR.$file,
-					'filesize'	=> @filesize(XS_TEMP_DIR.$file),
-					'date'		=> filemtime(XS_TEMP_DIR.$file),
-					'file'		=> $file,
-					'file2'		=> substr($file, 0, strlen($file) - strlen(STYLE_EXTENSION)),
-					'error'		=> $lang['xs_import_invalid_file'],
-					'template'	=> '-',
-					'styles'	=> array('-'),
-					'comment'	=> '',
-					'offset'	=> 0
+					'filename' => XS_TEMP_DIR.$file,
+					'filesize' => @filesize(XS_TEMP_DIR.$file),
+					'date' => filemtime(XS_TEMP_DIR.$file),
+					'file' => $file,
+					'file2' => substr($file, 0, strlen($file) - strlen(STYLE_EXTENSION)),
+					'error' => $lang['xs_import_invalid_file'],
+					'template' => '-',
+					'styles' => array('-'),
+					'comment' => '',
+					'offset' => 0
 					);
 				$files[] = $items;
 			}
@@ -337,29 +331,29 @@ if($dir)
 if(sizeof($files))
 {
 
-	for($i=0; $i< sizeof($files); $i++)
+	for($i = 0; $i < sizeof($files); $i++)
 	{
 		$item = $files[$i];
 		$row_class = $xs_row_class[$i % 2];
 		$template->assign_block_vars('styles', array(
-			'ROW_CLASS'		=> $row_class,
-			'FILE'			=> htmlspecialchars($item['file']),
-			'FILE2'			=> htmlspecialchars($item['file2']),
-			'FILENAME'		=> htmlspecialchars($item['filename']),
-			'TEMPLATE'		=> htmlspecialchars($item['template']),
-			'DATE'			=> create_date($config['default_dateformat'], $item['date'], $config['board_timezone']),
-			'COMMENT'		=> htmlspecialchars($item['comment']),
-			'U_DELETE'		=> append_sid('xs_import.' . PHP_EXT . '?del=' . urlencode($item['file'])),
-			'U_IMPORT'		=> append_sid('xs_import.' . PHP_EXT . '?importstyle=' . urlencode($item['file'])),
-			'U_DOWNLOAD'	=> append_sid('xs_download.' . PHP_EXT),
-			'U_LIST'		=> append_sid('xs_import.' . PHP_EXT . '?list=1&import=' . urlencode($item['file'])),
+			'ROW_CLASS' => $row_class,
+			'FILE' => htmlspecialchars($item['file']),
+			'FILE2' => htmlspecialchars($item['file2']),
+			'FILENAME' => htmlspecialchars($item['filename']),
+			'TEMPLATE' => htmlspecialchars($item['template']),
+			'DATE' => create_date($config['default_dateformat'], $item['date'], $config['board_timezone']),
+			'COMMENT' => htmlspecialchars($item['comment']),
+			'U_DELETE' => append_sid('xs_import.' . PHP_EXT . '?del=' . urlencode($item['file'])),
+			'U_IMPORT' => append_sid('xs_import.' . PHP_EXT . '?importstyle=' . urlencode($item['file'])),
+			'U_DOWNLOAD' => append_sid('xs_download.' . PHP_EXT),
+			'U_LIST' => append_sid('xs_import.' . PHP_EXT . '?list=1&import=' . urlencode($item['file'])),
 			));
 		if(empty($item['error']))
 		{
 			for($j=0; $j< sizeof($item['styles']); $j++)
 			{
 				$template->assign_block_vars('styles.list', array(
-					'STYLE'		=> $item['styles'][$j]
+					'STYLE' => $item['styles'][$j]
 					));
 			}
 			$template->assign_block_vars('styles.valid', array());
@@ -375,7 +369,7 @@ else
 	$template->assign_block_vars('nostyles', array());
 }
 $template->assign_vars(array(
-	'U_SCRIPT'	=> append_sid('xs_import.' . PHP_EXT),
+	'U_SCRIPT' => append_sid('xs_import.' . PHP_EXT),
 	));
 
 $template->pparse('body');

@@ -29,23 +29,28 @@ if (!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
+if (!class_exists('ct_database'))
+{
+	include(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_database.' . PHP_EXT);
+	$ctracker_config = new ct_database();
+}
 
-//
 // Start program
-//
-if ( isset($_POST['submit']) )
+if (isset($_POST['submit']))
 {
 	$user_bansql = '';
 	$email_bansql = '';
 	$ip_bansql = '';
 
 	$user_list = array();
-	if ( !empty($_POST['username']) )
+	$username = request_var('username', '', true);
+	$username = htmlspecialchars_decode($username, ENT_COMPAT);
+	if (!empty($username))
 	{
-		$this_userdata = get_userdata($_POST['username'], true);
-		if( !$this_userdata )
+		$this_userdata = get_userdata($username, true);
+		if(!$this_userdata)
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 		}
 
 		// CrackerTracker v5.x
@@ -56,13 +61,14 @@ if ( isset($_POST['submit']) )
 	}
 
 	$ip_list = array();
-	if ( isset($_POST['ban_ip']) )
+	$ban_ips = request_var('ban_ip', '');
+	if (!empty($ban_ips))
 	{
-		$ip_list_temp = explode(',', $_POST['ban_ip']);
+		$ip_list_temp = explode(',', $ban_ips);
 
 		for($i = 0; $i < sizeof($ip_list_temp); $i++)
 		{
-			if ( preg_match('/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})[ ]*\-[ ]*([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/', trim($ip_list_temp[$i]), $ip_range_explode) )
+			if (preg_match('/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})[ ]*\-[ ]*([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/', trim($ip_list_temp[$i]), $ip_range_explode))
 			{
 				//
 				// Don't ask about all this, just don't ask ... !
@@ -141,35 +147,30 @@ if ( isset($_POST['submit']) )
 	}
 
 	$email_list = array();
-	if (isset($_POST['ban_email']))
+	$ban_emails = request_var('ban_email', '', true);
+	if (!empty($ban_emails))
 	{
+		$email_list_temp = explode(',', $ban_emails);
+
 		// CrackerTracker v5.x
-		if (!empty($_POST['ban_email']))
+		include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
+
+		$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+		$temp_userdata = get_userdata($founder_id, false);
+		if(!$temp_userdata)
 		{
-			include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
+			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+		}
 
-			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-			$temp_userdata = get_userdata($founder_id, false);
-			if(!$temp_userdata)
-			{
-				message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
-			}
-
-			if ($temp_userdata['user_email'] == $_POST['ban_email'])
-			{
-				message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_1stadmin']);
-			}
+		if (in_array($temp_userdata['user_email'], $email_list_temp))
+		{
+			message_die(GENERAL_MESSAGE, $lang['ctracker_gmb_1stadmin']);
 		}
 		// CrackerTracker v5.x
-		$email_list_temp = explode(',', $_POST['ban_email']);
 
 		for($i = 0; $i < sizeof($email_list_temp); $i++)
 		{
-			//
-			// This ereg match is based on one by php@unreelpro.com
-			// contained in the annotated php manual at php.com (ereg
-			// section)
-			//
+			// This ereg match is based on one by php@unreelpro.com contained in the annotated php manual at php.com (ereg section)
 			if (preg_match('/^(([a-z0-9&\'\.\-_\+])|(\*))+@(([a-z0-9\-])|(\*))+\.([a-z0-9\-]+\.)*?[a-z]+$/is', trim($email_list_temp[$i])))
 			{
 				$email_list[] = trim($email_list_temp[$i]);
@@ -188,23 +189,23 @@ if ( isset($_POST['submit']) )
 		$in_banlist = false;
 		for($j = 0; $j < sizeof($current_banlist); $j++)
 		{
-			if ( $user_list[$i] == $current_banlist[$j]['ban_userid'] )
+			if ($user_list[$i] == $current_banlist[$j]['ban_userid'])
 			{
 				$in_banlist = true;
 			}
 		}
 
-		if ( !$in_banlist && ($user_list[$i] != ANONYMOUS) )
+		if (!$in_banlist && ($user_list[$i] != ANONYMOUS))
 		{
-			$kill_session_sql .= ( ( $kill_session_sql != '' ) ? ' OR ' : '' ) . "session_user_id = " . $user_list[$i];
+			$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . "session_user_id = " . $user_list[$i];
 
 			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid)
 				VALUES (" . $user_list[$i] . ")";
 			$db->sql_query($sql);
 
 			$sql = "UPDATE " . USERS_TABLE . "
-					SET user_warnings=".$config['max_user_bancard']."
-					WHERE user_id=".$user_list[$i];
+					SET user_warnings = " . $config['max_user_bancard'] . "
+					WHERE user_id = " . $user_list[$i];
 			$db->sql_query($sql);
 		}
 	}
@@ -214,15 +215,15 @@ if ( isset($_POST['submit']) )
 		$in_banlist = false;
 		for($j = 0; $j < sizeof($current_banlist); $j++)
 		{
-			if ( $ip_list[$i] == $current_banlist[$j]['ban_ip'] )
+			if ($ip_list[$i] == $current_banlist[$j]['ban_ip'])
 			{
 				$in_banlist = true;
 			}
 		}
 
-		if ( !$in_banlist )
+		if (!$in_banlist)
 		{
-			if ( preg_match('/(ff\.)|(\.ff)/is', chunk_split($ip_list[$i], 2, '.')) )
+			if (preg_match('/(ff\.)|(\.ff)/is', chunk_split($ip_list[$i], 2, '.')))
 			{
 				$kill_ip_sql = "session_ip LIKE '" . str_replace('.', '', preg_replace('/(ff\.)|(\.ff)/is', '%', chunk_split($ip_list[$i], 2, "."))) . "'";
 			}
@@ -244,7 +245,7 @@ if ( isset($_POST['submit']) )
 	// user or IP info just entered into the ban table ... this will force a session
 	// initialisation resulting in an instant ban
 	//
-	if ( $kill_session_sql != '' )
+	if ($kill_session_sql != '')
 	{
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
 			WHERE $kill_session_sql";
@@ -256,79 +257,82 @@ if ( isset($_POST['submit']) )
 		$in_banlist = false;
 		for($j = 0; $j < sizeof($current_banlist); $j++)
 		{
-			if ( $email_list[$i] == $current_banlist[$j]['ban_email'] )
+			if ($email_list[$i] == $current_banlist[$j]['ban_email'])
 			{
 				$in_banlist = true;
 			}
 		}
 
-		if ( !$in_banlist )
+		if (!$in_banlist)
 		{
 			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_email)
-				VALUES ('" . str_replace("\'", "''", $email_list[$i]) . "')";
+				VALUES ('" . $db->sql_escape($email_list[$i]) . "')";
 			$db->sql_query($sql);
 		}
 	}
 
 	$where_sql = '';
 
-	if ( isset($_POST['unban_user']) )
+	$unban_user = request_post_var('unban_user', array(0));
+	if (!empty($unban_user))
 	{
-		$user_list = $_POST['unban_user'];
+		$user_list = $unban_user;
 
 		for($i = 0; $i < sizeof($user_list); $i++)
 		{
-			if ( $user_list[$i] != -1 )
+			if ($user_list[$i] != -1)
 			{
-				$where_sql .= ( ( $where_sql != '' ) ? ', ' : '' ) . intval($user_list[$i]);
+				$where_sql .= (($where_sql != '') ? ', ' : '') . intval($user_list[$i]);
 			}
 		}
-if (! empty($where_sql))
-{
-	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
-		WHERE ban_id IN ($where_sql)";
-	$result = $db->sql_query($sql);
 
-	while ($user_id_list = $db->sql_fetchrow($result))
-	{
-		$where_user_sql .= ( ( $where_user_sql != '' ) ? ', ' : '' ) . $user_id_list['ban_userid'];
+		if (!empty($where_sql))
+		{
+			$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . "
+				WHERE ban_id IN ($where_sql)";
+			$result = $db->sql_query($sql);
+
+			while ($user_id_list = $db->sql_fetchrow($result))
+			{
+				$where_user_sql .= (($where_user_sql != '') ? ', ' : '') . $user_id_list['ban_userid'];
+			}
+			$sql = "UPDATE " . USERS_TABLE . "
+				SET user_warnings = '0'
+				WHERE user_id IN ($where_user_sql)";
+			$db->sql_query($sql);
+		}
+
 	}
-	$sql = "UPDATE " . USERS_TABLE . "
-		SET user_warnings='0'
-		WHERE user_id IN ($where_user_sql)";
-	$db->sql_query($sql);
-}
 
-
-	}
-
-	if ( isset($_POST['unban_ip']) )
+	$unban_ip = request_post_var('unban_ip', array(0));
+	if (!empty($unban_ip))
 	{
-		$ip_list = $_POST['unban_ip'];
+		$ip_list = $unban_ip;
 
 		for($i = 0; $i < sizeof($ip_list); $i++)
 		{
-			if ( $ip_list[$i] != -1 )
+			if ($ip_list[$i] != -1)
 			{
-				$where_sql .= ( ( $where_sql != '' ) ? ', ' : '' ) . str_replace("\'", "''", $ip_list[$i]);
+				$where_sql .= (($where_sql != '') ? ', ' : '') . $db->sql_escape($ip_list[$i]);
 			}
 		}
 	}
 
-	if ( isset($_POST['unban_email']) )
+	$unban_email = request_post_var('unban_email', array(0));
+	if (!empty($unban_email))
 	{
-		$email_list = $_POST['unban_email'];
+		$email_list = $unban_email;
 
 		for($i = 0; $i < sizeof($email_list); $i++)
 		{
-			if ( $email_list[$i] != -1 )
+			if ($email_list[$i] != -1)
 			{
-				$where_sql .= ( ( $where_sql != '' ) ? ', ' : '' ) . str_replace("\'", "''", $email_list[$i]);
+				$where_sql .= (($where_sql != '') ? ', ' : '') . $db->sql_escape($email_list[$i]);
 			}
 		}
 	}
 
-	if ( $where_sql != '' )
+	if ($where_sql != '')
 	{
 		$sql = "DELETE FROM " . BANLIST_TABLE . "
 			WHERE ban_id IN ($where_sql)";
@@ -337,7 +341,7 @@ if (! empty($where_sql))
 
 	$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
-	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid("admin_user_ban." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	$message = $lang['Ban_update_sucessful'] . '<br /><br />' . sprintf($lang['Click_return_banadmin'], '<a href="' . append_sid('admin_user_ban.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 

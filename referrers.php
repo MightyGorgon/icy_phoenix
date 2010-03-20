@@ -36,30 +36,15 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if (isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? htmlspecialchars($_POST['mode']) : htmlspecialchars($_GET['mode']);
-}
-else
-{
-	$mode = 'hits';
-}
+$referrer_id = request_var('referrer_id', '', true);
 
-if(isset($_POST['order']))
-{
-	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-elseif(isset($_GET['order']))
-{
-	$sort_order = ($_GET['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-else
-{
-	$sort_order = 'DESC';
-}
+$mode = request_var('mode', 'hits');
+
+$sort_order = request_var('order', 'DESC');
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 // Referrers sorting
 $mode_types_text = array($lang['Referrer_host'], $lang['Referrer_url'], $lang['Referrer_hits'], $lang['Referrer_ip'], $lang['Referrer_first'],  $lang['Referrer_last']);
@@ -85,17 +70,6 @@ else
 $select_sort_order .= '</select>';
 
 //Referrers Deletion
-$params = array('mode' => '', 'referrer_id' => '');
-
-foreach($params as $var => $default)
-{
-	$$var = $default;
-	if(isset($_POST[$var]) || isset($_GET[$var]))
-	{
-		$$var = (isset($_POST[$var])) ? $_POST[$var] : $_GET[$var];
-	}
-}
-
 if (sizeof($_POST))
 {
 	foreach($_POST as $key => $valx)
@@ -125,7 +99,7 @@ $template->assign_vars(array(
 	'L_SORT' => $lang['Sort'],
 	'L_HOST' => $lang['Referrer_host'],
 	'L_URL' => $lang['Referrer_url'],
-	'L_IP' =>	$lang['Referrer_ip'],
+	'L_IP' => $lang['Referrer_ip'],
 	'L_HITS' => $lang['Referrer_hits'],
 	'L_FIRST' => $lang['Referrer_first'],
 	'L_LAST' => $lang['Referrer_last'],

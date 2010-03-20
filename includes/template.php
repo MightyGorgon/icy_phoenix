@@ -42,7 +42,6 @@
  *
  */
 
-// CTracker_Ignore: File checked by human
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -108,14 +107,18 @@ class Template {
 	var $tpldir = '';
 	var $tpldir_len = 0;
 
-	// Default template directory.
-	// If file for default template isn't found file from this template is used.
+	// Default template directory
+	// If file for default template isn't found, then file from this template is used
 	var $tpldef = 'default';
 
-	// this will hash handle names to the compiled code for that handle.
+	// Default language
+	// If default language isn't set english will be used
+	var $default_language = 'english';
+
+	// this will hash handle names to the compiled code for that handle
 	var $compiled_code = array();
 
-	// This will hold the uncompiled code for that handle.
+	// This will hold the uncompiled code for that handle
 	var $uncompiled_code = array();
 
 	// Cache settings
@@ -231,7 +234,7 @@ class Template {
 			}
 		}
 		// checking if there are any outdated variables that should be deleted
-		for($i=0; $i< sizeof($outdated); $i++)
+		for($i = 0; $i < sizeof($outdated); $i++)
 		{
 			if(isset($config[$outdated[$i]]))
 			{
@@ -599,6 +602,16 @@ class Template {
 		{
 			echo '<!-- template ', $this->files[$handle], ' end -->';
 		}
+		return true;
+	}
+
+	/**
+	* Alias for Template Parse function...
+	*/
+	function display($handle)
+	{
+		global $db, $config, $userdata;
+		$this->pparse($handle);
 		return true;
 	}
 
@@ -1825,7 +1838,14 @@ class Template {
 			// file extension with session ID (eg: "php?sid=123&" or "php?")
 			// can be used to make custom URLs without modding phpbb
 			// contains "&" or "?" at the end so you can easily append paramenters
-			$php = append_sid(PHP_EXT);
+			if (!function_exists('append_sid'))
+			{
+				$php = PHP_EXT;
+			}
+			else
+			{
+				$php = append_sid(PHP_EXT);
+			}
 			if(strpos($php, '?'))
 			{
 				$php .= '&';
@@ -1837,7 +1857,8 @@ class Template {
 			$this->vars['PHP'] = isset($this->vars['PHP']) ? $this->vars['PHP'] : $php;
 			// adding language variable (eg: "english" or "german")
 			// can be used to make truly multi-lingual templates
-			$this->vars['LANG'] = isset($this->vars['LANG']) ? $this->vars['LANG'] : $config['default_lang'];
+			$this->vars['LANG'] = isset($this->vars['LANG']) ? $this->vars['LANG'] : (!empty($config['default_lang']) ? $config['default_lang'] : $this->default_language);
+			$this->default_language = $this->vars['LANG'];
 			// adding current template
 			$tpl = $this->root . '/'; // IP_ROOT_PATH . 'templates/' . $this->tpl . '/';
 			if(substr($tpl, 0, 2) === './')

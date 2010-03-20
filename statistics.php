@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -33,12 +32,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$language = $config['default_lang'];
-if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT))
-{
-	$language = 'english';
-}
-include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_statistics.' . PHP_EXT);
+setup_extra_lang(array('lang_statistics'));
 
 $cms_page['page_id'] = 'statistics';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);

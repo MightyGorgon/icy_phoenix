@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_TOPIC', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
@@ -51,15 +50,21 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_rate.' . PHP_EXT);
+setup_extra_lang(array('lang_rate'));
 
-$start = isset($_GET['start']) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
-$page_number = ($page_number < 1) ? false : $page_number;
+$page_number = request_var('page_number', 0);
+$page_number = ($page_number < 1) ? 0 : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $config['posts_per_page']) - $config['posts_per_page']);
+$start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
+
+$post_order = strtolower(request_var('postorder', 'asc'));
+$post_order = check_var_value($post_order, array('asc', 'desc'));
+$post_time_order = strtoupper($post_order);
+
+$sid = request_var('sid', '');
 
 // Activity - BEGIN
 if (!empty($config['plugins']['activity']['enabled']))
@@ -84,21 +89,22 @@ if (($kb_mode_var == 'on') && ($userdata['bot_id'] == false))
 	$kb_mode_append_red = '&kb=on';
 }
 
-$download = (isset($_GET['download'])) ? $_GET['download'] : '';
+$download = request_get_var('download', '');
 
-if (!$topic_id && !$post_id)
+if (empty($topic_id) && empty($post_id))
 {
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
 }
 
 // Find topic id if user requested a newer or older topic
-if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
+$view = request_get_var('view', '');
+if (!empty($view) &&  empty($post_id))
 {
-	if ($_GET['view'] == 'newest')
+	if ($view == 'newest')
 	{
-		if (isset($_COOKIE[$config['cookie_name'] . '_sid']) || isset($_GET['sid']))
+		if (isset($_COOKIE[$config['cookie_name'] . '_sid']) || !empty($sid))
 		{
-			$session_id = isset($_COOKIE[$config['cookie_name'] . '_sid']) ? $_COOKIE[$config['cookie_name'] . '_sid'] : $_GET['sid'];
+			$session_id = isset($_COOKIE[$config['cookie_name'] . '_sid']) ? $_COOKIE[$config['cookie_name'] . '_sid'] : $sid;
 			if (!preg_match('/^[A-Za-z0-9]*$/', $session_id))
 			{
 				$session_id = '';
@@ -108,7 +114,7 @@ if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
 			{
 				$sql = "SELECT p.post_id
 					FROM " . POSTS_TABLE . " p, " . SESSIONS_TABLE . " s,  " . USERS_TABLE . " u
-					WHERE s.session_id = '$session_id'
+					WHERE s.session_id = '" . $db->sql_escape($session_id) . "'
 						AND u.user_id = s.session_user_id
 						AND p.topic_id = '" . $topic_id . "'
 						AND p.post_time >= u.user_lastvisit
@@ -140,24 +146,17 @@ if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
 				$post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
 				$post_id_append_url = (!empty($post_id) ? ('#p' . $post_id) : '');
 
-				if (isset($_GET['sid']))
-				{
-					$session_id_append = 'sid=' . $session_id . '&';
-				}
-				else
-				{
-					$session_id_append = '';
-				}
+				$session_id_append = !empty($sid) ? ('sid=' . $session_id . '&') : '';
 				redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . $session_id_append . $kb_mode_append_red . $forum_id_append . '&' . $topic_id_append . '&' . $post_id_append . $post_id_append_url));
 			}
 		}
 
 		redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red, true));
 	}
-	elseif (($_GET['view'] == 'next') || ($_GET['view'] == 'previous'))
+	elseif (($view == 'next') || ($view == 'previous'))
 	{
-		$sql_condition = ($_GET['view'] == 'next') ? '>' : '<';
-		$sql_ordering = ($_GET['view'] == 'next') ? 'ASC' : 'DESC';
+		$sql_condition = ($view == 'next') ? '>' : '<';
+		$sql_ordering = ($view == 'next') ? 'ASC' : 'DESC';
 
 		$sql = "SELECT t.topic_id, t.forum_id
 			FROM " . TOPICS_TABLE . " t, " . TOPICS_TABLE . " t2
@@ -180,7 +179,7 @@ if (isset($_GET['view']) && empty($_GET[POST_POST_URL]))
 		}
 		else
 		{
-			$message = ($_GET['view'] == 'next') ? 'No_newer_topics' : 'No_older_topics';
+			$message = ($view == 'next') ? 'No_newer_topics' : 'No_older_topics';
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
@@ -269,27 +268,29 @@ if (!$config['disable_thanks_topics'] && $forum_topic_data['forum_thanks'] && !$
 // Thanks Mod - END
 
 // Set or remove bookmark - BEGIN
-if ((isset($_GET['setbm']) || isset($_GET['removebm'])) && !$userdata['is_bot'])
+$setbm = request_var('setbm', '');
+$removebm = request_var('removebm', '');
+if ((!empty($setbm) || !empty($removebm)) && !$userdata['is_bot'])
 {
-	$redirect = CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red . '&start=' . $start . '&postdays=' . $post_days . '&postorder=' . $post_order . '&highlight=' . $_GET['highlight'];
+	$redirect = CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red . '&start=' . $start . '&postdays=' . $post_days . '&postorder=' . $post_order . '&highlight=' . urlencode($_GET['highlight']);
 	if ($userdata['session_logged_in'])
 	{
-		if (isset($_GET['setbm']) && $_GET['setbm'])
+		if (!empty($setbm))
 		{
 			set_bookmark($topic_id);
 		}
-		elseif (isset($_GET['removebm']) && $_GET['removebm'])
+		elseif (!empty($removebm))
 		{
 			remove_bookmark($topic_id);
 		}
 	}
 	else
 	{
-		if (isset($_GET['setbm']) && $_GET['setbm'])
+		if (!empty($setbm))
 		{
 			$redirect .= '&setbm=true';
 		}
-		elseif (isset($_GET['removebm']) && $_GET['removebm'])
+		elseif (!empty($removebm))
 		{
 			$redirect .= '&removebm=true';
 		}
@@ -391,6 +392,8 @@ if ($post_id)
 }
 
 // Is user watching this thread?
+$watch = request_var('watch', '');
+$unwatch = request_var('unwatch', '');
 if($userdata['session_logged_in'] && !$userdata['is_bot'])
 {
 	$can_watch_topic = true;
@@ -404,9 +407,9 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 
 	if ($row = $db->sql_fetchrow($result))
 	{
-		if (isset($_GET['unwatch']))
+		if (!empty($unwatch))
 		{
-			if ($_GET['unwatch'] == 'topic')
+			if ($unwatch == 'topic')
 			{
 				$is_watching_topic = 0;
 				$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
@@ -437,9 +440,9 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 	}
 	else
 	{
-		if (isset($_GET['watch']))
+		if (!empty($watch))
 		{
-			if ($_GET['watch'] == 'topic')
+			if ($watch == 'topic')
 			{
 				$is_watching_topic = true;
 				$sql = "INSERT INTO " . TOPICS_WATCH_TABLE . " (user_id, topic_id, notify_status)
@@ -461,12 +464,9 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 }
 else
 {
-	if (isset($_GET['unwatch']))
+	if ($unwatch == 'topic')
 	{
-		if ($_GET['unwatch'] == 'topic')
-		{
-			redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red . '&unwatch=topic', true));
-		}
+		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red . '&unwatch=topic', true));
 	}
 	else
 	{
@@ -483,9 +483,9 @@ else
 $previous_days = array(0, 1, 7, 14, 30, 90, 180, 364);
 $previous_days_text = array($lang['All_Posts'], $lang['1_Day'], $lang['7_Days'], $lang['2_Weeks'], $lang['1_Month'], $lang['3_Months'], $lang['6_Months'], $lang['1_Year']);
 
-if(!empty($_POST['postdays']) || !empty($_GET['postdays']))
+$post_days = request_var('postdays', 0);
+if(!empty($post_days))
 {
-	$post_days = (!empty($_POST['postdays'])) ? intval($_POST['postdays']) : intval($_GET['postdays']);
 	$min_post_time = time() - (intval($post_days) * 86400);
 
 	$sql = "SELECT COUNT(p.post_id) AS num_posts
@@ -497,7 +497,7 @@ if(!empty($_POST['postdays']) || !empty($_GET['postdays']))
 	$total_replies = ($row = $db->sql_fetchrow($result)) ? intval($row['num_posts']) : 0;
 	$limit_posts_time = "AND p.post_time >= " . $min_post_time . " ";
 
-	if (!empty($_POST['postdays']))
+	if (!empty($post_days))
 	{
 		$start = 0;
 	}
@@ -519,17 +519,6 @@ for($i = 0; $i < sizeof($previous_days); $i++)
 $select_post_days .= '</select>';
 
 // Decide how to order the post display
-if (!empty($_POST['postorder']) || !empty($_GET['postorder']))
-{
-	$post_order = (!empty($_POST['postorder'])) ? htmlspecialchars($_POST['postorder']) : htmlspecialchars($_GET['postorder']);
-	$post_time_order = ($post_order == 'asc') ? 'ASC' : 'DESC';
-}
-else
-{
-	$post_order = 'asc';
-	$post_time_order = 'ASC';
-}
-
 $select_post_order = '<select name="postorder">';
 if ($post_time_order == 'ASC')
 {
@@ -685,14 +674,17 @@ $ranks_array = $cache->obtain_ranks(false);
 $topic_title = censor_text($topic_title);
 
 // Was a highlight request part of the URI?
-$highlight_match = $highlight = '';
+$highlight_match = '';
+$highlight = '';
 
-if (isset($_GET['highlight']))
+$highlight_words = request_var('highlight', '');
+$highlight_words = htmlspecialchars_decode($highlight_words, ENT_COMPAT);
+if (!empty($highlight_words))
 {
-	$_GET['highlight'] = addslashes(preg_replace('#[][\\/%():><{}`]#', ' ', $_GET['highlight']));
+	$highlight_words = addslashes(preg_replace('#[][\\/%():><{}`]#', ' ', $highlight_words));
 
 	// Split words and phrases
-	$words = explode(' ', trim(htmlspecialchars($_GET['highlight'])));
+	$words = explode(' ', trim(htmlspecialchars($highlight_words)));
 
 	for($i = 0; $i < sizeof($words); $i++)
 	{
@@ -703,8 +695,8 @@ if (isset($_GET['highlight']))
 	}
 	unset($words);
 
-	$highlight = urlencode($_GET['highlight']);
-	$highlight_match = phpbb_rtrim($highlight_match, "\\");
+	$highlight = urlencode($highlight_words);
+	$highlight_match = rtrim($highlight_match, "\\");
 }
 
 // Post, reply and other URL generation for templating vars
@@ -847,7 +839,7 @@ $s_auth_can .= ($is_auth['auth_reply'] ? $lang['Rules_reply_can'] : $lang['Rules
 $s_auth_can .= ($is_auth['auth_edit'] ? $lang['Rules_edit_can'] : $lang['Rules_edit_cannot']) . '<br />';
 $s_auth_can .= ($is_auth['auth_delete'] ? $lang['Rules_delete_can'] : $lang['Rules_delete_cannot']) . '<br />';
 $s_auth_can .= ($is_auth['auth_vote'] ? $lang['Rules_vote_can'] : $lang['Rules_vote_cannot']) . '<br />';
-if (intval($attach_config['disable_mod']) == 0)
+if (intval($config['disable_attachments_mod']) == 0)
 {
 	$s_auth_can .= ($is_auth['auth_attachments'] ? $lang['Rules_attach_can'] : $lang['Rules_attach_cannot']) . '<br />';
 	$s_auth_can .= ($is_auth['auth_download'] ? $lang['Rules_download_can'] : $lang['Rules_download_cannot']) . '<br />';
@@ -997,7 +989,7 @@ if ($userdata['session_logged_in'] && !$userdata['is_bot'])
 	$template->assign_vars(array(
 		'L_BOOKMARK_ACTION' => $set_rem_bookmark,
 		'IMG_BOOKMARK' => $bookmark_img,
-		'U_BOOKMARK_ACTION' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . $_GET['highlight'] . $bm_action)
+		'U_BOOKMARK_ACTION' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . urlencode($_GET['highlight']) . $bm_action)
 		)
 	);
 }
@@ -1234,14 +1226,8 @@ if (!empty($forum_topic_data['topic_vote']))
 		$user_voted = ($row = $db->sql_fetchrow($result)) ? true : 0;
 		$db->sql_freeresult($result);
 
-		if (isset($_GET['vote']) || isset($_POST['vote']))
-		{
-			$view_result = (((isset($_GET['vote'])) ? $_GET['vote'] : $_POST['vote']) == 'viewresult') ? true : 0;
-		}
-		else
-		{
-			$view_result = 0;
-		}
+		$view_result = request_var('vote', '');
+		$view_result = ($view_result == 'viewresult') ? 1 : 0;
 
 		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? true : 0) : 0;
 
@@ -1359,16 +1345,6 @@ include(IP_ROOT_PATH . 'includes/viewtopic_events_reg.' . PHP_EXT);
 
 init_display_post_attachments($forum_topic_data['topic_attachment']);
 
-// Don't update the topic view counter if viewer is poster or a BOT
-if (($postrow[0]['user_id'] != $userdata['user_id']) && !$userdata['is_bot'])
-{
-	// Update the topic view counter
-	$sql = "UPDATE " . TOPICS_TABLE . "
-		SET topic_views = topic_views + 1
-		WHERE topic_id = $topic_id";
-	$db->sql_query($sql);
-}
-
 // Begin Thanks Mod
 // Get topic thanks
 if ($show_thanks)
@@ -1425,7 +1401,6 @@ if ($config['enable_quick_quote'])
 	$template->assign_block_vars('switch_quick_quote', array());
 }
 
-// Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
 $sig_cache = array();
 $delnote = isset($_GET['delnote']) ? explode('.', $_GET['delnote']) : array();
 $this_year = create_date('Y', time(), $config['board_timezone']);
@@ -1445,6 +1420,7 @@ if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugin
 }
 // Mighty Gorgon - Feedbacks - END
 
+// Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
 for($i = 0; $i < $total_posts; $i++)
 {
 	$poster_id = $postrow[$i]['user_id'];
@@ -1568,7 +1544,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$profile_img = '<a href="' . $profile_url . '"><img src="' . $images['icon_profile'] . '" alt="' . htmlspecialchars($postrow[$i]['username']) . ' - ' . $lang['Read_profile'] . '" title="' . htmlspecialchars($postrow[$i]['username']) . '" /></a>';
 		$profile = '<a href="' . $profile_url . '">' . $lang['Profile'] . '</a>';
 
-		$pm_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id);
+		$pm_url = append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id);
 		$pm_img = '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 		$pm = '<a href="' . $pm_url . '">' . $lang['PM'] . '</a>';
 
@@ -1652,7 +1628,7 @@ for($i = 0; $i < $total_posts; $i++)
 		// Gender - END
 
 		// ONLINE / OFFLINE - BEGIN
-		$online_status_url = append_sid('viewonline.' . PHP_EXT);
+		$online_status_url = append_sid(CMS_PAGE_VIEWONLINE);
 		$online_status_lang = $lang['Offline'];
 		$online_status_class = 'offline';
 		if (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $poster_id) || $postrow[$i]['user_allow_viewonline'])
@@ -1805,9 +1781,9 @@ for($i = 0; $i < $total_posts; $i++)
 		if ($is_auth['auth_greencard'])
 		{
 			$grn_card_img = '<img src="'. $images['icon_g_card'] . '" alt="' . $lang['Give_G_card'] . '" />';
-			$grn_card_action = 'return confirm(\''.sprintf($lang['Green_card_warning'],$current_user).'\')';
+			$grn_card_action = 'return confirm(\'' . sprintf($lang['Green_card_warning'], $current_user) . '\')';
 			$temp_url = 'card.' . PHP_EXT . '?mode=unban&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $userdata['user_id'] . '&amp;sid=' . $userdata['session_id'];
-			$g_card_img = '<a href="' . $temp_url . '" title="'. $lang['Give_G_card'] . '" onclick="' . $grn_card_action . '">' . $grn_card_img . '</a>';
+			$g_card_img = '<a href="' . $temp_url . '" title="' . $lang['Give_G_card'] . '" onclick="' . $grn_card_action . '">' . $grn_card_img . '</a>';
 			if($phpbb_styles == true)
 			{
 				$g_card_img = '<span class="img-green">' . $g_card_img . '</span>';
@@ -2074,7 +2050,7 @@ for($i = 0; $i < $total_posts; $i++)
 			}
 			$GLOBALS['code_post_id'] = 0;
 			// update database
-			$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled='" . addslashes($message) . "' WHERE post_id='" . $postrow[$i]['post_id'] . "'";
+			$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled='" . $db->sql_escape($message) . "' WHERE post_id='" . $postrow[$i]['post_id'] . "'";
 			$db->sql_query($sql);
 		}
 		else
@@ -2136,7 +2112,7 @@ for($i = 0; $i < $total_posts; $i++)
 			}
 			$notes_list = $new_list;
 			$postrow[$i]['edit_notes'] = sizeof($notes_list) ? serialize($notes_list) : '';
-			$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes='" . addslashes($postrow[$i]['edit_notes']) . "' WHERE post_id='" . $postrow[$i]['post_id'] . "'";
+			$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes = '" . $db->sql_escape($postrow[$i]['edit_notes']) . "' WHERE post_id = '" . $postrow[$i]['post_id'] . "'";
 			$db->sql_query($sql);
 		}
 	}
@@ -2513,6 +2489,16 @@ if ($topic_useful_box)
 	{
 		$template->assign_block_vars('switch_topic_useful.link_this_topic', array());
 	}
+}
+
+// Don't update the topic view counter if viewer is poster or a BOT
+if (($postrow[0]['user_id'] != $userdata['user_id']) && !$userdata['is_bot'])
+{
+	// Update the topic view counter
+	$sql = "UPDATE " . TOPICS_TABLE . "
+		SET topic_views = topic_views + 1
+		WHERE topic_id = " . $topic_id;
+	$db->sql_query($sql);
 }
 
 //<!-- BEGIN Unread Post Information to Database Mod -->

@@ -28,31 +28,13 @@ init_userprefs($userdata);
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-
-$start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if ( isset($_GET['mode']) || isset($_POST['mode']) )
-{
-	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-}
-else
-{
-	$mode = 'joined';
-}
+$mode = request_var('mode', 'joined');
 
-if(isset($_POST['order']))
-{
-	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-elseif(isset($_GET['order']))
-{
-	$sort_order = ($_GET['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-else
-{
-	$sort_order = 'ASC';
-}
+$sort_order = request_var('order', 'ASC');
+$sort_order = ($sort_order == 'ASC') ? 'ASC' : 'DESC';
 
 //
 // Memberlist sorting
@@ -63,7 +45,7 @@ $mode_types = array('joindate', 'username', 'pics', 'last_pic');
 $select_sort_mode = '<select name="mode">';
 for($i = 0; $i < sizeof($mode_types_text); $i++)
 {
-	$selected = ( $mode == $mode_types[$i] ) ? ' selected="selected"' : '';
+	$selected = ($mode == $mode_types[$i]) ? ' selected="selected"' : '';
 	$select_sort_mode .= '<option value="' . $mode_types[$i] . '"' . $selected . '>' . $mode_types_text[$i] . '</option>';
 }
 $select_sort_mode .= '</select>';
@@ -85,7 +67,6 @@ $select_sort_order .= '</select>';
 | Start output the page
 +----------------------------------------------------------
 */
-
 $nav_server_url = create_server_url();
 $album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album_personal_index.' . PHP_EXT) . '" class="nav-current">' . $lang['Users_Personal_Galleries'] . '</a>';
 $breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;

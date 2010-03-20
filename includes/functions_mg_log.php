@@ -16,7 +16,7 @@ if (!defined('IN_ICYPHOENIX'))
 function ip_log($content, $db_log, $error_log = false)
 {
 	global $REQUEST_URI, $REMOTE_ADDR, $HTTP_USER_AGENT, $SERVER_NAME, $HTTP_REFERER;
-	global $config, $lang, $userdata, $db;
+	global $db, $config, $lang, $userdata;
 
 	$db_log_actions = (($config['db_log_actions'] == '1') || ($config['db_log_actions'] == '2')) ? true : false;
 
@@ -24,7 +24,7 @@ function ip_log($content, $db_log, $error_log = false)
 
 	switch($page_array['page_name'])
 	{
-		case 'memberlist.' . PHP_EXT:
+		case CMS_PAGE_MEMBERLIST:
 			return true;
 			break;
 		case CMS_PAGE_POSTING:
@@ -86,7 +86,7 @@ function ip_log($content, $db_log, $error_log = false)
 			foreach ($db_target as $db_target_data)
 			{
 				$sql = "INSERT INTO " . LOGS_TABLE . " (log_time, log_page, log_user_id, log_action, log_desc, log_target)
-					VALUES ('" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . addslashes($db_log['action']) . "', '" . addslashes($db_log['desc']) . "', '" . $db_target_data . "')";
+					VALUES ('" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . $db->sql_escape($db_log['action']) . "', '" . $db->sql_escape($db_log['desc']) . "', '" . $db_target_data . "')";
 				$result = $db->sql_query($sql);
 			}
 		}
@@ -99,7 +99,7 @@ function ip_log($content, $db_log, $error_log = false)
 			$new_log_id = $row['max_log_id'] + 1;
 
 			$sql = "INSERT INTO " . LOGS_TABLE . " (log_id, log_time, log_page, log_user_id, log_action, log_desc, log_target)
-				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . addslashes($db_log['action']) . "', '" . addslashes($db_log['desc']) . "', '')";
+				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . $db->sql_escape($db_log['action']) . "', '" . $db->sql_escape($db_log['desc']) . "', '')";
 			$result = $db->sql_query($sql);
 
 			if (($error_log) && $config['db_log_actions'] == '2')

@@ -88,17 +88,17 @@ function sudoku_grid_build()
 				}
 				else
 				{
-					$tile_object = '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" />';
+					$tile_object = '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" alt="" />';
 				}
 			}
 			/*
 			elseif ($mode == 'insert')
 			{
-				$tile_object = ($line_key != $co_ord[0] || $key != $co_ord[1]) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" />' : '<select name="num_input">' . $input_box;
+				$tile_object = ($line_key != $co_ord[0] || $key != $co_ord[1]) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" alt="" />' : '<select name="num_input">' . $input_box;
 			}
 			elseif ($mode == 'edit')
 			{
-				$tile_object = ($line_key != $co_ord[0] || $key != $co_ord[1]) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" />' : '<select name="num_input">' . $input_box;
+				$tile_object = ($line_key != $co_ord[0] || $key != $co_ord[1]) ? '<img src="' . IP_ROOT_PATH . $images[$tile_image] . '" alt="" />' : '<select name="num_input">' . $input_box;
 			}
 			*/
 
@@ -156,8 +156,8 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 	$row = $db->sql_fetchrow($result);
 	if (!$row)
 	{
-		$s_games=0;
-		$s_points=0;
+		$s_games = 0;
+		$s_points = 0;
 		// do for first run stats
 		$sql = " SELECT SUM(points) AS total_points FROM " . SUDOKU_USERS . "
 			WHERE user_id = $Sud_user_id";
@@ -202,7 +202,7 @@ function sudoku_tasks($Sud_user_id, $pack, $num, $level)
 
 	// delete previous data for this user
 	$sql = " DELETE FROM " . SUDOKU_SESSIONS . "
-		WHERE user_id=$Sud_user_id
+		WHERE user_id = $Sud_user_id
 		AND session_time != $time";
 	$db->sql_query($sql);
 
@@ -273,7 +273,7 @@ function sudoku_grid_success($pack, $num, $curr_points, $redirect)
 	global $db, $userdata, $lang, $lrow, $line;
 	// update the user stats
 	$sql = " UPDATE " . SUDOKU_STATS . "
-		SET played=played+1, points=points+'$curr_points'
+		SET played = played + 1, points = points + '$curr_points'
 		WHERE user_id=" . $userdata['user_id'];
 	$db->sql_query($sql);
 

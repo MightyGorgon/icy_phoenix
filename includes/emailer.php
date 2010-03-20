@@ -15,8 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
-
 //
 // The emailer class has support for attaching files, that isn't implemented
 // in the 2.0 release but we can probable find some way of using it in a future
@@ -210,7 +208,7 @@ class emailer
 	// Send the mail out to the recipients set previously in var $this->address
 	function send()
 	{
-		global $config, $lang, $db;
+		global $db, $config, $lang;
 		// Escape all quotes, else the eval will fail.
 		$this->msg = str_replace ("'", "\'", $this->msg);
 		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);
@@ -268,7 +266,7 @@ class emailer
 
 		// Build header
 
-		if ($config['html_email'] == true)
+		if (!empty($config['html_email']))
 		{
 			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/html; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . gmdate('r') . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
 		}
@@ -278,7 +276,7 @@ class emailer
 		}
 
 		// Send message ... removed $this->encode() from subject for time being
-		if ( $this->use_smtp )
+		if ($this->use_smtp)
 		{
 			if ( !defined('SMTP_INCLUDED') )
 			{

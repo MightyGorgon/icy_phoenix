@@ -44,9 +44,9 @@ class attach_pm extends attach_parent
 	*/
 	function preview_attachments()
 	{
-		global $attach_config, $userdata;
+		global $config, $userdata;
 
-		if (!intval($attach_config['allow_pm_attach']))
+		if (!intval($config['allow_pm_attach']))
 		{
 			return false;
 		}
@@ -59,7 +59,7 @@ class attach_pm extends attach_parent
 	*/
 	function insert_attachment_pm($a_privmsgs_id)
 	{
-		global $db, $userdata, $mode, $attach_config, $privmsg_sent_id, $to_userdata;
+		global $db, $userdata, $mode, $config, $privmsg_sent_id, $to_userdata;
 
 		$a_privmsgs_id = (int) $a_privmsgs_id;
 
@@ -69,7 +69,7 @@ class attach_pm extends attach_parent
 			$a_privmsgs_id = (int) $privmsg_sent_id;
 		}
 
-		if ($a_privmsgs_id && (($mode == 'post') || ($mode == 'reply') || ($mode == 'edit')) && intval($attach_config['allow_pm_attach']))
+		if ($a_privmsgs_id && (($mode == 'post') || ($mode == 'reply') || ($mode == 'edit')) && intval($config['allow_pm_attach']))
 		{
 			$this->do_insert_attachment('attach_list', 'pm', $a_privmsgs_id);
 			$this->do_insert_attachment('last_attachment', 'pm', $a_privmsgs_id);
@@ -152,16 +152,16 @@ class attach_pm extends attach_parent
 	*/
 	function display_attach_box_limits()
 	{
-		global $folder, $attach_config, $config, $template, $userdata, $lang, $db;
+		global $folder, $config, $template, $userdata, $lang, $db;
 
-		if (!$attach_config['allow_pm_attach'] && $userdata['user_level'] != ADMIN)
+		if (!$config['allow_pm_attach'] && $userdata['user_level'] != ADMIN)
 		{
 			return;
 		}
 
 		$this->get_quota_limits($userdata);
 
-		$pm_filesize_limit = (!$attach_config['pm_filesize_limit']) ? $attach_config['attachment_quota'] : $attach_config['pm_filesize_limit'];
+		$pm_filesize_limit = (!$config['pm_filesize_limit']) ? $config['attachment_quota'] : $config['pm_filesize_limit'];
 
 		$pm_filesize_total = get_total_attach_pm_filesize('to_user', (int) $userdata['user_id']);
 
@@ -171,16 +171,16 @@ class attach_pm extends attach_parent
 		{
 			$attach_limit_img_length = $config['privmsg_graphic_length'];
 		}
-		$attach_limit_remain = ( $pm_filesize_limit > 0 ) ? $pm_filesize_limit - $pm_filesize_total : 100;
-		if ( $attach_limit_pct <= 30 )
+		$attach_limit_remain = ($pm_filesize_limit > 0) ? $pm_filesize_limit - $pm_filesize_total : 100;
+		if ($attach_limit_pct <= 30)
 		{
 			$bar_colour = 'green';
 		}
-		else if ( ($attach_limit_pct > 30) && ($attach_limit_pct <= 70) )
+		elseif (($attach_limit_pct > 30) && ($attach_limit_pct <= 70))
 		{
 			$bar_colour = 'blue';
 		}
-		else if ( $attach_limit_pct > 70 )
+		elseif ($attach_limit_pct > 70)
 		{
 			$bar_colour = 'red';
 		}
@@ -199,7 +199,7 @@ class attach_pm extends attach_parent
 	*/
 	function privmsgs_attachment_mod($mode)
 	{
-		global $attach_config, $template, $userdata, $lang, $db;
+		global $config, $template, $userdata, $lang, $db;
 		global $confirm, $delete, $delete_all, $post_id, $privmsgs_id, $privmsg_id, $submit, $refresh, $mark_list, $folder;
 
 		if ($folder != 'outbox')
@@ -207,7 +207,7 @@ class attach_pm extends attach_parent
 			$this->display_attach_box_limits();
 		}
 
-		if (!intval($attach_config['allow_pm_attach']))
+		if (!intval($config['allow_pm_attach']))
 		{
 			return;
 		}

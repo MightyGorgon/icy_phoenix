@@ -19,13 +19,10 @@ class pafiledb_email extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata, $debug;
+		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata, $debug;
 
-		if (isset($_REQUEST['file_id']))
-		{
-			$file_id = intval($_REQUEST['file_id']);
-		}
-		else
+		$file_id = request_var('file_id', 0);
+		if (empty($file_id))
 		{
 			message_die(GENERAL_MESSAGE, $lang['File_not_exist']);
 		}
@@ -56,16 +53,17 @@ class pafiledb_email extends pafiledb_public
 		if (isset($_POST['submit']))
 		{
 			// session id check
-			if (!isset($_POST['sid']) || $_POST['sid'] != $userdata['session_id'])
+			$sid = request_post_var('sid', '');
+			if (empty($sid) || ($sid != $userdata['session_id']))
 			{
 				message_die(GENERAL_ERROR, 'Invalid_session');
 			}
-
 			$error = false;
 
-			if (!empty($_POST['femail']) && preg_match('/^[a-z0-9\.\-_\+]+@[a-z0-9\-_]+\.([a-z0-9\-_]+\.)*?[a-z]+$/is', $_POST['femail']))
+			$femail = request_var('femail', '');
+			if (!empty($femail) && preg_match('/^[a-z0-9\.\-_\+]+@[a-z0-9\-_]+\.([a-z0-9\-_]+\.)*?[a-z]+$/is', $femail))
 			{
-				$user_email = trim(stripslashes($_POST['femail']));
+				$user_email = $femail;
 			}
 			else
 			{
@@ -73,10 +71,10 @@ class pafiledb_email extends pafiledb_public
 				$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Email_invalid'] : $lang['Email_invalid'];
 			}
 
-			$username = trim(stripslashes($_POST['fname']));
-			$sender_name = trim(strip_tags(stripslashes($_POST['sname'])));
+			$username = request_var('fname', '', true);
+			$sender_name = request_var('sname', '', true);
 
-			if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && $sender_name != $userdata['username']))
+			if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && ($sender_name != $userdata['username'])))
 			{
 				include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
@@ -92,12 +90,12 @@ class pafiledb_email extends pafiledb_public
 				$sender_name = $userdata['username'];
 			}
 
-
 			if(!$userdata['session_logged_in'])
 			{
-				if (!empty($_POST['semail']) && preg_match('/^[a-z0-9\.\-_\+]+@[a-z0-9\-_]+\.([a-z0-9\-_]+\.)*?[a-z]+$/is', $_POST['semail']))
+				$semail = request_var('semail', '');
+				if (!empty($semail) && preg_match('/^[a-z0-9\.\-_\+]+@[a-z0-9\-_]+\.([a-z0-9\-_]+\.)*?[a-z]+$/is', $femail))
 				{
-					$sender_email = trim(stripslashes($_POST['semail']));
+					$sender_email = $semail;
 				}
 				else
 				{
@@ -110,21 +108,17 @@ class pafiledb_email extends pafiledb_public
 				$sender_email = $userdata['user_email'];
 			}
 
-			if (!empty($_POST['subject']))
-			{
-				$subject = trim(stripslashes($_POST['subject']));
-			}
-			else
+			$subject = request_var('subject', '', true);
+			$subject = htmlspecialchars_decode($subject, ENT_COMPAT);
+			if (empty($subject))
 			{
 				$error = true;
 				$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Empty_subject_email'] : $lang['Empty_subject_email'];
 			}
 
-			if (!empty($_POST['message']))
-			{
-				$message = trim(stripslashes($_POST['message']));
-			}
-			else
+			$message = request_var('message', '', true);
+			$message = htmlspecialchars_decode($message, ENT_COMPAT);
+			if (empty($message))
 			{
 				$error = true;
 				$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Empty_message_email'] : $lang['Empty_message_email'];
@@ -175,7 +169,7 @@ class pafiledb_email extends pafiledb_public
 
 		$this->generate_category_nav($file_data['file_catid']);
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'USER_LOGGED' => (!$userdata['session_logged_in']) ? true : false,
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),

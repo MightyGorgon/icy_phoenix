@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
@@ -38,26 +37,22 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
-$page_number = ($page_number < 1) ? false : $page_number;
+$page_number = request_var('page_number', 0);
+$page_number = ($page_number < 1) ? 0 : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
+$start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
+
+$sort_order = request_var('order', 'DESC');
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 // Memberlist sorting
+$mode = request_var('mode', 'joined');
+
 $mode_types_text = array($lang['Fast'], $lang['Standard'], $lang['Staff'], $lang['Sort_Joined'], $lang['Sort_Username'], $lang['Sort_Location'], $lang['Sort_Posts'], $lang['Sort_Email'], $lang['Sort_Website'], $lang['Sort_Top_Ten'], $lang['Sort_Birthday'], $lang['Style'], $lang['Who_is_Online'], $lang['Sort_LastLogon']);
 $mode_types = array('fast', 'standard', 'staff', 'joined', 'username', 'location', 'posts', 'email', 'website', 'topten', 'birthday', 'style', 'online', 'lastlogon');
-
-if (isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? htmlspecialchars($_POST['mode']) : htmlspecialchars($_GET['mode']);
-}
-else
-{
-	$mode = 'joined';
-}
 
 // Do not change strpos() == 0! Remember that == 0 is different from === false!!!
 if (!in_array($mode, $mode_types) && !(strpos($mode, 'cash_') == 0))
@@ -65,15 +60,12 @@ if (!in_array($mode, $mode_types) && !(strpos($mode, 'cash_') == 0))
 	$mode = 'joined';
 }
 
-$order = request_var('order', 'ASC');
-$sort_order = ($order == 'DESC') ? 'DESC' : 'ASC';
-
 // Mighty Gorgon - Power Memberlist - BEGIN
 $alphanum = request_var('alphanum', '');
 if (!empty($alphanum))
 {
 	$alphanum = ($alphanum == '#') ? '#' : (phpbb_clean_username(ip_clean_username(urldecode($alphanum))));
-	$alpha_where = ($alphanum == '#') ? "AND username NOT RLIKE '^[A-Z]'" : "AND username LIKE '$alphanum%'";
+	$alpha_where = ($alphanum == '#') ? "AND username NOT RLIKE '^[A-Z]'" : "AND username LIKE '" . $db->sql_escape($alphanum) . "%'";
 }
 
 $users_per_page = request_var('users_per_page', $config['topics_per_page']);
@@ -148,7 +140,7 @@ $template->assign_vars(array(
 
 	'S_MODE_SELECT' => $select_sort_mode,
 	'S_ORDER_SELECT' => $select_sort_order,
-	'S_MODE_ACTION' => append_sid('memberlist.' . PHP_EXT)
+	'S_MODE_ACTION' => append_sid(CMS_PAGE_MEMBERLIST)
 	)
 );
 
@@ -158,7 +150,7 @@ $alphanum_range = array_merge(array('' => 'All'), array('%23' => '#'), $alpha_ra
 foreach ($alphanum_range as $key => $alpha)
 {
 	if (in_array($alpha,$alpha_range)) $key = $alpha;
-	$alphanum_search_url = append_sid('memberlist.' . PHP_EXT . '?mode=' . ((isset($_GET['mode']) || isset($_POST['mode'])) ? $mode : 'username') . '&amp;sort=' . $sort_order . '&amp;alphanum=' . strtolower($key));
+	$alphanum_search_url = append_sid(CMS_PAGE_MEMBERLIST . '?mode=' . ((isset($_GET['mode']) || isset($_POST['mode'])) ? $mode : 'username') . '&amp;sort=' . $sort_order . '&amp;alphanum=' . strtolower($key));
 	$template->assign_block_vars('alphanumsearch', array(
 		'SEARCH_SIZE' => floor(100 / sizeof($alphanum_range)) . '%',
 		'SEARCH_TERM' => $alpha,
@@ -575,8 +567,8 @@ if (($mode != 'topten') || ($users_per_page < 10))
 	{
 		$total_members = $total['total'];
 
-		//$pagination = generate_pagination('memberlist.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $users_per_page, $start). '&nbsp;';
-		$pagination = generate_pagination('memberlist.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;users_per_page=' . $users_per_page . (!empty($alphanum) ? '&amp;alphanum=' . htmlspecialchars($alphanum) : ''), $total_members, $users_per_page, $start);
+		//$pagination = generate_pagination(CMS_PAGE_MEMBERLIST . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $users_per_page, $start). '&nbsp;';
+		$pagination = generate_pagination(CMS_PAGE_MEMBERLIST . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;users_per_page=' . $users_per_page . (!empty($alphanum) ? '&amp;alphanum=' . htmlspecialchars($alphanum) : ''), $total_members, $users_per_page, $start);
 	}
 	$db->sql_freeresult($result);
 }

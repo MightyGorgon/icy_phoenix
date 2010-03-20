@@ -111,7 +111,7 @@ class class_users
 		$user_password = md5($user_password);
 
 		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_regdate, user_password, user_email, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
-			VALUES ($user_id, '" . $db->sql_escape(stripslashes($username)) . "', " . time() . ", '" . $db->sql_escape(stripslashes($user_password)) . "', '" . $db->sql_escape(stripslashes($user_email)) . "', $user_style, $user_timezone, '" . $db->sql_escape(stripslashes($user_dateformat)) . "', '" . $db->sql_escape(stripslashes($user_lang)) . "', 0, 1, 'user_actkey')";
+			VALUES ($user_id, '" . $db->sql_escape($username) . "', " . time() . ", '" . $db->sql_escape($user_password) . "', '" . $db->sql_escape($user_email) . "', $user_style, $user_timezone, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_lang) . "', 0, 1, 'user_actkey')";
 		$db->sql_return_on_error(true);
 		$db->sql_transaction('begin');
 		$result = $db->sql_query($sql);

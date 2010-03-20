@@ -49,16 +49,17 @@ $field_names = array(
 	'auth_view_comment' => $lang['View_comment'],
 	'auth_post_comment' => $lang['Post_comment'],
 	'auth_edit_comment' => $lang['Edit_comment'],
-	'auth_delete_comment' => $lang['Delete_comment']);
+	'auth_delete_comment' => $lang['Delete_comment']
+);
 
 $cat_auth_levels = array('ALL', 'REG', 'PRIVATE', 'MOD', 'ADMIN');
 $cat_auth_const = array(AUTH_ALL, AUTH_REG, AUTH_ACL, AUTH_MOD, AUTH_ADMIN);
 
-$cat_parent = (isset($_REQUEST['cat_parent'])) ? intval($_REQUEST['cat_parent']) : 0;
+$cat_parent = request_var('cat_parent', 0);
+$cat_id = request_var('cat_id', 0);
 
-if(isset($_REQUEST['cat_id']))
+if(!empty($cat_id))
 {
-	$cat_id = intval($_REQUEST['cat_id']);
 	$cat_sql = "AND cat_id = $cat_id";
 }
 else
@@ -68,9 +69,7 @@ else
 }
 
 
-//
 // Start program proper
-//
 if(isset($_POST['submit']))
 {
 	$temp_sql = array();
@@ -103,17 +102,12 @@ if(isset($_POST['submit']))
 
 	$message = $lang['Category_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_catauth'],  '<a href="' . append_sid("admin_pa_catauth." . PHP_EXT) . '">', "</a>");
 	message_die(GENERAL_MESSAGE, $message);
-} // End of submit
+}
+// End of submit
 
-//
 
-//
-// Output the authorization details if an id was
-// specified
-//
-$pafiledb_template->set_filenames(array(
-	'body' => ADM_TPL . 'pa_auth_cat_body.tpl')
-);
+// Output the authorization details if an id was specified
+$template->set_filenames(array('body' => ADM_TPL . 'pa_auth_cat_body.tpl'));
 
 $permissions_menu = array(
 	append_sid('admin_pa_catauth.' . PHP_EXT) => $lang['Cat_Permissions'],
@@ -125,7 +119,7 @@ $permissions_menu = array(
 
 foreach($permissions_menu as $url => $l_name)
 {
-	$pafiledb_template->assign_block_vars('pertype', array(
+	$template->assign_block_vars('pertype', array(
 		'U_NAME' => $url,
 		'L_NAME' => $l_name)
 	);
@@ -139,10 +133,12 @@ foreach($permissions_menu as $url => $l_name)
 for($j = 0; $j < sizeof($cat_auth_fields); $j++)
 {
 	$cell_title = $field_names[$cat_auth_fields[$j]];
-	$pafiledb_template->assign_block_vars('cat_auth_titles', array(
-		'CELL_TITLE' => $cell_title)
+	$template->assign_block_vars('cat_auth_titles', array(
+		'CELL_TITLE' => $cell_title
+		)
 	);
 }
+
 if(empty($cat_id))
 {
 	admin_display_cat_auth($cat_parent);
@@ -150,10 +146,11 @@ if(empty($cat_id))
 }
 elseif(!empty($cat_id))
 {
-	$pafiledb_template->assign_block_vars('cat_row', array(
+	$template->assign_block_vars('cat_row', array(
 		'CATEGORY_NAME' => $pafiledb->cat_rowset[$cat_id]['cat_name'],
 		'IS_HIGHER_CAT' => ($pafiledb->cat_rowset[$cat_id]) ? false : true,
-		'U_CAT' => append_sid('admin_pa_catauth.' . PHP_EXT . "?cat_parent={$pafiledb->cat_rowset[$cat_id]['cat_parent']}"))
+		'U_CAT' => append_sid('admin_pa_catauth.' . PHP_EXT . "?cat_parent={$pafiledb->cat_rowset[$cat_id]['cat_parent']}")
+		)
 	);
 
 	for($j = 0; $j < sizeof($cat_auth_fields); $j++)
@@ -167,8 +164,9 @@ elseif(!empty($cat_id))
 		}
 		$custom_auth[$j] .= '</select>&nbsp;';
 
-		$pafiledb_template->assign_block_vars('cat_row.cat_auth_data', array(
-			'S_AUTH_LEVELS_SELECT' => $custom_auth[$j])
+		$template->assign_block_vars('cat_row.cat_auth_data', array(
+			'S_AUTH_LEVELS_SELECT' => $custom_auth[$j]
+			)
 		);
 	}
 	$s_hidden_fields = '<input type="hidden" name="cat_id" value="' . $cat_id . '">';
@@ -176,7 +174,7 @@ elseif(!empty($cat_id))
 }
 $s_column_span = sizeof($cat_auth_fields) + 2;
 
-$pafiledb_template->assign_vars(array(
+$template->assign_vars(array(
 	'CATEGORY_NAME' => $cat_name,
 
 	'L_CATEGORY' => $lang['Category'],
@@ -185,19 +183,17 @@ $pafiledb_template->assign_vars(array(
 	'L_SUBMIT' => $lang['Submit'],
 	'L_RESET' => $lang['Reset'],
 
-	'S_CATAUTH_ACTION' => append_sid("admin_pa_catauth." . PHP_EXT),
+	'S_CATAUTH_ACTION' => append_sid('admin_pa_catauth.' . PHP_EXT),
 	'S_COLUMN_SPAN' => $s_column_span,
-	'S_HIDDEN_FIELDS' => $s_hidden_fields)
+	'S_HIDDEN_FIELDS' => $s_hidden_fields
+	)
 );
-
-
 
 include('./page_header_admin.' . PHP_EXT);
 
-$pafiledb_template->display('body');
+$template->display('body');
 
 $pafiledb->_pafiledb();
-$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

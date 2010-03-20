@@ -49,8 +49,7 @@ if (@file_exists($cache_data_file) && empty($cache_refresh))
 	}
 }
 
-$encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT']);
-$encoding_charset = !empty($encoding_charset) ? $encoding_charset : 'UTF-8';
+$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 
 // GZip - BEGIN
 $do_gzip_compress = true;

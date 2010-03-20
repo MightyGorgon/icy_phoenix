@@ -21,100 +21,45 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
 $template->assign_block_vars('nav_left',array('ITEM' => '&raquo; <a href="' . append_sid('xs_styles.' . PHP_EXT) . '">' . $lang['xs_default_style'] . '</a>'));
 
-//
 // set new default style
-//
-if(!empty($_GET['setdefault']) && !defined('DEMO_MODE'))
+$setdefault = request_var('setdefault', 0);
+if(!empty($setdefault) && !defined('DEMO_MODE'))
 {
-	$config['default_style'] = intval($_GET['setdefault']);
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . $config['default_style'] . "' WHERE config_name='default_style'";
-	if(defined('XS_MODS_ADMIN_TEMPLATES'))
-	{
-		$sql = str_replace(' WHERE config_name', ', theme_public=\'1\' WHERE config_name', $sql);
-	}
-	$db->sql_query($sql);
+	set_config('default_style', $setdefault, false);
 }
 
-//
 // change "override" variable
-//
-if(isset($_GET['setoverride']) && !defined('DEMO_MODE'))
+$setoverride = request_var('setoverride', 0);
+if(!empty($setoverride) && !defined('DEMO_MODE'))
 {
-	$config['override_user_style'] = intval($_GET['setoverride']);
-	$sql = "UPDATE " . CONFIG_TABLE . " SET config_value='" . $config['override_user_style'] . "' WHERE config_name='override_user_style'";
-	$db->sql_query($sql);
+	set_config('override_user_style', $setoverride, false);
 }
 
-//
 // move all users to some style
-//
-if(!empty($_GET['moveusers']) && !defined('DEMO_MODE'))
+$moveusers = request_var('moveusers', 0);
+if(!empty($moveusers) && !defined('DEMO_MODE'))
 {
-	$id = intval($_GET['moveusers']);
-	$sql = "UPDATE " . USERS_TABLE . " SET user_style='" . $id . "' WHERE user_id > 0";
+	$sql = "UPDATE " . USERS_TABLE . " SET user_style = '" . $moveusers . "'";
 	$db->sql_query($sql);
 }
 
-//
 // move all users from some style
-//
-if(!empty($_GET['moveaway']) && !defined('DEMO_MODE'))
+$moveaway = request_var('moveaway', 0);
+$movestyle = request_var('movestyle', 0);
+$movestyle = (!empty($movestyle) && (check_style_exists($movestyle) != false)) ? $movestyle : $config['default_style'];
+if(!empty($moveaway) && !defined('DEMO_MODE'))
 {
-	$id = intval($_GET['moveaway']);
-	$id2 = intval($_GET['movestyle']);
-	if($id2)
-	{
-		$sql = "UPDATE " . USERS_TABLE . " SET user_style='" . $id2 . "' WHERE user_style = " . $id;
-	}
-	else
-	{
-		$sql = "UPDATE " . USERS_TABLE . " SET user_style = NULL WHERE user_style = " . $id;
-	}
+	$sql = "UPDATE " . USERS_TABLE . " SET user_style = '" . $movestyle . "' WHERE user_style = " . $moveaway;
 	$db->sql_query($sql);
 }
 
-//
-// set admin-only style (Admin Templates mod)
-//
-if(!empty($_GET['setadmin']) && !defined('DEMO_MODE'))
-{
-	$id = intval($_GET['setadmin']);
-	$setadmin = empty($_GET['admin']) ? 0 : 1;
-	$sql = "UPDATE " . THEMES_TABLE . " SET theme_public='{$setadmin}' WHERE themes_id='{$id}'";
-	$db->sql_query($sql);
-	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
-	{
-		// recache themes table
-		if ( empty($themes) )
-		{
-			$themes = new themes();
-		}
-		if ( !empty($themes) )
-		{
-			$themes->read(true);
-		}
-	}
-}
-
-//
 // get list of installed styles
-//
 $sql = 'SELECT themes_id, template_name, style_name FROM ' . THEMES_TABLE . ' ORDER BY template_name';
-if(defined('XS_MODS_ADMIN_TEMPLATES'))
-{
-	$sql = str_replace(', style_name', ', style_name, theme_public', $sql);
-}
 $db->sql_return_on_error(true);
 $result = $db->sql_query($sql);
 $db->sql_return_on_error(false);
@@ -129,7 +74,7 @@ $style_default = $config['default_style'];
 $num_users = 0;
 $style_ids = array();
 
-for($i=0; $i< sizeof($style_rowset); $i++)
+for($i = 0; $i < sizeof($style_rowset); $i++)
 {
 	$id = $style_rowset[$i]['themes_id'];
 	$style_ids[] = $id;
@@ -150,15 +95,15 @@ for($i=0; $i< sizeof($style_rowset); $i++)
 
 	$row_class = $xs_row_class[$i % 2];
 	$template->assign_block_vars('styles', array(
-		'ROW_CLASS'			=> $row_class,
-		'STYLE'				=> $style_rowset[$i]['style_name'],
-		'TEMPLATE'			=> $style_rowset[$i]['template_name'],
-		'ID'				=> $id,
-		'TOTAL'				=> $total,
-		'U_TOTAL'			=> append_sid('xs_styles.' . PHP_EXT . '?list=' . $id),
-		'U_DEFAULT'			=> append_sid('xs_styles.' . PHP_EXT . '?setdefault=' . $id),
-		'U_OVERRIDE'		=> append_sid('xs_styles.' . PHP_EXT . '?setoverride=' . ($style_override ? '0' : '1')),
-		'U_SWITCHALL'		=> append_sid('xs_styles.' . PHP_EXT . '?moveusers=' . $id),
+		'ROW_CLASS' => $row_class,
+		'STYLE' => $style_rowset[$i]['style_name'],
+		'TEMPLATE' => $style_rowset[$i]['template_name'],
+		'ID' => $id,
+		'TOTAL' => $total,
+		'U_TOTAL' => append_sid('xs_styles.' . PHP_EXT . '?list=' . $id),
+		'U_DEFAULT' => append_sid('xs_styles.' . PHP_EXT . '?setdefault=' . $id),
+		'U_OVERRIDE' => append_sid('xs_styles.' . PHP_EXT . '?setoverride=' . ($style_override ? '0' : '1')),
+		'U_SWITCHALL' => append_sid('xs_styles.' . PHP_EXT . '?moveusers=' . $id),
 		)
 	);
 	if($total > 0)
@@ -180,21 +125,6 @@ for($i=0; $i< sizeof($style_rowset); $i++)
 	else
 	{
 		$template->assign_block_vars('styles.nodefault', array());
-		if(defined('XS_MODS_ADMIN_TEMPLATES'))
-		{
-			if($style_rowset[$i]['theme_public'])
-			{
-				$template->assign_block_vars('styles.nodefault.admin_only', array(
-					'U_CHANGE'	=> append_sid('xs_styles.' . PHP_EXT . '?setadmin='.$id.'&admin=0')
-				));
-			}
-			else
-			{
-				$template->assign_block_vars('styles.nodefault.public', array(
-					'U_CHANGE'	=> append_sid('xs_styles.' . PHP_EXT . '?setadmin='.$id.'&admin=1')
-				));
-			}
-		}
 	}
 	if($total)
 	{
@@ -234,8 +164,8 @@ else
 }
 
 $template->assign_vars(array(
-	'U_SCRIPT'		=> 'xs_styles.' . PHP_EXT,
-	'NUM_DEFAULT'	=> $num_default
+	'U_SCRIPT' => 'xs_styles.' . PHP_EXT,
+	'NUM_DEFAULT' => $num_default
 	)
 );
 
@@ -246,14 +176,12 @@ if($total_users > $num_users)
 	$db->sql_query($sql);
 }
 
-//
 // get list of users
-//
-if(isset($_GET['list']))
+$user_style_id = request_get_var('list', 0);
+if(!empty($user_style_id))
 {
-	$id = intval($_GET['list']);
 	$template->assign_block_vars('list_users', array());
-	$sql = "SELECT user_id, username FROM " . USERS_TABLE . " WHERE user_style='{$id}' ORDER BY username ASC";
+	$sql = "SELECT user_id, username FROM " . USERS_TABLE . " WHERE user_style = '{$user_style_id}' ORDER BY username ASC";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -262,12 +190,12 @@ if(isset($_GET['list']))
 		xs_error('Could not get users list!', __LINE__, __FILE__);
 	}
 	$rowset = $db->sql_fetchrowset($result);
-	for($i=0; $i< sizeof($rowset); $i++)
+	for($i = 0; $i < sizeof($rowset); $i++)
 	{
 		$template->assign_block_vars('list_users.user', array(
-			'NUM'		=> $i + 1,
-			'ID'		=> $rowset[$i]['user_id'],
-			'NAME'		=> htmlspecialchars($rowset[$i]['username']),
+			'NUM' => $i + 1,
+			'ID' => $rowset[$i]['user_id'],
+			'NAME' => htmlspecialchars($rowset[$i]['username']),
 			)
 		);
 	}

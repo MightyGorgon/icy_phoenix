@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -75,10 +74,6 @@ function generate_text_for_display($text, $only_smileys = false, $censor = true,
 function generate_smilies_row()
 {
 	global $db, $cache, $config, $template;
-	if (defined('IN_PA_POSTING'))
-	{
-		global $pafiledb_template;
-	}
 
 	$max_smilies = (!empty($config['smilie_single_row']) ? intval($config['smilie_single_row']) : 20);
 
@@ -91,19 +86,12 @@ function generate_smilies_row()
 	$repl = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$parsing_template = array(
+		$template->assign_block_vars('smilies', array(
 			'CODE' => $row['code'],
 			'URL' => 'http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'],
 			'DESC' => htmlspecialchars($row['emoticon'])
+			)
 		);
-		if (defined('IN_PA_POSTING'))
-		{
-			$pafiledb_template->assign_block_vars('smilies', $parsing_template);
-		}
-		else
-		{
-			$template->assign_block_vars('smilies', $parsing_template);
-		}
 	}
 	$db->sql_freeresult($result);
 }

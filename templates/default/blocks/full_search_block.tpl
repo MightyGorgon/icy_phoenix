@@ -141,7 +141,7 @@
 				<option value="teoma">Teoma</option>
 				<option value="overture">Overture</option>
 				<option value="gocom">Go.com</option>
-				<option value="excite">Excite</option></select>
+				<option value="excite">Excite</option>
 			</select>
 		</td>
 	</tr>

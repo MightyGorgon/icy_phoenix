@@ -8,8 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
-
 // MANUAL CONFIG - BEGIN
 
 // If you decomment this line, then you will be able to use this file without sessions handling in latest Icy Phoenix
@@ -349,7 +347,7 @@ else
 		$cvalues_ary = array(
 			time(),
 			time(),
-			str_replace("\'", "''", $language),
+			$db->sql_escape($language),
 			'http://' . $server_name . $script_path . 'images/links/banner_ip.gif',
 			'http://' . $server_name . $script_path
 		);
@@ -388,7 +386,7 @@ else
 		$admin_pass_md5 = ($confirm && $userdata['user_level'] == ADMIN) ? $admin_pass1 : md5($admin_pass1);
 
 		$sql = "UPDATE " . $table_prefix . "users
-			SET username = '" . str_replace("\'", "''", $admin_name) . "', user_password='" . str_replace("\'", "''", $admin_pass_md5) . "', user_lang = '" . str_replace("\'", "''", $language) . "', user_email='" . str_replace("\'", "''", $board_email) . "'
+			SET username = '" . $db->sql_escape($admin_name) . "', user_password='" . $db->sql_escape($admin_pass_md5) . "', user_lang = '" . $db->sql_escape($language) . "', user_email='" . $db->sql_escape($board_email) . "'
 			WHERE username = 'Admin'";
 		$result = $db->sql_query($sql);
 		if (!$result)

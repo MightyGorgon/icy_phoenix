@@ -138,7 +138,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	$tracking_all = (isset($_COOKIE[$config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$config['cookie_name'] . '_f_all']) : NULL;
 
 	// categories hierarchy v 2 compliancy
-	$cat_hierarchy = function_exists(get_auth_keys);
+	$cat_hierarchy = function_exists('get_auth_keys');
 	if (!$cat_hierarchy)
 	{
 		// standard read
@@ -147,7 +147,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	}
 
 	// topic icon present
-	$icon_installed = function_exists(get_icon_title);
+	$icon_installed = function_exists('get_icon_title');
 
 	// get a default title
 	if (empty($list_title))

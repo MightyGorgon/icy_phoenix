@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
@@ -98,44 +97,12 @@ if ($is_allowed == false)
 }
 // Mighty Gorgon - ACP Privacy - END
 
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bb_db_admin.' . PHP_EXT);
+setup_extra_lang(array('lang_bb_db_admin'));
 
-
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode']);
-}
-else
-{
-	$mode = '';
-}
-
-if (isset($_POST['action']) || isset($_GET['action']))
-{
-	$action = (isset($_POST['action']) ? $_POST['action'] : $_GET['action']);
-}
-else
-{
-	$action = '';
-}
-
-if (isset($_POST['mass']) || isset($_GET['mass']))
-{
-	$mass = (isset($_POST['mass']) ? $_POST['mass'] : $_GET['mass']);
-}
-else
-{
-	$mass = '';
-}
-
-if (isset($_POST['mass_change']) || isset($_GET['mass_change']))
-{
-	$mass_change = (isset($_POST['mass_change']) ? $_POST['mass_change'] : $_GET['mass_change']);
-}
-else
-{
-	$mass_change = '';
-}
+$mode = request_var('mode', '');
+$action = request_var('action', '');
+$mass = request_var('mass', '');
+$mass_change = request_var('mass_change', '');
 
 // Auth Check - BEGIN
 $allowed = false;

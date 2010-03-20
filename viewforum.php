@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
 define('IN_VIEWFORUM', true);
@@ -37,9 +36,9 @@ $class_topics = new class_topics();
 $class_topics->var_init(true);
 
 // Start initial var setup
-if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
+$selected_id = request_var('selected_id', '');
+if (!empty($selected_id))
 {
-	$selected_id = isset($_POST['selected_id']) ? $_POST['selected_id'] : $_GET['selected_id'];
 	$type = substr($selected_id, 0, 1);
 	$id = intval(substr($selected_id, 1));
 	if ($type == POST_FORUM_URL)
@@ -55,14 +54,7 @@ if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
 	}
 }
 
-if (isset($_GET['mark']) || isset($_POST['mark']))
-{
-	$mark_read = (isset($_POST['mark'])) ? $_POST['mark'] : $_GET['mark'];
-}
-else
-{
-	$mark_read = '';
-}
+$mark_read = request_var('mark', '');
 // End initial var setup
 
 // Start session management
@@ -97,28 +89,28 @@ if ($tree['data'][$tree['keys'][POST_FORUM_URL . $forum_id]]['forum_kb_mode'] ==
 	}
 }
 
-$start = isset($_GET['start']) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
-$page_number = ($page_number < 1) ? false : $page_number;
+$page_number = request_var('page_number', 0);
+$page_number = ($page_number < 1) ? 0 : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
+$start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 if ($userdata['upi2db_access'])
 {
-	$params = array('always_read' => 'always_read', POST_FORUM_URL => 'f', POST_TOPIC_URL => 't', POST_POST_URL => 'p', 'do' => 'do', 'tt' => 'tt');
+	$params = array(
+		'always_read' => 'always_read',
+		POST_FORUM_URL => 'f',
+		POST_TOPIC_URL => 't',
+		POST_POST_URL => 'p',
+		'do' => 'do',
+		'tt' => 'tt'
+	);
 	while(list($var, $param) = @each($params))
 	{
-		if (!empty($_POST[$param]) || !empty($_GET[$param]))
-		{
-			$$var = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param];
-		}
-		else
-		{
-			$$var = '';
-		}
+		$$var = request_var($param, '');
 	}
 	$forum_id_append = ((!empty($f) && empty($forum_id_append)) ? (POST_FORUM_URL . '=' . $f) : $forum_id_append);
 	$topic_id_append = (!empty($t) ? (POST_TOPIC_URL . '=' . $t) : '');
@@ -216,7 +208,7 @@ else // we have a single letter, so let's sort alphabetically...
 {
 	$sort_dir = 'ASC';
 	$sort_order_sql = "t.topic_title " . $sort_dir;
-	$start_letter_sql = "AND t.topic_title LIKE '" . $start_letter . "%'";
+	$start_letter_sql = "AND t.topic_title LIKE '" . $db->sql_escape($start_letter) . "%'";
 }
 // Topics Sorting - END
 
@@ -388,6 +380,8 @@ unset($moderators);
 
 // Forum notification MOD - BEGIN
 // Is user watching this forum?
+$watch = request_var('watch', '');
+$unwatch = request_var('unwatch', '');
 if($userdata['session_logged_in'] && !$userdata['is_bot'])
 {
 	($forum_row['forum_notify'] == '1') ? ($can_watch_forum = true) : ($can_watch_forum = false);
@@ -401,9 +395,9 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 
 	if($row = $db->sql_fetchrow($result))
 	{
-		if(isset($_GET['unwatch']))
+		if(!empty($unwatch))
 		{
-			if($_GET['unwatch'] == 'forum')
+			if($unwatch == 'forum')
 			{
 				$is_watching_forum = 0;
 
@@ -435,9 +429,9 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 	}
 	else
 	{
-		if(isset($_GET['watch']))
+		if(!empty($watch))
 		{
-			if($_GET['watch'] == 'forum')
+			if($watch == 'forum')
 			{
 				$is_watching_forum = true;
 
@@ -460,9 +454,9 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 }
 else
 {
-	if(isset($_GET['unwatch']))
+	if(!empty($unwatch))
 	{
-		if($_GET['unwatch'] == 'forum')
+		if($unwatch == 'forum')
 		{
 			header('Location: ' . append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_VIEWFORUM . '&' . $forum_id_append . $kb_mode_append_red . '&unwatch=forum', true));
 		}
@@ -480,9 +474,9 @@ else
 $previous_days = array(0, 1, 7, 14, 30, 90, 180, 364);
 $previous_days_text = array($lang['All_Topics'], $lang['1_Day'], $lang['7_Days'], $lang['2_Weeks'], $lang['1_Month'], $lang['3_Months'], $lang['6_Months'], $lang['1_Year']);
 
-if (!empty($_POST['topicdays']) || !empty($_GET['topicdays']))
+$topic_days = request_var('topicdays', 0);
+if (!empty($topic_days))
 {
-	$topic_days = (!empty($_POST['topicdays'])) ? intval($_POST['topicdays']) : intval($_GET['topicdays']);
 	$min_topic_time = time() - ($topic_days * 86400);
 
 	$sql = "SELECT COUNT(t.topic_id) AS forum_topics
@@ -495,7 +489,7 @@ if (!empty($_POST['topicdays']) || !empty($_GET['topicdays']))
 	$topics_count = ($row['forum_topics']) ? $row['forum_topics'] : 1;
 	$limit_topics_time = "AND p.post_time >= " . $min_topic_time;
 
-	if (!empty($_POST['topicdays']))
+	if (!empty($topic_days))
 	{
 		$start = 0;
 	}
@@ -791,7 +785,7 @@ $s_auth_can .= ($is_auth['auth_reply'] ? $lang['Rules_reply_can'] : $lang['Rules
 $s_auth_can .= ($is_auth['auth_edit'] ? $lang['Rules_edit_can'] : $lang['Rules_edit_cannot']) . '<br />';
 $s_auth_can .= ($is_auth['auth_delete'] ? $lang['Rules_delete_can'] : $lang['Rules_delete_cannot']) . '<br />';
 $s_auth_can .= ($is_auth['auth_vote'] ? $lang['Rules_vote_can'] : $lang['Rules_vote_cannot']) . '<br />';
-if (intval($attach_config['disable_mod']) == 0)
+if (intval($config['disable_attachments_mod']) == 0)
 {
 	$s_auth_can .= ($is_auth['auth_attachments'] ? $lang['Rules_attach_can'] : $lang['Rules_attach_cannot']) . '<br />';
 	$s_auth_can .= ($is_auth['auth_download'] ? $lang['Rules_download_can'] : $lang['Rules_download_cannot']) . '<br />';

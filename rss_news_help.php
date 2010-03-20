@@ -18,11 +18,6 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-// Ok, only process those Groups allowed within this forum
-$nothing = true;
-
-$server_url = (substr($server_url, strlen($server_url) - 1, 1) == '/') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
-
 $template->assign_vars(array(
 	'L_RSS_NEWS_HELP_TITLE'				=> $lang['Rss_news_help_title'],
 	'L_RSS_NEWS_HELP_HEADER'			=> $lang['Rss_news_help_header'],
@@ -32,20 +27,15 @@ $template->assign_vars(array(
 	'L_RSS_NEWS_HELP_HEADER_3'		=> $lang['Rss_news_help_header_3'],
 	'L_RSS_NEWS_HELP_EXPLAIN_3'		=> $lang['Rss_news_help_explain_3'],
 	'L_RSS_NEWS_HELP_RIGHTS'			=> $lang['Rss_news_help_rights'],
-	'U_RSS'												=> $server_url . '/rss.' . PHP_EXT,
-	'U_RSS_NEWS'									=> $server_url . '/news_rss.' . PHP_EXT,
-	'U_RSS_ATOM'									=> $server_url . '/rss.' . PHP_EXT . '?atom',
+	'U_RSS'												=> IP_ROOT_PATH . 'rss.' . PHP_EXT,
+	'U_RSS_NEWS'									=> IP_ROOT_PATH . 'news_rss.' . PHP_EXT,
+	'U_RSS_ATOM'									=> IP_ROOT_PATH . 'rss.' . PHP_EXT . '?atom',
 	'L_URL_RSS_EXPLAIN'						=> $lang['L_url_rss_explain'],
 	'L_URL_RSS_NEWS_EXPLAIN'			=> $lang['L_url_rss_news_explain'],
 	'L_URL_RSS_ATOM_EXPLAIN'			=> $lang['L_url_rss_atom_explain'],
 	'L_CLOSE_WINDOW'							=> $lang['Close_window']
 	)
 );
-
-if ($nothing)
-{
-	$template->assign_block_vars('switch_nothing', array());
-}
 
 $gen_simple_header = true;
 full_page_generation('rss_news_help.tpl', $lang['Rss_news_help_title'], '', '');

@@ -53,17 +53,12 @@ if(!function_exists('cms_block_news'))
 		$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
 		//$page_query = $_SERVER['QUERY_STRING'];
 		//$page_query = (!empty($_SERVER['QUERY_STRING'])) ? explode('&', $_SERVER['QUERY_STRING']) : explode('&', getenv('QUERY_STRING'));
-		$portal_page_id = '';
-		if(isset($_GET['page']))
-		{
-			$portal_page_id = 'page=' . intval($_GET['page']) . '&amp;';
-		}
 
-		$ubid_link = '';
-		if(isset($_GET['ubid']))
-		{
-			$ubid_link = 'ubid=' . htmlspecialchars(intval($_GET['ubid'])) . '&amp;';
-		}
+		$portal_page_id = request_var('page', 0);
+		$portal_page_id = !empty($portal_page_id) ? ('page=' . $portal_page_id . '&amp;') : '';
+
+		$ubid_link = request_var('ubid', 0);
+		$ubid_link = !empty($ubid_link) ? ('ubid=' . $ubid_link . '&amp;') : '';
 
 		$template->set_filenames(array('news' => 'blocks/news_block.tpl'));
 
@@ -93,7 +88,8 @@ if(!function_exists('cms_block_news'))
 			)
 		);
 
-		if(isset($_GET['news']) && ($_GET['news'] == 'categories'))
+		$news = request_var('news', '');
+		if($news == 'categories')
 		{
 			// View the news categories.
 			$data_access = new NewsDataAccess(IP_ROOT_PATH);
@@ -134,13 +130,12 @@ if(!function_exists('cms_block_news'))
 			$content->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Categories']));
 			$content->renderTopics();
 		}
-		elseif(isset($_GET['news']) && ($_GET['news'] == 'archives'))
+		elseif($news == 'archives')
 		{
-			// View the news Archives.
-			$year = (isset($_GET['year'])) ? $_GET['year'] : 0;
-			$month = (isset($_GET['month'])) ? $_GET['month'] : 0;
-			$day = (isset($_GET['day'])) ? $_GET['day'] : 0;
-			$key = (isset($_GET['key'])) ? $_GET['key'] : '';
+			$year = request_var('year', 0);
+			$month = request_var('month', 0);
+			$day = request_var('day', 0);
+			$key = request_var('key', '');
 
 			$template->assign_block_vars('news_archives', array());
 			$content->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));
@@ -149,15 +144,9 @@ if(!function_exists('cms_block_news'))
 		else
 		{
 			// View news articles.
-			$topic_id = 0;
-			if(!empty($_GET['topic_id']))
-			{
-				$topic_id = intval($_GET['topic_id']);
-			}
-			elseif(!empty($_GET['news_id']))
-			{
-				$topic_id = intval($_GET['news_id']);
-			}
+			$topic_id = request_var('topic_id', 0);
+			$news_id = request_var('news_id', 0);
+			$topic_id = (empty($topic_id) && !empty($news_id)) ? $news_id : $topic_id;
 			$topic_id = ($topic_id < 0) ? 0 : $topic_id;
 
 			if (!empty($topic_id))

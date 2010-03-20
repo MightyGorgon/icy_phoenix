@@ -31,7 +31,7 @@ require('pagestart.' . PHP_EXT);
 require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
 require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
 
-if( !isset($_POST['submit']) )
+if(!isset($_POST['submit']))
 {
 	$template->set_filenames(array('body' => ADM_TPL . 'album_personal_body.tpl'));
 

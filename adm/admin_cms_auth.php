@@ -25,38 +25,23 @@ require('pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
 
 //Start Quick Administrator User Options and Information MOD
-if(isset($_POST['redirect']) || isset($_GET['redirect']))
-{
-	$redirect = (isset($_POST['redirect'])) ? $_POST['redirect'] : $_GET['redirect'];
-	$redirect = htmlspecialchars($redirect);
-}
-else
-{
-	$redirect = '';
-}
+$redirect = request_var('redirect', '');
 //End Quick Administrator User Options and Information MOD
 
-if (!empty($_POST['u']) || !empty($_GET['u']))
-{
-	$user_id = (!empty($_POST['u'])) ? intval($_POST['u']) : intval($_GET['u']);
-}
-else
-{
-	$user_id = false;
-}
+$user_id = request_post_var(POST_USERS_URL, 0);
 
-if (isset($_POST['username']))
+$username = request_post_var('username', '', true);
+if (!empty($username))
 {
-	$this_userdata = get_userdata($_POST['username'], true);
+	$this_userdata = get_userdata($username, true);
 	if (!is_array($this_userdata))
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_such_user']);
 	}
 	$user_id = $this_userdata['user_id'];
-	$username = $_POST['username'];
 }
 
-$posted_user_cms_level = (isset($_POST['user_cms_level']) ? intval($_POST['user_cms_level']) : false);
+$posted_user_cms_level = (isset($_POST['user_cms_level']) ? request_post_var('user_cms_level', 0) : false);
 
 // Please note that !== is on purpose...
 if ($posted_user_cms_level !== false)
@@ -71,12 +56,12 @@ if ($posted_user_cms_level !== false)
 }
 
 //Start Quick Administrator User Options and Information MOD
-if($redirect != '')
+if(!empty($redirect))
 {
 	$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_userprofile'], '<a href="' . append_sid('../' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT) . '">', '</a>');
 }
 //End Quick Administrator User Options and Information MOD
-elseif ($user_id != false)
+elseif (!empty($user_id))
 {
 	$user_cms_level = '';
 	$sql = "SELECT u.*

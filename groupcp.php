@@ -33,39 +33,18 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path']));
-$script_name = ($script_name != '') ? $script_name . '/groupcp.' . PHP_EXT : 'groupcp.' . PHP_EXT;
-$server_name = trim($config['server_name']);
-$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
+$server_url = create_server_url();
+$server_url = $server_url . CMS_PAGE_GROUP_CP;
 
-$server_url = $server_protocol . $server_name . $server_port . $script_name;
+$group_id = request_var(POST_GROUPS_URL, 0);
+$mode = request_var('mode', '');
 
-if (isset($_GET[POST_GROUPS_URL]) || isset($_POST[POST_GROUPS_URL]))
-{
-	$group_id = (isset($_POST[POST_GROUPS_URL])) ? intval($_POST[POST_GROUPS_URL]) : intval($_GET[POST_GROUPS_URL]);
-}
-else
-{
-	$group_id = '';
-}
+$confirm = isset($_POST['confirm']) ? true : false;
+$cancel = isset($_POST['cancel']) ? true : false;
 
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
-{
-	$mode = '';
-}
+$sid = request_var('sid', '');
 
-$confirm = isset($_POST['confirm']) ? true : 0;
-$cancel = isset($_POST['cancel']) ? true : 0;
-
-$sid = isset($_POST['sid']) ? $_POST['sid'] : '';
-
-$start = isset($_GET['start']) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 // Default var values
@@ -388,7 +367,7 @@ elseif ($group_id)
 
 				$sql = "SELECT user_id, user_email, user_lang, user_level
 					FROM " . USERS_TABLE . "
-					WHERE username = '" . str_replace("\'", "''", $username) . "'";
+					WHERE username = '" . $db->sql_escape($username) . "'";
 				$result = $db->sql_query($sql);
 
 				if (!($row = $db->sql_fetchrow($result)))

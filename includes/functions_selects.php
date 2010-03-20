@@ -20,8 +20,10 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-// Pick a language, any language ...
-function language_select($default, $select_name = 'language', $dirname = 'language', $return_array = false)
+/*
+* Language select box
+*/
+function language_select($select_name = 'language', $default = 'english', $dirname = 'language', $return_array = false)
 {
 
 	$dir = opendir(IP_ROOT_PATH . $dirname);
@@ -61,8 +63,10 @@ function language_select($default, $select_name = 'language', $dirname = 'langua
 	return $result;
 }
 
-// Pick a template/theme combo,
-function style_select($default_style, $select_name = 'style', $dirname = 'templates', $js_append = '')
+/*
+* Styles select box
+*/
+function style_select($select_name = 'style', $default_style = '', $js_append = '')
 {
 	global $db, $cache;
 
@@ -70,7 +74,7 @@ function style_select($default_style, $select_name = 'style', $dirname = 'templa
 	$styles = $cache->obtain_styles(true);
 	foreach ($styles as $k => $v)
 	{
-		$selected = ($k == $default_style) ? ' selected="selected"' : '';
+		$selected = (!empty($default_style) && ($k == $default_style)) ? ' selected="selected"' : '';
 		$style_select .= '<option value="' . $k . '"' . $selected . '>' . htmlspecialchars($v) . '</option>';
 	}
 	$style_select .= '</select>';
@@ -78,15 +82,15 @@ function style_select($default_style, $select_name = 'style', $dirname = 'templa
 	return $style_select;
 }
 
-// Pick a timezone
-function tz_select($default, $select_name = 'timezone')
+/*
+* TimeZone select box
+*/
+function tz_select($select_name = 'timezone', $default = '')
 {
 	global $sys_timezone, $lang;
 
-	if (!isset($default))
-	{
-		$default == $sys_timezone;
-	}
+	$default == empty($default) ? $sys_timezone : $default;
+
 	$tz_select = '<select name="' . $select_name . '">';
 
 	while(list($offset, $zone) = @each($lang['tz']))
@@ -99,8 +103,10 @@ function tz_select($default, $select_name = 'timezone')
 	return $tz_select;
 }
 
-// Visual pick Date Format for non technical users
-function date_select($default_format, $select_name = 'dateformat')
+/*
+* Date/Time format select box
+*/
+function date_select($select_name = 'dateformat', $default_format = '')
 {
 	global $lang, $config;
 
@@ -182,8 +188,10 @@ function date_select($default_format, $select_name = 'dateformat')
 	return $date_select;
 }
 
-// Auth List
-function auth_select($default, $select_name)
+/*
+* Auth select box
+*/
+function auth_select($select_name, $default)
 {
 	global $lang;
 	$auth_array_lang = array($lang['Forum_ALL'], $lang['Forum_REG'], $lang['Forum_MOD'], $lang['Forum_ADMIN']);
@@ -201,5 +209,202 @@ function auth_select($default, $select_name)
 
 	return $auth_select;
 }
+
+/*
+* Forums select box
+*/
+function forums_select_box($select_name, $default_value, $show_empty = true)
+{
+	global $lang;
+
+	$forums_select = '<select name="' . $select_name . '">';
+	if ($show_empty)
+	{
+		$forums_select .= '<option value="0">' . $lang['None'] . '</option>';
+	}
+	$forums_select .= get_tree_option_optg('f' . $default_value, true, true, true);
+	$forums_select .= '</select>';
+	return $forums_select;
+}
+
+/*
+* Creates forums option groups
+*/
+function get_tree_option_optg($cur = '', $all = false, $opt_prefix = true, $mark_selected = false)
+{
+	global $tree, $lang;
+
+	$keys = array();
+	$keys = get_auth_keys('Root', $all);
+	$last_level = -1;
+	$cat_open = false;
+
+	for ($i = 0; $i < sizeof($keys['id']); $i++)
+	{
+		// only get object that are not forum links type
+		if (($tree['type'][$keys['idx'][$i]] != POST_FORUM_URL) || empty($tree['data'][$keys['idx'][$i]]['forum_link']))
+		{
+			$level = $keys['real_level'][$i];
+
+			$inc = '';
+			for ($k = 0; $k < $level; $k++)
+			{
+				$inc .= "[*$k*]&nbsp;&nbsp;&nbsp;";
+			}
+
+			if ($level < $last_level)
+			{
+			//insert spacer if level goes down
+				//$res .='<option value="-1">' . $inc . '|&nbsp;&nbsp;&nbsp;</option>';
+			// make valid lines solid
+				$res = str_replace("[*$level*]", "|", $res);
+
+			// erase all unnessecary lines
+				for ($k = $level + 1; $k < $last_level; $k++)
+				{
+					$res = str_replace("[*$k*]", "&nbsp;", $res);
+				}
+
+			}
+			elseif ($level == 0 && $last_level == -1)
+			{
+				//$res .='<option value="-1">|</option>';
+			}
+
+			$last_level = $level;
+
+			if ($tree['type'][$keys['idx'][$i]] == POST_CAT_URL)
+			{
+				if ($cat_open == true)
+				{
+					$res .= '</optgroup>';
+				}
+				else
+				{
+					$cat_open = true;
+				}
+				$res .= '<optgroup label="';
+
+				// name
+				$name = strip_tags(get_object_lang($keys['id'][$i], 'name', $all));
+
+				if ($keys['level'][$i] >= 0)
+				{
+					$res .= $inc . '|--';
+				}
+
+				$res .= $name . '">';
+			}
+			else
+			{
+				if ($keys['id'][$i] != 'Root')
+				{
+					$is_selected = ($cur == $keys['id'][$i]) ? true : false;
+					$selected = $is_selected ? ' selected="selected"' : '';
+					if ($opt_prefix == true)
+					{
+						$res .= '<option value="' . $keys['id'][$i] . '"' . $selected . '>';
+					}
+					else
+					{
+						$res .= '<option value="' . str_replace(POST_FORUM_URL, '', $keys['id'][$i]) . '"' . $selected . '>';
+					}
+
+					// name
+					$name = (($is_selected && $mark_selected) ? ' * ' : '') . strip_tags(get_object_lang($keys['id'][$i], 'name', $all));
+
+					if ($keys['level'][$i] >= 0)
+					{
+						$res .= $inc . '|--';
+					}
+
+					$res .= $name . '</option>';
+				}
+			}
+		}
+	}
+	if ($cat_open == true)
+	{
+		$res .= '</optgroup>';
+	}
+
+	// erase all unnecessary lines
+	for ($k = 0; $k < $last_level; $k++)
+	{
+		$res = str_replace("[*$k*]", "&nbsp;", $res);
+	}
+
+	return $res;
+}
+
+/*
+* Creates a basic forums selectbox
+*/
+function make_forum_select($box_name, $ignore_forum = false, $select_forum = '', $all = false)
+{
+	$s_id = ($select_forum != '') ? POST_FORUM_URL . $select_forum : '';
+	$s_list = get_tree_option($select_forum, $all);
+	$res = '<select name="' . $box_name . '">' . $s_list . '</select>';
+	return $res;
+}
+
+/*
+* Creates a basic topics selectbox
+*/
+function make_topic_select($box_name, $forum_id)
+{
+	global $db, $userdata;
+
+	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+
+	$sql = "SELECT topic_id, topic_title
+		FROM " . TOPICS_TABLE . "
+		WHERE forum_id = $forum_id
+		ORDER BY topic_title";
+	$result = $db->sql_query($sql);
+
+	$topic_list = '';
+	while($row = $db->sql_fetchrow($result))
+	{
+		$topic_list .= '<option value="' . $row['topic_id'] . '">' . $row['topic_title'] . '</option>';
+	}
+
+	$topic_list = ($topic_list == '') ? '<option value="-1">-- ! No Topics ! --</option>' : '<select name="' . $box_name . '">' . $topic_list . '</select>';
+
+	return $topic_list;
+}
+
+/*
+* Creates selectbox for Gravatar Ratings
+*/
+function select_gravatar_rating($default = '')
+{
+	global $lang;
+
+	$symbols = array('G', 'PG', 'R', 'X');
+
+	$select_box = '<select name="gravatar_rating"><option value="">' . $lang['None'] . '</option>';
+	foreach($symbols as $rating)
+	{
+		$selected = ($rating == $default) ? ' selected="selected"' : '';
+		$select_box .= '<option value="' . $rating . '"' . $selected . '>' . $rating . '</option>';
+	}
+	$select_box .= '</select>';
+
+	return $select_box;
+}
+
+// Settings wrappers functions to be used in settings modules - BEGIN
+
+/*
+* Creates selectbox for...
+*/
+/*
+function settings_XXX_select($name, $default = '')
+{
+	$select_box = XXX_select($default, $name, $templates_folder);
+	return $select_box;
+}
+*/
 
 ?>

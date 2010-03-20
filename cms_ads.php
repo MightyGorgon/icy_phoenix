@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
@@ -93,8 +92,8 @@ $template->assign_vars(array(
 );
 
 $ad_id = request_var('ad_id', 0);
-$ad_title = request_var('ad_title', '');
-$ad_text = request_var('ad_text', '');
+$ad_title = request_var('ad_title', '', true);
+$ad_text = request_var('ad_text', '', true);
 $ad_position = request_var('ad_position', '');
 $ad_position = in_array($ad_position, $ad_positions_array) ? $ad_position : $ad_positions_array[0];
 $ad_auth = request_var('ad_auth', 0);
@@ -132,9 +131,9 @@ if($mode == 'save')
 	$input_table = ADS_TABLE;
 	// htmlspecialchars_decode is supported only since PHP 5+ (an alias has been added into functions.php, if you want to use a PHP 4 default function you can use html_entity_decode instead)
 	$input_array = array(
-		'ad_title' => '\'' . addslashes($ad_title) . '\'',
-		'ad_text' => '\'' . htmlspecialchars_decode(addslashes($ad_text), ENT_COMPAT) . '\'',
-		'ad_position' => '\'' . $ad_position . '\'',
+		'ad_title' => $ad_title,
+		'ad_text' => htmlspecialchars_decode($ad_text, ENT_COMPAT),
+		'ad_position' => $ad_position,
 		'ad_auth' => $ad_auth,
 		'ad_format' => $ad_format,
 		'ad_active' => $ad_active,
@@ -157,13 +156,13 @@ if($mode == 'save')
 	if(($ad_id > 0) && !empty($update_sql))
 	{
 		$message = $lang['AD_UPDATED'];
-		$sql = "UPDATE " . $input_table . " SET " . $update_sql . $where_sql;
+		$sql = "UPDATE " . $input_table . " SET " . $db->sql_build_insert_update($input_array, false) . $where_sql;
 		$result = $db->sql_query($sql);
 	}
 	elseif(!empty($input_fields_sql))
 	{
 		$message = $lang['AD_ADDED'];
-		$sql = "INSERT INTO " . $input_table . " " . $input_fields_sql . " VALUES " . $input_values_sql;
+		$sql = "INSERT INTO " . $input_table . " " . $db->sql_build_insert_update($input_array, true);
 		$result = $db->sql_query($sql);
 	}
 	else
@@ -229,8 +228,8 @@ elseif ($mode == 'add')
 		$db->sql_freeresult($result);
 
 		$ad_id = $row['ad_id'];
-		$ad_title = stripslashes($row['ad_title']);
-		$ad_text = htmlspecialchars(stripslashes($row['ad_text']));
+		$ad_title = $row['ad_title'];
+		$ad_text = htmlspecialchars($row['ad_text']);
 		$ad_position = $row['ad_position'];
 		$ad_auth = $row['ad_auth'];
 		$ad_format = $row['ad_format'];

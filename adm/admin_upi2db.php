@@ -28,7 +28,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 $sql = "SELECT * FROM " . CONFIG_TABLE . " WHERE config_name LIKE \"upi2db_%\"";
 $result = $db->sql_query($sql);
@@ -39,16 +39,15 @@ while($row = $db->sql_fetchrow($result))
 	$config_value = $row['config_value'];
 	$default_config[$config_name] = $config_value;
 
-	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
+	$tmp_value = request_post_var($config_name, '', true);
+	$new[$config_name] = (isset($_POST[$config_name])) ? $tmp_value : $default_config[$config_name];
 
-	if(isset($_POST['submit']))
+	if(isset($_POST['submit']) && isset($_POST[$config_name]))
 	{
-		$sql = "UPDATE " . CONFIG_TABLE . " SET
-			config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-			WHERE config_name = '$config_name'";
-		$db->sql_query($sql);
+		set_config($config_name, $new[$config_name], false);
 	}
 }
+$cache->destroy('config');
 
 $upi2db_on_1 = ($new['upi2db_on'] == 1) ? 'checked="checked"' : '';
 $upi2db_on_0 = ($new['upi2db_on'] == 0) ? 'checked="checked"' : '';
@@ -75,9 +74,9 @@ $result = $db->sql_query($sql);
 
 if(isset($_POST['submit']))
 {
-	$group_upi2db_on = (isset($_POST[group_upi2db_on])) ? $_POST[group_upi2db_on] : 0;
-	$group_min_posts = (isset($_POST[group_min_posts])) ? $_POST[group_min_posts] : 0;
-	$group_min_regdays = (isset($_POST[group_min_regdays])) ? $_POST[group_min_regdays] : 0;
+	$group_upi2db_on = request_post_var('group_upi2db_on', array(0));
+	$group_min_posts = request_post_var('group_min_posts', array(0));
+	$group_min_regdays = request_post_var('group_min_regdays', array(0));
 
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -107,7 +106,6 @@ while($row = $db->sql_fetchrow($result))
 		)
 	);
 }
-
 
 if(isset($_POST['submit']))
 {

@@ -164,7 +164,7 @@ function album_debug_render($variable, $array_level = 0)
 	switch (gettype($variable))
 	{
 		case 'boolean':
-			return $variable?'TRUE':'FALSE';
+			return $variable ? 'TRUE' : 'FALSE';
 			break;
 		case 'integer':
 		case 'double':

@@ -90,11 +90,11 @@ function attachment_sync_topic($topic_id)
 */
 function unlink_attach($filename, $mode = false)
 {
-	global $upload_dir, $attach_config, $lang;
+	global $upload_dir, $config, $lang;
 
 	$filename = basename($filename);
 
-	if (!intval($attach_config['allow_ftp_upload']))
+	if (!intval($config['allow_ftp_upload']))
 	{
 		if ($mode == MODE_THUMBNAIL)
 		{
@@ -122,7 +122,7 @@ function unlink_attach($filename, $mode = false)
 			if (ATTACH_DEBUG)
 			{
 				$add = ($mode == MODE_THUMBNAIL) ? '/' . THUMB_DIR : '';
-				message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_delete'], $attach_config['ftp_path'] . $add));
+				message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_delete'], $config['ftp_path'] . $add));
 			}
 
 			return $deleted;

@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
 define('IN_ICYPHOENIX', true);
@@ -61,20 +60,11 @@ if (!empty($start_month) && !empty($start_year))
 }
 
 // mode
-$mode = '';
-$mode_array = array('hour');
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode'];
-}
-
-if (!in_array($mode, $mode_array))
-{
-	$mode = '';
-}
+$mode = request_var('mode', '', true);
+$mode = check_var_value($mode, array('hour'));
 
 // start
-$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 // get the period
@@ -96,7 +86,7 @@ else
 
 // get the forum id selected
 $fid = '';
-if ( isset($_POST['selected_id']) || isset($_GET['fid']) )
+if (isset($_POST['selected_id']) || isset($_GET['fid']))
 {
 	$fid = isset($_POST['selected_id']) ? $_POST['selected_id'] : $_GET['fid'];
 	if ($fid != 'Root')
@@ -229,7 +219,7 @@ $first_day_of_week = isset($config['calendar_week_start']) ? intval($config['cal
 $s_month = '';
 for ($i = 0; $i < sizeof($set_of_months); $i++)
 {
-	$selected = ($month == $i+1) ? ' selected="selected"' : '';
+	$selected = ($month == $i + 1) ? ' selected="selected"' : '';
 	$s_month .= '<option value="' . ($i + 1) . '"' . $selected . '>' . $lang['datetime'][$set_of_months[$i]] . '</option>';
 }
 $s_month = sprintf('<select name="start_month" onchange="forms[\'f_calendar_scheduler\'].submit();">%s</select>', $s_month);

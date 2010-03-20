@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -2085,16 +2084,16 @@ class bbcode
 				$color_1 = $this->valid_color((isset($item['params']['colors']) ? $item['params']['colors'] : false));
 				$color_2 = $this->valid_color((isset($item['params']['colore']) ? $item['params']['colore'] : false));
 
-				$width_array = array('320', '425', '400', '480', '540', '640');
-				$height_array = array('240', '350', '300', '360', '420', '480', '385');
+				$width_array = array(320, 425, 400, 480, 540, 640);
+				$height_array = array(240, 350, 300, 360, 420, 480, 385);
 
 				// 4/3 YouTube width and height: 425x350
 				// 16/9 YouTube width and height: 640x385
-				$default_width = ((($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo')) ? '640' : '320');
+				$default_width = ((($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo')) ? 640 : 320);
 				$width = (isset($item['params']['width']) ? intval($item['params']['width']) : $default_width);
 				$width = ((($width > 10) && ($width < 641)) ? $width : $default_width);
 
-				$default_width = ((($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo')) ? '385' : '240');
+				$default_height = ((($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo')) ? 385 : 240);
 				$height = (isset($item['params']['height']) ? intval($item['params']['height']) : $default_height);
 				$height = ((($height > 10) && ($height < 481)) ? $height : $default_height);
 
@@ -2128,8 +2127,8 @@ class bbcode
 				}
 				elseif ($tag === 'vimeo')
 				{
-					$width = in_array($width, $width_array) ? $width : '640';
-					$height = in_array($height, $height_array) ? $height : '385';
+					$width = in_array($width, $width_array) ? $width : 640;
+					$height = in_array($height, $height_array) ? $height : 385;
 					$html = '<object type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" data="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '"><param name="quality" value="best" /><param name="allowfullscreen" value="true" /><param name="scale" value="showAll" /><param name="movie" value="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" /></object><br /><a href="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" target="_blank">Link</a><br />';
 				}
 				elseif ($tag === 'youtube')
@@ -2141,14 +2140,14 @@ class bbcode
 						$color_append .= ($color_2 ? ('&amp;color2=0x' . str_replace('#', '', $color_2)) : '');
 					}
 
-					$width = in_array($width, $width_array) ? $width : '640';
-					$height = in_array($height, $height_array) ? $height : '385';
+					$width = in_array($width, $width_array) ? $width : 640;
+					$height = in_array($height, $height_array) ? $height : 385;
 					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $content . $color_append . '" /><embed src="http://www.youtube.com/v/' . $content . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object><br /><a href="http://youtube.com/watch?v=' . $content . $color_append . '" target="_blank">Link</a><br />';
 				}
 				elseif ($tag === 'googlevideo')
 				{
-					$width = in_array($width, $width_array) ? $width : '640';
-					$height = in_array($height, $height_array) ? $height : '385';
+					$width = in_array($width, $width_array) ? $width : 640;
+					$height = in_array($height, $height_array) ? $height : 385;
 					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:' . $width . 'px; height:' . $height . 'px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#f8f8f8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="http://video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
 				}
 				return array(

@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -231,19 +230,19 @@ function make_exif($xkey, $xval)
 
 	while (!empty($xkey[$i]) )
 	{
-		if ( ereg("([0-9]{1,})/([0-9]{1,})", $xval[$i], $num) )
+		if (ereg("([0-9]{1,})/([0-9]{1,})", $xval[$i], $num))
 		{
-			if ( $num[1] > 1 ) $xval[$i] = round( ($num[1] / $num[2]), 6);
+			if ($num[1] > 1) $xval[$i] = round(($num[1] / $num[2]), 6);
 		}
-		if ( is_array($exif_info[$xkey[$i]]) && $xkey[$i] != 'IFD0_ResolutionUnit' )
+		if (is_array($exif_info[$xkey[$i]]) && $xkey[$i] != 'IFD0_ResolutionUnit')
 		{
-			if ( isset($exif_info[$xkey[$i]]['Units']) )
+			if (isset($exif_info[$xkey[$i]]['Units']))
 			{
-				if ( $xkey[$i+2] == 'IFD0_ResolutionUnit' )
+				if ($xkey[$i+2] == 'IFD0_ResolutionUnit')
 				{
 					$rexif[$exif_info[$xkey[$i]]['Name']] = ($xval[$i] . $exif_info[$xkey[$i]]['Units'] . $exif_info[$xkey[$i+2]][$xval[$i+2]]);
 				}
-				else if ( $xkey[$i+1] == 'IFD0_ResolutionUnit' )
+				elseif ($xkey[$i+1] == 'IFD0_ResolutionUnit')
 				{
 					$rexif[$exif_info[$xkey[$i]]['Name']] = ($xval[$i] . $exif_info[$xkey[$i]]['Units'] . $exif_info[$xkey[$i+1]][$xval[$i+1]]);
 				}
@@ -257,10 +256,10 @@ function make_exif($xkey, $xval)
 				$rexif[$exif_info[$xkey[$i]]['Name']] = $exif_info[$xkey[$i]][$xval[$i]];
 			}
 		}
-		else if ( isset($exif_info[$xkey[$i]]) && $xkey[$i] != 'IFD0_ResolutionUnit' )
+		elseif (isset($exif_info[$xkey[$i]]) && $xkey[$i] != 'IFD0_ResolutionUnit')
 		{
 			$rexif[$exif_info[$xkey[$i]]] = $xval[$i];
-			if ( $xkey[$i] == 'FILE_FileDateTime' )
+			if ($xkey[$i] == 'FILE_FileDateTime')
 			{
 				$rexif[$exif_info[$xkey[$i]]] = create_date('Y:m:d H:i:s',  $xval[$i], $config['board_timezone']);
 			}
@@ -306,7 +305,7 @@ while (list($k1,$v1) = each($exif))
 	$i++;
 }
 
-$x = intval(($i/2)+.5);
+$x = intval(($i / 2) + 0.5);
 
 for ($n = 0; $n < $x; $n++)
 {

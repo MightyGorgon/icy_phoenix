@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
 define('IN_ICYPHOENIX', true);
@@ -31,7 +30,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 if (!$userdata['session_logged_in'])
@@ -97,7 +96,6 @@ if ($watch_count > 0)
 	// are we currently watching any topics?
 	if ($watch_rows)
 	{
-
 		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] .'_t'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_t']) : array();
 		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
 

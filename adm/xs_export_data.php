@@ -21,12 +21,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
@@ -63,19 +57,19 @@ if(isset($_GET['export']))
 	{
 		$template->set_filenames(array('body' => XS_TPL_PATH . 'export_data2.tpl'));
 		$template->assign_vars(array(
-			'TOTAL'		=> sizeof($theme_rowset),
-			'EXPORT'	=> htmlspecialchars($export),
-			'U_ACTION'	=> append_sid("xs_export_data." . PHP_EXT)
+			'TOTAL' => sizeof($theme_rowset),
+			'EXPORT' => htmlspecialchars($export),
+			'U_ACTION' => append_sid("xs_export_data." . PHP_EXT)
 			)
 		);
-		for($i=0; $i< sizeof($theme_rowset); $i++)
+		for($i = 0; $i < sizeof($theme_rowset); $i++)
 		{
 			$row_class = $xs_row_class[$i % 2];
 			$template->assign_block_vars('styles', array(
-				'ROW_CLASS'		=> $row_class,
-				'NUM'			=> $i,
-				'ID'			=> $theme_rowset[$i]['themes_id'],
-				'STYLE'			=> htmlspecialchars($theme_rowset[$i]['style_name'])
+				'ROW_CLASS' => $row_class,
+				'NUM' => $i,
+				'ID' => $theme_rowset[$i]['themes_id'],
+				'STYLE' => htmlspecialchars($theme_rowset[$i]['style_name'])
 				)
 			);
 		}
@@ -91,7 +85,7 @@ if(!empty($_POST['export']) && !defined('DEMO_MODE'))
 	$params = array('export' => $export);
 	$total = intval($_POST['export_total']);
 	$count = 0;
-	for($i=0; $i<$total; $i++)
+	for($i = 0; $i <$total; $i++)
 	{
 		if(!empty($_POST['export_check_'.$i]))
 		{
@@ -122,7 +116,7 @@ if(!empty($_POST['export']) && !defined('DEMO_MODE'))
 	}
 	// get all themes for style
 	$export_list = array();
-	for($i=0; $i<$total; $i++)
+	for($i = 0; $i <$total; $i++)
 	{
 		if(!empty($_POST['export_check_'.$i]))
 		{
@@ -158,17 +152,17 @@ if(!empty($_POST['export']) && !defined('DEMO_MODE'))
 	$actions = array();
 	// chdir to template directory
 	$actions[] = array(
-			'command'	=> 'chdir',
-			'dir'		=> 'templates'
+			'command' => 'chdir',
+			'dir' => 'templates'
 		);
 	$actions[] = array(
-			'command'	=> 'chdir',
-			'dir'		=> $export
+			'command' => 'chdir',
+			'dir' => $export
 		);
 	$actions[] = array(
-			'command'	=> 'upload',
-			'local'		=> $local_filename,
-			'remote'	=> 'templates/' . $export . '/theme_info.cfg'
+			'command' => 'upload',
+			'local' => $local_filename,
+			'remote' => 'templates/' . $export . '/theme_info.cfg'
 			);
 	$ftp_log = array();
 	$ftp_error = '';
@@ -204,7 +198,7 @@ $prev_id = -1;
 $prev_tpl = '';
 $style_names = array();
 $j = 0;
-for($i=0; $i< sizeof($style_rowset); $i++)
+for($i = 0; $i < sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	if($item['template_name'] === $prev_tpl)
@@ -220,10 +214,10 @@ for($i=0; $i< sizeof($style_rowset); $i++)
 			$row_class = $xs_row_class[$j % 2];
 			$j++;
 			$template->assign_block_vars('styles', array(
-					'ROW_CLASS'	=> $row_class,
-					'TPL'		=> $prev_tpl,
-					'STYLES'	=> $str,
-					'U_EXPORT'	=> "xs_export_data." . PHP_EXT . "?export={$str2}&sid={$userdata['session_id']}",
+					'ROW_CLASS' => $row_class,
+					'TPL' => $prev_tpl,
+					'STYLES' => $str,
+					'U_EXPORT' => "xs_export_data." . PHP_EXT . "?export={$str2}&amp;sid={$userdata['session_id']}",
 				)
 			);
 		}
@@ -240,10 +234,10 @@ if($prev_id > 0)
 	$row_class = $xs_row_class[$j % 2];
 	$j++;
 	$template->assign_block_vars('styles', array(
-			'ROW_CLASS'	=> $row_class,
-			'TPL'		=> $prev_tpl,
-			'STYLES'	=> $str,
-			'U_EXPORT'	=> "xs_export_data." . PHP_EXT . "?export={$str2}&sid={$userdata['session_id']}",
+			'ROW_CLASS' => $row_class,
+			'TPL' => $prev_tpl,
+			'STYLES' => $str,
+			'U_EXPORT' => "xs_export_data." . PHP_EXT . "?export={$str2}&amp;sid={$userdata['session_id']}",
 		)
 	);
 }

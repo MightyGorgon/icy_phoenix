@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 define('IN_ICYPHOENIX', true);
 define('IN_CALENDAR', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');

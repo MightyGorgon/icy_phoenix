@@ -28,12 +28,13 @@ if (intval($config['require_activation']) == USER_ACTIVATION_ADMIN)
 
 if (isset($_POST['submit']))
 {
-	$username = isset($_POST['username']) ? phpbb_clean_username($_POST['username']) : '';
-	$email = trim(htmlspecialchars($_POST['email']));
+	$username = phpbb_clean_username(request_post_var('username', '', true));
+	$username = htmlspecialchars_decode($username, ENT_COMPAT);
+	$email = request_post_var('email', '');
 
-	$sql = "SELECT user_id, user_email, user_active, user_actkey, user_lang, user_last_login_try
+	$sql = "SELECT user_id, user_email, user_active, user_actkey, user_lang, user_last_login_attempt
 		FROM " . USERS_TABLE . "
-		WHERE username = '" . str_replace("\\'", "''", $username) . "'";
+		WHERE username = '" . $db->sql_escape($username) . "'";
 	$result = $db->sql_query($sql);
 
 	if (!($row = $db->sql_fetchrow($result)))
@@ -62,7 +63,7 @@ if (isset($_POST['submit']))
 
 	$current_time = time();
 
-	if ((intval($row['user_last_login_try']) > 0) && (($current_time - intval($row['user_last_login_try'])) < $config['login_reset_time']))
+	if ((intval($row['user_last_login_attempt']) > 0) && (($current_time - intval($row['user_last_login_attempt'])) < $config['login_reset_time']))
 	{
 		// Request flood
 		message_die(GENERAL_ERROR, 'Send_actmail_flood_error');
@@ -84,7 +85,7 @@ if (isset($_POST['submit']))
 
 	$emailer->assign_vars(array(
 		'SITENAME' => $config['sitename'],
-		'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
+		'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr($username, 0, 25)),
 		'PASSWORD' => '',
 		'WELCOME_MSG' => sprintf($lang['Welcome_subject'], $config['sitename']),
 		'EMAIL_SIG' => str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']),
@@ -96,8 +97,8 @@ if (isset($_POST['submit']))
 
 	// Update last activation sent time
 	$sql = "UPDATE " . USERS_TABLE . "
-		SET user_last_login_try = $current_time
-		WHERE username = '" . str_replace("\\'", "''", $username) . "'";
+		SET user_last_login_attempt = $current_time
+		WHERE username = '" . $db->sql_escape($username) . "'";
 	$result = $db->sql_query($sql);
 
 	message_die(GENERAL_MESSAGE, 'Resend_activation_email_done');
@@ -106,7 +107,7 @@ else
 {
 	$link_name = $lang['Resend_activation_email'];
 	$nav_server_url = create_server_url();
-	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 
 	$template->assign_vars(array(
 		'L_SEND_PASSWORD' => $lang['Resend_activation_email'],

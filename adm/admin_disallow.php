@@ -34,20 +34,21 @@ if( isset($_POST['add_name']) )
 {
 	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
-	$disallowed_user = ( isset($_POST['disallowed_user']) ) ? trim($_POST['disallowed_user']) : trim($_GET['disallowed_user']);
+	$disallowed_user = request_var('disallowed_user', '', true);
 
-	if ($disallowed_user == '')
+	if (empty($disallowed_user))
 	{
 		message_die(GENERAL_MESSAGE, $lang['Fields_empty']);
 	}
-	if( !validate_username($disallowed_user) )
+
+	if(!validate_username($disallowed_user))
 	{
 		$message = $lang['Disallowed_already'];
 	}
 	else
 	{
 		$sql = "INSERT INTO " . DISALLOW_TABLE . " (disallow_username)
-			VALUES('" . str_replace("\'", "''", $disallowed_user) . "')";
+			VALUES('" . $db->sql_escape($disallowed_user) . "')";
 		$result = $db->sql_query( $sql );
 
 		$message = $lang['Disallow_successful'];
@@ -57,9 +58,9 @@ if( isset($_POST['add_name']) )
 
 	message_die(GENERAL_MESSAGE, $message);
 }
-else if( isset($_POST['delete_name']) )
+elseif(isset($_POST['delete_name']))
 {
-	$disallowed_id = ( isset($_POST['disallowed_id']) ) ? intval( $_POST['disallowed_id'] ) : intval( $_GET['disallowed_id'] );
+	$disallowed_id = request_var('disallowed_id', 0);
 
 	$sql = "DELETE FROM " . DISALLOW_TABLE . " WHERE disallow_id = $disallowed_id";
 	$result = $db->sql_query($sql);
@@ -75,13 +76,10 @@ $sql = "SELECT * FROM " . DISALLOW_TABLE;
 $result = $db->sql_query($sql);
 $disallowed = $db->sql_fetchrowset($result);
 
-//
-// Ok now generate the info for the template, which will be put out no matter
-// what mode we are in.
-//
+// Ok now generate the info for the template, which will be put out no matter what mode we are in.
 $disallow_select = '<select name="disallowed_id">';
 
-if( trim($disallowed) == "" )
+if(trim($disallowed) == '')
 {
 	$disallow_select .= '<option value="">' . $lang['no_disallowed'] . '</option>';
 }
@@ -96,24 +94,23 @@ else
 
 $disallow_select .= '</select>';
 
-$template->set_filenames(array(
-	'body' => ADM_TPL . 'disallow_body.tpl')
-);
+$template->set_filenames(array('body' => ADM_TPL . 'disallow_body.tpl'));
 
 $template->assign_vars(array(
-	"S_DISALLOW_SELECT" => $disallow_select,
-	"S_FORM_ACTION" => append_sid("admin_disallow." . PHP_EXT),
+	'S_DISALLOW_SELECT' => $disallow_select,
+	'S_FORM_ACTION' => append_sid('admin_disallow.' . PHP_EXT),
 
-	"L_INFO" => $output_info,
-	"L_DISALLOW_TITLE" => $lang['Disallow_control'],
-	"L_DISALLOW_EXPLAIN" => $lang['Disallow_explain'],
-	"L_DELETE" => $lang['Delete_disallow'],
-	"L_DELETE_DISALLOW" => $lang['Delete_disallow_title'],
-	"L_DELETE_EXPLAIN" => $lang['Delete_disallow_explain'],
-	"L_ADD" => $lang['Add_disallow'],
-	"L_ADD_DISALLOW" => $lang['Add_disallow_title'],
-	"L_ADD_EXPLAIN" => $lang['Add_disallow_explain'],
-	"L_USERNAME" => $lang['Username'])
+	'L_INFO' => $output_info,
+	'L_DISALLOW_TITLE' => $lang['Disallow_control'],
+	'L_DISALLOW_EXPLAIN' => $lang['Disallow_explain'],
+	'L_DELETE' => $lang['Delete_disallow'],
+	'L_DELETE_DISALLOW' => $lang['Delete_disallow_title'],
+	'L_DELETE_EXPLAIN' => $lang['Delete_disallow_explain'],
+	'L_ADD' => $lang['Add_disallow'],
+	'L_ADD_DISALLOW' => $lang['Add_disallow_title'],
+	'L_ADD_EXPLAIN' => $lang['Add_disallow_explain'],
+	'L_USERNAME' => $lang['Username']
+	)
 );
 
 $template->pparse('body');

@@ -25,7 +25,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$confirm = ($_POST['confirm'] ? true : 0);
+$confirm = ($_POST['confirm'] ? true : false);
 
 if (isset($_POST['cancel']))
 {

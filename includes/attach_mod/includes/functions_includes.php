@@ -40,9 +40,9 @@ function attach_setup_viewtopic_auth(&$order_sql, &$sql)
 */
 function attach_build_auth_levels($is_auth, &$s_auth_can)
 {
-	global $lang, $attach_config, $forum_id;
+	global $lang, $config, $forum_id;
 
-	if (intval($attach_config['disable_mod']))
+	if (intval($config['disable_attachments_mod']))
 	{
 		return;
 	}
@@ -118,7 +118,7 @@ function physical_filename_already_stored($filename)
 */
 function get_attachments_from_pm($privmsgs_id_array)
 {
-	global $db, $attach_config;
+	global $db, $config;
 
 	$attachments = array();
 
@@ -142,7 +142,7 @@ function get_attachments_from_pm($privmsgs_id_array)
 		return $attachments;
 	}
 
-	$display_order = (intval($attach_config['display_order']) == 0) ? 'DESC' : 'ASC';
+	$display_order = (intval($config['display_order']) == 0) ? 'DESC' : 'ASC';
 
 	$sql = 'SELECT a.privmsgs_id, d.*
 		FROM ' . ATTACHMENTS_TABLE . ' a, ' . ATTACHMENTS_DESC_TABLE . " d

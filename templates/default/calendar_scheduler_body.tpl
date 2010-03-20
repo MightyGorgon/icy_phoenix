@@ -57,9 +57,9 @@
 </form>
 
 <br />
-<div style="float:right;"><span class="pagination">{PAGINATION}</span></div>
+<div style="float: right;"><span class="pagination">{PAGINATION}</span></div>
 
 <br />
-<div style="float:right;">{JUMPBOX}</div>
+<div style="float: right;">{JUMPBOX}</div>
 
 <!-- INCLUDE overall_footer.tpl -->

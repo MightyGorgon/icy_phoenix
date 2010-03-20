@@ -36,6 +36,9 @@ $upload_dir = POSTED_IMAGES_PATH;
 $filetypes = 'jpg,gif,png';
 $maxsize = (1000 * 1024);
 
+// We need to keep it here... so also error messages will initialize it correctly!
+$gen_simple_header = true;
+
 if(isset($_FILES['userfile']))
 {
 	$filename = strtolower($_FILES['userfile']['name']);
@@ -155,7 +158,6 @@ else
 
 }
 
-$gen_simple_header = true;
 full_page_generation($template_to_parse, $lang['Upload_Image_Local'], '', '');
 
 ?>

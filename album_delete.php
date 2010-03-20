@@ -32,15 +32,8 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 // Check the request
 // ------------------------------------
 
-if(isset($_GET['pic_id']))
-{
-	$pic_id = intval($_GET['pic_id']);
-}
-elseif(isset($_POST['pic_id']))
-{
-	$pic_id = intval($_POST['pic_id']);
-}
-else
+$pic_id = request_var('pic_id', 0);
+if ($pic_id <= 0)
 {
 	message_die(GENERAL_ERROR, 'No pics specified');
 }

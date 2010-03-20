@@ -275,8 +275,8 @@ function cash_create_log($type, $action, $message = '')
 	$action = implode(CASH_LOG_ACTION_DELIMETER,$action);
 	$current_time = time();
 	$sql = "INSERT INTO " . CASH_LOGS_TABLE . "
-			(log_time,log_type,log_action,log_text)
-			VALUES(" . $current_time . ", " . $type . ", '" . str_replace("'","''",$action) . "', '" . $message . "')";
+			(log_time, log_type, log_action, log_text)
+			VALUES(" . $current_time . ", " . $type . ", '" . $db->sql_escape($action) . "', '" . $db->sql_escape($message) . "')";
 	$db->sql_query($sql);
 }
 
@@ -286,10 +286,10 @@ function cash_clause($clause, $action)
 	if (preversion('4.0.5'))
 	{
 		// needs to survive the eval();
-		$clause = quoteslash($clause,'"');
-		$action = quoteslash($action,'"');
-		$action = explode(CASH_LOG_ACTION_DELIMETER,$action);
-		eval('$text = sprintf("' . $clause . '","' . implode('","',$action) . '");');
+		$clause = quoteslash($clause, '"');
+		$action = quoteslash($action, '"');
+		$action = explode(CASH_LOG_ACTION_DELIMETER, $action);
+		eval('$text = sprintf("' . $clause . '","' . implode('","', $action) . '");');
 	}
 	else
 	{

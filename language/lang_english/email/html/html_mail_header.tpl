@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<title>{SITENAME}</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
 		<style type="text/css">
 			body { background-color: #ffffff; font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; scrollbar-base-color: #224488; scrollbar-arrow-color: #DD4040; }

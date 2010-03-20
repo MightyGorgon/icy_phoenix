@@ -122,11 +122,11 @@ function is_forum_authed($auth_cache, $check_forum_id)
 */
 function attach_init_ftp($mode = false)
 {
-	global $lang, $attach_config;
+	global $lang, $config;
 
-	$server = (trim($attach_config['ftp_server']) == '') ? 'localhost' : trim($attach_config['ftp_server']);
+	$server = (trim($config['ftp_server']) == '') ? 'localhost' : trim($config['ftp_server']);
 
-	$ftp_path = ($mode == MODE_THUMBNAIL) ? trim($attach_config['ftp_path']) . '/' . THUMB_DIR : trim($attach_config['ftp_path']);
+	$ftp_path = ($mode == MODE_THUMBNAIL) ? trim($config['ftp_path']) . '/' . THUMB_DIR : trim($config['ftp_path']);
 
 	$conn_id = @ftp_connect($server);
 
@@ -135,14 +135,14 @@ function attach_init_ftp($mode = false)
 		message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_connect'], $server));
 	}
 
-	$login_result = @ftp_login($conn_id, $attach_config['ftp_user'], $attach_config['ftp_pass']);
+	$login_result = @ftp_login($conn_id, $config['ftp_user'], $config['ftp_pass']);
 
 	if (!$login_result)
 	{
-		message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_login'], $attach_config['ftp_user']));
+		message_die(GENERAL_ERROR, sprintf($lang['Ftp_error_login'], $config['ftp_user']));
 	}
 
-	if (!@ftp_pasv($conn_id, intval($attach_config['ftp_pasv_mode'])))
+	if (!@ftp_pasv($conn_id, intval($config['ftp_pasv_mode'])))
 	{
 		message_die(GENERAL_ERROR, $lang['Ftp_error_pasv_mode']);
 	}
@@ -204,7 +204,7 @@ function amod_realpath($path)
 */
 function get_attachments_from_post($post_id_array)
 {
-	global $db, $attach_config;
+	global $db, $config;
 
 	$attachments = array();
 
@@ -228,7 +228,7 @@ function get_attachments_from_post($post_id_array)
 		return $attachments;
 	}
 
-	$display_order = (intval($attach_config['display_order']) == 0) ? 'DESC' : 'ASC';
+	$display_order = (intval($config['display_order']) == 0) ? 'DESC' : 'ASC';
 
 	$sql = 'SELECT a.post_id, d.*
 		FROM ' . ATTACHMENTS_TABLE . ' a, ' . ATTACHMENTS_DESC_TABLE . " d

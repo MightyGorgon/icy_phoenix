@@ -25,6 +25,7 @@ if(!function_exists('cms_block_links'))
 	function cms_block_links()
 	{
 		global $db, $config, $template, $lang, $block_id, $cms_config_vars;
+		global $links_config;
 
 		$template->_tpldata['links_row.'] = array();
 		$template->_tpldata['links_own1.'] = array();
@@ -32,23 +33,11 @@ if(!function_exists('cms_block_links'))
 		$template->_tpldata['links_scroll.'] = array();
 		$template->_tpldata['links_static.'] = array();
 
-		// Grab data
-		if(!$link_config)
+		if (empty($links_config))
 		{
-			$sql = "SELECT * FROM ". LINK_CONFIG_TABLE;
-			$result = $db->sql_query($sql, 0, 'links_config_');
-
-			while($row = $db->sql_fetchrow($result))
-			{
-				$link_config[$row['config_name']] = $row['config_value'];
-			}
-			$db->sql_freeresult($result);
+			include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
+			$links_config = get_links_config(true);
 		}
-		$link_self_img = $link_config['site_logo'];
-		$site_logo_height = $link_config['height'];
-		$site_logo_width = $link_config['width'];
-		$display_interval = $link_config['display_interval'];
-		$display_logo_num = $link_config['display_logo_num'];
 
 		if($cms_config_vars['md_links_style'][$block_id])
 		{
@@ -72,12 +61,12 @@ if(!function_exists('cms_block_links'))
 			$template->assign_block_vars('links_code','');
 		}
 
-		$template->assign_block_vars($style_row,"");
+		$template->assign_block_vars($style_row, '');
 
 		$template->assign_vars(array(
-			'SITE_LOGO_WIDTH' => $site_logo_width,
-			'SITE_LOGO_HEIGHT' => $site_logo_height,
-			'U_SITE_LOGO' => $link_config['site_logo']
+			'SITE_LOGO_WIDTH' => $links_config['width'],
+			'SITE_LOGO_HEIGHT' =>$links_config['height'],
+			'U_SITE_LOGO' => $links_config['site_logo']
 			)
 		);
 
@@ -86,7 +75,7 @@ if(!function_exists('cms_block_links'))
 			WHERE link_active = 1
 			AND link_logo_src <> ''
 			ORDER BY RAND()
-			LIMIT ". $display_logo_num;
+			LIMIT " . $links_config['display_logo_num'];
 
 		// If failed just ignore
 		$db->sql_return_on_error(true);

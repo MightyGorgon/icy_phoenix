@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
@@ -36,17 +35,18 @@ if ($config['cash_adminnavbar'])
 $current_time = time();
 
 $ar_time = array(
-	"all" => "",
-	"day" => "(log_time > " . ($current_time - 86400) . ")",
-	"week" => "(log_time > " . ($current_time - 604800) . ")",
-	"month" => "(log_time > " . ($current_time - 2592000) . ")",
-	"year" => "(log_time > " . ($current_time - 31536000) . ")"
+	'all' => '',
+	'day' => '(log_time > ' . ($current_time - 86400) . ')',
+	'week' => '(log_time > ' . ($current_time - 604800) . ')',
+	'month' => '(log_time > ' . ($current_time - 2592000) . ')',
+	'year' => '(log_time > ' . ($current_time - 31536000) . ')'
 );
 
 function lt($const)
 {
 	return "log_type = $const";
 }
+
 $action_types = array(
 	CASH_LOG_DONATE => 'user',
 	CASH_LOG_ADMIN_MODEDIT => 'admin',
@@ -63,25 +63,22 @@ while (list($type,$user) = each ($action_types))
 }
 
 $ar_action = array(
-	'all' => "",
-	'user' => "(" . implode(" OR ",$action_users['user']) . ")",
-	'admin' => "(" . implode(" OR ",$action_users['admin']) . ")"
+	'all' => '',
+	'user' => '(' . implode(' OR ', $action_users['user']) . ')',
+	'admin' => '(' . implode(' OR ', $action_users['admin']) . ')'
 );
 
 $ar_count = array(
-	"a" => 10,
-	"b" => 25,
-	"c" => 50,
-	"d" => 100
+	'a' => 10,
+	'b' => 25,
+	'c' => 50,
+	'd' => 100
 );
 
-if (isset($_GET['delete']) &&
-	 (($_GET['delete'] == "all") ||
-	   ($_GET['delete'] == "admin") ||
-	   ($_GET['delete'] == "user")))
+if (isset($_GET['delete']) && (($_GET['delete'] == 'all') || ($_GET['delete'] == 'admin') || ($_GET['delete'] == 'user')))
 {
 	$deleteclause = $ar_action[$_GET['delete']];
-	if ($deleteclause != "")
+	if ($deleteclause != '')
 	{
 		$deleteclause = " WHERE " . $deleteclause;
 	}
@@ -130,10 +127,10 @@ if ($stime != 'all')
 $numactionfilters = sizeof($ar_action);
 $numtimefilters = sizeof($ar_time);
 
-$sql_clause = "";
+$sql_clause = '';
 if (sizeof($clause) != 0)
 {
-	$sql_clause = "WHERE " . implode(" AND ", $clause);
+	$sql_clause = 'WHERE ' . implode(' AND ', $clause);
 }
 
 $sql = "SELECT count(log_id) AS log_items
@@ -143,7 +140,7 @@ $result = $db->sql_query($sql);
 
 if (!($row = $db->sql_fetchrow($result)))
 {
-	message_die(CRITICAL_ERROR, "Could not obtain log count", "", __LINE__, __FILE__, $sql);
+	message_die(CRITICAL_ERROR, 'Could not obtain log count', '', __LINE__, __FILE__, $sql);
 }
 
 $total = $row['log_items'];

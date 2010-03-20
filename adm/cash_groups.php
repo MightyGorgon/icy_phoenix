@@ -15,14 +15,13 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_CASHMOD', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 if (empty($config['plugins']['cash']['enabled']))
 {
@@ -40,7 +39,7 @@ if (!$cash->currency_count())
 	message_die(GENERAL_MESSAGE, $lang['Insufficient_currencies']);
 }
 
-$mode = isset($_POST['mode']) ? $_POST['mode'] : 'main';
+$mode = request_var('mode', 'main');
 
 switch ($mode)
 {
@@ -49,14 +48,7 @@ switch ($mode)
 // ================= Update board mode (group add/remove/set) ================================
 //
 	case 'set':
-		if (isset($_POST['group_type']) &&
-			 isset($_POST['group_id']) &&
-			 is_numeric($_POST['group_type']) &&
-			 is_numeric($_POST['group_id']) &&
-			 isset($_POST['update_type']) &&
-			 isset($_POST['update_amount']) &&
-			 is_array($_POST['update_type']) &&
-			 is_array($_POST['update_amount']))
+		if (isset($_POST['group_type']) && isset($_POST['group_id']) && is_numeric($_POST['group_type']) && is_numeric($_POST['group_id']) && isset($_POST['update_type']) && isset($_POST['update_amount']) && is_array($_POST['update_type']) && is_array($_POST['update_amount']))
 		{
 			$update_clause = array();
 			while ($c_cur = &$cash->currency_next($cm_i))
@@ -160,10 +152,7 @@ switch ($mode)
 // ================= Update board mode (submitted form) ================================
 //
 	case 'update':
-		if (isset($_POST['group_type']) &&
-			 isset($_POST['group_id']) &&
-			 is_numeric($_POST['group_type']) &&
-			 is_numeric($_POST['group_id']))
+		if (isset($_POST['group_type']) && isset($_POST['group_id']) && is_numeric($_POST['group_type']) && is_numeric($_POST['group_id']))
 		{
 			$group_type = intval($_POST['group_type']);
 			$group_id = intval($_POST['group_id']);
@@ -180,9 +169,7 @@ switch ($mode)
 			{
 				$delete_this = true;
 				$varname = 'cash_' . $c_cur->id();
-				if (isset($_POST['submit']) &&
-					 isset($_POST[$varname]) &&
-					 is_array($_POST[$varname]))
+				if (isset($_POST['submit']) && isset($_POST[$varname]) && is_array($_POST[$varname]))
 				{
 					$updates = array();
 					while (list($key,$type) = each ($update_set))
@@ -247,12 +234,7 @@ switch ($mode)
 // ================= Edit board mode (change form) ================================
 //
 	case 'edit':
-		if (isset($_POST['group_type']) &&
-			 isset($_POST['group_id']) &&
-			 is_numeric($_POST['group_type']) &&
-			 is_numeric($_POST['group_id']) &&
-			 isset($_POST['group_name']) &&
-			 isset($_POST['group_description']))
+		if (isset($_POST['group_type']) && isset($_POST['group_id']) && is_numeric($_POST['group_type']) && is_numeric($_POST['group_id']) && isset($_POST['group_name']) && isset($_POST['group_description']))
 		{
 			// so we're editing one of the cash groups at a specific currency.
 			$group_type = intval($_POST['group_type']);
@@ -372,7 +354,6 @@ switch ($mode)
 						)
 					);
 				}
-
 
 			}
 

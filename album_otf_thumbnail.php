@@ -25,30 +25,18 @@ require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
 // ------------------------------------
 // Check the request
 // ------------------------------------
-if(isset($_GET['pic_id']))
+$pic_id = request_var('pic_id', '');
+if (empty($pic_id))
 {
-	$pic_id = $_GET['pic_id'];
-}
-elseif(isset($_POST['pic_id']))
-{
-	$pic_id = $_POST['pic_id'];
-}
-else
-{
-	message_die(GENERAL_MESSAGE, 'No pics specified');
+	die('No pics specified');
+	//message_die(GENERAL_MESSAGE, 'No pics specified');
 }
 
-if(isset($_GET['pic_cat']))
+$pic_cat = request_var('pic_cat', '');
+if (empty($pic_cat))
 {
-	$pic_cat = $_GET['pic_cat'];
-}
-elseif(isset($_POST['pic_cat']))
-{
-	$pic_cat = $_POST['pic_cat'];
-}
-else
-{
-	message_die(GENERAL_MESSAGE, 'No cat specified');
+	die('No cat specified');
+	//message_die(GENERAL_MESSAGE, 'No cat specified');
 }
 
 $pic_filename = $pic_id;

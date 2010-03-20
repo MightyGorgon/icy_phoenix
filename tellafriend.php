@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('CT_SECLEVEL', 'MEDIUM');
 $ct_ignoregvar = array('');
@@ -22,10 +21,10 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$topic_title = request_var('topic_title', '');
+$topic_title = request_var('topic_title', '', true);
 $topic_id = request_var('topic_id', 0);
-$friendname = request_var('friendname', '');
-$message = request_var('message', '');
+$friendname = request_var('friendname', '', true);
+$message = request_var('message', '', true);
 $PHP_SELF = $_SERVER['SCRIPT_NAME'];
 
 if (!$userdata['session_logged_in'])
@@ -42,7 +41,7 @@ else
 	$topic_link = create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id;
 }
 
-$mail_body = str_replace("{TOPIC}", trim(stripslashes(htmlspecialchars_decode($topic_title))), $lang['TELL_FRIEND_BODY']);
+$mail_body = str_replace("{TOPIC}", htmlspecialchars_decode($topic_title), $lang['TELL_FRIEND_BODY']);
 $mail_body = str_replace("{LINK}", $topic_link, $mail_body);
 $mail_body = str_replace("{SITENAME}", $config['sitename'], $mail_body);
 
@@ -56,7 +55,7 @@ $template->assign_vars(array(
 
 	'L_TELL_FRIEND_BODY' => $mail_body,
 
-	'TOPIC_TITLE' => trim(stripslashes($topic_title)),
+	'TOPIC_TITLE' => $topic_title,
 	'TOPIC_ID' => $topic_id,
 	'TOPIC_LINK' => $topic_link,
 	)
@@ -67,12 +66,16 @@ if (isset($_POST['submit']))
 {
 	$error = false;
 
-	if (!empty($_POST['friendemail']) && (strpos($_POST['friendemail'], "@") > 0))
+	$topic_title = request_var('topic_title', '', true);
+	$message = request_var('message', '', true);
+	$friendemail = request_var('friendemail', '', true);
+	$friendname = request_var('friendname', '', true);
+
+	if (!empty($friendemail) && (strpos($friendemail, '@') > 0))
 	{
-		$friendemail = trim(stripslashes($_POST['friendemail']));
-		if (!$_POST['friendname'])
+		if (empty($friendname))
 		{
-			$friendname=substr($friendemail, 0, strpos($_POST['friendemail'], "@"));
+			$friendname = substr($friendemail, 0, strpos($friendemail, '@'));
 		}
 	}
 	else
@@ -83,12 +86,8 @@ if (isset($_POST['submit']))
 
 	if (!$error)
 	{
-		$topic_title = stripslashes($_POST['topic_title']);
-		$message = stripslashes($_POST['message']);
 		if ($config['html_email'])
 		{
-			$topic_title = htmlspecialchars($topic_title);
-			$message = htmlspecialchars($message);
 			$message = str_replace("\n", '<br />', $message);
 			$message = str_replace($topic_link, ('<a href="' . $topic_link . '">' . $topic_link . '</a>'), $message);
 		}
@@ -106,7 +105,7 @@ if (isset($_POST['submit']))
 		$emailer->from($userdata['user_email']);
 		$emailer->replyto($userdata['user_email']);
 		$emailer->extra_headers($email_headers);
-		$emailer->set_subject(trim(stripslashes($topic_title)));
+		$emailer->set_subject($topic_title);
 
 		$emailer->assign_vars(array(
 			'SITENAME' => $config['sitename'],

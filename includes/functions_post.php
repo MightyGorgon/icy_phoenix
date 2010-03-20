@@ -37,9 +37,8 @@ function prepare_message($message, $html_on, $bbcode_on, $smile_on)
 	if ($html_on)
 	{
 		// If HTML is on, we try to make it safe
-		// This approach is quite agressive and anything that does not look like a valid tag
-		// is going to get converted to HTML entities
-		$message = stripslashes($message);
+		// This approach is quite agressive and anything that does not look like a valid tag is going to get converted to HTML entities
+		$message = $message;
 		$html_match = '#<[^\w<]*(\w+)((?:"[^"]*"|\'[^\']*\'|[^<>\'"])+)?>#';
 		$matches = array();
 
@@ -55,8 +54,9 @@ function prepare_message($message, $html_on, $bbcode_on, $smile_on)
 			//$message .= preg_replace($html_entities_match, $html_entities_replace, $part) . $tag;
 		}
 
-		$message = addslashes($message);
-		$message = str_replace('&quot;', '\&quot;', $message);
+		$message = $message;
+		// Mighty Gorgon: This should not be needed any more...
+		//$message = str_replace('&quot;', '\&quot;', $message);
 	}
 	else
 	{
@@ -104,16 +104,16 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	// Check subject
 	if (!empty($subject))
 	{
-		$subject = htmlspecialchars(trim($subject));
+		$subject = trim($subject);
 	}
 	elseif ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 	{
 		$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_subject'] : $lang['Empty_subject'];
 	}
 	// Check Topic Desciption
-	if ( !empty($topic_desc) )
+	if (!empty($topic_desc))
 	{
-		$topic_desc = htmlspecialchars(trim($topic_desc));
+		$topic_desc = trim($topic_desc);
 	}
 
 	// Check message
@@ -204,7 +204,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 
 		if (!empty($poll_title))
 		{
-			$poll_title = htmlspecialchars(trim($poll_title));
+			$poll_title = trim($poll_title);
 		}
 
 		if(!empty($poll_options))
@@ -215,7 +215,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 				$option_text = trim($option_text);
 				if (!empty($option_text))
 				{
-					$temp_option_text[intval($option_id)] = htmlspecialchars($option_text);
+					$temp_option_text[intval($option_id)] = $option_text;
 				}
 			}
 			$option_text = $temp_option_text;
@@ -251,11 +251,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	global $config, $lang, $db;
 	global $userdata, $user_ip, $post_data;
 	// CrackerTracker v5.x
-	global $ctracker_config;
-
-	if ((($mode == 'newtopic') || ($mode == 'reply')) && (($ctracker_config->settings['spammer_blockmode'] > 0) || ($ctracker_config->settings['spam_attack_boost'] == 1)) && ($userdata['user_level'] != ANONYMOUS))
+	if ((($mode == 'newtopic') || ($mode == 'reply')) && (($config['ctracker_spammer_blockmode'] > 0) || ($config['ctracker_spam_attack_boost'] == 1)) && ($userdata['user_level'] != ANONYMOUS))
 	{
-		include_once(IP_ROOT_PATH . 'ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 		$login_functions = new ct_userfunctions();
 		$login_functions->handle_postings();
 		unset($login_functions);
@@ -324,7 +322,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 		// Event Registration - END
 
-		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_tags, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_reg, topic_vote, topic_show_portal) VALUES ('$post_subject', '$topic_desc', " . $db->sql_validate_value($topic_tags) . ", " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_reg, $topic_vote, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '$post_subject', news_id = $news_id, topic_desc = '" . $topic_desc . "', topic_tags = " . $db->sql_validate_value($topic_tags) . ", topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration, topic_reg = $topic_reg" . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . ", topic_show_portal = $topic_show_portal
+		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_tags, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_reg, topic_vote, topic_show_portal) VALUES ('" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($topic_desc) . "', " . $db->sql_validate_value($topic_tags) . ", " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_reg, $topic_vote, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '" . $db->sql_escape($post_subject) . "', news_id = $news_id, topic_desc = '" . $db->sql_escape($topic_desc) . "', topic_tags = " . $db->sql_validate_value($topic_tags) . ", topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration, topic_reg = $topic_reg" . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . ", topic_show_portal = $topic_show_portal
 		WHERE topic_id = $topic_id";
 
 		$db->sql_query($sql);
@@ -410,7 +408,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	*/
 	// Mighty Gorgon - This must be tested! - END
 
-	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_autolinks_acronyms, enable_sig) VALUES (" . $topic_id . ", " . $forum_id . ", " . $userdata['user_id'] . ", '" . $post_username . "', '" . $post_subject . "', '" . $post_message . "', " . $current_time . ", '" . $user_ip . "', " . $bbcode_on . ", " . $html_on . ", " . $smilies_on . ", " . $acro_auto_on . ", " . $attach_sig . ")" : "UPDATE " . POSTS_TABLE . " SET post_username = '" . $post_username . "', post_text = '" . $post_message . "', post_text_compiled = '', post_subject = '" . $post_subject . "', enable_bbcode = " . $bbcode_on . ", enable_html = " . $html_on . ", enable_smilies = " . $smilies_on . ", enable_autolinks_acronyms = " . $acro_auto_on . ", enable_sig = " . $attach_sig . " " . $edited_sql . " WHERE post_id = " . $post_id;
+	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_autolinks_acronyms, enable_sig) VALUES (" . $topic_id . ", " . $forum_id . ", " . $userdata['user_id'] . ", '" . $db->sql_escape($post_username) . "', '" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($post_message) . "', " . $current_time . ", '" . $user_ip . "', " . $bbcode_on . ", " . $html_on . ", " . $smilies_on . ", " . $acro_auto_on . ", " . $attach_sig . ")" : "UPDATE " . POSTS_TABLE . " SET post_username = '" . $db->sql_escape($post_username) . "', post_text = '" . $db->sql_escape($post_message) . "', post_text_compiled = '', post_subject = '" . $db->sql_escape($post_subject) . "', enable_bbcode = " . $bbcode_on . ", enable_html = " . $html_on . ", enable_smilies = " . $smilies_on . ", enable_autolinks_acronyms = " . $acro_auto_on . ", enable_sig = " . $attach_sig . " " . $edited_sql . " WHERE post_id = " . $post_id;
 	$db->sql_transaction('begin');
 	$db->sql_query($sql);
 
@@ -422,9 +420,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	if($config['upi2db_on'])
 	{
-		$mark_edit = ($userdata['user_level'] == ADMIN || $userdata['user_level'] == MOD) ? $mark_edit : true;
+		$mark_edit = (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD)) ? $mark_edit : true;
 
-		if(($mode != 'editpost') || ($mode == 'editpost' && $post_data['last_post'] && $config['upi2db_last_edit_as_new'] && $mark_edit) || ($mode == 'editpost' && !$post_data['last_post'] && $config['upi2db_edit_as_new'] && $mark_edit) || ($mode == 'reply'))
+		if(($mode != 'editpost') || (($mode == 'editpost') && $post_data['last_post'] && $config['upi2db_last_edit_as_new'] && $mark_edit) || (($mode == 'editpost') && !$post_data['last_post'] && $config['upi2db_edit_as_new'] && $mark_edit) || ($mode == 'reply'))
 		{
 			$sql = "SELECT post_id FROM " . UPI2DB_LAST_POSTS_TABLE . "
 				WHERE post_id = " . $post_id;
@@ -457,7 +455,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	}
 //<!-- END Unread Post Information to Database Mod -->
 
-	add_search_words('single', $post_id, stripslashes($post_message), stripslashes($post_subject));
+	add_search_words('single', $post_id, $post_message, $post_subject);
 
 	// DOWNLOADS - BEGIN
 	if (!empty($config['plugins']['downloads']['enabled']))
@@ -496,7 +494,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	// Add poll
 	if ((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll'])) && !empty($poll_title) && (sizeof($poll_options) >= 2))
 	{
-		$sql = (!$post_data['has_poll']) ? "INSERT INTO " . VOTE_DESC_TABLE . " (topic_id, vote_text, vote_start, vote_length) VALUES ($topic_id, '$poll_title', $current_time, " . ($poll_length * 86400) . ")" : "UPDATE " . VOTE_DESC_TABLE . " SET vote_text = '$poll_title', vote_length = " . ($poll_length * 86400) . " WHERE topic_id = $topic_id";
+		$sql = (!$post_data['has_poll']) ? "INSERT INTO " . VOTE_DESC_TABLE . " (topic_id, vote_text, vote_start, vote_length) VALUES ($topic_id, '" . $db->sql_escape($poll_title) . "', $current_time, " . ($poll_length * 86400) . ")" : "UPDATE " . VOTE_DESC_TABLE . " SET vote_text = '" . $db->sql_escape($poll_title) . "', vote_length = " . ($poll_length * 86400) . " WHERE topic_id = $topic_id";
 		$db->sql_query($sql);
 
 		$delete_option_sql = '';
@@ -524,17 +522,15 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			$poll_id = $db->sql_nextid();
 		}
 
-		@reset($poll_options);
-
 		$poll_option_id = 1;
+		@reset($poll_options);
 		while (list($option_id, $option_text) = each($poll_options))
 		{
 			if (!empty($option_text))
 			{
-				$option_text = str_replace("\'", "''", htmlspecialchars($option_text));
 				$poll_result = (($mode == 'editpost') && isset($old_poll_result[$option_id])) ? $old_poll_result[$option_id] : 0;
 
-				$sql = (($mode != 'editpost') || !isset($old_poll_result[$option_id])) ? "INSERT INTO " . VOTE_RESULTS_TABLE . " (vote_id, vote_option_id, vote_option_text, vote_result) VALUES ($poll_id, $poll_option_id, '$option_text', $poll_result)" : "UPDATE " . VOTE_RESULTS_TABLE . " SET vote_option_text = '$option_text', vote_result = $poll_result WHERE vote_option_id = $option_id AND vote_id = $poll_id";
+				$sql = (($mode != 'editpost') || !isset($old_poll_result[$option_id])) ? "INSERT INTO " . VOTE_RESULTS_TABLE . " (vote_id, vote_option_id, vote_option_text, vote_result) VALUES ($poll_id, $poll_option_id, '" . $db->sql_escape($option_text) . "', $poll_result)" : "UPDATE " . VOTE_RESULTS_TABLE . " SET vote_option_text = '" . $db->sql_escape($option_text) . "', vote_result = $poll_result WHERE vote_option_id = $option_id AND vote_id = $poll_id";
 				$db->sql_query($sql);
 
 				$poll_option_id++;
@@ -548,6 +544,15 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 					AND vote_id = $poll_id";
 			$db->sql_query($sql);
 		}
+	}
+
+	// ReSync last topic title if needed
+	if (($mode == 'editpost') && $post_data['first_post'])
+	{
+		$sql = "UPDATE " . FORUMS_TABLE . " f
+			SET f.forum_last_post_subject = '" . $db->sql_escape($post_subject) . "'
+			WHERE f.forum_last_topic_id = " . $topic_id;
+		$result = $db->sql_query($sql);
 	}
 
 	$db->sql_transaction('commit');
@@ -578,11 +583,11 @@ function save_draft($draft_id, $user_id, $forum_id, $topic_id, $subject, $messag
 
 	if ($draft_id == 0)
 	{
-		$sql = "INSERT INTO " . DRAFTS_TABLE . " (user_id, forum_id, topic_id, save_time, draft_subject, draft_message) VALUES ('$user_id', '$forum_id', '$topic_id', '" . time() . "', '$subject', '$message')";
+		$sql = "INSERT INTO " . DRAFTS_TABLE . " (user_id, forum_id, topic_id, save_time, draft_subject, draft_message) VALUES ('$user_id', '$forum_id', '$topic_id', '" . time() . "', '" . $db->sql_escape($subject) . "', '" . $db->sql_escape($message) . "')";
 	}
 	else
 	{
-		$sql = "UPDATE " . DRAFTS_TABLE . " SET user_id = '$user_id', forum_id = '$forum_id', topic_id = '$topic_id', save_time =  '" . time() . "', draft_subject = '$subject', draft_message = '$message' WHERE draft_id = '" . $draft_id . "'";
+		$sql = "UPDATE " . DRAFTS_TABLE . " SET user_id = '$user_id', forum_id = '$forum_id', topic_id = '$topic_id', save_time =  '" . time() . "', draft_subject = '" . $db->sql_escape($subject) . "', draft_message = '" . $db->sql_escape($message) . "' WHERE draft_id = '" . $draft_id . "'";
 	}
 	$db->sql_query($sql);
 
@@ -957,7 +962,7 @@ function get_userdata_notifications($user, $force_str = false)
 	$sql = "SELECT *
 			FROM " . USERS_TABLE . "
 			WHERE ";
-	$sql .= ((is_integer($user)) ? ("user_id = " . $user) : "username = '" . str_replace("\'", "''", $user) . "'") . " AND user_id <> " . ANONYMOUS;
+	$sql .= ((is_integer($user)) ? ("user_id = " . $user) : "username = '" . $db->sql_escape($user) . "'") . " AND user_id <> " . ANONYMOUS;
 	$result = $db->sql_query($sql);
 	$return_value = ($row = $db->sql_fetchrow($result)) ? $row : false;
 	$db->sql_freeresult($result);
@@ -1054,7 +1059,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 						$bbcode->allow_html = ($config['allow_html'] ? $config['allow_html'] : false);
 						$bbcode->allow_smilies = ($config['allow_smilies'] ? $config['allow_smilies'] : false);
 						$post_text = $bbcode->parse($post_text);
-						$post_text = stripslashes($post_text);
+						//$post_text = stripslashes($post_text);
 					}
 					else
 					{
@@ -1173,7 +1178,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 						$bbcode->allow_html = ($config['allow_html'] ? $config['allow_html'] : false);
 						$bbcode->allow_smilies = ($config['allow_smilies'] ? $config['allow_smilies'] : false);
 						$post_text = $bbcode->parse($post_text);
-						$post_text = stripslashes($post_text);
+						//$post_text = stripslashes($post_text);
 					}
 					else
 					{
@@ -1326,7 +1331,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 						$bbcode->allow_html = ($config['allow_html'] ? $config['allow_html'] : false);
 						$bbcode->allow_smilies = ($config['allow_smilies'] ? $config['allow_smilies'] : false);
 						$post_text = $bbcode->parse($post_text);
-						$post_text = stripslashes($post_text);
+						$post_text = $post_text;
 					}
 					else
 					{
@@ -1426,19 +1431,14 @@ function generate_smilies($mode)
 	global $db, $cache, $config, $template, $images, $theme, $lang, $userdata;
 	global $user_ip, $session_length, $starttime, $gen_simple_header;
 
-	if (defined('IN_PA_POSTING'))
-	{
-		global $pafiledb_template;
-	}
-
 	$inline_columns = $config['smilie_columns'];
 	$inline_rows = $config['smilie_rows'];
 	$window_columns = $config['smilie_window_columns'];
 	$window_rows = $config['smilie_window_rows'];
 	$smilies_per_page = $window_columns * $window_rows;
-	$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+	$start = request_var('start', 0);
 	$start = ($start < 0) ? 0 : $start;
-	$smilies_per_page = (isset($_GET['smilies_per_page'])) ? intval($_GET['smilies_per_page']) : (isset($_POST['smilies_per_page'])) ? intval($_POST['smilies_per_page']) : $smilies_per_page;
+	$smilies_per_page = request_var('smilies_per_page', $smilies_per_page);
 
 	if ($mode == 'window')
 	{
@@ -1454,14 +1454,7 @@ function generate_smilies($mode)
 		$meta_content['keywords'] = '';
 		page_header($meta_content['page_title'], true);
 
-		if (defined('IN_PA_POSTING'))
-		{
-			$pafiledb_template->set_filenames(array('smiliesbody' => 'posting_smilies.tpl'));
-		}
-		else
-		{
-			$template->set_filenames(array('smiliesbody' => 'posting_smilies.tpl'));
-		}
+		$template->set_filenames(array('smiliesbody' => 'posting_smilies.tpl'));
 	}
 
 	// Smilies Order Replace
@@ -1517,28 +1510,14 @@ function generate_smilies($mode)
 			{
 				if (!$col)
 				{
-					if (defined('IN_PA_POSTING'))
-					{
-						$pafiledb_template->assign_block_vars('smilies_row', array());
-					}
-					else
-					{
-						$template->assign_block_vars('smilies_row', array());
-					}
+					$template->assign_block_vars('smilies_row', array());
 				}
-				$parsing_template = array(
+				$template->assign_block_vars('smilies_row.smilies_col', array(
 					'SMILEY_CODE' => $rowset[$i]['code'],
 					'SMILEY_IMG' => 'http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $rowset[$i]['smile_url'],
 					'SMILEY_DESC' => $rowset[$i]['emoticon']
+					)
 				);
-				if (defined('IN_PA_POSTING'))
-				{
-					$pafiledb_template->assign_block_vars('smilies_row.smilies_col', $parsing_template);
-				}
-				else
-				{
-					$template->assign_block_vars('smilies_row.smilies_col', $parsing_template);
-				}
 
 				$s_colspan = max($s_colspan, $col + 1);
 
@@ -1559,20 +1538,12 @@ function generate_smilies($mode)
 
 			if ($mode == 'inline' && $num_smilies > $inline_rows * $inline_columns)
 			{
-				$parsing_template = array(
+				$template->assign_vars(array(
 					'L_MORE_SMILIES' => $lang['More_emoticons'],
 					'U_MORE_SMILIES' => append_sid('posting.' . PHP_EXT . '?mode=smilies')
+					)
 				);
-				if (defined('IN_PA_POSTING'))
-				{
-					$pafiledb_template->assign_block_vars('switch_smilies_extra', array());
-					$pafiledb_template->assign_vars($parsing_template);
-				}
-				else
-				{
-					$template->assign_block_vars('switch_smilies_extra', array());
-					$template->assign_vars($parsing_template);
-				}
+				$template->assign_block_vars('switch_smilies_extra', array());
 			}
 
 			$pagination = generate_pagination('posting.' . PHP_EXT . '?mode=smilies', $num_smilies, $per_page, $start, false);
@@ -1588,7 +1559,7 @@ function generate_smilies($mode)
 			$select_smileys_pp .= '<option value="5000"' . (($smilies_per_page == 5000) ? ' selected="selected"' : '') . '>5000</option>';
 			$select_smileys_pp .= '</select>';
 
-			$parsing_template = array(
+			$template->assign_vars(array(
 				'L_EMOTICONS' => $lang['Emoticons'],
 				'L_CLOSE_WINDOW' => $lang['Close_window'],
 				'L_SMILEYS_PER_PAGE' => $lang['Smileys_Per_Page'],
@@ -1600,28 +1571,14 @@ function generate_smilies($mode)
 				'SELECT_SMILEYS_PP' => $select_smileys_pp,
 				'PAGINATION' => $pagination,
 				'S_SMILIES_COLSPAN' => $s_colspan
+				)
 			);
-			if (defined('IN_PA_POSTING'))
-			{
-				$pafiledb_template->assign_vars($parsing_template);
-			}
-			else
-			{
-				$template->assign_vars($parsing_template);
-			}
 		}
 	}
 
 	if ($mode == 'window')
 	{
-		if (defined('IN_PA_POSTING'))
-		{
-			$pafiledb_template->pparse('smiliesbody');
-		}
-		else
-		{
-			$template->pparse('smiliesbody');
-		}
+		$template->pparse('smiliesbody');
 		page_footer(true, '', true);
 	}
 }
@@ -1760,7 +1717,7 @@ function change_poster_id($post_id, $poster_name)
 
 	$sql = "SELECT user_id, username
 		FROM " . USERS_TABLE . "
-		WHERE username = '" . $poster_name . "'
+		WHERE username = '" . $db->sql_escape($poster_name) . "'
 		LIMIT 1";
 	$result = $db->sql_query($sql);
 

@@ -114,12 +114,12 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 		$cat_id = $album_data['id'][$AH_this];
 
 		// get the class colors
-		$class_catLeft = "cat";
-		$class_catMiddle = "cat";
-		$class_catRight = "cat";
+		$class_catLeft = 'cat';
+		$class_catMiddle = 'cat';
+		$class_catRight = 'cat';
 
 		// get category title
-		$cat_title = ($is_root) ? sprintf($lang['Personal_Gallery_Of_User'], $username): $cat['cat_title'];
+		$cat_title = ($is_root) ? htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User'], $username)) : $cat['cat_title'];
 
 		// send to template
 		$template->assign_block_vars('catrow', array());
@@ -132,13 +132,13 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 			'CLASS_CATRIGHT' => $class_catRight,
 			'CLASS_CATMIDDLE' => $class_catMiddle,
 			'WIDTH' => ($max_level == $level) ? 'width="50%"' : '',
-			'INC_SPAN' => $max_level - $level +1 , // + $column_offset,
+			'INC_SPAN' => $max_level - $level + 1 , // + $column_offset,
 
-			'U_CAT_EDIT' => append_sid(album_append_uid("$admin_url?action=edit&amp;cat_id=$cat_id")),
+			'U_CAT_EDIT' => append_sid(album_append_uid($admin_url . '?action=edit&amp;cat_id=' . $cat_id)),
 			'U_CAT_DELETE' => ($is_root && $userdata['user_level'] != ADMIN) ? '' : append_sid(album_append_uid("$admin_url?action=delete&amp;cat_id=$cat_id")),
-			'U_CAT_MOVE_UP' => ($is_root) ? '' : append_sid(album_append_uid("$admin_url?action=move&amp;move=-15&amp;cat_id=$cat_id")),
-			'U_CAT_MOVE_DOWN' => ($is_root) ? '' : append_sid(album_append_uid("$admin_url?action=move&amp;move=15&amp;cat_id=$cat_id")),
-			'U_VIEWCAT' => append_sid(album_append_uid("$admin_url?action=edit&amp;cat_id=$cat_id")),
+			'U_CAT_MOVE_UP' => ($is_root) ? '' : append_sid(album_append_uid($admin_url . '?action=move&amp;move=-15&amp;cat_id=' . $cat_id)),
+			'U_CAT_MOVE_DOWN' => ($is_root) ? '' : append_sid(album_append_uid($admin_url . '?action=move&amp;move=15&amp;cat_id=' . $cat_id)),
+			'U_VIEWCAT' => append_sid(album_append_uid($admin_url . '?action=edit&amp;cat_id=' . $cat_id)),
 
 			'L_MOVE_UP' => ($is_root) ? '' : $lang['Move_up'],
 			'L_MOVE_DOWN' => ($is_root) ? '' : $lang['Move_down'],
@@ -348,7 +348,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 					//$xs_new = ($total > 0)  ? '-new' : '';
 					$first_pic_id = album_get_first_pic_id($cur_cat_id);
 					$last_pic_id = album_get_last_pic_id($ss_cat_id);
-					$slideshow_link = append_sid(album_append_uid("album_showpage." . PHP_EXT . "?pic_id=" . $last_pic_id . "&amp;slideshow=5"));
+					$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . '&amp;slideshow=5'));
 					$slideshow_link_full = '[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]';
 					//$slideshow_link_full = '<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '&nbsp;' . $slideshow_img . '</a>';
 				}
@@ -957,13 +957,13 @@ function album_get_tree_option($selected_cat_id = ALBUM_ROOT_CATEGORY, $auth_key
 
 	if (!empty($public_res))
 	{
-		$public_res = sprintf('<option value="%d">%s</option><option value="%d">------------------------------</option>', ALBUM_JUMPBOX_PUBLIC_GALLERY, $lang['Public_Categories'], ALBUM_JUMPBOX_SEPERATOR) . $public_res;
+		$public_res = sprintf('<option value="%d">%s</option><option value="%d">------------------------------</option>', ALBUM_JUMPBOX_PUBLIC_GALLERY, $lang['Public_Categories'], ALBUM_JUMPBOX_SEPARATOR) . $public_res;
 	}
 
 	if (!empty($personal_res))
 	{
-		$seperator = (!empty($public_res)) ? sprintf('<option value="%d">------------------------------</option>',ALBUM_JUMPBOX_SEPERATOR) : '';
-		$personal_res = sprintf('%s<option value="%d">%s</option><option value="%d">------------------------------</option>', $seperator, ALBUM_JUMPBOX_USERS_GALLERY, $lang['Users_Personal_Galleries'], ALBUM_JUMPBOX_SEPERATOR) . $personal_res;
+		$separator = (!empty($public_res)) ? sprintf('<option value="%d">------------------------------</option>',ALBUM_JUMPBOX_SEPARATOR) : '';
+		$personal_res = sprintf('%s<option value="%d">%s</option><option value="%d">------------------------------</option>', $separator, ALBUM_JUMPBOX_USERS_GALLERY, $lang['Users_Personal_Galleries'], ALBUM_JUMPBOX_SEPARATOR) . $personal_res;
 	}
 
 	if ($include_delete)
@@ -1125,7 +1125,7 @@ function album_get_full_tree_option()
 
 function album_get_javascript_validation($js_error_var, $error_message, $include_delete_validation = true)
 {
-	$javascript = "case '".ALBUM_JUMPBOX_SEPERATOR."': \n";
+	$javascript = "case '".ALBUM_JUMPBOX_SEPARATOR."': \n";
 	$javascript .= ($include_delete_validation) ? "case '".ALBUM_JUMPBOX_DELETE."': \n" : '';
 	$javascript .= "case '".ALBUM_JUMPBOX_USERS_GALLERY."': \n";
 	$javascript .= "case '".ALBUM_JUMPBOX_PUBLIC_GALLERY."': \n";
@@ -1139,7 +1139,7 @@ function album_get_javascript_validation($js_error_var, $error_message, $include
 function album_validate_jumpbox_selection($cat_id)
 {
 	if ($cat_id == ALBUM_JUMPBOX_USERS_GALLERY || $cat_id == ALBUM_ROOT_CATEGORY ||
-		$cat_id == ALBUM_JUMPBOX_PUBLIC_GALLERY || $cat_id == ALBUM_JUMPBOX_SEPERATOR)
+		$cat_id == ALBUM_JUMPBOX_PUBLIC_GALLERY || $cat_id == ALBUM_JUMPBOX_SEPARATOR)
 	{
 		return false;
 	}
@@ -1164,7 +1164,7 @@ function album_build_jumpbox($cat_id, $user_id = ALBUM_PUBLIC_GALLERY, $auth_key
 
 	$javascript = "<script type=\"text/JavaScript\"><!-- \n";
 	$javascript .= "function onchangeCheck() {\n";
-	$javascript .= "    if(document.jumpbox.cat_id.value != " . ALBUM_JUMPBOX_SEPERATOR . ") {\n";
+	$javascript .= "    if(document.jumpbox.cat_id.value != " . ALBUM_JUMPBOX_SEPARATOR . ") {\n";
 	$javascript .= "        document.jumpbox.submit();";
 	$javascript .= "    }\n";
 	$javascript .= "}\n";
@@ -1391,7 +1391,7 @@ function album_generate_index_columns()
 	global $album_config, $template, $lang;
 
 	$indexes = array();
-	$table_head_class = "thTop";
+	$table_head_class = 'thTop';
 	$header_col_span = 2;
 
 	if ($album_config['show_index_thumb'] == 1)

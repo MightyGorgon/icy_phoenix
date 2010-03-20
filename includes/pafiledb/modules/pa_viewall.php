@@ -1,69 +1,30 @@
 <?php
 /*
-  paFileDB 3.0
-  ©2001/2002 PHP Arena
-  Written by Todd
-  todd@phparena.net
-  http://www.phparena.net
-  Keep all copyright links on the script visible
-  Please read the license included with this script for more information.
+* paFileDB 3.0
+* ©2001/2002 PHP Arena
+* Written by Todd
+* todd@phparena.net
+* http://www.phparena.net
+* Keep all copyright links on the script visible
+* Please read the license included with this script for more information.
 */
 
 class pafiledb_viewall extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template,$lang, $pafiledb_config, $userdata;
-		global $pafiledb_template, $db, $lang, $userdata, $user_ip, $pafiledb_functions, $config;
-		$start = ( isset($_REQUEST['start']) ) ? intval($_REQUEST['start']) : 0;
+		global $db, $config, $template, $lang, $userdata, $user_ip;
+		global $pafiledb_config, $pafiledb_functions;
+
+		$start = request_var('start', 0);
 		$start = ($start < 0) ? 0 : $start;
 
-		if( isset($_REQUEST['sort_method']) )
-		{
-			switch ($_REQUEST['sort_method'])
-			{
-				case 'file_name':
-					$sort_method = 'file_name';
-					break;
-				case 'file_time':
-					$sort_method = 'file_time';
-					break;
-				case 'file_dls':
-					$sort_method = 'file_dls';
-					break;
-				case 'file_rating':
-					$sort_method = 'rating';
-					break;
-				case 'file_update_time':
-					$sort_method = 'file_update_time';
-					break;
-				default:
-					$sort_method = $pafiledb_config['sort_method'];
-			}
-		}
-		else
-		{
-			$sort_method = $pafiledb_config['sort_method'];
-		}
+		$sort_method = request_var('sort_method', $pafiledb_config['sort_method']);
+		$sort_method = check_var_value($sort_method, array('file_name', 'file_time', 'file_dls', 'file_rating', 'file_update_time'));
+		$sort_method = ($sort_method == 'file_rating') ? 'rating' : $sort_method;
 
-		if( isset($_REQUEST['sort_order']) )
-		{
-			switch ($_REQUEST['sort_order'])
-			{
-				case 'ASC':
-					$sort_order = 'ASC';
-					break;
-				case 'DESC':
-					$sort_order = 'DESC';
-					break;
-				default:
-					$sort_order = $pafiledb_config['sort_order'];
-			}
-		}
-		else
-		{
-			$sort_order = $pafiledb_config['sort_order'];
-		}
+		$sort_order = request_var('order', $pafiledb_config['sort_order']);
+		$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 		if (!$pafiledb_config['settings_viewall'])
 		{
@@ -71,7 +32,7 @@ class pafiledb_viewall extends pafiledb_public
 		}
 		elseif(!$this->auth_global['auth_viewall'])
 		{
-			if ( !$userdata['session_logged_in'] )
+			if (!$userdata['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=viewall', true));
 			}
@@ -80,7 +41,7 @@ class pafiledb_viewall extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'L_VIEWALL' => $lang['Viewall'],
 			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'L_HOME' => $lang['Home'],

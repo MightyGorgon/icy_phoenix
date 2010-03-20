@@ -19,7 +19,7 @@ class pafiledb_toplist extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
+		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
 
 		if(!$this->auth_global['auth_toplist'])
 		{
@@ -32,15 +32,11 @@ class pafiledb_toplist extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
-		$mode = (isset($_REQUEST['mode'])) ? htmlspecialchars($_REQUEST['mode']) : 'newest';
-
-		$days = (isset($_REQUEST['days'])) ? intval($_REQUEST['days']) : 7;
-
-		$selected_date = ( isset($_REQUEST['selected_date']) ) ? $_REQUEST['selected_date'] : '';
-
-		$most_num = ( isset($_REQUEST['most_num']) ) ? intval($_REQUEST['most_num']) : 10;
-
-		$most_type = ( isset($_REQUEST['most_type']) ) ? htmlspecialchars($_REQUEST['most_type']) : 'num';
+		$mode = request_var('mode', 'newest');
+		$days = request_var('days', 7);
+		$selected_date = request_var('selected_date', '');
+		$most_num = request_var('most_num', 10);
+		$most_type = request_var('most_type', 'num');
 
 		if ($mode == 'downloads')
 		{
@@ -55,7 +51,7 @@ class pafiledb_toplist extends pafiledb_public
 			$l_current_toplist = $lang['Latest_downloads'];
 		}
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
@@ -98,7 +94,7 @@ class pafiledb_toplist extends pafiledb_public
 				$day_time = (time()-(86400 * 7));
 				for($i = 0; $i < sizeof($rowset); $i++)
 				{
-					if( ($rowset[$i]['file_time']) >= $day_time )
+					if(($rowset[$i]['file_time']) >= $day_time)
 					{
 						$file_num_week++;
 					}
@@ -109,13 +105,13 @@ class pafiledb_toplist extends pafiledb_public
 				$day_time = (time()-(86400 * 30));
 				for($i = 0; $i < sizeof($rowset); $i++)
 				{
-					if( ($rowset[$i]['file_time']) >= $day_time )
+					if(($rowset[$i]['file_time']) >= $day_time)
 					{
 						$file_num_month++;
 					}
 				}
 
-				$pafiledb_template->assign_vars(array(
+				$template->assign_vars(array(
 					'IS_NEWEST' => true,
 					'FILE_DATE' => (empty($selected_date)) ? true : false,
 
@@ -147,22 +143,23 @@ class pafiledb_toplist extends pafiledb_public
 						for($i = 0; $i < sizeof($rowset); $i++)
 						{
 							$file_date = gmdate('Y-m-d', $rowset[$i]['file_time']);
-							if( $file_date == $day_date )
+							if($file_date == $day_date)
 							{
 								$file_num++;
 							}
 						}
 
-						$pafiledb_template->assign_block_vars('files_date', array(
+						$template->assign_block_vars('files_date', array(
 							'U_DATES' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=newest&amp;days=7&amp;selected_date=' . $day_time),
 							'DATES' => gmdate('F d, Y', $day_time),
-							'TOTAL_DOWNLOADS' => $file_num)
+							'TOTAL_DOWNLOADS' => $file_num
+							)
 						);
 					}
 				}
 				else
 				{
-					$pafiledb_template->assign_vars(array(
+					$template->assign_vars(array(
 						'FILE_LIST' => true,
 
 						'L_NEW_FILE' => $lang['New_file'],
@@ -172,7 +169,8 @@ class pafiledb_toplist extends pafiledb_public
 						'L_NAME' => $lang['Name'],
 						'L_FILE' => $lang['File'],
 						'L_SUBMITER' => $lang['Submiter'],
-						'L_CATEGORY' => $lang['Category'])
+						'L_CATEGORY' => $lang['Category']
+						)
 					);
 
 					$file_ids = array();
@@ -230,8 +228,8 @@ class pafiledb_toplist extends pafiledb_public
 						//===================================================
 
 						//$rating = ($file_rowset[$i]['rating'] != 0) ? round($file_rowset[$i]['rating'], 2) . ' / 10' : $lang['Not_rated'];
-						//$rating2 = ($file_rowset[$i]['rating'] != 0) ? sprintf("%.1f", round(($file_rowset[$i]['rating']), 2)/2)  : '0.0';
-						$rating2 = ($file_rowset[$i]['rating'] != 0) ? sprintf("%.1f", round(($file_rowset[$i]['rating']), 0)/2)  : '0.0';
+						//$rating2 = ($file_rowset[$i]['rating'] != 0) ? sprintf("%.1f", round(($file_rowset[$i]['rating']), 2) / 2)  : '0.0';
+						$rating2 = ($file_rowset[$i]['rating'] != 0) ? sprintf("%.1f", round(($file_rowset[$i]['rating']), 0) / 2)  : '0.0';
 						//===================================================
 						// If the file is new then put a new image in front of it
 						//===================================================
@@ -269,7 +267,7 @@ class pafiledb_toplist extends pafiledb_public
 						//===================================================
 						// Assign Vars
 						//===================================================
-						$pafiledb_template->assign_block_vars('files_row', array(
+						$template->assign_block_vars('files_row', array(
 							'CAT_NAME' => $cat_name,
 							'FILE_NEW_IMAGE' => $images['pa_file_new'],
 							'PIN_IMAGE' => $posticon,
@@ -331,11 +329,11 @@ class pafiledb_toplist extends pafiledb_public
 				}
 				$limit = ($limit <= 0) ? 1 : $limit;
 
-				$pafiledb_template->assign_vars(array(
+				$template->assign_vars(array(
 					'IS_POPULAR' => true,
 					'FILE_LIST' => true,
 
-					'L_NEW_FILES' => sprintf( ($most_type == 'num') ? $lang['Popular_num'] : $lang['Popular_per'], $most_num, $file_num),
+					'L_NEW_FILES' => sprintf(($most_type == 'num') ? $lang['Popular_num'] : $lang['Popular_per'], $most_num, $file_num),
 					'L_NEW_FILE' => $lang['New_file'],
 					'L_SHOW_TOP' => $lang['Show_top'],
 					'L_OR_TOP' => $lang['Or_top'],
@@ -435,7 +433,7 @@ class pafiledb_toplist extends pafiledb_public
 					}
 
 					$poster = ($searchset[$i]['user_id'] == ANONYMOUS) ? $lang['Guest'] : colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']);
-					$pafiledb_template->assign_block_vars('files_row', array(
+					$template->assign_block_vars('files_row', array(
 						'CAT_NAME' => $searchset[$i]['cat_name'],
 						'FILE_NEW_IMAGE' => $images['pa_file_new'],
 						'PIN_IMAGE' => $posticon,

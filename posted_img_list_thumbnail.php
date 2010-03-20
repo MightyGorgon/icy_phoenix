@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IMG_THUMB', true);
 define('CT_SECLEVEL', 'MEDIUM');
@@ -29,7 +28,11 @@ require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
 // ------------------------------------
 // Check the request
 // ------------------------------------
-$pic_id = (isset($_GET['pic_id']) ? $_GET['pic_id'] : (isset($_POST['pic_id']) ? $_POST['pic_id'] : message_die(GENERAL_MESSAGE, 'No pics specified')));
+$pic_id = request_var('pic_id', '');
+if (empty($pic_id))
+{
+	message_die(GENERAL_MESSAGE, 'No pics specified');
+}
 $pic_id = urldecode($pic_id);
 $tmp_split = explode('/', $pic_id);
 $pic_user_id = intval((int) $tmp_split[0]);

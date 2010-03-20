@@ -31,35 +31,32 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-//
 // Output the authorization details
-//
-$template->set_filenames(array(
-	'body' => ADM_TPL . 'admin_notepad_body.tpl')
-);
+$template->set_filenames(array('body' => ADM_TPL . 'admin_notepad_body.tpl'));
 
 
+$noteme = request_var('noteme', '', true);
 if(isset($_POST['post']))
 {
-	$tnote = addslashes($_POST['noteme']);
-	$query = mysql_query("UPDATE " . NOTES_ADMIN_TABLE . "
-		SET text = '" . addslashes($_POST['noteme']) . "'
-		WHERE id = 1");
+	$sql = "UPDATE " . NOTES_ADMIN_TABLE . " SET text = '" . $db->sql_escape($noteme) . "' WHERE id = 1";
+	$result = $db->sql_query($sql);
 }
 
-$sql = mysql_query("SELECT text FROM " . NOTES_ADMIN_TABLE);
-if(!$sql)
+$sql = "SELECT text FROM " . NOTES_ADMIN_TABLE . " WHERE id = 1";
+$result = $db->sql_query($sql);
+
+while($row = $db->sql_fetchrow($result))
 {
-	echo mysql_error();
+	$note = $row['text'];
 }
-$note = mysql_fetch_array($sql);
 
 include('./page_header_admin.' . PHP_EXT);
 
 $template->assign_vars(array(
-	"L_TITLE" => $lang['Admin_notepad_title'],
-	"L_TITLE_EXPLAIN" => $lang['Admin_notepad_explain'],
-	"U_NOTEPAD" => stripslashes($note['text']))
+	'L_TITLE' => $lang['Admin_notepad_title'],
+	'L_TITLE_EXPLAIN' => $lang['Admin_notepad_explain'],
+	'U_NOTEPAD' => $note
+	)
 );
 
 $template->pparse('body');

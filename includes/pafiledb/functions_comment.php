@@ -17,12 +17,12 @@
 
 function display_comments(&$file_data)
 {
-	global $pafiledb_template, $pafiledb, $pafiledb_functions, $pafiledb_config;
-	global $db, $cache, $config, $images, $userdata, $lang, $bbcode;
+	global $pafiledb, $pafiledb_config, $pafiledb_functions;
+	global $db, $cache, $config, $template, $images, $userdata, $lang, $bbcode;
 	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'L_COMMENTS' => $lang['Comments']
 		)
 	);
@@ -36,9 +36,10 @@ function display_comments(&$file_data)
 
 	if (!($comment_number = $db->sql_numrows($result)))
 	{
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'L_NO_COMMENTS' => $lang['No_comments'],
-			'NO_COMMENTS' => TRUE)
+			'NO_COMMENTS' => true
+			)
 		);
 	}
 
@@ -92,7 +93,7 @@ function display_comments(&$file_data)
 
 		$comments_text = str_replace("\n", "\n<br />\n", $comments_text);
 
-		$pafiledb_template->assign_block_vars('text', array(
+		$template->assign_block_vars('text', array(
 			'POSTER' => $poster,
 			'U_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? append_sid('dload.' . PHP_EXT . "?action=post_comment&amp;cid={$comments_row['comments_id']}&amp;delete=do&amp;file_id={$file_data['file_id']}") : '',
 			'AUTH_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
@@ -123,7 +124,7 @@ function display_comments(&$file_data)
 
 	$db->sql_freeresult($result);
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'REPLY_IMG' => ($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_post_comment']) ? $images['pa_comment_post'] : '',
 		'AUTH_POST' => ($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_post_comment']) ? true : false,
 		'L_COMMENT_DO' => ($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_post_comment']) ? $lang['Comment_do'] : '',

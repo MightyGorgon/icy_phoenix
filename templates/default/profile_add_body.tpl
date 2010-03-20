@@ -187,36 +187,36 @@ function file_request(file_requested)
 <tr>
 	<td class="row1" width="38%"><span class="gen">{L_PHONE}:</span></td>
 	<td class="row2">
-		<input type="text" name="phone" class="post" style="width: 100px" size="10" maxlength="15" value="{PHONE}" />
+		<input type="text" name="phone" class="post" style="width: 100px;" size="10" maxlength="20" value="{PHONE}" />
 	</td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_ICQ_NUMBER}:</span></td>
-	<td class="row2"><input type="text" name="icq" class="post" style="width: 100px" size="10" maxlength="15" value="{ICQ}" /></td>
+	<td class="row2"><input type="text" name="icq" class="post" style="width: 100px;" size="10" maxlength="15" value="{ICQ}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_AIM}:</span></td>
-	<td class="row2"><input type="text" class="post" style="width: 150px" name="aim" size="20" maxlength="255" value="{AIM}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="aim" size="20" maxlength="255" value="{AIM}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_MESSENGER}:</span></td>
-	<td class="row2"><input type="text" class="post" style="width: 150px" name="msn" size="20" maxlength="255" value="{MSN}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="msn" size="20" maxlength="255" value="{MSN}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_YAHOO}:</span></td>
-	<td class="row2"><input type="text" class="post" style="width: 150px" name="yim" size="20" maxlength="255" value="{YIM}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="yim" size="20" maxlength="255" value="{YIM}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_SKYPE}:</span></td>
-	<td class="row2"><input type="text" class="post" style="width: 150px" name="skype" size="20" maxlength="255" value="{SKYPE}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="skype" size="20" maxlength="255" value="{SKYPE}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_WEBSITE}:</span></td>
-	<td class="row2"><input type="text" class="post" style="width: 200px" name="website" size="25" maxlength="255" value="{WEBSITE}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="website" size="25" maxlength="255" value="{WEBSITE}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_LOCATION}:</span></td>
-	<td class="row2"><input type="text" class="post" style="width: 200px" name="location" size="25" maxlength="100" value="{LOCATION}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="location" size="25" maxlength="100" value="{LOCATION}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_FLAG}:</span></td>
@@ -231,18 +231,18 @@ function file_request(file_requested)
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_OCCUPATION}:</span></td>
-	<td class="row2"><input type="text" class="post" style="width: 200px" name="occupation" size="25" maxlength="100" value="{OCCUPATION}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="occupation" size="25" maxlength="100" value="{OCCUPATION}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_INTERESTS}:</span></td>
-	<td class="row2"><input type="text" class="post" style="width: 200px" name="interests" size="35" maxlength="150" value="{INTERESTS}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="interests" size="35" maxlength="150" value="{INTERESTS}" /></td>
 </tr>
 <tr>
 	<td class="row1">
 		<span class="gen">{L_EXTRA_PROFILE_INFO}:</span><br />
 		<span class="gensmall">{L_EXTRA_PROFILE_INFO_EXPLAIN}</span>
 	</td>
-	<td class="row2"><textarea name="selfdes" style="width: 475px" rows="5" cols="60" class="post">{SELFDES}</textarea></td>
+	<td class="row2"><textarea name="selfdes" style="width: 475px;" rows="5" cols="60" class="post">{SELFDES}</textarea></td>
 </tr>
 
 <tr>

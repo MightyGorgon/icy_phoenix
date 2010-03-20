@@ -20,14 +20,14 @@ class class_form
 {
 
 	/*
-	* create_input
+	* Create_input
 	*/
 	function create_input($name, $properties)
 	{
 		global $config, $lang;
 
 		$input = '';
-		$default = !empty($properties['default']) ? (is_array($properties['default']) ? array_map('htmlspecialchars', array_map('stripslashes', $properties['default'])) : htmlspecialchars(stripslashes($properties['default']))) : '';
+		$default = !empty($properties['default']) ? (is_array($properties['default']) ? array_map('htmlspecialchars', $properties['default']) : htmlspecialchars($properties['default'])) : '';
 
 		switch ($properties['type'])
 		{
@@ -36,25 +36,21 @@ class class_form
 				$input = '<input type="hidden" name="' . $name . '" value="' . $default . '" />';
 				break;
 
-			case 'LIST_RADIO_BR':
-			case 'LIST_RADIO':
-				@reset($properties['values']);
-				while (list($key, $val) = @each($properties['values']))
-				{
-					$selected = ($default == $val) ? ' checked="checked"' : '';
-					$l_key = $this->get_lang($key);
-					$input .= '<input type="radio" name="' . $name . '" value="' . $val . '"' . $selected . ' />&nbsp;' . $l_key;
-					$input .= (($properties['type'] == 'LIST_RADIO_BR') ? '<br />' : '&nbsp;&nbsp;');
-				}
-				break;
-
 			case 'LIST_CHECKBOX':
+			case 'LIST_FLAGS':
 				@reset($properties['values']);
 				while (list($key, $val) = @each($properties['values']))
 				{
-					$selected = (!empty($default) && in_array(trim($val), $default)) ? ' checked="checked"' : '';
+					if ($properties['type'] == 'LIST_FLAGS')
+					{
+						$selected = ((int) $val & $default) ? ' checked="checked"' : '';
+					}
+					else
+					{
+						$selected = (!empty($default) && is_array($default) && in_array(trim($val), $default)) ? ' checked="checked"' : '';
+					}
 					$l_key = $this->get_lang($key);
-					$input .= '<input type="checkbox" name="' . $name . '[]" value="' . $val . '"' . $selected . ' />&nbsp;' . $l_key. '<br />';
+					$input .= '<label><input type="checkbox" name="' . $name . '[]" value="' . $val . '"' . $selected . ' />&nbsp;' . $l_key. '</label><br />';
 				}
 				break;
 
@@ -67,6 +63,18 @@ class class_form
 					$input .= '<option value="' . $val . '"' . $selected . '>' . $l_key . '</option>';
 				}
 				$input = '<select name="' . $name . '">' . $input . '</select>';
+				break;
+
+			case 'LIST_RADIO':
+			case 'LIST_RADIO_BR':
+				@reset($properties['values']);
+				while (list($key, $val) = @each($properties['values']))
+				{
+					$selected = ($default == $val) ? ' checked="checked"' : '';
+					$l_key = $this->get_lang($key);
+					$input .= '<input type="radio" name="' . $name . '" value="' . $val . '"' . $selected . ' />&nbsp;' . $l_key;
+					$input .= (($properties['type'] == 'LIST_RADIO_BR') ? '<br />' : '&nbsp;&nbsp;');
+				}
 				break;
 
 			case 'DATE_INPUT':
@@ -94,24 +102,29 @@ class class_form
 				break;
 
 			case 'TINYINT':
-				$input = '<input type="text" name="' . $name . '" maxlength="3" size="3" class="post" value="' . $default . '" />';
+				$input = '<input type="text" name="' . $name . '" maxlength="3" size="3" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
 				break;
 
 			case 'SMALLINT':
-				$input = '<input type="text" name="' . $name . '" maxlength="5" size="5" class="post" value="' . $default . '" />';
+				$input = '<input type="text" name="' . $name . '" maxlength="5" size="5" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
 				break;
 
 			case 'MEDIUMINT':
-				$input = '<input type="text" name="' . $name . '" maxlength="9" size="9" class="post" value="' . $default . '" />';
+				$input = '<input type="text" name="' . $name . '" maxlength="9" size="9" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
 				break;
 
 			case 'INT':
-				$input = '<input type="text" name="' . $name . '" maxlength="13" size="13" class="post" value="' . $default . '" />';
+				$input = '<input type="text" name="' . $name . '" maxlength="13" size="13" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
 				break;
 
+			case 'TINYTEXT':
+				$input = '<input type="text" name="' . $name . '" maxlength="20" size="20" class="post" value="' . $default . '" />';
+				break;
+
+			case 'PASSWORD':
 			case 'VARCHAR':
 			case 'HTMLVARCHAR':
-				$input = '<input type="text" name="' . $name . '" maxlength="255" size="45" class="post" value="' . $default . '" />';
+				$input = '<input type="' . (($properties['type'] == 'PASSWORD') ? 'password' : 'text') . '" name="' . $name . '" maxlength="255" size="45" class="post" value="' . $default . '" />';
 				break;
 
 			case 'TEXT':
@@ -119,6 +132,7 @@ class class_form
 				$input = '<div class="message-box"><textarea rows="10" cols="35" name="' . $name . '">' . $default . '</textarea></div>';
 				break;
 
+			case 'FUNCTION':
 			default:
 				if (!empty($properties['get_func']) && function_exists($properties['get_func']))
 				{
@@ -141,9 +155,9 @@ class class_form
 		/*
 		// to be used within a cycle
 		$template->assign_block_vars('field', array(
-			'L_NAME' => $mg_class_form->get_lang($v['lang_key']),
-			'L_EXPLAIN' => !empty($v['explain']) ? '<br />' . $mg_class_form->get_lang($v['explain']) : '',
-			'INPUT' => $mg_class_form->create_input($k, $v),
+			'L_NAME' => $class_form->get_lang($v['lang_key']),
+			'L_EXPLAIN' => !empty($v['explain']) ? '<br />' . $class_form->get_lang($v['explain']) : '',
+			'INPUT' => $class_form->create_input($k, $v),
 			)
 		);
 		*/
@@ -190,12 +204,91 @@ class class_form
 	}
 
 	/*
+	* Validate value
+	*/
+	function validate_value($config_data)
+	{
+		$config_value = $config_data['default'];
+		switch ($config_data['type'])
+		{
+			case 'HIDDEN':
+				break;
+
+			case 'LIST_CHECKBOX':
+			case 'LIST_FLAGS':
+				$flags_sum = 0;
+				if (($config_data['type'] == 'LIST_FLAGS') && !empty($config_value) && is_array($config_value))
+				{
+					foreach ($config_value as $k => $v)
+					{
+						$flags_sum += (int) $v;
+					}
+					$config_value = $flags_sum;
+				}
+
+				if (is_array($config_value))
+				{
+					foreach ($config_value as $k => $v)
+					{
+						if (!in_array($k, $config_data['values']))
+						{
+							unset($config_value[$k]);
+						}
+					}
+				}
+
+				if (!is_array($config_value) && !in_array($config_value, $config_data['values']))
+				{
+					$config_value = $config_data['values'][0];
+				}
+				break;
+
+			case 'LIST_DROP':
+			case 'LIST_RADIO':
+			case 'LIST_RADIO_BR':
+				if (!in_array($config_value, $config_data['values']))
+				{
+					$config_value = $config_data['values'][0];
+				}
+				break;
+
+			case 'TINYINT':
+			case 'SMALLINT':
+			case 'MEDIUMINT':
+			case 'INT':
+				$config_value = (int) ($config_value);
+				break;
+
+			case 'TINYTEXT':
+			case 'PASSWORD':
+			case 'VARCHAR':
+			case 'TEXT':
+			case 'DATEFMT':
+				$config_value = (string) trim(htmlspecialchars($config_value));
+				break;
+
+			case 'HTMLVARCHAR':
+			case 'HTMLTEXT':
+				$config_value = (string) trim($config_value);
+				break;
+
+			case 'FUNCTION':
+			default:
+				if (!empty($config_data['chk_func']) && function_exists($config_data['chk_func']))
+				{
+					$config_value = $config_data['chk_func']($config_data['name'], $config_value);
+				}
+				break;
+		}
+
+		return $config_value;
+	}
+
+	/*
 	* Build inputs_array
 	*/
-	function create_inputs_array($mode, $action)
+	function create_inputs_array(&$table_fields, &$inputs_array, &$current_time, &$item_id, $mode, $action)
 	{
-		global $table_fields, $inputs_array, $current_time, $item_id;
-
 		foreach ($table_fields as $k => $v)
 		{
 			if (($v['type'] != 'HIDDEN') && isset($v['is_time']) && $v['is_time'])
@@ -215,7 +308,7 @@ class class_form
 			{
 				$multibyte = (in_array($v['type'], array('HIDDEN', 'VARCHAR', 'HTMLVARCHAR', 'TEXT', 'HTMLTEXT'))) ? true : false;
 				$inputs_array[$k] = request_var($k, $v['default'], $multibyte);
-				$inputs_array[$k] = is_string($inputs_array[$k]) ? addslashes($inputs_array[$k]) : $inputs_array[$k];
+				//$inputs_array[$k] = is_string($inputs_array[$k]) ? addslashes($inputs_array[$k]) : $inputs_array[$k];
 			}
 
 			// We want to force each value the user isn't allowed to add/edit to the default value
@@ -227,12 +320,28 @@ class class_form
 	}
 
 	/*
+	* Request vars data
+	*/
+	function request_vars_data(&$data_array)
+	{
+		$vars_data = array();
+		foreach ($data_array as $k => $v)
+		{
+			$html_decode = (isset($v['type']) && in_array($v['type'], array('HTMLVARCHAR', 'HTMLTEXT'))) ? true : false;
+			$multibyte = (isset($v['type']) && in_array($v['type'], array('HIDDEN', 'VARCHAR', 'HTMLVARCHAR', 'TEXT', 'HTMLTEXT'))) ? true : false;
+			$vars_data[$k] = request_var($k, $v['default'], $multibyte);
+			$vars_data[$k] = $html_decode ? htmlspecialchars_decode($vars_data[$k], ENT_COMPAT) : $vars_data[$k];
+			$data_array[$k]['default'] = $vars_data[$k];
+		}
+		return $vars_data;
+	}
+
+	/*
 	* Build input form
 	*/
-	function create_input_form($mode, $action, $items_row)
+	function create_input_form(&$table_fields, &$inputs_array, &$current_time, &$s_bbcb_global, $mode, $action, $items_row)
 	{
 		global $config, $template, $theme, $lang, $s_hidden_fields;
-		global $table_fields, $inputs_array, $current_time, $s_bbcb_global;
 
 		foreach ($table_fields as $k => $v)
 		{
@@ -262,7 +371,7 @@ class class_form
 					$s_bbcb_global = true;
 					$html_status = ($config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
 					$bbcode_status = ($config['allow_bbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
-					$bbcode_status = sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>');
+					$bbcode_status = sprintf($bbcode_status, '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_FAQ . '?mode=bbcode') . '" target="_blank">', '</a>');
 					$smilies_status = ($config['allow_smilies']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 					$formatting_rules = '<br />' . $html_status . '<br />' . $bbcode_status . '<br />' . $smilies_status . '<br />';
 					$template->assign_vars(array(
@@ -279,19 +388,18 @@ class class_form
 	/*
 	* Build item view page
 	*/
-	function create_view_page($items_row)
+	function create_view_page(&$table_fields, &$inputs_array, $items_row)
 	{
 		global $config, $template, $theme, $lang, $bbcode;
-		global $table_fields, $inputs_array;
 
 		foreach ($table_fields as $k => $v)
 		{
 			$inputs_array[$k] = (isset($items_row[$k]) ? $items_row[$k] : $v['default']);
-			$inputs_array[$k] = is_string($inputs_array[$k]) ? stripslashes($inputs_array[$k]) : $inputs_array[$k];
+			//$inputs_array[$k] = is_string($inputs_array[$k]) ? stripslashes($inputs_array[$k]) : $inputs_array[$k];
 			// We convert HTML entities only if we do not need to pars HTML...
-			if (is_string($inputs_array[$k]) && empty($v['html_parse']))
+			if (is_string($inputs_array[$k]) && !empty($v['html_parse']))
 			{
-				$value = htmlspecialchars($inputs_array[$k]);
+				$value = htmlspecialchars_decode($inputs_array[$k], ENT_COMPAT);
 			}
 
 			$auth_level = $v['view_level'];
@@ -303,7 +411,7 @@ class class_form
 
 				// SPECIAL PROCESSING - BEGIN
 				// Convert back values from RADIO, SELECT or CHECKBOX
-				if (in_array($v['type'], array('LIST_RADIO_BR', 'LIST_RADIO', 'LIST_CHECKBOX', 'LIST_DROP')))
+				if (in_array($v['type'], array('LIST_CHECKBOX', 'LIST_DROP', 'LIST_FLAGS', 'LIST_RADIO', 'LIST_RADIO_BR')))
 				{
 					$tmp_value = $this->get_lang_from_value($inputs_array[$k], $v['values']);
 					$value = ($tmp_value != '') ? $tmp_value : $value;
@@ -357,7 +465,7 @@ class class_form
 					$value = colorize_username($inputs_array[$k]);
 				}
 
-				// Create user link (with user_name)
+				// Create user link (with username)
 				if ($v['is_username'])
 				{
 					$target_userid = $this->get_user_id($inputs_array[$k]);

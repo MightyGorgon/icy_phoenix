@@ -211,7 +211,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 		// check against stopwords end
 
 		$title_search = '';
-		$title_search_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', stripslashes($topic_title), $stopword_array, $synonym_array), 'search') : split(' ', $topic_title);
+		$title_search_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_title, $stopword_array, $synonym_array), 'search') : split(' ', $topic_title);
 
 		for ($i = 0; $i < sizeof($title_search_array); $i++)
 		{
@@ -229,7 +229,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 		if ($config['similar_stopwords'])
 		{
 			$topicdesc = '';
-			$topic_desc_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', stripslashes($topic_desc), $stopword_array, $synonym_array), 'search') : split(' ', $topic_desc);
+			$topic_desc_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_desc, $stopword_array, $synonym_array), 'search') : split(' ', $topic_desc);
 			for ($i = 0; $i < sizeof($topic_desc_array); $i++)
 			{
 				$topicdesc .= (($topicdesc == '') ? '': ' ') . $topic_desc_array[$i];
@@ -239,12 +239,12 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 		{
 			$topicdesc = $topic_desc;
 		}
-		$sql_topic_desc = "+MATCH(t.topic_desc) AGAINST('" . addslashes($topicdesc) . "')";
+		$sql_topic_desc = "+MATCH(t.topic_desc) AGAINST('" . $db->sql_escape($topicdesc) . "')";
 	}
 
-	$sql_match = "MATCH(t.topic_title) AGAINST('" . addslashes($title_search) . "')" . $sql_topic_desc;
+	$sql_match = "MATCH(t.topic_title) AGAINST('" . $db->sql_escape($title_search) . "')" . $sql_topic_desc;
 	*/
-	$sql_match = "MATCH(t.topic_title) AGAINST('" . addslashes($title_search) . "')";
+	$sql_match = "MATCH(t.topic_title) AGAINST('" . $db->sql_escape($title_search) . "')";
 
 	if ($config['similar_sort_type'] == 'time')
 	{

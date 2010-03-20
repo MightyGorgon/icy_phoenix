@@ -56,11 +56,11 @@ function get_img_size_format($width, $height)
 */
 function is_imagick()
 {
-	global $imagick, $attach_config;
+	global $imagick, $config;
 
-	if ($attach_config['img_imagick'] != '')
+	if ($config['img_imagick'] != '')
 	{
-		$imagick = $attach_config['img_imagick'];
+		$imagick = $config['img_imagick'];
 		return true;
 	}
 	else
@@ -116,9 +116,9 @@ function get_supported_image_types($type)
 */
 function copy_thumbnail($source, $new_file, $mimetype)
 {
-	global $attach_config;
+	global $config;
 
-	if (intval($attach_config['allow_ftp_upload']))
+	if (intval($config['allow_ftp_upload']))
 	{
 		$result = ftp_file($new_file, $source, $mimetype, true); // True for disable error-mode
 		if (!$result)
@@ -143,10 +143,10 @@ function copy_thumbnail($source, $new_file, $mimetype)
 */
 function create_thumbnail($source, $new_file, $mimetype)
 {
-	global $attach_config, $imagick;
+	global $config, $imagick;
 
 	$source = amod_realpath($source);
-	$min_filesize = (int) $attach_config['img_min_thumb_filesize'];
+	$min_filesize = (int) $config['img_min_thumb_filesize'];
 	$img_filesize = (@file_exists($source)) ? @filesize($source) : false;
 
 	if (!$img_filesize || ($img_filesize <= $min_filesize))
@@ -166,7 +166,7 @@ function create_thumbnail($source, $new_file, $mimetype)
 		return false;
 	}
 
-	if (($width <= $attach_config['img_link_width']) && ($height <= $attach_config['img_link_height']))
+	if (($width <= $config['img_link_width']) && ($height <= $config['img_link_height']))
 	{
 		$result = copy_thumbnail($source, $new_file, $mimetype);
 		return $result;
@@ -176,7 +176,7 @@ function create_thumbnail($source, $new_file, $mimetype)
 
 	$tmp_path = $old_file = '';
 
-	if (intval($attach_config['allow_ftp_upload']))
+	if (intval($config['allow_ftp_upload']))
 	{
 		$old_file = $new_file;
 
@@ -236,7 +236,7 @@ function create_thumbnail($source, $new_file, $mimetype)
 					break;
 			}
 
-			if (($type['version'] == 1) || !$attach_config['use_gd2'])
+			if (($type['version'] == 1) || !$config['use_gd2'])
 			{
 				$new_image = imagecreate($new_width, $new_height);
 				imagecopyresized($new_image, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
@@ -272,7 +272,7 @@ function create_thumbnail($source, $new_file, $mimetype)
 		return false;
 	}
 
-	if (intval($attach_config['allow_ftp_upload']))
+	if (intval($config['allow_ftp_upload']))
 	{
 		$result = ftp_file($new_file, $old_file, $mimetype, true); // True for disable error-mode
 		@unlink($new_file);

@@ -62,23 +62,15 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$template->set_filenames(array('body' => 'links_js_body.tpl'));
+include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
+$links_config = get_links_config(true);
+$link_self_img = $links_config['site_logo'];
+$site_logo_height = $links_config['height'];
+$site_logo_width = $links_config['width'];
+$display_interval = $links_config['display_interval'];
+$display_logo_num = $links_config['display_logo_num'];
 
-// Grab data
-$sql = "SELECT * FROM ". LINK_CONFIG_TABLE;
-$result = $db->sql_query($sql, 0, 'links_config_');
-while( $row = $db->sql_fetchrow($result) )
-{
-	$link_config_name = $row['config_name'];
-	$link_config_value = $row['config_value'];
-	$link_config[$link_config_name] = $link_config_value;
-	$link_self_img = $link_config['site_logo'];
-	$site_logo_height = $link_config['height'];
-	$site_logo_width = $link_config['width'];
-	$display_interval = $link_config['display_interval'];
-	$display_logo_num = $link_config['display_logo_num'];
-}
-$db->sql_freeresult($result);
+$template->set_filenames(array('body' => 'links_js_body.tpl'));
 
 $sql = "SELECT link_id, link_title, link_logo_src
 	FROM " . LINKS_TABLE . "

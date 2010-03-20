@@ -239,7 +239,7 @@ while($row = $db->sql_fetchrow($result))
 			// Start Advanced IP Tools Pack MOD
 			'IP' => htmlspecialchars($ip),
 			'USER_AGENT' => htmlspecialchars($row['session_user_agent']) . '<br />' . $row['session_page'],
-			'U_HOSTNAME_LOOKUP' => ($mode != 'lookup') ? append_sid('viewonline.' . PHP_EXT . '?mode=lookup&amp;ip=' . decode_ip($row['session_ip'])) : append_sid('viewonline.' . PHP_EXT . '?mode=ip&amp;ip=' . decode_ip($row['session_ip'])),
+			'U_HOSTNAME_LOOKUP' => ($mode != 'lookup') ? append_sid(CMS_PAGE_VIEWONLINE . '?mode=lookup&amp;ip=' . decode_ip($row['session_ip'])) : append_sid(CMS_PAGE_VIEWONLINE . '?mode=ip&amp;ip=' . decode_ip($row['session_ip'])),
 			'U_WHOIS' => 'http://whois.sc/' . decode_ip($row['session_ip']),
 			// End Advanced IP Tools Pack MOD
 

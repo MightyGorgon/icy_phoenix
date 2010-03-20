@@ -37,32 +37,32 @@
 <div style="text-align: center;"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></div>
 
 <div style="display:none;">
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/rangearrows.gif" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/mappoint.gif" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-saturation.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-brightness.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-tl.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-tr.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-bl.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-br.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-tl.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-tr.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-bl.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-br.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-tl.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-tr.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-bl.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-br.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-red-max.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-red-min.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-green-max.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-green-min.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-blue-max.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-blue-min.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-saturation.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-saturation-overlay.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-brightness.png" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-hue.png" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/rangearrows.gif" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/mappoint.gif" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-saturation.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-brightness.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-tl.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-tr.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-bl.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-br.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-tl.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-tr.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-bl.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-br.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-tl.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-tr.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-bl.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-br.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-red-max.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-red-min.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-green-max.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-green-min.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-blue-max.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-blue-min.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-saturation.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-saturation-overlay.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-brightness.png" alt="" />
+<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-hue.png" alt="" />
 </div>
 <script type="text/javascript">
 <!--

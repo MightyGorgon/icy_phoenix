@@ -28,17 +28,22 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
-include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'functions_field.' . PHP_EXT);
 
-$custom_field = new custom_field();
-$custom_field->init();
+$custom_fields = new custom_fields();
+$custom_fields->custom_table = PA_CUSTOM_TABLE;
+$custom_fields->custom_data_table = PA_CUSTOM_DATA_TABLE;
+$custom_fields->init();
 
 // MX Modified - select
-$mode = (isset($_REQUEST['mode'])) ? htmlspecialchars($_REQUEST['mode']) : 'select';
-$field_id = (isset($_REQUEST['field_id'])) ? intval($_REQUEST['field_id']) : 0;
-$field_type = (isset($_REQUEST['field_type'])) ? intval($_REQUEST['field_type']) : $custom_field->field_rowset[$field_id]['field_type'];
-$field_ids = (isset($_REQUEST['field_ids'])) ? $_REQUEST['field_ids'] : '';
-$submit = (isset($_POST['submit'])) ? TRUE : FALSE;
+$mode = request_var('mode', 'select');
+$field_id = request_var('field_id', 0);
+$field_ids = request_var('field_ids', array(''));
+$field_type = request_var('field_type', 0);
+if (empty($field_type))
+{
+	$field_type = $custom_fields->field_rowset[$field_id]['field_type'];
+}
+$submit = (isset($_POST['submit'])) ? true : false;
 
 switch($mode)
 {
@@ -62,16 +67,16 @@ switch($mode)
 
 if($submit)
 {
-	if($mode == 'do_add' && !$field_id)
+	if(($mode == 'do_add') && !$field_id)
 	{
-		$custom_field->update_add_field($field_type);
+		$custom_fields->update_add_field($field_type);
 
 		$message = $lang['Fieldadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
-	elseif($mode == 'do_add' && $field_id)
+	elseif(($mode == 'do_add') && $field_id)
 	{
-		$custom_field->update_add_field($field_type, $field_id);
+		$custom_fields->update_add_field($field_type, $field_id);
 
 		$message = $lang['Fieldedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
@@ -80,7 +85,7 @@ if($submit)
 	{
 		foreach($field_ids as $key => $value)
 		{
-			$custom_field->delete_field($key);
+			$custom_fields->delete_field($key);
 		}
 
 		$message = $lang['Fieldsdel'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_custom.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -89,9 +94,7 @@ if($submit)
 }
 
 
-$pafiledb_template->set_filenames(array(
-	'admin' => $template_file)
-);
+$template->set_filenames(array('admin' => $template_file));
 
 switch($mode)
 {
@@ -130,12 +133,13 @@ elseif($mode == 'delete')
 	$s_hidden_fields = '<input type="hidden" name="mode" value="delete">';
 }
 
-$pafiledb_template->assign_vars(array(
+$template->assign_vars(array(
 	'L_FIELD_TITLE' => $l_title,
 	'L_FIELD_EXPLAIN' => $lang['Fieldexplain'],
 
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
-	'S_FIELD_ACTION' => append_sid("admin_pa_custom." . PHP_EXT))
+	'S_FIELD_ACTION' => append_sid('admin_pa_custom.' . PHP_EXT)
+	)
 );
 
 
@@ -143,10 +147,10 @@ if($mode == 'addfield')
 {
 	if($field_id)
 	{
-		$data = $custom_field->get_field_data($field_id);
+		$data = $custom_fields->get_field_data($field_id);
 	}
 
-	$pafiledb_template->assign_vars(array(
+	$template->assign_vars(array(
 		'L_FIELD_NAME' => $lang['Fieldname'],
 		'L_FIELD_NAME_INFO' => $lang['Fieldnameinfo'],
 		'L_FIELD_DESC' => $lang['Fielddesc'],
@@ -165,7 +169,8 @@ if($mode == 'addfield')
 		'FIELD_DESC' => $data['custom_description'],
 		'FIELD_DATA' => $data['data'],
 		'FIELD_REGEX' => $data['regex'],
-		'FIELD_ORDER' => $data['field_order'])
+		'FIELD_ORDER' => $data['field_order']
+		)
 	);
 }
 elseif($mode == 'add')
@@ -179,26 +184,27 @@ elseif($mode == 'add')
 	}
 	$field_type_list .= '</select>';
 
-	$pafiledb_template->assign_vars(array(
-		'S_SELECT_FIELD_TYPE' => $field_type_list)
+	$template->assign_vars(array(
+		'S_SELECT_FIELD_TYPE' => $field_type_list
+		)
 	);
 }
-elseif($mode == 'edit' || $mode == 'delete' || $mode == 'select' )
+elseif(($mode == 'edit') || ($mode == 'delete') || ($mode == 'select'))
 {
-	foreach($custom_field->field_rowset as $field_id => $field_data)
+	foreach($custom_fields->field_rowset as $field_id => $field_data)
 	{
-		$pafiledb_template->assign_block_vars('field_row', array(
+		$template->assign_block_vars('field_row', array(
 			'FIELD_ID' => $field_id,
 			'FIELD_NAME' => $field_data['custom_name'],
-			'FIELD_DESC' => $field_data['custom_description'])
+			'FIELD_DESC' => $field_data['custom_description']
+			)
 		);
 	}
 }
 
-$pafiledb_template->display('admin');
+$template->display('admin');
 
 $pafiledb->_pafiledb();
-$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

@@ -165,10 +165,6 @@ $lang = array_merge($lang, array(
 	'Auth_toplist_explain' => 'Allow toplist for specific group of users',
 	'Auth_viewall' => 'Viewall Permission',
 	'Auth_viewall_explain' => 'Allow viewall for specific group of users',
-	'Bytes' => 'Bytes',
-	'KB' => 'KB',
-	'MB' => 'MB',
-
 
 // Custom Field
 	'Afield' => 'Custom Field: Add',

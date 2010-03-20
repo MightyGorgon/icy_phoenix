@@ -95,7 +95,7 @@ function xs_admin_override($modded = false)
 				unset($module['Styles'][$unset[$i]]);
 			}
 		}
-		$module['Styles']['Menu'] = 'xs_frameset.' . PHP_EXT . '?action=menu&showwarning=1';
+		$module['Styles']['Menu'] = 'xs_frameset.' . PHP_EXT . '?action=menu&amp;showwarning=1';
 	}
 	// add new menu
 	$module_name = '1300_Extreme_Styles';
@@ -114,7 +114,7 @@ function xs_admin_override($modded = false)
 		if(substr($var, 0, 9) === 'xs_style_')
 		{
 			$str = substr($var, 9);
-			$module['Template_Config'][$str] = 'xs_frameset.' . PHP_EXT . '?action=style_config&tpl='.urlencode($str);
+			$module['Template_Config'][$str] = 'xs_frameset.' . PHP_EXT . '?action=style_config&amp;tpl='.urlencode($str);
 		}
 	}
 }
@@ -185,14 +185,7 @@ header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 // Check compatibility with mods
 define('XS_MODS_CATEGORY_HIERARCHY', true);
 
-if(isset($theme['theme_public']))
-{
-	define('XS_MODS_ADMIN_TEMPLATES', true);
-}
-
-//
 // Get FTP configuration
-//
 function get_ftp_config($action, $post = array(), $allow_local = false, $show_error = '')
 {
 	global $db, $config, $template, $lang;
@@ -217,7 +210,7 @@ function get_ftp_config($action, $post = array(), $allow_local = false, $show_er
 			if($config[$var] !== $_POST[$var])
 			{
 				$config[$var] = stripslashes($_POST[$var]);
-				$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . xs_sql($config[$var]) . "' WHERE config_name = '{$var}'";
+				$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = '" . $db->sql_escape($config[$var]) . "' WHERE config_name = '{$var}'";
 				$db->sql_query($sql);
 			}
 		}
@@ -284,11 +277,11 @@ function get_ftp_config($action, $post = array(), $allow_local = false, $show_er
 		$str .= '<input type="hidden" name="' . htmlspecialchars($var) . '" value="' . htmlspecialchars($value) . '" />';
 	}
 	$template->assign_vars(array(
-			'FORM_ACTION'		=> $action,
-			'S_EXTRA_FIELDS'	=> $str,
-			'XS_FTP_HOST'		=> $xs_ftp_host,
-			'XS_FTP_LOGIN'		=> $xs_ftp_login,
-			'XS_FTP_PATH'		=> $xs_ftp_path,
+			'FORM_ACTION' => $action,
+			'S_EXTRA_FIELDS' => $str,
+			'XS_FTP_HOST' => $xs_ftp_host,
+			'XS_FTP_LOGIN' => $xs_ftp_login,
+			'XS_FTP_PATH' => $xs_ftp_path,
 		));
 	if($show_error)
 	{
@@ -368,15 +361,15 @@ function xs_get_style_header($filename, $str = '')
 	- header size (4 bytes)
 	- file size (4 bytes)
 	- number of entries (1 byte)
-    - entries sizes (number_of_entries bytes)
-    - entries
+	- entries sizes (number_of_entries bytes)
+	- entries
 	- footer
 	- gzcompressed tar of style (no crc check in tar)
 
 	entries:
-	  - template name
-      - comment
-	  - style names
+	- template name
+	- comment
+	- style names
 	*/
 	global $xs_header_error, $lang;
 	$xs_header_error = '';
@@ -417,14 +410,14 @@ function xs_get_style_header($filename, $str = '')
 		return false;
 	}
 	$items_len = array();
-	for($i=0; $i<$total; $i++)
+	for($i = 0; $i <$total; $i++)
 	{
 		$items_len[$i] = ord($str{$i+$start});
 	}
 	$start += $total;
 	$items = array();
 	$tpl = '';
-	for($i=0; $i<$total; $i++)
+	for($i = 0; $i <$total; $i++)
 	{
 		$str1 = substr($str, $start, $items_len[$i]);
 		if($i == 0)	$tpl = $str1;
@@ -438,13 +431,13 @@ function xs_get_style_header($filename, $str = '')
 		return false;
 	}
 	return array(
-		'template'	=> $tpl,
-		'styles'	=> $items,
-		'date'		=> @filemtime($filename),
-		'comment'	=> $comment,
-		'offset'	=> $header_size,
-		'filename'	=> $filename,
-		'filesize'	=> $filesize,
+		'template' => $tpl,
+		'styles' => $items,
+		'date' => @filemtime($filename),
+		'comment' => $comment,
+		'offset' => $header_size,
+		'filename' => $filename,
+		'filesize' => $filesize,
 		);
 }
 
@@ -777,7 +770,7 @@ function xs_install_style($tpl, $num)
 	{
 		return false;
 	}
-	$sql = "SELECT themes_id FROM " . THEMES_TABLE . " WHERE style_name='" . xs_sql($data['style_name']) . "'";
+	$sql = "SELECT themes_id FROM " . THEMES_TABLE . " WHERE style_name = '" . $db->sql_escape($data['style_name']) . "'";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -794,8 +787,8 @@ function xs_install_style($tpl, $num)
 	$values = array();
 	foreach($data as $var => $value)
 	{
-		$vars[] = xs_sql($var);
-		$values[] = xs_sql(stripslashes($value));
+		$vars[] = $db->sql_escape($var);
+		$values[] = $db->sql_escape($value);
 	}
 	$sql = "INSERT INTO " . THEMES_TABLE . " (" . implode(', ', $vars) . ") VALUES ('" . implode("', '", $values) . "')";
 	$db->sql_return_on_error(true);
@@ -805,19 +798,7 @@ function xs_install_style($tpl, $num)
 	{
 		return false;
 	}
-	// recache themes table
-	if(defined('XS_MODS_CATEGORY_HIERARCHY210'))
-	{
-		global $themes;
-		if ( empty($themes) )
-		{
-			$themes = new themes();
-		}
-		if ( !empty($themes) )
-		{
-			$themes->read(true);
-		}
-	}
+
 	// add configuration
 	global $template;
 	if($template->add_config($tpl))
@@ -976,8 +957,8 @@ function xs_error($error, $line = 0, $file = '')
 	}
 	$template->set_filenames(array('errormsg' => XS_TPL_PATH . 'message.tpl'));
 	$template->assign_vars(array(
-			'MESSAGE_TITLE'	=> $lang['Error'],
-			'MESSAGE_TEXT'	=> $error
+			'MESSAGE_TITLE' => $lang['Error'],
+			'MESSAGE_TEXT' => $error
 		));
 	$template->pparse('errormsg');
 	xs_exit();
@@ -989,8 +970,8 @@ function xs_message($title, $message)
 	global $template;
 	$template->set_filenames(array('msg' => XS_TPL_PATH . 'message.tpl'));
 	$template->assign_vars(array(
-			'MESSAGE_TITLE'	=> $title,
-			'MESSAGE_TEXT'	=> $message
+			'MESSAGE_TITLE' => $title,
+			'MESSAGE_TEXT' => $message
 		));
 	$template->pparse('msg');
 	xs_exit();
@@ -1074,23 +1055,23 @@ function pack_dir($dir1, $dir2, $search, $replace)
 	// add current directory
 	$base_dir = ($dir2 ? $dir2 : '.') . '/';
 	$header = array(
-		'filename'	=> $base_dir,
-		'mode'		=> '40777',
-		'uid'		=> '0',
-		'gid'		=> '0',
-		'size'		=> decoct(0),
-		'mtime'		=> decoct(@filemtime($dir)),
-		'checksum'	=> '0',	// ignore checksum
-		'typeflag'	=> '5',
-		'link'		=> '',
-		'magic'		=> "ustar",
-		'version'	=> '',
-		'uname'		=> 'user',
-		'gname'		=> 'group',
-		'devmajor'	=> '',
-		'devminor'	=> '',
-		'prefix'	=> '',
-		'extra'		=> ''
+		'filename' => $base_dir,
+		'mode' => '40777',
+		'uid' => '0',
+		'gid' => '0',
+		'size' => decoct(0),
+		'mtime' => decoct(@filemtime($dir)),
+		'checksum' => '0',	// ignore checksum
+		'typeflag' => '5',
+		'link' => '',
+		'magic' => "ustar",
+		'version' => '',
+		'uname' => 'user',
+		'gname' => 'group',
+		'devmajor' => '',
+		'devminor' => '',
+		'prefix' => '',
+		'extra' => ''
 		);
 	$header_str = pack(TAR_HEADER_PACK, $header['filename'], $header['mode'], $header['uid'], $header['gid'], $header['size'], $header['mtime'], $header['checksum'], $header['typeflag'], $header['linkname'], $header['magic'], $header['version'], $header['uname'], $header['gname'], $header['devmajor'], $header['devminor'], $header['prefix'], $header['extra']);
 	$file_str = '';
@@ -1178,7 +1159,7 @@ function set_export_method($method, $data)
 {
 	global $db, $config;
 	$data['method'] = $method;
-	$str = xs_sql(serialize($data));
+	$str = $db->sql_escape(serialize($data));
 	$sql = isset($config['xs_export_data']) ? "UPDATE " . CONFIG_TABLE . " SET config_value='{$str}' WHERE config_name='xs_export_data'" : "INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('xs_export_data', '{$str}')";
 	$db->sql_query($sql);
 }
@@ -1205,11 +1186,17 @@ function xs_download_file($filename, $content, $content_type = '')
 // strip slashes for sql
 function xs_sql($sql, $strip = false)
 {
+	global $db;
+	$sql = $db->sql_escape($sql);
+	return $sql;
+	// Mighty Gorgon: old code removed...
+	/*
 	if($strip)
 	{
 		$sql = stripslashes($sql);
 	}
 	return str_replace('\\\'', '\'\'', addslashes($sql));
+	*/
 }
 
 // clean template name

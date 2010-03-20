@@ -29,23 +29,19 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = ($_GET['mode']) ? $_GET['mode'] : $_POST['mode'];
-	$mode = htmlspecialchars($mode);
-}
+$mode = request_var('mode', '');
 
 if($mode == 'save')
 {
-	$link_id = (isset($_POST['id'])) ? intval($_POST['id']) : 0;
-	$keyword = (isset($_POST['keyword'])) ? trim($_POST['keyword']) : '';
-	$title = (isset($_POST['title'])) ? trim($_POST['title']) : '';
-	$url = (isset($_POST['url'])) ? trim($_POST['url']) : '';
-	$comment = (isset($_POST['comment'])) ? trim($_POST['comment']) : '';
-	$style = (isset($_POST['style'])) ? trim($_POST['style']) : '';
-	$internal = (isset($_POST['internal'])) ? intval($_POST['internal']) : 0;
-	$forum = (isset($_POST['link_forum'])) ? intval($_POST['link_forum']) : 0;
-	$delete = (isset($_POST['delete'])) ? intval($_POST['delete']) : 0;
+	$link_id = request_post_var('id', 0);
+	$keyword = request_post_var('keyword', '', true);
+	$title = request_post_var('title', '', true);
+	$url = request_post_var('url', '');
+	$comment = request_post_var('comment', '', true);
+	$style = request_post_var('style', '');
+	$internal = request_post_var('internal', 0);
+	$forum = request_post_var('link_forum', 0);
+	$delete = request_post_var('delete', 0);
 
 	if($delete)
 	{
@@ -60,7 +56,7 @@ if($mode == 'save')
 	}
 	else
 	{
-		if($keyword == '' || $title == '' || $url == '')
+		if(($keyword == '') || ($title == '') || ($url == ''))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_enter_autolink']);
 		}
@@ -68,7 +64,7 @@ if($mode == 'save')
 		if($link_id)
 		{
 			$sql = "UPDATE " . AUTOLINKS . "
-				SET link_keyword = '" . str_replace("\'", "''", $keyword) . "', link_title = '" . str_replace("\'", "''", $title) . "', link_url = '" . str_replace("\'", "''", $url) . "', link_comment = '" . str_replace("\'", "''", $comment) . "', link_style = '" . str_replace("\'", "''", $style) . "', link_forum = '" . $forum . "', link_int = '" . $internal . "'
+				SET link_keyword = '" . $db->sql_escape($keyword) . "', link_title = '" . $db->sql_escape($title) . "', link_url = '" . $db->sql_escape($url) . "', link_comment = '" . $db->sql_escape($comment) . "', link_style = '" . $db->sql_escape($style) . "', link_forum = '" . $forum . "', link_int = '" . $internal . "'
 				WHERE link_id = " . $link_id;
 
 			$message = $lang['Autolink_updated'];
@@ -76,7 +72,7 @@ if($mode == 'save')
 		else
 		{
 			$sql = "INSERT INTO " . AUTOLINKS . " (link_keyword, link_title, link_url, link_comment, link_style, link_forum, link_int)
-				VALUES ('" . str_replace("\'", "''", $keyword) . "', '" . str_replace("\'", "''", $title) . "', '" . str_replace("\'", "''", $url) . "', '" . str_replace("\'", "''", $comment) . "', '" . str_replace("\'", "''", $style) . "', $forum, $internal)";
+				VALUES ('" . $db->sql_escape($keyword) . "', '" . $db->sql_escape($title) . "', '" . $db->sql_escape($url) . "', '" . $db->sql_escape($comment) . "', '" . $db->sql_escape($style) . "', $forum, $internal)";
 
 			$message = $lang['Autolink_added'];
 		}
@@ -90,8 +86,8 @@ if($mode == 'save')
 }
 else
 {
-	$link_id_edit = (isset($_GET['id'])) ? intval($_GET['id']) : '';
-	$forum_id = (isset($_GET['forum_id'])) ? intval($_GET['forum_id']) : 0;
+	$link_id_edit = request_get_var('id', 0);
+	$forum_id = request_get_var('forum_id', 0);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'autolinks_body.tpl'));
 
@@ -212,11 +208,11 @@ else
 		for($i = 0; $i < $autolink_count; $i++)
 		{
 			$link_id = $autolink_rows[$i]['link_id'];
-			$link_keyword = htmlspecialchars($autolink_rows[$i]['link_keyword']);
-			$link_title = htmlspecialchars($autolink_rows[$i]['link_title']);
-			$link_url = htmlspecialchars($autolink_rows[$i]['link_url']);
-			$link_comment = htmlspecialchars($autolink_rows[$i]['link_comment']);
-			$link_style = htmlspecialchars($autolink_rows[$i]['link_style']);
+			$link_keyword = $autolink_rows[$i]['link_keyword'];
+			$link_title = $autolink_rows[$i]['link_title'];
+			$link_url = $autolink_rows[$i]['link_url'];
+			$link_comment = $autolink_rows[$i]['link_comment'];
+			$link_style = $autolink_rows[$i]['link_style'];
 			$link_forum = $autolink_rows[$i]['link_forum'];
 			$link_int = $autolink_rows[$i]['link_int'];
 
@@ -243,7 +239,8 @@ else
 	else
 	{
 		$template->assign_block_vars('no_autolinks', array(
-			'NO_AUTOLINKS' => $lang['No_autolinks'])
+			'NO_AUTOLINKS' => $lang['No_autolinks']
+			)
 		);
 	}
 }

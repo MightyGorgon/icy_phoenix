@@ -28,16 +28,16 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-$str_old = trim(htmlspecialchars($_POST['str_old']));
-$str_new = trim(htmlspecialchars($_POST['str_new']));
+$str_old = request_post_var('str_old', '', true);
+$str_new = request_post_var('str_new', '', true);
 
-if ($_POST['submit'] && !empty($str_old) && $str_old != $str_new)
+if ($_POST['submit'] && !empty($str_old) && ($str_old != $str_new))
 {
 	$template->assign_block_vars("switch_forum_sent", array());
 
 	$sql = "SELECT f.forum_id, f.forum_name, t.topic_id, t.topic_title, p.post_id, p.post_time, p.post_text, u.user_id, u.username
 		FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . USERS_TABLE . " u
-		WHERE post_text LIKE '%" . $str_old . "%'
+		WHERE post_text LIKE '%" . $db->sql_escape($str_old) . "%'
 		AND p.topic_id = t.topic_id
 		AND p.forum_id = f.forum_id
 		AND p.poster_id = u.user_id
@@ -63,8 +63,8 @@ if ($_POST['submit'] && !empty($str_old) && $str_old != $str_new)
 			);
 
 			$sql = "UPDATE " . POSTS_TABLE . "
-				SET post_text = '" . str_replace($str_old, $str_new, addslashes($row['post_text'])) . "'
-				WHERE post_id = '" . $row['post_id'] . "';";
+				SET post_text = '" . $db->sql_escape(str_replace($str_old, $str_new, $row['post_text'])) . "'
+				WHERE post_id = " . $row['post_id'];
 			$result = $db->sql_query($sql);
 		}
 
@@ -96,7 +96,8 @@ $template->assign_vars(array(
 
 	'STR_OLD' => $str_old,
 	'STR_NEW' => $str_new,
-	'POST_IMG' => '../' . $images['icon_latest_reply'])
+	'POST_IMG' => '../' . $images['icon_latest_reply']
+	)
 );
 
 $template->pparse('body');

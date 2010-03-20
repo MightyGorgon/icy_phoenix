@@ -35,7 +35,7 @@ function validate_username($username)
 
 	$sql = "SELECT username
 		FROM " . USERS_TABLE . "
-		WHERE LOWER(username) = '" . strtolower($username) . "'";
+		WHERE LOWER(username) = '" . $db->sql_escape(strtolower($username)) . "'";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -54,7 +54,7 @@ function validate_username($username)
 
 	$sql = "SELECT group_name
 		FROM " . GROUPS_TABLE . "
-		WHERE LOWER(group_name) = '" . strtolower($username) . "'";
+		WHERE LOWER(group_name) = '" . $db->sql_escape(strtolower($username)) . "'";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -91,7 +91,7 @@ function validate_username($username)
 	$db->sql_freeresult($result);
 
 	$sql = "SELECT word
-		FROM  " . WORDS_TABLE;
+		FROM " . WORDS_TABLE;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -163,7 +163,7 @@ function validate_email($email)
 
 			$sql = "SELECT user_email
 				FROM " . USERS_TABLE . "
-				WHERE user_email = '" . str_replace("\'", "''", $email) . "'";
+				WHERE user_email = '" . $db->sql_escape($email) . "'";
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))

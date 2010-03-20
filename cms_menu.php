@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);

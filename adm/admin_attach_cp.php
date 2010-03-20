@@ -29,20 +29,20 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-if (!intval($attach_config['allow_ftp_upload']))
+if (!intval($config['allow_ftp_upload']))
 {
-	if (($attach_config['upload_dir'][0] == '/') || (($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':')))
+	if (($config['upload_dir'][0] == '/') || (($config['upload_dir'][0] != '/') && ($config['upload_dir'][1] == ':')))
 	{
-		$upload_dir = $attach_config['upload_dir'];
+		$upload_dir = $config['upload_dir'];
 	}
 	else
 	{
-		$upload_dir = '../' . $attach_config['upload_dir'];
+		$upload_dir = '../' . $config['upload_dir'];
 	}
 }
 else
 {
-	$upload_dir = $attach_config['download_path'];
+	$upload_dir = $config['download_path'];
 }
 
 // Init Variables
@@ -67,7 +67,7 @@ if ($view == 'username')
 		$sort_order = 'DESC';
 	}
 }
-else if ($view == 'attachments')
+elseif ($view == 'attachments')
 {
 	$mode_types_text = array($lang['Sort_Filename'], $lang['Sort_Comment'], $lang['Sort_Extension'], $lang['Sort_Size'], $lang['Sort_Downloads'], $lang['Sort_Posttime'], /* $lang['Sort_Posts'] */);
 	$mode_types = array('real_filename', 'comment', 'extension', 'filesize', 'downloads', 'post_time' /* , 'posts' */);
@@ -78,7 +78,7 @@ else if ($view == 'attachments')
 		$sort_order = 'ASC';
 	}
 }
-else if ($view == 'search')
+elseif ($view == 'search')
 {
 	$mode_types_text = array($lang['Sort_Filename'], $lang['Sort_Comment'], $lang['Sort_Extension'], $lang['Sort_Size'], $lang['Sort_Downloads'], $lang['Sort_Posttime'], /* $lang['Sort_Posts'] */);
 	$mode_types = array('real_filename', 'comment', 'extension', 'filesize', 'downloads', 'post_time' /* , 'posts'*/);
@@ -200,7 +200,7 @@ $delete_id_list = request_var('delete_id_list', array(0));
 
 $confirm = ($_POST['confirm']) ? true : false;
 
-if ($confirm && sizeof($delete_id_list) > 0)
+if ($confirm && (sizeof($delete_id_list) > 0))
 {
 	$attachments = array();
 
@@ -243,16 +243,17 @@ else if ($delete && sizeof($delete_id_list) > 0)
 
 // Assign Default Template Vars
 $template->assign_vars(array(
-	'L_VIEW'					=> $lang['View'],
-	'L_SUBMIT'					=> $lang['Submit'],
-	'L_CONTROL_PANEL_TITLE'		=> $lang['Control_panel_title'],
-	'L_CONTROL_PANEL_EXPLAIN'	=> $lang['Control_panel_explain'],
+	'L_VIEW' => $lang['View'],
+	'L_SUBMIT' => $lang['Submit'],
+	'L_CONTROL_PANEL_TITLE' => $lang['Control_panel_title'],
+	'L_CONTROL_PANEL_EXPLAIN' => $lang['Control_panel_explain'],
 
 	'S_VIEW_SELECT'	=> $select_view,
-	'S_MODE_ACTION'	=> append_sid('admin_attach_cp.' . PHP_EXT))
+	'S_MODE_ACTION'	=> append_sid('admin_attach_cp.' . PHP_EXT)
+	)
 );
 
-if ($submit_change && $view == 'attachments')
+if ($submit_change && ($view == 'attachments'))
 {
 	$attach_change_list = request_var('attach_id_list', array(0));
 	$attach_comment_list = request_var('attach_comment_list', array(''));
@@ -295,17 +296,17 @@ if ($view == 'stats')
 
 	$upload_dir_size = get_formatted_dirsize();
 
-	if ($attach_config['attachment_quota'] >= 1048576)
+	if ($config['attachment_quota'] >= 1048576)
 	{
-		$attachment_quota = round($attach_config['attachment_quota'] / 1048576 * 100) / 100 . ' ' . $lang['MB'];
+		$attachment_quota = round($config['attachment_quota'] / 1048576 * 100) / 100 . ' ' . $lang['MB'];
 	}
-	else if ($attach_config['attachment_quota'] >= 1024)
+	else if ($config['attachment_quota'] >= 1024)
 	{
-		$attachment_quota = round($attach_config['attachment_quota'] / 1024 * 100) / 100 . ' ' . $lang['KB'];
+		$attachment_quota = round($config['attachment_quota'] / 1024 * 100) / 100 . ' ' . $lang['KB'];
 	}
 	else
 	{
-		$attachment_quota = $attach_config['attachment_quota'] . ' ' . $lang['Bytes'];
+		$attachment_quota = $config['attachment_quota'] . ' ' . $lang['Bytes'];
 	}
 
 	$sql = "SELECT count(*) AS total
@@ -349,23 +350,24 @@ if ($view == 'stats')
 	$db->sql_freeresult($result);
 
 	$template->assign_vars(array(
-		'L_STATISTIC'				=> $lang['Statistic'],
-		'L_VALUE'					=> $lang['Value'],
-		'L_NUMBER_OF_ATTACHMENTS'	=> $lang['Number_of_attachments'],
-		'L_TOTAL_FILESIZE'			=> $lang['Total_filesize'],
-		'L_ATTACH_QUOTA'			=> $lang['Attach_quota'],
-		'L_NUMBER_OF_POSTS'			=> $lang['Number_posts_attach'],
-		'L_NUMBER_OF_PMS'			=> $lang['Number_pms_attach'],
-		'L_NUMBER_OF_TOPICS'		=> $lang['Number_topics_attach'],
-		'L_NUMBER_OF_USERS'			=> $lang['Number_users_attach'],
+		'L_STATISTIC' => $lang['Statistic'],
+		'L_VALUE' => $lang['Value'],
+		'L_NUMBER_OF_ATTACHMENTS' => $lang['Number_of_attachments'],
+		'L_TOTAL_FILESIZE' => $lang['Total_filesize'],
+		'L_ATTACH_QUOTA' => $lang['Attach_quota'],
+		'L_NUMBER_OF_POSTS' => $lang['Number_posts_attach'],
+		'L_NUMBER_OF_PMS' => $lang['Number_pms_attach'],
+		'L_NUMBER_OF_TOPICS' => $lang['Number_topics_attach'],
+		'L_NUMBER_OF_USERS' => $lang['Number_users_attach'],
 
-		'TOTAL_FILESIZE'			=> $upload_dir_size,
-		'ATTACH_QUOTA'				=> $attachment_quota,
-		'NUMBER_OF_ATTACHMENTS'		=> $number_of_attachments,
-		'NUMBER_OF_POSTS'			=> $number_of_posts,
-		'NUMBER_OF_PMS'				=> $number_of_pms,
-		'NUMBER_OF_TOPICS'			=> $number_of_topics,
-		'NUMBER_OF_USERS'			=> $number_of_users)
+		'TOTAL_FILESIZE' => $upload_dir_size,
+		'ATTACH_QUOTA' => $attachment_quota,
+		'NUMBER_OF_ATTACHMENTS' => $number_of_attachments,
+		'NUMBER_OF_POSTS' => $number_of_posts,
+		'NUMBER_OF_PMS' => $number_of_pms,
+		'NUMBER_OF_TOPICS' => $number_of_topics,
+		'NUMBER_OF_USERS' => $number_of_users
+		)
 	);
 
 }
@@ -411,46 +413,46 @@ if ($view == 'search')
 	$template->set_filenames(array('body' => ADM_TPL . 'attach_cp_search.tpl'));
 
 	$template->assign_vars(array(
-		'L_ATTACH_SEARCH_QUERY'		=> $lang['Attach_search_query'],
-		'L_FILENAME'				=> $lang['File_name'],
-		'L_COMMENT'					=> $lang['File_comment'],
-		'L_SEARCH_OPTIONS'			=> $lang['Search_options'],
-		'L_SEARCH_AUTHOR'			=> $lang['Search_author'],
-		'L_WILDCARD_EXPLAIN'		=> $lang['Search_wildcard_explain'],
-		'L_SIZE_SMALLER_THAN'		=> $lang['Size_smaller_than'],
-		'L_SIZE_GREATER_THAN'		=> $lang['Size_greater_than'],
-		'L_COUNT_SMALLER_THAN'		=> $lang['Count_smaller_than'],
-		'L_COUNT_GREATER_THAN'		=> $lang['Count_greater_than'],
-		'L_MORE_DAYS_OLD'			=> $lang['More_days_old'],
-		'L_CATEGORY'				=> $lang['Category'],
-		'L_ORDER'					=> $lang['Order'],
-		'L_SORT_BY'					=> $lang['Select_sort_method'],
-		'L_FORUM'					=> $lang['Forum'],
-		'L_SEARCH'					=> $lang['Search'],
+		'L_ATTACH_SEARCH_QUERY' => $lang['Attach_search_query'],
+		'L_FILENAME' => $lang['File_name'],
+		'L_COMMENT' => $lang['File_comment'],
+		'L_SEARCH_OPTIONS' => $lang['Search_options'],
+		'L_SEARCH_AUTHOR' => $lang['Search_author'],
+		'L_WILDCARD_EXPLAIN' => $lang['Search_wildcard_explain'],
+		'L_SIZE_SMALLER_THAN' => $lang['Size_smaller_than'],
+		'L_SIZE_GREATER_THAN' => $lang['Size_greater_than'],
+		'L_COUNT_SMALLER_THAN' => $lang['Count_smaller_than'],
+		'L_COUNT_GREATER_THAN' => $lang['Count_greater_than'],
+		'L_MORE_DAYS_OLD' => $lang['More_days_old'],
+		'L_CATEGORY' => $lang['Category'],
+		'L_ORDER' => $lang['Order'],
+		'L_SORT_BY' => $lang['Select_sort_method'],
+		'L_FORUM' => $lang['Forum'],
+		'L_SEARCH' => $lang['Search'],
 
-		'S_FORUM_OPTIONS'			=> $s_forums,
-		'S_CATEGORY_OPTIONS'		=> $s_categories,
-		'S_SORT_OPTIONS'			=> $select_sort_mode,
-		'S_SORT_ORDER'				=> $select_sort_order)
+		'S_FORUM_OPTIONS' => $s_forums,
+		'S_CATEGORY_OPTIONS' => $s_categories,
+		'S_SORT_OPTIONS' => $select_sort_mode,
+		'S_SORT_ORDER' => $select_sort_order
+		)
 	);
 }
 
 // Username
 if ($view == 'username')
 {
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'attach_cp_user.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'attach_cp_user.tpl'));
 
 	$template->assign_vars(array(
-		'L_SELECT_SORT_METHOD'	=> $lang['Select_sort_method'],
-		'L_ORDER'				=> $lang['Order'],
-		'L_USERNAME'			=> $lang['Username'],
-		'L_TOTAL_SIZE'			=> $lang['Size_in_kb'],
-		'L_ATTACHMENTS'			=> $lang['Attachments'],
+		'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
+		'L_ORDER' => $lang['Order'],
+		'L_USERNAME' => $lang['Username'],
+		'L_TOTAL_SIZE' => $lang['Size_in_kb'],
+		'L_ATTACHMENTS' => $lang['Attachments'],
 
-		'S_MODE_SELECT'			=> $select_sort_mode,
-		'S_ORDER_SELECT'		=> $select_sort_order)
+		'S_MODE_SELECT' => $select_sort_mode,
+		'S_ORDER_SELECT' => $select_sort_order
+		)
 	);
 
 
@@ -520,12 +522,12 @@ if ($view == 'username')
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('memberrow', array(
-				'ROW_NUMBER'		=> $i + (intval($_GET['start']) + 1),
-				'ROW_CLASS'			=> $row_class,
-				'USERNAME'			=> $username,
-				'TOTAL_ATTACHMENTS'	=> $total_attachments,
-				'TOTAL_SIZE'		=> round(($total_size / MEGABYTE), 2),
-				'U_VIEW_MEMBER'		=> append_sid('admin_attach_cp.' . PHP_EXT . '?view=attachments&amp;uid=' . $members[$i]['user_id']))
+				'ROW_NUMBER' => $i + (intval($_GET['start']) + 1),
+				'ROW_CLASS' => $row_class,
+				'USERNAME' => $username,
+				'TOTAL_ATTACHMENTS' => $total_attachments,
+				'TOTAL_SIZE' => round(($total_size / MEGABYTE), 2),
+				'U_VIEW_MEMBER' => append_sid('admin_attach_cp.' . PHP_EXT . '?view=attachments&amp;uid=' . $members[$i]['user_id']))
 			);
 		}
 	}
@@ -546,29 +548,28 @@ if ($view == 'attachments')
 
 	$hidden_fields = '';
 
-	$template->set_filenames(array(
-		'body' => ADM_TPL . 'attach_cp_attachments.tpl')
-	);
+	$template->set_filenames(array('body' => ADM_TPL . 'attach_cp_attachments.tpl'));
 
 	$template->assign_vars(array(
-		'L_SELECT_SORT_METHOD'	=> $lang['Select_sort_method'],
-		'L_ORDER'				=> $lang['Order'],
+		'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
+		'L_ORDER' => $lang['Order'],
 
-		'L_FILENAME'			=> $lang['File_name'],
-		'L_FILECOMMENT'			=> $lang['File_comment_cp'],
-		'L_EXTENSION'			=> $lang['Extension'],
-		'L_SIZE'				=> $lang['Size_in_kb'],
-		'L_DOWNLOADS'			=> $lang['Downloads'],
-		'L_POST_TIME'			=> $lang['Post_time'],
-		'L_POSTED_IN_TOPIC'		=> $lang['Posted_in_topic'],
-		'L_DELETE'				=> $lang['Delete'],
-		'L_DELETE_MARKED'		=> $lang['Delete_marked'],
-		'L_SUBMIT_CHANGES'		=> $lang['Submit_changes'],
-		'L_MARK_ALL'			=> $lang['Mark_all'],
-		'L_UNMARK_ALL'			=> $lang['Unmark_all'],
+		'L_FILENAME' => $lang['File_name'],
+		'L_FILECOMMENT' => $lang['File_comment_cp'],
+		'L_EXTENSION' => $lang['Extension'],
+		'L_SIZE' => $lang['Size_in_kb'],
+		'L_DOWNLOADS' => $lang['Downloads'],
+		'L_POST_TIME' => $lang['Post_time'],
+		'L_POSTED_IN_TOPIC' => $lang['Posted_in_topic'],
+		'L_DELETE' => $lang['Delete'],
+		'L_DELETE_MARKED' => $lang['Delete_marked'],
+		'L_SUBMIT_CHANGES' => $lang['Submit_changes'],
+		'L_MARK_ALL' => $lang['Mark_all'],
+		'L_UNMARK_ALL' => $lang['Unmark_all'],
 
-		'S_MODE_SELECT'			=> $select_sort_mode,
-		'S_ORDER_SELECT'		=> $select_sort_order)
+		'S_MODE_SELECT' => $select_sort_mode,
+		'S_ORDER_SELECT' => $select_sort_order
+		)
 	);
 
 	$total_rows = 0;
@@ -589,8 +590,9 @@ if ($view == 'attachments')
 		$template->assign_block_vars('switch_user_based', array());
 
 		$template->assign_vars(array(
-			'S_USER_HIDDEN'			=> $s_hidden,
-			'L_STATISTICS_FOR_USER'	=> sprintf($lang['Statistics_for_user'], $username))
+			'S_USER_HIDDEN' => $s_hidden,
+			'L_STATISTICS_FOR_USER' => sprintf($lang['Statistics_for_user'], $username)
+			)
 		);
 
 		$sql = "SELECT attach_id
@@ -622,7 +624,7 @@ if ($view == 'attachments')
 			$order_by;
 
 	}
-	else if ($search_based)
+	elseif ($search_based)
 	{
 		// we are called from search
 		$attachments = search_attachments($order_by, $total_rows);
@@ -705,21 +707,22 @@ if ($view == 'attachments')
 			$hidden_field = '<input type="hidden" name="attach_id_list[]" value="' . intval($attachments[$i]['attach_id']) . '" />';
 
 			$template->assign_block_vars('attachrow', array(
-				'ROW_NUMBER'	=> $i + ($_GET['start'] + 1),
-				'ROW_CLASS'		=> $row_class,
+				'ROW_NUMBER' => $i + ($_GET['start'] + 1),
+				'ROW_CLASS' => $row_class,
 
-				'FILENAME'		=> $attachments[$i]['real_filename'],
-				'COMMENT'		=> $attachments[$i]['comment'],
-				'EXTENSION'		=> $attachments[$i]['extension'],
-				'SIZE'			=> round(($attachments[$i]['filesize'] / MEGABYTE), 2),
+				'FILENAME' => $attachments[$i]['real_filename'],
+				'COMMENT' => $attachments[$i]['comment'],
+				'EXTENSION' => $attachments[$i]['extension'],
+				'SIZE' => round(($attachments[$i]['filesize'] / MEGABYTE), 2),
 				'DOWNLOAD_COUNT'=> $attachments[$i]['download_count'],
-				'POST_TIME'		=> create_date($config['default_dateformat'], $attachments[$i]['filetime'], $config['board_timezone']),
-				'POST_TITLE'	=> $post_titles,
+				'POST_TIME' => create_date($config['default_dateformat'], $attachments[$i]['filetime'], $config['board_timezone']),
+				'POST_TITLE' => $post_titles,
 
-				'S_DELETE_BOX'	=> $delete_box,
-				'S_HIDDEN'		=> $hidden_field,
-				'U_VIEW_ATTACHMENT'	=> append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments[$i]['attach_id']))
-//				'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../viewtopic." . PHP_EXT . "?" . POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : '')
+				'S_DELETE_BOX' => $delete_box,
+				'S_HIDDEN' => $hidden_field,
+				'U_VIEW_ATTACHMENT' => append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments[$i]['attach_id']),
+				//'U_VIEW_POST' => ($attachments[$i]['post_id'] != 0) ? append_sid("../" . CMS_PAGE_VIEWTOPIC . "?" . POST_POST_URL . "=" . $attachments[$i]['post_id'] . "#" . $attachments[$i]['post_id']) : ''
+				)
 			);
 
 		}
@@ -743,15 +746,17 @@ if ($do_pagination && $total_rows > $config['topics_per_page'])
 	$pagination = generate_pagination('admin_attach_cp.' . PHP_EXT . '?view=' . $view . '&amp;mode=' . $mode . '&amp;order=' . $sort_order . '&amp;uid=' . $uid, $total_rows, $config['topics_per_page'], $start).'&nbsp;';
 
 	$template->assign_vars(array(
-		'PAGINATION'	=> $pagination,
-		'PAGE_NUMBER'	=> sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_rows / $config['topics_per_page'])),
+		'PAGINATION' => $pagination,
+		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_rows / $config['topics_per_page'])),
 
-		'L_GOTO_PAGE'	=> $lang['Goto_page'])
+		'L_GOTO_PAGE' => $lang['Goto_page']
+		)
 	);
 }
 
 $template->assign_vars(array(
-	'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $attach_config['attach_version']))
+	'ATTACH_VERSION' => sprintf($lang['Attachment_version'], $config['attach_version'])
+	)
 );
 
 $template->pparse('body');

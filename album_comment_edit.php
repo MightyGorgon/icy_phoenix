@@ -40,24 +40,14 @@ if( $album_config['comment'] == 0 )
 // ------------------------------------
 // Check the request
 // ------------------------------------
-
-if (isset($_POST['message']))
-{
-	$_POST['comment'] = $_POST['message'];
-}
-
-if(isset($_GET['comment_id']))
-{
-	$comment_id = intval($_GET['comment_id']);
-}
-elseif(isset($_POST['comment_id']))
-{
-	$comment_id = intval($_POST['comment_id']);
-}
-else
+$comment_id = request_var('comment_id', 0);
+if(empty($comment_id))
 {
 	message_die(GENERAL_ERROR, 'No comment_id specified');
 }
+$message = request_var('message', '', true);
+$comment_text = request_var('comment', '', true);
+$message = (empty($message) ? $comment_text : $message);
 
 // ------------------------------------
 // Get the comment info
@@ -146,11 +136,10 @@ else
 | Main work here...
 +----------------------------------------------------------
 */
-
-if( !isset($_POST['comment']) )
+if(empty($message))
 {
 	// Comments Screen
-	if( ($thispic['pic_user_id'] == ALBUM_GUEST) || ($thispic['username'] == '') )
+	if(($thispic['pic_user_id'] == ALBUM_GUEST) || ($thispic['username'] == ''))
 	{
 		$poster = ($thispic['pic_username'] == '') ? $lang['Guest'] : $thispic['pic_username'];
 	}
@@ -198,7 +187,7 @@ if( !isset($_POST['comment']) )
 		'U_PIC' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $pic_id)),
 
 		'PIC_ID' => $pic_id,
-		'PIC_TITLE' => htmlspecialchars($thispic['pic_title']),
+		'PIC_TITLE' => $thispic['pic_title'],
 		'PIC_DESC' => nl2br($thispic['pic_desc']),
 		'POSTER' => $poster,
 		'PIC_TIME' => create_date($config['default_dateformat'], $thispic['pic_time'], $config['board_timezone']),
@@ -231,13 +220,9 @@ if( !isset($_POST['comment']) )
 }
 else
 {
-	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						Comment Submited
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-	$comment_text = str_replace("\'", "''", htmlspecialchars(substr(trim($_POST['comment']), 0, $album_config['desc_length'])));
-
-	if( empty($comment_text) )
+	// Comment Submited
+	$comment_text = substr($message, 0, $album_config['desc_length']);
+	if(empty($comment_text))
 	{
 		message_die(GENERAL_ERROR, $lang['Comment_no_text']);
 	}
@@ -252,7 +237,7 @@ else
 	// Update the DB
 	// --------------------------------
 	$sql = "UPDATE ". ALBUM_COMMENT_TABLE ."
-			SET comment_text = '$comment_text', comment_edit_time = '$comment_edit_time', comment_edit_count = comment_edit_count + 1, comment_edit_user_id = '$comment_edit_user_id'
+			SET comment_text = '" . $db->sql_escape($comment_text) . "', comment_edit_time = '$comment_edit_time', comment_edit_count = comment_edit_count + 1, comment_edit_user_id = '$comment_edit_user_id'
 			WHERE comment_id = '$comment_id'";
 	$result = $db->sql_query($sql);
 

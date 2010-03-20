@@ -48,7 +48,7 @@ $topic_id = request_var(POST_TOPIC_URL, 0);
 $topic_id = empty($topic_id) ? request_var('topic', 0) : $topic_id;
 $topic_id = ($topic_id > 0) ? $topic_id : 0;
 
-if($topic_id == 0)
+if(empty($topic_id))
 {
 	ob_end_clean();
 	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');

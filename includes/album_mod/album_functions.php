@@ -177,7 +177,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	// Generate the SQL query based on $access_type and $moderator_check
 	// --------------------------------
-		$sql = 'SELECT cat_id, cat_user_id';
+	$sql = 'SELECT cat_id, cat_user_id';
 
 
 	for ($i = 0; $i < sizeof($access_type); $i++)
@@ -370,8 +370,8 @@ function personal_gallery_access($check_view, $check_upload)
 				{
 					$sql = "SELECT group_id, user_id
 							FROM ". USER_GROUP_TABLE ."
-							WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
-								AND group_id IN (". $album_config['personal_gallery_private'] .")";
+							WHERE user_id = '" . $userdata['user_id'] . "' AND user_pending = 0
+								AND group_id IN (" . $album_config['personal_gallery_private'] . ")";
 					$result = $db->sql_query($sql);
 
 					if($db->sql_numrows($result) > 0)
@@ -413,7 +413,7 @@ function personal_gallery_access($check_view, $check_upload)
 				{
 					$personal_gallery_access['view'] = 1;
 				}
-				else if(!empty($album_config['personal_gallery_private']) and $userdata['session_logged_in'])
+				elseif(!empty($album_config['personal_gallery_private']) and $userdata['session_logged_in'])
 				{
 					$sql = "SELECT group_id, user_id
 							FROM ". USER_GROUP_TABLE ."
@@ -522,14 +522,7 @@ function album_end()
 // ----------------------------------------------------------------
 function was_file_uploaded($files_array, $index)
 {
-	if (@phpversion() < '4.2.0')
-	{
-		return ((empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') || $files_array['size'][$index] == 0) ? false : true;
-	}
-	else
-	{
-		return (((empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') || $files_array['size'][$index] == 0) || $files_array['error'][$index] == 4) ? false : true;
-	}
+	return (((empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') || $files_array['size'][$index] == 0) || $files_array['error'][$index] == 4) ? false : true;
 }
 
 // ----------------------------------------------------------------
@@ -539,21 +532,8 @@ function was_file_uploaded($files_array, $index)
 function file_uploaded_exceeds_max_size($files_array, $index)
 {
 	// for some bizar reason I can't get the next few lines to work right 'error' is always = 0
-	if (@phpversion() >= '4.2.0')
-	{
-		// UPLOAD_ERR_INI_SIZE == 1 (was first defined in 4.3.0, so 1 here instead)
-		return ($files_array['error'][$index] == 1) ? true : false;
-	}
-	else
-	{
-		// earlier version of PHP (before 4.2.0) the error associated array didn't exist
-		// so we need to TRY to check if the file was too big
-		// the rule is the following (not fool proof):
-		//
-		// if 'name' isn't empty BUT 'tmp_name' and 'size' are empty (or for size = 0)
-		// then we must have exceeded our max file size (or another error occured)
-		return (!empty($files_array['name'][$index]) && ((empty($files_array['tmp_name'][$index]) || $files_array['tmp_name'][$index] == 'none') &&  $files_array['size'][$index] == 0)) ? true : false;
-	}
+	// UPLOAD_ERR_INI_SIZE == 1 (was first defined in 4.3.0, so 1 here instead)
+	return ($files_array['error'][$index] == 1) ? true : false;
 }
 
 // ----------------------------------------------------------------
@@ -682,11 +662,11 @@ function ImageRating($rating, $css_style = 'border-style:none')
 		}
 		else
 		{
-			$r = "";
+			$r = '';
 			for ($temp = 1; $temp <= $rating; $temp++)
 			{
-				//$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rank.gif" style="' . $css_style . '" align="middle" />&nbsp;';
-				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" align="middle" />&nbsp;';
+				//$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rank.gif" style="' . $css_style . '" alt="" />&nbsp;';
+				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" alt="" />&nbsp;';
 			}
 			return ($r);
 		}
@@ -710,11 +690,11 @@ function ImageRating($rating, $css_style = 'border-style:none')
 		}
 		else
 		{
-			$r = "";
+			$r = '';
 			for ($temp = 1; $temp <= $rating; $temp++)
 			{
-				//$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rank.gif" style="' . $css_style . '" align="middle" />&nbsp;';
-				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" align="middle" />&nbsp;';
+				//$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rank.gif" style="' . $css_style . '" alt="" />&nbsp;';
+				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" alt="" />&nbsp;';
 			}
 		}
 		return (round($rating, 2) . '&nbsp;' . $r);
@@ -870,21 +850,6 @@ function album_comment_notify($pic_id)
 				AND user_id IN ($update_watched_sql)";
 		$db->sql_query($sql);
 	}
-}
-
-function fap_create_server_url()
-{
-	// usage: $server_url = create_server_url();
-	global $config;
-
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-	$server_name = trim($config['server_name']);
-	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-	$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
-	$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
-
-	return $server_url;
 }
 
 function mx_album_uploadfilename($UploadFile)

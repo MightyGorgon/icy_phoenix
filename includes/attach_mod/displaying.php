@@ -32,11 +32,11 @@ $attachments = array();
 */
 function attachment_exists($filename)
 {
-	global $upload_dir, $attach_config;
+	global $upload_dir, $config;
 
 	$filename = basename($filename);
 
-	if (!intval($attach_config['allow_ftp_upload']))
+	if (!intval($config['allow_ftp_upload']))
 	{
 		if (!@file_exists(@amod_realpath($upload_dir . '/' . $filename)))
 		{
@@ -250,14 +250,14 @@ function init_display_template($template_var, $replacement, $filename = 'viewtop
 */
 function topic_attachment_image($switch_attachment)
 {
-	global $attach_config, $is_auth;
+	global $config, $is_auth;
 
-	if (intval($switch_attachment) == 0 || (!($is_auth['auth_download'] && $is_auth['auth_view'])) || intval($attach_config['disable_mod']) || $attach_config['topic_icon'] == '')
+	if (intval($switch_attachment) == 0 || (!($is_auth['auth_download'] && $is_auth['auth_view'])) || intval($config['disable_attachments_mod']) || $config['topic_icon'] == '')
 	{
 		return '';
 	}
 
-	$image = '<img src="' . $attach_config['topic_icon'] . '" alt="" /> ';
+	$image = '<img src="' . $config['topic_icon'] . '" alt="" /> ';
 
 	return $image;
 }
@@ -267,9 +267,9 @@ function topic_attachment_image($switch_attachment)
 */
 function display_post_attachments($post_id, $switch_attachment)
 {
-	global $attach_config, $is_auth;
+	global $config, $is_auth;
 
-	if (intval($switch_attachment) == 0 || intval($attach_config['disable_mod']))
+	if (intval($switch_attachment) == 0 || intval($config['disable_attachments_mod']))
 	{
 		return;
 	}
@@ -291,11 +291,11 @@ function display_post_attachments($post_id, $switch_attachment)
 //
 function display_assign_link($post_id)
 {
-	global $attach_config, $is_auth;
+	global $config, $is_auth;
 
 	$image = 'templates/subSilver/images/icon_mini_message.gif';
 
-	if ((intval($attach_config['disable_mod'])) || (!(($is_auth['auth_download']) && ($is_auth['auth_view']))))
+	if ((intval($config['disable_attachments_mod'])) || (!(($is_auth['auth_download']) && ($is_auth['auth_view']))))
 	{
 		return ('');
 	}
@@ -312,7 +312,7 @@ function display_assign_link($post_id)
 */
 function init_display_post_attachments($switch_attachment, $article = array(), $forum_attach = false, $block_id = 0)
 {
-	global $attach_config, $db, $is_auth, $template, $lang, $postrow, $total_posts, $attachments, $forum_row, $forum_topic_data;
+	global $config, $db, $is_auth, $template, $lang, $postrow, $total_posts, $attachments, $forum_row, $forum_topic_data;
 	global $is_news_index;
 
 	if (empty($forum_topic_data) && !empty($forum_row))
@@ -326,7 +326,7 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 
 	if (sizeof($article) == 0)
 	{
-		if ((intval($switch_attachment) == 0) || intval($attach_config['disable_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])))
+		if ((intval($switch_attachment) == 0) || intval($config['disable_attachments_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])))
 		{
 			return;
 		}
@@ -416,16 +416,16 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 */
 function privmsgs_attachment_image($privmsg_id)
 {
-	global $attach_config, $userdata;
+	global $config, $userdata;
 
-	$auth = ($userdata['user_level'] == ADMIN) ? 1 : intval($attach_config['allow_pm_attach']);
+	$auth = ($userdata['user_level'] == ADMIN) ? 1 : intval($config['allow_pm_attach']);
 
-	if (!attachment_exists_db($privmsg_id, PAGE_PRIVMSGS) || !$auth || intval($attach_config['disable_mod']) || $attach_config['topic_icon'] == '')
+	if (!attachment_exists_db($privmsg_id, PAGE_PRIVMSGS) || !$auth || intval($config['disable_attachments_mod']) || $config['topic_icon'] == '')
 	{
 		return '';
 	}
 
-	$image = '<img src="' . $attach_config['topic_icon'] . '" alt="" /> ';
+	$image = '<img src="' . $config['topic_icon'] . '" alt="" /> ';
 
 	return $image;
 }
@@ -435,7 +435,7 @@ function privmsgs_attachment_image($privmsg_id)
 */
 function display_pm_attachments($privmsgs_id, $switch_attachment)
 {
-	global $attach_config, $userdata, $template, $lang;
+	global $config, $userdata, $template, $lang;
 
 	if ($userdata['user_level'] == ADMIN)
 	{
@@ -443,10 +443,10 @@ function display_pm_attachments($privmsgs_id, $switch_attachment)
 	}
 	else
 	{
-		$auth_download = intval($attach_config['allow_pm_attach']);
+		$auth_download = intval($config['allow_pm_attach']);
 	}
 
-	if (intval($switch_attachment) == 0 || intval($attach_config['disable_mod']) || !$auth_download)
+	if (intval($switch_attachment) == 0 || intval($config['disable_attachments_mod']) || !$auth_download)
 	{
 		return;
 	}
@@ -465,7 +465,7 @@ function display_pm_attachments($privmsgs_id, $switch_attachment)
 */
 function init_display_pm_attachments($switch_attachment)
 {
-	global $attach_config, $template, $userdata, $lang, $attachments, $privmsg;
+	global $config, $template, $userdata, $lang, $attachments, $privmsg;
 
 	if ($userdata['user_level'] == ADMIN)
 	{
@@ -473,10 +473,10 @@ function init_display_pm_attachments($switch_attachment)
 	}
 	else
 	{
-		$auth_download = intval($attach_config['allow_pm_attach']);
+		$auth_download = intval($config['allow_pm_attach']);
 	}
 
-	if (intval($switch_attachment) == 0 || intval($attach_config['disable_mod']) || !$auth_download)
+	if (intval($switch_attachment) == 0 || intval($config['disable_attachments_mod']) || !$auth_download)
 	{
 		return;
 	}
@@ -519,9 +519,9 @@ function init_display_pm_attachments($switch_attachment)
 */
 function display_review_attachments($post_id, $switch_attachment, $is_auth)
 {
-	global $attach_config, $attachments;
+	global $config, $attachments;
 
-	if (intval($switch_attachment) == 0 || intval($attach_config['disable_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])) || intval($attach_config['attachment_topic_review']) == 0)
+	if (intval($switch_attachment) == 0 || intval($config['disable_attachments_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])) || intval($config['attachment_topic_review']) == 0)
 	{
 		return;
 	}
@@ -542,9 +542,9 @@ function display_review_attachments($post_id, $switch_attachment, $is_auth)
 */
 function init_display_review_attachments($is_auth)
 {
-	global $attach_config;
+	global $config;
 
-	if (intval($attach_config['disable_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])) || intval($attach_config['attachment_topic_review']) == 0)
+	if (intval($config['disable_attachments_mod']) || (!($is_auth['auth_download'] && $is_auth['auth_view'])) || intval($config['attachment_topic_review']) == 0)
 	{
 		return;
 	}
@@ -564,7 +564,7 @@ function init_display_review_attachments($is_auth)
 */
 function display_attachments_preview($attachment_id_list, $attachment_list, $attachment_filesize_list, $attachment_filename_list, $attachment_comment_list, $attachment_extension_list, $attachment_thumbnail_list)
 {
-	global $attach_config, $is_auth, $allowed_extensions, $userdata, $lang, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme;
+	global $config, $is_auth, $allowed_extensions, $userdata, $lang, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme;
 
 	if (sizeof($attachment_list) != 0)
 	{
@@ -641,9 +641,9 @@ function display_attachments_preview($attachment_id_list, $attachment_list, $att
 				{
 					$swf = true;
 				}
-				elseif ((intval($display_categories[$extension]) == IMAGE_CAT) && intval($attach_config['img_display_inlined']))
+				elseif ((intval($display_categories[$extension]) == IMAGE_CAT) && intval($config['img_display_inlined']))
 				{
-					if ((intval($attach_config['img_link_width']) != 0) || (intval($attach_config['img_link_height']) != 0))
+					if ((intval($config['img_link_width']) != 0) || (intval($config['img_link_height']) != 0))
 					{
 						list($width, $height) = image_getdimension($filename);
 
@@ -653,7 +653,7 @@ function display_attachments_preview($attachment_id_list, $attachment_list, $att
 						}
 						else
 						{
-							if (($width <= intval($attach_config['img_link_width'])) && ($height <= intval($attach_config['img_link_height'])))
+							if (($width <= intval($config['img_link_width'])) && ($height <= intval($config['img_link_height'])))
 							{
 								$image = true;
 							}
@@ -741,9 +741,9 @@ function display_attachments_preview($attachment_id_list, $attachment_list, $att
 				{
 					$upload_image = '';
 
-					if ($attach_config['upload_img'] != '' && $upload_icons[$extension] == '')
+					if ($config['upload_img'] != '' && $upload_icons[$extension] == '')
 					{
-						$upload_image = '<img src="' . $attach_config['upload_img'] . '" alt="" />';
+						$upload_image = '<img src="' . $config['upload_img'] . '" alt="" />';
 					}
 					elseif (trim($upload_icons[$extension]) != '')
 					{
@@ -783,7 +783,7 @@ function display_attachments_preview($attachment_id_list, $attachment_list, $att
 function display_attachments($post_id, $type = 'postrow')
 {
 	global $db, $config, $template, $userdata, $lang;
-	global $attach_config, $upload_dir, $allowed_extensions, $display_categories, $download_modes, $attachments, $upload_icons, $username_from;
+	global $upload_dir, $allowed_extensions, $display_categories, $download_modes, $attachments, $upload_icons, $username_from;
 	$num_attachments = sizeof($attachments['_' . $post_id]);
 	if ($num_attachments == 0)
 	{
@@ -800,9 +800,9 @@ function display_attachments($post_id, $type = 'postrow')
 
 		$upload_image = '';
 
-		if ($attach_config['upload_img'] != '' && trim($upload_icons[$attachments['_' . $post_id][$i]['extension']]) == '')
+		if ($config['upload_img'] != '' && trim($upload_icons[$attachments['_' . $post_id][$i]['extension']]) == '')
 		{
-			$upload_image = '<img src="' . $attach_config['upload_img'] . '" alt="" />';
+			$upload_image = '<img src="' . $config['upload_img'] . '" alt="" />';
 		}
 		elseif (trim($upload_icons[$attachments['_' . $post_id][$i]['extension']]) != '')
 		{
@@ -864,9 +864,9 @@ function display_attachments($post_id, $type = 'postrow')
 			{
 				$swf = true;
 			}
-			elseif (intval($display_categories[$attachments['_' . $post_id][$i]['extension']]) == IMAGE_CAT && intval($attach_config['img_display_inlined']))
+			elseif (intval($display_categories[$attachments['_' . $post_id][$i]['extension']]) == IMAGE_CAT && intval($config['img_display_inlined']))
 			{
-				if (intval($attach_config['img_link_width']) != 0 || intval($attach_config['img_link_height']) != 0)
+				if (intval($config['img_link_width']) != 0 || intval($config['img_link_height']) != 0)
 				{
 					list($width, $height) = image_getdimension($filename);
 
@@ -876,7 +876,7 @@ function display_attachments($post_id, $type = 'postrow')
 					}
 					else
 					{
-						if ($width <= intval($attach_config['img_link_width']) && $height <= intval($attach_config['img_link_height']))
+						if ($width <= intval($config['img_link_width']) && $height <= intval($config['img_link_height']))
 						{
 							$image = true;
 						}
@@ -908,7 +908,7 @@ function display_attachments($post_id, $type = 'postrow')
 				//	$download_link = true;
 				//
 				//
-				if (intval($attach_config['allow_ftp_upload']) && trim($attach_config['download_path']) == '')
+				if (intval($config['allow_ftp_upload']) && trim($config['download_path']) == '')
 				{
 					$img_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id']);
 					$download_link = true;
@@ -916,7 +916,7 @@ function display_attachments($post_id, $type = 'postrow')
 				else
 				{
 					// Check if we can reach the file or if it is stored outside of the webroot
-					if (($attach_config['upload_dir'][0] == '/') || (($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':')))
+					if (($config['upload_dir'][0] == '/') || (($config['upload_dir'][0] != '/') && ($config['upload_dir'][1] == ':')))
 					{
 						$img_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id']);
 						$download_link = true;
@@ -986,14 +986,14 @@ function display_attachments($post_id, $type = 'postrow')
 				// Section between BEGIN and END with (Without the // of course):
 				//	$thumb_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id'] . '&thumb=1');
 				//
-				if (intval($attach_config['allow_ftp_upload']) && (trim($attach_config['download_path']) == ''))
+				if (intval($config['allow_ftp_upload']) && (trim($config['download_path']) == ''))
 				{
 					$thumb_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id'] . '&thumb=1');
 				}
 				else
 				{
 					// Check if we can reach the file or if it is stored outside of the webroot
-					if (($attach_config['upload_dir'][0] == '/') || (($attach_config['upload_dir'][0] != '/') && ($attach_config['upload_dir'][1] == ':')))
+					if (($config['upload_dir'][0] == '/') || (($config['upload_dir'][0] != '/') && ($config['upload_dir'][1] == ':')))
 					{
 						$thumb_source = append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id'] . '&thumb=1');
 					}

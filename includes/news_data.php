@@ -458,7 +458,7 @@ class NewsDataAccess
 		$interval_begin = gmmktime(0, 0, 0, $month, $day, $year);
 		*/
 		// ubid = User Blog ID
-		$ubid = (isset($_GET['ubid'])) ? intval($_GET['ubid']) : $ubid;
+		$ubid = request_var('ubid', 0);
 		$ubid_sql = '';
 		if ($ubid >= 2)
 		{
@@ -537,7 +537,7 @@ class NewsDataAccess
 		$interval_end = gmmktime(0, 0, 0, $month + 1, 1, $year);
 		*/
 		// ubid = User Blog ID
-		$ubid = (isset($_GET['ubid'])) ? intval($_GET['ubid']) : $ubid;
+		$ubid = request_var('ubid', 0);
 		$ubid_sql = '';
 		if ($ubid >= 2)
 		{
@@ -613,7 +613,7 @@ class NewsDataAccess
 		$interval_end = gmmktime(0, 0, 0, 1, 1, $year + 1);
 		*/
 		// ubid = User Blog ID
-		$ubid = (isset($_GET['ubid'])) ? intval($_GET['ubid']) : $ubid;
+		$ubid = request_var('ubid', 0);
 		$ubid_sql = '';
 		if ($ubid >= 2)
 		{
@@ -656,7 +656,7 @@ class NewsDataAccess
 	{
 		$auth_sql = get_user_news_auth_access('topic');
 		// ubid = User Blog ID
-		$ubid = (isset($_GET['ubid'])) ? intval($_GET['ubid']) : $ubid;
+		$ubid = request_var('ubid', 0);
 		$ubid_sql = '';
 		if ($ubid >= 2)
 		{
@@ -712,7 +712,7 @@ class NewsDataAccess
 		$start = intval($start);
 		$start = ($start < 0) ? 0 : $start;
 		// ubid = User Blog ID
-		$ubid = (isset($_GET['ubid'])) ? intval($_GET['ubid']) : $ubid;
+		$ubid = request_var('ubid', $ubid);
 		$ubid_sql = '';
 		if ($ubid >= 2)
 		{
@@ -800,7 +800,7 @@ class NewsDataAccess
 		// Validate parameters.
 		$cat_id = intval($cat_id);
 		$cat_id = ($cat_id < 0) ? 0 : $cat_id;
-		$ubid = (isset($_GET['ubid'])) ? intval($_GET['ubid']) : $ubid;
+		$ubid = request_var('ubid', $ubid);
 		$ubid_sql = '';
 		if ($ubid >= 2)
 		{
@@ -861,7 +861,7 @@ class NewsDataAccess
 		$start = intval($start);
 		$start = ($start < 0) ? 0 : $start;
 		// ubid = User Blog ID
-		$ubid = (isset($_GET['ubid'])) ? intval($_GET['ubid']) : $ubid;
+		$ubid = request_var('ubid', $ubid);
 		$ubid_sql = '';
 		if ($ubid >= 2)
 		{

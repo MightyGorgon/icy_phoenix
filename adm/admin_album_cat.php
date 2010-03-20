@@ -190,7 +190,7 @@ if(!isset($_POST['mode']))
 
 			include('./page_footer_admin.' . PHP_EXT);
 		}
-		elseif( $_GET['action'] == 'delete' )
+		elseif($_GET['action'] == 'delete')
 		{
 			$cat_id = intval($_GET['cat_id']);
 
@@ -200,7 +200,7 @@ if(!isset($_POST['mode']))
 			$result = $db->sql_query($sql);
 
 			$cat_found = false;
-			while( $row = $db->sql_fetchrow($result) )
+			while($row = $db->sql_fetchrow($result))
 			{
 				if( $row['cat_id'] == $cat_id )
 				{
@@ -212,7 +212,7 @@ if(!isset($_POST['mode']))
 					$catrow[] = $row;
 				}
 			}
-			if( $cat_found == false )
+			if($cat_found == false)
 			{
 				message_die(GENERAL_ERROR, 'The requested category is not existed');
 			}
@@ -240,7 +240,7 @@ if(!isset($_POST['mode']))
 
 			include('./page_footer_admin.' . PHP_EXT);
 		}
-		elseif( $_GET['action'] == 'move' )
+		elseif($_GET['action'] == 'move')
 		{
 			$cat_id = intval($_GET['cat_id']);
 			$move = intval($_GET['move']);
@@ -254,9 +254,9 @@ if(!isset($_POST['mode']))
 }
 else
 {
-	if( $_POST['mode'] == 'new' )
+	if($_POST['mode'] == 'new')
 	{
-		if ( is_array($_POST['addcategory']))
+		if (is_array($_POST['addcategory']))
 		{
 			list($cat_id) = each($_POST['addcategory']);
 			$cat_title = stripslashes($_POST['name'][$cat_id]);
@@ -264,7 +264,7 @@ else
 			$cat_id = -1;
 		}
 
-		if( !isset($_POST['cat_title']) )
+		if(!isset($_POST['cat_title']))
 		{
 			album_read_tree();
 			$s_album_cat_list = album_get_tree_option($cat_parent, ALBUM_AUTH_VIEW, ALBUM_SELECTBOX_INCLUDE_ALL);
@@ -325,7 +325,7 @@ else
 		}
 		else
 		{
-			if( !get_magic_quotes_gpc() )
+			if(!get_magic_quotes_gpc())
 			{
 				$cat_title = addslashes(htmlspecialchars(trim($_POST['cat_title'])));
 				$cat_desc = addslashes(trim($_POST['cat_desc']));
@@ -389,12 +389,12 @@ else
 		$cat_parent = ($_POST['cat_parent_id'] == ALBUM_ROOT_CATEGORY) ? 0 : intval($_POST['cat_parent_id']);
 		$cat_parent = ($cat_parent < 0) ? 0 : $cat_parent;
 
-		if ( ($cat_id == $cat_parent) && (album_get_personal_root_id($album_user_id) != $cat_id) )
+		if (($cat_id == $cat_parent) && (album_get_personal_root_id($album_user_id) != $cat_id))
 		{
 			showResultMessage($lang['No_Self_Refering_Cat']);
 		}
 
-		if ( (album_get_personal_root_id($album_user_id) == $cat_id) && ($cat_parent != 0) )
+		if ((album_get_personal_root_id($album_user_id) == $cat_id) && ($cat_parent != 0))
 		{
 			showResultMessage($lang['Can_Not_Change_Main_Parent']);
 		}
@@ -408,7 +408,7 @@ else
 		// Return a message...
 		showResultMessage($lang['Category_updated']);
 	}
-	elseif( $_POST['mode'] == 'delete' )
+	elseif($_POST['mode'] == 'delete')
 	{
 		$parent_cat_deleted = false;
 		$parent_cat_id = 0;

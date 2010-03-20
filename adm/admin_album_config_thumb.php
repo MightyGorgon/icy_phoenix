@@ -139,7 +139,8 @@ function album_generate_config_thumb_box($config_data)
 		'L_DISABLED' => $lang['Disabled'],
 		'L_ENABLED' => $lang['Enabled'],
 		'L_YES' => $lang['Yes'],
-		'L_NO' => $lang['No'])
+		'L_NO' => $lang['No']
+		)
 	);
 }
 ?>

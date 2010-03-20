@@ -97,7 +97,7 @@ if($can_reply)
 	<div class="postwrapper">
 		<div class="posttopbar">
 			<div class="postname">{postrow.POSTER_NAME}<br /></div>
-			<div class="postedit">{postrow.QUOTE}</span> {postrow.EDIT} {postrow.DELETE} {postrow.IP}</div>
+			<div class="postedit">{postrow.QUOTE} {postrow.EDIT} {postrow.DELETE} {postrow.IP}</div>
 			<div class="postinfo">{postrow.POSTER_POSTS} {postrow.POSTER_FROM}<br /></div>
 			<div class="postdate">{postrow.POST_DATE}</div>
 		</div>
@@ -105,7 +105,7 @@ if($can_reply)
 		<span class="desc">{L_SUBJECT}: {postrow.POST_SUBJECT}</span>
 		<div class="postcontent">{postrow.MESSAGE}</div>
 		<br />
-		<span class="signature">{postrow.EDITED_MESSAGE}</span>
+		<!-- IF postrow.EDITED_MESSAGE --><span class="signature">{postrow.EDITED_MESSAGE}</span><!-- ENDIF -->
 		{postrow.ATTACHMENTS}
 		<div class="posttopbar">
 			<span class="desc">{postrow.PROFILE} {postrow.PM} {postrow.EMAIL} {postrow.WWW} {postrow.AIM} {postrow.YIM} {postrow.MSN} {postrow.SKYPE} {postrow.ICQ}</span>
@@ -114,14 +114,14 @@ if($can_reply)
 	<!-- END postrow -->
 
 	{LOFI_QUICK_REPLY_FORM}
-	<div class="bottom" valign="top">
+	<div class="bottom">
 		<div class="bottom-left"><a href="{U_POST_REPLY_TOPIC}" class="nav">{L_POST_REPLY_TOPIC}</a> {LOFI_QUICK_REPLY}</div>
 		<span class="pagination">{PAGINATION}</span>
 	</div>
 
 	<br />
 	<div class="bottom">
-		<div class="bottom-left" valign="top">{PAGE_NUMBER}<br />{S_TOPIC_ADMIN}<br /><br />{JUMPBOX}</div>
+		<div class="bottom-left">{PAGE_NUMBER}<br />{S_TOPIC_ADMIN}<br /><br />{JUMPBOX}</div>
 		{S_AUTH_LIST}
 	</div>
 </div>

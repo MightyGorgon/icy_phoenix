@@ -15,53 +15,47 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
+if (!defined('IN_ICYPHOENIX'))
+{
+	die('Hacking attempt');
+}
+
 /*
-	$type's accepted (pre-pend with AUTH_):
-
-	01 View,
-	02 Read,
-	03 Post,
-	04 Reply,
-	05 Edit,
-	06 Delete,
-	07 Sticky,
-	08 Announce,
-	09 Global Ann,
-	10 News,
-	11 Calendar,
-	12 Vote,
-	13 Poll,
-	14 Attach,
-	15 Download,
-	16 Warn,
-	17 Unban,
-	18 Report,
-	19 Rate
-
-	Possible options ($type/forum_id combinations):
-
-	* If you include a type and forum_id then a specific lookup will be done and
-	the single result returned
-
-	* If you set type to AUTH_ALL and specify a forum_id an array of all auth types
-	will be returned
-
-	* If you provide a forum_id a specific lookup on that forum will be done
-
-	* If you set forum_id to AUTH_LIST_ALL and specify a type an array listing the
-	results for all forums will be returned
-
-	* If you set forum_id to AUTH_LIST_ALL and type to AUTH_ALL a multidimensional
-	array containing the auth permissions for all types and all forums for that
-	user is returned
-
-	All results are returned as associative arrays, even when a single auth type is
-	specified.
-
-	If available you can send an array (either one or two dimensional) containing the
-	forum auth levels, this will prevent the auth function having to do its own
-	lookup
+* $type's accepted (pre-pend with AUTH_):
+*
+* 01 View,
+* 02 Read,
+* 03 Post,
+* 04 Reply,
+* 05 Edit,
+* 06 Delete,
+* 07 Sticky,
+* 08 Announce,
+* 09 Global Ann,
+* 10 News,
+* 11 Calendar,
+* 12 Vote,
+* 13 Poll,
+* 14 Attach,
+* 15 Download,
+* 16 Warn,
+* 17 Unban,
+* 18 Report,
+* 19 Rate
+*
+* Possible options ($type/forum_id combinations):
+*
+* - If you include a type and forum_id then a specific lookup will be done and the single result returned
+* - If you set type to AUTH_ALL and specify a forum_id an array of all auth types will be returned
+* - If you provide a forum_id a specific lookup on that forum will be done
+* - If you set forum_id to AUTH_LIST_ALL and specify a type an array listing the results for all forums will be returned
+* - If you set forum_id to AUTH_LIST_ALL and type to AUTH_ALL a multidimensional array containing the auth permissions
+* for all types and all forums for that user is returned
+*
+* All results are returned as associative arrays, even when a single auth type is specified.
+*
+* If available you can send an array (either one or two dimensional) containing the
+* forum auth levels, this will prevent the auth function having to do its own lookup
 */
 function auth($type, $forum_id, $userdata, $f_access = '')
 {
@@ -373,6 +367,9 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 	return $auth_user;
 }
 
+/*
+* Check user auth
+*/
 function auth_check_user($type, $key, $u_access, $is_admin)
 {
 	$auth_user = 0;
@@ -406,8 +403,105 @@ function auth_check_user($type, $key, $u_access, $is_admin)
 	return $auth_user;
 }
 
-// build_exclusion_forums_list
-// function needed to build a list of forum with no read access.
+/*
+* Check auth level
+* Returns true in case the user has the requested level
+*/
+function check_auth_level($level_required)
+{
+	global $userdata, $config;
+
+	if ($level_required == AUTH_ALL)
+	{
+		return true;
+	}
+
+	if ($userdata['user_level'] == ADMIN)
+	{
+		if (($level_required == AUTH_ADMIN) || ($level_required == AUTH_GUEST_ONLY))
+		{
+			return true;
+		}
+
+		if ($level_required == AUTH_FOUNDER)
+		{
+			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+			return ($userdata['user_id'] == $founder_id) ? true : false;
+		}
+		elseif ($level_required == AUTH_MAIN_ADMIN)
+		{
+			if (defined('MAIN_ADMINS_ID'))
+			{
+				$allowed_admins = explode(',', MAIN_ADMINS_ID);
+				return (in_array($userdata['user_id'], $allowed_admins)) ? true : false;
+			}
+		}
+	}
+
+	// Before going on... if level_required is for Guests only then check if the user is a guest but not a bot...
+	if ($level_required == AUTH_GUEST_ONLY)
+	{
+		return (!$userdata['is_bot'] && !$userdata['session_logged_in']) ? true : false;
+	}
+
+	// Force to AUTH_ADMIN since we already checked all cases for founder or main admins
+	if (($level_required == AUTH_FOUNDER) || ($level_required == AUTH_MAIN_ADMIN))
+	{
+		$level_required = AUTH_ADMIN;
+	}
+
+	// Access level required is at least REG and user is not an admin!
+	// Remember that Junior Admin has the ADMIN level while not in CMS or ACP
+	$not_auth = false;
+	// Check if the user is REG or a BOT
+	$is_reg = (($config['bots_reg_auth'] && $userdata['is_bot']) || $userdata['session_logged_in']) ? true : false;
+	$not_auth = (!$not_auth && ($level_required == AUTH_REG) && !$is_reg) ? true : $not_auth;
+	$not_auth = (!$not_auth && ($level_required == AUTH_MOD) && ($userdata['user_level'] != MOD) && ($userdata['user_level'] != ADMIN)) ? true : $not_auth;
+	$not_auth = (!$not_auth && ($level_required == AUTH_ADMIN)) ? true : $not_auth;
+	if ($not_auth)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+/**
+* Check if the user is allowed to access a page
+*/
+function check_page_auth($cms_page_id, $cms_auth_level, $return = false)
+{
+	global $userdata, $lang;
+
+	$is_auth = check_auth_level($cms_auth_level);
+
+	if (!$is_auth)
+	{
+		if ($return)
+		{
+			return false;
+		}
+		else
+		{
+			if (!$userdata['is_bot'] && !$userdata['session_logged_in'])
+			{
+				$page_array = array();
+				$page_array = extract_current_page(IP_ROOT_PATH);
+				redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
+			}
+			else
+			{
+				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+			}
+		}
+	}
+
+	return true;
+}
+
+/**
+* Builds a list of forums with no read access
+*/
 function build_exclusion_forums_list($only_auth_view = true)
 {
 	global $db, $config, $userdata, $lang, $tree;
@@ -457,8 +551,9 @@ function build_exclusion_forums_list($only_auth_view = true)
 	return $except_forums;
 }
 
-// build_allowed_forums_list
-// function needed to build a list of forum with read access.
+/**
+* Builds a list of forums with read access
+*/
 function build_allowed_forums_list()
 {
 	global $db, $config, $userdata, $lang, $tree;

@@ -12,8 +12,7 @@
 		</div>
 		<span class="desc">{L_SUBJECT}: {postrow.POST_SUBJECT}</span>
 		<div class="postcontent">{postrow.MESSAGE}</div><br />
-		<span class="signature">{postrow.EDITED_MESSAGE}</span>
-		<div class="signature">{postrow.SIGNATURE}</div>
+		<!-- IF postrow.EDITED_MESSAGE --><span class="signature">{postrow.EDITED_MESSAGE}</span><!-- ENDIF -->
 	</div>
 	<!-- END postrow -->
 	<div class="pagination">{PAGINATION}</div><br />

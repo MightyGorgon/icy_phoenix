@@ -34,16 +34,14 @@ $this_dir = IP_ROOT_PATH . DOWNLOADS_PATH;
 
 $html_path = create_server_url() . DOWNLOADS_PATH;
 
-if(isset($_GET['safety']) || isset($_POST['safety']))
-{
-	$safety = (isset($_POST['safety'])) ? intval($_POST['safety']) : intval($_GET['safety']);
-}
+$safety = request_var('safety', 0);
 
 $template->set_filenames(array('admin' => ADM_TPL . 'pa_admin_file_checker.tpl'));
 
 $template->assign_vars(array(
 	'L_FILE_CHECKER' => $lang['File_checker'],
-	'L_FCHECKER_EXPLAIN' => $lang['File_checker_explain'])
+	'L_FCHECKER_EXPLAIN' => $lang['File_checker_explain']
+	)
 );
 
 if ($safety == 1)
@@ -53,7 +51,8 @@ if ($safety == 1)
 	$template->assign_block_vars("check", array());
 
 	$template->assign_vars(array(
-		'L_FILE_CHECKER_SP1' => $lang['Checker_sp1'])
+		'L_FILE_CHECKER_SP1' => $lang['Checker_sp1']
+		)
 	);
 
 	$sql = "SELECT * FROM " . PA_FILES_TABLE;
@@ -62,25 +61,27 @@ if ($safety == 1)
 	while ($temp = $db->sql_fetchrow($overall_result))
 	{
 		$temp_dlurl = $temp['file_dlurl'];
-		if (substr($temp_dlurl,0,strlen($html_path)) !== $html_path)
+		if (substr($temp_dlurl, 0, strlen($html_path)) !== $html_path)
 		{
 			continue;
 		}
 
-		if (!is_file($this_dir."/".str_replace($html_path, "", $temp_dlurl)))
+		if (!is_file($this_dir . '/' . str_replace($html_path, '', $temp_dlurl)))
 		{
 			/*
 			$sql = "DELETE FROM " . PA_FILES_TABLE . " WHERE file_dlurl = '" . $temp_dlurl . "'";
 			$db->sql_query($sql);
 			*/
-			$template->assign_block_vars("check.check_step1", array(
-				'DEL_DURL' => $temp_dlurl)
+			$template->assign_block_vars('check.check_step1', array(
+				'DEL_DURL' => $temp_dlurl
+				)
 			);
 		}
 	}
 
 	$template->assign_vars(array(
-		'L_FILE_CHECKER_SP2' => $lang['Checker_sp2'])
+		'L_FILE_CHECKER_SP2' => $lang['Checker_sp2']
+		)
 	);
 	$sql = "SELECT * FROM " . PA_FILES_TABLE;
 	$overall_result = $db->sql_query($sql);
@@ -89,41 +90,43 @@ if ($safety == 1)
 	{
 		$temp_ssurl = $temp['file_ssurl'];
 		$temp_file_id = $temp['file_id'];
-		if (substr($temp_ssurl,0,strlen($html_path)) !== $html_path)
+		if (substr($temp_ssurl, 0, strlen($html_path)) !== $html_path)
 		{
 			continue;
 		}
 
-		if (!is_file($this_dir."/".str_replace($html_path, "", $temp_ssurl)))
+		if (!is_file($this_dir . '/' . str_replace($html_path, '', $temp_ssurl)))
 		{
 			/*
 			$sql = "UPDATE " . PA_FILES_TABLE . " SET file_ssurl='' WHERE file_id = '" . $temp_file_id . "'";
 			$db->sql_query($sql);
 			*/
 
-			$template->assign_block_vars("check.check_step2", array(
-				'DEL_SSURL' => $temp_file_id)
+			$template->assign_block_vars('check.check_step2', array(
+				'DEL_SSURL' => $temp_file_id
+				)
 			);
 		}
 	}
 
 	$template->assign_vars(array(
-		'L_FILE_CHECKER_SP3' => $lang['Checker_sp3'])
+		'L_FILE_CHECKER_SP3' => $lang['Checker_sp3']
+		)
 	);
 
 	$files = opendir($this_dir);
 	while ($temp = readdir($files))
 	{
-		if ($temp == "." || $temp == "..")
+		if (($temp == '.') || ($temp == '..'))
 		{
 			continue;
 		}
-		if (!is_file($this_dir.$temp))
+		if (!is_file($this_dir . $temp))
 		{
 			continue;
 		}
 
-		$sql = "SELECT * FROM " . PA_FILES_TABLE . " WHERE file_dlurl = '" . $html_path.$temp . "' OR file_ssurl = '" . $html_path.$temp . "'";
+		$sql = "SELECT * FROM " . PA_FILES_TABLE . " WHERE file_dlurl = '" . $html_path . $temp . "' OR file_ssurl = '" . $html_path . $temp . "'";
 		$result = $db->sql_query($sql);
 		$numhits = $db->sql_numrows($result);
 
@@ -142,19 +145,19 @@ if ($safety == 1)
 
 	if($saved == 0)
 	{
-		$saved = "N/A";
+		$saved = 'N/A';
 	}
 	elseif($saved >= 1073741824)
 	{
-		$saved = round($saved / 1073741824 * 100) / 100 . " Giga Byte";
+		$saved = round($saved / 1073741824 * 100) / 100 . ' Giga Byte';
 	}
 	elseif($saved >= 1048576)
 	{
-		$saved = round($saved / 1048576 * 100) / 100 . " Mega Byte";
+		$saved = round($saved / 1048576 * 100) / 100 . ' Mega Byte';
 	}
 	elseif($saved >= 1024)
 	{
-		$saved = round($saved / 1024 * 100) / 100 . " Kilo Byte";
+		$saved = round($saved / 1024 * 100) / 100 . ' Kilo Byte';
 	}
 	else
 	{
@@ -170,7 +173,7 @@ if ($safety == 1)
 }
 else
 {
-	$template->assign_block_vars("perform", array());
+	$template->assign_block_vars('perform', array());
 
 	$lang['File_saftey'] = str_replace("{html_path}", $html_path, $lang['File_saftey']);
 

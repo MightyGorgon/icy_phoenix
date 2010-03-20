@@ -423,6 +423,10 @@ $lang = array_merge($lang, array(
 	'Poll_for_explain' => '[ Enter 0 or leave blank for a never-ending poll ]',
 	'Delete_poll' => 'Delete Poll',
 
+	'POST_ENABLE_BBCODE' => 'Enable BBCode in this post',
+	'POST_ENABLE_SMILEYS' => 'Enable Smileys in this post',
+	'POST_ENABLE_HTML' => 'Enable HTML in this post',
+	'POST_ENABLE_ACRO_AUTO' => 'Enable Acronyms and Autolinks in this post',
 	'Disable_HTML_post' => 'Disable HTML in this post',
 	'Disable_ACRO_AUTO_post' => 'Disable Acronyms and Autolinks in this post',
 	'Disable_BBCode_post' => 'Disable BBCode in this post',
@@ -1494,7 +1498,6 @@ $lang = array_merge($lang, array(
 	'View_avatar_generator' => 'Avatar Generator',
 	'Adv_Search' => 'Advanced Search',
 	'Search_Explain' => 'Search inside the Site',
-	'Login_attempts_exceeded' => 'The maximum number of %s login attempts has been exceeded. You are not allowed to login for the next %s minutes.',
 	'Please_remove_install_contrib' => 'Please ensure the <b>install/</b> folder is deleted',
 	'Search_Engines' => 'Search Engine Bots:',
 	'Bots_browsing_forum' => 'Search Engine Bots browsing this forum:',
@@ -1855,7 +1858,7 @@ $lang = array_merge($lang, array(
 
 // Moved here from lang_adv_time.php
 	'time_mode' => 'Time management',
-	'time_mode_text' => 'The DST difference is the difference between Daylight Saving Time and normal time for your country (from 0 to 120 minutes, typically 60).<br /><br /><strong> * The mode marked by the asterisk is used by default on this board and is recommended by its administrator. </strong>',
+	'time_mode_text' => 'The DST difference is the difference between Daylight Saving Time and normal time for your country (from 0 to 120 minutes, typically 60)',
 	'time_mode_auto' => 'Automatic modes...',
 	'time_mode_full_pc' => 'Your computer time',
 	'time_mode_server_pc' => 'Server universal time, Timezone/DST<br /><span STYLE="margin-left: 25">from your computer</span>',
@@ -1865,6 +1868,7 @@ $lang = array_merge($lang, array(
 	'time_mode_dst_server' => 'By the server',
 	'time_mode_dst_time_lag' => 'DST difference',
 	'time_mode_dst_mn' => 'min',
+	'time_mode_dst_mn_explain' => 'Time expressed in minutes',
 	'time_mode_timezone' => 'Timezone',
 
 	'dst_time_lag_error' => 'DST difference value error. You must type a number of minutes between 0 and 120.',
@@ -2284,6 +2288,21 @@ $lang = array_merge($lang, array(
 	'DB_ITEM_CLICK_VIEW_ITEM' => 'Click %sHere%s to view added data',
 	'DB_ITEM_CLICK_RETURN_ITEMS' => 'Click %sHere%s to return to list page',
 	// COMMON DB - END
+
+	'LOGIN_ATTEMPTS_EXCEEDED' => 'The maximum number of %s login attempts has been exceeded. You are not allowed to login for the next %s minutes.',
+	'LOGIN_CONFIRM_EXPLAIN' => 'To prevent brute forcing accounts the board requires you to enter a confirmation code after a maximum amount of failed logins. The code is displayed in the image you should see below. If you are visually impaired or cannot otherwise read this code please contact the %sAdministrator%s.',
+	'LOGIN_ERROR_ATTEMPTS' => 'You exceeded the maximum allowed number of login attempts. In addition to your username and password you now also have to enter the confirm code from the image you see below.',
+	'LOGIN_ERROR_EXTERNAL_AUTH_APACHE' => 'You have not been authenticated by Apache.',
+	'LOGIN_ERROR_PASSWORD' => 'You have specified an incorrect password. Please check your password and try again. If you continue to have problems please contact the %sAdministrator%s.',
+	'LOGIN_ERROR_PASSWORD_CONVERT' => 'It was not possible to convert your password when updating this website\'s software. Please %srequest a new password%s. If you continue to have problems please contact the %sAdministrator%s.',
+	'LOGIN_ERROR_USERNAME' => 'You have specified an incorrect username. Please check your username and try again. If you continue to have problems please contact the %sAdministrator%s.',
+	'NO_PASSWORD_SUPPLIED' => 'You cannot login without a password.',
+	'ACTIVE_ERROR' => 'The specified username is currently inactive. If you have problems activating your account, please contact the %sAdministrator%s.',
+
+	'Bytes' => 'Bytes',
+	'KB' => 'KB',
+	'MB' => 'MB',
+	'GB' => 'GB',
 
 	)
 );

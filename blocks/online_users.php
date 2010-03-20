@@ -32,7 +32,7 @@ if(!function_exists('cms_block_online_users'))
 			'B_L_VIEW' => $lang['View_complete_list'],
 			'B_TOTAL_USERS_ONLINE' => $l_online_users,
 			'B_LOGGED_IN_USER_LIST' => $online_userlist,
-			'B_U_VIEWONLINE' => append_sid('viewonline.' . PHP_EXT),
+			'B_U_VIEWONLINE' => append_sid(CMS_PAGE_VIEWONLINE),
 			'B_RECORD_USERS' => sprintf($lang['Record_online_users'], $config['record_online_users'], create_date($config['default_dateformat'], $config['record_online_date'], $config['board_timezone']))
 			)
 		);

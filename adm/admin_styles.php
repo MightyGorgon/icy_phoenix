@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
@@ -36,21 +35,13 @@ if ($cancel)
 	redirect(ADM . '/'  . append_sid('admin_styles.' . PHP_EXT, true));
 }
 
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_GET['mode'])) ? $_GET['mode'] : $_POST['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
-{
-	$mode = '';
-}
+$mode = request_var('mode', '');
 
 switch($mode)
 {
 	case 'addnew':
-		$install_to = (isset($_GET['install_to'])) ? urldecode($_GET['install_to']) : $_POST['install_to'];
-		$style_name = (isset($_GET['style'])) ? urldecode($_GET['style']) : $_POST['style'];
+		$install_to = request_var('install_to', '');
+		$style_name = request_var('style', '');
 
 		if(isset($install_to))
 		{
@@ -125,7 +116,7 @@ switch($mode)
 
 								$sql = "SELECT themes_id
 									FROM " . THEMES_TABLE . "
-									WHERE style_name = '" . str_replace("\'", "''", $style_name) . "'";
+									WHERE style_name = '" . $db->sql_escape($style_name) . "'";
 								$result = $db->sql_query($sql);
 
 								if(!$db->sql_numrows($result))
@@ -228,7 +219,7 @@ switch($mode)
 				// First, check if we already have a style by this name
 				$sql = "SELECT themes_id
 					FROM " . THEMES_TABLE . "
-					WHERE style_name = '" . str_replace("\'", "''", $updated['style_name']) . "'";
+					WHERE style_name = '" . $db->sql_escape($updated['style_name']) . "'";
 				$result = $db->sql_query($sql);
 
 				if($db->sql_numrows($result))
@@ -246,7 +237,7 @@ switch($mode)
 					}
 					else
 					{
-						$values[] = "'" . str_replace("\'", "''", $val) . "'";
+						$values[] = "'" . $db->sql_escape($val) . "'";
 					}
 				}
 
@@ -288,7 +279,7 @@ switch($mode)
 				$themes_title = $lang['Edit_theme'];
 				$themes_explain = $lang['Edit_theme_explain'];
 
-				$style_id = intval($_GET['style_id']);
+				$style_id = request_get_var('style_id', 0);
 
 				$selected_names = array();
 				$selected_values = array();
@@ -384,13 +375,13 @@ switch($mode)
 		break;
 
 	case 'export';
-		if($_POST['export_template'])
+		$template_name = request_post_var('export_template', '', true);
+		if(!empty($template_name))
 		{
-			$template_name = $_POST['export_template'];
 
 			$sql = "SELECT *
 				FROM " . THEMES_TABLE . "
-				WHERE template_name = '" . str_replace("\'", "''", $template_name) . "'";
+				WHERE template_name = '" . $db->sql_escape($template_name) . "'";
 			$result = $db->sql_query($sql);
 			$theme_rowset = $db->sql_fetchrowset($result);
 
@@ -451,11 +442,13 @@ switch($mode)
 		}
 		elseif($_POST['send_file'])
 		{
+			$theme_info = request_post_var('theme_info', '', true);
+			$theme_info = htmlspecialchars_decode($theme_info, ENT_COMPAT);
 
 			header("Content-Type: text/x-delimtext; name=\"theme_info.cfg\"");
 			header("Content-disposition: attachment; filename=theme_info.cfg");
 
-			echo stripslashes($_POST['theme_info']);
+			echo stripslashes($theme_info);
 		}
 		else
 		{
@@ -468,7 +461,7 @@ switch($mode)
 				{
 					if(!is_file(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !is_link(phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && ($file != '.') && ($file != '..') && ($file != 'common') && ($file != 'default'))
 					{
-						$s_template_select .= '<option value="' . $file . '">' . $file . "</option>\n";
+						$s_template_select .= '<option value="' . $file . '">' . $file . '</option>' . "\n";
 					}
 				}
 				$s_template_select .= '</select>';
@@ -495,7 +488,7 @@ switch($mode)
 		break;
 
 	case 'delete':
-		$style_id = (isset($_GET['style_id'])) ? intval($_GET['style_id']) : intval($_POST['style_id']);
+		$style_id = request_get_var('style_id', 0);
 
 		if(!$confirm)
 		{

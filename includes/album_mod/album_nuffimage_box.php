@@ -28,31 +28,12 @@ if ($album_config['enable_nuffimage'] == 1)
 	$template->assign_var_from_handle('NUFFIMAGE_BOX', 'nuffimage_box');
 }
 */
-if( isset($_GET['sort_method']) )
-{
-	$sort_method = $_GET['sort_method'];
-}
-elseif( isset($_POST['sort_method']) )
-{
-	$sort_method = $_POST['sort_method'];
-}
-else
-{
-	$sort_method = $album_config['sort_method'];
-}
 
-if( isset($_GET['sort_order']) )
-{
-	$sort_order = $_GET['sort_order'];
-}
-elseif( isset($_POST['sort_order']) )
-{
-	$sort_order = $_POST['sort_order'];
-}
-else
-{
-	$sort_order = $album_config['sort_order'];
-}
+$sort_method = request_var('sort_method', $album_config['sort_method']);
+$sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'pic_view_count'));
+
+$sort_order = request_var('sort_order', $album_config['sort_order']);
+$sort_order = check_var_value(strtoupper($sort_order), array('ASC', 'DESC'));
 
 if ($album_config['enable_sepia_bw'] == 1)
 {

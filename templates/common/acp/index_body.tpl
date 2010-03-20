@@ -1,8 +1,6 @@
 <!-- IF S_ADMIN -->
 <div class="forumline" style="margin: 0 auto; display: block; text-align: center; width: 500px; padding: 10px;">
-<a href="{U_ACP_SERVER_SETTINGS}" title="{L_ACP_SERVER_SETTINGS}"><img src="{ACP_IMAGES_PATH}server_install.png" alt="{L_ACP_SERVER_SETTINGS}" title="{L_ACP_SERVER_SETTINGS}" /></a>&nbsp;
 <a href="{U_ACP_SETTINGS}" title="{L_ACP_SETTINGS}"><img src="{ACP_IMAGES_PATH}config.png" alt="{L_ACP_SETTINGS}" title="{L_ACP_SETTINGS}" /></a>&nbsp;
-<a href="{U_ACP_IP_SETTINGS}" title="{L_ACP_IP_SETTINGS}"><img src="{ACP_IMAGES_PATH}icy_phoenix.png" alt="{L_ACP_IP_SETTINGS}" title="{L_ACP_IP_SETTINGS}" /></a>&nbsp;
 <a href="{U_ACP_CACHE}" title="{L_ACP_CACHE}"><img src="{ACP_IMAGES_PATH}cache.png" alt="{L_ACP_CACHE}" title="{L_ACP_CACHE}" /></a>&nbsp;
 <a href="{U_ACP_FORUMS}" title="{L_ACP_FORUMS}"><img src="{ACP_IMAGES_PATH}forum.png" alt="{L_ACP_FORUMS}" title="{L_ACP_FORUMS}" /></a>&nbsp;
 <a href="{U_ACP_USERS}" title="{L_ACP_USERS}"><img src="{ACP_IMAGES_PATH}users.png" alt="{L_ACP_USERS}" title="{L_ACP_USERS}" /></a>&nbsp;
@@ -35,7 +33,7 @@
 <!-- BEGIN adminedit -->
 <tr>
 	<td class="row1" width="50%" valign="top"><span class="genmed"><b>{adminedit.EDITCOUNT}. {L_LISTOFADMINTEXT}:</b></span></td>
-	<td class="row1" width="50%"><span class="genmed"><a href="admin_users.php?mode=edit&u={adminedit.EDITOK}" style="text-decoration:none;">{adminedit.EDITUSER}</a></span></td>
+	<td class="row1" width="50%"><span class="genmed"><a href="admin_users.php?mode=edit&amp;u={adminedit.EDITOK}" style="text-decoration:none;">{adminedit.EDITUSER}</a></span></td>
 </tr>
 <!-- END adminedit -->
 <!-- BEGIN switch_firstadmin -->
@@ -108,13 +106,13 @@ if(GetCookie(tmp) == '2')
 	<td class="row2"><b>{USERS_PER_DAY}</b></td>
 </tr>
 <tr>
-	<td class="row3" nowrap width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row1" nowrap="nowrap" colspan="2">{L_NUMBER_ADMINISTRATORS}:</td>
 	<td class="row2" colspan="3">{NUMBER_OF_ADMINISTRATORS}</td>
 </tr>
 <tr>
-	<td class="row3" nowrap width="10">&nbsp;</td>
-	<td class="row3" nowrap width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row1" nowrap="nowrap">{L_NAME_ADMINISTRATORS}:</td>
 	<td class="row2" colspan="3">{NAMES_OF_ADMINISTRATORS}&nbsp;</td>
 </tr>
@@ -124,30 +122,30 @@ if(GetCookie(tmp) == '2')
 	<td class="row2" colspan="3">{NUMBER_OF_JUNIOR_ADMINISTRATORS}</td>
 </tr>
 <tr>
-	<td class="row3" nowrap width="10">&nbsp;</td>
-	<td class="row3" nowrap width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row1" nowrap="nowrap">{L_NAME_JUNIOR_ADMINISTRATORS}:</td>
 	<td class="row2" colspan="3">{NAMES_OF_JUNIOR_ADMINISTRATORS}&nbsp;</td>
 </tr>
 <tr>
-	<td class="row3" nowrap width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row1" nowrap="nowrap" colspan="2">{L_NUMBER_MODERATORS}:</td>
 	<td class="row2" colspan="3">{NUMBER_OF_MODERATORS}</td>
 </tr>
 <tr>
-	<td class="row3" nowrap width="10">&nbsp;</td>
-	<td class="row3" nowrap width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row1" nowrap="nowrap">{L_NAME_MODERATORS}:</td>
 	<td class="row2" colspan="3">{NAMES_OF_MODERATORS}&nbsp;</td>
 </tr>
 <tr>
-	<td class="row3" nowrap width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row1" nowrap="nowrap" colspan="2">{L_NUMBER_DEACTIVATED_USERS}:</td>
 	<td class="row2" colspan="3">{NUMBER_OF_DEACTIVATED_USERS}</td>
 </tr>
 <tr>
-	<td class="row3" nowrap width="10">&nbsp;</td>
-	<td class="row3" nowrap width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row1" nowrap="nowrap">{L_NAME_DEACTIVATED_USERS}:</td>
 	<td class="row2" colspan="3">{NAMES_OF_DEACTIVATED}&nbsp;</td>
 </tr>

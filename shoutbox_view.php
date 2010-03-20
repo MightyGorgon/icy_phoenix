@@ -55,16 +55,8 @@ if(!$is_auth['auth_read'])
 }
 // End auth check
 
-// see if we need offset
-if (isset($_POST['start']) || isset($_GET['start']))
-{
-	$start = (isset($_POST['start'])) ? intval($_POST['start']) : intval($_GET['start']);
-	$start = ($start < 0) ? 0 : $start;
-}
-else
-{
-	$start = 0;
-}
+$start = request_var('start', 0);
+$start = ($start < 0) ? 0 : $start;
 
 $template->set_filenames(array('body' => 'shoutbox_view_body.tpl'));
 
@@ -84,8 +76,8 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$username = ($user_id == ANONYMOUS) ? (($shout_row['shout_username'] == '') ? $lang['Guest'] : $shout_row['shout_username']) : colorize_username($shout_row['user_id'], $shout_row['username'], $shout_row['user_color'], $shout_row['user_active'], true);
 	$shout = $shout_row['shout_text'];
 	$bbcode->allow_html = ($config['allow_html'] ? true : false);
-	$bbcode->allow_bbcode = ($config['allow_bbcode'] && $shout_row['enable_bbcode'] ? true : false);
-	$bbcode->allow_smilies = ($config['allow_smilies'] && $shout_row['user_allowsmile'] && ($shout != '') && $shout_row['enable_smilies'] ? true : false);
+	$bbcode->allow_bbcode = (($config['allow_bbcode'] && $shout_row['enable_bbcode']) ? true : false);
+	$bbcode->allow_smilies = (($config['allow_smilies'] && $shout_row['user_allowsmile'] && ($shout != '') && $shout_row['enable_smilies']) ? true : false);
 	$shout = $bbcode->parse($shout);
 	$shout = (!$shout_row['shout_active']) ? $shout : $lang['Shout_censor'];
 	$shout = censor_text($shout);
@@ -105,6 +97,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 		)
 	);
 }
+
 $template->assign_vars(array(
 	'U_SHOUTBOX_VIEW' => append_sid('shoutbox_view.' . PHP_EXT),
 	'T_NAME' => $theme['template_name'],

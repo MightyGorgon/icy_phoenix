@@ -133,7 +133,7 @@ function checkAlbumForm()
 			switch (document.upload.cat_id.value)
 			{
 				case '{S_ALBUM_ROOT_CATEGORY}':
-				case '{S_ALBUM_JUMPBOX_SEPERATOR}':
+				case '{S_ALBUM_JUMPBOX_SEPARATOR}':
 				case '{S_ALBUM_JUMPBOX_USERS_GALLERY}':
 				case '{S_ALBUM_JUMPBOX_PUBLIC_GALLERY}':
 					formErrors = "{L_NO_VALID_CAT_SELECTED}";

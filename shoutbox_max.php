@@ -22,13 +22,13 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-$start = isset($_POST['start']) ? intval($_POST['start']) : (isset($_GET['start']) ? intval($_GET['start']) : 0);
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$page_number = (isset($_GET['page_number']) ? intval($_GET['page_number']) : (isset($_POST['page_number']) ? intval($_POST['page_number']) : false));
-$page_number = ($page_number < 1) ? false : $page_number;
+$page_number = request_var('page_number', 0);
+$page_number = ($page_number < 1) ? 0 : $page_number;
 
-$start = (!$page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']);
+$start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
 $cms_page['page_id'] = 'shoutbox';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
@@ -68,14 +68,8 @@ if(!$is_auth['auth_read'])
 $refresh = (isset($_GET['auto_refresh']) || isset($_GET['refresh'])) ? 1 : 0;
 $preview = (isset($_POST['preview'])) ? 1 : 0;
 $submit = (isset($_POST['shout']) && isset($_POST['message'])) ? 1 : 0;
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-}
-else
-{
-	$mode = '';
-}
+
+$mode = request_var('mode', '');
 
 // Set toggles for various options
 if (!$config['allow_html'])
@@ -107,7 +101,8 @@ if(!$userdata['session_logged_in'] || ($mode == 'editpost' && $post_info['poster
 {
 	$template->assign_block_vars('switch_username_select', array());
 }
-$username = (!empty($_POST['username'])) ? $_POST['username'] : '';
+$username = request_post_var('username', '', true);
+$username = htmlspecialchars_decode($username, ENT_COMPAT);
 // Check username
 if (!empty($username))
 {
@@ -126,7 +121,7 @@ if (!empty($username))
 
 if ($refresh || $preview)
 {
-	$message = (!empty($_POST['message'])) ? htmlspecialchars(trim(stripslashes($_POST['message']))) : '';
+	$message = request_post_var('message', '', true);
 	if (!empty($message))
 	{
 		if ($preview)
@@ -189,7 +184,8 @@ elseif ($submit || isset($_POST['message']))
 		}
 	}
 
-	$message = (isset($_POST['message'])) ? trim($_POST['message']) : '';
+	$message = request_post_var('message', '', true);
+	$message = htmlspecialchars_decode($message, ENT_COMPAT);
 	// insert shout !
 	if (!empty($message) && $is_auth['auth_post'] && !$error)
 	{
@@ -204,7 +200,7 @@ elseif ($submit || isset($_POST['message']))
 		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on);
 		//$message = (!get_magic_quotes_gpc()) ? addslashes($message) : stripslashes($message);
 		$sql = "INSERT INTO " . SHOUTBOX_TABLE. " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, enable_bbcode, enable_html, enable_smilies)
-				VALUES ('$message', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $username . "', $bbcode_on, $html_on, $smilies_on)";
+				VALUES ('" . $db->sql_escape($message) . "', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $db->sql_escape($username) . "', $bbcode_on, $html_on, $smilies_on)";
 		$result = $db->sql_query($sql);
 
 		// auto prune
@@ -218,11 +214,8 @@ elseif ($submit || isset($_POST['message']))
 elseif (($mode == 'delete') || ($mode == 'censor'))
 {
 	// make shout inactive
-	if (isset($_GET[POST_POST_URL]) || isset($_POST[POST_POST_URL]))
-	{
-		$post_id = (isset($_POST[POST_POST_URL])) ? intval($_POST[POST_POST_URL]) : intval($_GET[POST_POST_URL]);
-	}
-	else
+	$post_id = request_var(POST_POST_URL, 0);
+	if (empty($post_id))
 	{
 		message_die(GENERAL_ERROR, 'Error no shout id specifyed for delete/censor.', '', __LINE__, __FILE__);
 	}
@@ -380,7 +373,7 @@ if (isset($_GET['highlight']))
 	unset($words);
 
 	$highlight = urlencode($_GET['highlight']);
-	$highlight_match = phpbb_rtrim($highlight_match, "\\");
+	$highlight_match = rtrim($highlight_match, "\\");
 }
 
 $ranks_array = $cache->obtain_ranks(false);
@@ -639,7 +632,7 @@ if($error_msg != '')
 	$template->set_filenames(array('reg_header' => 'error_body.tpl'));
 	$template->assign_vars(array('ERROR_MESSAGE' => $error_msg));
 	$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
-	$message = (!empty($_POST['message'])) ? htmlspecialchars(trim(stripslashes($_POST['message']))) : '';
+	$message = request_post_var('message', '', true);
 	$template->assign_var('MESSAGE', $message);
 }
 

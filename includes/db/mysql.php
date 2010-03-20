@@ -112,6 +112,12 @@ class sql_db
 			$result = false;
 		}
 
+		// make db connection UTF-8 aware
+		if ($this->db_connect_id)
+		{
+			@mysql_query("SET NAMES 'utf8'");
+		}
+
 		$this->sql_server_version = $this->sql_server_info(true);
 
 		$this->sql_end_time = $this->sql_get_time();

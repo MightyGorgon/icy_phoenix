@@ -39,23 +39,19 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	else
 	{
 		$sessiondata = array();
-		$session_id = (isset($_GET['sid'])) ? $_GET['sid'] : '';
+		$session_id = request_get_var('sid', '');
 		$sessionmethod = SESSION_METHOD_GET;
 	}
 
 	$page_array = extract_current_page(IP_ROOT_PATH);
-	$forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]) : ((isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : '');
-	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
+	$forum_id = request_var(POST_FORUM_URL, 0);
+	$forum_id = ($forum_id < 0) ? 0 : $forum_id;
+	$topic_id = request_var(POST_TOPIC_URL, 0);
+	$topic_id = ($topic_id < 0) ? 0 : $topic_id;
 	$page_array['page_full'] .= (!empty($forum_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_f_=' . (int) $forum_id . 'x' : '';
 	$page_array['page_full'] .= (!empty($topic_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_t_=' . (int) $topic_id . 'x' : '';
-	if (function_exists('mysql_real_escape_string'))
-	{
-		$page_id = @mysql_real_escape_string(substr($page_array['page_full'], 0, 254));
-	}
-	else
-	{
-		$page_id = substr(str_replace("'", '%27', $page_array['page_full']), 0, 254);
-	}
+
+	$page_id = $db->sql_escape(substr($page_array['page_full'], 0, 254));
 
 	$last_visit = 0;
 	$current_time = time();
@@ -68,8 +64,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 
 	//
 	// Are auto-logins allowed?
-	// If allow_autologin is not set or is true then they are
-	// (same behaviour as old 2.0.x session code)
+	// If allow_autologin is not set or is true then they are (same behaviour as old 2.0.x session code)
 	//
 	if (isset($config['allow_autologin']) && !$config['allow_autologin'])
 	{
@@ -151,8 +146,8 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 			OR ban_userid = $user_id";
 	if ($user_id != ANONYMOUS)
 	{
-		$sql .= " OR ban_email LIKE '" . str_replace("\'", "''", $userdata['user_email']) . "'
-			OR ban_email LIKE '" . substr(str_replace("\'", "''", $userdata['user_email']), strpos(str_replace("\'", "''", $userdata['user_email']), "@")) . "'";
+		$sql .= " OR ban_email LIKE '" . $db->sql_escape($userdata['user_email']) . "'
+			OR ban_email LIKE '" . substr($db->sql_escape($userdata['user_email']), strpos($db->sql_escape($userdata['user_email']), "@")) . "'";
 	}
 	$result = CACHE_BAN_INFO ? $db->sql_query($sql, 0, 'ban_', USERS_CACHE_FOLDER) : $db->sql_query($sql);
 
@@ -188,11 +183,11 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 					}
 					elseif ($ban_info['ban_pub_reason_mode'] == '1')
 					{
-						$reason = str_replace("\n", '<br />', stripslashes($ban_info['ban_priv_reason']));
+						$reason = str_replace("\n", '<br />', $ban_info['ban_priv_reason']);
 					}
 					elseif ($ban_info['ban_pub_reason_mode'] == '2')
 					{
-						$reason = str_replace("\n", '<br />', stripslashes($ban_info['ban_pub_reason']));
+						$reason = str_replace("\n", '<br />', $ban_info['ban_pub_reason']);
 					}
 
 					$reason = empty($reason) ? $lang['You_been_banned'] : $reason;
@@ -206,8 +201,8 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 	// Create or update the session
 	$sql_ip = ($user_id == ANONYMOUS) ? " AND session_ip = '$user_ip'" : '';
 	$sql = "UPDATE " . SESSIONS_TABLE . "
-		SET session_ip = '$user_ip', session_start = $current_time, session_time = $current_time, session_page = '$page_id', session_logged_in = $login, session_user_agent = '" . addslashes($user_agent) . "', session_admin = $admin
-		WHERE session_id = '" . $session_id . "' $sql_ip
+		SET session_ip = '$user_ip', session_start = $current_time, session_time = $current_time, session_page = '$page_id', session_logged_in = $login, session_user_agent = '" . $db->sql_escape($user_agent) . "', session_admin = $admin
+		WHERE session_id = '" . $db->sql_escape($session_id) . "' $sql_ip
 			AND session_user_id = '$user_id'";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -218,7 +213,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 
 		$sql = "INSERT INTO " . SESSIONS_TABLE . "
 			(session_id, session_user_id, session_start, session_time, session_ip, session_user_agent, session_page, session_logged_in, session_admin)
-			VALUES ('$session_id', $user_id, $current_time, $current_time, '$user_ip', '" . addslashes($user_agent) . "', '$page_id', $login, $admin)";
+			VALUES ('" . $db->sql_escape($session_id) . "', $user_id, $current_time, $current_time, '$user_ip', '" . $db->sql_escape($user_agent) . "', '$page_id', $login, $admin)";
 		$db->sql_query($sql);
 	}
 
@@ -229,7 +224,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 		if (!$admin)
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_session_time = $current_time, user_http_agents = '" . addslashes($user_agent) . "', user_session_page = '$page_id', user_lastvisit = $last_visit, user_lastlogon = " . time() .  ", user_totallogon = (user_totallogon + 1)
+				SET user_session_time = $current_time, user_http_agents = '" . $db->sql_escape($user_agent) . "', user_session_page = '$page_id', user_lastvisit = $last_visit, user_lastlogon = " . time() .  ", user_totallogon = (user_totallogon + 1)
 				WHERE user_id = $user_id";
 			$db->sql_query($sql);
 
@@ -238,7 +233,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 			{
 				$sql = "INSERT INTO " . LOGINS_TABLE . "
 					(login_id, login_userid, login_ip, login_user_agent, login_time)
-					VALUES (NULL, $user_id, '$user_ip', '" . addslashes($user_agent) . "', $current_time)";
+					VALUES (NULL, $user_id, '$user_ip', '" . $db->sql_escape($user_agent) . "', $current_time)";
 				$db->sql_query($sql);
 
 				// Now get the results in groups based on how many topics per page parameter set in the admin panel
@@ -378,18 +373,14 @@ function session_pagestart($user_ip, $thispage_id = '')
 	}
 
 	$page_array = extract_current_page(IP_ROOT_PATH);
-	$forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]) : ((isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : '');
-	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
+	$forum_id = request_var(POST_FORUM_URL, 0);
+	$forum_id = ($forum_id < 0) ? 0 : $forum_id;
+	$topic_id = request_var(POST_TOPIC_URL, 0);
+	$topic_id = ($topic_id < 0) ? 0 : $topic_id;
 	$page_array['page_full'] .= (!empty($forum_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_f_=' . (int) $forum_id . 'x' : '';
 	$page_array['page_full'] .= (!empty($topic_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_t_=' . (int) $topic_id . 'x' : '';
-	if (function_exists('mysql_real_escape_string'))
-	{
-		$thispage_id = @mysql_real_escape_string(substr($page_array['page_full'], 0, 254));
-	}
-	else
-	{
-		$thispage_id = substr(str_replace("'", '%27', $page_array['page_full']), 0, 254);
-	}
+
+	$thispage_id = $db->sql_escape(substr($page_array['page_full'], 0, 254));
 
 	$last_visit = 0;
 	$current_time = time();
@@ -402,7 +393,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 		// session_id exists so go ahead and attempt to grab all data in preparation
 		$sql = "SELECT u.*, s.*
 			FROM " . SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-			WHERE s.session_id = '$session_id'
+			WHERE s.session_id = '" . $db->sql_escape($session_id) . "'
 				AND u.user_id = s.session_user_id AND session_time > $expiry_time";
 		$result = $db->sql_query($sql);
 		$userdata = $db->sql_fetchrow($result);
@@ -661,7 +652,7 @@ function session_reset_keys($user_id, $user_ip)
 	$db->sql_query($sql);
 
 	$where_sql = 'session_user_id = ' . (int) $user_id;
-	$where_sql .= ($user_id == $userdata['user_id']) ? " AND session_id <> '" . $userdata['session_id'] . "'" : '';
+	$where_sql .= ($user_id == $userdata['user_id']) ? " AND session_id <> '" . $db->sql_escape($userdata['session_id']) . "'" : '';
 	$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
 		WHERE $where_sql";
 	$db->sql_query($sql);

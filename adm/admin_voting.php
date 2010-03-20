@@ -28,34 +28,13 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-// Initialize variables
-// Determine current starting row
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-// Determine current sort field
-if(isset($_GET['field']) || isset($_POST['field']))
-{
-	$sort_field = (isset($_POST['field'])) ? $_POST['field'] : $_GET['field'];
-}
-else
-{
-	$sort_field = 'vote_id';
-}
+$sort_field = request_var('field', 'vote_id');
 
-// Determine current sort order
-if(isset($_POST['order']))
-{
-	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-elseif(isset($_GET['order']))
-{
-	$sort_order = ($_GET['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-else
-{
-	$sort_order = 'ASC';
-}
+$sort_order = request_var('order', 'ASC');
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 // Assign sort fields
 $sort_fields_text = array(
@@ -128,12 +107,8 @@ switch($sort_field)
 		break;
 }
 
-// Build arrays
-//
-// Assign page template
 $template->set_filenames(array('pollbody' => ADM_TPL . 'admin_voting_body.tpl'));
 
-// Assign labels
 $template->assign_vars(array(
 	'L_ADMIN_VOTE_EXPLAIN' => $lang['Admin_Vote_Explain'],
 	'L_ADMIN_VOTE_TITLE' => $lang['Admin_Vote_Title'],
@@ -149,7 +124,8 @@ $template->assign_vars(array(
 	'S_ORDER_SELECT' => $select_sort_order,
 
 	'ADMIN_VOTING_ICON' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/admin_voting_icon.gif" alt="' . $lang['Admin_Vote_Title'] .'" />',
-	));
+	)
+);
 
 // Assign Username array
 $sql = "SELECT DISTINCT u.user_id, u.username, u.user_active, u.user_color
@@ -219,15 +195,15 @@ while ($row = $db->sql_fetchrow($result))
 
 	if (time() < $vote_end)
 	{
-		$vote_duration = (date ('Y/m/d', $vote_start)) . " - " . (date ('Y/m/d', $vote_end)) . " (ongoing)";
+		$vote_duration = (date ('Y/m/d', $vote_start)) . ' - ' . (date ('Y/m/d', $vote_end)) . $lang['POLL_ONGOING'];
 	}
 	elseif ($vote_length == 0)
 	{
-		$vote_duration = (date ('Y/m/d', $vote_start)) . " - " . "Infinite..." ;
+		$vote_duration = (date ('Y/m/d', $vote_start)) . ' - ' . $lang['POLL_INFINITE'];
 	}
 	else
 	{
-		$vote_duration = (date ('Y/m/d', $vote_start)) . " - " . (date ('Y/m/d', $vote_end)) . " (completed)" ;
+		$vote_duration = (date ('Y/m/d', $vote_start)) . ' - ' . (date ('Y/m/d', $vote_end)) . $lang['POLL_COMPLETED'];
 	}
 
 	$user = '';

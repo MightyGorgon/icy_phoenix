@@ -84,9 +84,7 @@ if (isset($_POST['submit']))
 }
 
 
-//
 // Are we going to empty the cache table?
-//
 if (isset($_POST['empty_cache']))
 {
 	$sql = "DELETE FROM " . LIW_CACHE_TABLE;
@@ -97,13 +95,9 @@ if (isset($_POST['empty_cache']))
 }
 
 
-$template->set_filenames(array(
-	'body' => ADM_TPL . 'liw_body.tpl')
-);
+$template->set_filenames(array('body' => ADM_TPL . 'liw_body.tpl'));
 
-//
 // Do compatibility checks...
-//
 
 // getimagesize() URL support
 if (@phpversion() >= '4.0.5')
@@ -147,7 +141,6 @@ if (isset($default_config['liw_attach_enabled']))
 {
 	$template->assign_block_vars('switch_attach_mod_installed', array());
 }
-
 
 $template->assign_vars(array(
 	'S_CONFIG_ACTION' => append_sid('admin_liw.' . PHP_EXT),
@@ -196,7 +189,8 @@ $template->assign_vars(array(
 	'L_URLAWARE' => $lang['LIW_urlaware'],
 	'L_URLAWARE_EXPLAIN' => $lang['LIW_urlaware_explain'],
 	'L_OPENSSL' => $lang['LIW_openssl'],
-	'L_OPENSSL_EXPLAIN' => $lang['LIW_openssl_explain'])
+	'L_OPENSSL_EXPLAIN' => $lang['LIW_openssl_explain']
+	)
 );
 
 $template->pparse('body');

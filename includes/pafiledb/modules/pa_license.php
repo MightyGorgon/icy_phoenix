@@ -19,22 +19,16 @@ class pafiledb_license extends pafiledb_public
 {
 	function main($action)
 	{
-		global $pafiledb_template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
+		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
 
-		if (isset($_REQUEST['license_id']))
-		{
-			$license_id = intval($_REQUEST['license_id']);
-		}
-		else
+		$license_id = request_var('license_id', 0);
+		if (empty($license_id))
 		{
 			message_die(GENERAL_MESSAGE, $lang['License_not_exist']);
 		}
 
-		if (isset($_REQUEST['file_id']))
-		{
-			$file_id = intval($_REQUEST['file_id']);
-		}
-		else
+		$file_id = request_var('file_id', 0);
+		if (empty($file_id))
 		{
 			message_die(GENERAL_MESSAGE, $lang['File_not_exist']);
 		}
@@ -77,7 +71,7 @@ class pafiledb_license extends pafiledb_public
 
 		$this->generate_category_nav($file_data['file_catid']);
 
-		$pafiledb_template->assign_vars(array(
+		$template->assign_vars(array(
 			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 

@@ -157,17 +157,11 @@ class NewsModule
 				}
 				$index_file = htmlspecialchars(urldecode($index_file));
 
-				$portal_page_id = '';
-				if(isset($_GET['page']))
-				{
-					$portal_page_id = 'page=' . htmlspecialchars(intval($_GET['page'])) . '&amp;';
-				}
+				$portal_page_id = request_var('page', 0);
+				$portal_page_id = !empty($portal_page_id) ? ('page=' . $portal_page_id . '&amp;') : '';
 
-				$ubid_link = '';
-				if(isset($_GET['ubid']))
-				{
-					$ubid_link = 'ubid=' . htmlspecialchars(intval($_GET['ubid'])) . '&amp;';
-				}
+				$ubid_link = request_var('ubid', 0);
+				$ubid_link = !empty($ubid_link) ? ('ubid=' . $ubid_link . '&amp;') : '';
 
 				// Convert and clean special chars!
 				$topic_title = htmlspecialchars_clean($article['topic_title']);
@@ -236,9 +230,10 @@ class NewsModule
 		global $cms_config_var;
 		$this->item_count = 1;
 
-		$catid = (isset($_GET['cat_id'])) ? intval($_GET['cat_id']) : 0;
-		$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+		$catid = request_var('cat_id', 0);
+		$start = request_var('start', 0);
 		$start = ($start < 0) ? 0 : $start;
+
 		$this->item_count = $this->data->fetchArticlesCount($catid);
 
 		if($article_id <= 0)
@@ -355,7 +350,7 @@ class NewsModule
 			)
 		);
 
-		$articles = $this->data->fetchDay($day, $month, $year, $key);
+		$articles = $this->data->fetchDay($day, $month, $year);
 
 		$this->prepareArticles($articles, true, $show_attachments);
 	}
@@ -526,7 +521,7 @@ class NewsModule
 
 		$this->item_count = 1;
 
-		$catid = (isset($_GET['cat_id'])) ? $_GET['cat_id'] : 0;
+		$catid = request_var('cat_id', 0);
 
 		if($num_items > 0)
 		{
@@ -562,32 +557,28 @@ class NewsModule
 			)
 		);
 
-		if((isset($_GET['news']) && ($_GET['news'] == 'topics')))
+		$news_var = request_var('news', '');
+
+		if($news_var == 'topics')
 		{
 			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Categories']));
 			$this->renderTopics();
 		}
-		elseif(isset($_GET['news']) && ($_GET['news'] == 'archives'))
+		elseif($news_var == 'archives')
 		{
-			$year = (isset($_GET['year'])) ? $_GET['year'] : 0;
-			$month = (isset($_GET['month'])) ? $_GET['month'] : 0;
-			$day = (isset($_GET['day'])) ? $_GET['day'] : 0;
-			$key = (isset($_GET['key'])) ? $_GET['key'] : '';
+			$year = request_var('year', 0);
+			$month = request_var('month', 0);
+			$day = request_var('day', 0);
+			$key = request_var('key', '');
 
 			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));
 			$this->renderArchives($year, $month, $day, $key);
 		}
 		else
 		{
-			$topic_id = 0;
-			if(!empty($_GET['topic_id']))
-			{
-				$topic_id = intval($_GET['topic_id']);
-			}
-			elseif(!empty($_GET['news_id']))
-			{
-				$topic_id = intval($_GET['news_id']);
-			}
+			$topic_id = request_var('topic_id', 0);
+			$news_id = request_var('news_id', 0);
+			$topic_id = (empty($topic_id) && !empty($news_id)) ? $news_id : $topic_id;
 			$topic_id = ($topic_id < 0) ? 0 : $topic_id;
 
 			if (!empty($topic_id))
@@ -626,24 +617,30 @@ class NewsModule
 			//$index_file = CMS_PAGE_HOME;
 			$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
 			$base_url = htmlspecialchars(urldecode($index_file)) . '?news=article';
-			if(isset($_GET['topic_id']))
+
+			$topic_id = request_var('topic_id', 0);
+			$cat_id = request_var('cat_id', 0);
+			$page = request_var('page', 0);
+			$ubid = request_var('ubid', 0);
+
+			if(!empty($topic_id))
 			{
-				$base_url .= '&amp;topic_id=' . htmlspecialchars(intval($_GET['topic_id']));
+				$base_url .= '&amp;topic_id=' . $topic_id;
 			}
-			if(isset($_GET['cat_id']))
+			if(!empty($cat_id))
 			{
-				$base_url .= '&amp;cat_id=' . htmlspecialchars(intval($_GET['cat_id']));
+				$base_url .= '&amp;cat_id=' .$cat_id;
 			}
-			if(isset($_GET['page']))
+			if(!empty($page))
 			{
-				$base_url .= '&amp;page=' . htmlspecialchars(intval($_GET['page']));
+				$base_url .= '&amp;page=' . $page;
 			}
-			if(isset($_GET['ubid']))
+			if(!empty($ubid))
 			{
-				$base_url .= '&amp;ubid=' . htmlspecialchars(intval($_GET['ubid']));
+				$base_url .= '&amp;ubid=' . $ubid;
 			}
 
-			$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
+			$start = request_var('start', 0);
 			$start = ($start < 0) ? 0 : $start;
 
 			$this->setBlockVariables('pagination', array(

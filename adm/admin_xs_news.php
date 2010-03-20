@@ -35,19 +35,14 @@ require_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 // define the path to the admin news templates
 define('XS_TPL_PATH', '../../templates/common/xs_mod/tpl_news/');
 
-if (isset($_POST['message']))
-{
-	$_POST['news_text'] = $_POST['message'];
-}
+setup_extra_lang(array('lang_xs_news'));
 
-// check if ESM is installed
-if(empty($template->xs_version) || $template->xs_version < 6)
-{
-	message_die(GENERAL_ERROR, 'One of the following is probably true:<br /><br />1. eXtreme Styles mod is not installed<br />2. you forgot to upload includes/template.php<br />3. Your using an old version of eXtreme Styles mod');
-}
+$news_text = request_var('news_text', '', true);
+$news_text = htmlspecialchars_decode($news_text, ENT_COMPAT);
+$message = request_var('message', '', true);
+$message = htmlspecialchars_decode($message, ENT_COMPAT);
 
-// load the admin language file
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_xs_news.' . PHP_EXT);
+$news_text = !empty($message) ? $message : $news_text;
 
 // Set Date format based on the admin choice
 switch ($config['xs_news_dateformat'])
@@ -100,16 +95,7 @@ switch ($config['xs_news_dateformat'])
 	break;
 }
 
-// Mode setting
-if(isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
-{
-	$mode = "";
-}
+$mode = request_var('mode', '');
 
 if (isset($_POST['cancel']))
 {
@@ -118,7 +104,7 @@ if (isset($_POST['cancel']))
 
 if(isset($_POST['addnews']))
 {
-	$mode = (isset($_POST['addnews'])) ? 'addnews' : '';
+	$mode = 'addnews';
 }
 
 $confirm = (isset($_POST['confirm'])) ? true : 0;
@@ -134,9 +120,9 @@ if(!empty($mode))
 			{
 				$config_name = $xs_news_config_vars[$i];
 				$config_value = $config[$xs_news_config_vars[$i]];
-				$default_config[$config_name] = isset($_POST['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
+				$default_config[$config_name] = $config_value;
 
-				$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
+				$new[$config_name] = (isset($_POST[$config_name])) ? request_post_var($config_name, '') : $default_config[$config_name];
 
 				if(isset($_POST['submit']))
 				{
@@ -181,7 +167,7 @@ if(!empty($mode))
 			$xs_news_dateformat_select .= '<option value="7">' . create_date("F jS Y", time(), $config['board_timezone']) . '</option>';
 
 			$xs_news_dateformat_select .= '</select>';
-			$xs_news_dateformat_select = str_replace("value=\"".$new['xs_news_dateformat']."\">", "value=\"".$new['xs_news_dateformat']."\" selected=\"selected\">&raquo;" ,$xs_news_dateformat_select);
+			$xs_news_dateformat_select = str_replace("value=\"" . $new['xs_news_dateformat'] . "\">", "value=\"" . $new['xs_news_dateformat'] . "\" selected=\"selected\">&raquo;" ,$xs_news_dateformat_select);
 
 			$template->set_filenames(array('body' =>  XS_TPL_PATH . 'news_config_body.tpl'));
 
@@ -232,7 +218,7 @@ if(!empty($mode))
 				$newmode = 'modnews';
 				$buttonvalue = $lang['Update'];
 
-				$news_id = intval($_GET['id']);
+				$news_id = request_get_var('id', 0);
 
 				$row = xsm_get_info('news', $news_id);
 
@@ -290,22 +276,24 @@ if(!empty($mode))
 				'NEWS_ITEM' => $news_item,
 				'NEWS_DISPLAY_YES' => $news_display_yes,
 				'NEWS_DISPLAY_NO' => $news_display_no
-			));
+				)
+			);
 
 			$template->pparse('body');
 			break;
 
 		case 'createnews':
 			// Create a new news item in the DB
-			if(trim($_POST['news_text']) == "")
+			if(empty($news_text))
 			{
-				$message = $lang['n_create_item_null'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = $lang['n_create_item_null'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
-			$news_item = xsm_prepare_message(trim($_POST['news_text']));
+			$news_item = xsm_prepare_message($news_text);
 
-			$news_date = ((empty($_POST['news_date'])) ? create_date($date_format_ae, time(), $config['board_timezone']) : $_POST['news_date']);
+			$news_date = request_post_var('news_date', '');
+			$news_date = (empty($news_date) ? create_date($date_format_ae, time(), $config['board_timezone']) : $news_date);
 
 			$date_split = explode('/', $news_date);
 			$date_month = (($config['xs_news_dateformat'] == 1) ? $date_split[0] : $date_split[1]);
@@ -314,7 +302,7 @@ if(!empty($mode))
 
 			if(!checkdate($date_month, $date_day, $date_split[2]))
 			{
-				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}
@@ -330,11 +318,11 @@ if(!empty($mode))
 			$next_id = $max_id + 1;
 
 			$sql = "INSERT INTO " . XS_NEWS_TABLE . " (news_id, news_date, news_text, news_display, news_smilies" . ")
-				VALUES ('" . $next_id . "', '" . $news_date_posting . "', '" . str_replace("\'", "''", $news_item) . "', '" . intval($_POST['news_display']) . "', '" . intval($_POST['news_smilies']) . "')";
+				VALUES ('" . $next_id . "', '" . $news_date_posting . "', '" . $db->sql_escape($news_item) . "', '" . intval($_POST['news_display']) . "', '" . intval($_POST['news_smilies']) . "')";
 			$result = $db->sql_query($sql);
 			$db->clear_cache('xs_');
 
-			$message = $lang['n_news_item_added'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['n_news_item_added'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -342,9 +330,10 @@ if(!empty($mode))
 
 		case 'modnews':
 			// Modify a news item in the DB
-			$news_item = xsm_prepare_message(trim($_POST['news_text']));
+			$news_item = xsm_prepare_message($news_text);
 
-			$news_date = ((empty($_POST['news_date'])) ? create_date($date_format_ae, time(), $config['board_timezone']) : $_POST['news_date']);
+			$news_date = request_post_var('news_date', '');
+			$news_date = (empty($news_date) ? create_date($date_format_ae, time(), $config['board_timezone']) : $news_date);
 
 			$date_split = explode('/', $news_date);
 			$date_month = (($config['xs_news_dateformat'] == 1) ? $date_split[0] : $date_split[1]);
@@ -353,19 +342,19 @@ if(!empty($mode))
 
 			if(!checkdate($date_month, $date_day, $date_split[2]))
 			{
-				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = str_replace('dd/mm', $date_error, $lang['xs_news_invalid_date']) . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
 			$news_date_posting = gmmktime(gmdate('H'), gmdate('i'), gmdate('s'), $date_month, $date_day, $date_split[2]);
 
 			$sql = "UPDATE " . XS_NEWS_TABLE . "
-				SET news_date = " . $news_date_posting . ", news_text = '" . str_replace("\'", "''", $news_item) . "', news_display = " . intval($_POST['news_display']) . ", news_smilies = " . intval($_POST['news_smilies']). "
+				SET news_date = " . $news_date_posting . ", news_text = '" . $db->sql_escape($news_item) . "', news_display = " . intval($_POST['news_display']) . ", news_smilies = " . intval($_POST['news_smilies']). "
 				WHERE news_id = " . intval($_POST['id']);
 			$result = $db->sql_query($sql);
 			$db->clear_cache('xs_');
 
-			$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 
@@ -389,7 +378,7 @@ if(!empty($mode))
 				$result = $db->sql_query($sql);
 				$db->clear_cache('xs_');
 
-				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid("admin_xs_news." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+				$message = $lang['n_news_updated'] . '<br /><br />' . sprintf($lang['n_click_return_newslist'], '<a href="' . append_sid('admin_xs_news.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 				message_die(GENERAL_MESSAGE, $message);
 			}

@@ -14,111 +14,6 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /**
-* Create a profile link for the user with his own color
-*/
-// Mighty Gorgon: OLD COLORIZE FUNCTION - BEGIN
-/*
-
-//define('COLORIZE_CACHE_REFRESH', 2592000); // Caching time for user colors cache (Seconds) (60*60*24=86400) (86400*30=2592000)
-function groups_colorize_username($user_id, $no_profile = false, $get_only_color_style = false)
-{
-	global $config, $db;
-
-	// First check if user logged in
-	if($user_id != ANONYMOUS)
-	{
-		// Change following two variables if you need to:
-		$cache_update = 2592000;
-		$cache_file = USERS_CACHE_FOLDER . POST_USERS_URL . '_' . $user_id . '.' . PHP_EXT;
-		$update_cache = true;
-
-		if(@file_exists($cache_file))
-		{
-			$last_update = 0;
-			include($cache_file);
-			if($last_update > (time() - $cache_update))
-			{
-				$update_cache = false;
-			}
-		}
-
-		if($update_cache == true)
-		{
-			// Get the user info and see if they are assigned a color_group //
-			$sql = "SELECT u.username, u.user_active, u.user_color, u.user_color_group
-				FROM " . USERS_TABLE . " u
-				WHERE u.user_id = '" . $user_id . "'
-					LIMIT 1";
-			$result = $db->sql_query($sql);
-			$row = $db->sql_fetchrow($result);
-			$username = htmlspecialchars($row['username']);
-			//$username = $row['username']);
-			if($row['user_active'] == 0)
-			{
-				$style_color = '';
-			}
-			else
-			{
-				if($row['user_color'] != '')
-				{
-					$usercolor = check_valid_color($row['user_color']);
-				}
-				elseif($row['user_color_group'] != 0)
-				{
-					$sql_cg = "SELECT g.group_color FROM " . GROUPS_TABLE . " g
-						WHERE g.group_id = '" . $row['user_color_group'] . "'
-							LIMIT 1";
-					$result_cg = $db->sql_query($sql_cg);
-					$row_cg = $db->sql_fetchrow($result_cg);
-					$usercolor = check_valid_color($row_cg['group_color']);
-				}
-				else
-				{
-					$usercolor = $config['active_users_color'];
-				}
-				$usercolor = ($usercolor != false) ? $usercolor : $config['active_users_color'];
-			}
-
-			if(@$f = fopen($cache_file, 'w'))
-			{
-				$username = addslashes($username);
-				fwrite($f, '<' . '?php $last_update = ' . time() . '; $usercolor = \'' . $usercolor . '\'; $username = \'' . $username . '\'; ?' . '>');
-				fclose($f);
-				@chmod($cache_file, 0666);
-			}
-		}
-
-		$style_color = 'style="font-weight:bold;text-decoration:none;color:' . $usercolor . ';"';
-
-		if ($no_profile == false)
-		{
-			$user_link = '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" ' . $style_color . '>' . $username . '</a>';
-		}
-		else
-		{
-			$user_link = '<span ' . $style_color . '>' . $username . '</span>';
-		}
-
-		if ($get_only_color_style == true)
-		{
-			$user_link = $style_color;
-		}
-
-		return($user_link);
-	}
-	else
-	{
-		if($get_only_color_style == true)
-		{
-			return('');
-		}
-		return false;
-	}
-}
-*/
-// Mighty Gorgon: OLD COLORIZE FUNCTION - END
-
-/**
 * Get all users in a group
 */
 function get_users_in_group($group_id)
@@ -437,16 +332,16 @@ function build_groups_list_template()
 	$groups_list = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color($row['group_color']) ? ('color:' . check_valid_color($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
+		$groups_list .= '&nbsp;<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight: bold; text-decoration: none;' . (check_valid_color($row['group_color']) ? ('color: ' . check_valid_color($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
 	}
 	$db->sql_freeresult($result);
 	if ($config['active_users_legend'] == true)
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid('memberlist.' . PHP_EXT) . '" style="font-weight:bold;text-decoration:none;' . (check_valid_color($config['active_users_color']) ? ('color:' . check_valid_color($config['active_users_color']) . ';') : '') . '">' . $lang['Active_Users_Group'] . '</a>,';
+		$groups_list .= '&nbsp;<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '" style="font-weight: bold; text-decoration: none;' . (check_valid_color($config['active_users_color']) ? ('color: ' . check_valid_color($config['active_users_color']) . ';') : '') . '">' . $lang['Active_Users_Group'] . '</a>,';
 	}
 	if ($config['bots_legend'] == true)
 	{
-		$groups_list .= '&nbsp;<span style="font-weight:bold;text-decoration:none;' . (check_valid_color($config['bots_color']) ? ('color:' . check_valid_color($config['bots_color']) . ';') : '') . '">' . $lang['Bots_Group'] . '</span>,';
+		$groups_list .= '&nbsp;<span style="font-weight: bold; text-decoration: none;' . (check_valid_color($config['bots_color']) ? ('color: ' . check_valid_color($config['bots_color']) . ';') : '') . '">' . $lang['Bots_Group'] . '</span>,';
 	}
 	if ($groups_list != '')
 	{

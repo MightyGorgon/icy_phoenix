@@ -38,16 +38,16 @@ header ('Content-Type: text/xml');
 $time_start = getmicrotime();
 $rss_time = gmdate('D, j M Y G:i:s T', $time_start);
 
-// Create main board url
-$fap_full_url = fap_create_server_url();
+// Create main site url
+$fap_full_url = create_server_url();
 
 $index_site = $fap_full_url . 'album.' . PHP_EXT;
 $index_url = $fap_full_url . 'album_showpage.' . PHP_EXT;
 $thumb_url = $fap_full_url . 'album_thumbnail.' . PHP_EXT;
 
-// If not set, set the output count to 50
-$count = (isset($_GET['np'])) ? intval($_GET['np']) : 25;
-$count = ($count == 0) ? 25 : $count;
+// If not set, set the output count to 25
+$count = request_var('np', 25);
+$count = ($count <= 0) ? 25 : $count;
 
 // BEGIN Recent Photos
 // Start check permissions
@@ -83,7 +83,7 @@ if($userdata['user_level'] != ADMIN)
 }
 // End check permissions
 $NotErrorFlag = false;
-$sql_limit_time = "";
+$sql_limit_time = '';
 if (!$no_limit && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 {
 	$NotErrorFlag = true;

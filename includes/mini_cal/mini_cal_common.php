@@ -15,8 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
-
 /***************************************************************************
 		getFormattedDate
 

@@ -23,13 +23,14 @@ if (!defined('IN_ICYPHOENIX'))
 
 if (isset($_POST['submit']))
 {
-	$username = (!empty($_POST['username'])) ? phpbb_clean_username($_POST['username']) : '';
-	$email = (!empty($_POST['email'])) ? trim(strip_tags(htmlspecialchars($_POST['email']))) : '';
+	$username = phpbb_clean_username(request_post_var('username', '', true));
+	$username = htmlspecialchars_decode($username, ENT_COMPAT);
+	$email = request_post_var('email', '');
 
-	$sql = "SELECT user_id, username, user_email, user_active, user_lang, ct_last_pw_reset
+	$sql = "SELECT user_id, username, user_email, user_active, user_lang, user_passchg
 		FROM " . USERS_TABLE . "
-		WHERE user_email = '" . str_replace("\'", "''", $email) . "'
-			AND username = '" . str_replace("\'", "''", $username) . "'";
+		WHERE user_email = '" . $db->sql_escape($email) . "'
+			AND username = '" . $db->sql_escape($username) . "'";
 	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
@@ -43,27 +44,26 @@ if (isset($_POST['submit']))
 		$user_id = $row['user_id'];
 
 		// CrackerTracker v5.x
-		if ($ctracker_config->settings['pw_reset_feature'] == 1)
+		if ($config['ctracker_pw_reset_feature'] == 1)
 		{
-			if ($row['ct_last_pw_reset'] >= time())
+			$pwd_reset_flood_time = $row['user_passchg'] + (!empty($config['ctracker_pwreset_time']) ? (int) $config['ctracker_pwreset_time'] : 20) * 60;
+			if (time() <= $pwd_reset_flood_time)
 			{
-				message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_pwreset_info'], $ctracker_config->settings['pwreset_time']));
+				message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_pwreset_info'], $config['ctracker_pwreset_time']));
 			}
 		}
 		// CrackerTracker v5.x
 
-		$user_actkey = gen_rand_string(true);
+		$user_actkey = gen_rand_string();
 		//$key_len = 54 - strlen($server_url);
 		$key_len = 54 - strlen($profile_server_url);
 		$key_len = ($key_len > 6) ? $key_len : 6;
 		$user_actkey = substr($user_actkey, 0, $key_len);
-		$user_password = gen_rand_string(false);
+		$user_password = gen_rand_string();
 		// CrackerTracker v5.x
-		//$new_time = time() + $ctracker_config->settings['pwreset_time'] * 60;
-		// Compatibility trick
-		(empty($ctracker_config->settings['pwreset_time']))? $new_time = time() + 20 * 60 : null;
 		$sql = "UPDATE " . USERS_TABLE . "
-			SET user_newpasswd = '" . md5($user_password) . "', user_actkey = '$user_actkey', ct_last_pw_reset = '$new_time' WHERE user_id = " . $row['user_id'];
+			SET user_newpasswd = '" . md5($user_password) . "', user_actkey = '" . $user_actkey . "', user_passchg = '" . time() . "'
+			WHERE user_id = " . $row['user_id'];
 		// CrackerTracker v5.x
 		/*
 		$sql = "UPDATE " . USERS_TABLE . "
@@ -132,7 +132,7 @@ else
 // Output basic page
 $link_name = $lang['Send_password'];
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('profile_main.' . PHP_EXT) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 

@@ -25,7 +25,7 @@
 		<td class="row1 row-center" width="12%">{similar.topics.AUTHOR}</td>
 		<td class="row1 row-center"><b>{similar.topics.FORUM}</b></td>
 		<td class="row1 row-center" width="10%"><span class="genmed">{similar.topics.REPLIES}</span></td>
-		<td class="row1 row-center" width="18%" nowrap="no-wrap"><span class="genmed">{similar.topics.POST_TIME} {similar.topics.POST_URL}</span></td>
+		<td class="row1 row-center" width="18%" nowrap="nowrap"><span class="genmed">{similar.topics.POST_TIME} {similar.topics.POST_URL}</span></td>
 	</tr>
 	<!-- END topics -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

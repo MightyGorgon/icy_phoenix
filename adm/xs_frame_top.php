@@ -28,24 +28,24 @@ include_once('xs_include.' . PHP_EXT);
 $template->set_filenames(array('body' => XS_TPL_PATH . 'frame_top.tpl'));
 
 $template->assign_block_vars('left_nav', array(
-	'URL'	=> append_sid('xs_index.' . PHP_EXT),
-	'TEXT'	=> $lang['xs_menu_lc']
+	'URL' => append_sid('xs_index.' . PHP_EXT),
+	'TEXT' => $lang['xs_menu_lc']
 	));
 /* $template->assign_block_vars('left_nav', array(
-	'URL'	=> append_sid('xs_download.' . PHP_EXT),
-	'TEXT'	=> $lang['xs_download_styles_lc']
+	'URL' => append_sid('xs_download.' . PHP_EXT),
+	'TEXT' => $lang['xs_download_styles_lc']
 	)); */
 $template->assign_block_vars('left_nav', array(
-	'URL'	=> append_sid('xs_import.' . PHP_EXT),
-	'TEXT'	=> $lang['xs_import_styles_lc']
+	'URL' => append_sid('xs_import.' . PHP_EXT),
+	'TEXT' => $lang['xs_import_styles_lc']
 	));
 $template->assign_block_vars('left_nav', array(
-	'URL'	=> append_sid('xs_install.' . PHP_EXT),
-	'TEXT'	=> $lang['xs_install_styles_lc']
+	'URL' => append_sid('xs_install.' . PHP_EXT),
+	'TEXT' => $lang['xs_install_styles_lc']
 	));
 $template->assign_block_vars('left_nav', array(
-	'URL'	=> 'http://www.phpbbstyles.com',
-	'TEXT'	=> $lang['xs_support_forum_lc']
+	'URL' => 'http://www.phpbbstyles.com',
+	'TEXT' => $lang['xs_support_forum_lc']
 	));
 
 

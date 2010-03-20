@@ -1,13 +1,11 @@
 <?php
 
-// CTracker_Ignore: File checked by human
-
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
 }
 
-if ( !defined('IN_MINI_CAL') )
+if (!defined('IN_MINI_CAL'))
 {
 	die('Hacking attempt');
 }

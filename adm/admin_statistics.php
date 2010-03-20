@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
@@ -29,6 +28,8 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
+
+setup_extra_lang(array('lang_statistics'));
 
 // FUNCTIONS - BEGIN
 if (!function_exists('gen_auth_select'))
@@ -78,11 +79,6 @@ if (!function_exists('renumbering_order'))
 }
 // FUNCTIONS - END
 
-if (!empty($config))
-{
-	include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_statistics.' . PHP_EXT);
-}
-
 $__stats_config = array();
 
 $db->clear_cache('stats_config_');
@@ -93,13 +89,6 @@ while ($row = $db->sql_fetchrow($result))
 {
 	$__stats_config[$row['config_name']] = trim($row['config_value']);
 }
-
-$stats_lang = $config['default_lang'];
-if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $stats_lang . '/lang_statistics.' . PHP_EXT))
-{
-	$language = 'english';
-}
-include(IP_ROOT_PATH . 'language/lang_' . $stats_lang . '/lang_statistics.' . PHP_EXT);
 
 include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/class_stats_module.' . PHP_EXT);
@@ -120,17 +109,9 @@ while (list($key, $value) = each($images))
 $config['smilies_path'] = './../' . $config['smilies_path'];
 */
 
-// Init Vars
-$params = array(
-	'mode' => 'mode',
-	'submit' => 'submit',
-	'module_id' => POST_FORUM_URL
-);
-
-while(list($var, $param) = @each($params))
-{
-	(!empty($_POST[$param]) || !empty($_GET[$param]))? $$var = (!empty($_POST[$param])) ? $_POST[$param] : $_GET[$param] : $$var = '';
-}
+$mode = request_var('mode', '');
+$submit = request_var('submit', '');
+$module_id = request_var(POST_FORUM_URL, 0);
 
 $msg = '';
 $templated = true;
@@ -138,7 +119,7 @@ $templated = true;
 if(isset($_POST['update']))
 {
 	$modules_upd = array();
-	$modules_upd = $_POST['module_status'];
+	$modules_upd = request_post_var('module_status', array(0));
 
 	$sql = "SELECT * FROM " . MODULES_TABLE . " ORDER BY module_id ASC";
 	$result = $db->sql_query($sql);
@@ -148,9 +129,10 @@ if(isset($_POST['update']))
 
 	for($i = 0; $i < $m_count; $i++)
 	{
+		$update_time = request_post_var('module_time_' . $m_rows[$i]['module_id'], 0);
 		$m_active = empty($modules_upd) ? 0 : (in_array($m_rows[$i]['module_id'], $modules_upd) ? 1 : 0);
 		$sql = "UPDATE " . MODULES_TABLE . "
-						SET active = '" . $m_active . "', update_time = '" . intval($_POST['module_time_' . $m_rows[$i]['module_id']]) . "'
+						SET active = '" . $m_active . "', update_time = '" . $update_time . "'
 						WHERE module_id = '" . $m_rows[$i]['module_id'] . "'";
 		$result = $db->sql_query($sql);
 	}
@@ -160,7 +142,7 @@ if(isset($_POST['update']))
 if ($mode == 'order')
 {
 	// Change order of modules in the DB
-	$move = intval($_GET['move']);
+	$move = request_var('move', 0);
 
 	$sql = "UPDATE " . MODULES_TABLE . "
 	SET display_order = display_order + $move
@@ -174,7 +156,7 @@ if ($submit && ($mode == 'config'))
 {
 	if (!empty($_POST['return_limit_set']))
 	{
-		$update_value = (!empty($_POST['return_limit_set'])) ? intval($_POST['return_limit_set']) : 0;
+		$update_value = request_var('return_limit_set', 0);
 
 		if (intval($__stats_config['return_limit']) != intval($update_value))
 		{
@@ -197,7 +179,7 @@ if ($submit && ($mode == 'config'))
 
 	if (!empty($_POST['modules_dir_set']))
 	{
-		$update_value = (!empty($_POST['modules_dir_set'])) ? $_POST['modules_dir_set'] : '';
+		$update_value = request_var('modules_dir_set', '');
 
 		if ($__stats_config['modules_dir'] != $update_value)
 		{
@@ -317,10 +299,8 @@ if ($mode == 'auto_set')
 		$module_info = generate_module_info($stat_module_data[$module_id]);
 
 		// Start Time
-		$mtime = microtime();
-		$mtime = explode(" ", $mtime);
-		$mtime = $mtime[1] + $mtime[0];
-		$starttime = $mtime;
+		$stat_starttime = explode(' ', microtime());
+		$stat_starttime = $stat_starttime[1] + $stat_starttime[0];
 
 		$db->num_queries['total'] = 0;
 
@@ -342,11 +322,9 @@ if ($mode == 'auto_set')
 		$template->pparse('module_tpl_' . $module_id);
 
 		// End Time
-		$mtime = microtime();
-		$mtime = explode(" ", $mtime);
-		$mtime = $mtime[1] + $mtime[0];
-		$endtime = $mtime;
-		$totaltime = ($endtime - $starttime);
+		$stat_endtime = explode(' ', microtime());
+		$stat_endtime = $stat_endtime[1] + $stat_endtime[0];
+		$stat_totaltime = ($stat_endtime - $stat_starttime);
 
 		$num_queries = $db->num_queries['total'];
 
@@ -356,10 +334,10 @@ if ($mode == 'auto_set')
 		{
 			// Original update_time_factor was 1.5
 			$update_time_factor = 4;
-			$update_time_recommend = round((($totaltime * $num_queries) * $update_time_factor), 0);
+			$update_time_recommend = round((($stat_totaltime * $num_queries) * $update_time_factor), 0);
 		}
 
-		print '<span class="gen">Time consumed: ' . $totaltime . ' - Queries executed: ' . $num_queries . ' - Recommended Update Time: ' . $update_time_recommend . '</span><br />';
+		print '<span class="gen">Time consumed: ' . $stat_totaltime . ' - Queries executed: ' . $num_queries . ' - Recommended Update Time: ' . $update_time_recommend . '</span><br />';
 		print '<br />';
 
 		$sql = "UPDATE " . MODULES_TABLE . "
@@ -689,10 +667,8 @@ if ($mode == 'edit')
 	$return_limit = $__stats_config['return_limit'];
 
 	// Start Time
-	$mtime = microtime();
-	$mtime = explode(" ",$mtime);
-	$mtime = $mtime[1] + $mtime[0];
-	$starttime = $mtime;
+	$stat_starttime = explode(' ', microtime());
+	$stat_starttime = $stat_starttime[1] + $stat_starttime[0];
 
 	$db->num_queries['total'] = 0;
 
@@ -704,20 +680,6 @@ if ($mode == 'edit')
 	$__tpl_name = 'preview';
 	$__module_root_path = './../' . IP_ROOT_PATH;
 	$__module_data = $__stat_module_data[$__module_id];
-
-	$__language = $config['default_lang'];
-
-	if (!@file_exists(@realpath(IP_ROOT_PATH . 'language/lang_' . $__language . '/lang_statistics.' . PHP_EXT)))
-	{
-		$__language = 'english';
-	}
-
-	if (@file_exists(@realpath(IP_ROOT_PATH . 'language/lang_' . $__language . '/lang_statistics.' . PHP_EXT)))
-	{
-		include(IP_ROOT_PATH . 'language/lang_' . $__language . '/lang_statistics.' . PHP_EXT);
-	}
-
-	$__language = $config['default_lang'];
 
 	$statistics->result_cache_used = false;
 	$statistics->db_cache_used = false;
@@ -731,11 +693,9 @@ if ($mode == 'edit')
 	$template->set_filenames(array($__tpl_name => STATS_TPL . $__module_info['dname'] . '.tpl'));
 
 	// End Time
-	$mtime = microtime();
-	$mtime = explode(" ", $mtime);
-	$mtime = $mtime[1] + $mtime[0];
-	$endtime = $mtime;
-	$totaltime = ($endtime - $starttime);
+	$stat_endtime = explode(' ', microtime());
+	$stat_endtime = $stat_endtime[1] + $stat_endtime[0];
+	$stat_totaltime = ($stat_endtime - $stat_starttime);
 
 	$num_queries = $db->num_queries['total'];
 
@@ -743,7 +703,7 @@ if ($mode == 'edit')
 
 	if ($totaltime > 0.2)
 	{
-		$update_time_recommend = round((($totaltime * $num_queries) * 1.5), 0);
+		$update_time_recommend = round((($stat_totaltime * $num_queries) * 1.5), 0);
 	}
 
 	$template->assign_vars(array(
@@ -775,7 +735,7 @@ if ($mode == 'edit')
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
 		'L_PREVIEW' => $lang['Preview'],
-		'L_PREVIEW_DEBUG_INFO' => sprintf($lang['Preview_debug_info'], $totaltime, $num_queries),
+		'L_PREVIEW_DEBUG_INFO' => sprintf($lang['Preview_debug_info'], $stat_totaltime, $num_queries),
 		'L_UPDATE_TIME_RECOMMEND' => sprintf($lang['Update_time_recommend'], $update_time_recommend),
 		'L_BACK_TO_MANAGEMENT' => $lang['Back_to_management'],
 		'U_MANAGEMENT' => append_sid('admin_statistics.' . PHP_EXT . '?mode=manage'),

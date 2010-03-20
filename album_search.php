@@ -32,47 +32,34 @@ $nav_server_url = create_server_url();
 $album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album_search.' . PHP_EXT) . '" class="nav-current">' . $lang['Search'] . '</a>';
 $breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 
-if ((isset($_POST['search']) || isset($_GET['search'])) && (($_POST['search'] != '') || ($_GET['search'] != '')))
+$mode = request_var('mode', '', true);
+$search = request_var('search', '', true);
+$search_escaped = $db->sql_escape($search);
+
+if (!empty($search_escaped))
 {
 	$template->assign_block_vars('switch_search_results', array());
 
-	if (isset($_POST['mode']))
-	{
-		$m = $_POST['mode'];
-	}
-	elseif (isset($_GET['mode']))
-	{
-		$m = $_GET['mode'];
-	}
-	else
+	if (empty($mode))
 	{
 		message_die(GENERAL_ERROR, 'Bad request');
 	}
 
-	if (isset($_POST['search']))
+	if ($mode == 'user')
 	{
-		$s = $db->sql_escape($_POST['search']);
+		$where = "AND p.pic_username LIKE '%" . $search_escaped . "%'";
 	}
-	elseif (isset($_GET['search']))
+	elseif ($mode == 'name')
 	{
-		$s = $db->sql_escape($_GET['search']);
+		$where = "AND p.pic_title LIKE '%" . $search_escaped . "%'";
 	}
-
-	if ($m == 'user')
+	elseif ($mode == 'desc')
 	{
-		$where = "AND p.pic_username LIKE '%" . $s . "%'";
+		$where = "AND p.pic_desc LIKE '%" . $search_escaped . "%'";
 	}
-	elseif ($m == 'name')
+	elseif ($mode == 'name_desc')
 	{
-		$where = "AND p.pic_title LIKE '%" . $s . "%'";
-	}
-	elseif ($m == 'desc')
-	{
-		$where = "AND p.pic_desc LIKE '%" . $s . "%'";
-	}
-	elseif ($m == 'name_desc')
-	{
-		$where = "AND (p.pic_desc LIKE '%" . $s . "%' OR p.pic_title LIKE '%" . $s . "%')";
+		$where = "AND (p.pic_desc LIKE '%" . $search_escaped . "%' OR p.pic_title LIKE '%" . $search_escaped . "%')";
 	}
 	else
 	{
@@ -91,7 +78,7 @@ if ((isset($_POST['search']) || isset($_GET['search'])) && (($_POST['search'] !=
 	}
 	//$pics_per_page = 4;
 
-	$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
+	$start = request_var('start', 0);
 	$start = ($start < 0) ? 0 : $start;
 
 	// ------------------------------------
@@ -168,7 +155,7 @@ if ((isset($_POST['search']) || isset($_GET['search'])) && (($_POST['search'] !=
 						'L_CAT' => ($row['cat_user_id'] != ALBUM_PUBLIC_GALLERY) ? $lang['Users_Personal_Galleries'] : $row['cat_title'],
 						'U_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
 
-						'L_PIC' => htmlspecialchars($row['pic_title']),
+						'L_PIC' => $row['pic_title'],
 
 						'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 						'U_PIC_SP' => $pic_sp_link,
@@ -177,8 +164,8 @@ if ((isset($_POST['search']) || isset($_GET['search'])) && (($_POST['search'] !=
 						'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
 						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
-						'PIC_TITLE' => htmlspecialchars($row['pic_title']),
-						'DESC' => htmlspecialchars($row['pic_desc']),
+						'PIC_TITLE' => $row['pic_title'],
+						'DESC' => $row['pic_desc'],
 						'L_TIME' => create_date($config['default_dateformat'], $row['pic_time'], $config['board_timezone'])
 						)
 					);
@@ -217,7 +204,7 @@ else
 // --------------------------------
 
 $template->assign_vars(array(
-	'PAGINATION' => generate_pagination(append_sid(album_append_uid('album_search.' . PHP_EXT . '?mode=' . $m . '&amp;search=' . $s)), $total_pics, $pics_per_page, $start),
+	'PAGINATION' => generate_pagination(append_sid(album_append_uid('album_search.' . PHP_EXT . '?mode=' . $mode . '&amp;search=' . $search)), $total_pics, $pics_per_page, $start),
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 	)
 );

@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 if (!defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -283,7 +282,6 @@ function calendarperm($user_id)
 	return $cal_perm;
 }
 
-
 /***************************************************************************
 	getMiniCalPostForumsList
 
@@ -302,8 +300,6 @@ function getMiniCalPostForumsList($mini_cal_post_auth)
 	}
 
 }
-
-
 
 $template->assign_vars(array(
 	'U_MINI_CAL_CALENDAR' => append_sid(IP_ROOT_PATH . 'calendar.' . PHP_EXT),

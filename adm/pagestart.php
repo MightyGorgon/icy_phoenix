@@ -36,7 +36,6 @@ init_userprefs($userdata);
 // End session management
 
 include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
-//find_lang_file_nivisec('lang_jr_admin');
 
 if (!$userdata['session_logged_in'])
 {
@@ -46,7 +45,6 @@ elseif (!jr_admin_secure(basename($_SERVER['REQUEST_URI'])))
 {
 	message_die(GENERAL_ERROR, $lang['Error_Module_ID'], '', __LINE__, __FILE__);
 }
-
 
 if ($_GET['sid'] != $userdata['session_id'])
 {

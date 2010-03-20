@@ -33,8 +33,18 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 // If $pic_id not found we will assign it to FALSE
 // We will check $pic_id[] in POST method later (in $mode carry out)
 // ------------------------------------
-$pic_id = request_var('pic_id', 0);
-$pic_id = (($pic_id < 0) ? 0 : $pic_id);
+if (isset($_POST['pic_id']))
+{
+	$pic_id = request_var('pic_id', array(0 => 0));
+}
+else
+{
+	$pic_id = request_var('pic_id', 0);
+}
+if (!is_array($pic_id))
+{
+	$pic_id = (($pic_id < 0) ? 0 : $pic_id);
+}
 
 if (isset($_POST['cancel']))
 {
@@ -42,7 +52,7 @@ if (isset($_POST['cancel']))
 	redirect(append_sid($redirect, true));
 }
 
-if(!empty($pic_id))
+if(!empty($pic_id) && !is_array($pic_id))
 {
 	// Get this pic info
 	$sql = "SELECT p.*, c.*
@@ -89,50 +99,38 @@ $album_user_id = $thiscat['cat_user_id'];
 // ------------------------------------
 // set $mode (select action)
 // ------------------------------------
-if(isset($_POST['mode']))
+$mode = request_post_var('mode', '');
+
+// Oh data from Mod CP
+if(isset($_POST['move']))
 {
-	// Oh data from Mod CP
-	if(isset($_POST['move']))
-	{
-		$mode = 'move';
-	}
-	elseif(isset($_POST['lock']))
-	{
-		$mode = 'lock';
-	}
-	elseif(isset($_POST['unlock']))
-	{
-		$mode = 'unlock';
-	}
-	elseif(isset($_POST['delete']))
-	{
-		$mode = 'delete';
-	}
-	elseif(isset($_POST['approval']))
-	{
-		$mode = 'approval';
-	}
-	elseif(isset($_POST['unapproval']))
-	{
-		$mode = 'unapproval';
-	}
-	elseif(isset($_POST['copy']))
-	{
-		$mode = 'copy';
-	}
-	else
-	{
-		$mode = '';
-	}
+	$mode = 'move';
 }
-elseif(isset($_GET['mode']))
+elseif(isset($_POST['lock']))
 {
-	$mode = trim($_GET['mode']);
+	$mode = 'lock';
 }
-else
+elseif(isset($_POST['unlock']))
 {
-	$mode = '';
+	$mode = 'unlock';
 }
+elseif(isset($_POST['delete']))
+{
+	$mode = 'delete';
+}
+elseif(isset($_POST['approval']))
+{
+	$mode = 'approval';
+}
+elseif(isset($_POST['unapproval']))
+{
+	$mode = 'unapproval';
+}
+elseif(isset($_POST['copy']))
+{
+	$mode = 'copy';
+}
+
 // END $mode (select action)
 
 
@@ -163,99 +161,21 @@ if (!album_check_permission($auth_data, ALBUM_AUTH_MODERATOR))
 +----------------------------------------------------------
 */
 
-if ($mode == '')
+if (empty($mode))
 {
 	// --------------------------------
 	// Moderator Control Panel
 	// --------------------------------
 
 	// Set Variables
-	$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
+	$start = request_var('start', 0);
 	$start = ($start < 0) ? 0 : $start;
 
-	if(isset($_GET['sort_method']))
-	{
-		switch ($_GET['sort_method'])
-		{
-			case 'pic_title':
-				$sort_method = 'pic_title';
-				break;
-			case 'pic_user_id':
-				$sort_method = 'pic_user_id';
-				break;
-			case 'pic_view_count':
-				$sort_method = 'pic_view_count';
-				break;
-			case 'rating':
-				$sort_method = 'rating';
-				break;
-			case 'comments':
-				$sort_method = 'comments';
-				break;
-			case 'new_comment':
-				$sort_method = 'new_comment';
-				break;
-			default:
-				$sort_method = 'pic_time';
-		}
-	}
-	elseif(isset($_POST['sort_method']))
-	{
-		switch ($_POST['sort_method'])
-		{
-			case 'pic_title':
-				$sort_method = 'pic_title';
-				break;
-			case 'pic_user_id':
-				$sort_method = 'pic_user_id';
-				break;
-			case 'pic_view_count':
-				$sort_method = 'pic_view_count';
-				break;
-			case 'rating':
-				$sort_method = 'rating';
-				break;
-			case 'comments':
-				$sort_method = 'comments';
-				break;
-			case 'new_comment':
-				$sort_method = 'new_comment';
-				break;
-			default:
-				$sort_method = 'pic_time';
-		}
-	}
-	else
-	{
-		$sort_method = 'pic_time';
-	}
+	$sort_method = request_var('sort_method', 'pic_time');
+	$sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'pic_user_id', 'pic_view_count', 'rating', 'comments', 'new_comment'));
 
-	if(isset($_GET['sort_order']))
-	{
-		switch ($_GET['sort_order'])
-		{
-			case 'ASC':
-				$sort_order = 'ASC';
-				break;
-			default:
-				$sort_order = 'DESC';
-		}
-	}
-	elseif(isset($_POST['sort_order']))
-	{
-		switch ($_POST['sort_order'])
-		{
-			case 'ASC':
-				$sort_order = 'ASC';
-				break;
-			default:
-				$sort_order = 'DESC';
-		}
-	}
-	else
-	{
-		$sort_order = 'DESC';
-	}
+	$sort_order = request_var('order', 'ASC');
+	$sort_order = ($sort_order == 'ASC') ? 'ASC' : 'DESC';
 
 	// Count Pics
 	$sql = "SELECT COUNT(pic_id) AS count
@@ -307,9 +227,7 @@ if ($mode == '')
 			}
 		}
 
-
-
-		$sql = "SELECT p.pic_id, p.pic_title, p.pic_user_id, p.pic_user_ip, p.pic_username, p.pic_time, p.pic_cat_id, p.pic_view_count, p.pic_lock, p.pic_approval, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(c.comment_id) AS comments, MAX(c.comment_id) AS new_comment
+		$sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_user_ip, p.pic_username, p.pic_time, p.pic_cat_id, p.pic_view_count, p.pic_lock, p.pic_approval, u.user_id, u.username, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(c.comment_id) AS comments, MAX(c.comment_id) AS new_comment
 				FROM " . ALBUM_TABLE . " AS p
 					LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 					LEFT JOIN " . ALBUM_RATE_TABLE . " AS r ON p.pic_id = r.rate_pic_id
@@ -333,12 +251,12 @@ if ($mode == '')
 			}
 			else
 			{
-				$pic_poster = '<a href="'. append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $picrow[$i]['user_id']) .'">'. $picrow[$i]['username'] .'</a>';
+				$pic_poster = '<a href="'. append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $picrow[$i]['user_id']) . '">' . $picrow[$i]['username'] . '</a>';
 			}
 
 			$template->assign_block_vars('picrow', array(
 				'PIC_ID' => $picrow[$i]['pic_id'],
-				'PIC_TITLE' => '<a href="'. append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$i]['pic_id'])) . '" target="_blank">' . htmlspecialchars($picrow[$i]['pic_title']) . '</a>',
+				'PIC_TITLE' => '<a href="'. append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $picrow[$i]['pic_id'])) . '" target="_blank">' . $picrow[$i]['pic_title'] . '</a>',
 				'POSTER' => $pic_poster,
 				'TIME' => create_date($config['default_dateformat'], $picrow[$i]['pic_time'], $config['board_timezone']),
 				'RATING' => ($picrow[$i]['rating'] == 0) ? $lang['Not_rated'] : round($picrow[$i]['rating'], 2),
@@ -467,33 +385,26 @@ else
 			// if "target" has not been set, we will open the category select form
 			//
 			// we must check POST method now
+			if (empty($pic_id))
+			{
+				message_die(GENERAL_ERROR, 'No pics specified');
+			}
 			$pic_id_array = array();
-			if (!empty($pic_id)) // from GET
+			if (!is_array($pic_id))
 			{
 				$pic_id_array[] = $pic_id;
 			}
 			else
 			{
-				// Check $pic_id[] on POST Method now
-				if(isset($_POST['pic_id']))
-				{
-					$pic_id_array = $_POST['pic_id'];
-					if(!is_array($pic_id_array))
-					{
-						message_die(GENERAL_ERROR, 'Invalid request');
-					}
-				}
-				else
-				{
-					message_die(GENERAL_ERROR, 'No pics specified');
-				}
+				$pic_id_array = $pic_id;
 			}
 
 			// We must send out the $pic_id_array to store data between page changing
 			for ($i = 0; $i < sizeof($pic_id_array); $i++)
 			{
 				$template->assign_block_vars('pic_id_array', array(
-					'VALUE' => $pic_id_array[$i])
+					'VALUE' => $pic_id_array[$i]
+					)
 				);
 			}
 
@@ -525,23 +436,22 @@ else
 		{
 			// Do the MOVE action
 			//
-			// Now we only get $pic_id[] via POST (after the select target screen)
-			if(isset($_POST['pic_id']))
+			if (!empty($pic_id))
 			{
-				$pic_id = $_POST['pic_id'];
 				if(is_array($pic_id))
 				{
 					$pic_id_sql = implode(',', $pic_id);
 				}
 				else
 				{
-					message_die(GENERAL_ERROR, 'Invalid request');
+					$pic_id_sql = $pic_id;
 				}
 			}
 			else
 			{
 				message_die(GENERAL_ERROR, 'No pics specified');
 			}
+
 			// if we are trying to move picture(s) to root category or a
 			// personal gallary (shouldn't be possible), but better save then sorry
 			// ...then return an error
@@ -563,7 +473,7 @@ else
 
 			// Update the DB
 			$sql = "UPDATE " . ALBUM_TABLE . "
-					SET pic_cat_id = ". intval($_POST['target']) ."
+					SET pic_cat_id = " . intval($_POST['target']) . "
 					WHERE pic_id IN ($pic_id_sql)";
 			$result = $db->sql_query($sql);
 
@@ -577,31 +487,20 @@ else
 		//-----------------------------
 		// LOCK
 		//-----------------------------
-
-		// we must check POST method now
-		if (!empty($pic_id)) // from GET
+		if (!empty($pic_id))
 		{
-			$pic_id_sql = $pic_id;
-		}
-		else
-		{
-			// Check $pic_id[] on POST Method now
-			if(isset($_POST['pic_id']))
+			if(is_array($pic_id))
 			{
-				$pic_id = $_POST['pic_id'];
-				if(is_array($pic_id))
-				{
-					$pic_id_sql = implode(',', $pic_id);
-				}
-				else
-				{
-					message_die(GENERAL_ERROR, 'Invalid request');
-				}
+				$pic_id_sql = implode(',', $pic_id);
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				$pic_id_sql = $pic_id;
 			}
+		}
+		else
+		{
+			message_die(GENERAL_ERROR, 'No pics specified');
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -641,31 +540,20 @@ else
 		//-----------------------------
 		// UNLOCK
 		//-----------------------------
-
-		// we must check POST method now
-		if (!empty($pic_id)) // from GET
+		if (!empty($pic_id))
 		{
-			$pic_id_sql = $pic_id;
-		}
-		else
-		{
-			// Check $pic_id[] on POST Method now
-			if(isset($_POST['pic_id']))
+			if(is_array($pic_id))
 			{
-				$pic_id = $_POST['pic_id'];
-				if(is_array($pic_id))
-				{
-					$pic_id_sql = implode(',', $pic_id);
-				}
-				else
-				{
-					message_die(GENERAL_ERROR, 'Invalid request');
-				}
+				$pic_id_sql = implode(',', $pic_id);
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				$pic_id_sql = $pic_id;
 			}
+		}
+		else
+		{
+			message_die(GENERAL_ERROR, 'No pics specified');
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -705,31 +593,20 @@ else
 		//-----------------------------
 		// APPROVAL
 		//-----------------------------
-
-		// we must check POST method now
-		if (!empty($pic_id)) // from GET
+		if (!empty($pic_id))
 		{
-			$pic_id_sql = $pic_id;
-		}
-		else
-		{
-			// Check $pic_id[] on POST Method now
-			if(isset($_POST['pic_id']))
+			if(is_array($pic_id))
 			{
-				$pic_id = $_POST['pic_id'];
-				if(is_array($pic_id))
-				{
-					$pic_id_sql = implode(',', $pic_id);
-				}
-				else
-				{
-					message_die(GENERAL_ERROR, 'Invalid request');
-				}
+				$pic_id_sql = implode(',', $pic_id);
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				$pic_id_sql = $pic_id;
 			}
+		}
+		else
+		{
+			message_die(GENERAL_ERROR, 'No pics specified');
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -758,31 +635,20 @@ else
 		//-----------------------------
 		// UNAPPROVAL
 		//-----------------------------
-
-		// we must check POST method now
-		if (!empty($pic_id)) // from GET
+		if (!empty($pic_id))
 		{
-			$pic_id_sql = $pic_id;
-		}
-		else
-		{
-			// Check $pic_id[] on POST Method now
-			if(isset($_POST['pic_id']))
+			if(is_array($pic_id))
 			{
-				$pic_id = $_POST['pic_id'];
-				if(is_array($pic_id))
-				{
-					$pic_id_sql = implode(',', $pic_id);
-				}
-				else
-				{
-					message_die(GENERAL_ERROR, 'Invalid request');
-				}
+				$pic_id_sql = implode(',', $pic_id);
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				$pic_id_sql = $pic_id;
 			}
+		}
+		else
+		{
+			message_die(GENERAL_ERROR, 'No pics specified');
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -816,27 +682,14 @@ else
 		{
 			// if "target" has not been set, we will open the category select form
 			//
-			// we must check POST method now
 			$pic_id_array = array();
-			if (!empty($pic_id)) // from GET
+			if (!is_array($pic_id))
 			{
 				$pic_id_array[] = $pic_id;
 			}
 			else
 			{
-				// Check $pic_id[] on POST Method now
-				if(isset($_POST['pic_id']))
-				{
-					$pic_id_array = $_POST['pic_id'];
-					if(!is_array($pic_id_array))
-					{
-						message_die(GENERAL_ERROR, 'Invalid request');
-					}
-				}
-				else
-				{
-					message_die(GENERAL_ERROR, 'No pics specified');
-				}
+				$pic_id_array = $pic_id;
 			}
 
 			// We must send out the $pic_id_array to store data between page changing
@@ -875,23 +728,22 @@ else
 		{
 			// Do the Copy action
 			//
-			// Now we only get $pic_id[] via POST (after the select target screen)
-			if(isset($_POST['pic_id']))
+			if (!empty($pic_id))
 			{
-				$pic_id = $_POST['pic_id'];
 				if(is_array($pic_id))
 				{
 					$pic_id_sql = implode(',', $pic_id);
 				}
 				else
 				{
-					message_die(GENERAL_ERROR, 'Invalid request');
+					$pic_id_sql = $pic_id;
 				}
 			}
 			else
 			{
 				message_die(GENERAL_ERROR, 'No pics specified');
 			}
+
 			// if we are trying to copy picture(s) to root category or a
 			// personal gallery (shouldn't be possible), but better safe than sorry
 			// ...then return an error
@@ -967,12 +819,12 @@ else
 					message_die(GENERAL_ERROR, 'Could not copy image');
 				}
 
-				$pic_title = addslashes($picrow[$i]['pic_title']);
-				$pic_desc = addslashes($picrow[$i]['pic_title']);
+				$pic_title = $picrow[$i]['pic_title'];
+				$pic_desc = $picrow[$i]['pic_desc'];
 				$pic_time = time() + $i; // Gives each pic a different timestamp
 
 				$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
-				VALUES ('" . $pic_new_filename . "', '" . $pic_title . "', '" . $pic_desc . "', '" . $picrow[$i]['pic_user_id'] . "', '" . $picrow[$i]['pic_user_ip'] . "', '" . $picrow[$i]['pic_username'] . "', '" . $pic_time . "', '" . intval($_POST['target']) . "', '" . $picrow[$i]['pic_approval'] . "')";
+				VALUES ('" . $db->sql_escape($pic_new_filename) . "', '" . $db->sql_escape($pic_title) . "', '" . $db->sql_escape($pic_desc) . "', '" . $picrow[$i]['pic_user_id'] . "', '" . $picrow[$i]['pic_user_ip'] . "', '" . $db->sql_escape($picrow[$i]['pic_username']) . "', '" . $pic_time . "', '" . intval($_POST['target']) . "', '" . $picrow[$i]['pic_approval'] . "')";
 				$result = $db->sql_query($sql);
 			}
 
@@ -993,27 +845,19 @@ else
 
 		if(!isset($_POST['confirm']))
 		{
-			// we must check POST method now
-			$pic_id_array = array();
-			if (!empty($pic_id)) // from GET
+			if (empty($pic_id))
 			{
-				$pic_id_array[] = $pic_id;
+				message_die(GENERAL_ERROR, 'No pics specified');
+			}
+
+			$pic_id_array = array();
+			if(is_array($pic_id))
+			{
+				$pic_id_array = $pic_id;
 			}
 			else
 			{
-				// Check $pic_id[] on POST Method now
-				if(isset($_POST['pic_id']))
-				{
-					$pic_id_array = $_POST['pic_id'];
-					if(!is_array($pic_id_array))
-					{
-						message_die(GENERAL_ERROR, 'Invalid request');
-					}
-				}
-				else
-				{
-					message_die(GENERAL_ERROR, 'No pics specified');
-				}
+				$pic_id_array[] = $pic_id;
 			}
 
 			// We must send out the $pic_id_array to store data between page changing
@@ -1037,16 +881,15 @@ else
 		else
 		{
 			// Do the delete here...
-			if(isset($_POST['pic_id']))
+			if (!empty($pic_id))
 			{
-				$pic_id = $_POST['pic_id'];
 				if(is_array($pic_id))
 				{
 					$pic_id_sql = implode(',', $pic_id);
 				}
 				else
 				{
-					message_die(GENERAL_ERROR, 'Invalid request');
+					$pic_id_sql = $pic_id;
 				}
 			}
 			else

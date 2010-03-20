@@ -147,7 +147,8 @@ for ($i = 0; $i < $nyear; $i= $i + 1)
 		'DATE' => $date,
 		'POST' => $post,
 		'TOPIC' => $topic,
-		'USER' => $user)
+		'USER' => $user
+		)
 	);
 }
 

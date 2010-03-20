@@ -45,10 +45,14 @@ if(!function_exists('cms_block_news_posters'))
 		$quick_list = request_var('quick_list', '');
 
 		$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
+
+		$portal_page_id = request_var('page', 0);
+		$portal_page_id = !empty($portal_page_id) ? ('&amp;page=' . $portal_page_id) : '';
+
 		$base_url = htmlspecialchars(urldecode($index_file));
 		$base_url .= '?list_sort=' . (($list_sort == 1) ? POST_TOPIC_URL : POST_USERS_URL);
 		$base_url .= '&amp;per_page=' . $per_page;
-		$base_url .= ((isset($_GET['page'])) ? ('&amp;page=' . htmlspecialchars(intval($_GET['page']))) : '');
+		$base_url .= $portal_page_id;
 		$sort_sql = "ORDER BY " . (($list_sort == 1) ? "num_topics DESC" : "u.username ASC");
 
 		$template->assign_vars(array(
@@ -121,7 +125,7 @@ if(!function_exists('cms_block_news_posters'))
 				$poster_from_flag = ($row['user_from_flag']) ? ('&nbsp;<img src="images/flags/' . $row['user_from_flag'] . '" alt="' . $row['user_from_flag'] . '" title="' . $row['user_from'] . '" />') : '';
 				$poster_joined = $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $row['user_regdate'], $config['board_timezone']);
 
-				$temp_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id);
+				$temp_url = append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id);
 				$pm_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 				$pm = '<a href="' . $temp_url . '">' . $lang['PM'] . '</a>';
 

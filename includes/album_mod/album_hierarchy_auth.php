@@ -216,7 +216,7 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 		// ------------------------------------------------------------------------
 		// it is the root category of a non existing personal gallery
 		// ------------------------------------------------------------------------
-		if ($AH_thiscat['cat_user_id'] != 0 && $AH_thiscat['cat_id'] == 0)
+		if (($AH_thiscat['cat_user_id'] != 0) && ($AH_thiscat['cat_id'] == 0))
 		{
 			$album_permission = personal_gallery_access(1, 1); //$view_check, $upload_check);
 		}
@@ -265,13 +265,13 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 				// ------------------------------------------------------------------------
 				// are we checking a non existing personal gallery ?
 				// ------------------------------------------------------------------------
-				if (empty($AH_thiscat) || $AH_thiscat['cat_id'] == 0 || $cat_id == ALBUM_ROOT_CATEGORY)
+				if (empty($AH_thiscat) || ($AH_thiscat['cat_id'] == 0) || ($cat_id == ALBUM_ROOT_CATEGORY))
 				{
 					// ------------------------------------------------------------------------
 					// if the admin has set the creation of personal galleries to 'registered users'
 					// then filter out all other users then the current logged in user (and NON ADMIN)
 					// ------------------------------------------------------------------------
-					if ($userdata['user_id'] != $AH_thiscat['cat_user_id'] && $userdata['user_level'] != ADMIN)
+					if (($userdata['user_id'] != $AH_thiscat['cat_user_id']) && ($userdata['user_level'] != ADMIN))
 					{
 						$album_permission['upload'] = 0;
 					}
@@ -310,9 +310,9 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 					// it the permission is set to private BUT only for existing personal galleries
 					// if ($AH_thiscat['cat_id'] != 0 && ($user_id == $userdata['user_id']) )
 					// ------------------------------------------------------------------------
-					if ( $AH_thiscat['cat_id'] != 0 && ($AH_thiscat['cat_user_id'] == $userdata['user_id']) )
+					if (($AH_thiscat['cat_id'] != 0) && ($AH_thiscat['cat_user_id'] == $userdata['user_id']))
 					{
-						if ($album_config['personal_gallery'] == ALBUM_ADMIN && $userdata['user_level'] != ADMIN)
+						if (($album_config['personal_gallery'] == ALBUM_ADMIN) && ($userdata['user_level'] != ADMIN))
 						{
 							$album_permission['upload'] = 0;
 						}
@@ -358,7 +358,7 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 
 			for ($i = 0; $i < sizeof($album_permission); $i++)
 			{
-				if( ($AH_thiscat['cat_'. $album_permission_keys[$i] .'_level'] != ALBUM_ADMIN) && ($album_permission_keys[$i] != 'manage') )
+				if(($AH_thiscat['cat_'. $album_permission_keys[$i] .'_level'] != ALBUM_ADMIN) && ($album_permission_keys[$i] != 'manage'))
 				{
 					$album_permission[$album_permission_keys[$i]] = 1;
 				}

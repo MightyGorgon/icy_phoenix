@@ -119,7 +119,7 @@ while($lasttopic != $lastid)
 
 //Compresss the sitemap with gzip
 //this isn't as pretty as the code in page_header.php, but it's simple & it works :)
-if( function_exists(ob_gzhandler) && ($config['gzip_compress'] == 1) )
+if(function_exists(ob_gzhandler) && ($config['gzip_compress'] == 1))
 {
 	ob_start(ob_gzhandler);
 }

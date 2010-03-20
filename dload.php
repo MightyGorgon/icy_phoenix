@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 //define('CTRACKER_DISABLED', true);
 define('CTRACKER_DISABLE_OUTPUT', true);
 define('IN_DOWNLOAD', true);
@@ -35,7 +34,7 @@ if(intval($pafiledb_config['settings_disable']))
 	message_die(GENERAL_MESSAGE, $lang['pafiledb_disable']);
 }
 
-$action = (isset($_REQUEST['action'])) ? htmlspecialchars($_REQUEST['action']) : 'main';
+$action = request_var('action', 'main');
 
 $actions = array(
 					'download' => 'download',

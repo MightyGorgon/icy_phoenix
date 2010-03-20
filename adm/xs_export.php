@@ -21,12 +21,6 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 
-// check if mod is installed
-if(empty($template->xs_version) || $template->xs_version !== 8)
-{
-	message_die(GENERAL_ERROR, isset($lang['xs_error_not_installed']) ? $lang['xs_error_not_installed'] : 'eXtreme Styles mod is not installed. You forgot to upload includes/template.php');
-}
-
 define('IN_XS', true);
 include_once('xs_include.' . PHP_EXT);
 
@@ -69,17 +63,17 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 	$xs_send = @unserialize($xs_send_method);
 	$xs_send_method = $xs_send['method'] == 'ftp' ? 'ftp' : ($xs_send['method'] == 'file' ? 'file' : 'save');
 	$template->assign_vars(array(
-			'FORM_ACTION'		=> append_sid('xs_export.' . PHP_EXT),
-			'EXPORT_TEMPLATE'	=> htmlspecialchars($export),
-			'STYLE_ID'			=> $theme_rowset[0]['themes_id'],
-			'STYLE_NAME'		=> htmlspecialchars($theme_rowset[0]['style_name']),
-			'TOTAL'				=> sizeof($theme_rowset),
-			'SEND_METHOD_'.strtoupper($xs_send_method)	=> ' checked="checked"',
-			'SEND_DATA_DIR'		=> isset($xs_send['dir']) ? htmlspecialchars($xs_send['dir']) : '',
-			'SEND_DATA_HOST'	=> isset($xs_send['host']) ? htmlspecialchars($xs_send['host']) : '',
-			'SEND_DATA_LOGIN'	=> isset($xs_send['login']) ? htmlspecialchars($xs_send['login']) : '',
-			'SEND_DATA_FTPDIR'	=> isset($xs_send['ftpdir']) ? htmlspecialchars($xs_send['ftpdir']) : '',
-			'L_TITLE'			=> str_replace('{TPL}', $export, $lang['xs_export_style_title']),
+			'FORM_ACTION' => append_sid('xs_export.' . PHP_EXT),
+			'EXPORT_TEMPLATE' => htmlspecialchars($export),
+			'STYLE_ID' => $theme_rowset[0]['themes_id'],
+			'STYLE_NAME' => htmlspecialchars($theme_rowset[0]['style_name']),
+			'TOTAL' => sizeof($theme_rowset),
+			'SEND_METHOD_'.strtoupper($xs_send_method) => ' checked="checked"',
+			'SEND_DATA_DIR' => isset($xs_send['dir']) ? htmlspecialchars($xs_send['dir']) : '',
+			'SEND_DATA_HOST' => isset($xs_send['host']) ? htmlspecialchars($xs_send['host']) : '',
+			'SEND_DATA_LOGIN' => isset($xs_send['login']) ? htmlspecialchars($xs_send['login']) : '',
+			'SEND_DATA_FTPDIR' => isset($xs_send['ftpdir']) ? htmlspecialchars($xs_send['ftpdir']) : '',
+			'L_TITLE' => str_replace('{TPL}', $export, $lang['xs_export_style_title']),
 			));
 	if(sizeof($theme_rowset) == 1)
 	{
@@ -88,12 +82,12 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 	else
 	{
 		$template->assign_block_vars('switch_select_style', array());
-		for($i=0; $i< sizeof($theme_rowset); $i++)
+		for($i = 0; $i < sizeof($theme_rowset); $i++)
 		{
 			$template->assign_block_vars('switch_select_style.style', array(
-				'NUM'		=> $i,
-				'ID'		=> $theme_rowset[$i]['themes_id'],
-				'NAME'		=> htmlspecialchars($theme_rowset[$i]['style_name'])
+				'NUM' => $i,
+				'ID' => $theme_rowset[$i]['themes_id'],
+				'NAME' => htmlspecialchars($theme_rowset[$i]['style_name'])
 				));
 		}
 	}
@@ -111,7 +105,7 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 	$total = intval($_POST['total']);
 	$comment = substr(stripslashes($_POST['export_comment']), 0, 255);
 	$list = array();
-	for($i=0; $i<$total; $i++)
+	for($i = 0; $i <$total; $i++)
 	{
 		if(!empty($_POST['export_style_'.$i]))
 		{
@@ -147,7 +141,7 @@ if(!empty($export) && @file_exists(IP_ROOT_PATH . $template_dir . $export . '/th
 	$pack_replace = array('./theme_info.cfg' => $theme_data);
 
 	// pack style
-	for($i=0; $i< sizeof($theme_rowset); $i++)
+	for($i = 0; $i < sizeof($theme_rowset); $i++)
 	{
 		$id = $theme_rowset[$i]['themes_id'];
 		$theme_name = $theme_rowset[$i]['style_name'];
@@ -269,7 +263,7 @@ $prev_id = -1;
 $prev_tpl = '';
 $style_names = array();
 $j = 0;
-for($i=0; $i< sizeof($style_rowset); $i++)
+for($i = 0; $i < sizeof($style_rowset); $i++)
 {
 	$item = $style_rowset[$i];
 	if($item['template_name'] === $prev_tpl)
@@ -285,10 +279,10 @@ for($i=0; $i< sizeof($style_rowset); $i++)
 			$row_class = $xs_row_class[$j % 2];
 			$j++;
 			$template->assign_block_vars('styles', array(
-					'ROW_CLASS'	=> $row_class,
-					'TPL'		=> $prev_tpl,
-					'STYLES'	=> $str,
-					'U_EXPORT'	=> "xs_export." . PHP_EXT . "?export={$str2}&sid={$userdata['session_id']}",
+					'ROW_CLASS' => $row_class,
+					'TPL' => $prev_tpl,
+					'STYLES' => $str,
+					'U_EXPORT' => "xs_export." . PHP_EXT . "?export={$str2}&amp;sid={$userdata['session_id']}",
 				)
 			);
 		}
@@ -305,10 +299,10 @@ if($prev_id > 0)
 	$row_class = $xs_row_class[$j % 2];
 	$j++;
 	$template->assign_block_vars('styles', array(
-			'ROW_CLASS'	=> $row_class,
-			'TPL'		=> $prev_tpl,
-			'STYLES'	=> $str,
-			'U_EXPORT'	=> "xs_export." . PHP_EXT . "?export={$str2}&sid={$userdata['session_id']}",
+			'ROW_CLASS' => $row_class,
+			'TPL' => $prev_tpl,
+			'STYLES' => $str,
+			'U_EXPORT' => "xs_export." . PHP_EXT . "?export={$str2}&amp;sid={$userdata['session_id']}",
 		)
 	);
 }

@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
@@ -75,11 +74,10 @@ if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $config['defa
 }
 include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT);
 
-//
 // Set up variables and constants
-//
-$function = (isset($_GET['function'])) ? htmlspecialchars(trim($_GET['function'])) : '';
-$mode_id = (isset($_GET['mode'])) ? htmlspecialchars(trim($_GET['mode'])) : '';
+$function = request_var('function', '');
+$mode_id = request_var('mode', '');
+
 // Check for parameters
 reset ($config_data);
 while (list(, $value) = each ($config_data))
@@ -93,33 +91,25 @@ while (list(, $value) = each ($config_data))
 //
 // Get form-data if specified and override old settings
 //
-if (isset($_POST['mode']) && $_POST['mode'] == 'perform')
+if ($mode_id == 'perform')
 {
 	if (isset($_POST['confirm']))
 	{
 		$mode_id = 'perform';
-		$function = (isset($_POST['function'])) ? htmlspecialchars(trim($_POST['function'])) : '';
+		$function = request_post_var('function', '');
 	}
 }
 
 //
 // Switch of GZIP-compression when necessary and send the page header
 //
-if ($mode_id == 'start' || $mode_id == 'perform')
+if (($mode_id == 'start') || ($mode_id == 'perform'))
 {
 	$config['gzip_compress'] = false;
 }
 if ($function != 'perform_rebuild') // Don't send header when rebuilding the search index
 {
 	include('./page_header_admin.' . PHP_EXT);
-}
-
-//
-// Check the db-type
-//
-if (SQL_LAYER != 'mysql' && SQL_LAYER != 'mysql4')
-{
-	message_die(GENERAL_MESSAGE, $lang['dbtype_not_supported']);
 }
 
 switch($mode_id)
@@ -373,49 +363,49 @@ switch($mode_id)
 						case 3: // Current search config
 							if ($rebuild_end >= 0)
 							{
-								update_config('dbmtnc_rebuild_end', $rebuild_end);
+								set_config('dbmtnc_rebuild_end', $rebuild_end, false);
 							}
 							if ($rebuild_pos >= -1)
 							{
-								update_config('dbmtnc_rebuild_pos', $rebuild_pos);
+								set_config('dbmtnc_rebuild_pos', $rebuild_pos, false);
 							}
 						case 2: // Search config
 							if ($rebuildcfg_php3pps > 0)
 							{
-								update_config('dbmtnc_rebuildcfg_php3pps', $rebuildcfg_php3pps);
+								set_config('dbmtnc_rebuildcfg_php3pps', $rebuildcfg_php3pps, false);
 							}
 							if ($rebuildcfg_php4pps > 0)
 							{
-								update_config('dbmtnc_rebuildcfg_php4pps', $rebuildcfg_php4pps);
+								set_config('dbmtnc_rebuildcfg_php4pps', $rebuildcfg_php4pps, false);
 							}
 							if ($rebuildcfg_php3only >= 0 && $rebuildcfg_php3only <= 1)
 							{
-								update_config('dbmtnc_rebuildcfg_php3only', $rebuildcfg_php3only);
+								set_config('dbmtnc_rebuildcfg_php3only', $rebuildcfg_php3only, false);
 							}
 							if ($rebuildcfg_minposts > 0)
 							{
-								update_config('dbmtnc_rebuildcfg_minposts', $rebuildcfg_minposts);
+								set_config('dbmtnc_rebuildcfg_minposts', $rebuildcfg_minposts, false);
 							}
 							if ($rebuildcfg_maxmemory >= 0)
 							{
-								update_config('dbmtnc_rebuildcfg_maxmemory', $rebuildcfg_maxmemory);
+								set_config('dbmtnc_rebuildcfg_maxmemory', $rebuildcfg_maxmemory, false);
 							}
 							if ($rebuildcfg_timeoverwrite >= 0)
 							{
-								update_config('dbmtnc_rebuildcfg_timeoverwrite', $rebuildcfg_timeoverwrite);
+								set_config('dbmtnc_rebuildcfg_timeoverwrite', $rebuildcfg_timeoverwrite, false);
 							}
 							if ($rebuildcfg_timelimit >= 0)
 							{
-								update_config('dbmtnc_rebuildcfg_timelimit', $rebuildcfg_timelimit);
+								set_config('dbmtnc_rebuildcfg_timelimit', $rebuildcfg_timelimit, false);
 							}
 						case 1: // DBMTNC config
 							if ($disallow_rebuild >= 0 && $disallow_rebuild <= 1)
 							{
-								update_config('dbmtnc_disallow_rebuild', $disallow_rebuild);
+								set_config('dbmtnc_disallow_rebuild', $disallow_rebuild, false);
 							}
 							if ($disallow_postcounter >= 0 && $disallow_postcounter <= 1)
 							{
-								update_config('dbmtnc_disallow_postcounter', $disallow_postcounter);
+								set_config('dbmtnc_disallow_postcounter', $disallow_postcounter, false);
 							}
 					}
 					$message = $lang['Dbmtnc_config_updated'] . '<br /><br />' . sprintf($lang['Click_return_dbmtnc_config'], '<a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . '?mode=start&function=config') . '">', '</a>');
@@ -3101,7 +3091,7 @@ switch($mode_id)
 
 				echo('<p class="gen"><b>' . $lang['Preparing_config_data'] . '</b></p>' . "\n");
 				// Set data for start position in config table
-				update_config('dbmtnc_rebuild_pos', '0');
+				set_config('dbmtnc_rebuild_pos', '0', false);
 				// Get data for end position
 				$sql = "SELECT Max(post_id) AS max_post_id
 					FROM " . POSTS_TABLE;
@@ -3118,7 +3108,7 @@ switch($mode_id)
 				}
 				$db->sql_freeresult($result);
 				// Set data for end position in config table
-				update_config('dbmtnc_rebuild_end', intval($row['max_post_id']));
+				set_config('dbmtnc_rebuild_end', intval($row['max_post_id']), false);
 				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
 				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Can_start_rebuilding'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
@@ -3222,8 +3212,8 @@ switch($mode_id)
 				{
 					$db->sql_freeresult($result);
 					include('./page_header_admin.' . PHP_EXT);
-					update_config('dbmtnc_rebuild_pos', '-1');
-					update_config('dbmtnc_rebuild_end', '0');
+					set_config('dbmtnc_rebuild_pos', '-1', false);
+					set_config('dbmtnc_rebuild_end', '0', false);
 
 					echo('<p class="gen">' . $lang['Indexing_finished'] . ".</p>\n");
 
@@ -3354,7 +3344,7 @@ switch($mode_id)
 					break;
 				}
 				// All posts are indexed for this turn - update Config-Data
-				update_config('dbmtnc_rebuild_pos', $last_post);
+				set_config('dbmtnc_rebuild_pos', $last_post, false);
 				// OK, all actions are done - send headers
 
 				$redirect_url = append_sid(ADM . '/admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=perform_rebuild&amp;db_state=' . $db_state);

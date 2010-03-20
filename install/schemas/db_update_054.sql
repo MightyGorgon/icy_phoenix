@@ -180,6 +180,191 @@ CREATE TABLE `phpbb_plugins_config` (
 ########################################
 ##              BUILD 060             ##
 ########################################
+ALTER TABLE `phpbb_users` CHANGE `user_login_tries` `user_login_attempts` TINYINT(4) DEFAULT '0' NOT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_last_login_try` `user_last_login_attempt` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `phpbb_users` CHANGE `user_password` `user_password` VARCHAR(40) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_newpasswd` `user_newpasswd` VARCHAR(40) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_users` ADD `user_passchg` INT(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_password`;
+ALTER TABLE `phpbb_users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_passchg`;
+ALTER TABLE `phpbb_users` ADD `user_form_salt` VARCHAR(32) DEFAULT '' NOT NULL AFTER `user_pass_convert`;
+ALTER TABLE `phpbb_users` ADD `user_email_hash` BIGINT(20) DEFAULT '0' NOT NULL AFTER `user_email`;
+ALTER TABLE `phpbb_users` ADD `user_options` INT(11) UNSIGNED DEFAULT '895' NOT NULL AFTER `user_setbm`;
+
+ALTER TABLE `phpbb_users` DROP `ct_last_pw_reset`;
+ALTER TABLE `phpbb_users` DROP `ct_last_pw_change`;
+ALTER TABLE `phpbb_users` DROP `ct_login_count`;
+ALTER TABLE `phpbb_users` DROP `ct_login_vconfirm`;
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_ipblock_enabled', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_ipblock_logsize', '100');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_auto_recovery', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_vconfirm_guest', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_autoban_mails', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_search_time_guest', '30');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_search_time_user', '20');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_search_count_guest', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_search_count_user', '4');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_massmail_protection', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_reg_protection', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_reg_blocktime', '30');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_reg_lastip', '0.0.0.0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_pwreset_time', '20');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_massmail_time', '20');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_spammer_time', '30');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_spammer_postcount', '4');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_spammer_blockmode', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_loginfeature', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_pw_reset_feature', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_reg_last_reg', '1155944976');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_login_history', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_login_history_count', '10');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_login_ip_check', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_pw_validity', '30');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_pw_complex_min', '4');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_pw_complex_mode', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_pw_control', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_pw_complex', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_last_file_scan', '1156000091');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_last_checksum_scan', '1156000082');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_logsize_logins', '100');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_logsize_spammer', '100');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_reg_ip_scan', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_global_message', 'Hello world!');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_global_message_type', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_search_feature_enabled', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_spam_attack_boost', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_spam_keyword_det', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_footer_layout', '6');
+
+DELETE FROM `phpbb_config` WHERE config_name = 'ctracker_detect_misconfiguration';
+
+DROP TABLE `phpbb_ctracker_config`;
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upload_dir', 'files');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upload_img', 'images/attach_post.png');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('topic_icon', 'images/disk_multiple.png');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('display_order', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_filesize', '262144');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attachment_quota', '52428800');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_filesize_pm', '262144');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_attachments', '3');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_attachments_pm', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_attachments_mod', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_pm_attach', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attachment_topic_review', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_ftp_upload', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_apcp', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attach_version', '2.4.5');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('default_upload_quota', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('default_pm_quota', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftp_server', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftp_path', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('download_path', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftp_user', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftp_pass', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ftp_pasv_mode', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_display_inlined', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_max_width', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_max_height', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_link_width', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_link_height', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_create_thumbnail', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_min_thumb_filesize', '12000');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_imagick', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('use_gd2', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('wma_autoplay', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('flash_autoplay', '0');
+
+DROP TABLE `phpbb_attachments_config`;
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_site_history_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_site_history_last_run', '0');
+
+## AUTH SYSTEM - BEGIN
+CREATE TABLE `phpbb_acl_groups` (
+	`group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+	KEY `group_id` (`group_id`),
+	KEY `auth_opt_id` (`auth_option_id`),
+	KEY `auth_role_id` (`auth_role_id`)
+);
+
+CREATE TABLE `phpbb_acl_options` (
+	`auth_option_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+	`auth_option` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`is_global` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	`is_local` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	`founder_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	PRIMARY KEY (`auth_option_id`),
+	UNIQUE KEY `auth_option` (`auth_option`)
+);
+
+CREATE TABLE `phpbb_acl_roles` (
+	`role_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+	`role_name` varchar(255) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`role_description` text COLLATE utf8_bin NOT NULL,
+	`role_type` varchar(10) COLLATE utf8_bin NOT NULL DEFAULT '',
+	`role_order` smallint(4) unsigned NOT NULL DEFAULT '0',
+	PRIMARY KEY (`role_id`),
+	KEY `role_type` (`role_type`),
+	KEY `role_order` (`role_order`)
+);
+
+CREATE TABLE `phpbb_acl_roles_data` (
+	`role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`role_id`,`auth_option_id`),
+	KEY `ath_op_id` (`auth_option_id`)
+);
+
+CREATE TABLE `phpbb_acl_users` (
+	`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_option_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_role_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`auth_setting` tinyint(2) NOT NULL DEFAULT '0',
+	KEY `user_id` (`user_id`),
+	KEY `auth_option_id` (`auth_option_id`),
+	KEY `auth_role_id` (`auth_role_id`)
+);
+
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (1, 'cms_', 0, 1, 0);
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (2, 'cms_view', 0, 1, 0);
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (3, 'cms_edit', 0, 1, 0);
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (4, 'cms_l_new', 0, 1, 0);
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (5, 'cms_l_edit', 0, 1, 0);
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (6, 'cms_l_delete', 0, 1, 0);
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (7, 'cms_b_new', 0, 1, 0);
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (8, 'cms_b_edit', 0, 1, 0);
+INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (9, 'cms_b_delete', 0, 1, 0);
+
+INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (1, 'CMS_CONTENT_MANAGER', 'CMS_CONTENT_MANAGER_TEXT', 'cms_', 1);
+INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (2, 'CMS_REVIEWER', 'CMS_REVIEWER_TEXT', 'cms_', 2);
+INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (3, 'CMS_PUBLISHER', 'CMS_PUBLISHER_TEXT', 'cms_', 3);
+
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 2, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 3, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 4, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 5, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 6, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 7, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 8, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 9, 1);
+## AUTH SYSTEM - END
+
+## DB FIX FOR HTMLSPECIALCHARS AND SLASHES
+## Created a function to convert all unescaped data to the new format... but it's tricky... pay attention!
+##function sql_replace($table, $fields, $html_encode = true, $stripslashes = false)
+
+
+
+########################################
+##              BUILD 061             ##
+########################################
 
 
 
@@ -194,4 +379,4 @@ UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = '
 UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.3.6.59' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.7.60' WHERE config_name = 'ip_version';

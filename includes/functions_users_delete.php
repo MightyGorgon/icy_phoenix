@@ -37,13 +37,13 @@ function ip_user_kill($user_id)
 		$row = $db->sql_fetchrow($result);
 
 		$sql = "UPDATE " . POSTS_TABLE . "
-			SET poster_id = " . DELETED . ", post_username = '" . str_replace("\\'", "''", addslashes($this_userdata['username'])) . "'
+			SET poster_id = " . DELETED . ", post_username = '" . $db->sql_escape($this_userdata['username']) . "'
 			WHERE poster_id = $user_id";
 		$db->sql_query($sql);
 
 		// Start add - Fully integrated shoutbox MOD
 		$sql = "UPDATE " . SHOUTBOX_TABLE . "
-			SET shout_user_id = " . DELETED . ", shout_username = '$username'
+			SET shout_user_id = " . DELETED . ", shout_username = '" . $db->sql_escape($username) . "'
 			WHERE shout_user_id = $user_id";
 			$db->sql_query($sql);
 		// End add - Fully integrated shoutbox MOD

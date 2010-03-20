@@ -30,213 +30,50 @@ function adm_back_link($u_action)
 }
 
 /**
- * Function needed to fix config values before passing them to DB
+* Function needed to fix config values before passing them to DB
 */
 function fix_config_values($config_name, $config_value)
 {
-	global $new;
+	global $config;
+
+	if (in_array($config_name, array('header_table_text')))
+	{
+		$config_value = htmlspecialchars_decode($config_value, ENT_COMPAT);
+	}
+
 	if ($config_name == 'cookie_name')
 	{
-		$new['cookie_name'] = str_replace('.', '_', $new['cookie_name']);
+		$config_value = str_replace('.', '_', $config_value);
 	}
 
 	// Attempt to prevent a common mistake with this value,
 	// http:// is the protocol and not part of the server name
 	if ($config_name == 'server_name')
 	{
-		$new['server_name'] = str_replace('http://', '', $new['server_name']);
+		$config_value = str_replace('http://', '', $config_value);
 	}
 
 	if ($config_name == 'report_forum')
 	{
-		$new['report_forum'] = str_replace('f', '', $new['report_forum']);
+		$config_value = str_replace('f', '', $config_value);
 	}
 
 	if ($config_name == 'bin_forum')
 	{
-		$new['bin_forum'] = str_replace('f', '', $new['bin_forum']);
+		$config_value = str_replace('f', '', $config_value);
 	}
 
 	// Attempt to prevent a mistake with this value.
 	if ($config_name == 'avatar_path')
 	{
-		$new['avatar_path'] = trim($new['avatar_path']);
-		if (strstr($new['avatar_path'], "\0") || !is_dir(IP_ROOT_PATH . $new['avatar_path']) || !is_writable(IP_ROOT_PATH . $new['avatar_path']))
+		$config_value = trim($config_value);
+		if (strstr($config_value, "\0") || !is_dir(IP_ROOT_PATH . $config_value) || !is_writable(IP_ROOT_PATH . $config_value))
 		{
-			$new['avatar_path'] = $default_config['avatar_path'];
-		}
-	}
-}
-
-//--------------------------------------------------------------------------------------------------
-// get_tree_option_optg() : return a drop down menu list of <option></option>
-//--------------------------------------------------------------------------------------------------
-function get_tree_option_optg($cur = '', $all = false, $opt_prefix = true)
-{
-	global $tree, $lang;
-
-	$keys = array();
-	$keys = get_auth_keys('Root', $all);
-	$last_level = -1;
-	$cat_open = false;
-
-	for ($i = 0; $i < sizeof($keys['id']); $i++)
-	{
-		// only get object that are not forum links type
-		if (($tree['type'][$keys['idx'][$i]] != POST_FORUM_URL) || empty($tree['data'][$keys['idx'][$i]]['forum_link']))
-		{
-			$level = $keys['real_level'][$i];
-
-			$inc = '';
-			for ($k = 0; $k < $level; $k++)
-			{
-				$inc .= "[*$k*]&nbsp;&nbsp;&nbsp;";
-			}
-
-			if ($level < $last_level)
-			{
-			//insert spacer if level goes down
-				//$res .='<option value="-1">' . $inc . '|&nbsp;&nbsp;&nbsp;</option>';
-			// make valid lines solid
-				$res = str_replace("[*$level*]", "|", $res);
-
-			// erase all unnessecary lines
-				for ($k = $level + 1; $k < $last_level; $k++)
-				{
-					$res = str_replace("[*$k*]", "&nbsp;", $res);
-				}
-
-			}
-			elseif ($level == 0 && $last_level == -1)
-			{
-				//$res .='<option value="-1">|</option>';
-			}
-
-			$last_level = $level;
-
-			if ($tree['type'][$keys['idx'][$i]] == POST_CAT_URL)
-			{
-				if ($cat_open == true)
-				{
-					$res .= '</optgroup>';
-				}
-				else
-				{
-					$cat_open = true;
-				}
-				$res .= '<optgroup label="';
-
-				// name
-				$name = strip_tags(get_object_lang($keys['id'][$i], 'name', $all));
-
-				if ($keys['level'][$i] >= 0)
-				{
-					$res .= $inc . '|--';
-				}
-
-				$res .= $name . '">';
-			}
-			else
-			{
-				if ($keys['id'][$i] != 'Root')
-				{
-					$selected = ($cur == $keys['id'][$i]) ? ' selected="selected"' : '';
-					if ($opt_prefix == true)
-					{
-						$res .= '<option value="' . $keys['id'][$i] . '"' . $selected . '>';
-					}
-					else
-					{
-						$res .= '<option value="' . str_replace(POST_FORUM_URL, '', $keys['id'][$i]) . '"' . $selected . '>';
-					}
-
-					// name
-					$name = strip_tags(get_object_lang($keys['id'][$i], 'name', $all));
-
-					if ($keys['level'][$i] >= 0)
-					{
-						$res .= $inc . '|--';
-					}
-
-					$res .= $name . '</option>';
-				}
-			}
-		}
-	}
-	if ($cat_open == true)
-	{
-		$res .= '</optgroup>';
-	}
-
-	// erase all unnecessary lines
-	for ($k = 0; $k < $last_level; $k++)
-	{
-		$res = str_replace("[*$k*]", "&nbsp;", $res);
-	}
-
-	return $res;
-}
-
-// Simple version of jumpbox, just lists authed forums
-function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
-{
-	global $db, $userdata, $lang;
-
-	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
-
-	$sql = 'SELECT f.forum_id, f.forum_name
-		FROM ' . FORUMS_TABLE . ' f
-		WHERE f.forum_type = ' . FORUM_POST . '
-		ORDER BY f.forum_order';
-	$result = $db->sql_query($sql);
-
-	$forum_list = '';
-	while($row = $db->sql_fetchrow($result))
-	{
-		if ($is_auth_ary[$row['forum_id']]['auth_read'] && $ignore_forum != $row['forum_id'])
-		{
-			$selected = ($select_forum == $row['forum_id']) ? ' selected="selected"' : '';
-			$forum_list .= '<option value="' . $row['forum_id'] . '"' . $selected .'>' . htmlspecialchars(strip_tags($row['forum_name'])) . '</option>';
+			$config_value = $config['avatar_path'];
 		}
 	}
 
-	$forum_list = ($forum_list == '') ? $lang['No_forums'] : '<select name="' . $box_name . '">' . $forum_list . '</select>';
-
-	return $forum_list;
-}
-
-/*
-* selectbox() : replace the original phpBB function_admin/make_forum_select()
-*/
-function selectbox($box_name, $ignore_forum = false, $select_forum = '', $all = false)
-{
-	$s_id = ($select_forum != '') ? POST_FORUM_URL . $select_forum : '';
-	$s_list = get_tree_option($select_forum, $all);
-	$res = '<select name="' . $box_name . '">' . $s_list . '</select>';
-	return $res;
-}
-
-function make_topic_select($box_name, $forum_id)
-{
-	global $db, $userdata;
-
-	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
-
-	$sql = "SELECT topic_id, topic_title
-		FROM " . TOPICS_TABLE . "
-		WHERE forum_id = $forum_id
-		ORDER BY topic_title";
-	$result = $db->sql_query($sql);
-
-	$topic_list = '';
-	while($row = $db->sql_fetchrow($result))
-	{
-		$topic_list .= '<option value="' . $row['topic_id'] . '">' . $row['topic_title'] . '</option>';
-	}
-
-	$topic_list = ($topic_list == '') ? '<option value="-1">-- ! No Topics ! --</option>' : '<select name="' . $box_name . '">' . $topic_list . '</select>';
-
-	return $topic_list;
+	return $config_value;
 }
 
 // Synchronise functions for forums/topics
@@ -405,23 +242,6 @@ function duplicate_auth($source_id, $target_id)
 	return true;
 }
 
-function select_gravatar_rating($default = '')
-{
-	global $lang;
-
-	$symbols = array('G', 'PG', 'R', 'X');
-
-	$select_box = '<select name="gravatar_rating"><option value="">' . $lang['None'] . '</option>';
-	foreach($symbols as $rating)
-	{
-		$selected = ($rating == $default) ? ' selected="selected"' : '';
-		$select_box .= '<option value="' . $rating . '"' . $selected . '>' . $rating . '</option>';
-	}
-	$select_box .= '</select>';
-
-	return $select_box;
-}
-
 /**
 * Check MEM Limit
 */
@@ -506,6 +326,22 @@ function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port 
 	}
 
 	return $file_info;
+}
+
+/**
+* Return language string value for storage
+*/
+function prepare_lang_entry($text, $store = true)
+{
+	$text = (STRIP) ? stripslashes($text) : $text;
+
+	// Adjust for storage...
+	if ($store)
+	{
+		$text = str_replace("'", "\\'", str_replace('\\', '\\\\', $text));
+	}
+
+	return $text;
 }
 
 ?>

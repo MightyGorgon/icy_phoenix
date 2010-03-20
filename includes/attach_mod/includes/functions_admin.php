@@ -88,11 +88,11 @@ function auth_unpack($auth_cache)
 */
 function thumbnail_exists($filename)
 {
-	global $upload_dir, $attach_config;
+	global $upload_dir, $config;
 
 	$filename = basename($filename);
 
-	if (!intval($attach_config['allow_ftp_upload']))
+	if (!intval($config['allow_ftp_upload']))
 	{
 		if (!@file_exists(@amod_realpath($upload_dir . '/' . THUMB_DIR . '/t_' . $filename)))
 		{
@@ -145,25 +145,25 @@ function thumbnail_exists($filename)
 */
 function attachment_quota_settings($admin_mode, $submit = false, $mode)
 {
-	global $template, $db, $lang, $lang, $attach_config;
+	global $template, $db, $lang, $lang, $config;
 
 	// Make sure constants got included
 	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/constants.' . PHP_EXT);
 
-	if (!intval($attach_config['allow_ftp_upload']))
+	if (!intval($config['allow_ftp_upload']))
 	{
-		if ($attach_config['upload_dir'][0] == '/' || ($attach_config['upload_dir'][0] != '/' && $attach_config['upload_dir'][1] == ':'))
+		if ($config['upload_dir'][0] == '/' || ($config['upload_dir'][0] != '/' && $config['upload_dir'][1] == ':'))
 		{
-			$upload_dir = $attach_config['upload_dir'];
+			$upload_dir = $config['upload_dir'];
 		}
 		else
 		{
-			$upload_dir = IP_ROOT_PATH . $attach_config['upload_dir'];
+			$upload_dir = IP_ROOT_PATH . $config['upload_dir'];
 		}
 	}
 	else
 	{
-		$upload_dir = $attach_config['download_path'];
+		$upload_dir = $config['download_path'];
 	}
 
 	$user_id = 0;
@@ -232,8 +232,8 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 		else
 		{
 			// Set Default Quota Limit
-			$upload_quota = $attach_config['default_upload_quota'];
-			$pm_quota = $attach_config['default_pm_quota'];
+			$upload_quota = $config['default_upload_quota'];
+			$pm_quota = $config['default_pm_quota'];
 		}
 		$db->sql_freeresult($result);
 
@@ -294,8 +294,8 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 		else
 		{
 			// Set Default Quota Limit
-			$upload_quota = $attach_config['default_upload_quota'];
-			$pm_quota = $attach_config['default_pm_quota'];
+			$upload_quota = $config['default_upload_quota'];
+			$pm_quota = $config['default_pm_quota'];
 		}
 		$db->sql_freeresult($result);
 
@@ -520,11 +520,11 @@ function entry_exists($attach_id)
 */
 function collect_attachments()
 {
-	global $upload_dir, $attach_config;
+	global $upload_dir, $config;
 
 	$file_attachments = array();
 
-	if (!intval($attach_config['allow_ftp_upload']))
+	if (!intval($config['allow_ftp_upload']))
 	{
 		if ($dir = @opendir($upload_dir))
 		{
@@ -587,11 +587,11 @@ function collect_attachments()
 */
 function get_formatted_dirsize()
 {
-	global $attach_config, $upload_dir, $lang;
+	global $config, $upload_dir, $lang;
 
 	$upload_dir_size = 0;
 
-	if (!intval($attach_config['allow_ftp_upload']))
+	if (!intval($config['allow_ftp_upload']))
 	{
 		if ($dirname = @opendir($upload_dir))
 		{

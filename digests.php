@@ -341,33 +341,31 @@ else
 			$send_hour = $send_hour - 24;
 		}
 
+		$digests_data = array(
+			'digest_type' => request_var('digest_type', ''),
+			'format' => request_var('format', ''),
+			'show_text' => request_var('show_text', ''),
+			'show_mine' => request_var('show_mine', ''),
+			'new_only' => request_var('new_only', ''),
+			'send_on_no_messages' => request_var('send_on_no_messages', ''),
+			'send_hour' => intval($send_hour),
+			'text_length' => request_var('text_length', '')
+		);
+		$sql_update = $db->sql_build_insert_update($digests_data, false);
+
+		// Add ID for insert...
+		$digests_data = array_merge(array('user_id' => intval($userdata['user_id'])), $digests_data);
+		$sql_insert = $db->sql_build_insert_update($digests_data, true);
+
 		// first, create or update the subscription
 		if ($_POST['create_new'] == '1')// new digest
 		{
-			$sql = 'INSERT INTO ' . DIGEST_SUBSCRIPTIONS_TABLE . ' (user_id, digest_type, format, show_text, show_mine, new_only, send_on_no_messages, send_hour, text_length) VALUES (' .
-				intval($userdata['user_id']) . ', ' .
-				"'" . htmlspecialchars($_POST['digest_type']) . "', " .
-				"'" . htmlspecialchars($_POST['format']) . "', " .
-				"'" . htmlspecialchars($_POST['show_text']) . "', " .
-				"'" . htmlspecialchars($_POST['show_mine']) . "', " .
-				"'" . htmlspecialchars($_POST['new_only']) . "', " .
-				"'" . htmlspecialchars($_POST['send_on_no_messages']) . "', " .
-				"'" . intval($send_hour) . "', " .
-				intval($_POST['text_length']). ')';
+			$sql = 'INSERT INTO ' . DIGEST_SUBSCRIPTIONS_TABLE . ' ' . $sql_insert;
 			$update_type = 'create';
 		}
 		else
 		{
-			$sql = 'UPDATE ' . DIGEST_SUBSCRIPTIONS_TABLE . ' SET ' .
-				"digest_type = '" . htmlspecialchars($_POST['digest_type']) . "', " .
-				"format = '" . htmlspecialchars($_POST['format']) . "', " .
-				"show_text = '" . htmlspecialchars($_POST['show_text']) . "', " .
-				"show_mine = '" . htmlspecialchars($_POST['show_mine']) . "', " .
-				"new_only = '" . htmlspecialchars($_POST['new_only']) . "', " .
-				"send_on_no_messages = '" . htmlspecialchars($_POST['send_on_no_messages']) . "', " .
-				"send_hour = '" . intval($send_hour) . "', " .
-				'text_length = ' . intval($_POST['text_length']) . ' ' .
-				' WHERE user_id = ' . intval($userdata['user_id']);
+			$sql = 'UPDATE ' . DIGEST_SUBSCRIPTIONS_TABLE . ' SET ' . $sql_update . ' WHERE user_id = ' . intval($userdata['user_id']);
 			$update_type = 'modify';
 		}
 		$result = $db->sql_query($sql);

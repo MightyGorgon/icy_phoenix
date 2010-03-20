@@ -33,111 +33,34 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 // Get the request
 // ------------------------------------
 
+$start = request_var('start', 0);
+$start = ($start < 0) ? 0 : $start;
+
+$cat_id = request_var('cat_id', 0);
+$user_id = request_var('user_id', 0);
+
+$sort_method = request_var('sort_method', $album_config['sort_method']);
+$sort_method = check_var_value($sort_method, array('pic_title', 'pic_view_count', 'rating', 'comments', 'new_comment'));
+
+$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+
+$pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
+
 $auth_view = 0;
-if(isset($_GET['cat_id']))
+if(!empty($cat_id))
 {
-	$cat_id = intval($_GET['cat_id']);
 	$album_user_access = album_user_access($cat_id, $thiscat, 1, 0, 0, 0, 0, 0); // VIEW
 	$auth_view = $album_user_access['view'];
 	//$auth_view = ($userdata['user_level'] == ADMIN);
 }
-elseif(isset($_GET['user_id']))
+elseif(!empty($user_id))
 {
-	$user_id = intval($_GET['user_id']);
 	$cat_id = PERSONAL_GALLERY . " AND pic_user_id = $user_id";
 	$personal_gallery_access = personal_gallery_access(1, 0);
 	$auth_view = $personal_gallery_access['view'];
 	//$auth_view = (($userdata['user_id'] == $user_id) || ($userdata['user_level'] > 0)) ? 1 : 0;
 }
-
-$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
-$start = ($start < 0) ? 0 : $start;
-
-if(isset($_GET['sort_method']))
-{
-	switch ($_GET['sort_method'])
-	{
-		case 'pic_title':
-			$sort_method = 'pic_title';
-			break;
-		case 'pic_view_count':
-			$sort_method = 'pic_view_count';
-			break;
-		case 'rating':
-			$sort_method = 'rating';
-			break;
-		case 'comments':
-			$sort_method = 'comments';
-			break;
-		case 'new_comment':
-			$sort_method = 'new_comment';
-			break;
-		default:
-			$sort_method = $album_config['sort_method'];
-	}
-}
-elseif(isset($_POST['sort_method']))
-{
-	switch ($_POST['sort_method'])
-	{
-		case 'pic_title':
-			$sort_method = 'pic_title';
-			break;
-		case 'pic_view_count':
-			$sort_method = 'pic_view_count';
-			break;
-		case 'rating':
-			$sort_method = 'rating';
-			break;
-		case 'comments':
-			$sort_method = 'comments';
-			break;
-		case 'new_comment':
-			$sort_method = 'new_comment';
-			break;
-		default:
-			$sort_method = $album_config['sort_method'];
-	}
-}
-else
-{
-	$sort_method = $album_config['sort_method'];
-}
-
-if(isset($_GET['sort_order']))
-{
-	switch ($_GET['sort_order'])
-	{
-		case 'ASC':
-			$sort_order = 'ASC';
-			break;
-		case 'DESC':
-			$sort_order = 'DESC';
-			break;
-		default:
-			$sort_order = $album_config['sort_order'];
-	}
-}
-elseif(isset($_POST['sort_order']))
-{
-	switch ($_POST['sort_order'])
-	{
-		case 'ASC':
-			$sort_order = 'ASC';
-			break;
-		case 'DESC':
-			$sort_order = 'DESC';
-			break;
-		default:
-			$sort_order = $album_config['sort_order'];
-	}
-}
-else
-{
-	$sort_order = $album_config['sort_order'];
-}
-
-$pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
 
 // ------------------------------------
 // Check authorization

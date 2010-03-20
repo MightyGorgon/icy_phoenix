@@ -77,65 +77,10 @@ function get_db_stat($mode)
 function phpbb_clean_username($username)
 {
 	$username = substr(htmlspecialchars(str_replace("\'", "'", trim($username))), 0, 25);
-	$username = phpbb_rtrim($username, "\\");
+	$username = rtrim($username, "\\");
 	$username = str_replace("'", "\'", $username);
 
 	return $username;
-}
-
-/**
-* This function is a wrapper for ltrim, as charlist is only supported in php >= 4.1.0
-* Added in phpBB 2.0.18
-*/
-function phpbb_ltrim($str, $charlist = false)
-{
-	if ($charlist === false)
-	{
-		return ltrim($str);
-	}
-
-	$php_version = explode('.', PHP_VERSION);
-
-	// php version < 4.1.0
-	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
-	{
-		while ($str{0} == $charlist)
-		{
-			$str = substr($str, 1);
-		}
-	}
-	else
-	{
-		$str = ltrim($str, $charlist);
-	}
-
-	return $str;
-}
-
-// added at phpBB 2.0.12 to fix a bug in PHP 4.3.10 (only supporting charlist in php >= 4.1.0)
-function phpbb_rtrim($str, $charlist = false)
-{
-	if ($charlist === false)
-	{
-		return rtrim($str);
-	}
-
-	$php_version = explode('.', PHP_VERSION);
-
-	// php version < 4.1.0
-	if ((int) $php_version[0] < 4 || ((int) $php_version[0] == 4 && (int) $php_version[1] < 1))
-	{
-		while ($str{strlen($str)-1} == $charlist)
-		{
-			$str = substr($str, 0, strlen($str)-1);
-		}
-	}
-	else
-	{
-		$str = rtrim($str, $charlist);
-	}
-
-	return $str;
 }
 
 /**
@@ -198,7 +143,7 @@ function get_userdata($user, $force_str = false)
 	$sql = "SELECT *
 		FROM " . USERS_TABLE . "
 		WHERE ";
-	$sql .= ( ( is_integer($user) ) ? "user_id = $user" : "username = '" .  str_replace("\'", "''", $user) . "'" ) . " AND user_id <> " . ANONYMOUS;
+	$sql .= ( ( is_integer($user) ) ? "user_id = $user" : "username = '" .  $db->sql_escape($user) . "'" ) . " AND user_id <> " . ANONYMOUS;
 	if ( !($result = $db->sql_query($sql)) )
 	{
 		message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
@@ -325,7 +270,7 @@ function init_userprefs($userdata)
 	{
 		if ( !empty($userdata['user_lang']))
 		{
-			$default_lang = phpbb_ltrim(basename(phpbb_rtrim($userdata['user_lang'])), "'");
+			$default_lang = ltrim(basename(rtrim($userdata['user_lang'])), "'");
 		}
 
 		if ( !empty($userdata['user_dateformat']) )
@@ -340,7 +285,7 @@ function init_userprefs($userdata)
 	}
 	else
 	{
-		$default_lang = phpbb_ltrim(basename(phpbb_rtrim($config['default_lang'])), "'");
+		$default_lang = ltrim(basename(rtrim($config['default_lang'])), "'");
 	}
 
 	if ( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.'.PHP_EXT)) )
@@ -348,7 +293,7 @@ function init_userprefs($userdata)
 		if ( $userdata['user_id'] != ANONYMOUS )
 		{
 			// For logged in users, try the board default language next
-			$default_lang = phpbb_ltrim(basename(phpbb_rtrim($config['default_lang'])), "'");
+			$default_lang = ltrim(basename(rtrim($config['default_lang'])), "'");
 		}
 		else
 		{

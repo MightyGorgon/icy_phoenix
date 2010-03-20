@@ -194,7 +194,7 @@ class class_mcp_topic
 				if($leave_shadow)
 				{
 					$sql = "INSERT INTO " . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_status, topic_type, topic_vote, topic_views, topic_replies, topic_first_post_id, topic_last_post_id, topic_moved_id)
-						VALUES ($old_forum_id, '" . addslashes(str_replace("\'", "''", $row[$i]['topic_title'])) . "', '" . str_replace("\'", "''", $row[$i]['topic_poster']) . "', " . $row[$i]['topic_time'] . ", " . TOPIC_MOVED . ", " . POST_NORMAL . ", " . $row[$i]['topic_vote'] . ", " . $row[$i]['topic_views'] . ", " . $row[$i]['topic_replies'] . ", " . $row[$i]['topic_first_post_id'] . ", " . $row[$i]['topic_last_post_id'] . ", " . $topic_id . ")";
+						VALUES ($old_forum_id, '" . addslashes($db->sql_escape($row[$i]['topic_title'])) . "', '" . $db->sql_escape($row[$i]['topic_poster']) . "', " . $row[$i]['topic_time'] . ", " . TOPIC_MOVED . ", " . POST_NORMAL . ", " . $row[$i]['topic_vote'] . ", " . $row[$i]['topic_views'] . ", " . $row[$i]['topic_replies'] . ", " . $row[$i]['topic_first_post_id'] . ", " . $row[$i]['topic_last_post_id'] . ", " . $topic_id . ")";
 					$db->sql_query($sql);
 				}
 
@@ -277,7 +277,7 @@ class class_mcp_topic
 			$message = sprintf($lang['Sorry_auth_announce'], $is_auth['auth_announce_type']);
 			message_die(GENERAL_MESSAGE, $message);
 		}
-		if(empty($_POST['topic_id_list']) && empty($topics))
+		if(empty($topics))
 		{
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
@@ -460,7 +460,7 @@ class class_mcp_topic
 
 		$db->sql_transaction('begin');
 		$sql  = "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_poster, topic_time, forum_id, topic_status, topic_type)
-			VALUES ('" . str_replace("\'", "''", $subject) . "', " . $first_poster . ", " . $topic_time . ", " . $new_forum_id . ", " . TOPIC_UNLOCKED . ", " . POST_NORMAL . ")";
+			VALUES ('" . $db->sql_escape($subject) . "', " . $first_poster . ", " . $topic_time . ", " . $new_forum_id . ", " . TOPIC_UNLOCKED . ", " . POST_NORMAL . ")";
 		$db->sql_query($sql);
 
 		$new_topic_id = $db->sql_nextid();
@@ -664,6 +664,10 @@ class class_mcp_topic
 				if (!empty($forums_ids[$i]) && !in_array($forums_ids[$i], $forums_processed))
 				{
 					$forums_processed[] = $forums_ids[$i];
+					if (!function_exists('sync'))
+					{
+						include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+					}
 					sync('forum', $forums_ids[$i]);
 				}
 			}
@@ -677,6 +681,10 @@ class class_mcp_topic
 				if (!empty($topics_ids[$i]) && !in_array($topics_ids[$i], $topics_processed))
 				{
 					$topics_processed[] = $topics_ids[$i];
+					if (!function_exists('sync'))
+					{
+						include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+					}
 					sync('topic', $topics_ids[$i]);
 				}
 			}

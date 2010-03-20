@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 // Tell the Security Scanner that reachable code in this file is not a security issue
 
 define('IN_ICYPHOENIX', true);
@@ -35,7 +34,7 @@ if (isset($_POST['clear']))
 	message_die(GENERAL_MESSAGE, $message);
 }
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 $template->set_filenames(array('body' => ADM_TPL . 'google_bot_detector_body.tpl'));

@@ -1,0 +1,145 @@
+/* CMS USERS MENU */
+
+#cms_menu{
+	text-align: left;
+	width: 100%;
+	background: #FFF url(images/bg_post.gif) top repeat-x;;
+}
+
+#cms_nav {
+	margin-top: 3px;
+	padding: 2px 5px;
+	background: url(images/bg_nav2.gif) top repeat-x;
+	height: 14px;
+	border-top: solid 1px #AAA;
+	border-bottom: solid 1px #AAA;
+}
+
+.tabs {
+	list-style: none;
+	height: 25px;
+	margin: 2px;
+	padding: 0;
+}
+
+.tabs li {
+	float: left;
+	margin-right: 2px;
+}
+
+.tabs li a {
+	display: block;
+	position: relative;
+	text-decoration: none;
+	margin-top: 3px;
+	outline: 0;
+}
+
+.tabs_center {
+	height: 23px;
+	margin-top: 3px;
+	padding: 1px 5px 0px 5px;;
+	background: #E9EFF3;
+	font-size: 13px;
+	font-weight: bold;
+	font-style: normal;
+	color: #666666;
+	line-height: 20px;
+	white-space: nowrap;
+	overflow: hidden;
+	border: solid 1px #AAA;
+	-moz-border-radius-topright: 5px;
+	-webkit-border-radius-topright: 5px;
+	-moz-border-radius-topleft: 5px;
+	-webkit-border-radius-topleft: 5px;
+}
+
+.tabs_center:hover {
+	cursor: pointer;
+	color: #000;
+	background: #E9EFF3;
+}
+
+.selected {
+	margin-top: -3px;
+	padding-top: 1px;
+	height: 26px;
+	color: #000;
+	line-height: 24px;
+	cursor: default;
+	background: #E9EFF3;
+	border-bottom: solid 1px #E9EFF3;
+}
+
+.cms_auth {
+	background: #E9EFF3;
+	padding: 12px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+
+}
+
+.cms_button {
+  background: #FFF url(images/bg_nav2.gif) top repeat-x;
+	padding: 5px;
+	margin: 0px 0px 5px 3px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: solid 1px #AAA;
+	font-weight: bold;
+	color: #888;
+	float: right;
+}
+
+.cms_button:hover {
+  background: #FFF url(images/bg_nav2.gif) top repeat-x;
+	border: solid 1px #CC3333;
+	cursor: pointer;
+	color: #CC3333;
+}
+
+.cms_button_lite {
+  background: #FFF url(images/bg_nav2.gif) top repeat-x;
+	padding: 3px;
+	margin-left: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border: solid 1px #AAA;
+	font-weight: bold;
+	font-size: 10px;
+	color: #888;
+	float: right;
+	vertical-align: middle;
+}
+
+input.cms_button_lite {
+	padding: 2px;
+}
+
+.cms_button_lite:hover {
+  background: #ffffff url(images/bg_nav2.gif) top repeat-x;
+	border: solid 1px #cc3333;
+	cursor: pointer;
+	color: #cc3333;
+}
+
+.icon {
+	vertical-align: middle;
+	margin-left: 3px;
+}
+
+.box_title {
+	font-weight: bold;
+	font-size: 1.4em;
+	color: #444444;
+	text-shadow: 2px 2px 2px #AAA;
+}
+
+.auth_yes {
+	font-weight: bold;
+	color: #000000;
+}
+
+.auth_no {
+	color: #cccccc;
+}

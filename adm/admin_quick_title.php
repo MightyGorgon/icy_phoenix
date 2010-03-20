@@ -28,13 +28,13 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = ($_GET['mode']) ? $_GET['mode'] : $_POST['mode'];
-}
-else
+
+$mode = request_var('mode', '');
+
+if(empty($mode))
 {
 	// These could be entered via a form button
 	if(isset($_POST['add']))
@@ -45,19 +45,15 @@ else
 	{
 		$mode = 'save';
 	}
-	else
-	{
-		$mode = '';
-	}
 }
 
 
-if($mode != '')
+if(!empty($mode))
 {
-	if($mode == 'edit' || $mode == 'add')
+	if(($mode == 'edit') || ($mode == 'add'))
 	{
 		// They want to add a new title info, show the form.
-		$title_id = (isset($_GET['id'])) ? intval($_GET['id']) : 0;
+		$title_id = request_var('id', 0);
 
 		$s_hidden_fields = '';
 
@@ -107,23 +103,23 @@ if($mode != '')
 	elseif($mode == 'save')
 	{
 		// Ok, they sent us our info, let's update it.
-		$title_id = (isset($_POST['id'])) ? intval($_POST['id']) : 0;
+		$title_id = request_post_var('id', 0);
 		$admin = (!empty($_POST['admin_auth'])) ? 1 : 0 ;
 		$mod = (!empty($_POST['mod_auth'])) ? 1 : 0 ;
 		$poster = (!empty($_POST['poster_auth'])) ? 1 : 0 ;
-		$name = (isset($_POST['title_info'])) ? $_POST['title_info'] : '';
-		$date = (isset($_POST['date_format'])) ? trim($_POST['date_format']) : '';
+		$name = request_post_var('title_info', '', true);
+		$date = request_post_var('date_format', '');
 
-		if($name == '')
+		if(empty($name))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_select_title']);
 		}
 
-		if ($title_id)
+		if (!empty($title_id))
 		{
 
 			$sql = "UPDATE " . TITLE_INFOS_TABLE . "
-							SET title_info = '" . str_replace("\'", "''", $name) . "', date_format = '" . str_replace("\'", "''", $date) . "', admin_auth = $admin, mod_auth = $mod, poster_auth = $poster
+							SET title_info = '" . $db->sql_escape($name) . "', date_format = '" . $db->sql_escape($date) . "', admin_auth = $admin, mod_auth = $mod, poster_auth = $poster
 							WHERE id = '" . $title_id . "'";
 
 			$message = $lang['Title_updated'];
@@ -131,7 +127,7 @@ if($mode != '')
 		else
 		{
 			$sql = "INSERT INTO " . TITLE_INFOS_TABLE . " (title_info, admin_auth, mod_auth, poster_auth, date_format)
-							VALUES ('" . str_replace("\'", "''", $name) . "', $admin, $mod, $poster,'" . str_replace("\'", "''", $date) . "')";
+							VALUES ('" . $db->sql_escape($name) . "', $admin, $mod, $poster, '" . $db->sql_escape($date) . "')";
 
 			$message = $lang['Title_added'];
 		}
@@ -146,16 +142,9 @@ if($mode != '')
 	elseif($mode == 'delete')
 	{
 		// Ok, they want to delete the title
-		if(isset($_POST['id']) || isset($_GET['id']))
-		{
-			$title_id = (isset($_POST['id'])) ? intval($_POST['id']) : intval($_GET['id']);
-		}
-		else
-		{
-			$title_id = 0;
-		}
+		$title_id = request_post_var('id', 0);
 
-		if($title_id)
+		if (!empty($title_id))
 		{
 			$sql = "DELETE FROM " . TITLE_INFOS_TABLE . "
 							WHERE id = '" . $title_id . "'";

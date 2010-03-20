@@ -38,7 +38,6 @@ $value_maxlength = 250;
 $_POST['search_admin'] = 2;
 $_POST['new_level'] = 'normal';
 
-
 // get languages installed
 $countries = $lang_management->get_countries();
 
@@ -49,33 +48,17 @@ $packs = $lang_management->get_packs();
 $entries = $lang_management->get_entries();
 
 // get parameters
-$mode = '';
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = isset($_POST['mode']) ? $_POST['mode'] : $_GET['mode'];
-}
-if (!in_array($mode, array('pack', 'key')))
-{
-	$mode = '';
-}
+$mode = request_var('mode', '');
+$mode = check_var_value($mode, array('pack', 'key'), '');
 
-// level
-$level = 'normal';
-if (isset($_POST['level']) || isset($_GET['level']))
-{
-	$level = isset($_POST['level']) ? urldecode($_POST['level']) : urldecode($_GET['level']);
-}
-if (!in_array($level, array('normal', 'admin')))
-{
-	$level = 'normal';
-}
+$level = request_var('level', 'normal');
+$level = check_var_value($level, array('normal', 'admin'));
 
 // pack file
-$pack_file = '';
-if (isset($_POST['pack_file']) || isset($_GET['pack']))
-{
-	$pack_file = isset($_POST['pack_file']) ? urldecode($_POST['pack_file']) : urldecode($_GET['pack']);
-}
+$pack_file = request_post_var('pack_file', '');
+$pack_file = empty($pack_file) ? request_get_var('pack', '') : $pack_file;
+$pack_file = urldecode($pack_file);
+
 if (!isset($packs[$pack_file]))
 {
 	$pack_file = '';
@@ -83,16 +66,12 @@ if (!isset($packs[$pack_file]))
 }
 
 // keys
-$key_main = '';
-if (isset($_POST['key_main']) || isset($_GET['key']))
-{
-	$key_main = isset($_POST['key_main']) ? urldecode($_POST['key_main']) : urldecode($_GET['key']);
-}
-$key_sub = '';
-if (isset($_POST['key_sub']) || isset($_GET['sub']))
-{
-	$key_sub = isset($_POST['key_sub']) ? urldecode($_POST['key_sub']) : urldecode($_GET['sub']);
-}
+$key_main = request_post_var('key_main', '');
+$key_main = empty($key_main) ? request_get_var('key', '') : $key_main;
+
+$key_sub = request_post_var('key_sub', '');
+$key_sub = empty($key_sub) ? request_get_var('sub', '') : $key_sub;
+
 if (empty($key_main))
 {
 	$key_sub = '';
@@ -147,7 +126,7 @@ if ($mode == 'key')
 		$lang_management->write($new_entries);
 
 		// send message
-		$pack_url = append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=pack&amp;pack=' . urlencode($pack_file) . '&amp;level=' . urlencode(($level == 'normal') ? 'normal' : 'admin'));
+		$pack_url = append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=pack&amp;pack=' . urlencode($pack_file) . '&amp;level=' . (($level == 'normal') ? 'normal' : 'admin'));
 		message_die(GENERAL_MESSAGE, sprintf($lang['Lang_extend_delete_done'], '<a href="' . $pack_url . '">', '</a>'));
 
 		// back to the list
@@ -239,7 +218,7 @@ if ($mode == 'key')
 
 		// send message
 		$key_url = append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=key&amp;pack=' . urlencode($new_pack) . '&amp;key=' . urlencode($new_main) . '&amp;sub=' . urlencode($new_sub) . '&amp;level=' . urlencode(($new_level == 'normal') ? 'normal' : 'admin'));
-		$pack_url = append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=pack&amp;pack=' . urlencode($new_pack) . '&amp;level=' . urlencode(($new_level == 'normal') ? 'normal' : 'admin'));
+		$pack_url = append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=pack&amp;pack=' . urlencode($new_pack) . '&amp;level=' . (($new_level == 'normal') ? 'normal' : 'admin'));
 		message_die(GENERAL_MESSAGE, sprintf($lang['Lang_extend_update_done'], '<a href="' . $key_url . '">','</a>', '<a href="' . $pack_url . '">', '</a>'));
 	}
 	else
@@ -375,7 +354,7 @@ if ($mode == 'pack')
 
 			'L_EDIT'					=> $lang['Lang_extend_level_edit'],
 			'L_LEVEL_NEXT'		=> ($level == 'admin') ? $lang['Lang_extend_level_normal'] : $lang['Lang_extend_level_admin'],
-			'U_LEVEL_NEXT'		=> append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=pack&amp;pack=' . urlencode($pack_file) . '&amp;level=' . urlencode(($level == 'admin') ? 'normal' : 'admin')),
+			'U_LEVEL_NEXT'		=> append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=pack&amp;pack=' . urlencode($pack_file) . '&amp;level=' . (($level == 'admin') ? 'normal' : 'admin')),
 
 			'L_KEYS'					=> $lang['Lang_extend_entries'],
 			'L_NONE'					=> $lang['None'],
@@ -425,7 +404,7 @@ if ($mode == 'pack')
 						'CLASS'			=> $color ? 'row1' : 'row2',
 						'KEY_MAIN'	=> "['" . $key_main . "']",
 						'KEY_SUB'		=> empty($key_sub) ? '' : "['" . $key_sub . "']",
-						'U_KEY'			=> append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=key&amp;pack=' . urlencode($pack_file) . '&amp;level=' . urlencode($level) . '&amp;key=' . urlencode($key_main) . '&amp;sub=' . urlencode($key_sub)),
+						'U_KEY'			=> append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=key&amp;pack=' . urlencode($pack_file) . '&amp;level=' . $level . '&amp;key=' . urlencode($key_main) . '&amp;sub=' . urlencode($key_sub)),
 						'VALUE'			=> $value,
 						'STATUS'		=> $modified_added ? $lang['Lang_extend_added_modified'] : '',
 						)
@@ -620,8 +599,8 @@ if ($mode == 'search')
 				'LEVEL'			=> $admin ? $lang['Lang_extend_level_admin'] : $lang['Lang_extend_level_normal'],
 				'STATUS'		=> $modified_added ? $lang['Lang_extend_added_modified'] : '',
 
-				'U_PACK'		=> append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=pack&pack=' . urlencode($pack_file) . '&level=' . urlencode($admin ? 'admin' : 'normal')),
-				'U_KEY'			=> append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=key&pack=' . urlencode($pack_file) . '&level=' . urlencode($admin ? 'admin' : 'normal') . '&key=' . urlencode($key_main). '&sub=' . urlencode($key_sub)),
+				'U_PACK'		=> append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=pack&amp;pack=' . urlencode($pack_file) . '&amp;level=' . ($admin ? 'admin' : 'normal')),
+				'U_KEY'			=> append_sid('admin_lang_user_created.' . PHP_EXT . '?mode=key&amp;pack=' . urlencode($pack_file) . '&amp;level=' . ($admin ? 'admin' : 'normal') . '&amp;key=' . urlencode($key_main). '&amp;sub=' . urlencode($key_sub)),
 				)
 			);
 		}
@@ -641,7 +620,7 @@ if ($mode == 'search')
 		$s_hidden_fields .= '<input type="hidden" name="search_admin" value="' . $search_admin . '" />';
 
 		$template->assign_vars(array(
-			'S_ACTION'			=> append_sid('admin_lang_user_created.' . PHP_EXT),
+			'S_ACTION'				=> append_sid('admin_lang_user_created.' . PHP_EXT),
 			'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 			)
 		);
@@ -711,7 +690,7 @@ if ($mode == '')
 			//'PACK'				=> $lang_management->get_lang('Lang_extend_' . $pack_name),
 			'PACK'					=> $pack_name,
 			/* MG Lang DB - END */
-			'L_EDIT'	=> $lang['Edit'],
+			'L_EDIT'				=> $lang['Edit'],
 			'L_PACK_ADMIN'	=> $l_admin,
 			'U_PACK_ADMIN'	=> $u_admin,
 			'L_PACK_NORMAL'	=> $l_normal,
@@ -755,23 +734,23 @@ if ($mode == '')
 	$s_languages = sprintf('<select name="search_language">%s</select>', $s_languages);
 
 	$template->assign_vars(array(
-		'SEARCH_WORDS'			=> $search_words,
-		'SEARCH_ALL'			=> ($search_logic == 0) ? 'checked="checked"' : '',
-		'SEARCH_ONE'			=> ($search_logic == 1) ? 'checked="checked"' : '',
-		'SEARCH_IN_KEY'			=> ($search_in == 0) ? 'checked="checked"' : '',
-		'SEARCH_IN_VALUE'		=> ($search_in == 1) ? 'checked="checked"' : '',
-		'SEARCH_IN_BOTH'		=> ($search_in == 2) ? 'checked="checked"' : '',
+		'SEARCH_WORDS'				=> $search_words,
+		'SEARCH_ALL'					=> ($search_logic == 0) ? 'checked="checked"' : '',
+		'SEARCH_ONE'					=> ($search_logic == 1) ? 'checked="checked"' : '',
+		'SEARCH_IN_KEY'				=> ($search_in == 0) ? 'checked="checked"' : '',
+		'SEARCH_IN_VALUE'			=> ($search_in == 1) ? 'checked="checked"' : '',
+		'SEARCH_IN_BOTH'			=> ($search_in == 2) ? 'checked="checked"' : '',
 		'SEARCH_LEVEL_ADMIN'	=> ($search_in == 0) ? 'checked="checked"' : '',
 		'SEARCH_LEVEL_NORMAL'	=> ($search_in == 1) ? 'checked="checked"' : '',
 		'SEARCH_LEVEL_BOTH'		=> ($search_in == 2) ? 'checked="checked"' : '',
-		'S_LANGUAGES'			=> $s_languages,
+		'S_LANGUAGES'					=> $s_languages,
 		)
 	);
 
 	// footer
 	$s_hidden_fields = '';
 	$template->assign_vars(array(
-		'S_ACTION'			=> append_sid('admin_lang_user_created.' . PHP_EXT),
+		'S_ACTION'				=> append_sid('admin_lang_user_created.' . PHP_EXT),
 		'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 		)
 	);

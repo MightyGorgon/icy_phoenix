@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
@@ -35,12 +34,8 @@ if ($cancel)
 	redirect(ADM . '/' . append_sid('admin_ranks.' . PHP_EXT, true));
 }
 
-if(isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_GET['mode'])) ? $_GET['mode'] : $_POST['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
+$mode = request_var('mode', '');
+if(empty($mode))
 {
 	// These could be entered via a form button
 	if(isset($_POST['add']))
@@ -51,10 +46,6 @@ else
 	{
 		$mode = 'save';
 	}
-	else
-	{
-		$mode = '';
-	}
 }
 
 // Restrict mode input to valid options
@@ -62,14 +53,12 @@ $mode = (in_array($mode, array('add', 'edit', 'save', 'delete'))) ? $mode : '';
 
 if($mode != '')
 {
-	if($mode == 'edit' || $mode == 'add')
+	if(($mode == 'edit') || ($mode == 'add'))
 	{
-		//
 		// They want to add a new rank, show the form.
-		//
-		$rank_id = (isset($_GET['id'])) ? intval($_GET['id']) : 0;
+		$rank_id = request_get_var('id', 0);
 
-		$s_hidden_fields = "";
+		$s_hidden_fields = '';
 
 		if($mode == 'edit')
 		{
@@ -92,12 +81,12 @@ if($mode != '')
 		$s_hidden_fields .= '<input type="hidden" name="mode" value="save" />';
 
 		// Mighty Gorgon - Multiple Ranks - BEGIN
-		$rank_no_rank = ($rank_info['rank_special'] == '-2') ? "checked=\"checked\"" : "";
-		$rank_day_counter = ($rank_info['rank_special'] == '-1') ? "checked=\"checked\"" : "";
-		$rank_is_not_special = ($rank_info['rank_special'] == '0') ? "checked=\"checked\"" : "";
-		$rank_is_special = ($rank_info['rank_special'] == '1') ? "checked=\"checked\"" : "";
-		$rank_is_guest = ($rank_info['rank_special'] == '2') ? "checked=\"checked\"" : "";
-		$rank_is_banned = ($rank_info['rank_special'] == '3') ? "checked=\"checked\"" : "";
+		$rank_no_rank = ($rank_info['rank_special'] == '-2') ? 'checked="checked"' : '';
+		$rank_day_counter = ($rank_info['rank_special'] == '-1') ? 'checked="checked"' : '';
+		$rank_is_not_special = ($rank_info['rank_special'] == '0') ? 'checked="checked"' : '';
+		$rank_is_special = ($rank_info['rank_special'] == '1') ? 'checked="checked"' : '';
+		$rank_is_guest = ($rank_info['rank_special'] == '2') ? 'checked="checked"' : '';
+		$rank_is_banned = ($rank_info['rank_special'] == '3') ? 'checked="checked"' : '';
 
 		$rank_path = '../images/ranks/';
 		if (is_dir($rank_path))
@@ -116,18 +105,18 @@ if($mode != '')
 			$ranks_list = '<select name="rank_image_sel" onchange="update_rank(this.options[selectedIndex].value);">';
 			if ($rank_info['rank_image'] == '')
 			{
-				$ranks_list .= "<option value=\"\" selected=\"selected\">" . $lang['No_Rank_Image'] . "</option>";
+				$ranks_list .= '<option value="" selected="selected">' . $lang['No_Rank_Image'] . '</option>';
 			}
 			else
 			{
-				$ranks_list .= "<option value=\"\">" . $lang['No_Rank_Image'] . "</option>";
-				$ranks_list .= "<option value=\"" . $rank_info['rank_image'] . "\" selected=\"selected\">" . str_replace($rank_path, "", $rank_info['rank_image']) . "</option>";
+				$ranks_list .= '<option value="">' . $lang['No_Rank_Image'] . '</option>';
+				$ranks_list .= '<option value="' . $rank_info['rank_image'] . '" selected="selected">' . str_replace($rank_path, '', $rank_info['rank_image']) . '</option>';
 			}
-			for($k=0; $k<=$l;$k++)
+			for($k = 0; $k <= $l;$k++)
 			{
 				if ($file1[$k] != "")
 				{
-					$ranks_list .= "<option value=\"images/ranks/" . $file1[$k] . "\">images/ranks/" . $file1[$k] . "</option>";
+					$ranks_list .= '<option value="images/ranks/' . $file1[$k] . '">images/ranks/' . $file1[$k] . '</option>';
 				}
 			}
 			$rank_img_sp = (($rank_info['rank_image'] != '') ? ('../' . $rank_info['rank_image']) : $images['spacer']);
@@ -193,19 +182,16 @@ if($mode != '')
 	}
 	elseif($mode == 'save')
 	{
-		//
 		// Ok, they sent us our info, let's update it.
-		//
-
-		$rank_id = (isset($_POST['id'])) ? intval($_POST['id']) : 0;
-		$rank_title = (isset($_POST['title'])) ? trim($_POST['title']) : "";
+		$rank_id = request_post_var('id', 0);
+		$rank_title = request_post_var('title', '', true);
 		// Mighty Gorgon - Multiple Ranks - BEGIN
-		$special_rank = $_POST['special_rank'];
-		$min_posts = (isset($_POST['min_posts'])) ? intval($_POST['min_posts']) : -1;
-		$rank_image = ((isset($_POST['rank_image_path']))) ? trim($_POST['rank_image_path']) : '';
+		$special_rank = request_post_var('special_rank', 0);
+		$min_posts = request_post_var('min_posts', -1);
+		$rank_image = request_post_var('rank_image_path', '', true);
 		// Mighty Gorgon - Multiple Ranks - END
 
-		if($rank_title == '')
+		if(empty($rank_title))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
 		}
@@ -218,14 +204,12 @@ if($mode != '')
 			$min_posts = -1;
 		}
 
-		//
 		// The rank image has to be a jpg, gif or png
-		//
 		if($rank_image != '')
 		{
 			if (!preg_match("/(\.gif|\.png|\.jpg)$/is", $rank_image))
 			{
-				$rank_image = "";
+				$rank_image = '';
 			}
 		}
 
@@ -243,7 +227,7 @@ if($mode != '')
 			}
 			*/
 			$sql = "UPDATE " . RANKS_TABLE . "
-				SET rank_title = '" . str_replace("\'", "''", $rank_title) . "', rank_special = $special_rank, rank_min = $min_posts, rank_image = '" . str_replace("\'", "''", $rank_image) . "'
+				SET rank_title = '" . $db->sql_escape($rank_title) . "', rank_special = $special_rank, rank_min = $min_posts, rank_image = '" . $db->sql_escape($rank_image) . "'
 				WHERE rank_id = $rank_id";
 
 			$message = $lang['Rank_updated'];
@@ -251,7 +235,7 @@ if($mode != '')
 		else
 		{
 			$sql = "INSERT INTO " . RANKS_TABLE . " (rank_title, rank_special, rank_min, rank_image)
-				VALUES ('" . str_replace("\'", "''", $rank_title) . "', $special_rank, $min_posts, '" . str_replace("\'", "''", $rank_image) . "')";
+				VALUES ('" . $db->sql_escape($rank_title) . "', $special_rank, $min_posts, '" . $db->sql_escape($rank_image) . "')";
 
 			$message = $lang['Rank_added'];
 		}
@@ -259,7 +243,7 @@ if($mode != '')
 
 		$cache->destroy('_ranks');
 		$db->clear_cache('ranks_');
-		$message .= '<br /><br />' . sprintf($lang['Click_return_rankadmin'], '<a href="' . append_sid("admin_ranks." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+		$message .= '<br /><br />' . sprintf($lang['Click_return_rankadmin'], '<a href="' . append_sid('admin_ranks.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 
@@ -267,14 +251,7 @@ if($mode != '')
 	elseif($mode == 'delete')
 	{
 		// Ok, they want to delete their rank
-		if(isset($_POST['id']) || isset($_GET['id']))
-		{
-			$rank_id = (isset($_POST['id'])) ? intval($_POST['id']) : intval($_GET['id']);
-		}
-		else
-		{
-			$rank_id = 0;
-		}
+		$rank_id = request_post_var('id', 0);
 
 		$confirm = isset($_POST['confirm']);
 
@@ -294,7 +271,7 @@ if($mode != '')
 				WHERE group_rank = $rank_id";
 			$result = $db->sql_query($sql);
 
-			$message = $lang['Rank_removed'] . '<br /><br />' . sprintf($lang['Click_return_rankadmin'], '<a href="' . append_sid("admin_ranks." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+			$message = $lang['Rank_removed'] . '<br /><br />' . sprintf($lang['Click_return_rankadmin'], '<a href="' . append_sid('admin_ranks.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 
 			$cache->destroy('_ranks');
 			$db->clear_cache('ranks_');
@@ -314,8 +291,9 @@ if($mode != '')
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid("admin_ranks." . PHP_EXT),
-				'S_HIDDEN_FIELDS' => $hidden_fields)
+				'S_CONFIRM_ACTION' => append_sid('admin_ranks.' . PHP_EXT),
+				'S_HIDDEN_FIELDS' => $hidden_fields
+				)
 			);
 		}
 		else
@@ -332,9 +310,7 @@ if($mode != '')
 //
 // Show the default page
 //
-$template->set_filenames(array(
-	'body' => ADM_TPL . 'ranks_list_body.tpl')
-);
+$template->set_filenames(array('body' => ADM_TPL . 'ranks_list_body.tpl'));
 
 $sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_min ASC, rank_special ASC";
 $result = $db->sql_query($sql);
@@ -364,7 +340,7 @@ for($i = 0; $i < $rank_count; $i++)
 	$rank_min = $rank_rows[$i]['rank_min'];
 
 	// Mighty Gorgon - Multiple Ranks - BEGIN
-	$rank_img_sp = (($rank_rows[$i]['rank_image'] != "") ? ('../' . $rank_rows[$i]['rank_image']) : $images['spacer']);
+	$rank_img_sp = (($rank_rows[$i]['rank_image'] != '') ? ('../' . $rank_rows[$i]['rank_image']) : $images['spacer']);
 	$rank .= '<br /><img name="rank_image" src="' . $rank_img_sp . '" alt="" />';
 
 	if(($special_rank > 0) || ($special_rank == '-2'))

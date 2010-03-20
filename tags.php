@@ -53,11 +53,11 @@ $tag_text = ip_clean_string(urldecode(trim($tag_text)), $lang['ENCODING'], true)
 
 $mode_types = array('list', 'view');
 $mode = request_var('mode', $mode_types[0]);
-$mode = (!in_array($mode, $mode_types) ? $mode_types[0] : $mode);
+$mode = check_var_value($mode, $mode_types);
 
 $action_types = array('list');
 $action = request_var('action', $action_types[0]);
-$action = (!in_array($action, $action_types) ? $action_types[0] : $action);
+$action = check_var_value($action, $action_types);
 
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;

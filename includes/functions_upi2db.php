@@ -106,7 +106,7 @@ function check_upi2db_on($userdata)
 //################################### delete_old_data ##########################################
 // Version 1.0.0
 
-if(!function_exists(delete_old_data))
+if(!function_exists('delete_old_data'))
 {
 	function delete_old_data($expired_post_time, $del_mark_time, $del_perm_time, $db)
 	{
@@ -132,7 +132,7 @@ if(!function_exists(delete_old_data))
 //################################### unread ##########################################
 // Version 1.0.0
 
-if(!function_exists(unread))
+if(!function_exists('unread'))
 {
 	function unread()
 	{
@@ -250,7 +250,7 @@ if(!function_exists(unread))
 //################################### always_read ##########################################
 // Version 1.0.0
 
-if(!function_exists(always_read))
+if(!function_exists('always_read'))
 {
 	function always_read($topic_id, $always_read, $unread)
 	{
@@ -292,7 +292,7 @@ if(!function_exists(always_read))
 //################################### mark_always_read ##########################################
 // Version 1.0.0
 
-if(!function_exists(mark_always_read))
+if(!function_exists('mark_always_read'))
 {
 	function mark_always_read($topic_type, $topic_id, $forum_id, $file, $art, $unread, $start = false, $folder_image = false, $search_mode = false, $s2 = false)
 	{
@@ -358,7 +358,7 @@ if(!function_exists(mark_always_read))
 //################################### mark_always_read ##########################################
 // Version 1.0.0
 
-if(!function_exists(mark_always_read_vt_ip))
+if(!function_exists('mark_always_read_vt_ip'))
 {
 	function mark_always_read_vt_ip($topic_type, $topic_id, $forum_id, $art, $unread)
 	{
@@ -421,7 +421,7 @@ if(!function_exists(mark_always_read_vt_ip))
 //################################### mar_icon ##########################################
 // Version 1.0.0
 
-if(!function_exists(mar_icon))
+if(!function_exists('mar_icon'))
 {
 	function mar_icon($folder_image, $folder_txt)
 	{
@@ -433,7 +433,7 @@ if(!function_exists(mar_icon))
 //################################### mark_post_viewtopic ##########################################
 // Version 1.0.0
 
-if(!function_exists(mark_post_viewtopic))
+if(!function_exists('mark_post_viewtopic'))
 {
 	function mark_post_viewtopic($post_time_max, $unread, $topic_id, $forum_id, $post_id, $except_time, $topic_type)
 	{
@@ -474,7 +474,7 @@ if(!function_exists(mark_post_viewtopic))
 //################################### index_display_new ##########################################
 // Version 1.0.0
 
-if(!function_exists(index_display_new))
+if(!function_exists('index_display_new'))
 {
 	function index_display_new($unread)
 	{
@@ -525,7 +525,7 @@ if(!function_exists(index_display_new))
 //################################### always_read_forum ##########################################
 // Version 1.0.0
 
-if(!function_exists(always_read_forum))
+if(!function_exists('always_read_forum'))
 {
 	function always_read_forum($forum_id, $always_read)
 	{
@@ -562,7 +562,7 @@ if(!function_exists(always_read_forum))
 //################################### viewtopic_calc_unread ##########################################
 // Version 1.0.0
 
-if(!function_exists(viewtopic_calc_unread))
+if(!function_exists('viewtopic_calc_unread'))
 {
 	function viewtopic_calc_unread($unread, $topic_id, $post_id, $forum_id, &$mini_post_img, &$mini_post_alt, &$unread_color, &$read_posts)
 	{
@@ -609,7 +609,7 @@ if(!function_exists(viewtopic_calc_unread))
 //################################### search_calc_unread_ip ##########################################
 // Version 1.0.0
 
-if(!function_exists(search_calc_unread_ip))
+if(!function_exists('search_calc_unread_ip'))
 {
 	function search_calc_unread_ip($unread, $topic_id, $searchset, $i, &$mini_post_img, &$mini_post_alt, &$unread_color, &$folder_image, &$folder_alt)
 	{
@@ -669,7 +669,7 @@ if(!function_exists(search_calc_unread_ip))
 //################################### set_unread ##########################################
 // Version 1.0.0
 
-if(!function_exists(set_unread))
+if(!function_exists('set_unread'))
 {
 	function set_unread($t, $f, $p, $unread, $do, $tt)
 	{
@@ -726,7 +726,7 @@ if(!function_exists(set_unread))
 //################################### search_mark_as_read ##########################################
 // Version 1.0.0
 
-if(!function_exists(search_mark_as_read))
+if(!function_exists('search_mark_as_read'))
 {
 	function search_mark_as_read($mar_topic_id)
 	{
@@ -762,7 +762,7 @@ if(!function_exists(search_mark_as_read))
 //################################### sync_database ##########################################
 // Version 1.0.0
 
-if(!function_exists(sync_database))
+if(!function_exists('sync_database'))
 {
 	function sync_database($userdata)
 	{
@@ -855,7 +855,7 @@ if(!function_exists(sync_database))
 //################################### select_always_read ##########################################
 // Version 1.0.0
 
-if(!function_exists(select_always_read))
+if(!function_exists('select_always_read'))
 {
 	function select_always_read($userdata)
 	{
@@ -897,7 +897,7 @@ if(!function_exists(select_always_read))
 //################################### delete_read_posts ##########################################
 // Version 1.0.0
 
-if(!function_exists(delete_read_posts))
+if(!function_exists('delete_read_posts'))
 {
 	function delete_read_posts($read_posts)
 	{
@@ -921,7 +921,7 @@ if(!function_exists(delete_read_posts))
 //################################### except_time ##########################################
 // Version 1.0.0
 
-if(!function_exists(except_time))
+if(!function_exists('except_time'))
 {
 	function except_time()
 	{
@@ -937,7 +937,7 @@ if(!function_exists(except_time))
 //################################### viewforum_calc_unread ##########################################
 // Version 1.0.0
 
-if(!function_exists(viewforum_calc_unread))
+if(!function_exists('viewforum_calc_unread'))
 {
 	function viewforum_calc_unread($unread, $topic_id, $topic_rowset, $i, $folder_new, $folder, &$folder_alt, &$folder_image, &$newest_post_img, &$upi2db_status)
 	{
@@ -984,7 +984,7 @@ if(!function_exists(viewforum_calc_unread))
 //################################### marking_posts ##########################################
 // Version 1.0.0
 
-if(!function_exists(marking_posts))
+if(!function_exists('marking_posts'))
 {
 	function marking_posts($forum_id = '')
 	{
@@ -1019,7 +1019,7 @@ if(!function_exists(marking_posts))
 //################################### auth_forum_read ##########################################
 // Version 1.0.0
 
-if(!function_exists(auth_forum_read))
+if(!function_exists('auth_forum_read'))
 {
 	function auth_forum_read($userdata)
 	{
@@ -1051,7 +1051,7 @@ if(!function_exists(auth_forum_read))
 //################################### prune_upi2db ##########################################
 // Version 1.0.0
 
-if(!function_exists(prune_upi2db))
+if(!function_exists('prune_upi2db'))
 {
 	function prune_upi2db($sql_post)
 	{
@@ -1075,7 +1075,7 @@ if(!function_exists(prune_upi2db))
 //################################### index_display_new ##########################################
 // Version 1.0.0
 
-if(!function_exists(index_display_new))
+if(!function_exists('index_display_new'))
 {
 	function index_display_new($unread)
 	{

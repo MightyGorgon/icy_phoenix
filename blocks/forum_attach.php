@@ -57,9 +57,10 @@ if(!function_exists('cms_block_forum_attach'))
 		$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) ? true : false);
 		if ($cms_config_vars['md_single_post_retrieve'][$block_id])
 		{
+			$single_post_id = request_var('post_id', 0);
 			if ($cms_config_vars['md_single_post_auto_id'][$block_id])
 			{
-				$single_post_id = (!empty($_GET['post_id']) && intval($_GET['post_id']))? intval($_GET['post_id']) : $cms_config_vars['md_single_post_id'][$block_id];
+				$single_post_id = !empty($single_post_id) ? $single_post_id : $cms_config_vars['md_single_post_id'][$block_id];
 			}
 			else
 			{

@@ -27,7 +27,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-require(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_user_search.' . PHP_EXT);
 
@@ -53,8 +53,8 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 		}
 	}
 
-	$language_list = language_select('', 'language_type');
-	$timezone_list = tz_select('', 'timezone_type');
+	$language_list = language_select('language_type', '');
+	$timezone_list = tz_select('timezone_type', '');
 
 	$sql = "SELECT f.forum_id, f.forum_name, c.forum_id AS cat_id, c.forum_name AS cat_title
 				FROM (". FORUMS_TABLE ." AS f INNER JOIN ". FORUMS_TABLE ." AS c ON c.forum_id = f.parent_id)
@@ -83,7 +83,7 @@ if(!isset($_POST['dosearch']) && !isset($_GET['dosearch']))
 		}
 	}
 
-	$styles_list = style_select('', 'style_type');
+	$styles_list = style_select('style_type');
 
 	$lastvisited = array(1, 7, 14, 30, 60, 120, 365, 500, 730, 1000);
 	$lastvisited_list = '';
@@ -389,10 +389,10 @@ else
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
 							FROM " . USERS_TABLE . "
-								WHERE {$lower_b}username{$lower_e} $op '".str_replace("\'", "''", $username)."'
+								WHERE {$lower_b}username{$lower_e} $op '".$db->sql_escape($username)."'
 									AND user_id <> " . ANONYMOUS;
 
-			$select_sql .= " WHERE {$lower_b}u.username{$lower_e} $op '".str_replace("\'", "''", $username)."'
+			$select_sql .= " WHERE {$lower_b}u.username{$lower_e} $op '".$db->sql_escape($username)."'
 									AND u.user_id <> " . ANONYMOUS;
 			break;
 		case 'search_email':
@@ -425,10 +425,10 @@ else
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
 							FROM " . USERS_TABLE . "
-								WHERE {$lower_b}user_email{$lower_e} $op '".str_replace("\'", "''", $email)."'
+								WHERE {$lower_b}user_email{$lower_e} $op '".$db->sql_escape($email)."'
 									AND user_id <> " . ANONYMOUS;
 
-			$select_sql .= " WHERE {$lower_b}u.user_email{$lower_e} $op '".str_replace("\'", "''", $email)."'
+			$select_sql .= " WHERE {$lower_b}u.user_email{$lower_e} $op '".$db->sql_escape($email)."'
 									AND u.user_id <> " . ANONYMOUS;
 			break;
 		case 'search_ip':
@@ -819,10 +819,10 @@ else
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
 							FROM " . USERS_TABLE . "
-								WHERE {$lower_b}$field{$lower_e} $op '" . str_replace("\'", "''", $userfield_value) . "'
+								WHERE {$lower_b}$field{$lower_e} $op '" . $db->sql_escape($userfield_value) . "'
 									AND user_id <> " . ANONYMOUS;
 
-			$select_sql .= " WHERE {$lower_b}u.$field{$lower_e} $op '".str_replace("\'", "''", $userfield_value)."'
+			$select_sql .= " WHERE {$lower_b}u.$field{$lower_e} $op '".$db->sql_escape($userfield_value)."'
 									AND u.user_id <> " . ANONYMOUS;
 
 			break;
@@ -878,10 +878,10 @@ else
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
 								FROM " . USERS_TABLE . "
-								WHERE user_lang = '" . str_replace("\'", "''", $language_type) . "'
+								WHERE user_lang = '" . $db->sql_escape($language_type) . "'
 									AND user_id <> " . ANONYMOUS;
 
-			$select_sql .= " WHERE u.user_lang = '" . str_replace("\'", "''", $language_type) . "'
+			$select_sql .= " WHERE u.user_lang = '" . $db->sql_escape($language_type) . "'
 									AND u.user_id <> " . ANONYMOUS;
 
 			break;

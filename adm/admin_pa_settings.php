@@ -30,7 +30,7 @@ define('IN_PA_CONFIG_ADMIN', 1);
 include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $submit = (isset($_POST['submit'])) ? true : false;
-$size = (isset($_POST['max_size'])) ? $_POST['max_size'] : '';
+$size = request_var('max_size', '');
 
 $sql = 'SELECT * FROM ' . PA_CONFIG_TABLE;
 $result = $db->sql_query($sql);
@@ -41,7 +41,7 @@ while($row = $db->sql_fetchrow($result))
 	$config_value = $row['config_value'];
 	$default_config[$config_name] = $config_value;
 
-	$new[$config_name] = (isset($_POST[$config_name])) ? $_POST[$config_name] : $default_config[$config_name];
+	$new[$config_name] = (isset($_POST[$config_name])) ? request_post_var($config_name, '') : $default_config[$config_name];
 
 	if ((empty($size)) && (!$submit) && ($config_name == 'max_file_size'))
 	{
@@ -62,20 +62,19 @@ while($row = $db->sql_fetchrow($result))
 
 	if($submit)
 	{
-
 		if ($config_name == 'max_file_size')
 		{
 			$new[$config_name] = ($size == 'kb') ? round($new[$config_name] * 1024) : (($size == 'mb') ? round($new[$config_name] * 1048576) : $new[$config_name]);
 		}
-
-		$pafiledb_functions->set_config($config_name, $new[$config_name]);
+		$pafiledb_functions->set_config($config_name, $new[$config_name], false);
 	}
 }
 
 if($submit)
 {
-	$pa_cache->unload();
-	$message = $lang['Settings_changed'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_settings." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+	$cache->destroy('_config_pafiledb');
+	$db->clear_cache('config_pafiledb_');
+	$message = $lang['Settings_changed'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_settings.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
@@ -88,7 +87,7 @@ $auth_select = array();
 
 foreach($global_auth as $auth)
 {
-	$auth_select[$auth]	= '&nbsp;<select name="' . $auth . '">';
+	$auth_select[$auth] = '&nbsp;<select name="' . $auth . '">';
 	for($k = 0; $k < sizeof($cat_auth_levels); $k++)
 	{
 		$selected = ($new[$auth] == $cat_auth_const[$k]) ? ' selected="selected"' : '';
@@ -96,8 +95,6 @@ foreach($global_auth as $auth)
 	}
 	$auth_select[$auth] .= '</select>&nbsp;';
 }
-
-
 
 $view_all_yes = ($new['settings_viewall']) ? ' selected' : '';
 $view_all_no = (!$new['settings_viewall']) ? ' selected' : '';
@@ -134,7 +131,7 @@ $pm_notify_yes = ($new['pm_notify']) ? ' selected' : '';
 $pm_notify_no = (!$new['pm_notify']) ? ' selected' : '';
 
 $template->assign_vars(array(
-	'S_SETTINGS_ACTION' => append_sid("admin_pa_settings." . PHP_EXT),
+	'S_SETTINGS_ACTION' => append_sid('admin_pa_settings.' . PHP_EXT),
 
 	'L_MAX_FILE_SIZE' => $lang['Max_filesize'],
 	'L_MAX_FILE_SIZE_INFO' => $lang['Max_filesize_explain'],
@@ -266,13 +263,13 @@ $template->assign_vars(array(
 	'S_PM_NOTIFY_NO' => $pm_notify_no,
 
 	'S_ALLOW_IMAGES_YES' => $allow_comment_images_yes,
-	'S_ALLOW_IMAGES_NO' => $allow_comment_images_no)
+	'S_ALLOW_IMAGES_NO' => $allow_comment_images_no
+	)
 );
 
 $template->pparse('admin');
 
 $pafiledb->_pafiledb();
-$pa_cache->unload();
 
 include('./page_footer_admin.' . PHP_EXT);
 

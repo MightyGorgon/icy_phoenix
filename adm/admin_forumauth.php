@@ -30,6 +30,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 // build an indexed array on field names
 /*
@@ -41,9 +42,9 @@ while (list($auth_key, $auth_name) = @each($field_names))
 }
 */
 
-if(isset($_GET[POST_FORUM_URL]) || isset($_POST[POST_FORUM_URL]))
+$fid = request_var(POST_FORUM_URL, '');
+if(!empty($fid))
 {
-	$fid = (isset($_POST[POST_FORUM_URL])) ? $_POST[POST_FORUM_URL] : $_GET[POST_FORUM_URL];
 	$f_type = substr($fid, 0, 1);
 	if ($f_type == POST_FORUM_URL)
 	{
@@ -62,14 +63,7 @@ else
 	$forum_sql = '';
 }
 
-if(isset($_GET['adv']))
-{
-	$adv = intval($_GET['adv']);
-}
-else
-{
-	unset($adv);
-}
+$adv = request_get_var('adv', 0);
 
 // Start program proper
 if(isset($_POST['submit']))
@@ -142,7 +136,7 @@ if(empty($forum_id))
 	// Output the selection table if no forum id was specified
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_select_body.tpl'));
 
-	$select_list = selectbox(POST_FORUM_URL, false, '', true);
+	$select_list = make_forum_select(POST_FORUM_URL, false, '', true);
 
 	$template->assign_vars(array(
 		'L_AUTH_TITLE' => $lang['Auth_Control_Forum'],

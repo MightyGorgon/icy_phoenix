@@ -20,23 +20,12 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+$starttime = explode(' ', microtime());
+$starttime = $starttime[1] + $starttime[0];
+
 error_reporting(E_ALL ^ E_NOTICE); // Report all errors, except notices
 
-// OLD extension.inc - BEGIN
 //@ini_set('memory_limit', '24M');
-
-$starttime = 0;
-
-// Page generation time
-$mtime = microtime();
-$mtime = explode(' ', $mtime);
-$mtime = $mtime[1] + $mtime[0];
-$starttime = $mtime;
-
-// Change this if your extension is not .php!
-//@define('PHP_EXT', 'php');
-//$phpbb_root_path = IP_ROOT_PATH;
-//$phpEx = PHP_EXT;
 
 // Mighty Gorgon - Debug - BEGIN
 @define('DEBUG', true); // Debugging ON/OFF => TRUE/FALSE
@@ -50,10 +39,6 @@ if (defined('DEBUG_EXTRA') && (DEBUG_EXTRA == true))
 	}
 }
 // Mighty Gorgon - Debug - END
-// OLD extension.inc - END
-
-// The following code (unsetting globals)
-// Thanks to Matt Kavanagh and Stefan Esser for providing feedback as well as patch files
 
 /*
 * Remove variables created by register_globals from the global scope
@@ -76,8 +61,7 @@ function deregister_globals()
 		'base_memory_usage'	=> true,
 	);
 
-	// Not only will array_merge and array_keys give a warning if
-	// a parameter is not an array, array_merge will actually fail.
+	// Not only will array_merge and array_keys give a warning if a parameter is not an array, array_merge will actually fail.
 	// So we check if _SESSION has been initialised.
 	if (!isset($_SESSION) || !is_array($_SESSION))
 	{
@@ -120,8 +104,10 @@ function deregister_globals()
 				}
 			}
 		}
+
 		unset($GLOBALS[$varname]);
 	}
+
 	unset($input);
 }
 
@@ -140,6 +126,17 @@ else
 	define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
 }
 
+// Load Extensions
+if (!empty($load_extensions))
+{
+	$load_extensions = explode(',', $load_extensions);
+
+	foreach ($load_extensions as $extension)
+	{
+		@dl(trim($extension));
+	}
+}
+
 // CrackerTracker v5.x
 // Comment the following define to enable CT GET and POST parsing.
 define('GLOBAL_CTRACKER_DISABLED', true);
@@ -150,89 +147,9 @@ if(defined('IN_ADMIN') || defined('IN_CMS') || defined('CTRACKER_DISABLED') || d
 }
 else
 {
-	include(IP_ROOT_PATH . 'ctracker/engines/ct_security.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/ctracker/engines/ct_security.' . PHP_EXT);
 }
 // CrackerTracker v5.x
-
-// Protect against GLOBALS tricks
-if (isset($_POST['GLOBALS']) || isset($_FILES['GLOBALS']) || isset($_GET['GLOBALS']) || isset($_COOKIE['GLOBALS']))
-{
-	die('Hacking attempt');
-}
-
-// Protect against SESSION tricks
-if (isset($_SESSION) && !is_array($_SESSION))
-{
-	die('Hacking attempt');
-}
-
-//
-// addslashes to vars if magic_quotes_gpc is off
-// this is a security precaution to prevent someone
-// trying to break out of a SQL statement.
-//
-if(!STRIP)
-{
-	if(is_array($_GET))
-	{
-		while(list($k, $v) = each($_GET))
-		{
-			if(is_array($_GET[$k]))
-			{
-				while(list($k2, $v2) = each($_GET[$k]))
-				{
-					$_GET[$k][$k2] = addslashes($v2);
-				}
-				@reset($_GET[$k]);
-			}
-			else
-			{
-				$_GET[$k] = addslashes($v);
-			}
-		}
-		@reset($_GET);
-	}
-
-	if(is_array($_POST))
-	{
-		while(list($k, $v) = each($_POST))
-		{
-			if(is_array($_POST[$k]))
-			{
-				while(list($k2, $v2) = each($_POST[$k]))
-				{
-					$_POST[$k][$k2] = addslashes($v2);
-				}
-				@reset($_POST[$k]);
-			}
-			else
-			{
-				$_POST[$k] = addslashes($v);
-			}
-		}
-		@reset($_POST);
-	}
-
-	if(is_array($_COOKIE))
-	{
-		while(list($k, $v) = each($_COOKIE))
-		{
-			if(is_array($_COOKIE[$k]))
-			{
-				while(list($k2, $v2) = each($_COOKIE[$k]))
-				{
-					$_COOKIE[$k][$k2] = addslashes($v2);
-				}
-				@reset($_COOKIE[$k]);
-			}
-			else
-			{
-				$_COOKIE[$k] = addslashes($v);
-			}
-		}
-		@reset($_COOKIE);
-	}
-}
 
 //
 // Define some basic configuration arrays this also prevents malicious
@@ -246,7 +163,6 @@ $images = array();
 $lang = array();
 $tree = array();
 $nav_links = array();
-$dss_seeded = false;
 $gen_simple_header = false;
 $breadcrumbs_address = '';
 $breadcrumbs_links_left = '';
@@ -255,11 +171,12 @@ $breadcrumbs_links_right = '';
 $unread = array();
 //<!-- END Unread Post Information to Database Mod -->
 
-include(IP_ROOT_PATH . 'config.' . PHP_EXT);
+require(IP_ROOT_PATH . 'config.' . PHP_EXT);
 
 if(!defined('IP_INSTALLED') && !defined('IN_INSTALL'))
 {
-	header('Location: ' . IP_ROOT_PATH . 'install/install.' . PHP_EXT);
+	die('<p>config.' . PHP_EXT . ' could not be found.</p><p><a href="' . IP_ROOT_PATH . 'install/install.' . PHP_EXT . '">Click here to install Icy Phoenix</a></p>');
+	//header('Location: ' . IP_ROOT_PATH . 'install/install.' . PHP_EXT);
 	exit;
 }
 
@@ -271,7 +188,9 @@ include(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_categories_hierarchy.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/class_cms.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/class_settings.' . PHP_EXT);
 if (defined('IN_ADMIN'))
 {
 	include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
@@ -279,7 +198,9 @@ if (defined('IN_ADMIN'))
 
 // We need to instantiate Cache Class before DB to correctly initialize DB Connection
 $cache = new ip_cache();
+$class_settings = new class_settings();
 $ip_cms = new ip_cms();
+$ip_cms->init_vars();
 
 include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
@@ -290,16 +211,6 @@ unset($db->password);
 unset($message);
 unset($highlight);
 unset($sql);
-
-//
-// Obtain and encode users IP
-//
-// I'm removing HTTP_X_FORWARDED_FOR ... this may well cause other problems such as private range IP's appearing instead of the guilty routable IP, tough, don't
-// even bother complaining ... go scream and shout at the idiots out there who feel "clever" is doing harm rather than good ... karma is a great thing ... :)
-//
-$client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
-$user_ip = encode_ip($client_ip);
-$user_agent = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
 
 // Set PHP error handler to ours
 set_error_handler(defined('IP_MSG_HANDLER') ? IP_MSG_HANDLER : 'msg_handler');
@@ -317,19 +228,29 @@ else
 	}
 }
 
+$config = $cache->obtain_config();
+$config['default_style_row'] = $cache->obtain_default_style(false);
+$config['gzip_compress_runtime'] = $config['gzip_compress'];
+
+//
+// Obtain and encode users IP
+//
+// I'm removing HTTP_X_FORWARDED_FOR ... this may well cause other problems such as private range IP's appearing instead of the guilty routable IP, tough, don't
+// even bother complaining ... go scream and shout at the idiots out there who feel "clever" is doing harm rather than good ... karma is a great thing ... :)
+//
+$client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
+$user_ip = encode_ip($client_ip);
+$user_agent = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
+
 // CrackerTracker v5.x
-include(IP_ROOT_PATH . 'ctracker/classes/class_ct_database.' . PHP_EXT);
-$ctracker_config = new ct_database();
+$config['ctracker_user_ip_value'] = $client_ip;
 define('protection_unit_two', true);
-if ($ctracker_config->settings['ipblock_enabled'])
+if ($config['ctracker_ipblock_enabled'])
 {
-	include(IP_ROOT_PATH . 'ctracker/engines/ct_ipblocker.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/ctracker/engines/ct_ipblocker.' . PHP_EXT);
 }
 define('protection_unit_three', true);
 // CrackerTracker v5.x
-
-$config = $cache->obtain_config();
-$config['default_style_row'] = $cache->obtain_default_style(false);
 
 // CMS Pages Config - BEGIN
 if (!defined('SKIP_CMS_CONFIG') && !defined('IN_ADMIN') && !defined('IN_CMS'))
@@ -371,12 +292,6 @@ if ($config['mg_log_actions'] || !empty($config['db_log_actions']))
 	include(IP_ROOT_PATH . 'includes/functions_mg_log.' . PHP_EXT);
 }
 // MG Logs - END
-
-// This check could not be moved above, otherwise we may get errors due to some vars and includes not initialized
-if (file_exists('install'))
-{
-	trigger_error('Please_remove_install_contrib');
-}
 
 if ($config['url_rw'] || $config['url_rw_guests'])
 {
@@ -438,4 +353,5 @@ foreach ($cache->obtain_hooks() as $hook)
 	@include(IP_ROOT_PATH . 'includes/hooks/' . $hook . '.' . PHP_EXT);
 }
 */
+
 ?>

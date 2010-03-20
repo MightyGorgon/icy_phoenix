@@ -34,13 +34,8 @@ $db_log = array();
 $db_log_actions = (($config['db_log_actions'] == '1') || ($config['db_log_actions'] == '2')) ? true : false;
 
 // Simplify often used variables
-$_mode = '';
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$_mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-	$_mode = urldecode($_mode);
-}
-else
+$_mode = urldecode(request_var('mode', ''));
+if (empty($_mode))
 {
 	$_mode = (isset($_POST['lock']) ? 'lock' : $_mode);
 	$_mode = (isset($_POST['unlock']) ? 'unlock' : $_mode);
@@ -54,24 +49,34 @@ if (!empty($_mode))
 $_confirm = (isset($_POST['confirm'])) ? true : 0;
 $content .= '[CONFIRM: ' . $_confirm . '] - ';
 
-if (isset($_GET[POST_POST_URL]) || isset($_POST[POST_POST_URL]))
+
+$_forum = request_var(POST_FORUM_URL, 0);
+$_forum = ($_forum < 0) ? 0 : $_forum;
+
+$_topic = request_var(POST_TOPIC_URL, 0);
+$_topic = ($_topic < 0) ? 0 : $_topic;
+
+$_post = request_var(POST_POST_URL, 0);
+$_post = ($_post < 0) ? 0 : $_post;
+
+$_user = request_var(POST_USERS_URL, 0);
+$_user = ($_user < 0) ? 0 : $_user;
+//$_user = ($_user < 2) ? ANONYMOUS : $_user;
+
+if (!empty($_forum))
 {
-	$_post = (isset($_POST[POST_POST_URL])) ? intval($_POST[POST_POST_URL]) : intval($_GET[POST_POST_URL]);
-	$content .= '[POST: ' . $_post . '] - ';
-}
-if (isset($_GET[POST_TOPIC_URL]) || isset($_POST[POST_TOPIC_URL]))
-{
-	$_topic = (isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : intval($_GET[POST_TOPIC_URL]);
-	$content .= '[TOPIC: ' . $_topic . '] - ';
-}
-if (isset($_GET[POST_FORUM_URL]) || isset($_POST[POST_FORUM_URL]))
-{
-	$_forum = (isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : intval($_GET[POST_FORUM_URL]);
 	$content .= '[FORUM: ' . $_forum . '] - ';
 }
-if (isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL]))
+if (!empty($_topic))
 {
-	$_user = (isset($_POST[POST_USERS_URL])) ? intval($_POST[POST_USERS_URL]) : intval($_GET[POST_USERS_URL]);
+	$content .= '[TOPIC: ' . $_topic . '] - ';
+}
+if (!empty($_post))
+{
+	$content .= '[POST: ' . $_post . '] - ';
+}
+if (!empty($_user))
+{
 	$content .= '[USER: ' . $_user . '] - ';
 }
 
@@ -95,9 +100,12 @@ switch($page_array['page_name'])
 */
 
 // Diff log-schemas for each page
-//if(!empty($_POST)){
-	//dump_ary($_POST); // easy way to figure out scheme-variables to check
-//}
+/*
+if(!empty($_POST))
+{
+	dump_ary($_POST); // easy way to figure out scheme-variables to check
+}
+*/
 if(($page_array['page_dir'] == ADM) || ($page_array['page_dir'] == ('../' . ADM)))
 {
 	// ACP Logging
@@ -111,7 +119,7 @@ if(($page_array['page_dir'] == ADM) || ($page_array['page_dir'] == ('../' . ADM)
 				{
 					$db_log = array(
 						'action' => 'ADMIN_CAT_ADD',
-						'desc' => addslashes($_POST['name']),
+						'desc' => $_POST['name'],
 						'target' => '',
 					);
 				}
@@ -164,26 +172,7 @@ if(($page_array['page_dir'] == ADM) || ($page_array['page_dir'] == ('../' . ADM)
 				}
 			}
 			break;
-		case 'admin_board.' . PHP_EXT:
-		case 'admin_board_clearcache.' . PHP_EXT:
-		case 'admin_board_headers_banners.' . PHP_EXT:
-		case 'admin_board_quick_settings.' . PHP_EXT:
-		case 'admin_board_server.' . PHP_EXT:
-			if(isset($_POST['submit']))
-			{
-				$content .= '[Board Config]';
-				if ($db_log_actions == true)
-				{
-					$db_log = array(
-						'action' => 'ADMIN_BOARD_CONFIG',
-						'desc' => '',
-						'target' => '',
-					);
-				}
-				$update_log = true;
-			}
-			break;
-		case ('admin_board_extend.' . PHP_EXT):
+		case ('admin_config_settings.' . PHP_EXT):
 			if(isset($_POST['submit']))
 			{
 				$content .= '[Icy Phoenix Config]';
@@ -191,6 +180,23 @@ if(($page_array['page_dir'] == ADM) || ($page_array['page_dir'] == ('../' . ADM)
 				{
 					$db_log = array(
 						'action' => 'ADMIN_BOARD_IP_CONFIG',
+						'desc' => '',
+						'target' => '',
+					);
+				}
+				$update_log = true;
+			}
+			break;
+		case 'admin_board.' . PHP_EXT:
+		case 'admin_board_clearcache.' . PHP_EXT:
+		case 'admin_board_quick_settings.' . PHP_EXT:
+			if(isset($_POST['submit']))
+			{
+				$content .= '[Board Config]';
+				if ($db_log_actions == true)
+				{
+					$db_log = array(
+						'action' => 'ADMIN_BOARD_CONFIG',
 						'desc' => '',
 						'target' => '',
 					);

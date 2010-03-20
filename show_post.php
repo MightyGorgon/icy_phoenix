@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 // Added to optimize memory for attachments
 define('ATTACH_DISPLAY', true);
 define('IN_ICYPHOENIX', true);
@@ -261,7 +260,7 @@ if ($row = $db->sql_fetchrow($result))
 		// Mighty Gorgon - Multiple Ranks - END
 
 		// Handle anon users posting with usernames
-		if ($poster_id == ANONYMOUS && $row['post_username'] != '')
+		if (($poster_id == ANONYMOUS) && ($row['post_username'] != ''))
 		{
 			$poster = $row['post_username'];
 			$user_rank_01 = $lang['Guest'] . '<br />';
@@ -309,7 +308,7 @@ if ($row = $db->sql_fetchrow($result))
 			$message = $bbcode->parse($message);
 			$GLOBALS['code_post_id'] = 0;
 			// update database
-			$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled='" . addslashes($message) . "' WHERE post_id='" . $row['post_id'] . "'";
+			$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled='" . $db->sql_escape($message) . "' WHERE post_id = '" . $row['post_id'] . "'";
 			$db->sql_query($sql);
 		}
 		else

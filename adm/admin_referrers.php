@@ -38,30 +38,14 @@ if (isset($_POST['clear']))
 	message_die(GENERAL_MESSAGE, $message);
 }
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$mode = request_var('mode', 'hits');
+$referrer_id = request_var('referrer_id', 0);
+
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if (isset($_GET['mode']) || isset($_POST['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? htmlspecialchars($_POST['mode']) : htmlspecialchars($_GET['mode']);
-}
-else
-{
-	$mode = 'hits';
-}
-
-if(isset($_POST['order']))
-{
-	$sort_order = ($_POST['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-elseif(isset($_GET['order']))
-{
-	$sort_order = ($_GET['order'] == 'ASC') ? 'ASC' : 'DESC';
-}
-else
-{
-	$sort_order = 'DESC';
-}
+$sort_order = request_var('order', 'DESC');
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 // Referrers sorting
 $mode_types_text = array($lang['Referrer_host'], $lang['Referrer_url'], $lang['Referrer_hits'], $lang['Referrer_ip'], $lang['Referrer_first'],  $lang['Referrer_last']);
@@ -86,18 +70,6 @@ else
 }
 $select_sort_order .= '</select>';
 
-//Referrers Deletion
-$params = array('mode' => '', 'referrer_id' => '');
-
-foreach($params as $var => $default)
-{
-	$$var = $default;
-	if(isset($_POST[$var]) || isset($_GET[$var]))
-	{
-		$$var = (isset($_POST[$var])) ? $_POST[$var] : $_GET[$var];
-	}
-}
-
 if (sizeof($_POST))
 {
 	foreach($_POST as $key => $valx)
@@ -107,12 +79,8 @@ if (sizeof($_POST))
 		{
 			$referrer_id = substr($key, 10);
 
-			$sql = "SELECT * FROM " . REFERRERS_TABLE ."
-				WHERE referrer_id = '" . $referrer_id . "'";
-			$result = $db->sql_query($sql);
-
 			$sql = "DELETE FROM " . REFERRERS_TABLE ."
-							WHERE referrer_id = '" . $referrer_id . "'";
+							WHERE referrer_id = " . $referrer_id;
 			$db->sql_query($sql);
 		}
 	}

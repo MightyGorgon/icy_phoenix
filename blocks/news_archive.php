@@ -44,17 +44,12 @@ if(!function_exists('cms_block_news_archive'))
 		$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
 		//$page_query = $_SERVER['QUERY_STRING'];
 		//$page_query = (!empty($_SERVER['QUERY_STRING'])) ? explode('&', $_SERVER['QUERY_STRING']) : explode('&', getenv('QUERY_STRING'));
-		$portal_page_id = '';
-		if(isset($_GET['page']))
-		{
-			$portal_page_id = 'page=' . intval($_GET['page']) . '&amp;';
-		}
 
-		$ubid_link = '';
-		if(isset($_GET['ubid']))
-		{
-			$ubid_link = 'ubid=' . htmlspecialchars(intval($_GET['ubid'])) . '&amp;';
-		}
+		$portal_page_id = request_var('page', 0);
+		$portal_page_id = !empty($portal_page_id) ? ('page=' . $portal_page_id . '&amp;') : '';
+
+		$ubid_link = request_var('ubid', 0);
+		$ubid_link = !empty($ubid_link) ? ('ubid=' . $ubid_link . '&amp;') : '';
 
 		$template->set_filenames(array('news' => 'blocks/news_archive_block.tpl'));
 
@@ -114,10 +109,10 @@ if(!function_exists('cms_block_news_archive'))
 		else
 		{
 			// View the news Archives.
-			$year = (isset($_GET['year'])) ? $_GET['year'] : 0;
-			$month = (isset($_GET['month'])) ? $_GET['month'] : 0;
-			$day = (isset($_GET['day'])) ? $_GET['day'] : 0;
-			$key = (isset($_GET['key'])) ? $_GET['key'] : '';
+			$year = request_var('year', 0);
+			$month = request_var('month', 0);
+			$day = request_var('day', 0);
+			$key = request_var('key', '');
 
 			$template->assign_block_vars('news_archives', array());
 			$content->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));

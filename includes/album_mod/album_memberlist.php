@@ -38,16 +38,12 @@ if (empty($username))
 // Build the thumbnail page
 // ------------------------------------
 
-if (isset ($_POST['type']))
+if (check_http_var_exists('type', false))
 {
-	$album_view_type = $_POST['type'];
-}
-elseif (isset ($_GET['type']))
-{
-	$album_view_type = $_GET['type'];
+	$album_view_type = request_var('type', '');
 }
 
-$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 $pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
@@ -208,8 +204,8 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])),
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
-				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-				'DESC' => htmlspecialchars($picrow[$j]['pic_desc'])
+				'PIC_TITLE' => $picrow[$j]['pic_title'],
+				'DESC' => $picrow[$j]['pic_desc']
 				)
 			);
 
@@ -235,8 +231,8 @@ if ($total_pics > 0 && !empty($allowed_cat))
 
 			$template->assign_block_vars('picrow.pic_detail', array(
 				'PIC_ID' => $picrow[$j]['pic_id'],
-				'PIC_TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
-				'TITLE' => htmlspecialchars($picrow[$j]['pic_title']),
+				'PIC_TITLE' => $picrow[$j]['pic_title'],
+				'TITLE' => $picrow[$j]['pic_title'],
 
 				'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 				'U_PIC_SP' => $pic_sp_link,
@@ -387,7 +383,8 @@ $template->assign_vars(array(
 	'L_DESC' => $lang['Sort_Descending'],
 
 	'SORT_ASC' => ($sort_order == 'ASC') ? 'selected="selected"' : '',
-	'SORT_DESC' => ($sort_order == 'DESC') ? 'selected="selected"' : '')
+	'SORT_DESC' => ($sort_order == 'DESC') ? 'selected="selected"' : ''
+	)
 );
 
 ?>

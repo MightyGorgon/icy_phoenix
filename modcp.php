@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 // Added to optimize memory for attachments
 define('ATTACH_POSTING', true);
 define('ATTACH_DISPLAY', true);
@@ -24,7 +23,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
@@ -39,9 +38,9 @@ $class_topics->var_init(true);
 $confirm = ($_POST['confirm']) ? true : 0;
 $confirm_recycle = true;
 
-if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
+$selected_id = request_var('selected_id', '');
+if (!empty($selected_id))
 {
-	$selected_id = isset($_POST['selected_id']) ? $_POST['selected_id'] : $_GET['selected_id'];
 	$type = substr($selected_id, 0, 1);
 	$id = intval(substr($selected_id, 1));
 	if ($type == POST_FORUM_URL)
@@ -51,12 +50,14 @@ if (isset($_GET['selected_id']) || isset($_POST['selected_id']))
 	elseif (($type == POST_CAT_URL) || ($selected_id == 'Root'))
 	{
 		$parm = ($id != 0) ? '?' . POST_CAT_URL . '=' . $id : '';
-		redirect(append_sid('./' . CMS_PAGE_FORUM . $parm));
+		redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM . $parm));
 		exit;
 	}
 }
 
-$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+$sid = request_var('sid', '');
+
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 $delete = (isset($_POST['delete'])) ? true : false;
@@ -65,7 +66,7 @@ $move = (isset($_POST['move'])) ? true : false;
 $lock = (isset($_POST['lock'])) ? true : false;
 $unlock = (isset($_POST['unlock'])) ? true : false;
 $quick_title_edit = (isset($_POST['quick_title_edit'])) ? true : false;
-$qtnum = (isset($_POST['qtnum'])) ? intval($_POST['qtnum']) : 0;
+$qtnum = request_var('qtnum', 0);
 $merge = (isset($_POST['merge'])) ? true : false;
 $recycle = (isset($_POST['recycle'])) ? true : false;
 $sticky = (isset($_POST['sticky'])) ? true : false;
@@ -73,21 +74,17 @@ $announce = (isset($_POST['announce'])) ? true : false;
 $global_announce = (isset($_POST['super_announce'])) ? true : false;
 $normalize = (isset($_POST['normalize'])) ? true : false;
 $news_category_edit = (isset($_POST['news_category_edit'])) ? true : false;
-$news_category = (isset($_POST['news_category'])) ? intval($_POST['news_category']) : 0;
+$news_category = request_var('news_category', 0);
 $news_category = ($news_category < 0) ? 0 : $news_category;
 
-if(isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
-}
-else
+$mode = request_var('mode', '');
+if(empty($mode))
 {
 	if($delete)
 	{
 		$mode = 'delete';
 	}
-	elseif($poll_delete)
+	elseif ($poll_delete)
 	{
 		$mode = 'poll_delete';
 	}
@@ -95,11 +92,11 @@ else
 	{
 		$mode = 'move';
 	}
-	elseif($lock)
+	elseif ($lock)
 	{
 		$mode = 'lock';
 	}
-	elseif($unlock)
+	elseif ($unlock)
 	{
 		$mode = 'unlock';
 	}
@@ -115,15 +112,15 @@ else
 	{
 		$mode = 'merge';
 	}
-	elseif($sticky)
+	elseif ($sticky)
 	{
 		$mode = 'sticky';
 	}
-	elseif($announce)
+	elseif ($announce)
 	{
 		$mode = 'announce';
 	}
-	elseif($global_announce)
+	elseif ($global_announce)
 	{
 		$mode = 'super_announce';
 	}
@@ -141,24 +138,7 @@ else
 	}
 }
 
-if(isset($_POST['type']) || isset($_GET['type']))
-{
-	$type = (isset($_POST['type'])) ? $_POST['type'] : $_GET['type'];
-}
-else
-{
-	$type = '';
-}
-
-if(!empty($_POST['sid']) || !empty($_GET['sid']))
-{
-	$sid = (!empty($_POST['sid'])) ? $_POST['sid'] : $_GET['sid'];
-}
-else
-{
-	$sid = '';
-}
-
+$type = request_var('type', '');
 switch($type)
 {
 	case 'sticky':
@@ -461,7 +441,7 @@ switch($mode)
 				'L_LEAVESHADOW' => $lang['Leave_shadow_topic'],
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
-				'S_FORUM_SELECT' => selectbox('new_forum', $forum_id),
+				'S_FORUM_SELECT' => make_forum_select('new_forum', $forum_id),
 				'S_MODCP_ACTION' => append_sid('modcp.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields,
 				)
@@ -704,7 +684,7 @@ switch($mode)
 					'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id),
 					'S_SPLIT_ACTION' => append_sid('modcp.' . PHP_EXT),
 					'S_HIDDEN_FIELDS' => $s_hidden_fields,
-					'S_FORUM_SELECT' => selectbox('new_forum_id', false, $forum_id),
+					'S_FORUM_SELECT' => make_forum_select('new_forum_id', false, $forum_id),
 					)
 				);
 

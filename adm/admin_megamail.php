@@ -88,25 +88,24 @@ if (($mode == 'delete') && ($mail_id > 0))
 	}
 }
 
-$message = '';
-$subject = '';
+$subject = request_post_var('subject', '', true);
+$subject = htmlspecialchars_decode($subject, ENT_QUOTES);
+$message = request_post_var('message', '', true);
+$message = htmlspecialchars_decode($message, ENT_QUOTES);
+//$message = $_POST['message'];
 
 // Do the job ...
-if (isset($_POST['message']) || isset($_POST['subject']))
+if (!empty($subject) && !empty($message))
 {
-	$batchsize = (is_numeric($_POST['batchsize'])) ? intval($_POST['batchsize']) : $def_size;
-	$batchwait = (is_numeric($_POST['batchwait'])) ? intval($_POST['batchwait']) : $def_wait;
+	$batchsize = request_post_var('batchsize', $def_size);
+	$batchwait = request_post_var('batchwait', $def_wait);
 	$mass_pm = request_var('mass_pm', 0);
 	$email_format = request_var('email_format', 0);
-	$subject = request_var('subject', '');
-	$subject = htmlspecialchars_decode($subject, ENT_QUOTES);
-	//$message = request_var('message', '');
-	//$message = htmlspecialchars_decode($message, ENT_QUOTES);
-	$message = $_POST['message'];
+	$group_id = request_var(POST_GROUPS_URL, 0);
 
 	$mail_session_id = md5(uniqid(''));
 	$sql = "INSERT INTO " . MEGAMAIL_TABLE . " (mailsession_id, mass_pm, user_id, group_id, email_subject, email_body, email_format, batch_start, batch_size, batch_wait, status)
-			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . intval($_POST[POST_GROUPS_URL]) . ", '" . addslashes($subject) . "', '" . addslashes($message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
+			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . $group_id . ", '" . $db->sql_escape($subject) . "', '" . $db->sql_escape($message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
 	$result = $db->sql_query($sql);
 	$mail_id = $db->sql_nextid();
 	$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' . $mail_session_id);
@@ -118,16 +117,16 @@ if (isset($_POST['message']) || isset($_POST['subject']))
 	message_die(GENERAL_MESSAGE, $message);
 }
 
-if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
+$mail_id = request_get_var('mail_id', 0);
+$mail_session_id = request_get_var('mail_session_id', '');
+if (!empty($mail_id) && !empty($mail_session_id))
 {
 	@ignore_user_abort(true);
-	$mail_id = intval($_GET['mail_id']);
-	$mail_session_id = stripslashes(trim($_GET['mail_session_id']));
 	// Let's see if that session exists
 	$sql = "SELECT *
 			FROM " . MEGAMAIL_TABLE . "
 			WHERE mail_id = '" . $mail_id . "'
-				AND mailsession_id LIKE '" . $mail_session_id . "'";
+				AND mailsession_id LIKE '" . $db->sql_escape($mail_session_id) . "'";
 	$result = $db->sql_query($sql);
 	$mail_data = $db->sql_fetchrow($result);
 
@@ -137,8 +136,8 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	}
 	//Ok, the session exists
 
-	$subject = stripslashes($mail_data['email_subject']);
-	$message = stripslashes($mail_data['email_body']);
+	$subject = $mail_data['email_subject'];
+	$message = $mail_data['email_body'];
 	// Store the clean version of the message for PM
 	$pm_message = $message;
 	$group_id = $mail_data['group_id'];
@@ -223,7 +222,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 	// Create new mail session
 	$mail_session_id = md5(uniqid(''));
 	$sql = "UPDATE " . MEGAMAIL_TABLE . "
-			SET mailsession_id = '" . $mail_session_id . "', batch_start= " . ($mail_data['batch_start'] + $mail_data['batch_size']) . $is_done . "
+			SET mailsession_id = '" . $db->sql_escape($mail_session_id) . "', batch_start= " . ($mail_data['batch_start'] + $mail_data['batch_size']) . $is_done . "
 			WHERE mail_id = '" . $mail_id . "'";
 	$result = $db->sql_query($sql);
 
@@ -325,7 +324,7 @@ if (isset($_GET['mail_id']) && isset($_GET['mail_session_id']))
 		if ($mass_pm)
 		{
 			$server_url = create_server_url();
-			$pm_inbox_link = $server_url . 'privmsg.' . PHP_EXT . '?folder=inbox';
+			$pm_inbox_link = $server_url . CMS_PAGE_PRIVMSG . '?folder=inbox';
 			$pm_inbox_link = (!$config['html_email']) ? $pm_inbox_link : ('<a href="' . $pm_inbox_link . '">' . $pm_inbox_link . '</a>');
 			$message = str_replace(array('{SITENAME}', '{U_INBOX}'), array($config['sitename'], $pm_inbox_link), $lang['PM_NOTIFICATION']);
 			$message = (!$config['html_email']) ? str_replace('<br />', "\r\n", $message) : $message;
@@ -408,7 +407,7 @@ if ($mail_data = $db->sql_fetchrow($result))
 			"",
 		);
 
-		$plain_message = stripslashes($mail_data['email_body']);
+		$plain_message = $mail_data['email_body'];
 		$plain_message = strtr($plain_message, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		$plain_message = str_replace($look_up_array, $replacement_array, $plain_message);
 		$delete_url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_data['mail_id'] . '&amp;mode=delete');
@@ -417,7 +416,7 @@ if ($mail_data = $db->sql_fetchrow($result))
 			'ROW' => ($row_class % 2) ? 'row2' : 'row1',
 			'ID' => $mail_data['mail_id'],
 			'GROUP' => ($mail_data['group_id'] != -1) ? $mail_data['group_name'] : $lang['All_users'],
-			'SUBJECT' => stripslashes($mail_data['email_subject']),
+			'SUBJECT' => $mail_data['email_subject'],
 			'MASS_PM' => $mail_data['mass_pm'] ? $lang['Yes'] : $lang['No'],
 			'EMAIL_FORMAT' => (($mail_data['email_format'] == 2) ? $lang['FULL_HTML'] : (($mail_data['email_format'] == 1) ? $lang['BBCode'] : $lang['HTML'])),
 			'MESSAGE_BODY' => $plain_message,

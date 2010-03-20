@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
@@ -59,12 +58,12 @@ include(IP_ROOT_PATH . 'includes/sql_parse.' . PHP_EXT);
 define('VERBOSE', 0);
 
 // Increase maximum execution time, but don't complain about it if it isn't allowed.
-@set_time_limit(1200);
+@set_time_limit(0);
 
 // Begin program proper
-if(isset($_GET['perform']) || isset($_POST['perform']))
+$perform = request_var('perform', '');
+if(!empty($perform))
 {
-	$perform = (isset($_POST['perform'])) ? $_POST['perform'] : $_GET['perform'];
 
 	switch($perform)
 	{
@@ -112,21 +111,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 						$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 						$dbsize = $opt['Data_length'] + $opt['Index_length'];
 						// Exact weight of a table of a database
-						if($dbsize >= 1048576)
-						{
-							//$dbsize = sprintf("%.2f Mb", ($dbsize / 1048576));
-							$dbsize = round(($dbsize / 1048576), 1) . ' Mb';
-						}
-						else if($dbsize >= 1024)
-						{
-							//$dbsize = sprintf("%.2f Kb", ($dbsize / 1024));
-							$dbsize = round(($dbsize / 1024), 1) . ' Kb';
-						}
-						else
-						{
-							//$dbsize = sprintf("%.2f Bytes", $dbsize);
-							$dbsize = round($dbsize,1) . ' Bytes';
-						}
+						$dbsize = format_file_size($dbsize);
 						$opt['Data_free'] != 0 ? $data_free = 'No OK' : $data_free = 'OK';
 						$opt['Data_free'] != 0 ? $check = ' checked="checked"' : $check = '';
 
@@ -157,7 +142,7 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 					$i++;
 				}
 				$total_size = round(($total_size / 1048576), 1) . ' Mb';
-				$total_stat == 'No OK' ? $total_stat = 'No OK' : $total_stat = 'OK';
+				$total_stat = ($total_stat == 'No OK') ? 'No OK' : 'OK';
 
 				$template->set_filenames(array('body' => ADM_TPL . 'db_utils_optimize_body.tpl'));
 				$s_hidden_fields = '<input type="hidden" name="perform" value="' . $perform . '" />';
@@ -353,39 +338,6 @@ if(isset($_GET['perform']) || isset($_POST['perform']))
 	//
 	// End Optimize Database 1.2.2 by Sko22 < sko22@quellicheilpc.it >
 		case 'backup':
-			$error = false;
-			switch(SQL_LAYER)
-			{
-				case 'oracle':
-					$error = true;
-					break;
-				case 'db2':
-					$error = true;
-					break;
-				case 'msaccess':
-					$error = true;
-					break;
-				case 'mssql':
-				case 'mssql-odbc':
-					$error = true;
-					break;
-			}
-
-			if ($error)
-			{
-				include('./page_header_admin.' . PHP_EXT);
-
-				$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
-
-				$template->assign_vars(array(
-					'MESSAGE_TITLE' => $lang['Information'],
-					'MESSAGE_TEXT' => $lang['Backups_not_supported']
-					)
-				);
-
-				$template->pparse('body');
-				include('./page_footer_admin.' . PHP_EXT);
-			}
 
 			$phpbb_only = (!empty($_POST['phpbb_only'])) ? $_POST['phpbb_only'] : ((!empty($_GET['phpbb_only'])) ? $_GET['phpbb_only'] : 0);
 			$sql = 'SHOW TABLES';

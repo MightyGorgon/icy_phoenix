@@ -29,7 +29,9 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-require(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_link.' . PHP_EXT);
+setup_extra_lang(array('lang_main_link'));
+include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
+$links_config = get_links_config(true);
 
 $cms_page['page_id'] = 'links';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
@@ -44,29 +46,17 @@ if(!$userdata['session_logged_in'])
 	exit;
 }
 
-$link_title = (!empty($_POST['link_title'])) ? trim($_POST['link_title']) : '';
-$link_desc = (!empty($_POST['link_desc'])) ? trim($_POST['link_desc']) : '';
-$link_category = (!empty($_POST['link_category'])) ? (is_numeric($_POST['link_category']) ? $_POST['link_category'] : 0) : 0;
-$link_url = (!empty($_POST['link_url'])) ? trim($_POST['link_url']) : '';
-$link_logo_src = (!empty($_POST['link_logo_src'])) ? trim($_POST['link_logo_src']) : '';
-if ($link_logo_src == 'http://')  $link_logo_src = '';
+$link_title = request_var('link_title', '', true);
+$link_desc = request_var('link_desc', '', true);
+$link_url = request_var('link_url', '', true);
+$link_logo_src = request_var('link_logo_src', '', true);
+$link_logo_src = ($link_logo_src == 'http://') ? '' : $link_logo_src;
+$link_category = request_var('link_category', 0);
 $link_joined = time();
 $user_id = $userdata['user_id'];
 
-// Get Link Config
-$sql = "SELECT * FROM ". LINK_CONFIG_TABLE;
-$result = $db->sql_query($sql, 0, 'links_config_');
-while($row = $db->sql_fetchrow($result))
-{
-	$link_config_name = $row['config_name'];
-	$link_config_value = $row['config_value'];
-	$link_config[$link_config_name] = $link_config_value;
-}
-
-//
 // Check Link config
-//
-if($link_config['lock_submit_site'] && $userdata['user_level'] != ADMIN)
+if($links_config['lock_submit_site'] && $userdata['user_level'] != ADMIN)
 {
 	$message = $lang['Link_lock_submit_site'];
 	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid('links.' . PHP_EXT) . '">', '</a>');
@@ -77,7 +67,7 @@ if($link_config['lock_submit_site'] && $userdata['user_level'] != ADMIN)
 	message_die(GENERAL_MESSAGE, $message);
 }
 
-if(!$link_config['allow_no_logo'] && !$link_logo_src)
+if(!$links_config['allow_no_logo'] && !$link_logo_src)
 {
 	$message = $lang['Link_incomplete'];
 
@@ -91,7 +81,7 @@ if(!$link_config['allow_no_logo'] && !$link_logo_src)
 }
 
 // Add new link
-if($link_title && $link_desc && $link_category && $link_url)
+if(!empty($link_title) && !empty($link_desc) && !empty($link_category) && !empty($link_url))
 {
 	// Check regiter interval
 	$sql = "SELECT MAX(link_joined) AS last_link_joined FROM " . LINKS_TABLE . "
@@ -110,7 +100,7 @@ if($link_title && $link_desc && $link_category && $link_url)
 	{
 		$is_admin = ($userdata['user_level'] == ADMIN) ? true : 0;
 		$sql = "INSERT INTO " . LINKS_TABLE . " (link_title, link_desc, link_category, link_url, link_logo_src, link_joined,link_active , user_id , user_ip)
-			VALUES ('$link_title', '$link_desc', '$link_category', '$link_url', '$link_logo_src', '$link_joined', '$is_admin', '$user_id ', '$user_ip')";
+			VALUES ('" . $db->sql_escape($link_title) . "', '" . $db->sql_escape($link_desc) . "', '$link_category', '" . $db->sql_escape($link_url) . "', '" . $db->sql_escape($link_logo_src) . "', '$link_joined', '$is_admin', '$user_id ', '$user_ip')";
 		$db->sql_query($sql);
 
 		if ($userdata['user_level'] != ADMIN)
@@ -120,7 +110,7 @@ if($link_title && $link_desc && $link_category && $link_url)
 				WHERE user_level = " . ADMIN;
 			$admin_result = $db->sql_query($sql);
 
-			if ($link_config['email_notify'])
+			if ($links_config['email_notify'])
 			{
 				include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 				while($to_userdata = $db->sql_fetchrow($admin_result))
@@ -148,7 +138,7 @@ if($link_title && $link_desc && $link_category && $link_url)
 				}
 			}
 
-			if (empty($config['privmsg_disable']) && $link_config['pm_notify'])
+			if (empty($config['privmsg_disable']) && $links_config['pm_notify'])
 			{
 				include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
 

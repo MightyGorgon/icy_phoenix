@@ -93,7 +93,7 @@ if(!function_exists('cms_block_random_user'))
 			$profile = '<a href="' . $profile_url . '">' . $lang['Profile'] . '</a>';
 			$profile_link = '<a href="' . $profile_url . '">' . $lang['SEE_MORE_DETAILS'] . '</a>';
 
-			$pm_url = append_sid('privmsg.' . PHP_EXT . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id);
+			$pm_url = append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $user_id);
 			$pm_img = '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 			$pm = '<a href="' . $pm_url . '">' . $lang['PM'] . '</a>';
 
@@ -159,7 +159,7 @@ if(!function_exists('cms_block_random_user'))
 			{
 				if ($row['user_session_time'] >= (time() - $config['online_time']))
 				{
-					$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
+					$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
 				}
 				else
 				{
@@ -168,7 +168,7 @@ if(!function_exists('cms_block_random_user'))
 			}
 			else
 			{
-				$online_status_img = '<a href="' . append_sid('viewonline.' . PHP_EXT) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
+				$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
 			}
 			// ONLINE / OFFLINE - END
 

@@ -89,7 +89,7 @@ else
 	else
 	{
 		$hidden_fields_array = array('save' => 1);
-		$s_hidden_fields = build_hidden_fields($hidden_fields_array, true, false);
+		$s_hidden_fields = build_hidden_fields($hidden_fields_array, true, STRIP);
 
 		foreach ($plugins_list as $plugin)
 		{

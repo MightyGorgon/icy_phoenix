@@ -14,7 +14,7 @@ function checkCategoryID()
 			case '{ALBUM_ROOT_CATEGORY}':
 			case '{ALBUM_PUBLIC_GALLERY}':
 			case '{ALBUM_USERS_GALLERY}':
-			case '{ALBUM_JUMPBOX_SEPERATOR}':
+			case '{ALBUM_JUMPBOX_SEPARATOR}':
 				alert("{L_NO_VALID_CAT_SELECTED}");
 				return false;
 			default:

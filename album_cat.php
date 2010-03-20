@@ -31,15 +31,8 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 // ------------------------------------
 // Check the request
 // ------------------------------------
-if(isset($_POST['cat_id']))
-{
-	$cat_id = intval($_POST['cat_id']);
-}
-elseif(isset($_GET['cat_id']))
-{
-	$cat_id = intval($_GET['cat_id']);
-}
-else
+$cat_id = request_var('cat_id', 0);
+if ($cat_id <= 0)
 {
 	message_die(GENERAL_ERROR, 'No categories specified');
 }
@@ -64,29 +57,17 @@ while ($row = $db->sql_fetchrow($result))
 $db->sql_freeresult($result);
 
 /*
-if(isset($_POST['user_id']))
-{
-	$album_user_id = intval($_POST['user_id']);
-}
-elseif(isset($_GET['user_id']))
-{
-	$album_user_id = intval($_GET['user_id']);
-}
-else
+$album_user_id = request_var('user_id', 0);
+if(empty($album_user_id))
 {
 	// if no user_id was supplied then we aren't going to show a personal gallery category
 	$album_user_id = ALBUM_PUBLIC_GALLERY;
 }
 */
 
-if (isset ($_POST['mode']))
-{
-	$album_view_mode = strtolower($_POST['mode']);
-}
-elseif (isset ($_GET['mode']))
-{
-	$album_view_mode = strtolower($_GET['mode']);
-}
+$mode = request_var('mode', '');
+$album_view_mode = strtolower($mode);
+
 // make sure that it only contains some valid value
 switch ($album_view_mode)
 {
@@ -232,19 +213,14 @@ $cat_desc = album_get_object_lang($cat_id, 'desc');
 // Build the thumbnail page
 // ------------------------------------
 
-$start = isset($_GET['start']) ? intval($_GET['start']) : (isset($_POST['start']) ? intval($_POST['start']) : 0);
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$sort_methods_array = array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment');
-if(isset($_GET['sort_method']) || isset($_POST['sort_method']))
-{
-	$sort_method = isset($_GET['sort_method']) ? $_GET['sort_method'] : $_POST['sort_method'];
-	$sort_method = in_array($sort_method, $sort_methods_array) ? $sort_method : $album_config['sort_method'];
-}
-else
-{
-	$sort_method = $album_config['sort_method'];
-}
+$sort_method = request_var('sort_method', $album_config['sort_method']);
+$sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment'));
+
+$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 switch ($sort_method)
 {
@@ -273,43 +249,9 @@ switch ($sort_method)
 		$sort_method_sql = 'p.pic_id';
 }
 
-if(isset($_GET['sort_order']))
-{
-	switch ($_GET['sort_order'])
-	{
-		case 'ASC':
-			$sort_order = 'ASC';
-			break;
-		case 'DESC':
-			$sort_order = 'DESC';
-			break;
-		default:
-			$sort_order = $album_config['sort_order'];
-	}
-}
-elseif(isset($_POST['sort_order']))
-{
-	switch ($_POST['sort_order'])
-	{
-		case 'ASC':
-			$sort_order = 'ASC';
-			break;
-		case 'DESC':
-			$sort_order = 'DESC';
-			break;
-		default:
-			$sort_order = $album_config['sort_order'];
-	}
-}
-else
-{
-	$sort_order = $album_config['sort_order'];
-}
-
 // ------------------------------------
 // additional sorting options
 // ------------------------------------
-
 $sort_rating_option = '';
 $sort_username_option = '';
 $sort_comments_option = '';

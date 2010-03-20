@@ -245,8 +245,8 @@ if(!function_exists('cms_block_album'))
 									'U_PIC_DL' => $pic_dl_link,
 
 									'THUMBNAIL' => $thumbnail_file,
-									'DESC' => htmlspecialchars($recentrow[$image_counter]['pic_desc']),
-									'TITLE' => htmlspecialchars($recentrow[$image_counter]['pic_title']),
+									'DESC' => $recentrow[$image_counter]['pic_desc'],
+									'TITLE' => $recentrow[$image_counter]['pic_title'],
 									'POSTER' => $recent_poster,
 									'TIME' => create_date_ip($config['default_dateformat'], $recentrow[$image_counter]['pic_time'], $config['board_timezone']),
 									'VIEW' => $recentrow[$image_counter]['pic_view_count'],

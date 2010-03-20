@@ -28,17 +28,10 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-$start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
+$start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if ( isset($_GET['show']) || isset($_POST['show']) )
-{
-	$show = ( isset($_POST['show']) ) ? intval($_POST['show']) : intval($_GET['show']);
-}
-else
-{
-	$show = $config['topics_per_page'];
-}
+$show = request_var('show', $config['topics_per_page']);
 
 // Generate page
 $template->set_filenames(array('body' => ADM_TPL . 'admin_users_email_list_body.tpl'));

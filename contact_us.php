@@ -30,10 +30,10 @@ $cms_page['page_id'] = 'contact_us';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
 $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
 
-if (!empty($_GET['account_delete']) || !empty($_POST['account_delete']))
+$account_delete_id = request_var('account_delete', 0);
+$account_delete_id = ($account_delete_id <= 2) ? false : $account_delete_id;
+if (!empty($account_delete_id))
 {
-	$account_delete_id = (isset($_GET['account_delete']) ? intval($_GET['account_delete']) : (isset($_POST['account_delete']) ? intval($_POST['account_delete']) : false));
-	$account_delete_id = ($account_delete_id < 0) ? false : $account_delete_id;
 	if (!$userdata['session_logged_in'] || ($account_delete_id == false) || ($account_delete_id != $userdata['user_id']))
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
@@ -47,13 +47,6 @@ else
 }
 
 // Set default email variables
-$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-$script_name = ($script_name != '') ? $script_name . '/contact_us.' . PHP_EXT : 'contact_us.' . PHP_EXT;
-$server_name = trim($config['server_name']);
-$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-$server_url = $server_protocol . $server_name . $server_port . $script_name;
-
 $server_url = create_server_url();
 $contact_us_server_url = $server_url . 'contact_us.' . PHP_EXT;
 
@@ -86,9 +79,9 @@ if (!$account_delete)
 // TICKETS - END
 
 // CrackerTracker v5.x
-if (($userdata['ct_last_mail'] >= time()) && ($ctracker_config->settings['massmail_protection'] == 1))
+if (($userdata['ct_last_mail'] >= time()) && ($config['ctracker_massmail_protection'] == 1))
 {
-	message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_sendmail_info'], $ctracker_config->settings['massmail_time']));
+	message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_sendmail_info'], $config['ctracker_massmail_time']));
 }
 // CrackerTracker v5.x
 
@@ -97,13 +90,9 @@ if (time() - $userdata['user_emailtime'] < $config['flood_interval'])
 	message_die(GENERAL_MESSAGE, $lang['Flood_email_limit']);
 }
 
-$sender = '';
-$subject = '';
-$message = '';
-
-$sender = stripslashes($_POST['sender']);
-$subject = stripslashes($_POST['subject']);
-$message = stripslashes($_POST['message']);
+$sender = request_var('sender', '', true);
+$subject = request_var('subject', '', true);
+$message = request_var('message', '', true);
 
 if (isset($_POST['submit']))
 {
@@ -214,7 +203,7 @@ if (isset($_POST['submit']))
 		$db->sql_query($sql);
 		*/
 		// CrackerTracker v5.x
-		$new_mailtime = time() + $ctracker_config->settings['massmail_time'] * 60;
+		$new_mailtime = time() + $config['ctracker_massmail_time'] * 60;
 		$sql = 'UPDATE ' . USERS_TABLE . '
 			SET user_emailtime = ' . time() . ', ct_last_mail = ' . $new_mailtime . ' WHERE user_id = ' . $userdata['user_id'];
 		// CrackerTracker v5.x

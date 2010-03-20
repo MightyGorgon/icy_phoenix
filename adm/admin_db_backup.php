@@ -21,7 +21,6 @@ if (function_exists('check_acp_module_access'))
 }
 // Mighty Gorgon - ACP Privacy - END
 
-// CTracker_Ignore: File Checked By Human
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);

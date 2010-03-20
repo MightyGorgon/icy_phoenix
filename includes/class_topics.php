@@ -258,7 +258,7 @@ class class_topics
 
 						if(isset($_COOKIE[$config['cookie_name'] . '_f_all']))
 						{
-							if($_COOKIE[$config['cookie_name'] . '_f_all'] >= $topic_post_time)
+							if(intval($_COOKIE[$config['cookie_name'] . '_f_all']) >= $topic_post_time)
 							{
 								$unread_topics = false;
 							}

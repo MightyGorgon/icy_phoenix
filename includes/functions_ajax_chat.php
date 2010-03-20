@@ -14,7 +14,6 @@
 * Javier B (kinfule@lycos.es)
 */
 
-// CTracker_Ignore: File checked by human
 /*
 	From php.net comments
 	by ivanmaz(remove) at mech dot math dot msu dot su

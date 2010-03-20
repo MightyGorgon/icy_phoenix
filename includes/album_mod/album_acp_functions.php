@@ -123,7 +123,7 @@ function get_config_table($selection)
 
 	for ($i = 0; $i < sizeof($album_config_tabs); $i++)
 	{
-		if ( 0 == strcasecmp($album_config_tabs[$i]['selection'],$selection) )
+		if (0 == strcasecmp($album_config_tabs[$i]['selection'],$selection))
 		{
 			return $album_config_tabs[$i]['config_table_name'];
 		}
@@ -137,9 +137,9 @@ function is_valid_config_tab($config_array)
 	// these two array holds the minimum required fields for an config tab array
 	// if there are other that's accepted just don't remove these
 	// NOTE : the order of the keys are not important
-	$valid_config_keys = array(	0 => 'order',1 => 'selection',2 => 'title',3 => 'detail',4 => 'sub_config',5 => 'config_table_name',6 => 'generate_function',7 => 'template_file');
+	$valid_config_keys = array(0 => 'order', 1 => 'selection', 2 => 'title', 3 => 'detail', 4 => 'sub_config', 5 => 'config_table_name', 6 => 'generate_function', 7 => 'template_file');
 
-	$valid_sub_config_keys = array(	0 => 'order',1 => 'selection',2=> 'title',3 => 'detail',4 => 'template_file');
+	$valid_sub_config_keys = array(0 => 'order', 1 => 'selection', 2=> 'title', 3 => 'detail', 4 => 'template_file');
 
 	if (sizeof($config_array) == 0)
 	{

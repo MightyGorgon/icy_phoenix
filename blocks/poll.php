@@ -95,14 +95,8 @@ if(!function_exists('cms_block_poll'))
 
 				$user_voted = ($db->sql_numrows($result)) ? true : 0;
 
-				if(isset($_GET['vote']) || isset($_POST['vote']))
-				{
-					$view_result = (((isset($_GET['vote'])) ? $_GET['vote'] : $_POST['vote']) == 'viewresult') ? true : 0;
-				}
-				else
-				{
-					$view_result = 0;
-				}
+				$view_result = request_var('vote', '');
+				$view_result = ($view_result == 'viewresult') ? 1 : 0;
 
 				$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? true : 0) : 0;
 

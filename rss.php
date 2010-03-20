@@ -135,8 +135,7 @@ $sql_forum_where = !empty($forum_id) ? (' AND f.forum_id = ' . $forum_id) : ' ';
 $sql_topic_view = !empty($topic_id) ? (' AND t.topic_id = ' . $topic_id) : '';
 $sql_topics_only_where = ($display == 'topics') ? ' AND p.post_id = t.topic_first_post_id' : '';
 
-$encoding_charset = (strpos($useragent, 'MSIE') ? $lang['ENCODING'] : $lang['ENCODING_ALT']);
-$encoding_charset = !empty($encoding_charset) ? $encoding_charset : 'UTF-8';
+$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 
 // BEGIN Session management
 // Check user
@@ -177,7 +176,6 @@ if(($user_id == ANONYMOUS) && $use_cached)
 else
 {
 	// END Cache Mod
-
 
 	// BEGIN Create main board information (some code borrowed from functions_post.php)
 	// Build URL components
@@ -480,8 +478,8 @@ else
 			{
 				// Update the topic view counter
 				$sql = "UPDATE " . TOPICS_TABLE . "
-				SET topic_views = topic_views + 1
-				WHERE topic_id IN ($updlist)";
+					SET topic_views = topic_views + 1
+					WHERE topic_id IN ($updlist)";
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
 				$db->sql_return_on_error(false);
@@ -494,8 +492,8 @@ else
 		if(LV_MOD_INSTALLED && ($user_id != ANONYMOUS))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
-			SET user_totalpages = user_totalpages + $PostCount
-			WHERE user_id = $user_id";
+				SET user_totalpages = user_totalpages + $PostCount
+				WHERE user_id = $user_id";
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);

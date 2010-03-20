@@ -8,7 +8,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
@@ -23,19 +22,14 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_rate.' . PHP_EXT);
+setup_extra_lang(array('lang_rate'));
 include_once(IP_ROOT_PATH . 'includes/functions_rate.' . PHP_EXT);
 
-$params = array('rate_mode', 'forum_top', 'topic_id', 'rating');
+$rate_mode = request_var('rate_mode', '');
+$forum_top = request_var('forum_top', '');
+$topic_id = request_var('topic_id', 0);
+$rating = request_post_var('rating', 0);
 
-foreach($params as $var)
-{
-	$$var = '';
-	if( isset($_POST[$var]) || isset($_GET[$var]) )
-	{
-		$$var = ( isset($_POST[$var]) ) ? $_POST[$var] : $_GET[$var];
-	}
-}
 /*******************************************************************************************
 /** Page Titles if Specific!
 /******************************************************************************************/

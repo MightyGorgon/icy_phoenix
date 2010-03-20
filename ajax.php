@@ -29,14 +29,8 @@ init_userprefs($userdata);
 // End session management
 
 // Get SID and check it
-if (isset($_POST['sid']) || isset($_GET['sid']))
-{
-	$sid = (isset($_POST['sid'])) ? $_POST['sid'] : $_GET['sid'];
-}
-else
-{
-	$sid = '';
-}
+$sid = request_var('sid', '');
+
 if ($sid != $userdata['session_id'])
 {
 	$result_ar = array(
@@ -47,14 +41,10 @@ if ($sid != $userdata['session_id'])
 }
 
 // Get mode
-if (isset($_POST['mode']) || isset($_GET['mode']))
-{
-	$mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-}
-else
-{
-	$mode = '';
-}
+$mode = request_var('mode', '');
+$search = request_var('search', 0);
+$username = request_var('username', '', true);
+$email = request_var('email', '', true);
 
 // Send AJAX headers - this is to prevent browsers from caching possible error pages
 AJAX_headers();
@@ -63,22 +53,13 @@ if ($mode == 'checkusername_post')
 {
 	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
-	if (isset($_GET['username']) || isset($_POST['username']))
-	{
-		$username = (isset($_POST['username'])) ? utf8_rawurldecode($_POST['username']) : utf8_rawurldecode($_GET['username']);
-	}
-	else
-	{
-		$username = '';
-	}
-
 	$result_code = AJAX_OP_COMPLETED;
 	$error_msg = '';
 	if (!empty($username))
 	{
 		$username = phpbb_clean_username($username);
 
-		if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && $username != $userdata['username']))
+		if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && ($username != $userdata['username'])))
 		{
 			$result = validate_username($username);
 			if ($result['error'])
@@ -101,24 +82,6 @@ if ($mode == 'checkusername_post')
 elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 {
 	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-
-	// Get username
-	if (isset($_GET['username']) || isset($_POST['username']))
-	{
-		$username = (isset($_POST['username'])) ? utf8_rawurldecode($_POST['username']) : utf8_rawurldecode($_GET['username']);
-	}
-	else
-	{
-		$username = '';
-	}
-	if (isset($_GET['search']) || isset($_POST['search']))
-	{
-		$search = (isset($_POST['search'])) ? intval($_POST['search']) : intval($_GET['search']);
-	}
-	else
-	{
-		$search = 0;
-	}
 
 	if (empty($username))
 	{
@@ -153,7 +116,7 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 	{
 		$sql = "SELECT user_id
 						FROM " . USERS_TABLE . "
-						WHERE username = '" . $username . "'
+						WHERE username = '" . $db->sql_escape($username) . "'
 						AND user_id <> " . ANONYMOUS;
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
@@ -184,7 +147,7 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 		}
 		$sql = "SELECT username
 						FROM " . USERS_TABLE . "
-						WHERE username LIKE '" . $username . "'
+						WHERE username LIKE '" . $db->sql_escape($username) . "'
 						AND user_id <> " . ANONYMOUS . "
 						ORDER BY username";
 		$db->sql_return_on_error(true);
@@ -248,15 +211,6 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 elseif ($mode == 'checkemail')
 {
 	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-
-	if (isset($_GET['email']) || isset($_POST['email']))
-	{
-		$email = (isset($_POST['email'])) ? stripslashes(utf8_rawurldecode($_POST['email'])) : stripslashes(utf8_rawurldecode($_GET['email']));
-	}
-	else
-	{
-		$email = '';
-	}
 
 	$result_code = AJAX_OP_COMPLETED;
 	$error_msg = '';

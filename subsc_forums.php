@@ -19,7 +19,7 @@ init_userprefs($userdata);
 // End session management
 
 //Gather required Information
-$subs_forums_list_sql='SELECT forum_id FROM ' . FORUMS_WATCH_TABLE . ' where user_id = ' . $userdata['user_id'] . ' and notify_status = 0';
+$subs_forums_list_sql = 'SELECT forum_id FROM ' . FORUMS_WATCH_TABLE . ' WHERE user_id = ' . $userdata['user_id'] . ' AND notify_status = 0';
 $subs_forums_list = $db->sql_query($subs_forums_list_sql);
 
 $tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
@@ -127,7 +127,7 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 
 						if (isset($_COOKIE[$config['cookie_name'] . '_f_all']))
 						{
-							if ($_COOKIE[$config['cookie_name'] . '_f_all'] > $forum_last_post_time)
+							if (intval($_COOKIE[$config['cookie_name'] . '_f_all']) > $forum_last_post_time)
 							{
 								$unread_topics = false;
 							}

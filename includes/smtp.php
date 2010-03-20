@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('SMTP_INCLUDED', 1);
 
 //
@@ -187,12 +186,11 @@ function smtpmail($mail_to, $subject, $message, $headers = '')
 	// This is the last response code we look for until the end of the message.
 	server_parse($socket, "354", __LINE__);
 
+	// Send the Subject Line...
+	if (!eregi ('Subject:',$subject)) fwrite($socket, "Subject: $subject\r\n");
 
-// Send the Subject Line...
-if (!eregi ('Subject:',$subject)) fwrite($socket, "Subject: $subject\r\n");
-
-// Now the To Header.
-if (!eregi ('To:',$headers)) fwrite($socket, "To: $mail_to\r\n");
+	// Now the To Header.
+	if (!eregi ('To:',$headers)) fwrite($socket, "To: $mail_to\r\n");
 
 
 	// Now any custom headers....

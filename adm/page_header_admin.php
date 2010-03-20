@@ -36,7 +36,7 @@ if (defined('ONLY_FOUNDER_ACP') && (ONLY_FOUNDER_ACP == true))
 
 // gzip_compression
 $do_gzip_compress = false;
-if ($config['gzip_compress'])
+if ($config['gzip_compress_runtime'])
 {
 	$phpver = phpversion();
 
@@ -129,7 +129,7 @@ $template->assign_vars(array(
 	'S_CONTENT_DIR_LEFT' => $lang['LEFT'],
 	'S_CONTENT_DIR_RIGHT' => $lang['RIGHT'],
 
-	'SITENAME' => htmlspecialchars($config['sitename']),
+	'SITENAME' => $config['sitename'],
 	'PAGE_TITLE' => $meta_content['page_title'],
 
 	// AJAX Features - BEGIN
@@ -138,7 +138,7 @@ $template->assign_vars(array(
 	// AJAX Features - END
 
 	'L_ADMIN' => $lang['Admin'],
-	'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+	'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 	'L_FAQ' => $lang['FAQ'],
 
 	'U_INDEX' => append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM),
@@ -150,9 +150,7 @@ $template->assign_vars(array(
 	'U_ACP_EMAIL' => append_sid('admin_megamail.' . PHP_EXT),
 	'U_ACP_ALBUM' => append_sid('admin_album_config_extended.' . PHP_EXT),
 	'U_ACP_DOWNLOADS' => append_sid('admin_pa_category.' . PHP_EXT),
-	'U_ACP_SERVER_SETTINGS' => append_sid('admin_board_server.' . PHP_EXT),
-	'U_ACP_SETTINGS' => append_sid('admin_board.' . PHP_EXT),
-	'U_ACP_IP_SETTINGS' => append_sid('admin_board_extend.' . PHP_EXT),
+	'U_ACP_SETTINGS' => append_sid('admin_config_settings.' . PHP_EXT),
 	'U_ACP_CACHE' => append_sid('admin_board_clearcache.' . PHP_EXT),
 
 	'L_ACP_FORUMS' => $lang['1200_Forums'] . ' ' . $lang['100_Manage'],
@@ -161,9 +159,7 @@ $template->assign_vars(array(
 	'L_ACP_EMAIL' => $lang['130_Mass_Email'],
 	'L_ACP_ALBUM' => $lang['2200_Photo_Album'],
 	'L_ACP_DOWNLOADS' => $lang['2000_Downloads'],
-	'L_ACP_SERVER_SETTINGS' => $lang['100_Server_Configuration'],
-	'L_ACP_SETTINGS' => $lang['110_Various_Configuration'],
-	'L_ACP_IP_SETTINGS' => $lang['120_MG_Configuration'],
+	'L_ACP_SETTINGS' => $lang['100_Main_Settings'],
 	'L_ACP_CACHE' => $lang['127_Clear_Cache'],
 
 	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),

@@ -37,7 +37,7 @@ while ($row = $db->sql_fetchrow($result))
 
 	$post_date = create_date($config['default_dateformat'], $row['post_time'], $config['board_timezone']);
 
-	$post_subject = ($row['post_subject'] != '') ? $row['post_subject'] : '';
+	$post_subject = !empty($row['post_subject']) ? htmlspecialchars_decode($row['post_subject'], ENT_COMPAT) : '';
 
 	$message = $row['post_text'];
 	$message = strip_tags($message);
@@ -64,7 +64,7 @@ while ($row = $db->sql_fetchrow($result))
 	{
 		$search = array("/\[hide\](.*?)\[\/hide\]/");
 		$replace = array($lang['xs_bbc_hide_message']. ':' . $break . $lang['xs_bbc_hide_message_explain'] . $break);
-		$message =  preg_replace($search, $replace, $message);
+		$message = preg_replace($search, $replace, $message);
 	}
 	$message = unprepare_message($message);
 	$search = array('/&#40;/', '/&#41;/', '/&#58;/', '/&#91;/', '/&#93;/', '/&#123;/', '/&#125;/');
@@ -78,7 +78,7 @@ while ($row = $db->sql_fetchrow($result))
 }
 $db->sql_freeresult($result);
 
-$disp_folder = ($download == -1) ? 'Topic_' . $topic_id : 'Post_' . $download;
+$disp_folder = ($download == -1) ? 'topic_' . $topic_id : 'post_' . $download;
 $this_download_src = create_server_url() . (CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . (($download > 0) ? ('&' . POST_POST_URL . '=' . $download . '#p' . $download) : ''));
 
 $download_file = $this_download_src . $break . $download_file;
@@ -89,7 +89,7 @@ if (!$is_auth_read['auth_read'])
 	$disp_folder = 'Download';
 }
 
-$filename = $config['sitename'] . '_' . (preg_replace('/[^A-Za-z0-9]+/', '_', $post_subject)) . '_' . $disp_folder . '_' . gmdate('Ymd') . '.txt';
+$filename = ip_clean_string($config['sitename'], $lang['ENCODING']) . '_' . ip_clean_string($post_subject, $lang['ENCODING']) . '_' . $disp_folder . '_' . gmdate('Ymd') . '.txt';
 header('Content-Type: text/x-delimtext; name="' . $filename . '"');
 header('Content-Disposition: attachment;filename="' . $filename . '"');
 header('Content-Transfer-Encoding: plain/text');

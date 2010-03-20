@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 /**
 * All Attachment Functions needed to determine Special Files/Dimensions
 */

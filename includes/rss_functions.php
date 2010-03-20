@@ -15,28 +15,60 @@
 *
 */
 
-// CTracker_Ignore: File Checked By Human
 // Tell the Security Scanner that reachable code in this file is not a security issue
 
 function FormatLanguage($lng)
 {
 // You can add you ISO 639 coutry code here or remove unused codes
-	$iso639=array("albanian"=>"sq","arabic"=>"ar","azerbaijani"=>"az",
-		"bulgarian"=>"bg","chinese"=>"zh","chinese_simplified"=>"zh",
-		"chinese_traditional"=>"zh","croatian"=>"hr","czech"=>"cs",
-		"danish"=>"da","dutch"=>"nl","english"=>"en",
-		"esperanto"=>"eo","estonian"=>"et","finnish"=>"fi",
-		"french"=>"fr","japanese"=>"ja","galego"=>"gl",
-		"german"=>"de","greek"=>"el","hungarian"=>"hu",
-		"hebrew"=>"he","icelandic"=>"is","indonesian"=>"id",
-		"italian"=>"it","korean"=>"ko","kurdish"=>"ku",
-		"macedonian"=>"mk","moldavian"=>"mo","mongolian"=>"mn",
-		"norwegian"=>"no","polish"=>"pl","portuguese"=>"pt",
-		"romanian"=>"ro","russian"=>"ru","russian_tu"=>"ru",
-		"serbian"=>"sr","slovak"=>"sk","slovenian"=>"sl",
-		"spanish"=>"es","swedish"=>"sv","thai"=>"th",
-		"turkish"=>"tr","uigur"=>"ug","ukrainian"=>"uk",
-		"vietnamese"=>"vi","welsh"=>"cy");
+	$iso639 = array(
+		'albanian' => 'sq',
+		'arabic' => 'ar',
+		'azerbaijani' => 'az',
+		'bulgarian' => 'bg',
+		'chinese' => 'zh',
+		'chinese_simplified' => 'zh',
+		'chinese_traditional' => 'zh',
+		'croatian' => 'hr',
+		'czech' => 'cs',
+		'danish' => 'da',
+		'dutch' => 'nl',
+		'english' => 'en',
+		'esperanto' => 'eo',
+		'estonian' => 'et',
+		'finnish' => 'fi',
+		'french' => 'fr',
+		'japanese' => 'ja',
+		'galego' => 'gl',
+		'german' => 'de',
+		'greek' => 'el',
+		'hungarian' => 'hu',
+		'hebrew' => 'he',
+		'icelandic' => 'is',
+		'indonesian' => 'id',
+		'italian' => 'it',
+		'korean' => 'ko',
+		'kurdish' => 'ku',
+		'macedonian' => 'mk',
+		'moldavian' => 'mo',
+		'mongolian' => 'mn',
+		'norwegian' => 'no',
+		'polish' => 'pl',
+		'portuguese' => 'pt',
+		'romanian' => 'ro',
+		'russian' => 'ru',
+		'russian_tu' => 'ru',
+		'serbian' => 'sr',
+		'slovak' => 'sk',
+		'slovenian' => 'sl',
+		'spanish' => 'es',
+		'swedish' => 'sv',
+		'thai' => 'th',
+		'turkish' => 'tr',
+		'uigur' => 'ug',
+		'ukrainian' => 'uk',
+		'vietnamese' => 'vi',
+		'welsh' => 'cy'
+	);
 	$user_lang=(isset($iso639[$lng]))? $iso639[$lng]:'';
 	return(($user_lang!='')?"\n<language>$user_lang</language>":'');
 }
@@ -102,11 +134,15 @@ function rss_session_begin($user_id, $user_ip)
 {
 	global $db, $config;
 	$page_array = extract_current_page(IP_ROOT_PATH);
-	$forum_id = (isset($_GET[POST_FORUM_URL])) ? intval($_GET[POST_FORUM_URL]) : ((isset($_POST[POST_FORUM_URL])) ? intval($_POST[POST_FORUM_URL]) : '');
-	$topic_id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : ((isset($_POST[POST_TOPIC_URL])) ? intval($_POST[POST_TOPIC_URL]) : '');
+
+	$forum_id = request_var(POST_FORUM_URL, 0);
+	$forum_id = ($forum_id < 0) ? 0 : $forum_id;
+	$topic_id = request_var(POST_TOPIC_URL, 0);
+	$topic_id = ($topic_id < 0) ? 0 : $topic_id;
+
 	$page_array['page_full'] .= (!empty($forum_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_f_=' . (int) $forum_id . 'x' : '';
 	$page_array['page_full'] .= (!empty($topic_id)) ? ((strpos($page_array['page_full'], '?') !== false) ? '&' : '?') . '_t_=' . (int) $topic_id . 'x' : '';
-	if (function_exists(mysql_real_escape_string))
+	if (function_exists('mysql_real_escape_string'))
 	{
 		$page_id = @mysql_real_escape_string(substr($page_array['page_full'], 0, 254));
 	}
@@ -149,8 +185,8 @@ function rss_session_begin($user_id, $user_ip)
 			OR ban_userid = $user_id";
 	if ($user_id != ANONYMOUS)
 	{
-		$sql .= " OR ban_email LIKE '" . str_replace("\'", "''", $userdata['user_email']) . "'
-			OR ban_email LIKE '" . substr(str_replace("\'", "''", $userdata['user_email']), strpos(str_replace("\'", "''", $userdata['user_email']), "@")) . "'";
+		$sql .= " OR ban_email LIKE '" . $db->sql_escape($userdata['user_email']) . "'
+			OR ban_email LIKE '" . substr($db->sql_escape($userdata['user_email']), strpos($db->sql_escape($userdata['user_email']), "@")) . "'";
 	}
 
 	$db->sql_return_on_error(true);
@@ -174,7 +210,7 @@ function rss_session_begin($user_id, $user_ip)
 	$session_id = md5(uniqid(mt_rand(), true));
 	$sql = "INSERT INTO " . SESSIONS_TABLE . "
 		(session_id, session_user_id, session_start, session_time, session_ip, session_page, session_logged_in, session_admin)
-		VALUES ('$session_id', $user_id, $current_time, $current_time, '$user_ip', '$page_id', $login, 0)";
+		VALUES ('" . $db->sql_escape($session_id) . "', $user_id, $current_time, $current_time, '$user_ip', '$page_id', $login, 0)";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -242,7 +278,7 @@ function rss_session_end()
 	$session_id = $userdata['session_id'];
 	$user_id = $userdata['user_id'];
 	$sql = 'DELETE FROM ' . SESSIONS_TABLE . "
-		WHERE session_id = '$session_id'
+		WHERE session_id = '" . $db->sql_escape($session_id) . "'
 		AND session_user_id = $user_id";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -275,7 +311,7 @@ function rss_get_user()
 		{
 			$sql = "SELECT user_id, username, user_password, user_active, user_level
 			FROM " . USERS_TABLE . "
-			WHERE username = '" . str_replace("\\'", "''", $username) . "'";
+			WHERE username = '" . $db->sql_escape($username) . "'";
 		}
 		$result = $db->sql_query($sql);
 

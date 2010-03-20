@@ -71,9 +71,9 @@ $sql_up[5] = ' AND user_posts = \'0\' AND user_lastvisit < ' . (time() - (86400 
 $options = '<option value="1">&nbsp;' . $lang['1_Day'] . '</option>
 	<option value="7">&nbsp;' . $lang['7_Days'] . '</option>
 	<option value="14">&nbsp;' . $lang['2_Weeks'] . '</option>
-	<option value="21">&nbsp;'.sprintf($lang['X_Weeks'],3).'</option>
+	<option value="21">&nbsp;' . sprintf($lang['X_Weeks'], 3) . '</option>
 	<option value="30">&nbsp;' . $lang['1_Month'] . '</option>
-	<option value="60">&nbsp;'.sprintf($lang['X_Months'],2).'</option>
+	<option value="60">&nbsp;' . sprintf($lang['X_Months'], 2) . '</option>
 	<option value="90">&nbsp;' . $lang['3_Months'] . '</option>
 	<option value="180">&nbsp;' . $lang['6_Months'] . '</option>
 	<option value="365">&nbsp;' . $lang['1_Year'] . '</option>

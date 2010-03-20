@@ -15,7 +15,6 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 if (defined('IN_ICYPHOENIX'))
 {
 	die('Hacking attempt');
@@ -38,14 +37,14 @@ init_userprefs($userdata);
 // Display the allowed Extension Groups and Upload Size
 if ($privmsg)
 {
-	$auth['auth_attachments'] = ($userdata['user_level'] != ADMIN) ? intval($attach_config['allow_pm_attach']) : true;
+	$auth['auth_attachments'] = ($userdata['user_level'] != ADMIN) ? intval($config['allow_pm_attach']) : true;
 	$auth['auth_view'] = true;
-	$_max_filesize = $attach_config['max_filesize_pm'];
+	$_max_filesize = $config['max_filesize_pm'];
 }
 else
 {
 	$auth = auth(AUTH_ALL, $forum_id, $userdata);
-	$_max_filesize = $attach_config['max_filesize'];
+	$_max_filesize = $config['max_filesize'];
 }
 
 if (!($auth['auth_attachments'] && $auth['auth_view']))

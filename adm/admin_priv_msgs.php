@@ -60,45 +60,19 @@ if ($is_allowed == false)
 }
 // Mighty Gorgon - ACP Privacy - END
 
-/****************************************************************************
-/** Module Actual Start
-/***************************************************************************/
-/*******************************************************************************************
-/** Get parameters.  'var_name' => 'default_value'
-/** This is outdated insecure, but I don't feel like rewriting the whole thing to be even more
-/**    class structured.  Maybe some day when phpBB moves to php5 I will.
-/******************************************************************************************/
-//Normal sections.
-$params = array(
-	'mode' => '',
-	'order' => 'DESC',
-	'sort' => 'privmsgs_date',
-	'pmaction' => 'none',
-	'filter_from' => '',
-	'filter_to' => '',
-	'filter_from_text' => '',
-	'filter_to_text' => ''
-);
+$mode = request_var('mode', '');
+$order = request_var('order', 'DESC');
+$sort = request_var('sort', 'privmsgs_date');
+$pmaction = request_var('pmaction', 'none');
+$filter_from = request_var('filter_from', '', true);
+$filter_to = request_var('filter_to', '', true);
+$filter_from_text = request_var('filter_from_text', '', true);
+$filter_to_text = request_var('filter_to_text', '', true);
 
-foreach($params as $var => $default)
-{
-	$$var = $default;
-	if(isset($_POST[$var]) || isset($_GET[$var]))
-	{
-		$$var = (isset($_POST[$var])) ? $_POST[$var] : $_GET[$var];
-	}
-}
+$view_id = request_var('view_id', 0);
+$start = request_var('start', 0);
+$pmtype = request_var('pmtype', PRIVMSGS_ALL_MAIL);
 
-//Sections requiring intval assignments
-$params = array('view_id' => '', 'start' => 0, 'pmtype' => PRIVMSGS_ALL_MAIL);
-foreach($params as $var => $default)
-{
-	$$var = $default;
-	if(isset($_POST[$var]) || isset($_GET[$var]))
-	{
-		$$var = intval((isset($_POST[$var])) ? $_POST[$var] : $_GET[$var]);
-	}
-}
 /****************************************************************************
 /** Main Vars.
 /***************************************************************************/
@@ -123,7 +97,7 @@ define('PRIVMSGS_UNREAD_MAIL', 5);
 /*******************************************************************************************
 /** Setup some options
 /******************************************************************************************/
-$archive_text = ($config['aprvmArchive'] && $mode == 'archive') ? '_archive' : '';
+$archive_text = ($config['aprvmArchive'] && ($mode == 'archive')) ? '_archive' : '';
 $pmtype_text = ($pmtype != PRIVMSGS_ALL_MAIL) ? "AND pm.privmsgs_type = $pmtype" : '';
 
 // Assign text filters if specified
@@ -185,7 +159,7 @@ switch($pmaction)
 		$bbcode->allow_bbcode = ($config['allow_bbcode'] && $privmsg['privmsgs_enable_bbcode'] ? true : false);
 		$bbcode->allow_smilies = ($config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'] ? true : false);
 		$private_message = $bbcode->parse($private_message);
-		$private_message = str_replace("\n", '<br />', $private_message);
+		//$private_message = str_replace("\n", '<br />', $private_message);
 
 		$template->set_filenames(array('viewmsg_body' => ADM_TPL . 'admin_priv_msgs_view_body.tpl'));
 		$template->assign_vars(array(
@@ -287,7 +261,7 @@ switch($pmaction)
 			}
 
 			$status_message .= $lang['Removed_Sent'];
-			$status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
+			$status_message .= sprintf($lang['Affected_Rows'], $db->sql_affectedrows());
 		}
 	}
 	default:
@@ -320,7 +294,7 @@ switch($pmaction)
 				'DATE' => create_date($lang['DATE_FORMAT'], $row['privmsgs_date'], $config['board_timezone'])
 				)
 			);
-			if ($mode != 'archive' && $config['aprvmArchive'])
+			if (($mode != 'archive') && $config['aprvmArchive'])
 			{
 				$template->assign_block_vars('msgrow.archive_avail_switch_msg', array());
 			}
@@ -334,7 +308,7 @@ switch($pmaction)
 
 		$aprvmUtil->do_pagination();
 
-		if ($mode != 'archive' && $config['aprvmArchive'])
+		if (($mode != 'archive') && $config['aprvmArchive'])
 		{
 			$template->assign_block_vars('archive_avail_switch', array());
 		}

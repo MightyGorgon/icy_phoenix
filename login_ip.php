@@ -8,12 +8,18 @@
 *
 */
 
-// CTracker_Ignore: File checked by human
 define('IN_ICYPHOENIX', true);
 define('IN_LOGIN', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/auth_db.' . PHP_EXT);
+
+if (!class_exists('ct_database'))
+{
+	include(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_database.' . PHP_EXT);
+	$ctracker_config = new ct_database();
+}
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -23,20 +29,13 @@ init_userprefs($userdata);
 // session id check
 $sid = request_var('sid', '');
 
-$redirect = request_var('redirect', '');
+$redirect = request_var('redirect', '', true);
 $redirect_url = (!empty($redirect) ? urldecode(str_replace(array('&amp;', '?', PHP_EXT . '&'), array('&', '&', PHP_EXT . '?'), $redirect)) : '');
 
 if (strstr($redirect_url, "\n") || strstr($redirect_url, "\r") || strstr($redirect_url, ';url'))
 {
 	message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url.');
 }
-
-// CrackerTracker v5.x
-if (!empty($_POST['username']) && ($ctracker_config->settings['loginfeature'] == 1))
-{
-	$ctracker_config->check_login_status($_POST['username']);
-}
-// CrackerTracker v5.x
 
 if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) || isset($_GET['logout']))
 {
@@ -45,121 +44,78 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 		$username = isset($_POST['username']) ? phpbb_clean_username($_POST['username']) : '';
 		$password = isset($_POST['password']) ? $_POST['password'] : '';
 
-		$sql = "SELECT user_id, username, user_password, user_active, user_level, user_login_tries, user_last_login_try, ct_login_count
-			FROM " . USERS_TABLE . "
-			WHERE username = '" . str_replace("\\'", "''", $username) . "'";
-		$result = $db->sql_query($sql);
+		$login_result = login_db($username, $password, false, true);
 
-		if($row = $db->sql_fetchrow($result))
+		if ($login_result['status'] === LOGIN_ERROR_ATTEMPTS)
 		{
-			if(($row['user_level'] != ADMIN) && $config['board_disable'])
+			message_die(GENERAL_MESSAGE, sprintf($lang['LOGIN_ATTEMPTS_EXCEEDED'], $config['max_login_attempts'], $config['login_reset_time']));
+		}
+
+		if ($login_result['status'] === LOGIN_SUCCESS)
+		{
+			if(($login_result['user_row']['user_level'] != ADMIN) && $config['board_disable'])
 			{
 				redirect(append_sid(CMS_PAGE_FORUM, true));
 			}
 			else
 			{
-				// If the last login is more than x minutes ago, then reset the login tries/time
-				if ($row['user_last_login_try'] && $config['login_reset_time'] && ($row['user_last_login_try'] < (time() - ($config['login_reset_time'] * 60))))
-				{
-					$login_reset = mg_reset_login_system($row['user_id']);
-					$row['user_last_login_try'] = $row['user_login_tries'] = 0;
-				}
 				// CrackerTracker v5.x
-				if ($ctracker_config->settings['login_history'] == 1)
+				if ($config['ctracker_login_history'] == 1)
 				{
-					$ctracker_config->update_login_history($row['user_id']);
+					$ctracker_config->update_login_history($login_result['user_row']['user_id']);
 				}
 
-				/*
-				if ($ctracker_config->settings['loginfeature'] == 1)
+				if ($config['ctracker_login_ip_check'] == 1)
 				{
-					$ctracker_config->reset_login_system($row['user_id']);
-				}
-				*/
-
-				if ($ctracker_config->settings['login_ip_check'] == 1)
-				{
-					$ctracker_config->set_user_ip($row['user_id']);
+					$ctracker_config->set_user_ip($login_result['user_row']['user_id']);
 				}
 				// CrackerTracker v5.x
 
-				// Check to see if user is allowed to login again... if his tries are exceeded
-				if ($row['user_last_login_try'] && $config['login_reset_time'] && $config['max_login_attempts'] &&
-					($row['user_last_login_try'] >= (time() - ($config['login_reset_time'] * 60))) && ($row['user_login_tries'] >= $config['max_login_attempts']) && ($userdata['user_level'] != ADMIN))
+				$autologin = (isset($_POST['autologin'])) ? true : 0;
+
+				if (isset($_POST['online_status']) && (($_POST['online_status'] == 'hidden') || ($_POST['online_status'] == 'visible')))
 				{
-					message_die(GENERAL_MESSAGE, sprintf($lang['Login_attempts_exceeded'], $config['max_login_attempts'], $config['login_reset_time']));
-				}
-				if((md5($password) == $row['user_password']) && $row['user_active'])
-				{
-					$autologin = (isset($_POST['autologin'])) ? true : 0;
-
-					if (isset($_POST['online_status']))
-					{
-						if ($_POST['online_status'] == 'hidden')
-						{
-							$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allow_viewonline = 0 WHERE user_id = ' . $row['user_id'];
-							$db->sql_return_on_error(true);
-							$db->sql_query($sql);
-							$db->sql_return_on_error(false);
-						}
-						elseif ($_POST['online_status'] == 'visible')
-						{
-							$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allow_viewonline = 1 WHERE user_id = ' . $row['user_id'];
-							$db->sql_return_on_error(true);
-							$db->sql_query($sql);
-							$db->sql_return_on_error(false);
-						}
-					}
-
-					$admin = (isset($_POST['admin'])) ? 1 : 0;
-					$session_id = session_begin($row['user_id'], $user_ip, false, $autologin, $admin);
-
-					// Reset login tries
-					mg_reset_login_system($row['user_id']);
-
-					if($session_id)
-					{
-						$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
-						redirect(append_sid($redirect_url, true));
-					}
-					else
-					{
-						message_die(CRITICAL_ERROR, "Couldn't start session : login", "", __LINE__, __FILE__);
-					}
-				}
-				// Only store a failed login attempt for an active user - inactive users can't login even with a correct password
-				elseif($row['user_active'])
-				{
-					// Save login tries and last login
-					if ($row['user_id'] != ANONYMOUS)
-					{
-						// CrackerTracker v5.x
-						include_once(IP_ROOT_PATH . 'ctracker/classes/class_log_manager.' . PHP_EXT);
-						$logfile = new log_manager();
-						$logfile->prepare_log($row['username']);
-						$logfile->write_general_logfile($ctracker_config->settings['logsize_logins'], 4);
-						unset($logfile);
-
-						if ($ctracker_config->settings['loginfeature'] == 1)
-						{
-							$ctracker_config->handle_wrong_login($row['user_id'], $row['ct_login_count']);
-						}
-						// CrackerTracker v5.x
-						$sql = 'UPDATE ' . USERS_TABLE . '
-							SET user_login_tries = user_login_tries + 1, user_last_login_try = ' . time() . '
-							WHERE user_id = ' . $row['user_id'];
-						$db->sql_query($sql);
-					}
+					$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allow_viewonline = ' . (($_POST['online_status'] == 'hidden') ? '0' : '1') . ' WHERE user_id = ' . $login_result['user_row']['user_id'];
+					$db->sql_return_on_error(true);
+					$db->sql_query($sql);
+					$db->sql_return_on_error(false);
 				}
 
-				meta_refresh(3, (CMS_PAGE_LOGIN . '?redirect=' . htmlspecialchars($redirect_url)));
+				$admin = (isset($_POST['admin'])) ? 1 : 0;
+				$session_id = session_begin($login_result['user_row']['user_id'], $user_ip, false, $autologin, $admin);
 
-				$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="' . CMS_PAGE_LOGIN . '?redirect=' . htmlspecialchars($redirect_url) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
-				message_die(GENERAL_MESSAGE, $message);
+				if($session_id)
+				{
+					$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
+					redirect(append_sid($redirect_url, true));
+				}
+				else
+				{
+					message_die(CRITICAL_ERROR, "Couldn't start session: login", "", __LINE__, __FILE__);
+				}
 			}
 		}
 		else
 		{
+			if (($login_result['status'] === LOGIN_ERROR_USERNAME) || ($login_result['status'] === LOGIN_ERROR_PASSWORD) || ($login_result['status'] === LOGIN_ERROR_ACTIVE))
+			{
+				if ($login_result['error_msg'] === 'LOGIN_ERROR_PASSWORD')
+				{
+					// CrackerTracker v5.x
+					if (!class_exists('log_manager'))
+					{
+						include(IP_ROOT_PATH . 'includes/ctracker/classes/class_log_manager.' . PHP_EXT);
+					}
+					$logfile = new log_manager();
+					$logfile->prepare_log($login_result['user_row']['username']);
+					$logfile->write_general_logfile($config['ctracker_logsize_logins'], 4);
+					unset($logfile);
+					// CrackerTracker v5.x
+				}
+				$error_message = ($login_result['error_msg'] === 'NO_PASSWORD_SUPPLIED') ? $lang[$login_result['error_msg']] : sprintf($lang[$login_result['error_msg']], '<a href="' . append_sid(CMS_PAGE_CONTACT_US) . '">', '</a>');
+				message_die(GENERAL_MESSAGE, $error_message);
+			}
+
 			meta_refresh(3, (CMS_PAGE_LOGIN . '?redirect=' . htmlspecialchars($redirect_url)));
 
 			$message = $lang['Error_login'] . '<br /><br />' . sprintf($lang['Click_return_login'], '<a href="' . CMS_PAGE_LOGIN . '?redirect=' . htmlspecialchars($redirect_url) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
@@ -170,7 +126,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 	elseif((isset($_GET['logout']) || isset($_POST['logout'])) && $userdata['session_logged_in'])
 	{
 		// session id check
-		if ($sid == '' || $sid != $userdata['session_id'])
+		if (($sid == '') || ($sid != $userdata['session_id']))
 		{
 			message_die(GENERAL_ERROR, 'Invalid_session');
 		}
@@ -259,7 +215,7 @@ else
 			$template->assign_block_vars('switch_resend_activation_email', array());
 		}
 
-		if (!isset($_GET['admin']) )
+		if (!isset($_GET['admin']))
 		{
 			$template->assign_block_vars('switch_login_type', array());
 		}

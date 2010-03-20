@@ -26,12 +26,12 @@ require('pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-if ( !defined('XS_TPL_PATH') )
+if (!defined('XS_TPL_PATH'))
 {
 	define('XS_TPL_PATH', '../../templates/common/xs_mod/tpl_news/');
 }
 
-$mode = $_GET['mode'];
+$mode = request_var('mode', '');
 
 if ($mode == 'smilies')
 {

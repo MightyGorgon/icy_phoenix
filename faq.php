@@ -34,10 +34,12 @@ check_page_auth($cms_page['page_id'], $cms_auth_level);
 // Set vars to prevent naughtiness
 $faq = array();
 
+$mode = request_var('mode', '');
+
 // Load the appropriate faq file
-if(isset($_GET['mode']))
+if(!empty($mode))
 {
-	switch($_GET['mode'])
+	switch($mode)
 	{
 		case 'bbcode':
 			$lang_file = 'lang_bbcode';
@@ -77,9 +79,7 @@ for($i = 0; $i < sizeof($faq); $i++)
 	else
 	{
 		$j = ($counter != 0) ? $j + 1 : 0;
-
 		$faq_block_titles[$j] = $faq[$i][1];
-
 		$counter = 0;
 	}
 }
