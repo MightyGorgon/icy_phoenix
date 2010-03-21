@@ -13,6 +13,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_flood.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 define('ENABLE_VISUAL_CONFIRM', true);
@@ -78,17 +79,7 @@ if (!$account_delete)
 }
 // TICKETS - END
 
-// CrackerTracker v5.x
-if (($userdata['ct_last_mail'] >= time()) && ($config['ctracker_massmail_protection'] == 1))
-{
-	message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_sendmail_info'], $config['ctracker_massmail_time']));
-}
-// CrackerTracker v5.x
-
-if (time() - $userdata['user_emailtime'] < $config['flood_interval'])
-{
-	message_die(GENERAL_MESSAGE, $lang['Flood_email_limit']);
-}
+check_flood_email(false);
 
 $sender = request_var('sender', '', true);
 $subject = request_var('subject', '', true);
@@ -103,7 +94,7 @@ if (isset($_POST['submit']))
 		if (empty($_POST['confirm_id']))
 		{
 			$error = true;
-			$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Confirm_code_wrong'];
+			$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['CONFIRM_CODE_WRONG'];
 		}
 		else
 		{
@@ -124,7 +115,7 @@ if (isset($_POST['submit']))
 				if ($row['code'] != $confirm_code)
 				{
 					$error = true;
-					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Confirm_code_wrong'];
+					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['CONFIRM_CODE_WRONG'];
 				}
 				else
 				{
@@ -137,7 +128,7 @@ if (isset($_POST['submit']))
 			else
 			{
 				$error = true;
-				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Confirm_code_wrong'];
+				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['CONFIRM_CODE_WRONG'];
 			}
 			$db->sql_freeresult($result);
 		}
@@ -195,42 +186,37 @@ if (isset($_POST['submit']))
 
 	if (!$error)
 	{
-		/*
-		$mtimetemp = time() + 240;
-		$sql = "UPDATE " . USERS_TABLE . "
-			SET ct_mailcount = " . $mtimetemp . "
-			WHERE user_id = " . $userdata['user_id'];
-		$db->sql_query($sql);
-		*/
-		// CrackerTracker v5.x
-		$new_mailtime = time() + $config['ctracker_massmail_time'] * 60;
-		$sql = 'UPDATE ' . USERS_TABLE . '
-			SET user_emailtime = ' . time() . ', ct_last_mail = ' . $new_mailtime . ' WHERE user_id = ' . $userdata['user_id'];
-		// CrackerTracker v5.x
-		/*
-		$sql = "UPDATE " . USERS_TABLE . "
-			SET user_emailtime = " . time() . "
-			WHERE user_id = " . $userdata['user_id'];
-		*/
-		$db->sql_return_on_error(true);
-		$result = $db->sql_query($sql);
-		$db->sql_return_on_error(false);
-		if ($result)
+		update_flood_time_email();
+
+		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+		$emailer = new emailer($config['smtp_delivery']);
+
+		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
+		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
+		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
+		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+
+		$emailer->use_template('empty_email', $user_lang);
+		$emailer->email_address($config['board_email']);
+		$emailer->from($sender);
+		$emailer->bcc($bcc_list);
+		$emailer->replyto($sender);
+		$emailer->extra_headers($email_headers);
+		$emailer->set_subject($subject);
+
+		$emailer->assign_vars(array(
+			'MESSAGE' => $message
+			)
+		);
+		$emailer->send();
+		$emailer->reset();
+
+		if (!empty($_POST['cc_email']))
 		{
-			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($config['smtp_delivery']);
-
-			$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
-			$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-			$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-			$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
-
-			$emailer->use_template('empty_email', $user_lang);
-			$emailer->email_address($config['board_email']);
 			$emailer->from($sender);
-			$emailer->bcc($bcc_list);
 			$emailer->replyto($sender);
-			$emailer->extra_headers($email_headers);
+			$emailer->use_template('empty_email');
+			$emailer->email_address($sender);
 			$emailer->set_subject($subject);
 
 			$emailer->assign_vars(array(
@@ -239,46 +225,27 @@ if (isset($_POST['submit']))
 			);
 			$emailer->send();
 			$emailer->reset();
-
-			if (!empty($_POST['cc_email']))
-			{
-				$emailer->from($sender);
-				$emailer->replyto($sender);
-				$emailer->use_template('empty_email');
-				$emailer->email_address($sender);
-				$emailer->set_subject($subject);
-
-				$emailer->assign_vars(array(
-					'MESSAGE' => $message
-					)
-				);
-				$emailer->send();
-				$emailer->reset();
-			}
-
-			$redirect_url = append_sid(CMS_PAGE_HOME);
-			meta_refresh(3, $redirect_url);
-
-			$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_HOME) . '">', '</a>');
-
-			if ($account_delete)
-			{
-				$sql = "UPDATE " . USERS_TABLE . "
-					SET user_active = '0'
-					WHERE user_id = " . $userdata['user_id'];
-				$result = $db->sql_query($sql);
-				$clear_notification = user_clear_notifications($userdata['user_id']);
-				$message = $lang['Email_sent'];
-				$redirect_url = append_sid(CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $userdata['session_id']);
-				meta_refresh(3, $redirect_url);
-			}
-
-			message_die(GENERAL_MESSAGE, $message);
 		}
-		else
+
+		$redirect_url = append_sid(CMS_PAGE_HOME);
+		meta_refresh(3, $redirect_url);
+
+		$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_HOME) . '">', '</a>');
+
+		if ($account_delete)
 		{
-			message_die(GENERAL_ERROR, 'Could not update last email time', '', __LINE__, __FILE__, $sql);
+			$sql = "UPDATE " . USERS_TABLE . "
+				SET user_active = '0'
+				WHERE user_id = " . $userdata['user_id'];
+			$result = $db->sql_query($sql);
+			$clear_notification = user_clear_notifications($userdata['user_id']);
+			$message = $lang['Email_sent'];
+			$redirect_url = append_sid(CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $userdata['session_id']);
+			meta_refresh(3, $redirect_url);
 		}
+
+		message_die(GENERAL_MESSAGE, $message);
+
 	}
 }
 
@@ -322,7 +289,7 @@ if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
 	{
 		if ($row['attempts'] > 3)
 		{
-			message_die(GENERAL_MESSAGE, $lang['Too_many_registers']);
+			message_die(GENERAL_MESSAGE, $lang['TOO_MANY_ATTEMPTS']);
 		}
 	}
 	$db->sql_freeresult($result);
@@ -368,9 +335,7 @@ $template->assign_vars(array(
 	'L_DELETE_ACCOUNT_EXPLAIN' => $lang['Delete_My_Account_Explain'],
 	'L_OPTIONS' => $lang['Options'],
 	'L_CC_EMAIL' => $lang['CC_email'],
-	'L_CONFIRM_CODE_IMPAIRED' => sprintf($lang['Confirm_code_impaired'], '<a href="mailto:' . $config['board_email'] . '">', '</a>'),
-	'L_CONFIRM_CODE' => $lang['Confirm_code'],
-	'L_CONFIRM_CODE_EXPLAIN' => $lang['Confirm_code_explain'],
+	'L_CONFIRM_CODE_IMPAIRED' => sprintf($lang['CONFIRM_CODE_IMPAIRED'], '<a href="mailto:' . $config['board_email'] . '">', '</a>'),
 	'L_SPELLCHECK' => $lang['Spellcheck'],
 	'L_SEND_EMAIL' => $lang['Send_Email']
 	)

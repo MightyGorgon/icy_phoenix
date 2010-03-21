@@ -177,7 +177,7 @@ class pafiledb_email extends pafiledb_public
 			'S_EMAIL_ACTION' => append_sid('dload.' . PHP_EXT),
 			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />',
 
-			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 			'L_EMAIL' => $lang['Semail'],
 			'L_EMAIL' => $lang['Emailfile'],
 			'L_EMAILINFO' => $lang['Emailinfo'],

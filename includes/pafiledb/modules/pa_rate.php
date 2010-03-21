@@ -54,7 +54,7 @@ class pafiledb_rate extends pafiledb_public
 
 		$this->generate_category_nav($file_data['file_catid']);
 		$template->assign_vars(array(
-			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 			'L_RATE' => $lang['Rate'],
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),

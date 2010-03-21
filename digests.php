@@ -412,7 +412,7 @@ else
 	$template->assign_vars(array(
 		'CREATE_MODIFY_UNSUBSCRIBE_MSG' => $confim_message,
 		'U_INDEX' => append_sid(CMS_PAGE_FORUM),
-		'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename']))
+		'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename'])
 		)
 	);
 

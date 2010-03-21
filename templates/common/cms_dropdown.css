@@ -7,10 +7,10 @@
 }
 
 .chromestyle ul {
-	border: 1px solid #bbb;
+	border: 1px solid #bbbbbb;
 	height: 14px;
 	width: 100%;
-	background: url("cms/images/bg_menu.gif") center repeat-x;
+	background: url('cms/images/bg_menu.gif') center repeat-x;
 	padding: 4px 0px;
 	margin: 0px;
 	text-align: left;
@@ -30,7 +30,7 @@
 
 .chromestyle ul li a:hover {
 	text-decoration: none;
-	background: url("cms/images/bg_menu_hover.gif") center center repeat-x;
+	background: url('cms/images/bg_menu_hover.gif') center center repeat-x;
 	border: solid 1px #cc3333;
 }
 
@@ -41,7 +41,7 @@
 
 .chromestyle ul li a[rel]:after {
 	/*content: " v";
-	content: " " url(downimage.gif); */
+	content: " " url('cms/images/downimage.gif'); */
 	border: solid 1px transparent;
 }
 
@@ -81,7 +81,7 @@
 .dropmenudiv hr {
 	margin: 2px;
 	border: none;
-	border-top: 1px solid #CCCCCC;
+	border-top: 1px solid #cccccc;
 }
 
 .dropmenudiv img {

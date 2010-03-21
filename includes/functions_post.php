@@ -281,26 +281,14 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		$post_subject = ucwords($post_subject);
 	}
 
+	// Flood control
 	if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
 	{
-		// Flood control
-		$where_sql = ($userdata['user_id'] == ANONYMOUS) ? "poster_ip = '$user_ip'" : 'poster_id = ' . $userdata['user_id'];
-		$sql = "SELECT MAX(post_time) AS last_post_time
-			FROM " . POSTS_TABLE . "
-			WHERE $where_sql";
-		$db->sql_return_on_error(true);
-		$result = $db->sql_query($sql);
-		$db->sql_return_on_error(false);
-		if ($result)
+		if (!function_exists('check_flood_posting'))
 		{
-			if ($row = $db->sql_fetchrow($result))
-			{
-				if (intval($row['last_post_time']) > 0 && ($current_time - intval($row['last_post_time'])) < intval($config['flood_interval']))
-				{
-					message_die(GENERAL_MESSAGE, $lang['Flood_Error']);
-				}
-			}
+			include_once(IP_ROOT_PATH . 'includes/functions_flood.' . PHP_EXT);
 		}
+		check_flood_posting(false);
 	}
 
 	if ($mode == 'editpost')

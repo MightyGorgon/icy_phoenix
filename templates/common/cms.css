@@ -4,6 +4,14 @@
 @import url("cms_dropdown.css");
 @import url("cms_users.css");
 
+html {
+	font-family: "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
+}
+
+body {
+	font-family: "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
+}
+
 #cms, p, td, th {
 	color: #000000;
 }

@@ -46,7 +46,6 @@ $tables = array(
 	'banlist',
 	'bbcodes',
 	'bookmarks',
-	'captcha_config',
 	'cash',
 	'cash_events',
 	'cash_exchange',

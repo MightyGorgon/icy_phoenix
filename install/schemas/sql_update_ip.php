@@ -1505,30 +1505,6 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('max_link_bookmarks', '0')";
 
-		$sql[] = "CREATE TABLE `" . $table_prefix . "captcha_config` (
-			`config_name` varchar(255) NOT NULL default '',
-			`config_value` varchar(100) NOT NULL default '',
-			PRIMARY KEY (`config_name`)
-		)";
-
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('width', '316')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('height', '61')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('background_color', '#E5ECF9')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('jpeg', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('jpeg_quality', '50')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('pre_letters', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('pre_letters_great', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('font', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('chess', '2')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('ellipses', '2')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('arcs', '2')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('lines', '2')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('image', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('gammacorrect', '1.4')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('foreground_lattice_x', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('foreground_lattice_y', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "captcha_config VALUES ('lattice_color', '#FFFFFF')";
-
 		$sql[] = "ALTER TABLE `" . $table_prefix . "search_results` ADD COLUMN search_time int(11) DEFAULT '0' NOT NULL";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "profile_fields` (
@@ -1936,8 +1912,7 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_search_time` INT(11) NULL DEFAULT 1 AFTER `user_newpasswd`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_search_count` MEDIUMINT(8) NULL DEFAULT 1 AFTER `ct_search_time`;";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_mail` INT(11) NULL DEFAULT 1 AFTER `ct_search_count`;";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_post` INT(11) NULL DEFAULT 1 AFTER `ct_last_mail`;";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_post` INT(11) NULL DEFAULT 1 AFTER `ct_search_count`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_post_counter` MEDIUMINT(8) NULL DEFAULT 1 AFTER `ct_last_post`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_enable_ip_warn` TINYINT(1) NULL DEFAULT 1 AFTER `ct_post_counter`;";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `ct_last_used_ip` VARCHAR(16) NULL DEFAULT '0.0.0.0' AFTER `ct_enable_ip_warn`;";
@@ -3845,6 +3820,27 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.7.60 */
 		case '1.3.7.60':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `ct_last_mail`";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_width', '316')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_height', '61')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_background_color', '#E5ECF9')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_jpeg', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_jpeg_quality', '50')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_pre_letters', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_pre_letters_great', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_font', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_chess', '2')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_ellipses', '2')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_arcs', '2')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_lines', '2')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_image', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_gammacorrect', '1.4')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_foreground_lattice_x', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_foreground_lattice_y', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('captcha_lattice_color', '#FFFFFF')";
+
+		$sql[] = "DROP TABLE `" . $table_prefix . "captcha_config`";
 
 		/* Updating from IP 1.3.8.61 */
 		case '1.3.8.61':

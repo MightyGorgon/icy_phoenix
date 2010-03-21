@@ -50,8 +50,8 @@ if(isset($_GET['edit']))
 	$id = intval($_GET['edit']);
 	$template->assign_block_vars('edit', array(
 		'ID' => $id,
-		'TITLE' => $config['xs_downloads_title_'.$id],
-		'URL' => $config['xs_downloads_'.$id]
+		'TITLE' => $config['xs_downloads_title_' . $id],
+		'URL' => $config['xs_downloads_' . $id]
 		)
 	);
 }
@@ -122,10 +122,10 @@ for($i = 0; $i < $config['xs_downloads_count']; $i++)
 		'ROW_CLASS' => $row_class,
 		'NUM' => $i,
 		'NUM1' => $i + 1,
-		'URL' => htmlspecialchars($config['xs_downloads_'.$i]),
-		'TITLE' => htmlspecialchars($config['xs_downloads_title_'.$i]),
-		'U_DOWNLOAD' => append_sid('xs_download.' . PHP_EXT . '?url='.$i),
-		'U_EDIT' => append_sid('xs_download.' . PHP_EXT . '?edit='.$i),
+		'URL' => $config['xs_downloads_' . $i],
+		'TITLE' => $config['xs_downloads_title_' . $i],
+		'U_DOWNLOAD' => append_sid('xs_download.' . PHP_EXT . '?url=' . $i),
+		'U_EDIT' => append_sid('xs_download.' . PHP_EXT . '?edit=' . $i),
 		)
 	);
 }

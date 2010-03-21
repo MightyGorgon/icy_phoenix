@@ -411,7 +411,6 @@ define('BANLIST_TABLE', $table_prefix . 'banlist');
 define('BBCODES_TABLE', $table_prefix . 'bbcodes');
 define('BOOKMARK_TABLE', $table_prefix . 'bookmarks');
 define('BOTS_TABLE', $table_prefix . 'bots');
-define('CAPTCHA_CONFIG_TABLE', $table_prefix . 'captcha_config');
 define('CONFIG_TABLE', $table_prefix . 'config');
 define('CONFIRM_TABLE', $table_prefix . 'confirm');
 define('DIGEST_SUBSCRIPTIONS_TABLE', $table_prefix . 'digest_subscriptions');

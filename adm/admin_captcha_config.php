@@ -31,29 +31,25 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-// Pull config data
-$sql = "SELECT * FROM " . CAPTCHA_CONFIG_TABLE;
-$result = $db->sql_query($sql);
-while($row = $db->sql_fetchrow($result))
+$captcha_config_array = array('enable_confirm', 'use_captcha', 'captcha_width', 'captcha_height', 'captcha_background_color', 'captcha_jpeg', 'captcha_jpeg_quality', 'captcha_pre_letters', 'captcha_pre_letters_great', 'captcha_font', 'captcha_chess', 'captcha_ellipses', 'captcha_arcs', 'captcha_lines', 'captcha_image', 'captcha_gammacorrect', 'captcha_foreground_lattice_x', 'captcha_foreground_lattice_y', 'captcha_lattice_color');
+
+for($i = 0; $i < sizeof($captcha_config_array); $i++)
 {
-	$config_name = $row['config_name'];
-	$config_value = $row['config_value'];
-	$default_config[$config_name] = $config_value;
+	$config_name = $captcha_config_array[$i];
+	$config_value = trim($config[$captcha_config_array[$i]]);
+	$new[$config_name] = request_post_var($config_name, $config_value, true);
 
-	$new[$config_name] = request_post_var($config_name, $default_config[$config_name]);
-
-	if(isset($_POST['submit']))
+	if(isset($_POST['submit']) && isset($_POST[$config_name]))
 	{
-		$sql = "UPDATE " . CAPTCHA_CONFIG_TABLE . " SET
-			config_value = '" . $db->sql_escape($new[$config_name]) . "'
-			WHERE config_name = '$config_name'";
-		$db->sql_query($sql);
+		set_config($config_name, $new[$config_name], false);
 	}
 }
 
 if(isset($_POST['submit']))
 {
-	$message = $lang['captcha_config_updated'] . '<br />' . sprintf($lang['Click_return_captcha_config'], '<a href="' . append_sid("admin_captcha_config." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>') . '<br /><br />';
+	$cache->destroy('config');
+
+	$message = $lang['captcha_config_updated'] . '<br />' . sprintf($lang['Click_return_captcha_config'], '<a href="' . append_sid('admin_captcha_config.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>') . '<br /><br />';
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -100,38 +96,47 @@ $template->assign_vars(array(
 	'L_GENERATE_JPEG_EXPAIN' => $lang['generate_jpeg_explain'],
 	'L_JPEG_QUALITY' => $lang['generate_jpeg_quality'],
 
-	'WIDTH' => $new['width'],
-	'HEIGHT' => $new['height'],
-	'BACKGROUND_COLOR' => $new['background_color'],
-	'PRE_LETTERS' => $new['pre_letters'],
-	'LATTICE_X_LINES' => $new['foreground_lattice_x'],
-	'LATTICE_Y_LINES' => $new['foreground_lattice_y'],
-	'LATTICE_COLOR' => $new['lattice_color'],
-	'GAMMACORRECT' => $new['gammacorrect'],
-	'JPEG_QUALITY' => $new['jpeg_quality'],
+	'WIDTH' => $new['captcha_width'],
+	'HEIGHT' => $new['captcha_height'],
+	'BACKGROUND_COLOR' => $new['captcha_background_color'],
+	'PRE_LETTERS' => $new['captcha_pre_letters'],
+	'LATTICE_X_LINES' => $new['captcha_foreground_lattice_x'],
+	'LATTICE_Y_LINES' => $new['captcha_foreground_lattice_y'],
+	'LATTICE_COLOR' => $new['captcha_lattice_color'],
+	'GAMMACORRECT' => $new['captcha_gammacorrect'],
+	'JPEG_QUALITY' => $new['captcha_jpeg_quality'],
 
 	'CAPTCHA_IMG' => '<img src="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=confirm&amp;id=Admin') . '" alt="" />',
 
-	'S_GREAT_PRE_LETTERS_YES' => ($new['pre_letters_great'] == 1) ? 'checked="checked"' : '',
-	'S_GREAT_PRE_LETTERS_NO' => ($new['pre_letters_great'] == 0) ? 'checked="checked"' : '',
-	'S_RND_FONT_PER_LETTER_YES' => ($new['font'] == 1) ? 'checked="checked"' : '',
-	'S_RND_FONT_PER_LETTER_NO' => ($new['font'] == 0) ? 'checked="checked"' : '',
-	'S_ALLOW_CHESS_YES' => ($new['chess'] == 1) ? 'checked="checked"' : '',
-	'S_ALLOW_CHESS_NO' => ($new['chess'] == 0) ? 'checked="checked"' : '',
-	'S_ALLOW_CHESS_RND' => ($new['chess'] == 2) ? 'checked="checked"' : '',
-	'S_ALLOW_ELLIPSES_YES' => ($new['ellipses'] == 1) ? 'checked="checked"' : '',
-	'S_ALLOW_ELLIPSES_NO' => ($new['ellipses'] == 0) ? 'checked="checked"' : '',
-	'S_ALLOW_ELLIPSES_RND' => ($new['ellipses'] == 2) ? 'checked="checked"' : '',
-	'S_ALLOW_ARCS_YES' => ($new['arcs'] == 1) ? 'checked="checked"' : '',
-	'S_ALLOW_ARCS_NO' => ($new['arcs'] == 0) ? 'checked="checked"' : '',
-	'S_ALLOW_ARCS_RND' => ($new['arcs'] == 2) ? 'checked="checked"' : '',
-	'S_ALLOW_LINES_YES' => ($new['lines'] == 1) ? 'checked="checked"' : '',
-	'S_ALLOW_LINES_NO' => ($new['lines'] == 0) ? 'checked="checked"' : '',
-	'S_ALLOW_LINES_RND' => ($new['lines'] == 2) ? 'checked="checked"' : '',
-	'S_ALLOW_IMAGE_YES' => ($new['image'] == 1) ? 'checked="checked"' : '',
-	'S_ALLOW_IMAGE_NO' => ($new['image'] == 0) ? 'checked="checked"' : '',
-	'S_JPEG_IMAGE_YES' => ($new['jpeg'] == 1) ? 'checked="checked"' : '',
-	'S_JPEG_IMAGE_NO' => ($new['jpeg'] == 0) ? 'checked="checked"' : '',
+	'L_ENABLE_CONFIRM' => $lang['Visual_confirm'],
+	'L_ENABLE_CONFIRM_EXPLAIN' => $lang['Visual_confirm_explain'],
+	'S_ENABLE_CONFIRM_YES' => ($new['enable_confirm'] == 1) ? 'checked="checked"' : '',
+	'S_ENABLE_CONFIRM_NO' => ($new['enable_confirm'] == 0) ? 'checked="checked"' : '',
+	'L_USE_CAPTCHA' => $lang['Use_Captcha'],
+	'L_USE_CAPTCHA_EXPLAIN' => $lang['Use_Captcha_Explain'],
+	'S_USE_CAPTCHA_YES' => ($new['use_captcha'] == 1) ? 'checked="checked"' : '',
+	'S_USE_CAPTCHA_NO' => ($new['use_captcha'] == 0) ? 'checked="checked"' : '',
+
+	'S_GREAT_PRE_LETTERS_YES' => ($new['captcha_pre_letters_great'] == 1) ? 'checked="checked"' : '',
+	'S_GREAT_PRE_LETTERS_NO' => ($new['captcha_pre_letters_great'] == 0) ? 'checked="checked"' : '',
+	'S_RND_FONT_PER_LETTER_YES' => ($new['captcha_font'] == 1) ? 'checked="checked"' : '',
+	'S_RND_FONT_PER_LETTER_NO' => ($new['captcha_font'] == 0) ? 'checked="checked"' : '',
+	'S_ALLOW_CHESS_YES' => ($new['captcha_chess'] == 1) ? 'checked="checked"' : '',
+	'S_ALLOW_CHESS_NO' => ($new['captcha_chess'] == 0) ? 'checked="checked"' : '',
+	'S_ALLOW_CHESS_RND' => ($new['captcha_chess'] == 2) ? 'checked="checked"' : '',
+	'S_ALLOW_ELLIPSES_YES' => ($new['captcha_ellipses'] == 1) ? 'checked="checked"' : '',
+	'S_ALLOW_ELLIPSES_NO' => ($new['captcha_ellipses'] == 0) ? 'checked="checked"' : '',
+	'S_ALLOW_ELLIPSES_RND' => ($new['captcha_ellipses'] == 2) ? 'checked="checked"' : '',
+	'S_ALLOW_ARCS_YES' => ($new['captcha_arcs'] == 1) ? 'checked="checked"' : '',
+	'S_ALLOW_ARCS_NO' => ($new['captcha_arcs'] == 0) ? 'checked="checked"' : '',
+	'S_ALLOW_ARCS_RND' => ($new['captcha_arcs'] == 2) ? 'checked="checked"' : '',
+	'S_ALLOW_LINES_YES' => ($new['captcha_lines'] == 1) ? 'checked="checked"' : '',
+	'S_ALLOW_LINES_NO' => ($new['captcha_lines'] == 0) ? 'checked="checked"' : '',
+	'S_ALLOW_LINES_RND' => ($new['captcha_lines'] == 2) ? 'checked="checked"' : '',
+	'S_ALLOW_IMAGE_YES' => ($new['captcha_image'] == 1) ? 'checked="checked"' : '',
+	'S_ALLOW_IMAGE_NO' => ($new['captcha_image'] == 0) ? 'checked="checked"' : '',
+	'S_JPEG_IMAGE_YES' => ($new['captcha_jpeg'] == 1) ? 'checked="checked"' : '',
+	'S_JPEG_IMAGE_NO' => ($new['captcha_jpeg'] == 0) ? 'checked="checked"' : '',
 
 	'S_HIDDEN_FIELDS' => '',
 	'S_CAPTCHA_CONFIG_ACTION' => append_sid('admin_captcha_config.' . PHP_EXT)

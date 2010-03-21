@@ -563,7 +563,7 @@ if (isset($_POST['submit']))
 		if (empty($_POST['confirm_id']))
 		{
 			$error = true;
-			$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Confirm_code_wrong'];
+			$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['CONFIRM_CODE_WRONG'];
 		}
 		else
 		{
@@ -585,7 +585,7 @@ if (isset($_POST['submit']))
 				if ($row['code'] != $confirm_code)
 				{
 					$error = true;
-					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Confirm_code_wrong'];
+					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['CONFIRM_CODE_WRONG'];
 				}
 				else
 				{
@@ -598,7 +598,7 @@ if (isset($_POST['submit']))
 			else
 			{
 				$error = true;
-				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Confirm_code_wrong'];
+				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['CONFIRM_CODE_WRONG'];
 			}
 			$db->sql_freeresult($result);
 		}
@@ -2053,7 +2053,7 @@ else
 		{
 			if ($row['attempts'] > 3)
 			{
-				message_die(GENERAL_MESSAGE, $lang['Too_many_registers']);
+				message_die(GENERAL_MESSAGE, $lang['TOO_MANY_ATTEMPTS']);
 			}
 		}
 		$db->sql_freeresult($result);
@@ -2392,9 +2392,7 @@ else
 		'L_CONFIRM_EMAIL' => $lang['Email_confirm'],
 		'EMAIL_CONFIRM' => $email_confirm,
 
-		'L_CONFIRM_CODE_IMPAIRED' => sprintf($lang['Confirm_code_impaired'], '<a href="mailto:' . $config['board_email'] . '">', '</a>'),
-		'L_CONFIRM_CODE' => $lang['Confirm_code'],
-		'L_CONFIRM_CODE_EXPLAIN' => $lang['Confirm_code_explain'],
+		'L_CONFIRM_CODE_IMPAIRED' => sprintf($lang['CONFIRM_CODE_IMPAIRED'], '<a href="mailto:' . $config['board_email'] . '">', '</a>'),
 
 		'U_AJAX_VERIFY' => 'ajax_verify.' . PHP_EXT,
 		'VERIFY_UN_JS' => $verify_un_js,

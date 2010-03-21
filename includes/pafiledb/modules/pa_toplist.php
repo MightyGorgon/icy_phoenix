@@ -58,15 +58,15 @@ class pafiledb_toplist extends pafiledb_public
 
 			'U_INDEX' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
-			'U_NEWEST_FILE' => append_sid('dload.' . PHP_EXT . '?action=toplist&mode=newest'),
-			'U_MOST_POPULAR' => append_sid('dload.' . PHP_EXT . '?action=toplist&mode=downloads'),
-			'U_TOP_RATED' => append_sid('dload.' . PHP_EXT . '?action=toplist&mode=rating'),
+			'U_NEWEST_FILE' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=newest'),
+			'U_MOST_POPULAR' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=downloads'),
+			'U_TOP_RATED' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=rating'),
 			'XS_NEW' => $xs_new,
 			'L_CURRENT_TOPLIST' => $l_current_toplist,
 			'L_NEWEST_FILE' => $lang['Latest_downloads'],
 			'L_MOST_POPULAR' => $lang['Most_downloads'],
 			'L_TOP_RATED' => $lang['Rated_downloads'],
-			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 			'L_TOPLIST' => $lang['Toplist'])
 		);
 

@@ -429,11 +429,11 @@ else
 				$parent_cat_id = 0;
 				if (isset($lang[$config['sitename']]))
 				{
-					$parent_cat_title = sprintf($lang['Forum_Index'], $lang[htmlspecialchars($config['sitename'])]);
+					$parent_cat_title = sprintf($lang['Forum_Index'], $lang[$config['sitename']]);
 				}
 				else
 				{
-					$parent_cat_title = sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename']));
+					$parent_cat_title = sprintf($lang['Forum_Index'], $config['sitename']);
 				}
 
 				//it is so set the indicator that we are deleting a parent category

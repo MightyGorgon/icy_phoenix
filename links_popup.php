@@ -30,8 +30,8 @@ include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
 $links_config = get_links_config(true);
 
 $template->assign_vars(array(
-	'L_LINK_US' => $lang['Link_us'] . htmlspecialchars($config['sitename']),
-	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], htmlspecialchars($config['sitename'])),'L_SUBMIT' => $lang['Submit'],
+	'L_LINK_US' => $lang['Link_us'] . $config['sitename'],
+	'L_LINK_US_EXPLAIN' => sprintf($lang['Link_us_explain'], $config['sitename']),'L_SUBMIT' => $lang['Submit'],
 	'L_CLOSE_WINDOW' => $lang['Close_window'],
 	'LINK_US_SYNTAX' => str_replace(' ', '&nbsp;', sprintf(htmlentities($lang['Link_us_syntax'], ENT_QUOTES), $links_config['site_url'], $links_config['site_logo'], $links_config['width'], $links_config['height'], htmlspecialchars(str_replace('"', '', $config['sitename'])))),
 

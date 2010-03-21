@@ -136,9 +136,6 @@ else
 	}
 }
 
-$config['sitename'] = htmlspecialchars($config['sitename']);
-$config['site_desc'] = htmlspecialchars($config['site_desc']);
-
 // Create RSS header
 $rdf_header = '<?xml version="1.0" encoding="ISO-8859-2" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/">

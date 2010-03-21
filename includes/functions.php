@@ -3322,7 +3322,7 @@ function page_header($title = '', $parse_template = false)
 	$page_query = $_SERVER['QUERY_STRING'];
 
 	$meta_content['page_title'] = !empty($title) ? $title : $meta_content['page_title'];
-	$meta_content['page_title'] = empty($meta_content['page_title']) ? htmlspecialchars($config['sitename']) : strip_tags($meta_content['page_title']);
+	$meta_content['page_title'] = empty($meta_content['page_title']) ? $config['sitename'] : strip_tags($meta_content['page_title']);
 	$meta_content['page_title_clean'] = empty($meta_content['page_title_clean']) ? strip_tags($meta_content['page_title']) : $meta_content['page_title_clean'];
 
 	// DYNAMIC META TAGS - BEGIN
@@ -3421,11 +3421,11 @@ function page_header($title = '', $parse_template = false)
 	// Defined here to correctly assign the Language Variables and be able to change the variables within code.
 	$nav_links['top'] = array (
 		'url' => append_sid(CMS_PAGE_HOME),
-		'title' => htmlspecialchars($config['sitename'])
+		'title' => $config['sitename']
 	);
 	$nav_links['forum'] = array (
 		'url' => append_sid(CMS_PAGE_FORUM),
-		'title' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename']))
+		'title' => sprintf($lang['Forum_Index'], $config['sitename'])
 	);
 	$nav_links['search'] = array (
 		'url' => append_sid(CMS_PAGE_SEARCH),
@@ -4141,7 +4141,7 @@ function page_header($title = '', $parse_template = false)
 		'L_LOGIN_LOGOUT2' => $l_login_logout2,
 		'L_LOGIN' => $lang['Login'],
 		'L_HOME' => $lang['Home'],
-		'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+		'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 		'L_REGISTER' => $lang['Register'],
 		'L_BOARDRULES' => $lang['BoardRules'],
 		'L_PROFILE' => $lang['Profile'],
@@ -4245,7 +4245,7 @@ function page_header($title = '', $parse_template = false)
 		'S_PAGE_NAV' => (isset($cms_page['page_nav']) ? $cms_page['page_nav'] : true),
 		'NAV_SEPARATOR' => $nav_separator,
 		'NAV_CAT_DESC' => $nav_cat_desc,
-		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != htmlspecialchars($config['sitename'])) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
+		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
 		'S_BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : true),
 		'BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : $breadcrumbs_links_left),
 		'S_BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? false : true),

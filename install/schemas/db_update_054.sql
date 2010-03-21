@@ -365,9 +365,27 @@ INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`)
 ########################################
 ##              BUILD 061             ##
 ########################################
+ALTER TABLE `phpbb_users` DROP `ct_last_mail`;
 
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_width', '316');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_height', '61');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_background_color', '#E5ECF9');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_jpeg', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_jpeg_quality', '50');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_pre_letters', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_pre_letters_great', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_font', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_chess', '2');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_ellipses', '2');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_arcs', '2');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_lines', '2');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_image', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_gammacorrect', '1.4');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_foreground_lattice_x', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_foreground_lattice_y', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_lattice_color', '#FFFFFF');
 
-
+DROP TABLE `phpbb_captcha_config`;
 
 
 #####################

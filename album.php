@@ -197,7 +197,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	}
 
 	$template->assign_vars(array(
-		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != htmlspecialchars($config['sitename'])) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
+		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
 
 		'ALBUM_NAV' => $album_nav_cat_desc,
 		'S_COLS' => $cols,

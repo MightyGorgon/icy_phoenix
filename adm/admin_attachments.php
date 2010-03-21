@@ -146,7 +146,6 @@ for($i = 0; $i < sizeof($attachments_config_array); $i++)
 		}
 
 		set_config($config_name, $new_attach[$config_name], false);
-		$db->sql_query($sql);
 
 		if (($config_name == 'max_filesize') || ($config_name == 'attachment_quota') || ($config_name == 'max_filesize_pm'))
 		{

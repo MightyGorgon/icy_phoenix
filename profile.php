@@ -101,7 +101,8 @@ if (!empty($mode))
 	elseif ($mode == 'confirm')
 	{
 		// Visual Confirmation
-		if ($userdata['session_logged_in'] && (htmlspecialchars($_GET['id']) != 'Admin'))
+		$force_captcha = request_var('force_captcha', 0);
+		if (empty($force_captcha) && $userdata['session_logged_in'] && ($_GET['id'] != 'Admin'))
 		{
 			exit;
 		}

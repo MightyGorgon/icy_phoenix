@@ -43,7 +43,7 @@ class pafiledb_viewall extends pafiledb_public
 
 		$template->assign_vars(array(
 			'L_VIEWALL' => $lang['Viewall'],
-			'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+			'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 

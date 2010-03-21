@@ -755,7 +755,6 @@ class class_form
 	}
 
 	/*
-	* image_output
 	* Outputs image with correct headers
 	*/
 	function image_output($pic_full_path, $pic_title_reg, $pic_filetype)

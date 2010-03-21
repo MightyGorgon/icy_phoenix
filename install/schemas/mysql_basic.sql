@@ -259,26 +259,6 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yandex', '', 'Yandex/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yanga WorldSearch', '', 'Yanga WorldSearch Bot', '');
 
-## `phpbb_captcha_config`
-##
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('width', '316');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('height', '61');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('background_color', '#E5ECF9');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('jpeg', '0');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('jpeg_quality', '50');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('pre_letters', '0');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('pre_letters_great', '0');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('font', '0');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('chess', '2');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('ellipses', '2');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('arcs', '2');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('lines', '2');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('image', '0');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('gammacorrect', '1.4');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('foreground_lattice_x', '0');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('foreground_lattice_y', '0');
-INSERT INTO `phpbb_captcha_config` (`config_name`, `config_value`) VALUES ('lattice_color', '#FFFFFF');
-
 ## `phpbb_cms_block_position`
 ##
 
@@ -931,6 +911,25 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_spa
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_spam_keyword_det', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ctracker_footer_layout', '6');
 ## CTracker Settings - END
+## CAPTCHA Settings - BEGIN
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_width', '316');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_height', '61');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_background_color', '#E5ECF9');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_jpeg', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_jpeg_quality', '50');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_pre_letters', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_pre_letters_great', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_font', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_chess', '2');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_ellipses', '2');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_arcs', '2');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_lines', '2');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_image', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_gammacorrect', '1.4');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_foreground_lattice_x', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_foreground_lattice_y', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_lattice_color', '#FFFFFF');
+## CAPTCHA Settings - END
 
 ## `phpbb_ctracker_ipblocker`
 ##

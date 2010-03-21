@@ -668,7 +668,6 @@ $lang = array_merge($lang, array(
 	'Password_mismatch' => 'The passwords you entered did not match.',
 	'Current_password_mismatch' => 'The current password you supplied does not match that stored in the database.',
 	'Password_long' => 'Your password must be no more than 32 characters.',
-	'Too_many_registers' => 'You have exceeded the number of attempts allowed for this session. Please try again later.',
 	'Username_taken' => 'Sorry, but this username has already been taken.',
 	'Username_invalid' => 'Sorry, but this username contains an invalid character such as \'.',
 	'Username_disallowed' => 'Sorry, but this username has been disallowed.',
@@ -725,17 +724,14 @@ $lang = array_merge($lang, array(
 	'Empty_subject_email' => 'You must specify a subject for the e-mail.',
 	'Empty_message_email' => 'You must enter a message to be e-mailed.',
 
-
 // Visual confirmation system strings
-	'Confirm_code_wrong' => 'The confirmation code you entered was incorrect',
-//	'Too_many_registers' => 'You have exceeded the number of attempts for this session. Please try again later.',
-	'Confirm_code_impaired' => 'If you are visually impaired or cannot otherwise read this code please contact the %sAdministrator%s for help.',
-	'Confirm_code' => 'Confirmation code',
-	'Confirm_code_explain' => 'Enter the code exactly as you see it. The code is case sensitive and zero has a diagonal line through it.',
+	'CONFIRM_CODE_WRONG' => 'The confirmation code you entered was incorrect',
+	'TOO_MANY_ATTEMPTS' => 'You have exceeded the number of attempts allowed for this session. Please try again later.',
+	'CONFIRM_CODE_IMPAIRED' => 'If you are visually impaired or cannot otherwise read this code please contact the %sAdministrator%s for help.',
+	'CONFIRM_CODE' => 'Confirmation code',
+	'CONFIRM_CODE_EXPLAIN' => 'Enter the code exactly as you see it. There is no ZERO.',
 
-
-
-// Members list
+// Memberlist
 	'Select_sort_method' => 'Select sort method',
 	'Sort' => 'Sort',
 	'Sort_Top_Ten' => 'Top Ten Posters',
@@ -748,7 +744,6 @@ $lang = array_merge($lang, array(
 	'Sort_Ascending' => 'Ascending',
 	'Sort_Descending' => 'Descending',
 	'Order' => 'Order',
-
 
 // Group control panel
 	'Group_Control_Panel' => 'Group Control Panel',

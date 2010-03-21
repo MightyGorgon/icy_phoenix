@@ -142,9 +142,6 @@ else
 	}
 }
 
-$config['sitename'] = htmlspecialchars($config['sitename']);
-$config['site_desc'] = htmlspecialchars($config['site_desc']);
-
 // Create RSS header
 $rss_header = '<?xml version="1.0" encoding="ISO-8859-2" ?>
 <rss version="2.0">

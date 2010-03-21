@@ -150,7 +150,7 @@ class phpbb_recaptcha extends phpbb_default_captcha
 		}
 		else
 		{
-			$explain = $lang(($this->type != CONFIRM_POST) ? 'CONFIRM_EXPLAIN' : 'POST_CONFIRM_EXPLAIN', '<a href="mailto:' . htmlspecialchars($config['board_contact']) . '">', '</a>');
+			$explain = $lang(($this->type != CONFIRM_POST) ? 'CONFIRM_EXPLAIN' : 'POST_CONFIRM_EXPLAIN', '<a href="mailto:' . $config['board_email'] . '">', '</a>');
 
 			$template->assign_vars(array(
 				'RECAPTCHA_SERVER' => $this->recaptcha_server,

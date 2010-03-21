@@ -22,6 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_flood.' . PHP_EXT);
 
 // Is send through board enabled? No, return to index
 if (!$config['board_email_form'])
@@ -66,18 +67,7 @@ if ($row = $db->sql_fetchrow($result))
 
 	if ($row['user_viewemail'] || ($userdata['user_level'] == ADMIN))
 	{
-
-		// CrackerTracker v5.x
-		if ($userdata['ct_last_mail'] >= time() && $config['ctracker_massmail_protection'] == 1)
-		{
-			message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_sendmail_info'], $config['ctracker_massmail_time']));
-		}
-		// CrackerTracker v5.x
-
-		if (time() - $userdata['user_emailtime'] < $config['flood_interval'])
-		{
-			message_die(GENERAL_MESSAGE, $lang['Flood_email_limit']);
-		}
+		check_flood_email(false);
 
 		if (isset($_POST['submit']))
 		{
@@ -102,25 +92,7 @@ if ($row = $db->sql_fetchrow($result))
 
 			if (!$error)
 			{
-				/*
-				$mtimetemp = time() + 240;
-				$sql = "UPDATE " . USERS_TABLE . "
-					SET ct_mailcount = " . $mtimetemp . "
-					WHERE user_id = " . $userdata['user_id'];
-				$db->sql_query($sql);
-				*/
-				// CrackerTracker v5.x
-				$new_mailtime = time() + $config['ctracker_massmail_time'] * 60;
-				$sql = 'UPDATE ' . USERS_TABLE . '
-					SET user_emailtime = ' . time() . ', ct_last_mail = ' . $new_mailtime . ' WHERE user_id = ' . $userdata['user_id'];
-				// CrackerTracker v5.x
-				/*
-				$sql = "UPDATE " . USERS_TABLE . "
-					SET user_emailtime = " . time() . "
-					WHERE user_id = " . $userdata['user_id'];
-				*/
-
-				$result = $db->sql_query($sql);
+				update_flood_time_email();
 
 				include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 				$emailer = new emailer($config['smtp_delivery']);

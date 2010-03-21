@@ -141,7 +141,7 @@ class pafiledb_download extends pafiledb_public
 			$this->generate_category_nav($file_data['file_catid']);
 
 			$template->assign_vars(array(
-				'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+				'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 				'L_MIRRORS' => $lang['Mirrors'],
 				'L_MIRROR_LOCATION' => $lang['Mirror_location'],
 				'L_DOWNLOAD' => $lang['Download_file'],

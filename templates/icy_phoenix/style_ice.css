@@ -1,7 +1,7 @@
-@import url("../default/common.css");
+@import url("../common/common.css");
+@import url("../common/common_dropdown.css");
 @import url("../common/common_colors.css");
 @import url("../common/fap.css");
-@import url("../common/dock.css");
 @import url("style_ice_colors.css");
 
 /* main selectors */

@@ -4,7 +4,12 @@
 @import url("fap.css");
 
 /* main selectors */
+html {
+	font-family: "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
+}
+
 body {
+	font-family: "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
 	background: #ffffff;
 	/*background: #ffffff url('images/bg_body.gif') top left repeat-x;*/
 	margin: 0px 0px 0px 0;

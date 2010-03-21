@@ -576,11 +576,11 @@ else
 
 				if (isset($lang[$config['sitename']]))
 				{
-					$parent_cat_title = sprintf($lang['Forum_Index'], $lang[htmlspecialchars($config['sitename'])]);
+					$parent_cat_title = sprintf($lang['Forum_Index'], $lang[$config['sitename']]);
 				}
 				else
 				{
-					$parent_cat_title = sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename']));
+					$parent_cat_title = sprintf($lang['Forum_Index'], $config['sitename']);
 				}
 
 				//... then check if the selected category is a child to another category

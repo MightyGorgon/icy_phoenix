@@ -233,15 +233,11 @@ class class_pm
 		$sql = "SELECT MAX(privmsgs_date) AS last_post_time
 			FROM " . PRIVMSGS_TABLE . "
 			WHERE privmsgs_from_userid = " . $userdata['user_id'];
-		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
-		$db->sql_return_on_error(false);
-		if ($result)
+		if ($db_row = $db->sql_fetchrow($result))
 		{
-			$db_row = $db->sql_fetchrow($result);
-			$last_post_time = $db_row['last_post_time'];
-			$current_time = time();
-			if (($current_time - $last_post_time) < $config['flood_interval'])
+			$ip_pm_flood_time = (int) $db_row['last_post_time'] + (int) $config['flood_interval'];
+			if ($ip_pm_flood_time >= time())
 			{
 				$return = true;
 			}

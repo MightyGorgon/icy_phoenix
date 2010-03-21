@@ -22,15 +22,22 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // Do we have an id? No, then just exit
-if (empty($_GET['id']))
+$confirm_id = request_get_var('id', '');
+if (empty($confirm_id))
 {
 	exit;
 }
 
-$confirm_id = htmlspecialchars($_GET['id']);
-
 // Define available charset
 $chars = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+if (!defined('CAPTCHA_FONTS_PATH'))
+{
+	define('CAPTCHA_FONTS_PATH', 'images/fonts/');
+}
+if (!defined('CAPTCHA_PICS_PATH'))
+{
+	define('CAPTCHA_PICS_PATH', 'images/pics/');
+}
 
 //if (!preg_match('/^[A-Za-z0-9]+$/', $confirm_id))
 if (!preg_match('/^[[:alnum:]]+$/', $confirm_id))
@@ -79,54 +86,40 @@ else
 	}
 }
 
-//$config['use_captcha'] = true;
-if ($config['use_captcha'] == true)
+if (!empty($config['use_captcha']))
 {
 	srand((double) microtime() * 1000000);
-	//include(IP_ROOT_PATH . 'includes/functions_captcha.' . PHP_EXT);
-
-	// Read the config table
-	$sql = "SELECT *
-		FROM " . CAPTCHA_CONFIG_TABLE;
-	$result = $db->sql_query($sql);
-
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$captcha_config[$row['config_name']] = $row['config_value'];
-	}
-	$db->sql_freeresult($result);
 
 	// For better compatibility with some servers which need absolute path to load TTFonts
-
 	//$absolute_root_path = IP_ROOT_PATH; //Why this doesn't work???
 	$absolute_root_path = str_replace('index.' . PHP_EXT, '', realpath(IP_ROOT_PATH . 'index.' . PHP_EXT));
 
 	// Prefs
-	$total_width = $captcha_config['width'];
-	$total_height = $captcha_config['height'];
+	$total_width = $config['captcha_width'];
+	$total_height = $config['captcha_height'];
 
-	$hex_bg_color = get_rgb($captcha_config['background_color']);
+	$hex_bg_color = get_rgb($config['captcha_background_color']);
 	$bg_color = array();
 	$bg_color = explode(",", $hex_bg_color);
 
-	$jpeg = $captcha_config['jpeg'];
-	$img_quality = $captcha_config['jpeg_quality'];
+	$jpeg = $config['captcha_jpeg'];
+	$img_quality = $config['captcha_jpeg_quality'];
 	// Max quality is 95
 
-	$pre_letters = $captcha_config['pre_letters'];
-	$pre_letter_great = $captcha_config['pre_letters_great'];
-	$rnd_font = $captcha_config['font'];
-	$chess = $captcha_config['chess'];
-	$ellipses = $captcha_config['ellipses'];
-	$arcs = $captcha_config['arcs'];
-	$lines = $captcha_config['lines'];
-	$image = $captcha_config['image'];
+	$pre_letters = $config['captcha_pre_letters'];
+	$pre_letter_great = $config['captcha_pre_letters_great'];
+	$rnd_font = $config['captcha_font'];
+	$chess = $config['captcha_chess'];
+	$ellipses = $config['captcha_ellipses'];
+	$arcs = $config['captcha_arcs'];
+	$lines = $config['captcha_lines'];
+	$image = $config['captcha_image'];
 
-	$gammacorrect = $captcha_config['gammacorrect'];
+	$gammacorrect = $config['captcha_gammacorrect'];
 
-	$foreground_lattice_y = $captcha_config['foreground_lattice_y'];
-	$foreground_lattice_x = $captcha_config['foreground_lattice_x'];
-	$hex_lattice_color = get_rgb($captcha_config['lattice_color']);
+	$foreground_lattice_y = $config['captcha_foreground_lattice_y'];
+	$foreground_lattice_x = $config['captcha_foreground_lattice_x'];
+	$hex_lattice_color = get_rgb($config['captcha_lattice_color']);
 	$rgb_lattice_color = array();
 	$rgb_lattice_color = explode(",", $hex_lattice_color);
 
@@ -134,7 +127,7 @@ if ($config['use_captcha'] == true)
 	if ($image)
 	{
 		$bg_imgs = array();
-		if ($img_dir = @opendir(IP_ROOT_PATH . 'images/captcha/pics/'))
+		if ($img_dir = @opendir(IP_ROOT_PATH . CAPTCHA_PICS_PATH))
 		{
 			while (true == ($file = @readdir($img_dir)))
 			{
@@ -150,7 +143,7 @@ if ($config['use_captcha'] == true)
 	}
 
 	$fonts = array();
-	if ($fonts_dir = @opendir(IP_ROOT_PATH . 'images/captcha/fonts/'))
+	if ($fonts_dir = @opendir(IP_ROOT_PATH . CAPTCHA_FONTS_PATH))
 	{
 		while (true == ($file = @readdir($fonts_dir)))
 		{
@@ -215,7 +208,6 @@ if ($config['use_captcha'] == true)
 	}
 	//
 
-
 	$text_color_array = array('255,51,0', '51,77,255', '204,51,102', '0,153,0', '255,166,2', '255,0,255', '255,0,0', '0,255,0', '0,0,255', '0,255,255');
 	shuffle($text_color_array);
 	$pre_text_color_array = array('255,71,20', '71,20,224', '224,71,122', '20,173,20', '255,186,22', '25,25,25');
@@ -239,7 +231,7 @@ if ($config['use_captcha'] == true)
 		$angle = mt_rand(-30, 30);
 
 		$char_pos = array();
-		$char_pos = imagettfbbox($size, $angle, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
+		$char_pos = imagettfbbox($size, $angle, $absolute_root_path . CAPTCHA_FONTS_PATH . $fonts[$font], $char);
 		$letter_width = abs($char_pos[0]) + abs($char_pos[4]);
 		$letter_height = abs($char_pos[1]) + abs($char_pos[5]);
 
@@ -257,9 +249,9 @@ if ($config['use_captcha'] == true)
 			$text_color = explode(",", $text_color);
 			$textcolor = imagecolorallocate($image, $text_color[0], $text_color[1], $text_color[2]);
 
-			imagettftext($image, $size, $pre_angle, $x_pos, $y_pos-2, $white, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
-			imagettftext($image, $size, $pre_angle, $x_pos+2, $y_pos, $black, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
-			imagettftext($image, $size, $pre_angle, $x_pos+1, $y_pos-1, $textcolor, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
+			imagettftext($image, $size, $pre_angle, $x_pos, $y_pos-2, $white, $absolute_root_path . CAPTCHA_FONTS_PATH . $fonts[$font], $char);
+			imagettftext($image, $size, $pre_angle, $x_pos+2, $y_pos, $black, $absolute_root_path . CAPTCHA_FONTS_PATH . $fonts[$font], $char);
+			imagettftext($image, $size, $pre_angle, $x_pos+1, $y_pos-1, $textcolor, $absolute_root_path . CAPTCHA_FONTS_PATH . $fonts[$font], $char);
 
 			$size = ($pre_letter_great) ? $size - 2 : $size + 2;
 		}
@@ -269,9 +261,9 @@ if ($config['use_captcha'] == true)
 		$text_color = explode(",", $text_color);
 		$textcolor = imagecolorallocate($image, $text_color[0], $text_color[1], $text_color[2]);
 
-		imagettftext($image, $size, $angle, $x_pos, $y_pos-2, $white, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
-		imagettftext($image, $size, $angle, $x_pos+2, $y_pos, $black, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
-		imagettftext($image, $size, $angle, $x_pos+1, $y_pos-1, $textcolor, $absolute_root_path . 'images/captcha/fonts/' . $fonts[$font], $char);
+		imagettftext($image, $size, $angle, $x_pos, $y_pos-2, $white, $absolute_root_path . CAPTCHA_FONTS_PATH . $fonts[$font], $char);
+		imagettftext($image, $size, $angle, $x_pos+2, $y_pos, $black, $absolute_root_path . CAPTCHA_FONTS_PATH . $fonts[$font], $char);
+		imagettftext($image, $size, $angle, $x_pos+1, $y_pos-1, $textcolor, $absolute_root_path . CAPTCHA_FONTS_PATH . $fonts[$font], $char);
 	}
 
 

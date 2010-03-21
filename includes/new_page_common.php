@@ -124,13 +124,13 @@ if(empty($layout_template))
 }
 
 
-$meta_content['page_title'] = htmlspecialchars($config['sitename']);
+$meta_content['page_title'] = $config['sitename'];
 $meta_content['description'] = '';
 $meta_content['keywords'] = '';
 
 if (!$cms_default_page)
 {
-	$meta_content['page_title'] = (!empty($layout_name) ? htmlspecialchars($layout_name) : htmlspecialchars($config['sitename']));
+	$meta_content['page_title'] = (!empty($layout_name) ? htmlspecialchars($layout_name) : $config['sitename']);
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
 }
 
@@ -162,7 +162,7 @@ if (!empty($layout_name_add))
 }
 
 $template->assign_vars(array(
-	'CMS_PAGE_TITLE' => (!empty($layout_name) ? htmlspecialchars($layout_name) : htmlspecialchars($config['sitename'])),
+	'CMS_PAGE_TITLE' => (!empty($layout_name) ? htmlspecialchars($layout_name) : $config['sitename']),
 	'S_PAGE_NAV' => $cms_page['page_nav'],
 	'S_GLOBAL_BLOCKS' => $cms_page['global_blocks'],
 	)

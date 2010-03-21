@@ -152,8 +152,8 @@ $template->assign_vars(array(
 	'XS_AUTO_COMPILE_1' => $config['xs_auto_compile'] ? ' checked="checked"' : '',
 	'XS_AUTO_RECOMPILE_0' => $config['xs_auto_recompile'] ? '' : ' checked="checked"',
 	'XS_AUTO_RECOMPILE_1' => $config['xs_auto_recompile'] ? ' checked="checked"' : '',
-	'XS_PHP' => htmlspecialchars($config['xs_php']),
-	'XS_DEF_TEMPLATE' => htmlspecialchars($config['xs_def_template']),
+	'XS_PHP' => $config['xs_php'],
+	'XS_DEF_TEMPLATE' => $config['xs_def_template'],
 	'XS_CHECK_SWITCHES_0' => !$config['xs_check_switches'] ? ' checked="checked"' : '', // no check
 	'XS_CHECK_SWITCHES_1' => $config['xs_check_switches'] == 1 ? ' checked="checked"' : '', // smart check
 	'XS_CHECK_SWITCHES_2' => $config['xs_check_switches'] == 2 ? ' checked="checked"' : '', // simple check

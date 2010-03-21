@@ -216,7 +216,7 @@ class pafiledb_user_upload extends pafiledb_public
 				'L_HOME' => $lang['Home'],
 				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-				'L_INDEX' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])),
+				'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 				'L_UPLOAD' => $lang['User_upload'],
 				'L_FILE_TITLE' => $l_title,
 				'L_FILE_APPROVED' => $lang['Approved'],

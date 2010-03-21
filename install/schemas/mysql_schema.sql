@@ -384,17 +384,6 @@ CREATE TABLE phpbb_bots (
 
 ## --------------------------------------------------------
 
-## `phpbb_captcha_config`
-
-CREATE TABLE `phpbb_captcha_config` (
-	`config_name` varchar(255) NOT NULL DEFAULT '',
-	`config_value` varchar(100) NOT NULL DEFAULT '',
-	PRIMARY KEY (`config_name`)
-);
-
-## `phpbb_captcha_config`
-
-
 ## `phpbb_config`
 
 CREATE TABLE `phpbb_config` (
@@ -2236,8 +2225,7 @@ CREATE TABLE `phpbb_xs_news_xml` (
 ## Cracker Tracker - BEGIN
 ALTER TABLE `phpbb_users` ADD `ct_search_time` INT( 11 ) NULL DEFAULT 1 AFTER `user_newpasswd`;
 ALTER TABLE `phpbb_users` ADD `ct_search_count` MEDIUMINT( 8 ) NULL DEFAULT 1 AFTER `ct_search_time`;
-ALTER TABLE `phpbb_users` ADD `ct_last_mail` INT( 11 ) NULL DEFAULT 1 AFTER `ct_search_count`;
-ALTER TABLE `phpbb_users` ADD `ct_last_post` INT( 11 ) NULL DEFAULT 1 AFTER `ct_last_mail`;
+ALTER TABLE `phpbb_users` ADD `ct_last_post` INT( 11 ) NULL DEFAULT 1 AFTER `ct_search_count`;
 ALTER TABLE `phpbb_users` ADD `ct_post_counter` MEDIUMINT( 8 ) NULL DEFAULT 1 AFTER `ct_last_post`;
 ALTER TABLE `phpbb_users` ADD `ct_enable_ip_warn` TINYINT( 1 ) NULL DEFAULT 1 AFTER `ct_post_counter`;
 ALTER TABLE `phpbb_users` ADD `ct_last_used_ip` VARCHAR( 16 ) NULL DEFAULT '0.0.0.0' AFTER `ct_enable_ip_warn`;

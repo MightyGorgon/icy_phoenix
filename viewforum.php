@@ -805,7 +805,7 @@ if ($is_auth['auth_mod'])
 // Mozilla navigation bar
 $nav_links['up'] = array(
 	'url' => append_sid(CMS_PAGE_FORUM),
-	'title' => sprintf($lang['Forum_Index'], htmlspecialchars($config['sitename'])
+	'title' => sprintf($lang['Forum_Index'], $config['sitename']
 	)
 );
 
