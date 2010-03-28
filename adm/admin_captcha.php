@@ -8,14 +8,10 @@
 *
 */
 
-/**
-*
-* @Extra credits for this file
-* Ptirhiik (admin@rpgnet-fr.com)
-*
-*/
-
 define('IN_ICYPHOENIX', true);
+
+// Mighty Gorgon: force to return until new CAPTCHA is effectively in place!
+return;
 
 if(!empty($setmodules))
 {

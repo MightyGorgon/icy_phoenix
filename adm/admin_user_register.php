@@ -27,8 +27,6 @@ $unhtml_specialchars_replace = array('>', '<', '"', '&');
 $error = false;
 $meta_content['page_title'] = $lang['Register'];
 
-$coppa = (empty($_POST['coppa']) && empty($_GET['coppa'])) ? 0 : true;
-
 $sql = "SELECT config_value
 	FROM " . CONFIG_TABLE . "
 	WHERE config_name = 'board_timezone'";
@@ -38,74 +36,27 @@ $config['board_timezone'] = $row['config_value'];
 $db->sql_freeresult($result);
 
 // Check and initialize some variables if needed
-if (isset($_POST['submit']) || ($mode == 'register'))
+if (isset($_POST['submit']))
 {
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-	$strip_var_list = array('username' => 'username', 'email' => 'email', 'new_password' => 'new_password', 'password_confirm' => 'password_confirm');
+	$username = request_post_var('username', '', true);
+	$username = htmlspecialchars_decode($username, ENT_COMPAT);
+	$new_password = request_post_var('new_password', '', true);
+	$new_password = htmlspecialchars_decode($new_password, ENT_COMPAT);
+	$password_confirm = request_post_var('password_confirm', '', true);
+	$password_confirm = htmlspecialchars_decode($password_confirm, ENT_COMPAT);
 
-	// Strip all tags from data ... may p**s some people off, bah, strip_tags is
-	// doing the job but can still break HTML output ... have no choice, have
-	// to use htmlspecialchars ... be prepared to be moaned at.
-	while(list($var, $param) = @each($strip_var_list))
-	{
-		if (!empty($_POST[$param]))
-		{
-			$$var = trim(htmlspecialchars($_POST[$param]));
-		}
-	}
-
-	$user_style = (isset($_POST['style'])) ? intval($_POST['style']) : $config['default_style'];
-
-	if (!empty($_POST['language']))
-	{
-		if (preg_match('/^[a-z_]+$/i', $_POST['language']))
-		{
-			$user_lang = htmlspecialchars($_POST['language']);
-		}
-		else
-		{
-			$error = true;
-			$error_msg = $lang['Fields_empty'];
-		}
-	}
-	else
-	{
-		$user_lang = $config['default_lang'];
-	}
-
-	$user_timezone = (isset($_POST['timezone'])) ? doubleval($_POST['timezone']) : $config['board_timezone'];
-	$sql = "SELECT config_value
-		FROM " . CONFIG_TABLE . "
-		WHERE config_name = 'default_dateformat'";
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	$config['default_dateformat'] = $row['config_value'];
-	$db->sql_freeresult($result);
-
-	$user_dateformat = (!empty($_POST['dateformat'])) ? trim(htmlspecialchars($_POST['dateformat'])) : $config['default_dateformat'];
-
-	if (!isset($_POST['submit']))
-	{
-		$username = stripslashes($username);
-		$email = stripslashes($email);
-		$cur_password = htmlspecialchars(stripslashes($cur_password));
-		$new_password = htmlspecialchars(stripslashes($new_password));
-		$password_confirm = htmlspecialchars(stripslashes($password_confirm));
-
-		$user_lang = stripslashes($user_lang);
-		$user_dateformat = stripslashes($user_dateformat);
-	}
+	$email = request_post_var('email', '', true);
+	$user_style = request_post_var('style', $config['default_style']);
+	$user_lang = request_post_var('language', $config['default_lang']);
+	$user_timezone = request_post_var('timezone', $config['board_timezone']);
+	$user_dateformat = request_post_var('dateformat', $config['default_dateformat']);
 }
 
-//
-// Let's make sure the user isn't logged in while registering,
-// and ensure that they were trying to register a second time
-// (Prevents double registrations)
-//
-if ($mode == 'register' && ($userdata['session_logged_in'] || ($username == $userdata['username'])))
+if (!empty($username) && ($username == $userdata['username']))
 {
 	message_die(GENERAL_MESSAGE, $lang['Username_taken'], '', __LINE__, __FILE__);
 }
@@ -126,7 +77,7 @@ if (isset($_POST['submit']))
 	}
 
 	// Do a ban check on this email address
-	if (($email != $userdata['user_email']) || ($mode == 'register'))
+	if ($email != $userdata['user_email'])
 	{
 		$result = validate_email($email);
 		if ($result['error'])
@@ -143,7 +94,7 @@ if (isset($_POST['submit']))
 	{
 		$error = true;
 	}
-	elseif (($username != $userdata['username']) || ($mode == 'register'))
+	elseif ($username != $userdata['username'])
 	{
 		if (strtolower($username) != strtolower($userdata['username']))
 		{
@@ -173,7 +124,7 @@ if (isset($_POST['submit']))
 		}
 		$user_id = $row['total'] + 1;
 
-		$new_password = md5($new_password);
+		$new_password = phpbb_hash($new_password);
 
 		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_regdate, user_password, user_email, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
 			VALUES ($user_id, '" . $db->sql_escape($username) . "', " . time() . ", '" . $db->sql_escape($new_password) . "', '" . $db->sql_escape($email) . "', $user_style, $user_timezone, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_lang) . "', 0, 1, 'user_actkey')";
@@ -200,27 +151,14 @@ if (isset($_POST['submit']))
 
 if ($error)
 {
-	// If an error occured we need to stripslashes on returned data
-	$username = stripslashes($username);
-	$email = stripslashes($email);
+	// If an error occured we need to htmlspecialchars again username for output on returned data
+	$username = htmlspecialchars($username);
 	$new_password = '';
 	$password_confirm = '';
-
-	$user_lang = stripslashes($user_lang);
-	$user_dateformat = stripslashes($user_dateformat);
 }
 
 // Default pages
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
-
-$coppa = false;
-
-if (!isset($user_template))
-{
-	$selected_template = $config['system_template'];
-}
-
-$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="coppa" value="' . $coppa . '" />';
 
 if ($error)
 {
@@ -248,11 +186,8 @@ $template->assign_vars(array(
 
 	'L_USERNAME' => $lang['Username'],
 	'L_CURRENT_PASSWORD' => $lang['Current_password'],
-	'L_NEW_PASSWORD' => ($mode == 'register') ? $lang['Password'] : $lang['New_password'],
+	'L_NEW_PASSWORD' => $lang['Password'],
 	'L_CONFIRM_PASSWORD' => $lang['Confirm_password'],
-	'L_CONFIRM_PASSWORD_EXPLAIN' => ($mode == 'editprofile') ? $lang['Confirm_password_explain'] : '',
-	'L_PASSWORD_IF_CHANGED' => ($mode == 'editprofile') ? $lang['password_if_changed'] : '',
-	'L_PASSWORD_CONFIRM_IF_CHANGED' => ($mode == 'editprofile') ? $lang['password_confirm_if_changed'] : '',
 	'L_SUBMIT' => $lang['Submit'],
 	'L_RESET' => $lang['Reset'],
 	'L_BOARD_LANGUAGE' => $lang['Board_lang'],

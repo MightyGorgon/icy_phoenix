@@ -23,7 +23,7 @@ for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
 ?>
 <!-- BEGIN catrow -->
 <!-- BEGIN tablehead -->
-<div id="{catrow.MAIN_CAT_ID}_f_h" style="display:none;">
+<div id="{catrow.MAIN_CAT_ID}_f_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('{catrow.MAIN_CAT_ID}_f','{catrow.MAIN_CAT_ID}_f_h','{catrow.MAIN_CAT_ID}_f');" alt="{L_SHOW}" /><span class="forumlink">{catrow.tablehead.L_FORUM}</span>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

@@ -209,13 +209,14 @@ class emailer
 	function send()
 	{
 		global $db, $config, $lang;
+
 		// Escape all quotes, else the eval will fail.
-		$this->msg = str_replace ("'", "\'", $this->msg);
+		$this->msg = str_replace("'", "\'", $this->msg);
 		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);
 
 		// Set vars
-		reset ($this->vars);
-		while (list($key, $val) = each($this->vars))
+		reset($this->vars);
+		while(list($key, $val) = each($this->vars))
 		{
 			$$key = $val;
 		}
@@ -223,14 +224,13 @@ class emailer
 		eval("\$this->msg = '$this->msg';");
 
 		// Clear vars
-		reset ($this->vars);
-		while (list($key, $val) = each($this->vars))
+		reset($this->vars);
+		while(list($key, $val) = each($this->vars))
 		{
 			unset($$key);
 		}
 
-		// We now try and pull a subject from the email body ... if it exists,
-		// do this here because the subject may contain a variable
+		// We now try and pull a subject from the email body ... if it exists do this here because the subject may contain a variable
 		$drop_header = '';
 		$match = array();
 		if (preg_match('#^(Subject:(.*?))$#m', $this->msg, $match))
@@ -268,11 +268,11 @@ class emailer
 
 		if (!empty($config['html_email']))
 		{
-			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/html; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . gmdate('r') . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
+			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/html; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . gmdate('r') . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '') . (($bcc != '') ? "Bcc: $bcc\n" : '');
 		}
 		else
 		{
-			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . gmdate('r') . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
+			$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . gmdate('r') . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By Icy Phoenix\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '') . (($bcc != '') ? "Bcc: $bcc\n" : '');
 		}
 
 		// Send message ... removed $this->encode() from subject for time being

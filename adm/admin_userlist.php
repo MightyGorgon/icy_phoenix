@@ -409,11 +409,11 @@ switch($mode)
 				{
 					$temp = 'num';
 				}
-				$alphanum_search_url = append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show . '&amp;alphanum=' . $temp);
+				$alphanum_search_url = append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort_method . '&amp;order=' . $sort_order . '&amp;show=' . $show . '&amp;alphanum=' . $temp);
 			}
 			else
 			{
-				$alphanum_search_url = append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show);
+				$alphanum_search_url = append_sid(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort_method . '&amp;order=' . $sort_order . '&amp;show=' . $show);
 			}
 
 			$template->assign_block_vars('alphanumsearch', array(
@@ -433,7 +433,7 @@ switch($mode)
 		$select_sort = '<select name="sort" class="post">';
 		for($i = 0; $i < sizeof($select_sort_by); $i++)
 		{
-			$selected = ($sort == $select_sort_by[$i]) ? ' selected="selected"' : '';
+			$selected = ($sort_method == $select_sort_by[$i]) ? ' selected="selected"' : '';
 			$select_sort .= '<option value="' . $select_sort_by[$i] . '"' . $selected . '>' . $select_sort_by_text[$i] . '</option>';
 		}
 		$select_sort .= '</select>';
@@ -498,7 +498,7 @@ switch($mode)
 			)
 		);
 
-		$order_by = "ORDER BY $sort $sort_order ";
+		$order_by = "ORDER BY $sort_method $sort_order ";
 
 		$sql = "SELECT *
 			FROM " . USERS_TABLE . "
@@ -630,7 +630,7 @@ switch($mode)
 		if ($total = $db->sql_fetchrow($count_result))
 		{
 			$total_members = $total['total'];
-			$pagination = generate_pagination(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort . '&amp;order=' . $sort_order . '&amp;show=' . $show . ((isset($alphanum)) ? '&amp;alphanum=' . $alphanum : ''), $total_members, $show, $start);
+			$pagination = generate_pagination(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT . '?sort=' . $sort_method . '&amp;order=' . $sort_order . '&amp;show=' . $show . ((isset($alphanum)) ? '&amp;alphanum=' . $alphanum : ''), $total_members, $show, $start);
 		}
 
 		$template->assign_vars(array(

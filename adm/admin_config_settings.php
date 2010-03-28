@@ -8,13 +8,6 @@
 *
 */
 
-/**
-*
-* @Extra credits for this file
-* Ptirhiik (admin@rpgnet-fr.com)
-*
-*/
-
 define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))

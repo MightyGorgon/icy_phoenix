@@ -222,8 +222,9 @@ else
 	switch($mode)
 	{
 		case 'search_username':
-			$username = (isset($_GET['username'])) ? $_GET['username'] : $_POST['username'];
-			$regex = ($_POST['search_username_regex']) ? true : ($_GET['regex']) ? true : false;
+			$username = request_var('username', '', true);
+			$username = htmlspecialchars_decode($username, ENT_COMPAT);
+			$regex = ($_POST['search_username_regex']) ? true : (request_var('regex', 0) ? true : false);
 
 			if(!$username)
 			{
@@ -231,9 +232,10 @@ else
 			}
 
 			break;
+
 		case 'search_email':
-			$email = (isset($_GET['email'])) ? $_GET['email'] : $_POST['email'];
-			$regex = ($_POST['search_email_regex']) ? true : ($_GET['regex']) ? true : false;
+			$email = request_var('email', '', true);
+			$regex = ($_POST['search_email_regex']) ? true : (request_var('regex', 0) ? true : false);
 
 			if(!$email)
 			{
@@ -241,45 +243,50 @@ else
 			}
 
 			break;
+
 		case 'search_ip':
-			$ip_address = (isset($_POST['ip_address'])) ? $_POST['ip_address'] : $_GET['ip_address'];
+			$ip_address = request_var('ip_address', '');
 
 			if(!$ip_address)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_ip']);
 			}
 			break;
+
 		case 'search_joindate':
-			$date_type = (isset($_POST['date_type'])) ? $_POST['date_type'] : $_GET['date_type'];
-			$date_day = (isset($_POST['date_day'])) ? $_POST['date_day'] : $_GET['date_day'];
-			$date_month = (isset($_POST['date_month'])) ? $_POST['date_month'] : $_GET['date_month'];
-			$date_year = (isset($_POST['date_year'])) ? $_POST['date_year'] : $_GET['date_year'];
+			$date_type = request_var('date_type', '');
+			$date_day = request_var('date_day', '');
+			$date_month = request_var('date_month', '');
+			$date_year = request_var('date_year', '');
 
 			if(!$date_type || !$date_day || !$date_month || !$date_year)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_date']);
 			}
 			break;
+
 		case 'search_group':
-			$group_id = (isset($_POST['group_id'])) ? $_POST['group_id'] : $_GET['group_id'];
-			if(!$group_id)
+			$group_id = request_var('group_id', 0);
+			if(empty($group_id))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_group']);
 			}
 			break;
-		case 'search_postcount':
-			$postcount_type = (isset($_POST['postcount_type'])) ? $_POST['postcount_type'] : $_GET['postcount_type'];
-			$postcount_value = (isset($_POST['postcount_value'])) ? $_POST['postcount_value'] : $_GET['postcount_value'];
 
-			if(!$postcount_type || (!$postcount_value && $postcount_value != 0))
+		case 'search_postcount':
+			$postcount_type = request_var('postcount_type', '');
+			$postcount_value = request_var('postcount_value', 0);
+
+			if(!$postcount_type || (!$postcount_value && ($postcount_value != 0)))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_postcount']);
 			}
 			break;
+
 		case 'search_userfield':
-			$userfield_type = (isset($_POST['userfield_type'])) ? $_POST['userfield_type'] : $_GET['userfield_type'];
-			$userfield_value = (isset($_POST['userfield_value'])) ? $_POST['userfield_value'] : $_GET['userfield_value'];
-			$regex = ($_POST['search_userfield_regex']) ? true : ($_GET['regex']) ? true : false;
+			$userfield_type = request_var('userfield_type', '');
+			$userfield_value = request_var('userfield_value', '');
+			$regex = ($_POST['search_userfield_regex']) ? true : (request_var('regex', 0) ? true : false);
 
 			if(!$userfield_type || !$userfield_value)
 			{
@@ -287,9 +294,10 @@ else
 			}
 
 			break;
+
 		case 'search_lastvisited':
-			$lastvisited_days = (isset($_POST['lastvisited_days'])) ? $_POST['lastvisited_days'] : $_GET['lastvisited_days'];
-			$lastvisited_type = (isset($_POST['lastvisited_type'])) ? $_POST['lastvisited_type'] : $_GET['lastvisited_type'];
+			$lastvisited_days = request_var('lastvisited_days', '');
+			$lastvisited_type = request_var('lastvisited_type', '');
 
 			if(!$lastvisited_days || !$lastvisited_type)
 			{
@@ -297,8 +305,9 @@ else
 			}
 
 			break;
+
 		case 'search_language':
-			$language_type = (isset($_POST['language_type'])) ? $_POST['language_type'] : $_GET['language_type'];
+			$language_type = request_var('language_type', '');
 
 			if(!$language_type)
 			{
@@ -306,8 +315,9 @@ else
 			}
 
 			break;
+
 		case 'search_timezone':
-			$timezone_type = (isset($_POST['timezone_type'])) ? $_POST['timezone_type'] : $_GET['timezone_type'];
+			$timezone_type = request_var('timezone_type', '');
 
 			if(!$timezone_type && $timezone_type != 0)
 			{
@@ -315,8 +325,9 @@ else
 			}
 
 			break;
+
 		case 'search_style':
-			$style_type = (isset($_POST['style_type'])) ? $_POST['style_type'] : $_GET['style_type'];
+			$style_type = request_var('style_type', '');
 
 			if(!$style_type)
 			{
@@ -324,8 +335,9 @@ else
 			}
 
 			break;
+
 		case 'search_moderators':
-			$moderators_forum = (isset($_POST['moderators_forum'])) ? $_POST['moderators_forum'] : $_GET['moderators_forum'];
+			$moderators_forum = request_var('moderators_forum', '');
 
 			if(!$moderators_forum)
 			{
@@ -333,9 +345,10 @@ else
 			}
 
 			break;
+
 		case 'search_misc':
 		default:
-			$misc = (isset($_POST['misc'])) ? $_POST['misc'] : $_GET['misc'];
+			$misc = request_var('misc', '');
 			if(!$misc)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid']);
@@ -360,9 +373,9 @@ else
 	switch($mode)
 	{
 		case 'search_username':
-			$base_url .= '&search_username=true&username=' . rawurlencode(stripslashes($username));
+			$base_url .= '&search_username=true&username=' . rawurlencode($username);
 
-			$text = sprintf($lang['Search_for_username'], strip_tags(htmlspecialchars(stripslashes($username))));
+			$text = sprintf($lang['Search_for_username'], strip_tags(htmlspecialchars($username)));
 
 			if(!$regex)
 			{
@@ -396,9 +409,9 @@ else
 									AND u.user_id <> " . ANONYMOUS;
 			break;
 		case 'search_email':
-			$base_url .= '&search_email=true&email=' . rawurlencode(stripslashes($email));
+			$base_url .= '&search_email=true&email=' . rawurlencode($email);
 
-			$text = sprintf($lang['Search_for_email'], strip_tags(htmlspecialchars(stripslashes($email))));
+			$text = sprintf($lang['Search_for_email'], strip_tags($email));
 
 			if(!$regex)
 			{
@@ -432,12 +445,12 @@ else
 									AND u.user_id <> " . ANONYMOUS;
 			break;
 		case 'search_ip':
-			$base_url .= '&search_ip=true&ip_address=' . rawurlencode(stripslashes($ip_address));
+			$base_url .= '&search_ip=true&ip_address=' . rawurlencode($ip_address);
 
 			// Remove any whitespace
 			$ip_address = trim($ip_address);
 
-			$text = sprintf($lang['Search_for_ip'], strip_tags(htmlspecialchars(stripslashes($ip_address))));
+			$text = sprintf($lang['Search_for_ip'], strip_tags($ip_address));
 
 			unset($users);
 			$users = array();
@@ -580,7 +593,7 @@ else
 
 			break;
 		case 'search_joindate':
-			$base_url .= '&search_joindate=true&date_type=' . rawurlencode($date_type) . '&date_day=' . rawurlencode($date_day) . '&date_month=' . rawurlencode($date_month) . '&date_year=' . rawurlencode(stripslashes($date_year));
+			$base_url .= '&search_joindate=true&date_type=' . rawurlencode($date_type) . '&date_day=' . rawurlencode($date_day) . '&date_month=' . rawurlencode($date_month) . '&date_year=' . rawurlencode($date_year);
 
 			$date_type = trim(strtolower($date_type));
 
@@ -610,7 +623,7 @@ else
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_year']);
 			}
 
-			$text = sprintf($lang['Search_for_date'], strip_tags(htmlspecialchars(stripslashes($date_type))), $date_year, $date_month, $date_day);
+			$text = sprintf($lang['Search_for_date'], strip_tags($date_type), $date_year, $date_month, $date_day);
 
 			$time = gmmktime(0, 0, 0, $date_month, $date_day, $date_year);
 
@@ -655,7 +668,7 @@ else
 
 			$group_name = $db->sql_fetchrow($result);
 
-			$text = sprintf($lang['Search_for_group'], strip_tags(htmlspecialchars($group_name['group_name'])));
+			$text = sprintf($lang['Search_for_group'], strip_tags($group_name['group_name']));
 
 			$total_sql .= "SELECT COUNT(u.user_id) AS total
 								FROM " . USERS_TABLE . " AS u, " . USER_GROUP_TABLE . " AS ug
@@ -673,7 +686,7 @@ else
 			$postcount_type = trim(strtolower($postcount_type));
 			$postcount_value = trim(strtolower($postcount_value));
 
-			$base_url .= '&search_postcount=true&postcount_type=' . rawurlencode($postcount_type) . '&postcount_value=' . rawurlencode(stripslashes($postcount_value));
+			$base_url .= '&search_postcount=true&postcount_type=' . rawurlencode($postcount_type) . '&postcount_value=' . rawurlencode($postcount_value);
 
 			switch($postcount_type)
 			{
@@ -750,9 +763,9 @@ else
 
 			break;
 		case 'search_userfield':
-			$base_url .= '&search_userfield=true&userfield_type=' . rawurlencode($userfield_type) . '&userfield_value=' . rawurlencode(stripslashes($userfield_value));
+			$base_url .= '&search_userfield=true&userfield_type=' . rawurlencode($userfield_type) . '&userfield_value=' . rawurlencode($userfield_value);
 
-			$text = strip_tags(htmlspecialchars(stripslashes($userfield_value)));
+			$text = strip_tags(htmlspecialchars($userfield_value));
 
 			if(!$regex)
 			{
@@ -830,7 +843,7 @@ else
 			$lastvisited_type = trim(strtolower($lastvisited_type));
 			$lastvisited_days = intval($lastvisited_days);
 
-			$base_url .= '&search_lastvisited=true&lastvisited_type=' . rawurlencode(stripslashes($lastvisited_type)) . '&lastvisited_days=' . rawurlencode($lastvisited_days);
+			$base_url .= '&search_lastvisited=true&lastvisited_type=' . rawurlencode($lastvisited_type) . '&lastvisited_days=' . rawurlencode($lastvisited_days);
 
 			$lastvisited_seconds = (time() - ((($lastvisited_days * 24) * 60) * 60));
 
@@ -865,7 +878,7 @@ else
 
 			break;
 		case 'search_language':
-			$base_url .= '&search_language=true&language_type=' . rawurlencode(stripslashes($language_type));
+			$base_url .= '&search_language=true&language_type=' . rawurlencode($language_type);
 
 			$language_type = trim(strtolower(stripslashes($language_type)));
 
@@ -874,7 +887,7 @@ else
 				message_die(GENERAL_MESSAGE, $lang['Search_invalid_language']);
 			}
 
-			$text = sprintf($lang['Search_for_language'], strip_tags(htmlspecialchars($language_type)));
+			$text = sprintf($lang['Search_for_language'], strip_tags($language_type));
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
 								FROM " . USERS_TABLE . "
@@ -886,8 +899,8 @@ else
 
 			break;
 		case 'search_timezone':
-			$base_url .= '&search_timezone=true&timezone_type=' . rawurlencode(stripslashes($timezone_type));
-			$text = sprintf($lang['Search_for_timezone'], strip_tags(htmlspecialchars(stripslashes($timezone_type))));
+			$base_url .= '&search_timezone=true&timezone_type=' . rawurlencode($timezone_type);
+			$text = sprintf($lang['Search_for_timezone'], strip_tags($timezone_type));
 
 			$timezone_type = intval($timezone_type);
 
@@ -901,7 +914,7 @@ else
 
 			break;
 		case 'search_style':
-			$base_url .= '&search_style=true&style_type=' . rawurlencode(stripslashes($style_type));
+			$base_url .= '&search_style=true&style_type=' . rawurlencode($style_type);
 
 			$style_type = intval($style_type);
 
@@ -917,7 +930,7 @@ else
 
 			$style_name = $db->sql_fetchrow($result);
 
-			$text = sprintf($lang['Search_for_style'], strip_tags(htmlspecialchars($style_name['style_name'])));
+			$text = sprintf($lang['Search_for_style'], strip_tags($style_name['style_name']));
 
 			$total_sql .= "SELECT COUNT(user_id) AS total
 								FROM " . USERS_TABLE . "
@@ -929,7 +942,7 @@ else
 
 			break;
 		case 'search_moderators':
-			$base_url .= '&search_moderators=true&moderators_forum=' . rawurlencode(stripslashes($moderators_forum));
+			$base_url .= '&search_moderators=true&moderators_forum=' . rawurlencode($moderators_forum);
 			$moderators_forum = intval($moderators_forum);
 
 			$sql = "SELECT forum_name
@@ -944,7 +957,7 @@ else
 
 			$forum_name = $db->sql_fetchrow($result);
 
-			$text = sprintf($lang['Search_for_moderators'], strip_tags(htmlspecialchars($forum_name['forum_name'])));
+			$text = sprintf($lang['Search_for_moderators'], strip_tags($forum_name['forum_name']));
 
 			$total_sql .= "SELECT COUNT(DISTINCT u.user_id) AS total
 							FROM " . USERS_TABLE . " AS u, " . GROUPS_TABLE . " AS g, " . USER_GROUP_TABLE . " AS ug, " . AUTH_ACCESS_TABLE . " AS aa
@@ -968,7 +981,7 @@ else
 		default:
 			$misc = trim(strtolower($misc));
 
-			$base_url .= '&search_misc=true&misc=' . rawurlencode(stripslashes($misc));
+			$base_url .= '&search_misc=true&misc=' . rawurlencode($misc);
 
 			switch($misc)
 			{
@@ -1043,50 +1056,47 @@ else
 
 	$select_sql .= " ORDER BY ";
 
-	switch(strtolower($_GET['sort']))
+	$sort_method = request_var('sort', '');
+	switch(strtolower($sort_method))
 	{
 		case 'regdate':
 			$sort = 'regdate';
-
-			$select_sql .= "u.user_regdate";
+			$select_sql .= 'u.user_regdate';
 			break;
 		case 'posts':
 			$sort = 'posts';
-
-			$select_sql .= "u.user_posts";
+			$select_sql .= 'u.user_posts';
 			break;
 		case 'user_email':
 			$sort = 'user_email';
-
-			$select_sql .= "u.user_email";
+			$select_sql .= 'u.user_email';
 			break;
 		case 'lastvisit':
 			$sort = 'lastvisit';
-
-			$select_sql .= "u.user_lastvisit";
+			$select_sql .= 'u.user_lastvisit';
 			break;
 		case 'username':
 		default:
 			$sort = 'username';
-
-			$select_sql .= "u.username";
+			$select_sql .= 'u.username';
 	}
 
-	switch($_GET['order'])
+	$sort_order = request_var('order', 'DESC');
+	switch($sort_order)
 	{
 		case 'DESC':
-			$order = "DESC";
-			$o_order = "ASC";
+			$order = 'DESC';
+			$o_order = 'ASC';
 			break;
 		case 'DESC':
 		default:
-			$o_order = "DESC";
-			$order = "ASC";
+			$o_order = 'DESC';
+			$order = 'ASC';
 	}
 
 	$select_sql .= " $order";
 
-	$page = (isset($_GET['page'])) ? intval($_GET['page']) : intval(trim($_POST['page']));
+	$page = request_var('page', 0);
 
 	if($page < 1)
 	{

@@ -246,6 +246,12 @@ if ($mode != 'register')
 // Check and initialize some variables if needed
 if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['submitavatar']) || isset($_POST['avatargenerator']) || isset($_POST['submitgenava']) || isset($_POST['cancelavatar']) || $mode == 'register')
 {
+	// Reset some config values which are overridden from init_userprefs
+	$config_tmp = get_config(false);
+	$config['default_lang'] = $config_tmp['default_lang'];
+	$config['board_timezone'] = $config_tmp['board_timezone'];
+	$config['default_dateformat'] = $config_tmp['default_dateformat'];
+
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
@@ -268,9 +274,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 		'confirm_code' => 'confirm_code'
 	);
 
-	// Strip all tags from data ... may p**s some people off, bah, strip_tags is
-	// doing the job but can still break HTML output ... have no choice, have
-	// to use htmlspecialchars ... be prepared to be moaned at.
+	// Strip all tags from data ... may p**s some people off, bah, strip_tags is doing the job but can still break HTML output ... have no choice, have to use htmlspecialchars ... be prepared to be moaned at.
 	while(list($var, $param) = @each($strip_var_list))
 	{
 		$$var = request_post_var($param, '', true);
@@ -329,8 +333,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	}
 	// Birthday - END
 
-	// Run some validation on the optional fields. These are pass-by-ref, so they'll be changed to
-	// empty strings if they fail.
+	// Run some validation on the optional fields. These are pass-by-ref, so they'll be changed to empty strings if they fail.
 	validate_optional_fields($icq, $aim, $msn, $yim, $skype, $website, $location, $occupation, $interests, $phone, $selfdes, $signature);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -411,12 +414,6 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 		$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['dst_time_lag_error'];
 	}
 
-	$sql = "SELECT config_value
-		FROM " . CONFIG_TABLE . "
-		WHERE config_name = 'default_dateformat'";
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	$config['default_dateformat'] = $row['config_value'];
 	$user_dateformat = request_post_var('dateformat', $config['default_dateformat']);
 
 	$user_avatarselect = request_post_var('avatarselect', '');

@@ -2161,11 +2161,14 @@ if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll']))
 		@reset($poll_options);
 		while(list($option_id, $option_text) = each($poll_options))
 		{
-			$template->assign_block_vars('poll_option_rows', array(
-				'POLL_OPTION' => $option_text,
-				'S_POLL_OPTION_NUM' => $option_id
-				)
-			);
+			if (!empty($option_text))
+			{
+				$template->assign_block_vars('poll_option_rows', array(
+					'POLL_OPTION' => $option_text,
+					'S_POLL_OPTION_NUM' => $option_id
+					)
+				);
+			}
 		}
 	}
 

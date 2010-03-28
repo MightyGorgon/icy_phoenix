@@ -55,9 +55,12 @@ if(!function_exists('cms_block_user_block'))
 			$avatar_img = '<img src="' . $config['default_avatar_guests_url'] . '" alt="" />';
 		}
 
+		$s_last_visit = create_date($config['default_dateformat'], $userdata['user_lastvisit'], $config['board_timezone']);
+
 		$template->assign_vars(array(
 			'AVATAR_IMG' => $avatar_img,
 			'U_NAME_LINK' => $name_link,
+			'LAST_VISIT_DATE' => sprintf($lang['You_last_visit'], $s_last_visit),
 			'L_REMEMBER_ME' => $lang['Remember_me'],
 			'L_SEND_PASSWORD' => $lang['Forgotten_password'],
 			'U_SEND_PASSWORD' => append_sid(CMS_PAGE_PROFILE . '?mode=sendpassword'),
