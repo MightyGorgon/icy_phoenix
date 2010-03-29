@@ -76,9 +76,9 @@ if($mode != 'list')
 	}
 	elseif($mode == 'save')
 	{
-		$ticket_cat_title = request_var('ticket_cat_title', '');
-		$ticket_cat_des = request_var('ticket_cat_des', '');
-		$ticket_cat_emails = request_var('ticket_cat_emails', '');
+		$ticket_cat_title = request_var('ticket_cat_title', '', true);
+		$ticket_cat_des = request_var('ticket_cat_des', '', true);
+		$ticket_cat_emails = request_var('ticket_cat_emails', '', true);
 
 		if($ticket_cat_title == '')
 		{

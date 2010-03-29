@@ -66,8 +66,8 @@ if ($submit)
 	}
 
 	$edit_post_time = gmmktime($hour, $minute, $second, $month, $new_day, $year);
-	// Mighty Gorgon: alternative way... it needs to be checked though!!!
-	//$edit_post_time = gmmktime($hour, $minute, $second, $month, $new_day, $year) - (3600 * $config['board_timezone']);
+	$dst_sec = get_dst($edit_post_time, $config['board_timezone']);
+	$edit_post_time = $edit_post_time - (3600 * $config['board_timezone']) - $dst_sec;
 
 	$time_changed = change_post_time($post_id, $edit_post_time);
 

@@ -42,8 +42,8 @@
 <!-- IF field.L_SEPARATOR --><tr><th colspan="2">{field.L_SEPARATOR}</th></tr><!-- ENDIF -->
 <!-- IF field.L_SEPARATOR_EXPLAIN --><tr><td class="row2" colspan="2"><div class="gensmall">{field.L_SEPARATOR_EXPLAIN}</div></td></tr><!-- ENDIF -->
 <tr>
-	<td class="row1" width="50%"><span class="genmed"><b>{field.L_NAME}</b></span><span class="gensmall">{field.L_EXPLAIN}</span></td>
-	<td class="row2" width="50%"><span class="gen">{field.INPUT}</span><span class="gensmall">{field.OVERRIDE}</span></td>
+	<td class="row1" width="50%"><div class="genmed"><b>{field.L_NAME}</b></div><!-- IF field.L_EXPLAIN --><div class="gensmall">{field.L_EXPLAIN}</div><!-- ENDIF --></td>
+	<td class="row2" width="50%"><div class="gen">{field.INPUT}</div><!-- IF field.OVERRIDE --><div class="gensmall">{field.OVERRIDE}</div><!-- ENDIF --></td>
 </tr>
 <!-- END field -->
 <tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>

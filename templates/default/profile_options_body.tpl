@@ -7,15 +7,12 @@
 <tr><td colspan="2" class="row-header"><span>{L_MOD_NAME}</span></td></tr>
 <!-- BEGIN field -->
 <tr>
-	<td class="row1" width="50%">
-		<span class="gen">{field.L_NAME}</span>
-		<!-- IF field.L_EXPLAIN --><span class="gensmall">{field.L_EXPLAIN}</span><!-- ENDIF -->
-	</td>
-	<td class="row2" width="50%" nowrap="nowrap"><span class="gen">{field.INPUT}</span></td>
+	<td class="row1" width="50%"><div class="gen">{field.L_NAME}</div><!-- IF field.L_EXPLAIN --><div class="gensmall">{field.L_EXPLAIN}</div><!-- ENDIF --></td>
+	<td class="row2" width="50%" nowrap="nowrap"><div class="gen">{field.INPUT}</div></td>
 </tr>
 <!-- END field -->
 <tr>
-	<td class="catBottom" colspan="2" align="center">{S_HIDDEN_FIELDS}
+	<td class="cat" colspan="2">{S_HIDDEN_FIELDS}
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
 		<input type="reset" value="{L_RESET}" class="liteoption" />
 	</td>

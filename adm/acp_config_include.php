@@ -238,7 +238,7 @@ while (list($config_name, $config_data) = @each($acp_modules[$menu_name]['data']
 		'L_SEPARATOR' => !empty($config_data['separator']) ? $class_settings->get_lang($config_data['separator']) : false,
 		'L_SEPARATOR_EXPLAIN' => !empty($config_data['separator_explain']) ? $class_settings->get_lang($config_data['separator_explain']) : false,
 		'L_NAME' => $class_settings->get_lang($config_data['lang_key']),
-		'L_EXPLAIN' => !empty($config_data['explain']) ? '<br />' . $class_settings->get_lang($config_data['explain']) : '',
+		'L_EXPLAIN' => !empty($config_data['explain']) ? $class_settings->get_lang($config_data['explain']) : '',
 		'INPUT' => $input,
 		'OVERRIDE' => $override,
 		)

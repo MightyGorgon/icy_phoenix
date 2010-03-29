@@ -3842,6 +3842,8 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "DROP TABLE `" . $table_prefix . "captcha_config`";
 
+		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "hacks_list`";
+
 		/* Updating from IP 1.3.8.61 */
 		case '1.3.8.61':
 	}

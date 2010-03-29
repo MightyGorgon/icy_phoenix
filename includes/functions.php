@@ -884,7 +884,7 @@ function unique_id($extra = 'c')
 *
 * The homepage URL for this framework is:
 *
-*	http://www.openwall.com/phpass/
+* http://www.openwall.com/phpass/
 *
 * Please be sure to update the Version line if you edit this file in any way.
 * It is suggested that you leave the main version number intact, but indicate
@@ -2177,7 +2177,14 @@ function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 // e.g. realdate ("m d Y", 3) returns the string "1 3 1970"
 function realdate($date_syntax = 'Ymd', $date = 0)
 {
-	return create_date($date_syntax, ($date * 86400) + 1, 0);
+	global $config;
+
+	$unix_time = ($date * 86400) + 1;
+	// Since we are using create_date, we need to adjust time back by timezone and dst to avoid date change...
+	$zone_offset = (3600 * $config['board_timezone']) + get_dst($unix_time, $config['board_timezone']);
+	$unix_time = $unix_time - $zone_offset;
+
+	return create_date($date_syntax, $unix_time, $config['board_timezone']);
 }
 // Birthday - END
 

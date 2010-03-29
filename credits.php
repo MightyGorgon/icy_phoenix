@@ -48,12 +48,12 @@ switch($mode)
 			$template->assign_block_vars('listrow', array(
 				'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
 				'HACK_ID' => $row['hack_id'],
-				'HACK_AUTHOR' => ($row['hack_author_email'] != '') ? ((USE_CRYPTIC_EMAIL) ? htmlspecialchars(stripslashes($row['hack_author'])) . '<br />' . cryptize_hl_email(stripslashes($row['hack_author_email'])) : '<a href="mailto:' . stripslashes($row['hack_author_email']) . '">' . htmlspecialchars(stripslashes($row['hack_author'])) . '</a>') : htmlspecialchars(stripslashes($row['hack_author'])),
-				'HACK_WEBSITE' => ($row['hack_author_website'] != '') ? '<a target="blank" href="' . htmlspecialchars(stripslashes($row['hack_author_website'])) . '">' . htmlspecialchars(stripslashes($row['hack_author_website'])) . '</a>' : $lang['No_Website'],
-				'HACK_NAME' => ($row['hack_download_url'] != '') ? '<a target="blank" href="' . htmlspecialchars(stripslashes($row['hack_download_url'])) . '">' . htmlspecialchars(stripslashes($row['hack_name'])) . '</a>' : stripslashes($row['hack_name']),
-				'HACK_DESC' => htmlspecialchars(stripslashes($row['hack_desc'])),
-				//'HACK_VERSION' => ($row['hack_version'] != '') ? ' v' . stripslashes($row['hack_version']) : ''));
-				'HACK_VERSION' => ($row['hack_version'] != '') ? stripslashes($row['hack_version']) : ''
+				'HACK_AUTHOR' => ($row['hack_author_email'] != '') ? ((USE_CRYPTIC_EMAIL) ? $row['hack_author'] . '<br />' . cryptize_hl_email($row['hack_author_email']) : '<a href="mailto:' . $row['hack_author_email'] . '">' . $row['hack_author'] . '</a>') : $row['hack_author'],
+				'HACK_WEBSITE' => ($row['hack_author_website'] != '') ? '<a target="blank" href="' . $row['hack_author_website'] . '">' . $row['hack_author_website'] . '</a>' : $lang['No_Website'],
+				'HACK_NAME' => ($row['hack_download_url'] != '') ? '<a target="blank" href="' . $row['hack_download_url'] . '">' . $row['hack_name'] . '</a>' : $row['hack_name'],
+				'HACK_DESC' => $row['hack_desc'],
+				//'HACK_VERSION' => ($row['hack_version'] != '') ? ' v' . $row['hack_version'] : ''));
+				'HACK_VERSION' => ($row['hack_version'] != '') ? $row['hack_version'] : ''
 				)
 			);
 		}

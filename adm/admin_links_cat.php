@@ -124,7 +124,7 @@ if(empty($mode))
 
 			if($db->sql_numrows($result) == 0)
 			{
-				message_die(GENERAL_ERROR, 'The requested category is not existed');
+				message_die(GENERAL_ERROR, 'The requested category doesn\'t exist');
 			}
 			$catrow = $db->sql_fetchrow($result);
 
@@ -171,7 +171,7 @@ if(empty($mode))
 			}
 			if($cat_found == false)
 			{
-				message_die(GENERAL_ERROR, 'The requested category is not existed');
+				message_die(GENERAL_ERROR, 'The requested category doesn\'t exist');
 			}
 
 			$select_to = '<select name="target"><option value="0">'. $lang['Delete_all_links'] .'</option>';
@@ -218,7 +218,7 @@ if(empty($mode))
 }
 else
 {
-	if($move == 'new')
+	if($mode == 'new')
 	{
 		if(!isset($_POST['cat_title']))
 		{
@@ -231,7 +231,8 @@ else
 				'L_CAT_TITLE' => $lang['Category_Title'],
 				'L_DISABLED' => $lang['Disabled'],
 				'S_MODE' => 'new',
-				'L_PANEL_TITLE' => $lang['Create_category'])
+				'L_PANEL_TITLE' => $lang['Create_category']
+				)
 			);
 
 			$template->pparse('body');
@@ -263,12 +264,11 @@ else
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
-	elseif($move == 'edit')
+	elseif($mode == 'edit')
 	{
 		// Get posting variables
 		$cat_id = request_var('cat_id', 0);
 		$cat_title = request_var('cat_title', '', true);
-
 
 		// Now we update this row
 		$sql = "UPDATE ". LINK_CATEGORIES_TABLE ."
@@ -281,7 +281,7 @@ else
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
-	elseif($move == 'delete')
+	elseif($mode == 'delete')
 	{
 		$cat_id = request_var('cat_id', 0);
 		$target = request_var('target', 0);

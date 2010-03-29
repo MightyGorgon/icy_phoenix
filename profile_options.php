@@ -278,7 +278,7 @@ else
 			// dump to template
 			$template->assign_block_vars('field', array(
 				'L_NAME' => $class_settings->get_lang($config_data['lang_key']),
-				'L_EXPLAIN' => !empty($config_data['explain']) ? '<br />' . $class_settings->get_lang($config_data['explain']) : '',
+				'L_EXPLAIN' => !empty($config_data['explain']) ? $class_settings->get_lang($config_data['explain']) : '',
 				'INPUT' => $input,
 				)
 			);

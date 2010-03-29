@@ -45,8 +45,8 @@ $page_number = ($page_number < 1) ? 0 : $page_number;
 
 $start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
-$sort_order = request_var('order', 'DESC');
-$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+$sort_order = request_var('order', 'ASC');
+$sort_order = check_var_value($sort_order, array('ASC', 'DESC'));
 
 // Memberlist sorting
 $mode = request_var('mode', 'joined');

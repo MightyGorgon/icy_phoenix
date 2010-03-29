@@ -171,7 +171,7 @@ elseif ($mode != '')
 			$news_image = request_var('image_url', '', true);
 
 			// If no code was entered complain ...
-			if (empty($news_category) || empty($news_image) || emtpy($news_id))
+			if (empty($news_category) || empty($news_image) || empty($news_id))
 			{
 				message_die(MESSAGE, $lang['Fields_empty']);
 			}

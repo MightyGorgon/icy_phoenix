@@ -200,7 +200,7 @@ class pafiledb_email extends pafiledb_public
 			'SNAME' => $userdata['username'],
 			'SEMAIL' => $userdata['user_email'],
 			'DOWNLOAD' => $pafiledb_config['settings_dbname'],
-			'FILE_URL' => create_server_url() . '/dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id,
+			'FILE_URL' => create_server_url() . 'dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id,
 			'ID' => $file_id
 			)
 		);

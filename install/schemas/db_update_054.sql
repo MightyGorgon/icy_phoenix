@@ -387,6 +387,9 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_latt
 
 DROP TABLE `phpbb_captcha_config`;
 
+TRUNCATE TABLE `phpbb_hacks_list`;
+
+
 
 #####################
 

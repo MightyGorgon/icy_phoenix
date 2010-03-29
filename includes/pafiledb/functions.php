@@ -709,7 +709,7 @@ class user_info
 
 	function update_downloader_info($file_id)
 	{
-		global $user_ip, $db, $userdata;
+		global $db, $userdata, $user_ip;
 
 		$where_sql = ($userdata['user_id'] != ANONYMOUS) ? "user_id = '" . $userdata['user_id'] . "'" : "downloader_ip = '" . $user_ip . "'";
 

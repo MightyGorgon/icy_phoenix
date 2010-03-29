@@ -118,17 +118,18 @@ class class_form
 				break;
 
 			case 'TINYTEXT':
-				$input = '<input type="text" name="' . $name . '" maxlength="20" size="20" class="post" value="' . $default . '" />';
-				break;
-
 			case 'PASSWORD':
 			case 'VARCHAR':
 			case 'HTMLVARCHAR':
-				$input = '<input type="' . (($properties['type'] == 'PASSWORD') ? 'password' : 'text') . '" name="' . $name . '" maxlength="255" size="45" class="post" value="' . $default . '" />';
+				$maxlength = ($properties['type'] == 'TINYTEXT') ? 20 : 255;
+				$size = ($properties['type'] == 'TINYTEXT') ? 20 : 45;
+				$default = !in_array($properties['type'], array('HTMLVARCHAR')) ? htmlspecialchars_decode($default, ENT_COMPAT) : $default;
+				$input = '<input type="' . (($properties['type'] == 'PASSWORD') ? 'password' : 'text') . '" name="' . $name . '" maxlength="' . $maxlength . '" size="' . $size . '" class="post" value="' . $default . '" />';
 				break;
 
 			case 'TEXT':
 			case 'HTMLTEXT':
+				$default = !in_array($properties['type'], array('HTMLTEXT')) ? htmlspecialchars_decode($default, ENT_COMPAT) : $default;
 				$input = '<div class="message-box"><textarea rows="10" cols="35" name="' . $name . '">' . $default . '</textarea></div>';
 				break;
 
@@ -146,7 +147,7 @@ class class_form
 		// dump to template
 		$template->assign_block_vars('field', array(
 			'L_NAME' => $this->get_lang($properties['lang_key']),
-			'L_EXPLAIN' => !empty($properties['explain']) ? '<br />' . $this->get_lang($properties['explain']) : '',
+			'L_EXPLAIN' => !empty($properties['explain']) ? $this->get_lang($properties['explain']) : '',
 			'INPUT' => $input,
 			)
 		);
@@ -156,7 +157,7 @@ class class_form
 		// to be used within a cycle
 		$template->assign_block_vars('field', array(
 			'L_NAME' => $class_form->get_lang($v['lang_key']),
-			'L_EXPLAIN' => !empty($v['explain']) ? '<br />' . $class_form->get_lang($v['explain']) : '',
+			'L_EXPLAIN' => !empty($v['explain']) ? $class_form->get_lang($v['explain']) : '',
 			'INPUT' => $class_form->create_input($k, $v),
 			)
 		);

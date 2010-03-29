@@ -101,7 +101,7 @@ if (sizeof($_POST))
 				}
 
 				/* Compile the SQL Lists */
-				$update_sql .= ($update_sql != '') ? ", $val = '" . $db->sql_escape($_POST[$val]) . "'" : "$val = '" . $db->sql_escape($_POST[$val]) . "'";
+				$update_sql .= (($update_sql != '') ? ', ' : '') . "$val = '" . $db->sql_escape(htmlspecialchars($_POST[$val])) . "'";
 			}
 
 			$sql = "UPDATE " . HACKS_LIST_TABLE . "
@@ -128,8 +128,8 @@ if (sizeof($_POST))
 				}
 
 				/* Compile the SQL Lists */
-				$insert_sql .= ($insert_sql != '') ? ", $val" : $val;
-				$insert_val_sql .= ($insert_val_sql != '') ? ", '" . $db->sql_escape($_POST[$val]) . "'" : "'" . $db->sql_escape($_POST[$val]) . "'";
+				$insert_sql .= (($insert_sql != '') ? ', ' : '') . $db->sql_escape($val);
+				$insert_val_sql .= (($insert_val_sql != '') ? ', ' : '') . "'" . $db->sql_escape(htmlspecialchars($_POST[$val])) . "'";
 			}
 
 			$sql = "INSERT INTO " . HACKS_LIST_TABLE . "
@@ -160,15 +160,15 @@ switch($mode)
 		$template->assign_vars(array(
 			'S_HACK_ID' => $row['hack_id'],
 			'S_HIDDEN' => 'update_id_' . $row['hack_id'],
-			'S_HACK_NAME' => $row['hack_name'],
-			'S_HACK_DESC' => $row['hack_desc'],
-			'S_HACK_DOWNLOAD' => $row['hack_download_url'],
-			'S_HACK_AUTHOR' => $row['hack_author'],
-			'S_HACK_AUTHOR_EMAIL' => $row['hack_author_email'],
-			'S_HACK_WEBSITE' => $row['hack_author_website'],
+			'S_HACK_NAME' => htmlspecialchars_decode($row['hack_name'], ENT_COMPAT),
+			'S_HACK_DESC' => htmlspecialchars_decode($row['hack_desc'], ENT_COMPAT),
+			'S_HACK_DOWNLOAD' => htmlspecialchars_decode($row['hack_download_url'], ENT_COMPAT),
+			'S_HACK_AUTHOR' => htmlspecialchars_decode($row['hack_author'], ENT_COMPAT),
+			'S_HACK_AUTHOR_EMAIL' => htmlspecialchars_decode($row['hack_author_email'], ENT_COMPAT),
+			'S_HACK_WEBSITE' => htmlspecialchars_decode($row['hack_author_website'], ENT_COMPAT),
 			'S_HACK_HIDE_NO' => ($row['hack_hide'] == 'No') ? 'checked="checked"' : '',
 			'S_HACK_HIDE_YES' => ($row['hack_hide'] == 'Yes') ? 'checked="checked"' : '',
-			'S_HACK_VERSION' => $row['hack_version']
+			'S_HACK_VERSION' => htmlspecialchars_decode($row['hack_version'], ENT_COMPAT)
 			)
 		);
 

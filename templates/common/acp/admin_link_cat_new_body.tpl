@@ -8,7 +8,7 @@
 	<td class="row1" width="20%"><span class="gen">{L_CAT_TITLE}:</span></td>
 	<td class="row2"><input name="cat_title" type="text" class="post" size="35" value="{S_CAT_TITLE}" /></td>
 </tr>
-<tr><td class="cat" align="center" colspan="2"><input type="hidden" value="{S_MODE}" name="mode" /><input name="submit" type="submit" value="{L_PANEL_TITLE}" class="liteoption" /></td></tr>
+<tr><td class="cat" align="center" colspan="2"><input type="hidden" name="mode" value="{S_MODE}" /><input name="submit" type="submit" value="{L_PANEL_TITLE}" class="liteoption" /></td></tr>
 </table>
 </form>
 <div align="center"><span class="copyright">Links MOD v1.2.1 by <a href="http://www.phpbb2.de" target="_blank">phpBB2.de</a> and OOHOO</span></div>
