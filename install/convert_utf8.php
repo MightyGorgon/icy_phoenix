@@ -2,7 +2,7 @@
 /**
 *
 * @package Icy Phoenix
-* @version $Id$
+* @version $Id: functions.php 175 2010-02-14 19:59:14Z Mighty Gorgon $
 * @copyright (c) 2008 Icy Phoenix
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *

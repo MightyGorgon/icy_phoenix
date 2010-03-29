@@ -33,8 +33,8 @@ $lang['xs_goto_default'] = str_replace('{URL}', append_sid('xs_styles.' . PHP_EX
 @set_time_limit(XS_MAX_TIMEOUT);
 
 // install style
-$style = request_var('style', '', true);
-$num = request_var('num', 0);
+$style = request_get_var('style', '', true);
+$num = request_get_var('num', 0);
 if(!empty($style) && !defined('DEMO_MODE'))
 {
 	$res = xs_install_style($style, $num);

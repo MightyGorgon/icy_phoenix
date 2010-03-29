@@ -22,6 +22,11 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
+if (!function_exists('get_ip_version'))
+{
+	include_once(IP_ROOT_PATH . 'includes/functions_versions.' . PHP_EXT);
+}
+
 include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 $jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
 
@@ -39,102 +44,38 @@ else
 
 $template->set_filenames(array('body' => ADM_TPL . 'ip_header.tpl'));
 
-// Check for new version
-$current_version = explode('.', $config['ip_version']);
-$minor_revision = (int) $current_version[3];
 $errno = 0;
-$errstr = $version_info = '';
-// Version cache mod start
-// Change following two variables if you need to:
-$cache_update = 86400; // 24 hours cache timeout. change it to whatever you want
-$cache_file = MAIN_CACHE_FOLDER . 'ip_update_' . $config['default_lang'] . $config['ip_version'] . '.php'; // file where to store cache
+$errstr = '';
+$version_info = '';
 
-//global $config;
-$do_update = true;
 //$check_update = false;
 $check_update = $config['enable_xs_version_check'];
 
-if($check_update == true)
+if(!empty($check_update))
 {
-	if(@file_exists($cache_file))
+	$latest_ip_version = get_ip_version();
+	if (!empty($latest_ip_version))
 	{
-		$last_update = 0;
-		$version_info = '';
-		@include($cache_file);
-		if($last_update && !empty($version_info) && $last_update > (time() - $cache_update))
+		if ($latest_ip_version == $config['ip_version'])
 		{
-			$do_update = false;
+			$version_info = '<span class="text_green">' . $lang['Version_up_to_date_ip'] . '</span>';
 		}
 		else
 		{
-			$version_info = '';
+			$version_info = '<span class="text_red">' . $lang['Version_not_up_to_date_ip'] . '</span>';
 		}
 	}
-
-	if($do_update == true)
+	else
 	{
-		// Version cache mod end
-		if ($fsock = @fsockopen('www.icyphoenix.com', 80, $errno, $errstr, 15))
+		$fsock = @fsockopen('www.icyphoenix.com', 80, $errno, $errstr, 15);
+		if ($errstr)
 		{
-			@fwrite($fsock, "GET /version/ip.txt HTTP/1.1\r\n");
-			@fwrite($fsock, "HOST: www.icyphoenix.com\r\n");
-			@fwrite($fsock, "Connection: close\r\n\r\n");
-
-			$get_info = false;
-			while (!@feof($fsock))
-			{
-				if ($get_info)
-				{
-					$version_info .= @fread($fsock, 1024);
-				}
-				else
-				{
-					if (@fgets($fsock, 1024) == "\r\n")
-					{
-						$get_info = true;
-					}
-				}
-			}
-			@fclose($fsock);
-
-			$version_info = explode("\n", $version_info);
-			$latest_head_revision = (int) $version_info[0];
-			$latest_minor_revision = (int) $version_info[3];
-			$latest_version = (int) $version_info[0] . '.' . (int) $version_info[1] . '.' . (int) $version_info[2] . '.' . (int) $version_info[3];
-			$latest_version_text = $version_info[0] . '.' . $version_info[1] . '.' . $version_info[2] . '.' . $version_info[3];
-
-			//if (($latest_head_revision == 1) && ($minor_revision == $latest_minor_revision))
-			if ($latest_version_text == $config['ip_version'])
-			{
-				$version_info = '<span class="text_green">' . $lang['Version_up_to_date_ip'] . '</span>';
-			}
-			else
-			{
-				$version_info = '<span class="text_red">' . $lang['Version_not_up_to_date_ip'] . '</span>';
-			}
+			$version_info = '<span class="text_red">' . sprintf($lang['Connect_socket_error_ip'], $errstr) . '</span>';
 		}
 		else
 		{
-			if ($errstr)
-			{
-				$version_info = '<span class="text_red">' . sprintf($lang['Connect_socket_error_ip'], $errstr) . '</span>';
-			}
-			else
-			{
-				$version_info = '<span>' . $lang['Socket_functions_disabled'] . '</span>';
-			}
+			$version_info = '<span>' . $lang['Socket_functions_disabled'] . '</span>';
 		}
-
-		// Version cache mod start
-		if(@$f = fopen($cache_file, 'w'))
-		{
-			$search = array('\\', '\'');
-			$replace = array('\\\\', '\\\'');
-			fwrite($f, '<' . '?php $last_update = ' . time() . '; $version_info = \'' . str_replace($search, $replace, $version_info) . '\'; ?' . '>');
-			fclose($f);
-			@chmod($cache_file, 0777);
-		}
-		// Version cache mod end
 	}
 }
 else

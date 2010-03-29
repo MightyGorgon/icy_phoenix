@@ -27,17 +27,21 @@
 */
 
 // Constant check
-if ( !defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP') )
+if (!defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP'))
 {
 	die('Hacking attempt!');
 }
 
+if (!function_exists('get_ip_version'))
+{
+	include_once(IP_ROOT_PATH . 'includes/functions_versions.' . PHP_EXT);
+}
+$latest_ip_version = get_ip_version();
 
 /*
- * Template file association
- */
+* Template file association
+*/
 $template->set_filenames(array('ct_body' => ADM_TPL . 'acp_maintenance.tpl'));
-
 
 // First we look wich mode the user has selected
 $mode = request_var('mode', '');
@@ -283,7 +287,6 @@ elseif ($mode == '5')
 	}
 }
 
-
 /*
  * Info or Errorbox
  */
@@ -354,9 +357,9 @@ $template->assign_vars(array(
 	'L_SEC_INFO_D3' => $testvalue[9],
 
 	'L_SEC_INFO_4' => $lang['ctracker_ma_scheck_4'],
-	'L_SEC_INFO_V4' => '2' . $config['version'],
-	'L_SEC_INFO_OV4' => $uplink_values[3],
-	'L_SEC_INFO_D4' => ('2' . $config['version'] >= $uplink_values[3])? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
+	'L_SEC_INFO_V4' => $config['ip_version'],
+	'L_SEC_INFO_OV4' => $latest_ip_version,
+	'L_SEC_INFO_D4' => ($config['ip_version'] >= $latest_ip_version)? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
 
 	'L_SEC_INFO_4a' => $lang['ctracker_ma_scheck_4a'],
 	'L_SEC_INFO_V4a' => ($config['enable_confirm'] == 1)? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off'],
