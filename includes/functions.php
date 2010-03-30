@@ -1047,7 +1047,7 @@ function _hash_crypt_private($password, $setting, &$itoa64)
 	/**
 	* We're kind of forced to use MD5 here since it's the only
 	* cryptographic primitive available in all versions of PHP
-	* currently in use.  To implement our own low-level crypto
+	* currently in use. To implement our own low-level crypto
 	* in PHP would result in much worse performance and
 	* consequently in lower iteration counts and hashes that are
 	* quicker to crack (by non-PHP code).
@@ -1090,7 +1090,6 @@ function phpbb_email_hash($email)
 
 //Form validation
 
-
 /**
 * Add a secret hash for use in links/GET requests
 * @param string $link_name The name of the link; has to match the name used in check_link_hash, otherwise no restrictions apply
@@ -1129,7 +1128,7 @@ function add_form_key($form_name)
 	global $config, $template, $userdata;
 
 	$now = time();
-	$token_sid = ($userdata['user_id'] == ANONYMOUS && !empty($config['form_token_sid_guests'])) ? $userdata['session_id'] : '';
+	$token_sid = (($userdata['user_id'] == ANONYMOUS) && !empty($config['form_token_sid_guests'])) ? $userdata['session_id'] : '';
 	$token = sha1($now . $userdata['user_form_salt'] . $form_name . $token_sid);
 
 	$s_fields = build_hidden_fields(array(
@@ -3100,7 +3099,7 @@ function get_ad($ad_position)
 	if ($total_ads > 0)
 	{
 		$selected_ad = rand(0, $total_ads - 1);
-		$ad_text = stripslashes($active_ads[$selected_ad]['ad_text']);
+		$ad_text = $active_ads[$selected_ad]['ad_text'];
 		if ($active_ads[$selected_ad]['ad_format'])
 		{
 			global $bbcode;

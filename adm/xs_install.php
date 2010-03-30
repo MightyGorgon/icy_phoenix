@@ -61,8 +61,7 @@ if(!empty($total) && !defined('DEMO_MODE'))
 	$num = array();
 	for($i = 0; $i < $total; $i++)
 	{
-		$install_switch = request_post_var('install_' . $i, 0);
-		if(!empty($install_switch))
+		if(!empty($_POST['install_' . $i]))
 		{
 			$tpl[] = request_post_var('install_' . $i . '_style', '', true);
 			$num[] = request_post_var('install_' . $i . '_num', 0);
@@ -155,7 +154,8 @@ foreach($styles as $var => $value)
 $template->assign_vars(array(
 	'U_INSTALL' => append_sid('xs_install.' . PHP_EXT),
 	'TOTAL' => sizeof($styles)
-	));
+	)
+);
 
 $template->set_filenames(array('body' => XS_TPL_PATH . 'install.tpl'));
 $template->pparse('body');

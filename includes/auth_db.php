@@ -179,8 +179,6 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 	if (!$row['user_pass_convert'] && phpbb_check_hash($password, $row['user_password']))
 	{
 		// Check for old password hash...
-		// Mighty Gorgon: decomment this when we are ready for new passwords
-		/*
 		if (strlen($row['user_password']) == 32)
 		{
 			$hash = phpbb_hash($password);
@@ -194,7 +192,6 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 
 			$row['user_password'] = $hash;
 		}
-		*/
 
 		if ($row['user_login_attempts'] != 0)
 		{

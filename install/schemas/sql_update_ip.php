@@ -3708,7 +3708,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_password` `user_password` VARCHAR(40) DEFAULT '' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_newpasswd` `user_newpasswd` VARCHAR(40) DEFAULT '' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_passchg` INT(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_password`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_passchg`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL AFTER `user_passchg`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_form_salt` VARCHAR(32) DEFAULT '' NOT NULL AFTER `user_pass_convert`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_email_hash` BIGINT(20) DEFAULT '0' NOT NULL AFTER `user_email`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_options` INT(11) UNSIGNED DEFAULT '895' NOT NULL AFTER `user_setbm`";
@@ -3843,6 +3843,8 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "DROP TABLE `" . $table_prefix . "captcha_config`";
 
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "hacks_list`";
+
+		$sql[] = "UPDATE TABLE `" . $table_prefix . "users` SET `user_pass_convert` = '1'";
 
 		/* Updating from IP 1.3.8.61 */
 		case '1.3.8.61':

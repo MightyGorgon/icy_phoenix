@@ -185,7 +185,7 @@ ALTER TABLE `phpbb_users` CHANGE `user_last_login_try` `user_last_login_attempt`
 ALTER TABLE `phpbb_users` CHANGE `user_password` `user_password` VARCHAR(40) DEFAULT '' NOT NULL;
 ALTER TABLE `phpbb_users` CHANGE `user_newpasswd` `user_newpasswd` VARCHAR(40) DEFAULT '' NOT NULL;
 ALTER TABLE `phpbb_users` ADD `user_passchg` INT(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_password`;
-ALTER TABLE `phpbb_users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_passchg`;
+ALTER TABLE `phpbb_users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL AFTER `user_passchg`;
 ALTER TABLE `phpbb_users` ADD `user_form_salt` VARCHAR(32) DEFAULT '' NOT NULL AFTER `user_pass_convert`;
 ALTER TABLE `phpbb_users` ADD `user_email_hash` BIGINT(20) DEFAULT '0' NOT NULL AFTER `user_email`;
 ALTER TABLE `phpbb_users` ADD `user_options` INT(11) UNSIGNED DEFAULT '895' NOT NULL AFTER `user_setbm`;
@@ -388,6 +388,8 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_latt
 DROP TABLE `phpbb_captcha_config`;
 
 TRUNCATE TABLE `phpbb_hacks_list`;
+
+UPDATE `phpbb_users` SET `user_pass_convert` = '1';
 
 
 

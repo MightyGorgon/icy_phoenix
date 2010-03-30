@@ -54,7 +54,6 @@ if(isset($_POST['action_update']))
 $item_type = request_var('item_type', '');
 $item_type = empty($item_type) ? false : $item_type;
 $item_type = isset($_POST['add_cat']) ? 'category_item' : $item_type;
-$item_type = htmlspecialchars($item_type);
 
 if (!empty($_REQUEST['action']) && !empty($_GET['action']) && ($_POST['action'] != $_GET['action']))
 {
@@ -215,13 +214,13 @@ if($mode == 'menu_item')
 					$mi_cat_parent_id = '';
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$row['menu_name'] = !empty($lang['cat_item_' . $row['menu_name_lang']]) ? $lang['cat_item_' . $row['menu_name_lang']] : stripslashes($row['menu_name']);
+						$row['menu_name'] = !empty($lang['cat_item_' . $row['menu_name_lang']]) ? $lang['cat_item_' . $row['menu_name_lang']] : $row['menu_name'];
 						$mi_cat_parent_id .= '<option value="' . $row['cat_id'] . '"';
 						if($m_info['cat_parent_id'] == $row['cat_id'])
 						{
 							$mi_cat_parent_id .= ' selected="selected"';
 						}
-						$mi_cat_parent_id .= '>' . htmlspecialchars($row['menu_name']) . '</option>';
+						$mi_cat_parent_id .= '>' . $row['menu_name'] . '</option>';
 					}
 					$template->assign_block_vars('parent_cat_sel', array(
 						'PARENT_CAT_SEL' => $mi_cat_parent_id,
@@ -253,8 +252,8 @@ if($mode == 'menu_item')
 					$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
 				}
 
-				$mi_menu_name = stripslashes($m_info['menu_name']);
-				$mi_menu_desc = stripslashes($m_info['menu_desc']);
+				$mi_menu_name = $m_info['menu_name'];
+				$mi_menu_desc = $m_info['menu_desc'];
 				$mi_menu_link = $m_info['menu_link'];
 				$mi_menu_link_external = $m_info['menu_link_external'];
 				$mi_menu_link_external_yes = ($mi_menu_link_external == '1') ? 'checked="checked"' : '';
@@ -339,9 +338,9 @@ if($mode == 'menu_item')
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$parent_cat_item_parsed = true;
-					$row['menu_name'] = !empty($lang['cat_item_' . $row['menu_name_lang']]) ? $lang['cat_item_' . $row['menu_name_lang']] : stripslashes($row['menu_name']);
+					$row['menu_name'] = !empty($lang['cat_item_' . $row['menu_name_lang']]) ? $lang['cat_item_' . $row['menu_name_lang']] : $row['menu_name'];
 					$mi_cat_parent_id .= '<option value="' . $row['cat_id'] . '"';
-					$mi_cat_parent_id .= '>' . htmlspecialchars($row['menu_name']) . '</option>';
+					$mi_cat_parent_id .= '>' . $row['menu_name'] . '</option>';
 				}
 				if ($parent_cat_item_parsed == false)
 				{
@@ -496,13 +495,13 @@ if($mode == 'menu_item')
 		$mi_menu_sql_id = 0;
 		//$mi_menu_parent_id = (isset($_POST['menu_parent_id'])) ? intval(trim($_POST['menu_parent_id'])) : '';
 		$mi_menu_parent_id = $m_id;
-		$mi_cat_id = (isset($_POST['cat_id'])) ? intval(trim($_POST['cat_id'])) : '0';
-		$mi_cat_parent_id = (isset($_POST['cat_parent_id'])) ? intval(trim($_POST['cat_parent_id'])) : '0';
-		$mi_menu_status = (isset($_POST['menu_status'])) ? trim($_POST['menu_status']) : '0';
-		$mi_menu_order = (isset($_POST['menu_order'])) ? intval(trim($_POST['menu_order'])) : '0';
-		$mi_menu_icon = (isset($_POST['menu_icon'])) ? trim($_POST['menu_icon']) : '';
-		$mi_menu_desc = (isset($_POST['menu_desc'])) ? trim($_POST['menu_desc']) : '';
-		$mi_menu_default = (isset($_POST['menu_default'])) ? trim($_POST['menu_default']) : '0';
+		$mi_cat_id = request_post_var('cat_id', 0);
+		$mi_cat_parent_id = request_post_var('cat_parent_id', 0);
+		$mi_menu_status = request_post_var('menu_status', 0);
+		$mi_menu_order = request_post_var('menu_order', 0);
+		$mi_menu_icon = request_post_var('menu_icon', '', true);
+		$mi_menu_desc = request_post_var('menu_desc', '', true);
+		$mi_menu_default = request_post_var('menu_default', 0);
 		if ($mi_menu_default > '0')
 		{
 			$mi_menu_name = build_default_link_name($mi_menu_default);
@@ -513,20 +512,21 @@ if($mode == 'menu_item')
 		}
 		else
 		{
-			$mi_menu_name = (isset($_POST['menu_name'])) ? trim($_POST['menu_name']) : '';
-			$mi_menu_name_lang = (isset($_POST['menu_name_lang'])) ? trim($_POST['menu_name_lang']) : '';
-			$mi_menu_link = (isset($_POST['menu_link'])) ? trim($_POST['menu_link']) : '';
-			$mi_menu_link_external = (isset($_POST['menu_link_external'])) ? trim($_POST['menu_link_external']) : '0';
-			$mi_auth_view = (isset($_POST['auth_view'])) ? trim($_POST['auth_view']) : '0';
+			$mi_menu_name = request_post_var('menu_name', '', true);
+			$mi_menu_name_lang = request_post_var('menu_name_lang', '', true);
+			$mi_menu_link = request_post_var('menu_link', '', true);
+			$mi_menu_link_external = request_post_var('menu_link_external', 0);
+			$mi_auth_view = request_post_var('auth_view', 0);
 		}
-		$mi_auth_view_group = (isset($_POST['auth_view_group'])) ? trim($_POST['auth_view_group']) : '0';
+		$mi_auth_view_group = request_post_var('auth_view_group', '0');
 
 		if($mi_id)
 		{
+			$mi_old_cat_parent_id = request_post_var('old_cat_parent_id', 0);
 			$sql_order = '';
 			if (isset($_POST['old_cat_parent_id']) && ($item_type != 'category_item'))
 			{
-				if (intval(trim($_POST['old_cat_parent_id'])) != $mi_cat_parent_id)
+				if ($mi_old_cat_parent_id != $mi_cat_parent_id)
 				{
 					$sql = "SELECT max(menu_order) max_menu_order FROM " . CMS_NAV_MENU_TABLE . " WHERE menu_parent_id ='" . $mi_menu_id . "' AND cat_parent_id ='" . $mi_cat_parent_id . "'";
 					$result = $db->sql_query($sql);
@@ -544,15 +544,15 @@ if($mode == 'menu_item')
 				cat_parent_id = '" . $mi_cat_parent_id . "',
 				" . $sql_order . "
 				menu_status = '" . $mi_menu_status . "',
-				menu_icon = '" . $mi_menu_icon . "',
-				menu_name_lang = '" . $mi_menu_name_lang . "',
-				menu_name = '" . addslashes($mi_menu_name) . "',
-				menu_desc = '" . addslashes($mi_menu_desc) . "',
-				menu_link = '" . $mi_menu_link . "',
+				menu_icon = '" . $db->sql_escape($mi_menu_icon) . "',
+				menu_name_lang = '" . $db->sql_escape($mi_menu_name_lang) . "',
+				menu_name = '" . $db->sql_escape($mi_menu_name) . "',
+				menu_desc = '" . $db->sql_escape($mi_menu_desc) . "',
+				menu_link = '" . $db->sql_escape($mi_menu_link) . "',
 				menu_link_external = '" . $mi_menu_link_external . "',
 				auth_view = '" . $mi_auth_view . "',
-				auth_view_group = '" . $mi_auth_view_group . "',
-				menu_default = '" . $mi_menu_default . "'
+				auth_view_group = '" . $db->sql_escape($mi_auth_view_group) . "',
+				menu_default = '" . $db->sql_escape($mi_menu_default) . "'
 				WHERE menu_item_id = '" . $mi_id . "'";
 			$result = $db->sql_query($sql);
 
@@ -583,7 +583,7 @@ if($mode == 'menu_item')
 				$mi_menu_order = $row['max_menu_order'] + 1;
 			}
 
-			$sql = "INSERT INTO " . CMS_NAV_MENU_TABLE . " (menu_id, menu_parent_id, cat_id, cat_parent_id, menu_status, menu_order, menu_icon, menu_name_lang, menu_name, menu_desc, menu_link, menu_link_external, auth_view, auth_view_group, menu_default) VALUES ('" . $mi_menu_sql_id . "', '" . $mi_menu_parent_id . "', '" . $mi_cat_id . "', '" . $mi_cat_parent_id . "', '" . $mi_menu_status . "', '" . $mi_menu_order . "', '" . $mi_menu_icon . "', '" . $mi_menu_name_lang . "', '" . addslashes($mi_menu_name) . "', '" . addslashes($mi_menu_desc) . "', '" . $mi_menu_link . "', '" . $mi_menu_link_external . "', '" . $mi_auth_view . "', '" . $mi_auth_view_group . "', '" . $mi_menu_default . "')";
+			$sql = "INSERT INTO " . CMS_NAV_MENU_TABLE . " (menu_id, menu_parent_id, cat_id, cat_parent_id, menu_status, menu_order, menu_icon, menu_name_lang, menu_name, menu_desc, menu_link, menu_link_external, auth_view, auth_view_group, menu_default) VALUES ('" . $mi_menu_sql_id . "', '" . $mi_menu_parent_id . "', '" . $mi_cat_id . "', '" . $mi_cat_parent_id . "', '" . $mi_menu_status . "', '" . $mi_menu_order . "', '" . $db->sql_escape($mi_menu_icon) . "', '" . $db->sql_escape($mi_menu_name_lang) . "', '" . $db->sql_escape($mi_menu_name) . "', '" . $db->sql_escape($mi_menu_desc) . "', '" . $db->sql_escape($mi_menu_link) . "', '" . $mi_menu_link_external . "', '" . $mi_auth_view . "', '" . $db->sql_escape($mi_auth_view_group) . "', '" . $db->sql_escape($mi_menu_default) . "')";
 			$result = $db->sql_query($sql);
 
 			if($item_type == 'category_item')
@@ -604,15 +604,9 @@ if($mode == 'menu_item')
 	}
 	elseif($action == 'delete')
 	{
-		$cat_id = 0;
-		if(!empty($_GET['cat_id']))
-		{
-			$cat_id = intval($_GET['cat_id']);
-		}
-		if ($cat_id < 1)
-		{
-			$cat_id = 0;
-		}
+		$cat_id = request_get_var('cat_id', 0);
+		$cat_id = ($cat_id < 1) ? 0 : $cat_id;
+
 		if(!isset($_POST['confirm']))
 		{
 			$s_hidden_fields = '';
@@ -714,7 +708,7 @@ elseif($mode == 'menu_block')
 			}
 			else
 			{
-				$cat_parent_id = (isset($_GET['cat_parent_id'])) ? intval($_GET['cat_parent_id']) : 0;
+				$cat_parent_id = request_get_var('cat_parent_id', 0);
 				if ($cat_parent_id != 0)
 				{
 					change_item_order($mi_id, $cat_parent_id, $m_id, $move);
@@ -770,9 +764,9 @@ elseif($mode == 'menu_block')
 				}
 				else
 				{
-					$cat_name = (($cat_item_data['menu_name'] != '') ? stripslashes($cat_item_data['menu_name']) : 'cat_item' . $cat_item_data['cat_id']) ;
+					$cat_name = (($cat_item_data['menu_name'] != '') ? $cat_item_data['menu_name'] : 'cat_item' . $cat_item_data['cat_id']) ;
 				}
-				$cat_desc = (($cat_item_data['menu_desc'] != '') ? htmlspecialchars(stripslashes($cat_item_data['menu_desc'])) : '') ;
+				$cat_desc = (($cat_item_data['menu_desc'] != '') ? $cat_item_data['menu_desc'] : '') ;
 				//$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="' . $cat_name . '" title="' . $cat_name . '" style="vertical-align: middle;" />&nbsp;' : '');
 				// No icon = Standard icon!
 				$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="" title="' . $cat_desc . '" style="vertical-align: middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;');
@@ -820,7 +814,7 @@ elseif($mode == 'menu_block')
 						$item_counter++;
 						// No icon = Standard icon!
 						$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="' . $menu_name . '" style="vertical-align: middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;');
-						$menu_desc = (($menu_cat_item_data['menu_desc'] != '') ? htmlspecialchars(stripslashes($menu_cat_item_data['menu_desc'])) : '');
+						$menu_desc = (($menu_cat_item_data['menu_desc'] != '') ? $menu_cat_item_data['menu_desc'] : '');
 						if ($menu_cat_item_data['menu_default'] == 0)
 						{
 							if (($menu_cat_item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$menu_cat_item_data['menu_name_lang']]))
@@ -829,7 +823,7 @@ elseif($mode == 'menu_block')
 							}
 							else
 							{
-								$menu_name = (($menu_cat_item_data['menu_name'] != '') ? htmlspecialchars(stripslashes($menu_cat_item_data['menu_name'])) : 'cat_item' . $menu_cat_item_data['cat_id']);
+								$menu_name = (($menu_cat_item_data['menu_name'] != '') ? $menu_cat_item_data['menu_name'] : 'cat_item' . $menu_cat_item_data['cat_id']);
 							}
 							if ($menu_cat_item_data['menu_link_external'] == true)
 							{
@@ -931,8 +925,8 @@ elseif (($mode == 'menu_list') || ($mode == false))
 								WHERE menu_item_id = '" . $mi_id . "'";
 				$result = $db->sql_query($sql);
 				$m_info = $db->sql_fetchrow($result);
-				$mi_menu_name = htmlspecialchars(stripslashes($m_info['menu_name']));
-				$mi_menu_desc = htmlspecialchars(stripslashes($m_info['menu_desc']));
+				$mi_menu_name = $m_info['menu_name'];
+				$mi_menu_desc = $m_info['menu_desc'];
 				$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
 				foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
 				{
@@ -987,17 +981,17 @@ elseif (($mode == 'menu_list') || ($mode == false))
 	elseif($action == 'save')
 	{
 		$mi_menu_item_id = $mi_id;
-		$mi_menu_name = (isset($_POST['menu_name'])) ? trim($_POST['menu_name']) : '';
-		$mi_menu_name_lang = (isset($_POST['menu_name_lang'])) ? trim($_POST['menu_name_lang']) : '';
-		$mi_menu_desc = (isset($_POST['menu_desc'])) ? trim($_POST['menu_desc']) : '';
+		$mi_menu_name = request_post_var('menu_name', '', true);
+		$mi_menu_name_lang = request_post_var('menu_name_lang', '', true);
+		$mi_menu_desc = request_post_var('menu_desc', '', true);
 
 		if($mi_id)
 		{
 			$sql = "UPDATE " . CMS_NAV_MENU_TABLE . "
 				SET
-				menu_name = '" . addslashes($mi_menu_name) . "',
-				menu_name_lang = '" . $mi_menu_name_lang . "',
-				menu_desc = '" . addslashes($mi_menu_desc) . "'
+				menu_name = '" . $db->sql_escape($mi_menu_name) . "',
+				menu_name_lang = '" . $db->sql_escape($mi_menu_name_lang) . "',
+				menu_desc = '" . $db->sql_escape($mi_menu_desc) . "'
 				WHERE menu_item_id = '" . $mi_id . "'";
 			$result = $db->sql_query($sql);
 			$message = $lang['Menu_updated'];
@@ -1009,7 +1003,7 @@ elseif (($mode == 'menu_list') || ($mode == false))
 			$row = $db->sql_fetchrow($result);
 			$mi_menu_id = $row['max_menu_id'] + 1;
 
-			$sql = "INSERT INTO " . CMS_NAV_MENU_TABLE . " (menu_id, menu_name, menu_name_lang, menu_desc) VALUES ('" . $mi_menu_id . "', '" . addslashes($mi_menu_name) . "', '" . $mi_menu_name_lang . "', '" . addslashes($mi_menu_desc) . "')";
+			$sql = "INSERT INTO " . CMS_NAV_MENU_TABLE . " (menu_id, menu_name, menu_name_lang, menu_desc) VALUES ('" . $mi_menu_id . "', '" . $db->sql_escape($mi_menu_name) . "', '" . $db->sql_escape($mi_menu_name_lang) . "', '" . $db->sql_escape($mi_menu_desc) . "')";
 			$message = $lang['Menu_created'];
 			$result = $db->sql_query($sql);
 		}
@@ -1079,8 +1073,8 @@ elseif (($mode == 'menu_list') || ($mode == false))
 
 			$template->assign_block_vars('menu_row', array(
 				'MENU_ID' => $menu_item['menu_id'],
-				'MENU_NAME' => stripslashes($menu_item['menu_name']),
-				'MENU_DESCRIPTION' => stripslashes($menu_item['menu_desc']),
+				'MENU_NAME' => $menu_item['menu_name'],
+				'MENU_DESCRIPTION' => $menu_item['menu_desc'],
 				'U_ITEMS_EDIT' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url),
 				'U_EDIT' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list&amp;action=edit' . $append_url),
 				'U_DELETE' => append_sid('cms_menu.' . PHP_EXT . '?mode=menu_list&amp;action=delete' . $append_url),
