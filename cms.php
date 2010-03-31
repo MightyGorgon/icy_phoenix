@@ -618,7 +618,7 @@ if(($mode == 'blocks'))
 		}
 
 		$b_title = request_post_var('title', '', true);
-		$b_bposition = request_post_var('b_bposition', '', true);
+		$b_bposition = request_post_var('bposition', '', true);
 		$b_active = request_post_var('active', 0);
 		$b_type = request_post_var('type', 0);
 		$b_content = htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);

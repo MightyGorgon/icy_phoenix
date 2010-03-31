@@ -362,7 +362,7 @@ class ip_cms
 				}
 				else
 				{
-					$title_string = stripslashes($block_info[$b_counter]['title']);
+					$title_string = $block_info[$b_counter]['title'];
 				}
 
 				if(!empty($block_info[$b_counter]['blockfile']))
@@ -375,7 +375,7 @@ class ip_cms
 				}
 				else
 				{
-					$message = stripslashes($block_info[$b_counter]['content']);
+					$message = $block_info[$b_counter]['content'];
 					if($block_info[$b_counter]['type'] == true)
 					{
 						@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
