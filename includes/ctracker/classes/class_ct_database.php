@@ -212,15 +212,18 @@ class ct_database
 		$result = $db->sql_query($sql);
 
 		// Delete old values from the Database
-		$this->settings['ctracker_login_history_count']--;
-		$sql = 'SELECT * FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $user_id . ' ORDER BY ct_login_time DESC LIMIT ' . $this->settings['ctracker_login_history_count'] . ',1';
-		$result = $db->sql_query($sql);
+		$config['ctracker_login_history_count']--;
+		if ($config['ctracker_login_history_count'] >= 0)
+		{
+			$sql = 'SELECT * FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $user_id . ' ORDER BY ct_login_time DESC LIMIT ' . $config['ctracker_login_history_count'] . ', 1';
+			$result = $db->sql_query($sql);
 
-		$row = $db->sql_fetchrow($result);
-		$temp_time = !empty($row['ct_login_time'])? $row['ct_login_time'] : 0;
+			$row = $db->sql_fetchrow($result);
+			$temp_time = !empty($row['ct_login_time'])? $row['ct_login_time'] : 0;
 
-		$sql = 'DELETE FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $user_id . ' AND ct_login_time < ' . $temp_time;
-		$result = $db->sql_query($sql);
+			$sql = 'DELETE FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $user_id . ' AND ct_login_time < ' . $temp_time;
+			$result = $db->sql_query($sql);
+		}
 	}
 
 	/**

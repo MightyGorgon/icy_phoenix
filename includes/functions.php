@@ -4114,8 +4114,6 @@ function page_header($title = '', $parse_template = false)
 	// The following assigns all _common_ variables that may be used at any point in a template.
 	$template->assign_vars(array(
 		'DOCTYPE_HTML' => $doctype_html,
-		'NAV_SEP' => $lang['Nav_Separator'],
-		'NAV_DOT' => '&#8226;',
 		'NAV_LINKS' => $nav_links_html,
 
 		'U_LOGIN_LOGOUT' => append_sid(IP_ROOT_PATH . $u_login_logout),

@@ -137,7 +137,8 @@ if(isset($_POST['cancel']))
 
 if(isset($_POST['hascontent']))
 {
-	$block_content = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : false;
+	$block_content = request_post_var('blockfile', '', true);
+	$block_content = (isset($_POST['blockfile'])) ? $block_content : false;
 	$block_text = (empty($block_content) ? true : false);
 	$hascontent = true;
 }
@@ -222,7 +223,7 @@ if(($mode == 'blocks'))
 
 	if(($action == 'add') || ($action == 'edit'))
 	{
-		$message = isset($_POST['message']) ? stripslashes(trim($_POST['message'])) : '';
+		$message = htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
 
 		$l_row = get_global_blocks_layout($table_name, $field_name, $id_var_value);
 
@@ -255,7 +256,8 @@ if(($mode == 'blocks'))
 			$b_info['groups'] = '';
 		}
 
-		$b_info['bposition'] = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : $b_info['bposition'];
+		$bposition = request_post_var('bposition', '');
+		$b_info['bposition'] = (isset($_POST['bposition'])) ? $bposition : $b_info['bposition'];
 		$position = get_blocks_positions(CMS_BLOCK_POSITION_TABLE, $l_id_list, $b_info['bposition']);
 
 		$blocks_array = get_blocks_files_list($blocks_dir, $blocks_prefix);
@@ -274,7 +276,8 @@ if(($mode == 'blocks'))
 		{
 			$block_content_file = $b_info['blockfile'];
 		}
-		$b_info['blockfile'] = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : $b_info['blockfile'];
+		$blockfile = request_post_var('blockfile', '', true);
+		$b_info['blockfile'] = (isset($_POST['blockfile'])) ? $blockfile : $b_info['blockfile'];
 
 		$select_name = 'blockfile';
 		$default = $b_info['blockfile'];
@@ -282,7 +285,8 @@ if(($mode == 'blocks'))
 		$select_js = ($cms_ajax) ? ' id="blockfile" onchange="javascript:ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=\'+this.form.blockfile.options[this.form.blockfile.selectedIndex].value, \'block_config\');"' : '';
 		$blockfile = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
-		$b_info['view'] = (isset($_POST['view'])) ? trim($_POST['view']) : $b_info['view'];
+		$view = request_post_var('view', '', true);
+		$b_info['view'] = (isset($_POST['view'])) ? $view : $b_info['view'];
 
 		$select_name = 'view';
 		$default = $b_info['view'];
@@ -291,7 +295,8 @@ if(($mode == 'blocks'))
 		$select_js = '';
 		$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
-		$message = isset($_POST['message']) ? stripslashes(trim($_POST['message'])) : (!empty($b_info['content']) ? stripslashes(trim($b_info['content'])) : '');
+		$message = htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+		$message = isset($_POST['message']) ? $message : (!empty($b_info['content']) ? trim($b_info['content']) : '');
 
 		$group = get_all_usergroups($b_info['groups']);
 
@@ -300,17 +305,21 @@ if(($mode == 'blocks'))
 			$group = '&nbsp;&nbsp;' . $lang['None'];
 		}
 
-		$b_title = (isset($_POST['title'])) ? stripslashes(trim($_POST['title'])) : (!empty($b_info['title']) ? stripslashes(trim($b_info['title'])) : '');
-		//$b_bposition = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : "";
-		$b_active = (isset($_POST['active'])) ? intval($_POST['active']) : ($b_info['active'] ? $b_info['active'] : 0);
-		$b_type = (isset($_POST['type'])) ? intval($_POST['type']) : ($b_info['type'] ? $b_info['type'] : 0);
-		//$b_content = (isset($_POST['message'])) ? trim($_POST['message']) : "";
-		//$b_blockfile = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : ($blockfile ? $blockfile : '');
+		$b_title = request_post_var('title', '', true);
+		$b_title = (isset($_POST['title'])) ? $b_title : (!empty($b_info['title']) ? trim($b_info['title']) : '');
+		$b_active = request_post_var('active', 0);
+		$b_active = (isset($_POST['active'])) ? $b_active : ($b_info['active'] ? $b_info['active'] : 0);
+		$b_type = request_post_var('type', 0);
+		$b_type = (isset($_POST['type'])) ? $b_type : ($b_info['type'] ? $b_info['type'] : 0);
 		$b_view = (isset($b_info['view']) ? $b_info['view'] : 0);
-		$b_local = (isset($_POST['local'])) ? intval($_POST['local']) : ($b_info['local'] ? $b_info['local'] : 0);
-		$b_titlebar = (isset($_POST['titlebar'])) ? intval($_POST['titlebar']) : ($b_info['titlebar'] ? $b_info['titlebar'] : 0);
-		$b_border = (isset($_POST['border'])) ? intval($_POST['border']) : ($b_info['border'] ? $b_info['border'] : 0);
-		$b_background = (isset($_POST['background'])) ? intval($_POST['background']) : ($b_info['background'] ? $b_info['background'] : 0);
+		$b_local = request_post_var('local', 0);
+		$b_local = (isset($_POST['local'])) ? $b_local : ($b_info['local'] ? $b_info['local'] : 0);
+		$b_titlebar = request_post_var('titlebar', 0);
+		$b_titlebar = (isset($_POST['titlebar'])) ? $b_titlebar : ($b_info['titlebar'] ? $b_info['titlebar'] : 0);
+		$b_border = request_post_var('border', 0);
+		$b_border = (isset($_POST['border'])) ? $b_border : ($b_info['border'] ? $b_info['border'] : 0);
+		$b_background = request_post_var('background', 0);
+		$b_background = (isset($_POST['background'])) ? $b_background : ($b_info['background'] ? $b_info['background'] : 0);
 
 		$max_group_id = get_max_group_id();
 		$b_group = '';
@@ -340,7 +349,7 @@ if(($mode == 'blocks'))
 				//generate_smilies('inline');
 				$s_hidden_fields .= '<input type="hidden" name="blockfile" value="" />';
 				$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
-				$s_hidden_fields .= '<input type="hidden" name="title" value="' . htmlspecialchars($b_title) . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="title" value="' . $b_title . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="bposition" value="' . $position['block'] . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="active" value="' . $b_active . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="local" value="' . $b_local . '" />';
@@ -357,7 +366,7 @@ if(($mode == 'blocks'))
 				$s_hidden_fields .= '<input type="hidden" name="blockfile" value="' . $block_content_file . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="message" value="" />';
 				$s_hidden_fields .= '<input type="hidden" name="type" value="0" />';
-				$s_hidden_fields .= '<input type="hidden" name="title" value="' . htmlspecialchars($b_title) . '" />';
+				$s_hidden_fields .= '<input type="hidden" name="title" value="' . $b_title . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="bposition" value="' . $position['block'] . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="active" value="' . $b_active . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="local" value="' . $b_local . '" />';
@@ -480,7 +489,6 @@ if(($mode == 'blocks'))
 			{
 				$template_to_parse = CMS_TPL . 'cms_block_content_body.tpl';
 				$template->assign_var('CMS_PAGE_TITLE', $lang['Blocks_Creation_01']);
-				//$s_hidden_fields .= '<input type="hidden" name="message" value="' . $message . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="message" value="' . htmlspecialchars($message) . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="type" value="' . $b_type . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
@@ -565,7 +573,7 @@ if(($mode == 'blocks'))
 			'L_SUBMIT' => $lang['Submit'],
 			'L_PREVIEW' => $lang['Preview'],
 
-			'TITLE' => htmlspecialchars($b_title),
+			'TITLE' => $b_title,
 			'POSITION' => $position['select'],
 			'ACTIVE' => ($b_active) ? 'checked="checked"' : '',
 			'NOT_ACTIVE' => (!$b_active) ? 'checked="checked"' : '',
@@ -609,19 +617,17 @@ if(($mode == 'blocks'))
 			message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 		}
 
-		$b_title = (isset($_POST['title'])) ? trim($_POST['title']) : '';
-		$b_title = addslashes($b_title);
-		$b_bposition = (isset($_POST['bposition'])) ? trim($_POST['bposition']) : '';
-		$b_active = (isset($_POST['active'])) ? intval($_POST['active']) : 0;
-		$b_type = (isset($_POST['type'])) ? intval($_POST['type']) : 0;
-		$b_content = (isset($_POST['message'])) ? trim($_POST['message']) : '';
-		$b_content = addslashes($b_content);
-		$b_blockfile = (isset($_POST['blockfile'])) ? trim($_POST['blockfile']) : '';
-		$b_view = (isset($_POST['view'])) ? trim($_POST['view']) : 0;
-		$b_border = (isset($_POST['border'])) ? intval($_POST['border']) : 0;
-		$b_titlebar = (isset($_POST['titlebar'])) ? intval($_POST['titlebar']) : 0;
-		$b_local = (isset($_POST['local'])) ? intval($_POST['local']) : 0;
-		$b_background = (isset($_POST['background'])) ? intval($_POST['background']) : 0;
+		$b_title = request_post_var('title', '', true);
+		$b_bposition = request_post_var('b_bposition', '', true);
+		$b_active = request_post_var('active', 0);
+		$b_type = request_post_var('type', 0);
+		$b_content = htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+		$b_blockfile = request_post_var('blockfile', '', true);
+		$b_view = request_post_var('view', '');
+		$b_border = request_post_var('border', 0);
+		$b_titlebar = request_post_var('titlebar', 0);
+		$b_local = request_post_var('local', 0);
+		$b_background = request_post_var('background', 0);
 		$is_config = (isset($_GET['isconfig']) ? true : (isset($_POST['isconfig']) ? true : false));
 
 		$max_group_id = get_max_group_id();
@@ -683,12 +689,12 @@ if(($mode == 'blocks'))
 			{
 				$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
 					SET
-					title = '" . $b_title . "',
-					bposition = '" . $b_bposition . "',
+					title = '" . $db->sql_escape($b_title) . "',
+					bposition = '" . $db->sql_escape($b_bposition) . "',
 					active = '" . $b_active . "',
 					type = '" . $b_type . "',
-					content = '" . $b_content . "',
-					blockfile = '" . $b_blockfile . "',
+					content = '" . $db->sql_escape($b_content) . "',
+					blockfile = '" . $db->sql_escape($b_blockfile) . "',
 					layout = '" . $layout_value . "',
 					layout_special = '" . $layout_special_value . "',
 					view = '" . $b_view . "',
@@ -751,16 +757,16 @@ if(($mode == 'blocks'))
 							if(!$existing)
 							{
 								$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
-									VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][0]) . "', '" . $db->sql_escape($block_variables[$i][1]) . "', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . $db->sql_escape($block_variables[$i][6]) . "')";
+									VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][0]) . "', '" . $db->sql_escape($block_variables[$i][1]) . "', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][3]) . "', '" . $db->sql_escape($block_variables[$i][4]) . "', '" . $block_variables[$i][5] . "', '" . $db->sql_escape($block_variables[$i][6]) . "')";
 								$result = $db->sql_query($sql);
 
 								$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
-									VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
+									VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][7]) . "')";
 								$result = $db->sql_query($sql);
 							}
 							else
 							{
-								$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET config_value = '" . $block_variables[$i][7] . "'
+								$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET config_value = '" . $db->sql_escape($block_variables[$i][7]) . "'
 												WHERE config_name = '" . $db->sql_escape($block_variables[$i][2]) . "'
 													AND bid = " . $b_id;
 								$result = $db->sql_query($sql);
@@ -773,8 +779,8 @@ if(($mode == 'blocks'))
 			{
 				$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
 					SET
-					title = '" . $b_title . "',
-					bposition = '" . $b_bposition . "',
+					title = '" . $db->sql_escape($b_title) . "',
+					bposition = '" . $db->sql_escape($b_bposition) . "',
 					active = '" . $b_active . "',
 					layout = '" . $layout_value . "',
 					layout_special = '" . $layout_special_value . "',
@@ -795,7 +801,7 @@ if(($mode == 'blocks'))
 			$weight = get_max_blocks_position(CMS_BLOCKS_TABLE, $id_var_value, $b_bposition) + 1;
 			$b_id = get_max_block_id(CMS_BLOCKS_TABLE) + 1;
 
-			$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $b_title . "', '" . $b_content . "', '" . $b_bposition . "', '" . $weight . "', '" . $b_active . "', '" . $b_type . "', '" . $b_blockfile . "', '" . $b_view . "', '" . $layout_value . "', '" . $layout_special_value . "', '" . $b_border . "', '" . $b_titlebar . "', '" . $b_background . "', '" . $b_local . "', '" . $b_group . "')";
+			$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $db->sql_escape($b_title) . "', '" . $db->sql_escape($b_content) . "', '" . $b_bposition . "', '" . $weight . "', '" . $b_active . "', '" . $b_type . "', '" . $b_blockfile . "', '" . $b_view . "', '" . $layout_value . "', '" . $layout_special_value . "', '" . $b_border . "', '" . $b_titlebar . "', '" . $b_background . "', '" . $b_local . "', '" . $b_group . "')";
 			$result = $db->sql_query($sql);
 
 			if(!empty($b_blockfile))
@@ -814,11 +820,11 @@ if(($mode == 'blocks'))
 						}
 
 						$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
-							VALUES ('" . $b_id . "', '" . $db->sql_escape($block_variables[$i][0]) . "', '" . $db->sql_escape($block_variables[$i][1]) . "', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . $db->sql_escape($block_variables[$i][6]) . "')";
+							VALUES ('" . $b_id . "', '" . $db->sql_escape($block_variables[$i][0]) . "', '" . $db->sql_escape($block_variables[$i][1]) . "', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][3]) . "', '" . $db->sql_escape($block_variables[$i][4]) . "', '" . $block_variables[$i][5] . "', '" . $db->sql_escape($block_variables[$i][6]) . "')";
 						$result = $db->sql_query($sql);
 
 						$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
-							VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
+							VALUES ('" . $b_id ."', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][7]) . "')";
 						$result = $db->sql_query($sql);
 					}
 				}
@@ -904,7 +910,7 @@ if(($mode == 'blocks'))
 					$weight = get_max_blocks_position(CMS_BLOCKS_TABLE, $id_var_value, $b_bposition, 'layout') + 1;
 					$b_id = get_max_block_id(CMS_BLOCKS_TABLE) + 1;
 
-					$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . addslashes(stripslashes($b_info['title'])) . "', '" . addslashes(stripslashes($b_info['content'])) . "', '" . $b_info['bposition'] . "', '" . $b_info['weight'] . "', '" . $b_info['active'] . "', '" . $b_info['type'] . "', '" . $b_info['blockfile'] . "', '" . $b_info['view'] . "', '" . (($id_var_name == 'l_id') ? $id_var_value : 0) . "', '" . (($id_var_name == 'ls_id') ? $id_var_value : 0) . "', '" . $b_info['border'] . "', '" . $b_info['titlebar'] . "', '" . $b_info['background'] . "', '" . $b_info['local'] . "', '" . $b_info['groups'] . "')";
+					$sql = "INSERT INTO " . CMS_BLOCKS_TABLE . " (bid, title, content, bposition, weight, active, type, blockfile, view, layout, layout_special, border, titlebar, background, local, groups) VALUES ('" . $b_id . "', '" . $db->sql_escape($b_info['title']) . "', '" . $db->sql_escape($b_info['content']) . "', '" . $db->sql_escape($b_info['bposition']) . "', '" . $b_info['weight'] . "', '" . $b_info['active'] . "', '" . $b_info['type'] . "', '" . $b_info['blockfile'] . "', '" . $b_info['view'] . "', '" . (($id_var_name == 'l_id') ? $id_var_value : 0) . "', '" . (($id_var_name == 'ls_id') ? $id_var_value : 0) . "', '" . $b_info['border'] . "', '" . $b_info['titlebar'] . "', '" . $b_info['background'] . "', '" . $b_info['local'] . "', '" . $b_info['groups'] . "')";
 					$result = $db->sql_query($sql);
 
 					$sql_cfg = "SELECT * FROM " . CMS_CONFIG_TABLE . " AS c, " . CMS_BLOCK_VARIABLE_TABLE . " AS bv
@@ -918,11 +924,11 @@ if(($mode == 'blocks'))
 					{
 						$portal_name = $row_cfg['config_name'];
 						$sql = "INSERT INTO " . CMS_BLOCK_VARIABLE_TABLE . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
-							VALUES ('" . $b_id . "', '" . $row_cfg['label'] . "', '" . $row_cfg['sub_label'] . "', '" . $row_cfg['config_name'] . "', '" . $row_cfg['field_options'] . "', '" . addslashes(stripslashes($row_cfg['field_values'])) . "', '" . $row_cfg['type'] . "', '" . $row_cfg['block'] . "')";
+							VALUES ('" . $b_id . "', '" . $db->sql_escape($row_cfg['label']) . "', '" . $db->sql_escape($row_cfg['sub_label']) . "', '" . $db->sql_escape($row_cfg['config_name']) . "', '" . $row_cfg['field_options'] . "', '" . $db->sql_escape($row_cfg['field_values']) . "', '" . $row_cfg['type'] . "', '" . $db->sql_escape($row_cfg['block']) . "')";
 						$result = $db->sql_query($sql);
 
 						$sql = "INSERT INTO " . CMS_CONFIG_TABLE . " (bid, config_name, config_value)
-							VALUES ('" . $b_id . "', '" . $row_cfg['config_name'] . "', '" . addslashes(stripslashes($row_cfg['config_value'])) . "')";
+							VALUES ('" . $b_id . "', '" . $db->sql_escape($row_cfg['config_name']) . "', '" . $db->sql_escape($row_cfg['config_value']) . "')";
 						$result = $db->sql_query($sql);
 					}
 					$db->sql_transaction('commit');
@@ -1149,7 +1155,7 @@ if(($mode == 'blocks'))
 						for ($i = 0; $i < sizeof($block_debug_array); $i++)
 						{
 							$sql = "UPDATE " . CMS_BLOCKS_TABLE . "
-								SET weight = '" . $i . "', bposition = '" . $bposition . "'
+								SET weight = '" . $i . "', bposition = '" . $db->sql_escape($bposition) . "'
 								WHERE bid = '" . $block_debug_array[$i] . "'";
 							$result = $db->sql_query($sql);
 						}
@@ -1516,7 +1522,7 @@ if(($mode == 'blocks'))
 
 							$template->assign_block_vars('blocks', array(
 								'ROW_CLASS' => $row_class,
-								'TITLE' => stripslashes(trim($b_rows[$i]['title'])),
+								'TITLE' => $b_rows[$i]['title'],
 								'BLOCK_CB_ID' => $b_rows[$i]['bid'],
 								//'POSITION' => $position[$b_position],
 								'POSITION' => $b_position_l,
@@ -1728,7 +1734,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 			'L_EDIT_LAYOUT' => $lang['Layout_Edit'],
 			'L_SUBMIT' => $lang['Submit'],
 
-			'NAME' => (empty($l_info['name']) ? '' : htmlspecialchars($l_info['name'])),
+			'NAME' => (empty($l_info['name']) ? '' : $l_info['name']),
 			'FILENAME' => (empty($l_info['filename']) ? '' : $l_info['filename']),
 			'PAGE_ID' => (empty($l_info['page_id']) ? '' : $l_info['page_id']),
 			'TEMPLATE' => $layout_details,
@@ -1748,16 +1754,16 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 	}
 	elseif($action == 'save')
 	{
-		$l_name = (isset($_POST['name'])) ? trim($_POST['name']) : '';
-		$l_page_id = (isset($_POST['page_id']) ? (preg_replace('/[^A-Za-z0-9_]+/', '', strtolower(htmlspecialchars(trim($_POST['page_id']))))) : '');
-		$l_locked = (isset($_POST['locked'])) ? intval($_POST['locked']) : 0;
-		$l_filename = (isset($_POST['filename'])) ? htmlspecialchars(trim($_POST['filename'])) : '';
-		$l_filename_old = (isset($_POST['filename_old'])) ? htmlspecialchars(trim($_POST['filename_old'])) : '';
-		$l_template = (isset($_POST['template'])) ? trim($_POST['template']) : '';
-		$l_global_blocks = (isset($_POST['global_blocks'])) ? intval($_POST['global_blocks']) : 0;
-		$l_page_nav = (isset($_POST['page_nav'])) ? intval($_POST['page_nav']) : 0;
-		$l_view = (isset($_POST['view'])) ? intval($_POST['view']) : 0;
-		$l_edit_auth = (isset($_POST['edit_auth'])) ? intval($_POST['edit_auth']) : 0;
+		$l_name = request_post_var('name', '', true);
+		$l_page_id = preg_replace('/[^A-Za-z0-9_]+/', '', strtolower(request_post_var('page_id', '', true)));
+		$l_locked = request_post_var('locked', 0);
+		$l_filename = request_post_var('filename', '', true);
+		$l_filename_old = request_post_var('filename_old', '', true);
+		$l_template = request_post_var('template', '', true);
+		$l_global_blocks = request_post_var('template', 0);
+		$l_page_nav = request_post_var('page_nav', 0);
+		$l_view = request_post_var('view', 0);
+		$l_edit_auth = request_post_var('edit_auth', 0);
 
 		if (!$is_layout_special)
 		{
@@ -2125,7 +2131,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 			$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
 			$lang_var = 'auth_view_' . $l_rows[$i]['name'];
 			$layout_id = $l_rows[$i][$field_name];
-			$layout_name = ($is_layout_special ? (isset($lang[$lang_var]) ? htmlspecialchars($lang[$lang_var]) : htmlspecialchars($l_rows[$i]['name'])) : htmlspecialchars($l_rows[$i]['name']));
+			$layout_name = ($is_layout_special ? (isset($lang[$lang_var]) ? htmlspecialchars($lang[$lang_var]) : $l_rows[$i]['name']) : $l_rows[$i]['name']);
 			$layout_filename = $l_rows[$i]['filename'];
 			$layout_preview = ($is_layout_special ? (empty($layout_filename) ? '#' : append_sid($layout_filename)) : (empty($layout_filename) ? (CMS_PAGE_HOME . '?page=' . $layout_id) : append_sid($layout_filename)));
 			$layout_locked = false;
@@ -2148,7 +2154,7 @@ if (($mode == 'layouts_special') || ($mode == 'layouts'))
 				'ROW_DEFAULT_STYLE' => ($layout_id == $default_portal_id) ? 'font-weight: bold;' : '',
 				'LAYOUT_ID' => $layout_id,
 				'LAYOUT_NAME' => $layout_name,
-				'LAYOUT_FILENAME' => (empty($layout_filename) ? $lang['None'] : htmlspecialchars($layout_filename)),
+				'LAYOUT_FILENAME' => (empty($layout_filename) ? $lang['None'] : $layout_filename),
 				'LAYOUT_BLOCKS' => count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $layout_id . '\'', $is_layout_special, true) . '/' . count_blocks_in_layout(CMS_BLOCKS_TABLE, '\'' . $layout_id . '\'', $is_layout_special, false),
 				'LAYOUT_TEMPLATE' => $l_rows[$i]['template'],
 
@@ -2208,7 +2214,7 @@ if($mode == 'config')
 		{
 			$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET
 				config_value = '" . $db->sql_escape($new[$cms_field[$row['config_name']]['name']]) . "'
-				WHERE config_name = '" . $cms_field[$row['config_name']]['name'] . "'";
+				WHERE config_name = '" . $db->sql_escape($cms_field[$row['config_name']]['name']) . "'";
 			$result = $db->sql_query($sql);
 		}
 		else

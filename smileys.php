@@ -24,7 +24,7 @@ $cat = request_var('cat', '');
 $server_url = create_server_url();
 $smileys_base_path = $config['smilies_path'] . '/';
 $toc_folder = $smileys_base_path . 'cats/';
-if (is_dir($toc_folder))
+if (@is_dir($toc_folder))
 {
 	$skip_files = array(
 		'.',
@@ -49,7 +49,7 @@ if (is_dir($toc_folder))
 			$cats_list[] = $cat_name;
 		}
 	}
-	closedir($dir);
+	@closedir($dir);
 	@asort($cats_list);
 	@reset($cats_list);
 }

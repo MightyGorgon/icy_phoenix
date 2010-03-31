@@ -294,7 +294,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 
 	$user_agent = (!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : ((!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
-	if (ereg('Opera(/|)([0-9].[0-9]{1,2})', $user_agent, $log_version))
+	if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $user_agent, $log_version))
 	{
 		$browser_version = $log_version[2];
 		$browser_agent = 'opera';
@@ -330,9 +330,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 		$browser_agent = 'other';
 	}
 
-	//
 	// Correct the Mime Type, if it's an octetstream
-	//
 	if (($mimetype == 'application/octet-stream') || ($mimetype == 'application/octetstream'))
 	{
 		if (($browser_agent == 'ie') || ($browser_agent == 'opera'))

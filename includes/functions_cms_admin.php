@@ -723,7 +723,7 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 	$output .= '<li class="cms-content" id="list_' . $b_row['bposition'] . '_id' . $b_id . '" >';
 	$output .= '<div class="row1" style="min-height: 24px;">';
 	$output .= '<div style="text-align: center; float: left;">' . $u_move . '</div>';
-	$output .= '<div style="text-align: center;"><b>' . htmlspecialchars(stripslashes($b_row['title'])) . '</b></div>';
+	$output .= '<div style="text-align: center;"><b>' . $b_row['title'] . '</b></div>';
 	$output .= '</div>';
 	$output .= '<div class="container row1">';
 	$output .= '<div class="left">' . $u_border . $u_titlebar . $u_local . $u_background . '<br />';

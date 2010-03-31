@@ -59,10 +59,10 @@ if (isset($_POST['submit']))
 		$key_len = 54 - strlen($profile_server_url);
 		$key_len = ($key_len > 6) ? $key_len : 6;
 		$user_actkey = substr($user_actkey, 0, $key_len);
-		$user_password = phpbb_hash(gen_rand_string());
+		$user_password = gen_rand_string();
 		// CrackerTracker v5.x
 		$sql = "UPDATE " . USERS_TABLE . "
-			SET user_newpasswd = '" . $db->sql_escape($user_password) . "', user_actkey = '" . $user_actkey . "', user_passchg = '" . time() . "'
+			SET user_newpasswd = '" . $db->sql_escape(phpbb_hash($user_password)) . "', user_actkey = '" . $user_actkey . "', user_passchg = '" . time() . "'
 			WHERE user_id = " . $row['user_id'];
 		// CrackerTracker v5.x
 		$db->sql_query($sql);

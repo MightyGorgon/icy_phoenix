@@ -42,7 +42,7 @@ $start = ($start < 0) ? 0 : $start;
 $show = request_var('show', $config['topics_per_page']);
 $show = ($show < 1) ? $config['topics_per_page'] : $show;
 
-$sort_method = request_var('sort_method', 'user_regdate');
+$sort_method = request_var('sort', 'user_regdate');
 
 $sort_order = request_var('order', 'ASC');
 $sort_order = check_var_value($sort_order, array('DESC', 'ASC'));

@@ -39,8 +39,11 @@ $mark_forum_id = request_var('forum_id', 0);
 
 if($userdata['upi2db_access'])
 {
+	// Mighty Gorgon: are these two vars really needed? After a quick global search, they are not needed... so I comment them!
+	/*
 	$always_read_topics_string = explode(',', $unread['always_read']['topics']);
 	$always_read_forums_string = explode(',', $unread['always_read']['forums']);
+	*/
 
 	if (!empty($mark_always_read))
 	{

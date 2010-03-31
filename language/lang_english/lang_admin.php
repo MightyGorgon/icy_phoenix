@@ -784,7 +784,7 @@ $lang = array_merge($lang, array(
 	'Optimize_DB' => 'Optimize Database',
 	'Optimize_Enable_cron' => 'Enable Cron',
 	'Optimize_Cron_every' => 'Cron Every',
-	'Optimize_Cron_every_explain' => 'Please note that you need also to enable <b>PHP Cron [Global Switch]</b> in <b>Configuration &raquo; Icy Phoenix &raquo; Cron</b>',
+	'Optimize_Cron_every_explain' => 'Please note that you need also to enable <b>PHP Cron [Global Switch]</b> in <b>ACP &raquo; Configuration &raquo; Main Settings &raquo; Cron</b>',
 	'Optimize_month' => 'Month',
 	'Optimize_2weeks' => '2 weeks',
 	'Optimize_week' => 'Week',
@@ -1970,14 +1970,14 @@ $lang = array_merge($lang, array(
 	// Tickets Submission - END
 
 	'FORUM_LIMIT_EDIT_TIME' => 'Limit User Post Edit Time',
-	'FORUM_LIMIT_EDIT_TIME_EXPLAIN' => 'By enabling this option users will be allowed to edit own messages only within the limit set in Posts configuration of Icy Phoenix (ACP &raquo; Configuration &raquo; Icy Phoenix &raquo; Posting And Messages)',
+	'FORUM_LIMIT_EDIT_TIME_EXPLAIN' => 'By enabling this option users will be allowed to edit own messages only within the limit set in Posts configuration of Icy Phoenix (ACP &raquo; Configuration &raquo; Main Settings &raquo; Posting And Messages)',
 
 	'BACK_TO_TOP' => 'Top',
 	'BACK_TO_PREV' => 'Back to previous page',
 
 	// Custom BBCodes - BEGIN
 	'BBCODES_CUSTOM_BBCODES' => 'Custom BBCodes',
-	'BBCODES_CUSTOM_BBCODES_EXPLAIN' => 'BBCode is a special implementation of HTML offering greater control over what and how something is displayed. From this page you can add, remove and edit custom BBCodes. To be able to use these Custom BBCodes you need to enable <b>Enable Custom BBCodes</b> in <b>Configuration &raquo; Icy Phoenix &raquo; Posting And Messages</b> section.',
+	'BBCODES_CUSTOM_BBCODES_EXPLAIN' => 'BBCode is a special implementation of HTML offering greater control over what and how something is displayed. From this page you can add, remove and edit custom BBCodes. To be able to use these Custom BBCodes you need to enable <b>Enable Custom BBCodes</b> in <b>ACP &raquo; Configuration &raquo; Main Settings &raquo; Posting And Messages</b> section.',
 	'BBCODES_NO_BBCODES' => 'No BBCodes',
 	'BBCODES_NO_BBCODES_SEL' => 'No BBCode selected',
 	'BBCODES_NO_BBCODES_INPUT' => 'You have to fill the BBCode tag',

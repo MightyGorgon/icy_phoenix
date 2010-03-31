@@ -89,7 +89,7 @@ if(CACHE_TO_FILE && (CACHE_TIME > 0))
 	{
 		$cachefiletime = @filemtime($cache_file);
 		$timedif = ($deadline - $cachefiletime);
-		if(($timedif < CACHE_TIME) && (filesize($cache_file) > 0))
+		if(($timedif < CACHE_TIME) && (@filesize($cache_file) > 0))
 		{
 			$use_cached = true;
 		}
@@ -419,10 +419,13 @@ else
 				$author= $post['post_username'];
 			}
 			$author = $bbcode->make_clickable($author);
-			// Assign "item" variables to template
+			// Mighty Gorgon: shall we still need these utf8_encode?
+			/*
 			$topic_title = utf8_encode($topic_title);
 			$post_subject = utf8_encode($post_subject);
 			$message = utf8_encode($message);
+			*/
+			// Assign "item" variables to template
 			$template->assign_block_vars('post_item', array(
 				'POST_URL' => $viewpost_url . '?' . POST_POST_URL . '=' . $post['post_id'] . '#p' . $post['post_id'],
 				'FIRST_POST_URL' => $viewpost_url . '?' . POST_POST_URL . '=' . $post['topic_first_post_id'] . '#p' . $post['topic_first_post_id'],

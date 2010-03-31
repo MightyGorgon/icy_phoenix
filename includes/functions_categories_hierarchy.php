@@ -1263,7 +1263,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				$url_viewforum = ($type == POST_FORUM_URL) ? append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $id) : append_sid(CMS_PAGE_FORUM . '?' . POST_CAT_URL . '=' . $id);
 			}
 			// send to template
-			if (($config['show_rss_forum_icon'] == 1) && ($data['forum_index_icons'] == 1) && ($type == POST_FORUM_URL))
+			if ($config['show_rss_forum_icon'] && ($data['forum_index_icons'] == 1) && ($type == POST_FORUM_URL))
 			{
 				$rss_feed_icon = '';
 				if (!$data['tree.locked'] && $userdata['session_logged_in'])

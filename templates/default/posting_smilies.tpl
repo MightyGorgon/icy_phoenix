@@ -16,11 +16,7 @@
 		</tr>
 		<!-- END smilies_row -->
 		<!-- BEGIN switch_smilies_extra -->
-		<tr>
-			<td align="center" colspan="{S_SMILIES_COLSPAN}">
-				<span class="nav"><a href="{U_MORE_SMILIES}" onclick="open_window('{U_MORE_SMILIES}', 250, 300);return false" target="_smilies" class="nav">{L_MORE_SMILIES}</a></span>
-			</td>
-		</tr>
+		<tr><td align="center" colspan="{S_SMILIES_COLSPAN}"><span class="nav"><a href="{U_MORE_SMILIES}" onclick="open_window('{U_MORE_SMILIES}', 250, 300);return false" target="_smilies" class="nav">{L_MORE_SMILIES}</a></span></td></tr>
 		<!-- END switch_smilies_extra -->
 		</table>
 	</td>

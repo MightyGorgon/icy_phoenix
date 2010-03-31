@@ -53,7 +53,7 @@ if ($config['ctracker_login_history'])
 		$template->assign_block_vars('login_output', array(
 			'ROW_CLASS' => ($count % 2 == 0)? $theme['td_class1'] : $theme['td_class2'],
 			'VALUE_1' => $count,
-			'VALUE_2' => gmdate($userdata['user_dateformat'], $row['ct_login_time']),
+			'VALUE_2' => create_date($config['default_dateformat'], $row['ct_login_time'], $config['board_timezone']),
 			'VALUE_3' => $row['ct_login_ip']
 			)
 		);

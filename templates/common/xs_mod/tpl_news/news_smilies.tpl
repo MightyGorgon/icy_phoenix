@@ -27,9 +27,7 @@ window.resizeTo({W_WIDTH_SMILIES},{W_HEIGHT_SMILIES});
 					</tr>
 					<!-- END smilies_row -->
 					<!-- BEGIN switch_smilies_extra -->
-					<tr align="center">
-						<td colspan="{S_SMILIES_COLSPAN}"><span  class="nav"><a href="{U_MORE_SMILIES}" onclick="open_window('{U_MORE_SMILIES}', 250, 300);return false" target="_smilies" class="nav">{L_MORE_SMILIES}</a></td>
-					</tr>
+					<tr align="center"><td colspan="{S_SMILIES_COLSPAN}"><span  class="nav"><a href="{U_MORE_SMILIES}" onclick="open_window('{U_MORE_SMILIES}', 250, 300);return false" target="_smilies" class="nav">{L_MORE_SMILIES}</a></td></tr>
 					<!-- END switch_smilies_extra -->
 				</table></td>
 			</tr>

@@ -3658,7 +3658,7 @@ class bbcode
 	{
 		// Returns text highlighted in rainbow colours
 		$colors = $this->load_rainbow_colors();
-		$text = trim(stripslashes($text));
+		$text = trim($text);
 		$length = strlen($text);
 		$result = '';
 		$color_counter = 0;

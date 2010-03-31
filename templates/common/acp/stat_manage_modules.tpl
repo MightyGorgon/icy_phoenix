@@ -37,7 +37,7 @@
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr class="{modulerow.ROW_CLASS}h">
 			<td class="{modulerow.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 100px;">{modulerow.U_MOVE_DOWN}&nbsp;{modulerow.U_MOVE_UP}&nbsp;{modulerow.U_EDIT}</td>
-			<td class="{modulerow.ROW_CLASS}" style="padding: 0px; background: none;"><strong>{modulerow.NAME}</strong></td>
+			<td class="{modulerow.ROW_CLASS}" style="padding: 0px; background: none;"><b>{modulerow.NAME}</b></td>
 			<td class="{modulerow.ROW_CLASS}" style="padding: 0px; background: none; width: 250px;">{modulerow.DNAME}</td>
 			<td class="{modulerow.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 90px;"><!-- IF modulerow.S_STATUS_CHECK --><input type="checkbox" name="module_status[]" value="{modulerow.MODULE_ID}"{modulerow.CHECKED} />&nbsp;<!-- ENDIF -->{modulerow.U_STATE}</td>
 			<td class="{modulerow.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 100px;"><input type="text" class="post" maxlength="10" name="module_time_{modulerow.MODULE_ID}" value="{modulerow.UPDATE_TIME}" style="width: 50px;" />

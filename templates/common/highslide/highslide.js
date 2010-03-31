@@ -1,8 +1,8 @@
 /******************************************************************************
 Name:    Highslide JS
-Version: 4.0.12 (February 4 2009)
+Version: 4.1.8 (October 27 2009)
 Config:  default
-Author:  Torstein Hønsi
+Author:  Torstein HÃ¸nsi
 Support: http://highslide.com/support
 
 Licence:
@@ -25,8 +25,7 @@ Under the following conditions:
 
 Your fair use and other rights are in no way affected by the above.
 ******************************************************************************/
-
-var hs = {
+if (!hs) { var hs = {
 // Language strings
 lang : {
 	cssDirection: 'ltr',
@@ -59,6 +58,7 @@ fullExpandPosition : 'bottom right',
 fullExpandOpacity : 1,
 showCredits : true, // you can set this to false if you want
 creditsHref : 'http://highslide.com/',
+creditsTarget : '_self',
 enableKeyListener : true,
 openerTagNames : ['a'], // Add more to allow slideshow indexing
 
@@ -67,7 +67,6 @@ minWidth: 200,
 minHeight: 200,
 allowSizeReduction: true, // allow the image to reduce to fit client size. If false, this overrides minWidth and minHeight
 outlineType : 'drop-shadow', // set null to disable outlines
-wrapperClassName : 'highslide-wrapper', // for enhanced css-control
 // END OF YOUR SETTINGS
 
 
@@ -88,6 +87,7 @@ overrides : [
 	'headingText',
 	'headingEval',
 	'headingOverlay',
+	'creditsPosition',
 	'dragByHeading',
 
 	'width',
@@ -113,16 +113,19 @@ oPos : {
 mouse: {},
 headingOverlay: {},
 captionOverlay: {},
-faders : [],
+timers : [],
 
 pendingOutlines : {},
 clones : {},
+onReady: [],
+uaVersion: /Trident\/4\.0/.test(navigator.userAgent) ? 8 :
+	parseFloat((navigator.userAgent.toLowerCase().match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ) || [0,'0'])[1]),
 ie : (document.all && !window.opera),
 safari : /Safari/.test(navigator.userAgent),
 geckoMac : /Macintosh.+rv:1\.[0-8].+Gecko/.test(navigator.userAgent),
 
 $ : function (id) {
-	return document.getElementById(id);
+	if (id) return document.getElementById(id);
 },
 
 push : function (arr, val) {
@@ -131,15 +134,16 @@ push : function (arr, val) {
 
 createElement : function (tag, attribs, styles, parent, nopad) {
 	var el = document.createElement(tag);
-	if (attribs) hs.setAttribs(el, attribs);
+	if (attribs) hs.extend(el, attribs);
 	if (nopad) hs.setStyles(el, {padding: 0, border: 'none', margin: 0});
 	if (styles) hs.setStyles(el, styles);
 	if (parent) parent.appendChild(el);
 	return el;
 },
 
-setAttribs : function (el, attribs) {
+extend : function (el, attribs) {
 	for (var x in attribs) el[x] = attribs[x];
+	return el;
 },
 
 setStyles : function (el, styles) {
@@ -151,10 +155,43 @@ setStyles : function (el, styles) {
 		else el.style[x] = styles[x];
 	}
 },
+animate: function(el, prop, opt) {
+	var start,
+		end,
+		unit;
+	if (typeof opt != 'object' || opt === null) {
+		var args = arguments;
+		opt = {
+			duration: args[2],
+			easing: args[3],
+			complete: args[4]
+		};
+	}
+	if (typeof opt.duration != 'number') opt.duration = 250;
+	opt.easing = Math[opt.easing] || Math.easeInQuad;
+	opt.curAnim = hs.extend({}, prop);
+	for (var name in prop) {
+		var e = new hs.fx(el, opt , name );
 
-ieVersion : function () {
-	var arr = navigator.appVersion.split("MSIE");
-	return arr[1] ? parseFloat(arr[1]) : null;
+		start = parseFloat(hs.css(el, name)) || 0;
+		end = parseFloat(prop[name]);
+		unit = name != 'opacity' ? 'px' : '';
+
+		e.custom( start, end, unit );
+	}
+},
+css: function(el, prop) {
+	if (document.defaultView) {
+		return document.defaultView.getComputedStyle(el, null).getPropertyValue(prop);
+
+	} else {
+		if (prop == 'opacity') prop = 'filter';
+		var val = el.currentStyle[prop.replace(/\-(\w)/g, function (a, b){ return b.toUpperCase(); })];
+		if (prop == 'filter')
+			val = val.replace(/alpha\(opacity=([0-9]+)\)/,
+				function (a, b) { return b / 100 });
+		return val === '' ? 1 : val;
+	}
 },
 
 getPageSize : function () {
@@ -165,7 +202,7 @@ getPageSize : function () {
 			(d.documentElement.clientWidth || self.innerWidth),
 		height = hs.ie ? iebody.clientHeight : self.innerHeight;
 
-	return {
+	hs.page = {
 		width: width,
 		height: height,
 		scrollLeft: hs.ie ? iebody.scrollLeft : pageXOffset,
@@ -198,18 +235,23 @@ expand : function(a, params, custom, type) {
 
 
 focusTopmost : function() {
-	var topZ = 0, topmostKey = -1;
-	for (var i = 0; i < hs.expanders.length; i++) {
-		if (hs.expanders[i]) {
-			if (hs.expanders[i].wrapper.style.zIndex && hs.expanders[i].wrapper.style.zIndex > topZ) {
-				topZ = hs.expanders[i].wrapper.style.zIndex;
-
+	var topZ = 0,
+		topmostKey = -1,
+		expanders = hs.expanders,
+		exp,
+		zIndex;
+	for (var i = 0; i < expanders.length; i++) {
+		exp = expanders[i];
+		if (exp) {
+			zIndex = exp.wrapper.style.zIndex;
+			if (zIndex && zIndex > topZ) {
+				topZ = zIndex;
 				topmostKey = i;
 			}
 		}
 	}
 	if (topmostKey == -1) hs.focusKey = -1;
-	else hs.expanders[topmostKey].focus();
+	else expanders[topmostKey].focus();
 },
 
 getParam : function (a, param) {
@@ -241,11 +283,13 @@ getNode : function (id) {
 },
 
 discardElement : function(d) {
-	hs.garbageBin.appendChild(d);
+	if (d) hs.garbageBin.appendChild(d);
 	hs.garbageBin.innerHTML = '';
 },
 transit : function (adj, exp) {
-	hs.last = exp = exp || hs.getExpander();
+	var last = exp = exp || hs.getExpander();
+	if (hs.upcoming) return false;
+	else hs.last = last;
 	try {
 		hs.upcoming = adj;
 		adj.onclick();
@@ -259,9 +303,9 @@ transit : function (adj, exp) {
 },
 
 previousOrNext : function (el, op) {
-	var exp = hs.getExpander(el),
-		adj = exp.getAdjacentAnchor(op);
-	return hs.transit(adj, exp);
+	var exp = hs.getExpander(el);
+	if (exp) return hs.transit(exp.getAdjacentAnchor(op), exp);
+	else return false;
 },
 
 previous : function (el) {
@@ -304,7 +348,6 @@ keyHandler : function(e) {
 
 		if (e.preventDefault) e.preventDefault();
     	else e.returnValue = false;
-
     	if (exp) {
 			if (op == 0) {
 				exp.close();
@@ -319,7 +362,7 @@ keyHandler : function(e) {
 
 
 registerOverlay : function (overlay) {
-	hs.push(hs.overlays, overlay);
+	hs.push(hs.overlays, hs.extend(overlay, { hsId: 'hsId'+ hs.idCounter++ } ));
 },
 
 
@@ -382,8 +425,16 @@ mouseClickHandler : function(e)
 		if (e.target.form) return true;
 		var match = el.className.match(/highslide-(image|move|resize)/);
 		if (match) {
-			hs.dragArgs = { exp: exp , type: match[1], left: exp.x.pos, width: exp.x.size, top: exp.y.pos,
-				height: exp.y.size, clickX: e.clientX, clickY: e.clientY };
+			hs.dragArgs = {
+				exp: exp ,
+				type: match[1],
+				left: exp.x.pos,
+				width: exp.x.size,
+				top: exp.y.pos,
+				height: exp.y.size,
+				clickX: e.clientX,
+				clickY: e.clientY
+			};
 
 
 			hs.addEventListener(document, 'mousemove', hs.dragHandler);
@@ -410,7 +461,6 @@ mouseClickHandler : function(e)
 			else if (hasDragged || (!hasDragged && hs.hasHtmlExpanders)) {
 				hs.dragArgs.exp.doShowHide('hidden');
 			}
-
 			hs.hasFocused = false;
 			hs.dragArgs = null;
 
@@ -456,18 +506,17 @@ wrapperMouseHandler : function (e) {
 		if (!exp.isExpanded) return;
 		if (!exp || !e.relatedTarget || hs.getExpander(e.relatedTarget, true) == exp
 			|| hs.dragArgs) return;
-		for (var i = 0; i < exp.overlays.length; i++) {
+		for (var i = 0; i < exp.overlays.length; i++) (function() {
 			var o = hs.$('hsId'+ exp.overlays[i]);
 			if (o && o.hideOnMouseOut) {
-				var from = over ? 0 : o.opacity,
-					to = over ? o.opacity : 0;
-				hs.fade(o, from, to);
+				if (over) hs.setStyles(o, { visibility: 'visible', display: '' });
+				hs.animate(o, { opacity: over ? o.opacity : 0 }, o.dur);
 			}
-		}
+		})();
 	} catch (e) {}
 },
-
 addEventListener : function (el, event, func) {
+	if (el == document && event == 'ready') hs.push(hs.onReady, func);
 	try {
 		el.addEventListener(event, func, false);
 	} catch (e) {
@@ -523,6 +572,15 @@ preloadImages : function (number) {
 
 init : function () {
 	if (!hs.container) {
+
+		hs.getPageSize();
+		hs.ieLt7 = hs.ie && hs.uaVersion < 7;
+		for (var x in hs.langDefaults) {
+			if (typeof hs[x] != 'undefined') hs.lang[x] = hs[x];
+			else if (typeof hs.lang[x] == 'undefined' && typeof hs.langDefaults[x] != 'undefined')
+				hs.lang[x] = hs.langDefaults[x];
+		}
+
 		hs.container = hs.createElement('div', {
 				className: 'highslide-container'
 			}, {
@@ -557,20 +615,17 @@ init : function () {
 		Math.easeInQuad = function (t, b, c, d) {
 			return c*(t/=d)*t + b;
 		};
-		for (var x in hs.langDefaults) {
-			if (typeof hs[x] != 'undefined') hs.lang[x] = hs[x];
-			else if (typeof hs.lang[x] == 'undefined' && typeof hs.langDefaults[x] != 'undefined')
-				hs.lang[x] = hs.langDefaults[x];
-		}
 
-		hs.hideSelects = (hs.ie && hs.ieVersion() < 7);
-		hs.hideIframes = ((window.opera && navigator.appVersion < 9) || navigator.vendor == 'KDE'
-			|| (hs.ie && hs.ieVersion() < 5.5));
+		hs.hideSelects = hs.ieLt7;
+		hs.hideIframes = ((window.opera && hs.uaVersion < 9) || navigator.vendor == 'KDE'
+			|| (hs.ie && hs.uaVersion < 5.5));
 	}
 },
-domReady : function() {
-	hs.isDomReady = true;
-	if (hs.onDomReady) hs.onDomReady();
+ready : function() {
+	if (hs.isReady) return;
+	hs.isReady = true;
+
+	for (var i = 0; i < hs.onReady.length; i++) hs.onReady[i]();
 },
 
 updateAnchors : function() {
@@ -600,49 +655,108 @@ getAnchors : function() {
 },
 
 
-fade : function (el, o, oFinal, dur, fn, i, dir) {
-	if (typeof i == 'undefined') { // new fader
-		if (typeof dur != 'number') dur = 250;
-		if (dur < 25) { // instant
-			hs.setStyles( el, { opacity: oFinal	});
-			if (fn) fn();
-			return;
-		}
-		i = hs.faders.length;
-		dir = oFinal > o ? 1 : -1;
-		var step = (25 / (dur - dur % 25)) * Math.abs(o - oFinal);
-	}
-	o = parseFloat(o);
-	var skip = (el.fade === 0 || el.fade === false || (el.fade == 2 && hs.ie));
-	el.style.visibility = ((skip ? oFinal : o) <= 0) ? 'hidden' : 'visible';
-	if (skip || o < 0 || (dir == 1 && o > oFinal)) {
-		if (fn) fn();
-		return;
-	}
-	if (el.fading && el.fading.i != i) {
-		clearTimeout(hs.faders[el.fading.i]);
-		o = el.fading.o;
-	}
-	el.fading = {i: i, o: o, step: (step || el.fading.step)};
-	el.style.visibility = (o <= 0) ? 'hidden' : 'visible';
-	hs.setStyles(el, { opacity: o });
-	hs.faders[i] = setTimeout(function() {
-		hs.fade(el, o + el.fading.step * dir, oFinal, null, fn, i, dir);
-	}, 25);
-},
-
 close : function(el) {
 	var exp = hs.getExpander(el);
 	if (exp) exp.close();
 	return false;
 }
 }; // end hs object
+hs.fx = function( elem, options, prop ){
+	this.options = options;
+	this.elem = elem;
+	this.prop = prop;
 
+	if (!options.orig) options.orig = {};
+};
+hs.fx.prototype = {
+	update: function(){
+		(hs.fx.step[this.prop] || hs.fx.step._default)(this);
+
+		if (this.options.step)
+			this.options.step.call(this.elem, this.now, this);
+
+	},
+	custom: function(from, to, unit){
+		this.startTime = (new Date()).getTime();
+		this.start = from;
+		this.end = to;
+		this.unit = unit;// || this.unit || "px";
+		this.now = this.start;
+		this.pos = this.state = 0;
+
+		var self = this;
+		function t(gotoEnd){
+			return self.step(gotoEnd);
+		}
+
+		t.elem = this.elem;
+
+		if ( t() && hs.timers.push(t) == 1 ) {
+			hs.timerId = setInterval(function(){
+				var timers = hs.timers;
+
+				for ( var i = 0; i < timers.length; i++ )
+					if ( !timers[i]() )
+						timers.splice(i--, 1);
+
+				if ( !timers.length ) {
+					clearInterval(hs.timerId);
+				}
+			}, 13);
+		}
+	},
+	step: function(gotoEnd){
+		var t = (new Date()).getTime();
+		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
+			this.now = this.end;
+			this.pos = this.state = 1;
+			this.update();
+
+			this.options.curAnim[ this.prop ] = true;
+
+			var done = true;
+			for ( var i in this.options.curAnim )
+				if ( this.options.curAnim[i] !== true )
+					done = false;
+
+			if ( done ) {
+				if (this.options.complete) this.options.complete.call(this.elem);
+			}
+			return false;
+		} else {
+			var n = t - this.startTime;
+			this.state = n / this.options.duration;
+			this.pos = this.options.easing(n, 0, 1, this.options.duration);
+			this.now = this.start + ((this.end - this.start) * this.pos);
+			this.update();
+		}
+		return true;
+	}
+
+};
+
+hs.extend( hs.fx, {
+	step: {
+
+		opacity: function(fx){
+			hs.setStyles(fx.elem, { opacity: fx.now });
+		},
+
+		_default: function(fx){
+			try {
+				if ( fx.elem.style && fx.elem.style[ fx.prop ] != null )
+					fx.elem.style[ fx.prop ] = fx.now + fx.unit;
+				else
+					fx.elem[ fx.prop ] = fx.now;
+			} catch (e) {}
+		}
+	}
+});
 
 hs.Outline =  function (outlineType, onLoad) {
 	this.onLoad = onLoad;
 	this.outlineType = outlineType;
-	var v = hs.ieVersion(), tr;
+	var v = hs.uaVersion, tr;
 
 	this.hasAlphaImageLoader = hs.ie && v >= 5.5 && v < 7;
 	if (!outlineType) {
@@ -726,29 +840,33 @@ onGraphicLoad : function () {
 	if (this.onLoad) this.onLoad();
 },
 
-setPosition : function (exp, pos, vis) {
-	pos = pos || {
-		x: exp.x.pos,
-		y: exp.y.pos,
-		w: exp.x.size + exp.x.p1 + exp.x.p2,
-		h: exp.y.size + exp.y.p1 + exp.y.p2
-	};
+setPosition : function (pos, offset, vis, dur, easing) {
+	var exp = this.exp,
+		stl = exp.wrapper.style,
+		offset = offset || 0,
+		pos = pos || {
+			x: exp.x.pos + offset,
+			y: exp.y.pos + offset,
+			w: exp.x.get('wsize') - 2 * offset,
+			h: exp.y.get('wsize') - 2 * offset
+		};
 	if (vis) this.table.style.visibility = (pos.h >= 4 * this.offset)
 		? 'visible' : 'hidden';
 	hs.setStyles(this.table, {
 		left: (pos.x - this.offset) +'px',
 		top: (pos.y - this.offset) +'px',
-		width: (pos.w + 2 * (exp.x.cb + this.offset)) +'px'
+		width: (pos.w + 2 * this.offset) +'px'
 	});
 
-	pos.w += 2 * (exp.x.cb - this.offset);
-	pos.h += + 2 * (exp.y.cb - this.offset);
+	pos.w -= 2 * this.offset;
+	pos.h -= 2 * this.offset;
 	hs.setStyles (this.td[4], {
 		width: pos.w >= 0 ? pos.w +'px' : 0,
 		height: pos.h >= 0 ? pos.h +'px' : 0
 	});
 	if (this.hasAlphaImageLoader) this.td[3].style.height
 		= this.td[5].style.height = this.td[4].style.height;
+
 },
 
 destroy : function(hide) {
@@ -777,6 +895,8 @@ get : function(key) {
 			return this.size + 2 * this.cb + this.p1 + this.p2;
 		case 'fitsize':
 			return this.clientSize - this.marginMin - this.marginMax;
+		case 'maxsize':
+			return this.get('fitsize') - 2 * this.cb - this.p1 - this.p2 ;
 		case 'opos':
 			return this.pos - (this.exp.outline ? this.exp.outline.offset : 0);
 		case 'osize':
@@ -789,14 +909,15 @@ get : function(key) {
 calcBorders: function() {
 	// correct for borders
 	this.cb = (this.exp.content['offset'+ this.ucwh] - this.t) / 2;
-	this.marginMax = hs['margin'+ this.ucrb] + 2 * this.cb;
+
+	this.marginMax = hs['margin'+ this.ucrb];
 },
 calcThumb: function() {
 	this.t = this.exp.el[this.wh] ? parseInt(this.exp.el[this.wh]) :
 		this.exp.el['offset'+ this.ucwh];
 	this.tpos = this.exp.tpos[this.dim];
 	this.tb = (this.exp.el['offset'+ this.ucwh] - this.t) / 2;
-	if (this.tpos == 0) {
+	if (this.tpos == 0 || this.tpos == -1) {
 		this.tpos = (hs.page[this.wh] / 2) + hs.page['scroll'+ this.uclt];
 	};
 },
@@ -807,10 +928,14 @@ calcExpanded: function() {
 
 	// size and position
 	this.pos = this.tpos - this.cb + this.tb;
+
+	if (this.maxHeight && this.dim == 'x')
+		exp.maxWidth = Math.min(exp.maxWidth || this.full, exp.maxHeight * this.full / exp.y.full);
+
 	this.size = Math.min(this.full, exp['max'+ this.ucwh] || this.full);
 	this.minSize = exp.allowSizeReduction ?
 		Math.min(exp['min'+ this.ucwh], this.full) :this.full;
-	if (exp.useBox)	{
+	if (exp.isImage && exp.useBox)	{
 		this.size = exp[this.wh];
 		this.imgSize = this.full;
 	}
@@ -830,23 +955,23 @@ setSize: function(i) {
 
 	exp.content.style[this.wh] = i +'px';
 	exp.wrapper.style[this.wh] = this.get('wsize') +'px';
-	if (exp.outline) exp.outline.setPosition(exp);
+	if (exp.outline) exp.outline.setPosition();
 	if (this.dim == 'x' && exp.overlayBox) exp.sizeOverlayBox(true);
 },
 setPos: function(i) {
 	this.pos = i;
 	this.exp.wrapper.style[this.lt] = i +'px';
 
-	if (this.exp.outline) this.exp.outline.setPosition(this.exp);
+	if (this.exp.outline) this.exp.outline.setPosition();
 
 }
 };
 
 hs.Expander = function(a, params, custom, contentType) {
-	if (document.readyState && hs.ie && !hs.isDomReady) {
-		hs.onDomReady = function() {
+	if (document.readyState && hs.ie && !hs.isReady) {
+		hs.addEventListener(document, 'ready', function() {
 			new hs.Expander(a, params, custom, contentType);
-		};
+		});
 		return;
 	}
 	this.a = a;
@@ -858,7 +983,6 @@ hs.Expander = function(a, params, custom, contentType) {
 	this.overlays = [];
 	hs.init();
 	var key = this.key = hs.expanders.length;
-
 	// override inline parameters
 	for (var i = 0; i < hs.overrides.length; i++) {
 		var name = hs.overrides[i];
@@ -881,12 +1005,12 @@ hs.Expander = function(a, params, custom, contentType) {
 	}
 
 	// cancel other
-	for (var i = 0; i < hs.expanders.length; i++) {
+	if (!hs.allowSimultaneousLoading) for (var i = 0; i < hs.expanders.length; i++) {
 		if (hs.expanders[i] && hs.expanders[i].thumb != el && !hs.expanders[i].onLoadStarted) {
 			hs.expanders[i].cancelLoading();
 		}
 	}
-	hs.expanders[this.key] = this;
+	hs.expanders[key] = this;
 	if (!hs.allowMultipleInstances && !hs.upcoming) {
 		if (hs.expanders[key-1]) hs.expanders[key-1].close();
 		if (typeof hs.focusKey != 'undefined' && hs.expanders[hs.focusKey])
@@ -896,21 +1020,19 @@ hs.Expander = function(a, params, custom, contentType) {
 	// initiate metrics
 	this.el = el;
 	this.tpos = hs.getPosition(el);
-	hs.page = hs.getPageSize();
+	hs.getPageSize();
 	var x = this.x = new hs.Dimension(this, 'x');
 	x.calcThumb();
 	var y = this.y = new hs.Dimension(this, 'y');
 	y.calcThumb();
-
-	// instanciate the wrapper
 	this.wrapper = hs.createElement(
 		'div', {
 			id: 'highslide-wrapper-'+ this.key,
-			className: this.wrapperClassName
+			className: 'highslide-wrapper '+ this.wrapperClassName
 		}, {
 			visibility: 'hidden',
 			position: 'absolute',
-			zIndex: hs.zIndexCounter++
+			zIndex: hs.zIndexCounter += 2
 		}, null, true );
 
 	this.wrapper.onmouseover = this.wrapper.onmouseout = hs.wrapperMouseHandler;
@@ -939,10 +1061,15 @@ hs.Expander = function(a, params, custom, contentType) {
 };
 
 hs.Expander.prototype = {
+error : function(e) {
+	// alert ('Line '+ e.lineNumber +': '+ e.message);
+	window.location.href = this.src;
+},
 
 connectOutline : function() {
-	var o = this.outline = hs.pendingOutlines[this.outlineType];
-	o.table.style.zIndex = this.wrapper.style.zIndex;
+	var outline = this.outline = hs.pendingOutlines[this.outlineType];
+	outline.exp = this;
+	outline.table.style.zIndex = this.wrapper.style.zIndex - 1;
 	hs.pendingOutlines[this.outlineType] = null;
 },
 
@@ -1000,33 +1127,33 @@ contentLoaded : function() {
 			hs.setStyles(this.loading, { top: '-9999px' });
 			this.loading = null;
 		}
-
-		hs.setStyles (this.wrapper, {
-			left: x.tpos +'px',
-			top: y.tpos +'px'
-		});
 			x.full = this.content.width;
 			y.full = this.content.height;
 
 			hs.setStyles(this.content, {
-				width: this.x.t +'px',
-				height: this.y.t +'px'
+				width: x.t +'px',
+				height: y.t +'px'
 			});
 			this.wrapper.appendChild(this.content);
 			hs.container.appendChild(this.wrapper);
 
 		x.calcBorders();
 		y.calcBorders();
+
+		hs.setStyles (this.wrapper, {
+			left: (x.tpos + x.tb - x.cb) +'px',
+			top: (y.tpos + x.tb - y.cb) +'px'
+		});
 		this.getOverlays();
 
 		var ratio = x.full / y.full;
-
 		x.calcExpanded();
 		this.justify(x);
 
 		y.calcExpanded();
 		this.justify(y);
 		if (this.overlayBox) this.sizeOverlayBox(0, 1);
+
 
 		if (this.allowSizeReduction) {
 				this.correctRatio(ratio);
@@ -1038,7 +1165,7 @@ contentLoaded : function() {
 		this.show();
 
 	} catch (e) {
-		window.location.href = this.src;
+		this.error(e);
 	}
 },
 
@@ -1059,12 +1186,12 @@ justify : function (p, moveOnly) {
 		}
 		if (p.pos + p.get('wsize') > p.scroll + p.clientSize - p.marginMax) {
 			if (!moveOnly && hasMovedMin && allowReduce) {
-				p.size = p.get('fitsize')- 2 * p.cb - p.p1 - p.p2; // can't expand more
+				p.size = Math.min(p.size, p.get(dim == 'y' ? 'fitsize' : 'maxsize'));
 			} else if (p.get('wsize') < p.get('fitsize')) {
 				p.pos = p.scroll + p.clientSize - p.marginMax - p.get('wsize');
 			} else { // image larger than viewport
 				p.pos = p.scroll + p.marginMin;
-				if (!moveOnly && allowReduce) p.size = p.get('fitsize')- 2 * p.cb - p.p1 - p.p2;
+				if (!moveOnly && allowReduce) p.size = p.get(dim == 'y' ? 'fitsize' : 'maxsize');
 			}
 		}
 
@@ -1115,7 +1242,7 @@ correctRatio : function(ratio) {
 		x.size = xSize;
 		y.size = ySize;
 	}
-	this.fitOverlayBox(useBox ? null : ratio);
+	changed = this.fitOverlayBox(useBox ? null : ratio, changed);
 	if (useBox && y.size < y.imgSize) {
 		y.imgSize = y.size;
 		x.imgSize = y.size * ratio;
@@ -1131,7 +1258,7 @@ correctRatio : function(ratio) {
 		if (this.overlayBox) this.sizeOverlayBox();
 	}
 },
-fitOverlayBox : function(ratio) {
+fitOverlayBox : function(ratio, changed) {
 	var x = this.x, y = this.y;
 	if (this.overlayBox) {
 		while (y.size > this.minHeight && x.size > this.minWidth
@@ -1139,148 +1266,105 @@ fitOverlayBox : function(ratio) {
 			y.size -= 10;
 			if (ratio) x.size = y.size * ratio;
 			this.sizeOverlayBox(0, 1);
+			changed = true;
 		}
 	}
+	return changed;
 },
 
 show : function () {
+	var x = this.x, y = this.y;
 	this.doShowHide('hidden');
+
 	// Apply size change
 	this.changeSize(
-		1,
-		{
-			xpos: this.x.tpos + this.x.tb - this.x.cb,
-			ypos: this.y.tpos + this.y.tb - this.y.cb,
-			xsize: this.x.t,
-			ysize: this.y.t,
-			xp1: 0,
-			xp2: 0,
-			yp1: 0,
-			yp2: 0,
-			ximgSize: this.x.t,
-			ximgPad: 0,
-			yimgSize: this.y.t,
-			yimgPad: 0,
-			o: hs.outlineStartOffset
-		},
-		{
-			xpos: this.x.pos,
-			ypos: this.y.pos,
-			xsize: this.x.size,
-			ysize: this.y.size,
-			xp1: this.x.p1,
-			yp1: this.y.p1,
-			xp2: this.x.p2,
-			yp2: this.y.p2,
-			ximgSize: this.x.imgSize,
-			ximgPad: this.x.get('imgPad'),
-			yimgSize: this.y.imgSize,
-			yimgPad: this.y.get('imgPad'),
-			o: this.outline ? this.outline.offset : 0
+		1, {
+			wrapper: {
+				width : x.get('wsize'),
+				height : y.get('wsize'),
+				left: x.pos,
+				top: y.pos
+			},
+			content: {
+				left: x.p1 + x.get('imgPad'),
+				top: y.p1 + y.get('imgPad'),
+				width:x.imgSize ||x.size,
+				height:y.imgSize ||y.size
+			}
 		},
 		hs.expandDuration
 	);
 },
 
-changeSize : function(up, from, to, dur) {
+changeSize : function(up, to, dur) {
 
 	if (this.outline && !this.outlineWhileAnimating) {
-		if (up) this.outline.setPosition(this);
+		if (up) this.outline.setPosition();
 		else this.outline.destroy();
 	}
 
 
-	if (!up && this.overlayBox) {
-		hs.discardElement(this.overlayBox);
-	}
-	if (this.fadeInOut) {
-		from.op = up ? 0 : 1;
-		to.op = up;
-	}
-	var t,
-		exp = this,
-		easing = Math[this.easing] || Math.easeInQuad,
-		steps = (up ? hs.expandSteps : hs.restoreSteps) || parseInt(dur / 25) || 1;
-	if (!up) easing = Math[this.easingClose] || easing;
-	for (var i = 1; i <= steps ; i++) {
-		t = Math.round(i * (dur / steps));
+	if (!up) this.destroyOverlays();
 
-		(function(){
-			var pI = i, size = {};
+	var exp = this,
+		x = exp.x,
+		y = exp.y,
+		easing = this.easing;
+	if (!up) easing = this.easingClose || easing;
+	var after = up ?
+		function() {
 
-			for (var x in from) {
-				size[x] = easing(t, from[x], to[x] - from[x], dur);
-				if (isNaN(size[x])) size[x] = to[x];
-				if (!/^op$/.test(x)) size[x] = Math.round(size[x]);
-			}
-			setTimeout ( function() {
-				if (up && pI == 1) {
-					exp.content.style.visibility = 'visible';
-					exp.a.className += ' highslide-active-anchor';
-				}
-				exp.setSize(size);
-			}, t);
-		})();
-	}
-
-	if (up) {
-
-		setTimeout(function() {
 			if (exp.outline) exp.outline.table.style.visibility = "visible";
-		}, t);
-		setTimeout(function() {
-			exp.afterExpand();
-		}, t + 50);
+			setTimeout(function() {
+				exp.afterExpand();
+			}, 50);
+		} :
+		function() {
+			exp.afterClose();
+		};
+	if (up) hs.setStyles( this.wrapper, {
+		width: x.t +'px',
+		height: y.t +'px'
+	});
+	if (this.fadeInOut) {
+		hs.setStyles(this.wrapper, { opacity: up ? 0 : 1 });
+		hs.extend(to.wrapper, { opacity: up });
 	}
-	else setTimeout(function() { exp.afterClose(); }, t);
-},
-
-setSize : function (to) {
-	try {
-		if (to.op) hs.setStyles(this.wrapper, { opacity: to.op });
-		hs.setStyles ( this.wrapper, {
-			width : (to.xsize +to.xp1 + to.xp2 +
-				2 * this.x.cb) +'px',
-			height : (to.ysize +to.yp1 + to.yp2 +
-				2 * this.y.cb) +'px',
-			left: to.xpos +'px',
-			top: to.ypos +'px'
-		});
-		hs.setStyles(this.content, {
-			left: (to.xp1 + to.ximgPad) +'px',
-			top: (to.yp1 + to.yimgPad) +'px',
-			width: (to.ximgSize ||to.xsize) +'px',
-			height: (to.yimgSize ||to.ysize) +'px'
-		});
-
-		if (this.outline && this.outlineWhileAnimating) {
-			var o = this.outline.offset - to.o;
-			this.outline.setPosition(this, {
-				x: to.xpos + o,
-				y: to.ypos + o,
-				w: to.xsize + to.xp1 + to.xp2 + - 2 * o,
-				h: to.ysize + to.yp1 + to.yp2 + - 2 * o
-			}, 1);
+	hs.animate( this.wrapper, to.wrapper, {
+		duration: dur,
+		easing: easing,
+		step: function(val, args) {
+			if (exp.outline && exp.outlineWhileAnimating && args.prop == 'top') {
+				var fac = up ? args.pos : 1 - args.pos;
+				var pos = {
+					w: x.t + (x.get('wsize') - x.t) * fac,
+					h: y.t + (y.get('wsize') - y.t) * fac,
+					x: x.tpos + (x.pos - x.tpos) * fac,
+					y: y.tpos + (y.pos - y.tpos) * fac
+				};
+				exp.outline.setPosition(pos, 0, 1);
+			}
 		}
-
+	});
+	hs.animate( this.content, to.content, dur, easing, after);
+	if (up) {
 		this.wrapper.style.visibility = 'visible';
-
-	} catch (e) {
-		window.location.href = this.src;
+		this.content.style.visibility = 'visible';
+		this.a.className += ' highslide-active-anchor';
 	}
 },
+
+
 
 
 afterExpand : function() {
 	this.isExpanded = true;
 	this.focus();
+	if (hs.upcoming && hs.upcoming == this.a) hs.upcoming = null;
 	this.prepareNextOutline();
-
-
 	var p = hs.page, mX = hs.mouse.x + p.scrollLeft, mY = hs.mouse.y + p.scrollTop;
 	this.mouseIsOver = this.x.pos < mX && mX < this.x.pos + this.x.get('wsize')
 		&& this.y.pos < mY && mY < this.y.pos + this.y.get('wsize');
-
 	if (this.overlayBox) this.showOverlays();
 
 },
@@ -1314,8 +1398,8 @@ getAdjacentAnchor : function(op) {
 },
 
 getAnchorIndex : function() {
-	var arr = hs.anchors.groups[this.slideshowGroup || 'none'];
-	for (var i = 0; i < arr.length; i++) {
+	var arr = hs.getAnchors().groups[this.slideshowGroup || 'none'];
+	if (arr) for (var i = 0; i < arr.length; i++) {
 		if (arr[i] == this.a) return i;
 	}
 	return null;
@@ -1323,6 +1407,7 @@ getAnchorIndex : function() {
 
 
 cancelLoading : function() {
+	hs.discardElement (this.wrapper);
 	hs.expanders[this.key] = null;
 	if (this.loading) hs.loading.style.left = '-9999px';
 },
@@ -1330,13 +1415,14 @@ cancelLoading : function() {
 writeCredits : function () {
 	this.credits = hs.createElement('a', {
 		href: hs.creditsHref,
+		target: hs.creditsTarget,
 		className: 'highslide-credits',
 		innerHTML: hs.lang.creditsText,
 		title: hs.lang.creditsTitle
 	});
 	this.createOverlay({
 		overlayId: this.credits,
-		position: 'top left'
+		position: this.creditsPosition || 'top left'
 	});
 },
 
@@ -1353,13 +1439,17 @@ getInline : function(types, addOverlay) {
 			s = this[type +'Text'];
 		}
 		if (!this[type] && !s) {
-			var next = this.a.nextSibling;
-			while (next && !hs.isHsAnchor(next)) {
-				if ((new RegExp('highslide-'+ type)).test(next.className || null)) {
-					this[type] = next.cloneNode(1);
-					break;
+			this[type] = hs.getNode(this.a['_'+ type + 'Id']);
+			if (!this[type]) {
+				var next = this.a.nextSibling;
+				while (next && !hs.isHsAnchor(next)) {
+					if ((new RegExp('highslide-'+ type)).test(next.className || null)) {
+						if (!next.id) this.a['_'+ type + 'Id'] = next.id = 'hsId'+ hs.idCounter++;
+						this[type] = hs.getNode(next.id);
+						break;
+					}
+					next = next.nextSibling;
 				}
-				next = next.nextSibling;
 			}
 		}
 
@@ -1428,7 +1518,7 @@ showHideElements : function (tagName, visibility) {
 },
 
 focus : function() {
-	this.wrapper.style.zIndex = hs.zIndexCounter++;
+	this.wrapper.style.zIndex = hs.zIndexCounter += 2;
 	// blur others
 	for (var i = 0; i < hs.expanders.length; i++) {
 		if (hs.expanders[i] && i == hs.focusKey) {
@@ -1441,13 +1531,13 @@ focus : function() {
 
 	// focus this
 	if (this.outline) this.outline.table.style.zIndex
-		= this.wrapper.style.zIndex;
+		= this.wrapper.style.zIndex - 1;
 	this.content.className = 'highslide-'+ this.contentType;
 		this.content.title = hs.lang.restoreTitle;
 
 		if (hs.restoreCursor) {
 			hs.styleRestoreCursor = window.opera ? 'pointer' : 'url('+ hs.graphicsDir + hs.restoreCursor +'), pointer';
-			if (hs.ie && hs.ieVersion() < 6) hs.styleRestoreCursor = 'hand';
+			if (hs.ie && hs.uaVersion < 6) hs.styleRestoreCursor = 'hand';
 			this.content.style.cursor = hs.styleRestoreCursor;
 		}
 
@@ -1472,6 +1562,7 @@ resize : function (e) {
 resizeTo: function(w, h) {
 	this.y.setSize(h);
 	this.x.setSize(w);
+	this.wrapper.style.height = this.y.get('wsize') +'px';
 },
 
 close : function() {
@@ -1484,84 +1575,75 @@ close : function() {
 		this.content.style.cursor = 'default';
 		this.changeSize(
 			0, {
-				xpos: this.x.pos,
-				ypos: this.y.pos,
-				xsize: this.x.size,
-				ysize: this.y.size,
-				xp1: this.x.p1,
-				yp1: this.y.p1,
-				xp2: this.x.p2,
-				yp2: this.y.p2,
-				ximgSize: this.x.imgSize,
-				ximgPad: this.x.get('imgPad'),
-				yimgSize: this.y.imgSize,
-				yimgPad: this.y.get('imgPad'),
-				o: this.outline ? this.outline.offset : 0
-			}, {
-				xpos: this.x.tpos - this.x.cb + this.x.tb,
-				ypos: this.y.tpos - this.y.cb + this.y.tb,
-				xsize: this.x.t,
-				ysize: this.y.t,
-				xp1: 0,
-				yp1: 0,
-				xp2: 0,
-				yp2: 0,
-				ximgSize: this.x.imgSize ? this.x.t : null,
-				ximgPad: 0,
-				yimgSize: this.y.imgSize ? this.y.t : null,
-				yimgPad: 0,
-				o: hs.outlineStartOffset
-			},
-			hs.restoreDuration
+				wrapper: {
+					width : this.x.t,
+					height : this.y.t,
+					left: this.x.tpos - this.x.cb + this.x.tb,
+					top: this.y.tpos - this.y.cb + this.y.tb
+				},
+				content: {
+					left: 0,
+					top: 0,
+					width: this.x.t,
+					height: this.y.t
+				}
+			}, hs.restoreDuration
 		);
-
 	} catch (e) { this.afterClose(); }
 },
 
 createOverlay : function (o) {
 	var el = o.overlayId;
 	if (typeof el == 'string') el = hs.getNode(el);
+	if (o.html) el = hs.createElement('div', { innerHTML: o.html });
 	if (!el || typeof el == 'string') return;
 	el.style.display = 'block';
 	this.genOverlayBox();
 	var width = o.width && /^[0-9]+(px|%)$/.test(o.width) ? o.width : 'auto';
 	if (/^(left|right)panel$/.test(o.position) && !/^[0-9]+px$/.test(o.width)) width = '200px';
-
 	var overlay = hs.createElement(
 		'div', {
-			id: 'hsId'+ hs.idCounter++, hsId: o.hsId
+			id: 'hsId'+ hs.idCounter++,
+			hsId: o.hsId
 		}, {
 			position: 'absolute',
 			visibility: 'hidden',
 			width: width,
-			direction: hs.lang.cssDirection || ''
-		},
-		this.overlayBox,
+			direction: hs.lang.cssDirection || '',
+			opacity: 0
+		},this.overlayBox,
 		true
 	);
 
 	overlay.appendChild(el);
-	hs.setAttribs(overlay, {
-		hideOnMouseOut: o.hideOnMouseOut,
-		opacity: o.opacity || 1,
-		hsPos: o.position,
-		fade: o.fade
+	hs.extend(overlay, {
+		opacity: 1,
+		offsetX: 0,
+		offsetY: 0,
+		dur: (o.fade === 0 || o.fade === false || (o.fade == 2 && hs.ie)) ? 0 : 250
 	});
+	hs.extend(overlay, o);
 
 	if (this.gotOverlays) {
 		this.positionOverlay(overlay);
-		if (!overlay.hideOnMouseOut || this.mouseIsOver) hs.fade(overlay, 0, overlay.opacity);
+		if (!overlay.hideOnMouseOut || this.mouseIsOver)
+			hs.animate(overlay, { opacity: overlay.opacity }, overlay.dur);
 	}
 	hs.push(this.overlays, hs.idCounter - 1);
 },
 positionOverlay : function(overlay) {
-	var p = overlay.hsPos || 'middle center';
-	if (/left$/.test(p)) overlay.style.left = 0;
+	var p = overlay.position || 'middle center',
+		offX = overlay.offsetX,
+		offY = overlay.offsetY;
+	if (overlay.parentNode != this.overlayBox) this.overlayBox.appendChild(overlay);
+	if (/left$/.test(p)) overlay.style.left = offX +'px';
+
 	if (/center$/.test(p))	hs.setStyles (overlay, {
 		left: '50%',
-		marginLeft: '-'+ Math.round(overlay.offsetWidth / 2) +'px'
+		marginLeft: (offX - Math.round(overlay.offsetWidth / 2)) +'px'
 	});
-	if (/right$/.test(p))	overlay.style.right = 0;
+
+	if (/right$/.test(p)) overlay.style.right = - offX +'px';
 
 	if (/^leftpanel$/.test(p)) {
 		hs.setStyles(overlay, {
@@ -1583,12 +1665,13 @@ positionOverlay : function(overlay) {
 		});
 		this.x.p2 = overlay.offsetWidth;
 	}
-	if (/^top/.test(p)) overlay.style.top = 0;
+
+	if (/^top/.test(p)) overlay.style.top = offY +'px';
 	if (/^middle/.test(p))	hs.setStyles (overlay, {
 		top: '50%',
-		marginTop: '-'+ Math.round(overlay.offsetHeight / 2) +'px'
+		marginTop: (offY - Math.round(overlay.offsetHeight / 2)) +'px'
 	});
-	if (/^bottom/.test(p)) overlay.style.bottom = 0;
+	if (/^bottom/.test(p)) overlay.style.bottom = - offY +'px';
 	if (/^above$/.test(p)) {
 		hs.setStyles(overlay, {
 			left: (- this.x.p1 - this.x.cb) +'px',
@@ -1627,7 +1710,7 @@ getOverlays : function() {
 	var os = [];
 	for (var i = 0; i < this.overlays.length; i++) {
 		var o = hs.$('hsId'+ this.overlays[i]);
-		if (/panel$/.test(o.hsPos)) this.positionOverlay(o);
+		if (/panel$/.test(o.position)) this.positionOverlay(o);
 		else hs.push(os, o);
 	}
 	for (var i = 0; i < os.length; i++) this.positionOverlay(os[i]);
@@ -1639,44 +1722,47 @@ genOverlayBox : function() {
 			className: this.wrapperClassName
 		}, {
 			position : 'absolute',
-			width: this.x.size ? this.x.size +'px' : this.x.full +'px',
-			height: 0,
+			width: (this.x.size || (this.useBox ? this.width : null)
+				|| this.x.full) +'px',
+			height: (this.y.size || this.y.full) +'px',
 			visibility : 'hidden',
 			overflow : 'hidden',
-			zIndex : hs.ie ? 4 : null
+			zIndex : hs.ie ? 4 : 'auto'
 		},
 		hs.container,
 		true
 	);
 },
 sizeOverlayBox : function(doWrapper, doPanels) {
-	hs.setStyles( this.overlayBox, {
-		width: this.x.size +'px',
-		height: this.y.size +'px'
+	var overlayBox = this.overlayBox,
+		x = this.x,
+		y = this.y;
+	hs.setStyles( overlayBox, {
+		width: x.size +'px',
+		height: y.size +'px'
 	});
 	if (doWrapper || doPanels) {
 		for (var i = 0; i < this.overlays.length; i++) {
 			var o = hs.$('hsId'+ this.overlays[i]);
-			var ie6 = (hs.ie && (hs.ieVersion() <= 6 || document.compatMode == 'BackCompat'));
-			if (o && /^(above|below)$/.test(o.hsPos)) {
+			var ie6 = (hs.ieLt7 || document.compatMode == 'BackCompat');
+			if (o && /^(above|below)$/.test(o.position)) {
 				if (ie6) {
-					o.style.width = (this.overlayBox.offsetWidth + 2 * this.x.cb
-						+ this.x.p1 + this.x.p2) +'px';
+					o.style.width = (overlayBox.offsetWidth + 2 * x.cb
+						+ x.p1 + x.p2) +'px';
 				}
-				this.y[o.hsPos == 'above' ? 'p1' : 'p2'] = o.offsetHeight;
+				y[o.position == 'above' ? 'p1' : 'p2'] = o.offsetHeight;
 			}
-			if (o && ie6 && /^(left|right)panel$/.test(o.hsPos)) {
-				o.style.height = (this.overlayBox.offsetHeight + 2 * this.y.cb
-						+ this.y.p1 + this.y.p2) +'px';
+			if (o && ie6 && /^(left|right)panel$/.test(o.position)) {
+				o.style.height = (overlayBox.offsetHeight + 2* y.cb) +'px';
 			}
 		}
 	}
 	if (doWrapper) {
 		hs.setStyles(this.content, {
-			top: this.y.p1 +'px'
+			top: y.p1 +'px'
 		});
-		hs.setStyles(this.overlayBox, {
-			top: (this.y.p1 + this.y.cb) +'px'
+		hs.setStyles(overlayBox, {
+			top: (y.p1 + y.cb) +'px'
 		});
 	}
 },
@@ -1694,8 +1780,17 @@ showOverlays : function() {
 	for (var i = 0; i < this.overlays.length; i++) {
 		var o = hs.$('hsId'+ this.overlays[i]);
 		o.style.zIndex = 4;
-		if (!o.hideOnMouseOut || this.mouseIsOver) hs.fade(o, 0, o.opacity);
+		if (!o.hideOnMouseOut || this.mouseIsOver) {
+			o.style.visibility = 'visible';
+			hs.setStyles(o, { visibility: 'visible', display: '' });
+			hs.animate(o, { opacity: o.opacity }, o.dur);
+		}
 	}
+},
+
+destroyOverlays : function() {
+	if (!this.overlays.length) return;
+	hs.discardElement(this.overlayBox);
 },
 
 
@@ -1732,7 +1827,7 @@ doFullExpand : function () {
 		this.doShowHide('hidden');
 
 	} catch (e) {
-		window.location.href = this.content.src;
+		this.error(e);
 	}
 },
 
@@ -1744,12 +1839,16 @@ afterClose : function () {
 		if (this.outline && this.outlineWhileAnimating) this.outline.destroy();
 
 		hs.discardElement(this.wrapper);
+
 	hs.expanders[this.key] = null;
 	hs.reOrder();
 }
 
 };
-if (document.readyState && hs.ie) {
+hs.langDefaults = hs.lang;
+// history
+var HsExpander = hs.Expander;
+if (hs.ie) {
 	(function () {
 		try {
 			document.documentElement.doScroll('left');
@@ -1757,33 +1856,43 @@ if (document.readyState && hs.ie) {
 			setTimeout(arguments.callee, 50);
 			return;
 		}
-		hs.domReady();
+		hs.ready();
 	})();
 }
-hs.langDefaults = hs.lang;
-// history
-var HsExpander = hs.Expander;
+hs.addEventListener(document, 'DOMContentLoaded', hs.ready);
+hs.addEventListener(window, 'load', hs.ready);
 
 // set handlers
-hs.addEventListener(window, 'load', function() {
+hs.addEventListener(document, 'ready', function() {
 	if (hs.expandCursor) {
-		var sel = '.highslide img',
-			dec = 'cursor: url('+ hs.graphicsDir + hs.expandCursor +'), pointer !important;';
-
 		var style = hs.createElement('style', { type: 'text/css' }, null,
 			document.getElementsByTagName('HEAD')[0]);
 
-		if (!hs.ie) {
-			style.appendChild(document.createTextNode(sel + " {" + dec + "}"));
-		} else {
-			var last = document.styleSheets[document.styleSheets.length - 1];
-			if (typeof(last.addRule) == "object") last.addRule(sel, dec);
+		function addRule(sel, dec) {
+			if (!hs.ie) {
+				style.appendChild(document.createTextNode(sel + " {" + dec + "}"));
+			} else {
+				var last = document.styleSheets[document.styleSheets.length - 1];
+				if (typeof(last.addRule) == "object") last.addRule(sel, dec);
+			}
 		}
+		function fix(prop) {
+			return 'expression( ( ( ignoreMe = document.documentElement.'+ prop +
+				' ? document.documentElement.'+ prop +' : document.body.'+ prop +' ) ) + \'px\' );';
+		}
+		if (hs.expandCursor) addRule ('.highslide img',
+			'cursor: url('+ hs.graphicsDir + hs.expandCursor +'), pointer !important;');
 	}
+});
+hs.addEventListener(window, 'resize', function() {
+	hs.getPageSize();
 });
 hs.addEventListener(document, 'mousemove', function(e) {
 	hs.mouse = { x: e.clientX, y: e.clientY	};
 });
 hs.addEventListener(document, 'mousedown', hs.mouseClickHandler);
 hs.addEventListener(document, 'mouseup', hs.mouseClickHandler);
+
+hs.addEventListener(document, 'ready', hs.getAnchors);
 hs.addEventListener(window, 'load', hs.preloadImages);
+}

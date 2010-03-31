@@ -147,7 +147,7 @@ if($can_reply)
 				<img src="{smilies.URL}" onmouseover="this.style.cursor='pointer';" onclick="emoticon('{smilies.CODE}');" alt="{smilies.DESC}" title="{smilies.DESC}" />
 				<!-- END smilies -->
 			</td>
-			<td align="center" valign="middle">&nbsp;<input type="button" class="button" name="SmilesButt" value="{L_SMILEYS_MORE}" onclick="openAllSmiles();" /></td>
+			<td align="center" valign="middle">&nbsp;<input type="button" class="liteoption" name="SmilesButt" value="{L_SMILEYS_MORE}" onclick="openAllSmiles();" /></td>
 		</tr>
 		</table>
 	</td>

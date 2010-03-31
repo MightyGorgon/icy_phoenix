@@ -141,7 +141,7 @@
 </tr>
 <tr><th colspan="3">{L_CATNAME_8}</th></tr>
 <tr>
-	<td class="row3 row-center" width="20%" rowspan="4"><img src="{CAT_ICON_8}"  alt="" /></td>
+	<td class="row3 row-center" width="20%" rowspan="3"><img src="{CAT_ICON_8}"  alt="" /></td>
 	<td class="row1" width="50%"><b>{L_MOD_31}</b><br />{L_EXP_31}</td>
 	<td class="row1" width="30%"><select name="ctracker_auto_recovery">{S_OUTPUT_31}</select></td>
 </tr>
@@ -153,8 +153,6 @@
 	<td class="row1" width="50%"><b>{L_MOD_33}</b><br />{L_EXP_33}</td>
 	<td class="row1" width="30%"><select name="ctracker_autoban_mails">{S_OUTPUT_33}</select></td>
 </tr>
-<tr>
-	<td class="cat" colspan="3" align="center"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
-</tr>
+<tr><td class="cat" colspan="3" align="center"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>
 </form>

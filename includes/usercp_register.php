@@ -632,8 +632,7 @@ if (isset($_POST['submit']))
 				$profile_security->pw_create_date($user_id);
 				// CrackerTracker v5.x
 				//$new_password = md5($new_password);
-				$new_password = phpbb_hash($new_password);
-				$passwd_sql = "user_password = '" . $db->sql_escape($new_password) . "', ";
+				$passwd_sql = "user_password = '" . $db->sql_escape(phpbb_hash($new_password)) . "', ";
 			}
 		}
 	}
@@ -1067,7 +1066,7 @@ if (isset($_POST['submit']))
 // , user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color
 // , $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color
 			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_from_flag, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color, user_aim, user_yim, user_msnm, user_skype, user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_birthday_y, user_birthday_m, user_birthday_d, user_next_birthday_greeting, user_active, user_actkey)
-				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', " . time() . ", '" . $db->sql_escape($new_password) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape($icq) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . $db->sql_escape(str_replace(' ', '+', $aim)) . "', '" . $db->sql_escape($yim) . "', '" . $db->sql_escape($msn) . "', '" . $db->sql_escape($skype) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, 1, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', ";
+				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', " . time() . ", '" . $db->sql_escape(phpbb_hash($new_password)) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape($icq) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . $db->sql_escape(str_replace(' ', '+', $aim)) . "', '" . $db->sql_escape($yim) . "', '" . $db->sql_escape($msn) . "', '" . $db->sql_escape($skype) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, 1, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', ";
 			if (($config['require_activation'] == USER_ACTIVATION_SELF) || ($config['require_activation'] == USER_ACTIVATION_ADMIN) || $coppa)
 			{
 				$user_actkey = gen_rand_string();
@@ -2160,11 +2159,8 @@ else
 	}
 // End add - Birthday MOD
 
-	//
-	// Let's do an overall check for settings/versions which would prevent
-	// us from doing file uploads....
-	//
-
+	$verify_un_js = '';
+	$verify_email_js = '';
 	if ($config['ajax_checks_register'] == true)
 	{
 		$verify_un_js = 'onblur="verifyUsername(this.value)"';
@@ -2174,12 +2170,8 @@ else
 		$verify_email_js = 'onKeyUp="verifyEmail(this.value)"';
 		*/
 	}
-	else
-	{
-		$verify_un_js = '';
-		$verify_email_js = '';
-	}
 
+	// Let's do an overall check for settings/versions which would prevent us from doing file uploads....
 	$ini_val = (phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 	$form_enctype = (@$ini_val('file_uploads') == '0' || strtolower(@$ini_val('file_uploads') == 'off') || (phpversion() == '4.0.4pl1') || !$config['allow_avatar_upload'] || ((phpversion() < '4.0.3') && (@$ini_val('open_basedir') != ''))) ? '' : 'enctype="multipart/form-data"';
 
@@ -2188,9 +2180,9 @@ else
 		'L_YES' => $lang['Yes'],
 		'L_NO' => $lang['No'],
 		'USERNAME' => isset($username) ? $username : '',
-		'CUR_PASSWORD' => isset($cur_password) ? $cur_password : '',
-		'NEW_PASSWORD' => isset($new_password) ? $new_password : '',
-		'PASSWORD_CONFIRM' => isset($password_confirm) ? $password_confirm : '',
+		'CUR_PASSWORD' => isset($cur_password) ? htmlspecialchars($cur_password) : '',
+		'NEW_PASSWORD' => isset($new_password) ? htmlspecialchars($new_password) : '',
+		'PASSWORD_CONFIRM' => isset($password_confirm) ? htmlspecialchars($password_confirm) : '',
 		'EMAIL' => isset($email) ? $email : '',
 		'SIG_EDIT_LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=signature'),
 		'SIG_DESC' => $lang['sig_description'],

@@ -85,7 +85,7 @@ if(!empty($remove_id) && !defined('DEMO_MODE'))
 	$db->sql_query($sql);
 	$template->assign_block_vars('removed', array());
 	// remove files
-	if(!empty($remove_dir)
+	if(!empty($remove_dir))
 	{
 		$remove_tpl = $row['template_name'];
 	}

@@ -59,7 +59,7 @@ if ($lang_extend_admin)
 		'IP_enable_digests' => 'Enable Digests',
 
 		'IP_digests_php_cron' => 'Enable Digests PHP Cron',
-		'IP_digests_php_cron_explain' => 'This feature will enable a PHP emulation of the CRON trying to send the emails once per hour, but since it is based on a PHP emulation it may not be correctly executed every time. This means that sometimes emails may not be sent. If you can enable CRON on your server, use CRON instead of this feature. Please note that you need also to enable <b>PHP Cron [Global Switch]</b> in <b>Configuration &raquo; Icy Phoenix &raquo; Cron</b>',
+		'IP_digests_php_cron_explain' => 'This feature will enable a PHP emulation of the CRON trying to send the emails once per hour, but since it is based on a PHP emulation it may not be correctly executed every time. This means that sometimes emails may not be sent. If you can enable CRON on your server, use CRON instead of this feature. Please note that you need also to enable <b>PHP Cron [Global Switch]</b> in <b>ACP &raquo; Configuration &raquo; Main Settings &raquo; Cron</b>',
 
 		'IP_emails_only_to_admins' => 'Emails Only To Admins',
 		'IP_emails_only_to_admins_explain' => 'Allow email system only for sending emails to admins',

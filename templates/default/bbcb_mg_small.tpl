@@ -72,7 +72,7 @@ function bbcb_vars_reassign_end()
 		<!-- BEGIN smilies -->
 		<img src="{smilies.URL}" onmouseover="this.style.cursor='pointer';" onclick="bbcb_vars_reassign_start(); emoticon('{smilies.CODE}');bbcb_vars_reassign_end();" alt="{smilies.DESC}" title="{smilies.DESC}" />
 		<!-- END smilies -->
-		<!-- &nbsp;<input type="button" class="button" name="SmilesButt" value="{L_MORE_SMILIES}" onclick="openAllSmiles();" /> -->
+		<!-- &nbsp;<input type="button" class="liteoption" name="SmilesButt" value="{L_MORE_SMILIES}" onclick="openAllSmiles();" /> -->
 	</td>
 </tr>
 
