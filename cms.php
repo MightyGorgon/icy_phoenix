@@ -1114,8 +1114,8 @@ if(($mode == 'blocks'))
 	}
 	elseif(($id_var_value != 0) || ($action == 'editglobal'))
 	{
-		// To be removed when it is fixed...
-		$cms_ajax = false;
+		// Mighty Gorgon: to be removed when it is fixed...
+		$cms_ajax = (($action == 'editglobal') || ($id_var_name == 'ls_id')) ? false : $cms_ajax;
 
 		if(isset($_POST['action_update']))
 		{

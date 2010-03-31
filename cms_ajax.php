@@ -71,16 +71,7 @@ if ($blockfile == '')
 	{
 		$b_info = get_block_info(CMS_BLOCKS_TABLE, $b_id);
 		$b_type = $b_info['type'];
-		$b_content = stripslashes(trim($b_info['content']));
-		/*
-		$html_find = array('€', '&euro;', '&#8364;');
-		$html_replace = array('&#8364;', '&euro;', '&euro;');
-		$b_content = str_replace($html_find, $html_replace, $b_content);
-		*/
-		$b_content = utf8_encode(htmlspecialchars($b_content));
-		//$b_content = htmlentities($b_content, ENT_COMPAT, $encoding_charset);
-		//$b_content = htmlspecialchars($b_content);
-		//$b_content = $b_info['content'];
+		$b_content = $b_info['content'];
 	}
 
 	$template->assign_vars(array(
