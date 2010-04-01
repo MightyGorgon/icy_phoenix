@@ -113,19 +113,6 @@ $s_colspan = 0;
 $pic_cat_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_cat);
 $js_include = '';
 $js_images_list = '';
-/*
-if ($album_config['enable_mooshow'])
-{
-	$template->assign_block_vars('mooshow', array());
-	$js_images_list = get_images_list(ALBUM_OTF_PATH . $pic_cat, $pic_cat_reg);
-
-	$js_include .= '<script type="text/javascript" src="templates/common/album/prototype.lite.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="templates/common/album/moo.fx.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="templates/common/album/moo.fx.pack.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript" src="templates/common/album/mooshow.1.04.js"></script>' . "\n";
-	$js_include .= '<script type="text/javascript">var showsIE = new Array("' . $pic_cat_reg . '");</script>' . "\n";
-}
-*/
 
 // Upload To Album - BEGIN
 $select_cat = '';

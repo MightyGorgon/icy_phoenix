@@ -304,13 +304,13 @@ function request_boolean_var($var_name, $default, $multibyte = false, $post_only
 {
 	if ($post_only)
 	{
-		$return_value = request_post_var($var_name, $default, $multibyte);
+		$return = request_post_var($var_name, $default, $multibyte);
 	}
 	else
 	{
-		$return_value = request_var($var_name, $default, $multibyte);
+		$return = request_var($var_name, $default, $multibyte);
 	}
-	$return_value = !empty($return_value) ? true : false;
+	$return = !empty($return) ? true : false;
 	return $return;
 }
 
@@ -370,7 +370,7 @@ function check_http_var_exists($var_name, $empty_var = false)
 			return false;
 		}
 	}
-	return $return;
+	return false;
 }
 
 /**

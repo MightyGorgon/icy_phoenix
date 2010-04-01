@@ -77,7 +77,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '400' WHERE `config_name` = 'thumbnail_size'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_posts'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_lightbox'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_highslide'";
 
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'img_shoutbox'";
 
@@ -182,7 +182,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '400' WHERE `config_name` = 'thumbnail_size'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'thumbnail_posts'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'thumbnail_lightbox'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'thumbnail_highslide'";
 
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'url_rw'";
 
@@ -299,7 +299,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '400' WHERE `config_name` = 'thumbnail_size'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_posts'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_lightbox'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_highslide'";
 
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'new_msgs_mumber'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '5' WHERE `config_name` = 'last_msgs_n'";

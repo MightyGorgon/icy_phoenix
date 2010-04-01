@@ -211,11 +211,6 @@ function get_user_browser($http_user_agent_str)
 		$user_browser_ver = 'Konqueror ' . $log_version[1];
 		$user_browser_img .= 'konqueror.png';
 	}
-	elseif (ereg('Bunjalloo', $http_user_agent_str, $log_version))
-	{
-		$user_browser_ver = 'Bunjalloo';
-		$user_browser_img .= 'unknown.png';
-	}
 	else
 	{
 		$user_browser_ver = $lang['UNKNOWN'];

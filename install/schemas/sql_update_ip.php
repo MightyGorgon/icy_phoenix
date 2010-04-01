@@ -1882,7 +1882,6 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_poster_info_topic', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_bbcb_active_content', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('thumbnail_lightbox', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('enable_quick_quote', '0')";
 
 		$sql[] = "ALTER TABLE " . $table_prefix . "users ADD user_personal_pics_count INT DEFAULT '0' NOT NULL";
@@ -2029,7 +2028,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('lb_preview', '0');";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('use_old_pics_gen', '0');";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('show_last_comments', '0');";
-		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('enable_mooshow', '0');";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_cms_level` TINYINT(4) DEFAULT '0' NOT NULL";
 
@@ -3845,6 +3843,9 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "hacks_list`";
 
 		$sql[] = "UPDATE TABLE `" . $table_prefix . "users` SET `user_pass_convert` = '1'";
+
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'thumbnail_lightbox'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "album_config` WHERE config_name = 'enable_mooshow'";
 
 		/* Updating from IP 1.3.8.61 */
 		case '1.3.8.61':

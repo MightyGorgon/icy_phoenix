@@ -112,7 +112,6 @@ else
 	$config['thumbnail_cache'] = 0;
 	$config['thumbnail_posts'] = 0;
 	$config['thumbnail_highslide'] = 0;
-	$config['thumbnail_lightbox'] = 0;
 	$config['disable_html_guests'] = 0;
 	$config['quote_iterations'] = 3;
 	$config['switch_bbcb_active_content'] = 1;
@@ -626,10 +625,6 @@ class bbcode
 			{
 				$slideshow = !empty($item['params']['slide']) ? ', { slideshowGroup: \'' . $this->process_text($item['params']['slide']) . '\' } ' : '';
 			}
-			elseif ($config['thumbnail_lightbox'])
-			{
-				$slideshow = 'lightbox' . (!empty($item['params']['slide']) ? '[' . $this->process_text($item['params']['slide']) . ']' : '');
-			}
 			$liw_bypass = false;
 
 			// [img=blah]blah2[/img]
@@ -794,10 +789,6 @@ class bbcode
 				if ($this->allow_hs && $config['thumbnail_posts'] && $config['thumbnail_highslide'])
 				{
 					$extra_html = ' class="highslide" onclick="return hs.expand(this' . $slideshow . ')"';
-				}
-				elseif ($this->allow_hs && $config['thumbnail_posts'] && $config['thumbnail_lightbox'])
-				{
-					$extra_html = ' rel="' . $slideshow . '" title="' . $this->process_text($params['alt']) . '"';
 				}
 				else
 				{

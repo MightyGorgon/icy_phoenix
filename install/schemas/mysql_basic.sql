@@ -137,7 +137,6 @@ INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('set_me
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('lb_preview', '0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('use_old_pics_gen', '0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('show_last_comments', '0');
-INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('enable_mooshow', '0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('invert_nav_arrows', '0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('show_otf_link', '1');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('show_all_pics_link', '1');
@@ -684,7 +683,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_emai
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_header_dropdown', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_poster_info_topic', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_bbcb_active_content', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_lightbox', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_quick_quote', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_xs_version_check', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_all_bbcode', '0');

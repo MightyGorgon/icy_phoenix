@@ -88,14 +88,6 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
-	'thumbnail_lightbox' => array(
-		'lang_key' => 'IP_thumbnail_lightbox',
-		'explain' => 'IP_thumbnail_lightbox_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-		),
-
 	'thumbnail_cache' => array(
 		'lang_key' => 'IP_thumbnail_cache',
 		'type' => 'LIST_RADIO',

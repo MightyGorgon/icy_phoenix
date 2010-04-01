@@ -109,7 +109,6 @@ if ($email[$result] == 'Y')
 }
 
 // Start output of page
-$config['thumbnail_lightbox'] = false;
 $config['thumbnail_highslide'] = false;
 $config['ajax_features'] = false;
 

@@ -45,7 +45,7 @@ function sql_replace($table, $fields, $html_encode = true, $stripslashes = false
 		{
 			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '&', '&amp;')";
 			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '&&amp;', '&amp;')";
-			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '\"', '&quotes;')";
+			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '\"', '&quot;')";
 			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '<', '&lt;')";
 			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '>', '&gt;')";
 		}

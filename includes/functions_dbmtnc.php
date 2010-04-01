@@ -481,7 +481,6 @@ $default_config = array(
 	'switch_header_dropdown' => '0',
 	'switch_poster_info_topic' => '0',
 	'switch_bbcb_active_content' => '1',
-	'thumbnail_lightbox' => '1',
 	'enable_quick_quote' => '1',
 	'enable_xs_version_check' => '0',
 	'allow_all_bbcode' => '1',

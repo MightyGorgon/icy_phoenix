@@ -78,60 +78,19 @@ if ((intval($album_config['set_memory']) > '0') && (intval($album_config['set_me
 
 if ($album_config['show_inline_copyright'] == 0)
 {
-	/*
-	$album_copyright = '<div align="center" class="gensmall" style="font-family: Verdana, Arial, Helvetica, sans-serif; letter-spacing: -1px"><b>Photo Album Powered by</b><br />';
-	$album_copyright .= 'Photo Album 2' . $album_config['album_version'] . '&nbsp;&copy;&nbsp;2002-2003&nbsp;<a href="http://smartor.is-root.com" target="_blank">Smartor</a><br />';
-	$album_copyright .= 'Volodymyr (CLowN) Skoryk\'s SP1 Addon 1.5.1<br />';
-	$album_copyright .= 'IdleVoid\'s Album Category Hierarchy 1.3.0<br />';
-	$album_copyright .= '<a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a> Full Album Pack ' . $album_config['fap_version'];
-	$album_copyright .= '</div>';
-	*/
-	$album_copyright = '<div align="center" class="gensmall" style="font-family: Verdana, Arial, Helvetica, sans-serif; letter-spacing: -1px">';
+	$album_copyright = '<div class="gensmall" style="text-align: center; font-family: Verdana, Arial, Helvetica, sans-serif; letter-spacing: -1px">';
 	$album_copyright .= 'Photo Album Powered by:&nbsp;<a href="http://www.icyphoenix.com" target="_blank">Mighty Gorgon</a> Full Album Pack ' . $album_config['fap_version'] . '&nbsp;&copy;&nbsp;2009<br />';
 	$album_copyright .= '[based on <a href="http://smartor.is-root.com" target="_blank">Smartor</a> Photo Album plus IdleVoid\'s Album CH &amp; CLowN SP1]';
 	$album_copyright .= '</div>';
 }
 else
 {
-	/*
-	$album_copyright = '<div align="center" class="gensmall" style="font-family: Verdana, Arial, Helvetica, sans-serif; letter-spacing: -1px"><b>Photo Album Powered by:</b>&nbsp;';
-	$album_copyright .= 'Photo Album 2' . $album_config['album_version'] . '&nbsp;<a href="http://smartor.is-root.com" target="_blank">Smartor</a>&nbsp;-&nbsp;';
-	$album_copyright .= 'CLowN SP1 Addon 1.5.1&nbsp;-&nbsp;';
-	$album_copyright .= 'IdleVoid\'s Album CH 1.3.0&nbsp;-&nbsp;';
-	$album_copyright .= '<a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a> Full Album Pack ' . $album_config['fap_version'];
-	$album_copyright .= '</div>';
-	*/
-	$album_copyright = '<div align="center" class="gensmall" style="font-family: Verdana, Arial, Helvetica, sans-serif; letter-spacing: -1px">';
+	$album_copyright = '<div class="gensmall" style="text-align: center; font-family: Verdana, Arial, Helvetica, sans-serif; letter-spacing: -1px">';
 	$album_copyright .= 'Photo Album Powered by:&nbsp;<a href="http://www.icyphoenix.com" target="_blank">Mighty Gorgon</a> Full Album Pack ' . $album_config['fap_version'] . '&nbsp;&copy;&nbsp;2009';
 	$album_copyright .= '&nbsp;[based on <a href="http://smartor.is-root.com" target="_blank">Smartor</a> Photo Album plus IdleVoid\'s Album CH &amp; CLowN SP1]';
 	$album_copyright .= '</div>';
 }
 
-$preview_lb_div = '';
-if ($album_config['lb_preview'])
-{
-	// Mighty Gorgon: currently disabled...
-	/*
-	$preview_lb_div = '<script type="text/javascript" src="templates/common/album/fap_loader.js"></script>';
-	$preview_lb_div .= '<div id="preview_div" style="display: none; position: absolute; z-index: 110; left: -600px; top: -600px;">';
-	$preview_lb_div .= '	<div class="border_preview" style="width: ' . $album_config['midthumb_width'] . 'px; height: ' . $album_config['midthumb_height'] . 'px;">';
-	$preview_lb_div .= '		<div id="loader_container" style="display: none; visibility: hidden;">';
-	$preview_lb_div .= '			<div id="loader">';
-	$preview_lb_div .= '				<div align="center">Loading preview...</div>';
-	$preview_lb_div .= '				<div id="loader_bg">';
-	$preview_lb_div .= '					<div id="progress" style="left: 96px; width: 16px;"></div>';
-	$preview_lb_div .= '				</div>';
-	$preview_lb_div .= '			</div>';
-	$preview_lb_div .= '		</div>';
-	$preview_lb_div .= '		Preview';
-	$preview_lb_div .= '		<div class="preview_temp_load">';
-	$preview_lb_div .= '			<img onload="javascript:remove_loading();" src="" alt="" />';
-	$preview_lb_div .= '		</div>';
-	$preview_lb_div .= '	</div>';
-	$preview_lb_div .= '</div>';
-	$preview_lb_div .= '<br /><br />';
-	*/
-}
 
 include_once(ALBUM_MOD_PATH . 'album_functions.' . PHP_EXT);
 include_once(ALBUM_MOD_PATH . 'album_hierarchy_functions.' . PHP_EXT);
@@ -166,13 +125,12 @@ $template->assign_vars(array(
 	'THUMB_SIZE' => $thumb_size,
 	'MIDTHUMB_W' => $album_config['midthumb_width'],
 	'MIDTHUMB_H' => $album_config['midthumb_height'],
-	'PREVIEW_LB_DIV' => $preview_lb_div,
 
 	'U_ALBUM_SEARCH' => append_sid(album_append_uid('album_search.' . PHP_EXT)),
 	'U_ALBUM_UPLOAD' => append_sid(album_append_uid('album_upload.' . PHP_EXT)),
 
 	'ALBUM_VERSION' => '2' . $album_config['album_version'],
-	'ALBUM_COPYRIGHT' => $preview_lb_div . $album_copyright
+	'ALBUM_COPYRIGHT' => $album_copyright
 	)
 );
 

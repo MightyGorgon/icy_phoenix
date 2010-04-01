@@ -294,9 +294,6 @@ if ($lang_extend_admin)
 		'IP_thumbnail_highslide' => 'Use HighSlide to show images if thumbnails are enabled',
 		'IP_thumbnail_highslide_explain' => 'Opens the image in front of the current page instead of opening it in a new window. More about <a href="http://www.highslide.com/" target="_blank">HighSlide JS...</a><br />Make sure you empty the precompiled posts after changing this setting!',
 
-		'IP_thumbnail_lightbox' => 'Use Lightbox JavaScript if thumbnails are enabled',
-		'IP_thumbnail_lightbox_explain' => 'Opens the image in front of the current page instead of opening it in a new window. More about <a href="http://www.huddletogether.com/projects/lightbox/" target="_blank">Lightbox JS...</a><br />Make sure you empty the precompiled posts after changing this setting!<br />If you have enabled HighSlide, then this setting will be ignored.',
-
 		'IP_thumbnail_cache' => 'Thumbnails cache',
 
 		'IP_thumbnail_quality' => 'Thumbnails quality (1-100)',

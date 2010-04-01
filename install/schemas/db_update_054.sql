@@ -391,6 +391,9 @@ TRUNCATE TABLE `phpbb_hacks_list`;
 
 UPDATE `phpbb_users` SET `user_pass_convert` = '1';
 
+DELETE FROM `phpbb_config` WHERE config_name = 'thumbnail_lightbox';
+DELETE FROM `phpbb_album_config`` WHERE config_name = 'enable_mooshow';
+
 
 
 #####################

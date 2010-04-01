@@ -339,7 +339,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('digests_last
 
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('use_old_pics_gen', '0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('show_last_comments', '0');
-INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('enable_mooshow', '0');
 
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('shoutbox_floodinterval', '3');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('display_shouts', '20');
