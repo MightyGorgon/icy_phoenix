@@ -277,8 +277,8 @@ class ct_userfunctions
 			$eur_count = 0;
 			$match1 = array();
 			$match2 = array();
-			$match1 = preg_split('/US|\\$|€/m', $_POST['message']);
-			$match2 = preg_split('/US|\\$|€/m', $_POST['subject']);
+			$match1 = preg_split('/US|\\$|â‚¬/m', $_POST['message']);
+			$match2 = preg_split('/US|\\$|â‚¬/m', $_POST['subject']);
 			$eur_count = sizeof($match1) + sizeof($match2) - 2;
 
 			if ($url_count > 6 || $eur_count > 6)

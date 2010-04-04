@@ -1,3 +1,32 @@
+<!-- IF S_HIGHSLIDER and not S_NO_PICS -->
+
+<script type="text/javascript">
+var {HS_GALLERY_ID} = {
+	thumbnailId: '{HS_PIC_ID}',
+	wrapperClassName: 'dark',
+	captionEval: 'this.a.title',
+	numberPosition: 'caption',
+	useBox: true,
+	width: 600,
+	height: 450
+}
+</script>
+
+<div class="highslide-gallery">
+	<a class="highslide" id="{HS_PIC_ID}" href="{HS_PIC_FULL}" title="{HS_PIC_TITLE}" onclick="return hs.expand(this, {HS_GALLERY_ID})"><img src="{HS_PIC_THUMB}" alt="" /></a>
+	<div class="hidden-container">
+	<!-- BEGIN recent_pics -->
+		<!-- BEGIN recent_detail -->
+		<!-- IF not recent_pics.recent_detail.IS_FIRST_PIC -->
+		<a class="highslide" href="{recent_pics.recent_detail.U_PIC_DL}" title="{recent_pics.recent_detail.TITLE}" onclick="return hs.expand(this, {HS_GALLERY_ID})"><img src="{recent_pics.recent_detail.THUMBNAIL}" alt="{recent_pics.recent_detail.TITLE}" /></a>
+		<!-- ENDIF -->
+		<!-- END recent_detail -->
+	<!-- END recent_pics -->
+	</div>
+</div>
+
+<!-- ELSE -->
+
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 
 <!-- BEGIN no_pics -->
@@ -24,3 +53,5 @@
 <!-- END recent_pics -->
 
 </table>
+
+<!-- ENDIF -->

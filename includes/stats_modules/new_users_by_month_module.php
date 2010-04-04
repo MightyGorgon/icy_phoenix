@@ -43,7 +43,6 @@ $user_count = $stat_db->sql_numrows($result);
 $user_data = $stat_db->sql_fetchrowset($result);
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 for ($i = 0; $i < $user_count; $i=$i+$k)
 {

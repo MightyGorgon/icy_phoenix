@@ -329,6 +329,7 @@ $lang = array_merge($lang, array(
 	'Use_SMTP' => 'Use SMTP Server for email',
 	'Use_SMTP_explain' => 'Say yes if you want to, or have to send email via a named server instead of the local mail function',
 	'SMTP_server' => 'SMTP Server Address',
+	'SMTP_port' => 'SMTP Port',
 	'SMTP_username' => 'SMTP Username',
 	'SMTP_username_explain' => 'Only enter a username if your SMTP server requires it',
 	'SMTP_password' => 'SMTP Password',

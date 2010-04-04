@@ -45,7 +45,6 @@ $firstcount = $user_data[0]['used_counter'];
 $cst = ($firstcount > 0) ? 90 / $firstcount : 90;
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 for ($i = 0; $i < $user_count; $i++)
 {

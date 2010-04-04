@@ -47,7 +47,6 @@ $result = $stat_db->sql_query($sql);
 $topic_data = $stat_db->sql_fetchrowset($result);
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 for ($i = 0; $i < sizeof($topic_data); $i++)
 {
@@ -81,7 +80,6 @@ $least_first_place = $config['max_topics'] - sizeof($topic_data) + 1;
 $topic_data = $stat_db->sql_fetchrowset($result);
 
 $template->_tpldata['leasttopics.'] = array();
-//reset($template->_tpldata['leasttopics.']);
 
 for ($i = 0; $i < sizeof($topic_data); $i++)
 {

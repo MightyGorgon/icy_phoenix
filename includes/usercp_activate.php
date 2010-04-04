@@ -61,13 +61,10 @@ if ($row = $db->sql_fetchrow($result))
 		if ((intval($config['require_activation']) == USER_ACTIVATION_ADMIN) && ($sql_update_pass == ''))
 		{
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($config['smtp_delivery']);
-
-			$emailer->from($config['board_email']);
-			$emailer->replyto($config['board_email']);
+			$emailer = new emailer();
 
 			$emailer->use_template('admin_welcome_activated', $row['user_lang']);
-			$emailer->email_address($row['user_email']);
+			$emailer->to($row['user_email']);
 			$emailer->set_subject($lang['Account_activated_subject']);
 
 			$emailer->assign_vars(array(

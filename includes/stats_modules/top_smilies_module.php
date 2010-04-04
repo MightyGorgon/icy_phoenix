@@ -133,7 +133,6 @@ if (!$statistics->result_cache_used)
 	$firstcount = $all_smilies[0]['count'];
 
 	$template->_tpldata['stats_row.'] = array();
-	//reset($template->_tpldata['stats_row.']);
 
 	$host = extract_current_hostname();
 

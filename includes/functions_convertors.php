@@ -22,6 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 /**
 * Replace values in DB: useful for UTF8 Conversion
+* Example: UPDATE ip_cms_blocks SET content = REPLACE(content, '\"', '&quot;');
 */
 function sql_replace($table, $fields, $html_encode = true, $stripslashes = false)
 {

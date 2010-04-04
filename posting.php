@@ -188,9 +188,7 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-//
 // Was cancel pressed? If so then redirect to the appropriate page, no point in continuing with any further checks
-//
 if (isset($_POST['cancel']))
 {
 	if ($postreport)

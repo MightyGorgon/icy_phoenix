@@ -798,16 +798,13 @@ function album_comment_notify($pic_id)
 		if (sizeof($bcc_list_ary))
 		{
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($config['smtp_delivery']);
+			$emailer = new emailer();
 
 			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
 			$script_name = ($script_name != '') ? $script_name . '/album_showpage.' . PHP_EXT : 'album_showpage.' . PHP_EXT;
 			$server_name = trim($config['server_name']);
 			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
 			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-
-			$emailer->from($config['board_email']);
-			$emailer->replyto($config['board_email']);
 
 			@reset($bcc_list_ary);
 			while (list($user_lang, $bcc_list) = each($bcc_list_ary))

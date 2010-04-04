@@ -229,7 +229,6 @@ if ($attachment_mod_installed)
 }
 
 $template->_tpldata['adminrow.'] = array();
-//reset($template->_tpldata['adminrow.']);
 
 for ($i = 0; $i < sizeof($statistic_array); $i += 2)
 {

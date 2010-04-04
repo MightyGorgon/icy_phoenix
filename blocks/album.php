@@ -40,11 +40,8 @@ if(!function_exists('cms_block_album'))
 		}
 
 		$template->_tpldata['recent_pics.'] = array();
-		//reset($template->_tpldata['recent_pics.']);
 		$template->_tpldata['recent_details.'] = array();
-		//reset($template->_tpldata['recent_details.']);
 		$template->_tpldata['no_pics'] = array();
-		//reset($template->_tpldata['no_pics.']);
 
 		/*
 		echo($cms_config_vars['md_pics_all'][$block_id] . '<br />');
@@ -120,6 +117,7 @@ if(!function_exists('cms_block_album'))
 			$pics_allowed = '';
 		}
 
+		$no_pics = false;
 		if ($allowed_cat != $pics_allowed)
 		{
 			$category_id = $cms_config_vars['md_cat_id'][$block_id];
@@ -244,6 +242,8 @@ if(!function_exists('cms_block_album'))
 									'U_PIC_SP' => $pic_sp_link,
 									'U_PIC_DL' => $pic_dl_link,
 
+									'IS_FIRST_PIC' => ($image_counter == 0) ? true : false,
+
 									'THUMBNAIL' => $thumbnail_file,
 									'DESC' => $recentrow[$image_counter]['pic_desc'],
 									'TITLE' => $recentrow[$image_counter]['pic_title'],
@@ -251,8 +251,21 @@ if(!function_exists('cms_block_album'))
 									'TIME' => create_date_ip($config['default_dateformat'], $recentrow[$image_counter]['pic_time'], $config['board_timezone']),
 									'VIEW' => $recentrow[$image_counter]['pic_view_count'],
 									'RATING' => ($album_config['rate'] == 1) ? ($lang['Rating'] . ': ' . $recentrow[$image_counter]['rating'] . '<br />') : '',
-									'COMMENTS' => ($album_config['comment'] == 1) ? ($lang['Comments'] . ': ' . $recentrow[$image_counter]['comments'] . '<br />') : '')
+									'COMMENTS' => ($album_config['comment'] == 1) ? ($lang['Comments'] . ': ' . $recentrow[$image_counter]['comments'] . '<br />') : ''
+									)
 								);
+
+								if ($image_counter == 0)
+								{
+									$template->assign_vars(array(
+										'HS_GALLERY_ID' => 'hs_gallery_id_' . $recentrow[$image_counter]['pic_id'],
+										'HS_PIC_ID' => 'hs_pic_id_' . $recentrow[$image_counter]['pic_id'],
+										'HS_PIC_TITLE' => $recentrow[$image_counter]['pic_title'],
+										'HS_PIC_FULL' => $pic_dl_link,
+										'HS_PIC_THUMB' => $thumbnail_file,
+										)
+									);
+								}
 							}
 
 							$image_counter++;
@@ -264,18 +277,26 @@ if(!function_exists('cms_block_album'))
 			{
 				// No Pics Found
 				$template->assign_block_vars('no_pics', array());
+				$no_pics = true;
 			}
 		}
 		else
 		{
 			// No Cats Found
 			$template->assign_block_vars('no_pics', array());
+			$no_pics = true;
 		}
 
 		$template->assign_vars(array(
 			//'S_COL_WIDTH' => (100 / $cms_config_vars['md_pics_number'][$block_id]) . '%',
 			'S_COL_WIDTH' => (100 / (($cms_config_vars['md_pics_cols_number'][$block_id] == 0) ? 4 : $cms_config_vars['md_pics_cols_number'][$block_id])) . '%',
 			'TARGET_BLANK' => ($album_config['fullpic_popup']) ? 'target="_blank"' : '',
+
+			'S_HIGHSLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
+			'S_NIVO_SLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
+			'S_SLIDER_ID' => 'cms_slider_' . $block_id,
+			'S_NO_PICS' => (!empty($no_pics) ? true : false),
+
 			'L_NO_PICS' => $lang['No_Pics'],
 			'L_PIC_TITLE' => $lang['Pic_Title'],
 			'L_VIEW' => $lang['View'],

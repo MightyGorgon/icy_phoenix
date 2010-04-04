@@ -170,12 +170,6 @@
 							<li><b>cache/sql/</b></li>
 							<li><b>cache/topics/</b></li>
 							<li><b>cache/users/</b></li>
-							<li><b>ctracker/logfiles/logfile_attempt_counter.txt</b></li>
-							<li><b>ctracker/logfiles/logfile_blocklist.txt</b></li>
-							<li><b>ctracker/logfiles/logfile_debug_mode.txt</b></li>
-							<li><b>ctracker/logfiles/logfile_malformed_logins.txt</b></li>
-							<li><b>ctracker/logfiles/logfile_spammer.txt</b></li>
-							<li><b>ctracker/logfiles/logfile_worms.txt</b></li>
 							<li><b>downloads/</b></li>
 							<li><b>files/</b></li>
 							<li><b>files/album/</b></li>
@@ -187,6 +181,12 @@
 							<li><b>files/thumbs/</b></li>
 							<li><b>images/avatars/</b></li>
 							<li><b>logs/</b></li>
+							<li><b>logs/logfile_attempt_counter.txt</b></li>
+							<li><b>logs/logfile_blocklist.txt</b></li>
+							<li><b>logs/logfile_debug_mode.txt</b></li>
+							<li><b>logs/logfile_malformed_logins.txt</b></li>
+							<li><b>logs/logfile_spammer.txt</b></li>
+							<li><b>logs/logfile_worms.txt</b></li>
 							<li><b>pafiledb/uploads/</b></li>
 							</ul>
 							<br />
@@ -203,7 +203,17 @@
 						<li>Launch the setup from the install folder: <b>install/install.php</b> (i.e. <a class="post-url" href="http://www.mysite.com/icyphoenix/install/install.php">http://www.mysite.com/forum/install/install.php</a>)</li>
 						<li>Follow all the instructions on the screen, fill all requested data and complete the setup.</li>
 						<li>Delete or rename <b>install</b> folder.</li>
-						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS).</li>
+						<li>Customize files that may needs to be tweaked a bit for your site:
+							<ul>
+							<li><b>.htaccess</b>: settings about your domain and basic apache settings.</li>
+							<li><b>robots.txt</b>: change the path of your sitemap and customize basics bots rules.</li>
+							<li><b>favicon.ico</b> and <b>images/favicon.ico</b>: customize your site icon.</li>
+							<li><b>includes/constants.php</b>: customize some constants values and set your main admins id.</li>
+							<li><b>language/lang_XXX/lang_main_settings.php</b>: some important data about you, your site and basic settings.</li>
+							<li><b>templates/default/overall_header*.tpl</b>: you can customize here some parts of the appearance of your template (some of these settings may be changed in ACP and CMS, so you don't need to edit these files).</li>
+							</ul>
+						</li>
+						<li>Customize options in ACP and CMS.</li>
 						<li>Enjoy your New Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
 					<br />

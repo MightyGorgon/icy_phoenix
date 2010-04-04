@@ -258,6 +258,12 @@ $settings_data = array(
 		'default' => '',
 		),
 
+	'smtp_port' => array(
+		'lang_key' => 'SMTP_port',
+		'type' => 'VARCHAR',
+		'default' => '25',
+		),
+
 	'smtp_username' => array(
 		'lang_key' => 'SMTP_username',
 		'explain' => 'SMTP_username_explain',

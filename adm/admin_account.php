@@ -93,11 +93,9 @@ if((($delete && $confirm) || $activate) && $mark_list)
 			}
 
 			include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($config['smtp_delivery']);
-			$emailer->from($config['board_email']);
-			$emailer->replyto($config['board_email']);
+			$emailer = new emailer();
 			$emailer->use_template('admin_account_action', stripslashes($mail['user_lang']));
-			$emailer->email_address($mail['user_email']);
+			$emailer->to($mail['user_email']);
 			$emailer->set_subject($subject);
 
 			$emailer->assign_vars(array(

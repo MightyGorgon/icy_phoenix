@@ -34,7 +34,7 @@ if(!function_exists('cms_block_paypal_donate'))
 		$total_donors = 0;
 		if (!empty($cms_config_vars['md_paypal_total_donors'][$block_id]))
 		{
-			$sql = "SELECT COUNT(transaction_id) AS total FROM " . $table_prefix . 'mg_donations_data';
+			$sql = "SELECT COUNT(transaction_id) AS total FROM " . $table_prefix . 'donations_data';
 			$result = $db->sql_query($sql, 86400, 'donations_data_');
 
 			if ($total = $db->sql_fetchrow($result))
@@ -47,7 +47,7 @@ if(!function_exists('cms_block_paypal_donate'))
 		$total_amount = '';
 		if (!empty($cms_config_vars['md_paypal_total_amount'][$block_id]))
 		{
-			$sql = "SELECT mc_currency, SUM(payment_gross) AS total_amount FROM " . $table_prefix . 'mg_donations_data' . " GROUP BY mc_currency";
+			$sql = "SELECT mc_currency, SUM(payment_gross) AS total_amount FROM " . $table_prefix . 'donations_data' . " GROUP BY mc_currency";
 			$result = $db->sql_query($sql, 86400, 'donations_data_');
 			$total_amounts = array();
 			$total_amounts = $db->sql_fetchrowset($result);

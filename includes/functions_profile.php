@@ -239,7 +239,7 @@ function text_to_column($text)
 	$pattern = array("#&quot;#", "#&amp;#", "#&lt;#", "#&gt;#");
 	$replace = array('"', '&', '<', '>');
 	$text = preg_replace($pattern, $replace,$text);
-	$pattern = "#[\s\*\$\(\)!\.,\-\?\/\\\[\]\{\};\:'´`\"&\^+=<>\|]#";
+	$pattern = "#[\s\*\$\(\)!\.,\-\?\/\\\[\]\{\};\:'Â´`\"&\^+=<>\|]#";
 	$replace = "_";
 	$text = preg_replace($pattern, $replace,$text);
 	return strtolower($text);

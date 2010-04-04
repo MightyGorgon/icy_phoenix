@@ -40,7 +40,6 @@ $user_data = $stat_db->sql_fetchrowset($result);
 $firstcount = $user_data[0]['num_topics'];
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 for ($i = 0; $i < $user_count; $i++)
 {

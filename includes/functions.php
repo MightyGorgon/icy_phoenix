@@ -87,8 +87,10 @@ function extract_current_page($root_path)
 		$page_dir = substr($page_dir, 0, -1);
 	}
 
+	$page_full = $page_name . (($query_string) ? '?' . $query_string : '');
+
 	// Current page from Icy Phoenix root (for example: adm/index.php?i=10&b=2)
-	$page = (($page_dir) ? $page_dir . '/' : '') . $page_name . (($query_string) ? '?' . $query_string : '');
+	$page = (($page_dir) ? $page_dir . '/' : '') . $page_full;
 
 	// The script path from the webroot to the current directory (for example: /ip/adm/) : always prefixed with / and ends in /
 	$script_path = trim(str_replace('\\', '/', dirname($script_name)));
@@ -116,7 +118,7 @@ function extract_current_page($root_path)
 		'page'							=> $page,
 		'query_string'			=> $query_string,
 		'forum'							=> (isset($_REQUEST[$post_forum_url]) && $_REQUEST[$post_forum_url] > 0) ? (int) $_REQUEST[$post_forum_url] : 0,
-		'page_full'					=> $page_name . (($query_string) ? '?' . $query_string : ''),
+		'page_full'					=> $page_full,
 	);
 
 	return $page_array;

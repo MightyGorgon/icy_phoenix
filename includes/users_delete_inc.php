@@ -138,18 +138,15 @@ while (isset($users_list[$i]['user_id']))
 
 	if (NOTIFY_USERS && !empty($user_email))
 	{
-		$emailer = new emailer($config['smtp_delivery']);
+		$emailer = new emailer();
 
-		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
-		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
 
 		$emailer->use_template('delete_users', (file_exists(IP_ROOT_PATH . 'language/lang_' . $user_lang . '/email/delete_users.tpl')) ? $user_lang : 'english');
-		$emailer->email_address($user_email);
-		$emailer->from($config['board_email']);
-		$emailer->replyto($config['board_email']);
-		$emailer->extra_headers($email_headers);
+		$emailer->to($user_email);
 
 		$emailer->assign_vars(array(
 			'U_REGISTER' => $profile_server_url,

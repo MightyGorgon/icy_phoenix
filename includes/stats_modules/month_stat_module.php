@@ -65,7 +65,6 @@ $topic_con = 0;
 $topic_sum = 0;
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 for ($i = 0; $i < $nyear; $i= $i + 1)
 {

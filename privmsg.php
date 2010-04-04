@@ -1443,13 +1443,9 @@ elseif ($submit || $refresh || ($mode != ''))
 				$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
 
 				include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-				$emailer = new emailer($config['smtp_delivery']);
-
-				$emailer->from($config['board_email']);
-				$emailer->replyto($config['board_email']);
-
+				$emailer = new emailer();
 				$emailer->use_template('privmsg_notify', $to_userdata['user_lang']);
-				$emailer->email_address($to_userdata['user_email']);
+				$emailer->to($to_userdata['user_email']);
 				$emailer->set_subject($lang['Notification_subject']);
 
 				if ($config['html_email'] == true)
@@ -1477,7 +1473,8 @@ elseif ($submit || $refresh || ($mode != ''))
 					'PRIV_MSG_TEXT' => $message,
 					// Mighty Gorgon - End
 					'FROM_USERNAME' => $userdata['username'],
-					'U_INBOX' => $server_protocol . $server_name . $server_port . $script_name . '?folder=inbox')
+					'U_INBOX' => $server_protocol . $server_name . $server_port . $script_name . '?folder=inbox'
+					)
 				);
 
 				$emailer->send();

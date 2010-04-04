@@ -95,7 +95,6 @@ else
 }
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 for ($i = 0; $i < $num_attachments; $i++)
 {

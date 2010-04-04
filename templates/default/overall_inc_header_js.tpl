@@ -73,6 +73,12 @@ window.onunload = function()
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ip_scripts.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/run_active_content.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_compressed.js"></script>
+
+<!-- IF S_NIVO_SLIDER -->
+<link rel="stylesheet" href=".{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_custom.css" type="text/css" media="screen" />
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_compressed.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
 <!-- IF S_ACP_CMS -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/prototype.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}scriptaculous/scriptaculous.js"></script>
@@ -89,6 +95,9 @@ window.onunload = function()
 
 <!-- IF S_HIGHSLIDE -->
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/highslide.css" type="text/css" media="screen" />
+<!--[if lt IE 7]>
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/highslide-ie6.css" type="text/css" />
+<![endif]-->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/highslide-full.packed.js"></script>
 <script type="text/javascript">
 hs.graphicsDir = '{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/graphics/';
@@ -114,6 +123,14 @@ hs.addSlideshow({
 		position: 'bottom center',
 		hideOnMouseOut: true
 	}
+	<!-- IF S_HIGHSLIDER -->
+	,
+	thumbstrip: {
+		position: 'above',
+		mode: 'horizontal',
+		relativeTo: 'expander'
+	}
+	<!-- ENDIF -->
 });
 </script>
 <!-- ENDIF -->

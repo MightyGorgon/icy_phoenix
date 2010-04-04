@@ -53,7 +53,6 @@ for ($i = 0; $i < 7; $i++)
 }
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 // build rows
 for ($i = 1; $i < 8; $i++)

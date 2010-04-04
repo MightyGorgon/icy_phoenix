@@ -75,11 +75,9 @@ if (isset($_POST['submit']))
 
 	include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
-	$emailer = new emailer($config['smtp_delivery']);
-	$emailer->from($config['board_email']);
-	$emailer->replyto($config['board_email']);
+	$emailer = new emailer();
 
-	$emailer->email_address(trim($row['user_email']));
+	$emailer->to(trim($row['user_email']));
 	$emailer->use_template('user_welcome_inactive', $row['user_lang']);
 	$emailer->set_subject($lang['Resend_activation_email']);
 

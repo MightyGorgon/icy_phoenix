@@ -189,13 +189,9 @@ elseif (isset($_POST['joingroup']) && $group_id)
 	if (!$is_autogroup_enable)
 	{
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-		$emailer = new emailer($config['smtp_delivery']);
-
-		$emailer->from($config['board_email']);
-		$emailer->replyto($config['board_email']);
-
+		$emailer = new emailer();
 		$emailer->use_template('group_request', $moderator['user_lang']);
-		$emailer->email_address($moderator['user_email']);
+		$emailer->to($moderator['user_email']);
 		$emailer->set_subject($lang['Group_request']);
 
 		$emailer->assign_vars(array(
@@ -437,13 +433,9 @@ elseif ($group_id)
 					$group_name = $group_name_row['group_name'];
 
 					include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-					$emailer = new emailer($config['smtp_delivery']);
-
-					$emailer->from($config['board_email']);
-					$emailer->replyto($config['board_email']);
-
+					$emailer = new emailer();
 					$emailer->use_template('group_added', $row['user_lang']);
-					$emailer->email_address($row['user_email']);
+					$emailer->to($row['user_email']);
 					$emailer->set_subject($lang['Group_added']);
 
 					$emailer->assign_vars(array(
@@ -618,16 +610,14 @@ elseif ($group_id)
 						$group_name = $group_name_row['group_name'];
 
 						include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-						$emailer = new emailer($config['smtp_delivery']);
-
-						$emailer->from($config['board_email']);
-						$emailer->replyto($config['board_email']);
-
-						for ($i = 0; $i < sizeof($bcc_list); $i++)
+						$emailer = new emailer();
+						foreach ($bcc_list as $bcc_address)
 						{
-							$emailer->bcc($bcc_list[$i]);
+							if (!empty($bcc_address))
+							{
+								$emailer->bcc($bcc_address);
+							}
 						}
-
 						$emailer->use_template('group_approved');
 						$emailer->set_subject($lang['Group_approved']);
 
@@ -636,7 +626,8 @@ elseif ($group_id)
 							'GROUP_NAME' => $group_name,
 							'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
 
-							'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id)
+							'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
+							)
 						);
 						$emailer->send();
 						$emailer->reset();

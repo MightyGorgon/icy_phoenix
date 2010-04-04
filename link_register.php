@@ -117,13 +117,9 @@ if(!empty($link_title) && !empty($link_desc) && !empty($link_category) && !empty
 				{
 					if ($to_userdata['user_email'])
 					{
-						$emailer = new emailer($config['smtp_delivery']);
-
-						$emailer->from($config['board_email']);
-						$emailer->replyto($config['board_email']);
-
+						$emailer = new emailer();
 						$emailer->use_template('link_add', $to_userdata['user_lang']);
-						$emailer->email_address($to_userdata['user_email']);
+						$emailer->to($to_userdata['user_email']);
 
 						$emailer->assign_vars(array(
 							'LINK_URL' => $link_url,

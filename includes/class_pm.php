@@ -96,25 +96,21 @@ class class_pm
 			$config['smtp_host'] = @ini_get('SMTP');
 		}
 
-		$emailer = new emailer($config['smtp_delivery']);
+		$emailer = new emailer();
 
-		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
-		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
-
-		$emailer->extra_headers($email_headers);
-		$emailer->from($config['board_email']);
-		$emailer->replyto($config['board_email']);
+		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
 
 		if ($use_bcc)
 		{
-			$emailer->email_address($config['board_email']);
+			$emailer->to($config['board_email']);
 			$emailer->bcc($recipient_email);
 		}
 		else
 		{
-			$emailer->email_address($recipient_email);
+			$emailer->to($recipient_email);
 		}
 
 		$emailer->set_subject($email_subject);

@@ -162,6 +162,7 @@ if (isset($_POST['submit']))
 
 	// TICKETS - BEGIN
 	$bcc_list = '';
+	$bcc_emails = array();
 	if (!$account_delete)
 	{
 		$ticket_cat_id = request_var('ticket_cat_id', '');
@@ -189,43 +190,51 @@ if (isset($_POST['submit']))
 		update_flood_time_email();
 
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-		$emailer = new emailer($config['smtp_delivery']);
+		$emailer = new emailer();
 
-		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
-		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+
+		$email_subject = htmlspecialchars_decode($subject, ENT_COMPAT);
+		//$email_subject = utf8_decode($email_subject);
+
+		$email_message = $message;
+		/*
+		$email_message = htmlspecialchars_decode($email_message, ENT_COMPAT);
+		$trans_tbl = get_html_translation_table(HTML_ENTITIES);
+		if (!empty($config['html_email']))
+		{
+			$email_message = strtr($email_message, $trans_tbl);
+		}
+		*/
 
 		$emailer->use_template('empty_email', $user_lang);
-		$emailer->email_address($config['board_email']);
+		$emailer->to($config['board_email']);
 		$emailer->from($sender);
-		$emailer->bcc($bcc_list);
+		foreach ($bcc_emails as $bcc_address)
+		{
+			if (!empty($bcc_address))
+			{
+				$emailer->bcc($bcc_address);
+			}
+		}
+		// Send also to sender in BCC if needed...
+		if (!empty($_POST['cc_email']))
+		{
+			$emailer->bcc($sender);
+		}
 		$emailer->replyto($sender);
-		$emailer->extra_headers($email_headers);
-		$emailer->set_subject($subject);
+
+		$emailer->set_subject($email_subject);
 
 		$emailer->assign_vars(array(
-			'MESSAGE' => $message
+			'MESSAGE' => $email_message
 			)
 		);
 		$emailer->send();
 		$emailer->reset();
-
-		if (!empty($_POST['cc_email']))
-		{
-			$emailer->from($sender);
-			$emailer->replyto($sender);
-			$emailer->use_template('empty_email');
-			$emailer->email_address($sender);
-			$emailer->set_subject($subject);
-
-			$emailer->assign_vars(array(
-				'MESSAGE' => $message
-				)
-			);
-			$emailer->send();
-			$emailer->reset();
-		}
 
 		$redirect_url = append_sid(CMS_PAGE_HOME);
 		meta_refresh(3, $redirect_url);

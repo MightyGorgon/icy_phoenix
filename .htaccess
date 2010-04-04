@@ -123,11 +123,11 @@ RewriteRule ^.*$ http://127.0.0.1/ [R,L]
 
 # This ruleset is to "stop" stupid attempts to use MS IIS expolits on us
 # NIMDA
-RewriteCond %{REQUEST_URI} /(admin¦cmd¦httpodbc¦nsiislog¦root¦shell)\.(dll¦exe) [NC]
+RewriteCond %{REQUEST_URI} /(adminÂ¦cmdÂ¦httpodbcÂ¦nsiislogÂ¦rootÂ¦shell)\.(dllÂ¦exe) [NC]
 RewriteRule !(error\.php|robots\.txt) /error.php?mode=nimda [L,E=HTTP_USER_AGENT:NIMDA_EXPLOIT,T=application/x-httpd-cgi]
 
 # CODERED
-RewriteCond %{REQUEST_URI} /default\.(ida¦idq)$ [NC,OR]
+RewriteCond %{REQUEST_URI} /default\.(idaÂ¦idq)$ [NC,OR]
 RewriteCond %{REQUEST_URI} /.*\.printer$ [NC]
 RewriteRule !(error\.php|robots\.txt) /error.php?mode=codered [L,E=HTTP_USER_AGENT:CODERED_EXPLOIT,T=application/x-httpd-cgi]
 ### VIRUS - EXPLOITS - END
@@ -174,7 +174,7 @@ RewriteCond %{HTTP_USER_AGENT} ^NPBot [NC,OR]
 
 # This ruleset is for formmail script abusers...
 # We don't use Perl for Postnuke so this is not really needed.
-RewriteCond %{REQUEST_URI} (mail.?form|form|form.?mail|mail|mailto)\.(cgi¦exe¦pl)$ [NC]
+RewriteCond %{REQUEST_URI} (mail.?form|form|form.?mail|mail|mailto)\.(cgiÂ¦exeÂ¦pl)$ [NC]
 
 # Used to send these bots to someplace else you can change the url to whatever you would like
 #RewriteRule .* http://www.microsoft.com/ [F,R,L]

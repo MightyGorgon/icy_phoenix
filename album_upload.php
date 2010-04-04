@@ -1233,8 +1233,6 @@ else
 
 			include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
-			$email_headers = 'From: ' . $config['board_email'] . "\nReturn-Path: " . $config['board_email'] . "\r\n";
-
 			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
 			$server_name = trim($config['server_name']);
 			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
@@ -1253,11 +1251,9 @@ else
 			{
 				if ($to_users['user_notify_pm'] && !empty($to_users['user_email']) && $to_users['user_active'])
 				{
-					$emailer = new emailer($config['smtp_delivery']);
-
+					$emailer = new emailer();
 					$emailer->use_template('album_notify', $to_users['user_lang']);
-					$emailer->extra_headers($email_headers);
-					$emailer->email_address($to_users['user_email']);
+					$emailer->to($to_users['user_email']);
 					$emailer->set_subject(); //$lang['Notification_subject']
 
 					$emailer->assign_vars(array(

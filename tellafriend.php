@@ -93,18 +93,17 @@ if (isset($_POST['submit']))
 		}
 
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-		$emailer = new emailer($config['smtp_delivery']);
+		$emailer = new emailer();
 
-		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
-		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
 
 		$emailer->use_template('tellafriend_email', $user_lang);
-		$emailer->email_address($friendname . '<' . $friendemail . '>');
+		$emailer->to($friendemail, $friendname);
 		$emailer->from($userdata['user_email']);
 		$emailer->replyto($userdata['user_email']);
-		$emailer->extra_headers($email_headers);
 		$emailer->set_subject($topic_title);
 
 		$emailer->assign_vars(array(

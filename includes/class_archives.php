@@ -700,13 +700,13 @@ class zip_file extends archive
 				continue;
 			}
 
-			$translate =  array('Ç'=>pack("C",128),'ü'=>pack("C",129),'é'=>pack("C",130),'â'=>pack("C",131),'ä'=>pack("C",132),
-								'à'=>pack("C",133),'å'=>pack("C",134),'ç'=>pack("C",135),'ê'=>pack("C",136),'ë'=>pack("C",137),
-								'è'=>pack("C",138),'ï'=>pack("C",139),'î'=>pack("C",140),'ì'=>pack("C",141),'Ä'=>pack("C",142),
-								'Å'=>pack("C",143),'É'=>pack("C",144),'æ'=>pack("C",145),'Æ'=>pack("C",146),'ô'=>pack("C",147),
-								'ö'=>pack("C",148),'ò'=>pack("C",149),'û'=>pack("C",150),'ù'=>pack("C",151),'Ö'=>pack("C",153),
-								'Ü'=>pack("C",154),'£'=>pack("C",156),'¥'=>pack("C",157),'ƒ'=>pack("C",159),'á'=>pack("C",160),
-								'í'=>pack("C",161),'ó'=>pack("C",162),'ú'=>pack("C",163),'ñ'=>pack("C",164),'Ñ'=>pack("C",165));
+			$translate =  array('Ã‡'=>pack("C",128),'Ã¼'=>pack("C",129),'Ã©'=>pack("C",130),'Ã¢'=>pack("C",131),'Ã¤'=>pack("C",132),
+								'Ã '=>pack("C",133),'Ã¥'=>pack("C",134),'Ã§'=>pack("C",135),'Ãª'=>pack("C",136),'Ã«'=>pack("C",137),
+								'Ã¨'=>pack("C",138),'Ã¯'=>pack("C",139),'Ã®'=>pack("C",140),'Ã¬'=>pack("C",141),'Ã„'=>pack("C",142),
+								'Ã…'=>pack("C",143),'Ã‰'=>pack("C",144),'Ã¦'=>pack("C",145),'Ã†'=>pack("C",146),'Ã´'=>pack("C",147),
+								'Ã¶'=>pack("C",148),'Ã²'=>pack("C",149),'Ã»'=>pack("C",150),'Ã¹'=>pack("C",151),'Ã–'=>pack("C",153),
+								'Ãœ'=>pack("C",154),'Â£'=>pack("C",156),'Â¥'=>pack("C",157),'Æ’'=>pack("C",159),'Ã¡'=>pack("C",160),
+								'Ã­'=>pack("C",161),'Ã³'=>pack("C",162),'Ãº'=>pack("C",163),'Ã±'=>pack("C",164),'Ã‘'=>pack("C",165));
 			$current['name2'] = strtr($current['name2'],$translate);
 
 			$timedate = explode(" ", gmdate("Y n j G i s", $current['stat'][9]));

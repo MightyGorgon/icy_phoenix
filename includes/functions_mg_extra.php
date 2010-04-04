@@ -26,12 +26,12 @@ function mg_text_cleaning($text)
 	);
 
 	$replacement_array = array(
-		"à",
-		"è",
-		"ì",
-		"ò",
-		"ù",
-		"é",
+		"Ã ",
+		"Ã¨",
+		"Ã¬",
+		"Ã²",
+		"Ã¹",
+		"Ã©",
 		" ",
 	);
 
@@ -43,12 +43,12 @@ function mg_text_cleaning($text)
 function mg_text_format($text)
 {
 	$look_up_array = array(
-		"à",
-		"è",
-		"ì",
-		"ò",
-		"ù",
-		"é",
+		"Ã ",
+		"Ã¨",
+		"Ã¬",
+		"Ã²",
+		"Ã¹",
+		"Ã©",
 		" ",
 	);
 

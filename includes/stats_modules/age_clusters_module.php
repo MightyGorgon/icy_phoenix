@@ -95,7 +95,6 @@ for ($i = 1; $i < ($total_clusters - 1); $i++)
 //print_r($sql_array);
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 $firstcount = max($age_data);
 

@@ -979,15 +979,12 @@ if (isset($_POST['submit']))
 				// The users account has been deactivated, send them an email with a new activation key
 				//
 				include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-				$emailer = new emailer($config['smtp_delivery']);
+				$emailer = new emailer();
 
 				if ($config['require_activation'] != USER_ACTIVATION_ADMIN)
 				{
-					$emailer->from($config['board_email']);
-					$emailer->replyto($config['board_email']);
-
 					$emailer->use_template('user_activate', stripslashes($user_lang));
-					$emailer->email_address($email);
+					$emailer->to($email);
 					$emailer->set_subject($lang['Reactivate']);
 
 					$emailer->assign_vars(array(
@@ -1156,13 +1153,10 @@ if (isset($_POST['submit']))
 			}
 
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($config['smtp_delivery']);
-
-			$emailer->from($config['board_email']);
-			$emailer->replyto($config['board_email']);
+			$emailer = new emailer();
 
 			$emailer->use_template($email_template, stripslashes($user_lang));
-			$emailer->email_address($email);
+			$emailer->to($email);
 			$emailer->set_subject(sprintf($lang['Welcome_subject'], $config['sitename']));
 
 			if($coppa)

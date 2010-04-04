@@ -472,17 +472,14 @@ while ($row = $db->sql_fetchrow($result))
 
 		if (!(is_object($emailer)))
 		{
-			$emailer = new emailer($config['smtp_delivery']);
+			$emailer = new emailer();
 		}
 
+		$emailer->use_template('mail_digests', $row['user_lang']);
 		if ($html)
 		{
-
-			$emailer->use_template('mail_digests', $row['user_lang']);
-
 			// Apply a style sheet if requested for HTML digest. If no style sheet is wanted then the
 			// link tag pointing to the style sheet is not displayed. A custom style sheet gets first priority.
-
 			/*
 			if ($link_tag_unset)
 			{
@@ -511,28 +508,12 @@ while ($row = $db->sql_fetchrow($result))
 			*/
 		}
 
-		else
-		{
-			$emailer->use_template('mail_digests', $row['user_lang']);
-		}
-
-		$emailer->extra_headers('From: ' . $lang['digest_from_text_name'] . ' <' . $lang['digest_from_email_address'] . '>' . "\n");
-
 		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
-		if ($html)
-		{
-			$emailer->extra_headers('MIME-Version: 1.0');
-			$emailer->extra_headers('Content-type: text/html; charset=' . $encoding_charset);
-		}
-		else
-		{
-			$emailer->extra_headers('Content-Type: text/plain; charset=' . $encoding_charset);
-		}
-
-		$emailer->email_address($to);
-		//$emailer->from($config['board_email']);
-		//$emailer->replyto($config['board_email']);
+		$config['html_email'] = $html;
+		$emailer->from = $lang['digest_from_text_name'] . ' <' . $lang['digest_from_email_address'] . '>';
+		$emailer->to($to);
 		$emailer->set_subject($lang['digest_subject_line']);
+
 		$emailer->assign_vars(array(
 			'BOARD_URL' => DIGEST_SITE_URL,
 			'LINK' => $link_tag,
@@ -563,7 +544,6 @@ while ($row = $db->sql_fetchrow($result))
 			'VERSION' => DIGEST_VERSION
 			)
 		);
-		$config['html_email'] = $html;
 		$emailer->send($html);
 		$emailer->reset();
 

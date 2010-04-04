@@ -259,6 +259,7 @@ if (!empty($mail_id) && !empty($mail_session_id))
 			include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
 			$privmsg = new class_pm();
 		}
+		$bcc_list_array = array();
 		$bcc_list = '';
 		do
 		{
@@ -267,6 +268,7 @@ if (!empty($mail_id) && !empty($mail_session_id))
 				$privmsg->send($userdata['user_id'], $row['user_id'], $subject, $pm_message);
 			}
 			$bcc_list .= (($bcc_list != '') ? ', ' : '') . $row['user_email'];
+			$bcc_list_array[] = $row['user_email'];
 		}
 		while ($row = $db->sql_fetchrow($result));
 		$db->sql_freeresult($result);
@@ -296,12 +298,12 @@ if (!empty($mail_id) && !empty($mail_session_id))
 			$config['smtp_host'] = @$ini_val('SMTP');
 		}
 
-		$emailer = new emailer($config['smtp_delivery']);
+		$emailer = new emailer();
 
-		$email_headers = 'X-AntiAbuse: Board servername - ' . trim($config['server_name']) . "\n";
-		$email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
-		$email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-		$email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
+		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
 
 		if ($email_format == 2)
 		{
@@ -311,11 +313,13 @@ if (!empty($mail_id) && !empty($mail_session_id))
 		{
 			$emailer->use_template('admin_send_email', $config['default_lang']);
 		}
-		$emailer->bcc($bcc_list);
-		$emailer->email_address($config['board_email']);
-		$emailer->from($config['board_email']);
-		$emailer->replyto($config['board_email']);
-		$emailer->extra_headers($email_headers);
+		foreach ($bcc_list_array as $bcc_address)
+		{
+			if (!empty($bcc_address))
+			{
+				$emailer->bcc($bcc_address);
+			}
+		}
 		$emailer->set_subject($subject);
 
 		// Do we want to force line breaks? It is HTML, so we should not replace line breaks...

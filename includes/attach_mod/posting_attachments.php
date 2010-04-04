@@ -1075,8 +1075,8 @@ class attach_parent
 					$this->attach_filename = delete_extension($this->attach_filename);
 					$this->attach_filename = str_replace(array(' ','-'), array('_','_'), $this->attach_filename);
 					$this->attach_filename = str_replace('__', '_', $this->attach_filename);
-					$this->attach_filename = str_replace(array(',', '.', '!', '?', 'ü', 'Ü', 'ö', 'Ö', 'ä', 'Ä', ';', ':', '@', "'", '"', '&'), array('', '', '', '', 'ue', 'ue', 'oe', 'oe', 'ae', 'ae', '', '', '', '', '', 'and'), $this->attach_filename);
-					$this->attach_filename = str_replace(array('$', 'ß', '>','<','§','%','=','/','(',')','#','*','+',"\\",'{','}','[',']'), array('dollar', 'ss','greater','lower','paragraph','percent','equal','','','','','','','','','','',''), $this->attach_filename);
+					$this->attach_filename = str_replace(array(',', '.', '!', '?', 'Ã¼', 'Ãœ', 'Ã¶', 'Ã–', 'Ã¤', 'Ã„', ';', ':', '@', "'", '"', '&'), array('', '', '', '', 'ue', 'ue', 'oe', 'oe', 'ae', 'ae', '', '', '', '', '', 'and'), $this->attach_filename);
+					$this->attach_filename = str_replace(array('$', 'ÃŸ', '>','<','Â§','%','=','/','(',')','#','*','+',"\\",'{','}','[',']'), array('dollar', 'ss','greater','lower','paragraph','percent','equal','','','','','','','','','','',''), $this->attach_filename);
 					// Remove non-latin characters
 					$this->attach_filename = preg_replace("/([\xC2\xC3])([\x80-\xBF])/e", "chr(ord('\\1')<<6&0xC0|ord('\\2')&0x3F)", $this->attach_filename);
 					$this->attach_filename = rawurlencode($this->attach_filename);

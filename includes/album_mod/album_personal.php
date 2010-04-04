@@ -229,7 +229,7 @@ $template_to_parse = 'album_cat_body.tpl';
 // $cat_id     : is the currently selected category
 // $allowed_cat: is a list of all the allowed categories that the current user
 //               is allowed to view
-// £cat_ids    : is synomous with $allowed_cat OR $cat_id, depending on the view mode
+// Â£cat_ids    : is synomous with $allowed_cat OR $cat_id, depending on the view mode
 //
 // 0: Begin of 'work flow'
 //

@@ -24,7 +24,7 @@
 *
 * We included some virtual Troopers for you. ;-)
 *
-* @author Christian Knerr (cback) and Tekin Birdüzen (cYbercOsmOnauT)
+* @author Christian Knerr (cback) and Tekin BirdÃ¼zen (cYbercOsmOnauT)
 * @package ctracker
 * @version 5.0.6
 * @since 15.07.2006 - 21:36:24

@@ -1,6 +1,6 @@
 Name = "Fully integrated shoutbox "
 Description = "A fully phpBB2 enabled shoutbox witch support: database abstration layer, timezones, languages templates, smilies, BBcode and censored words"
-Author = "Niels (Niels Chr. Rød)"
+Author = "Niels (Niels Chr. RÃ¸d)"
 
 Version = "1.1.7"
 Download_URL = "http://mods.db9.dk"

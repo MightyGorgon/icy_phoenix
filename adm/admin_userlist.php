@@ -295,7 +295,7 @@ switch($mode)
 			$group_id = intval($_POST[POST_GROUPS_URL]);
 
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-			$emailer = new emailer($config['smtp_delivery']);
+			$emailer = new emailer();
 
 			$i = 0;
 			while($i < sizeof($user_ids))
@@ -354,11 +354,8 @@ switch($mode)
 
 					$server_url = $server_protocol . $server_name . $server_port . $script_name;
 
-					$emailer->from($config['board_email']);
-					$emailer->replyto($config['board_email']);
-
 					$emailer->use_template('group_added', $row['user_lang']);
-					$emailer->email_address($row['user_email']);
+					$emailer->to($row['user_email']);
 					$emailer->set_subject($lang['Group_added']);
 
 					$emailer->assign_vars(array(

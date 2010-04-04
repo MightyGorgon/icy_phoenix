@@ -64,7 +64,6 @@ $template->assign_vars(array(
 );
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 // months site_history
 for ($i = 0; $i < 12; $i++)

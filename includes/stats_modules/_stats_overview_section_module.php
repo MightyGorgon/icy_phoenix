@@ -49,7 +49,6 @@ $module_count = $db->sql_numrows($result);
 $module_data = $db->sql_fetchrowset($result);
 
 $template->_tpldata['stats_row_link.'] = array();
-//reset($template->_tpldata['stats_row_link.']);
 
 // for all installed modules output an inpage link
 $num_modules = 0;

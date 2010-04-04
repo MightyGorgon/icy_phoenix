@@ -68,13 +68,10 @@ if (isset($_POST['submit']))
 		$db->sql_query($sql);
 
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-		$emailer = new emailer($config['smtp_delivery']);
-
-		$emailer->from($config['board_email']);
-		$emailer->replyto($config['board_email']);
+		$emailer = new emailer();
 
 		$emailer->use_template('user_activate_passwd', $row['user_lang']);
-		$emailer->email_address($row['user_email']);
+		$emailer->to($row['user_email']);
 		$emailer->set_subject($lang['New_password_activation']);
 
 		$emailer->assign_vars(array(

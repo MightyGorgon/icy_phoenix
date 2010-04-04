@@ -678,6 +678,7 @@ $default_config = array(
 	'flash_autoplay' => '0',
 	'cron_site_history_interval' => '0',
 	'cron_site_history_last_run' => '0',
+	'smtp_port' => '25',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

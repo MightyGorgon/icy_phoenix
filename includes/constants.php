@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.7.60');
+define('ICYPHOENIX_VERSION', '1.3.9.62');
 
 // FOUNDER ID, this is the ID used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -312,6 +312,16 @@ define('PRIVMSGS_UNREAD_MAIL', 5);
 // Session parameters
 define('SESSION_METHOD_COOKIE', 100);
 define('SESSION_METHOD_GET', 101);
+
+// Notify methods
+define('NOTIFY_EMAIL', 0);
+define('NOTIFY_IM', 1);
+define('NOTIFY_BOTH', 2);
+
+// Email Priority Settings
+define('MAIL_LOW_PRIORITY', 4);
+define('MAIL_NORMAL_PRIORITY', 3);
+define('MAIL_HIGH_PRIORITY', 2);
 
 // Various constants
 define('POST_BIRTHDAY', 9);

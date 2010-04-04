@@ -1030,11 +1030,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				if (sizeof($bcc_list_ary))
 				{
 					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-					$emailer = new emailer($config['smtp_delivery']);
+					$emailer = new emailer();
 					$server_url = create_server_url();
-
-					$emailer->from($config['board_email']);
-					$emailer->replyto($config['board_email']);
 
 					$topic_title = unprepare_message($topic_title);
 					$topic_title = censor_text($topic_title);
@@ -1149,11 +1146,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				if (sizeof($bcc_list_ary))
 				{
 					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-					$emailer = new emailer($config['smtp_delivery']);
+					$emailer = new emailer();
 					$server_url = create_server_url();
-
-					$emailer->from($config['board_email']);
-					$emailer->replyto($config['board_email']);
 
 					$topic_title = unprepare_message($topic_title);
 					$topic_title = censor_text($topic_title);
@@ -1302,11 +1296,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				if (sizeof($bcc_list_ary))
 				{
 					include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-					$emailer = new emailer($config['smtp_delivery']);
+					$emailer = new emailer();
 					$server_url = create_server_url();
-
-					$emailer->from($config['board_email']);
-					$emailer->replyto($config['board_email']);
 
 					$topic_title = unprepare_message($topic_title);
 					$topic_title = censor_text($topic_title);
@@ -1334,7 +1325,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 						$temp_is_auth = auth(AUTH_ALL, $forum_id, $temp_userdata, -1);
 
 						// another security check (i.e. the forum might have become private and there are still users who have notification activated)
-						if( $temp_is_auth['auth_read'] && $temp_is_auth['auth_view'] )
+						if($temp_is_auth['auth_read'] && $temp_is_auth['auth_view'])
 						{
 							$emailer->use_template('newtopic_notify', $user_lang);
 

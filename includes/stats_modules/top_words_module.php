@@ -43,7 +43,6 @@ $stopwords_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang
 @array_push($stopwords_array, 'quot');
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 $j = 1;
 $firstcount = 0;

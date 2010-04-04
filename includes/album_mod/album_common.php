@@ -33,14 +33,7 @@ if (!defined('IMG_THUMB'))
 }
 
 // Include Language
-$language = $config['default_lang'];
-
-if (!file_exists(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_album_main.' . PHP_EXT))
-{
-	$language = 'english';
-}
-
-include(IP_ROOT_PATH . 'language/lang_' . $language . '/lang_album_main.' . PHP_EXT);
+setup_extra_lang(array('lang_album_main'));
 
 // Get Album Config
 $album_config = array();

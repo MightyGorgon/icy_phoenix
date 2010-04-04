@@ -41,7 +41,6 @@ $topic_count = $stat_db->sql_numrows($result);
 $topic_data = $stat_db->sql_fetchrowset($result);
 
 $template->_tpldata['stats_row.'] = array();
-//reset($template->_tpldata['stats_row.']);
 
 for ($i = 0; $i < $topic_count; $i++)
 {
