@@ -13,8 +13,6 @@ function icon_text(text)
 -->
 </script>
 
-<!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
-
 <div id="description" class="forumline" style="text-align:center;font-weight:bold"><br />&nbsp;<br /><br /></div>
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">

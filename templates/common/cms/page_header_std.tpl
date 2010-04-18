@@ -9,7 +9,6 @@
 <title>{PAGE_TITLE}</title>
 <link rel="shortcut icon" href="{FULL_SITE_PATH}images/favicon.ico" />
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}acp.css" type="text/css" />
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}dock.css" type="text/css" />
 <!-- BEGIN css_style_include -->
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{css_style_include.CSS_FILE}" type="text/css" />
 <!-- END css_style_include -->
@@ -40,3 +39,5 @@
 	<!-- IF not HAS_DIED and S_SHOW_CMS_MENU -->
 	<!-- INCLUDE ../common/cms/cms_nav_menu_inc_start.tpl -->
 	<!-- ENDIF -->
+
+	<!-- INCLUDE ../common/cms/breadcrumbs.tpl -->

@@ -1260,6 +1260,7 @@ CREATE TABLE `phpbb_pa_votes` (
 
 CREATE TABLE phpbb_plugins (
 	plugin_name varchar(255) NOT NULL DEFAULT '',
+	plugin_version varchar(255) NOT NULL DEFAULT '',
 	plugin_dir varchar(255) NOT NULL DEFAULT '',
 	plugin_enabled tinyint(2) NOT NULL DEFAULT 0,
 	PRIMARY KEY (plugin_name)
@@ -2339,6 +2340,20 @@ CREATE TABLE `phpbb_cms_block_position` (
 	PRIMARY KEY (`bpid`)
 );
 
+CREATE TABLE `phpbb_cms_block_settings` (
+	`bs_id` int(10) NOT NULL AUTO_INCREMENT,
+	`user_id` int(10) NOT NULL,
+	`name` varchar(255) NOT NULL default '',
+	`content` text NOT NULL ,
+	`blockfile` varchar(255) NOT NULL default '',
+	`view` tinyint(1) NOT NULL default 0,
+	`type` tinyint(1) NOT NULL default 1,
+	`edit_auth` tinyint(1) NOT NULL default 5,
+	`groups` tinytext NOT NULL,
+	`locked` tinyint(1) NOT NULL DEFAULT 1,
+	PRIMARY KEY (`bs_id`)
+);
+
 CREATE TABLE `phpbb_cms_block_variable` (
 	`bvid` int(10) NOT NULL auto_increment,
 	`bid` int(10) NOT NULL DEFAULT '0',
@@ -2354,22 +2369,19 @@ CREATE TABLE `phpbb_cms_block_variable` (
 
 CREATE TABLE `phpbb_cms_blocks` (
 	`bid` int(10) NOT NULL auto_increment,
+	`block_settings_id` int(10) UNSIGNED NOT NULL,
+	`block_cms_id` int(10) UNSIGNED NOT NULL,
 	`layout` int(10) NOT NULL DEFAULT '0',
 	`layout_special` int(10) NOT NULL DEFAULT '0',
 	`title` varchar(60) NOT NULL DEFAULT '',
-	`content` TEXT NOT NULL,
 	`bposition` char(2) NOT NULL DEFAULT '',
 	`weight` int(10) NOT NULL DEFAULT '1',
 	`active` tinyint(1) NOT NULL DEFAULT '1',
-	`blockfile` varchar(255) NOT NULL DEFAULT '',
-	`view` tinyint(1) NOT NULL DEFAULT '0',
-	`type` tinyint(1) NOT NULL DEFAULT '1',
 	`border` tinyint(1) NOT NULL DEFAULT '1',
 	`titlebar` tinyint(1) NOT NULL DEFAULT '1',
 	`background` tinyint(1) NOT NULL DEFAULT '1',
 	`local` tinyint(1) NOT NULL DEFAULT '0',
 	`edit_auth` tinyint(1) NOT NULL DEFAULT '5',
-	`groups` TINYTEXT NOT NULL,
 	PRIMARY KEY (`bid`)
 );
 
@@ -2386,6 +2398,7 @@ CREATE TABLE `phpbb_cms_layout` (
 	`name` varchar(100) NOT NULL DEFAULT '',
 	`filename` varchar(100) NOT NULL DEFAULT '',
 	`template` varchar(100) NOT NULL DEFAULT '',
+	`layout_cms_id` int(10) UNSIGNED NOT NULL,
 	`global_blocks` tinyint(1) NOT NULL DEFAULT '0',
 	`page_nav` tinyint(1) NOT NULL DEFAULT '1',
 	`config_vars` TEXT NOT NULL,

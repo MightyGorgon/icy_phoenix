@@ -33,8 +33,6 @@ function option_disabled (form)
 //-->
 </script>
 
-<!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
-
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_block.png" alt="{L_CMS_MENU_TITLE}" title="{L_CMS_MENU_TITLE}" /></td>
@@ -118,8 +116,8 @@ function option_disabled (form)
 	<td class="cat" align="center">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="save" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
-		<input type="submit" name="reset" class="liteoption" value="{L_RESET}" />
-		<!-- <input type="reset" name="reset" class="liteoption" value="{L_RESET}" /> -->
+		<!-- <input type="submit" name="reset" class="liteoption" value="{L_RESET}" /> -->
+		<input type="reset" name="reset" class="liteoption" value="{L_RESET}" />
 	</td>
 </tr>
 </table>

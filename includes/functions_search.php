@@ -363,6 +363,15 @@ function username_search($search_match, $ajax_search = false)
 		$db->sql_freeresult($result);
 	}
 
+	$target_form_name = preg_replace('/[^A-Za-z0-9-_]+/', '', request_var('target_form_name', 'post'));
+	$target_element_name = preg_replace('/[^A-Za-z0-9-_]+/', '', request_var('target_element_name', 'username'));
+
+	$s_hidden_fields = build_hidden_fields(array(
+		'target_form_name' => $target_form_name,
+		'target_element_name' => $target_element_name,
+		)
+	);
+
 	$template->assign_vars(array(
 		'USERNAME' => (!empty($search_match)) ? phpbb_clean_username($search_match) : '',
 
@@ -374,9 +383,10 @@ function username_search($search_match, $ajax_search = false)
 		'L_SEARCH_EXPLAIN' => $lang['Search_author_explain'],
 		'L_CLOSE_WINDOW' => $lang['Close_window'],
 
-		'S_TARGET_FORM_NAME' => preg_replace('/[^A-Za-z0-9-_]+/', '', request_var('target_form_name', 'post')),
-		'S_TARGET_ELEMENT_NAME' => preg_replace('/[^A-Za-z0-9-_]+/', '', request_var('target_element_name', 'username')),
+		'S_TARGET_FORM_NAME' => $target_form_name,
+		'S_TARGET_ELEMENT_NAME' => $target_element_name,
 
+		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		'S_USERNAME_OPTIONS' => $username_list,
 		'S_SEARCH_ACTION' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser')
 		)

@@ -50,6 +50,7 @@ function refresh_username(selected_username)
 		<span class="genmed" id="username_list" {USERNAME_LIST_VIS}>
 			{L_UPDATE_USERNAME}<br />
 			<span id="username_select"><select name="username_list">{S_USERNAME_OPTIONS}</select></span>&nbsp;
+			{S_HIDDEN_FIELDS}
 			<input type="submit" class="liteoption" onclick="refresh_username(this.form.username_list.options[this.form.username_list.selectedIndex].value); return false;" name="use" value="{L_SELECT}" />
 		</span><br />
 		<br /><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span>

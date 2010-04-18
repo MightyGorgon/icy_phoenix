@@ -134,11 +134,12 @@ class class_pm
 			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
 
 			$recipient_username = empty($recipient_username) ? $lang['User'] : $recipient_username;
+			$email_sig = create_signature($config['board_email_sig']);
 			$emailer->use_template('privmsg_notify', $recipient_lang);
 			$emailer->assign_vars(array(
 				'USERNAME' => $recipient_username,
 				'SITENAME' => $config['sitename'],
-				'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+				'EMAIL_SIG' => $email_sig,
 				'FROM' => $userdata['username'],
 				'DATE' => create_date($config['default_dateformat'], time(), $config['board_timezone']),
 				'SUBJECT' => $pm_subject,

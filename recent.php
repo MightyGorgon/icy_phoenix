@@ -79,14 +79,14 @@ if(!empty($user_id))
 
 	if (!empty($user_id))
 	{
-		$sql = "SELECT username
-			FROM " . USERS_TABLE . "
-			WHERE user_id = '" . $user_id . "'";
-		$result = $db->sql_query($sql);
-		$row = $db->sql_fetchrow($result);
-		if (empty($row['username']))
+		$target_userdata = get_userdata($user_id);
+		if (empty($target_userdata))
 		{
 			$mode = $set_mode;
+		}
+		else
+		{
+			$username = htmlspecialchars($target_userdata['username']);
 		}
 	}
 	else

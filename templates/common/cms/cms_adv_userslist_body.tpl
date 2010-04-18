@@ -56,11 +56,6 @@
 	<td class="cat" align="center" colspan="3">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="save" class="mainoption" value="{L_SUBMIT}" />
-		<!--
-		&nbsp;&nbsp;
-		<input type="submit" name="reset" class="liteoption" value="{L_RESET}" />
-		-->
-		<!-- <input type="reset" name="reset" class="liteoption" value="{L_RESET}" /> -->
 	</td>
 </tr>
 </table>

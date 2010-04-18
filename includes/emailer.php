@@ -16,15 +16,6 @@
 */
 
 /*
-* Mighty Gorgon To Fix:
-* - Removed SMTP from emailer class
-* - Changed addresses to to
-* - Now addresses are array
-* - Headers changed
-* - Global search for $email_headers: remove all!
-*/
-
-/*
 * Emailer class
 */
 class emailer
@@ -603,7 +594,7 @@ class emailer
 		}
 		*/
 
-		$calling_page = (!empty($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : $_ENV['PHP_SELF'];
+		$calling_page = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : $_ENV['SCRIPT_NAME'];
 
 		$message = '';
 		switch ($type)

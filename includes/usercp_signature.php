@@ -173,7 +173,6 @@ $template->assign_vars(array(
 );
 
 // BBCBMG - BEGIN
-//$bbcbmg_in_acp = true;
 include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END

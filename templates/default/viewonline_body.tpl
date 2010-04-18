@@ -65,13 +65,7 @@
 	<td class="no-padding" valign="top">
 		<table width="100%" cellspacing="0" cellpadding="0" border="0">
 			<!-- BEGIN last_seen_row -->
-			<tr>
-				<td class="row1" width="100%">
-					<span class="genmed">
-						{switch_show_recent.last_seen_row.L_LSEEN_TIME}<b>{NAV_SEP}</b>{switch_show_recent.last_seen_row.U_LSEEN_LINK}
-					</span>
-				</td>
-			</tr>
+			<tr><td class="row1" width="100%"><span class="genmed">{switch_show_recent.last_seen_row.L_LSEEN_TIME}<b>{NAV_SEP}</b>{switch_show_recent.last_seen_row.U_LSEEN_LINK}</span></td></tr>
 			<!-- END last_seen_row -->
 		</table>
 	</td>

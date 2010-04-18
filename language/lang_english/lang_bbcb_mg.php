@@ -200,7 +200,7 @@ $lang = array_merge($lang, array(
 	'xs_bbc_hide_quote_message' => 'Quoted Hidden Message, which is still hidden.',
 	'xs_bbc_hide_message_explain' => 'Sorry, but you must be registered and also post a reply to view this message.',
 
-	'bbcode_url' => 'Enter the URL (eg. http://www.phpbb.com)',
+	'bbcode_url' => 'Enter the URL (eg. http://www.icyphoenix.com)',
 	'bbcode_url_title' => 'Enter the title of the link',
 	'bbcode_url_empty' => 'You didn\'t enter a url',
 	'bbcode_url_errors' => 'Error!',

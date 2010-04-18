@@ -4,12 +4,10 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 <!-- ENDIF -->
 
-<!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
-
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_blocks.png" alt="{L_BLOCKS_PAGE_01}" title="{L_BLOCKS_PAGE_01}" /></td>
-	<td class="row1" valign="top"><h1>{L_BLOCKS_PAGE_01}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
+	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_blocks.png" alt="{L_CMS_BLOCK_PAGE}" title="{L_CMS_BLOCK_PAGE}" /></td>
+	<td class="row1" valign="top"><h1>{L_CMS_BLOCK_PAGE}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
 </tr>
 </table>
 
@@ -24,6 +22,10 @@
 			<td class="row2"><input type="text" maxlength="60" size="30" name="title" value="{TITLE}" class="post" /></td>
 		</tr>
 		<tr>
+			<td class="row1" align="right">{L_CMS_BLOCK_PARENT}</td>
+			<td class="row2">{BLOCK_PARENT}</td>
+		</tr>
+		<tr>
 			<td class="row1">{L_B_POSITION}</td>
 			<td class="row2"><select name="bposition" class="post">{POSITION}</select></td>
 		</tr>
@@ -33,14 +35,6 @@
 				<input type="radio" name="active" value="1" {ACTIVE} /> {L_ENABLED}&nbsp;&nbsp;
 				<input type="radio" name="active" value="0" {NOT_ACTIVE} /> {L_DISABLED}
 			</td>
-		</tr>
-		<tr>
-			<td class="row1" align="right">{L_B_BLOCK_FILE}</td>
-			<td class="row2">{BLOCKFILE}</td>
-		</tr>
-		<tr>
-			<td class="row1" align="right">{L_B_VIEW_BY}</td>
-			<td class="row2">{VIEWBY}</td>
 		</tr>
 		<tr>
 			<td class="row1" align="right">{L_B_BORDER}</td>
@@ -70,10 +64,6 @@
 				<input type="radio" name="background" value="0" {NO_BACKGROUND} /> {L_NO}
 			</td>
 		</tr>
-		<tr>
-			<td class="row1" align="right">{L_B_GROUP}</td>
-			<td class="row2">{GROUP}</td>
-		</tr>
 		</table>
 	</td>
 </tr>
@@ -81,9 +71,9 @@
 <tr>
 	<td class="cat" align="center">
 		{S_HIDDEN_FIELDS}
-		<input type="submit" name="block_content_setup" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
-		<input type="submit" name="reset" class="liteoption" value="{L_RESET}" />
-		<!-- <input type="reset" name="reset" class="liteoption" value="{L_RESET}" /> -->
+		<input type="submit" name="save" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
+		<!-- <input type="submit" name="reset" class="liteoption" value="{L_RESET}" /> -->
+		<input type="reset" name="reset" class="liteoption" value="{L_RESET}" />
 	</td>
 </tr>
 </table>

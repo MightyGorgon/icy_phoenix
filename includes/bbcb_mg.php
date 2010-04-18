@@ -76,7 +76,8 @@ if ($view_pic_upload == true)
 $bbcbmg_path_prefix = '';
 if (isset($bbcbmg_in_acp))
 {
-	$bbcbmg_path_prefix = ($bbcbmg_in_acp == true) ? '../' : '';
+	// Mighty Gorgon: if we use absolute path this is not needed...
+	//$bbcbmg_path_prefix = ($bbcbmg_in_acp == true) ? '../' : '';
 }
 
 $template->assign_vars(array(

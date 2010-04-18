@@ -36,6 +36,10 @@
 					</tr>
 					<tr>
 						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
+						<td class="genmed" align="left"><a href="{U_CMS_BLOCK_SETTINGS}">{L_CMS_BLOCK_SETTINGS}</a></td>
+					</tr>
+					<tr>
+						<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 						<td class="genmed" align="left"><a href="{U_CMS_GLOBAL_BLOCKS}">{L_CMS_GLOBAL_BLOCKS}</a></td>
 					</tr>
 					<tr>

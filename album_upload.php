@@ -1256,10 +1256,11 @@ else
 					$emailer->to($to_users['user_email']);
 					$emailer->set_subject(); //$lang['Notification_subject']
 
+					$email_sig = create_signature($config['board_email_sig']);
 					$emailer->assign_vars(array(
 						'USERNAME' => $to_users['username'],
 						'SITENAME' => $config['sitename'],
-						'EMAIL_SIG' => str_replace('<br />', "\n", "----- \n" . $config['board_email_sig']),
+						'EMAIL_SIG' => $email_sig,
 						'FROM' => $userdata['username'],
 						'PIC_TITLE' => $pic_title,
 						'PIC_ID' => $new_pic_id['pic_id'],

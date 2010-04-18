@@ -75,70 +75,50 @@ class ip_cache extends acm
 	/*
 	* Get CMS global blocks config values (New Version!)
 	*/
-	function obtain_cms_global_blocks_config_new($from_cache = false)
-	{
-		global $db, $ip_cms, $cms_config_vars;
-
-		$auth_level = $ip_cms->cms_blocks_view();
-		$auth_level_suffix = implode('', $auth_level);
-		if (($config = $this->get('_cms_global_blocks_config_' . $auth_level_suffix)) === false)
-		{
-			$cms_id = $cms_config_vars['id'] ? $cms_config_vars['id'] : 0;
-
-			$sql = "SELECT b.*, s.*
-				FROM " . $ip_cms->tables['blocks_table'] . " AS b,
-				" . $ip_cms->tables['block_settings_table'] . " AS s
-				WHERE b.layout = 0
-				AND b.active = 1
-				AND b.block_cms_id = '" . $cms_id . "'
-				AND " . $db->sql_in_set('s.view', $auth_level) . "
-				AND b.bposition IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
-				AND b.block_settings_id = s.bs_id
-				ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
-			$result = $from_cache ? $db->sql_query($sql, 0, 'cms_global_blocks_', CMS_CACHE_FOLDER) : $db->sql_query($sql);
-
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$config[$row['bposition']][] = $row;
-			}
-			$db->sql_freeresult($result);
-			$this->put('_cms_global_blocks_config_' . $auth_level_suffix, $config);
-		}
-
-		return $config;
-	}
-
-	/*
-	* Get CMS global blocks config values
-	*/
 	function obtain_cms_global_blocks_config($from_cache = false)
 	{
-		global $db, $ip_cms;
+		global $db, $config, $ip_cms, $cms_config_vars;
 
 		$auth_level = $ip_cms->cms_blocks_view();
 		$auth_level_suffix = implode('', $auth_level);
-		if (($config = $this->get('_cms_global_blocks_config_' . $auth_level_suffix)) === false)
+		if (($cms_config = $this->get('_cms_global_blocks_config_' . $auth_level_suffix)) === false)
 		{
-			$config = array();
-			$sql = "SELECT *
-				FROM " . CMS_BLOCKS_TABLE . "
-				WHERE layout = 0
-				AND active = 1
-				AND " . $db->sql_in_set('view', $auth_level) . "
-				AND bposition IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
-				ORDER BY bposition ASC, layout ASC, layout_special ASC, weight ASC";
-			$result = $from_cache ? $db->sql_query($sql, 0, 'cms_global_blocks_', CMS_CACHE_FOLDER) : $db->sql_query($sql);
+			if (!empty($config['cms_version']))
+			{
+				$cms_id = $cms_config_vars['id'] ? $cms_config_vars['id'] : 0;
 
-			$config = array();
+				$sql = "SELECT b.*, s.*
+					FROM " . $ip_cms->tables['blocks_table'] . " AS b,
+					" . $ip_cms->tables['block_settings_table'] . " AS s
+					WHERE b.layout = 0
+					AND b.active = 1
+					AND b.block_cms_id = '" . $cms_id . "'
+					AND " . $db->sql_in_set('s.view', $auth_level) . "
+					AND b.bposition IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
+					AND b.block_settings_id = s.bs_id
+					ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
+			}
+			else
+			{
+				$sql = "SELECT *
+					FROM " . CMS_BLOCKS_TABLE . "
+					WHERE layout = 0
+					AND active = 1
+					AND " . $db->sql_in_set('view', $auth_level) . "
+					AND bposition IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
+					ORDER BY bposition ASC, layout ASC, layout_special ASC, weight ASC";
+			}
+			$result = $from_cache ? $db->sql_query($sql, 0, 'cms_global_blocks_', CMS_CACHE_FOLDER) : $db->sql_query($sql);
+			$cms_config = array();
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$config[$row['bposition']][] = $row;
+				$cms_config[$row['bposition']][] = $row;
 			}
 			$db->sql_freeresult($result);
-			$this->put('_cms_global_blocks_config_' . $auth_level_suffix, $config);
+			$this->put('_cms_global_blocks_config_' . $auth_level_suffix, $cms_config);
 		}
 
-		return $config;
+		return $cms_config;
 	}
 
 	/*

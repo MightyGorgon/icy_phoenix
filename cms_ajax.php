@@ -58,7 +58,6 @@ $blockfile = (isset($_GET['blockfile']) ? $_GET['blockfile'] : (isset($_POST['bl
 if ($blockfile == '')
 {
 	// BBCBMG - BEGIN
-	//$bbcbmg_in_acp = true;
 	include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 	$template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 	// BBCBMG - END

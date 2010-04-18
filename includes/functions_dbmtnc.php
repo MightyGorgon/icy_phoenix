@@ -682,6 +682,7 @@ $default_config = array(
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,
+	'cms_version' => '2.0.0',
 
 	// Cash
 	'cash_disable' => 0,

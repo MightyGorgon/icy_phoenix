@@ -156,7 +156,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		}
 		$next_birthday_greeting = request_post_var('next_birthday_greeting', 0);
 
-		$allowviewonline = request_post_var('hideonline', 1);
+		$allowviewonline = request_post_var('hideonline', 0);
 		$allowviewonline = !empty($allowviewonline) ? 0 : 1;
 		$profile_view_popup = request_post_var('profile_view_popup', 0);
 		$viewemail = request_post_var('viewemail', 0);
@@ -335,7 +335,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			else
 			{
 				$password = phpbb_hash($password);
-				$passwd_sql = "user_password = '" . $db->sql_escape($password) . "', ";
+				$passwd_sql = "user_password = '" . $db->sql_escape($password) . "', " . ((strlen($password) == 34) ? "user_pass_convert = 0, " : "");
 			}
 		}
 		elseif($password && !$password_confirm)
@@ -714,8 +714,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				$db->sql_query($sql);
 			}
 
-			// We remove all stored login keys since the password has been updated
-			// and change the current one (if applicable)
+			// We remove all stored login keys since the password has been updated and change the current one (if applicable)
 			if (!empty($passwd_sql))
 			{
 				session_reset_keys($user_id, $user_ip);

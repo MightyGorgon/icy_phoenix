@@ -43,7 +43,8 @@ class class_captcha
 			VALUES ('" . $db->sql_escape($confirm_id) . "', '" . $db->sql_escape($userdata['session_id']) . "', '" . $db->sql_escape($code) . "')";
 		$result = $db->sql_query($sql);
 		unset($code);
-		$confirm_image = '<img src="' . append_sid(CMS_PAGE_PROFILE . '?mode=confirm&amp;id=' . $confirm_id) . '" alt="" title="" />';
+		$server_url = create_server_url();
+		$confirm_image = '<img src="' . append_sid($server_url . CMS_PAGE_PROFILE . '?mode=confirm&amp;id=' . $confirm_id) . '" alt="" title="" />';
 
 		$template->assign_vars(array(
 			'S_CAPTCHA' => true,

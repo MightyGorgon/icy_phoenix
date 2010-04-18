@@ -1943,6 +1943,7 @@ $lang = array_merge($lang, array(
 /* lang_.php - BEGIN */
 /* lang_.php - END */
 
+	'Uploading' => 'Uploading...',
 	'Upload_Image_Local' => 'Upload Image',
 	'Uploaded_Images_Local' => 'Uploaded Images',
 	'Upload_Image_Local_Explain' => 'Select the file to be uploaded',

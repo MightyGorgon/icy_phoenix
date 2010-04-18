@@ -3,11 +3,11 @@
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/prototype.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 
-<script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}js/color_bar.js"></script>
-<script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colormethods.js"></script>
-<script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorvaluepicker.js"></script>
-<script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/slider.js"></script>
-<script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorpicker.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}js/color_bar.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colormethods.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorvaluepicker.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/slider.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}colorpicker/colorpicker.js"></script>
 
 <div id="cpdiv" style="background-color: #888888; border: solid 1px #000000; padding: 10px; margin: 5px; width: 440px;">
 
@@ -38,32 +38,32 @@
 <div style="text-align: center;"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></div>
 
 <div style="display:none;">
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/rangearrows.gif" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/mappoint.gif" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-saturation.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-brightness.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-tl.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-tr.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-bl.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-br.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-tl.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-tr.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-bl.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-br.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-tl.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-tr.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-bl.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-br.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-red-max.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-red-min.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-green-max.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-green-min.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-blue-max.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-blue-min.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-saturation.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-saturation-overlay.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-brightness.png" alt="" />
-<img src="{BBCB_MG_PATH_PREFIX}images/colorpicker/map-hue.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/rangearrows.gif" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/mappoint.gif" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-saturation.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-brightness.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-tl.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-tr.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-bl.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-blue-br.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-tl.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-tr.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-bl.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-red-br.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-tl.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-tr.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-bl.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-green-br.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-red-max.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-red-min.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-green-max.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-green-min.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-blue-max.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-blue-min.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-saturation.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-saturation-overlay.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-brightness.png" alt="" />
+<img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-hue.png" alt="" />
 </div>
 <script type="text/javascript">
 <!--

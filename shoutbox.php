@@ -55,8 +55,7 @@ if(!$is_auth['auth_read'])
 }
 // End auth check
 
-//$refresh = (isset($_POST['auto_refresh']) || isset($_POST['refresh'])) ? 1 : 0;
-$refresh = (isset($_GET['auto_refresh']) || isset($_GET['refresh'])) ? 1 : 0;
+$refresh = (check_http_var_exists('auto_refresh', false) || check_http_var_exists('refresh', false)) ? 1 : 0;
 $submit = (isset($_POST['shout']) && isset($_POST['message'])) ? 1 : 0;
 $mode = request_var('mode', '');
 

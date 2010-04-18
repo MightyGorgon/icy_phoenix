@@ -185,24 +185,28 @@ class ip_cms
 		$is_gh_block = false;
 		if(!$is_special && !$global_blocks)
 		{
-			/*
-			$sql = "SELECT b.*, s.*
-				FROM " . $this->tables['blocks_table'] . " AS b,
-				" . $this->tables['block_settings_table'] . " AS s
-				WHERE b.layout = " . $layout . "
-				AND b.active = 1
-				AND " . $db->sql_in_set('s.view', $this->cms_blocks_view()) . "
-				AND b.bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
-				AND b.block_settings_id = s.bs_id
-				ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
-			*/
-			$sql = "SELECT *
-				FROM " . $this->tables['blocks_table'] . "
-				WHERE layout = " . $layout . "
-				AND active = 1
-				AND " . $db->sql_in_set('view', $this->cms_blocks_view()) . "
-				AND bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
-				ORDER BY bposition ASC, layout ASC, layout_special ASC, weight ASC";
+			if (!empty($config['cms_version']))
+			{
+				$sql = "SELECT b.*, s.*
+					FROM " . $this->tables['blocks_table'] . " AS b,
+					" . $this->tables['block_settings_table'] . " AS s
+					WHERE b.layout = " . $layout . "
+					AND b.active = 1
+					AND " . $db->sql_in_set('s.view', $this->cms_blocks_view()) . "
+					AND b.bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
+					AND b.block_settings_id = s.bs_id
+					ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
+			}
+			else
+			{
+				$sql = "SELECT *
+					FROM " . $this->tables['blocks_table'] . "
+					WHERE layout = " . $layout . "
+					AND active = 1
+					AND " . $db->sql_in_set('view', $this->cms_blocks_view()) . "
+					AND bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
+					ORDER BY bposition ASC, layout ASC, layout_special ASC, weight ASC";
+			}
 			$block_im_result = $db->sql_query($sql, 0, 'cms_blocks_', CMS_CACHE_FOLDER);
 
 			$block_info = array();

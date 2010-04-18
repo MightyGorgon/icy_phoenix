@@ -162,11 +162,6 @@ define('BBCODE_NOSMILIES_END', '<!-- no smilies end -->');
 define('BBCODE_SMILIES_PATH', $smileys_path);
 define('AUTOURL', time());
 
-if (function_exists('create_server_url'))
-{
-	array_merge(array(create_server_url()), $urls_local);
-}
-
 // Need to initialize the random numbers only ONCE
 mt_srand((double) microtime() * 1000000);
 
@@ -383,7 +378,20 @@ class bbcode
 	*/
 	function process_tag(&$item)
 	{
-		global $db, $cache, $config, $userdata, $lang, $server_url, $topic_id;
+		global $db, $cache, $config, $userdata, $lang, $topic_id, $urls_local;
+
+		if (function_exists('create_server_url'))
+		{
+			$server_url = create_server_url();
+			$urls_local = empty($urls_local) ? array($server_url) : array_merge(array($server_url), $urls_local);
+		}
+		else
+		{
+			$host = getenv('HTTP_HOST');
+			$host = (!empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (!empty($host) ? $host : $config['server_name']));
+			$server_url = 'http://' . $host . $config['script_path'];
+		}
+
 		//LIW - BEGIN
 		$max_image_width = intval($config['liw_max_width']);
 		//LIW - END
@@ -750,7 +758,8 @@ class bbcode
 					if ($item['params']['cache'] == 'false')
 					{
 						$cache_image = false;
-						$cache_append = 'cache=false&amp;';
+						//$cache_append = 'cache=false&amp;';
+						$cache_append = 'cache=false&';
 					}
 					else
 					{
@@ -1257,7 +1266,6 @@ class bbcode
 			}
 			// check if url is local
 			$url_local = false;
-			global $urls_local;
 			for($i = 0; $i < sizeof($urls_local); $i++)
 			{
 				if(strlen($url) > strlen($urls_local[$i]) && strpos($url, $urls_local[$i]) === 0)

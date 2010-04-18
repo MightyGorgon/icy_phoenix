@@ -1,4 +1,4 @@
-<script type="text/javascript" src="{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}js/color_bar.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}{T_COMMON_TPL_PATH}js/color_bar.js"></script>
 
 <script type="text/javascript">
 // <![CDATA[
@@ -11,6 +11,6 @@ var text2 = s_help.substring(search(s_help,"]"),search(s_help,"/"));
 </script>
 
 <table class="bbcbmg" style="width: 550px;" cellspacing="0" cellpadding="0" border="0">
-<tr><td width="100%" align="left"><script type="text/javascript">rgb(pas, width1, height1, text1, text2, '{BBCB_MG_PATH_PREFIX}');</script></td></tr>
+<tr><td width="100%" align="left"><script type="text/javascript">rgb(pas, width1, height1, text1, text2, '{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}');</script></td></tr>
 </table>
 

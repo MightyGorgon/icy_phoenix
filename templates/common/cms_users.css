@@ -3,7 +3,7 @@
 #cms_menu{
 	text-align: left;
 	width: 100%;
-	background: #FFF url(images/bg_post.gif) top repeat-x;;
+	background: #ffffff url(images/bg_post.gif) top repeat-x;;
 }
 
 #cms_nav {
@@ -11,15 +11,15 @@
 	padding: 2px 5px;
 	background: url(images/bg_nav2.gif) top repeat-x;
 	height: 14px;
-	border-top: solid 1px #AAA;
-	border-bottom: solid 1px #AAA;
+	border-top: solid 1px #aaaaaa;
+	border-bottom: solid 1px #aaaaaa;
 }
 
 .tabs {
 	list-style: none;
 	height: 25px;
-	margin: 2px;
-	padding: 0;
+	padding: 2px 0px 0px 2px;
+
 }
 
 .tabs li {
@@ -39,7 +39,7 @@
 	height: 23px;
 	margin-top: 3px;
 	padding: 1px 5px 0px 5px;;
-	background: #E9EFF3;
+	background: #e9eff3;
 	font-size: 13px;
 	font-weight: bold;
 	font-style: normal;
@@ -47,7 +47,7 @@
 	line-height: 20px;
 	white-space: nowrap;
 	overflow: hidden;
-	border: solid 1px #AAA;
+	border: solid 1px #aaaaaa;
 	-moz-border-radius-topright: 5px;
 	-webkit-border-radius-topright: 5px;
 	-moz-border-radius-topleft: 5px;
@@ -56,58 +56,57 @@
 
 .tabs_center:hover {
 	cursor: pointer;
-	color: #000;
-	background: #E9EFF3;
+	color: #000000;
+	background: #e9eff3;
 }
 
 .selected {
-	margin-top: -3px;
+	margin-top: 0px;
 	padding-top: 1px;
 	height: 26px;
-	color: #000;
-	line-height: 24px;
+	color: #000000;
+	line-height: 20px;
 	cursor: default;
-	background: #E9EFF3;
-	border-bottom: solid 1px #E9EFF3;
+	background: #e9eff3;
+	border-bottom: solid 1px #e9eff3;
 }
 
 .cms_auth {
-	background: #E9EFF3;
+	background: #e9eff3;
 	padding: 12px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
-
 }
 
 .cms_button {
-  background: #FFF url(images/bg_nav2.gif) top repeat-x;
+	background: #ffffff url('images/bg_nav2.gif') top repeat-x;
 	padding: 5px;
 	margin: 0px 0px 5px 3px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: solid 1px #AAA;
+	border: solid 1px #aaaaaa;
 	font-weight: bold;
-	color: #888;
+	color: #888888;
 	float: right;
 }
 
 .cms_button:hover {
-  background: #FFF url(images/bg_nav2.gif) top repeat-x;
-	border: solid 1px #CC3333;
+	background: #ffffff url('images/bg_nav2.gif') top repeat-x;
+	border: solid 1px #cc3333;
 	cursor: pointer;
-	color: #CC3333;
+	color: #cc3333;
 }
 
 .cms_button_lite {
-  background: #FFF url(images/bg_nav2.gif) top repeat-x;
+	background: #ffffff url('images/bg_nav2.gif') top repeat-x;
 	padding: 3px;
 	margin-left: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	border: solid 1px #AAA;
+	border: solid 1px #aaaaaa;
 	font-weight: bold;
 	font-size: 10px;
-	color: #888;
+	color: #888888;
 	float: right;
 	vertical-align: middle;
 }
@@ -117,7 +116,7 @@ input.cms_button_lite {
 }
 
 .cms_button_lite:hover {
-  background: #ffffff url(images/bg_nav2.gif) top repeat-x;
+	background: #ffffff url(images/bg_nav2.gif) top repeat-x;
 	border: solid 1px #cc3333;
 	cursor: pointer;
 	color: #cc3333;
@@ -132,7 +131,7 @@ input.cms_button_lite {
 	font-weight: bold;
 	font-size: 1.4em;
 	color: #444444;
-	text-shadow: 2px 2px 2px #AAA;
+	text-shadow: 2px 2px 2px #aaaaaa;
 }
 
 .auth_yes {
@@ -142,4 +141,21 @@ input.cms_button_lite {
 
 .auth_no {
 	color: #cccccc;
+}
+
+#global-wrapper {
+	width: 100%;
+	/*width: 900px !important;*/
+	clear: both;
+	margin: 0 auto;
+}
+
+.form-title {
+	font-weight: bold;
+	font-size: 1.2em;
+	color: #444444;
+}
+
+.row1 {
+	vertical-align: top;
 }

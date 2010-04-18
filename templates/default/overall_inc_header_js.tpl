@@ -74,8 +74,14 @@ window.onunload = function()
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/run_active_content.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_compressed.js"></script>
 
+<!-- IF S_JQUERY_UI -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/themes/smoothness/jquery-ui.css" type="text/css" media="screen" />
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/i18n/jquery-ui-i18n.min.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
 <!-- IF S_NIVO_SLIDER -->
-<link rel="stylesheet" href=".{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_custom.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_custom.css" type="text/css" media="screen" />
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_compressed.js" type="text/javascript"></script>
 <!-- ENDIF -->
 

@@ -251,7 +251,7 @@ if($mode != '')
 	elseif($mode == 'delete')
 	{
 		// Ok, they want to delete their rank
-		$rank_id = request_post_var('id', 0);
+		$rank_id = request_var('id', 0);
 
 		$confirm = isset($_POST['confirm']);
 

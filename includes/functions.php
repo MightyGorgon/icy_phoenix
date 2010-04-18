@@ -748,7 +748,10 @@ function phpbb_optionset($bit, $set, $data)
 	return $data;
 }
 
-// Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
+/*
+* Get Userdata, $user can be username or user_id.
+* If force_str is true, the username will be forced.
+*/
 function get_userdata($user, $force_str = false)
 {
 	global $db;
@@ -1206,6 +1209,23 @@ function ip_clean_username($username)
 {
 	$username = preg_replace('/[^A-Za-z0-9&\-_]+/', '', trim($username));
 	return $username;
+}
+
+/*
+* Create email signature
+*/
+function create_signature($signature = '')
+{
+	global $config;
+
+	$signature = !empty($signature) ? $signature : $config['board_email_sig'];
+	$email_sig = (!empty($signature) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $signature) : '');
+	if (!empty($config['html_email']))
+	{
+		$email_sig = nl2br($email_sig);
+	}
+
+	return $email_sig;
 }
 
 /*

@@ -185,7 +185,7 @@ ALTER TABLE `phpbb_users` CHANGE `user_last_login_try` `user_last_login_attempt`
 ALTER TABLE `phpbb_users` CHANGE `user_password` `user_password` VARCHAR(40) DEFAULT '' NOT NULL;
 ALTER TABLE `phpbb_users` CHANGE `user_newpasswd` `user_newpasswd` VARCHAR(40) DEFAULT '' NOT NULL;
 ALTER TABLE `phpbb_users` ADD `user_passchg` INT(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_password`;
-ALTER TABLE `phpbb_users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL AFTER `user_passchg`;
+ALTER TABLE `phpbb_users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_passchg`;
 ALTER TABLE `phpbb_users` ADD `user_form_salt` VARCHAR(32) DEFAULT '' NOT NULL AFTER `user_pass_convert`;
 ALTER TABLE `phpbb_users` ADD `user_email_hash` BIGINT(20) DEFAULT '0' NOT NULL AFTER `user_email`;
 ALTER TABLE `phpbb_users` ADD `user_options` INT(11) UNSIGNED DEFAULT '895' NOT NULL AFTER `user_setbm`;
@@ -400,6 +400,52 @@ DELETE FROM `phpbb_album_config`` WHERE config_name = 'enable_mooshow';
 ##              BUILD 062             ##
 ########################################
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smtp_port', '25');
+ALTER TABLE `phpbb_plugins` ADD `plugin_version` VARCHAR(255) NOT NULL DEFAULT '' AFTER `plugin_name`;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
+
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 2, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 4, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 5, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 7, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 8, 1);
+
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 2, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 4, 1);
+INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 7, 1);
+
+## NEW CMS - BEGIN
+CREATE TABLE `phpbb_cms_block_settings` (
+	`bs_id` int(10) NOT NULL AUTO_INCREMENT,
+	`user_id` int(10) NOT NULL,
+	`name` varchar(255) NOT NULL default '',
+	`content` text NOT NULL ,
+	`blockfile` varchar(255) NOT NULL default '',
+	`view` tinyint(1) NOT NULL default 0,
+	`type` tinyint(1) NOT NULL default 1,
+	`edit_auth` tinyint(1) NOT NULL default 5,
+	`groups` tinytext NOT NULL,
+	`locked` tinyint(1) NOT NULL DEFAULT 1,
+	PRIMARY KEY (`bs_id`)
+);
+
+INSERT INTO `phpbb_cms_block_settings`
+SELECT b.bid, 0, b.title, b.content, b.blockfile, b.view, b.type, b.edit_auth, b.groups, 1
+FROM `phpbb_cms_blocks` b
+ORDER BY b.bid;
+
+ALTER TABLE `phpbb_cms_blocks` DROP `content`;
+ALTER TABLE `phpbb_cms_blocks` DROP `blockfile`;
+ALTER TABLE `phpbb_cms_blocks` DROP `view`;
+ALTER TABLE `phpbb_cms_blocks` DROP `type`;
+ALTER TABLE `phpbb_cms_blocks` DROP `groups`;
+
+ALTER TABLE `phpbb_cms_blocks` ADD `block_settings_id` int(10) UNSIGNED NOT NULL AFTER `bid`;
+ALTER TABLE `phpbb_cms_blocks` ADD `block_cms_id` int(10) UNSIGNED NOT NULL AFTER `block_settings_id`;
+
+UPDATE `phpbb_cms_blocks` SET `block_settings_id` = `bid`;
+
+ALTER TABLE `phpbb_cms_layout` ADD `layout_cms_id` int(10) UNSIGNED NOT NULL AFTER `template`;
+## NEW CMS - END
 
 
 
@@ -408,8 +454,9 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smtp_port', 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_attachments_config SET config_value = '2.4.5' WHERE config_name = 'attach_version';
-UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';
-UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
+UPDATE phpbb_config SET config_value = '1.3.10.63' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '1.3.9.62' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
+UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
+UPDATE phpbb_config SET config_value = '2.4.5' WHERE config_name = 'attach_version';
+UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';

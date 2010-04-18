@@ -40,6 +40,26 @@ $mode = (isset($_POST['save']) ? 'save' : $mode);
 $mode = (!in_array($mode, $mode_types) ? $mode_types[0] : $mode);
 // MODES - END
 
+// ACTIONS - BEGIN
+$actions_types = array('none', 'update', 'install', 'uninstall');
+$action = request_var('action', $actions_types[0]);
+$action = (!in_array($action, $actions_types) ? $actions_types[0] : $action);
+// ACTIONS - END
+
+$plugin_dir = request_var('plugin_dir', '');
+if (!empty($plugin_dir))
+{
+	$plugin_info_file = $class_plugins->plugins_path . $plugin_dir . '/info.' . PHP_EXT;
+	if (file_exists($plugin_info_file))
+	{
+		$plugin_data['dir'] = $plugin_dir;
+	}
+	else
+	{
+		$action = 'none';
+	}
+}
+
 // VARS - BEGIN
 $s_hidden_fields = '';
 // VARS - END
@@ -49,28 +69,45 @@ $plugins_config = $cache->obtain_plugins_config();
 
 if($mode == 'save')
 {
-	$existing_plugins = array();
-	foreach ($plugins_list as $plugin)
+	if ($action == 'install')
 	{
-		$existing_plugins[] = $plugin['config'];
-		$plugin_data = array();
-		$plugin_data = array(
-			'name' => $plugin['config'],
-			'dir' => $plugin['dir'],
-			'enabled' => (isset($_POST[$plugin['config']]) ? $_POST[$plugin['config']] : 0),
-		);
-		$class_plugins->set_config($plugin_data, false, true);
+		$result = $class_plugins->install($plugin_data);
 	}
-
-	foreach ($plugins_config as $k => $v)
+	elseif ($action == 'update')
 	{
-		if (!in_array($k, $existing_plugins))
+		$result = $class_plugins->update($plugin_data);
+	}
+	elseif ($action == 'uninstall')
+	{
+		$result = $class_plugins->uninstall($plugin_data);
+	}
+	else
+	{
+		$existing_plugins = array();
+		foreach ($plugins_list as $plugin)
 		{
+			$existing_plugins[] = $plugin['config'];
 			$plugin_data = array();
-			$plugin_data = array('name' => $k);
-			$class_plugins->remove_config($plugin_data, false);
+			$plugin_data = array(
+				'name' => $plugin['config'],
+				'version' => $plugin['version'],
+				'dir' => $plugin['dir'],
+				'enabled' => (isset($_POST[$plugin['config']]) ? $_POST[$plugin['config']] : 0),
+			);
+			$class_plugins->set_config($plugin_data, false, true);
+		}
+
+		foreach ($plugins_config as $k => $v)
+		{
+			if (!in_array($k, $existing_plugins))
+			{
+				$plugin_data = array();
+				$plugin_data = array('name' => $k);
+				$class_plugins->remove_config($plugin_data, false);
+			}
 		}
 	}
+
 	$cache->destroy('config_plugins');
 
 	$message = $lang['PLUGINS_CONFIG_UPDATED'];
@@ -100,15 +137,35 @@ else
 				'name' => $plugin['config'],
 				'type' => 'LIST_RADIO',
 				'default' => empty($plugins_config[$plugin['config']]['plugin_enabled']) ? 0 : 1,
-				'values' => array('Yes' => 1, 'No' => 0),
+				'values' => array('Enabled' => 1, 'Disabled' => 0),
 			);
 
+			$install_link = append_sid(THIS_PAGE . '?plugin_dir=' . htmlspecialchars(urlencode($plugin['dir'])) . '&amp;mode=save&amp;action=install');
+			$install_img = '<a href="' . $install_link . '" class="text_green" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_INSTALL'] . '&nbsp;<img src="' . IP_ROOT_PATH . 'images/cms/b_add.png" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_INSTALL'] . '" title="' . $lang['PLUGINS_INSTALL'] . '" /></a>';
+
+			$update_link = append_sid(THIS_PAGE . '?plugin_dir=' . htmlspecialchars(urlencode($plugin['dir'])) . '&amp;mode=save&amp;action=update');
+			$update_img = '<a href="' . $update_link . '" class="text_green" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_UPGRADE'] . '&nbsp;<img src="' . IP_ROOT_PATH . 'images/cms/b_refresh.png" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_UPGRADE'] . '" title="' . $lang['PLUGINS_UPGRADE'] . '" /></a>';
+
+			$uninstall_link = append_sid(THIS_PAGE . '?plugin_dir=' . htmlspecialchars(urlencode($plugin['dir'])) . '&amp;mode=save&amp;action=uninstall');
+			$uninstall_img = '<a href="' . $uninstall_link . '" class="text_red" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_UNINSTALL'] . '&nbsp;<img src="' . IP_ROOT_PATH . 'images/cms/b_delete.png" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_UNINSTALL'] . '" title="' . $lang['PLUGINS_UNINSTALL'] . '" /></a>';
+
+			$plugin_up_to_date = version_compare($plugins_config[$plugin['config']]['plugin_version'], $plugin['version'], '=');
+			$plugin_installed = !empty($plugins_config[$plugin['config']]['plugin_version']) ? true : false;
 			$template->assign_block_vars('plugin', array(
 				'ROW_CLASS' => $row_class,
 				'PLUGIN_DIR' => htmlspecialchars($plugin['dir']),
+				'PLUGIN_CURRENT_VERSION' => $plugin_installed ? htmlspecialchars($plugins_config[$plugin['config']]['plugin_version']) : false,
+				'PLUGIN_LAST_VERSION' => htmlspecialchars($plugin['version']),
+				'PLUGIN_STATUS_COLOR' => ' class="' . ($plugin_up_to_date ? 'text_green' : 'text_red') . '"',
+				'PLUGIN_STATUS' => ($plugin_up_to_date ? $lang['PLUGINS_UP_TO_DATE'] : $lang['PLUGINS_OUTDATED']),
 				'PLUGIN_NAME' => htmlspecialchars($plugin['name']),
 				'PLUGIN_DESCRIPTION' => htmlspecialchars($plugin['description']),
 				'PLUGIN_RADIO' => $class_form->create_input($plugin['config'], $plugin_array),
+				'PLUGIN_INSTALLED' => $plugin_installed,
+				'PLUGIN_UP_TO_DATE' => $plugin_up_to_date,
+				'PLUGIN_LINK_INSTALL' => $install_img,
+				'PLUGIN_LINK_UPDATE' => $update_img,
+				'PLUGIN_LINK_UNINSTALL' => $uninstall_img,
 				)
 			);
 		}

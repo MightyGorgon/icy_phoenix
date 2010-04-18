@@ -98,11 +98,12 @@ if((($delete && $confirm) || $activate) && $mark_list)
 			$emailer->to($mail['user_email']);
 			$emailer->set_subject($subject);
 
+			$email_sig = create_signature($config['board_email_sig']);
 			$emailer->assign_vars(array(
 				'SUBJECT' => $subject,
 				'TEXT' => sprintf($text, $config['sitename']),
 				'USERNAME' => $mail['username'],
-				'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+				'EMAIL_SIG' => $email_sig,
 				)
 			);
 			$emailer->send();

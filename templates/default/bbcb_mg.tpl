@@ -5,7 +5,7 @@ s_s_help = "{L_BBCODE_S_HELP}";
 
 {JAVASCRIPT_LANG_VARS}
 
-var bbcb_mg_img_path = "{BBCB_MG_PATH_PREFIX}images/bbcb_mg/images/gif/";
+var bbcb_mg_img_path = "{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/bbcb_mg/images/gif/";
 var bbcb_mg_img_ext = ".gif";
 
 function openAllSmiles()
@@ -106,38 +106,38 @@ function openAllSmiles()
 			<td>
 				<div class="gennull">
 					<span class="genmed">&nbsp;</span>
-					<a href="javascript:BBCleft()"><img src="{BBCB_MG_IMG_PATH}left{BBCB_MG_IMG_EXT}" name="left" onmouseover="helpline('left')" alt="{L_BBCB_MG_L}" title="{L_BBCB_MG_L}" class="bbimages" /></a>
-					<a href="javascript:BBCcenter()"><img src="{BBCB_MG_IMG_PATH}center{BBCB_MG_IMG_EXT}" name="center" onmouseover="helpline('center')" alt="{L_BBCB_MG_C}" title="{L_BBCB_MG_C}" class="bbimages" /></a>
-					<a href="javascript:BBCright()"><img src="{BBCB_MG_IMG_PATH}right{BBCB_MG_IMG_EXT}" name="right" onmouseover="helpline('right')" alt="{L_BBCB_MG_R}" title="{L_BBCB_MG_R}" class="bbimages" /></a>
-					<a href="javascript:BBCjustify()"><img src="{BBCB_MG_IMG_PATH}justify{BBCB_MG_IMG_EXT}" name="justify" onmouseover="helpline('justify')" alt="{L_BBCB_MG_J}" title="{L_BBCB_MG_J}" class="bbimages" /></a>
+					<a href="javascript:BBCleft()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}left{BBCB_MG_IMG_EXT}" name="left" onmouseover="helpline('left')" alt="{L_BBCB_MG_L}" title="{L_BBCB_MG_L}" class="bbimages" /></a>
+					<a href="javascript:BBCcenter()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}center{BBCB_MG_IMG_EXT}" name="center" onmouseover="helpline('center')" alt="{L_BBCB_MG_C}" title="{L_BBCB_MG_C}" class="bbimages" /></a>
+					<a href="javascript:BBCright()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}right{BBCB_MG_IMG_EXT}" name="right" onmouseover="helpline('right')" alt="{L_BBCB_MG_R}" title="{L_BBCB_MG_R}" class="bbimages" /></a>
+					<a href="javascript:BBCjustify()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}justify{BBCB_MG_IMG_EXT}" name="justify" onmouseover="helpline('justify')" alt="{L_BBCB_MG_J}" title="{L_BBCB_MG_J}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<a href="javascript:BBCbold()" accesskey="b"><img src="{BBCB_MG_IMG_PATH}bold{BBCB_MG_IMG_EXT}" name="bold_img" onmouseover="helpline('b')" alt="{L_BBCB_MG_B}" title="{L_BBCB_MG_B}" class="bbimages" /></a>
-					<a href="javascript:BBCitalic()" accesskey="i"><img src="{BBCB_MG_IMG_PATH}italic{BBCB_MG_IMG_EXT}" name="italic" onmouseover="helpline('i')" alt="{L_BBCB_MG_I}" title="{L_BBCB_MG_I}" class="bbimages" /></a>
-					<a href="javascript:BBCunder()" accesskey="u"><img src="{BBCB_MG_IMG_PATH}under{BBCB_MG_IMG_EXT}" name="under" onmouseover="helpline('u')" alt="{L_BBCB_MG_U}" title="{L_BBCB_MG_U}" class="bbimages" /></a>
-					<a href="javascript:BBCstrike()"><img src="{BBCB_MG_IMG_PATH}strike{BBCB_MG_IMG_EXT}" name="strik" onmouseover="helpline('strike')" alt="{L_BBCB_MG_S}" title="{L_BBCB_MG_S}" class="bbimages" /></a>
-					<a href="javascript:BBCsup()"><img src="{BBCB_MG_IMG_PATH}sup{BBCB_MG_IMG_EXT}" name="supscript" onmouseover="helpline('sup')" alt="{L_BBCB_MG_SUP}" title="{L_BBCB_MG_SUP}" class="bbimages" /></a>
-					<a href="javascript:BBCsub()"><img src="{BBCB_MG_IMG_PATH}sub{BBCB_MG_IMG_EXT}" name="subs" onmouseover="helpline('sub')" alt="{L_BBCB_MG_SUB}" title="{L_BBCB_MG_SUB}" class="bbimages" /></a>
+					<a href="javascript:BBCbold()" accesskey="b"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}bold{BBCB_MG_IMG_EXT}" name="bold_img" onmouseover="helpline('b')" alt="{L_BBCB_MG_B}" title="{L_BBCB_MG_B}" class="bbimages" /></a>
+					<a href="javascript:BBCitalic()" accesskey="i"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}italic{BBCB_MG_IMG_EXT}" name="italic" onmouseover="helpline('i')" alt="{L_BBCB_MG_I}" title="{L_BBCB_MG_I}" class="bbimages" /></a>
+					<a href="javascript:BBCunder()" accesskey="u"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}under{BBCB_MG_IMG_EXT}" name="under" onmouseover="helpline('u')" alt="{L_BBCB_MG_U}" title="{L_BBCB_MG_U}" class="bbimages" /></a>
+					<a href="javascript:BBCstrike()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}strike{BBCB_MG_IMG_EXT}" name="strik" onmouseover="helpline('strike')" alt="{L_BBCB_MG_S}" title="{L_BBCB_MG_S}" class="bbimages" /></a>
+					<a href="javascript:BBCsup()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}sup{BBCB_MG_IMG_EXT}" name="supscript" onmouseover="helpline('sup')" alt="{L_BBCB_MG_SUP}" title="{L_BBCB_MG_SUP}" class="bbimages" /></a>
+					<a href="javascript:BBCsub()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}sub{BBCB_MG_IMG_EXT}" name="subs" onmouseover="helpline('sub')" alt="{L_BBCB_MG_SUB}" title="{L_BBCB_MG_SUB}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<a href="javascript:BBClist()" accesskey="l"><img src="{BBCB_MG_IMG_PATH}list{BBCB_MG_IMG_EXT}" name="listdf" onmouseover="helpline('list')" alt="{L_BBCB_MG_LST}" title="{L_BBCB_MG_LST}" class="bbimages" /></a>
-					<a href="javascript:BBClistO()" accesskey="l"><img src="{BBCB_MG_IMG_PATH}list_o{BBCB_MG_IMG_EXT}" name="listodf" onmouseover="helpline('listo')" alt="{L_BBCB_MG_LST}" title="{L_BBCB_MG_LSTO}" class="bbimages" /></a>
-					<a href="javascript:BBCbullet()" accesskey="*"><img src="{BBCB_MG_IMG_PATH}list_ast{BBCB_MG_IMG_EXT}" name="listbullet" onmouseover="helpline('bullet')" alt="{L_BBCB_MG_BULLET}" title="{L_BBCB_MG_BULLET}" class="bbimages" /></a>
+					<a href="javascript:BBClist()" accesskey="l"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}list{BBCB_MG_IMG_EXT}" name="listdf" onmouseover="helpline('list')" alt="{L_BBCB_MG_LST}" title="{L_BBCB_MG_LST}" class="bbimages" /></a>
+					<a href="javascript:BBClistO()" accesskey="l"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}list_o{BBCB_MG_IMG_EXT}" name="listodf" onmouseover="helpline('listo')" alt="{L_BBCB_MG_LST}" title="{L_BBCB_MG_LSTO}" class="bbimages" /></a>
+					<a href="javascript:BBCbullet()" accesskey="*"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}list_ast{BBCB_MG_IMG_EXT}" name="listbullet" onmouseover="helpline('bullet')" alt="{L_BBCB_MG_BULLET}" title="{L_BBCB_MG_BULLET}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<a href="javascript:BBChl()" ><img src="{BBCB_MG_IMG_PATH}highlight{BBCB_MG_IMG_EXT}" name="highlight" onmouseover="helpline('highlight')" alt="{L_BBCB_MG_HIGHLIGHT}" title="{L_BBCB_MG_HIGHLIGHT}" class="bbimages" /></a>
-					<a href="javascript:BBChr()"><img src="{BBCB_MG_IMG_PATH}hr{BBCB_MG_IMG_EXT}" name="hr" onmouseover="helpline('hr')" alt="{L_BBCB_MG_HR}" title="{L_BBCB_MG_HR}" class="bbimages" /></a>
+					<a href="javascript:BBChl()" ><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}highlight{BBCB_MG_IMG_EXT}" name="highlight" onmouseover="helpline('highlight')" alt="{L_BBCB_MG_HIGHLIGHT}" title="{L_BBCB_MG_HIGHLIGHT}" class="bbimages" /></a>
+					<a href="javascript:BBChr()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}hr{BBCB_MG_IMG_EXT}" name="hr" onmouseover="helpline('hr')" alt="{L_BBCB_MG_HR}" title="{L_BBCB_MG_HR}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
 					<!-- IF S_ACTIVE_CONTENT -->
-					<a href="javascript:BBCflash()"><img src="{BBCB_MG_IMG_PATH}flash{BBCB_MG_IMG_EXT}" name="flash" onmouseover="helpline('flash')" alt="{L_BBCB_MG_FLSH}" title="{L_BBCB_MG_FLSH}" class="bbimages" /></a>
-					<a href="javascript:BBCvideo()"><img src="{BBCB_MG_IMG_PATH}video{BBCB_MG_IMG_EXT}" name="video" onmouseover="helpline('video')" alt="{L_BBCB_MG_VID}" title="{L_BBCB_MG_VID}" class="bbimages" /></a>
-					<a href="javascript:BBCgooglevideo()"><img src="{BBCB_MG_IMG_PATH}googlevideo{BBCB_MG_IMG_EXT}" name="googlevideo" onmouseover="helpline('googlevideo')" alt="{L_BBCB_MG_GVID}" title="{L_BBCB_MG_GVID}" class="bbimages" /></a>
-					<a href="javascript:BBCyoutube()"><img src="{BBCB_MG_IMG_PATH}youtube{BBCB_MG_IMG_EXT}" name="youtube" onmouseover="helpline('youtube')" alt="{L_BBCB_MG_YOUTUBE}" title="{L_BBCB_MG_YOUTUBE}" class="bbimages" /></a>
-					<a href="javascript:BBCram()"><img src="{BBCB_MG_IMG_PATH}ram{BBCB_MG_IMG_EXT}" name="ram" onmouseover="helpline('ram')" alt="{L_BBCB_MG_RAM}" title="{L_BBCB_MG_RAM}" class="bbimages" /></a>
-					<a href="javascript:BBCquick()"><img src="{BBCB_MG_IMG_PATH}quick{BBCB_MG_IMG_EXT}" name="quick" onmouseover="helpline('quick')" alt="Quicktime" title="Quicktime" class="bbimages" /></a>
-					<a href="javascript:BBCstream()"><img src="{BBCB_MG_IMG_PATH}sound{BBCB_MG_IMG_EXT}" name="stream" onmouseover="helpline('stream')" alt="{L_BBCB_MG_STRM}" title="{L_BBCB_MG_STRM}" class="bbimages" /></a>
-					<a href="javascript:BBCemff()"><img src="{BBCB_MG_IMG_PATH}emff{BBCB_MG_IMG_EXT}" name="emff" onmouseover="helpline('emff')" alt="{L_BBCB_MG_EMFF}" title="{L_BBCB_MG_EMFF}" class="bbimages" /></a>
+					<a href="javascript:BBCflash()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}flash{BBCB_MG_IMG_EXT}" name="flash" onmouseover="helpline('flash')" alt="{L_BBCB_MG_FLSH}" title="{L_BBCB_MG_FLSH}" class="bbimages" /></a>
+					<a href="javascript:BBCvideo()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}video{BBCB_MG_IMG_EXT}" name="video" onmouseover="helpline('video')" alt="{L_BBCB_MG_VID}" title="{L_BBCB_MG_VID}" class="bbimages" /></a>
+					<a href="javascript:BBCgooglevideo()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}googlevideo{BBCB_MG_IMG_EXT}" name="googlevideo" onmouseover="helpline('googlevideo')" alt="{L_BBCB_MG_GVID}" title="{L_BBCB_MG_GVID}" class="bbimages" /></a>
+					<a href="javascript:BBCyoutube()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}youtube{BBCB_MG_IMG_EXT}" name="youtube" onmouseover="helpline('youtube')" alt="{L_BBCB_MG_YOUTUBE}" title="{L_BBCB_MG_YOUTUBE}" class="bbimages" /></a>
+					<a href="javascript:BBCram()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}ram{BBCB_MG_IMG_EXT}" name="ram" onmouseover="helpline('ram')" alt="{L_BBCB_MG_RAM}" title="{L_BBCB_MG_RAM}" class="bbimages" /></a>
+					<a href="javascript:BBCquick()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}quick{BBCB_MG_IMG_EXT}" name="quick" onmouseover="helpline('quick')" alt="Quicktime" title="Quicktime" class="bbimages" /></a>
+					<a href="javascript:BBCstream()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}sound{BBCB_MG_IMG_EXT}" name="stream" onmouseover="helpline('stream')" alt="{L_BBCB_MG_STRM}" title="{L_BBCB_MG_STRM}" class="bbimages" /></a>
+					<a href="javascript:BBCemff()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}emff{BBCB_MG_IMG_EXT}" name="emff" onmouseover="helpline('emff')" alt="{L_BBCB_MG_EMFF}" title="{L_BBCB_MG_EMFF}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 					<!-- ENDIF -->
 
@@ -148,43 +148,43 @@ function openAllSmiles()
 			<td>
 				<div class="gennull">
 					<span class="genmed">&nbsp;</span>
-					<a href="javascript:BBCquote()" accesskey="q"><img src="{BBCB_MG_IMG_PATH}quote{BBCB_MG_IMG_EXT}" name="quote" onmouseover="helpline('quote')" alt="{L_BBCB_MG_QUOTE}" title="{L_BBCB_MG_QUOTE}" class="bbimages" /></a>
-					<a href="javascript:BBCcode()" accesskey="c"><img src="{BBCB_MG_IMG_PATH}code{BBCB_MG_IMG_EXT}" name="code" onmouseover="helpline('code')" alt="{L_BBCB_MG_CODE}" title="{L_BBCB_MG_CODE}" class="bbimages" /></a>
-					<a href="javascript:BBCphpbbmod()" accesskey="p"><img src="{BBCB_MG_IMG_PATH}code{BBCB_MG_IMG_EXT}" name="phpbbmod" onmouseover="helpline('phpbbmod')" alt="{L_BBCB_MG_PHPBBMOD}" title="{L_BBCB_MG_PHPBBMOD}" class="bbimages" /></a>
+					<a href="javascript:BBCquote()" accesskey="q"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}quote{BBCB_MG_IMG_EXT}" name="quote" onmouseover="helpline('quote')" alt="{L_BBCB_MG_QUOTE}" title="{L_BBCB_MG_QUOTE}" class="bbimages" /></a>
+					<a href="javascript:BBCcode()" accesskey="c"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}code{BBCB_MG_IMG_EXT}" name="code" onmouseover="helpline('code')" alt="{L_BBCB_MG_CODE}" title="{L_BBCB_MG_CODE}" class="bbimages" /></a>
+					<a href="javascript:BBCphpbbmod()" accesskey="p"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}code{BBCB_MG_IMG_EXT}" name="phpbbmod" onmouseover="helpline('phpbbmod')" alt="{L_BBCB_MG_PHPBBMOD}" title="{L_BBCB_MG_PHPBBMOD}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<a href="javascript:BBCurl()" accesskey="w"><img src="{BBCB_MG_IMG_PATH}url{BBCB_MG_IMG_EXT}" name="url" onmouseover="helpline('url')" alt="{L_BBCB_MG_URL}" title="{L_BBCB_MG_URL}" class="bbimages" /></a>
-					<a href="javascript:BBCmail()" accesskey="e"><img src="{BBCB_MG_IMG_PATH}email{BBCB_MG_IMG_EXT}" name="email" onmouseover="helpline('mail')" alt="{L_BBCB_MG_EML}" title="{L_BBCB_MG_EML}" class="bbimages" /></a>
+					<a href="javascript:BBCurl()" accesskey="w"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}url{BBCB_MG_IMG_EXT}" name="url" onmouseover="helpline('url')" alt="{L_BBCB_MG_URL}" title="{L_BBCB_MG_URL}" class="bbimages" /></a>
+					<a href="javascript:BBCmail()" accesskey="e"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}email{BBCB_MG_IMG_EXT}" name="email" onmouseover="helpline('mail')" alt="{L_BBCB_MG_EML}" title="{L_BBCB_MG_EML}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
 					<!-- IF S_PIC_UPLOAD -->
-					<a href="{U_BBCODE_POSTICYIMAGE}" onclick="popup('{U_BBCODE_POSTICYIMAGE}', 700, 300, '_upload_image'); return false;"><img src="{BBCB_MG_IMG_PATH}post_icy_image{BBCB_MG_IMG_EXT}" name="posticyimage" onmouseover="helpline('posticyimage')" alt="{L_BBCB_MG_POSTICYIMAGE}" title="{L_BBCB_MG_POSTICYIMAGE}" class="bbimages" /></a>
+					<a href="{U_BBCODE_POSTICYIMAGE}" onclick="popup('{U_BBCODE_POSTICYIMAGE}', 700, 300, '_upload_image'); return false;"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}post_icy_image{BBCB_MG_IMG_EXT}" name="posticyimage" onmouseover="helpline('posticyimage')" alt="{L_BBCB_MG_POSTICYIMAGE}" title="{L_BBCB_MG_POSTICYIMAGE}" class="bbimages" /></a>
 					<!-- ENDIF -->
 					<!-- IF S_POSTIMAGE_ORG -->
-					<a href="{U_BBCODE_POSTIMAGE}" accesskey="g"><img src="{BBCB_MG_IMG_PATH}image_add{BBCB_MG_IMG_EXT}" name="uploadimg" onmouseover="helpline('image_upload')" alt="{L_BBCB_MG_UPLOAD_IMG}" title="{L_BBCB_MG_UPLOAD_IMG}" class="bbimages" /></a>
+					<a href="{U_BBCODE_POSTIMAGE}" accesskey="g"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_add{BBCB_MG_IMG_EXT}" name="uploadimg" onmouseover="helpline('image_upload')" alt="{L_BBCB_MG_UPLOAD_IMG}" title="{L_BBCB_MG_UPLOAD_IMG}" class="bbimages" /></a>
 					<!-- ENDIF -->
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<a href="javascript:BBCimgl()"><img src="{BBCB_MG_IMG_PATH}image_linkl{BBCB_MG_IMG_EXT}" name="imgl" onmouseover="helpline('imgl')" alt="{L_BBCB_MG_IMGL}" title="{L_BBCB_MG_IMGL}" class="bbimages" /></a>
-					<a href="javascript:BBCimg()" accesskey="p"><img src="{BBCB_MG_IMG_PATH}image_link{BBCB_MG_IMG_EXT}" name="img" onmouseover="helpline('img')" alt="{L_BBCB_MG_IMG}" title="{L_BBCB_MG_IMG}" class="bbimages" /></a>
-					<a href="javascript:BBCimgr()"><img src="{BBCB_MG_IMG_PATH}image_linkr{BBCB_MG_IMG_EXT}" name="imgr" onmouseover="helpline('imgr')" alt="{L_BBCB_MG_IMGR}" title="{L_BBCB_MG_IMGR}" class="bbimages" /></a>
+					<a href="javascript:BBCimgl()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_linkl{BBCB_MG_IMG_EXT}" name="imgl" onmouseover="helpline('imgl')" alt="{L_BBCB_MG_IMGL}" title="{L_BBCB_MG_IMGL}" class="bbimages" /></a>
+					<a href="javascript:BBCimg()" accesskey="p"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_link{BBCB_MG_IMG_EXT}" name="img" onmouseover="helpline('img')" alt="{L_BBCB_MG_IMG}" title="{L_BBCB_MG_IMG}" class="bbimages" /></a>
+					<a href="javascript:BBCimgr()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_linkr{BBCB_MG_IMG_EXT}" name="imgr" onmouseover="helpline('imgr')" alt="{L_BBCB_MG_IMGR}" title="{L_BBCB_MG_IMGR}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<a href="javascript:BBCalbumimgl()"><img src="{BBCB_MG_IMG_PATH}image_gall{BBCB_MG_IMG_EXT}" name="albumimgl" onmouseover="helpline('albumimgl')" alt="{L_BBCB_MG_ALBUMIMGL}" title="{L_BBCB_MG_ALBUMIMGL}" class="bbimages" /></a>
-					<a href="javascript:BBCalbumimg()"><img src="{BBCB_MG_IMG_PATH}image_gal{BBCB_MG_IMG_EXT}" name="albumimg" onmouseover="helpline('albumimg')" alt="{L_BBCB_MG_ALBUMIMG}" title="{L_BBCB_MG_ALBUMIMG}" class="bbimages" /></a>
-					<a href="javascript:BBCalbumimgr()"><img src="{BBCB_MG_IMG_PATH}image_galr{BBCB_MG_IMG_EXT}" name="albumimgr" onmouseover="helpline('albumimgr')" alt="{L_BBCB_MG_ALBUMIMGR}" title="{L_BBCB_MG_ALBUMIMGR}" class="bbimages" /></a>
+					<a href="javascript:BBCalbumimgl()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_gall{BBCB_MG_IMG_EXT}" name="albumimgl" onmouseover="helpline('albumimgl')" alt="{L_BBCB_MG_ALBUMIMGL}" title="{L_BBCB_MG_ALBUMIMGL}" class="bbimages" /></a>
+					<a href="javascript:BBCalbumimg()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_gal{BBCB_MG_IMG_EXT}" name="albumimg" onmouseover="helpline('albumimg')" alt="{L_BBCB_MG_ALBUMIMG}" title="{L_BBCB_MG_ALBUMIMG}" class="bbimages" /></a>
+					<a href="javascript:BBCalbumimgr()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_galr{BBCB_MG_IMG_EXT}" name="albumimgr" onmouseover="helpline('albumimgr')" alt="{L_BBCB_MG_ALBUMIMGR}" title="{L_BBCB_MG_ALBUMIMGR}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<a href="javascript:BBCspoiler()" ><img src="{BBCB_MG_IMG_PATH}spoiler{BBCB_MG_IMG_EXT}" name="spoiler" onmouseover="helpline('spoiler')" alt="{L_BBCB_MG_SPOILER}" title="{L_BBCB_MG_SPOILER}" class="bbimages" /></a>
-					<a href="javascript:BBCcell()" ><img src="{BBCB_MG_IMG_PATH}cell{BBCB_MG_IMG_EXT}" name="cell" onmouseover="helpline('cell')" alt="{L_BBCB_MG_CELL}" title="{L_BBCB_MG_CELL}" class="bbimages" /></a>
-					<a href="javascript:BBCfade()"><img src="{BBCB_MG_IMG_PATH}fade{BBCB_MG_IMG_EXT}" name="fade" onmouseover="helpline('fade')" alt="{L_BBCB_MG_FADE}" title="{L_BBCB_MG_FADE}" class="bbimages" /></a>
-					<a href="javascript:BBCgrad()"><img src="{BBCB_MG_IMG_PATH}grad{BBCB_MG_IMG_EXT}" name="rainb" onmouseover="helpline('grad')" alt="{L_BBCB_MG_GRAD}" title="{L_BBCB_MG_GRAD}" class="bbimages" /></a>
+					<a href="javascript:BBCspoiler()" ><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}spoiler{BBCB_MG_IMG_EXT}" name="spoiler" onmouseover="helpline('spoiler')" alt="{L_BBCB_MG_SPOILER}" title="{L_BBCB_MG_SPOILER}" class="bbimages" /></a>
+					<a href="javascript:BBCcell()" ><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}cell{BBCB_MG_IMG_EXT}" name="cell" onmouseover="helpline('cell')" alt="{L_BBCB_MG_CELL}" title="{L_BBCB_MG_CELL}" class="bbimages" /></a>
+					<a href="javascript:BBCfade()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}fade{BBCB_MG_IMG_EXT}" name="fade" onmouseover="helpline('fade')" alt="{L_BBCB_MG_FADE}" title="{L_BBCB_MG_FADE}" class="bbimages" /></a>
+					<a href="javascript:BBCgrad()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}grad{BBCB_MG_IMG_EXT}" name="rainb" onmouseover="helpline('grad')" alt="{L_BBCB_MG_GRAD}" title="{L_BBCB_MG_GRAD}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<a href="javascript:BBCmarqd()"><img src="{BBCB_MG_IMG_PATH}marqd{BBCB_MG_IMG_EXT}" name="marqd" onmouseover="helpline('marqd')" alt="{L_BBCB_MG_MD}" title="{L_BBCB_MG_MD}" class="bbimages" /></a>
-					<a href="javascript:BBCmarqu()"><img src="{BBCB_MG_IMG_PATH}marqu{BBCB_MG_IMG_EXT}" name="marqu" onmouseover="helpline('marqu')" alt="{L_BBCB_MG_MU}" title="{L_BBCB_MG_MU}" class="bbimages" /></a>
-					<a href="javascript:BBCmarql()"><img src="{BBCB_MG_IMG_PATH}marql{BBCB_MG_IMG_EXT}" name="marql" onmouseover="helpline('marql')" alt="{L_BBCB_MG_ML}" title="{L_BBCB_MG_ML}" class="bbimages" /></a>
-					<a href="javascript:BBCmarqr()"><img src="{BBCB_MG_IMG_PATH}marqr{BBCB_MG_IMG_EXT}" name="marqr" onmouseover="helpline('marqr')" alt="{L_BBCB_MG_MR}" title="{L_BBCB_MG_MR}" class="bbimages" /></a>
+					<a href="javascript:BBCmarqd()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}marqd{BBCB_MG_IMG_EXT}" name="marqd" onmouseover="helpline('marqd')" alt="{L_BBCB_MG_MD}" title="{L_BBCB_MG_MD}" class="bbimages" /></a>
+					<a href="javascript:BBCmarqu()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}marqu{BBCB_MG_IMG_EXT}" name="marqu" onmouseover="helpline('marqu')" alt="{L_BBCB_MG_MU}" title="{L_BBCB_MG_MU}" class="bbimages" /></a>
+					<a href="javascript:BBCmarql()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}marql{BBCB_MG_IMG_EXT}" name="marql" onmouseover="helpline('marql')" alt="{L_BBCB_MG_ML}" title="{L_BBCB_MG_ML}" class="bbimages" /></a>
+					<a href="javascript:BBCmarqr()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}marqr{BBCB_MG_IMG_EXT}" name="marqr" onmouseover="helpline('marqr')" alt="{L_BBCB_MG_MR}" title="{L_BBCB_MG_MR}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 				</div>
 			</td>

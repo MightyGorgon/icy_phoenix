@@ -4,8 +4,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 <!-- ENDIF -->
 
-<!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
-
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_edit.png" alt="{L_CMS_PAGES}" title="{L_CMS_PAGES}" /></td>
@@ -19,6 +17,24 @@
 <tr>
 	<td class="row1" style="padding:0px" valign="top">
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+		<!-- IF not S_LAYOUT_SPECIAL -->
+		<tr>
+			<td class="row1" colspan="2" style="text-align:center">
+				<table class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+				<tr>
+					<!-- BEGIN layouts -->
+					<td class="row1" style="text-align:center">{layouts.LAYOUT_IMG}</td>
+					<!-- END layouts -->
+				</tr>
+				<tr>
+					<!-- BEGIN layouts -->
+					<td class="row1" style="text-align:center">{layouts.LAYOUT_RADIO}</td>
+					<!-- END layouts -->
+				</tr>
+				</table>
+			</td>
+		</tr>
+		<!-- ENDIF -->
 		<tr>
 			<td class="row1">{L_LAYOUT_NAME}</td>
 			<td class="row2"><input type="text" maxlength="100" size="30" name="name" value="{NAME}" class="post" /></td>
@@ -33,14 +49,6 @@
 			<td class="row1">{L_CMS_FILENAME}<!-- IF not S_LAYOUT_SPECIAL --><br /><span class="gensmall">{L_CMS_FILENAME_EXPLAIN}</span><br /><span class="gensmall">{L_CMS_FILENAME_AUTH}</span><!-- ENDIF --></td>
 			<td class="row2"><input type="text" maxlength="100" size="30" name="filename" value="{FILENAME}" class="post" /></td>
 		</tr>
-		<!-- IF not S_LAYOUT_SPECIAL -->
-		<!-- IF not S_LAYOUT_ADV -->
-		<tr>
-			<td class="row1">{L_LAYOUT_TEMPLATE}</td>
-			<td class="row2"><select name="template" class="post">{TEMPLATE}</select></td>
-		</tr>
-		<!-- ENDIF -->
-		<!-- ENDIF -->
 		<tr>
 			<td class="row1">{L_LAYOUT_GLOBAL_BLOCKS}</td>
 			<td class="row2">
@@ -65,7 +73,7 @@
 			<td class="row2">{EDIT_AUTH}</td>
 		</tr>
 		<tr>
-			<td class="row1">{L_LAYOUT_GROUPS}</td>
+			<td class="row1">{L_B_GROUPS}</td>
 			<td class="row2">{GROUPS}</td>
 		</tr>
 		<!-- ENDIF -->

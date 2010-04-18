@@ -194,10 +194,11 @@ elseif (isset($_POST['joingroup']) && $group_id)
 		$emailer->to($moderator['user_email']);
 		$emailer->set_subject($lang['Group_request']);
 
+		$email_sig = create_signature($config['board_email_sig']);
 		$emailer->assign_vars(array(
 			'SITENAME' => $config['sitename'],
 			'GROUP_MODERATOR' => $moderator['username'],
-			'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+			'EMAIL_SIG' => $email_sig,
 			'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id . '&validate=true'
 			)
 		);
@@ -438,10 +439,11 @@ elseif ($group_id)
 					$emailer->to($row['user_email']);
 					$emailer->set_subject($lang['Group_added']);
 
+					$email_sig = create_signature($config['board_email_sig']);
 					$emailer->assign_vars(array(
 						'SITENAME' => $config['sitename'],
 						'GROUP_NAME' => $group_name,
-						'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+						'EMAIL_SIG' => $email_sig,
 
 						'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
 						)
@@ -621,10 +623,11 @@ elseif ($group_id)
 						$emailer->use_template('group_approved');
 						$emailer->set_subject($lang['Group_approved']);
 
+						$email_sig = create_signature($config['board_email_sig']);
 						$emailer->assign_vars(array(
 							'SITENAME' => $config['sitename'],
 							'GROUP_NAME' => $group_name,
-							'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+							'EMAIL_SIG' => $email_sig,
 
 							'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
 							)

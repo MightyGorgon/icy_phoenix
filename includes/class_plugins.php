@@ -19,9 +19,240 @@ if (!defined('IN_ICYPHOENIX'))
 class class_plugins
 {
 
+	var $plugin_name = '';
+	var $plugin_version = '';
+	var $plugin_dir = '';
+
+	var $plugins_path = '';
+
 	var $config = array();
 	var $modules = array();
 	var $list_yes_no = array('Yes' => 1, 'No' => 0);
+
+	/**
+	* Instantiate class
+	*/
+	function class_plugins()
+	{
+		$this->plugins_path = IP_ROOT_PATH . PLUGINS_PATH;
+
+	}
+
+	/**
+	* Install plugin
+	*/
+	function install($plugin_data, $clear_cache = true)
+	{
+		global $db, $config, $table_prefix;
+
+		$sql_results = array();
+		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
+		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
+		if (!empty($plugin_install_data))
+		{
+			foreach ($plugin_install_data as $version => $instructions)
+			{
+				if (!empty($plugin_install_data[$version]['sql']))
+				{
+					foreach ($plugin_install_data[$version]['sql'] as $sql_statement)
+					{
+						$error = array();
+						$message = '';
+						$db->sql_return_on_error(true);
+						$result = $db->sql_query($sql_statement);
+						$db->sql_return_on_error(false);
+						if (!$result)
+						{
+							$error = $db->sql_error();
+							$message = $error['message'];
+						}
+						$sql_results[] = array(
+							'sql' => $sql_statement,
+							'message' => htmlspecialchars($message),
+							'success' => empty($message) ? true : false
+						);
+					}
+				}
+
+				if (!empty($plugin_install_data[$version]['functions']))
+				{
+					foreach ($plugin_install_data[$version]['functions'] as $install_function)
+					{
+						eval($install_function);
+					}
+				}
+			}
+		}
+
+		$plugin_data['name'] = $plugin_info['config'];
+		$plugin_data['version'] = $plugin_info['version'];
+		$plugin_data['enabled'] = 1;
+		$this->set_config($plugin_data, false, true);
+
+		if ($clear_cache)
+		{
+			$this->cache_clear();
+		}
+
+		return $sql_results;
+	}
+
+	/**
+	* Update plugin
+	*/
+	function update($plugin_data, $clear_cache = true)
+	{
+		global $db, $config, $table_prefix;
+
+		$sql_results = array();
+		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
+		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
+		if (!empty($plugin_install_data))
+		{
+			foreach ($plugin_install_data as $version => $instructions)
+			{
+				if (version_compare($plugin_data['version'], $version, '<'))
+				{
+					if (!empty($plugin_install_data[$version]['sql']))
+					{
+						foreach ($plugin_install_data[$version]['sql'] as $sql_statement)
+						{
+							$error = array();
+							$message = '';
+							$db->sql_return_on_error(true);
+							$result = $db->sql_query($sql_statement);
+							$db->sql_return_on_error(false);
+							if (!$result)
+							{
+								$error = $db->sql_error();
+								$message = $error['message'];
+							}
+							$sql_results[] = array(
+								'sql' => $sql_statement,
+								'message' => htmlspecialchars($message),
+								'success' => empty($message) ? true : false
+							);
+						}
+					}
+
+					if (!empty($plugin_install_data[$version]['functions']))
+					{
+						foreach ($plugin_install_data[$version]['functions'] as $install_function)
+						{
+							eval($install_function);
+						}
+					}
+				}
+			}
+		}
+
+		if ($clear_cache)
+		{
+			$this->cache_clear();
+		}
+
+		return $sql_results;
+	}
+
+	/**
+	* Uninstall plugin
+	*/
+	function uninstall($plugin_data, $clear_cache = true)
+	{
+		global $db, $config, $table_prefix;
+
+		$sql_results = array();
+		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
+		$plugin_uninstall_data = $this->get_plugin_uninstall_data($plugin_data['dir']);
+		if (!empty($plugin_uninstall_data))
+		{
+			foreach ($plugin_uninstall_data['sql'] as $sql_statement)
+			{
+				$error = array();
+				$message = '';
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql_statement);
+				$db->sql_return_on_error(false);
+				if (!$result)
+				{
+					$error = $db->sql_error();
+					$message = $error['message'];
+				}
+				$sql_results[] = array(
+					'sql' => $sql_statement,
+					'message' => htmlspecialchars($message),
+					'success' => empty($message) ? true : false
+				);
+			}
+			foreach ($plugin_uninstall_data['functions'] as $uninstall_function)
+			{
+				eval($uninstall_function);
+			}
+		}
+
+		if ($clear_cache)
+		{
+			$this->cache_clear();
+		}
+
+		return $sql_results;
+	}
+
+	/*
+	* Get plugin info
+	*/
+	function get_plugin_info($plugin_dir)
+	{
+		$plugin_info = array();
+		$plugin_info_file = $this->plugins_path . $plugin_dir . '/info.' . PHP_EXT;
+		if (file_exists($plugin_info_file))
+		{
+			@include($plugin_info_file);
+			$plugin_info = array(
+				'dir' => $plugin_dir,
+				'config' => (!empty($plugin_details['config']) ? $plugin_details['config'] : $plugins_subdir),
+				'name' => (!empty($plugin_details['name']) ? $plugin_details['name'] : $plugins_subdir),
+				'version' => (!empty($plugin_details['version']) ? $plugin_details['version'] : '1.0.0'),
+				'description' => (!empty($plugin_details['description']) ? $plugin_details['description'] : ''),
+			);
+		}
+
+		return $plugin_info;
+	}
+
+	/*
+	* Get plugin install data
+	*/
+	function get_plugin_install_data($plugin_dir)
+	{
+		global $config, $table_prefix;
+
+		$install_data = array();
+		$plugin_install_file = $this->plugins_path . $plugin_dir . '/install/install.' . PHP_EXT;
+		if (file_exists($plugin_install_file))
+		{
+			@include($plugin_install_file);
+		}
+
+		return $install_data;
+	}
+
+	/*
+	* Get plugin uninstall data
+	*/
+	function get_plugin_uninstall_data($plugin_dir)
+	{
+		global $config, $table_prefix;
+
+		$install_data = array();
+		$plugin_install_file = $this->plugins_path . $plugin_dir . '/install/install.' . PHP_EXT;
+		if (file_exists($plugin_install_file))
+		{
+			@include($plugin_install_file);
+		}
+
+		return $uninstall_data;
+	}
 
 	/*
 	* Get plugins list
@@ -29,23 +260,16 @@ class class_plugins
 	function get_plugins_list()
 	{
 		$plugins_list = array();
-		$plugins_path = IP_ROOT_PATH . PLUGINS_PATH;
-		$plugins_dir = @opendir($plugins_path);
+		$plugins_dir = @opendir($this->plugins_path);
 		while (($plugins_subdir = @readdir($plugins_dir)) !== false)
 		{
 			$exclude_dirs = array('.', '..');
-			if (is_dir($plugins_path . $plugins_subdir) && !in_array($plugins_subdir, $exclude_dirs))
+			if (is_dir($this->plugins_path . $plugins_subdir) && !in_array($plugins_subdir, $exclude_dirs))
 			{
-				$plugin_info_file = $plugins_path . $plugins_subdir . '/info.' . PHP_EXT;
+				$plugin_info_file = $this->plugins_path . $plugins_subdir . '/info.' . PHP_EXT;
 				if (file_exists($plugin_info_file))
 				{
-					@include($plugin_info_file);
-					$plugins_list[$plugins_subdir] = array(
-						'dir' => $plugins_subdir,
-						'config' => (!empty($plugin_details['config']) ? $plugin_details['config'] : $plugins_subdir),
-						'name' => (!empty($plugin_details['name']) ? $plugin_details['name'] : $plugins_subdir),
-						'description' => (!empty($plugin_details['description']) ? $plugin_details['description'] : ''),
-					);
+					$plugins_list[$plugins_subdir] = $this->get_plugin_info($plugins_subdir);
 				}
 			}
 		}
@@ -61,9 +285,14 @@ class class_plugins
 	{
 		global $db, $cache, $config, $lang;
 
-		$sql = "UPDATE " . PLUGINS_TABLE . "
-			SET plugin_dir = '" . $db->sql_escape($plugin_data['dir']) . "',
-				plugin_enabled = '" . $db->sql_escape($plugin_data['enabled']) . "'
+		$plugin_data_sql = array(
+			'plugin_version' => !empty($plugin_data['version']) ? $plugin_data['version'] : '1.0.0',
+			'plugin_dir' => !empty($plugin_data['dir']) ? $plugin_data['dir'] : $plugin_data['name'],
+			'plugin_enabled' => !empty($plugin_data['enabled']) ? $plugin_data['enabled'] : '0'
+		);
+		$db->sql_build_insert_update($plugin_data_sql, true);
+
+		$sql = "UPDATE " . PLUGINS_TABLE . " SET " . $db->sql_build_insert_update($plugin_data_sql, false) . "
 			WHERE plugin_name = '" . $db->sql_escape($plugin_data['name']) . "'";
 		$db->sql_return_on_error($return);
 		$db->sql_query($sql);
@@ -71,8 +300,8 @@ class class_plugins
 
 		if (!$db->sql_affectedrows())
 		{
-			$sql = "INSERT INTO " . PLUGINS_TABLE . " (`plugin_name`, `plugin_dir`, `plugin_enabled`)
-							VALUES ('" . $db->sql_escape($plugin_data['name']) . "', '" . $db->sql_escape($plugin_data['dir']) . "', '" . $db->sql_escape($plugin_data['enabled']) . "')";
+			$plugin_data_sql = array_merge(array('plugin_name' => $plugin_data['name']), $plugin_data_sql);
+			$sql = "INSERT INTO " . PLUGINS_TABLE . " " . $db->sql_build_insert_update($plugin_data_sql, true);
 			$db->sql_return_on_error($return);
 			$db->sql_query($sql);
 			$db->sql_return_on_error(false);

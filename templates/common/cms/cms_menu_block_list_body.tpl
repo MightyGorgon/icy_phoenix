@@ -4,8 +4,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 <!-- ENDIF -->
 
-<!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
-
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_block.png" alt="{L_CMS_MENU_TITLE}" title="{L_CMS_MENU_TITLE}" /></td>

@@ -21,6 +21,19 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
+$meta_content['page_title'] = ($meta_content['page_title'] == '') ? $config['sitename'] : $meta_content['page_title'];
+$meta_content['description'] = ($meta_content['description'] == '') ? '' : $meta_content['description'];
+$meta_content['keywords'] = ($meta_content['keywords'] == '') ? '' : $meta_content['keywords'];
+
+if (!defined('CMS_INIT'))
+{
+	define('CMS_INIT', true);
+}
+$cms_config_vars = (empty($cms_config_vars)) ? $cache->obtain_cms_config() : $cms_config_vars;
+$cms_config_global_blocks = (empty($cms_config_global_blocks)) ? $cache->obtain_cms_global_blocks_config(false) : $cms_config_global_blocks;
+
+$config['default_style'] = $cms_config_vars['style'];
+
 // Start session management
 if (empty($userdata))
 {
@@ -29,24 +42,23 @@ if (empty($userdata))
 }
 // End session management
 
-if (!defined('CMS_INIT'))
-{
-	define('CMS_INIT', true);
-}
-
-$cms_config_vars = (empty($cms_config_vars) ? $cache->obtain_cms_config() : $cms_config_vars);
-$cms_config_global_blocks = (empty($cms_config_global_blocks) ? $cache->obtain_cms_global_blocks_config(false) : $cms_config_global_blocks);
-
 if (defined('IN_CMS_PAGE_INDEX'))
 {
-	$layout = request_var('page', $cms_config_vars['default_portal']);
-	$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
+	if(!empty($_GET['page']))
+	{
+		$layout = intval($_GET['page']);
+		$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
+	}
+	else
+	{
+		$layout = $cms_config_vars['default_portal'];
+	}
 }
 else
 {
 	$page_filename = $db->sql_escape(basename($_SERVER['SCRIPT_NAME']));
 
-	$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE filename = '" . $page_filename . "'";
+	$sql = "SELECT * FROM " . $ip_cms->tables['layout_table'] . " WHERE filename = '" . $page_filename . "'";
 	$layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);
 	while ($row = $db->sql_fetchrow($layout_result))
 	{
@@ -58,16 +70,21 @@ else
 	$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
 }
 
+if (!($cms_config_vars['status']))
+{
+	$layout = $cms_config_vars['locked_page'] > 0 ? $cms_config_vars['locked_page'] : $layout;
+}
+
 $cms_default_page = (($layout == $cms_config_vars['default_portal']) ? true : false);
 
-$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE lid = '" . $layout . "'";
+$sql = "SELECT * FROM " . $ip_cms->tables['layout_table'] . " WHERE lid = '" . $layout . "'";
 $layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);
 while ($row = $db->sql_fetchrow($layout_result))
 {
 	$layout_row = $row;
 }
 $db->sql_freeresult($layout_result);
-$layout_name = $cms_default_page ? false : $layout_row['name'];
+$layout_name = $cms_default_page ? false : $meta_content['page_title'] . ' :: ' . $layout_row['name'];
 $layout_template = $layout_row['template'];
 $cms_page['global_blocks'] = ($layout_row['global_blocks'] == 0) ? false : true;
 $cms_page['page_nav'] = ($layout_row['page_nav'] == 0) ? false : true;
@@ -110,7 +127,7 @@ if(!$is_auth_view)
 if(empty($layout_template))
 {
 	$layout = $cms_config_vars['default_portal'];
-	$sql = "SELECT * FROM " . CMS_LAYOUT_TABLE . " WHERE lid = '" . $layout . "'";
+	$sql = "SELECT * FROM " . $ip_cms->tables['layout_table'] . " WHERE lid = '" . $layout . "'";
 	$layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);
 	while ($row = $db->sql_fetchrow($layout_result))
 	{
@@ -123,10 +140,6 @@ if(empty($layout_template))
 	$cms_page['page_nav'] = ($layout_row['page_nav'] == 0) ? false : true;
 }
 
-
-$meta_content['page_title'] = $config['sitename'];
-$meta_content['description'] = '';
-$meta_content['keywords'] = '';
 
 if (!$cms_default_page)
 {

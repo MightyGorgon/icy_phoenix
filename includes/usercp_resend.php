@@ -81,12 +81,13 @@ if (isset($_POST['submit']))
 	$emailer->use_template('user_welcome_inactive', $row['user_lang']);
 	$emailer->set_subject($lang['Resend_activation_email']);
 
+	$email_sig = create_signature($config['board_email_sig']);
 	$emailer->assign_vars(array(
 		'SITENAME' => $config['sitename'],
 		'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr($username, 0, 25)),
 		'PASSWORD' => '',
 		'WELCOME_MSG' => sprintf($lang['Welcome_subject'], $config['sitename']),
-		'EMAIL_SIG' => str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']),
+		'EMAIL_SIG' => $email_sig,
 		'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . $row['user_actkey']
 		)
 	);

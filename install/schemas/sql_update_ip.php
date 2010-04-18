@@ -63,6 +63,7 @@ switch ($req_version)
 	case '13760': $current_ip_version = '1.3.7.60'; break;
 	case '13861': $current_ip_version = '1.3.8.61'; break;
 	case '13962': $current_ip_version = '1.3.9.62'; break;
+	case '131063': $current_ip_version = '1.3.10.63'; break;
 }
 
 // Icy Phoenix Part...
@@ -3707,7 +3708,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_password` `user_password` VARCHAR(40) DEFAULT '' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_newpasswd` `user_newpasswd` VARCHAR(40) DEFAULT '' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_passchg` INT(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_password`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL AFTER `user_passchg`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pass_convert` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_passchg`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_form_salt` VARCHAR(32) DEFAULT '' NOT NULL AFTER `user_pass_convert`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_email_hash` BIGINT(20) DEFAULT '0' NOT NULL AFTER `user_email`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_options` INT(11) UNSIGNED DEFAULT '895' NOT NULL AFTER `user_setbm`";
@@ -3843,7 +3844,7 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "hacks_list`";
 
-		$sql[] = "UPDATE TABLE `" . $table_prefix . "users` SET `user_pass_convert` = '1'";
+		$sql[] = "UPDATE `" . $table_prefix . "users` SET `user_pass_convert` = '1'";
 
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'thumbnail_lightbox'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "album_config` WHERE config_name = 'enable_mooshow'";
@@ -3851,16 +3852,66 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.3.8.61 */
 		case '1.3.8.61':
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('smtp_port', '25')";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "plugins` ADD `plugin_version` VARCHAR(255) NOT NULL DEFAULT '' AFTER `plugin_name`";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0')";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 2, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 4, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 5, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 7, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 8, 1)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 2, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 4, 1)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 7, 1)";
+
+		// NEW CMS - BEGIN
+		$sql[] = "CREATE TABLE `" . $table_prefix . "cms_block_settings` (
+			`bs_id` int(10) NOT NULL AUTO_INCREMENT,
+			`user_id` int(10) NOT NULL,
+			`name` varchar(255) NOT NULL default '',
+			`content` text NOT NULL ,
+			`blockfile` varchar(255) NOT NULL default '',
+			`view` tinyint(1) NOT NULL default 0,
+			`type` tinyint(1) NOT NULL default 1,
+			`edit_auth` tinyint(1) NOT NULL default 5,
+			`groups` tinytext NOT NULL,
+			`locked` tinyint(1) NOT NULL DEFAULT 1,
+			PRIMARY KEY (`bs_id`)
+		)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_settings`
+		SELECT b.bid, 0, b.title, b.content, b.blockfile, b.view, b.type, b.edit_auth, b.groups, 1
+		FROM `" . $table_prefix . "cms_blocks` b
+		ORDER BY b.bid";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `content`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `blockfile`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `view`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `type`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `groups`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `block_settings_id` int(10) UNSIGNED NOT NULL AFTER `bid`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `block_cms_id` int(10) UNSIGNED NOT NULL AFTER `block_settings_id`";
+
+		$sql[] = "UPDATE `" . $table_prefix . "cms_blocks` SET `block_settings_id` = `bid`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` ADD `layout_cms_id` int(10) UNSIGNED NOT NULL AFTER `template`";
+		// NEW CMS - END
 
 		/* Updating from IP 1.3.9.62 */
 		case '1.3.9.62':
+
+		/* Updating from IP 1.3.10.63 */
+		case '1.3.10.63':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";
 	$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '" . $ip_version . "' WHERE config_name = 'ip_version'";
 	$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '" . $phpbb_version . "' WHERE `config_name` = 'version'";
+	$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '2.0.0' WHERE config_name = 'cms_version'";
 	$sql[] = "UPDATE " . $table_prefix . "album_config SET config_value = '" . $fap_version . "' WHERE config_name = 'fap_version'";
-	$sql[] = "UPDATE " . $table_prefix . "attachments_config SET `config_value` = '2.4.5' WHERE `config_name` = 'attach_version'";
+	$sql[] = "UPDATE " . $table_prefix . "config SET `config_value` = '2.4.5' WHERE `config_name` = 'attach_version'";
 	$sql[] = "UPDATE " . $table_prefix . "config SET `config_value` = '3.0.7' WHERE `config_name` = 'upi2db_version'";
 }
 

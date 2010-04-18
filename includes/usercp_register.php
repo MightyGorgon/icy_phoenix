@@ -343,7 +343,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	$upi2db_unread_color = request_post_var('upi2db_unread_color', 0);
 //<!-- END Unread Post Information to Database Mod -->
 
-	$allowviewonline = request_post_var('hideonline', 1);
+	$allowviewonline = request_post_var('hideonline', 0);
 	$allowviewonline = !empty($allowviewonline) ? 0 : 1;
 	$profile_view_popup = request_post_var('profile_view_popup', 0);
 	$viewemail = request_post_var('viewemail', 0);
@@ -987,10 +987,11 @@ if (isset($_POST['submit']))
 					$emailer->to($email);
 					$emailer->set_subject($lang['Reactivate']);
 
+					$email_sig = create_signature($config['board_email_sig']);
 					$emailer->assign_vars(array(
 						'SITENAME' => $config['sitename'],
 						'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
-						'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+						'EMAIL_SIG' => $email_sig,
 						//'U_ACTIVATE' => $server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 						'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 						)
@@ -1014,9 +1015,10 @@ if (isset($_POST['submit']))
 						$emailer->use_template('admin_activate', $row['user_lang']);
 						$emailer->set_subject($lang['Reactivate']);
 
+						$email_sig = create_signature($config['board_email_sig']);
 						$emailer->assign_vars(array(
 							'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
-							'EMAIL_SIG' => str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']),
+							'EMAIL_SIG' => $email_sig,
 							//'U_ACTIVATE' => $server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 							'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 							)
@@ -1161,11 +1163,12 @@ if (isset($_POST['submit']))
 
 			if($coppa)
 			{
+				$email_sig = create_signature($config['board_email_sig']);
 				$emailer->assign_vars(array(
 					'SITENAME' => $config['sitename'],
 					'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
 					'PASSWORD' => $password_confirm,
-					'EMAIL_SIG' => str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']),
+					'EMAIL_SIG' => $email_sig,
 
 					'FAX_INFO' => $config['coppa_fax'],
 					'MAIL_INFO' => $config['coppa_mail'],
@@ -1185,12 +1188,13 @@ if (isset($_POST['submit']))
 			}
 			else
 			{
+				$email_sig = create_signature($config['board_email_sig']);
 				$emailer->assign_vars(array(
 					'SITENAME' => $config['sitename'],
 					'WELCOME_MSG' => sprintf($lang['Welcome_subject'], $config['sitename']),
 					'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
 					'PASSWORD' => $password_confirm,
-					'EMAIL_SIG' => str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']),
+					'EMAIL_SIG' => $email_sig,
 					//'U_ACTIVATE' => $server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 					'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 					)
@@ -1216,9 +1220,10 @@ if (isset($_POST['submit']))
 					$emailer->use_template('admin_activate', $row['user_lang']);
 					$emailer->set_subject($lang['New_account_subject']);
 
+					$email_sig = create_signature($config['board_email_sig']);
 					$emailer->assign_vars(array(
 						'USERNAME' => preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, substr(str_replace("\'", "'", $username), 0, 25)),
-						'EMAIL_SIG' => str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']),
+						'EMAIL_SIG' => $email_sig,
 						'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 						)
 					);
@@ -1293,7 +1298,7 @@ if ($error)
 	$aim = str_replace('+', ' ', $aim);
 	$phone = htmlspecialchars($phone);
 }
-elseif ($mode == 'editprofile' && !isset($_POST['avatargallery']) && !isset($_POST['submitavatar']) && !isset($_POST['avatargenerator']) && !isset($_POST['submitgenava']) && !isset($_POST['cancelavatar']))
+elseif (($mode == 'editprofile') && !isset($_POST['avatargallery']) && !isset($_POST['submitavatar']) && !isset($_POST['avatargenerator']) && !isset($_POST['submitgenava']) && !isset($_POST['cancelavatar']))
 {
 	$user_id = $userdata['user_id'];
 	$username = $userdata['username'];

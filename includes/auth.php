@@ -548,13 +548,14 @@ function build_exclusion_forums_list($only_auth_view = true)
 			}
 		}
 	}
+
 	return $except_forums;
 }
 
 /**
 * Builds a list of forums with read access
 */
-function build_allowed_forums_list()
+function build_allowed_forums_list($return_array = false)
 {
 	global $db, $config, $userdata, $lang, $tree;
 
@@ -570,7 +571,7 @@ function build_allowed_forums_list()
 	$is_auth_ary = array();
 	$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
 
-	$allowed_forums = '0';
+	$allowed_forums_array = array();
 	for($f = 0; $f < sizeof($forum_data); $f++)
 	{
 		$include_this = false;
@@ -590,9 +591,19 @@ function build_allowed_forums_list()
 
 		if ($include_this)
 		{
-			$allowed_forums .= ', ' . $forum_data[$f]['forum_id'];
+			$allowed_forums_array[] = $forum_data[$f]['forum_id'];
 		}
 	}
+
+	if ($return_array)
+	{
+		$allowed_forums = $allowed_forums_array;
+	}
+	else
+	{
+		$allowed_forums = !empty($allowed_forums_array) ? implode(',', $allowed_forums_array) : 0;
+	}
+
 	return $allowed_forums;
 }
 

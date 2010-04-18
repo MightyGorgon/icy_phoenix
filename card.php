@@ -388,12 +388,13 @@ if ($no_error)
 		$emailer->replyto($from_email);
 		//$emailer->set_subject($e_subj);
 
+		$email_sig = create_signature($config['board_email_sig']);
 		$emailer->assign_vars(array(
 			'SITENAME' => $config['sitename'],
 			'WARNINGS' => $warning_data['user_warnings'],
 			'TOTAL_WARN' => $config['max_user_bancard'],
 			'POST_URL' => $viewtopic_server_url . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
-			'EMAIL_SIG' => str_replace("<br />", "\n", $config['sig_line'] . " \n" . $config['board_email_sig']),
+			'EMAIL_SIG' => $email_sig,
 			'WARNER' => $userdata['username'],
 			'BLOCK_TIME' => $block_time,
 			'WARNED_POSTER' => $warning_data['username']

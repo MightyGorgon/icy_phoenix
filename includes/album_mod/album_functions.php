@@ -823,8 +823,9 @@ function album_comment_notify($pic_id)
 				// This is a nasty kludge to remove the username var ... till translators update their templates
 				$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
 
+				$email_sig = create_signature($config['board_email_sig']);
 				$emailer->assign_vars(array(
-					'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+					'EMAIL_SIG' => $email_sig,
 					'SITENAME' => $config['sitename'],
 					'PIC_TITLE' => $pic_title,
 					'U_PIC' => $server_protocol . $server_name . $server_port . $script_name . '?pic_id=' . $pic_id,

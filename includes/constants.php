@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.9.62');
+define('ICYPHOENIX_VERSION', '1.3.10.63');
 
 // FOUNDER ID, this is the ID used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -123,6 +123,7 @@ define('FORUMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'forums/');
 define('POSTS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'posts/');
 define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
 define('TOPICS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'topics/');
+define('UPLOADS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'uploads/');
 define('USERS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'users/');
 define('SETTINGS_PATH', 'settings/');
 define('PLUGINS_PATH', 'plugins/');

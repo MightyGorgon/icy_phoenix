@@ -1448,7 +1448,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				$emailer->to($to_userdata['user_email']);
 				$emailer->set_subject($lang['Notification_subject']);
 
-				if ($config['html_email'] == true)
+				if (!empty($config['html_email']))
 				{
 					//HTML Message
 					$bbcode->allow_html = ($html_on ? true : false);
@@ -1462,10 +1462,11 @@ elseif ($submit || $refresh || ($mode != ''))
 				{
 					$message = $bbcode->bbcode_killer($privmsg_message, '');
 				}
+				$email_sig = create_signature($config['board_email_sig']);
 				$emailer->assign_vars(array(
 					'USERNAME' => stripslashes($to_username),
 					'SITENAME' => $config['sitename'],
-					'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+					'EMAIL_SIG' => $email_sig,
 					// Mighty Gorgon - Begin
 					'FROM' => $userdata['username'],
 					'DATE' => create_date($config['default_dateformat'], time(), $config['board_timezone']),

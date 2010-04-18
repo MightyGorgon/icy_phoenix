@@ -67,11 +67,12 @@ if ($row = $db->sql_fetchrow($result))
 			$emailer->to($row['user_email']);
 			$emailer->set_subject($lang['Account_activated_subject']);
 
+			$email_sig = create_signature($config['board_email_sig']);
 			$emailer->assign_vars(array(
 				'SITENAME' => $config['sitename'],
 				'USERNAME' => $row['username'],
 				'PASSWORD' => $password_confirm,
-				'EMAIL_SIG' => (!empty($config['board_email_sig']) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '')
+				'EMAIL_SIG' => $email_sig
 				)
 			);
 			$emailer->send();

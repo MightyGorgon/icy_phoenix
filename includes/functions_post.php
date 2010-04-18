@@ -1078,8 +1078,9 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 							$topic_url = $server_url . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id;
 						}
 
+						$email_sig = create_signature($config['board_email_sig']);
 						$emailer->assign_vars(array(
-							'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+							'EMAIL_SIG' => $email_sig,
 							'SITENAME' => $config['sitename'],
 							//'USERNAME' => $users_ary[$bcc_list['0']],
 							//'USERNAME' => '',
@@ -1201,8 +1202,9 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 								$topic_url = $server_url . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id;
 							}
 
+							$email_sig = create_signature($config['board_email_sig']);
 							$emailer->assign_vars(array(
-								'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+								'EMAIL_SIG' => $email_sig,
 								'SITENAME' => $config['sitename'],
 								//'USERNAME' => $users_ary[$bcc_list['0']],
 								//'USERNAME' => '',
@@ -1342,7 +1344,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 							// This is a nasty kludge to remove the username var ... till (if?) translators update their templates
 							$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
 
-							if ($config['url_rw'] == '1')
+							if (!empty($config['url_rw']))
 							{
 								$topic_url = $server_url . str_replace ('--', '-', make_url_friendly($topic_title) . '-vp' . $post_id . '.html#p' . $post_id);
 							}
@@ -1351,8 +1353,9 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 								$topic_url = $server_url . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post_id . '#p' . $post_id;
 							}
 
+							$email_sig = create_signature($config['board_email_sig']);
 							$emailer->assign_vars(array(
-								'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+								'EMAIL_SIG' => $email_sig,
 								'SITENAME' => $config['sitename'],
 								//'USERNAME' => $users_ary[$bcc_list['0']],
 								//'USERNAME' => '',

@@ -32,7 +32,7 @@ function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b
 	switch ($cms_page)
 	{
 		case 'cms':
-			if (($mode == 'blocks') || ($mode == 'blocks_adv'))
+			if ($mode == 'blocks')
 			{
 				if ((($action == 'list') || ($action == 'edit') || ($action == 'save') || empty($action)) && !isset($_POST['action_update']))
 				{
@@ -54,8 +54,6 @@ function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b
 			break;
 		case 'cms_ads':
 			$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
-			break;
-		case 'cms_adv':
 			break;
 		case 'cms_auth':
 			$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
@@ -101,11 +99,18 @@ function get_cms_global_vars()
 /**
 * Gets all layouts
 */
-function get_layouts_list($table_name, $field_name)
+function get_layouts_list($table_name, $field_name, $cms_id = false)
 {
-	global $db;
+	global $db, $userdata;
 
-	$sql = "SELECT * FROM " . $table_name . " ORDER BY " . $field_name;
+	$sql_where = '';
+
+	if (defined('IN_CMS_USERS'))
+	{
+		$cms_id = ($cms_id) ? $cms_id : 0;
+		$sql_where = " WHERE layout_cms_id = '" . $cms_id . "'";
+	}
+	$sql = "SELECT * FROM " . $table_name . $sql_where . " ORDER BY " . $field_name;
 	$result = $db->sql_query($sql);
 	$l_rows = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
@@ -113,29 +118,27 @@ function get_layouts_list($table_name, $field_name)
 	return $l_rows;
 }
 
-/**
-* Gets all layout special ID
-*/
-function get_all_layout_special_ids($table_name, $field_name, $sql_field_name)
+function get_blocks_installed()
 {
 	global $db;
 
-	$layout_special_ids = array();
-	$sql = "SELECT " . $field_name . ", " . $sql_field_name . " FROM " . $table_name . " ORDER BY " . $field_name;
-	$result = $db->sql_query($sql, 0, 'cms_l_ids_', CMS_CACHE_FOLDER);
-
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$layout_special_ids[$row[$sql_field_name]] = $row[$field_name];
-	}
+	$bs_array = array();
+	$sql = "SELECT bs_id, name FROM " . CMS_BLOCK_SETTINGS_TABLE . " ORDER BY name ASC";
+	$result = $db->sql_query($sql);
+	$bs_rows = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
-
-	return $layout_special_ids;
+	foreach($bs_rows as $key => $data)
+	{
+		$bs_array['ID'][$key] = $data['bs_id'];
+		$bs_array['TITLE'][$key] = $data['name'];
+	}
+	return $bs_array;
 }
 
 /**
 * Check if a user is auth to edit the selected layout
 */
+/*
 function get_layout_edit_auth($table_name, $field_name, $id_var_value)
 {
 	global $db, $userdata;
@@ -154,6 +157,7 @@ function get_layout_edit_auth($table_name, $field_name, $id_var_value)
 
 	return $is_auth;
 }
+*/
 
 /*
 * Get layout name
@@ -216,7 +220,7 @@ function get_max_layout_id($table_name)
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
 
-	return $row[lid];
+	return $row['lid'];
 }
 
 /*
@@ -249,19 +253,19 @@ function count_blocks_in_layout($table_name, $l_id_list, $is_special = false, $o
 /*
 * Get layout details
 */
-function get_blocks_files_list($blocks_dir, $blocks_prefix)
+function get_blocks_files_list()
 {
 	$blocks_array = array();
-	$blocks = @opendir($blocks_dir);
+	$blocks = @opendir(BLOCKS_DIR);
 	while ($file = @readdir($blocks))
 	{
 		$ext = substr(strrchr($file, '.'), 1);
-		if ((substr($file, 0, strlen($blocks_prefix)) == $blocks_prefix) && ($ext == PHP_EXT))
+		if ((substr($file, 0, strlen(BLOCKS_PREFIX)) == BLOCKS_PREFIX) && ($ext == PHP_EXT))
 		{
-			$blocks_array[] = substr(substr($file, strlen($blocks_prefix)), 0, (strlen($ext) * -1) - 1);
+			$blocks_array[] = substr(substr($file, strlen(BLOCKS_PREFIX)), 0, (strlen($ext) * -1) - 1);
 		}
 	}
-	@closedir($blocks_dir);
+	@closedir(BLOCKS_DIR);
 	sort($blocks_array);
 
 	return $blocks_array;
@@ -270,10 +274,8 @@ function get_blocks_files_list($blocks_dir, $blocks_prefix)
 /*
 * Get layout details
 */
-function get_layouts_details($layout_dir, $layout_extension, $common_cms_template, $layout_field = 'template', $cms_type = 'cms_standard')
+function get_layouts_details($l_info, $layout_dir, $layout_extension, $layout_field = 'template')
 {
-	global $l_info;
-
 	$layout_details = array();
 	$num_layout = 0;
 	$layouts = @opendir($layout_dir);
@@ -283,14 +285,8 @@ function get_layouts_details($layout_dir, $layout_extension, $common_cms_templat
 		if (($pos !== false) && ($file != 'index.html'))
 		{
 			$img = 'layout_' . str_replace($layout_extension, '', $file) . '.png';
-			if ($cms_type == 'cms_standard')
-			{
-				$img = (file_exists($common_cms_template . 'images/' . $img)) ? ($common_cms_template . 'images/' . $img) : ($common_cms_template . 'images/layout_unknown.png');
-			}
-			else
-			{
-				$img = (file_exists($common_cms_template . 'layouts/' . $img)) ? ($common_cms_template . 'layouts/' . $img) : ($common_cms_template . 'layouts/layout_unknown.png');
-			}
+			$img = (file_exists(CMS_TPL_ABS_PATH . 'images/' . $img)) ? (CMS_TPL_ABS_PATH . 'images/' . $img) : (CMS_TPL_ABS_PATH . 'images/layout_unknown.png');
+
 			$layout_details[$num_layout]['img'] = '<img src="' . $img . '" alt="' . $file . '" title="' . $file . '"/>';
 			$layout_details[$num_layout]['file'] = '<input type="radio" name="' . $layout_field . '" value="' . $file . '"';
 			if(!empty($l_info) && $l_info['template'] == $file)
@@ -359,14 +355,17 @@ function default_layout_content()
 /*
 * Delete layout
 */
-function delete_layout($layout_table, $block_pos_table, $l_id)
+function delete_layout($l_id)
 {
 	global $db;
 
-	$sql = "DELETE FROM " . $layout_table . " WHERE lid = " . $l_id;
+	$sql = "DELETE FROM " . CMS_LAYOUT_TABLE . " WHERE lid = " . $l_id;
 	$result = $db->sql_query($sql);
 
-	$sql = "DELETE FROM " . $block_pos_table . " WHERE layout = " . $l_id;
+	$sql = "DELETE FROM " . CMS_BLOCK_POSITION_TABLE . " WHERE layout = " . $l_id;
+	$result = $db->sql_query($sql);
+
+	$sql = "DELETE FROM " . CMS_BLOCKS_TABLE . " WHERE layout = " . $ls_id;
 	$result = $db->sql_query($sql);
 
 	return true;
@@ -375,14 +374,14 @@ function delete_layout($layout_table, $block_pos_table, $l_id)
 /*
 * Delete layout special
 */
-function delete_layout_special($table_name, $block_layout_field, $field_name, $id_var_value)
+function delete_layout_special($ls_id)
 {
 	global $db;
 
-	$sql = "DELETE FROM " . $table_name . " WHERE " . $field_name . " = " . $id_var_value;
+	$sql = "DELETE FROM " . CMS_LAYOUT_SPECIAL_TABLE . " WHERE lsid = " . $ls_id;
 	$result = $db->sql_query($sql);
 
-	$sql = "DELETE FROM " . CMS_BLOCKS_TABLE . " WHERE " . $block_layout_field . " = " . $id_var_value;
+	$sql = "DELETE FROM " . CMS_BLOCKS_TABLE . " WHERE layout_special = " . $ls_id;
 	$result = $db->sql_query($sql);
 
 	return true;
@@ -403,7 +402,23 @@ function get_global_blocks_layout($table_name, $field_name, $id_var_value)
 	return $l_row;
 }
 
-/**
+/*
+* Get installed blocks
+*/
+function get_installed_blocks()
+{
+	global $db, $userdata;
+
+	$cms_level_sql = "";
+	$sql = "SELECT * FROM " . CMS_BLOCK_SETTINGS_TABLE;
+	$result = $db->sql_query($sql);
+	$b_rows = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	return $b_rows;
+}
+
+/*
 * Gets all blocks in a layout
 */
 function get_blocks_list($table_name, $field_name, $id_var_value)
@@ -573,25 +588,14 @@ function get_max_block_id($table_name)
 /*
 * Delete a block
 */
-function delete_block($table_name, $b_id)
+function delete_block($b_id)
 {
-	global $db;
+	global $db, $cms_admin;
 
-	if ($table_name == CMS_BLOCKS_TABLE)
-	{
-		$cfg_table = CMS_CONFIG_TABLE;
-		$blocks_var_table = CMS_BLOCK_VARIABLE_TABLE;
-	}
-	else
-	{
-		$cfg_table = CMS_ADV_CONFIG_TABLE;
-		$blocks_var_table = CMS_ADV_BLOCK_VARIABLE_TABLE;
-	}
-
-	$sql = "DELETE FROM " . $table_name . " WHERE bid = " . $b_id;
+	$sql = "DELETE FROM " . $cms_admin->tables['blocks_table'] . " WHERE bid = " . $b_id;
 	$result = $db->sql_query($sql);
 
-	delete_block_config_all($cfg_table, $blocks_var_table, $b_id);
+	delete_block_config_all($cms_admin->tables['block_config_table'], $cms_admin->tables['block_variable_table'], $b_id);
 	return true;
 }
 
@@ -630,7 +634,7 @@ function delete_block_config_single($cfg_table, $blocks_var_table, $b_id, $confi
 /*
 * Create CMS block
 */
-function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $cms_type)
+function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid)
 {
 	global $db, $images, $lang;
 
@@ -639,20 +643,9 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 		return false;
 	}
 
-	if ($cms_type == 'cms_standard')
-	{
-		$source_file = 'cms.';
-		$cms_type_id = '1';
-		$cms_block_table = CMS_BLOCKS_TABLE;
-		$type_append_url = '&cms_type=cms_standard';
-	}
-	else
-	{
-		$source_file = 'cms_adv.';
-		$cms_type_id = '0';
-		$cms_block_table = CMS_ADV_BLOCKS_TABLE;
-		$type_append_url = '';
-	}
+	$source_file = 'cms.';
+	$cms_type_id = '1';
+	$cms_block_table = CMS_BLOCKS_TABLE;
 
 	$sql = "SELECT * FROM " . $cms_block_table . " WHERE bid = " . $b_id . "";
 	$result = $db->sql_query($sql);
@@ -662,19 +655,19 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 	switch ($b_row['view'])
 	{
 		case '0':
-			$b_view = '[ ' . $lang['B_All'] . ' ]';
+			$b_view = '[ ' . $lang['B_ALL'] . ' ]';
 			break;
 		case '1':
-			$b_view = '[ ' . $lang['B_Guests'] . ' ]';
+			$b_view = '[ ' . $lang['B_GUESTS'] . ' ]';
 			break;
 		case '2':
-			$b_view = '[ ' . $lang['B_Reg'] . ' ]';
+			$b_view = '[ ' . $lang['B_REG'] . ' ]';
 			break;
 		case '3':
-			$b_view = '[ ' . $lang['B_Mod'] . ' ]';
+			$b_view = '[ ' . $lang['B_MOD'] . ' ]';
 			break;
 		case '4':
-			$b_view = '[ ' . $lang['B_Admin'] . ' ]';
+			$b_view = '[ ' . $lang['B_ADMIN'] . ' ]';
 			break;
 	}
 
@@ -684,7 +677,7 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 	}
 	else
 	{
-		$groups = '[ ' . $lang['B_All'] . ' ]';
+		$groups = '[ ' . $lang['B_ALL'] . ' ]';
 	}
 	$b_content = (empty($b_row['blockfile'])) ? $lang['B_Text'] : $lang['B_File'];
 	$b_type = (empty($b_row['blockfile'])) ? (($b_row['type']) ? '(' . $lang['B_BBCode'] . ')' : '(' . $lang['B_HTML'] . ')') : '&nbsp;';
@@ -710,8 +703,8 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid, $
 	$u_local = '<img src="' . $img_local . '" alt="' . $lang['TURN_LOCAL'] . '" title="' . $lang['TURN_LOCAL'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 3, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 	$u_background = '<img src="' . $img_background . '" alt="' . $lang['TURN_BACKGROUND'] . '" title="' . $lang['TURN_BACKGROUND'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 4, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 
-	$u_edit = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=edit&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['Block_Edit'] . '" title="' . $lang['Block_Edit'] . '"/></a>';
-	$u_delete = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks' . $type_append_url . '&amp;action=delete&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CMS_Delete'] . '" title="' . $lang['CMS_Delete'] . '"/></a>';
+	$u_edit = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks&amp;action=edit&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['Block_Edit'] . '" title="' . $lang['Block_Edit'] . '"/></a>';
+	$u_delete = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks&amp;action=delete&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CMS_Delete'] . '" title="' . $lang['CMS_Delete'] . '"/></a>';
 
 	$block_class = (!$invalid) ? 'sortable-list-div' : 'sortable-invalid-list-div';
 
@@ -880,6 +873,34 @@ function fix_weight_blocks($l_id, $table_name)
 }
 
 /*
+* Get 'View by' lang var
+*/
+function get_block_view_name($value)
+{
+	global $lang;
+
+	switch ($value)
+	{
+		case '0':
+			$b_view = $lang['B_ALL'];
+			break;
+		case '1':
+			$b_view = $lang['B_GUESTS'];
+			break;
+		case '2':
+			$b_view = $lang['B_REG'];
+			break;
+		case '3':
+			$b_view = $lang['B_MOD'];
+			break;
+		case '4':
+			$b_view = $lang['B_ADMIN'];
+			break;
+	}
+	return $b_view;
+}
+
+/*
 * Get all usergroups
 */
 function get_all_usergroups($info_groups = '')
@@ -923,6 +944,29 @@ function get_max_group_id()
 	$max_group_id = $row['max_group_id'];
 
 	return $max_group_id;
+}
+
+function get_selected_groups()
+{
+	$max_group_id = get_max_group_id();
+	$b_group = '';
+	$not_first = false;
+	for($i = 1; $i <= $max_group_id; $i++)
+	{
+		if(isset($_POST['group' . strval($i)]))
+		{
+			if($not_first)
+			{
+				$b_group .= ',' . strval($i);
+			}
+			else
+			{
+				$b_group .= strval($i);
+				$not_first = true;
+			}
+		}
+	}
+	return $b_group;
 }
 
 /*
@@ -1011,6 +1055,55 @@ function file_creation($path)
 		}
 	}
 	return true;
+}
+
+function show_preview($preview_type, $message)
+{
+	global $bbcode, $template;
+
+	if ($preview_type == true)
+	{
+		$preview_message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
+		$bbcode->allow_html = false;
+		$bbcode->allow_bbcode = true;
+		$bbcode->allow_smilies = true;
+		$preview_message = $bbcode->parse($preview_message);
+	}
+	else
+	{
+		$preview_message = $message;
+		// You shouldn't convert NEW LINES to <br /> because you are parsing HTML, so linebreaks must be inserted as <br />
+		// If you want linebreaks to be converted automatically, just decomment this line.
+		//$preview_message = str_replace("\n", "\n<br />\n", $message);
+	}
+	$template->assign_block_vars('block_preview', array(
+		'PREVIEW_MESSAGE' => $preview_message,
+		)
+	);
+
+	return true;
+}
+
+function cms_role_langs()
+{
+	global $db, $lang;
+
+	$sql = "SELECT * FROM " . ACL_ROLES_TABLE . " WHERE role_type = 'cms_' ORDER BY role_order ASC";
+	$result = $db->sql_query($sql);
+	$rows = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	$i = 0;
+	foreach ($rows as $data)
+	{
+		$role_langs['ID'][$i] = $data['role_id'];
+		$role_langs['NAME'][$i] = $lang[$data['role_name']];
+		$role_langs['NAME_ARRAY'][$data['role_id']] = $lang[$data['role_name']];
+		$role_langs['DESC_ARRAY'][$data['role_id']] = $lang[$data['role_description']];
+		$i++;
+	}
+
+	return $role_langs;
 }
 
 ?>

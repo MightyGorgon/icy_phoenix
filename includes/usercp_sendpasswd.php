@@ -62,7 +62,7 @@ if (isset($_POST['submit']))
 		$user_password = gen_rand_string();
 		// CrackerTracker v5.x
 		$sql = "UPDATE " . USERS_TABLE . "
-			SET user_newpasswd = '" . $db->sql_escape(phpbb_hash($user_password)) . "', user_actkey = '" . $user_actkey . "', user_passchg = '" . time() . "'
+			SET user_newpasswd = '" . $db->sql_escape(phpbb_hash($user_password)) . "', user_actkey = '" . $user_actkey . "', user_passchg = '" . time() . "', user_pass_convert = '0'
 			WHERE user_id = " . $row['user_id'];
 		// CrackerTracker v5.x
 		$db->sql_query($sql);
@@ -74,11 +74,12 @@ if (isset($_POST['submit']))
 		$emailer->to($row['user_email']);
 		$emailer->set_subject($lang['New_password_activation']);
 
+		$email_sig = create_signature($config['board_email_sig']);
 		$emailer->assign_vars(array(
 			'SITENAME' => $config['sitename'],
 			'USERNAME' => $username,
 			'PASSWORD' => $user_password,
-			'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", $config['sig_line'] . " \n" . $config['board_email_sig']) : '',
+			'EMAIL_SIG' => $email_sig,
 			'U_ACTIVATE' => $profile_server_url . '?mode=activate&' . POST_USERS_URL . '=' . $user_id . '&act_key=' . $user_actkey
 			)
 		);

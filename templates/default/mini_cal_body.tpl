@@ -20,20 +20,20 @@
 	</tr>
 	<!-- END mini_cal_row -->
 
-	<tr><td colspan="7" class="row1" align="left"><span class="gensmall">{L_WHOSBIRTHDAY_TODAY}</span><!-- IF L_WHOSBIRTHDAY_WEEK --><br /><span class="gensmall">{L_WHOSBIRTHDAY_WEEK}</span><!-- ENDIF --></td></tr>
+	<tr><td colspan="7" class="row1"><span class="gensmall">{L_WHOSBIRTHDAY_TODAY}</span><!-- IF L_WHOSBIRTHDAY_WEEK --><br /><span class="gensmall">{L_WHOSBIRTHDAY_WEEK}</span><!-- ENDIF --></td></tr>
 
 	<!-- BEGIN switch_mini_cal_events -->
-	<tr><th colspan="7" height="28"><span class="cattitle">{L_MINI_CAL_EVENTS}</span></th></tr>
+	<tr><th colspan="7"><span class="cattitle">{L_MINI_CAL_EVENTS}</span></th></tr>
 	<!-- END switch_mini_cal_events -->
 	<!-- BEGIN mini_cal_events -->
 	<tr><td colspan="7" class="row1"><span class="gensmall">{mini_cal_events.MINI_CAL_EVENT_DATE} - <a href="{mini_cal_events.U_MINI_CAL_EVENT}" class="gensmall">{mini_cal_events.S_MINI_CAL_EVENT}</a></span></td></tr>
 	<!-- END mini_cal_events -->
 	<!-- BEGIN mini_cal_no_events -->
-	<tr><td colspan="7" class="row1"><span class="genMed">{L_MINI_CAL_NO_EVENTS}</span></td></tr>
+	<tr><td colspan="7" class="row1"><span class="genmed">{L_MINI_CAL_NO_EVENTS}</span></td></tr>
 	<!-- END mini_cal_no_events -->
 	<!-- BEGIN switch_mini_cal_add_events -->
 	<tr>
-		<td colspan="7" class="row1" height="28" align="center">
+		<td colspan="7" class="row1 row-center">
 			<span class="genmed">
 				{S_MINI_CAL_EVENTS_FORUMS_LIST} <input type="submit" value="{L_MINI_CAL_ADD_EVENT}" class="liteoption" />
 				<input type="Hidden" name="mode" id="mode" value="newtopic" />
