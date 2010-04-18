@@ -96,7 +96,7 @@ if ($mode_id == 'perform')
 	if (isset($_POST['confirm']))
 	{
 		$mode_id = 'perform';
-		$function = request_post_var('function', '');
+		$function = request_var('function', '');
 	}
 }
 
@@ -106,6 +106,7 @@ if ($mode_id == 'perform')
 if (($mode_id == 'start') || ($mode_id == 'perform'))
 {
 	$config['gzip_compress'] = false;
+	$config['gzip_compress_runtime'] = false;
 }
 if ($function != 'perform_rebuild') // Don't send header when rebuilding the search index
 {
@@ -123,11 +124,11 @@ switch($mode_id)
 
 		for($i = 0; $i < sizeof($mtnc); $i++)
 		{
-			if (sizeof($mtnc[$i]) && $mtnc[$i][0] == $function)
+			if (sizeof($mtnc[$i]) && ($mtnc[$i][0] == $function))
 			{
 				$warning_message = $mtnc[$i];
 				$warning_message_defined = true;
-			};
+			}
 		}
 
 		if (!$warning_message_defined)
@@ -156,7 +157,6 @@ switch($mode_id)
 			$template->pparse('body');
 			break;
 		}
-
 		// We do not exit if no warning message is specified. In this case we will start directly with performing...
 
 	case 'perform': // Execute the commands
@@ -170,7 +170,7 @@ switch($mode_id)
 		// Increase maximum execution time, but don't complain about it if it isn't
 		// allowed.
 		@set_time_limit(120);
-		// Switch of buffering
+		// Switch off buffering
 		ob_end_flush();
 		switch($function)
 		{
