@@ -398,6 +398,27 @@ function build_groups_user($user_id, $show_hidden = true)
 }
 
 /**
+* Query the group details.
+*
+* @param => group_id
+* @return => string
+*/
+function get_group_details($group_id)
+{
+	global $db;
+
+	$sql = "SELECT g.*
+					FROM " . GROUPS_TABLE . " as g
+					WHERE g.group_id = '" . $group_id . "'
+					LIMIT 1";
+	$result = $db->sql_query($sql);
+	$group_details = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+
+	return $group_details;
+}
+
+/**
 * Query the group color.
 *
 * @param => group_id

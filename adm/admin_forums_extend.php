@@ -161,7 +161,7 @@ $cat_id = ($cat_id < 0) ? 0 : $cat_id;
 $forum_id = request_var(POST_FORUM_URL, 0);
 $forum_id = ($forum_id < 0) ? 0 : $forum_id;
 
-// selected id : current displayed id
+// selected id: current displayed id
 $selected_id = request_var('selected_id', '');
 $type = substr($selected_id, 0, 1);
 $id = intval(substr($selected_id, 1));
@@ -358,7 +358,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			$fields_list = 'forums_fields_list';
 			break;
 		case POST_CAT_URL:
-			$process_forum_rules = true;
+			$process_forum_rules = false;
 			$fields_list = 'categories_fields_list';
 			break;
 		default:
@@ -931,6 +931,13 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			}
 			//echo($item['forum_rules'] . '<br />');
 
+			// if we are editing a forum / cat it is better to unset the id
+			if (!$new_item)
+			{
+				unset($forums_fields_list['forum_id']);
+				unset($categories_fields_list['forum_id']);
+			}
+
 			// regular fields
 			@reset($$fields_list);
 			while (list($table_field, $process_field) = @each($$fields_list))
@@ -960,11 +967,11 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			$index_value = intval($item['id']);
 			if ($new_item)
 			{
-				$sql = "INSERT INTO $table ($sql_fields) VALUES($sql_values)";
+				$sql = "INSERT INTO " . $table . " (" . $sql_fields . ") VALUES(" . $sql_values . ")";
 			}
 			else
 			{
-				$sql = "UPDATE $table SET $sql_update WHERE $index_field = $index_value";
+				$sql = "UPDATE " . $table . " SET " . $sql_update . " WHERE " . $index_field . " = " . $index_value;
 			}
 			//echo($sql . '<br />');
 			$db->sql_query($sql);

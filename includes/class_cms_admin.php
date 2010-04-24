@@ -1077,7 +1077,7 @@ class cms_admin
 			$edit_auth = '';
 			$group = '';
 			$default = empty($l_info['view']) ? 0 : $l_info['view'];
-			$view = auth_select($default, 'view');
+			$view = auth_select('view', $default);
 		}
 
 		$template->assign_vars(array(
@@ -1433,7 +1433,7 @@ class cms_admin
 			if ($is_layout_special)
 			{
 				$layout_locked = !empty($l_rows[$i]['locked']) ? true : false;
-				$auth_view_select_box = auth_select($l_rows[$i]['view'], 'auth_view_' . $layout_id);
+				$auth_view_select_box = auth_select('auth_view_' . $layout_id, $l_rows[$i]['view']);
 			}
 
 			$template->assign_block_vars('layout.l_row', array(

@@ -20,7 +20,7 @@ function update_icon(newimage)
 
 <div class="forumline nav-div">
 	<p class="nav-header">
-		<a href="{U_INDEX}" class="nav">{L_INDEX}</a>{NAV_CAT_DESC}</span>
+		<a href="{U_INDEX}" class="nav">{L_INDEX}</a>{NAV_CAT_DESC}
 	</p>
 	<div class="nav-links">
 		<div class="nav-links-left">{L_TITLE_EXPLAIN}</div>
@@ -130,7 +130,7 @@ function update_icon(newimage)
 </tr>
 <tr><th colspan="2">{L_MOD_OS_FORUMRULES}</th></tr>
 <tr>
-	<td class="row1"><span class="genmed"><b>{L_RULES_DISPLAY_TITLE}</b></td>
+	<td class="row1"><span class="genmed"><b>{L_RULES_DISPLAY_TITLE}</b></span></td>
 	<td class="row2"><input type="checkbox" name="rules_display_title" value="1" {S_RULES_DISPLAY_TITLE_ENABLED} />&nbsp;<span class="genmed">{L_ENABLED}</span></td>
 </tr>
 <tr>

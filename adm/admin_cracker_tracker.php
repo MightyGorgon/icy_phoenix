@@ -41,28 +41,28 @@ if(!empty($setmodules))
 {
 	// Mighty Gorgon: Module FileScanner (ID 3) temporarily disabled...
 	$filename = basename(__FILE__);
-	$module['ctracker_module_category']['ctracker_module_1']  = $filename . '?modu=1';
-	$module['ctracker_module_category']['ctracker_module_2']  = $filename . '?modu=2';
-	//$module['ctracker_module_category']['ctracker_module_3']  = $filename . '?modu=3';
-	$module['ctracker_module_category']['ctracker_module_4']  = $filename . '?modu=4';
-	$module['ctracker_module_category']['ctracker_module_5']  = $filename . '?modu=5';
-	$module['ctracker_module_category']['ctracker_module_6']  = $filename . '?modu=6';
-	$module['ctracker_module_category']['ctracker_module_7']  = $filename . '?modu=7';
-	$module['ctracker_module_category']['ctracker_module_8']  = $filename . '?modu=8';
-	$module['ctracker_module_category']['ctracker_module_9']  = $filename . '?modu=9';
-	$module['ctracker_module_category']['ctracker_module_10'] = $filename . '?modu=10';
-	$module['ctracker_module_category']['ctracker_module_11'] = $filename . '?modu=11';
-	$ja_module['ctracker_module_category']['ctracker_module_1']  = false;
-	$ja_module['ctracker_module_category']['ctracker_module_2']  = false;
-	//$ja_module['ctracker_module_category']['ctracker_module_3']  = false;
-	$ja_module['ctracker_module_category']['ctracker_module_4']  = false;
-	$ja_module['ctracker_module_category']['ctracker_module_5']  = false;
-	$ja_module['ctracker_module_category']['ctracker_module_6']  = false;
-	$ja_module['ctracker_module_category']['ctracker_module_7']  = false;
-	$ja_module['ctracker_module_category']['ctracker_module_8']  = false;
-	$ja_module['ctracker_module_category']['ctracker_module_9']  = false;
-	$ja_module['ctracker_module_category']['ctracker_module_10'] = false;
-	$ja_module['ctracker_module_category']['ctracker_module_11'] = false;
+	$module['2600_CRACKERTRACKER']['ctracker_module_1']  = $filename . '?modu=1';
+	$module['2600_CRACKERTRACKER']['ctracker_module_2']  = $filename . '?modu=2';
+	//$module['2600_CRACKERTRACKER']['ctracker_module_3']  = $filename . '?modu=3';
+	$module['2600_CRACKERTRACKER']['ctracker_module_4']  = $filename . '?modu=4';
+	$module['2600_CRACKERTRACKER']['ctracker_module_5']  = $filename . '?modu=5';
+	$module['2600_CRACKERTRACKER']['ctracker_module_6']  = $filename . '?modu=6';
+	$module['2600_CRACKERTRACKER']['ctracker_module_7']  = $filename . '?modu=7';
+	$module['2600_CRACKERTRACKER']['ctracker_module_8']  = $filename . '?modu=8';
+	$module['2600_CRACKERTRACKER']['ctracker_module_9']  = $filename . '?modu=9';
+	$module['2600_CRACKERTRACKER']['ctracker_module_10'] = $filename . '?modu=10';
+	$module['2600_CRACKERTRACKER']['ctracker_module_11'] = $filename . '?modu=11';
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_1']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_2']  = false;
+	//$ja_module['2600_CRACKERTRACKER']['ctracker_module_3']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_4']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_5']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_6']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_7']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_8']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_9']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_10'] = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_11'] = false;
 	return;
 }
 

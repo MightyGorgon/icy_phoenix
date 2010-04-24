@@ -13,7 +13,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
-	$module['1500_Plugins']['100_Plugins_Modules'] = $file;
+	$module['3000_Plugins']['100_Plugins_Modules'] = $file;
 	return;
 }
 

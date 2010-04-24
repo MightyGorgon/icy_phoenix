@@ -211,17 +211,43 @@ function auth_select($select_name, $default)
 }
 
 /*
+* Groups select box
+*/
+function groups_select($select_name, $default, $allow_empty = true)
+{
+	global $db, $cache, $lang;
+
+	$sql = "SELECT group_id, group_name, group_color
+		FROM " . GROUPS_TABLE . "
+		WHERE group_single_user <> 1
+		ORDER BY group_name ASC";
+	$result = $db->sql_query($sql, 0, 'groups_', USERS_CACHE_FOLDER);
+	$groups = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	$groups_select = '<select name="' . $select_name . '">';
+	$groups_select .= (!empty($allow_empty) ? '<option value="0">' . $lang['None'] . '</option>' : '');
+	for($j = 0; $j < sizeof($groups); $j++)
+	{
+		$group_color = check_valid_color($groups[$j]['group_color']);
+		$group_color = (!empty($group_color) ? ' style="color: ' . $group_color . '; font-weight: bold;"' : '');
+		$selected = ($groups[$j]['group_id'] == $default) ? ' selected="selected"' : '';
+		$groups_select .= '<option value="' . $groups[$j]['group_id'] . '"' . $selected . $group_color . '>' . htmlspecialchars($groups[$j]['group_name']) . '</option>';
+	}
+	$groups_select .= '</select>';
+
+	return $groups_select;
+}
+
+/*
 * Forums select box
 */
-function forums_select_box($select_name, $default_value, $show_empty = true)
+function forums_select_box($select_name, $default_value, $allow_empty = true)
 {
 	global $lang;
 
 	$forums_select = '<select name="' . $select_name . '">';
-	if ($show_empty)
-	{
-		$forums_select .= '<option value="0">' . $lang['None'] . '</option>';
-	}
+	$forums_select .= (!empty($allow_empty) ? '<option value="0">' . $lang['None'] . '</option>' : '');
 	$forums_select .= get_tree_option_optg('f' . $default_value, true, true, true);
 	$forums_select .= '</select>';
 	return $forums_select;

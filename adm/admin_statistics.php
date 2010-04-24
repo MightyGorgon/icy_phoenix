@@ -20,8 +20,8 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['Statistics']['Statistics_management'] = $filename . '?mode=manage';
-	$module['Statistics']['Statistics_config'] = $filename . '?mode=config';
+	$module['2500_STATS']['Statistics_management'] = $filename . '?mode=manage';
+	$module['2500_STATS']['Statistics_config'] = $filename . '?mode=config';
 	return;
 }
 

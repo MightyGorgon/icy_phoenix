@@ -102,7 +102,7 @@ class class_files_upload extends class_files
 						}
 						else
 						{
-							if (empty($image_size[0]) || ($image_size[0] > $this->max_width) || ($image_size[1] > $this->max_height) || empty($image_size[1]))
+							if (empty($image_size[0]) || ($image_size[0] > $this->max_width) || empty($image_size[1]) || ($image_size[1] > $this->max_height))
 							{
 								@unlink($temp_file_name);
 								$this->cleanup($this->temp_folder);

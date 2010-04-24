@@ -22,7 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 define('ICYPHOENIX_VERSION', '1.3.10.63');
 
-// FOUNDER ID, this is the ID used to send Welcome and Birthday PM
+// FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
 // ALLOW ONLY FOUNDER ACP, by setting this to true only the FOUNDER will be able to access ACP
 define('ONLY_FOUNDER_ACP', false);

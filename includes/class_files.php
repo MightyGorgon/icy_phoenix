@@ -343,53 +343,57 @@ class class_files
 	/*
 	* List all files
 	*/
-	function list_files($source_folder)
+	function list_files($dir, $recursive = true, $allowed_extensions = false, $disallowed_extensions = false)
 	{
-		$source_folder = $this->remove_trailing_slashes($source_folder);
-		$directory = @opendir($source_folder);
+		$dir = $this->remove_trailing_slashes($dir);
+		$directory = @opendir($dir);
 		$files_list = array();
-		while (@$file = @readdir($directory))
+
+		if (!empty($allowed_extensions))
 		{
-			$full_path_file = $source_folder . '/' . $file;
-			if (!in_array($file, array('.', '..')))
-			{
-				if (@is_dir($source_folder . '/' . $file))
-				{
-					$files_list = array_merge($files_list, $this->list_files($full_path_file));
-				}
-				else
-				{
-					$files_list[] = $full_path_file;
-				}
-			}
+			$allowed_extensions = is_array($allowed_extensions) ? $allowed_extensions : array($allowed_extensions);
+			$allowed_extensions = array_map('strtolower', $allowed_extensions);
 		}
-		@closedir($directory);
-		sort($files_list);
 
-		return $files_list;
-	}
+		if (!empty($disallowed_extensions))
+		{
+			$disallowed_extensions = is_array($disallowed_extensions) ? $disallowed_extensions : array($disallowed_extensions);
+			$disallowed_extensions = array_map('strtolower', $disallowed_extensions);
+			//$disallowed_extensions = array('ace', 'bak', 'bmp', 'css', 'gif', 'hl', 'htc', 'htm', 'html', 'ico', 'jar', 'jpeg', 'jpg', 'js', 'pak', 'png', 'rar', 'sql', 'swf', 'tpl', 'ttf', 'txt', 'wmv', 'zip');
+		}
 
-	/*
-	* List all files with a certain extension
-	*/
-	function list_files_type($source_folder, $extension)
-	{
-		$source_folder = $this->remove_trailing_slashes($source_folder);
-		$directory = @opendir($source_folder);
-		$files_list = array();
 		while (@$file = @readdir($directory))
 		{
-			$full_path_file = $source_folder . '/' . $file;
+			$full_path_file = $dir . '/' . $file;
 			if (!in_array($file, array('.', '..')))
 			{
-				if (@is_dir($source_folder . '/' . $file))
+				if (@is_dir($dir . '/' . $file))
 				{
-					$files_list = array_merge($files_list, $this->list_files_type($full_path_file, $extension));
+					if (!empty($recursive))
+					{
+						$files_list = array_merge($files_list, $this->list_files($full_path_file, $recursive, $allowed_extensions, $disallowed_extensions));
+					}
 				}
 				else
 				{
-					$file_details = $this->get_file_details($full_path_file);
-					if ($file_details['extension'] == $extension)
+					$process_file = true;
+					if (!empty($allowed_extensions) || !empty($disallowed_extensions))
+					{
+						$process_file = false;
+						$file_details = $this->get_file_details($full_path_file);
+
+						if (!empty($disallowed_extensions) && !in_array(strtolower($file_details['extension']), $disallowed_extensions))
+						{
+							$process_file = true;
+						}
+
+						if (!empty($allowed_extensions) && in_array(strtolower($file_details['extension']), $allowed_extensions))
+						{
+							$process_file = true;
+						}
+					}
+
+					if ($process_file)
 					{
 						$files_list[] = $full_path_file;
 					}
@@ -403,114 +407,14 @@ class class_files
 	}
 
 	/*
-	* Create files list
-	*/
-	function create_files_list($dir, $process_subdirs = true, $list_subdirs = true)
-	{
-		if (empty($dir))
-		{
-			die('Provide a valid root dir');
-			exit;
-		}
-
-		$dir = $this->remove_trailing_slashes($dir);
-		$directory = @opendir($dir);
-		$files_list = array();
-
-		while (@$file = @readdir($directory))
-		{
-			if (!in_array($file, array('.', '..')))
-			{
-				$is_dir = (@is_dir($dir . '/' . $file)) ? true : false;
-				$temp_path = $dir . '/' . $file;
-				if (!$is_dir || ($is_dir && $list_subdirs))
-				{
-					$files_list[] = $temp_path;
-				}
-
-				// Directory found, so recall this function
-				if ($is_dir && $process_subdirs)
-				{
-					$files_list = array_merge($files_list, $this->create_files_list($dir . '/' . $file, $process_subdirs, $list_subdirs));
-				}
-			}
-		}
-		@closedir($directory);
-		sort($files_list);
-
-		return $files_list;
-	}
-
-	/*
-	* Creates full files list
-	*/
-	function create_files_list_full($mode, $dir, $include_types = false, $exclude_types = true)
-	{
-		$dir = $this->remove_trailing_slashes($dir);
-		$include_types = empty($include_types) ? false : (is_array($include_types) ? $include_types : explode(',', $include_types));
-		$exclude_types = empty($exclude_types) ? false : (is_array($exclude_types) ? $exclude_types : explode(',', $exclude_types));
-		//$exclude_types = array('ace', 'bak', 'bmp', 'css', 'gif', 'hl', 'htc', 'htm', 'html', 'ico', 'jar', 'jpeg', 'jpg', 'js', 'pak', 'png', 'rar', 'sql', 'swf', 'tpl', 'ttf', 'txt', 'wmv', 'zip');
-
-		$directory = @opendir($dir);
-		$files_list = array();
-
-		while (@$file = @readdir($directory))
-		{
-			$process_file = false;
-			if (!in_array($file, array('.', '..')))
-			{
-				$is_dir = (@is_dir($dir . '/' . $file)) ? true : false;
-				$temp_path = $dir . '/' . $file;
-				$file_details = $this->get_file_details($temp_path);
-				$file_title = $file_details['filename'];
-				$file_type = strtolower($file_details['extension']);
-
-				if (empty($include_types) && empty($exclude_types))
-				{
-					$process_file = true;
-				}
-				elseif (empty($include_types) && !empty($exclude_types))
-				{
-					$process_file = !in_array($file_type, $exclude_types) ? true : false;
-				}
-				elseif (!empty($include_types) && empty($exclude_types))
-				{
-					$process_file = in_array($file_type, $include_types) ? true : false;
-				}
-				else
-				{
-					$process_file = (in_array($file_type, $include_types) && !in_array($file_type, $exclude_types)) ? true : false;
-				}
-
-				if ($process_file)
-				{
-					$files_list[] = $temp_path;
-				}
-
-				// Directory found, so recall this function
-				if ($is_dir && ($mode == 'full'))
-				{
-					$files_list = array_merge($files_list, $this->create_files_list_full($mode, $dir . '/' . $file, $include_types, $exclude_types));
-				}
-			}
-		}
-
-		@closedir($directory);
-
-		return $files_list;
-	}
-
-	/*
 	* Gets the number of files
 	*/
-	function get_number_of_files($mode, $dir)
+	function get_number_of_files($dir, $recursive = true, $allowed_extensions = false, $disallowed_extensions = false)
 	{
 		$dir = $this->remove_trailing_slashes($dir);
-		$modes_array = array('simple', 'full');
-		$mode = (!empty($mode) && in_array($mode, $modes_array)) ? $mode : $modes_array[0];
 		if (empty($this->files_list))
 		{
-			$this->files_list = $this->create_files_list_full($mode, $dir, $this->allowed_extensions, $this->disallowed_extensions);
+			$this->files_list = $this->list_files($dir, $recursive, $allowed_extensions, $disallowed_extensions);
 		}
 		$files_count = sizeof($this->files_list);
 
@@ -520,14 +424,12 @@ class class_files
 	/*
 	* Gets the dir size
 	*/
-	function get_dir_size($mode, $dir)
+	function get_dir_size($dir, $recursive = true, $allowed_extensions = false, $disallowed_extensions = false)
 	{
 		$dir = $this->remove_trailing_slashes($dir);
-		$modes_array = array('simple', 'full');
-		$mode = (!empty($mode) && in_array($mode, $modes_array)) ? $mode : $modes_array[0];
 		if (empty($this->files_list))
 		{
-			$this->files_list = $this->create_files_list_full($mode, $dir, $this->allowed_extensions, $this->disallowed_extensions);
+			$this->files_list = $this->list_files($dir, $recursive, $allowed_extensions, $disallowed_extensions);
 		}
 
 		$dir_size = 0;
@@ -690,45 +592,6 @@ class class_files
 			}
 		}
 		@closedir($res);
-	}
-
-	/*
-	* GZ Compression
-	* usage: $result = gzcompressfile('my_data.sql');
-	*/
-	function gzcompressfile($source, $level = false)
-	{
-		$dest = $source . '.gz';
-		$mode = 'wb' . $level;
-		$error = false;
-		if($fp_out = gzopen($dest, $mode))
-		{
-			if($fp_in = @fopen($source, 'rb'))
-			{
-				while(!@feof($fp_in))
-				{
-					gzwrite($fp_out, @fread($fp_in, 1024 * 512));
-				}
-				@fclose($fp_in);
-			}
-			else
-			{
-				$error = true;
-			}
-			gzclose($fp_out);
-		}
-		else
-		{
-			$error = true;
-		}
-		if($error)
-		{
-			return false;
-		}
-		else
-		{
-			return $dest;
-		}
 	}
 
 	/**
