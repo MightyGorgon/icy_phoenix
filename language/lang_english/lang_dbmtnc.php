@@ -106,12 +106,17 @@ $mtnc[] = array('reset_sessions',
 $mtnc[] = array('--', '', '', '', 8);
 $mtnc[] = array('sync_topics_subjects',
 	'Synchronize topics subjects',
-	'This function will synchronize topic subjects in first post of each topics You won\'t need this function under normal conditions.',
+	'This function will synchronize topic subjects in first post of each topic. You shouldn\'t have to run this function under normal conditions.',
 	'This will synchronize topic subjects in first post of each topic. The site will not be accessible during this time. Proceed?',
+	0);
+$mtnc[] = array('synchronize_notify_forum_id',
+	'Synchronize Topic Notifications forum IDs',
+	'This function will update forum IDs on topic notifications table. You shouldn\'t have to run this function under normal conditions.',
+	'',
 	0);
 $mtnc[] = array('rebuild_search_index',
 	'Rebuild search index',
-	'This function will rebuild the index used for searching. You won\'t need this function under normal conditions.',
+	'This function will rebuild the index used for searching. You shouldn\'t have to run this function under normal conditions.',
 	'This will delete the complete search index and rebuild it. It can take up to several hours to complete this task. The site will not be accessible during this time. Proceed?',
 	7);
 $mtnc[] = array('proceed_rebuilding',
@@ -386,6 +391,8 @@ $lang = array_merge($lang, array(
 	'Click_or_wait_to_proceed' => 'Click here to proceed or wait a few seconds',
 	'Indexing_progress' => '%d of %d posts (%01.1f%%) have been indexed. Last post indexed: %d',
 	'Indexing_finished' => 'Rebuilding the index was finished successfully',
+// synchronize_notify_forum_id
+	'Synchronizing_notify_forum_ids' => 'Synchronizing topics notifications forum IDs',
 // synchronize_post
 	'Synchronize_posts' => 'Synchronizing post data',
 	'Synchronize_topic_data' => 'Synchronizing topics',

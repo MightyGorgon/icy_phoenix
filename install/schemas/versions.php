@@ -23,7 +23,7 @@ if (!defined('IN_ICYPHOENIX'))
 // Versioning
 $fap_version = '1.5.0';
 $phpbb_version = '.0.23';
-$ip_version = '1.3.10.63';
+$ip_version = '1.3.11.64';
 
 // CHMOD
 $chmod_777 = array();

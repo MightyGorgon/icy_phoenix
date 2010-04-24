@@ -68,6 +68,11 @@ if($_POST['submit'])
 		$sql = "UPDATE " . FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
 		$db->sql_query($sql);
 	}
+
+	// Delete notifications for not auth users
+	include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+	$notifications->delete_not_auth_notifications();
+
 	cache_tree(true);
 
 	$redirect_url = append_sid(ADM . '/admin_forumauth_list.' . PHP_EXT);

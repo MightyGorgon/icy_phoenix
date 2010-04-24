@@ -64,6 +64,7 @@ switch ($req_version)
 	case '13861': $current_ip_version = '1.3.8.61'; break;
 	case '13962': $current_ip_version = '1.3.9.62'; break;
 	case '131063': $current_ip_version = '1.3.10.63'; break;
+	case '131164': $current_ip_version = '1.3.11.64'; break;
 }
 
 // Icy Phoenix Part...
@@ -3904,6 +3905,11 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.10.63 */
 		case '1.3.10.63':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics_watch` ADD `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `topic_id`";
+		$sql[] = "UPDATE `" . $table_prefix . "topics_watch` tw, `" . $table_prefix . "topics` t SET tw.forum_id = t.forum_id WHERE tw.topic_id = t.topic_id";
+
+		/* Updating from IP 1.3.11.64 */
+		case '1.3.11.64':
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

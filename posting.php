@@ -1216,6 +1216,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		if (($error_msg == '') && ($mode != 'poll_delete'))
 		{
 			// Forum Notification - BEGIN
+			include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
 			$post_data['subject'] = $subject;
 			$post_data['username'] = ($userdata['user_id'] == ANONYMOUS) ? $username : $userdata['username'];
 			$post_data['message'] = $message;
@@ -1229,7 +1230,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 				if ($topic_info = $db->sql_fetchrow($result))
 				{
-					user_notification('newtopic', $post_data, $topic_info['topic_title'], $forum_id, $topic_id, $post_id, $notify_user);
+					$notifications->send_notifications('newtopic', $post_data, $topic_info['topic_title'], $forum_id, $topic_id, $post_id, $notify_user);
 				}
 
 			}
@@ -1239,9 +1240,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 				{
 					set_bookmark($topic_id);
 				}
-				// Forum Notification - BEGIN
-				user_notification($mode, $post_data, $post_info['topic_title'], $forum_id, $topic_id, $post_id, $notify_user);
-				// Forum Notification - END
+				$notifications->send_notifications($mode, $post_data, $post_info['topic_title'], $forum_id, $topic_id, $post_id, $notify_user);
 			}
 			// Forum Notification - END
 		}

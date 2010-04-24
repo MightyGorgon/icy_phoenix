@@ -31,6 +31,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
 
 // FUNCTIONS - BEGIN
 if (!function_exists('check_auth'))
@@ -140,6 +141,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			$auth_reset = reset_auth_for_admins($user_id);
 		}
 
+		$notifications->delete_not_auth_notifications();
 		$db->clear_cache();
 		cache_tree(true);
 
@@ -163,6 +165,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				$result = $db->sql_query($sql);
 			}
 
+			$notifications->delete_not_auth_notifications();
 			$message = $lang['Auth_updated'] . '<br /><br />' . sprintf($l_auth_return, '<a href="' . append_sid($l_auth_url . PHP_EXT . '?mode=' . $mode) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		}
 		else
@@ -512,6 +515,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			$result = $db->sql_query($sql);
 		}
 
+		$notifications->delete_not_auth_notifications();
 		$db->clear_cache();
 		message_die(GENERAL_MESSAGE, $message);
 	}

@@ -219,6 +219,11 @@ class class_mcp_topic
 					WHERE topic_id = " . $topic_id;
 				$db->sql_query($sql);
 //<!-- END Unread Post Information to Database Mod -->
+
+				$sql = "UPDATE " . TOPICS_WATCH_TABLE . "
+					SET forum_id = " . $new_forum_id . "
+					WHERE topic_id = " . $topic_id;
+				$db->sql_query($sql);
 			}
 
 			$db->sql_transaction('commit');

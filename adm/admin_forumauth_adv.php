@@ -63,6 +63,10 @@ if(isset($_POST['submit']))
 						WHERE forum_id IN ('" . $forums_to_auth . "')";
 		//die($sql);
 		$db->sql_query($sql);
+
+		// Delete notifications for not auth users
+		include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+		$notifications->delete_not_auth_notifications($data['forums']);
 	}
 
 	cache_tree(true);

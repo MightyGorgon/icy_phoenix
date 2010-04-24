@@ -284,7 +284,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	{
 		$user_id = request_post_var('user_id', 0);
 		$current_email = request_post_var('current_email', '', true);
-		$email_confirm = request_post_var('current_email', '', true);
+		$email_confirm = request_post_var('email_confirm', '', true);
 	}
 
 	$trim_var_list = array(

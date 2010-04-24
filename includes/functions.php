@@ -3734,12 +3734,26 @@ function page_header($title = '', $parse_template = false)
 			$s_privmsg_new = 0;
 		}
 
-		// We don't want this SQL being too expensive... so we will allow the number of new messages only for users which log on frequently
-		if ($config['enable_new_messages_number'] && ($userdata['user_lastvisit'] > (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 60 * 60 * 24))))
+		// We don't want this SQL being too expensive... so we will allow the number of new messages only for some pages... (you can add here other pages if you wish!)
+		// We will also allow the number of new messages only for users which log on frequently
+		$new_messages_counter_pages_array = array(CMS_PAGE_FORUM, CMS_PAGE_VIEWFORUM);
+		$display_counter = ($config['enable_new_messages_number'] && !$userdata['is_bot'] && in_array($page_url['basename'], $new_messages_counter_pages_array) && ($userdata['user_lastvisit'] > (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 60 * 60 * 24)))) ? true : false;
+		if ($display_counter)
 		{
+			$auth_forum = '';
+			if ($userdata['user_level'] != ADMIN)
+			{
+				if (!function_exists('auth_forum_read'))
+				{
+					include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
+				}
+				$userdata['auth_forum_id'] = isset($userdata['auth_forum_id']) ? $userdata['auth_forum_id'] : auth_forum_read($userdata);
+				$auth_forum = (!empty($userdata['auth_forum_id'])) ? ' AND forum_id IN (' . $userdata['auth_forum_id'] . ') ' : '';
+			}
+
 			$sql = "SELECT COUNT(post_id) as total
 				FROM " . POSTS_TABLE . "
-				WHERE post_time >= " . $userdata['user_lastvisit'] . "
+				WHERE post_time >= " . $userdata['user_lastvisit'] . $auth_forum . "
 				AND poster_id != " . $userdata['user_id'];
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);

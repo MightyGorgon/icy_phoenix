@@ -269,6 +269,10 @@ elseif ($mode == 'ban')
 		$message = $lang['Ban_update_red'];
 		$e_temp = 'ban_block';
 		//$e_subj = $lang['Card_banned'];
+
+		// Delete notifications for user
+		include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+		$notifications->delete_user_notifications($poster_id);
 	}
 	else
 	{

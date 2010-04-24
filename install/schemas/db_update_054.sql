@@ -449,12 +449,26 @@ ALTER TABLE `phpbb_cms_layout` ADD `layout_cms_id` int(10) UNSIGNED NOT NULL AFT
 
 
 
+########################################
+##              BUILD 063             ##
+########################################
+ALTER TABLE `phpbb_topics_watch` ADD `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `topic_id`;
+UPDATE `phpbb_topics_watch` tw, `phpbb_topics` t SET tw.forum_id = t.forum_id WHERE tw.topic_id = t.topic_id;
+
+
+
+########################################
+##              BUILD 064             ##
+########################################
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.10.63' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.11.64' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

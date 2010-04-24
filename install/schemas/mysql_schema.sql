@@ -1915,6 +1915,7 @@ CREATE TABLE `phpbb_topics_tags_match` (
 
 CREATE TABLE `phpbb_topics_watch` (
 	`topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	`user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`notify_status` tinyint(1) NOT NULL DEFAULT '0',
 	KEY `topic_id` (`topic_id`),

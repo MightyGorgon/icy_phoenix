@@ -719,6 +719,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			{
 				session_reset_keys($user_id, $user_ip);
 			}
+
 			// Custom Profile Fields - BEGIN
 			$profile_data = get_fields();
 			$profile_names = array();
@@ -763,6 +764,13 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			// Custom Profile Fields - END
 
 			update_user_posts_details($this_userdata['user_id'], $user_color, '', true, true);
+
+			// Delete forum/topic notifications if user has been deactivated
+			if (empty($user_status))
+			{
+				include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+				$notifications->delete_user_notifications($poster_id);
+			}
 
 			$message .= $lang['Admin_user_updated'];
 

@@ -106,6 +106,10 @@ if(isset($_POST['submit']))
 			$sql = "UPDATE " . FORUMS_TABLE . " SET $sql WHERE forum_id = $forum_id";
 		}
 
+		// Delete notifications for not auth users
+		include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+		$notifications->delete_not_auth_notifications($forum_id);
+
 		if ($sql != '')
 		{
 			$db->sql_query($sql);

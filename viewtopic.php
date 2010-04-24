@@ -445,8 +445,8 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 			if ($watch == 'topic')
 			{
 				$is_watching_topic = true;
-				$sql = "INSERT INTO " . TOPICS_WATCH_TABLE . " (user_id, topic_id, notify_status)
-					VALUES (" . $userdata['user_id'] . ", $topic_id, 0)";
+				$sql = "INSERT INTO " . TOPICS_WATCH_TABLE . " (user_id, topic_id, forum_id, notify_status)
+					VALUES (" . $userdata['user_id'] . ", " . $topic_id . ", " . $forum_id . ", 0)";
 				$result = $db->sql_query($sql);
 			}
 
