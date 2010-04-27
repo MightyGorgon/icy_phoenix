@@ -406,6 +406,87 @@ class class_files
 		return $files_list;
 	}
 
+	/**
+	* Creates an images list from a folder
+	*/
+	function create_images_list($source_path, $allowed_image_types = '')
+	{
+		$allowed_image_types = empty($allowed_image_types) ? array('gif', 'jpg', 'jpeg', 'png') : (array) $allowed_image_types;
+
+		// Re-define some keys for getimagesize
+		// Defines the keys we want instead of 0, 1, 2, 3, 'bits', 'channels', and 'mime'.
+		$image_data_keys = array(
+			'width',
+			'height',
+			'type',
+			'attr',
+			'bits',
+			'channels',
+			'mime'
+		);
+
+		// Assign useful values for the third index.
+		$image_types = array(
+			1 => 'gif',
+			2 => 'jpg',
+			3 => 'png',
+			4 => 'swf',
+			5 => 'psd',
+			6 => 'bmp',
+			7 => 'tiff (intel byte order)',
+			8 => 'tiff (motorola byte order)',
+			9 => 'jpc',
+			10 => 'jp2',
+			11 => 'jpx',
+			12 => 'jb2',
+			13 => 'swc',
+			14 => 'iff',
+			15 => 'wbmp',
+			16 => 'xbm'
+		);
+
+		$images_list = array();
+		if (is_dir($source_path))
+		{
+			$files_list = $this->list_files($source_path, false, $allowed_image_types, false);
+			foreach ($files_list as $image)
+			{
+				$temp = array();
+				$data = array();
+				$temp = @getimagesize($image);
+				if(!empty($temp))
+				{
+					// Convert keys to numbers
+					$temp = array_values($temp);
+
+					// Make an array using values from $redefine_keys as keys and values from $temp as values.
+					foreach ($temp as $k => $v)
+					{
+						$image_data[$image_data_keys[$k]] = $v;
+					}
+
+					// Convert the image type
+					$image_data['type'] = $image_types[$image_data['type']];
+
+					$process_image = (empty($image_data['width']) || empty($image_data['height']) || !in_array($image_data['type'], $allowed_image_types)) ? false : true;
+					if ($process_image)
+					{
+						$image_size = @filesize($image);
+						$images_list[] = array(
+							'src' => $image,
+							'width' => (int) $image_data['width'],
+							'height' => (int) $image_data['height'],
+							'type' => $image_data['type'],
+							'size' => (int) $image_size
+						);
+					}
+				}
+			}
+		}
+
+		return $images_list;
+	}
+
 	/*
 	* Gets the number of files
 	*/

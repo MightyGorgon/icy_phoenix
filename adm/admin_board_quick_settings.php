@@ -52,7 +52,7 @@ if (substr($mode, 0, 3) == 'set')
 		*/
 
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'allow_html'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = 'b,i,u,pre,table,tr,td' WHERE `config_name` = 'allow_html_tags'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = 'a,b,i,u,pre,table,tr,td' WHERE `config_name` = 'allow_html_tags'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'allow_bbcode'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'allow_smilies'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'allow_sig'";
@@ -267,7 +267,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'liw_attach_enabled'";
 
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'allow_html'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = 'b,i,u,pre,table,tr,td' WHERE `config_name` = 'allow_html_tags'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = 'a,b,i,u,pre,table,tr,td' WHERE `config_name` = 'allow_html_tags'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'allow_bbcode'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'allow_smilies'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'allow_sig'";

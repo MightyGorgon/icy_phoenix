@@ -45,7 +45,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 	// ------------------------------------
 	// get a random pic from album
 	// ------------------------------------
-	if ($album_config['hon_rate_where'] == '')
+	if (empty($album_config['hon_rate_where']))
 	{
 		$sql = "SELECT `pic_id` FROM " . ALBUM_TABLE . "
 						WHERE pic_user_id <> '" . $userdata['user_id'] . "'

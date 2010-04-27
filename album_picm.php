@@ -28,7 +28,7 @@ init_userprefs($userdata);
 
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
-require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 
 // ------------------------------------
 // Check the request
@@ -223,7 +223,7 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 		{
 			$wm_position = (($album_config['disp_watermark_at'] > 0) && ($album_config['disp_watermark_at'] < 10)) ? $album_config['disp_watermark_at'] : 5;
 			$wm_transition = 50;
-			$thumbnail = mergePics($pic_info['fullpath'], $wm_file, $wm_position, $wm_transition, $pic_info['filetype']);
+			$thumbnail = mergeResizePics($pic_info['fullpath'], $wm_file, 0, 0, $pic_info['filetype'], $wm_position, $wm_transition, false);
 		}
 		// MG Watermark - END
 		if (($album_config['midthumb_cache'] == true))
@@ -316,7 +316,7 @@ else
 		{
 			$wm_position = (($album_config['disp_watermark_at'] > 0) && ($album_config['disp_watermark_at'] < 10)) ? $album_config['disp_watermark_at'] : 5;
 			$wm_transition = 50;
-			$thumbnail = mergeResizePics($pic_info['fullpath'], $wm_file, $thumbnail_width, $thumbnail_height, $wm_position, $wm_transition, $pic_info['filetype']);
+			$thumbnail = mergeResizePics($pic_info['fullpath'], $wm_file, $thumbnail_width, $thumbnail_height, $pic_info['filetype'], $wm_position, $wm_transition, true);
 		}
 		else
 		{

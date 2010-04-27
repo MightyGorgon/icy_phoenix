@@ -48,7 +48,7 @@ $settings_data = array(
 		'lang_key' => 'Allowed_tags',
 		'explain' => 'Allowed_tags_explain',
 		'type' => 'VARCHAR',
-		'default' => 'b,i,u,pre,table,tr,td',
+		'default' => 'a,b,i,u,pre,table,tr,td',
 		),
 
 	'allow_bbcode' => array(

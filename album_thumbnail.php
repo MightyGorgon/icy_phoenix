@@ -27,7 +27,7 @@ init_userprefs($userdata);
 
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
-require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 
 // ------------------------------------
 // Check the request

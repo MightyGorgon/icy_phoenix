@@ -351,7 +351,7 @@ class ImgObj
 	function JpegQuality($quality = 75)
 	{
 		static $static_jpeg_quality = 75;
-		if ( ($quality >= 1) && ($quality <= 100) )
+		if (($quality >= 1) && ($quality <= 100))
 		{
 			$static_jpeg_quality = $quality;
 		}
@@ -637,7 +637,7 @@ class ImgObj
 		{
 			$gd_ver = 1; return 1;
 		}
-		if ($user_ver != 2 && $gd_ver > 0 )
+		if ($user_ver != 2 && $gd_ver > 0)
 		{
 			return $gd_ver;
 		}
@@ -745,8 +745,8 @@ class ImgObj
 		$this->Resize($this->ImageWidth(), $this->ImageHeight(), 0, false);
 		// Load the watermark into memory
 		$watermarkfile_id = imagecreatefrompng($watermarkfile);
-		$watermarkfile_width = imageSX($watermarkfile_id);
-		$watermarkfile_height = imageSY($watermarkfile_id);
+		$watermarkfile_width = imagesx($watermarkfile_id);
+		$watermarkfile_height = imagesy($watermarkfile_id);
 		// If alpha is true we have the capability to resize the png thus saving time and memory.
 		// If not then we will have to do it the other way.
 		if ($this->Alpha)
@@ -782,7 +782,7 @@ class ImgObj
 		{
 			//If watermark is too big, resize image then reduce after applying watermark
 			//If we resize the watermark we will lose transparency.
-			if( (($this->ImageWidth() * $maxsize / 100) < $watermarkfile_width) || (($this->ImageHeight() * $maxsize / 100) < $watermarkfile_height) )
+			if((($this->ImageWidth() * $maxsize / 100) < $watermarkfile_width) || (($this->ImageHeight() * $maxsize / 100) < $watermarkfile_height))
 			{
 				$tempwidth=$this->ImageWidth();
 				$tempheight=$this->ImageHeight();
@@ -820,9 +820,9 @@ class ImgObj
 		$watermarkfile_height = imagesy($watermarkfile_id);
 		$resize_width = $this->ImageWidth() * $maxsize / 100;
 		$resize_height = $this->ImageHeight() * $maxsize / 100;
-		if ( ($watermarkfile_width > $resize_width) || ($watermarkfile_height > $resize_height) )
+		if (($watermarkfile_width > $resize_width) || ($watermarkfile_height > $resize_height))
 		{
-			if ( ($watermarkfile_width / $watermarkfile_height) > ($resize_width / $resize_height) )
+			if (($watermarkfile_width / $watermarkfile_height) > ($resize_width / $resize_height))
 			{
 				$resize_height = $resize_width * ($watermarkfile_height / $watermarkfile_width);
 			}
@@ -853,7 +853,7 @@ class ImgObj
 		{
 			//If watermark is too big, resize image then reduce after applying watermark
 			//If we resize the watermark we will lose transparency.
-			if( (($this->ImageWidth() * $maxsize / 100) < $watermarkfile_width) || (($this->ImageHeight() * $maxsize / 100) < $watermarkfile_height) )
+			if((($this->ImageWidth() * $maxsize / 100) < $watermarkfile_width) || (($this->ImageHeight() * $maxsize / 100) < $watermarkfile_height))
 			{
 				$tempwidth = $this->ImageWidth();
 				$tempheight = $this->ImageHeight();
@@ -863,7 +863,7 @@ class ImgObj
 		}
 
 		//Position watermark and place on image
-		switch( $position )
+		switch($position)
 		{
 			case 1: // top left
 				$dest_x = 0;
@@ -871,7 +871,7 @@ class ImgObj
 				break;
 
 			case 2: // top middle
-				$dest_x = ( ( $this->ImageWidth() - $watermarkfile_width ) / 2 );
+				$dest_x = (($this->ImageWidth() - $watermarkfile_width) / 2);
 				$dest_y = 0;
 				break;
 
@@ -882,17 +882,17 @@ class ImgObj
 
 			case 4: // middle left
 				$dest_x = 0;
-				$dest_y = ( $this->ImageHeight() / 2 ) - ( $watermarkfile_height / 2 );
+				$dest_y = ($this->ImageHeight() / 2) - ($watermarkfile_height / 2);
 				break;
 
 			case 5: // middle
-				$dest_x = ( $this->ImageWidth() / 2 ) - ( $watermarkfile_width / 2 );
-				$dest_y = ( $this->ImageHeight() / 2 ) - ( $watermarkfile_height / 2 );
+				$dest_x = ($this->ImageWidth() / 2) - ($watermarkfile_width / 2);
+				$dest_y = ($this->ImageHeight() / 2) - ($watermarkfile_height / 2);
 				break;
 
 			case 6: // middle right
 				$dest_x = $this->ImageWidth() - $watermarkfile_width;
-				$dest_y = ( $this->ImageHeight() / 2 ) - ( $watermarkfile_height / 2 );
+				$dest_y = ($this->ImageHeight() / 2) - ($watermarkfile_height / 2);
 				break;
 
 			case 7: // bottom left
@@ -901,7 +901,7 @@ class ImgObj
 				break;
 
 			case 8: // bottom middle
-				$dest_x = ( ( $this->ImageWidth() - $watermarkfile_width ) / 2 );
+				$dest_x = (($this->ImageWidth() - $watermarkfile_width) / 2);
 				$dest_y = $this->ImageHeight() - $watermarkfile_height;
 				break;
 
@@ -915,7 +915,7 @@ class ImgObj
 		}
 
 		//$transition = 50;
-		if ( ($transition == 100) || ($wm_resized == true) )
+		if (($transition == 100) || ($wm_resized == true))
 		{
 			imagecopy($this->ImageID, $watermarkfile_id, $dest_x, $dest_y, 0, 0, $watermarkfile_width, $watermarkfile_height);
 		}
@@ -1825,7 +1825,7 @@ class ImgObj
 		// Load the buffer array with the stereo graphics data
 		for($y = 0; $y < $this->ImageHeight(); $y++)
 		{
-			for( $x = 0; $x < $this->ImageWidth(); $x++)
+			for($x = 0; $x < $this->ImageWidth(); $x++)
 			{
 				// Find gray value at point
 				$rgb = imagecolorat($this->ImageID, $x, $y);
@@ -1845,9 +1845,9 @@ class ImgObj
 				$left_px = (int)$x-($sep/2);
 				$right_px = (int)$x+($sep/2);
 
-				if(( $left_px >= 0) && ($right_px < $this->ImageWidth()))
+				if(($left_px >= 0) && ($right_px < $this->ImageWidth()))
 				{
-					if(!isset( $buffer[$left_px][$y]))
+					if(!isset($buffer[$left_px][$y]))
 					{
 						$buffer[$left_px][$y] = $colors[rand(1,255)];
 					}
@@ -1855,9 +1855,9 @@ class ImgObj
 				}
 			}
 			// Find and fill in any spaces we missed
-			for( $x = 0; $x < $this->ImageWidth();$x++)
+			for($x = 0; $x < $this->ImageWidth();$x++)
 			{
-				if(!isset( $buffer[$x][$y]))
+				if(!isset($buffer[$x][$y]))
 				{
 					$buffer[$x][$y] = $colors[rand(1,255)];
 				}
@@ -1867,7 +1867,7 @@ class ImgObj
 		// Copy buffer to temp image
 		for($y = 0; $y < $this->ImageHeight(); $y++)
 		{
-			for( $x = 0; $x < $this->ImageWidth(); $x++)
+			for($x = 0; $x < $this->ImageWidth(); $x++)
 			{
 					imagesetpixel($stereo_img,$x, $y, $buffer[$x][$y]);
 			}
@@ -1905,7 +1905,7 @@ class ImgObj
 
 
 /*
-Function get_full_image_info
+* Function get_full_image_info
 */
 
 define ('IMAGE_WIDTH', 'width');
@@ -1917,29 +1917,29 @@ define ('IMAGE_CHANNELS', 'channels');
 define ('IMAGE_MIME', 'mime');
 
 /**
- * mixed get_full_image_info( file $file [, string $out] )
- *
- * Returns information about $file.
- *
- * If the second argument is supplied, a string representing that information will be returned.
- *
- * Valid values for the second argument are IMAGE_WIDTH, 'width', IMAGE_HEIGHT, 'height', IMAGE_TYPE, 'type',
- * IMAGE_ATTR, 'attr', IMAGE_BITS, 'bits', IMAGE_CHANNELS, 'channels', IMAGE_MIME, and 'mime'.
- *
- * If only the first argument is supplied an array containing all the information is returned,
- * which will look like the following:
- *
- *    [width] => int (width),
- *    [height] => int (height),
- *    [type] => string (type),
- *    [attr] => string (attributes formatted for IMG tags),
- *    [bits] => int (bits),
- *    [channels] => int (channels),
- *    [mime] => string (mime-type)
- *
- * Returns false if $file is not a file, no arguments are supplied, $file is not an image, or otherwise fails.
- *
- **/
+* mixed get_full_image_info(file $file [, string $out])
+*
+* Returns information about $file.
+*
+* If the second argument is supplied, a string representing that information will be returned.
+*
+* Valid values for the second argument are IMAGE_WIDTH, 'width', IMAGE_HEIGHT, 'height', IMAGE_TYPE, 'type',
+* IMAGE_ATTR, 'attr', IMAGE_BITS, 'bits', IMAGE_CHANNELS, 'channels', IMAGE_MIME, and 'mime'.
+*
+* If only the first argument is supplied an array containing all the information is returned,
+* which will look like the following:
+*
+*    [width] => int (width),
+*    [height] => int (height),
+*    [type] => string (type),
+*    [attr] => string (attributes formatted for IMG tags),
+*    [bits] => int (bits),
+*    [channels] => int (channels),
+*    [mime] => string (mime-type)
+*
+* Returns false if $file is not a file, no arguments are supplied, $file is not an image, or otherwise fails.
+*
+**/
 function get_full_image_info($file = null, $out = null, $local = false)
 {
 	// If $file is not supplied or is not a file, warn the user and return false.
@@ -1998,6 +1998,7 @@ function get_full_image_info($file = null, $out = null, $local = false)
 		15 => 'WBMP',
 		16 => 'XBM'
 	);
+
 	$temp = array();
 	$data = array();
 
@@ -2026,7 +2027,7 @@ function get_full_image_info($file = null, $out = null, $local = false)
 }
 
 /*
-Function any_url_exists to check whether a file exists on any domain.
+* Function any_url_exists to check whether a file exists on any domain.
 */
 function any_url_exists($url)
 {
@@ -2066,222 +2067,58 @@ function any_url_exists($url)
 }
 
 /*
-Function nuff_http_vars needed to store all HTTP vars into one array
+* Function nuff_http_vars needed to store all HTTP vars into one array
 */
 function nuff_http_vars()
 {
 	$nuff_http = array();
-	$nuff_http['full_string'] = '';
 
-	// Var Init
 	/* Resize */
-	if( (isset($_GET['nuff_resize'])) || (isset($_POST['nuff_resize'])))
-	{
-		$nuff_http['nuff_resize'] = isset($_GET['nuff_resize']) ? intval($_GET['nuff_resize']) : intval($_POST['nuff_resize']);
-	}
-	else
-	{
-		$nuff_http['nuff_resize'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_resize=' . $nuff_http['nuff_resize'];
-
+	$nuff_http['nuff_resize'] = request_var('nuff_resize', 0);
 	/* Resize Width */
-	if( (isset($_GET['nuff_resize_w'])) || (isset($_POST['nuff_resize_w'])))
-	{
-		$nuff_http['nuff_resize_w'] = isset($_GET['nuff_resize_w']) ? intval($_GET['nuff_resize_w']) : intval($_POST['nuff_resize_w']);
-	}
-	else
-	{
-		$nuff_http['nuff_resize_w'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_resize_w=' . $nuff_http['nuff_resize_w'];
-
+	$nuff_http['nuff_resize_w'] = request_var('nuff_resize_w', 0);
 	/* Resize Height*/
-	if( (isset($_GET['nuff_resize_h'])) || (isset($_POST['nuff_resize_h'])))
-	{
-		$nuff_http['nuff_resize_h'] = isset($_GET['nuff_resize_h']) ? intval($_GET['nuff_resize_h']) : intval($_POST['nuff_resize_h']);
-	}
-	else
-	{
-		$nuff_http['nuff_resize_h'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_resize_h=' . $nuff_http['nuff_resize_h'];
-
+	$nuff_http['nuff_resize_h'] = request_var('nuff_resize_h', 0);
 	/* Recompression */
-	if( (isset($_GET['nuff_recompress'])) || (isset($_POST['nuff_recompress'])))
-	{
-		$nuff_http['nuff_recompress'] = isset($_GET['nuff_recompress']) ? intval($_GET['nuff_recompress']) : intval($_POST['nuff_recompress']);
-	}
-	else
-	{
-		$nuff_http['nuff_recompress'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_recompress=' . $nuff_http['nuff_recompress'];
-
+	$nuff_http['nuff_recompress'] = request_var('nuff_recompress', 0);
 	/* Recompression Ratio */
-	if( (isset($_GET['nuff_recompress_r'])) || (isset($_POST['nuff_recompress_r'])))
-	{
-		$nuff_http['nuff_recompress_r'] = isset($_GET['nuff_recompress_r']) ? intval($_GET['nuff_recompress_r']) : intval($_POST['nuff_recompress_r']);
-	}
-	else
-	{
-		$nuff_http['nuff_recompress_r'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_recompress_r=' . $nuff_http['nuff_recompress_r'];
-
+	$nuff_http['nuff_recompress_r'] = request_var('nuff_recompress_r', 0);
 	/* Rotation */
-	if( (isset($_GET['nuff_rotation'])) || (isset($_POST['nuff_rotation'])))
-	{
-		$nuff_http['nuff_rotation'] = isset($_GET['nuff_rotation']) ? intval($_GET['nuff_rotation']) : intval($_POST['nuff_rotation']);
-	}
-	else
-	{
-		$nuff_http['nuff_rotation'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_rotation=' . $nuff_http['nuff_rotation'];
-
+	$nuff_http['nuff_rotation'] = request_var('nuff_rotation', 0);
 	/* Rotation Degree */
-	if( (isset($_GET['nuff_rotation_d'])) || (isset($_POST['nuff_rotation_d'])))
-	{
-		$nuff_http['nuff_rotation_d'] = isset($_GET['nuff_rotation_d']) ? intval($_GET['nuff_rotation_d']) : intval($_POST['nuff_rotation_d']);
-	}
-	else
-	{
-		$nuff_http['nuff_rotation_d'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_rotation_d=' . $nuff_http['nuff_rotation_d'];
-
+	$nuff_http['nuff_rotation_d'] = request_var('nuff_rotation_d', 0);
 	/* Sepia */
-	if( (isset($_GET['nuff_sepia'])) || (isset($_POST['nuff_sepia'])))
-	{
-		$nuff_http['nuff_sepia'] = isset($_GET['nuff_sepia']) ? intval($_GET['nuff_sepia']) : intval($_POST['nuff_sepia']);
-	}
-	else
-	{
-		$nuff_http['nuff_sepia'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_sepia=' . $nuff_http['nuff_sepia'];
-
+	$nuff_http['nuff_sepia'] = request_var('nuff_sepia', 0);
 	/* Black And White */
-	if( (isset($_GET['nuff_bw'])) || (isset($_POST['nuff_bw'])))
-	{
-		$nuff_http['nuff_bw'] = isset($_GET['nuff_bw']) ? intval($_GET['nuff_bw']) : intval($_POST['nuff_bw']);
-	}
-	else
-	{
-		$nuff_http['nuff_bw'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_bw=' . $nuff_http['nuff_bw'];
-
+	$nuff_http['nuff_bw'] = request_var('nuff_bw', 0);
 	/* Mirror */
-	if( (isset($_GET['nuff_mirror'])) || (isset($_POST['nuff_mirror'])))
-	{
-		$nuff_http['nuff_mirror'] = isset($_GET['nuff_mirror']) ? intval($_GET['nuff_mirror']) : intval($_POST['nuff_mirror']);
-	}
-	else
-	{
-		$nuff_http['nuff_mirror'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_mirror=' . $nuff_http['nuff_mirror'];
-
+	$nuff_http['nuff_mirror'] = request_var('nuff_mirror', 0);
 	/* Flip */
-	if( (isset($_GET['nuff_flip'])) || (isset($_POST['nuff_flip'])))
-	{
-		$nuff_http['nuff_flip'] = isset($_GET['nuff_flip']) ? intval($_GET['nuff_flip']) : intval($_POST['nuff_flip']);
-	}
-	else
-	{
-		$nuff_http['nuff_flip'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_flip=' . $nuff_http['nuff_flip'];
-
+	$nuff_http['nuff_flip'] = request_var('nuff_flip', 0);
 	/* Blur */
-	if( (isset($_GET['nuff_blur'])) || (isset($_POST['nuff_blur'])))
-	{
-		$nuff_http['nuff_blur'] = isset($_GET['nuff_blur']) ? intval($_GET['nuff_blur']) : intval($_POST['nuff_blur']);
-	}
-	else
-	{
-		$nuff_http['nuff_blur'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_blur=' . $nuff_http['nuff_blur'];
-
+	$nuff_http['nuff_blur'] = request_var('nuff_blur', 0);
 	/* Pixelate */
-	if( (isset($_GET['nuff_pixelate'])) || (isset($_POST['nuff_pixelate'])))
-	{
-		$nuff_http['nuff_pixelate'] = isset($_GET['nuff_pixelate']) ? intval($_GET['nuff_pixelate']) : intval($_POST['nuff_pixelate']);
-	}
-	else
-	{
-		$nuff_http['nuff_pixelate'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_pixelate=' . $nuff_http['nuff_pixelate'];
-
+	$nuff_http['nuff_pixelate'] = request_var('nuff_pixelate', 0);
 	/* Scatter */
-	if( (isset($_GET['nuff_scatter'])) || (isset($_POST['nuff_scatter'])))
-	{
-		$nuff_http['nuff_scatter'] = isset($_GET['nuff_scatter']) ? intval($_GET['nuff_scatter']) : intval($_POST['nuff_scatter']);
-	}
-	else
-	{
-		$nuff_http['nuff_scatter'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_scatter=' . $nuff_http['nuff_scatter'];
-
+	$nuff_http['nuff_scatter'] = request_var('nuff_scatter', 0);
 	/* Infrared */
-	if( (isset($_GET['nuff_infrared'])) || (isset($_POST['nuff_infrared'])))
-	{
-		$nuff_http['nuff_infrared'] = isset($_GET['nuff_infrared']) ? intval($_GET['nuff_infrared']) : intval($_POST['nuff_infrared']);
-	}
-	else
-	{
-		$nuff_http['nuff_infrared'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_infrared=' . $nuff_http['nuff_infrared'];
-
+	$nuff_http['nuff_infrared'] = request_var('nuff_infrared', 0);
 	/* Tint */
-	if( (isset($_GET['nuff_tint'])) || (isset($_POST['nuff_tint'])))
-	{
-		$nuff_http['nuff_tint'] = isset($_GET['nuff_tint']) ? intval($_GET['nuff_tint']) : intval($_POST['nuff_tint']);
-	}
-	else
-	{
-		$nuff_http['nuff_tint'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_tint=' . $nuff_http['nuff_tint'];
-
+	$nuff_http['nuff_tint'] = request_var('nuff_tint', 0);
 	/* Interlace */
-	if( (isset($_GET['nuff_interlace'])) || (isset($_POST['nuff_interlace'])))
-	{
-		$nuff_http['nuff_interlace'] = isset($_GET['nuff_interlace']) ? intval($_GET['nuff_interlace']) : intval($_POST['nuff_interlace']);
-	}
-	else
-	{
-		$nuff_http['nuff_interlace'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_interlace=' . $nuff_http['nuff_interlace'];
-
+	$nuff_http['nuff_interlace'] = request_var('nuff_interlace', 0);
 	/* Screen */
-	if( (isset($_GET['nuff_screen'])) || (isset($_POST['nuff_screen'])))
-	{
-		$nuff_http['nuff_screen'] = isset($_GET['nuff_screen']) ? intval($_GET['nuff_screen']) : intval($_POST['nuff_screen']);
-	}
-	else
-	{
-		$nuff_http['nuff_screen'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_screen=' . $nuff_http['nuff_screen'];
-
+	$nuff_http['nuff_screen'] = request_var('nuff_screen', 0);
 	/* Stereogram */
-	if( (isset($_GET['nuff_stereogram'])) || (isset($_POST['nuff_stereogram'])))
+	$nuff_http['nuff_stereogram'] = request_var('nuff_stereogram', 0);
+
+	$nuff_http_full_string = '';
+	foreach ($nuff_http as $k => $v)
 	{
-		$nuff_http['nuff_stereogram'] = isset($_GET['nuff_stereogram']) ? intval($_GET['nuff_stereogram']) : intval($_POST['nuff_stereogram']);
+		$nuff_http_full_string .= '&' . $k . '=' . $v;
 	}
-	else
-	{
-		$nuff_http['nuff_stereogram'] = 0;
-	}
-	$nuff_http['full_string'] .= '&nuff_stereogram=' . $nuff_http['nuff_stereogram'];
+
+	$nuff_http['full_string'] = $nuff_http_full_string;
 
 	return $nuff_http;
 
@@ -2304,199 +2141,144 @@ function nuff_http_vars()
 //          8 = bottom middle
 //          9 = bottom right
 //
-
-function mergePics($sourcefile, $insertfile, $pos = 0, $transition = 50, $pic_filetype)
+function mergeResizePics($sourcefile, $insertfile, $thumbnail_width, $thumbnail_height, $pic_filetype, $pos = 0, $transition = 50, $resize = true)
 {
-
 	global $album_config;
 
-	$insertfile_id = imageCreateFromPNG($insertfile);
-
-	switch( $pic_filetype )
+	switch($pic_filetype)
 	{
 		case 'jpg':
-			$sourcefile_id = imageCreateFromJPEG($sourcefile);
+			$sourcefile_id = imagecreatefromjpeg($sourcefile);
 			break;
 		case 'png':
-			$sourcefile_id = imageCreateFromPNG($sourcefile);
+			$sourcefile_id = imagecreatefrompng($sourcefile);
 			break;
 		default:
 			break;
 	}
+
+	$insertfile_id = imagecreatefrompng($insertfile);
 
 	// Get the size of both pics
-	$sourcefile_width = imageSX($sourcefile_id);
-	$sourcefile_height = imageSY($sourcefile_id);
-	$insertfile_width = imageSX($insertfile_id);
-	$insertfile_height = imageSY($insertfile_id);
+	$sourcefile_width = imagesx($sourcefile_id);
+	$sourcefile_height = imagesy($sourcefile_id);
+	$insertfile_width = imagesx($insertfile_id);
+	$insertfile_height = imagesy($insertfile_id);
 
-	switch( $pos )
+	if (!empty($resize))
 	{
-		case 1: // top left
-			$dest_x = 0;
-			$dest_y = 0;
-			break;
+		if ($album_config['gd_version'] == 1)
+		{
+			$new_image = @imagecreate($thumbnail_width, $thumbnail_height);
+			@imagecopyresized($new_image, $sourcefile_id, 0, 0, 0, 0, $thumbnail_width, $thumbnail_height, $sourcefile_width, $sourcefile_height);
+		}
+		else
+		{
+			$new_image = @imagecreatetruecolor($thumbnail_width, $thumbnail_height);
+			@imagecopyresampled($new_image, $sourcefile_id, 0, 0, 0, 0, $thumbnail_width, $thumbnail_height, $sourcefile_width, $sourcefile_height);
+		}
 
-		case 2: // top middle
-			$dest_x = ( ( $sourcefile_width - $insertfile_width ) / 2 );
-			$dest_y = 0;
-			break;
-
-		case 3: // top right
-			$dest_x = $sourcefile_width - $insertfile_width;
-			$dest_y = 0;
-			break;
-
-		case 4: // middle left
-			$dest_x = 0;
-			$dest_y = ( $sourcefile_height / 2 ) - ( $insertfile_height / 2 );
-			break;
-
-		case 5: // middle
-			$dest_x = ( $sourcefile_width / 2 ) - ( $insertfile_width / 2 );
-			$dest_y = ( $sourcefile_height / 2 ) - ( $insertfile_height / 2 );
-			break;
-
-		case 6: // middle right
-			$dest_x = $sourcefile_width - $insertfile_width;
-			$dest_y = ( $sourcefile_height / 2 ) - ( $insertfile_height / 2 );
-			break;
-
-		case 7: // bottom left
-			$dest_x = 0;
-			$dest_y = $sourcefile_height - $insertfile_height;
-			break;
-
-		case 8: // bottom middle
-			$dest_x = ( ( $sourcefile_width - $insertfile_width ) / 2 );
-			$dest_y = $sourcefile_height - $insertfile_height;
-			break;
-
-		case 9: // bottom right
-			$dest_x = $sourcefile_width - $insertfile_width;
-			$dest_y = $sourcefile_height - $insertfile_height;
-			break;
-
-		default:
-			break;
-	}
-
-	// Merge the two pix
-	imageCopyMerge($sourcefile_id, $insertfile_id, $dest_x, $dest_y, 0, 0, $insertfile_width, $insertfile_height, $transition);
-
-	// Create the final image
-	switch( $pic_filetype )
-	{
-		case 'jpg':
-			imagejpeg($sourcefile_id, '', $album_config['thumbnail_quality']);
-			break;
-		case 'png':
-			imagepng($sourcefile_id);
-			break;
-		default:
-			break;
-	}
-
-	imageDestroy($sourcefile_id);
-}
-
-function mergeResizePics($sourcefile, $insertfile, $thumbnail_width, $thumbnail_height, $pos = 0, $transition = 50, $pic_filetype)
-{
-
-	global $album_config;
-
-	switch( $pic_filetype )
-	{
-		case 'jpg':
-			$sourcefile_id = imageCreateFromJPEG($sourcefile);
-			break;
-		case 'png':
-			$sourcefile_id = imageCreateFromPNG($sourcefile);
-			break;
-		default:
-			break;
-	}
-
-	$insertfile_id = imageCreateFromPNG($insertfile);
-
-	// Get the size of both pics
-	$sourcefile_width = imageSX($sourcefile_id);
-	$sourcefile_height = imageSY($sourcefile_id);
-	$insertfile_width = imageSX($insertfile_id);
-	$insertfile_height = imageSY($insertfile_id);
-
-	if ($album_config['gd_version'] == 1)
-	{
-		$thumbnail = @imageCreate($thumbnail_width, $thumbnail_height);
-		@imageCopyResized($thumbnail, $sourcefile_id, 0, 0, 0, 0, $thumbnail_width, $thumbnail_height, $sourcefile_width, $sourcefile_height);
+		// Reset the size
+		$sourcefile_width = $thumbnail_width;
+		$sourcefile_height = $thumbnail_height;
 	}
 	else
 	{
-		$thumbnail = @imageCreateTrueColor($thumbnail_width, $thumbnail_height);
-		@imageCopyResampled($thumbnail, $sourcefile_id, 0, 0, 0, 0, $thumbnail_width, $thumbnail_height, $sourcefile_width, $sourcefile_height);
+		$new_image = $sourcefile_id;
 	}
 
-	// Reset the size
-	$sourcefile_width = $thumbnail_width;
-	$sourcefile_height = $thumbnail_height;
+	$dest = get_image_coord($pos, $sourcefile_width, $sourcefile_height, $insertfile_width, $insertfile_height);
 
-	switch( $pos )
+	// Merge the two pix
+	imagecopymerge($new_image, $insertfile_id, $dest['x'], $dest['y'], 0, 0, $insertfile_width, $insertfile_height, $transition);
+	imagedestroy($insertfile_id);
+
+	if (!empty($resize))
+	{
+		imagedestroy($sourcefile_id);
+		return $new_image;
+	}
+	else
+	{
+		// Create the final image
+		switch($pic_filetype)
+		{
+			case 'jpg':
+				imagejpeg($sourcefile_id, '', $album_config['thumbnail_quality']);
+				break;
+			case 'png':
+				imagepng($sourcefile_id);
+				break;
+			default:
+				break;
+		}
+
+		imagedestroy($sourcefile_id);
+	}
+}
+
+/*
+* Get image coordinates for watermark
+*/
+function get_image_coord($pos, $sourcefile_width, $sourcefile_height, $insertfile_width, $insertfile_height)
+{
+	$dest = array(
+		'x' => 0,
+		'y' => 0
+	);
+
+	switch($pos)
 	{
 		case 1: // top left
-			$dest_x = 0;
-			$dest_y = 0;
+			$dest['x'] = 0;
+			$dest['y'] = 0;
 			break;
 
 		case 2: // top middle
-			$dest_x = ( ( $sourcefile_width - $insertfile_width ) / 2 );
-			$dest_y = 0;
+			$dest['x'] = (($sourcefile_width - $insertfile_width) / 2);
+			$dest['y'] = 0;
 			break;
 
 		case 3: // top right
-			$dest_x = $sourcefile_width - $insertfile_width;
-			$dest_y = 0;
+			$dest['x'] = $sourcefile_width - $insertfile_width;
+			$dest['y'] = 0;
 			break;
 
 		case 4: // middle left
-			$dest_x = 0;
-			$dest_y = ( $sourcefile_height / 2 ) - ( $insertfile_height / 2 );
+			$dest['x'] = 0;
+			$dest['y'] = ($sourcefile_height / 2) - ($insertfile_height / 2);
 			break;
 
 		case 5: // middle
-			$dest_x = ( $sourcefile_width / 2 ) - ( $insertfile_width / 2 );
-			$dest_y = ( $sourcefile_height / 2 ) - ( $insertfile_height / 2 );
+			$dest['x'] = ($sourcefile_width / 2) - ($insertfile_width / 2);
+			$dest['y'] = ($sourcefile_height / 2) - ($insertfile_height / 2);
 			break;
 
 		case 6: // middle right
-			$dest_x = $sourcefile_width - $insertfile_width;
-			$dest_y = ( $sourcefile_height / 2 ) - ( $insertfile_height / 2 );
+			$dest['x'] = $sourcefile_width - $insertfile_width;
+			$dest['y'] = ($sourcefile_height / 2) - ($insertfile_height / 2);
 			break;
 
 		case 7: // bottom left
-			$dest_x = 0;
-			$dest_y = $sourcefile_height - $insertfile_height;
+			$dest['x'] = 0;
+			$dest['y'] = $sourcefile_height - $insertfile_height;
 			break;
 
 		case 8: // bottom middle
-			$dest_x = ( ( $sourcefile_width - $insertfile_width ) / 2 );
-			$dest_y = $sourcefile_height - $insertfile_height;
+			$dest['x'] = (($sourcefile_width - $insertfile_width) / 2);
+			$dest['y'] = $sourcefile_height - $insertfile_height;
 			break;
 
 		case 9: // bottom right
-			$dest_x = $sourcefile_width - $insertfile_width;
-			$dest_y = $sourcefile_height - $insertfile_height;
+			$dest['x'] = $sourcefile_width - $insertfile_width;
+			$dest['y'] = $sourcefile_height - $insertfile_height;
 			break;
 
 		default:
 			break;
 	}
 
-	// Merge the two pix
-	imageCopyMerge($thumbnail, $insertfile_id, $dest_x, $dest_y, 0, 0, $insertfile_width, $insertfile_height, $transition);
-	imageDestroy($sourcefile_id);
-	imageDestroy($insertfile_id);
-
-	return $thumbnail;
+	return $dest;
 }
 
 ?>

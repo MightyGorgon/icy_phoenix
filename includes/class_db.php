@@ -31,7 +31,7 @@ class class_db
 
 		$sql_filter_by = (!empty($filter_item) ? (" WHERE i." . $filter_item . " = " . $db->sql_validate_value($filter_item_value) . " ") : '');
 		$sql_order_by = (!empty($sort_order) ? ((" ORDER BY i." . $sort_order . " ") . (!empty($sort_dir) ? ($sort_dir . " ") : '')) : '');
-		$sql_limit = (!empty($n_items) ? (" LIMIT " . (!empty($start) ? ($start . ", " . $n_items) : ($n_items . " "))) : '');
+		$sql_limit = (!empty($n_items) ? (" LIMIT " . (!empty($start) ? ($start . ", " . $n_items) : $n_items) . " ") : '');
 		$sql_where_extra = (!empty($sql_where_extra) ? ((empty($sql_filter_by) ? " WHERE " : " AND ") . $sql_where_extra) : '');
 
 		$sql = "SELECT i.*" . $sql_select_extra . " FROM " . $this->main_db_table . " i" . $sql_from_extra . $sql_filter_by . $sql_where_extra . $sql_order_by . $sql_limit;

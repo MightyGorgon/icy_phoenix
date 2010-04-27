@@ -16,7 +16,7 @@ if (!defined('IN_ICYPHOENIX'))
 // ------------------------------------
 // NUFFIMAGE SWITCHES
 // ------------------------------------
-require(ALBUM_MOD_PATH . 'album_image_class.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $nuff_http = nuff_http_vars();
 
 //include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
