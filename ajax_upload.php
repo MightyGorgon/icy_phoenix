@@ -49,6 +49,7 @@ if(isset($_FILES['userfile']))
 	{
 		// Extension not allowed
 		echo('3');
+		//echo('new Array {"RESULT":"3", "FILENAME":"' . $filename . '"};');
 		exit;
 	}
 
@@ -96,6 +97,7 @@ if(isset($_FILES['userfile']))
 	{
 		// File is empty
 		echo('4');
+		//echo('new Array {"RESULT":"4", "FILENAME":"' . $filename . '"};');
 		exit;
 	}
 
@@ -103,6 +105,7 @@ if(isset($_FILES['userfile']))
 	{
 		// File is too big
 		echo('5');
+		//echo('new Array {"RESULT":"5", "FILENAME":"' . $filename . '"};');
 		exit;
 	}
 
@@ -131,16 +134,20 @@ if(isset($_FILES['userfile']))
 		@unlink($upload_dir . $filename . '.' . $extension);
 		// Extension not allowed
 		echo('3');
+		//echo('new Array {"RESULT":"3", "FILENAME":"' . $filename . '"};');
 		exit;
 	}
 	// Success
-	echo('1');
+	//echo('1');
+	//echo('new Array {"RESULT":"1", "FILENAME":"' . $filename . '"};');
+	echo($filename . '.' . $extension);
 	exit;
 }
 else
 {
 	// Error
 	echo('2');
+	//echo('new Array {"RESULT":"2", "FILENAME":"' . $filename . '"};');
 	exit;
 }
 

@@ -90,14 +90,14 @@ function get_calendar_title_date($calendar_start, $calendar_duration)
 	}
 
 	// add the time to start date if present
-	$fmt_start = $lang['DATE_FORMAT2'];
+	$fmt_start = $lang['DATE_FORMAT_CALENDAR'];
 	if (!empty($hour))
 	{
 		$fmt_start = $config['default_dateformat'];
 	}
 
 	// add the time to end date if duration
-	$fmt_end = $lang['DATE_FORMAT2'];
+	$fmt_end = $lang['DATE_FORMAT_CALENDAR'];
 	if (!empty($hour) || !empty($d_hour))
 	{
 		$fmt_end = $config['default_dateformat'];
@@ -396,7 +396,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		$message = $bbcode->parse($message);
 
 		// get the date format
-		$fmt = $lang['DATE_FORMAT2'];
+		$fmt = $lang['DATE_FORMAT_CALENDAR'];
 		if (!empty($topic_calendar_duration))
 		{
 			$fmt = $config['default_dateformat'];
@@ -502,7 +502,7 @@ function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $y
 	{
 		$user_id = $birthdays_list[$i]['user_id'];
 		$username = $birthdays_list[$i]['username'];
-		$user_birthday = realdate($lang['DATE_FORMAT2'], $birthdays_list[$i]['user_birthday']);
+		$user_birthday = realdate($lang['DATE_FORMAT_CALENDAR'], $birthdays_list[$i]['user_birthday']);
 
 		// We cannot use colorize_username because this should be just the url... try to parse the color code instead
 		$username_colorized = colorize_username($birthdays_list[$i]['user_id'], $birthdays_list[$i]['username'], $birthdays_list[$i]['user_color'], $birthdays_list[$i]['user_active'], true);
@@ -992,7 +992,7 @@ function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 			$template->assign_block_vars('_calendar_box._row._cell', array(
 				'WIDTH' => floor(100 / $nb_cells),
 				'SPAN' => $span,
-				'DATE' => sprintf($format, date_dsp(($full_month ? '' : 'D ') . $lang['DATE_FORMAT2'], $offset_date)),
+				'DATE' => sprintf($format, date_dsp(($full_month ? '' : 'D ') . $lang['DATE_FORMAT_CALENDAR'], $offset_date)),
 				'U_DATE' => append_sid(IP_ROOT_PATH . 'calendar_scheduler.' . PHP_EXT . '?d=' . $offset_date . '&amp;fid=' . $fid),
 				)
 			);

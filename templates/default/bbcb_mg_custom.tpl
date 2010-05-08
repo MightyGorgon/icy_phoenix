@@ -59,7 +59,7 @@ function bbcb_vars_reassign_end()
 			<span class="genmed">&nbsp;&nbsp;</span>
 			<a href="javascript:bbcb_vars_reassign_start();BBCimg();bbcb_vars_reassign_end();" accesskey="p"><img border="0" src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_link{BBCB_MG_IMG_EXT}" name="img" onmouseover="helpline('img')" alt="{L_BBCB_MG_IMG}" title="{L_BBCB_MG_IMG}" class="bbimages" /></a>
 			<!-- IF S_PIC_UPLOAD -->
-			<a href="{U_BBCODE_POSTICYIMAGE}" onclick="popup('{U_BBCODE_POSTICYIMAGE}', 700, 300, '_upload_image'); return false;"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}post_icy_image{BBCB_MG_IMG_EXT}" name="posticyimage" onmouseover="helpline('posticyimage')" alt="{L_BBCB_MG_POSTICYIMAGE}" title="{L_BBCB_MG_POSTICYIMAGE}" class="bbimages" /></a>
+			<a href="{U_BBCODE_POSTICYIMAGE}" onclick="popup('{U_BBCODE_POSTICYIMAGE}', 700, 500, '_upload_image'); return false;"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}post_icy_image{BBCB_MG_IMG_EXT}" name="posticyimage" onmouseover="helpline('posticyimage')" alt="{L_BBCB_MG_POSTICYIMAGE}" title="{L_BBCB_MG_POSTICYIMAGE}" class="bbimages" /></a>
 			<!-- ENDIF -->
 
 			<span class="genmed">&nbsp;&nbsp;</span>

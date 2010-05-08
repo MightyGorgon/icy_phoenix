@@ -39,7 +39,7 @@ class acm
 	*/
 	function acm()
 	{
-		$this->cache_dir = MAIN_CACHE_FOLDER;
+		$this->cache_dir = defined('MAIN_CACHE_FOLDER') ? MAIN_CACHE_FOLDER : 'cache/';
 	}
 
 	/**
@@ -594,10 +594,10 @@ class acm
 	*/
 	function remove_file($cache_folder, $filename, $check = false)
 	{
-		$cache_folder = !empty($cache_folder) ? $cache_folder : MAIN_CACHE_FOLDER;
+		$cache_folder = !empty($cache_folder) ? $cache_folder : $this->cache_dir;
 		// The code below should ensures that a correct folder is identified... but maybe it is better avoid extra checks to file system to save CPU and disk charge
 		/*
-		$cache_folder = (!empty($cache_folder) && @is_dir($cache_folder)) ? $cache_folder : MAIN_CACHE_FOLDER;
+		$cache_folder = (!empty($cache_folder) && @is_dir($cache_folder)) ? $cache_folder : $this->cache_dir;
 		$cache_folder = ((@is_dir($cache_folder)) ? $cache_folder : @phpbb_realpath($cache_folder));
 		*/
 

@@ -431,7 +431,7 @@ class emailer
 			$template_lang = $config['default_lang'];
 		}
 
-		if ($config['html_email'])
+		if (!empty($config['html_email']))
 		{
 			if (empty($this->tpl_msg[$template_lang . $template_file]))
 			{

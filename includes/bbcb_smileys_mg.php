@@ -48,7 +48,8 @@ $template->assign_vars(array(
 	'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . PHP_EXT . '?mode=text2shield'),
 
 	'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
-	'U_UPLOAD_IMAGE' => append_sid('upload.' . PHP_EXT),
+	//'U_UPLOAD_IMAGE' => append_sid('upload.' . PHP_EXT),
+	'U_UPLOAD_IMAGE' => append_sid('upload_ajax.' . PHP_EXT),
 	)
 );
 

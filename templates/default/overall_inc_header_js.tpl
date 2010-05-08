@@ -80,7 +80,11 @@ window.onunload = function()
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/i18n/jquery-ui-i18n.min.js" type="text/javascript"></script>
 <!-- ENDIF -->
 
-<!-- IF S_NIVO_SLIDER -->
+<!-- IF S_JQ_CYCLE_SLIDESHOW -->
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_cycle_all_compressed.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
+<!-- IF S_JQ_NIVO_SLIDER -->
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_custom.css" type="text/css" media="screen" />
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_compressed.js" type="text/javascript"></script>
 <!-- ENDIF -->

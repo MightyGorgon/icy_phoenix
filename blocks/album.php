@@ -293,7 +293,7 @@ if(!function_exists('cms_block_album'))
 			'TARGET_BLANK' => ($album_config['fullpic_popup']) ? 'target="_blank"' : '',
 
 			'S_HIGHSLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
-			'S_NIVO_SLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
+			'S_JQ_NIVO_SLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
 			'S_SLIDER_ID' => 'cms_slider_' . $block_id,
 			'S_NO_PICS' => (!empty($no_pics) ? true : false),
 

@@ -76,7 +76,8 @@ if ($row = $db->sql_fetchrow($result))
 			$subject = request_var('subject', '', true);
 			$subject = htmlspecialchars_decode($subject, ENT_COMPAT);
 			$message = request_var('message', '', true);
-			$message = htmlspecialchars_decode($message, ENT_COMPAT);
+			// We need to check if HTML emails are enabled so we can correctly escape content and linebreaks
+			$message = !empty($config['html_email']) ? nl2br($message) : htmlspecialchars_decode($message, ENT_COMPAT);
 
 			if (empty($subject))
 			{

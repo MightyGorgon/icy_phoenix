@@ -222,6 +222,34 @@ class ImgObj
 	}
 
 	//****************************************************************************
+	// Function to send image to browser
+	//   Usage : LoadSendToBrowser('Image', 'jpg', '', '', 75)
+	//   Returns : true on success and false on failure
+	//****************************************************************************
+	function LoadSendToBrowser($pic_src, $pic_name = 'image', $pic_filetype = 'jpg', $pic_prefix = '', $pic_suffix = '', $jpg_quality = 75)
+	{
+		global $images;
+		switch ($pic_filetype)
+		{
+			case 'gif':
+				$pic_filetype_header = 'gif';
+				break;
+			case 'png':
+				$pic_filetype_header = 'png';
+				break;
+			case 'jpg':
+			case 'jpeg':
+			default:
+				$pic_filetype_header = 'jpeg';
+				break;
+		}
+		header('Content-type: image/' . $pic_filetype_header);
+		header('Content-Disposition: filename=' . $pic_prefix . $pic_name . $pic_suffix . '.' . $pic_filetype);
+		@readfile($pic_src);
+		return true;
+	}
+
+	//****************************************************************************
 	// Function to get image width
 	//   Usage : ImageWidth()
 	//   Returns : Image width in pixels or false on failure
@@ -705,7 +733,7 @@ class ImgObj
 			$bottom = $this->ImageHeight();
 		}
 		$temp_img = ($this->gdVersion() == 1) ? imagecreate($right - $left, $bottom - $top) : imagecreatetruecolor($right - $left, $bottom - $top);
-		imagecopy($temp_img, $this->ImageID, 0, 0, $left, $top, $right - $left, $bottom - $top) || die("Fuck");
+		imagecopy($temp_img, $this->ImageID, 0, 0, $left, $top, $right - $left, $bottom - $top) || die('error');
 		$this->DestroyImage();
 		$this->ImageID = $temp_img;
 		$this->ChangeFlag = true;
@@ -2279,6 +2307,174 @@ function get_image_coord($pos, $sourcefile_width, $sourcefile_height, $insertfil
 	}
 
 	return $dest;
+}
+
+/*
+* create_thumb
+* Thumbnails Creation
+*/
+function create_thumb($source_pic, $allowed_extensions, $t_width, $t_height, $t_suffix = '', $t_path = '', $t_quality = '75', $force_size = false)
+{
+	if (!class_exists('class_files'))
+	{
+		include_once(IP_ROOT_PATH . 'includes/class_files.' . PHP_EXT);
+	}
+	$class_files = new class_files();
+
+	if (!empty($allowed_extensions))
+	{
+		$allowed_extensions = is_array($allowed_extensions) ? $allowed_extensions : array($allowed_extensions);
+		$allowed_extensions = array_map('strtolower', $allowed_extensions);
+	}
+
+	$file_details = array();
+	$pic_fullpath = str_replace(array(' '), array('%20'), $source_pic);
+	$file_details = $class_files->get_file_details($source_pic);
+	$pic_filename = $file_details['name_full'];
+	$pic_title = $file_details['filename'];
+	$pic_filetype = $file_details['extension'];
+	$pic_title_reg = $class_files->clean_string($pic_title, false);
+	$pic_thumbnail = $pic_title . $t_suffix . '.' . $pic_filetype;
+
+	if (!empty($allowed_extensions) && !in_array($pic_filetype, $allowed_extensions))
+	{
+		return false;
+	}
+
+	$pic_size = get_full_image_info($source_pic, null, true);
+	if($pic_size == false)
+	{
+		return false;
+	}
+
+	$pic_width = $pic_size['width'];
+	$pic_height = $pic_size['height'];
+	$pic_filetype_new = strtolower($pic_size['type']);
+	$pic_thumbnail_fullpath = (($t_path == '') ? '' : ($t_path . '/')) . $pic_thumbnail;
+
+	switch($pic_filetype_new)
+	{
+		case 'gif':
+			$img_tmp = @imagecreatefromgif($source_pic);
+			break;
+		case 'jpg':
+			$img_tmp = @imagecreatefromjpeg($source_pic);
+			break;
+		case 'png':
+			$img_tmp = @imagecreatefrompng($source_pic);
+			break;
+		default:
+			return false;
+			break;
+	}
+
+	$pic_ratio = $pic_width / $pic_height;
+	$t_ratio = $t_width / $t_height;
+	$x_offset = 0;
+	$y_offset = 0;
+	$dest_width = $t_width;
+	$dest_height = $t_height;
+	if (!empty($force_size))
+	{
+		if ($pic_ratio > $t_ratio)
+		{
+			$dest_width = $t_height * $pic_ratio;
+		}
+		else
+		{
+			$dest_height = $t_width / $pic_ratio;
+		}
+		$x_mid = $dest_width / 2;
+		$y_mid = $dest_height / 2;
+		$x_offset = round($x_mid - ($t_width / 2), 0);
+		$y_offset = round($y_mid - ($t_height / 2), 0);
+
+		// If we want to crop the image, we need an intermediate image... and we need to reset final width and height
+		$img_new = @imagecreatetruecolor($dest_width, $dest_height);
+		if (!$img_new)
+		{
+			return false;
+		}
+
+		@imagealphablending($img_new, false);
+		@imagecopyresampled($img_new, $img_tmp, 0, 0, 0, 0, $dest_width, $dest_height, $pic_width, $pic_height);
+		@imagesavealpha($img_new, true);
+		@imagedestroy($img_tmp);
+
+		$img_tmp = $img_new;
+		$dest_width = $t_width;
+		$dest_height = $t_height;
+		$pic_width = $t_width;
+		$pic_height = $t_height;
+	}
+	else
+	{
+		if (($pic_width <= $t_width) && ($pic_height <= $t_height))
+		{
+			$dest_width = $pic_width;
+			$dest_height = $pic_height;
+			if (($t_path != '') && !file_exists($t_path))
+			{
+				@mkdir ($t_path, 0777);
+			}
+			@copy($source_pic, $pic_thumbnail_fullpath);
+			@chmod($pic_thumbnail_fullpath, 0755);
+			return true;
+		}
+		else
+		{
+			if ($pic_ratio > $t_ratio)
+			{
+				$dest_width = round($t_height * $pic_ratio, 0);
+			}
+			else
+			{
+				$dest_height = round($t_width / $pic_ratio, 0);
+			}
+		}
+	}
+
+	$img_new = @imagecreatetruecolor($dest_width, $dest_height);
+	if (!$img_new)
+	{
+		return false;
+	}
+
+	@imagealphablending($img_new, false);
+	@imagecopyresampled($img_new, $img_tmp, 0, 0, $x_offset, $y_offset, $dest_width, $dest_height, $pic_width, $pic_height);
+	@imagesavealpha($img_new, true);
+	@imagedestroy($img_tmp);
+
+	if (($t_path != '') && !file_exists($t_path))
+	{
+		@mkdir ($t_path, 0777);
+	}
+
+	// If you want all thumbnails to be forced as JPG you can decomment these lines
+	/*
+	imagejpeg ($img_new, $pic_thumbnail_fullpath, '75');
+	return true;
+	exit;
+	*/
+
+	switch ($pic_filetype)
+	{
+		case 'jpg':
+			@imagejpeg($img_new, $pic_thumbnail_fullpath, '75');
+			break;
+		case 'png':
+			@imagepng($img_new, $pic_thumbnail_fullpath);
+			break;
+		case 'gif':
+			@imagegif($img_new, $pic_thumbnail_fullpath);
+			break;
+		default:
+			return false;
+			exit;
+	}
+	@chmod($pic_thumbnail_fullpath, 0755);
+	@imagedestroy($img_new);
+	return true;
 }
 
 ?>

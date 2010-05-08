@@ -16,7 +16,7 @@
 <!-- BEGIN switch_sm_pic_upload -->
 <br />
 <table class="forumline" width="90%" border="0" cellspacing="0" cellpadding="0">
-<tr><td class="cat" align="center"><input type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" style="width: 135px" onclick="window.open('{U_UPLOAD_IMAGE}','_upload_image','height=300,width=700,resizable=yes,scrollbars=no'); return false;" /></td></tr>
+<tr><td class="cat" align="center"><input type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" style="width: 135px" onclick="window.open('{U_UPLOAD_IMAGE}','_upload_image','height=500,width=700,resizable=yes,scrollbars=no'); return false;" /></td></tr>
 </table>
 <!-- END switch_sm_pic_upload -->
 

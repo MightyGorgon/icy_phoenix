@@ -44,14 +44,7 @@ function checkForm(formObj)
 </tr>
 <tr>
 	<td class="row1" valign="top"><span class="gen"><b>{L_OPTIONS}</b></span></td>
-	<td class="row2" align="left">
-		<table cellspacing="0" cellpadding="1" border="0">
-			<tr>
-				<td><input type="checkbox" name="cc_email"  value="1" checked="checked" /></td>
-				<td><span class="gen">{L_CC_EMAIL}</span></td>
-			</tr>
-		</table>
-	</td>
+	<td class="row2" align="left"><input type="checkbox" name="cc_email" value="1" checked="checked" />&nbsp;<span class="gen">{L_CC_EMAIL}</span></td>
 </tr>
 <tr><td class="catBottom" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" tabindex="6" name="submit" class="mainoption" value="{L_SEND_EMAIL}" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

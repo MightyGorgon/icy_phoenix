@@ -66,10 +66,19 @@ if (isset($_POST['submit']))
 {
 	$error = false;
 
-	$topic_title = request_var('topic_title', '', true);
-	$message = request_var('message', '', true);
 	$friendemail = request_var('friendemail', '', true);
 	$friendname = request_var('friendname', '', true);
+	$topic_title = request_var('topic_title', '', true);
+	$message = request_var('message', '', true);
+	// We need to check if HTML emails are enabled so we can correctly escape content and linebreaks
+	if (!empty($config['html_email']))
+	{
+		$message = nl2br(str_replace($topic_link, ('<a href="' . $topic_link . '">' . $topic_link . '</a>'), $message));
+	}
+	else
+	{
+		$message = htmlspecialchars_decode($message, ENT_COMPAT);
+	}
 
 	if (!empty($friendemail) && (strpos($friendemail, '@') > 0))
 	{
@@ -86,12 +95,6 @@ if (isset($_POST['submit']))
 
 	if (!$error)
 	{
-		if ($config['html_email'])
-		{
-			$message = str_replace("\n", '<br />', $message);
-			$message = str_replace($topic_link, ('<a href="' . $topic_link . '">' . $topic_link . '</a>'), $message);
-		}
-
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer();
 

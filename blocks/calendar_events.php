@@ -33,7 +33,7 @@ if(!function_exists('cms_block_calendar_events'))
 		$allow_forum_id = $cms_config_vars['md_events_forums_id'][$block_id];
 		$allow_forum_id_array = explode(',', str_replace(' ', '', $allow_forum_id));
 		$allowed_forum_ids = build_allowed_forums_list(true);
-		$allowed_forum_id_array = ($allow_forum_id != '0') ? array_intersect($allowed_forum_ids, $allow_forum_id_array) : $allowed_forum_ids;
+		$allowed_forum_id_array = (!empty($allow_forum_id) ? array_intersect($allowed_forum_ids, $allow_forum_id_array) : $allowed_forum_ids);
 
 		if (empty($allowed_forum_id_array))
 		{
@@ -69,15 +69,21 @@ if(!function_exists('cms_block_calendar_events'))
 						'ROW_CLASS' => $row_class,
 						'SHOW_END_TIME' => $show_end_date,
 
-						'EVENT_START_DATE' => $event_row['topic_calendar_time'],
-						'EVENT_START_TIME' => $event_row['topic_calendar_time'],
-						'EVENT_END_DATE' => $event_row['topic_calendar_time'],
-						'EVENT_END_TIME' => $event_row['topic_calendar_time'],
+						'EVENT_START_DATE' => gmdate($lang['DATE_FORMAT_DATE'], $event_row['topic_calendar_time']),
+						'EVENT_START_TIME' => gmdate($lang['DATE_FORMAT_TIME'], $event_row['topic_calendar_time']),
+						'EVENT_END_DATE' => gmdate($lang['DATE_FORMAT_DATE'], $event_row['topic_calendar_time'] + $event_row['topic_calendar_duration']),
+						'EVENT_END_TIME' => gmdate($lang['DATE_FORMAT_TIME'], $event_row['topic_calendar_time'] + $event_row['topic_calendar_duration']),
+						/*
+						'EVENT_START_DATE' => create_date($lang['DATE_FORMAT_DATE'], $event_row['topic_calendar_time'], $config['board_timezone']),
+						'EVENT_START_TIME' => create_date($lang['DATE_FORMAT_TIME'], $event_row['topic_calendar_time'], $config['board_timezone']),
+						'EVENT_END_DATE' => create_date($lang['DATE_FORMAT_DATE'], $event_row['topic_calendar_time'], $config['board_timezone']),
+						'EVENT_END_TIME' => create_date($lang['DATE_FORMAT_TIME'], $event_row['topic_calendar_time'], $config['board_timezone']),
+						*/
 
 						'U_EVENT_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $event_row['forum_id']),
 						'L_EVENT_FORUM' => $event_row['forum_name'],
 						'U_EVENT_TITLE' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $event_row['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $event_row['topic_id']),
-						'L_EVENT_TITLE' => htmlspecialchars($event_row['topic_title']),
+						'L_EVENT_TITLE' => $event_row['topic_title'],
 						)
 					);
 					$i++;

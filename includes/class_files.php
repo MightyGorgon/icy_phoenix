@@ -95,9 +95,9 @@ class class_files
 	/**
 	* Sanitizes a string to only lowercase letters, numbers and underscore
 	*/
-	function clean_string($string)
+	function clean_string($string, $lowercase = true)
 	{
-		$string = preg_replace('/[^a-z0-9]+/', '_', strtolower($string));
+		$string = !empty($lowercase) ? preg_replace('/[^a-z0-9]+/', '_', strtolower($string)) : preg_replace('/[^A-Za-z0-9]+/', '_', $string);
 		return $string;
 	}
 
@@ -117,7 +117,7 @@ class class_files
 	{
 		$file_details = array();
 		$file_details = pathinfo($file_name);
-		$file_details['clean_name'] = $this->clean_string($file_details['filename']) . '.' . $this->clean_string($file_details['extension']);
+		$file_details['clean_name'] = $this->clean_string($file_details['filename'], true) . '.' . $this->clean_string($file_details['extension']);
 		return $file_details;
 	}
 
@@ -141,7 +141,7 @@ class class_files
 			$dir_name = time() . '_' . $this->unique_id();
 		}
 
-		$dir_name = $this->clean_string($dir_name);
+		$dir_name = $this->clean_string($dir_name, true);
 		$dir_full_path = $this->uploads_folder . $dir_name;
 		while(@is_dir($dir_full_path))
 		{
@@ -171,7 +171,7 @@ class class_files
 		$file_full_path = $target_dir . $file_details['clean_name'];
 		while (@file_exists($file_full_path))
 		{
-			$file_full_path = $target_dir . $this->clean_string($file_details['filename']) . '_' . time() . '_' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT) . '.' . $this->clean_string($file_details['extension']);
+			$file_full_path = $target_dir . $this->clean_string($file_details['filename'], true) . '_' . time() . '_' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT) . '.' . $this->clean_string($file_details['extension']);
 		}
 		return $file_full_path;
 	}

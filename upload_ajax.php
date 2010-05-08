@@ -41,6 +41,7 @@ unset($js_temp);
 
 $server_path = create_server_url();
 $upload_dir = POSTED_IMAGES_PATH;
+$user_upload_dir = '';
 $allowed_extensions = 'gif|jpg|jpeg|png';
 $max_file_size = (1000 * 1024);
 
@@ -48,14 +49,16 @@ if (USERS_SUBFOLDERS_IMG)
 {
 	if (is_dir($upload_dir . $userdata['user_id']))
 	{
-		$upload_dir = $upload_dir . $userdata['user_id'] . '/';
+		$user_upload_dir = $userdata['user_id'] . '/';
+		$upload_dir = $upload_dir . $user_upload_dir;
 	}
 	else
 	{
 		$dir_creation = @mkdir($upload_dir . $userdata['user_id'], 0777);
 		if ($dir_creation)
 		{
-			$upload_dir = $upload_dir . $userdata['user_id'] . '/';
+			$user_upload_dir = $userdata['user_id'] . '/';
+			$upload_dir = $upload_dir . $user_upload_dir;
 		}
 	}
 }
@@ -64,6 +67,7 @@ $template_to_parse = 'upload_image_ajax.tpl';
 
 $template->assign_vars(array(
 	'S_UPLOAD_DIR' => $upload_dir,
+	'S_USER_UPLOAD_DIR' => $user_upload_dir,
 	'S_AJAX_UPLOAD' => 'ajax_upload.' . PHP_EXT,
 	'S_ALLOWED_EXTENSIONS' => $allowed_extensions,
 	'S_MAX_FILE_SIZE' => $max_file_size,
@@ -77,13 +81,13 @@ $template->assign_vars(array(
 
 	// Used in JS, we need to escape
 	'L_UPLOADING_JS' => addslashes($lang['Uploading']),
-	'L_ALLOWED_EXT_JS' => addslashes($lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $filetypes) . '.'),
+	'L_ALLOWED_EXT_JS' => addslashes($lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.'),
 	'IMG_LOADING_JS' => '<img src="' . IP_ROOT_PATH . 'images/loading.gif' . '" alt="' . addslashes(htmlspecialchars($lang['Uploading'])) . '" />',
 
 	'L_UPLOADING' => $lang['Uploading'],
 	'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 	'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
-	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $filetypes) . '.',
+	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.',
 	)
 );
 

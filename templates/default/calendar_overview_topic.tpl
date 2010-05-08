@@ -14,8 +14,8 @@
 	<td class="row1">
 		<span class="genmed">{CALENDAR_MESSAGE}<hr /></span>
 		<span class="gensmall">
-			<b>{L_VIEWS}:</b>{VIEWS}<br />
-			<b>{L_REPLIES}:</b>{REPLIES}
+			<b>{L_VIEWS}:</b>&nbsp;{VIEWS}<br />
+			<b>{L_REPLIES}:</b>&nbsp;{REPLIES}
 		</span>
 	</td>
 </tr>

@@ -83,7 +83,17 @@ check_flood_email(false);
 
 $sender = request_var('sender', '', true);
 $subject = request_var('subject', '', true);
+$subject = htmlspecialchars_decode($subject, ENT_COMPAT);
 $message = request_var('message', '', true);
+// We need to check if HTML emails are enabled so we can correctly escape content and linebreaks
+$message = !empty($config['html_email']) ? $message : htmlspecialchars_decode($message, ENT_COMPAT);
+if ($account_delete)
+{
+	$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $userdata['username']) . "\r\n<hr />\r\n\r\n" . $message;
+}
+$linebreaks_search = array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/");
+$linebreaks_replace = !empty($config['html_email']) ? array("\r\n", "\r\n", "<br />\r\n") : array("\r\n", "\r\n", "\r\n");
+$message = preg_replace($linebreaks_search, $linebreaks_replace, $message);
 
 if (isset($_POST['submit']))
 {
@@ -146,15 +156,7 @@ if (isset($_POST['submit']))
 		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Empty_subject_email'] : $lang['Empty_subject_email'];
 	}
 
-	if (!empty($message))
-	{
-		if ($account_delete)
-		{
-			$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $userdata['username']) . "<br />\r\n<hr /><br />\r\n<br />\r\n" . $message;
-		}
-		$message = preg_replace(array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/"), array("\r\n", "\r\n", "<br />\r\n"), $message);
-	}
-	else
+	if (empty($message))
 	{
 		$error = true;
 		$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Empty_message_email'] : $lang['Empty_message_email'];
@@ -197,18 +199,8 @@ if (isset($_POST['submit']))
 		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
 		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
 
-		$email_subject = htmlspecialchars_decode($subject, ENT_COMPAT);
-		//$email_subject = utf8_decode($email_subject);
-
+		$email_subject = $subject;
 		$email_message = $message;
-		/*
-		$email_message = htmlspecialchars_decode($email_message, ENT_COMPAT);
-		$trans_tbl = get_html_translation_table(HTML_ENTITIES);
-		if (!empty($config['html_email']))
-		{
-			$email_message = strtr($email_message, $trans_tbl);
-		}
-		*/
 
 		$emailer->use_template('empty_email', $user_lang);
 		$emailer->to($config['board_email']);

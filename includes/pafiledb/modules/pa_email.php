@@ -19,7 +19,8 @@ class pafiledb_email extends pafiledb_public
 {
 	function main($action)
 	{
-		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata, $debug;
+		global $db, $config, $template, $images, $userdata, $lang;
+		global $pafiledb_config, $debug;
 
 		$file_id = request_var('file_id', 0);
 		if (empty($file_id))
@@ -117,7 +118,9 @@ class pafiledb_email extends pafiledb_public
 			}
 
 			$message = request_var('message', '', true);
-			$message = htmlspecialchars_decode($message, ENT_COMPAT);
+			// We need to check if HTML emails are enabled so we can correctly escape content and linebreaks
+			$message = !empty($config['html_email']) ? nl2br($message) : htmlspecialchars_decode($message, ENT_COMPAT);
+
 			if (empty($message))
 			{
 				$error = true;

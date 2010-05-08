@@ -97,7 +97,8 @@ $template->assign_vars(array(
 
 	'U_BBCODE_COLORPICKER' => append_sid('bbcb_mg_cp.' . PHP_EXT),
 	'U_BBCODE_POSTIMAGE' => $post_image_lang,
-	'U_BBCODE_POSTICYIMAGE' => append_sid('upload.' . PHP_EXT),
+	//'U_BBCODE_POSTICYIMAGE' => append_sid('upload.' . PHP_EXT),
+	'U_BBCODE_POSTICYIMAGE' => append_sid('upload_ajax.' . PHP_EXT),
 
 	'L_BBCODE_B_HELP' => $lang['bbcode_b_help'],
 	'L_BBCODE_I_HELP' => $lang['bbcode_i_help'],
