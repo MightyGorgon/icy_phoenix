@@ -48,8 +48,8 @@ if(isset($_FILES['userfile']))
 	if(!in_array($extension, $types))
 	{
 		// Extension not allowed
-		echo('3');
-		//echo('new Array {"RESULT":"3", "FILENAME":"' . $filename . '"};');
+		//echo('3');
+		echo('3|' . $filename . '.' . $extension . '|0|0|0');
 		exit;
 	}
 
@@ -96,16 +96,16 @@ if(isset($_FILES['userfile']))
 	if(empty($filename))
 	{
 		// File is empty
-		echo('4');
-		//echo('new Array {"RESULT":"4", "FILENAME":"' . $filename . '"};');
+		//echo('4');
+		echo('4|' . $filename . '.' . $extension . '|0|0|0');
 		exit;
 	}
 
 	if($file_size > $maxsize)
 	{
 		// File is too big
-		echo('5');
-		//echo('new Array {"RESULT":"5", "FILENAME":"' . $filename . '"};');
+		//echo('5');
+		echo('5|' . $filename . '.' . $extension . '|0|0|0');
 		exit;
 	}
 
@@ -133,21 +133,22 @@ if(isset($_FILES['userfile']))
 	{
 		@unlink($upload_dir . $filename . '.' . $extension);
 		// Extension not allowed
-		echo('3');
-		//echo('new Array {"RESULT":"3", "FILENAME":"' . $filename . '"};');
+		//echo('3');
+		echo('3|' . $filename . '.' . $extension . '|0|0|0');
 		exit;
 	}
 	// Success
+	$filesize = filesize($upload_dir . $filename . '.' . $extension);
 	//echo('1');
-	//echo('new Array {"RESULT":"1", "FILENAME":"' . $filename . '"};');
-	echo($filename . '.' . $extension);
+	echo('1|' . $filename . '.' . $extension . '|' . (int) $filesize . '|' . (int) $pic_size[0] . '|' . (int) $pic_size[1]);
+	//echo($filename . '.' . $extension);
 	exit;
 }
 else
 {
 	// Error
-	echo('2');
-	//echo('new Array {"RESULT":"2", "FILENAME":"' . $filename . '"};');
+	//echo('2');
+	echo('2|' . $filename . '.' . $extension . '|0|0|0');
 	exit;
 }
 

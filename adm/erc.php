@@ -24,6 +24,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_dbmtnc.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
 @set_time_limit(0);

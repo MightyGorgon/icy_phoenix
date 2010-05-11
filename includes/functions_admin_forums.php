@@ -225,6 +225,8 @@ function reorder_tree()
 		}
 	}
 
+	convert_forum_order();
+
 	// Make sure forums cache is empty again...
 	empty_cache_folders(FORUMS_CACHE_FOLDER);
 	empty_cache_folders(TOPICS_CACHE_FOLDER);
@@ -233,6 +235,77 @@ function reorder_tree()
 	board_stats();
 }
 
+/*
+* Adjust left and right it for nested set model!
+*/
+function convert_forum_order()
+{
+	global $db;
+
+	// Reset all left and right IDs
+	$sql = "UPDATE " . FORUMS_TABLE . " SET left_id = 0, right_id = 0";
+	$result = $db->sql_query($sql);
+
+	// Get root forums
+	$sql = "SELECT f.forum_id, f.forum_order, f.parent_id, f.left_id, f.right_id
+		FROM " . FORUMS_TABLE . " f
+		WHERE f.parent_id = 0
+		ORDER BY f.forum_order ASC";
+	$result = $db->sql_query($sql);
+	$root_forums = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	$left_id = 1;
+	$right_id = 2;
+	foreach ($root_forums as $k => $v)
+	{
+		$input_array = array(
+			'left_id' => $left_id,
+			'right_id' => $right_id,
+		);
+
+		$sql_update = $db->sql_build_insert_update($input_array, false);
+		$sql = "UPDATE " . FORUMS_TABLE . " SET " . $sql_update . " WHERE forum_id = " . (int) $v['forum_id'];
+		$result = $db->sql_query($sql);
+		$left_id = $left_id + 2;
+		$right_id = $right_id + 2;
+	}
+
+	// Get all forums
+	$sql = "SELECT f.forum_id, f.forum_order, f.parent_id, f.left_id, f.right_id
+		FROM " . FORUMS_TABLE . " f
+		ORDER BY f.forum_order ASC";
+	$result = $db->sql_query($sql);
+	$all_forums = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	foreach ($all_forums as $k => $v)
+	{
+		if (!empty($v['parent_id']))
+		{
+			$sql = "SELECT f.right_id FROM " . FORUMS_TABLE . " f WHERE f.forum_id = " . (int) $v['parent_id'];
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			$parent_right_id = (int) $row['right_id'];
+			$db->sql_freeresult($result);
+
+			$sql = "UPDATE " . FORUMS_TABLE . " SET right_id = (right_id + 2) WHERE right_id >= " . $parent_right_id;
+			$result = $db->sql_query($sql);
+
+			$sql = "UPDATE " . FORUMS_TABLE . " SET left_id = (left_id + 2) WHERE left_id > " . $parent_right_id;
+			$result = $db->sql_query($sql);
+
+			$input_array = array(
+				'left_id' => $parent_right_id,
+				'right_id' => $parent_right_id + 1,
+			);
+
+			$sql_update = $db->sql_build_insert_update($input_array, false);
+			$sql = "UPDATE " . FORUMS_TABLE . " SET " . $sql_update . " WHERE forum_id = " . (int) $v['forum_id'];
+			$result = $db->sql_query($sql);
+		}
+	}
+}
 // admin_forums_extend.php - END
 
 /**

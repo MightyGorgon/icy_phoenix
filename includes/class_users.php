@@ -74,7 +74,7 @@ class class_users
 				}
 			}
 
-			if ($batch_process)
+			if (!empty($error) && $batch_process)
 			{
 				return false;
 			}

@@ -676,6 +676,145 @@ class class_files
 	}
 
 	/**
+	* Explode any single-dimensional array into a full blown tree structure, based on the delimiters found in it's keys.
+	*
+	* @author    Kevin van Zonneveld <kevin@vanzonneveld.net>
+	* @author    Lachlan Donald
+	* @author    Takkie
+	* @copyright 2008 Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	* @license   http://www.opensource.org/licenses/bsd-license.php New BSD Licence
+	* @version   SVN: Release: $Id: explodeTree.inc.php 89 2008-09-05 20:52:48Z kevin $
+	* @link      http://kevin.vanzonneveld.net/
+	*
+	* @param array   $array
+	* @param string  $delimiter
+	* @param boolean $baseval
+	*
+	* @return array
+	*/
+	/*
+	if(exec("find /etc/php5", $files))
+	{
+		// the $files array now holds the path as it's values, but we also want the paths as keys:
+		$key_files = array_combine(array_values($files), array_values($files));
+		// show the array
+		print_r($key_files);
+	}
+	// let '/' be our delimiter
+	$tree = explode_tree($key_files, "/");
+	// show the array
+	print_r($tree);
+	// now the 3rd argument, the baseval, is true
+	$tree = explode_tree($key_files, "/", true);
+	*/
+	function explode_tree($array, $delimiter = '_', $baseval = false)
+	{
+		if(!is_array($array)) return false;
+		$split_re  = '/' . preg_quote($delimiter, '/') . '/';
+		$return_array = array();
+		foreach ($array as $key => $val)
+		{
+			// Get parent parts and the current leaf
+			$parts = preg_split($split_re, $key, -1, PREG_SPLIT_NO_EMPTY);
+			$leaf_part = array_pop($parts);
+
+			// Build parent structure
+			// Might be slow for really deep and large structures
+			$parent_array = &$return_array;
+			foreach ($parts as $part)
+			{
+				if (!isset($parent_array[$part]))
+				{
+					$parent_array[$part] = array();
+				}
+				elseif (!is_array($parent_array[$part]))
+				{
+					if ($baseval)
+					{
+						$parent_array[$part] = array('__base_val' => $parent_array[$part]);
+					}
+					else
+					{
+						$parent_array[$part] = array();
+					}
+				}
+				$parent_array = &$parent_array[$part];
+			}
+
+			// Add the final part to the structure
+			if (empty($parent_array[$leaf_part]))
+			{
+				$parent_array[$leaf_part] = $val;
+			}
+			elseif ($baseval && is_array($parent_array[$leaf_part]))
+			{
+				$parent_array[$leaf_part]['__base_val'] = $val;
+			}
+		}
+
+		return $return_array;
+	}
+
+
+	function plot_tree($arr, $indent = 0, $mother_run = true)
+	{
+		if($mother_run)
+		{
+			// the beginning of plotTree. We're at rootlevel
+			echo "start\n";
+		}
+
+		foreach($arr as $k => $v)
+		{
+			// skip the baseval thingy. Not a real node.
+			if($k == '__base_val') continue;
+			// determine the real value of this node.
+			$show_val = ( is_array($v) ? $v['__base_val'] : $v );
+
+			// show the indents
+			echo str_repeat('  ', $indent);
+			if($indent == 0)
+			{
+				// this is a root node. no parents
+				echo 'O ';
+			}
+			elseif(is_array($v))
+			{
+				// this is a normal node. parents and children
+				echo '+ ';
+			}
+			else
+			{
+				// this is a leaf node. no children
+				echo '- ';
+			}
+
+			// show the actual node
+			echo $k . ' (' . $show_val . ')' . "\n";
+
+			if(is_array($v))
+			{
+				// this is what makes it recursive, rerun for childs
+				$this->plot_tree($v, ($indent + 1), false);
+			}
+		}
+
+		if($mother_run)
+		{
+			echo "end\n";
+		}
+	}
+
+	function bytes_to_string($size, $precision = 2)
+	{
+		$sizes = array('YB', 'ZB', 'EB', 'PB', 'TB', 'GB', 'MB', 'KB', 'Bytes');
+		$total = count($sizes);
+
+		while($total-- && ($size > 1024)) $size /= 1024;
+		return round($size, $precision) . " " . $sizes[$total];
+	}
+
+	/**
 	* Global function for chmodding directories and files for internal use
 	* This function determines owner and group whom the file belongs to and user and group of PHP and then set safest possible file permissions.
 	* The function determines owner and group from common.php file and sets the same to the provided file. Permissions are mapped to the group, user always has rw(x) permission.

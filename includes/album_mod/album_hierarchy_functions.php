@@ -593,7 +593,7 @@ function album_free_album_data()
 }
 
 //-----------------------------------------------
-// builds the album_tree strcture
+// builds the album_tree structure
 //-----------------------------------------------
 function album_build_tree(&$cats, &$parents, $level = ALBUM_ROOT_CATEGORY, $parent = ALBUM_ROOT_CATEGORY)
 {

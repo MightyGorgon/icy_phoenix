@@ -15,25 +15,40 @@
 				// extension is not allowed
 				if (! (ext && /^({S_ALLOWED_EXTENSIONS})$/.test(ext)))
 				{
-					status.text('{L_ALLOWED_EXT_JS}');
+					status.html('<span class="text_red">{L_ALLOWED_EXT_JS}<\/span>');
 					return false;
 				}
 				status.html('{IMG_LOADING_JS}');
 			},
 			onComplete: function(file, response){
 				//On completion clear the status
-				status.text('');
+				status.html('');
 				//Add uploaded file to list
-				if((response !== '0') && (response !== '2') && (response !== '3') && (response !== '4') && (response !== '5'))
+				var res_array = response.split("|");
+				if(res_array[0] == '1')
 				{
 					pic_counter++;
 					img_bbcode = '{IMG_BBCODE}';
 					//$('<div><\/div>').appendTo('#files').html('<img src="{S_UPLOAD_DIR}' + file + '" alt="" /><br />' + '<span class="text_green">' + file + '<\/span>').addClass('picframe-cont');
-					$('<div><\/div>').appendTo('#files').html('<img src="posted_img_list_thumbnail.' + php_ext + '?pic_id=' + escape('{S_USER_UPLOAD_DIR}' + file) + '" alt="" /><br />' + '<input class="post" name="bbci_' + pic_counter + '" size="80" maxlength="200" value="' + img_bbcode.replace('___IMAGE___', response) + '" style="width: 160px; max-width: 160px;" type="text" readonly="readonly" onclick="this.form.bbci_' + pic_counter + '.focus(); this.form.bbci_' + pic_counter + '.select();" />' + '<br /><input type="button" class="mainoption" value="{L_INSERT_BBC}" onclick="bbcb_ui_vars_reassign_start(); emoticon_sc(this.form.bbci_' + pic_counter + '.value); bbcb_ui_vars_reassign_end();" />').addClass('picframe-cont');
+					$('<div><\/div>').appendTo('#files').html('<img src="posted_img_list_thumbnail.' + php_ext + '?pic_id=' + escape('{S_USER_UPLOAD_DIR}' + res_array[1]) + '" alt="" /><br />' + '<input class="post" name="bbci_' + pic_counter + '" size="80" maxlength="200" value="' + img_bbcode.replace('___IMAGE___', res_array[1]) + '" style="width: 160px; max-width: 160px;" type="text" readonly="readonly" onclick="this.form.bbci_' + pic_counter + '.focus(); this.form.bbci_' + pic_counter + '.select();" />' + '<br /><input type="button" class="mainoption" value="{L_INSERT_BBC}" onclick="bbcb_ui_vars_reassign_start(); emoticon_sc(this.form.bbci_' + pic_counter + '.value); bbcb_ui_vars_reassign_end();" />').addClass('picframe-cont');
 				}
 				else
 				{
-					$('<div><\/div>').appendTo('#files').html('<span class="text_red">' + file + '<\/span>').addClass('picframe-cont');
+					var error_message = '';
+					if(res_array[0] == '5')
+					{
+						error_message = '{L_UPLOAD_ERROR_SIZE}<br />';
+					}
+					else if(res_array[0] == '3')
+					{
+						error_message = '{L_UPLOAD_ERROR_TYPE}<br />';
+					}
+					else
+					{
+						error_message = '{L_UPLOAD_ERROR}<br />';
+					}
+					status.html('<span class="text_red">' + error_message + file + '<\/span>');
+					//$('<div><\/div>').appendTo('#files').html('<span class="text_red">' + error_message + file + '<\/span>').addClass('picframe-cont');
 				}
 			}
 		});
