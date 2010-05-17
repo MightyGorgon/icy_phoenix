@@ -15,6 +15,11 @@
 *
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	die('Hacking attempt');
+}
+
 /**
 * All Attachment Functions needed to determine Special Files/Dimensions
 */

@@ -209,6 +209,8 @@ class class_form
 	*/
 	function validate_value($config_data)
 	{
+		global $lang;
+
 		$config_value = $config_data['default'];
 		switch ($config_data['type'])
 		{

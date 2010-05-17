@@ -324,6 +324,10 @@ define('MAIL_LOW_PRIORITY', 4);
 define('MAIL_NORMAL_PRIORITY', 3);
 define('MAIL_HIGH_PRIORITY', 2);
 
+// Captcha code length
+define('CAPTCHA_MIN_CHARS', 4);
+define('CAPTCHA_MAX_CHARS', 7);
+
 // Various constants
 define('POST_BIRTHDAY', 9);
 define('POST_CALENDAR', 10);
@@ -405,6 +409,8 @@ define('REG_UNREGISTER', 4);
 // Some of the most used colors names
 define('RGB_COLORS_LIST', 'aqua,black,blue,brown,cadetblue,chocolate,crimson,cyan,darkblue,darkgreen,darkgrey,darkorchid,darkred,deepskyblue,fuchsia,gold,gray,green,indigo,lightgrey,lime,maroon,navy,olive,orange,peachpuff,purple,red,seagreen,silver,teal,violet,white,yellow');
 
+define('VOTE_CONVERTED', 127);
+
 // Do not insert anything but tables below!
 // Table names
 define('ACRONYMS_TABLE', $table_prefix . 'acronyms');
@@ -449,6 +455,8 @@ define('NEWS_TABLE', $table_prefix . 'news');
 define('NOTES_ADMIN_TABLE',$table_prefix . 'notes');
 define('PLUGINS_TABLE', $table_prefix . 'plugins');
 define('PLUGINS_CONFIG_TABLE', $table_prefix . 'plugins_config');
+define('POLL_OPTIONS_TABLE', $table_prefix . 'poll_options');
+define('POLL_VOTES_TABLE', $table_prefix . 'poll_votes');
 define('POSTS_TABLE', $table_prefix . 'posts');
 define('PRIVMSGS_TABLE', $table_prefix . 'privmsgs');
 define('PROFILE_FIELDS_TABLE', $table_prefix . 'profile_fields');
@@ -482,9 +490,6 @@ define('TOPICS_TAGS_MATCH_TABLE', $table_prefix . 'topics_tags_match');
 define('TOPICS_WATCH_TABLE', $table_prefix . 'topics_watch');
 define('USER_GROUP_TABLE', $table_prefix . 'user_group');
 define('USERS_TABLE', $table_prefix . 'users');
-define('VOTE_DESC_TABLE', $table_prefix . 'vote_desc');
-define('VOTE_RESULTS_TABLE', $table_prefix . 'vote_results');
-define('VOTE_USERS_TABLE', $table_prefix . 'vote_voters');
 define('WORDS_TABLE', $table_prefix . 'words');
 define('XS_NEWS_TABLE', $table_prefix . 'xs_news');
 define('XS_NEWS_XML_TABLE', $table_prefix . 'xs_news_xml');

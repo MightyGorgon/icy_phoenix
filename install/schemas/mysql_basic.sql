@@ -1695,8 +1695,8 @@ INSERT INTO `phpbb_themes` (`themes_id`, `template_name`, `style_name`, `head_st
 
 ## `phpbb_topics`
 ##
-INSERT INTO `phpbb_topics` (`topic_id`, `forum_id`, `topic_title`, `topic_desc`, `topic_poster`, `topic_time`, `topic_views`, `topic_replies`, `topic_status`, `topic_vote`, `topic_type`, `topic_first_post_id`, `topic_last_post_id`, `topic_moved_id`, `topic_attachment`, `title_compl_infos`, `news_id`, `topic_calendar_time`, `topic_calendar_duration`, `topic_rating`, `topic_show_portal`) VALUES (1, 3, 'Welcome to Icy Phoenix', '', 2, 1241136000, 0, 0, 0, 0, 0, 1, 1, 0, 0, NULL, 0, NULL, NULL, 0, 0);
-INSERT INTO `phpbb_topics` (`topic_id`, `forum_id`, `topic_title`, `topic_desc`, `topic_poster`, `topic_time`, `topic_views`, `topic_replies`, `topic_status`, `topic_vote`, `topic_type`, `topic_first_post_id`, `topic_last_post_id`, `topic_moved_id`, `topic_attachment`, `title_compl_infos`, `news_id`, `topic_calendar_time`, `topic_calendar_duration`, `topic_rating`, `topic_show_portal`) VALUES (2, 3, 'Sample News Post in Portal', '', 2, 1241136000, 1, 0, 0, 0, 4, 2, 2, 0, 0, NULL, 1, 0, 0, 0, 0);
+INSERT INTO `phpbb_topics` (`topic_id`, `forum_id`, `topic_title`, `topic_desc`, `topic_poster`, `topic_time`, `topic_views`, `topic_replies`, `topic_status`, `topic_type`, `topic_first_post_id`, `topic_last_post_id`, `topic_moved_id`, `topic_attachment`, `title_compl_infos`, `news_id`, `topic_calendar_time`, `topic_calendar_duration`, `topic_rating`, `topic_show_portal`) VALUES (1, 3, 'Welcome to Icy Phoenix', '', 2, 1241136000, 0, 0, 0, 0, 1, 1, 0, 0, NULL, 0, NULL, NULL, 0, 0);
+INSERT INTO `phpbb_topics` (`topic_id`, `forum_id`, `topic_title`, `topic_desc`, `topic_poster`, `topic_time`, `topic_views`, `topic_replies`, `topic_status`, `topic_type`, `topic_first_post_id`, `topic_last_post_id`, `topic_moved_id`, `topic_attachment`, `title_compl_infos`, `news_id`, `topic_calendar_time`, `topic_calendar_duration`, `topic_rating`, `topic_show_portal`) VALUES (2, 3, 'Sample News Post in Portal', '', 2, 1241136000, 0, 0, 0, 4, 2, 2, 0, 0, NULL, 1, 0, 0, 0, 0);
 
 ## `phpbb_topics_watch`
 ##

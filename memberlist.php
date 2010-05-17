@@ -15,11 +15,11 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
 define('CM_MEMBERLIST', true);
 // MG Cash MOD For IP - END
+define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);

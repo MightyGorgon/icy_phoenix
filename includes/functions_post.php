@@ -74,7 +74,7 @@ function unprepare_message($message)
 }
 
 // Prepare a message for posting
-function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$reg_active, &$reg_reset, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
+function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$subject, &$message, &$poll_title, &$poll_options, &$poll_data, &$reg_active, &$reg_reset, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
 	global $config, $userdata, $lang;
 	global $topic_id;
@@ -200,12 +200,18 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	// Handle poll stuff
 	if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post']))
 	{
-		$poll_length = (isset($poll_length)) ? max(0, intval($poll_length)) : 0;
-
-		if (!empty($poll_title))
-		{
-			$poll_title = trim($poll_title);
-		}
+		$poll_title = (!empty($poll_title) ? trim($poll_title) : (isset($poll_data['title']) ? trim($poll_data['title']) : ''));
+		$poll_start = (isset($poll_data['start'])) ? $poll_data['start'] : time();
+		$poll_length = (isset($poll_data['length'])) ? max(0, intval($poll_data['length'])) : 0;
+		$poll_max_options = (isset($poll_data['max_options'])) ? max(1, intval($poll_data['max_options'])) : 1;
+		$poll_change = (isset($poll_data['change'])) ? $poll_data['change'] : 0;
+		$poll_data = array(
+			'title' => $poll_title,
+			'start' => $poll_start,
+			'length' => $poll_length,
+			'max_options' => $poll_max_options,
+			'change' => $poll_change
+		);
 
 		if(!empty($poll_options))
 		{
@@ -246,10 +252,10 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 }
 
 // Post a new topic/reply/poll or edit existing post/poll
-function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, $post_username, $post_subject, $topic_title_clean, $topic_tags, $post_message, $poll_title, &$poll_options, &$poll_length, &$reg_active, &$reg_reset, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$news_category, &$topic_show_portal, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
+function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, $post_username, $post_subject, $topic_title_clean, $topic_tags, $post_message, $poll_title, &$poll_options, &$poll_data, &$reg_active, &$reg_reset, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$news_category, &$topic_show_portal, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
 	global $config, $lang, $db;
-	global $userdata, $user_ip, $post_data;
+	global $userdata, $user_ip;
 	// CrackerTracker v5.x
 	if ((($mode == 'newtopic') || ($mode == 'reply')) && (($config['ctracker_spammer_blockmode'] > 0) || ($config['ctracker_spam_attack_boost'] == 1)) && ($userdata['user_level'] != ANONYMOUS))
 	{
@@ -299,8 +305,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post']))
 	{
 		$topic_vote = (!empty($poll_title) && sizeof($poll_options) >= 2) ? 1 : 0;
-		$topic_show_portal = ( $topic_show_portal == true ) ? 1 : 0;
-		$topic_calendar_duration = ( $topic_calendar_duration == '') ? 0 : $topic_calendar_duration;
+		$topic_show_portal = ($topic_show_portal == true) ? 1 : 0;
+		$topic_calendar_duration = ($topic_calendar_duration == '') ? 0 : $topic_calendar_duration;
 
 		// Event Registration - BEGIN
 		$topic_reg = 0;
@@ -310,7 +316,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 		// Event Registration - END
 
-		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_tags, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_reg, topic_vote, topic_show_portal) VALUES ('" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($topic_desc) . "', " . $db->sql_validate_value($topic_tags) . ", " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_reg, $topic_vote, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '" . $db->sql_escape($post_subject) . "', news_id = $news_id, topic_desc = '" . $db->sql_escape($topic_desc) . "', topic_tags = " . $db->sql_validate_value($topic_tags) . ", topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration, topic_reg = $topic_reg" . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . ", topic_show_portal = $topic_show_portal
+		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_tags, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_reg, topic_show_portal) VALUES ('" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($topic_desc) . "', " . $db->sql_validate_value($topic_tags) . ", " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_reg, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '" . $db->sql_escape($post_subject) . "', news_id = $news_id, topic_desc = '" . $db->sql_escape($topic_desc) . "', topic_tags = " . $db->sql_validate_value($topic_tags) . ", topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration, topic_reg = $topic_reg" . ", topic_show_portal = $topic_show_portal
 		WHERE topic_id = $topic_id";
 
 		$db->sql_query($sql);
@@ -350,6 +356,94 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 	}
 
+	// Poll management - BEGIN
+	if ((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll'])) && !empty($poll_title) && (sizeof($poll_options) >= 2))
+	{
+		$poll_title = (!empty($poll_title) ? trim($poll_title) : (isset($poll_data['title']) ? trim($poll_data['title']) : ''));
+		$poll_start = !empty($poll_data['start']) ? $poll_data['start'] : $current_time;
+		$poll_length = isset($poll_data['length']) ? max(0, intval($poll_data['length'])) : 0;
+		$poll_max_options = (isset($poll_data['max_options'])) ? max(1, intval($poll_data['max_options'])) : 1;
+		$poll_last_vote = !empty($post_data['poll_last_vote']) ? $post_data['poll_last_vote'] : 0;
+		$poll_change = !empty($poll_data['change']) ? 1 : 0;
+
+		$sql_ary = array(
+			'poll_title' => $poll_title,
+			'poll_start' => $poll_start,
+			'poll_length' => $poll_length,
+			'poll_max_options' => $poll_max_options,
+			'poll_last_vote' => $poll_last_vote,
+			'poll_vote_change' => $poll_change
+		);
+
+		$sql_poll_update = $db->sql_build_insert_update($sql_ary, false);
+
+		$sql = "UPDATE " . TOPICS_TABLE . " SET " . $sql_poll_update . " WHERE topic_id = " . $topic_id;
+		$db->sql_query($sql);
+
+		$delete_option_sql = '';
+		$old_poll_result = array();
+		if (($mode == 'editpost') && $post_data['has_poll'])
+		{
+			$sql = "SELECT *
+				FROM " . POLL_OPTIONS_TABLE . "
+				WHERE topic_id = $topic_id
+				ORDER BY poll_option_id ASC";
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$old_poll_result[$row['poll_option_id']] = $row['poll_option_total'];
+
+				if (!isset($poll_options[$row['poll_option_id']]))
+				{
+					$delete_option_sql .= (($delete_option_sql != '') ? ', ' : '') . $row['poll_option_id'];
+				}
+			}
+		}
+
+		$poll_option_id = 1;
+		@reset($poll_options);
+		while (list($option_id, $option_text) = each($poll_options))
+		{
+			if (!empty($option_text))
+			{
+				$option_insert = (($mode != 'editpost') || !isset($old_poll_result[$option_id])) ? true : false;
+				$poll_result = $option_insert ? 0 : $old_poll_result[$option_id];
+				$poll_option_id = $option_insert ? $poll_option_id : $option_id;
+
+				$sql_tmp_option_ary = array(
+					'poll_option_id' => $poll_option_id,
+					'topic_id' => $topic_id,
+					'poll_option_text' => $option_text,
+					'poll_option_total' => $poll_result
+				);
+
+				$sql_tmp_option = $db->sql_build_insert_update($sql_tmp_option_ary, $option_insert);
+
+				if ($option_insert)
+				{
+					$sql = "INSERT INTO " . POLL_OPTIONS_TABLE . " " . $sql_tmp_option;
+				}
+				else
+				{
+					$sql = "UPDATE " . POLL_OPTIONS_TABLE . " SET " . $sql_tmp_option . " WHERE poll_option_id = $option_id AND topic_id = $topic_id";
+				}
+				$db->sql_query($sql);
+
+				$poll_option_id++;
+			}
+		}
+
+		if ($delete_option_sql != '')
+		{
+			$sql = "DELETE FROM " . POLL_OPTIONS_TABLE . "
+				WHERE poll_option_id IN ($delete_option_sql)
+					AND topic_id = $topic_id";
+			$db->sql_query($sql);
+		}
+	}
+	// Poll management - END
+
 	// Event Registration - BEGIN
 	if ((($mode == 'newtopic') || ($mode == 'editpost')) && ($topic_reg == 1))
 	{
@@ -386,15 +480,6 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			$edited_sql = (($mode == 'editpost') && !$post_data['last_post']) ? $edited_sql : '';
 		}
 	}
-
-	// Mighty Gorgon - This must be tested! - BEGIN
-	/*
-	if (get_magic_quotes_gpc() == false)
-	{
-		$post_message = addslashes($post_message);
-	}
-	*/
-	// Mighty Gorgon - This must be tested! - END
 
 	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_autolinks_acronyms, enable_sig) VALUES (" . $topic_id . ", " . $forum_id . ", " . $userdata['user_id'] . ", '" . $db->sql_escape($post_username) . "', '" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($post_message) . "', " . $current_time . ", '" . $user_ip . "', " . $bbcode_on . ", " . $html_on . ", " . $smilies_on . ", " . $acro_auto_on . ", " . $attach_sig . ")" : "UPDATE " . POSTS_TABLE . " SET post_username = '" . $db->sql_escape($post_username) . "', post_text = '" . $db->sql_escape($post_message) . "', post_text_compiled = '', post_subject = '" . $db->sql_escape($post_subject) . "', enable_bbcode = " . $bbcode_on . ", enable_html = " . $html_on . ", enable_smilies = " . $smilies_on . ", enable_autolinks_acronyms = " . $acro_auto_on . ", enable_sig = " . $attach_sig . " " . $edited_sql . " WHERE post_id = " . $post_id;
 	$db->sql_transaction('begin');
@@ -478,61 +563,6 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 	}
 	// DOWNLOADS - END
-
-	// Add poll
-	if ((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll'])) && !empty($poll_title) && (sizeof($poll_options) >= 2))
-	{
-		$sql = (!$post_data['has_poll']) ? "INSERT INTO " . VOTE_DESC_TABLE . " (topic_id, vote_text, vote_start, vote_length) VALUES ($topic_id, '" . $db->sql_escape($poll_title) . "', $current_time, " . ($poll_length * 86400) . ")" : "UPDATE " . VOTE_DESC_TABLE . " SET vote_text = '" . $db->sql_escape($poll_title) . "', vote_length = " . ($poll_length * 86400) . " WHERE topic_id = $topic_id";
-		$db->sql_query($sql);
-
-		$delete_option_sql = '';
-		$old_poll_result = array();
-		if (($mode == 'editpost') && $post_data['has_poll'])
-		{
-			$sql = "SELECT vote_option_id, vote_result
-				FROM " . VOTE_RESULTS_TABLE . "
-				WHERE vote_id = $poll_id
-				ORDER BY vote_option_id ASC";
-			$result = $db->sql_query($sql);
-
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$old_poll_result[$row['vote_option_id']] = $row['vote_result'];
-
-				if (!isset($poll_options[$row['vote_option_id']]))
-				{
-					$delete_option_sql .= ($delete_option_sql != '') ? ', ' . $row['vote_option_id'] : $row['vote_option_id'];
-				}
-			}
-		}
-		else
-		{
-			$poll_id = $db->sql_nextid();
-		}
-
-		$poll_option_id = 1;
-		@reset($poll_options);
-		while (list($option_id, $option_text) = each($poll_options))
-		{
-			if (!empty($option_text))
-			{
-				$poll_result = (($mode == 'editpost') && isset($old_poll_result[$option_id])) ? $old_poll_result[$option_id] : 0;
-
-				$sql = (($mode != 'editpost') || !isset($old_poll_result[$option_id])) ? "INSERT INTO " . VOTE_RESULTS_TABLE . " (vote_id, vote_option_id, vote_option_text, vote_result) VALUES ($poll_id, $poll_option_id, '" . $db->sql_escape($option_text) . "', $poll_result)" : "UPDATE " . VOTE_RESULTS_TABLE . " SET vote_option_text = '" . $db->sql_escape($option_text) . "', vote_result = $poll_result WHERE vote_option_id = $option_id AND vote_id = $poll_id";
-				$db->sql_query($sql);
-
-				$poll_option_id++;
-			}
-		}
-
-		if ($delete_option_sql != '')
-		{
-			$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . "
-				WHERE vote_option_id IN ($delete_option_sql)
-					AND vote_id = $poll_id";
-			$db->sql_query($sql);
-		}
-	}
 
 	// ReSync last topic title if needed
 	if (($mode == 'editpost') && $post_data['first_post'])
@@ -686,7 +716,8 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 	}
 	else
 	{
-		$topic_update_sql .= 'topic_vote = 0';
+		// Shall we update poll fields for this topic?
+		//$topic_update_sql .= 'topic_vote = 0';
 	}
 
 	$db->sql_transaction('begin');
@@ -847,7 +878,7 @@ function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_a
 /*
 * Delete a post/poll
 */
-function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id)
+function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id)
 {
 	global $db, $cache, $config, $lang, $userdata, $user_ip;
 
@@ -909,16 +940,14 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		remove_search_post($post_id);
 	}
 
-	if ($mode == 'poll_delete' || ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post']) && $post_data['has_poll'] && $post_data['edit_poll'])
+	if (($mode == 'poll_delete') || (($mode == 'delete') && $post_data['first_post'] && $post_data['last_post']) && $post_data['has_poll'] && $post_data['edit_poll'])
 	{
-		$sql = "DELETE FROM " . VOTE_DESC_TABLE . " WHERE topic_id = $topic_id";
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . " WHERE vote_id = $poll_id";
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . VOTE_USERS_TABLE . " WHERE vote_id = $poll_id";
-		$db->sql_query($sql);
+		if (!class_exists('class_topics'))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+		}
+		$class_topics = new class_topics();
+		$class_topics->class_topics($topic_id);
 	}
 
 	if ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post'])

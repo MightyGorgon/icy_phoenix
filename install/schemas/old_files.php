@@ -56,6 +56,7 @@ $files_array = array(
 	'ctracker_login.php'
 	'db_generator.php',
 	'edit_post_time.php',
+	'fetchposts.php',
 	'site_hist.php',
 	'subscp.php',
 	'uptime.php',
@@ -249,8 +250,11 @@ for ($i = 0; $i < sizeof($templates_array); $i++)
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_tail.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_tailcenter.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_page_tailright.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_poll_ballot.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/portal_poll_result.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/site_hist.tpl';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/viewtopic_nav.tpl';
+	$files_array[] = 'templates/' . $templates_array[$i] . '/viewtopic_poll_ballot.tpl';
 
 	$files_array[] = 'templates/' . $templates_array[$i] . '/xs/index.htm';
 	$files_array[] = 'templates/' . $templates_array[$i] . '/xs/index.html';

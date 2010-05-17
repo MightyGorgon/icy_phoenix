@@ -61,7 +61,7 @@ $post_order = ($post_order == 'DESC') ? 'DESC' : 'ASC';
 
 $template->set_filenames(array('body' => 'viewtopic_print.tpl'));
 
-$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read
+$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 	WHERE t.topic_id = '" . $topic_id . "'
 		AND f.forum_id = t.forum_id";

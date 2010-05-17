@@ -60,6 +60,9 @@ $poll_edit = request_var('edit_poll_option', '');
 $mark_edit = request_var('mark_edit', '');
 // UPI2DB - END
 
+$start = request_var('start', 0);
+$start = ($start < 0) ? 0 : $start;
+
 $confirm = isset($_POST['confirm']) ? true : false;
 $draft_confirm = !empty($_POST['draft_confirm']) ? true : false;
 $draft = (!empty($draft) || $draft_confirm) ? true : false;
@@ -319,14 +322,7 @@ switch ($mode)
 			message_die(GENERAL_MESSAGE, $lang['No_topic_id']);
 		}
 
-		$cash_sql = '';
-		// MG Cash MOD For IP - BEGIN
-		if (!empty($config['plugins']['cash']['enabled']))
-		{
-			$cash_sql = ', t.topic_poster';
-		}
-		// MG Cash MOD For IP - END
-		$sql = "SELECT f.*, fr.*, t.topic_status, t.topic_title, t.topic_type" . $cash_sql . "
+		$sql = "SELECT f.*, fr.*, t.*
 			FROM " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr, " . TOPICS_TABLE . " t
 			WHERE t.topic_id = " . $topic_id . "
 				AND f.forum_id = t.forum_id
@@ -398,24 +394,12 @@ if ($result && $post_info)
 	if (($submit || $confirm) && ($lock || $unlock) && $is_auth['auth_mod'] && ($mode != 'newtopic') && (!$refresh))
 	{
 		$t_id = (!isset($post_info['topic_id'])) ? $topic_id : $post_info['topic_id'];
-
-		if ($unlock)
-		{
-			$sql = "UPDATE " . TOPICS_TABLE . "
-			SET topic_status = " . TOPIC_UNLOCKED . "
-			WHERE topic_id = " . $t_id . "
-			AND topic_moved_id = 0";
-		}
-		elseif ($lock)
-		{
-			$sql = "UPDATE " . TOPICS_TABLE . "
-			SET topic_status = " . TOPIC_LOCKED . "
-			WHERE topic_id = " . $t_id . "
-			AND topic_moved_id = 0";
-		}
-
 		if ($lock || $unlock)
 		{
+			$sql = "UPDATE " . TOPICS_TABLE . "
+			SET topic_status = " . ($lock ? TOPIC_LOCKED : TOPIC_UNLOCKED) . "
+			WHERE topic_id = " . $t_id . "
+			AND topic_moved_id = 0";
 			$result = $db->sql_query($sql);
 		}
 	}
@@ -454,7 +438,8 @@ if ($result && $post_info)
 		$post_data['first_post'] = ($post_info['topic_first_post_id'] == $post_id) ? true : false;
 		$post_data['last_post'] = ($post_info['topic_last_post_id'] == $post_id) ? true : false;
 		$post_data['last_topic'] = ($post_info['forum_last_post_id'] == $post_id) ? true : false;
-		$post_data['has_poll'] = ($post_info['topic_vote']) ? true : false;
+		$post_data['has_poll'] = (!empty($post_info['poll_start']) ? true : false);
+		$post_data['poll_start'] = !empty($post_info['poll_start']) ? $post_info['poll_start'] : 0;
 		// Event Registration - BEGIN
 		$post_data['has_reg'] = ($post_info['topic_reg']) ? true : false;
 		// Event Registration - END
@@ -473,24 +458,32 @@ if ($result && $post_info)
 		if ($post_data['first_post'] && $post_data['has_poll'])
 		{
 			$sql = "SELECT *
-				FROM " . VOTE_DESC_TABLE . " vd, " . VOTE_RESULTS_TABLE . " vr
-				WHERE vd.topic_id = $topic_id
-					AND vr.vote_id = vd.vote_id
-				ORDER BY vr.vote_option_id";
+				FROM " . POLL_OPTIONS_TABLE . " o
+				WHERE o.topic_id = " . $topic_id . "
+				ORDER BY o.poll_option_id";
 			$result = $db->sql_query($sql);
 
 			$poll_options = array();
 			$poll_results_sum = 0;
 			if ($row = $db->sql_fetchrow($result))
 			{
-				$poll_title = $row['vote_text'];
-				$poll_id = $row['vote_id'];
-				$poll_length = $row['vote_length'] / 86400;
+				$poll_title = $row['poll_option_text'];
+				$poll_start = $post_info['poll_start'];
+				$poll_length = $post_info['poll_length'] / 86400;
+				$poll_max_options = $post_info['poll_max_options'];
+				$poll_change = $post_info['poll_change'];
+				$poll_data = array(
+					'title' => $poll_title,
+					'start' => $poll_start,
+					'length' => $poll_length,
+					'max_options' => $poll_max_options,
+					'change' => $poll_change
+				);
 
 				do
 				{
-					$poll_options[$row['vote_option_id']] = $row['vote_option_text'];
-					$poll_results_sum += $row['vote_result'];
+					$poll_options[$row['poll_option_id']] = $row['poll_option_text'];
+					$poll_results_sum += $row['poll_option_total'];
 				}
 				while ($row = $db->sql_fetchrow($result));
 			}
@@ -567,10 +560,11 @@ if ($result && $post_info)
 		$post_data['first_post'] = ($mode == 'newtopic') ? true : 0;
 		$post_data['last_post'] = false;
 		$post_data['has_poll'] = false;
+		$post_data['poll_start'] = 0;
 		$post_data['edit_poll'] = false;
 	}
 
-	if (($mode == 'poll_delete') && empty($poll_id))
+	if ($mode == 'poll_delete')
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_such_post']);
 	}
@@ -758,7 +752,7 @@ if($userdata['session_logged_in'] && $post_data['disp_news'])
 	$news_cat = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
-		if(($news_category > 0 && $news_category == $row['news_id']) || ($post_data['news_id'] > 0 && $post_data['news_id'] == $row['news_id']))
+		if((($news_category > 0) && ($news_category == $row['news_id'])) || (($post_data['news_id'] > 0) && ($post_data['news_id'] == $row['news_id'])))
 		{
 			$news_sel = $row;
 		}
@@ -892,63 +886,142 @@ elseif ($mode == 'thank')
 elseif ($mode == 'vote')
 {
 	// Vote in a poll
-	if (!empty($_POST['vote_id']))
-	{
-		$vote_option_id = intval($_POST['vote_id']);
+	$voted_id = request_var('vote_id', array('' => 0));
+	$voted_id = (sizeof($voted_id) > 1) ? array_unique($voted_id) : $voted_id;
 
-		$sql = "SELECT vd.vote_id
-			FROM " . VOTE_DESC_TABLE . " vd, " . VOTE_RESULTS_TABLE . " vr
-			WHERE vd.topic_id = $topic_id
-				AND vr.vote_id = vd.vote_id
-				AND vr.vote_option_id = $vote_option_id
-			GROUP BY vd.vote_id";
+	// Does this topic contain a poll?
+	if (!empty($post_info['poll_start']))
+	{
+		$sql = "SELECT o.*
+			FROM " . POLL_OPTIONS_TABLE . " o
+			WHERE o.topic_id = " . $topic_id . "
+			ORDER BY o.poll_option_id";
 		$result = $db->sql_query($sql);
 
-		if ($vote_info = $db->sql_fetchrow($result))
+		$poll_info = array();
+		while ($row = $db->sql_fetchrow($result))
 		{
-			$vote_id = $vote_info['vote_id'];
-
-			$sql = "SELECT *
-				FROM " . VOTE_USERS_TABLE . "
-				WHERE vote_id = $vote_id
-					AND vote_user_id = " . $userdata['user_id'];
-			$result2 = $db->sql_query($sql);
-
-			if (!($row = $db->sql_fetchrow($result2)))
-			{
-				$sql = "UPDATE " . VOTE_RESULTS_TABLE . "
-					SET vote_result = vote_result + 1
-					WHERE vote_id = $vote_id
-						AND vote_option_id = $vote_option_id";
-				$db->sql_transaction('begin');
-				$db->sql_query($sql);
-
-				$sql = "INSERT INTO " . VOTE_USERS_TABLE . " (vote_id, vote_user_id, vote_user_ip, vote_cast)
-					VALUES ($vote_id, " . $userdata['user_id'] . ", '$user_ip', $vote_option_id)";
-				$db->sql_query($sql);
-				$db->sql_transaction('commit');
-
-				$message = $lang['Vote_cast'];
-			}
-			else
-			{
-				$message = $lang['Already_voted'];
-			}
-			$db->sql_freeresult($result2);
-		}
-		else
-		{
-			$message = $lang['No_vote_option'];
+			$poll_info[] = $row;
 		}
 		$db->sql_freeresult($result);
 
-		$redirect_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append);
+		$cur_voted_id = array();
+		if ($userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+		{
+			$sql = "SELECT poll_option_id
+				FROM " . POLL_VOTES_TABLE . "
+				WHERE topic_id = " . $topic_id . "
+					AND vote_user_id = " . $userdata['user_id'];
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$cur_voted_id[] = $row['poll_option_id'];
+			}
+			$db->sql_freeresult($result);
+		}
+		else
+		{
+			// Currently disable guests posting...
+			$message = $lang['POLL_NO_GUESTS'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
+			message_die(GENERAL_MESSAGE, $message);
+
+			// Cookie based guest tracking... I don't like this but hum ho... it's oft requested. This relies on "nice" users who don't feel the need to delete cookies to mess with results.
+			if (isset($_COOKIE[$config['cookie_name'] . '_poll_' . $topic_id]))
+			{
+				$cur_voted_id = explode(',', $_COOKIE[$config['cookie_name'] . '_poll_' . $topic_id]);
+				$cur_voted_id = array_map('intval', $cur_voted_id);
+			}
+		}
+
+		if (!sizeof($voted_id) || (sizeof($voted_id) > $post_info['poll_max_options']) || in_array(VOTE_CONVERTED, $cur_voted_id))
+		{
+			if (!sizeof($voted_id))
+			{
+				$message = $lang['NO_VOTE_OPTION'];
+			}
+			elseif (sizeof($voted_id) > $post_info['poll_max_options'])
+			{
+				$message = $lang['TOO_MANY_VOTE_OPTIONS'];
+			}
+			elseif (in_array(VOTE_CONVERTED, $cur_voted_id))
+			{
+				$message = $lang['VOTE_CONVERTED'];
+			}
+			else
+			{
+				$message = $lang['FORM_INVALID'];
+			}
+
+			$redirect_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append . '&amp;start=' . $start);
+			meta_refresh(3, $redirect_url);
+
+			$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
+			message_die(GENERAL_MESSAGE, $message);
+		}
+
+		foreach ($voted_id as $option)
+		{
+			if (in_array($option, $cur_voted_id))
+			{
+				continue;
+			}
+
+			$sql = "UPDATE " . POLL_OPTIONS_TABLE . "
+				SET poll_option_total = poll_option_total + 1
+				WHERE poll_option_id = " . (int) $option . "
+					AND topic_id = " . (int) $topic_id;
+			$db->sql_query($sql);
+
+			if ($userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+			{
+				$sql_ary = array(
+					'topic_id' => (int) $topic_id,
+					'poll_option_id' => (int) $option,
+					'vote_user_id' => (int) $userdata['user_id'],
+					'vote_user_ip' => (string) $userdata['session_ip'],
+				);
+
+				$sql = "INSERT INTO " . POLL_VOTES_TABLE . " " . $db->sql_build_array('INSERT', $sql_ary);
+				$db->sql_query($sql);
+			}
+		}
+
+		foreach ($cur_voted_id as $option)
+		{
+			if (!in_array($option, $voted_id))
+			{
+				$sql = "UPDATE " . POLL_OPTIONS_TABLE . "
+					SET poll_option_total = poll_option_total - 1
+					WHERE poll_option_id = " . (int) $option . "
+						AND topic_id = " . (int) $topic_id;
+				$db->sql_query($sql);
+
+				if ($userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+				{
+					$sql = "DELETE FROM " . POLL_VOTES_TABLE . "
+						WHERE topic_id = " . (int) $topic_id . "
+							AND poll_option_id = " . (int) $option . "
+							AND vote_user_id = " . (int) $userdata['user_id'];
+					$db->sql_query($sql);
+				}
+			}
+		}
+
+		if ($userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+		{
+			set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
+		}
+
+		$sql = "UPDATE " . TOPICS_TABLE . "
+			SET poll_last_vote = " . time() . "
+			WHERE topic_id = " . $topic_id;
+		$db->sql_query($sql);
+
+		$redirect_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append . '&amp;start=' . $start);
 		meta_refresh(3, $redirect_url);
 
-		$message .= '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) . '">', '</a>');
-
-		empty_cache_folders(POSTS_CACHE_FOLDER);
-
+		$message = $lang['VOTE_SUBMITTED'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	else
@@ -1058,8 +1131,20 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			$notes = htmlspecialchars_decode(request_post_var('notes', '', true), ENT_COMPAT);
 
 			$poll_title = (isset($_POST['poll_title']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_title', '', true) : '';
-			$poll_options = (isset($_POST['poll_option_text']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_option_text', array(0 => ''), true) : '';
+			$poll_options = (isset($_POST['poll_option_text']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_option_text', array(0 => ''), true) : array();
+			$poll_start = time();
 			$poll_length = (isset($_POST['poll_length']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_length', 0) : 0;
+			$poll_length = max(0, $poll_length * 86400);
+			$poll_max_options = (isset($_POST['poll_max_options']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_max_options', 1) : 1;
+			$poll_max_options = max(1, $poll_max_options);
+			$poll_change = (isset($_POST['poll_change']) && $is_auth['auth_pollcreate']) ? 1 : 0;
+			$poll_data = array(
+				'title' => $poll_title,
+				'start' => $poll_start,
+				'length' => $poll_length,
+				'max_options' => $poll_max_options,
+				'change' => $poll_change
+			);
 
 			$topic_calendar_time = ($topic_calendar_time != $post_data['topic_calendar_time'] && !$is_auth['auth_cal']) ? $post_data['topic_calendar_time'] : $topic_calendar_time;
 			if (empty($topic_calendar_time)) $topic_calendar_time = 0;
@@ -1082,7 +1167,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_length'] : '';
 			// Event Registration - END
 
-			prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $subject, $message, $poll_title, $poll_options, $poll_length, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
+			prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $subject, $message, $poll_title, $poll_options, $poll_data, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
 
 			// MG Drafts - BEGIN
 			if (($config['allow_drafts'] == true) && $draft && $draft_confirm && $userdata['session_logged_in'] && (($mode == 'reply') || ($mode == 'newtopic')))
@@ -1190,7 +1275,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					unset($class_topics_tags);
 				}
 
-				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, $username, $subject, $topic_title_clean, $topic_tags, $message, $poll_title, $poll_options, $poll_length, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
+				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, $username, $subject, $topic_title_clean, $topic_tags, $message, $poll_title, $poll_options, $poll_data, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
 			}
 			break;
 
@@ -1200,7 +1285,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			{
 				message_die(GENERAL_MESSAGE, $error_msg);
 			}
-			delete_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id);
+			delete_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id);
 			break;
 	}
 
@@ -1349,8 +1434,19 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	unset($class_topics_tags);
 
 	$poll_title = (!empty($_POST['poll_title'])) ? request_post_var('poll_title', '', true) : '';
+	$poll_start = time();
 	$poll_length = (isset($_POST['poll_length'])) ? request_post_var('poll_length', 0) : 0;
-	$poll_length =  max(0, $poll_length);
+	$poll_length = max(0, $poll_length * 86400);
+	$poll_max_options = (isset($_POST['poll_max_options'])) ? request_post_var('poll_max_options', 1) : 1;
+	$poll_max_options = max(1, $poll_max_options);
+	$poll_change = (isset($_POST['poll_change'])) ? 1 : 0;
+	$poll_data = array(
+		'title' => $poll_title,
+		'start' => $poll_start,
+		'length' => $poll_length,
+		'max_options' => $poll_max_options,
+		'change' => $poll_change
+	);
 
 	$poll_options = request_post_var('poll_option_text', array(0 => ''), true);
 	if (!empty($poll_options))
@@ -1515,7 +1611,17 @@ else
 		// Start replacement - Yellow card MOD
 		$username = ($userdata['session_logged_in']) ? $userdata['username'] : '';
 		$poll_title = '';
-		$poll_length = '';
+		$poll_start = 0;
+		$poll_length = 0;
+		$poll_max_options = 1;
+		$poll_change = 0;
+		$poll_data = array(
+			'title' => $poll_title,
+			'start' => $poll_start,
+			'length' => $poll_length,
+			'max_options' => $poll_max_options,
+			'change' => $poll_change
+		);
 		// End replacement - Yellow card MOD
 	}
 	elseif ($mode == 'reply')
@@ -2144,7 +2250,11 @@ if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll']))
 		'L_POLL_DELETE' => $lang['Delete_poll'],
 
 		'POLL_TITLE' => $poll_title,
-		'POLL_LENGTH' => $poll_length
+		'POLL_START' => $poll_start,
+		'POLL_LENGTH' => $poll_length,
+		'POLL_MAX_OPTIONS_INPUT' => $poll_max_options,
+		'POLL_CHANGE_CHECKBOX' => (!empty($poll_change) ? ' checked="checked"' : ''),
+		'POLL_CHANGE' => $poll_change
 		)
 	);
 

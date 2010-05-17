@@ -1168,8 +1168,8 @@ function create_topic()
 
 	if (!$topic_created)
 	{
-		$sql = 'INSERT INTO ' . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_vote, topic_type, topic_first_post_id, topic_last_post_id, topic_moved_id)
-			VALUES ($forum_id, '" . $db->sql_escape($lang['New_topic_name']) . "', -1, " . time() . ", 0, 0, " . TOPIC_UNLOCKED . ", 0, " . POST_NORMAL . ", 0, 0, 0)";
+		$sql = 'INSERT INTO ' . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_type, topic_first_post_id, topic_last_post_id, topic_moved_id)
+			VALUES ($forum_id, '" . $db->sql_escape($lang['New_topic_name']) . "', -1, " . time() . ", 0, 0, " . TOPIC_UNLOCKED . ", " . POST_NORMAL . ", 0, 0, 0)";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);

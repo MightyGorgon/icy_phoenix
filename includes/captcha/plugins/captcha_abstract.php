@@ -97,7 +97,8 @@ class phpbb_default_captcha
 		}
 		else
 		{
-			$link = append_sid(IP_ROOT_PATH . 'ucp.' . PHP_EXT, 'mode=confirm&amp;confirm_id=' . $this->confirm_id . '&amp;type=' . $this->type);
+			//$link = append_sid(IP_ROOT_PATH . 'ucp.' . PHP_EXT, 'mode=confirm&amp;confirm_id=' . $this->confirm_id . '&amp;type=' . $this->type);
+			$link = append_sid(IP_ROOT_PATH . 'CMS_PAGE_PROFILE.' . PHP_EXT, 'mode=confirm&amp;confirm_id=' . $this->confirm_id . '&amp;type=' . $this->type);
 			$explain = (($this->type != CONFIRM_POST) ? $lang['CONFIRM_EXPLAIN'] : $lang['POST_CONFIRM_EXPLAIN']);
 			$explain = sprintf($explain, '<a href="mailto:' . $config['board_email'] . '">', '</a>');
 

@@ -5,9 +5,18 @@
 // <![CDATA[
 var soundfile = "notify.wav";
 
+var sound_ver = parseInt(navigator.appVersion);
+var sound_ie4 = ((sound_ver > 3) && (navigator.appName != "Netscape")) ? 1 : 0;
+var sound_ns3 = ((sound_ver == 3) && (navigator.appName == "Netscape")) ? 1 : 0;
+var sound_ns4 = ((sound_ver > 3) && (navigator.appName == "Netscape")) ? 1 : 0;
+var sound_flag = ((sound_ns3 || sound_ns4) && (!navigator.javaEnabled() || !navigator.mimeTypes['audio/wav'])) ? false : true;
+
 function playsound(soundfile)
 {
-	document.getElementById("notify").innerHTML = '<embed src="' + soundfile + '" autostart="true" loop="false" hidden="true" />';
+	if (sound_flag)
+	{
+		document.getElementById("notify").innerHTML = '<embed src="' + soundfile + '" autostart="true" loop="false" hidden="true" />';
+	}
 }
 // ]]>
 </script>

@@ -122,9 +122,9 @@ class class_topics
 	/*
 	* Builds icons for topics
 	*/
-	function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $topic_replies, $topic_news_id, $topic_vote, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies, $unread)
+	function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $topic_replies, $topic_news_id, $poll_start, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies, $unread)
 	{
-		//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
+		//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
 		global $config, $lang, $images, $userdata, $tracking_topics, $tracking_forums, $forum_id_append, $topic_id_append;
 
 		$topic_link = array();
@@ -217,7 +217,7 @@ class class_topics
 				$topic_link['icon'] = '<img src="' . $images['vf_topic_news'] . '" alt="' . $lang['Topic_News_nb'] . '" title="' . $lang['Topic_News_nb'] . '" /> ' . $topic_link['icon'];
 			}
 
-			if($topic_vote)
+			if($poll_start > 0)
 			{
 				//$topic_link['type'] .= $lang['Topic_Poll'] . ' ';
 				$topic_link['type'] = '<img src="' . $images['vf_topic_poll'] . '" alt="' . $lang['Topic_Poll_nb'] . '" title="' . $lang['Topic_Poll_nb'] . '" /> ' . $topic_link['type'];
@@ -409,6 +409,364 @@ class class_topics
 		}
 		$db->sql_freeresult($result);
 		return $topic_prefixes;
+	}
+
+	/*
+	* Fetch posts
+	*/
+	function fetch_posts($forum_sql, $number_of_posts, $text_length, $show_portal = false, $random_mode = false, $single_post = false, $only_auth_view = true)
+	{
+		global $db, $cache, $config, $userdata, $bbcode;
+
+		if (!class_exists('bbcode') || empty($bbcode))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		}
+
+		$except_forums = build_exclusion_forums_list($only_auth_view);
+
+		$add_to_sql = '';
+		if (empty($single_post) && !empty($forum_sql))
+		{
+			$except_forums_exp = explode(',', str_replace(' ', '', $except_forums));
+			$allowed_forums_exp = explode(',', str_replace(' ', '', $forum_sql));
+			$except_forums = '';
+			for ($e = 0; $e < sizeof($except_forums_exp); $e++)
+			{
+				if (!in_array($except_forums_exp[$e], $allowed_forums_exp))
+				{
+					$except_forums .= ($except_forums == '') ? $except_forums_exp[$e] : (', ' . $except_forums_exp[$e]);
+				}
+			}
+			$add_to_sql .= ' AND t.forum_id IN (' . $forum_sql . ')';
+			$add_to_sql .= ' AND t.forum_id NOT IN (' . $except_forums . ')';
+		}
+		else
+		{
+			$add_to_sql .= ' AND t.forum_id NOT IN (' . $except_forums . ')';
+		}
+
+		if (!empty($show_portal))
+		{
+			$add_to_sql .= ' AND t.topic_show_portal = 1';
+		}
+
+		if (!empty($random_mode))
+		{
+			$order_sql = 'RAND()';
+		}
+		else
+		{
+			$order_sql = 't.topic_time DESC';
+		}
+
+		if ($number_of_posts != 0)
+		{
+			$limit_sql = ' LIMIT 0,' . $number_of_posts;
+		}
+		else
+		{
+			$limit_sql = '';
+		}
+
+		if (!empty($single_post))
+		{
+			$single_post_id = $forum_sql;
+			$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
+					FROM " . POSTS_TABLE . " AS p, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
+					WHERE p.post_id = '" . $single_post_id . "'
+						" . $add_to_sql . "
+						AND t.topic_id = p.topic_id
+						AND p.poster_id = u.user_id";
+		}
+		else
+		{
+			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
+					FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
+					WHERE t.topic_time <= " . time() . "
+						" . $add_to_sql . "
+						AND t.topic_poster = u.user_id
+						AND t.topic_first_post_id = p.post_id
+						AND t.topic_status <> 2
+					ORDER BY " . $order_sql . $limit_sql;
+		}
+		// query the database
+		$result = $db->sql_query($sql);
+
+		// fetch all postings
+		$posts = array();
+		if ($row = $db->sql_fetchrow($result))
+		{
+			$i = 0;
+			do
+			{
+				$posts[$i]['enable_bbcode'] = $row['enable_bbcode'];
+				$posts[$i]['enable_html'] = $row['enable_html'];
+				$posts[$i]['enable_smilies'] = $row['enable_smilies'];
+				$posts[$i]['enable_autolinks_acronyms'] = $row['enable_autolinks_acronyms'];
+				$posts[$i]['post_text'] = $row['post_text'];
+				$message = $posts[$i]['post_text'];
+				$posts[$i]['forum_id'] = $row['forum_id'];
+				$posts[$i]['topic_id'] = $row['topic_id'];
+				$posts[$i]['topic_replies'] = $row['topic_replies'];
+				$posts[$i]['topic_time'] = create_date_ip($config['default_dateformat'], $row['topic_time'], $config['board_timezone']);
+				$posts[$i]['topic_title'] = $row['topic_title'];
+				$posts[$i]['user_id'] = $row['user_id'];
+				$posts[$i]['username'] = $row['username'];
+				$posts[$i]['user_active'] = $row['user_active'];
+				$posts[$i]['user_color'] = $row['user_color'];
+				$posts[$i]['topic_attachment'] = $row['topic_attachment'];
+				$posts[$i]['post_id'] = $row['post_id'];
+				$posts[$i]['post_attachment'] = $row['post_attachment'];
+
+				$message_compiled = empty($posts[$i]['post_text_compiled']) ? false : $posts[$i]['post_text_compiled'];
+
+				$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
+				$bbcode->allow_html = ((($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
+				$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
+
+				$clean_tags = false;
+				if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))
+				{
+					$clean_tags = true;
+					$posts[$i]['striped'] = 1;
+				}
+
+				if($message_compiled === false)
+				{
+					$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies']) ? true : false;
+					$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
+				}
+				else
+				{
+					$posts[$i]['post_text'] = $message_compiled;
+				}
+
+				if ($clean_tags == true)
+				{
+					$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? substr($posts[$i]['post_text'], 0, $text_length) . ' ...' : $posts[$i]['post_text'];
+				}
+
+				$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
+				$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
+
+				//Acronyms, AutoLinks - BEGIN
+				if ($posts[$i]['enable_autolinks_acronyms'])
+				{
+					$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
+					$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
+				}
+				//Acronyms, AutoLinks - END
+				$i++;
+			}
+			while ($row = $db->sql_fetchrow($result));
+		}
+		$db->sql_freeresult($result);
+
+		// return the result
+		return $posts;
+	}
+
+	/**
+	* Gets poll data for a topic
+	*/
+	function get_poll_data($topic_id)
+	{
+		global $db, $cache, $config, $userdata;
+
+		$sql = "SELECT o.*
+			FROM " . POLL_OPTIONS_TABLE . " o
+			WHERE o.topic_id = " . (int) $topic_id . "
+			ORDER BY o.poll_option_id";
+		$result = $db->sql_query($sql);
+
+		$poll_info = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$poll_info[] = $row;
+		}
+		$db->sql_freeresult($result);
+
+		$cur_voted_id = array();
+		if (!empty($userdata) && $userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+		{
+			$sql = "SELECT v.poll_option_id
+				FROM " . POLL_VOTES_TABLE . " v
+				WHERE v.topic_id = " . (int) $topic_id . "
+					AND v.vote_user_id = " . (int) $userdata['user_id'];
+			$result = $db->sql_query($sql);
+
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$cur_voted_id[] = $row['poll_option_id'];
+			}
+			$db->sql_freeresult($result);
+		}
+		else
+		{
+			// Cookie based guest tracking... I don't like this but hum ho... it's oft requested. This relies on "nice" users who don't feel the need to delete cookies to mess with results
+			if (isset($_COOKIE[$config['cookie_name'] . '_poll_' . $topic_id]))
+			{
+				$cur_voted_id = explode(',', $_COOKIE[$config['cookie_name'] . '_poll_' . $topic_id]);
+				$cur_voted_id = array_map('intval', $cur_voted_id);
+			}
+		}
+
+		return array('poll_info' => $poll_info, 'cur_voted_id' => $cur_voted_id);
+	}
+
+	/**
+	* Removes a poll
+	*/
+	function remove_poll($topic_id)
+	{
+		global $db, $cache, $config, $userdata;
+
+		$sql_ary = array(
+			'poll_title' => '',
+			'poll_start' => 0,
+			'poll_length' => 0,
+			'poll_max_options' => 1,
+			'poll_last_vote' => 0,
+			'poll_vote_change' => 0
+		);
+
+		$sql_update = $db->sql_build_insert_update($sql_ary, false);
+
+		$sql = "UPDATE " . TOPICS_TABLE . " SET " . $sql_update . " WHERE topic_id = " . (int) $topic_id;
+		$db->sql_query($sql);
+
+		$sql = "DELETE FROM " . POLL_OPTIONS_TABLE . " WHERE topic_id = " . (int) $topic_id;
+		$db->sql_query($sql);
+
+		$sql = "DELETE FROM " . POLL_VOTES_TABLE . " WHERE topic_id = " . (int) $topic_id;
+		$db->sql_query($sql);
+	}
+
+	/**
+	* Display a poll
+	*/
+	function display_poll($topic_data, $is_cms_block = false)
+	{
+		global $db, $cache, $config, $userdata, $lang, $template, $images, $bbcode;
+		global $start, $kb_mode_append, $is_auth, $lofi;
+
+		if (!class_exists('bbcode') || empty($bbcode))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		}
+
+		$poll_data_result = $this->get_poll_data($topic_data['topic_id']);
+		$poll_info = $poll_data_result['poll_info'];
+		$cur_voted_id = $poll_data_result['cur_voted_id'];
+		unset($poll_data_result);
+
+		$poll_total = 0;
+		foreach ($poll_info as $poll_option)
+		{
+			$poll_total += $poll_option['poll_option_total'];
+		}
+
+		// Mighty Gorgon: Shall we enable BBCode for polls?
+		$poll_bbcode = true;
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['enable_bbcode']) ? true : false;
+		$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) ? true : false;
+		$bbcode->allow_smilies = ($config['allow_smilies'] && !$lofi) ? true : false;
+		for ($i = 0, $size = sizeof($poll_info); $i < $size; $i++)
+		{
+			$poll_info[$i]['poll_option_text'] = censor_text($poll_info[$i]['poll_option_text']);
+
+			if (!empty($poll_bbcode))
+			{
+				$poll_info[$i]['poll_option_text'] = $bbcode->parse($poll_info[$i]['poll_option_text']);
+			}
+		}
+
+		$topic_data['poll_title'] = censor_text($topic_data['poll_title']);
+
+		if (!empty($poll_bbcode))
+		{
+			$topic_data['poll_title'] = $bbcode->parse($topic_data['poll_title']);
+		}
+		unset($poll_bbcode);
+
+		$user_voted = !empty($cur_voted_id) ? true : false;
+		$poll_expired = (!empty($topic_data['poll_length'])) ? ((((int) $topic_data['poll_start'] + (int) $topic_data['poll_length']) < time()) ? true : false) : false;
+		$s_display_results = request_var('vote', '');
+		$s_display_results = ($user_voted || ($s_display_results == 'viewresult')) ? true : false;
+		$s_auth_vote = $is_auth['auth_vote'] ? true : false;
+		$s_can_vote = (($userdata['user_level'] == ADMIN) || ((!$user_voted || !empty($topic_data['poll_vote_change'])) && !$poll_expired && $s_auth_vote && ($topic_data['topic_status'] != TOPIC_LOCKED))) ? true : false;
+
+		if (!empty($is_cms_block))
+		{
+			$s_can_vote = false;
+			$s_display_results = true;
+		}
+
+		$template->set_filenames(array('pollbox' => 'viewtopic_poll_result.tpl'));
+
+		$vote_graphic = 0;
+		$vote_graphic_max = sizeof($images['voting_graphic']);
+
+		foreach ($poll_info as $poll_option)
+		{
+			$option_pct = ($poll_total > 0) ? $poll_option['poll_option_total'] / $poll_total : 0;
+			$option_pct = round($option_pct, 2);
+			$option_pct_txt = sprintf("%.1d%%", round($option_pct * 100));
+
+			$option_color = ($option_pct <= 0.33) ? 'red' : ((($option_pct > 0.33) && ($option_pct <= 0.66)) ? 'blue' : 'green');
+			$option_graphic_length = round($option_pct * $config['vote_graphic_length']);
+			$option_graphic = ($option_graphic < $option_graphic_max - 1) ? $option_graphic + 1 : 0;
+			$template->assign_block_vars('poll_option', array(
+				'POLL_OPTION_ID' => $poll_option['poll_option_id'],
+				'POLL_OPTION_CAPTION' => $poll_option['poll_option_text'],
+				'POLL_OPTION_RESULT' => $poll_option['poll_option_total'],
+				'POLL_OPTION_PERCENT' => $option_pct_txt,
+				'POLL_OPTION_PCT' => round($option_pct * 100),
+				//'POLL_OPTION_IMG' => $user->img('poll_center', $option_pct_txt, round($option_pct * 250)),
+				'POLL_OPTION_VOTED' => (in_array($poll_option['poll_option_id'], $cur_voted_id)) ? true : false,
+
+				'POLL_OPTION_COLOR' => $option_color,
+				'POLL_OPTION_IMG' => $images['voting_graphic'][$option_graphic],
+				'POLL_OPTION_IMG_WIDTH' => $option_graphic_length,
+				'POLL_GRAPHIC' => $images['voting_graphic_' . $option_color],
+				'POLL_GRAPHIC_BODY' => $images['voting_graphic_' . $option_color . '_body'],
+				'POLL_GRAPHIC_LEFT' => $images['voting_graphic_' . $option_color . '_left'],
+				'POLL_GRAPHIC_RIGHT' => $images['voting_graphic_' . $option_color . '_right'],
+				)
+			);
+		}
+
+		$poll_end = $topic_data['poll_start'] + $topic_data['poll_length'];
+		$s_hidden_fields = '<input type="hidden" name="topic_id" value="' . $topic_data['topic_id'] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="mode" value="vote" />';
+		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+
+		$forum_id_append = POST_FORUM_URL . '=' . $topic_data['forum_id'];
+		$topic_id_append = POST_TOPIC_URL . '=' . $topic_data['topic_id'];
+		$template->assign_vars(array(
+			'TOTAL_VOTES' => $poll_total,
+			'POLL_QUESTION' => $topic_data['poll_title'],
+			'S_HAS_POLL' => true,
+			'S_CAN_VOTE' => $s_can_vote,
+			'S_DISPLAY_RESULTS' => $s_display_results,
+			'S_IS_MULTI_CHOICE' => ($topic_data['poll_max_options'] > 1) ? true : false,
+			'S_HIDDEN_FIELDS' => $s_hidden_fields,
+			'S_POLL_ACTION' => append_sid(CMS_PAGE_POSTING . '?mode=vote&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;start=' . $start),
+			'S_CMS_BLOCK' => !empty($is_cms_block) ? true : false,
+
+			'U_VIEW_RESULTS' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;vote=viewresult'),
+
+			'L_MAX_VOTES' => ($topic_data['poll_max_options'] == 1) ? $lang['MAX_OPTION_SELECT'] : sprintf($lang['MAX_OPTIONS_SELECT'], $topic_data['poll_max_options']),
+			'L_POLL_LENGTH' => (!empty($topic_data['poll_length'])) ? sprintf($lang[($poll_end > time()) ? 'POLL_RUN_TILL' : 'POLL_ENDED_AT'], create_date($config['default_dateformat'], $poll_end, $config['board_timezone'])) : '',
+			'L_TOTAL_VOTES' => $lang['Total_votes'],
+			'L_SUBMIT_VOTE' => $lang['Submit_vote'],
+			'L_VIEW_RESULTS' => $lang['View_results'],
+			)
+		);
+		unset($poll_end, $poll_info, $voted_id);
+
+		$template->assign_var_from_handle('POLL_DISPLAY', 'pollbox');
 	}
 
 }

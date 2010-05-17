@@ -307,111 +307,120 @@ class ct_adminfunctions
 					break;
 				}
 
-				if(!preg_match('/\\$no_page_header|\\$confirm|\\$close/', $scanline) && !preg_match('/^[ \\t]*$\\r?\\n/m', $scanline) && !preg_match('/<\\?php|\\?>|\/\/|\/\/.|\/\\*.|\/\\*|#|#.|\*|\*./m', $scanline) && !empty($scanline))
+				if(!preg_match('/\\$no_page_header|\\$confirm|\\$cancel|\\$close|\\$plugin_name/', $scanline) && !preg_match('/^[ \\t]*$\\r?\\n/m', $scanline) && !preg_match('/<\\?php|\\?>|\/\/|\/\/.|\/\\*.|\/\\*|#|#.|\*|\*./m', $scanline) && !empty($scanline))
 				{
 					$action_counter++;
 
-					if(preg_match('/define\\(\'in_icyphoenix\'./m', $scanline) && $action_counter == 1)
+					// New condition added to avoid warning where some constants are defined on top of the file!
+					if(empty($constant_set) && empty($root_path) && ($action_counter == 1) && preg_match('/define\\(|\\$ct_ignorepvar|\\$ct_ignoregvar/', $scanline) && !preg_match('/define\\(\'in_icyphoenix\'./m', $scanline))
 					{
-						$constant_set = true;
-					}
-					elseif(preg_match('/if\\(!defined\\(\'in_icyphoenix\'./m', $scanline) && $action_counter == 1)
-					{
-						$constant_check = true;
-						break;
-					}
-					elseif($constant_set && preg_match('/define\\(\'ip_root_path\'./m', $scanline) && $action_counter == 2)
-					{
-						$root_path = true;
-					}
-					// OLD extension.inc
-					//elseif($constant_set && preg_match('/include\\(ip_root_path\\.\'extension\\.inc|require\\(ip_root_path\\.\'extension\\.inc/', $scanline) && $action_counter == 3)
-					elseif($constant_set && preg_match('/define\\(\'php_ext\'./m', $scanline) && $action_counter == 3)
-					{
-						$extension_inc = true;
-					}
-					elseif($constant_set && preg_match('/include\\(ip_root_path\\.\'common\\.|include\\(\'\\.\/common\\.|require\\(\'\\.\/common\\.|require\\(ip_root_path\\.\'common\\.|require\\(\'\\.\/pagestart\\./', $scanline) && ($action_counter == 4 || $action_counter == 5))
-					{
-						$common_included = true;
-						break;
-					}
-					elseif($constant_set && preg_match('/if\\(!empty\\(\\$setmodules|if\\(isset|if\\(!isset/', $scanline))
-					{
-						$action_counter--;
-						$acp_flag = true;
-
-						if(preg_match('/{/m', $scanline))
-						{
-							$bcounter++;
-						}
-
-						if(preg_match('/}/m', $scanline))
-						{
-							$bcounter--;
-						}
-					}
-					elseif($constant_set && $acp_flag)
-					{
-						if(preg_match('/{/m', $scanline))
-						{
-							$bcounter++;
-						}
-
-						if(preg_match('/}/m', $scanline))
-						{
-							$bcounter--;
-						}
-
-						if($bcounter == 0)
-						{
-							$acp_flag = false;
-						}
-
-						$action_counter--;
-					}
-					elseif(preg_match('/function.|class./', $scanline))
-					{
-						$func_or_class = true;
-						$func_class_flag = true;
-
-						if(preg_match('/{/m', $scanline))
-						{
-							$bcounter++;
-						}
-
-						if(preg_match('/}/m', $scanline))
-						{
-							$bcounter--;
-						}
-					}
-					elseif($func_or_class)
-					{
-						if(preg_match('/{/m', $scanline))
-						{
-							$bcounter++;
-						}
-
-						if(preg_match('/}/m', $scanline))
-						{
-							$bcounter--;
-						}
-
-						if($bcounter == 0)
-						{
-							$func_or_class = false;
-						}
-					}
-					elseif(!$constant_check || !$common_included || !$func_or_class)
-					{
-						$reachable_code = true;
-						$func_class_flag = false;
-						break;
+						$action_counter = 0;
 					}
 					else
 					{
-						$reachable_code = true;
-						break;
-					}// else
+						if(preg_match('/define\\(\'in_icyphoenix\'./m', $scanline) && in_array($action_counter, array(1)))
+						{
+							$constant_set = true;
+						}
+						elseif(preg_match('/if\\(!defined\\(\'in_icyphoenix\'./m', $scanline) && in_array($action_counter, array(1)))
+						{
+							$constant_check = true;
+							break;
+						}
+						elseif($constant_set && preg_match('/define\\(\'ip_root_path\'./m', $scanline) && in_array($action_counter, array(2, 3, 4)))
+						{
+							$root_path = true;
+						}
+						// OLD extension.inc
+						//elseif($constant_set && preg_match('/include\\(ip_root_path\\.\'extension\\.inc|require\\(ip_root_path\\.\'extension\\.inc/', $scanline) && in_array($action_counter, array(3)))
+						elseif($constant_set && preg_match('/define\\(\'php_ext\'./m', $scanline) && in_array($action_counter, array(3, 4, 5)))
+						{
+							$extension_inc = true;
+						}
+						elseif($constant_set && preg_match('/include\\(ip_root_path\\.\'common\\.|include\\(\'\\.\/common\\.|require\\(\'\\.\/common\\.|require\\(ip_root_path\\.\'common\\.|require\\(\'\\.\/pagestart\\.|require\\(\'pagestart\\.|require\\(ip_root_path\\.\'adm\/pagestart\\./', $scanline) && in_array($action_counter, array(4, 5, 6, 7)))
+						{
+							$common_included = true;
+							break;
+						}
+						elseif($constant_set && preg_match('/if\\(!empty\\(\\$setmodules|if\\(isset|if\\(!isset|if\\(defined|if\\(!defined|if\\(function_exists/', $scanline))
+						{
+							$action_counter--;
+							$acp_flag = true;
+
+							if(preg_match('/{/m', $scanline))
+							{
+								$bcounter++;
+							}
+
+							if(preg_match('/}/m', $scanline))
+							{
+								$bcounter--;
+							}
+						}
+						elseif($constant_set && $acp_flag)
+						{
+							if(preg_match('/{/m', $scanline))
+							{
+								$bcounter++;
+							}
+
+							if(preg_match('/}/m', $scanline))
+							{
+								$bcounter--;
+							}
+
+							if($bcounter == 0)
+							{
+								$acp_flag = false;
+							}
+
+							$action_counter--;
+						}
+						elseif(preg_match('/function.|class./', $scanline))
+						{
+							$func_or_class = true;
+							$func_class_flag = true;
+
+							if(preg_match('/{/m', $scanline))
+							{
+								$bcounter++;
+							}
+
+							if(preg_match('/}/m', $scanline))
+							{
+								$bcounter--;
+							}
+						}
+						elseif($func_or_class)
+						{
+							if(preg_match('/{/m', $scanline))
+							{
+								$bcounter++;
+							}
+
+							if(preg_match('/}/m', $scanline))
+							{
+								$bcounter--;
+							}
+
+							if($bcounter == 0)
+							{
+								$func_or_class = false;
+							}
+						}
+						elseif(!$constant_check || !$common_included || !$func_or_class)
+						{
+							$reachable_code = true;
+							$func_class_flag = false;
+							break;
+						}
+						else
+						{
+							$reachable_code = true;
+							break;
+						}// else
+					}
+
 				} // if
 			} // for
 

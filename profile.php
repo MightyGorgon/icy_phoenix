@@ -102,7 +102,7 @@ if (!empty($mode))
 	{
 		// Visual Confirmation
 		$force_captcha = request_var('force_captcha', 0);
-		if (empty($force_captcha) && $userdata['session_logged_in'] && ($_GET['id'] != 'Admin'))
+		if (empty($force_captcha) && $userdata['session_logged_in'] && ($_GET['confirm_id'] != 'Admin'))
 		{
 			exit;
 		}

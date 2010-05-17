@@ -25,8 +25,14 @@ if(!function_exists('cms_block_forum_attach'))
 	function cms_block_forum_attach()
 	{
 		global $db, $cache, $config, $template, $images, $lang, $bbcode, $block_id, $cms_config_vars;
+
+		if (!class_exists('class_topics'))
+		{
+			include(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+		}
+		$class_topics = new class_topics();
+
 		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
-		@include_once(IP_ROOT_PATH . 'fetchposts.' . PHP_EXT);
 
 		$template->_tpldata['articles_fp.'] = array();
 
@@ -67,27 +73,24 @@ if(!function_exists('cms_block_forum_attach'))
 				$single_post_id = $cms_config_vars['md_single_post_id'][$block_id];
 			}
 
-			$fetchposts = phpbb_fetch_posts_attach($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, false, true, $only_auth_view);
+			$fetchposts = $class_topics->fetch_posts($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, false, true, $only_auth_view);
 		}
 		else
 		{
-			$fetchposts = phpbb_fetch_posts_attach($cms_config_vars['md_posts_forum_id'][$block_id], $cms_config_vars['md_num_posts'][$block_id], $cms_config_vars['md_posts_length'][$block_id], $cms_config_vars['md_posts_show_portal'][$block_id], $cms_config_vars['md_posts_random'][$block_id], false, $only_auth_view);
+			$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_posts_forum_id'][$block_id], $cms_config_vars['md_num_posts'][$block_id], $cms_config_vars['md_posts_length'][$block_id], $cms_config_vars['md_posts_show_portal'][$block_id], $cms_config_vars['md_posts_random'][$block_id], false, $only_auth_view);
 		}
 
 		for($i = 0; $i < sizeof($fetchposts); $i++)
 		{
 			init_display_post_attachments($fetchposts[$i]['topic_attachment'], $fetchposts[$i], true, $block_id);
+			$open_bracket = '';
+			$close_bracket = '';
+			$read_full = '';
 			if($fetchposts[$i]['striped'] == 1)
 			{
 				$open_bracket = '[ ';
 				$close_bracket = ' ]';
 				$read_full = $lang['Read_Full'];
-			}
-			else
-			{
-				$open_bracket = '';
-				$close_bracket = '';
-				$read_full = '';
 			}
 
 			// Convert and clean special chars!

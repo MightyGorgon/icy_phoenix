@@ -331,7 +331,9 @@ class ip_cms
 
 		for ($b_counter = 0; $b_counter < $block_count; $b_counter++)
 		{
-			$block_id = $block_info[$b_counter]['bid'];
+			// We cannot use 'bid' anymore since now blocks settings are identified by 'block_settings_id'
+			//$block_id = $block_info[$b_counter]['bid'];
+			$block_id = $block_info[$b_counter]['block_settings_id'];
 			$is_group_allowed = true;
 			if(!empty($block_info[$b_counter]['groups']))
 			{

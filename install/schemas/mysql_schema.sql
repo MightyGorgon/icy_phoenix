@@ -400,10 +400,13 @@ CREATE TABLE `phpbb_config` (
 ## `phpbb_confirm`
 
 CREATE TABLE `phpbb_confirm` (
-	`confirm_id` char(32) NOT NULL DEFAULT '',
-	`session_id` char(32) NOT NULL DEFAULT '',
-	`code` char(6) NOT NULL DEFAULT '',
-	PRIMARY KEY (`session_id`,`confirm_id`)
+	confirm_id char(32) DEFAULT '' NOT NULL,
+	session_id char(32) DEFAULT '' NOT NULL,
+	confirm_type tinyint(3) DEFAULT '0' NOT NULL,
+	code varchar(8) DEFAULT '' NOT NULL,
+	seed int(10) UNSIGNED DEFAULT '0' NOT NULL,
+	PRIMARY KEY (session_id, confirm_id),
+	KEY confirm_type (confirm_type)
 );
 
 ## `phpbb_confirm`
@@ -1258,12 +1261,12 @@ CREATE TABLE `phpbb_pa_votes` (
 
 ## `phpbb_plugins`
 
-CREATE TABLE phpbb_plugins (
-	plugin_name varchar(255) NOT NULL DEFAULT '',
-	plugin_version varchar(255) NOT NULL DEFAULT '',
-	plugin_dir varchar(255) NOT NULL DEFAULT '',
-	plugin_enabled tinyint(2) NOT NULL DEFAULT 0,
-	PRIMARY KEY (plugin_name)
+CREATE TABLE `phpbb_plugins` (
+	`plugin_name` varchar(255) NOT NULL DEFAULT '',
+	`plugin_version` varchar(255) NOT NULL DEFAULT '',
+	`plugin_dir` varchar(255) NOT NULL DEFAULT '',
+	`plugin_enabled` tinyint(2) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`plugin_name`)
 );
 
 ## `phpbb_plugins`
@@ -1280,6 +1283,39 @@ CREATE TABLE `phpbb_plugins_config` (
 );
 
 ## `phpbb_plugins_config`
+
+
+## --------------------------------------------------------
+
+## `phpbb_poll_options`
+
+CREATE TABLE `phpbb_poll_options` (
+	`poll_option_id` tinyint(4) DEFAULT '0' NOT NULL,
+	`topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`poll_option_text` text NOT NULL,
+	`poll_option_total` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	KEY `poll_opt_id` (`poll_option_id`),
+	KEY `topic_id` (`topic_id`)
+);
+
+## `phpbb_poll_options`
+
+
+## --------------------------------------------------------
+
+## `phpbb_poll_votes`
+
+CREATE TABLE `phpbb_poll_votes` (
+	`topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`poll_option_id` tinyint(4) DEFAULT '0' NOT NULL,
+	`vote_user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`vote_user_ip` varchar(40) DEFAULT '' NOT NULL,
+	KEY `topic_id` (`topic_id`),
+	KEY `vote_user_id` (`vote_user_id`),
+	KEY `vote_user_ip` (`vote_user_ip`)
+);
+
+## `phpbb_poll_votes`
 
 
 ## --------------------------------------------------------
@@ -1843,8 +1879,13 @@ CREATE TABLE `phpbb_topics` (
 	`topic_views` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	`topic_replies` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	`topic_status` tinyint(3) NOT NULL DEFAULT '0',
-	`topic_vote` tinyint(1) NOT NULL DEFAULT '0',
 	`topic_type` tinyint(3) NOT NULL DEFAULT '0',
+	`poll_title` varchar(255) DEFAULT '' NOT NULL,
+	`poll_start` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`poll_length` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`poll_max_options` tinyint(4) DEFAULT '1' NOT NULL,
+	`poll_last_vote` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`poll_vote_change` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
 	`topic_first_post_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	`topic_first_post_time` int(11) unsigned NOT NULL DEFAULT '0',
 	`topic_first_poster_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -2117,56 +2158,6 @@ CREATE TABLE `phpbb_users` (
 );
 
 ## `phpbb_users`
-
-
-## --------------------------------------------------------
-
-## `phpbb_vote_desc`
-
-CREATE TABLE `phpbb_vote_desc` (
-	`vote_id` mediumint(8) unsigned NOT NULL auto_increment,
-	`topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-	`vote_text` TEXT NOT NULL,
-	`vote_start` int(11) NOT NULL DEFAULT '0',
-	`vote_length` int(11) NOT NULL DEFAULT '0',
-	PRIMARY KEY (`vote_id`),
-	KEY `topic_id` (`topic_id`)
-);
-
-## `phpbb_vote_desc`
-
-
-## --------------------------------------------------------
-
-## `phpbb_vote_results`
-
-CREATE TABLE `phpbb_vote_results` (
-	`vote_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-	`vote_option_id` tinyint(4) unsigned NOT NULL DEFAULT '0',
-	`vote_option_text` varchar(255) NOT NULL DEFAULT '',
-	`vote_result` int(11) NOT NULL DEFAULT '0',
-	KEY `vote_option_id` (`vote_option_id`),
-	KEY `vote_id` (`vote_id`)
-);
-
-## `phpbb_vote_results`
-
-
-## --------------------------------------------------------
-
-## `phpbb_vote_voters`
-
-CREATE TABLE `phpbb_vote_voters` (
-	`vote_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-	`vote_user_id` mediumint(8) NOT NULL DEFAULT '0',
-	`vote_user_ip` char(8) NOT NULL DEFAULT '',
-	`vote_cast` tinyint(4) unsigned NOT NULL DEFAULT '0',
-	KEY `vote_id` (`vote_id`),
-	KEY `vote_user_id` (`vote_user_id`),
-	KEY `vote_user_ip` (`vote_user_ip`)
-);
-
-## `phpbb_vote_voters`
 
 
 ## --------------------------------------------------------

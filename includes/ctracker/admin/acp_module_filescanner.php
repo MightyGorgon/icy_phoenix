@@ -149,7 +149,7 @@ else
 */
 $template->assign_vars(array(
 	'L_HEADLINE' => $lang['ctracker_fscan_head'],
-	'L_SUBHEADLINE' => sprintf($lang['ctracker_fscan_subhead'], gmdate($config['default_dateformat'], $config['ctracker_last_file_scan'])),
+	'L_SUBHEADLINE' => sprintf($lang['ctracker_fscan_subhead'], create_date($config['default_dateformat'], $config['ctracker_last_file_scan'], $config['board_timezone'])),
 	'L_FUNC_HEADER' => $lang['ctracker_fchk_funcheader'],
 	'L_TABLE_HEADER' => $lang['ctracker_fchk_tableheader'],
 	'L_OPTION_1' => $lang['ctracker_fscan_option1'],

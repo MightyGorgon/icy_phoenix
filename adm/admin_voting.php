@@ -38,20 +38,20 @@ $sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 // Assign sort fields
 $sort_fields_text = array(
-	$lang['Sort_vote_id'],
 	$lang['Sort_poll_topic'],
-	$lang['Sort_vote_start']
+	$lang['Sort_poll_title'],
+	$lang['Sort_poll_start'],
 );
 
 $sort_fields = array(
-	'vote_id',
 	'poll_topic',
-	'vote_start'
+	'poll_title',
+	'poll_start',
 );
 
 if (empty($sort_field))
 {
-	$sort_field = 'vote_id';
+	$sort_field = 'poll_topic';
 	$sort_order = 'ASC';
 }
 
@@ -87,25 +87,22 @@ $order_by = '';
 
 switch($sort_field)
 {
-	case 'vote_id':
-		$order_by = 'vote_id ' . $sort_order .
-					' LIMIT ' . $start . ", " . $config['topics_per_page'];
-		break;
 	case 'poll_topic':
-		$order_by = 'vote_text ' . $sort_order .
-					' LIMIT ' . $start . ", " . $config['topics_per_page'];
+		$order_by = 'topic_id ' . $sort_order;
 		break;
-	case 'vote_start':
-		$order_by = 'vote_start ' . $sort_order .
-					' LIMIT ' . $start . ", " . $config['topics_per_page'];
+	case 'poll_title':
+		$order_by = 'poll_title ' . $sort_order;
+		break;
+	case 'poll_start':
+		$order_by = 'poll_start ' . $sort_order;
 		break;
 	default:
-		$sort_field = 'vote_id';
+		$sort_field = 'topic_id';
 		$sort_order = 'ASC';
-		$order_by = 'vote_id ' . $sort_order .
-					' LIMIT ' . $start . ", " . $config['topics_per_page'];
+		$order_by = 'topic_id ' . $sort_order;
 		break;
 }
+$order_by = $order_by . ' LIMIT ' . $start . ", " . $config['topics_per_page'];
 
 $template->set_filenames(array('pollbody' => ADM_TPL . 'admin_voting_body.tpl'));
 
@@ -123,14 +120,14 @@ $template->assign_vars(array(
 	'S_FIELD_SELECT' => $select_sort_field,
 	'S_ORDER_SELECT' => $select_sort_order,
 
-	'ADMIN_VOTING_ICON' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/admin_voting_icon.gif" alt="' . $lang['Admin_Vote_Title'] .'" />',
+	'ADMIN_VOTING_ICON' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/admin_voting_icon.gif" alt="' . $lang['Admin_Vote_Title'] . '" />',
 	)
 );
 
 // Assign Username array
 $sql = "SELECT DISTINCT u.user_id, u.username, u.user_active, u.user_color
-		FROM " . USERS_TABLE . " AS u , " . VOTE_USERS_TABLE . " AS vv
-		WHERE u.user_id = vv.vote_user_id";
+		FROM " . USERS_TABLE . " AS u , " . POLL_VOTES_TABLE . " AS v
+		WHERE u.user_id = v.vote_user_id";
 $result = $db->sql_query($sql);
 
 $users_arr[] = array();
@@ -144,40 +141,35 @@ while ($row = $db->sql_fetchrow($result))
 	$users_arr[$user_id]['user_active'] = $row['user_active'];
 	$users_arr[$user_id]['user_color'] = $row['user_color'];
 }
+$db->sql_freeresult($result);
 
 // Assign poll options array
 $sql = "SELECT *
-		FROM " . VOTE_RESULTS_TABLE . "
-		ORDER BY vote_id";
+		FROM " . POLL_OPTIONS_TABLE . "
+		ORDER BY topic_id ASC";
 $result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
 {
-	$vote_id = $row['vote_id'];
-	$vote_option_id = $row['vote_option_id'];
-	$vote_option_text = $row['vote_option_text'];
-	$vote_result = $row['vote_result'];
-	$option_arr[$vote_id][$vote_option_id]['text'] = $vote_option_text;
-	$option_arr[$vote_id][$vote_option_id]['result'] = $vote_result;
+	$option_arr[$row['topic_id']][$row['poll_option_id']]['poll_option_text'] = $row['poll_option_text'];
+	$option_arr[$row['topic_id']][$row['poll_option_id']]['poll_option_total'] = $row['poll_option_total'];
 }
+$db->sql_freeresult($result);
 
 // Assign individual vote results
-$sql = "SELECT vote_id, vote_user_id, vote_cast
-		FROM " . VOTE_USERS_TABLE . "
-		ORDER BY vote_id";
+$sql = "SELECT *
+		FROM " . POLL_VOTES_TABLE . "
+		ORDER BY topic_id ASC, poll_option_id ASC";
 $result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
 {
-	$vote_id = $row['vote_id'];
-	$vote_user_id = $row['vote_user_id'];
-	$vote_cast = $row['vote_cast'];
-	$voter_arr[$vote_id][$vote_user_id] = $vote_cast;
+	$voter_arr[$row['topic_id']][$row['vote_user_id']][$row['poll_option_id']] = $row['poll_option_id'];
 }
+$db->sql_freeresult($result);
 
-
-$sql ="SELECT *
-		FROM " . VOTE_DESC_TABLE . "
+$sql ="SELECT * FROM " . TOPICS_TABLE . "
+		WHERE poll_title <> ''
 		ORDER BY " . $order_by;
 $result = $db->sql_query($sql);
 $num_polls = $db->sql_numrows($result);
@@ -186,11 +178,10 @@ $i = 0;
 while ($row = $db->sql_fetchrow($result))
 {
 	$topic_row_color = (($i % 2) == 0) ? 'row1' : 'row2';
-	$vote_id = $row['vote_id'];
-	$vote_text = $row['vote_text'];
 	$topic_id = $row['topic_id'];
-	$vote_start = $row['vote_start'];
-	$vote_length = $row['vote_length'];
+	$vote_text = $row['poll_title'];
+	$vote_start = $row['poll_start'];
+	$vote_length = $row['poll_length'];
 	$vote_end = $vote_start + $vote_length;
 
 	if (time() < $vote_end)
@@ -210,13 +201,21 @@ while ($row = $db->sql_fetchrow($result))
 	$users = '';
 	$user_option_arr = '';
 
-	if (sizeof($voter_arr[$vote_id]) > 0)
+	if (sizeof($voter_arr[$topic_id]) > 0)
 	{
-		foreach($voter_arr[$vote_id] as $user_id => $option_id)
+		$users_added = array();
+		foreach($voter_arr[$topic_id] as $user_id => $option_id)
 		{
 			$current_username = colorize_username($users_arr[$user_id]['user_id'], $users_arr[$user_id]['username'], $users_arr[$user_id]['user_color'], $users_arr[$user_id]['user_active']);
 			$user .= $current_username . ', ';
-			$user_option_arr[$option_id] .= $current_username . ', ';
+			$users_added[] = $user_id;
+			foreach ($option_id as $result_id)
+			{
+				if (!in_array($user_id, $users_added))
+				{
+					$user_option_arr[$result_id] .= $current_username . ', ';
+				}
+			}
 		}
 		$user = substr($user, '0', strrpos($user, ', '));
 	}
@@ -228,16 +227,16 @@ while ($row = $db->sql_fetchrow($result))
 		'USER' => $user,
 		'ENDDATE' => $vote_end,
 		'VOTE_DURATION' => $vote_duration,
-		'VOTE_ID' => $vote_id
+		'VOTE_ID' => $topic_id
 		)
 	);
 
-	if (sizeof($voter_arr[$vote_id]) > 0)
+	if (sizeof($option_arr[$topic_id]) > 0)
 	{
-		foreach($option_arr[$vote_id] as $vote_option_id => $elem)
+		foreach($option_arr[$topic_id] as $vote_option_id => $elem)
 		{
-			$option_text = $elem['text'];
-			$option_result = $elem['result'];
+			$option_text = $elem['poll_option_text'];
+			$option_result = $elem['poll_option_total'];
 			$user = $user_option_arr[$vote_option_id];
 			$user = substr($user, '0', strrpos($user, ', '));
 
@@ -253,22 +252,17 @@ while ($row = $db->sql_fetchrow($result))
 	$i++;
 
 }
+$db->sql_freeresult($result);
 
 // Pagination routine
-$sql = "SELECT count(*) AS total" .
-		" FROM " . VOTE_DESC_TABLE .
-		" WHERE vote_id > 0";
-$result = $db->sql_query($sql);
-
-if ($total = $db->sql_fetchrow($result))
+if ($num_polls > 0)
 {
-	$total_polls = $total['total'];
-	$pagination = generate_pagination('admin_voting.' . PHP_EXT . '?mode=' . $sort_field . '&amp;order=' . $sort_order, $total_polls, $config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_voting.' . PHP_EXT . '?mode=' . $sort_field . '&amp;order=' . $sort_order, $num_polls, $config['topics_per_page'], $start). '&nbsp;';
 }
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
-	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_polls / $config['topics_per_page'])),
+	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($num_polls / $config['topics_per_page'])),
 
 	'L_GOTO_PAGE' => $lang['Goto_page']
 	)

@@ -14,6 +14,11 @@
 * Javier B (kinfule@lycos.es)
 */
 
+if (!defined('IN_ICYPHOENIX'))
+{
+	die('Hacking attempt');
+}
+
 /*
 	From php.net comments
 	by ivanmaz(remove) at mech dot math dot msu dot su

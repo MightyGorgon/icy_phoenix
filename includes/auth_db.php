@@ -185,8 +185,7 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 
 			// Update the password in the users table to the new format
 			$sql = 'UPDATE ' . USERS_TABLE . "
-				SET user_password = '" . $db->sql_escape($hash) . "',
-					user_pass_convert = 0
+				SET user_password = '" . $db->sql_escape($hash) . "', user_pass_convert = 0
 				WHERE user_id = {$row['user_id']}";
 			$db->sql_query($sql);
 

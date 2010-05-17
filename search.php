@@ -1538,7 +1538,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$views = $searchset[$i]['topic_views'];
 				$replies = $searchset[$i]['topic_replies'];
 
-				$topic_link = $class_topics->build_topic_icon_link($searchset[$i]['forum_id'], $searchset[$i]['topic_id'], $searchset[$i]['topic_type'], $searchset[$i]['topic_reg'], $searchset[$i]['topic_replies'], $searchset[$i]['news_id'], $searchset[$i]['topic_vote'], $searchset[$i]['topic_status'], $searchset[$i]['topic_moved_id'], $searchset[$i]['post_time'], $user_replied, $replies, $unread);
+				$topic_link = $class_topics->build_topic_icon_link($searchset[$i]['forum_id'], $searchset[$i]['topic_id'], $searchset[$i]['topic_type'], $searchset[$i]['topic_reg'], $searchset[$i]['topic_replies'], $searchset[$i]['news_id'], $searchset[$i]['poll_start'], $searchset[$i]['topic_status'], $searchset[$i]['topic_moved_id'], $searchset[$i]['post_time'], $user_replied, $replies, $unread);
 
 				$topic_id = $topic_link['topic_id'];
 				$topic_id_append = $topic_link['topic_id_append'];

@@ -303,7 +303,7 @@ if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
 		VALUES ('" . $confirm_id . "', '" . $userdata['session_id'] . "', '" . $code . "')";
 	$result = $db->sql_query($sql);
 	unset($code);
-	$confirm_image = '<img src="' . append_sid(CMS_PAGE_PROFILE . '?mode=confirm&amp;id=' . $confirm_id) . '" alt="" title="" />';
+	$confirm_image = '<img src="' . append_sid(CMS_PAGE_PROFILE . '?mode=confirm&amp;confirm_id=' . $confirm_id) . '" alt="" title="" />';
 	$s_hidden_fields .= '<input type="hidden" name="confirm_id" value="' . $confirm_id . '" />';
 	$template->assign_block_vars('switch_confirm', array());
 }

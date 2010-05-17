@@ -1,3 +1,1 @@
-<!-- <form method="post" action="{S_POLL_ACTION}"> -->
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">{PORTAL_POLL}</table>
-<!-- </form> -->
+<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><!-- IF S_POLL_EXISTS -->{POLL_DISPLAY}<!-- ELSE --><tr><td class="row2 row-center"><br /><br />{L_NO_POLLS}<br /><br /></td></tr><!-- ENDIF --></table>

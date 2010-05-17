@@ -26,8 +26,13 @@ if(!function_exists('cms_block_kb'))
 	{
 		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $userdata, $lang, $block_id, $cms_config_vars;
 
+		if (!class_exists('class_topics'))
+		{
+			include(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+		}
+		$class_topics = new class_topics();
+
 		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
-		@include_once(IP_ROOT_PATH . 'fetchposts.' . PHP_EXT);
 
 		$template->_tpldata['kb_list.'] = array();
 		$template->_tpldata['kb_article.'] = array();
@@ -62,9 +67,8 @@ if(!function_exists('cms_block_kb'))
 		{
 			$template->assign_block_vars('kb_article', array());
 
-			$forum_id = (isset($_GET['f'])) ? intval($_GET['f']) : intval($_POST['f']);
-
-			$fetchposts = phpbb_fetch_posts($forum_id, 0, 0);
+			$forum_id = request_var(POST_FORUM_URL, 0);
+			$fetchposts = $class_topics->fetch_posts($forum_id, 0, 0, false, false, false, false);
 
 			$id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : intval($_POST[POST_TOPIC_URL]);
 			$i = 0;
@@ -101,9 +105,8 @@ if(!function_exists('cms_block_kb'))
 			{
 				$template->assign_block_vars('kb_list', array());
 
-				$forum_id = (isset($_GET['f'])) ? intval($_GET['f']) : intval($_POST['f']);
-
-				$fetchposts = phpbb_fetch_posts($forum_id, 0, 0);
+				$forum_id = request_var(POST_FORUM_URL, 0);
+				$fetchposts = $class_topics->fetch_posts($forum_id, 0, 0, false, false, false, false);
 
 				for ($i = 0; $i < sizeof($fetchposts); $i++)
 				{

@@ -53,7 +53,7 @@ function ip_user_kill($user_id)
 			WHERE topic_poster = $user_id";
 		$db->sql_query($sql);
 
-		$sql = "UPDATE " . VOTE_USERS_TABLE . "
+		$sql = "UPDATE " . POLL_VOTES_TABLE . "
 			SET vote_user_id = " . DELETED . "
 			WHERE vote_user_id = $user_id";
 		$db->sql_query($sql);

@@ -8,12 +8,13 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
 define('IN_ADMIN', true);
 // to enable email notification to the user, after deletion, enable this
 define('NOTIFY_USERS', true);
 // to disable confirmation when executing PRUNE_MG
 define('KILL_CONFIRM', false);
+
+define('IN_ICYPHOENIX', true);
 
 if (empty($_POST['mode']) && empty($_GET['mode']))
 {

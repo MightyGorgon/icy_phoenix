@@ -38,9 +38,9 @@ function prune($forum_id, $prune_date, $prune_all = false)
 	}
 
 	$db->sql_freeresult($result);
-	$prune_all = ($prune_all) ? '' : 'AND t.topic_vote = 0 AND t.topic_type <> ' . POST_ANNOUNCE;
+	$prune_all = ($prune_all) ? '' : 'AND t.poll_start = 0 AND t.topic_type <> ' . POST_ANNOUNCE;
 
-	// Those without polls and announcements ... unless told otherwise!
+	// Those without polls and announcements... unless told otherwise!
 	$sql = "SELECT t.topic_id
 		FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
 		WHERE t.forum_id = $forum_id

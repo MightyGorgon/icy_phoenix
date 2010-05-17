@@ -194,9 +194,9 @@ function date_select($select_name = 'dateformat', $default_format = '')
 function auth_select($select_name, $default)
 {
 	global $lang;
-	$auth_array_lang = array($lang['Forum_ALL'], $lang['Forum_REG'], $lang['Forum_MOD'], $lang['Forum_ADMIN']);
-	//$auth_array = array(ANONYMOUS, USER, MOD, ADMIN);
+
 	$auth_array = array(AUTH_ALL, AUTH_REG, AUTH_MOD, AUTH_ADMIN);
+	$auth_array_lang = array($lang['AUTH_ALL'], $lang['AUTH_REG'], $lang['AUTH_MOD'], $lang['AUTH_ADMIN']);
 
 	$auth_select = '<select name="' . $select_name . '">';
 

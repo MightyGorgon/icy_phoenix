@@ -32,7 +32,7 @@ for($i = 0; $i < $count_similar; $i++)
 	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
 	$topic_type =  ($similar['topic_type'] == POST_ANNOUNCE) ? $lang['Topic_Announcement'] .' ': '';
 	$topic_type .= ($similar['topic_type'] == POST_STICKY) ? $lang['Topic_Sticky'] .' ': '';
-	$topic_type .= ($similar['topic_vote']) ? $lang['Topic_Poll'] .' ': '';
+	$topic_type .= (!empty($similar['poll_start'])) ? $lang['Topic_Poll'] .' ': '';
 	$replies = $similar['topic_replies'];
 
 	$topic_class = '';

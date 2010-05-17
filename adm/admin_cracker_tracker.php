@@ -16,8 +16,8 @@
 */
 
 // Set constants
-define('IN_ICYPHOENIX', true);
 define('CTRACKER_ACP', true);
+define('IN_ICYPHOENIX', true);
 
 /**
 * <b>Module Number Documentation:</b>
@@ -39,11 +39,11 @@ define('CTRACKER_ACP', true);
 // Generate the Modules we need
 if(!empty($setmodules))
 {
-	// Mighty Gorgon: Module FileScanner (ID 3) temporarily disabled...
+	// Module FileScanner: (ID 3) re-enabled...
 	$filename = basename(__FILE__);
 	$module['2600_CRACKERTRACKER']['ctracker_module_1']  = $filename . '?modu=1';
 	$module['2600_CRACKERTRACKER']['ctracker_module_2']  = $filename . '?modu=2';
-	//$module['2600_CRACKERTRACKER']['ctracker_module_3']  = $filename . '?modu=3';
+	$module['2600_CRACKERTRACKER']['ctracker_module_3']  = $filename . '?modu=3';
 	$module['2600_CRACKERTRACKER']['ctracker_module_4']  = $filename . '?modu=4';
 	$module['2600_CRACKERTRACKER']['ctracker_module_5']  = $filename . '?modu=5';
 	$module['2600_CRACKERTRACKER']['ctracker_module_6']  = $filename . '?modu=6';
@@ -54,7 +54,7 @@ if(!empty($setmodules))
 	$module['2600_CRACKERTRACKER']['ctracker_module_11'] = $filename . '?modu=11';
 	$ja_module['2600_CRACKERTRACKER']['ctracker_module_1']  = false;
 	$ja_module['2600_CRACKERTRACKER']['ctracker_module_2']  = false;
-	//$ja_module['2600_CRACKERTRACKER']['ctracker_module_3']  = false;
+	$ja_module['2600_CRACKERTRACKER']['ctracker_module_3']  = false;
 	$ja_module['2600_CRACKERTRACKER']['ctracker_module_4']  = false;
 	$ja_module['2600_CRACKERTRACKER']['ctracker_module_5']  = false;
 	$ja_module['2600_CRACKERTRACKER']['ctracker_module_6']  = false;

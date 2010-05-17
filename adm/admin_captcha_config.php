@@ -106,7 +106,7 @@ $template->assign_vars(array(
 	'GAMMACORRECT' => $new['captcha_gammacorrect'],
 	'JPEG_QUALITY' => $new['captcha_jpeg_quality'],
 
-	'CAPTCHA_IMG' => '<img src="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=confirm&amp;id=Admin') . '" alt="" />',
+	'CAPTCHA_IMG' => '<img src="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=confirm&amp;confirm_id=Admin') . '" alt="" />',
 
 	'L_ENABLE_CONFIRM' => $lang['Visual_confirm'],
 	'L_ENABLE_CONFIRM_EXPLAIN' => $lang['Visual_confirm_explain'],

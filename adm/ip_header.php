@@ -8,8 +8,8 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
 define('IN_ADMIN', true);
+define('IN_ICYPHOENIX', true);
 
 // Load default header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');

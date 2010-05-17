@@ -22,7 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // Do we have an id? No, then just exit
-$confirm_id = request_get_var('id', '');
+$confirm_id = request_get_var('confirm_id', '');
 if (empty($confirm_id))
 {
 	exit;

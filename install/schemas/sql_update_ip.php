@@ -65,6 +65,7 @@ switch ($req_version)
 	case '13962': $current_ip_version = '1.3.9.62'; break;
 	case '131063': $current_ip_version = '1.3.10.63'; break;
 	case '131164': $current_ip_version = '1.3.11.64'; break;
+	case '131265': $current_ip_version = '1.3.12.65'; break;
 }
 
 // Icy Phoenix Part...
@@ -3902,14 +3903,78 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.9.62 */
 		case '1.3.9.62':
-
-		/* Updating from IP 1.3.10.63 */
-		case '1.3.10.63':
 		$sql[] = "ALTER TABLE `" . $table_prefix . "topics_watch` ADD `forum_id` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `topic_id`";
 		$sql[] = "UPDATE `" . $table_prefix . "topics_watch` tw, `" . $table_prefix . "topics` t SET tw.forum_id = t.forum_id WHERE tw.topic_id = t.topic_id";
 
+		/* Updating from IP 1.3.10.63 */
+		case '1.3.10.63':
+		$sql[] = "DROP TABLE `" . $table_prefix . "confirm`";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "confirm` (
+			confirm_id char(32) DEFAULT '' NOT NULL,
+			session_id char(32) DEFAULT '' NOT NULL,
+			confirm_type tinyint(3) DEFAULT '0' NOT NULL,
+			code varchar(8) DEFAULT '' NOT NULL,
+			seed int(10) UNSIGNED DEFAULT '0' NOT NULL,
+			PRIMARY KEY (session_id, confirm_id),
+			KEY confirm_type (confirm_type)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "poll_options` (
+			poll_option_id tinyint(4) DEFAULT '0' NOT NULL,
+			topic_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			poll_option_text text NOT NULL,
+			poll_option_total mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			KEY poll_opt_id (poll_option_id),
+			KEY topic_id (topic_id)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "poll_votes` (
+			topic_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			poll_option_id tinyint(4) DEFAULT '0' NOT NULL,
+			vote_user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			vote_user_ip varchar(40) DEFAULT '' NOT NULL,
+			KEY topic_id (topic_id),
+			KEY vote_user_id (vote_user_id),
+			KEY vote_user_ip (vote_user_ip)
+		)";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `poll_title` varchar(255) DEFAULT '' NOT NULL AFTER `topic_type`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `poll_start` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `poll_title`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `poll_length` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `poll_start`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `poll_max_options` tinyint(4) DEFAULT '1' NOT NULL AFTER `poll_length`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `poll_last_vote` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `poll_max_options`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `poll_vote_change` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `poll_last_vote`";
+
+		$sql[] = "UPDATE " . $table_prefix . "topics t, " . $table_prefix . "vote_desc vd
+			SET t.poll_title = vd.vote_text, t.poll_start = vd.vote_start, t.poll_length = vd.vote_length, t.poll_max_options = 1, t.poll_vote_change = 0
+			WHERE t.topic_vote = 1
+			AND vd.topic_id = t.topic_id";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "poll_options`
+			SELECT vr.vote_option_id, vd.topic_id, vr.vote_option_text, vr.vote_result
+			FROM `" . $table_prefix . "vote_desc` vd, `" . $table_prefix . "vote_results` vr
+			WHERE vr.vote_id = vd.vote_id
+			ORDER BY vd.topic_id ASC, vd.vote_id ASC, vr.vote_option_id ASC";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "poll_votes`
+			SELECT vd.topic_id, vv.vote_cast, vv.vote_user_id, vv.vote_user_ip
+			FROM `" . $table_prefix . "vote_desc` vd, `" . $table_prefix . "vote_voters` vv
+			WHERE vd.vote_id = vv.vote_id
+			ORDER BY vd.topic_id ASC, vv.vote_user_id ASC";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` DROP `topic_vote`";
+		$sql[] = "DROP TABLE `" . $table_prefix . "vote_desc`";
+		$sql[] = "DROP TABLE `" . $table_prefix . "vote_results`";
+		$sql[] = "DROP TABLE `" . $table_prefix . "vote_voters`";
+
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
+
+		/* Updating from IP 1.3.12.65 */
+		case '1.3.12.65':
+
+
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

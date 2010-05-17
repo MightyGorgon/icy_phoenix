@@ -1610,8 +1610,8 @@ switch($mode_id)
 							}
 							$db->sql_freeresult($result2);
 							// Restore topic
-							$sql2 = 'INSERT INTO ' . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_vote, topic_type, topic_first_post_id, topic_last_post_id, topic_moved_id)
-								VALUES ($new_forum, '" . addslashes($topic_title) . "', " . $row2['poster_id'] . ", " . $row2['post_time'] . ", 0, $post_replies, " . TOPIC_UNLOCKED . ", 0, " . POST_NORMAL . ", $first_post, $last_post, 0)";
+							$sql2 = 'INSERT INTO ' . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_type, topic_first_post_id, topic_last_post_id, topic_moved_id)
+								VALUES ($new_forum, '" . addslashes($topic_title) . "', " . $row2['poster_id'] . ", " . $row2['post_time'] . ", 0, $post_replies, " . TOPIC_UNLOCKED . ", " . POST_NORMAL . ", $first_post, $last_post, 0)";
 							$db->sql_return_on_error(true);
 							$result2 = $db->sql_query($sql2);
 							$db->sql_return_on_error(false);
@@ -2072,11 +2072,12 @@ switch($mode_id)
 
 				// Check for votes without a topic
 				echo('<p class="gen"><b>' . $lang['Checking_votes_wo_topic'] . '</b></p>' . "\n");
-				$sql = "SELECT v.vote_id, v.vote_text, v.vote_start, v.vote_length
-					FROM " . VOTE_DESC_TABLE . " v
-						LEFT JOIN " . TOPICS_TABLE . " t ON v.topic_id = t.topic_id
-					WHERE t.topic_id IS NULL";
 				$result_array = array();
+
+				$sql = "SELECT o.*
+					FROM " . POLL_OPTIONS_TABLE . " o
+						LEFT JOIN " . TOPICS_TABLE . " t ON o.topic_id = t.topic_id
+					WHERE t.topic_id IS NULL";
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
 				$db->sql_return_on_error(false);
@@ -2092,10 +2093,7 @@ switch($mode_id)
 						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
-					$start_time = create_date($config['default_dateformat'], $row['vote_start'], $config['board_timezone']);
-					$end_time = ($row['vote_length'] == 0) ? '-' : create_date($config['default_dateformat'], $row['vote_start'] + $row['vote_length'], $config['board_timezone']);
-					echo("<li>" . sprintf($lang['Invalid_vote'], htmlspecialchars($row['vote_text']), $row['vote_id'], $start_time, $end_time) . "</li>\n");
-					$result_array[] = $row['vote_id'];
+					$result_array[] = $row['topic_id'];
 				}
 				$db->sql_freeresult($result);
 				if ($list_open)
@@ -2103,50 +2101,12 @@ switch($mode_id)
 					echo("</ul></div>\n");
 					$list_open = false;
 				}
-				if (sizeof($result_array))
-				{
-					$record_list = implode(',', $result_array);
-					echo('<p class="gen">' . $lang['Deleting_Votes'] . " </p>\n");
-					$sql = "DELETE FROM " . VOTE_DESC_TABLE . "
-						WHERE vote_id IN ($record_list)";
-					$db->sql_return_on_error(true);
-					$result = $db->sql_query($sql);
-					$db->sql_return_on_error(false);
-					if (!$result)
-					{
-						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
-					}
-					$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . "
-						WHERE vote_id IN ($record_list)";
-					$db->sql_return_on_error(true);
-					$result = $db->sql_query($sql);
-					$db->sql_return_on_error(false);
-					if (!$result)
-					{
-						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
-					}
-					$sql = "DELETE FROM " . VOTE_USERS_TABLE . "
-						WHERE vote_id IN ($record_list)";
-					$db->sql_return_on_error(true);
-					$result = $db->sql_query($sql);
-					$db->sql_return_on_error(false);
-					if (!$result)
-					{
-						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
-					}
-				}
-				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-
 				// Check for votes without results
 				echo('<p class="gen"><b>' . $lang['Checking_votes_wo_result'] . '</b></p>' . "\n");
-				$sql = "SELECT v.vote_id, v.vote_text, v.vote_start, v.vote_length
-					FROM " . VOTE_DESC_TABLE . " v
-						LEFT JOIN " . VOTE_RESULTS_TABLE . " vr ON v.vote_id = vr.vote_id
-					WHERE vr.vote_id IS NULL";
-				$result_array = array();
+				$sql = "SELECT o.*
+					FROM " . POLL_VOTES_TABLE . " o
+						LEFT JOIN " . TOPICS_TABLE . " t ON o.topic_id = t.topic_id
+					WHERE t.topic_id IS NULL";
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
 				$db->sql_return_on_error(false);
@@ -2162,10 +2122,7 @@ switch($mode_id)
 						echo("<div class=\"post-text\"><ul>\n");
 						$list_open = true;
 					}
-					$start_time = create_date($config['default_dateformat'], $row['vote_start'], $config['board_timezone']);
-					$end_time = ($row['vote_length'] == 0) ? '-' : create_date($config['default_dateformat'], $row['vote_start'] + $row['vote_length'], $config['board_timezone']);
-					echo("<li>" . sprintf($lang['Invalid_vote'], htmlspecialchars($row['vote_text']), $row['vote_id'], $start_time, $end_time) . "</li>\n");
-					$result_array[] = $row['vote_id'];
+					$result_array[] = $row['topic_id'];
 				}
 				$db->sql_freeresult($result);
 				if ($list_open)
@@ -2177,8 +2134,8 @@ switch($mode_id)
 				{
 					$record_list = implode(',', $result_array);
 					echo('<p class="gen">' . $lang['Deleting_Votes'] . " </p>\n");
-					$sql = "DELETE FROM " . VOTE_DESC_TABLE . "
-						WHERE vote_id IN ($record_list)";
+					$sql = "DELETE FROM " . POLL_OPTIONS_TABLE . "
+						WHERE topic_id IN ($record_list)";
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
 					$db->sql_return_on_error(false);
@@ -2186,17 +2143,8 @@ switch($mode_id)
 					{
 						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
 					}
-					$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . "
-						WHERE vote_id IN ($record_list)";
-					$db->sql_return_on_error(true);
-					$result = $db->sql_query($sql);
-					$db->sql_return_on_error(false);
-					if (!$result)
-					{
-						throw_error("Couldn't delete vote data!", __LINE__, __FILE__, $sql);
-					}
-					$sql = "DELETE FROM " . VOTE_USERS_TABLE . "
-						WHERE vote_id IN ($record_list)";
+					$sql = "DELETE FROM " . POLL_VOTES_TABLE . "
+						WHERE topic_id IN ($record_list)";
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
 					$db->sql_return_on_error(false);
@@ -2206,123 +2154,16 @@ switch($mode_id)
 					}
 				}
 				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-
-				// Check vote data in topics
-				echo('<p class="gen"><b>' . $lang['Checking_topics_vote_data'] . '</b></p>' . "\n");
-				$db_updated = false;
-				$sql = "SELECT t.topic_id
-					FROM " . TOPICS_TABLE . " t
-						LEFT JOIN " . VOTE_DESC_TABLE . " v ON t.topic_id = v.topic_id
-					WHERE v.vote_id IS NULL AND
-						t.topic_vote = 1";
-				$result_array = array();
-				$db->sql_return_on_error(true);
-				$result = $db->sql_query($sql);
-				$db->sql_return_on_error(false);
-				if (!$result)
-				{
-					throw_error("Couldn't get topic and vote data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$result_array[] = $row['topic_id'];
-				}
-				$db->sql_freeresult($result);
-				if (sizeof($result_array))
-				{
-					$record_list = implode(',', $result_array);
-					echo('<p class="gen">' . $lang['Updating_topics_wo_vote'] . '</p>' . "\n");
-					$sql = "UPDATE " . TOPICS_TABLE . "
-						SET topic_vote = 0
-						WHERE topic_id IN ($record_list)";
-					$db->sql_return_on_error(true);
-					$result = $db->sql_query($sql);
-					$db->sql_return_on_error(false);
-					if (!$result)
-					{
-						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql);
-					}
-					$affected_rows = $db->sql_affectedrows();
-					if ($affected_rows == 1)
-					{
-						$db_updated = true;
-						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
-					}
-					elseif ($affected_rows > 1)
-					{
-						$db_updated = true;
-						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
-					}
-				}
-				// Check for topics with vote not marked as vote
-				if (check_mysql_version())
-				{
-					$sql = "SELECT t.topic_id
-						FROM " . TOPICS_TABLE . " t
-							INNER JOIN " . VOTE_DESC_TABLE . " v ON t.topic_id = v.topic_id
-						WHERE t.topic_vote = 0";
-				}
-				else
-				{
-					$sql = "SELECT t.topic_id
-						FROM " . TOPICS_TABLE . " t, " .
-							VOTE_DESC_TABLE . " v
-						WHERE t.topic_id = v.topic_id
-							AND t.topic_vote = 0";
-				}
-				$result_array = array();
-				$db->sql_return_on_error(true);
-				$result = $db->sql_query($sql);
-				$db->sql_return_on_error(false);
-				if (!$result)
-				{
-					throw_error("Couldn't get topic and vote data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$result_array[] = $row['topic_id'];
-				}
-				$db->sql_freeresult($result);
-				if (sizeof($result_array))
-				{
-					$record_list = implode(',', $result_array);
-					echo('<p class="gen">' . $lang['Updating_topics_w_vote'] . '</p>' . "\n");
-					$sql = "UPDATE " . TOPICS_TABLE . "
-						SET topic_vote = 1
-						WHERE topic_id IN ($record_list)";
-					$db->sql_return_on_error(true);
-					$result = $db->sql_query($sql);
-					$db->sql_return_on_error(false);
-					if (!$result)
-					{
-						throw_error("Couldn't update topic information!", __LINE__, __FILE__, $sql);
-					}
-					$affected_rows = $db->sql_affectedrows();
-					if ($affected_rows == 1)
-					{
-						$db_updated = true;
-						echo('<p class="gen">' . sprintf($lang['Affected_row'], $affected_rows) . '</p>' . "\n");
-					}
-					elseif ($affected_rows > 1)
-					{
-						$db_updated = true;
-						echo('<p class="gen">' . sprintf($lang['Affected_rows'], $affected_rows) . '</p>' . "\n");
-					}
-				}
-				if (!$db_updated)
 				{
 					echo($lang['Nothing_to_do']);
 				}
 
 				// Check for vote results without a vote
 				echo('<p class="gen"><b>' . $lang['Checking_results_wo_vote'] . '</b></p>' . "\n");
-				$sql = "SELECT vr.vote_id, vr.vote_option_id, vr.vote_option_text, vr.vote_result
-					FROM " . VOTE_RESULTS_TABLE . " vr
-						LEFT JOIN " . VOTE_DESC_TABLE . " v ON vr.vote_id = v.vote_id
-					WHERE v.vote_id IS NULL";
+				$sql = "SELECT v.*
+					FROM " . POLL_VOTES_TABLE . " v
+						LEFT JOIN " . POLL_OPTIONS_TABLE . " o ON v.poll_option_id = o.poll_option_id
+					WHERE o.poll_option_id IS NULL";
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
 				$db->sql_return_on_error(false);
@@ -2339,9 +2180,9 @@ switch($mode_id)
 						$list_open = true;
 					}
 					echo("<li>" . sprintf($lang['Invalid_result'], htmlspecialchars($row['vote_option_text']), $row['vote_result']) . "</li>\n");
-					$sql2 = "DELETE FROM " . VOTE_RESULTS_TABLE . "
-						WHERE vote_id = " . $row['vote_id'] . "
-							AND vote_option_id = " . $row['vote_option_id'];
+					$sql2 = "DELETE FROM " . POLL_VOTES_TABLE . "
+						WHERE poll_option_id = " . $row['poll_option_id'] . "
+							AND topic_id = " . $row['topic_id'];
 					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
 					$db->sql_return_on_error(false);
@@ -2363,11 +2204,11 @@ switch($mode_id)
 
 				// Checking for invalid voters data
 				echo('<p class="gen"><b>' . $lang['Checking_voters_data'] . '</b></p>' . "\n");
-				$sql = "SELECT vu.vote_user_id
-					FROM " . VOTE_USERS_TABLE . " vu
-						LEFT JOIN " . USERS_TABLE . " u ON vu.vote_user_id = u.user_id
+				$sql = "SELECT v.vote_user_id
+					FROM " . POLL_VOTES_TABLE . " v
+						LEFT JOIN " . USERS_TABLE . " u ON v.vote_user_id = u.user_id
 					WHERE u.user_id IS NULL
-					GROUP BY vu.vote_user_id";
+					GROUP BY v.vote_user_id";
 				$user_array = array();
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
@@ -2381,36 +2222,14 @@ switch($mode_id)
 					$user_array[] = $row['vote_user_id'];
 				}
 				$db->sql_freeresult($result);
-				$sql = "SELECT vu.vote_id
-					FROM " . VOTE_USERS_TABLE . " vu
-						LEFT JOIN " . VOTE_DESC_TABLE . " v ON vu.vote_id = v.vote_id
-					WHERE v.vote_id IS NULL
-					GROUP BY vu.vote_id";
-				$vote_array = array();
-				$db->sql_return_on_error(true);
-				$result = $db->sql_query($sql);
-				$db->sql_return_on_error(false);
-				if (!$result)
-				{
-					throw_error("Couldn't get voters and vote data!", __LINE__, __FILE__, $sql);
-				}
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$vote_array[] = $row['vote_id'];
-				}
-				$db->sql_freeresult($result);
-				if (sizeof($user_array) || sizeof($vote_array))
+				if (sizeof($user_array))
 				{
 					$sql_query = '';
 					if (sizeof($user_array))
 					{
 						$sql_query = 'vote_user_id IN (' . implode(',', $user_array) . ') ';
 					}
-					if (sizeof($vote_array))
-					{
-						$sql_query .= (($sql_query == '') ? '' : ' OR ') . 'vote_id IN (' . implode(',', $vote_array) . ') ';
-					}
-					$sql = "DELETE FROM " . VOTE_USERS_TABLE . "
+					$sql = "DELETE FROM " . POLL_VOTES_TABLE . "
 						WHERE $sql_query";
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
@@ -4441,7 +4260,6 @@ switch($mode_id)
 				set_autoincrement(SMILIES_TABLE, 'smilies_id', 5);
 				set_autoincrement(THEMES_TABLE, 'themes_id', 8);
 				set_autoincrement(TOPICS_TABLE, 'topic_id', 8);
-				set_autoincrement(VOTE_DESC_TABLE, 'vote_id', 8);
 				set_autoincrement(WORDS_TABLE, 'word_id', 8);
 
 				echo("</ul></div>\n");

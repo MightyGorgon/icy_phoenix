@@ -161,27 +161,24 @@ function delete_item($old, $new = '', $topic_dest = '')
 		$db->sql_query($sql);
 
 		// polls
-		$sql = "SELECT v.vote_id FROM " . VOTE_DESC_TABLE . " v, " . TOPICS_TABLE . " t
-					WHERE t.forum_id = $old_id
-						AND v.topic_id = t.topic_id";
+		$sql = "SELECT t.topic_id FROM " . TOPICS_TABLE . " t
+					WHERE t.forum_id = $old_id";
 		$result = $db->sql_query($sql);
 
-		$vote_ids = array();
+		$topic_ids = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$vote_ids[] = $row['vote_id'];
+			$topic_ids[] = $row['topic_id'];
 		}
-		$s_vote_ids = empty($vote_ids) ? '' : implode(', ', $vote_ids);
-		if (!empty($s_vote_ids))
+
+		if (!empty($topic_ids))
 		{
-			$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . " WHERE vote_id IN ($s_vote_ids)";
-			$result = $db->sql_query($sql);
-
-			$sql = "DELETE FROM " . VOTE_USERS_TABLE . " WHERE vote_id IN ($s_vote_ids)";
-			$result = $db->sql_query($sql);
-
-			$sql = "DELETE FROM " . VOTE_DESC_TABLE . " WHERE vote_id IN ($s_vote_ids)";
-			$result = $db->sql_query($sql);
+			if (!class_exists('class_mcp_topic'))
+			{
+				@include_once(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+			}
+			$class_mcp = new class_mcp_topic();
+			$class_mcp->topic_poll_delete($topic_ids);
 		}
 
 		// topics

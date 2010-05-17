@@ -178,7 +178,6 @@ function is_leap_year($year)
 //		event_replies :				for topics : number of replies
 //		event_views :				for topics : number of views
 //		event_type :				for topics : topic type
-//		event_vote :				for topics : poll present
 //		event_status :				for topics : topic status
 //		event_moved_id :			for topics : topic moved id
 //		event_last_id :				for topics : last post id
@@ -461,7 +460,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		$new_row['event_replies'] = $topic_replies;
 		$new_row['event_views'] = $topic_views;
 		$new_row['event_type'] = $row['topic_type'];
-		$new_row['event_vote'] = $row['topic_vote'];
 		$new_row['event_status'] = $row['topic_status'];
 		$new_row['event_moved_id'] = $row['topic_moved_id'];
 		$new_row['event_last_id'] = $row['topic_last_post_id'];
@@ -543,7 +541,6 @@ function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $y
 		$new_row['event_replies'] = '';
 		$new_row['event_views'] = '';
 		$new_row['event_type'] = POST_BIRTHDAY;
-		$new_row['event_vote'] = '';
 		$new_row['event_status'] = '';
 		$new_row['event_moved_id'] = '';
 		$new_row['event_last_id'] = '';

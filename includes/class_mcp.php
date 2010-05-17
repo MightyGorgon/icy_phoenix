@@ -193,8 +193,8 @@ class class_mcp_topic
 				$topic_id = $row[$i]['topic_id'];
 				if($leave_shadow)
 				{
-					$sql = "INSERT INTO " . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_status, topic_type, topic_vote, topic_views, topic_replies, topic_first_post_id, topic_last_post_id, topic_moved_id)
-						VALUES ($old_forum_id, '" . addslashes($db->sql_escape($row[$i]['topic_title'])) . "', '" . $db->sql_escape($row[$i]['topic_poster']) . "', " . $row[$i]['topic_time'] . ", " . TOPIC_MOVED . ", " . POST_NORMAL . ", " . $row[$i]['topic_vote'] . ", " . $row[$i]['topic_views'] . ", " . $row[$i]['topic_replies'] . ", " . $row[$i]['topic_first_post_id'] . ", " . $row[$i]['topic_last_post_id'] . ", " . $topic_id . ")";
+					$sql = "INSERT INTO " . TOPICS_TABLE . " (forum_id, topic_title, topic_poster, topic_time, topic_status, topic_type, topic_views, topic_replies, topic_first_post_id, topic_last_post_id, topic_moved_id)
+						VALUES ($old_forum_id, '" . addslashes($db->sql_escape($row[$i]['topic_title'])) . "', '" . $db->sql_escape($row[$i]['topic_poster']) . "', " . $row[$i]['topic_time'] . ", " . TOPIC_MOVED . ", " . POST_NORMAL . ", " . $row[$i]['topic_views'] . ", " . $row[$i]['topic_replies'] . ", " . $row[$i]['topic_first_post_id'] . ", " . $row[$i]['topic_last_post_id'] . ", " . $topic_id . ")";
 					$db->sql_query($sql);
 				}
 
@@ -580,35 +580,25 @@ class class_mcp_topic
 	{
 		global $db, $cache, $lang;
 
-		$sql = "UPDATE " . TOPICS_TABLE . " SET topic_vote = '0'
-			WHERE " . $db->sql_in_set('topic_id', $topics);
-		$result = $db->sql_query($sql);
+		$sql_ary = array(
+			'poll_title' => '',
+			'poll_start' => 0,
+			'poll_length' => 0,
+			'poll_max_options' => 1,
+			'poll_last_vote' => 0,
+			'poll_vote_change' => 0
+		);
 
-		$sql = "SELECT vote_id FROM " . VOTE_DESC_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics);
-		$result = $db->sql_query($sql);
+		$sql_update = $db->sql_build_insert_update($sql_ary, false);
 
-		$vote_id_sql = '';
-		while($row = $db->sql_fetchrow($result))
-		{
-			$vote_id_sql .= (($vote_id_sql != '') ? ', ' : '') . $row['vote_id'];
-		}
-		$db->sql_freeresult($result);
+		$sql = "UPDATE " . TOPICS_TABLE . " SET " . $sql_update . " WHERE " . $db->sql_in_set('topic_id', $topics);
+		$db->sql_query($sql);
 
-		if($vote_id_sql != '')
-		{
-			$sql = "DELETE FROM " . VOTE_DESC_TABLE . "
-				WHERE vote_id IN (" . $vote_id_sql . ")";
-			$db->sql_query($sql);
+		$sql = "DELETE FROM " . POLL_OPTIONS_TABLE . " WHERE " . $db->sql_in_set('topic_id', $topics);
+		$db->sql_query($sql);
 
-			$sql = "DELETE FROM " . VOTE_RESULTS_TABLE . "
-				WHERE vote_id IN (" . $vote_id_sql . ")";
-			$db->sql_query($sql);
-
-			$sql = "DELETE FROM " . VOTE_USERS_TABLE . "
-				WHERE vote_id IN (" . $vote_id_sql . ")";
-			$db->sql_query($sql);
-		}
+		$sql = "DELETE FROM " . POLL_VOTES_TABLE . " WHERE " . $db->sql_in_set('topic_id', $topics);
+		$db->sql_query($sql);
 
 		empty_cache_folders(POSTS_CACHE_FOLDER);
 	}

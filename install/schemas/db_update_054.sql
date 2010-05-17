@@ -460,6 +460,75 @@ UPDATE `phpbb_topics_watch` tw, `phpbb_topics` t SET tw.forum_id = t.forum_id WH
 ########################################
 ##              BUILD 064             ##
 ########################################
+DROP TABLE `phpbb_confirm`;
+
+CREATE TABLE `phpbb_confirm` (
+	confirm_id char(32) DEFAULT '' NOT NULL,
+	session_id char(32) DEFAULT '' NOT NULL,
+	confirm_type tinyint(3) DEFAULT '0' NOT NULL,
+	code varchar(8) DEFAULT '' NOT NULL,
+	seed int(10) UNSIGNED DEFAULT '0' NOT NULL,
+	PRIMARY KEY (session_id, confirm_id),
+	KEY confirm_type (confirm_type)
+);
+
+##### POLL CONVERSION - BEGIN
+# Table: 'phpbb_poll_options'
+CREATE TABLE `phpbb_poll_options` (
+	poll_option_id tinyint(4) DEFAULT '0' NOT NULL,
+	topic_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	poll_option_text text NOT NULL,
+	poll_option_total mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	KEY poll_opt_id (poll_option_id),
+	KEY topic_id (topic_id)
+);
+
+# Table: 'phpbb_poll_votes'
+CREATE TABLE `phpbb_poll_votes` (
+	topic_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	poll_option_id tinyint(4) DEFAULT '0' NOT NULL,
+	vote_user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	vote_user_ip varchar(40) DEFAULT '' NOT NULL,
+	KEY topic_id (topic_id),
+	KEY vote_user_id (vote_user_id),
+	KEY vote_user_ip (vote_user_ip)
+);
+
+##ADD
+ALTER TABLE `phpbb_topics` ADD `poll_title` varchar(255) DEFAULT '' NOT NULL AFTER `topic_type`;
+ALTER TABLE `phpbb_topics` ADD `poll_start` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `poll_title`;
+ALTER TABLE `phpbb_topics` ADD `poll_length` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `poll_start`;
+ALTER TABLE `phpbb_topics` ADD `poll_max_options` tinyint(4) DEFAULT '1' NOT NULL AFTER `poll_length`;
+ALTER TABLE `phpbb_topics` ADD `poll_last_vote` int(11) UNSIGNED DEFAULT '0' NOT NULL AFTER `poll_max_options`;
+ALTER TABLE `phpbb_topics` ADD `poll_vote_change` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `poll_last_vote`;
+
+UPDATE phpbb_topics t, phpbb_vote_desc vd
+SET t.poll_title = vd.vote_text, t.poll_start = vd.vote_start, t.poll_length = vd.vote_length, t.poll_max_options = 1, t.poll_vote_change = 0
+WHERE t.topic_vote = 1
+AND vd.topic_id = t.topic_id;
+
+INSERT INTO `phpbb_poll_options`
+SELECT vr.vote_option_id, vd.topic_id, vr.vote_option_text, vr.vote_result
+FROM `phpbb_vote_desc` vd, `phpbb_vote_results` vr
+WHERE vr.vote_id = vd.vote_id
+ORDER BY vd.topic_id ASC, vd.vote_id ASC, vr.vote_option_id ASC;
+
+INSERT INTO `phpbb_poll_votes`
+SELECT vd.topic_id, vv.vote_cast, vv.vote_user_id, vv.vote_user_ip
+FROM `phpbb_vote_desc` vd, `phpbb_vote_voters` vv
+WHERE vd.vote_id = vv.vote_id
+ORDER BY vd.topic_id ASC, vv.vote_user_id ASC;
+
+##REMOVE
+ALTER TABLE `phpbb_topics` DROP `topic_vote`;
+DROP TABLE `phpbb_vote_desc`;
+DROP TABLE `phpbb_vote_results`;
+DROP TABLE `phpbb_vote_voters`;
+##### POLL CONVERSION - END
+
+
+
+
 
 
 

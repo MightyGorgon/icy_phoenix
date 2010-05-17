@@ -15,7 +15,10 @@
 *
 */
 
-// Tell the Security Scanner that reachable code in this file is not a security issue
+if (!defined('IN_ICYPHOENIX'))
+{
+	die('Hacking attempt');
+}
 
 function FormatLanguage($lng)
 {

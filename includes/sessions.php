@@ -296,6 +296,7 @@ function session_begin($user_id, $user_ip, $auto_create = 0, $enable_autologin =
 
 	$userdata['session_id'] = $session_id;
 	$userdata['session_ip'] = $user_ip;
+	$userdata['session_ip_clean'] = decode_ip($user_ip);
 	$userdata['session_user_id'] = $user_id;
 	$userdata['session_logged_in'] = $login;
 	$userdata['session_page'] = $page_id;
@@ -407,11 +408,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 		// Did the session exist in the DB?
 		if (isset($userdata['user_id']))
 		{
-			//
-			// Do not check IP assuming equivalence, if IPv4 we'll check only first 24
-			// bits ... I've been told (by vHiker) this should alleviate problems with
-			// load balanced et al proxies while retaining some reliance on IP security.
-			//
+			// Do not check IP assuming equivalence, if IPv4 we'll check only first 24 bits ... I've been told (by vHiker) this should alleviate problems with load balanced et al proxies while retaining some reliance on IP security.
 			$ip_check_s = substr($userdata['session_ip'], 0, 6);
 			$ip_check_u = substr($user_ip, 0, 6);
 
@@ -515,10 +512,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 
 	if (!$userdata_processed)
 	{
-		//
-		// If we reach here then no (valid) session exists. So we'll create a new one,
-		// using the cookie user_id if available to pull basic user prefs.
-		//
+		// If we reach here then no (valid) session exists. So we'll create a new one, using the cookie user_id if available to pull basic user prefs.
 		$user_id = (isset($sessiondata['userid'])) ? intval($sessiondata['userid']) : ANONYMOUS;
 
 		if (!($userdata = session_begin($user_id, $user_ip, true)))
@@ -527,6 +521,7 @@ function session_pagestart($user_ip, $thispage_id = '')
 		}
 	}
 
+	$userdata['session_ip_clean'] = decode_ip($userdata['session_ip']);
 	// Mighty Gorgon - BOT SESSION - BEGIN
 	$userdata['is_bot'] = false;
 	if ($userdata['user_id'] != ANONYMOUS)
@@ -682,6 +677,26 @@ function session_reset_keys($user_id, $user_ip)
 		unset($sessiondata);
 		unset($auto_login_key);
 	}
+}
+
+/**
+* Sets a cookie
+*
+* Sets a cookie of the given name with the specified data for the given length of time. If no time is specified, a session cookie will be set.
+*
+* @param string $name Name of the cookie, will be automatically prefixed with the phpBB cookie name. track becomes [cookie_name]_track then.
+* @param string $cookiedata The data to hold within the cookie
+* @param int $cookietime The expiration time as UNIX timestamp. If 0 is provided, a session cookie is set.
+*/
+function set_cookie($name, $cookiedata, $cookietime)
+{
+	global $config;
+
+	$name_data = rawurlencode($config['cookie_name'] . '_' . $name) . '=' . rawurlencode($cookiedata);
+	$expire = gmdate('D, d-M-Y H:i:s \\G\\M\\T', $cookietime);
+	$domain = (!$config['cookie_domain'] || ($config['cookie_domain'] == 'localhost') || ($config['cookie_domain'] == '127.0.0.1')) ? '' : '; domain=' . $config['cookie_domain'];
+
+	header('Set-Cookie: ' . $name_data . (($cookietime) ? '; expires=' . $expire : '') . '; path=' . $config['cookie_path'] . $domain . ((!$config['cookie_secure']) ? '' : '; secure') . '; HttpOnly', false);
 }
 
 //

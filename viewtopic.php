@@ -190,10 +190,10 @@ $join_sql_table = (!$post_id ? '' : (", " . POSTS_TABLE . " p, " . POSTS_TABLE .
 $join_sql = (!$post_id ? ("t.topic_id = " . $topic_id) : ("p.post_id = " . $post_id . " AND t.topic_id = p.topic_id AND p2.topic_id = p.topic_id AND p2.post_id <= " . $post_id));
 $count_sql = (!$post_id ? '' : (", COUNT(p2.post_id) AS prev_posts"));
 
-$order_sql = (!$post_id ? '' : ("GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, t.topic_last_post_id, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard ORDER BY p.post_id ASC"));
+$order_sql = (!$post_id ? '' : ("GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard ORDER BY p.post_id ASC"));
 
 // Let's try to query all fields for topics and forums... it should not require too much resources as we are querying only one row
-//$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_thanks, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.forum_rules, f.auth_ban, f.auth_greencard, f.auth_bluecard, fr.*" . $count_sql . "
+//$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_thanks, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.forum_rules, f.auth_ban, f.auth_greencard, f.auth_bluecard, fr.*" . $count_sql . "
 $sql = "SELECT t.*, f.*, fr.*" . $count_sql . "
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr" . $join_sql_table . "
 	WHERE $join_sql
@@ -1199,144 +1199,9 @@ $template->assign_vars(array(
 );
 
 // Does this topic contain a poll?
-if (!empty($forum_topic_data['topic_vote']))
+if (!empty($forum_topic_data['poll_start']))
 {
-	$s_hidden_fields = '';
-
-	$sql = "SELECT vd.vote_id, vd.vote_text, vd.vote_start, vd.vote_length, vr.vote_option_id, vr.vote_option_text, vr.vote_result
-		FROM " . VOTE_DESC_TABLE . " vd, " . VOTE_RESULTS_TABLE . " vr
-		WHERE vd.topic_id = $topic_id
-			AND vr.vote_id = vd.vote_id
-		ORDER BY vr.vote_option_id ASC";
-	$result = $db->sql_query($sql);
-
-	if ($vote_info = $db->sql_fetchrowset($result))
-	{
-		$db->sql_freeresult($result);
-		$vote_options = sizeof($vote_info);
-
-		$vote_id = $vote_info[0]['vote_id'];
-		$vote_title = $vote_info[0]['vote_text'];
-
-		$sql = "SELECT vote_id
-			FROM " . VOTE_USERS_TABLE . "
-			WHERE vote_id = $vote_id
-				AND vote_user_id = " . intval($userdata['user_id']);
-		$result = $db->sql_query($sql);
-		$user_voted = ($row = $db->sql_fetchrow($result)) ? true : 0;
-		$db->sql_freeresult($result);
-
-		$view_result = request_var('vote', '');
-		$view_result = ($view_result == 'viewresult') ? 1 : 0;
-
-		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? true : 0) : 0;
-
-		if ($user_voted || $view_result || $poll_expired || !$is_auth['auth_vote'] || $forum_topic_data['topic_status'] == TOPIC_LOCKED)
-		{
-			$template->set_filenames(array('pollbox' => 'viewtopic_poll_result.tpl'));
-
-			$vote_results_sum = 0;
-
-			for($i = 0; $i < $vote_options; $i++)
-			{
-				$vote_results_sum += $vote_info[$i]['vote_result'];
-			}
-
-			$vote_graphic = 0;
-			$vote_graphic_max = sizeof($images['voting_graphic']);
-
-			for($i = 0; $i < $vote_options; $i++)
-			{
-				$vote_percent = ($vote_results_sum > 0) ? $vote_info[$i]['vote_result'] / $vote_results_sum : 0;
-				// [Begin] XS Poll Color - Edited by MG
-					if ($vote_percent <= 0.3)
-					{
-						$vote_color = 'red';
-					}
-					elseif (($vote_percent > 0.3) && ($vote_percent <= 0.6))
-					{
-						$vote_color = 'blue';
-					}
-					elseif ($vote_percent > 0.6)
-					{
-						$vote_color = 'green';
-					}
-				// [End] XS Poll Color - Edited by MG
-				$vote_graphic_length = round($vote_percent * $config['vote_graphic_length']);
-
-				$voting_bar = 'voting_graphic_' . $vote_color;
-				$voting_bar_body = 'voting_graphic_' . $vote_color . '_body';
-				$voting_bar_left = 'voting_graphic_' . $vote_color . '_left';
-				$voting_bar_right = 'voting_graphic_' . $vote_color . '_right';
-
-				$voting_bar_img = $images[$voting_bar];
-				$voting_bar_body_img = $images[$voting_bar_body];
-				$voting_bar_left_img = $images[$voting_bar_left];
-				$voting_bar_right_img = $images[$voting_bar_right];
-
-				$vote_graphic_img = $images['voting_graphic'][$vote_graphic];
-				$vote_graphic = ($vote_graphic < $vote_graphic_max - 1) ? $vote_graphic + 1 : 0;
-
-				$vote_info[$i]['vote_option_text'] = censor_text($vote_info[$i]['vote_option_text']);
-
-				$template->assign_block_vars('poll_option', array(
-					'POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'],
-					'POLL_OPTION_RESULT' => $vote_info[$i]['vote_result'],
-					'POLL_OPTION_PCT' => $vote_percent * 100,
-					'POLL_OPTION_PERCENT' => sprintf('%.1d%%', ($vote_percent * 100)),
-					'POLL_GRAPHIC' => $voting_bar_img,
-					'POLL_GRAPHIC_BODY' => $voting_bar_body_img,
-					'POLL_GRAPHIC_LEFT' => $voting_bar_left_img,
-					'POLL_GRAPHIC_RIGHT' => $voting_bar_right_img,
-					'POLL_OPTION_COLOR' => $vote_color,
-					'POLL_OPTION_IMG' => $vote_graphic_img,
-					'POLL_OPTION_IMG_WIDTH' => $vote_graphic_length
-					)
-				);
-			}
-
-			$template->assign_vars(array(
-				'L_TOTAL_VOTES' => $lang['Total_votes'],
-				'TOTAL_VOTES' => $vote_results_sum
-				)
-			);
-
-		}
-		else
-		{
-			$template->set_filenames(array('pollbox' => 'viewtopic_poll_ballot.tpl'));
-
-			for($i = 0; $i < $vote_options; $i++)
-			{
-				$vote_info[$i]['vote_option_text'] = censor_text($vote_info[$i]['vote_option_text']);
-				$template->assign_block_vars('poll_option', array(
-					'POLL_OPTION_ID' => $vote_info[$i]['vote_option_id'],
-					'POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'])
-				);
-			}
-
-			$template->assign_vars(array(
-				'L_SUBMIT_VOTE' => $lang['Submit_vote'],
-				'L_VIEW_RESULTS' => $lang['View_results'],
-				'U_VIEW_RESULTS' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;vote=viewresult')
-				)
-			);
-
-			$s_hidden_fields = '<input type="hidden" name="topic_id" value="' . $topic_id . '" /><input type="hidden" name="mode" value="vote" />';
-		}
-
-		$vote_title = censor_text($vote_title);
-
-		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
-
-		$template->assign_vars(array(
-			'POLL_QUESTION' => $vote_title,
-			'S_HIDDEN_FIELDS' => $s_hidden_fields,
-			'S_POLL_ACTION' => append_sid('posting.' . PHP_EXT . '?mode=vote&amp;' . $forum_id_append . '&amp;' . $topic_id_append))
-		);
-
-		$template->assign_var_from_handle('POLL_DISPLAY', 'pollbox');
-	}
+	$class_topics->display_poll($forum_topic_data, false);
 }
 
 // Event Registration - BEGIN

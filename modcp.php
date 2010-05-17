@@ -150,15 +150,15 @@ switch($type)
 	case 'shadow':
 		$where_type = " AND t.topic_status = " . TOPIC_MOVED; break;
 	case 'poll':
-		$where_type = " AND t.topic_vote = '1' AND t.topic_type = " . POST_NORMAL; break;
+		$where_type = " AND t.poll_start <> '0' AND t.topic_type = " . POST_NORMAL; break;
 	case 'locked':
-		$where_type = " AND t.topic_status = " . TOPIC_LOCKED . " AND t.topic_type = " . POST_NORMAL . " AND t.topic_vote = '0'"; break;
+		$where_type = " AND t.topic_status = " . TOPIC_LOCKED . " AND t.topic_type = " . POST_NORMAL . " AND t.poll_start = '0'"; break;
 	case 'unlocked':
-		$where_type = " AND t.topic_status = " . TOPIC_UNLOCKED . " AND t.topic_type = " . POST_NORMAL . " AND t.topic_views > '0' AND t.topic_replies > '0' AND t.topic_vote = '0'"; break;
+		$where_type = " AND t.topic_status = " . TOPIC_UNLOCKED . " AND t.topic_type = " . POST_NORMAL . " AND t.topic_views > '0' AND t.topic_replies > '0' AND t.poll_start = '0'"; break;
 	case 'unread':
-		$where_type = " AND t.topic_views = '0' AND t.topic_type = " . POST_NORMAL . " AND t.topic_status = " . TOPIC_UNLOCKED . " AND t.topic_vote = '0'"; break;
+		$where_type = " AND t.topic_views = '0' AND t.topic_type = " . POST_NORMAL . " AND t.topic_status = " . TOPIC_UNLOCKED . " AND t.poll_start = '0'"; break;
 	case 'unanswered':
-		$where_type = " AND t.topic_replies = '0' AND t.topic_type = " . POST_NORMAL . " AND t.topic_status = " . TOPIC_UNLOCKED . " AND t.topic_views > '0' AND t.topic_vote = '0'"; break;
+		$where_type = " AND t.topic_replies = '0' AND t.topic_type = " . POST_NORMAL . " AND t.topic_status = " . TOPIC_UNLOCKED . " AND t.topic_views > '0' AND t.poll_start = '0'"; break;
 	default:
 		$where_type = ''; break;
 }
@@ -1099,7 +1099,7 @@ switch($mode)
 			$replies = $topic_rowset[$i]['topic_replies'];
 			$topic_type = $topic_rowset[$i]['topic_type'];
 
-			$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['topic_vote'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $is_unread);
+			$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $is_unread);
 
 			if (!$topic_rowset[$i]['topic_status'] == TOPIC_MOVED)
 			{

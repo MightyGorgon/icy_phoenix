@@ -264,7 +264,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		{
 			$topic_type = '';
 		}
-		if($topic_rowset[$i]['topic_vote'])
+		if(!empty($topic_rowset[$i]['poll_start']) && ($topic_rowset[$i]['topic_status'] != TOPIC_MOVED))
 		{
 			$topic_type .= $lang['Topic_Poll'] . ' ';
 			$force_type_display = true;

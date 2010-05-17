@@ -2311,6 +2311,34 @@ $lang = array_merge($lang, array(
 	'EVENT_TITLE' => 'Event',
 	'EVENT_FORUM' => 'Category',
 
+	'MAX_OPTIONS_SELECT' => 'You may select up to <strong>%d</strong> options',
+	'MAX_OPTION_SELECT' => 'You may select <strong>1</strong> option',
+	'NO_POLLS' => 'No Polls',
+	'NO_VOTE_OPTION' => 'You must specify an option when voting.',
+	'NO_VOTES' => 'No votes',
+	'POLL_ENDED_AT' => 'Poll ended at %s',
+	'POLL_MAX_OPTIONS' => 'Max options',
+	'POLL_MAX_OPTIONS_EXPLAIN' => 'Maximum number of options selectable by users',
+	'POLL_NO_GUESTS' => 'Sorry, but Guests are not allowed to vote',
+	'POLL_RUN_TILL' => 'Poll runs till %s',
+	'POLL_VOTE_CHANGE' => 'Allow vote change',
+	'POLL_VOTED_OPTION' => 'You voted for this option',
+	'TOO_MANY_VOTE_OPTIONS' => 'You have tried to vote for too many options.',
+	'VIEW_POLL' => 'View Poll',
+	'VOTE_SUBMITTED' => 'Your vote has been cast.',
+	'VOTE_CONVERTED' => 'Changing votes is not supported for converted polls.',
+
+	'FORM_INVALID' => 'The submitted form was invalid. Try submitting again.',
+
+	'AUTH_NONE' => 'NONE',
+	'AUTH_ALL' => 'ALL',
+	'AUTH_REG' => 'REG',
+	'AUTH_SELF' => 'SELF',
+	'AUTH_PRIVATE' => 'PRIVATE',
+	'AUTH_MOD' => 'MOD',
+	'AUTH_JADMIN' => 'J ADMIN',
+	'AUTH_ADMIN' => 'ADMIN',
+
 	)
 );
 

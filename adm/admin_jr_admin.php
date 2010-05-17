@@ -15,11 +15,9 @@
 *
 */
 
-// Tell the Security Scanner that reachable code in this file is not a security issue
-
-define('IN_ICYPHOENIX', true);
 define('MOD_VERSION', '2.0.5');
 define('MOD_CODE', 1);
+define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {

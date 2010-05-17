@@ -323,7 +323,6 @@ for ($i = 0; $i < sizeof($events); $i++)
 	$row['topic_title']								= $events[$i]['event_title'];
 	$row['topic_replies']							= $events[$i]['event_replies'];
 	$row['topic_type']								= $events[$i]['event_type'];
-	$row['topic_vote']								= $events[$i]['event_vote'];
 	$row['topic_status']							= $events[$i]['event_status'];
 	$row['topic_moved_id']						= $events[$i]['event_moved_id'];
 	$row['post_time']									= $events[$i]['event_last_time'];

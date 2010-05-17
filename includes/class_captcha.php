@@ -25,7 +25,7 @@ class class_captcha
 	/*
 	* Creates CAPTCHA image
 	*/
-	function create_image()
+	function build_captcha()
 	{
 		global $db, $cache, $config, $template, $userdata, $lang, $user_ip;
 
@@ -44,7 +44,7 @@ class class_captcha
 		$result = $db->sql_query($sql);
 		unset($code);
 		$server_url = create_server_url();
-		$confirm_image = '<img src="' . append_sid($server_url . CMS_PAGE_PROFILE . '?mode=confirm&amp;id=' . $confirm_id) . '" alt="" title="" />';
+		$confirm_image = '<img src="' . append_sid($server_url . CMS_PAGE_PROFILE . '?mode=confirm&amp;confirm_id=' . $confirm_id) . '" alt="" title="" />';
 
 		$template->assign_vars(array(
 			'S_CAPTCHA' => true,

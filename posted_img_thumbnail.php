@@ -8,10 +8,10 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
 define('IMG_THUMB', true);
 define('CT_SECLEVEL', 'MEDIUM');
 $ct_ignoregvar = array('');
+define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);

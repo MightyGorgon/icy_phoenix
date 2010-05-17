@@ -276,7 +276,7 @@ for($i = 0; $i < sizeof($line); $i++)
 	$views = $line[$i]['topic_views'];
 	$replies = $line[$i]['topic_replies'];
 
-	$topic_link = $class_topics->build_topic_icon_link($forum_id, $line[$i]['topic_id'], $line[$i]['topic_type'], $line[$i]['topic_reg'], $line[$i]['topic_replies'], $line[$i]['news_id'], $line[$i]['topic_vote'], $line[$i]['topic_status'], $line[$i]['topic_moved_id'], $line[$i]['post_time'], $user_replied, $replies, $unread);
+	$topic_link = $class_topics->build_topic_icon_link($forum_id, $line[$i]['topic_id'], $line[$i]['topic_type'], $line[$i]['topic_reg'], $line[$i]['topic_replies'], $line[$i]['news_id'], $line[$i]['poll_start'], $line[$i]['topic_status'], $line[$i]['topic_moved_id'], $line[$i]['post_time'], $user_replied, $replies, $unread);
 
 	$topic_id = $topic_link['topic_id'];
 	$topic_id_append = $topic_link['topic_id_append'];
