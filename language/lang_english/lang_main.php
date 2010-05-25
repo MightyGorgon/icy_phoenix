@@ -143,11 +143,13 @@ $lang = array_merge($lang, array(
 	'View_newest_post' => 'View newest post',
 	'Page_of' => 'Page <b>%d</b> of <b>%d</b>', // Replaces with: Page 1 of 2 for example
 
-	'ICQ' => 'ICQ Number',
 	'AIM' => 'AIM Address',
+	'ICQ' => 'ICQ Number',
+	'JABBER' => 'Jabber',
 	'MSNM' => 'MSN Live',
-	'YIM' => 'Yahoo Messenger',
 	'SKYPE' => 'Skype',
+	'YIM' => 'Yahoo Messenger',
+
 	'Forum_Index' => 'Forum',  // eg. sitename Forum Index, %s can be removed if you prefer
 
 	'Post_new_topic' => 'Post new topic',
@@ -734,13 +736,13 @@ $lang = array_merge($lang, array(
 // Memberlist
 	'Select_sort_method' => 'Select sort method',
 	'Sort' => 'Sort',
-	'Sort_Top_Ten' => 'Top Ten Posters',
-	'Sort_Joined' => 'Joined Date',
-	'Sort_Username' => 'Username',
-	'Sort_Location' => 'Location',
-	'Sort_Posts' => 'Total posts',
-	'Sort_Email' => 'Email',
-	'Sort_Website' => 'Website',
+	'SORT_TOP_TEN' => 'Top Ten Posters',
+	'SORT_JOINED' => 'Joined Date',
+	'SORT_USERNAME' => 'Username',
+	'SORT_LOCATION' => 'Location',
+	'SORT_POSTS' => 'Total posts',
+	'SORT_EMAIL' => 'Email',
+	'SORT_WEBSITE' => 'Website',
 	'Sort_Ascending' => 'Ascending',
 	'Sort_Descending' => 'Descending',
 	'Order' => 'Order',
@@ -1634,13 +1636,24 @@ $lang = array_merge($lang, array(
 	'Users_Hidden' => 'Hidden',
 // Mighty Gorgon - Enhanced Online - END
 // Mighty Gorgon - Power Memberlist - BEGIN
-	'Fast' => 'Fast',
-	'Standard' => 'Standard',
 	'Style' => 'Style',
 	'User_Contacts' => 'Contacts',
 	'Memberlist_Users_Display' => 'Users per page:',
-	'Sort_LastLogon' => 'Last Logon',
-	'Sort_Birthday' => 'Birthday',
+	'SORT_FAST' => 'Fast',
+	'SORT_STANDARD' => 'Standard',
+	'SORT_RANK' => 'Rank',
+	'SORT_STAFF' => 'Staff',
+	'SORT_STYLE' => 'Style',
+	'SORT_LASTLOGON' => 'Last Logon',
+	'SORT_BIRTHDAY' => 'Birthday',
+	'SORT_ONLINE' => 'Online',
+	'ASCENDING' => 'Ascending',
+	'DESCENDING' => 'Descending',
+	'LESS_THAN' => 'Less than',
+	'EQUAL_TO' => 'Equal to',
+	'MORE_THAN' => 'More than',
+	'BEFORE' => 'Before',
+	'AFTER' => 'After',
 // Mighty Gorgon - Power Memberlist - END
 // Mighty Gorgon - Multiple Ranks - BEGIN
 	'Staff' => 'Staff',
@@ -2329,6 +2342,12 @@ $lang = array_merge($lang, array(
 	'VOTE_CONVERTED' => 'Changing votes is not supported for converted polls.',
 
 	'FORM_INVALID' => 'The submitted form was invalid. Try submitting again.',
+
+	'NO_USERS_FOUND' => 'No users found',
+	'POST_IP' => 'IP Address',
+	'FIND_USERNAME' => 'Find a member',
+	'FIND_USERNAME_HIDE' => 'Hide &quot;Find a member&quot; form',
+	'FIND_USERNAME_EXPLAIN' => 'Use this form to search for specific members. You do not need to fill out all fields. To match partial data use * as a wildcard. When entering dates use the format <kbd>YYYY-MM-DD</kbd>, e.g. <samp>2004-02-29</samp>. Use the mark checkboxes to select one or more usernames (several usernames may be accepted depending on the form itself) and click the Select Marked button to return to the previous form.',
 
 	'AUTH_NONE' => 'NONE',
 	'AUTH_ALL' => 'ALL',

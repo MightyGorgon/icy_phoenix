@@ -3968,6 +3968,15 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "DROP TABLE `" . $table_prefix . "vote_results`";
 		$sql[] = "DROP TABLE `" . $table_prefix . "vote_voters`";
 
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_jabber` varchar(255) DEFAULT '' NOT NULL AFTER `user_icq`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_aim` `user_aim` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_icq` `user_icq` varchar(15) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_msnm` `user_msnm` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_skype` `user_skype` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_yim` `user_yim` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_interests` `user_interests` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_occ` `user_occ` varchar(255) DEFAULT '' NOT NULL";
+
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
 

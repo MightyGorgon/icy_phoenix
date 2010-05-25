@@ -306,7 +306,7 @@ if (empty($mode))
 	{
 		$sort_username_option = '<option value="username" ';
 		$sort_username_option .= ($sort_method == 'pic_user_id') ? 'selected="selected"' : '';
-		$sort_username_option .= '>' . $lang['Sort_Username'] .'</option>';
+		$sort_username_option .= '>' . $lang['SORT_USERNAME'] .'</option>';
 	}
 
 	$template->assign_vars(array(

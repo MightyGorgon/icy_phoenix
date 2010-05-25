@@ -331,10 +331,10 @@ $template->assign_vars(array(
 	'L_USERS_LASTHOUR' => ($today_visitors['last_hour']) ? sprintf($lang['Users_lasthour_explain'], $today_visitors['last_hour']) : $lang['Users_lasthour_none_explain'],
 	'L_USERS_TODAY' => $l_today_users,
 	// End add - Last visit MOD
-	// Start add - Birthday MOD
+	// BIRTHDAY - BEGIN
 	'L_WHOSBIRTHDAY_WEEK' => ($config['birthday_check_day'] >= 1) ? sprintf((($birthdays_list['xdays']) ? $lang['Birthday_week'] : $lang['Nobirthday_week']), $config['birthday_check_day']) . $birthdays_list['xdays'] : '',
 	'L_WHOSBIRTHDAY_TODAY' => ($birthdays_list['today']) ? $lang['Birthday_today'] . $birthdays_list['today'] : $lang['Nobirthday_today'],
-	// End add - Birthday MOD
+	// BIRTHDAY - END
 	'L_FORUM' => $lang['Forum'],
 	'L_TOPICS' => $lang['Topics'],
 	'L_REPLIES' => $lang['Replies'],

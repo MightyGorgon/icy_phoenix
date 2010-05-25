@@ -699,29 +699,116 @@ function set_cookie($name, $cookiedata, $cookietime)
 	header('Set-Cookie: ' . $name_data . (($cookietime) ? '; expires=' . $expire : '') . '; path=' . $config['cookie_path'] . $domain . ((!$config['cookie_secure']) ? '' : '; secure') . '; HttpOnly', false);
 }
 
-//
-// Append $SID to a url. Borrowed from phplib and modified. This is an
-// extra routine utilised by the session code above and acts as a wrapper
-// around every single URL and form action. If you replace the session
-// code you must include this routine, even if it's empty.
-//
-function append_sid($url, $non_html_amp = false, $char_conversion = false)
+/*
+* Append $SID to a url. Borrowed from phplib and modified. This is an extra routine utilised by the session code above and acts as a wrapper around every single URL and form action.
+* If you replace the session code you must include this routine, even if it's empty.
+*/
+function append_sid($url, $non_html_amp = false, $char_conversion = false, $params = false, $session_id = false)
 {
-	global $SID;
+	global $SID, $_SID, $_EXTRA_URL, $phpbb_hook;
 
-	if (!empty($SID) && !preg_match('#sid=#', $url))
+	$_SID = !empty($SID) ? $SID : $_SID;
+	$is_amp = empty($non_html_amp) ? true : false;
+	$amp_delim = !empty($is_amp) ? '&amp;' : '&';
+	$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+
+	if (empty($params))
 	{
-		if ($char_conversion == true)
+		$amp_delim = (!empty($char_conversion) ? '%26' : $amp_delim);
+		$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+		if (!empty($SID) && !preg_match('#sid=#', $url))
 		{
-			$url .= ((strpos($url, '?') !== false) ? '%26' : '?') . $SID;
+			$url .= $url_delim . $SID;
 		}
-		else
+		return $url;
+	}
+
+	// Developers using the hook function need to globalise the $_SID and $_EXTRA_URL on their own and also handle it appropiatly.
+	// They could mimick most of what is within this function
+	if (!empty($phpbb_hook) && $phpbb_hook->call_hook(__FUNCTION__, $url, $params, $is_amp, $session_id))
+	{
+		if ($phpbb_hook->hook_return(__FUNCTION__))
 		{
-			$url .= ((strpos($url, '?') !== false) ? (($non_html_amp) ? '&' : '&amp;') : '?') . $SID;
+			return $phpbb_hook->hook_return_result(__FUNCTION__);
 		}
 	}
 
-	return $url;
+	$params_is_array = is_array($params);
+
+	// Get anchor
+	$anchor = '';
+	if (strpos($url, '#') !== false)
+	{
+		list($url, $anchor) = explode('#', $url, 2);
+		$anchor = '#' . $anchor;
+	}
+	elseif (!$params_is_array && strpos($params, '#') !== false)
+	{
+		list($params, $anchor) = explode('#', $params, 2);
+		$anchor = '#' . $anchor;
+	}
+
+	// Handle really simple cases quickly
+	if (($_SID == '') && ($session_id === false) && empty($_EXTRA_URL) && !$params_is_array && !$anchor)
+	{
+		if ($params === false)
+		{
+			return $url;
+		}
+		return $url . (($params !== false) ? $url_delim . $params : '');
+	}
+
+	// Assign sid if session id is not specified
+	if ($session_id === false)
+	{
+		$session_id = $_SID;
+	}
+
+	// Appending custom url parameter?
+	$append_url = (!empty($_EXTRA_URL)) ? implode($amp_delim, $_EXTRA_URL) : '';
+
+	// Use the short variant if possible ;)
+	if ($params === false)
+	{
+		// Append session id
+		if (!$session_id)
+		{
+			return $url . (($append_url) ? $url_delim . $append_url : '') . $anchor;
+		}
+		else
+		{
+			return $url . (($append_url) ? $url_delim . $append_url . $amp_delim : $url_delim) . 'sid=' . $session_id . $anchor;
+		}
+	}
+
+	// Build string if parameters are specified as array
+	if (is_array($params))
+	{
+		$output = array();
+
+		foreach ($params as $key => $item)
+		{
+			if ($item === NULL)
+			{
+				continue;
+			}
+
+			if ($key == '#')
+			{
+				$anchor = '#' . $item;
+				continue;
+			}
+
+			$output[] = $key . '=' . $item;
+		}
+
+		$params = implode($amp_delim, $output);
+	}
+
+	// Append session id and parameters (even if they are empty)
+	// If parameters are empty, the developer can still append his/her parameters without caring about the delimiter
+	return $url . (($append_url) ? $url_delim . $append_url . $amp_delim : $url_delim) . $params . ((!$session_id) ? '' : $amp_delim . 'sid=' . $session_id) . $anchor;
+
 }
 
 ?>

@@ -628,7 +628,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		// Update users post count
 		$user_posts = request_var('user_posts', 0);
 
-		// Start add - Birthday MOD
+		// BIRTHDAY - BEGIN
 		// find the birthday values, reflected by the $lang['Submit_date_format']
 		if ($birthday_day || $birthday_month || $birthday_year) //if a birthday is submited, then validate it
 		{
@@ -661,7 +661,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		{
 			$birthday = ($error) ? '' : 999999;
 		}
-		// End add - Birthday MOD
+		// BIRTHDAY - END
 
 		// Update entry in DB
 		if(!$error)
@@ -1324,7 +1324,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$flag_select .= '</select>';
 		// Flag End
 
-		// Start add - Birthday MOD
+		// BIRTHDAY - BEGIN
 		$s_b_day = '<span class="genmed">' . $lang['Day'] . '&nbsp;</span><select name="b_day" size="1" class="gensmall">
 			<option value="0">&nbsp;-&nbsp;</option>
 			<option value="1">&nbsp;1&nbsp;</option>
@@ -1411,7 +1411,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 						break;
 				}
 		}
-		// End add - Birthday MOD
+		// BIRTHDAY - END
 		// Start add - Gender MOD
 		switch ($gender)
 		{

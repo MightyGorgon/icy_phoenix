@@ -17,7 +17,7 @@
 </tr>
 <!-- BEGIN memberrow -->
 <tr>
-	<td class="row1h">&nbsp;<span class="gen"><a href="{memberrow.U_VIEWGALLERY}" class="gen">{memberrow.USERNAME}</a></span></td>
+	<td class="row1h">&nbsp;<a href="{memberrow.U_VIEWGALLERY}" class="genmed" style="text-decoration: none;">{memberrow.USERNAME}</a></td>
 	<td class="row1 row-center" nowrap="nowrap"><span class="gensmall">&nbsp;{memberrow.JOINED}&nbsp;</span></td>
 	<td class="row1 row-center" align="center"><span class="gensmall">{memberrow.PICS}</span></td>
 </tr>

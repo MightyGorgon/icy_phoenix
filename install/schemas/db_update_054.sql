@@ -526,9 +526,14 @@ DROP TABLE `phpbb_vote_results`;
 DROP TABLE `phpbb_vote_voters`;
 ##### POLL CONVERSION - END
 
-
-
-
+ALTER TABLE `phpbb_users` ADD `user_jabber` varchar(255) DEFAULT '' NOT NULL AFTER `user_icq`;
+ALTER TABLE `phpbb_users` CHANGE `user_aim` `user_aim` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_icq` `user_icq` varchar(15) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_msnm` `user_msnm` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_skype` `user_skype` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_yim` `user_yim` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_interests` `user_interests` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_users` CHANGE `user_occ` `user_occ` varchar(255) DEFAULT '' NOT NULL;
 
 
 

@@ -58,7 +58,7 @@ $view = (isset($_POST['search']) && $_POST['search']) ? 'attachments' : $view;
 // process modes based on view
 if ($view == 'username')
 {
-	$mode_types_text = array($lang['Sort_Username'], $lang['Sort_Attachments'], $lang['Sort_Size']);
+	$mode_types_text = array($lang['SORT_USERNAME'], $lang['Sort_Attachments'], $lang['Sort_Size']);
 	$mode_types = array('username', 'attachments', 'filesize');
 
 	if (!$mode)

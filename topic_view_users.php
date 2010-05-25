@@ -71,7 +71,7 @@ $mode = request_var('mode', 'joined');
 $sort_order = request_var('order', 'DESC');
 $sort_order = check_var_value($sort_order, array('ASC', 'DESC'));
 
-$mode_types_text = array($lang['Sort_Username'], $lang['Sort_Email'], $lang['Sort_Joined'], $lang['Topic_time'], $lang['Topic_count'], $lang['Sort_Website'], $lang['Sort_Top_Ten']);
+$mode_types_text = array($lang['SORT_USERNAME'], $lang['SORT_EMAIL'], $lang['SORT_JOINED'], $lang['Topic_time'], $lang['Topic_count'], $lang['SORT_WEBSITE'], $lang['SORT_TOP_TEN']);
 $mode_types = array('username', 'email', 'joindate', 'topic_time', 'topic_count', 'website', 'topten');
 
 $select_sort_mode = '<select name="mode">';

@@ -27,7 +27,7 @@
 	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_USER_IP}</td>
 	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_ACTIVE}</td>
 	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap">{linkrow.LINK_HITS}</td>
-	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap"><a href="{U_LINK}?mode=edit&link_id={linkrow.LINK_ID}">{L_EDIT}</a> | <a href="{U_LINK}?mode=delete&link_id={linkrow.LINK_ID}">{L_DELETE}</a></td>
+	<td class="{linkrow.ROW_CLASS} row-center" nowrap="nowrap"><a href="{U_LINK}?mode=edit&amp;link_id={linkrow.LINK_ID}">{L_EDIT}</a> | <a href="{U_LINK}?mode=delete&link_id={linkrow.LINK_ID}">{L_DELETE}</a></td>
 </tr>
 <!-- END linkrow -->
 <tr><td class="cat" colspan="8">&nbsp;</td></tr>

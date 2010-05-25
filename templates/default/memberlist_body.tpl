@@ -1,33 +1,29 @@
 <!-- INCLUDE overall_header.tpl -->
 
+<!-- IF S_SEARCH_USER -->
+<!-- INCLUDE memberlist_search.tpl -->
+<!-- ENDIF -->
+
 <form method="post" action="{S_MODE_ACTION}">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_SORT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_MEMBERLIST}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<tr><td class="cat" width="100%"><!-- IF S_ADMIN --><b><a href="{U_FIND_MEMBER}" class="genmed">{L_FIND_MEMBER}</a></b>&nbsp;&bull;&nbsp;<!-- ENDIF --><!-- BEGIN alphanumsearch -->&nbsp;<b><a href="{alphanumsearch.SEARCH_LINK}" class="genmed">{alphanumsearch.SEARCH_TERM}</a></b>&nbsp;<!-- END alphanumsearch --></td></tr>
 <tr>
 	<td class="row1 row-center" align="center" nowrap="nowrap">
 		<span class="genmed">
 			{L_USERS_PER_PAGE}&nbsp;<input type="text" name="users_per_page" value="{S_USERS_PER_PAGE}" size="5" class="post" />&nbsp;
 			{L_SELECT_SORT_METHOD}:&nbsp;{S_MODE_SELECT}&nbsp;&nbsp;{L_ORDER}:&nbsp;{S_ORDER_SELECT}&nbsp;&nbsp;
-			<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" />
+			<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
 		</span>
-	</td>
-</tr>
-<tr>
-	<td class="cat" width="100%">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-		<tr>
-			<!-- BEGIN alphanumsearch -->
-			<td align="center" width="{alphanumsearch.SEARCH_SIZE}">
-				<span class="nav"><a href="{alphanumsearch.SEARCH_LINK}" class="genmed">{alphanumsearch.SEARCH_TERM}</a></span>
-			</td>
-			<!-- END alphanumsearch -->
-		</tr>
-		</table>
 	</td>
 </tr>
 <tr><td class="row1"><span class="gensmall"><b>{L_LEGEND}:&nbsp;</b>{GROUPS_LIST_LEGEND}</span></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_MEMBERLIST}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<!-- IF S_NO_USERS -->
+<tr><th>{L_NO_USERS_FOUND}</th></tr>
+<tr><td>{L_NO_USERS_FOUND}</td></tr>
+<!-- ELSE -->
 <tr>
 	<th width="30">#</th>
 	<th>{L_ONLINE_STATUS}</th>
@@ -36,7 +32,7 @@
 	<th>{L_USER_RANK}</th>
 	<th width="50">{L_POSTS}</th>
 	<!-- BEGIN cashrow -->
-	<th class="thTop" nowrap="nowrap">{cashrow.NAME}</th>
+	<th nowrap="nowrap">{cashrow.NAME}</th>
 	<!-- END cashrow -->
 	<th>{L_FROM}</th>
 	<th>{L_JOINED}</th>
@@ -83,16 +79,11 @@
 <tr>
 	<td class="cat" width="100%" colspan="{NUMCOLS}">
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0" align="center">
-		<tr>
-			<!-- BEGIN alphanumsearch -->
-			<td align="center" width="{alphanumsearch.SEARCH_SIZE}">
-				<span class="nav"><a href="{alphanumsearch.SEARCH_LINK}" class="genmed">{alphanumsearch.SEARCH_TERM}</a></span>
-			</td>
-			<!-- END alphanumsearch -->
-		</tr>
+		<tr><!-- BEGIN alphanumsearch --><td align="center" width="{alphanumsearch.SEARCH_SIZE}"><span class="nav"><a href="{alphanumsearch.SEARCH_LINK}" class="genmed">{alphanumsearch.SEARCH_TERM}</a></span></td><!-- END alphanumsearch --></tr>
 		</table>
 	</td>
 </tr>
+<!-- ENDIF -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 

@@ -92,7 +92,7 @@ function checkForm(tab,subtab)
 <table class="tab_border" width="98%" cellpadding="1" cellspacing="1" border="0">
 <tr>
 	<!-- BEGIN header_row -->
-	<td class="{header_row.HEADER_TAB_CLASS}" nowrap="1" height="24"><a href="#" onclick="checkForm('{header_row.TAB_SELECT_NAME}');" class="{header_row.TAB_LINKS}">{header_row.L_TAB_TITLE}</a></td>
+	<td class="{header_row.HEADER_TAB_CLASS}" nowrap="nowrap" height="24"><a href="#" onclick="checkForm('{header_row.TAB_SELECT_NAME}');" class="{header_row.TAB_LINKS}">{header_row.L_TAB_TITLE}</a></td>
 	<!-- END header_row -->
 	<td class="filler" width="100%">&nbsp;</td>
 </tr>

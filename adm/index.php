@@ -80,7 +80,7 @@ elseif($acp_pane == 'right')
 	$template->assign_vars(array(
 		'S_IS_FOUNDER' => $is_allowed,
 		'U_ADMIN_LOGS' => append_sid('admin_logs.' . PHP_EXT),
-		'L_WELCOME' => $lang['Welcome_phpBB'],
+		'L_WELCOME' => $lang['Welcome_IP'],
 		'L_ADMIN_INTRO' => $lang['Admin_intro'],
 		'L_PAYPAL_INFO' => $lang['PayPalInfo'],
 		'L_SITE_STATS' => $lang['Forum_stats'],

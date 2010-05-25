@@ -277,7 +277,7 @@ if($album_user_id == ALBUM_PUBLIC_GALLERY)
 {
 	$sort_username_option = '<option value="username" ';
 	$sort_username_option .= ($sort_method == 'username') ? 'selected="selected"' : '';
-	$sort_username_option .= '>' . $lang['Sort_Username'] .'</option>';
+	$sort_username_option .= '>' . $lang['SORT_USERNAME'] .'</option>';
 }
 
 // ------------------------------------

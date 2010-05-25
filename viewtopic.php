@@ -1293,7 +1293,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$user_pic_count = $postrow[$i]['user_personal_pics_count'];
 	$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : colorize_username($postrow[$i]['user_id'], $postrow[$i]['username'], $postrow[$i]['user_color'], $postrow[$i]['user_active']);
 	$poster_qq = ($poster_id == ANONYMOUS) ? $lang['Guest'] : $postrow[$i]['username'];
-	// Start add - Birthday MOD
+	// BIRTHDAY - BEGIN
 	$poster_age = '';
 	if ($config['birthday_viewtopic'])
 	{
@@ -1321,7 +1321,7 @@ for($i = 0; $i < $total_posts; $i++)
 			$gebbild = ' ';
 		}
 	}
-	// End add - Birthday MOD
+	// BIRTHDAY - END
 
 	$post_date = create_date_ip($config['default_dateformat'], $postrow[$i]['post_time'], $config['board_timezone']);
 

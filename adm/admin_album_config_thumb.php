@@ -121,7 +121,7 @@ function album_generate_config_thumb_box($config_data)
 		'L_DEFAULT_SORT_METHOD' => $lang['Default_Sort_Method'],
 		'L_TIME' => $lang['Time'],
 		'L_PIC_TITLE' => $lang['Pic_Title'],
-		'L_USERNAME' => $lang['Sort_Username'],
+		'L_USERNAME' => $lang['SORT_USERNAME'],
 		'L_VIEW' => $lang['View'],
 		'L_RATING' => $lang['Rating'],
 		'L_COMMENTS' => $lang['Comments'],

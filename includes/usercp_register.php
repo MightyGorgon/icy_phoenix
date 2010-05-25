@@ -2072,7 +2072,7 @@ else
 		$template->assign_block_vars($cpl_registration_info . 'switch_confirm', array());
 	}
 
-// Start add - Birthday MOD
+// BIRTHDAY - BEGIN
 	$s_b_day = '<span class="genmed">' . $lang['Day'] . '&nbsp;</span><select name="b_day" size="1" class="gensmall">
 		<option value="0">&nbsp;-&nbsp;</option>
 		<option value="1">&nbsp;1&nbsp;</option>
@@ -2157,7 +2157,7 @@ else
 				break;
 		}
 	}
-// End add - Birthday MOD
+// BIRTHDAY - END
 
 	$verify_un_js = '';
 	$verify_email_js = '';

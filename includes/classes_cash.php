@@ -268,7 +268,7 @@ if (defined('CM_MEMBERLIST'))
 {
 	class cash_memberlist
 	{
-		function droplists(&$mode_types_text, &$mode_types)
+		function droplists(&$sort_array)
 		{
 			global $config, $cash;
 			if ($config['cash_disable'])
@@ -277,8 +277,7 @@ if (defined('CM_MEMBERLIST'))
 			}
 			while ($c_cur = &$cash->currency_next($cm_i, CURRENCY_ENABLED | CURRENCY_VIEWMEMBERLIST))
 			{
-				$mode_types_text[] = $c_cur->name(true);
-				$mode_types[] = 'cash_' . $c_cur->id();
+				$sort_array['cash_' . $c_cur->id()] = array('lang' => $c_cur->name(true), 'mode' => 'cash_' . $c_cur->id(), 'sql' => 'u.' . 'cash_' . $c_cur->id());
 			}
 		}
 
@@ -318,8 +317,8 @@ if (defined('CM_MEMBERLIST'))
 			// whee! now that we have the $template, we can do whatever we want with it! yay!
 			$cash_field = "";
 			$count = $cash->currency_count(CURRENCY_ENABLED | CURRENCY_VIEWMEMBERLIST);
-			$template->assign_var('NUM_COLUMNS',$count + $num_columns);
-			while ($c_cur = &$cash->currency_next($cm_i,CURRENCY_ENABLED | CURRENCY_VIEWMEMBERLIST))
+			$template->assign_var('NUM_COLUMNS', $count + $num_columns);
+			while ($c_cur = &$cash->currency_next($cm_i, CURRENCY_ENABLED | CURRENCY_VIEWMEMBERLIST))
 			{
 				$template->assign_block_vars('cashrow',array('NAME' => $c_cur->name()));
 				$cash_field .= $c_cur->db() . ', ';
@@ -328,8 +327,8 @@ if (defined('CM_MEMBERLIST'))
 			{
 				return;
 			}
-			$insertpoint = strpos($sql,'user_id');
-			$sql = substr($sql,0,$insertpoint) . $cash_field . substr($sql,$insertpoint);
+			$insertpoint = strpos($sql, 'user_id');
+			$sql = substr($sql, 0, $insertpoint) . $cash_field . substr($sql, $insertpoint);
 		}
 
 		function listing(&$template,&$row)

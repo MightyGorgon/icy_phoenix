@@ -39,7 +39,7 @@ $sort_order = ($sort_order == 'ASC') ? 'ASC' : 'DESC';
 //
 // Memberlist sorting
 //
-$mode_types_text = array($lang['Sort_Joined'], $lang['Sort_Username'], $lang['Pics'], $lang['Last_Pic']);
+$mode_types_text = array($lang['SORT_JOINED'], $lang['SORT_USERNAME'], $lang['Pics'], $lang['Last_Pic']);
 $mode_types = array('joindate', 'username', 'pics', 'last_pic');
 
 $select_sort_mode = '<select name="mode">';
@@ -103,7 +103,7 @@ switch($mode)
 		break;
 }
 
-$sql = "SELECT u.username, u.user_id, u.user_regdate, COUNT(p.pic_id) AS pics, MAX(p.pic_id) AS last_pic, COUNT(c.cat_user_id) AS cats
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_regdate, COUNT(p.pic_id) AS pics, MAX(p.pic_id) AS last_pic, COUNT(c.cat_user_id) AS cats
 		FROM " . USERS_TABLE . " AS u, " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c
 		WHERE u.user_id <> " . ANONYMOUS . "
 			AND c.cat_user_id = u.user_id
@@ -119,9 +119,10 @@ while($row = $db->sql_fetchrow($result))
 
 for ($i = 0; $i < sizeof($memberrow); $i++)
 {
+	$username = colorize_username($memberrow[$i]['user_id'], $memberrow[$i]['username'], $memberrow[$i]['user_color'], $memberrow[$i]['user_active'], true, false, false, false);
 	$template->assign_block_vars('memberrow', array(
-		'ROW_CLASS' => ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'],
-		'USERNAME' => $memberrow[$i]['username'],
+		'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
+		'USERNAME' => $username,
 		'U_VIEWGALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $memberrow[$i]['user_id'])),
 		//'U_VIEWGALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($memberrow[$i]['user_id']) . 'user_id=' . $memberrow[$i]['user_id'])),
 		'JOINED' => create_date($lang['DATE_FORMAT'], $memberrow[$i]['user_regdate'], $config['board_timezone']),

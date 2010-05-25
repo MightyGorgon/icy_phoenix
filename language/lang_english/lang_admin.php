@@ -71,7 +71,7 @@ $lang = array_merge($lang, array(
 // Index
 	'Admin' => 'Administration',
 	'Not_admin' => 'You are not authorized to administer this board',
-	'Welcome_phpBB' => 'Welcome to Icy Phoenix',
+	'Welcome_IP' => 'Welcome to Icy Phoenix',
 	'Admin_intro' => 'Thank you for choosing Icy Phoenix as your forum solution. This screen will give you a quick overview of all the various statistics of your site. You can get back to this page by clicking on the <u>Admin Index</u> link above. To return to the index of your board, click on the <u>Forum</u> link (also above). The menu on the left hand side of this screen will allow you to control every aspect of your forum experience. Each secondary option link will have instructions on how to use the tools.',
 	'PayPalInfo' => 'Icy Phoenix is an open source project, you can show your appreciation and support future development by donating to the project.',
 	'Forum_stats' => 'Site Statistics',
@@ -171,8 +171,7 @@ $lang = array_merge($lang, array(
 	'Administrators' => 'Administrators',
 	'Hidden' => 'Hidden',
 
-// These are displayed in the drop down boxes for advanced
-// mode forum auth, try and keep them short!
+// These are displayed in the drop down boxes for advanced mode forum auth, try and keep them short!
 	'Forum_NONE' => 'NONE',
 	'Forum_ALL' => 'ALL',
 	'Forum_REG' => 'REG',
@@ -720,7 +719,7 @@ $lang = array_merge($lang, array(
 	'sig_divider' => 'Current Signature Divider',
 	'sig_explain' => 'Control what divides the user\'s signature from their post',
 
-// Start add - Birthday MOD
+// BIRTHDAY - BEGIN
 	'Birthday_required' => 'Force users to submit a birthday',
 	'Enable_birthday_greeting' => 'Enable birthday greetings',
 	'Birthday_greeting_explain' => 'Enable Users who have submitted a date of birth to have a birthday greeting when they visit the board',
@@ -731,7 +730,7 @@ $lang = array_merge($lang, array(
 	'Min_user_age' => 'Minimum user age',
 	'Birthday_lookforward' => 'Birthday look forward',
 	'Birthday_lookforward_explain' => 'Number of days the script should look forward to for users with a birthday',
-// End add - Birthday MOD
+// BIRTHDAY - END
 
 // Start add - Yellow card admin MOD
 	'Max_user_bancard' => 'Maximum number of warnings',

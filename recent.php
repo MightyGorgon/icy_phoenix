@@ -125,9 +125,8 @@ $sql_start = "SELECT DISTINCT(t.topic_id), t.*, p.poster_id, p.post_username AS 
 			LEFT OUTER JOIN " . FORUMS_TABLE . " f ON (f.forum_id = p.forum_id)
 			LEFT OUTER JOIN " . USERS_TABLE . " u ON (u.user_id = p.poster_id)
 			LEFT OUTER JOIN " . USERS_TABLE . " u2 ON (u2.user_id = t.topic_poster)
-		WHERE $where_forums
-			AND p.post_id = t.topic_last_post_id
-			AND t.topic_status <> 2";
+		WHERE ";
+$sql_where = $where_forums . " AND p.post_id = t.topic_last_post_id AND t.topic_status <> " . TOPIC_MOVED;
 $sql_end = "LIMIT $start, $topic_limit";
 
 if (!$userdata['session_logged_in'])
@@ -148,7 +147,7 @@ switch($mode)
 {
 	case 'today':
 		$sql_tmp = " AND (p.post_time + " . $adj_time . ") > " . $int_day_sec;
-		$sql = $sql_start . $sql_tmp . $sql_sort . $sql_end;
+		$sql = $sql_start . $sql_where . $sql_tmp . $sql_sort . $sql_end;
 		$template->assign_vars(array('STATUS' => $lang['Recent_today']));
 		$where_count = $where_forums . $sql_tmp;
 		$l_mode = $lang['Recent_title_today'];
@@ -156,35 +155,35 @@ switch($mode)
 
 	case 'yesterday':
 		$sql_tmp = " AND (p.post_time + 86400 + " . $adj_time . ") > " . $int_day_sec . " AND (p.post_time + " . $adj_time . ") < " . $int_day_sec;
-		$sql = $sql_start . $sql_tmp . $sql_sort . $sql_end;
+		$sql = $sql_start . $sql_where . $sql_tmp . $sql_sort . $sql_end;
 		$template->assign_vars(array('STATUS' => $lang['Recent_yesterday']));
 		$where_count = $where_forums . $sql_tmp;
 		$l_mode = $lang['Recent_title_yesterday'];
 		break;
 
 	case 'last24':
-		$sql = $sql_start . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 86400" . $sql_sort . $sql_end;
+		$sql = $sql_start . $sql_where . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 86400" . $sql_sort . $sql_end;
 		$template->assign_vars(array('STATUS' => $lang['Recent_last24']));
 		$where_count = $where_forums . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 86400";
 		$l_mode = $lang['Recent_title_last24'];
 		break;
 
 	case 'lastweek':
-		$sql = $sql_start . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 691200" . $sql_sort . $sql_end;
+		$sql = $sql_start . $sql_where . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 691200" . $sql_sort . $sql_end;
 		$template->assign_vars(array('STATUS' => $lang['Recent_lastweek']));
 		$where_count = $where_forums . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 691200";
 		$l_mode = $lang['Recent_title_lastweek'];
 		break;
 
 	case 'lastXdays':
-		$sql = $sql_start . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 86400 * " . $amount_days . $sql_sort . $sql_end;
+		$sql = $sql_start . $sql_where . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 86400 * " . $amount_days . $sql_sort . $sql_end;
 		$template->assign_vars(array('STATUS' => sprintf($lang['Recent_lastXdays'], $amount_days)));
 		$where_count = $where_forums . " AND UNIX_TIMESTAMP(NOW()) - p.post_time < 86400 * $amount_days";
 		$l_mode = sprintf($lang['Recent_title_lastXdays'], $amount_days);
 		break;
 
 	case 'utopics':
-		$sql = $sql_start . " AND t.topic_poster = " . $user_id . $sql_sort . $sql_end;
+		$sql = $sql_start . $sql_where . " AND t.topic_poster = " . $user_id . $sql_sort . $sql_end;
 		$template->assign_vars(array('STATUS' => sprintf($lang['RECENT_USER_STARTED_NAV'], $username)));
 		$where_count = $where_forums . " AND t.topic_poster = '" . $user_id . "'";
 		$l_mode = sprintf($lang['RECENT_USER_STARTED_TITLE'], $username);
@@ -192,9 +191,11 @@ switch($mode)
 		break;
 
 	case 'uposts':
-		$sql = "SELECT DISTINCT(topic_id)
+		$sql = "SELECT topic_id, MAX(post_time) as ptime
 			FROM " . POSTS_TABLE . "
-			WHERE poster_id = '" . $user_id . "'";
+			WHERE poster_id = '" . $user_id . "'
+			GROUP BY topic_id
+			ORDER BY ptime DESC";
 		$result = $db->sql_query($sql);
 
 		$search_ids = array();
@@ -207,10 +208,9 @@ switch($mode)
 		$total_topics = sizeof($search_ids);
 		if ($total_topics > 0)
 		{
-			$sql_add = " AND t.topic_id IN (" . implode(',', $search_ids) . ") ";
-			$where_forums = $where_forums . $sql_add;
+			$sql_where = " t.topic_id IN (" . implode(',', $search_ids) . ") AND " . $sql_where;
 		}
-		$sql = $sql_start . $sql_add . $sql_sort . $sql_end;
+		$sql = $sql_start . $sql_where . $sql_sort . $sql_end;
 		$template->assign_vars(array('STATUS' => sprintf($lang['RECENT_USER_POSTS_NAV'], $username)));
 		$where_count = $where_forums . " AND p.poster_id = '" . $user_id . "'";
 		$l_mode = sprintf($lang['RECENT_USER_POSTS_TITLE'], $username);
@@ -223,8 +223,8 @@ switch($mode)
 		{
 			$sql_sort = ' ORDER BY f.forum_id ASC, tv.view_time DESC ';
 		}
-		$sql_start .= " AND tv.topic_id = t.topic_id AND tv.user_id = '" . $user_id . "' ";
-		$sql = $sql_start . $sql_sort . $sql_end;
+		$sql_where = $sql_where . " AND tv.topic_id = t.topic_id AND tv.user_id = '" . $user_id . "' ";
+		$sql = $sql_start . $sql_where . $sql_sort . $sql_end;
 		$template->assign_vars(array('STATUS' => sprintf($lang['RECENT_USER_VIEWS_NAV'], $username)));
 		$where_count = $where_forums . " AND tv.topic_id = t.topic_id AND tv.user_id = '" . $user_id . "'";
 		$l_mode = sprintf($lang['RECENT_USER_VIEWS_TITLE'], $username);

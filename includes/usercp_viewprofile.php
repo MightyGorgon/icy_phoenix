@@ -362,7 +362,7 @@ if ($profiledata['user_id'])
 	$user_most_active_posts = $user_most_active['posts'];
 }
 
-// Start add - Birthday MOD
+// BIRTHDAY - BEGIN
 if ($profiledata['user_birthday'] != 999999)
 {
 	$user_birthday = realdate($lang['DATE_FORMAT_BIRTHDAY'], $profiledata['user_birthday']);
@@ -371,7 +371,7 @@ else
 {
 	$user_birthday = $lang['No_birthday_specify'];
 }
-// End add - Birthday MOD
+// BIRTHDAY - END
 
 
 // Start add - Gender MOD
@@ -561,9 +561,9 @@ $template->assign_vars(array(
 	// End add - Gender MOD
 
 
-	// Start add - Birthday MOD
+	// BIRTHDAY - BEGIN
 	'BIRTHDAY' => $user_birthday,
-	// End add - Birthday MOD
+	// BIRTHDAY - END
 
 	'AVATAR_IMG' => $avatar_img,
 
@@ -648,9 +648,9 @@ $template->assign_vars(array(
 	'L_GENDER' => $lang['Gender'],
 	// End add - Gender MOD
 
-// Start add - Birthday MOD
+// BIRTHDAY - BEGIN
 	'L_BIRTHDAY' => $lang['Birthday'],
-// End add - Birthday MOD
+// BIRTHDAY - END
 
 	'U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author),
 	'U_SEARCH_USER_TOPICS' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics'),
