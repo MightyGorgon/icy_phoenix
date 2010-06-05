@@ -84,6 +84,10 @@ function update_icon(newimage)
 	<td class="row2"><input type="radio" name="forum_thanks" value="1"{FORUM_THANK_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_thanks" value="0"{FORUM_THANK_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
 </tr>
 <tr>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_LIKES}</b></span><br /><span class="gensmall">{L_FORUM_LIKES_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="forum_likes" value="1"{FORUM_LIKE_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_likes" value="0"{FORUM_LIKE_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr>
 	<td class="row1"><span class="genmed"><b>{L_FORUM_SIMILAR_TOPICS}</b></span><br /><span class="gensmall">{L_FORUM_SIMILAR_TOPICS_EXPLAIN}</span></td>
 	<td class="row2"><input type="radio" name="forum_similar_topics" value="1"{FORUM_SIMILAR_TOPICS_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_similar_topics" value="0"{FORUM_SIMILAR_TOPICS_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
 </tr>

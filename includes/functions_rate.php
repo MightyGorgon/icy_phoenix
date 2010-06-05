@@ -857,17 +857,17 @@ function ratings_view_topic()
 		//Common Output Variables
 		$rating_row = rating_stats($topic_id);
 		$template->assign_vars(array(
-			'L_RATE_TOPIC_USER_ANON' => ($config['check_anon_ip_when_rating'] && $userdata['user_id'] == ANONYMOUS) ? sprintf($lang['Or_Someone_From_IP']) : '',
+			'L_RATE_TOPIC_USER_ANON' => ($config['check_anon_ip_when_rating'] && ($userdata['user_id'] == ANONYMOUS)) ? sprintf($lang['Or_Someone_From_IP']) : '',
 			'RATE_TOPIC_STATS' => sprintf($lang['Rate_Stats'], $rating_row['average'], $rating_row['minimum'], $rating_row['maximum'], $rating_row['number_of_rates']),
 			'RATE_AVERAGE' => $rating_row['average'],
-			'RATE_MINIMUM' => ( $rating_row['minimum'] == '' ) ? 0: $rating_row['minimum'],
-			'RATE_MAXIMUM' => ( $rating_row['maximum'] == '' ) ? 0: $rating_row['maximum'],
+			'RATE_MINIMUM' => empty($rating_row['minimum']) ? 0 : $rating_row['minimum'],
+			'RATE_MAXIMUM' => empty($rating_row['maximum']) ? 0 : $rating_row['maximum'],
 			'NUMBER_OF_RATES' => $rating_row['number_of_rates'],
 			//'TOPIC_TITLE' => id_to_value($topic_id, 'topic'),
 			'L_SUMMARY' => $lang['Summary']
 			)
 		);
-		if ( $config['allow_ext_rating'] && ($rating_row['number_of_rates'] > 0) )
+		if ((!empty($config['allow_ext_rating']) && ($rating_row['number_of_rates'] > 0)) || (($rating_row['number_of_rates'] > 0) && ($userdata['user_level'] == ADMIN)))
 		{
 			$template->assign_vars(array(
 				'FULL_STATS_URL' => '[ ' . sprintf($lang['View_Details'], append_sid('rate.' . PHP_EXT . '?rate_mode=detailed&amp;topic_id=' . $topic_id)) . ' ]'

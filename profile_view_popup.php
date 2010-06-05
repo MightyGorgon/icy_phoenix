@@ -20,7 +20,7 @@ init_userprefs($userdata);
 
 $current_time = time();
 $user_id = $userdata['user_id'];
-$last_view =$userdata['user_last_profile_view'];
+$last_view = $userdata['user_last_profile_view'];
 
 $sql = "SELECT p.*, u.username, u.user_active, u.user_color
 		FROM " . PROFILE_VIEW_TABLE . " p, " . USERS_TABLE . " u

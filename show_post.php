@@ -154,7 +154,7 @@ if (!$is_auth['auth_read'])
 	message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
 }
 
-$meta_content['page_title'] =  $topic_title;
+$meta_content['page_title'] = $topic_title;
 
 $view_prev_post_url = append_sid('show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . $post_id . '&amp;view=previous');
 $view_next_post_url = append_sid('show_post.' . PHP_EXT . '?' . POST_POST_URL .' =' . $post_id . '&amp;view=next');

@@ -179,12 +179,12 @@ else
 	if ($pic_width > $pic_height)
 	{
 		$thumbnail_width = $album_config['thumbnail_size'];
-		$thumbnail_height = $album_config['thumbnail_size'] * ($pic_height/$pic_width);
+		$thumbnail_height = $album_config['thumbnail_size'] * ($pic_height / $pic_width);
 	}
 	else
 	{
 		$thumbnail_height = $album_config['thumbnail_size'];
-		$thumbnail_width = $album_config['thumbnail_size'] * ($pic_width/$pic_height);
+		$thumbnail_width = $album_config['thumbnail_size'] * ($pic_width / $pic_height);
 	}
 
 	// Old Thumbnails - BEGIN

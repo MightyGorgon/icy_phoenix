@@ -19,13 +19,22 @@ $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);
 // End session management
 
-if ($config['disable_topic_view'])
+$like = request_var('like', '');
+if ($userdata['is_bot'] || (empty($like) && !empty($config['disable_topic_view'])) || (!empty($like) && (!empty($config['disable_likes_posts']) || !$userdata['session_logged_in'])))
 {
 	message_die(GENERAL_MESSAGE, $lang['Feature_Disabled']);
 }
 
-$topic_id = request_var(POST_TOPIC_URL, 0);
-if (empty($topic_id))
+include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
+$class_form = new class_form();
+
+@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+$class_topics = new class_topics();
+
+// Init common vars: forum_id, topic_id, post_id, etc.
+$class_topics->var_init(true);
+
+if ((empty($like) && empty($topic_id)) || (!empty($like) && empty($post_id)))
 {
 	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
 }
@@ -35,28 +44,42 @@ if (!$userdata['session_logged_in'])
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=topic_view_users.' . PHP_EXT . '&' . POST_TOPIC_URL . '=' . $topic_id, true));
 }
 
-// find the forum, in witch the topic are located
-$sql = "SELECT f.forum_id
-	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
-	WHERE f.forum_id = t.forum_id AND t.topic_id = '" . $topic_id . "'";
+// Find the forum where this topic is located
+if (!empty($like))
+{
+	$sql = "SELECT f.*, t.*, p.*
+		FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
+		WHERE p.post_id = " . $post_id . "
+			AND t.topic_id = p.topic_id
+			AND f.forum_id = t.forum_id";
+}
+else
+{
+	$sql = "SELECT f.*, t.*
+		FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t
+		WHERE t.topic_id = " . $topic_id . "
+			AND f.forum_id = t.forum_id";
+}
 $result = $db->sql_query($sql);
-
-if (!($forum_topic_data = $db->sql_fetchrow($result)))
+$forum_topic_data = $db->sql_fetchrow($result);
+$db->sql_freeresult($result);
+if (empty($forum_topic_data))
 {
 	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
 }
 $forum_id = $forum_topic_data['forum_id'];
 
-$is_auth_ary = array();
-$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata, $forum_topic_data);
-if ((!$is_auth_ary[$forum_topic_data['forum_id']]['auth_read']) || (!$is_auth_ary[$forum_topic_data['forum_id']]['auth_view']))
+$is_auth = array();
+$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_topic_data);
+
+if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 
 // If you want to disallow view to normal users decomment this block
-//if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
-if ($userdata['user_level'] != ADMIN)
+//if (empty($like) && ($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
+if (empty($like) && ($userdata['user_level'] != ADMIN))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
@@ -66,93 +89,56 @@ if ($userdata['user_level'] != ADMIN)
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$mode = request_var('mode', 'joined');
+$select_name = 'mode';
+$mode_types = array('topic_time', 'username', 'email', 'joindate', 'topic_count', 'website', 'topten');
+$mode_types_text = array($lang['Topic_time'], $lang['SORT_USERNAME'], $lang['SORT_EMAIL'], $lang['SORT_JOINED'], $lang['Topic_count'], $lang['SORT_WEBSITE'], $lang['SORT_TOP_TEN']);
+$mode = request_var('mode', $mode_types[0]);
+$mode = check_var_value($mode, $mode_types);
+$default = $mode;
+$select_js = '';
+$select_sort_mode = $class_form->build_select_box($select_name, $default, $mode_types, $mode_types_text, $select_js);
 
+$select_name = 'order';
+$sort_order_select_array = array('ASC', 'DESC');
+$sort_order_select_lang_array = array($lang['Sort_Ascending'], $lang['Sort_Descending']);
 $sort_order = request_var('order', 'DESC');
-$sort_order = check_var_value($sort_order, array('ASC', 'DESC'));
+$sort_order = check_var_value($sort_order, $sort_order_select_array);
+$default = $sort_order;
+$select_js = '';
+$select_sort_order = $class_form->build_select_box($select_name, $default, $sort_order_select_array, $sort_order_select_lang_array, $select_js);
 
-$mode_types_text = array($lang['SORT_USERNAME'], $lang['SORT_EMAIL'], $lang['SORT_JOINED'], $lang['Topic_time'], $lang['Topic_count'], $lang['SORT_WEBSITE'], $lang['SORT_TOP_TEN']);
-$mode_types = array('username', 'email', 'joindate', 'topic_time', 'topic_count', 'website', 'topten');
-
-$select_sort_mode = '<select name="mode">';
-for($i = 0; $i < sizeof($mode_types_text); $i++)
-{
-	$selected = ($mode == $mode_types[$i]) ? ' selected="selected"' : '';
-	$select_sort_mode .= '<option value="' . $mode_types[$i] . '"' . $selected . '>' . $mode_types_text[$i] . '</option>';
-}
-$select_sort_mode .= '</select>';
-
-$select_sort_order = '<select name="order">';
-if($sort_order == 'ASC')
-{
-	$select_sort_order .= '<option value="ASC" selected="selected">' . $lang['Sort_Ascending'] . '</option><option value="DESC">' . $lang['Sort_Descending'] . '</option>';
-}
-else
-{
-	$select_sort_order .= '<option value="ASC">' . $lang['Sort_Ascending'] . '</option><option value="DESC" selected="selected">' . $lang['Sort_Descending'] . '</option>';
-}
-$select_sort_order .= '</select>';
-
-$select_sort_order .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '"/>';
-
-make_jumpbox(CMS_PAGE_VIEWFORUM);
-
-$template->assign_vars(array(
-	'L_PAGE_TITLE' => $lang['who_viewed'],
-	'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
-	'L_EMAIL' => $lang['Email'],
-	'L_WEBSITE' => $lang['Website'],
-	'L_ONLINE_STATUS' => $lang['Online_status'],
-	'L_ORDER' => $lang['Order'],
-	'L_SORT' => $lang['Sort'],
-	'L_SUBMIT' => $lang['Sort'],
-	'L_PM' => $lang['Private_Message'],
-	'L_USER_PROFILE' => $lang['Profile'],
-	'L_EMAIL' => $lang['Email'],
-	'L_CONTACTS' => $lang['User_Contacts'],
-	'L_ONLINE_STATUS' => $lang['Online_status'],
-	'L_USER_WWW' => $lang['Website'],
-	'L_USER_EMAIL' => $lang['Send_Email'],
-	'L_USER_PROFILE' => $lang['Profile'],
-
-	'L_VIEWS_COUNT' => $lang['Topic_count'],
-	'L_LAST_VIEWED' => $lang['Topic_time'],
-	'L_FROM' => $lang['Location'],
-	'L_JOINED' => $lang['Joined'],
-
-	'S_MODE_SELECT' => $select_sort_mode,
-	'S_ORDER_SELECT' => $select_sort_order,
-	'S_MODE_ACTION' => append_sid('topic_view_users.' . PHP_EXT)
-	)
-);
+$base_url = IP_ROOT_PATH . 'topic_view_users.' . PHP_EXT . '?' . (!empty($like) ? ('like=1&amp;' . POST_POST_URL . '=' . $post_id) : (POST_TOPIC_URL . '=' . $topic_id));
+$base_url_full = $base_url . '&amp;mode=' . $mode . '&amp;order=' . $sort_order;
 
 switch($mode)
 {
 	case 'joined':
-		$order_by = "u.user_regdate $sort_order LIMIT $start, " . $config['topics_per_page'];
+		$order_by = "u.user_regdate";
 		break;
 	case 'username':
-		$order_by = "u.username $sort_order LIMIT $start, " . $config['topics_per_page'];
+		$order_by = "u.username";
 		break;
 	case 'topic_count':
-		$order_by = "tv.view_count $sort_order LIMIT $start, " . $config['topics_per_page'];
+		$order_by = !empty($like) ? "u.user_posts" : "tv.view_count";
 		break;
 	case 'topic_time':
-		$order_by = "tv.view_time $sort_order LIMIT $start, " . $config['topics_per_page'];
+		$order_by = !empty($like) ? "pl.like_time" : "tv.view_time";
 		break;
 	case 'email':
-		$order_by = "u.user_email $sort_order LIMIT $start, " . $config['topics_per_page'];
+		$order_by = "u.user_email";
 		break;
 	case 'website':
-		$order_by = "u.user_website $sort_order LIMIT $start, " . $config['topics_per_page'];
+		$order_by = "u.user_website";
 		break;
 	case 'topten':
 		$order_by = "u.user_posts $sort_order LIMIT 10";
 		break;
 	default:
-		$order_by = "u.user_regdate $sort_order LIMIT $start, " . $config['topics_per_page'];
+		$order_by = !empty($like) ? "pl.like_time" : "u.user_regdate";
 		break;
 }
+
+$order_by = $order_by . (($mode != 'topten') ? (' ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page']) : '');
 
 if ($userdata['user_level'] == ADMIN)
 {
@@ -163,13 +149,25 @@ else
 	$sql_hidden = ' AND u.user_allow_viewonline = \'1\'';
 }
 
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, tv.view_time, tv.view_count
-	FROM " . USERS_TABLE . " u, " . TOPIC_VIEW_TABLE . " tv
-	WHERE u.user_id = tv.user_id
-		AND tv.topic_id = '" . $topic_id . "'
-		" . $sql_hidden . "
-	GROUP BY tv.user_id
-	ORDER BY $order_by";
+if (!empty($like))
+{
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, pl.like_time
+		FROM " . USERS_TABLE . " u, " . POSTS_LIKES_TABLE . " pl
+		WHERE u.user_id = pl.user_id
+			AND pl.post_id = " . $post_id . "
+			" . $sql_hidden . "
+		ORDER BY $order_by";
+}
+else
+{
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, tv.view_time, tv.view_count
+		FROM " . USERS_TABLE . " u, " . TOPIC_VIEW_TABLE . " tv
+		WHERE u.user_id = tv.user_id
+			AND tv.topic_id = " . $topic_id . "
+			" . $sql_hidden . "
+		GROUP BY tv.user_id
+		ORDER BY $order_by";
+}
 $result = $db->sql_query($sql);
 
 $i = 0;
@@ -185,8 +183,16 @@ while ($row = $db->sql_fetchrow($result))
 		$$k = $v;
 	}
 
-	$topic_time = ($row['view_time']) ? create_date($config['default_dateformat'], $row['view_time'], $config['board_timezone']) : $lang['Never_last_logon'];
-	$view_count = ($row['view_count']) ? $row['view_count'] : '&nbsp;';
+	if (!empty($like))
+	{
+		$topic_time = ($row['like_time']) ? create_date($config['default_dateformat'], $row['like_time'], $config['board_timezone']) : $lang['Never_last_logon'];
+		$view_count = '&nbsp;';
+	}
+	else
+	{
+		$topic_time = ($row['view_time']) ? create_date($config['default_dateformat'], $row['view_time'], $config['board_timezone']) : $lang['Never_last_logon'];
+		$view_count = ($row['view_count']) ? $row['view_count'] : '&nbsp;';
+	}
 
 	$poster_avatar = $user_info['avatar'];
 
@@ -250,18 +256,27 @@ while ($row = $db->sql_fetchrow($result))
 	$i++;
 }
 
-if ($mode != 'topten' || $config['topics_per_page'] < 10)
+if (($mode != 'topten') || ($config['topics_per_page'] < 10))
 {
 
-	$sql = "SELECT count(*) AS total
-		FROM " . TOPIC_VIEW_TABLE . "
-		WHERE topic_id = " . $topic_id;
+	if (!empty($like))
+	{
+		$sql = "SELECT count(*) AS total
+			FROM " . POSTS_LIKES_TABLE . "
+			WHERE post_id = " . $post_id;
+	}
+	else
+	{
+		$sql = "SELECT count(*) AS total
+			FROM " . TOPIC_VIEW_TABLE . "
+			WHERE topic_id = " . $topic_id;
+	}
 	$result = $db->sql_query($sql);
 
 	if ($total = $db->sql_fetchrow($result))
 	{
 		$total_members = $total['total'];
-		$pagination = generate_pagination('topic_view_users.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_members, $config['topics_per_page'], $start) . '&nbsp;';
+		$pagination = generate_pagination($base_url_full, $total_members, $config['topics_per_page'], $start) . '&nbsp;';
 	}
 }
 else
@@ -270,13 +285,50 @@ else
 	$total_members = 10;
 }
 
+make_jumpbox(CMS_PAGE_VIEWFORUM);
+
+$page_title = !empty($like) ? $lang['LIKE_RECAP'] : $lang['who_viewed'];
 $template->assign_vars(array(
+	'L_PAGE_TITLE' => $page_title,
+	'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
+	'L_EMAIL' => $lang['Email'],
+	'L_WEBSITE' => $lang['Website'],
+	'L_ONLINE_STATUS' => $lang['Online_status'],
+	'L_ORDER' => $lang['Order'],
+	'L_SORT' => $lang['Sort'],
+	'L_SUBMIT' => $lang['Sort'],
+	'L_PM' => $lang['Private_Message'],
+	'L_USER_PROFILE' => $lang['Profile'],
+	'L_EMAIL' => $lang['Email'],
+	'L_CONTACTS' => $lang['User_Contacts'],
+	'L_ONLINE_STATUS' => $lang['Online_status'],
+	'L_USER_WWW' => $lang['Website'],
+	'L_USER_EMAIL' => $lang['Send_Email'],
+	'L_USER_PROFILE' => $lang['Profile'],
+
+	'L_VIEWS_COUNT' => $lang['Topic_count'],
+	'L_LAST_VIEWED' => !empty($like) ? $lang['LIKE_TIME'] : $lang['Topic_time'],
+	'L_FROM' => $lang['Location'],
+	'L_JOINED' => $lang['Joined'],
+
+	'S_POSTS_LIKES' => !empty($like) ? true : false,
+	'S_MODE_SELECT' => $select_sort_mode,
+	'S_ORDER_SELECT' => $select_sort_order,
+	'S_MODE_ACTION' => append_sid($base_url),
+
+	'CLOSE_WINDOW' => $lang['Close_window'],
+
 	'PAGINATION' => $pagination,
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_members / $config['topics_per_page'])),
 	'L_GOTO_PAGE' => $lang['Goto_page']
 	)
 );
 
-full_page_generation('whoviewed_body.tpl', $lang['who_viewed'], '', '');
+if (!empty($like))
+{
+	$gen_simple_header = true;
+	$template->assign_var('S_POPUP', true);
+}
+full_page_generation('whoviewed_body.tpl', $page_title, '', '');
 
 ?>

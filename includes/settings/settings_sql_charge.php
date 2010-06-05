@@ -129,6 +129,14 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
+	'disable_likes_posts' => array(
+		'lang_key' => 'IP_disable_likes_posts',
+		'explain' => 'IP_disable_likes_posts_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
 	'disable_topic_view' => array(
 		'lang_key' => 'IP_disable_topic_view',
 		'explain' => 'IP_disable_topic_view_explain',

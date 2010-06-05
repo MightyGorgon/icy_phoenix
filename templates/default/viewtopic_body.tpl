@@ -1,11 +1,5 @@
-<script type="text/javascript">
-<!--
-function post_time_edit(url)
-{
-	window.open(url, '_postedittime', 'width=600,height=300,resizable=no,scrollbars=no');
-}
-//-->
-</script>
+<!-- INCLUDE viewtopic_inc_js.tpl -->
+
 <!-- INCLUDE breadcrumbs_vt.tpl -->
 <br clear="all" />
 
@@ -43,21 +37,6 @@ function post_time_edit(url)
 </tr>
 </table>
 
-<script type="text/javascript">
-// <![CDATA[
-
-<!-- BEGIN switch_quick_quote -->
-message = new Array();
-<!-- END switch_quick_quote -->
-
-<!-- BEGIN postrow -->
-<!-- BEGIN switch_quick_quote -->
-message[{postrow.U_POST_ID}] = " user=\"{postrow.POSTER_NAME_QQ}\" post=\"{postrow.U_POST_ID}\"]{postrow.PLAIN_MESSAGE}[/";
-<!-- END switch_quick_quote -->
-<!-- END postrow -->
-
-// ]]>
-</script>
 {IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE_SHORT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- IF VIEWTOPIC_BANNER_TOP -->
 <tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_TOP}</div></td></tr>
@@ -133,7 +112,7 @@ message[{postrow.U_POST_ID}] = " user=\"{postrow.POSTER_NAME_QQ}\" post=\"{postr
 			{postrow.MESSAGE}<br />
 			{postrow.ATTACHMENTS}
 		</div>
-		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
+		<div class="align-spacer">&nbsp;</div>
 		<div class="post-text post-text-hide-flow">
 			<br /><br /><br />
 			<!-- BEGIN above_sig -->
@@ -146,7 +125,7 @@ message[{postrow.U_POST_ID}] = " user=\"{postrow.POSTER_NAME_QQ}\" post=\"{postr
 			<span class="post-details"><br />{postrow.below_sig.BELOW_VAL}</span>
 			<!-- END below_sig -->
 		</div>
-		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
+		<div class="align-spacer">&nbsp;</div>
 		<!-- IF S_EDIT_NOTES -->
 		<!-- IF postrow.EDITED_MESSAGE -->
 		<div class="post-notes"><div class="post-note"><span class="gensmall">{postrow.EDITED_MESSAGE}&nbsp;</span></div></div>
@@ -166,11 +145,14 @@ message[{postrow.U_POST_ID}] = " user=\"{postrow.POSTER_NAME_QQ}\" post=\"{postr
 		<!-- ENDIF -->
 	</td>
 </tr>
+<!-- IF S_POSTS_LIKES -->
+<tr><td class="row-post-date" colspan="2"><span class="gensmall"><span id="like_s_p{postrow.U_POST_ID}"><!-- IF postrow.POST_LIKE_TEXT -->{postrow.POST_LIKE_TEXT}&nbsp;&bull;<!-- ENDIF -->&nbsp;</span><!-- IF S_LOGGED_IN --><a href="#" id="like_a_p{postrow.U_POST_ID}" style="text-decoration: none;" onclick="post_like_ajax({postrow.U_TOPIC_ID}, {postrow.U_POST_ID}); return false;"><!-- IF postrow.READER_LIKES -->{L_UNLIKE}<!-- ELSE -->{L_LIKE}<!-- ENDIF --></a>&nbsp;&bull;<!-- ENDIF -->&nbsp;{postrow.SINGLE_POST_SHARE}</span></td></tr>
+<!-- ENDIF -->
 <tr>
 	<td class="row-post-date"><div style="text-align: center;"><b>{postrow.SINGLE_POST}</b>&nbsp;&nbsp;<!-- IF S_ADMIN -->{postrow.POST_EDIT_STRING_SHORT}<!-- ELSE -->{postrow.POST_DATE}<!-- ENDIF --></div></td>
 	<td class="row-post-buttons post-buttons">
-		<div style="text-align:right;vertical-align:middle;">
-			<div class="extra-top-padding" style="position:relative;float:left;text-align:left;vertical-align:middle;">
+		<div style="text-align: right; vertical-align: middle;">
+			<div class="extra-top-padding" style="position: relative; float: left; text-align: left; vertical-align: middle;">
 				{postrow.PROFILE_IMG}{postrow.PM_IMG}{postrow.EMAIL_IMG}{postrow.WWW_IMG}{postrow.ALBUM_IMG}&nbsp;
 			</div>
 			<!-- IF not S_BOT -->

@@ -1513,3 +1513,40 @@ function AJAXFinishTopicMove(result_code, code)
 		window.location.href = code;
 	}
 }
+
+function AJAXPostLike(mode, topic_id, post_id)
+{
+	if (!ajax_core_defined)
+	{
+		return;
+	}
+
+	mode = ((mode == 'like') ? 'like' : 'unlike');
+
+	if ((topic_id > 0) && (post_id > 0))
+	{
+		error_handler = 'AJAXFinishPostLike';
+		var url = 'ajax.' + php_ext;
+		var params = 'mode=' + mode + '&t=' + ajax_escape(topic_id) + '&p=' + ajax_escape(post_id);
+		if (S_SID != '')
+		{
+			params += '&sid=' + S_SID;
+		}
+		if (!loadXMLDoc(url, params, 'GET', 'error_req_change'))
+		{
+			AJAXFinishPostLike(AJAX_OP_COMPLETED, '', topic_id, post_id);
+		}
+	}
+	else
+	{
+		AJAXFinishPostLike(AJAX_OP_COMPLETED, '', topic_id, post_id);
+	}
+}
+
+function AJAXFinishPostLike(result_code, error_msg, topic_id, post_id)
+{
+	if (!ajax_core_defined)
+	{
+		return;
+	}
+}

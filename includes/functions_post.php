@@ -621,7 +621,7 @@ function get_first_last_post_id($topic_id)
 
 	$topic_data = array();
 
-	$sql = "SELECT MAX(post_id) AS last_post_id, MIN(post_id) AS first_post_id, COUNT(post_id) AS replies
+	$sql = "SELECT MAX(post_id) AS last_post_id, MIN(post_id) AS first_post_id, COUNT(post_id) - 1 AS replies
 		FROM " . POSTS_TABLE . "
 		WHERE topic_id = " . $topic_id;
 	$result = $db->sql_query($sql);

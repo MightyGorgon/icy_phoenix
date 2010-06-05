@@ -47,6 +47,8 @@ var AJAX_DELETE_POST = 14;
 var AJAX_DELETE_TOPIC = 15;
 var AJAX_TOPIC_TYPE = 16;
 var AJAX_TOPIC_MOVE = 17;
+var AJAX_POST_LIKE = 18;
+var AJAX_POST_UNLIKE = 19;
 
 var AJAX_DEBUG_RESULTS = 0;
 var AJAX_DEBUG_REQUEST_ERRORS = 0;
@@ -364,4 +366,35 @@ function utf8_decode(text)
 	}
 
 	return text;
+}
+
+function writediv(dest_div, dest_string)
+{
+	document.getElementById(dest_div).innerHTML = dest_string;
+}
+
+function file_request(file_requested)
+{
+	if(window.XMLHttpRequest) // FIREFOX
+	{
+		xhr_object = new XMLHttpRequest();
+	}
+	else if(window.ActiveXObject) // IE
+	{
+		xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	else
+	{
+		return(false);
+	}
+	xhr_object.open("GET", file_requested, false);
+	xhr_object.send(null);
+	if(xhr_object.readyState == 4)
+	{
+		return(xhr_object.responseText);
+	}
+	else
+	{
+		return(false);
+	}
 }

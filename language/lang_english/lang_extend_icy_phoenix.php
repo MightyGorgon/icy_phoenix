@@ -148,8 +148,11 @@ if ($lang_extend_admin)
 
 		'IP_show_thanks_viewtopic' => 'Show Thanks received when viewing topics',
 
+		'IP_disable_likes_posts' => 'Disable Posts Like (Global Switch)',
+		'IP_disable_likes_posts_explain' => 'This option allows you to disable globally &quot;Like This Post&quot; feature',
+
 		'IP_disable_topic_view' => 'Disable "Who read this topic" (Global Switch)',
-		'IP_disable_topic_view_explain' => 'This option allows you to disable "Who read this topic" feature (this saves SQL space).',
+		'IP_disable_topic_view_explain' => 'This option allows you to disable &quot;Who read this topic&quot; feature (this saves SQL space).',
 
 		'IP_disable_referrers' => 'Disable Referrers',
 		'IP_disable_referrers_explain' => 'This option allows you to disable Referrers feature (this saves SQL space).',

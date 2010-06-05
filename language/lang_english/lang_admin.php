@@ -2059,6 +2059,9 @@ $lang = array_merge($lang, array(
 	'POLL_ONGOING' => ' (ongoing)',
 	'POLL_COMPLETED' => ' (completed))',
 
+	'FORUM_LIKES' => 'Like Posts',
+	'FORUM_LIKES_EXPLAIN' => 'Allow users to like single posts in a topic (you need to enable the global switch in Icy Phoenix Settings [SQL Charge] to be able to use this feature)',
+
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'IP_CONFIGURATION' => 'Icy Phoenix Settings',
 	'IP_CONFIGURATION_EXPLAIN' => '<em><b>Advanced Icy Phoenix Settings</b></em>',

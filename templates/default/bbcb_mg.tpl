@@ -91,7 +91,7 @@ function openAllSmiles()
 			<option style="color: black;" value="black" class="genmed">{L_COLOR_BLACK}</option>
 		</select>
 		<!-- IF S_COLORPICKER -->
-		<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 530, 420, '_color_picker'); return false;"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" style="vertical-align:middle;" class="bbimages" /></a>
+		<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 530, 420, '_color_picker'); return false;"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" style="vertical-align: middle;" class="bbimages" /></a>
 		<!-- ENDIF -->
 	</td>
 	<td width="20%" align="right" nowrap="nowrap" valign="middle">

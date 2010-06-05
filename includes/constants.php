@@ -397,6 +397,8 @@ define('AJAX_DELETE_POST', 14);
 define('AJAX_DELETE_TOPIC', 15);
 define('AJAX_TOPIC_TYPE', 16);
 define('AJAX_TOPIC_MOVE', 17);
+define('AJAX_POST_LIKE', 18);
+define('AJAX_POST_UNLIKE', 19);
 // Ajaxed - END
 
 // Event Registration - BEGIN
@@ -458,6 +460,7 @@ define('PLUGINS_CONFIG_TABLE', $table_prefix . 'plugins_config');
 define('POLL_OPTIONS_TABLE', $table_prefix . 'poll_options');
 define('POLL_VOTES_TABLE', $table_prefix . 'poll_votes');
 define('POSTS_TABLE', $table_prefix . 'posts');
+define('POSTS_LIKES_TABLE', $table_prefix . 'posts_likes');
 define('PRIVMSGS_TABLE', $table_prefix . 'privmsgs');
 define('PROFILE_FIELDS_TABLE', $table_prefix . 'profile_fields');
 define('PROFILE_VIEW_TABLE', $table_prefix . 'profile_view');

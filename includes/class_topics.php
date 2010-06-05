@@ -769,6 +769,167 @@ class class_topics
 		$template->assign_var_from_handle('POLL_DISPLAY', 'pollbox');
 	}
 
+	/**
+	* Like a post
+	*/
+	function post_like_add($post_data)
+	{
+		global $db, $cache, $config, $userdata, $lang;
+
+		if (empty($post_data) || empty($post_data['post_id']) || ($post_data['user_id'] == ANONYMOUS))
+		{
+			return false;
+		}
+		/*
+		$post_data = array(
+			'topic_id' => $topic_id,
+			'post_id' => $post_id,
+			'user_id' => $user_id,
+			'like_time' => time()
+		);
+		*/
+
+		// Check if the user already liked this post!
+		$sql = "SELECT COUNT(user_id) AS total_likes
+			FROM " . POSTS_LIKES_TABLE . "
+			WHERE post_id = " . $post_data['post_id'] . "
+				AND user_id = " . $post_data['user_id'];
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$total_likes = $total['total_likes'];
+
+		if (empty($total_likes))
+		{
+			$sql_ary = array(
+				'topic_id' => $post_data['topic_id'],
+				'post_id' => $post_data['post_id'],
+				'user_id' => $post_data['user_id'],
+				'like_time' => $post_data['like_time']
+			);
+
+			$sql_insert = $db->sql_build_insert_update($sql_ary, true);
+
+			$sql = "UPDATE " . POSTS_TABLE . " SET post_likes = post_likes + 1 WHERE post_id = " . $post_data['post_id'];
+			$db->sql_query($sql);
+
+			$sql = "INSERT INTO " . POSTS_LIKES_TABLE . " " . $sql_insert;
+			$db->sql_query($sql);
+		}
+
+		return true;
+	}
+
+	/**
+	* Remove like from a post
+	*/
+	function post_like_remove($post_data)
+	{
+		global $db, $cache, $config, $userdata, $lang;
+
+		if (empty($post_data) || empty($post_data['post_id']) || empty($post_data['user_id']))
+		{
+			return false;
+		}
+
+		$sql = "UPDATE " . POSTS_TABLE . " SET post_likes = post_likes - 1 WHERE post_id = " . $post_data['post_id'];
+		$db->sql_query($sql);
+
+		$sql = "DELETE FROM " . POSTS_LIKES_TABLE . " WHERE post_id = " . $post_data['post_id'] . " AND user_id = " . $post_data['user_id'];
+		$db->sql_query($sql);
+
+		return true;
+	}
+
+	/**
+	* Remove all like for a user
+	*/
+	function post_like_user_remove($user_id)
+	{
+		global $db, $cache, $config, $userdata, $lang;
+
+		if (empty($user_id))
+		{
+			return false;
+		}
+
+		$sql = "DELETE FROM " . POSTS_LIKES_TABLE . " WHERE user_id = " . $user_id;
+		$db->sql_query($sql);
+
+		return true;
+	}
+
+	/**
+	* Remove like from a topic
+	*/
+	function topic_posts_likes_get($post_data, $posts_list = false)
+	{
+		global $db, $cache, $config, $userdata, $lang;
+
+		if (empty($post_data) || empty($post_data['topic_id']))
+		{
+			return false;
+		}
+
+		if (!empty($posts_list) && is_array($posts_list))
+		{
+			$sql_where = " post_id IN(" . implode(',', $posts_list) . ") ";
+		}
+		else
+		{
+			$sql_where = " topic_id = " . $post_data['topic_id'];
+		}
+
+		$topic_posts_likes = array();
+		$sql = "SELECT *
+			FROM " . POSTS_LIKES_TABLE . "
+			WHERE " . $sql_where;
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$topic_posts_likes['posts'][$row['post_id']][] = $row['user_id'];
+			$topic_posts_likes['users'][$row['user_id']][] = $row['post_id'];
+		}
+		$db->sql_freeresult($result);
+
+		return $topic_posts_likes;
+	}
+
+	/**
+	* Remove like from a topic
+	*/
+	function topic_posts_likes_remove($post_data)
+	{
+		global $db, $cache, $config, $userdata, $lang;
+
+		if (empty($post_data) || empty($post_data['topic_id']))
+		{
+			return false;
+		}
+
+		$sql = "UPDATE " . POSTS_TABLE . " SET post_likes = 0 WHERE topic_id = " . $post_data['topic_id'];
+		$db->sql_query($sql);
+
+		$sql = "DELETE FROM " . POSTS_LIKES_TABLE . " WHERE topic_id = " . $post_data['topic_id'];
+		$db->sql_query($sql);
+
+		return true;
+	}
+
+	/**
+	* Posts Likes ReSync
+	*/
+	function posts_likes_resync()
+	{
+		global $db, $cache, $config, $userdata, $lang;
+
+		$sql = "UPDATE " . POSTS_TABLE . " p, " . POSTS_LIKES_TABLE . " pl
+			SET p.post_likes = COUNT(pl.post_id), pl.topic_id = p.topic_id
+			WHERE pl.post_id = p.post_id";
+		$db->sql_query($sql);
+
+		return true;
+	}
+
 }
 
 ?>

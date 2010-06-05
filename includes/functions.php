@@ -2758,7 +2758,8 @@ function AJAX_message_die($data_ar)
 
 			$template->assign_block_vars('tag', array(
 				'TAGNAME' => $key,
-				'VALUE' => $value)
+				'VALUE' => $value
+				)
 			);
 		}
 	}

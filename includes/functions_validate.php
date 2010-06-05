@@ -126,10 +126,7 @@ function validate_username($username)
 	return array('error' => false, 'error_msg' => '');
 }
 
-//
-// Check to see if email address is banned
-// or already present in the DB
-//
+// Check to see if email address is banned or already present in the DB
 function validate_email($email)
 {
 	global $db, $lang;

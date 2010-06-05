@@ -54,7 +54,7 @@ function AJAXCheckEmail(email)
 	if (email != '')
 	{
 		error_handler = 'AJAXFinishCheckEmail';
-		var url	= 'ajax.' + php_ext;
+		var url = 'ajax.' + php_ext;
 		var params = 'mode=checkemail&email=' + ajax_escape(email);
 		if (S_SID != '')
 		{

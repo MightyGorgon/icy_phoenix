@@ -542,6 +542,7 @@ CREATE TABLE `phpbb_forums` (
 	`forum_last_poster_color` varchar(16) DEFAULT '' NOT NULL,
 	`forum_postcount` tinyint(1) NOT NULL DEFAULT '1',
 	`forum_thanks` tinyint(1) NOT NULL DEFAULT '0',
+	`forum_likes` tinyint(1) NOT NULL DEFAULT '0',
 	`forum_notify` tinyint(1) unsigned NOT NULL DEFAULT '1',
 	`forum_limit_edit_time` tinyint(1) NOT NULL DEFAULT '0',
 	`forum_similar_topics` TINYINT(1) NOT NULL DEFAULT '0',
@@ -1344,6 +1345,7 @@ CREATE TABLE `phpbb_posts` (
 	`post_edit_id` mediumint(8) NOT NULL DEFAULT '0',
 	`post_attachment` tinyint(1) NOT NULL DEFAULT '0',
 	`post_bluecard` tinyint(1) DEFAULT NULL,
+	`post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`post_id`),
 	KEY `forum_id` (`forum_id`),
 	KEY `topic_id` (`topic_id`),
@@ -1352,6 +1354,23 @@ CREATE TABLE `phpbb_posts` (
 );
 
 ## `phpbb_posts`
+
+
+## --------------------------------------------------------
+
+## `phpbb_posts_likes`
+
+CREATE TABLE `phpbb_posts_likes` (
+	topic_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	post_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	like_time  int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	KEY topic_id (topic_id),
+	KEY post_id (post_id),
+	KEY user_id (user_id)
+);
+
+## `phpbb_posts_likes`
 
 
 ## --------------------------------------------------------

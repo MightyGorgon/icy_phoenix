@@ -216,6 +216,28 @@ blockquote, .post-text blockquote, .code-content {
 	overflow: auto;
 }
 
+/* Alignment */
+.align-spacer {
+	clear: both;
+	display: block;
+	margin-bottom: 2px;
+}
+
+.align-right, .align-top-right, .align-bottom-right {
+	float: right;
+	text-align: right;
+	padding-right: 3px;
+	margin-right: 3px;
+}
+
+.align-top-right {
+	vertical-align: top;
+}
+
+.align-bottom-right {
+	vertical-align: bottom;
+}
+
 /* main tables/divs */
 .graph table{
 	border: none;

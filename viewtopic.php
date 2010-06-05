@@ -246,7 +246,7 @@ if ($forum_topic_data['forum_kb_mode'])
 
 // Thanks Mod - BEGIN
 $show_thanks = false;
-if (!$config['disable_thanks_topics'] && $forum_topic_data['forum_thanks'] && !$userdata['is_bot'])
+if (!empty($config['disable_thanks_topics']) && $forum_topic_data['forum_thanks'] && !$userdata['is_bot'])
 {
 	$show_thanks = true;
 	$show_thanks_button = false;
@@ -475,11 +475,7 @@ else
 	}
 }
 
-//
-// Generate a 'Show posts in previous x days' select box. If the postdays var is POSTed
-// then get it's value, find the number of topics with dates newer than it (to properly
-// handle pagination) and alter the main query
-//
+// Generate a 'Show posts in previous x days' select box. If the postdays var is POSTed then get it's value, find the number of topics with dates newer than it (to properly handle pagination) and alter the main query
 $previous_days = array(0, 1, 7, 14, 30, 90, 180, 364);
 $previous_days_text = array($lang['All_Posts'], $lang['1_Day'], $lang['7_Days'], $lang['2_Weeks'], $lang['1_Month'], $lang['3_Months'], $lang['6_Months'], $lang['1_Year']);
 
@@ -1038,7 +1034,7 @@ if ($forum_topic_data['rules_in_viewtopic'])
 }
 
 $topic_viewed_link = '';
-if (($config['disable_topic_view'] == 0) && ($forum_topic_data['forum_topic_views'] == 1) && ($userdata['user_level'] == ADMIN))
+if (empty($config['disable_topic_view']) && ($forum_topic_data['forum_topic_views'] == 1) && ($userdata['user_level'] == ADMIN))
 {
 	$topic_viewed_link = append_sid('topic_view_users.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append);
 }
@@ -1270,6 +1266,20 @@ $sig_cache = array();
 $delnote = isset($_GET['delnote']) ? explode('.', $_GET['delnote']) : array();
 $this_year = create_date('Y', time(), $config['board_timezone']);
 $this_date = create_date('md', time(), $config['board_timezone']);
+
+// Mighty Gorgon - POSTS LIKES - BEGIN
+$posts_like_enabled = false;
+if (empty($config['disable_likes_posts']) && $forum_topic_data['forum_likes'] && !$userdata['is_bot'])
+{
+	$posts_like_enabled = true;
+	$posts_list = array();
+	for($i = 0; $i < $total_posts; $i++)
+	{
+		$posts_list[] = $postrow[$i]['post_id'];
+	}
+	$topic_posts_likes = $class_topics->topic_posts_likes_get(array('topic_id' => $topic_id), $posts_list);
+}
+// Mighty Gorgon - POSTS LIKES - END
 
 // Mighty Gorgon - Feedbacks - BEGIN
 $feedback_disabled = true;
@@ -2033,6 +2043,73 @@ for($i = 0; $i < $total_posts; $i++)
 	$post_edit_string_short = ($userdata['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $post_date . '</a>') : '';
 	$post_edit_string = ($userdata['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $lang['Edit_post_time_xs'] . '</a>') : '';
 	$single_post = '<a href="#_Single_Post_View" onclick="open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\'); return false;" style="text-decoration: none;">#' . ($i + 1 + $start) . '</a>';
+	$single_post_share = '<a href="#" onclick="popup(\'share.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_share\'); return false;" style="text-decoration: none;">' . $lang['SHARE'] . '</a>';
+	$single_post_like_list = '<a href="#" onclick="popup(\'topic_view_users.' . PHP_EXT . '?like=1&amp;' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_like\'); return false;" style="text-decoration: none;" title="' . $lang['LIKE_RECAP'] . '">' . '{USERS_LIKE}' . '</a>';
+
+	// Mighty Gorgon - POSTS LIKES - BEGIN
+	$post_like_text = '';
+	$post_like_text_js = '';
+	if ($posts_like_enabled)
+	{
+		$users_like = sizeof($topic_posts_likes['posts'][$post_id]);
+		$reader_likes = false;
+		$post_like_text_single = false;
+
+		if (($userdata['user_id'] != ANONYMOUS) && !empty($topic_posts_likes['users'][$userdata['user_id']]) && in_array($post_id, $topic_posts_likes['users'][$userdata['user_id']]))
+		{
+			$reader_likes = true;
+			$users_like--;
+		}
+
+		if (!empty($users_like))
+		{
+			$post_like_text_single = ($users_like == 1) ? true : false;
+		}
+
+		if ($reader_likes)
+		{
+			if (empty($users_like))
+			{
+				$single_post_like_list = '';
+				$post_like_text = $lang['LIKE_COUNTER_YOU'];
+				$post_like_text_js = '';
+			}
+			elseif ($post_like_text_single)
+			{
+				$single_post_like_list = str_replace('{USERS_LIKE}', 1, $single_post_like_list);
+				$post_like_text = $lang['LIKE_COUNTER_YOU_OTHERS_SINGLE'];
+				$post_like_text_js = $lang['LIKE_COUNTER_OTHERS_SINGLE'];
+			}
+			else
+			{
+				$single_post_like_list = str_replace('{USERS_LIKE}', $users_like, $single_post_like_list);
+				$post_like_text = sprintf($lang['LIKE_COUNTER_YOU_OTHERS'], $single_post_like_list);
+				$post_like_text_js = sprintf($lang['LIKE_COUNTER_OTHERS'], $single_post_like_list);
+			}
+		}
+		else
+		{
+			if (empty($users_like))
+			{
+				$single_post_like_list = '';
+				$post_like_text = '';
+				$post_like_text_js = $lang['LIKE_COUNTER_YOU'];
+			}
+			elseif ($post_like_text_single)
+			{
+				$single_post_like_list = str_replace('{USERS_LIKE}', 1, $single_post_like_list);
+				$post_like_text = $lang['LIKE_COUNTER_OTHERS_SINGLE'];
+				$post_like_text_js = $lang['LIKE_COUNTER_YOU_OTHERS_SINGLE'];
+			}
+			else
+			{
+				$single_post_like_list = str_replace('{USERS_LIKE}', $users_like, $single_post_like_list);
+				$post_like_text = sprintf($lang['LIKE_COUNTER_OTHERS'], $single_post_like_list);
+				$post_like_text_js = sprintf($lang['LIKE_COUNTER_YOU_OTHERS'], $single_post_like_list);
+			}
+		}
+	}
+	// Mighty Gorgon - POSTS LIKES - END
 
 	// Mighty Gorgon - Feedbacks - BEGIN
 	$feedbacks_received = '';
@@ -2160,6 +2237,11 @@ for($i = 0; $i < $total_posts; $i++)
 		'NOTES_DATA' => $postrow[$i]['edit_notes'],
 		'DOWNLOAD_POST' => append_sid(CMS_PAGE_VIEWTOPIC . '?download=' . $postrow[$i]['post_id'] . '&amp;' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append),
 		'SINGLE_POST' => $single_post,
+		'SINGLE_POST_SHARE' => $single_post_share,
+		'READER_LIKES' => $reader_likes,
+		'POST_LIKE_TEXT' => $post_like_text,
+		'POST_LIKE_TEXT_JS' => addslashes($post_like_text),
+		'POST_LIKE_TEXT_JS_NEW' => addslashes($post_like_text_js),
 		'POSTER_NO' => $poster_number,
 		//'POSTER_NO' => $postrow[$i]['poster_id'],
 		'USER_WARNINGS' => !empty($user_warnings) ? $user_warnings : '',
@@ -2178,6 +2260,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_B_CARD' => $b_card_img,
 		'S_CARD' => ($phpbb_styles) ? $card_action : append_sid('card.' . PHP_EXT),
 
+		'U_TOPIC_ID' => $topic_id,
 		'U_POST_ID' => $postrow[$i]['post_id']
 		)
 	);
@@ -2354,6 +2437,14 @@ if ($topic_useful_box)
 	{
 		$template->assign_block_vars('switch_topic_useful.link_this_topic', array());
 	}
+}
+
+if ($posts_like_enabled)
+{
+	$template->assign_vars(array(
+		'S_POSTS_LIKES' => true,
+		)
+	);
 }
 
 // Don't update the topic view counter if viewer is poster or a BOT

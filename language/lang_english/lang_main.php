@@ -2358,6 +2358,19 @@ $lang = array_merge($lang, array(
 	'AUTH_JADMIN' => 'J ADMIN',
 	'AUTH_ADMIN' => 'ADMIN',
 
+	'SHARE' => 'Share',
+	'LIKE' => 'Like',
+	'UNLIKE' => 'Unlike',
+	'LIKE_POST' => 'Like this post',
+	'UNLIKE_POST' => 'Unlike this post',
+	'LIKE_TIME' => 'Date',
+	'LIKE_RECAP' => 'Users who likes this post',
+	'LIKE_COUNTER_YOU' => 'You like this post',
+	'LIKE_COUNTER_YOU_OTHERS_SINGLE' => 'You and another user like this post',
+	'LIKE_COUNTER_YOU_OTHERS' => 'You and %s users like this post',
+	'LIKE_COUNTER_OTHERS' => '%s users like this post',
+	'LIKE_COUNTER_OTHERS_SINGLE' => 'One user likes this post',
+
 	)
 );
 

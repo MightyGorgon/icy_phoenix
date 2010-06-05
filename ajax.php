@@ -233,6 +233,57 @@ elseif ($mode == 'checkemail')
 	}
 	AJAX_message_die($result_ar);
 }
+elseif (($mode == 'like') || ($mode == 'unlike'))
+{
+	if ($userdata['user_id'] == ANONYMOUS)
+	{
+		$result_code = AJAX_ERROR;
+	}
+	else
+	{
+		@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+		$class_topics = new class_topics();
+
+		// Init common vars: forum_id, topic_id, post_id, etc.
+		$class_topics->var_init(true);
+
+		$post_data = array(
+			'topic_id' => $topic_id,
+			'post_id' => $post_id,
+			'user_id' => $userdata['user_id'],
+			'like_time' => time()
+		);
+
+		if ($mode == 'like')
+		{
+			$like_result = $class_topics->post_like_add($post_data);
+		}
+		else
+		{
+			$like_result = $class_topics->post_like_remove($post_data);
+		}
+
+		if ($like_result)
+		{
+			$result_code = ($mode == 'like') ? AJAX_POST_LIKE : AJAX_POST_UNLIKE;
+			$error_msg = '';
+		}
+		else
+		{
+			$result_code = AJAX_ERROR;
+			$error_msg = '';
+		}
+	}
+
+	$result_ar = array(
+		'result' => $result_code
+	);
+	if (!empty($error_msg))
+	{
+		$result_ar['error_msg'] = $error_msg;
+	}
+	AJAX_message_die($result_ar);
+}
 else
 {
 	$result_ar = array(

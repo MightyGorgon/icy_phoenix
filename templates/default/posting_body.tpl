@@ -12,8 +12,8 @@ var L_AJAX_NO_RESULTS = '{L_AJAX_NO_RESULTS}';
 //-->
 </script>
 
-<!-- <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script> -->
-<script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ajax/ajax_postfunctions.js"></script>
+<!-- <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script> -->
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_postfunctions.js"></script>
 <!-- ENDIF -->
 
 <script type="text/javascript">

@@ -115,7 +115,10 @@ $tables = array(
 	'pa_votes',
 	'plugins',
 	'plugins_config',
+	'poll_options',
+	'poll_votes',
 	'posts',
+	'posts_likes',
 	'privmsgs',
 	'privmsgs_archive',
 	'profile_fields',
@@ -155,9 +158,6 @@ $tables = array(
 	'upi2db_unread_posts',
 	'users',
 	'user_group',
-	'vote_desc',
-	'vote_results',
-	'vote_voters',
 	'words',
 	'xs_news',
 	'xs_news_xml',
@@ -679,6 +679,7 @@ $default_config = array(
 	'cron_site_history_interval' => '0',
 	'cron_site_history_last_run' => '0',
 	'smtp_port' => '25',
+	'disable_likes_posts' => '1',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

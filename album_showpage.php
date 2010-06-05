@@ -172,8 +172,12 @@ if ($album_config['slideshow_script'])
 			$pic_array_id = $i;
 		}
 		$pic_list .= 'Pic[' . $i . '] = \'' . append_sid(album_append_uid($pic_link . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']), true) . '\'; ' . "\n";
+		/*
 		$tit_list .= 'Tit[' . $i . '] = \'' . str_replace("'", "\'", $total_pic_rows[$i]['pic_title']) . '\'; ' . "\n";
 		$des_list .= 'Des[' . $i . '] = \'' . str_replace(array("\r\n", "\n", "\r"), array('\n', '\n', '\n'), str_replace("'", "\'", $total_pic_rows[$i]['pic_desc'])) . '\'; ' . "\n";
+		*/
+		$tit_list .= 'Tit[' . $i . '] = \'' . addslashes($total_pic_rows[$i]['pic_title']) . '\'; ' . "\n";
+		$des_list .= 'Des[' . $i . '] = \'' . str_replace(array("\r\n", "\n", "\r"), array('\n', '\n', '\n'), addslashes($total_pic_rows[$i]['pic_desc'])) . '\'; ' . "\n";
 		/*
 		$pic_list .= 'Pic[' . $i . '] = \'' . ALBUM_UPLOAD_PATH . $total_pic_rows[$i]['pic_filename'] . '\'; ' . "\n";
 		*/

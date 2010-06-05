@@ -417,8 +417,6 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 	}
 	$privmsg->delete_older_message('PM_INBOX', $privmsg_recipient);
 	$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message, $attach_sig, $html_status, $bbcode_status, $smilies_status, $acro_auto_status);
-	unset($privmsg);
-
 
 	if ($targetdata['user_notify_pm'] && !empty($targetdata['user_email']) && $targetdata['user_active'])
 	{
@@ -433,6 +431,7 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 
 		$privmsg->notification($privmsg_sender, $privmsg_recipient, $targetdata['user_email'], $lang['Notification_subject'], $message, false, $privmsg_subject, $targetdata['username'], $targetdata['user_lang'], false);
 	}
+	unset($privmsg);
 }
 
 //

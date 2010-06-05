@@ -14,6 +14,10 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
+// We need to force some vars...
+$config['thumbnail_highslide'] = false;
+$config['ajax_features'] = false;
+
 // Start session management
 $userdata = session_pagestart($user_ip, false);
 init_userprefs($userdata);
@@ -109,9 +113,6 @@ if ($email[$result] == 'Y')
 }
 
 // Start output of page
-$config['thumbnail_highslide'] = false;
-$config['ajax_features'] = false;
-
 $template->assign_vars(array(
 	'ERROR_MESSAGE' => $error_msg
 	)

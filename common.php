@@ -231,6 +231,12 @@ else
 $config = $cache->obtain_config();
 $config['default_style_row'] = $cache->obtain_default_style(false);
 $config['gzip_compress_runtime'] = $config['gzip_compress'];
+// Initialize AJAX
+$config['ajax_features'] = false;
+if (defined('IN_TOPIC') || defined('IN_CMS'))
+{
+	$config['ajax_features'] = true;
+}
 
 //
 // Obtain and encode users IP

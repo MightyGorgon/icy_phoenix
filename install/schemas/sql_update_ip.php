@@ -3977,6 +3977,20 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_interests` `user_interests` varchar(255) DEFAULT '' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_occ` `user_occ` varchar(255) DEFAULT '' NOT NULL";
 
+		$sql[] = "CREATE TABLE `" . $table_prefix . "posts_likes` (
+			topic_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			post_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			user_id mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			like_time  int(11) UNSIGNED DEFAULT '0' NOT NULL,
+			KEY topic_id (topic_id),
+			KEY post_id (post_id),
+			KEY user_id (user_id)
+		)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('disable_likes_posts', '1')";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_likes` tinyint(1) NOT NULL DEFAULT '0' AFTER `forum_thanks`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`";
+
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
 

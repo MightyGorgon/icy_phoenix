@@ -39,7 +39,7 @@ function open_postreview(ref)
 			{postrow.MESSAGE}<br />
 			{postrow.ATTACHMENTS}
 		</div>
-		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
+		<div class="align-spacer">&nbsp;</div>
 		<div class="post-text post-text-hide-flow">
 			<br /><br /><br />
 			<!-- BEGIN above_sig -->
@@ -52,7 +52,7 @@ function open_postreview(ref)
 			<span class="post-details"><br />{postrow.below_sig.BELOW_VAL}</span>
 			<!-- END below_sig -->
 		</div>
-		<div style="margin-bottom: 2px;clear: both;display: block;">&nbsp;</div>
+		<div class="align-spacer">&nbsp;</div>
 		<!-- IF S_EDIT_NOTES -->
 		<!-- IF postrow.EDITED_MESSAGE -->
 		<div class="post-notes"><div class="post-note"><span class="gensmall">{postrow.EDITED_MESSAGE}&nbsp;</span></div></div>
