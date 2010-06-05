@@ -51,7 +51,7 @@ $tag_id = ($tag_id < 0) ? 0 : $tag_id;
 $tag_text = request_var('tag_text', '');
 $tag_text = ip_clean_string(urldecode(trim($tag_text)), $lang['ENCODING'], true);
 
-$mode_types = array('list', 'view');
+$mode_types = array('cloud', 'list', 'view');
 $mode = request_var('mode', $mode_types[0]);
 $mode = check_var_value($mode, $mode_types);
 
@@ -63,7 +63,7 @@ $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 $per_page = request_var('per_page', 0);
-$per_page = (($per_page < 20) || ($per_page > 200)) ? $config['topics_per_page'] : $per_page;
+$per_page = (($per_page < 20) || ($per_page > 300)) ? $config['topics_per_page'] : $per_page;
 
 $s_hidden_fields = '';
 
@@ -227,6 +227,9 @@ else
 {
 	$template_to_parse = 'tags_list_body.tpl';
 
+	$breadcrumbs_links_right .= (($breadcrumbs_links_right != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=' . (($mode == 'cloud') ? 'list' : 'cloud')) . '">' . (($mode == 'cloud') ? $lang['TOPIC_TAGS_LIST'] : $lang['TOPIC_TAGS_CLOUDS']) . '</a>';
+
+	$per_page = ($mode == 'cloud') ? $config['word_graph_max_words'] : $per_page;
 	$num_items = $class_topics_tags->get_total_tags();
 	$tags = $class_topics_tags->get_tags($sort_order, $sort_dir, $start, $per_page);
 
@@ -234,13 +237,14 @@ else
 	foreach ($tags as $tag)
 	{
 		$class = ($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
-
+		$tag_font_size = intval(mt_rand(8, 14));
 		$template->assign_block_vars('row', array(
 			'CLASS' => $class,
 			'ROW_NUMBER' => $i + 1,
 
 			'U_TAG_TEXT' => append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($tag['tag_text']))),
 			'TAG_TEXT' => htmlspecialchars($tag['tag_text']),
+			'TAG_FONT_SIZE' => $tag_font_size,
 			'TAG_COUNT' => $tag['tag_count'],
 			)
 		);
@@ -249,6 +253,7 @@ else
 }
 
 $template->assign_vars(array(
+	'S_SHOW_CLOUD' => ($mode == 'cloud') ? true : false,
 	'S_FORM_ACTION' => append_sid(CMS_PAGE_TAGS),
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	'S_SORT_ORDER_SELECT' => $sort_order_select_box,

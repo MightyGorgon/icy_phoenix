@@ -4,6 +4,10 @@
 <h2 style="text-align: left;"><a href="{U_TAGS}" style="text-decoration: none;">{L_TOPIC_TAGS}</a></h2>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_TOPIC_TAGS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<!-- IF S_SHOW_CLOUD -->
+<tr><th>{L_TOPIC_TAGS}</th></tr>
+<tr><td class="row1g row-center"><!-- BEGIN row --><span style="font-size: {row.TAG_FONT_SIZE}px;"><a href="{row.U_TAG_TEXT}" style="font-size: {row.TAG_FONT_SIZE}px;">{row.TAG_TEXT}&nbsp;({row.TAG_COUNT})</a>&nbsp;&nbsp;</span><!-- END row --></td></tr>
+<!-- ELSE -->
 <tr>
 	<th width="30">#</th>
 	<th>{L_TAG_TEXT}</th>
@@ -16,6 +20,7 @@
 	<td class="{row.CLASS} row-center" style="background: none;" nowrap="nowrap"><span class="genmed">{row.TAG_COUNT}</span></td>
 </tr>
 <!-- END row -->
+<!-- ENDIF -->
 <tr><td class="spaceRow" colspan="3"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr>
 	<td class="cat" colspan="3">
