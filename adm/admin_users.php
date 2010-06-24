@@ -252,6 +252,15 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		}
 	}
 
+	// PROFILE EDIT BRIDGE - BEGIN
+	$target_profile_data = array(
+		'user_id' => '',
+		'username' => '',
+		'password' => '',
+		'email' => ''
+	);
+	// PROFILE EDIT BRIDGE - END
+
 	if(isset($_POST['submit']))
 	{
 		include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
@@ -283,6 +292,9 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				$rename_user = $username; // Used for renaming usergroup
 			}
 		}
+		// PROFILE EDIT BRIDGE - BEGIN
+		$target_profile_data['username'] = $username;
+		// PROFILE EDIT BRIDGE - END
 
 		// Custom Profile Fields MOD - BEGIN
 		$profile_data = get_fields();
@@ -334,6 +346,9 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			}
 			else
 			{
+				// PROFILE EDIT BRIDGE - BEGIN
+				$target_profile_data['password'] = $password;
+				// PROFILE EDIT BRIDGE - END
 				$password = phpbb_hash($password);
 				$passwd_sql = "user_password = '" . $db->sql_escape($password) . "', " . ((strlen($password) == 34) ? "user_pass_convert = 0, " : "");
 			}
@@ -372,7 +387,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		}
 
 		// Avatar stuff
-		$avatar_sql = "";
+		$avatar_sql = '';
 		if(isset($_POST['avatardel']))
 		{
 			if($this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "")
@@ -413,15 +428,15 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 						switch($user_avatar_filetype)
 						{
-							case "jpeg":
-							case "pjpeg":
-							case "jpg":
+							case 'jpeg':
+							case 'pjpeg':
+							case 'jpg':
 								$imgtype = '.jpg';
 								break;
-							case "gif":
+							case 'gif':
 								$imgtype = '.gif';
 								break;
-							case "png":
+							case 'png':
 								$imgtype = '.png';
 								break;
 							default:
@@ -507,15 +522,15 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 							switch($file_type)
 							{
-								case "jpeg":
-								case "pjpeg":
-								case "jpg":
+								case 'jpeg':
+								case 'pjpeg':
+								case 'jpg':
 									$imgtype = '.jpg';
 									break;
-								case "gif":
+								case 'gif':
 									$imgtype = '.gif';
 									break;
-								case "png":
+								case 'png':
 									$imgtype = '.png';
 									break;
 								default:
@@ -528,8 +543,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 							{
 								$avatar_data = substr($avatar_data, strlen($avatar_data) - $file_size, $file_size);
 
-								$tmp_filename = tempnam ("/tmp", $this_userdata['user_id'] . "-");
-								$fptr = @fopen($tmp_filename, "wb");
+								$tmp_filename = tempnam('/tmp', $this_userdata['user_id'] . '-');
+								$fptr = @fopen($tmp_filename, 'wb');
 								$bytes_written = @fwrite($fptr, $avatar_data, $file_size);
 								@fclose($fptr);
 
@@ -599,7 +614,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
 			}
 		}
-		elseif($user_avatar_remoteurl != "" && $avatar_sql == "" && !$error)
+		elseif(($user_avatar_remoteurl != '') && ($avatar_sql == '') && !$error)
 		{
 			if(!preg_match("#^http:\/\/#i", $user_avatar_remoteurl))
 			{
@@ -693,6 +708,11 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			$db->clear_cache('ban_', USERS_CACHE_FOLDER);
 			clear_user_color_cache($user_id);
 
+			// PROFILE EDIT BRIDGE - BEGIN
+			$target_profile_data['email'] = $email;
+			$target_profile_data['user_id'] = $user_id;
+			// PROFILE EDIT BRIDGE - END
+
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_icq = '" . $db->sql_escape($icq) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting=$next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape($aim) . "', user_yim = '" . $db->sql_escape($yim) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_active = $user_status, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
 				WHERE user_id = '" . $user_id . "'";
@@ -771,6 +791,19 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
 				$notifications->delete_user_notifications($poster_id);
 			}
+
+			// PROFILE EDIT BRIDGE - BEGIN
+			if (!class_exists('class_users'))
+			{
+				include_once(IP_ROOT_PATH . 'includes/class_users.' . PHP_EXT);
+			}
+			if (empty($class_users))
+			{
+				$class_users = new class_users();
+			}
+			$class_users->profile_update($target_profile_data);
+			unset($target_profile_data);
+			// PROFILE EDIT BRIDGE - END
 
 			$message .= $lang['Admin_user_updated'];
 
@@ -1015,7 +1048,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			$s_hidden_fields .= '<input type="hidden" name="phone" value="' . str_replace("\"", "&quot;", $phone) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="occupation" value="' . str_replace("\"", "&quot;", $occupation) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="interests" value="' . str_replace("\"", "&quot;", $interests) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="birthday" value="'.$birthday.'" />';
+			$s_hidden_fields .= '<input type="hidden" name="birthday" value="' . $birthday . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="next_birthday_greeting" value="' . $next_birthday_greeting . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="selfdes" value="' . str_replace("\"", "&quot;", $selfdes) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="signature" value="' . str_replace("\"", "&quot;", $signature) . '" />';
@@ -1308,14 +1341,14 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		// Build the html select statement
 		$flag_start_image = 'blank.gif' ;
 		$selected = (isset($user_flag)) ? '' : ' selected="selected"';
-		$flag_select = "<select name=\"user_flag\" onchange=\"document.images['user_flag'].src = '" . IP_ROOT_PATH . "images/flags/' + this.value;\" >";
-		$flag_select .= "<option value=\"blank.gif\"$selected>" . $lang['Select_Country'] . "</option>";
+		$flag_select = '<select name="user_flag" onchange="document.images[\'user_flag\'].src = \'../images/flags/\' + this.value;" >';
+		$flag_select .= '<option value="blank.gif"' . $selected . '>' . $lang['Select_Country'] . '</option>';
 		for ($i = 0; $i < $num_flags; $i++)
 		{
 			$flag_name = $flag_row[$i]['flag_name'];
 			$flag_image = $flag_row[$i]['flag_image'];
 			$selected = (isset($user_flag)) ? (($user_flag == $flag_image) ? 'selected="selected"' : '') : '' ;
-			$flag_select .= "\t<option value=\"$flag_image\"$selected>$flag_name</option>";
+			$flag_select .= "\t" . '<option value="' . $flag_image . '"' . $selected . '>' . $flag_name . '</option>';
 			if (isset($user_flag) && ($user_flag == $flag_image))
 			{
 				$flag_start_image = $flag_image ;

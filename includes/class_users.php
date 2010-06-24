@@ -108,6 +108,18 @@ class class_users
 		}
 
 		$user_id = $row['total'] + 1;
+
+		// PROFILE EDIT BRIDGE - BEGIN
+		$target_profile_data = array(
+			'user_id' => $user_id,
+			'username' => $username,
+			'password' => $user_password,
+			'email' => $user_email
+		);
+		$this->profile_update($target_profile_data);
+		unset($target_profile_data);
+		// PROFILE EDIT BRIDGE - END
+
 		$user_password = md5($user_password);
 
 		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_regdate, user_password, user_email, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
@@ -157,6 +169,26 @@ class class_users
 		{
 			board_stats();
 		}
+
+		return true;
+	}
+
+	/*
+	* User profile update: this function is called when username, email and password are changed in a user profile
+	*/
+	function profile_update($target_profile_data)
+	{
+		global $db, $config, $userdata, $lang;
+
+		/*
+		$target_profile_data = array(
+			'user_id' => '',
+			'username' => '',
+			'password' => '',
+			'email' => ''
+		);
+		*/
+		//print_r($target_profile_data);
 
 		return true;
 	}

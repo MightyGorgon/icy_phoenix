@@ -141,6 +141,10 @@ class class_mcp_topic
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
 
+		$sql = "DELETE FROM " . POSTS_LIKES_TABLE . "
+			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+		$db->sql_query($sql);
+
 		$sql = "DELETE FROM " . POSTS_TABLE . "
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
@@ -379,6 +383,11 @@ class class_mcp_topic
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
 
+		$sql = "UPDATE " . POSTS_LIKES_TABLE . "
+			SET topic_id = '" . $new_topic_id . "'
+			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+		$db->sql_query($sql);
+
 		$sql = "DELETE FROM " . REGISTRATION_TABLE . "
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
@@ -474,6 +483,11 @@ class class_mcp_topic
 			SET topic_id = " . $new_topic_id . "
 			WHERE topic_id = " . $topic_id . "
 			AND user_id IN (" . $user_id_sql . ")";
+		$db->sql_query($sql);
+
+		$sql = "UPDATE " . POSTS_LIKES_TABLE . "
+			SET topic_id = " . $new_topic_id . "
+			WHERE post_id IN (" . $post_id_sql . ")";
 		$db->sql_query($sql);
 
 		$sql = "UPDATE " . POSTS_TABLE . "

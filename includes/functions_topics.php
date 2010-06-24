@@ -157,11 +157,11 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 		$sql = "SELECT t.*, u.user_id, u.username, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, f.forum_id, f.forum_name, p.post_time, p.post_username
 					FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . FORUMS_TABLE . " f, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2
 					WHERE t.topic_id IN (" . $topics_array . ")
-					AND t.forum_id = f.forum_id
-					AND p.poster_id = u2.user_id
-					AND p.post_id = t.topic_last_post_id
-					AND t.topic_poster = u.user_id
-					AND t.topic_status <> " . TOPIC_MOVED . "
+						AND t.forum_id = f.forum_id
+						AND p.poster_id = u2.user_id
+						AND p.post_id = t.topic_last_post_id
+						AND t.topic_poster = u.user_id
+						AND t.topic_status <> " . TOPIC_MOVED . "
 					GROUP BY t.topic_id
 					ORDER BY p.post_time";
 		$result = $db->sql_query($sql);
@@ -259,12 +259,12 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 	$sql = "SELECT t.*, u.user_id, u.username, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, f.forum_id, f.forum_name, p.post_time, p.post_username, $sql_match as relevance
 				FROM ". TOPICS_TABLE ." t, ". USERS_TABLE ." u, ". FORUMS_TABLE ." f, ". POSTS_TABLE ." p, " . USERS_TABLE . " u2
 				WHERE t.topic_id <> $topic_id $forums_auth_sql
-				AND $sql_match
-				AND t.forum_id = f.forum_id
-				AND p.poster_id = u2.user_id
-				AND p.post_id = t.topic_last_post_id
-				AND t.topic_poster = u.user_id
-				AND t.topic_status <> " . TOPIC_MOVED . "
+					AND $sql_match
+					AND t.forum_id = f.forum_id
+					AND p.poster_id = u2.user_id
+					AND p.post_id = t.topic_last_post_id
+					AND t.topic_poster = u.user_id
+					AND t.topic_status <> " . TOPIC_MOVED . "
 				GROUP BY t.topic_id
 				ORDER BY " . $sql_sort . " DESC LIMIT 0," . intval($config['similar_max_topics']);
 	$result = $db->sql_query($sql);

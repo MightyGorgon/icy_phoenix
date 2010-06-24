@@ -146,6 +146,18 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 			if (((strlen($row['user_password']) == 34) && (phpbb_check_hash(md5($password_old_format), $row['user_password']) || phpbb_check_hash(md5(utf8_to_cp1252($password_old_format)), $row['user_password'])))
 				|| ((strlen($row['user_password']) == 32) && ((md5($password_old_format) == $row['user_password']) || (md5(utf8_to_cp1252($password_old_format)) == $row['user_password']))))
 			{
+				// PROFILE EDIT BRIDGE - BEGIN
+				$target_profile_data = array(
+					'user_id' => $row['user_id'],
+					'username' => $username,
+					'password' => $password_new_format
+				);
+				include_once(IP_ROOT_PATH . 'includes/class_users.' . PHP_EXT);
+				$class_users = new class_users();
+				$class_users->profile_update($target_profile_data);
+				unset($target_profile_data);
+				// PROFILE EDIT BRIDGE - END
+
 				$hash = phpbb_hash($password_new_format);
 
 				// Update the password in the users table to the new format and remove user_pass_convert flag

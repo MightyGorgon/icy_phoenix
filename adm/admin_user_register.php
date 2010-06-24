@@ -124,6 +124,7 @@ if (isset($_POST['submit']))
 		}
 		$user_id = $row['total'] + 1;
 
+		$clean_password = $new_password;
 		$new_password = phpbb_hash($new_password);
 
 		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_regdate, user_password, user_email, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
@@ -141,6 +142,26 @@ if (isset($_POST['submit']))
 			VALUES ($user_id, $group_id, 0)";
 		$result = $db->sql_query($sql);
 		$db->sql_transaction('commit');
+
+		// PROFILE EDIT BRIDGE - BEGIN
+		$target_profile_data = array(
+			'user_id' => $user_id,
+			'username' => $username,
+			'password' => $clean_password,
+			'email' => $email
+		);
+		if (!class_exists('class_users'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/class_users.' . PHP_EXT);
+		}
+		if (empty($class_users))
+		{
+			$class_users = new class_users();
+		}
+		$class_users->profile_update($target_profile_data);
+		unset($clean_password);
+		unset($target_profile_data);
+		// PROFILE EDIT BRIDGE - END
 
 		board_stats();
 

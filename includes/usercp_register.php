@@ -483,6 +483,15 @@ if (isset($_POST['submit']))
 {
 	include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
 
+	// PROFILE EDIT BRIDGE - BEGIN
+	$target_profile_data = array(
+		'user_id' => '',
+		'username' => '',
+		'password' => '',
+		'email' => ''
+	);
+	// PROFILE EDIT BRIDGE - END
+
 	// session id check
 	if (($sid == '') || ($sid != $userdata['session_id']))
 	{
@@ -629,6 +638,9 @@ if (isset($_POST['submit']))
 
 			if (!$error)
 			{
+				// PROFILE EDIT BRIDGE - BEGIN
+				$target_profile_data['password'] = $new_password;
+				// PROFILE EDIT BRIDGE - END
 				// CrackerTracker v5.x
 				$profile_security->pw_create_date($user_id);
 				// CrackerTracker v5.x
@@ -704,6 +716,9 @@ if (isset($_POST['submit']))
 				$username_sql = "username = '" . $db->sql_escape($username) . "', ";
 			}
 		}
+		// PROFILE EDIT BRIDGE - BEGIN
+		$target_profile_data['username'] = $username;
+		// PROFILE EDIT BRIDGE - END
 	}
 
 	if ($signature != '')
@@ -886,11 +901,17 @@ if (isset($_POST['submit']))
 				$user_active = 'user_active';
 				$user_actkey = 'user_actkey';
 			}
+
+			// PROFILE EDIT BRIDGE - BEGIN
+			$target_profile_data['email'] = $email;
+			$target_profile_data['user_id'] = $user_id;
+			// PROFILE EDIT BRIDGE - END
+
 // Unread Post Information to Database Mod
 // IN LINE ADD
 // , user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) ."', user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color, user_icq = '" . $db->sql_escape($icq) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = '$next_birthday_greeting', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', $aim)) . "', user_yim = '" . $db->sql_escape($yim) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowsmile = $allowsmilies, user_showavatars = $showavatars, user_showsignatures = $showsignatures, user_allowswearywords = $allowswearywords, user_allowhtml = $allowhtml, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_timezone = $user_timezone, user_time_mode = $time_mode, user_dst_time_lag = $dst_time_lag, user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_active = $user_active, user_actkey = '$user_actkey'" . $avatar_sql . ", user_gender = '" . $gender . "'
+				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color, user_icq = '" . $db->sql_escape($icq) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = '$next_birthday_greeting', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', $aim)) . "', user_yim = '" . $db->sql_escape($yim) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowsmile = $allowsmilies, user_showavatars = $showavatars, user_showsignatures = $showsignatures, user_allowswearywords = $allowswearywords, user_allowhtml = $allowhtml, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_timezone = $user_timezone, user_time_mode = $time_mode, user_dst_time_lag = $dst_time_lag, user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_active = $user_active, user_actkey = '$user_actkey'" . $avatar_sql . ", user_gender = '" . $gender . "'
 				WHERE user_id = " . $user_id;
 			$result = $db->sql_query($sql);
 
@@ -1038,6 +1059,19 @@ if (isset($_POST['submit']))
 				$message = $lang['Profile_updated'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>') . '<br /><br />' . sprintf($lang['Cpl_Click_Return_Cpl'], '<a href="' . append_sid($redirect_url) . '">', '</a>');
 			}
 
+			// PROFILE EDIT BRIDGE - BEGIN
+			if (!class_exists('class_users'))
+			{
+				include_once(IP_ROOT_PATH . 'includes/class_users.' . PHP_EXT);
+			}
+			if (empty($class_users))
+			{
+				$class_users = new class_users();
+			}
+			$class_users->profile_update($target_profile_data);
+			unset($target_profile_data);
+			// PROFILE EDIT BRIDGE - END
+
 			$redirect_url = append_sid($redirect_url);
 			meta_refresh(3, $redirect_url);
 			message_die(GENERAL_MESSAGE, $message);
@@ -1059,6 +1093,15 @@ if (isset($_POST['submit']))
 			$user_registered_hostname = addslashes($user_registered_hostname);
 			$user_registered_ip = encode_ip($user_registered_ip);
 			// End Advanced IP Tools Pack MOD
+
+			// PROFILE EDIT BRIDGE - BEGIN
+			$target_profile_data = array(
+				'user_id' => $user_id,
+				'username' => $username,
+				'password' => $new_password,
+				'email' => $email
+			);
+			// PROFILE EDIT BRIDGE - END
 
 			// Get current date
 // Unread Post Information to Database Mod
@@ -1281,6 +1324,19 @@ if (isset($_POST['submit']))
 				message_die(GENERAL_ERROR, 'Could not update custom profile fields', '', __LINE__, __FILE__, $sql2);
 			}
 			// Custom Profile Fields - END
+
+			// PROFILE EDIT BRIDGE - BEGIN
+			if (!class_exists('class_users'))
+			{
+				include_once(IP_ROOT_PATH . 'includes/class_users.' . PHP_EXT);
+			}
+			if (empty($class_users))
+			{
+				$class_users = new class_users();
+			}
+			$class_users->profile_update($target_profile_data);
+			unset($target_profile_data);
+			// PROFILE EDIT BRIDGE - END
 
 			$message = $message . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 

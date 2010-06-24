@@ -295,19 +295,19 @@ function rss_session_end()
 function rss_get_user()
 {
 	global $db;
-	if((!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW']))
-		&& isset($_SERVER['REMOTE_USER']) && preg_match('/Basic\s+(.*)$/i', $_SERVER['REMOTE_USER'], $matches)) {
+	if((!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) && isset($_SERVER['REMOTE_USER']) && preg_match('/Basic\s+(.*)$/i', $_SERVER['REMOTE_USER'], $matches))
+	{
 		list($name, $password) = explode(':', base64_decode($matches[1]), 2);
 		$_SERVER['PHP_AUTH_USER'] = strip_tags($name);
-		$_SERVER['PHP_AUTH_PW']	= strip_tags($password);
+		$_SERVER['PHP_AUTH_PW'] = strip_tags($password);
 	}
 	if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']))
 	{
-		$username=phpbb_clean_username($_SERVER['PHP_AUTH_USER']);
-		$password=md5($_SERVER['PHP_AUTH_PW']);
+		$username = phpbb_clean_username($_SERVER['PHP_AUTH_USER']);
+		$password = md5($_SERVER['PHP_AUTH_PW']);
 		if(isset($_GET['uid']))
 		{
-			$uid=intval($_GET['uid']);
+			$uid = intval($_GET['uid']);
 			$sql = "SELECT * FROM " . USERS_TABLE . " WHERE user_id = $uid";
 		}
 		else
@@ -320,7 +320,7 @@ function rss_get_user()
 
 		if($row = $db->sql_fetchrow($result))
 		{
-			if($password == $row['user_password'] && $row['user_active'])
+			if(($password == $row['user_password']) && $row['user_active'])
 			{
 				// Yes!!!  It's good user
 				return $row['user_id'];

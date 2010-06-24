@@ -102,11 +102,26 @@ class cms_admin
 		$action = (isset($_POST['save']) ? 'save' : $action);
 		$this->action = (in_array($action, $action_array) ? $action : false);
 
-		$l_id = request_var('l_id', 0);
-		$this->l_id = ($l_id < 0) ? false : $l_id;
+		if (isset($_REQUEST['l_id']))
+		{
+			$l_id = request_var('l_id', 0);
+			$this->l_id = ($l_id < 0) ? false : $l_id;
+		}
 
-		$ls_id = request_var('ls_id', 0);
-		$this->ls_id = ($ls_id < 0) ? false : $ls_id;
+		if (isset($_REQUEST['ls_id']))
+		{
+			$ls_id = request_var('ls_id', 0);
+			$this->ls_id = ($ls_id < 0) ? false : $ls_id;
+		}
+
+		if ($this->l_id !== false)
+		{
+			$this->ls_id = false;
+		}
+		elseif ($this->ls_id !== false)
+		{
+			$this->l_id = false;
+		}
 
 		$b_id = request_var('b_id', 0);
 		$this->b_id = ($b_id < 0) ? false : $b_id;

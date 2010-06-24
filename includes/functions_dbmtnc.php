@@ -1450,7 +1450,7 @@ function check_authorization($die = true)
 	if (!$allow_access && $die)
 	{
 ?>
-	<p><span style="color:red"><?php echo $lang['Auth_failed']; ?></span></p>
+	<p><span style="color: red;"><?php echo $lang['Auth_failed']; ?></span></p>
 </body>
 </html>
 <?php

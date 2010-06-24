@@ -159,7 +159,8 @@ for($i = 0; $i < $count_similar; $i++)
 
 	$post_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $similar['topic_last_post_id']) . '#p' . $similar['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a><br />' . $last_post_author;
 
-	$post_time = create_date_ip($config['default_dateformat'], $similar['topic_time'], $config['board_timezone']);
+	//$post_time = create_date_ip($config['default_dateformat'], $similar['topic_time'], $config['board_timezone']);
+	$post_time = create_date_ip($config['default_dateformat'], $similar['topic_last_post_time'], $config['board_timezone']);
 
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
