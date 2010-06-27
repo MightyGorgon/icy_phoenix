@@ -44,6 +44,16 @@ function sql_replace($table, $fields, $html_encode = true, $stripslashes = false
 	{
 		foreach ($fields as $field)
 		{
+			/*
+			UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, '\\"', '\"');
+			UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, "\\'", "\'");
+
+			UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, '&', '&amp;');
+			UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, '&&amp;', '&amp;');
+			UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, '\"', '&quot;');
+			UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, '<', '&lt;');
+			UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, '>', '&gt;');
+			*/
 			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '&', '&amp;')";
 			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '&&amp;', '&amp;')";
 			$sql_replace_array[] = "UPDATE " . $table . " SET " . $field . " = REPLACE(" . $field . ", '\"', '&quot;')";

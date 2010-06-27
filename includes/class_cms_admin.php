@@ -17,10 +17,10 @@ class cms_admin
 {
 	var $mode = false;
 	var $action = false;
-	var $l_id = false;	//Layout ID
-	var $ls_id = false;	//Layout Special ID
-	var $b_id = false;	//Block ID
-	var $bs_id = false;	//Block Settings ID
+	var $l_id = false; //Layout ID
+	var $ls_id = false; //Layout Special ID
+	var $b_id = false; //Block ID
+	var $bs_id = false; //Block Settings ID
 
 	function check_version()
 	{
@@ -840,6 +840,7 @@ class cms_admin
 
 		$data['groups'] = get_selected_groups();
 		$data['content'] = request_post_var('message', '', true);
+		$data['content'] = htmlspecialchars_decode($data['content'], ENT_COMPAT);
 		$data['locked'] = $data['locked'] ? 1 : 0;
 
 		if($this->bs_id)

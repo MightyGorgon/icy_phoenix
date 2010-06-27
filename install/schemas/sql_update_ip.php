@@ -66,6 +66,7 @@ switch ($req_version)
 	case '131063': $current_ip_version = '1.3.10.63'; break;
 	case '131164': $current_ip_version = '1.3.11.64'; break;
 	case '131265': $current_ip_version = '1.3.12.65'; break;
+	case '131366': $current_ip_version = '1.3.13.66'; break;
 }
 
 // Icy Phoenix Part...
@@ -3991,11 +3992,18 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_likes` tinyint(1) NOT NULL DEFAULT '0' AFTER `forum_thanks`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`";
 
+		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\"', '\"')";
+		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\'\", \"'\")";
+
+
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
 
 		/* Updating from IP 1.3.12.65 */
 		case '1.3.12.65':
+
+		/* Updating from IP 1.3.13.66 */
+		case '1.3.13.66':
 
 
 	}

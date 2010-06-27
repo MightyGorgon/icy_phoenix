@@ -1466,7 +1466,7 @@ $lang = array_merge($lang, array(
 	'Always_swear' => 'Always allow swear words',
 
 	'Shoutbox' => 'Shoutbox',
-	'Shoutbox_date' => ' d m Y h:i:s',
+	'Shoutbox_date' => ' d m Y H:i:s',
 	'Shout_censor' => '<b>Shout removed!</b>',
 	'Shout_refresh' => 'Refresh',
 	'Shout_text' => 'Your text',

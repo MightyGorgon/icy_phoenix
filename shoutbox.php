@@ -37,7 +37,7 @@ switch ($userdata['user_level'])
 	default:
 		$is_auth['auth_read'] = 1;
 		$is_auth['auth_view'] = 1;
-		if ($userdata['user_id']==ANONYMOUS)
+		if ($userdata['user_id'] == ANONYMOUS)
 		{
 			$is_auth['auth_delete'] = 0;
 			$is_auth['auth_post'] = 0;

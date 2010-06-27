@@ -84,7 +84,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 
 	//$shout = str_replace("\n", "\n<br />\n", $shout);
 
-	$shout = (preg_match("/<a/", $shout)) ? str_replace("\">" , "\" target=\"_top\">", $shout) : $shout;
+	$shout = (preg_match('/<a/', $shout)) ? str_replace('">', '" target="_top">', $shout) : $shout;
 
 	$shout = $bbcode->acronym_pass($shout);
 	$shout = $bbcode->autolink_text($shout, '999999');

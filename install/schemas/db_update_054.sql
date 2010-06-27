@@ -551,6 +551,15 @@ ALTER TABLE `phpbb_forums` ADD `forum_likes` tinyint(1) NOT NULL DEFAULT '0' AFT
 ALTER TABLE `phpbb_posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`;
 #### POST LIKE - END
 
+UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, '\\"', '\"');
+UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, "\\'", "\'");
+
+
+
+########################################
+##              BUILD 065             ##
+########################################
+
 
 
 
@@ -559,7 +568,7 @@ ALTER TABLE `phpbb_posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAUL
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.11.64' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.12.65' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
