@@ -27,7 +27,7 @@ if (empty($_GET[POST_USERS_URL]) || ($_GET[POST_USERS_URL] == ANONYMOUS))
 }
 
 $profiledata = get_userdata($_GET[POST_USERS_URL]);
-if (empty($profiledata['user_id']))
+if (empty($profiledata) || empty($profiledata['user_id']))
 {
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
@@ -66,10 +66,37 @@ if ($user != $viewer_id)
 		$db->sql_query($sql);
 	}
 }
-if (!$profiledata)
+
+include_once(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
+
+if (!empty($userdata['session_logged_in']) && ($profiledata['user_id'] != $userdata['user_id']))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	$zmode = request_var('zmode', '');
+	if (!empty($zmode))
+	{
+		// Allow only friends...
+		//$zmode_types = array('friend', 'foe');
+		$zmode_types = array('friend');
+		$zmode = (!in_array($zmode, $zmode_types) ? '' : $zmode);
+	}
+
+	if (!empty($zmode))
+	{
+		$zaction = request_var('zaction', '');
+		$zaction_types = array('add', 'remove');
+		$zaction = (!in_array($zaction, $zaction_types) ? '' : $zaction);
+
+		if (!empty($zaction) && ($zaction == 'add'))
+		{
+			user_friend_foe_add(array($profiledata['user_id']), true);
+		}
+		elseif (!empty($zaction) && ($zaction == 'remove'))
+		{
+			user_friend_foe_remove(array($profiledata['user_id']), true);
+		}
+	}
 }
+
 // Mighty Gorgon - Multiple Ranks - BEGIN
 @include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 $ranks_array = $cache->obtain_ranks(false);
@@ -86,7 +113,7 @@ $memberdays = max(1, round((time() - $regdate) / 86400));
 $posts_per_day = $profiledata['user_posts'] / $memberdays;
 
 // Get the users percentage of total posts
-if ($profiledata['user_posts'] != 0 )
+if ($profiledata['user_posts'] != 0)
 {
 	$total_posts = $config['max_posts'];
 	$percentage = ($total_posts) ? min(100, ($profiledata['user_posts'] / $total_posts) * 100) : 0;
@@ -98,7 +125,7 @@ else
 
 // Mighty Gorgon - Thanks Received - BEGIN
 $total_thanks_received = 0;
-if ($config['show_thanks_profile'] && !$config['disable_thanks_topics'])
+if ($config['show_thanks_profile'] && empty($config['disable_thanks_topics']))
 {
 	$total_thanks_received = user_get_thanks_received($profiledata['user_id']);
 	$template->assign_block_vars('show_thanks_profile', array());
@@ -472,12 +499,18 @@ if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugin
 }
 // Mighty Gorgon - Feedbacks - END
 
+$is_friend = user_check_friend_foe($profiledata['user_id'], true);
+
 $template->assign_vars(array(
 	// Mighty Gorgon - Feedbacks - BEGIN
 	'FEEDBACKS' => $feedbacks_received,
 	// Mighty Gorgon - Feedbacks - END
 	'USERNAME' => $profiledata['username'],
 	'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $profiledata['user_regdate'], $config['board_timezone']),
+
+	'SHOW_FRIEND_LINK' => ($profiledata['user_id'] != $userdata['user_id']) ? true : false,
+	'IS_FRIEND' => !empty($is_friend) ? true : false,
+	'U_FRIEND_ADD_REMOVE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;zmode=friend&amp;zaction=' . (!empty($is_friend) ? ('remove') : ('add'))),
 
 	// Start add - Last visit MOD
 	'L_LOGON' => $lang['Last_logon'],
@@ -592,7 +625,7 @@ $template->assign_vars(array(
 	'L_PHONE' => $lang['UserPhone'],
 	'L_EXTRA_PROFILE_INFO' => $lang['Extra_profile_info'],
 	'L_EXTRA_WINDOW'=> $lang['Extra_window']. " :: " . $profiledata['username'],
-	'U_EXTRA_WINDOW' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&extra_mode=window'),
+	'U_EXTRA_WINDOW' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&ampextra_mode=window'),
 	// Mighty Gorgon - HTTP AGENTS - BEGIN
 	'USER_OS_IMG' => $user_os['img'],
 	'USER_BROWSER_IMG' => $user_browser['img'],

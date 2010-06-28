@@ -147,40 +147,11 @@ if($delete && $mark_list)
 	{
 		if(sizeof($mark_list))
 		{
-			$delete_id = '';
 			for($i = 0; $i < sizeof($mark_list); $i++)
 			{
-				$delete_id .= (($delete_id != '') ? ', ' : '') . intval($mark_list[$i]);
+				$user_id = (int) $mark_list[$i];
+				$killed = ip_user_kill($user_id);
 			}
-
-			$delete_u_sql = "DELETE FROM ". USERS_TABLE ." WHERE user_id IN ($delete_id) AND user_id <> ". ANONYMOUS ." AND ";
-			switch($action)
-			{
-				case 'inactive':
-					$delete_u_sql .= "user_active = '0'";
-					break;
-				case 'active':
-					$delete_u_sql .= "user_active = '1'";
-					break;
-			}
-			$db->sql_transaction('begin');
-			$db->sql_query($delete_u_sql);
-
-			$delete_ug_sql = "DELETE FROM ". USER_GROUP_TABLE ." WHERE user_id IN ($delete_id) AND user_id <> ". ANONYMOUS;
-			$db->sql_query($delete_ug_sql);
-			$db->sql_transaction('commit');
-
-			$select_g_sql = "SELECT g.group_id FROM ". GROUPS_TABLE ." g
-											LEFT JOIN ". USER_GROUP_TABLE ." ug ON g.group_id = ug.group_id
-											WHERE group_single_user = 1 AND ug.group_id IS NULL";
-			$result = $db->sql_query($select_g_sql);
-
-			while($group = $db->sql_fetchrow($result))
-			{
-				$delete_g_sql = "DELETE FROM ". GROUPS_TABLE ." WHERE group_id = '". $group['group_id'] ."'";
-				$db->sql_query($delete_g_sql);
-			}
-			$db->sql_freeresult($result);
 
 			$template->assign_vars(array('MESSAGE' => ((sizeof($mark_list) == '1') ? $lang['Account_user_deleted'] : $lang['Account_users_deleted']).' '. $lang['Account_notification']));
 			$template->assign_block_vars('switch_message', array());
@@ -242,22 +213,29 @@ else
 	$letter_sql = " AND username LIKE '" . $db->sql_escape($by_letter) . "%' ";
 }
 
-$sql_count = "SELECT COUNT(user_id) AS total_users FROM " . USERS_TABLE . " ";
-$sql = "SELECT username, user_id, user_active, user_color, user_actkey, user_regdate, user_email FROM " . USERS_TABLE . " ";
+$sql_count = "SELECT COUNT(user_id) AS total_users
+	FROM " . USERS_TABLE . "
+	WHERE user_id <> " . ANONYMOUS . " ";
+
+$sql = "SELECT username, user_id, user_active, user_color, user_actkey, user_regdate, user_email
+	FROM " . USERS_TABLE . "
+	WHERE user_id <> " . ANONYMOUS . " ";
+
 switch($action)
 {
 	case 'inactive':
-		$sql_count .= "WHERE user_id <> ". ANONYMOUS ." AND user_active != '1' $letter_sql";
-		$sql .= "WHERE user_id <> ". ANONYMOUS ." AND user_active != '1' $letter_sql";
+		$sql_extra = " AND user_active <> '1' ";
 		break;
 	case 'active':
-		$sql_count .= "WHERE user_id <> ". ANONYMOUS ." AND user_active != '0' $letter_sql";
-		$sql .= "WHERE user_id <> ". ANONYMOUS ." AND user_active != '0' $letter_sql";
+		$sql_extra = " AND user_active <> '0' ";
 		break;
 	default:
 		message_die(GENERAL_MESSAGE, $lang['No_mode']);
 		break;
 }
+
+$sql_count = $sql_count . $sql_extra . $letter_sql;
+$sql = $sql . $sql_extra . $letter_sql;
 
 if($submit_wait && (!empty($_POST['days']) || !empty($_GET['days'])))
 {
@@ -335,6 +313,22 @@ if($row = $db->sql_fetchrow($result))
 	{
 		$user_id = $row['user_id'];
 
+		$sql_posts_count = "SELECT COUNT(post_id) AS total_posts
+			FROM " . POSTS_TABLE . "
+			WHERE poster_id = " . $user_id;
+		$result_posts = $db->sql_query($sql_posts_count);
+		$row_posts = $db->sql_fetchrow($result_posts);
+		$total_posts = $row_posts['total_posts'];
+		$db->sql_freeresult($result_posts);
+
+		$sql_pics_count = "SELECT COUNT(pic_id) AS total_pics
+			FROM " . ALBUM_TABLE . "
+			WHERE pic_user_id = " . $user_id;
+		$result_pics = $db->sql_query($sql_pics_count);
+		$row_pics = $db->sql_fetchrow($result_pics);
+		$total_pics = $row_pics['total_pics'];
+		$db->sql_freeresult($result_pics);
+
 		$email_url = ($config['board_email_form']) ? append_sid('../' . CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL . '=' . $user_id) : 'mailto:' . $row['user_email'];
 		$email = '<a href="' . $email_url . '" class="gensmall">' . $row['user_email'] . '</a>';
 
@@ -344,6 +338,8 @@ if($row = $db->sql_fetchrow($result))
 			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 			'EMAIL' => $email,
+			'POSTS' => $total_posts,
+			'PICS' => $total_pics,
 			'JOINED' => create_date($config['default_dateformat'], $row['user_regdate'], $config['board_timezone']),
 			'PERIOD' => period(time() - $row['user_regdate']),
 			'U_EDIT_USER' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $user_id),

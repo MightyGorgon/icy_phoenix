@@ -82,6 +82,12 @@
 						<td class="row1 post-buttons"><span class="genmed">{PM_IMG}</span></td>
 					</tr>
 					<!-- IF S_LOGGED_IN -->
+					<!-- IF SHOW_FRIEND_LINK -->
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{L_FRIENDSHIP_STATUS}</span></b></td>
+						<td class="row1 post-buttons"><span class="gensmall"><a href="{U_FRIEND_ADD_REMOVE}" class="gensmall"><!-- IF IS_FRIEND -->{L_FRIEND_REMOVE}<!-- ELSE -->{L_FRIEND_ADD}<!-- ENDIF --></a></span></td>
+					</tr>
+					<!-- ENDIF -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_AJAX_SHOUTBOX_PVT}</span></b></td>
 						<td class="row1 post-buttons"><span class="gensmall"><a href="#" class="gensmall" onclick="window.open('{U_AJAX_SHOUTBOX_PVT_LINK}', '_chat', 'width=720,height=600,resizable=yes'); return false;">{L_AJAX_SHOUTBOX_PVT_LINK}</a></span></td>

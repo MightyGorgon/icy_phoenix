@@ -70,9 +70,9 @@ $lang = array_merge($lang, array(
 
 // Index
 	'Admin' => 'Administration',
-	'Not_admin' => 'You are not authorized to administer this board',
+	'Not_admin' => 'You are not authorized to administer this website',
 	'Welcome_IP' => 'Welcome to Icy Phoenix',
-	'Admin_intro' => 'Thank you for choosing Icy Phoenix as your forum solution. This screen will give you a quick overview of all the various statistics of your site. You can get back to this page by clicking on the <u>Admin Index</u> link above. To return to the index of your board, click on the <u>Forum</u> link (also above). The menu on the left hand side of this screen will allow you to control every aspect of your forum experience. Each secondary option link will have instructions on how to use the tools.',
+	'Admin_intro' => 'Thank you for choosing Icy Phoenix as your CMS solution. This screen will give you a quick overview of all the various statistics of your site. You can get back to this page by clicking on the <u>Admin Index</u> link above. To return to the index of your board, click on the <u>Forum</u> link (also above). The menu on the left hand side of this screen will allow you to control every aspect of your forum experience. Each secondary option link will have instructions on how to use the tools.',
 	'PayPalInfo' => 'Icy Phoenix is an open source project, you can show your appreciation and support future development by donating to the project.',
 	'Forum_stats' => 'Site Statistics',
 	'Admin_Index' => 'Admin Index',
@@ -2061,6 +2061,8 @@ $lang = array_merge($lang, array(
 
 	'FORUM_LIKES' => 'Like Posts',
 	'FORUM_LIKES_EXPLAIN' => 'Allow users to like single posts in a topic (you need to enable the global switch in Icy Phoenix Settings [SQL Charge] to be able to use this feature)',
+
+	'POSTS_PICS' => 'Posts / Pics',
 
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'IP_CONFIGURATION' => 'Icy Phoenix Settings',

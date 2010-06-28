@@ -140,15 +140,8 @@ if (isset($_POST['submit']))
 
 					if (sizeof($user_id_ary))
 					{
-						$sql_values = ($zmode == 'friends') ? "'1', '0'" : "'0', '1'";
-
-						$sql_ary = array();
-						foreach ($user_id_ary as $zebra_id)
-						{
-							$sql = "INSERT INTO " . ZEBRA_TABLE . " (`user_id` , `zebra_id` , `friend` , `foe`)
-											VALUES ('" . $userdata['user_id'] . "', '" . $zebra_id . "', " . $sql_values . ")";
-							$result = $db->sql_query($sql);
-						}
+						$friend_foe_mode = ($zmode == 'friends') ? true : false;
+						user_friend_foe_add($user_id_ary, $friend_foe_mode);
 						$updated = true;
 					}
 					unset($user_id_ary);
@@ -159,11 +152,8 @@ if (isset($_POST['submit']))
 		{
 			// Force integer values
 			$data['usernames'] = array_map('intval', $data['usernames']);
-			$users_to_del = implode("','", $data['usernames']);
-			$sql = "DELETE FROM " . ZEBRA_TABLE . "
-				WHERE user_id = " . $userdata['user_id'] . "
-					AND zebra_id IN ('" . $users_to_del . "')";
-			$result = $db->sql_query($sql);
+			$friend_foe_mode = ($zmode == 'friends') ? true : false;
+			user_friend_foe_remove($data['usernames'], $friend_foe_mode);
 			$updated = true;
 		}
 

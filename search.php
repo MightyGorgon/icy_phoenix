@@ -163,7 +163,7 @@ $search_fields = check_var_value($search_fields, $search_fields_types);
 $search_cat = request_var('search_cat', -1);
 
 $search_thanks = request_var('search_thanks', 0);
-$search_thanks = (($search_thanks >= '2') && ($config['disable_thanks_topics'] == false)) ? $search_thanks : false;
+$search_thanks = (($search_thanks >= '2') && empty($config['disable_thanks_topics'])) ? $search_thanks : false;
 
 $search_where = request_post_var('search_where', 'Root');
 $search_where_topic = request_post_var('search_where_topic', 'Root');

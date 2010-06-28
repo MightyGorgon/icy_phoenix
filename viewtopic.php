@@ -246,7 +246,7 @@ if ($forum_topic_data['forum_kb_mode'])
 
 // Thanks Mod - BEGIN
 $show_thanks = false;
-if (!empty($config['disable_thanks_topics']) && $forum_topic_data['forum_thanks'] && !$userdata['is_bot'])
+if (empty($config['disable_thanks_topics']) && !empty($forum_topic_data['forum_thanks']) && !$userdata['is_bot'])
 {
 	$show_thanks = true;
 	$show_thanks_button = false;
@@ -1399,7 +1399,7 @@ for($i = 0; $i < $total_posts; $i++)
 	// Mighty Gorgon - Multiple Ranks - END
 
 	$poster_thanks_received = '';
-	if (($poster_id != ANONYMOUS) && ($userdata['user_id'] != ANONYMOUS) && $config['show_thanks_viewtopic'] && !$config['disable_thanks_topics'] && !$lofi)
+	if (($poster_id != ANONYMOUS) && ($userdata['user_id'] != ANONYMOUS) && $config['show_thanks_viewtopic'] && empty($config['disable_thanks_topics']) && !$lofi)
 	{
 		$total_thanks_received = user_get_thanks_received($poster_id);
 		$poster_thanks_received = ($total_thanks_received > 0) ? ($lang['THANKS_RECEIVED'] . ': ' . '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_thanks=' . $poster_id) . '">' . $total_thanks_received . '</a>' . '<br />') : '';
@@ -2324,7 +2324,7 @@ for($i = 0; $i < $total_posts; $i++)
 
 	display_post_attachments($postrow[$i]['post_id'], $postrow[$i]['post_attachment']);
 
-	if($show_thanks && ($i == 0) && ($current_page == 1) && ($thanks <> ''))
+	if(!empty($show_thanks) && ($i == 0) && ($current_page == 1) && !empty($thanks))
 	{
 		$template->assign_block_vars('postrow.thanks', array(
 			'THANKS' => $thanks,

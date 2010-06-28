@@ -34,12 +34,13 @@ function select_switch(status)
 	<th>#</th>
 	<th>{L_USERNAME}</th>
 	<th>{L_EMAIL}</th>
+	<th>{L_POSTS_PICS}</th>
 	<th>{L_JOINED}</th>
 	<th>{L_MARK}</th>
 </tr>
 <tr>
 	<td colspan="2" align="left" nowrap="nowrap" class="row3"><span class="gensmall">{L_ACTIVATION}</span></td>
-	<td colspan="3" align="right" class="row3"><span class="gensmall">{TOTAL_USERS}</span></td>
+	<td colspan="4" align="right" class="row3"><span class="gensmall">{TOTAL_USERS}</span></td>
 </tr>
 <!-- BEGIN admin_account -->
 <tr>
@@ -50,17 +51,19 @@ function select_switch(status)
 			<td align="left">{admin_account.USERNAME}</td>
 			<td align="right"><span class="gensmall"><a href="{admin_account.U_EDIT_USER}" class="gensmall">{L_EDIT_USER}</a>&nbsp;|&nbsp;<a href="{admin_account.U_USER_AUTH}" class="gensmall">{L_USER_AUTH}</a></span>&nbsp;&nbsp;</td>
 		</tr>
-		</table></td>
+		</table>
+	</td>
 	<td class="{admin_account.ROW_CLASS}"><span class="genmed">{admin_account.EMAIL}</span></td>
+	<td class="{admin_account.ROW_CLASS} row-center"><span class="genmed">{admin_account.POSTS} / {admin_account.PICS}</span></td>
 	<td class="{admin_account.ROW_CLASS}" nowrap="nowrap"><span class="gensmall"><b>{admin_account.PERIOD}</b></span>&nbsp;&nbsp;&nbsp;<span class="genmed">{admin_account.JOINED}</span>&nbsp;</td>
 	<td class="{admin_account.ROW_CLASS} row-center"><input type="checkbox" name="mark[]2" value="{admin_account.S_MARK_ID}" /></td>
 </tr>
 <!-- END admin_account -->
 <!-- BEGIN switch_no_users -->
-<tr><td class="row1 row-center" colspan="5" valign="middle"><span class="gen">{L_NO_USERS}</span></td></tr>
+<tr><td class="row1 row-center" colspan="6" valign="middle"><span class="gen">{L_NO_USERS}</span></td></tr>
 <!-- END switch_no_users -->
 <tr>
-	<td class="cat" colspan="5">
+	<td class="cat" colspan="6">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="activate" value="{L_DE_ACTIVATE_MARKED}" class="liteoption" />&nbsp;
 		<input type="submit" name="delete" value="{L_DELETE_MARKED}" class="liteoption" />

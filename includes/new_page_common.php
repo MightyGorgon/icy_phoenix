@@ -32,7 +32,10 @@ if (!defined('CMS_INIT'))
 $cms_config_vars = (empty($cms_config_vars)) ? $cache->obtain_cms_config() : $cms_config_vars;
 $cms_config_global_blocks = (empty($cms_config_global_blocks)) ? $cache->obtain_cms_global_blocks_config(false) : $cms_config_global_blocks;
 
-$config['default_style'] = $cms_config_vars['style'];
+if (defined('IN_CMS_USERS') && !empty($cms_config_vars['style']))
+{
+	$config['default_style'] = $cms_config_vars['style'];
+}
 
 // Start session management
 if (empty($userdata))

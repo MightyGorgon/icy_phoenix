@@ -1372,7 +1372,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				}
 				else
 				{
-					$u_pm_friend = user_check_friend($to_userdata['user_id']);
+					$u_pm_friend = user_check_friend_foe($to_userdata['user_id'], true);
 					if ($u_pm_friend == true)
 					{
 						$pm_send = true;
@@ -1402,7 +1402,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				}
 				else
 				{
-					$u_pm_friend = user_check_friend($to_userdata['user_id']);
+					$u_pm_friend = user_check_friend_foe($to_userdata['user_id'], true);
 					if ($u_pm_friend == true)
 					{
 						$pm_send = true;

@@ -13,13 +13,18 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-function user_check_friend($target_id)
+/*
+* Check whether a user is a friend or a foe
+*/
+function user_check_friend_foe($target_id, $friend = true)
 {
-	global $userdata, $db;
+	global $db, $cache, $config, $userdata;
+
+	$sql_check = !empty($friend) ? (" AND friend = '1' ") : (" AND foe = '1' ");
 	$sql = "SELECT * FROM " . ZEBRA_TABLE . "
 			WHERE user_id = '" . $userdata['user_id'] . "'
 				AND zebra_id = '" . $target_id . "'
-				AND friend = '1'
+				" . $sql_check . "
 			LIMIT 1";
 	$result = $db->sql_query($sql);
 
@@ -28,12 +33,17 @@ function user_check_friend($target_id)
 		$db->sql_freeresult($result);
 		return true;
 	}
+
 	return false;
 }
 
+/*
+* Get the list of friends or foes
+*/
 function user_get_zebra_list($ftype = 'friends')
 {
-	global $userdata, $db;
+	global $db, $cache, $config, $userdata;
+
 	if ($ftype == 'foes')
 	{
 		$sql_f_check = 'foe';
@@ -66,17 +76,21 @@ function user_get_zebra_list($ftype = 'friends')
 	}
 }
 
+/*
+* Get the list of friends online
+*/
 function user_get_friends_online_list()
 {
-	global $userdata, $db;
+	global $db, $cache, $config, $userdata;
+
 	$friends_online_list = array();
 	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, s.session_logged_in, s.session_time
 					FROM " . ZEBRA_TABLE . " z, " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 					WHERE z.user_id = '" . $userdata['user_id'] . "'
-					AND z.friend = '1'
-					AND u.user_id = z.zebra_id
-					AND u.user_id = s.session_user_id
-					AND s.session_time >= " . (time() - ONLINE_REFRESH) . "";
+						AND z.friend = '1'
+						AND u.user_id = z.zebra_id
+						AND u.user_id = s.session_user_id
+						AND s.session_time >= " . (time() - ONLINE_REFRESH) . "";
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))
@@ -98,23 +112,71 @@ function user_get_friends_online_list()
 	}
 }
 
-function user_check_admin_mod($target_id)
+/*
+* Adds a friend or a foe
+*/
+function user_friend_foe_add($target_ids, $friend = true)
 {
-	global $db;
-	$sql = "SELECT * FROM " . USERS_TABLE . "
-			WHERE user_id = '" . $target_id . "'
-				AND user_level > 0
-			LIMIT 1";
-	$result = $db->sql_query($sql, 0, 'user_level_');
+	global $db, $cache, $config, $userdata;
 
-	while ($row = $db->sql_fetchrow($result))
+	if (empty($target_ids))
 	{
-		$db->sql_freeresult($result);
-		return true;
+		return false;
 	}
-	return false;
+
+	if (!is_array($target_ids))
+	{
+		$target_ids = array($target_ids);
+	}
+
+	$sql_values = !empty($friend) ? "'1', '0'" : "'0', '1'";
+	foreach ($target_ids as $target_id)
+	{
+		$is_friend_foe = user_check_friend_foe($target_id, $friend);
+		if (empty($is_friend_foe))
+		{
+			user_friend_foe_remove(array($target_id), !$friend);
+			$sql = "INSERT INTO " . ZEBRA_TABLE . " (`user_id` , `zebra_id` , `friend` , `foe`)
+							VALUES ('" . $userdata['user_id'] . "', '" . $target_id . "', " . $sql_values . ")";
+			$result = $db->sql_query($sql);
+		}
+	}
+
+	return true;
 }
 
+/*
+* Removes a friend or a foe
+*/
+function user_friend_foe_remove($target_ids, $friend = true)
+{
+	global $db, $cache, $config, $userdata;
+
+	if (empty($target_ids))
+	{
+		return false;
+	}
+
+	if (!is_array($target_ids))
+	{
+		$target_ids = array($target_ids);
+	}
+
+	$sql_check = !empty($friend) ? (" AND friend = '1' ") : (" AND foe = '1' ");
+
+	$users_to_del = implode("','", $target_ids);
+	$sql = "DELETE FROM " . ZEBRA_TABLE . "
+		WHERE user_id = " . $userdata['user_id'] . "
+			AND zebra_id IN ('" . $users_to_del . "')
+			" . $sql_check;
+	$result = $db->sql_query($sql);
+
+	return true;
+}
+
+/*
+* Checks whether PM are allowed
+*/
 function user_check_pm_in_allowed($target_id)
 {
 	global $userdata, $db;

@@ -2373,6 +2373,12 @@ $lang = array_merge($lang, array(
 	'LIKE_COUNTER_OTHERS' => '%s users like this post',
 	'LIKE_COUNTER_OTHERS_SINGLE' => 'One user likes this post',
 
+	'FRIENDSHIP_STATUS' => 'Friendship status',
+	'FRIEND_ADD' => 'Add as a friend',
+	'FRIEND_REMOVE' => 'Remove as a friend',
+	'FOE_ADD' => 'Add as a foe',
+	'FOE_REMOVE' => 'Remove as a foe',
+
 	)
 );
 
