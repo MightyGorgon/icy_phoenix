@@ -300,27 +300,57 @@ $www_url = ($profiledata['user_website']) ? $profiledata['user_website'] : '';
 $www_img = ($profiledata['user_website']) ? '<a href="' . $profiledata['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '&nbsp;';
 $www = ($profiledata['user_website']) ? '<a href="' . $profiledata['user_website'] . '" target="_blank">' . $profiledata['user_website'] . '</a>' : '&nbsp;';
 
-$aim_img = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], $images['icon_aim']) : '&nbsp;';
-$aim = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], false) : '&nbsp;';
-$aim_url = (!empty($profiledata['user_aim'])) ? build_im_link('aim', $profiledata['user_aim'], $lang['AIM'], false, true) : '';
+$im_links_array = array(
+	'chat' => 'id',
+	'aim' => 'aim',
+	'facebook' => 'facebook',
+	'icq' => 'icq',
+	'jabber' => 'jabber',
+	'msn' => 'msnm',
+	'skype' => 'skype',
+	'twitter' => 'twitter',
+	'yahoo' => 'yim',
+);
 
-$icq_status_img = (!empty($profiledata['user_icq'])) ? '<a href="http://wwp.icq.com/' . $profiledata['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $profiledata['user_icq'] . '&img=5" width="18" height="18" /></a>' : '&nbsp;';
-$icq_img = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], $images['icon_icq']) : '&nbsp;';
-$icq = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], false) : '&nbsp;';
-$icq_url = (!empty($profiledata['user_icq'])) ? build_im_link('icq', $profiledata['user_icq'], $lang['ICQ'], false, true) : '';
+$all_ims = array();
+foreach ($im_links_array as $im_k => $im_v)
+{
+	$all_ims[$im_k] = array(
+		'plain' => '&nbsp;',
+		'img' => '&nbsp;',
+		'url' => ''
+	);
+	if (!empty($profiledata['user_' . $im_v]))
+	{
+		$all_ims[$im_k] = array(
+			'plain' => build_im_link($im_k, $profiledata, false, false, false, false, false),
+			'img' => build_im_link($im_k, $profiledata, 'icon_tpl', true, false, false, false),
+			'url' => build_im_link($im_k, $profiledata, false, false, true, false, false)
+		);
+	}
+}
 
-$msn_img = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], $images['icon_msnm']) : '&nbsp;';
-$msn = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], false) : '&nbsp;';
+$aim_img = $all_ims['aim']['img'];
+$aim = $all_ims['aim']['plain'];
+$aim_url = $all_ims['aim']['url'];
+
+$icq_status_img = (!empty($profiledata['user_icq'])) ? '<a href="http://wwp.icq.com/' . $profiledata['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $profiledata['user_icq'] . '&amp;img=5" width="18" height="18" /></a>' : '&nbsp;';
+$icq_img = $all_ims['icq']['img'];
+$icq = $all_ims['icq']['plain'];
+$icq_url = $all_ims['icq']['url'];
+
+$msn_img = $all_ims['msn']['img'];
+$msn = $all_ims['msn']['plain'];
 $msn = $msn_img;
-$msn_url = (!empty($profiledata['user_msnm'])) ? build_im_link('msn', $profiledata['user_msnm'], $lang['MSNM'], false, true) : '';
+$msn_url = $all_ims['msn']['url'];
 
-$skype_img = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], $images['icon_skype']) : '&nbsp;';
-$skype = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], false) : '&nbsp;';
-$skype_url = (!empty($profiledata['user_skype'])) ? build_im_link('skype', $profiledata['user_skype'], $lang['SKYPE'], false, true) : '';
+$skype_img = $all_ims['skype']['img'];
+$skype = $all_ims['skype']['plain'];
+$skype_url = $all_ims['skype']['url'];
 
-$yim_img = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], $images['icon_yim']) : '&nbsp;';
-$yim = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false) : '&nbsp;';
-$yim_url = (!empty($profiledata['user_yim'])) ? build_im_link('yahoo', $profiledata['user_yim'], $lang['YIM'], false, true) : '';
+$yahoo_img = $all_ims['yahoo']['img'];
+$yahoo = $all_ims['yahoo']['plain'];
+$yahoo_url = $all_ims['yahoo']['url'];
 
 $temp_url = append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode($profiledata['username']) . '&amp;showresults=posts');
 $search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" title="' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '" /></a>';
@@ -573,13 +603,15 @@ $template->assign_vars(array(
 	'SKYPE_IMG' => $skype_img,
 	'SKYPE' => $skype,
 	'U_SKYPE' => $skype_url,
-	'YIM_IMG' => $yim_img,
-	'YIM' => $yim,
-	'U_YIM' => $yim_url,
+	'YIM_IMG' => $yahoo_img,
+	'YIM' => $yahoo,
+	'U_YIM' => $yahoo_url,
 	'U_AJAX_SHOUTBOX_PVT_LINK' => ($userdata['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($userdata['user_id'], $profiledata['user_id']) . '|' . max($userdata['user_id'], $profiledata['user_id']))) : '#'),
 
 	//'LOCATION' => ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;',
 	'LOCATION' => $location,
+	'USER_FIRST_NAME' => ($profiledata['user_first_name']) ? $profiledata['user_first_name'] : '&nbsp;',
+	'USER_LAST_NAME' => ($profiledata['user_last_name']) ? $profiledata['user_last_name'] : '&nbsp;',
 	'OCCUPATION' => ($profiledata['user_occ']) ? $profiledata['user_occ'] : '&nbsp;',
 	'INTERESTS' => ($profiledata['user_interests']) ? $profiledata['user_interests'] : '&nbsp;',
 

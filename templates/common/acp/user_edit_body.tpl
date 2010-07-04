@@ -23,9 +23,7 @@ function ColorExample(ColorCode)
 <form action="{S_PROFILE_ACTION}" {S_FORM_ENCTYPE} method="post">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2">{L_REGISTRATION_INFO}</th></tr>
-<tr>
-	<td class="row2" colspan="2"><span class="gensmall">{L_ITEMS_REQUIRED}</span></td>
-</tr>
+<tr><td class="row2" colspan="2"><span class="gensmall">{L_ITEMS_REQUIRED}</span></td></tr>
 <tr>
 	<td class="row1" width="38%"><span class="gen">{L_USERNAME}: *</span></td>
 	<td class="row2"><input class="post" type="text" name="acp_username" size="35" maxlength="40" value="{USERNAME}" /></td>
@@ -44,11 +42,17 @@ function ColorExample(ColorCode)
 	<span class="gensmall">{L_PASSWORD_CONFIRM_IF_CHANGED}</span></td>
 	<td class="row2"><input class="post" type="password" name="password_confirm" size="35" maxlength="32" value="" /></td>
 </tr>
-<tr>
-	<td class="catsides" colspan="2">&nbsp;</td>
-</tr>
+<tr><td class="catsides" colspan="2">&nbsp;</td></tr>
 <tr><th colspan="2">{L_PROFILE_INFO}</th></tr>
 <tr><td class="row2" colspan="2"><span class="gensmall">{L_PROFILE_INFO_NOTICE}</span></td></tr>
+<tr>
+	<td class="row1"><span class="gen">{L_USER_FIRST_NAME}:</span></td>
+	<td class="row2"><input class="post" type="text" name="user_first_name" size="35" maxlength="180" value="{USER_FIRST_NAME}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_USER_LAST_NAME}:</span></td>
+	<td class="row2"><input class="post" type="text" name="user_last_name" size="35" maxlength="180" value="{USER_LAST_NAME}" /></td>
+</tr>
 <tr>
 	<td class="row1"><span class="gen">{L_PHONE}</span></td>
 	<td class="row2"><input class="post" type="text" name="phone" size="35" maxlength="150" value="{PHONE}" /></td>

@@ -3998,6 +3998,10 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_first_name` varchar(255) DEFAULT '' NOT NULL AFTER `username_clean`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_last_name` varchar(255) DEFAULT '' NOT NULL AFTER `user_first_name`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_facebook` varchar(255) DEFAULT '' NOT NULL AFTER `user_yim`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_twitter` varchar(255) DEFAULT '' NOT NULL AFTER `user_facebook`";
 
 		/* Updating from IP 1.3.12.65 */
 		case '1.3.12.65':

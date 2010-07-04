@@ -1452,26 +1452,56 @@ for($i = 0; $i < $total_posts; $i++)
 		$www = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank">' . $lang['Website'] . '</a>' : '';
 		$www_url = ($postrow[$i]['user_website']) ? $postrow[$i]['user_website'] : '';
 
-		$aim_img = (!empty($postrow[$i]['user_aim'])) ? build_im_link('aim', $postrow[$i]['user_aim'], $lang['AIM'], $images['icon_aim2']) : '';
-		$aim = (!empty($postrow[$i]['user_aim'])) ? build_im_link('aim', $postrow[$i]['user_aim'], $lang['AIM'], false) : '';
-		$aim_url = (!empty($postrow[$i]['user_aim'])) ? build_im_link('aim', $postrow[$i]['user_aim'], $lang['AIM'], false, true) : '';
+		$im_links_array = array(
+			'chat' => 'id',
+			'aim' => 'aim',
+			'facebook' => 'facebook',
+			'icq' => 'icq',
+			'jabber' => 'jabber',
+			'msn' => 'msnm',
+			'skype' => 'skype',
+			'twitter' => 'twitter',
+			'yahoo' => 'yim',
+		);
 
-		$icq_status_img = (!empty($postrow[$i]['user_icq'])) ? '<a href="http://wwp.icq.com/' . $postrow[$i]['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $postrow[$i]['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
-		$icq_img = (!empty($postrow[$i]['user_icq'])) ? build_im_link('icq', $postrow[$i]['user_icq'], $lang['ICQ'], $images['icon_icq2']) : '';
-		$icq = (!empty($postrow[$i]['user_icq'])) ? build_im_link('icq', $postrow[$i]['user_icq'], $lang['ICQ'], false) : '';
-		$icq_url = (!empty($postrow[$i]['user_icq'])) ? build_im_link('icq', $postrow[$i]['user_icq'], $lang['ICQ'], false, true) : '';
+		$all_ims = array();
+		foreach ($im_links_array as $im_k => $im_v)
+		{
+			$all_ims[$im_k] = array(
+				'plain' => '',
+				'img' => '',
+				'url' => ''
+			);
+			if (!empty($postrow[$i]['user_' . $im_v]))
+			{
+				$all_ims[$im_k] = array(
+					'plain' => build_im_link($im_k, $postrow[$i], false, false, false, false, false),
+					'img' => build_im_link($im_k, $postrow[$i], 'icon_tpl_vt', true, false, false, false),
+					'url' => build_im_link($im_k, $postrow[$i], false, false, true, false, false)
+				);
+			}
+		}
 
-		$msn_img = (!empty($postrow[$i]['user_msnm'])) ? build_im_link('msn', $postrow[$i]['user_msnm'], $lang['MSNM'], $images['icon_msnm2']) : '';
-		$msn = (!empty($postrow[$i]['user_msnm'])) ? build_im_link('msn', $postrow[$i]['user_msnm'], $lang['MSNM'], false) : '';
-		$msn_url = (!empty($postrow[$i]['user_msnm'])) ? build_im_link('msn', $postrow[$i]['user_msnm'], $lang['MSNM'], false, true) : '';
+		$aim_img = $all_ims['aim']['img'];
+		$aim = $all_ims['aim']['plain'];
+		$aim_url = $all_ims['aim']['url'];
 
-		$skype_img = (!empty($postrow[$i]['user_skype'])) ? build_im_link('skype', $postrow[$i]['user_skype'], $lang['SKYPE'], $images['icon_skype2']) : '';
-		$skype = (!empty($postrow[$i]['user_skype'])) ? build_im_link('skype', $postrow[$i]['user_skype'], $lang['SKYPE'], false) : '';
-		$skype_url = (!empty($postrow[$i]['user_skype'])) ? build_im_link('skype', $postrow[$i]['user_skype'], $lang['SKYPE'], false, true) : '';
+		$icq_status_img = (!empty($postrow[$i]['user_icq'])) ? '<a href="http://wwp.icq.com/' . $postrow[$i]['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $postrow[$i]['user_icq'] . '&amp;img=5" width="18" height="18" /></a>' : '';
+		$icq_img = $all_ims['icq']['img'];
+		$icq = $all_ims['icq']['plain'];
+		$icq_url = $all_ims['icq']['url'];
 
-		$yim_img = (!empty($postrow[$i]['user_yim'])) ? build_im_link('yahoo', $postrow[$i]['user_yim'], $lang['YIM'], $images['icon_yim2']) : '';
-		$yim = (!empty($postrow[$i]['user_yim'])) ? build_im_link('yahoo', $postrow[$i]['user_yim'], $lang['YIM'], false) : '';
-		$yim_url = (!empty($postrow[$i]['user_yim'])) ? build_im_link('yahoo', $postrow[$i]['user_yim'], $lang['YIM'], false, true) : '';
+		$msn_img = $all_ims['msn']['img'];
+		$msn = $all_ims['msn']['plain'];
+		$msn_url = $all_ims['msn']['url'];
+
+		$skype_img = $all_ims['skype']['img'];
+		$skype = $all_ims['skype']['plain'];
+		$skype_url = $all_ims['skype']['url'];
+
+		$yahoo_img = $all_ims['yahoo']['img'];
+		$yahoo = $all_ims['yahoo']['plain'];
+		$yahoo_url = $all_ims['yahoo']['url'];
 
 		// --- Smart Album Button BEGIN ----------------
 		$album_url = '';
@@ -1558,9 +1588,9 @@ for($i = 0; $i < $total_posts; $i++)
 		$skype_url = '';
 		$skype_img = '';
 		$skype = '';
-		$yim_url = '';
-		$yim_img = '';
-		$yim = '';
+		$yahoo_url = '';
+		$yahoo_img = '';
+		$yahoo = '';
 		$album_url = '';
 		$album_img = '';
 		$album = '';
@@ -2198,8 +2228,8 @@ for($i = 0; $i < $total_posts; $i++)
 		'MSN' => $msn,
 		'SKYPE_IMG' => $skype_img,
 		'SKYPE' => $skype,
-		'YIM_IMG' => $yim_img,
-		'YIM' => $yim,
+		'YIM_IMG' => $yahoo_img,
+		'YIM' => $yahoo,
 		'ALBUM_IMG' => $album_img,
 		'ALBUM' => $album,
 		'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
@@ -2222,7 +2252,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_ICQ' => $icq_url,
 		'U_MSN' => $msn_url,
 		'U_SKYPE' => $skype_url,
-		'U_YIM' => $yim_url,
+		'U_YIM' => $yahoo_url,
 		'U_ALBUM' => $album_url,
 		'L_POSTER_ONLINE_STATUS' => $online_status_lang,
 		'POSTER_ONLINE_STATUS_CLASS' => $online_status_class,

@@ -730,7 +730,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 					'SKYPE_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $skype_img : '',
 					'ICQ_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $icq_img : '',
 					'MSNM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $msn_img : '',
-					'YIM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $yim_img : '',
+					'YIM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $yahoo_img : '',
 
 					'U_PROFILE' => $profile_url,
 					'U_PM' => $pm_url,
@@ -741,7 +741,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 					'U_ICQ' => $icq_url,
 					'U_MSN' => $msn_url,
 					'U_SKYPE' => $skype_url,
-					'U_YIM' => $yim_url,
+					'U_YIM' => $yahoo_url,
 					'L_POSTER_ONLINE_STATUS' => $online_status_lang,
 					'POSTER_ONLINE_STATUS_CLASS' => $online_status_class,
 					'U_POSTER_ONLINE_STATUS' => $online_status_url,

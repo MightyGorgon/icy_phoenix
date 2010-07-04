@@ -7,12 +7,6 @@ chmod 777 cache/sql
 chmod 777 cache/topics
 chmod 777 cache/uploads
 chmod 777 cache/users
-chmod 777 ctracker/logfiles/logfile_attempt_counter.txt
-chmod 777 ctracker/logfiles/logfile_blocklist.txt
-chmod 777 ctracker/logfiles/logfile_debug_mode.txt
-chmod 777 ctracker/logfiles/logfile_malformed_logins.txt
-chmod 777 ctracker/logfiles/logfile_spammer.txt
-chmod 777 ctracker/logfiles/logfile_worms.txt
 chmod 777 downloads
 chmod 777 files
 chmod 777 files/album
@@ -25,4 +19,10 @@ chmod 777 files/screenshots
 chmod 777 files/thumbs
 chmod 777 images/avatars
 chmod 777 logs
+chmod 777 logs/logfile_attempt_counter.txt
+chmod 777 logs/logfile_blocklist.txt
+chmod 777 logs/logfile_debug_mode.txt
+chmod 777 logs/logfile_malformed_logins.txt
+chmod 777 logs/logfile_spammer.txt
+chmod 777 logs/logfile_worms.txt
 

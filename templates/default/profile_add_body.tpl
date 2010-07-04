@@ -65,17 +65,19 @@
 
 <!-- END switch_cpl_reg_info -->
 <!-- BEGIN switch_cpl_profile_info -->
+<tr><td class="row-header" colspan="2"><span>{L_PROFILE_INFO}</span></td></tr>
+<tr><td class="row1" colspan="2"><span class="gensmall">{L_PROFILE_INFO_NOTICE}<br />{L_ITEMS_REQUIRED}</span></td></tr>
 <tr>
-	<td class="row-header" colspan="2"><span>{L_PROFILE_INFO}</span></td>
+	<td class="row1"><span class="gen">{L_USER_FIRST_NAME}:</span></td>
+	<td class="row2"><input class="post" type="text" name="user_first_name" size="35" maxlength="180" value="{USER_FIRST_NAME}" /></td>
 </tr>
 <tr>
-	<td class="row1" colspan="2"><span class="gensmall">{L_PROFILE_INFO_NOTICE}<br />{L_ITEMS_REQUIRED}</span></td>
+	<td class="row1"><span class="gen">{L_USER_LAST_NAME}:</span></td>
+	<td class="row2"><input class="post" type="text" name="user_last_name" size="35" maxlength="180" value="{USER_LAST_NAME}" /></td>
 </tr>
 <tr>
-	<td class="row1" width="38%"><span class="gen">{L_PHONE}:</span></td>
-	<td class="row2">
-		<input type="text" name="phone" class="post" style="width: 100px;" size="10" maxlength="20" value="{PHONE}" />
-	</td>
+	<td class="row1"><span class="gen">{L_PHONE}:</span></td>
+	<td class="row2"><input type="text" name="phone" class="post" style="width: 100px;" size="10" maxlength="20" value="{PHONE}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_ICQ_NUMBER}:</span></td>

@@ -127,21 +127,56 @@ if(!function_exists('cms_block_random_user'))
 			$www_img = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
 			$www = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Website'] . '</a>' : '';
 
-			$icq_status_img = (!empty($row['user_icq'])) ? '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
-			$icq_img = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], $images['icon_icq2']) : '';
-			$icq = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], false) : '';
+			$im_links_array = array(
+				'chat' => 'id',
+				'aim' => 'aim',
+				'facebook' => 'facebook',
+				'icq' => 'icq',
+				'jabber' => 'jabber',
+				'msn' => 'msnm',
+				'skype' => 'skype',
+				'twitter' => 'twitter',
+				'yahoo' => 'yim',
+			);
 
-			$aim_img = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], $images['icon_aim2']) : '';
-			$aim = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], false) : '';
+			$all_ims = array();
+			foreach ($im_links_array as $im_k => $im_v)
+			{
+				$all_ims[$im_k] = array(
+					'plain' => '',
+					'img' => '',
+					'url' => ''
+				);
+				if (!empty($row['user_' . $im_v]))
+				{
+					$all_ims[$im_k] = array(
+						'plain' => build_im_link($im_k, $row, false, false, false, false, false),
+						'img' => build_im_link($im_k, $row, 'icon_tpl_vt', true, false, false, false),
+						'url' => build_im_link($im_k, $row, false, false, true, false, false)
+					);
+				}
+			}
 
-			$msn_img = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], $images['icon_msnm2']) : '';
-			$msn = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], false) : '';
+			$aim_img = $all_ims['aim']['img'];
+			$aim = $all_ims['aim']['plain'];
+			$aim_url = $all_ims['aim']['url'];
 
-			$yim_img = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], $images['icon_yim2']) : '';
-			$yim = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], false) : '';
+			$icq_status_img = (!empty($row['user_icq'])) ? '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&amp;img=5" width="18" height="18" /></a>' : '';
+			$icq_img = $all_ims['icq']['img'];
+			$icq = $all_ims['icq']['plain'];
+			$icq_url = $all_ims['icq']['url'];
 
-			$skype_img = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], $images['icon_skype2']) : '';
-			$skype = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], false) : '';
+			$msn_img = $all_ims['msn']['img'];
+			$msn = $all_ims['msn']['plain'];
+			$msn_url = $all_ims['msn']['url'];
+
+			$skype_img = $all_ims['skype']['img'];
+			$skype = $all_ims['skype']['plain'];
+			$skype_url = $all_ims['skype']['url'];
+
+			$yahoo_img = $all_ims['yahoo']['img'];
+			$yahoo = $all_ims['yahoo']['plain'];
+			$yahoo_url = $all_ims['yahoo']['url'];
 
 			if ($row['user_personal_pics_count'] > 0)
 			{
@@ -214,8 +249,8 @@ if(!function_exists('cms_block_random_user'))
 				'AIM' => $aim,
 				'MSN_IMG' => $msn_img,
 				'MSN' => $msn,
-				'YIM_IMG' => $yim_img,
-				'YIM' => $yim,
+				'YIM_IMG' => $yahoo_img,
+				'YIM' => $yahoo,
 				'SKYPE_IMG' => $skype_img,
 				'SKYPE' => $skype,
 				'POSTER_ONLINE_STATUS_IMG' => $online_status_img,

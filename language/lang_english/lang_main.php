@@ -591,7 +591,7 @@ $lang = array_merge($lang, array(
 	'Wrong_Profile' => 'You cannot modify a profile that is not your own.',
 
 // Invision View Profile - BEGIN
-	'Invision_Active_Stats' => 'Active Stats',
+	'Invision_Active_Stats' => 'Stats',
 	'Invision_Communicate' => 'Communicate',
 	'Invision_Info' => 'Information',
 	'Invision_Member_Group' => 'Member Group',
@@ -2378,6 +2378,11 @@ $lang = array_merge($lang, array(
 	'FRIEND_REMOVE' => 'Remove as a friend',
 	'FOE_ADD' => 'Add as a foe',
 	'FOE_REMOVE' => 'Remove as a foe',
+
+	'USER_FIRST_NAME' => 'First Name',
+	'USER_LAST_NAME' => 'Last Name',
+	'FACEBOOK' => 'Facebook',
+	'TWITTER' => 'Twitter',
 
 	)
 );

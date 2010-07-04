@@ -1466,6 +1466,7 @@ class bbcode
 			// replace spaces and tabs with &nbsp;
 			if(!defined('EXTRACT_CODE'))
 			{
+				/*
 				$search = array(
 					'  ',
 					"\t"
@@ -1475,6 +1476,8 @@ class bbcode
 					'&nbsp; &nbsp; '
 				);
 				$text = str_replace($search, $replace, $this->process_text($content, false, true));
+				*/
+				$text = $this->process_text($content, false, true);
 			}
 			else
 			{
@@ -1761,6 +1764,7 @@ class bbcode
 			}
 			if(!defined('EXTRACT_CODE'))
 			{
+				/*
 				$search = array(
 					'  ',
 					"\t"
@@ -1770,6 +1774,8 @@ class bbcode
 					'&nbsp; &nbsp; '
 				);
 				$text = str_replace($search, $replace, $this->process_text($content, false, true));
+				*/
+				$text = $this->process_text($content, false, true);
 			}
 			else
 			{

@@ -622,9 +622,9 @@ if (sizeof($user_list))
 			$skype_url = '';
 			$skype_img = '';
 			$skype = '';
-			$yim_url = '';
-			$yim_img = '';
-			$yim = '';
+			$yahoo_url = '';
+			$yahoo_img = '';
+			$yahoo = '';
 			$album_url = '';
 			$album_img = '';
 			$album = '';
@@ -743,8 +743,8 @@ if (sizeof($user_list))
 			'MSN' => $msn,
 			'SKYPE_IMG' => $skype_img,
 			'SKYPE' => $skype,
-			'YIM_IMG' => $yim_img,
-			'YIM' => $yim,
+			'YIM_IMG' => $yahoo_img,
+			'YIM' => $yahoo,
 			'POSTER_GENDER' => $gender_image,
 			'STYLE' => $style,
 			'BIRTHDAY' => $row['user_birthday'],
@@ -759,7 +759,7 @@ if (sizeof($user_list))
 			'U_ICQ' => $icq_url,
 			'U_MSN' => $msn_url,
 			'U_SKYPE' => $skype_url,
-			'U_YIM' => $yim_url,
+			'U_YIM' => $yahoo_url,
 			'L_POSTER_ONLINE_STATUS' => $online_status_lang,
 			'POSTER_ONLINE_STATUS_CLASS' => $online_status_class,
 			'U_POSTER_ONLINE_STATUS' => $online_status_url,

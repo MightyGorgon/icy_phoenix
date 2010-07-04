@@ -3050,31 +3050,74 @@ function get_gravatar($email)
 	return $image;
 }
 
-function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false, $im_url = false)
+/*
+* This function will build a complete IM link with image and lang
+*/
+//function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false, $im_url = false, $im_icon = false, $im_status = false)
+function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = false, $im_url = false, $im_status = false, $im_lang = false)
 {
-	switch($im_type)
+	global $userdata, $lang, $images;
+
+	$available_im = array(
+		'chat' => array('field' => 'user_id', 'lang' => 'AJAX_SHOUTBOX_PVT_LINK', 'icon_tpl' => 'icon_im_chat', 'icon_tpl_vt' => 'icon_im_chat', 'url' => '{REF}'),
+		'aim' => array('field' => 'user_aim', 'lang' => 'AIM', 'icon_tpl' => 'icon_aim', 'icon_tpl_vt' => 'icon_aim2', 'url' => 'aim:goim?screenname={REF}&amp;message=Hello'),
+		'facebook' => array('field' => 'user_facebook', 'lang' => 'FACEBOOK', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => $im_id),
+		'icq' => array('field' => 'user_icq', 'lang' => 'ICQ', 'icon_tpl' => 'icon_icq', 'icon_tpl_vt' => 'icon_icq2', 'url' => 'http://www.icq.com/people/webmsg.php?to={REF}'),
+		'jabber' => array('field' => 'user_jabber', 'lang' => 'JABBER', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
+		'msn' => array('field' => 'user_msnm', 'lang' => 'MSNM', 'icon_tpl' => 'icon_msnm', 'icon_tpl_vt' => 'icon_msnm2', 'url' => 'http://spaces.live.com/{REF}'),
+		'skype' => array('field' => 'user_skype', 'lang' => 'SKYPE', 'icon_tpl' => 'icon_skype', 'icon_tpl_vt' => 'icon_skype2', 'url' => 'callto://{REF}'),
+		'twitter' => array('field' => 'user_twitter', 'lang' => 'TWITTER', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
+		'yahoo' => array('field' => 'user_yim', 'lang' => 'YIM', 'icon_tpl' => 'icon_yim', 'icon_tpl_vt' => 'icon_yim2', 'url' => 'http://edit.yahoo.com/config/send_webmesg?.target={REF}&amp;.src=pg')
+	);
+
+	// Default values
+	$im_icon = '';
+	$im_icon_append = '';
+	if (!empty($user_data[$available_im[$im_type]['field']]))
 	{
-		case 'aim':
-			$im_ref = 'aim:goim?screenname=' . $im_id . '&amp;message=Hello';
-			break;
-		case 'icq':
-			// http://wwp.icq.com/scripts/search.dll?to=
-			$im_ref = 'http://www.icq.com/people/webmsg.php?to=' . $im_id;
-			break;
-		case 'msn':
-			$im_ref = 'http://spaces.live.com/' . $im_id;
-			break;
-		case 'yahoo':
-			$im_ref = 'http://edit.yahoo.com/config/send_webmesg?.target=' . $im_id . '&amp;.src=pg';
-			break;
-		case 'skype':
-			$im_ref = 'callto://' . $im_id;
-			break;
-		default:
-			$im_ref = $im_id;
+		$im_ref = $user_data[$available_im[$im_type]['field']];
 	}
-	$link_content = ($im_img !== false) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '" title="' . $im_id . '" />') : $im_lang;
-	$im_link = ($im_url !== false) ? $im_ref : '<a href="' . $im_ref . '">' . $link_content . '</a>';
+	else
+	{
+		return '';
+	}
+
+	if (!empty($im_status) && in_array($im_status, array('online', 'offline', 'hidden')))
+	{
+		$im_icon_append = '_' . $im_status;
+	}
+
+	if (!empty($available_im[$im_type]))
+	{
+		if (!empty($im_icon_type) && in_array($im_icon_type, array('icon', 'icon_tpl', 'icon_tpl_vt')))
+		{
+			if ($im_icon_type == 'icon')
+			{
+				$im_icon = $images['icon_im_' . $im_type . $im_icon_append];
+			}
+			else
+			{
+				$im_icon = $images[$available_im[$im_type][$im_icon_type]];
+			}
+		}
+
+		$im_ref = str_replace('{REF}', $im_ref, $available_im[$im_type]['url']);
+		if ($im_type == 'chat')
+		{
+			if (empty($userdata['session_logged_in']))
+			{
+				return '';
+			}
+			$im_ref = '#" onclick="window.open(\'' . append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($userdata['user_id'], $user_data['user_id']) . '|' . max($userdata['user_id'], $user_data['user_id']))) . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;';
+		}
+
+		$im_img = (!empty($im_img) && !empty($im_icon)) ? $im_icon : false;
+		$im_lang = !empty($im_lang) ? $im_lang : (!empty($available_im[$im_type]['lang']) ? $lang[$available_im[$im_type]['lang']] : '');
+	}
+
+	$link_content = !empty($im_img) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '" title="' . $im_id . '" />') : $im_lang;
+	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '">' . $link_content . '</a>');
+
 	return $im_link;
 }
 

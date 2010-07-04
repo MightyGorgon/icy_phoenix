@@ -13,7 +13,6 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-
 /**
 * Alias for user class
 */
@@ -276,7 +275,7 @@ function smiley_text($message)
 	return $message;
 }
 
-if (empty($bbcode))
+if (empty($bbcode) || !class_exists('bbcode'))
 {
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 }
@@ -301,7 +300,11 @@ class phpbb3_bbcode extends bbcode
 
 }
 
-// Initialazing classes...
+// Initialazing vars and classes...
+define('IN_PHPBB', true);
+$phpbb_root_path = IP_ROOT_PATH;
+$phpEx = PHP_EXT;
+
 $user = new user();
 $auth = new auth();
 unset($bbcode);

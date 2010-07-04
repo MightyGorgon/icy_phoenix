@@ -155,7 +155,7 @@ if(!function_exists('cms_block_news_posters'))
 					'AVATAR_IMG' => $poster_avatar,
 					'POSTER_FROM' => $poster_from . $poster_from_flag,
 					'POSTER_JOINED' => $poster_joined,
-					'CONTACTS' => $pm_img . $www_img . $icq_img . $aim_img . $msn_img . $yim_img . $skype_img,
+					'CONTACTS' => $pm_img . $www_img . $icq_img . $aim_img . $msn_img . $yahoo_img . $skype_img,
 
 					'PROFILE_IMG' => $profile_img,
 					'PROFILE' => $profile,
@@ -172,8 +172,8 @@ if(!function_exists('cms_block_news_posters'))
 					'MSN' => $msn,
 					'SKYPE_IMG' => $skype_img,
 					'SKYPE' => $skype,
-					'YIM_IMG' => $yim_img,
-					'YIM' => $yim,
+					'YIM_IMG' => $yahoo_img,
+					'YIM' => $yahoo,
 
 					'U_PROFILE' => $profile_url,
 					'U_PM' => $pm_url,
@@ -182,7 +182,7 @@ if(!function_exists('cms_block_news_posters'))
 					'U_ICQ' => $icq_url,
 					'U_MSN' => $msn_url,
 					'U_SKYPE' => $skype_url,
-					'U_YIM' => $yim_url,
+					'U_YIM' => $yahoo_url,
 
 					'U_VIEWPOSTER' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id),
 					'U_VIEWNEWS' => append_sid($page_link . ((strpos($page_link, '?') === false) ? '?' : '&amp;') . 'ubid=' . $user_id),

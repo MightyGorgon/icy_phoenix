@@ -1393,7 +1393,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	}
 
 	// root level footer
-	if (($config['split_cat'] && $cat_break && $real_level == 0) || ((!$config['split_cat'] || !$cat_break) && $real_level == -1))
+	if (($config['split_cat'] && $cat_break && ($real_level == 0)) || ((!$config['split_cat'] || !$cat_break) && ($real_level == -1)))
 	{
 		$template->assign_block_vars('catrow', array());
 		$template->assign_block_vars('catrow.tablefoot', array());

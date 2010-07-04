@@ -559,7 +559,10 @@ UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`, "\\'", "\'"
 ########################################
 ##              BUILD 065             ##
 ########################################
-
+ALTER TABLE `phpbb_users` ADD `user_first_name` varchar(255) DEFAULT '' NOT NULL AFTER `username_clean`;
+ALTER TABLE `phpbb_users` ADD `user_last_name` varchar(255) DEFAULT '' NOT NULL AFTER `user_first_name`;
+ALTER TABLE `phpbb_users` ADD `user_facebook` varchar(255) DEFAULT '' NOT NULL AFTER `user_yim`;
+ALTER TABLE `phpbb_users` ADD `user_twitter` varchar(255) DEFAULT '' NOT NULL AFTER `user_facebook`;
 
 
 

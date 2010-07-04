@@ -30,7 +30,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 
 	$date_format = ($date_format == false) ? $lang['JOINED_DATE_FORMAT'] : $date_format;
 
-	$info_array = array('avatar', 'from', 'posts', 'joined', 'gender', 'flag', 'style', 'age', 'birthday', 'avatar', 'profile_url', 'profile_img', 'profile', 'pm_url', 'pm_img', 'pm', 'search_url', 'search_img', 'search', 'ip_url', 'ip_img', 'ip', 'email_url', 'email_img', 'email', 'www_url', 'www_img', 'www', 'aim_url', 'aim_img', 'aim', 'icq_url', 'icq_status_img', 'icq_img', 'icq', 'msn_url', 'msn_img', 'msn', 'skype_url', 'skype_img', 'skype', 'yim_url', 'yim_img', 'yim', 'online_status_url', 'online_status_class', 'online_status_img', 'online_status');
+	$info_array = array('avatar', 'first_name', 'last_name', 'from', 'posts', 'joined', 'gender', 'flag', 'style', 'age', 'birthday', 'avatar', 'profile_url', 'profile_img', 'profile', 'pm_url', 'pm_img', 'pm', 'search_url', 'search_img', 'search', 'ip_url', 'ip_img', 'ip', 'email_url', 'email_img', 'email', 'www_url', 'www_img', 'www', 'facebook_url', 'facebook_img', 'facebook', 'twitter_url', 'twitter_img', 'twitter', 'aim_url', 'aim_img', 'aim', 'icq_url', 'icq_status_img', 'icq_img', 'icq', 'jabber_url', 'jabber_img', 'jabber', 'msn_url', 'msn_img', 'msn', 'skype_url', 'skype_img', 'skype', 'yahoo_url', 'yahoo_img', 'yahoo', 'online_status_url', 'online_status_class', 'online_status_img', 'online_status');
 
 	// Initialize everything...
 	$user_info = array();
@@ -89,30 +89,44 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	$user_info['search_img'] = '<a href="' . $search_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $username) . '" title="' . sprintf($lang['Search_user_posts'], $username) . '" /></a>';
 	$user_info['search'] = '<a href="' . $search_url . '">' . sprintf($lang['Search_user_posts'], $username) . '</a>';
 
-	$user_info['www_img'] = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
-	$user_info['www'] = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Visit_website'] . '</a>' : '';
-	$user_info['www_url'] = ($row['user_website'] != '') ? $row['user_website'] : '';
+	$user_info['www_img'] = !empty($row['user_website']) ? ('<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>') : '';
+	$user_info['www'] = !empty($row['user_website']) ? ('<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Visit_website'] . '</a>') : '';
+	$user_info['www_url'] = !empty($row['user_website']) ? $row['user_website'] : '';
 
-	$user_info['aim_img'] = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], $images['icon_aim2']) : '';
-	$user_info['aim'] = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], false) : '';
-	$user_info['aim_url'] = (!empty($row['user_aim'])) ? build_im_link('aim', $row['user_aim'], $lang['AIM'], false, true) : '';
+	$im_links_array = array(
+		'chat' => 'id',
+		'aim' => 'aim',
+		'facebook' => 'facebook',
+		'icq' => 'icq',
+		'jabber' => 'jabber',
+		'msn' => 'msnm',
+		'skype' => 'skype',
+		'twitter' => 'twitter',
+		'yahoo' => 'yim',
+	);
 
-	$user_info['icq_status_img'] = (!empty($row['user_icq'])) ? '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&img=5" width="18" height="18" /></a>' : '';
-	$user_info['icq_img'] = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], $images['icon_icq2']) : '';
-	$user_info['icq'] = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], false) : '';
-	$user_info['icq_url'] = (!empty($row['user_icq'])) ? build_im_link('icq', $row['user_icq'], $lang['ICQ'], false, true) : '';
+	$all_ims = array();
+	foreach ($im_links_array as $im_k => $im_v)
+	{
+		$all_ims[$im_k] = array(
+			'plain' => '',
+			'img' => '',
+			'url' => ''
+		);
+		if (!empty($row['user_' . $im_v]))
+		{
+			$all_ims[$im_k] = array(
+				'plain' => build_im_link($im_k, $row, false, false, false, false, false),
+				'img' => build_im_link($im_k, $row, 'icon_tpl_vt', true, false, false, false),
+				'url' => build_im_link($im_k, $row, false, false, true, false, false)
+			);
+		}
+		$user_info[$im_k . '_img'] = $all_ims[$im_k]['img'];
+		$user_info[$im_k] = $all_ims[$im_k]['plain'];
+		$user_info[$im_k . '_url'] = $all_ims[$im_k]['url'];
+	}
 
-	$user_info['msn_img'] = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], $images['icon_msnm2']) : '';
-	$user_info['msn'] = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], false) : '';
-	$user_info['msn_url'] = (!empty($row['user_msnm'])) ? build_im_link('msn', $row['user_msnm'], $lang['MSNM'], false, true) : '';
-
-	$user_info['skype_img'] = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], $images['icon_skype2']) : '';
-	$user_info['skype'] = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], false) : '';
-	$user_info['skype_url'] = (!empty($row['user_skype'])) ? build_im_link('skype', $row['user_skype'], $lang['SKYPE'], false, true) : '';
-
-	$user_info['yim_img'] = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], $images['icon_yim2']) : '';
-	$user_info['yim'] = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], false) : '';
-	$user_info['yim_url'] = (!empty($row['user_yim'])) ? build_im_link('yahoo', $row['user_yim'], $lang['YIM'], false, true) : '';
+	$user_info['icq_status_img'] = (!empty($row['user_icq'])) ? '<a href="http://wwp.icq.com/' . $row['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $row['user_icq'] . '&amp;img=5" width="18" height="18" /></a>' : '';
 
 	// ONLINE / OFFLINE - BEGIN
 	$user_info['online_status_url'] = append_sid(CMS_PAGE_VIEWONLINE);
@@ -222,9 +236,9 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 		'SKYPE_URL' => $user_info['skype_url'],
 		'SKYPE_IMG' => $user_info['skype_img'],
 		'SKYPE' => $user_info['skype'],
-		'YIM_URL' => $user_info['yim_url'],
-		'YIM_IMG' => $user_info['yim_img'],
-		'YIM' => $user_info['yim'],
+		'YIM_URL' => $user_info['yahoo_url'],
+		'YIM_IMG' => $user_info['yahoo_img'],
+		'YIM' => $user_info['yahoo'],
 		'ONLINE_STATUS_URL' => $user_info['online_status_url'],
 		'ONLINE_STATUS_CLASS' => $user_info['online_status_class'],
 		'ONLINE_STATUS_IMG' => $user_info['online_status_img'],
