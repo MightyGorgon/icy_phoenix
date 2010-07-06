@@ -267,6 +267,33 @@ $user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . 
 $user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
 // Mighty Gorgon - Multiple Ranks - END
 
+// ONLINE OFFLINE - BEGIN
+$user_online_status = 'offline';
+if ($profiledata['user_session_time'] >= (time() - $config['online_time']))
+{
+	if ($profiledata['user_allow_viewonline'])
+	{
+		$user_online_status = 'online';
+		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_online'] . '" alt="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" /></a>';
+	}
+	elseif (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $profiledata['user_id']))
+	{
+		$user_online_status = 'hidden';
+		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_hidden'] . '" alt="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" /></a>';
+	}
+	else
+	{
+		$user_online_status = 'offline';
+		$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" />';
+	}
+}
+else
+{
+	$user_online_status = 'offline';
+	$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" />';
+}
+// ONLINE OFFLINE - END
+
 $pm_url = append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
 $pm_img = '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 $pm = '<a href="' . $pm_url . '">' . $lang['Send_private_message'] . '</a>';
@@ -317,6 +344,7 @@ foreach ($im_links_array as $im_k => $im_v)
 {
 	$all_ims[$im_k] = array(
 		'plain' => '&nbsp;',
+		'icon' => '',
 		'img' => '&nbsp;',
 		'url' => ''
 	);
@@ -324,6 +352,7 @@ foreach ($im_links_array as $im_k => $im_v)
 	{
 		$all_ims[$im_k] = array(
 			'plain' => build_im_link($im_k, $profiledata, false, false, false, false, false),
+			'icon' => build_im_link($im_k, $profiledata, 'icon', true, false, $user_online_status, false),
 			'img' => build_im_link($im_k, $profiledata, 'icon_tpl', true, false, false, false),
 			'url' => build_im_link($im_k, $profiledata, false, false, true, false, false)
 		);
@@ -459,7 +488,7 @@ if (!empty($config['plugins']['activity']['enabled']))
 	if (($config['ina_show_view_profile']) && ($profiledata['user_trophies'] > '0') && ($profiledata['user_id'] != ANONYMOUS))
 	{
 		$template->assign_block_vars('trophy', array(
-			'PROFILE_TROPHY' => '<a href="javascript:popup_open(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&sid=' . $userdata['session_id'] . '\', \'New_Window\', \'400\', \'380\', \'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
+			'PROFILE_TROPHY' => '<a href="javascript:popup_open(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'] . '\',\'New_Window\',\'400\',\'380\',\'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
 			'TROPHY_TITLE' => $lang['Trohpy']
 			)
 		);
@@ -491,27 +520,6 @@ $nav_server_url = create_server_url();
 $breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 $breadcrumbs_links_right = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author) . '">' . htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow)) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
 
-// Start add - Online/Offline/Hidden Mod
-if ($profiledata['user_session_time'] >= (time() - $config['online_time']))
-{
-	if ($profiledata['user_allow_viewonline'])
-	{
-		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_online'] . '" alt="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" /></a>';
-	}
-	elseif ($userdata['user_level'] == ADMIN || $userdata['user_id'] == $profiledata['user_id'])
-	{
-		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_hidden'] . '" alt="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" /></a>';
-	}
-	else
-	{
-		$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" />';
-	}
-}
-else
-{
-	$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" />';
-}
-// End add - Online/Offline/Hidden Mod
 display_upload_attach_box_limits($profiledata['user_id']);
 
 // Mighty Gorgon - Feedbacks - BEGIN
@@ -608,6 +616,16 @@ $template->assign_vars(array(
 	'U_YIM' => $yahoo_url,
 	'U_AJAX_SHOUTBOX_PVT_LINK' => ($userdata['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($userdata['user_id'], $profiledata['user_id']) . '|' . max($userdata['user_id'], $profiledata['user_id']))) : '#'),
 
+	'ICON_CHAT' => $all_ims['chat']['icon'],
+	'ICON_AIM' => $all_ims['aim']['icon'],
+	'ICON_FACEBOOK' => $all_ims['facebook']['icon'],
+	'ICON_ICQ' => $all_ims['icq']['icon'],
+	'ICON_JABBER' => $all_ims['jabber']['icon'],
+	'ICON_MSN' => $all_ims['msn']['icon'],
+	'ICON_SKYPE' => $all_ims['skype']['icon'],
+	'ICON_TWITTER' => $all_ims['twitter']['icon'],
+	'ICON_YAHOO' => $all_ims['yahoo']['icon'],
+
 	//'LOCATION' => ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;',
 	'LOCATION' => $location,
 	'USER_FIRST_NAME' => ($profiledata['user_first_name']) ? $profiledata['user_first_name'] : '&nbsp;',
@@ -656,8 +674,8 @@ $template->assign_vars(array(
 
 	'L_PHONE' => $lang['UserPhone'],
 	'L_EXTRA_PROFILE_INFO' => $lang['Extra_profile_info'],
-	'L_EXTRA_WINDOW'=> $lang['Extra_window']. " :: " . $profiledata['username'],
-	'U_EXTRA_WINDOW' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&ampextra_mode=window'),
+	'L_EXTRA_WINDOW'=> $lang['Extra_window'] . ' :: ' . $profiledata['username'],
+	'U_EXTRA_WINDOW' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;extra_mode=window'),
 	// Mighty Gorgon - HTTP AGENTS - BEGIN
 	'USER_OS_IMG' => $user_os['img'],
 	'USER_BROWSER_IMG' => $user_browser['img'],
@@ -803,23 +821,13 @@ foreach($contacts as $contact_field)
 $user_id = $userdata['user_id'];
 $view_user_id = $profiledata['user_id'];
 $groups = array();
-$sql = '
-	SELECT
-		g.group_id,
-		g.group_name,
-		g.group_description,
-		g.group_type
-	FROM
-		'.USER_GROUP_TABLE.' as l,
-		'.GROUPS_TABLE.' as g
-	WHERE
-		l.user_pending = 0 AND
-		g.group_single_user = 0 AND
-		l.user_id ='. $view_user_id.' AND
-		g.group_id = l.group_id
-	ORDER BY
-		g.group_name,
-		g.group_id';
+$sql = 'SELECT g.group_id, g.group_name, g.group_description, g.group_type, g.group_color
+	FROM ' . USER_GROUP_TABLE . ' as l, ' . GROUPS_TABLE . ' as g
+	WHERE l.user_pending = 0
+		AND g.group_single_user = 0
+		AND l.user_id ='. $view_user_id . '
+		AND g.group_id = l.group_id
+	ORDER BY g.group_name, g.group_id';
 $result = $db->sql_query($sql);
 while ($group = $db->sql_fetchrow($result))
 {
@@ -846,7 +854,11 @@ if (sizeof($groups) > 0)
 		else
 		{
 			$group_id = $groups[$i]['group_id'];
-			$sql = 'SELECT * FROM ' . USER_GROUP_TABLE . ' WHERE group_id = ' . $group_id . ' AND user_id = ' . $user_id . ' AND user_pending = 0';
+			$sql = 'SELECT *
+				FROM ' . USER_GROUP_TABLE . '
+				WHERE group_id = ' . $group_id . '
+					AND user_id = ' . $user_id . '
+					AND user_pending = 0';
 			$result = $db->sql_query($sql);
 			$is_ok = ($group = $db->sql_fetchrow($result));
 		}  // end if ($view_list[$i]['group_type'] == GROUP_HIDDEN)
@@ -856,7 +868,8 @@ if (sizeof($groups) > 0)
 			$u_group_name = append_sid('groupcp.' . PHP_EXT . '?g=' . $groups[$i]['group_id']);
 			$l_group_name = $groups[$i]['group_name'];
 			$l_group_desc = $groups[$i]['group_description'];
-			$template->assign_block_vars('groups',array(
+			$template->assign_block_vars('groups', array(
+				'GROUP_COLOR' => (!empty($groups[$i]['group_color']) ? (' style="color: ' . $groups[$i]['group_color'] . ';"') : ''),
 				'U_GROUP_NAME' => $u_group_name,
 				'L_GROUP_NAME' => $l_group_name,
 				'L_GROUP_DESC' => $l_group_desc,

@@ -19,6 +19,14 @@
 						<td class="row2" valign="top"><b><span class="genmed">{L_PM}</span></b></td>
 						<td class="row1 post-buttons"><span class="genmed">{PM_IMG}</span></td>
 					</tr>
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{L_EMAIL_ADDRESS}</span></b></td>
+						<td class="row1 post-buttons"><span class="genmed">{EMAIL_IMG}</span></td>
+					</tr>
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{L_PHONE}</span></b></td>
+						<td class="row1 post-buttons"><span class="genmed">{PHONE}</span></td>
+					</tr>
 					<!-- IF S_LOGGED_IN -->
 					<!-- IF SHOW_FRIEND_LINK -->
 					<tr>
@@ -32,32 +40,8 @@
 					</tr>
 					<!-- ENDIF -->
 					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_EMAIL_ADDRESS}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{EMAIL_IMG}</span></td>
-					</tr>
-					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_AIM}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{AIM_IMG}</span></td>
-					</tr>
-					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_ICQ_NUMBER}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{ICQ_IMG}</span></td>
-					</tr>
-					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_MESSENGER}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{MSN_IMG}</span></td>
-					</tr>
-					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_YAHOO}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{YIM_IMG}</span></td>
-					</tr>
-					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_SKYPE}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{SKYPE_IMG}</span></td>
-					</tr>
-					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_PHONE}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{PHONE}</span></td>
+						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_COMMUNICATE}</span></b></td>
+						<td class="row1 post-buttons"><span class="genmed"><!-- IF S_LOGGED_IN and ICON_CHAT -->&nbsp;{ICON_CHAT}<!-- ENDIF --><!-- IF ICON_FACEBOOK -->&nbsp;{ICON_FACEBOOK}<!-- ENDIF --><!-- IF ICON_TWITTER -->&nbsp;{ICON_TWITTER}<!-- ENDIF --><!-- IF ICON_AIM -->&nbsp;{ICON_AIM}<!-- ENDIF --><!-- IF ICON_ICQ -->&nbsp;{ICON_ICQ}<!-- ENDIF --><!-- IF ICON_JABBER -->&nbsp;{ICON_JABBER}<!-- ENDIF --><!-- IF ICON_MSN -->&nbsp;{ICON_MSN}<!-- ENDIF --><!-- IF ICON_SKYPE -->&nbsp;{ICON_SKYPE}<!-- ENDIF --><!-- IF ICON_YAHOO -->&nbsp;{ICON_YAHOO}<!-- ENDIF -->&nbsp;</span></td>
 					</tr>
 					<!-- BEGIN custom_contact -->
 					<tr>{custom_contact.CONTACT}</tr>
@@ -107,24 +91,25 @@
 					<!-- BEGIN custom_about -->
 					<tr>{custom_about.ABOUT}</tr>
 					<!-- END custom_about -->
+					<tr>
+						<td class="row2" valign="top" width="30%"><b><span class="genmed">{L_INVISION_SIGNATURE}</span></b></td>
+						<td class="row1"><span class="genmed">{INVISION_USER_SIG}</span></td>
+					</tr>
 					<!-- BEGIN switch_groups_on -->
+					<tr><th colspan="2"><span class="genmed"><b>{L_INVISION_MEMBER_GROUP}</b></span></th></tr>
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_MEMBER_GROUP}</span></b></td>
 						<td class="row1">
 							<span class="genmed">
 					<!-- END switch_groups_on -->
 							<!-- BEGIN groups -->
-								<a href="{groups.U_GROUP_NAME}" class="gentbl"><b>{groups.L_GROUP_NAME}</b></a>:&nbsp;{groups.L_GROUP_DESC}<br />
+								<a href="{groups.U_GROUP_NAME}"{groups.GROUP_COLOR}><b{groups.GROUP_COLOR}>{groups.L_GROUP_NAME}</b></a>:&nbsp;{groups.L_GROUP_DESC}<br />
 							<!-- END groups -->
 					<!-- BEGIN switch_groups_on -->
 							</span>
 						</td>
 					</tr>
 					<!-- END switch_groups_on -->
-					<tr>
-						<td class="row2" valign="top" width="30%"><b><span class="genmed">{L_INVISION_SIGNATURE}</span></b></td>
-						<td class="row1"><span class="genmed">{INVISION_USER_SIG}</span></td>
-					</tr>
 				</table>
 			</td>
 		</tr>

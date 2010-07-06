@@ -71,13 +71,19 @@ $is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
 if($userdata['upi2db_access'])
 {
 	$params = array(
-		'always_read' => 'always_read',
 		POST_FORUM_URL => POST_FORUM_URL,
 		POST_TOPIC_URL => POST_TOPIC_URL,
 		POST_POST_URL => POST_POST_URL,
-		's2' => 's2',
-		'mar_topic_id' => 'mar_topic_id',
 		'mar' => 'mar',
+	);
+	while(list($var, $param) = @each($params))
+	{
+		$$var = request_var($param, 0);
+	}
+
+	$params = array(
+		'always_read' => 'always_read',
+		's2' => 's2',
 		'do' => 'do',
 		'search_id' => 'search_id',
 		'search_mode' => 'search_id',
@@ -87,6 +93,8 @@ if($userdata['upi2db_access'])
 	{
 		$$var = request_var($param, '');
 	}
+
+	$mar_topic_id = request_var('mar_topic_id', array(0));
 
 	if (empty($unread))
 	{
@@ -256,7 +264,7 @@ if (($search_mode == 'bookmarks') && ($mode == 'removebm'))
 	$delete = (isset($_POST['delete'])) ? true : false;
 	if ($delete && isset($_POST['topic_id_list']))
 	{
-		$topics = request_post_var('topic_id_list', 0);
+		$topics = request_post_var('topic_id_list', array(0));
 		for($i = 0; $i < sizeof($topics); $i++)
 		{
 			$topic_list .= (($topic_list != '') ? ', ' : '') . intval($topics[$i]);

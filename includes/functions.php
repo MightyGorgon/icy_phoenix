@@ -3053,7 +3053,6 @@ function get_gravatar($email)
 /*
 * This function will build a complete IM link with image and lang
 */
-//function build_im_link($im_type, $im_id, $im_lang = '', $im_img = false, $im_url = false, $im_icon = false, $im_status = false)
 function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = false, $im_url = false, $im_status = false, $im_lang = false)
 {
 	global $userdata, $lang, $images;
@@ -3075,14 +3074,15 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 	$im_icon_append = '';
 	if (!empty($user_data[$available_im[$im_type]['field']]))
 	{
-		$im_ref = $user_data[$available_im[$im_type]['field']];
+		$im_id = $user_data[$available_im[$im_type]['field']];
+		$im_ref = $im_id;
 	}
 	else
 	{
 		return '';
 	}
 
-	if (!empty($im_status) && in_array($im_status, array('online', 'offline', 'hidden')))
+	if (!empty($im_status) && in_array($im_type, array('chat')) && in_array($im_status, array('online', 'offline', 'hidden')))
 	{
 		$im_icon_append = '_' . $im_status;
 	}
@@ -3115,8 +3115,8 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 		$im_lang = !empty($im_lang) ? $im_lang : (!empty($available_im[$im_type]['lang']) ? $lang[$available_im[$im_type]['lang']] : '');
 	}
 
-	$link_content = !empty($im_img) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '" title="' . $im_id . '" />') : $im_lang;
-	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '">' . $link_content . '</a>');
+	$link_content = !empty($im_img) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '"' . (empty($im_url) ? '' : (' title="' . $im_id . '"')) . ' />') : $im_lang;
+	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '" title="' . $im_lang . ' - ' . $im_id . '">' . $link_content . '</a>');
 
 	return $im_link;
 }

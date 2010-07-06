@@ -177,7 +177,7 @@ elseif ($mode == 'report')
 		message_die(GENERAL_MESSAGE, $lang['No_moderators'] . '<br /><br />');
 	}
 
-	(($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>');
+	(($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid(CMS_PAGE_POSTING . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>');
 
 	$i = 0;
 	if (($blue_card >= $config['bluecard_limit_2'] && (!(($blue_card - $config['bluecard_limit_2']) % $config['bluecard_limit']))) || ($blue_card == $config['bluecard_limit_2']))
