@@ -860,7 +860,7 @@ function gen_rand_string($num_chars = 8)
 function unique_id($extra = 'c')
 {
 	static $dss_seeded = false;
-	global $config;
+	global $config, $cache;
 
 	$val = $config['rand_seed'] . microtime();
 	$val = md5($val);
@@ -868,8 +868,9 @@ function unique_id($extra = 'c')
 
 	if(($dss_seeded !== true) && ($config['rand_seed_last_update'] < (time() - rand(1, 10))))
 	{
-		set_config('rand_seed', $config['rand_seed']);
-		set_config('rand_seed_last_update', time());
+		// Maybe we can avoid emptying cache every random seed generation...
+		set_config('rand_seed', $config['rand_seed'], false);
+		set_config('rand_seed_last_update', time(), false);
 		$dss_seeded = true;
 	}
 

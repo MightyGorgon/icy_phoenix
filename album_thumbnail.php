@@ -183,7 +183,6 @@ if(($pic_width < $album_config['thumbnail_size']) && ($pic_height < $album_confi
 }
 else
 {
-
 	// --------------------------------
 	// Cache is empty. Try to re-generate!
 	// --------------------------------

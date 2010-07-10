@@ -266,7 +266,7 @@ class sql_db
 
 		$cache_ttl = empty($cache_prefix) ? 0 : (empty($cache_ttl) ? CACHE_SQL_EXPIRY : $cache_ttl);
 
-		// Cache SQL in the same file plus underscore
+		// Cache SQL to the same file plus underscore
 		if (defined('SQL_DEBUG_LOG') && SQL_DEBUG_LOG && !defined('IN_ADMIN'))
 		{
 			$f = fopen($this->cache_folder . 'sql_history.' . PHP_EXT, 'a+');

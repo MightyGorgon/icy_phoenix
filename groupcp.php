@@ -589,7 +589,7 @@ elseif ($group_id)
 						WHERE user_id IN ($sql_in)
 							AND user_color = '" . $group_color . "'";
 					$db->sql_query($sql_users);
-					$cache->remove_file(MAIN_CACHE_FOLDER . CACHE_TREE_FILE);
+					$cache->remove_file(CACHE_TREE_FILE, false, MAIN_CACHE_FOLDER);
 					$db->clear_cache(SQL_CACHE_FOLDER);
 					$db->clear_cache(USERS_CACHE_FOLDER);
 
