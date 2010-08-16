@@ -183,7 +183,7 @@ $meta_content['keywords'] = '';
 
 // Block DNSBL Blacklisted Registrants (by TerraFrost) - BEGIN
 $blacklist_enabled = ($config['disable_registration_ip_check'] == 1) ? false : true;
-if (($mode == 'register') && (isset($_POST['submit'])) && ($blacklist_enabled == true))
+if (($mode == 'register') && (isset($_POST['submit'])) && !empty($blacklist_enabled))
 {
 	$address = $_SERVER['REMOTE_ADDR'];
 	$rev = implode('.',array_reverse(explode('.', $address)));
@@ -208,11 +208,8 @@ if (($mode == 'register') && (isset($_POST['submit'])) && ($blacklist_enabled ==
 }
 // Block DNSBL Blacklisted Registrants (by TerraFrost) - END
 
-if (isset($_GET['cpl_mode']) || isset($_POST['cpl_mode']))
-{
-	$cpl_mode = (isset($_GET['cpl_mode'])) ? $_GET['cpl_mode'] : $_POST['cpl_mode'];
-	$cpl_mode = htmlspecialchars($cpl_mode);
-}
+$cpl_mode = isset($_GET['cpl_mode']) ? request_get_var('cpl_mode', '') : request_var('cpl_mode', '');
+
 if (($mode == 'register') || (($cpl_mode != 'all') && ($cpl_mode != 'reg_info') && ($cpl_mode != 'profile_info') && ($cpl_mode != 'preferences') && ($cpl_mode != 'board_settings') && ($cpl_mode != 'avatar') && ($cpl_mode != 'signature')))
 {
 	$cpl_mode = 'all';
@@ -286,8 +283,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	{
 		$user_id = request_post_var('user_id', 0);
 		$current_email = request_post_var('current_email', '', true);
-		//$email_confirm = request_post_var('email_confirm', '', true);
-		$email_confirm = request_post_var('current_email', '', true);
+		$email_confirm = ($cpl_mode == 'reg_info') ? $email_confirm : $current_email;
 	}
 
 	$trim_var_list = array(
@@ -298,6 +294,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 		'selfdes' => 'selfdes',
 		'username' => 'username'
 	);
+
 	while(list($var, $param) = @each($trim_var_list))
 	{
 		$$var = request_post_var($param, '', true);
@@ -662,7 +659,7 @@ if (isset($_POST['submit']))
 	if (($email != $userdata['user_email']) || ($email_confirm != $userdata['user_email']) || ($email != $email_confirm) || ($mode == 'register'))
 	{
 		$result = validate_email($email);
-		if ($result['error'])
+		if (!empty($result['error']))
 		{
 			$email = $userdata['user_email'];
 			$email_confirm = $userdata['user_email'];
@@ -685,7 +682,6 @@ if (isset($_POST['submit']))
 			{
 				$email = $userdata['user_email'];
 				$email_confirm = $userdata['user_email'];
-				$email = $email_confirm;
 
 				$error = true;
 				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Current_password_mismatch'];
@@ -715,7 +711,7 @@ if (isset($_POST['submit']))
 
 			if (!$error)
 			{
-				$username_sql = "username = '" . $db->sql_escape($username) . "', ";
+				$username_sql = "username = '" . $db->sql_escape($username) . "', username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "', ";
 			}
 		}
 		// PROFILE EDIT BRIDGE - BEGIN
@@ -1110,8 +1106,8 @@ if (isset($_POST['submit']))
 // IN LINE ADD
 // , user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color
 // , $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color
-			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_from_flag, user_first_name, user_last_name, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color, user_aim, user_yim, user_msnm, user_skype, user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_birthday_y, user_birthday_m, user_birthday_d, user_next_birthday_greeting, user_active, user_actkey)
-				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', " . time() . ", '" . $db->sql_escape(phpbb_hash($new_password)) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape($icq) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($user_first_name) . "', '" . $db->sql_escape($user_last_name) . "', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . $db->sql_escape(str_replace(' ', '+', $aim)) . "', '" . $db->sql_escape($yim) . "', '" . $db->sql_escape($msn) . "', '" . $db->sql_escape($skype) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, 1, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', ";
+			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, username_clean, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_from_flag, user_first_name, user_last_name, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color, user_aim, user_yim, user_msnm, user_skype, user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_birthday_y, user_birthday_m, user_birthday_d, user_next_birthday_greeting, user_active, user_actkey)
+				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', '" . $db->sql_escape(utf8_clean_string($username)) . "', " . time() . ", '" . $db->sql_escape(phpbb_hash($new_password)) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape($icq) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($user_first_name) . "', '" . $db->sql_escape($user_last_name) . "', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . $db->sql_escape(str_replace(' ', '+', $aim)) . "', '" . $db->sql_escape($yim) . "', '" . $db->sql_escape($msn) . "', '" . $db->sql_escape($skype) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, 1, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', ";
 			if (($config['require_activation'] == USER_ACTIVATION_SELF) || ($config['require_activation'] == USER_ACTIVATION_ADMIN) || $coppa)
 			{
 				$user_actkey = gen_rand_string();

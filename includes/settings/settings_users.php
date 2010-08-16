@@ -89,7 +89,7 @@ $settings_data = array(
 		'lang_key' => 'Max_user_bancard',
 		'explain' => 'Max_user_bancard_explain',
 		'type' => 'SMALLINT',
-		'default' => 2,
+		'default' => 3,
 		),
 
 	'gender_required' => array(

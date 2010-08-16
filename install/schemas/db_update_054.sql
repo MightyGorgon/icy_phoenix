@@ -566,12 +566,21 @@ ALTER TABLE `phpbb_users` ADD `user_twitter` varchar(255) DEFAULT '' NOT NULL AF
 
 
 
+########################################
+##              BUILD 066             ##
+########################################
+ALTER TABLE `phpbb_users` ADD `user_type` tinyint(2) DEFAULT '0' NOT NULL AFTER `user_regdate`;
+ALTER TABLE `phpbb_users` ADD `user_mask` tinyint(1) DEFAULT '0' NOT NULL AFTER `user_active`;
+
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.12.65' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.13.66' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

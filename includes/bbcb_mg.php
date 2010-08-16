@@ -43,12 +43,12 @@ else
 	$template->set_filenames(array('bbcb_mg' => 'bbcb_mg.tpl'));
 }
 
-if ($config['enable_postimage_org'] == true)
+if (!empty($config['enable_postimage_org']))
 {
 	$template->assign_var('S_POSTIMAGE_ORG', true);
 }
 
-if ($config['enable_colorpicker'] == true)
+if (!empty($config['enable_colorpicker']))
 {
 	$template->assign_var('S_COLORPICKER', true);
 }
@@ -63,9 +63,14 @@ else
 	$post_image_lang = 'javascript:void(0);" onclick="window.open(\'http://www.postimage.org/index.php?mode=phpbb&tpl=.&forumurl=\' + escape(document.location.href), \'_imagehost\',\'width=500,height=400,resizable=yes\');';
 }
 
-if ($config['switch_bbcb_active_content'] == true)
+if (empty($s_disable_bbc_special_content))
 {
-	$template->assign_var('S_ACTIVE_CONTENT', true);
+	$template->assign_var('S_BBC_SPECIAL_CONTENT', true);
+}
+
+if (!empty($config['switch_bbcb_active_content']))
+{
+	$template->assign_var('S_BBC_ACTIVE_CONTENT', true);
 }
 
 if ($view_pic_upload == true)

@@ -120,6 +120,12 @@ function openAllSmiles()
 					<a href="javascript:BBCsub()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}sub{BBCB_MG_IMG_EXT}" name="subs" onmouseover="helpline('sub')" alt="{L_BBCB_MG_SUB}" title="{L_BBCB_MG_SUB}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
+					<!-- IF not S_BBC_SPECIAL_CONTENT -->
+					<a href="javascript:BBCurl()" accesskey="w"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}url{BBCB_MG_IMG_EXT}" name="url" onmouseover="helpline('url')" alt="{L_BBCB_MG_URL}" title="{L_BBCB_MG_URL}" class="bbimages" /></a>
+					<a href="javascript:BBCmail()" accesskey="e"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}email{BBCB_MG_IMG_EXT}" name="email" onmouseover="helpline('mail')" alt="{L_BBCB_MG_EML}" title="{L_BBCB_MG_EML}" class="bbimages" /></a>
+					<span class="genmed">&nbsp;&nbsp;</span>
+					<!-- ENDIF -->
+
 					<a href="javascript:BBClist()" accesskey="l"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}list{BBCB_MG_IMG_EXT}" name="listdf" onmouseover="helpline('list')" alt="{L_BBCB_MG_LST}" title="{L_BBCB_MG_LST}" class="bbimages" /></a>
 					<a href="javascript:BBClistO()" accesskey="l"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}list_o{BBCB_MG_IMG_EXT}" name="listodf" onmouseover="helpline('listo')" alt="{L_BBCB_MG_LST}" title="{L_BBCB_MG_LSTO}" class="bbimages" /></a>
 					<a href="javascript:BBCbullet()" accesskey="*"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}list_ast{BBCB_MG_IMG_EXT}" name="listbullet" onmouseover="helpline('bullet')" alt="{L_BBCB_MG_BULLET}" title="{L_BBCB_MG_BULLET}" class="bbimages" /></a>
@@ -129,7 +135,7 @@ function openAllSmiles()
 					<a href="javascript:BBChr()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}hr{BBCB_MG_IMG_EXT}" name="hr" onmouseover="helpline('hr')" alt="{L_BBCB_MG_HR}" title="{L_BBCB_MG_HR}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
-					<!-- IF S_ACTIVE_CONTENT -->
+					<!-- IF S_BBC_ACTIVE_CONTENT and S_BBC_SPECIAL_CONTENT -->
 					<a href="javascript:BBCflash()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}flash{BBCB_MG_IMG_EXT}" name="flash" onmouseover="helpline('flash')" alt="{L_BBCB_MG_FLSH}" title="{L_BBCB_MG_FLSH}" class="bbimages" /></a>
 					<a href="javascript:BBCvideo()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}video{BBCB_MG_IMG_EXT}" name="video" onmouseover="helpline('video')" alt="{L_BBCB_MG_VID}" title="{L_BBCB_MG_VID}" class="bbimages" /></a>
 					<a href="javascript:BBCgooglevideo()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}googlevideo{BBCB_MG_IMG_EXT}" name="googlevideo" onmouseover="helpline('googlevideo')" alt="{L_BBCB_MG_GVID}" title="{L_BBCB_MG_GVID}" class="bbimages" /></a>
@@ -144,6 +150,7 @@ function openAllSmiles()
 				</div>
 			</td>
 		</tr>
+		<!-- IF S_BBC_SPECIAL_CONTENT -->
 		<tr>
 			<td>
 				<div class="gennull">
@@ -189,6 +196,7 @@ function openAllSmiles()
 				</div>
 			</td>
 		</tr>
+		<!-- ENDIF -->
 		</table>
 	</td>
 </tr>

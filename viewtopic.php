@@ -587,7 +587,7 @@ $self_sql_tables = (intval($is_auth['auth_read']) == AUTH_SELF) ? ', ' . USERS_T
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = u2.user_id AND (u2.user_id = '" . $userdata['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
 
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 	WHERE p.topic_id = $topic_id
 		AND t.topic_id = p.topic_id
@@ -1298,6 +1298,12 @@ if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugin
 // Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
 for($i = 0; $i < $total_posts; $i++)
 {
+	$this_poster_mask = false;
+	if (($userdata['user_level'] != ADMIN) && !empty($postrow[$i]['user_mask']) && empty($postrow[$i]['user_active']))
+	{
+		$this_poster_mask = true;
+		user_profile_mask($postrow[$i]);
+	}
 	$poster_id = $postrow[$i]['user_id'];
 	$post_id = $postrow[$i]['post_id'];
 	$user_pic_count = $postrow[$i]['user_personal_pics_count'];
@@ -2270,8 +2276,8 @@ for($i = 0; $i < $total_posts; $i++)
 		'SINGLE_POST_SHARE' => $single_post_share,
 		'READER_LIKES' => $reader_likes,
 		'POST_LIKE_TEXT' => $post_like_text,
-		'POST_LIKE_TEXT_JS' => addslashes($post_like_text),
-		'POST_LIKE_TEXT_JS_NEW' => addslashes($post_like_text_js),
+		'POST_LIKE_TEXT_JS' => str_replace(array('/'), array('\/'), addslashes($post_like_text)),
+		'POST_LIKE_TEXT_JS_NEW' => str_replace(array('/'), array('\/'), addslashes($post_like_text_js)),
 		'POSTER_NO' => $poster_number,
 		//'POSTER_NO' => $postrow[$i]['poster_id'],
 		'USER_WARNINGS' => !empty($user_warnings) ? $user_warnings : '',

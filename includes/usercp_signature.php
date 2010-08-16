@@ -173,6 +173,7 @@ $template->assign_vars(array(
 );
 
 // BBCBMG - BEGIN
+$s_disable_bbc_special_content = (empty($config['allow_all_bbcode']) ? true : false);
 include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
 $template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
 // BBCBMG - END

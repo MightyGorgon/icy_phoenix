@@ -315,16 +315,44 @@ class class_topics_tags
 		global $db, $lang;
 
 		$topic_tags_links = '';
+		$topic_tags_links_array = array();
 		$topic_tags = $this->get_topics_tags($topics_ids_array);
 		if (!empty($topic_tags))
 		{
 			foreach ($topic_tags as $tag)
 			{
-				$topic_tags_links .= (!empty($topic_tags_links) ? ', ' : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . urlencode($tag)) . '">' . $tag . '</a>';
+				$topic_tags_links_array[] = $this->build_tag_link($tag);
 			}
+			$topic_tags_links = implode(', ', $topic_tags_links_array);
 		}
 
 		return $topic_tags_links;
+	}
+
+	/*
+	* Build tags list single topic
+	*/
+	function build_tags_list_single_topic($topic_tags)
+	{
+		$topic_tags_array = explode(', ', $topic_tags);
+		$topic_tags_links_array = array();
+		foreach ($topic_tags_array as $tag)
+		{
+			$topic_tags_links_array[] = $this->build_tag_link($tag);
+		}
+		$topic_tags_links = implode(', ', $topic_tags_links_array);
+
+		return $topic_tags_links;
+	}
+
+	/*
+	* Build tag link
+	*/
+	function build_tag_link($tag)
+	{
+		$tag_link = '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . urlencode($tag)) . '">' . $tag . '</a>';
+
+		return $tag_link;
 	}
 
 	/*

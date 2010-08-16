@@ -67,6 +67,7 @@ switch ($req_version)
 	case '131164': $current_ip_version = '1.3.11.64'; break;
 	case '131265': $current_ip_version = '1.3.12.65'; break;
 	case '131366': $current_ip_version = '1.3.13.66'; break;
+	case '131467': $current_ip_version = '1.3.14.67'; break;
 }
 
 // Icy Phoenix Part...
@@ -1110,7 +1111,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('birthday_check_day', '7')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('bluecard_limit', '3')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('bluecard_limit_2', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('max_user_bancard', '10')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('max_user_bancard', '3')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('report_forum', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('index_rating_return', '10')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('min_rates_number', '5')";
@@ -2269,7 +2270,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('url_rw_guests', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('lofi_bots', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('ajax_checks_register', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('inactive_users_memberlists', '1')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('inactive_users_memberlists', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('smilie_window_rows', '10')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('invert_nav_arrows', '0');";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('show_otf_link', '1');";
@@ -4005,10 +4006,15 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.12.65 */
 		case '1.3.12.65':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_type` tinyint(2) DEFAULT '0' NOT NULL AFTER `user_regdate`";
+		$page_framework->convert_usernames();
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_mask` tinyint(1) DEFAULT '0' NOT NULL AFTER `user_active`";
 
 		/* Updating from IP 1.3.13.66 */
 		case '1.3.13.66':
 
+		/* Updating from IP 1.3.13.67 */
+		case '1.3.13.67':
 
 	}
 

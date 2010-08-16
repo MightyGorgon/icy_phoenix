@@ -32,6 +32,12 @@ if (empty($profiledata) || empty($profiledata['user_id']))
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
 
+// We force the user to be active to show its profile... or we require the viewer to be admin!
+if (empty($profiledata['user_active']) && ($userdata['user_level'] != ADMIN))
+{
+	message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+}
+
 // Update the profile view list
 $user = $profiledata['user_id'];
 $viewer = $userdata['username'];

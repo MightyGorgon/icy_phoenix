@@ -210,7 +210,7 @@ elseif($by_letter == 'others')
 }
 else
 {
-	$letter_sql = " AND username LIKE '" . $db->sql_escape($by_letter) . "%' ";
+	$letter_sql = " AND LOWER(username) LIKE '" . $db->sql_escape($by_letter) . "%' ";
 }
 
 $sql_count = "SELECT COUNT(user_id) AS total_users

@@ -92,7 +92,7 @@ function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $ava
 
 function user_avatar_generator($mode, &$error, &$error_msg, $avatar_filename)
 {
-	global $config;
+	global $db, $config;
 
 	$new_filename = uniqid(rand()) . '.gif';
 

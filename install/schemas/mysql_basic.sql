@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.12.65');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.13.66');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
@@ -533,7 +533,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('min_user_age
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('birthday_check_day', '7');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bluecard_limit', '3');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bluecard_limit_2', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_user_bancard', '10');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_user_bancard', '3');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('report_forum', '4');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bin_forum', '5');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_rating_return', '10');
@@ -725,7 +725,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upi2db_max_n
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('url_rw_guests', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('lofi_bots', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_checks_register', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('inactive_users_memberlists', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('inactive_users_memberlists', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_pic_upload', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_postimage_org', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_new_messages_number', '0');

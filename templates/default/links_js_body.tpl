@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}">
 <head>
 <title>Links</title>
-<meta http-equiv="Content-Type" content="text/html; charset={S_CONTENT_ENCODING}">
+<meta http-equiv="Content-Type" content="text/html; charset={S_CONTENT_ENCODING}" />
 <!-- <link rel="stylesheet" href="{T_TPL_PATH}style_{CSS_COLOR}.css" type="text/css" /> -->
 </head>
 <body style="margin-top:0px;margin-left:0px;">

@@ -1965,7 +1965,7 @@ $lang = array_merge($lang, array(
 	'Upload_Image_Empty' => 'You can\'t upload air... you know!',
 	'Upload_File_Too_Big' => 'The file you are trying to upload is too big! Max allowed size:',
 	'Upload_File_Error' => 'Unknown Error',
-	'Upload_File_Error_Size' => 'File type not allowed!',
+	'Upload_File_Error_Size' => 'File size not allowed!',
 	'Upload_File_Error_Type' => 'File type not allowed!',
 	'Upload_File_Type_Allowed' => 'Only these file types may be uploaded',
 	'Upload_Insert_Image' => 'Insert BBCode',
@@ -2266,6 +2266,7 @@ $lang = array_merge($lang, array(
 	'TOPIC_TAGS_LIST' => 'Tags And Keywords List',
 	'TAG_COUNT' => 'Counter',
 	'TAG_TEXT' => 'Tag',
+	'TAGS_TEXT' => 'Tags',
 	'TAG_RESULTS' => 'Selected tag: <b>%s</b>',
 	'TAGS_NO_TAGS' => 'No tags have been defined',
 	'TAGS_NO_TAG' => 'Specified tag doesn\'t exist',
@@ -2335,7 +2336,7 @@ $lang = array_merge($lang, array(
 	'POLL_MAX_OPTIONS' => 'Max options',
 	'POLL_MAX_OPTIONS_EXPLAIN' => 'Maximum number of options selectable by users',
 	'POLL_NO_GUESTS' => 'Sorry, but Guests are not allowed to vote',
-	'POLL_RUN_TILL' => 'Poll runs till %s',
+	'POLL_RUN_TILL' => 'Poll runs until %s',
 	'POLL_VOTE_CHANGE' => 'Allow vote change',
 	'POLL_VOTED_OPTION' => 'You voted for this option',
 	'TOO_MANY_VOTE_OPTIONS' => 'You have tried to vote for too many options.',
@@ -2366,7 +2367,7 @@ $lang = array_merge($lang, array(
 	'LIKE_POST' => 'Like this post',
 	'UNLIKE_POST' => 'Unlike this post',
 	'LIKE_TIME' => 'Date',
-	'LIKE_RECAP' => 'Users who likes this post',
+	'LIKE_RECAP' => 'Users who like this post',
 	'LIKE_COUNTER_YOU' => 'You like this post',
 	'LIKE_COUNTER_YOU_OTHERS_SINGLE' => 'You and another user like this post',
 	'LIKE_COUNTER_YOU_OTHERS' => 'You and %s users like this post',
@@ -2383,6 +2384,8 @@ $lang = array_merge($lang, array(
 	'USER_LAST_NAME' => 'Last Name',
 	'FACEBOOK' => 'Facebook',
 	'TWITTER' => 'Twitter',
+
+	'INACTIVE_USER' => 'Inactive User',
 
 	)
 );

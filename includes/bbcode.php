@@ -3023,9 +3023,9 @@ class bbcode
 						return array(
 							'items' => $items,
 							'tag' => $result['tag'],
-							'pos' => $result['pos'],
-							'start' => $result['start'],
-							'len' => $result['len']
+							'pos' => !empty($result['pos']) ? $result['pos'] : 0,
+							'start' => !empty($result['start']) ? $result['start'] : 0,
+							'len' => !empty($result['len']) ? $result['len'] : 0
 						);
 					}
 				}

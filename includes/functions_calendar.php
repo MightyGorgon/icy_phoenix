@@ -648,7 +648,7 @@ function get_birthdays_list_full()
 		$b_day = create_date('j', $time_now, $config['board_timezone']);
 		$b_day_end = create_date('j', $time_now + ($config['birthday_check_day'] * 86400), $config['board_timezone']);
 		$b_limit = 0;
-		$show_inactive = (($config['inactive_users_memberlists'] == false) ? false : true);
+		$show_inactive = (empty($config['inactive_users_memberlists']) ? false : true);
 
 		$birthdays_list['xdays'] = '';
 		$birthdays_list['today'] = '';

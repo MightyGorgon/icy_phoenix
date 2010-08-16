@@ -38,7 +38,7 @@ class acm
 	var $cache_dir_backup = '';
 	var $cache_dirs = array();
 
-	var $use_old_ip_cache = true;
+	var $use_old_ip_cache = false;
 
 	/**
 	* Set cache path

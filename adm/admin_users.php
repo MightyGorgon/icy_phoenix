@@ -133,13 +133,6 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 		validate_optional_fields($icq, $aim, $msn, $yim, $skype, $website, $location, $occupation, $interests, $phone, $selfdes, $signature);
 
-		if ($mode == 'editprofile')
-		{
-			$user_id = request_post_var('user_id', 0);
-			$current_email = request_post_var('current_email', '', true);
-			$email_confirm = request_post_var('current_email', '', true);
-		}
-
 		$gender = request_post_var('gender', 0);
 		$birthday = request_post_var('birthday', 0);
 		$birthday_day = request_post_var('b_day', 0);
@@ -207,6 +200,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_avatar_type = (empty($user_avatar_loc)) ? $this_userdata['user_avatar_type'] : '';
 
 		$user_status = request_post_var('user_status', 0);
+		$user_mask = request_post_var('user_mask', 0);
+		$user_mask = (!empty($user_status) ? 0 : $user_mask);
 		$user_ycard = request_post_var('user_ycard', 0);
 
 		$user_allowpm = request_post_var('user_allowpm', 0);
@@ -290,7 +285,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 			if (!$error)
 			{
-				$username_sql = "username = '" . $db->sql_escape($username) . "', ";
+				$username_sql = "username = '" . $db->sql_escape($username) . "', username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "', ";
 				$rename_user = $username; // Used for renaming usergroup
 			}
 		}
@@ -716,7 +711,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			// PROFILE EDIT BRIDGE - END
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_icq = '" . $db->sql_escape($icq) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting=$next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape($aim) . "', user_yim = '" . $db->sql_escape($yim) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_active = $user_status, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
+				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_icq = '" . $db->sql_escape($icq) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting=$next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape($aim) . "', user_yim = '" . $db->sql_escape($yim) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_active = $user_status, user_mask = $user_mask, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
 				WHERE user_id = '" . $user_id . "'";
 			$result = $db->sql_query($sql);
 
@@ -729,7 +724,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			}
 
 			// Delete user session, to prevent the user navigating the forum (if logged in) when disabled
-			if (!$user_status)
+			if (empty($user_status))
 			{
 				$sql = "DELETE FROM " . SESSIONS_TABLE . "
 					WHERE session_user_id = " . $user_id;
@@ -787,7 +782,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 			update_user_posts_details($this_userdata['user_id'], $user_color, '', true, true);
 
-			// Delete forum/topic notifications if user has been deactivated
+			// Delete forums/topics notifications if user has been deactivated
 			if (empty($user_status))
 			{
 				include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
@@ -938,6 +933,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_dateformat = $this_userdata['user_dateformat'];
 
 		$user_status = $this_userdata['user_active'];
+		$user_mask = $this_userdata['user_mask'];
 		$user_ycard = $this_userdata['user_warnings'];
 		$user_allowavatar = $this_userdata['user_allowavatar'];
 //<!-- BEGIN Unread Post Information to Database Mod -->
@@ -1082,6 +1078,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			$s_hidden_fields .= '<input type="hidden" name="dst_time_lag" value="' . $dst_time_lag . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="dateformat" value="' . str_replace("\"", "&quot;", $user_dateformat) . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="user_status" value="' . $user_status . '" />';
+			$s_hidden_fields .= '<input type="hidden" name="user_mask" value="' . $user_mask . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="user_ycard" value="' . $user_ycard . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="user_allowpm" value="' . $user_allowpm . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="user_allowavatar" value="' . $user_allowavatar . '" />';
@@ -1593,6 +1590,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 //<!-- END Unread Post Information to Database Mod -->
 			'USER_ACTIVE_YES' => ($user_status) ? 'checked="checked"' : '',
 			'USER_ACTIVE_NO' => (!$user_status) ? 'checked="checked"' : '',
+			'USER_MASK_YES' => ($user_mask) ? 'checked="checked"' : '',
+			'USER_MASK_NO' => (!$user_mask) ? 'checked="checked"' : '',
 			'BANCARD' => $user_ycard,
 			'POSTS' => $user_posts,
 			// Mighty Gorgon - Multiple Ranks - BEGIN

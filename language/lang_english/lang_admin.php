@@ -2057,12 +2057,15 @@ $lang = array_merge($lang, array(
 
 	'POLL_INFINITE' => 'Infinite...',
 	'POLL_ONGOING' => ' (ongoing)',
-	'POLL_COMPLETED' => ' (completed))',
+	'POLL_COMPLETED' => ' (completed)',
 
 	'FORUM_LIKES' => 'Like Posts',
 	'FORUM_LIKES_EXPLAIN' => 'Allow users to like single posts in a topic (you need to enable the global switch in Icy Phoenix Settings [SQL Charge] to be able to use this feature)',
 
 	'POSTS_PICS' => 'Posts / Pics',
+
+	'INACTIVE_USER_FEATURE' => 'Mask this user',
+	'INACTIVE_USER_FEATURE_EXPLAIN' => 'By enabling this switch, the user will be masked in forums and topics. User profile details will be replaced by anonymous data. User will be masked only if its account is not active.',
 
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'IP_CONFIGURATION' => 'Icy Phoenix Settings',

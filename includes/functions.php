@@ -2578,14 +2578,7 @@ function board_stats()
 	}
 
 	// newest user
-	if ($config['inactive_users_memberlists'] == true)
-	{
-		$sql_active_users = '';
-	}
-	else
-	{
-		$sql_active_users = 'AND user_active = 1';
-	}
+	$sql_active_users = empty($config['inactive_users_memberlists']) ? ' AND user_active = 1 ' : '';
 	$sql = "SELECT user_id, username
 		FROM " . USERS_TABLE . "
 		WHERE user_id <> " . ANONYMOUS . "
@@ -3120,6 +3113,54 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '" title="' . $im_lang . ' - ' . $im_id . '">' . $link_content . '</a>');
 
 	return $im_link;
+}
+
+/*
+* Fake User Profile
+*/
+function user_profile_mask(&$user_data)
+{
+	global $config, $lang;
+
+	$user_data['user_id'] = ANONYMOUS;
+	$user_data['username'] = $lang['INACTIVE_USER'];
+	$user_data['post_username'] = $user_data['username'];
+	$user_data['user_color'] = '';
+	$user_data['user_level'] = USER;
+	$user_data['user_regdate'] = $config['board_startdate'];
+	$user_data['user_from'] = '';
+	$user_data['user_from_flag'] = '';
+	$user_data['user_birthday'] = 999999;
+	$user_data['user_posts'] = 0;
+	$user_data['user_personal_pics_count'] = 0;
+	$user_data['user_avatar'] = '';
+	$user_data['user_avatar_type'] = 0;
+	$user_data['user_allowavatar'] = 0;
+	$user_data['user_lang'] = $config['default_lang'];
+	$user_data['user_style'] = $config['default_style'];
+	$user_data['user_rank'] = '-2';
+	$user_data['user_rank_2'] = '-2';
+	$user_data['user_rank_3'] = '-2';
+	$user_data['user_rank_4'] = '-2';
+	$user_data['user_rank_5'] = '-2';
+	$user_data['user_viewemail'] = 0;
+	$user_data['user_website'] = '';
+	$user_data['user_aim'] = '';
+	$user_data['user_facebook'] = '';
+	$user_data['user_icq'] = '';
+	$user_data['user_jabber'] = '';
+	$user_data['user_msnm'] = '';
+	$user_data['user_skype'] = '';
+	$user_data['user_twitter'] = '';
+	$user_data['user_yim'] = '';
+	$user_data['user_gender'] = 0;
+	$user_data['user_allow_viewonline'] = 0;
+	$user_data['user_session_time'] = 0;
+	$user_data['poster_ip'] = '';
+	$user_data['user_warnings'] = 0;
+	$user_data['user_sig'] = '';
+
+	return true;
 }
 
 /*

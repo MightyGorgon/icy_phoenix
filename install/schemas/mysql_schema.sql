@@ -2062,6 +2062,7 @@ CREATE TABLE `phpbb_user_group` (
 CREATE TABLE `phpbb_users` (
 	`user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`user_active` tinyint(1) DEFAULT '1',
+	`user_mask` tinyint(1) DEFAULT '0',
 	`username` varchar(36) NOT NULL DEFAULT '',
 	`username_clean` varchar(255) NOT NULL DEFAULT '',
 	`user_first_name` varchar(255) NOT NULL DEFAULT '',
@@ -2076,6 +2077,7 @@ CREATE TABLE `phpbb_users` (
 	`user_http_agents` varchar(255) NOT NULL DEFAULT '',
 	`user_lastvisit` int(11) NOT NULL DEFAULT '0',
 	`user_regdate` int(11) NOT NULL DEFAULT '0',
+	`user_type` tinyint(2) DEFAULT '0' NOT NULL,
 	`user_level` tinyint(4) DEFAULT '0',
 	`user_cms_level` tinyint(4) DEFAULT '0',
 	`user_posts` mediumint(8) unsigned NOT NULL DEFAULT '0',

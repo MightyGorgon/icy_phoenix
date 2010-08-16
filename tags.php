@@ -177,6 +177,8 @@ if ($mode == 'view')
 		$last_author = ($topic['topic_last_poster_id'] != ANONYMOUS) ? colorize_username($topic['topic_last_poster_id'], $topic['topic_last_poster_name'], $topic['topic_last_poster_color'], 1) : (($topic['topic_last_poster_name'] != '') ? $topic['topic_last_poster_name'] : $lang['Guest']);
 		$last_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $topic['topic_last_post_id']) . '#p' . $topic['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
+		$topic_tags_links = $class_topics_tags->build_tags_list_single_topic($topic['topic_tags']);
+
 		// Convert and clean special chars!
 		$topic_title = htmlspecialchars_clean($topic_title);
 		$template->assign_block_vars('row', array(
@@ -196,6 +198,7 @@ if ($mode == 'view')
 			'GOTO_PAGE' => $topic_pagination['base'],
 			'GOTO_PAGE_FULL' => $topic_pagination['full'],
 			'VIEWS' => $views,
+			'TOPIC_TAGS' => $topic_tags_links,
 
 			'REPLIES' => $replies,
 			//'FIRST_TIME' => sprintf($lang['Recent_first'], $first_time),

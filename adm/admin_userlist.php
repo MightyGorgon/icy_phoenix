@@ -52,16 +52,7 @@ $alphanum = request_var('alphanum', '');
 if (!empty($alphanum))
 {
 	$alphanum = $db->sql_escape($alphanum);
-	switch($dbms)
-	{
-		case 'postgres':
-			$alpha_where = ($alphanum == 'num') ? "AND username !~ '^[A-Z]+'" : "AND username ILIKE '$alphanum%'";
-			break;
-
-		default:
-			$alpha_where = ($alphanum == 'num') ? "AND username NOT RLIKE '^[A-Z]'" : "AND username LIKE '$alphanum%'";
-			break;
-	}
+	$alpha_where = ($alphanum == 'num') ? "AND username NOT RLIKE '^[A-Z]'" : "AND LOWER(username) LIKE '$alphanum%'";
 }
 else
 {

@@ -2350,6 +2350,154 @@ class ip_page
 	}
 
 	/**
+	* Convert all usernames to username_clean
+	* In theory there should be no collision, since Icy Phoenix doesn't allow special chars in usernames
+	*/
+	function convert_usernames()
+	{
+		global $db, $table_prefix, $lang;
+
+		/*
+		// ASSIGN FOUNDER STATUS - BEGIN
+		// Grab user ids of users with user_level of ADMIN
+		$sql = "SELECT user_id
+			FROM " . $table_prefix . "users
+			WHERE user_level = 1
+			ORDER BY user_regdate ASC";
+		$result = $db->sql_query($sql);
+
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$user_id = (int) $row['user_id'];
+			// Set founder admin...
+			$sql = "UPDATE " . $table_prefix . "users
+				SET user_type = " . USER_FOUNDER . "
+				WHERE user_id = $user_id";
+			$db->sql_query($sql);
+		}
+		$db->sql_freeresult($result);
+		// ASSIGN FOUNDER STATUS - END
+		*/
+
+		// Make sure we have username_clean field
+		$sql_username_clean = "ALTER TABLE " . $table_prefix . "users ADD username_clean varchar(255) DEFAULT '' NOT NULL AFTER username";
+		$db->sql_return_on_error(true);
+		$db->sql_query($sql_username_clean);
+		$db->sql_return_on_error(false);
+
+		// Create a temporary table in which we store the clean usernames
+		$drop_sql = 'DROP TABLE ' . $table_prefix . 'userconv';
+		$create_sql = 'CREATE TABLE ' . $table_prefix . 'userconv (
+			user_id mediumint(8) NOT NULL,
+			username_clean varchar(255) DEFAULT \'\' NOT NULL
+		)';
+
+		$db->sql_return_on_error(true);
+		$db->sql_query($drop_sql);
+		$db->sql_return_on_error(false);
+		$db->sql_query($create_sql);
+
+		// Now select all user_ids and usernames and then convert the username (this can take quite a while!)
+		$sql = 'SELECT user_id, username
+			FROM ' . $table_prefix . 'users';
+		$result = $db->sql_query($sql);
+
+		$insert_ary = array();
+		$i = 0;
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$clean_name = utf8_clean_string($row['username']);
+			$insert_ary[] = array('user_id' => $row['user_id'], 'username_clean' => $clean_name);
+
+			$sql_update = "UPDATE " . $table_prefix . "users SET username_clean = '" . $db->sql_escape($clean_name) . "' WHERE user_id = " . (int) $row['user_id'];
+			$db->sql_return_on_error(true);
+			$db->sql_query($sql_update);
+			$db->sql_return_on_error(false);
+
+			if ($i % 1000 == 999)
+			{
+				$db->sql_multi_insert($table_prefix . 'userconv', $insert_ary);
+				$insert_ary = array();
+			}
+			$i++;
+		}
+		$db->sql_freeresult($result);
+
+		if (sizeof($insert_ary))
+		{
+			$db->sql_multi_insert($table_prefix . 'userconv', $insert_ary);
+		}
+		unset($insert_ary);
+
+		// Now find the clean version of the usernames that collide
+		$sql = 'SELECT username_clean
+			FROM ' . $table_prefix . 'userconv
+			GROUP BY username_clean
+			HAVING COUNT(user_id) > 1';
+		$result = $db->sql_query($sql);
+
+		$colliding_names = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$colliding_names[] = $row['username_clean'];
+		}
+		$db->sql_freeresult($result);
+
+		// There was at least one collision, the admin will have to solve it before conversion can continue
+		if (sizeof($colliding_names))
+		{
+			$sql = 'SELECT user_id, username_clean
+				FROM ' . $table_prefix . 'userconv
+				WHERE ' . $db->sql_in_set('username_clean', $colliding_names);
+			$result = $db->sql_query($sql);
+			unset($colliding_names);
+
+			$colliding_user_ids = array();
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$colliding_user_ids[(int) $row['user_id']] = $row['username_clean'];
+			}
+			$db->sql_freeresult($result);
+
+			$sql = 'SELECT username, user_id, user_posts
+				FROM ' . $table_prefix . 'users
+				WHERE ' . $db->sql_in_set('user_id', array_keys($colliding_user_ids));
+			$result = $db->sql_query($sql);
+
+			$colliding_users = array();
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$row['user_id'] = (int) $row['user_id'];
+				if (isset($colliding_user_ids[$row['user_id']]))
+				{
+					$colliding_users[$colliding_user_ids[$row['user_id']]][] = $row;
+				}
+			}
+			$db->sql_freeresult($result);
+			unset($colliding_user_ids);
+
+			$list = '';
+			foreach ($colliding_users as $username_clean => $users)
+			{
+				$list .= sprintf($lang['COLLIDING_CLEAN_USERNAME'], $username_clean) . "<br />\n";
+				foreach ($users as $i => $row)
+				{
+					$list .= sprintf($lang['COLLIDING_USER'], $row['user_id'], $row['username'], $row['user_posts']) . "<br />\n";
+				}
+			}
+
+			$lang['INST_ERR_FATAL'] = $lang['CONV_ERR_FATAL'];
+			die('<span style="color: red;">' . $lang['COLLIDING_USERNAMES_FOUND'] . '</span></b><br /><br />' . $list . '<b>');
+		}
+		else
+		{
+
+		}
+
+		$db->sql_query($drop_sql);
+	}
+
+	/**
 	* Fix last posters
 	*/
 	function fix_last_posters()
@@ -2500,6 +2648,9 @@ class ip_page
 		return $table_output;
 	}
 
+	/*
+	* Displays a box with upgrade info
+	*/
 	function box_upgrade_info()
 	{
 		global $lang, $language;
@@ -2564,6 +2715,9 @@ class ip_page
 		echo('<br /><br />' . "\n");
 	}
 
+	/*
+	* Displays a box with upgrade steps
+	*/
 	function box_upgrade_steps()
 	{
 		global $lang, $language;

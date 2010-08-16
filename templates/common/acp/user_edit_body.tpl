@@ -402,15 +402,6 @@ function ColorExample(ColorCode)
 	<td class="row1"><span class="gen">{L_PM_QUOTA}</span></td>
 	<td class="row2">{S_SELECT_PM_QUOTA}</td>
 </tr>
-
-<tr>
-	<td class="row1"><span class="gen">{L_USER_ACTIVE}</span></td>
-	<td class="row2">
-	<input type="radio" name="user_status" value="1" {USER_ACTIVE_YES} />
-	<span class="gen">{L_YES}</span>&nbsp;&nbsp;
-	<input type="radio" name="user_status" value="0" {USER_ACTIVE_NO} />
-	<span class="gen">{L_NO}</span></td>
-</tr>
 <tr>
 	<td class="row1"><span class="gen">{L_ALLOW_PM}</span></td>
 	<td class="row2">
@@ -474,6 +465,14 @@ function ColorExample(ColorCode)
 <tr>
 	<td class="row1"><span class="gen">{L_POSTCOUNT}:</span><br /><span class="gensmall">{L_POSTCOUNT_EXPLAIN}<br /></td>
 	<td class="row2"><input type="text" class="post" style="width: 40px;" name="user_posts" size="4" maxlength="7" value="{POSTS}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_USER_ACTIVE}</span></td>
+	<td class="row2"><input type="radio" name="user_status" value="1" {USER_ACTIVE_YES} /><span class="gen">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="user_status" value="0" {USER_ACTIVE_NO} /><span class="gen">{L_NO}</span></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_INACTIVE_USER_FEATURE}</span><br /><span class="gensmall">{L_INACTIVE_USER_FEATURE_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="user_mask" value="1" {USER_MASK_YES} /><span class="gen">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="user_mask" value="0" {USER_MASK_NO} /><span class="gen">{L_NO}</span></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_DELETE_USER}</span></td>

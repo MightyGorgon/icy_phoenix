@@ -261,6 +261,11 @@ $lang = array_merge($lang, array(
 
 	'RenMovePics' => 'Rename And Move Posted Pics',
 	'RenMovePicsExplain' => 'This feature will rename and move all posted pics from the main folder into users subfolders: you will then need to update posts table using the <i>Fix Posts</i> function to adjust all paths in posts',
+
+	'COLLIDING_CLEAN_USERNAME' => '<strong>%s</strong> is the clean username for:',
+	'COLLIDING_USERNAMES_FOUND' => 'Colliding usernames were found on your old board. In order to complete the conversion please delete or rename these users so that there is only one user on your old board for each clean username.',
+	'COLLIDING_USER' => '&raquo; user id: <strong>%d</strong> username: <strong>%s</strong> (%d posts)',
+
 	)
 );
 

@@ -344,7 +344,7 @@ function username_search($search_match, $ajax_search = false)
 
 		$sql = "SELECT username
 			FROM " . USERS_TABLE . "
-			WHERE username LIKE '" . $db->sql_escape($username_search) . "' AND user_id <> " . ANONYMOUS . "
+			WHERE LOWER(username) LIKE '" . $db->sql_escape(strtolower($username_search)) . "' AND user_id <> " . ANONYMOUS . "
 			ORDER BY username";
 		$result = $db->sql_query($sql);
 

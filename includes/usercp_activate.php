@@ -88,6 +88,9 @@ if ($row = $db->sql_fetchrow($result))
 			$redirect_url = append_sid(CMS_PAGE_FORUM);
 			meta_refresh(10, $redirect_url);
 
+			// Refresh last user id if needed...
+			board_stats();
+
 			$message = ($sql_update_pass == '') ? $lang['Account_active'] : $lang['Password_activated'];
 			message_die(GENERAL_MESSAGE, $message);
 		}

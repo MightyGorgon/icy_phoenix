@@ -460,7 +460,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				$sql = "SELECT user_id
 					FROM " . USERS_TABLE . "
-					WHERE username LIKE '$search_author'";
+					WHERE LOWER(username) LIKE '$search_author'";
 				$result = $db->sql_query($sql);
 
 				$matching_userids = '';
@@ -747,12 +747,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							if ($search_topic_starter)
 							{
 								$from_sql .= ", " . USERS_TABLE . " u, " . TOPICS_TABLE . " t";
-								$where_sql .= " AND u.user_id = p.poster_id AND u.username LIKE '$search_author' AND p.post_id = t.topic_first_post_id ";
+								$where_sql .= " AND u.user_id = p.poster_id AND LOWER(u.username) LIKE '" . strtolower($search_author) . "' AND p.post_id = t.topic_first_post_id ";
 							}
 							else
 							{
 								$from_sql .= ", " . USERS_TABLE . " u";
-								$where_sql .= " AND u.user_id = p.poster_id AND u.username LIKE '$search_author' ";
+								$where_sql .= " AND u.user_id = p.poster_id AND LOWER(u.username) LIKE '" . strtolower($search_author) . "' ";
 							}
 						}
 
@@ -828,7 +828,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					if ($search_author != '')
 					{
 						$from_sql .= ", " . USERS_TABLE . " u";
-						$where_sql .= " AND u.user_id = p.poster_id AND u.username LIKE '$search_author'";
+						$where_sql .= " AND u.user_id = p.poster_id AND LOWER(u.username) LIKE '" . strtolower($search_author) . "'";
 					}
 
 					$sql = "SELECT " . $select_sql . "
