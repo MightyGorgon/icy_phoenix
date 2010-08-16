@@ -113,11 +113,14 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			'user_first_name' => 'user_first_name',
 			'user_last_name' => 'user_last_name',
 			'email' => 'email',
-			'icq' => 'icq',
 			'aim' => 'aim',
+			'facebook' => 'facebook',
+			'icq' => 'icq',
+			'jabber' => 'jabber',
 			'msn' => 'msn',
-			'yim' => 'yim',
 			'skype' => 'skype',
+			'twitter' => 'twitter',
+			'yim' => 'yim',
 			'website' => 'website',
 			'location' => 'location',
 			'occupation' => 'occupation',
@@ -711,7 +714,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			// PROFILE EDIT BRIDGE - END
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_icq = '" . $db->sql_escape($icq) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting=$next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape($aim) . "', user_yim = '" . $db->sql_escape($yim) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_active = $user_status, user_mask = $user_mask, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
+				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = $next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', trim($aim))) . "', user_facebook = '" . $db->sql_escape($facebook) . "', user_icq = '" . $db->sql_escape($icq) . "', user_jabber = '" . $db->sql_escape($jabber) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_twitter = '" . $db->sql_escape($twitter) . "', user_yim = '" . $db->sql_escape($yim) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_active = $user_status, user_mask = $user_mask, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
 				WHERE user_id = '" . $user_id . "'";
 			$result = $db->sql_query($sql);
 
@@ -862,11 +865,14 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$password = '';
 		$password_confirm = '';
 
-		$icq = $this_userdata['user_icq'];
 		$aim = str_replace('+', ' ', $this_userdata['user_aim']);
+		$facebook = $this_userdata['user_facebook'];
+		$icq = $this_userdata['user_icq'];
+		$jabber = $this_userdata['user_jabber'];
 		$msn = $this_userdata['user_msnm'];
-		$yim = $this_userdata['user_yim'];
 		$skype = $this_userdata['user_skype'];
+		$twitter = $this_userdata['user_twitter'];
+		$yim = $this_userdata['user_yim'];
 
 		$website = $this_userdata['user_website'];
 		$location = $this_userdata['user_from'];
@@ -1029,72 +1035,81 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 			$coppa = ((!$_POST['coppa'] && !$_GET['coppa']) || $mode == 'register') ? 0 : true;
 
-			$s_hidden_fields = '<input type="hidden" name="mode" value="edit" />';
-			$s_hidden_fields .= '<input type="hidden" name="agreed" value="true" />';
-			$s_hidden_fields .= '<input type="hidden" name="avatarcatname" value="' . $category . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="coppa" value="' . $coppa . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="id" value="' . $user_id . '" />';
+			$s_hidden_fields = '';
 
-			$s_hidden_fields .= '<input type="hidden" name="username" value="' . str_replace("\"", "&quot;", $username) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="email" value="' . str_replace("\"", "&quot;", $email) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="icq" value="' . str_replace("\"", "&quot;", $icq) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="aim" value="' . str_replace("\"", "&quot;", $aim) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="msn" value="' . str_replace("\"", "&quot;", $msn) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="yim" value="' . str_replace("\"", "&quot;", $yim) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="skype" value="' . str_replace("\"", "&quot;", $skype) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="website" value="' . str_replace("\"", "&quot;", $website) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="location" value="' . str_replace("\"", "&quot;", $location) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_flag" value="' . str_replace("\"", "&quot;", $user_flag) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="phone" value="' . str_replace("\"", "&quot;", $phone) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_first_name" value="' . str_replace("\"", "&quot;", $user_first_name) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_last_name" value="' . str_replace("\"", "&quot;", $user_last_name) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="occupation" value="' . str_replace("\"", "&quot;", $occupation) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="interests" value="' . str_replace("\"", "&quot;", $interests) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="birthday" value="' . $birthday . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="next_birthday_greeting" value="' . $next_birthday_greeting . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="selfdes" value="' . str_replace("\"", "&quot;", $selfdes) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="signature" value="' . str_replace("\"", "&quot;", $signature) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="viewemail" value="' . $viewemail . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="allowmassemail" value="' . $allowmassemail . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="allowpmin" value="' . $allowpmin . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="gender" value="' . $gender . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="notifypm" value="' . $notifypm . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="popup_pm" value="' . $popup_pm . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="notifyreply" value="' . $notifyreply . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="attachsig" value="' . $attachsig . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="setbm" value="' . $setbm . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_showavatars" value="' . $user_showavatars . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_showsignatures" value="' . $user_showsignatures . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_allowswearywords" value="' . $user_allowswearywords . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="allowhtml" value="' . $allowhtml . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="allowbbcode" value="' . $allowbbcode . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="allowsmilies" value="' . $allowsmilies . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="hideonline" value="' . !$allowviewonline . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="profile_view_popup" value="' . $profile_view_popup . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="style" value="' . $user_style . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="language" value="' . $user_lang . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="timezone" value="' . $user_timezone . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="time_mode" value="' . $time_mode . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="dst_time_lag" value="' . $dst_time_lag . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="dateformat" value="' . str_replace("\"", "&quot;", $user_dateformat) . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_status" value="' . $user_status . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_mask" value="' . $user_mask . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_ycard" value="' . $user_ycard . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_allowpm" value="' . $user_allowpm . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_allowavatar" value="' . $user_allowavatar . '" />';
+			$hidden_fields_array = array(
+				'mode' => 'edit',
+				'agreed' => 'true',
+				'avatarcatname' => $category,
+				'coppa' => $coppa,
+				'id' => $user_id,
+				'username' => $username,
+				'email' => $email,
+				'aim' => $aim,
+				'facebook' => $facebook,
+				'icq' => $icq,
+				'jabber' => $jabber,
+				'msn' => $msn,
+				'skype' => $skype,
+				'twitter' => $twitter,
+				'yim' => $yim,
+				'website' => $website,
+				'location' => $location,
+				'user_flag' => $user_flag,
+				'phone' => $phone,
+				'user_first_name' => $user_first_name,
+				'user_last_name' => $user_last_name,
+				'occupation' => $occupation,
+				'insterests' => $interests,
+				'birthday' => $birthday,
+				'next_birthday_greeting' => $next_birthday_greeting,
+				'selfdes' => $selfdes,
+				'signature' => $signature,
+				'viewemail' => $viewemail,
+				'allowmassemail' => $allowmassemail,
+				'allowpmin' => $allowpmin,
+				'gender' => $gender,
+				'notifypm' => $notifypm,
+				'popup_pm' => $popup_pm,
+				'notifyreply' => $notifyreply,
+				'attachsig' => $attachsig,
+				'setbm' => $setbm,
+				'user_showavatars' => $user_showavatars,
+				'user_showsignatures' => $user_showsignatures,
+				'user_allowswearywords' => $user_allowswearywords,
+				'allowhtml' => $allowhtml,
+				'allowbbcode' => $allowbbcode,
+				'allowsmilies' => $allowsmilies,
+				'hideonline' => !$allowviewonline,
+				'profile_view_popup' => $profile_view_popup,
+				'style' => $user_style,
+				'language' => $user_lang,
+				'timezone' => $user_timezone,
+				'time_mode' => $time_mode,
+				'dst_time_lag' => $dst_time_lag,
+				'dateformat' => $user_dateformat,
+				'user_status' => $user_status,
+				'user_mask' => $user_mask,
+				'user_ycard' => $user_ycard,
+				'user_allowpm' => $user_allowpm,
+				'user_allowavatar' => $user_allowavatar,
 //<!-- BEGIN Unread Post Information to Database Mod -->
-			$s_hidden_fields .= '<input type="hidden" name="user_upi2db_disable" value="' . $user_upi2db_disable . '" />';
+				'user_upi2db_disable' => $user_upi2db_disable,
 //<!-- END Unread Post Information to Database Mod -->
-			$s_hidden_fields .= '<input type="hidden" name="user_posts" value="' . $user_posts . '" />';
-			// Mighty Gorgon - Multiple Ranks - BEGIN
-			$s_hidden_fields .= '<input type="hidden" name="user_rank" value="' . $user_rank . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_rank2" value="' . $user_rank2 . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_rank3" value="' . $user_rank3 . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_rank4" value="' . $user_rank4 . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_rank5" value="' . $user_rank5 . '" />';
-			// Mighty Gorgon - Multiple Ranks - END
-			$s_hidden_fields .= '<input type="hidden" name="user_color_group" value="' . $user_color_group . '" />';
-			$s_hidden_fields .= '<input type="hidden" name="user_color" value="' . $user_color . '" />';
+				'user_posts' => $user_posts,
+				'user_rank' => $user_rank,
+				'user_rank2' => $user_rank2,
+				'user_rank3' => $user_rank3,
+				'user_rank4' => $user_rank4,
+				'user_rank5' => $user_rank5,
+				'user_color_group' => $user_color_group,
+				'user_color' => $user_color,
+			);
+
+			foreach ($hidden_fields_array as $k => $v)
+			{
+				$s_hidden_fields .= '<input type="hidden" name="' . $k . '" value="' . $v . '" />';
+			}
 
 			$template->assign_vars(array(
 				'L_USER_TITLE' => $lang['User_admin'],
@@ -1491,21 +1506,21 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				break;
 		}
 
-		//
-		// Let's do an overall check for settings/versions which would prevent
-		// us from doing file uploads....
-		//
+		// Let's do an overall check for settings/versions which would prevent us from doing file uploads...
 		$ini_val = (phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 		$form_enctype = (!@$ini_val('file_uploads') || (phpversion() == '4.0.4pl1') || !$config['allow_avatar_upload'] || ((phpversion() < '4.0.3') && @$ini_val('open_basedir') != '')) ? '' : 'enctype="multipart/form-data"';
 
 		$template->assign_vars(array(
 			'USERNAME' => $username,
 			'EMAIL' => $email,
-			'YIM' => $yim,
-			'SKYPE' => $skype,
-			'ICQ' => $icq,
-			'MSN' => $msn,
 			'AIM' => $aim,
+			'FACEBOOK' => $facebook,
+			'ICQ' => $icq,
+			'JABBER' => $jabber,
+			'MSN' => $msn,
+			'SKYPE' => $skype,
+			'TWITTER' => $twitter,
+			'YIM' => $yim,
 			'USER_FIRST_NAME' => $user_first_name,
 			'USER_LAST_NAME' => $user_last_name,
 			'OCCUPATION' => $occupation,

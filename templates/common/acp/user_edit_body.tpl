@@ -58,24 +58,36 @@ function ColorExample(ColorCode)
 	<td class="row2"><input class="post" type="text" name="phone" size="35" maxlength="150" value="{PHONE}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_AIM}</span></td>
+	<td class="row2"><input class="post" type="text" name="aim" size="20" maxlength="255" value="{AIM}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_FACEBOOK}</span></td>
+	<td class="row2"><input class="post" type="text" name="facebook" size="20" maxlength="255" value="{FACEBOOK}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_ICQ_NUMBER}</span></td>
 	<td class="row2"><input class="post" type="text" name="icq" size="10" maxlength="15" value="{ICQ}" /></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_AIM}</span></td>
-	<td class="row2"><input class="post" type="text" name="aim" size="20" maxlength="255" value="{AIM}" /></td>
+	<td class="row1"><span class="gen">{L_JABBER}</span></td>
+	<td class="row2"><input class="post" type="text" name="jabber" size="20" maxlength="255" value="{JABBER}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_MESSENGER}</span></td>
 	<td class="row2"><input class="post" type="text" name="msn" size="20" maxlength="255" value="{MSN}" /></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_YAHOO}</span></td>
-	<td class="row2"><input class="post" type="text" name="yim" size="20" maxlength="255" value="{YIM}" /></td>
-</tr>
-<tr>
 	<td class="row1"><span class="gen">{L_SKYPE}</span></td>
 	<td class="row2"><input class="post" type="text" name="skype" size="20" maxlength="255" value="{SKYPE}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_TWITTER}</span></td>
+	<td class="row2"><input class="post" type="text" name="twitter" size="20" maxlength="255" value="{TWITTER}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_YAHOO}</span></td>
+	<td class="row2"><input class="post" type="text" name="yim" size="20" maxlength="255" value="{YIM}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_WEBSITE}</span></td>

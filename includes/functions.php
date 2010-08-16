@@ -3054,7 +3054,7 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 	$available_im = array(
 		'chat' => array('field' => 'user_id', 'lang' => 'AJAX_SHOUTBOX_PVT_LINK', 'icon_tpl' => 'icon_im_chat', 'icon_tpl_vt' => 'icon_im_chat', 'url' => '{REF}'),
 		'aim' => array('field' => 'user_aim', 'lang' => 'AIM', 'icon_tpl' => 'icon_aim', 'icon_tpl_vt' => 'icon_aim2', 'url' => 'aim:goim?screenname={REF}&amp;message=Hello'),
-		'facebook' => array('field' => 'user_facebook', 'lang' => 'FACEBOOK', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => $im_id),
+		'facebook' => array('field' => 'user_facebook', 'lang' => 'FACEBOOK', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
 		'icq' => array('field' => 'user_icq', 'lang' => 'ICQ', 'icon_tpl' => 'icon_icq', 'icon_tpl_vt' => 'icon_icq2', 'url' => 'http://www.icq.com/people/webmsg.php?to={REF}'),
 		'jabber' => array('field' => 'user_jabber', 'lang' => 'JABBER', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
 		'msn' => array('field' => 'user_msnm', 'lang' => 'MSNM', 'icon_tpl' => 'icon_msnm', 'icon_tpl_vt' => 'icon_msnm2', 'url' => 'http://spaces.live.com/{REF}'),
@@ -3113,54 +3113,6 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '" title="' . $im_lang . ' - ' . $im_id . '">' . $link_content . '</a>');
 
 	return $im_link;
-}
-
-/*
-* Fake User Profile
-*/
-function user_profile_mask(&$user_data)
-{
-	global $config, $lang;
-
-	$user_data['user_id'] = ANONYMOUS;
-	$user_data['username'] = $lang['INACTIVE_USER'];
-	$user_data['post_username'] = $user_data['username'];
-	$user_data['user_color'] = '';
-	$user_data['user_level'] = USER;
-	$user_data['user_regdate'] = $config['board_startdate'];
-	$user_data['user_from'] = '';
-	$user_data['user_from_flag'] = '';
-	$user_data['user_birthday'] = 999999;
-	$user_data['user_posts'] = 0;
-	$user_data['user_personal_pics_count'] = 0;
-	$user_data['user_avatar'] = '';
-	$user_data['user_avatar_type'] = 0;
-	$user_data['user_allowavatar'] = 0;
-	$user_data['user_lang'] = $config['default_lang'];
-	$user_data['user_style'] = $config['default_style'];
-	$user_data['user_rank'] = '-2';
-	$user_data['user_rank_2'] = '-2';
-	$user_data['user_rank_3'] = '-2';
-	$user_data['user_rank_4'] = '-2';
-	$user_data['user_rank_5'] = '-2';
-	$user_data['user_viewemail'] = 0;
-	$user_data['user_website'] = '';
-	$user_data['user_aim'] = '';
-	$user_data['user_facebook'] = '';
-	$user_data['user_icq'] = '';
-	$user_data['user_jabber'] = '';
-	$user_data['user_msnm'] = '';
-	$user_data['user_skype'] = '';
-	$user_data['user_twitter'] = '';
-	$user_data['user_yim'] = '';
-	$user_data['user_gender'] = 0;
-	$user_data['user_allow_viewonline'] = 0;
-	$user_data['user_session_time'] = 0;
-	$user_data['poster_ip'] = '';
-	$user_data['user_warnings'] = 0;
-	$user_data['user_sig'] = '';
-
-	return true;
 }
 
 /*

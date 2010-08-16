@@ -41,7 +41,7 @@
 					<!-- ENDIF -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_COMMUNICATE}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed"><!-- IF S_LOGGED_IN and ICON_CHAT -->&nbsp;{ICON_CHAT}<!-- ENDIF --><!-- IF ICON_FACEBOOK -->&nbsp;{ICON_FACEBOOK}<!-- ENDIF --><!-- IF ICON_TWITTER -->&nbsp;{ICON_TWITTER}<!-- ENDIF --><!-- IF ICON_AIM -->&nbsp;{ICON_AIM}<!-- ENDIF --><!-- IF ICON_ICQ -->&nbsp;{ICON_ICQ}<!-- ENDIF --><!-- IF ICON_JABBER -->&nbsp;{ICON_JABBER}<!-- ENDIF --><!-- IF ICON_MSN -->&nbsp;{ICON_MSN}<!-- ENDIF --><!-- IF ICON_SKYPE -->&nbsp;{ICON_SKYPE}<!-- ENDIF --><!-- IF ICON_YAHOO -->&nbsp;{ICON_YAHOO}<!-- ENDIF -->&nbsp;</span></td>
+						<td class="row1 post-buttons"><span class="genmed"><!-- IF S_LOGGED_IN and ICON_CHAT -->&nbsp;{ICON_CHAT}<!-- ENDIF --><!-- IF ICON_AIM -->&nbsp;{ICON_AIM}<!-- ENDIF --><!-- IF ICON_FACEBOOK -->&nbsp;{ICON_FACEBOOK}<!-- ENDIF --><!-- IF ICON_ICQ -->&nbsp;{ICON_ICQ}<!-- ENDIF --><!-- IF ICON_JABBER -->&nbsp;{ICON_JABBER}<!-- ENDIF --><!-- IF ICON_MSN -->&nbsp;{ICON_MSN}<!-- ENDIF --><!-- IF ICON_SKYPE -->&nbsp;{ICON_SKYPE}<!-- ENDIF --><!-- IF ICON_TWITTER -->&nbsp;{ICON_TWITTER}<!-- ENDIF --><!-- IF ICON_YAHOO -->&nbsp;{ICON_YAHOO}<!-- ENDIF -->&nbsp;</span></td>
 					</tr>
 					<!-- BEGIN custom_contact -->
 					<tr>{custom_contact.CONTACT}</tr>

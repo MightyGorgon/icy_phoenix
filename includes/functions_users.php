@@ -365,6 +365,54 @@ function generate_ranks($user_row, $ranks_array)
 }
 
 /*
+* Fake User Profile
+*/
+function user_profile_mask(&$user_data)
+{
+	global $config, $lang;
+
+	$user_data['user_id'] = ANONYMOUS;
+	$user_data['username'] = $lang['INACTIVE_USER'];
+	$user_data['post_username'] = $user_data['username'];
+	$user_data['user_color'] = '';
+	$user_data['user_level'] = USER;
+	$user_data['user_regdate'] = $config['board_startdate'];
+	$user_data['user_from'] = '';
+	$user_data['user_from_flag'] = '';
+	$user_data['user_birthday'] = 999999;
+	$user_data['user_posts'] = 0;
+	$user_data['user_personal_pics_count'] = 0;
+	$user_data['user_avatar'] = '';
+	$user_data['user_avatar_type'] = 0;
+	$user_data['user_allowavatar'] = 0;
+	$user_data['user_lang'] = $config['default_lang'];
+	$user_data['user_style'] = $config['default_style'];
+	$user_data['user_rank'] = '-2';
+	$user_data['user_rank_2'] = '-2';
+	$user_data['user_rank_3'] = '-2';
+	$user_data['user_rank_4'] = '-2';
+	$user_data['user_rank_5'] = '-2';
+	$user_data['user_viewemail'] = 0;
+	$user_data['user_website'] = '';
+	$user_data['user_aim'] = '';
+	$user_data['user_facebook'] = '';
+	$user_data['user_icq'] = '';
+	$user_data['user_jabber'] = '';
+	$user_data['user_msnm'] = '';
+	$user_data['user_skype'] = '';
+	$user_data['user_twitter'] = '';
+	$user_data['user_yim'] = '';
+	$user_data['user_gender'] = 0;
+	$user_data['user_allow_viewonline'] = 0;
+	$user_data['user_session_time'] = 0;
+	$user_data['poster_ip'] = '';
+	$user_data['user_warnings'] = 0;
+	$user_data['user_sig'] = '';
+
+	return true;
+}
+
+/*
 * Top X Posters
 */
 function top_posters($user_limit, $show_admins = true, $show_mods = true, $only_array = false)
@@ -375,7 +423,8 @@ function top_posters($user_limit, $show_admins = true, $show_mods = true, $only_
 	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_posts, u.user_avatar, u.user_avatar_type, u.user_allowavatar
 	FROM " . USERS_TABLE . " u
 	WHERE (u.user_id <> " . ANONYMOUS . ")
-	" . $sql_level . "
+		AND u.user_active = 1
+		" . $sql_level . "
 	ORDER BY u.user_posts DESC
 	LIMIT " . $user_limit;
 	$result = $db->sql_query($sql, 0, 'posts_top_posters_', POSTS_CACHE_FOLDER);

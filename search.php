@@ -1059,7 +1059,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		if ($show_results == 'posts')
 		{
-			$sql = "SELECT p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_active, u.user_color, u.user_sig
+			$sql = "SELECT p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_sig
 				FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p
 				WHERE p.post_id IN ($search_results)
 					AND f.forum_id = p.forum_id
@@ -1068,7 +1068,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 		else
 		{
-			$sql = "SELECT t.*, f.forum_id, f.forum_name, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time
+			$sql = "SELECT t.*, f.forum_id, f.forum_name, u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_mask as user_mask2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time
 				FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
 				WHERE t.topic_id IN ($search_results)
 					AND t.topic_poster = u.user_id
@@ -1427,6 +1427,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']) : (($searchset[$i]['post_username'] != '') ? $searchset[$i]['post_username'] : $lang['Guest']);
 				//$poster .= ($searchset[$i]['user_id'] != ANONYMOUS) ? $searchset[$i]['username'] : (($searchset[$i]['post_username'] != "") ? $searchset[$i]['post_username'] : $lang['Guest']);
 
+				if (($userdata['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask']) && empty($searchset[$i]['user_active']))
+				{
+					$poster = $lang['INACTIVE_USER'];
+				}
+
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				if(!$userdata['upi2db_access'])
 				{
@@ -1652,9 +1657,19 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$topic_author = ($topic_author_name != '') ? $topic_author_name : $lang['Guest'];
 				}
 
+				if (($userdata['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask']) && empty($searchset[$i]['user_active']))
+				{
+					$topic_author = $lang['INACTIVE_USER'];
+				}
+
 				$first_post_time = create_date($config['default_dateformat'], $searchset[$i]['topic_time'], $config['board_timezone']);
 				$last_post_time = create_date_ip($config['default_dateformat'], $searchset[$i]['post_time'], $config['board_timezone']);
 				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($searchset[$i]['id2'], $searchset[$i]['user2'], $searchset[$i]['user_color2'], $searchset[$i]['user_active2']);
+
+				if (($userdata['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask2']) && empty($searchset[$i]['user_active2']))
+				{
+					$last_post_author = $lang['INACTIVE_USER'];
+				}
 
 				$last_post_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#p' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 //<!-- BEGIN Unread Post Information to Database Mod -->

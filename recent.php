@@ -119,7 +119,7 @@ if ($mode == 'utview')
 	$extra_tables = ", " . TOPIC_VIEW_TABLE . " tv";
 }
 
-$sql_start = "SELECT DISTINCT(t.topic_id), t.*, p.poster_id, p.post_username AS last_poster_name, p.post_id, p.post_time, f.forum_name, f.forum_id, u.username AS last_poster, u.user_id AS last_poster_id, u.user_active AS last_poster_active, u.user_color AS last_poster_color, u2.username AS first_poster, u2.user_id AS first_poster_id, u2.user_active AS first_poster_active, u2.user_color AS first_poster_color, p2.post_username AS first_poster_name" . $extra_fields . "
+$sql_start = "SELECT DISTINCT(t.topic_id), t.*, p.poster_id, p.post_username AS last_poster_name, p.post_id, p.post_time, f.forum_name, f.forum_id, u.username AS last_poster, u.user_id AS last_poster_id, u.user_active AS last_poster_active, u.user_mask AS last_poster_mask, u.user_color AS last_poster_color, u2.username AS first_poster, u2.user_id AS first_poster_id, u2.user_active AS first_poster_active, u2.user_mask AS first_poster_mask, u2.user_color AS first_poster_color, p2.post_username AS first_poster_name" . $extra_fields . "
 		FROM (" . TOPICS_TABLE . " t, " . POSTS_TABLE . " p" . $extra_tables . ")
 			LEFT OUTER JOIN " . POSTS_TABLE . " p2 ON (p2.post_id = t.topic_first_post_id)
 			LEFT OUTER JOIN " . FORUMS_TABLE . " f ON (f.forum_id = p.forum_id)
@@ -287,8 +287,16 @@ for($i = 0; $i < sizeof($line); $i++)
 	// Old format
 	//$first_time = create_date_ip($config['default_dateformat'], $line[$i]['topic_time'], $config['board_timezone']);
 	$first_author = ($line[$i]['first_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['first_poster_id'], $line[$i]['first_poster'], $line[$i]['first_poster_color'], $line[$i]['first_poster_active']) : (($line[$i]['first_poster_name'] != '') ? $line[$i]['first_poster_name'] : $lang['Guest']);
+	if (($userdata['user_level'] != ADMIN) && !empty($line[$i]['first_poster_mask']) && empty($line[$i]['first_poster_active']))
+	{
+		$first_author = $lang['INACTIVE_USER'];
+	}
 	$last_time = create_date_ip($config['default_dateformat'], $line[$i]['post_time'], $config['board_timezone']);
 	$last_author = ($line[$i]['last_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['last_poster_id'], $line[$i]['last_poster'], $line[$i]['last_poster_color'], $line[$i]['last_poster_active']) : (($line[$i]['last_poster_name'] != '') ? $line[$i]['last_poster_name'] : $lang['Guest']);
+	if (($userdata['user_level'] != ADMIN) && !empty($line[$i]['last_poster_mask']) && empty($line[$i]['last_poster_active']))
+	{
+		$last_author = $lang['INACTIVE_USER'];
+	}
 	$last_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $line[$i]['topic_last_post_id']) . '#p' . $line[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
 	// SELF AUTH - BEGIN

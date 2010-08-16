@@ -602,7 +602,7 @@ else
 //$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = '" . $userdata['user_id'] . "'" : '';
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND (t.topic_poster = '" . $userdata['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
-$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time, p2.post_edit_time, p.enable_bbcode, p.enable_html, p.enable_smilies
+$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_mask as user_mask2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time, p2.post_edit_time, p.enable_bbcode, p.enable_html, p.enable_smilies
 				FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
 				WHERE $upi2db_post_global_announce
 					AND t.topic_poster = u.user_id
@@ -1166,7 +1166,11 @@ if($total_topics)
 		}
 
 		$topic_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] : $lang['Guest']) : colorize_username($topic_rowset[$i]['user_id'], $topic_rowset[$i]['username'], $topic_rowset[$i]['user_color'], $topic_rowset[$i]['user_active']);
-		$topic_author .= ($topic_rowset[$i]['user_id'] != ANONYMOUS) ? '' : '';
+
+		if (($userdata['user_level'] != ADMIN) && !empty($topic_rowset[$i]['user_mask']) && empty($topic_rowset[$i]['user_active']))
+		{
+			$topic_author = $lang['INACTIVE_USER'];
+		}
 
 		//$first_post_time = create_date_ip($config['default_dateformat'], $topic_rowset[$i]['topic_time'], $config['board_timezone']);
 		$first_post_time = create_date_ip($lang['DATE_FORMAT_VF'], $topic_rowset[$i]['topic_time'], $config['board_timezone'], true);
@@ -1174,6 +1178,11 @@ if($total_topics)
 		$last_post_time = create_date_ip($config['default_dateformat'], $topic_rowset[$i]['post_time'], $config['board_timezone']);
 
 		$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($topic_rowset[$i]['id2'], $topic_rowset[$i]['user2'], $topic_rowset[$i]['user_color2'], $topic_rowset[$i]['user_active2']);
+
+		if (($userdata['user_level'] != ADMIN) && !empty($topic_rowset[$i]['user_mask2']) && empty($topic_rowset[$i]['user_active2']))
+		{
+			$last_post_author = $lang['INACTIVE_USER'] . ' ';
+		}
 
 		// Convert and clean special chars!
 		$last_post_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (!empty($topic_link['class_new']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $topic_title_plain . ' - ' . $lang['View_latest_post'] . '" /></a>';
