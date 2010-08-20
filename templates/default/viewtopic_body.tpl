@@ -50,7 +50,7 @@
 <!-- BEGIN postrow -->
 <tr>
 	<td class="row-post-author">
-		<span class="post-name"><a id="p{postrow.U_POST_ID}"></a>{postrow.POSTER_FROM_FLAG}&nbsp;{postrow.POSTER_NAME}&nbsp;{postrow.POSTER_GENDER}</span>
+		<span class="post-name"><a id="p{postrow.U_POST_ID}"></a>{postrow.POSTER_ONLINE_STATUS_IMG}&nbsp;{postrow.POSTER_NAME}&nbsp;{postrow.POSTER_GENDER}</span>
 		<br />
 		<div class="center-block-text">
 			<div class="post-rank">
@@ -69,7 +69,6 @@
 		<!-- END switch_showavatars -->
 		<div class="post-details">
 			<!-- IF not S_BOT -->
-			{postrow.POSTER_ONLINE_STATUS_IMG}{postrow.IP_IMG}{postrow.AIM_IMG}{postrow.ICQ_IMG}{postrow.MSN_IMG}{postrow.SKYPE_IMG}{postrow.YIM_IMG}<br />
 			<!-- ENDIF -->
 			<!-- {postrow.POSTER_NO}<br /> -->
 			{postrow.POSTER_JOINED}<br />
@@ -78,7 +77,7 @@
 			{postrow.POSTER_THANKS_RECEIVED}
 			<!-- ENDIF -->
 			{postrow.POSTER_AGE}
-			{postrow.POSTER_FROM}<br />
+			{postrow.POSTER_FROM_FULL}<br />
 			<!-- IF postrow.FEEDBACKS -->{postrow.FEEDBACKS}<!-- ENDIF -->
 			<!-- IF not S_BOT -->
 			<!-- BEGIN switch_poster_info -->
@@ -101,7 +100,7 @@
 			<!-- IF not S_BOT -->
 			{postrow.QUOTE_IMG}{postrow.EDIT_IMG}{postrow.DELETE_IMG}
 			{postrow.UNREAD_IMG}
-			{postrow.U_R_CARD}{postrow.U_Y_CARD}{postrow.U_G_CARD}{postrow.U_B_CARD}<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a>{postrow.ARROWS}
+			{postrow.U_R_CARD}{postrow.U_Y_CARD}{postrow.U_G_CARD}{postrow.U_B_CARD}&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
 			<!-- ELSE -->
 			&nbsp;
 			<!-- ENDIF -->

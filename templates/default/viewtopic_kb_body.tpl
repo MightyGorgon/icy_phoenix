@@ -31,10 +31,7 @@ function open_postreview(ref)
 	<td class="row-post-buttons post-buttons" colspan="2">
 		<div class="post-buttons-top post-buttons">
 			<!-- IF not S_BOT -->
-			{postrow.ARROWS}
-			{postrow.QUOTE_IMG}
-			<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}"></a>
-			{postrow.EDIT_IMG}&nbsp;{postrow.DELETE_IMG}&nbsp;{postrow.IP_IMG}&nbsp;
+			{postrow.QUOTE_IMG}&nbsp;{postrow.EDIT_IMG}&nbsp;{postrow.DELETE_IMG}&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
 			<!-- ELSE -->
 			&nbsp;
 			<!-- ENDIF -->
@@ -71,8 +68,8 @@ function open_postreview(ref)
 </tr>
 <tr>
 	<td class="row-post-buttons post-buttons" colspan="2">
-		<div style="float:right;">{postrow.POSTER_ONLINE_STATUS_IMG}&nbsp;{postrow.PROFILE_IMG}&nbsp;{postrow.PM_IMG}&nbsp;{postrow.EMAIL_IMG}&nbsp;</div>
-		<span class="gensmall">&nbsp;{postrow.POSTER_NAME}&nbsp;[&nbsp;{postrow.POST_DATE}&nbsp;]</span>
+		<div style="float:right;">{postrow.PROFILE_IMG}&nbsp;{postrow.PM_IMG}&nbsp;{postrow.EMAIL_IMG}&nbsp;</div>
+		<span class="gensmall">{postrow.POSTER_NAME}&nbsp;[&nbsp;{postrow.POST_DATE}&nbsp;]</span>
 	</td>
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>

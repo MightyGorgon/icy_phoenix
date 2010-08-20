@@ -2380,6 +2380,7 @@ $lang = array_merge($lang, array(
 	'FOE_ADD' => 'Add as a foe',
 	'FOE_REMOVE' => 'Remove as a foe',
 
+	'SOCIAL_NETWORKS' => 'Social Networks',
 	'USER_FIRST_NAME' => 'First Name',
 	'USER_LAST_NAME' => 'Last Name',
 	'FACEBOOK' => 'Facebook',

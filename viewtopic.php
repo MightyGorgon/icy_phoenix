@@ -1343,9 +1343,11 @@ for($i = 0; $i < $total_posts; $i++)
 
 	$poster_posts = ($postrow[$i]['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $postrow[$i]['user_posts'] : '';
 
-	$poster_from = ($postrow[$i]['user_from'] && ($postrow[$i]['user_id'] != ANONYMOUS)) ? $lang['Location'] . ': ' . $postrow[$i]['user_from'] : '';
+	$poster_from_flag = (!empty($postrow[$i]['user_from_flag']) && ($postrow[$i]['user_id'] != ANONYMOUS)) ? '<img src="images/flags/' . $postrow[$i]['user_from_flag'] . '" alt="' . $postrow[$i]['user_from_flag'] . '" title="' . $postrow[$i]['user_from'] . '" />' : '';
 
-	$poster_from_flag = ($postrow[$i]['user_from_flag'] && ($postrow[$i]['user_id'] != ANONYMOUS)) ? '<img src="images/flags/' . $postrow[$i]['user_from_flag'] . '" alt="' . $postrow[$i]['user_from_flag'] . '" title="' . $postrow[$i]['user_from'] . '" />' : '';
+	$poster_from = (!empty($postrow[$i]['user_from']) && ($postrow[$i]['user_id'] != ANONYMOUS)) ? $lang['Location'] . ': ' . $postrow[$i]['user_from'] : '';
+
+	$poster_from_full = ((!empty($poster_from_flag) || !empty($postrow[$i]['user_from'])) && ($postrow[$i]['user_id'] != ANONYMOUS)) ? $lang['Location'] . ':' . (!empty($poster_from_flag) ? (' ' . $poster_from_flag) : '') . (!empty($postrow[$i]['user_from']) ? (' ' . $postrow[$i]['user_from']) : '') : '';
 
 	$poster_joined = ($postrow[$i]['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $postrow[$i]['user_regdate'], $config['board_timezone']) : '';
 
@@ -1546,20 +1548,20 @@ for($i = 0; $i < $total_posts; $i++)
 		{
 			if ($postrow[$i]['user_session_time'] >= (time() - $config['online_time']))
 			{
-				$online_status_img = '<a href="' . $online_status_url . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
+				$online_status_img = '<a href="' . $online_status_url . '"><img src="' . $images['icon_im_status_online'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
 				$online_status_lang = $lang['Online'];
 				$online_status_class = 'online';
 			}
 			else
 			{
-				$online_status_img = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] .'" title="' . $lang['Offline'] .'" />';
+				$online_status_img = '<img src="' . $images['icon_im_status_offline'] . '" alt="' . $lang['Offline'] .'" title="' . $lang['Offline'] .'" />';
 				$online_status_lang = $lang['Offline'];
 				$online_status_class = 'offline';
 			}
 		}
 		else
 		{
-			$online_status_img = '<a href="' . $online_status_url . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
+			$online_status_img = '<a href="' . $online_status_url . '"><img src="' . $images['icon_im_status_hidden'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
 			$online_status_lang = $lang['Hidden'];
 			$online_status_class = 'hidden';
 		}
@@ -1639,7 +1641,8 @@ for($i = 0; $i < $total_posts; $i++)
 	{
 		$ip_url = 'modcp.' . PHP_EXT . '?mode=ip&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id'] . '&amp;sid=' . $userdata['session_id'];
 		// Start Advanced IP Tools Pack MOD
-		$ip_img = '<a href="' . $ip_url . '"><img src="' . $images['icon_ip2'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" /></a>';
+		$ip_img = '<a href="' . $ip_url . '"><img src="' . $images['icon_ip'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" /></a>';
+		$ip_img_icon = '<a href="' . $ip_url . '"><img src="' . $images['vt_post_ip'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" /></a>';
 		// End Advanced IP Tools Pack MOD
 		$ip = '<a href="' . $ip_url . '">' . $lang['View_IP'] . '</a>';
 
@@ -2195,6 +2198,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'POSTER_POSTS' => $poster_posts,
 		'POSTER_THANKS_RECEIVED' => $poster_thanks_received,
 		'POSTER_FROM' => $poster_from,
+		'POSTER_FROM_FULL' => $poster_from_full,
 		'POSTER_FROM_FLAG' => $poster_from_flag,
 		'POSTER_AVATAR' => $poster_avatar,
 		'POST_DATE' => $post_date,
@@ -2247,7 +2251,9 @@ for($i = 0; $i < $total_posts; $i++)
 		'QUOTE_IMG' => $quote_img,
 		'QUOTE' => $quote,
 		'DOWNLOAD_IMG' => $images['icon_download2'],
+		'DOWNLOAD_IMG_ICON' => $images['vt_post_download'],
 		'IP_IMG' => $ip_img,
+		'IP_IMG_ICON' => $ip_img_icon,
 		'IP' => $ip,
 
 		'U_PROFILE' => $profile_url,
