@@ -26,7 +26,7 @@ switch($dbms)
 		include('includes/mysql.' . PHP_EXT);
 		break;
 	case 'mysql4':
-		include('includes/mysql4.' . PHP_EXT);
+		include('includes/mysql.' . PHP_EXT);
 		break;
 }
 
