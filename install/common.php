@@ -62,7 +62,9 @@ if (defined('BASIC_COMMON'))
 	include(IP_ROOT_PATH . 'config.' . PHP_EXT);
 	include('includes/constants.' . PHP_EXT);
 	include('includes/functions.' . PHP_EXT);
-	include('includes/db.' . PHP_EXT);
+	//include('includes/db.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
 }
 
 if (defined('INSTALLING_ICYPHOENIX'))

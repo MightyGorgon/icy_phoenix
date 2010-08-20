@@ -2357,6 +2357,11 @@ class ip_page
 	{
 		global $db, $table_prefix, $lang;
 
+		if (!function_exists('utf8_clean_string'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
+		}
+
 		/*
 		// ASSIGN FOUNDER STATUS - BEGIN
 		// Grab user ids of users with user_level of ADMIN
