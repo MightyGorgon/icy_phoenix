@@ -296,7 +296,7 @@ if(($page_array['page_dir'] == ADM) || ($page_array['page_dir'] == ('../' . ADM)
 					{
 						if(!empty($_POST['username']))
 						{
-							$sql = "SELECT user_id FROM " . USERS_TABLE . " WHERE username = '" . phpbb_clean_username($_POST['username']) . "'";
+							$sql = get_users_sql(phpbb_clean_username($_POST['username']), false, false, true, true);
 							$result = $db->sql_query($sql);
 							$user_row = $db->sql_fetchrow($result);
 							$db->sql_freeresult($result);
@@ -482,7 +482,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					$content .= '[Group Add: ' . $_tmp1 . ' ==> ' . $_POST['username'] . ']';
 					if ($db_log_actions == true)
 					{
-						$sql = "SELECT user_id FROM " . USERS_TABLE . " WHERE username = '" . phpbb_clean_username($_POST['username']) . "'";
+						$sql = get_users_sql(phpbb_clean_username($_POST['username']), false, false, true, true);
 						$result = $db->sql_query($sql);
 						$user_row = $db->sql_fetchrow($result);
 						$db->sql_freeresult($result);

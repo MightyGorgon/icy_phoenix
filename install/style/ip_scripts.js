@@ -1,5 +1,4 @@
 // Show / Hide - BEGIN
-var PreloadFlag = false;
 var expDays = 90;
 var exp = new Date();
 var tmp = '';

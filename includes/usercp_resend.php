@@ -34,7 +34,7 @@ if (isset($_POST['submit']))
 
 	$sql = "SELECT user_id, user_email, user_active, user_actkey, user_lang, user_last_login_attempt
 		FROM " . USERS_TABLE . "
-		WHERE username = '" . $db->sql_escape($username) . "'";
+		WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "'";
 	$result = $db->sql_query($sql);
 
 	if (!($row = $db->sql_fetchrow($result)))
@@ -97,7 +97,7 @@ if (isset($_POST['submit']))
 	// Update last activation sent time
 	$sql = "UPDATE " . USERS_TABLE . "
 		SET user_last_login_attempt = $current_time
-		WHERE username = '" . $db->sql_escape($username) . "'";
+		WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "'";
 	$result = $db->sql_query($sql);
 
 	message_die(GENERAL_MESSAGE, 'Resend_activation_email_done');

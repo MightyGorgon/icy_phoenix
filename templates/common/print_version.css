@@ -172,7 +172,7 @@ a.postlink:hover { text-decoration: underline; color: #dd6900}
 	border-bottom-width: 1px
 }
 
-.post-text { width: 99%; float: left; clear: both; font-size: 12px; /*line-height: 1.2em;*/ padding-bottom: 3px; }
+.post-text { width: 98%; float: left; clear: both; font-size: 12px; /*line-height: 1.2em;*/ padding-bottom: 3px; }
 .post-text-hide-flow { overflow: auto; max-width: 740px; }
 .post-text blockquote { color: #444444; display: block; overflow: auto; margin: 5px 20px; width: auto; border: solid 1px #cccccc; background: #ffffff url('images/bg_quote_content.gif') bottom right no-repeat; padding: 5px; font-size: 12px; }
 .post-text blockquote .quote-user, .post-text blockquote .quote-nouser { margin: 0; margin-bottom: 5px; padding-left: 18px; padding-bottom: 3px; border-bottom: solid 1px #dddddd; font-size: 11px; line-height: 1.2em; font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: normal; color: #808080; background: #ffffff url('./images/bg_quote_header.gif') top left no-repeat; }

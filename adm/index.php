@@ -502,7 +502,6 @@ elseif($acp_pane == 'right')
 		'USERS_PER_DAY' => $users_per_day,
 		'AVATAR_DIR_SIZE' => $avatar_dir_size,
 		'DB_SIZE' => $dbsize,
-		'IP_VERSION' => $config['ip_version'],
 		'PHPBB_VERSION' => '2' . $config['version'],
 		'PHP_VERSION' => phpversion(),
 		'MYSQL_VERSION' => $mysql_version,

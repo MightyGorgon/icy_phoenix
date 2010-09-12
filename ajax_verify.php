@@ -14,8 +14,8 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
-$mode = isset($_GET['mode']) ? $_GET['mode'] : '';
-$verify = isset($_GET['verify']) ? $_GET['verify'] : '';
+$mode = request_get_var('mode', '');
+$verify = request_get_var('verify', '', true);
 
 if ($mode == 'username')
 {

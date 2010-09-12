@@ -1,8 +1,4 @@
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_header_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_header.tpl -->
-<!-- ENDIF -->
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
@@ -27,7 +23,7 @@
 	<th>{L_B_GROUPS}</th>
 </tr>
 <!-- BEGIN blocks -->
-<tr class="{blocks.ROW_CLASS} row1h" style="background-image: none;">
+<tr class="{blocks.ROW_CLASS} {blocks.ROW_CLASS}h" style="background-image: none;">
 	<td class="{blocks.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="block[]" value="{blocks.BLOCK_CB_ID}" /></td>
 	<td class="{blocks.ROW_CLASS}" style="background: none;">{blocks.TITLE}</td>
 	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.POSITION}</td>
@@ -49,8 +45,4 @@
 </table>
 </form>
 
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_footer.tpl -->
-<!-- ENDIF -->

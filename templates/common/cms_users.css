@@ -3,13 +3,13 @@
 #cms_menu{
 	text-align: left;
 	width: 100%;
-	background: #ffffff url(images/bg_post.gif) top repeat-x;;
+	background: #ffffff url('images/bg_post.gif') top repeat-x;;
 }
 
 #cms_nav {
 	margin-top: 3px;
 	padding: 2px 5px;
-	background: url(images/bg_nav2.gif) top repeat-x;
+	background: url('images/bg_nav2.gif') top repeat-x;
 	height: 14px;
 	border-top: solid 1px #aaaaaa;
 	border-bottom: solid 1px #aaaaaa;
@@ -48,9 +48,11 @@
 	white-space: nowrap;
 	overflow: hidden;
 	border: solid 1px #aaaaaa;
+
 	-moz-border-radius-topright: 5px;
-	-webkit-border-radius-topright: 5px;
 	-moz-border-radius-topleft: 5px;
+
+	-webkit-border-radius-topright: 5px;
 	-webkit-border-radius-topleft: 5px;
 }
 
@@ -116,7 +118,7 @@ input.cms_button_lite {
 }
 
 .cms_button_lite:hover {
-	background: #ffffff url(images/bg_nav2.gif) top repeat-x;
+	background: #ffffff url('images/bg_nav2.gif') top repeat-x;
 	border: solid 1px #cc3333;
 	cursor: pointer;
 	color: #cc3333;
@@ -156,6 +158,3 @@ input.cms_button_lite {
 	color: #444444;
 }
 
-.row1 {
-	vertical-align: top;
-}

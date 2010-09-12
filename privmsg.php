@@ -15,6 +15,7 @@
 *
 */
 
+define('IN_PM', true);
 // MG Cash MOD For IP - BEGIN
 define('IN_CASHMOD', true);
 // MG Cash MOD For IP - END
@@ -645,25 +646,14 @@ elseif ($mode == 'read')
 
 	// Mighty Gorgon - Multiple Ranks - BEGIN
 	$user_ranks = generate_ranks($privmsg, $ranks_array);
-
-	$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
-	$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
-	$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
-	$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
-	$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
-	$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
-	$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
-	$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
-	$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
-	$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
-	if (($user_rank_01 == '') && ($user_rank_01_img  == '') && ($user_rank_02 == '') && ($user_rank_02_img == '') && ($user_rank_03 == '') && ($user_rank_03_img == '') && ($user_rank_04 == '') && ($user_rank_04_img == '') && ($user_rank_05 == '') && ($user_rank_05_img == ''))
+	if (($user_ranks['rank_01_html'] == '') && ($user_ranks['rank_01_img_html']  == '') && ($user_ranks['rank_02_html'] == '') && ($user_ranks['rank_02_img_html'] == '') && ($user_ranks['rank_03_html'] == '') && ($user_ranks['rank_03_img_html'] == '') && ($user_ranks['rank_04_html'] == '') && ($user_ranks['rank_04_img_html'] == '') && ($user_ranks['rank_05_html'] == '') && ($user_ranks['rank_05_img_html'] == ''))
 	{
-		$user_rank_01 = '&nbsp;';
+		$user_ranks['rank_01_html'] = '&nbsp;';
 	}
 	// Mighty Gorgon - Multiple Ranks - END
 
-	$poster_rank = $user_rank_01;
-	$rank_image = $user_rank_01_img;
+	$poster_rank = $user_ranks['rank_01_html'];
+	$rank_image = $user_ranks['rank_01_img_html'];
 
 	// Dump it to the templating engine
 	$template->assign_vars(array(
@@ -1260,10 +1250,9 @@ elseif ($submit || $refresh || ($mode != ''))
 		if (!empty($username))
 		{
 			$to_username = phpbb_clean_username($username);
-
 			$sql = "SELECT user_id, user_notify_pm, user_email, user_lang, user_active
 				FROM " . USERS_TABLE . "
-				WHERE username = '" . $db->sql_escape($to_username) . "'
+				WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($to_username)) . "'
 					AND user_id <> " . ANONYMOUS;
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
@@ -1817,7 +1806,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		$s_hidden_fields .= '<input type="hidden" name="' . POST_POST_URL . '" value="' . $privmsg_id . '" />';
 	}
 
-/* Start Private Message Review By aUsTiN */
+	/* Start Private Message Review By aUsTiN */
 	$post_to_review = $_GET['p'];
 
 	$q = "SELECT *
@@ -1858,7 +1847,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		'PRIVATE_MSG_TITLE' => $lang['private_msg_review_title']
 		)
 	);
-/* End Private Message Review By aUsTiN */
+	/* End Private Message Review By aUsTiN */
 
 	// Send smilies to template
 	//generate_smilies('inline');
@@ -1868,7 +1857,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	$privmsg_subject = str_replace('"', '&quot;', $privmsg_subject);
 	*/
 
-	if ($config['ajax_features'] == true)
+	if (!empty($config['ajax_features']))
 	{
 		$ajax_blur = ($mode == 'newtopic') ? 'onblur="AJAXSearch(this.value);"' : '';
 		$ajax_pm_user_check = 'onkeyup="AJAXCheckPMUsername(this.value);"';
@@ -2007,7 +1996,7 @@ $search_subject = '';
 $search_text = '';
 if($search_type === 'author')
 {
-	$sql = "SELECT user_id, username FROM " . USERS_TABLE . " WHERE username LIKE '" . $db->sql_escape($search_value) . "' LIMIT 0, 1";
+	$sql = get_users_sql($search_value, true, false, true, false);
 	$result = $db->sql_query($sql);
 	if($result)
 	{
@@ -2016,7 +2005,7 @@ if($search_type === 'author')
 		if($row !== false)
 		{
 			$search_userid = $row['user_id'];
-			$search_sql = ' AND privmsgs_' . ($folder === 'inbox' || $folder === 'savebox' ? 'from' : 'to') . '_userid = ' . $search_userid . ' ';
+			$search_sql = ' AND privmsgs_' . ((($folder === 'inbox') || ($folder === 'savebox')) ? 'from' : 'to') . '_userid = ' . $search_userid . ' ';
 		}
 	}
 }

@@ -452,15 +452,15 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			}
 			else
 			{
-				$search_author = str_replace('*', '%', trim($db->sql_escape($search_author)));
+				//$search_author = str_replace('*', '%', trim($db->sql_escape($search_author)));
+				$search_author = str_replace('*', '%', trim($db->sql_escape(utf8_clean_string($search_author))));
 				if(!$only_bluecards && (strpos($search_author, '%') !== false) && (strlen(str_replace('%', '', $search_author)) < $config['search_min_chars']))
 				{
 					$search_author = '';
+					message_die(GENERAL_MESSAGE, sprintf($lang['SEARCH_MIN_CHARS'], $config['search_min_chars']));
 				}
 
-				$sql = "SELECT user_id
-					FROM " . USERS_TABLE . "
-					WHERE LOWER(username) LIKE '$search_author'";
+				$sql = get_users_sql($search_author, true, false, false, false);
 				$result = $db->sql_query($sql);
 
 				$matching_userids = '';

@@ -197,15 +197,7 @@ class aprvmUtils
 					return $nameCache['user_formatted'][$id];
 				}
 
-				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE username = '" . $db->sql_escape($id) . "'";
-				$result = $db->sql_query($sql);
-				$row = $db->sql_fetchrow($result);
-				//Setupcache
-				$formatted_username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
-				$nameCache['user'][$row['user_id']] = $row['username'];
-				$nameCache['user_formatted'][$row['user_id']] = $formatted_username;
-				$nameCache['reverse'][$row['username']] = $row['user_id'];
-				return $formatted_username;
+				$sql = "SELECT user_id, username, username_clean, user_active, user_color FROM " . USERS_TABLE . " WHERE user_id = '" . $id . "'";
 				break;
 			}
 			case 'user':
@@ -215,15 +207,7 @@ class aprvmUtils
 					return $nameCache['user'][$id];
 				}
 
-				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE user_id = " . $id;
-				$result = $db->sql_query($sql);
-				$row = $db->sql_fetchrow($result);
-				//Setupcache
-				$formatted_username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
-				$nameCache['user'][$row['user_id']] = $row['username'];
-				$nameCache['user_formatted'][$row['user_id']] = $formatted_username;
-				$nameCache['reverse'][$row['username']] = $row['user_id'];
-				return $row['username'];
+				$sql = "SELECT user_id, username, username_clean, user_active, user_color FROM " . USERS_TABLE . " WHERE user_id = " . $id;
 				break;
 			}
 			case 'reverse':
@@ -232,25 +216,50 @@ class aprvmUtils
 				{
 					return $nameCache['reverse'][$id];
 				}
-				$sql = "SELECT user_id, username, user_active, user_color FROM " . USERS_TABLE . " WHERE username = '" . $db->sql_escape($id) . "'";
-				$result = $db->sql_query($sql);
-				$row = $db->sql_fetchrow($result);
-				if (empty($row['user_id']))
-				{
-					return 0;
-				}
-				else
-				{
-					//Setupcache
-					$formatted_username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
-					$nameCache['user'][$row['user_id']] = $row['username'];
-					$nameCache['user_formatted'][$row['user_id']] = $formatted_username;
-					$nameCache['reverse'][$row['username']] = $row['user_id'];
-					return $row['user_id'];
-				}
+				$sql = get_users_sql($id, false, false, true, false);
 				break;
 			}
 		}
+
+		if (!empty($sql))
+		{
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+			if (empty($row['user_id']))
+			{
+				return false;
+			}
+			else
+			{
+				// Compile cache
+				$formatted_username = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
+				$nameCache['user'][$row['user_id']] = $row['username'];
+				$nameCache['user_formatted'][$row['user_id']] = $formatted_username;
+				$nameCache['reverse'][$row['username']] = $row['user_id'];
+
+				switch($mode)
+				{
+					case 'user_formatted':
+					{
+						return $formatted_username;
+						break;
+					}
+					case 'user':
+					{
+						return $row['username'];
+						break;
+					}
+					case 'reverse':
+					{
+						return $row['user_id'];
+						break;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	function do_pagination($mode = 'normal')

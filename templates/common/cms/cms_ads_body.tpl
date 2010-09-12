@@ -1,8 +1,4 @@
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_header_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_header.tpl -->
-<!-- ENDIF -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -18,7 +14,7 @@
 	<th>{L_AD_ENABLED}</th>
 </tr>
 <!-- BEGIN ads_cfg -->
-<tr class="{ads_cfg.ROW_CLASS} row1h" style="background-image:none;">
+<tr class="{ads_cfg.ROW_CLASS} {ads_cfg.ROW_CLASS}h" style="background-image:none;">
 	<td class="{ads_cfg.ROW_CLASS}" style="background: none;"><b class="gensmall">{ads_cfg.AD_CFG}</b></td>
 	<td class="{ads_cfg.ROW_CLASS} row-center" style="background: none;">{ads_cfg.AD_RADIO}</td>
 </tr>
@@ -37,7 +33,7 @@
 	<th>{L_ACTION}</th>
 </tr>
 <!-- BEGIN ads -->
-<tr class="{ads.ROW_CLASS} row1h" style="background-image: none;">
+<tr class="{ads.ROW_CLASS} {ads.ROW_CLASS}h" style="background-image: none;">
 	<td class="{ads.ROW_CLASS} row-center" style="background: none; width: 30px;"><b class="gensmall">{ads.AD_ID}</b></td>
 	<td class="{ads.ROW_CLASS} row-center" style="background: none; width: 50px;"><input type="checkbox" name="ads[]" value="{ads.AD_ID}"{ads.AD_ACTIVE_CHECKED} /></td>
 	<td class="{ads.ROW_CLASS}" style="background: none;"><b class="gensmall">{ads.AD_TITLE}</b></td>
@@ -54,8 +50,4 @@
 </table>
 </form>
 
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_footer.tpl -->
-<!-- ENDIF -->

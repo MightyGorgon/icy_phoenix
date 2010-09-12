@@ -1,7 +1,5 @@
 window.onload=function()
 {
-	PreloadFlag = true;
-
 	Nifty("div.rounded_line");
 	Nifty("div.rounded_line_ext");
 	//Nifty("div.forumline");

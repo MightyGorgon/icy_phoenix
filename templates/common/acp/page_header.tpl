@@ -19,7 +19,7 @@
 <!-- INCLUDE overall_inc_header_js.tpl -->
 
 </head>
-<body id="acp" onload="PreloadFlag=true;">
+<body id="acp">
 
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
 <tr>

@@ -294,8 +294,7 @@ class pafiledb_functions
 		$file_url = $file_data['file_dlurl'];
 		$file_size = $file_data['file_size'];
 
-		$formated_url = create_server_url();
-		$html_path = $formated_url . '/' . $directory;
+		$html_path = create_server_url() . $directory;
 		$update_filesize = false;
 
 		if (((substr($file_url, 0, strlen($html_path)) == $html_path) || !empty($file_data['unique_name'])) && empty($file_size))

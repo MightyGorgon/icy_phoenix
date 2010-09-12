@@ -42,8 +42,4 @@
 </table>
 </form>
 
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_footer.tpl -->
-<!-- ENDIF -->

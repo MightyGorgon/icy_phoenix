@@ -265,11 +265,11 @@ function generate_ranks($user_row, $ranks_array)
 	);
 
 	$user_ranks_array = array(
-		'rank_01', 'rank_01_img',
-		'rank_02', 'rank_02_img',
-		'rank_03', 'rank_03_img',
-		'rank_04', 'rank_04_img',
-		'rank_05', 'rank_05_img',
+		'rank_01',
+		'rank_02',
+		'rank_03',
+		'rank_04',
+		'rank_05',
 	);
 
 	$user_ranks = array();
@@ -281,6 +281,9 @@ function generate_ranks($user_row, $ranks_array)
 	for($j = 0; $j < sizeof($user_ranks_array); $j++)
 	{
 		$user_ranks[$user_ranks_array[$j]] = '';
+		$user_ranks[$user_ranks_array[$j] . '_img'] = '';
+		$user_ranks[$user_ranks_array[$j] . '_html'] = '';
+		$user_ranks[$user_ranks_array[$j] . '_img_html'] = '';
 	}
 
 	if ($user_row['user_id'] == ANONYMOUS)
@@ -304,6 +307,7 @@ function generate_ranks($user_row, $ranks_array)
 	{
 		$rank_tmp = $ranks_array['ranksrow'][$j]['rank_title'];
 		$rank_img_tmp = ($ranks_array['ranksrow'][$j]['rank_image']) ? '<img src="' . $ranks_array['ranksrow'][$j]['rank_image'] . '" alt="' . $rank_tmp . '" title="' . $rank_tmp . '" />' : '';
+		$rank_tmp = (empty($ranks_array['ranksrow'][$j]['rank_show_title']) && !empty($rank_img_tmp)) ? '' : $rank_tmp;
 		if ($is_guest == true)
 		{
 			if ($ranks_array['ranksrow'][$j]['rank_special'] == '2')
@@ -350,10 +354,12 @@ function generate_ranks($user_row, $ranks_array)
 						break;
 				}
 
-				if ($rank_sw == true)
+				if (!empty($rank_sw))
 				{
-					$user_ranks[$user_ranks_array[(($k + 1) * 2) - 2]] = $rank_tmp;
-					$user_ranks[$user_ranks_array[(($k + 1) * 2) - 1]] = $rank_img_tmp;
+					$user_ranks[$user_ranks_array[$k]] = $rank_tmp;
+					$user_ranks[$user_ranks_array[$k] . '_img'] = $rank_img_tmp;
+					$user_ranks[$user_ranks_array[$k] . '_html'] = !empty($rank_tmp) ? ($rank_tmp . '<br />') : '';
+					$user_ranks[$user_ranks_array[$k] . '_img_html'] = !empty($rank_img_tmp) ? ($rank_img_tmp . '<br />') : '';
 					$rank_sw = false;
 				}
 			}

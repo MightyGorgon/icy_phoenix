@@ -1,8 +1,4 @@
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_header_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_header.tpl -->
-<!-- ENDIF -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -37,7 +33,7 @@ window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);
 	<th style="width: 70px;" nowrap="nowrap">{L_CMS_BLOCKS}</th>
 </tr>
 <!-- BEGIN l_row -->
-<tr class="{layout.l_row.ROW_CLASS} row1h" style="background-image: none;">
+<tr class="{layout.l_row.ROW_CLASS} {layout.l_row.ROW_CLASS}h" style="background-image: none;">
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><b>{layout.l_row.LAYOUT_ID}</b></td>
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;" nowrap="nowrap">
 		<a href="{layout.l_row.U_LAYOUT}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CMS_CONFIGURE_BLOCKS}" title="{L_CMS_CONFIGURE_BLOCKS}" style="margin-right: 3px;" /></a><a href="{layout.l_row.U_PREVIEW_LAYOUT}"><img src="{IMG_LAYOUT_PREVIEW}" alt="{L_PREVIEW}" title="{L_PREVIEW}" style="margin-right: 3px;" /></a><!-- IF not layout.l_row.LOCKED  --><!-- IF S_L_EDIT --><a href="{layout.l_row.U_EDIT_LAYOUT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" style="margin-right: 3px;" /></a><!-- ENDIF --><!-- IF S_L_DELETE --><a href="{layout.l_row.U_DELETE_LAYOUT}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a><!-- ENDIF --><!-- ENDIF -->
@@ -57,8 +53,4 @@ window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);
 </form>
 <!-- END layout -->
 
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_footer.tpl -->
-<!-- ENDIF -->

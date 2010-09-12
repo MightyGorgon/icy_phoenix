@@ -1,8 +1,4 @@
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_header_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_header.tpl -->
-<!-- ENDIF -->
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
@@ -33,7 +29,7 @@
 		<th width="10%" align="center">{L_CMS_BLOCKS}</th>
 	</tr>
 	<!-- BEGIN l_row -->
-	<tr class="{layout.l_row.ROW_CLASS} row1h" style="background-image: none;">
+	<tr class="{layout.l_row.ROW_CLASS} {layout.l_row.ROW_CLASS}h" style="background-image: none;">
 		<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><b>{layout.l_row.LAYOUT_ID}</b></td>
 		<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;" nowrap="nowrap">
 			<a href="{layout.l_row.U_LAYOUT}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CONFIGURE_BLOCKS}" title="{L_CONFIGURE_BLOCKS}" /></a>&nbsp;
@@ -59,8 +55,4 @@
 </form>
 <!-- END layout -->
 
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_footer.tpl -->
-<!-- ENDIF -->

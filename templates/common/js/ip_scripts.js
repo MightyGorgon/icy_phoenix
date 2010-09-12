@@ -1,5 +1,4 @@
 // Show / Hide - BEGIN
-var PreloadFlag = false;
 var expDays = 90;
 var exp = new Date();
 var tmp = '';
@@ -185,6 +184,39 @@ function hideMenu(id)
 	}
 }
 // Show / Hide - END
+
+// Display text - BEGIN
+function display_text(id, text)
+{
+	var text = '<br \/>' + text + '<br \/><br \/>';
+	var divarea = false;
+	if (document.all)
+	{
+		divarea = document.all[id];
+	}
+	else
+	{
+		divarea = document.getElementById(id);
+	}
+
+	if (divarea.innerHTML)
+	{
+		divarea.innerHTML = text;
+	}
+	else if (document.all)
+	{
+		divarea.innerText = text;
+	}
+	else if (divarea.textContent)
+	{
+		divarea.textContent = text;
+	}
+	else if (divarea.firstChild.nodeValue)
+	{
+		divarea.firstChild.nodeValue = text;
+	}
+}
+// Display text - END
 
 // Set Width - BEGIN
 function setWidth(elementID, tmpWidth)

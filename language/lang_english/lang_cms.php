@@ -28,6 +28,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	// MG CMS - BEGIN
 	'CMS_WELCOME' => 'Welcome to Icy Phoenix',
+	'CMS_THANKS' => 'Thanks for using <a href="http://www.icyphoenix.com/" title="Icy Phoenix">Icy Phoenix</a>. If you need help you can check <a href="http://www.icyphoenix.com/viewforumlist.php?f=4" title="Documentation">Documentation</a> or <a href="http://www.icyphoenix.com/forum.php" title="Support Forum">Support Forum</a>.',
 	'BP_Title' => 'Blocks Position Tag',
 	'BP_Explain' => 'Add, edit or delete blocks position that can be used in site pages. The default positions are \'header\', \'footer\', \'right\', \'left\' and \'centre\'. These positions correspond to the layout being used for a specific site page. Only existing positions per site page must be added here. Position keys that are not existing in the specified layout will not appear in the site page. Each position tag key and character must be unique per site page.',
 	'BP_Position' => 'Position character',
@@ -453,6 +454,7 @@ $lang = array_merge($lang, array(
 		'cms_b_edit' => 'Edit Blocks',
 		'cms_b_delete' => 'Delete Blocks',
 	),
+
 	)
 );
 

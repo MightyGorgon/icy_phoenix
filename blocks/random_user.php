@@ -71,20 +71,9 @@ if(!function_exists('cms_block_random_user'))
 
 			// Mighty Gorgon - Multiple Ranks - BEGIN
 			$user_ranks = generate_ranks($row, $ranks_array);
-
-			$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
-			$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
-			$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
-			$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
-			$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
-			$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
-			$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
-			$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
-			$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
-			$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
-			if (($user_rank_01 == '') && ($user_rank_01_img  == '') && ($user_rank_02 == '') && ($user_rank_02_img == '') && ($user_rank_03 == '') && ($user_rank_03_img == '') && ($user_rank_04 == '') && ($user_rank_04_img == '') && ($user_rank_05 == '') && ($user_rank_05_img == ''))
+			if (($user_ranks['rank_01_html'] == '') && ($user_ranks['rank_01_img_html']  == '') && ($user_ranks['rank_02_html'] == '') && ($user_ranks['rank_02_img_html'] == '') && ($user_ranks['rank_03_html'] == '') && ($user_ranks['rank_03_img_html'] == '') && ($user_ranks['rank_04_html'] == '') && ($user_ranks['rank_04_img_html'] == '') && ($user_ranks['rank_05_html'] == '') && ($user_ranks['rank_05_img_html'] == ''))
 			{
-				$user_rank_01 = '&nbsp;';
+				$user_ranks['rank_01_html'] = '&nbsp;';
 			}
 			// Mighty Gorgon - Multiple Ranks - END
 
@@ -216,16 +205,16 @@ if(!function_exists('cms_block_random_user'))
 				'U_VIEWPOSTS' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode(ip_utf8_decode($username_simple)) . '&amp;showresults=posts'),
 				'POSTER_AGE' => $poster_age,
 				'POSTER_BIRTHDAY' => $poster_birthday,
-				'USER_RANK_01' => $user_rank_01,
-				'USER_RANK_01_IMG' => $user_rank_01_img,
-				'USER_RANK_02' => $user_rank_02,
-				'USER_RANK_02_IMG' => $user_rank_02_img,
-				'USER_RANK_03' => $user_rank_03,
-				'USER_RANK_03_IMG' => $user_rank_03_img,
-				'USER_RANK_04' => $user_rank_04,
-				'USER_RANK_04_IMG' => $user_rank_04_img,
-				'USER_RANK_05' => $user_rank_05,
-				'USER_RANK_05_IMG' => $user_rank_05_img,
+				'USER_RANK_01' => $user_ranks['rank_01_html'],
+				'USER_RANK_01_IMG' => $user_ranks['rank_01_img_html'],
+				'USER_RANK_02' => $user_ranks['rank_02_html'],
+				'USER_RANK_02_IMG' => $user_ranks['rank_02_img_html'],
+				'USER_RANK_03' => $user_ranks['rank_03_html'],
+				'USER_RANK_03_IMG' => $user_ranks['rank_03_img_html'],
+				'USER_RANK_04' => $user_ranks['rank_04_html'],
+				'USER_RANK_04_IMG' => $user_ranks['rank_04_img_html'],
+				'USER_RANK_05' => $user_ranks['rank_05_html'],
+				'USER_RANK_05_IMG' => $user_ranks['rank_05_img_html'],
 				'POSTER_GENDER' => $gender_image,
 				'POSTER_JOINED' => $poster_joined,
 				'POSTER_POSTS' => $poster_posts,

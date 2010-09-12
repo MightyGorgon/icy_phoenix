@@ -54,10 +54,8 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 		);
 	}
 
-	// We still need to check whether username_clean is working fine in Icy Phoenix after conversion!
-	//$sql_match = !empty($user_id) ? ("user_id = '" . $db->sql_escape($user_id) . "'") : ("username = '" . $db->sql_escape($username) . "'");
 	$sql_match = !empty($user_id) ? ("user_id = '" . $db->sql_escape($user_id) . "'") : ("username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "'");
-	$sql = 'SELECT user_id, username, user_password, user_passchg, user_pass_convert, user_email, user_active, user_level, user_login_attempts, user_last_login_attempt
+	$sql = 'SELECT user_id, username, username_clean, user_password, user_passchg, user_pass_convert, user_email, user_active, user_level, user_login_attempts, user_last_login_attempt
 		FROM ' . USERS_TABLE . '
 		WHERE ' . $sql_match;
 	$result = $db->sql_query($sql);

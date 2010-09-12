@@ -27,7 +27,6 @@ $template->set_filenames(array('page_footer' => ADM_TPL . 'page_footer.tpl'));
 
 $template->assign_vars(array(
 	'PHPBB_VERSION' => '2' . $config['version'],
-	'IP_VERSION' => $config['ip_version'],
 	'TRANSLATION_INFO' => (isset($lang['TRANSLATION_INFO'])) ? $lang['TRANSLATION_INFO'] : ((isset($lang['TRANSLATION'])) ? $lang['TRANSLATION'] : '')
 	)
 );

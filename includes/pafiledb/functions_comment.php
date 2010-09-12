@@ -77,17 +77,6 @@ function display_comments(&$file_data)
 
 		// Mighty Gorgon - Multiple Ranks - BEGIN
 		$user_ranks = generate_ranks($comments_row, $ranks_array);
-
-		$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
-		$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
-		$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
-		$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
-		$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
-		$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
-		$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
-		$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
-		$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
-		$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
 		// Mighty Gorgon - Multiple Ranks - END
 
 
@@ -101,16 +90,16 @@ function display_comments(&$file_data)
 			'ICON_MINIPOST_IMG' => IP_ROOT_PATH . $images['icon_minipost'],
 			'ICON_SPACER' => IP_ROOT_PATH . $images['spacer'],
 			'GENDER' => $user_info['gender'],
-			'USER_RANK_01' => $user_rank_01,
-			'USER_RANK_01_IMG' => $user_rank_01_img,
-			'USER_RANK_02' => $user_rank_02,
-			'USER_RANK_02_IMG' => $user_rank_02_img,
-			'USER_RANK_03' => $user_rank_03,
-			'USER_RANK_03_IMG' => $user_rank_03_img,
-			'USER_RANK_04' => $user_rank_04,
-			'USER_RANK_04_IMG' => $user_rank_04_img,
-			'USER_RANK_05' => $user_rank_05,
-			'USER_RANK_05_IMG' => $user_rank_05_img,
+			'USER_RANK_01' => $user_ranks['rank_01_html'],
+			'USER_RANK_01_IMG' => $user_ranks['rank_01_img_html'],
+			'USER_RANK_02' => $user_ranks['rank_02_html'],
+			'USER_RANK_02_IMG' => $user_ranks['rank_02_img_html'],
+			'USER_RANK_03' => $user_ranks['rank_03_html'],
+			'USER_RANK_03_IMG' => $user_ranks['rank_03_img_html'],
+			'USER_RANK_04' => $user_ranks['rank_04_html'],
+			'USER_RANK_04_IMG' => $user_ranks['rank_04_img_html'],
+			'USER_RANK_05' => $user_ranks['rank_05_html'],
+			'USER_RANK_05_IMG' => $user_ranks['rank_05_img_html'],
 			'POSTER_JOINED' => $poster_joined,
 			'POSTER_POSTS' => $poster_posts,
 			'POSTER_FROM' => $poster_from,

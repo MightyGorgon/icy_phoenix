@@ -29,7 +29,7 @@ function attach_rules(forum_id)
 {CPL_MENU_OUTPUT}
 <table width="100%" align="center" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="100%" align="center" style="vertical-align:top;">
+	<td width="100%" align="center" style="vertical-align: top;">
 		<div class="forumline" style="margin-left: 5%; margin-right: 5%px;">
 		<table width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>

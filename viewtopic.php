@@ -1389,20 +1389,9 @@ for($i = 0; $i < $total_posts; $i++)
 
 	// Mighty Gorgon - Multiple Ranks - BEGIN
 	$user_ranks = generate_ranks($postrow[$i], $ranks_array);
-
-	$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
-	$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
-	$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
-	$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
-	$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
-	$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
-	$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
-	$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
-	$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
-	$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
-	if (($user_rank_01 == '') && ($user_rank_01_img  == '') && ($user_rank_02 == '') && ($user_rank_02_img == '') && ($user_rank_03 == '') && ($user_rank_03_img == '') && ($user_rank_04 == '') && ($user_rank_04_img == '') && ($user_rank_05 == '') && ($user_rank_05_img == ''))
+	if (($user_ranks['rank_01_html'] == '') && ($user_ranks['rank_01_img_html']  == '') && ($user_ranks['rank_02_html'] == '') && ($user_ranks['rank_02_img_html'] == '') && ($user_ranks['rank_03_html'] == '') && ($user_ranks['rank_03_img_html'] == '') && ($user_ranks['rank_04_html'] == '') && ($user_ranks['rank_04_img_html'] == '') && ($user_ranks['rank_05_html'] == '') && ($user_ranks['rank_05_img_html'] == ''))
 	{
-		$user_rank_01 = '&nbsp;';
+		$user_ranks['rank_01_html'] = '&nbsp;';
 	}
 	// Mighty Gorgon - Multiple Ranks - END
 
@@ -1418,7 +1407,7 @@ for($i = 0; $i < $total_posts; $i++)
 	{
 		$poster = $postrow[$i]['post_username'];
 		$poster_qq = $postrow[$i]['post_username'];
-		$user_rank_01 = $lang['Guest'] . '<br />';
+		$user_ranks['rank_01_html'] = $lang['Guest'] . '<br />';
 	}
 
 	if ($poster_id != ANONYMOUS)
@@ -1894,16 +1883,6 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 	// CrackerTracker v5.x
 
-	// BEGIN CMX News Mod
-	// Strip out the <!--break--> delimiter.
-	$delim = htmlspecialchars('<!--break-->');
-	$pos = strpos($message, $delim);
-	if(($pos !== false) && ($pos < strlen($message)))
-	{
-		$message = substr_replace($message, html_entity_decode($delim), $pos, strlen($delim));
-	}
-	// END CMX News Mod
-
 	$user_sig = ($postrow[$i]['enable_sig'] && (trim($postrow[$i]['user_sig']) != '') && $config['allow_sig']) ? $postrow[$i]['user_sig'] : '';
 
 	// Replace Naughty Words - BEGIN
@@ -1931,6 +1910,12 @@ for($i = 0; $i < $total_posts; $i++)
 	elseif($user_sig)
 	{
 		$user_sig = $sig_cache[$postrow[$i]['user_id']];
+	}
+
+	// Replace new lines (we use this rather than nl2br because till recently it wasn't XHTML compliant)
+	if ($user_sig != '')
+	{
+		$user_sig = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 	}
 
 	$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $postrow[$i]['enable_html'];
@@ -1999,11 +1984,18 @@ for($i = 0; $i < $total_posts; $i++)
 		$message = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match . ')(?!\w|[^<>]*>)#i', '<span class="highlight-w"><b>\1</b></span>', $message);
 	}
 
-	// Replace newlines (we use this rather than nl2br because till recently it wasn't XHTML compliant)
-	if ($user_sig != '')
+	// BEGIN CMX News Mod
+	// Strip out the <!--break--> delimiter.
+	if ($postrow[$i]['post_id'] == $topic_first_post_id)
 	{
-		$user_sig = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
+		$delim = htmlspecialchars('<!--break-->');
+		$pos = strpos($message, $delim);
+		if(($pos !== false) && ($pos < strlen($message)))
+		{
+			$message = substr_replace($message, html_entity_decode($delim), $pos, strlen($delim));
+		}
 	}
+	// END CMX News Mod
 
 	// Mighty Gorgon - ???
 	// $message = str_replace("\n", "\n<br />\n", $message);
@@ -2183,16 +2175,16 @@ for($i = 0; $i < $total_posts; $i++)
 		//'POSTER_NAME_QR' => htmlspecialchars($poster_qq),
 		'POSTER_AGE' => $poster_age,
 		'GEB_BILD' => !empty($gebbild) ? $gebbild : '',
-		'USER_RANK_01' => $user_rank_01,
-		'USER_RANK_01_IMG' => $user_rank_01_img,
-		'USER_RANK_02' => $user_rank_02,
-		'USER_RANK_02_IMG' => $user_rank_02_img,
-		'USER_RANK_03' => $user_rank_03,
-		'USER_RANK_03_IMG' => $user_rank_03_img,
-		'USER_RANK_04' => $user_rank_04,
-		'USER_RANK_04_IMG' => $user_rank_04_img,
-		'USER_RANK_05' => $user_rank_05,
-		'USER_RANK_05_IMG' => $user_rank_05_img,
+		'USER_RANK_01' => $user_ranks['rank_01_html'],
+		'USER_RANK_01_IMG' => $user_ranks['rank_01_img_html'],
+		'USER_RANK_02' => $user_ranks['rank_02_html'],
+		'USER_RANK_02_IMG' => $user_ranks['rank_02_img_html'],
+		'USER_RANK_03' => $user_ranks['rank_03_html'],
+		'USER_RANK_03_IMG' => $user_ranks['rank_03_img_html'],
+		'USER_RANK_04' => $user_ranks['rank_04_html'],
+		'USER_RANK_04_IMG' => $user_ranks['rank_04_img_html'],
+		'USER_RANK_05' => $user_ranks['rank_05_html'],
+		'USER_RANK_05_IMG' => $user_ranks['rank_05_img_html'],
 		'POSTER_GENDER' => $gender_image,
 		'POSTER_JOINED' => $poster_joined,
 		'POSTER_POSTS' => $poster_posts,

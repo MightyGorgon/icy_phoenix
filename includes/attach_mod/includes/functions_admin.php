@@ -688,12 +688,10 @@ function search_attachments($order_by, &$total_rows)
 		$search_author = stripslashes(phpbb_clean_username($search_author));
 
 		// Prepare for directly going into sql query
-		$search_author = str_replace('*', '%', $db->sql_escape($search_author));
+		$search_author = str_replace('*', '%', $db->sql_escape(utf8_clean_string($search_author)));
 
 		// We need the post_id's, because we want to query the Attachment Table
-		$sql = 'SELECT user_id
-			FROM ' . USERS_TABLE . "
-			WHERE username LIKE '$search_author'";
+		$sql = get_users_sql($search_author, true, false, false, false);
 		$result = $db->sql_query($sql);
 
 		$matching_userids = '';

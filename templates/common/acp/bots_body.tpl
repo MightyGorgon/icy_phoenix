@@ -16,7 +16,7 @@
 	<th>{L_ACTION}</th>
 </tr>
 <!-- BEGIN bots -->
-<tr class="{bots.ROW_CLASS} row1h" style="background-image: none;">
+<tr class="{bots.ROW_CLASS} {bots.ROW_CLASS}h" style="background-image: none;">
 	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:30px;"><b class="gensmall">{bots.BOT_ID}</b></td>
 	<td class="{bots.ROW_CLASS}" style="background: none;"><b class="gensmall">{bots.BOT_NAME}</b></td>
 	<td class="{bots.ROW_CLASS}" style="background: none;"><span class="gensmall">{bots.BOT_COLOR}</span></td>

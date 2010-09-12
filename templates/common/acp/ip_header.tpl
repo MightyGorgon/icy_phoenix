@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html;" />
 <link rel="stylesheet" href="../templates/common/acp.css" type="text/css" />
 </head>
-<body id="header" onload="PreloadFlag = true;">
+<body id="header">
 
 	<div class="nav-links row-center" style="font-family: Arial, Helvetica, sans-serif; border-left-color: #dddddd;">
 		<div class="nav-links-left">{L_VERSION_INFORMATION}: {VERSION_INFO}</div>

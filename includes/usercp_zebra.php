@@ -96,12 +96,13 @@ if (isset($_POST['submit']))
 				foreach ($data['add'] as $user_tmp)
 				{
 					$username_tmp = phpbb_clean_username($user_tmp);
-					$users_to_add .= (($users_to_add == '') ? '' : ', ') . "'" . $db->sql_escape($username_tmp) . "'";
+					//$users_to_add .= (($users_to_add == '') ? '' : ', ') . "'" . $db->sql_escape($username_tmp) . "'";
+					$users_to_add .= (($users_to_add == '') ? '' : ', ') . "'" . $db->sql_escape(utf8_clean_string($username_tmp)) . "'";
 				}
 				//$users_to_add = implode('\',\'', $data['add']);
 				$sql = "SELECT user_id, user_level
 					FROM " . USERS_TABLE . "
-					WHERE username IN (" . $users_to_add . ")
+					WHERE username_clean IN (" . $users_to_add . ")
 						AND user_active = 1";
 				//die($sql);
 				$result = $db->sql_query($sql);

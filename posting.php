@@ -2091,7 +2091,7 @@ if (($config['ctracker_vconfirm_guest'] == 1) && !$userdata['session_logged_in']
 }
 // CrackerTracker v5.x
 
-if ($config['ajax_features'] == true)
+if (!empty($config['ajax_features']))
 {
 	$ajax_blur = ($mode == 'newtopic') ? 'onblur="AJAXSearch(this.value);"' : '';
 	$ajax_pm_user_check = 'onkeyup="AJAXCheckPMUsername(this.value);"';

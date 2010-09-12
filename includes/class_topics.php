@@ -669,7 +669,7 @@ class class_topics
 
 		// Mighty Gorgon: Shall we enable BBCode for polls?
 		$poll_bbcode = true;
-		$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['enable_bbcode']) ? true : false;
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode']) ? true : false;
 		$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) ? true : false;
 		$bbcode->allow_smilies = ($config['allow_smilies'] && !$lofi) ? true : false;
 		for ($i = 0, $size = sizeof($poll_info); $i < $size; $i++)

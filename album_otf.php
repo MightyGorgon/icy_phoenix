@@ -124,7 +124,7 @@ if($userdata['user_level'] == ADMIN)
 	album_read_tree($userdata['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
 	$userinfo = album_get_nonexisting_personal_gallery_info();
 	$count = sizeof($userinfo);
-	for($idx=0; $idx < count; $idx++)
+	for($idx = 0; $idx < $count; $idx++)
 	{
 		$personal_gallery = init_personal_gallery_cat($userinfo[$idx]['user_id']);
 		$album_user_access = album_permissions($userinfo[$idx]['user_id'], 0, ALBUM_AUTH_CREATE_PERSONAL, $personal_gallery);

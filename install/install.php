@@ -260,6 +260,10 @@ else
 		exit;
 	}
 
+	if (!function_exists('utf8_clean_string'))
+	{
+		include(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
+	}
 	include('includes/db.' . PHP_EXT);
 	$dbms_schema = 'schemas/' . $available_dbms[$dbms]['SCHEMA'] . '_schema.sql';
 	$dbms_basic = 'schemas/' . $available_dbms[$dbms]['SCHEMA'] . '_basic.sql';
@@ -386,7 +390,7 @@ else
 		$admin_pass_md5 = ($confirm && $userdata['user_level'] == ADMIN) ? $admin_pass1 : md5($admin_pass1);
 
 		$sql = "UPDATE " . $table_prefix . "users
-			SET username = '" . $db->sql_escape($admin_name) . "', user_password='" . $db->sql_escape($admin_pass_md5) . "', user_lang = '" . $db->sql_escape($language) . "', user_email='" . $db->sql_escape($board_email) . "', user_pass_convert = '1'
+			SET username = '" . $db->sql_escape($admin_name) . "', username_clean = '" . $db->sql_escape(utf8_clean_string($admin_name)) . "', user_password='" . $db->sql_escape($admin_pass_md5) . "', user_lang = '" . $db->sql_escape($language) . "', user_email='" . $db->sql_escape($board_email) . "', user_pass_convert = '1'
 			WHERE username = 'Admin'";
 		$result = $db->sql_query($sql);
 		if (!$result)

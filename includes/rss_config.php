@@ -20,8 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('CACHE_TIME', 600);					// Cache time for RSS feed in sec, 5 min by default
-																		// Set to zero to disable cache (Not recomendated).
+define('CACHE_TIME', 600);					// Cache time for RSS feed in sec, 5 min by default. Set to zero to disable cache (Not recomended).
 define('AUTOSTYLED', false);				// Use XSLT transformation in MSIE by default
 define('CACHE_TO_FILE', true);			// Use cache dir for caching defaul page. You MUST set 777 to that dir first
 define('UPDATE_VIEW_COUNT', false);	// Update count of viewed topics for non-Anonymous user. If set to false disable Who viewed a topic update too
@@ -30,12 +29,10 @@ define('DEFAULT_ITEMS', 25);				// How many items parsed in feed by default
 define('MAX_ITEMS', 100);						// Max number of parsed items
 define('AUTOLOGIN', true);					// Try to autologin using cookie if user not set 'login' or 'uid' key
 define('SEE_MODIFYED', true);				// Include in feed modified from last visit record in addition to new records
-define('MAX_WEEKS_AGO', 2);					// Limit RSS feed by time. Most important in large forums (!)
-																		// Set to zero if you don't want use this futures
+define('MAX_WEEKS_AGO', 2);					// Limit RSS feed by time. Most important in large forums (!) Set to zero if you don't want use this feature
 $show_time = true;									// Show total script time in RSS comments.
 $unauthed = '0';										// Comma separated list of unauthed forums. For ex.: '0,1,11';
-
 $cache_root = 'cache/';							// Cache dir
-$cache_filename = 'rss_feed.xml';
+$cache_filename = 'rss_feed.xml';		// Cache filename
 
 ?>

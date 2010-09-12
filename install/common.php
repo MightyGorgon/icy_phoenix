@@ -37,7 +37,7 @@ else
 	define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
 }
 
-// Try to override some limits - maybe it helps some...
+// Try to override some limits - maybe it helps on some servers...
 @set_time_limit(0);
 $mem_limit = $ip_functions->check_mem_limit();
 @ini_set('memory_limit', $mem_limit);

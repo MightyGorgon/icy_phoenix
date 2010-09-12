@@ -53,7 +53,7 @@ $files_array = array(
 	'changestyle.php',
 	'cpl_menu.php',
 	'cms_auth.php',
-	'ctracker_login.php'
+	'ctracker_login.php',
 	'db_generator.php',
 	'edit_post_time.php',
 	'fetchposts.php',

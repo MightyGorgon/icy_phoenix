@@ -21,7 +21,7 @@ switch ($mode)
 	case 'user_name':
 		$mode_des = 'Username';
 		$sql = "FROM " . USERS_TABLE . "
-						WHERE username = '" . $db->sql_escape($del_user) . "'";
+						WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($del_user)) . "'";
 		break;
 
 	case 'user_id':

@@ -308,7 +308,6 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 
 				$template->assign_vars(array(
-					'IP_VERSION' => $config['ip_version'],
 					'PHPBB_VERSION' => '2' . $config['version'],
 					'MOD_VERSION' => DBMTNC_VERSION,
 					'PHP_VERSION' => phpversion(),

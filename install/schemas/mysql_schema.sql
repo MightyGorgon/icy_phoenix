@@ -1497,6 +1497,7 @@ CREATE TABLE `phpbb_ranks` (
 	`rank_title` varchar(50) NOT NULL DEFAULT '',
 	`rank_min` mediumint(8) NOT NULL DEFAULT '0',
 	`rank_special` tinyint(1) DEFAULT '0',
+	`rank_show_title` tinyint(1) DEFAULT '1',
 	`rank_image` varchar(255) DEFAULT NULL,
 	PRIMARY KEY (`rank_id`)
 );

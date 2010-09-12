@@ -114,3 +114,187 @@ ul.sortable-list {
 	clear: both;
 	height: 1px;
 }
+
+
+/* STYLE COLORS - BEGIN */
+/* BBCode Buttons */
+.bbimages:hover {
+	background-color: #ff5500;
+}
+
+/* Various */
+abbr, acronym {
+	border-bottom: 1px dotted #333333;
+	cursor: help;
+}
+
+.forum_rules { font-size: 10px; color: #ff0000; font-weight: bold; }
+
+b.date-today, .last-post b { color: #dd2222; font-weight: bold; }
+b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style: italic; }
+
+/* MG BOXES */
+.bbcb_mg_codetitle, .post-text .mg_codetitle {
+	color: #ffffaa;
+	background: #559977 url('images/bbc_code.gif') no-repeat right;
+	border: 1px solid #dddddd;
+	font-weight: bold;
+	font-size: 10px;
+	text-align: left;
+	padding: 5px;
+	width: 90%;
+	margin-top: 10px;
+}
+
+.bbcb_mg_codediv, .post-text .mg_codediv {
+	color: #006600;
+	background: #fafafa;
+	border: 1px solid #dddddd;
+	border-top: 0;
+	font-family: "Courier New", Courier, sans-serif;
+	font-size: 12px;
+	text-align: left;
+	padding: 5px;
+	overflow: auto;
+	width: 90%;
+	/* height: 100px; */
+}
+
+.bbcb_mg_quotetitle, .post-text .mg_quotetitle {
+	color: #446688;
+	background: #aaccff url('images/bbc_quote.gif') no-repeat right;
+	border: 1px solid #dddddd;
+	font-weight: bold;
+	font-size: 10px;
+	text-align: left;
+	padding: 5px;
+	width: 90%;
+	margin-top: 10px;
+}
+
+.bbcb_mg_attachtitle, .post-text .mg_attachtitle {
+	color: #ffdd99;
+	background: #ff9933 url('images/bbc_zip.gif') no-repeat right;
+	border: 1px solid #dddddd;
+	font-weight: bold;
+	font-size: 10px;
+	text-align: left;
+	padding: 5px;
+	width: 90%;
+	margin-top: 10px;
+}
+
+.bbcb_mg_quotediv, .post-text .mg_quotediv, .bbcb_mg_attachdiv, .post-text .mg_attachdiv {
+	color: #666666;
+	background: #fafafa;
+	border: 1px solid #dddddd;
+	border-top: 0;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	text-align: left;
+	padding: 5px;
+	width: 90%;
+	overflow: auto;
+	direction: ltr;
+	/* max-height: 200px; */
+}
+
+.post-text .mg_codetitle, .post-text .mg_codediv, .post-text .mg_quotetitle, .post-text .mg_quotediv, .post-text .mg_attachtitle, .post-text .mg_attachdiv {
+	display: block;
+}
+
+.bbcb_mg_spoiler, .post-text .spoiler, .post-text .spoiler_trans {
+	background-color: #fafafa;
+	border: 1px solid #ff5500;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	line-height: 125%;
+	margin: 5px 20px;
+	padding: 5px;
+}
+
+.spoiler .code-header {
+	background-color: #fafafa !important;
+}
+
+.post-text .spoiler {
+	display: block;
+	/*overflow: hidden;*/
+	overflow: auto;
+	color: #666666;
+}
+
+.post-text .spoiler_trans {
+	display: block;
+	/*overflow: hidden;*/
+	overflow: auto;
+	color: #fafafa;
+	width: auto;
+}
+
+/* MG COLORS CLASSES */
+.foundercolor,
+a.foundercolor,
+a.foundercolor:link,
+a.foundercolor:active,
+a.foundercolor:visited { color: #ff5500; font-weight: bold; }
+
+a.foundercolor:hover { color: #cc3333; text-decoration: underline; }
+
+.admincolor,
+a.admincolor,
+a.admincolor:link,
+a.admincolor:active,
+a.admincolor:visited { color: #dd2222; font-weight: bold; }
+
+a.admincolor:hover { color: #cc3333; text-decoration: underline; }
+
+.modcolor,
+a.modcolor,
+a.modcolor:link,
+a.modcolor:active,
+a.modcolor:visited { color: #228844; font-weight: bold; }
+
+a.modcolor:hover { color: #cc3333; text-decoration: underline; }
+
+.usercolor,
+a.usercolor,
+a.usercolor:link,
+a.usercolor:active,
+a.usercolor:visited { color: #224488; font-weight: bold; }
+
+a.usercolor:hover { color: #cc3333; text-decoration: underline; }
+
+.topic_glo,
+a.topic_glo,
+a.topic_glo:link,
+a.topic_glo:active,
+a.topic_glo:visited { color: #ff5500; font-weight: bold; }
+
+a.topic_glo:hover { color: #cc3333; text-decoration: underline; }
+
+.topic_ann,
+a.topic_ann,
+a.topic_ann:link,
+a.topic_ann:active,
+a.topic_ann:visited { color: #dd2222; font-weight: bold; }
+
+a.topic_ann:hover { color: #cc3333; text-decoration: underline; }
+
+.topic_imp,
+a.topic_imp,
+a.topic_imp:link,
+a.topic_imp:active,
+a.topic_imp:visited { color: #228844; font-weight: bold; }
+
+a.topic_imp:hover { color: #cc3333; text-decoration: underline; }
+
+.topic_nor,
+a.topic_nor,
+a.topic_nor:link,
+a.topic_nor:active,
+a.topic_nor:visited { color: #224488; font-weight: bold; }
+
+a.topic_nor:hover { color: #cc3333; text-decoration: underline; }
+/* STYLE COLORS - END */
+

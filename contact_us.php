@@ -85,8 +85,9 @@ $sender = request_var('sender', '', true);
 $subject = request_var('subject', '', true);
 $subject = htmlspecialchars_decode($subject, ENT_COMPAT);
 $message = request_var('message', '', true);
+
 // We need to check if HTML emails are enabled so we can correctly escape content and linebreaks
-$message = !empty($config['html_email']) ? $message : htmlspecialchars_decode($message, ENT_COMPAT);
+$message = !empty($config['html_email']) ? $message : str_replace(array('&lt;br&gt;', '&lt;br/&gt;', '&lt;br /&gt;'), array('<br />', '<br />', '<br />'), htmlspecialchars_decode($message, ENT_COMPAT));
 if ($account_delete)
 {
 	$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $userdata['username']) . "\r\n<hr />\r\n\r\n" . $message;

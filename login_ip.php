@@ -53,7 +53,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 
 		if ($login_result['status'] === LOGIN_SUCCESS)
 		{
-			if(($login_result['user_row']['user_level'] != ADMIN) && $config['board_disable'])
+			if(($login_result['user_row']['user_level'] != ADMIN) && !empty($config['board_disable']))
 			{
 				redirect(append_sid(CMS_PAGE_FORUM, true));
 			}

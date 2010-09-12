@@ -70,10 +70,7 @@ class pafiledb_search extends pafiledb_public
 				if (($search_author != '') && ($search_keywords == ''))
 				{
 					$search_author = str_replace('*', '%', trim($search_author));
-
-					$sql = "SELECT user_id
-						FROM " . USERS_TABLE . "
-						WHERE username LIKE '" . $db->sql_escape($search_author) . "'";
+					$sql = get_users_sql($search_author, true, false, true, false);
 					$result = $db->sql_query($sql);
 
 					$matching_userids = '';

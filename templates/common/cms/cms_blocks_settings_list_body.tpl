@@ -1,8 +1,4 @@
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_header_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_header.tpl -->
-<!-- ENDIF -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
@@ -27,7 +23,7 @@
 <tr><td class="row1" colspan="9"><div class="post-text">{L_NO_BLOCKS_AVAILABLE}</div></td></tr>
 <!-- ELSE -->
 <!-- BEGIN blocks -->
-<tr class="{blocks.ROW_CLASS} row1h" style="background-image: none;">
+<tr class="{blocks.ROW_CLASS} {blocks.ROW_CLASS}h" style="background-image: none;">
 	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">
 		<!-- IF blocks.S_MANAGE -->
 		<!-- IF S_B_EDIT --><a href="{blocks.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<!-- ENDIF -->
@@ -56,8 +52,4 @@
 </table>
 </form>
 
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_footer_std.tpl -->
-<!-- ELSE -->
 <!-- INCLUDE ../common/cms/page_footer.tpl -->
-<!-- ENDIF -->

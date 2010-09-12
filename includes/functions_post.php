@@ -833,7 +833,7 @@ function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_a
 {
 	global $db, $cache;
 
-	if (!$all_data_only)
+	if (empty($all_data_only))
 	{
 		$last_post_id = get_forum_last_post_id($forum_id);
 		$topic_data = get_first_last_post_id($topic_id);
@@ -854,7 +854,7 @@ function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_a
 		$db->sql_query($sql);
 	}
 
-	if (!$skip_all_data)
+	if (empty($skip_all_data))
 	{
 		$sql = "UPDATE " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
 			SET t.topic_first_post_id = p.post_id, t.topic_first_post_time = p.post_time, t.topic_first_poster_id = p.poster_id, t.topic_first_poster_name = u.username, t.topic_first_poster_color = u.user_color, t.topic_last_post_id = p2.post_id, t.topic_last_post_time = p2.post_time, t.topic_last_poster_id = p2.poster_id, t.topic_last_poster_name = u2.username, t.topic_last_poster_color = u2.user_color
@@ -869,6 +869,11 @@ function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_a
 			WHERE f.forum_last_post_id = p.post_id
 				AND t.topic_id = p.topic_id
 				AND p.poster_id = u.user_id";
+		$result = $db->sql_query($sql);
+
+		$sql = "UPDATE " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
+			SET p.post_subject = t.topic_title
+			WHERE p.post_id = t.topic_first_post_id";
 		$result = $db->sql_query($sql);
 	}
 
@@ -1279,10 +1284,7 @@ function change_poster_id($post_id, $poster_name)
 	}
 	*/
 
-	$sql = "SELECT user_id, username
-		FROM " . USERS_TABLE . "
-		WHERE username = '" . $db->sql_escape($poster_name) . "'
-		LIMIT 1";
+	$sql = get_users_sql($poster_name, false, false, true, false);
 	$result = $db->sql_query($sql);
 
 	if(!($row = $db->sql_fetchrow($result)))

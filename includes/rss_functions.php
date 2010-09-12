@@ -304,31 +304,42 @@ function rss_get_user()
 	if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW']))
 	{
 		$username = phpbb_clean_username($_SERVER['PHP_AUTH_USER']);
-		$password = md5($_SERVER['PHP_AUTH_PW']);
+		$password = $_SERVER['PHP_AUTH_PW'];
+
 		if(isset($_GET['uid']))
 		{
 			$uid = intval($_GET['uid']);
-			$sql = "SELECT * FROM " . USERS_TABLE . " WHERE user_id = $uid";
+			$uid = (int) $uid;
+			$user_data = get_userdata($uid, false);
+			if (!empty($user_data['username']))
+			{
+				$username = $user_data['username']
+			}
+			else
+			{
+				GetHTTPPasswd();
+			}
+		}
+
+		if (!function_exists('login_db'))
+		{
+			include(IP_ROOT_PATH . 'includes/auth_db.' . PHP_EXT);
+		}
+		$login_result = login_db($username, $password, false, true);
+
+		if ($login_result['status'] === LOGIN_SUCCESS)
+		{
+			return $row['user_id'];
 		}
 		else
 		{
-			$sql = "SELECT user_id, username, user_password, user_active, user_level
-			FROM " . USERS_TABLE . "
-			WHERE username = '" . $db->sql_escape($username) . "'";
-		}
-		$result = $db->sql_query($sql);
-
-		if($row = $db->sql_fetchrow($result))
-		{
-			if(($password == $row['user_password']) && $row['user_active'])
-			{
-				// Yes!!!  It's good user
-				return $row['user_id'];
-			}
-			else GetHTTPPasswd();
+			GetHTTPPasswd();
 		}
 	}
-	else GetHTTPPasswd();
+	else
+	{
+		GetHTTPPasswd();
+	}
 	return ANONYMOUS;
 }
 

@@ -1,3 +1,7 @@
+body {
+	behavior: url('templates/common/csshover3.htc');
+}
+
 #global-wrapper {
 }
 
@@ -5,7 +9,7 @@
 }
 
 .topic-title-hide-flow-header {
-	width: 680px;
+	width: 660px;
 }
 
 .topic-title-hide-flow {
@@ -20,6 +24,7 @@
 }
 
 .post-text {
+	width: 98% !important;
 	/* this is set to avoid one line post being hidden by scrollers in IE */
 	height: auto !important; /* modern browsers */
 	/*height: 40px;*/ /* IE5.x and IE6 */
@@ -62,7 +67,6 @@ blockquote, .post-text blockquote, .code-content, .post-text .code-header {
 }
 
 .row1h, .row1h-new, .row2h, .row2h-new {
-	/*behavior: url('templates/common/pseudo-hover.htc');*/
 }
 
 li.code-row {

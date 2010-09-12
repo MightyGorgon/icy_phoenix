@@ -17,6 +17,11 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_menu_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
+
+$cms_admin = new cms_admin();
+$cms_admin->root = CMS_PAGE_CMS;
+//$cms_admin->init_vars($mode_array, $action_array);
 
 // Start session management
 $userdata = session_pagestart($user_ip);
@@ -108,6 +113,10 @@ else
 {
 	$template->assign_block_vars('cms_dock_off', array());
 }
+
+/* TABS - BEGIN */
+$cms_admin->generate_tabs('menu');
+/* TABS - END */
 
 $s_hidden_fields = '';
 $s_append_url = '';

@@ -36,35 +36,47 @@ a:hover, a:active { color: #cc3333; text-decoration: none; }
 	overflow: auto;
 	margin: 0px 0px 20px 0px;
 	padding: 50px 10px 0px 10px;
-	background: #ffffff url(images/bg_body.gif) top center repeat-x;
+	background: #ffffff url('images/bg_body.gif') top center repeat-x;
 }
 
 .main-footer {
+	/*
+	margin-top: -46px;
+	clear: both;
+	position: relative;
+	width: 100%;
+	*/
+	border-top: solid 1px #dddddd;
+	background: #ffffff url('images/bg_nav2.gif') top left repeat-x;
+	color: #888888;
+	/*
+	*/
 	position: fixed;
 	bottom: 0px;
 	left: 0px;
 	width: 99.8%;
-	z-index: 1
+	z-index: 1;
+	/*
+	*/
 }
 
 .main-footer-content {
-	color: #888888;
 	text-align: right;
-	background: #ffffff url(images/bg_nav2.gif) top left repeat-x;
-	padding: 3px 5px;
+	padding: 3px;
 	font-size: 10px;
 	line-height: 1.4em;
-	border-top: solid 1px #dddddd;
 }
 
 .main-footer-content-left {
+	/*
 	position: relative;
+	*/
 	float: left;
 	text-align: left;
 }
 
 .cat {
-	background: #ffffff url(images/bg_catbottom.gif) top left repeat-x;
+	background: #ffffff url('images/bg_catbottom.gif') top left repeat-x;
 	text-align: center;
 	border: solid 1px #ffffff;
 	border-right-color: #dddddd;

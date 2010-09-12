@@ -32,7 +32,8 @@ b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style:
 	background: #fafafa;
 	border: 1px solid #dddddd;
 	border-top: 0;
-	font: 12px Courier, "Courier New", sans-serif;
+	font-family: "Courier New", Courier, sans-serif;
+	font-size: 12px;
 	text-align: left;
 	padding: 5px;
 	overflow: auto;

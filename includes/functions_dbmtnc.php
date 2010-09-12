@@ -1399,7 +1399,7 @@ function check_authorization($die = true)
 	$db_password = htmlspecialchars_decode($db_password, ENT_COMPAT);
 
 	// Change authentication mode if selected option does not allow database authentication
-	if ($option == 'rld' || $option == 'rtd')
+	if (($option == 'rld') || ($option == 'rtd'))
 	{
 		$auth_method = 'board';
 	}
@@ -1407,32 +1407,13 @@ function check_authorization($die = true)
 	switch ($auth_method)
 	{
 		case 'board':
-			$sql = "SELECT user_id, username, user_password, user_active, user_level
-				FROM " . USERS_TABLE . "
-				WHERE username = '" . $db->sql_escape($board_user) . "'";
-			$db->sql_return_on_error(true);
-			$result = $db->sql_query($sql);
-			$db->sql_return_on_error(false);
-			if (!$result)
+			include_once(IP_ROOT_PATH . 'includes/auth_db.' . PHP_EXT);
+			$login_result = login_db($board_user, $board_password, false, true);
+			$allow_access = false;
+			if (($login_result['status'] === LOGIN_SUCCESS) && ($login_result['user_row']['user_level'] == ADMIN))
 			{
-				erc_throw_error('Error in obtaining userdata', __LINE__, __FILE__, $sql);
+				$allow_access = true;
 			}
-			if($row = $db->sql_fetchrow($result))
-			{
-				if((md5($board_password) == $row['user_password']) && $row['user_active'] && ($row['user_level'] == ADMIN))
-				{
-					$allow_access = true;
-				}
-				else
-				{
-					$allow_access = false;
-				}
-			}
-			else
-			{
-				$allow_access = false;
-			}
-			$db->sql_freeresult($result);
 			break;
 		case 'db':
 			if (($db_user == $dbuser) && ($db_password == $dbpasswd))

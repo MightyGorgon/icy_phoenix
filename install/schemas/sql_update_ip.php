@@ -68,6 +68,7 @@ switch ($req_version)
 	case '131265': $current_ip_version = '1.3.12.65'; break;
 	case '131366': $current_ip_version = '1.3.13.66'; break;
 	case '131467': $current_ip_version = '1.3.14.67'; break;
+	case '131568': $current_ip_version = '1.3.15.68'; break;
 }
 
 // Icy Phoenix Part...
@@ -4012,9 +4013,13 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.13.66 */
 		case '1.3.13.66':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "ranks` ADD `rank_show_title` tinyint(1) DEFAULT '1' NOT NULL AFTER `rank_special`";
 
-		/* Updating from IP 1.3.13.67 */
-		case '1.3.13.67':
+		/* Updating from IP 1.3.14.67 */
+		case '1.3.14.67':
+
+		/* Updating from IP 1.3.15.68 */
+		case '1.3.15.68':
 
 	}
 

@@ -76,6 +76,7 @@ if($mode != '')
 		else
 		{
 			$rank_info['rank_special'] = 0;
+			$rank_info['rank_show_title'] = 1;
 		}
 
 		$s_hidden_fields .= '<input type="hidden" name="mode" value="save" />';
@@ -150,6 +151,9 @@ if($mode != '')
 			'RANK_LIST' => $ranks_list,
 			'RANK_IMG' => ($rank_info['rank_image'] != '') ? '../' . $rank_info['rank_image'] : $images['spacer'],
 
+			'RANK_SHOW_TITLE_YES' => (!empty($rank_info['rank_show_title']) ? 'checked="checked"' : ''),
+			'RANK_SHOW_TITLE_NO' => (empty($rank_info['rank_show_title']) ? 'checked="checked"' : ''),
+
 			'L_NO_RANK' => $lang['No_Rank'],
 			'L_DAYS_RANK' => $lang['Rank_Days_Count'],
 			'L_POSTS_RANK' => $lang['Rank_Posts_Count'],
@@ -185,6 +189,8 @@ if($mode != '')
 		// Ok, they sent us our info, let's update it.
 		$rank_id = request_post_var('id', 0);
 		$rank_title = request_post_var('title', '', true);
+		$rank_show_title = request_post_var('rank_show_title', 1);
+		$rank_show_title = empty($rank_show_title) ? 0 : 1;
 		// Mighty Gorgon - Multiple Ranks - BEGIN
 		$special_rank = request_post_var('special_rank', 0);
 		$min_posts = request_post_var('min_posts', -1);
@@ -227,15 +233,15 @@ if($mode != '')
 			}
 			*/
 			$sql = "UPDATE " . RANKS_TABLE . "
-				SET rank_title = '" . $db->sql_escape($rank_title) . "', rank_special = $special_rank, rank_min = $min_posts, rank_image = '" . $db->sql_escape($rank_image) . "'
+				SET rank_title = '" . $db->sql_escape($rank_title) . "', rank_special = $special_rank, rank_min = $min_posts, rank_image = '" . $db->sql_escape($rank_image) . "', rank_show_title = $rank_show_title
 				WHERE rank_id = $rank_id";
 
 			$message = $lang['Rank_updated'];
 		}
 		else
 		{
-			$sql = "INSERT INTO " . RANKS_TABLE . " (rank_title, rank_special, rank_min, rank_image)
-				VALUES ('" . $db->sql_escape($rank_title) . "', $special_rank, $min_posts, '" . $db->sql_escape($rank_image) . "')";
+			$sql = "INSERT INTO " . RANKS_TABLE . " (rank_title, rank_special, rank_min, rank_image, rank_show_title)
+				VALUES ('" . $db->sql_escape($rank_title) . "', $special_rank, $min_posts, '" . $db->sql_escape($rank_image) . "', $rank_show_title)";
 
 			$message = $lang['Rank_added'];
 		}
@@ -307,9 +313,7 @@ if($mode != '')
 	include('./page_footer_admin.' . PHP_EXT);
 }
 
-//
 // Show the default page
-//
 $template->set_filenames(array('body' => ADM_TPL . 'ranks_list_body.tpl'));
 
 $sql = "SELECT * FROM " . RANKS_TABLE . " ORDER BY rank_min ASC, rank_special ASC";

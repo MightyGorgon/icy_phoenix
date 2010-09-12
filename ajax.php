@@ -114,10 +114,7 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 	$username_row = false;
 	if (($mode == 'checkusername_pm') || (($mode == 'search_user') && !$has_wildcards))
 	{
-		$sql = "SELECT user_id
-						FROM " . USERS_TABLE . "
-						WHERE username = '" . $db->sql_escape($username) . "'
-						AND user_id <> " . ANONYMOUS;
+		$sql = get_users_sql($username, false, false, true, false);
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -147,8 +144,8 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 		}
 		$sql = "SELECT username
 						FROM " . USERS_TABLE . "
-						WHERE username LIKE '" . $db->sql_escape($username) . "'
-						AND user_id <> " . ANONYMOUS . "
+						WHERE username_clean LIKE '" . $db->sql_escape(utf8_clean_string($username)) . "'
+							AND user_id <> " . ANONYMOUS . "
 						ORDER BY username";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);

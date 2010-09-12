@@ -362,9 +362,7 @@ elseif ($group_id)
 			{
 				$username = (isset($_POST['username'])) ? phpbb_clean_username($_POST['username']) : '';
 
-				$sql = "SELECT user_id, user_email, user_lang, user_level
-					FROM " . USERS_TABLE . "
-					WHERE username = '" . $db->sql_escape($username) . "'";
+				$sql = get_users_sql($username, false, true, true, false);
 				$result = $db->sql_query($sql);
 
 				if (!($row = $db->sql_fetchrow($result)))

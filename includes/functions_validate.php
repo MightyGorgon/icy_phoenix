@@ -32,10 +32,7 @@ function validate_username($username)
 	// Remove doubled up spaces
 	$username = preg_replace('#\s+#', ' ', trim($username));
 	$username = phpbb_clean_username($username);
-
-	$sql = "SELECT username
-		FROM " . USERS_TABLE . "
-		WHERE LOWER(username) = '" . $db->sql_escape(strtolower($username)) . "'";
+	$sql = get_users_sql($username, false, false, true, false);
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -160,7 +157,7 @@ function validate_email($email)
 
 			$sql = "SELECT user_email
 				FROM " . USERS_TABLE . "
-				WHERE user_email = '" . $db->sql_escape($email) . "'";
+				WHERE LOWER(user_email) = '" . $db->sql_escape(strtolower($email)) . "'";
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))

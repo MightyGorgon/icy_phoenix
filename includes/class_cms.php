@@ -54,7 +54,7 @@ class ip_cms
 	}
 
 	/*
-	*
+	* Special function to assign var from handle
 	*/
 	function cms_assign_var_from_handle($template_var, $handle)
 	{
@@ -66,7 +66,7 @@ class ip_cms
 	}
 
 	/*
-	*
+	* Checks if the user is allowed to view the block
 	*/
 	function cms_blocks_view()
 	{
@@ -99,7 +99,7 @@ class ip_cms
 	}
 
 	/*
-	*
+	* Creates a list of all groups
 	*/
 	function cms_groups($user_id)
 	{
@@ -124,7 +124,7 @@ class ip_cms
 	}
 
 	/*
-	*
+	* Blocks parsing function
 	*/
 	function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, $type = '')
 	{

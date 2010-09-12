@@ -8,7 +8,10 @@
 {NAV_LINKS}
 <title>{PAGE_TITLE}</title>
 <link rel="shortcut icon" href="{FULL_SITE_PATH}images/favicon.ico" />
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}cms.css" type="text/css" />
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}cms_new.css" type="text/css" />
+<!--[if IE]>
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}cms_ie.css" type="text/css" />
+<![endif]-->
 <!-- BEGIN css_style_include -->
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{css_style_include.CSS_FILE}" type="text/css" />
 <!-- END css_style_include -->
@@ -18,103 +21,44 @@
 
 <!-- INCLUDE overall_inc_header_js.tpl -->
 
-<script type="text/javascript">
-<!--
-	function show_nav(menu_id)
-	{
-		for(i=0; i<{N_TABS}; i++)
-		{
-			if (i == menu_id)
-		  {
-				document.getElementById('cms_nav').innerHTML = document.getElementById('menu' + i).innerHTML;
-				document.getElementById('tc_' + i).className += ' selected';
-				document.getElementById('link_' + i).className = 'selected';
-			}
-			else
-			{
-				document.getElementById('tc_' + i).className = 'tabs_center';
-				document.getElementById('link_' + i).className = '';
-			}
-		}
-	}
-//-->
-</script>
-
 </head>
-<body id="cms" onload="PreloadFlag=true;">
-<!-- IF S_CMS_AUTH -->
+<body>
 
-<div class="main-header">
-	<div id="cms_menu">
-		<ul class="tabs">
-			<!-- BEGIN tabs -->
-			<li>
-				<div onclick="show_nav('{tabs.TABS_ID}');">
-					<div id="tc_{tabs.TABS_ID}" class="tabs_center {tabs.SELECTED}">
-					<div id="link_{tabs.TABS_ID}" class="{tabs.SELECTED}">{tabs.TABS_TITLE}</div>
-					</div>
-				</div>
-			</li>
-			<!-- END tabs -->
+<div id="global-wrapper">
+<span><a name="top"></a></span>
+
+<div class="top-menu">
+	<div id="horiz-menu">
+		<ul class="menutop">
+			<li>{U_ACP}</li>
+			<li><a href="{FULL_SITE_PATH}{U_PORTAL}" accesskey="h">{L_HOME}</a></li>
+			<li><a href="{FULL_SITE_PATH}{U_INDEX}">{L_INDEX}</a></li>
+			<!-- IF S_LOGGED_IN -->
+			<li><a href="{FULL_SITE_PATH}{U_PROFILE}">{L_PROFILE}</a></li>
+			<!-- ENDIF -->
+			<li><a href="{FULL_SITE_PATH}{U_LOGIN_LOGOUT}" accesskey="l">{L_LOGIN_LOGOUT2}</a></li>
 		</ul>
-		 <div id="cms_nav">{CURRENT_NAV}</div>
 	</div>
+	<h2 class="sitename">{SITENAME}</h2>
 </div>
 
-<!-- BEGIN tabs -->
-<div id="menu{tabs.TABS_ID}" style="display:none">{tabs.TABS_NAV}</div>
-<!-- END tabs -->
+<!-- <div class="top-header">&nbsp;</div> -->
 
-<!-- ENDIF -->
-<div class="main-content">
-	<table width="100%" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="100%" valign="top">
-		<a name="top"></a>
-		<table width="100%" cellspacing="0" cellpadding="0">
-		<tr>
-			<!-- IF S_CMS_AUTH -->
-			<td valign="top" width="110">
-				<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-					<tr><td height="80" class="row1h row-center">
-					<!-- IF S_L_ADD || S_L_EDIT || S_L_DELETE -->
-					<a href="{U_CMS_USERS_CUSTOM_PAGES}"><img src="images/cms/cms_users_pages.png" alt="{L_CMS_USERS_LAYOUTS}" title="{L_CMS_USERS_LAYOUTS}" /></a>
-					<!-- ELSE -->
-					<img src="images/cms/cms_users_pages_locked.png" alt="{L_CMS_USERS_LAYOUTS}" title="{L_CMS_USERS_LAYOUTS}" />
-					<!-- ENDIF -->
-					<br /><b>{L_CMS_USERS_LAYOUTS}</b></td></tr>
-					<tr><td class="row1h row-center">
-					<!-- IF S_B_ADD || S_B_EDIT || S_B_DELETE -->
-					<a href="{U_CMS_USERS_BLOCK_SETTINGS}"><img src="images/cms/cms_users_installed_blocks.png" alt="{L_CMS_BLOCK_SETTINGS}" title="{L_CMS_BLOCK_SETTINGS}" /></a>
-					<!-- ELSE -->
-					<img src="images/cms/cms_users_installed_blocks_locked.png" alt="{L_CMS_BLOCK_SETTINGS}" title="{L_CMS_BLOCK_SETTINGS}" />
-					<!-- ENDIF -->
-					<br /><b>{L_CMS_BLOCK_SETTINGS}</b></td></tr>
-					<tr><td class="row1h row-center">
-					<!-- IF S_B_ADD || S_B_EDIT || S_B_DELETE -->
-					<a href="{U_CMS_USERS_GLOBAL_BLOCKS}"><img src="images/cms/cms_users_global_blocks.png" alt="{L_CMS_GLOBAL_BLOCKS}" title="{L_CMS_GLOBAL_BLOCKS}" /></a>
-					<!-- ELSE -->
-					<img src="images/cms/cms_users_global_blocks_locked.png" alt="{L_CMS_GLOBAL_BLOCKS}" title="{L_CMS_GLOBAL_BLOCKS}" />
-					<!-- ENDIF -->
-					<br /><b>{L_CMS_GLOBAL_BLOCKS}</b></td></tr>
-					<tr><td class="row1h row-center"><a href="{U_CMS_MENU}"><img src="images/cms/cms_users_menu.png" alt="{L_CMS_USERS_MENU}" title="{L_CMS_USERS_MENU}" /></a><br /><b>{L_CMS_USERS_MENU}</b></td></tr>
-					<tr><td class="row1h row-center">
-					<!-- IF S_EDIT_SETTINGS -->
-					<a href="{U_CMS_USERS_CONFIG}"><img src="images/cms/cms_users_config.png" alt="{L_CMS_USERS_CONFIG}" title="{L_CMS_USERS_CONFIG}" /></a>
-					<!-- ELSE -->
-					<img src="images/cms/cms_users_config_locked.png" alt="{L_CMS_USERS_CONFIG}" title="{L_CMS_USERS_CONFIG}" />
-					<!-- ENDIF -->
-					<br /><b>{L_CMS_USERS_CONFIG}</b></td></tr>
-					<tr><td class="row1h row-center">
-					<!-- IF S_EDIT_SETTINGS -->
-					<a href="{U_CMS_USERS_AUTH}"><img src="images/cms/cms_users_auth.png" alt="{L_CMS_AUTH}" title="{L_CMS_AUTH}" /></a>
-					<!-- ELSE -->
-					<img src="images/cms/cms_users_auth_locked.png" alt="{L_CMS_USERS_AUTH}" title="{L_CMS_USERS_AUTH}" />
-					<!-- ENDIF -->
-					<br /><b>{L_CMS_AUTH}</b></td></tr>
-					
-				</table>
-			</td>
-			<!-- ENDIF -->
-			<td valign="top">
-				<div style="padding-left:7px">
+<div class="top-sep">&nbsp;</div>
+
+<!-- PAGE_BEGIN -->
+<div id="tabs">
+	<ul>
+		<!-- BEGIN tabs -->
+		<li <!-- IF tabs.S_SELECTED -->class="activetab"<!-- ENDIF -->><a href="{tabs.TAB_LINK}"><span><!-- IF tabs.TAB_ICON --><img src="{tabs.TAB_ICON}" alt="{tabs.TAB_TITLE}" title="{tabs.TAB_TITLE}" />&nbsp;<!-- ENDIF -->{tabs.TAB_TITLE}</span></a></li>
+		<!-- END tabs -->
+	</ul>
+</div>
+
+<div id="wrapper"><div id="wrapper-inner">
+
+<table id="forumtable" cellspacing="0" cellpadding="0">
+<tr>
+	<td colspan="3" id="content">
+
+	<!-- INCLUDE ../common/cms/breadcrumbs.tpl -->

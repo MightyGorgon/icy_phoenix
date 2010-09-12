@@ -2,7 +2,7 @@
 /**
 *
 * @package Icy Phoenix
-* @version $Id: cms.php 171 2010-02-07 18:29:35Z Mighty Gorgon $
+* @version $Id$
 * @copyright (c) 2008 Icy Phoenix
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -169,6 +169,18 @@ else
 	$cms_admin->mode_blocks_name = 'blocks';
 	$is_layout_special = true;
 }
+
+/* TABS - BEGIN */
+$tab_mode = $cms_admin->mode;
+if (($cms_admin->mode == 'blocks') && ($cms_admin->action != 'editglobal') && (($cms_admin->l_id != 0) || ($cms_admin->ls_id != 0)))
+{
+	if (($cms_admin->mode_layout_name == 'layouts') || ($cms_admin->mode_layout_name == 'layouts_special'))
+	{
+		$tab_mode = $cms_admin->mode_layout_name;
+	}
+}
+$cms_admin->generate_tabs($tab_mode);
+/* TABS - END */
 
 if($cms_admin->mode == 'block_settings')
 {

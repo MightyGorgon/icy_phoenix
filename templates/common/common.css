@@ -223,6 +223,21 @@ blockquote, .post-text blockquote, .code-content {
 	margin-bottom: 2px;
 }
 
+.align-left, .align-top-left, .align-bottom-left {
+	float: left;
+	text-align: left;
+	padding-left: 3px;
+	margin-left: 3px;
+}
+
+.align-top-left {
+	vertical-align: top;
+}
+
+.align-bottom-left {
+	vertical-align: bottom;
+}
+
 .align-right, .align-top-right, .align-bottom-right {
 	float: right;
 	text-align: right;
@@ -236,6 +251,30 @@ blockquote, .post-text blockquote, .code-content {
 
 .align-bottom-right {
 	vertical-align: bottom;
+}
+
+.align-left-f {
+	float: left;
+}
+
+.align-right-f {
+	float: right;
+}
+
+.va-top {
+	vertical-align: top;
+}
+
+.va-middle {
+	vertical-align: middle;
+}
+
+.va-bottom {
+	vertical-align: bottom;
+}
+
+.clear {
+	clear: both;
 }
 
 /* main tables/divs */

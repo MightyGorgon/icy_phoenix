@@ -73,9 +73,7 @@ $view_id = request_var('view_id', 0);
 $start = request_var('start', 0);
 $pmtype = request_var('pmtype', PRIVMSGS_ALL_MAIL);
 
-/****************************************************************************
-/** Main Vars.
-/***************************************************************************/
+// Main Vars.
 $status_message = '';
 $aprvmUtil->init();
 
@@ -94,9 +92,7 @@ define('PRIVMSGS_SAVED_OUT_MAIL', 4);
 define('PRIVMSGS_UNREAD_MAIL', 5);
 */
 
-/*******************************************************************************************
-/** Setup some options
-/******************************************************************************************/
+// Setup some options
 $archive_text = ($config['aprvmArchive'] && ($mode == 'archive')) ? '_archive' : '';
 $pmtype_text = ($pmtype != PRIVMSGS_ALL_MAIL) ? "AND pm.privmsgs_type = $pmtype" : '';
 
@@ -117,16 +113,12 @@ if (sizeof($_POST))
 	$aprvmMan = new aprvmManager();
 	foreach($_POST as $key => $val)
 	{
-		/*******************************************************************************************
-		/** Check for archive items
-		/******************************************************************************************/
+		// Check for archive items
 		if ($config['aprvmArchive'] && substr_count($key, 'archive_id_'))
 		{
 			$aprvmMan->addArchiveItem(substr($key, 11));
 		}
-		/*******************************************************************************************
-		/** Check for deletion items
-		/******************************************************************************************/
+		// Check for deletion items
 		elseif (substr_count($key, 'delete_id_'))
 		{
 			$aprvmMan->addDeleteItem(substr($key, 10));
@@ -134,9 +126,8 @@ if (sizeof($_POST))
 	}
 	$aprvmMan->go();
 }
-/*******************************************************************************************
-/** Switch our Mode to the right one
-/******************************************************************************************/
+
+// Switch our Mode to the right one
 switch($pmaction)
 {
 	case 'view_message':
@@ -150,9 +141,8 @@ switch($pmaction)
 			WHERE pm.privmsgs_id = $view_id";
 		$result = $db->sql_query($sql);
 		$privmsg = $db->sql_fetchrow($result);
-		/************************/
-		/* Just stole all the phpBB code for message processing :) And edited a ton of it out since we are all admins here */
-		/**********************/
+
+		// Just stole all the phpBB code for message processing :) And edited a ton of it out since we are all admins here
 		$private_message = $privmsg['privmsgs_text'];
 
 		$bbcode->allow_html = ($config['allow_html'] ? true : false);
@@ -266,7 +256,7 @@ switch($pmaction)
 	}
 	default:
 	{
-		$sql = 'SELECT pm.* FROM ' . PRIVMSGS_TABLE . "$archive_text pm
+		$sql = "SELECT pm.* FROM " . PRIVMSGS_TABLE . "$archive_text pm
 				WHERE pm.privmsgs_id = pm.privmsgs_id
 				$pmtype_text
 				$filter_from_text
@@ -286,7 +276,7 @@ switch($pmaction)
 				'PM_ID' => $row['privmsgs_id'],
 				'PM_TYPE' => $lang['PM_' . $row['privmsgs_type']],
 				'SUBJECT' => $row['privmsgs_subject'],
-				'FROM_IP' => ($config['aprvmIP']) ? '<br />('.decode_ip($row['privmsgs_ip']).')' : '',
+				'FROM_IP' => ($config['aprvmIP']) ? '<br />(' . decode_ip($row['privmsgs_ip']) . ')' : '',
 				'FROM' => $aprvmUtil->id_2_name($row['privmsgs_from_userid'], 'user_formatted'),
 				'TO' => $aprvmUtil->id_2_name($row['privmsgs_to_userid'], 'user_formatted'),
 				'U_VIEWMSG' => $onclick_url,

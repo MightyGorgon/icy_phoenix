@@ -671,25 +671,14 @@ if(empty($comment_text) && !isset($_POST['rating']))
 
 				// Mighty Gorgon - Multiple Ranks - BEGIN
 				$user_ranks = generate_ranks($commentrow[$i], $ranks_array);
-
-				$user_rank_01 = ($user_ranks['rank_01'] == '') ? '' : ($user_ranks['rank_01'] . '<br />');
-				$user_rank_01_img = ($user_ranks['rank_01_img'] == '') ? '' : ($user_ranks['rank_01_img'] . '<br />');
-				$user_rank_02 = ($user_ranks['rank_02'] == '') ? '' : ($user_ranks['rank_02'] . '<br />');
-				$user_rank_02_img = ($user_ranks['rank_02_img'] == '') ? '' : ($user_ranks['rank_02_img'] . '<br />');
-				$user_rank_03 = ($user_ranks['rank_03'] == '') ? '' : ($user_ranks['rank_03'] . '<br />');
-				$user_rank_03_img = ($user_ranks['rank_03_img'] == '') ? '' : ($user_ranks['rank_03_img'] . '<br />');
-				$user_rank_04 = ($user_ranks['rank_04'] == '') ? '' : ($user_ranks['rank_04'] . '<br />');
-				$user_rank_04_img = ($user_ranks['rank_04_img'] == '') ? '' : ($user_ranks['rank_04_img'] . '<br />');
-				$user_rank_05 = ($user_ranks['rank_05'] == '') ? '' : ($user_ranks['rank_05'] . '<br />');
-				$user_rank_05_img = ($user_ranks['rank_05_img'] == '') ? '' : ($user_ranks['rank_05_img'] . '<br />');
-				if (($user_rank_01 == '') && ($user_rank_01_img  == '') && ($user_rank_02 == '') && ($user_rank_02_img == '') && ($user_rank_03 == '') && ($user_rank_03_img == '') && ($user_rank_04 == '') && ($user_rank_04_img == '') && ($user_rank_05 == '') && ($user_rank_05_img == ''))
+				if (($user_ranks['rank_01_html'] == '') && ($user_ranks['rank_01_img_html']  == '') && ($user_ranks['rank_02_html'] == '') && ($user_ranks['rank_02_img_html'] == '') && ($user_ranks['rank_03_html'] == '') && ($user_ranks['rank_03_img_html'] == '') && ($user_ranks['rank_04_html'] == '') && ($user_ranks['rank_04_img_html'] == '') && ($user_ranks['rank_05_html'] == '') && ($user_ranks['rank_05_img_html'] == ''))
 				{
-					$user_rank_01 = '&nbsp;';
+					$user_ranks['rank_01_html'] = '&nbsp;';
 				}
 				// Mighty Gorgon - Multiple Ranks - END
 
-				$poster_rank = $user_rank_01;
-				$rank_image = $user_rank_01_img;
+				$poster_rank = $user_ranks['rank_01_html'];
+				$rank_image = $user_ranks['rank_01_img_html'];
 
 				// Handle anon users posting with usernames
 				if (($commentrow[$i]['user_id'] == ANONYMOUS) && ($commentrow[$i]['post_username'] != ''))
@@ -722,10 +711,10 @@ if(empty($comment_text) && !isset($_POST['rating']))
 					'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
 
 					//users mesangers, website, email
-					'PROFILE_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $profile_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" style="border:0px;" /></a>' : '',
-					'PM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" style="border:0px;" /></a>' : '',
-					'EMAIL_IMG' => (($commentrow[$i]['user_id'] != ANONYMOUS) && ($email_url != '')) ? '<a href="' . $email_url . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" style="border:0px;" /></a>' : '',
-					'WWW_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? ($commentrow[$i]['user_website']) ? '<a href="' . $commentrow[$i]['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" style="border:0px;" /></a>' : '' : '',
+					'PROFILE_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $profile_url . '"><img src="' . $images['icon_profile'] . '" alt="' . $lang['Read_profile'] . '" title="' . $lang['Read_profile'] . '" /></a>' : '',
+					'PM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>' : '',
+					'EMAIL_IMG' => (($commentrow[$i]['user_id'] != ANONYMOUS) && ($email_url != '')) ? '<a href="' . $email_url . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>' : '',
+					'WWW_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? ($commentrow[$i]['user_website']) ? '<a href="' . $commentrow[$i]['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '' : '',
 					'AIM_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $aim_img : '',
 					'SKYPE_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $skype_img : '',
 					'ICQ_IMG' => ($commentrow[$i]['user_id'] != ANONYMOUS) ? $icq_img : '',
@@ -759,11 +748,11 @@ if(empty($comment_text) && !isset($_POST['rating']))
 
 					'U_EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? $edit_url : '',
 
-					'EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="' . $edit_url . '"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit_delete_post'] . '" title="' . $lang['Edit_delete_post'] . '" style="border:0px;" /></a>' : '',
+					'EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="' . $edit_url . '"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit_delete_post'] . '" title="' . $lang['Edit_delete_post'] . '" /></a>' : '',
 
 					'U_DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? $delete_url : '',
 
-					'DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="' . $delete_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" style="border:0px;" /></a>' : ''
+					'DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="' . $delete_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>' : ''
 
 					)
 				);
@@ -796,16 +785,16 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
 
 			$next_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=next&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
 			$prev_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
 		}
 		else
 		{
-			$next_pic = ($no_next_pic== false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
-			$prev_pic = ($no_prev_pic  == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$next_pic = ($no_next_pic== false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$prev_pic = ($no_prev_pic  == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
 
 			$next_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
 			$prev_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=next&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
@@ -967,11 +956,11 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	);
 	if(in_array($style_used[2], $allowed_styles) && (!empty($template->xs_version)))
 	{
-		$edit_link_content = '<img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit_pic'] . '" title="' . $lang['Edit_pic'] . '" style="border:0px;" />';
-		$delete_link_content = '<img src="' . $images['topic_mod_delete'] . '" alt="' . $lang['Delete_pic'] . '" title="' . $lang['Delete_pic'] . '" style="border:0px;" />';
-		$lock_link_content = ($thispic['pic_lock'] == 0) ? '<img src="' . $images['topic_mod_lock'] . '" alt="' . $lang['Lock'] . '" title="' . $lang['Lock'] . '" style="border:0px;" />' : '<img src="' . $images['topic_mod_unlock'] . '" alt="' . $lang['Unlock'] . '" title="' . $lang['Unlock'] . '" style="border:0px;" />';
-		$move_link_content = '<img src="' . $images['topic_mod_move'] . '" alt="' . $lang['Move'] . '" title="' . $lang['Move'] . '" style="border:0px;" />';
-		$copy_link_content = '<img src="' . $images['topic_mod_copy'] . '" alt="' . $lang['Copy'] . '" title="' . $lang['Copy'] . '" style="border:0px;" />';
+		$edit_link_content = '<img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit_pic'] . '" title="' . $lang['Edit_pic'] . '" />';
+		$delete_link_content = '<img src="' . $images['topic_mod_delete'] . '" alt="' . $lang['Delete_pic'] . '" title="' . $lang['Delete_pic'] . '" />';
+		$lock_link_content = ($thispic['pic_lock'] == 0) ? '<img src="' . $images['topic_mod_lock'] . '" alt="' . $lang['Lock'] . '" title="' . $lang['Lock'] . '" />' : '<img src="' . $images['topic_mod_unlock'] . '" alt="' . $lang['Unlock'] . '" title="' . $lang['Unlock'] . '" />';
+		$move_link_content = '<img src="' . $images['topic_mod_move'] . '" alt="' . $lang['Move'] . '" title="' . $lang['Move'] . '" />';
+		$copy_link_content = '<img src="' . $images['topic_mod_copy'] . '" alt="' . $lang['Copy'] . '" title="' . $lang['Copy'] . '" />';
 	}
 
 	$pic_desc = $thispic['pic_desc'];

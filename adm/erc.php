@@ -934,7 +934,7 @@ switch($mode)
 				{
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_lang = '$new_lang'
-						WHERE username = '$board_user'";
+						WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($board_user)) . "'";
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
 					$db->sql_return_on_error(false);
@@ -989,7 +989,7 @@ switch($mode)
 				{
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_style = $new_style
-						WHERE username = '$board_user'";
+						WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($board_user)) . "'";
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
 					$db->sql_return_on_error(false);
@@ -1149,7 +1149,8 @@ switch($mode)
 
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_active = 1, user_level = " . ADMIN . "
-					WHERE username = '$username' AND user_id <> -1";
+					WHERE username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "'
+						AND user_id <> -1";
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
 				$db->sql_return_on_error(false);

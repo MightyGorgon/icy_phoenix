@@ -69,7 +69,7 @@ $template->set_filenames(array('header' => ADM_TPL . 'page_header.tpl'));
 
 // Mighty Gorgon - AJAX Features - Begin
 $ajax_blur = '';
-$ajax_user_check = $config['ajax_features'] ? 'onkeyup="AJAXUsernameSearch(this.value, 0);"' : '';
+$ajax_user_check = !empty($config['ajax_features']) ? 'onkeyup="AJAXUsernameSearch(this.value, 0);"' : '';
 // Mighty Gorgon - AJAX Features - End
 
 if(is_array($css_style_include))

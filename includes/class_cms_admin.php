@@ -15,6 +15,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 class cms_admin
 {
+	var $root = '';
 	var $mode = false;
 	var $action = false;
 	var $l_id = false; //Layout ID
@@ -22,9 +23,23 @@ class cms_admin
 	var $b_id = false; //Block ID
 	var $bs_id = false; //Block Settings ID
 
+	var $menu_images_root = 'images/cms/menu/';
+
+
+	/**
+	* Some defaults
+	*/
+	function cms_admin()
+	{
+		$this->root = CMS_PAGE_CMS;
+	}
+
+	/*
+	* Check CMS version
+	*/
 	function check_version()
 	{
-		global $lang, $db, $template, $config, $table_prefix;
+		global $db, $cache, $config, $userdata, $lang, $template, $table_prefix;
 
 		if ($config['cms_rev'] != '2')
 		{
@@ -52,9 +67,13 @@ class cms_admin
 				}
 			}
 		}
+
 		return true;
 	}
 
+	/*
+	* Init CMS vars
+	*/
 	function init_vars($mode_array, $action_array)
 	{
 		//$this->check_version();
@@ -139,8 +158,154 @@ class cms_admin
 		{
 			$this->mode = $this->get_user_cms_id() ? $this->mode : 'new';
 		}
+
+		return true;
 	}
 
+	/*
+	* Generate nav tabs
+	*/
+	function generate_nav_tabs($mode, $sep = '&nbsp;|&nbsp;')
+	{
+		global $db, $cache, $config, $userdata, $lang, $template;
+
+		$tabs_array = array();
+
+		$tabs_array[] = array(
+			'TITLE' => $lang['CMS_TITLE'],
+			'MODE' => array(false, 'layouts', 'block_settings', 'blocks'),
+			'LINKS' => array(
+				'<a href="' . IP_ROOT_PATH . $this->root . '">' . strtoupper($lang['CMS_USERS_INDEX']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . $this->root . '?mode=layouts">' . strtoupper($lang['CMS_USERS_LAYOUTS']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . $this->root . '?mode=block_settings">' . strtoupper($lang['CMS_BLOCK_SETTINGS']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . $this->root . '?mode=blocks&amp;l_id=0&amp;action=editglobal">' . strtoupper($lang['CMS_GLOBAL_BLOCKS']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . 'cms_menu.' . PHP_EXT . '">' . $lang['CMS_USERS_MENU_UPPERCASE'] . '</a>'
+			),
+			'AUTH' => AUTH_ALL,
+		);
+		$tabs_array[] = array(
+			'TITLE' => $lang['CMS_SETTINGS'],
+			'MODE' => array('config', 'auth', 'profile'),
+			'LINKS' => array(
+				'<a href="' . IP_ROOT_PATH . $this->root . '?mode=config">' . strtoupper($lang['CMS_USERS_CONFIG']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . $this->root . '?mode=auth">' . strtoupper($lang['CMS_AUTH']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . CMS_PAGE_PROFILE_MAIN . '">' . strtoupper($lang['CMS_USERS_PROFILE']) . '</a>'
+			),
+			'AUTH' => AUTH_ALL,
+		);
+		if ($mode == 'cms_users')
+		{
+			$tabs_array[] = array(
+				'TITLE' => $lang['CMS_USERS'],
+				'MODE' => array('userlist', 'new_users'),
+				'LINKS' => array(
+					'<a href="' . IP_ROOT_PATH . $this->root . '?mode=userlist">' . strtoupper($lang['CMS_USERS_USERLIST']) . '</a>',
+					'<a href="' . IP_ROOT_PATH . $this->root . '?mode=new_users">' . strtoupper($lang['CMS_USERS_USERLIST_NEW']) . '</a>'
+				),
+				'AUTH' => AUTH_ADMIN,
+			);
+		}
+		$tabs_array[] = array(
+			'TITLE' => $lang['CMS_LINKS'],
+			'MODE' => array(),
+			'LINKS' => array(
+				'<a href="' . IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . strtoupper($lang['LINK_ACP']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . CMS_PAGE_CMS . '?sid=' . $userdata['session_id'] . '">' . strtoupper($lang['LINK_CMS']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . CMS_PAGE_HOME . '">' . strtoupper($lang['LINK_HOME']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . CMS_PAGE_FORUM . '">' . strtoupper($lang['LINK_FORUM']) . '</a>',
+				'<a href="http://www.icyphoenix.com" target="_blank">ICY PHOENIX</a>'
+			),
+			'AUTH' => AUTH_ALL,
+		);
+
+		$tabs_counter = 0;
+		$current_nav = false;
+		foreach ($tabs_array as $tab_data)
+		{
+			if(check_auth_level($tab_data['AUTH']))
+			{
+				$selected = '';
+				if (in_array($this->mode, $tab_data['MODE']))
+				{
+					$selected = 'selected';
+					$current_nav = empty($current_nav) ? implode($sep, $tab_data['LINKS']) : $current_nav;
+				}
+
+				$template->assign_block_vars('tabs', array(
+					'TABS_ID' => $tabs_counter,
+					'TABS_TITLE' => $tab_data['TITLE'],
+					'TABS_NAV' => implode($sep, $tab_data['LINKS']),
+					'SELECTED' => $selected,
+					)
+				);
+				$tabs_counter++;
+			}
+		}
+
+		$template->assign_vars(array(
+			'CMS_PAGE_TITLE' => false,
+			'N_TABS' => $tabs_counter,
+			'CURRENT_NAV' => $current_nav,
+			)
+		);
+
+		return true;
+	}
+
+	/*
+	/*
+	* Generate tabs
+	*/
+	function generate_tabs($mode)
+	{
+		global $db, $cache, $config, $userdata, $lang, $template;
+
+		$tabs_array = array();
+
+		$tabs_array[] = array('TITLE' => $lang['CMS_TITLE'], 'MODE' => false, 'LINK' => append_sid(IP_ROOT_PATH . $this->root), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_home.png', 'AUTH' => AUTH_REG);
+		$tabs_array[] = array('TITLE' => $lang['CMS_CUSTOM_PAGES'], 'MODE' => 'layouts', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_custom_pages.png', 'AUTH' => AUTH_REG);
+		$tabs_array[] = array('TITLE' => $lang['CMS_STANDARD_PAGES'], 'MODE' => 'layouts_special', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts_special'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_standard_pages.png', 'AUTH' => AUTH_REG);
+		$tabs_array[] = array('TITLE' => $lang['CMS_BLOCK_SETTINGS'], 'MODE' => 'block_settings', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=block_settings'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks.png', 'AUTH' => AUTH_REG);
+		$tabs_array[] = array('TITLE' => $lang['CMS_GLOBAL_BLOCKS'], 'MODE' => 'blocks', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=blocks&amp;l_id=0&amp;action=editglobal'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks_global.png', 'AUTH' => AUTH_REG);
+		$tabs_array[] = array('TITLE' => $lang['CMS_CONFIG'], 'MODE' => 'config', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=config'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_settings.png', 'AUTH' => AUTH_REG);
+		$tabs_array[] = array('TITLE' => $lang['CMS_MENU_PAGE'], 'MODE' => 'menu', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_menu.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_menu.png', 'AUTH' => AUTH_REG);
+		$tabs_array[] = array('TITLE' => $lang['CMS_ADS'], 'MODE' => 'ads', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_ads.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_ads.png', 'AUTH' => AUTH_REG);
+
+		$tabs_counter = 0;
+		$current_nav = false;
+		foreach ($tabs_array as $tab_data)
+		{
+			$selected = false;
+			if(check_auth_level($tab_data['AUTH']))
+			{
+				if ($mode == $tab_data['MODE'])
+				{
+					$selected = true;
+				}
+
+				$template->assign_block_vars('tabs', array(
+					'TAB_ID' => $tabs_counter,
+					'TAB_TITLE' => $tab_data['TITLE'],
+					'TAB_LINK' => $tab_data['LINK'],
+					'TAB_ICON' => $tab_data['ICON'],
+					'S_SELECTED' => $selected,
+					)
+				);
+				$tabs_counter++;
+			}
+		}
+
+		$template->assign_vars(array(
+			'N_TABS' => $tabs_counter,
+			)
+		);
+
+		return true;
+	}
+
+	/*
+	* Manage block
+	*/
 	function manage_block()
 	{
 		global $class_form, $template, $lang, $auth;
@@ -211,8 +376,13 @@ class cms_admin
 			'S_HIDDEN_FIELDS' => $this->s_hidden_fields
 			)
 		);
+
+		return true;
 	}
 
+	/*
+	* Save block
+	*/
 	function save_block()
 	{
 		global $db, $class_db, $lang, $userdata;
@@ -274,8 +444,13 @@ class cms_admin
 		$this->fix_weight_blocks($this->id_var_value, $this->table_name);
 
 		redirect(append_sid($this->root . '?mode=blocks&amp;' . $this->id_var_name . '=' . $redirect_l_id));
+
+		return true;
 	}
 
+	/*
+	* Delete block
+	*/
 	function delete_block()
 	{
 		global $db, $template, $lang;
@@ -321,8 +496,13 @@ class cms_admin
 			$this->fix_weight_blocks(0, $this->table_name);
 			redirect(append_sid($this->root . '?mode=blocks&amp;' . $this->id_var_name . '=' . $this->id_var_value . $redirect_action));
 		}
+
+		return true;
 	}
 
+	/*
+	* Update blocks
+	*/
 	function update_blocks()
 	{
 		global $db;
@@ -361,8 +541,13 @@ class cms_admin
 			$this->fix_weight_blocks($this->id_var_value, $this->table_name);
 			redirect(append_sid($this->root . '?mode=' . $this->mode . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . $action_append));
 		}
+
+		return true;
 	}
 
+	/*
+	* Move block
+	*/
 	function move_block($move)
 	{
 		global $db, $lang;
@@ -396,8 +581,13 @@ class cms_admin
 			$result = $db->sql_query($sql);
 			$this->fix_weight_blocks($this->id_var_value, $this->table_name);
 		}
+
+		return true;
 	}
 
+	/*
+	* Show blocks list
+	*/
 	function show_blocks_list()
 	{
 		global $db, $template, $lang, $theme;
@@ -523,8 +713,13 @@ class cms_admin
 				$template->assign_var('S_NO_BLOCKS', true);
 			}
 		}
+
+		return true;
 	}
 
+	/*
+	* Manage block settings
+	*/
 	function manage_block_settings()
 	{
 		global $db, $lang, $class_form, $template, $userdata;
@@ -814,8 +1009,13 @@ class cms_admin
 		include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
 		$template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
 		// BBCBMG SMILEYS - END
+
+		return true;
 	}
 
+	/*
+	* Save block settings
+	*/
 	function save_block_settings()
 	{
 		global $db, $class_db, $lang, $userdata;
@@ -854,8 +1054,13 @@ class cms_admin
 		}
 		$this->update_block_config($data['blockfile']);
 		redirect(append_sid($this->root . '?mode=block_settings', true));
+
+		return true;
 	}
 
+	/*
+	* Update block config
+	*/
 	function update_block_config($blockfile)
 	{
 		global $db;
@@ -926,8 +1131,13 @@ class cms_admin
 				}
 			}
 		}
+
+		return true;
 	}
 
+	/*
+	* Delete block settings
+	*/
 	function delete_block_settings()
 	{
 		global $db, $template, $lang, $userdata;
@@ -971,8 +1181,13 @@ class cms_admin
 			$this->delete_block_config_all();
 			redirect(append_sid($this->root . '?mode=block_settings'));
 		}
+
+		return true;
 	}
 
+	/*
+	* Show blocks settings list
+	*/
 	function show_blocks_settings_list()
 	{
 		global $lang, $theme, $template, $userdata;
@@ -1012,8 +1227,13 @@ class cms_admin
 		{
 			$template->assign_var('S_NO_BLOCKS', true);
 		}
+
+		return true;
 	}
 
+	/*
+	* Manage layout
+	*/
 	function manage_layout($is_layout_special)
 	{
 		global $db, $template, $class_form, $lang;
@@ -1114,8 +1334,13 @@ class cms_admin
 			'S_HIDDEN_FIELDS' => $this->s_hidden_fields
 			)
 		);
+
+		return true;
 	}
 
+	/*
+	* Save layout
+	*/
 	function save_layout($is_layout_special)
 	{
 		global $db, $template, $class_db, $lang, $userdata;
@@ -1320,8 +1545,13 @@ class cms_admin
 		$message .= '<br /><br />';
 
 		message_die(GENERAL_MESSAGE, $message);
+
+		return true;
 	}
 
+	/*
+	* Delete layout
+	*/
 	function delete_layout()
 	{
 		global $db, $lang, $template;
@@ -1379,8 +1609,13 @@ class cms_admin
 
 			redirect(append_sid($this->root . '?mode=' . $this->mode_layout_name));
 		}
+
+		return true;
 	}
 
+	/*
+	* Update layout
+	*/
 	function update_layout()
 	{
 		global $db;
@@ -1408,8 +1643,13 @@ class cms_admin
 			$result = $db->sql_query($sql);
 		}
 		redirect(append_sid($this->root . '?mode=' . $this->mode_layout_name . $action_append));
+
+		return true;
 	}
 
+	/*
+	* Show layouts list
+	*/
 	function show_layouts_list($is_layout_special)
 	{
 		global $db, $class_form, $template, $theme, $lang;
@@ -1473,6 +1713,8 @@ class cms_admin
 				)
 			);
 		}
+
+		return true;
 	}
 
 	/*
@@ -1503,6 +1745,7 @@ class cms_admin
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
+
 			return !empty($row['var_id']) ? $row['var_id'] : false;
 		}
 	}
@@ -1513,11 +1756,13 @@ class cms_admin
 	function get_user_cms_id()
 	{
 		global $db, $userdata, $auth;
+
 		$sql = "SELECT cu_id FROM " . CMS_USERS_TABLE . " WHERE cu_user_id = '" . $userdata['user_id'] . "'";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
 		$user_cms_id =  !empty($row['cu_id']) ? $row['cu_id'] : false;
+
 		return $auth->acl_get('cms_view', $this->cms_id) ? true : $user_cms_id;
 	}
 
@@ -1570,17 +1815,18 @@ class cms_admin
 	* Get all blocks settings detail
 	*/
 	function get_blocks_settings_detail()
-		{
-			global $db;
+	{
+		global $db;
 
-			$bs_rows = $this->get_installed_blocks();
-			foreach($bs_rows as $key => $data)
-			{
-				$bs_array['ID'][$key] = $data['bs_id'];
-				$bs_array['TITLE'][$key] = $data['name'];
-			}
-			return $bs_array;
+		$bs_rows = $this->get_installed_blocks();
+		foreach($bs_rows as $key => $data)
+		{
+			$bs_array['ID'][$key] = $data['bs_id'];
+			$bs_array['TITLE'][$key] = $data['name'];
 		}
+
+		return $bs_array;
+	}
 
 	/*
 	* Get blocks positions for the selected layouts
@@ -1762,6 +2008,8 @@ class cms_admin
 				$result2 = $db->sql_query($sql);
 			}
 		}
+
+		return true;
 	}
 
 	/*

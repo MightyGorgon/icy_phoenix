@@ -749,26 +749,19 @@ function phpbb_optionset($bit, $set, $data)
 }
 
 /*
-* Get Userdata, $user can be username or user_id.
+* Get user data, $user can be username or user_id.
 * If force_str is true, the username will be forced.
 */
 function get_userdata($user, $force_str = false)
 {
 	global $db;
 
-	if (!is_numeric($user) || $force_str)
-	{
-		$user = phpbb_clean_username($user);
-	}
-	else
-	{
-		$user = intval($user);
-	}
+	$user = (!is_numeric($user) || $force_str) ? phpbb_clean_username($user) : intval($user);
 
 	$sql = "SELECT *
 		FROM " . USERS_TABLE . "
 		WHERE ";
-	$sql .= ((is_integer($user)) ? "user_id = $user" : "username = '" .  $db->sql_escape($user) . "'") . " AND user_id <> " . ANONYMOUS;
+	$sql .= (is_integer($user) ? ("user_id = " . (int) $user) : ("username_clean = '" . $db->sql_escape(utf8_clean_string($user)) . "'")) . " AND user_id <> " . ANONYMOUS;
 	$result = $db->sql_query($sql);
 
 	if ($db->sql_affectedrows() == 0)
@@ -789,6 +782,18 @@ function get_userdata($user, $force_str = false)
 	{
 		return false;
 	}
+}
+
+/*
+* Generate an SQL to get users based on a search string
+*/
+function get_users_sql($username, $sql_like = false, $all_data = false, $data_escape = true, $clean_username = false)
+{
+	$username = (!empty($clean_username) ? phpbb_clean_username($username) : $username);
+	$sql = "SELECT " . (!empty($all_data) ? "*" : ("user_id, username, username_clean, user_active, user_color, user_level")) . " FROM " . USERS_TABLE . "
+		WHERE username_clean " . (!empty($sql_like) ? (" LIKE ") : (" = ")) . "'" . (!empty($data_escape) ? $db->sql_escape(utf8_clean_string($username)) : $username) . "'" . (!empty($sql_like) ? "" : (" LIMIT 1"));
+
+	return $sql;
 }
 
 /*
@@ -3381,8 +3386,8 @@ function page_header($title = '', $parse_template = false)
 	if (defined('IN_CMS'))
 	{
 		$config['cms_style'] = (!empty($_GET['cms_style']) ? ((intval($_GET['cms_style']) == 1) ? 1 : 0) : $config['cms_style']);
-		//$cms_style_std = ($config['cms_style'] == 1) ? false : true;
-		$cms_style_std = ($config['cms_style'] == CMS_STD) ? true : false;
+		//$cms_style_std = ($config['cms_style'] == CMS_STD) ? true : false;
+		$cms_style_std = true;
 		$template->assign_var('CMS_STD_TPL', $cms_style_std);
 	}
 
@@ -3480,7 +3485,7 @@ function page_header($title = '', $parse_template = false)
 	// Mighty Gorgon - AJAX Features - Begin
 	$ajax_user_check = '';
 	$ajax_user_check_alt = '';
-	if ($config['ajax_features'])
+	if (!empty($config['ajax_features']))
 	{
 		$ajax_user_check = 'onkeyup="AJAXUsernameSearch(this.value, 0);"';
 		$ajax_user_check_alt = 'onkeyup="AJAXUsernameSearch(this.value, 1);"';
@@ -4076,6 +4081,7 @@ function page_header($title = '', $parse_template = false)
 			'RECORD_USERS' => sprintf($lang['Record_online_users'], $config['record_online_users'], create_date($config['default_dateformat'], $config['record_online_date'], $config['board_timezone'])),
 
 			'TOP_HTML_BLOCK' => $top_html_block_text,
+			'S_HEADER_BANNER' => (empty($header_banner_text) ? false : true),
 			'HEADER_BANNER_CODE' => $header_banner_text,
 			'NAV_MENU_ADS_TOP' => $nav_menu_ads_top,
 			'NAV_MENU_ADS_BOTTOM' => $nav_menu_ads_bottom,

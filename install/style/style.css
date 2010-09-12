@@ -640,7 +640,7 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #dd2222; text-decoration:
 
 /* phpbbstyles.com bbcode */
 .post-text {
-	width: 99%;
+	width: 99% !important;
 	float: left;
 	clear: both;
 	font-size: 12px;
@@ -996,7 +996,8 @@ select option {
 	background: #fafafa;
 	border: 1px solid #dddddd;
 	border-top: 0;
-	font: 12px Courier, "Courier New", sans-serif;
+	font-family: "Courier New", Courier, sans-serif;
+	font-size: 12px;
 	text-align: left;
 	padding: 5px;
 	overflow: auto;
