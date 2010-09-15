@@ -249,4 +249,3 @@
 	$.fn.Treeview = $.fn.treeview;
 
 })(jQuery);
-

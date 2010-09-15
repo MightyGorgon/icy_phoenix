@@ -13,7 +13,6 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-
 /**
 * Compress JS CSS class
 */

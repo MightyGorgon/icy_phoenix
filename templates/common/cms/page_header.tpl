@@ -39,7 +39,8 @@
 			<li><a href="{FULL_SITE_PATH}{U_LOGIN_LOGOUT}" accesskey="l">{L_LOGIN_LOGOUT2}</a></li>
 		</ul>
 	</div>
-	<h2 class="sitename">{SITENAME}</h2>
+	<!-- <h2 class="sitename">{SITENAME}</h2> -->
+	<img src="{FULL_SITE_PATH}images/icy_phoenix_wb.png" alt="Icy Phoenix" class="sitelogo" /><h2 class="sitename">Icy Phoenix</h2>
 </div>
 
 <!-- <div class="top-header">&nbsp;</div> -->

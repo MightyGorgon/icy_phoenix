@@ -111,8 +111,9 @@ else
 		)
 	);
 
-	$start = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
+	$start = request_get_var('start', 0);
 	$start = ($start < 0) ? 0 : $start;
+
 	// Make Pagination and collect some extra data
 	$sql = 'SELECT COUNT(s.shout_id) as stored_shouts, MAX(s.shout_id) as total_shouts
 					FROM ' . AJAX_SHOUTBOX_TABLE . ' s

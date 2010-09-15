@@ -17,6 +17,8 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
+$config['jquery_ui'] = true;
+
 $cms_admin = new cms_admin();
 $cms_admin->root = CMS_PAGE_CMS;
 //$cms_admin->init_vars($mode_array, $action_array);

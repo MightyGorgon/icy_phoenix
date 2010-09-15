@@ -167,7 +167,9 @@ hr.dashed {
 	float: left;
 	clear: both;
 	font-size: 12px;
-	/*line-height: 1.2em;*/
+	line-height: 1.4em;
+	/* to be checked... currently needed for Chrome */
+	overflow-y: hidden !important;
 	/* to avoid vertical scrollbar with acronyms in last line */
 	padding-bottom: 3px;
 }

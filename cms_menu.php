@@ -19,6 +19,8 @@ include_once(IP_ROOT_PATH . 'includes/functions_cms_menu_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
+$config['jquery_ui'] = true;
+
 $cms_admin = new cms_admin();
 $cms_admin->root = CMS_PAGE_CMS;
 //$cms_admin->init_vars($mode_array, $action_array);
@@ -286,11 +288,11 @@ if($mode == 'menu_item')
 
 				//$mi_auth_view = $m_info['auth_view'];
 				$view_array = array(
-					'0' => $lang['B_All'],
-					'1' => $lang['B_Guests'],
-					'2' => $lang['B_Reg'],
-					'3' => $lang['B_Mod'],
-					'4' => $lang['B_Admin']
+					'0' => $lang['B_ALL'],
+					'1' => $lang['B_GUESTS'],
+					'2' => $lang['B_REG'],
+					'3' => $lang['B_MOD'],
+					'4' => $lang['B_ADMIN']
 				);
 
 				$mi_auth_view ='';
@@ -394,11 +396,11 @@ if($mode == 'menu_item')
 
 			//$mi_auth_view = $m_info['auth_view'];
 			$view_array = array(
-				'0' => $lang['B_All'],
-				'1' => $lang['B_Guests'],
-				'2' => $lang['B_Reg'],
-				'3' => $lang['B_Mod'],
-				'4' => $lang['B_Admin']
+				'0' => $lang['B_ALL'],
+				'1' => $lang['B_GUESTS'],
+				'2' => $lang['B_REG'],
+				'3' => $lang['B_MOD'],
+				'4' => $lang['B_ADMIN']
 			);
 
 			$mi_auth_view ='';

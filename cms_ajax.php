@@ -17,6 +17,8 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $common_cms_template = IP_ROOT_PATH . 'templates/common/cms/';
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 
+$config['jquery_ui'] = true;
+
 // Start session management
 $userdata = session_pagestart($user_ip);
 init_userprefs($userdata);

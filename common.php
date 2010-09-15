@@ -231,14 +231,6 @@ else
 $config = $cache->obtain_config();
 $config['default_style_row'] = $cache->obtain_default_style(false);
 $config['gzip_compress_runtime'] = $config['gzip_compress'];
-// Do we really need this? maybe not...
-// Initialize AJAX
-/*
-if (!defined('IN_TOPIC') && !defined('IN_POSTING') && !defined('IN_PM') && !defined('IN_SEARCH') && !defined('IN_ADMIN') && !defined('IN_CMS'))
-{
-	$config['ajax_features'] = false;
-}
-*/
 
 // Obtain and encode users IP
 // Removing HTTP_X_FORWARDED_FOR ... this may well cause other problems such as private range IP's appearing instead of the guilty routable IP, tough, don't even bother complaining ... go scream and shout at the idiots out there who feel "clever" is doing harm rather than good ... karma is a great thing ... :)

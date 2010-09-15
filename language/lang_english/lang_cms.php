@@ -127,6 +127,7 @@ $lang = array_merge($lang, array(
 	'Click_return_blocksadmin' => 'Click %sHere%s to return to Blocks Management',
 	'Block_removed' => 'Block removed',
 	'B_BV_added' => 'Block Config file available: Block Variables automatically inserted',
+	'B_EDIT_BS' => 'Edit Settings',
 	'B_EDIT' => 'Edit',
 	'B_DELETE' => 'Delete',
 

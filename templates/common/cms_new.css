@@ -168,7 +168,20 @@ label:hover { color: #666666; }
 
 h2.sitename {
 	color: #225599;
-	padding: 15px;
+	padding-top: 15px;
+	padding-right: 15px;
+	padding-bottom: 15px;
+	padding-left: 5px;
+	text-align: left;
+	float: left;
+	display: inline;
+}
+
+.sitelogo {
+	padding-top: 3px;
+	padding-right: 0px;
+	padding-left: 5px;
+	float: left;
 	text-align: left;
 	float: left;
 	display: inline;

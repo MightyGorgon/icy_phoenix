@@ -665,6 +665,7 @@ class cms_admin
 					}
 					else
 					{
+						$bs_id = $b_rows[$i]['block_settings_id'];
 						$b_id = $b_rows[$i]['bid'];
 						$b_weight = $b_rows[$i]['weight'];
 						$b_position = $b_rows[$i]['bposition'];
@@ -699,6 +700,7 @@ class cms_admin
 							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
 							'VIEW' => $b_view,
 
+							'U_EDIT_BS' => append_sid($this->root . '?mode=block_settings&amp;action=edit&amp;&amp;bs_id=' . $bs_id),
 							'U_EDIT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=edit&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $b_id),
 							'U_DELETE' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=delete&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $b_id),
 							'U_MOVE_UP' => append_sid($this->root . '?mode=' . $this->mode . $redirect_action . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),

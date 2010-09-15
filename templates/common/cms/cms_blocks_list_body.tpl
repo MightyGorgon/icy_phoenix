@@ -21,10 +21,15 @@
 <!-- BEGIN blocks -->
 <tr class="{blocks.ROW_CLASS} {blocks.ROW_CLASS}h" style="background-image: none;">
 	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">
-		<!-- IF S_B_EDIT --><a href="{blocks.U_MOVE_UP}"><img src="{IMG_CMS_ARROW_UP}" alt="{L_MOVE_UP}" title="{L_B_MOVE_UP}" /></a>&nbsp;
+		<!-- IF S_B_EDIT -->
+		<a href="{blocks.U_MOVE_UP}"><img src="{IMG_CMS_ARROW_UP}" alt="{L_MOVE_UP}" title="{L_B_MOVE_UP}" /></a>&nbsp;
 		<a href="{blocks.U_MOVE_DOWN}"><img src="{IMG_CMS_ARROW_DOWN}" alt="{L_MOVE_DOWN}" title="{L_B_MOVE_DOWN}" /></a>&nbsp;
-		<a href="{blocks.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_B_EDIT}" title="{L_B_EDIT}" /></a>&nbsp;<!-- ENDIF -->
-		<!-- IF S_B_DELETE --><a href="{blocks.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_B_DELETE}" title="{L_B_DELETE}" /></a><!-- ENDIF -->
+		<a href="{blocks.U_EDIT_BS}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_B_EDIT_BS}" title="{L_B_EDIT_BS}" /></a>&nbsp;
+		<a href="{blocks.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_B_EDIT}" title="{L_B_EDIT}" /></a>&nbsp;
+		<!-- ENDIF -->
+		<!-- IF S_B_DELETE -->
+		<a href="{blocks.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_B_DELETE}" title="{L_B_DELETE}" /></a>
+		<!-- ENDIF -->
 	</td>
 	<td class="{blocks.ROW_CLASS}" style="background: none;"><a href="{blocks.U_EDIT}">{blocks.TITLE}</a></td>
 	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.POSITION}</td>
