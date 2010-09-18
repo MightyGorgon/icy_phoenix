@@ -789,6 +789,8 @@ function get_userdata($user, $force_str = false)
 */
 function get_users_sql($username, $sql_like = false, $all_data = false, $data_escape = true, $clean_username = false)
 {
+	global $config, $cache, $db;
+
 	$username = (!empty($clean_username) ? phpbb_clean_username($username) : $username);
 	$sql = "SELECT " . (!empty($all_data) ? "*" : ("user_id, username, username_clean, user_active, user_color, user_level")) . " FROM " . USERS_TABLE . "
 		WHERE username_clean " . (!empty($sql_like) ? (" LIKE ") : (" = ")) . "'" . (!empty($data_escape) ? $db->sql_escape(utf8_clean_string($username)) : $username) . "'" . (!empty($sql_like) ? "" : (" LIMIT 1"));
@@ -2048,6 +2050,9 @@ function setup_style($style_id, $current_default_style, $current_style = false)
 	return $row;
 }
 
+/*
+* Checks if a style exists
+*/
 function check_style_exists($style_id)
 {
 	global $db, $config, $template, $images, $all_styles_array;
@@ -2069,12 +2074,37 @@ function check_style_exists($style_id)
 	return $style_exists;
 }
 
+/*
+* Check if a user is allowed to view IP addresses
+*/
+function ip_display_auth($userdata, $is_forum = false)
+{
+	global $config;
+
+	$is_mod = ($userdata['user_level'] == MOD) ? true : false;
+	if (!empty($is_forum))
+	{
+		global $is_auth;
+		$is_mod = !empty($is_auth['auth_mod']) ? MOD : USER;
+	}
+
+	$ip_display_auth = (($userdata['user_level'] == ADMIN) || (empty($config['ip_admins_only']) && !empty($is_mod))) ? true : false;
+
+	return $ip_display_auth;
+}
+
+/*
+* Encode IP addresses to HEX
+*/
 function encode_ip($dotquad_ip)
 {
 	$ip_sep = explode('.', $dotquad_ip);
 	return sprintf('%02x%02x%02x%02x', $ip_sep[0], $ip_sep[1], $ip_sep[2], $ip_sep[3]);
 }
 
+/*
+* Decode IP addresses from HEX
+*/
 function decode_ip($int_ip)
 {
 	$hexipbang = explode('.', chunk_split($int_ip, 2, '.'));

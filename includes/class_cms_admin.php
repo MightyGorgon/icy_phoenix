@@ -472,7 +472,7 @@ class cms_admin
 		}
 		else
 		{
-			if($this->b_id != 0)
+			if(!empty($this->b_id))
 			{
 				$sql = "DELETE FROM " . $this->tables['blocks_table'] . " WHERE bid = " . $this->b_id;
 				$result = $db->sql_query($sql);
@@ -742,7 +742,7 @@ class cms_admin
 
 		if($this->action == 'edit')
 		{
-			if($this->bs_id)
+			if(!empty($this->bs_id))
 			{
 				$b_info = $this->get_block_settings_info();
 				if((($b_info['locked'] == '1') || ($b_info['user_id'] != $userdata['user_id'])) && ($userdata['user_level'] != ADMIN))
@@ -868,6 +868,19 @@ class cms_admin
 			$this->s_hidden_fields .= '<input type="hidden" name="locked" value="' . $locked_hidden . '" />';
 			$this->s_hidden_fields .= $b_group_hidden;
 
+			$block_vars_default = array();
+			$block_count_variables = 0;
+			if(!empty($block_content_file))
+			{
+				$block_vars_default = $this->get_block_vars_default($block_content_file);
+				$block_count_variables = sizeof($block_vars_default);
+				$block_vars_default_names = array();
+				for($i = 0; $i < $block_count_variables; $i++)
+				{
+					$block_vars_default_names[$block_vars_default[$i]['config_name']] = $i;
+				}
+			}
+
 			if (($this->bs_id > 0) && ($block_content_file == $block_content_file_old))
 			{
 				$sql = "SELECT * FROM " . $this->tables['block_config_table'] . " AS c, " . $this->tables['block_variable_table'] . " AS bv
@@ -877,36 +890,30 @@ class cms_admin
 									ORDER BY c.id";
 				$result = $db->sql_query($sql);
 
-				$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
 				$rows_counter = 0;
+				$vars_counter = 0;
+				$block_vars_existing_names = array();
 				while($row = $db->sql_fetchrow($result))
 				{
-					$cms_field = array();
-					$cms_field = create_cms_field($row);
-
-					$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
-
-					if($cms_field[$row['config_name']]['type'] == '4')
+					if (in_array($row['config_name'], $block_vars_default_names))
 					{
-						$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
+						create_cms_field_tpl($row, false);
+						$vars_counter++;
 					}
-					else
-					{
-						$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? request_var($cms_field[$row['config_name']]['name'], '') : $default_portal[$cms_field[$row['config_name']]['name']];
-					}
-
-					$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
-
-					$template->assign_block_vars('cms_block', array(
-						'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
-						'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
-						'FIELD' => $cms_field[$row['config_name']]['output']
-						)
-					);
+					$block_vars_existing_names[$row['config_name']] = $rows_counter;
 					$rows_counter++;
 				}
 
-				if ($rows_counter == 0)
+				for($i = 0; $i < $block_count_variables; $i++)
+				{
+					if (!in_array($block_vars_default[$i]['config_name'], $block_vars_existing_names))
+					{
+						create_cms_field_tpl($block_vars_default[$i], false);
+						$vars_counter++;
+					}
+				}
+
+				if (empty($vars_counter))
 				{
 					$template->assign_block_vars('cms_no_bv', array(
 						'L_NO_BV' => $lang['No_bv_selected'],
@@ -917,55 +924,11 @@ class cms_admin
 			}
 			else
 			{
-				if(file_exists(BLOCKS_DIR . $block_content_file . '.cfg'))
+				if(!empty($block_vars_default))
 				{
-					$block_count_variables = 0;
-					include(BLOCKS_DIR . $block_content_file . '.cfg');
-					if ($block_count_variables > 0)
+					for($i = 0; $i < $block_count_variables; $i++)
 					{
-						for($i = 0; $i < $block_count_variables; $i++)
-						{
-							$row = array(
-								'config_name' => $block_variables[$i][2],
-								'config_value' => $block_variables[$i][7],
-								'label' => $block_variables[$i][0],
-								'sub_label' => $block_variables[$i][1],
-								'field_options' => $block_variables[$i][3],
-								'field_values' => $block_variables[$i][4],
-								'type' => $block_variables[$i][5],
-								'block' => $block_variables[$i][6],
-							);
-
-							$cms_field = array();
-							$cms_field = create_cms_field($row);
-
-							$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
-
-							if($cms_field[$row['config_name']]['type'] == '4')
-							{
-								$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
-							}
-							else
-							{
-								$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? request_var($cms_field[$row['config_name']]['name'], '') : $default_portal[$cms_field[$row['config_name']]['name']];
-							}
-
-							$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
-
-							$template->assign_block_vars('cms_block', array(
-								'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
-								'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
-								'FIELD' => $cms_field[$row['config_name']]['output']
-								)
-							);
-						}
-					}
-					else
-					{
-						$template->assign_block_vars('cms_no_bv', array(
-							'L_NO_BV' => $lang['No_bv_selected'],
-							)
-						);
+						create_cms_field_tpl($block_vars_default[$i], false);
 					}
 				}
 				else
@@ -1045,14 +1008,16 @@ class cms_admin
 		$data['content'] = htmlspecialchars_decode($data['content'], ENT_COMPAT);
 		$data['locked'] = $data['locked'] ? 1 : 0;
 
-		if($this->bs_id)
+		if(!empty($this->bs_id))
 		{
 			$class_db->update_item($this->bs_id, $data);
 		}
 		else
 		{
 			$data['user_id'] = $userdata['user_id'];
-			$class_db->insert_item($data);
+			$sql = "INSERT INTO " . $this->tables['block_settings_table'] . " " . $db->sql_build_insert_update($data, true);
+			$result = $db->sql_query($sql);
+			$this->bs_id = $db->sql_nextid();
 		}
 		$this->update_block_config($data['blockfile']);
 		redirect(append_sid($this->root . '?mode=block_settings', true));
@@ -1067,71 +1032,68 @@ class cms_admin
 	{
 		global $db;
 
-		if($this->bs_id)
+		$block_vars_default = array();
+		$block_count_variables = 0;
+		if(!empty($blockfile))
 		{
-			if(!empty($blockfile) && file_exists(BLOCKS_DIR . $blockfile . '.cfg'))
+			$block_vars_default = $this->get_block_vars_default($blockfile);
+			$block_count_variables = sizeof($block_vars_default);
+			$block_vars_default_names = array();
+			for($i = 0; $i < $block_count_variables; $i++)
 			{
-				include(BLOCKS_DIR . $blockfile . '.cfg');
-
-				// let's empty the previously created config vars...
-				$sql = "SELECT * FROM " . $this->tables['block_config_table'] . " WHERE bid = '" . $this->bs_id . "'";
-				$result = $db->sql_query($sql);
-
-				while($row = $db->sql_fetchrow($result))
-				{
-					$delete_var = true;
-					for($i = 0; $i < $block_count_variables; $i++)
-					{
-						if ($row['config_name'] == $block_variables[$i][2])
-						{
-							$delete_var = false;
-						}
-					}
-
-					if ($delete_var == true)
-					{
-						$this->delete_block_config_single($row['config_name']);
-					}
-				}
-				$db->sql_freeresult($result);
-			}
-			else
-			{
-				$this->delete_block_config_all();
+				$block_vars_default_names[$block_vars_default[$i]['config_name']] = $i;
 			}
 		}
 
-		if(!empty($blockfile) && file_exists(BLOCKS_DIR . $blockfile . '.cfg'))
+		if(!empty($block_vars_default))
 		{
-			include(BLOCKS_DIR . $blockfile . '.cfg');
+			// Let's empty the previously created config vars...
+			$sql = "SELECT * FROM " . $this->tables['block_config_table'] . " WHERE bid = '" . $this->bs_id . "'";
+			$result = $db->sql_query($sql);
+
+			while($row = $db->sql_fetchrow($result))
+			{
+				$delete_var = in_array($row['config_name'], $block_vars_default_names) ? false : true;
+				if (!empty($delete_var))
+				{
+					$this->delete_block_config_single($row['config_name']);
+				}
+			}
+			$db->sql_freeresult($result);
 
 			for($i = 0; $i < $block_count_variables; $i++)
 			{
-				if ((!empty($_POST[$block_variables[$i][2]])) || ($_POST[$block_variables[$i][2]] == '0'))
+				$config_value_tmp = request_post_var($block_vars_default[$i]['config_name'], '', true);
+				$config_value_tmp = htmlspecialchars_decode($config_value_tmp, ENT_COMPAT);
+				if (check_http_var_exists($block_vars_default[$i]['config_name'], true))
 				{
-					$block_variables[$i][7] = $db->sql_escape($_POST[$block_variables[$i][2]]);
+					$block_vars_default[$i]['config_value'] = $config_value_tmp;
 				}
 
-				$existing = $this->get_existing_block_var($block_variables[$i][2]);
+				$block_var_exists = $this->block_var_exists($block_vars_default[$i]['config_name']);
 
-				if(!$existing || !$this->bs_id)
+				if(empty($block_var_exists))
 				{
 					$sql = "INSERT INTO " . $this->tables['block_variable_table'] . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
-						VALUES ('" . $this->bs_id ."', '" . $db->sql_escape($block_variables[$i][0]) . "', '" . $db->sql_escape($block_variables[$i][1]) . "', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $db->sql_escape($block_variables[$i][3]) . "', '" . $block_variables[$i][4] . "', '" . $block_variables[$i][5] . "', '" . $db->sql_escape($block_variables[$i][6]) . "')";
+						VALUES ('" . $this->bs_id ."', '" . $db->sql_escape($block_vars_default[$i]['label']) . "', '" . $db->sql_escape($block_vars_default[$i]['sub_label']) . "', '" . $db->sql_escape($block_vars_default[$i]['config_name']) . "', '" . $db->sql_escape($block_vars_default[$i]['field_options']) . "', '" . $block_vars_default[$i]['field_values'] . "', '" . $block_vars_default[$i]['type'] . "', '" . $db->sql_escape($block_vars_default[$i]['block']) . "')";
 					$result = $db->sql_query($sql);
 
 					$sql = "INSERT INTO " . $this->tables['block_config_table'] . " (bid, config_name, config_value)
-						VALUES ('" . $this->bs_id ."', '" . $db->sql_escape($block_variables[$i][2]) . "', '" . $block_variables[$i][7] . "')";
+						VALUES ('" . $this->bs_id ."', '" . $db->sql_escape($block_vars_default[$i]['config_name']) . "', '" . $db->sql_escape($block_vars_default[$i]['config_value']) . "')";
 					$result = $db->sql_query($sql);
 				}
 				else
 				{
-					$sql = "UPDATE " . $this->tables['block_config_table'] . " SET config_value = '" . $block_variables[$i][7] . "'
-									WHERE config_name = '" . $db->sql_escape($block_variables[$i][2]) . "'
+					$sql = "UPDATE " . $this->tables['block_config_table'] . " SET config_value = '" . $db->sql_escape($block_vars_default[$i]['config_value']) . "'
+									WHERE config_name = '" . $db->sql_escape($block_vars_default[$i]['config_name']) . "'
 										AND bid = " . $this->bs_id;
 					$result = $db->sql_query($sql);
 				}
 			}
+		}
+		else
+		{
+			$this->delete_block_config_all();
 		}
 
 		return true;
@@ -1144,7 +1106,7 @@ class cms_admin
 	{
 		global $db, $template, $lang, $userdata;
 
-		if($this->bs_id != 0)
+		if(!empty($this->bs_id))
 		{
 			$b_info = $this->get_block_settings_info();
 			if((($b_info['locked'] == '1') || ($b_info['user_id'] != $userdata['user_id'])) && ($userdata['user_level'] != ADMIN))
@@ -1859,6 +1821,38 @@ class cms_admin
 	}
 
 	/*
+	* Get block vars default
+	*/
+	function get_block_vars_default($block_file)
+	{
+		$block_vars_default = array();
+
+		if(!empty($block_file) && file_exists(BLOCKS_DIR . $block_file . '.cfg'))
+		{
+			$block_count_variables = 0;
+			include(BLOCKS_DIR . $block_file . '.cfg');
+			if ($block_count_variables > 0)
+			{
+				for($i = 0; $i < $block_count_variables; $i++)
+				{
+					$block_vars_default[] = array(
+						'label' => $block_variables[$i][0],
+						'sub_label' => $block_variables[$i][1],
+						'config_name' => $block_variables[$i][2],
+						'field_options' => $block_variables[$i][3],
+						'field_values' => $block_variables[$i][4],
+						'type' => $block_variables[$i][5],
+						'block' => $block_variables[$i][6],
+						'config_value' => $block_variables[$i][7],
+					);
+				}
+			}
+		}
+
+		return $block_vars_default;
+	}
+
+	/*
 	* Get max blocks position
 	*/
 	function get_max_blocks_position($id_var_value, $b_bposition)
@@ -1909,7 +1903,7 @@ class cms_admin
 	/*
 	* Check if a configuration entry exists
 	*/
-	function get_existing_block_var($block_variable_name)
+	function block_var_exists($block_variable_name)
 	{
 		global $db;
 
@@ -1919,9 +1913,9 @@ class cms_admin
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
-		$existing = $row['existing'];
+		$block_var_exists = $row['existing'];
 
-		return $existing;
+		return $block_var_exists;
 	}
 
 	/*

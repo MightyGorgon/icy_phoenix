@@ -487,6 +487,10 @@ a.nav-menu-link {
 	white-space: nowrap !important;
 }
 
+.css-button-body img {
+	vertical-align: middle;
+}
+
 .css-button-left {
 	float: left;
 	margin-right: 5px !important;

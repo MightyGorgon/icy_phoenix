@@ -472,7 +472,7 @@ function check_acp_module_access()
 				$is_allowed = true;
 			}
 		}
-		if ($is_allowed == false)
+		if (empty($is_allowed))
 		{
 			for ($i = 0; $i < sizeof($allowed_admins); $i++)
 			{
@@ -483,7 +483,7 @@ function check_acp_module_access()
 				}
 			}
 		}
-		if ($is_allowed == false)
+		if (empty($is_allowed))
 		{
 			return false;
 		}

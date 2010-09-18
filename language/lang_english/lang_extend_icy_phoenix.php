@@ -423,6 +423,9 @@ if ($lang_extend_admin)
 		'IP_admin_protect' => 'Protect Main Admin Account',
 		'IP_admin_protect_explain' => 'Enabling this option will add more security to Main Admin: it can\'t be demoted by others administrators or users.',
 
+		'IP_ip_admins_only' => 'Display IP Addresses To Admins Only',
+		'IP_ip_admins_only_explain' => 'Enabling this option will allow only administrators to view IP addresses in forums and profiles (disabling this option will allow also moderators to display IP addresses).',
+
 		'IP_db_log_actions' => 'Enable DB Actions Log',
 		'IP_db_log_actions_explain' => 'By enabling this option any action that modifies the DB will be stored in a the DB. If this option has been set as true in constants.php, then cannot be disabled in ACP. If you select to have the reports, then extra files will be stored with all errors logged.',
 

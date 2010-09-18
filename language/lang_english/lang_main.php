@@ -2389,6 +2389,10 @@ $lang = array_merge($lang, array(
 	'INACTIVE_USER' => 'Inactive User',
 	'SEARCH_MIN_CHARS' => 'You need to input at least %s chars to perform the search.',
 
+	'EXTRA_STATS_SHOW' => 'Show Extra Statistics',
+	'EXTRA_STATS_HIDE' => 'Hide Extra Statistics',
+	'RESERVED' => 'Reserved',
+
 	)
 );
 

@@ -111,7 +111,7 @@ if (!isset($config[BBUS_CONFIGPROP_TRSCALE_NAME]))
 }
 
 /* Now, begin the task of constructing the BB Usage Stats data */
-if ($view_bb_usage_allowed)
+if (!empty($show_extra_stats) && $view_bb_usage_allowed)
 {
 
 	$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);

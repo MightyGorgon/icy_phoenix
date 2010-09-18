@@ -1296,6 +1296,7 @@ if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugin
 // Mighty Gorgon - Feedbacks - END
 
 // Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
+$ip_display_auth = ip_display_auth($userdata, true);
 for($i = 0; $i < $total_posts; $i++)
 {
 	$this_poster_mask = false;
@@ -1625,15 +1626,19 @@ for($i = 0; $i < $total_posts; $i++)
 	$delpost = '';
 	$ip_url = '';
 	$ip_img = '';
+	$ip_img_icon = '';
 	$ip = '';
 	if (($userdata['user_level'] == ADMIN) || $is_auth['auth_mod'])
 	{
-		$ip_url = 'modcp.' . PHP_EXT . '?mode=ip&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id'] . '&amp;sid=' . $userdata['session_id'];
-		// Start Advanced IP Tools Pack MOD
-		$ip_img = '<a href="' . $ip_url . '"><img src="' . $images['icon_ip'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" /></a>';
-		$ip_img_icon = '<a href="' . $ip_url . '"><img src="' . $images['vt_post_ip'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" /></a>';
-		// End Advanced IP Tools Pack MOD
-		$ip = '<a href="' . $ip_url . '">' . $lang['View_IP'] . '</a>';
+		if (!empty($ip_display_auth))
+		{
+			$ip_url = 'modcp.' . PHP_EXT . '?mode=ip&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id'] . '&amp;sid=' . $userdata['session_id'];
+			// Start Advanced IP Tools Pack MOD
+			$ip_img = '<a href="' . $ip_url . '"><img src="' . $images['icon_ip'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" /></a>';
+			$ip_img_icon = '<a href="' . $ip_url . '"><img src="' . $images['vt_post_ip'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($postrow[$i]['poster_ip']) . ')" /></a>';
+			// End Advanced IP Tools Pack MOD
+			$ip = '<a href="' . $ip_url . '">' . $lang['View_IP'] . '</a>';
+		}
 
 		if (($config['allow_mods_edit_admin_posts'] == false) && ($postrow[$i]['user_level'] == ADMIN) && ($userdata['user_level'] != ADMIN))
 		{

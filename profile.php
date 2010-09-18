@@ -70,9 +70,6 @@ if (!empty($mode))
 		$cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 		check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-		// Mighty Gorgon - Full Album Pack - BEGIN
-		include (ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
-		// Mighty Gorgon - Full Album Pack - END
 		include(IP_ROOT_PATH . 'includes/usercp_viewprofile.' . PHP_EXT);
 		exit;
 	}

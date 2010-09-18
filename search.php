@@ -233,7 +233,8 @@ $sort_by_types = array($lang['Sort_Time'], $lang['Sort_Post_Subject'], $lang['So
 // Start Advanced IP Tools Pack MOD
 // For security reasons, we need to make sure the IP lookup is coming from an admin or mod.
 $search_ip = '';
-if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+$ip_display_auth = ip_display_auth($userdata, false);
+if (!empty($ip_display_auth))
 {
 	$ip_address = request_var('search_ip', '');
 	if (!empty($ip_address))

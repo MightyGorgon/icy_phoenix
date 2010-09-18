@@ -17,11 +17,11 @@
 	<td width="25%" nowrap="nowrap" class="{reg_user_row.ROW_CLASS} row-center"><span class="genmed">{reg_user_row.LASTUPDATE}</span></td>
 	<td width="40%" class="{reg_user_row.ROW_CLASS}h" onclick="window.location.href='{reg_user_row.U_FORUM_LOCATION}'"><span class="gen"><a href="{reg_user_row.U_FORUM_LOCATION}">{reg_user_row.FORUM_LOCATION}</a></span></td>
 </tr>
-<!-- BEGIN switch_user_admin_or_mod -->
+<!-- BEGIN switch_display_ips -->
 <tr>
 	<td width="100%" class="{reg_user_row.ROW_CLASS}" colspan="3"><span class="gensmall">{L_IP}:&nbsp;<a href="{reg_user_row.U_HOSTNAME_LOOKUP}">{reg_user_row.IP}</a>&nbsp;&#187;&nbsp;<a href="{reg_user_row.U_WHOIS}" target="_blank">{L_WHOIS}</a>&nbsp;||&nbsp;{L_BROWSER}:&nbsp;{reg_user_row.USER_AGENT}</span></td>
 </tr>
-<!-- END switch_user_admin_or_mod -->
+<!-- END switch_display_ips -->
 <!-- END reg_user_row -->
 <tr><td class="spaceRow" colspan="3"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr><td class="row1" colspan="3"><span class="gen">{TOTAL_GUEST_USERS_ONLINE}</span></td></tr>
@@ -31,11 +31,11 @@
 	<td width="25%" nowrap="nowrap" class="{guest_user_row.ROW_CLASS} row-center"><span class="genmed">{guest_user_row.LASTUPDATE}</span></td>
 	<td width="40%" class="{guest_user_row.ROW_CLASS}h" onclick="window.location.href='{guest_user_row.U_FORUM_LOCATION}'"><span class="gen"><a href="{guest_user_row.U_FORUM_LOCATION}">{guest_user_row.FORUM_LOCATION}</a></span></td>
 </tr>
-<!-- BEGIN switch_user_admin_or_mod -->
+<!-- BEGIN switch_display_ips -->
 <tr>
 	<td width="100%" class="{guest_user_row.ROW_CLASS}" colspan="3"><span class="gensmall">{L_IP}:&nbsp;<a href="{guest_user_row.U_HOSTNAME_LOOKUP}">{guest_user_row.IP}</a>&nbsp;&#187;&nbsp;<a href="{guest_user_row.U_WHOIS}" target="_blank">{L_WHOIS}</a>&nbsp;||&nbsp;{L_BROWSER}:&nbsp;{guest_user_row.USER_AGENT}</span></td>
 </tr>
-<!-- END switch_user_admin_or_mod -->
+<!-- END switch_display_ips -->
 <!-- END guest_user_row -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 

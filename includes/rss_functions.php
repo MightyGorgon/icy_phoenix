@@ -313,7 +313,7 @@ function rss_get_user()
 			$user_data = get_userdata($uid, false);
 			if (!empty($user_data['username']))
 			{
-				$username = $user_data['username']
+				$username = $user_data['username'];
 			}
 			else
 			{

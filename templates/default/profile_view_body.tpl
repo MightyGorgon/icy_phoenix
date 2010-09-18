@@ -1,5 +1,13 @@
 <!-- INCLUDE overall_header.tpl -->
 
+<!-- IF S_ADMIN -->
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_QUICK_ADMIN_OPTIONS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<tr>
+	<td class="row1 row-center" colspan="2" ><span class="genmed"><a href="{U_ADMIN_EDIT_PROFILE}">{L_ADMIN_EDIT_PROFILE}</a> || <a href="{U_ADMIN_EDIT_PERMISSIONS}">{L_ADMIN_EDIT_PERMISSIONS}</a> || {L_USER_ACTIVE_INACTIVE} || {L_BANNED_USERNAME} || {L_BANNED_EMAIL}</span></td>
+</tr>
+</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+<!-- ENDIF -->
+
 {IMG_THL}{IMG_THC}<span class="forumlink">{USERNAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td height="2"></td>
@@ -133,6 +141,9 @@
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_RECENT_USER_ACTIVITY}</span></b></td>
 						<td class="row1">
+							<!-- IF S_EXTRA_STATS_AUTH -->
+							<span class="genmed">[ <a href="{U_EXTRA_STATS}">{L_EXTRA_STATS}</a> ]</span><br />
+							<!-- ENDIF -->
 							<span class="genmed">[ <a href="{U_USER_RECENT_TOPICS}">{L_USER_TOPICS_STARTED}</a> ]</span><br />
 							<span class="genmed">[ <a href="{U_USER_RECENT_POSTS}">{L_USER_POSTS}</a> ]</span><br />
 							<!-- IF S_ADMIN -->
@@ -231,14 +242,6 @@
 <tr><td height="2">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<!-- IF S_ADMIN -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_QUICK_ADMIN_OPTIONS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr>
-	<td class="row1 row-center" colspan="2" ><span class="genmed"><a href="{U_ADMIN_EDIT_PROFILE}">{L_ADMIN_EDIT_PROFILE}</a> || <a href="{U_ADMIN_EDIT_PERMISSIONS}">{L_ADMIN_EDIT_PERMISSIONS}</a> || {L_USER_ACTIVE_INACTIVE} || {L_BANNED_USERNAME} || {L_BANNED_EMAIL}</span></td>
-</tr>
-</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-<!-- ENDIF -->
-
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_EXTRA_PROFILE_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1"><div class="post-text post-text-hide-flow">{SELFDES}</div></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
@@ -273,89 +276,9 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- END recent_pics_block -->
 
-{BB_USAGE_STATS_TEMPLATE}
-
-<!-- BEGIN switch_user_admin_or_mod -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_OTHER_REGISTERED_IPS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr>
-	<th>{L_USERNAME}</th>
-	<th>{L_REGISTERED_HOSTNAME}</th>
-	<th>{L_TIME}</th>
-</tr>
-<!-- BEGIN switch_other_user_ips -->
-<!-- BEGIN OTHER_REGISTERED_IPS -->
-<tr>
-	<td class="row1"><span class="genmed"><a href="{switch_user_admin_or_mod.switch_other_user_ips.OTHER_REGISTERED_IPS.U_PROFILE}">{switch_user_admin_or_mod.switch_other_user_ips.OTHER_REGISTERED_IPS.USER_NAME}</a></span></td>
-	<td class="row1"><span class="genmed">{switch_user_admin_or_mod.switch_other_user_ips.OTHER_REGISTERED_IPS.USER_HOSTNAME}</span></td>
-	<td class="row1"><span class="genmed">{switch_user_admin_or_mod.switch_other_user_ips.OTHER_REGISTERED_IPS.TIME}</span></td>
-</tr>
-<!-- END OTHER_REGISTERED_IPS -->
-<!-- END switch_other_user_ips -->
-<!-- BEGIN switch_no_other_registered_ips -->
-<tr><td class="row1 row-center" colspan="3"><span class="genmed">{L_NO_OTHER_REGISTERED_IPS}</span></td></tr>
-<!-- END switch_no_other_registered_ips -->
-</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-	<td align="left" valign="top"><span class="gen">{USERS_PAGE_NUMBER}&nbsp;</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">&nbsp;{USERS_PAGINATION}</span><br /></td>
-</tr>
-</table>
-
-<br />
-
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_OTHER_IPS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<!-- BEGIN switch_other_posted_ips -->
-<!-- BEGIN ALL_IPS_POSTED_FROM -->
-<tr>
-	<td class="row1"><span class="genmed"><a href="{switch_user_admin_or_mod.switch_other_posted_ips.ALL_IPS_POSTED_FROM.U_POSTER_IP}" target="_blank">{switch_user_admin_or_mod.switch_other_posted_ips.ALL_IPS_POSTED_FROM.POSTER_IP}</a> [ <a href="{switch_user_admin_or_mod.switch_other_posted_ips.ALL_IPS_POSTED_FROM.U_POSTS_LINK}">{switch_user_admin_or_mod.switch_other_posted_ips.ALL_IPS_POSTED_FROM.POSTS}</a> ] </span></td>
-</tr>
-<!-- END ALL_IPS_POSTED_FROM -->
-<!-- END switch_other_posted_ips -->
-<!-- BEGIN switch_no_other_posted_ips -->
-<tr>
-	<td class="row1 row-center"><span class="genmed">{L_NO_OTHER_POSTED_IPS}</span></td>
-</tr>
-<!-- END switch_no_other_posted_ips -->
-</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-	<td align="left" valign="top"><span class="gen">{IPS_PAGE_NUMBER}&nbsp;</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">&nbsp;{IPS_PAGINATION}</span></td>
-</tr>
-</table>
-
-<br />
-
-<!-- IF S_LOGINS_HISTORY -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_LOGINS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr>
-	<th>{L_IP}</th>
-	<th>{L_BROWSER}</th>
-	<th>{L_TIME}</th>
-</tr>
-<!-- BEGIN USER_LOGINS -->
-<tr>
-	<td class="row1"><span class="genmed"><a href="{switch_user_admin_or_mod.USER_LOGINS.U_IP}" target="_blank">{switch_user_admin_or_mod.USER_LOGINS.IP}</a></span></td>
-	<td class="row1"><span class="genmed">{switch_user_admin_or_mod.USER_LOGINS.USER_AGENT}</span></td>
-	<td class="row1"><span class="genmed">{switch_user_admin_or_mod.USER_LOGINS.LOGIN_TIME}</span></td>
-</tr>
-<!-- END USER_LOGINS -->
-<!-- BEGIN switch_no_logins -->
-<tr><td class="row1 row-center" colspan="3"><span class="genmed">{L_NO_LOGINS}</span></td></tr>
-<!-- END switch_no_logins -->
-</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-
-<table class="empty-table" width="100%" align="center" cellspacing="0">
-<tr>
-	<td align="left" valign="top"><span class="gen">{LOGINS_PAGE_NUMBER}&nbsp;</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">&nbsp;{LOGINS_PAGINATION}</span><br /><span class="gensmall">{S_TIMEZONE}</span></td>
-</tr>
-</table>
+<!-- IF S_EXTRA_STATS -->
+<!-- INCLUDE profile_view_stats.tpl -->
 <!-- ENDIF -->
-<!-- END switch_user_admin_or_mod -->
 
 <!-- BEGIN profile_char -->
 {profile_char.CHAR_PROFILE}

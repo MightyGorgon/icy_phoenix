@@ -96,7 +96,7 @@ class class_mcp_topic
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
 
-		// Tags - BEGIN
+		// TAGS - BEGIN
 		@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
 		$class_topics_tags = new class_topics_tags();
 		$tags = $class_topics_tags->get_topics_tags($topics);
@@ -109,7 +109,7 @@ class class_mcp_topic
 			}
 			$class_topics_tags->update_tag_entry($tags);
 		}
-		// Tags - END
+		// TAGS - END
 
 		// UPI2DB - BEGIN
 		$sql = "DELETE FROM " . UPI2DB_ALWAYS_READ_TABLE . "
@@ -228,6 +228,13 @@ class class_mcp_topic
 					SET forum_id = " . $new_forum_id . "
 					WHERE topic_id = " . $topic_id;
 				$db->sql_query($sql);
+
+				// TAGS - BEGIN
+				$sql = "UPDATE " . TOPICS_TAGS_MATCH_TABLE . "
+					SET forum_id = " . $new_forum_id . "
+					WHERE topic_id = " . $topic_id;
+				$db->sql_query($sql);
+				// TAGS - END
 			}
 
 			$db->sql_transaction('commit');
@@ -396,7 +403,7 @@ class class_mcp_topic
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
 
-		// Tags - BEGIN
+		// TAGS - BEGIN
 		@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
 		$class_topics_tags = new class_topics_tags();
 		$tags = $class_topics_tags->get_topics_tags($topics);
@@ -406,7 +413,7 @@ class class_mcp_topic
 			$class_topics_tags->remove_tag_from_match($tags, $topics[$i]);
 			$class_topics_tags->update_tag_entry($tags);
 		}
-		// Tags - END
+		// TAGS - END
 
 		$this->topic_poll_delete($topics);
 

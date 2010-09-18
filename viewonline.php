@@ -256,9 +256,10 @@ while($row = $db->sql_fetchrow($result))
 			)
 		);
 		// Start Advanced IP Tools Pack MOD
-		if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+		$ip_display_auth = ip_display_auth($userdata, false);
+		if (!empty($ip_display_auth))
 		{
-			$template->assign_block_vars($which_row . '.switch_user_admin_or_mod', array());
+			$template->assign_block_vars($which_row . '.switch_display_ips', array());
 		}
 		// End Advanced IP Tools Pack MOD
 

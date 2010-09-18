@@ -384,13 +384,6 @@ if($cms_admin->mode == 'config')
 	$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_CONFIG']);
 
 	// Pull all config data
-	/*
-	$sql = "SELECT * FROM " . CMS_BLOCK_VARIABLE_TABLE . " AS b RIGHT JOIN " . CMS_CONFIG_TABLE . " AS p
-		USING (config_name)
-		WHERE ((b.config_name IS NULL) OR (b.config_name IS NOT NULL))
-			AND ((p.bid = 0))
-		ORDER BY b.block, b.bvid, p.id";
-	*/
 	$sql = "SELECT * FROM " . $cms_admin->tables['block_variable_table'] . " AS b, " . $cms_admin->tables['block_config_table'] . " AS p
 		WHERE (b.bid = 0)
 			AND (p.bid = 0)
@@ -400,38 +393,7 @@ if($cms_admin->mode == 'config')
 	$controltype = array('1' => 'textbox', '2' => 'dropdown list', '3' => 'radio buttons', '4' => 'checkbox');
 	while($row = $db->sql_fetchrow($result))
 	{
-		$cms_field = array();
-		$cms_field = create_cms_field($row);
-		//$cms_field = array_merge($cms_field, create_cms_field($row));
-
-		$default_portal[$cms_field[$row['config_name']]['name']] = $cms_field[$row['config_name']]['value'];
-
-		if($cms_field[$row['config_name']]['type'] == '4')
-		{
-			$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? '1' : '0';
-		}
-		else
-		{
-			$new[$cms_field[$row['config_name']]['name']] = (isset($_POST[$cms_field[$row['config_name']]['name']])) ? $_POST[$cms_field[$row['config_name']]['name']] : $default_portal[$cms_field[$row['config_name']]['name']];
-		}
-
-		if(isset($_POST['save']))
-		{
-			$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET
-				config_value = '" . str_replace("\'", "''", $new[$cms_field[$row['config_name']]['name']]) . "'
-				WHERE config_name = '" . $cms_field[$row['config_name']]['name'] . "'";
-			$result = $db->sql_query($sql);
-		}
-		else
-		{
-			$is_block = ($cms_field[$row['config_name']]['block'] != '@Portal Config') ? 'block ' : '';
-			$template->assign_block_vars('cms_block', array(
-				'L_FIELD_LABEL' => $cms_field[$row['config_name']]['label'],
-				'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$row['config_name']]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$row['config_name']]['block']) . ' ' . $is_block . ']</span>',
-				'FIELD' => $cms_field[$row['config_name']]['output']
-				)
-			);
-		}
+		create_cms_field_tpl($row, true);
 	}
 	$db->sql_freeresult($result);
 

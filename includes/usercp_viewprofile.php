@@ -21,12 +21,15 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-if (empty($_GET[POST_USERS_URL]) || ($_GET[POST_USERS_URL] == ANONYMOUS))
+$show_extra_stats = request_get_var('stats', 0);
+$target_user_id = request_get_var(POST_USERS_URL, ANONYMOUS);
+
+if (empty($target_user_id) || ($target_user_id == ANONYMOUS))
 {
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 }
 
-$profiledata = get_userdata($_GET[POST_USERS_URL]);
+$profiledata = get_userdata($target_user_id);
 if (empty($profiledata) || empty($profiledata['user_id']))
 {
 	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
@@ -168,11 +171,27 @@ if ($show_latest_pics)
 	$limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
 	$cols_per_page = $album_config['img_cols'];
 
+	if ($userdata['user_level'] == ADMIN)
+	{
+		$cat_view_level_sql = '';
+	}
+	elseif (!empty($userdata['session_logged_in']))
+	{
+		$cat_view_level_sql = " AND c.cat_view_level <= 1 ";
+	}
+	else
+	{
+		$cat_view_level_sql = " AND c.cat_view_level <= 0 ";
+	}
+
+	//$include_personal_galleries_sql = (($userdata['user_level'] == ADMIN) || (!empty($userdata['session_logged_in']) && empty($album_config['personal_gallery_view'])) || (empty($userdata['session_logged_in']) && ($album_config['personal_gallery_view'] == ANONYMOUS))) ? (" AND c.cat_user_id = " . $profiledata['user_id'] . " ") : "";
+	$include_personal_galleries_sql = (($userdata['user_level'] == ADMIN) || (!empty($userdata['session_logged_in']) && empty($album_config['personal_gallery_view'])) || (empty($userdata['session_logged_in']) && ($album_config['personal_gallery_view'] == ANONYMOUS))) ? "" : (" AND c.cat_user_id = 0 ");
+
 	$sql = "SELECT p.*, c.*, u.user_id, u.username, u.user_active, u.user_color
 			FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c, " . USERS_TABLE . " u
-			WHERE c.cat_user_id = " . $profiledata['user_id'] . "
+			WHERE p.pic_approval = 1
+				" . $include_personal_galleries_sql . $cat_view_level_sql . "
 				AND p.pic_cat_id = c.cat_id
-				AND p.pic_approval = 1
 				AND u.user_id = p.pic_user_id
 			ORDER BY pic_time DESC";
 	$result = $db->sql_query($sql);
@@ -219,22 +238,39 @@ if ($show_latest_pics)
 				$pic_sp_link = append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
 				$pic_dl_link = append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
 
+				// Temporarily force to TRUE
+				$album_user_access['view'] = true;
+				if ($album_user_access['view'] == false)
+				{
+					$pic_title = '&nbsp;';
+					$pic_desc = '&nbsp;';
+					$pic_thumbnail = $images['no_thumbnail'];
+					$pic_views = 0;
+				}
+				else
+				{
+					$pic_title = $recentrow[$j]['pic_title'];
+					$pic_desc = $recentrow[$j]['pic_desc'];
+					$pic_thumbnail = append_sid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
+					$pic_views = $recentrow[$j]['pic_view_count'];
+				}
+
 				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
 					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 					'U_PIC_SP' => $pic_sp_link,
 					'U_PIC_DL' => $pic_dl_link,
 
-					'THUMBNAIL' => append_sid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']),
+					'THUMBNAIL' => $pic_thumbnail,
 					'PIC_PREVIEW_HS' => $pic_preview_hs,
 					'PIC_PREVIEW' => $pic_preview,
-					'DESC' => $recentrow[$j]['pic_desc']
+					'DESC' => $pic_desc
 					)
 				);
 
 				$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
 				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
-					'PIC_TITLE' => $recentrow[$j]['pic_title'],
-					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $recentrow[$j]['pic_title'] . '</a>',
+					'PIC_TITLE' => $pic_title,
+					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $pic_title . '</a>',
 					'POSTER' => $recent_poster,
 					'TIME' => create_date($config['default_dateformat'], $recentrow[$j]['pic_time'], $config['board_timezone']),
 
@@ -242,7 +278,7 @@ if ($show_latest_pics)
 					'U_PIC_SP' => $pic_sp_link,
 					'U_PIC_DL' => $pic_dl_link,
 
-					'VIEW' => $recentrow[$j]['pic_view_count'],
+					'VIEW' => $pic_views,
 					)
 				);
 			}
@@ -476,7 +512,7 @@ $flag = (!empty($profiledata['user_from_flag'])) ? '<img src="images/flags/' . $
 $location .= '&nbsp;' . $flag ;
 
 // Activity - BEGIN
-if (!empty($config['plugins']['activity']['enabled']))
+if (!empty($config['plugins']['activity']['enabled']) && !empty($userdata['session_logged_in']))
 {
 	include_once(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['activity']['dir'] . 'common.' . PHP_EXT);
 	unset($trophy_count, $trophy_holder, $trophy);
@@ -527,7 +563,7 @@ if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugin
 	{
 		$feedbacks_average = (($feedbacks_details['feedbacks_count'] > 0) ? (round($feedbacks_details['feedbacks_sum'] / $feedbacks_details['feedbacks_count'], 1)) : 0);
 		$feedbacks_average_img = IP_ROOT_PATH . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
-		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid(PLUGINS_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align:middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
+		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid(PLUGINS_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align: middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
 	}
 }
 // Mighty Gorgon - Feedbacks - END
@@ -880,9 +916,10 @@ if (sizeof($groups) > 0)
 
 // Start Advanced IP Tools Pack MOD
 // Let's see if the user viewing this page is an admin or mod, if not, we can save several database queries! :P
-if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+$ip_display_auth = ip_display_auth($userdata, false);
+if (!empty($ip_display_auth))
 {
-	$template->assign_block_vars('switch_user_admin_or_mod',array() );
+	$template->assign_block_vars('switch_display_ips', array());
 	// All users registering under this IP address section
 	if ($encoded_ip != '')
 	{
@@ -903,11 +940,11 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 			$sql = "SELECT user_id, username, user_regdate, user_registered_ip, user_registered_hostname FROM " . USERS_TABLE . " WHERE user_registered_ip = '" . $encoded_ip . "' AND user_id != '" . $profiledata['user_id'] . "' ORDER BY user_regdate DESC LIMIT $u_start, " . $config['topics_per_page'];
 			$result = $db->sql_query($sql);
 
-			$template->assign_block_vars('switch_user_admin_or_mod.switch_other_user_ips', array());
+			$template->assign_block_vars('switch_display_ips.switch_other_user_ips', array());
 
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$template->assign_block_vars('switch_user_admin_or_mod.switch_other_user_ips.OTHER_REGISTERED_IPS', array(
+				$template->assign_block_vars('switch_display_ips.switch_other_user_ips.OTHER_REGISTERED_IPS', array(
 					'USER_NAME' => $row['username'],
 					'U_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 					'USER_HOSTNAME' => htmlspecialchars($row['user_registered_hostname']),
@@ -931,7 +968,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 				'L_NO_OTHER_REGISTERED_IPS' => $lang['No_other_registered_ips'],
 				)
 			);
-			$template->assign_block_vars('switch_user_admin_or_mod.switch_no_other_registered_ips', array());
+			$template->assign_block_vars('switch_display_ips.switch_no_other_registered_ips', array());
 		}
 	}
 
@@ -941,7 +978,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 			'L_NO_OTHER_REGISTERED_IPS' => $lang['No_other_registered_ips'],
 			)
 		);
-		$template->assign_block_vars('switch_user_admin_or_mod.switch_no_other_registered_ips', array());
+		$template->assign_block_vars('switch_display_ips.switch_no_other_registered_ips', array());
 	}
 
 	// All IP addresses this user has posted from section
@@ -962,13 +999,13 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 		$sql = 'SELECT poster_ip, COUNT(*) AS postings FROM ' . POSTS_TABLE . ' WHERE poster_id = "' . $profiledata['user_id'] . '" GROUP BY poster_ip ORDER BY ' . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . " DESC LIMIT $i_start, " . $config['topics_per_page'];
 		$result = $db->sql_query($sql);
 
-		$template->assign_block_vars('switch_user_admin_or_mod.switch_other_posted_ips', array());
+		$template->assign_block_vars('switch_display_ips.switch_other_posted_ips', array());
 
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$poster_ip = decode_ip($row['poster_ip']);
 
-			$template->assign_block_vars('switch_user_admin_or_mod.switch_other_posted_ips.ALL_IPS_POSTED_FROM', array(
+			$template->assign_block_vars('switch_display_ips.switch_other_posted_ips.ALL_IPS_POSTED_FROM', array(
 				'U_POSTER_IP' => 'http://whois.sc/' . $poster_ip,
 				'POSTER_IP' => $poster_ip,
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
@@ -993,7 +1030,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 			'L_NO_OTHER_POSTED_IPS' => $lang['No_other_posted_ips'],
 			)
 		);
-		$template->assign_block_vars('switch_user_admin_or_mod.switch_no_other_posted_ips', array());
+		$template->assign_block_vars('switch_display_ips.switch_no_other_posted_ips', array());
 	}
 
 	if (!$config['disable_logins'])
@@ -1023,7 +1060,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 			{
 				$ip = decode_ip($row['login_ip']);
 
-				$template->assign_block_vars('switch_user_admin_or_mod.USER_LOGINS', array(
+				$template->assign_block_vars('switch_display_ips.USER_LOGINS', array(
 					'U_IP' => 'http://whois.sc/' . $ip,
 					'IP' => $ip,
 					'USER_AGENT' => htmlspecialchars($row['login_user_agent']),
@@ -1047,7 +1084,7 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 				'L_NO_LOGINS' => $lang['No_logins'],
 				)
 			);
-			$template->assign_block_vars('switch_user_admin_or_mod.switch_no_logins', array());
+			$template->assign_block_vars('switch_display_ips.switch_no_logins', array());
 		}
 
 		$template->assign_vars(array(
@@ -1061,12 +1098,14 @@ if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
 	}
 }
 // End Advanced IP Tools Pack MOD
+
 // Mighty Gorgon - Full Album Pack - BEGIN
 if ($album_config['show_all_in_personal_gallery'])
 {
 	$template->assign_block_vars('enable_view_toggle', array());
 }
 // Mighty Gorgon - Full Album Pack - END
+
 //Start Quick Administrator User Options and Information MOD
 if ($userdata['user_level'] == ADMIN)
 {
@@ -1098,7 +1137,18 @@ $template->assign_vars(array(
 );
 
 //End Quick Administrator User Options and Information MOD
+
 include(IP_ROOT_PATH . 'includes/bb_usage_stats.' . PHP_EXT);
+// We need to keep this here... to make sure also $view_bb_usage_allowed is assigned
+$extra_stats_auth = (!empty($view_bb_usage_allowed) || !empty($ip_display_auth)) ? true : false;
+$template->assign_vars(array(
+	'L_EXTRA_STATS' => (!empty($show_extra_stats) ? $lang['EXTRA_STATS_HIDE'] : $lang['EXTRA_STATS_SHOW']),
+	'U_EXTRA_STATS' => append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . (!empty($show_extra_stats) ? '' : '&amp;stats=1')),
+	'S_EXTRA_STATS_AUTH' => (!empty($extra_stats_auth) ? true : false),
+	'S_EXTRA_STATS' => (!empty($show_extra_stats) ? true : false),
+	)
+);
+
 // MG Cash MOD For IP - BEGIN
 if (!empty($config['plugins']['cash']['enabled']))
 {

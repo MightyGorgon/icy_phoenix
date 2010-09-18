@@ -314,7 +314,7 @@ if (!$album_config['invert_nav_arrows'])
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
-				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
+				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #ff5522;' : '',
 				)
 			);
 		}

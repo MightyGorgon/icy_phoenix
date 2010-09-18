@@ -24,7 +24,7 @@ if (!defined('IN_ICYPHOENIX'))
 if (function_exists('check_acp_module_access'))
 {
 	$is_allowed = check_acp_module_access();
-	if ($is_allowed == false)
+	if (empty($is_allowed))
 	{
 		return;
 	}
@@ -54,7 +54,7 @@ $aprvmUtil->copyrightYear = '2001-2005';
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 $is_allowed = check_acp_module_access();
-if ($is_allowed == false)
+if (empty($is_allowed))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }

@@ -23,7 +23,7 @@ require('pagestart.' . PHP_EXT);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 $is_allowed = check_acp_module_access();
-if ($is_allowed == false)
+if (empty($is_allowed))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }

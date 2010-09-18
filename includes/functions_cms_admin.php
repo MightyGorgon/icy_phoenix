@@ -536,24 +536,6 @@ function get_block_info($blocks_table, $b_id)
 }
 
 /*
-* Check if a configuration entry exists
-*/
-function get_existing_block_var($table_name, $b_id, $block_variable_name)
-{
-	global $db;
-
-	$sql = "SELECT count(1) existing FROM " . $table_name . "
-		WHERE config_name = '" . $block_variable_name . "'
-			AND bid = '" . $b_id . "'";
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-	$existing = $row['existing'];
-
-	return $existing;
-}
-
-/*
 * Get max blocks position
 */
 function get_max_blocks_position($table_name, $id_var_value, $b_bposition)
@@ -812,7 +794,54 @@ function create_cms_field($config_array)
 		default:
 			$cms_field[$config_array['config_name']]['output'] = '';
 	}
+
 	return $cms_field;
+}
+
+/*
+* Create CMS field with templage
+*/
+function create_cms_field_tpl($config_array, $check_save = false)
+{
+	global $db, $cache, $config, $userdata, $lang, $template;
+
+	$cms_field = array();
+	$cms_field = create_cms_field($config_array);
+
+	$config_name_tmp = $config_array['config_name'];
+
+	$default_portal[$cms_field[$config_name_tmp]['name']] = $cms_field[$config_name_tmp]['value'];
+
+	if($cms_field[$config_name_tmp]['type'] == '4')
+	{
+		$new[$cms_field[$config_name_tmp]['name']] = (isset($_POST[$cms_field[$config_name_tmp]['name']])) ? '1' : '0';
+	}
+	else
+	{
+		$config_value_tmp = request_post_var($cms_field[$config_name_tmp]['name'], '', true);
+		$config_value_tmp = htmlspecialchars_decode($config_value_tmp, ENT_COMPAT);
+		$new[$cms_field[$config_name_tmp]['name']] = (isset($_POST[$cms_field[$config_name_tmp]['name']])) ? $config_value_tmp : $default_portal[$cms_field[$config_name_tmp]['name']];
+	}
+
+	if(!empty($check_save) && isset($_POST['save']))
+	{
+		$sql = "UPDATE " . CMS_CONFIG_TABLE . " SET
+			config_value = '" . $db->sql_escape($new[$cms_field[$config_name_tmp]['name']]) . "'
+			WHERE config_name = '" . $cms_field[$config_name_tmp]['name'] . "'";
+		$result = $db->sql_query($sql);
+	}
+	else
+	{
+		$is_block = ($cms_field[$config_name_tmp]['block'] != '@Portal Config') ? 'block ' : '';
+		$template->assign_block_vars('cms_block', array(
+			'L_FIELD_LABEL' => $cms_field[$config_name_tmp]['label'],
+			'L_FIELD_SUBLABEL' => '<br /><br /><span class="gensmall">' . $cms_field[$config_name_tmp]['sub_label'] . ' [ ' . str_replace("@", "", $cms_field[$config_name_tmp]['block']) . ' ' . $is_block . ']</span>',
+			'FIELD' => $cms_field[$config_name_tmp]['output']
+			)
+		);
+	}
+
+	return true;
 }
 
 /*

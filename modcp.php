@@ -725,6 +725,12 @@ switch($mode)
 		break;
 
 	case 'ip':
+		$ip_display_auth = ip_display_auth($userdata, false);
+		if (empty($ip_display_auth))
+		{
+			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
+		}
+
 		$meta_content['page_title'] = $lang['Mod_CP'] . ' (' . $lang['IP'] . ')';
 		page_header($meta_content['page_title'], true);
 

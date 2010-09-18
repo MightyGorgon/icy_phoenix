@@ -59,6 +59,7 @@ if(!function_exists('cms_block_calendar_events'))
 			}
 			else
 			{
+				$template->assign_var('SHOW_END_TIME', $show_end_date);
 				$i = 0;
 				while ($event_row = $db->sql_fetchrow($result))
 				{
@@ -67,7 +68,6 @@ if(!function_exists('cms_block_calendar_events'))
 					$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 					$template->assign_block_vars('event_row', array(
 						'ROW_CLASS' => $row_class,
-						'SHOW_END_TIME' => $show_end_date,
 
 						'EVENT_START_DATE' => gmdate($lang['DATE_FORMAT_DATE'], $event_row['topic_calendar_time']),
 						'EVENT_START_TIME' => gmdate($lang['DATE_FORMAT_TIME'], $event_row['topic_calendar_time']),

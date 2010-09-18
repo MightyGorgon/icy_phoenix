@@ -21,7 +21,7 @@ define('IN_ICYPHOENIX', true);
 if (function_exists('check_acp_module_access'))
 {
 	$is_allowed = check_acp_module_access();
-	if ($is_allowed == false)
+	if (empty($is_allowed))
 	{
 		return;
 	}
@@ -91,7 +91,7 @@ if(!function_exists('admin_db_prepare_sql'))
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 $is_allowed = check_acp_module_access();
-if ($is_allowed == false)
+if (empty($is_allowed))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
