@@ -4382,6 +4382,7 @@ function page_header($title = '', $parse_template = false)
 			'IMG_LAYOUT_PREVIEW' => $images['layout_preview'],
 			'IMG_BLOCK_EDIT' => $images['block_edit'],
 			'IMG_BLOCK_DELETE' => $images['block_delete'],
+			'IMG_CMS_ARROW_MOVE' => $images['block_move_s'],
 			'IMG_CMS_ARROW_UP' => $images['arrows_cms_up'],
 			'IMG_CMS_ARROW_DOWN' => $images['arrows_cms_down'],
 			)

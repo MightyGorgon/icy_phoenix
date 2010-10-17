@@ -578,6 +578,8 @@ ALTER TABLE `phpbb_users` ADD `user_mask` tinyint(1) DEFAULT '0' NOT NULL AFTER 
 ##              BUILD 067             ##
 ########################################
 ALTER TABLE `phpbb_ranks` ADD `rank_show_title` tinyint(1) DEFAULT '1' NOT NULL AFTER `rank_special`;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_admins_only', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attachments_stats', '0');
 
 
 

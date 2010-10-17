@@ -1532,28 +1532,24 @@ for($i = 0; $i < $total_posts; $i++)
 
 		// ONLINE / OFFLINE - BEGIN
 		$online_status_url = append_sid(CMS_PAGE_VIEWONLINE);
+		// Start as offline...
+		$online_status_img = '<img src="' . $images['icon_im_status_offline'] . '" alt="' . $lang['Offline'] . '" title="' . $lang['Offline'] . '" />';
 		$online_status_lang = $lang['Offline'];
 		$online_status_class = 'offline';
-		if (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $poster_id) || $postrow[$i]['user_allow_viewonline'])
+		if ($postrow[$i]['user_session_time'] >= (time() - $config['online_time']))
 		{
-			if ($postrow[$i]['user_session_time'] >= (time() - $config['online_time']))
+			if (!empty($postrow[$i]['user_allow_viewonline']))
 			{
-				$online_status_img = '<a href="' . $online_status_url . '"><img src="' . $images['icon_im_status_online'] . '" alt="' . $lang['Online'] .'" title="' . $lang['Online'] .'" /></a>';
+				$online_status_img = '<a href="' . $online_status_url . '"><img src="' . $images['icon_im_status_online'] . '" alt="' . $lang['Online'] . '" title="' . $lang['Online'] . '" /></a>';
 				$online_status_lang = $lang['Online'];
 				$online_status_class = 'online';
 			}
-			else
+			elseif (isset($postrow[$i]['user_allow_viewonline']) && empty($postrow[$i]['user_allow_viewonline']) && (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $poster_id)))
 			{
-				$online_status_img = '<img src="' . $images['icon_im_status_offline'] . '" alt="' . $lang['Offline'] .'" title="' . $lang['Offline'] .'" />';
-				$online_status_lang = $lang['Offline'];
-				$online_status_class = 'offline';
+				$online_status_img = '<a href="' . $online_status_url . '"><img src="' . $images['icon_im_status_hidden'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
+				$online_status_lang = $lang['Hidden'];
+				$online_status_class = 'hidden';
 			}
-		}
-		else
-		{
-			$online_status_img = '<a href="' . $online_status_url . '"><img src="' . $images['icon_im_status_hidden'] . '" alt="' . $lang['Hidden'] .'" title="' . $lang['Hidden'] .'" /></a>';
-			$online_status_lang = $lang['Hidden'];
-			$online_status_class = 'hidden';
 		}
 		// ONLINE / OFFLINE - END
 	}

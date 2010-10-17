@@ -30,8 +30,8 @@ if(!function_exists('cms_block_calendar_events'))
 		$show_end_date = !empty($cms_config_vars['md_events_end'][$block_id]) ? true : false;
 		$events_number = (int) $cms_config_vars['md_events_num'][$block_id];
 		$events_number = ($events_number < 2) ? 10 : $events_number;
-		$allow_forum_id = $cms_config_vars['md_events_forums_id'][$block_id];
-		$allow_forum_id_array = explode(',', str_replace(' ', '', $allow_forum_id));
+		$allow_forum_id = str_replace(' ', '', $cms_config_vars['md_events_forums_id'][$block_id]);
+		$allow_forum_id_array = explode(',', $allow_forum_id);
 		$allowed_forum_ids = build_allowed_forums_list(true);
 		$allowed_forum_id_array = (!empty($allow_forum_id) ? array_intersect($allowed_forum_ids, $allow_forum_id_array) : $allowed_forum_ids);
 

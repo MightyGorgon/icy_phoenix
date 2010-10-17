@@ -156,12 +156,18 @@ $lang = array_merge($lang, array(
 	'Reply_to_topic' => 'Reply to topic',
 	'Reply_with_quote' => 'Reply with quote',
 
-	'Click_return_topic' => 'Click %sHere%s to return to the topic', // %s's here are for uris, do not remove!
 	'Click_return_login' => 'Click %sHere%s to try again',
+	'Click_return_index' => 'Click %sHere%s to return to the Index',
 	'Click_return_forum' => 'Click %sHere%s to return to the forum',
-	'Click_view_message' => 'Click %sHere%s to view your message',
+	'Click_return_topic' => 'Click %sHere%s to return to the topic', // %s's here are for uris, do not remove!
+	'Click_return_viewtopic' => 'Click %sHere%s to return to the topic',
 	'Click_return_modcp' => 'Click %sHere%s to return to the Moderator Control Panel',
+	'Click_return_profile' => 'Click %sHere%s to return to User Profile',
+	'Click_return_preferences' => 'Click %sHere%s to return to Preferences',
 	'Click_return_group' => 'Click %sHere%s to return to group information',
+	'Click_return_inbox' => 'Click %sHere%s to return to your Inbox',
+	'Click_view_message' => 'Click %sHere%s to view your message',
+	'Click_view_privmsg' => 'Click %sHere%s to visit your Inbox',
 
 	'Admin_panel' => 'ACP',
 
@@ -518,9 +524,6 @@ $lang = array_merge($lang, array(
 
 	'Message_sent' => 'Your message has been sent.',
 
-	'Click_return_inbox' => 'Click %sHere%s to return to your Inbox',
-	'Click_return_index' => 'Click %sHere%s to return to the Index',
-
 	'Send_a_new_message' => 'Send a new private message',
 	'Send_a_reply' => 'Reply to a private message',
 	'Edit_message' => 'Edit private message',
@@ -545,8 +548,6 @@ $lang = array_merge($lang, array(
 	'Sentbox_size' => 'Sentbox [%d%% full]',
 	'Savebox_size' => 'Savebox [%d%% full]',
 
-	'Click_view_privmsg' => 'Click %sHere%s to visit your Inbox',
-
 // Profiles/Registration
 	'Viewing_user_profile' => 'Viewing profile :: %s', // %s is username
 	'About_user' => 'All about %s', // %s is username
@@ -556,8 +557,10 @@ $lang = array_merge($lang, array(
 	'Admin_edit_permissions' => 'Edit User\'s Permissions',
 	'User_active' => 'User <b>is</b> active',
 	'User_not_active' => 'User <b>is not</b> active',
-	'Username_banned' => 'Username <b>is</b> banned',
-	'Username_not_banned' => 'Username <b>is not</b> banned',
+	'Username_banned' => 'User <b>is</b> banned',
+	'Username_not_banned' => 'User <b>is not</b> banned',
+	'USER_BAN' => 'Ban',
+	'USER_UNBAN' => 'Unban',
 	'User_email_banned' => 'User\'s email [ %s ] <b>is</b> banned',
 	'User_email_not_banned' => 'User\'s email <b>is not</b> banned',
 //End Quick Administrator User Options and Information MOD
@@ -961,8 +964,6 @@ $lang = array_merge($lang, array(
 	'Guestbook' => 'Guestbook',
 	'Viewing_guestbook' => 'Read the guestbook',
 
-	'Click_return_preferences' => 'Click %sHere%s to return to Preferences',
-
 	'Warn_new_post' => 'There is at least one new reply in this thread. Please review new replies in topic review and re-submit your post.',
 
 	'Today_at' => '<b class="date-today">Today</b> at ',
@@ -1017,7 +1018,6 @@ $lang = array_merge($lang, array(
 	'Ban_reactivate' => 'Your account has been reactivated',
 	'Ban_warning' => 'You\'ve received a warning',
 	'Ban_blocked' => 'Your account is now blocked',
-	'Click_return_viewtopic' => 'Click %sHere%s to return to the topic',
 /*
 	'Rules_ban_can' => 'You <b>can</b> ban other users in this forum',
 	'Rules_greencard_can' => 'You <b>can</b> un-ban users in this forum',

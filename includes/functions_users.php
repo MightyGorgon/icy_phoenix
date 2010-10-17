@@ -130,34 +130,24 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 
 	// ONLINE / OFFLINE - BEGIN
 	$user_info['online_status_url'] = append_sid(CMS_PAGE_VIEWONLINE);
+	// Start as offline...
+	$user_info['online_status_img'] = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] . '" title="' . $lang['Offline'] . '" />';
 	$user_info['online_status_lang'] = $lang['Offline'];
 	$user_info['online_status_class'] = 'offline';
-	if (isset($row['user_allow_viewonline']) && ($row['user_session_time'] >= (time() - $config['online_time'])))
+	if ($row['user_session_time'] >= (time() - $config['online_time']))
 	{
-		if ($row['user_allow_viewonline'])
+		if (!empty($row['user_allow_viewonline']))
 		{
 			$user_info['online_status_img'] = '<a href="' . $user_info['online_status_url'] . '"><img src="' . $images['icon_online2'] . '" alt="' . $lang['Online'] . '" title="' . $lang['Online'] . '" /></a>';
 			$user_info['online_status_lang'] = $lang['Online'];
 			$user_info['online_status_class'] = 'online';
 		}
-		elseif (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $user_id))
+		elseif (isset($row['user_allow_viewonline']) && empty($row['user_allow_viewonline']) && (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $user_id)))
 		{
 			$user_info['online_status_img'] = '<a href="' . $user_info['online_status_url'] . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
 			$user_info['online_status_lang'] = $lang['Hidden'];
 			$user_info['online_status_class'] = 'hidden';
 		}
-		else
-		{
-			$user_info['online_status_img'] = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] . '" title="' . $lang['Offline'] . '" />';
-			$user_info['online_status_lang'] = $lang['Offline'];
-			$user_info['online_status_class'] = 'offline';
-		}
-	}
-	else
-	{
-		$user_info['online_status_img'] = '<img src="' . $images['icon_offline2'] . '" alt="' . $lang['Offline'] . '" title="' . $lang['Offline'] . '" />';
-		$user_info['online_status_lang'] = $lang['Offline'];
-		$user_info['online_status_class'] = 'offline';
 	}
 	// ONLINE / OFFLINE - END
 
@@ -308,20 +298,26 @@ function generate_ranks($user_row, $ranks_array)
 		$rank_tmp = $ranks_array['ranksrow'][$j]['rank_title'];
 		$rank_img_tmp = ($ranks_array['ranksrow'][$j]['rank_image']) ? '<img src="' . $ranks_array['ranksrow'][$j]['rank_image'] . '" alt="' . $rank_tmp . '" title="' . $rank_tmp . '" />' : '';
 		$rank_tmp = (empty($ranks_array['ranksrow'][$j]['rank_show_title']) && !empty($rank_img_tmp)) ? '' : $rank_tmp;
-		if ($is_guest == true)
+		if (!empty($is_guest))
 		{
 			if ($ranks_array['ranksrow'][$j]['rank_special'] == '2')
 			{
 				$user_ranks['rank_01'] = $rank_tmp;
 				$user_ranks['rank_01_img'] = $rank_img_tmp;
+				$user_ranks['rank_01_html'] = !empty($rank_tmp) ? ($rank_tmp . '<br />') : '';
+				$user_ranks['rank_01_img_html'] = !empty($rank_img_tmp) ? ($rank_img_tmp . '<br />') : '';
+				break;
 			}
 		}
-		elseif ($is_banned == true)
+		elseif (!empty($is_banned))
 		{
 			if ($ranks_array['ranksrow'][$j]['rank_special'] == '3')
 			{
 				$user_ranks['rank_01'] = $rank_tmp;
 				$user_ranks['rank_01_img'] = $rank_img_tmp;
+				$user_ranks['rank_01_html'] = !empty($rank_tmp) ? ($rank_tmp . '<br />') : '';
+				$user_ranks['rank_01_img_html'] = !empty($rank_img_tmp) ? ($rank_img_tmp . '<br />') : '';
+				break;
 			}
 		}
 		else

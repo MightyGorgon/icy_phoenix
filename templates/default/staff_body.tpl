@@ -13,14 +13,14 @@
 <tr>
 	<td class="row1g" valign="top">
 		<span class="gen">{user_level.staff.USERNAME}</span>
-		<div class="post-rank"><b>{user_level.staff.RANK}</b>{user_level.staff.RANK_IMAGE}</div>
+		<div class="post-rank"><!-- IF user_level.staff.RANK --><b>{user_level.staff.RANK}</b><!-- ENDIF -->{user_level.staff.RANK_IMAGE}</div>
 		<span class="post-images">{user_level.staff.AVATAR}</span>
 	</td>
 	<td class="row1g" valign="top"><span class="forumlink">{user_level.staff.FORUMS}</span></td>
 	<td class="row1g" valign="top">
 		<span class="genmed">
-			<b>{L_POSTS}:</b>&nbsp;{user_level.staff.POSTS}&nbsp;&nbsp;({user_level.staff.POST_PERCENT},&nbsp;ø&nbsp;{user_level.staff.POSTS_PER_DAY})<br />
-			<b>{L_TOPICS}:</b>&nbsp;{user_level.staff.TOPICS}&nbsp;&nbsp;({user_level.staff.TOPIC_PERCENT},&nbsp;ø&nbsp;{user_level.staff.TOPICS_PER_DAY})<br />
+			<b>{L_POSTS}:</b>&nbsp;{user_level.staff.POSTS}&nbsp;&nbsp;({user_level.staff.POST_PERCENT},&nbsp;&bull;&nbsp;{user_level.staff.POSTS_PER_DAY})<br />
+			<b>{L_TOPICS}:</b>&nbsp;{user_level.staff.TOPICS}&nbsp;&nbsp;({user_level.staff.TOPIC_PERCENT},&nbsp;&bull;&nbsp;{user_level.staff.TOPICS_PER_DAY})<br />
 			<!-- <b>{L_LAST_POST}:</b>&nbsp;{user_level.staff.LAST_POST}<br /> -->
 			<b>{L_JOINED}:</b>&nbsp;{user_level.staff.JOINED}&nbsp;&nbsp;({user_level.staff.PERIOD})
 		</span>

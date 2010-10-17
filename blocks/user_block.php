@@ -41,7 +41,8 @@ if(!function_exists('cms_block_user_block'))
 				$lang['Search_new'] = $lang['Search_new'] . "&nbsp;(" . $row['total'] . ")";
 				$db->sql_freeresult($result);
 			}
-		}*/
+		}
+		*/
 
 		// Check For Anonymous User
 		if ($userdata['user_id'] != ANONYMOUS)

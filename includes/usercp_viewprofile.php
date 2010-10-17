@@ -189,7 +189,8 @@ if ($show_latest_pics)
 
 	$sql = "SELECT p.*, c.*, u.user_id, u.username, u.user_active, u.user_color
 			FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c, " . USERS_TABLE . " u
-			WHERE p.pic_approval = 1
+			WHERE p.pic_user_id = '" . $profiledata['user_id'] . "'
+				AND p.pic_approval = 1
 				" . $include_personal_galleries_sql . $cat_view_level_sql . "
 				AND p.pic_cat_id = c.cat_id
 				AND u.user_id = p.pic_user_id
@@ -1130,7 +1131,9 @@ $template->assign_vars(array(
 	'L_USER_ACTIVE_INACTIVE' => ($profiledata['user_active'] == 1) ? $lang['User_active'] : $lang['User_not_active'],
 	'L_BANNED_USERNAME' => ($banned_username == '') ? $lang['Username_not_banned'] : $lang['Username_banned'],
 	'L_BANNED_EMAIL' => ($banned_email == '') ? $lang['User_email_not_banned'] : htmlspecialchars(sprintf($lang['User_email_banned'], $profiledata['user_email'])),
+	'L_USER_BAN_UNBAN' => ($banned_username == '') ? $lang['USER_BAN'] : $lang['USER_UNBAN'],
 
+	'U_USER_BAN_UNBAN' => IP_ROOT_PATH . 'card.' . PHP_EXT . '?mode=' . (($banned_username == '') ? 'ban' : 'unban') . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'],
 	'U_ADMIN_EDIT_PROFILE' => ADM . '/admin_users.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=edit&amp;redirect=yes',
 	'U_ADMIN_EDIT_PERMISSIONS' => ADM . '/admin_ug_auth.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=user'
 	)

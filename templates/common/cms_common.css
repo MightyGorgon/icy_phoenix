@@ -65,7 +65,19 @@
 ul.sortable-list {
 	list-style-type: none;
 	min-height: 30px;
-	color: black;
+}
+
+ul.sortable-list li {
+	line-height: 1.8em;
+	padding: 3px;
+}
+
+ul.sortable-list li img {
+	vertical-align: bottom;
+}
+
+img.sort-handler {
+	cursor: move;
 }
 
 /* CMS ADV */

@@ -58,23 +58,26 @@ if (empty($post_id) && ($user_id == ANONYMOUS))
 	message_die(GENERAL_ERROR, "No user/post specified", "", __LINE__, __FILE__, 'post_id="' . $post_id . '", user_id="' . $user_id . '"');
 }
 
-$sql = 'SELECT DISTINCT forum_id, poster_id, post_bluecard FROM ' . POSTS_TABLE . ' WHERE post_id = "' . $post_id . '"';
-$result = $db->sql_query($sql);
-$result = $db->sql_fetchrow($result);
-$blue_card = $result['post_bluecard'];
-if ($post_id)
+if (!empty($post_id))
 {
+	$sql = 'SELECT DISTINCT forum_id, poster_id, post_bluecard FROM ' . POSTS_TABLE . ' WHERE post_id = "' . $post_id . '"';
+	$result = $db->sql_query($sql);
+	$result = $db->sql_fetchrow($result);
+	$blue_card = $result['post_bluecard'];
+
 	// post mode
 	$forum_id = $result['forum_id'];
 	$poster_id = $result['poster_id'];
 }
 elseif ($user_id)
 {
-	//user mode
-	//forum_id will control witch permission, when no post_id is given, and a user_id is given instead
-	//disable the frum_id line will give no default access when no post_id is given
-	// installe extra permission mod, in order to enable this feature
-//	$forum_id = PAGE_CARD;
+	/*
+	user mode
+	forum_id will control which permission, when no post_id is given, and a user_id is given instead
+	disable the forum_id line will give no default access when no post_id is given
+	install extra permission mod, in order to enable this feature
+	*/
+	//$forum_id = PAGE_CARD;
 	$poster_id = $user_id;
 }
 
@@ -92,7 +95,7 @@ $already_banned = false;
 
 if ($mode == 'report_reset')
 {
-	if (! $is_auth['auth_mod'])
+	if (!$is_auth['auth_mod'])
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
@@ -129,7 +132,7 @@ elseif ($mode == 'report')
 	$sql = 'SELECT p.topic_id FROM ' . POSTS_TABLE . ' p WHERE p.post_subject = "(' . $post_id . ')' . $post_subject . '"';
 	$result = $db->sql_query($sql);
 	$post_details = $db->sql_fetchrow($result);
-	$allready_reported = ($blue_card) ? $post_details['topic_id'] : '';
+	$already_reported = ($blue_card) ? $post_details['topic_id'] : '';
 
 	$blue_card++;
 	$sql = 'UPDATE ' . POSTS_TABLE . ' SET post_bluecard = "' . $blue_card . '" WHERE post_id = "' . $post_id . '"';
@@ -177,7 +180,7 @@ elseif ($mode == 'report')
 		message_die(GENERAL_MESSAGE, $lang['No_moderators'] . '<br /><br />');
 	}
 
-	(($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid(CMS_PAGE_POSTING . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>');
+	(($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid(CMS_PAGE_POSTING . '?mode=' . (($already_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $already_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>');
 
 	$i = 0;
 	if (($blue_card >= $config['bluecard_limit_2'] && (!(($blue_card - $config['bluecard_limit_2']) % $config['bluecard_limit']))) || ($blue_card == $config['bluecard_limit_2']))
@@ -213,15 +216,15 @@ elseif ($mode == 'report')
 			$i++;
 		}
 	}
-	message_die(GENERAL_MESSAGE, (($total_mods) ? sprintf($lang['Post_reported'], $total_mods) : $lang['Post_reported_1']) . '<br /><br />' . (($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($allready_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $allready_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>'));
+	message_die(GENERAL_MESSAGE, (($total_mods) ? sprintf($lang['Post_reported'], $total_mods) : $lang['Post_reported_1']) . '<br /><br />' . (($config['report_forum']) ? sprintf($lang['Send_message'], '<a href="' . append_sid('posting.' . PHP_EXT . '?mode=' . (($already_reported) ? 'reply&amp;' . POST_TOPIC_URL . '=' . $already_reported : 'newtopic&amp;' . POST_FORUM_URL . '=' . $config['report_forum']) . '&amp;postreport=' . $post_id) . '">', '</a>') : '') . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id). '">', '</a>'));
 }
 elseif ($mode == 'unban')
 {
-	if (! $is_auth['auth_greencard'])
+	if (($userdata['user_level'] != ADMIN) && !$is_auth['auth_greencard'])
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
-	// look up the user
+	// Get user basic data
 	$sql = 'SELECT user_active, user_warnings FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 	$the_user = $db->sql_fetchrow($result);
@@ -234,17 +237,17 @@ elseif ($mode == 'unban')
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "0" WHERE user_id = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
-	$message = $lang['Ban_update_green'] . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?mode=post&u=' . $poster_id) . '">', '</a>');
+	$message = $lang['Ban_update_green'] . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id) . '">', '</a>');
 	$e_temp = 'ban_reactivated';
 	//$e_subj = $lang['Ban_reactivate'];
 }
 elseif ($mode == 'ban')
 {
-	if (!$is_auth['auth_ban'])
+	if (($userdata['user_level'] != ADMIN) && !$is_auth['auth_ban'])
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
-	// look up the user
+	// Get user basic data
 	$sql = 'SELECT user_active, user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 	$the_user = $db->sql_fetchrow($result);
@@ -282,43 +285,13 @@ elseif ($mode == 'ban')
 		$already_banned = true;
 	}
 }
-elseif ($mode == 'block')
-{
-	if (empty($config['block_time']))
-	{
-		message_die(GENERAL_ERROR, "Protect user account mod not installed, this is required for this operation");
-	}
-	if (! $is_auth['auth_ban'])
-	{
-		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
-	}
-	// look up the user
-	$sql = "SELECT user_active, user_level FROM " . USERS_TABLE . " WHERE user_id = '" . $poster_id . "'";
-	$result = $db->sql_query($sql);
-	$the_user = $db->sql_fetchrow($result);
-	if (($the_user['user_level'] == ADMIN) || ($the_user['user_level'] == JUNIOR_ADMIN))
-	{
-		message_die(GENERAL_ERROR, $lang['Block_no_admin']);
-	}
-	// update the user table with new status
-	$sql = "UPDATE " . USERS_TABLE . " SET user_block_by = '" . $user_ip . "', user_blocktime = '" . (time() + $config['RY_block_time'] * 60) . "' WHERE user_id = '" . $poster_id . "'";
-	$result = $db->sql_query($sql);
-
-	$sql = "UPDATE " . SESSIONS_TABLE . " SET session_logged_in = '0', session_user_id = '" . ANONYMOUS . "' WHERE session_user_id = '" . $poster_id . "'";
-	$result = $db->sql_query($sql);
-
-	$block_time = make_time_text ($config['RY_block_time']);
-	$message = sprintf($lang['Block_update'],$block_time) . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id) . '">', '</a>');
-	$e_temp = 'card_block';
-	//$e_subj = sprintf($lang['Card_blocked'], $block_time);
-}
 elseif ($mode == 'warn')
 {
-	if (!$is_auth['auth_ban'])
+	if (($userdata['user_level'] != ADMIN) && !$is_auth['auth_ban'])
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
-	// look up the user
+	// Get user basic data
 	$sql = 'SELECT user_active, user_warnings, user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 	$the_user = $db->sql_fetchrow($result);
@@ -418,13 +391,13 @@ elseif ($already_banned)
 }
 else
 {
-	$message = 'Error in card.php file';
+	$message = 'Error in card.' . PHP_EXT;
 }
 
 $cache->destroy_datafiles(array('_ranks'), MAIN_CACHE_FOLDER, 'data', false);
 $db->clear_cache('ban_', USERS_CACHE_FOLDER);
 
-$message .= ($post_id != '-1') ? '<br /><br />' . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>') : '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM). '">', '</a>');
+$message .= (!empty($post_id) && ($post_id > 0)) ? ('<br /><br />' . sprintf($lang['Click_return_viewtopic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id) . '">', '</a>')) : ('<br /><br />' . sprintf($lang['Click_return_profile'], '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $poster_id). '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM). '">', '</a>'));
 
 message_die(GENERAL_MESSAGE, $message);
 

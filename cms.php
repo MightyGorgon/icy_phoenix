@@ -20,7 +20,7 @@ include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
 $config['jquery_ui'] = true;
 
-$js_temp = array('js/cms.js', 'scriptaculous/unittest.js');
+$js_temp = array('js/cms.js');
 $js_include = (!empty($js_include) && is_array($js_include)) ? array_merge($js_include, $js_temp) : $js_temp;
 unset($js_temp);
 

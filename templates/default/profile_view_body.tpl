@@ -3,7 +3,7 @@
 <!-- IF S_ADMIN -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_QUICK_ADMIN_OPTIONS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" colspan="2" ><span class="genmed"><a href="{U_ADMIN_EDIT_PROFILE}">{L_ADMIN_EDIT_PROFILE}</a> || <a href="{U_ADMIN_EDIT_PERMISSIONS}">{L_ADMIN_EDIT_PERMISSIONS}</a> || {L_USER_ACTIVE_INACTIVE} || {L_BANNED_USERNAME} || {L_BANNED_EMAIL}</span></td>
+	<td class="row1 row-center" colspan="2" ><span class="genmed"><a href="{U_ADMIN_EDIT_PROFILE}" title="{L_ADMIN_EDIT_PROFILE}">{L_ADMIN_EDIT_PROFILE}</a>&nbsp;&bull;&nbsp;<a href="{U_ADMIN_EDIT_PERMISSIONS}" title="{L_ADMIN_EDIT_PERMISSIONS}">{L_ADMIN_EDIT_PERMISSIONS}</a>&nbsp;&bull;&nbsp;{L_USER_ACTIVE_INACTIVE}&nbsp;&bull;&nbsp;{L_BANNED_USERNAME}&nbsp;[&nbsp;<a href="{U_USER_BAN_UNBAN}" title="{L_USER_BAN_UNBAN}">{L_USER_BAN_UNBAN}</a>&nbsp;]&nbsp;&bull;&nbsp;{L_BANNED_EMAIL}</span></td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- ENDIF -->

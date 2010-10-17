@@ -604,7 +604,8 @@ div.thumb div { border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radi
 	color: #225599;
 	font-weight: bold;
 	font-size: 11px;
-	height: 24px;
+	height: 28px;
+	min-height: 28px;
 	padding: 0 5px;
 	white-space: nowrap;
 }
@@ -667,7 +668,7 @@ div.thumb div { border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radi
 	font-size: 10px;
 }
 
-.catBottom, .cat, .catLeft, .catRight {
+.cat, .catBottom, .catLeft, .catRight {
 	text-align: center;
 	background-color: #ffffff;
 	height: 28px;
@@ -773,7 +774,7 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #dd2222; text-decoration:
 .moderators a:hover, .moderators a:active { color: #336699; text-decoration: underline; }
 
 /* viewforum */
-.topiclink b, .topiclink-new b {
+.topiclink, .topiclink-new, .topiclink b, .topiclink-new b {
 	color: #225599;
 	font-size: 11px;
 }

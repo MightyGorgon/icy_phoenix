@@ -8,44 +8,24 @@
 </table>
 
 <form method="post" action="{S_BLOCKS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-<tr>
-	<th>{L_ACTION}</th>
-	<th>{L_B_TITLE}</th>
-	<th>{L_B_POSITION}</th>
-	<th>{L_B_ACTIVE}</th>
-</tr>
 <!-- IF S_NO_BLOCKS -->
-<tr><td class="row1" colspan="9"><div class="post-text">{L_NO_BLOCKS_AVAILABLE}</div></td></tr>
+<div class="post-text">{L_NO_BLOCKS_AVAILABLE}</div>
 <!-- ELSE -->
+<div style="text-align: left">
 <!-- BEGIN blocks -->
-<tr class="{blocks.ROW_CLASS} {blocks.ROW_CLASS}h" style="background-image: none;">
-	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">
-		<!-- IF S_B_EDIT -->
-		<a href="{blocks.U_MOVE_UP}"><img src="{IMG_CMS_ARROW_UP}" alt="{L_MOVE_UP}" title="{L_B_MOVE_UP}" /></a>&nbsp;
-		<a href="{blocks.U_MOVE_DOWN}"><img src="{IMG_CMS_ARROW_DOWN}" alt="{L_MOVE_DOWN}" title="{L_B_MOVE_DOWN}" /></a>&nbsp;
-		<a href="{blocks.U_EDIT_BS}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_B_EDIT_BS}" title="{L_B_EDIT_BS}" /></a>&nbsp;
-		<a href="{blocks.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_B_EDIT}" title="{L_B_EDIT}" /></a>&nbsp;
-		<!-- ENDIF -->
-		<!-- IF S_B_DELETE -->
-		<a href="{blocks.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_B_DELETE}" title="{L_B_DELETE}" /></a>
-		<!-- ENDIF -->
-	</td>
-	<td class="{blocks.ROW_CLASS}" style="background: none;"><a href="{blocks.U_EDIT}">{blocks.TITLE}</a></td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">{blocks.POSITION}</td>
-	<td class="{blocks.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="block[]" value="{blocks.BLOCK_CB_ID}"{blocks.BLOCK_CHECKED} /></td>
-</tr>
+<!-- IF blocks.POSITION_CHANGE and not blocks.FIRST_ID --></ul></div><br /><br /><!-- ENDIF -->
+<!-- IF blocks.POSITION_CHANGE or blocks.FIRST_ID --><div id="{blocks.SORT_CID}"><span class="topiclink">{blocks.POSITION}</span><br /><ul id="{blocks.SORT_SID}" class="sortable-list"><!-- ENDIF -->
+<li id="{blocks.SORT_SID}_{blocks.SORT_EID}">
+<span><img src="{IMG_CMS_ARROW_MOVE}" alt="{L_B_MOVE}" title="{L_B_MOVE}" class="sort-handler" /></span>&nbsp;<!-- IF S_B_EDIT --><a href="{blocks.U_MOVE_UP}"><img src="{IMG_CMS_ARROW_UP}" alt="{L_MOVE_UP}" title="{L_B_MOVE_UP}" /></a>&nbsp;<a href="{blocks.U_MOVE_DOWN}"><img src="{IMG_CMS_ARROW_DOWN}" alt="{L_MOVE_DOWN}" title="{L_B_MOVE_DOWN}" /></a>&nbsp;<a href="{blocks.U_EDIT_BS}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_B_EDIT_BS}" title="{L_B_EDIT_BS}" /></a>&nbsp;<a href="{blocks.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_B_EDIT}" title="{L_B_EDIT}" /></a>&nbsp;<!-- ENDIF --><!-- IF S_B_DELETE --><a href="{blocks.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_B_DELETE}" title="{L_B_DELETE}" /></a>&nbsp;<!-- ENDIF -->&nbsp;&nbsp;<input type="checkbox" name="block[]" value="{blocks.BLOCK_CB_ID}"{blocks.BLOCK_CHECKED} />&nbsp;&nbsp;<a href="{blocks.U_EDIT}">{blocks.TITLE}</a>
+</li>
+<!-- IF blocks.LAST_ID --></ul></div><br /><!-- ENDIF -->
 <!-- END blocks -->
 <!-- ENDIF -->
-<tr><td class="spaceRow" colspan="9"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr>
-	<td class="cat" colspan="9" align="center">
-		{S_HIDDEN_FIELDS}
-		<!-- IF S_B_EDIT --><input type="submit" name="action_update" value="{L_CMS_SAVE_CHANGES}" class="liteoption" /><!-- ENDIF -->
-		<!-- IF S_B_ADD -->&nbsp;&nbsp;<input type="submit" name="add" value="{L_B_ADD}" class="mainoption" /><!-- ENDIF -->
-	</td>
-</tr>
-</table>
+</div>
+
+{S_HIDDEN_FIELDS}
+<!-- IF S_B_EDIT --><input type="submit" name="action_update" value="{L_CMS_SAVE_CHANGES}" class="liteoption" /><!-- ENDIF -->
+<!-- IF S_B_ADD -->&nbsp;&nbsp;<input type="submit" name="add" value="{L_B_ADD}" class="mainoption" /><!-- ENDIF -->
 </form>
 
 <!-- INCLUDE ../common/cms/page_footer.tpl -->

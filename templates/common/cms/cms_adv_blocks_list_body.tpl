@@ -48,7 +48,7 @@ function goForm(form)
 <tr><td class="spaceRow" colspan="9"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr>
 	<td align="center">
-		<div style="min-width:750px">
+		<div style="min-width: 750px;">
 		{LAYOUT_BLOCKS}
 		{INVALID_BLOCKS}
 		<!-- BEGIN drop_blocks -->

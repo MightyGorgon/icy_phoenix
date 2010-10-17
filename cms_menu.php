@@ -21,6 +21,10 @@ include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
 $config['jquery_ui'] = true;
 
+$js_temp = array('js/cms.js', 'js/prototype.js', 'scriptaculous/scriptaculous.js', 'scriptaculous/unittest.js');
+$js_include = (!empty($js_include) && is_array($js_include)) ? array_merge($js_include, $js_temp) : $js_temp;
+unset($js_temp);
+
 $cms_admin = new cms_admin();
 $cms_admin->root = CMS_PAGE_CMS;
 //$cms_admin->init_vars($mode_array, $action_array);

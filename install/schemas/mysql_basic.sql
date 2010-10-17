@@ -946,6 +946,9 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_fore
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_lattice_color', '#FFFFFF');
 ## CAPTCHA Settings - END
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smtp_port', '25');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_likes_posts', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_admins_only', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attachments_stats', '0');
 
 ## `phpbb_ctracker_ipblocker`
 ##

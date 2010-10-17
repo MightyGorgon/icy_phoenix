@@ -21,6 +21,11 @@
 
 <!-- INCLUDE overall_inc_header_js.tpl -->
 
+<!-- EXTRA CMS JS - BEGIN -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_tiptip.css" type="text/css" media="screen" />
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_tiptip.js" type="text/javascript"></script>
+<!-- EXTRA CMS JS - END -->
+
 </head>
 <body>
 
@@ -51,7 +56,7 @@
 <div id="tabs">
 	<ul>
 		<!-- BEGIN tabs -->
-		<li <!-- IF tabs.S_SELECTED -->class="activetab"<!-- ENDIF -->><a href="{tabs.TAB_LINK}"><span><!-- IF tabs.TAB_ICON --><img src="{tabs.TAB_ICON}" alt="{tabs.TAB_TITLE}" title="{tabs.TAB_TITLE}" />&nbsp;<!-- ENDIF -->{tabs.TAB_TITLE}</span></a></li>
+		<li <!-- IF tabs.S_SELECTED -->class="activetab"<!-- ENDIF -->><a href="{tabs.TAB_LINK}" class="tiptip" title="{tabs.TAB_TIP}"><span><!-- IF tabs.TAB_ICON --><img src="{tabs.TAB_ICON}" alt="{tabs.TAB_TITLE}" title="{tabs.TAB_TITLE}" />&nbsp;<!-- ENDIF -->{tabs.TAB_TITLE}</span></a></li>
 		<!-- END tabs -->
 	</ul>
 </div>

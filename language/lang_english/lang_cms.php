@@ -109,6 +109,7 @@ $lang = array_merge($lang, array(
 	'DISABLED' => 'Disabled',
 	'B_TEXT' => 'Text',
 	'B_FILE' => 'Block File',
+	'B_MOVE' => 'Move',
 	'B_MOVE_UP' => 'Move Up',
 	'B_MOVE_DOWN' => 'Move Down',
 	'B_VIEW_BY' => 'View By',
@@ -411,6 +412,17 @@ $lang = array_merge($lang, array(
 	'CMS_AJAX_ENABLE' => 'Enable AJAX',
 	'CMS_AJAX_DISABLE' => 'Disable AJAX',
 // CMS - ADV - END
+
+// CMS - TIPS - BEGIN
+	'CMS_TIP_TITLE' => 'Main CMS page',
+	'CMS_TIP_CUSTOM_PAGES' => 'Customized pages: all pages created from scratch into Icy Phoenix based on one among the available layouts templates.<br />You can customize each page by adding, editing or deleting blocks and contents.<br />You can also assign a a physical name to a page (if your server allows it, you can create for example a new page called <b>mypage.php</b>).<br />In this section you can also customize permissions and global page settings like breadcrumbs and global blocks.',
+	'CMS_TIP_STANDARD_PAGES' => 'Standard pages: default pages in Icy Phoenix.<br />These pages already have a defined content, but you can customize them by adding blocks or content in one of the allowed positions.<br />You can also add new pages, but these must already exists on your server.<br />In this section you can also customize permissions and global page settings like breadcrumbs and global blocks.',
+	'CMS_TIP_BLOCK_SETTINGS' => 'A block is a section or widget you can add to any page.<br />Before being able to add a block to a page, you need to create it in this section.<br />Once block content has been defined and saved, you can then add the block on any page.<br />After you have created a new block, you can also add the same block on multiple pages without having to duplicate its content again.',
+	'CMS_TIP_GLOBAL_BLOCKS' => 'Global blocks are blocks that could be used on any page without the needs to add them on any page.<br />To be able to display global blocks you need to make sure that the target page has Global Blocks enabled in its settings.',
+	'CMS_TIP_CONFIG' => 'CMS configuration: in this page you can set some basics settings of the CMS.',
+	'CMS_TIP_MENU' => 'This section allows you to create and manage navigations menu.<br />You can create several navigations menu and then you will be able to add them on any page through the &quot;Dynamic Menu&quot; block (remember to add the right Menu ID).<br />You are also able to set special images and permissions on any link and links categories.',
+	'CMS_TIP_ADS' => 'The advertising section is intended to manage common kind of advertising in all pages and in some common sections (like forums, topics and menu).<br />In this section you will be able to create several ads and then you can decide how to be displayed (if more than one ad is set for the same position, then ads will be displayed randomly).',
+// CMS - TIPS - END
 
 // CMS USERS
 	'CMS_USERS_INDEX' => 'Index',

@@ -253,9 +253,12 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 			}
 		}
 
-		// Delete notifications for baned users
-		include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
-		$notifications->delete_user_notifications($user_list);
+		if (!empty($user_list))
+		{
+			// Delete notifications for banned users
+			include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+			$notifications->delete_user_notifications($user_list);
+		}
 
 		for ($i = 0; $i < sizeof($ip_list); $i++)
 		{

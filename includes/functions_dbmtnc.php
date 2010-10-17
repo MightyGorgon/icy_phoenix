@@ -680,6 +680,8 @@ $default_config = array(
 	'cron_site_history_last_run' => '0',
 	'smtp_port' => '25',
 	'disable_likes_posts' => '1',
+	'ip_admins_only' => '0',
+	'attachments_stats' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

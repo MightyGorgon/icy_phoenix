@@ -11,8 +11,10 @@
 **/
 <!-- END xs_file_version -->
 
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}">
 <head>
+<meta http-equiv="content-type" content="text/html; charset={S_CONTENT_ENCODING}" />
 <meta http-equiv="Content-Style-Type" content="text/css">
 <link rel="stylesheet" href="{XS_PATH}style.css" type="text/css">
 <style>
@@ -32,22 +34,23 @@ td.white a:hover, td.white a:active { color: #FF9933; text-decoration: none; }
 <table width="100%" height="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td align="left" valign="top" width="285">
-
-<div class="div_logo"><img src="{XS_PATH}images/top_logo.jpg" width="285" height="50" alt="" /></div>
-
-<div class="div_nav">
-<!-- BEGIN left_nav -->
-[<a href="{left_nav.URL}" target="xs_main">{left_nav.TEXT}</a>]
-<!-- END left_nav -->
-</div>
-
+		<div class="div_logo"><img src="{XS_PATH}images/top_logo.jpg" width="285" height="50" alt="" /></div>
+		<div class="div_nav">
+		<!-- BEGIN left_nav -->
+		[<a href="{left_nav.URL}" target="xs_main">{left_nav.TEXT}</a>]
+		<!-- END left_nav -->
+		</div>
 	</td>
-	<td align="center" valign="middle" style="padding: 2px;"><!-- <table cellspacing="1" cellpadding="3" class="forumline">
+	<td align="center" valign="middle" style="padding: 2px;">
+	<!--
+	<table cellspacing="1" cellpadding="3" class="forumline">
 	<tr>
 		<td class="white"></td>
 		<td class="white"></td>
 	</tr>
-	</table> --></td>
+	</table>
+	-->
+	</td>
 </tr>
 </table>
 </body>

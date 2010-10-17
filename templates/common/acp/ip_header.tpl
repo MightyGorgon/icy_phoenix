@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}">
 <head>
 <title>Icy Phoenix Administration</title>
-<meta http-equiv="Content-Type" content="text/html;" />
+<meta http-equiv="content-type" content="text/html; charset={S_CONTENT_ENCODING}" />
 <link rel="stylesheet" href="../templates/common/acp.css" type="text/css" />
 </head>
 <body id="header">

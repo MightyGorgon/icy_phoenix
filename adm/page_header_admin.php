@@ -72,6 +72,10 @@ $ajax_blur = '';
 $ajax_user_check = !empty($config['ajax_features']) ? 'onkeyup="AJAXUsernameSearch(this.value, 0);"' : '';
 // Mighty Gorgon - AJAX Features - End
 
+$js_temp = array('js/prototype.js', 'scriptaculous/scriptaculous.js', 'scriptaculous/unittest.js');
+$js_include = (!empty($js_include) && is_array($js_include)) ? array_merge($js_include, $js_temp) : $js_temp;
+unset($js_temp);
+
 if(is_array($css_style_include))
 {
 	for ($i = 0; $i < sizeof($css_style_include); $i++)
