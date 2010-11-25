@@ -841,7 +841,7 @@ class cms_admin
 					$blocks_pos[] = $v;
 				}
 				$b_position_array = "'" . implode("','", $blocks_pos) . "'";
-				$containment = '"list_' . implode('","list_', $blocks_list_pos) . '"';
+				$containment = '"list_' . implode('","list_', $blocks_pos) . '"';
 
 				foreach ($b_rows as $block)
 				{
@@ -849,8 +849,8 @@ class cms_admin
 					{
 						$temp_b_id = $this->b_id;
 						$temp_bs_id = $this->bs_id;
-						$this->b_id = $b_rows[$i]['block_settings_id'];
-						$this->bs_id = $b_rows[$i]['bid'];
+						$this->b_id = $block['block_settings_id'];
+						$this->bs_id = $block['bid'];
 						$this->delete_block_force();
 						$this->b_id = $temp_b_id;
 						$this->bs_id = $temp_bs_id;
@@ -861,159 +861,73 @@ class cms_admin
 					}
 				}
 
-				foreach ($blocks as $position)
+				foreach ($blocks_pos as $block_position)
 				{
-					foreach ($position as $k => $v)
+					$b_counter = 0;
+					$b_size = sizeof($blocks[$block_position]);
+					$block_position_l = !empty($lang['cms_pos_' . $block_position]) ? $lang['cms_pos_' . $block_position] : $block_position;
+					foreach ($blocks[$block_position] as $k => $v)
 					{
-
-					}
-				}
-			}
-
-
-
-
-
-
-			for($j = 0; $j < $l_count; $j++)
-			{
-				$sql = "SELECT bid FROM " . CMS_BLOCKS_TABLE . " WHERE layout = " . $l_id_list . " AND bposition = '" . $l_rows[$j]['bposition'] . "' ORDER BY weight";
-				if(!$result = $db->sql_query($sql))
-				{
-					message_die(GENERAL_ERROR, 'Could not query blocks table', $lang['Error'], __LINE__, __FILE__, $sql);
-				}
-				$b_rows = $db->sql_fetchrowset($result);
-				$db->sql_freeresult($result);
-
-				$b_count = empty($b_rows) ? 0 : count($b_rows);
-				$b_position_l = !empty($lang['cms_pos_' . $l_rows[$j]['pkey']]) ? $lang['cms_pos_' . $l_rows[$j]['pkey']] : $l_rows[$j]['pkey'];
-
-				if ($b_count > 0)
-				{
-					for($i = 0; $i < $b_count; $i++)
-					{
-						$b_id = $b_rows[$i]['bid'];
-
-						$redirect_action = '&amp;action=list';
-						$output_block = make_cms_block($id_var_value, $b_id, $i, $b_count, $b_position_l, false, $cms_type);
-
-						if ($output_block !== false)
+						$process_block = (($v['layout_special'] != 0) && ($this->action == 'editglobal')) ? false : true;
+						if ($process_blocks)
 						{
-							$template->assign_block_vars($l_rows[$j]['pkey'] . '_blocks_row', array(
-								'CMS_BLOCK' => $output_block,
-								'OUTPUT' => $output_block,
+							$block_handle = 'block_' . $v['bid'];
+							$template->set_filenames(array($block_handle => CMS_TPL . 'cms_blocks_handler.tpl'));
+							$template->assign_vars('blocks', array(
+								'ROW_CLASS' => $row_class,
+								'FIRST_ID' => ($b_counter == 0) ? true : false,
+								'LAST_ID' => ($b_counter == ($b_size - 1)) ? true : false,
+								'SORT_CID' => $this->sort_cid_prefix . $block_position,
+								'SORT_SID' => $this->sort_sid_prefix . $block_position,
+								'SORT_EID' => $this->sort_eid_prefix . $v['bid'],
+								'POSITION_ID' => $block_position,
+								'TITLE' => trim($v['title']),
+								'BLOCK_CB_ID' => $v['bid'],
+								'ACTIVE' => ($v['active']) ? $lang['YES'] : $lang['NO'],
+								'BLOCK_CHECKED' => ($v['active']) ? ' checked="checked"' : '',
+								'TYPE' => (empty($v['blockfile'])) ? (($v['type']) ? $lang['B_BBCODE'] : $lang['B_HTML']) : '&nbsp;',
+								'BORDER' => ($v['border']) ? $lang['YES'] : $lang['NO'],
+								'TITLEBAR' => ($v['titlebar']) ? $lang['YES'] : $lang['NO'],
+								'LOCAL' => ($v['local']) ? $lang['YES'] : $lang['NO'],
+								'BACKGROUND' => ($v['background']) ? $lang['YES'] : $lang['NO'],
+								'GROUPS' => $groups,
+								'CONTENT' => (empty($v['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
+								'VIEW' => $v['view'],
+
+								'U_EDIT_BS' => append_sid($this->root . '?mode=block_settings&amp;action=edit&amp;&amp;bs_id=' . $v['block_settings_id']),
+								'U_EDIT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=edit&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $v['bid']),
+								'U_DELETE' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=delete&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $v['bid']),
+								'U_MOVE_UP' => append_sid($this->root . '?mode=' . $this->mode . $redirect_action . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;move=1&amp;b_id=' . $v['bid'] . '&amp;weight=' . $v['weight'] . '&amp;pos=' . $block_position),
+								'U_MOVE_DOWN' => append_sid($this->root . '?mode=' . $this->mode . $redirect_action . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;move=0&amp;b_id=' . $v['bid'] . '&amp;weight=' . $v['weight'] . '&amp;pos=' . $block_position)
 								)
 							);
-						}
-					}
-				}
-				else
-				{
-					$output_block = '<div class="sortable-list-div">' . $b_position_l;
-					$output_block .= '<ul class="sortable-list" id="list_' . $l_rows[$j]['bposition'] . '"><li></li></ul></div>';
+							$blocks[$block_position][$b_counter]['output'] = $template->get_var_from_handle($block_handle);
+							$template->assign_block_vars($block_position . '_blocks_row', array(
+								'CMS_BLOCK' => $blocks[$block_position][$b_counter]['output'],
+								'OUTPUT' => $blocks[$block_position][$b_counter]['output'],
+								)
+							);
+							$b_counter++;
 
-					$template->assign_block_vars($l_rows[$j]['pkey'] . '_blocks_row', array(
-						'CMS_BLOCK' => $output_block,
-						'OUTPUT' => $output_block,
-						)
-					);
-				}
+							if ($b_counter == 0)
+							{
+								$output_block = '<div class="sortable-list-div">' . $block_position_l . '<ul class="sortable-list" id="list_' . $block_position . '"><li></li></ul></div>';
+								$template->assign_block_vars($block_position . '_blocks_row', array(
+									'CMS_BLOCK' => $output_block,
+									'OUTPUT' => $output_block,
+									)
+								);
+							}
 
-				$template->assign_var('LAYOUT_BLOCKS', cms_assign_var_from_handle($template, 'layout_blocks'));
-
-				$template->assign_block_vars('drop_blocks', array(
-					'BPOSITION' => $l_rows[$j]['bposition'],
-					)
-				);
-
-			}
-
-
-
-
-
-
-
-
-
-
-
-			if ($b_count > 0)
-			{
-				$else_counter = 0;
-				$pos_change = false;
-				for($i = 0; $i < $b_count; $i++)
-				{
-					if (($b_rows[$i]['layout_special'] != 0) && ($this->action == 'editglobal'))
-					{
-					}
-					else
-					{
-						$bs_id = $b_rows[$i]['block_settings_id'];
-						$b_id = $b_rows[$i]['bid'];
-						$b_weight = $b_rows[$i]['weight'];
-						$pos_change = (($i == 0) || ($b_position != $b_rows[$i]['bposition'])) ? true : false;
-						$b_position = $b_rows[$i]['bposition'];
-						$b_position_l = !empty($lang['cms_pos_' . $position[$b_position]]) ? $lang['cms_pos_' . $position[$b_position]] : $row['pkey'];
-
-						$row_class = (!($else_counter % 2)) ? $theme['td_class2'] : $theme['td_class1'];
-						$else_counter++;
-
-						if (($this->l_id == 0) && ($this->id_var_name == 'l_id'))
-						{
-							$redirect_action = '&amp;action=editglobal';
-						}
-						else
-						{
-							$redirect_action = '&amp;action=list';
-						}
-
-						$template->assign_block_vars('blocks', array(
-							'ROW_CLASS' => $row_class,
-							'FIRST_ID' => ($i == 0) ? true : false,
-							'LAST_ID' => ($i == ($b_count - 1)) ? true : false,
-							'SORT_CID' => $this->sort_cid_prefix . $b_rows[$i]['bposition'],
-							'SORT_SID' => $this->sort_sid_prefix . $b_rows[$i]['bposition'],
-							'SORT_EID' => $this->sort_eid_prefix . $b_rows[$i]['bid'],
-							'POSITION_ID' => $b_rows[$i]['bposition'],
-							'POSITION_CHANGE' => (!empty($pos_change)) ? true : false,
-							'TITLE' => trim($b_rows[$i]['title']),
-							'BLOCK_CB_ID' => $b_rows[$i]['bid'],
-							'POSITION' => $b_position_l,
-							'L_POSITION' => $b_position_l,
-							'ACTIVE' => ($b_rows[$i]['active']) ? $lang['YES'] : $lang['NO'],
-							'BLOCK_CHECKED' => ($b_rows[$i]['active']) ? ' checked="checked"' : '',
-							'TYPE' => (empty($b_rows[$i]['blockfile'])) ? (($b_rows[$i]['type']) ? $lang['B_BBCODE'] : $lang['B_HTML']) : '&nbsp;',
-							'BORDER' => ($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO'],
-							'TITLEBAR' => ($b_rows[$i]['titlebar']) ? $lang['YES'] : $lang['NO'],
-							'LOCAL' => ($b_rows[$i]['local']) ? $lang['YES'] : $lang['NO'],
-							'BACKGROUND' => ($b_rows[$i]['background']) ? $lang['YES'] : $lang['NO'],
-							'GROUPS' => $groups,
-							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
-							'VIEW' => $b_view,
-
-							'U_EDIT_BS' => append_sid($this->root . '?mode=block_settings&amp;action=edit&amp;&amp;bs_id=' . $bs_id),
-							'U_EDIT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=edit&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $b_id),
-							'U_DELETE' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=delete&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $b_id),
-							'U_MOVE_UP' => append_sid($this->root . '?mode=' . $this->mode . $redirect_action . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;move=1&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position),
-							'U_MOVE_DOWN' => append_sid($this->root . '?mode=' . $this->mode . $redirect_action . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;move=0&amp;b_id=' . $b_id . '&amp;weight=' . $b_weight . '&amp;pos=' . $b_position)
-							)
-						);
-
-						if (!empty($pos_change))
-						{
 							$template->assign_block_vars('jq_sort', array(
-								'ID' => $this->sort_sid_prefix . $b_rows[$i]['bposition'],
-								'PROP' => 'containment: "#' . $this->sort_cid_prefix . $b_rows[$i]['bposition'] . '", handle: "img.sort-handler", axis: "y"',
+								'ID' => $this->sort_sid_prefix . $block_position,
+								'PROP' => 'containment: "#' . $this->sort_cid_prefix . $block_position . '", handle: "img.sort-handler", axis: "y"',
 								)
 							);
+
 						}
 					}
 				}
-			}
-			else
-			{
-				$template->assign_var('S_NO_BLOCKS', true);
 			}
 		}
 
@@ -1468,7 +1382,7 @@ class cms_admin
 
 				$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
 
-				$b_view = get_block_view_name($b_rows[$i]['view']);
+				$b_view = $this->get_block_view_name($b_rows[$i]['view']);
 
 				$groups = (!empty($b_rows[$i]['groups'])) ? get_groups_names($b_rows[$i]['groups']) : $lang['B_ALL'];
 

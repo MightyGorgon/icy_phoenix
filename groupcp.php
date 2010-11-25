@@ -677,13 +677,14 @@ elseif ($group_id)
 	$db->sql_freeresult($result);
 
 	// Get user information for this group
+	// Changed sorting by username_clean instead of username
 	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
 		FROM " . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug
 		WHERE ug.group_id = $group_id
 			AND u.user_id = ug.user_id
 			AND ug.user_pending = 0
 			AND ug.user_id <> " . $group_moderator['user_id'] . "
-		ORDER BY u.username LIMIT $start, " . $config['topics_per_page'];
+		ORDER BY u.username_clean LIMIT $start, " . $config['topics_per_page'];
 	$result = $db->sql_query($sql);
 	$group_members = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
@@ -693,7 +694,7 @@ elseif ($group_id)
 		WHERE ug.group_id = $group_id
 			AND ug.user_pending = 1
 			AND u.user_id = ug.user_id
-		ORDER BY u.username";
+		ORDER BY u.username_clean";
 	$result = $db->sql_query($sql);
 	$modgroup_pending_list = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);

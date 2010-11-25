@@ -186,15 +186,15 @@ while ($row = $db->sql_fetchrow($result))
 
 	if (time() < $vote_end)
 	{
-		$vote_duration = (date ('Y/m/d', $vote_start)) . ' - ' . (date ('Y/m/d', $vote_end)) . $lang['POLL_ONGOING'];
+		$vote_duration = (date('Y/m/d', $vote_start)) . ' - ' . (date('Y/m/d', $vote_end)) . $lang['POLL_ONGOING'];
 	}
 	elseif ($vote_length == 0)
 	{
-		$vote_duration = (date ('Y/m/d', $vote_start)) . ' - ' . $lang['POLL_INFINITE'];
+		$vote_duration = (date('Y/m/d', $vote_start)) . ' - ' . $lang['POLL_INFINITE'];
 	}
 	else
 	{
-		$vote_duration = (date ('Y/m/d', $vote_start)) . ' - ' . (date ('Y/m/d', $vote_end)) . $lang['POLL_COMPLETED'];
+		$vote_duration = (date('Y/m/d', $vote_start)) . ' - ' . (date('Y/m/d', $vote_end)) . $lang['POLL_COMPLETED'];
 	}
 
 	$user = '';

@@ -248,6 +248,7 @@ elseif (isset($_POST['group_update']))
 		$group_moderator = request_var('username', '', true);
 		$group_moderator = htmlspecialchars_decode($group_moderator, ENT_COMPAT);
 		$delete_old_moderator = isset($_POST['delete_old_moderator']) ? true : false;
+		$group_rank = request_var('group_rank', 0);
 		$group_color = check_valid_color(request_var('group_color', '', true));
 		$group_color = ($group_color !== false) ? $group_color : '';
 		$group_legend = isset($_POST['group_legend']) ? $_POST['group_legend'] : '0';

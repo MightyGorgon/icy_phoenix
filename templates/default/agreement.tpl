@@ -7,7 +7,7 @@
 		<tr>
 			<td align="left">
 				<br /><div class="post-text"><span class="genmed">{AGREEMENT}</span></div><br /><br /><br />
-				<br /><div class="post-text"><span class="genmed">{L_PRIVACY_DISCLAIMER}</span></div><br /><br /><br />
+				<br /><div class="post-text"><span class="genmed">{L_PRIVACY_DISCLAIMER}</span></div><br clear="all" /><br /><br /><br />
 				<label><input type="checkbox" name="privacy" />&nbsp;{AGREE_CHECKBOX}</label><br /><br />
 			</td>
 		</tr>

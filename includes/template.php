@@ -763,6 +763,18 @@ class Template {
 	}
 
 	/**
+	* Special function to get directly a var from handle
+	*/
+	function get_var_from_handle($handle)
+	{
+		ob_start();
+		$this->pparse($handle);
+		$res = ob_get_contents();
+		ob_end_clean();
+		return $res;
+	}
+
+	/**
 	* Block-level variable assignment. Adds a new block iteration with the given
 	* variable assignments. Note that this should only be called once per block
 	* iteration.

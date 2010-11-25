@@ -91,11 +91,12 @@ else
 */
 
 // Get user list
+// Changed sorting by username_clean instead of username
 $sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_time, s.session_page, s.session_ip, s.session_user_agent
 	FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 	WHERE u.user_id = s.session_user_id
 	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
-	ORDER BY u.username ASC, s.session_ip ASC";
+	ORDER BY u.username_clean ASC, s.session_ip ASC";
 $result = $db->sql_query($sql);
 
 $guest_users = 0;

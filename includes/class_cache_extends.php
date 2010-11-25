@@ -420,12 +420,13 @@ class ip_cache extends acm
 			$today_visitors['total_guests'] = $db->sql_numrows($result);
 			$db->sql_freeresult($result);
 
+			// Changed sorting by username_clean instead of username
 			$sql = 'SELECT user_id, username, user_active, user_color, user_allow_viewonline, user_level, user_lastlogon
 							FROM ' . USERS_TABLE . '
 							WHERE user_id != "' . ANONYMOUS . '"
 								AND user_session_time >= ' . $timetoday . '
 								AND user_session_time < ' . ($timetoday + 86399) . '
-							ORDER BY username';
+							ORDER BY username_clean';
 			$result = $db->sql_query($sql);
 
 			while($todayrow = $db->sql_fetchrow($result))

@@ -95,6 +95,9 @@ function ip_user_kill($user_id)
 		$sql = "DELETE FROM " . DRAFTS_TABLE . " WHERE user_id = " . $user_id;
 		$db->sql_query($sql);
 
+		$sql = "DELETE FROM " . LINKS_TABLE . " WHERE user_id = " . $user_id;
+		$db->sql_query($sql);
+
 		$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid = " . $user_id;
 		$db->sql_query($sql);
 

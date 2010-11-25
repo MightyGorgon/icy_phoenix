@@ -1,8 +1,4 @@
-<!-- IF CMS_STD_TPL -->
-<!-- INCLUDE ../common/cms/page_header_std.tpl -->
-<!-- ELSE -->
-<!-- INCLUDE ../common/cms/page_header.tpl --><!-- ENDIF -->
-
+<!-- INCLUDE ../common/cms/page_header.tpl -->
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>

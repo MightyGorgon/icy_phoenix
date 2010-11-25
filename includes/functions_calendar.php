@@ -610,11 +610,12 @@ function get_birthdays_list($year = 0, $year_lt = false, $month = 0, $day = 0, $
 
 	$sql_limit = ($limit > 0) ? ('LIMIT ' . $limit) : '';
 
+	// Changed sorting by username_clean instead of username
 	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_birthday, u.user_birthday_y, u.user_birthday_m, u.user_birthday_d
 				FROM " . USERS_TABLE . " AS u
 				WHERE u.user_id <> " . ANONYMOUS . "
 				" . $sql_where . "
-				ORDER BY username
+				ORDER BY username_clean
 				" . $sql_limit;
 	//$result = $db->sql_query($sql, 0, 'birthdays_list_');
 	$result = $db->sql_query($sql);

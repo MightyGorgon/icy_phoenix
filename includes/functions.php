@@ -69,7 +69,7 @@ function extract_current_page($root_path)
 	$query_string = trim(implode('&', $use_args));
 
 	// basenamed page name (for example: index.php)
-	$page_name = basename($script_name);
+	$page_name = (substr($script_name, -1, 1) == '/') ? '' : basename($script_name);
 	$page_name = urlencode(htmlspecialchars($page_name));
 
 	// current directory within the phpBB root (for example: adm)
@@ -3465,7 +3465,7 @@ function page_header($title = '', $parse_template = false)
 	$phpbb_meta .= '<meta name="description" content="' . str_replace('"', '', $meta_content['description']) . '" />' . "\n";
 	$phpbb_meta .= '<meta name="keywords" content="' . str_replace('"', '', $meta_content['keywords']) . '" />' . "\n";
 	$phpbb_meta .= '<meta name="category" content="general" />' . "\n";
-	$phpbb_meta .= '<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />' . "\n";
+	$phpbb_meta .= '<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9" />' . "\n";
 
 	if (defined('IN_ADMIN') || defined('IN_CMS') || defined('IN_SEARCH') || defined('IN_POSTING'))
 	{

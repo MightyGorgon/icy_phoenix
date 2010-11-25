@@ -112,16 +112,15 @@ switch ($mode)
 			)
 		);
 
-		$sql = "SELECT l.*, u.username
-				FROM " . LINKS_TABLE . " l, " . USERS_TABLE . " u
-				WHERE l.user_id = u.user_id";
+		$sql = "SELECT l.*
+				FROM " . LINKS_TABLE . " l";
 		if ($search_keywords)
 		{
-			$sql .= " AND (link_title LIKE '%" . $db->sql_escape($search_keywords) . "%' OR link_desc LIKE '%" . $db->sql_escape($search_keywords) . "%') ORDER BY link_id DESC LIMIT $start, $linkspp";
+			$sql .= " AND (l.link_title LIKE '%" . $db->sql_escape($search_keywords) . "%' OR l.link_desc LIKE '%" . $db->sql_escape($search_keywords) . "%') ORDER BY l.link_id DESC LIMIT $start, $linkspp";
 		}
 		else
 		{
-			$sql .= " ORDER BY link_id DESC LIMIT $start, $linkspp";
+			$sql .= " ORDER BY l.link_id DESC LIMIT $start, $linkspp";
 		}
 
 		$result = $db->sql_query($sql);
@@ -135,7 +134,6 @@ switch ($mode)
 				$link_id = $row['link_id'];
 				$link_id .= '&sid=' . $userdata['session_id'] . '';
 				$user_id = $row['user_id'];
-				$username = $row['username'];
 
 				$template->assign_block_vars('linkrow', array(
 					'ROW_CLASS' => $row_class,
@@ -143,7 +141,7 @@ switch ($mode)
 					'LINK_TITLE' => $row['link_title'],
 					'LINK_URL' => $row['link_url'],
 					'LINK_CATEGORY' => $link_categories[$row['link_category']],
-					'U_LINK_USER' => ($user_id != ANONYMOUS) ? ('<a href="../' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id . '" target="_blank">' . $username . '</a>') : $username,
+					'U_LINK_USER' => colorize_username($user_id),
 					'LINK_JOINED' => create_date($lang['DATE_FORMAT'], $row['link_joined'], $config['board_timezone']),
 					'LINK_USER_IP' => decode_ip($row['user_ip']),
 					'LINK_DESC' => $row['link_desc'],

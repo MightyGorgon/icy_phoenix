@@ -54,7 +54,9 @@
 div#horiz-menu {
 /* this is a z-index ie6 and ie7 bug fix */
 	z-index: 50;
-	position: relative;
+	/* This has to be verified to be working fine in every browser */
+	/*position: relative;*/
+	position: static;
 }
 
 #horiz-menu li li {

@@ -54,18 +54,6 @@ class ip_cms
 	}
 
 	/*
-	* Special function to assign var from handle
-	*/
-	function cms_assign_var_from_handle($template_var, $handle)
-	{
-		ob_start();
-		$template_var->pparse($handle);
-		$str = ob_get_contents();
-		ob_end_clean();
-		return $str;
-	}
-
-	/*
 	* Checks if the user is allowed to view the block
 	*/
 	function cms_blocks_view()
@@ -377,7 +365,7 @@ class ip_cms
 					$template->set_filenames(array($block_handle => 'blocks/' . $block_name . '_block.tpl'));
 					$output_block = '';
 					include(IP_ROOT_PATH . 'blocks/' . $block_info[$b_counter]['blockfile'] . '.' . PHP_EXT);
-					$output_block = $this->cms_assign_var_from_handle($template, $block_handle);
+					$output_block = $template->get_var_from_handle($block_handle);
 				}
 				else
 				{
@@ -413,7 +401,7 @@ class ip_cms
 					'BACKGROUND' => (($block_info[$b_counter]['background'] == 1) ? true : false),
 					)
 				);
-				$cms_block = $this->cms_assign_var_from_handle($template, $block_handle);
+				$cms_block = $template->get_var_from_handle($block_handle);
 				$template->assign_block_vars($position_prefix . 'blocks_row', array(
 					'CMS_BLOCK' => $cms_block,
 					'OUTPUT' => $output_block

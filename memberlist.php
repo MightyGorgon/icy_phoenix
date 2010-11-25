@@ -346,17 +346,6 @@ if (empty($cash_condition))
 	}
 }
 
-// Count the users ...
-$sql_active_users = empty($config['inactive_users_memberlists']) ? 'AND u.user_active = 1' : '';
-$sql = "SELECT COUNT(u.user_id) AS total_users
-	FROM " . USERS_TABLE . " u
-	WHERE u.user_id <> " . ANONYMOUS . "
-	$sql_active_users
-	$sql_where";
-$result = $db->sql_query($sql);
-$total_users = (int) $db->sql_fetchfield('total_users');
-$db->sql_freeresult($result);
-
 $s_char_options = '<option value=""' . ((!$first_char) ? ' selected="selected"' : '') . '>&nbsp; &nbsp;</option>';
 for ($i = 97; $i < 123; $i++)
 {
@@ -472,14 +461,21 @@ if (($action == 'searchuser') && ($userdata['user_level'] == ADMIN))
 	);
 }
 
-// Get us some users :D
+// Get the users
 $sql_active_users = empty($config['inactive_users_memberlists']) ? 'AND u.user_active = 1' : '';
-$sql = "SELECT u.user_id
-	FROM " . USERS_TABLE . " u
+$sql_from_where_part = " FROM " . USERS_TABLE . " u
 	WHERE u.user_id <> " . ANONYMOUS . "
-		$sql_active_users
-		$sql_where
-	ORDER BY $order_by";
+	$sql_active_users
+	$sql_where";
+
+// Count the users ...
+$sql_count = "SELECT COUNT(u.user_id) AS total_users " . $sql_from_where_part;
+$result = $db->sql_query($sql_count);
+$total_users = (int) $db->sql_fetchfield('total_users');
+$db->sql_freeresult($result);
+
+// Get us some users :D
+$sql = "SELECT u.user_id " . $sql_from_where_part . " ORDER BY $order_by";
 $result = $db->sql_query_limit($sql, $users_per_page, $start);
 
 $user_list = array();
@@ -912,7 +908,8 @@ else
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $users_per_page) + 1), ceil($total_users / $users_per_page)),
-	'L_GOTO_PAGE' => $lang['Goto_page'])
+	'L_GOTO_PAGE' => $lang['Goto_page']
+	)
 );
 
 full_page_generation('memberlist_body.tpl', $lang['Memberlist'], '', '');

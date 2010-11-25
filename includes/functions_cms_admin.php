@@ -170,7 +170,7 @@ function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid)
 	$hidden_fields .= '<input type="hidden" id="local_' . $b_id . '" value="' . $b_row['local'] . '" />';
 	$hidden_fields .= '<input type="hidden" id="background_' . $b_id . '" value="' . $b_row['background'] . '" />';
 
-	$u_move = '<img class="handle" src="' . $images['block_move'] . '" alt="' . $lang['Block_Move'] . '" title="' . $lang['BLOCK_MOVE'] . '" style="vertical-align: middle; cursor: move"/>&nbsp;';
+	$u_move = '<img class="handle" src="' . $images['block_move'] . '" alt="' . $lang['BLOCK_MOVE'] . '" title="' . $lang['BLOCK_MOVE'] . '" style="vertical-align: middle; cursor: move;"/>&nbsp;';
 
 	$u_active = '<img src="' . $img_active . '" alt="' . $lang['TURN_ACTIVE'] . '" title="' . $lang['TURN_ACTIVE'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 0, ' . $b_id . ', ' . $cms_type_id . ')"/>';
 	$u_border = '<img src="' . $img_border . '" alt="' . $lang['TURN_BORDER'] . '" title="' . $lang['TURN_BORDER'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 1, ' . $b_id . ', ' . $cms_type_id . ')"/>';

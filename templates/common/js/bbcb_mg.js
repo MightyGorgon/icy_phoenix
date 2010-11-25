@@ -129,6 +129,43 @@ function initInsertions()
 	}
 }
 
+function split_lines(text)
+{
+	var lines = text.split('\n');
+	var splitLines = new Array();
+	var j = 0;
+	for(i = 0; i < lines.length; i++)
+	{
+		if (lines[i].length <= 80)
+		{
+			splitLines[j] = lines[i];
+			j++;
+		}
+		else
+		{
+			var line = lines[i];
+			do
+			{
+				var splitAt = line.indexOf(' ', 80);
+
+				if (splitAt == -1)
+				{
+					splitLines[j] = line;
+					j++;
+				}
+				else
+				{
+					splitLines[j] = line.substring(0, splitAt);
+					line = line.substring(splitAt);
+					j++;
+				}
+			}
+			while(splitAt != -1);
+		}
+	}
+	return splitLines;
+}
+
 // From http://www.massless.org/mozedit/
 function mozWrap(txtarea, open, close)
 {
@@ -141,7 +178,7 @@ function mozWrap(txtarea, open, close)
 		selEnd = selLength;
 	}
 	var s1 = (txtarea.value).substring(0, selStart);
-	var s2 = (txtarea.value).substring(selStart, selEnd)
+	var s2 = (txtarea.value).substring(selStart, selEnd);
 	var s3 = (txtarea.value).substring(selEnd, selLength);
 	txtarea.value = s1 + open + s2 + close + s3;
 	txtarea.selectionStart = selStart + open.length;
@@ -211,7 +248,7 @@ function bbcbmg_insert(text, spaces, popup)
 		//mozInsert(txtarea, text, "");
 		var sel_start = txtarea.selectionStart;
 		var sel_end = txtarea.selectionEnd;
-		mozWrap(txtarea, text, '')
+		mozWrap(txtarea, text, '');
 		txtarea.selectionStart = sel_start + text.length;
 		txtarea.selectionEnd = sel_end + text.length;
 	}

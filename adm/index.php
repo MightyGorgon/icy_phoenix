@@ -202,11 +202,12 @@ elseif($acp_pane == 'right')
 	$db->sql_freeresult($result);
 
 	$deactivated_names = '';
+	// Changed sorting by username_clean instead of username
 	$sql = "SELECT username, user_id, user_active, user_color
 		FROM " . USERS_TABLE . "
 		WHERE user_active = 0
 			AND user_id <> " . ANONYMOUS . "
-		ORDER BY username";
+		ORDER BY username_clean";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -243,11 +244,12 @@ elseif($acp_pane == 'right')
 	$db->sql_freeresult($result);
 
 	$moderator_names = '';
+	// Changed sorting by username_clean instead of username
 	$sql = "SELECT username, user_id, user_active, user_color
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . MOD . "
 			AND user_id <> " . ANONYMOUS . "
-		ORDER BY username";
+		ORDER BY username_clean";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -284,11 +286,12 @@ elseif($acp_pane == 'right')
 	$db->sql_freeresult($result);
 
 	$junior_administrator_names = '';
+	// Changed sorting by username_clean instead of username
 	$sql = "SELECT username, user_id, user_active, user_color
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . JUNIOR_ADMIN . "
 			AND user_id <> " . ANONYMOUS . "
-		ORDER BY username";
+		ORDER BY username_clean";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -324,11 +327,12 @@ elseif($acp_pane == 'right')
 	$db->sql_freeresult($result);
 
 	$administrator_names = '';
+	// Changed sorting by username_clean instead of username
 	$sql = "SELECT username, user_id, user_active, user_color
 		FROM " . USERS_TABLE . "
 		WHERE user_level = " . ADMIN . "
 			AND user_id <> " . ANONYMOUS . "
-		ORDER BY username";
+		ORDER BY username_clean";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
