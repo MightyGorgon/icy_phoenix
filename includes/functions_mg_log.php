@@ -99,7 +99,7 @@ function ip_log($content, $db_log, $error_log = false)
 			$new_log_id = $row['max_log_id'] + 1;
 
 			$sql = "INSERT INTO " . LOGS_TABLE . " (log_id, log_time, log_page, log_user_id, log_action, log_desc, log_target)
-				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . $db->sql_escape($db_log['action']) . "', '" . $db->sql_escape($db_log['desc']) . "', '')";
+				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . $db->sql_escape($db_log['action']) . "', '" . $db->sql_escape($db_log['desc']) . "', 0)";
 			$result = $db->sql_query($sql);
 
 			if (($error_log) && $config['db_log_actions'] == '2')
