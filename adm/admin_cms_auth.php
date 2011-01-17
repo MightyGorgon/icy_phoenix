@@ -74,12 +74,12 @@ elseif (!empty($user_id))
 	$db->sql_freeresult($result);
 
 	$auth_array = array(
-		'0' => $lang['CMS_Guest'],
-		'1' => $lang['CMS_Reg'],
+		'0' => $lang['CMS_GUEST'],
+		'1' => $lang['CMS_REG'],
 		'2' => $lang['CMS_VIP'],
-		'3' => $lang['CMS_Publisher'],
-		'4' => $lang['CMS_Reviewer'],
-		'5' => $lang['CMS_Content_Manager']
+		'3' => $lang['CMS_PUBLISHER'],
+		'4' => $lang['CMS_REVIEWER'],
+		'5' => $lang['CMS_CONTENT_MANAGER']
 	);
 
 	$s_user_type = '<select name="user_cms_level">';

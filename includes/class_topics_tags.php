@@ -45,6 +45,22 @@ class class_topics_tags
 	}
 
 	/*
+	* Search for a tag
+	*/
+	function search_tag($tag)
+	{
+		global $db, $lang;
+
+		$tags_list = array();
+		$sql = "SELECT tag_id, tag_text FROM " . TOPICS_TAGS_LIST_TABLE . " WHERE tag_text LIKE '" . $db->sql_escape($tag) . "%'";
+		$result = $db->sql_query($sql);
+		$tags_list = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+
+		return $tags_list;
+	}
+
+	/*
 	* Check if tag exists
 	*/
 	function check_tag($tag)

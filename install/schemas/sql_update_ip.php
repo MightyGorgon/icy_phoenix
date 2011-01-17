@@ -2060,8 +2060,6 @@ if (substr($mode, 0, 6) == 'update')
 			UNIQUE user_id (user_id, forum_id)
 		)";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('enable_digests', '0')";
-
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('forum_wordgraph', '0')";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD FULLTEXT (topic_title)";
@@ -2238,9 +2236,6 @@ if (substr($mode, 0, 6) == 'update')
 
 		// Icy Phoenix CMS - END
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('digests_php_cron', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('digests_last_send_time', '0')";
-
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('shoutbox_floodinterval', '3')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('display_shouts', '20')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('stored_shouts', '1000')";
@@ -2397,7 +2392,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "DELETE FROM `" . $table_prefix . "cms_block_variable` WHERE `config_name` = 'md_cache_filename_protect'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "cms_block_variable` WHERE `config_name` = 'md_cache_serialize'";
 		$sql[] = "UPDATE " . $table_prefix . "album_config SET config_value = '.0.56' WHERE config_name = 'album_version'";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('digests_php_cron_lock', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('allow_only_id2_admin', '0')";
 
 		/* Updating from IP 1.1.0.15 */
@@ -3897,10 +3891,10 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `type`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `groups`";
 
-		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `block_settings_id` int(10) UNSIGNED NOT NULL AFTER `bid`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `block_cms_id` int(10) UNSIGNED NOT NULL AFTER `block_settings_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `bs_id` int(10) UNSIGNED NOT NULL AFTER `bid`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` ADD `block_cms_id` int(10) UNSIGNED NOT NULL AFTER `bs_id`";
 
-		$sql[] = "UPDATE `" . $table_prefix . "cms_blocks` SET `block_settings_id` = `bid`";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_blocks` SET `bs_id` = `bid`";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` ADD `layout_cms_id` int(10) UNSIGNED NOT NULL AFTER `template`";
 		// NEW CMS - END
@@ -4020,6 +4014,14 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.14.67 */
 		case '1.3.14.67':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` CHANGE `block_settings_id` `bs_id` INT(10) UNSIGNED NOT NULL";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_lock_hour', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_birthdays_interval', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cron_birthdays_last_run', '0')";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'enable_digests'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'digests_php_cron'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'digests_php_cron_lock'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'digests_last_send_time'";
 
 		/* Updating from IP 1.3.15.68 */
 		case '1.3.15.68':

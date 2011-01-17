@@ -79,21 +79,6 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
-	'enable_digests' => array(
-		'lang_key' => 'IP_enable_digests',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-		),
-
-	'digests_php_cron' => array(
-		'lang_key' => 'IP_digests_php_cron',
-		'explain' => 'IP_digests_php_cron_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 1,
-		'values' => $this->list_yes_no,
-		),
-
 	'emails_only_to_admins' => array(
 		'lang_key' => 'IP_emails_only_to_admins',
 		'explain' => 'IP_emails_only_to_admins_explain',

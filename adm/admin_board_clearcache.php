@@ -36,6 +36,9 @@ if(check_http_var_exists('confirm_clear_cache_main', false))
 		message_die(GENERAL_MESSAGE, $meta_tag . $message);
 	}
 
+	// Make sure cron is unlocked... just to make sure that it didn't hang somewhere in time... :-)
+	set_config('cron_lock', '0');
+	set_config('cron_lock_hour', 0);
 	$message = $lang['Empty_Cache_Success'] . '<br /><br />';
 	$confirmation = true;
 }

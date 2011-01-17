@@ -95,7 +95,7 @@ class ip_cache extends acm
 					AND b.block_cms_id = '" . $cms_id . "'
 					AND " . $db->sql_in_set('s.view', $auth_level) . "
 					AND b.bposition IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
-					AND b.block_settings_id = s.bs_id
+					AND b.bs_id = s.bs_id
 					ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
 			}
 			else

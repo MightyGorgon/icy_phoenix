@@ -33,42 +33,75 @@ function unlock_cron()
 */
 function process_digests()
 {
-	global $db, $config, $userdata, $table_prefix;
+	global $db, $cache, $config, $userdata, $lang, $table_prefix;
 
 	// Digests - BEGIN
-	if ($config['enable_digests'])
+	if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0))
 	{
-		/*
 		// MG PHP Cron Emulation For Digests - BEGIN
-		$is_allowed = true;
-		// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
-		$is_allowed = (!$userdata['session_logged_in']) ? true : false;
 		$page_url = pathinfo($_SERVER['SCRIPT_NAME']);
 		$digests_pages_array = array(CMS_PAGE_PROFILE, CMS_PAGE_POSTING);
-		if ($config['digests_php_cron'] && $is_allowed && !in_array($page_url['basename'], $digests_pages_array))
-		//if ($config['digests_php_cron'] && ($config['digests_php_cron_lock'] == false) && (!$userdata['session_logged_in']) && !in_array($page_url['basename'], $digests_pages_array))
+		if (empty($config['cron_lock_hour']) && !in_array($page_url['basename'], $digests_pages_array))
 		{
-			if ((time() - $config['digests_last_send_time']) > CRON_REFRESH)
+			if ((time() - $config['cron_digests_last_run']) > CRON_REFRESH)
 			{
-				$config['digests_last_send_time'] = ($config['digests_last_send_time'] == 0) ? (time() - 3600) : $config['digests_last_send_time'];
-				$last_send_time = @getdate($config['digests_last_send_time']);
+				$config['cron_digests_last_run'] = ($config['cron_digests_last_run'] == 0) ? (time() - 3600) : $config['cron_digests_last_run'];
+				$last_send_time = @getdate($config['cron_digests_last_run']);
 				$cur_time = @getdate();
 				if ($cur_time['hours'] <> $last_send_time['hours'])
 				{
-					set_config('digests_php_cron_lock', 1);
+					set_config('cron_lock_hour', 1);
 					define('PHP_DIGESTS_CRON', true);
 					include_once(IP_ROOT_PATH . 'mail_digests.' . PHP_EXT);
 				}
 			}
 		}
 		// MG PHP Cron Emulation For Digests - END
-		*/
 	}
 	// Digests - END
 
 	if (CRON_DEBUG == false)
 	{
 		set_config('cron_digests_last_run', time());
+	}
+}
+
+/**
+* Process Birthdays
+*/
+function process_birthdays()
+{
+	global $db, $cache, $config, $lang;
+
+	if (!empty($config['cron_birthdays_interval']))
+	{
+		// MG PHP Cron Emulation For Birthdays - BEGIN
+		$page_url = pathinfo($_SERVER['SCRIPT_NAME']);
+		$birthdays_pages_array = array(CMS_PAGE_PROFILE, CMS_PAGE_POSTING);
+		if (empty($config['cron_lock_hour']) && !in_array($page_url['basename'], $birthdays_pages_array))
+		{
+			if ((time() - $config['cron_birthdays_last_run']) > CRON_REFRESH)
+			{
+				$config['cron_birthdays_last_run'] = ($config['cron_birthdays_last_run'] == 0) ? (time() - 3600) : $config['cron_birthdays_last_run'];
+				$last_send_time = @getdate($config['cron_birthdays_last_run']);
+				$cur_time = @getdate();
+				if ($cur_time['hours'] <> $last_send_time['hours'])
+				{
+					set_config('cron_lock_hour', 1);
+					if (!function_exists('birthday_email_send'))
+					{
+						include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+					}
+					birthday_email_send();
+				}
+			}
+		}
+		// MG PHP Cron Emulation For Birthdays - END
+	}
+
+	if (CRON_DEBUG == false)
+	{
+		set_config('cron_birthdays_last_run', time());
 	}
 }
 

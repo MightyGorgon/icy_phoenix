@@ -182,7 +182,7 @@ class ip_cms
 					AND b.active = 1
 					AND " . $db->sql_in_set('s.view', $this->cms_blocks_view()) . "
 					AND b.bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
-					AND b.block_settings_id = s.bs_id
+					AND b.bs_id = s.bs_id
 					ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
 			}
 			else
@@ -319,9 +319,9 @@ class ip_cms
 
 		for ($b_counter = 0; $b_counter < $block_count; $b_counter++)
 		{
-			// We cannot use 'bid' anymore since now blocks settings are identified by 'block_settings_id'
+			// We cannot use 'bid' anymore since now blocks settings are identified by 'bs_id'
 			//$block_id = $block_info[$b_counter]['bid'];
-			$block_id = $block_info[$b_counter]['block_settings_id'];
+			$block_id = $block_info[$b_counter]['bs_id'];
 			$is_group_allowed = true;
 			if(!empty($block_info[$b_counter]['groups']))
 			{

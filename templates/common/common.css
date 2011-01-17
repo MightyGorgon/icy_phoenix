@@ -624,6 +624,13 @@ div.thumb div img{ max-width: 180px; max-height: 150px; }
 }
 /* Thumbs Frame & Shadow - END */
 
+/* UL OL - BEGIN */
+ul.no-bullet {
+	list-style: none;
+	list-style-type: none;
+}
+/* UL OL - BEGIN */
+
 /* Sitemap */
 h2.sitemap, h2.maximise, h2.minimise {
 	background: url('images/switch_maximise.gif') no-repeat center left;

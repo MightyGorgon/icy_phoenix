@@ -5,7 +5,7 @@ Charset: iso-8859-1
 <br />
 <br />
 <i>
-<span style="color:#a4a4a4; font-size:11">
+<span style="color: #a4a4a4; font-size: 11;">
 The above email was sent to you from <b>{FROM_USERNAME}</b> via his account at <b>{SITENAME}</b>. <br />
 If this message is spam, contains abusive or other comments you find offensive please contact the webmaster of the board at the following address:
 <br /><br />

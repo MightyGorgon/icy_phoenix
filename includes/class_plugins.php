@@ -35,7 +35,6 @@ class class_plugins
 	function class_plugins()
 	{
 		$this->plugins_path = IP_ROOT_PATH . PLUGINS_PATH;
-
 	}
 
 	/**
@@ -145,6 +144,9 @@ class class_plugins
 				}
 			}
 		}
+
+		$plugin_data['version'] = !empty($plugin_info['version']) ? $plugin_info['version'] : $plugin_data['version'];
+		$this->set_config($plugin_data, true, true);
 
 		if ($clear_cache)
 		{
@@ -276,6 +278,46 @@ class class_plugins
 		@closedir($plugins_dir);
 		ksort($plugins_list);
 		return $plugins_list;
+	}
+
+	/*
+	* Get plugin config
+	*/
+	function get_config($plugin_dir)
+	{
+		global $db, $cache, $lang;
+
+		$sql = "SELECT * FROM " . PLUGINS_TABLE . " WHERE plugin_dir = '" . $db->sql_escape($plugin_dir) . "'";
+		$result = $db->sql_query($sql);
+
+		$plugin_info = array();
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$plugin_info = $row;
+		}
+		$db->sql_freeresult($result);
+
+		return $plugin_info;
+	}
+
+
+	/**
+	* Map plugin config data from db input
+	*/
+	function config_map($plugin_data, $plugin_data_input)
+	{
+		$plugin_data_map = array();
+		if (!empty($plugin_data_input))
+		{
+			$plugin_data_map = array(
+				'name' => !empty($plugin_data_input['plugin_name']) ? $plugin_data_input['plugin_name'] : (!empty($plugin_data['name']) ? $plugin_data['name'] : ''),
+				'version' => !empty($plugin_data_input['plugin_version']) ? $plugin_data_input['plugin_version'] : (!empty($plugin_data['version']) ? $plugin_data['version'] : ''),
+				'dir' => !empty($plugin_data_input['plugin_dir']) ? $plugin_data_input['plugin_dir'] : (!empty($plugin_data['dir']) ? $plugin_data['dir'] : ''),
+				'enabled' => !empty($plugin_data_input['plugin_enabled']) ? $plugin_data_input['plugin_enabled'] : (!empty($plugin_data['enabled']) ? $plugin_data['enabled'] : 0),
+			);
+		}
+
+		return $plugin_data_map;
 	}
 
 	/**

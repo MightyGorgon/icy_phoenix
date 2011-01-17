@@ -1,7 +1,9 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <br />
+<!-- INCLUDE tags_search_js.tpl -->
 <h2 style="text-align: left;"><a href="{U_TAGS}" style="text-decoration: none;">{L_TOPIC_TAGS}</a></h2>
+<br clear="all" />
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_TOPIC_TAGS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- IF S_SHOW_CLOUD -->

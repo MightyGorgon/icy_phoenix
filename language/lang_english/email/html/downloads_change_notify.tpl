@@ -18,5 +18,5 @@ If you want to take a look at this download click the following link:<br /><br /
 Remember that you can always choose not to be notified about edited downloads by dropping the notifications in the download details or your downloads user profile.<br /><br />
 
 <br /><br />
-<span style="color:#a4a4a4; font-size:11">
-{EMAIL_SIG}</span></font>
+<span style="color: #a4a4a4; font-size: 11;">{EMAIL_SIG}</span>
+</font>

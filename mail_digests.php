@@ -42,7 +42,7 @@ if (!defined('PHP_DIGESTS_CRON'))
 	init_userprefs($userdata);
 	// End session management
 
-	if (empty($config['enable_digests']))
+	if (empty($config['cron_digests_interval']) || ($config['cron_digests_interval'] == -1))
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 	}
@@ -116,8 +116,7 @@ $sql = "SELECT s.user_id, u.username, u.user_email, u.user_lastvisit, u.user_lan
 	WHERE s.user_id = u.user_id AND ((digest_type = 'DAY' AND send_hour = " . $current_hour . ')' . $weekly_digest_text . ')';
 $result = $db->sql_query($sql);
 
-// Retrieve a list of forum_ids that all registered users can access. Since digests go only to registered
-// users it's important to include those forums not accessible to the general public but accessible to users.
+// Retrieve a list of forum_ids that all registered users can access. Since digests go only to registered users it's important to include those forums not accessible to the general public but accessible to users.
 $sql2 = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE auth_read IN (' . AUTH_ALL . ', ' . AUTH_REG . ') AND forum_type = ' . FORUM_POST;
 $result2 = $db->sql_query($sql2);
 $i = 0;
@@ -130,7 +129,6 @@ while ($row2 = $db->sql_fetchrow($result2))
 $db->sql_freeresult($result2);
 
 // With each pass through the loop one user will receive a customized digest.
-
 $digests_sent = 0;
 while ($row = $db->sql_fetchrow($result))
 {
@@ -180,7 +178,6 @@ while ($row = $db->sql_fetchrow($result))
 
 		// The true last visit date is the greatest of: last_visited_date, last message posted, and last session date
 		$last_visited_date = max($last_post_date, $last_session_date, $last_visited_date);
-
 	}
 
 	// Get a list of forums that can only be read if user has been granted explicit permission
@@ -615,7 +612,7 @@ if (DIGEST_SHOW_SUMMARY)
 
 $db->sql_freeresult($result);
 
-set_config('digests_last_send_time', time());
-set_config('digests_php_cron_lock', 0);
+set_config('cron_digests_last_run', time());
+set_config('cron_lock_hour', 0);
 
 ?>

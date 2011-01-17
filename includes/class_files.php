@@ -676,6 +676,30 @@ class class_files
 	}
 
 	/**
+	* Page Header
+	*/
+	function simple_page_header($page_title)
+	{
+		echo('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n");
+		echo('<html>' . "\n");
+		echo('<head>' . "\n");
+		echo('	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />' . "\n");
+		echo('	<meta name="author" content="Mighty Gorgon" />' . "\n");
+		echo('	<title>' . (!empty($page_title) ? $page_title : 'Icy Phoenix') . '</title>' . "\n");
+		echo('</head>' . "\n");
+		echo('<body>' . "\n");
+	}
+
+	/**
+	* Page Footer
+	*/
+	function simple_page_footer()
+	{
+		echo('</body>' . "\n");
+		echo('</html>' . "\n");
+	}
+
+	/**
 	* Explode any single-dimensional array into a full blown tree structure, based on the delimiters found in it's keys.
 	*
 	* @author    Kevin van Zonneveld <kevin@vanzonneveld.net>
@@ -754,7 +778,6 @@ class class_files
 
 		return $return_array;
 	}
-
 
 	function plot_tree($arr, $indent = 0, $mother_run = true)
 	{

@@ -18,5 +18,5 @@ Remember that you can always choose not to be notified of new pic comments by ei
 <br /><br />
 <hr />
 <br /><br />
-<span style="color:#a4a4a4; font-size:11">
-{EMAIL_SIG}</span></font>
+<span style="color: #a4a4a4; font-size: 11;">{EMAIL_SIG}</span>
+</font>

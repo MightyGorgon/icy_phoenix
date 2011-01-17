@@ -370,7 +370,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		// SMILEYS IN TITLE - END
 
 		$dsp_topic_icon = '';
-		if (function_exists(get_icon_title))
+		if (function_exists('get_icon_title'))
 		{
 			$dsp_topic_icon = get_icon_title($topic_icon, 0, POST_CALENDAR);
 		}
@@ -635,7 +635,7 @@ function get_birthdays_list($year = 0, $year_lt = false, $month = 0, $day = 0, $
 */
 function get_birthdays_list_full()
 {
-	global $cache, $config;
+	global $db, $cache, $config;
 
 	if (($birthdays_list = $cache->get('_birthdays_list_' . $config['board_timezone'])) === false)
 	{
@@ -685,7 +685,7 @@ function get_birthdays_list_full()
 
 function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 {
-	global $tree, $template, $lang, $images, $userdata, $db, $cache, $config, $bbcode;
+	global $db, $cache, $config, $userdata, $template, $images, $lang, $bbcode, $tree;
 	static $handler;
 
 	if (empty($handler))

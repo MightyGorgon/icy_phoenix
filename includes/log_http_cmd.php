@@ -863,6 +863,10 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 
 if ($update_log)
 {
+	if (!function_exists('ip_log'))
+	{
+		include(IP_ROOT_PATH . 'includes/functions_mg_log.' . PHP_EXT);
+	}
 	ip_log($content, $db_log);
 }
 

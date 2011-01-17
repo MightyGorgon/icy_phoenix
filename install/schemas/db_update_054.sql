@@ -439,10 +439,10 @@ ALTER TABLE `phpbb_cms_blocks` DROP `view`;
 ALTER TABLE `phpbb_cms_blocks` DROP `type`;
 ALTER TABLE `phpbb_cms_blocks` DROP `groups`;
 
-ALTER TABLE `phpbb_cms_blocks` ADD `block_settings_id` int(10) UNSIGNED NOT NULL AFTER `bid`;
-ALTER TABLE `phpbb_cms_blocks` ADD `block_cms_id` int(10) UNSIGNED NOT NULL AFTER `block_settings_id`;
+ALTER TABLE `phpbb_cms_blocks` ADD `bs_id` int(10) UNSIGNED NOT NULL AFTER `bid`;
+ALTER TABLE `phpbb_cms_blocks` ADD `block_cms_id` int(10) UNSIGNED NOT NULL AFTER `bs_id`;
 
-UPDATE `phpbb_cms_blocks` SET `block_settings_id` = `bid`;
+UPDATE `phpbb_cms_blocks` SET `bs_id` = `bid`;
 
 ALTER TABLE `phpbb_cms_layout` ADD `layout_cms_id` int(10) UNSIGNED NOT NULL AFTER `template`;
 ## NEW CMS - END
@@ -583,13 +583,28 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attachments_
 
 
 
+########################################
+##              BUILD 068             ##
+########################################
+ALTER TABLE `phpbb_cms_blocks` CHANGE `block_settings_id` `bs_id` INT(10) UNSIGNED NOT NULL;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_lock_hour', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_birthdays_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_birthdays_last_run', '0');
+DELETE FROM `phpbb_config` WHERE config_name = 'enable_digests';
+DELETE FROM `phpbb_config` WHERE config_name = 'digests_php_cron';
+DELETE FROM `phpbb_config` WHERE config_name = 'digests_php_cron_lock';
+DELETE FROM `phpbb_config` WHERE config_name = 'digests_last_send_time';
+
+!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0)
+empty($config['cron_digests_interval']) || ($config['cron_digests_interval'] == -1)
+
 
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.14.67' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.15.68' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

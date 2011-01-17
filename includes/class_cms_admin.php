@@ -351,8 +351,8 @@ class cms_admin
 		$position = $this->get_blocks_positions($l_id_list, $b_info['bposition']);
 
 		$bs_array = $this->get_blocks_settings_detail();
-		$select_name = 'block_settings_id';
-		$default = $b_info['block_settings_id'];
+		$select_name = 'bs_id';
+		$default = $b_info['bs_id'];
 		$select_js = '';
 		$b_block_parent = $class_form->build_select_box($select_name, $default, $bs_array['ID'], $bs_array['TITLE'], $select_js);
 
@@ -398,7 +398,7 @@ class cms_admin
 			'title' => '',
 			'bposition' => '',
 			'active' => '',
-			'block_settings_id' => '',
+			'bs_id' => '',
 			'border' => '',
 			'titlebar' => '',
 			'local' => '',
@@ -457,7 +457,7 @@ class cms_admin
 	/*
 	* Delete block
 	*/
-	function delete_block_force()
+	function delete_block_force($settings_remove = false)
 	{
 		global $db;
 
@@ -465,7 +465,10 @@ class cms_admin
 		{
 			$sql = "DELETE FROM " . $this->tables['blocks_table'] . " WHERE bid = " . $this->b_id;
 			$result = $db->sql_query($sql);
-			$this->delete_block_config_all();
+			if (!empty($settings_remove))
+			{
+				$this->delete_block_config_all();
+			}
 			$this->fix_weight_blocks($this->id_var_value, $this->table_name);
 			$this->fix_weight_blocks(0, $this->table_name);
 			return true;
@@ -501,7 +504,7 @@ class cms_admin
 		{
 			if(!empty($this->b_id))
 			{
-				$this->delete_block_force();
+				$this->delete_block_force(false);
 				if (($this->l_id == 0) && ($this->id_var_name == 'l_id'))
 				{
 					$redirect_action = '&amp;action=editglobal';
@@ -687,7 +690,7 @@ class cms_admin
 					}
 					else
 					{
-						$bs_id = $b_rows[$i]['block_settings_id'];
+						$bs_id = $b_rows[$i]['bs_id'];
 						$b_id = $b_rows[$i]['bid'];
 						$b_weight = $b_rows[$i]['weight'];
 						$pos_change = (($i == 0) || ($b_position != $b_rows[$i]['bposition'])) ? true : false;
@@ -849,9 +852,9 @@ class cms_admin
 					{
 						$temp_b_id = $this->b_id;
 						$temp_bs_id = $this->bs_id;
-						$this->b_id = $block['block_settings_id'];
+						$this->b_id = $block['bs_id'];
 						$this->bs_id = $block['bid'];
-						$this->delete_block_force();
+						$this->delete_block_force(false);
 						$this->b_id = $temp_b_id;
 						$this->bs_id = $temp_bs_id;
 					}
@@ -894,7 +897,7 @@ class cms_admin
 								'CONTENT' => (empty($v['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
 								'VIEW' => $v['view'],
 
-								'U_EDIT_BS' => append_sid($this->root . '?mode=block_settings&amp;action=edit&amp;&amp;bs_id=' . $v['block_settings_id']),
+								'U_EDIT_BS' => append_sid($this->root . '?mode=block_settings&amp;action=edit&amp;&amp;bs_id=' . $v['bs_id']),
 								'U_EDIT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=edit&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $v['bid']),
 								'U_DELETE' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=delete&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $v['bid']),
 								'U_MOVE_UP' => append_sid($this->root . '?mode=' . $this->mode . $redirect_action . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;move=1&amp;b_id=' . $v['bid'] . '&amp;weight=' . $v['weight'] . '&amp;pos=' . $block_position),
@@ -1354,7 +1357,7 @@ class cms_admin
 			$sql = "DELETE FROM " . $this->tables['block_settings_table'] . " WHERE bs_id = " . $this->bs_id;
 			$result = $db->sql_query($sql);
 
-			$sql = "DELETE FROM " . $this->tables['blocks_table'] . " WHERE block_settings_id = " . $this->bs_id;
+			$sql = "DELETE FROM " . $this->tables['blocks_table'] . " WHERE bs_id = " . $this->bs_id;
 			$result = $db->sql_query($sql);
 
 			$this->delete_block_config_all();

@@ -1898,7 +1898,7 @@ function setup_basic_lang()
 /**
 * Setup extra lang
 */
-function setup_extra_lang($lang_files_array, $lang_base_path = '')
+function setup_extra_lang($lang_files_array, $lang_base_path = '', $lang_override = '')
 {
 	global $config, $lang;
 
@@ -1915,7 +1915,8 @@ function setup_extra_lang($lang_files_array, $lang_base_path = '')
 	$lang_base_path = (empty($lang_base_path) ? (IP_ROOT_PATH . 'language/') : $lang_base_path);
 	for ($i = 0; $i < sizeof($lang_files_array); $i++)
 	{
-		$user_lang_file = $lang_base_path . 'lang_' . $config['default_lang'] . '/' . $lang_files_array[$i] . '.' . PHP_EXT;
+		$lang_override = !empty($lang_override) ? $lang_override : $config['default_lang'];
+		$user_lang_file = $lang_base_path . 'lang_' . $lang_override . '/' . $lang_files_array[$i] . '.' . PHP_EXT;
 		$default_lang_file = $lang_base_path . 'lang_english/' . $lang_files_array[$i] . '.' . PHP_EXT;
 		if (@file_exists($user_lang_file))
 		{
@@ -2111,11 +2112,13 @@ function decode_ip($int_ip)
 	return hexdec($hexipbang[0]). '.' . hexdec($hexipbang[1]) . '.' . hexdec($hexipbang[2]) . '.' . hexdec($hexipbang[3]);
 }
 
-// Create calendar timestamp from timezone
+/*
+* Create calendar timestamp from timezone
+*/
 function cal_date($gmepoch, $tz)
 {
 	global $config;
-	return (@strtotime(gmdate('M d Y H:i:s', $gmepoch + (3600 * $tz))));
+	return (@strtotime(gmdate('M d Y H.i.s', $gmepoch + (3600 * $tz))));
 }
 
 /*
@@ -2132,7 +2135,9 @@ function dateserial($year, $month, $day, $hour, $minute, $timezone = 'UTC')
 }
 */
 
-// Get DST
+/*
+* Get DST
+*/
 function get_dst($gmepoch, $tz = 0)
 {
 	global $config, $userdata;
@@ -2167,7 +2172,9 @@ function get_dst($gmepoch, $tz = 0)
 	return $dst_sec;
 }
 
-// Create date/time from format and timezone
+/*
+* Create date/time using the specified format and timezone
+*/
 function create_date($format, $gmepoch, $tz = 0)
 {
 	global $config, $userdata, $lang;
@@ -2190,6 +2197,9 @@ function create_date($format, $gmepoch, $tz = 0)
 	return $date;
 }
 
+/*
+* Create midnight time for a date
+*/
 function create_date_midnight($gmepoch, $tz = 0)
 {
 	global $config;
@@ -2203,6 +2213,9 @@ function create_date_midnight($gmepoch, $tz = 0)
 	return $midnight;
 }
 
+/*
+* Create date/time using the specified format and timezone
+*/
 function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 {
 	global $config, $lang;
@@ -2211,7 +2224,7 @@ function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 	$midnight = create_date_midnight($gmepoch, $tz);
 
 	$output_date = '';
-	$format_hour = 'H:i';
+	$format_hour = 'H.i';
 	if ($gmepoch > $midnight)
 	{
 		$format = ($day_only) ? $format : $format_hour;
@@ -3713,42 +3726,12 @@ function page_header($title = '', $parse_template = false)
 			// see if user has or have had birthday, also see if greeting are enabled
 			if (($userdata['user_birthday'] != 999999) && $config['birthday_greeting'] && (create_date('Ymd', time(), $config['board_timezone']) >= $userdata['user_next_birthday_greeting'] . realdate('md', $userdata['user_birthday'])))
 			{
-				// Birthday PM - BEGIN
-				$pm_subject = $lang['Greeting_Messaging'];
-				$pm_date = gmdate('U');
-
-				$year = create_date('Y', time(), $config['board_timezone']);
-				$date_today = create_date('Ymd', time(), $config['board_timezone']);
-				$user_birthday = realdate('md', $userdata['user_birthday']);
-				$user_birthday2 = (($year . $user_birthday < $date_today) ? ($year + 1) : $year) . $user_birthday;
-
-				$user_age = create_date('Y', time(), $config['board_timezone']) - realdate('Y', $userdata['user_birthday']);
-				if (create_date('md', time(), $config['board_timezone']) < realdate('md', $userdata['user_birthday']))
+				if (!function_exists('birthday_pm_send'))
 				{
-					$user_age--;
+					include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 				}
-
-				$pm_text = ($user_birthday2 == $date_today) ? sprintf($lang['Birthday_greeting_today'], $user_age) : sprintf($lang['Birthday_greeting_prev'], $user_age, realdate(str_replace('Y', '', $lang['DATE_FORMAT_BIRTHDAY']), $userdata['user_birthday']) . ((!empty($userdata['user_next_birthday_greeting']) ? ($userdata['user_next_birthday_greeting']) : '')));
-
-				$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-
-				include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
-				$privmsg_subject = sprintf($pm_subject, $config['sitename']);
-				$privmsg_message = sprintf($pm_text, $config['sitename'], $config['sitename']);
-				$privmsg_sender = $founder_id;
-				$privmsg_recipient = $userdata['user_id'];
-
-				$privmsg = new class_pm();
-				$privmsg->delete_older_message('PM_INBOX', $privmsg_recipient);
-				$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message);
-				unset($privmsg);
-				// Birthday PM - END
-
-				$sql = "UPDATE " . USERS_TABLE . "
-					SET user_next_birthday_greeting = " . (create_date('Y', time(), $config['board_timezone']) + 1) . "
-					WHERE user_id = " . $userdata['user_id'];
-				$status = $db->sql_query($sql);
-			} //Sorry user shall not have a greeting this year
+				birthday_pm_send();
+			}
 			// Birthday - END
 
 			if ($userdata['user_profile_view'] && $userdata['user_profile_view_popup'])
@@ -3879,7 +3862,7 @@ function page_header($title = '', $parse_template = false)
 		//<!-- END Unread Post Information to Database Mod -->
 
 		// Digests - BEGIN
-		if ($config['enable_digests'])
+		if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0))
 		{
 			if (!defined('DIGEST_SITE_URL'))
 			{
@@ -3892,23 +3875,24 @@ function page_header($title = '', $parse_template = false)
 				$template->assign_block_vars('switch_show_digests', array());
 			}
 
+			// Mighty Gorgon: try again with cron.php to see if this time Digests are working fine...
+			/*
 			// DIGESTS TEMP CODE - BEGIN
 			// MG PHP Cron Emulation For Digests - BEGIN
 			$is_allowed = true;
 			// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
 			$is_allowed = (!$userdata['session_logged_in']) ? true : false;
 			$digests_pages_array = array(CMS_PAGE_PROFILE, CMS_PAGE_POSTING);
-			if ($config['digests_php_cron'] && $is_allowed && !in_array($page_url['basename'], $digests_pages_array))
-			//if ($config['digests_php_cron'] && ($config['digests_php_cron_lock'] == false) && (!$userdata['session_logged_in']) && !in_array($page_url['basename'], $digests_pages_array))
+			if ($is_allowed && !in_array($page_url['basename'], $digests_pages_array))
 			{
-				if ((time() - $config['digests_last_send_time']) > CRON_REFRESH)
+				if ((time() - $config['cron_digests_last_run']) > CRON_REFRESH)
 				{
-					$config['digests_last_send_time'] = ($config['digests_last_send_time'] == 0) ? (time() - 3600) : $config['digests_last_send_time'];
-					$last_send_time = @getdate($config['digests_last_send_time']);
+					$config['cron_digests_last_run'] = ($config['cron_digests_last_run'] == 0) ? (time() - 3600) : $config['cron_digests_last_run'];
+					$last_send_time = @getdate($config['cron_digests_last_run']);
 					$cur_time = @getdate();
 					if ($cur_time['hours'] <> $last_send_time['hours'])
 					{
-						set_config('digests_php_cron_lock', 1);
+						set_config('cron_lock_hour', 1);
 						define('PHP_DIGESTS_CRON', true);
 						include_once(IP_ROOT_PATH . 'mail_digests.' . PHP_EXT);
 					}
@@ -3916,6 +3900,7 @@ function page_header($title = '', $parse_template = false)
 			}
 			// MG PHP Cron Emulation For Digests - END
 			// DIGESTS TEMP CODE - END
+			*/
 		}
 		// Digests - END
 
@@ -4590,16 +4575,16 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 			$cron_trigger = $cron_time - $config['cron_' . $cron_types[$i] . '_interval'];
 			if (($config['cron_' . $cron_types[$i] . '_interval'] > 0) && ($cron_trigger > $config['cron_' . $cron_types[$i] . '_last_run']))
 			{
-				$cron_append .= (($cron_append == '') ? '?' : '&amp;') . $cron_types[$i] . '=1';
+				$cron_append .= (empty($cron_append) ? '?' : '&amp;') . $cron_types[$i] . '=1';
 			}
 		}
 
 		// We can force digests as all checks are performed by the function
-		$last_send_time = @getdate($config['digests_last_send_time']);
+		$last_send_time = @getdate($config['cron_digests_last_run']);
 		$cur_time = @getdate();
-		if ($config['enable_digests'] && $config['digests_php_cron'] && ($cur_time['hours'] <> $last_send_time['hours']))
+		if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0) && ($cur_time['hours'] <> $last_send_time['hours']))
 		{
-			$cron_append .= (($cron_append == '') ? '?' : '&amp;') . 'digests=1';
+			$cron_append .= (empty($cron_append) ? '?' : '&amp;') . 'digests=1';
 		}
 
 		if (!empty($cron_append))
@@ -4696,28 +4681,6 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	if ($exit)
 	{
 		garbage_collection();
-
-		// Compress buffered output if required and send to browser
-
-		// URL Rewrite - BEGIN
-		if ($config['url_rw_runtime'])
-		{
-			$contents = rewrite_urls(ob_get_contents());
-			if(@extension_loaded('zlib') && $config['gzip_compress_runtime'])
-			{
-				ob_end_clean();
-				ob_start('ob_gzhandler');
-				echo $contents;
-			}
-			else
-			{
-				ob_end_clean();
-				echo $contents;
-				ob_start();
-			}
-		}
-		// URL Rewrite - END
-
 		exit_handler();
 		exit;
 	}
@@ -4773,6 +4736,17 @@ function exit_handler()
 			return $phpbb_hook->hook_return_result(__FUNCTION__);
 		}
 	}
+
+	// URL Rewrite - BEGIN
+	// Compress buffered output if required and send to browser
+	if (!empty($config['url_rw_runtime']))
+	{
+		$contents = rewrite_urls(ob_get_contents());
+		ob_end_clean();
+		(@extension_loaded('zlib') && !empty($config['gzip_compress_runtime'])) ? ob_start('ob_gzhandler') : ob_start();
+		echo $contents;
+	}
+	// URL Rewrite - END
 
 	// As a pre-caution... some setups display a blank page if the flush() is not there.
 	(empty($config['gzip_compress_runtime']) && empty($config['url_rw_runtime'])) ? @flush() : @ob_flush();

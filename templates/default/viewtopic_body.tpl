@@ -90,7 +90,7 @@
 			<!-- BEGIN author_profile -->
 			{postrow.author_profile.AUTHOR_VAL}<br />
 			<!-- END author_profile -->
-			<div class="center-block-text">&nbsp;{postrow.GEB_BILD}</div>
+			<div class="center-block-text">&nbsp;{postrow.HAPPY_BIRTHDAY}</div>
 		</div>
 		&nbsp;<br />
 	</td>

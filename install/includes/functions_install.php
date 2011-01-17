@@ -928,6 +928,93 @@ class ip_sql
 
 		return $output;
 	}
+
+	/**
+	* Converts the DB to UTF-8
+	*/
+	function convert_utf8($echo_results = false)
+	{
+		global $db, $dbname, $table_prefix;
+
+		$db->sql_return_on_error(true);
+
+		$sql = "ALTER DATABASE {$db->sql_escape($dbname)}
+			CHARACTER SET utf8
+			DEFAULT CHARACTER SET utf8
+			COLLATE utf8_bin
+			DEFAULT COLLATE utf8_bin";
+		$db->sql_query($sql);
+
+		$sql = "SHOW TABLES";
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			// This assignment doesn't work...
+			//$table = $row[0];
+
+			$current_item = each($row);
+			$table = $current_item['value'];
+			reset($row);
+
+			$sql = "ALTER TABLE {$db->sql_escape($table)}
+				DEFAULT CHARACTER SET utf8
+				COLLATE utf8_bin";
+			$db->sql_query($sql);
+
+			if (!empty($echo_results))
+			{
+				echo("&bull;&nbsp;Table&nbsp;<b style=\"color: #dd2222;\">$table</b> converted to UTF-8<br />\n");
+			}
+
+			$sql = "SHOW FIELDS FROM {$db->sql_escape($table)}";
+			$result_fields = $db->sql_query($sql);
+
+			while ($row_fields = $db->sql_fetchrow($result_fields))
+			{
+				// These assignments don't work...
+				/*
+				$field_name = $row_fields[0];
+				$field_type = $row_fields[1];
+				$field_null = $row_fields[2];
+				$field_key = $row_fields[3];
+				$field_default = $row_fields[4];
+				$field_extra = $row_fields[5];
+				*/
+
+				$field_name = $row_fields['Field'];
+				$field_type = $row_fields['Type'];
+				$field_null = $row_fields['Null'];
+				$field_key = $row_fields['Key'];
+				$field_default = $row_fields['Default'];
+				$field_extra = $row_fields['Extra'];
+
+				// Let's remove BLOB and BINARY for now...
+				//if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false) || (strpos(strtolower($field_type), 'blob') !== false) || (strpos(strtolower($field_type), 'binary') !== false))
+				if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false))
+				{
+					//$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin";
+
+					$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin " . (($field_null != 'YES') ? "NOT " : "") . "NULL DEFAULT " . (($field_default != 'None') ? ((!empty($field_default) || !is_null($field_default)) ? (is_string($field_default) ? ("'" . $db->sql_escape($field_default) . "'") : $field_default) : (($field_null != 'YES') ? "''" : "NULL")) : "''");
+					$db->sql_query($sql_fields);
+
+					if (!empty($echo_results))
+					{
+						echo("\t&nbsp;&nbsp;&raquo;&nbsp;Field&nbsp;<b style=\"color: #4488aa;\">$field_name</b> (in table <b style=\"color: #009900;\">$table</b>) converted to UTF-8<br />\n");
+					}
+				}
+			}
+
+			if (!empty($echo_results))
+			{
+				echo("<br />\n");
+				flush();
+			}
+		}
+
+		$db->sql_return_on_error(false);
+		return true;
+	}
+
 }
 
 
@@ -1249,6 +1336,9 @@ class ip_page
 	{
 		global $lang;
 
+		$rowspan_admin = 8;
+		$rowspan_admin = empty($upgrade_option) ? $rowspan_admin : $rowspan_admin++;
+
 		echo('	<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n");
 		echo('	<tr><td class="row-header" colspan="3"><span>' . $lang['Initial_config'] . '</span></td></tr>' . "\n");
 
@@ -1257,17 +1347,20 @@ class ip_page
 		{
 			echo('	<tr><td class="row1" colspan="3" align="center"><span class="gen" style="color: ' . $this->color_error . '">' . $error . '</span></td></tr>' . "\n");
 		}
-		echo('	<tr><td class="row1 row-center" rowspan="9" width="90"><img src="style/server_install.png" alt="' . $lang['Initial_config'] . '" title="' . $lang['Initial_config'] . '" /></td></tr>' . "\n");
+		echo('	<tr><td class="row1 row-center" rowspan="' . $rowspan_admin . '" width="90"><img src="style/server_install.png" alt="' . $lang['Initial_config'] . '" title="' . $lang['Initial_config'] . '" /></td></tr>' . "\n");
 		echo('	<!--' . "\n");
 		echo('	<tr>' . "\n");
 		echo('		<td class="row1" align="right"><span class="gen">' . $lang['Default_lang'] . ': </span></td>' . "\n");
 		echo('		<td class="row2">' . $lang_select . '</td>' . "\n");
 		echo('	</tr>' . "\n");
 		echo('	-->' . "\n");
-		echo('	<tr>' . "\n");
-		echo('		<td class="row1" align="right"><span class="gen">' . $lang['Install_Method'] . ':</span></td>' . "\n");
-		echo('		<td class="row2">' . $upgrade_option . '</td>' . "\n");
-		echo('	</tr>' . "\n");
+		if (!empty($upgrade_option))
+		{
+			echo('	<tr>' . "\n");
+			echo('		<td class="row1" align="right"><span class="gen">' . $lang['Install_Method'] . ':</span></td>' . "\n");
+			echo('		<td class="row2">' . $upgrade_option . '</td>' . "\n");
+			echo('	</tr>' . "\n");
+		}
 		echo('	<tr>' . "\n");
 		echo('		<td class="row1" align="right"><span class="gen">' . $lang['Admin_Username'] . ': </span></td>' . "\n");
 		echo('		<td class="row2"><input type="text" class="post" name="admin_name" value="' . (($admin_name != '') ? $admin_name : '') . '" /></td>' . "\n");
@@ -1338,7 +1431,7 @@ class ip_page
 
 	function finish_install($hidden_fields)
 	{
-		global $lang;
+		global $db, $ip_sql, $lang;
 
 		echo('	<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n");
 		echo('	<tr><td class="row-header" colspan="2"><span>' . $lang['Finish_Install'] . '</span></td></tr>' . "\n");
@@ -1351,6 +1444,7 @@ class ip_page
 		echo('	</table>' . "\n");
 
 		$this->fix_last_posters();
+		$ip_sql->convert_utf8(false);
 	}
 
 	function read_chmod()
@@ -2351,7 +2445,7 @@ class ip_page
 
 	/**
 	* Convert all usernames to username_clean
-	* In theory there should be no collision, since Icy Phoenix doesn't allow special chars in usernames
+	* Theoretically there should be no collision, since Icy Phoenix doesn't allow special chars in usernames
 	*/
 	function convert_usernames()
 	{

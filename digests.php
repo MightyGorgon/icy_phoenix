@@ -37,7 +37,7 @@ init_userprefs($userdata);
 include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_digests.' . PHP_EXT);
 
-if (empty($config['enable_digests']))
+if (empty($config['cron_digests_interval']) || ($config['cron_digests_interval'] == -1))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }

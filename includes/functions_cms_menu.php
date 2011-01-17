@@ -159,11 +159,11 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '29':
-			if ($config['enable_digests'])
+			if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0))
 			{
-			$menu_name = stripslashes(build_default_link_name($default_id));
-			$menu_link = append_sid($link);
-			$menu_url = '<a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a>';
+				$menu_name = stripslashes(build_default_link_name($default_id));
+				$menu_link = append_sid($link);
+				$menu_url = '<a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a>';
 			}
 			else
 			{

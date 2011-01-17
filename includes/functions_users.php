@@ -444,4 +444,181 @@ function top_posters($user_limit, $show_admins = true, $show_mods = true, $only_
 	return $return_value;
 }
 
+/**
+* Sends a birthday PM
+*/
+function birthday_pm_send()
+{
+	global $db, $cache, $config, $userdata, $lang;
+
+	// Birthday - BEGIN
+	// Check if the user has or have had birthday, also see if greetings are enabled
+	if (($userdata['user_birthday'] != 999999) && !empty($config['birthday_greeting']) && (create_date('Ymd', time(), $config['board_timezone']) >= $userdata['user_next_birthday_greeting'] . realdate('md', $userdata['user_birthday'])))
+	{
+		// If a user had a birthday more than one week before we will not send the PM...
+		if ((time() - gmmktime(0, 0, 0, $userdata['user_birthday_m'], $userdata['user_birthday_d'], $userdata['user_next_birthday_greeting'])) <= (86400 * 8))
+		{
+			// Birthday PM - BEGIN
+			$pm_subject = $lang['Greeting_Messaging'];
+			$pm_date = gmdate('U');
+
+			$year = create_date('Y', time(), $config['board_timezone']);
+			$date_today = create_date('Ymd', time(), $config['board_timezone']);
+			$user_birthday = realdate('md', $userdata['user_birthday']);
+			$user_birthday2 = (($year . $user_birthday < $date_today) ? ($year + 1) : $year) . $user_birthday;
+
+			$user_age = create_date('Y', time(), $config['board_timezone']) - realdate('Y', $userdata['user_birthday']);
+			if (create_date('md', time(), $config['board_timezone']) < realdate('md', $userdata['user_birthday']))
+			{
+				$user_age--;
+			}
+
+			$pm_text = ($user_birthday2 == $date_today) ? sprintf($lang['Birthday_greeting_today'], $user_age) : sprintf($lang['Birthday_greeting_prev'], $user_age, realdate(str_replace('Y', '', $lang['DATE_FORMAT_BIRTHDAY']), $userdata['user_birthday']) . ((!empty($userdata['user_next_birthday_greeting']) ? ($userdata['user_next_birthday_greeting']) : '')));
+
+			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+
+			include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
+			$privmsg_subject = sprintf($pm_subject, $config['sitename']);
+			$privmsg_message = sprintf($pm_text, $config['sitename'], $config['sitename']);
+			$privmsg_sender = $founder_id;
+			$privmsg_recipient = $userdata['user_id'];
+
+			$privmsg = new class_pm();
+			$privmsg->delete_older_message('PM_INBOX', $privmsg_recipient);
+			$privmsg->send($privmsg_sender, $privmsg_recipient, $privmsg_subject, $privmsg_message);
+			unset($privmsg);
+			// Birthday PM - END
+		}
+
+		// Update next greetings year
+		$sql = "UPDATE " . USERS_TABLE . "
+			SET user_next_birthday_greeting = " . (create_date('Y', time(), $config['board_timezone']) + 1) . "
+			WHERE user_id = " . $userdata['user_id'];
+		$status = $db->sql_query($sql);
+	} //Sorry user shall not have a greeting this year
+	// Birthday - END
+
+}
+
+/**
+* Sends a birthday Email
+*/
+function birthday_email_send()
+{
+	global $db, $cache, $config, $lang;
+
+	include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+	$server_url = create_server_url();
+
+	$birthdays_list = get_birthdays_list_email();
+	foreach ($birthdays_list as $k => $v)
+	{
+		// Birthday - BEGIN
+		// Check if the user has or have had birthday, also see if greetings are enabled
+		if (!empty($config['birthday_greeting']))
+		{
+			// Birthday Email - BEGIN
+			setup_extra_lang(array('lang_cron_vars'), '', $v['user_lang']);
+			$email_subject = sprintf($lang['BIRTHDAY_GREETING_EMAIL_SUBJECT'], $config['sitename']);
+			$pm_date = gmdate('U');
+
+			$year = create_date('Y', time(), $v['user_timezone']);
+			$date_today = create_date('Ymd', time(), $v['user_timezone']);
+			$user_birthday = realdate('md', $v['user_birthday']);
+			$user_birthday2 = (($year . $user_birthday < $date_today) ? ($year + 1) : $year) . $user_birthday;
+
+			$user_age = create_date('Y', time(), $v['user_timezone']) - realdate('Y', $v['user_birthday']);
+			if (create_date('md', time(), $v['user_timezone']) < realdate('md', $v['user_birthday']))
+			{
+				$user_age--;
+			}
+
+			$email_text = sprintf($lang['BIRTHDAY_GREETING_EMAIL_CONTENT'], $user_age);
+
+			// Send the email!
+			$emailer = new emailer();
+
+			$emailer->use_template('birthday_greeting', $v['user_lang']);
+			$emailer->to($v['user_email']);
+
+			// If for some reason the mail template subject cannot be read... note it will not necessarily be in the posters own language!
+			$emailer->set_subject($email_subject);
+
+			$v['username'] = !empty($v['user_first_name']) ? $v['user_first_name'] : $v['username'];
+
+			// This is a nasty kludge to remove the username var ... till (if?) translators update their templates
+			$emailer->msg = preg_replace('#[ ]?{USERNAME}#', $v['username'], $emailer->msg);
+
+			$email_sig = create_signature($config['board_email_sig']);
+			$emailer->assign_vars(array(
+				'USERNAME' => !empty($config['html_email']) ? htmlspecialchars($v['username']) : $v['username'],
+				'USER_AGE' => $user_age,
+				'EMAIL_SIG' => $email_sig,
+				'SITENAME' => $config['sitename'],
+				'SITE_URL' => $server_url
+				)
+			);
+
+			$emailer->send();
+			$emailer->reset();
+			// Birthday Email - END
+
+			$sql = "UPDATE " . USERS_TABLE . "
+				SET user_next_birthday_greeting = " . (create_date('Y', time(), $v['user_timezone']) + 1) . "
+				WHERE user_id = " . $v['user_id'];
+			$status = $db->sql_query($sql);
+		}
+		// Birthday - END
+	}
+	setup_extra_lang(array('lang_cron_vars'));
+}
+
+/**
+* Get the birthdays list to send greetings email.
+*/
+function get_birthdays_list_email()
+{
+	global $db, $cache;
+
+	// Since the highest timezone is +12, we start twelve hours later... we also need to keep into account that -12 and +12 have one day delay!
+	$time_now = time();
+	$time_now_12 = $time_now + (60 * 60 * 12);
+	$b_h = gmdate('G', $time_now);
+	$timezone_delta = ($b_h == 0) ? 0 : (($b_h < 12) ? -$bh : (24 - $b_h));
+	$b_y = gmdate('Y', $time_now_12);
+	$b_m = gmdate('n', $time_now_12);
+	$b_d = gmdate('j', $time_now_12);
+
+	$sql_where = ' ((u.user_birthday_y <= ' . $b_y . ') AND (u.user_birthday_m = ' . $b_m . ') AND (u.user_birthday_d = ' . $b_d . ')) ';
+
+	if ((gmdate('L', $time_now_12) == 0) && ($b_m == 3) && ($b_d == 1))
+	{
+		$sql_where .= ' OR ((u.user_birthday_y <= ' . $b_y . ') AND (u.user_birthday_m = 2) AND (u.user_birthday_d = 29)) ';
+	}
+
+	$sql_timezone = '(user_timezone LIKE "' . $timezone_delta . '.%")';
+	if ($timezone_delta == 12)
+	{
+		$sql_timezone = ' AND (' . $sql_timezone . ' OR (user_timezone LIKE "-' . $timezone_delta . '.%")) ';
+	}
+	else
+	{
+		$sql_timezone = ' AND ' . $sql_timezone . ' ';
+	}
+
+	$sql_where = ' AND (u.user_birthday <> 999999) AND (user_active = 1) AND (user_allow_mass_email = 1) ' . $sql_timezone . ' AND (' . $sql_where . ')';
+
+	// Changed sorting by username_clean instead of username
+	$sql = "SELECT u.user_id, u.username, u.user_first_name, u.user_active, u.user_color, u.user_email, u.user_timezone, u.user_lang, u.user_birthday, u.user_birthday_y, u.user_birthday_m, u.user_birthday_d, u.user_next_birthday_greeting
+				FROM " . USERS_TABLE . " AS u
+				WHERE u.user_id <> " . ANONYMOUS . "
+				" . $sql_where . "
+				ORDER BY username_clean";
+	$result = $db->sql_query($sql);
+	$birthdays_list = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	return $birthdays_list;
+}
+
 ?>

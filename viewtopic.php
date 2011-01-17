@@ -1329,14 +1329,7 @@ for($i = 0; $i < $total_posts; $i++)
 			$poster_age = '';
 			$poster_birthdate = '';
 		}
-		if ($this_date == $poster_birthdate)
-		{
-			$gebbild = '<img src="images/birthdaycake.gif" alt="Happy Birthday" title="Happy Birthday" />';
-		}
-		else
-		{
-			$gebbild = ' ';
-		}
+		$birtdhay_cake = ($this_date == $poster_birthdate) ? '<img src="images/birthday_cake.png" alt="Happy Birthday" title="Happy Birthday" />' : '';
 	}
 	// BIRTHDAY - END
 
@@ -2175,7 +2168,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'POSTER_NAME_QR' => str_replace(array(' ', '?', '&'), array('%20', '%3F', '%26'), $poster_qq),
 		//'POSTER_NAME_QR' => htmlspecialchars($poster_qq),
 		'POSTER_AGE' => $poster_age,
-		'GEB_BILD' => !empty($gebbild) ? $gebbild : '',
+		'HAPPY_BIRTHDAY' => $birtdhay_cake,
 		'USER_RANK_01' => $user_ranks['rank_01_html'],
 		'USER_RANK_01_IMG' => $user_ranks['rank_01_img_html'],
 		'USER_RANK_02' => $user_ranks['rank_02_html'],

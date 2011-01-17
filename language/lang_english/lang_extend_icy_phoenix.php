@@ -56,11 +56,6 @@ if ($lang_extend_admin)
 		'IP_html_email' => 'HTML Email',
 		'IP_html_email_explain' => 'Enabling this option will enable HTML emails, otherwise they will be simple text mail',
 
-		'IP_enable_digests' => 'Enable Digests',
-
-		'IP_digests_php_cron' => 'Enable Digests PHP Cron',
-		'IP_digests_php_cron_explain' => 'This feature will enable a PHP emulation of the CRON trying to send the emails once per hour, but since it is based on a PHP emulation it may not be correctly executed every time. This means that sometimes emails may not be sent. If you can enable CRON on your server, use CRON instead of this feature. Please note that you need also to enable <b>PHP Cron [Global Switch]</b> in <b>ACP &raquo; Configuration &raquo; Main Settings &raquo; Cron</b>',
-
 		'IP_emails_only_to_admins' => 'Emails Only To Admins',
 		'IP_emails_only_to_admins_explain' => 'Allow email system only for sending emails to admins',
 
@@ -445,25 +440,32 @@ if ($lang_extend_admin)
 		'IP_cron_global_switch' => 'Enable PHP Cron [Global Switch]',
 		'IP_cron_global_switch_explain' => 'By enabling this option a PHP based cron will be activated: some automatic operations will be executed at fixed time intervals. The optimal time range for each cron feature depends on your site traffic and preferences: if you don\'t know what these settings may impact, please leave this feature disabled, you probably don\'t need it.',
 
+		'IP_cron_digests_interval' => 'Digests PHP Cron',
+		'IP_cron_digests_interval_explain' => 'This feature will enable a PHP emulation of the CRON trying to send digests emails once per hour, but since it is based on a PHP emulation it may not be correctly executed every time. This means that sometimes emails may not be sent. If you can enable CRON on your server, please select <b>Server Cron</b> and make sure you manually enable the file to allow digests to be run via server.<br /><br /><b>Last run: ' . (($config['cron_digests_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_digests_last_run']), $config['board_timezone'])) . '</b>',
+
+		'IP_cron_birthdays_interval' => 'Birthdays PHP Cron',
+		'IP_cron_birthdays_interval_explain' => 'This feature will enable a PHP emulation of the CRON trying to send birthdays greeting emails, but since it is based on a PHP emulation it may not be correctly executed every time. This means that sometimes emails may not be sent.<br /><br /><b>Last run: ' . (($config['cron_birthdays_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_birthdays_last_run']), $config['board_timezone'])) . '</b>',
+
 		'IP_cron_files_interval' => 'Files Executions Cron Interval',
-		'IP_cron_files_interval_explain' => 'This kind of cron may be used to automatically run certain files every fixed interval you decide. The files to be executed must be added in <b>constants.php</b> &raquo; <b>define(\'CRON_FILES\', \'\');</b>. Multiple files must be separated by comma.<br /><br /><b>Last run: ' . (($config['cron_files_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($config['cron_files_last_run']), $config['board_timezone'])) . '</b>',
+		'IP_cron_files_interval_explain' => 'This kind of cron may be used to automatically run certain files every fixed interval you decide. The files to be executed must be added in <b>constants.php</b> &raquo; <b>define(\'CRON_FILES\', \'\');</b>. Multiple files must be separated by comma.<br /><br /><b>Last run: ' . (($config['cron_files_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_files_last_run']), $config['board_timezone'])) . '</b>',
 
 		'IP_cron_database_interval' => 'DB Optimization Cron Interval',
-		'IP_cron_database_interval_explain' => 'This feature will optimize the database of the site every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_database_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($config['cron_database_last_run']), $config['board_timezone'])) . '</b>',
+		'IP_cron_database_interval_explain' => 'This feature will optimize the database of the site every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_database_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_database_last_run']), $config['board_timezone'])) . '</b>',
 
 		'IP_cron_cache_interval' => 'Tidy Templates Cache Cron Interval',
-		'IP_cron_cache_interval_explain' => 'Templates cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_cache_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($config['cron_cache_last_run']), $config['board_timezone'])) . '</b>',
+		'IP_cron_cache_interval_explain' => 'Templates cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_cache_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_cache_last_run']), $config['board_timezone'])) . '</b>',
 
 		'IP_cron_sql_interval' => 'Tidy SQL Cache Cron Interval',
-		'IP_cron_sql_interval_explain' => 'SQL cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_sql_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($config['cron_sql_last_run']), $config['board_timezone'])) . '</b>',
+		'IP_cron_sql_interval_explain' => 'SQL cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_sql_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_sql_last_run']), $config['board_timezone'])) . '</b>',
 
 		'IP_cron_users_interval' => 'Tidy Users Cache Cron Interval',
-		'IP_cron_users_interval_explain' => 'Users cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_users_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($config['cron_users_last_run']), $config['board_timezone'])) . '</b>',
+		'IP_cron_users_interval_explain' => 'Users cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_users_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_users_last_run']), $config['board_timezone'])) . '</b>',
 
 		'IP_cron_topics_interval' => 'Tidy Topics Cache Cron Interval',
-		'IP_cron_topics_interval_explain' => 'Topics cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_topics_last_run'] == 0) ? 'NEVER' : create_date('d M Y H:i:s', ($config['cron_topics_last_run']), $config['board_timezone'])) . '</b>',
+		'IP_cron_topics_interval_explain' => 'Topics cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_topics_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_topics_last_run']), $config['board_timezone'])) . '</b>',
 
 		'Cron_Disabled' => 'Disabled',
+		'Cron_Server' => 'Server Cron',
 		'15M' => '15 Minutes',
 		'30M' => '30 Minutes',
 		'1H' => '1 Hour',

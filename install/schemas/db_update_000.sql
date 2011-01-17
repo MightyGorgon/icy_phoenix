@@ -156,8 +156,6 @@ CREATE TABLE `phpbb_digest_subscribed_forums` (
 	`forum_id` SMALLINT(5) NOT NULL DEFAULT 0,
 	UNIQUE user_id (user_id, forum_id)
 );
-
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_digests', '0');
 ## Digests - END
 
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('forum_wordgraph', '0');
@@ -333,9 +331,6 @@ INSERT INTO `phpbb_cms_layout` (`lid`, `name`, `template`, `global_blocks`, `vie
 INSERT INTO `phpbb_cms_layout` (`lid`, `name`, `template`, `global_blocks`, `view`, `groups`) VALUES (5, 'Portal Body', 'portal_body.tpl', 0, 0, '');
 
 ## Icy Phoenix CMS - END
-
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('digests_php_cron', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('digests_last_send_time', '0');
 
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('use_old_pics_gen', '0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('show_last_comments', '0');
@@ -534,7 +529,6 @@ UPDATE phpbb_album_config SET config_value = '.0.56' WHERE config_name = 'album_
 ########################################
 ##              BUILD 014             ##
 ########################################
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('digests_php_cron_lock', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_only_id2_admin', '0');
 
 

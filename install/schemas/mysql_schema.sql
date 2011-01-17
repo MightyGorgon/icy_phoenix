@@ -2388,7 +2388,7 @@ CREATE TABLE `phpbb_cms_block_variable` (
 
 CREATE TABLE `phpbb_cms_blocks` (
 	`bid` int(10) NOT NULL auto_increment,
-	`block_settings_id` int(10) UNSIGNED NOT NULL,
+	`bs_id` int(10) UNSIGNED NOT NULL,
 	`block_cms_id` int(10) UNSIGNED NOT NULL,
 	`layout` int(10) NOT NULL DEFAULT '0',
 	`layout_special` int(10) NOT NULL DEFAULT '0',

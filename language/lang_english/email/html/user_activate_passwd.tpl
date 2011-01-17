@@ -14,5 +14,5 @@ If successful you will be able to login using the following password:<br /><br /
 <br /><br />
 You can of course change this password yourself via the profile page. If you have any difficulties please contact the board administrator.
 <br /><br />
-<span style="color:#a4a4a4; font-size:11">
-{EMAIL_SIG}</span></font>
+<span style="color: #a4a4a4; font-size: 11;">{EMAIL_SIG}</span>
+</font>

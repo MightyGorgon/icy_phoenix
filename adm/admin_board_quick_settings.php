@@ -117,8 +117,6 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'switch_header_dropdown'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'enable_xs_version_check'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'ajax_checks_register'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'enable_digests'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'digests_php_cron'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'enable_new_messages_number'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'google_bot_detector'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'extra_display'";
@@ -226,8 +224,6 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'switch_header_dropdown'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'enable_xs_version_check'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'ajax_checks_register'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'enable_digests'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'digests_php_cron'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'enable_new_messages_number'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'google_bot_detector'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'xmas_fx'";
@@ -342,8 +338,6 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'visit_counter_switch'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'enable_xs_version_check'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'ajax_checks_register'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'enable_digests'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'digests_php_cron'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'enable_new_messages_number'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'google_bot_detector'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'inactive_users_memberlists'";

@@ -249,14 +249,14 @@ if ((($action == 'searchuser') || sizeof(array_intersect(array_keys($_GET), $sea
 
 			if ($row = $db->sql_fetchrow($result))
 			{
-				$ip_sql = array();
+				$user_ip_sql = array();
 				do
 				{
-					$ip_sql[] = $row['poster_id'];
+					$user_ip_sql[] = $row['poster_id'];
 				}
 				while ($row = $db->sql_fetchrow($result));
 
-				$sql_where .= " AND " . $db->sql_in_set('u.user_id', $ip_sql);
+				$sql_where .= " AND " . $db->sql_in_set('u.user_id', $user_ip_sql);
 			}
 			else
 			{

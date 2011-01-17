@@ -20,5 +20,5 @@ However, should you forget your password you can request a new one which will be
 <br /><br />
 Thank you for registering.
 <br /><br />
-<span style="color:#a4a4a4; font-size:11">
-{EMAIL_SIG}</span></font>
+<span style="color: #a4a4a4; font-size: 11;">{EMAIL_SIG}</span>
+</font>

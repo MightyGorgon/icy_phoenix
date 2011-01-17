@@ -40,11 +40,11 @@ $mem_limit = check_mem_limit();
 @ini_set('memory_limit', $mem_limit);
 
 /*
-$cron_types = array('queue', 'digests', 'files', 'database', 'cache', 'sql', 'users', 'topics', 'sessions');
+$cron_types = array('queue', 'digests', 'birthdays', 'files', 'database', 'cache', 'sql', 'users', 'topics', 'sessions');
 $cron_functions = array('queue', 'process_digests', 'process_files', 'tidy_database', 'tidy_cache', 'tidy_sql', 'tidy_users', 'tidy_topics', 'tidy_sessions');
 */
-$cron_types = array('digests', 'files', 'database', 'cache', 'sql', 'users', 'topics');
-$cron_functions = array('process_digests', 'process_files', 'tidy_database', 'tidy_cache', 'tidy_sql', 'tidy_users', 'tidy_topics');
+$cron_types = array('digests', 'birthdays', 'files', 'database', 'cache', 'sql', 'users', 'topics');
+$cron_functions = array('process_digests', 'process_birthdays', 'process_files', 'tidy_database', 'tidy_cache', 'tidy_sql', 'tidy_users', 'tidy_topics');
 $cron_queue = array();
 $cron_queue_functions = array();
 
@@ -68,7 +68,18 @@ for ($i = 0; $i < sizeof($cron_types); $i++)
 			break;
 
 			case 'digests':
-				if (!$config['enable_digests'])
+				if (empty($config['cron_digests_interval']) || ($config['cron_digests_interval'] == -1))
+				{
+					$skip_this = true;
+				}
+				else
+				{
+					$force_this = true;
+				}
+			break;
+
+			case 'birthdays':
+				if (empty($config['cron_birthdays_interval']))
 				{
 					$skip_this = true;
 				}
@@ -125,7 +136,7 @@ if (!isset($config['cron_lock']))
 }
 
 // make sure cron doesn't run multiple times in parallel
-if ($config['cron_lock'])
+if (!empty($config['cron_lock']))
 {
 	// if the other process is running more than CRON_REFRESH already we have to assume it aborted without cleaning the lock
 	$time = explode(' ', $config['cron_lock']);
@@ -170,7 +181,7 @@ for ($i = 0; $i < sizeof($cron_queue); $i++)
 		break;
 
 		case 'digests':
-			if (!$config['enable_digests'])
+			if (empty($config['cron_digests_interval']) || ($config['cron_digests_interval'] == -1))
 			{
 				$skip_this = true;
 			}

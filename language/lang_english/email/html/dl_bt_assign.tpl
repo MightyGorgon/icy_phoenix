@@ -11,5 +11,5 @@ For more details about this report please follow up this link:<br /><br />
 <a href="{U_BUG_REPORT}">{U_BUG_REPORT}</a><br /><br />
 
 <br /><br />
-<span style="color:#a4a4a4; font-size:11">
-{EMAIL_SIG}</span></font>
+<span style="color: #a4a4a4; font-size: 11;">{EMAIL_SIG}</span>
+</font>

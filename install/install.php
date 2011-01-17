@@ -244,6 +244,7 @@ elseif (($install_step == 1) || ($admin_pass1 != $admin_pass2) || empty($admin_p
 	$s_hidden_fields .= '<input type="hidden" name="lang" value="' . $language . '" />';
 	//$s_hidden_fields .= '<input type="hidden" name="install_step" value="2" />';
 
+	$upgrade_option = '';
 	$page_framework->page_header($lang['Welcome_install'], $instruction_text);
 	$page_framework->setup_form($error, $lang_select, $dbms_select, $upgrade_option, $dbhost, $dbname, $dbuser, $dbpasswd, $table_prefix, $board_email, $server_name, $server_port, $script_path, $admin_name, $admin_pass1, $admin_pass2, $language, $s_hidden_fields);
 	$page_framework->page_footer();

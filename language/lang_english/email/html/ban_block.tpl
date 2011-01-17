@@ -10,5 +10,5 @@ The reasons for this can be numerous, this final warning is given because of thi
 
 If you don't see why you've received this warning you could try to contact <b>{WARNER}</b>, who gave the warning, explaining your post, and that you don't understand why this warning was given. <br /><br />
 
-<span style="color:#a4a4a4; font-size:11">
-{EMAIL_SIG}</span></font>
+<span style="color: #a4a4a4; font-size: 11;">{EMAIL_SIG}</span>
+</font>

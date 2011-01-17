@@ -17,5 +17,5 @@ Here is a reminder of some of the terms you accepted when you registered, we kin
 <br /><br />
 If you don't see why you've received this warning you could try to contact <b>{WARNER}</b>, who gave the warning, explaining your post, and that you don't understand why this warning is given. 
 <br /><br />
-<span style="color:#a4a4a4; font-size:11">
-{EMAIL_SIG}</span></font>
+<span style="color: #a4a4a4; font-size: 11;">{EMAIL_SIG}</span>
+</font>

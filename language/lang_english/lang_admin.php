@@ -722,7 +722,7 @@ $lang = array_merge($lang, array(
 // BIRTHDAY - BEGIN
 	'Birthday_required' => 'Force users to submit a birthday',
 	'Enable_birthday_greeting' => 'Enable birthday greetings',
-	'Birthday_greeting_explain' => 'Enable Users who have submitted a date of birth to have a birthday greeting when they visit the board',
+	'Birthday_greeting_explain' => 'Enable Users who have submitted a date of birth to have a birthday greeting via PM when they visit the board. To enable/disable Birthdays Email, you need to check the <b>Cron</b> section in <b>Main Settings</b>.',
 	'Next_birthday_greeting' => 'Next birthday popup year',
 	'Next_birthday_greeting_explain' => 'This field keeps track of the next year the user will have a birthday greeting',
 	'Wrong_next_birthday_greeting' => 'The supplied, next birthday popup year, was not valid, please try again',
@@ -1339,10 +1339,6 @@ $lang = array_merge($lang, array(
 	'Pics_Count_Not_Synchronized' => 'User\'s pics counters not synchronized correctly',
 
 // IP - BUILD 001
-	'Enable_Digests' => 'Enable Digests',
-	'Enable_Digests_PHPCron' => 'Enable Digests PHP Cron',
-	'Enable_Digests_PHPCron_Explain' => 'This feature will enable a PHP emulation of the CRON trying to send the emails once per hour, but since it is based on a PHP emulation it may not be correctly executed every time. This means that sometimes emails may not be sent. If you can enable CRON on your server, use CRON instead of this feature.',
-
 // Ajax Shoutbox - BEGIN
 	'Shoutbox_config' => 'AJAX Shoutbox Configuration',
 	'Shout_read_only' => 'Read Only',
@@ -2038,8 +2034,8 @@ $lang = array_merge($lang, array(
 	'PLUGINS_NAME' => 'Name',
 	'PLUGINS_DESCRIPTION' => 'Description',
 	'PLUGINS_VERSION' => 'Version',
-	'PLUGINS_CURRENT_VERSION' => 'Current version',
-	'PLUGINS_LAST_VERSION' => 'Last version',
+	'PLUGINS_CURRENT_VERSION' => 'Installed version',
+	'PLUGINS_LAST_VERSION' => 'Latest version',
 	'PLUGINS_INSTALL' => 'Install',
 	'PLUGINS_UPGRADE' => 'Upgrade',
 	'PLUGINS_UNINSTALL' => 'Uninstall',

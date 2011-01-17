@@ -2268,6 +2268,8 @@ $lang = array_merge($lang, array(
 	'TAG_TEXT' => 'Tag',
 	'TAGS_TEXT' => 'Tags',
 	'TAG_RESULTS' => 'Selected tag: <b>%s</b>',
+	'TAGS_SEARCH' => 'Search a tag...',
+	'TAGS_SEARCH_NO_RESULTS' => 'No tags found!',
 	'TAGS_NO_TAGS' => 'No tags have been defined',
 	'TAGS_NO_TAG' => 'Specified tag doesn\'t exist',
 

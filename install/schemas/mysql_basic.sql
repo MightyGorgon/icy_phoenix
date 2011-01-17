@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.14.67');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.15.68');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
@@ -336,21 +336,21 @@ INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `co
 ## `phpbb_cms_blocks`
 ##
 
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(1, 1, 0, 0, 0, 'Nav Links', 'hl', 1, 1, 0, 0, 0, 0, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(2, 2, 0, 1, 0, 'Nav Links', 'l', 1, 1, 0, 0, 0, 0, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(3, 3, 0, 1, 0, 'Recent', 'l', 3, 0, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(4, 4, 0, 1, 0, 'Poll', 'r', 4, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(5, 5, 0, 1, 0, 'Welcome', 'c', 1, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(6, 6, 0, 1, 0, 'News', 'x', 1, 1, 0, 0, 0, 0, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(7, 7, 0, 1, 0, 'User Block', 'r', 1, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(8, 8, 0, 1, 0, 'Top Posters', 'r', 5, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(9, 9, 0, 1, 0, 'Search', 'l', 1, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(10, 10, 0, 1, 0, 'Who is Online', 'r', 2, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(11, 11, 0, 1, 0, 'Album', 'l', 2, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(12, 12, 0, 1, 0, 'Links', 'l', 4, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(13, 13, 0, 1, 0, 'Statistics', 'r', 3, 1, 1, 1, 1, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(14, 14, 0, 1, 0, 'Wordgraph', 'b', 2, 1, 0, 0, 0, 1, 5);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `block_settings_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(15, 15, 0, 1, 0, 'Welcome', 'c', 2, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(1, 1, 0, 0, 0, 'Nav Links', 'hl', 1, 1, 0, 0, 0, 0, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(2, 2, 0, 1, 0, 'Nav Links', 'l', 1, 1, 0, 0, 0, 0, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(3, 3, 0, 1, 0, 'Recent', 'l', 3, 0, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(4, 4, 0, 1, 0, 'Poll', 'r', 4, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(5, 5, 0, 1, 0, 'Welcome', 'c', 1, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(6, 6, 0, 1, 0, 'News', 'x', 1, 1, 0, 0, 0, 0, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(7, 7, 0, 1, 0, 'User Block', 'r', 1, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(8, 8, 0, 1, 0, 'Top Posters', 'r', 5, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(9, 9, 0, 1, 0, 'Search', 'l', 1, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(10, 10, 0, 1, 0, 'Who is Online', 'r', 2, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(11, 11, 0, 1, 0, 'Album', 'l', 2, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(12, 12, 0, 1, 0, 'Links', 'l', 4, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(13, 13, 0, 1, 0, 'Statistics', 'r', 3, 1, 1, 1, 1, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(14, 14, 0, 1, 0, 'Wordgraph', 'b', 2, 1, 0, 0, 0, 1, 5);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`, `edit_auth`) VALUES(15, 15, 0, 1, 0, 'Welcome', 'c', 2, 1, 1, 1, 1, 1, 5);
 
 ## `phpbb_cms_config`
 ##
@@ -703,15 +703,12 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_bbcb_
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_quick_quote', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_xs_version_check', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_all_bbcode', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_digests', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('forum_wordgraph', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('similar_topics', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('similar_stopwords', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('similar_ignore_forums_ids', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('similar_sort_type', 'relev');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('similar_max_topics', '5');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('digests_php_cron', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('digests_last_send_time', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('shoutbox_floodinterval', '3');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('display_shouts', '20');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('stored_shouts', '1000');
@@ -738,7 +735,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('global_disab
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_topic_view', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('page_title_simple', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_referrers', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('digests_php_cron_lock', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('mg_log_actions', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('active_users_color', '#224455');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('active_users_legend', '1');
@@ -774,12 +770,15 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_topic_d
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bots_reg_auth', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_global_switch', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_lock', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_lock_hour', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_queue_interval', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_queue_last_run', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_digests_interval', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_digests_last_run', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_files_interval', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_files_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_birthdays_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_birthdays_last_run', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_database_interval', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_database_last_run', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_cache_interval', '0');

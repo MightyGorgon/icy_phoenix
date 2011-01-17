@@ -48,7 +48,7 @@ $table_fields = array(
 $tag_id = request_var('tag_id', 0);
 $tag_id = ($tag_id < 0) ? 0 : $tag_id;
 
-$tag_text = request_var('tag_text', '');
+$tag_text = request_var('tag_text', '', true);
 $tag_text = ip_clean_string(urldecode(trim($tag_text)), $lang['ENCODING'], true);
 
 $mode_types = array('cloud', 'list', 'view');
@@ -262,6 +262,7 @@ $template->assign_vars(array(
 	'S_SORT_ORDER_SELECT' => $sort_order_select_box,
 	'S_SORT_DIR_SELECT' => $sort_dir_select_box,
 
+	'U_TAGS_SEARCH_PAGE' => append_sid('tags_search.' . PHP_EXT),
 	'U_TAGS' => append_sid(CMS_PAGE_TAGS),
 	)
 );

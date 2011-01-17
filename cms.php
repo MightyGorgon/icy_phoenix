@@ -300,7 +300,7 @@ if($cms_admin->mode == 'blocks')
 		$template_to_parse = CMS_TPL . 'cms_blocks_list_body.tpl';
 		$template->assign_var('CMS_PAGE_TITLE', $lang['BLOCKS_TITLE']);
 
-		$move = (isset($_GET['move'])) ? $_GET['move'] : -1;
+		$move = request_get_var('move', -1);
 
 		if(($cms_admin->mode == 'blocks') && (($move == '0') || ($move == '1')))
 		{

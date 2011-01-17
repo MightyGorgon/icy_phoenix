@@ -73,13 +73,22 @@ if($mode == 'save')
 	{
 		$result = $class_plugins->install($plugin_data);
 	}
-	elseif ($action == 'update')
+	elseif (($action == 'update') || ($action == 'uninstall'))
 	{
-		$result = $class_plugins->update($plugin_data);
-	}
-	elseif ($action == 'uninstall')
-	{
-		$result = $class_plugins->uninstall($plugin_data);
+		$plugin_info_db = $class_plugins->get_config($plugin_data['dir']);
+		if (!empty($plugin_info_db))
+		{
+			$plugin_data = $class_plugins->config_map($plugin_data, $plugin_info_db);
+		}
+
+		if ($action == 'update')
+		{
+			$result = $class_plugins->update($plugin_data);
+		}
+		elseif ($action == 'uninstall')
+		{
+			$result = $class_plugins->uninstall($plugin_data);
+		}
 	}
 	else
 	{
