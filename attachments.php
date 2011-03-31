@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_attach.' . PHP_EXT);
@@ -62,7 +63,7 @@ $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 $attach_id = request_var('attach_id', 0);
-$attach_id = (($attach_id > 0) && ($userdata['user_level'] == ADMIN)) ? $attach_id : 0;
+$attach_id = (($attach_id > 0) && ($user->data['user_level'] == ADMIN)) ? $attach_id : 0;
 
 $mode = request_var('mode', $default_sort_method);
 
@@ -247,8 +248,8 @@ else
 		WHERE f.parent_id = c.forum_id
 		ORDER BY f.forum_order";
 	$result = $db->sql_query($sql, 0, 'attachments_forums_');
-	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
-	$is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $userdata);
+	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
+	$is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $user->data);
 
 	$forum_ids = array();
 	$select_forums = '';
@@ -386,7 +387,7 @@ else
 			$filename_link = '<a href="' . $view_attachment . '" class="gen" target="_blank">' . $filename . '</a>';
 		}
 
-		if (($attachments[$i]['download_count'] > 0) && ($userdata['user_level'] == ADMIN))
+		if (($attachments[$i]['download_count'] > 0) && ($user->data['user_level'] == ADMIN))
 		{
 			$download_count_link = '<a href="' . append_sid('attachments.' . PHP_EXT . '?attach_id=' . intval($attachments[$i]['attach_id'])) . '">' . $attachments[$i]['download_count'] . '</a>';
 		}

@@ -89,7 +89,7 @@ $template->assign_vars(array(
 
 	'L_CLEAR' => $lang['Detector_Clear'],
 	'L_DETECTOR_TITLE' => $lang['Detector'],
-	'L_DETECTOR_EXPLAIN' => $lang['Detector_Explain'] . sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),
+	'L_DETECTOR_EXPLAIN' => $lang['Detector_Explain'] . sprintf($lang['All_times'], $lang['tz'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),
 	'L_DETECTOR_ID' => $lang['Detector_ID'],
 	'L_DETECTOR_TIME' => $lang['Detector_Time'],
 	'L_DETECTOR_URL' => $lang['Detector_Url'],

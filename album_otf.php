@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -116,12 +117,12 @@ $js_images_list = '';
 
 // Upload To Album - BEGIN
 $select_cat = '';
-if($userdata['user_level'] == ADMIN)
+if($user->data['user_level'] == ADMIN)
 {
 	$template->assign_block_vars('upload_allowed', array());
 
 	$cat_id = ALBUM_ROOT_CATEGORY;
-	album_read_tree($userdata['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
+	album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
 	$userinfo = album_get_nonexisting_personal_gallery_info();
 	$count = sizeof($userinfo);
 	for($idx = 0; $idx < $count; $idx++)
@@ -130,7 +131,7 @@ if($userdata['user_level'] == ADMIN)
 		$album_user_access = album_permissions($userinfo[$idx]['user_id'], 0, ALBUM_AUTH_CREATE_PERSONAL, $personal_gallery);
 		if (album_check_permission($album_user_access, ALBUM_AUTH_CREATE_PERSONAL) == true)
 		{
-			$selected = (($userdata['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
+			$selected = (($user->data['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
 			$personal_gallery_list .= '<option value="-' . $userinfo[$idx]['user_id'] . '" ' . $selected . '>' . sprintf($lang['Personal_Gallery_Of_User'], $userinfo[$idx]['username']) . '</option>';
 		}
 	}

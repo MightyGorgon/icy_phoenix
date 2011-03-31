@@ -1,7 +1,7 @@
 <!-- BEGIN switch_header_table -->
 <tr>
 	<td width="100%" colspan="3" align="center">
-	<div style="width: 90%; margin 0 auto; clear: both; text-align: center; padding: 10px;">
+	<div style="width: 90%; margin: 0 auto; clear: both; text-align: center; padding: 10px;">
 		{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 			<tr><td class="row-header"><span>{L_STAFF_MESSAGE}</span></td></tr>
 			<tr><td class="row-post"><div class="post-text">{switch_header_table.HEADER_TEXT}</div><br /><br /></td></tr>
@@ -14,7 +14,7 @@
 <!-- BEGIN ctracker_message -->
 <tr>
 	<td width="100%" colspan="3" align="center">
-	<div style="width: 90%; margin 0 auto; clear: both; text-align: center; padding: 10px;">
+	<div style="width: 90%; margin: 0 auto; clear: both; text-align: center; padding: 10px;">
 		{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 			<td width="80" align="center" style="background-color:#{ctracker_message.ROW_COLOR};"><img src="{ctracker_message.ICON_GLOB}" alt="" title="" /></td>

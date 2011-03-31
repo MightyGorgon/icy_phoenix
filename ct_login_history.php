@@ -26,15 +26,16 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // session id check
 $sid = request_var('sid', '');
 
 // Ensure that a user is logged in and the feature is available
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	message_die(GENERAL_MESSAGE, $lang['ctracker_lhistory_err']);
 }
@@ -42,7 +43,7 @@ if (!$userdata['session_logged_in'])
 // Output Login History
 if ($config['ctracker_login_history'])
 {
-	$sql = 'SELECT * FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $userdata['user_id'] . ' ORDER BY ct_login_time DESC';
+	$sql = 'SELECT * FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $user->data['user_id'] . ' ORDER BY ct_login_time DESC';
 	$result = $db->sql_query($sql);
 	$count = 0;
 
@@ -71,12 +72,12 @@ if ($config['ctracker_login_ip_check'] == 1)
 	if ($_POST['submit'])
 	{
 		$newsetting = intval($_POST['ct_enable_ip_warn']);
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_enable_ip_warn = ' . $newsetting . ' WHERE user_id = ' . $userdata['user_id'];
-		$userdata['ct_enable_ip_warn'] = $newsetting;
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_enable_ip_warn = ' . $newsetting . ' WHERE user_id = ' . $user->data['user_id'];
+		$user->data['ct_enable_ip_warn'] = $newsetting;
 		$result = $db->sql_query($sql);
 	}
 
-	($userdata['ct_enable_ip_warn'] == 1) ? $sel1 = ' checked="checked"' : $sel2 = ' checked';
+	($user->data['ct_enable_ip_warn'] == 1) ? $sel1 = ' checked="checked"' : $sel2 = ' checked';
 
 	$template->assign_block_vars('log_set', array(
 			'S_FORM_ACTION' => append_sid('ct_login_history.' . PHP_EXT),

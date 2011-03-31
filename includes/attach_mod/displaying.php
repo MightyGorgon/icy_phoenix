@@ -416,9 +416,9 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 */
 function privmsgs_attachment_image($privmsg_id)
 {
-	global $config, $userdata;
+	global $config, $user;
 
-	$auth = ($userdata['user_level'] == ADMIN) ? 1 : intval($config['allow_pm_attach']);
+	$auth = ($user->data['user_level'] == ADMIN) ? 1 : intval($config['allow_pm_attach']);
 
 	if (!attachment_exists_db($privmsg_id, PAGE_PRIVMSGS) || !$auth || intval($config['disable_attachments_mod']) || $config['topic_icon'] == '')
 	{
@@ -435,9 +435,9 @@ function privmsgs_attachment_image($privmsg_id)
 */
 function display_pm_attachments($privmsgs_id, $switch_attachment)
 {
-	global $config, $userdata, $template, $lang;
+	global $config, $user, $template, $lang;
 
-	if ($userdata['user_level'] == ADMIN)
+	if ($user->data['user_level'] == ADMIN)
 	{
 		$auth_download = 1;
 	}
@@ -465,9 +465,9 @@ function display_pm_attachments($privmsgs_id, $switch_attachment)
 */
 function init_display_pm_attachments($switch_attachment)
 {
-	global $config, $template, $userdata, $lang, $attachments, $privmsg;
+	global $config, $template, $user, $lang, $attachments, $privmsg;
 
-	if ($userdata['user_level'] == ADMIN)
+	if ($user->data['user_level'] == ADMIN)
 	{
 		$auth_download = 1;
 	}
@@ -564,7 +564,7 @@ function init_display_review_attachments($is_auth)
 */
 function display_attachments_preview($attachment_id_list, $attachment_list, $attachment_filesize_list, $attachment_filename_list, $attachment_comment_list, $attachment_extension_list, $attachment_thumbnail_list)
 {
-	global $config, $is_auth, $allowed_extensions, $userdata, $lang, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme;
+	global $config, $is_auth, $allowed_extensions, $user, $lang, $display_categories, $upload_dir, $upload_icons, $template, $db, $theme;
 
 	if (sizeof($attachment_list) != 0)
 	{
@@ -782,7 +782,7 @@ function display_attachments_preview($attachment_id_list, $attachment_list, $att
 */
 function display_attachments($post_id, $type = 'postrow')
 {
-	global $db, $config, $template, $userdata, $lang;
+	global $db, $config, $template, $user, $lang;
 	global $upload_dir, $allowed_extensions, $display_categories, $download_modes, $attachments, $upload_icons, $username_from;
 	$num_attachments = sizeof($attachments['_' . $post_id]);
 	if ($num_attachments == 0)
@@ -838,7 +838,7 @@ function display_attachments($post_id, $type = 'postrow')
 			);
 		}
 
-		if (!$denied || $userdata['user_level'] == ADMIN)
+		if (!$denied || $user->data['user_level'] == ADMIN)
 		{
 			// Some basic Template Vars
 			$template->assign_vars(array(
@@ -958,7 +958,7 @@ function display_attachments($post_id, $type = 'postrow')
 				{
 					$img_code = '<img src="' . $img_source . '" alt="' . $display_name . '" />';
 				}
-				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($userdata['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
+				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($user->data['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
 				$template->assign_block_vars($type . '.attach.cat_images', array(
 					'DOWNLOAD_NAME' => $display_name,
 					'S_UPLOAD_IMAGE' => $upload_image,
@@ -1012,7 +1012,7 @@ function display_attachments($post_id, $type = 'postrow')
 					}
 				}
 
-				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($userdata['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
+				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($user->data['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
 				$template->assign_block_vars($type . '.attach.cat_thumb_images', array(
 					'DOWNLOAD_NAME' => $display_name,
 					'S_UPLOAD_IMAGE' => $upload_image,
@@ -1031,7 +1031,7 @@ function display_attachments($post_id, $type = 'postrow')
 			if ($stream)
 			{
 				// Streams
-				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($userdata['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
+				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($user->data['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
 				$template->assign_block_vars($type . '.attach.cat_stream', array(
 					'U_DOWNLOAD_LINK' => $filename,
 					'S_UPLOAD_IMAGE' => $upload_image,
@@ -1055,7 +1055,7 @@ function display_attachments($post_id, $type = 'postrow')
 				// Macromedia Flash Files
 				list($width, $height) = swf_getdimension($filename);
 
-				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($userdata['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
+				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($user->data['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
 				$template->assign_block_vars($type . '.attach.cat_swf', array(
 					'U_DOWNLOAD_LINK' => $filename,
 					'S_UPLOAD_IMAGE' => $upload_image,
@@ -1080,7 +1080,7 @@ function display_attachments($post_id, $type = 'postrow')
 				$target_blank = 'target="_blank"'; //((intval($display_categories[$attachments['_' . $post_id][$i]['extension']]) == IMAGE_CAT)) ? 'target="_blank"' : '';
 
 				// display attachment
-				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($userdata['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
+				$download_count_link = (($attachments['_' . $post_id][$i]['download_count'] > '0') && ($user->data['user_level'] == ADMIN)) ? ('<a href="' . append_sid(IP_ROOT_PATH . 'attachments.' . PHP_EXT . '?attach_id=' . $attachments['_' . $post_id][$i]['attach_id']) . '">' . sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']) . '</a>') : sprintf($lang['Download_number'], $attachments['_' . $post_id][$i]['download_count']);
 				$template->assign_block_vars($type . '.attach.attachrow', array(
 					'U_DOWNLOAD_LINK' => append_sid(IP_ROOT_PATH . 'download.' . PHP_EXT . '?id=' . $attachments['_' . $post_id][$i]['attach_id']),
 					'S_UPLOAD_IMAGE' => $upload_image,

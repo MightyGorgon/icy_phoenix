@@ -208,7 +208,7 @@ class ct_database
 		$user_id = intval($user_id);
 
 		// Create SQL Command to insert new login
-		$sql = 'INSERT INTO ' . CTRACKER_LOGINHISTORY . ' (ct_user_id, ct_login_ip, ct_login_time) VALUES ' . "($user_id, '$login_ip', $login_time)";
+		$sql = 'INSERT INTO ' . CTRACKER_LOGINHISTORY . ' (ct_user_id, ct_login_ip, ct_login_time) VALUES ' . "($user_id, '" . $db->sql_escape($login_ip) . "', $login_time)";
 		$result = $db->sql_query($sql);
 
 		// Delete old values from the Database
@@ -245,7 +245,7 @@ class ct_database
 	*/
 	function set_user_ip($user_id)
 	{
-		global $db, $config, $userdata;
+		global $db, $config, $user;
 
 		// Ensure that $user_id is integer
 		$user_id = intval($user_id);
@@ -253,12 +253,12 @@ class ct_database
 		$result = $db->sql_query($sql);
 
 		// Update Userdata Array (wich is already available here!)
-		$userdata['ct_last_ip'] = $userdata['ct_last_used_ip'];
+		$user->data['ct_last_ip'] = $user->data['ct_last_used_ip'];
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_last_used_ip = \'' . $config['ctracker_user_ip_value'] . '\' WHERE user_id = ' . $user_id;
 		$result = $db->sql_query($sql);
 
 		// Update Userdata Array (wich is already available here!)
-		$userdata['ct_last_used_ip'] = $config['ctracker_user_ip_value'];
+		$user->data['ct_last_used_ip'] = $config['ctracker_user_ip_value'];
 	}
 
 	/**
@@ -270,9 +270,9 @@ class ct_database
 	*/
 	function first_admin_protection($user_id)
 	{
-		global $userdata, $lang;
+		global $user, $lang;
 
-		if ($user_id != $userdata['user_id'])
+		if ($user_id != $user->data['user_id'])
 		{
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 			if ($user_id == $founder_id)

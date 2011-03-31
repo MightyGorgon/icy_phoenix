@@ -19,7 +19,7 @@ class pafiledb_post_comment extends pafiledb_public
 {
 	function main($action)
 	{
-		global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $bbcode, $user_ip, $bbcode_tpl;
+		global $db, $cache, $config, $template, $images, $theme, $user, $lang, $bbcode, $bbcode_tpl;
 		global $html_entities_match, $html_entities_replace, $unhtml_specialchars_match, $unhtml_specialchars_replace;
 		global $pafiledb_functions, $pafiledb_config, $view_pic_upload, $session_length, $starttime, $post_image_lang;
 
@@ -65,7 +65,7 @@ class pafiledb_post_comment extends pafiledb_public
 
 		if((!$this->auth[$file_data['file_catid']]['auth_post_comment']))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=post_comment&file_id=' . $file_id, true));
 			}
@@ -74,9 +74,9 @@ class pafiledb_post_comment extends pafiledb_public
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
-		$html_on = ($userdata['user_allowhtml'] && $pafiledb_config['allow_html']) ? 1 : 0;
-		$bbcode_on = ($userdata['user_allowbbcode'] && $pafiledb_config['allow_bbcode']) ? 1 : 0;
-		$smilies_on = ($userdata['user_allowsmile'] && $pafiledb_config['allow_smilies']) ? 1 : 0;
+		$html_on = ($user->data['user_allowhtml'] && $pafiledb_config['allow_html']) ? 1 : 0;
+		$bbcode_on = ($user->data['user_allowbbcode'] && $pafiledb_config['allow_bbcode']) ? 1 : 0;
+		$smilies_on = ($user->data['user_allowsmile'] && $pafiledb_config['allow_smilies']) ? 1 : 0;
 
 		// =======================================================
 		// MX Addon
@@ -90,7 +90,7 @@ class pafiledb_post_comment extends pafiledb_public
 
 			$file_info = $db->sql_fetchrow($result);
 
-			if (($this->auth[$file_info['file_catid']]['auth_delete_comment'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'])
+			if (($this->auth[$file_info['file_catid']]['auth_delete_comment'] && $file_info['user_id'] == $user->data['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'])
 			{
 				$sql = 'DELETE FROM ' . PA_COMMENTS_TABLE . "
 					WHERE comments_id = $cid";
@@ -113,9 +113,9 @@ class pafiledb_post_comment extends pafiledb_public
 			// Generate smilies listing for page output
 			//$pafiledb_functions->pa_generate_smilies('inline');
 
-			$html_status = ($userdata['user_allowhtml'] && $pafiledb_config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
-			$bbcode_status = ($userdata['user_allowbbcode'] && $pafiledb_config['allow_bbcode'] ) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
-			$smilies_status = ($userdata['user_allowsmile'] && $pafiledb_config['allow_smilies'] ) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+			$html_status = ($user->data['user_allowhtml'] && $pafiledb_config['allow_html']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+			$bbcode_status = ($user->data['user_allowbbcode'] && $pafiledb_config['allow_bbcode'] ) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+			$smilies_status = ($user->data['user_allowsmile'] && $pafiledb_config['allow_smilies'] ) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 			$links_status = ($pafiledb_config['allow_comment_links'] ) ? $lang['Links_are_ON'] : $lang['Links_are_OFF'];
 			$images_status = ($pafiledb_config['allow_comment_images'] ) ? $lang['Images_are_ON'] : $lang['Images_are_OFF'];
 			$hidden_form_fields = '<input type="hidden" name="action" value="post_comment" /><input type="hidden" name="file_id" value="' . $file_id . '" /><input type="hidden" name="comment" value="post" />';
@@ -199,7 +199,7 @@ class pafiledb_post_comment extends pafiledb_public
 			//$comments_text = str_replace('<br />', "\n", $message);
 			$comments_text = $message;
 
-			$poster_id = intval($userdata['user_id']);
+			$poster_id = intval($user->data['user_id']);
 			$title = $subject;
 			$time = time();
 			if($length > $pafiledb_config['max_comment_chars'])

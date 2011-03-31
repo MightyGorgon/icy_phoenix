@@ -24,8 +24,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -139,7 +140,7 @@ $album_user_access = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_VIEW_
 
 if ($album_user_access['upload'] == 0)
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(album_append_uid(CMS_PAGE_LOGIN . '?redirect=album_upload.' . PHP_EXT . '?cat_id=' . $cat_id), true));
 	}
@@ -174,7 +175,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	// ------------------------------------
 	$check_user_limit = false;
 
-	if(($userdata['user_level'] != ADMIN) && ($userdata['session_logged_in']))
+	if(($user->data['user_level'] != ADMIN) && ($user->data['session_logged_in']))
 	{
 		if ($album_user_access['moderator'])
 		{
@@ -197,7 +198,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	{
 		$sql = "SELECT COUNT(pic_id) AS count
 				FROM " . ALBUM_TABLE . "
-				WHERE pic_user_id = '" . $userdata['user_id'] . "'
+				WHERE pic_user_id = '" . $user->data['user_id'] . "'
 					AND pic_cat_id = '$cat_id'";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
@@ -241,8 +242,8 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	// --------------------------------
 	// Build categories select
 	// --------------------------------
-	album_read_tree($userdata['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
-	if($userdata['session_logged_in'])
+	album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
+	if($user->data['session_logged_in'])
 	{
 		// build fake list of personal galleries (these will get created when needed later automatically
 		$userinfo = album_get_nonexisting_personal_gallery_info();
@@ -261,7 +262,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 			$album_user_access = album_permissions($userinfo[$idx]['user_id'], 0, ALBUM_AUTH_CREATE_PERSONAL, $personal_gallery);
 			if (album_check_permission($album_user_access, ALBUM_AUTH_CREATE_PERSONAL) == true)
 			{
-				$selected = (($userdata['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
+				$selected = (($user->data['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
 				$personal_gallery_list .= '<option value="-' . $userinfo[$idx]['user_id'] . '" ' . $selected . '>' . sprintf($lang['Personal_Gallery_Of_User'], $userinfo[$idx]['username']) . '</option>';
 			}
 		}
@@ -429,7 +430,7 @@ else
 	$pic_desc = substr($pic_desc, 0, $album_config['desc_length']);
 	$pic_username = request_var('pic_username', '', true);
 	$pic_username = substr($pic_username, 0, 32);
-	$pic_username = (!$userdata['session_logged_in']) ? $pic_username : $userdata['username'];
+	$pic_username = (!$user->data['session_logged_in']) ? $pic_username : $user->data['username'];
 
 	if(!isset($_FILES['pic_file']))
 	{
@@ -490,7 +491,7 @@ else
 	// Check username for guest posting
 	// --------------------------------
 
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		if ($pic_username != '')
 		{
@@ -699,8 +700,8 @@ else
 		{
 			$pic_time += 2;
 		}
-		$pic_user_id = $userdata['user_id'];
-		$pic_user_ip = $userdata['session_ip'];
+		$pic_user_id = $user->data['user_id'];
+		$pic_user_ip = $user->data['session_ip'];
 
 
 		// --------------------------------
@@ -800,7 +801,7 @@ else
 		$upload_path = $pic_base_path . $pic_extra_path;
 		if (USERS_SUBFOLDERS_ALBUM == true)
 		{
-			$pic_extra_path = $userdata['user_id'] . '/';
+			$pic_extra_path = $user->data['user_id'] . '/';
 			$upload_path = $pic_base_path . $pic_extra_path;
 			if (!is_dir($upload_path))
 			{
@@ -1195,7 +1196,7 @@ else
 		{
 			$sql = "SELECT COUNT(pic_id) AS count
 				FROM " . ALBUM_TABLE . "
-				WHERE pic_user_id = '" . $userdata['user_id'] . "'
+				WHERE pic_user_id = '" . $user->data['user_id'] . "'
 				AND pic_cat_id = '" . $cat_id . "'";
 			$result = $db->sql_query($sql);
 			$personal_pics_count = $db->sql_fetchrow($result);
@@ -1261,7 +1262,7 @@ else
 						'USERNAME' => $to_users['username'],
 						'SITENAME' => $config['sitename'],
 						'EMAIL_SIG' => $email_sig,
-						'FROM' => $userdata['username'],
+						'FROM' => $user->data['username'],
 						'PIC_TITLE' => $pic_title,
 						'PIC_ID' => $new_pic_id['pic_id'],
 						'PIC_APPROVAL' => ($pic_approval ? $lang['Approvation_OK'] : $lang['Approvation_NO']),
@@ -1294,7 +1295,7 @@ else
 				$pic_id = $new_pic_id['pic_id'];
 
 				$sql = "INSERT INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
-					VALUES ('" . $pic_id . "', '" . $userdata['user_id'] . "', 0)";
+					VALUES ('" . $pic_id . "', '" . $user->data['user_id'] . "', 0)";
 				$result = $db->sql_query($sql);
 			}
 		}

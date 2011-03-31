@@ -82,7 +82,7 @@ class class_pm
 	*/
 	function notification($sender_id, $recipient_id, $recipient_email, $email_subject, $email_text, $use_bcc = false, $pm_subject = '', $recipient_username = '', $recipient_lang = '', $emty_email_template = false)
 	{
-		global $db, $config, $userdata, $lang, $user_ip;
+		global $db, $config, $user, $lang;
 
 		require(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
@@ -99,9 +99,9 @@ class class_pm
 		$emailer = new emailer();
 
 		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . $user->ip);
 
 		if ($use_bcc)
 		{
@@ -140,11 +140,11 @@ class class_pm
 				'USERNAME' => $recipient_username,
 				'SITENAME' => $config['sitename'],
 				'EMAIL_SIG' => $email_sig,
-				'FROM' => $userdata['username'],
+				'FROM' => $user->data['username'],
 				'DATE' => create_date($config['default_dateformat'], time(), $config['board_timezone']),
 				'SUBJECT' => $pm_subject,
 				'PRIV_MSG_TEXT' => $email_text,
-				'FROM_USERNAME' => $userdata['username'],
+				'FROM_USERNAME' => $user->data['username'],
 				'U_INBOX' => $server_protocol . $server_name . $server_port . $script_name . '?folder=inbox'
 				)
 			);
@@ -224,12 +224,12 @@ class class_pm
 	*/
 	function is_flood()
 	{
-		global $db, $config, $userdata;
+		global $db, $config, $user;
 
 		$return = false;
 		$sql = "SELECT MAX(privmsgs_date) AS last_post_time
 			FROM " . PRIVMSGS_TABLE . "
-			WHERE privmsgs_from_userid = " . $userdata['user_id'];
+			WHERE privmsgs_from_userid = " . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		if ($db_row = $db->sql_fetchrow($result))
 		{

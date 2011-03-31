@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -130,7 +131,7 @@ $auth_data = album_get_auth_data($cat_id);
 // ------------------------------------
 if(!$auth_data['view'])
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(album_append_uid(CMS_PAGE_LOGIN . '?redirect=album_cat.' . PHP_EXT . '&cat_id=' . $cat_id)));
 	}
@@ -309,8 +310,8 @@ if($auth_data['upload'] == true)
 }
 
 // Enable download only for own personal galleries
-//if ($thiscat['cat_user_id'] == $userdata['user_id'])
-if((($userdata['user_level'] == ADMIN) || (($album_config['show_download'] == 1) && ($auth_data['upload'] == true)) || (($album_config['show_download'] == 2))) && ($total_pics > 0))
+//if ($thiscat['cat_user_id'] == $user->data['user_id'])
+if((($user->data['user_level'] == ADMIN) || (($album_config['show_download'] == 1) && ($auth_data['upload'] == true)) || (($album_config['show_download'] == 2))) && ($total_pics > 0))
 {
 	$enable_picture_download_switch = true;
 	$template->assign_block_vars('enable_picture_download', array());

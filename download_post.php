@@ -15,8 +15,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $post_id = request_var('post', 0);
@@ -53,9 +54,9 @@ define('EXTRACT_CODE', $code_id);
 // compile post
 $bbcode->allow_bbcode = true;
 $bbcode->allow_smilies = $config['allow_smilies'] && $postrow['user_allowsmile'] ? true : false;
-$GLOBALS['code_post_id'] = $postrow['post_id'];
+$bbcode->code_post_id = $postrow['post_id'];
 $message = $bbcode->parse($postrow['post_text']);
-$GLOBALS['code_post_id'] = 0;
+$bbcode->code_post_id = 0;
 
 if(!strlen($code_text))
 {

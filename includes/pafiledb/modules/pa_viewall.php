@@ -13,7 +13,7 @@ class pafiledb_viewall extends pafiledb_public
 {
 	function main($action)
 	{
-		global $db, $config, $template, $lang, $userdata, $user_ip;
+		global $db, $config, $template, $lang, $user;
 		global $pafiledb_config, $pafiledb_functions;
 
 		$start = request_var('start', 0);
@@ -32,7 +32,7 @@ class pafiledb_viewall extends pafiledb_public
 		}
 		elseif(!$this->auth_global['auth_viewall'])
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=viewall', true));
 			}

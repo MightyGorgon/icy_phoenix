@@ -36,25 +36,25 @@ if (empty($profiledata) || empty($profiledata['user_id']))
 }
 
 // We force the user to be active to show its profile... or we require the viewer to be admin!
-if (empty($profiledata['user_active']) && ($userdata['user_level'] != ADMIN))
+if (empty($profiledata['user_active']) && ($user->data['user_level'] != ADMIN))
 {
 	message_die(GENERAL_MESSAGE, $lang['No_such_user']);
 }
 
 // Update the profile view list
-$user = $profiledata['user_id'];
-$viewer = $userdata['username'];
-$viewer_id = $userdata['user_id'];
+$target_user = $profiledata['user_id'];
+$viewer = $user->data['username'];
+$viewer_id = $user->data['user_id'];
 $current_time = time();
-if ($user != $viewer_id)
+if ($target_user != $viewer_id)
 {
 	$sql = "UPDATE " . USERS_TABLE . "
 			SET user_profile_view = '1'
-			WHERE user_id = " . $user;
+			WHERE user_id = " . $target_user;
 	$db->sql_query($sql);
 
 	$sql = "SELECT * FROM " . PROFILE_VIEW_TABLE . "
-		WHERE user_id = " . $user . "
+		WHERE user_id = " . $target_user . "
 		AND viewer_id = " . $viewer_id;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -64,13 +64,13 @@ if ($user != $viewer_id)
 		if (!$row = $db->sql_fetchrow($result))
 		$sql = "INSERT INTO " . PROFILE_VIEW_TABLE . "
 			(user_id, viewername, viewer_id, view_stamp, counter)
-			VALUES ('$user', '" . $db->sql_escape($viewer) . "', '$viewer_id', '$current_time', '1')";
+			VALUES ('" . $db->sql_escape($target_user) . "', '" . $db->sql_escape($viewer) . "', '" . $db->sql_escape($viewer_id) . "', '" . $db->sql_escape($current_time) . "', '1')";
 		$db->sql_query($sql);
 		$count = $row['counter'] + 1;
 
 		$sql = "UPDATE " . PROFILE_VIEW_TABLE . "
 				SET view_stamp = '$current_time', counter = '$count'
-				WHERE user_id = " . $user. "
+				WHERE user_id = " . $target_user. "
 				AND viewer_id = " . $viewer_id;
 		$db->sql_query($sql);
 	}
@@ -78,7 +78,7 @@ if ($user != $viewer_id)
 
 include_once(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
 
-if (!empty($userdata['session_logged_in']) && ($profiledata['user_id'] != $userdata['user_id']))
+if (!empty($user->data['session_logged_in']) && ($profiledata['user_id'] != $user->data['user_id']))
 {
 	$zmode = request_var('zmode', '');
 	if (!empty($zmode))
@@ -143,8 +143,8 @@ if ($config['show_thanks_profile'] && empty($config['disable_thanks_topics']))
 
 // Mighty Gorgon - HTTP AGENTS - BEGIN
 include(IP_ROOT_PATH . 'includes/functions_mg_http.' . PHP_EXT);
-$user_os = get_user_os($profiledata['user_http_agents']);
-$user_browser = get_user_browser($profiledata['user_http_agents']);
+$user_os = get_user_os($profiledata['user_browser']);
+$user_browser = get_user_browser($profiledata['user_browser']);
 // Mighty Gorgon - HTTP AGENTS - END
 
 // Mighty Gorgon - Full Album Pack - BEGIN
@@ -171,11 +171,11 @@ if ($show_latest_pics)
 	$limit_sql = $album_config['img_cols'] * $album_config['img_rows'];
 	$cols_per_page = $album_config['img_cols'];
 
-	if ($userdata['user_level'] == ADMIN)
+	if ($user->data['user_level'] == ADMIN)
 	{
 		$cat_view_level_sql = '';
 	}
-	elseif (!empty($userdata['session_logged_in']))
+	elseif (!empty($user->data['session_logged_in']))
 	{
 		$cat_view_level_sql = " AND c.cat_view_level <= 1 ";
 	}
@@ -184,8 +184,8 @@ if ($show_latest_pics)
 		$cat_view_level_sql = " AND c.cat_view_level <= 0 ";
 	}
 
-	//$include_personal_galleries_sql = (($userdata['user_level'] == ADMIN) || (!empty($userdata['session_logged_in']) && empty($album_config['personal_gallery_view'])) || (empty($userdata['session_logged_in']) && ($album_config['personal_gallery_view'] == ANONYMOUS))) ? (" AND c.cat_user_id = " . $profiledata['user_id'] . " ") : "";
-	$include_personal_galleries_sql = (($userdata['user_level'] == ADMIN) || (!empty($userdata['session_logged_in']) && empty($album_config['personal_gallery_view'])) || (empty($userdata['session_logged_in']) && ($album_config['personal_gallery_view'] == ANONYMOUS))) ? "" : (" AND c.cat_user_id = 0 ");
+	//$include_personal_galleries_sql = (($user->data['user_level'] == ADMIN) || (!empty($user->data['session_logged_in']) && empty($album_config['personal_gallery_view'])) || (empty($user->data['session_logged_in']) && ($album_config['personal_gallery_view'] == ANONYMOUS))) ? (" AND c.cat_user_id = " . $profiledata['user_id'] . " ") : "";
+	$include_personal_galleries_sql = (($user->data['user_level'] == ADMIN) || (!empty($user->data['session_logged_in']) && empty($album_config['personal_gallery_view'])) || (empty($user->data['session_logged_in']) && ($album_config['personal_gallery_view'] == ANONYMOUS))) ? "" : (" AND c.cat_user_id = 0 ");
 
 	$sql = "SELECT p.*, c.*, u.user_id, u.username, u.user_active, u.user_color
 			FROM " . ALBUM_TABLE . " AS p, " . ALBUM_CAT_TABLE . " AS c, " . USERS_TABLE . " u
@@ -308,7 +308,7 @@ if ($profiledata['user_session_time'] >= (time() - $config['online_time']))
 		$user_online_status = 'online';
 		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_online'] . '" alt="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" /></a>';
 	}
-	elseif (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $profiledata['user_id']))
+	elseif (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $profiledata['user_id']))
 	{
 		$user_online_status = 'hidden';
 		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_hidden'] . '" alt="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" /></a>';
@@ -331,7 +331,7 @@ $pm_img = '<a href="' . $pm_url . '"><img src="' . $images['icon_pm'] . '" alt="
 $pm = '<a href="' . $pm_url . '">' . $lang['Send_private_message'] . '</a>';
 
 $email_url = '';
-if (empty($userdata['user_id']) || ($userdata['user_id'] == ANONYMOUS))
+if (empty($user->data['user_id']) || ($user->data['user_id'] == ANONYMOUS))
 {
 	if (!empty($profiledata['user_viewemail']))
 	{
@@ -343,7 +343,7 @@ if (empty($userdata['user_id']) || ($userdata['user_id'] == ANONYMOUS))
 	}
 	$email = '&nbsp;';
 }
-elseif (!empty($profiledata['user_viewemail']) || $userdata['user_level'] == ADMIN)
+elseif (!empty($profiledata['user_viewemail']) || $user->data['user_level'] == ADMIN)
 {
 	$email_url = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $profiledata['user_id']) : 'mailto:' . $profiledata['user_email'];
 	$email_img = '<a href="' . $email_url . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
@@ -418,7 +418,7 @@ $search_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_search'] 
 $search = '<a href="' . $temp_url . '">' . sprintf($lang['Search_user_posts'], $profiledata['username']) . '</a>';
 // Start Advanced IP Tools Pack MOD
 $encoded_ip = ($profiledata['user_registered_ip'] == '') ? '' : $profiledata['user_registered_ip'];
-$decoded_ip = (decode_ip($encoded_ip) == '0.0.0.0') ? $lang['Not_recorded'] : decode_ip($encoded_ip);
+$decoded_ip = ($encoded_ip == '0.0.0.0') ? $lang['Not_recorded'] : $encoded_ip;
 $hostname = ($profiledata['user_registered_hostname'] == '') ? $lang['Not_recorded'] : htmlspecialchars($profiledata['user_registered_hostname']);
 // End Advanced IP Tools Pack MOD
 
@@ -513,14 +513,14 @@ $flag = (!empty($profiledata['user_from_flag'])) ? '<img src="images/flags/' . $
 $location .= '&nbsp;' . $flag ;
 
 // Activity - BEGIN
-if (!empty($config['plugins']['activity']['enabled']) && !empty($userdata['session_logged_in']))
+if (!empty($config['plugins']['activity']['enabled']) && !empty($user->data['session_logged_in']))
 {
 	include_once(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['activity']['dir'] . 'common.' . PHP_EXT);
 	unset($trophy_count, $trophy_holder, $trophy);
 	if (($config['ina_show_view_profile']) && ($profiledata['user_trophies'] > '0') && ($profiledata['user_id'] != ANONYMOUS))
 	{
 		$template->assign_block_vars('trophy', array(
-			'PROFILE_TROPHY' => '<a href="javascript:popup_open(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'] . '\',\'New_Window\',\'400\',\'380\',\'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
+			'PROFILE_TROPHY' => '<a href="javascript:popup_open(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&amp;sid=' . $user->data['session_id'] . '\',\'New_Window\',\'400\',\'380\',\'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
 			'TROPHY_TITLE' => $lang['Trohpy']
 			)
 		);
@@ -578,13 +578,13 @@ $template->assign_vars(array(
 	'USERNAME' => $profiledata['username'],
 	'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $profiledata['user_regdate'], $config['board_timezone']),
 
-	'SHOW_FRIEND_LINK' => ($profiledata['user_id'] != $userdata['user_id']) ? true : false,
+	'SHOW_FRIEND_LINK' => ($profiledata['user_id'] != $user->data['user_id']) ? true : false,
 	'IS_FRIEND' => !empty($is_friend) ? true : false,
 	'U_FRIEND_ADD_REMOVE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;zmode=friend&amp;zaction=' . (!empty($is_friend) ? ('remove') : ('add'))),
 
 	// Start add - Last visit MOD
 	'L_LOGON' => $lang['Last_logon'],
-	'LAST_LOGON' => (($userdata['user_level'] == ADMIN) || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastlogon'])? create_date($config['default_dateformat'], $profiledata['user_lastlogon'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
+	'LAST_LOGON' => (($user->data['user_level'] == ADMIN) || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastlogon'])? create_date($config['default_dateformat'], $profiledata['user_lastlogon'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
 	'L_TOTAL_ONLINE_TIME' => $lang['Total_online_time'],
 	'TOTAL_ONLINE_TIME' => make_hours($profiledata['user_totaltime']),
 	'L_LAST_ONLINE_TIME' => $lang['Last_online_time'],
@@ -624,7 +624,7 @@ $template->assign_vars(array(
 	'PM_IMG' => $pm_img,
 	'PM' => $pm,
 	'U_PM' => $pm_url,
-	'EMAIL_IMG' => (!$userdata['session_logged_in'])? '' : $email_img,
+	'EMAIL_IMG' => (!$user->data['session_logged_in'])? '' : $email_img,
 	'EMAIL' => $email,
 	'U_EMAIL' => $email_url,
 	'WWW_IMG' => $www_img,
@@ -646,7 +646,7 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yahoo_img,
 	'YIM' => $yahoo,
 	'U_YIM' => $yahoo_url,
-	'U_AJAX_SHOUTBOX_PVT_LINK' => ($userdata['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($userdata['user_id'], $profiledata['user_id']) . '|' . max($userdata['user_id'], $profiledata['user_id']))) : '#'),
+	'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
 
 	'ICON_CHAT' => $all_ims['chat']['icon'],
 	'ICON_AIM' => $all_ims['aim']['icon'],
@@ -776,7 +776,7 @@ $template->assign_vars(array(
 	'L_OTHER_REGISTERED_IPS' => sprintf($lang['Other_registered_ips'], $decoded_ip),
 	'L_OTHER_IPS' => $lang['Other_posted_ips'],
 	'USER_EMAIL_ADDRESS' => $profiledata['user_email'],
-	'U_USER_IP_ADDRESS' => ($decoded_ip != $lang['Not_recorded']) ? '<a href="http://whois.sc/' . $decoded_ip . '" target="_blank">' . $decoded_ip . '</a>' : $lang['Not_recorded'],
+	'U_USER_IP_ADDRESS' => ($decoded_ip != $lang['Not_recorded']) ? '<a href="http://whois.sc/' . htmlspecialchars(urlencode($decoded_ip)) . '" target="_blank">' . $decoded_ip . '</a>' : $lang['Not_recorded'],
 	'USER_IP_ADDRESS' => $decoded_ip,
 	'USER_REGISTERED_HOSTNAME' => $hostname,
 	// End Advanced IP Tools Pack MOD
@@ -850,7 +850,7 @@ foreach($contacts as $contact_field)
 //====================================================================== |
 //==== Start Invision View Profile ===================================== |
 //==== v1.1.3 ========================================================== |
-$user_id = $userdata['user_id'];
+$user_id = $user->data['user_id'];
 $view_user_id = $profiledata['user_id'];
 $groups = array();
 $sql = 'SELECT g.group_id, g.group_name, g.group_description, g.group_type, g.group_color
@@ -879,7 +879,7 @@ if (sizeof($groups) > 0)
 	{
 		$is_ok = false;
 		// groupe invisible ?
-		if (($groups[$i]['group_type'] != GROUP_HIDDEN) || ($userdata['user_level'] == ADMIN))
+		if (($groups[$i]['group_type'] != GROUP_HIDDEN) || ($user->data['user_level'] == ADMIN))
 		{
 			$is_ok = true;
 		}
@@ -917,7 +917,7 @@ if (sizeof($groups) > 0)
 
 // Start Advanced IP Tools Pack MOD
 // Let's see if the user viewing this page is an admin or mod, if not, we can save several database queries! :P
-$ip_display_auth = ip_display_auth($userdata, false);
+$ip_display_auth = ip_display_auth($user->data, false);
 if (!empty($ip_display_auth))
 {
 	$template->assign_block_vars('switch_display_ips', array());
@@ -949,7 +949,7 @@ if (!empty($ip_display_auth))
 					'USER_NAME' => $row['username'],
 					'U_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 					'USER_HOSTNAME' => htmlspecialchars($row['user_registered_hostname']),
-					'TIME' => create_date($userdata['user_dateformat'], $row['user_regdate'], $userdata['user_timezone']),
+					'TIME' => create_date($user->data['user_dateformat'], $row['user_regdate'], $user->data['user_timezone']),
 					)
 				);
 			}
@@ -1004,13 +1004,13 @@ if (!empty($ip_display_auth))
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$poster_ip = decode_ip($row['poster_ip']);
+			$poster_ip = $row['poster_ip'];
 
 			$template->assign_block_vars('switch_display_ips.switch_other_posted_ips.ALL_IPS_POSTED_FROM', array(
-				'U_POSTER_IP' => 'http://whois.sc/' . $poster_ip,
+				'U_POSTER_IP' => 'http://whois.sc/' . htmlspecialchars(urlencode($poster_ip)),
 				'POSTER_IP' => $poster_ip,
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
-				'U_POSTS_LINK' => append_sid(CMS_PAGE_SEARCH . '?mode=results&amp;search_author=' . urlencode(htmlspecialchars($profiledata['username'])) . '&amp;search_ip=' . $poster_ip),
+				'U_POSTS_LINK' => append_sid(CMS_PAGE_SEARCH . '?mode=results&amp;search_author=' . htmlspecialchars(urlencode($profiledata['username'])) . '&amp;search_ip=' . $poster_ip),
 				)
 			);
 		}
@@ -1059,14 +1059,15 @@ if (!empty($ip_display_auth))
 
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$ip = decode_ip($row['login_ip']);
+				$ip = $row['login_ip'];
 
 				$template->assign_block_vars('switch_display_ips.USER_LOGINS', array(
-					'U_IP' => 'http://whois.sc/' . $ip,
+					'U_IP' => 'http://whois.sc/' . htmlspecialchars(urlencode($ip)),
 					'IP' => $ip,
 					'USER_AGENT' => htmlspecialchars($row['login_user_agent']),
-					'LOGIN_TIME' => create_date($userdata['user_dateformat'], $row['login_time'], $userdata['user_timezone']),
-				));
+					'LOGIN_TIME' => create_date($user->data['user_dateformat'], $row['login_time'], $user->data['user_timezone']),
+					)
+				);
 			}
 
 			$base_url = CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'];
@@ -1108,7 +1109,7 @@ if ($album_config['show_all_in_personal_gallery'])
 // Mighty Gorgon - Full Album Pack - END
 
 //Start Quick Administrator User Options and Information MOD
-if ($userdata['user_level'] == ADMIN)
+if ($user->data['user_level'] == ADMIN)
 {
 	$template->assign_block_vars('switch_user_admin',array());
 }
@@ -1133,9 +1134,9 @@ $template->assign_vars(array(
 	'L_BANNED_EMAIL' => ($banned_email == '') ? $lang['User_email_not_banned'] : htmlspecialchars(sprintf($lang['User_email_banned'], $profiledata['user_email'])),
 	'L_USER_BAN_UNBAN' => ($banned_username == '') ? $lang['USER_BAN'] : $lang['USER_UNBAN'],
 
-	'U_USER_BAN_UNBAN' => IP_ROOT_PATH . 'card.' . PHP_EXT . '?mode=' . (($banned_username == '') ? 'ban' : 'unban') . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'],
-	'U_ADMIN_EDIT_PROFILE' => ADM . '/admin_users.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=edit&amp;redirect=yes',
-	'U_ADMIN_EDIT_PERMISSIONS' => ADM . '/admin_ug_auth.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=user'
+	'U_USER_BAN_UNBAN' => IP_ROOT_PATH . 'card.' . PHP_EXT . '?mode=' . (($banned_username == '') ? 'ban' : 'unban') . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $user->data['session_id'],
+	'U_ADMIN_EDIT_PROFILE' => ADM . '/admin_users.' . PHP_EXT . '?sid=' . $user->data['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=edit&amp;redirect=yes',
+	'U_ADMIN_EDIT_PERMISSIONS' => ADM . '/admin_ug_auth.' . PHP_EXT . '?sid=' . $user->data['session_id'] . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;mode=user'
 	)
 );
 
@@ -1155,7 +1156,7 @@ $template->assign_vars(array(
 // MG Cash MOD For IP - BEGIN
 if (!empty($config['plugins']['cash']['enabled']))
 {
-	$cm_viewprofile->post_vars($template, $profiledata, $userdata);
+	$cm_viewprofile->post_vars($template, $profiledata, $user->data);
 }
 // MG Cash MOD For IP - END
 

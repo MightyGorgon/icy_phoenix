@@ -85,7 +85,7 @@ function get_object_lang($cur, $field, $all = false)
 //--------------------------------------------------------------------------------------------------
 function cache_tree_output()
 {
-	global $tree, $userdata;
+	global $tree, $user;
 
 	if (!defined('CACHE_TREE'))
 	{
@@ -100,7 +100,7 @@ function cache_tree_output()
 
 	$template->assign_vars(array(
 		'TIME' => gmdate('Y-m-d H:i:s') . ' (GMT)',
-		'USERNAME' => $userdata['username'],
+		'USERNAME' => $user->data['username'],
 		)
 	);
 
@@ -284,7 +284,7 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 
 function cache_tree($write = false)
 {
-	global $db, $cache, $config, $userdata, $lang, $tree;
+	global $db, $cache, $config, $user, $lang, $tree;
 
 	$parents = array();
 
@@ -390,11 +390,11 @@ function cache_tree($write = false)
 function read_tree($force = false)
 {
 
-	global $db, $config, $userdata, $tree;
+	global $db, $config, $user, $tree;
 	global $unread;
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-	if($userdata['upi2db_access'])
+	if($user->data['upi2db_access'])
 	{
 		if (empty($unread))
 		{
@@ -463,15 +463,15 @@ function read_tree($force = false)
 
 	// set the unread flag
 //<!-- BEGIN Unread Post Information to Database Mod -->
-	if(!$userdata['upi2db_access'])
+	if(!$user->data['upi2db_access'])
 	{
 //<!-- END Unread Post Information to Database Mod -->
 
 		// Get new posts since last visit... only for registered users
-		if ($userdata['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
 			$time_limit = time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60);
-			$user_lastvisit = ($userdata['user_lastvisit'] < $time_limit) ? $time_limit : $userdata['user_lastvisit'];
+			$user_lastvisit = ($user->data['user_lastvisit'] < $time_limit) ? $time_limit : $user->data['user_lastvisit'];
 			$sql_limit = " LIMIT " . LAST_LOGIN_NEW_POSTS_LIMIT;
 
 			$sql = "SELECT p.forum_id, p.topic_id, p.post_time
@@ -566,7 +566,7 @@ function read_tree($force = false)
 //--------------------------------------------------------------------------------------------------
 function set_tree_user_auth()
 {
-	global $config, $userdata, $lang, $db;
+	global $config, $user, $lang, $db;
 	global $tree;
 
 	// Get users online for each forum
@@ -642,8 +642,8 @@ function set_tree_user_auth()
 		{
 			// forum auth
 			$auth_read = $tree['auth'][$cur]['auth_read'];
-			//if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($tree['auth'][$cur]['auth_read']) == AUTH_SELF))
-			if(($userdata['user_level'] != ADMIN) && (intval($tree['auth'][$cur]['auth_read']) == AUTH_SELF))
+			//if(((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($tree['auth'][$cur]['auth_read']) == AUTH_SELF))
+			if(($user->data['user_level'] != ADMIN) && (intval($tree['auth'][$cur]['auth_read']) == AUTH_SELF))
 			{
 				$auth_lp = false;
 			}
@@ -763,9 +763,9 @@ function set_tree_user_auth()
 }
 
 //--------------------------------------------------------------------------------------------------
-// get_user_tree() : generate the hierarchy tree - called in init_userprefs()
+// get_user_tree() : generate the hierarchy tree - called in $user->setup()
 //--------------------------------------------------------------------------------------------------
-function get_user_tree(&$userdata)
+function get_user_tree(&$user_data)
 {
 	global $tree;
 
@@ -778,7 +778,7 @@ function get_user_tree(&$userdata)
 	if (empty($tree['auth']))
 	{
 		$tree['auth'] = array();
-		$wauth = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+		$wauth = auth(AUTH_ALL, AUTH_LIST_ALL, $user_data);
 		if (!empty($wauth))
 		{
 			reset($wauth);
@@ -894,7 +894,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	global $template, $db, $cache, $config, $lang, $images, $theme;
 	global $tree, $bbcode, $lofi;
 //<!-- BEGIN Unread Post Information to Database Mod -->
-	global $userdata, $unread;
+	global $user, $unread;
 //<!-- END Unread Post Information to Database Mod -->
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
@@ -1220,7 +1220,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			// forum icon
 			$icon_img = empty($data['icon']) ? '' : (isset($images[$data['icon']]) ? $images[$data['icon']] : $data['icon']);
 //<!-- BEGIN Unread Post Information to Database Mod -->
-			if($userdata['upi2db_access'])
+			if($user->data['upi2db_access'])
 			{
 				$folder_image_ar_big = $images['forum_nor_ar'];
 				$cat_image_ar_big = $images['forum_sub_ar'];
@@ -1254,7 +1254,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				$mark_always_read = '<img src="' . $folder_image . '" alt="' . $folder_alt . '" title="' . $folder_alt . '" />';
 			}
 //<!-- END Unread Post Information to Database Mod -->
-			if (($config['url_rw'] == true) || (($config['url_rw_guests'] == true) && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == true) || (($config['url_rw_guests'] == true) && ($user->data['user_id'] == ANONYMOUS)))
 			{
 				$url_viewforum = ($type == POST_FORUM_URL) ? append_sid(str_replace ('--', '-', make_url_friendly($title) . '-vf' . $id . '.html')) : append_sid(str_replace ('--', '-', make_url_friendly($title) . '-vc' . $id . '.html'));
 			}
@@ -1266,7 +1266,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			if ($config['show_rss_forum_icon'] && ($data['forum_index_icons'] == 1) && ($type == POST_FORUM_URL))
 			{
 				$rss_feed_icon = '';
-				if (!$data['tree.locked'] && $userdata['session_logged_in'])
+				if (!$data['tree.locked'] && $user->data['session_logged_in'])
 				{
 					$rss_feed_icon .= '&nbsp;<a href="' . append_sid(CMS_PAGE_POSTING . '?mode=newtopic&amp;' . POST_FORUM_URL . '=' . $id) . '"><img src="' . $images['vf_topic_nor'] . '" alt="' . $lang['Post_new_topic'] . '" title="' . $lang['Post_new_topic'] . '" /></a>';
 				}
@@ -1407,7 +1407,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 //--------------------------------------------------------------------------------------------------
 function display_index($cur = 'Root')
 {
-	global $db, $config, $template, $images, $userdata, $lang;
+	global $db, $config, $template, $images, $user, $lang;
 	global $nav_separator, $nav_cat_desc;
 	global $tree;
 
@@ -1461,7 +1461,7 @@ function display_index($cur = 'Root')
 //--------------------------------------------------------------------------------------------------
 function make_cat_nav_tree($cur, $pgm = '', $meta_content = '', $nav_class = 'nav')
 {
-	global $tree, $config, $userdata, $db, $nav_separator;
+	global $tree, $config, $user, $db, $nav_separator;
 	global $global_orig_word, $global_replacement_word;
 
 	$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
@@ -1471,7 +1471,7 @@ function make_cat_nav_tree($cur, $pgm = '', $meta_content = '', $nav_class = 'na
 
 	$kb_mode_append = '';
 	$kb_mode_var = request_var('kb', '');
-	if (!empty($kb_mode_var) && !$userdata['is_bot'])
+	if (!empty($kb_mode_var) && !$user->data['is_bot'])
 	{
 		if ($kb_mode_var == 'on')
 		{

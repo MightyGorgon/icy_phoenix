@@ -141,16 +141,16 @@ while (isset($users_list[$i]['user_id']))
 		$emailer = new emailer();
 
 		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . $user_ip);
 
 		$emailer->use_template('delete_users', (file_exists(IP_ROOT_PATH . 'language/lang_' . $user_lang . '/email/delete_users.tpl')) ? $user_lang : 'english');
 		$emailer->to($user_email);
 
 		$emailer->assign_vars(array(
 			'U_REGISTER' => $profile_server_url,
-			'USER' => $userdata['username'],
+			'USER' => $user->data['username'],
 			'USERNAME' => $username,
 			'SITENAME' => $config['sitename'],
 			'BOARD_EMAIL' => $config['board_email']

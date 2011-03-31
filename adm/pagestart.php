@@ -31,13 +31,14 @@ define('CTRACKER_DISABLED', true);
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . ADM . '/index.' . PHP_EXT, true));
 }
@@ -46,12 +47,13 @@ elseif (!jr_admin_secure(basename($_SERVER['REQUEST_URI'])))
 	message_die(GENERAL_ERROR, $lang['Error_Module_ID'], '', __LINE__, __FILE__);
 }
 
-if ($_GET['sid'] != $userdata['session_id'])
+$session_id = request_get_var('sid', '');
+if ($session_id != $user->data['session_id'])
 {
-	redirect('index.' . PHP_EXT . '?sid=' . $userdata['session_id']);
+	redirect('index.' . PHP_EXT . '?sid=' . $user->data['session_id']);
 }
 
-if (!$userdata['session_admin'])
+if (!$user->data['session_admin'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . ADM . '/index.' . PHP_EXT . '&admin=1', true));
 }

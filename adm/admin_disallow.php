@@ -85,7 +85,6 @@ if(trim($disallowed) == '')
 }
 else
 {
-	$user = array();
 	for( $i = 0; $i < sizeof($disallowed); $i++ )
 	{
 		$disallow_select .= '<option value="' . $disallowed[$i]['disallow_id'] . '">' . $disallowed[$i]['disallow_username'] . '</option>';

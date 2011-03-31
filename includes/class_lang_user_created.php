@@ -282,7 +282,7 @@ class lang_management
 
 	function write($entries)
 	{
-		global $template, $userdata, $lang;
+		global $template, $user, $lang;
 		global $countries, $packs;
 
 		// read old values
@@ -376,10 +376,10 @@ class lang_management
 			);
 
 			$array_replace = array(
-				'$' . 'Id: ' . $pack_filename . ' ' . $edittime . ' ' . $userdata['username'] . ' $',
+				'$' . 'Id: ' . $pack_filename . ' ' . $edittime . ' ' . $user->data['username'] . ' $',
 				$country_name,
 				$edittime,
-				$userdata['username'],
+				$user->data['username'],
 			);
 
 			$file_content = str_replace($array_find, $array_replace, $file_content);

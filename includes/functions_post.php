@@ -76,7 +76,7 @@ function unprepare_message($message)
 // Prepare a message for posting
 function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$subject, &$message, &$poll_title, &$poll_options, &$poll_data, &$reg_active, &$reg_reset, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
-	global $config, $userdata, $lang;
+	global $config, $user, $lang;
 	global $topic_id;
 	global $db;
 
@@ -85,7 +85,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	{
 		$username = phpbb_clean_username($username);
 
-		if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && ($username != $userdata['username'])))
+		if (!$user->data['session_logged_in'] || ($user->data['session_logged_in'] && ($username != $user->data['username'])))
 		{
 			include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
@@ -170,7 +170,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 
 	// Check to see if the user is last poster and is bumping
 	//if(($mode == 'reply' || $mode == 'quote') && ($config['no_bump'] == true) && ($new_post_while_posting == false))
-	$no_bump = ((($config['no_bump'] == 1) && ($userdata['user_level'] != ADMIN)) || (($config['no_bump'] == 2) && ($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))) ? true : false;
+	$no_bump = ((($config['no_bump'] == 1) && ($user->data['user_level'] != ADMIN)) || (($config['no_bump'] == 2) && ($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD))) ? true : false;
 	if((($mode == 'reply') || ($mode == 'quote')) && ($no_bump == true) && ($new_post_while_posting == false))
 	{
 		if(isset($topic_id))
@@ -187,7 +187,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 			{
 				if($row = $db->sql_fetchrow($result))
 				{
-					if($row['poster_id'] == $userdata['user_id'])
+					if($row['poster_id'] == $user->data['user_id'])
 					{
 						$error_msg .= (empty($error_msg) ? '' : '<br />') . $lang['WARN_NO_BUMP'];
 					}
@@ -254,10 +254,10 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 // Post a new topic/reply/poll or edit existing post/poll
 function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$topic_type, &$bbcode_on, &$html_on, &$acro_auto_on, &$smilies_on, &$attach_sig, $post_username, $post_subject, $topic_title_clean, $topic_tags, $post_message, $poll_title, &$poll_options, &$poll_data, &$reg_active, &$reg_reset, &$reg_max_option1, &$reg_max_option2, &$reg_max_option3, &$reg_length, &$news_category, &$topic_show_portal, &$mark_edit, &$topic_desc, $topic_calendar_time = 0, $topic_calendar_duration = 0)
 {
-	global $config, $lang, $db;
-	global $userdata, $user_ip;
+	global $db, $cache, $config, $user, $lang;
+
 	// CrackerTracker v5.x
-	if ((($mode == 'newtopic') || ($mode == 'reply')) && (($config['ctracker_spammer_blockmode'] > 0) || ($config['ctracker_spam_attack_boost'] == 1)) && ($userdata['user_level'] != ANONYMOUS))
+	if ((($mode == 'newtopic') || ($mode == 'reply')) && (($config['ctracker_spammer_blockmode'] > 0) || ($config['ctracker_spam_attack_boost'] == 1)) && ($user->data['user_level'] != ANONYMOUS))
 	{
 		include_once(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 		$login_functions = new ct_userfunctions();
@@ -281,14 +281,14 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	$current_time = time();
 
-	if (($userdata['user_level'] != ADMIN) && (($config['force_large_caps_mods'] == true) || ($userdata['user_level'] != MOD)))
+	if (($user->data['user_level'] != ADMIN) && (($config['force_large_caps_mods'] == true) || ($user->data['user_level'] != MOD)))
 	{
 		//$post_subject = strtolower($post_subject);
 		$post_subject = ucwords($post_subject);
 	}
 
 	// Flood control
-	if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
+	if (($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD))
 	{
 		if (!function_exists('check_flood_posting'))
 		{
@@ -316,7 +316,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 		// Event Registration - END
 
-		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_tags, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_reg, topic_show_portal) VALUES ('" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($topic_desc) . "', " . $db->sql_validate_value($topic_tags) . ", " . $userdata['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_reg, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '" . $db->sql_escape($post_subject) . "', news_id = $news_id, topic_desc = '" . $db->sql_escape($topic_desc) . "', topic_tags = " . $db->sql_validate_value($topic_tags) . ", topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration, topic_reg = $topic_reg" . ", topic_show_portal = $topic_show_portal
+		$sql = ($mode != 'editpost') ? "INSERT INTO " . TOPICS_TABLE . " (topic_title, topic_desc, topic_tags, topic_poster, topic_time, forum_id, news_id, topic_status, topic_type, topic_calendar_time, topic_calendar_duration, topic_reg, topic_show_portal) VALUES ('" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($topic_desc) . "', " . $db->sql_validate_value($topic_tags) . ", " . $user->data['user_id'] . ", $current_time, $forum_id, $news_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_calendar_time, $topic_calendar_duration, $topic_reg, $topic_show_portal)" : "UPDATE " . TOPICS_TABLE . " SET topic_title = '" . $db->sql_escape($post_subject) . "', news_id = $news_id, topic_desc = '" . $db->sql_escape($topic_desc) . "', topic_tags = " . $db->sql_validate_value($topic_tags) . ", topic_type = $topic_type, topic_calendar_time = $topic_calendar_time, topic_calendar_duration = $topic_calendar_duration, topic_reg = $topic_reg" . ", topic_show_portal = $topic_show_portal
 		WHERE topic_id = $topic_id";
 
 		$db->sql_query($sql);
@@ -460,8 +460,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	// Event Registration - END
 
 	// To show also admins modifications decomment this line!!!
-	//if( ($userdata['user_level'] == ADMIN) && !$config['always_show_edit_by'] )
-	if($userdata['user_level'] == ADMIN)
+	//if( ($user->data['user_level'] == ADMIN) && !$config['always_show_edit_by'] )
+	if($user->data['user_level'] == ADMIN)
 	{
 		$edited_sql = '';
 	}
@@ -470,7 +470,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		// Original phpBB "Edit By"
 		//$edited_sql = ($mode == 'editpost' && !$post_data['last_post'] && $post_data['poster_post']) ? ", post_edit_time = $current_time, post_edit_count = post_edit_count + 1 " : "";
 
-		$edited_sql = ", post_edit_time = '" . $current_time . "', post_edit_count = (post_edit_count + 1), post_edit_id = '" . $userdata['user_id'] . "' ";
+		$edited_sql = ", post_edit_time = '" . $current_time . "', post_edit_count = (post_edit_count + 1), post_edit_id = '" . $user->data['user_id'] . "' ";
 		if ($config['always_show_edit_by'] == true)
 		{
 			$edited_sql = ($mode == 'editpost') ? $edited_sql : '';
@@ -481,7 +481,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 	}
 
-	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_autolinks_acronyms, enable_sig) VALUES (" . $topic_id . ", " . $forum_id . ", " . $userdata['user_id'] . ", '" . $db->sql_escape($post_username) . "', '" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($post_message) . "', " . $current_time . ", '" . $user_ip . "', " . $bbcode_on . ", " . $html_on . ", " . $smilies_on . ", " . $acro_auto_on . ", " . $attach_sig . ")" : "UPDATE " . POSTS_TABLE . " SET post_username = '" . $db->sql_escape($post_username) . "', post_text = '" . $db->sql_escape($post_message) . "', post_text_compiled = '', post_subject = '" . $db->sql_escape($post_subject) . "', enable_bbcode = " . $bbcode_on . ", enable_html = " . $html_on . ", enable_smilies = " . $smilies_on . ", enable_autolinks_acronyms = " . $acro_auto_on . ", enable_sig = " . $attach_sig . " " . $edited_sql . " WHERE post_id = " . $post_id;
+	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_autolinks_acronyms, enable_sig) VALUES (" . $topic_id . ", " . $forum_id . ", " . $user->data['user_id'] . ", '" . $db->sql_escape($post_username) . "', '" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($post_message) . "', " . $current_time . ", '" . $db->sql_escape($user->ip) . "', " . $bbcode_on . ", " . $html_on . ", " . $smilies_on . ", " . $acro_auto_on . ", " . $attach_sig . ")" : "UPDATE " . POSTS_TABLE . " SET post_username = '" . $db->sql_escape($post_username) . "', post_text = '" . $db->sql_escape($post_message) . "', post_text_compiled = '', post_subject = '" . $db->sql_escape($post_subject) . "', enable_bbcode = " . $bbcode_on . ", enable_html = " . $html_on . ", enable_smilies = " . $smilies_on . ", enable_autolinks_acronyms = " . $acro_auto_on . ", enable_sig = " . $attach_sig . " " . $edited_sql . " WHERE post_id = " . $post_id;
 	$db->sql_transaction('begin');
 	$db->sql_query($sql);
 
@@ -493,7 +493,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	if($config['upi2db_on'])
 	{
-		$mark_edit = (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD)) ? $mark_edit : true;
+		$mark_edit = (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD)) ? $mark_edit : true;
 
 		if(($mode != 'editpost') || (($mode == 'editpost') && $post_data['last_post'] && $config['upi2db_last_edit_as_new'] && $mark_edit) || (($mode == 'editpost') && !$post_data['last_post'] && $config['upi2db_edit_as_new'] && $mark_edit) || ($mode == 'reply'))
 		{
@@ -506,16 +506,16 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			if ($id_vorhanden == 0)
 			{
 				$pt_or_pet = ($mode != 'editpost') ? "post_time" : "post_edit_time";
-				$sql = "INSERT INTO " . UPI2DB_LAST_POSTS_TABLE . " (post_id, topic_id, forum_id, poster_id, " . $pt_or_pet . ", topic_type, post_edit_by) VALUES ('$post_id', '$topic_id', '$forum_id', '" . $userdata['user_id'] . "', '$current_time', '$topic_type', '" . $userdata['user_id'] . "')";
+				$sql = "INSERT INTO " . UPI2DB_LAST_POSTS_TABLE . " (post_id, topic_id, forum_id, poster_id, " . $pt_or_pet . ", topic_type, post_edit_by) VALUES ('$post_id', '$topic_id', '$forum_id', '" . $user->data['user_id'] . "', '$current_time', '$topic_type', '" . $user->data['user_id'] . "')";
 			}
 			else
 			{
-				$sql = "UPDATE " . UPI2DB_LAST_POSTS_TABLE . " SET post_edit_time = '" . $current_time . "', topic_type = '" . $topic_type . "', post_edit_by = '" . $userdata['user_id'] . "' WHERE post_id = " . $post_id;
+				$sql = "UPDATE " . UPI2DB_LAST_POSTS_TABLE . " SET post_edit_time = '" . $current_time . "', topic_type = '" . $topic_type . "', post_edit_by = '" . $user->data['user_id'] . "' WHERE post_id = " . $post_id;
 			}
 			$db->sql_query($sql);
 		}
 		// Edited By Mighty Gorgon - BEGIN
-		if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
+		if (($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD))
 		{
 			if(($topic_type == POST_STICKY) || ($topic_type == POST_ANNOUNCE) || ($topic_type == POST_GLOBAL_ANNOUNCE))
 			{
@@ -540,7 +540,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 		if ($dl_config['enable_post_dl_traffic'])
 		{
-			if (!$dl_config['delay_post_traffic'] || ((time() - $userdata['user_regdate']) / 84600) > $dl_config['delay_post_traffic'])
+			if (!$dl_config['delay_post_traffic'] || ((time() - $user->data['user_regdate']) / 84600) > $dl_config['delay_post_traffic'])
 			{
 				$dl_traffic = 0;
 				if ($mode == 'newtopic')
@@ -556,7 +556,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 				{
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_traffic = user_traffic + $dl_traffic
-						WHERE user_id = " . $userdata['user_id'];
+						WHERE user_id = " . $user->data['user_id'];
 					$db->sql_query($sql);
 				}
 			}
@@ -885,7 +885,7 @@ function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_a
 */
 function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id)
 {
-	global $db, $cache, $config, $lang, $userdata, $user_ip;
+	global $db, $cache, $config, $lang, $user;
 
 	if ($mode != 'poll_delete')
 	{
@@ -976,15 +976,15 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	return;
 }
 
-function get_userdata_notifications($user, $force_str = false)
+function get_userdata_notifications($target_user, $force_str = false)
 {
 	global $db;
 
-	$user = (!is_numeric($user) || $force_str) ? phpbb_clean_username($user) : intval($user);
+	$target_user = (!is_numeric($target_user) || $force_str) ? phpbb_clean_username($target_user) : intval($target_user);
 	$sql = "SELECT *
 			FROM " . USERS_TABLE . "
 			WHERE ";
-	$sql .= ((is_integer($user)) ? ("user_id = " . $user) : "username = '" . $db->sql_escape($user) . "'") . " AND user_id <> " . ANONYMOUS;
+	$sql .= ((is_integer($target_user)) ? ("user_id = " . $target_user) : "username = '" . $db->sql_escape($target_user) . "'") . " AND user_id <> " . ANONYMOUS;
 	$result = $db->sql_query($sql);
 	$return_value = ($row = $db->sql_fetchrow($result)) ? $row : false;
 	$db->sql_freeresult($result);
@@ -997,8 +997,8 @@ function get_userdata_notifications($user, $force_str = false)
 */
 function generate_smilies($mode)
 {
-	global $db, $cache, $config, $template, $images, $theme, $lang, $userdata;
-	global $user_ip, $session_length, $starttime, $gen_simple_header;
+	global $db, $cache, $config, $user, $template, $images, $theme, $lang;
+	global $session_length, $starttime, $gen_simple_header;
 
 	$inline_columns = $config['smilie_columns'];
 	$inline_rows = $config['smilie_rows'];
@@ -1012,8 +1012,9 @@ function generate_smilies($mode)
 	if ($mode == 'window')
 	{
 		// Start session management
-		$userdata = session_pagestart($user_ip);
-		init_userprefs($userdata);
+		$user->session_begin();
+		//$auth->acl($user->data);
+		$user->setup();
 		// End session management
 
 		$gen_simple_header = true;
@@ -1216,11 +1217,11 @@ function clean_html($tag)
 
 function change_post_time($post_id, $post_time)
 {
-	global $db, $userdata;
+	global $db, $user;
 
 	/*
 	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-	if ($userdata['user_id'] != $founder_id)
+	if ($user->data['user_id'] != $founder_id)
 	{
 		return false;
 	}
@@ -1274,11 +1275,11 @@ function change_post_time($post_id, $post_time)
 
 function change_poster_id($post_id, $poster_name)
 {
-	global $db, $userdata;
+	global $db, $user;
 
 	/*
 	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-	if ($userdata['user_id'] != $founder_id)
+	if ($user->data['user_id'] != $founder_id)
 	{
 		return false;
 	}

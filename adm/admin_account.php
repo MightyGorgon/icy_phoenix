@@ -176,7 +176,7 @@ elseif($activate && $mark_list)
 				break;
 			case 'active':
 				$activate_sql .= " SET user_active = '0' WHERE user_active = '1'";
-				$clear_notification = user_clear_notifications($userdata['user_id']);
+				$clear_notification = user_clear_notifications($user->data['user_id']);
 				break;
 		}
 		$activate_sql .= " AND user_id IN ($activate_id)";

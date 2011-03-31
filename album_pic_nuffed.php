@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -68,7 +69,7 @@ if($album_user_access['view'] == false)
 // Check Pic Approval
 // ------------------------------------
 
-if($userdata['user_level'] != ADMIN)
+if($user->data['user_level'] != ADMIN)
 {
 	if(($thispic['cat_approval'] == ADMIN) || (($thispic['cat_approval'] == MOD) && !$album_user_access['moderator']))
 	{
@@ -185,8 +186,8 @@ if($nuff_http['nuff_rotation_d'] > 0)
 }
 
 //WatermarkPos(File, Pos, Size, Transition)
-if(($pic_info['filetype'] != 'gif') && ($album_config['use_watermark'] == true) && ($userdata['user_level'] != ADMIN) &&
-	((!$userdata['session_logged_in']) || ($album_config['wut_users'] == 1)))
+if(($pic_info['filetype'] != 'gif') && ($album_config['use_watermark'] == true) && ($user->data['user_level'] != ADMIN) &&
+	((!$user->data['session_logged_in']) || ($album_config['wut_users'] == 1)))
 {
 	//$wm_file = ALBUM_WM_FILE;
 	$wm_file = (file_exists($thispic['cat_wm']) ? $thispic['cat_wm'] : ALBUM_WM_FILE);

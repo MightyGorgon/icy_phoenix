@@ -65,8 +65,8 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 	$email_bansql = '';
 	$ip_bansql = '';
 
-	$ban_time = time();
-	$ban_by_userid = $userdata['user_id'];
+	$ban_start = time();
+	$ban_by_userid = $user->data['user_id'];
 	$ban_priv_reason = request_post_var('ban_priv_reason', 'NULL', true);
 	$ban_pub_reason_mode = request_post_var('ban_pub_reason_mode', '', true);
 	$ban_pub_reason = request_post_var('ban_pub_reason', 'NULL', true);
@@ -75,15 +75,15 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 	$ban_expire_time_mode = request_post_var('ban_expire_time_mode', '');
 	if ($ban_expire_time_mode == 'never')
 	{
-		$ban_expire_time = 'NULL';
+		$ban_end = 'NULL';
 	}
 	elseif ($ban_expire_time_mode == 'relative')
 	{
-		$ban_expire_time = @strtotime('+' . $_POST['ban_expire_time_relative'] . ' ' . $_POST['ban_expire_time_relative_units']);
+		$ban_end = @strtotime('+' . $_POST['ban_expire_time_relative'] . ' ' . $_POST['ban_expire_time_relative_units']);
 	}
 	elseif ($ban_expire_time_mode == 'absolute')
 	{
-		$ban_expire_time = @strtotime($_POST['ban_expire_time_absolute_hour'] . ':' . $_POST['ban_expire_time_absolute_minute'] . ' ' . $_POST['ban_expire_time_absolute_ampm'] .' '. $_POST['ban_expire_time_absolute_month'] . '/' . $_POST['ban_expire_time_absolute_mday'] . '/' . $_POST['ban_expire_time_absolute_year']);
+		$ban_end = @strtotime($_POST['ban_expire_time_absolute_hour'] . ':' . $_POST['ban_expire_time_absolute_minute'] . ' ' . $_POST['ban_expire_time_absolute_ampm'] .' '. $_POST['ban_expire_time_absolute_month'] . '/' . $_POST['ban_expire_time_absolute_mday'] . '/' . $_POST['ban_expire_time_absolute_year']);
 	}
 
 	$user_list = array ();
@@ -104,86 +104,7 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 	$ban_ips = request_var('ban_ip', '');
 	if (!empty($ban_ips))
 	{
-		$ip_list_temp = explode(',', $ban_ips);
-
-		for ($i = 0; $i < sizeof($ip_list_temp); $i++)
-		{
-			if (preg_match('/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})[ ]*\-[ ]*([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/', trim($ip_list_temp[$i]), $ip_range_explode))
-			{
-				//
-				// Don't ask about all this, just don't ask ... !
-				//
-				$ip_1_counter = $ip_range_explode[1];
-				$ip_1_end = $ip_range_explode[5];
-
-				while ($ip_1_counter <= $ip_1_end)
-				{
-					$ip_2_counter = ($ip_1_counter == $ip_range_explode[1]) ? $ip_range_explode[2] : 0;
-					$ip_2_end = ($ip_1_counter < $ip_1_end) ? 254 : $ip_range_explode[6];
-
-					if ($ip_2_counter == 0 && $ip_2_end == 254)
-					{
-						$ip_2_counter = 255;
-						$ip_2_fragment = 255;
-
-						$ip_list[] = encode_ip ("$ip_1_counter.255.255.255");
-					}
-
-					while ($ip_2_counter <= $ip_2_end)
-					{
-						$ip_3_counter = ($ip_2_counter == $ip_range_explode[2] && $ip_1_counter == $ip_range_explode[1]) ? $ip_range_explode[3] : 0;
-						$ip_3_end = ($ip_2_counter < $ip_2_end || $ip_1_counter < $ip_1_end) ? 254 : $ip_range_explode[7];
-
-						if ($ip_3_counter == 0 && $ip_3_end == 254)
-						{
-							$ip_3_counter = 255;
-							$ip_3_fragment = 255;
-
-							$ip_list[] = encode_ip ("$ip_1_counter.$ip_2_counter.255.255");
-						}
-
-						while ($ip_3_counter <= $ip_3_end)
-						{
-							$ip_4_counter = ($ip_3_counter == $ip_range_explode[3] && $ip_2_counter == $ip_range_explode[2] && $ip_1_counter == $ip_range_explode[1]) ? $ip_range_explode[4] : 0;
-							$ip_4_end = ($ip_3_counter < $ip_3_end || $ip_2_counter < $ip_2_end) ? 254 : $ip_range_explode[8];
-
-							if ($ip_4_counter == 0 && $ip_4_end == 254)
-							{
-								$ip_4_counter = 255;
-								$ip_4_fragment = 255;
-
-								$ip_list[] = encode_ip ("$ip_1_counter.$ip_2_counter.$ip_3_counter.255");
-							}
-
-							while ($ip_4_counter <= $ip_4_end)
-							{
-								$ip_list[] = encode_ip ("$ip_1_counter.$ip_2_counter.$ip_3_counter.$ip_4_counter");
-								$ip_4_counter++;
-							}
-							$ip_3_counter++;
-						}
-						$ip_2_counter++;
-					}
-					$ip_1_counter++;
-				}
-			}
-			elseif (preg_match ('/^([\w\-_]\.?){2,}$/is', trim ($ip_list_temp[$i])))
-			{
-				$ip = gethostbynamel(trim($ip_list_temp[$i]));
-
-				for ($j = 0; $j < sizeof($ip); $j++)
-				{
-					if (!empty($ip[$j]))
-					{
-						$ip_list[] = encode_ip ($ip[$j]);
-					}
-				}
-			}
-			elseif (preg_match('/^([0-9]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})$/', trim($ip_list_temp[$i])))
-			{
-				$ip_list[] = encode_ip (str_replace('*', '255', trim($ip_list_temp[$i])));
-			}
-		}
+		$ip_list = match_ips($ban_ips);
 	}
 
 	$email_list = array ();
@@ -194,12 +115,8 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 
 		for ($i = 0; $i < sizeof($email_list_temp); $i++)
 		{
-			//
-			// This ereg match is based on one by php@unreelpro.com
-			// contained in the annotated php manual at php.com (ereg
-			// section)
-			//
-			if (eregi('^(([[:alnum:]\*]+([-_.][[:alnum:]\*]+)*\.?)|(\*))@([[:alnum:]]+([-_]?[[:alnum:]]+)*\.){1,3}([[:alnum:]]{2,6})$', trim($email_list_temp[$i])))
+			// This ereg match is based on one by php@unreelpro.com contained in the annotated php manual at php.com (ereg section)
+			if (preg_match('/^(([a-z0-9&\'\.\-_\+])|(\*))+@(([a-z0-9\-])|(\*))+\.([a-z0-9\-]+\.)*?[a-z]+$/is', trim($email_list_temp[$i])))
 			{
 				$email_list[] = trim($email_list_temp[$i]);
 			}
@@ -209,8 +126,8 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 	if (isset($_POST['submit_update']))
 	{
 		$sql = "UPDATE ". BANLIST_TABLE ."
-			SET ban_expire_time = $ban_expire_time, ban_priv_reason = '" . $db->sql_escape($ban_priv_reason) . "', ban_pub_reason_mode = '" . $db->sql_escape($ban_pub_reason_mode) . "', ban_pub_reason = '" . $db->sql_escape($ban_pub_reason) . "'
-			WHERE ban_id = '". intval($_POST['ban_id']) ."'";
+			SET ban_end = $ban_end, ban_priv_reason = '" . $db->sql_escape($ban_priv_reason) . "', ban_pub_reason_mode = '" . $db->sql_escape($ban_pub_reason_mode) . "', ban_pub_reason = '" . $db->sql_escape($ban_pub_reason) . "'
+			WHERE ban_id = '" . intval($_POST['ban_id']) . "'";
 		if (!$db->sql_query ($sql))
 		{
 			message_die (GENERAL_ERROR, "Couldn't update ban information", "", __LINE__, __FILE__, $sql);
@@ -218,8 +135,7 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 	}
 	else
 	{
-		$sql = "SELECT *
-			FROM ". BANLIST_TABLE;
+		$sql = "SELECT * FROM " . BANLIST_TABLE;
 		if (!($result = $db->sql_query ($sql)))
 		{
 			message_die (GENERAL_ERROR, "Couldn't obtain banlist information", "", __LINE__, __FILE__, $sql);
@@ -244,8 +160,8 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 			{
 				$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . "session_user_id = " . $user_list[$i];
 
-				$sql = "INSERT INTO ". BANLIST_TABLE ." (ban_userid, ban_time, ban_expire_time, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
-					VALUES (" . $user_list[$i] . ", $ban_time, $ban_expire_time, $ban_by_userid, '" . $db->sql_escape($ban_priv_reason) . "', " . $db->sql_escape($ban_pub_reason_mode) . ", '" . $db->sql_escape($ban_pub_reason) . "')";
+				$sql = "INSERT INTO ". BANLIST_TABLE ." (ban_userid, ban_start, ban_end, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
+					VALUES (" . $user_list[$i] . ", $ban_start, $ban_end, $ban_by_userid, '" . $db->sql_escape($ban_priv_reason) . "', " . $db->sql_escape($ban_pub_reason_mode) . ", '" . $db->sql_escape($ban_pub_reason) . "')";
 				if (!$db->sql_query ($sql))
 				{
 					message_die (GENERAL_ERROR, "Couldn't insert ban_userid info into database", "", __LINE__, __FILE__, $sql);
@@ -273,19 +189,19 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 
 			if (!$in_banlist)
 			{
-				if (preg_match('/(ff\.)|(\.ff)/is', chunk_split($ip_list[$i], 2, '.')))
+				if (preg_match('/(255\.)|(\.255)/is', $ip_list[$i]))
 				{
-					$kill_ip_sql = "session_ip LIKE '". str_replace('.', '', preg_replace('/(ff\.)|(\.ff)/is', '%', chunk_split($ip_list[$i], 2, "."))) ."'";
+					$kill_ip_sql = "session_ip LIKE '" . str_replace('.', '', preg_replace('/(255\.)|(\.255)/is', '%', $ip_list[$i])) . "'";
 				}
 				else
 				{
-					$kill_ip_sql = "session_ip = '". $ip_list[$i] ."'";
+					$kill_ip_sql = "session_ip = '" . $db->sql_escape($ip_list[$i]) . "'";
 				}
 
 				$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . $kill_ip_sql;
 
-				$sql = "INSERT INTO ". BANLIST_TABLE ." (ban_ip, ban_time, ban_expire_time, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
-					VALUES ('" . $ip_list[$i] . "', $ban_time, $ban_expire_time, $ban_by_userid, '" . $db->sql_escape($ban_priv_reason) . "', " . $db->sql_escape($ban_pub_reason_mode) . ", '" . $db->sql_escape($ban_pub_reason) . "')";
+				$sql = "INSERT INTO ". BANLIST_TABLE ." (ban_ip, ban_start, ban_end, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
+					VALUES ('" . $db->sql_escape($ip_list[$i]) . "', $ban_start, $ban_end, $ban_by_userid, '" . $db->sql_escape($ban_priv_reason) . "', " . $db->sql_escape($ban_pub_reason_mode) . ", '" . $db->sql_escape($ban_pub_reason) . "')";
 				if (!$db->sql_query ($sql))
 				{
 					message_die (GENERAL_ERROR, "Couldn't insert ban_ip info into database", "", __LINE__, __FILE__, $sql);
@@ -321,8 +237,8 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 
 			if (!$in_banlist)
 			{
-				$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_email, ban_time, ban_expire_time, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
-					VALUES ('" . $db->sql_escape($email_list[$i]) . "', $ban_time, $ban_expire_time, $ban_by_userid, '" . $db->sql_escape($ban_priv_reason) . "', " . $db->sql_escape($ban_pub_reason_mode) . ", '" . $db->sql_escape($ban_pub_reason) . "')";
+				$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_email, ban_start, ban_end, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
+					VALUES ('" . $db->sql_escape($email_list[$i]) . "', $ban_start, $ban_end, $ban_by_userid, '" . $db->sql_escape($ban_priv_reason) . "', " . $db->sql_escape($ban_pub_reason_mode) . ", '" . $db->sql_escape($ban_pub_reason) . "')";
 				if (!$db->sql_query ($sql))
 				{
 					message_die (GENERAL_ERROR, "Couldn't insert ban_email info into database", "", __LINE__, __FILE__, $sql);
@@ -366,7 +282,7 @@ elseif ($_GET['mode'] == 'view_reasons')
 	{
 		$template->assign_block_vars('ban_ip', array(
 			'L_IP' => $lang['BM_IP'],
-			'IP' => str_replace('255', '*', decode_ip ($row['ban_ip']))
+			'IP' => str_replace('255', '*', $row['ban_ip'])
 			)
 		);
 	}
@@ -476,7 +392,8 @@ elseif (isset($_POST['add']) || ($mode == 'edit'))
 			$template->assign_block_vars('ip_row', array(
 				'L_IP_OR_HOSTNAME' => $lang['IP_hostname'],
 				'L_BAN_IP_EXPLAIN' => $lang['Ban_IP_explain'],
-				'BAN_IP' => (!empty($row['ban_ip'])) ? str_replace('255', '*', decode_ip ($row['ban_ip'])) : '')
+				'BAN_IP' => (!empty($row['ban_ip'])) ? str_replace('255', '*', $row['ban_ip']) : ''
+				)
 			);
 		}
 		elseif (isset($row['ban_email']))
@@ -489,9 +406,9 @@ elseif (isset($_POST['add']) || ($mode == 'edit'))
 			);
 		}
 
-		if (isset($row['ban_expire_time']))
+		if (isset($row['ban_end']))
 		{
-			$ban_expire_time = @getdate($row['ban_expire_time']);
+			$ban_expire_time = @getdate($row['ban_end']);
 
 			if ($ban_expire_time['hours'] < 13)
 			{
@@ -719,16 +636,16 @@ else
 			$ban_by = '-';
 		}
 
-		$ban_time = (isset($row['ban_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_time'], $config['board_timezone']) : '-';
-		$ban_expire_time = (isset($row['ban_expire_time'])) ? create_date ($lang['DATE_FORMAT'], $row['ban_expire_time'], $config['board_timezone']) : '-';
+		$ban_start = (isset($row['ban_start'])) ? create_date($lang['DATE_FORMAT'], $row['ban_start'], $config['board_timezone']) : '-';
+		$ban_end = (isset($row['ban_end'])) ? create_date($lang['DATE_FORMAT'], $row['ban_end'], $config['board_timezone']) : '-';
 		$ban_reason = (isset($row['ban_priv_reason']) || isset($row['ban_pub_reason'])) ? "<a href=\"javascript:void (0);\" onclick=\"window.open ('" . append_sid('admin_user_bantron.' . PHP_EXT . '?mode=view_reasons&amp;ban_id=' . $ban_id) . "','ban_reason','scrollbars=yes,width=540,height=450')\">" . $lang['View'] . '</a>' : '-';
 
 		$template->assign_block_vars('rowlist', array(
 			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 			'BAN_ID' => $ban_id,
-			'BAN_TIME' => $ban_time,
-			'BAN_EXPIRE_TIME' => $ban_expire_time,
-			'U_BAN_EDIT' => append_sid ('admin_user_bantron.' . PHP_EXT . '?mode=edit&amp;ban_id=' . $ban_id),
+			'BAN_TIME' => $ban_start,
+			'BAN_EXPIRE_TIME' => $ban_end,
+			'U_BAN_EDIT' => append_sid('admin_user_bantron.' . PHP_EXT . '?mode=edit&amp;ban_id=' . $ban_id),
 			'BAN_REASON' => $ban_reason,
 			'BAN_BY' => $ban_by
 			)
@@ -746,7 +663,7 @@ else
 
 			case 'ip':
 				$template->assign_block_vars('rowlist.ip_content', array(
-					'IP' => str_replace ('255', '*', decode_ip ($row['ban_ip']))
+					'IP' => str_replace('255', '*', $row['ban_ip'])
 					)
 				);
 
@@ -767,7 +684,7 @@ else
 				);
 
 				$template->assign_block_vars('rowlist.ip_content', array(
-					'IP' => (empty ($row['ban_ip'])) ? '-' : str_replace ('255', '*', decode_ip ($row['ban_ip']))
+					'IP' => (empty ($row['ban_ip'])) ? '-' : str_replace('255', '*', $row['ban_ip'])
 					)
 				);
 

@@ -34,10 +34,11 @@ mgl_write_log('L', $mgl_sitename, $mgl_subject, $mgl_log_file, $mgl_notification
 function mgl_write_log($action, $sitename, $subject, $log_file, $notification_email)
 {
 	global $REQUEST_URI, $REMOTE_ADDR, $HTTP_USER_AGENT, $REDIRECT_ERROR_NOTES, $SERVER_NAME, $HTTP_REFERER;
-	global $userdata;
+	global $user;
 
 	$remote_address = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
-	$user_agent = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
+	$remote_address = (!empty($remote_address) && ($remote_address != '::1')) ? $remote_address : '127.0.0.1';
+	$user_agent_log = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
 	$referer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getenv('HTTP_REFERER');
 	$referer = ($referer == '') ? $HTTP_REFERER : $referer;
 	$referer = preg_replace('/[?&]{1}sid=[A-Za-z0-9]{32}/', '', $referer);
@@ -51,20 +52,20 @@ function mgl_write_log($action, $sitename, $subject, $log_file, $notification_em
 	{
 		/*
 		$message = '[' . $date . ']';
-		$message .= '[USER: ' . $userdata['username'] . ' - (ID: ' . $userdata['user_id'] . ')]';
+		$message .= '[USER: ' . $user->data['username'] . ' - (ID: ' . $user->data['user_id'] . ')]';
 		$message .= ' [URL: ' . $script_name . ' ]';
 		$message .= ' [REF: ' . $referer . ' ]';
 		$message .= ' [IP: ' . $remote_address . ']';
-		$message .= ' [Client: ' . $user_agent . ']';
+		$message .= ' [Client: ' . $user_agent_log . ']';
 		$message .= "\n";
 		*/
 		$message = '"' . $date . '";';
-		$message .= '"' . $userdata['username'] . '";';
-		$message .= '"' . $userdata['user_id'] . '";';
+		$message .= '"' . $user->data['username'] . '";';
+		$message .= '"' . $user->data['user_id'] . '";';
 		$message .= '"' . str_replace('"', '\'', $script_name) . '";';
 		$message .= '"' . str_replace('"', '\'', $referer) . '";';
 		$message .= '"' . $remote_address . '";';
-		$message .= '"' . str_replace('"', '\'', $user_agent) . '";';
+		$message .= '"' . str_replace('"', '\'', $user_agent_log) . '";';
 		$message .= "\n";
 		$fp = fopen ($log_file, "a+");
 		fwrite($fp, $message);

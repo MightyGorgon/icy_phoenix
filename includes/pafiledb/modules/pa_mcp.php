@@ -19,7 +19,7 @@ class pafiledb_mcp extends pafiledb_public
 {
 	function main($action)
 	{
-		global $db, $config, $lang, $images, $userdata, $debug;
+		global $db, $config, $lang, $images, $user, $debug;
 		global $pafiledb_config, $template, $pafiledb_functions;
 
 		$this->init();
@@ -55,9 +55,9 @@ class pafiledb_mcp extends pafiledb_public
 		// Pafiledb auth for mcp
 		//===================================================
 
-		if((!$this->auth[$cat_id]['auth_mod']) || !$userdata['session_logged_in'])
+		if((!$this->auth[$cat_id]['auth_mod']) || !$user->data['session_logged_in'])
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
 			}
@@ -103,7 +103,7 @@ class pafiledb_mcp extends pafiledb_public
 
 		if(($mode == 'do_approve') || ($mode == 'do_unapprove'))
 		{
-			if (($pafiledb_config['validator'] == 'validator_mod' && $this->auth[$cat_id]['auth_mod']) || $userdata['user_level'] == ADMIN)
+			if (($pafiledb_config['validator'] == 'validator_mod' && $this->auth[$cat_id]['auth_mod']) || $user->data['user_level'] == ADMIN)
 			{
 				if(is_array($file_ids) && !empty($file_ids))
 				{

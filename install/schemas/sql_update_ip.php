@@ -54,6 +54,7 @@ switch ($req_version)
 	case '122552': $current_ip_version = '1.2.25.52'; break;
 	case '13053': $current_ip_version = '1.3.0.53'; break;
 	case '13053a': $current_ip_version = '1.3.0.53a'; break;
+	case '13053b': $current_ip_version = '1.3.0.53b'; break;
 	case '13154': $current_ip_version = '1.3.1.54'; break;
 	case '13255': $current_ip_version = '1.3.2.55'; break;
 	case '13356': $current_ip_version = '1.3.3.56'; break;
@@ -152,7 +153,7 @@ if (substr($mode, 0, 6) == 'update')
 			`comment_cat_id` int(11) NOT NULL default '0',
 			`comment_user_id` mediumint(8) NOT NULL default '0',
 			`comment_username` varchar(32) default '',
-			`comment_user_ip` varchar(8) NOT NULL default '',
+			`comment_user_ip` varchar(40) NOT NULL default '',
 			`comment_time` int(11) unsigned NOT NULL default '0',
 			`comment_text` TEXT NOT NULL,
 			`comment_edit_time` int(11) unsigned default NULL,
@@ -174,7 +175,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "album_rate` (
 			`rate_pic_id` int(11) unsigned NOT NULL default '0',
 			`rate_user_id` mediumint(8) NOT NULL default '0',
-			`rate_user_ip` char(8) NOT NULL default '',
+			`rate_user_ip` varchar(40) NOT NULL default '',
 			`rate_point` tinyint(3) unsigned NOT NULL default '0',
 			`rate_hon_point` tinyint(3) NOT NULL default '0',
 			KEY `rate_pic_id` (`rate_pic_id`),
@@ -280,8 +281,8 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE " . $table_prefix . "auth_access ADD `auth_mod` tinyint(1) NOT NULL default '0'";
 		$sql[] = "ALTER TABLE " . $table_prefix . "auth_access ADD `auth_news` tinyint(1) NOT NULL default '0'";
 		$sql[] = "ALTER TABLE " . $table_prefix . "auth_access ADD `auth_cal` tinyint(1) NOT NULL default '0'";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_time` INT(11) DEFAULT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_expire_time` INT(11) DEFAULT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_start` INT(11) DEFAULT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_end` INT(11) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_by_userid` MEDIUMINT(8) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_priv_reason` TEXT DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_pub_reason_mode` TINYINT(1) DEFAULT NULL";
@@ -512,8 +513,8 @@ if (substr($mode, 0, 6) == 'update')
 			`link_active` tinyint(1) NOT NULL default '0',
 			`link_hits` int(10) unsigned NOT NULL default '0',
 			`user_id` mediumint(8) NOT NULL default '0',
-			`user_ip` varchar(8) NOT NULL default '',
-			`last_user_ip` varchar(8) NOT NULL default '',
+			`user_ip` varchar(40) NOT NULL default '',
+			`last_user_ip` varchar(40) NOT NULL default '',
 			PRIMARY KEY (`link_id`)
 		)";
 
@@ -527,7 +528,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "logins` (
 			`login_id` mediumint(8) unsigned NOT NULL auto_increment,
 			`login_userid` mediumint(8) NOT NULL default '0',
-			`login_ip` varchar(8) NOT NULL default '0',
+			`login_ip` varchar(40) NOT NULL default '0',
 			`login_user_agent` varchar(255) NOT NULL default 'n/a',
 			`login_time` int(11) NOT NULL default '0',
 			PRIMARY KEY (`login_id`)
@@ -636,7 +637,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_download_info` (
 			`file_id` mediumint(8) NOT NULL default '0',
 			`user_id` mediumint(8) NOT NULL default '0',
-			`downloader_ip` varchar(8) NOT NULL default '',
+			`downloader_ip` varchar(40) NOT NULL default '',
 			`downloader_os` varchar(255) NOT NULL default '',
 			`downloader_browser` varchar(255) NOT NULL default '',
 			`browser_version` varchar(255) NOT NULL default ''
@@ -645,7 +646,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_files` (
 			`file_id` int(10) NOT NULL auto_increment,
 			`user_id` mediumint(8) NOT NULL default '0',
-			`poster_ip` varchar(8) NOT NULL default '',
+			`poster_ip` varchar(40) NOT NULL default '',
 			`file_name` TEXT NOT NULL,
 			`file_size` int(20) NOT NULL default '0',
 			`unique_name` varchar(255) NOT NULL default '',
@@ -710,7 +711,7 @@ if (substr($mode, 0, 6) == 'update')
 			`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
 			`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
 			`privmsgs_date` int(11) NOT NULL default '0',
-			`privmsgs_ip` varchar(8) NOT NULL default '',
+			`privmsgs_ip` varchar(40) NOT NULL default '',
 			`privmsgs_enable_bbcode` tinyint(1) NOT NULL default '1',
 			`privmsgs_enable_html` tinyint(1) NOT NULL default '0',
 			`privmsgs_enable_smilies` tinyint(1) NOT NULL default '1',
@@ -735,8 +736,8 @@ if (substr($mode, 0, 6) == 'update')
 			`user_id` mediumint(8) unsigned NOT NULL default '0',
 			`topic_id` mediumint(8) unsigned NOT NULL default '0',
 			`rating` mediumint(8) unsigned NOT NULL default '0',
-			`user_ip` char(8) NOT NULL default '',
-			`rating_time` int(10) unsigned NOT NULL default '0',
+			`user_ip` varchar(40) NOT NULL default '',
+			`rating_time` int(11) NOT NULL default '0',
 			PRIMARY KEY (`rating_id`),
 			KEY `topic_id` (`topic_id`)
 		)";
@@ -745,14 +746,14 @@ if (substr($mode, 0, 6) == 'update')
 			`referrer_id` int(11) NOT NULL auto_increment,
 			`referrer_host` varchar(255) NOT NULL default '',
 			`referrer_url` varchar(255) NOT NULL default '',
-			`referrer_ip` varchar(8) NOT NULL default '',
+			`referrer_ip` varchar(40) NOT NULL default '',
 			`referrer_hits` int(11) NOT NULL default '1',
 			`referrer_firstvisit` int(11) NOT NULL default '0',
 			`referrer_lastvisit` int(11) NOT NULL default '0',
 			PRIMARY KEY (`referrer_id`)
 		)";
 
-		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` ADD `session_user_agent` VARCHAR(255) NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` ADD `session_browser` VARCHAR(255) NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` ADD `session_admin` TINYINT(2) DEFAULT '0' NOT NULL";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "sessions_keys` (
@@ -770,7 +771,7 @@ if (substr($mode, 0, 6) == 'update')
 			`shout_user_id` mediumint(8) NOT NULL default '0',
 			`shout_group_id` mediumint(8) NOT NULL default '0',
 			`shout_session_time` int(11) NOT NULL default '0',
-			`shout_ip` varchar(8) NOT NULL default '',
+			`shout_ip` varchar(40) NOT NULL default '',
 			`shout_text` TEXT NOT NULL,
 			`shout_active` mediumint(8) NOT NULL default '0',
 			`enable_bbcode` tinyint(1) NOT NULL default '0',
@@ -841,7 +842,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_calendar_time` INT(11) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_calendar_duration` INT(11) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_rating` DOUBLE UNSIGNED DEFAULT '0' NOT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_http_agents` VARCHAR(255) NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_browser` VARCHAR(255) NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_rank2` INT(11) DEFAULT '-1'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_rank3` INT(11) DEFAULT '-2'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_rank4` INT(11) DEFAULT '-2'";
@@ -1359,7 +1360,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_config` VALUES ('validator', 'validator_admin')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_config` VALUES ('pm_notify', '0')";
 
-		$sql[] = "INSERT INTO `" . $table_prefix . "referrers` VALUES (1, 'icyphoenix.com', 'http://icyphoenix.com', '7f000001', 1, 1121336515, 1121336515)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "referrers` VALUES (1, 'icyphoenix.com', 'http://icyphoenix.com', '127.0.0.1', 1, 1121336515, 1121336515)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('return_limit', '10')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('version', '2.1.5')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('modules_dir', 'includes/stat_modules')";
@@ -2025,7 +2026,7 @@ if (substr($mode, 0, 6) == 'update')
 		// Create Login History Table
 		$sql[] = "CREATE TABLE `" . $table_prefix . "ctracker_loginhistory` (
 				`ct_user_id` int(10) default NULL,
-				`ct_login_ip` varchar(16) default NULL,
+				`ct_login_ip` varchar(40) default NULL,
 				`ct_login_time` int(11) NOT NULL default '0'
 				);";
 
@@ -2247,7 +2248,7 @@ if (substr($mode, 0, 6) == 'update')
 			`user_id` MEDIUMINT(8) NOT NULL,
 			`shouter_name` VARCHAR(30) NOT NULL DEFAULT 'guest',
 			`shout_text` TEXT NOT NULL,
-			`shouter_ip` VARCHAR(8) NOT NULL DEFAULT '',
+			`shouter_ip` VARCHAR(40) NOT NULL DEFAULT '',
 			`shout_time` INT(11) NOT NULL,
 			PRIMARY KEY (shout_id)
 		)";
@@ -2285,7 +2286,7 @@ if (substr($mode, 0, 6) == 'update')
 			`session_id` int(10) NOT NULL auto_increment,
 			`session_user_id` mediumint(8) NOT NULL default '0',
 			`session_username` varchar(25) NOT NULL default '',
-			`session_ip` varchar(8) NOT NULL default '0',
+			`session_ip` varchar(40) NOT NULL default '0',
 			`session_start` int(11) NOT NULL default '0',
 			`session_time` int(11) NOT NULL default '0',
 			PRIMARY KEY (`session_id`)
@@ -2648,7 +2649,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "dl_banlist` (
 			ban_id INT(11) AUTO_INCREMENT NOT NULL,
 			user_id MEDIUMINT(8) DEFAULT 0 NOT NULL,
-			user_ip CHAR(8) DEFAULT '' NOT NULL,
+			user_ip VARCHAR(40) DEFAULT '' NOT NULL,
 			user_agent VARCHAR(50) DEFAULT '' NOT NULL,
 			username VARCHAR(25) DEFAULT '' NOT NULL,
 			guests TINYINT(1) DEFAULT 0 NOT NULL,
@@ -2740,7 +2741,7 @@ if (substr($mode, 0, 6) == 'update')
 			username VARCHAR(32) NOT NULL DEFAULT '',
 			traffic BIGINT(20) NOT NULL DEFAULT '0',
 			direction TINYINT(1) NOT NULL DEFAULT '0',
-			user_ip VARCHAR(8) NOT NULL DEFAULT '',
+			user_ip VARCHAR(40) NOT NULL DEFAULT '',
 			browser VARCHAR(20) NOT NULL DEFAULT '',
 			time_stamp INT(11) NOT NULL DEFAULT '0',
 		PRIMARY KEY (dl_id)
@@ -2870,10 +2871,10 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('write_errors_log', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('write_digests_log', '0')";
 		$sql[] = "CREATE TABLE `" . $table_prefix . "attachments_stats` (
-			`attach_id` mediumint(8) unsigned NOT NULL default '0',
-			`user_id` mediumint(8) NOT NULL default '0',
-			`user_ip` VARCHAR(8) NOT NULL DEFAULT '',
-			`user_http_agents` VARCHAR(255) NOT NULL DEFAULT '',
+			`attach_id` MEDIUMINT(8) unsigned NOT NULL default '0',
+			`user_id` MEDIUMINT(8) NOT NULL default '0',
+			`user_ip` VARCHAR(40) NOT NULL DEFAULT '',
+			`user_browser` VARCHAR(255) NOT NULL DEFAULT '',
 			`download_time` INT(11) NOT NULL DEFAULT '0',
 			KEY `attach_id` (`attach_id`)
 		)";
@@ -3117,7 +3118,7 @@ if (substr($mode, 0, 6) == 'update')
 				`forum_id` smallint(5) unsigned NOT NULL default '0',
 				`poster_id` mediumint(8) NOT NULL default '0',
 				`post_time` int(11) NOT NULL default '0',
-				`poster_ip` varchar(8) NOT NULL default '',
+				`poster_ip` varchar(40) NOT NULL default '',
 				`post_username` varchar(25) default NULL,
 				`post_subject` varchar(255) default NULL,
 				`post_text` TEXT NOT NULL,
@@ -3167,7 +3168,7 @@ if (substr($mode, 0, 6) == 'update')
 				`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
 				`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
 				`privmsgs_date` int(11) NOT NULL default '0',
-				`privmsgs_ip` varchar(8) NOT NULL default '',
+				`privmsgs_ip` varchar(40) NOT NULL default '',
 				`privmsgs_enable_bbcode` tinyint(1) NOT NULL default '1',
 				`privmsgs_enable_html` tinyint(1) NOT NULL default '0',
 				`privmsgs_enable_smilies` tinyint(1) NOT NULL default '1',
@@ -3445,7 +3446,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE " . $table_prefix . "registration (
 			topic_id mediumint(8) unsigned NOT NULL default '0',
 			registration_user_id mediumint(8) NOT NULL default '0',
-			registration_user_ip varchar(8) NOT NULL default '',
+			registration_user_ip varchar(40) NOT NULL default '',
 			registration_time int(11) NOT NULL default '0',
 			registration_status tinyint(1) NOT NULL default '0',
 			KEY topic_id (topic_id),
@@ -3528,6 +3529,7 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.3.0.53 */
 		case '1.3.0.53':
 		case '1.3.0.53a':
+		case '1.3.0.53b':
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('gheader', 'gh', 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('gfooter', 'gf', 0)";
 
@@ -4022,6 +4024,159 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'digests_php_cron'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'digests_php_cron_lock'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'digests_last_send_time'";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('robots_index_topics_no_replies', '1')";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "rate_results` CHANGE `rating_time` `rating_time` int(11) NOT NULL DEFAULT '0'";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_permissions` mediumtext NOT NULL AFTER `user_mask`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_perm_from` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_permissions`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_http_agents` `user_browser` varchar(255) DEFAULT '' NOT NULL";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "attachments_stats` CHANGE `user_http_agents` `user_browser` varchar(255) DEFAULT '' NOT NULL";
+
+		$sql_tmp = "SHOW TABLES LIKE '_old_" . $table_prefix . "sessions'";
+		$result_tmp = $db->sql_query($sql_tmp);
+		if (!$row = $db->sql_fetchrow($result_tmp))
+		{
+			$sql[] = "CREATE TABLE `___sessions___` (
+				`session_id` varchar(32) NOT NULL DEFAULT '',
+				`session_user_id` mediumint(8) NOT NULL DEFAULT '0',
+				`session_start` int(11) NOT NULL DEFAULT '0',
+				`session_time` int(11) NOT NULL DEFAULT '0',
+				`session_ip` varchar(40) NOT NULL DEFAULT '0',
+				`session_browser` varchar(255) DEFAULT '' NOT NULL,
+				`session_page` varchar(255) NOT NULL DEFAULT '',
+				`session_logged_in` tinyint(1) NOT NULL DEFAULT '0',
+				`session_forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+				`session_topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+				`session_last_visit` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+				`session_forwarded_for` varchar(255) DEFAULT '' NOT NULL,
+				`session_viewonline` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+				`session_autologin` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+				`session_admin` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+				PRIMARY KEY (`session_id`),
+				KEY `session_user_id` (`session_user_id`),
+				KEY `session_fid` (`session_forum_id`)
+			)";
+
+			$sql[] = "INSERT INTO `___sessions___`
+			SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_browser, s.session_page, s.session_logged_in, 0, 0, '', 1, 0, s.session_admin
+			FROM `" . $table_prefix . "sessions` s
+			ORDER BY s.session_id";
+
+			$sql[] = "RENAME TABLE `" . $table_prefix . "sessions` TO `_old_" . $table_prefix . "sessions`";
+			$sql[] = "RENAME TABLE `___sessions___` TO `" . $table_prefix . "sessions`";
+		}
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` CHANGE `group_name` `group_name` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` CHANGE `group_description` `group_description` text NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD `group_founder_manage` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_type`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD `group_display` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_description`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD `group_sig_chars` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_legend_order`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD `group_receive_pm` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_sig_chars`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD `group_message_limit` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_receive_pm`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD `group_max_recipients` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_message_limit`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD `group_skip_auth` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_max_recipients`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD INDEX `group_legend_name` (`group_legend`, `group_name`)";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "user_group` CHANGE `user_pending` `user_pending` tinyint(1) DEFAULT '1' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "user_group` ADD `group_leader` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "user_group` ADD INDEX `group_leader` (`group_leader`)";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('limit_load', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('limit_search_load', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ip_check', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('browser_check', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('referer_validation', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('force_server_vars', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('session_last_gc', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('active_sessions', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('form_token_lifetime', '7200')";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "log` (
+			`log_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
+			`log_type` tinyint(4) DEFAULT '0' NOT NULL,
+			`user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`reportee_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`log_ip` varchar(40) DEFAULT '' NOT NULL,
+			`log_time` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+			`log_operation` text NOT NULL,
+			`log_data` mediumtext NOT NULL,
+			PRIMARY KEY (`log_id`),
+			KEY log_type (`log_type`),
+			KEY forum_id (`forum_id`),
+			KEY topic_id (`topic_id`),
+			KEY reportee_id (`reportee_id`),
+			KEY user_id (`user_id`)
+		)";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` CHANGE `ban_time` `ban_start` int(11) DEFAULT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` CHANGE `ban_expire_time` `ban_end` int(11) DEFAULT NULL";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "ajax_shoutbox` CHANGE `shouter_ip` `shouter_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "ajax_shoutbox_sessions` CHANGE `session_ip` `session_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "album_comment` CHANGE `comment_user_ip` `comment_user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "album_rate` CHANGE `rate_user_ip` `rate_user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "attachments_stats` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` CHANGE `ban_ip` `ban_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "ctracker_loginhistory` CHANGE `ct_login_ip` `ct_login_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "dl_banlist` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "dl_stats` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "kb_votes` CHANGE `votes_ip` `votes_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "links` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "links` CHANGE `last_user_ip` `last_user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "logins` CHANGE `login_ip` `login_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "pa_download_info` CHANGE `downloader_ip` `downloader_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "pa_files` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "pa_votes` CHANGE `votes_ip` `votes_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "poll_votes` CHANGE `vote_user_ip` `vote_user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "privmsgs` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "privmsgs_archive` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "rate_results` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "referrers` CHANGE `referrer_ip` `referrer_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "registration` CHANGE `registration_user_ip` `registration_user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` CHANGE `session_ip` `session_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions_keys` CHANGE `last_ip` `last_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "shout` CHANGE `shout_ip` `shout_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `ct_last_used_ip` `ct_last_used_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `ct_last_ip` `ct_last_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_registered_ip` `user_registered_ip` varchar(40) NOT NULL DEFAULT ''";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "blogs_posts` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "guestbooks_posts` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DEFAULT ''";
+
+		$sql[] = "UPDATE `" . $table_prefix . "ajax_shoutbox` ip SET ip.shouter_ip = INET_NTOA(CONV(ip.shouter_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "ajax_shoutbox_sessions` ip SET ip.session_ip = INET_NTOA(CONV(ip.session_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "album_comment` ip SET ip.comment_user_ip = INET_NTOA(CONV(ip.comment_user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "album_rate` ip SET ip.rate_user_ip = INET_NTOA(CONV(ip.rate_user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "attachments_stats` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "banlist` ip SET ip.ban_ip = INET_NTOA(CONV(ip.ban_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "dl_banlist` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "dl_stats` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "kb_votes` ip SET ip.votes_ip = INET_NTOA(CONV(ip.votes_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "links` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "links` ip SET ip.last_user_ip = INET_NTOA(CONV(ip.last_user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "logins` ip SET ip.login_ip = INET_NTOA(CONV(ip.login_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "pa_download_info` ip SET ip.downloader_ip = INET_NTOA(CONV(ip.downloader_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "pa_files` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "pa_votes` ip SET ip.votes_ip = INET_NTOA(CONV(ip.votes_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "poll_votes` ip SET ip.vote_user_ip = INET_NTOA(CONV(ip.vote_user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "privmsgs` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "privmsgs_archive` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "rate_results` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "referrers` ip SET ip.referrer_ip = INET_NTOA(CONV(ip.referrer_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "registration` ip SET ip.registration_user_ip = INET_NTOA(CONV(ip.registration_user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "sessions` ip SET ip.session_ip = INET_NTOA(CONV(ip.session_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "sessions_keys` ip SET ip.last_ip = INET_NTOA(CONV(ip.last_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "shout` ip SET ip.shout_ip = INET_NTOA(CONV(ip.shout_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "users` ip SET ip.user_registered_ip = INET_NTOA(CONV(ip.user_registered_ip, 16, 10))";
+
+		$sql[] = "UPDATE `" . $table_prefix . "blogs_posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "guestbooks_posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10))";
 
 		/* Updating from IP 1.3.15.68 */
 		case '1.3.15.68':

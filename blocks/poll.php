@@ -24,7 +24,7 @@ if(!function_exists('cms_block_poll'))
 {
 	function cms_block_poll()
 	{
-		global $db, $cache, $config, $template, $images, $userdata, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 		global $kb_mode_append, $is_auth, $lofi, $bbcode;
 
 		$template->_tpldata['poll_option.'] = array();

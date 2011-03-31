@@ -29,8 +29,9 @@ include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $cms_page['page_id'] = 'memberlist';
@@ -89,12 +90,12 @@ $sort_array = array(
 	'w' => array('lang' => $lang['SORT_ONLINE'], 'mode' => 'online', 'sql' => 'u.user_session_time'),
 );
 
-if ($userdata['user_level'] == ADMIN)
+if ($user->data['user_level'] == ADMIN)
 {
 	$sort_array['e'] = array('lang' => $lang['SORT_EMAIL'], 'mode' => 'email', 'sql' => 'u.user_email');
 }
 
-if (!empty($userdata['session_logged_in']))
+if (!empty($user->data['session_logged_in']))
 {
 	$sort_array['l'] = array('lang' => $lang['SORT_LASTLOGON'], 'mode' => 'lastlogon', 'sql' => 'u.user_session_time');
 	//$sort_array['l'] = array('lang' => $lang['SORT_LASTLOGON'], 'mode' => 'lastlogon', 'sql' => 'u.user_lastlogon');
@@ -155,7 +156,7 @@ $search_params = array('username', 'email', 'icq', 'aim', 'yahoo', 'msn', 'jabbe
 // We validate form and field here, only id/class allowed
 $form = (!preg_match('/^[a-z0-9_-]+$/i', $form)) ? '' : $form;
 $field = (!preg_match('/^[a-z0-9_-]+$/i', $field)) ? '' : $field;
-if ((($action == 'searchuser') || sizeof(array_intersect(array_keys($_GET), $search_params)) > 0) && ($userdata['user_level'] == ADMIN))
+if ((($action == 'searchuser') || sizeof(array_intersect(array_keys($_GET), $search_params)) > 0) && ($user->data['user_level'] == ADMIN))
 {
 	$username = request_var('username', '', true);
 	$email = strtolower(request_var('email', ''));
@@ -203,7 +204,7 @@ if ((($action == 'searchuser') || sizeof(array_intersect(array_keys($_GET), $sea
 	}
 
 	$sql_where .= ($username) ? ' AND LOWER(u.username) ' . $db->sql_like_expression(str_replace('*', $db->any_char, utf8_clean_string($username))) : '';
-	$sql_where .= (($userdata['user_level'] == ADMIN) && $email) ? ' AND u.user_email ' . $db->sql_like_expression(str_replace('*', $db->any_char, $email)) . ' ' : '';
+	$sql_where .= (($user->data['user_level'] == ADMIN) && $email) ? ' AND u.user_email ' . $db->sql_like_expression(str_replace('*', $db->any_char, $email)) . ' ' : '';
 	$sql_where .= ($aim) ? ' AND u.user_aim ' . $db->sql_like_expression(str_replace('*', $db->any_char, $aim)) . ' ' : '';
 	$sql_where .= ($icq) ? ' AND u.user_icq ' . $db->sql_like_expression(str_replace('*', $db->any_char, $icq)) . ' ' : '';
 	$sql_where .= ($jabber) ? ' AND u.user_jabber ' . $db->sql_like_expression(str_replace('*', $db->any_char, $jabber)) . ' ' : '';
@@ -212,10 +213,10 @@ if ((($action == 'searchuser') || sizeof(array_intersect(array_keys($_GET), $sea
 	$sql_where .= ($yahoo) ? ' AND u.user_yim ' . $db->sql_like_expression(str_replace('*', $db->any_char, $yahoo)) . ' ' : '';
 	$sql_where .= (is_numeric($count) && isset($find_key_match[$count_select])) ? ' AND u.user_posts ' . $find_key_match[$count_select] . ' ' . (int) $count . ' ' : '';
 	$sql_where .= (sizeof($joined) > 1 && isset($find_key_match[$joined_select])) ? " AND u.user_regdate " . $find_key_match[$joined_select] . ' ' . gmmktime(0, 0, 0, intval($joined[1]), intval($joined[2]), intval($joined[0])) : '';
-	$sql_where .= (!empty($userdata['session_logged_in']) && sizeof($active) > 1 && isset($find_key_match[$active_select])) ? " AND u.user_lastlogon " . $find_key_match[$active_select] . ' ' . gmmktime(0, 0, 0, $active[1], intval($active[2]), intval($active[0])) : '';
+	$sql_where .= (!empty($user->data['session_logged_in']) && sizeof($active) > 1 && isset($find_key_match[$active_select])) ? " AND u.user_lastlogon " . $find_key_match[$active_select] . ' ' . gmmktime(0, 0, 0, $active[1], intval($active[2]), intval($active[0])) : '';
 	$sql_where .= ($search_group_id) ? " AND u.user_id = ug.user_id AND ug.group_id = $search_group_id AND ug.user_pending = 0 " : '';
 
-	if ($ipdomain && ($userdata['user_level'] == ADMIN))
+	if ($ipdomain && ($user->data['user_level'] == ADMIN))
 	{
 		if (strspn($ipdomain, 'abcdefghijklmnopqrstuvwxyz'))
 		{
@@ -223,7 +224,7 @@ if ((($action == 'searchuser') || sizeof(array_intersect(array_keys($_GET), $sea
 
 			if ($hostnames !== false)
 			{
-				$ips = "'" . implode('\', \'', array_map(array($db, 'sql_escape'), array_map('encode_ip', preg_replace('#([0-9]{1,3}\.[0-9]{1,3}[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})#', "\\1", gethostbynamel($ipdomain))))) . "'";
+				$ips = "'" . implode('\', \'', array_map(array($db, 'sql_escape'), preg_replace('#([0-9]{1,3}\.[0-9]{1,3}[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})#', "\\1", gethostbynamel($ipdomain)))) . "'";
 			}
 			else
 			{
@@ -328,7 +329,7 @@ if (empty($cash_condition))
 			$sql_where = "AND u.user_level != 0";
 			break;
 		case 'online':
-			if ($userdata['user_level'] == ADMIN)
+			if ($user->data['user_level'] == ADMIN)
 			{
 				$sql_where = "AND u.user_session_time >= $last_x_mins";
 			}
@@ -338,7 +339,7 @@ if (empty($cash_condition))
 			}
 			break;
 		case 'lastlogon':
-			if ($userdata['user_level'] != ADMIN)
+			if ($user->data['user_level'] != ADMIN)
 			{
 				$sql_where = "AND u.user_allow_viewonline <> 0";
 			}
@@ -429,7 +430,7 @@ if (!empty($alphanum))
 	$sql_where = ($alphanum == '#') ? "AND LOWER(username) NOT RLIKE '^[a-z]'" : "AND LOWER(username) LIKE '" . $db->sql_escape($alphanum) . "%'";
 }
 
-if (($action == 'searchuser') && ($userdata['user_level'] == ADMIN))
+if (($action == 'searchuser') && ($user->data['user_level'] == ADMIN))
 {
 	$template->assign_vars(array(
 		'USERNAME' => $username,
@@ -445,8 +446,8 @@ if (($action == 'searchuser') && ($userdata['user_level'] == ADMIN))
 		'COUNT' => $count,
 		'IP' => $ipdomain,
 
-		'S_IP_SEARCH_ALLOWED' => ($userdata['user_level'] == ADMIN) ? true : false,
-		'S_EMAIL_SEARCH_ALLOWED' => ($userdata['user_level'] == ADMIN) ? true : false,
+		'S_IP_SEARCH_ALLOWED' => ($user->data['user_level'] == ADMIN) ? true : false,
+		'S_EMAIL_SEARCH_ALLOWED' => ($user->data['user_level'] == ADMIN) ? true : false,
 		'S_IN_SEARCH_POPUP' => ($form && $field) ? true : false,
 		'S_SEARCH_USER' => true,
 		'S_FORM_NAME' => $form,
@@ -692,19 +693,19 @@ if (sizeof($user_list))
 			$age = ' ';
 		}
 
-		$deluser_url = (($userdata['user_level'] == ADMIN) ? append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) : '');
+		$deluser_url = (($user->data['user_level'] == ADMIN) ? append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) : '');
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 		$template->assign_block_vars('memberrow', array(
 			'ROW_NUMBER' => $i + ($start + 1),
-			//'ROW_NUMBER' => $i + ($_GET['start'] + 1) . (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
+			//'ROW_NUMBER' => $i + ($_GET['start'] + 1) . (($user->data['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 			'FROM' => $from,
 			'JOINED' => $joined,
-			'DELETE' => (($userdata['user_level'] == ADMIN) ? '&nbsp;<a href="' . $deluser_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
+			'DELETE' => (($user->data['user_level'] == ADMIN) ? '&nbsp;<a href="' . $deluser_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),
 
 			// Start add - Last visit MOD
-			'LAST_LOGON' => ($userdata['user_level'] == ADMIN || (!$config['hidde_last_logon'] && $row['user_allow_viewonline'])) ? (!empty($row['last_visit']) ? create_date($config['default_dateformat'], $row['last_visit'], $config['board_timezone']) : $lang['Never_last_logon']) : $lang['Hidde_last_logon'],
+			'LAST_LOGON' => ($user->data['user_level'] == ADMIN || (!$config['hidde_last_logon'] && $row['user_allow_viewonline'])) ? (!empty($row['last_visit']) ? create_date($config['default_dateformat'], $row['last_visit'], $config['board_timezone']) : $lang['Never_last_logon']) : $lang['Hidde_last_logon'],
 			// End add - Last visit MOD
 
 			'POSTS' => $posts,
@@ -715,7 +716,7 @@ if (sizeof($user_list))
 			'SEARCH' => $search,
 			'PM_IMG' => $pm_img,
 			'PM' => $pm,
-			'EMAIL_IMG' => (!$userdata['session_logged_in']) ? '' : $email_img,
+			'EMAIL_IMG' => (!$user->data['session_logged_in']) ? '' : $email_img,
 			'EMAIL' => $email,
 			'WWW_IMG' => $www_img,
 			'WWW' => $www,
@@ -826,7 +827,7 @@ $template->assign_vars(array(
 	'U_SORT_AIM' => $sort_url . '&amp;sk=h&amp;sd=' . (($sort_key == 'h' && $sort_dir == 'a') ? 'd' : 'a'),
 	'U_SORT_MSN' => $sort_url . '&amp;sk=i&amp;sd=' . (($sort_key == 'i' && $sort_dir == 'a') ? 'd' : 'a'),
 	'U_SORT_YIM' => $sort_url . '&amp;sk=j&amp;sd=' . (($sort_key == 'j' && $sort_dir == 'a') ? 'd' : 'a'),
-	'U_SORT_ACTIVE' => ($userdata['user_level'] == ADMIN) ? $sort_url . '&amp;sk=l&amp;sd=' . (($sort_key == 'l' && $sort_dir == 'a') ? 'd' : 'a') : '',
+	'U_SORT_ACTIVE' => ($user->data['user_level'] == ADMIN) ? $sort_url . '&amp;sk=l&amp;sd=' . (($sort_key == 'l' && $sort_dir == 'a') ? 'd' : 'a') : '',
 	'U_SORT_RANK' => $sort_url . '&amp;sk=m&amp;sd=' . (($sort_key == 'm' && $sort_dir == 'a') ? 'd' : 'a'),
 	'U_LIST_CHAR' => $sort_url . '&amp;sk=a&amp;sd=' . (($sort_key == 'l' && $sort_dir == 'a') ? 'd' : 'a'),
 

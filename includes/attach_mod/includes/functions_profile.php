@@ -28,14 +28,14 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function display_upload_attach_box_limits($user_id, $group_id = 0)
 {
-	global $config, $lang, $db, $template, $userdata, $profiledata, $images;
+	global $config, $lang, $db, $template, $user, $profiledata, $images;
 
 	if (intval($config['disable_attachments_mod']))
 	{
 		return;
 	}
 
-	if (($userdata['user_level'] != ADMIN) && ($userdata['user_id'] != $user_id))
+	if (($user->data['user_level'] != ADMIN) && ($user->data['user_id'] != $user_id))
 	{
 		return;
 	}
@@ -117,7 +117,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 		}
 		else
 		{
-			$attachments->get_quota_limits($userdata, $user_id);
+			$attachments->get_quota_limits($user->data, $user_id);
 		}
 	}
 
@@ -224,7 +224,7 @@ function display_upload_attach_box_limits($user_id, $group_id = 0)
 	$template->assign_vars(array(
 		'L_UACP' => $lang['UACP'],
 		'L_UPLOAD_QUOTA' => $lang['Upload_quota'],
-		'U_UACP' => IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?u=' . $user_id . '&amp;sid=' . $userdata['session_id'],
+		'U_UACP' => IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $user_id . '&amp;sid=' . $user->data['session_id'],
 		'UPLOADED' => sprintf($lang['User_uploaded_profile'], $user_uploaded),
 		'QUOTA' => sprintf($lang['User_quota_profile'], $user_quota),
 		'UPLOAD_LIMIT_IMG_WIDTH' => $upload_limit_img_length,

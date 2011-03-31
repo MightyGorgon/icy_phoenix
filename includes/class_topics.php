@@ -125,7 +125,7 @@ class class_topics
 	function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $topic_replies, $topic_news_id, $poll_start, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies, $unread)
 	{
 		//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
-		global $config, $lang, $images, $userdata, $tracking_topics, $tracking_forums, $forum_id_append, $topic_id_append;
+		global $config, $lang, $images, $user, $tracking_topics, $tracking_forums, $forum_id_append, $topic_id_append;
 
 		$topic_link = array();
 		$topic_link['forum_id_append'] = $forum_id_append;
@@ -225,16 +225,16 @@ class class_topics
 			}
 		}
 
-		if($userdata['session_logged_in'])
+		if($user->data['session_logged_in'])
 		{
 			//-----------------------------------------------------------
 			//<!-- BEGIN Unread Post Information to Database Mod -->
-			if(!$userdata['upi2db_access'] || !is_array($unread))
+			if(!$user->data['upi2db_access'] || !is_array($unread))
 			{
 			//<!-- END Unread Post Information to Database Mod -->
 			//------------------------------------------------------------
 
-				if($topic_post_time > $userdata['user_lastvisit'])
+				if($topic_post_time > $user->data['user_lastvisit'])
 				{
 					if(!empty($tracking_topics) || !empty($tracking_forums) || isset($_COOKIE[$config['cookie_name'] . '_f_all']))
 					{
@@ -322,23 +322,23 @@ class class_topics
 	*/
 	function upi_calc_unread_simple($unread, $topic_id)
 	{
-		global $userdata, $lang;
+		global $user, $lang;
 
 		$upi2db_status = '';
 		if (in_array($topic_id, $unread['new_topics']) || in_array($topic_id, $unread['edit_topics']))
 		{
-			if((in_array($topic_id, $unread['new_topics']) && in_array($topic_id, $unread['edit_topics'])) && $userdata['user_upi2db_new_word'] && $userdata['user_upi2db_edit_word'])
+			if((in_array($topic_id, $unread['new_topics']) && in_array($topic_id, $unread['edit_topics'])) && $user->data['user_upi2db_new_word'] && $user->data['user_upi2db_edit_word'])
 			{
 				$upi2db_status = $lang['upi2db_post_edit'] . $lang['upi2db_post_and'] . $lang['upi2db_post_new'] . ': ';
 			}
 			else
 			{
-				if(in_array($topic_id, $unread['new_topics']) && $userdata['user_upi2db_new_word'])
+				if(in_array($topic_id, $unread['new_topics']) && $user->data['user_upi2db_new_word'])
 				{
 					$upi2db_status = $lang['upi2db_post_new'] . ': ';
 				}
 
-				if(in_array($topic_id, $unread['edit_topics']) && $userdata['user_upi2db_edit_word'])
+				if(in_array($topic_id, $unread['edit_topics']) && $user->data['user_upi2db_edit_word'])
 				{
 					$upi2db_status = $lang['upi2db_post_edit'] . ': ';
 				}
@@ -364,9 +364,9 @@ class class_topics
 	*/
 	function user_replied_array($topic_rowset)
 	{
-		global $userdata, $db, $config;
+		global $user, $db, $config;
 		$user_topics = array();
-		if (($userdata['user_id'] != ANONYMOUS) && !$userdata['is_bot'] && $config['enable_own_icons'])
+		if (($user->data['user_id'] != ANONYMOUS) && !$user->data['is_bot'] && $config['enable_own_icons'])
 		{
 			// get all the topic ids to display
 			$topic_ids = array();
@@ -381,7 +381,7 @@ class class_topics
 				$s_topic_ids = implode(', ', $topic_ids);
 				$sql = "SELECT DISTINCT topic_id FROM " . POSTS_TABLE . "
 						WHERE topic_id IN (" . $s_topic_ids . ")
-							AND poster_id = " . $userdata['user_id'];
+							AND poster_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 
 				while ($row = $db->sql_fetchrow($result))
@@ -416,7 +416,7 @@ class class_topics
 	*/
 	function fetch_posts($forum_sql, $number_of_posts, $text_length, $show_portal = false, $random_mode = false, $single_post = false, $only_auth_view = true)
 	{
-		global $db, $cache, $config, $userdata, $bbcode;
+		global $db, $cache, $config, $user, $bbcode, $lofi;
 
 		if (!class_exists('bbcode') || empty($bbcode))
 		{
@@ -519,10 +519,10 @@ class class_topics
 				$posts[$i]['post_id'] = $row['post_id'];
 				$posts[$i]['post_attachment'] = $row['post_attachment'];
 
-				$message_compiled = empty($posts[$i]['post_text_compiled']) ? false : $posts[$i]['post_text_compiled'];
+				$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
 
-				$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
-				$bbcode->allow_html = ((($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
+				$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
+				$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
 				$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
 
 				$clean_tags = false;
@@ -532,9 +532,8 @@ class class_topics
 					$posts[$i]['striped'] = 1;
 				}
 
-				if($message_compiled === false)
+				if ($message_compiled === false)
 				{
-					$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies']) ? true : false;
 					$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
 				}
 				else
@@ -544,7 +543,7 @@ class class_topics
 
 				if ($clean_tags == true)
 				{
-					$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? substr($posts[$i]['post_text'], 0, $text_length) . ' ...' : $posts[$i]['post_text'];
+					$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? (substr($posts[$i]['post_text'], 0, $text_length) . ' ...') : $posts[$i]['post_text'];
 				}
 
 				$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
@@ -572,7 +571,7 @@ class class_topics
 	*/
 	function get_poll_data($topic_id)
 	{
-		global $db, $cache, $config, $userdata;
+		global $db, $cache, $config, $user;
 
 		$sql = "SELECT o.*
 			FROM " . POLL_OPTIONS_TABLE . " o
@@ -588,12 +587,12 @@ class class_topics
 		$db->sql_freeresult($result);
 
 		$cur_voted_id = array();
-		if (!empty($userdata) && $userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+		if (!empty($user->data) && $user->data['session_logged_in'] && ($user->data['bot_id'] === false))
 		{
 			$sql = "SELECT v.poll_option_id
 				FROM " . POLL_VOTES_TABLE . " v
 				WHERE v.topic_id = " . (int) $topic_id . "
-					AND v.vote_user_id = " . (int) $userdata['user_id'];
+					AND v.vote_user_id = " . (int) $user->data['user_id'];
 			$result = $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -620,7 +619,7 @@ class class_topics
 	*/
 	function remove_poll($topic_id)
 	{
-		global $db, $cache, $config, $userdata;
+		global $db, $cache, $config, $user;
 
 		$sql_ary = array(
 			'poll_title' => '',
@@ -648,7 +647,7 @@ class class_topics
 	*/
 	function display_poll($topic_data, $is_cms_block = false)
 	{
-		global $db, $cache, $config, $userdata, $lang, $template, $images, $bbcode;
+		global $db, $cache, $config, $user, $lang, $template, $images, $bbcode;
 		global $start, $kb_mode_append, $is_auth, $lofi;
 
 		if (!class_exists('bbcode') || empty($bbcode))
@@ -669,8 +668,8 @@ class class_topics
 
 		// Mighty Gorgon: Shall we enable BBCode for polls?
 		$poll_bbcode = true;
-		$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode']) ? true : false;
-		$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) ? true : false;
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode']) ? true : false;
+		$bbcode->allow_html = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) ? true : false;
 		$bbcode->allow_smilies = ($config['allow_smilies'] && !$lofi) ? true : false;
 		for ($i = 0, $size = sizeof($poll_info); $i < $size; $i++)
 		{
@@ -695,7 +694,7 @@ class class_topics
 		$s_display_results = request_var('vote', '');
 		$s_display_results = ($user_voted || ($s_display_results == 'viewresult')) ? true : false;
 		$s_auth_vote = $is_auth['auth_vote'] ? true : false;
-		$s_can_vote = (($userdata['user_level'] == ADMIN) || ((!$user_voted || !empty($topic_data['poll_vote_change'])) && !$poll_expired && $s_auth_vote && ($topic_data['topic_status'] != TOPIC_LOCKED))) ? true : false;
+		$s_can_vote = (($user->data['user_level'] == ADMIN) || ((!$user_voted || !empty($topic_data['poll_vote_change'])) && !$poll_expired && $s_auth_vote && ($topic_data['topic_status'] != TOPIC_LOCKED))) ? true : false;
 
 		if (!empty($is_cms_block))
 		{
@@ -740,7 +739,7 @@ class class_topics
 		$poll_end = $topic_data['poll_start'] + $topic_data['poll_length'];
 		$s_hidden_fields = '<input type="hidden" name="topic_id" value="' . $topic_data['topic_id'] . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="mode" value="vote" />';
-		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 		$forum_id_append = POST_FORUM_URL . '=' . $topic_data['forum_id'];
 		$topic_id_append = POST_TOPIC_URL . '=' . $topic_data['topic_id'];
@@ -774,7 +773,7 @@ class class_topics
 	*/
 	function post_like_add($post_data)
 	{
-		global $db, $cache, $config, $userdata, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		if (empty($post_data) || empty($post_data['post_id']) || ($post_data['user_id'] == ANONYMOUS))
 		{
@@ -824,7 +823,7 @@ class class_topics
 	*/
 	function post_like_remove($post_data)
 	{
-		global $db, $cache, $config, $userdata, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		if (empty($post_data) || empty($post_data['post_id']) || empty($post_data['user_id']))
 		{
@@ -845,7 +844,7 @@ class class_topics
 	*/
 	function post_like_user_remove($user_id)
 	{
-		global $db, $cache, $config, $userdata, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		if (empty($user_id))
 		{
@@ -863,7 +862,7 @@ class class_topics
 	*/
 	function topic_posts_likes_get($post_data, $posts_list = false)
 	{
-		global $db, $cache, $config, $userdata, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		if (empty($post_data) || empty($post_data['topic_id']))
 		{
@@ -899,7 +898,7 @@ class class_topics
 	*/
 	function topic_posts_likes_remove($post_data)
 	{
-		global $db, $cache, $config, $userdata, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		if (empty($post_data) || empty($post_data['topic_id']))
 		{
@@ -920,7 +919,7 @@ class class_topics
 	*/
 	function posts_likes_resync()
 	{
-		global $db, $cache, $config, $userdata, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		$sql = "UPDATE " . POSTS_TABLE . " p, " . POSTS_LIKES_TABLE . " pl
 			SET p.post_likes = COUNT(pl.post_id), pl.topic_id = p.topic_id

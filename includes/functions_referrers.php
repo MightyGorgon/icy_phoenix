@@ -52,7 +52,7 @@ if (!function_exists('arrayinstr'))
 
 if ($_SERVER['HTTP_REFERER'] && !eregi($_SERVER['HTTP_HOST'] . $config['script_path'], $_SERVER['HTTP_REFERER']))
 {
-	$referrer_url = $_SERVER['HTTP_REFERER'];
+	$referrer_url = (!empty($_SERVER['HTTP_REFERER'])) ? (string) $_SERVER['HTTP_REFERER'] : '';
 	$referrer_host = $referrer_url;
 	$referrer_host = str_replace ('http://', '', $referrer_host);
 	$referrer_host = substr($referrer_host, 0, strpos($referrer_host, "/"));

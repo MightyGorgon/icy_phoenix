@@ -25,7 +25,7 @@ if(!function_exists('cms_block_calendar'))
 {
 	function cms_block_calendar()
 	{
-		global $db, $cache, $config, $template, $images, $userdata, $lang, $bbcode;
+		global $db, $cache, $config, $template, $images, $user, $lang, $bbcode;
 		global $mini_cal_today, $mini_cal_this_month, $mini_cal_this_year, $mini_cal_this_day;
 
 		$birthdays_list = array();

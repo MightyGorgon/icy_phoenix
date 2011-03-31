@@ -242,8 +242,9 @@ function send_file_to_browser($attachment, $upload_dir)
 //
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 if (!$download_id)
@@ -251,7 +252,7 @@ if (!$download_id)
 	message_die(GENERAL_ERROR, $lang['No_attachment_selected']);
 }
 
-if ($config['disable_attachments_mod'] && ($userdata['user_level'] != ADMIN))
+if ($config['disable_attachments_mod'] && ($user->data['user_level'] != ADMIN))
 {
 	message_die(GENERAL_MESSAGE, $lang['Attachment_feature_disabled']);
 }
@@ -292,7 +293,7 @@ for ($i = 0; $i < $num_auth_pages && $authorized == false; $i++)
 		$row = $db->sql_fetchrow($result);
 		$forum_id = $row['forum_id'];
 		$is_auth = array();
-		$is_auth = auth(AUTH_ALL, $forum_id, $userdata);
+		$is_auth = auth(AUTH_ALL, $forum_id, $user->data);
 
 		if ($is_auth['auth_download'])
 		{
@@ -301,7 +302,7 @@ for ($i = 0; $i < $num_auth_pages && $authorized == false; $i++)
 	}
 	else
 	{
-		if ((intval($config['allow_pm_attach'])) && (($userdata['user_id'] == $auth_pages[$i]['user_id_2']) || ($userdata['user_id'] == $auth_pages[$i]['user_id_1'])) || ($userdata['user_level'] == ADMIN))
+		if ((intval($config['allow_pm_attach'])) && (($user->data['user_id'] == $auth_pages[$i]['user_id_2']) || ($user->data['user_id'] == $auth_pages[$i]['user_id_1'])) || ($user->data['user_level'] == ADMIN))
 		{
 			$authorized = true;
 		}
@@ -330,7 +331,7 @@ for ($i = 0; $i < $num_rows; $i++)
 }
 
 // disallowed ?
-if (!in_array($attachment['extension'], $allowed_extensions) && ($userdata['user_level'] != ADMIN))
+if (!in_array($attachment['extension'], $allowed_extensions) && ($user->data['user_level'] != ADMIN))
 {
 	message_die(GENERAL_MESSAGE, sprintf($lang['Extension_disabled_after_posting'], $attachment['extension']));
 }

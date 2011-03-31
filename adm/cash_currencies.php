@@ -101,8 +101,8 @@ if (!empty($set))
 				// Log the action
 				// [admin/mod id][admin/mod name][copied currency name][copied over currency name]
 
-				$action = array($userdata['user_id'],
-								$userdata['username'],
+				$action = array($user->data['user_id'],
+								$user->data['username'],
 								$c_cur->name(true),
 								$newname
 					);
@@ -155,8 +155,8 @@ if (!empty($set))
 
 					// Log the action
 					// [admin/mod id][admin/mod name][currency name]
-					$action = array($userdata['user_id'],
-									$userdata['username'],
+					$action = array($user->data['user_id'],
+									$user->data['username'],
 									$c_cur->name(true)
 						);
 					cash_create_log(CASH_LOG_ADMIN_DELETE_CURRENCY, $action);
@@ -205,8 +205,8 @@ if (!empty($set))
 					// Log the action
 					// [admin/mod id][admin/mod name][copied currency name][copied over currency name]
 					$action = array(
-						$userdata['user_id'],
-						$userdata['username'],
+						$user->data['user_id'],
+						$user->data['username'],
 						$c_cur1->name(true),
 						$c_cur2->name(true)
 					);
@@ -286,8 +286,8 @@ if (!empty($set))
 				// Log the action
 				// [admin/mod id][admin/mod name][currency name]
 				$action = array(
-					$userdata['user_id'],
-					$userdata['username'],
+					$user->data['user_id'],
+					$user->data['username'],
 					$new_name
 				);
 				cash_create_log(CASH_LOG_ADMIN_CREATE_CURRENCY, $action);

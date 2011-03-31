@@ -19,7 +19,7 @@ class pafiledb_file extends pafiledb_public
 {
 	function main($action)
 	{
-		global $db, $cache, $config, $images, $userdata, $lang, $bbcode, $pafiledb_config, $template, $pafiledb_functions;
+		global $db, $cache, $config, $images, $user, $lang, $bbcode, $pafiledb_config, $template, $pafiledb_functions;
 
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
@@ -71,7 +71,7 @@ class pafiledb_file extends pafiledb_public
 
 		if((!$this->auth[$file_data['file_catid']]['auth_view_file']))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=file&file_id=' . $file_id, true));
 			}
@@ -169,8 +169,8 @@ class pafiledb_file extends pafiledb_public
 			'FILE_SCREENSHOT' => $file_screenshot_url,
 			'FILE_WEBSITE' => $file_website_url,
 // MX Addon
-			'AUTH_EDIT' => (($this->auth[$file_data['file_catid']]['auth_edit_file'] && $file_data['user_id'] == $userdata['user_id']) || $this->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
-			'AUTH_DELETE' => (($this->auth[$file_data['file_catid']]['auth_delete_file'] && $file_data['user_id'] == $userdata['user_id']) || $this->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
+			'AUTH_EDIT' => (($this->auth[$file_data['file_catid']]['auth_edit_file'] && $file_data['user_id'] == $user->data['user_id']) || $this->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
+			'AUTH_DELETE' => (($this->auth[$file_data['file_catid']]['auth_delete_file'] && $file_data['user_id'] == $user->data['user_id']) || $this->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
 
 			'AUTH_DOWNLOAD' => ($this->auth[$file_data['file_catid']]['auth_download']) ? true : false,
 			'AUTH_RATE' => ($this->auth[$file_data['file_catid']]['auth_rate']) ? true : false,

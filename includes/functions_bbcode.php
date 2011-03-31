@@ -19,7 +19,7 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function generate_text_for_display($text, $only_smileys = false, $censor = true, $acro_autolinks = false, $forum_id = '999999')
 {
-	global $bbcode, $config, $userdata;
+	global $bbcode, $config, $user;
 
 	if (empty($text))
 	{
@@ -39,15 +39,15 @@ function generate_text_for_display($text, $only_smileys = false, $censor = true,
 	if (empty($bbcode))
 	{
 		$bbcode = new bbcode();
-		if (!$userdata['session_logged_in'])
+		if (!$user->data['session_logged_in'])
 		{
-			$userdata['user_allowhtml'] = $config['allow_html'] ? true : false;
-			$userdata['user_allowbbcode'] = $config['allow_bbcode'] ? true : false;
-			$userdata['user_allowsmile'] = $config['allow_smilies'] ? true : false;
+			$user->data['user_allowhtml'] = $config['allow_html'] ? true : false;
+			$user->data['user_allowbbcode'] = $config['allow_bbcode'] ? true : false;
+			$user->data['user_allowsmile'] = $config['allow_smilies'] ? true : false;
 		}
-		$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
-		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+		$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
+		$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+		$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 	}
 
 	if ($only_smileys)
@@ -130,7 +130,7 @@ function get_attachment_details($attach_id)
 */
 function get_download_details($file_id)
 {
-	global $db, $userdata;
+	global $db, $user;
 	$sql = "SELECT f.*, c.*
 		FROM " . PA_FILES_TABLE . " f, " . PA_CATEGORY_TABLE . " c
 		WHERE file_id = " . $file_id . "
@@ -145,11 +145,11 @@ function get_download_details($file_id)
 	{
 		$db->sql_freeresult($result);
 		$allowed = false;
-		if (($row['auth_view_file'] == AUTH_ALL) || ($userdata['user_level'] == ADMIN))
+		if (($row['auth_view_file'] == AUTH_ALL) || ($user->data['user_level'] == ADMIN))
 		{
 			$allowed = true;
 		}
-		elseif (($row['auth_view_file'] == AUTH_REG) && $userdata['session_logged_in'])
+		elseif (($row['auth_view_file'] == AUTH_REG) && $user->data['session_logged_in'])
 		{
 			$allowed = true;
 		}

@@ -316,7 +316,7 @@ for($i = 0; $i < sizeof($style_rowset); $i++)
 					'ROW_CLASS' => $row_class,
 					'TPL' => $prev_tpl,
 					'STYLES' => $str,
-					'U_CLONE' => 'xs_clone.' . PHP_EXT . "?clone={$str2}&amp;sid={$userdata['session_id']}",
+					'U_CLONE' => 'xs_clone.' . PHP_EXT . "?clone={$str2}&amp;sid={$user->data['session_id']}",
 				)
 			);
 		}
@@ -336,7 +336,7 @@ if($prev_id > 0)
 			'ROW_CLASS' => $row_class,
 			'TPL' => $prev_tpl,
 			'STYLES' => $str,
-			'U_CLONE' => 'xs_clone.' . PHP_EXT . "?clone={$str2}&amp;sid={$userdata['session_id']}",
+			'U_CLONE' => 'xs_clone.' . PHP_EXT . "?clone={$str2}&amp;sid={$user->data['session_id']}",
 		)
 	);
 }

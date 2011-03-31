@@ -19,7 +19,7 @@ class pafiledb_rate extends pafiledb_public
 {
 	function main($action)
 	{
-		global $template, $lang, $config, $pafiledb_config, $db, $userdata, $pafiledb_functions, $pafiledb_user;
+		global $template, $lang, $config, $pafiledb_config, $db, $user, $pafiledb_functions, $pafiledb_user;
 
 		$file_id = request_var('file_id', 0);
 		if (empty($file_id))
@@ -43,7 +43,7 @@ class pafiledb_rate extends pafiledb_public
 
 		if((!$this->auth[$file_data['file_catid']]['auth_rate']))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=rate&file_id=' . $file_id, true));
 			}

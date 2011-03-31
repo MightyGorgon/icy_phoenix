@@ -26,14 +26,15 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $class_topics = new class_topics();
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	$redirect = (isset($start)) ? ('&start=' . $start) : '';
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=watched_topics.' . PHP_EXT . $redirect, true));
@@ -45,7 +46,7 @@ if (isset($_POST['unwatch_list']))
 	$topic_ids = implode(',', $_POST['unwatch_list']);
 	$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
 		WHERE topic_id IN(" .  $topic_ids . ")
-		AND user_id = " . $userdata['user_id'];
+		AND user_id = " . $user->data['user_id'];
 	$result = $db->sql_query($sql);
 }
 
@@ -64,7 +65,7 @@ $template->assign_vars(array(
 	)
 );
 
-$sql = "SELECT COUNT(*) as watch_count FROM " . TOPICS_WATCH_TABLE . " w WHERE w.user_id = " . $userdata['user_id'];
+$sql = "SELECT COUNT(*) as watch_count FROM " . TOPICS_WATCH_TABLE . " w WHERE w.user_id = " . $user->data['user_id'];
 $result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
 $watch_count = ($row['watch_count']) ? $row['watch_count'] : 0;
@@ -87,7 +88,7 @@ if ($watch_count > 0)
 			AND t.topic_poster = first.user_id
 			AND p.poster_id = last.user_id
 			AND f.forum_id = t.forum_id
-			AND w.user_id = " . $userdata['user_id'] . "
+			AND w.user_id = " . $user->data['user_id'] . "
 		ORDER BY t.topic_last_post_id DESC
 		LIMIT $start, " . $config['topics_per_page'];
 	$result = $db->sql_query($sql);

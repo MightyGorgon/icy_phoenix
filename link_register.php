@@ -25,8 +25,9 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 setup_extra_lang(array('lang_main_link'));
@@ -40,7 +41,7 @@ $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $c
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 // Users Authentication, members only area
-if(!$userdata['session_logged_in'])
+if(!$user->data['session_logged_in'])
 {
 	header('Location: ' . append_sid(CMS_PAGE_LOGIN . '?redirect=links.' . PHP_EXT, true));
 	exit;
@@ -53,10 +54,10 @@ $link_logo_src = request_var('link_logo_src', '', true);
 $link_logo_src = ($link_logo_src == 'http://') ? '' : $link_logo_src;
 $link_category = request_var('link_category', 0);
 $link_joined = time();
-$user_id = $userdata['user_id'];
+$user_id = $user->data['user_id'];
 
 // Check Link config
-if($links_config['lock_submit_site'] && $userdata['user_level'] != ADMIN)
+if($links_config['lock_submit_site'] && $user->data['user_level'] != ADMIN)
 {
 	$message = $lang['Link_lock_submit_site'];
 	$message .= '<br /><br />' . sprintf($lang['Click_return_links'], '<a href="' . append_sid('links.' . PHP_EXT) . '">', '</a>');
@@ -98,12 +99,12 @@ if(!empty($link_title) && !empty($link_desc) && !empty($link_category) && !empty
 
 	if(($link_joined - $last_link_joined) > 60)
 	{
-		$is_admin = ($userdata['user_level'] == ADMIN) ? true : 0;
+		$is_admin = ($user->data['user_level'] == ADMIN) ? true : 0;
 		$sql = "INSERT INTO " . LINKS_TABLE . " (link_title, link_desc, link_category, link_url, link_logo_src, link_joined,link_active , user_id , user_ip)
 			VALUES ('" . $db->sql_escape($link_title) . "', '" . $db->sql_escape($link_desc) . "', '$link_category', '" . $db->sql_escape($link_url) . "', '" . $db->sql_escape($link_logo_src) . "', '$link_joined', '$is_admin', '$user_id ', '$user_ip')";
 		$db->sql_query($sql);
 
-		if ($userdata['user_level'] != ADMIN)
+		if ($user->data['user_level'] != ADMIN)
 		{
 			$sql = "SELECT user_id, username, user_notify_pm, user_allow_pm, user_email, user_lang, user_active
 				FROM " . USERS_TABLE . "
@@ -149,7 +150,7 @@ if(!empty($link_title) && !empty($link_desc) && !empty($link_category) && !empty
 					// Has admin prevented user from sending PM's?
 					if ($to_userdata['user_allow_pm'])
 					{
-						$privmsg_sender = ($userdata['user_id'] != ANONYMOUS) ? $userdata['user_id'] : $to_userdata['user_id'];
+						$privmsg_sender = ($user->data['user_id'] != ANONYMOUS) ? $user->data['user_id'] : $to_userdata['user_id'];
 						$privmsg_recipient = $to_userdata['user_id'];
 						$privmsg_subject = $lang['Link_pm_notify_subject'];
 						$privmsg_message = sprintf($lang['Link_pm_notify_message'], $link_url);

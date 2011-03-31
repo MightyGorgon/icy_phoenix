@@ -334,7 +334,7 @@ function remove_search_post($post_id_sql, $remove_subject = true, $remove_messag
 */
 function username_search($search_match, $ajax_search = false)
 {
-	global $db, $config, $template, $images, $theme, $userdata, $lang;
+	global $db, $config, $template, $images, $theme, $user, $lang;
 	global $starttime, $gen_simple_header;
 
 	$username_list = '';

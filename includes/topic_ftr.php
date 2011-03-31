@@ -22,10 +22,10 @@ if (empty($ftr_install_time))
 }
 
 $ftr_view_mode = request_var('mode', '');
-$ftr_user_viewed = ftr_get_users_view($userdata['user_id']);
+$ftr_user_viewed = ftr_get_users_view($user->data['user_id']);
 $ftr_all_users = $config['ftr_all_users'];
 
-if ($ftr_user_viewed || ($userdata['session_logged_in'] && !$ftr_all_users && ($userdata['user_regdate'] <= $ftr_install_time)) || ($ftr_view_mode == 'reading'))
+if ($ftr_user_viewed || ($user->data['session_logged_in'] && !$ftr_all_users && ($user->data['user_regdate'] <= $ftr_install_time)) || ($ftr_view_mode == 'reading'))
 {
 	$ftr_disabled = true;
 }
@@ -33,12 +33,12 @@ else
 {
 	if ($ftr_view_mode == 'read_this')
 	{
-		ftr_insert_read_topic($userdata['user_id']);
+		ftr_insert_read_topic($user->data['user_id']);
 		redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $config['ftr_topic_number'] . $kb_mode_append_red . '&mode=reading'));
 	}
 	else
 	{
-		if (!$ftr_user_viewed && ((!$ftr_all_users && ($userdata['user_regdate'] >= $ftr_install_time)) || $ftr_all_users))
+		if (!$ftr_user_viewed && ((!$ftr_all_users && ($user->data['user_regdate'] >= $ftr_install_time)) || $ftr_all_users))
 		{
 			$ftr_topic = $config['ftr_topic_number'];
 			$msg = $config['ftr_message'];
@@ -53,16 +53,16 @@ else
 }
 
 /* functions_ftr.php - END */
-function ftr_get_users_view($user)
+function ftr_get_users_view($target_user)
 {
-	global $db, $cache, $userdata;
+	global $db, $cache, $user;
 
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		return false;
 	}
 
-	$sql = "SELECT * FROM ". FORCE_READ_USERS_TABLE . " WHERE user = '" . $user . "' LIMIT 1";
+	$sql = "SELECT * FROM ". FORCE_READ_USERS_TABLE . " WHERE user = '" . $target_user . "' LIMIT 1";
 	$result = $db->sql_query($sql);
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -72,11 +72,11 @@ function ftr_get_users_view($user)
 	return false;
 }
 
-function ftr_insert_read_topic($user)
+function ftr_insert_read_topic($target_user)
 {
 	global $db, $cache;
 
-	$q = "INSERT INTO ". FORCE_READ_USERS_TABLE . " VALUES ('$user', " . time() . ")";
+	$q = "INSERT INTO ". FORCE_READ_USERS_TABLE . " VALUES ('" . $target_user . "', " . time() . ")";
 	$r = $db -> sql_query($q);
 
 	return true;

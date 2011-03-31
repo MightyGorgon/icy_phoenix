@@ -198,11 +198,12 @@ else
 }
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
-if($sid == '' || ($sid != $userdata['session_id']))
+if($sid == '' || ($sid != $user->data['session_id']))
 {
 	message_die(GENERAL_ERROR, 'Invalid_session');
 }
@@ -226,7 +227,7 @@ if(isset($_POST['cancel']))
 
 if (!($mode == 'quick_title_edit'))
 {
-	$is_auth = auth(AUTH_ALL, $forum_id, $userdata);
+	$is_auth = auth(AUTH_ALL, $forum_id, $user->data);
 
 	if (!$is_auth['auth_mod'])
 	{
@@ -240,14 +241,14 @@ else
 		$sql_qt = "SELECT * FROM " . TITLE_INFOS_TABLE . " WHERE id = $qtnum";
 		$result_qt = $db->sql_query($sql_qt);
 		$qt_row = $db->sql_fetchrow($result_qt);
-		if ((($userdata['user_level'] == ADMIN) && ($qt_row['admin_auth'] == 0)) || (($userdata['user_level'] == MOD) && ($qt_row['mod_auth'] == 0)) || (($userdata['user_level'] == USER) && ($qt_row['poster_auth'] == 0)) || (($userdata['user_level'] == USER) && ($qt_row['poster_auth'] == 1) && ($userdata['user_id'] != $topic_row['topic_poster'])))
+		if ((($user->data['user_level'] == ADMIN) && ($qt_row['admin_auth'] == 0)) || (($user->data['user_level'] == MOD) && ($qt_row['mod_auth'] == 0)) || (($user->data['user_level'] == USER) && ($qt_row['poster_auth'] == 0)) || (($user->data['user_level'] == USER) && ($qt_row['poster_auth'] == 1) && ($user->data['user_id'] != $topic_row['topic_poster'])))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		}
 	}
 	else
 	{
-		if (($userdata['user_level'] == USER) && ($userdata['user_id'] != $topic_row['topic_poster']))
+		if (($user->data['user_level'] == USER) && ($user->data['user_id'] != $topic_row['topic_poster']))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		}
@@ -276,13 +277,13 @@ switch($mode)
 
 			if(!empty($topic_id))
 			{
-				$redirect_page = CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 				$l_redirect = sprintf($lang['Click_return_forum'], '<a href="'. $redirect_page .'">', '</a>');
 			}
 			else
 			{
-				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
-				$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
+				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
+				$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] .'">', '</a>');
 			}
 
 			$redirect_url = $redirect_page;
@@ -297,7 +298,7 @@ switch($mode)
 				message_die(GENERAL_MESSAGE, $lang['None_selected']);
 			}
 
-			$hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="type" value="' . $type . '" /><input type="hidden" name="'. POST_FORUM_URL .'" value="' . $forum_id . '" />';
+			$hidden_fields = '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="type" value="' . $type . '" /><input type="hidden" name="'. POST_FORUM_URL .'" value="' . $forum_id . '" />';
 			if(isset($_POST['topic_id_list']))
 			{
 				$topics = $_POST['topic_id_list'];
@@ -337,8 +338,8 @@ switch($mode)
 			$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 			$mcp_topic->topic_poll_delete($topics);
 
-			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
-			$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
+			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
+			$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] .'">', '</a>');
 
 			$redirect_url = $redirect_page;
 			meta_refresh(3, $redirect_url);
@@ -352,7 +353,7 @@ switch($mode)
 				message_die(GENERAL_MESSAGE, $lang['None_selected']);
 			}
 
-			$hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="type" value="' . $type . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
+			$hidden_fields = '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="type" value="' . $type . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
 			if(isset($_POST['topic_id_list']))
 			{
 				$topics = $_POST['topic_id_list'];
@@ -397,19 +398,19 @@ switch($mode)
 
 			if(!empty($topic_id))
 			{
-				$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 				$message .= sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
 			}
 			else
 			{
-				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 				$message .= sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 			}
 
 			$redirect_url = $redirect_page;
 			meta_refresh(3, $redirect_url);
 
-			message_die(GENERAL_MESSAGE, $message .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>'));
+			message_die(GENERAL_MESSAGE, $message .'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] .'">', '</a>'));
 		}
 		else
 		{
@@ -419,7 +420,7 @@ switch($mode)
 				message_die(GENERAL_MESSAGE, $lang['None_selected']);
 			}
 
-			$hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="type" value="' . $type . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
+			$hidden_fields = '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" /><input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="type" value="' . $type . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
 			if(isset($_POST['topic_id_list']))
 			{
 				$topics = $_POST['topic_id_list'];
@@ -465,12 +466,12 @@ switch($mode)
 
 		if(!empty($topic_id))
 		{
-			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 			$message = sprintf($lang['Click_return_topic'], '<a href="'. $redirect_page .'">', '</a>');
 		}
 		else
 		{
-			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 			$message = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>');
 		}
 
@@ -479,11 +480,11 @@ switch($mode)
 
 		if($mode == 'lock')
 		{
-			message_die(GENERAL_MESSAGE, ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_locked'] : $lang['Topics_Locked']) .'<br /><br />'. $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>'));
+			message_die(GENERAL_MESSAGE, ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_locked'] : $lang['Topics_Locked']) .'<br /><br />'. $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>'));
 		}
 		elseif($mode == 'unlock')
 		{
-			message_die(GENERAL_MESSAGE, ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_unlocked'] : $lang['Topics_Unlocked']) .'<br /><br />'. $message . '<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>'));
+			message_die(GENERAL_MESSAGE, ((sizeof($topics) == '1') ? $lang['Mod_CP_topic_unlocked'] : $lang['Topics_Unlocked']) .'<br /><br />'. $message . '<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>'));
 		}
 		break;
 
@@ -506,7 +507,7 @@ switch($mode)
 		}
 		else
 		{
-			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&sid=' . $userdata['session_id'];
+			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&sid=' . $user->data['session_id'];
 			$message = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>');
 		}
 
@@ -560,12 +561,12 @@ switch($mode)
 
 			if (!empty($topic_id))
 			{
-				$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $new_topic_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $new_topic_id . '&amp;sid=' . $user->data['session_id'];
 				$message .= sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
 			}
 			else
 			{
-				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 				$message .= sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 			}
 
@@ -585,7 +586,7 @@ switch($mode)
 			}
 
 			$hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
-			$hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+			$hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 			if (isset($_POST['topic_id_list']))
 			{
@@ -641,10 +642,10 @@ switch($mode)
 			}
 
 			$new_topic_id = $mcp_topic->topic_split($posts, $forum_id, $fid, $topic_id, $split_beyond, $topic_subject);
-			$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 			meta_refresh(3, $redirect_url);
 
-			$message = $lang['Topic_split'] . '<br /><br />' . sprintf($lang['Mod_CP_click_return_topic'], '<a href="' . $redirect_url . '">', '</a>', '<a href="' . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $new_topic_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>').'<br /><br />'. sprintf($lang['Click_return_modcp'], '<a href="modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&sid=' . $userdata['session_id'] .'">', '</a>').'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] .'">', '</a>');
+			$message = $lang['Topic_split'] . '<br /><br />' . sprintf($lang['Mod_CP_click_return_topic'], '<a href="' . $redirect_url . '">', '</a>', '<a href="' . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $new_topic_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>').'<br /><br />'. sprintf($lang['Click_return_modcp'], '<a href="modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&sid=' . $user->data['session_id'] .'">', '</a>').'<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] .'">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -660,7 +661,7 @@ switch($mode)
 				ORDER BY p.post_time ASC";
 			$result = $db->sql_query($sql);
 
-			$s_hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" /><input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" /><input type="hidden" name="mode" value="split" />';
+			$s_hidden_fields = '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" /><input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '" /><input type="hidden" name="mode" value="split" />';
 
 			if(($total_posts = $db->sql_numrows($result)) > '0')
 			{
@@ -694,17 +695,11 @@ switch($mode)
 					$post_subject = ($postrow[$i]['post_subject'] != '') ? $postrow[$i]['post_subject'] : $topic_title;
 					$post_date = create_date_ip($config['default_dateformat'], $postrow[$i]['post_time'], $config['board_timezone']);
 
-					if(!empty($postrow[$i]['post_text_compiled']))
-					{
-						$message = $postrow[$i]['post_text_compiled'];
-					}
-					else
-					{
-						$bbcode->allow_html = ($config['allow_html'] && $postrow[$i]['enable_bbcode'] ? true : false);
-						$bbcode->allow_bbcode = ($config['allow_bbcode'] && $postrow[$i]['enable_bbcode'] ? true : false);
-						$bbcode->allow_smilies = ($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
-						$message = $bbcode->parse($message);
-					}
+					$bbcode->allow_html = ($config['allow_html'] && $postrow[$i]['enable_bbcode'] ? true : false);
+					$bbcode->allow_bbcode = ($config['allow_bbcode'] && $postrow[$i]['enable_bbcode'] ? true : false);
+					$bbcode->allow_smilies = ($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
+					$message = $bbcode->parse($message);
+
 					$checkbox = ($i > 0) ? '<input type="checkbox" name="post_id_list[]" value="' . $postrow[$i]['post_id'] . '" />' : '&nbsp;';
 
 					$template->assign_block_vars('postrow', array(
@@ -725,7 +720,7 @@ switch($mode)
 		break;
 
 	case 'ip':
-		$ip_display_auth = ip_display_auth($userdata, false);
+		$ip_display_auth = ip_display_auth($user->data, false);
 		if (empty($ip_display_auth))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
@@ -751,7 +746,7 @@ switch($mode)
 			message_die(GENERAL_MESSAGE, $lang['No_such_post']);
 		}
 
-		$ip_this_post = decode_ip($post_row['poster_ip']);
+		$ip_this_post = $post_row['poster_ip'];
 		$ip_this_post = ($rdns_ip_num == $ip_this_post) ? htmlspecialchars(gethostbyaddr($ip_this_post)) : $ip_this_post;
 
 		$poster_id = $post_row['poster_id'];
@@ -764,8 +759,8 @@ switch($mode)
 			'L_LOOKUP_IP' => $lang['Lookup_IP'],
 			'L_SEARCH' => $lang['Search'],
 			'SEARCH_IMG' => $images['icon_search'],
-			'IP' => $ip_this_post,
-			'U_LOOKUP_IP' => 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;rdns=' . $ip_this_post . '&amp;sid=' . $userdata['session_id'],
+			'IP' => htmlspecialchars($ip_this_post),
+			'U_LOOKUP_IP' => 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;rdns=' . htmlspecialchars(urlencode($ip_this_post)) . '&amp;sid=' . $user->data['session_id'],
 			)
 		);
 
@@ -784,15 +779,16 @@ switch($mode)
 					continue;
 				}
 
-				$ip = decode_ip($row['poster_ip']);
+				$ip = $row['poster_ip'];
 				$ip = ($rdns_ip_num == $row['poster_ip'] || $rdns_ip_num == 'all') ? htmlspecialchars(gethostbyaddr($ip)) : $ip;
 
 				$template->assign_block_vars('iprow', array(
 					'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
-					'IP' => $ip,
+					'IP' => htmlspecialchars($ip),
 					'POSTS' => $row['postings'] .' '. (($row['postings'] == '1') ? $lang['Post'] : $lang['Posts']),
-					'U_LOOKUP_IP' => 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;rdns=' . $row['poster_ip'] . '&amp;sid=' . $userdata['session_id'],
-				));
+					'U_LOOKUP_IP' => 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;rdns=' . htmlspecialchars(urlencode($row['poster_ip'])) . '&amp;sid=' . $user->data['session_id'],
+					)
+				);
 				$i++;
 			}
 			while($row = $db->sql_fetchrow($result));
@@ -815,7 +811,7 @@ switch($mode)
 					'USERNAME' => ($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'],
 					'POSTS' => $row['postings'] .' '. (($row['postings'] == '1') ? $lang['Post'] : $lang['Posts']),
 					'L_SEARCH_POSTS' => sprintf($lang['Search_user_posts'], (($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'])),
-					'U_PROFILE' => ($row['user_id'] == ANONYMOUS) ? 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'] : append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+					'U_PROFILE' => ($row['user_id'] == ANONYMOUS) ? 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'] : append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 					'U_SEARCHPOSTS' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . (($id == ANONYMOUS) ? 'Anonymous' : urlencode($username)) . '&amp;showresults=topics'),
 					'U_PROFILE_COL' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 					//'U_SEARCHPOSTS' => append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode((($row['user_id'] == ANONYMOUS) ? $lang['Guest'] : $row['username'])) . '&amp;showresults=topics'),
@@ -835,9 +831,9 @@ switch($mode)
 		{
 			if (($config['bin_forum'] == 0) || (empty($_POST['topic_id_list']) && empty($topic_id)))
 			{
-				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 				$message = sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
-				$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+				$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>');
 
 				$redirect_url = $redirect_page;
 				meta_refresh(3, $redirect_url);
@@ -857,10 +853,10 @@ switch($mode)
 					$message = $lang['No_Topics_Moved'];
 				}
 
-				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+				$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 				$message .= '<br /><br />' . sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 
-				$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+				$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $old_forum_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>');
 
 				$redirect_url = $redirect_page;
 				meta_refresh(3, $redirect_url);
@@ -882,16 +878,16 @@ switch($mode)
 
 		if (!empty($topic_id))
 		{
-			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 			$message = sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
 		}
 		else
 		{
-			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 			$message = sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 		}
 
-		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>');
 
 		$redirect_url = $redirect_page;
 		meta_refresh(3, $redirect_url);
@@ -915,16 +911,16 @@ switch($mode)
 
 		if (!empty($topic_id))
 		{
-			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 			$message = sprintf($lang['Click_return_topic'], '<a href="' . $redirect_page . '">', '</a>');
 		}
 		else
 		{
-			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'];
+			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 			$message = sprintf($lang['Click_return_modcp'], '<a href="' . $redirect_page . '">', '</a>');
 		}
 
-		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>');
 
 		$redirect_url = $redirect_page;
 		meta_refresh(3, $redirect_url);
@@ -940,9 +936,9 @@ switch($mode)
 		$l_topic_type = array($lang['Display_global'], $lang['Display_announce'], $lang['Display_sticky'], $lang['Display_poll'], $lang['Display_locked']);
 		for($tt = 0; $tt < sizeof($u_topic_type); $tt++)
 		{
-			$topic_types .= ($type == $u_topic_type[$tt]) ? $l_topic_type[$tt] .'&nbsp;|&nbsp;' : '<a href="modcp.' . PHP_EXT . '?'. POST_FORUM_URL .'='. $forum_id .'&amp;type='. $u_topic_type[$tt] .'&amp;sid='. $userdata['session_id'] .'" class="genmed">'. $l_topic_type[$tt] .'</a>&nbsp;|&nbsp;';
+			$topic_types .= ($type == $u_topic_type[$tt]) ? $l_topic_type[$tt] .'&nbsp;|&nbsp;' : '<a href="modcp.' . PHP_EXT . '?'. POST_FORUM_URL .'='. $forum_id .'&amp;type='. $u_topic_type[$tt] .'&amp;sid='. $user->data['session_id'] .'" class="genmed">'. $l_topic_type[$tt] .'</a>&nbsp;|&nbsp;';
 		}
-		$topic_types .= (empty($type)) ? $lang['Display_all'] : '<a href="modcp.' . PHP_EXT . '?'. POST_FORUM_URL .'='. $forum_id .'&amp;sid='. $userdata['session_id'] .'" class="genmed">'. $lang['Display_all'] .'</a>';
+		$topic_types .= (empty($type)) ? $lang['Display_all'] : '<a href="modcp.' . PHP_EXT . '?'. POST_FORUM_URL .'='. $forum_id .'&amp;sid='. $user->data['session_id'] .'" class="genmed">'. $lang['Display_all'] .'</a>';
 
 		if($forum_topics == '0')
 		{
@@ -955,7 +951,7 @@ switch($mode)
 		$select_title = '<select name="qtnum"><option value="-1">---</option>';
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$addon = str_replace('%mod%', addslashes($userdata['username']), $row['title_info']);
+			$addon = str_replace('%mod%', addslashes($user->data['username']), $row['title_info']);
 			$dateqt = ($row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($row['date_format'], time(), $config['board_timezone']);
 			$addon = str_replace('%date%', $dateqt, $addon);
 			$select_title .= '<option value="' . $row['id'] . '">' . htmlspecialchars($addon) . '</option>';
@@ -1004,7 +1000,7 @@ switch($mode)
 			'L_MARK_ALL' => $lang['Mark_all'],
 			'L_UNMARK_ALL' => $lang['Unmark_all'],
 			'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id),
-			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />',
+			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />',
 			'S_MODCP_ACTION' => append_sid('modcp.' . PHP_EXT),
 			)
 		);
@@ -1045,7 +1041,7 @@ switch($mode)
 		{
 			$template->assign_block_vars('switch_auth_lock', array());
 		}
-		if(($type != 'unlocked' && (($type == 'locked') || ($type == 'poll') || ($type == 'sticky') || ($type == 'announce'))) || ($userdata['user_level'] == ADMIN))
+		if(($type != 'unlocked' && (($type == 'locked') || ($type == 'poll') || ($type == 'sticky') || ($type == 'announce'))) || ($user->data['user_level'] == ADMIN))
 		{
 			$template->assign_block_vars('switch_auth_unlock', array());
 		}
@@ -1126,7 +1122,7 @@ switch($mode)
 			$last_post_author =  colorize_username($topic_rowset[$i]['user_id'], $topic_rowset[$i]['username'], $topic_rowset[$i]['user_color'], $topic_rowset[$i]['user_active']);
 			$last_post_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 
-			$u_view_topic = 'modcp.' . PHP_EXT . '?mode=split&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+			$u_view_topic = 'modcp.' . PHP_EXT . '?mode=split&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 			$topic_replies = $topic_rowset[$i]['topic_replies'];
 
 			$last_post_time = create_date_ip($config['default_dateformat'], $topic_rowset[$i]['post_time'], $config['board_timezone']);
@@ -1160,7 +1156,7 @@ switch($mode)
 		}
 
 		$template->assign_vars(array(
-			'PAGINATION' => generate_pagination('modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'], $forum_topics, $config['topics_per_page'], $start),
+			'PAGINATION' => generate_pagination('modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'], $forum_topics, $config['topics_per_page'], $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($forum_topics / $config['topics_per_page'])),
 			'L_GOTO_PAGE' => $lang['Goto_page']
 			)

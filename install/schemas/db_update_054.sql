@@ -595,8 +595,161 @@ DELETE FROM `phpbb_config` WHERE config_name = 'digests_php_cron';
 DELETE FROM `phpbb_config` WHERE config_name = 'digests_php_cron_lock';
 DELETE FROM `phpbb_config` WHERE config_name = 'digests_last_send_time';
 
-!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0)
-empty($config['cron_digests_interval']) || ($config['cron_digests_interval'] == -1)
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('robots_index_topics_no_replies', '1');
+
+ALTER TABLE `phpbb_rate_results` CHANGE `rating_time` `rating_time` int(11) NOT NULL DEFAULT '0';
+
+## SESSIONS - BEGIN
+
+ALTER TABLE `phpbb_users` ADD `user_permissions` mediumtext NOT NULL AFTER `user_mask`;
+ALTER TABLE `phpbb_users` ADD `user_perm_from` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_permissions`;
+ALTER TABLE `phpbb_users` CHANGE `user_http_agents` `user_browser` varchar(255) DEFAULT '' NOT NULL;
+
+ALTER TABLE `phpbb_attachments_stats` CHANGE `user_http_agents` `user_browser` varchar(255) DEFAULT '' NOT NULL;
+
+CREATE TABLE `___sessions___` (
+	`session_id` varchar(32) NOT NULL DEFAULT '',
+	`session_user_id` mediumint(8) NOT NULL DEFAULT '0',
+	`session_start` int(11) NOT NULL DEFAULT '0',
+	`session_time` int(11) NOT NULL DEFAULT '0',
+	`session_ip` varchar(40) NOT NULL DEFAULT '0',
+	`session_browser` varchar(255) DEFAULT '' NOT NULL,
+	`session_page` varchar(255) NOT NULL DEFAULT '',
+	`session_logged_in` tinyint(1) NOT NULL DEFAULT '0',
+	`session_forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`session_topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`session_last_visit` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`session_forwarded_for` varchar(255) DEFAULT '' NOT NULL,
+	`session_viewonline` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	`session_autologin` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+	`session_admin` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+	PRIMARY KEY (`session_id`),
+	KEY `session_user_id` (`session_user_id`),
+	KEY `session_fid` (`session_forum_id`)
+);
+
+INSERT INTO `___sessions___`
+SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_browser, s.session_page, s.session_logged_in, 0, 0, 0, '', 1, 0, s.session_admin
+FROM `phpbb_sessions` s
+ORDER BY s.session_id;
+
+RENAME TABLE `phpbb_sessions` TO `_old_phpbb_sessions`;
+RENAME TABLE `___sessions___` TO `phpbb_sessions`;
+
+ALTER TABLE `phpbb_groups` CHANGE `group_name` `group_name` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_groups` CHANGE `group_description` `group_description` text NOT NULL;
+ALTER TABLE `phpbb_groups` ADD `group_founder_manage` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_type`;
+ALTER TABLE `phpbb_groups` ADD `group_display` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_description`;
+ALTER TABLE `phpbb_groups` ADD `group_sig_chars` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_legend_order`;
+ALTER TABLE `phpbb_groups` ADD `group_receive_pm` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_sig_chars`;
+ALTER TABLE `phpbb_groups` ADD `group_message_limit` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_receive_pm`;
+ALTER TABLE `phpbb_groups` ADD `group_max_recipients` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_message_limit`;
+ALTER TABLE `phpbb_groups` ADD `group_skip_auth` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `group_max_recipients`;
+ALTER TABLE `phpbb_groups` ADD INDEX `group_legend_name` (`group_legend`, `group_name`);
+
+ALTER TABLE `phpbb_user_group` CHANGE `user_pending` `user_pending` tinyint(1) DEFAULT '1' NOT NULL;
+ALTER TABLE `phpbb_user_group` ADD `group_leader` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_id`;
+ALTER TABLE `phpbb_user_group` ADD INDEX `group_leader` (`group_leader`);
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('limit_load', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('limit_search_load', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_check', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('browser_check', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('referer_validation', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('force_server_vars', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_last_gc', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('active_sessions', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('form_token_lifetime', '7200');
+
+CREATE TABLE `phpbb_log` (
+	`log_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
+	`log_type` tinyint(4) DEFAULT '0' NOT NULL,
+	`user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`reportee_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`log_ip` varchar(40) DEFAULT '' NOT NULL,
+	`log_time` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`log_operation` text NOT NULL,
+	`log_data` mediumtext NOT NULL,
+	PRIMARY KEY (`log_id`),
+	KEY log_type (`log_type`),
+	KEY forum_id (`forum_id`),
+	KEY topic_id (`topic_id`),
+	KEY reportee_id (`reportee_id`),
+	KEY user_id (`user_id`)
+);
+
+ALTER TABLE `phpbb_banlist` CHANGE `ban_time` `ban_start` int(11) DEFAULT NULL;
+ALTER TABLE `phpbb_banlist` CHANGE `ban_expire_time` `ban_end` int(11) DEFAULT NULL;
+
+ALTER TABLE `phpbb_ajax_shoutbox` CHANGE `shouter_ip` `shouter_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_ajax_shoutbox_sessions` CHANGE `session_ip` `session_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_album_comment` CHANGE `comment_user_ip` `comment_user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_album_rate` CHANGE `rate_user_ip` `rate_user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_attachments_stats` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_banlist` CHANGE `ban_ip` `ban_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_ctracker_loginhistory` CHANGE `ct_login_ip` `ct_login_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_dl_banlist` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_dl_stats` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_kb_votes` CHANGE `votes_ip` `votes_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_links` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_links` CHANGE `last_user_ip` `last_user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_logins` CHANGE `login_ip` `login_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_pa_download_info` CHANGE `downloader_ip` `downloader_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_pa_files` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_pa_votes` CHANGE `votes_ip` `votes_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_poll_votes` CHANGE `vote_user_ip` `vote_user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_posts` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_privmsgs` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_privmsgs_archive` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_rate_results` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_referrers` CHANGE `referrer_ip` `referrer_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_registration` CHANGE `registration_user_ip` `registration_user_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_sessions` CHANGE `session_ip` `session_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_sessions_keys` CHANGE `last_ip` `last_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_shout` CHANGE `shout_ip` `shout_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_users` CHANGE `ct_last_used_ip` `ct_last_used_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_users` CHANGE `ct_last_ip` `ct_last_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_users` CHANGE `user_registered_ip` `user_registered_ip` varchar(40) NOT NULL DEFAULT '';
+
+ALTER TABLE `phpbb_blogs_posts` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_guestbooks_posts` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DEFAULT '';
+
+UPDATE `phpbb_ajax_shoutbox` ip SET ip.shouter_ip = INET_NTOA(CONV(ip.shouter_ip, 16, 10));
+UPDATE `phpbb_ajax_shoutbox_sessions` ip SET ip.session_ip = INET_NTOA(CONV(ip.session_ip, 16, 10));
+UPDATE `phpbb_album_comment` ip SET ip.comment_user_ip = INET_NTOA(CONV(ip.comment_user_ip, 16, 10));
+UPDATE `phpbb_album_rate` ip SET ip.rate_user_ip = INET_NTOA(CONV(ip.rate_user_ip, 16, 10));
+UPDATE `phpbb_attachments_stats` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10));
+UPDATE `phpbb_banlist` ip SET ip.ban_ip = INET_NTOA(CONV(ip.ban_ip, 16, 10));
+UPDATE `phpbb_dl_banlist` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10));
+UPDATE `phpbb_dl_stats` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10));
+UPDATE `phpbb_kb_votes` ip SET ip.votes_ip = INET_NTOA(CONV(ip.votes_ip, 16, 10));
+UPDATE `phpbb_links` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10));
+UPDATE `phpbb_links` ip SET ip.last_user_ip = INET_NTOA(CONV(ip.last_user_ip, 16, 10));
+UPDATE `phpbb_logins` ip SET ip.login_ip = INET_NTOA(CONV(ip.login_ip, 16, 10));
+UPDATE `phpbb_pa_download_info` ip SET ip.downloader_ip = INET_NTOA(CONV(ip.downloader_ip, 16, 10));
+UPDATE `phpbb_pa_files` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10));
+UPDATE `phpbb_pa_votes` ip SET ip.votes_ip = INET_NTOA(CONV(ip.votes_ip, 16, 10));
+UPDATE `phpbb_poll_votes` ip SET ip.vote_user_ip = INET_NTOA(CONV(ip.vote_user_ip, 16, 10));
+UPDATE `phpbb_posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10));
+UPDATE `phpbb_privmsgs` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10));
+UPDATE `phpbb_privmsgs_archive` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10));
+UPDATE `phpbb_rate_results` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10));
+UPDATE `phpbb_referrers` ip SET ip.referrer_ip = INET_NTOA(CONV(ip.referrer_ip, 16, 10));
+UPDATE `phpbb_registration` ip SET ip.registration_user_ip = INET_NTOA(CONV(ip.registration_user_ip, 16, 10));
+UPDATE `phpbb_sessions` ip SET ip.session_ip = INET_NTOA(CONV(ip.session_ip, 16, 10));
+UPDATE `phpbb_sessions_keys` ip SET ip.last_ip = INET_NTOA(CONV(ip.last_ip, 16, 10));
+UPDATE `phpbb_shout` ip SET ip.shout_ip = INET_NTOA(CONV(ip.shout_ip, 16, 10));
+UPDATE `phpbb_users` ip SET ip.user_registered_ip = INET_NTOA(CONV(ip.user_registered_ip, 16, 10));
+
+UPDATE `phpbb_blogs_posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10));
+UPDATE `phpbb_guestbooks_posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10));
+
+
+## SESSIONS - END
+
+
 
 
 #####################

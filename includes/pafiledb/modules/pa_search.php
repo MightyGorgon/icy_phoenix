@@ -19,11 +19,11 @@ class pafiledb_search extends pafiledb_public
 {
 	function main($action)
 	{
-		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
+		global $template, $lang, $config, $pafiledb_config, $db, $images, $user;
 
 		if(!$this->auth_global['auth_search'])
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}
@@ -337,14 +337,14 @@ class pafiledb_search extends pafiledb_public
 
 				$sql = "UPDATE " . SEARCH_TABLE . "
 					SET search_id = $search_id, search_array = '" . $db->sql_escape($result_array) . "'
-					WHERE session_id = '" . $userdata['session_id'] . "'";
+					WHERE session_id = '" . $user->data['session_id'] . "'";
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
 				$db->sql_return_on_error(false);
 				if (!$result || !$db->sql_affectedrows())
 				{
 					$sql = "INSERT INTO " . SEARCH_TABLE . " (search_id, session_id, search_array)
-						VALUES($search_id, '" . $userdata['session_id'] . "', '" . $db->sql_escape($result_array) . "')";
+						VALUES($search_id, '" . $user->data['session_id'] . "', '" . $db->sql_escape($result_array) . "')";
 					$result = $db->sql_query($sql);
 				}
 			}
@@ -356,7 +356,7 @@ class pafiledb_search extends pafiledb_public
 					$sql = "SELECT search_array
 						FROM " . SEARCH_TABLE . "
 						WHERE search_id = $search_id
-						AND session_id = '" . $userdata['session_id'] . "'";
+						AND session_id = '" . $user->data['session_id'] . "'";
 					$result = $db->sql_query($sql);
 
 					if ($row = $db->sql_fetchrow($result))

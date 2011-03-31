@@ -14,12 +14,13 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 //Gather required Information
-$subs_forums_list_sql = 'SELECT forum_id FROM ' . FORUMS_WATCH_TABLE . ' WHERE user_id = ' . $userdata['user_id'] . ' AND notify_status = 0';
+$subs_forums_list_sql = 'SELECT forum_id FROM ' . FORUMS_WATCH_TABLE . ' WHERE user_id = ' . $user->data['user_id'] . ' AND notify_status = 0';
 $subs_forums_list = $db->sql_query($subs_forums_list_sql);
 
 $tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
@@ -52,7 +53,7 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 	{
 		$forum_counter++;
 		$is_auth = array();
-		$is_auth = auth(AUTH_VIEW, $subs_forum_id, $userdata);
+		$is_auth = auth(AUTH_VIEW, $subs_forum_id, $user->data);
 
 		if ($empty_forum_status == 1)
 		{
@@ -81,12 +82,12 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 			else
 			{
 				$unread_topics = false;
-				if ($userdata['session_logged_in'])
+				if ($user->data['session_logged_in'])
 				{
 					$sql = "SELECT t.forum_id, t.topic_id, p.post_time, t.topic_title
 								FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 								WHERE p.post_id = t.topic_last_post_id
-								AND p.post_time > " . $userdata['user_lastvisit'] . "
+								AND p.post_time > " . $user->data['user_lastvisit'] . "
 								AND t.topic_moved_id = 0";
 					$result = $db->sql_query($sql);
 

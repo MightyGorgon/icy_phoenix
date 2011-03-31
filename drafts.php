@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 if (!$config['allow_drafts'])
@@ -34,7 +35,7 @@ if (!empty($_POST['kill_drafts']))
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	$redirect = (isset($start)) ? ('&start=' . $start) : '';
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=drafts.' . PHP_EXT . $redirect, true));
@@ -131,7 +132,7 @@ $template->assign_vars(array(
 	)
 );
 
-$sql = "SELECT COUNT(*) as drafts_count FROM " . DRAFTS_TABLE . " d WHERE d.user_id = " . $userdata['user_id'];
+$sql = "SELECT COUNT(*) as drafts_count FROM " . DRAFTS_TABLE . " d WHERE d.user_id = " . $user->data['user_id'];
 $result = $db->sql_query($sql);
 $row = $db->sql_fetchrow($result);
 $drafts_count = ($row['drafts_count']) ? $row['drafts_count'] : 0;
@@ -144,7 +145,7 @@ if ($no_drafts == false)
 {
 	$sql = "SELECT d.*
 		FROM " . DRAFTS_TABLE . " d
-		WHERE d.user_id = '" . $userdata['user_id'] . "'
+		WHERE d.user_id = '" . $user->data['user_id'] . "'
 		ORDER BY d.save_time DESC
 		LIMIT $start, " . $config['topics_per_page'];
 	$result = $db->sql_query($sql);

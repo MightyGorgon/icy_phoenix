@@ -23,8 +23,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $cms_page['page_id'] = 'groupcp';
@@ -52,7 +53,7 @@ $is_moderator = false;
 
 if (isset($_POST['groupstatus']) && $group_id)
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=groupcp.' . PHP_EXT . '&' . POST_GROUPS_URL . '=' . $group_id, true));
 	}
@@ -63,7 +64,7 @@ if (isset($_POST['groupstatus']) && $group_id)
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 
-	if (($row['group_moderator'] != $userdata['user_id']) && ($userdata['user_level'] != ADMIN))
+	if (($row['group_moderator'] != $user->data['user_id']) && ($user->data['user_level'] != ADMIN))
 	{
 		$redirect_url = append_sid(CMS_PAGE_FORUM);
 		meta_refresh(3, $redirect_url);
@@ -89,11 +90,11 @@ if (isset($_POST['groupstatus']) && $group_id)
 }
 elseif (isset($_POST['colorize_all']) && $group_id)
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=groupcp.' . PHP_EXT . '&' . POST_GROUPS_URL . '=' . $group_id, true));
 	}
-	elseif ($sid !== $userdata['session_id'])
+	elseif ($sid !== $user->data['session_id'])
 	{
 		message_die(GENERAL_ERROR, $lang['Session_invalid']);
 	}
@@ -111,7 +112,7 @@ elseif (isset($_POST['joingroup']) && $group_id)
 {
 	// First, joining a group
 	// If the user isn't logged in redirect them to login
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=groupcp.' . PHP_EXT . '&' . POST_GROUPS_URL . '=' . $group_id, true));
 	}
@@ -119,20 +120,20 @@ elseif (isset($_POST['joingroup']) && $group_id)
 	$sql = "SELECT ug.user_id, g.group_type, g.group_rank, g.group_color, g.group_count, g.group_count_max
 		FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
 		WHERE g.group_id = '" . $group_id . "'
-			AND (g.group_type <> " . GROUP_HIDDEN . " OR (g.group_count <= '" . $userdata['user_posts'] . "' AND g.group_count_max > '" . $userdata['user_posts'] . "'))
+			AND (g.group_type <> " . GROUP_HIDDEN . " OR (g.group_count <= '" . $user->data['user_posts'] . "' AND g.group_count_max > '" . $user->data['user_posts'] . "'))
 			AND ug.group_id = g.group_id";
 	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
-		$is_autogroup_enable = (($row['group_count'] <= $userdata['user_posts']) && ($row['group_count_max'] > $userdata['user_posts'])) ? true : false;
+		$is_autogroup_enable = (($row['group_count'] <= $user->data['user_posts']) && ($row['group_count_max'] > $user->data['user_posts'])) ? true : false;
 		$group_rank = $row['group_rank'];
 		$group_color = $row['group_color'];
 		if (($row['group_type'] == GROUP_OPEN) || $is_autogroup_enable)
 		{
 			do
 			{
-				if ($userdata['user_id'] == $row['user_id'])
+				if ($user->data['user_id'] == $row['user_id'])
 				{
 					$redirect_url = append_sid(CMS_PAGE_FORUM);
 					meta_refresh(3, $redirect_url);
@@ -160,20 +161,20 @@ elseif (isset($_POST['joingroup']) && $group_id)
 	}
 
 	$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
-		VALUES ($group_id, " . $userdata['user_id'] . ",'" . (($is_autogroup_enable) ? 0 : 1) . "')";
+		VALUES ($group_id, " . $user->data['user_id'] . ",'" . (($is_autogroup_enable) ? 0 : 1) . "')";
 	$result = $db->sql_query($sql);
 
 	if ($is_autogroup_enable)
 	{
-		update_user_color($user_id, $group_data['group_color'], $userdata['user_color_group'], false, false);
+		update_user_color($user_id, $group_data['group_color'], $user->data['user_color_group'], false, false);
 		update_user_posts_details($user_id, $group_data['group_color'], '', false, false);
 	}
 
-	if (($userdata['user_rank'] == '0') && ($group_rank != '0') && $is_autogroup_enable)
+	if (($user->data['user_rank'] == '0') && ($group_rank != '0') && $is_autogroup_enable)
 	{
 		$sql_users = "UPDATE " . USERS_TABLE . "
 			SET user_rank = '" . $group_rank . "'
-			WHERE user_id = '" . $userdata['user_id'] . "'";
+			WHERE user_id = '" . $user->data['user_id'] . "'";
 		$db->sql_query($sql_users);
 	}
 
@@ -237,11 +238,11 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 	{
 		redirect(append_sid('groupcp.' . PHP_EXT, true));
 	}
-	elseif (!$userdata['session_logged_in'])
+	elseif (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=groupcp.' . PHP_EXT . '&' . POST_GROUPS_URL . '=' . $group_id, true));
 	}
-	elseif ($sid !== $userdata['session_id'])
+	elseif ($sid !== $user->data['session_id'])
 	{
 		message_die(GENERAL_ERROR, $lang['Session_invalid']);
 	}
@@ -249,18 +250,18 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 	if ($confirm)
 	{
 		$sql = "DELETE FROM " . USER_GROUP_TABLE . "
-			WHERE user_id = " . $userdata['user_id'] . "
+			WHERE user_id = " . $user->data['user_id'] . "
 				AND group_id = '" . $group_id . "'";
 		$result = $db->sql_query($sql);
 
-		update_user_color($userdata['user_id'], $config['active_users_color'], 0);
-		update_user_posts_details($userdata['user_id'], '', '', false, false);
+		update_user_color($user->data['user_id'], $config['active_users_color'], 0);
+		update_user_posts_details($user->data['user_id'], '', '', false, false);
 
-		if (($userdata['user_level'] != ADMIN) && ($userdata['user_level'] == MOD))
+		if (($user->data['user_level'] != ADMIN) && ($user->data['user_level'] == MOD))
 		{
 			$sql = "SELECT COUNT(auth_mod) AS is_auth_mod
 				FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug
-				WHERE ug.user_id = " . $userdata['user_id'] . "
+				WHERE ug.user_id = " . $user->data['user_id'] . "
 					AND aa.group_id = ug.group_id
 					AND aa.auth_mod = 1";
 			$result = $db->sql_query($sql);
@@ -269,7 +270,7 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 			{
 				$sql = "UPDATE " . USERS_TABLE . "
 					SET user_level = " . USER . "
-					WHERE user_id = " . $userdata['user_id'];
+					WHERE user_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 			}
 		}
@@ -288,7 +289,7 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 		$unsub_msg = (isset($_POST['unsub'])) ? $lang['Confirm_unsub'] : $lang['Confirm_unsub_pending'];
 
 		$s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" /><input type="hidden" name="unsub" value="1" />';
-		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 		$nav_server_url = create_server_url();
 		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('groupcp.' . PHP_EXT) . '" class="nav-current">' . $lang['Group_Control_Panel'] . '</a>';
@@ -311,7 +312,7 @@ elseif ($group_id)
 	// If so, check to see if they are logged in.
 	if (isset($_GET['validate']))
 	{
-		if (!$userdata['session_logged_in'])
+		if (!$user->data['session_logged_in'])
 		{
 			redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=groupcp.' . PHP_EXT . '&' . POST_GROUPS_URL . '=' . $group_id, true));
 		}
@@ -331,7 +332,7 @@ elseif ($group_id)
 		$group_rank = $group_info['group_rank'];
 		$group_color = $group_info['group_color'];
 
-		if (($group_moderator == $userdata['user_id']) || ($userdata['user_level'] == ADMIN) || $is_autogroup_enable)
+		if (($group_moderator == $user->data['user_id']) || ($user->data['user_level'] == ADMIN) || $is_autogroup_enable)
 		{
 			$is_moderator = true;
 		}
@@ -339,11 +340,11 @@ elseif ($group_id)
 		// Handle Additions, removals, approvals and denials
 		if (!empty($_POST['add']) || !empty($_POST['remove']) || isset($_POST['approve']) || isset($_POST['deny']) || isset($_POST['mass_colorize']))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=groupcp.' . PHP_EXT . '&' . POST_GROUPS_URL . '=' . $group_id, true));
 			}
-			elseif ($sid !== $userdata['session_id'])
+			elseif ($sid !== $user->data['session_id'])
 			{
 				message_die(GENERAL_ERROR, $lang['Session_invalid']);
 			}
@@ -716,32 +717,32 @@ elseif ($group_id)
 	{
 		for($i = 0; $i < $members_count; $i++)
 		{
-			if (($group_members[$i]['user_id'] == $userdata['user_id']) && $userdata['session_logged_in'])
+			if (($group_members[$i]['user_id'] == $user->data['user_id']) && $user->data['session_logged_in'])
 			{
 				$is_group_member = true;
 			}
 		}
 	}
 
-	$is_autogroup_enable = ($group_info['group_count'] <= $userdata['user_posts'] && $group_info['group_count_max'] > $userdata['user_posts']) ? true : false;
+	$is_autogroup_enable = ($group_info['group_count'] <= $user->data['user_posts'] && $group_info['group_count_max'] > $user->data['user_posts']) ? true : false;
 
 	if ($modgroup_pending_count)
 	{
 		for($i = 0; $i < $modgroup_pending_count; $i++)
 		{
-			if ($modgroup_pending_list[$i]['user_id'] == $userdata['user_id'] && $userdata['session_logged_in'])
+			if ($modgroup_pending_list[$i]['user_id'] == $user->data['user_id'] && $user->data['session_logged_in'])
 			{
 				$is_group_pending_member = true;
 			}
 		}
 	}
 
-	if ($userdata['user_level'] == ADMIN)
+	if ($user->data['user_level'] == ADMIN)
 	{
 		$is_moderator = true;
 	}
 
-	if ($userdata['user_id'] == $group_info['group_moderator'])
+	if ($user->data['user_id'] == $group_info['group_moderator'])
 	{
 		$is_moderator = true;
 
@@ -757,7 +758,7 @@ elseif ($group_id)
 
 		$s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 	}
-	elseif ($userdata['user_id'] == ANONYMOUS)
+	elseif ($user->data['user_id'] == ANONYMOUS)
 	{
 		$group_details = $lang['Login_to_join'];
 		$s_hidden_fields = '';
@@ -823,7 +824,7 @@ elseif ($group_id)
 	$user_info = array();
 	$user_info = generate_user_info($group_moderator, $config['default_dateformat'], $is_moderator);
 
-	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 	$group_color = check_valid_color($group_info['group_color']) ? check_valid_color($group_info['group_color']) : false;
 	$template->assign_vars(array(
@@ -1126,7 +1127,7 @@ elseif ($group_id)
 		$template->assign_block_vars('switch_mod_option', array());
 		$template->assign_block_vars('switch_add_member', array());
 	}
-	if ($userdata['user_level'] == ADMIN)
+	if ($user->data['user_level'] == ADMIN)
 	{
 		$template->assign_block_vars('switch_mod_option.switch_admin', array());
 	}
@@ -1139,13 +1140,13 @@ else
 	// Select all group that the user is a member of or where the user has a pending membership.
 	$in_group = array();
 
-	if ($userdata['session_logged_in'])
+	if ($user->data['session_logged_in'])
 	{
 		$in_group = array();
 
 		$sql = "SELECT g.group_id, g.group_name, g.group_description, g.group_type, g.group_color, ug.user_pending
 			FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
-			WHERE ug.user_id = " . $userdata['user_id'] . "
+			WHERE ug.user_id = " . $user->data['user_id'] . "
 				AND ug.group_id = g.group_id
 				AND g.group_single_user <> " . true . "
 				AND ug.user_pending = '0'
@@ -1176,7 +1177,7 @@ else
 
 		$sql = "SELECT g.group_id, g.group_name, g.group_description, g.group_type, g.group_color, ug.user_pending
 			FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
-			WHERE ug.user_id = " . $userdata['user_id'] . "
+			WHERE ug.user_id = " . $user->data['user_id'] . "
 				AND ug.group_id = g.group_id
 				AND g.group_single_user <> " . true . "
 				AND ug.user_pending = '1'
@@ -1221,9 +1222,9 @@ else
 		$template->assign_block_vars('switch_groups_remaining', array());
 		do
 		{
-			$is_autogroup_enable = (($row['group_count'] <= $userdata['user_posts']) && ($row['group_count_max'] > $userdata['user_posts'])) ? true : false;
+			$is_autogroup_enable = (($row['group_count'] <= $user->data['user_posts']) && ($row['group_count_max'] > $user->data['user_posts'])) ? true : false;
 
-			if (($row['group_type'] != GROUP_HIDDEN) || ($userdata['user_level'] == ADMIN))
+			if (($row['group_type'] != GROUP_HIDDEN) || ($user->data['user_level'] == ADMIN))
 			{
 				$s_group_list_opt .='<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
 				$group_color = check_valid_color($row['group_color']) ? check_valid_color($row['group_color']) : false;
@@ -1276,11 +1277,11 @@ else
 		}
 		*/
 
-		$s_hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+		$s_hidden_fields = '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 		$template->assign_vars(array(
 			'L_GROUP_MEMBERSHIP_DETAILS' => $lang['Group_member_details'],
-			'L_JOIN_A_GROUP' => ($userdata['session_logged_in'] ? $lang['Group_member_join'] : $lang['Usergroups']),
+			'L_JOIN_A_GROUP' => ($user->data['session_logged_in'] ? $lang['Group_member_join'] : $lang['Usergroups']),
 			'L_YOU_BELONG_GROUPS' => $lang['Current_memberships'],
 			'L_SELECT_A_GROUP' => $lang['Non_member_groups'],
 			'L_PENDING_GROUPS' => $lang['Memberships_pending'],

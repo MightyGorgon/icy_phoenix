@@ -26,7 +26,7 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 {
-	global $config, $lang, $images, $userdata;
+	global $config, $lang, $images, $user;
 
 	$date_format = ($date_format == false) ? $lang['JOINED_DATE_FORMAT'] : $date_format;
 
@@ -46,7 +46,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 
 	$user_info['avatar'] = user_get_avatar($row['user_id'], $row['user_level'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
 
-	if (empty($userdata['user_id']) || ($userdata['user_id'] == ANONYMOUS))
+	if (empty($user->data['user_id']) || ($user->data['user_id'] == ANONYMOUS))
 	{
 		if (!empty($row['user_viewemail']))
 		{
@@ -58,7 +58,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 		}
 		$user_info['email'] = '&nbsp;';
 	}
-	elseif (!empty($row['user_viewemail']) || $is_moderator || $userdata['user_level'] == ADMIN)
+	elseif (!empty($row['user_viewemail']) || $is_moderator || $user->data['user_level'] == ADMIN)
 	{
 		$user_info['email_url'] = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
 		$user_info['email_img'] = '<a href="' . $user_info['email_url'] . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
@@ -70,10 +70,10 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 		$user_info['email'] = '&nbsp;';
 	}
 
-	if (isset($row['ct_last_used_ip']) && ($userdata['user_level'] == ADMIN))
+	if (isset($row['ct_last_used_ip']) && ($user->data['user_level'] == ADMIN))
 	{
-		$user_info['ip_url'] = 'http://www.nic.com/cgi-bin/whois.cgi?query=' . decode_ip($row['ct_last_used_ip']);
-		$user_info['ip_img'] = '<a href="' . $user_info['ip_url'] . '" target="_blank"><img src="' . $images['icon_ip2'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($row['ct_last_used_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($row['ct_last_used_ip']) . ')" /></a>';
+		$user_info['ip_url'] = 'http://www.nic.com/cgi-bin/whois.cgi?query=' . htmlspecialchars(urlencode($row['ct_last_used_ip']));
+		$user_info['ip_img'] = '<a href="' . $user_info['ip_url'] . '" target="_blank"><img src="' . $images['icon_ip2'] . '" alt="' . $lang['View_IP'] . ' (' . htmlspecialchars($row['ct_last_used_ip']) . ')" title="' . $lang['View_IP'] . ' (' . htmlspecialchars($row['ct_last_used_ip']) . ')" /></a>';
 		$user_info['ip'] = '<a href="' . $user_info['ip_url'] . '">' . $lang['View_IP'] . '</a>';
 	}
 
@@ -142,7 +142,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 			$user_info['online_status_lang'] = $lang['Online'];
 			$user_info['online_status_class'] = 'online';
 		}
-		elseif (isset($row['user_allow_viewonline']) && empty($row['user_allow_viewonline']) && (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $user_id)))
+		elseif (isset($row['user_allow_viewonline']) && empty($row['user_allow_viewonline']) && (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $user_id)))
 		{
 			$user_info['online_status_img'] = '<a href="' . $user_info['online_status_url'] . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
 			$user_info['online_status_lang'] = $lang['Hidden'];
@@ -449,14 +449,14 @@ function top_posters($user_limit, $show_admins = true, $show_mods = true, $only_
 */
 function birthday_pm_send()
 {
-	global $db, $cache, $config, $userdata, $lang;
+	global $db, $cache, $config, $user, $lang;
 
 	// Birthday - BEGIN
 	// Check if the user has or have had birthday, also see if greetings are enabled
-	if (($userdata['user_birthday'] != 999999) && !empty($config['birthday_greeting']) && (create_date('Ymd', time(), $config['board_timezone']) >= $userdata['user_next_birthday_greeting'] . realdate('md', $userdata['user_birthday'])))
+	if (($user->data['user_birthday'] != 999999) && !empty($config['birthday_greeting']) && (create_date('Ymd', time(), $config['board_timezone']) >= $user->data['user_next_birthday_greeting'] . realdate('md', $user->data['user_birthday'])))
 	{
 		// If a user had a birthday more than one week before we will not send the PM...
-		if ((time() - gmmktime(0, 0, 0, $userdata['user_birthday_m'], $userdata['user_birthday_d'], $userdata['user_next_birthday_greeting'])) <= (86400 * 8))
+		if ((time() - gmmktime(0, 0, 0, $user->data['user_birthday_m'], $user->data['user_birthday_d'], $user->data['user_next_birthday_greeting'])) <= (86400 * 8))
 		{
 			// Birthday PM - BEGIN
 			$pm_subject = $lang['Greeting_Messaging'];
@@ -464,16 +464,16 @@ function birthday_pm_send()
 
 			$year = create_date('Y', time(), $config['board_timezone']);
 			$date_today = create_date('Ymd', time(), $config['board_timezone']);
-			$user_birthday = realdate('md', $userdata['user_birthday']);
+			$user_birthday = realdate('md', $user->data['user_birthday']);
 			$user_birthday2 = (($year . $user_birthday < $date_today) ? ($year + 1) : $year) . $user_birthday;
 
-			$user_age = create_date('Y', time(), $config['board_timezone']) - realdate('Y', $userdata['user_birthday']);
-			if (create_date('md', time(), $config['board_timezone']) < realdate('md', $userdata['user_birthday']))
+			$user_age = create_date('Y', time(), $config['board_timezone']) - realdate('Y', $user->data['user_birthday']);
+			if (create_date('md', time(), $config['board_timezone']) < realdate('md', $user->data['user_birthday']))
 			{
 				$user_age--;
 			}
 
-			$pm_text = ($user_birthday2 == $date_today) ? sprintf($lang['Birthday_greeting_today'], $user_age) : sprintf($lang['Birthday_greeting_prev'], $user_age, realdate(str_replace('Y', '', $lang['DATE_FORMAT_BIRTHDAY']), $userdata['user_birthday']) . ((!empty($userdata['user_next_birthday_greeting']) ? ($userdata['user_next_birthday_greeting']) : '')));
+			$pm_text = ($user_birthday2 == $date_today) ? sprintf($lang['Birthday_greeting_today'], $user_age) : sprintf($lang['Birthday_greeting_prev'], $user_age, realdate(str_replace('Y', '', $lang['DATE_FORMAT_BIRTHDAY']), $user->data['user_birthday']) . ((!empty($user->data['user_next_birthday_greeting']) ? ($user->data['user_next_birthday_greeting']) : '')));
 
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 
@@ -481,7 +481,7 @@ function birthday_pm_send()
 			$privmsg_subject = sprintf($pm_subject, $config['sitename']);
 			$privmsg_message = sprintf($pm_text, $config['sitename'], $config['sitename']);
 			$privmsg_sender = $founder_id;
-			$privmsg_recipient = $userdata['user_id'];
+			$privmsg_recipient = $user->data['user_id'];
 
 			$privmsg = new class_pm();
 			$privmsg->delete_older_message('PM_INBOX', $privmsg_recipient);
@@ -493,7 +493,7 @@ function birthday_pm_send()
 		// Update next greetings year
 		$sql = "UPDATE " . USERS_TABLE . "
 			SET user_next_birthday_greeting = " . (create_date('Y', time(), $config['board_timezone']) + 1) . "
-			WHERE user_id = " . $userdata['user_id'];
+			WHERE user_id = " . $user->data['user_id'];
 		$status = $db->sql_query($sql);
 	} //Sorry user shall not have a greeting this year
 	// Birthday - END

@@ -142,16 +142,20 @@ $encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 $user_id = ($needlogin ? rss_get_user() : ANONYMOUS);
 if(($user_id == ANONYMOUS) && AUTOLOGIN)
 {
-	$userdata = session_pagestart($user_ip);
-	$user_id = $userdata['user_id'];
+	// Start session management
+	$user->session_begin();
+	//$auth->acl($user->data);
+	$user->setup();
+	// End session management
+	$user_id = $user->data['user_id'];
 }
 else
 {
-	$userdata = rss_session_begin($user_id, $user_ip, 0);
+	$user->data = rss_session_begin($user_id, $user_ip, 0);
+	$user->setup();
 }
 
-init_userprefs($userdata);
-$username = $userdata['username'];
+$username = $user->data['username'];
 // END session management
 
 // BEGIN Cache Mod
@@ -196,10 +200,10 @@ else
 
 	// Auth check
 	$sql_forum_where = '';
-	if($userdata['user_level'] <> ADMIN)
+	if($user->data['user_level'] <> ADMIN)
 	{
 		$is_auth = array();
-		$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+		$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 		if($forum_id == '')
 		{
 			while (list($forumId, $auth_mode) = each($is_auth))
@@ -316,7 +320,7 @@ else
 	// BEGIN Assign static variables to template
 	// Variable reassignment for Topic Replies
 	$l_topic_replies = $lang['Topic'] . ' ' . $lang['Replies'];
-	$user_lang = $userdata['user_lang'];
+	$user_lang = $user->data['user_lang'];
 	if(empty($user_lang))
 	{
 		$user_lang = $config['default_lang'];
@@ -369,9 +373,9 @@ else
 			$message = $post['post_text'];
 			$user_sig = ($post['enable_sig'] && ($post['user_sig'] != '') && $config['allow_sig']) ? $post['user_sig'] : '';
 			// If the board has HTML off but the post has HTML on then we process it, else leave it alone
-			$html_on = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) ? 1 : 0 ;
-			$bbcode_on = ($config['allow_bbcode'] && $userdata['user_allowbbcode']) ? 1 : 0 ;
-			$smilies_on = ($config['allow_smilies'] && $userdata['user_allowsmile']) ? 1 : 0 ;
+			$html_on = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) ? 1 : 0 ;
+			$bbcode_on = ($config['allow_bbcode'] && $user->data['user_allowbbcode']) ? 1 : 0 ;
+			$smilies_on = ($config['allow_smilies'] && $user->data['user_allowsmile']) ? 1 : 0 ;
 
 			$bbcode->allow_html = $html_on;
 			$bbcode->allow_bbcode = $bbcode_on;
@@ -433,9 +437,10 @@ else
 				'AUTHOR0' => htmlspecialchars($author0),
 				'ATOM_TIME' => gmdate('Y-m-d\TH:i:s', $post['post_time']) . 'Z',
 				'ATOM_TIME_M' => (($post['post_edit_time'] <> '') ? gmdate('Y-m-d\TH:i:s', $post['post_edit_time']) . 'Z' : gmdate('Y-m-d\TH:i:s', $post['post_time']) . 'Z'),
-				'UTF_TIME' => RSSTimeFormat($post['post_time'],$userdata['user_timezone']),
+				'UTF_TIME' => RSSTimeFormat($post['post_time'],$user->data['user_timezone']),
 
 				'FORUM_NAME' => $post['forum_name'],
+				//'TOPIC_TITLE' => htmlspecialchars($bbcode->undo_htmlspecialchars($topic_title)),
 				'TOPIC_TITLE' => $bbcode->undo_htmlspecialchars($topic_title),
 
 				'AUTHOR' => $author,
@@ -477,7 +482,7 @@ else
 					}
 				}
 			}
-			if (($updlist != '') && !$userdata['is_bot'])
+			if (($updlist != '') && !$user->data['is_bot'])
 			{
 				// Update the topic view counter
 				$sql = "UPDATE " . TOPICS_TABLE . "

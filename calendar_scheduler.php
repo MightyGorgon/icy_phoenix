@@ -25,8 +25,9 @@ include(IP_ROOT_PATH . 'includes/functions_calendar.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_topics_list.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // some constants

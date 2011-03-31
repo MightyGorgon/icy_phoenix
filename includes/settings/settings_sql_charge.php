@@ -56,6 +56,13 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
+	'active_sessions' => array(
+		'lang_key' => 'IP_active_sessions',
+		'explain' => 'IP_active_sessions_explain',
+		'type' => 'VARCHAR',
+		'default' => '0',
+		),
+
 	'global_disable_upi2db' => array(
 		'lang_key' => 'IP_global_disable_upi2db',
 		'explain' => 'IP_global_disable_upi2db_explain',

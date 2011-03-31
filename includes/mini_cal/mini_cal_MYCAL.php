@@ -30,18 +30,18 @@ if (!defined('IN_MINI_CAL'))
 	getMiniCalForumsAuth
 
 	version:		1.0.0
-	parameters:	 $userdata - an initialised $userdata array.
+	parameters:	 $user_data - an initialised $user_data array.
 	returns:		a two part array
 						$mini_cal_auth['view'] - a comma seperated list of forums which the user has VIEW permissions for
 						$mini_cal_auth['post'] - a comma seperated list of forums which the user has POST permissions for
  ***************************************************************************/
-function getMiniCalForumsAuth($userdata)
+function getMiniCalForumsAuth($user_data)
 {
 	global $db;
 
 	// initialise our forums auth list
 	$mini_cal_auth_ary = array();
-	$mini_cal_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+	$mini_cal_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $user_data);
 
 	$mini_cal_auth = array();
 	$mini_cal_auth['view'] = '';

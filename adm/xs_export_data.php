@@ -217,7 +217,7 @@ for($i = 0; $i < sizeof($style_rowset); $i++)
 					'ROW_CLASS' => $row_class,
 					'TPL' => $prev_tpl,
 					'STYLES' => $str,
-					'U_EXPORT' => "xs_export_data." . PHP_EXT . "?export={$str2}&amp;sid={$userdata['session_id']}",
+					'U_EXPORT' => "xs_export_data." . PHP_EXT . "?export={$str2}&amp;sid={$user->data['session_id']}",
 				)
 			);
 		}
@@ -237,7 +237,7 @@ if($prev_id > 0)
 			'ROW_CLASS' => $row_class,
 			'TPL' => $prev_tpl,
 			'STYLES' => $str,
-			'U_EXPORT' => "xs_export_data." . PHP_EXT . "?export={$str2}&amp;sid={$userdata['session_id']}",
+			'U_EXPORT' => "xs_export_data." . PHP_EXT . "?export={$str2}&amp;sid={$user->data['session_id']}",
 		)
 	);
 }

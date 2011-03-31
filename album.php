@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -63,13 +64,13 @@ if ($album_user_id != ALBUM_PUBLIC_GALLERY)
 
 	if ($album_user_id < 1)
 	{
-		if (!$userdata['session_logged_in'])
+		if (!$user->data['session_logged_in'])
 		{
 			redirect(append_sid(album_append_uid(CMS_PAGE_LOGIN . '?redirect=album.' . PHP_EXT, true)));
 		}
 		else
 		{
-			$album_user_id = $userdata['user_id'];
+			$album_user_id = $user->data['user_id'];
 			redirect(append_sid(album_append_uid('album.' . PHP_EXT, true)));
 		}
 	}

@@ -1,7 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <?php
-global $userdata, $config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
+global $user, $config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
 $post_subject = (((strlen($post_subject) > 0) && ((substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX']) || (substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX_OLD']))) ? '' : $lang['REPLY_PREFIX']) . $post_subject;
 $this->vars['qr_subject'] = $post_subject;
 $this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="ShowHide(\'quick_reply\', \'quick_reply2\'); return false;"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
@@ -32,10 +32,10 @@ ob_start();
 	<td class="row2">
 	<span class="genmed">
 	<?php
-		$user_sig = ( $userdata['user_sig'] != '' && $config['allow_sig'] ) ? $userdata['user_sig'] : '';
-		$html_on = $config['allow_html'] ? $userdata['user_allowhtml'] : 1;
-		$bbcode_on = $config['allow_bbcode'] ? $userdata['user_allowbbcode'] : 0;
-		$smilies_on = $config['allow_smilies'] ? $userdata['user_allowsmile'] : 0;
+		$user_sig = ( $user->data['user_sig'] != '' && $config['allow_sig'] ) ? $user->data['user_sig'] : '';
+		$html_on = $config['allow_html'] ? $user->data['user_allowhtml'] : 1;
+		$bbcode_on = $config['allow_bbcode'] ? $user->data['user_allowbbcode'] : 0;
+		$smilies_on = $config['allow_smilies'] ? $user->data['user_allowsmile'] : 0;
 	?>
 	<label><input type="checkbox" name="disable_acro_auto" /><span class="genmed">&nbsp;<?php echo $lang['Disable_ACRO_AUTO_post']; ?></span></label><br />
 	<?php if($config['allow_html']) { ?>
@@ -48,7 +48,7 @@ ob_start();
 	<label><input type="checkbox" name="disable_smilies" <?php echo ($smilies_on ? '' : 'checked="checked"'); ?> /><span class="genmed">&nbsp;<?php echo $lang['Disable_Smilies_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_smilies" value="checked" /><?php } ?>
 	<?php if($user_sig) {  ?>
-	<label><input type="checkbox" name="attach_sig" <?php echo ($userdata['user_attachsig'] ? 'checked="checked"' : ''); ?> /><span class="genmed">&nbsp;<?php echo $lang['Attach_signature']; ?></span></label><br />
+	<label><input type="checkbox" name="attach_sig" <?php echo ($user->data['user_attachsig'] ? 'checked="checked"' : ''); ?> /><span class="genmed">&nbsp;<?php echo $lang['Attach_signature']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="attach_sig" value="" /><?php } ?>
 	</span>
 	</td>
@@ -59,7 +59,7 @@ ob_start();
 		<input type="hidden" name="id" value="{REPLY_ID}" />
 		<input type="hidden" name="mode" value="reply" />
 		<input type="hidden" name="t" value="<?php echo $privmsgs_id; ?>" />
-		<input type="hidden" name="sid" value="<?php echo $userdata['session_id']; ?>" />
+		<input type="hidden" name="sid" value="<?php echo $user->data['session_id']; ?>" />
 		<input type="submit" tabindex="5" name="preview" class="liteoption" value="<?php echo $lang['Preview']; ?>" />&nbsp;
 		<input type="submit" accesskey="s" tabindex="6" name="post" class="mainoption" value="<?php echo $lang['Submit']; ?>" />
 	</td>

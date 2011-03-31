@@ -387,7 +387,7 @@ function cash_quotematch(&$message)
 
 function cash_pm(&$targetdata, $privmsg_subject, &$message)
 {
-	global $db, $cache, $config, $userdata, $lang, $bbcode, $html_entities_match, $html_entities_replace;
+	global $db, $cache, $config, $user, $lang, $bbcode, $html_entities_match, $html_entities_replace;
 	//
 	// It looks like we're sending a PM!
 	// NOTE: most of the following code is shamelessly "reproduced" from privmsg.php
@@ -396,10 +396,10 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-	$attach_sig = $userdata['user_attachsig'];
-	$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
+	$attach_sig = $user->data['user_attachsig'];
+	$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
 	$bbcode->allow_bbcode = true;
-	$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+	$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 	$html_status = $bbcode->allow_html;
 	$bbcode_status = $bbcode->allow_bbcode;
 	$smilies_status = $bbcode->allow_smilies;
@@ -407,11 +407,11 @@ function cash_pm(&$targetdata, $privmsg_subject, &$message)
 
 	include_once(IP_ROOT_PATH . 'includes/class_pm.' . PHP_EXT);
 	$privmsg_message = prepare_message($message, $html_status, $bbcode_status, $smilies_status);
-	$privmsg_sender = $userdata['user_id'];
+	$privmsg_sender = $user->data['user_id'];
 	$privmsg_recipient = $targetdata['user_id'];
 
 	$privmsg = new class_pm();
-	if (($userdata['user_level'] != ADMIN) && $privmsg->is_flood())
+	if (($user->data['user_level'] != ADMIN) && $privmsg->is_flood())
 	{
 		message_die(GENERAL_MESSAGE, $lang['Flood_Error']);
 	}
@@ -1081,12 +1081,12 @@ class cash_user
 	var $cashgroups;
 	var $cashgroups_init;
 
-	function cash_user($user_id, $userdata = false)
+	function cash_user($user_id, $user_data = false)
 	{
 		$this->user_id = $user_id;
-		if ($userdata)
+		if ($user_data)
 		{
-			$this->userdata = $userdata;
+			$this->userdata = $user_data;
 			$this->userdata_stored = true;
 		}
 		else

@@ -20,8 +20,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 $config['jquery_ui'] = true;
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);

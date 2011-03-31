@@ -26,12 +26,13 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $sid = request_var('sid', '');
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // session id check
-if (($sid == '') || ($sid != $userdata['session_id']))
+if (($sid == '') || ($sid != $user->data['session_id']))
 {
 	message_die(GENERAL_ERROR, 'Invalid_session');
 }
@@ -45,7 +46,7 @@ if (empty($user_id))
 
 $profiledata = get_userdata($user_id);
 
-if ($profiledata['user_id'] != $userdata['user_id'] && $userdata['user_level'] != ADMIN)
+if ($profiledata['user_id'] != $user->data['user_id'] && $user->data['user_level'] != ADMIN)
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
@@ -178,7 +179,7 @@ elseif ($delete && sizeof($delete_id_list) > 0)
 	$hidden_fields .= '<input type="hidden" name="order" value="' . $sort_order . '" />';
 	$hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '" value="' . intval($profiledata['user_id']) . '" />';
 	$hidden_fields .= '<input type="hidden" name="start" value="' . $start . '" />';
-	$hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 	for ($i = 0; $i < sizeof($delete_id_list); $i++)
 	{
@@ -205,7 +206,7 @@ $total_rows = 0;
 $username = $profiledata['username'];
 
 $s_hidden = '<input type="hidden" name="' . POST_USERS_URL . '" value="' . intval($profiledata['user_id']) . '" />';
-$s_hidden .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+$s_hidden .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 // Assign Template Vars
 $template->assign_vars(array(
@@ -376,7 +377,7 @@ if (sizeof($attachments) > 0)
 			$post_titles = implode('<br />', $post_titles);
 
 			$hidden_field = '<input type="hidden" name="attach_id_list[]" value="' . (int) $attachments[$i]['attach_id'] . '">';
-			$hidden_field .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+			$hidden_field .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 			$comment = str_replace("\n", '<br />', $attachments[$i]['comment']);
 
@@ -404,7 +405,7 @@ if (sizeof($attachments) > 0)
 // Generate Pagination
 if ($do_pagination && $total_rows > $config['topics_per_page'])
 {
-	$pagination = generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $userdata['session_id'], $total_rows, $config['topics_per_page'], $start).'&nbsp;';
+	$pagination = generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $user->data['session_id'], $total_rows, $config['topics_per_page'], $start).'&nbsp;';
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,

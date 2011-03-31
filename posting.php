@@ -187,8 +187,9 @@ elseif ($mode == 'smilies')
 }
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Was cancel pressed? If so then redirect to the appropriate page, no point in continuing with any further checks
@@ -286,7 +287,7 @@ switch($mode)
 }
 
 //if ($read_only_write_auth_required && $config['read_only_forum'])
-if ($read_only_write_auth_required && $config['read_only_forum'] && ($userdata['user_level'] != ADMIN))
+if ($read_only_write_auth_required && $config['read_only_forum'] && ($user->data['user_level'] != ADMIN))
 {
 	message_die(GENERAL_MESSAGE, $lang['READ_ONLY_FORUM']);
 }
@@ -385,7 +386,7 @@ if ($result && $post_info)
 	}
 	$forum_name = get_object_lang(POST_FORUM_URL . $post_info['forum_id'], 'name');
 
-	$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $post_info);
+	$is_auth = auth(AUTH_ALL, $forum_id, $user->data, $post_info);
 
 	// Topic Lock/Unlock
 	$lock = (isset($_POST['lock'])) ? true : false;
@@ -414,7 +415,7 @@ if ($result && $post_info)
 	}
 
 	// LIMIT POST EDIT TIME - BEGIN
-	if (($mode == 'editpost') && $post_info['forum_limit_edit_time'] && ($userdata['user_level'] != ADMIN) && !$is_auth['auth_mod'] && (intval($config['forum_limit_edit_time_interval']) > 0) && !$submit)
+	if (($mode == 'editpost') && $post_info['forum_limit_edit_time'] && ($user->data['user_level'] != ADMIN) && !$is_auth['auth_mod'] && (intval($config['forum_limit_edit_time_interval']) > 0) && !$submit)
 	{
 		if (intval($config['forum_limit_edit_time_interval']) < ((time() - $post_info['post_time']) / 60))
 		{
@@ -434,7 +435,7 @@ if ($result && $post_info)
 			$post_data['post_text'] = (($mode == 'editpost') || ($mode == 'delete')) ? $post_info['post_text'] : '';
 		}
 		// MG Cash MOD For IP - END
-		$post_data['poster_post'] = ($post_info['poster_id'] == $userdata['user_id']) ? true : false;
+		$post_data['poster_post'] = ($post_info['poster_id'] == $user->data['user_id']) ? true : false;
 		$post_data['first_post'] = ($post_info['topic_first_post_id'] == $post_id) ? true : false;
 		$post_data['last_post'] = ($post_info['topic_last_post_id'] == $post_id) ? true : false;
 		$post_data['last_topic'] = ($post_info['forum_last_post_id'] == $post_id) ? true : false;
@@ -450,7 +451,7 @@ if ($result && $post_info)
 		$post_data['topic_calendar_duration'] = $post_info['topic_calendar_duration'];
 		$post_data['poster_id'] = $post_info['poster_id'];
 
-		if (($config['allow_mods_edit_admin_posts'] == false) && ($post_info['user_level'] == ADMIN) && ($userdata['user_level'] != ADMIN))
+		if (($config['allow_mods_edit_admin_posts'] == false) && ($post_info['user_level'] == ADMIN) && ($user->data['user_level'] != ADMIN))
 		{
 			message_die(GENERAL_ERROR, $lang['CannotEditAdminsPosts']);
 		}
@@ -497,7 +498,7 @@ if ($result && $post_info)
 		}
 
 		// Can this user edit/delete the post/poll?
-		if (($post_info['poster_id'] != $userdata['user_id']) && !$is_auth['auth_mod'])
+		if (($post_info['poster_id'] != $user->data['user_id']) && !$is_auth['auth_mod'])
 		{
 			$message = ($delete || ($mode == 'delete')) ? $lang['Delete_own_posts'] : $lang['Edit_own_posts'];
 			$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) . '">', '</a>');
@@ -612,7 +613,7 @@ if (!$is_auth[$is_auth_type] || (!empty($is_auth_type_cal) && !$is_auth[$is_auth
 	// Event Registration - BEGIN
 	$reg_number_clicked = request_var('register', 0);
 	// Event Registration - END
-	if ($userdata['session_logged_in'])
+	if ($user->data['session_logged_in'])
 	{
 		if (!empty($is_auth_type_cal) && !$is_auth[$is_auth_type_cal])
 		{
@@ -656,7 +657,7 @@ elseif (intval($is_auth[$is_auth_type]) == AUTH_SELF)
 				FROM " . TOPICS_TABLE . " t, " . USERS_TABLE. " u
 				WHERE t.topic_id = " . $topic_id . "
 					AND t.topic_poster = u.user_id
-					AND u.user_id = " . $userdata['user_id'];
+					AND u.user_id = " . $user->data['user_id'];
 			break;
 	}
 	$result = $db->sql_query($sql);
@@ -675,10 +676,10 @@ if (!$config['allow_html'])
 }
 else
 {
-	$html_on = ($submit || $refresh) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_html'] : $userdata['user_allowhtml']);
+	$html_on = ($submit || $refresh) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($user->data['user_id'] == ANONYMOUS) ? $config['allow_html'] : $user->data['user_allowhtml']);
 }
 
-$html_on = (!empty($_POST['disable_html']) ? 0 : ((($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins']) ? 1 : $html_on));
+$html_on = (!empty($_POST['disable_html']) ? 0 : ((($user->data['user_level'] == ADMIN) && $config['allow_html_only_for_admins']) ? 1 : $html_on));
 
 $acro_auto_on = ($submit || $refresh) ? ((!empty($_POST['disable_acro_auto'])) ? 0 : 1) : 1;
 
@@ -688,7 +689,7 @@ if (!$config['allow_bbcode'])
 }
 else
 {
-	$bbcode_on = ($submit || $refresh) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_bbcode'] : $userdata['user_allowbbcode']);
+	$bbcode_on = ($submit || $refresh) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($user->data['user_id'] == ANONYMOUS) ? $config['allow_bbcode'] : $user->data['user_allowbbcode']);
 }
 
 if (!$config['allow_smilies'])
@@ -697,7 +698,7 @@ if (!$config['allow_smilies'])
 }
 else
 {
-	$smilies_on = ($submit || $refresh) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_smilies'] : $userdata['user_allowsmile']);
+	$smilies_on = ($submit || $refresh) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($user->data['user_id'] == ANONYMOUS) ? $config['allow_smilies'] : $user->data['user_allowsmile']);
 }
 
 if($is_auth['auth_news'])
@@ -715,31 +716,31 @@ if (($submit || $refresh) && $is_auth['auth_read'])
 }
 else
 {
-	if ($mode != 'newtopic' && $userdata['session_logged_in'] && $is_auth['auth_read'])
+	if ($mode != 'newtopic' && $user->data['session_logged_in'] && $is_auth['auth_read'])
 	{
 		$sql = "SELECT topic_id
 			FROM " . TOPICS_WATCH_TABLE . "
 			WHERE topic_id = $topic_id
-				AND user_id = " . $userdata['user_id'];
+				AND user_id = " . $user->data['user_id'];
 		$result = $db->sql_query($sql);
-		$notify_user = ($db->sql_fetchrow($result)) ? true : $userdata['user_notify'];
+		$notify_user = ($db->sql_fetchrow($result)) ? true : $user->data['user_notify'];
 		$db->sql_freeresult($result);
 	}
 	else
 	{
-		$notify_user = ($userdata['session_logged_in'] && $is_auth['auth_read']) ? $userdata['user_notify'] : 0;
+		$notify_user = ($user->data['session_logged_in'] && $is_auth['auth_read']) ? $user->data['user_notify'] : 0;
 	}
 }
 
-$attach_sig = ($submit || $refresh) ? ((!empty($_POST['attach_sig'])) ? 1 : 0) : (($userdata['user_id'] == ANONYMOUS) ? 0 : $userdata['user_attachsig']);
-$setbm = ($submit || $refresh) ? ((!empty($_POST['setbm'])) ? 1 : 0) : (($userdata['user_id'] == ANONYMOUS) ? 0 : $userdata['user_setbm']);
+$attach_sig = ($submit || $refresh) ? ((!empty($_POST['attach_sig'])) ? 1 : 0) : (($user->data['user_id'] == ANONYMOUS) ? 0 : $user->data['user_attachsig']);
+$setbm = ($submit || $refresh) ? ((!empty($_POST['setbm'])) ? 1 : 0) : (($user->data['user_id'] == ANONYMOUS) ? 0 : $user->data['user_setbm']);
 execute_posting_attachment_handling();
 
 // What shall we do?
 
 // BEGIN cmx_slash_news_mod
 // Get News Categories.
-if($userdata['session_logged_in'] && $post_data['disp_news'])
+if($user->data['session_logged_in'] && $post_data['disp_news'])
 {
 	if (($mode == 'editpost') && empty($post_id))
 	{
@@ -799,7 +800,7 @@ if (($delete || $poll_delete || ($mode == 'delete')) && !$confirm)
 	// Confirm deletion
 	$s_hidden_fields .= '<input type="hidden" name="' . POST_POST_URL . '" value="' . $post_id . '" />';
 	$s_hidden_fields .= ($delete || $mode == 'delete') ? '<input type="hidden" name="mode" value="delete" />' : '<input type="hidden" name="mode" value="poll_delete" />';
-	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 	$l_confirm = ($delete || ($mode == 'delete')) ? $lang['Confirm_delete'] : $lang['Confirm_delete_poll'];
 
@@ -823,14 +824,14 @@ elseif ($mode == 'thank')
 		message_die(GENERAL_MESSAGE, 'No topic Selected');
 	}
 
-	if (!($userdata['session_logged_in']))
+	if (!($user->data['session_logged_in']))
 	{
 		$message = $lang['thanks_not_logged'];
 		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 
-	$userid = $userdata['user_id'];
+	$userid = $user->data['user_id'];
 	$thanks_date = time();
 
 	// Check if user is the topic starter
@@ -844,7 +845,7 @@ elseif ($mode == 'thank')
 		message_die(GENERAL_ERROR, 'Couldn\'t check for topic starter', '', __LINE__, __FILE__, $sql);
 	}
 
-	if ($topic_starter_check['topic_poster'] == $userdata['user_id'])
+	if ($topic_starter_check['topic_poster'] == $user->data['user_id'])
 	{
 		$message = $lang['t_starter'];
 		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) . '">', '</a>');
@@ -906,12 +907,12 @@ elseif ($mode == 'vote')
 		$db->sql_freeresult($result);
 
 		$cur_voted_id = array();
-		if ($userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+		if ($user->data['session_logged_in'] && ($user->data['bot_id'] === false))
 		{
 			$sql = "SELECT poll_option_id
 				FROM " . POLL_VOTES_TABLE . "
 				WHERE topic_id = " . $topic_id . "
-					AND vote_user_id = " . $userdata['user_id'];
+					AND vote_user_id = " . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -973,13 +974,13 @@ elseif ($mode == 'vote')
 					AND topic_id = " . (int) $topic_id;
 			$db->sql_query($sql);
 
-			if ($userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+			if ($user->data['session_logged_in'] && ($user->data['bot_id'] === false))
 			{
 				$sql_ary = array(
 					'topic_id' => (int) $topic_id,
 					'poll_option_id' => (int) $option,
-					'vote_user_id' => (int) $userdata['user_id'],
-					'vote_user_ip' => (string) $userdata['session_ip'],
+					'vote_user_id' => (int) $user->data['user_id'],
+					'vote_user_ip' => (string) $user->data['session_ip'],
 				);
 
 				$sql = "INSERT INTO " . POLL_VOTES_TABLE . " " . $db->sql_build_array('INSERT', $sql_ary);
@@ -997,18 +998,18 @@ elseif ($mode == 'vote')
 						AND topic_id = " . (int) $topic_id;
 				$db->sql_query($sql);
 
-				if ($userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+				if ($user->data['session_logged_in'] && ($user->data['bot_id'] === false))
 				{
 					$sql = "DELETE FROM " . POLL_VOTES_TABLE . "
 						WHERE topic_id = " . (int) $topic_id . "
 							AND poll_option_id = " . (int) $option . "
-							AND vote_user_id = " . (int) $userdata['user_id'];
+							AND vote_user_id = " . (int) $user->data['user_id'];
 					$db->sql_query($sql);
 				}
 			}
 		}
 
-		if ($userdata['session_logged_in'] && ($userdata['bot_id'] === false))
+		if ($user->data['session_logged_in'] && ($user->data['bot_id'] === false))
 		{
 			set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
 		}
@@ -1036,7 +1037,7 @@ elseif ($mode == 'register')
 	if (!empty($_GET['register']))
 	{
 		$new_regstate = intval($_GET['register']);
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 		$zeit = time();
 
 		$sql = "SELECT registration_status FROM " . REGISTRATION_TABLE . "
@@ -1105,7 +1106,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 	$return_message = '';
 	$return_meta = '';
 	// session id check
-	if (($sid == '') || ($sid != $userdata['session_id']))
+	if (($sid == '') || ($sid != $user->data['session_id']))
 	{
 		$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Session_invalid'] : $lang['Session_invalid'];
 	}
@@ -1116,7 +1117,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		case 'newtopic':
 		case 'reply':
 			// CrackerTracker v5.x
-			if (($config['ctracker_vconfirm_guest'] == 1) && !$userdata['session_logged_in'])
+			if (($config['ctracker_vconfirm_guest'] == 1) && !$user->data['session_logged_in'])
 			{
 				define('CRACKER_TRACKER_VCONFIRM', true);
 				define('POST_CONFIRM_CHECK', true);
@@ -1159,21 +1160,21 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			}
 
 			// Event Registration - BEGIN
-			$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['start_registration'] : '';
-			$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reset_registration'] : '';
-			$reg_max_option1 = (!empty($_POST['reg_max_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option1'] : '';
-			$reg_max_option2 = (!empty($_POST['reg_max_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option2'] : '';
-			$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_max_option3'] : '';
-			$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? $_POST['reg_length'] : '';
+			$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? $_POST['start_registration'] : '';
+			$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? $_POST['reset_registration'] : '';
+			$reg_max_option1 = (!empty($_POST['reg_max_option1']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? $_POST['reg_max_option1'] : '';
+			$reg_max_option2 = (!empty($_POST['reg_max_option2']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? $_POST['reg_max_option2'] : '';
+			$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? $_POST['reg_max_option3'] : '';
+			$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? $_POST['reg_length'] : '';
 			// Event Registration - END
 
 			prepare_post($mode, $post_data, $bbcode_on, $html_on, $smilies_on, $error_msg, $username, $subject, $message, $poll_title, $poll_options, $poll_data, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
 
 			// MG Drafts - BEGIN
-			if (($config['allow_drafts'] == true) && $draft && $draft_confirm && $userdata['session_logged_in'] && (($mode == 'reply') || ($mode == 'newtopic')))
+			if (($config['allow_drafts'] == true) && $draft && $draft_confirm && $user->data['session_logged_in'] && (($mode == 'reply') || ($mode == 'newtopic')))
 			{
-				save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, strip_tags($subject), $message);
-				//save_draft($draft_id, $userdata['user_id'], $forum_id, $topic_id, $db->sql_escape(strip_tags($subject)), $db->sql_escape($message));
+				save_draft($draft_id, $user->data['user_id'], $forum_id, $topic_id, strip_tags($subject), $message);
+				//save_draft($draft_id, $user->data['user_id'], $forum_id, $topic_id, $db->sql_escape(strip_tags($subject)), $db->sql_escape($message));
 				$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 
 				$redirect_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id);
@@ -1204,7 +1205,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					// check limit and delete notes
 					if(sizeof($notes_list) >= intval($config['edit_notes_n']))
 					{
-						if($notes_list[$i]['poster'] == $userdata['user_id'])
+						if($notes_list[$i]['poster'] == $user->data['user_id'])
 						{
 							$del_num = $i;
 						}
@@ -1226,7 +1227,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 						}
 					}
 					$notes_list[] = array(
-						'poster' => $userdata['user_id'],
+						'poster' => $user->data['user_id'],
 						'time' => time(),
 						//'text' => htmlspecialchars($notes)
 						'text' => $notes
@@ -1237,11 +1238,11 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 					// We need this, otherwise editing for normal users will be account twice!
 					$edit_count_sql = '';
-					if($userdata['user_level'] == ADMIN)
+					if($user->data['user_level'] == ADMIN)
 					{
 						$edit_count_sql = ", post_edit_count = (post_edit_count + 1)";
 					}
-					$edited_sql = "post_edit_time = '" . time() . "'" . $edit_count_sql . ", post_edit_id = '" . $userdata['user_id'] . "'";
+					$edited_sql = "post_edit_time = '" . time() . "'" . $edit_count_sql . ", post_edit_id = '" . $user->data['user_id'] . "'";
 					$sql = "UPDATE " . POSTS_TABLE . " SET " . $edited_sql . " WHERE post_id='" . $post_id . "'";
 					$db->sql_query($sql);
 				}
@@ -1293,7 +1294,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 	{
 		if ($mode != 'editpost')
 		{
-			$user_id = (($mode == 'reply') || ($mode == 'newtopic')) ? $userdata['user_id'] : $post_data['poster_id'];
+			$user_id = (($mode == 'reply') || ($mode == 'newtopic')) ? $user->data['user_id'] : $post_data['poster_id'];
 			update_post_stats($mode, $post_data, $forum_id, $topic_id, $post_id, $user_id);
 		}
 		$attachment_mod['posting']->insert_attachment($post_id);
@@ -1303,7 +1304,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			// Forum Notification - BEGIN
 			include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
 			$post_data['subject'] = $subject;
-			$post_data['username'] = ($userdata['user_id'] == ANONYMOUS) ? $username : $userdata['username'];
+			$post_data['username'] = ($user->data['user_id'] == ANONYMOUS) ? $username : $user->data['username'];
 			$post_data['message'] = $message;
 			if ($post_data['first_post'])
 			{
@@ -1377,7 +1378,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		{
 			// URL for redirection after deleting a post
 			$redirect = CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . $topic_id_append;
-			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 			{
 				$redirect = str_replace ('--', '-', make_url_friendly($subject) . '-vt' . $topic_id . '.html');
 			}
@@ -1391,7 +1392,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			// URL for redirection after posting or editing a post
 			$redirect = CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . (!empty($topic_id_append) ? ($topic_id_append . '&') : '') . POST_POST_URL . '=' . $post_id;
 			$post_append = '#p' . $post_id;
-			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 			{
 				$redirect = str_replace ('--', '-', make_url_friendly($subject) . '-vp' . $post_id . '.html');
 			}
@@ -1471,17 +1472,17 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	}
 
 	// Event Registration - BEGIN
-	$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? 'checked="checked"' : '';
-	$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? 'checked="checked"' : '';
-	$reg_max_option1 = (!empty($_POST['reg_max_option1']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option1']) : '';
-	$reg_max_option2 = (!empty($_POST['reg_max_option2']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option2']) : '';
-	$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_max_option3']) : '';
-	$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $userdata['session_logged_in']) ? max(0, $_POST['reg_length']) : '';
+	$reg_active = (isset($_POST['start_registration']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? 'checked="checked"' : '';
+	$reg_reset = (isset($_POST['reset_registration']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? 'checked="checked"' : '';
+	$reg_max_option1 = (!empty($_POST['reg_max_option1']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? max(0, $_POST['reg_max_option1']) : '';
+	$reg_max_option2 = (!empty($_POST['reg_max_option2']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? max(0, $_POST['reg_max_option2']) : '';
+	$reg_max_option3 = (!empty($_POST['reg_max_option3']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? max(0, $_POST['reg_max_option3']) : '';
+	$reg_length = (isset($_POST['reg_length']) && $is_auth['auth_vote'] && $user->data['session_logged_in']) ? max(0, $_POST['reg_length']) : '';
 	// Event Registration - END
 
 	if (($mode == 'newtopic') || ($mode == 'reply'))
 	{
-		$user_sig = (($userdata['user_sig'] != '') && $config['allow_sig']) ? $userdata['user_sig'] : '';
+		$user_sig = (($user->data['user_sig'] != '') && $config['allow_sig']) ? $user->data['user_sig'] : '';
 	}
 	elseif ($mode == 'editpost')
 	{
@@ -1498,7 +1499,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		// Finalise processing as per viewtopic
 		if(!$html_on)
 		{
-			if(($user_sig != '') || !$userdata['user_allowhtml'])
+			if(($user_sig != '') || !$user->data['user_allowhtml'])
 			{
 				$user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', '&lt;\2&gt;', $user_sig);
 			}
@@ -1511,9 +1512,9 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 
 		if(($attach_sig) && ($user_sig != ''))
 		{
-			$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
-			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+			$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
+			$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+			$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 			$bbcode->is_sig = true;
 			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
@@ -1606,10 +1607,10 @@ else
 
 	if ($mode == 'newtopic')
 	{
-		$user_sig = ($userdata['user_sig'] != '') ? $userdata['user_sig'] : '';
+		$user_sig = ($user->data['user_sig'] != '') ? $user->data['user_sig'] : '';
 		$message = '';
 		// Start replacement - Yellow card MOD
-		$username = ($userdata['session_logged_in']) ? $userdata['username'] : '';
+		$username = ($user->data['session_logged_in']) ? $user->data['username'] : '';
 		$poll_title = '';
 		$poll_start = 0;
 		$poll_length = 0;
@@ -1626,8 +1627,8 @@ else
 	}
 	elseif ($mode == 'reply')
 	{
-		$user_sig = ($userdata['user_sig'] != '') ? $userdata['user_sig'] : '';
-		$username = ($userdata['session_logged_in']) ? $userdata['username'] : '';
+		$user_sig = ($user->data['user_sig'] != '') ? $user->data['user_sig'] : '';
+		$username = ($user->data['session_logged_in']) ? $user->data['username'] : '';
 		$subject = $lang['REPLY_PREFIX'] . $post_info['topic_title'];
 		$message = '';
 	}
@@ -1670,8 +1671,8 @@ else
 		}
 		else
 		{
-			$attach_sig = ($userdata['user_attachsig']) ? 1 : 0;
-			$user_sig = $userdata['user_sig'];
+			$attach_sig = ($user->data['user_attachsig']) ? 1 : 0;
+			$user_sig = $user->data['user_sig'];
 		}
 
 		$message = str_replace('<', '&lt;', $message);
@@ -1723,7 +1724,7 @@ if($user_sig != '')
 }
 
 // HTML toggle selection
-if ($config['allow_html'] || (($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
+if ($config['allow_html'] || (($user->data['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
 {
 	$html_status = $lang['HTML_is_ON'];
 	$template->assign_block_vars('switch_html_checkbox', array());
@@ -1755,13 +1756,13 @@ else
 	$smilies_status = $lang['Smilies_are_OFF'];
 }
 
-if(!$userdata['session_logged_in'] || (($mode == 'editpost') && $post_info['poster_id'] == ANONYMOUS))
+if(!$user->data['session_logged_in'] || (($mode == 'editpost') && $post_info['poster_id'] == ANONYMOUS))
 {
 	$template->assign_block_vars('switch_username_select', array());
 }
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-if($userdata['upi2db_access'] && ($mode == 'editpost') && (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD)))
+if($user->data['upi2db_access'] && ($mode == 'editpost') && (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD)))
 {
 	$template->assign_block_vars('switch_mark_edit_checkbox', array());
 	$mark_edit = ($refresh) ? $mark_edit : true;
@@ -1769,7 +1770,7 @@ if($userdata['upi2db_access'] && ($mode == 'editpost') && (($userdata['user_leve
 //<!-- END Unread Post Information to Database Mod -->
 
 // Notify checkbox - only show if user is logged in
-if ($userdata['session_logged_in'] && $is_auth['auth_read'])
+if ($user->data['session_logged_in'] && $is_auth['auth_read'])
 {
 	if ($mode != 'editpost' || ($mode == 'editpost' && $post_info['poster_id'] != ANONYMOUS))
 	{
@@ -1778,7 +1779,7 @@ if ($userdata['session_logged_in'] && $is_auth['auth_read'])
 }
 
 // Bookmark checkbox - only show if user is logged in and not editing a post
-if ($userdata['session_logged_in'])
+if ($user->data['session_logged_in'])
 {
 	if ($mode != 'editpost')
 	{
@@ -1987,7 +1988,7 @@ if (($mode == 'newtopic') || ($mode == 'editpost' && $post_data['first_post']))
 }
 
 $hidden_form_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
-$hidden_form_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+$hidden_form_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 $hidden_form_fields .= ($lock_subject) ? '<input type="hidden" name="lock_subject" value="' . $lock_subject . '" />' : '';
 
 switch($mode)
@@ -2075,7 +2076,7 @@ if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post'])
 	{
 		$template->assign_block_vars('topic_description', array());
 	}
-	if ($config['display_tags_box'] && (($userdata['user_level'] == ADMIN) || ($is_auth['auth_mod'] && $config['allow_moderators_edit_tags'])))
+	if ($config['display_tags_box'] && (($user->data['user_level'] == ADMIN) || ($is_auth['auth_mod'] && $config['allow_moderators_edit_tags'])))
 	{
 		$template->assign_var('S_TOPIC_TAGS', true);
 	}
@@ -2083,7 +2084,7 @@ if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post'])
 
 // CrackerTracker v5.x
 $confirm_image = '';
-if (($config['ctracker_vconfirm_guest'] == 1) && !$userdata['session_logged_in'])
+if (($config['ctracker_vconfirm_guest'] == 1) && !$user->data['session_logged_in'])
 {
 	define('CRACKER_TRACKER_VCONFIRM', true);
 	$template->assign_block_vars('switch_confirm', array());

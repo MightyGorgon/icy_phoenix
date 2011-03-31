@@ -162,7 +162,7 @@ $template->assign_vars(array(
 	'XS_UL2' => '</table>',
 	'XS_LI' => '<tr><td width="20" align="center" valign="middle"><img src="../templates/common/xs_mod/images/dot.gif" alt="" /></td><td align="left" valign="middle" width="100%"><span class="gen">',
 	'XS_LI2' => '</span></td></tr>',
-	'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />',
+	'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />',
 	)
 );
 

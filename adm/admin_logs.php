@@ -43,7 +43,7 @@ if (empty($is_allowed))
 // Mighty Gorgon - ACP Privacy - END
 
 $founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-$is_allowed = ($userdata['user_id'] == $founder_id) ? true : false;
+$is_allowed = ($user->data['user_id'] == $founder_id) ? true : false;
 
 $template->set_filenames(array('body' => ADM_TPL . 'admin_logs_body.tpl'));
 

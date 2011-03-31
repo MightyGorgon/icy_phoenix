@@ -16,8 +16,9 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 define ('NUM_SHOUT', 20);
 
 // Start session management
-$userdata = session_pagestart($user_ip, false);
-init_userprefs($userdata);
+$user->session_begin(false);
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $cms_page['page_id'] = 'shoutbox';
@@ -30,14 +31,14 @@ $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $c
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 // Start auth check
-switch ($userdata['user_level'])
+switch ($user->data['user_level'])
 {
 	case ADMIN :
 	case MOD : $is_auth['auth_mod'] = 1;
 	default:
 		$is_auth['auth_read'] = 1;
 		$is_auth['auth_view'] = 1;
-		if ($userdata['user_id']==ANONYMOUS)
+		if ($user->data['user_id']==ANONYMOUS)
 		{
 			$is_auth['auth_delete'] = 0;
 			$is_auth['auth_post'] = 0;

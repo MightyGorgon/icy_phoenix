@@ -37,11 +37,12 @@ $class_topics = new class_topics();
 define('PARSE_CPL_NAV', true);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
-if (($_GET['search_id'] != 'unanswered') && !$userdata['session_logged_in'] && $config['gsearch_guests'])
+if (($_GET['search_id'] != 'unanswered') && !$user->data['session_logged_in'] && $config['gsearch_guests'])
 {
 	$google_q = request_var('search_keywords', '', true);
 	$google_sitesearch = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
@@ -64,11 +65,11 @@ if (check_http_var_exists('mode', false) || check_http_var_exists('search_id', f
 // SELF AUTH
 // MG Added for an indepth auth check and SELF posts - BEGIN
 $is_auth_ary = array();
-$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 // MG Added for an indepth auth check and SELF posts - END
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-if($userdata['upi2db_access'])
+if($user->data['upi2db_access'])
 {
 	$params = array(
 		POST_FORUM_URL => POST_FORUM_URL,
@@ -120,7 +121,7 @@ if($userdata['upi2db_access'])
 		$redirect_url = append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_mode . (isset($s2) ? ('&amp;s2=' . $s2) : ''));
 		meta_refresh(3, $redirect_url);
 
-		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_search'], '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_mode . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '">', '</a> ');
+		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_search'], '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_mode . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 	$count_new_posts = sizeof($unread['new_posts']);
@@ -233,7 +234,7 @@ $sort_by_types = array($lang['Sort_Time'], $lang['Sort_Post_Subject'], $lang['So
 // Start Advanced IP Tools Pack MOD
 // For security reasons, we need to make sure the IP lookup is coming from an admin or mod.
 $search_ip = '';
-$ip_display_auth = ip_display_auth($userdata, false);
+$ip_display_auth = ip_display_auth($user->data, false);
 if (!empty($ip_display_auth))
 {
 	$ip_address = request_var('search_ip', '');
@@ -270,7 +271,7 @@ if (($search_mode == 'bookmarks') && ($mode == 'removebm'))
 		{
 			$topic_list .= (($topic_list != '') ? ', ' : '') . intval($topics[$i]);
 		}
-		if ($userdata['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
 			remove_bookmark($topic_list);
 		}
@@ -310,11 +311,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			{
 // UPI2DB REPLACE -------------------------------------------------
 /*
-				if ($userdata['session_logged_in'])
+				if ($user->data['session_logged_in'])
 				{
 					#$sql = "SELECT post_id
 						#FROM " . POSTS_TABLE . "
-						#WHERE post_time >= " . $userdata['user_lastvisit'];
+						#WHERE post_time >= " . $user->data['user_lastvisit'];
 				}
 				else
 				{
@@ -324,14 +325,14 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$show_results = 'topics';
 */
 // -------------------------------------------------
-				if ($userdata['session_logged_in'])
+				if ($user->data['session_logged_in'])
 				{
 //<!-- BEGIN Unread Post Information to Database Mod -->
-					if(!$userdata['upi2db_access'] || $search_id == 'newposts')
+					if(!$user->data['upi2db_access'] || $search_id == 'newposts')
 					{
 						$sql = "SELECT post_id
 							FROM " . POSTS_TABLE . "
-							WHERE post_time >= " . $userdata['user_lastvisit'];
+							WHERE post_time >= " . $user->data['user_lastvisit'];
 					}
 					else
 					{
@@ -402,11 +403,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			//End Advanced IP Tools Pack MOD
 			elseif ($search_id == 'egosearch')
 			{
-				if ($userdata['session_logged_in'])
+				if ($user->data['session_logged_in'])
 				{
 					$sql = "SELECT post_id
 						FROM " . POSTS_TABLE . "
-						WHERE poster_id = " . $userdata['user_id'];
+						WHERE poster_id = " . $user->data['user_id'];
 				}
 				else
 				{
@@ -849,7 +850,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 		elseif ($search_thanks != false)
 		{
-			if ($userdata['session_logged_in'])
+			if ($user->data['session_logged_in'])
 			{
 				if ($auth_sql != '')
 				{
@@ -928,7 +929,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 		elseif ($search_id == 'bookmarks')
 		{
-			if ($userdata['session_logged_in'])
+			if ($user->data['session_logged_in'])
 			{
 				if ($auth_sql != '')
 				{
@@ -936,7 +937,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 						FROM " . TOPICS_TABLE . " t, " . BOOKMARK_TABLE . " b, " . FORUMS_TABLE . " f
 						WHERE t.topic_id = b.topic_id
 							AND t.forum_id = f.forum_id
-							AND b.user_id = " . $userdata['user_id'] . "
+							AND b.user_id = " . $user->data['user_id'] . "
 							AND $auth_sql";
 				}
 				else
@@ -944,7 +945,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$sql = "SELECT t.topic_id
 						FROM " . TOPICS_TABLE . " t, " . BOOKMARK_TABLE . " b
 						WHERE t.topic_id = b.topic_id
-							AND b.user_id = " . $userdata['user_id'];
+							AND b.user_id = " . $user->data['user_id'];
 				}
 			}
 			else
@@ -1018,14 +1019,14 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		$sql = "UPDATE " . SEARCH_TABLE . "
 			SET search_id = $search_id, search_time = $current_time, search_array = '" . $db->sql_escape($result_array) . "'
-			WHERE session_id = '" . $userdata['session_id'] . "'";
+			WHERE session_id = '" . $user->data['session_id'] . "'";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
 		if (!$result || !$db->sql_affectedrows())
 		{
 			$sql = "INSERT INTO " . SEARCH_TABLE . " (search_id, session_id, search_time, search_array)
-				VALUES($search_id, '" . $userdata['session_id'] . "', $current_time, '" . $db->sql_escape($result_array) . "')";
+				VALUES($search_id, '" . $user->data['session_id'] . "', $current_time, '" . $db->sql_escape($result_array) . "')";
 			$result = $db->sql_query($sql);
 		}
 	}
@@ -1037,7 +1038,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			$sql = "SELECT search_array
 				FROM " . SEARCH_TABLE . "
 				WHERE search_id = $search_id
-					AND session_id = '" . $userdata['session_id'] . "'";
+					AND session_id = '" . $user->data['session_id'] . "'";
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
@@ -1056,7 +1057,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 	// Look up data ...
 	if ($search_results != '')
 	{
-		//$this_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+		//$this_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 
 		if ($show_results == 'posts')
 		{
@@ -1130,7 +1131,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		while($row = $db->sql_fetchrow($result))
 		{
-			if($userdata['upi2db_access'])
+			if($user->data['upi2db_access'])
 			{
 				if($config['upi2db_edit_topic_first'])
 				{
@@ -1192,7 +1193,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$searchset[] = $row;
 			}
 		}
-		if($userdata['upi2db_access'])
+		if($user->data['upi2db_access'])
 		{
 			if($config['upi2db_edit_topic_first'])
 			{
@@ -1338,11 +1339,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		{
 			if ($search_where == -1)
 			{
-				$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+				$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 			}
 			else
 			{
-				$is_auth = auth(AUTH_ALL, $search_where, $userdata);
+				$is_auth = auth(AUTH_ALL, $search_where, $user->data);
 			}
 		}
 
@@ -1378,7 +1379,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			$post_date = create_date_ip($config['default_dateformat'], $searchset[$i]['post_time'], $config['board_timezone']);
 
 			$message = !empty($searchset[$i]['post_text']) ? $searchset[$i]['post_text'] : '';
-			$message_compiled = empty($searchset[$i]['post_text_compiled']) ? false : $searchset[$i]['post_text_compiled'];
+			$message_compiled = (empty($searchset[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $searchset[$i]['post_text_compiled'];
 			$topic_title = !empty($searchset[$i]['topic_title']) ? $searchset[$i]['topic_title'] : '';
 			$topic_title_prefix = (empty($searchset[$i]['title_compl_infos'])) ? '' : $searchset[$i]['title_compl_infos'] . ' ';
 
@@ -1400,9 +1401,9 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$bbcode->allow_html = $config['allow_html'] && $searchset[$i]['enable_html'];
 					$bbcode->allow_bbcode = $config['allow_bbcode'] && $searchset[$i]['enable_bbcode'];
 					$bbcode->allow_smilies = $config['allow_smilies'] && $searchset[$i]['enable_smilies'];
-					$GLOBALS['code_post_id'] = $searchset[$i]['post_id'];
+					$bbcode->code_post_id = $searchset[$i]['post_id'];
 					$message = $bbcode->parse($message, '', false, $clean_tags);
-					$GLOBALS['code_post_id'] = 0;
+					$bbcode->code_post_id = 0;
 				}
 				else
 				{
@@ -1428,16 +1429,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']) : (($searchset[$i]['post_username'] != '') ? $searchset[$i]['post_username'] : $lang['Guest']);
 				//$poster .= ($searchset[$i]['user_id'] != ANONYMOUS) ? $searchset[$i]['username'] : (($searchset[$i]['post_username'] != "") ? $searchset[$i]['post_username'] : $lang['Guest']);
 
-				if (($userdata['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask']) && empty($searchset[$i]['user_active']))
+				if (($user->data['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask']) && empty($searchset[$i]['user_active']))
 				{
 					$poster = $lang['INACTIVE_USER'];
 				}
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-				if(!$userdata['upi2db_access'])
+				if(!$user->data['upi2db_access'])
 				{
 //<!-- END Unread Post Information to Database Mod -->
-					if ($userdata['session_logged_in'] && $searchset[$i]['post_time'] > $userdata['user_lastvisit'])
+					if ($user->data['session_logged_in'] && $searchset[$i]['post_time'] > $user->data['user_lastvisit'])
 					{
 						if (!empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]))
 						{
@@ -1476,7 +1477,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				{
 					search_calc_unread_ip($unread, $topic_id, $searchset, $i, $mini_post_img, $mini_post_alt, $unread_color, $folder_image, $folder_alt);
 				}
-				if($userdata['upi2db_access'])
+				if($user->data['upi2db_access'])
 				{
 					if($s2 == 'mark')
 					{
@@ -1487,7 +1488,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 //<!-- END Unread Post Information to Database Mod -->
 				// SELF AUTH - BEGIN
 				// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
-				if (((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $userdata['user_id']))
+				if (((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $user->data['user_id']))
 				{
 					$poster = $lang['Reserved_Author'];
 					$topic_title = $lang['Reserved_Topic'];
@@ -1535,7 +1536,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					)
 				);
 //<!-- BEGIN Unread Post Information to Database Mod -->
-				if($userdata['upi2db_access'])
+				if($user->data['upi2db_access'])
 				{
 					$template->assign_block_vars('searchresults.switch_upi2db_on', array());
 				}
@@ -1562,11 +1563,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				{
 					$regoption_array = array();
 
-					if ($userdata['session_logged_in'])
+					if ($user->data['session_logged_in'])
 					{
 						$sql = "SELECT registration_status FROM " . REGISTRATION_TABLE . "
 								WHERE topic_id = " . $topic_id . "
-								AND registration_user_id = " . $userdata['user_id'];
+								AND registration_user_id = " . $user->data['user_id'];
 						$result = $db->sql_query($sql);
 
 						if ($regrow = $db->sql_fetchrow($result))
@@ -1658,7 +1659,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$topic_author = ($topic_author_name != '') ? $topic_author_name : $lang['Guest'];
 				}
 
-				if (($userdata['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask']) && empty($searchset[$i]['user_active']))
+				if (($user->data['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask']) && empty($searchset[$i]['user_active']))
 				{
 					$topic_author = $lang['INACTIVE_USER'];
 				}
@@ -1667,14 +1668,14 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$last_post_time = create_date_ip($config['default_dateformat'], $searchset[$i]['post_time'], $config['board_timezone']);
 				$last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($searchset[$i]['id2'], $searchset[$i]['user2'], $searchset[$i]['user_color2'], $searchset[$i]['user_active2']);
 
-				if (($userdata['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask2']) && empty($searchset[$i]['user_active2']))
+				if (($user->data['user_level'] != ADMIN) && !empty($searchset[$i]['user_mask2']) && empty($searchset[$i]['user_active2']))
 				{
 					$last_post_author = $lang['INACTIVE_USER'];
 				}
 
 				$last_post_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#p' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
 //<!-- BEGIN Unread Post Information to Database Mod -->
-				if($userdata['upi2db_access'])
+				if($user->data['upi2db_access'])
 				{
 					$mark_always_read = mark_always_read($searchset[$i]['topic_type'], $topic_id, $forum_id, 'search', 'icon', $unread, $start, $topic_link['image'], $search_mode, $s2);
 				}
@@ -1685,12 +1686,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$tt = $searchset[$i]['topic_type'];
 //<!-- END Unread Post Information to Database Mod -->
 
-				$mark_link_start = '';//($userdata['session_logged_in']) ? '<a onclick="return AJAXMarkTopic('. $topic_id .');" href="#">' : '';
-				$mark_link_end = '';//($userdata['session_logged_in']) ? '</a>' : '';
+				$mark_link_start = '';//($user->data['session_logged_in']) ? '<a onclick="return AJAXMarkTopic('. $topic_id .');" href="#">' : '';
+				$mark_link_end = '';//($user->data['session_logged_in']) ? '</a>' : '';
 
 				// SELF AUTH - BEGIN
 				// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
-				if (((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $userdata['user_id']))
+				if (((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $user->data['user_id']))
 				{
 					$topic_author = $lang['Reserved_Author'];
 					$last_post_author = $lang['Reserved_Author'];
@@ -1704,7 +1705,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				// Edited By Mighty Gorgon - BEGIN
-				if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+				if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 				{
 					$mark_read_forbid = false;
 				}
@@ -1757,7 +1758,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					)
 				);
 //<!-- BEGIN Unread Post Information to Database Mod -->
-				if($userdata['upi2db_access'])
+				if($user->data['upi2db_access'])
 				{
 					$template->assign_block_vars('searchresults.switch_upi2db_on', array());
 				}
@@ -1867,7 +1868,7 @@ for($i = 0; $i < sizeof($previous_days); $i++)
 	$selected = ($topic_days == $previous_days[$i]) ? ' selected="selected"' : '';
 	$s_time .= '<option value="' . $previous_days[$i] . '"' . $selected . '>' . $previous_days_text[$i] . '</option>';
 }
-$l_only_bluecards = ($userdata['user_level'] >= ADMIN) ? '<input type="checkbox" name="only_bluecards" />&nbsp;' . $lang['Search_only_bluecards'] : '' ;
+$l_only_bluecards = ($user->data['user_level'] >= ADMIN) ? '<input type="checkbox" name="only_bluecards" />&nbsp;' . $lang['Search_only_bluecards'] : '' ;
 
 $breadcrumbs_links_right = '<span class="gensmall"><a href="' . append_sid('gsearch.' . PHP_EXT) . '">' . $lang['GSEARCH_ENGINE'] . '</a></span>';
 

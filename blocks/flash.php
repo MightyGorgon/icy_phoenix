@@ -24,7 +24,7 @@ if(!function_exists('cms_block_flash'))
 {
 	function cms_block_flash()
 	{
-		global $db, $cache, $config, $template, $theme, $images, $userdata, $lang, $table_prefix, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page;
+		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page;
 
 		if (empty($cms_config_layouts[$cms_page_id_tmp]['md_flash_src']))
 		{

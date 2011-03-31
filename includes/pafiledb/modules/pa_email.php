@@ -19,7 +19,7 @@ class pafiledb_email extends pafiledb_public
 {
 	function main($action)
 	{
-		global $db, $config, $template, $images, $userdata, $lang;
+		global $db, $config, $template, $images, $user, $lang;
 		global $pafiledb_config, $debug;
 
 		$file_id = request_var('file_id', 0);
@@ -42,7 +42,7 @@ class pafiledb_email extends pafiledb_public
 
 		if((!$this->auth[$file_data['file_catid']]['auth_email']))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=email&file_id=' . $file_id, true));
 			}
@@ -55,7 +55,7 @@ class pafiledb_email extends pafiledb_public
 		{
 			// session id check
 			$sid = request_post_var('sid', '');
-			if (empty($sid) || ($sid != $userdata['session_id']))
+			if (empty($sid) || ($sid != $user->data['session_id']))
 			{
 				message_die(GENERAL_ERROR, 'Invalid_session');
 			}
@@ -75,7 +75,7 @@ class pafiledb_email extends pafiledb_public
 			$username = request_var('fname', '', true);
 			$sender_name = request_var('sname', '', true);
 
-			if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && ($sender_name != $userdata['username'])))
+			if (!$user->data['session_logged_in'] || ($user->data['session_logged_in'] && ($sender_name != $user->data['username'])))
 			{
 				include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
@@ -88,10 +88,10 @@ class pafiledb_email extends pafiledb_public
 			}
 			else
 			{
-				$sender_name = $userdata['username'];
+				$sender_name = $user->data['username'];
 			}
 
-			if(!$userdata['session_logged_in'])
+			if(!$user->data['session_logged_in'])
 			{
 				$semail = request_var('semail', '');
 				if (!empty($semail) && preg_match('/^[a-z0-9\.\-_\+]+@[a-z0-9\-_]+\.([a-z0-9\-_]+\.)*?[a-z]+$/is', $femail))
@@ -106,7 +106,7 @@ class pafiledb_email extends pafiledb_public
 			}
 			else
 			{
-				$sender_email = $userdata['user_email'];
+				$sender_email = $user->data['user_email'];
 			}
 
 			$subject = request_var('subject', '', true);
@@ -134,9 +134,9 @@ class pafiledb_email extends pafiledb_public
 				$emailer = new emailer();
 
 				$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-				$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-				$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-				$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+				$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+				$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+				$emailer->headers('X-AntiAbuse: User IP - ' . $user_ip);
 
 				$emailer->use_template('profile_send_email', $user_lang);
 				$emailer->to($user_email);
@@ -172,12 +172,12 @@ class pafiledb_email extends pafiledb_public
 		$this->generate_category_nav($file_data['file_catid']);
 
 		$template->assign_vars(array(
-			'USER_LOGGED' => (!$userdata['session_logged_in']) ? true : false,
+			'USER_LOGGED' => (!$user->data['session_logged_in']) ? true : false,
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
 			'S_EMAIL_ACTION' => append_sid('dload.' . PHP_EXT),
-			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />',
+			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />',
 
 			'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename']),
 			'L_EMAIL' => $lang['Semail'],
@@ -199,8 +199,8 @@ class pafiledb_email extends pafiledb_public
 			'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 
 			'FILE_NAME' => $file_data['file_name'],
-			'SNAME' => $userdata['username'],
-			'SEMAIL' => $userdata['user_email'],
+			'SNAME' => $user->data['username'],
+			'SEMAIL' => $user->data['user_email'],
 			'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 			'FILE_URL' => create_server_url() . 'dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id,
 			'ID' => $file_id

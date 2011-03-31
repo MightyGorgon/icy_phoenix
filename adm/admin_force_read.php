@@ -115,16 +115,16 @@ if($mode == 'users')
 		GROUP BY user
 		ORDER BY time ASC
 		LIMIT $start, $show";
-	$r1 		= $db->sql_query($q1);
+	$r1 = $db->sql_query($q1);
 	while($row1 = $db->sql_fetchrow($r1))
 	{
-		$user = $row1['user'];
+		$target_user = $row1['user'];
 		$time = $row1['time'];
 		$time = strftime("%b. %d, %Y @ %H:%M:%S", $time);
 
 		$q = "SELECT username, user_color, user_active
 			FROM ". USERS_TABLE ."
-			WHERE user_id = " . $user;
+			WHERE user_id = " . $target_user;
 		$r = $db->sql_query($q);
 		$row = $db->sql_fetchrow($r);
 		$name = $row['username'];
@@ -132,7 +132,7 @@ if($mode == 'users')
 		echo "	<tr>";
 		echo "		<td class=\"row2\" width=\"50%\" valign=\"middle\">";
 		echo "			<span class=\"genmed\">";
-		echo "				" . colorize_username($user, $name, $row['user_color'], $row['user_active']) . "&nbsp;[<a href=\"" . append_sid($_SERVER['SCRIPT_NAME'] . "?mode=delete_user&amp;user=" . $user) ."\">" . $lang['Delete'] . "</a>]";
+		echo "				" . colorize_username($target_user, $name, $row['user_color'], $row['user_active']) . "&nbsp;[<a href=\"" . append_sid($_SERVER['SCRIPT_NAME'] . "?mode=delete_user&amp;user=" . $target_user) ."\">" . $lang['Delete'] . "</a>]";
 		echo "			</span>";
 		echo "		</td>";
 		echo "		<td class=\"row2\" width=\"50%\" valign=\"middle\">";

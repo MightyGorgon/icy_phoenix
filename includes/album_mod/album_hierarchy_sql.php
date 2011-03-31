@@ -61,7 +61,7 @@ function album_reorder_cat($user_id = ALBUM_PUBLIC_GALLERY)
 // ------------------------------------------------------------------------
 function album_read_tree($user_id = ALBUM_PUBLIC_GALLERY, $options = ALBUM_AUTH_VIEW)
 {
-	global $db, $userdata, $album_data;
+	global $db, $user, $album_data;
 
 	$can_view = (int) checkFlag($options, ALBUM_AUTH_VIEW);
 	$can_upload = (int) checkFlag($options, ALBUM_AUTH_UPLOAD);
@@ -203,7 +203,7 @@ function album_read_tree($user_id = ALBUM_PUBLIC_GALLERY, $options = ALBUM_AUTH_
 
 function album_init_personal_gallery($user_id)
 {
-	global $db, $album_data , $userdata;
+	global $db, $album_data , $user;
 
 	// parent categories
 	$parents = array();
@@ -250,7 +250,7 @@ function album_get_personal_root_id($user_id)
 	}
 
 	//if (is_array($album_data) && sizeof($album_data['data']) > 0)
-	if (($userdata['user_id'] == $user_id) && is_array($album_data) && sizeof($album_data['data']) > 0 && $album_data['personal'][0] == 1)
+	if (($user->data['user_id'] == $user_id) && is_array($album_data) && sizeof($album_data['data']) > 0 && $album_data['personal'][0] == 1)
 	{
 		return $album_data['id'][0]; // the first array index is always root
 	}
@@ -329,7 +329,7 @@ function album_get_nonexisting_personal_gallery_info()
 // ------------------------------------------------------------------------
 function album_create_personal_gallery($user_id, $view_level, $upload_level, $options = 0)
 {
-	global $album_config, $template, $userdata, $lang, $db;
+	global $album_config, $template, $user, $lang, $db;
 
 	if ($user_id == ALBUM_PUBLIC_GALLERY)
 	{
@@ -498,9 +498,9 @@ function album_move_tree($cat_id, $move, $user_id = ALBUM_PUBLIC_GALLERY)
 // ------------------------------------------------------------------------
 function album_no_newest_pictures($check_date, $cats, $exclude_cat_id = 0)
 {
-	global $db, $config, $userdata, $lang, $album_config;
+	global $db, $config, $user, $lang, $album_config;
 
-	$user_last_visit = $userdata['user_lastvisit'];
+	$user_last_visit = $user->data['user_lastvisit'];
 	$pictotalrows = array();
 
 	if (is_null($cats))
@@ -1015,7 +1015,7 @@ function album_get_total_pics_old($cats)
 // ------------------------------------------------------------------------
 function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, $start, $sort_method, $sort_order, $total_pics)
 {
-	global $config, $album_data, $album_config, $template, $userdata, $lang, $db;
+	global $config, $album_data, $album_config, $template, $user, $lang, $db;
 
 	$viewmode = (strpos($cat_ids, ',') != false) ? '&mode=' . ALBUM_VIEW_ALL : '';
 
@@ -1041,7 +1041,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 	//if (($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && ($AH_thiscat['cat_user_id'] > 0)))
 	if (($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && (album_get_cat_user_id($cat_ids) != false)))
 	{
-		if(($userdata['user_level'] == ADMIN) || (($auth_data['moderator'] == 1) && ($AH_thiscat['cat_approval'] == ALBUM_MOD)))
+		if(($user->data['user_level'] == ADMIN) || (($auth_data['moderator'] == 1) && ($AH_thiscat['cat_approval'] == ALBUM_MOD)))
 		{
 			$pic_approval_sql = '';
 		}
@@ -1125,7 +1125,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 			//if (($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && ($AH_thiscat['cat_user_id'] > 0)))
 			if (($AH_thiscat['cat_approval'] != ALBUM_USER) || (($album_config['personal_pics_approval'] == 1) && (album_get_cat_user_id($cat_ids) != false)))
 			{
-				if(($userdata['user_level'] == ADMIN) || (($auth_data['moderator'] == 1) && ($AH_thiscat['cat_approval'] == ALBUM_MOD)))
+				if(($user->data['user_level'] == ADMIN) || (($auth_data['moderator'] == 1) && ($AH_thiscat['cat_approval'] == ALBUM_MOD)))
 				{
 					$approval_mode = ($picrow[$j]['pic_approval'] == 0) ? 'approval' : 'unapproval';
 
@@ -1185,9 +1185,9 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 			$image_comment = ($picrow[$j]['comments'] == 0) ? $lang['Not_commented'] : $picrow[$j]['comments'];
 
-			$edit_rights = (($auth_data['edit'] && ($picrow[$j]['pic_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($AH_thiscat['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? true : false;
+			$edit_rights = (($auth_data['edit'] && ($picrow[$j]['pic_user_id'] == $user->data['user_id'])) || ($auth_data['moderator'] && ($AH_thiscat['cat_edit_level'] != ALBUM_ADMIN)) || ($user->data['user_level'] == ADMIN)) ? true : false;
 
-			$delete_rights = (($auth_data['delete'] && ($picrow[$j]['pic_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($AH_thiscat['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? true : false;
+			$delete_rights = (($auth_data['delete'] && ($picrow[$j]['pic_user_id'] == $user->data['user_id'])) || ($auth_data['moderator'] && ($AH_thiscat['cat_delete_level'] != ALBUM_ADMIN)) || ($user->data['user_level'] == ADMIN)) ? true : false;
 
 			$template->assign_block_vars('index_pics_block.picrow.pic_detail', array(
 				'PIC_ID' => $picrow[$j]['pic_id'],
@@ -1217,13 +1217,13 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 				'LOCK' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=' . (($picrow[$j]['pic_lock'] == 0) ? 'lock' : 'unlock') . '&amp;pic_id=' . $picrow[$j]['pic_id'])) .'">'. (($picrow[$j]['pic_lock'] == 0) ? $lang['Lock'] : $lang['Unlock']) .'</a>' : '',
 
-				'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($picrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($picrow[$j]['pic_user_ip']) .'</a><br />' : '',
+				'IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : '',
 
-				//'AVATAR_PIC' => (($album_config['personal_allow_avatar_gallery'] == 1) && ($userdata['user_id'] == $picrow[$j]['pic_user_id'])) ? '<br /><a href="'. append_sid('album_avatar.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']) . '">' . $lang['Avatar_Set'] . '</a>' : '',
+				//'AVATAR_PIC' => (($album_config['personal_allow_avatar_gallery'] == 1) && ($user->data['user_id'] == $picrow[$j]['pic_user_id'])) ? '<br /><a href="'. append_sid('album_avatar.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']) . '">' . $lang['Avatar_Set'] . '</a>' : '',
 
-				'AVATAR_PIC' => (($album_config['personal_allow_avatar_gallery'] == 1) && ($userdata['user_id'] == $picrow[$j]['pic_user_id']) && ($picrow[$j]['cat_user_id'] != 0)) ? '<br /><a href="'. append_sid('album_avatar.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']) . '">' . $lang['Avatar_Set'] . '</a>' : '',
+				'AVATAR_PIC' => (($album_config['personal_allow_avatar_gallery'] == 1) && ($user->data['user_id'] == $picrow[$j]['pic_user_id']) && ($picrow[$j]['cat_user_id'] != 0)) ? '<br /><a href="'. append_sid('album_avatar.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id']) . '">' . $lang['Avatar_Set'] . '</a>' : '',
 
-				'IMG_BBCODE' => (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $picrow[$j]['pic_user_id'])) ? '<br /><a href="javasript://" OnClick="window.clipboardData.setData(\'Text\', \'[albumimg]' . $picrow[$j]['pic_id'] . '[/albumimg]\'); return false;">' . $lang['BBCode_Copy'] . '</a>' : ''
+				'IMG_BBCODE' => (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $picrow[$j]['pic_user_id'])) ? '<br /><a href="javasript://" OnClick="window.clipboardData.setData(\'Text\', \'[albumimg]' . $picrow[$j]['pic_id'] . '[/albumimg]\'); return false;">' . $lang['BBCode_Copy'] . '</a>' : ''
 				)
 			);
 
@@ -1268,7 +1268,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 		'PAGINATION' => generate_pagination(append_sid(album_append_uid($album_pagination_page_url . '?cat_id=' . intval($cat_ids) . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . $viewmode)), $total_pics, $pics_per_page, $start),
 		'SLIDESHOW' => $slideshow_link_full,
 		$waiting = ($tot_unapproved == 0) ? "" : $tot_unapproved . $lang['Waiting'],
-		'WAITING' => ($userdata['user_level'] == ADMIN) ? (($tot_unapproved == 0) ? '&nbsp;' : '<br /><span class="gensmall"><b>' . $tot_unapproved . $lang['Waiting'] . '</b></span>') : '&nbsp;',
+		'WAITING' => ($user->data['user_level'] == ADMIN) ? (($tot_unapproved == 0) ? '&nbsp;' : '<br /><span class="gensmall"><b>' . $tot_unapproved . $lang['Waiting'] . '</b></span>') : '&nbsp;',
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 		)
 	);
@@ -1393,7 +1393,7 @@ function album_build_recent_pics($cats)
 
 						'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
-						'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($picrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
+						'IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
 						)
 					);
 				}
@@ -1537,7 +1537,7 @@ function album_build_highest_rated_pics($cats)
 
 							'H_COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
-							'H_IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($picrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
+							'H_IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
 							)
 						);
 					}
@@ -1679,7 +1679,7 @@ function album_build_most_viewed_pics($cats)
 
 						'H_COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
-						'H_IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($picrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
+						'H_IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
 						)
 					);
 			 	}
@@ -1815,7 +1815,7 @@ function album_build_random_pics($cats)
 
 						'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
 
-						'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($picrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
+						'IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
 						)
 					);
 				}
@@ -1839,7 +1839,7 @@ function album_build_random_pics($cats)
 
 function album_build_last_comments_info($cats)
 {
-	global $db, $cache, $config, $template, $userdata, $lang, $bbcode, $album_config, $album_data;
+	global $db, $cache, $config, $template, $user, $lang, $bbcode, $album_config, $album_data;
 
 	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
@@ -1918,9 +1918,9 @@ function album_build_last_comments_info($cats)
 
 			$commentsrow[$i]['comment_text'] = censor_text($commentsrow[$i]['comment_text']);
 
-			$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-			$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-			$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
+			$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+			$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+			$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 			$bbcode->allow_html = $html_on;
 			$bbcode->allow_bbcode = $bbcode_on;
 			$bbcode->allow_smilies = $smilies_on;
@@ -1952,7 +1952,7 @@ function album_build_last_comments_info($cats)
 				'VIEW' => $commentsrow[$i]['pic_view_count'],
 				'RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $commentsrow[$i]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 				'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $commentsrow[$i]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
-				'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($commentsrow[$i]['pic_user_ip']) . '" target="_blank">' . decode_ip($commentsrow[$i]['pic_user_ip']) .'</a><br />' : ''
+				'IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($commentsrow[$i]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($commentsrow[$i]['pic_user_ip']) .'</a><br />' : ''
 				)
 			);
 		}

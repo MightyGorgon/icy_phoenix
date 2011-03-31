@@ -19,7 +19,7 @@ class pafiledb_license extends pafiledb_public
 {
 	function main($action)
 	{
-		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
+		global $template, $lang, $config, $pafiledb_config, $db, $images, $user;
 
 		$license_id = request_var('license_id', 0);
 		if (empty($license_id))
@@ -47,7 +47,7 @@ class pafiledb_license extends pafiledb_public
 
 		if((!$this->auth[$file_data['file_catid']]['auth_download']))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=license&license_id=' . $license_id . '&amp;file_id=' . $file_id, true));
 			}

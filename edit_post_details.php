@@ -15,11 +15,12 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
-if ($userdata['user_level'] != ADMIN)
+if ($user->data['user_level'] != ADMIN)
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
@@ -156,8 +157,8 @@ else
 	}
 
 	// Check user dateformat for output
-	$twelve_hours = (strpos($userdata['user_dateformat'], 'g') || strpos($userdata['user_dataformat'], 'h')) ? true : 0;
-	$am_pm = (strpos($userdata['user_dateformat'], 'a') || strpos($userdata['user_dataformat'], 'A')) ? true : 0;
+	$twelve_hours = (strpos($user->data['user_dateformat'], 'g') || strpos($user->data['user_dateformat'], 'h')) ? true : 0;
+	$am_pm = (strpos($user->data['user_dateformat'], 'a') || strpos($user->data['user_dateformat'], 'A')) ? true : 0;
 
 	// Create the drop downs
 	$s_hours = '<select name="' . $topic_post_time . '_hour">';
@@ -168,7 +169,7 @@ else
 		$s_hours .= '<option value="'.$j.'">'.$j.'</option>';
 	}
 	$s_hours .= '</select>';
-	$s_hours = str_replace('value="' . create_date((!empty($twelve_hours) ? 'h' : 'H'), $edit_post_time, $userdata['user_timezone']).'">', 'value="' . create_date((!empty($twelve_hours) ? 'h' : 'H'), $edit_post_time, $userdata['user_timezone']) . '" selected="selected">', $s_hours);
+	$s_hours = str_replace('value="' . create_date((!empty($twelve_hours) ? 'h' : 'H'), $edit_post_time, $user->data['user_timezone']).'">', 'value="' . create_date((!empty($twelve_hours) ? 'h' : 'H'), $edit_post_time, $user->data['user_timezone']) . '" selected="selected">', $s_hours);
 
 	$s_minutes = '<select name="' . $topic_post_time . '_minute">';
 	$s_seconds = '<select name="' . $topic_post_time . '_second">';
@@ -181,8 +182,8 @@ else
 	}
 	$s_minutes .= '</select>';
 	$s_seconds .= '</select>';
-	$s_minutes = str_replace('value="' . create_date('i', $edit_post_time, $userdata['user_timezone']) . '">', 'value="' . create_date('i', $edit_post_time, $userdata['user_timezone']) . '" selected="selected">', $s_minutes);
-	$s_seconds = str_replace('value="' . create_date('s', $edit_post_time, $userdata['user_timezone']) . '">', 'value="' . create_date('s', $edit_post_time, $userdata['user_timezone']) . '" selected="selected">', $s_seconds);
+	$s_minutes = str_replace('value="' . create_date('i', $edit_post_time, $user->data['user_timezone']) . '">', 'value="' . create_date('i', $edit_post_time, $user->data['user_timezone']) . '" selected="selected">', $s_minutes);
+	$s_seconds = str_replace('value="' . create_date('s', $edit_post_time, $user->data['user_timezone']) . '">', 'value="' . create_date('s', $edit_post_time, $user->data['user_timezone']) . '" selected="selected">', $s_seconds);
 
 	if ($am_pm == true)
 	{
@@ -190,7 +191,7 @@ else
 		$s_am_pm .= '<option value="am">AM</option>';
 		$s_am_pm .= '<option value="pm">PM</option>';
 		$s_am_pm .= '</select>';
-		$s_am_pm = str_replace('value="' . create_date('a', $edit_post_time, $userdata['user_timezone']) . '">', 'value="' . create_date('a', $edit_post_time, $userdata['user_timezone']) . '" selected="selected">', $s_am_pm);
+		$s_am_pm = str_replace('value="' . create_date('a', $edit_post_time, $user->data['user_timezone']) . '">', 'value="' . create_date('a', $edit_post_time, $user->data['user_timezone']) . '" selected="selected">', $s_am_pm);
 	}
 	else
 	{
@@ -205,7 +206,7 @@ else
 		$s_days .= '<option value="' . $j . '">' . $j . '</option>';
 	}
 	$s_days .= '</select>';
-	$s_days = str_replace('value="' . create_date('d', $edit_post_time, $userdata['user_timezone']) . '">', 'value="' . create_date('d', $edit_post_time, $userdata['user_timezone']) . '" selected="selected">', $s_days);
+	$s_days = str_replace('value="' . create_date('d', $edit_post_time, $user->data['user_timezone']) . '">', 'value="' . create_date('d', $edit_post_time, $user->data['user_timezone']) . '" selected="selected">', $s_days);
 
 	$s_months = '<select name="' . $topic_post_time . '_month">';
 	$s_months .= '<option value="01">' . $lang['datetime']['January'] . '</option>';
@@ -221,15 +222,15 @@ else
 	$s_months .= '<option value="11">' . $lang['datetime']['November'] . '</option>';
 	$s_months .= '<option value="12">' . $lang['datetime']['December'] . '</option>';
 	$s_months .= '</select>';
-	$s_months = str_replace('value="' . create_date('m', $edit_post_time, $userdata['user_timezone']) . '">', 'value="' . create_date('m', $edit_post_time, $userdata['user_timezone']) . '" selected="selected">', $s_months);
+	$s_months = str_replace('value="' . create_date('m', $edit_post_time, $user->data['user_timezone']) . '">', 'value="' . create_date('m', $edit_post_time, $user->data['user_timezone']) . '" selected="selected">', $s_months);
 
-	$s_year = '<input type="text" class="post" size="4" maxlength="4" name="' . $topic_post_time . '_year" value="' . create_date('Y', $edit_post_time, $userdata['user_timezone']) . '" />';
+	$s_year = '<input type="text" class="post" size="4" maxlength="4" name="' . $topic_post_time . '_year" value="' . create_date('Y', $edit_post_time, $user->data['user_timezone']) . '" />';
 
 	$date_sep = '&nbsp;.&nbsp;';
 	$time_sep = '&nbsp;:&nbsp;';
 	$blank_sep = '&nbsp;&nbsp;&nbsp;';
 
-	if ($userdata['user_lang'] == 'english')
+	if ($user->data['user_lang'] == 'english')
 	{
 		$post_edit_string = $s_months . $date_sep . $s_days . $date_sep . $s_year;
 	}

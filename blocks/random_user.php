@@ -24,7 +24,7 @@ if(!function_exists('cms_block_random_user'))
 {
 	function cms_block_random_user()
 	{
-		global $db, $cache, $config, $template, $images, $userdata, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 
 		// Mighty Gorgon - Multiple Ranks - BEGIN
 		@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
@@ -100,7 +100,7 @@ if(!function_exists('cms_block_random_user'))
 			}
 			// End add - Gender MOD
 
-			if (!empty($row['user_viewemail']) || ($userdata['user_level'] == ADMIN))
+			if (!empty($row['user_viewemail']) || ($user->data['user_level'] == ADMIN))
 			{
 				$email_uri = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $user_id) : 'mailto:' . $row['user_email'];
 
@@ -179,7 +179,7 @@ if(!function_exists('cms_block_random_user'))
 			}
 
 			// ONLINE / OFFLINE - BEGIN
-			if (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $user_id) || $row['user_allow_viewonline'])
+			if (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $user_id) || $row['user_allow_viewonline'])
 			{
 				if ($row['user_session_time'] >= (time() - $config['online_time']))
 				{
@@ -227,7 +227,7 @@ if(!function_exists('cms_block_random_user'))
 				'PROFILE_LINK' => $profile_link,
 				'PM_IMG' => $pm_img,
 				'PM' => $pm,
-				'EMAIL_IMG' => (!$userdata['session_logged_in']) ? '' : $email_img,
+				'EMAIL_IMG' => (!$user->data['session_logged_in']) ? '' : $email_img,
 				'EMAIL' => $email,
 				'WWW_IMG' => $www_img,
 				'WWW' => $www,

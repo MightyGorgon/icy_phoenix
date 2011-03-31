@@ -19,8 +19,9 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 define('ENABLE_VISUAL_CONFIRM', true);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
@@ -35,7 +36,7 @@ $account_delete_id = request_var('account_delete', 0);
 $account_delete_id = ($account_delete_id <= 2) ? false : $account_delete_id;
 if (!empty($account_delete_id))
 {
-	if (!$userdata['session_logged_in'] || ($account_delete_id == false) || ($account_delete_id != $userdata['user_id']))
+	if (!$user->data['session_logged_in'] || ($account_delete_id == false) || ($account_delete_id != $user->data['user_id']))
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 	}
@@ -90,7 +91,7 @@ $message = request_var('message', '', true);
 $message = !empty($config['html_email']) ? $message : str_replace(array('&lt;br&gt;', '&lt;br/&gt;', '&lt;br /&gt;'), array('<br />', '<br />', '<br />'), htmlspecialchars_decode($message, ENT_COMPAT));
 if ($account_delete)
 {
-	$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $userdata['username']) . "\r\n<hr />\r\n\r\n" . $message;
+	$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $user->data['username']) . "\r\n<hr />\r\n\r\n" . $message;
 }
 $linebreaks_search = array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/");
 $linebreaks_replace = !empty($config['html_email']) ? array("\r\n", "\r\n", "<br />\r\n") : array("\r\n", "\r\n", "\r\n");
@@ -100,7 +101,7 @@ if (isset($_POST['submit']))
 {
 	$error = false;
 
-	if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
+	if (ENABLE_VISUAL_CONFIRM && !$user->data['session_logged_in'])
 	{
 		if (empty($_POST['confirm_id']))
 		{
@@ -119,7 +120,7 @@ if (isset($_POST['submit']))
 			$sql = "SELECT code
 				FROM " . CONFIRM_TABLE . "
 				WHERE confirm_id = '" . $confirm_id . "'
-					AND session_id = '" . $userdata['session_id'] . "'";
+					AND session_id = '" . $user->data['session_id'] . "'";
 			$result = $db->sql_query($sql);
 			if ($row = $db->sql_fetchrow($result))
 			{
@@ -132,7 +133,7 @@ if (isset($_POST['submit']))
 				{
 					$sql = "DELETE FROM " . CONFIRM_TABLE . "
 						WHERE confirm_id = '" . $confirm_id . "'
-							AND session_id = '" . $userdata['session_id'] . "'";
+							AND session_id = '" . $user->data['session_id'] . "'";
 					$result = $db->sql_query($sql);
 				}
 			}
@@ -196,9 +197,9 @@ if (isset($_POST['submit']))
 		$emailer = new emailer();
 
 		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . $user_ip);
 
 		$email_subject = $subject;
 		$email_message = $message;
@@ -238,11 +239,11 @@ if (isset($_POST['submit']))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_active = '0'
-				WHERE user_id = " . $userdata['user_id'];
+				WHERE user_id = " . $user->data['user_id'];
 			$result = $db->sql_query($sql);
-			$clear_notification = user_clear_notifications($userdata['user_id']);
+			$clear_notification = user_clear_notifications($user->data['user_id']);
 			$message = $lang['Email_sent'];
-			$redirect_url = append_sid(CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $userdata['session_id']);
+			$redirect_url = append_sid(CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $user->data['session_id']);
 			meta_refresh(3, $redirect_url);
 		}
 
@@ -261,7 +262,7 @@ if ($error)
 	$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
 }
 
-if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
+if (ENABLE_VISUAL_CONFIRM && !$user->data['session_logged_in'])
 {
 	// Visual Confirmation
 	$confirm_image = '';
@@ -285,7 +286,7 @@ if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
 
 	$sql = "SELECT COUNT(session_id) AS attempts
 		FROM " . CONFIRM_TABLE . "
-		WHERE session_id = '" . $userdata['session_id'] . "'";
+		WHERE session_id = '" . $user->data['session_id'] . "'";
 	$result = $db->sql_query($sql);
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -301,7 +302,7 @@ if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
 	$code = substr(str_replace('0', 'Z', strtoupper(base_convert($code, 16, 35))), 2, 6);
 	$confirm_id = md5(uniqid($user_ip));
 	$sql = "INSERT INTO " . CONFIRM_TABLE . " (confirm_id, session_id, code)
-		VALUES ('" . $confirm_id . "', '" . $userdata['session_id'] . "', '" . $code . "')";
+		VALUES ('" . $confirm_id . "', '" . $user->data['session_id'] . "', '" . $code . "')";
 	$result = $db->sql_query($sql);
 	unset($code);
 	$confirm_image = '<img src="' . append_sid(CMS_PAGE_PROFILE . '?mode=confirm&amp;confirm_id=' . $confirm_id) . '" alt="" title="" />';
@@ -312,7 +313,7 @@ if (ENABLE_VISUAL_CONFIRM && !$userdata['session_logged_in'])
 if ($account_delete == true)
 {
 	$template->assign_block_vars('delete_account', array());
-	$s_hidden_fields .= '<input type="hidden" name="account_delete" value="' . $userdata['user_id'] . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="account_delete" value="' . $user->data['user_id'] . '" />';
 }
 
 $template->assign_vars(array(

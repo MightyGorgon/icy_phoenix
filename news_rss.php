@@ -29,8 +29,9 @@ if( $config['allow_rss'] != 1 )
 }
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 include_once(IP_ROOT_PATH . 'includes/news.' . PHP_EXT);

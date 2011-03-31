@@ -28,8 +28,9 @@ include(IP_ROOT_PATH . 'includes/functions_stats.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/class_stats_module.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 setup_extra_lang(array('lang_statistics'));
@@ -68,7 +69,7 @@ for ($__count = 0; $__count < sizeof($__stat_module_rows); $__count++)
 	// Clear Template and Destroy Language Variables
 	//$template->destroy();
 
-	if (module_auth_check($__stat_module_data[$__module_id], $userdata))
+	if (module_auth_check($__stat_module_data[$__module_id], $user->data))
 	{
 		print '<a name="s' . $__module_id . '"></a>';
 

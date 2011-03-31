@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 if ($config['disable_referrers'] == true)
@@ -114,7 +115,7 @@ $template->assign_vars(array(
 );
 
 //Check Level of User
-if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 {
 	$template->assign_block_vars('switch_admin_or_mod',array());
 }
@@ -160,7 +161,7 @@ while($row = $db->sql_fetchrow($result))
 		'ROW_CLASS' => $row_class,
 		'HOST' => $row['referrer_host'],
 		'URL' => '<a href="' . htmlspecialchars($row['referrer_url']) . '" rel="nofollow" target="_blank">' . htmlspecialchars($url_name) . '</a>',
-		'IP' => '<a href="http://whois.sc/' . decode_ip($row['referrer_ip']) . '" target="_blank">' . decode_ip($row['referrer_ip']) . '</a>',
+		'IP' => '<a href="http://whois.sc/' . htmlspecialchars(urlencode($row['referrer_ip'])) . '" target="_blank">' . htmlspecialchars($row['referrer_ip']) . '</a>',
 		'HITS' => $row['referrer_hits'],
 		'FIRST' => create_date_ip($config['default_dateformat'], $row['referrer_firstvisit'], $config['board_timezone']),
 		'LAST' => create_date_ip($config['default_dateformat'], $row['referrer_lastvisit'], $config['board_timezone'])

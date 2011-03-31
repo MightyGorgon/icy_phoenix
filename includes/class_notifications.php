@@ -26,13 +26,13 @@ class class_notifications
 	*/
 	function class_notifications()
 	{
-		global $config, $db, $userdata;
+		global $config, $db, $user;
 
 		// Build exclusion list
 		$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . " WHERE ban_userid <> 0 ORDER BY ban_userid ASC";
 		$result = $db->sql_query($sql, 86400, 'ban_', USERS_CACHE_FOLDER);
 
-		$this->exclude_users = array($userdata['user_id'], ANONYMOUS);
+		$this->exclude_users = array($user->data['user_id'], ANONYMOUS);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			if (isset($row['ban_userid']) && !empty($row['ban_userid']))
@@ -61,7 +61,7 @@ class class_notifications
 	*/
 	function send_notifications($mode, &$post_data, &$topic_title, &$forum_id, &$topic_id, &$post_id, &$notify_user)
 	{
-		global $config, $lang, $db, $userdata;
+		global $config, $lang, $db, $user;
 		global $bbcode;
 
 		$current_time = time();
@@ -220,13 +220,13 @@ class class_notifications
 			{
 				$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
 					WHERE topic_id = " . $topic_id . "
-						AND user_id = " . $userdata['user_id'];
+						AND user_id = " . $user->data['user_id'];
 				$db->sql_query($sql);
 			}
 			elseif ($notify_user && empty($row['topic_id']))
 			{
 				$sql = "INSERT INTO " . TOPICS_WATCH_TABLE . " (user_id, topic_id, forum_id, notify_status)
-					VALUES (" . $userdata['user_id'] . ", " . $topic_id . ", " . $forum_id . ", " . TOPIC_WATCH_UN_NOTIFIED . ")";
+					VALUES (" . $user->data['user_id'] . ", " . $topic_id . ", " . $forum_id . ", " . TOPIC_WATCH_UN_NOTIFIED . ")";
 				$db->sql_query($sql);
 			}
 		}

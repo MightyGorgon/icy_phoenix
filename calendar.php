@@ -28,8 +28,9 @@ $mem_limit = check_mem_limit();
 @ini_set('memory_limit', $mem_limit);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $cms_page['page_id'] = 'calendar';

@@ -24,7 +24,7 @@ if(!function_exists('cms_block_news_archive'))
 {
 	function cms_block_news_archive()
 	{
-		global $db, $cache, $config, $template, $userdata, $lang, $bbcode, $block_id, $cms_config_var, $cms_config_vars;
+		global $db, $cache, $config, $template, $user, $lang, $bbcode, $block_id, $cms_config_var, $cms_config_vars;
 		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'includes/news.' . PHP_EXT);
 
@@ -59,7 +59,7 @@ if(!function_exists('cms_block_news_archive'))
 			'INDEX_FILE' => htmlspecialchars(urldecode($index_file)),
 			'PORTAL_PAGE_ID' => $portal_page_id . $ubid_link,
 			'PHP_EXT' => PHP_EXT,
-			'S_NEWS_VIEWS' => (($userdata['user_level'] == ADMIN) && !empty($config['disable_topic_view'])) ? true : false,
+			'S_NEWS_VIEWS' => (($user->data['user_level'] == ADMIN) && !empty($config['disable_topic_view'])) ? true : false,
 			'S_COLS' => 4,
 
 			'L_INDEX' => $lang['Index'],

@@ -27,7 +27,7 @@ if (defined('ONLY_FOUNDER_ACP') && (ONLY_FOUNDER_ACP == true))
 	// Note that the get_founder_id here has the clear cache parameter set to true...
 	// This is important as we are in ACP, and we want to make sure we have cache cleaned...
 	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id(true));
-	if ($userdata['user_id'] != $founder_id)
+	if ($user->data['user_id'] != $founder_id)
 	{
 		die($lang['Not_Auth_View']);
 		//message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
@@ -166,7 +166,7 @@ $template->assign_vars(array(
 	'L_ACP_SETTINGS' => $lang['100_Main_Settings'],
 	'L_ACP_CACHE' => $lang['127_Clear_Cache'],
 
-	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),
+	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tz'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),
 	'S_LOGIN_ACTION' => append_sid('../' . CMS_PAGE_LOGIN),
 	'S_JUMPBOX_ACTION' => append_sid('../' . CMS_PAGE_VIEWFORUM),
 	'S_CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),

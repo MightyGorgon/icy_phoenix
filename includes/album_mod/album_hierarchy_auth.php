@@ -147,7 +147,7 @@ function album_get_auth_keys($cur_cat_id = ALBUM_ROOT_CATEGORY, $auth_key = ALBU
 // ------------------------------------------------------------------------
 function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 {
-	global $db, $userdata, $lang, $album_config, $album_data;
+	global $db, $user, $lang, $album_config, $album_data;
 
 	$moderator_check = 1;
 
@@ -271,7 +271,7 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 					// if the admin has set the creation of personal galleries to 'registered users'
 					// then filter out all other users then the current logged in user (and NON ADMIN)
 					// ------------------------------------------------------------------------
-					if (($userdata['user_id'] != $AH_thiscat['cat_user_id']) && ($userdata['user_level'] != ADMIN))
+					if (($user->data['user_id'] != $AH_thiscat['cat_user_id']) && ($user->data['user_level'] != ADMIN))
 					{
 						$album_permission['upload'] = 0;
 					}
@@ -289,7 +289,7 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 				// ------------------------------------------------------------------------
 				// Only admins can upload images to users personal gallery
 				// ------------------------------------------------------------------------
-				if ($userdata['user_level'] != ADMIN)
+				if ($user->data['user_level'] != ADMIN)
 				{
 					$album_permission['upload'] = 0;
 				}
@@ -308,11 +308,11 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 					// ------------------------------------------------------------------------
 					// make sure the owner of the personal gallery can upload to his personal gallery
 					// it the permission is set to private BUT only for existing personal galleries
-					// if ($AH_thiscat['cat_id'] != 0 && ($user_id == $userdata['user_id']) )
+					// if ($AH_thiscat['cat_id'] != 0 && ($user_id == $user->data['user_id']) )
 					// ------------------------------------------------------------------------
-					if (($AH_thiscat['cat_id'] != 0) && ($AH_thiscat['cat_user_id'] == $userdata['user_id']))
+					if (($AH_thiscat['cat_id'] != 0) && ($AH_thiscat['cat_user_id'] == $user->data['user_id']))
 					{
-						if (($album_config['personal_gallery'] == ALBUM_ADMIN) && ($userdata['user_level'] != ADMIN))
+						if (($album_config['personal_gallery'] == ALBUM_ADMIN) && ($user->data['user_level'] != ADMIN))
 						{
 							$album_permission['upload'] = 0;
 						}
@@ -330,18 +330,18 @@ function album_permissions($user_id, $cat_id, $permission_checks, $catdata = 0)
 		// Check if we can moderate the personal gallery AND also check if we can
 		// manage the personal gallery categories
 		// ------------------------------------------------------------------------
-		if ( ($userdata['user_level'] == ADMIN) ||
+		if ( ($user->data['user_level'] == ADMIN) ||
 			(($album_permission['upload'] == 1) &&
 			($album_config['personal_allow_gallery_mod'] == 1) &&
-			($AH_thiscat['cat_user_id'] == $userdata['user_id'])) )
+			($AH_thiscat['cat_user_id'] == $user->data['user_id'])) )
 		{
 			$album_permission['moderator'] = 1;
 		}
 
-		if ( ($userdata['user_level'] == ADMIN) ||
+		if ( ($user->data['user_level'] == ADMIN) ||
 			(($album_config['personal_allow_sub_categories'] == 1) &&
 			($album_config['personal_sub_category_limit'] != 0) &&
-			($AH_thiscat['cat_user_id'] == $userdata['user_id']) &&
+			($AH_thiscat['cat_user_id'] == $user->data['user_id']) &&
 			($album_permission['upload'] == 1)) )
 		{
 			$album_permission['manage'] = 1;
@@ -480,7 +480,7 @@ function album_get_auth_data($cat_id)
 // ------------------------------------------------------------------------
 function album_build_auth_list($user_id, $cat_id = ALBUM_ROOT_CATEGORY, $auth_data = 0)
 {
-	global $userdata, $lang, $album_config;
+	global $user, $lang, $album_config;
 
 	$auth_list = '';
 
@@ -511,7 +511,7 @@ function album_build_auth_list($user_id, $cat_id = ALBUM_ROOT_CATEGORY, $auth_da
 	// ------------------------------------------------------------------------
 	// add Moderator Control Panel here
 	// ------------------------------------------------------------------------
-	if (($userdata['user_level'] == ADMIN) || ($auth_data['moderator'] == 1))
+	if (($user->data['user_level'] == ADMIN) || ($auth_data['moderator'] == 1))
 	{
 		$auth_list .= sprintf($lang['Album_moderate_can'], '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 		$auth_list .= '<br />';
@@ -525,12 +525,12 @@ function album_build_auth_list($user_id, $cat_id = ALBUM_ROOT_CATEGORY, $auth_da
 	if (($user_id != ALBUM_PUBLIC_GALLERY) && ($auth_data['manage'] == 1))
 	{
 		/*
-		if ( ($userdata['user_level'] == ADMIN) ||
+		if ( ($user->data['user_level'] == ADMIN) ||
 			(($album_config['personal_allow_gallery_mod'] == 1) &&
 			($album_config['personal_allow_sub_categories'] == 1) &&
 			($album_config['personal_sub_category_limit'] != 0)) )
 		*/
-		if (($userdata['user_level'] == ADMIN) || (($album_config['personal_allow_sub_categories'] == 1) && ($album_config['personal_sub_category_limit'] != 0)))
+		if (($user->data['user_level'] == ADMIN) || (($album_config['personal_allow_sub_categories'] == 1) && ($album_config['personal_sub_category_limit'] != 0)))
 		{
 			$auth_list .= sprintf($lang['Album_Can_Manage_Categories'], '<a href="' . append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">', '</a>');
 			$auth_list .= '<br />';

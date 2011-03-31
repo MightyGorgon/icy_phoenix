@@ -57,14 +57,14 @@ if ($refresh)
 	$sql = 'SELECT code
 		FROM ' . CONFIRM_TABLE . "
 		WHERE confirm_id = '" . $confirm_id . "'
-			AND session_id = '" . $userdata['session_id'] . "'";
+			AND session_id = '" . $user->data['session_id'] . "'";
 	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 			WHERE confirm_id = '$confirm_id'
-				AND session_id = '" . $userdata['session_id'] . "'";
+				AND session_id = '" . $user->data['session_id'] . "'";
 		$db->sql_query($sql);
 	}
 }
@@ -87,7 +87,7 @@ if (($mode == 'check') || defined('POST_CONFIRM_CHECK'))
 		$sql = 'SELECT code
 			FROM ' . CONFIRM_TABLE . "
 			WHERE confirm_id = '" . $confirm_id . "'
-				AND session_id = '" . $userdata['session_id'] . "'";
+				AND session_id = '" . $user->data['session_id'] . "'";
 		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))
@@ -101,7 +101,7 @@ if (($mode == 'check') || defined('POST_CONFIRM_CHECK'))
 			{
 				$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 					WHERE confirm_id = '$confirm_id'
-						AND session_id = '" . $userdata['session_id'] . "'";
+						AND session_id = '" . $user->data['session_id'] . "'";
 				$db->sql_query($sql);
 			}
 		}
@@ -157,7 +157,7 @@ else
 
 	$sql = 'SELECT COUNT(session_id) AS attempts
 		FROM ' . CONFIRM_TABLE . "
-		WHERE session_id = '" . $userdata['session_id'] . "'";
+		WHERE session_id = '" . $user->data['session_id'] . "'";
 	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
@@ -178,7 +178,7 @@ else
 	$confirm_id = md5(uniqid($user_ip));
 
 	$sql = 'INSERT INTO ' . CONFIRM_TABLE . " (confirm_id, session_id, code)
-		VALUES ('$confirm_id', '". $userdata['session_id'] . "', '$code')";
+		VALUES ('$confirm_id', '". $user->data['session_id'] . "', '$code')";
 	$db->sql_query($sql);
 
 	unset($code);

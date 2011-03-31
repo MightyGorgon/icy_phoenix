@@ -22,8 +22,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Activity - BEGIN
@@ -37,7 +38,7 @@ if (!empty($config['plugins']['activity']['enabled']))
 $mark_always_read = request_var('always_read', '');
 $mark_forum_id = request_var('forum_id', 0);
 
-if($userdata['upi2db_access'])
+if($user->data['upi2db_access'])
 {
 	// Mighty Gorgon: are these two vars really needed? After a quick global search, they are not needed... so I comment them!
 	/*
@@ -75,20 +76,20 @@ $mark_read = request_var('mode', '');
 if($mark_read == 'forums')
 {
 	// Force last visit to max 60 days limit to avoid having too much unread topics
-	if($userdata['session_logged_in'] && !$userdata['is_bot'])
+	if($user->data['session_logged_in'] && !$user->data['is_bot'])
 	{
-		if ($userdata['user_lastvisit'] < (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60)))
+		if ($user->data['user_lastvisit'] < (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60)))
 		{
-			$userdata['user_lastvisit'] = time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60);
+			$user->data['user_lastvisit'] = time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60);
 		}
 	}
 
 	if ($viewcat < 0)
 	{
-		if($userdata['session_logged_in'] && !$userdata['is_bot'])
+		if($user->data['session_logged_in'] && !$user->data['is_bot'])
 		{
 			//<!-- BEGIN Unread Post Information to Database Mod -->
-			if(!$userdata['upi2db_access'])
+			if(!$user->data['upi2db_access'])
 			{
 				setcookie($config['cookie_name'] . '_f_all', time(), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
 			}
@@ -104,7 +105,7 @@ if($mark_read == 'forums')
 	}
 	else
 	{
-		if($userdata['session_logged_in'] && !$userdata['is_bot'])
+		if($user->data['session_logged_in'] && !$user->data['is_bot'])
 		{
 			// get the list of object authorized
 			$keys = array();
@@ -129,7 +130,7 @@ if($mark_read == 'forums')
 							unset($tracking_forums[key($tracking_forums)]);
 						}
 
-						if ($row['last_post'] > $userdata['user_lastvisit'])
+						if ($row['last_post'] > $user->data['user_lastvisit'])
 						{
 							$tracking_forums[$forum_id] = time();
 							setcookie($config['cookie_name'] . '_f', serialize($tracking_forums), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
@@ -206,12 +207,12 @@ if (($config['display_viewonline'] == 2) || (($viewcat < 0) && ($config['display
 	// Birthday Box - END
 }
 
-$avatar_img = user_get_avatar($userdata['user_id'], $userdata['user_level'], $userdata['user_avatar'], $userdata['user_avatar_type'], $userdata['user_allowavatar']);
+$avatar_img = user_get_avatar($user->data['user_id'], $user->data['user_level'], $user->data['user_avatar'], $user->data['user_avatar_type'], $user->data['user_allowavatar']);
 
 // Check For Anonymous User
-if ($userdata['user_id'] != ANONYMOUS)
+if ($user->data['user_id'] != ANONYMOUS)
 {
-	$username = colorize_username($userdata['user_id'], $userdata['username'], $userdata['user_color'], $userdata['user_active']);
+	$username = colorize_username($user->data['user_id'], $user->data['username'], $user->data['user_color'], $user->data['user_active']);
 }
 else
 {
@@ -241,11 +242,11 @@ if ($config['site_history'] && ((time() - (int) $config['cron_site_history_last_
 	$dato = create_date('H', $current_time, 1);
 	$timetoday = $hour_now - (3600 * $dato);
 
-	$sql = 'SELECT COUNT(DISTINCT session_ip) as guests_today FROM ' . SESSIONS_TABLE . ' WHERE session_user_id="' . ANONYMOUS . '" AND session_time >= ' . $timetoday . ' AND session_time < ' . ($timetoday + 86399);
+	$sql = "SELECT COUNT(DISTINCT session_ip) as guests_today FROM " . SESSIONS_TABLE . " WHERE session_user_id = '" . ANONYMOUS . "' AND session_time >= " . $timetoday . " AND session_time < " . ($timetoday + 86399);
 	$result = $db->sql_query($sql);
 	$guest_count = $db->sql_fetchrow($result);
 
-	$sql = 'SELECT user_allow_viewonline, COUNT(*) as count FROM ' . USERS_TABLE . ' WHERE user_id!="' . ANONYMOUS . '" AND user_session_time >= ' . $timetoday . ' AND user_session_time < ' . ($timetoday + 86399) . ' GROUP BY user_allow_viewonline';
+	$sql = "SELECT user_allow_viewonline, COUNT(*) as count FROM " . USERS_TABLE . " WHERE user_id <> '" . ANONYMOUS . "' AND user_session_time >= " . $timetoday . " AND user_session_time < " . ($timetoday + 86399) . " GROUP BY user_allow_viewonline";
 	$result = $db->sql_query($sql);
 	while ($reg_count = $db->sql_fetchrow ($result))
 	{
@@ -260,13 +261,13 @@ if ($config['site_history'] && ((time() - (int) $config['cron_site_history_last_
 	}
 	$db->sql_freeresult($result);
 
-	$sql = 'UPDATE ' . SITE_HISTORY_TABLE . ' SET reg="' . $today_visitors['reg_visible'] . '", hidden="' . $today_visitors['reg_hidden'] . '", guests="' . $guest_count['guests_today'] . '" WHERE date=' . $hour_now;
+	$sql = "UPDATE " . SITE_HISTORY_TABLE . " SET reg = '" . $today_visitors['reg_visible'] . "', hidden = '" . $today_visitors['reg_hidden'] . "', guests = '" . $guest_count['guests_today'] . "' WHERE date = " . $hour_now;
 	$result = $db->sql_query($sql);
 	$affectedrows = $db->sql_affectedrows();
 	if (!$result || !$affectedrows)
 	{
-		$sql = 'INSERT IGNORE INTO ' . SITE_HISTORY_TABLE . ' (date, reg, hidden, guests)
-			VALUES (' . $hour_now . ', "' . $today_visitors['reg_visible'] . '", "' . $today_visitors['reg_hidden'] . '", "' . $guest_count['guests_today'] . '")';
+		$sql = "INSERT IGNORE INTO " . SITE_HISTORY_TABLE . " (date, reg, hidden, guests)
+			VALUES (" . $hour_now . ", '" . $today_visitors['reg_visible'] . "', '" . $today_visitors['reg_hidden'] . "', '" . $guest_count['guests_today'] . "')";
 		$db->sql_query($sql);
 	}
 	if (isset($result))
@@ -279,7 +280,7 @@ if ($config['site_history'] && ((time() - (int) $config['cron_site_history_last_
 // set the param of the mark read func
 $mark = ($viewcat == -1) ? '' : '&amp;' . POST_CAT_URL . '=' . $viewcat;
 
-if (!$config['board_disable'] || ($config['board_disable'] && ($userdata['user_level'] == ADMIN)))
+if (!$config['board_disable'] || ($config['board_disable'] && ($user->data['user_level'] == ADMIN)))
 {
 	$template->vars['S_TPL_FILENAME'] = 'index';
 }
@@ -287,7 +288,7 @@ if (!$config['board_disable'] || ($config['board_disable'] && ($userdata['user_l
 build_groups_list_template();
 
 //$template->assign_block_vars('google_ad', array());
-if ($userdata['session_logged_in'] && !$userdata['is_bot'])
+if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
 	$nav_server_url = create_server_url();
 	$breadcrumbs_links_right = '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM . '?mark=forums') . '">' . $lang['Mark_all_forums'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=newposts') . '">' . $lang['Search_new'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=egosearch') . '">' . $lang['Search_your_posts'] . '</a>';
@@ -442,7 +443,7 @@ $display = display_index($viewcatkey);
 
 // check shoutbox permissions and display only to authorized users
 $auth_level_req = (isset($cms_config_layouts['shoutbox']['view']) ? $cms_config_layouts['shoutbox']['view'] : AUTH_ALL);
-if (($config['index_shoutbox'] && (($userdata['user_level'] + 1) >= $auth_level_req) && $userdata['session_logged_in'] && !$userdata['is_bot']) || ($config['index_shoutbox'] && ($userdata['user_level'] == ADMIN)))
+if (($config['index_shoutbox'] && (($user->data['user_level'] + 1) >= $auth_level_req) && $user->data['session_logged_in'] && !$user->data['is_bot']) || ($config['index_shoutbox'] && ($user->data['user_level'] == ADMIN)))
 {
 	$template->assign_vars(array('S_SHOUTBOX' => true));
 }

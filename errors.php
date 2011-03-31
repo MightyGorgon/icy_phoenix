@@ -19,8 +19,9 @@ $config['thumbnail_highslide'] = false;
 $config['ajax_features'] = false;
 
 // Start session management
-$userdata = session_pagestart($user_ip, false);
-init_userprefs($userdata);
+$user->session_begin(false);
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Errors Configuration Flags
@@ -126,7 +127,8 @@ function errors_notification($action, $result, $sitename, $subject, $errors_log,
 	global $lang;
 
 	$remote_address = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
-	$user_agent = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
+	$remote_address = (!empty($remote_address) && ($remote_address != '::1')) ? $remote_address : '127.0.0.1';
+	$user_agent_errors = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
 	$referer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getenv('HTTP_REFERER');
 	//$referer = ($referer == '') ? $HTTP_REFERER : $HTTP_REFERER;
 	$referer = ($referer == '') ? $HTTP_REFERER : $referer;
@@ -142,7 +144,7 @@ function errors_notification($action, $result, $sitename, $subject, $errors_log,
 		$message .= ' [URL: ' . $script_name . ' ]';
 		$message .= ' [REF: ' . $referer . ' ]';
 		$message .= ' [IP: ' . $remote_address . ']';
-		$message .= ' [Client: ' . $user_agent . ']';
+		$message .= ' [Client: ' . $user_agent_errors . ']';
 		$message .= "\n";
 		$fp = fopen ($errors_log, "a+");
 		fwrite($fp, $message);
@@ -160,7 +162,7 @@ function errors_notification($action, $result, $sitename, $subject, $errors_log,
 		Date:       $date
 		URL:        $referer
 		IP Address: $remote_address
-		Browser:    $user_agent
+		Browser:    $user_agent_errors
 		==============================================================================
 		------------------------------------------------------------------------------
 		==============================================================================

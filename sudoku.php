@@ -22,8 +22,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get language Variables and page specific functions
@@ -32,8 +33,8 @@ setup_extra_lang(array('lang_sudoku'));
 include_once(IP_ROOT_PATH . 'includes/functions_sudoku.' . PHP_EXT);
 
  // Make sure the player is registered
-$user_id = $userdata['user_id'];
-if (!$userdata['session_logged_in'])
+$user_id = $user->data['user_id'];
+if (!$user->data['session_logged_in'])
 {
 	$header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
 	header($header_location . append_sid(CMS_PAGE_LOGIN . "?redirect=sudoku." . PHP_EXT, true));
@@ -58,7 +59,7 @@ $co_ord = explode('_', htmlspecialchars($_GET['tile']));
 $redirect = '<meta http-equiv = "refresh" content = "3;url = ' . append_sid('sudoku.' . PHP_EXT) . '">';
 $games = array();
 $points = array();
-$admin_tools = ($userdata['user_level'] == ADMIN) ? '|| <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=resynch') . '" class="nav">' . $lang['sudoku_resynch'] . '</a> || <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=reset_game') . '" class="nav">' . $lang['sudoku_reset_game'] . '</a>' : '';
+$admin_tools = ($user->data['user_level'] == ADMIN) ? '|| <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=resynch') . '" class="nav">' . $lang['sudoku_resynch'] . '</a> || <a href="' . append_sid('sudoku.' . PHP_EXT . '?&amp;mode=reset_game') . '" class="nav">' . $lang['sudoku_reset_game'] . '</a>' : '';
 // Set template Vars
 $template->assign_vars(array(
 	'SUDOKU_VERSION' => sprintf($lang['Sudoku_Version'], $config['sudoku_version'], $latest_pack),
@@ -87,7 +88,7 @@ $template->assign_vars(array(
 //
 if ($mode == 'resynch')
 {
-	if ($userdata['user_level'] != ADMIN)
+	if ($user->data['user_level'] != ADMIN)
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Authorized'] . $redirect);
 	}
@@ -97,7 +98,7 @@ if ($mode == 'resynch')
 
 if ($mode == 'reset_game')
 {
-	if ($userdata['user_level'] != ADMIN)
+	if ($user->data['user_level'] != ADMIN)
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Authorized'] . $redirect);
 	}
@@ -165,7 +166,7 @@ if ($mode == 'buy')
 	$solutions_ary = $line;
 	unset($line);
 	unset($lrow);
-	$and_clause = 'AND user_id = ' . $userdata['user_id'];
+	$and_clause = 'AND user_id = ' . $user->data['user_id'];
 	sudoku_starting_data($pack, $num, SUDOKU_USERS, $and_clause);
 	$users_ary = $line;
 	unset($line);
@@ -211,7 +212,7 @@ if ($mode == 'buy')
 	SET $key = '$new_line', points = points - 30
 	WHERE game_pack = $pack
 	AND game_num = $num
-	AND user_id = " . $userdata['user_id'];
+	AND user_id = " . $user->data['user_id'];
 	$db->sql_query($sql);
 
 	$redirect='<meta http-equiv="refresh" content="3;url=' . append_sid('sudoku.' . PHP_EXT . '?#grid') . '">';
@@ -235,7 +236,7 @@ if (isset($_POST['input_num']))
 	$sql = " SELECT $this_line FROM " . SUDOKU_USERS . "
 	WHERE game_pack = $pack
 	AND game_num = $num
-	AND user_id = " . $userdata['user_id'];
+	AND user_id = " . $user->data['user_id'];
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$insert_line = explode('a', $row[$this_line]);
@@ -285,13 +286,13 @@ if (isset($_POST['input_num']))
 	SET $this_line = '" . $inserted_line . "',points=points+$points_addition
 	WHERE game_pack = $pack
 	AND game_num = $num
-	AND user_id = " . $userdata['user_id'];
+	AND user_id = " . $user->data['user_id'];
 	$db->sql_query($sql);
 }
 
 // check to see if this user has played the game, if not we'll set them up for it
 $sql = " SELECT user_id, game_pack, game_num, game_level, points FROM " . SUDOKU_USERS . "
-WHERE user_id=" . $userdata['user_id'] . "
+WHERE user_id=" . $user->data['user_id'] . "
 ORDER BY game_pack DESC, game_num DESC
 LIMIT 1
 ";
@@ -307,7 +308,7 @@ if (!$row['user_id'])
 	$sql = " INSERT INTO " . SUDOKU_USERS . "
 	(user_id,game_pack,game_num,game_level,line_1,line_2,line_3,line_4,line_5,line_6,line_7,line_8,line_9)
 	VALUES
-	(" . $userdata['user_id'] . ",1,1,1,'" . $lrow['line_1'] . "','" . $lrow['line_2'] . "','" . $lrow['line_3'] . "','" . $lrow['line_4'] . "','" . $lrow['line_5'] . "','" . $lrow['line_6'] . "','" . $lrow['line_7'] . "','" . $lrow['line_8'] . "','" . $lrow['line_9'] . "')
+	(" . $user->data['user_id'] . ",1,1,1,'" . $lrow['line_1'] . "','" . $lrow['line_2'] . "','" . $lrow['line_3'] . "','" . $lrow['line_4'] . "','" . $lrow['line_5'] . "','" . $lrow['line_6'] . "','" . $lrow['line_7'] . "','" . $lrow['line_8'] . "','" . $lrow['line_9'] . "')
 	";
 	$db->sql_query($sql);
 
@@ -317,7 +318,7 @@ if (!$row['user_id'])
 
 	$sql = " UPDATE " . USERS_TABLE . "
 	SET user_sudoku_playing = 1
-	WHERE user_id=" . $userdata['user_id'];
+	WHERE user_id=" . $user->data['user_id'];
 	$db->sql_query($sql);
 }
 
@@ -328,7 +329,7 @@ $pack = $row['game_pack'];
 $num = $row['game_num'];
 $level = $row['game_level'];
 $curr_points = $row['points'];
-$and_clause='AND user_id=' . $userdata['user_id'];
+$and_clause='AND user_id=' . $user->data['user_id'];
 switch ($level)
 {
 	case EASY:
@@ -376,7 +377,7 @@ if ($mode == 'reset')
 	sudoku_starting_data($pack,$num, SUDOKU_STARTS,'');
 	$sql = " UPDATE " . SUDOKU_USERS . "
 	SET points=-200,line_1='" . $lrow['line_1'] . "',line_2='" . $lrow['line_2'] . "',line_3='" . $lrow['line_3'] . "',line_4='" . $lrow['line_4'] . "',line_5='" . $lrow['line_5'] . "',line_6='" . $lrow['line_6'] . "',line_7='" . $lrow['line_7'] . "',line_8='" . $lrow['line_8'] . "',line_9='" . $lrow['line_9'] . "'
-	WHERE user_id=" . $userdata['user_id'] . "
+	WHERE user_id=" . $user->data['user_id'] . "
 	AND game_pack = $pack
 	AND game_num = $num
 	";
@@ -387,7 +388,7 @@ if ($mode == 'reset')
 }
 
 // perform tasks
-sudoku_tasks($userdata['user_id'], $pack, $num, $level);
+sudoku_tasks($user->data['user_id'], $pack, $num, $level);
 sudoku_starting_data($pack, $num, SUDOKU_USERS, $and_clause);
 
 // check for completed grid
@@ -547,7 +548,7 @@ if (!in_array('x', $line[0]) && !in_array('x', $line[1]) && !in_array('x', $line
 		$sql = " UPDATE " . SUDOKU_USERS . "
 		SET line_1 = '" . $u_line_insert[0] . "',line_2 = '" . $u_line_insert[1] . "',line_3 = '" . $u_line_insert[2] . "',line_4 = '" . $u_line_insert[3] . "',line_5 = '" . $u_line_insert[4] . "',
 		line_6 = '" . $u_line_insert[5] . "',line_7 = '" . $u_line_insert[6] . "',line_8 = '" . $u_line_insert[7] . "',line_9 = '" . $u_line_insert[8] . "',points = points-$points_minus
-		WHERE user_id = " . $userdata['user_id'] . "
+		WHERE user_id = " . $user->data['user_id'] . "
 		AND game_pack = $pack
 		AND game_num = $num
 		";
@@ -654,7 +655,7 @@ for ($i = 0; $i < sizeof($active_name); $i++)
 $s_users_today_disp=implode(', ', $s_users_today_names);
 $s_users_active_disp=implode(', ', $s_users_active_names);
 
-$this_userid = $userdata['user_id'];
+$this_userid = $user->data['user_id'];
 // parse to template
 $template->assign_vars(array(
 	'POINTS_VALUE' => number_format($points[$this_userid]),

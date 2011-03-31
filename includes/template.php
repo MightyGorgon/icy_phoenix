@@ -610,7 +610,7 @@ class Template {
 	*/
 	function display($handle)
 	{
-		global $db, $config, $userdata;
+		global $db, $config, $user;
 		$this->pparse($handle);
 		return true;
 	}
@@ -626,8 +626,8 @@ class Template {
 		// Mighty Gorgon - Extra Debug - BEGIN
 		if (defined('DEBUG_EXTRA') && !empty($_REQUEST['explain']))
 		{
-			global $userdata, $db;
-			if (($userdata['user_level'] == ADMIN) && method_exists($db, 'sql_report'))
+			global $user, $db;
+			if (($user->data['user_level'] == ADMIN) && method_exists($db, 'sql_report'))
 			{
 				return false;
 			}

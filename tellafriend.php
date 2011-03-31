@@ -17,8 +17,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $topic_title = request_var('topic_title', '', true);
@@ -27,7 +28,7 @@ $friendname = request_var('friendname', '', true);
 $message = request_var('message', '', true);
 $PHP_SELF = $_SERVER['SCRIPT_NAME'];
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id, true));
 }
@@ -50,8 +51,8 @@ $template->assign_vars(array(
 	'L_SUBMIT' => $lang['Send_email'],
 	'SITENAME' => $config['sitename'],
 
-	'SENDER_NAME' => $userdata['username'],
-	'SENDER_MAIL' => $userdata['user_email'],
+	'SENDER_NAME' => $user->data['username'],
+	'SENDER_MAIL' => $user->data['user_email'],
 
 	'L_TELL_FRIEND_BODY' => $mail_body,
 
@@ -99,20 +100,20 @@ if (isset($_POST['submit']))
 		$emailer = new emailer();
 
 		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . $user_ip);
 
 		$emailer->use_template('tellafriend_email', $user_lang);
 		$emailer->to($friendemail, $friendname);
-		$emailer->from($userdata['user_email']);
-		$emailer->replyto($userdata['user_email']);
+		$emailer->from($user->data['user_email']);
+		$emailer->replyto($user->data['user_email']);
 		$emailer->set_subject($topic_title);
 
 		$emailer->assign_vars(array(
 			'SITENAME' => $config['sitename'],
 			'BOARD_EMAIL' => $config['board_email'],
-			'FROM_USERNAME' => $userdata['username'],
+			'FROM_USERNAME' => $user->data['username'],
 			'TO_USERNAME' => $friendname,
 			'MESSAGE' => $message
 			)

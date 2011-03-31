@@ -120,7 +120,7 @@ for ($i = 0; $i < $nyear; $i= $i + 1)
 	{
 		if ($users_data[$j]['mon'] == $datem && $users_data[$j]['year'] == $datey)
 		{
-			$user = $users_data[$j]['ant'];
+			$target_user = $users_data[$j]['ant'];
 			$user_sum += $users_data[$j]['ant'];
 			$user_con++;
 			$f = 1;
@@ -132,10 +132,10 @@ for ($i = 0; $i < $nyear; $i= $i + 1)
 	}
 	else
 	{
-		$user = '-';
+		$target_user = '-';
 	}
 
-	if ($user == '-' && $topic == '-' && $post == '-')
+	if (($target_user == '-') && ($topic == '-') && ($post == '-'))
 	{
 		break;
 	}
@@ -146,7 +146,7 @@ for ($i = 0; $i < $nyear; $i= $i + 1)
 		'DATE' => $date,
 		'POST' => $post,
 		'TOPIC' => $topic,
-		'USER' => $user
+		'USER' => $target_user
 		)
 	);
 }

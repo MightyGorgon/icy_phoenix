@@ -19,8 +19,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $class_topics = new class_topics();
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $start = request_var('start', 0);
@@ -41,7 +42,7 @@ $set_days = '7'; // set default days (used for lastXdays mode)
 // ############         Edit above         ########################################
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-if($userdata['upi2db_access'])
+if($user->data['upi2db_access'])
 {
 	if (empty($unread))
 	{
@@ -61,7 +62,7 @@ $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $c
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $mode_types = array('today', 'yesterday', 'last24', 'lastweek', 'lastXdays', 'utopics', 'uposts');
-if ($userdata['user_level'] == ADMIN)
+if ($user->data['user_level'] == ADMIN)
 {
 	$mode_types = array_merge($mode_types, array('utview'));
 }
@@ -129,15 +130,15 @@ $sql_start = "SELECT DISTINCT(t.topic_id), t.*, p.poster_id, p.post_username AS 
 $sql_where = $where_forums . " AND p.post_id = t.topic_last_post_id AND t.topic_status <> " . TOPIC_MOVED;
 $sql_end = "LIMIT $start, $topic_limit";
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
-	$userdata['user_time_mode'] = $config['default_time_mode'];
-	$userdata['user_timezone'] = $config['board_timezone'];
-	$userdata['user_dst_time_lag'] = $config['default_dst_time_lag'];
+	$user->data['user_time_mode'] = $config['default_time_mode'];
+	$user->data['user_timezone'] = $config['board_timezone'];
+	$user->data['user_dst_time_lag'] = $config['default_dst_time_lag'];
 }
 
-$dst_sec = get_dst(time(), $userdata['user_timezone']);
-$adj_time = (3600 * $userdata['user_timezone']) + $dst_sec;
+$dst_sec = get_dst(time(), $user->data['user_timezone']);
+$adj_time = (3600 * $user->data['user_timezone']) + $dst_sec;
 $int_day_sec = intval((time() + $adj_time) / 86400) * 86400;
 
 $mode_pagination = '&amp;amount_days=' . $amount_days;
@@ -287,13 +288,13 @@ for($i = 0; $i < sizeof($line); $i++)
 	// Old format
 	//$first_time = create_date_ip($config['default_dateformat'], $line[$i]['topic_time'], $config['board_timezone']);
 	$first_author = ($line[$i]['first_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['first_poster_id'], $line[$i]['first_poster'], $line[$i]['first_poster_color'], $line[$i]['first_poster_active']) : (($line[$i]['first_poster_name'] != '') ? $line[$i]['first_poster_name'] : $lang['Guest']);
-	if (($userdata['user_level'] != ADMIN) && !empty($line[$i]['first_poster_mask']) && empty($line[$i]['first_poster_active']))
+	if (($user->data['user_level'] != ADMIN) && !empty($line[$i]['first_poster_mask']) && empty($line[$i]['first_poster_active']))
 	{
 		$first_author = $lang['INACTIVE_USER'];
 	}
 	$last_time = create_date_ip($config['default_dateformat'], $line[$i]['post_time'], $config['board_timezone']);
 	$last_author = ($line[$i]['last_poster_id'] != ANONYMOUS) ? colorize_username($line[$i]['last_poster_id'], $line[$i]['last_poster'], $line[$i]['last_poster_color'], $line[$i]['last_poster_active']) : (($line[$i]['last_poster_name'] != '') ? $line[$i]['last_poster_name'] : $lang['Guest']);
-	if (($userdata['user_level'] != ADMIN) && !empty($line[$i]['last_poster_mask']) && empty($line[$i]['last_poster_active']))
+	if (($user->data['user_level'] != ADMIN) && !empty($line[$i]['last_poster_mask']) && empty($line[$i]['last_poster_active']))
 	{
 		$last_author = $lang['INACTIVE_USER'];
 	}
@@ -302,7 +303,7 @@ for($i = 0; $i < sizeof($line); $i++)
 	// SELF AUTH - BEGIN
 	// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
 	/*
-	if ((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) && (intval($is_auth_ary[$line[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($line[$i]['first_poster_id'] != $userdata['user_id']))
+	if ((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) && (intval($is_auth_ary[$line[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($line[$i]['first_poster_id'] != $user->data['user_id']))
 	{
 		$first_author = $lang['Reserved_Author'];
 		$last_author = $lang['Reserved_Author'];

@@ -17,12 +17,13 @@ include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $is_auth_ary = array();
-$is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata, $forum_data);
+$is_auth_ary = auth(AUTH_VIEW, AUTH_LIST_ALL, $user->data, $forum_data);
 
 $sql_forums = "SELECT ug.user_id, f.forum_id, f.forum_name
 		FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . FORUMS_TABLE . " f
@@ -162,7 +163,7 @@ for($i = 0; $i < sizeof($level_cat); $i++)
 			'SEARCH' => $search,
 			'PM_IMG' => $pm_img,
 			'PM' => $pm,
-			'EMAIL_IMG' => (!$userdata['session_logged_in']) ? '' : $email_img,
+			'EMAIL_IMG' => (!$user->data['session_logged_in']) ? '' : $email_img,
 			'EMAIL' => $email,
 			'WWW_IMG' => $www_img,
 			'WWW' => $www,

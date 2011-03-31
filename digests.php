@@ -30,8 +30,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
@@ -46,7 +47,7 @@ if (empty($config['cron_digests_interval']) || ($config['cron_digests_interval']
 $board_timezone = gmdate('Z') / 3600;
 
 // Get current user's timezone
-$user_timezone = (float) $userdata['user_timezone'];
+$user_timezone = (float) $user->data['user_timezone'];
 
 // Offset the timezone information. We will store in the subscriptions table the
 // server time to send the digest, since mail_digests.php expects it this way.
@@ -56,12 +57,12 @@ $offset = $board_timezone - $user_timezone;
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
 
-	if ($userdata['session_logged_in'])
+	if ($user->data['session_logged_in'])
 	{
 		$template_to_parse = 'digests.tpl';
 
 		// get current subscription data for this user, if any
-		$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
+		$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$create_new = ($row['count'] == 0) ? true : false;
@@ -82,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		{
 			// read current digest options into local variables, because we have one inherent connection
 
-			$sql = 'SELECT digest_type, format, show_text, show_mine, new_only, send_on_no_messages, send_hour, text_length FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
+			$sql = 'SELECT digest_type, format, show_text, show_mine, new_only, send_on_no_messages, send_hour, text_length FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 
@@ -106,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		$db->sql_freeresult ($result);
 
 		// get current subscribed forums for this user, if any
-		$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
+		$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$all_forums_new = ($row['count'] == 0) ? true : false;
@@ -248,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 
 		$sql = 'SELECT DISTINCT a.forum_id, f.forum_name, c.forum_order AS cat_order, f.forum_order
 			FROM ' . AUTH_ACCESS_TABLE . ' a, ' . USER_GROUP_TABLE . ' ug, ' . FORUMS_TABLE . ' f, ' . FORUMS_TABLE . ' c
-			WHERE ug.user_id = ' . $userdata['user_id'] . '
+			WHERE ug.user_id = ' . $user->data['user_id'] . '
 				AND ug.user_pending = 0
 				AND a.group_id = ug.group_id
 				AND a.forum_id = f.forum_id
@@ -279,7 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 				// Is this forum currently subscribed? If so it needs to be checkmarked
 				if (!($all_forums_new))
 				{
-					$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE forum_id = ' . $forum_ids [$j] . ' AND user_id = ' . $userdata['user_id'];
+					$sql = 'SELECT count(*) AS count FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE forum_id = ' . $forum_ids [$j] . ' AND user_id = ' . $user->data['user_id'];
 					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrow($result);
 					if ($row['count'] == 0)
@@ -317,11 +318,11 @@ else
 
 		// user no longer wants a digest
 		// first remove all individual forum subscriptions
-		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
+		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 
 		// remove subscription itself
-		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
+		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIPTIONS_TABLE . ' WHERE user_id = ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		$update_type = 'unsubscribe';
 
@@ -354,7 +355,7 @@ else
 		$sql_update = $db->sql_build_insert_update($digests_data, false);
 
 		// Add ID for insert...
-		$digests_data = array_merge(array('user_id' => intval($userdata['user_id'])), $digests_data);
+		$digests_data = array_merge(array('user_id' => intval($user->data['user_id'])), $digests_data);
 		$sql_insert = $db->sql_build_insert_update($digests_data, true);
 
 		// first, create or update the subscription
@@ -365,14 +366,14 @@ else
 		}
 		else
 		{
-			$sql = 'UPDATE ' . DIGEST_SUBSCRIPTIONS_TABLE . ' SET ' . $sql_update . ' WHERE user_id = ' . intval($userdata['user_id']);
+			$sql = 'UPDATE ' . DIGEST_SUBSCRIPTIONS_TABLE . ' SET ' . $sql_update . ' WHERE user_id = ' . intval($user->data['user_id']);
 			$update_type = 'modify';
 		}
 		$result = $db->sql_query($sql);
 
 		// next, if there are any individual forum subscriptions, remove the old ones and create the new ones
 
-		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $userdata['user_id'];
+		$sql = 'DELETE FROM ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' WHERE user_id = ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 
 		// Note that if "all_forums" is checked, this is noted in the subscriptions table. It does not put
@@ -385,7 +386,7 @@ else
 			{
 				if (substr($key, 0, 6) == 'forum_')
 				{
-					$sql = 'INSERT INTO ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' (user_id, forum_id) VALUES (' . $userdata['user_id'] . ', ' . htmlspecialchars(substr($key,6)) . ')';
+					$sql = 'INSERT INTO ' . DIGEST_SUBSCRIBED_FORUMS_TABLE . ' (user_id, forum_id) VALUES (' . $user->data['user_id'] . ', ' . htmlspecialchars(substr($key,6)) . ')';
 					$result = $db->sql_query($sql);
 				}
 			}

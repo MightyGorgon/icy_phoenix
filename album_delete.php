@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -66,7 +67,7 @@ $album_user_access = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_DELET
 
 if ($album_user_access['delete'] == 0)
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_delete.' . PHP_EXT . '?pic_id=' . $pic_id));
 	}
@@ -77,9 +78,9 @@ if ($album_user_access['delete'] == 0)
 }
 else
 {
-	if((!$album_user_access['moderator']) && ($userdata['user_level'] != ADMIN))
+	if((!$album_user_access['moderator']) && ($user->data['user_level'] != ADMIN))
 	{
-		if ($thispic['pic_user_id'] != $userdata['user_id'])
+		if ($thispic['pic_user_id'] != $user->data['user_id'])
 		{
 			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
@@ -176,7 +177,7 @@ else
 	{
 		$sql = "SELECT COUNT(pic_id) AS count
 			FROM " . ALBUM_TABLE . "
-			WHERE pic_user_id = '". $userdata['user_id'] ."'
+			WHERE pic_user_id = '". $user->data['user_id'] ."'
 			AND pic_cat_id = '" . $cat_id . "'";
 		$result = $db->sql_query($sql);
 		$personal_pics_count = $db->sql_fetchrow($result);

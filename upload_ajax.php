@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // This page is not in layout special...
@@ -47,17 +48,17 @@ $max_file_size = (1000 * 1024);
 
 if (USERS_SUBFOLDERS_IMG)
 {
-	if (is_dir($upload_dir . $userdata['user_id']))
+	if (is_dir($upload_dir . $user->data['user_id']))
 	{
-		$user_upload_dir = $userdata['user_id'] . '/';
+		$user_upload_dir = $user->data['user_id'] . '/';
 		$upload_dir = $upload_dir . $user_upload_dir;
 	}
 	else
 	{
-		$dir_creation = @mkdir($upload_dir . $userdata['user_id'], 0777);
+		$dir_creation = @mkdir($upload_dir . $user->data['user_id'], 0777);
 		if ($dir_creation)
 		{
-			$user_upload_dir = $userdata['user_id'] . '/';
+			$user_upload_dir = $user->data['user_id'] . '/';
 			$upload_dir = $upload_dir . $user_upload_dir;
 		}
 	}

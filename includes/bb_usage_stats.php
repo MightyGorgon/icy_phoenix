@@ -53,23 +53,23 @@ else
 
 /* Determine if user is permitted to view forum usage data */
 $view_bb_usage_allowed = false;
-if (($viewlevel & BBUS_VIEWLEVEL_ANONYMOUS) != 0 && $userdata['user_id'] == ANONYMOUS)
+if (($viewlevel & BBUS_VIEWLEVEL_ANONYMOUS) != 0 && $user->data['user_id'] == ANONYMOUS)
 {
 	$view_bb_usage_allowed = true;
 }
-elseif(($viewlevel & BBUS_VIEWLEVEL_SELF) != 0 && $profiledata['user_id'] == $userdata['user_id'])
+elseif(($viewlevel & BBUS_VIEWLEVEL_SELF) != 0 && $profiledata['user_id'] == $user->data['user_id'])
 {
 	$view_bb_usage_allowed = true;
 }
-elseif(($viewlevel & BBUS_VIEWLEVEL_USERS) != 0 && $userdata['user_level'] == USER)
+elseif(($viewlevel & BBUS_VIEWLEVEL_USERS) != 0 && $user->data['user_level'] == USER)
 {
 	$view_bb_usage_allowed = true;
 }
-elseif(($viewlevel & BBUS_VIEWLEVEL_MODERATORS) != 0 && $userdata['user_level'] == MOD)
+elseif(($viewlevel & BBUS_VIEWLEVEL_MODERATORS) != 0 && $user->data['user_level'] == MOD)
 {
 	$view_bb_usage_allowed = true;
 }
-elseif(($viewlevel & BBUS_VIEWLEVEL_ADMINS) != 0 && $userdata['user_level'] == ADMIN)
+elseif(($viewlevel & BBUS_VIEWLEVEL_ADMINS) != 0 && $user->data['user_level'] == ADMIN)
 {
 	$view_bb_usage_allowed = true;
 }
@@ -80,7 +80,7 @@ elseif(($viewlevel & BBUS_VIEWLEVEL_SPECIALGRP) != 0)
 	{
 		if ($config[BBUS_CONFIGPROP_SPECIALGRP_NAME] != -1)
 		{
-			if (is_user_member_of_group($userdata['user_id'], $config[BBUS_CONFIGPROP_SPECIALGRP_NAME]))
+			if (is_user_member_of_group($user->data['user_id'], $config[BBUS_CONFIGPROP_SPECIALGRP_NAME]))
 			{
 				$view_bb_usage_allowed = true;
 			}
@@ -114,7 +114,7 @@ if (!isset($config[BBUS_CONFIGPROP_TRSCALE_NAME]))
 if (!empty($show_extra_stats) && $view_bb_usage_allowed)
 {
 
-	$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+	$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 
 	/* Retrieve user's forum usage data */
 	$forum_usage_rows =& get_forum_usage_rows($profiledata['user_id'], $profiledata['user_posts'], ($viewoptions & BBUS_VIEWOPTION_SHOW_ALL_FORUMS));

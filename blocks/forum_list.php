@@ -24,7 +24,7 @@ if(!function_exists('cms_block_forum_list'))
 {
 	function cms_block_forum_list()
 	{
-		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $userdata, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $user, $lang, $block_id, $cms_config_vars;
 
 		$template->_tpldata['cat_row.'] = array();
 		$template->_tpldata['forum_row.'] = array();

@@ -25,8 +25,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_mg_http.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Viewonline pagination... to be coded...
@@ -76,7 +77,7 @@ foreach ($forums_array as $forum)
 
 // Get auth data
 $is_auth_ary = array();
-$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 
 // Viewonline pagination... to be coded...
 /*
@@ -92,7 +93,7 @@ else
 
 // Get user list
 // Changed sorting by username_clean instead of username
-$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_time, s.session_page, s.session_ip, s.session_user_agent
+$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_time, s.session_page, s.session_forum_id, s.session_topic_id, s.session_ip, s.session_browser
 	FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 	WHERE u.user_id = s.session_user_id
 	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
@@ -115,8 +116,8 @@ while($row = $db->sql_fetchrow($result))
 	$forum_id = false;
 	$topic_id = false;
 	// Mighty Gorgon - HTTP AGENTS - BEGIN
-	$user_os = get_user_os($row['session_user_agent']);
-	$user_browser = get_user_browser($row['session_user_agent']);
+	$user_os = get_user_os($row['session_browser']);
+	$user_browser = get_user_browser($row['session_browser']);
 	// Mighty Gorgon - HTTP AGENTS - END
 
 	if ($row['session_logged_in'])
@@ -129,7 +130,7 @@ while($row = $db->sql_fetchrow($result))
 
 			if (!$row['user_allow_viewonline'])
 			{
-				$view_online = (($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $user_id)) ? true : false;
+				$view_online = (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $user_id)) ? true : false;
 				$hidden_users++;
 				$username = '<i>' . $username . '</i>';
 			}
@@ -149,10 +150,10 @@ while($row = $db->sql_fetchrow($result))
 		if ($row['session_ip'] != $prev_ip)
 		{
 			// MG BOTS Parsing - BEGIN
-			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_user_agent']);
-			if ($bot_name_tmp != false)
+			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_browser']);
+			if ($bot_name_tmp['name'] != false)
 			{
-				$username = $bot_name_tmp;
+				$username = $bot_name_tmp['name'];
 			}
 			else
 			{
@@ -172,19 +173,15 @@ while($row = $db->sql_fetchrow($result))
 	{
 		if ((strpos($row['session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($row['session_page'], CMS_PAGE_VIEWTOPIC) !== false))
 		{
-			$results = array();
-			ereg('_f_=([0-9]*)x', $row['session_page'], $results);
-			if (!empty($results[0]))
+			if (!empty($row['session_forum_id']))
 			{
-				$forum_id = str_replace(array('_f_=', 'x'), array('', ''), $results[0]);
+				$forum_id = $row['session_forum_id'];
 				$is_auth_view = ($is_auth_ary[$forum_id]['auth_read'] != false) ? true : false;
 			}
 
-			$results = array();
-			ereg('_t_=([0-9]*)x', $row['session_page'], $results);
-			if (!empty($results[0]))
+			if (!empty($row['session_topic_id']))
 			{
-				$topic_id = str_replace(array('_t_=', 'x'), array('', ''), $results[0]);
+				$topic_id = $row['session_topic_id'];
 			}
 		}
 
@@ -226,22 +223,23 @@ while($row = $db->sql_fetchrow($result))
 		// Start Advanced IP Tools Pack MOD
 		$mode = htmlspecialchars($_GET['mode']);
 
-		if ((($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD)) && $mode == 'lookup' && isset($_GET['ip']) && (decode_ip($row['session_ip']) == $_GET['ip']))
+		$test_ip = request_get_var('ip', '');
+		if ((($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD)) && ($mode == 'lookup') && isset($_GET['ip']) && ($row['session_ip'] == $test_ip))
 		{
-			$ip = gethostbyaddr(decode_ip($row['session_ip']));
+			$ip = gethostbyaddr($row['session_ip']);
 		}
 		else
 		{
-			$ip = decode_ip($row['session_ip']);
+			$ip = $row['session_ip'];
 			$mode = 'ip';
 		}
 		// End Advanced IP Tools Pack MOD
 		$template->assign_block_vars("$which_row", array(
 			// Start Advanced IP Tools Pack MOD
 			'IP' => htmlspecialchars($ip),
-			'USER_AGENT' => htmlspecialchars($row['session_user_agent']) . '<br />' . htmlspecialchars($row['session_page']),
-			'U_HOSTNAME_LOOKUP' => ($mode != 'lookup') ? append_sid(CMS_PAGE_VIEWONLINE . '?mode=lookup&amp;ip=' . decode_ip($row['session_ip'])) : append_sid(CMS_PAGE_VIEWONLINE . '?mode=ip&amp;ip=' . decode_ip($row['session_ip'])),
-			'U_WHOIS' => 'http://whois.sc/' . decode_ip($row['session_ip']),
+			'USER_AGENT' => htmlspecialchars($row['session_browser']) . '<br />' . htmlspecialchars($row['session_page']),
+			'U_HOSTNAME_LOOKUP' => ($mode != 'lookup') ? append_sid(CMS_PAGE_VIEWONLINE . '?mode=lookup&amp;ip=' . htmlspecialchars(urlencode($row['session_ip']))) : append_sid(CMS_PAGE_VIEWONLINE . '?mode=ip&amp;ip=' . htmlspecialchars(urlencode($row['session_ip']))),
+			'U_WHOIS' => 'http://whois.sc/' . htmlspecialchars(urlencode($row['session_ip'])),
 			// End Advanced IP Tools Pack MOD
 
 			'ROW_CLASS' => $row_class,
@@ -257,7 +255,7 @@ while($row = $db->sql_fetchrow($result))
 			)
 		);
 		// Start Advanced IP Tools Pack MOD
-		$ip_display_auth = ip_display_auth($userdata, false);
+		$ip_display_auth = ip_display_auth($user->data, false);
 		if (!empty($ip_display_auth))
 		{
 			$template->assign_block_vars($which_row . '.switch_display_ips', array());
@@ -393,7 +391,7 @@ if ($config['online_last_msgs'] == 1)
 		$username_text = $last_seen_row[$i]['username'];
 		if($last_seen_row[$i]['user_allow_viewonline'] != 1)
 		{
-			if($userdata['user_level'] == ADMIN)
+			if($user->data['user_level'] == ADMIN)
 			{
 				$username = '<i>' . $username . '</i>';
 			}
@@ -404,7 +402,7 @@ if ($config['online_last_msgs'] == 1)
 		}
 
 		$template->assign_block_vars('switch_show_recent.last_seen_row', array(
-				'U_LSEEN_LINK' => ($last_seen_row[$i]['user_allow_viewonline']) ? $username : (($userdata[user_level] == ADMIN) ? '<i>' . $username . '</i>' : $username),
+				'U_LSEEN_LINK' => ($last_seen_row[$i]['user_allow_viewonline']) ? $username : (($user->data[user_level] == ADMIN) ? '<i>' . $username . '</i>' : $username),
 				'L_LSEEN_USERNAME' => $username_text,
 				'L_LSEEN_TIME' => create_date_ip($config['default_dateformat'], $last_seen_row[$i]['user_lastlogon'], $config['board_timezone']),
 				//'L_LSEEN_TIME' => gmdate("d.m.Y - H:i", $last_seen_row[$i]['user_lastlogon']),

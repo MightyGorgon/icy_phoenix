@@ -22,8 +22,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -92,14 +93,14 @@ if((isset($_GET['action'])) && ($_GET['action'] == 'create'))
 	$auth_data = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_UPLOAD);
 	if (!album_check_permission($auth_data, ALBUM_AUTH_UPLOAD))
 	{
-		if (($album_user_id != $userdata['user_id']) && ($userdata['user_level'] != ADMIN))
+		if (($album_user_id != $user->data['user_id']) && ($user->data['user_level'] != ADMIN))
 		{
-			if(($album_user_id <= 0) && (!$userdata['session_logged_in']))
+			if(($album_user_id <= 0) && (!$user->data['session_logged_in']))
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_cat.' . PHP_EXT));
 			}
-			$album_user_id = (isset($_GET['user_id']) && (intval($_GET['user_id']) > 1)) ? intval($_GET['user_id']) : $userdata['user_id'];
-			//$album_user_id = $userdata['user_id'];
+			$album_user_id = (isset($_GET['user_id']) && (intval($_GET['user_id']) > 1)) ? intval($_GET['user_id']) : $user->data['user_id'];
+			//$album_user_id = $user->data['user_id'];
 		}
 		else
 		{
@@ -114,9 +115,9 @@ else
 	$auth_data = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES);
 	if (!album_check_permission($auth_data, ALBUM_AUTH_MANAGE_PERSONAL_CATEGORIES))
 	{
-		if (($album_user_id != $userdata['user_id']) && ($userdata['user_level'] != ADMIN))
+		if (($album_user_id != $user->data['user_id']) && ($user->data['user_level'] != ADMIN))
 		{
-			if(($album_user_id <= 0) && (!$userdata['session_logged_in']))
+			if(($album_user_id <= 0) && (!$user->data['session_logged_in']))
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_cat.' . PHP_EXT));
 			}
@@ -125,7 +126,7 @@ else
 			{
 				redirect(append_sid('album.' . PHP_EXT));
 			}
-			$album_user_id = $userdata['user_id'];
+			$album_user_id = $user->data['user_id'];
 		}
 		else
 		{

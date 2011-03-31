@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 @include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
@@ -65,7 +66,7 @@ $post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
 $post_id_append_url = (!empty($post_id) ? ('#p' . $post_id) : '');
 
 $is_auth = array();
-$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $post_data);
+$is_auth = auth(AUTH_ALL, $forum_id, $user->data, $post_data);
 
 if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 {

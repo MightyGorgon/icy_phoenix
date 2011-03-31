@@ -19,7 +19,7 @@ class pafiledb_download extends pafiledb_public
 {
 	function main($action)
 	{
-		global $db, $config, $template, $theme, $userdata, $lang;
+		global $db, $config, $template, $theme, $user, $lang;
 		global $gen_simple_header, $starttime, $debug;
 		global $cms_config_vars, $cms_page;
 		global $pafiledb_config, $pafiledb_user, $pafiledb_functions;
@@ -67,7 +67,7 @@ class pafiledb_download extends pafiledb_public
 
 		if((!$this->auth[$file_data['file_catid']]['auth_download']))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=download&file_id=' . $file_id, true));
 			}
@@ -292,34 +292,34 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 	// Determine the Browser the User is using, because of some nasty incompatibilities.
 	// Most of the methods used in this function are from phpMyAdmin. :)
 
-	$user_agent = (!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : ((!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '');
+	$user_agent_pa = (!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : ((!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '');
 
-	if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $user_agent, $log_version))
+	if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $user_agent_pa, $log_version))
 	{
 		$browser_version = $log_version[2];
 		$browser_agent = 'opera';
 	}
-	elseif (ereg('MSIE ([0-9].[0-9]{1,2})', $user_agent, $log_version))
+	elseif (ereg('MSIE ([0-9].[0-9]{1,2})', $user_agent_pa, $log_version))
 	{
 		$browser_version = $log_version[1];
 		$browser_agent = 'ie';
 	}
-	elseif (ereg('OmniWeb/([0-9].[0-9]{1,2})', $user_agent, $log_version))
+	elseif (ereg('OmniWeb/([0-9].[0-9]{1,2})', $user_agent_pa, $log_version))
 	{
 		$browser_version = $log_version[1];
 		$browser_agent = 'omniweb';
 	}
-	elseif (ereg('(Konqueror/)(.*)(;)', $user_agent, $log_version))
+	elseif (ereg('(Konqueror/)(.*)(;)', $user_agent_pa, $log_version))
 	{
 		$browser_version = $log_version[2];
 		$browser_agent = 'konqueror';
 	}
-	elseif (ereg('Mozilla/([0-9].[0-9]{1,2})', $user_agent, $log_version) && ereg('Safari/([0-9]*)', $user_agent, $log_version2))
+	elseif (ereg('Mozilla/([0-9].[0-9]{1,2})', $user_agent_pa, $log_version) && ereg('Safari/([0-9]*)', $user_agent_pa, $log_version2))
 	{
 		$browser_version = $log_version[1] . '.' . $log_version2[1];
 		$browser_agent = 'safari';
 	}
-	elseif (ereg('Mozilla/([0-9].[0-9]{1,2})', $user_agent, $log_version))
+	elseif (ereg('Mozilla/([0-9].[0-9]{1,2})', $user_agent_pa, $log_version))
 	{
 		$browser_version = $log_version[1];
 		$browser_agent = 'mozilla';

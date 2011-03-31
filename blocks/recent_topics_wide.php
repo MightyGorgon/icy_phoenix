@@ -24,7 +24,7 @@ if(!function_exists('cms_block_recent_topics_wide'))
 {
 	function cms_block_recent_topics_wide()
 	{
-		global $db, $cache, $config, $template, $userdata, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $user, $lang, $block_id, $cms_config_vars;
 
 		$template->_tpldata['recent_topic_row.'] = array();
 

@@ -99,7 +99,7 @@ class NewsModule
 	*/
 	function prepareArticles($articles, $show_abstract = false, $show_attachments = true)
 	{
-		global $lang, $config, $images, $is_auth, $theme, $userdata, $block_id, $cms_config_var;
+		global $lang, $config, $images, $is_auth, $theme, $user, $block_id, $cms_config_var;
 
 		if (isset($cms_config_var['md_news_length']))
 		{
@@ -132,8 +132,8 @@ class NewsModule
 
 				$sql = '';
 
-				$dateformat = ($userdata['user_id'] == ANONYMOUS) ? $config['default_dateformat'] : $userdata['user_dateformat'];
-				$timezone = ($userdata['user_id'] == ANONYMOUS) ? $config['board_timezone'] : $userdata['user_timezone'];
+				$dateformat = ($user->data['user_id'] == ANONYMOUS) ? $config['default_dateformat'] : $user->data['user_dateformat'];
+				$timezone = ($user->data['user_id'] == ANONYMOUS) ? $config['board_timezone'] : $user->data['user_timezone'];
 
 				$this->setVariables(array(
 					'L_REPLIES' => $lang['Replies'],
@@ -276,7 +276,7 @@ class NewsModule
 	*/
 	function renderComments($article_id, $start = 0)
 	{
-		global $config, $userdata, $lang;
+		global $config, $user, $lang;
 		$trimmed = false;
 
 		$comments = $this->data->fetchPosts($article_id, $start);
@@ -288,8 +288,8 @@ class NewsModule
 			{
 				$comment['post_text'] = $this->parseMessage($comment['post_text'], $comment['enable_bbcode'], $comment['enable_html'], $comment['enable_smilies'], $comment['enable_autolinks_acronyms']);
 
-				$dateformat = ($userdata['user_id'] == ANONYMOUS) ? $config['default_dateformat'] : $userdata['user_dateformat'];
-				$timezone = ($userdata['user_id'] == ANONYMOUS) ? $config['board_timezone'] : $userdata['user_timezone'];
+				$dateformat = ($user->data['user_id'] == ANONYMOUS) ? $config['default_dateformat'] : $user->data['user_dateformat'];
+				$timezone = ($user->data['user_id'] == ANONYMOUS) ? $config['board_timezone'] : $user->data['user_timezone'];
 
 				$this->setBlockVariables('comments', array(
 					'L_TITLE' => $comment['post_subject'],
@@ -359,15 +359,15 @@ class NewsModule
 	{
 		global $lang;
 
-		global $config, $userdata;
+		global $config, $user;
 		$tz = $config['board_timezone'];
 		$tm = $config['default_time_mode'];
 		$tl = $config['default_dst_time_lag'];
-		if ($userdata['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
-			$tz = $userdata['user_timezone'];
-			$tm = $userdata['user_time_mode'];
-			$tl = $userdata['user_dst_time_lag'];
+			$tz = $user->data['user_timezone'];
+			$tm = $user->data['user_time_mode'];
+			$tl = $user->data['user_dst_time_lag'];
 		}
 		switch ($tm)
 		{
@@ -728,7 +728,7 @@ class NewsModule
 
 	function parseMessage($text, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms)
 	{
-		global $db, $cache, $config, $userdata, $bbcode, $lofi;
+		global $db, $cache, $config, $user, $bbcode, $lofi;
 
 		if(!empty($text))
 		{

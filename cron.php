@@ -28,8 +28,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 
 // Do not update users last page entry
 // Start session management
-$userdata = session_pagestart($user_ip, false);
-init_userprefs($userdata);
+$user->session_begin(false);
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Set this to true if you want to skip gif output and make some debugs on cron

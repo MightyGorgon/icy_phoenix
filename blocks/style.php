@@ -24,7 +24,7 @@ if(!function_exists('cms_block_style'))
 {
 	function cms_block_style()
 	{
-		global $db, $cache, $config, $template, $images, $userdata, $lang, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page;
+		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page;
 		global $style_select, $default_style;
 
 		$default_style = $config['default_style'];

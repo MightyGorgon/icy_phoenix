@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // This page is not in layout special...
@@ -27,7 +28,7 @@ check_page_auth($cms_page['page_id'], $cms_auth_level);
 // Force the page_id to album
 $cms_page['page_id'] = 'album';
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
@@ -39,21 +40,21 @@ $pic_id = request_var('pic_id', '');
 
 $mode_array = array('show', 'delete', 'full');
 $mode = request_var('mode', '');
-$mode = (($userdata['user_level'] == ADMIN) && in_array($mode, $mode_array)) ? $mode : $mode_array[0];
+$mode = (($user->data['user_level'] == ADMIN) && in_array($mode, $mode_array)) ? $mode : $mode_array[0];
 
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-if ($userdata['user_level'] == ADMIN)
+if ($user->data['user_level'] == ADMIN)
 {
-	$pic_user_id = request_var('user', $userdata['user_id']);
+	$pic_user_id = request_var('user', $user->data['user_id']);
 }
 else
 {
-	$pic_user_id = $userdata['user_id'];
+	$pic_user_id = $user->data['user_id'];
 }
 
-if ($userdata['user_level'] == ADMIN)
+if ($user->data['user_level'] == ADMIN)
 {
 	if (($mode == 'delete') && ($pic_id != ''))
 	{
@@ -225,7 +226,7 @@ if (USERS_SUBFOLDERS_IMG == true)
 		}
 
 		$pic_delete_url = '';
-		if ($userdata['user_level'] == ADMIN)
+		if ($user->data['user_level'] == ADMIN)
 		{
 			$pic_delete_url = '<br /><span class="gensmall"><a href="' . append_sid('posted_img_list.' . PHP_EXT . '?mode=delete&amp;pic_id=' . urlencode($pic_images[$i])) . '">' . $lang['Delete'] . '</a></span>';
 		}
@@ -254,9 +255,9 @@ if (USERS_SUBFOLDERS_IMG == true)
 }
 else
 {
-	if ($userdata['user_level'] != ADMIN)
+	if ($user->data['user_level'] != ADMIN)
 	{
-		$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $userdata['user_id'] . '.dat';
+		$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $user->data['user_id'] . '.dat';
 	}
 	else
 	{
@@ -288,9 +289,9 @@ else
 				if(preg_match('/(\.gif$|\.tif$|\.png$|\.jpg$|\.jpeg$)$/is', $file))
 				{
 					$own_pics = false;
-					if ($userdata['user_level'] != ADMIN)
+					if ($user->data['user_level'] != ADMIN)
 					{
-						$own_pics = (strpos($file, 'user_' . $userdata['user_id'] . '_') === false) ? false : true;
+						$own_pics = (strpos($file, 'user_' . $user->data['user_id'] . '_') === false) ? false : true;
 					}
 					else
 					{
@@ -363,7 +364,7 @@ else
 		}
 
 		$pic_delete_url = '';
-		if ($userdata['user_level'] == ADMIN)
+		if ($user->data['user_level'] == ADMIN)
 		{
 			$pic_delete_url = '<br /><span class="gensmall"><a href="' . append_sid('posted_img_list.' . PHP_EXT . '?mode=delete&amp;pic_id=' . urlencode($pic_images[$i])) . '">' . $lang['Delete'] . '</a></span>';
 		}

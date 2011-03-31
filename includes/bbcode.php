@@ -44,15 +44,15 @@ $text = $bbcode->parse($text);
 BBCode Conditions
 =================
 
-$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
-$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
+$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 
 =================
 
-$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
+$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
 $bbcode->allow_html = $html_on;
 $bbcode->allow_bbcode = $bbcode_on;
@@ -115,8 +115,8 @@ else
 	$config['disable_html_guests'] = 0;
 	$config['quote_iterations'] = 3;
 	$config['switch_bbcb_active_content'] = 1;
-	$userdata['session_logged_in'] = 0;
-	$userdata['user_lang'] = 'english';
+	$user->data['session_logged_in'] = 0;
+	$user->data['user_lang'] = 'english';
 	$lang['OpenNewWindow'] = 'Open in new window';
 	$lang['Click_enlarge_pic'] = 'Click to enlarge the image';
 	$lang['Links_For_Guests'] = 'You must be logged in to see this link';
@@ -172,6 +172,7 @@ class bbcode
 	var $tag = '';
 
 	var $code_counter = 0;
+	var $code_post_id = 0;
 
 	var $allow_html = false;
 	var $allow_styling = true;
@@ -378,7 +379,7 @@ class bbcode
 	*/
 	function process_tag(&$item)
 	{
-		global $db, $cache, $config, $userdata, $lang, $topic_id, $urls_local;
+		global $db, $cache, $config, $user, $lang, $topic_id, $urls_local;
 
 		if (function_exists('create_server_url'))
 		{
@@ -952,8 +953,8 @@ class bbcode
 					{
 						include_once(IP_ROOT_PATH . 'includes/functions_bbcode.' . PHP_EXT);
 					}
-					$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
-					$is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $userdata);
+					$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
+					$is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $user->data);
 					$attachment_details = get_attachment_details($params['id']);
 					if (($attachment_details == false) || !$is_auth_ary[$attachment_details['forum_id']]['auth_read'] || !$is_download_auth_ary[$attachment_details['forum_id']]['auth_download'])
 					{
@@ -1287,7 +1288,7 @@ class bbcode
 			// generate html
 			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($url_local ? '' : (' target="_blank"' . (!empty($item['params']['nofollow']) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
 
-			if ($config['disable_html_guests'] && !$userdata['session_logged_in'])
+			if ($config['disable_html_guests'] && !$user->data['session_logged_in'])
 			{
 				return array(
 					'valid' => true,
@@ -1404,18 +1405,18 @@ class bbcode
 				return $error;
 			}
 			// check user
-			$user = '';
+			$target_user = '';
 			$post_rev = '';
 			if(isset($item['params']['param']))
 			{
-				$user = htmlspecialchars($item['params']['param']);
+				$target_user = htmlspecialchars($item['params']['param']);
 			}
 			elseif(isset($item['params']['user']))
 			{
-				$user = htmlspecialchars($item['params']['user']);
+				$target_user = htmlspecialchars($item['params']['user']);
 				if(isset($item['params']['userid']) && intval($item['params']['userid']))
 				{
-					$user = '<a href="' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . intval($item['params']['userid']) . '">' . $user . '</a>';
+					$target_user = '<a href="' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . intval($item['params']['userid']) . '">' . $target_user . '</a>';
 				}
 			}
 			// generate html
@@ -1426,15 +1427,15 @@ class bbcode
 				$html .= ' cite="'. CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . intval($item['params']['post']) . '#p' . intval($item['params']['post']) . '"';
 			}
 			$html .= '>';
-			if($user)
+			if($target_user)
 			{
 				if ($tag === 'ot')
 				{
-					$html .= '<div class="quote-user"><div class="error-message" style="display:inline;">' . $lang['OffTopic'] . '</div>&nbsp;' . $user . ':&nbsp;' . $post_rev . '</div>';
+					$html .= '<div class="quote-user"><div class="error-message" style="display:inline;">' . $lang['OffTopic'] . '</div>&nbsp;' . $target_user . ':&nbsp;' . $post_rev . '</div>';
 				}
 				else
 				{
-					$html .= '<div class="quote-user">' . $user . '&nbsp;' . $lang['wrote'] . ':&nbsp;' . $post_rev . '</div>';
+					$html .= '<div class="quote-user">' . $target_user . '&nbsp;' . $lang['wrote'] . ':&nbsp;' . $post_rev . '</div>';
 				}
 			}
 			else
@@ -1606,7 +1607,7 @@ class bbcode
 					$html = substr($html, 0, strlen($html) - strlen($str));
 				}
 				$start = isset($item['params']['start']) ? intval($item['params']['start']) : 1;
-				$can_download = !empty($GLOBALS['code_post_id']) ? $GLOBALS['code_post_id'] : 0;
+				$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
 				if($can_download)
 				{
 					//$download_text = ' [<a href="download.php?post=' . $can_download;
@@ -1726,7 +1727,7 @@ class bbcode
 					$html = str_replace(array("\n", "\r\n"), array("<br />\n", "<br />\r\n"), $html);
 				}
 
-				$can_download = !empty($GLOBALS['code_post_id']) ? $GLOBALS['code_post_id'] : 0;
+				$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
 				if($can_download)
 				{
 					$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
@@ -1828,7 +1829,7 @@ class bbcode
 				$html = str_replace(array("\n", "\r\n"), array("<br />\n", "<br />\r\n"), $html);
 			}
 
-			$can_download = !empty($GLOBALS['code_post_id']) ? $GLOBALS['code_post_id'] : 0;
+			$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
 			if($can_download)
 			{
 				$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
@@ -1868,9 +1869,9 @@ class bbcode
 				return $error;
 			}
 			$show = false;
-			if(defined('IS_ICYPHOENIX') && $userdata['session_logged_in'])
+			if(defined('IS_ICYPHOENIX') && $user->data['session_logged_in'])
 			{
-				if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+				if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 				{
 					$show = true;
 				}
@@ -1879,7 +1880,7 @@ class bbcode
 					$sql = "SELECT p.poster_id, p.topic_id
 						FROM " . POSTS_TABLE . " p
 						WHERE p.topic_id = " . intval($topic_id) . "
-						AND p.poster_id = " . $userdata['user_id'];
+						AND p.poster_id = " . $user->data['user_id'];
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
 					$db->sql_return_on_error(false);
@@ -1892,7 +1893,7 @@ class bbcode
 					$sql = "SELECT *
 						FROM " . THANKS_TABLE . "
 						WHERE topic_id = " . intval($topic_id) . "
-						AND user_id = " . $userdata['user_id'];
+						AND user_id = " . $user->data['user_id'];
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
 					$db->sql_return_on_error(false);
@@ -1976,7 +1977,7 @@ class bbcode
 				$language = $item['params']['param'];
 			}
 
-			$content = ($userdata['user_lang'] != $language) ? '' : $content;
+			$content = ($user->data['user_lang'] != $language) ? '' : $content;
 
 			// We need this trick to process BBCodes withing language BBCode
 			if(empty($content))
@@ -2112,7 +2113,7 @@ class bbcode
 				}
 				elseif ($tag === 'video')
 				{
-					$html = '<div align="center"><embed src="' . $content . '" width="' . $width . '" height="' . $height . '"></embed></div>';
+					$html = '<div align="center"><embed src="' . $content . '" width="' . $width . '" height="' . $height . '" autostart="false"></embed></div>';
 				}
 				elseif ($tag === 'ram')
 				{
@@ -3574,7 +3575,7 @@ class bbcode
 	/**
 	* This function returns a regular expression pattern for commonly used expressions
 	* Use with / as delimiter for email mode and # for url modes
-	* mode can be: email|bbcode_htm|url|url_inline|www_url|www_url_inline|relative_url|relative_url_inline|ipv4|ipv6
+	* mode can be: email|bbcode_htm|url|url_inline|www_url|www_url_inline|relative_url|relative_url_inline
 	*/
 	function get_preg_expression($mode)
 	{
@@ -3593,16 +3594,6 @@ class bbcode
 					'#<!\-\- .*? \-\->#s',
 					'#<.*?>#s',
 				);
-			break;
-
-			// Whoa these look impressive!
-			// The code to generate the following two regular expressions which match valid IPv4/IPv6 addresses can be found in the develop directory
-			case 'ipv4':
-				return '#^(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$#';
-			break;
-
-			case 'ipv6':
-				return '#^(?:(?:(?:[\dA-F]{1,4}:){6}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:::(?:[\dA-F]{1,4}:){5}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:):(?:[\dA-F]{1,4}:){4}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,2}:(?:[\dA-F]{1,4}:){3}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,3}:(?:[\dA-F]{1,4}:){2}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,4}:(?:[\dA-F]{1,4}:)(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,5}:(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,6}:[\dA-F]{1,4})|(?:(?:[\dA-F]{1,4}:){1,7}:))$#i';
 			break;
 
 			case 'url':

@@ -63,7 +63,7 @@ if (MINI_CAL_CALENDAR_VERSION != 'NONE')
 	include_once(IP_ROOT_PATH . 'includes/mini_cal/' . $mini_cal_inc . '.' . PHP_EXT);
 
 	// include the required events calendar support
-	$mini_cal_auth = getMiniCalForumsAuth($userdata);
+	$mini_cal_auth = getMiniCalForumsAuth($user->data);
 	$mini_cal_event_days = getMiniCalEventDays($mini_cal_auth['view']);
 	getMiniCalEvents($mini_cal_auth);
 	getMiniCalPostForumsList($mini_cal_auth['post']);

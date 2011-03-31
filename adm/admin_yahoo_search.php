@@ -105,7 +105,7 @@ if (isset($_POST['submit']))
 				$server_port = ($default_config['server_port'] == '80') ? '' : ':' . $default_config['server_port'];
 				$script_path = $default_config['script_path'];
 				//URL REWRITE MOD START
-				if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+				if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 				{
 					$viewtopic_url = str_replace ('--', '-', make_url_friendly($row['topic_title']) . '-vt' . $row['topic_id'] . '.html');
 				}
@@ -190,7 +190,7 @@ if (isset($_POST['submit']))
 			$server_port = ($default_config['server_port'] == '80') ? '' : ':' . $default_config['server_port'];
 			$script_path = $default_config['script_path'];
 			//URL REWRITE MOD START
-			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 			{
 				$viewtopic_url = str_replace ('--', '-', make_url_friendly($row['topic_title']) . '-vt' . $row['topic_id'] . '.html');
 			}

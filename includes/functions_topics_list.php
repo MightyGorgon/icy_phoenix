@@ -65,8 +65,8 @@ define('USER_REPLIED_ICON', true); // activate this line if you are using differ
 //--------------------------------------------------
 function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = false, $display_nav_tree = true, $footer='', $inbox = true, $select_field='', $select_type = 0, $select_formname = '', $select_values = array())
 {
-	global $template, $db, $cache, $config, $userdata, $lang, $images, $theme;
-	global $tree, $bbcode, $userdata;
+	global $template, $db, $cache, $config, $user, $lang, $images, $theme;
+	global $tree, $bbcode, $user;
 	//<!-- BEGIN Unread Post Information to Database Mod -->
 	global $unread;
 	//<!-- END Unread Post Information to Database Mod -->
@@ -143,7 +143,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	{
 		// standard read
 		$is_auth = array();
-		$is_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+		$is_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 	}
 
 	// topic icon present
@@ -162,7 +162,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 
 	// check if user replied to the topic
 	$user_topics = array();
-	if ($userdata['user_id'] != ANONYMOUS)
+	if ($user->data['user_id'] != ANONYMOUS)
 	{
 		// get all the topic ids to display
 		$topic_ids = array();
@@ -182,7 +182,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			$s_topic_ids = implode(', ', $topic_ids);
 			$sql = "SELECT DISTINCT topic_id FROM " . POSTS_TABLE . "
 					WHERE topic_id IN ($s_topic_ids)
-						AND poster_id = " . $userdata['user_id'];
+						AND poster_id = " . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -336,13 +336,13 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 				}
 			}
 			$newest_post_img = '';
-			if ($userdata['session_logged_in'] && ($topic_item_type == POST_TOPIC_URL))
+			if ($user->data['session_logged_in'] && ($topic_item_type == POST_TOPIC_URL))
 			{
 				//<!-- BEGIN Unread Post Information to Database Mod -->
-				if(!$userdata['upi2db_access'])
+				if(!$user->data['upi2db_access'])
 				{
 				//<!-- END Unread Post Information to Database Mod -->
-					if($topic_rowset[$i]['post_time'] > $userdata['user_lastvisit'])
+					if($topic_rowset[$i]['post_time'] > $user->data['user_lastvisit'])
 					{
 						if(!empty($tracking_topics) || !empty($tracking_forums) || !empty($tracking_all))
 						{
@@ -625,7 +625,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		}
 
 		//<!-- BEGIN Unread Post Information to Database Mod -->
-		if($userdata['upi2db_access'])
+		if($user->data['upi2db_access'])
 		{
 			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $unread, $start, $folder_image);
 		}

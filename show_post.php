@@ -19,8 +19,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Start initial var setup
@@ -104,7 +105,7 @@ if ($download)
 	$is_auth_read = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$is_auth_read = auth(AUTH_ALL, $row['forum_id'], $userdata);
+		$is_auth_read = auth(AUTH_ALL, $row['forum_id'], $user->data);
 
 		$poster_id = $row['user_id'];
 		$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : $row['username'];
@@ -147,7 +148,7 @@ if ($download)
 	exit;
 }
 $is_auth = array();
-$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_row);
+$is_auth = auth(AUTH_ALL, $forum_id, $user->data, $forum_row);
 
 if (!$is_auth['auth_read'])
 {
@@ -235,9 +236,9 @@ if ($row = $db->sql_fetchrow($result))
 		$poster_avatar = $user_info['avatar'];
 
 		// Check For Anonymous User
-		if ($userdata['user_id'] != '-1')
+		if ($user->data['user_id'] != '-1')
 		{
-			$name_link = '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;' . $userdata['user_id']) . '">' . $userdata['username'] . '</a>';
+			$name_link = '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;' . $user->data['user_id']) . '">' . $user->data['username'] . '</a>';
 		}
 		else
 		{
@@ -262,7 +263,7 @@ if ($row = $db->sql_fetchrow($result))
 		$post_subject = ($row['post_subject'] != '') ? $row['post_subject'] : '';
 
 		$message = $row['post_text'];
-		$message_compiled = empty($row['post_text_compiled']) ? false : $row['post_text_compiled'];
+		$message_compiled = (empty($row['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $row['post_text_compiled'];
 
 		$user_sig = ($row['enable_sig'] && ($row['user_sig'] != '') && $config['allow_sig']) ? $row['user_sig'] : '';
 
@@ -273,9 +274,9 @@ if ($row = $db->sql_fetchrow($result))
 
 		if($user_sig && empty($sig_cache[$row['user_id']]))
 		{
-			$bbcode->allow_html = ($config['allow_html'] && $userdata['user_allowhtml']) ? true : false;
-			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $userdata['user_allowbbcode']) ? true : false;
-			$bbcode->allow_smilies = ($config['allow_smilies'] && $userdata['user_allowsmile'] && !$lofi) ? true : false;
+			$bbcode->allow_html = ($config['allow_html'] && $user->data['user_allowhtml']) ? true : false;
+			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode']) ? true : false;
+			$bbcode->allow_smilies = ($config['allow_smilies'] && $user->data['user_allowsmile'] && !$lofi) ? true : false;
 			$bbcode->is_sig = true;
 			$user_sig = $bbcode->parse($user_sig);
 			$bbcode->is_sig = false;
@@ -287,18 +288,19 @@ if ($row = $db->sql_fetchrow($result))
 		}
 
 		// Parse message and/or sig for BBCode if reqd
-		$bbcode->allow_html = ((($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['enable_html']) ? true : false;
-		$bbcode->allow_bbcode = (($config['allow_bbcode'] && $userdata['user_allowbbcode']) && $row['enable_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($config['allow_smilies'] && $userdata['user_allowsmile'] && $row['enable_smilies'] && !$lofi) ? true : false;
+		$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['enable_html']) ? true : false;
+		$bbcode->allow_bbcode = (($config['allow_bbcode'] && $user->data['user_allowbbcode']) && $row['enable_bbcode']) ? true : false;
+		$bbcode->allow_smilies = ($config['allow_smilies'] && $user->data['user_allowsmile'] && $row['enable_smilies'] && !$lofi) ? true : false;
 
 		if($message_compiled === false)
 		{
-			$GLOBALS['code_post_id'] = $row['post_id'];
+			$bbcode->code_post_id = $row['post_id'];
 			$message = $bbcode->parse($message);
-			$GLOBALS['code_post_id'] = 0;
-			// update database
-			$sql = "UPDATE " . POSTS_TABLE . " SET post_text_compiled='" . $db->sql_escape($message) . "' WHERE post_id = '" . $row['post_id'] . "'";
-			$db->sql_query($sql);
+			$bbcode->code_post_id = 0;
+			if (empty($bbcode->allow_bbcode))
+			{
+				$message = str_replace("\n", "<br />", preg_replace("/\r\n/", "\n", $message));
+			}
 		}
 		else
 		{
@@ -329,7 +331,7 @@ if ($row = $db->sql_fetchrow($result))
 			$message = $bbcode->autolink_text($message, $forum_id);
 		}
 
-		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 		{
 			$mini_post_url = str_replace ('--', '-', make_url_friendly($row['post_subject']) . '-vp' . $row['post_id'] . '.html#p' . $row['post_id']);
 		}

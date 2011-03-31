@@ -132,7 +132,7 @@ switch ($mode)
 			{
 				$row_class = !($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
 				$link_id = $row['link_id'];
-				$link_id .= '&sid=' . $userdata['session_id'] . '';
+				$link_id .= '&sid=' . $user->data['session_id'] . '';
 				$user_id = $row['user_id'];
 
 				$template->assign_block_vars('linkrow', array(
@@ -143,7 +143,7 @@ switch ($mode)
 					'LINK_CATEGORY' => $link_categories[$row['link_category']],
 					'U_LINK_USER' => colorize_username($user_id),
 					'LINK_JOINED' => create_date($lang['DATE_FORMAT'], $row['link_joined'], $config['board_timezone']),
-					'LINK_USER_IP' => decode_ip($row['user_ip']),
+					'LINK_USER_IP' => $row['user_ip'],
 					'LINK_DESC' => $row['link_desc'],
 					'LINK_ACTIVE' => '<span class="text_' . ($row['link_active'] ? 'green">' . $lang['ON'] : 'red">' . $lang['OFF']) . '</span>',
 					'LINK_HITS' => $row['link_hits']
@@ -204,7 +204,7 @@ switch ($mode)
 			$template->assign_vars(array(
 				'PAGE_TITLE' => ($mode == 'edit' ? $lang['Edit_link'] : $lang['Delete_link']),
 				'PAGE_EXPLAIN' => ($mode == 'edit' ? $lang['Edit_link_explain'] . (' <a href="' . append_sid('admin_links.' . PHP_EXT . '?mode=delete&amp;link_id=' . $link_id) . '">' . $lang['Delete_link'] . '</a>') : $lang['Delete_link_explain'] . (' <a href="' . append_sid('admin_links.' . PHP_EXT . '?mode=edit&amp;link_id=' . $link_id) . '">' . $lang['Edit_link'] . '</a>')),
-				'PAGE_ACTION' => ($mode == 'edit' ? 'admin_links.' . PHP_EXT . '?mode=update&amp;action=modify&amp;link_id=' . $link_id . '&amp;sid=' . $userdata['session_id'] : 'admin_links.' . PHP_EXT . '?mode=update&amp;action=delete&amp;link_id=' . $link_id . '&amp;sid=' . $userdata['session_id']),
+				'PAGE_ACTION' => ($mode == 'edit' ? 'admin_links.' . PHP_EXT . '?mode=update&amp;action=modify&amp;link_id=' . $link_id . '&amp;sid=' . $user->data['session_id'] : 'admin_links.' . PHP_EXT . '?mode=update&amp;action=delete&amp;link_id=' . $link_id . '&amp;sid=' . $user->data['session_id']),
 
 				'L_SUBMIT' => ($mode == 'edit' ? $lang['Link_update'] : $lang['Link_delete']),
 
@@ -232,7 +232,7 @@ switch ($mode)
 		$link_active = (!empty($_POST['link_active'])) ? 1 : 0;
 
 		$link_joined = time();
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 
 		switch ($action)
 		{

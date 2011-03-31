@@ -73,9 +73,9 @@ for($i = 0; $i < $count_similar; $i++)
 		}
 	}
 
-	if($userdata['session_logged_in'])
+	if($user->data['session_logged_in'])
 	{
-		if($similar['post_time'] > $userdata['user_lastvisit'])
+		if($similar['post_time'] > $user->data['user_lastvisit'])
 		{
 			if(!empty($tracking_topics) || !empty($tracking_forums) || isset($_COOKIE[$config['cookie_name'] .'_f_all']))
 			{

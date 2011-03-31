@@ -18,8 +18,9 @@ $no_page_header = true;
 require(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 if (!function_exists('get_ip_version'))
@@ -28,15 +29,15 @@ if (!function_exists('get_ip_version'))
 }
 
 include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
-$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
+$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
 
-if(!$userdata['session_logged_in'])
+if(!$user->data['session_logged_in'])
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 else
 {
-	if (($userdata['user_level'] != ADMIN) && ($userdata['session_logged_in'] && (empty($jr_admin_userdata['user_jr_admin']))))
+	if (($user->data['user_level'] != ADMIN) && ($user->data['session_logged_in'] && (empty($jr_admin_userdata['user_jr_admin']))))
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 	}

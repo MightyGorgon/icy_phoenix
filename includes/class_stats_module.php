@@ -75,7 +75,7 @@ class Statistics
 	}
 
 	// Forum Auth (Returns an Forum SQL ID String)
-	function forum_auth($userdata, $auth = AUTH_VIEW)
+	function forum_auth($user_data, $auth = AUTH_VIEW)
 	{
 		global $db;
 
@@ -86,7 +86,7 @@ class Statistics
 
 		$this->auth_data_sql = '';
 
-		$is_auth_ary = auth($auth, AUTH_LIST_ALL, $userdata);
+		$is_auth_ary = auth($auth, AUTH_LIST_ALL, $user_data);
 
 		$sql = "SELECT forum_id
 			FROM " . FORUMS_TABLE . "

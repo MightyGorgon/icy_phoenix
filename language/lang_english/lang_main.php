@@ -699,14 +699,14 @@ $lang = array_merge($lang, array(
 	'COPPA' => 'Your account has been created but has to be approved. Please check your e-mail for details.',
 
 	'Registration' => 'Registration Agreement Terms',
-	'Reg_agreement' => 'While the administrators and moderators of this forum will attempt to remove or edit any generally objectionable material as quickly as possible, it is impossible to review every message. Therefore you acknowledge that all posts made to these forums express the views and opinions of the author and not the administrators, moderators or webmaster (except for posts by these people) and hence will not be held liable.<br /><br />You agree not to post any abusive, obscene, vulgar, slanderous, hateful, threatening, sexually-oriented or any other material that may violate any applicable laws. Doing so may lead to you being immediately and permanently banned (and your service provider being informed). The IP address of all posts is recorded to aid in enforcing these conditions. You agree that the webmaster, administrator and moderators of this forum have the right to remove, edit, move or close any topic at any time should they see fit. As a user you agree to any information you have entered above being stored in a database. While this information will not be disclosed to any third party without your consent the webmaster, administrator and moderators cannot be held responsible for any hacking attempt that may lead to the data being compromised.<br /><br />This forum system uses cookies to store information on your local computer. These cookies do not contain any of the information you have entered above; they serve only to improve your viewing pleasure. The e-mail address is used only for confirming your registration details and password (and for sending new passwords should you forget your current one).<br /><br />By clicking Register below you agree to be bound by these conditions.',
+	'Reg_agreement' => 'While the administrators and moderators of this forum will attempt to remove or edit any generally objectionable material as quickly as possible, it is impossible to review every message. Therefore you acknowledge that all posts made to these forums express the views and opinions of the author and not the administrators, moderators or webmaster (except for posts by these people) and hence will not be held liable.<br /><br />You agree not to post any abusive, obscene, vulgar, slanderous, hateful, threatening, sexually-oriented or any other material that may violate any applicable laws. Doing so may lead to you being immediately and permanently banned (and your service provider being informed). The IP address of all posts is recorded to aid in enforcing these conditions. You agree that the webmaster, administrator and moderators of this forum have the right to remove, edit, move or close any topic at any time should they see fit. As a user you agree to any information you have entered above being stored in a database. While this information will not be disclosed to any third party without your consent the webmaster, administrator and moderators cannot be held responsible for any hacking attempt that may lead to the data being compromised.<br /><br />This forum system uses cookies to store information on your local computer. These cookies do not contain any of the information you have entered above; they serve only to improve your viewing pleasure. The e-mail address is used only for confirming your registration details and password (and for sending new passwords should you forget your current one).<br /><br />By clicking &quot;<i>I agree to these terms</i>&quot; you agree to be bound by these conditions. Also be aware that your personal data will be treated in respect to the current laws in the country of the site owner.<br /><br />',
 
 	'Agreement' => 'Agreement',
-	'Agree_under_13' => 'I Agree to these terms and am <b>under</b> 13 years of age',
-	'Agree_over_13' => 'I Agree to these terms',
+	'Agree_under_13' => 'I agree to these terms and am <b>under</b> 13 years of age',
+	'Agree_over_13' => 'I agree to these terms',
 	'Agree_not' => 'I do not agree to these terms',
 	'Agree_checkbox' => 'I specifically agree to these terms',
-	'Agree_checkbox_Error' => 'You need to check the "AGREE" box on the page bottom to register!',
+	'Agree_checkbox_Error' => 'You need to check the "AGREEMENT" box at the bottom of the page to register!',
 
 	'Wrong_activation' => 'The activation key you supplied does not match any in the database.',
 	'Send_password' => 'Send me a new password',
@@ -2177,14 +2177,6 @@ $lang = array_merge($lang, array(
 	'WHITE_LIST_MESSAGE' => 'This site require account confirmation via email. Please check that this domains in the white-list of your antispam system or you could never receive the activation message.',
 	'CLICK_RETURN_HOME' => 'Click %sHere%s to return to Home Page',
 
-	'WEEK_DAY_SUNDAY' => 'Sunday',
-	'WEEK_DAY_MONDAY' => 'Monday',
-	'WEEK_DAY_TUESDAY' => 'Tuesday',
-	'WEEK_DAY_WEDNESDAY' => 'Wednesday',
-	'WEEK_DAY_THURSDAY' => 'Thursday',
-	'WEEK_DAY_FRIDAY' => 'Friday',
-	'WEEK_DAY_SATURDAY' => 'Saturday',
-
 	'RATINGS' => 'Ratings',
 
 	'ERROR_TABLE' => 'Could not query %s table',
@@ -2205,13 +2197,6 @@ $lang = array_merge($lang, array(
 	'MANAGEMENT' => 'Management',
 	'SORT_ORDER' => 'Sort by',
 	'SORT_DIR' => 'Sort direction',
-
-	'TIME_YEAR' => 'Year',
-	'TIME_MONTH' => 'Month',
-	'TIME_DAY' => 'Day',
-	'TIME_HOUR' => 'Hour',
-	'TIME_MINUTE' => 'Minute',
-	'TIME_SECOND' => 'Second',
 
 	'CONTACTS' => 'Contacts',
 
@@ -2422,130 +2407,205 @@ $lang['Prune_explain'][5] = 'Who have never posted and not visited recently, <b>
 $lang['All_times'] = 'All times are %s'; // eg. All times are GMT - 12 Hours (times from next block)
 
 // Time zones short
-$lang['tzs']['-12'] = 'GMT - 12 Hours';
-$lang['tzs']['-11'] = 'GMT - 11 Hours';
-$lang['tzs']['-10'] = 'GMT - 10 Hours';
-$lang['tzs']['-9'] = 'GMT - 9 Hours';
-$lang['tzs']['-8'] = 'GMT - 8 Hours';
-$lang['tzs']['-7'] = 'GMT - 7 Hours';
-$lang['tzs']['-6'] = 'GMT - 6 Hours';
-$lang['tzs']['-5'] = 'GMT - 5 Hours';
-$lang['tzs']['-4'] = 'GMT - 4 Hours';
-$lang['tzs']['-3.5'] = 'GMT - 3.5 Hours';
-$lang['tzs']['-3'] = 'GMT - 3 Hours';
-$lang['tzs']['-2'] = 'GMT - 2 Hours';
-$lang['tzs']['-1'] = 'GMT - 1 Hours';
-$lang['tzs']['0'] = 'GMT';
-$lang['tzs']['1'] = 'GMT + 1 Hour';
-$lang['tzs']['2'] = 'GMT + 2 Hours';
-$lang['tzs']['3'] = 'GMT + 3 Hours';
-$lang['tzs']['3.5'] = 'GMT + 3.5 Hours';
-$lang['tzs']['4'] = 'GMT + 4 Hours';
-$lang['tzs']['4.5'] = 'GMT + 4.5 Hours';
-$lang['tzs']['5'] = 'GMT + 5 Hours';
-$lang['tzs']['5.5'] = 'GMT + 5.5 Hours';
-$lang['tzs']['6'] = 'GMT + 6 Hours';
-$lang['tzs']['6.5'] = 'GMT + 6.5 Hours';
-$lang['tzs']['7'] = 'GMT + 7 Hours';
-$lang['tzs']['8'] = 'GMT + 8 Hours';
-$lang['tzs']['9'] = 'GMT + 9 Hours';
-$lang['tzs']['9.5'] = 'GMT + 9.5 Hours';
-$lang['tzs']['10'] = 'GMT + 10 Hours';
-$lang['tzs']['11'] = 'GMT + 11 Hours';
-$lang['tzs']['12'] = 'GMT + 12 Hours';
-$lang['tzs']['13'] = 'GMT + 13 Hours';
+$lang['tz'] = array(
+	'-12' => 'UTC - 12 Hours',
+	'-11' => 'UTC - 11 Hours',
+	'-10' => 'UTC - 10 Hours',
+	'-9.5' => 'UTC - 9:30 Hours',
+	'-9' => 'UTC - 9 Hours',
+	'-8' => 'UTC - 8 Hours',
+	'-7' => 'UTC - 7 Hours',
+	'-6' => 'UTC - 6 Hours',
+	'-5' => 'UTC - 5 Hours',
+	'-4.5' => 'UTC - 4:30 Hours',
+	'-4' => 'UTC - 4 Hours',
+	'-3.5' => 'UTC - 3:30 Hours',
+	'-3' => 'UTC - 3 Hours',
+	'-2' => 'UTC - 2 Hours',
+	'-1' => 'UTC - 1 Hour',
+	'0' => 'UTC',
+	'1' => 'UTC + 1 Hour',
+	'2' => 'UTC + 2 Hours',
+	'3' => 'UTC + 3 Hours',
+	'3.5' => 'UTC + 3:30 Hours',
+	'4' => 'UTC + 4 Hours',
+	'4.5' => 'UTC + 4:30 Hours',
+	'5' => 'UTC + 5 Hours',
+	'5.5' => 'UTC + 5:30 Hours',
+	'5.75' => 'UTC + 5:45 Hours',
+	'6' => 'UTC + 6 Hours',
+	'6.5' => 'UTC + 6:30 Hours',
+	'7' => 'UTC + 7 Hours',
+	'8' => 'UTC + 8 Hours',
+	'8.75' => 'UTC + 8:45 Hours',
+	'9' => 'UTC + 9 Hours',
+	'9.5' => 'UTC + 9:30 Hours',
+	'10' => 'UTC + 10 Hours',
+	'10.5' => 'UTC + 10:30 Hours',
+	'11' => 'UTC + 11 Hours',
+	'11.5' => 'UTC + 11:30 Hours',
+	'12' => 'UTC + 12 Hours',
+	'12.75' => 'UTC + 12:45 Hours',
+	'13' => 'UTC + 13 Hours',
+	'14' => 'UTC + 14 Hours',
+	'dst' => '[ <abbr title="Daylight Saving Time">DST</abbr> ]',
+);
 
 // These are displayed in the timezone select box
-$lang['tz']['-12'] = '(GMT -12 Hours) Eniwetok, Kwajalein';
-$lang['tz']['-11'] = '(GMT -11 Hours) Midway Island, Samoa';
-$lang['tz']['-10'] = '(GMT -10 Hours) Hawaii';
-$lang['tz']['-9'] = '(GMT -9 Hours) Alaska';
-$lang['tz']['-8'] = '(GMT -8 Hours) Pacific Time (US &amp; Canada)';
-$lang['tz']['-7'] = '(GMT -7 Hours) Mountain Time (US &amp; Canada)';
-$lang['tz']['-6'] = '(GMT -6 Hours) Central Time (US &amp; Canada), Mexico City';
-$lang['tz']['-5'] = '(GMT -5 Hours) Eastern Time (US &amp; Canada), Bogota, Lima, Quito';
-$lang['tz']['-4'] = '(GMT -4 Hours) Atlantic Time (Canada), Caracas, La Paz';
-$lang['tz']['-3.5'] = '(GMT -3.5 Hours) Newfoundland';
-$lang['tz']['-3'] = '(GMT -3 Hours) Brazil, Buenos Aires, Georgetown';
-$lang['tz']['-2'] = '(GMT -2 Hours) Mid-Atlantic';
-$lang['tz']['-1'] = '(GMT -1 Hour) Azores, Cape Verde Islands';
-$lang['tz']['0'] = '(GMT) Western Europe Time, London, Lisbon, Casablanca, Monrovia';
-$lang['tz']['1'] = '(GMT +1 Hour) CET(Central Europe Time), Brussels, Madrid, Paris';
-$lang['tz']['2'] = '(GMT +2 Hours) EET(Eastern Europe Time), Kaliningrad, South Africa';
-$lang['tz']['3'] = '(GMT +3 Hours) Baghdad, Kuwait, Riyadh, Moscow, St. Petersburg';
-$lang['tz']['3.5'] = '(GMT +3.5 Hours) Tehran';
-$lang['tz']['4'] = '(GMT +4 Hours) Abu Dhabi, Muscat, Baku, Tbilisi';
-$lang['tz']['4.5'] = '(GMT +4.5 Hours) Kabul';
-$lang['tz']['5'] = '(GMT +5 Hours) Ekaterinburg, Islamabad, Karachi, Tashkent';
-$lang['tz']['5.5'] = '(GMT +5.5 Hours) Bombay, Calcutta, Madras, New Delhi';
-$lang['tz']['5.75'] = '(GMT +5.75 Hours) Kathmandu';
-$lang['tz']['6'] = '(GMT +6 Hours) Almaty, Dhaka, Colombo';
-$lang['tz']['6.5'] = '(GMT +6.5 Hours)';
-$lang['tz']['7'] = '(GMT +7 Hours) Bangkok, Hanoi, Jakarta';
-$lang['tz']['8'] = '(GMT +8 Hours) Beijing, Perth, Singapore, Hong Kong, Urumqi';
-$lang['tz']['9'] = '(GMT +9 Hours) Tokyo, Seoul, Osaka, Sapporo, Yakutsk';
-$lang['tz']['9.5'] = '(GMT +9.5 Hours) Adelaide, Darwin';
-$lang['tz']['10'] = '(GMT +10 Hours) EAST(East Australian Standard), Guam';
-$lang['tz']['11'] = '(GMT +11 Hours) Magadan, Solomon Islands, New Caledonia';
-$lang['tz']['12'] = '(GMT +12 Hours) Auckland, Fiji, Kamchatka, Marshall Island';
-$lang['tz']['13'] = '(GMT +13 Hours) Nuku\'alofa';
+$lang['tz_zones'] = array(
+	'-12' => '[UTC - 12] Baker Island Time',
+	'-11' => '[UTC - 11] Niue Time, Samoa Standard Time',
+	'-10' => '[UTC - 10] Hawaii-Aleutian Standard Time, Cook Island Time',
+	'-9.5' => '[UTC - 9:30] Marquesas Islands Time',
+	'-9' => '[UTC - 9] Alaska Standard Time, Gambier Island Time',
+	'-8' => '[UTC - 8] Pacific Standard Time',
+	'-7' => '[UTC - 7] Mountain Standard Time',
+	'-6' => '[UTC - 6] Central Standard Time',
+	'-5' => '[UTC - 5] Eastern Standard Time',
+	'-4.5' => '[UTC - 4:30] Venezuelan Standard Time',
+	'-4' => '[UTC - 4] Atlantic Standard Time',
+	'-3.5' => '[UTC - 3:30] Newfoundland Standard Time',
+	'-3' => '[UTC - 3] Amazon Standard Time, Central Greenland Time',
+	'-2' => '[UTC - 2] Fernando de Noronha Time, South Georgia &amp; the South Sandwich Islands Time',
+	'-1' => '[UTC - 1] Azores Standard Time, Cape Verde Time, Eastern Greenland Time',
+	'0' => '[UTC] Western European Time, Greenwich Mean Time',
+	'1' => '[UTC + 1] Central European Time, West African Time',
+	'2' => '[UTC + 2] Eastern European Time, Central African Time',
+	'3' => '[UTC + 3] Moscow Standard Time, Eastern African Time',
+	'3.5' => '[UTC + 3:30] Iran Standard Time',
+	'4' => '[UTC + 4] Gulf Standard Time, Samara Standard Time',
+	'4.5' => '[UTC + 4:30] Afghanistan Time',
+	'5' => '[UTC + 5] Pakistan Standard Time, Yekaterinburg Standard Time',
+	'5.5' => '[UTC + 5:30] Indian Standard Time, Sri Lanka Time',
+	'5.75' => '[UTC + 5:45] Nepal Time',
+	'6' => '[UTC + 6] Bangladesh Time, Bhutan Time, Novosibirsk Standard Time',
+	'6.5' => '[UTC + 6:30] Cocos Islands Time, Myanmar Time',
+	'7' => '[UTC + 7] Indochina Time, Krasnoyarsk Standard Time',
+	'8' => '[UTC + 8] Chinese Standard Time, Australian Western Standard Time, Irkutsk Standard Time',
+	'8.75' => '[UTC + 8:45] Southeastern Western Australia Standard Time',
+	'9' => '[UTC + 9] Japan Standard Time, Korea Standard Time, Chita Standard Time',
+	'9.5' => '[UTC + 9:30] Australian Central Standard Time',
+	'10' => '[UTC + 10] Australian Eastern Standard Time, Vladivostok Standard Time',
+	'10.5' => '[UTC + 10:30] Lord Howe Standard Time',
+	'11' => '[UTC + 11] Solomon Island Time, Magadan Standard Time',
+	'11.5' => '[UTC + 11:30] Norfolk Island Time',
+	'12' => '[UTC + 12] New Zealand Time, Fiji Time, Kamchatka Standard Time',
+	'12.75' => '[UTC + 12:45] Chatham Islands Time',
+	'13' => '[UTC + 13] Tonga Time, Phoenix Islands Time',
+	'14' => '[UTC + 14] Line Island Time',
+);
 // Timezones - END
 
-$lang['datetime']['Sunday'] = $lang['WEEK_DAY_SUNDAY'];
-$lang['datetime']['Monday'] = $lang['WEEK_DAY_MONDAY'];
-$lang['datetime']['Tuesday'] = $lang['WEEK_DAY_TUESDAY'];
-$lang['datetime']['Wednesday'] = $lang['WEEK_DAY_WEDNESDAY'];
-$lang['datetime']['Thursday'] = $lang['WEEK_DAY_THURSDAY'];
-$lang['datetime']['Friday'] = $lang['WEEK_DAY_FRIDAY'];
-$lang['datetime']['Saturday'] = $lang['WEEK_DAY_SATURDAY'];
-$lang['datetime']['Sun'] = 'Sun';
-$lang['datetime']['Mon'] = 'Mon';
-$lang['datetime']['Tue'] = 'Tue';
-$lang['datetime']['Wed'] = 'Wed';
-$lang['datetime']['Thu'] = 'Thu';
-$lang['datetime']['Fri'] = 'Fri';
-$lang['datetime']['Sat'] = 'Sat';
-$lang['datetime']['January'] = 'January';
-$lang['datetime']['February'] = 'February';
-$lang['datetime']['March'] = 'March';
-$lang['datetime']['April'] = 'April';
-$lang['datetime']['May'] = 'May';
-$lang['datetime']['June'] = 'June';
-$lang['datetime']['July'] = 'July';
-$lang['datetime']['August'] = 'August';
-$lang['datetime']['September'] = 'September';
-$lang['datetime']['October'] = 'October';
-$lang['datetime']['November'] = 'November';
-$lang['datetime']['December'] = 'December';
-$lang['datetime']['JAN'] = 'Jan';
-$lang['datetime']['FEB'] = 'Feb';
-$lang['datetime']['MAR'] = 'Mar';
-$lang['datetime']['APR'] = 'Apr';
-$lang['datetime']['MAY'] = 'May';
-$lang['datetime']['JUN'] = 'Jun';
-$lang['datetime']['JUL'] = 'Jul';
-$lang['datetime']['AUG'] = 'Aug';
-$lang['datetime']['SEP'] = 'Sep';
-$lang['datetime']['OCT'] = 'Oct';
-$lang['datetime']['NOV'] = 'Nov';
-$lang['datetime']['DEC'] = 'Dec';
-$lang['datetime']['Jan'] = $lang['datetime']['JAN'];
-$lang['datetime']['Feb'] = $lang['datetime']['FEB'];
-$lang['datetime']['Mar'] = $lang['datetime']['MAR'];
-$lang['datetime']['Apr'] = $lang['datetime']['APR'];
-$lang['datetime']['May'] = $lang['datetime']['MAY'];
-$lang['datetime']['Jun'] = $lang['datetime']['JUN'];
-$lang['datetime']['Jul'] = $lang['datetime']['JUL'];
-$lang['datetime']['Aug'] = $lang['datetime']['AUG'];
-$lang['datetime']['Sep'] = $lang['datetime']['SEP'];
-$lang['datetime']['Oct'] = $lang['datetime']['OCT'];
-$lang['datetime']['Nov'] = $lang['datetime']['NOV'];
-$lang['datetime']['Dec'] = $lang['datetime']['DEC'];
+// Dates And Times - BEGIN
+$lang = array_merge($lang, array(
+	'WEEK_DAY_SUNDAY' => 'Sunday',
+	'WEEK_DAY_MONDAY' => 'Monday',
+	'WEEK_DAY_TUESDAY' => 'Tuesday',
+	'WEEK_DAY_WEDNESDAY' => 'Wednesday',
+	'WEEK_DAY_THURSDAY' => 'Thursday',
+	'WEEK_DAY_FRIDAY' => 'Friday',
+	'WEEK_DAY_SATURDAY' => 'Saturday',
+
+	'TIME_YEAR' => 'Year',
+	'TIME_MONTH' => 'Month',
+	'TIME_DAY' => 'Day',
+	'TIME_HOUR' => 'Hour',
+	'TIME_MINUTE' => 'Minute',
+	'TIME_SECOND' => 'Second',
+
+	// The value is only an example and will get replaced by the current time on view
+	'dateformats' => array(
+		'd M Y, H:i' => '01 Jan 2007, 13:37',
+		'd M Y H:i' => '01 Jan 2007 13:37',
+		'M jS, \'y, H:i' => 'Jan 1st, \'07, 13:37',
+		'D M d, Y g:i a' => 'Mon Jan 01, 2007 1:37 pm',
+		'F jS, Y, g:i a' => 'January 1st, 2007, 1:37 pm',
+		'|d M Y|, H:i' => 'Today, 13:37 / 01 Jan 2007, 13:37',
+		'|F jS, Y|, g:i a' => 'Today, 1:37 pm / January 1st, 2007, 1:37 pm'
+	),
+
+	// The default dateformat which will be used on new installs in this language
+	// Translators should change this if a the usual date format is different
+	'default_dateformat' => 'D M d, Y g:i a', // Mon Jan 01, 2007 1:37 pm
+
+	)
+);
+
+$lang['datetime'] = array(
+	'TODAY' => 'Today',
+	'TOMORROW' => 'Tomorrow',
+	'YESTERDAY' => 'Yesterday',
+	'AGO' => array(
+		0 => 'less than a minute ago',
+		1 => '%d minute ago',
+		2 => '%d minutes ago',
+		60=> '1 hour ago',
+	),
+
+	'Sunday' => 'Sunday',
+	'Monday' => 'Monday',
+	'Tuesday' => 'Tuesday',
+	'Wednesday' => 'Wednesday',
+	'Thursday' => 'Thursday',
+	'Friday' => 'Friday',
+	'Saturday' => 'Saturday',
+
+	'Sun' => 'Sun',
+	'Mon' => 'Mon',
+	'Tue' => 'Tue',
+	'Wed' => 'Wed',
+	'Thu' => 'Thu',
+	'Fri' => 'Fri',
+	'Sat' => 'Sat',
+
+	'January' => 'January',
+	'February' => 'February',
+	'March' => 'March',
+	'April' => 'April',
+	'May' => 'May',
+	'June' => 'June',
+	'July' => 'July',
+	'August' => 'August',
+	'September' => 'September',
+	'October' => 'October',
+	'November' => 'November',
+	'December' => 'December',
+
+	'JAN' => 'Jan',
+	'FEB' => 'Feb',
+	'MAR' => 'Mar',
+	'APR' => 'Apr',
+	'MAY' => 'May',
+	'JUN' => 'Jun',
+	'JUL' => 'Jul',
+	'AUG' => 'Aug',
+	'SEP' => 'Sep',
+	'OCT' => 'Oct',
+	'NOV' => 'Nov',
+	'DEC' => 'Dec',
+
+	'Jan_short' => 'Jan',
+	'Feb_short' => 'Feb',
+	'Mar_short' => 'Mar',
+	'Apr_short' => 'Apr',
+	'May_short' => 'May',
+	'Jun_short' => 'Jun',
+	'Jul_short' => 'Jul',
+	'Aug_short' => 'Aug',
+	'Sep_short' => 'Sep',
+	'Oct_short' => 'Oct',
+	'Nov_short' => 'Nov',
+	'Dec_short' => 'Dec',
+);
 
 $lang['day_short'] = array($lang['datetime']['Sun'], $lang['datetime']['Mon'], $lang['datetime']['Tue'], $lang['datetime']['Wed'], $lang['datetime']['Thu'], $lang['datetime']['Fri'], $lang['datetime']['Sat']);
+
 $lang['day_long'] = array($lang['datetime']['Sunday'], $lang['datetime']['Monday'], $lang['datetime']['Tuesday'], $lang['datetime']['Wednesday'], $lang['datetime']['Thursday'], $lang['datetime']['Friday'], $lang['datetime']['Saturday']);
+
 $lang['month_short'] = array($lang['datetime']['JAN'], $lang['datetime']['FEB'], $lang['datetime']['MAR'], $lang['datetime']['APR'], $lang['datetime']['MAY'], $lang['datetime']['JUN'], $lang['datetime']['JUL'], $lang['datetime']['AUG'], $lang['datetime']['SEP'], $lang['datetime']['OCT'], $lang['datetime']['NOV'], $lang['datetime']['DEC']);
+
 $lang['month_long'] = array($lang['datetime']['January'], $lang['datetime']['February'], $lang['datetime']['March'], $lang['datetime']['April'], $lang['datetime']['May'], $lang['datetime']['June'], $lang['datetime']['July'], $lang['datetime']['August'], $lang['datetime']['September'], $lang['datetime']['October'], $lang['datetime']['November'], $lang['datetime']['December']);
+// Dates And Times - END
 
 //====================================================
 // Do not insert anything below this line

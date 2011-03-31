@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -41,7 +42,7 @@ switch ($album_view_mode)
 		$album_view_mode = ALBUM_VIEW_LIST;
 }
 
-//$album_user_id = $userdata['user_id'];
+//$album_user_id = $user->data['user_id'];
 $album_user_id = ALBUM_PUBLIC_GALLERY;
 //$album_user_id = ALBUM_ROOT_CATEGORY;
 $catrows = array ();
@@ -365,17 +366,17 @@ if ($total_pics > 0 && !empty($allowed_cat))
 
 				'COMMENTS' => ($album_config['comment'] == 1) ? ($lang['Comments'] . ' : <a href="' . append_sid(album_append_uid($album_comment_pic_url . '?pic_id=' . $picrow[$j]['pic_id'] . '&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method)) . '">' . $image_comment . '</a><br />') : '',
 
-				'EDIT' => (($userdata['user_level'] == ADMIN) or ($userdata['user_id'] == $picrow[$j]['pic_user_id'])) ? '<a href="'. append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Edit_pic'] . '</a>' : '',
+				'EDIT' => (($user->data['user_level'] == ADMIN) or ($user->data['user_id'] == $picrow[$j]['pic_user_id'])) ? '<a href="'. append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Edit_pic'] . '</a>' : '',
 
-				'DELETE' => (($userdata['user_level'] == ADMIN) or ($userdata['user_id'] == $picrow[$j]['pic_user_id'])) ? '<a href="'. append_sid(album_append_uid('album_delete.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Delete_pic'] . '</a>' : '',
+				'DELETE' => (($user->data['user_level'] == ADMIN) or ($user->data['user_id'] == $picrow[$j]['pic_user_id'])) ? '<a href="'. append_sid(album_append_uid('album_delete.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Delete_pic'] . '</a>' : '',
 
-				'LOCK' => ($userdata['user_level'] == ADMIN) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=lock&amp;pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Lock'] . '</a>' : '',
+				'LOCK' => ($user->data['user_level'] == ADMIN) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=lock&amp;pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Lock'] . '</a>' : '',
 
-				'MOVE' => ($userdata['user_level'] == ADMIN) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Move'] . '</a>' : '',
+				'MOVE' => ($user->data['user_level'] == ADMIN) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Move'] . '</a>' : '',
 
-				'COPY' => ($userdata['user_level'] == ADMIN) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Copy'] . '</a>' : '',
+				'COPY' => ($user->data['user_level'] == ADMIN) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Copy'] . '</a>' : '',
 
-				'IP' => ($userdata['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . decode_ip($picrow[$j]['pic_user_ip']) . '" target="_blank">' . decode_ip($picrow[$j]['pic_user_ip']) . '</a><br />' : ''
+				'IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) . '</a><br />' : ''
 				)
 			);
 		}

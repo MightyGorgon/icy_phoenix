@@ -27,7 +27,7 @@ if (!defined('IN_ICYPHOENIX'))
 //
 function validate_username($username)
 {
-	global $db, $userdata, $lang;
+	global $db, $user, $lang;
 
 	// Remove doubled up spaces
 	$username = preg_replace('#\s+#', ' ', trim($username));
@@ -40,7 +40,7 @@ function validate_username($username)
 	{
 		while ($row = $db->sql_fetchrow($result))
 		{
-			if (($userdata['session_logged_in'] && ($row['username'] != $userdata['username'])) || !$userdata['session_logged_in'])
+			if (($user->data['session_logged_in'] && ($row['username'] != $user->data['username'])) || !$user->data['session_logged_in'])
 			{
 				$db->sql_freeresult($result);
 				return array('error' => true, 'error_msg' => $lang['Username_taken']);

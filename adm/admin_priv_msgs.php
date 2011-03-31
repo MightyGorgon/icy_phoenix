@@ -146,8 +146,8 @@ switch($pmaction)
 		$private_message = $privmsg['privmsgs_text'];
 
 		$bbcode->allow_html = ($config['allow_html'] ? true : false);
-		$bbcode->allow_bbcode = ($config['allow_bbcode'] && $privmsg['privmsgs_enable_bbcode'] ? true : false);
-		$bbcode->allow_smilies = ($config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'] ? true : false);
+		$bbcode->allow_bbcode = (($config['allow_bbcode'] && $privmsg['privmsgs_enable_bbcode']) ? true : false);
+		$bbcode->allow_smilies = (($config['allow_smilies'] && $privmsg['privmsgs_enable_smilies']) ? true : false);
 		$private_message = $bbcode->parse($private_message);
 		//$private_message = str_replace("\n", '<br />', $private_message);
 
@@ -160,7 +160,7 @@ switch($pmaction)
 			'L_PRIVATE_MESSAGES' => $aprvmUtil->modName,
 
 			'SUBJECT' => $privmsg['privmsgs_subject'],
-			'FROM_IP' => ($config['aprvmIP']) ? ' : ('.decode_ip($privmsg['privmsgs_ip']).')' : '',
+			'FROM_IP' => ($config['aprvmIP']) ? ' : (' . htmlspecialchars($privmsg['privmsgs_ip']) . ')' : '',
 			'FROM' => $aprvmUtil->id_2_name($privmsg['privmsgs_from_userid'], 'user_formatted'),
 			'TO' => $aprvmUtil->id_2_name($privmsg['privmsgs_to_userid'], 'user_formatted'),
 			'DATE' => create_date($lang['DATE_FORMAT'], $privmsg['privmsgs_date'], $config['board_timezone']),
@@ -276,7 +276,7 @@ switch($pmaction)
 				'PM_ID' => $row['privmsgs_id'],
 				'PM_TYPE' => $lang['PM_' . $row['privmsgs_type']],
 				'SUBJECT' => $row['privmsgs_subject'],
-				'FROM_IP' => ($config['aprvmIP']) ? '<br />(' . decode_ip($row['privmsgs_ip']) . ')' : '',
+				'FROM_IP' => ($config['aprvmIP']) ? '<br />(' . htmlspecialchars($row['privmsgs_ip']) . ')' : '',
 				'FROM' => $aprvmUtil->id_2_name($row['privmsgs_from_userid'], 'user_formatted'),
 				'TO' => $aprvmUtil->id_2_name($row['privmsgs_to_userid'], 'user_formatted'),
 				'U_VIEWMSG' => $onclick_url,

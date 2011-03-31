@@ -24,7 +24,7 @@ if(!function_exists('cms_block_nav_links'))
 {
 	function cms_block_nav_links()
 	{
-		global $config, $template, $userdata, $lang, $cms_page, $cms_page_blocks;
+		global $config, $template, $user, $lang, $cms_page, $cms_page_blocks;
 
 		if(!defined('HAS_DIED') && !defined('IN_LOGIN') && ($cms_page['global_blocks'] || $cms_page_blocks))
 		{

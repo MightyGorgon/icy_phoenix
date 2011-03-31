@@ -16,9 +16,9 @@ function openAllSmiles()
 <?php
 
 // check if quick reply is enabled
-global $userdata, $config, $topic_id, $is_auth, $forum_topic_data, $lang, $images;
+global $user, $config, $forum_id, $topic_id, $is_auth, $forum_topic_data, $lang, $images;
 
-$can_reply = $userdata['session_logged_in'] ? true : false;
+$can_reply = $user->data['session_logged_in'] ? true : false;
 //$can_reply = true;
 
 if($can_reply)
@@ -156,13 +156,13 @@ if($can_reply)
 	<td class="row1" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Options']; ?>:</b></span></td>
 	<td class="row2">
 	<?php
-		$user_sig = ($userdata['user_sig'] != '' && $config['allow_sig']) ? $userdata['user_sig'] : '';
-		$html_on = $config['allow_html'] ? $userdata['user_allowhtml'] : 1;
-		$bbcode_on = $config['allow_bbcode'] ? $userdata['user_allowbbcode'] : 0;
-		$smilies_on = $config['allow_smilies'] ? $userdata['user_allowsmile'] : 0;
+		$user_sig = ($user->data['user_sig'] != '' && $config['allow_sig']) ? $user->data['user_sig'] : '';
+		$html_on = $config['allow_html'] ? $user->data['user_allowhtml'] : 1;
+		$bbcode_on = $config['allow_bbcode'] ? $user->data['user_allowbbcode'] : 0;
+		$smilies_on = $config['allow_smilies'] ? $user->data['user_allowsmile'] : 0;
 	?>
 	<label><input type="checkbox" name="disable_acro_auto" />&nbsp;<span class="genmed"><?php echo $lang['Disable_ACRO_AUTO_post']; ?></span></label><br />
-	<?php if($config['allow_html'] || (($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins'])) { ?>
+	<?php if($config['allow_html'] || (($user->data['user_level'] == ADMIN) && $config['allow_html_only_for_admins'])) { ?>
 	<label><input type="checkbox" name="disable_html" <?php echo ($html_on ? '' : 'checked="checked"'); ?> />&nbsp;<span class="genmed"><?php echo $lang['Disable_HTML_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_html" value="checked" /><?php } ?>
 	<?php if($config['allow_bbcode']) { ?>
@@ -172,9 +172,9 @@ if($can_reply)
 	<label><input type="checkbox" name="disable_smilies" <?php echo ($smilies_on ? '' : 'checked="checked"'); ?> />&nbsp;<span class="genmed"><?php echo $lang['Disable_Smilies_post']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="disable_smilies" value="checked" /><?php } ?>
 	<?php if($user_sig) { ?>
-	<label><input type="checkbox" name="attach_sig" <?php echo ($userdata['user_attachsig'] ? 'checked="checked"' : ''); ?> />&nbsp;<span class="genmed"><?php echo $lang['Attach_signature']; ?></span></label><br />
+	<label><input type="checkbox" name="attach_sig" <?php echo ($user->data['user_attachsig'] ? 'checked="checked"' : ''); ?> />&nbsp;<span class="genmed"><?php echo $lang['Attach_signature']; ?></span></label><br />
 	<?php } else { ?><input type="hidden" name="attach_sig" value="" /><?php } ?>
-	<label><input type="checkbox" name="notify" <?php echo ($userdata['user_notify'] ? 'checked="checked"' : ''); ?> />&nbsp;<span class="genmed"><?php echo $lang['Notify']; ?></span></label><br />
+	<label><input type="checkbox" name="notify" <?php echo ($user->data['user_notify'] ? 'checked="checked"' : ''); ?> />&nbsp;<span class="genmed"><?php echo $lang['Notify']; ?></span></label><br />
 	<!-- BEGIN switch_lock_topic -->
 	<label><input type="checkbox" name="lock" {switch_lock_topic.S_LOCK_CHECKED} />&nbsp;<span>{switch_lock_topic.L_LOCK_TOPIC}</span></label><br />
 	<!-- END switch_lock_topic -->
@@ -186,8 +186,9 @@ if($can_reply)
 <tr>
 	<td class="cat" colspan="2">
 		<input type="hidden" name="mode" value="reply" />
+		<input type="hidden" name="f" value="<?php echo $forum_id; ?>" />
 		<input type="hidden" name="t" value="<?php echo $topic_id; ?>" />
-		<input type="hidden" name="sid" value="<?php echo $userdata['session_id']; ?>" />
+		<input type="hidden" name="sid" value="<?php echo $user->data['session_id']; ?>" />
 		<input type="submit" tabindex="5" name="preview" class="liteoption" value="<?php echo $lang['Preview']; ?>" />&nbsp;
 		<input type="submit" accesskey="s" tabindex="6" name="post" class="mainoption" value="<?php echo $lang['Submit']; ?>" />
 	</td>

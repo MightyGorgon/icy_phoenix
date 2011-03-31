@@ -14,7 +14,7 @@ class pafiledb_user_upload extends pafiledb_public
 	function main($action)
 	{
 		global $pafiledb_config, $pafiledb_functions, $template;
-		global $db, $cache, $config, $lang, $userdata, $user_ip;
+		global $db, $cache, $config, $lang, $user;
 
 		// =======================================================
 		// Get Vars
@@ -38,7 +38,7 @@ class pafiledb_user_upload extends pafiledb_public
 		{
 			if(!$this->auth[$cat_id]['auth_upload'])
 			{
-				if (!$userdata['session_logged_in'])
+				if (!$user->data['session_logged_in'])
 				{
 					redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=user_upload&cat_id=' . $cat_id, true));
 				}
@@ -51,7 +51,7 @@ class pafiledb_user_upload extends pafiledb_public
 		{
 			if(empty($dropmenu))
 			{
-				if (!$userdata['session_logged_in'])
+				if (!$user->data['session_logged_in'])
 				{
 					redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=user_upload', true));
 				}
@@ -70,7 +70,7 @@ class pafiledb_user_upload extends pafiledb_public
 			$result = $db->sql_query($sql);
 			$file_info = $db->sql_fetchrow($result);
 
-			if (($this->auth[$file_info['file_catid']]['auth_delete_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'])
+			if (($this->auth[$file_info['file_catid']]['auth_delete_file'] && $file_info['user_id'] == $user->data['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod'])
 			{
 				$this->delete_files($file_id);
 				$this->_pafiledb();
@@ -155,7 +155,7 @@ class pafiledb_user_upload extends pafiledb_public
 				$file_info = $db->sql_fetchrow($result);
 
 				// AUTH CHECK
-				if (!(($this->auth[$file_info['file_catid']]['auth_edit_file'] && $file_info['user_id'] == $userdata['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod']))
+				if (!(($this->auth[$file_info['file_catid']]['auth_edit_file'] && $file_info['user_id'] == $user->data['user_id']) || $this->auth[$file_info['file_catid']]['auth_mod']))
 				{
 					$message = sprintf($lang['Sorry_auth_edit'], $this->auth[$cat_id]['auth_upload_type']);
 					message_die(GENERAL_MESSAGE, $message);

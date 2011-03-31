@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $forum_id = request_var('f', 0);
@@ -31,13 +32,13 @@ $privmsg = (!$forum_id) ? true : false;
 // Display the allowed Extension Groups and Upload Size
 if ($privmsg)
 {
-	$auth['auth_attachments'] = ($userdata['user_level'] != ADMIN) ? intval($config['allow_pm_attach']) : true;
+	$auth['auth_attachments'] = ($user->data['user_level'] != ADMIN) ? intval($config['allow_pm_attach']) : true;
 	$auth['auth_view'] = true;
 	$_max_filesize = $config['max_filesize_pm'];
 }
 else
 {
-	$auth = auth(AUTH_ALL, $forum_id, $userdata);
+	$auth = auth(AUTH_ALL, $forum_id, $user->data);
 	$_max_filesize = $config['max_filesize'];
 }
 

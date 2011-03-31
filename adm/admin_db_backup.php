@@ -423,8 +423,8 @@ switch ($mode)
 							if ($supported == 'true')
 							{
 								$tz = $config['board_timezone'];
-								$time_mode = $userdata['user_time_mode'];
-								$dst_time_lag = $userdata['user_dst_time_lag'];
+								$time_mode = $user->data['user_time_mode'];
+								$dst_time_lag = $user->data['user_dst_time_lag'];
 								switch ($time_mode)
 								{
 									case MANUAL_DST:

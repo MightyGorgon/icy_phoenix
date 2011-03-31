@@ -24,7 +24,7 @@ if(!function_exists('cms_block_random_topics_ver'))
 {
 	function cms_block_random_topics_ver()
 	{
-		global $db, $cache, $config, $template, $userdata, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $user, $lang, $block_id, $cms_config_vars;
 
 		$template->_tpldata['random_topic_ver_row.'] = array();
 

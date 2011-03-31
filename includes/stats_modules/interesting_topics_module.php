@@ -30,7 +30,7 @@ $result = $stat_db->sql_query($sql);
 
 while ($row = $stat_db->sql_fetchrow($result))
 {
-	$is_auth = auth('auth_view', $row['forum_id'], $userdata);
+	$is_auth = auth('auth_view', $row['forum_id'], $user->data);
 	if ($is_auth['auth_view'])
 	{
 		$auth_data_sql .= ($auth_data_sql != '') ? ', ' . $row['forum_id'] : $row['forum_id'];

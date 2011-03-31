@@ -25,8 +25,9 @@ $js_include = (!empty($js_include) && is_array($js_include)) ? array_merge($js_i
 unset($js_temp);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $mode_array = array('blocks', 'config', 'layouts', 'layouts_special', 'smilies', 'block_settings');
@@ -38,7 +39,7 @@ $cms_admin->init_vars($mode_array, $action_array);
 
 $redirect_append = (!empty($cms_admin->mode) ? ('&mode=' . $cms_admin->mode) : '') . (!empty($cms_admin->action) ? ('&action=' . $cms_admin->action) : '') . (!empty($cms_admin->l_id) ? ('&l_id=' . $cms_admin->l_id) : '') . (!empty($cms_admin->b_id) ? ('&b_id=' . $cms_admin->b_id) : '');
 
-if (!$userdata['session_admin'])
+if (!$user->data['session_admin'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . $cms_admin->root . '&admin=1' . $redirect_append, true));
 }
@@ -106,7 +107,7 @@ if(isset($_POST['cancel']))
 	redirect(append_sid($cms_admin->root, true));
 }
 
-$show_cms_menu = (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
+$show_cms_menu = (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 

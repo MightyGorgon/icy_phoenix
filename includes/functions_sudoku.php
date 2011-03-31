@@ -270,11 +270,11 @@ function sudoku_resynch()
 
 function sudoku_grid_success($pack, $num, $curr_points, $redirect)
 {
-	global $db, $userdata, $lang, $lrow, $line;
+	global $db, $user, $lang, $lrow, $line;
 	// update the user stats
 	$sql = " UPDATE " . SUDOKU_STATS . "
 		SET played = played + 1, points = points + '$curr_points'
-		WHERE user_id=" . $userdata['user_id'];
+		WHERE user_id=" . $user->data['user_id'];
 	$db->sql_query($sql);
 
 	$line='';
@@ -292,7 +292,7 @@ function sudoku_grid_success($pack, $num, $curr_points, $redirect)
 	$sql = " INSERT INTO " . SUDOKU_USERS . "
 		(user_id,game_pack,game_num,game_level,line_1,line_2,line_3,line_4,line_5,line_6,line_7,line_8,line_9)
 		VALUES
-		(" . $userdata['user_id'] . "," . $lrow['game_pack'] . "," . $lrow['game_num'] . "," . $lrow['game_level'] . ",'" . $lrow['line_1'] . "','" . $lrow['line_2'] . "','" . $lrow['line_3'] . "','" . $lrow['line_4'] . "','" . $lrow['line_5'] . "','" . $lrow['line_6'] . "','" . $lrow['line_7'] . "','" . $lrow['line_8'] . "','" . $lrow['line_9'] . "')";
+		(" . $user->data['user_id'] . "," . $lrow['game_pack'] . "," . $lrow['game_num'] . "," . $lrow['game_level'] . ",'" . $lrow['line_1'] . "','" . $lrow['line_2'] . "','" . $lrow['line_3'] . "','" . $lrow['line_4'] . "','" . $lrow['line_5'] . "','" . $lrow['line_6'] . "','" . $lrow['line_7'] . "','" . $lrow['line_8'] . "','" . $lrow['line_9'] . "')";
 	$db->sql_query($sql);
 
 	$message=$lang['sudoku_load_new'] . $redirect;

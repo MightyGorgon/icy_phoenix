@@ -88,7 +88,7 @@ function pseudo_die($error, $error_msg)
 // Update and return Shoutbox sessions data
 function update_session(&$error_msg)
 {
-	global $db, $cache, $userdata, $lang, $user_ip;
+	global $db, $cache, $user, $lang;
 	$guest_sql = '';
 	$online_counter = 0;
 	$reg_online_counter = 0;
@@ -106,16 +106,16 @@ function update_session(&$error_msg)
 	}
 
 	// Guest are reconized by their IP
-	if(!$userdata['session_logged_in'])
+	if(!$user->data['session_logged_in'])
 	{
-		$guest_sql = " AND session_ip = '" . $user_ip . "'";
+		$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
 	}
 
 	// Only get session data if the user was online SESSION_REFRESH seconds ago
 	$time_ago = time() - SESSION_REFRESH;
 	$sql = 'SELECT session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
-			WHERE session_user_id = ' . $userdata['user_id'] . '
+			WHERE session_user_id = ' . $user->data['user_id'] . '
 				AND session_time >= ' . $time_ago . '
 				' . $guest_sql . '
 			LIMIT 1';
@@ -132,7 +132,7 @@ function update_session(&$error_msg)
 	{
 		$current_session_id = $row['session_id'];
 		$sql = "UPDATE " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-				SET session_ip = '" . $user_ip . "',
+				SET session_ip = '" . $db->sql_escape($user->ip) . "',
 				session_time = " . time() . "
 				WHERE session_id = " . $row['session_id'];
 	}
@@ -140,7 +140,7 @@ function update_session(&$error_msg)
 	{
 		$current_session_id = get_ajax_chat_max_session_id() + 1;
 		$sql = "INSERT INTO " . AJAX_SHOUTBOX_SESSIONS_TABLE . " (session_id, session_user_id, session_username, session_ip, session_start, session_time)
-			VALUES (" . $current_session_id . ", " . $userdata['user_id'] . ", '" . ($userdata['session_logged_in'] ? $userdata['username'] : '') . "', '" . $user_ip . "', " . time() . ", " . time() . ")";
+			VALUES (" . $current_session_id . ", " . $user->data['user_id'] . ", '" . ($user->data['session_logged_in'] ? $user->data['username'] : '') . "', '" . $db->sql_escape($user->ip) . "', " . time() . ", " . time() . ")";
 	}
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -151,7 +151,7 @@ function update_session(&$error_msg)
 	}
 
 	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-			WHERE session_user_id = " . $userdata['user_id'] . "
+			WHERE session_user_id = " . $user->data['user_id'] . "
 				AND session_id <> " . $current_session_id;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);

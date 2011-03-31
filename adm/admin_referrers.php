@@ -72,17 +72,22 @@ $select_sort_order .= '</select>';
 
 if (sizeof($_POST))
 {
+	$referrer_ids = array();
 	foreach($_POST as $key => $valx)
 	{
 		// Check for deletion items
 		if (substr_count($key, 'delete_id_'))
 		{
-			$referrer_id = substr($key, 10);
-
-			$sql = "DELETE FROM " . REFERRERS_TABLE ."
-							WHERE referrer_id = " . $referrer_id;
-			$db->sql_query($sql);
+			$referrer_ids[] = substr($key, strlen('delete_id_'));
 		}
+	}
+
+	if (!empty($referrer_ids))
+	{
+		$del_sql = implode(',', $referrer_ids);
+		$sql = "DELETE FROM " . REFERRERS_TABLE ."
+						WHERE referrer_id IN (" . $del_sql . ")";
+		$db->sql_query($sql);
 	}
 }
 
@@ -97,7 +102,7 @@ $template->assign_vars(array(
 	'L_SORT' => $lang['Sort'],
 	'L_HOST' => $lang['Referrer_host'],
 	'L_URL' => $lang['Referrer_url'],
-	'L_IP' =>	$lang['Referrer_ip'],
+	'L_IP' => $lang['Referrer_ip'],
 	'L_HITS' => $lang['Referrer_hits'],
 	'L_FIRST' => $lang['Referrer_first'],
 	'L_LAST' => $lang['Referrer_last'],
@@ -146,22 +151,23 @@ while($row = $db->sql_fetchrow($result))
 {
 
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-	$url_name = (strlen($row['referrer_url']) > 50)?substr ($row['referrer_url'], 0, 50).'...' :$row['referrer_url'];// Cut Url name if it is longer than 50 chars
+	$url_name = (strlen($row['referrer_url']) > 50) ? (substr($row['referrer_url'], 0, 50) . '...') : $row['referrer_url'];// Cut Url name if it is longer than 50 chars
 
 	$template->assign_block_vars('refersrow', array(
 		'ID' => $i + ($start + 1),
 		'REFER_ID' => $row['referrer_id'],
 		'ROW_CLASS' => $row_class,
 		'HOST' => $row['referrer_host'],
-		'URL' => '<a href="' . $row['referrer_url'] .'" rel="nofollow" target="_blank">' . $url_name . '</a>',
-		'IP' => '<a href="http://whois.sc/' . decode_ip($row['referrer_ip']) . '" target="_blank">' . decode_ip($row['referrer_ip']) . '</a>',
+		'URL' => '<a href="' . htmlspecialchars($row['referrer_url']) . '" rel="nofollow" target="_blank">' . htmlspecialchars($url_name) . '</a>',
+		'IP' => '<a href="http://whois.sc/' . htmlspecialchars(urlencode($row['referrer_ip'])) . '" target="_blank">' . htmlspecialchars($row['referrer_ip']) . '</a>',
 		'HITS' => $row['referrer_hits'],
 		'FIRST' => create_date_ip($config['default_dateformat'], $row['referrer_firstvisit'], $config['board_timezone']),
-		'LAST' => create_date_ip($config['default_dateformat'], $row['referrer_lastvisit'], $config['board_timezone']))
-		);
+		'LAST' => create_date_ip($config['default_dateformat'], $row['referrer_lastvisit'], $config['board_timezone'])
+		)
+	);
 
 	//Check Level of User
-	if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+	if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 	{
 		$template->assign_block_vars('refersrow.switch_admin_or_mod',array());
 	}

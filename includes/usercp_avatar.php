@@ -48,7 +48,7 @@ function check_image_type(&$type, &$error, &$error_msg)
 
 function user_avatar_delete($avatar_type, $avatar_file)
 {
-	global $config, $userdata;
+	global $config, $user;
 
 	$avatar_file = basename($avatar_file);
 	if ($avatar_type == USER_AVATAR_UPLOAD && $avatar_file != '')
@@ -507,7 +507,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'aim', 'facebook', 'icq', 'jabber', 'msn', 'skype', 'twitter', 'yim', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
 
 	$s_hidden_vars = '<input type="hidden" name="sid" value="' . $session_id . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="avatarcatname" value="' . $category . '" />';
-	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $userdata['user_id'] . '" />';
+	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $user->data['user_id'] . '" />';
 	for($i = 0; $i < sizeof($params); $i++)
 	{
 		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', $$params[$i]) . '" />';
@@ -539,7 +539,7 @@ function display_avatar_generator($mode, &$avatar_filename, &$avatar_image, &$av
 
 	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'aim', 'facebook', 'icq', 'jabber', 'msn', 'skype', 'twitter', 'yim', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
 	$s_hidden_vars = '<input type="hidden" name="sid" value="' . $session_id . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="avatar_filename" value="' . $avatar_filename . '" />';
-	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $userdata['user_id'] . '" />';
+	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $user->data['user_id'] . '" />';
 
 	for($i = 0; $i < sizeof($params); $i++)
 	{

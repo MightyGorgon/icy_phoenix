@@ -563,9 +563,9 @@ class class_mcp_topic
 	*/
 	function topic_quick_title_edit($topics_ids, $qt_row)
 	{
-		global $db, $cache, $config, $userdata, $lang;
+		global $db, $cache, $config, $user, $lang;
 
-		$addon = str_replace('%mod%', addslashes($userdata['username']), $qt_row['title_info'] . ' ');
+		$addon = str_replace('%mod%', addslashes($user->data['username']), $qt_row['title_info'] . ' ');
 		$dateqt = ($qt_row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_row['date_format'], time(), $config['board_timezone']);
 		$addon = str_replace('%date%', $dateqt, $addon);
 

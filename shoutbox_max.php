@@ -18,8 +18,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 define('NUM_SHOUT', 20);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $start = request_var('start', 0);
@@ -37,7 +38,7 @@ $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $c
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 // Start auth check
-switch ($userdata['user_level'])
+switch ($user->data['user_level'])
 {
 	//Customize this, if you need other permission settings
 	// please also make same changes to other shoutbox php files
@@ -47,7 +48,7 @@ switch ($userdata['user_level'])
 	default:
 			$is_auth['auth_read'] = 1;
 			$is_auth['auth_view'] = 1;
-			if ($userdata['user_id'] == ANONYMOUS)
+			if ($user->data['user_id'] == ANONYMOUS)
 			{
 				$is_auth['auth_delete'] = 0;
 				$is_auth['auth_post'] = 0;
@@ -77,7 +78,7 @@ if (!$config['allow_html'])
 }
 else
 {
-	$html_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_html'] : $userdata['user_allowhtml']);
+	$html_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : (($user->data['user_id'] == ANONYMOUS) ? $config['allow_html'] : $user->data['user_allowhtml']);
 }
 if (!$config['allow_bbcode'])
 {
@@ -85,7 +86,7 @@ if (!$config['allow_bbcode'])
 }
 else
 {
-	$bbcode_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_bbcode'] : $userdata['user_allowbbcode']);
+	$bbcode_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : (($user->data['user_id'] == ANONYMOUS) ? $config['allow_bbcode'] : $user->data['user_allowbbcode']);
 }
 
 if (!$config['allow_smilies'])
@@ -94,9 +95,9 @@ if (!$config['allow_smilies'])
 }
 else
 {
-	$smilies_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($userdata['user_id'] == ANONYMOUS) ? $config['allow_smilies'] : $userdata['user_allowsmile']);
+	$smilies_on = ($submit || $refresh || $preview) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : (($user->data['user_id'] == ANONYMOUS) ? $config['allow_smilies'] : $user->data['user_allowsmile']);
 }
-if(!$userdata['session_logged_in'] || ($mode == 'editpost' && $post_info['poster_id'] == ANONYMOUS))
+if(!$user->data['session_logged_in'] || ($mode == 'editpost' && $post_info['poster_id'] == ANONYMOUS))
 {
 	$template->assign_block_vars('switch_username_select', array());
 }
@@ -106,7 +107,7 @@ $username = htmlspecialchars_decode($username, ENT_COMPAT);
 if (!empty($username))
 {
 	$username = phpbb_clean_username($username);
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		require_once(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 		$result = validate_username($username);
@@ -164,7 +165,7 @@ elseif ($submit || isset($_POST['message']))
 {
 	$current_time = time();
 	// Flood control
-	$where_sql = ($userdata['user_id'] == ANONYMOUS) ? "shout_ip = '$user_ip'" : 'shout_user_id = ' . $userdata['user_id'];
+	$where_sql = ($user->data['user_id'] == ANONYMOUS) ? "shout_ip = '$user_ip'" : 'shout_user_id = ' . $user->data['user_id'];
 	$sql = "SELECT MAX(shout_session_time) AS last_post_time
 		FROM " . SHOUTBOX_TABLE . "
 		WHERE $where_sql";
@@ -175,7 +176,7 @@ elseif ($submit || isset($_POST['message']))
 	{
 		if ($row = $db->sql_fetchrow($result))
 		{
-			if (($row['last_post_time'] > 0) && (($current_time - $row['last_post_time']) < $config['flood_interval']) && ($userdata['user_level'] != ADMIN))
+			if (($row['last_post_time'] > 0) && (($current_time - $row['last_post_time']) < $config['flood_interval']) && ($user->data['user_level'] != ADMIN))
 			{
 				$error = true;
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Flood_Error'] : $lang['Flood_Error'];
@@ -199,7 +200,7 @@ elseif ($submit || isset($_POST['message']))
 		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on);
 		//$message = (!get_magic_quotes_gpc()) ? addslashes($message) : stripslashes($message);
 		$sql = "INSERT INTO " . SHOUTBOX_TABLE. " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, enable_bbcode, enable_html, enable_smilies)
-				VALUES ('" . $db->sql_escape($message) . "', '" . time() . "', '" . $userdata['user_id'] . "', '$user_ip', '" . $db->sql_escape($username) . "', $bbcode_on, $html_on, $smilies_on)";
+				VALUES ('" . $db->sql_escape($message) . "', '" . time() . "', '" . $user->data['user_id'] . "', '$user_ip', '" . $db->sql_escape($username) . "', $bbcode_on, $html_on, $smilies_on)";
 		$result = $db->sql_query($sql);
 
 		// auto prune
@@ -223,9 +224,9 @@ elseif (($mode == 'delete') || ($mode == 'censor'))
 	$shout_identifyer = $db->sql_fetchrow($result);
 	$user_id = $shout_identifyer['shout_user_id'];
 
-	if ((($userdata['user_id'] != ANONYMOUS) || (($userdata['user_id'] == ANONYMOUS) && ($userdata['session_ip'] == $shout_identifyer['shout_ip']))) && ((($userdata['user_id'] == $user_id) && $is_auth['auth_delete']) || $is_auth['auth_mod']) && ($mode == 'censor'))
+	if ((($user->data['user_id'] != ANONYMOUS) || (($user->data['user_id'] == ANONYMOUS) && ($user->data['session_ip'] == $shout_identifyer['shout_ip']))) && ((($user->data['user_id'] == $user_id) && $is_auth['auth_delete']) || $is_auth['auth_mod']) && ($mode == 'censor'))
 	{
-		$sql = "UPDATE " . SHOUTBOX_TABLE . " SET shout_active = " . $userdata['user_id'] . " WHERE shout_id = $post_id";
+		$sql = "UPDATE " . SHOUTBOX_TABLE . " SET shout_active = " . $user->data['user_id'] . " WHERE shout_id = $post_id";
 		$result = $db->sql_query($sql);
 	}
 	elseif ($is_auth['auth_mod'] && ($mode == 'delete'))
@@ -259,7 +260,7 @@ elseif ($mode == 'ip')
 	$poster_id = $shout_identifyer['shout_user_id'];
 	$rdns_ip_num = (isset($_GET['rdns'])) ? $_GET['rdns'] : '';
 
-	$ip_this_post = decode_ip($shout_identifyer['shout_ip']);
+	$ip_this_post = $shout_identifyer['shout_ip'];
 	$ip_this_post = ($rdns_ip_num == $ip_this_post) ? gethostbyaddr($ip_this_post) : $ip_this_post;
 
 	$template->assign_vars(array(
@@ -270,8 +271,8 @@ elseif ($mode == 'ip')
 		'L_LOOKUP_IP' => $lang['Lookup_IP'],
 		'L_SEARCH' => $lang['Search'],
 		'SEARCH_IMG' => $images['icon_search'],
-		'IP' => $ip_this_post,
-		'U_LOOKUP_IP' => append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;rdns=' . $ip_this_post)
+		'IP' => htmlspecialchars($ip_this_post),
+		'U_LOOKUP_IP' => append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;rdns=' . htmlspecialchars(urlencode($ip_this_post)))
 		)
 	);
 
@@ -297,17 +298,17 @@ elseif ($mode == 'ip')
 				continue;
 			}
 
-			$ip = decode_ip($row['shout_ip']);
-			$ip = ($rdns_ip_num == $row['shout_ip'] || $rdns_ip_num == 'all') ? gethostbyaddr($ip) : $ip;
+			$ip = $row['shout_ip'];
+			$ip = (($rdns_ip_num == $row['shout_ip']) || ($rdns_ip_num == 'all')) ? gethostbyaddr($ip) : $ip;
 
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 			$template->assign_block_vars('iprow', array(
 				'ROW_CLASS' => $row_class,
-				'IP' => $ip,
+				'IP' => htmlspecialchars($ip),
 				'POSTS' => $row['postings'] . ' ' . (($row['postings'] == 1) ? $lang['Post'] : $lang['Posts']),
 
-				'U_LOOKUP_IP' => append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;rdns=' . $row['shout_ip'])
+				'U_LOOKUP_IP' => append_sid('shoutbox_max.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;rdns=' . htmlspecialchars(urlencode($row['shout_ip'])))
 				)
 			);
 
@@ -407,7 +408,7 @@ else
 }
 
 // HTML toggle selection
-if ($config['allow_html'] || (($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
+if ($config['allow_html'] || (($user->data['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
 {
 	$html_status = $lang['HTML_is_ON'];
 	$template->assign_block_vars('switch_html_checkbox', array());
@@ -521,7 +522,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 		$ip_img = '';
 		$ip = '';
 
-		if (($userdata['user_id'] == $user_id && $is_auth['auth_delete']) && ($userdata['user_id'] != ANONYMOUS || ($userdata['user_id'] == ANONYMOUS && $userdata['session_ip'] == $shout_row['shout_ip'])))
+		if ((($user->data['user_id'] == $user_id) && $is_auth['auth_delete']) && (($user->data['user_id'] != ANONYMOUS) || (($user->data['user_id'] == ANONYMOUS) && ($user->data['session_ip'] == $shout_row['shout_ip']))))
 		{
 			$censorshout_url = append_sid('shoutbox_max.' . PHP_EXT . '?mode=censor&amp;' . POST_POST_URL . '=' . $shout_row['shout_id']);
 			$censorshout_img = '<a href="' . $censorshout_url . '"><img src="' . $images['icon_censor'] . '" alt="' . $lang['Censor'] . '" title="' . $lang['Censor'] . '" /></a>&nbsp;';

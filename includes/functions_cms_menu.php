@@ -77,30 +77,30 @@ function build_default_link_name($default_id)
 
 function build_complete_url($default_id, $block_id, $link, $menu_icon)
 {
-	global $db, $cache, $template, $config, $userdata, $lang, $theme, $images;
+	global $db, $cache, $template, $config, $user, $lang, $theme, $images;
 	global $unread;
 
 	switch ($default_id)
 	{
 		case '1':
 			$menu_name = stripslashes(build_default_link_name($default_id));
-			$menu_link = append_sid($link) . '?sid=' . $userdata['session_id'];
+			$menu_link = append_sid($link) . '?sid=' . $user->data['session_id'];
 			$menu_url = '<a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a>';
 			break;
 		case '2':
 			$menu_name = stripslashes(build_default_link_name($default_id));
-			$menu_link = append_sid($link) . '?sid=' . $userdata['session_id'];
+			$menu_link = append_sid($link) . '?sid=' . $user->data['session_id'];
 			$menu_url = '<a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a>';
 			break;
 		case '25':
-			if($userdata['upi2db_access'])
+			if($user->data['upi2db_access'])
 			{
 				if (empty($unread))
 				{
 					$unread = unread();
 				}
 				$u_display_new = index_display_new($unread);
-				$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
+				$upi2db_first_use = ($user->data['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
 				$menu_url = '<a href="' . $u_display_new['u_url'] . '" title=" ' . $u_display_new['u_string_full'] . '">' . $menu_icon . $u_display_new['unread_string'] . '</a>';
 			}
 			else
@@ -109,14 +109,14 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '26':
-			if($userdata['upi2db_access'])
+			if($user->data['upi2db_access'])
 			{
 				if (empty($unread))
 				{
 					$unread = unread();
 				}
 				$u_display_new = index_display_new($unread);
-				$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
+				$upi2db_first_use = ($user->data['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
 				$menu_url = '<a href="' . $u_display_new['m_url'] . '" title=" ' . $u_display_new['m_string_full'] . '">' . $menu_icon . $u_display_new['marked_string'] . '</a>';
 			}
 			else
@@ -125,14 +125,14 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '27':
-			if($userdata['upi2db_access'])
+			if($user->data['upi2db_access'])
 			{
 				if (empty($unread))
 				{
 					$unread = unread();
 				}
 				$u_display_new = index_display_new($unread);
-				$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
+				$upi2db_first_use = ($user->data['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
 				$menu_url = '<a href="' . $u_display_new['p_url'] . '" title=" ' . $u_display_new['p_string_full'] . '">' . $menu_icon . $u_display_new['permanent_string'] . '</a>';
 			}
 			else
@@ -141,14 +141,14 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			}
 			break;
 		case '28':
-			if($userdata['upi2db_access'])
+			if($user->data['upi2db_access'])
 			{
 				if (empty($unread))
 				{
 					$unread = unread();
 				}
 				$u_display_new = index_display_new($unread);
-				$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
+				$upi2db_first_use = ($user->data['user_upi2db_datasync'] == '0') ? '<script type="text/javascript"><!--alert ("' . $lang['upi2db_first_use_txt'] . '")//--></script>' : '';
 				$menu_url = $menu_icon . $lang['Posts'] . ': <a href="search.' . PHP_EXT . '?search_id=newposts">' . $lang['New2'] . '</a>';
 				$menu_url .= '&nbsp;&#8226;&nbsp;' . $u_display_new['u'] . '&nbsp;&#8226;&nbsp;' . $u_display_new['m'] . '&nbsp;&#8226;&nbsp;' . $u_display_new['p'];
 				//$menu_url .= $u_display_new['u'] . $u_display_new['m'] . $u_display_new['p'];
@@ -216,14 +216,14 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 			$menu_url = '<a href="javascript:rss_news_help()">' . $menu_icon . $lang['Rss_news_feeds'] . '</a>';
 			break;
 		case '44':
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				$menu_link = 'login_ip.' . PHP_EXT . '?redirect=forum.' . PHP_EXT;
 				$menu_name = $lang['Login'];
 			}
 			else
 			{
-				$menu_link = 'login_ip.' . PHP_EXT . '?logout=true&amp;sid=' . $userdata['session_id'];
+				$menu_link = 'login_ip.' . PHP_EXT . '?logout=true&amp;sid=' . $user->data['session_id'];
 				$menu_name = $lang['Logout'];
 			}
 			$menu_url = '<a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a>';

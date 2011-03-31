@@ -32,7 +32,7 @@ if (!defined('IN_ICYPHOENIX'))
 //
 function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check, $rate_check, $comment_check, $edit_check, $delete_check)
 {
-	global $db, $userdata, $album_config;
+	global $db, $user, $album_config;
 
 	// --------------------------------
 	// Force to check moderator status
@@ -73,7 +73,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	// If the current user is an ADMIN (ALBUM_ADMIN == ADMIN)
 	// --------------------------------
-	if ($userdata['user_level'] == ADMIN)
+	if ($user->data['user_level'] == ADMIN)
 	{
 		for ($i = 0; $i < sizeof($album_user_access); $i++)
 		{
@@ -93,7 +93,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	// --------------------------------
 	// if this is a GUEST, we will ignore some checking
 	// --------------------------------
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$edit_check = 0;
 		$delete_check = 0;
@@ -229,14 +229,14 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 				break;
 
 			case ALBUM_USER:
-				if ($userdata['session_logged_in'])
+				if ($user->data['session_logged_in'])
 				{
 					$album_user_access[$access_type[$i]] = 1;
 				}
 				break;
 
 			case ALBUM_PRIVATE:
-				if(($thiscat['cat_'. $access_type[$i] .'_groups'] != '') and ($userdata['session_logged_in']))
+				if(($thiscat['cat_'. $access_type[$i] .'_groups'] != '') and ($user->data['session_logged_in']))
 				{
 					$groups_access[] = $access_type[$i];
 				}
@@ -290,7 +290,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 	{
 		$sql = "SELECT group_id, user_id
 				FROM ". USER_GROUP_TABLE ."
-				WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
+				WHERE user_id = '". $user->data['user_id'] ."' AND user_pending = 0
 					AND group_id IN (". $thiscat['cat_'. $groups_access[$i] .'_groups'] .")";
 		$result = $db->sql_query($sql);
 
@@ -339,7 +339,7 @@ function album_user_access($cat_id, $passed_auth = 0, $view_check, $upload_check
 // any personal galleries
 function personal_gallery_access($check_view, $check_upload)
 {
-	global $db, $userdata, $album_config;
+	global $db, $user, $album_config;
 
 	// This array will contain the result
 	$personal_gallery_access = array(
@@ -355,22 +355,22 @@ function personal_gallery_access($check_view, $check_upload)
 		switch ($album_config['personal_gallery'])
 		{
 			case ALBUM_USER:
-				if ($userdata['session_logged_in'])
+				if ($user->data['session_logged_in'])
 				{
 					$personal_gallery_access['upload'] = 1;
 				}
 				break;
 
 			case ALBUM_PRIVATE:
-				if(($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN))
+				if(($user->data['session_logged_in']) and ($user->data['user_level'] == ADMIN))
 				{
 					$personal_gallery_access['upload'] = 1;
 				}
-				else if(!empty($album_config['personal_gallery_private']) and $userdata['session_logged_in'])
+				else if(!empty($album_config['personal_gallery_private']) and $user->data['session_logged_in'])
 				{
 					$sql = "SELECT group_id, user_id
 							FROM ". USER_GROUP_TABLE ."
-							WHERE user_id = '" . $userdata['user_id'] . "' AND user_pending = 0
+							WHERE user_id = '" . $user->data['user_id'] . "' AND user_pending = 0
 								AND group_id IN (" . $album_config['personal_gallery_private'] . ")";
 					$result = $db->sql_query($sql);
 
@@ -382,7 +382,7 @@ function personal_gallery_access($check_view, $check_upload)
 				break;
 
 			case ALBUM_ADMIN:
-				if(($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN))
+				if(($user->data['session_logged_in']) and ($user->data['user_level'] == ADMIN))
 				{
 					$personal_gallery_access['upload'] = 1;
 				}
@@ -402,22 +402,22 @@ function personal_gallery_access($check_view, $check_upload)
 				break;
 
 			case ALBUM_USER:
-				if ($userdata['session_logged_in'])
+				if ($user->data['session_logged_in'])
 				{
 					$personal_gallery_access['view'] = 1;
 				}
 				break;
 
 			case ALBUM_PRIVATE:
-				if(($userdata['session_logged_in']) and ($userdata['user_level'] == ADMIN))
+				if(($user->data['session_logged_in']) and ($user->data['user_level'] == ADMIN))
 				{
 					$personal_gallery_access['view'] = 1;
 				}
-				elseif(!empty($album_config['personal_gallery_private']) and $userdata['session_logged_in'])
+				elseif(!empty($album_config['personal_gallery_private']) and $user->data['session_logged_in'])
 				{
 					$sql = "SELECT group_id, user_id
 							FROM ". USER_GROUP_TABLE ."
-							WHERE user_id = '". $userdata['user_id'] ."' AND user_pending = 0
+							WHERE user_id = '". $user->data['user_id'] ."' AND user_pending = 0
 								AND group_id IN (". $album_config['personal_gallery_private'] .")";
 					$result = $db->sql_query($sql);
 
@@ -442,11 +442,11 @@ function personal_gallery_access($check_view, $check_upload)
 //
 function init_personal_gallery_cat($user_id = 0)
 {
-	global $userdata, $db, $lang, $album_config;
+	global $user, $db, $lang, $album_config;
 
 	if ($user_id == 0)
 	{
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 	}
 
 	$sql = "SELECT COUNT(pic_id) AS count
@@ -457,7 +457,7 @@ function init_personal_gallery_cat($user_id = 0)
 	$row = $db->sql_fetchrow($result);
 	$count = $row['count'];
 
-	if ($user_id != $userdata['user_id'])
+	if ($user_id != $user->data['user_id'])
 	{
 		$sql = "SELECT user_id, username
 				FROM ". USERS_TABLE ."
@@ -468,7 +468,7 @@ function init_personal_gallery_cat($user_id = 0)
 	}
 	else
 	{
-		$username = $userdata['username'];
+		$username = $user->data['username'];
 	}
 
 	$thiscat = array(
@@ -704,13 +704,13 @@ function ImageRating($rating, $css_style = 'border-style:none')
 function CanRated ($picID, $userID)
 {
 //PRE: deside if user can rate things on hot or not
-	global $db, $userdata, $album_config;
+	global $db, $user, $album_config;
 
-	if (! $userdata['session_logged_in'] && $album_config['hon_rate_users'] == 1)
+	if (! $user->data['session_logged_in'] && $album_config['hon_rate_users'] == 1)
 	{
 		$alowed = true;
 	}
-	elseif ($userdata['session_logged_in'] && $album_config['hon_rate_times'] == 0)
+	elseif ($user->data['session_logged_in'] && $album_config['hon_rate_times'] == 0)
 	{
 		$sql = "SELECT *
 					FROM ". ALBUM_RATE_TABLE ."
@@ -738,7 +738,7 @@ function CanRated ($picID, $userID)
 
 function album_comment_notify($pic_id)
 {
-	global $db, $config, $userdata, $lang, $album_config;
+	global $db, $config, $user, $lang, $album_config;
 
 	// One row SQL for caching purpose...
 	$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . " WHERE ban_userid <> 0 ORDER BY ban_userid ASC";
@@ -757,7 +757,7 @@ function album_comment_notify($pic_id)
 				FROM " . ALBUM_COMMENT_WATCH_TABLE . " cw, " . USERS_TABLE . " u
 				LEFT JOIN " . ALBUM_TABLE . " AS p ON p.pic_id = $pic_id
 				WHERE cw.pic_id = $pic_id
-					AND cw.user_id NOT IN (" . $userdata['user_id'] . ", " . ANONYMOUS . $user_id_sql . ")
+					AND cw.user_id NOT IN (" . $user->data['user_id'] . ", " . ANONYMOUS . $user_id_sql . ")
 					AND cw.notify_status = " . COMMENT_WATCH_UN_NOTIFIED . "
 					AND u.user_id = cw.user_id";
 	$result = $db->sql_query($sql);

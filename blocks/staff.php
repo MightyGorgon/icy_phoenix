@@ -25,7 +25,7 @@ if(!function_exists('cms_block_staff'))
 {
 	function cms_block_staff()
 	{
-		global $db, $cache, $config, $template, $theme, $images, $userdata, $lang, $table_prefix;
+		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix;
 
 		$sql = "SELECT * FROM " . USERS_TABLE."
 			WHERE user_level <> 0

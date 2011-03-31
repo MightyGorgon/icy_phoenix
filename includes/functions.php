@@ -20,6 +20,119 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+
+/*
+* Append $SID to a url. Borrowed from phplib and modified. This is an extra routine utilised by the session code and acts as a wrapper around every single URL and form action.
+* If you replace the session code you must include this routine, even if it's empty.
+*/
+function append_sid($url, $non_html_amp = false, $char_conversion = false, $params = false, $session_id = false)
+{
+	global $SID, $_SID, $_EXTRA_URL, $phpbb_hook;
+
+	$_SID = (empty($_SID) && !empty($SID) || (!empty($SID) && ($SID != ('sid=' . $_SID)))) ? str_replace('sid=', '', $SID) : $_SID;
+	$is_amp = empty($non_html_amp) ? true : false;
+	$amp_delim = !empty($is_amp) ? '&amp;' : '&';
+	$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+
+	if (empty($params))
+	{
+		$amp_delim = (!empty($char_conversion) ? '%26' : $amp_delim);
+		$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+		if (!empty($SID) && !preg_match('#sid=#', $url))
+		{
+			$url .= $url_delim . $SID;
+		}
+		return $url;
+	}
+
+	// Developers using the hook function need to globalise the $_SID and $_EXTRA_URL on their own and also handle it appropiatly.
+	// They could mimick most of what is within this function
+	if (!empty($phpbb_hook) && $phpbb_hook->call_hook(__FUNCTION__, $url, $params, $is_amp, $session_id))
+	{
+		if ($phpbb_hook->hook_return(__FUNCTION__))
+		{
+			return $phpbb_hook->hook_return_result(__FUNCTION__);
+		}
+	}
+
+	$params_is_array = is_array($params);
+
+	// Get anchor
+	$anchor = '';
+	if (strpos($url, '#') !== false)
+	{
+		list($url, $anchor) = explode('#', $url, 2);
+		$anchor = '#' . $anchor;
+	}
+	elseif (!$params_is_array && strpos($params, '#') !== false)
+	{
+		list($params, $anchor) = explode('#', $params, 2);
+		$anchor = '#' . $anchor;
+	}
+
+	// Handle really simple cases quickly
+	if (($_SID == '') && ($session_id === false) && empty($_EXTRA_URL) && !$params_is_array && !$anchor)
+	{
+		if ($params === false)
+		{
+			return $url;
+		}
+		return $url . (($params !== false) ? $url_delim . $params : '');
+	}
+
+	// Assign sid if session id is not specified
+	if ($session_id === false)
+	{
+		$session_id = $_SID;
+	}
+
+	// Appending custom url parameter?
+	$append_url = (!empty($_EXTRA_URL)) ? implode($amp_delim, $_EXTRA_URL) : '';
+
+	// Use the short variant if possible ;)
+	if ($params === false)
+	{
+		// Append session id
+		if (!$session_id)
+		{
+			return $url . (($append_url) ? $url_delim . $append_url : '') . $anchor;
+		}
+		else
+		{
+			return $url . (($append_url) ? $url_delim . $append_url . $amp_delim : $url_delim) . 'sid=' . $session_id . $anchor;
+		}
+	}
+
+	// Build string if parameters are specified as array
+	if (is_array($params))
+	{
+		$output = array();
+
+		foreach ($params as $key => $item)
+		{
+			if ($item === NULL)
+			{
+				continue;
+			}
+
+			if ($key == '#')
+			{
+				$anchor = '#' . $item;
+				continue;
+			}
+
+			$output[] = $key . '=' . $item;
+		}
+
+		$params = implode($amp_delim, $output);
+	}
+
+	// Append session id and parameters (even if they are empty)
+	// If parameters are empty, the developer can still append his/her parameters without caring about the delimiter
+	return $url . (($append_url) ? $url_delim . $append_url . $amp_delim : $url_delim) . $params . ((!$session_id) ? '' : $amp_delim . 'sid=' . $session_id) . $anchor;
+
+}
+
 /*
 * extract_current_page
 * function backported from phpBB3 - Olympus
@@ -109,6 +222,7 @@ function extract_current_page($root_path)
 	$script_path .= (substr($script_path, -1, 1) == '/') ? '' : '/';
 	$root_script_path .= (substr($root_script_path, -1, 1) == '/') ? '' : '/';
 	$post_forum_url = (defined('POST_FORUM_URL') ? POST_FORUM_URL : 'f');
+	$post_topic_url = (defined('POST_TOPIC_URL') ? POST_TOPIC_URL : 't');
 
 	$page_array += array(
 		'root_script_path'	=> str_replace(' ', '%20', htmlspecialchars($root_script_path)),
@@ -118,6 +232,7 @@ function extract_current_page($root_path)
 		'page'							=> $page,
 		'query_string'			=> $query_string,
 		'forum'							=> (isset($_REQUEST[$post_forum_url]) && $_REQUEST[$post_forum_url] > 0) ? (int) $_REQUEST[$post_forum_url] : 0,
+		'topic'							=> (isset($_REQUEST[$post_topic_url]) && $_REQUEST[$post_topic_url] > 0) ? (int) $_REQUEST[$post_topic_url] : 0,
 		'page_full'					=> $page_full,
 	);
 
@@ -569,151 +684,6 @@ function ip_utf8_decode($string)
 	return $string;
 }
 
-// Initialise user settings on page load
-function init_userprefs($userdata)
-{
-	global $db, $cache, $template, $theme, $images, $lang, $config, $nav_separator;
-	global $class_settings, $tree, $unread;
-
-	// Get all settings
-	$class_settings->setup_settings();
-
-	/*
-	$test_language = request_var(LANG_URL, '');
-	if (!empty($test_language))
-	{
-		$test_language = str_replace(array('.', '/'), '', urldecode($test_language));
-		$config['default_lang'] = is_dir(IP_ROOT_PATH . 'language/lang_' . $test_language) ? $test_language : $config['default_lang'];
-		setcookie($config['cookie_name'] . '_lang', $config['default_lang'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-	}
-	*/
-
-	$default_lang = ltrim(basename(rtrim($config['default_lang'])), "'");
-	if ($userdata['user_id'] != ANONYMOUS)
-	{
-		$default_lang = !empty($userdata['user_lang']) ? ltrim(basename(rtrim($userdata['user_lang'])), "'") : $default_lang;
-
-		$config['board_timezone'] = !empty($userdata['user_timezone']) ? $userdata['user_timezone'] : $config['board_timezone'];
-		$config['default_dateformat'] = !empty($userdata['user_dateformat']) ? $userdata['user_dateformat'] : $config['default_dateformat'];
-
-		$config['topics_per_page'] = !empty($userdata['user_topics_per_page']) ? $userdata['user_topics_per_page'] : $config['topics_per_page'];
-		$config['posts_per_page'] = !empty($userdata['user_posts_per_page']) ? $userdata['user_posts_per_page'] : $config['posts_per_page'];
-		$config['hot_threshold'] = !empty($userdata['user_hot_threshold']) ? $userdata['user_hot_threshold'] : $config['hot_threshold'];
-	}
-
-	if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.' . PHP_EXT)))
-	{
-		if ($userdata['user_id'] != ANONYMOUS)
-		{
-			// For logged in users, try the board default language next
-			$default_lang = ltrim(basename(rtrim($config['default_lang'])), "'");
-		}
-		else
-		{
-			// For guests it means the default language is not present, try english
-			// This is a long shot since it means serious errors in the setup to reach here,
-			// but english is part of a new install so it's worth us trying
-			$default_lang = 'english';
-		}
-
-		if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.' . PHP_EXT)))
-		{
-			message_die(CRITICAL_ERROR, 'Could not locate valid language pack');
-		}
-	}
-
-	// If we've had to change the value in any way then let's write it back to the database
-	// before we go any further since it means there is something wrong with it
-	if (($userdata['user_id'] != ANONYMOUS) && ($userdata['user_lang'] !== $default_lang))
-	{
-		$sql = 'UPDATE ' . USERS_TABLE . "
-			SET user_lang = '" . $default_lang . "'
-			WHERE user_lang = '" . $userdata['user_lang'] . "'";
-		$result = $db->sql_query($sql);
-		$userdata['user_lang'] = $default_lang;
-	}
-	elseif (($userdata['user_id'] === ANONYMOUS) && ($config['default_lang'] !== $default_lang))
-	{
-		$sql = 'UPDATE ' . CONFIG_TABLE . "
-			SET config_value = '" . $default_lang . "'
-			WHERE config_name = 'default_lang'";
-		$result = $db->sql_query($sql);
-	}
-	$config['default_lang'] = $default_lang;
-
-	setup_basic_lang();
-
-	$nav_separator = empty($nav_separator) ? (empty($lang['Nav_Separator']) ? '&nbsp;&raquo;&nbsp;' : $lang['Nav_Separator']) : $nav_separator;
-
-	if (empty($tree['auth']))
-	{
-		get_user_tree($userdata);
-	}
-
-	// MG Logs - BEGIN
-	if ($config['mg_log_actions'] || $config['db_log_actions'])
-	{
-		include(IP_ROOT_PATH . 'includes/log_http_cmd.' . PHP_EXT);
-	}
-	// MG Logs - END
-
-	// Set up style
-	$current_default_style = $config['default_style'];
-	if (!$config['override_user_style'])
-	{
-		$test_style = request_var(STYLE_URL, 0);
-		if ($test_style > 0)
-		{
-			$current_style = $config['default_style'];
-			$config['default_style'] = urldecode($test_style);
-			$config['default_style'] = ($config['default_style'] == 0) ? $current_style : $config['default_style'];
-			$style = $config['default_style'];
-			if ($theme = setup_style($style, $current_default_style, $current_style))
-			{
-				if ($userdata['user_id'] != ANONYMOUS)
-				{
-					// user logged in --> save new style ID in user profile
-					$sql = "UPDATE " . USERS_TABLE . "
-						SET user_style = " . $theme['themes_id'] . "
-						WHERE user_id = " . $userdata['user_id'];
-					$db->sql_query($sql);
-					$userdata['user_style'] = $theme['themes_id'];
-				}
-				/*
-				else
-				{
-					$config['default_style'] = $theme['themes_id'];
-					setcookie($config['cookie_name'] . '_style', $config['default_style'] , (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-				}
-				*/
-				return;
-			}
-		}
-		if (($userdata['user_id'] != ANONYMOUS) && ($userdata['user_style'] > 0))
-		{
-			if ($theme = setup_style($userdata['user_style'], $current_default_style))
-			{
-				return;
-			}
-		}
-	}
-
-	$theme = setup_style($config['default_style'], $current_default_style);
-
-	//<!-- BEGIN Unread Post Information to Database Mod -->
-	$unread = array();
-	if (!defined('IN_CMS') && $userdata['upi2db_access'])
-	{
-		if (empty($unread))
-		{
-			$unread = unread();
-		}
-	}
-	//<!-- END Unread Post Information to Database Mod -->
-
-	return;
-}
-
 /**
 * Get option bitfield from custom data
 *
@@ -749,19 +719,19 @@ function phpbb_optionset($bit, $set, $data)
 }
 
 /*
-* Get user data, $user can be username or user_id.
+* Get user data, $target_user can be username or user_id.
 * If force_str is true, the username will be forced.
 */
-function get_userdata($user, $force_str = false)
+function get_userdata($target_user, $force_str = false)
 {
 	global $db;
 
-	$user = (!is_numeric($user) || $force_str) ? phpbb_clean_username($user) : intval($user);
+	$target_user = (!is_numeric($target_user) || $force_str) ? phpbb_clean_username($target_user) : intval($target_user);
 
 	$sql = "SELECT *
 		FROM " . USERS_TABLE . "
 		WHERE ";
-	$sql .= (is_integer($user) ? ("user_id = " . (int) $user) : ("username_clean = '" . $db->sql_escape(utf8_clean_string($user)) . "'")) . " AND user_id <> " . ANONYMOUS;
+	$sql .= (is_integer($target_user) ? ("user_id = " . (int) $target_user) : ("username_clean = '" . $db->sql_escape(utf8_clean_string($target_user)) . "'")) . " AND user_id <> " . ANONYMOUS;
 	$result = $db->sql_query($sql);
 
 	if ($db->sql_affectedrows() == 0)
@@ -1110,14 +1080,14 @@ function phpbb_email_hash($email)
 */
 function generate_link_hash($link_name)
 {
-	global $userdata;
+	global $user;
 
-	if (!isset($userdata["hash_$link_name"]))
+	if (!isset($user->data["hash_$link_name"]))
 	{
-		$userdata["hash_$link_name"] = substr(sha1($userdata['user_form_salt'] . $link_name), 0, 8);
+		$user->data["hash_$link_name"] = substr(sha1($user->data['user_form_salt'] . $link_name), 0, 8);
 	}
 
-	return $userdata["hash_$link_name"];
+	return $user->data["hash_$link_name"];
 }
 
 
@@ -1138,11 +1108,11 @@ function check_link_hash($token, $link_name)
 */
 function add_form_key($form_name)
 {
-	global $config, $template, $userdata;
+	global $config, $template, $user;
 
 	$now = time();
-	$token_sid = (($userdata['user_id'] == ANONYMOUS) && !empty($config['form_token_sid_guests'])) ? $userdata['session_id'] : '';
-	$token = sha1($now . $userdata['user_form_salt'] . $form_name . $token_sid);
+	$token_sid = (($user->data['user_id'] == ANONYMOUS) && !empty($config['form_token_sid_guests'])) ? $user->data['session_id'] : '';
+	$token = sha1($now . $user->data['user_form_salt'] . $form_name . $token_sid);
 
 	$s_fields = build_hidden_fields(array(
 		'creation_time' => $now,
@@ -1165,7 +1135,7 @@ function add_form_key($form_name)
 */
 function check_form_key($form_name, $timespan = false, $return_page = '', $trigger = false)
 {
-	global $config, $userdata, $lang;
+	global $config, $user, $lang;
 
 	if ($timespan === false)
 	{
@@ -1183,8 +1153,8 @@ function check_form_key($form_name, $timespan = false, $return_page = '', $trigg
 		// If creation_time and the time() now is zero we can assume it was not a human doing this (the check for if ($diff)...
 		if ($diff && (($diff <= $timespan) || ($timespan === -1)))
 		{
-			$token_sid = (($userdata['user_id'] == ANONYMOUS) && !empty($config['form_token_sid_guests'])) ? $userdata['session_id'] : '';
-			$key = sha1($creation_time . $userdata['user_form_salt'] . $form_name . $token_sid);
+			$token_sid = (($user->data['user_id'] == ANONYMOUS) && !empty($config['form_token_sid_guests'])) ? $user->data['session_id'] : '';
+			$key = sha1($creation_time . $user->data['user_form_salt'] . $form_name . $token_sid);
 
 			if ($key === $token)
 			{
@@ -1340,14 +1310,14 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 */
 function jumpbox($action, $match_forum_id = 0)
 {
-	global $db, $template, $userdata, $lang;
+	global $db, $template, $user, $lang;
 
 	// build the jumpbox
 	$boxstring  = '<select name="selected_id" onchange="if(this.options[this.selectedIndex].value != -1){ forms[\'jumpbox\'].submit() }">';
 	$boxstring .= get_tree_option(POST_FORUM_URL . $match_forum_id);
 	$boxstring .= '</select>';
 
-	$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$boxstring .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 	// dump this to template
 	$template->set_filenames(array('jumpbox' => 'jumpbox.tpl'));
@@ -1602,6 +1572,84 @@ function create_server_url($without_script_path = false)
 }
 
 /**
+* Returns url from the session/current page with an re-appended SID with optionally stripping vars from the url
+*/
+function build_url($strip_vars = false)
+{
+	global $user;
+
+	// Append SID
+	$redirect = append_sid($user->page['page'], true);
+
+	// Add delimiter if not there...
+	if (strpos($redirect, '?') === false)
+	{
+		$redirect .= '?';
+	}
+
+	// Strip vars...
+	if (($strip_vars !== false) && strpos($redirect, '?') !== false)
+	{
+		if (!is_array($strip_vars))
+		{
+			$strip_vars = array($strip_vars);
+		}
+
+		$query = $_query = array();
+
+		$args = substr($redirect, strpos($redirect, '?') + 1);
+		$args = ($args) ? explode('&', $args) : array();
+		$redirect = substr($redirect, 0, strpos($redirect, '?'));
+
+		foreach ($args as $argument)
+		{
+			$arguments = explode('=', $argument);
+			$key = $arguments[0];
+			unset($arguments[0]);
+
+			if ($key === '')
+			{
+				continue;
+			}
+
+			$query[$key] = implode('=', $arguments);
+		}
+
+		// Strip the vars off
+		foreach ($strip_vars as $strip)
+		{
+			if (isset($query[$strip]))
+			{
+				unset($query[$strip]);
+			}
+		}
+
+		// Glue the remaining parts together... already urlencoded
+		foreach ($query as $key => $value)
+		{
+			$_query[] = $key . '=' . $value;
+		}
+		$query = implode('&', $_query);
+
+		$redirect .= ($query) ? '?' . $query : '';
+	}
+
+	// We need to be cautious here.
+	// On some situations, the redirect path is an absolute URL, sometimes a relative path
+	// For a relative path, let's prefix it with $phpbb_root_path to point to the correct location,
+	// else we use the URL directly.
+	$url_parts = @parse_url($redirect);
+
+	// URL
+	if (($url_parts !== false) && !empty($url_parts['scheme']) && !empty($url_parts['host']))
+	{
+		return str_replace('&', '&amp;', $redirect);
+	}
+
+	return IP_ROOT_PATH . str_replace('&', '&amp;', $redirect);
+}
+
+/**
 * Redirects the user to another page then exits the script nicely
 * This function is intended for urls within the board. It's not meant to redirect to cross-domains.
 *
@@ -1842,6 +1890,47 @@ function meta_refresh($time, $url)
 }
 
 /**
+* Outputs correct status line header.
+*
+* Depending on php sapi one of the two following forms is used:
+*
+* Status: 404 Not Found
+*
+* HTTP/1.x 404 Not Found
+*
+* HTTP version is taken from HTTP_VERSION environment variable,
+* and defaults to 1.0.
+*
+* Sample usage:
+*
+* send_status_line(404, 'Not Found');
+*
+* @param int $code HTTP status code
+* @param string $message Message for the status code
+* @return void
+*/
+function send_status_line($code, $message)
+{
+	if (substr(strtolower(@php_sapi_name()), 0, 3) === 'cgi')
+	{
+		// in theory, we shouldn't need that due to php doing it. Reality offers a differing opinion, though
+		header("Status: $code $message", true, $code);
+	}
+	else
+	{
+		if (isset($_SERVER['HTTP_VERSION']))
+		{
+			$version = $_SERVER['HTTP_VERSION'];
+		}
+		else
+		{
+			$version = 'HTTP/1.0';
+		}
+		header("$version $code $message", true, $code);
+	}
+}
+
+/**
 * Setup basic lang
 */
 function setup_basic_lang()
@@ -1889,7 +1978,13 @@ function setup_basic_lang()
 
 		foreach ($lang_files as $lang_file)
 		{
-			@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT);
+			// Do not suppress error if in DEBUG_EXTRA mode
+			$include_result = (defined('DEBUG_EXTRA')) ? (include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT)) : (@include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT));
+
+			if ($include_result === false)
+			{
+				die('Language file ' . IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT . ' couldn\'t be opened.');
+			}
 		}
 	}
 	return true;
@@ -1961,7 +2056,7 @@ function get_style($style_id, $from_cache = true)
 /**
 * Setup the default style
 */
-function setup_style($style_id, $current_default_style, $current_style = false)
+function setup_style($style_id, $current_default_style)
 {
 	global $db, $config, $template, $images, $all_styles_array;
 
@@ -1984,32 +2079,19 @@ function setup_style($style_id, $current_default_style, $current_style = false)
 			// We are trying to setup a style which does not exist in the database
 			// Try to fallback to the board default (if the user had a custom style)
 			// and then any users using this style to the default if it succeeds
-			$style_exists = false;
-			if (($style_id != $config['default_style']) || !empty($current_style))
+			if ($style_id != $config['default_style'])
 			{
-				if (!empty($current_style))
-				{
-					$config['default_style'] = $current_style;
-				}
+				$config['default_style'] = $current_default_style;
 				$style_id = (int) $config['default_style'];
 				$template_row = get_style($style_id, true);
 				$style_exists = !empty($template_row) ? true : false;
 
-				if (!$style_exists)
+				if ($style_exists)
 				{
-					$style_id = (int) $current_default_style;
-					$template_row = get_style($style_id, true);
-					$style_exists = !empty($template_row) ? true : false;
-				}
-				else
-				{
-					if (empty($current_style))
-					{
-						$sql = "UPDATE " . USERS_TABLE . "
-							SET user_style = " . (int) $config['default_style'] . "
-							WHERE user_style = '" . $style_id . "'";
-						$result = $db->sql_query($sql);
-					}
+					$sql = "UPDATE " . USERS_TABLE . "
+						SET user_style = " . (int) $config['default_style'] . "
+						WHERE user_style = '" . $style_id . "'";
+					$result = $db->sql_query($sql);
 				}
 			}
 
@@ -2078,18 +2160,18 @@ function check_style_exists($style_id)
 /*
 * Check if a user is allowed to view IP addresses
 */
-function ip_display_auth($userdata, $is_forum = false)
+function ip_display_auth($user_data, $is_forum = false)
 {
 	global $config;
 
-	$is_mod = ($userdata['user_level'] == MOD) ? true : false;
+	$is_mod = ($user_data['user_level'] == MOD) ? true : false;
 	if (!empty($is_forum))
 	{
 		global $is_auth;
 		$is_mod = !empty($is_auth['auth_mod']) ? MOD : USER;
 	}
 
-	$ip_display_auth = (($userdata['user_level'] == ADMIN) || (empty($config['ip_admins_only']) && !empty($is_mod))) ? true : false;
+	$ip_display_auth = (($user_data['user_level'] == ADMIN) || (empty($config['ip_admins_only']) && !empty($is_mod))) ? true : false;
 
 	return $ip_display_auth;
 }
@@ -2109,7 +2191,7 @@ function encode_ip($dotquad_ip)
 function decode_ip($int_ip)
 {
 	$hexipbang = explode('.', chunk_split($int_ip, 2, '.'));
-	return hexdec($hexipbang[0]). '.' . hexdec($hexipbang[1]) . '.' . hexdec($hexipbang[2]) . '.' . hexdec($hexipbang[3]);
+	return hexdec($hexipbang[0]) . '.' . hexdec($hexipbang[1]) . '.' . hexdec($hexipbang[2]) . '.' . hexdec($hexipbang[3]);
 }
 
 /*
@@ -2140,18 +2222,18 @@ function dateserial($year, $month, $day, $hour, $minute, $timezone = 'UTC')
 */
 function get_dst($gmepoch, $tz = 0)
 {
-	global $config, $userdata;
+	global $config, $user;
 
 	$tz = empty($tz) ? $config['board_timezone'] : $tz;
-	if (!empty($userdata) && !$userdata['session_logged_in'])
+	if (!empty($user->data) && !$user->data['session_logged_in'])
 	{
-		$userdata['user_time_mode'] = $config['default_time_mode'];
-		$userdata['user_dst_time_lag'] = $config['default_dst_time_lag'];
+		$user->data['user_time_mode'] = $config['default_time_mode'];
+		$user->data['user_dst_time_lag'] = $config['default_dst_time_lag'];
 	}
-	elseif (!empty($userdata))
+	elseif (!empty($user->data))
 	{
-		$config['default_time_mode'] = $userdata['user_time_mode'];
-		$config['default_dst_time_lag'] = $userdata['user_dst_time_lag'];
+		$config['default_time_mode'] = $user->data['user_time_mode'];
+		$config['default_dst_time_lag'] = $user->data['user_dst_time_lag'];
 	}
 	$time_mode = $config['default_time_mode'];
 	$dst_time_lag = $config['default_dst_time_lag'];
@@ -2177,17 +2259,27 @@ function get_dst($gmepoch, $tz = 0)
 */
 function create_date($format, $gmepoch, $tz = 0)
 {
-	global $config, $userdata, $lang;
+	global $config, $user, $lang;
 	static $translate;
 
 	$tz = empty($tz) ? $config['board_timezone'] : $tz;
 	// We need to force this ==> isset($lang['datetime']) <== otherwise we may have $lang initialized and we don't want that...
 	if (empty($translate) && ($config['default_lang'] != 'english') && isset($lang['datetime']))
 	{
+		$use_short_names = false;
+		if (((strpos($format, '\M') === false) && (strpos($format, 'M') !== false)) || ((strpos($format, '\r') === false) && (strpos($format, 'r') !== false)))
+		{
+			$use_short_names = true;
+		}
 		@reset($lang['datetime']);
 		while (list($match, $replace) = @each($lang['datetime']))
 		{
-			$translate[$match] = $replace;
+			$var_name = $match;
+			if ((strpos($match, '_short') !== false) && $use_short_names)
+			{
+				$var_name = str_replace('_short', '', $match);
+			}
+			$translate[$var_name] = $replace;
 		}
 	}
 
@@ -2521,10 +2613,10 @@ function censor_text($text)
 	// We moved the word censor checks in here because we call this function quite often - and then only need to do the check once
 	if (!isset($censors) || !is_array($censors))
 	{
-		global $userdata, $cache;
+		global $user, $cache;
 
 		// We check here if the user is having viewing censors disabled (and also allowed to do so).
-		if ($userdata['user_allowswearywords'])
+		if ($user->data['user_allowswearywords'])
 		{
 			$censors = array();
 		}
@@ -2665,7 +2757,7 @@ function board_stats()
 /*
 * MG BOTS Parsing Function
 */
-function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $check_inactive = false, $return_id = false)
+function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $check_inactive = false)
 {
 	global $db, $lang;
 	/*
@@ -2683,8 +2775,7 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 	{
 		if ((strpos($browser, 'Firefox') !== false) || (strpos($browser, 'MSIE') !== false) || (strpos($browser, 'Opera') !== false))
 		{
-			$bot_name = false;
-			return $bot_name;
+			return array('name' => false, 'id' => 0);
 		}
 	}
 
@@ -2709,35 +2800,27 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 			{
 				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
-			if ($return_id == true)
-			{
-				$bot_name = $active_bots[$i]['bot_id'];
-			}
-			return $bot_name;
+			return array('name' => $bot_name, 'id' => $active_bots[$i]['bot_id']);
 		}
 
 		if (!empty($active_bots[$i]['bot_ip']))
 		{
 			foreach (explode(',', $active_bots[$i]['bot_ip']) as $bot_ip)
 			{
-				if (strpos(decode_ip($ip_address), trim($bot_ip)) === 0)
+				if (strpos($ip_address, trim($bot_ip)) === 0)
 				{
 					$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
 					if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
 					{
 						message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 					}
-					if ($return_id == true)
-					{
-						$bot_name = $active_bots[$i]['bot_id'];
-					}
-					return $bot_name;
+					return array('name' => $bot_name, 'id' => $active_bots[$i]['bot_id']);
 				}
 			}
 		}
 	}
 
-	return false;
+	return array('name' => false, 'id' => 0);
 }
 
 /*
@@ -3097,7 +3180,7 @@ function get_gravatar($email)
 */
 function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = false, $im_url = false, $im_status = false, $im_lang = false)
 {
-	global $userdata, $lang, $images;
+	global $user, $lang, $images;
 
 	$available_im = array(
 		'chat' => array('field' => 'user_id', 'lang' => 'AJAX_SHOUTBOX_PVT_LINK', 'icon_tpl' => 'icon_im_chat', 'icon_tpl_vt' => 'icon_im_chat', 'url' => '{REF}'),
@@ -3146,11 +3229,11 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 		$im_ref = str_replace('{REF}', $im_ref, $available_im[$im_type]['url']);
 		if ($im_type == 'chat')
 		{
-			if (empty($userdata['session_logged_in']))
+			if (empty($user->data['session_logged_in']))
 			{
 				return '';
 			}
-			$im_ref = '#" onclick="window.open(\'' . append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($userdata['user_id'], $user_data['user_id']) . '|' . max($userdata['user_id'], $user_data['user_id']))) . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;';
+			$im_ref = '#" onclick="window.open(\'' . append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']))) . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;';
 		}
 
 		$im_img = (!empty($im_img) && !empty($im_icon)) ? $im_icon : false;
@@ -3168,7 +3251,7 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 */
 function get_ad($ad_position)
 {
-	global $db, $config, $userdata;
+	global $db, $config, $user;
 
 	$ad_text = '';
 	if (!$config['ads_' . $ad_position])
@@ -3177,7 +3260,7 @@ function get_ad($ad_position)
 	}
 
 	$user_auth = AUTH_ALL;
-	$user_level = ($userdata['user_id'] == ANONYMOUS) ? ANONYMOUS : $userdata['user_level'];
+	$user_level = ($user->data['user_id'] == ANONYMOUS) ? ANONYMOUS : $user->data['user_level'];
 	switch ($user_level)
 	{
 		case ADMIN:
@@ -3376,13 +3459,15 @@ function empty_images_cache_folders($files_per_step = 0)
 	return true;
 }
 
+// Handler, header and footer
+
 /**
 * Page Header
 */
 function page_header($title = '', $parse_template = false)
 {
-	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
-	global $table_prefix, $SID, $_SID, $user_ip;
+	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
+	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
@@ -3400,7 +3485,7 @@ function page_header($title = '', $parse_template = false)
 
 	// gzip_compression
 	$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
-	$config['url_rw_runtime'] = ($config['url_rw'] || ($config['url_rw_guests'] && ($userdata['user_id'] == ANONYMOUS))) ? true : false;
+	$config['url_rw_runtime'] = ($config['url_rw'] || ($config['url_rw_guests'] && ($user->data['user_id'] == ANONYMOUS))) ? true : false;
 
 	if ($config['gzip_compress_runtime'])
 	{
@@ -3482,12 +3567,20 @@ function page_header($title = '', $parse_template = false)
 
 	if (defined('IN_ADMIN') || defined('IN_CMS') || defined('IN_SEARCH') || defined('IN_POSTING'))
 	{
-		$phpbb_meta .= '<meta name="robots" content="noindex,nofollow" />' . "\n";
+		$phpbb_meta_content = 'noindex,nofollow';
 	}
 	else
 	{
-		$phpbb_meta .= '<meta name="robots" content="index,follow" />' . "\n";
+		if (defined('ROBOTS_NOINDEX'))
+		{
+			$phpbb_meta_content = 'noindex';
+		}
+		else
+		{
+			$phpbb_meta_content = 'index,follow';
+		}
 	}
+	$phpbb_meta .= '<meta name="robots" content="' . $phpbb_meta_content . '" />' . "\n";
 
 	$phpbb_meta .= !empty($lang['Extra_Meta']) ? ($lang['Extra_Meta'] . "\n\n") : "\n";
 
@@ -3628,14 +3721,14 @@ function page_header($title = '', $parse_template = false)
 	// Time Management - BEGIN
 	// Format Timezone. We are unable to use array_pop here, because of PHP3 compatibility
 	$s_timezone = str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)));
-	$l_timezone = $lang['tzs'][$s_timezone];
+	$l_timezone = $lang['tz'][$s_timezone];
 
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
-		$userdata['user_time_mode'] = $config['default_time_mode'];
+		$user->data['user_time_mode'] = $config['default_time_mode'];
 	}
 
-	switch ($userdata['user_time_mode'])
+	switch ($user->data['user_time_mode'])
 	{
 		case MANUAL_DST:
 			$time_message = sprintf($lang['All_times'], $l_timezone) . $lang['dst_enabled_mode'];
@@ -3660,7 +3753,7 @@ function page_header($title = '', $parse_template = false)
 	$new_private_chat_switch = false;
 
 	// LOGGED IN CHECK - BEGIN
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		// Allow autologin?
 		if (!isset($config['allow_autologin']) || $config['allow_autologin'])
@@ -3704,15 +3797,15 @@ function page_header($title = '', $parse_template = false)
 	}
 	else
 	{
-		if (!empty($userdata['user_popup_pm']))
+		if (!empty($user->data['user_popup_pm']))
 		{
 			$template->assign_block_vars('switch_enable_pm_popup', array());
 		}
 
-		$u_login_logout = CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $userdata['session_id'];
-		$l_login_logout = $lang['Logout'] . ' (' . $userdata['username'] . ') ';
+		$u_login_logout = CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $user->data['session_id'];
+		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ') ';
 		$l_login_logout2 = $lang['Logout'];
-		$s_last_visit = create_date($config['default_dateformat'], $userdata['user_lastvisit'], $config['board_timezone']);
+		$s_last_visit = create_date($config['default_dateformat'], $user->data['user_lastvisit'], $config['board_timezone']);
 
 		// DOWNLOADS ADV - BEGIN
 		//@include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['downloads']['dir'] . 'includes/dl_page_header_inc.' . PHP_EXT);
@@ -3724,7 +3817,7 @@ function page_header($title = '', $parse_template = false)
 
 			// Birthday - BEGIN
 			// see if user has or have had birthday, also see if greeting are enabled
-			if (($userdata['user_birthday'] != 999999) && $config['birthday_greeting'] && (create_date('Ymd', time(), $config['board_timezone']) >= $userdata['user_next_birthday_greeting'] . realdate('md', $userdata['user_birthday'])))
+			if (($user->data['user_birthday'] != 999999) && $config['birthday_greeting'] && (create_date('Ymd', time(), $config['board_timezone']) >= $user->data['user_next_birthday_greeting'] . realdate('md', $user->data['user_birthday'])))
 			{
 				if (!function_exists('birthday_pm_send'))
 				{
@@ -3734,7 +3827,7 @@ function page_header($title = '', $parse_template = false)
 			}
 			// Birthday - END
 
-			if ($userdata['user_profile_view'] && $userdata['user_profile_view_popup'])
+			if ($user->data['user_profile_view'] && $user->data['user_profile_view_popup'])
 			{
 				$template->assign_vars(array(
 					'PROFILE_VIEW' => true,
@@ -3743,17 +3836,17 @@ function page_header($title = '', $parse_template = false)
 				);
 			}
 
-			if ($userdata['user_new_privmsg'] && !$config['privmsg_disable'])
+			if ($user->data['user_new_privmsg'] && !$config['privmsg_disable'])
 			{
 				$new_pm_switch = true;
-				$l_message_new = ($userdata['user_new_privmsg'] == 1) ? $lang['New_pm'] : $lang['New_pms'];
-				$l_privmsgs_text = sprintf($l_message_new, $userdata['user_new_privmsg']);
+				$l_message_new = ($user->data['user_new_privmsg'] == 1) ? $lang['New_pm'] : $lang['New_pms'];
+				$l_privmsgs_text = sprintf($l_message_new, $user->data['user_new_privmsg']);
 
-				if ($userdata['user_last_privmsg'] > $userdata['user_lastvisit'])
+				if ($user->data['user_last_privmsg'] > $user->data['user_lastvisit'])
 				{
 					$sql = "UPDATE " . USERS_TABLE . "
-						SET user_last_privmsg = '" . $userdata['user_lastvisit'] . "'
-						WHERE user_id = " . $userdata['user_id'];
+						SET user_last_privmsg = '" . $user->data['user_lastvisit'] . "'
+						WHERE user_id = " . $user->data['user_id'];
 					$db->sql_query($sql);
 					$s_privmsg_new = 1;
 					$icon_pm = $images['pm_new_msg'];
@@ -3772,17 +3865,17 @@ function page_header($title = '', $parse_template = false)
 			}
 
 			$icon_private_chat = $images['private_chat'];
-			if (!empty($userdata['user_private_chat_alert']))
+			if (!empty($user->data['user_private_chat_alert']))
 			{
 				$new_private_chat_switch = true;
 				$icon_private_chat = $images['private_chat_alert'];
-				$u_private_chat = append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . $userdata['user_private_chat_alert']);
+				$u_private_chat = append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . $user->data['user_private_chat_alert']);
 			}
 
-			if ($userdata['user_unread_privmsg'])
+			if ($user->data['user_unread_privmsg'])
 			{
-				$l_message_unread = ($userdata['user_unread_privmsg'] == 1) ? $lang['Unread_pm'] : $lang['Unread_pms'];
-				$l_privmsgs_text_unread = sprintf($l_message_unread, $userdata['user_unread_privmsg']);
+				$l_message_unread = ($user->data['user_unread_privmsg'] == 1) ? $lang['Unread_pm'] : $lang['Unread_pms'];
+				$l_privmsgs_text_unread = sprintf($l_message_unread, $user->data['user_unread_privmsg']);
 			}
 			else
 			{
@@ -3800,24 +3893,24 @@ function page_header($title = '', $parse_template = false)
 		// We don't want this SQL being too expensive... so we will allow the number of new messages only for some pages... (you can add here other pages if you wish!)
 		// We will also allow the number of new messages only for users which log on frequently
 		$new_messages_counter_pages_array = array(CMS_PAGE_FORUM, CMS_PAGE_VIEWFORUM);
-		$display_counter = ($config['enable_new_messages_number'] && !$userdata['is_bot'] && in_array($page_url['basename'], $new_messages_counter_pages_array) && ($userdata['user_lastvisit'] > (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 60 * 60 * 24)))) ? true : false;
+		$display_counter = ($config['enable_new_messages_number'] && !$user->data['is_bot'] && in_array($page_url['basename'], $new_messages_counter_pages_array) && ($user->data['user_lastvisit'] > (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 60 * 60 * 24)))) ? true : false;
 		if ($display_counter)
 		{
 			$auth_forum = '';
-			if ($userdata['user_level'] != ADMIN)
+			if ($user->data['user_level'] != ADMIN)
 			{
 				if (!function_exists('auth_forum_read'))
 				{
 					include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
 				}
-				$userdata['auth_forum_id'] = isset($userdata['auth_forum_id']) ? $userdata['auth_forum_id'] : auth_forum_read($userdata);
-				$auth_forum = (!empty($userdata['auth_forum_id'])) ? ' AND forum_id IN (' . $userdata['auth_forum_id'] . ') ' : '';
+				$user->data['auth_forum_id'] = isset($user->data['auth_forum_id']) ? $user->data['auth_forum_id'] : auth_forum_read($user->data);
+				$auth_forum = (!empty($user->data['auth_forum_id'])) ? ' AND forum_id IN (' . $user->data['auth_forum_id'] . ') ' : '';
 			}
 
 			$sql = "SELECT COUNT(post_id) as total
 				FROM " . POSTS_TABLE . "
-				WHERE post_time >= " . $userdata['user_lastvisit'] . $auth_forum . "
-				AND poster_id != " . $userdata['user_id'];
+				WHERE post_time >= " . $user->data['user_lastvisit'] . $auth_forum . "
+				AND poster_id != " . $user->data['user_id'];
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
@@ -3846,15 +3939,15 @@ function page_header($title = '', $parse_template = false)
 		//<!-- BEGIN Unread Post Information to Database Mod -->
 		$upi2db_first_use = '';
 		$u_display_new = array();
-		if($userdata['upi2db_access'])
+		if($user->data['upi2db_access'])
 		{
 			$u_display_new = index_display_new($unread);
 			$template->assign_block_vars('switch_upi2db_on', array());
-			$upi2db_first_use = ($userdata['user_upi2db_datasync'] == '0') ? ('<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n" . 'alert ("' . $lang['upi2db_first_use_txt'] . '");' . "\n" . '// ]]>' . "\n" . '</script>') : '';
+			$upi2db_first_use = ($user->data['user_upi2db_datasync'] == '0') ? ('<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n" . 'alert ("' . $lang['upi2db_first_use_txt'] . '");' . "\n" . '// ]]>' . "\n" . '</script>') : '';
 		}
 		else
 		{
-			if ($userdata['session_logged_in'])
+			if ($user->data['session_logged_in'])
 			{
 				$template->assign_block_vars('switch_upi2db_off', array());
 			}
@@ -3870,7 +3963,7 @@ function page_header($title = '', $parse_template = false)
 				define('DIGEST_SITE_URL', $digest_server_url);
 			}
 			@include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_digests.' . PHP_EXT);
-			if ($userdata['session_logged_in'])
+			if ($user->data['session_logged_in'])
 			{
 				$template->assign_block_vars('switch_show_digests', array());
 			}
@@ -3881,7 +3974,7 @@ function page_header($title = '', $parse_template = false)
 			// MG PHP Cron Emulation For Digests - BEGIN
 			$is_allowed = true;
 			// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
-			$is_allowed = (!$userdata['session_logged_in']) ? true : false;
+			$is_allowed = (!$user->data['session_logged_in']) ? true : false;
 			$digests_pages_array = array(CMS_PAGE_PROFILE, CMS_PAGE_POSTING);
 			if ($is_allowed && !in_array($page_url['basename'], $digests_pages_array))
 			{
@@ -3931,7 +4024,7 @@ function page_header($title = '', $parse_template = false)
 		$l_online_users = '';
 		$ac_online_text = '';
 		$ac_username_lists = '';
-		if (defined('SHOW_ONLINE') && !$userdata['is_bot'])
+		if (defined('SHOW_ONLINE') && !$user->data['is_bot'])
 		{
 			include(IP_ROOT_PATH . 'includes/users_online_block.' . PHP_EXT);
 		}
@@ -3942,11 +4035,11 @@ function page_header($title = '', $parse_template = false)
 		* CrackerTracker IP Range Scanner
 		*/
 		$marknow = request_var('marknow', '');
-		if (($marknow == 'ipfeature') && $userdata['session_logged_in'])
+		if (($marknow == 'ipfeature') && $user->data['session_logged_in'])
 		{
 			// Mark IP Feature Read
-			$userdata['ct_last_ip'] = $userdata['ct_last_used_ip'];
-			$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_last_ip = ct_last_used_ip WHERE user_id=' . $userdata['user_id'];
+			$user->data['ct_last_ip'] = $user->data['ct_last_used_ip'];
+			$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_last_ip = ct_last_used_ip WHERE user_id=' . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 
 			if (!empty($_SERVER['HTTP_REFERER']))
@@ -3956,7 +4049,7 @@ function page_header($title = '', $parse_template = false)
 			}
 		}
 
-		if (($config['ctracker_login_ip_check'] == 1) && ($userdata['ct_enable_ip_warn'] == 1) && $userdata['session_logged_in'])
+		if (($config['ctracker_login_ip_check'] == 1) && ($user->data['ct_enable_ip_warn'] == 1) && $user->data['session_logged_in'])
 		{
 			include_once(IP_ROOT_PATH . 'includes/ctracker/classes/class_ct_userfunctions.' . PHP_EXT);
 			$ctracker_user = new ct_userfunctions();
@@ -3978,11 +4071,11 @@ function page_header($title = '', $parse_template = false)
 		/*
 		* CrackerTracker Global Message Function
 		*/
-		if (($marknow == 'globmsg') && $userdata['session_logged_in'])
+		if (($marknow == 'globmsg') && $user->data['session_logged_in'])
 		{
 			// Mark Global Message as read
-			$userdata['ct_global_msg_read'] = 0;
-			$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_global_msg_read = 0 WHERE user_id=' . $userdata['user_id'];
+			$user->data['ct_global_msg_read'] = 0;
+			$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_global_msg_read = 0 WHERE user_id=' . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 
 			if (!empty($_SERVER['HTTP_REFERER']))
@@ -3992,7 +4085,7 @@ function page_header($title = '', $parse_template = false)
 			}
 		}
 
-		if (($userdata['ct_global_msg_read'] == 1) && $userdata['session_logged_in'] && ($config['ctracker_global_message'] != ''))
+		if (($user->data['ct_global_msg_read'] == 1) && $user->data['session_logged_in'] && ($config['ctracker_global_message'] != ''))
 		{
 			// Output Global Message
 			$global_message_output = '';
@@ -4016,7 +4109,7 @@ function page_header($title = '', $parse_template = false)
 			);
 		}
 
-		if (((($config['login_history'] == 1) || ($config['login_ip_check'] == 1)) && ($userdata['session_logged_in'])))
+		if (((($config['login_history'] == 1) || ($config['login_ip_check'] == 1)) && ($user->data['session_logged_in'])))
 		{
 			$template->assign_block_vars('login_sec_link', array());
 		}
@@ -4024,15 +4117,15 @@ function page_header($title = '', $parse_template = false)
 		/*
 		* CrackerTracker Password Expiry Check
 		*/
-		if ($userdata['session_logged_in'] && ($config['ctracker_pw_control'] == 1))
+		if ($user->data['session_logged_in'] && ($config['ctracker_pw_control'] == 1))
 		{
-			$pwd_expiry_time = $userdata['user_passchg'] + (!empty($config['ctracker_pw_validity']) ? (int) $config['ctracker_pw_validity'] : 365) * 24 * 60 * 60;
+			$pwd_expiry_time = $user->data['user_passchg'] + (!empty($config['ctracker_pw_validity']) ? (int) $config['ctracker_pw_validity'] : 365) * 24 * 60 * 60;
 			if (time() > $pwd_expiry_time)
 			{
 				$template->assign_block_vars('ctracker_message', array(
 					'ROW_COLOR' => 'ffdfdf',
 					'ICON_GLOB' => $images['ctracker_note'],
-					'L_MESSAGE_TEXT' => sprintf($lang['ctracker_info_pw_expired'], $config['ctracker_pw_validity'], $userdata['user_id']),
+					'L_MESSAGE_TEXT' => sprintf($lang['ctracker_info_pw_expired'], $config['ctracker_pw_validity'], $user->data['user_id']),
 					'L_MARK_MESSAGE' => '',
 					'U_MARK_MESSAGE' => ''
 					)
@@ -4042,7 +4135,7 @@ function page_header($title = '', $parse_template = false)
 		/*
 		* CrackerTracker Debug Mode Check
 		*/
-		if (defined('CT_DEBUG_MODE') && (CT_DEBUG_MODE === true) && ($userdata['user_level'] == ADMIN))
+		if (defined('CT_DEBUG_MODE') && (CT_DEBUG_MODE === true) && ($user->data['user_level'] == ADMIN))
 		{
 			$template->assign_block_vars('ctracker_message', array(
 				'ROW_COLOR' => 'ffdfdf',
@@ -4178,19 +4271,19 @@ function page_header($title = '', $parse_template = false)
 
 			'L_CPL_ZEBRA_EXPLAIN' => $lang['FRIENDS_EXPLAIN'],
 
-			'U_CPL_PROFILE_VIEWED' => append_sid('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $userdata['user_id']),
+			'U_CPL_PROFILE_VIEWED' => append_sid('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $user->data['user_id']),
 			'U_CPL_NEWMSG' => append_sid(CMS_PAGE_PRIVMSG . '?mode=post'),
 			'U_CPL_REGISTRATION_INFO' => append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=reg_info'),
-			'U_CPL_DELETE_ACCOUNT' => append_sid('contact_us.' . PHP_EXT . '?account_delete=' . $userdata['user_id']),
+			'U_CPL_DELETE_ACCOUNT' => append_sid('contact_us.' . PHP_EXT . '?account_delete=' . $user->data['user_id']),
 			'U_CPL_PROFILE_INFO' => append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=profile_info'),
 			'U_CPL_PREFERENCES' => append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=preferences'),
 			'U_CPL_BOARD_SETTINGS' => append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=board_settings'),
 			'U_CPL_AVATAR_PANEL' => append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=avatar'),
 			'U_CPL_SIGNATURE' => append_sid(CMS_PAGE_PROFILE . '?mode=signature'),
-			'U_CPL_OWN_POSTS' => append_sid(CMS_PAGE_SEARCH. '?search_author=' . urlencode($userdata['username']) . '&amp;showresults=posts'),
-			'U_CPL_OWN_PICTURES' => append_sid('album.' . PHP_EXT . '?user_id=' . $userdata['user_id']),
-			'U_CPL_CALENDAR_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;module=calendar_settings&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
-			'U_CPL_SUBFORUM_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;module=forums_settings&amp;' . POST_USERS_URL . '=' . $userdata['user_id']),
+			'U_CPL_OWN_POSTS' => append_sid(CMS_PAGE_SEARCH. '?search_author=' . urlencode($user->data['username']) . '&amp;showresults=posts'),
+			'U_CPL_OWN_PICTURES' => append_sid('album.' . PHP_EXT . '?user_id=' . $user->data['user_id']),
+			'U_CPL_CALENDAR_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;module=calendar_settings&amp;' . POST_USERS_URL . '=' . $user->data['user_id']),
+			'U_CPL_SUBFORUM_SETTINGS' => append_sid('profile_options.' . PHP_EXT . '?sub=preferences&amp;module=forums_settings&amp;' . POST_USERS_URL . '=' . $user->data['user_id']),
 			'U_CPL_SUBSCFORUMS' => append_sid('subsc_forums.' . PHP_EXT),
 			'U_CPL_BOOKMARKS' => append_sid(CMS_PAGE_SEARCH . '?search_id=bookmarks'),
 			'U_CPL_INBOX' => append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox'),
@@ -4375,7 +4468,7 @@ function page_header($title = '', $parse_template = false)
 	}
 	// Mighty Gorgon - CMS IMAGES - END
 
-	if ($config['board_disable'] && ($userdata['user_level'] == ADMIN))
+	if ($config['board_disable'] && ($user->data['user_level'] == ADMIN))
 	{
 		$template->assign_block_vars('switch_admin_disable_board', array());
 	}
@@ -4385,7 +4478,7 @@ function page_header($title = '', $parse_template = false)
 		$cms_page['global_blocks'] = (empty($cms_page['global_blocks']) ? false : true);
 		//$cms_page['global_blocks'] = ((!isset($cms_page['page_id']) || !$cms_page['global_blocks']) ? false : true);
 		$cms_page_blocks = ((empty($cms_page['page_id']) || empty($cms_config_layouts[$cms_page['page_id']])) ? false : true);
-		if(empty($gen_simple_header) && !defined('HAS_DIED') && !defined('IN_LOGIN') && ($cms_page['global_blocks'] || $cms_page_blocks) && (!$config['board_disable'] || ($userdata['user_level'] == ADMIN)))
+		if(empty($gen_simple_header) && !defined('HAS_DIED') && !defined('IN_LOGIN') && ($cms_page['global_blocks'] || $cms_page_blocks) && (!$config['board_disable'] || ($user->data['user_level'] == ADMIN)))
 		{
 			$template->assign_var('SWITCH_CMS_GLOBAL_BLOCKS', true);
 			$ip_cms->cms_parse_blocks($cms_page['page_id'], !empty($cms_page['page_id']), $cms_page['global_blocks'], 'header');
@@ -4434,7 +4527,7 @@ function page_header($title = '', $parse_template = false)
 		}
 	}
 
-	if (($userdata['user_level'] != ADMIN) && $config['board_disable'] && !defined('HAS_DIED') && !defined('IN_ADMIN') && !defined('IN_LOGIN'))
+	if (($user->data['user_level'] != ADMIN) && $config['board_disable'] && !defined('HAS_DIED') && !defined('IN_ADMIN') && !defined('IN_LOGIN'))
 	{
 		if($config['board_disable_mess_st'])
 		{
@@ -4473,8 +4566,8 @@ function page_header($title = '', $parse_template = false)
 */
 function page_footer($exit = true, $template_to_parse = 'body', $parse_template = false)
 {
-	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
-	global $table_prefix, $SID, $_SID, $user_ip;
+	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
+	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
@@ -4484,14 +4577,14 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $unread;
 
 	$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
-	$config['url_rw_runtime'] = (isset($config['url_rw_runtime']) ? $config['url_rw_runtime'] : (($config['url_rw'] || ($config['url_rw_guests'] && ($userdata['user_id'] == ANONYMOUS))) ? true : false));
+	$config['url_rw_runtime'] = (isset($config['url_rw_runtime']) ? $config['url_rw_runtime'] : (($config['url_rw'] || ($config['url_rw_guests'] && ($user->data['user_id'] == ANONYMOUS))) ? true : false));
 
 	if (!defined('IN_CMS'))
 	{
 		$cms_page['global_blocks'] = (empty($cms_page['global_blocks']) ? false : true);
 		//$cms_page['global_blocks'] = ((!isset($cms_page['page_id']) || !$cms_page['global_blocks']) ? false : true);
 		$cms_page_blocks = ((empty($cms_page['page_id']) || empty($cms_config_layouts[$cms_page['page_id']])) ? false : true);
-		if(empty($gen_simple_header) && !defined('HAS_DIED') && !defined('IN_LOGIN') && ($cms_page['global_blocks'] || $cms_page_blocks) && (!$config['board_disable'] || ($userdata['user_level'] == ADMIN)))
+		if(empty($gen_simple_header) && !defined('HAS_DIED') && !defined('IN_LOGIN') && ($cms_page['global_blocks'] || $cms_page_blocks) && (!$config['board_disable'] || ($user->data['user_level'] == ADMIN)))
 		{
 			$template->assign_var('SWITCH_CMS_GLOBAL_BLOCKS', true);
 			if ($ip_cms->cms_parse_blocks($cms_page['page_id'], !empty($cms_page['page_id']), $cms_page['global_blocks'], 'tailcenter'))
@@ -4525,7 +4618,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		// CrackerTracker v5.x
 		/*
 		include_once(IP_ROOT_PATH . 'includes/ctracker/engines/ct_footer.' . PHP_EXT);
-		$output_login_status = ($userdata['ct_enable_ip_warn'] ? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off']);
+		$output_login_status = ($user->data['ct_enable_ip_warn'] ? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off']);
 
 		$template->assign_vars(array(
 			'CRACKER_TRACKER_FOOTER' => create_footer_layout($config['ctracker_footer_layout']),
@@ -4567,7 +4660,6 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	{
 		$cron_time = time();
 		$cron_append = '';
-		//$cron_types = array('queue', 'digests', 'files', 'database', 'cache', 'sql', 'users', 'topics', 'sessions');
 		$cron_types = array('files', 'database', 'cache', 'sql', 'users', 'topics');
 
 		for ($i = 0; $i < sizeof($cron_types); $i++)
@@ -4579,12 +4671,17 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 			}
 		}
 
-		// We can force digests as all checks are performed by the function
-		$last_send_time = @getdate($config['cron_digests_last_run']);
+		// We can force hours crons as all checks are performed by the function
+		$hour_cron_types = array('digests', 'birthdays');
 		$cur_time = @getdate();
-		if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0) && ($cur_time['hours'] <> $last_send_time['hours']))
+		foreach ($hour_cron_types as $hour_cron_type)
 		{
-			$cron_append .= (empty($cron_append) ? '?' : '&amp;') . 'digests=1';
+			$config['cron_' . $hour_cron_type . '_last_run'] = ($config['cron_' . $hour_cron_type . '_last_run'] == 0) ? (time() - 3600) : $config['cron_' . $hour_cron_type . '_last_run'];
+			$last_send_time = @getdate($config['cron_' . $hour_cron_type . '_last_run']);
+			if (!empty($config['cron_' . $hour_cron_type . '_interval']) && ($config['cron_' . $hour_cron_type . '_interval'] > 0) && ($cur_time['hours'] != $last_send_time['hours']))
+			{
+				$cron_append .= (empty($cron_append) ? '?' : '&amp;') . $hour_cron_type . '=1';
+			}
 		}
 
 		if (!empty($cron_append))
@@ -4599,7 +4696,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		// Page generation time - BEGIN
 		/* Set $page_gen_allowed to FALSE if you want only Admins to view page generation info */
 		$page_gen_allowed = true;
-		if (($userdata['user_level'] == ADMIN) || $page_gen_allowed)
+		if (($user->data['user_level'] == ADMIN) || $page_gen_allowed)
 		{
 			$gzip_text = ($config['gzip_compress_runtime']) ? 'GZIP ' . $lang['Enabled']: 'GZIP ' . $lang['Disabled'];
 			$debug_text = (DEBUG == true) ? $lang['Debug_On'] : $lang['Debug_Off'];
@@ -4615,7 +4712,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 			$php_part = 100 - $sql_part;
 
 			// Mighty Gorgon - Extra Debug - BEGIN
-			if (defined('DEBUG_EXTRA') && ($userdata['user_level'] == ADMIN))
+			if (defined('DEBUG_EXTRA') && ($user->data['user_level'] == ADMIN))
 			{
 				if (function_exists('memory_get_usage'))
 				{
@@ -4634,8 +4731,8 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 				}
 			}
 
-			//if (defined('DEBUG_EXTRA') && ($userdata['user_level'] == ADMIN))
-			if (defined('DEBUG_EXTRA') && !empty($_REQUEST['explain']) && ($userdata['user_level'] == ADMIN) && method_exists($db, 'sql_report'))
+			//if (defined('DEBUG_EXTRA') && ($user->data['user_level'] == ADMIN))
+			if (defined('DEBUG_EXTRA') && !empty($_REQUEST['explain']) && ($user->data['user_level'] == ADMIN) && method_exists($db, 'sql_report'))
 			{
 				$db->sql_report('display');
 			}
@@ -4769,6 +4866,72 @@ function full_page_generation($page_template, $page_title = '', $page_descriptio
 }
 
 /**
+* Add log event
+*/
+function add_log()
+{
+	global $db, $user;
+
+	// In phpBB 3.1.x i want to have logging in a class to be able to control it
+	// For now, we need a quite hakish approach to circumvent logging for some actions
+	// @todo implement cleanly
+	if (!empty($GLOBALS['skip_add_log']))
+	{
+		return false;
+	}
+
+	$args = func_get_args();
+
+	$mode = array_shift($args);
+	$reportee_id = ($mode == 'user') ? intval(array_shift($args)) : '';
+	$forum_id = ($mode == 'mod') ? intval(array_shift($args)) : '';
+	$topic_id = ($mode == 'mod') ? intval(array_shift($args)) : '';
+	$action = array_shift($args);
+	$data = (!sizeof($args)) ? '' : serialize($args);
+
+	$sql_ary = array(
+		'user_id' => (empty($user->data)) ? ANONYMOUS : $user->data['user_id'],
+		'log_ip' => $user->ip,
+		'log_time' => time(),
+		'log_operation' => $action,
+		'log_data' => $data,
+	);
+
+	switch ($mode)
+	{
+		case 'admin':
+			$sql_ary['log_type'] = LOG_ADMIN;
+		break;
+
+		case 'mod':
+			$sql_ary += array(
+				'log_type' => LOG_MOD,
+				'forum_id' => $forum_id,
+				'topic_id' => $topic_id
+			);
+		break;
+
+		case 'user':
+			$sql_ary += array(
+				'log_type' => LOG_USERS,
+				'reportee_id' => $reportee_id
+			);
+		break;
+
+		case 'critical':
+			$sql_ary['log_type'] = LOG_CRITICAL;
+		break;
+
+		default:
+			return false;
+	}
+
+	$db->sql_query('INSERT INTO ' . LOG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary));
+
+	return $db->sql_nextid();
+}
+
+/**
 * Return a nicely formatted backtrace (parts from the php manual by diz at ysagoon dot com)
 */
 function get_backtrace()
@@ -4825,6 +4988,254 @@ function get_backtrace()
 	}
 	$output .= '</div>';
 	return $output;
+}
+
+/**
+* This function returns a regular expression pattern for commonly used expressions
+* Use with / as delimiter for email mode and # for url modes
+* mode can be: ipv4|ipv6
+*/
+function get_preg_expression($mode)
+{
+	switch ($mode)
+	{
+		// Whoa these look impressive!
+		// The code to generate the following two regular expressions which match valid IPv4/IPv6 addresses can be found in the develop directory
+		case 'ipv4':
+			return '#^(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$#';
+		break;
+
+		case 'ipv6':
+			return '#^(?:(?:(?:[\dA-F]{1,4}:){6}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:::(?:[\dA-F]{1,4}:){5}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:):(?:[\dA-F]{1,4}:){4}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,2}:(?:[\dA-F]{1,4}:){3}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,3}:(?:[\dA-F]{1,4}:){2}(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,4}:(?:[\dA-F]{1,4}:)(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,5}:(?:[\dA-F]{1,4}:[\dA-F]{1,4}|(?:(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?:\d{1,2}|1\d\d|2[0-4]\d|25[0-5])))|(?:(?:[\dA-F]{1,4}:){1,6}:[\dA-F]{1,4})|(?:(?:[\dA-F]{1,4}:){1,7}:))$#i';
+		break;
+	}
+
+	return '';
+}
+
+/**
+* Returns the first block of the specified IPv6 address and as many additional
+* ones as specified in the length paramater.
+* If length is zero, then an empty string is returned.
+* If length is greater than 3 the complete IP will be returned
+*/
+function short_ipv6($ip, $length)
+{
+	if ($length < 1)
+	{
+		return '';
+	}
+
+	// extend IPv6 addresses
+	$blocks = substr_count($ip, ':') + 1;
+	if ($blocks < 9)
+	{
+		$ip = str_replace('::', ':' . str_repeat('0000:', 9 - $blocks), $ip);
+	}
+	if ($ip[0] == ':')
+	{
+		$ip = '0000' . $ip;
+	}
+	if ($length < 4)
+	{
+		$ip = implode(':', array_slice(explode(':', $ip), 0, 1 + $length));
+	}
+
+	return $ip;
+}
+
+/**
+* Wrapper for php's checkdnsrr function.
+*
+* @param string $host:Fully-Qualified Domain Name
+* @param string $type: Resource record type to lookup
+*						Supported types are: MX (default), A, AAAA, NS, TXT, CNAME
+*						Other types may work or may not work
+*
+* @return mixed: true if entry found,
+*					false if entry not found,
+*					null if this function is not supported by this environment
+*
+* Since null can also be returned, you probably want to compare the result
+* with === true or === false,
+*
+* @author bantu
+*/
+function phpbb_checkdnsrr($host, $type = 'MX')
+{
+	// The dot indicates to search the DNS root (helps those having DNS prefixes on the same domain)
+	if (substr($host, -1) == '.')
+	{
+		$host_fqdn = $host;
+		$host = substr($host, 0, -1);
+	}
+	else
+	{
+		$host_fqdn = $host . '.';
+	}
+	// $host: has format some.host.example.com
+	// $host_fqdn: has format some.host.example.com.
+
+	// If we're looking for an A record we can use gethostbyname()
+	if (($type == 'A') && function_exists('gethostbyname'))
+	{
+		return (@gethostbyname($host_fqdn) == $host_fqdn) ? false : true;
+	}
+
+	// checkdnsrr() is available on Windows since PHP 5.3,
+	// but until 5.3.3 it only works for MX records
+	// See: http://bugs.php.net/bug.php?id=51844
+
+	// Call checkdnsrr() if
+	// we're looking for an MX record or
+	// we're not on Windows or
+	// we're running a PHP version where #51844 has been fixed
+
+	// checkdnsrr() supports AAAA since 5.0.0
+	// checkdnsrr() supports TXT since 5.2.4
+	if ((($type == 'MX') || (DIRECTORY_SEPARATOR != '\\') || version_compare(PHP_VERSION, '5.3.3', '>=')) && (($type != 'AAAA') || version_compare(PHP_VERSION, '5.0.0', '>=')) && (($type != 'TXT') || version_compare(PHP_VERSION, '5.2.4', '>=')) && function_exists('checkdnsrr')
+	)
+	{
+		return checkdnsrr($host_fqdn, $type);
+	}
+
+	// dns_get_record() is available since PHP 5; since PHP 5.3 also on Windows,
+	// but on Windows it does not work reliable for AAAA records before PHP 5.3.1
+
+	// Call dns_get_record() if
+	// we're not looking for an AAAA record or
+	// we're not on Windows or
+	// we're running a PHP version where AAAA lookups work reliable
+	if ((($type != 'AAAA') || (DIRECTORY_SEPARATOR != '\\') || version_compare(PHP_VERSION, '5.3.1', '>=')) && function_exists('dns_get_record'))
+	{
+		// dns_get_record() expects an integer as second parameter
+		// We have to convert the string $type to the corresponding integer constant.
+		$type_constant = 'DNS_' . $type;
+		$type_param = (defined($type_constant)) ? constant($type_constant) : DNS_ANY;
+
+		// dns_get_record() might throw E_WARNING and return false for records that do not exist
+		$resultset = @dns_get_record($host_fqdn, $type_param);
+
+		if (empty($resultset) || !is_array($resultset))
+		{
+			return false;
+		}
+		elseif ($type_param == DNS_ANY)
+		{
+			// $resultset is a non-empty array
+			return true;
+		}
+
+		foreach ($resultset as $result)
+		{
+			if (isset($result['host']) && ($result['host'] == $host) && isset($result['type']) && ($result['type'] == $type))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// If we're on Windows we can still try to call nslookup via exec() as a last resort
+	if ((DIRECTORY_SEPARATOR == '\\') && function_exists('exec'))
+	{
+		@exec('nslookup -type=' . escapeshellarg($type) . ' ' . escapeshellarg($host_fqdn), $output);
+
+		// If output is empty, the nslookup failed
+		if (empty($output))
+		{
+			return NULL;
+		}
+
+		foreach ($output as $line)
+		{
+			$line = trim($line);
+
+			if (empty($line))
+			{
+				continue;
+			}
+
+			// Squash tabs and multiple whitespaces to a single whitespace.
+			$line = preg_replace('/\s+/', ' ', $line);
+
+			switch ($type)
+			{
+				case 'MX':
+					if (stripos($line, "$host MX") === 0)
+					{
+						return true;
+					}
+				break;
+
+				case 'NS':
+					if (stripos($line, "$host nameserver") === 0)
+					{
+						return true;
+					}
+				break;
+
+				case 'TXT':
+					if (stripos($line, "$host text") === 0)
+					{
+						return true;
+					}
+				break;
+
+				case 'CNAME':
+					if (stripos($line, "$host canonical name") === 0)
+					{
+						return true;
+					}
+
+				default:
+				case 'A':
+				case 'AAAA':
+					if (!empty($host_matches))
+					{
+						// Second line
+						if (stripos($line, "Address: ") === 0)
+						{
+							return true;
+						}
+						else
+						{
+							$host_matches = false;
+						}
+					}
+					else if (stripos($line, "Name: $host") === 0)
+					{
+						// First line
+						$host_matches = true;
+					}
+				break;
+			}
+		}
+
+		return false;
+	}
+
+	return NULL;
+}
+
+/**
+* Handler for init calls in phpBB. This function is called in user::setup();
+* This function supports hooks.
+*/
+function phpbb_user_session_handler()
+{
+	global $phpbb_hook;
+
+	if (!empty($phpbb_hook) && $phpbb_hook->call_hook(__FUNCTION__))
+	{
+		if ($phpbb_hook->hook_return(__FUNCTION__))
+		{
+			return $phpbb_hook->hook_return_result(__FUNCTION__);
+		}
+	}
+
+	return;
 }
 
 /**
@@ -4975,8 +5386,8 @@ function html_message($msg_title, $msg_text, $return_url)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
-	global $table_prefix, $SID, $_SID, $user_ip;
+	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
+	global $table_prefix, $SID, $_SID;
 	global $gen_simple_header, $session_length, $starttime, $base_memory_usage, $do_gzip_compress;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $nav_separator, $nav_links;
@@ -5074,11 +5485,12 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		}
 	}
 
-	if(empty($userdata) && (($msg_code == GENERAL_MESSAGE) || ($msg_code == GENERAL_ERROR)))
+	if(empty($user->data) && (($msg_code == GENERAL_MESSAGE) || ($msg_code == GENERAL_ERROR)))
 	{
 		// Start session management
-		$userdata = session_pagestart($user_ip);
-		init_userprefs($userdata);
+		$user->session_begin();
+		//$auth->acl($user->data);
+		$user->setup();
 		// End session management
 	}
 

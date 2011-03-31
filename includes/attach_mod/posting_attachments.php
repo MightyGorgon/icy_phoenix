@@ -227,7 +227,7 @@ class attach_parent
 	*/
 	function handle_attachments($mode)
 	{
-		global $is_auth, $config, $refresh, $post_id, $submit, $preview, $error, $error_msg, $lang, $template, $userdata, $db;
+		global $is_auth, $config, $refresh, $post_id, $submit, $preview, $error, $error_msg, $lang, $template, $user, $db;
 
 		//
 		// ok, what shall we do ;)
@@ -249,7 +249,7 @@ class attach_parent
 				$mode = 'editpost';
 			}
 
-			if ($userdata['user_level'] == ADMIN)
+			if ($user->data['user_level'] == ADMIN)
 			{
 				$is_auth['auth_attachments'] = 1;
 				$max_attachments = ADMIN_MAX_ATTACHMENTS;
@@ -262,7 +262,7 @@ class attach_parent
 		}
 		else
 		{
-			if ($userdata['user_level'] == ADMIN)
+			if ($user->data['user_level'] == ADMIN)
 			{
 				$max_attachments = ADMIN_MAX_ATTACHMENTS;
 			}
@@ -307,7 +307,7 @@ class attach_parent
 
 		if ($this->page == PAGE_PRIVMSGS)
 		{
-			if ($userdata['user_level'] == ADMIN)
+			if ($user->data['user_level'] == ADMIN)
 			{
 				$auth = true;
 			}
@@ -682,16 +682,16 @@ class attach_parent
 
 		if ($message_type == 'pm')
 		{
-			global $userdata, $to_userdata;
+			global $user, $to_userdata;
 
 			$post_id = 0;
 			$privmsgs_id = (int) $message_id;
-			$user_id_1 = (int) $userdata['user_id'];
+			$user_id_1 = (int) $user->data['user_id'];
 			$user_id_2 = (int) $to_userdata['user_id'];
 		}
 		elseif ($message_type = 'post')
 		{
-			global $post_info, $userdata;
+			global $post_info, $user;
 
 			$post_id = (int) $message_id;
 			$privmsgs_id = 0;
@@ -700,7 +700,7 @@ class attach_parent
 
 			if (!$user_id_1)
 			{
-				$user_id_1 = (int) $userdata['user_id'];
+				$user_id_1 = (int) $user->data['user_id'];
 			}
 		}
 
@@ -791,7 +791,7 @@ class attach_parent
 	*/
 	function display_attachment_bodies()
 	{
-		global $config, $db, $is_auth, $lang, $mode, $template, $upload_dir, $userdata, $forum_id;
+		global $config, $db, $is_auth, $lang, $mode, $template, $upload_dir, $user, $forum_id;
 
 		// Choose what to display
 		$value_add = $value_posted = 0;
@@ -942,7 +942,7 @@ class attach_parent
 				);
 
 				// Thumbnail there ? And is the User Admin or Mod ? Then present the 'Delete Thumbnail' Button
-				if (intval($this->attachment_thumbnail_list[$i]) == 1 && ((isset($is_auth['auth_mod']) && $is_auth['auth_mod']) || $userdata['user_level'] == ADMIN))
+				if (intval($this->attachment_thumbnail_list[$i]) == 1 && ((isset($is_auth['auth_mod']) && $is_auth['auth_mod']) || $user->data['user_level'] == ADMIN))
 				{
 					$template->assign_block_vars('attach_row.switch_thumbnail', array());
 				}
@@ -962,7 +962,7 @@ class attach_parent
 	*/
 	function upload_attachment()
 	{
-		global $db, $userdata, $lang, $config, $forum_id, $error, $error_msg, $upload_dir;
+		global $db, $user, $lang, $config, $forum_id, $error, $error_msg, $upload_dir;
 
 		$this->post_attach = ($this->filename != '') ? true : false;
 
@@ -1043,7 +1043,7 @@ class attach_parent
 			}
 
 			// Check Forum Permissions
-			if (!$error && ($this->page != PAGE_PRIVMSGS) && ($userdata['user_level'] != ADMIN) && !is_forum_authed($auth_cache, $forum_id) && (trim($auth_cache) != ''))
+			if (!$error && ($this->page != PAGE_PRIVMSGS) && ($user->data['user_level'] != ADMIN) && !is_forum_authed($auth_cache, $forum_id) && (trim($auth_cache) != ''))
 			{
 				$error = true;
 				if(!empty($error_msg))
@@ -1087,7 +1087,7 @@ class attach_parent
 
 					if (!$new_filename)
 					{
-						$u_id = (intval($userdata['user_id']) == ANONYMOUS) ? 0 : intval($userdata['user_id']);
+						$u_id = (intval($user->data['user_id']) == ANONYMOUS) ? 0 : intval($user->data['user_id']);
 						$new_filename = $u_id . '_' . $this->filetime . '.' . $this->extension;
 					}
 
@@ -1101,7 +1101,7 @@ class attach_parent
 				}
 				else
 				{
-					$u_id = (intval($userdata['user_id']) == ANONYMOUS) ? 0 : intval($userdata['user_id']);
+					$u_id = (intval($user->data['user_id']) == ANONYMOUS) ? 0 : intval($user->data['user_id']);
 					$this->attach_filename = $u_id . '_' . $this->filetime . '.' . $this->extension;
 				}
 
@@ -1183,7 +1183,7 @@ class attach_parent
 					$error_msg .= $lang['FileType_Mismatch'];
 				}
 
-				if (!$error && ($userdata['user_level'] != ADMIN))
+				if (!$error && ($user->data['user_level'] != ADMIN))
 				{
 					list($width, $height) = $pic_size;
 
@@ -1203,7 +1203,7 @@ class attach_parent
 			}
 
 			// check Filesize
-			if (!$error && ($allowed_filesize != 0) && ($this->filesize > $allowed_filesize) && ($userdata['user_level'] != ADMIN))
+			if (!$error && ($allowed_filesize != 0) && ($this->filesize > $allowed_filesize) && ($user->data['user_level'] != ADMIN))
 			{
 				$size_lang = ($allowed_filesize >= 1048576) ? $lang['MB'] : ( ($allowed_filesize >= 1024) ? $lang['KB'] : $lang['Bytes'] );
 
@@ -1246,7 +1246,7 @@ class attach_parent
 
 			}
 
-			$this->get_quota_limits($userdata);
+			$this->get_quota_limits($user->data);
 
 			// Check our user quota
 			if ($this->page != PAGE_PRIVMSGS)
@@ -1255,7 +1255,7 @@ class attach_parent
 				{
 					$sql = 'SELECT attach_id
 						FROM ' . ATTACHMENTS_TABLE . '
-						WHERE user_id_1 = ' . (int) $userdata['user_id'] . '
+						WHERE user_id_1 = ' . (int) $user->data['user_id'] . '
 							AND privmsgs_id = 0
 						GROUP BY attach_id';
 					$result = $db->sql_query($sql);
@@ -1315,7 +1315,7 @@ class attach_parent
 			{
 				if ($config['pm_filesize_limit'])
 				{
-					$total_filesize = get_total_attach_pm_filesize('from_user', $userdata['user_id']);
+					$total_filesize = get_total_attach_pm_filesize('from_user', $user->data['user_id']);
 
 					if (($total_filesize + $this->filesize) > $config['pm_filesize_limit'])
 					{
@@ -1331,7 +1331,7 @@ class attach_parent
 				$to_user = (isset($_POST['username']) ) ? $_POST['username'] : '';
 
 				// Check Receivers PM Quota
-				if (!empty($to_user) && $userdata['user_level'] != ADMIN)
+				if (!empty($to_user) && $user->data['user_level'] != ADMIN)
 				{
 					$u_data = get_userdata($to_user, true);
 
@@ -1464,7 +1464,7 @@ class attach_posting extends attach_parent
 	*/
 	function preview_attachments()
 	{
-		global $config, $is_auth, $userdata;
+		global $config, $is_auth, $user;
 
 		if (intval($config['disable_attachments_mod']) || !$is_auth['auth_attachments'])
 		{
@@ -1479,7 +1479,7 @@ class attach_posting extends attach_parent
 	*/
 	function insert_attachment($post_id)
 	{
-		global $db, $is_auth, $mode, $userdata, $error, $error_msg;
+		global $db, $is_auth, $mode, $user, $error, $error_msg;
 
 		// Insert Attachment ?
 		if (!empty($post_id) && (($mode == 'newtopic') || ($mode == 'reply') || ($mode == 'editpost')) && $is_auth['auth_attachments'])

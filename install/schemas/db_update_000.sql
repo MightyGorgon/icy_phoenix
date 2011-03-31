@@ -19,8 +19,8 @@ ALTER TABLE `phpbb_users` ADD `ct_search_count` MEDIUMINT( 8 ) NULL DEFAULT 1 AF
 ALTER TABLE `phpbb_users` ADD `ct_last_post` INT( 11 ) NULL DEFAULT 1 AFTER `ct_search_count`;
 ALTER TABLE `phpbb_users` ADD `ct_post_counter` MEDIUMINT( 8 ) NULL DEFAULT 1 AFTER `ct_last_post`;
 ALTER TABLE `phpbb_users` ADD `ct_enable_ip_warn` TINYINT( 1 ) NULL DEFAULT 1 AFTER `ct_post_counter`;
-ALTER TABLE `phpbb_users` ADD `ct_last_used_ip` VARCHAR( 16 ) NULL DEFAULT '0.0.0.0' AFTER `ct_enable_ip_warn`;
-ALTER TABLE `phpbb_users` ADD `ct_last_ip` VARCHAR( 16 ) NULL DEFAULT '0.0.0.0' AFTER `ct_last_used_ip`;
+ALTER TABLE `phpbb_users` ADD `ct_last_used_ip` VARCHAR( 40 ) NULL DEFAULT '0.0.0.0' AFTER `ct_enable_ip_warn`;
+ALTER TABLE `phpbb_users` ADD `ct_last_ip` VARCHAR( 40 ) NULL DEFAULT '0.0.0.0' AFTER `ct_last_used_ip`;
 ALTER TABLE `phpbb_users` ADD `ct_global_msg_read` TINYINT( 1 ) NULL DEFAULT 0 AFTER `ct_last_ip`;
 ALTER TABLE `phpbb_users` ADD `ct_miserable_user` TINYINT( 1 ) NULL DEFAULT 0 AFTER `ct_global_msg_read`;
 
@@ -118,7 +118,7 @@ INSERT INTO `phpbb_ctracker_ipblocker` (`id`, `ct_blocker_value`) VALUES (32, '*
 
 CREATE TABLE `phpbb_ctracker_loginhistory` (
 	`ct_user_id` int(10) default NULL,
-	`ct_login_ip` varchar(16) default NULL,
+	`ct_login_ip` varchar(40) default NULL,
 	`ct_login_time` int(11) NOT NULL default '0'
 	);
 ## Cracker Tracker - END
@@ -345,7 +345,7 @@ CREATE TABLE phpbb_ajax_shoutbox (
 	user_id MEDIUMINT(8) NOT NULL,
 	shouter_name VARCHAR(30) NOT NULL DEFAULT 'guest',
 	shout_text TEXT NOT NULL,
-	shouter_ip VARCHAR(8) NOT NULL DEFAULT '',
+	shouter_ip VARCHAR(40) NOT NULL DEFAULT '',
 	shout_time INT(11) NOT NULL,
 	PRIMARY KEY ( shout_id )
 );
@@ -417,7 +417,7 @@ CREATE TABLE `phpbb_ajax_shoutbox_sessions` (
   `session_id` int(10) NOT NULL auto_increment,
   `session_user_id` mediumint(8) NOT NULL default '0',
   `session_username` varchar(25) NOT NULL default '',
-  `session_ip` varchar(8) NOT NULL default '0',
+  `session_ip` varchar(40) NOT NULL default '0',
   `session_start` int(11) NOT NULL default '0',
   `session_time` int(11) NOT NULL default '0',
   PRIMARY KEY  (`session_id`)
@@ -821,7 +821,7 @@ CREATE TABLE phpbb_dl_auth (
 CREATE TABLE phpbb_dl_banlist (
 	ban_id INT(11) AUTO_INCREMENT NOT NULL,
 	user_id MEDIUMINT(8) DEFAULT 0 NOT NULL,
-	user_ip CHAR(8) DEFAULT '' NOT NULL,
+	user_ip CHAR(40) DEFAULT '' NOT NULL,
 	user_agent VARCHAR(50) DEFAULT '' NOT NULL,
 	username VARCHAR(25) DEFAULT '' NOT NULL,
 	guests TINYINT(1) DEFAULT 0 NOT NULL,
@@ -913,7 +913,7 @@ CREATE TABLE phpbb_dl_stats (
 	username VARCHAR(32) NOT NULL DEFAULT '',
 	traffic BIGINT(20) NOT NULL DEFAULT '0',
 	direction TINYINT(1) NOT NULL DEFAULT '0',
-	user_ip VARCHAR(8) NOT NULL DEFAULT '',
+	user_ip VARCHAR(40) NOT NULL DEFAULT '',
 	browser VARCHAR(20) NOT NULL DEFAULT '',
 	time_stamp INT(11) NOT NULL DEFAULT '0',
 PRIMARY KEY (dl_id)
@@ -1058,7 +1058,7 @@ CREATE TABLE `phpbb_attachments_stats` (
 	`attach_id` mediumint(8) unsigned NOT NULL default '0',
 	`user_id` mediumint(8) NOT NULL default '0',
 	`user_ip` VARCHAR(8) NOT NULL DEFAULT '',
-	`user_http_agents` VARCHAR(255) NOT NULL DEFAULT '',
+	`user_browser` VARCHAR(255) NOT NULL DEFAULT '',
 	`download_time` INT(11) NOT NULL DEFAULT '0',
 	KEY `attach_id` (`attach_id`)
 );
@@ -1336,7 +1336,7 @@ CREATE TABLE `___posts___` (
 	`forum_id` smallint(5) unsigned NOT NULL default '0',
 	`poster_id` mediumint(8) NOT NULL default '0',
 	`post_time` int(11) NOT NULL default '0',
-	`poster_ip` varchar(8) NOT NULL default '',
+	`poster_ip` varchar(40) NOT NULL default '',
 	`post_username` varchar(25) default NULL,
 	`post_subject` varchar(255) default NULL,
 	`post_text` TEXT NOT NULL,
@@ -1381,7 +1381,7 @@ CREATE TABLE `___privmsgs___` (
 	`privmsgs_from_userid` mediumint(8) NOT NULL default '0',
 	`privmsgs_to_userid` mediumint(8) NOT NULL default '0',
 	`privmsgs_date` int(11) NOT NULL default '0',
-	`privmsgs_ip` varchar(8) NOT NULL default '',
+	`privmsgs_ip` varchar(40) NOT NULL default '',
 	`privmsgs_enable_bbcode` tinyint(1) NOT NULL default '1',
 	`privmsgs_enable_html` tinyint(1) NOT NULL default '0',
 	`privmsgs_enable_smilies` tinyint(1) NOT NULL default '1',
@@ -1675,7 +1675,7 @@ INSERT INTO `phpbb_flags` (`flag_name`, `flag_image`) VALUES ('Montenegro', 'mon
 CREATE TABLE phpbb_registration (
 	topic_id mediumint(8) unsigned NOT NULL default '0',
 	registration_user_id mediumint(8) NOT NULL default '0',
-	registration_user_ip varchar(8) NOT NULL default '',
+	registration_user_ip varchar(40) NOT NULL default '',
 	registration_time int(11) NOT NULL default '0',
 	registration_status tinyint(1) NOT NULL default '0',
 	KEY topic_id (topic_id),

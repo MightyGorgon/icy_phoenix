@@ -58,15 +58,16 @@ $mark_read = request_var('mark', '');
 // End initial var setup
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $kb_mode = false;
 $kb_mode_append = '';
 $kb_mode_append_red = '';
 $kb_mode_var = request_var('kb', '');
-if (($kb_mode_var == 'on') && ($userdata['bot_id'] == false))
+if (($kb_mode_var == 'on') && ($user->data['bot_id'] == false))
 {
 	$kb_mode = true;
 	$kb_mode_append = '&amp;kb=on';
@@ -98,7 +99,7 @@ $page_number = ($page_number < 1) ? 0 : $page_number;
 $start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-if ($userdata['upi2db_access'])
+if ($user->data['upi2db_access'])
 {
 	$params = array(
 		'always_read' => 'always_read',
@@ -248,7 +249,7 @@ if (($CH_this > -1) && !empty($tree['data'][$CH_this]['forum_link']))
 	if ($tree['data'][$CH_this]['forum_link_internal'])
 	{
 		$part = explode('?', $url);
-		$url .= ((sizeof($part) > 1) ? '&' : '?') . 'sid=' . $userdata['session_id'];
+		$url .= ((sizeof($part) > 1) ? '&' : '?') . 'sid=' . $user->data['session_id'];
 		$url = append_sid($url);
 
 		// redirect to url
@@ -274,7 +275,7 @@ $is_auth = $tree['auth'][POST_FORUM_URL . $forum_id];
 
 if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$redirect = $forum_id_append . $kb_mode_append_red . ((isset($start)) ? '&start=' . $start : '');
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_VIEWFORUM . '&' . $redirect, true));
@@ -290,16 +291,16 @@ if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 // Handle marking posts
 if ($mark_read == 'topics')
 {
-	if ($userdata['session_logged_in'] && !$userdata['is_bot'])
+	if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 	{
 		// Force last visit to max 60 days limit to avoid having too much unread topics
-		if ($userdata['user_lastvisit'] < (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60)))
+		if ($user->data['user_lastvisit'] < (time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60)))
 		{
-			$userdata['user_lastvisit'] = time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60);
+			$user->data['user_lastvisit'] = time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60);
 		}
 
 		//<!-- BEGIN Unread Post Information to Database Mod -->
-		if(!$userdata['upi2db_access'])
+		if(!$user->data['upi2db_access'])
 		{
 		//<!-- END Unread Post Information to Database Mod -->
 
@@ -319,7 +320,7 @@ if ($mark_read == 'topics')
 					unset($tracking_forums[key($tracking_forums)]);
 				}
 
-				if ($row['last_post'] > $userdata['user_lastvisit'])
+				if ($row['last_post'] > $user->data['user_lastvisit'])
 				{
 					$tracking_forums[$forum_id] = time();
 					setcookie($config['cookie_name'] . '_f', serialize($tracking_forums), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
@@ -382,14 +383,14 @@ unset($moderators);
 // Is user watching this forum?
 $watch = request_var('watch', '');
 $unwatch = request_var('unwatch', '');
-if($userdata['session_logged_in'] && !$userdata['is_bot'])
+if($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
 	($forum_row['forum_notify'] == '1') ? ($can_watch_forum = true) : ($can_watch_forum = false);
 
 	$sql = "SELECT notify_status
 	FROM " . FORUMS_WATCH_TABLE . "
 	WHERE forum_id = $forum_id
-		AND user_id = " . $userdata['user_id'] . "
+		AND user_id = " . $user->data['user_id'] . "
 	LIMIT 1";
 	$result = $db->sql_query($sql);
 
@@ -403,7 +404,7 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 
 				$sql = "DELETE FROM " . FORUMS_WATCH_TABLE . "
 					WHERE forum_id = " . $forum_id . "
-						AND user_id = " . $userdata['user_id'];
+						AND user_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 			}
 
@@ -422,7 +423,7 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 				$sql = "UPDATE " . FORUMS_WATCH_TABLE . "
 					SET notify_status = 0
 					WHERE forum_id = " . $forum_id . "
-						AND user_id = " . $userdata['user_id'];
+						AND user_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 			}
 		}
@@ -436,7 +437,7 @@ if($userdata['session_logged_in'] && !$userdata['is_bot'])
 				$is_watching_forum = true;
 
 				$sql = "INSERT INTO " . FORUMS_WATCH_TABLE . " (user_id, forum_id, notify_status)
-					VALUES (" . $userdata['user_id'] . ", " . $forum_id . ", 0)";
+					VALUES (" . $user->data['user_id'] . ", " . $forum_id . ", 0)";
 				$result = $db->sql_query($sql);
 			}
 
@@ -529,7 +530,7 @@ for($i = 0; $i < sizeof($previous_days); $i++)
 $select_topic_days .= '</select>';
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-if(!$userdata['upi2db_access'])
+if(!$user->data['upi2db_access'])
 {
 //<!-- END Unread Post Information to Database Mod -->
 
@@ -556,7 +557,7 @@ if(!$userdata['upi2db_access'])
 // End add - Global announcement MOD
 //<!-- BEGIN Unread Post Information to Database Mod -->
 //}
-//if(!$userdata['upi2db_access'])
+//if(!$user->data['upi2db_access'])
 //{
 //<!-- END Unread Post Information to Database Mod -->
 	// All announcement data, this keeps announcements on each viewforum page...
@@ -599,8 +600,8 @@ else
 
 // Grab all the basic data (all topics except announcements) for this forum
 // Self AUTH - BEGIN
-//$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = '" . $userdata['user_id'] . "'" : '';
-$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND (t.topic_poster = '" . $userdata['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
+//$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = '" . $user->data['user_id'] . "'" : '';
+$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND (t.topic_poster = '" . $user->data['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
 $sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_mask as user_mask2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time, p2.post_edit_time, p.enable_bbcode, p.enable_html, p.enable_smilies
 				FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
@@ -642,7 +643,7 @@ $topic_rowset_nn = array();
 $topic_rowset_ar = array();
 $topic_rowset_n = array();
 
-if($userdata['upi2db_access'])
+if($user->data['upi2db_access'])
 {
 	if($config['upi2db_edit_topic_first'])
 	{
@@ -799,7 +800,7 @@ $s_auth_can .= ($is_auth['auth_bluecard'] ? $lang['Rules_bluecard_can'] . '<br /
 
 if ($is_auth['auth_mod'])
 {
-	$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;start=' . $start . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+	$s_auth_can .= sprintf($lang['Rules_moderate'], '<a href="modcp.' . PHP_EXT . '?' . $forum_id_append . '&amp;start=' . $start . '&amp;sid=' . $user->data['session_id'] . '">', '</a>');
 }
 
 // Mozilla navigation bar
@@ -828,7 +829,7 @@ if($can_watch_forum)
 // End add - Forum notification MOD
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-if($userdata['upi2db_access'])
+if($user->data['upi2db_access'])
 {
 	if(!in_array($forum_id, $unread['always_read']['forums']))
 	{
@@ -858,7 +859,7 @@ if ($config['display_viewonline'])
 {
 	define('SHOW_ONLINE', true);
 }
-if (!$config['board_disable'] || ($config['board_disable'] && ($userdata['user_level'] == ADMIN)))
+if (!$config['board_disable'] || ($config['board_disable'] && ($user->data['user_level'] == ADMIN)))
 {
 	$template->vars['S_TPL_FILENAME'] = 'index';
 }
@@ -868,7 +869,7 @@ $meta_content['page_title'] = $forum_row['forum_name'];
 $meta_content['description'] = '';
 $meta_content['keywords'] = '';
 $breadcrumbs_links_right = '';
-if ($userdata['session_logged_in'] && !$userdata['is_bot'])
+if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
 	$breadcrumbs_links_left = $marked_as_read;
 	$breadcrumbs_links_right = (($mark_as_read != '') ? ($mark_as_read . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . $s_watching_forum . (($mark_always_read != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;' . $mark_always_read) : '');
@@ -1076,11 +1077,11 @@ if($total_topics)
 		{
 			$regoption_array = array();
 
-			if ($userdata['session_logged_in'] && !$userdata['is_bot'])
+			if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 			{
 				$sql = "SELECT registration_status FROM " . REGISTRATION_TABLE . "
 						WHERE topic_id = " . $topic_id . "
-						AND registration_user_id = " . $userdata['user_id'];
+						AND registration_user_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 
 				if ($regrow = $db->sql_fetchrow($result))
@@ -1156,7 +1157,7 @@ if($total_topics)
 
 		$topic_pagination = generate_topic_pagination($forum_id, $topic_id, $replies);
 
-		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 		{
 			$view_topic_url = append_sid(str_replace ('--', '-', make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
 		}
@@ -1167,7 +1168,7 @@ if($total_topics)
 
 		$topic_author = ($topic_rowset[$i]['user_id'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username'] != '') ? $topic_rowset[$i]['post_username'] : $lang['Guest']) : colorize_username($topic_rowset[$i]['user_id'], $topic_rowset[$i]['username'], $topic_rowset[$i]['user_color'], $topic_rowset[$i]['user_active']);
 
-		if (($userdata['user_level'] != ADMIN) && !empty($topic_rowset[$i]['user_mask']) && empty($topic_rowset[$i]['user_active']))
+		if (($user->data['user_level'] != ADMIN) && !empty($topic_rowset[$i]['user_mask']) && empty($topic_rowset[$i]['user_active']))
 		{
 			$topic_author = $lang['INACTIVE_USER'];
 		}
@@ -1179,7 +1180,7 @@ if($total_topics)
 
 		$last_post_author = ($topic_rowset[$i]['id2'] == ANONYMOUS) ? (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : colorize_username($topic_rowset[$i]['id2'], $topic_rowset[$i]['user2'], $topic_rowset[$i]['user_color2'], $topic_rowset[$i]['user_active2']);
 
-		if (($userdata['user_level'] != ADMIN) && !empty($topic_rowset[$i]['user_mask2']) && empty($topic_rowset[$i]['user_active2']))
+		if (($user->data['user_level'] != ADMIN) && !empty($topic_rowset[$i]['user_mask2']) && empty($topic_rowset[$i]['user_active2']))
 		{
 			$last_post_author = $lang['INACTIVE_USER'] . ' ';
 		}
@@ -1189,7 +1190,7 @@ if($total_topics)
 
 //----------------------------------------------------
 //<!-- BEGIN Unread Post Information to Database Mod -->
-		if($userdata['upi2db_access'])
+		if($user->data['upi2db_access'])
 		{
 			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $unread, $start, $topic_link['image']);
 		}

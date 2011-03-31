@@ -21,7 +21,7 @@ $template->assign_vars(array(
 	'MODULE_NAME' => $lang['module_name_most_viewed_topics'])
 );
 
-$auth_data_sql = $statistics->forum_auth($userdata);
+$auth_data_sql = $statistics->forum_auth($user->data);
 
 if ($auth_data_sql == '')
 {

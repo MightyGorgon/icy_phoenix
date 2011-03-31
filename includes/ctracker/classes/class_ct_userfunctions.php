@@ -43,9 +43,9 @@ class ct_userfunctions
 	*/
 	function search_handler()
 	{
-		global $db, $config, $userdata, $lang, $is_ajax;
+		global $db, $config, $user, $lang, $is_ajax;
 
-		if (($config['ctracker_search_feature_enabled'] == 0) || ($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+		if (($config['ctracker_search_feature_enabled'] == 0) || ($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 		{
 			// Search feature function was disabled
 			return;
@@ -55,7 +55,7 @@ class ct_userfunctions
 		$max_searches = 0;
 		$wait_time = 0;
 
-		if ($userdata['user_id'] == ANONYMOUS)
+		if ($user->data['user_id'] == ANONYMOUS)
 		{
 			$max_searches = $config['ctracker_search_count_guest'];
 			$wait_time = $config['ctracker_search_time_guest'];
@@ -70,16 +70,16 @@ class ct_userfunctions
 		/*
 		* Now we do the Search control
 		*/
-		if (($userdata['user_level'] != ADMIN) || !$is_ajax)
+		if (($user->data['user_level'] != ADMIN) || !$is_ajax)
 		{
-			if ($userdata['ct_search_time'] < time())
+			if ($user->data['ct_search_time'] < time())
 			{
 				/*
 				* Block-Time is not there, so reset the values in Usertable
 				*/
 				$search_time_new = time() + $wait_time;
 
-				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_time = ' . $search_time_new . ', ct_search_count = 1 WHERE user_id = ' . $userdata['user_id'];
+				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_time = ' . $search_time_new . ', ct_search_count = 1 WHERE user_id = ' . $user->data['user_id'];
 
 				// Execute SQL Command in database
 				if (!$result = $db->sql_query($sql))
@@ -88,14 +88,14 @@ class ct_userfunctions
 				}
 
 			}
-			elseif ($userdata['ct_search_count'] < $max_searches)
+			elseif ($user->data['ct_search_count'] < $max_searches)
 			{
 				/*
 				* We're still in the time limitations, but the user has
 				* a possibility to start multiple searches in this time
 				* but we have to count all these searches.
 				*/
-				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_count = ct_search_count + 1 WHERE user_id = ' . $userdata['user_id'];
+				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_count = ct_search_count + 1 WHERE user_id = ' . $user->data['user_id'];
 
 				// Execute SQL Command in database
 				if (!$result = $db->sql_query($sql))
@@ -106,7 +106,7 @@ class ct_userfunctions
 			else
 			{
 				// How long a user really has to wait?
-				$real_wait_time = $userdata['ct_search_time'] - time();
+				$real_wait_time = $user->data['ct_search_time'] - time();
 
 				/*
 				* So a user or guest wanted to search once more so to really
@@ -114,12 +114,12 @@ class ct_userfunctions
 				* Also we increment the Search counter one time that no new search
 				* wait time will be set if someone tries AGAIN to search.
 				*/
-				if ($userdata['ct_search_count'] == $max_searches)
+				if ($user->data['ct_search_count'] == $max_searches)
 				{
 					$search_time_new = time() + $wait_time;
 					$real_wait_time  = $search_time_new - time();
 
-					$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_time = ' . $search_time_new . ', ct_search_count = ct_search_count + 1 WHERE user_id = ' . $userdata['user_id'] . ';';
+					$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_search_time = ' . $search_time_new . ', ct_search_count = ct_search_count + 1 WHERE user_id = ' . $user->data['user_id'] . ';';
 
 					// Execute SQL Command in database
 					if (!$result = $db->sql_query($sql))
@@ -163,9 +163,9 @@ class ct_userfunctions
 	*/
 	function check_ip_range()
 	{
-		global $userdata, $lang;
+		global $user, $lang;
 
-		if ($userdata['ct_last_ip'] == '0.0.0.0' || $userdata['ct_last_used_ip'] == '0.0.0.0')
+		if ($user->data['ct_last_ip'] == '0.0.0.0' || $user->data['ct_last_used_ip'] == '0.0.0.0')
 		{
 			return 'allclear'; // not yet initialized
 		}
@@ -173,8 +173,8 @@ class ct_userfunctions
 		$first_ip_range  = array();
 		$second_ip_range = array();
 
-		$first_ip_range  = explode('.', $userdata['ct_last_used_ip']);
-		$second_ip_range = explode('.', $userdata['ct_last_ip']);
+		$first_ip_range  = explode('.', $user->data['ct_last_used_ip']);
+		$second_ip_range = explode('.', $user->data['ct_last_ip']);
 
 		if ($first_ip_range[0] == $second_ip_range[0] && $first_ip_range[1] == $second_ip_range[1])
 		{
@@ -218,10 +218,10 @@ class ct_userfunctions
 	*/
 	function handle_postings()
 	{
-		global $db, $config, $userdata, $lang;
+		global $db, $config, $user, $lang;
 
 		// MOD or ADMIN? - No Action please.
-		if ($userdata['user_level'] > 0)
+		if ($user->data['user_level'] > 0)
 		{
 			return;
 		}
@@ -230,24 +230,24 @@ class ct_userfunctions
 		// Why String and Int Check? Well some servers have problems to cast values from an Object so we make here little compatibility tricks
 		if ($config['ctracker_spammer_blockmode'] != '0' || intval($config['ctracker_spammer_blockmode']) > 0)
 		{
-			if (time() >= $userdata['ct_last_post'])
+			if (time() >= $user->data['ct_last_post'])
 			{
-				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_post_counter = 1, ct_last_post = ' . time() . '+' . $config['ctracker_spammer_time'] . ' WHERE user_id = ' . $userdata['user_id'];
+				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_post_counter = 1, ct_last_post = ' . time() . '+' . $config['ctracker_spammer_time'] . ' WHERE user_id = ' . $user->data['user_id'];
 				if (!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 				}
 			}
-			else if ($userdata['ct_post_counter'] < intval($config['ctracker_spammer_postcount']))
+			else if ($user->data['ct_post_counter'] < intval($config['ctracker_spammer_postcount']))
 			{
-				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_post_counter = ct_post_counter + 1 WHERE user_id = ' . $userdata['user_id'];
+				$sql = 'UPDATE ' . USERS_TABLE . ' SET ct_post_counter = ct_post_counter + 1 WHERE user_id = ' . $user->data['user_id'];
 				if (!$result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
 				}
 
-				$userdata['ct_post_counter']++;
-				if ($userdata['ct_post_counter'] == intval($config['ctracker_spammer_postcount']))
+				$user->data['ct_post_counter']++;
+				if ($user->data['ct_post_counter'] == intval($config['ctracker_spammer_postcount']))
 				{
 					message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_binf_spammer'], $config['ctracker_spammer_time'], $config['spammer_time']));
 				}
@@ -262,7 +262,7 @@ class ct_userfunctions
 		// Spammer Boost
 		if ($config['ctracker_spam_attack_boost'] == '1' || intval($config['ctracker_spam_attack_boost']) == 1)
 		{
-			if ($userdata['user_posts'] >= 2)
+			if ($user->data['user_posts'] >= 2)
 			{
 				return;
 			}
@@ -319,17 +319,17 @@ class ct_userfunctions
 	*/
 	function block_handler()
 	{
-		global $db, $config, $userdata, $lang;
+		global $db, $config, $user, $lang;
 
-		if ($userdata['user_id'] == ANONYMOUS)
+		if ($user->data['user_id'] == ANONYMOUS)
 		{
 			return;
 		}
 
-		if ((intval($config['ctracker_spammer_blockmode']) == 1) && ($userdata['user_id'] != ANONYMOUS))
+		if ((intval($config['ctracker_spammer_blockmode']) == 1) && ($user->data['user_id'] != ANONYMOUS))
 		{
 			// Ban user
-			$sql = "INSERT INTO " . BANLIST_TABLE . "(`ban_id` , `ban_userid` , `ban_ip` , `ban_email`) VALUES ('', '" . $userdata['user_id'] . "', '', NULL);";
+			$sql = "INSERT INTO " . BANLIST_TABLE . "(`ban_id` , `ban_userid` , `ban_ip` , `ban_email`) VALUES ('', '" . $user->data['user_id'] . "', '', NULL);";
 			if(!$db->sql_query($sql))
 			{
 				message_die(CRITICAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
@@ -339,7 +339,7 @@ class ct_userfunctions
 		elseif (intval($config['ctracker_spammer_blockmode']) == 2)
 		{
 			// Block user
-			$sql = 'UPDATE ' . USERS_TABLE . ' SET user_active = 0 WHERE user_id = ' . $userdata['user_id'];
+			$sql = 'UPDATE ' . USERS_TABLE . ' SET user_active = 0 WHERE user_id = ' . $user->data['user_id'];
 			if (!$result = $db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
@@ -349,11 +349,11 @@ class ct_userfunctions
 			{
 				include_once(IP_ROOT_PATH . 'includes/functions_users_delete.' . PHP_EXT);
 			}
-			$clear_notification = user_clear_notifications($userdata['user_id']);
+			$clear_notification = user_clear_notifications($user->data['user_id']);
 		}
 
 		// Remove Profile data
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allowavatar = 0, user_email=\'info@example.com\', user_icq = \'\', user_website=\'\', user_from=\'\', user_sig=\'\', user_aim=\'\', user_yim=\'\', user_msnm=\'\', user_occ=\'\', user_interests=\'\' WHERE user_id = ' . $userdata['user_id'];
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allowavatar = 0, user_email=\'info@example.com\', user_icq = \'\', user_website=\'\', user_from=\'\', user_sig=\'\', user_aim=\'\', user_yim=\'\', user_msnm=\'\', user_occ=\'\', user_interests=\'\' WHERE user_id = ' . $user->data['user_id'];
 		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);
@@ -362,14 +362,14 @@ class ct_userfunctions
 		// Log it
 		include_once(IP_ROOT_PATH . 'includes/ctracker/classes/class_log_manager.' . PHP_EXT);
 		$logfile = new log_manager();
-		$logfile->prepare_log($userdata['username']);
+		$logfile->prepare_log($user->data['username']);
 		$logfile->write_general_logfile($config['ctracker_logsize_spammer'], 5);
 		unset($logfile);
 
 		// Log out user
-		if($userdata['session_logged_in'])
+		if($user->data['session_logged_in'])
 		{
-			session_end($userdata['session_id'], $userdata['user_id']);
+			$user->session_kill();
 		}
 
 		// Output Info Message
@@ -391,7 +391,7 @@ class ct_userfunctions
 	*/
 	function handle_profile()
 	{
-		global $config, $userdata, $lang, $mode, $ctracker_config;
+		global $config, $user, $lang, $mode, $ctracker_config;
 
 		/*
 		* Done this that Eclipse or another Code-Checker does not output
@@ -467,7 +467,7 @@ class ct_userfunctions
 
 				if (preg_match('/^' . $current_value . '$/is', $clean_aim) || preg_match('/^' . $current_value . '$/is', $clean_msn) || preg_match('/^' . $current_value . '$/is', $clean_yim) || preg_match('/^' . $current_value . '$/is', $clean_website) || preg_match('/^' . $current_value . '$/is', $clean_location) || preg_match('/^' . $current_value . '$/is', $clean_occupation) || preg_match('/^' . $current_value . '$/is', $clean_interests) || preg_match('/^' . $current_value . '$/is', $clean_signature))
 				{
-					(($mode != 'register') && ($userdata['user_level'] == 0)) ? $this->block_handler() : null;
+					(($mode != 'register') && ($user->data['user_level'] == 0)) ? $this->block_handler() : null;
 					message_die(GENERAL_MESSAGE, $lang['ctracker_info_profile_spammer']);
 				} // if
 			} // for
@@ -499,7 +499,7 @@ class ct_userfunctions
 	*/
 	function password_functions()
 	{
-		global $db, $config, $userdata, $lang, $mode;
+		global $db, $config, $user, $lang, $mode;
 
 		// Password length check
 		$pw_length = strlen($_POST['new_password']);

@@ -83,18 +83,19 @@ else
 }
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // session id check
-if ($sid == '' || ($sid != $userdata['session_id']))
+if ($sid == '' || ($sid != $user->data['session_id']))
 {
 	message_die(GENERAL_ERROR, 'Invalid_session');
 }
 
 // Start auth check
-$is_auth = auth(AUTH_ALL, $forum_id, $userdata);
+$is_auth = auth(AUTH_ALL, $forum_id, $user->data);
 
 if (!$is_auth['auth_mod'])
 {
@@ -106,9 +107,9 @@ if ($confirm)
 {
 	if (($config['bin_forum'] == 0) || (empty($_POST['topic_id_list']) && empty($topic_id)))
 	{
-		$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+		$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 		$message = sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
-		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>');
 
 		meta_refresh(3, $redirect_url);
 
@@ -127,10 +128,10 @@ if ($confirm)
 			$message = $lang['No_Topics_Moved'];
 		}
 
-		$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $userdata['session_id'];
+		$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 		$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
 
-		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $userdata['session_id'] . '">', '</a>');
+		$message = $message . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] . '">', '</a>');
 
 		meta_refresh(3, $redirect_url);
 

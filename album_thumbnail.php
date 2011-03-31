@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip, false);
-init_userprefs($userdata);
+$user->session_begin(false);
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -74,7 +75,7 @@ if ($album_user_access['view'] == false)
 // ------------------------------------
 // Check Pic Approval
 // ------------------------------------
-if ($userdata['user_level'] != ADMIN)
+if ($user->data['user_level'] != ADMIN)
 {
 	if (($thispic['cat_approval'] == ADMIN) || (($thispic['cat_approval'] == MOD) && !$album_user_access['moderator']))
 	{

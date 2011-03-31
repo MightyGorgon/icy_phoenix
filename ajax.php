@@ -24,14 +24,15 @@ include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 define('AJAX_HEADERS', true);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get SID and check it
 $sid = request_var('sid', '');
 
-if ($sid != $userdata['session_id'])
+if ($sid != $user->data['session_id'])
 {
 	$result_ar = array(
 		'result' => AJAX_ERROR,
@@ -59,7 +60,7 @@ if ($mode == 'checkusername_post')
 	{
 		$username = phpbb_clean_username($username);
 
-		if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && ($username != $userdata['username'])))
+		if (!$user->data['session_logged_in'] || ($user->data['session_logged_in'] && ($username != $user->data['username'])))
 		{
 			$result = validate_username($username);
 			if ($result['error'])
@@ -211,7 +212,7 @@ elseif ($mode == 'checkemail')
 
 	$result_code = AJAX_OP_COMPLETED;
 	$error_msg = '';
-	if ((!empty($email)) && ((($email != $userdata['user_email']) && $userdata['session_logged_in']) || !$userdata['session_logged_in']))
+	if ((!empty($email)) && ((($email != $user->data['user_email']) && $user->data['session_logged_in']) || !$user->data['session_logged_in']))
 	{
 		$result = validate_email($email);
 		if ($result['error'])
@@ -232,7 +233,7 @@ elseif ($mode == 'checkemail')
 }
 elseif (($mode == 'like') || ($mode == 'unlike'))
 {
-	if ($userdata['user_id'] == ANONYMOUS)
+	if ($user->data['user_id'] == ANONYMOUS)
 	{
 		$result_code = AJAX_ERROR;
 	}
@@ -247,7 +248,7 @@ elseif (($mode == 'like') || ($mode == 'unlike'))
 		$post_data = array(
 			'topic_id' => $topic_id,
 			'post_id' => $post_id,
-			'user_id' => $userdata['user_id'],
+			'user_id' => $user->data['user_id'],
 			'like_time' => time()
 		);
 

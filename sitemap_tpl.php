@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $server_url = create_server_url();
@@ -97,7 +98,7 @@ while($lasttopic != $lastid)
 		{
 			$topic_change = 'always';
 		}
-		if ( ($config['url_rw'] == '1') || ( ($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS) ) )
+		if ( ($config['url_rw'] == '1') || ( ($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS) ) )
 		{
 			$url = $server_url. str_replace ('--', '-', make_url_friendly($topic['topic_title']) . '-vt' . $topic['topic_id'] . '.html');
 		}

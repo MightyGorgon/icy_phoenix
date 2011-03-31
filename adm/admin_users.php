@@ -46,10 +46,10 @@ $html_entities_replace = array('&lt;', '&gt;');
 // Disallow other admins to delete or edit the first admin - BEGIN
 $selected_user_id = request_post_var('id', 0);
 $founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-if (($selected_user_id == $founder_id) && ($userdata['user_id'] != $founder_id))
+if (($selected_user_id == $founder_id) && ($user->data['user_id'] != $founder_id))
 {
-	$edituser = $userdata['username'];
-	$editok = $userdata['user_id'];
+	$edituser = $user->data['username'];
+	$editok = $user->data['user_id'];
 	$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . $db->sql_escape($edituser) . "','" . $editok . "')";
 	$result = $db->sql_query($sql);
 	message_die(GENERAL_MESSAGE, $lang['L_ADMINEDITMSG']);
@@ -62,7 +62,7 @@ $redirect = request_var('redirect', '');
 // Begin program
 if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) || isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL]))))
 {
-	// Reset some config values which are overridden from init_userprefs
+	// Reset some config values which are overridden from user->setup()
 	$config_tmp = get_config(false);
 	$config['default_lang'] = $config_tmp['default_lang'];
 	$config['board_timezone'] = $config_tmp['board_timezone'];
@@ -84,7 +84,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 		}
 
-		if($_POST['deleteuser'] && ($userdata['user_id'] != $user_id))
+		if($_POST['deleteuser'] && ($user->data['user_id'] != $user_id))
 		{
 			$killed = ip_user_kill($user_id);
 
@@ -279,7 +279,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 					$error = true;
 					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $result['error_msg'];
 				}
-				elseif (strtolower($db->sql_escape($username)) == strtolower($userdata['username']))
+				elseif (strtolower($db->sql_escape($username)) == strtolower($user->data['username']))
 				{
 					$error = true;
 					$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Username_taken'];
@@ -737,7 +737,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			// We remove all stored login keys since the password has been updated and change the current one (if applicable)
 			if (!empty($passwd_sql))
 			{
-				session_reset_keys($user_id, $user_ip);
+				session_reset_keys($user_id, $user->ip);
 			}
 
 			// Custom Profile Fields - BEGIN
@@ -1582,7 +1582,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			'HOT_TOPIC' => !$user_hot_threshold ? $config['hot_threshold'] : $user_hot_threshold,
 
 			'AVATAR' => $avatar,
-			'GRAVATAR' => ($user_avatar_type == USER_GRAVATAR) ? $userdata['user_avatar'] : '',
+			'GRAVATAR' => ($user_avatar_type == USER_GRAVATAR) ? $user->data['user_avatar'] : '',
 			'STYLE_SELECT' => style_select('style', $user_style),
 			'LANGUAGE_SELECT' => language_select('language', $user_lang),
 			'TIMEZONE_SELECT' => tz_select('timezone', $user_timezone),

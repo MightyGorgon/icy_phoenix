@@ -37,13 +37,14 @@ if (defined('IN_CMS_USERS') && !empty($cms_config_vars['style']))
 	$config['default_style'] = $cms_config_vars['style'];
 }
 
-// Start session management
-if (empty($userdata))
+if (empty($user->data))
 {
-	$userdata = session_pagestart($user_ip);
-	init_userprefs($userdata);
+	// Start session management
+	$user->session_begin();
+	//$auth->acl($user->data);
+	$user->setup();
+	// End session management
 }
-// End session management
 
 if (defined('IN_CMS_PAGE_INDEX'))
 {
@@ -104,7 +105,7 @@ if(!$is_auth_view)
 		$group_content = explode(',', $layout_row['groups']);
 		for ($i = 0; $i < sizeof($group_content); $i++)
 		{
-			if(in_array(intval($group_content[$i]), $ip_cms->cms_groups($userdata['user_id'])))
+			if(in_array(intval($group_content[$i]), $ip_cms->cms_groups($user->data['user_id'])))
 			{
 				$is_auth_view = true;
 				break;
@@ -115,7 +116,7 @@ if(!$is_auth_view)
 
 if(!$is_auth_view)
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$page_array = array();
 		$page_array = extract_current_page(IP_ROOT_PATH);
@@ -150,7 +151,7 @@ if (!$cms_default_page)
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
 }
 
-if (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] >= CMS_CONTENT_MANAGER))
+if (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] >= CMS_CONTENT_MANAGER))
 {
 	$cms_acp_url = '<br /><br /><div style="text-align:center;">';
 	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout) . '">' . $lang['CMS_ACP'] . '</a>';

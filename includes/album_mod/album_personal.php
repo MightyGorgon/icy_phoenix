@@ -72,7 +72,7 @@ else
 
 if (!album_check_permission($auth_data, ALBUM_AUTH_VIEW))
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album.' . PHP_EXT . '&user_id=' . $album_user_id));
 	}
@@ -90,7 +90,7 @@ if (!album_check_permission($auth_data, ALBUM_AUTH_VIEW))
 // ------------------------------------------------------------------------
 if (!album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) && (sizeof($album_data['data']) <= 1))
 {
-	if ($album_user_id == $userdata['user_id'])
+	if ($album_user_id == $user->data['user_id'])
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_allowed_to_create_personal_gallery']);
 	}
@@ -361,7 +361,7 @@ if(((album_check_permission($auth_data, ALBUM_AUTH_UPLOAD) == true) && ($enable_
 }
 
 // Enable download only for own personal galleries
-//if (($total_pics > 0) && ($enable_picture_download_switch == false) && ($thiscat['cat_user_id'] == $userdata['user_id']))
+//if (($total_pics > 0) && ($enable_picture_download_switch == false) && ($thiscat['cat_user_id'] == $user->data['user_id']))
 if (($total_pics > 0) && ($enable_picture_download_switch == false))
 {
 	$template->assign_block_vars('enable_picture_download_pg', array());
@@ -387,7 +387,7 @@ if ($album_config['show_all_in_personal_gallery'] == 1)
 	$template->assign_block_vars('enable_view_toggle', array());
 }
 
-if ($thiscat['cat_user_id'] == $userdata['user_id'])
+if ($thiscat['cat_user_id'] == $user->data['user_id'])
 {
 	$template->assign_block_vars('switch_own_gallery', array());
 }

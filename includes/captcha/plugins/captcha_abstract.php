@@ -234,7 +234,7 @@ class phpbb_default_captcha
 	*/
 	function generate_code()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$this->code = gen_rand_string(mt_rand(CAPTCHA_MIN_CHARS, CAPTCHA_MAX_CHARS));
 		$this->confirm_id = md5(unique_id($user->ip));
@@ -245,7 +245,7 @@ class phpbb_default_captcha
 
 		$sql = 'INSERT INTO ' . CONFIRM_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 				'confirm_id' => (string) $this->confirm_id,
-				'session_id' => (string) $userdata['session_id'],
+				'session_id' => (string) $user->data['session_id'],
 				'confirm_type' => (int) $this->type,
 				'code' => (string) $this->code,
 				'seed' => (int) $this->seed)
@@ -258,7 +258,7 @@ class phpbb_default_captcha
 	*/
 	function regenerate_code()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$this->code = gen_rand_string(mt_rand(CAPTCHA_MIN_CHARS, CAPTCHA_MAX_CHARS));
 		$this->seed = hexdec(substr(unique_id(), 4, 10));
@@ -271,7 +271,7 @@ class phpbb_default_captcha
 				'seed' => (int) $this->seed)) . '
 				WHERE
 				confirm_id = \'' . $db->sql_escape($this->confirm_id) . '\'
-					AND session_id = \'' . $db->sql_escape($userdata['session_id']) . '\'';
+					AND session_id = \'' . $db->sql_escape($user->data['session_id']) . '\'';
 		$db->sql_query($sql);
 	}
 
@@ -280,7 +280,7 @@ class phpbb_default_captcha
 	*/
 	function new_attempt()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$this->code = gen_rand_string(mt_rand(CAPTCHA_MIN_CHARS, CAPTCHA_MAX_CHARS));
 		$this->seed = hexdec(substr(unique_id(), 4, 10));
@@ -294,7 +294,7 @@ class phpbb_default_captcha
 				, attempts = attempts + 1
 				WHERE
 				confirm_id = \'' . $db->sql_escape($this->confirm_id) . '\'
-					AND session_id = \'' . $db->sql_escape($userdata['session_id']) . '\'';
+					AND session_id = \'' . $db->sql_escape($user->data['session_id']) . '\'';
 		$db->sql_query($sql);
 	}
 
@@ -303,12 +303,12 @@ class phpbb_default_captcha
 	*/
 	function load_code()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$sql = 'SELECT code, seed, attempts
 			FROM ' . CONFIRM_TABLE . "
 			WHERE confirm_id = '" . $db->sql_escape($this->confirm_id) . "'
-				AND session_id = '" . $db->sql_escape($userdata['session_id']) . "'
+				AND session_id = '" . $db->sql_escape($user->data['session_id']) . "'
 				AND confirm_type = " . $this->type;
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
@@ -332,11 +332,11 @@ class phpbb_default_captcha
 
 	function delete_code()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
 			WHERE confirm_id = '" . $db->sql_escape($confirm_id) . "'
-				AND session_id = '" . $db->sql_escape($userdata['session_id']) . "'
+				AND session_id = '" . $db->sql_escape($user->data['session_id']) . "'
 				AND confirm_type = " . $this->type;
 		$db->sql_query($sql);
 	}
@@ -348,10 +348,10 @@ class phpbb_default_captcha
 
 	function reset()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
-			WHERE session_id = '" . $db->sql_escape($userdata['session_id']) . "'
+			WHERE session_id = '" . $db->sql_escape($user->data['session_id']) . "'
 				AND confirm_type = " . (int) $this->type;
 		$db->sql_query($sql);
 

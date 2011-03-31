@@ -96,7 +96,7 @@ class pafiledb
 	//===================================================
 	function init()
 	{
-		global $db, $userdata, $debug;
+		global $db, $user, $debug;
 
 		unset($this->cat_rowset);
 		unset($this->subcat_rowset);
@@ -502,7 +502,7 @@ class pafiledb
 
 	function auth($c_access)
 	{
-		global $db, $db, $userdata, $lang, $pafiledb_config;
+		global $db, $db, $user, $lang, $pafiledb_config;
 // Mx Addon
 		$a_sql = 'a.auth_view, a.auth_read, a.auth_view_file, a.auth_edit_file, a.auth_delete_file, a.auth_upload, a.auth_download, a.auth_rate, a.auth_email, a.auth_view_comment, a.auth_post_comment, a.auth_edit_comment, a.auth_delete_comment, a.auth_mod, a.auth_search, a.auth_stats, a.auth_toplist, a.auth_viewall';
 		$auth_fields = array('auth_view', 'auth_read', 'auth_view_file', 'auth_edit_file', 'auth_delete_file', 'auth_upload', 'auth_download', 'auth_rate', 'auth_email', 'auth_view_comment', 'auth_post_comment', 'auth_edit_comment', 'auth_delete_comment');
@@ -515,11 +515,11 @@ class pafiledb
 		//
 		$u_access = array();
 		$global_u_access = array();
-		if ($userdata['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
 			$sql = "SELECT a.cat_id, a.group_id, $a_sql
 				FROM " . PA_AUTH_ACCESS_TABLE . " a, " . USER_GROUP_TABLE . " ug
-				WHERE ug.user_id = {$userdata['user_id']}
+				WHERE ug.user_id = {$user->data['user_id']}
 					AND ug.user_pending = 0
 					AND a.group_id = ug.group_id";
 			$result = $db->sql_query($sql);
@@ -541,7 +541,7 @@ class pafiledb
 			}
 		}
 
-		$is_admin = ($userdata['user_level'] == ADMIN && $userdata['session_logged_in']) ? true : 0;
+		$is_admin = ($user->data['user_level'] == ADMIN && $user->data['session_logged_in']) ? true : 0;
 
 		for($i = 0; $i < sizeof($auth_fields); $i++)
 		{
@@ -572,17 +572,17 @@ class pafiledb
 						break;
 
 					case AUTH_REG:
-						$this->auth[$c_cat_id][$key] = ($userdata['session_logged_in']) ? true : 0;
+						$this->auth[$c_cat_id][$key] = ($user->data['session_logged_in']) ? true : 0;
 						$this->auth[$c_cat_id][$key . '_type'] = $lang['Auth_Registered_Users'];
 						break;
 
 					case AUTH_ACL:
-						$this->auth[$c_cat_id][$key] = ($userdata['session_logged_in']) ? $this->auth_check_user(AUTH_ACL, $key, $u_access[$c_cat_id], $is_admin) : 0;
+						$this->auth[$c_cat_id][$key] = ($user->data['session_logged_in']) ? $this->auth_check_user(AUTH_ACL, $key, $u_access[$c_cat_id], $is_admin) : 0;
 						$this->auth[$c_cat_id][$key . '_type'] = $lang['Auth_Users_granted_access'];
 						break;
 
 					case AUTH_MOD:
-						$this->auth[$c_cat_id][$key] = ($userdata['session_logged_in']) ? $this->auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$c_cat_id], $is_admin) : 0;
+						$this->auth[$c_cat_id][$key] = ($user->data['session_logged_in']) ? $this->auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$c_cat_id], $is_admin) : 0;
 						$this->auth[$c_cat_id][$key . '_type'] = $lang['Auth_Moderators'];
 						break;
 
@@ -600,7 +600,7 @@ class pafiledb
 		for($k = 0; $k < sizeof($c_access); $k++)
 		{
 			$c_cat_id = $c_access[$k]['cat_id'];
-			$this->auth[$c_cat_id]['auth_mod'] = ($userdata['session_logged_in']) ? $this->auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$c_cat_id], $is_admin) : 0;
+			$this->auth[$c_cat_id]['auth_mod'] = ($user->data['session_logged_in']) ? $this->auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$c_cat_id], $is_admin) : 0;
 		}
 
 		for($i = 0; $i < sizeof($auth_fields_global); $i++)
@@ -617,17 +617,17 @@ class pafiledb
 					break;
 
 				case AUTH_REG:
-					$this->auth_global[$key] = ($userdata['session_logged_in']) ? true : 0;
+					$this->auth_global[$key] = ($user->data['session_logged_in']) ? true : 0;
 					$this->auth_global[$key . '_type'] = $lang['Auth_Registered_Users'];
 					break;
 
 				case AUTH_ACL:
-					$this->auth_global[$key] = ($userdata['session_logged_in']) ? $this->global_auth_check_user(AUTH_ACL, $key, $global_u_access, $is_admin) : 0;
+					$this->auth_global[$key] = ($user->data['session_logged_in']) ? $this->global_auth_check_user(AUTH_ACL, $key, $global_u_access, $is_admin) : 0;
 					$this->auth_global[$key . '_type'] = $lang['Auth_Users_granted_access'];
 					break;
 
 				case AUTH_MOD:
-					$this->auth_global[$key] = ($userdata['session_logged_in']) ? $this->global_auth_check_user(AUTH_MOD, 'auth_mod', $global_u_access, $is_admin) : 0;
+					$this->auth_global[$key] = ($user->data['session_logged_in']) ? $this->global_auth_check_user(AUTH_MOD, 'auth_mod', $global_u_access, $is_admin) : 0;
 					$this->auth_global[$key . '_type'] = $lang['Auth_Moderators'];
 					break;
 
@@ -724,12 +724,12 @@ class pafiledb
 
 	function category_display($cat_id = PA_ROOT_CAT)
 	{
-		global $db, $config, $template, $images, $lang, $userdata, $debug;
+		global $db, $config, $template, $images, $lang, $user, $debug;
 		global $pafiledb_config;
 
 		if($this->cat_empty())
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				$redirect = ($cat_id != PA_ROOT_CAT) ? 'dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $cat_id : 'dload.' . PHP_EXT;
 				redirect(append_sid(CMS_PAGE_LOGIN. '?redirect=' . $redirect, true));
@@ -778,7 +778,7 @@ class pafiledb
 
 					$xs_new = ($is_new)  ? '-new' : '';
 					$mini_img = $images['icon_minicat'];
-					if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+					if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 					{
 						$url_cat = append_sid(str_replace ('--', '-', make_url_friendly($subcat_row['cat_name']) . '-dc' . $subcat_id . '.html'));
 					}
@@ -824,7 +824,7 @@ class pafiledb
 				{
 					if($total_sub_cat)
 					{
-						if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+						if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 						{
 							$url_cat = append_sid(str_replace ('--', '-', make_url_friendly($subcat_row['cat_name']) . '-dc' . $subcat_id . '.html'));
 						}
@@ -869,7 +869,7 @@ class pafiledb
 
 							$sub_cat = $this->get_sub_cat($sub_cat_rowset[$k]['cat_id']);
 							$xs_new = ($is_new) ? '-new' : '';
-							if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+							if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 							{
 								$url_cat = append_sid(str_replace ('--', '-', make_url_friendly($sub_cat_rowset[$k]['cat_name']) . '-dc' . $sub_cat_rowset[$k]['cat_id'] . '.html'));
 							}
@@ -1031,7 +1031,7 @@ class pafiledb
 			//===================================================
 			$xs_new = ($is_new)  ? '-new' : '';
 
-			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 			{
 				$url_file = append_sid(str_replace ('--', '-', make_url_friendly($file_rowset[$i]['file_name']) . '-df' . $file_rowset[$i]['file_id'] . '.html'));
 			}
@@ -1447,7 +1447,7 @@ class pafiledb
 
 	function update_add_file($file_id = false)
 	{
-		global $db, $config, $userdata, $user_ip, $pafiledb_config, $pafiledb_functions;
+		global $db, $config, $user, $pafiledb_config, $pafiledb_functions;
 
 		$ss_upload = request_post_var('screen_shot_url', '');
 		$ss_upload = empty($ss_upload) ? true : false;
@@ -1479,7 +1479,7 @@ class pafiledb
 		$file_short_desc = request_post_var('short_desc', '', true);
 		$file_short_desc = !empty($file_short_desc) ? $file_short_desc : (!empty($file_long_desc) ? substr($file_long_desc, 0, 50) . '...' : '');
 		$file_author = request_post_var('author', '', true);
-		$file_author = !empty($file_author) ? $file_author : (($userdata['user_id'] != ANONYMOUS) ? $userdata['username'] : '');
+		$file_author = !empty($file_author) ? $file_author : (($user->data['user_id'] != ANONYMOUS) ? $user->data['username'] : '');
 		$file_version = request_post_var('version', '', true);
 
 		$file_website = request_post_var('website', '', true);
@@ -1646,7 +1646,7 @@ class pafiledb
 		{
 			if (!$file_id)
 			{
-				$file_approved = (($pafiledb->modules[$pafiledb->module_name]->auth[$_REQUEST['cat_id']]['auth_mod'] || $userdata['user_level'] == ADMIN) && $userdata['session_logged_in']) ? 1 : 0;
+				$file_approved = (($pafiledb->modules[$pafiledb->module_name]->auth[$_REQUEST['cat_id']]['auth_mod'] || $user->data['user_level'] == ADMIN) && $user->data['session_logged_in']) ? 1 : 0;
 			}
 			else
 			{
@@ -1657,7 +1657,7 @@ class pafiledb
 		if(!$file_id)
 		{
 			$sql = 'INSERT INTO ' . PA_FILES_TABLE . " (user_id, poster_ip, file_name, file_size, unique_name, real_name, file_dir, file_desc, file_creator, file_version, file_longdesc, file_ssurl, file_sshot_link, file_dlurl, file_time, file_update_time, file_catid, file_posticon, file_license, file_dls, file_last, file_pin, file_docsurl, file_approved)
-					VALUES('{$userdata['user_id']}', '$user_ip', '" . $db->sql_escape($file_name) . "', '$file_size', '$physical_file_name', '$file_realname', '{$pafiledb_config['upload_dir']}', '" . $db->sql_escape($file_short_desc) . "', '" . $db->sql_escape($file_author) . "', '" . $db->sql_escape($file_version) . "', '" . $db->sql_escape($file_long_desc) . "', '$screen_shot_url', '$file_ss_link', '$file_remote_url', '$file_time', '$file_time', '$cat_id', '$file_posticon', '$file_license', '$file_dls', '0', '$file_pin', '$file_website', '$file_approved')";
+					VALUES('{$user->data['user_id']}', '" . $db->sql_escape($user->ip) . "', '" . $db->sql_escape($file_name) . "', '$file_size', '$physical_file_name', '$file_realname', '{$pafiledb_config['upload_dir']}', '" . $db->sql_escape($file_short_desc) . "', '" . $db->sql_escape($file_author) . "', '" . $db->sql_escape($file_version) . "', '" . $db->sql_escape($file_long_desc) . "', '$screen_shot_url', '$file_ss_link', '$file_remote_url', '$file_time', '$file_time', '$cat_id', '$file_posticon', '$file_license', '$file_dls', '0', '$file_pin', '$file_website', '$file_approved')";
 		}
 		else
 		{
@@ -1701,7 +1701,7 @@ class pafiledb
 
 	function mirror_add_update($file_id, $file_upload, $file_remote_url, $file_local, $file_realname, $file_size, $file_type, $mirror_location, $mirror_id = false)
 	{
-		global $db, $db, $userdata, $pafiledb_config, $pafiledb_functions;
+		global $db, $db, $user, $pafiledb_config, $pafiledb_functions;
 
 		if(empty($file_remote_url) && empty($file_local) && !$file_id)
 		{
@@ -1835,8 +1835,8 @@ class pafiledb
 			$server = parse_url($url, PHP_URL_HOST);
 			$port = parse_url($url, PHP_URL_PORT);
 			$path = parse_url($url, PHP_URL_PATH);
-			$user = parse_url($url, PHP_URL_USER);
-			$pass = parse_url($url, PHP_URL_PASS);
+			$username = parse_url($url, PHP_URL_USER);
+			$password = parse_url($url, PHP_URL_PASS);
 			if ((!$server) || (!$path))
 			{
 				return false;
@@ -1845,13 +1845,13 @@ class pafiledb
 			{
 				$port = 21;
 			}
-			if (!$user)
+			if (!$username)
 			{
-				$user = 'anonymous';
+				$username = 'anonymous';
 			}
-			if (!$pass)
+			if (!$password)
 			{
-				$pass = 'phpos@';
+				$password = 'phpos@';
 			}
 			switch ($sch)
 			{
@@ -1866,7 +1866,7 @@ class pafiledb
 			{
 				return false;
 			}
-			$login = ftp_login($ftpid, $user, $pass);
+			$login = ftp_login($ftpid, $username, $password);
 			if (!$login)
 			{
 				return false;

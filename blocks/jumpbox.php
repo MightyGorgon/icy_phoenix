@@ -24,7 +24,7 @@ if(!function_exists('cms_block_jumpbox'))
 {
 	function cms_block_jumpbox()
 	{
-		global $db, $cache, $config, $template, $theme, $images, $userdata, $lang, $table_prefix, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars;
 
 		include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
 
@@ -90,16 +90,16 @@ if(!function_exists('cms_block_jumpbox'))
 						$cat_allowed = true;
 						break;
 					case '1':
-						$cat_allowed = ($userdata['session_logged_in'] ? false : true);
+						$cat_allowed = ($user->data['session_logged_in'] ? false : true);
 						break;
 					case '2':
-						$cat_allowed = ($userdata['session_logged_in'] ? true : false);
+						$cat_allowed = ($user->data['session_logged_in'] ? true : false);
 						break;
 					case '3':
-						$cat_allowed = ((($userdata['user_level'] == MOD) || ($userdata['user_level'] == ADMIN)) ? true : false);
+						$cat_allowed = ((($user->data['user_level'] == MOD) || ($user->data['user_level'] == ADMIN)) ? true : false);
 						break;
 					case '4':
-						$cat_allowed = (($userdata['user_level'] == ADMIN) ? true : false);
+						$cat_allowed = (($user->data['user_level'] == ADMIN) ? true : false);
 						break;
 					default:
 						$cat_allowed = true;
@@ -143,16 +143,16 @@ if(!function_exists('cms_block_jumpbox'))
 								$menu_allowed = true;
 								break;
 							case '1':
-								$menu_allowed = ($userdata['session_logged_in'] ? false : true);
+								$menu_allowed = ($user->data['session_logged_in'] ? false : true);
 								break;
 							case '2':
-								$menu_allowed = ($userdata['session_logged_in'] ? true : false);
+								$menu_allowed = ($user->data['session_logged_in'] ? true : false);
 								break;
 							case '3':
-								$menu_allowed = ((($userdata['user_level'] == MOD) || ($userdata['user_level'] == ADMIN)) ? true : false);
+								$menu_allowed = ((($user->data['user_level'] == MOD) || ($user->data['user_level'] == ADMIN)) ? true : false);
 								break;
 							case '4':
-								$menu_allowed = (($userdata['user_level'] == ADMIN) ? true : false);
+								$menu_allowed = (($user->data['user_level'] == ADMIN) ? true : false);
 								break;
 							default:
 								$menu_allowed = true;

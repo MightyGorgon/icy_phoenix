@@ -396,7 +396,7 @@ class phpbb_captcha_qa
 	*/
 	function select_question()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 
 		if (!sizeof($this->question_ids))
@@ -408,7 +408,7 @@ class phpbb_captcha_qa
 
 		$sql = 'INSERT INTO ' . CAPTCHA_QA_CONFIRM_TABLE . ' ' . $db->sql_build_array('INSERT', array(
 			'confirm_id' => (string) $this->confirm_id,
-			'session_id' => (string) $userdata['session_id'],
+			'session_id' => (string) $user->data['session_id'],
 			'lang_iso' => (string) $this->question_lang,
 			'confirm_type' => (int) $this->type,
 			'question_id' => (int) $this->question,
@@ -424,7 +424,7 @@ class phpbb_captcha_qa
 	*/
 	function reselect_question()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		if (!sizeof($this->question_ids))
 		{
@@ -437,7 +437,7 @@ class phpbb_captcha_qa
 		$sql = 'UPDATE ' . CAPTCHA_QA_CONFIRM_TABLE . '
 			SET question_id = ' . (int) $this->question . "
 			WHERE confirm_id = '" . $db->sql_escape($this->confirm_id) . "'
-				AND session_id = '" . $db->sql_escape($userdata['session_id']) . "'";
+				AND session_id = '" . $db->sql_escape($user->data['session_id']) . "'";
 		$db->sql_query($sql);
 
 		$this->load_answer();
@@ -448,7 +448,7 @@ class phpbb_captcha_qa
 	*/
 	function new_attempt()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		// yah, I would prefer a stronger rand, but this should work
 		$this->question = (int) array_rand($this->question_ids);
@@ -458,7 +458,7 @@ class phpbb_captcha_qa
 			SET question_id = ' . (int) $this->question . ",
 				attempts = attempts + 1
 			WHERE confirm_id = '" . $db->sql_escape($this->confirm_id) . "'
-				AND session_id = '" . $db->sql_escape($userdata['session_id']) . "'";
+				AND session_id = '" . $db->sql_escape($user->data['session_id']) . "'";
 		$db->sql_query($sql);
 
 		$this->load_answer();
@@ -469,7 +469,7 @@ class phpbb_captcha_qa
 	*/
 	function load_answer()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		if (!sizeof($this->question_ids))
 		{
@@ -480,7 +480,7 @@ class phpbb_captcha_qa
 			FROM ' . CAPTCHA_QA_CONFIRM_TABLE . ' con, ' . CAPTCHA_QUESTIONS_TABLE . " qes
 			WHERE con.question_id = qes.question_id
 				AND confirm_id = '" . $db->sql_escape($this->confirm_id) . "'
-				AND session_id = '" . $db->sql_escape($userdata['session_id']) . "'
+				AND session_id = '" . $db->sql_escape($user->data['session_id']) . "'
 				AND qes.lang_iso = '" . $db->sql_escape($this->question_lang) . "'
 				AND confirm_type = " . $this->type;
 		$result = $db->sql_query($sql);
@@ -536,11 +536,11 @@ class phpbb_captcha_qa
 	*/
 	function delete_code()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$sql = 'DELETE FROM ' . CAPTCHA_QA_CONFIRM_TABLE . "
 			WHERE confirm_id = '" . $db->sql_escape($confirm_id) . "'
-				AND session_id = '" . $db->sql_escape($userdata['session_id']) . "'
+				AND session_id = '" . $db->sql_escape($user->data['session_id']) . "'
 				AND confirm_type = " . $this->type;
 		$db->sql_query($sql);
 	}
@@ -558,10 +558,10 @@ class phpbb_captcha_qa
 	*/
 	function reset()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$sql = 'DELETE FROM ' . CAPTCHA_QA_CONFIRM_TABLE . "
-			WHERE session_id = '" . $db->sql_escape($userdata['session_id']) . "'
+			WHERE session_id = '" . $db->sql_escape($user->data['session_id']) . "'
 				AND confirm_type = " . (int) $this->type;
 		$db->sql_query($sql);
 
@@ -587,7 +587,7 @@ class phpbb_captcha_qa
 	*/
 	function acp_page($id, &$module)
 	{
-		global $db, $userdata, $auth, $template, $lang;
+		global $db, $user, $auth, $template, $lang;
 		global $config, $phpbb_admin_path;
 
 		$user->add_lang('acp/board');

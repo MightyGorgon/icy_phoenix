@@ -2,9 +2,9 @@
 
 <?php
 // check if quick reply is enabled
-global $userdata, $config, $topic_id, $is_auth, $forum_topic_data, $lang;
+global $user, $config, $topic_id, $is_auth, $forum_topic_data, $lang;
 
-$can_reply = $userdata['session_logged_in'] ? true : false;
+$can_reply = $user->data['session_logged_in'] ? true : false;
 if($can_reply)
 {
 	$is_auth_type = 'auth_reply';
@@ -62,7 +62,7 @@ if($can_reply)
 		<td class="catBottom" colspan="2">
 			<input type="hidden" name="mode" value="reply" />
 			<input type="hidden" name="t" value="<?php echo $topic_id; ?>" />
-			<input type="hidden" name="sid" value="<?php echo $userdata['session_id']; ?>" />
+			<input type="hidden" name="sid" value="<?php echo $user->data['session_id']; ?>" />
 			<input type="submit" accesskey="s" tabindex="6" name="post" class="mainoption" value="<?php echo $lang['Submit']; ?>" />&nbsp;
 			<input type="submit" tabindex="5" name="preview" class="mainoption" value="<?php echo $lang['Preview']; ?>" />
 		</td>

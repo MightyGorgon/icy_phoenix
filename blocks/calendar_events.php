@@ -25,7 +25,7 @@ if(!function_exists('cms_block_calendar_events'))
 {
 	function cms_block_calendar_events()
 	{
-		global $db, $cache, $config, $template, $theme, $userdata, $lang, $bbcode, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $theme, $user, $lang, $bbcode, $block_id, $cms_config_vars;
 
 		$show_end_date = !empty($cms_config_vars['md_events_end'][$block_id]) ? true : false;
 		$events_number = (int) $cms_config_vars['md_events_num'][$block_id];

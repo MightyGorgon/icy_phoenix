@@ -2,16 +2,10 @@
 <form method="post" action="{S_AGREE_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{SITENAME} - {REGISTRATION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1g" align="center">
-		<table width="80%" cellspacing="2" cellpadding="2" border="0" align="center">
-		<tr>
-			<td align="left">
-				<br /><div class="post-text"><span class="genmed">{AGREEMENT}</span></div><br /><br /><br />
-				<br /><div class="post-text"><span class="genmed">{L_PRIVACY_DISCLAIMER}</span></div><br clear="all" /><br /><br /><br />
-				<label><input type="checkbox" name="privacy" />&nbsp;{AGREE_CHECKBOX}</label><br /><br />
-			</td>
-		</tr>
-		</table>
+	<td class="row1">
+		<br /><div class="post-text">{AGREEMENT}</div><br clear="all" /><br /><br />
+		<br /><div class="post-text">{L_PRIVACY_DISCLAIMER}</div><br clear="all" /><br /><br /><br />
+		<label><input type="checkbox" name="privacy" />&nbsp;{AGREE_CHECKBOX}</label><br clear="all" /><br />
 	</td>
 </tr>
 <tr>

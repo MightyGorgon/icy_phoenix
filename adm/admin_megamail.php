@@ -105,7 +105,7 @@ if (!empty($subject) && !empty($message))
 
 	$mail_session_id = md5(uniqid(''));
 	$sql = "INSERT INTO " . MEGAMAIL_TABLE . " (mailsession_id, mass_pm, user_id, group_id, email_subject, email_body, email_format, batch_start, batch_size, batch_wait, status)
-			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $userdata['user_id'] . ", " . $group_id . ", '" . $db->sql_escape($subject) . "', '" . $db->sql_escape($message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
+			VALUES ('" . $mail_session_id . "', " . $mass_pm . ", " . $user->data['user_id'] . ", " . $group_id . ", '" . $db->sql_escape($subject) . "', '" . $db->sql_escape($message) . "', " . $email_format . ", 0, " . $batchsize . "," . $batchwait . ", 0)";
 	$result = $db->sql_query($sql);
 	$mail_id = $db->sql_nextid();
 	$url = append_sid('admin_megamail.' . PHP_EXT . '?mail_id=' . $mail_id . '&amp;mail_session_id=' . $mail_session_id);
@@ -265,7 +265,7 @@ if (!empty($mail_id) && !empty($mail_session_id))
 		{
 			if ($mass_pm)
 			{
-				$privmsg->send($userdata['user_id'], $row['user_id'], $subject, $pm_message);
+				$privmsg->send($user->data['user_id'], $row['user_id'], $subject, $pm_message);
 			}
 			$bcc_list .= (($bcc_list != '') ? ', ' : '') . $row['user_email'];
 			$bcc_list_array[] = $row['user_email'];
@@ -301,9 +301,9 @@ if (!empty($mail_id) && !empty($mail_session_id))
 		$emailer = new emailer();
 
 		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . $user_ip);
 
 		if ($email_format == 2)
 		{

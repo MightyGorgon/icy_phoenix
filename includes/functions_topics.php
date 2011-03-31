@@ -86,10 +86,10 @@ function get_dividers($topics)
 // Checks whether a bookmark is set or not
 function is_bookmark_set($topic_id)
 {
-	global $db, $userdata;
+	global $db, $user;
 
 	$is_bookmark_set = false;
-	$user_id = $userdata['user_id'];
+	$user_id = $user->data['user_id'];
 	$sql = "SELECT topic_id, user_id
 		FROM " . BOOKMARK_TABLE . "
 		WHERE topic_id = " . $topic_id . "
@@ -110,8 +110,8 @@ function is_bookmark_set($topic_id)
 // Sets a bookmark
 function set_bookmark($topic_id)
 {
-	global $db, $userdata;
-	$user_id = $userdata['user_id'];
+	global $db, $user;
+	$user_id = $user->data['user_id'];
 
 	if (!is_bookmark_set($topic_id, $user_id))
 	{
@@ -126,9 +126,9 @@ function set_bookmark($topic_id)
 // Removes a bookmark
 function remove_bookmark($topic_id)
 {
-	global $db, $userdata;
+	global $db, $user;
 
-	$user_id = $userdata['user_id'];
+	$user_id = $user->data['user_id'];
 	$sql = "DELETE FROM " . BOOKMARK_TABLE . "
 		WHERE topic_id IN (" . $topic_id . ") AND user_id = " . $user_id;
 	$db->sql_query($sql);
@@ -143,10 +143,10 @@ function remove_bookmark($topic_id)
 */
 function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $similar_topics_ids = '', $topic_desc = '')
 {
-	global $db, $config, $userdata, $lang;
+	global $db, $config, $user, $lang;
 
 	$similar_topics = array();
-	if(($similar_topics_ids !== '') && (!$userdata['session_logged_in'] || $userdata['is_bot']))
+	if(($similar_topics_ids !== '') && (!$user->data['session_logged_in'] || $user->data['is_bot']))
 	{
 		if($similar_topics_ids == 'empty')
 		{
@@ -182,7 +182,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 	// Get forum auth information to insure privacy of hidden topics
 	$forums_auth_sql = '';
 	//foreach ($similar_forums_auth as $k=>$v)
-	//$similar_forums_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+	//$similar_forums_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 	foreach ($similar_forums_auth as $k => $v)
 	{
 		if (sizeof($ignore_forums_ids) && in_array($k, $ignore_forums_ids))
@@ -272,7 +272,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 	$db->sql_freeresult($result);
 	$count_similar = sizeof($similar_topics);
 
-	if(!$userdata['session_logged_in'] || $userdata['is_bot'])
+	if(!$user->data['session_logged_in'] || $user->data['is_bot'])
 	{
 		$similar_ids_array = 'empty';
 		if (!empty($count_similar))

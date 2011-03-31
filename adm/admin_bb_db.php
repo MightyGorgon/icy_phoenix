@@ -107,14 +107,14 @@ $mass_change = request_var('mass_change', '');
 // Auth Check - BEGIN
 $allowed = false;
 $founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-if ($userdata['user_id'] == $founder_id)
+if ($user->data['user_id'] == $founder_id)
 {
 	$allowed = true;
 }
 if (!$allowed && defined('MAIN_ADMINS_ID'))
 {
 	$allowed_admins = explode(',', MAIN_ADMINS_ID);
-	if (in_array($userdata['user_id'], $allowed_admins))
+	if (in_array($user->data['user_id'], $allowed_admins))
 	{
 		$allowed = true;
 	}
@@ -131,7 +131,7 @@ echo '<table class="forumline" width="200" cellspacing="0" cellpadding="0" borde
 echo '	<tr>';
 echo '		<td align="left" valign="middle" class="row2" colspan="15">';
 echo '			<span class="genmed">';
-echo '				' . $lang['db_sql_query_db'] . '<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=sql_change&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images . 'b_sql.png" alt="" /></a>&nbsp;&nbsp;<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=explain_change&amp;sid=' . $userdata['session_id'] . '"><img src="' . $images . 'b_tipp.png" alt="' . $lang['db_explain'] . '" title="' . $lang['db_explain'] . '" /></a>';
+echo '				' . $lang['db_sql_query_db'] . '<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=sql_change&amp;sid=' . $user->data['session_id'] . '"><img src="' . $images . 'b_sql.png" alt="" /></a>&nbsp;&nbsp;<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=explain_change&amp;sid=' . $user->data['session_id'] . '"><img src="' . $images . 'b_tipp.png" alt="' . $lang['db_explain'] . '" title="' . $lang['db_explain'] . '" /></a>';
 echo '				<div style="text-align:center;"><a href="' . append_sid($_SERVER['SCRIPT_NAME']) . '"><b>' . $dbname . '</b></a></div>';
 echo '			</span>';
 echo '		</td>';
@@ -203,7 +203,7 @@ if ($mode == 'sql_change')
 {
 	if (!$action)
 	{
-		echo '<form name="sql" action="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id'] .'" method="post">';
+		echo '<form name="sql" action="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'" method="post">';
 		echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 		echo '	<tr>';
 		echo '		<td class="row1" width="100%">';
@@ -362,7 +362,7 @@ $row 	= $db->sql_fetchrowset($r);
 if ($rows)
 	{
 $total 			= $rows;
-$pagination 	= generate_pagination($_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $order .'&amp;way='. $way .'&amp;sid='. $userdata['session_id'], $rows, 30, $start). '&nbsp;';
+$pagination 	= generate_pagination($_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $order .'&amp;way='. $way .'&amp;sid='. $user->data['session_id'], $rows, 30, $start). '&nbsp;';
 	}
 else
 	$pagination = '&nbsp;';
@@ -406,7 +406,7 @@ $r = $db->sql_query($q);
 		$fields[] = $d['Field'];
 	echo '	<td class="row1">';
 	echo '		<span class="genmed">';
-	echo '			'. $d['Field'] .'&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $d['Field'] .'&amp;way=DESC&amp;start='. $start .'&amp;sid='. $userdata['session_id'] .'"><img src="'. $images .'s_desc.png" border="0"></a>&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $d['Field'] .'&amp;way=ASC&amp;start='. $start .'&amp;sid='. $userdata['session_id'] .'"><img src="'. $images .'s_asc.png" border="0"></a>';
+	echo '			'. $d['Field'] .'&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $d['Field'] .'&amp;way=DESC&amp;start='. $start .'&amp;sid='. $user->data['session_id'] .'"><img src="'. $images .'s_desc.png" border="0"></a>&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $d['Field'] .'&amp;way=ASC&amp;start='. $start .'&amp;sid='. $user->data['session_id'] .'"><img src="'. $images .'s_asc.png" border="0"></a>';
 	echo '		</span>';
 	echo '	</td>';
 		}
@@ -439,7 +439,7 @@ echo '	document.mass.elements[i].checked = status;';
 echo '		}';
 echo '	}';
 echo '</script>';
-echo '<form name="mass" action="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id'] .'" method="post">';
+echo '<form name="mass" action="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'" method="post">';
 echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
 echo '	<tr>';
 echo '		<th>';
@@ -449,7 +449,7 @@ echo '			</span>';
 echo '		</th>';
 echo '		<th colspan="5">';
 echo '			<span class="genmed">';
-echo '				<b>'. $lang['db_action'] .'</b>&nbsp;&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=explain&amp;sid='. $userdata['session_id'] .'"><img src="'. $images .'b_tipp.png" alt="'. $lang['db_explain'] .'" title="'. $lang['db_explain'] .'" border="0"></a>';
+echo '				<b>'. $lang['db_action'] .'</b>&nbsp;&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=explain&amp;sid='. $user->data['session_id'] .'"><img src="'. $images .'b_tipp.png" alt="'. $lang['db_explain'] .'" title="'. $lang['db_explain'] .'" border="0"></a>';
 echo '			</span>';
 echo '		</th>';
 echo '		<th>';
@@ -514,27 +514,27 @@ $selected_tables = array();
 		echo '			</span>';
 		echo '		</td>';
 		echo '		<td class="row2">';
-		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
+		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $x .'&amp;sid='. $user->data['session_id'] .'">';
 		echo '				<img src="'. $images .'b_select.png" alt="'. $lang['db_browse'] .'" title="'. $lang['db_browse'] .'">';
 		echo '			</a>';
 		echo '		</td>';
 		echo '		<td class="row2">';
-		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=structure&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
+		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=structure&amp;table='. $x .'&amp;sid='. $user->data['session_id'] .'">';
 		echo '				<img src="'. $images .'b_props.png" alt="'. $lang['db_structure'] .'" title="'. $lang['db_structure'] .'">';
 		echo '			</a>';
 		echo '		</td>';
 		echo '		<td class="row2">';
-		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=optimize&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
+		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=optimize&amp;table='. $x .'&amp;sid='. $user->data['session_id'] .'">';
 		echo '				<img src="'. $images .'b_browse.png" alt="'. $lang['db_optimize'] .'" title="'. $lang['db_optimize'] .'">';
 		echo '			</a>';
 		echo '		</td>';
 		echo '		<td class="row2">';
-		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=truncate&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
+		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=truncate&amp;table='. $x .'&amp;sid='. $user->data['session_id'] .'">';
 		echo '				<img src="'. $images .'b_empty.png" alt="'. $lang['db_truncate'] .'" title="'. $lang['db_truncate'] .'">';
 		echo '			</a>';
 		echo '		</td>';
 		echo '		<td class="row2">';
-		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=drop&amp;table='. $x .'&amp;sid='. $userdata['session_id'] .'">';
+		echo '			<a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=drop&amp;table='. $x .'&amp;sid='. $user->data['session_id'] .'">';
 		echo '				<img src="'. $images .'b_drop.png" alt="'. $lang['db_drop'] .'" title="'. $lang['db_drop'] .'">';
 		echo '			</a>';
 		echo '		</td>';
@@ -657,17 +657,17 @@ $tables = $db->sql_fetchrowset($r);
 		}
 
 	if (!$action)
-		message_die(GENERAL_MESSAGE, sprintf($lang['db_dro_warning'], $table_name) .'<br /><br /><a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=drop&amp;action=yes&amp;table='. $table_id .'&amp;table_name='. $table_name .'&amp;sid='. $userdata['session_id'] .'">'. $lang['db_warning_y'] .'</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?action=no&amp;sid='. $userdata['session_id'] .'">'. $lang['db_warning_n'] .'</a>');
+		message_die(GENERAL_MESSAGE, sprintf($lang['db_dro_warning'], $table_name) .'<br /><br /><a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=drop&amp;action=yes&amp;table='. $table_id .'&amp;table_name='. $table_name .'&amp;sid='. $user->data['session_id'] .'">'. $lang['db_warning_y'] .'</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?action=no&amp;sid='. $user->data['session_id'] .'">'. $lang['db_warning_n'] .'</a>');
 
 	if ($action == 'yes')
 		{
 	$q = 'DROP TABLE IF EXISTS '. $_GET['table_name'];
 	$db->sql_query($q);
 
-	message_die(GENERAL_MESSAGE, sprintf($lang['db_dro_success'], $_GET['table_name']) .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id'] .'">', '</a>'));
+	message_die(GENERAL_MESSAGE, sprintf($lang['db_dro_success'], $_GET['table_name']) .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'">', '</a>'));
 		}
 	elseif ($action == 'no')
-		redirect($_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id']);
+		redirect($_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id']);
 	}
 
 if ($mode == 'truncate')
@@ -687,17 +687,17 @@ $tables = $db->sql_fetchrowset($r);
 		}
 
 	if (!$action)
-		message_die(GENERAL_MESSAGE, sprintf($lang['db_tru_warning'], $table_name) .'<br /><br /><a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=truncate&amp;action=yes&amp;table='. $table_id .'&amp;table_name='. $table_name .'&amp;sid='. $userdata['session_id'] .'">'. $lang['db_warning_y'] .'</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?action=no&amp;sid='. $userdata['session_id'] .'">'. $lang['db_warning_n'] .'</a>');
+		message_die(GENERAL_MESSAGE, sprintf($lang['db_tru_warning'], $table_name) .'<br /><br /><a href="'. $_SERVER['SCRIPT_NAME'] .'?mode=truncate&amp;action=yes&amp;table='. $table_id .'&amp;table_name='. $table_name .'&amp;sid='. $user->data['session_id'] .'">'. $lang['db_warning_y'] .'</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'. $_SERVER['SCRIPT_NAME'] .'?action=no&amp;sid='. $user->data['session_id'] .'">'. $lang['db_warning_n'] .'</a>');
 
 	if ($action == 'yes')
 		{
 	$q = 'TRUNCATE '. $_GET['table_name'];
 	$db->sql_query($q);
 
-	message_die(GENERAL_MESSAGE, sprintf($lang['db_tru_success'], $_GET['table_name']) .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id'] .'">', '</a>'));
+	message_die(GENERAL_MESSAGE, sprintf($lang['db_tru_success'], $_GET['table_name']) .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'">', '</a>'));
 		}
 	elseif ($action == 'no')
-		redirect($_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id']);
+		redirect($_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id']);
 	}
 
 if ($mode == 'optimize')
@@ -718,7 +718,7 @@ $tables = $db->sql_fetchrowset($r);
 $q = 'OPTIMIZE TABLE'. $table_name;
 $db->sql_query($q);
 
-message_die(GENERAL_MESSAGE, sprintf($lang['db_opt_success'], $table_name) .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id'] .'">', '</a>'));
+message_die(GENERAL_MESSAGE, sprintf($lang['db_opt_success'], $table_name) .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'">', '</a>'));
 	}
 
 if ($mode == 'structure')
@@ -819,10 +819,10 @@ echo '</form>';
 	}
 
 if ($mode == 'explain')
-	message_die(GENERAL_MESSAGE, $lang['db_explained'] .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id'] .'">', '</a>'));
+	message_die(GENERAL_MESSAGE, $lang['db_explained'] .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'">', '</a>'));
 
 if ($mode == 'explain_change')
-	message_die(GENERAL_MESSAGE, $lang['db_change_exp'] .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id'] .'">', '</a>'));
+	message_die(GENERAL_MESSAGE, $lang['db_change_exp'] .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'">', '</a>'));
 
 if ($mass_change)
 	{
@@ -867,7 +867,7 @@ $tables_to_change = isset($_POST['selected_tables']) ? $_POST['selected_tables']
 			$msg .= sprintf($l, $tables_to_change[$x]) .'<br />';
 		}
 	}
-		message_die(GENERAL_MESSAGE, $msg .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $userdata['session_id'] .'">', '</a>'));
+		message_die(GENERAL_MESSAGE, $msg .'<br /><br />'. sprintf($lang['db_back'], '<a href="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'">', '</a>'));
 		}
 	}
 

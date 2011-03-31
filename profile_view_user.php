@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $link_name = $lang['Profile_viewed'];
@@ -62,7 +63,7 @@ while ($row = $db->sql_fetchrow($result))
 		'AVATAR' => $viewer_avatar,
 		'VIEW_BY' => colorize_username($viewer, $row['username'], $row['user_color'], $row['user_active']),
 		'NUMBER' => $row['counter'],
-		'STAMP' => create_date_ip($userdata['user_dateformat'], $row['view_stamp'], $userdata['user_timezone'])
+		'STAMP' => create_date_ip($user->data['user_dateformat'], $row['view_stamp'], $user->data['user_timezone'])
 		)
 	);
 }

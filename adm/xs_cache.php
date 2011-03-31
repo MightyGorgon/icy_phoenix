@@ -209,8 +209,8 @@ for($i = 0; $i < sizeof($style_rowset); $i++)
 				'ROW_CLASS' => $row_class,
 				'TPL' => $prev_tpl,
 				'STYLES' => $str,
-				'U_CLEAR' => 'xs_cache.' . PHP_EXT . "?clear={$str2}&amp;sid={$userdata['session_id']}",
-				'U_COMPILE' => 'xs_cache.' . PHP_EXT . "?compile={$str2}&amp;sid={$userdata['session_id']}",
+				'U_CLEAR' => 'xs_cache.' . PHP_EXT . "?clear={$str2}&amp;sid={$user->data['session_id']}",
+				'U_COMPILE' => 'xs_cache.' . PHP_EXT . "?compile={$str2}&amp;sid={$user->data['session_id']}",
 				)
 			);
 		}
@@ -229,15 +229,15 @@ if($prev_id > 0)
 		'ROW_CLASS' => $row_class,
 		'TPL' => $prev_tpl,
 		'STYLES' => $str,
-		'U_CLEAR' => 'xs_cache.' . PHP_EXT . "?clear={$str2}&amp;sid={$userdata['session_id']}",
-		'U_COMPILE' => 'xs_cache.' . PHP_EXT . "?compile={$str2}&amp;sid={$userdata['session_id']}",
+		'U_CLEAR' => 'xs_cache.' . PHP_EXT . "?clear={$str2}&amp;sid={$user->data['session_id']}",
+		'U_COMPILE' => 'xs_cache.' . PHP_EXT . "?compile={$str2}&amp;sid={$user->data['session_id']}",
 		)
 	);
 }
 
 $template->assign_vars(array(
-	'U_CLEAR_ALL' => 'xs_cache.' . PHP_EXT . "?clear=&amp;sid={$userdata['session_id']}",
-	'U_COMPILE_ALL' => 'xs_cache.' . PHP_EXT . "?compile=&amp;sid={$userdata['session_id']}",
+	'U_CLEAR_ALL' => 'xs_cache.' . PHP_EXT . "?clear=&amp;sid={$user->data['session_id']}",
+	'U_COMPILE_ALL' => 'xs_cache.' . PHP_EXT . "?compile=&amp;sid={$user->data['session_id']}",
 	'RESULT' => '<br /><br />' . $data
 	)
 );

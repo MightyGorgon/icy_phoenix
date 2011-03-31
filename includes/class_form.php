@@ -721,11 +721,11 @@ class class_form
 	*/
 	function fix_unix_time($unix_time, $factor = 1)
 	{
-		global $config, $lang, $userdata;
+		global $config, $lang, $user;
 
-		$time_zone = (isset($userdata['user_timezone']) ? $userdata['user_timezone'] : $config['board_timezone']);
-		$time_mode = (isset($userdata['user_time_mode']) ? $userdata['user_time_mode'] : $config['default_time_mode']);
-		$dst_time_lag = (isset($userdata['user_dst_time_lag']) ? $userdata['user_dst_time_lag'] : $config['default_dst_time_lag']);
+		$time_zone = (isset($user->data['user_timezone']) ? $user->data['user_timezone'] : $config['board_timezone']);
+		$time_mode = (isset($user->data['user_time_mode']) ? $user->data['user_time_mode'] : $config['default_time_mode']);
+		$dst_time_lag = (isset($user->data['user_dst_time_lag']) ? $user->data['user_dst_time_lag'] : $config['default_dst_time_lag']);
 
 		switch ($time_mode)
 		{

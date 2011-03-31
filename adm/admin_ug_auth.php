@@ -80,10 +80,10 @@ $user_level_new = request_var('userlevel', '');
 
 // Disallow other admins to delete or edit the first admin - BEGIN
 $founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-if (($user_id == $founder_id) && ($userdata['user_id'] != $founder_id))
+if (($user_id == $founder_id) && ($user->data['user_id'] != $founder_id))
 {
-	$edituser = $userdata['username'];
-	$editok = $userdata['user_id'];
+	$edituser = $user->data['username'];
+	$editok = $user->data['user_id'];
 	$sql = "INSERT INTO " . ADMINEDIT_TABLE . " (edituser, editok) VALUES ('" . $db->sql_escape($edituser) . "','" . $editok . "')";
 	$result = $db->sql_query($sql);
 	message_die(GENERAL_MESSAGE, $lang['L_ADMINEDITMSG']);
@@ -132,7 +132,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 		$current_level = $user_level;
 		$new_level = (($user_level_new == 'admin') ? ADMIN : JUNIOR_ADMIN);
 		$level_changed = false;
-		if ($userdata['user_id'] != $user_id)
+		if ($user->data['user_id'] != $user_id)
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
 				SET user_level = '" . $new_level . "'
@@ -154,7 +154,7 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 		if (($mode == 'user') && ($user_level_new == 'user') && (($user_level == ADMIN) || ($user_level == JUNIOR_ADMIN)))
 		{
 			// Make admin a user (if already admin) ... ignore if you're trying to change yourself from an admin to user!
-			if ($userdata['user_id'] != $user_id)
+			if ($user->data['user_id'] != $user_id)
 			{
 				$auth_reset = reset_all_auth($user_id);
 

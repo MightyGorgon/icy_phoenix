@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -111,7 +112,7 @@ $album_user_access = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_COMME
 
 if( ($album_user_access['comment'] == 0) || ($album_user_access['edit'] == 0) )
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_comment_edit.' . PHP_EXT . '?comment_id=' . $comment_id));
 	}
@@ -122,9 +123,9 @@ if( ($album_user_access['comment'] == 0) || ($album_user_access['edit'] == 0) )
 }
 else
 {
-	if( (!$album_user_access['moderator']) && ($userdata['user_level'] != ADMIN) )
+	if( (!$album_user_access['moderator']) && ($user->data['user_level'] != ADMIN) )
 	{
-		if ($thiscomment['comment_user_id'] != $userdata['user_id'])
+		if ($thiscomment['comment_user_id'] != $user->data['user_id'])
 		{
 			message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 		}
@@ -231,7 +232,7 @@ else
 	// Prepare variables
 	// --------------------------------
 	$comment_edit_time = time();
-	$comment_edit_user_id = $userdata['user_id'];
+	$comment_edit_user_id = $user->data['user_id'];
 
 	// --------------------------------
 	// Update the DB

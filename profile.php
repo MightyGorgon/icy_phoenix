@@ -39,8 +39,9 @@ include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 define('PARSE_CPL_NAV', true);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $meta_content['page_title'] = $lang['Profile'];
@@ -75,7 +76,7 @@ if (!empty($mode))
 	}
 	elseif (($mode == 'editprofile') || ($mode == 'register'))
 	{
-		if (!$userdata['session_logged_in'] && ($mode == 'editprofile'))
+		if (!$user->data['session_logged_in'] && ($mode == 'editprofile'))
 		{
 			redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=editprofile', true));
 			//redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=editprofile&cpl_mode=reg_info', true));
@@ -85,7 +86,7 @@ if (!empty($mode))
 	}
 	elseif ($mode == 'signature')
 	{
-		if (!$userdata['session_logged_in'] && ($mode == 'signature'))
+		if (!$user->data['session_logged_in'] && ($mode == 'signature'))
 		{
 			$header_location = (@preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE"))) ? "Refresh: 0; URL=" : "Location: ";
 			header($header_location . append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=signature', true));
@@ -99,7 +100,7 @@ if (!empty($mode))
 	{
 		// Visual Confirmation
 		$force_captcha = request_var('force_captcha', 0);
-		if (empty($force_captcha) && $userdata['session_logged_in'] && ($_GET['confirm_id'] != 'Admin'))
+		if (empty($force_captcha) && $user->data['session_logged_in'] && ($_GET['confirm_id'] != 'Admin'))
 		{
 			exit;
 		}

@@ -40,7 +40,7 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 	$option3_list = array();
 	$s_hidden_fields = '';
 	$s_hidden_fields = '<input type="hidden" name="topic_id" value="' . $topic_id . '" /><input type="hidden" name="mode" value="vote" />';
-	$s_hidden_fields = '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$s_hidden_fields = '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 	$template->set_filenames(array('regbox' => 'viewtopic_events_reg.tpl'));
 
@@ -61,7 +61,7 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 
 	for($u = 0; $u < $numregs; $u++)
 	{
-		if ($reg_info[$u]['user_id'] == $userdata['user_id'])
+		if ($reg_info[$u]['user_id'] == $user->data['user_id'])
 		{
 			$self_registered = $reg_info[$u]['registration_status'];
 		}
@@ -119,15 +119,15 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 	$readonly_option1 = '';
 	$readonly_option2 = '';
 	$readonly_option3 = '';
-	if (($self_registered == 1) || ($reg_expired === 1) || ((check_max_registration($topic_id, 1) === false) && (check_user_registered($topic_id, $userdata['user_id'], 1) === false)))
+	if (($self_registered == 1) || ($reg_expired === 1) || ((check_max_registration($topic_id, 1) === false) && (check_user_registered($topic_id, $user->data['user_id'], 1) === false)))
 	{
 		$readonly_option1 = 'disabled="disabled"';
 	}
-	if (($self_registered == 2) || ($reg_expired === 1) || ((check_max_registration($topic_id, 2) === false) && (check_user_registered($topic_id, $userdata['user_id'], 2) === false)))
+	if (($self_registered == 2) || ($reg_expired === 1) || ((check_max_registration($topic_id, 2) === false) && (check_user_registered($topic_id, $user->data['user_id'], 2) === false)))
 	{
 		$readonly_option2 = 'disabled="disabled"';
 	}
-	if (($self_registered == 3) || ($reg_expired === 1) || ((check_max_registration($topic_id, 3) === false) && (check_user_registered($topic_id, $userdata['user_id'], 3) === false)))
+	if (($self_registered == 3) || ($reg_expired === 1) || ((check_max_registration($topic_id, 3) === false) && (check_user_registered($topic_id, $user->data['user_id'], 3) === false)))
 	{
 		$readonly_option3 = 'disabled="disabled"';
 	}

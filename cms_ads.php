@@ -24,8 +24,9 @@ $cms_admin->root = CMS_PAGE_CMS;
 //$cms_admin->init_vars($mode_array, $action_array);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
@@ -42,7 +43,7 @@ if (!$access_allowed)
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 
-if (!$userdata['session_admin'])
+if (!$user->data['session_admin'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=cms_ads.' . PHP_EXT . '&admin=1', true));
 }
@@ -112,7 +113,7 @@ $ad_sort_by_array = array('ad_position', 'ad_id', 'ad_title', 'ad_auth', 'ad_for
 $ad_sort_by = in_array($ad_sort_by, $ad_sort_by_array) ? $ad_sort_by : $ad_sort_by_array[0];
 $ad_sort_order = request_var('sort_order', '');
 
-$show_cms_menu = (($userdata['user_level'] == ADMIN) || ($userdata['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
+$show_cms_menu = (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 	'S_SHOW_CMS_MENU' => $show_cms_menu

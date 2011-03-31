@@ -82,13 +82,14 @@ elseif ($user_id)
 }
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Start auth check
 $is_auth = array();
-$is_auth = auth(AUTH_ALL, $forum_id, $userdata);
+$is_auth = auth(AUTH_ALL, $forum_id, $user->data);
 
 $no_error = true;
 $already_banned = false;
@@ -129,7 +130,7 @@ elseif ($mode == 'report')
 	$post_details = $db->sql_fetchrow($result);
 	$post_subject = $post_details['post_subject'];
 
-	$sql = 'SELECT p.topic_id FROM ' . POSTS_TABLE . ' p WHERE p.post_subject = "(' . $post_id . ')' . $post_subject . '"';
+	$sql = 'SELECT p.topic_id FROM ' . POSTS_TABLE . ' p WHERE p.post_subject = "(' . $post_id . ')' . $db->sql_escape($post_subject) . '"';
 	$result = $db->sql_query($sql);
 	$post_details = $db->sql_fetchrow($result);
 	$already_reported = ($blue_card) ? $post_details['topic_id'] : '';
@@ -193,9 +194,9 @@ elseif ($mode == 'report')
 			$emailer = new emailer();
 
 			$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-			$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-			$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-			$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+			$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+			$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+			$emailer->headers('X-AntiAbuse: User IP - ' . $user_ip);
 
 			$emailer->use_template('repport_post', (file_exists(IP_ROOT_PATH . 'language/lang_' . $report_recipients[$i]['user_lang'] . '/email/html/repport_post.tpl')) ? $report_recipients[$i]['user_lang'] : 'english');
 			$emailer->to($report_recipients[$i]['user_email']);
@@ -205,7 +206,7 @@ elseif ($mode == 'report')
 				'POST_URL' => $viewtopic_server_url . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
 				'POST_SUBJECT' => $post_subject,
 				'FORUM_NAME' => $forum_name,
-				'USER' => '"' . $userdata['username'] . '"',
+				'USER' => '"' . $user->data['username'] . '"',
 				'NUMBER_OF_REPPORTS' => $blue_card,
 				'SITENAME' => $config['sitename'],
 				'BOARD_EMAIL' => $config['board_email']
@@ -220,7 +221,7 @@ elseif ($mode == 'report')
 }
 elseif ($mode == 'unban')
 {
-	if (($userdata['user_level'] != ADMIN) && !$is_auth['auth_greencard'])
+	if (($user->data['user_level'] != ADMIN) && !$is_auth['auth_greencard'])
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
@@ -243,7 +244,7 @@ elseif ($mode == 'unban')
 }
 elseif ($mode == 'ban')
 {
-	if (($userdata['user_level'] != ADMIN) && !$is_auth['auth_ban'])
+	if (($user->data['user_level'] != ADMIN) && !$is_auth['auth_ban'])
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
@@ -287,7 +288,7 @@ elseif ($mode == 'ban')
 }
 elseif ($mode == 'warn')
 {
-	if (($userdata['user_level'] != ADMIN) && !$is_auth['auth_ban'])
+	if (($user->data['user_level'] != ADMIN) && !$is_auth['auth_ban'])
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
@@ -349,15 +350,15 @@ if ($no_error)
 	{
 		$server_url = create_server_url();
 		$viewtopic_server_url = $server_url . CMS_PAGE_VIEWTOPIC;
-		$from_email = ($userdata['user_email'] && $userdata['user_viewemail']) ? $userdata['user_email'] : $config['board_email'];
+		$from_email = ($user->data['user_email'] && $user->data['user_viewemail']) ? $user->data['user_email'] : $config['board_email'];
 
 		include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer();
 
 		$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-		$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-		$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-		$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+		$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+		$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+		$emailer->headers('X-AntiAbuse: User IP - ' . $user_ip);
 
 		$emailer->use_template($e_temp, $warning_data['user_lang']);
 		$emailer->to($warning_data['user_email']);
@@ -372,7 +373,7 @@ if ($no_error)
 			'TOTAL_WARN' => $config['max_user_bancard'],
 			'POST_URL' => $viewtopic_server_url . '?' . $forum_id_append . $topic_id_append . POST_POST_URL . '=' . $post_id . '#p' . $post_id,
 			'EMAIL_SIG' => $email_sig,
-			'WARNER' => $userdata['username'],
+			'WARNER' => $user->data['username'],
 			'BLOCK_TIME' => $block_time,
 			'WARNED_POSTER' => $warning_data['username']
 			)

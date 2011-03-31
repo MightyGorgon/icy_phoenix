@@ -24,15 +24,15 @@ $my_lang_module_name = $lang['module_name__stats_overview_section'];
 // get information about the installed modules
 
 $auth_level = AUTH_ALL;
-if ($userdata['user_level'] == ADMIN)
+if ($user->data['user_level'] == ADMIN)
 {
 	$auth_level = AUTH_ADMIN;
 }
-elseif ($userdata['user_level'] == MOD)
+elseif ($user->data['user_level'] == MOD)
 {
 	$auth_level = AUTH_MOD;
 }
-elseif ($userdata['session_logged_in'])
+elseif ($user->data['session_logged_in'])
 {
 	$auth_level = AUTH_REG;
 }

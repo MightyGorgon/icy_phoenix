@@ -59,11 +59,12 @@ include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 @set_time_limit(180);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
-$sql = 'SELECT user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $userdata['user_id'] . '" LIMIT 1';
+$sql = 'SELECT user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $user->data['user_id'] . '" LIMIT 1';
 $result = $db->sql_query($sql);
 $user_row = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);

@@ -21,14 +21,15 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	message_die(GENERAL_MESSAGE, $lang['Login_To_Vote']);
 }
@@ -48,14 +49,14 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 	if (empty($album_config['hon_rate_where']))
 	{
 		$sql = "SELECT `pic_id` FROM " . ALBUM_TABLE . "
-						WHERE pic_user_id <> '" . $userdata['user_id'] . "'
+						WHERE pic_user_id <> '" . $user->data['user_id'] . "'
 						ORDER BY RAND() LIMIT 1";
 	}
 	else
 	{
 		$sql = "SELECT `pic_id` FROM " . ALBUM_TABLE . "
 						WHERE pic_cat_id IN (" . $album_config['hon_rate_where'] . ")
-							AND pic_user_id <> '" . $userdata['user_id'] . "'
+							AND pic_user_id <> '" . $user->data['user_id'] . "'
 						ORDER BY RAND() LIMIT 1";
 	}
 	$result = $db->sql_query($sql);
@@ -68,7 +69,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 	// ------------------------------------
 	$rating_from = ($album_config['hon_rate_sep'] == 1) ? 'AVG(r.rate_hon_point) AS rating' : 'AVG(r.rate_point) AS rating';
 	$sql_where = '';
-	if ($userdata['user_level'] != ADMIN)
+	if ($user->data['user_level'] != ADMIN)
 	{
 		$sql_where = 'AND p.pic_approval = 1';
 	}
@@ -107,7 +108,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 
 		if ($album_user_access['view'] == 0)
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_hotornot.' . PHP_EXT));
 			}
@@ -122,7 +123,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 	// Check Pic Approval
 	// ------------------------------------
 
-	if ($userdata['user_level'] != ADMIN)
+	if ($user->data['user_level'] != ADMIN)
 	{
 		if(($thiscat['cat_approval'] == ADMIN) || (($thiscat['cat_approval'] == MOD) && !$album_user_access['moderator']))
 		{
@@ -152,7 +153,7 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 	$image_rating = ImageRating($thispic['rating']);
 
 	//hot or not rating
-	if (CanRated($pic_id, $userdata['user_id']))
+	if (CanRated($pic_id, $user->data['user_id']))
 	{
 		$template->assign_block_vars('hon_rating', array());
 
@@ -212,13 +213,13 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 }
 else
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 	}
 
-	$rate_user_id = $userdata['user_id'];
-	$rate_user_ip = $userdata['session_ip'];
+	$rate_user_id = $user->data['user_id'];
+	$rate_user_ip = $user->data['session_ip'];
 	$pic_id = request_var('pic_id', 0);
 	if($pic_id <= 0)
 	{
@@ -243,7 +244,7 @@ else
 	if (!($rated = $db->sql_fetchrow($result)))
 	{
 		$sql = "INSERT INTO " . ALBUM_RATE_TABLE . " (rate_pic_id, rate_user_id, rate_user_ip, " . $rating_field . ")
-				VALUES ('$pic_id', '$rate_user_id', '$rate_user_ip', '$rate_point')";
+				VALUES ('" . $db->sql_escape($pic_id) . "', '" . $db->sql_escape($rate_user_id) . "', '" . $db->sql_escape($rate_user_ip) . "', '" . $db->sql_escape($rate_point) . "')";
 		$result = $db->sql_query($sql);
 		$rate_string = $lang['Album_rate_successfully'];
 	}

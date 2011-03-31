@@ -57,7 +57,7 @@ if (isset($_POST['submit']))
 			// may lead to complaints
 			$sql = 'SELECT z.*, u.username
 				FROM ' . ZEBRA_TABLE . ' z, ' . USERS_TABLE . ' u
-				WHERE z.user_id = ' . $userdata['user_id'] . '
+				WHERE z.user_id = ' . $user->data['user_id'] . '
 					AND u.user_id = z.zebra_id';
 			$result = $db->sql_query($sql);
 
@@ -86,7 +86,7 @@ if (isset($_POST['submit']))
 
 			// remove the user himself from the username array
 			$n = sizeof($data['add']);
-			$data['add'] = array_diff($data['add'], array($userdata['username']));
+			$data['add'] = array_diff($data['add'], array($user->data['username']));
 
 			unset($friends, $foes, $n);
 
@@ -175,7 +175,7 @@ if (isset($_POST['submit']))
 $sql_and = ($zmode == 'foes') ? 'z.foe = 1' : 'z.friend = 1';
 $sql = "SELECT z.*, u.username
 	FROM " . ZEBRA_TABLE . " z, " . USERS_TABLE . " u
-	WHERE z.user_id = '" . $userdata['user_id'] . "'
+	WHERE z.user_id = '" . $user->data['user_id'] . "'
 		AND " . $sql_and . "
 		AND u.user_id = z.zebra_id
 	ORDER BY u.username ASC";

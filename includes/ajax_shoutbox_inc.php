@@ -39,7 +39,7 @@ if (!defined('AJAX_CHAT_ROOM'))
 	$chat_room_users = explode('|', $chat_room);
 	$chat_room_users_count = sizeof($chat_room_users);
 	$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
-	if(($userdata['user_level'] != ADMIN) && !empty($chat_room) && !in_array($userdata['user_id'], $chat_room_users))
+	if(($user->data['user_level'] != ADMIN) && !empty($chat_room) && !in_array($user->data['user_id'], $chat_room_users))
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
 	}
@@ -64,9 +64,9 @@ if(!empty($action))
 	$error_msg = '';
 
 	// Delete alert for poster if present
-	if ($private_chat && !empty($userdata['user_private_chat_alert']))
+	if ($private_chat && !empty($user->data['user_private_chat_alert']))
 	{
-		$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '0' WHERE user_id = " . $userdata['user_id'];
+		$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '0' WHERE user_id = " . $user->data['user_id'];
 		$db->sql_query($sql);
 	}
 
@@ -74,7 +74,7 @@ if(!empty($action))
 	if($action == 'read')
 	{
 		// Stop guest from reading the shoutbox if they aren't allowed
-		if (($config['shout_allow_guest'] == 0) && !$userdata['session_logged_in'])
+		if (($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
 		{
 			pseudo_die(SHOUTBOX_NO_ERROR, $lang['Shoutbox_no_auth']);
 		}
@@ -186,11 +186,11 @@ if(!empty($action))
 			$message = $row[$x]['shout_text'];
 			$message = censor_text($message);
 
-			//$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
+			//$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
 			// Forced HTML to false to avoid problems
 			$bbcode->allow_html = false;
-			$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-			$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+			$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+			$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 			/*
 			$bbcode->allow_html = true;
 			$bbcode->allow_bbcode = true;
@@ -224,7 +224,7 @@ if(!empty($action))
 		// Flood Control
 		$sql = "SELECT MAX(s.shout_time) AS last_shout
 				FROM " . AJAX_SHOUTBOX_TABLE . " s
-				WHERE s.shouter_ip = '" . $user_ip . "'";
+				WHERE s.shouter_ip = '" . $db->sql_escape($user_ip) . "'";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -257,7 +257,7 @@ if(!empty($action))
 			$alert_users_array = array();
 			foreach ($chat_room_users as $chat_room_user)
 			{
-				if (($chat_room_user != $userdata['user_id']) && !in_array($chat_room_user, $row))
+				if (($chat_room_user != $user->data['user_id']) && !in_array($chat_room_user, $row))
 				{
 					$alert_users_array[] = $chat_room_user;
 				}
@@ -271,10 +271,10 @@ if(!empty($action))
 		}
 
 		// Some weird conversion of the data inputed
-		if($userdata['session_logged_in'])
+		if($user->data['session_logged_in'])
 		{
 			$shouter = '';
-			//$shouter = colorize_username($userdata['user_id'], $userdata['username'], $userdata['user_color'], $userdata['user_active']);
+			//$shouter = colorize_username($user->data['user_id'], $user->data['username'], $user->data['user_color'], $user->data['user_active']);
 		}
 		else
 		{
@@ -320,11 +320,11 @@ if(!empty($action))
 		}
 		*/
 
-		//$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
+		//$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
 		// Forced HTML to false to avoid problems
 		$bbcode->allow_html = false;
-		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+		$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+		$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 		//$message = addslashes($bbcode->parse($message));
 		$message = $bbcode->parse($message);
 		$message = str_replace('http://', 'http:_/_/', $message);
@@ -335,7 +335,7 @@ if(!empty($action))
 		if ($message != '')
 		{
 			// Add new data
-			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time, shout_room) VALUES (" . $userdata['user_id'] . ", '" . $db->sql_escape($shouter) . "', '" . $db->sql_escape($message) . "', '" . $user_ip . "', " . $shout_time . ", '" . $chat_room . "')";
+			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time, shout_room) VALUES (" . $user->data['user_id'] . ", '" . $db->sql_escape($shouter) . "', '" . $db->sql_escape($message) . "', '" . $db->sql_escape($user_ip) . "', " . $shout_time . ", '" . $chat_room . "')";
 
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
@@ -381,7 +381,7 @@ if(!empty($action))
 	// Code for Deleting Data
 	elseif ($action == 'del')
 	{
-		if(($userdata['user_level'] == ADMIN) && ($userdata['session_logged_in']))
+		if(($user->data['user_level'] == ADMIN) && ($user->data['session_logged_in']))
 		{
 			$shout_id = request_var('sh', 0);
 
@@ -458,7 +458,7 @@ if($config['shout_allow_guest'] > 0)
 	{
 		// Guest and users may shout.
 		$template->assign_block_vars('view_shoutbox.shout_allowed', array());
-		if(!($userdata['session_logged_in']))
+		if(!($user->data['session_logged_in']))
 		{
 			// Only guests need to enter a username
 			$template->assign_block_vars('view_shoutbox.shout_allowed.guest_shouter', array());
@@ -467,7 +467,7 @@ if($config['shout_allow_guest'] > 0)
 	else
 	{
 		// Only registered users may shout.
-		if($userdata['session_logged_in'])
+		if($user->data['session_logged_in'])
 		{
 			$template->assign_block_vars('view_shoutbox.shout_allowed', array());
 		}
@@ -476,7 +476,7 @@ if($config['shout_allow_guest'] > 0)
 else
 {
 	// Only registered users may see/shout
-	if($userdata['session_logged_in'])
+	if($user->data['session_logged_in'])
 	{
 		$template->assign_block_vars('view_shoutbox', array(
 			'BOX_WIDTH' => $shoutbox_width,
@@ -501,7 +501,7 @@ else
 
 $template->assign_block_vars('view_shoutbox.onload', array());
 
-if($userdata['user_level'] == ADMIN)
+if($user->data['user_level'] == ADMIN)
 {
 	$template->assign_block_vars('view_shoutbox.user_is_admin', array());
 }

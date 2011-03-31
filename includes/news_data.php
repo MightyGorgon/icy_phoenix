@@ -28,9 +28,9 @@ if (!defined('IN_ICYPHOENIX'))
  */
 function get_user_news_auth_access($forum_topic)
 {
-	global $userdata;
+	global $user;
 
-	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 	$ignore_forum_sql = '';
 	$auth_sql = '';
 
@@ -425,16 +425,16 @@ class NewsDataAccess
 	**/
 	function fetchDay($day, $month, $year)
 	{
-		global $config, $userdata;
+		global $config, $user;
 
 		$tz = $config['board_timezone'];
 		$tm = $config['default_time_mode'];
 		$tl = $config['default_dst_time_lag'];
-		if ($userdata['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
-			$tz = $userdata['user_timezone'];
-			$tm = $userdata['user_time_mode'];
-			$tl = $userdata['user_dst_time_lag'];
+			$tz = $user->data['user_timezone'];
+			$tm = $user->data['user_time_mode'];
+			$tl = $user->data['user_dst_time_lag'];
 		}
 		switch ($tm)
 		{
@@ -504,15 +504,15 @@ class NewsDataAccess
 	**/
 	function fetchDays($month, $year)
 	{
-		global $config, $userdata;
+		global $config, $user;
 		$tz = $config['board_timezone'];
 		$tm = $config['default_time_mode'];
 		$tl = $config['default_dst_time_lag'];
-		if ($userdata['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
-			$tz = $userdata['user_timezone'];
-			$tm = $userdata['user_time_mode'];
-			$tl = $userdata['user_dst_time_lag'];
+			$tz = $user->data['user_timezone'];
+			$tm = $user->data['user_time_mode'];
+			$tl = $user->data['user_dst_time_lag'];
 		}
 		switch ($tm)
 		{
@@ -580,15 +580,15 @@ class NewsDataAccess
 	**/
 	function fetchMonths($year)
 	{
-		global $config, $userdata;
+		global $config, $user;
 		$tz = $config['board_timezone'];
 		$tm = $config['default_time_mode'];
 		$tl = $config['default_dst_time_lag'];
-		if ($userdata['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
-			$tz = $userdata['user_timezone'];
-			$tm = $userdata['user_time_mode'];
-			$tl = $userdata['user_dst_time_lag'];
+			$tz = $user->data['user_timezone'];
+			$tm = $user->data['user_time_mode'];
+			$tl = $user->data['user_dst_time_lag'];
 		}
 		switch ($tm)
 		{

@@ -21,11 +21,11 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 //################################### check_condition ##########################################
-function check_group_auth($userdata)
+function check_group_auth($user_data)
 {
 	global $config, $db;
 
-	if(!$userdata['session_logged_in'])
+	if(!$user_data['session_logged_in'])
 	{
 		return false;
 	}
@@ -34,8 +34,8 @@ function check_group_auth($userdata)
 	$no_group_min_posts = $config['upi2db_no_group_min_posts'];
 	$no_group_min_regdays = $config['upi2db_no_group_min_regdays'];
 
-	$user_min_posts = $userdata['user_posts'];
-	$user_min_regdays  = floor((time() - $userdata['user_regdate']) / 86400);
+	$user_min_posts = $user_data['user_posts'];
+	$user_min_regdays  = floor((time() - $user_data['user_regdate']) / 86400);
 
 	$check_user_upi2db_on = false;
 	$count_user_in_groups = 0;
@@ -46,7 +46,7 @@ function check_group_auth($userdata)
 			WHERE ug.group_id = g.group_id
 			AND g.group_single_user <> " . TRUE . "
 			AND ug.user_pending <> ".TRUE . "
-			AND ug.user_id = " . $userdata['user_id'] . "
+			AND ug.user_id = " . $user_data['user_id'] . "
 			GROUP BY g.group_id";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -81,21 +81,21 @@ function check_group_auth($userdata)
 }
 
 //################################### check_is_upi2db_on ##########################################
-function check_upi2db_on($userdata)
+function check_upi2db_on($user_data)
 {
 	global $config;
 
-	$user_upi2db_on = $userdata['user_upi2db_which_system'];
-	$user_upi2db_disable = $userdata['user_upi2db_disable'];
+	$user_upi2db_on = $user_data['user_upi2db_which_system'];
+	$user_upi2db_disable = $user_data['user_upi2db_disable'];
 	$admin_upi2db_on = $config['upi2db_on'];
 
-	if($config['board_disable'] || $user_upi2db_disable || !$userdata['session_logged_in'] || !$admin_upi2db_on )
+	if($config['board_disable'] || $user_upi2db_disable || !$user_data['session_logged_in'] || !$admin_upi2db_on )
 	{
 		return false;
 	}
 	elseif(($admin_upi2db_on == 1) || (($admin_upi2db_on == 2) && ($user_upi2db_on == 1)))
 	{
-		return check_group_auth($userdata);
+		return check_group_auth($user_data);
 	}
 
 	return false;
@@ -136,19 +136,19 @@ if(!function_exists('unread'))
 {
 	function unread()
 	{
-		global $db, $cache, $config, $userdata;
+		global $db, $cache, $config, $user;
 
-		if(!$userdata['session_logged_in'])
+		if(!$user->data['session_logged_in'])
 		{
 			return;
 		}
 
-		$user_id = $userdata['user_id'];
-		$auth_forum_id = $userdata['auth_forum_id'];
+		$user_id = $user->data['user_id'];
+		$auth_forum_id = $user->data['auth_forum_id'];
 
 		$anz_unread = 0;
 		$auth_forum = ($auth_forum_id) ? ' AND forum_id IN (' . $auth_forum_id . ')' : '';
-		$max_new_posts = ($userdata['user_level'] != ADMIN) ? (($userdata['user_level'] != MOD) ? $config['upi2db_max_new_posts'] : $config['upi2db_max_new_posts_mod']) : $config['upi2db_max_new_posts_admin'];
+		$max_new_posts = ($user->data['user_level'] != ADMIN) ? (($user->data['user_level'] != MOD) ? $config['upi2db_max_new_posts'] : $config['upi2db_max_new_posts_mod']) : $config['upi2db_max_new_posts_admin'];
 		// Edited By Mighty Gorgon - BEGIN
 		$max_new_posts = ($max_new_posts == 0) ? UPI2DB_MAX_UNREAD_POSTS : $max_new_posts;
 		// Edited By Mighty Gorgon - END
@@ -167,7 +167,7 @@ if(!function_exists('unread'))
 		$unread['mark_posts'] = array();
 		$unread['mark_topics'] = array();
 		$unread['del_posts'] = array();
-		$unread['always_read'] = $userdata['always_read'];
+		$unread['always_read'] = $user->data['always_read'];
 
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
@@ -254,9 +254,9 @@ if(!function_exists('always_read'))
 {
 	function always_read($topic_id, $always_read, $unread)
 	{
-		global $config, $userdata, $db, $lang;
+		global $config, $user, $db, $lang;
 
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 		$time_now = time();
 		if((sizeof($unread['always_read']['topics']) >= $config['upi2db_max_permanent_topics']) && ($always_read == 'set'))
 		{
@@ -296,10 +296,10 @@ if(!function_exists('mark_always_read'))
 {
 	function mark_always_read($topic_type, $topic_id, $forum_id, $file, $art, $unread, $start = false, $folder_image = false, $search_mode = false, $s2 = false)
 	{
-		global $config, $userdata, $lang, $images;
+		global $config, $user, $lang, $images;
 
 		// Edited By Mighty Gorgon - BEGIN
-		if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+		if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 		{
 			$except_ar_topics = false;
 		}
@@ -362,10 +362,10 @@ if(!function_exists('mark_always_read_vt_ip'))
 {
 	function mark_always_read_vt_ip($topic_type, $topic_id, $forum_id, $art, $unread)
 	{
-		global $config, $userdata, $lang, $images;
+		global $config, $user, $lang, $images;
 
 		// Edited By Mighty Gorgon - BEGIN
-		if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+		if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 		{
 			$except_ar_topics = false;
 		}
@@ -437,7 +437,7 @@ if(!function_exists('mark_post_viewtopic'))
 {
 	function mark_post_viewtopic($post_time_max, $unread, $topic_id, $forum_id, $post_id, $except_time, $topic_type)
 	{
-		global $config, $userdata, $lang, $images;
+		global $config, $user, $lang, $images;
 
 		if(is_array($unread['always_read']['forums']) && !in_array($forum_id, $unread['always_read']['forums']) && !in_array($topic_id, $unread['always_read']['topics']) && ($post_time_max > $except_time))
 		{
@@ -529,9 +529,9 @@ if(!function_exists('always_read_forum'))
 {
 	function always_read_forum($forum_id, $always_read)
 	{
-		global $config, $userdata, $db, $lang;
+		global $config, $user, $db, $lang;
 
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 		$time_now = time();
 		if ($always_read == 'set')
 		{
@@ -566,7 +566,7 @@ if(!function_exists('viewtopic_calc_unread'))
 {
 	function viewtopic_calc_unread($unread, $topic_id, $post_id, $forum_id, &$mini_post_img, &$mini_post_alt, &$unread_color, &$read_posts)
 	{
-		global $config, $userdata, $lang, $images;
+		global $config, $user, $lang, $images;
 
 		if (is_array($unread['always_read']['forums']) && (in_array($post_id, $unread['edit_posts']) || in_array($post_id, $unread['new_posts']) || in_array($post_id, $unread['mark_posts'])) && !in_array($forum_id, $unread['always_read']['forums']))
 		{
@@ -585,8 +585,8 @@ if(!function_exists('viewtopic_calc_unread'))
 			{
 				$titel_color = 'upi2db_unread_color';
 			}
-			//$unread_color = ($userdata['user_upi2db_unread_color']) ? 'style="background-color:#' . $titel_color . ' ; background-image : url(' . $images[backgrount_vt] . ')"' : '';
-			$unread_color = ($userdata['user_upi2db_unread_color']) ? $titel_color : '';
+			//$unread_color = ($user->data['user_upi2db_unread_color']) ? 'style="background-color:#' . $titel_color . ' ; background-image : url(' . $images[backgrount_vt] . ')"' : '';
+			$unread_color = ($user->data['user_upi2db_unread_color']) ? $titel_color : '';
 
 			if ($read_posts == '')
 			{
@@ -613,7 +613,7 @@ if(!function_exists('search_calc_unread_ip'))
 {
 	function search_calc_unread_ip($unread, $topic_id, $searchset, $i, &$mini_post_img, &$mini_post_alt, &$unread_color, &$folder_image, &$folder_alt)
 	{
-		global $config, $userdata, $lang, $images;
+		global $config, $user, $lang, $images;
 
 		$post_id = $searchset[$i]['post_id'];
 		$unread_color  = '';
@@ -644,7 +644,7 @@ if(!function_exists('search_calc_unread_ip'))
 				{
 					$titel_color = 'upi2db_unread_color';
 				}
-				if($userdata['user_upi2db_unread_color'])
+				if($user->data['user_upi2db_unread_color'])
 				{
 					//$unread_color = 'style="background-color:#' . $titel_color . ' ; background-image : url(' . $images[backgrount_vt] . ')"';
 					$unread_color = $titel_color;
@@ -673,9 +673,9 @@ if(!function_exists('set_unread'))
 {
 	function set_unread($t, $f, $p, $unread, $do, $tt)
 	{
-		global $db, $config, $userdata, $lang;
+		global $db, $config, $user, $lang;
 
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 		$time = time();
 
 		if((sizeof($unread['mark_posts']) >= $config['upi2db_max_mark_posts']) && ($do == 'mark_post'))
@@ -715,7 +715,7 @@ if(!function_exists('set_unread'))
 		{
 			$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
 				WHERE post_id = " . $p . "
-				AND user_id = " . $userdata['user_id'];
+				AND user_id = " . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 			$mark_read_text = $lang['upi2db_post_unmarked'];
 		}
@@ -730,12 +730,12 @@ if(!function_exists('search_mark_as_read'))
 {
 	function search_mark_as_read($mar_topic_id)
 	{
-		global $config, $db, $userdata, $lang;
+		global $config, $db, $user, $lang;
 
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 
 		// Edited By Mighty Gorgon - BEGIN
-		if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+		if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 		{
 			$sql_add_mar = '';
 		}
@@ -764,13 +764,13 @@ if(!function_exists('search_mark_as_read'))
 
 if(!function_exists('sync_database'))
 {
-	function sync_database($userdata)
+	function sync_database($user_data)
 	{
 		global $config, $db;
 
 		$time = time();
 
-		if($userdata['user_upi2db_datasync'] > ($time - UPI2DB_RESYNC_TIME))
+		if($user_data['user_upi2db_datasync'] > ($time - UPI2DB_RESYNC_TIME))
 		{
 			return;
 		}
@@ -779,12 +779,12 @@ if(!function_exists('sync_database'))
 		$del_mark_time = $time - ($config['upi2db_del_mark'] * 86400);
 		$del_perm_time = $time - ($config['upi2db_del_perm'] * 86400);
 
-		$always_read = $userdata['always_read'];
-		$auth_forum_id = $userdata['auth_forum_id'];
+		$always_read = $user_data['always_read'];
+		$auth_forum_id = $user_data['auth_forum_id'];
 		$always_read_forums = '';
 		$always_read_topics = '';
-		$user_id = $userdata['user_id'];
-		$user_dbsync = $userdata['user_upi2db_datasync'];
+		$user_id = $user_data['user_id'];
+		$user_dbsync = $user_data['user_upi2db_datasync'];
 
 		if(gmdate('Ymd',$config['upi2db_delete_old_data']) != gmdate('Ymd', time()))
 		{
@@ -800,17 +800,17 @@ if(!function_exists('sync_database'))
 		$ar_forums = ($always_read_forums) ? 'AND forum_id NOT IN (' . $always_read_forums . ')' : '';
 		$ar_topics = ($always_read_topics) ? 'AND topic_id NOT IN (' . $always_read_topics . ')' : '';
 		$auth_forum = ($auth_forum_id) ? 'AND forum_id IN ('. $auth_forum_id .')' : '';
-		$max_new_post = ($userdata['user_level'] != ADMIN) ? (($userdata['user_level'] != MOD) ? $config['upi2db_max_new_posts'] : $config['upi2db_max_new_posts_mod']): $config['upi2db_max_new_posts_admin'];
+		$max_new_post = ($user_data['user_level'] != ADMIN) ? (($user_data['user_level'] != MOD) ? $config['upi2db_max_new_posts'] : $config['upi2db_max_new_posts_mod']): $config['upi2db_max_new_posts_admin'];
 		// Edited By Mighty Gorgon - BEGIN
 		$max_new_posts = ($max_new_posts == 0) ? UPI2DB_MAX_UNREAD_POSTS : $max_new_posts;
 		$new_post_limit = ($max_new_post > 0) ? 'ORDER BY post_time DESC, post_edit_time DESC LIMIT ' . $max_new_post : 'ORDER BY post_time DESC, post_edit_time DESC';
 		// Edited By Mighty Gorgon - END
-		$dbsync = ($user_dbsync < $userdata['user_regdate']) ? $userdata['user_regdate'] : $user_dbsync;
+		$dbsync = ($user_dbsync < $user_data['user_regdate']) ? $user_data['user_regdate'] : $user_dbsync;
 		$copy_annoncments = (empty($user_dbsync)) ? 'OR topic_type != 0' : '';
 
 
 		$sql = "SELECT post_id, topic_id, forum_id, user_id, status FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
-			WHERE user_id = '" . $userdata['user_id'] . "'
+			WHERE user_id = '" . $user_data['user_id'] . "'
 			AND status != 2";
 
 		$post_ids = array();
@@ -822,14 +822,14 @@ if(!function_exists('sync_database'))
 		{
 			while($read = $db->sql_fetchrow($result))
 			{
-				if (!in_array($read['post_id'],$post_ids))
+				if (!in_array($read['post_id'], $post_ids))
 				{
 					$post_ids[] = $read['post_id'];
 				}
 			}
 		}
 		$post_ids = implode(',', $post_ids);
-		$no_post_ids = ($post_ids) ? 'AND post_id NOT IN (' . $post_ids . ')' : '';
+		$no_post_ids = ($post_ids) ? ('AND post_id NOT IN (' . $post_ids . ')') : '';
 
 // Mal testen --> INSERT DELAYED INTO
 
@@ -848,7 +848,6 @@ if(!function_exists('sync_database'))
 		$sql = "UPDATE " . USERS_TABLE . " SET user_upi2db_datasync = " . time() . "
 			WHERE user_id = '" . $user_id . "'";
 		$db->sql_query($sql);
-		$userdata['db_sync'] = '1';
 	}
 }
 
@@ -857,12 +856,12 @@ if(!function_exists('sync_database'))
 
 if(!function_exists('select_always_read'))
 {
-	function select_always_read($userdata)
+	function select_always_read($user_data)
 	{
 		global $db;
 		$always_read['topics'] = array();
 		$always_read['forums'] = array();
-		$user_id = $userdata['user_id'];
+		$user_id = $user_data['user_id'];
 
 		$sql = "SELECT topic_id, forum_id FROM " . UPI2DB_ALWAYS_READ_TABLE . "
 			WHERE user_id = '" . $user_id . "'";
@@ -901,7 +900,7 @@ if(!function_exists('delete_read_posts'))
 {
 	function delete_read_posts($read_posts)
 	{
-		global $userdata, $db;
+		global $user, $db;
 
 		if (empty($read_posts))
 		{
@@ -911,7 +910,7 @@ if(!function_exists('delete_read_posts'))
 		{
 			$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
 				WHERE post_id IN (" . $read_posts . ")
-				AND user_id = " . $userdata['user_id'] . "
+				AND user_id = " . $user->data['user_id'] . "
 				AND status <> '2'";
 			$result = $db->sql_query($sql);
 		}
@@ -925,10 +924,10 @@ if(!function_exists('except_time'))
 {
 	function except_time()
 	{
-		global $config, $userdata;
+		global $config, $user;
 
 		$save_time = time() - ($config['upi2db_auto_read'] * 86400);
-		$except_time = ($userdata['user_regdate'] > $config['upi2db_install_time']) ? (($userdata['user_regdate'] > $save_time) ? $userdata['user_regdate'] : $save_time) : (($config['upi2db_install_time'] > $save_time) ? $config['upi2db_install_time'] : $save_time);
+		$except_time = ($user->data['user_regdate'] > $config['upi2db_install_time']) ? (($user->data['user_regdate'] > $save_time) ? $user->data['user_regdate'] : $save_time) : (($config['upi2db_install_time'] > $save_time) ? $config['upi2db_install_time'] : $save_time);
 
 		return $except_time;
 	}
@@ -941,7 +940,7 @@ if(!function_exists('viewforum_calc_unread'))
 {
 	function viewforum_calc_unread($unread, $topic_id, $topic_rowset, $i, $folder_new, $folder, &$folder_alt, &$folder_image, &$newest_post_img, &$upi2db_status)
 	{
-		global $config, $userdata, $lang, $images;
+		global $config, $user, $lang, $images;
 
 		$upi2db_status = '';
 		if (in_array($topic_id, $unread['new_topics']) || in_array($topic_id, $unread['edit_topics']))
@@ -949,18 +948,18 @@ if(!function_exists('viewforum_calc_unread'))
 			$folder_image = $folder_new;
 			$folder_alt = $lang['New_posts'];
 
-			if((in_array($topic_id, $unread['new_topics']) && in_array($topic_id, $unread['edit_topics'])) && $userdata['user_upi2db_new_word'] && $userdata['user_upi2db_edit_word'])
+			if((in_array($topic_id, $unread['new_topics']) && in_array($topic_id, $unread['edit_topics'])) && $user->data['user_upi2db_new_word'] && $user->data['user_upi2db_edit_word'])
 			{
 				$upi2db_status = $lang['upi2db_post_edit'] . $lang['upi2db_post_and'] . $lang['upi2db_post_new'] . ': ';
 			}
 			else
 			{
-				if(in_array($topic_id, $unread['new_topics']) && $userdata['user_upi2db_new_word'])
+				if(in_array($topic_id, $unread['new_topics']) && $user->data['user_upi2db_new_word'])
 				{
 					$upi2db_status = $lang['upi2db_post_new'] . ': ';
 				}
 
-				if(in_array($topic_id, $unread['edit_topics']) && $userdata['user_upi2db_edit_word'])
+				if(in_array($topic_id, $unread['edit_topics']) && $user->data['user_upi2db_edit_word'])
 				{
 					$upi2db_status = $lang['upi2db_post_edit'] . ': ';
 				}
@@ -988,14 +987,14 @@ if(!function_exists('marking_posts'))
 {
 	function marking_posts($forum_id = '')
 	{
-		global $db, $config, $userdata;
+		global $db, $config, $user;
 
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 
 		$mp_forum = (empty($forum_id)) ? "" : " AND forum_id = '" . $forum_id . "'";
 
 		// Edited By Mighty Gorgon - BEGIN
-		if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+		if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 		{
 			$sql_add_mar = '';
 		}
@@ -1004,7 +1003,7 @@ if(!function_exists('marking_posts'))
 			$sql_add_mar = " AND topic_type != '" . POST_STICKY . "' AND topic_type != '" . POST_ANNOUNCE . "' AND topic_type != '" . POST_GLOBAL_ANNOUNCE . "'";
 		}
 
-		$auth_forum_read = auth_forum_read($userdata);
+		$auth_forum_read = auth_forum_read($user_data);
 		$sql_forum_auth = !empty($auth_forum_read) ? " OR (forum_id NOT IN(" . $auth_forum_read . "))" : "";
 		// Edited By Mighty Gorgon - END
 
@@ -1021,7 +1020,7 @@ if(!function_exists('marking_posts'))
 
 if(!function_exists('auth_forum_read'))
 {
-	function auth_forum_read($userdata)
+	function auth_forum_read($user_data)
 	{
 		global $config, $db, $lang;
 
@@ -1035,7 +1034,7 @@ if(!function_exists('auth_forum_read'))
 		}
 
 		$is_auth_ary = array();
-		$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata, $forum_data);
+		$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $user_data, $forum_data);
 		$auth_forum_id = '';
 		for ($i = 0; $i < sizeof($forum_data); $i++)
 		{
@@ -1055,9 +1054,9 @@ if(!function_exists('prune_upi2db'))
 {
 	function prune_upi2db($sql_post)
 	{
-		global $config, $db, $userdata, $lang;
+		global $config, $db, $user, $lang;
 
-		$user_id = $userdata['user_id'];
+		$user_id = $user->data['user_id'];
 
 		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
 			WHERE post_id IN (" . $sql_post . ")";

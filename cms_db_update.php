@@ -20,15 +20,16 @@ $config['jquery_ui'] = true;
 define('AJAX_HEADERS', true);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // We need to add a USER_ID check-in (passed via GET) to give proper AUTH to non admin users to edit only own pages
 
 // Get SID and check it
 $sid = request_var('sid', '');
-if ($sid != $userdata['session_id'])
+if ($sid != $user->data['session_id'])
 {
 	$result_ar = array(
 		'result' => AJAX_ERROR,
@@ -106,7 +107,7 @@ switch ($mode)
 		}
 		break;
 	case 'update_menu_order':
-		if ($userdata['user_level'] != ADMIN)
+		if ($user->data['user_level'] != ADMIN)
 		{
 			$result_ar = array(
 				'result' => AJAX_ERROR,
@@ -136,7 +137,7 @@ switch ($mode)
 		}
 		break;
 	case 'update_modules_order':
-		if ($userdata['user_level'] != ADMIN)
+		if ($user->data['user_level'] != ADMIN)
 		{
 			$result_ar = array(
 				'result' => AJAX_ERROR,
@@ -166,7 +167,7 @@ switch ($mode)
 		}
 		break;
 	case 'update_smileys_order':
-		if ($userdata['user_level'] != ADMIN)
+		if ($user->data['user_level'] != ADMIN)
 		{
 			$result_ar = array(
 				'result' => AJAX_ERROR,

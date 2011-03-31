@@ -15,12 +15,13 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $like = request_var('like', '');
-if ($userdata['is_bot'] || (empty($like) && !empty($config['disable_topic_view'])) || (!empty($like) && (!empty($config['disable_likes_posts']) || !$userdata['session_logged_in'])))
+if ($user->data['is_bot'] || (empty($like) && !empty($config['disable_topic_view'])) || (!empty($like) && (!empty($config['disable_likes_posts']) || !$user->data['session_logged_in'])))
 {
 	message_die(GENERAL_MESSAGE, $lang['Feature_Disabled']);
 }
@@ -39,7 +40,7 @@ if ((empty($like) && empty($topic_id)) || (!empty($like) && empty($post_id)))
 	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
 }
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=topic_view_users.' . PHP_EXT . '&' . POST_TOPIC_URL . '=' . $topic_id, true));
 }
@@ -70,7 +71,7 @@ if (empty($forum_topic_data))
 $forum_id = $forum_topic_data['forum_id'];
 
 $is_auth = array();
-$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_topic_data);
+$is_auth = auth(AUTH_ALL, $forum_id, $user->data, $forum_topic_data);
 
 if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 {
@@ -78,8 +79,8 @@ if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 }
 
 // If you want to disallow view to normal users decomment this block
-//if (empty($like) && ($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD))
-if (empty($like) && ($userdata['user_level'] != ADMIN))
+//if (empty($like) && ($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD))
+if (empty($like) && ($user->data['user_level'] != ADMIN))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
@@ -140,7 +141,7 @@ switch($mode)
 
 $order_by = $order_by . (($mode != 'topten') ? (' ' . $sort_order . ' LIMIT ' . $start . ', ' . $config['topics_per_page']) : '');
 
-if ($userdata['user_level'] == ADMIN)
+if ($user->data['user_level'] == ADMIN)
 {
 	$sql_hidden = '';
 }

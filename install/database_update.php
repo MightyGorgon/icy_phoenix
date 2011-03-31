@@ -30,7 +30,7 @@ if (@file_exists(@$ip_functions->ip_realpath(IP_ROOT_PATH . 'config.' . PHP_EXT)
 // Check if Icy Phoenix or phpBB are already installed
 if (defined('IP_INSTALLED') || defined('PHPBB_INSTALLED'))
 {
-	if (empty($userdata) || !$userdata['session_logged_in'])
+	if (empty($user->data) || !$user->data['session_logged_in'])
 	{
 		define('BASIC_COMMON', true);
 		require('common.' . PHP_EXT);
@@ -47,21 +47,22 @@ if (defined('IP_INSTALLED') || defined('PHPBB_INSTALLED'))
 		include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 		// Start session management
-		$userdata = session_pagestart($user_ip, 0);
-		init_userprefs($userdata);
+		$user->session_begin(false);
+		//$auth->acl($user->data);
+		$user->setup();
 		// End session management
 
 		if (defined('IP_INSTALLED'))
 		{
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-			if ($userdata['user_id'] != $founder_id)
+			if ($user->data['user_id'] != $founder_id)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 			}
 		}
 		else
 		{
-			if ($userdata['user_level'] != ADMIN)
+			if ($user->data['user_level'] != ADMIN)
 			{
 				// We need to use $lang['Not_Authorized'] because the $lang['Not_Auth_View'] isn't available in standard phpBB
 				message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);

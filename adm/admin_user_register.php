@@ -56,7 +56,7 @@ if (isset($_POST['submit']))
 	$user_dateformat = request_post_var('dateformat', $config['default_dateformat']);
 }
 
-if (!empty($username) && ($username == $userdata['username']))
+if (!empty($username) && ($username == $user->data['username']))
 {
 	message_die(GENERAL_MESSAGE, $lang['Username_taken'], '', __LINE__, __FILE__);
 }
@@ -77,12 +77,12 @@ if (isset($_POST['submit']))
 	}
 
 	// Do a ban check on this email address
-	if ($email != $userdata['user_email'])
+	if ($email != $user->data['user_email'])
 	{
 		$result = validate_email($email);
 		if ($result['error'])
 		{
-			$email = $userdata['user_email'];
+			$email = $user->data['user_email'];
 
 			$error = true;
 			$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $result['error_msg'];
@@ -94,9 +94,9 @@ if (isset($_POST['submit']))
 	{
 		$error = true;
 	}
-	elseif ($username != $userdata['username'])
+	elseif ($username != $user->data['username'])
 	{
-		if (strtolower($username) != strtolower($userdata['username']))
+		if (strtolower($username) != strtolower($user->data['username']))
 		{
 			$result = validate_username($username);
 			if ($result['error'])

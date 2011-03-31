@@ -156,7 +156,7 @@ for($i = 0; $i < sizeof($style_config); $i++)
 
 $template->assign_vars(array(
 	'TPL' => htmlspecialchars($tpl),
-	'U_FORM' => 'xs_style_config.' . PHP_EXT . '?sid=' . $userdata['session_id'],
+	'U_FORM' => 'xs_style_config.' . PHP_EXT . '?sid=' . $user->data['session_id'],
 	)
 );
 

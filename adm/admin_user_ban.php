@@ -64,86 +64,7 @@ if (isset($_POST['submit']))
 	$ban_ips = request_var('ban_ip', '');
 	if (!empty($ban_ips))
 	{
-		$ip_list_temp = explode(',', $ban_ips);
-
-		for($i = 0; $i < sizeof($ip_list_temp); $i++)
-		{
-			if (preg_match('/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})[ ]*\-[ ]*([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/', trim($ip_list_temp[$i]), $ip_range_explode))
-			{
-				//
-				// Don't ask about all this, just don't ask ... !
-				//
-				$ip_1_counter = $ip_range_explode[1];
-				$ip_1_end = $ip_range_explode[5];
-
-				while ( $ip_1_counter <= $ip_1_end )
-				{
-					$ip_2_counter = ( $ip_1_counter == $ip_range_explode[1] ) ? $ip_range_explode[2] : 0;
-					$ip_2_end = ( $ip_1_counter < $ip_1_end ) ? 254 : $ip_range_explode[6];
-
-					if ( $ip_2_counter == 0 && $ip_2_end == 254 )
-					{
-						$ip_2_counter = 255;
-						$ip_2_fragment = 255;
-
-						$ip_list[] = encode_ip("$ip_1_counter.255.255.255");
-					}
-
-					while ( $ip_2_counter <= $ip_2_end )
-					{
-						$ip_3_counter = ( $ip_2_counter == $ip_range_explode[2] && $ip_1_counter == $ip_range_explode[1] ) ? $ip_range_explode[3] : 0;
-						$ip_3_end = ( $ip_2_counter < $ip_2_end || $ip_1_counter < $ip_1_end ) ? 254 : $ip_range_explode[7];
-
-						if ( $ip_3_counter == 0 && $ip_3_end == 254 )
-						{
-							$ip_3_counter = 255;
-							$ip_3_fragment = 255;
-
-							$ip_list[] = encode_ip("$ip_1_counter.$ip_2_counter.255.255");
-						}
-
-						while ( $ip_3_counter <= $ip_3_end )
-						{
-							$ip_4_counter = ( $ip_3_counter == $ip_range_explode[3] && $ip_2_counter == $ip_range_explode[2] && $ip_1_counter == $ip_range_explode[1] ) ? $ip_range_explode[4] : 0;
-							$ip_4_end = ( $ip_3_counter < $ip_3_end || $ip_2_counter < $ip_2_end ) ? 254 : $ip_range_explode[8];
-
-							if ( $ip_4_counter == 0 && $ip_4_end == 254 )
-							{
-								$ip_4_counter = 255;
-								$ip_4_fragment = 255;
-
-								$ip_list[] = encode_ip("$ip_1_counter.$ip_2_counter.$ip_3_counter.255");
-							}
-
-							while ( $ip_4_counter <= $ip_4_end )
-							{
-								$ip_list[] = encode_ip("$ip_1_counter.$ip_2_counter.$ip_3_counter.$ip_4_counter");
-								$ip_4_counter++;
-							}
-							$ip_3_counter++;
-						}
-						$ip_2_counter++;
-					}
-					$ip_1_counter++;
-				}
-			}
-			elseif ( preg_match('/^([\w\-_]\.?){2,}$/is', trim($ip_list_temp[$i])) )
-			{
-				$ip = gethostbynamel(trim($ip_list_temp[$i]));
-
-				for($j = 0; $j < sizeof($ip); $j++)
-				{
-					if ( !empty($ip[$j]) )
-					{
-						$ip_list[] = encode_ip($ip[$j]);
-					}
-				}
-			}
-			elseif ( preg_match('/^([0-9]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})$/', trim($ip_list_temp[$i])) )
-			{
-				$ip_list[] = encode_ip(str_replace('*', '255', trim($ip_list_temp[$i])));
-			}
-		}
+		$ip_list = match_ips($ban_ips);
 	}
 
 	$email_list = array();
@@ -230,28 +151,24 @@ if (isset($_POST['submit']))
 
 		if (!$in_banlist)
 		{
-			if (preg_match('/(ff\.)|(\.ff)/is', chunk_split($ip_list[$i], 2, '.')))
+			if (preg_match('/(255\.)|(\.255)/is', $ip_list[$i]))
 			{
-				$kill_ip_sql = "session_ip LIKE '" . str_replace('.', '', preg_replace('/(ff\.)|(\.ff)/is', '%', chunk_split($ip_list[$i], 2, "."))) . "'";
+				$kill_ip_sql = "session_ip LIKE '" . str_replace('.', '', preg_replace('/(255\.)|(\.255)/is', '%', $ip_list[$i])) . "'";
 			}
 			else
 			{
-				$kill_ip_sql = "session_ip = '" . $ip_list[$i] . "'";
+				$kill_ip_sql = "session_ip = '" . $db->sql_escape($ip_list[$i]) . "'";
 			}
 
-			$kill_session_sql .= ( ( $kill_session_sql != '' ) ? ' OR ' : '' ) . $kill_ip_sql;
+			$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . $kill_ip_sql;
 
 			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_ip)
-				VALUES ('" . $ip_list[$i] . "')";
+				VALUES ('" . $db->sql_escape($ip_list[$i]) . "')";
 			$db->sql_query($sql);
 		}
 	}
 
-	//
-	// Now we'll delete all entries from the session table with any of the banned
-	// user or IP info just entered into the ban table ... this will force a session
-	// initialisation resulting in an instant ban
-	//
+	// Now we'll delete all entries from the session table with any of the banned user or IP info just entered into the ban table ... this will force a session initialisation resulting in an instant ban
 	if ($kill_session_sql != '')
 	{
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
@@ -422,7 +339,7 @@ else
 
 		if (!empty($banlist[$i]['ban_ip']))
 		{
-			$ban_ip = str_replace('255', '*', decode_ip($banlist[$i]['ban_ip']));
+			$ban_ip = str_replace('255', '*', $banlist[$i]['ban_ip']);
 			$select_iplist .= '<option value="' . $ban_id . '">' . $ban_ip . '</option>';
 			$ipban_count++;
 		}

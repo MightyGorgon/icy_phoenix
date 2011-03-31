@@ -33,7 +33,7 @@ function unlock_cron()
 */
 function process_digests()
 {
-	global $db, $cache, $config, $userdata, $lang, $table_prefix;
+	global $db, $cache, $config, $user, $lang, $table_prefix;
 
 	// Digests - BEGIN
 	if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0))
@@ -48,7 +48,7 @@ function process_digests()
 				$config['cron_digests_last_run'] = ($config['cron_digests_last_run'] == 0) ? (time() - 3600) : $config['cron_digests_last_run'];
 				$last_send_time = @getdate($config['cron_digests_last_run']);
 				$cur_time = @getdate();
-				if ($cur_time['hours'] <> $last_send_time['hours'])
+				if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0) && ($cur_time['hours'] != $last_send_time['hours']))
 				{
 					set_config('cron_lock_hour', 1);
 					define('PHP_DIGESTS_CRON', true);
@@ -85,7 +85,7 @@ function process_birthdays()
 				$config['cron_birthdays_last_run'] = ($config['cron_birthdays_last_run'] == 0) ? (time() - 3600) : $config['cron_birthdays_last_run'];
 				$last_send_time = @getdate($config['cron_birthdays_last_run']);
 				$cur_time = @getdate();
-				if ($cur_time['hours'] <> $last_send_time['hours'])
+				if (!empty($config['cron_birthdays_interval']) && ($config['cron_birthdays_interval'] > 0) && ($cur_time['hours'] != $last_send_time['hours']))
 				{
 					set_config('cron_lock_hour', 1);
 					if (!function_exists('birthday_email_send'))
@@ -128,11 +128,11 @@ function process_files()
 */
 function tidy_database()
 {
-	global $dbname, $db, $config, $userdata;
+	global $dbname, $db, $config, $user;
 
 	$is_allowed = true;
 	// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
-	$is_allowed = (!$userdata['session_logged_in']) ? true : false;
+	$is_allowed = (!$user->data['session_logged_in']) ? true : false;
 
 	if ($is_allowed)
 	{

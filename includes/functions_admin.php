@@ -243,6 +243,92 @@ function duplicate_auth($source_id, $target_id)
 }
 
 /**
+* Check IP addresses
+*/
+function match_ips($ip_list_match)
+{
+
+	$ip_list = array();
+	$ip_list_temp = explode(',', $ip_list_match);
+
+	for($i = 0; $i < sizeof($ip_list_temp); $i++)
+	{
+		if (preg_match('/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})[ ]*\-[ ]*([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/', trim($ip_list_temp[$i]), $ip_range_explode))
+		{
+			// Don't ask about all this, just don't ask ... !
+			$ip_1_counter = $ip_range_explode[1];
+			$ip_1_end = $ip_range_explode[5];
+
+			while ($ip_1_counter <= $ip_1_end)
+			{
+				$ip_2_counter = ($ip_1_counter == $ip_range_explode[1]) ? $ip_range_explode[2] : 0;
+				$ip_2_end = ($ip_1_counter < $ip_1_end) ? 254 : $ip_range_explode[6];
+
+				if (($ip_2_counter == 0) && ($ip_2_end == 254))
+				{
+					$ip_2_counter = 255;
+					$ip_2_fragment = 255;
+					$ip_list[] = "$ip_1_counter.255.255.255";
+				}
+
+				while ($ip_2_counter <= $ip_2_end)
+				{
+					$ip_3_counter = (($ip_2_counter == $ip_range_explode[2]) && ($ip_1_counter == $ip_range_explode[1])) ? $ip_range_explode[3] : 0;
+					$ip_3_end = (($ip_2_counter < $ip_2_end) || ($ip_1_counter < $ip_1_end)) ? 254 : $ip_range_explode[7];
+
+					if (($ip_3_counter == 0) && ($ip_3_end == 254))
+					{
+						$ip_3_counter = 255;
+						$ip_3_fragment = 255;
+						$ip_list[] = "$ip_1_counter.$ip_2_counter.255.255";
+					}
+
+					while ($ip_3_counter <= $ip_3_end)
+					{
+						$ip_4_counter = (($ip_3_counter == $ip_range_explode[3]) && ($ip_2_counter == $ip_range_explode[2]) && ($ip_1_counter == $ip_range_explode[1])) ? $ip_range_explode[4] : 0;
+						$ip_4_end = (($ip_3_counter < $ip_3_end) || ($ip_2_counter < $ip_2_end)) ? 254 : $ip_range_explode[8];
+
+						if (($ip_4_counter == 0) && ($ip_4_end == 254))
+						{
+							$ip_4_counter = 255;
+							$ip_4_fragment = 255;
+							$ip_list[] = "$ip_1_counter.$ip_2_counter.$ip_3_counter.255";
+						}
+
+						while ($ip_4_counter <= $ip_4_end)
+						{
+							$ip_list[] = "$ip_1_counter.$ip_2_counter.$ip_3_counter.$ip_4_counter";
+							$ip_4_counter++;
+						}
+						$ip_3_counter++;
+					}
+					$ip_2_counter++;
+				}
+				$ip_1_counter++;
+			}
+		}
+		elseif (preg_match('/^([\w\-_]\.?){2,}$/is', trim($ip_list_temp[$i])))
+		{
+			$ip = gethostbynamel(trim($ip_list_temp[$i]));
+
+			for($j = 0; $j < sizeof($ip); $j++)
+			{
+				if ( !empty($ip[$j]) )
+				{
+					$ip_list[] = $ip[$j];
+				}
+			}
+		}
+		elseif (preg_match('/^([0-9]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})$/', trim($ip_list_temp[$i])))
+		{
+			$ip_list[] = str_replace('*', '255', trim($ip_list_temp[$i]));
+		}
+	}
+
+	return $ip_list;
+}
+
+/**
 * Check MEM Limit
 */
 function check_mem_limit()

@@ -182,7 +182,7 @@ class pafiledb_functions
 
 	function upload_file($userfile, $userfile_name, $userfile_size, $upload_dir = '', $local = false)
 	{
-		global $lang, $config, $pafiledb_config, $userdata;
+		global $lang, $config, $pafiledb_config, $user;
 
 		$upload_dir = (substr($upload_dir, 0, 1) == '/') ? substr($upload_dir, 1) : $upload_dir;
 
@@ -200,7 +200,7 @@ class pafiledb_functions
 		// if the file size is more than the allowed size another error message
 		// =======================================================
 
-		if (($userfile_size > $pafiledb_config['max_file_size']) && ($userdata['user_level'] != ADMIN) && $userdata['session_logged_in'])
+		if (($userfile_size > $pafiledb_config['max_file_size']) && ($user->data['user_level'] != ADMIN) && $user->data['session_logged_in'])
 		{
 			$file_info['error'] = true;
 			if(!empty($file_info['message']))
@@ -434,8 +434,8 @@ class pafiledb_functions
 
 function pafiledb_page_header($page_title)
 {
-	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
-	global $table_prefix, $SID, $_SID, $user_ip;
+	global $db, $cache, $config, $template, $images, $theme, $user, $lang, $tree;
+	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
@@ -518,7 +518,7 @@ function pafiledb_page_header($page_title)
 		'IS_AUTH_STATS' => $is_auth_stats,
 		'IS_AUTH_TOPLIST' => $is_auth_toplist,
 		'IS_AUTH_UPLOAD' => $is_auth_upload,
-		'IS_ADMIN' => (($userdata['user_level'] == ADMIN) && $userdata['session_logged_in']) ? true : 0,
+		'IS_ADMIN' => (($user->data['user_level'] == ADMIN) && $user->data['session_logged_in']) ? true : 0,
 		//'IS_MOD' => $pafiledb->modules[$pafiledb->module_name]->is_moderator(),
 		'IS_MOD' => $pafiledb->modules[$pafiledb->module_name]->auth[$_REQUEST['cat_id']]['auth_mod'],
 		'IS_AUTH_MCP' => $mcp_auth,
@@ -552,8 +552,8 @@ function pafiledb_page_header($page_title)
 //===================================================
 function pafiledb_page_footer()
 {
-	global $db, $cache, $config, $template, $images, $theme, $userdata, $lang, $tree;
-	global $table_prefix, $SID, $_SID, $user_ip;
+	global $db, $cache, $config, $template, $images, $theme, $user, $lang, $tree;
+	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
@@ -567,7 +567,7 @@ function pafiledb_page_footer()
 		'JUMPMENU' => $pafiledb->modules[$pafiledb->module_name]->jumpmenu_option(),
 		'L_JUMP' => $lang['jump'],
 		'S_JUMPBOX_ACTION' => append_sid('dload.' . PHP_EXT),
-		'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))])
+		'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tz'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))])
 		)
 	);
 	$pafiledb->modules[$pafiledb->module_name]->_pafiledb();
@@ -603,10 +603,10 @@ class user_info
 	/* Constructor
 	 Determine client browser type, version and platform using
 	 heuristic examination of user agent string.
-	 @param $user_agent allows override of user agent string for testing.
+	 @param $user_agent_pa allows override of user agent string for testing.
 	*/
 
-	function user_info($user_agent = '')
+	function user_info($user_agent_pa = '')
 	{
 		global $HTTP_USER_AGENT;
 
@@ -623,21 +623,21 @@ class user_info
 			$HTTP_USER_AGENT = '';
 		}
 
-		if (empty($user_agent))
+		if (empty($user_agent_pa))
 		{
-			$user_agent = $HTTP_USER_AGENT;
+			$user_agent_pa = $HTTP_USER_AGENT;
 		}
 
-		$user_agent = strtolower($user_agent);
+		$user_agent_pa = strtolower($user_agent_pa);
 
 		// Determine browser and version
 		// The order in which we test the agents patterns is important
 		// Intentionally ignore Konquerer.  It should show up as Mozilla.
 		// post-Netscape Mozilla versions using Gecko show up as Mozilla 5.0
 
-		if (preg_match('/(opera |opera\/)([0-9]*).([0-9]{1,2})/', $user_agent, $matches)) ;
-		elseif (preg_match('/(msie)([0-9]*).([0-9]{1,2})/', $user_agent, $matches)) ;
-		elseif (preg_match('/(mozilla\/)([0-9]*).([0-9]{1,2})/', $user_agent, $matches)) ;
+		if (preg_match('/(opera |opera\/)([0-9]*).([0-9]{1,2})/', $user_agent_pa, $matches)) ;
+		elseif (preg_match('/(msie)([0-9]*).([0-9]{1,2})/', $user_agent_pa, $matches)) ;
+		elseif (preg_match('/(mozilla\/)([0-9]*).([0-9]{1,2})/', $user_agent_pa, $matches)) ;
 		else
 		{
 			$matches[1] = 'unknown';
@@ -676,7 +676,7 @@ class user_info
 		// Determine platform
 		// This is very incomplete for platforms other than Win/Mac
 
-		if (preg_match('/(win|mac|linux|unix)/', $user_agent, $matches));
+		if (preg_match('/(win|mac|linux|unix)/', $user_agent_pa, $matches));
 		else $matches[1] = 'unknown';
 
 		switch ($matches[1])
@@ -708,9 +708,9 @@ class user_info
 
 	function update_downloader_info($file_id)
 	{
-		global $db, $userdata, $user_ip;
+		global $db, $user;
 
-		$where_sql = ($userdata['user_id'] != ANONYMOUS) ? "user_id = '" . $userdata['user_id'] . "'" : "downloader_ip = '" . $user_ip . "'";
+		$where_sql = ($user->data['user_id'] != ANONYMOUS) ? "user_id = '" . $user->data['user_id'] . "'" : "downloader_ip = '" . $db->sql_escape($user->ip) . "'";
 
 		$sql = "SELECT user_id, downloader_ip
 			FROM " . PA_DOWNLOAD_INFO_TABLE . "
@@ -720,7 +720,7 @@ class user_info
 		if(!$db->sql_numrows($result))
 		{
 			$sql = "INSERT INTO " . PA_DOWNLOAD_INFO_TABLE . " (file_id, user_id, download_time, downloader_ip, downloader_os, downloader_browser, browser_version)
-						VALUES('" . $file_id . "', '" . $userdata['user_id'] . "', '" . time() . "', '" . $user_ip . "', '" . $db->sql_escape($this->platform) . "', '" . $db->sql_escape($this->agent) . "', '" . $db->sql_escape($this->ver) . "')";
+						VALUES('" . $file_id . "', '" . $user->data['user_id'] . "', '" . time() . "', '" . $db->sql_escape($user->ip) . "', '" . $db->sql_escape($this->platform) . "', '" . $db->sql_escape($this->agent) . "', '" . $db->sql_escape($this->ver) . "')";
 			$db->sql_query($sql);
 		}
 
@@ -729,9 +729,9 @@ class user_info
 
 	function update_voter_info($file_id, $rating)
 	{
-		global $user_ip, $db, $userdata, $lang;
+		global $db, $user, $lang;
 
-		$where_sql = ($userdata['user_id'] != ANONYMOUS) ? "user_id = '" . $userdata['user_id'] . "'" : "votes_ip = '" . $user_ip . "'";
+		$where_sql = ($user->data['user_id'] != ANONYMOUS) ? "user_id = '" . $user->data['user_id'] . "'" : "votes_ip = '" . $db->sql_escape($user->ip) . "'";
 
 		$sql = "SELECT user_id, votes_ip
 			FROM " . PA_VOTES_TABLE . "
@@ -743,7 +743,7 @@ class user_info
 		if(!$db->sql_numrows($result))
 		{
 			$sql = "INSERT INTO " . PA_VOTES_TABLE . " (user_id, votes_ip, votes_file, rate_point, voter_os, voter_browser, browser_version)
-						VALUES('" . $userdata['user_id'] . "', '" . $user_ip . "', '" . $file_id . "','" . $rating ."', '" . $db->sql_escape($this->platform) . "', '" . $db->sql_escape($this->agent) . "', '" . $db->sql_escape($this->ver) . "')";
+						VALUES('" . $user->data['user_id'] . "', '" . $db->sql_escape($user->ip) . "', '" . $file_id . "','" . $rating ."', '" . $db->sql_escape($this->platform) . "', '" . $db->sql_escape($this->agent) . "', '" . $db->sql_escape($this->ver) . "')";
 			$db->sql_query($sql);
 		}
 		else

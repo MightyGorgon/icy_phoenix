@@ -120,6 +120,9 @@ if ($lang_extend_admin)
 		'IP_site_history' => 'Site Statistics',
 		'IP_site_history_explain' => 'Enabling this option some extra statistics will be stored in the DB (daily visits, posts, etc.).',
 
+		'IP_active_sessions' => 'Limit Number Of Sessions',
+		'IP_active_sessions_explain' => '<b>BE CAREFUL</b> with this value: this number is the maximum allowed number of sessions, if the limit is reached the site will be not accessible. If you don\'t know how to configure this limit, leave it to 0 (ZERO).',
+
 		'IP_global_disable_upi2db' => 'Disable UPI2DB globally',
 		'IP_global_disable_upi2db_explain' => 'This option lets you disable UPI2DB globally thus saving extra memory.',
 
@@ -193,8 +196,8 @@ if ($lang_extend_admin)
 		'IP_show_random_quote_explain' => 'Enabling this option will enable random quotes to be shown on <b>Forum Index</b>',
 
 // TAB - Posting
-		'IP_posts_precompiled' => 'Disable precompiled posts',
-		'IP_posts_precompiled_explain' => 'By enabling this option viewtopic will always compile posts text without using the precompiled text, (this is slower, but it can be useful in some cases).',
+		'IP_posts_precompiled' => 'Disable Precompiled Posts For Guests',
+		'IP_posts_precompiled_explain' => 'By enabling this option viewtopic will always parse posts text without using the precompiled text for guests (this is slower, but it can be useful in some cases).',
 
 		'IP_read_only_forum' => 'Disable posting in all forums (Read Only Mode)',
 		'IP_read_only_forum_explain' => 'This options allows to lock posting in all forums without having to change permissions. This may be useful for limited periods of time when admins would like to disallow users posting without having to lock the site or change all forum authorizations. Admins will still be able to post.',
@@ -217,6 +220,9 @@ if ($lang_extend_admin)
 		'IP_no_bump' => 'Forbid bumping within 24 hours',
 		'IP_no_bump_explain' => 'Enabling this option last posters won\'t be able to post within 24 hours from their last post unless someone else has posted a reply (never applies to admins)',
 		'MODS_ALLOWED' => 'Moderators Can Posts',
+
+		'IP_robots_index_topics_no_replies' => 'Enable Robots Indexing Topics No Replies',
+		'IP_robots_index_topics_no_replies_explain' => 'Enabling this option will enable indexing for topics with no replies, otherwise topics with no replies will not be indexed',
 
 		'IP_display_tags_box' => 'TAGS :: Display Topics Tags',
 		'IP_display_tags_box_explain' => 'Enabling this option will enable Topics Tags (tags could be used for indexing purpose): tags could be inserted / edited only by administrators (or moderators if you enable the switch below) to avoid spam',

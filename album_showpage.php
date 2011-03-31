@@ -23,8 +23,9 @@ include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -429,7 +430,7 @@ $auth_data = album_permissions($album_user_id, $cat_id, $check_permissions, $thi
 
 if ($auth_data['view'] == 0)
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_showpage.' . PHP_EXT . '&amp;pic_id=' . $pic_id));
 		exit;
@@ -444,12 +445,12 @@ if ($auth_data['view'] == 0)
 //RATING:  Additional Check: if this user already rated
 // ------------------------------------
 $own_pic_rate = false;
-if($userdata['session_logged_in'])
+if($user->data['session_logged_in'])
 {
 	$sql = "SELECT *
 			FROM ". ALBUM_RATE_TABLE ."
 			WHERE rate_pic_id = '$pic_id'
-				AND rate_user_id = '". $userdata['user_id'] ."'
+				AND rate_user_id = '". $user->data['user_id'] ."'
 			LIMIT 1";
 	$result = $db->sql_query($sql);
 
@@ -462,7 +463,7 @@ if($userdata['session_logged_in'])
 		$already_rated = false;
 	}
 
-	if ($thispic['pic_user_id'] == $userdata['user_id'])
+	if ($thispic['pic_user_id'] == $user->data['user_id'])
 	{
 		$own_pic_rate = true;
 	}
@@ -473,14 +474,14 @@ else
 }
 
 // Watch pic for comments - BEGIN
-if($userdata['session_logged_in'])
+if($user->data['session_logged_in'])
 {
 	//$can_watch_comment = true;
 
 	$sql = "SELECT notify_status
 		FROM " . ALBUM_COMMENT_WATCH_TABLE . "
 		WHERE pic_id = $pic_id
-			AND user_id = " . $userdata['user_id'] . "
+			AND user_id = " . $user->data['user_id'] . "
 		LIMIT 1";
 	$result = $db->sql_query($sql);
 
@@ -493,7 +494,7 @@ if($userdata['session_logged_in'])
 			{
 				$sql = "DELETE FROM " . ALBUM_COMMENT_WATCH_TABLE . "
 					WHERE pic_id = $pic_id
-						AND user_id = " . $userdata['user_id'];
+						AND user_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 				$is_watching_comment = false;
 			}
@@ -513,7 +514,7 @@ if($userdata['session_logged_in'])
 				$sql = "UPDATE " . ALBUM_COMMENT_WATCH_TABLE . "
 					SET notify_status = 0
 					WHERE pic_id = $pic_id
-						AND user_id = " . $userdata['user_id'];
+						AND user_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 			}
 		}
@@ -524,7 +525,7 @@ if($userdata['session_logged_in'])
 		if ($_GET['watch'] == 'comment')
 		{
 			$sql = "INSERT INTO " . ALBUM_COMMENT_WATCH_TABLE . " (pic_id, user_id, notify_status)
-				VALUES ($pic_id, " . $userdata['user_id'] . ", 0)";
+				VALUES ($pic_id, " . $user->data['user_id'] . ", 0)";
 			$result = $db->sql_query($sql);
 		}
 
@@ -639,9 +640,9 @@ if(empty($comment_text) && !isset($_POST['rating']))
 				$commentrow[$i]['comment_text'] = censor_text($commentrow[$i]['comment_text']);
 
 				// Smilies
-				$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-				$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-				$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
+				$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+				$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+				$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 				$bbcode->allow_html = $html_on;
 				$bbcode->allow_bbcode = $bbcode_on;
 				$bbcode->allow_smilies = $smilies_on;
@@ -687,10 +688,10 @@ if(empty($comment_text) && !isset($_POST['rating']))
 					$poster_rank = $lang['Guest'];
 				}
 
-				if ($userdata['user_level'] == ADMIN)
+				if ($user->data['user_level'] == ADMIN)
 				{
-					$ip_url = 'http://www.nic.com/cgi-bin/whois.cgi?query=' . decode_ip($commentrow[$i]['comment_user_ip']);
-					$ip_img = '<a href="' . $ip_url . '" target="_blank"><img src="' . $images['icon_ip2'] . '" alt="' . $lang['View_IP'] . ' (' . decode_ip($commentrow[$i]['comment_user_ip']) . ')" title="' . $lang['View_IP'] . ' (' . decode_ip($commentrow[$i]['comment_user_ip']) . ')" /></a>';
+					$ip_url = 'http://www.nic.com/cgi-bin/whois.cgi?query=' . htmlspecialchars(urlencode($commentrow[$i]['comment_user_ip']));
+					$ip_img = '<a href="' . $ip_url . '" target="_blank"><img src="' . $images['icon_ip2'] . '" alt="' . $lang['View_IP'] . ' (' . htmlspecialchars($commentrow[$i]['comment_user_ip']) . ')" title="' . $lang['View_IP'] . ' (' . htmlspecialchars($commentrow[$i]['comment_user_ip']) . ')" /></a>';
 					$ip = '<a href="' . $ip_url . '">' . $lang['View_IP'] . '</a>';
 				}
 				else
@@ -706,7 +707,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 					'ID' => $commentrow[$i]['comment_id'],
 					'POSTER_NAME' => $poster,
 					'COMMENT_TIME' => create_date_ip($config['default_dateformat'], $commentrow[$i]['comment_time'], $config['board_timezone']),
-					'IP' => ($userdata['user_level'] == ADMIN) ? '<a href="' . $ip_url . '" target="_blank">' . decode_ip($commentrow[$i]['comment_user_ip']) .'</a><br />' : '',
+					'IP' => ($user->data['user_level'] == ADMIN) ? '<a href="' . $ip_url . '" target="_blank">' . htmlspecialchars($commentrow[$i]['comment_user_ip']) .'</a><br />' : '',
 					'IP_IMG' => $ip_img,
 					'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
 
@@ -746,13 +747,13 @@ if(empty($comment_text) && !isset($_POST['rating']))
 					'TEXT' => $commentrow[$i]['comment_text'],
 					'EDIT_INFO' => $edit_info,
 
-					'U_EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? $edit_url : '',
+					'U_EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $user->data['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($user->data['user_level'] == ADMIN)) ? $edit_url : '',
 
-					'EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="' . $edit_url . '"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit_delete_post'] . '" title="' . $lang['Edit_delete_post'] . '" /></a>' : '',
+					'EDIT' => (($auth_data['edit'] && ($commentrow[$i]['comment_user_id'] == $user->data['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_edit_level'] != ALBUM_ADMIN)) || ($user->data['user_level'] == ADMIN)) ? '<a href="' . $edit_url . '"><img src="' . $images['icon_edit'] . '" alt="' . $lang['Edit_delete_post'] . '" title="' . $lang['Edit_delete_post'] . '" /></a>' : '',
 
-					'U_DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? $delete_url : '',
+					'U_DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $user->data['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($user->data['user_level'] == ADMIN)) ? $delete_url : '',
 
-					'DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $userdata['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($userdata['user_level'] == ADMIN)) ? '<a href="' . $delete_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>' : ''
+					'DELETE' => (($auth_data['delete'] && ($commentrow[$i]['comment_user_id'] == $user->data['user_id'])) || ($auth_data['moderator'] && ($thispic['cat_delete_level'] != ALBUM_ADMIN)) || ($user->data['user_level'] == ADMIN)) ? '<a href="' . $delete_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>' : ''
 
 					)
 				);
@@ -882,7 +883,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	{
 		$template->assign_block_vars('switch_comment_post', array());
 
-		if(!$userdata['session_logged_in'])
+		if(!$user->data['session_logged_in'])
 		{
 			$template->assign_block_vars('switch_comment_post.logout', array());
 		}
@@ -894,7 +895,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$image_rating = ImageRating($thispic['rating']);
 		$template->assign_block_vars('rate_switch', array());
 
-		if ($auth_data['rate'] == 1 && ($already_rated == false) && (($own_pic_rate == false) || ($userdata['user_level'] == ADMIN)))
+		if ($auth_data['rate'] == 1 && ($already_rated == false) && (($own_pic_rate == false) || ($user->data['user_level'] == ADMIN)))
 		{
 			$template->assign_block_vars('rate_switch.rate_row', array());
 			for ($i = 0; $i < $album_config['rate_scale']; $i++)
@@ -985,8 +986,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
 		'ALBUM_NAVIGATION_ARROW' => ALBUM_NAV_ARROW,
 		'NAV_CAT_DESC' => $album_nav_cat_desc,
-		'EDIT' => (($auth_data['moderator']) || ($userdata['user_id'] == $thispic['pic_user_id'])) ? '<a href="' . append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'])) . '">' . $edit_link_content . '</a>' : '',
-		'DELETE' => (($auth_data['moderator']) || ($userdata['user_id'] == $thispic['pic_user_id'])) ? '<a href="' . append_sid(album_append_uid('album_delete.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'])) . '">' . $delete_link_content . '</a>' : '',
+		'EDIT' => (($auth_data['moderator']) || ($user->data['user_id'] == $thispic['pic_user_id'])) ? '<a href="' . append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'])) . '">' . $edit_link_content . '</a>' : '',
+		'DELETE' => (($auth_data['moderator']) || ($user->data['user_id'] == $thispic['pic_user_id'])) ? '<a href="' . append_sid(album_append_uid('album_delete.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'])) . '">' . $delete_link_content . '</a>' : '',
 		'LOCK' => ($auth_data['moderator']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=' . (($thispic['pic_lock'] == 0) ? 'lock' : 'unlock') . '&amp;pic_id=' . $thispic['pic_id'])) . '">' . $lock_link_content . '</a>' : '',
 		'MOVE' => ($auth_data['moderator']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;pic_id=' . $thispic['pic_id'])) . '">' . $move_link_content . '</a>' : '',
 		'COPY' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;pic_id=' . $thispic['pic_id'])) . '">' . $copy_link_content . '</a>' : '',
@@ -1073,11 +1074,11 @@ if(empty($comment_text) && !isset($_POST['rating']))
 
 		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id)),
 
-		'U_COMMENT_WATCH_LINK' =>($is_watching_comments) ? '<a href="' . append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . '&amp;unwatch=comment') . '">' . $lang['Unwatch_pic'] . '</a>' : ($userdata['session_logged_in'] ? '<a href="' . append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . '&amp;watch=comment') . '">' . $lang['Watch_pic'] . '</a>' : ''),
+		'U_COMMENT_WATCH_LINK' =>($is_watching_comments) ? '<a href="' . append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . '&amp;unwatch=comment') . '">' . $lang['Unwatch_pic'] . '</a>' : ($user->data['session_logged_in'] ? '<a href="' . append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . '&amp;watch=comment') . '">' . $lang['Watch_pic'] . '</a>' : ''),
 
 		// Rating
-		//'S_RATE_MSG' => (!$userdata['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($already_rated) ? $lang['Already_rated'] : $lang['Please_Rate_It']),
-		'S_RATE_MSG' => (!$userdata['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($own_pic_rate == true) ? $lang['Own_Pic_Rate'] : (($already_rated == true) ? $lang['Already_rated'] : $lang['Please_Rate_It'])),
+		//'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($already_rated) ? $lang['Already_rated'] : $lang['Please_Rate_It']),
+		'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($own_pic_rate == true) ? $lang['Own_Pic_Rate'] : (($already_rated == true) ? $lang['Already_rated'] : $lang['Please_Rate_It'])),
 		'PIC_RATING' => $image_rating . (($own_pic_rate == true) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
 		'L_CURRENT_RATING' => $lang['Current_Rating'],
 		'L_PLEASE_RATE_IT' => $lang['Please_Rate_It']
@@ -1140,7 +1141,7 @@ else
 	}
 	if (($auth_data['comment'] == 0) && ($auth_data['rate'] == 0))
 	{
-		if (!$userdata['session_logged_in'])
+		if (!$user->data['session_logged_in'])
 		{
 			redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_showpage.' . PHP_EXT . '&amp;pic_id=' . $pic_id));
 		}
@@ -1157,7 +1158,7 @@ else
 
 		$comment_username = request_var('comment_username', '', true);
 		$comment_username = substr($comment_username, 0, 32);
-		$comment_username = !$userdata['session_logged_in'] ? $comment_username : htmlspecialchars($userdata['username']);
+		$comment_username = !$user->data['session_logged_in'] ? $comment_username : htmlspecialchars($user->data['username']);
 
 		// Check Pic Locked
 		if(($thispic['pic_lock'] == 1) && (!$auth_data['moderator']))
@@ -1166,7 +1167,7 @@ else
 		}
 
 		// Check username for guest posting
-		if (!$userdata['session_logged_in'])
+		if (!$user->data['session_logged_in'])
 		{
 			if ($comment_username != '')
 			{
@@ -1178,11 +1179,10 @@ else
 			}
 		}
 
-
 		// Prepare variables
 		$comment_time = time();
-		$comment_user_id = $userdata['user_id'];
-		$comment_user_ip = $userdata['session_ip'];
+		$comment_user_id = $user->data['user_id'];
+		$comment_user_ip = $user->data['session_ip'];
 
 		// Get $comment_id
 		$sql = "SELECT MAX(comment_id) AS max
@@ -1196,7 +1196,7 @@ else
 		if ($comment_text != '')
 		{
 			$sql = "INSERT INTO " . ALBUM_COMMENT_TABLE ." (comment_id, comment_pic_id, comment_cat_id, comment_user_id, comment_username, comment_user_ip, comment_time, comment_text)
-					VALUES ('$comment_id', '$pic_id', '$cat_id', '$comment_user_id', '" . $db->sql_escape($comment_username) . "', '$comment_user_ip', '$comment_time', '" . $db->sql_escape($comment_text) . "')";
+					VALUES ('$comment_id', '$pic_id', '$cat_id', '$comment_user_id', '" . $db->sql_escape($comment_username) . "', '" . $db->sql_escape($comment_user_ip) . "', '$comment_time', '" . $db->sql_escape($comment_text) . "')";
 			$result = $db->sql_query($sql);
 			// Watch pic for comments - BEGIN
 			// Here we send email notification
@@ -1207,7 +1207,7 @@ else
 	}
 
 	// Rating System
-	if (($album_config['rate'] == 1) && ($auth_data['rate'] == 1) && ($userdata['session_logged_in']))
+	if (($album_config['rate'] == 1) && ($auth_data['rate'] == 1) && ($user->data['session_logged_in']))
 	{
 		// Check Pic Locked
 		if(($thispic['pic_lock'] == 1) && (!$auth_data['moderator']))
@@ -1224,11 +1224,11 @@ else
 				message_die(GENERAL_ERROR, 'Bad submitted value - ' . $rate_point);
 			}
 
-			$rate_user_id = $userdata['user_id'];
-			$rate_user_ip = $userdata['session_ip'];
+			$rate_user_id = $user->data['user_id'];
+			$rate_user_ip = $user->data['session_ip'];
 
 			$sql = "INSERT INTO " . ALBUM_RATE_TABLE . " (rate_pic_id, rate_user_id, rate_user_ip, rate_point)
-					VALUES ('$pic_id', '$rate_user_id', '$rate_user_ip', '$rate_point')";
+					VALUES ('" . $db->sql_escape($pic_id) . "', '" . $db->sql_escape($rate_user_id) . "', '" . $db->sql_escape($rate_user_ip) . "', '" . $db->sql_escape($rate_point) . "')";
 			$result = $db->sql_query($sql);
 			$message = $lang['Album_rate_successfully'] . '<br /><br />';
 		}

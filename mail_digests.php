@@ -38,8 +38,9 @@ if (!defined('PHP_DIGESTS_CRON'))
 	include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 	// Start session management
-	$userdata = session_pagestart($user_ip);
-	init_userprefs($userdata);
+	$user->session_begin();
+	//$auth->acl($user->data);
+	$user->setup();
 	// End session management
 
 	if (empty($config['cron_digests_interval']) || ($config['cron_digests_interval'] == -1))
@@ -53,11 +54,12 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if (empty($userdata))
+if (empty($user->data))
 {
 	// Start session management
-	$userdata = session_pagestart($user_ip);
-	init_userprefs($userdata);
+	$user->session_begin();
+	//$auth->acl($user->data);
+	$user->setup();
 	// End session management
 }
 

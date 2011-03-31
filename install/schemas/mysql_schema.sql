@@ -114,7 +114,7 @@ CREATE TABLE `phpbb_album_comment` (
 	`comment_cat_id` int(11) NOT NULL DEFAULT '0',
 	`comment_user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`comment_username` varchar(32) DEFAULT '',
-	`comment_user_ip` varchar(8) NOT NULL DEFAULT '',
+	`comment_user_ip` varchar(40) NOT NULL DEFAULT '',
 	`comment_time` int(11) unsigned NOT NULL DEFAULT '0',
 	`comment_text` TEXT NOT NULL,
 	`comment_edit_time` int(11) unsigned DEFAULT NULL,
@@ -164,7 +164,7 @@ CREATE TABLE `phpbb_album_config` (
 CREATE TABLE `phpbb_album_rate` (
 	`rate_pic_id` int(11) unsigned NOT NULL DEFAULT '0',
 	`rate_user_id` mediumint(8) NOT NULL DEFAULT '0',
-	`rate_user_ip` char(8) NOT NULL DEFAULT '',
+	`rate_user_ip` varchar(40) NOT NULL DEFAULT '',
 	`rate_point` tinyint(3) unsigned NOT NULL DEFAULT '0',
 	`rate_hon_point` tinyint(3) NOT NULL DEFAULT '0',
 	KEY `rate_pic_id` (`rate_pic_id`),
@@ -241,8 +241,8 @@ CREATE TABLE `phpbb_attachments_desc` (
 CREATE TABLE `phpbb_attachments_stats` (
 	`attach_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	`user_id` mediumint(8) NOT NULL DEFAULT '0',
-	`user_ip` VARCHAR(8) NOT NULL DEFAULT '',
-	`user_http_agents` VARCHAR(255) NOT NULL DEFAULT '',
+	`user_ip` VARCHAR(40) NOT NULL DEFAULT '',
+	`user_browser` VARCHAR(255) NOT NULL DEFAULT '',
 	`download_time` INT(11) NOT NULL DEFAULT '0',
 	KEY `attach_id` (`attach_id`)
 );
@@ -310,10 +310,10 @@ CREATE TABLE `phpbb_autolinks` (
 CREATE TABLE `phpbb_banlist` (
 	`ban_id` mediumint(8) unsigned NOT NULL auto_increment,
 	`ban_userid` mediumint(8) NOT NULL DEFAULT '0',
-	`ban_ip` varchar(8) NOT NULL DEFAULT '',
+	`ban_ip` varchar(40) NOT NULL DEFAULT '',
 	`ban_email` varchar(255) DEFAULT NULL,
-	`ban_time` int(11) DEFAULT NULL,
-	`ban_expire_time` int(11) DEFAULT NULL,
+	`ban_start` int(11) DEFAULT NULL,
+	`ban_end` int(11) DEFAULT NULL,
 	`ban_by_userid` mediumint(8) DEFAULT NULL,
 	`ban_priv_reason` TEXT NOT NULL,
 	`ban_pub_reason_mode` tinyint(1) DEFAULT NULL,
@@ -642,14 +642,21 @@ CREATE TABLE `phpbb_google_bot_detector` (
 CREATE TABLE `phpbb_groups` (
 	`group_id` mediumint(8) NOT NULL auto_increment,
 	`group_type` tinyint(4) NOT NULL DEFAULT '1',
-	`group_name` varchar(40) NOT NULL DEFAULT '',
-	`group_description` varchar(255) NOT NULL DEFAULT '',
+	`group_founder_manage` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+	`group_name` varchar(255) DEFAULT '' NOT NULL,
+	`group_description` text NOT NULL,
+	`group_display` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
 	`group_moderator` mediumint(8) NOT NULL DEFAULT '0',
 	`group_single_user` tinyint(1) NOT NULL DEFAULT '1',
 	`group_rank` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`group_color` varchar(16) DEFAULT '' NOT NULL,
 	`group_legend` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
 	`group_legend_order` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`group_sig_chars` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`group_receive_pm` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+	`group_message_limit` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`group_max_recipients` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`group_skip_auth` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
 	`group_count` int(4) unsigned DEFAULT '99999999',
 	`group_count_max` int(4) unsigned DEFAULT '99999999',
 	`group_count_enable` smallint(2) unsigned DEFAULT '0',
@@ -657,6 +664,7 @@ CREATE TABLE `phpbb_groups` (
 	`upi2db_min_posts` mediumint(4) NOT NULL DEFAULT '0',
 	`upi2db_min_regdays` mediumint(4) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`group_id`),
+	KEY `group_legend_name` (`group_legend`, `group_name`),
 	KEY `group_single_user` (`group_single_user`)
 );
 
@@ -937,8 +945,8 @@ CREATE TABLE `phpbb_links` (
 	`link_active` tinyint(1) NOT NULL DEFAULT '0',
 	`link_hits` int(10) unsigned NOT NULL DEFAULT '0',
 	`user_id` mediumint(8) NOT NULL DEFAULT '0',
-	`user_ip` varchar(8) NOT NULL DEFAULT '',
-	`last_user_ip` varchar(8) NOT NULL DEFAULT '',
+	`user_ip` varchar(40) NOT NULL DEFAULT '',
+	`last_user_ip` varchar(40) NOT NULL DEFAULT '',
 	PRIMARY KEY (`link_id`)
 );
 
@@ -966,7 +974,7 @@ CREATE TABLE `phpbb_liw_cache` (
 CREATE TABLE `phpbb_logins` (
 	`login_id` mediumint(8) unsigned NOT NULL auto_increment,
 	`login_userid` mediumint(8) NOT NULL DEFAULT '0',
-	`login_ip` varchar(8) NOT NULL DEFAULT '0',
+	`login_ip` varchar(40) NOT NULL DEFAULT '0',
 	`login_user_agent` varchar(255) NOT NULL DEFAULT 'n/a',
 	`login_time` int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`login_id`)
@@ -1162,7 +1170,7 @@ CREATE TABLE `phpbb_pa_download_info` (
 	`file_id` mediumint(8) NOT NULL DEFAULT '0',
 	`user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`download_time` int(11) NOT NULL DEFAULT '0',
-	`downloader_ip` varchar(8) NOT NULL DEFAULT '',
+	`downloader_ip` varchar(40) NOT NULL DEFAULT '',
 	`downloader_os` varchar(255) NOT NULL DEFAULT '',
 	`downloader_browser` varchar(255) NOT NULL DEFAULT '',
 	`browser_version` varchar(255) NOT NULL DEFAULT ''
@@ -1178,7 +1186,7 @@ CREATE TABLE `phpbb_pa_download_info` (
 CREATE TABLE `phpbb_pa_files` (
 	`file_id` int(10) NOT NULL auto_increment,
 	`user_id` mediumint(8) NOT NULL DEFAULT '0',
-	`poster_ip` varchar(8) NOT NULL DEFAULT '',
+	`poster_ip` varchar(40) NOT NULL DEFAULT '',
 	`file_name` text NOT NULL,
 	`file_size` int(20) NOT NULL DEFAULT '0',
 	`unique_name` varchar(255) NOT NULL DEFAULT '',
@@ -1329,7 +1337,7 @@ CREATE TABLE `phpbb_posts` (
 	`forum_id` smallint(5) unsigned NOT NULL DEFAULT '0',
 	`poster_id` mediumint(8) NOT NULL DEFAULT '0',
 	`post_time` int(11) NOT NULL DEFAULT '0',
-	`poster_ip` varchar(8) NOT NULL DEFAULT '',
+	`poster_ip` varchar(40) NOT NULL DEFAULT '',
 	`post_username` varchar(25) DEFAULT NULL,
 	`post_subject` varchar(255) DEFAULT NULL,
 	`post_text` text NOT NULL,
@@ -1385,7 +1393,7 @@ CREATE TABLE `phpbb_privmsgs` (
 	`privmsgs_from_userid` mediumint(8) NOT NULL DEFAULT '0',
 	`privmsgs_to_userid` mediumint(8) NOT NULL DEFAULT '0',
 	`privmsgs_date` int(11) NOT NULL DEFAULT '0',
-	`privmsgs_ip` varchar(8) NOT NULL DEFAULT '',
+	`privmsgs_ip` varchar(40) NOT NULL DEFAULT '',
 	`privmsgs_enable_bbcode` tinyint(1) NOT NULL DEFAULT '1',
 	`privmsgs_enable_html` tinyint(1) NOT NULL DEFAULT '0',
 	`privmsgs_enable_smilies` tinyint(1) NOT NULL DEFAULT '1',
@@ -1412,7 +1420,7 @@ CREATE TABLE `phpbb_privmsgs_archive` (
 	`privmsgs_from_userid` mediumint(8) NOT NULL DEFAULT '0',
 	`privmsgs_to_userid` mediumint(8) NOT NULL DEFAULT '0',
 	`privmsgs_date` int(11) NOT NULL DEFAULT '0',
-	`privmsgs_ip` varchar(8) NOT NULL DEFAULT '',
+	`privmsgs_ip` varchar(40) NOT NULL DEFAULT '',
 	`privmsgs_enable_bbcode` tinyint(1) NOT NULL DEFAULT '1',
 	`privmsgs_enable_html` tinyint(1) NOT NULL DEFAULT '0',
 	`privmsgs_enable_smilies` tinyint(1) NOT NULL DEFAULT '1',
@@ -1514,8 +1522,8 @@ CREATE TABLE `phpbb_rate_results` (
 	`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	`topic_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
 	`rating` mediumint(8) unsigned NOT NULL DEFAULT '0',
-	`user_ip` char(8) NOT NULL DEFAULT '',
-	`rating_time` int(10) unsigned NOT NULL DEFAULT '0',
+	`user_ip` varchar(40) NOT NULL DEFAULT '',
+	`rating_time` int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`rating_id`),
 	KEY `topic_id` (`topic_id`)
 );
@@ -1531,7 +1539,7 @@ CREATE TABLE `phpbb_referrers` (
 	`referrer_id` int(11) NOT NULL auto_increment,
 	`referrer_host` varchar(255) NOT NULL DEFAULT '',
 	`referrer_url` varchar(255) NOT NULL DEFAULT '',
-	`referrer_ip` varchar(8) NOT NULL DEFAULT '',
+	`referrer_ip` varchar(40) NOT NULL DEFAULT '',
 	`referrer_hits` int(11) NOT NULL DEFAULT '1',
 	`referrer_firstvisit` int(11) NOT NULL DEFAULT '0',
 	`referrer_lastvisit` int(11) NOT NULL DEFAULT '0',
@@ -1596,14 +1604,20 @@ CREATE TABLE `phpbb_sessions` (
 	`session_user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`session_start` int(11) NOT NULL DEFAULT '0',
 	`session_time` int(11) NOT NULL DEFAULT '0',
-	`session_ip` varchar(8) NOT NULL DEFAULT '0',
-	`session_user_agent` varchar(255) NOT NULL DEFAULT '',
+	`session_ip` varchar(40) NOT NULL DEFAULT '0',
+	`session_browser` varchar(255) DEFAULT '' NOT NULL,
 	`session_page` varchar(255) NOT NULL DEFAULT '',
 	`session_logged_in` tinyint(1) NOT NULL DEFAULT '0',
-	`session_admin` tinyint(2) NOT NULL DEFAULT '0',
+	`session_forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`session_topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`session_last_visit` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`session_forwarded_for` varchar(255) DEFAULT '' NOT NULL,
+	`session_viewonline` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	`session_autologin` tinyint(1) UNSIGNED DEFAULT '0' NOT NULL,
+	`session_admin` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
 	PRIMARY KEY (`session_id`),
 	KEY `session_user_id` (`session_user_id`),
-	KEY `session_id_ip_user_id` (`session_id`,`session_ip`,`session_user_id`)
+	KEY `session_fid` (`session_forum_id`)
 );
 
 ## `phpbb_sessions`
@@ -1616,7 +1630,7 @@ CREATE TABLE `phpbb_sessions` (
 CREATE TABLE `phpbb_sessions_keys` (
 	`key_id` varchar(32) NOT NULL DEFAULT '0',
 	`user_id` mediumint(8) NOT NULL DEFAULT '0',
-	`last_ip` varchar(8) NOT NULL DEFAULT '0',
+	`last_ip` varchar(40) NOT NULL DEFAULT '',
 	`last_login` int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`key_id`,`user_id`),
 	KEY `last_login` (`last_login`)
@@ -1635,7 +1649,7 @@ CREATE TABLE `phpbb_shout` (
 	`shout_user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`shout_group_id` mediumint(8) NOT NULL DEFAULT '0',
 	`shout_session_time` int(11) NOT NULL DEFAULT '0',
-	`shout_ip` varchar(8) NOT NULL DEFAULT '',
+	`shout_ip` varchar(40) NOT NULL DEFAULT '',
 	`shout_text` TEXT NOT NULL,
 	`shout_active` mediumint(8) NOT NULL DEFAULT '0',
 	`enable_bbcode` tinyint(1) NOT NULL DEFAULT '0',
@@ -2046,11 +2060,13 @@ CREATE TABLE `phpbb_upi2db_unread_posts` (
 ## `phpbb_user_group`
 
 CREATE TABLE `phpbb_user_group` (
-	`group_id` mediumint(8) NOT NULL DEFAULT '0',
-	`user_id` mediumint(8) NOT NULL DEFAULT '0',
-	`user_pending` tinyint(1) DEFAULT NULL,
+	`group_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`group_leader` tinyint(1) unsigned DEFAULT '0' NOT NULL,
+	`user_pending` tinyint(1) DEFAULT '1' NOT NULL,
 	KEY `group_id` (`group_id`),
-	KEY `user_id` (`user_id`)
+	KEY `user_id` (`user_id`),
+	KEY `group_leader` (`group_leader`)
 );
 
 ## `phpbb_user_group`
@@ -2064,6 +2080,8 @@ CREATE TABLE `phpbb_users` (
 	`user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`user_active` tinyint(1) DEFAULT '1',
 	`user_mask` tinyint(1) DEFAULT '0',
+	`user_permissions` mediumtext NOT NULL,
+	`user_perm_from` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`username` varchar(36) NOT NULL DEFAULT '',
 	`username_clean` varchar(255) NOT NULL DEFAULT '',
 	`user_first_name` varchar(255) NOT NULL DEFAULT '',
@@ -2075,7 +2093,7 @@ CREATE TABLE `phpbb_users` (
 	`user_form_salt` varchar(32) DEFAULT '' NOT NULL,
 	`user_session_time` int(11) NOT NULL DEFAULT '0',
 	`user_session_page` varchar(255) NOT NULL DEFAULT '',
-	`user_http_agents` varchar(255) NOT NULL DEFAULT '',
+	`user_browser` varchar(255) NOT NULL DEFAULT '',
 	`user_lastvisit` int(11) NOT NULL DEFAULT '0',
 	`user_regdate` int(11) NOT NULL DEFAULT '0',
 	`user_type` tinyint(2) DEFAULT '0' NOT NULL,
@@ -2157,7 +2175,7 @@ CREATE TABLE `phpbb_users` (
 	`user_time_mode` tinyint(4) NOT NULL DEFAULT '5',
 	`user_dst_time_lag` tinyint(4) NOT NULL DEFAULT '60',
 	`user_pc_timeOffsets` varchar(11) NOT NULL DEFAULT '0',
-	`user_registered_ip` varchar(8) DEFAULT NULL,
+	`user_registered_ip` varchar(40) DEFAULT NULL,
 	`user_registered_hostname` varchar(255) DEFAULT NULL,
 	`user_profile_view` smallint(5) NOT NULL DEFAULT '0',
 	`user_last_profile_view` int(11) NOT NULL DEFAULT '0',
@@ -2273,7 +2291,7 @@ CREATE TABLE `phpbb_ctracker_ipblocker` (
 
 CREATE TABLE `phpbb_ctracker_loginhistory` (
 	`ct_user_id` int(10) DEFAULT NULL,
-	`ct_login_ip` varchar(16) DEFAULT NULL,
+	`ct_login_ip` varchar(40) DEFAULT NULL,
 	`ct_login_time` int(11) NOT NULL DEFAULT '0'
 	);
 ## Cracker Tracker - END
@@ -2310,6 +2328,25 @@ CREATE TABLE phpbb_zebra (
 
 
 ## ICY PHOENIX LOGS - BEGIN
+
+CREATE TABLE `phpbb_log` (
+	`log_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
+	`log_type` tinyint(4) DEFAULT '0' NOT NULL,
+	`user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`topic_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`reportee_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`log_ip` varchar(40) DEFAULT '' NOT NULL,
+	`log_time` int(11) UNSIGNED DEFAULT '0' NOT NULL,
+	`log_operation` text NOT NULL,
+	`log_data` mediumtext NOT NULL,
+	PRIMARY KEY (`log_id`),
+	KEY log_type (`log_type`),
+	KEY forum_id (`forum_id`),
+	KEY topic_id (`topic_id`),
+	KEY reportee_id (`reportee_id`),
+	KEY user_id (`user_id`)
+);
 
 CREATE TABLE `phpbb_logs` (
 	`log_id` int(11) unsigned NOT NULL auto_increment,
@@ -2475,7 +2512,7 @@ CREATE TABLE phpbb_ajax_shoutbox (
 	user_id MEDIUMINT(8) NOT NULL,
 	shouter_name VARCHAR(30) NOT NULL DEFAULT 'guest',
 	shout_text TEXT NOT NULL,
-	shouter_ip VARCHAR(8) NOT NULL DEFAULT '',
+	shouter_ip VARCHAR(40) NOT NULL DEFAULT '',
 	shout_time INT(11) NOT NULL,
 	shout_room VARCHAR(255) NOT NULL DEFAULT '',
 	PRIMARY KEY ( shout_id )
@@ -2486,7 +2523,7 @@ CREATE TABLE `phpbb_ajax_shoutbox_sessions` (
 	`session_id` int(10) NOT NULL,
 	`session_user_id` mediumint(8) NOT NULL DEFAULT '0',
 	`session_username` varchar(25) NOT NULL DEFAULT '',
-	`session_ip` varchar(8) NOT NULL DEFAULT '0',
+	`session_ip` varchar(40) NOT NULL DEFAULT '0',
 	`session_start` int(11) NOT NULL DEFAULT '0',
 	`session_time` int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`session_id`)
@@ -2643,7 +2680,7 @@ CREATE TABLE phpbb_dl_auth (
 CREATE TABLE phpbb_dl_banlist (
 	ban_id INT(11) AUTO_INCREMENT NOT NULL,
 	user_id MEDIUMINT(8) DEFAULT 0 NOT NULL,
-	user_ip CHAR(8) DEFAULT '' NOT NULL,
+	user_ip VARCHAR(40) DEFAULT '' NOT NULL,
 	user_agent VARCHAR(50) DEFAULT '' NOT NULL,
 	username VARCHAR(25) DEFAULT '' NOT NULL,
 	guests TINYINT(1) DEFAULT 0 NOT NULL,
@@ -2735,7 +2772,7 @@ CREATE TABLE phpbb_dl_stats (
 	username VARCHAR(32) NOT NULL DEFAULT '',
 	traffic BIGINT(20) NOT NULL DEFAULT '0',
 	direction TINYINT(1) NOT NULL DEFAULT '0',
-	user_ip VARCHAR(8) NOT NULL DEFAULT '',
+	user_ip VARCHAR(40) NOT NULL DEFAULT '',
 	browser VARCHAR(20) NOT NULL DEFAULT '',
 	time_stamp INT(11) NOT NULL DEFAULT '0',
 PRIMARY KEY (dl_id)
@@ -2762,7 +2799,7 @@ ALTER TABLE phpbb_users ADD COLUMN user_download_counter MEDIUMINT(8) DEFAULT '0
 CREATE TABLE phpbb_registration (
 	topic_id mediumint(8) unsigned NOT NULL default '0',
 	registration_user_id mediumint(8) NOT NULL default '0',
-	registration_user_ip varchar(8) NOT NULL default '',
+	registration_user_ip varchar(40) NOT NULL default '',
 	registration_time int(11) NOT NULL default '0',
 	registration_status tinyint(1) NOT NULL default '0',
 	KEY topic_id (topic_id),

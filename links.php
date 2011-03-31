@@ -23,8 +23,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $cms_page['page_id'] = 'links';
@@ -113,12 +114,12 @@ if($links_config['lock_submit_site'] == 0)
 	// display submit site
 	$template->assign_block_vars('lock', array());
 
-	if(!$userdata['session_logged_in'])
+	if(!$user->data['session_logged_in'])
 	{
 		$template->assign_block_vars('lock.logout', array());
 	}
 
-	if($userdata['session_logged_in'])
+	if($user->data['session_logged_in'])
 	{
 		$template->assign_block_vars('lock.submit', array());
 	}

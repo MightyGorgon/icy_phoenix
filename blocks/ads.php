@@ -24,7 +24,7 @@ if(!function_exists('cms_block_ads'))
 {
 	function cms_block_ads()
 	{
-		global $db, $cache, $config, $template, $images, $userdata, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 
 		include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_ads.' . PHP_EXT);
 
@@ -83,7 +83,7 @@ if(!function_exists('cms_block_ads'))
 				$ads_blocks[] = $tmp_ads;
 			}
 		}
-		if (!$userdata['session_logged_in'] && is_array($$banner_var_guests) && (sizeof($$banner_var_guests) > 0))
+		if (!$user->data['session_logged_in'] && is_array($$banner_var_guests) && (sizeof($$banner_var_guests) > 0))
 		{
 			foreach ($$banner_var_guests as $tmp_ads)
 			{

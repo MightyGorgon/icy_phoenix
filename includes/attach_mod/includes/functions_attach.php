@@ -253,17 +253,17 @@ function get_attachments_from_post($post_id_array)
 */
 function update_attachments_stats($attach_id)
 {
-	global $db, $userdata, $lang, $user_ip, $user_agent;
+	global $db, $user, $lang;
 
 	$sql = 'UPDATE ' . ATTACHMENTS_DESC_TABLE . '
 	SET download_count = download_count + 1
 	WHERE attach_id = ' . (int) $attach_id;
 	$db->sql_query($sql);
 
-	if (!$userdata['is_bot'] && defined('USE_ATTACHMENTS_STATS') && USE_ATTACHMENTS_STATS)
+	if (!$user->data['is_bot'] && defined('USE_ATTACHMENTS_STATS') && USE_ATTACHMENTS_STATS)
 	{
-		$sql = "INSERT INTO " . ATTACHMENTS_STATS_TABLE . " (`attach_id`, `user_id`, `user_ip`, `user_http_agents`, `download_time`)
-			VALUES ('" . $attach_id . "', '" . $userdata['user_id'] . "', '" . $user_ip . "', '" . addslashes($user_agent) . "', '" . time() . "')";
+		$sql = "INSERT INTO " . ATTACHMENTS_STATS_TABLE . " (`attach_id`, `user_id`, `user_ip`, `user_browser`, `download_time`)
+			VALUES ('" . $attach_id . "', '" . $user->data['user_id'] . "', '" . $db->sql_escape($user->ip) . "', '" . $db->sql_escape(addslashes($user->browser)) . "', '" . time() . "')";
 		$result = $db->sql_query($sql);
 	}
 

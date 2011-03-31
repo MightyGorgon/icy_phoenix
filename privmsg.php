@@ -101,8 +101,9 @@ $folder = request_var('folder', 'inbox');
 $folder = check_var_value($folder, $folders_array);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Cancel
@@ -168,11 +169,11 @@ if ($mode == 'newpm')
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Private_Messaging'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
-	if ($userdata['session_logged_in'])
+	if ($user->data['session_logged_in'])
 	{
-		if ($userdata['user_new_privmsg'])
+		if ($user->data['user_new_privmsg'])
 		{
-			$l_new_message = ($userdata['user_new_privmsg'] == 1) ? $lang['You_new_pm'] : $lang['You_new_pms'];
+			$l_new_message = ($user->data['user_new_privmsg'] == 1) ? $lang['You_new_pm'] : $lang['You_new_pms'];
 		}
 		else
 		{
@@ -206,7 +207,7 @@ elseif ($mode == 'read')
 		message_die(GENERAL_ERROR, $lang['No_post_id']);
 	}
 
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=privmsg.' . PHP_EXT . '&folder=' . $folder . '&mode=' . $mode . '&' . POST_POST_URL . '=' . $privmsgs_id, true));
 	}
@@ -219,27 +220,27 @@ elseif ($mode == 'read')
 	{
 		case 'inbox':
 			$l_box_name = $lang['Inbox'];
-			$pm_sql_user = "AND pm.privmsgs_to_userid = " . $userdata['user_id'] . "
+			$pm_sql_user = "AND pm.privmsgs_to_userid = " . $user->data['user_id'] . "
 				AND (pm.privmsgs_type = " . PRIVMSGS_READ_MAIL . "
 					OR pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 					OR pm.privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 			break;
 		case 'outbox':
 			$l_box_name = $lang['Outbox'];
-			$pm_sql_user = "AND pm.privmsgs_from_userid =  " . $userdata['user_id'] . "
+			$pm_sql_user = "AND pm.privmsgs_from_userid =  " . $user->data['user_id'] . "
 				AND (pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 					OR pm.privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ") ";
 			break;
 		case 'sentbox':
 			$l_box_name = $lang['Sentbox'];
-			$pm_sql_user = "AND pm.privmsgs_from_userid =  " . $userdata['user_id'] . "
+			$pm_sql_user = "AND pm.privmsgs_from_userid =  " . $user->data['user_id'] . "
 				AND pm.privmsgs_type = " . PRIVMSGS_SENT_MAIL;
 			break;
 		case 'savebox':
 			$l_box_name = $lang['Savebox'];
-			$pm_sql_user = "AND ((pm.privmsgs_to_userid = " . $userdata['user_id'] . "
+			$pm_sql_user = "AND ((pm.privmsgs_to_userid = " . $user->data['user_id'] . "
 					AND pm.privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . ")
-				OR (pm.privmsgs_from_userid = " . $userdata['user_id'] . "
+				OR (pm.privmsgs_from_userid = " . $user->data['user_id'] . "
 					AND pm.privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . ")
 				)";
 			break;
@@ -305,7 +306,7 @@ elseif ($mode == 'read')
 
 		$sql = "UPDATE " . USERS_TABLE . "
 			SET $sql
-			WHERE user_id = " . $userdata['user_id'];
+			WHERE user_id = " . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 
 		$sql = "UPDATE " . PRIVMSGS_TABLE . "
@@ -592,7 +593,7 @@ elseif ($mode == 'read')
 
 	if ($config['allow_sig'])
 	{
-		$user_sig = ($privmsg['privmsgs_from_userid'] == $userdata['user_id']) ? $userdata['user_sig'] : $privmsg['user_sig'];
+		$user_sig = ($privmsg['privmsgs_from_userid'] == $user->data['user_id']) ? $user->data['user_sig'] : $privmsg['user_sig'];
 	}
 	else
 	{
@@ -602,7 +603,7 @@ elseif ($mode == 'read')
 	// If the board has HTML off but the post has HTML on then we process it, else leave it alone
 	if (!$config['allow_html'])
 	{
-		if ($user_sig != '' && $privmsg['privmsgs_enable_sig'] && $userdata['user_allowhtml'])
+		if ($user_sig != '' && $privmsg['privmsgs_enable_sig'] && $user->data['user_allowhtml'])
 		{
 			$user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $user_sig);
 		}
@@ -623,7 +624,7 @@ elseif ($mode == 'read')
 		$bbcode->is_sig = false;
 	}
 
-	$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $privmsg['privmsgs_enable_html'];
+	$bbcode->allow_html = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $privmsg['privmsgs_enable_html'];
 	$bbcode->allow_bbcode = $config['allow_bbcode'] ? true : false;
 	$bbcode->allow_smilies = $config['allow_smilies'] && $privmsg['privmsgs_enable_smilies'];
 	$private_message = $bbcode->parse($private_message);
@@ -721,7 +722,7 @@ elseif ($mode == 'read')
 }
 elseif (($delete && $mark_list) || $delete_all)
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=privmsg.' . PHP_EXT . '&folder=inbox', true));
 	}
@@ -736,7 +737,7 @@ elseif (($delete && $mark_list) || $delete_all)
 	{
 		$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" />';
 		$s_hidden_fields .= (isset($_POST['delete'])) ? '<input type="hidden" name="delete" value="true" />' : '<input type="hidden" name="deleteall" value="true" />';
-		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 		for($i = 0; $i < sizeof($mark_list); $i++)
 		{
@@ -759,29 +760,29 @@ elseif (($delete && $mark_list) || $delete_all)
 		);
 		full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');
 	}
-	elseif ($confirm && $sid === $userdata['session_id'])
+	elseif ($confirm && $sid === $user->data['session_id'])
 	{
 		if ($delete_all)
 		{
 			switch($folder)
 			{
 				case 'inbox':
-					$delete_type = "privmsgs_to_userid = " . $userdata['user_id'] . " AND (
+					$delete_type = "privmsgs_to_userid = " . $user->data['user_id'] . " AND (
 					privmsgs_type = " . PRIVMSGS_READ_MAIL . " OR privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 					break;
 
 				case 'outbox':
-					$delete_type = "privmsgs_from_userid = " . $userdata['user_id'] . " AND (privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
+					$delete_type = "privmsgs_from_userid = " . $user->data['user_id'] . " AND (privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 					break;
 
 				case 'sentbox':
-					$delete_type = "privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
+					$delete_type = "privmsgs_from_userid = " . $user->data['user_id'] . " AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
 					break;
 
 				case 'savebox':
-					$delete_type = "((privmsgs_from_userid = " . $userdata['user_id'] . "
+					$delete_type = "((privmsgs_from_userid = " . $user->data['user_id'] . "
 						AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . ")
-					OR (privmsgs_to_userid = " . $userdata['user_id'] . "
+					OR (privmsgs_to_userid = " . $user->data['user_id'] . "
 						AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . "))";
 					break;
 			}
@@ -812,10 +813,10 @@ elseif (($delete && $mark_list) || $delete_all)
 				switch ($folder)
 				{
 					case 'inbox':
-						$sql = "privmsgs_to_userid = " . $userdata['user_id'];
+						$sql = "privmsgs_to_userid = " . $user->data['user_id'];
 						break;
 					case 'outbox':
-						$sql = "privmsgs_from_userid = " . $userdata['user_id'];
+						$sql = "privmsgs_from_userid = " . $user->data['user_id'];
 						break;
 				}
 
@@ -895,23 +896,23 @@ elseif (($delete && $mark_list) || $delete_all)
 			switch($folder)
 			{
 				case 'inbox':
-					$delete_sql .= "privmsgs_to_userid = " . $userdata['user_id'] . " AND (
+					$delete_sql .= "privmsgs_to_userid = " . $user->data['user_id'] . " AND (
 						privmsgs_type = " . PRIVMSGS_READ_MAIL . " OR privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 					break;
 
 				case 'outbox':
-					$delete_sql .= "privmsgs_from_userid = " . $userdata['user_id'] . " AND (
+					$delete_sql .= "privmsgs_from_userid = " . $user->data['user_id'] . " AND (
 						privmsgs_type = " . PRIVMSGS_NEW_MAIL . " OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 					break;
 
 				case 'sentbox':
-					$delete_sql .= "privmsgs_from_userid = " . $userdata['user_id'] . " AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
+					$delete_sql .= "privmsgs_from_userid = " . $user->data['user_id'] . " AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
 					break;
 
 				case 'savebox':
-					$delete_sql .= "((privmsgs_from_userid = " . $userdata['user_id'] . "
+					$delete_sql .= "((privmsgs_from_userid = " . $user->data['user_id'] . "
 						AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . ")
-					OR (privmsgs_to_userid = " . $userdata['user_id'] . "
+					OR (privmsgs_to_userid = " . $user->data['user_id'] . "
 						AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . "))";
 					break;
 			}
@@ -921,7 +922,7 @@ elseif (($delete && $mark_list) || $delete_all)
 }
 elseif ($download && $mark_list)
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$header_location = (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE'))) ? 'Refresh: 0; URL=' : 'Location: ';
 		header($header_location . append_sid(CMS_PAGE_LOGIN .'?redirect=privmsg.' . PHP_EXT . '&folder=inbox', true));
@@ -952,7 +953,7 @@ elseif ($download && $mark_list)
 		$i = 0;
 		$crlf = "\r\n";
 		$pmtext = $lang['Private_Messaging'] . ' (' . $config['sitename'] . ')' . $crlf;
-		$user_dateformat = ($userdata['user_dateformat']) ? $userdata['user_dateformat'] : $config['default_dateformat'];
+		$user_dateformat = ($user->data['user_dateformat']) ? $user->data['user_dateformat'] : $config['default_dateformat'];
 		$pmtext .= $disp_folder . ' (' . gmdate($user_dateformat) . ')' . $crlf;
 		while($mark_list[$i] != '')
 		{
@@ -969,7 +970,7 @@ elseif ($download && $mark_list)
 				$tmpmsg = wordwrap(htmlspecialchars_decode($db_row['privmsgs_text'], ENT_COMPAT), 78, $crlf);
 				$from = (($folder == 'inbox') || ($folder == 'savebox')) ? $lang['From'] : $lang['To'];
 				$pmtext .= '------------------------------------------------------------------------------' . $crlf;
-				$pmtext .= $lang['Mailbox'] . ': ' . $userdata['username'] . $crlf;
+				$pmtext .= $lang['Mailbox'] . ': ' . $user->data['username'] . $crlf;
 				$pmtext .= $from . ': ' . $db_row['username'] . $crlf;
 				$pmtext .= $lang['Posted'] . ': ' . gmdate($user_dateformat, $db_row['privmsgs_date']) . $crlf;
 				$pmtext .= $lang['Subject'] . ': ' . htmlspecialchars_decode($db_row['privmsgs_subject'], ENT_COMPAT) . $crlf . $crlf;
@@ -994,7 +995,7 @@ elseif ($download && $mark_list)
 }
 elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=privmsg.' . PHP_EXT . '&folder=inbox', true));
 	}
@@ -1004,9 +1005,9 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 		// See if recipient is at their savebox limit
 		$sql = "SELECT COUNT(privmsgs_id) AS savebox_items, MIN(privmsgs_date) AS oldest_post_time
 			FROM " . PRIVMSGS_TABLE . "
-			WHERE ((privmsgs_to_userid = " . $userdata['user_id'] . "
+			WHERE ((privmsgs_to_userid = " . $user->data['user_id'] . "
 					AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . ")
-				OR (privmsgs_from_userid = " . $userdata['user_id'] . "
+				OR (privmsgs_from_userid = " . $user->data['user_id'] . "
 					AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . "))";
 		$result = $db->sql_query($sql);
 
@@ -1015,9 +1016,9 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 			if ($config['max_savebox_privmsgs'] && $saved_info['savebox_items'] >= $config['max_savebox_privmsgs'])
 			{
 				$sql = "SELECT privmsgs_id FROM " . PRIVMSGS_TABLE . "
-					WHERE ((privmsgs_to_userid = " . $userdata['user_id'] . "
+					WHERE ((privmsgs_to_userid = " . $user->data['user_id'] . "
 								AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . ")
-							OR (privmsgs_from_userid = " . $userdata['user_id'] . "
+							OR (privmsgs_from_userid = " . $user->data['user_id'] . "
 								AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . "))
 						AND privmsgs_date = " . $saved_info['oldest_post_time'];
 				$result = $db->sql_query($sql);
@@ -1045,10 +1046,10 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 			switch ($folder)
 			{
 				case 'inbox':
-					$sql = "privmsgs_to_userid = " . $userdata['user_id'];
+					$sql = "privmsgs_to_userid = " . $user->data['user_id'];
 					break;
 				case 'outbox':
-					$sql = "privmsgs_from_userid = " . $userdata['user_id'];
+					$sql = "privmsgs_from_userid = " . $user->data['user_id'];
 					break;
 			}
 
@@ -1124,7 +1125,7 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 		{
 			case 'inbox':
 				$saved_sql .= " SET privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . "
-					WHERE privmsgs_to_userid = " . $userdata['user_id'] . "
+					WHERE privmsgs_to_userid = " . $user->data['user_id'] . "
 						AND (privmsgs_type = " . PRIVMSGS_READ_MAIL . "
 							OR privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 							OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
@@ -1132,14 +1133,14 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 
 			case 'outbox':
 				$saved_sql .= " SET privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . "
-					WHERE privmsgs_from_userid = " . $userdata['user_id'] . "
+					WHERE privmsgs_from_userid = " . $user->data['user_id'] . "
 						AND (privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 							OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ") ";
 				break;
 
 			case 'sentbox':
 				$saved_sql .= " SET privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . "
-					WHERE privmsgs_from_userid = " . $userdata['user_id'] . "
+					WHERE privmsgs_from_userid = " . $user->data['user_id'] . "
 						AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
 				break;
 		}
@@ -1153,7 +1154,7 @@ elseif ($save && $mark_list && ($folder != 'savebox') && ($folder != 'outbox'))
 }
 elseif ($submit || $refresh || ($mode != ''))
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$user_id = (isset($_GET[POST_USERS_URL])) ? '&' . POST_USERS_URL . '=' . intval($_GET[POST_USERS_URL]) : '';
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=privmsg.' . PHP_EXT . '&folder=' . $folder . '&mode=' . $mode . $user_id, true));
@@ -1166,7 +1167,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 	else
 	{
-		$html_on = ($submit || $refresh) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : $userdata['user_allowhtml'];
+		$html_on = ($submit || $refresh) ? ((!empty($_POST['disable_html'])) ? 0 : 1) : $user->data['user_allowhtml'];
 	}
 
 	$acro_auto_on = ($submit || $refresh) ? ((!empty($_POST['disable_acro_auto'])) ? 0 : 1) : 1;
@@ -1177,7 +1178,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 	else
 	{
-		$bbcode_on = ($submit || $refresh) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : $userdata['user_allowbbcode'];
+		$bbcode_on = ($submit || $refresh) ? ((!empty($_POST['disable_bbcode'])) ? 0 : 1) : $user->data['user_allowbbcode'];
 	}
 
 	if (!$config['allow_smilies'])
@@ -1186,18 +1187,18 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 	else
 	{
-		$smilies_on = ($submit || $refresh) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : $userdata['user_allowsmile'];
+		$smilies_on = ($submit || $refresh) ? ((!empty($_POST['disable_smilies'])) ? 0 : 1) : $user->data['user_allowsmile'];
 	}
 
-	$attach_sig = ($submit || $refresh) ? ((!empty($_POST['attach_sig'])) ? 1 : 0) : $userdata['user_attachsig'];
-	$user_sig = ($userdata['user_sig'] != '' && $config['allow_sig']) ? $userdata['user_sig'] : '';
+	$attach_sig = ($submit || $refresh) ? ((!empty($_POST['attach_sig'])) ? 1 : 0) : $user->data['user_attachsig'];
+	$user_sig = ($user->data['user_sig'] != '' && $config['allow_sig']) ? $user->data['user_sig'] : '';
 
-	if (($submit) && ($mode != 'edit') && ($userdata['user_level'] != ADMIN))
+	if (($submit) && ($mode != 'edit') && ($user->data['user_level'] != ADMIN))
 	{
 		// Flood control
 		$sql = "SELECT MAX(privmsgs_date) AS last_post_time
 			FROM " . PRIVMSGS_TABLE . "
-			WHERE privmsgs_from_userid = " . $userdata['user_id'];
+			WHERE privmsgs_from_userid = " . $user->data['user_id'];
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -1221,7 +1222,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		$sql = 'SELECT privmsgs_from_userid
 			FROM ' . PRIVMSGS_TABLE . '
 			WHERE privmsgs_id = ' . (int) $privmsg_id . '
-				AND privmsgs_from_userid = ' . $userdata['user_id'];
+				AND privmsgs_from_userid = ' . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 
 		if (!($row = $db->sql_fetchrow($result)))
@@ -1236,7 +1237,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	if ($submit)
 	{
 		// session id check
-		if (($sid == '') || ($sid != $userdata['session_id']))
+		if (($sid == '') || ($sid != $user->data['session_id']))
 		{
 			$error = true;
 			$error_msg .= ((!empty($error_msg)) ? '<br />' : '') . $lang['Session_invalid'];
@@ -1296,16 +1297,16 @@ elseif ($submit || $refresh || ($mode != ''))
 	if (($submit || ($draft && $draft_confirm)) && !$error)
 	{
 		// Has admin prevented user from sending PM's?
-		if (!$userdata['user_allow_pm'])
+		if (!$user->data['user_allow_pm'])
 		{
 			$message = $lang['Cannot_send_privmsg'];
 			message_die(GENERAL_MESSAGE, $message);
 		}
 
 		// MG Drafts - BEGIN
-		if (($config['allow_drafts'] == true) && $draft && $draft_confirm && $userdata['session_logged_in'])
+		if (($config['allow_drafts'] == true) && $draft && $draft_confirm && $user->data['session_logged_in'])
 		{
-			save_draft($draft_id, $userdata['user_id'], 0, 0, $privmsg_subject, $message);
+			save_draft($draft_id, $user->data['user_id'], 0, 0, $privmsg_subject, $message);
 			$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 			$redirect_url = append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox');
@@ -1348,7 +1349,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				}
 			}
 
-			if ($userdata['user_level'] > 0)
+			if ($user->data['user_level'] > 0)
 			{
 				$pm_send = true;
 			}
@@ -1374,11 +1375,11 @@ elseif ($submit || $refresh || ($mode != ''))
 				}
 			}
 			$sql_info = "INSERT INTO " . PRIVMSGS_TABLE . " (privmsgs_type, privmsgs_subject, privmsgs_text, privmsgs_from_userid, privmsgs_to_userid, privmsgs_date, privmsgs_ip, privmsgs_enable_html, privmsgs_enable_bbcode, privmsgs_enable_smilies, privmsgs_enable_autolinks_acronyms, privmsgs_attach_sig)
-				VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . $db->sql_escape($privmsg_subject) . "', '" . $db->sql_escape($privmsg_message) . "', " . $userdata['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $acro_auto_on, $attach_sig)";
+				VALUES (" . PRIVMSGS_NEW_MAIL . ", '" . $db->sql_escape($privmsg_subject) . "', '" . $db->sql_escape($privmsg_message) . "', " . $user->data['user_id'] . ", " . $to_userdata['user_id'] . ", $msg_time, '$user_ip', $html_on, $bbcode_on, $smilies_on, $acro_auto_on, $attach_sig)";
 		}
 		else
 		{
-			if ($userdata['user_level'] > 0)
+			if ($user->data['user_level'] > 0)
 			{
 				$pm_send = true;
 			}
@@ -1404,7 +1405,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				}
 			}
 			$sql_info = "UPDATE " . PRIVMSGS_TABLE . "
-				SET privmsgs_type = " . PRIVMSGS_NEW_MAIL . ", privmsgs_subject = '" . $db->sql_escape($privmsg_subject) . "', privmsgs_text = '" . $db->sql_escape($privmsg_message) . "', privmsgs_from_userid = " . $userdata['user_id'] . ", privmsgs_to_userid = " . $to_userdata['user_id'] . ", privmsgs_date = $msg_time, privmsgs_ip = '$user_ip', privmsgs_enable_html = $html_on, privmsgs_enable_bbcode = $bbcode_on, privmsgs_enable_smilies = $smilies_on, privmsgs_enable_autolinks_acronyms = $acro_auto_on, privmsgs_attach_sig = $attach_sig
+				SET privmsgs_type = " . PRIVMSGS_NEW_MAIL . ", privmsgs_subject = '" . $db->sql_escape($privmsg_subject) . "', privmsgs_text = '" . $db->sql_escape($privmsg_message) . "', privmsgs_from_userid = " . $user->data['user_id'] . ", privmsgs_to_userid = " . $to_userdata['user_id'] . ", privmsgs_date = $msg_time, privmsgs_ip = '$user_ip', privmsgs_enable_html = $html_on, privmsgs_enable_bbcode = $bbcode_on, privmsgs_enable_smilies = $smilies_on, privmsgs_enable_autolinks_acronyms = $acro_auto_on, privmsgs_attach_sig = $attach_sig
 				WHERE privmsgs_id = $privmsg_id";
 		}
 		$result = $db->sql_query($sql_info);
@@ -1457,12 +1458,12 @@ elseif ($submit || $refresh || ($mode != ''))
 					'SITENAME' => $config['sitename'],
 					'EMAIL_SIG' => $email_sig,
 					// Mighty Gorgon - Begin
-					'FROM' => $userdata['username'],
+					'FROM' => $user->data['username'],
 					'DATE' => create_date($config['default_dateformat'], time(), $config['board_timezone']),
 					'SUBJECT' => $privmsg_subject,
 					'PRIV_MSG_TEXT' => $message,
 					// Mighty Gorgon - End
-					'FROM_USERNAME' => $userdata['username'],
+					'FROM_USERNAME' => $user->data['username'],
 					'U_INBOX' => $server_protocol . $server_name . $server_port . $script_name . '?folder=inbox'
 					)
 				);
@@ -1473,7 +1474,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			// MG Cash MOD For IP - BEGIN
 			if (!empty($config['plugins']['cash']['enabled']))
 			{
-				$pmer = new cash_user($userdata['user_id'],$userdata);
+				$pmer = new cash_user($user->data['user_id'], $user->data);
 				$pmer->give_pm_amount();
 				while (false) {}
 			}
@@ -1502,12 +1503,12 @@ elseif ($submit || $refresh || ($mode != ''))
 		if ($mode == 'post')
 		{
 			$meta_content['page_title'] = $lang['Post_new_pm'];
-			$user_sig = ($userdata['user_sig'] != '' && $config['allow_sig']) ? $userdata['user_sig'] : '';
+			$user_sig = ($user->data['user_sig'] != '' && $config['allow_sig']) ? $user->data['user_sig'] : '';
 		}
 		elseif ($mode == 'reply')
 		{
 			$meta_content['page_title'] = $lang['Post_reply_pm'];
-			$user_sig = ($userdata['user_sig'] != '' && $config['allow_sig']) ? $userdata['user_sig'] : '';
+			$user_sig = ($user->data['user_sig'] != '' && $config['allow_sig']) ? $user->data['user_sig'] : '';
 		}
 		elseif ($mode == 'edit')
 		{
@@ -1521,7 +1522,7 @@ elseif ($submit || $refresh || ($mode != ''))
 
 			if ($postrow = $db->sql_fetchrow($result))
 			{
-				if ($userdata['user_id'] != $postrow['user_id'])
+				if ($user->data['user_id'] != $postrow['user_id'])
 				{
 					message_die(GENERAL_MESSAGE, $lang['Edit_own_posts']);
 				}
@@ -1564,7 +1565,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			$sql = "SELECT pm.*, u.username, u.user_id, u.user_sig
 				FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u
 				WHERE pm.privmsgs_id = $privmsg_id
-					AND pm.privmsgs_from_userid = " . $userdata['user_id'] . "
+					AND pm.privmsgs_from_userid = " . $user->data['user_id'] . "
 					AND (pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 						OR pm.privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")
 					AND u.user_id = pm.privmsgs_to_userid";
@@ -1593,7 +1594,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			$sql = "SELECT pm.privmsgs_subject, pm.privmsgs_date, pm.privmsgs_text, u.username, u.user_id
 				FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u
 				WHERE pm.privmsgs_id = $privmsg_id
-					AND pm.privmsgs_to_userid = " . $userdata['user_id'] . "
+					AND pm.privmsgs_to_userid = " . $user->data['user_id'] . "
 					AND u.user_id = pm.privmsgs_from_userid";
 			$result = $db->sql_query($sql);
 
@@ -1627,7 +1628,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 
 	// Has admin prevented user from sending PM's?
-	if (!$userdata['user_allow_pm'] && $mode != 'edit')
+	if (!$user->data['user_allow_pm'] && $mode != 'edit')
 	{
 		$message = $lang['Cannot_send_privmsg'];
 		message_die(GENERAL_MESSAGE, $message);
@@ -1661,7 +1662,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		// Finalise processing as per viewtopic
 		if (!$html_on)
 		{
-			if ($user_sig != '' || !$userdata['user_allowhtml'])
+			if ($user_sig != '' || !$user->data['user_allowhtml'])
 			{
 				$user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $user_sig);
 			}
@@ -1710,7 +1711,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			'TOPIC_TITLE' => $preview_subject,
 			'POST_SUBJECT' => $preview_subject,
 			'MESSAGE_TO' => $to_username,
-			'MESSAGE_FROM' => $userdata['username'],
+			'MESSAGE_FROM' => $user->data['username'],
 			'POST_DATE' => create_date_ip($config['default_dateformat'], time(), $config['board_timezone']),
 			'MESSAGE' => $preview_message,
 			'PLAIN_MESSAGE' => $plain_message,
@@ -1746,7 +1747,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	$template->assign_var('S_POSTING_PM', true);
 
 	// HTML toggle selection
-	if ($config['allow_html'] || (($userdata['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
+	if ($config['allow_html'] || (($user->data['user_level'] == ADMIN) && $config['allow_html_only_for_admins']))
 	{
 		$html_status = $lang['HTML_is_ON'];
 		$template->assign_block_vars('switch_html_checkbox', array());
@@ -1800,7 +1801,7 @@ elseif ($submit || $refresh || ($mode != ''))
 
 	$s_hidden_fields = '<input type="hidden" name="folder" value="' . $folder . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
-	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 	if ($mode == 'edit')
 	{
 		$s_hidden_fields .= '<input type="hidden" name="' . POST_POST_URL . '" value="' . $privmsg_id . '" />';
@@ -1816,7 +1817,7 @@ elseif ($submit || $refresh || ($mode != ''))
 	$row = $db->sql_fetchrow($r);
 
 	$prv_msg_review = $row['privmsgs_text'];
-	$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['privmsgs_enable_html'];
+	$bbcode->allow_html = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['privmsgs_enable_html'];
 	$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
 	$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 	$prv_msg_review = $bbcode->parse($prv_msg_review);
@@ -1957,26 +1958,26 @@ elseif ($submit || $refresh || ($mode != ''))
 }
 
 // Default page
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=privmsg.' . PHP_EXT . '&folder=inbox', true));
 }
 
 // Update unread status
 $sql = "UPDATE " . USERS_TABLE . "
-	SET user_unread_privmsg = user_unread_privmsg + user_new_privmsg, user_new_privmsg = 0, user_last_privmsg = " . $userdata['session_start'] . "
-	WHERE user_id = " . $userdata['user_id'];
+	SET user_unread_privmsg = user_unread_privmsg + user_new_privmsg, user_new_privmsg = 0, user_last_privmsg = " . $user->data['session_start'] . "
+	WHERE user_id = " . $user->data['user_id'];
 $db->sql_query($sql);
 
 $sql = "UPDATE " . PRIVMSGS_TABLE . "
 	SET privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . "
 	WHERE privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
-		AND privmsgs_to_userid = " . $userdata['user_id'];
+		AND privmsgs_to_userid = " . $user->data['user_id'];
 $db->sql_query($sql);
 
 // Reset PM counters
-$userdata['user_new_privmsg'] = 0;
-$userdata['user_unread_privmsg'] = ($userdata['user_new_privmsg'] + $userdata['user_unread_privmsg']);
+$user->data['user_new_privmsg'] = 0;
+$user->data['user_unread_privmsg'] = ($user->data['user_new_privmsg'] + $user->data['user_unread_privmsg']);
 
 // Generate page
 $nav_server_url = create_server_url();
@@ -2022,12 +2023,12 @@ $sql = "SELECT pm.privmsgs_type, pm.privmsgs_id, pm.privmsgs_date, pm.privmsgs_s
 switch($folder)
 {
  case 'inbox':
-		$sql_tot .= "WHERE privmsgs_to_userid = " . $userdata['user_id'] . " $search_sql
+		$sql_tot .= "WHERE privmsgs_to_userid = " . $user->data['user_id'] . " $search_sql
 			AND (privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 
-		$sql .= "WHERE pm.privmsgs_to_userid = " . $userdata['user_id'] . " $search_sql
+		$sql .= "WHERE pm.privmsgs_to_userid = " . $user->data['user_id'] . " $search_sql
 			AND u.user_id = pm.privmsgs_from_userid
 			AND (pm.privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
 				OR pm.privmsgs_type = " . PRIVMSGS_READ_MAIL . "
@@ -2035,35 +2036,35 @@ switch($folder)
 		break;
 
 	case 'outbox':
-		$sql_tot .= "WHERE privmsgs_from_userid = " . $userdata['user_id'] . " $search_sql
+		$sql_tot .= "WHERE privmsgs_from_userid = " . $user->data['user_id'] . " $search_sql
 			AND (privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 
-		$sql .= "WHERE pm.privmsgs_from_userid = " . $userdata['user_id'] . " $search_sql
+		$sql .= "WHERE pm.privmsgs_from_userid = " . $user->data['user_id'] . " $search_sql
 			AND u.user_id = pm.privmsgs_to_userid
 			AND (pm.privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 		break;
 
 	case 'sentbox':
-		$sql_tot .= "WHERE privmsgs_from_userid = " . $userdata['user_id'] . " $search_sql
+		$sql_tot .= "WHERE privmsgs_from_userid = " . $user->data['user_id'] . " $search_sql
 			AND privmsgs_type =  " . PRIVMSGS_SENT_MAIL;
 
-		$sql .= "WHERE pm.privmsgs_from_userid = " . $userdata['user_id'] . " $search_sql
+		$sql .= "WHERE pm.privmsgs_from_userid = " . $user->data['user_id'] . " $search_sql
 			AND u.user_id = pm.privmsgs_to_userid
 			AND pm.privmsgs_type =  " . PRIVMSGS_SENT_MAIL;
 		break;
 
 	case 'savebox':
-		$sql_tot .= "WHERE ((privmsgs_to_userid = " . $userdata['user_id'] . "
+		$sql_tot .= "WHERE ((privmsgs_to_userid = " . $user->data['user_id'] . "
 				AND privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . ")
-			OR (privmsgs_from_userid = " . $userdata['user_id'] . "
+			OR (privmsgs_from_userid = " . $user->data['user_id'] . "
 				AND privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . "))";
 
 		$sql .= "WHERE u.user_id = pm.privmsgs_from_userid
-			AND ((pm.privmsgs_to_userid = " . $userdata['user_id'] . "
+			AND ((pm.privmsgs_to_userid = " . $user->data['user_id'] . "
 				AND pm.privmsgs_type = " . PRIVMSGS_SAVED_IN_MAIL . ")
-			OR (pm.privmsgs_from_userid = " . $userdata['user_id'] . "
+			OR (pm.privmsgs_from_userid = " . $user->data['user_id'] . "
 				AND pm.privmsgs_type = " . PRIVMSGS_SAVED_OUT_MAIL . "))";
 		break;
 

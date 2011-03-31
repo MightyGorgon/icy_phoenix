@@ -18,10 +18,10 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b_id = '')
 {
-	global $userdata;
+	global $user;
 
 	// If the user is admin... give immediate access and exit!
-	if ($userdata['user_level'] == ADMIN)
+	if ($user->data['user_level'] == ADMIN)
 	{
 		return true;
 	}
@@ -36,30 +36,30 @@ function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b
 			{
 				if ((($action == 'list') || ($action == 'edit') || ($action == 'save') || empty($action)) && !isset($_POST['action_update']))
 				{
-					$is_auth = ($userdata['user_cms_level'] < CMS_PUBLISHER) ? false : true;
+					$is_auth = ($user->data['user_cms_level'] < CMS_PUBLISHER) ? false : true;
 				}
 				else
 				{
-					$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+					$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 				}
 			}
 			elseif (($mode == 'layouts') || ($mode == 'layouts_adv') || ($mode == 'layouts_special'))
 			{
-				$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+				$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 			}
 			else
 			{
-				$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+				$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 			}
 			break;
 		case 'cms_ads':
-			$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+			$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 			break;
 		case 'cms_auth':
-			$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+			$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 			break;
 		case 'cms_menu':
-			$is_auth = ($userdata['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
+			$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
 			break;
 		default:
 			return false;
@@ -296,7 +296,7 @@ function create_cms_field($config_array)
 */
 function create_cms_field_tpl($config_array, $check_save = false)
 {
-	global $db, $cache, $config, $userdata, $lang, $template;
+	global $db, $cache, $config, $user, $lang, $template;
 
 	$cms_field = array();
 	$cms_field = create_cms_field($config_array);

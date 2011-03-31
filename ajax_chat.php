@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $mode_types = array('archive');
@@ -30,7 +31,7 @@ $mode = request_var('mode', '');
 $mode = (!in_array($mode, $mode_types) ? '' : $mode);
 
 // Give guest a notice so they know they aren't allowed to use the shoutbox.
-if(($config['shout_allow_guest'] == 0) && !$userdata['session_logged_in'])
+if(($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
 {
 	message_die(GENERAL_ERROR, $lang['Shoutbox_no_auth']);
 }
@@ -40,7 +41,7 @@ $chat_room = preg_replace('/[^0-9|]+/', '', trim($chat_room));
 $chat_room_users = array();
 $chat_room_users = explode('|', $chat_room);
 $chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
-if(($userdata['user_level'] != ADMIN) && !empty($chat_room) && !in_array($userdata['user_id'], $chat_room_users))
+if(($user->data['user_level'] != ADMIN) && !empty($chat_room) && !in_array($user->data['user_id'], $chat_room_users))
 {
 	message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
 }
@@ -135,7 +136,7 @@ else
 	// Get my shouts
 	$sql = "SELECT COUNT(s.shout_id) as count
 			FROM " . AJAX_SHOUTBOX_TABLE . " s
-			WHERE s.user_id = " . $userdata['user_id'] . "
+			WHERE s.user_id = " . $user->data['user_id'] . "
 				AND " . $chat_room_sql;
 	$result = $db->sql_query($sql);
 	$myshouts = $db->sql_fetchrow($result);
@@ -296,15 +297,15 @@ else
 		// Word Censor.
 		$message = censor_text($message);
 
-		$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
-		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+		$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
+		$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+		$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 		$message = $bbcode->parse($message);
 
 		//$message = preg_replace(array('<', '>'), array('mg_tag_open', 'mg_tag_close'), $message);
 		*/
 
-		if($userdata['session_logged_in'] && ($userdata['user_level'] == ADMIN))
+		if($user->data['session_logged_in'] && ($user->data['user_level'] == ADMIN))
 		{
 			$temp_url = 'javascript: deleteShout(' . $id . ')';
 			$delpost_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';

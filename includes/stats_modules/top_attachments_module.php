@@ -61,8 +61,8 @@ $order_by = 'download_count DESC LIMIT ' . $return_limit;
 // Get Valid Forum ID's to search
 $sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE forum_type = ' . FORUM_POST;
 $result = $stat_db->sql_query($sql);
-$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
-$is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $userdata);
+$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
+$is_download_auth_ary = auth(AUTH_DOWNLOAD, AUTH_LIST_ALL, $user->data);
 
 $forum_ids = array();
 while($row = $stat_db->sql_fetchrow($result))

@@ -122,7 +122,7 @@ function decode_ip($int_ip)
 */
 function decode_ban_ip($int_ip)
 {
-	return str_replace('255', '*', decode_ip($int_ip));
+	return str_replace('255', '*', $int_ip);
 }
 
 ?>

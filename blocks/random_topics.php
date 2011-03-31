@@ -24,14 +24,14 @@ if(!function_exists('cms_block_random_topics'))
 {
 	function cms_block_random_topics()
 	{
-		global $db, $cache, $config, $template, $userdata, $lang, $bbcode, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $user, $lang, $bbcode, $block_id, $cms_config_vars;
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 		$template->_tpldata['random_topic_row.'] = array();
 
-		$bbcode->allow_html = ($userdata['user_allowhtml'] && $config['allow_html']) ? true : false;
-		$bbcode->allow_bbcode = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+		$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
+		$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+		$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 
 		$allowed_forum_id = build_allowed_forums_list();
 

@@ -18,8 +18,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 setup_extra_lang(array('lang_rate'));
@@ -76,10 +77,10 @@ page_header($meta_content['page_title'], true);
 switch($rate_mode)
 {
 	case 'rate':
-		rate_topic($userdata['user_id'], $topic_id, $rating, 'rate');
+		rate_topic($user->data['user_id'], $topic_id, $rating, 'rate');
 		break;
 	case 'rerate':
-		rate_topic($userdata['user_id'], $topic_id, $rating, 'rerate');
+		rate_topic($user->data['user_id'], $topic_id, $rating, 'rerate');
 	break;
 	case 'detailed':
 		ratings_detailed($topic_id);

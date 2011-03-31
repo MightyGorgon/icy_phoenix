@@ -15,14 +15,14 @@ if (!defined('IN_ICYPHOENIX'))
 
 function ip_user_kill($user_id)
 {
-	global $config, $lang, $userdata, $db;
+	global $config, $lang, $user, $db;
 
 	if (!($this_userdata = get_userdata($user_id)))
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
 	}
 
-	if($userdata['user_id'] != $user_id)
+	if($user->data['user_id'] != $user_id)
 	{
 
 		// We need to reset notifications before deleting the user from the table, because we also want to make sure to reset his profile if something goes wrong in deletion
@@ -59,7 +59,7 @@ function ip_user_kill($user_id)
 		$db->sql_query($sql);
 
 		$sql = "UPDATE " . GROUPS_TABLE . "
-			SET group_moderator = '" . $userdata['user_id'] . "'
+			SET group_moderator = '" . $user->data['user_id'] . "'
 			WHERE group_moderator = '" . $user_id . "'";
 		$db->sql_query($sql);
 

@@ -64,11 +64,12 @@ if (!isset($_POST['install_step']))
 			include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 			// Start session management
-			$userdata = session_pagestart($user_ip, 0);
-			init_userprefs($userdata);
+			$user->session_begin(false);
+			//$auth->acl($user->data);
+			$user->setup();
 			// End session management
 
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				if (!defined('CMS_PAGE_LOGIN')) define('CMS_PAGE_LOGIN', 'login.' . PHP_EXT);
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . THIS_PATH . THIS_FILE));
@@ -78,14 +79,14 @@ if (!isset($_POST['install_step']))
 			if (defined('IP_INSTALLED'))
 			{
 				$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-				if ($userdata['user_id'] != $founder_id)
+				if ($user->data['user_id'] != $founder_id)
 				{
 					message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 				}
 			}
 			else
 			{
-				if ($userdata['user_level'] != ADMIN)
+				if ($user->data['user_level'] != ADMIN)
 				{
 					// We need to use $lang['Not_Authorized'] because the $lang['Not_Auth_View'] isn't available in standard phpBB
 					message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
@@ -388,7 +389,7 @@ else
 			}
 		}
 
-		$admin_pass_md5 = ($confirm && $userdata['user_level'] == ADMIN) ? $admin_pass1 : md5($admin_pass1);
+		$admin_pass_md5 = ($confirm && $user->data['user_level'] == ADMIN) ? $admin_pass1 : md5($admin_pass1);
 
 		$sql = "UPDATE " . $table_prefix . "users
 			SET username = '" . $db->sql_escape($admin_name) . "', username_clean = '" . $db->sql_escape(utf8_clean_string($admin_name)) . "', user_password='" . $db->sql_escape($admin_pass_md5) . "', user_lang = '" . $db->sql_escape($language) . "', user_email='" . $db->sql_escape($board_email) . "', user_pass_convert = '1'

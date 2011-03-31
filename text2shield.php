@@ -15,8 +15,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip, false);
-init_userprefs($userdata);
+$user->session_begin(false);
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $smiley_creator_path = IP_ROOT_PATH . 'images/smiles/smiley_creator/';

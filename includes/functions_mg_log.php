@@ -16,7 +16,7 @@ if (!defined('IN_ICYPHOENIX'))
 function ip_log($content, $db_log, $error_log = false)
 {
 	global $REQUEST_URI, $REMOTE_ADDR, $HTTP_USER_AGENT, $SERVER_NAME, $HTTP_REFERER;
-	global $db, $config, $lang, $userdata;
+	global $db, $config, $lang, $user;
 
 	$db_log_actions = (($config['db_log_actions'] == '1') || ($config['db_log_actions'] == '2')) ? true : false;
 
@@ -34,7 +34,7 @@ function ip_log($content, $db_log, $error_log = false)
 			}
 			break;
 		case CMS_PAGE_PROFILE:
-			if ($userdata['user_id'] == ANONYMOUS)
+			if ($user->data['user_id'] == ANONYMOUS)
 			{
 				return true;
 			}
@@ -43,7 +43,7 @@ function ip_log($content, $db_log, $error_log = false)
 			return true;
 			break;
 		case CMS_PAGE_VIEWTOPIC:
-			if ($userdata['user_id'] == ANONYMOUS)
+			if ($user->data['user_id'] == ANONYMOUS)
 			{
 				return true;
 			}
@@ -51,7 +51,8 @@ function ip_log($content, $db_log, $error_log = false)
 	}
 
 	$remote_address = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
-	$user_agent = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
+	$remote_address = (!empty($remote_address) && ($remote_address != '::1')) ? $remote_address : '127.0.0.1';
+	$user_agent_log = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
 	$referer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getenv('HTTP_REFERER');
 	$referer = preg_replace('/sid=[A-Za-z0-9]{32}/', '', $referer);
 
@@ -60,10 +61,10 @@ function ip_log($content, $db_log, $error_log = false)
 		$date = gmdate('Y/m/d - H:i:s');
 
 		$message = '[' . $date . ']';
-		$message .= ' [USER_ID: ' . $userdata['user_id'] . ' ]';
+		$message .= ' [USER_ID: ' . $user->data['user_id'] . ' ]';
 		$message .= ' [REQ: ' . $page_array['page'] . ' ]';
 		$message .= ' [IP: ' . $remote_address . ']';
-		//$message .= ' [CLIENT: ' . $user_agent . ']';
+		//$message .= ' [CLIENT: ' . $user_agent_log . ']';
 		$message .= ' [REF: ' . $referer . ']';
 		$message .= "\n";
 		$message .= $content;
@@ -86,7 +87,7 @@ function ip_log($content, $db_log, $error_log = false)
 			foreach ($db_target as $db_target_data)
 			{
 				$sql = "INSERT INTO " . LOGS_TABLE . " (log_time, log_page, log_user_id, log_action, log_desc, log_target)
-					VALUES ('" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . $db->sql_escape($db_log['action']) . "', '" . $db->sql_escape($db_log['desc']) . "', '" . $db_target_data . "')";
+					VALUES ('" . time() ."', '" . $page_array['page'] . "', '" . $user->data['user_id'] . "', '" . $db->sql_escape($db_log['action']) . "', '" . $db->sql_escape($db_log['desc']) . "', '" . $db_target_data . "')";
 				$result = $db->sql_query($sql);
 			}
 		}
@@ -99,7 +100,7 @@ function ip_log($content, $db_log, $error_log = false)
 			$new_log_id = $row['max_log_id'] + 1;
 
 			$sql = "INSERT INTO " . LOGS_TABLE . " (log_id, log_time, log_page, log_user_id, log_action, log_desc, log_target)
-				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $userdata['user_id'] . "', '" . $db->sql_escape($db_log['action']) . "', '" . $db->sql_escape($db_log['desc']) . "', '')";
+				VALUES ('" . $new_log_id . "', '" . time() ."', '" . $page_array['page'] . "', '" . $user->data['user_id'] . "', '" . $db->sql_escape($db_log['action']) . "', '" . $db->sql_escape($db_log['desc']) . "', '')";
 			$result = $db->sql_query($sql);
 
 			if (($error_log) && $config['db_log_actions'] == '2')

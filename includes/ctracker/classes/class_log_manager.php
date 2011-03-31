@@ -87,6 +87,7 @@ class log_manager
 		$this->ct_referer = $_SERVER['HTTP_REFERER'];
 		$this->ct_user_agent = $_SERVER['HTTP_USER_AGENT'];
 		$this->ct_remote_addr = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
+		$this->ct_remote_addr = (!empty($this->ct_remote_addr) && ($this->ct_remote_addr != '::1')) ? $this->ct_remote_addr : '127.0.0.1';
 		$this->ct_remote_host = (!empty($_SERVER['REMOTE_HOST'])) ? $_SERVER['REMOTE_HOST'] : ((!empty($_ENV['REMOTE_HOST'])) ? $_ENV['REMOTE_HOST'] : getenv('REMOTE_HOST'));
 		$this->ct_counter_value = 0;
 	}

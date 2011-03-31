@@ -25,8 +25,9 @@ $lang['Clear_browser'] = 'You need to clear your browser cookies and cache and r
 $lang['Delete_file'] = 'Please delete this script and the install directory now!';
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $action = request_var('action', '');

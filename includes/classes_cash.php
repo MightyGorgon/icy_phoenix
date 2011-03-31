@@ -381,7 +381,7 @@ if (defined('CM_VIEWTOPIC'))
 			$sql = substr($sql,0,$insertpoint) . $cash_field . substr($sql,$insertpoint);
 		}
 
-		function post_vars(&$postdata, &$userdata, $forum_id)
+		function post_vars(&$postdata, &$user_data, $forum_id)
 		{
 			$template = &$this->template;
 			global $config, $lang, $cash;
@@ -390,10 +390,10 @@ if (defined('CM_VIEWTOPIC'))
 				return;
 			}
 			$mask = false;
-			if ($userdata['user_level'] != ADMIN)
+			if ($user_data['user_level'] != ADMIN)
 			{
 				$mask = CURRENCY_ENABLED;
-				if ($postdata['user_id'] != $userdata['user_id'])
+				if ($postdata['user_id'] != $user_data['user_id'])
 				{
 					$mask &= CURRENCY_VIEWTOPIC;
 				}
@@ -411,7 +411,7 @@ if (defined('CM_VIEWTOPIC'))
 						)
 					);
 				}
-				if (($cash->currency_count(CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE) >= 2) && $userdata['session_logged_in'])
+				if (($cash->currency_count(CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE) >= 2) && $user_data['session_logged_in'])
 				{
 					$template->assign_block_vars('cashlinks',array(
 						'U_LINK' => append_sid('cash.' . PHP_EXT),
@@ -419,7 +419,7 @@ if (defined('CM_VIEWTOPIC'))
 						)
 					);
 				}
-				if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_DONATE, $forum_id) && ($userdata['user_id'] != $postdata['user_id']) && $userdata['session_logged_in'])
+				if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_DONATE, $forum_id) && ($user_data['user_id'] != $postdata['user_id']) && $user_data['session_logged_in'])
 				{
 					$template->assign_block_vars('cashlinks',array(
 						'U_LINK' => append_sid('cash.' . PHP_EXT . '?mode=donate&amp;ref=viewtopic&amp;' . POST_USERS_URL . '=' . $postdata['user_id'] . '&amp;' . POST_POST_URL . '=' . $postdata['post_id']),
@@ -427,7 +427,7 @@ if (defined('CM_VIEWTOPIC'))
 						)
 					);
 				}
-				if ($cash->currency_count() && (($userdata['user_level'] == ADMIN) || (($userdata['user_level'] == MOD) && $cash->currency_count(CURRENCY_ENABLED | CURRENCY_MODEDIT | CURRENCY_VIEWTOPIC, $forum_id))))
+				if ($cash->currency_count() && (($user_data['user_level'] == ADMIN) || (($user_data['user_level'] == MOD) && $cash->currency_count(CURRENCY_ENABLED | CURRENCY_MODEDIT | CURRENCY_VIEWTOPIC, $forum_id))))
 				{
 					$template->assign_block_vars('cashlinks',array(
 						'U_LINK' => append_sid('cash.' . PHP_EXT . '?mode=modedit&amp;ref=viewtopic&amp;' . POST_USERS_URL . '=' . $postdata['user_id'] . '&amp;' . POST_POST_URL . '='.$postdata['post_id']),
@@ -452,7 +452,7 @@ if (defined('CM_VIEWPROFILE'))
 {
 	class cash_viewprofile
 	{
-		function post_vars(&$old_template, &$profiledata, &$userdata)
+		function post_vars(&$old_template, &$profiledata, &$user_data)
 		{
 			global $config, $lang, $cash;
 			if ($config['cash_disable'])
@@ -462,10 +462,10 @@ if (defined('CM_VIEWPROFILE'))
 			$template = new Template_plus();
 			$template->set($old_template);
 			$mask = false;
-			if ($userdata['user_level'] != ADMIN)
+			if ($user_data['user_level'] != ADMIN)
 			{
 				$mask = CURRENCY_ENABLED;
-				if ($profiledata['user_id'] != $userdata['user_id'])
+				if ($profiledata['user_id'] != $user_data['user_id'])
 				{
 					$mask &= CURRENCY_VIEWPROFILE;
 				}
@@ -481,7 +481,7 @@ if (defined('CM_VIEWPROFILE'))
 					)
 				);
 			}
-			if ($userdata['session_logged_in'] && (($cash->currency_count(CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE) >= 2) || ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_DONATE) && ($userdata['user_id'] != $profiledata['user_id'])) || ($cash->currency_count() && (($userdata['user_level'] == ADMIN) || (($userdata['user_level'] == MOD) && $cash->currency_count(CURRENCY_ENABLED | CURRENCY_MODEDIT))))))
+			if ($user_data['session_logged_in'] && (($cash->currency_count(CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE) >= 2) || ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_DONATE) && ($user_data['user_id'] != $profiledata['user_id'])) || ($cash->currency_count() && (($user_data['user_level'] == ADMIN) || (($user_data['user_level'] == MOD) && $cash->currency_count(CURRENCY_ENABLED | CURRENCY_MODEDIT))))))
 			{
 				$template->assign_block_vars('switch_cashlinkson',array());
 				if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_EXCHANGEABLE) >= 2)
@@ -492,7 +492,7 @@ if (defined('CM_VIEWPROFILE'))
 						)
 					);
 				}
-				if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_DONATE) && ($userdata['user_id'] != $profiledata['user_id']))
+				if ($cash->currency_count(CURRENCY_ENABLED | CURRENCY_DONATE) && ($user_data['user_id'] != $profiledata['user_id']))
 				{
 					$template->assign_block_vars('switch_cashlinkson.cashlinks',array(
 						'U_LINK' => append_sid('cash.' . PHP_EXT . '?mode=donate&amp;ref=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
@@ -500,7 +500,7 @@ if (defined('CM_VIEWPROFILE'))
 						)
 					);
 				}
-				if ($cash->currency_count() && (($userdata['user_level'] == ADMIN) || (($userdata['user_level'] == MOD) && $cash->currency_count(CURRENCY_ENABLED | CURRENCY_MODEDIT))))
+				if ($cash->currency_count() && (($user_data['user_level'] == ADMIN) || (($user_data['user_level'] == MOD) && $cash->currency_count(CURRENCY_ENABLED | CURRENCY_MODEDIT))))
 				{
 					$template->assign_block_vars('switch_cashlinkson.cashlinks',array(
 						'U_LINK' => append_sid('cash.' . PHP_EXT . '?mode=modedit&amp;ref=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
@@ -526,13 +526,13 @@ if (defined('CM_POSTING'))
 
 		function update_post($mode, &$post_data, $forum_id, $topic_id, $post_id, $topic_type, $post_username, &$post_message)
 		{
-			global $config, $userdata;
+			global $config, $user;
 			if ($config['cash_disable'] || (($mode != 'newtopic') && ($mode != 'reply') && ($mode != 'editpost')))
 			{
 				return '';
 			}
 			$first_post = $post_data['first_post'];
-			$poster_id = $userdata['user_id'];
+			$poster_id = $user->data['user_id'];
 			$old_message = '';
 			if ($mode == 'editpost')
 			{
@@ -565,7 +565,7 @@ if (defined('CM_POSTING'))
 
 		function cash_update($mode, $poster_id, $first_post, &$old_message, &$new_message, $forum_id, $topic_id, $post_id, $topic_starter)
 		{
-			global $config, $lang, $db, $userdata, $cash;
+			global $config, $lang, $db, $user, $cash;
 
 			if (($mode == 'reply') && ($poster_id != $topic_starter) && ($topic_userdata = get_userdata($topic_starter)))
 			{
@@ -576,9 +576,9 @@ if (defined('CM_POSTING'))
 			{
 				return;
 			}
-			if ($userdata['user_id'] == $poster_id)
+			if ($user->data['user_id'] == $poster_id)
 			{
-				$posting_user = new cash_user($userdata['user_id'], $userdata);
+				$posting_user = new cash_user($user->data['user_id'], $user->data);
 			}
 			else
 			{
@@ -666,13 +666,13 @@ if (defined('CM_POSTING'))
 					WHERE user_id = " . $poster_id;
 				$db->sql_query($sql);
 
-				return (($userdata['user_id'] == $poster_id) && ($config['cash_display_after_posts'] == 1)) ? sprintf($config['cash_post_message'], implode(', ', $message_clause)) : '';
+				return (($user->data['user_id'] == $poster_id) && ($config['cash_display_after_posts'] == 1)) ? sprintf($config['cash_post_message'], implode(', ', $message_clause)) : '';
 			}
 		}
 
 		function cash_update_thanks($poster_id)
 		{
-			global $config, $lang, $db, $userdata, $cash;
+			global $config, $lang, $db, $user, $cash;
 
 			$posting_user = new cash_user($poster_id);
 			$sql_clause = array();

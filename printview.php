@@ -22,8 +22,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // gzip_compression
@@ -79,11 +80,11 @@ $topic_time = $forum_row['topic_time'];
 
 // Start auth check
 $is_auth = array();
-$is_auth = auth(AUTH_READ, $forum_id, $userdata, $forum_row);
+$is_auth = auth(AUTH_READ, $forum_id, $user->data, $forum_row);
 
 if(!$is_auth['auth_read'])
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$redirect = POST_TOPIC_URL . '=' . $topic_id;
 		header('Location: ' . append_sid(CMS_PAGE_LOGIN . '?redirect=printview.' . PHP_EXT . '&' . $redirect, true));
@@ -138,8 +139,8 @@ for($i = 0; $i < $total_posts; $i++)
 	// SMILEYS IN TITLE - END
 
 	// Mighty Gorgon - New BBCode Functions - BEGIN
-	$bbcode->allow_html = (($config['allow_html'] && $userdata['user_allowhtml']) || $config['allow_html_only_for_admins']) && $postrow[$i]['enable_html'];
-	$bbcode->allow_bbcode = $config['allow_bbcode'] && $userdata['user_allowbbcode'] && $postrow[$i]['enable_bbcode'];
+	$bbcode->allow_html = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $postrow[$i]['enable_html'];
+	$bbcode->allow_bbcode = $config['allow_bbcode'] && $user->data['user_allowbbcode'] && $postrow[$i]['enable_bbcode'];
 	$bbcode->allow_smilies = $config['allow_smilies'] && empty($lofi) && $postrow[$i]['enable_smilies'];
 
 	if(preg_match('/\[code/i', $message))
@@ -199,7 +200,7 @@ $template->assign_vars(array(
 	'S_HIDDEN_FIELDS' => $s_hidden_fields,
 	'S_CONTENT_DIRECTION' => $lang['DIRECTION'],
 	'S_CONTENT_ENCODING' => $lang['ENCODING'],
-	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tzs'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),
+	'S_TIMEZONE' => sprintf($lang['All_times'], $lang['tz'][str_replace('.0', '', sprintf('%.1f', number_format($config['board_timezone'], 1)))]),
 	)
 );
 

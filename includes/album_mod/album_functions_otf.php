@@ -16,14 +16,14 @@ if (!defined('IN_ICYPHOENIX'))
 // FUNCTIONS - BEGIN
 function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension, $otf_pic_title, $otf_pic_des, $otf_pic_cat, $otf_pic_time)
 {
-	global $db, $userdata;
+	global $db, $user;
 
 	$pic_base_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 	$pic_extra_path = '';
 	$upload_path = $pic_base_path . $pic_extra_path;
 	if (USERS_SUBFOLDERS_ALBUM == true)
 	{
-		$pic_extra_path = $userdata['user_id'] . '/';
+		$pic_extra_path = $user->data['user_id'] . '/';
 		$upload_path = $pic_base_path . $pic_extra_path;
 		if (!is_dir($upload_path))
 		{
@@ -50,9 +50,9 @@ function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension,
 	{
 		$otf_pic_time = time();
 	}
-	$otf_pic_username = $userdata['username'];
-	$otf_pic_user_id = $userdata['user_id'];
-	$otf_pic_user_ip = $userdata['session_ip'];
+	$otf_pic_username = $user->data['username'];
+	$otf_pic_user_id = $user->data['user_id'];
+	$otf_pic_user_ip = $user->data['session_ip'];
 
 	$move_file = 'rename';
 	//$move_file = 'copy';
@@ -63,7 +63,7 @@ function pic_upload_to_cat($otf_pic_path, $otf_pic_filename, $otf_pic_extension,
 	{
 		@chmod($upload_path . $otf_pic_full_filename, 0777);
 		$sql = "INSERT INTO " . ALBUM_TABLE . " (pic_filename, pic_thumbnail, pic_title, pic_desc, pic_user_id, pic_user_ip, pic_username, pic_time, pic_cat_id, pic_approval)
-				VALUES ('" . $db->sql_escape($pic_extra_path . $otf_pic_full_filename) . "', '', '" . $db->sql_escape($otf_pic_title) . "', '" . $db->sql_escape($otf_pic_des) . "', '" . $otf_pic_user_id . "', '" . $otf_pic_user_ip . "', '" . $db->sql_escape($otf_pic_username) . "', '" . $otf_pic_time . "', '" . $otf_pic_cat . "', '1')";
+				VALUES ('" . $db->sql_escape($pic_extra_path . $otf_pic_full_filename) . "', '', '" . $db->sql_escape($otf_pic_title) . "', '" . $db->sql_escape($otf_pic_des) . "', '" . $otf_pic_user_id . "', '" . $db->sql_escape($otf_pic_user_ip) . "', '" . $db->sql_escape($otf_pic_username) . "', '" . $otf_pic_time . "', '" . $otf_pic_cat . "', '1')";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);

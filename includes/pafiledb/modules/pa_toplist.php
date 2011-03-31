@@ -19,11 +19,11 @@ class pafiledb_toplist extends pafiledb_public
 {
 	function main($action)
 	{
-		global $template, $lang, $config, $pafiledb_config, $db, $images, $userdata;
+		global $template, $lang, $config, $pafiledb_config, $db, $images, $user;
 
 		if(!$this->auth_global['auth_toplist'])
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=stats', true));
 			}

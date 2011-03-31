@@ -25,7 +25,7 @@ if(!function_exists('cms_block_recent_articles'))
 	function cms_block_recent_articles()
 	{
 		// if article approved in the table is equal to 1 the article has been approved, else it is not approved, so don't show it.
-		global $db, $cache, $config, $template, $userdata, $lang, $table_prefix, $style_row, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $user, $lang, $table_prefix, $style_row, $block_id, $cms_config_vars;
 
 		$template->_tpldata['recent_articles.'] = array();
 

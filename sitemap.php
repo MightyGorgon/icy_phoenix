@@ -21,8 +21,9 @@ $mem_limit = check_mem_limit();
 @ini_set('max_execution_time', '3600');
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // SITEMAP SETTINGS - BEGIN
@@ -109,16 +110,9 @@ else
 {
 	$server_url = create_server_url();
 
-	// Google only
-	// OLD
-	//$xml_urlset = '<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">';
-	// NEW
-	//$xml_urlset = '<urlset xmlns="http://www.google.com/schemas/sitemap/0.84" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84 http://www.google.com/schemas/sitemap/0.84/sitemap.xsd">';
-
 	// GYM
 	$xml_urlset = '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-//' . "\n" . '
 	$xml_sitemap_header = '<' . '?xml version="1.0" encoding="UTF-8"?' . '>
 ' . $xml_urlset . '
 	<url>
@@ -175,7 +169,7 @@ else
 		}
 		$sql = "SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_type, t.topic_status, t.news_id, p.post_time
 						FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p
-						WHERE t.topic_last_post_id=p.post_id
+						WHERE t.topic_last_post_id = p.post_id
 						AND t.forum_id IN (" . $forumids . ") $wheresql
 						ORDER BY t.topic_id " . $config['sitemap_sort'] . "
 						LIMIT " . $config['sitemap_topic_limit'];
@@ -184,27 +178,23 @@ else
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$topics = $row;
-			$row['topic_type'] = ($row['news_id'] > 0) ? '2' : $row['topic_type'];
+
+			$row['topic_type'] = ($row['news_id'] > 0) ? POST_ANNOUNCE : $row['topic_type'];
 			switch ($row['topic_type'])
 			{
-				case 2:
+				case POST_ANNOUNCE:
 					$topic_priority = $config['sitemap_announce_priority'];
 				break;
-				case 1:
+				case POST_STICKY:
 					$topic_priority = $config['sitemap_sticky_priority'];
 				break;
 				default:
 					$topic_priority = $config['sitemap_default_priority'];
 			}
-			if ($row['topic_status'] == 1)
-			{
-				$topic_change = 'never';
-			}
-			else
-			{
-				$topic_change = 'always';
-			}
-			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+
+			$topic_change = ($row['topic_status'] == TOPIC_LOCKED) ? 'never' : 'always';
+
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 			{
 				$url = $server_url . str_replace ('--', '-', make_url_friendly($row['topic_title']) . '-vt' . $row['topic_id'] . '.html');
 			}
@@ -242,7 +232,7 @@ else
 			$dl_sitemap['file_name'];
 			$dl_sitemap['file_desc'];
 			*/
-			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+			if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 			{
 				$url = $server_url . str_replace ('--', '-', make_url_friendly($dl_sitemap['file_name']) . '-df' . $dl_sitemap['file_id'] . '.html');
 			}
@@ -326,7 +316,7 @@ else
 			{
 				$pic_priority = $config['sitemap_default_priority'];
 				$pic_change = 'never';
-				if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+				if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 				{
 					$url = $server_url . str_replace ('--', '-', make_url_friendly($row['pic_title']) . '-asp' . $row['pic_id'] . '.html');
 				}
@@ -349,6 +339,10 @@ else
 	// MG SITEMAP - ALBUM - END
 
 	$xml_content = $xml_sitemap_header . $xml_sitemap_body . $xml_sitemap_footer;
+
+	// We close the connections here since we are not using page_footer...
+	garbage_collection();
+
 	// GZip - BEGIN
 	/*
 	ob_start();
@@ -356,11 +350,12 @@ else
 	ob_end_flush();
 	if($fp = @fopen($cache_data_file, 'w'))
 	{
-		@fwrite ($fp, $out,strlen($gz_out));
+		@fwrite ($fp, $out, strlen($gz_out));
 		@fclose($fp);
 	}
 	*/
 	// GZip - END
+
 	@chmod($cache_data_file, 0777);
 	@chmod($sitemap_xml_file, 0777);
 	@unlink($cache_data_file);

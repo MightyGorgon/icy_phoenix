@@ -21,8 +21,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -144,7 +145,7 @@ $auth_data = album_permissions($album_user_id, $cat_id, ALBUM_AUTH_VIEW_AND_UPLO
 
 if (!album_check_permission($auth_data, ALBUM_AUTH_MODERATOR))
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		redirect(append_sid(album_append_uid(CMS_PAGE_LOGIN . '?redirect=album_modcp.' . PHP_EXT . '&amp;cat_id=' . $cat_id)));
 	}
@@ -196,14 +197,14 @@ if (empty($mode))
 		// Old Approval
 		/*
 		$pic_approval_sql = '';
-		if(($userdata['user_level'] != ADMIN) && ($thiscat['cat_approval'] == ALBUM_ADMIN))
+		if(($user->data['user_level'] != ADMIN) && ($thiscat['cat_approval'] == ALBUM_ADMIN))
 		{
 			// because he went through my Permission Checking above so he must be at least a Moderator
 			$pic_approval_sql = 'AND p.pic_approval = 1';
 		}
 		*/
 
-		if($userdata['user_level'] == ADMIN)
+		if($user->data['user_level'] == ADMIN)
 		{
 			$pic_approval_sql = '';
 			$is_auth_approve = true;
@@ -220,7 +221,7 @@ if (empty($mode))
 				$is_auth_approve = true;
 			}
 
-			if(($userdata['user_id'] == $thiscat['cat_user_id']) && ($album_config['personal_allow_gallery_mod'] == 1) && ($album_config['personal_pics_approval'] == ALBUM_MOD))
+			if(($user->data['user_id'] == $thiscat['cat_user_id']) && ($album_config['personal_allow_gallery_mod'] == 1) && ($album_config['personal_pics_approval'] == ALBUM_MOD))
 			{
 				$pic_approval_sql = '';
 				$is_auth_approve = true;
@@ -410,9 +411,9 @@ else
 
 			// Create categories select
 			//album_read_tree($album_user_id, ALBUM_AUTH_VIEW_AND_UPLOAD); // only categories user can view AND upload too
-			album_read_tree($userdata['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
+			album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
 			$category_select = '<select name="target">';
-			if($userdata['user_level'] == ADMIN)
+			if($user->data['user_level'] == ADMIN)
 			{
 				$category_select .= album_get_simple_tree_option(ALBUM_ROOT_CATEGORY, ALBUM_AUTH_MODERATOR);
 			}
@@ -702,9 +703,9 @@ else
 
 			// Create categories select
 			//album_read_tree($album_user_id, ALBUM_AUTH_VIEW_AND_UPLOAD); // only categories user can view AND upload too
-			album_read_tree($userdata['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
+			album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
 			$category_select = '<select name="target">';
-			if($userdata['user_level'] == ADMIN)
+			if($user->data['user_level'] == ADMIN)
 			{
 				$category_select .= album_get_simple_tree_option(ALBUM_ROOT_CATEGORY, ALBUM_AUTH_MODERATOR);
 			}

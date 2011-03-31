@@ -112,6 +112,14 @@ $settings_data = array(
 			),
 		),
 
+	'robots_index_topics_no_replies' => array(
+		'lang_key' => 'IP_robots_index_topics_no_replies',
+		'explain' => 'IP_robots_index_topics_no_replies_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
 	'display_tags_box' => array(
 		'lang_key' => 'IP_display_tags_box',
 		'explain' => 'IP_display_tags_box_explain',

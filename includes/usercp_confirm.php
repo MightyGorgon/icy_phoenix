@@ -47,7 +47,7 @@ if (!preg_match('/^[[:alnum:]]+$/', $confirm_id))
 
 if ($confirm_id === 'Admin')
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		die('Hacking attempt');
 		exit;
@@ -61,7 +61,7 @@ else
 	// Use this for User Confirm
 	$sql = 'SELECT code
 		FROM ' . CONFIRM_TABLE . "
-		WHERE session_id = '" . $userdata['session_id'] . "'
+		WHERE session_id = '" . $user->data['session_id'] . "'
 			AND confirm_id = '" . $confirm_id . "'";
 	$result = $db->sql_query($sql);
 
@@ -69,7 +69,7 @@ else
 	/*
 	$sql = 'SELECT code
 		FROM ' . CTVISKEY . "
-		WHERE session_id = '" . $userdata['session_id'] . "'
+		WHERE session_id = '" . $user->data['session_id'] . "'
 			AND confirm_id = '$confirm_id'";
 	$result = $db->sql_query($sql);
 	*/

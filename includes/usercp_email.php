@@ -39,7 +39,7 @@ else
 	message_die(GENERAL_MESSAGE, $lang['No_user_specified']);
 }
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=email&' . POST_USERS_URL . '=' . $user_id_dest, true));
 }
@@ -65,7 +65,7 @@ if ($row = $db->sql_fetchrow($result))
 		}
 	}
 
-	if ($row['user_viewemail'] || ($userdata['user_level'] == ADMIN))
+	if ($row['user_viewemail'] || ($user->data['user_level'] == ADMIN))
 	{
 		check_flood_email(false);
 
@@ -99,20 +99,20 @@ if ($row = $db->sql_fetchrow($result))
 				$emailer = new emailer();
 
 				$emailer->headers('X-AntiAbuse: Board servername - ' . trim($config['server_name']));
-				$emailer->headers('X-AntiAbuse: User_id - ' . $userdata['user_id']);
-				$emailer->headers('X-AntiAbuse: Username - ' . $userdata['username']);
-				$emailer->headers('X-AntiAbuse: User IP - ' . decode_ip($user_ip));
+				$emailer->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+				$emailer->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+				$emailer->headers('X-AntiAbuse: User IP - ' . $user_ip);
 
 				$emailer->use_template('profile_send_email', $user_lang);
 				$emailer->to($user_email);
-				$emailer->from($userdata['user_email']);
-				$emailer->replyto($userdata['user_email']);
+				$emailer->from($user->data['user_email']);
+				$emailer->replyto($user->data['user_email']);
 				$emailer->set_subject($subject);
 
 				$emailer->assign_vars(array(
 					'SITENAME' => $config['sitename'],
 					'BOARD_EMAIL' => $config['board_email'],
-					'FROM_USERNAME' => $userdata['username'],
+					'FROM_USERNAME' => $user->data['username'],
 					'TO_USERNAME' => $username,
 					'MESSAGE' => $message
 					)
@@ -123,15 +123,15 @@ if ($row = $db->sql_fetchrow($result))
 				if (!empty($_POST['cc_email']))
 				{
 					$emailer->use_template('profile_send_email');
-					$emailer->email_address($userdata['user_email']);
-					$emailer->from($userdata['user_email']);
-					$emailer->replyto($userdata['user_email']);
+					$emailer->email_address($user->data['user_email']);
+					$emailer->from($user->data['user_email']);
+					$emailer->replyto($user->data['user_email']);
 					$emailer->set_subject($subject);
 
 					$emailer->assign_vars(array(
 						'SITENAME' => $config['sitename'],
 						'BOARD_EMAIL' => $config['board_email'],
-						'FROM_USERNAME' => $userdata['username'],
+						'FROM_USERNAME' => $user->data['username'],
 						'TO_USERNAME' => $username,
 						'MESSAGE' => $message
 						)

@@ -22,8 +22,9 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/class_archives.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -52,21 +53,21 @@ if(!empty($cat_id))
 {
 	$album_user_access = album_user_access($cat_id, $thiscat, 1, 0, 0, 0, 0, 0); // VIEW
 	$auth_view = $album_user_access['view'];
-	//$auth_view = ($userdata['user_level'] == ADMIN);
+	//$auth_view = ($user->data['user_level'] == ADMIN);
 }
 elseif(!empty($user_id))
 {
 	$cat_id = PERSONAL_GALLERY . " AND pic_user_id = $user_id";
 	$personal_gallery_access = personal_gallery_access(1, 0);
 	$auth_view = $personal_gallery_access['view'];
-	//$auth_view = (($userdata['user_id'] == $user_id) || ($userdata['user_level'] > 0)) ? 1 : 0;
+	//$auth_view = (($user->data['user_id'] == $user_id) || ($user->data['user_level'] > 0)) ? 1 : 0;
 }
 
 // ------------------------------------
 // Check authorization
 // ------------------------------------
 
-if ((!$auth_view) || (($album_config['show_download'] == 0) && ($userdata['user_level'] != ADMIN)))
+if ((!$auth_view) || (($album_config['show_download'] == 0) && ($user->data['user_level'] != ADMIN)))
 {
 	message_die(GENERAL_ERROR, $lang['No_Download_auth']);
 }

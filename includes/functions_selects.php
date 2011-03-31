@@ -71,6 +71,12 @@ function style_select($select_name = 'style', $default_style = '', $js_append = 
 	global $db, $cache;
 
 	$style_select = '<select name="' . $select_name . '"' . $js_append . '>';
+	if (empty($cache) || !class_exists('ip_cache'))
+	{
+		@include_once(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
+		@include_once(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
+		$cache = new ip_cache();
+	}
 	$styles = $cache->obtain_styles(true);
 	foreach ($styles as $k => $v)
 	{
@@ -93,7 +99,7 @@ function tz_select($select_name = 'timezone', $default = '')
 
 	$tz_select = '<select name="' . $select_name . '">';
 
-	while(list($offset, $zone) = @each($lang['tz']))
+	while(list($offset, $zone) = @each($lang['tz_zones']))
 	{
 		$selected = ($offset == $default) ? ' selected="selected"' : '';
 		$tz_select .= '<option value="' . $offset . '"' . $selected . '>' . str_replace('GMT', 'UTC', $zone) . '</option>';
@@ -379,9 +385,9 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '',
 */
 function make_topic_select($box_name, $forum_id)
 {
-	global $db, $userdata;
+	global $db, $user;
 
-	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 
 	$sql = "SELECT topic_id, topic_title
 		FROM " . TOPICS_TABLE . "

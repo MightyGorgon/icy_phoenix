@@ -20,7 +20,7 @@ class auth
 
 	function acl()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$role_data = $this->get_role_data();
 		$option_array = $this->get_options_array();
@@ -41,7 +41,7 @@ class auth
 		{
 			$sql = 'SELECT o.*, u.*
 				FROM ' . ACL_OPTIONS_TABLE . ' as o, ' . ACL_USERS_TABLE. ' as u
-				WHERE u.user_id = ' . $userdata['user_id'] . ' AND o.auth_option_id = u.auth_option_id';
+				WHERE u.user_id = ' . $user->data['user_id'] . ' AND o.auth_option_id = u.auth_option_id';
 			$result = $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -56,15 +56,15 @@ class auth
 
 	function acl_get($opt, $target = 0)
 	{
-		global $userdata;
-		return ($userdata['user_level'] == ADMIN) ? true : $this->acl_options[$target][$opt];
+		global $user;
+		return ($user->data['user_level'] == ADMIN) ? true : $this->acl_options[$target][$opt];
 	}
 
 	function get_role_data()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
-		$sql = "SELECT auth_role_id, forum_id FROM " . ACL_USERS_TABLE . " WHERE user_id = '" . $userdata['user_id'] . "'";
+		$sql = "SELECT auth_role_id, forum_id FROM " . ACL_USERS_TABLE . " WHERE user_id = '" . $user->data['user_id'] . "'";
 
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);

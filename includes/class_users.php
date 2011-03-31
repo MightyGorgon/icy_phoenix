@@ -24,7 +24,7 @@ class class_users
 	*/
 	function create_user($username, $user_password, $user_email, $user_style, $user_lang, $user_dateformat, $user_timezone, $check_values = true, $batch_process = false)
 	{
-		global $db, $config, $userdata, $lang;
+		global $db, $config, $user, $lang;
 
 		if ($check_values)
 		{
@@ -178,7 +178,7 @@ class class_users
 	*/
 	function profile_update($target_profile_data)
 	{
-		global $db, $config, $userdata, $lang;
+		global $db, $config, $user, $lang;
 
 		/*
 		$target_profile_data = array(

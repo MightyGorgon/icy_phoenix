@@ -54,15 +54,13 @@ $guests_online = 0;
 $online_userlist = '';
 $l_online_users = '';
 
-$any_char = chr(0) . '%';
-$one_char = chr(0) . '_';
 if (!empty($topic_id) && !defined('IN_VIEWFORUM'))
 {
-	$user_forum_sql = ' AND s.session_page ' . $db->sql_like_expression("{$any_char}_t_={$topic_id}x{$any_char}");
+	$user_forum_sql = ' AND s.session_topic_id = ' . $db->sql_escape($topic_id);
 }
 elseif (!empty($forum_id))
 {
-	$user_forum_sql = ' AND s.session_page ' . $db->sql_like_expression("{$any_char}_f_={$forum_id}x{$any_char}");
+	$user_forum_sql = ' AND s.session_forum_id = ' . $db->sql_escape($forum_id);
 }
 else
 {
@@ -70,7 +68,7 @@ else
 }
 
 // Changed sorting by username_clean instead of username
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip, s.session_user_agent
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip, s.session_browser
 	FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 	WHERE u.user_id = s.session_user_id
 	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
@@ -105,7 +103,7 @@ while($row = $db->sql_fetchrow($result))
 				$user_online_link = '<em>' . $user_online_link . '</em>';
 			}
 
-			if ($row['user_allow_viewonline'] || ($userdata['user_level'] == ADMIN) || ($userdata['user_id'] == $row['user_id']))
+			if ($row['user_allow_viewonline'] || ($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $row['user_id']))
 			{
 				$online_userlist .= (($online_userlist != '') ? ', ' : '') . $user_online_link;
 			}
@@ -115,17 +113,17 @@ while($row = $db->sql_fetchrow($result))
 	else
 	{
 		// Skip multiple sessions for one user
-		if (($row['session_ip'] != $prev_session_ip) || ($userdata['session_ip'] != ''))
+		if (($row['session_ip'] != $prev_session_ip) || ($user->data['session_ip'] != ''))
 		{
 			$guests_online++;
 			// MG BOTS Parsing - BEGIN
-			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_user_agent']);
-			if ($bot_name_tmp != false)
+			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_browser']);
+			if ($bot_name_tmp['name'] != false)
 			{
-				if (!in_array($bot_name_tmp, $tmp_bots_array))
+				if (!in_array($bot_name_tmp['name'], $tmp_bots_array))
 				{
-					$tmp_bots_array[] = $bot_name_tmp;
-					$online_botlist .= ($online_botlist != '') ? ', ' . $bot_name_tmp : $bot_name_tmp;
+					$tmp_bots_array[] = $bot_name_tmp['name'];
+					$online_botlist .= ($online_botlist != '') ? ', ' . $bot_name_tmp['name'] : $bot_name_tmp['name'];
 				}
 			}
 			// MG BOTS Parsing - END
@@ -149,10 +147,10 @@ if (empty($online_userlist))
 	$online_userlist = $lang['None'];
 }
 // user always browsing - only needed if on view-forum & user is not hidden
-if (isset($forum_id) && $userdata['session_logged_in'] && $userdata['user_allow_viewonline'])
+if (isset($forum_id) && $user->data['session_logged_in'] && $user->data['user_allow_viewonline'])
 {
 
-	$user_browsing_link = colorize_username($userdata['user_id'], $userdata['username'], $userdata['user_color'], $userdata['user_active']);
+	$user_browsing_link = colorize_username($user->data['user_id'], $user->data['username'], $user->data['user_color'], $user->data['user_active']);
 
 	// if userlist shows `none` replace with user_browsing_link
 	if ($online_userlist == $lang['None'])

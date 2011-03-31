@@ -48,7 +48,7 @@ function date_dsp($format, $date)
 
 function get_calendar_title_date($calendar_start, $calendar_duration)
 {
-	global $lang, $images, $config, $userdata;
+	global $lang, $images, $config, $user;
 	global $bbcode;
 	if (empty($calendar_start)) return '';
 
@@ -200,7 +200,7 @@ function is_leap_year($year)
 //
 function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = false, $start = 0, $max_limit = -1, $fid = '')
 {
-	global $tree, $template, $lang, $images, $userdata, $db, $cache, $config, $bbcode;
+	global $tree, $template, $lang, $images, $user, $db, $cache, $config, $bbcode;
 
 	// get some parameter
 	$topic_title_length = isset($config['calendar_title_length']) ? intval($config['calendar_title_length']) : 30;
@@ -217,7 +217,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 	{
 		// standard read
 		$is_auth = array();
-		$is_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+		$is_auth = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 
 		// forum or cat asked
 		$is_ask = array();
@@ -384,9 +384,9 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 			$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
 		}
 
-		$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-		$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-		$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
+		$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+		$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+		$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
 		$bbcode->allow_html = $html_on;
 		$bbcode->allow_bbcode = $bbcode_on;
@@ -428,7 +428,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 			'TOPIC_TITLE' => $dsp_topic_icon . '&nbsp;' . $topic_title,
 			'CALENDAR_EVENT' => get_calendar_title_date($topic_calendar_time, $topic_calendar_duration),
 			'AUTHOR' => $topic_author,
-			'TOPIC_DATE' => create_date($userdata['user_dateformat'], $topic_time, $config['board_timezone']),
+			'TOPIC_DATE' => create_date($user->data['user_dateformat'], $topic_time, $config['board_timezone']),
 			'NAV_DESC' => $nav_desc,
 			'CALENDAR_MESSAGE'  => $message,
 			'VIEWS' => $topic_views,
@@ -685,7 +685,7 @@ function get_birthdays_list_full()
 
 function display_calendar($main_template, $nb_days = 0, $start = 0, $fid = '')
 {
-	global $db, $cache, $config, $userdata, $template, $images, $lang, $bbcode, $tree;
+	global $db, $cache, $config, $user, $template, $images, $lang, $bbcode, $tree;
 	static $handler;
 
 	if (empty($handler))

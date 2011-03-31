@@ -41,11 +41,11 @@ if ($row = $db->sql_fetchrow($result))
 	{
 		if ((intval($config['require_activation']) == USER_ACTIVATION_ADMIN) && ($row['user_newpasswd'] == ''))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=activate&' . POST_USERS_URL . '=' . $row['user_id'] . '&act_key=' . trim($_GET['act_key'])));
 			}
-			elseif ($userdata['user_level'] != ADMIN)
+			elseif ($user->data['user_level'] != ADMIN)
 			{
 				message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 			}

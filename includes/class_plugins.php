@@ -437,7 +437,7 @@ class class_plugins
 	*/
 	function user_config_key($key, $user_field = '', $over_field = '')
 	{
-		global $config, $userdata;
+		global $config, $user;
 
 		// Get the user fields name if not given
 		if (empty($user_field))
@@ -455,7 +455,7 @@ class class_plugins
 		if (!isset($this->config[$key])) return;
 
 		// Does the user field exists ?
-		if (!isset($userdata[$user_field])) return;
+		if (!isset($user->data[$user_field])) return;
 
 		// Does the overwrite switch exists?
 		if (!isset($this->config[$over_field]))
@@ -465,13 +465,13 @@ class class_plugins
 
 		// Overwrite with the user data only if not overwrite set, not anonymous, logged in
 		// If the user is admin we will not overwrite his setting either...
-		if ((!intval($this->config[$over_field]) && ($userdata['user_id'] != ANONYMOUS) && $userdata['session_logged_in']) || ($userdata['user_level'] == ADMIN))
+		if ((!intval($this->config[$over_field]) && ($user->data['user_id'] != ANONYMOUS) && $user->data['session_logged_in']) || ($user->data['user_level'] == ADMIN))
 		{
-			$this->config[$key] = $userdata[$user_field];
+			$this->config[$key] = $user->data[$user_field];
 		}
 		else
 		{
-			$userdata[$user_field] = $this->config[$key];
+			$user->data[$user_field] = $this->config[$key];
 		}
 	}
 

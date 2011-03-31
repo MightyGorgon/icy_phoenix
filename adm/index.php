@@ -34,7 +34,7 @@ if($acp_pane == 'left')
 	//Needed to avoid emptying cache when generating ACP Modules... do not remove or change, unless you also change it in common.php
 	define('ACP_MODULES', true);
 
-	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
+	$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
 	$module = jr_admin_get_module_list($jr_admin_userdata['user_jr_admin']);
 
 	include('page_header_admin.' . PHP_EXT);
@@ -73,7 +73,7 @@ elseif($acp_pane == 'right')
 	include('./page_header_admin.' . PHP_EXT);
 
 	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-	$is_allowed = ($userdata['user_id'] == $founder_id) ? true : false;
+	$is_allowed = ($user->data['user_id'] == $founder_id) ? true : false;
 
 	$template->set_filenames(array('body' => ADM_TPL . 'index_body.tpl'));
 
@@ -127,7 +127,7 @@ elseif($acp_pane == 'right')
 	$sql = "SELECT COUNT(*) AS total FROM " . ADMINEDIT_TABLE;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-	if(($userdata['user_id'] == $founder_id) && ($row['total'] > 0))
+	if(($user->data['user_id'] == $founder_id) && ($row['total'] > 0))
 	{
 		$template->assign_block_vars('switch_firstadmin', array());
 	}
@@ -530,7 +530,7 @@ elseif($acp_pane == 'right')
 	// End forum statistics
 
 	// Get users online information.
-	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_session_time, u.user_session_page, s.session_logged_in, s.session_ip, s.session_start, s.session_page, s.session_user_agent
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_session_time, u.user_session_page, s.session_logged_in, s.session_ip, s.session_start, s.session_page, s.session_forum_id, s.session_topic_id, s.session_browser
 		FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 		WHERE s.session_logged_in = '1'
 			AND u.user_id = s.session_user_id
@@ -540,7 +540,7 @@ elseif($acp_pane == 'right')
 	$result = $db->sql_query($sql);
 	$onlinerow_reg = $db->sql_fetchrowset($result);
 
-	$sql = "SELECT session_page, session_logged_in, session_time, session_ip, session_start, session_user_agent
+	$sql = "SELECT session_page, session_forum_id, session_topic_id, session_logged_in, session_time, session_ip, session_start, session_browser
 		FROM " . SESSIONS_TABLE . "
 		WHERE session_logged_in = '0'
 			AND session_time >= " . (time() - ONLINE_REFRESH) . "
@@ -570,7 +570,7 @@ elseif($acp_pane == 'right')
 
 				//$username = $onlinerow_reg[$i]['username'];
 				$username = colorize_username($onlinerow_reg[$i]['user_id'], $onlinerow_reg[$i]['username'], $onlinerow_reg[$i]['user_color'], $onlinerow_reg[$i]['user_active']);
-				if($onlinerow_reg[$i]['user_allow_viewonline'] || ($userdata['user_level'] == ADMIN))
+				if($onlinerow_reg[$i]['user_allow_viewonline'] || ($user->data['user_level'] == ADMIN))
 				{
 					$registered_users++;
 					$hidden = false;
@@ -585,18 +585,14 @@ elseif($acp_pane == 'right')
 				$topic_id = false;
 				if ((strpos($onlinerow_reg[$i]['user_session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($onlinerow_reg[$i]['user_session_page'], CMS_PAGE_VIEWTOPIC) !== false))
 				{
-					$results = array();
-					ereg('_f_=([0-9]*)x', $onlinerow_reg[$i]['user_session_page'], $results);
-					if (!empty($results[0]))
+					if (!empty($onlinerow_reg[$i]['session_forum_id']))
 					{
-						$forum_id = str_replace(array('_f_=', 'x'), array('', ''), $results[0]);
+						$forum_id = $onlinerow_reg[$i]['session_forum_id'];
 					}
 
-					$results = array();
-					ereg('_t_=([0-9]*)x', $onlinerow_reg[$i]['user_session_page'], $results);
-					if (!empty($results[0]))
+					if (!empty($onlinerow_reg[$i]['session_topic_id']))
 					{
-						$topic_id = str_replace(array('_t_=', 'x'), array('', ''), $results[0]);
+						$topic_id = $onlinerow_reg[$i]['session_topic_id'];
 					}
 				}
 
@@ -631,7 +627,7 @@ elseif($acp_pane == 'right')
 
 				$row_class = ($registered_users % 2) ? $theme['td_class1'] : $theme['td_class2'];
 
-				$reg_ip = decode_ip($onlinerow_reg[$i]['session_ip']);
+				$reg_ip = $onlinerow_reg[$i]['session_ip'];
 
 				$template->assign_block_vars('reg_user_row', array(
 					'ROW_CLASS' => $row_class,
@@ -641,7 +637,7 @@ elseif($acp_pane == 'right')
 					'FORUM_LOCATION' => $location['lang'],
 					'IP_ADDRESS' => $reg_ip,
 
-					'U_WHOIS_IP' => 'http://whois.sc/' . $reg_ip,
+					'U_WHOIS_IP' => 'http://whois.sc/' . htmlspecialchars(urlencode($reg_ip)),
 					'U_USER_PROFILE' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $onlinerow_reg[$i]['user_id']),
 					'U_FORUM_LOCATION' => $location['url']
 					)
@@ -671,18 +667,14 @@ elseif($acp_pane == 'right')
 			$topic_id = false;
 			if ((strpos($onlinerow_guest[$i]['session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($onlinerow_guest[$i]['session_page'], CMS_PAGE_VIEWTOPIC) !== false))
 			{
-				$results = array();
-				ereg('_f_=([0-9]*)x', $onlinerow_guest[$i]['session_page'], $results);
-				if (!empty($results[0]))
+				if (!empty($onlinerow_guest[$i]['session_forum_id']))
 				{
-					$forum_id = str_replace(array('_f_=', 'x'), array('', ''), $results[0]);
+					$forum_id = $onlinerow_guest[$i]['session_forum_id'];
 				}
 
-				$results = array();
-				ereg('_t_=([0-9]*)x', $onlinerow_guest[$i]['session_page'], $results);
-				if (!empty($results[0]))
+				if (!empty($onlinerow_guest[$i]['session_topic_id']))
 				{
-					$topic_id = str_replace(array('_t_=', 'x'), array('', ''), $results[0]);
+					$topic_id = $onlinerow_guest[$i]['session_topic_id'];
 				}
 			}
 
@@ -718,12 +710,12 @@ elseif($acp_pane == 'right')
 			$row_class = ($guest_users % 2) ? $theme['td_class1'] : $theme['td_class2'];
 
 			// MG BOTS Parsing - BEGIN
-			$guest_ip = decode_ip($onlinerow_guest[$i]['session_ip']);
+			$guest_ip = $onlinerow_guest[$i]['session_ip'];
 
 			$bot_name_tmp = bots_parse($onlinerow_guest[$i]['session_ip'], $config['bots_color']);
-			if ($bot_name_tmp != false)
+			if ($bot_name_tmp['name'] != false)
 			{
-				$name_guest = $bot_name_tmp;
+				$name_guest = $bot_name_tmp['name'];
 			}
 			else
 			{
@@ -739,7 +731,7 @@ elseif($acp_pane == 'right')
 				'FORUM_LOCATION' => $location['lang'],
 				'IP_ADDRESS' => $guest_ip,
 
-				'U_WHOIS_IP' => 'http://whois.sc/' . $guest_ip,
+				'U_WHOIS_IP' => 'http://whois.sc/' . htmlspecialchars(urlencode($guest_ip)),
 				'U_FORUM_LOCATION' => $location['url']
 				)
 			);

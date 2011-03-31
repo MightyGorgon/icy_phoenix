@@ -296,7 +296,7 @@ if (($mode == 'moveup') || ($mode == 'movedw'))
 	reorder_tree();
 
 	// add topics count and various informations
-	get_user_tree($userdata);
+	get_user_tree($user->data);
 	$mode = '';
 }
 

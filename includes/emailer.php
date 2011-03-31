@@ -584,7 +584,7 @@ class emailer
 	*/
 	function error($type, $msg)
 	{
-		global $config, $userdata, $lang;
+		global $config, $user, $lang;
 
 		/*
 		// Session doesn't exist, create it

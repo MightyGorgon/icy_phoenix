@@ -58,9 +58,9 @@ class ip_cms
 	*/
 	function cms_blocks_view()
 	{
-		global $userdata, $config;
+		global $user, $config;
 
-		$is_reg = (($config['bots_reg_auth'] && $userdata['is_bot']) || $userdata['session_logged_in']) ? true : false;
+		$is_reg = ((!empty($config['bots_reg_auth']) && $user->data['is_bot']) || $user->data['session_logged_in']) ? true : false;
 		if (!$is_reg)
 		{
 			$result = array(0, 1);
@@ -68,7 +68,7 @@ class ip_cms
 		else
 		{
 			// User is not a guest here...
-			switch($userdata['user_level'])
+			switch($user->data['user_level'])
 			{
 				case ADMIN:
 					// If you want admin to see also GUEST ONLY blocks you need to use these settings...
@@ -116,7 +116,7 @@ class ip_cms
 	*/
 	function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, $type = '')
 	{
-		global $db, $cache, $config, $template, $userdata, $lang, $bbcode;
+		global $db, $cache, $config, $template, $user, $lang, $bbcode;
 		global $cms_config_vars, $cms_config_layouts, $cms_config_global_blocks, $block_id;
 
 		if(!$is_special)
@@ -329,7 +329,7 @@ class ip_cms
 				$group_content = explode(',', $block_info[$b_counter]['groups']);
 				for ($i = 0; $i < sizeof($group_content); $i++)
 				{
-					if(in_array(intval($group_content[$i]), $this->cms_groups($userdata['user_id'])))
+					if(in_array(intval($group_content[$i]), $this->cms_groups($user->data['user_id'])))
 					{
 						$is_group_allowed = true;
 					}

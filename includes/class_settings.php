@@ -94,7 +94,7 @@ class class_settings
 	*/
 	function user_config_key($key, $user_field = '', $over_field = '')
 	{
-		global $config, $userdata;
+		global $config, $user;
 
 		// Get the user fields name if not given
 		if (empty($user_field))
@@ -112,7 +112,7 @@ class class_settings
 		if (!isset($config[$key])) return;
 
 		// Does the user field exists ?
-		if (!isset($userdata[$user_field])) return;
+		if (!isset($user->data[$user_field])) return;
 
 		// Does the overwrite switch exists?
 		if (!isset($config[$over_field]))
@@ -122,13 +122,13 @@ class class_settings
 
 		// Overwrite with the user data only if not overwrite set, not anonymous, logged in
 		// If the user is admin we will not overwrite his setting either...
-		if ((!intval($config[$over_field]) && ($userdata['user_id'] != ANONYMOUS) && $userdata['session_logged_in']) || ($userdata['user_level'] == ADMIN))
+		if ((!intval($config[$over_field]) && ($user->data['user_id'] != ANONYMOUS) && $user->data['session_logged_in']) || ($user->data['user_level'] == ADMIN))
 		{
-			$config[$key] = $userdata[$user_field];
+			$config[$key] = $user->data[$user_field];
 		}
 		else
 		{
-			$userdata[$user_field] = $config[$key];
+			$user->data[$user_field] = $config[$key];
 		}
 	}
 
@@ -337,12 +337,12 @@ class class_settings
 	*/
 	function is_auth($level_required)
 	{
-		global $userdata;
+		global $user;
 
 		$return = false;
 		// add also JUNIOR_ADMIN?
-		//if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == JUNIOR_ADMIN))
-		if ($userdata['user_level'] == ADMIN)
+		//if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == JUNIOR_ADMIN))
+		if ($user->data['user_level'] == ADMIN)
 		{
 			$return = true;
 		}
@@ -359,7 +359,7 @@ class class_settings
 	*/
 	function is_auth_display($config_name, $config_data, $in_acp = true, $target_userdata = false)
 	{
-		global $config, $userdata;
+		global $config, $user;
 
 		$return = false;
 
@@ -372,7 +372,7 @@ class class_settings
 		}
 		else
 		{
-			if (((!empty($config_data['user']) && isset($target_userdata[$config_data['user']]) && (!$config[$config_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $config_data['system']) && $this->is_auth($config_data['auth']))
+			if (((!empty($config_data['user']) && isset($target_userdata[$config_data['user']]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || $config_data['system']) && $this->is_auth($config_data['auth']))
 			{
 				$return = true;
 			}

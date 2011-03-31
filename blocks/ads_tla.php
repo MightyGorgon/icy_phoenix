@@ -24,7 +24,7 @@ if(!function_exists('cms_block_ads_tla'))
 {
 	function cms_block_ads_tla()
 	{
-		global $db, $cache, $config, $template, $images, $userdata, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 
 		$ads_content = tla_ads($cms_config_vars['md_tla_xml_filename'][$block_id], $cms_config_vars['md_tla_inventory_key'][$block_id], $cms_config_vars['md_tla_display'][$block_id]);
 
@@ -61,8 +61,8 @@ if(!function_exists('cms_block_ads_tla'))
 		if((filemtime($LOCAL_XML_FILENAME) < (time() - 3600)) || (filesize($LOCAL_XML_FILENAME) < 20))
 		{
 			$request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-			$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-			tla_updateLocalXML('http://www.text-link-ads.com/xml.php?inventory_key=' . $inventory_key . '&referer=' . urlencode($request_uri) . '&user_agent=' . urlencode($user_agent), $LOCAL_XML_FILENAME, $CONNECTION_TIMEOUT);
+			$user_agent_ads = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+			tla_updateLocalXML('http://www.text-link-ads.com/xml.php?inventory_key=' . $inventory_key . '&referer=' . urlencode($request_uri) . '&user_agent=' . urlencode($user_agent_ads), $LOCAL_XML_FILENAME, $CONNECTION_TIMEOUT);
 		}
 
 		$xml = tla_getLocalXML($LOCAL_XML_FILENAME);

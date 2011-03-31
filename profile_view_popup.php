@@ -14,13 +14,14 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $current_time = time();
-$user_id = $userdata['user_id'];
-$last_view = $userdata['user_last_profile_view'];
+$user_id = $user->data['user_id'];
+$last_view = $user->data['user_last_profile_view'];
 
 $sql = "SELECT p.*, u.username, u.user_active, u.user_color
 		FROM " . PROFILE_VIEW_TABLE . " p, " . USERS_TABLE . " u
@@ -35,13 +36,13 @@ while ($row = $db->sql_fetchrow($result))
 	$viewer = $row['viewer_id'];
 	$template->assign_block_vars('row', array(
 		'VIEW_BY' => colorize_username($viewer, $row['username'], $row['user_color'], $row['user_active']),
-		'STAMP' => create_date_ip($userdata['user_dateformat'], $row['view_stamp'], $userdata['user_timezone'])
+		'STAMP' => create_date_ip($user->data['user_dateformat'], $row['view_stamp'], $user->data['user_timezone'])
 		)
 	);
 }
 
 $template->assign_vars(array(
-	'PROFILE' => '<a href="'.append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id).'" target="_new" class="nav-current">'.$userdata['username'].'</a>',
+	'PROFILE' => '<a href="'.append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id).'" target="_new" class="nav-current">'.$user->data['username'].'</a>',
 	'L_VIEW_TITLE' => $meta_content['page_title'],
 	'L_CLOSE' => $lang['Close_window'],
 	'L_VIEWER' => $lang['Username'],

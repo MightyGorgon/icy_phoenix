@@ -14,8 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // This page is not in layout special...
@@ -55,7 +56,7 @@ if(isset($_FILES['userfile']))
 
 	$server_path = create_server_url();
 
-	if ($userdata['user_id'] < 0)
+	if ($user->data['user_id'] < 0)
 	{
 		$filename = 'guest_' . preg_replace('/[^a-z0-9]+/', '_', $filename);
 	}
@@ -64,26 +65,26 @@ if(isset($_FILES['userfile']))
 		$filename = preg_replace('/[^a-z0-9]+/', '_', $filename);
 		if (USERS_SUBFOLDERS_IMG == true)
 		{
-			if (is_dir($upload_dir . $userdata['user_id']))
+			if (is_dir($upload_dir . $user->data['user_id']))
 			{
-				$upload_dir = $upload_dir . $userdata['user_id'] . '/';
+				$upload_dir = $upload_dir . $user->data['user_id'] . '/';
 			}
 			else
 			{
-				$dir_creation = @mkdir($upload_dir . $userdata['user_id'], 0777);
+				$dir_creation = @mkdir($upload_dir . $user->data['user_id'], 0777);
 				if ($dir_creation == true)
 				{
-					$upload_dir = $upload_dir . $userdata['user_id'] . '/';
+					$upload_dir = $upload_dir . $user->data['user_id'] . '/';
 				}
 				else
 				{
-					$filename = 'user_' . $userdata['user_id'] . '_' . $filename;
+					$filename = 'user_' . $user->data['user_id'] . '_' . $filename;
 				}
 			}
 		}
 		else
 		{
-			$filename = 'user_' . $userdata['user_id'] . '_' . $filename;
+			$filename = 'user_' . $user->data['user_id'] . '_' . $filename;
 		}
 	}
 	while(file_exists($upload_dir . $filename . '.' . $extension))
@@ -115,7 +116,7 @@ if(isset($_FILES['userfile']))
 	{
 		@unlink($cache_data_file);
 	}
-	$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $userdata['user_id'] . '.dat';
+	$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $user->data['user_id'] . '.dat';
 	if(@is_file($cache_data_file))
 	{
 		@unlink($cache_data_file);

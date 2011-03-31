@@ -743,7 +743,7 @@ switch($mode_id)
 					}
 					echo("<li>" . htmlspecialchars($row['group_name']) . " (" . $row['group_id'] . ")</li>\n");
 					$sql2 = "UPDATE " . GROUPS_TABLE . "
-						SET group_moderator = " . $userdata['user_id'] . "
+						SET group_moderator = " . $user->data['user_id'] . "
 						WHERE group_id = " . $row['group_id'];
 					$db->sql_return_on_error(true);
 					$result2 = $db->sql_query($sql2);
@@ -1097,7 +1097,7 @@ switch($mode_id)
 						$db->sql_freeresult($result);
 						$sql = "SELECT themes_id
 							FROM " . THEMES_TABLE . "
-							WHERE themes_id = " . $userdata['user_style'];
+							WHERE themes_id = " . $user->data['user_style'];
 							echo($sql);
 						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql);
@@ -1183,10 +1183,10 @@ switch($mode_id)
 					{
 						$default_lang = $boad_language;
 					}
-					elseif (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $userdata['user_lang'] . '/lang_main.' . PHP_EXT)))
+					elseif (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $user->data['user_lang'] . '/lang_main.' . PHP_EXT)))
 					{
 						echo('<p class="gen">' . $lang['Default_language_invalid'] . '</p>' . "\n");
-						$default_lang = $userdata['user_lang'];
+						$default_lang = $user->data['user_lang'];
 					}
 					elseif (file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_english/lang_main.' . PHP_EXT)))
 					{
@@ -4045,23 +4045,23 @@ switch($mode_id)
 				// Restore session data of current user to prevent getting thrown out of the admin panel
 				echo('<p class="gen"><b>' . $lang['Restoring_session'] . '</b></p>' . "\n");
 				// Set Variables
-				$session_id = $userdata['session_id'];
-				$user_id = $userdata['user_id'];
+				$session_id = $user->data['session_id'];
+				$user_id = $user->data['user_id'];
 				$current_time = time();
-				$user_ip = $userdata['session_ip'];
-				$page_id = $userdata['session_page'];
-				$login = $userdata['session_logged_in'];
+				$user_ip = $user->data['session_ip'];
+				$page_id = $user->data['session_page'];
+				$login = $user->data['session_logged_in'];
 				if ($phpbb_version[1] >= 15)
 				{
 					$sql = "INSERT INTO " . SESSIONS_TABLE . "
 						(session_id, session_user_id, session_start, session_time, session_ip, session_page, session_logged_in, session_admin)
-						VALUES ('" . $session_id . "', '" . $user_id . "', '" . $current_time . "', '" . $current_time . "', '" . $user_ip . "', '" . $page_id . "', '" . $login . "', '1')";
+						VALUES ('" . $session_id . "', '" . $user_id . "', '" . $current_time . "', '" . $current_time . "', '" . $db->sql_escape($user_ip) . "', '" . $page_id . "', '" . $login . "', '1')";
 				}
 				else
 				{
 					$sql = "INSERT INTO " . SESSIONS_TABLE . "
 						(session_id, session_user_id, session_start, session_time, session_ip, session_page, session_logged_in)
-						VALUES ('" . $session_id . "', '" . $user_id . "', '" . $current_time . "', '" . $current_time . "', '" . $user_ip . "', '" . $page_id . "', '" . $login . "')";
+						VALUES ('" . $session_id . "', '" . $user_id . "', '" . $current_time . "', '" . $current_time . "', '" . $db->sql_escape($user_ip) . "', '" . $page_id . "', '" . $login . "')";
 				}
 				$db->sql_return_on_error(true);
 				$result = $db->sql_query($sql);
@@ -4294,7 +4294,7 @@ switch($mode_id)
 				{
 					// Table is to big - so delete some records
 					$sql = "DELETE FROM " . SESSIONS_TABLE . "
-						WHERE session_id != '" . $userdata['session_id'] . "'";
+						WHERE session_id != '" . $user->data['session_id'] . "'";
 					if (SQL_LAYER == 'mysql4')
 					{
 						// When using MySQL 4: delete only the oldest records

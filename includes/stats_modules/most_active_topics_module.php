@@ -23,7 +23,7 @@ $template->assign_vars(array(
 );
 
 // Authorization SQL - forum-based
-$auth_data_sql = $statistics->forum_auth($userdata);
+$auth_data_sql = $statistics->forum_auth($user->data);
 
 if ($auth_data_sql == '')
 {

@@ -45,7 +45,7 @@ class cms_admin
 	*/
 	function check_version()
 	{
-		global $db, $cache, $config, $userdata, $lang, $template, $table_prefix;
+		global $db, $cache, $config, $user, $lang, $template, $table_prefix;
 
 		if ($config['cms_rev'] != '2')
 		{
@@ -173,7 +173,7 @@ class cms_admin
 	*/
 	function generate_nav_tabs($mode, $sep = '&nbsp;|&nbsp;')
 	{
-		global $db, $cache, $config, $userdata, $lang, $template;
+		global $db, $cache, $config, $user, $lang, $template;
 
 		$tabs_array = array();
 
@@ -215,8 +215,8 @@ class cms_admin
 			'TITLE' => $lang['CMS_LINKS'],
 			'MODE' => array(),
 			'LINKS' => array(
-				'<a href="' . IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?sid=' . $userdata['session_id'] . '">' . strtoupper($lang['LINK_ACP']) . '</a>',
-				'<a href="' . IP_ROOT_PATH . CMS_PAGE_CMS . '?sid=' . $userdata['session_id'] . '">' . strtoupper($lang['LINK_CMS']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . ADM . '/index.' . PHP_EXT . '?sid=' . $user->data['session_id'] . '">' . strtoupper($lang['LINK_ACP']) . '</a>',
+				'<a href="' . IP_ROOT_PATH . CMS_PAGE_CMS . '?sid=' . $user->data['session_id'] . '">' . strtoupper($lang['LINK_CMS']) . '</a>',
 				'<a href="' . IP_ROOT_PATH . CMS_PAGE_HOME . '">' . strtoupper($lang['LINK_HOME']) . '</a>',
 				'<a href="' . IP_ROOT_PATH . CMS_PAGE_FORUM . '">' . strtoupper($lang['LINK_FORUM']) . '</a>',
 				'<a href="http://www.icyphoenix.com" target="_blank">ICY PHOENIX</a>'
@@ -264,7 +264,7 @@ class cms_admin
 	*/
 	function generate_tabs($mode)
 	{
-		global $db, $cache, $config, $userdata, $lang, $template;
+		global $db, $cache, $config, $user, $lang, $template;
 
 		$tabs_array = array();
 
@@ -392,7 +392,7 @@ class cms_admin
 	*/
 	function save_block()
 	{
-		global $db, $class_db, $lang, $userdata;
+		global $db, $class_db, $lang, $user;
 
 		$inputs_array = array(
 			'title' => '',
@@ -942,7 +942,7 @@ class cms_admin
 	*/
 	function manage_block_settings()
 	{
-		global $db, $lang, $class_form, $template, $userdata;
+		global $db, $lang, $class_form, $template, $user;
 
 		if(isset($_POST['hascontent']))
 		{
@@ -963,7 +963,7 @@ class cms_admin
 			if(!empty($this->bs_id))
 			{
 				$b_info = $this->get_block_settings_info();
-				if((($b_info['locked'] == '1') || ($b_info['user_id'] != $userdata['user_id'])) && ($userdata['user_level'] != ADMIN))
+				if((($b_info['locked'] == '1') || ($b_info['user_id'] != $user->data['user_id'])) && ($user->data['user_level'] != ADMIN))
 				{
 					message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 				}
@@ -981,7 +981,7 @@ class cms_admin
 			$b_info['groups'] = '';
 		}
 
-		if ($userdata['user_level'] == ADMIN)
+		if ($user->data['user_level'] == ADMIN)
 		{
 			$blocks_array = $this->get_blocks_files_list();
 			$options_array = array();
@@ -1201,7 +1201,7 @@ class cms_admin
 	*/
 	function save_block_settings()
 	{
-		global $db, $class_db, $lang, $userdata;
+		global $db, $class_db, $lang, $user;
 
 		$inputs_array = array(
 			'name' => '',
@@ -1232,7 +1232,7 @@ class cms_admin
 		}
 		else
 		{
-			$data['user_id'] = $userdata['user_id'];
+			$data['user_id'] = $user->data['user_id'];
 			$sql = "INSERT INTO " . $this->tables['block_settings_table'] . " " . $db->sql_build_insert_update($data, true);
 			$result = $db->sql_query($sql);
 			$this->bs_id = $db->sql_nextid();
@@ -1322,12 +1322,12 @@ class cms_admin
 	*/
 	function delete_block_settings()
 	{
-		global $db, $template, $lang, $userdata;
+		global $db, $template, $lang, $user;
 
 		if(!empty($this->bs_id))
 		{
 			$b_info = $this->get_block_settings_info();
-			if((($b_info['locked'] == '1') || ($b_info['user_id'] != $userdata['user_id'])) && ($userdata['user_level'] != ADMIN))
+			if((($b_info['locked'] == '1') || ($b_info['user_id'] != $user->data['user_id'])) && ($user->data['user_level'] != ADMIN))
 			{
 				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 			}
@@ -1372,7 +1372,7 @@ class cms_admin
 	*/
 	function show_blocks_settings_list()
 	{
-		global $lang, $theme, $template, $userdata;
+		global $lang, $theme, $template, $user;
 
 		$b_rows = $this->get_installed_blocks();
 		$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
@@ -1398,7 +1398,7 @@ class cms_admin
 						'VIEW' => $b_view,
 						'USERNAME' => colorize_username($b_rows[$i]['user_id']),
 						'STATUS' => $b_rows[$i]['locked'],
-						'S_MANAGE' => (($b_rows[$i]['locked'] == '1') && ($userdata['user_level'] != ADMIN)) ? false : true,
+						'S_MANAGE' => (($b_rows[$i]['locked'] == '1') && ($user->data['user_level'] != ADMIN)) ? false : true,
 						'U_EDIT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=edit&amp;bs_id=' . $this->bs_id),
 						'U_DELETE' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=delete&amp;bs_id=' . $this->bs_id),
 					)
@@ -1525,7 +1525,7 @@ class cms_admin
 	*/
 	function save_layout($is_layout_special)
 	{
-		global $db, $template, $class_db, $lang, $userdata;
+		global $db, $template, $class_db, $lang, $user;
 
 		$inputs_array = array(
 			'name' => '',
@@ -1904,10 +1904,10 @@ class cms_admin
 	*/
 	function get_layout_edit_auth()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		// If the user is admin... give immediate access and exit!
-		if ($userdata['user_level'] == ADMIN)
+		if ($user->data['user_level'] == ADMIN)
 		{
 			return true;
 		}
@@ -1916,7 +1916,7 @@ class cms_admin
 		$result = $db->sql_query($sql);
 		$l_row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
-		$is_auth = (($l_row['edit_auth'] <= $userdata['user_cms_level']) ? true : false);
+		$is_auth = (($l_row['edit_auth'] <= $user->data['user_cms_level']) ? true : false);
 
 		return $is_auth;
 	}
@@ -1926,7 +1926,7 @@ class cms_admin
 	*/
 	function get_layouts_list()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		$sql_where = '';
 
@@ -2068,7 +2068,7 @@ class cms_admin
 	*/
 	function get_cms_id()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		if (!defined('IN_CMS_USERS'))
 		{
@@ -2086,7 +2086,7 @@ class cms_admin
 			}
 			else
 			{
-				$sql = "SELECT cu_id  var_id FROM " . CMS_USERS_TABLE . " WHERE cu_user_id = '" . $userdata['user_id'] . "'";
+				$sql = "SELECT cu_id  var_id FROM " . CMS_USERS_TABLE . " WHERE cu_user_id = '" . $user->data['user_id'] . "'";
 			}
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
@@ -2101,9 +2101,9 @@ class cms_admin
 	*/
 	function get_user_cms_id()
 	{
-		global $db, $userdata, $auth;
+		global $db, $user, $auth;
 
-		$sql = "SELECT cu_id FROM " . CMS_USERS_TABLE . " WHERE cu_user_id = '" . $userdata['user_id'] . "'";
+		$sql = "SELECT cu_id FROM " . CMS_USERS_TABLE . " WHERE cu_user_id = '" . $user->data['user_id'] . "'";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
@@ -2117,10 +2117,10 @@ class cms_admin
 	*/
 	function get_block_edit_auth()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
 		// If the user is admin... give immediate access and exit!
-		if ($userdata['user_level'] == ADMIN)
+		if ($user->data['user_level'] == ADMIN)
 		{
 			return true;
 		}
@@ -2129,7 +2129,7 @@ class cms_admin
 		$result = $db->sql_query($sql);
 		$b_row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
-		$is_auth = (($b_row['edit_auth'] <= $userdata['user_cms_level']) ? true : false);
+		$is_auth = (($b_row['edit_auth'] <= $user->data['user_cms_level']) ? true : false);
 
 		return $is_auth;
 	}
@@ -2235,9 +2235,9 @@ class cms_admin
 	*/
 	function get_installed_blocks()
 	{
-		global $db, $userdata;
+		global $db, $user;
 
-		$sql = "SELECT * FROM " . $this->tables['block_settings_table'] . " WHERE user_id = " . $userdata['user_id'] . " OR locked = '1' ORDER BY locked DESC, name ASC";
+		$sql = "SELECT * FROM " . $this->tables['block_settings_table'] . " WHERE user_id = " . $user->data['user_id'] . " OR locked = '1' ORDER BY locked DESC, name ASC";
 		$result = $db->sql_query($sql);
 		$b_rows = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
@@ -2411,9 +2411,9 @@ class cms_admin
 	*/
 	function get_blocks_from_layouts($block_layout_field, $l_id_list, $sql_no_gb = '')
 	{
-		global $db, $userdata;
+		global $db, $user;
 
-		//$cms_level_sql = " AND edit_auth <= " . $userdata['user_cms_level'] . " ";
+		//$cms_level_sql = " AND edit_auth <= " . $user->data['user_cms_level'] . " ";
 		$user_sql = "";
 		if (defined('IN_CMS_USERS') && ($this->action == 'editglobal'))
 		{

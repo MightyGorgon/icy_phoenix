@@ -52,8 +52,9 @@ if (!empty($selected_id))
 }
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $config['topics_per_page'] = VIEWFORUMLIST_PER_PAGE;
@@ -160,7 +161,7 @@ $is_auth = $tree['auth'][POST_FORUM_URL . $forum_id];
 
 if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 {
-	if (!$userdata['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$redirect = $forum_id_append . ((isset($start)) ? '&start=' . $start : '');
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_VIEWFORUMLIST . '&' . $redirect, true));
@@ -263,7 +264,7 @@ if($total_topics)
 		$topic_title = htmlspecialchars_clean($topic_title);
 		$topic_title_plain = htmlspecialchars($topic_title);
 
-		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 		{
 			$view_topic_url = append_sid(str_replace ('--', '-', make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
 		}

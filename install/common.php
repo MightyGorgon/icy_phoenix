@@ -73,7 +73,7 @@ if (defined('BASIC_COMMON'))
 if (defined('INSTALLING_ICYPHOENIX'))
 {
 	// Initialise some basic arrays
-	$userdata = array();
+	$user = array();
 	$lang = array();
 	$error = false;
 

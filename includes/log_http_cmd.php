@@ -80,7 +80,7 @@ if (!empty($_user))
 	$content .= '[USER: ' . $_user . '] - ';
 }
 
-// Log general visits - do this before action-logging (makes sure $userdata['log_id'] relates to the action rather than visit)
+// Log general visits - do this before action-logging (makes sure $user->data['log_id'] relates to the action rather than visit)
 // Skip Visits-logging on certain pages by adding them to this switch-case
 /*
 switch($page_array['page_name'])

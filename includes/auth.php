@@ -57,9 +57,9 @@ if (!defined('IN_ICYPHOENIX'))
 * If available you can send an array (either one or two dimensional) containing the
 * forum auth levels, this will prevent the auth function having to do its own lookup
 */
-function auth($type, $forum_id, $userdata, $f_access = '')
+function auth($type, $forum_id, &$user_data, $f_access = '')
 {
-	global $db, $config, $lang, $tree;
+	global $db, $config, $user, $lang, $tree;
 
 	if (!empty($tree['data']))
 	{
@@ -173,7 +173,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 	//
 	if (empty($f_access))
 	{
-		$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? "WHERE a.forum_id = $forum_id" : '';
+		$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? (" WHERE a.forum_id = " . $forum_id) : '';
 
 		$sql = "SELECT a.forum_id, $a_sql
 			FROM " . FORUMS_TABLE . " a
@@ -194,13 +194,13 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 	// has the type set to ALL, if yes they are good to go, if not then they are denied access
 	//
 	$u_access = array();
-	if ($userdata['session_logged_in'])
+	if ($user_data['session_logged_in'])
 	{
 		$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? "AND a.forum_id = $forum_id" : '';
 
 		$sql = "SELECT a.forum_id, $a_sql, a.auth_mod
 			FROM " . AUTH_ACCESS_TABLE . " a, " . USER_GROUP_TABLE . " ug
-			WHERE ug.user_id = " . $userdata['user_id'] . "
+			WHERE ug.user_id = " . $user_data['user_id'] . "
 				AND ug.user_pending = 0
 				AND a.group_id = ug.group_id
 				$forum_match_sql";
@@ -224,8 +224,8 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 		$db->sql_freeresult($result);
 	}
 
-	$is_admin = (($userdata['user_level'] == ADMIN) && $userdata['session_logged_in']) ? true : 0;
-	//$is_admin = ((($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == JUNIOR_ADMIN)) && $userdata['session_logged_in']) ? true : 0;
+	$is_admin = (($user_data['user_level'] == ADMIN) && $user_data['session_logged_in']) ? true : 0;
+	//$is_admin = ((($user_data['user_level'] == ADMIN) || ($user_data['user_level'] == JUNIOR_ADMIN)) && $user_data['session_logged_in']) ? true : 0;
 
 	$auth_user = array();
 	for($i = 0; $i < sizeof($auth_fields); $i++)
@@ -255,26 +255,24 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 					break;
 
 				case AUTH_REG:
-					$auth_user[$key] = ($userdata['session_logged_in']) ? true : 0;
-					// Check if the user is a BOT
-					$auth_user[$key] = (($config['bots_reg_auth'] == true) && $userdata['is_bot']) ? true : $auth_user[$key];
+					$auth_user[$key] = ($user_data['session_logged_in'] || (!empty($config['bots_reg_auth']) && $user_data['is_bot'])) ? true : 0;
 					$auth_user[$key . '_type'] = $lang['Auth_Registered_Users'];
 					break;
 
 				// Self AUTH - BEGIN
 				case AUTH_SELF:
-					$auth_user[$key] = ($userdata['session_logged_in']) ? ((auth_check_user(AUTH_MOD, 'auth_mod', $u_access, $is_admin)) ? true : AUTH_SELF) : 0;
+					$auth_user[$key] = ($user_data['session_logged_in']) ? ((auth_check_user(AUTH_MOD, 'auth_mod', $u_access, $is_admin)) ? true : AUTH_SELF) : 0;
 					$auth_user[$key . '_type'] = $lang['Auth_Self_Users'];
 					break;
 				// Self AUTH - END
 
 				case AUTH_ACL:
-					$auth_user[$key] = ($userdata['session_logged_in']) ? auth_check_user(AUTH_ACL, $key, $u_access, $is_admin) : 0;
+					$auth_user[$key] = ($user_data['session_logged_in']) ? auth_check_user(AUTH_ACL, $key, $u_access, $is_admin) : 0;
 					$auth_user[$key . '_type'] = $lang['Auth_Users_granted_access'];
 					break;
 
 				case AUTH_MOD:
-					$auth_user[$key] = ($userdata['session_logged_in']) ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0;
+					$auth_user[$key] = ($user_data['session_logged_in']) ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0;
 					$auth_user[$key . '_type'] = $lang['Auth_Moderators'];
 					break;
 
@@ -308,26 +306,24 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 						break;
 
 					case AUTH_REG:
-						$auth_user[$f_forum_id][$key] = ($userdata['session_logged_in']) ? true : 0;
-						// Check if the user is a BOT
-						$auth_user[$f_forum_id][$key] = (($config['bots_reg_auth'] == true) && $userdata['is_bot']) ? true : $auth_user[$f_forum_id][$key];
+						$auth_user[$f_forum_id][$key] = ($user_data['session_logged_in'] || (!empty($config['bots_reg_auth']) && $user_data['is_bot'])) ? true : 0;
 						$auth_user[$f_forum_id][$key . '_type'] = $lang['Auth_Registered_Users'];
 						break;
 
 					// Self AUTH - BEGIN
 					case AUTH_SELF:
-						$auth_user[$f_forum_id][$key] = ($userdata['session_logged_in']) ? ((auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin)) ? true : AUTH_SELF) : 0;
+						$auth_user[$f_forum_id][$key] = ($user_data['session_logged_in']) ? ((auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin)) ? true : AUTH_SELF) : 0;
 						$auth_user[$f_forum_id][$key . '_type'] = $lang['Auth_Self_Users'];
 						break;
 					// Self AUTH - END
 
 					case AUTH_ACL:
-						$auth_user[$f_forum_id][$key] = ($userdata['session_logged_in']) ? auth_check_user(AUTH_ACL, $key, $u_access[$f_forum_id], $is_admin) : 0;
+						$auth_user[$f_forum_id][$key] = ($user_data['session_logged_in']) ? auth_check_user(AUTH_ACL, $key, $u_access[$f_forum_id], $is_admin) : 0;
 						$auth_user[$f_forum_id][$key . '_type'] = $lang['Auth_Users_granted_access'];
 						break;
 
 					case AUTH_MOD:
-						$auth_user[$f_forum_id][$key] = ($userdata['session_logged_in']) ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0;
+						$auth_user[$f_forum_id][$key] = ($user_data['session_logged_in']) ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0;
 						$auth_user[$f_forum_id][$key . '_type'] = $lang['Auth_Moderators'];
 						break;
 
@@ -351,7 +347,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 	// Is user a moderator?
 	if ($forum_id != AUTH_LIST_ALL)
 	{
-		$auth_user['auth_mod'] = ($userdata['session_logged_in']) ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0;
+		$auth_user['auth_mod'] = ($user_data['session_logged_in']) ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access, $is_admin) : 0;
 	}
 	else
 	{
@@ -360,7 +356,7 @@ function auth($type, $forum_id, $userdata, $f_access = '')
 			$f_forum_id = $f_access[$k]['forum_id'];
 			$u_access[$f_forum_id] = isset($u_access[$f_forum_id]) ? $u_access[$f_forum_id] : array();
 
-			$auth_user[$f_forum_id]['auth_mod'] = ($userdata['session_logged_in']) ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0;
+			$auth_user[$f_forum_id]['auth_mod'] = ($user_data['session_logged_in']) ? auth_check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $is_admin) : 0;
 		}
 	}
 
@@ -409,14 +405,14 @@ function auth_check_user($type, $key, $u_access, $is_admin)
 */
 function check_auth_level($level_required)
 {
-	global $userdata, $config;
+	global $user, $config;
 
 	if ($level_required == AUTH_ALL)
 	{
 		return true;
 	}
 
-	if ($userdata['user_level'] == ADMIN)
+	if ($user->data['user_level'] == ADMIN)
 	{
 		if (($level_required == AUTH_ADMIN) || ($level_required == AUTH_GUEST_ONLY))
 		{
@@ -426,14 +422,14 @@ function check_auth_level($level_required)
 		if ($level_required == AUTH_FOUNDER)
 		{
 			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-			return ($userdata['user_id'] == $founder_id) ? true : false;
+			return ($user->data['user_id'] == $founder_id) ? true : false;
 		}
 		elseif ($level_required == AUTH_MAIN_ADMIN)
 		{
 			if (defined('MAIN_ADMINS_ID'))
 			{
 				$allowed_admins = explode(',', MAIN_ADMINS_ID);
-				return (in_array($userdata['user_id'], $allowed_admins)) ? true : false;
+				return (in_array($user->data['user_id'], $allowed_admins)) ? true : false;
 			}
 		}
 	}
@@ -441,7 +437,7 @@ function check_auth_level($level_required)
 	// Before going on... if level_required is for Guests only then check if the user is a guest but not a bot...
 	if ($level_required == AUTH_GUEST_ONLY)
 	{
-		return (!$userdata['is_bot'] && !$userdata['session_logged_in']) ? true : false;
+		return (!$user->data['is_bot'] && !$user->data['session_logged_in']) ? true : false;
 	}
 
 	// Force to AUTH_ADMIN since we already checked all cases for founder or main admins
@@ -454,9 +450,9 @@ function check_auth_level($level_required)
 	// Remember that Junior Admin has the ADMIN level while not in CMS or ACP
 	$not_auth = false;
 	// Check if the user is REG or a BOT
-	$is_reg = (($config['bots_reg_auth'] && $userdata['is_bot']) || $userdata['session_logged_in']) ? true : false;
+	$is_reg = ((!empty($config['bots_reg_auth']) && $user->data['is_bot']) || $user->data['session_logged_in']) ? true : false;
 	$not_auth = (!$not_auth && ($level_required == AUTH_REG) && !$is_reg) ? true : $not_auth;
-	$not_auth = (!$not_auth && ($level_required == AUTH_MOD) && ($userdata['user_level'] != MOD) && ($userdata['user_level'] != ADMIN)) ? true : $not_auth;
+	$not_auth = (!$not_auth && ($level_required == AUTH_MOD) && ($user->data['user_level'] != MOD) && ($user->data['user_level'] != ADMIN)) ? true : $not_auth;
 	$not_auth = (!$not_auth && ($level_required == AUTH_ADMIN)) ? true : $not_auth;
 	if ($not_auth)
 	{
@@ -471,7 +467,7 @@ function check_auth_level($level_required)
 */
 function check_page_auth($cms_page_id, $cms_auth_level, $return = false)
 {
-	global $userdata, $lang;
+	global $user, $lang;
 
 	$is_auth = check_auth_level($cms_auth_level);
 
@@ -483,7 +479,7 @@ function check_page_auth($cms_page_id, $cms_auth_level, $return = false)
 		}
 		else
 		{
-			if (!$userdata['is_bot'] && !$userdata['session_logged_in'])
+			if (!$user->data['is_bot'] && !$user->data['session_logged_in'])
 			{
 				$page_array = array();
 				$page_array = extract_current_page(IP_ROOT_PATH);
@@ -504,7 +500,7 @@ function check_page_auth($cms_page_id, $cms_auth_level, $return = false)
 */
 function build_exclusion_forums_list($only_auth_view = true)
 {
-	global $db, $config, $userdata, $lang, $tree;
+	global $db, $config, $user, $lang, $tree;
 
 	$sql_auth = "SELECT forum_id, parent_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
 	$result_auth = $db->sql_query($sql_auth, 0, 'forums_excluded_list_', FORUMS_CACHE_FOLDER);
@@ -516,7 +512,7 @@ function build_exclusion_forums_list($only_auth_view = true)
 	$db->sql_freeresult($result_auth);
 
 	$is_auth_ary = array();
-	$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+	$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 
 	$except_forums = '\'start\'';
 	for($f = 0; $f < sizeof($forum_data); $f++)
@@ -530,7 +526,7 @@ function build_exclusion_forums_list($only_auth_view = true)
 
 		// SELF AUTH - BEGIN
 		// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
-		if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
+		if(((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
 		{
 			$exclude_this = true;
 		}
@@ -557,7 +553,7 @@ function build_exclusion_forums_list($only_auth_view = true)
 */
 function build_allowed_forums_list($return_array = false)
 {
-	global $db, $config, $userdata, $lang, $tree;
+	global $db, $config, $user, $lang, $tree;
 
 	$sql_auth = "SELECT forum_id, parent_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
 	$result_auth = $db->sql_query($sql_auth, 0, 'forums_allowed_list_', FORUMS_CACHE_FOLDER);
@@ -569,7 +565,7 @@ function build_allowed_forums_list($return_array = false)
 	$db->sql_freeresult($result_auth);
 
 	$is_auth_ary = array();
-	$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+	$is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 
 	$allowed_forums_array = array();
 	for($f = 0; $f < sizeof($forum_data); $f++)
@@ -583,7 +579,7 @@ function build_allowed_forums_list($return_array = false)
 
 		// SELF AUTH - BEGIN
 		// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
-		if(((($userdata['user_level'] != ADMIN) && ($userdata['user_level'] != MOD)) || (($userdata['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
+		if(((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
 		{
 			$include_this = false;
 		}

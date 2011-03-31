@@ -125,25 +125,25 @@ function unique_id($extra = 'c')
 }
 
 //
-// Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
+// Get Userdata, $target_user can be username or user_id. If force_str is true, the username will be forced.
 //
-function get_userdata($user, $force_str = false)
+function get_userdata($target_user, $force_str = false)
 {
 	global $db;
 
-	if (!is_numeric($user) || $force_str)
+	if (!is_numeric($target_user) || $force_str)
 	{
-		$user = phpbb_clean_username($user);
+		$target_user = phpbb_clean_username($target_user);
 	}
 	else
 	{
-		$user = intval($user);
+		$target_user = intval($target_user);
 	}
 
 	$sql = "SELECT *
 		FROM " . USERS_TABLE . "
 		WHERE ";
-	$sql .= ( ( is_integer($user) ) ? "user_id = $user" : "username = '" .  $db->sql_escape($user) . "'" ) . " AND user_id <> " . ANONYMOUS;
+	$sql .= ( ( is_integer($target_user) ) ? "user_id = $target_user" : "username = '" .  $db->sql_escape($target_user) . "'" ) . " AND user_id <> " . ANONYMOUS;
 	if ( !($result = $db->sql_query($sql)) )
 	{
 		message_die(GENERAL_ERROR, 'Tried obtaining data for a non-existent user', '', __LINE__, __FILE__, $sql);
@@ -154,9 +154,9 @@ function get_userdata($user, $force_str = false)
 
 function make_jumpbox($action, $match_forum_id = 0)
 {
-	global $template, $userdata, $lang, $db, $nav_links, $SID;
+	global $template, $user, $lang, $db, $nav_links, $SID;
 
-//	$is_auth = auth(AUTH_VIEW, AUTH_LIST_ALL, $userdata);
+//	$is_auth = auth(AUTH_VIEW, AUTH_LIST_ALL, $user->data);
 
 	$sql = "SELECT c.cat_id, c.cat_title, c.cat_order
 		FROM " . CATEGORIES_TABLE . " c, " . FORUMS_TABLE . " f
@@ -239,7 +239,7 @@ function make_jumpbox($action, $match_forum_id = 0)
 	// Let the jumpbox work again in sites having additional session id checks.
 //	if ( !empty($SID) )
 //	{
-		$boxstring .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+		$boxstring .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 //	}
 
 	$template->set_filenames(array(
@@ -666,7 +666,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
 	global $db, $config, $template, $theme, $images, $lang, $nav_links, $gen_simple_header;
-	global $userdata, $user_ip, $session_length;
+	global $user, $user_ip, $session_length;
 	global $starttime;
 
 	if(defined('HAS_DIED'))
@@ -705,10 +705,13 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		}
 	}
 
-	if( empty($userdata) && ( $msg_code == GENERAL_MESSAGE || $msg_code == GENERAL_ERROR ) )
+	if( empty($user->data) && ( $msg_code == GENERAL_MESSAGE || $msg_code == GENERAL_ERROR ) )
 	{
-		$userdata = session_pagestart($user_ip, PAGE_INDEX);
-		init_userprefs($userdata);
+		// Start session management
+		$user->session_begin();
+		//$auth->acl($user->data);
+		$user->setup();
+		// End session management
 	}
 
 	//
@@ -1340,9 +1343,9 @@ function remove_search_post($post_id_sql)
 //
 function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 {
-	global $db, $userdata;
+	global $db, $user;
 
-	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
+	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 
 	$sql = 'SELECT f.forum_id, f.forum_name
 		FROM ' . CATEGORIES_TABLE . ' c, ' . FORUMS_TABLE . ' f

@@ -30,7 +30,7 @@ error_reporting(E_ALL ^ E_NOTICE); // Report all errors, except notices
 // Mighty Gorgon - Debug - BEGIN
 @define('DEBUG', true); // Debugging ON/OFF => TRUE/FALSE
 @define('DEBUG_EXTRA', true); // Extra Debugging ON/OFF => TRUE/FALSE
-if (defined('DEBUG_EXTRA') && (DEBUG_EXTRA == true))
+if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 {
 	$base_memory_usage = 0;
 	if (function_exists('memory_get_usage'))
@@ -151,13 +151,10 @@ else
 }
 // CrackerTracker v5.x
 
-//
-// Define some basic configuration arrays this also prevents malicious
-// rewriting of language and other array values via URI params
-//
+// Initialize some basic configuration arrays this also prevents malicious rewriting of language and other array values via URI params
 $config = array();
 $cms_config_layouts = array();
-$userdata = array();
+$user = array();
 $theme = array();
 $images = array();
 $lang = array();
@@ -180,29 +177,30 @@ if(!defined('IP_INSTALLED') && !defined('IN_INSTALL'))
 	exit;
 }
 
-include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/sessions.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_categories_hierarchy.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/class_cms.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/class_settings.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/sessions.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/functions_categories_hierarchy.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_cms.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_settings.' . PHP_EXT);
 if (defined('IN_ADMIN'))
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+	require_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 }
 
 // We need to instantiate Cache Class before DB to correctly initialize DB Connection
 $cache = new ip_cache();
 $class_settings = new class_settings();
+$user = new user();
 $ip_cms = new ip_cms();
 $ip_cms->init_vars();
 
-include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
 // We do not need these any longer, unset for safety purpose
 unset($dbuser);
@@ -218,6 +216,7 @@ set_error_handler(defined('IP_MSG_HANDLER') ? IP_MSG_HANDLER : 'msg_handler');
 // Check if we are in ACP
 if ((defined('IN_ADMIN') || defined('IN_CMS')) && !defined('ACP_MODULES'))
 {
+	define('NEED_SID', true);
 	$cache->destroy('config');
 }
 else
@@ -234,16 +233,15 @@ $config['gzip_compress_runtime'] = $config['gzip_compress'];
 
 // Obtain and encode users IP
 // Removing HTTP_X_FORWARDED_FOR ... this may well cause other problems such as private range IP's appearing instead of the guilty routable IP, tough, don't even bother complaining ... go scream and shout at the idiots out there who feel "clever" is doing harm rather than good ... karma is a great thing ... :)
-$client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
-$user_ip = encode_ip($client_ip);
-$user_agent = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
+$user_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
+$user_ip = (!empty($user_ip) && ($user_ip != '::1')) ? $user_ip : '127.0.0.1';
 
 // CrackerTracker v5.x
-$config['ctracker_user_ip_value'] = $client_ip;
+$config['ctracker_user_ip_value'] = $user_ip;
 define('protection_unit_two', true);
-if ($config['ctracker_ipblock_enabled'])
+if (!empty($config['ctracker_ipblock_enabled']))
 {
-	include(IP_ROOT_PATH . 'includes/ctracker/engines/ct_ipblocker.' . PHP_EXT);
+	require(IP_ROOT_PATH . 'includes/ctracker/engines/ct_ipblocker.' . PHP_EXT);
 }
 define('protection_unit_three', true);
 // CrackerTracker v5.x
@@ -265,72 +263,39 @@ foreach ($cache->obtain_plugins_config() as $k => $plugin)
 // MG Cash MOD For IP - BEGIN
 if (!empty($config['plugins']['cash']['enabled']) && defined('IN_CASHMOD'))
 {
-	include(IP_ROOT_PATH . 'includes/functions_cash.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/functions_cash.' . PHP_EXT);
 }
 // MG Cash MOD For IP - END
 
-include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'attachment_mod.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'attachment_mod.' . PHP_EXT);
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
-if ($config['global_disable_upi2db'])
+if (!empty($config['global_disable_upi2db']))
 {
 	$config['upi2db_on'] = 0;
 }
 else
 {
-	include(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
 }
 //<!-- END Unread Post Information to Database Mod -->
 
 // MG Logs - BEGIN
-if ($config['mg_log_actions'] || !empty($config['db_log_actions']))
+if (!empty($config['mg_log_actions']) || !empty($config['db_log_actions']))
 {
-	include(IP_ROOT_PATH . 'includes/functions_mg_log.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/functions_mg_log.' . PHP_EXT);
 }
 // MG Logs - END
 
-if ($config['url_rw'] || $config['url_rw_guests'])
+if (!empty($config['url_rw']) || !empty($config['url_rw_guests']))
 {
-	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
-if (!$config['disable_referrers'])
+if (empty($config['disable_referrers']))
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_referrers.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/functions_referrers.' . PHP_EXT);
 }
-
-// Mighty Gorgon - Change Lang/Style - BEGIN
-$test_language = request_var(LANG_URL, '');
-if (!empty($test_language))
-{
-	$test_language = str_replace(array('.', '/'), '', urldecode($test_language));
-	$config['default_lang'] = is_dir(IP_ROOT_PATH . 'language/lang_' . $test_language) ? $test_language : $config['default_lang'];
-	setcookie($config['cookie_name'] . '_lang', $config['default_lang'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-}
-else
-{
-	if (isset($_COOKIE[$config['cookie_name'] . '_lang']) && is_dir(IP_ROOT_PATH . 'language/lang_' . basename($_COOKIE[$config['cookie_name'] . '_lang'])))
-	{
-		$config['default_lang'] = $_COOKIE[$config['cookie_name'] . '_lang'];
-	}
-}
-
-$test_style = request_var(STYLE_URL, 0);
-if ($test_style > 0)
-{
-	$current_style = $config['default_style'];
-	$config['default_style'] = urldecode($test_style);
-	$config['default_style'] = (check_style_exists($config['default_style']) == false) ? $current_style : $config['default_style'];
-	setcookie($config['cookie_name'] . '_style', $config['default_style'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-}
-else
-{
-	if (isset($_COOKIE[$config['cookie_name'] . '_style']) && (check_style_exists($_COOKIE[$config['cookie_name'] . '_style']) != false))
-	{
-		$config['default_style'] = $_COOKIE[$config['cookie_name'] . '_style'];
-	}
-}
-// Mighty Gorgon - Change Lang/Style - END
 
 if ($config['admin_protect'])
 {

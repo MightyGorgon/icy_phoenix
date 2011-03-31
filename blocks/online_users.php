@@ -24,7 +24,7 @@ if(!function_exists('cms_block_online_users'))
 {
 	function cms_block_online_users()
 	{
-		global $db, $cache, $config, $template, $theme, $images, $userdata, $lang, $table_prefix;
+		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix;
 
 		include(IP_ROOT_PATH . 'includes/users_online_block.' . PHP_EXT);
 

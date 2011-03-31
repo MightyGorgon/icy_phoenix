@@ -458,11 +458,8 @@ else
 			// Let's see if they entered a full valid IPv4 address
 			if(preg_match('/^([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){3}$/', $ip_address))
 			{
-				// Encode the ip into hexademicals
-				$ip = encode_ip($ip_address);
-
 				// Because we will be deleting based on IP's, we will store the encoded IP alone
-				$users[] = $ip;
+				$users[] = $ip_address;
 			}
 			// We will also support wildcards, is this an xxx.xxx.* address?
 			elseif(preg_match('/^([0-9]{1,2}|[0-2][0-9]{0,2})(\.([0-9]{1,2}|[0-2][0-9]{0,2})){0,2}\.\*/', $ip_address))
@@ -482,17 +479,17 @@ else
 					// xxx.xxx.xxx.*
 					case 4:
 						// We will encode the ip into hexademical quads
-						$users[] = encode_ip($ip_split[0].".".$ip_split[1].".".$ip_split[2].".255");
+						$users[] = $ip_split[0] . "." . $ip_split[1] . "." . $ip_split[2] . ".255";
 						break;
 					// xxx.xxx.*
 					case 3:
 						// We will encode the ip into hexademical quads again..
-						$users[] = encode_ip($ip_split[0].".".$ip_split[1].".255.255");
+						$users[] = $ip_split[0] . "." . $ip_split[1] . ".255.255";
 						break;
 					// xxx.*
 					case 2:
 						// We will encode the ip into hexademical quads again again....
-						$users[] = encode_ip($ip_split[0] . ".255.255.255");
+						$users[] = $ip_split[0] . ".255.255.255";
 						break;
 				}
 			}
@@ -507,7 +504,7 @@ else
 				$end_range = explode('.', $range[1]);
 
 				// Confirm if we are in the same subnet or the last quad in the beginning range is greater than the last in the ending range
-				if(($start_range[0].$start_range[1].$start_range[2] != $end_range[0].$end_range[1].$end_range[2]) || ($start_range[3] > $end_range[3]))
+				if(($start_range[0] . $start_range[1] . $start_range[2] != $end_range[0] . $end_range[1] . $end_range[2]) || ($start_range[3] > $end_range[3]))
 				{
 					message_die(GENERAL_MESSAGE, $lang['Search_invalid_ip']);
 				}
@@ -516,7 +513,7 @@ else
 				for($i = $start_range[3]; $i <= $end_range[3]; $i++)
 				{
 					// let's put it in the big array..
-					$users[] = encode_ip($start_range[0] . "." . $start_range[1] . "." . $start_range[2] . "." . $i);
+					$users[] = $start_range[0] . "." . $start_range[1] . "." . $start_range[2] . "." . $i;
 				}
 			}
 			// This is not a valid IP based on what we want..
@@ -550,7 +547,7 @@ else
 						$ip_start = substr($address, 0, 6);
 					}
 
-					$ip_like_sql .= ($ip_like_sql != '') ? " OR poster_ip LIKE '".$ip_start."%'" : "poster_ip LIKE '".$ip_start."%'";
+					$ip_like_sql .= ($ip_like_sql != '') ? (" OR poster_ip LIKE '" . $ip_start . "%'") : ("poster_ip LIKE '" . $ip_start . "%'");
 				}
 				else
 				{

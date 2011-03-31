@@ -22,7 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 function topic_review($forum_id, $topic_id, $is_inline_review)
 {
-	global $db, $config, $template, $images, $theme, $userdata, $lang, $bbcode, $tree;
+	global $db, $config, $template, $images, $theme, $user, $lang, $bbcode, $tree;
 	global $user_ip, $starttime, $gen_simple_header;
 
 	if (!$is_inline_review)
@@ -54,12 +54,13 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 		$topic_calendar_duration = intval($forum_row['topic_calendar_duration']);
 
 		// Start session management
-		$userdata = session_pagestart($user_ip);
-		init_userprefs($userdata);
+		$user->session_begin();
+		//$auth->acl($user->data);
+		$user->setup();
 		// End session management
 
 		$is_auth = array();
-		$is_auth = auth(AUTH_ALL, $forum_id, $userdata, $forum_row);
+		$is_auth = auth(AUTH_ALL, $forum_id, $user->data, $forum_row);
 
 		if (!$is_auth['auth_read'])
 		{
@@ -156,17 +157,11 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 
 			$post_subject = censor_text($post_subject);
 			$message = censor_text($message);
-			if(!empty($row['post_text_compiled']))
-			{
-				$message = $row['post_text_compiled'];
-			}
-			else
-			{
-				$bbcode->allow_html = (($config['allow_html'] && $row['enable_bbcode']) ? true : false);
-				$bbcode->allow_bbcode = (($config['allow_bbcode'] && $row['enable_bbcode']) ? true : false);
-				$bbcode->allow_smilies = (($config['allow_smilies'] && $row['enable_smilies']) ? true : false);
-				$message = $bbcode->parse($message);
-			}
+
+			$bbcode->allow_html = (($config['allow_html'] && $row['enable_bbcode']) ? true : false);
+			$bbcode->allow_bbcode = (($config['allow_bbcode'] && $row['enable_bbcode']) ? true : false);
+			$bbcode->allow_smilies = (($config['allow_smilies'] && $row['enable_smilies']) ? true : false);
+			$message = $bbcode->parse($message);
 
 			if ($row['enable_autolinks_acronyms'])
 			{

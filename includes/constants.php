@@ -79,7 +79,7 @@ define('CMS_PAGE_PROFILE_MAIN', 'profile_main.' . PHP_EXT);
 define('CMS_PAGE_POSTING', 'posting.' . PHP_EXT);
 define('CMS_PAGE_DRAFTS', 'drafts.' . PHP_EXT);
 define('CMS_PAGE_MEMBERLIST', 'memberlist.' . PHP_EXT);
-define('CMS_PAGE_GROUP_CP', 'group_cp.' . PHP_EXT);
+define('CMS_PAGE_GROUP_CP', 'groupcp.' . PHP_EXT);
 define('CMS_PAGE_PRIVMSG', 'privmsg.' . PHP_EXT);
 define('CMS_PAGE_FAQ', 'faq.' . PHP_EXT);
 define('CMS_PAGE_RULES', 'rules.' . PHP_EXT);
@@ -143,10 +143,15 @@ include_once(ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
 // Mighty Gorgon - FAP - END
 
 // CHMOD permissions
-@define('CHMOD_ALL', 7);
-@define('CHMOD_READ', 4);
-@define('CHMOD_WRITE', 2);
-@define('CHMOD_EXECUTE', 1);
+if (!defined('CHMOD_ALL')) @define('CHMOD_ALL', 7);
+if (!defined('CHMOD_READ')) @define('CHMOD_READ', 4);
+if (!defined('CHMOD_WRITE')) @define('CHMOD_WRITE', 2);
+if (!defined('CHMOD_EXECUTE')) @define('CHMOD_EXECUTE', 1);
+
+// Referer validation
+define('REFERER_VALIDATE_NONE', 0);
+define('REFERER_VALIDATE_HOST', 1);
+define('REFERER_VALIDATE_PATH', 2);
 
 // User Levels <- Do not change the values of USER or ADMIN
 define('DELETED', -1);
@@ -179,6 +184,11 @@ define('GENERAL_MESSAGE', 200);
 define('GENERAL_ERROR', 202);
 define('CRITICAL_MESSAGE', 203);
 define('CRITICAL_ERROR', 204);
+
+// ACL
+define('ACL_NEVER', 0);
+define('ACL_YES', 1);
+define('ACL_NO', -1);
 
 // Auth settings - Levels
 define('AUTH_NONE', -1);
@@ -324,6 +334,12 @@ define('MAIL_LOW_PRIORITY', 4);
 define('MAIL_NORMAL_PRIORITY', 3);
 define('MAIL_HIGH_PRIORITY', 2);
 
+// Log types
+define('LOG_ADMIN', 0);
+define('LOG_MOD', 1);
+define('LOG_CRITICAL', 2);
+define('LOG_USERS', 3);
+
 // Captcha code length
 define('CAPTCHA_MIN_CHARS', 4);
 define('CAPTCHA_MAX_CHARS', 7);
@@ -451,6 +467,7 @@ define('LINK_CONFIG_TABLE', $table_prefix . 'link_config');
 define('LINKS_TABLE', $table_prefix . 'links');
 define('LIW_CACHE_TABLE', $table_prefix . 'liw_cache');
 define('LOGINS_TABLE', $table_prefix . 'logins');
+define('LOG_TABLE', $table_prefix . 'log');
 define('LOGS_TABLE', $table_prefix . 'logs');
 define('MODULES_TABLE', $table_prefix . 'stats_modules');
 define('NEWS_TABLE', $table_prefix . 'news');

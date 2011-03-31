@@ -27,7 +27,7 @@ class class_captcha
 	*/
 	function build_captcha()
 	{
-		global $db, $cache, $config, $template, $userdata, $lang, $user_ip;
+		global $db, $cache, $config, $template, $user, $lang;
 
 		$this->clear_confirm_table();
 
@@ -38,9 +38,9 @@ class class_captcha
 		//$code = substr(str_replace(array('0'), array('Z'), strtoupper(base_convert($code, 16, 35))), 2, 6);
 		// Easiest to read charset... some letters and numbers may be ambiguous
 		$code = substr(str_replace(array('0', '1', '2', '5', 'O', 'I', 'Z', 'S'), array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), strtoupper(base_convert($code, 16, 35))), 2, $this->code_lenght);
-		$confirm_id = md5(uniqid($user_ip));
+		$confirm_id = md5(uniqid($user->ip));
 		$sql = "INSERT INTO " . CONFIRM_TABLE . " (confirm_id, session_id, code)
-			VALUES ('" . $db->sql_escape($confirm_id) . "', '" . $db->sql_escape($userdata['session_id']) . "', '" . $db->sql_escape($code) . "')";
+			VALUES ('" . $db->sql_escape($confirm_id) . "', '" . $db->sql_escape($user->data['session_id']) . "', '" . $db->sql_escape($code) . "')";
 		$result = $db->sql_query($sql);
 		unset($code);
 		$server_url = create_server_url();
@@ -94,14 +94,14 @@ class class_captcha
 	*/
 	function check_attempts($return = false)
 	{
-		global $db, $cache, $config, $userdata, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		$return_value = true;
 
 		// Check number of attempts for current session
 		$sql = "SELECT COUNT(session_id) AS attempts
 			FROM " . CONFIRM_TABLE . "
-			WHERE session_id = '" . $db->sql_escape($userdata['session_id']) . "'";
+			WHERE session_id = '" . $db->sql_escape($user->data['session_id']) . "'";
 		$result = $db->sql_query($sql);
 		if ($row = $db->sql_fetchrow($result))
 		{
@@ -127,7 +127,7 @@ class class_captcha
 	*/
 	function check_code()
 	{
-		global $db, $cache, $config, $userdata, $lang, $user_ip;
+		global $db, $cache, $config, $user, $lang;
 
 		$return_array = array('error' => false, 'error_msg' => '');
 
@@ -148,7 +148,7 @@ class class_captcha
 			$sql = "SELECT code
 				FROM " . CONFIRM_TABLE . "
 				WHERE confirm_id = '" . $db->sql_escape($confirm_id) . "'
-					AND session_id = '" . $db->sql_escape($userdata['session_id']) . "'";
+					AND session_id = '" . $db->sql_escape($user->data['session_id']) . "'";
 			$result = $db->sql_query($sql);
 			if ($row = $db->sql_fetchrow($result))
 			{
@@ -163,9 +163,9 @@ class class_captcha
 					/*
 					$sql = "DELETE FROM " . CONFIRM_TABLE . "
 						WHERE confirm_id = '" . $db->sql_escape($confirm_id) . "'
-							AND session_id = '" . $db->sql_escape($userdata['session_id']) . "'";
+							AND session_id = '" . $db->sql_escape($user->data['session_id']) . "'";
 					*/
-					$sql = "DELETE FROM " . CONFIRM_TABLE . " WHERE session_id = '" . $db->sql_escape($userdata['session_id']) . "'";
+					$sql = "DELETE FROM " . CONFIRM_TABLE . " WHERE session_id = '" . $db->sql_escape($user->data['session_id']) . "'";
 					$result = $db->sql_query($sql);
 				}
 			}

@@ -45,7 +45,7 @@ else
 			// array_key_exists($friends_list[$i]['zebra_id'], $friends_online_list)
 			if (isset($friends_online_list[$friends_list[$i]['zebra_id']]['user_allow_viewonline']))
 			{
-				if (($friends_online_list[$friends_list[$i]['zebra_id']]['user_allow_viewonline'] == true) || ($userdata['user_level'] == ADMIN))
+				if (($friends_online_list[$friends_list[$i]['zebra_id']]['user_allow_viewonline'] == true) || ($user->data['user_level'] == ADMIN))
 				{
 					$template->assign_block_vars('friends_online', array(
 						'USERNAME_FULL' => colorize_username($friends_list[$i]['zebra_id'], $friends_list[$i]['username'], $friends_list[$i]['user_color'], $friends_list[$i]['user_active']),

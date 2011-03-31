@@ -31,18 +31,18 @@ include_once(IP_ROOT_PATH . 'cal_settings.' . PHP_EXT);
 	getMiniCalForumsAuth
 
 	version:		1.0.0
-	parameters:	 $userdata - an initialised $userdata array.
+	parameters:	 $user_data - an initialised $user_data array.
 	returns:		a two part array
 						$mini_cal_auth['view'] - a comma seperated list of forums which the user has VIEW permissions for
 						$mini_cal_auth['post'] - a comma seperated list of forums which the user has POST permissions for
  ***************************************************************************/
-function getMiniCalForumsAuth($userdata)
+function getMiniCalForumsAuth($user_data)
 {
 	global $db;
 
 	// initialise our forums auth list
 	$mini_cal_auth_ary = array();
-	$mini_cal_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $userdata);
+	$mini_cal_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $user_data);
 
 	$mini_cal_auth = array();
 	$mini_cal_auth['view'] = '';
@@ -59,10 +59,10 @@ function getMiniCalForumsAuth($userdata)
 			$cal_config[$row['config_name']] = $row['config_value'];
 		}
 
-		$mini_cal_auth['view'] = (($userdata['user_level'] == ADMIN) || $cal_config['allow_anon']);
+		$mini_cal_auth['view'] = (($user_data['user_level'] == ADMIN) || $cal_config['allow_anon']);
 
-		$caluser = calendarperm($userdata['user_id']);
-		if($cal_config['allow_user_default'] > $caluser && $userdata['user_id'] != ANONYMOUS)
+		$caluser = calendarperm($user_data['user_id']);
+		if(($cal_config['allow_user_default'] > $caluser) && ($user_data['user_id'] != ANONYMOUS))
 		{
 			$caluser = $cal_config['allow_user_default'];
 		}

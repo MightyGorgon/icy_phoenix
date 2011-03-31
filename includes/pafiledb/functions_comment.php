@@ -18,7 +18,7 @@
 function display_comments(&$file_data)
 {
 	global $pafiledb, $pafiledb_config, $pafiledb_functions;
-	global $db, $cache, $config, $template, $images, $userdata, $lang, $bbcode;
+	global $db, $cache, $config, $template, $images, $user, $lang, $bbcode;
 	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 
@@ -84,9 +84,9 @@ function display_comments(&$file_data)
 
 		$template->assign_block_vars('text', array(
 			'POSTER' => $poster,
-			'U_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? append_sid('dload.' . PHP_EXT . "?action=post_comment&amp;cid={$comments_row['comments_id']}&amp;delete=do&amp;file_id={$file_data['file_id']}") : '',
-			'AUTH_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
-			'DELETE_IMG' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $userdata['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? $images['icon_delpost'] : '',
+			'U_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $user->data['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? append_sid('dload.' . PHP_EXT . "?action=post_comment&amp;cid={$comments_row['comments_id']}&amp;delete=do&amp;file_id={$file_data['file_id']}") : '',
+			'AUTH_COMMENT_DELETE' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $user->data['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? true : false,
+			'DELETE_IMG' => (($pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_delete_comment'] && ($file_info['user_id'] == $user->data['user_id'])) || $pafiledb->modules[$pafiledb->module_name]->auth[$file_data['file_catid']]['auth_mod']) ? $images['icon_delpost'] : '',
 			'ICON_MINIPOST_IMG' => IP_ROOT_PATH . $images['icon_minipost'],
 			'ICON_SPACER' => IP_ROOT_PATH . $images['spacer'],
 			'GENDER' => $user_info['gender'],

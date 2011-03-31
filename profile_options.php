@@ -24,11 +24,12 @@ include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=profile_options.' . PHP_EXT, true));
 }
@@ -44,8 +45,8 @@ $view_user_id = empty($view_user_id) ? request_var(POST_USERS_URL, 0) : $view_us
 $target_userdata = array();
 if (empty($view_user_id) || ($view_user_id == ANONYMOUS))
 {
-	$view_user_id = $userdata['user_id'];
-	$target_userdata = $userdata;
+	$view_user_id = $user->data['user_id'];
+	$target_userdata = $user->data;
 }
 else
 {
@@ -60,7 +61,7 @@ else
 }
 
 // Get the user level
-$user_level = $userdata['user_level'];
+$user_level = $user->data['user_level'];
 if ($user_level == MOD)
 {
 	if ($target_userdata['user_level'] == ADMIN)
@@ -71,7 +72,7 @@ if ($user_level == MOD)
 	{
 		// Verify that the user is really a moderator (phpBB lack)
 		$sql = "SELECT * FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug
-				WHERE ug.user_id = " . $userdata['user_id'] . "
+				WHERE ug.user_id = " . $user->data['user_id'] . "
 					AND aa.group_id = ug.group_id
 					AND aa.auth_mod = 1
 					AND ug.user_pending = 0
@@ -86,7 +87,7 @@ if ($user_level == MOD)
 }
 
 // Check auth level
-if (($view_user_id != $userdata['user_id']) && ($userdata['user_level'] != ADMIN))
+if (($view_user_id != $user->data['user_id']) && ($user->data['user_level'] != ADMIN))
 {
 	message_die(GENERAL_INFO, $lang['Wrong_Profile']);
 }
@@ -178,7 +179,7 @@ $return_link = append_sid('profile_options.' . PHP_EXT . '?sub=' . strtolower($m
 if ($submit)
 {
 	// session id check
-	if ($sid != $userdata['session_id'])
+	if ($sid != $user->data['session_id'])
 	{
 		message_die(GENERAL_ERROR, 'Invalid_session');
 	}
@@ -197,7 +198,7 @@ if ($submit)
 			$config_data['default'] = $_POST[$config_data['user']];
 			$config_value = $class_form->validate_value($config_data);
 
-			if ((isset($target_userdata[$config_data['name']]) && (!$config[$config_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $config_data['system'])
+			if ((isset($target_userdata[$config_data['name']]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || $config_data['system'])
 			{
 				// update
 				$sql = "UPDATE " . USERS_TABLE . "
@@ -269,7 +270,7 @@ else
 	{
 		// process only fields from users table
 		$user_field = $config_data['user'];
-		if (((!empty($user_field) && isset($target_userdata[$user_field]) && (!$config[$config_name . '_over'] || ($userdata['user_level'] == ADMIN))) || $config_data['system']) && $class_settings->is_auth($config_data['auth'], $user_level))
+		if (((!empty($user_field) && isset($target_userdata[$user_field]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || $config_data['system']) && $class_settings->is_auth($config_data['auth'], $user_level))
 		{
 			$config_data['name'] = $config_data['user'];
 			$config_data['default'] = $target_userdata[$user_field];
@@ -286,7 +287,7 @@ else
 	}
 
 	// system
-	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $userdata['session_id'] . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="view_user_id" value="' . $view_user_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="sub" value="' . $menu_name . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="mod_id" value="' . $mod_id . '" />';

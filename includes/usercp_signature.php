@@ -15,9 +15,9 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // get the board & user settings ...
-$html_on = ($userdata['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-$bbcode_on = ($userdata['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-$smilies_on = ($userdata['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
+$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
 $bbcode->allow_html = $html_on;
 $bbcode->allow_bbcode = $bbcode_on;
@@ -73,7 +73,7 @@ if ($submit)
 		else
 		{
 			$signature = prepare_message($signature, $html_on, $bbcode_on, $smilies_on);
-			$user_id =  $userdata['user_id'];
+			$user_id =  $user->data['user_id'];
 
 			$sql = "UPDATE " . USERS_TABLE . "
 			SET user_sig = '" . $db->sql_escape($signature) . "'
@@ -131,9 +131,9 @@ elseif ($mode)
 
 	$template->assign_block_vars('switch_current_sig', array());
 
-	$signature = $userdata['user_sig'];
-	//$user_sig = prepare_message($userdata['user_sig'], $html_on, $bbcode_on, $smilies_on);
-	$user_sig = $userdata['user_sig'];
+	$signature = $user->data['user_sig'];
+	//$user_sig = prepare_message($user->data['user_sig'], $html_on, $bbcode_on, $smilies_on);
+	$user_sig = $user->data['user_sig'];
 
 	if($user_sig != '')
 	{

@@ -44,7 +44,7 @@ class attach_pm extends attach_parent
 	*/
 	function preview_attachments()
 	{
-		global $config, $userdata;
+		global $config, $user;
 
 		if (!intval($config['allow_pm_attach']))
 		{
@@ -59,7 +59,7 @@ class attach_pm extends attach_parent
 	*/
 	function insert_attachment_pm($a_privmsgs_id)
 	{
-		global $db, $userdata, $mode, $config, $privmsg_sent_id, $to_userdata;
+		global $db, $user, $mode, $config, $privmsg_sent_id, $to_userdata;
 
 		$a_privmsgs_id = (int) $a_privmsgs_id;
 
@@ -152,18 +152,18 @@ class attach_pm extends attach_parent
 	*/
 	function display_attach_box_limits()
 	{
-		global $folder, $config, $template, $userdata, $lang, $db;
+		global $folder, $config, $template, $user, $lang, $db;
 
-		if (!$config['allow_pm_attach'] && $userdata['user_level'] != ADMIN)
+		if (!$config['allow_pm_attach'] && $user->data['user_level'] != ADMIN)
 		{
 			return;
 		}
 
-		$this->get_quota_limits($userdata);
+		$this->get_quota_limits($user->data);
 
 		$pm_filesize_limit = (!$config['pm_filesize_limit']) ? $config['attachment_quota'] : $config['pm_filesize_limit'];
 
-		$pm_filesize_total = get_total_attach_pm_filesize('to_user', (int) $userdata['user_id']);
+		$pm_filesize_total = get_total_attach_pm_filesize('to_user', (int) $user->data['user_id']);
 
 		$attach_limit_pct = ( $pm_filesize_limit > 0 ) ? round(( $pm_filesize_total / $pm_filesize_limit ) * 100) : 0;
 		$attach_limit_img_length = ( $pm_filesize_limit > 0 ) ? round(( $pm_filesize_total / $pm_filesize_limit ) * $config['privmsg_graphic_length']) : 0;
@@ -199,7 +199,7 @@ class attach_pm extends attach_parent
 	*/
 	function privmsgs_attachment_mod($mode)
 	{
-		global $config, $template, $userdata, $lang, $db;
+		global $config, $template, $user, $lang, $db;
 		global $confirm, $delete, $delete_all, $post_id, $privmsgs_id, $privmsg_id, $submit, $refresh, $mark_list, $folder;
 
 		if ($folder != 'outbox')
@@ -233,7 +233,7 @@ class attach_pm extends attach_parent
 
 		if (($this->pm_delete_attachments || $delete) && sizeof($mark_list))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				$header_location = ( @preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE')) ) ? 'Refresh: 0; URL=' : 'Location: ';
 				header($header_location . append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . '?redirect=privmsg.' . PHP_EXT . '&folder=inbox', true));

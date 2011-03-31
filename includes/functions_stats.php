@@ -293,7 +293,7 @@ function get_module_data_from_db()
 
 
 // Check Module Authentication Only ALL, REG and ADMIN is supported
-function module_auth_check($module_data, $userdata)
+function module_auth_check($module_data, $user_data)
 {
 	// FALSE = Not Authorized
 	// TRUE = Authorized
@@ -304,40 +304,19 @@ function module_auth_check($module_data, $userdata)
 	switch ($auth_value)
 	{
 		case AUTH_ALL:
-			return (true);
+			return true;
 			break;
 
 		case AUTH_REG:
-			if ($userdata['session_logged_in'] && ($userdata['user_id'] != ANONYMOUS))
-			{
-				return (true);
-			}
-			else
-			{
-				return (false);
-			}
+			return ((($user_data['session_logged_in'] && ($user_data['user_id'] != ANONYMOUS))) ? true : false);
 			break;
 
 		case AUTH_MOD:
-			if ($userdata['session_logged_in'] && (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD)))
-			{
-				return (true);
-			}
-			else
-			{
-				return (false);
-			}
+			return (($user_data['session_logged_in'] && (($user_data['user_level'] == ADMIN) || ($user_data['user_level'] == MOD))) ? true : false);
 			break;
 
 		case AUTH_ADMIN:
-			if ($userdata['session_logged_in'] && ($userdata['user_level'] == ADMIN))
-			{
-				return (true);
-			}
-			else
-			{
-				return (false);
-			}
+			return (($user_data['session_logged_in'] && ($user_data['user_level'] == ADMIN)) ? true : false);
 			break;
 	}
 

@@ -31,11 +31,12 @@ include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 @set_time_limit(180);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
-if ($userdata['user_level'] != ADMIN)
+if ($user->data['user_level'] != ADMIN)
 {
 	message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 }

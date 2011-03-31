@@ -142,7 +142,7 @@ class phpbb_recaptcha extends phpbb_default_captcha
 
 	function get_template()
 	{
-		global $config, $userdata, $lang, $template;
+		global $config, $user, $lang, $template;
 
 		if ($this->is_solved())
 		{
@@ -286,7 +286,7 @@ class phpbb_recaptcha extends phpbb_default_captcha
 	*/
 	function recaptcha_check_answer($extra_params = array())
 	{
-		global $config, $userdata, $lang;
+		global $config, $user, $lang;
 
 		//discard spam submissions
 		if ($this->challenge == null || strlen($this->challenge) == 0 || $this->response == null || strlen($this->response) == 0)

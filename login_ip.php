@@ -22,8 +22,9 @@ if (!class_exists('ct_database'))
 }
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // session id check
@@ -39,7 +40,7 @@ if (strstr($redirect_url, "\n") || strstr($redirect_url, "\r") || strstr($redire
 
 if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) || isset($_GET['logout']))
 {
-	if((isset($_POST['login']) || isset($_GET['login'])) && (!$userdata['session_logged_in'] || isset($_POST['admin'])))
+	if((isset($_POST['login']) || isset($_GET['login'])) && (!$user->data['session_logged_in'] || isset($_POST['admin'])))
 	{
 		$username = isset($_POST['username']) ? phpbb_clean_username($_POST['username']) : '';
 		$password = isset($_POST['password']) ? $_POST['password'] : '';
@@ -71,20 +72,21 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 				}
 				// CrackerTracker v5.x
 
-				$autologin = (isset($_POST['autologin'])) ? true : 0;
+				$set_admin = (isset($_POST['admin'])) ? 1 : 0;
+				$persist_login = (isset($_POST['autologin'])) ? 1 : 0;
+				$viewonline = (($_POST['online_status'] == 'hidden') ? 0 : 1);
 
 				if (isset($_POST['online_status']) && (($_POST['online_status'] == 'hidden') || ($_POST['online_status'] == 'visible')))
 				{
-					$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allow_viewonline = ' . (($_POST['online_status'] == 'hidden') ? '0' : '1') . ' WHERE user_id = ' . $login_result['user_row']['user_id'];
+					$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allow_viewonline = ' . $viewonline . ' WHERE user_id = ' . $login_result['user_row']['user_id'];
 					$db->sql_return_on_error(true);
 					$db->sql_query($sql);
 					$db->sql_return_on_error(false);
 				}
 
-				$admin = (isset($_POST['admin'])) ? 1 : 0;
-				$session_id = session_begin($login_result['user_row']['user_id'], $user_ip, false, $autologin, $admin);
+				$user->session_create($login_result['user_row']['user_id'], $set_admin, $persist_login, $viewonline);
 
-				if($session_id)
+				if(!empty($user->session_id))
 				{
 					$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
 					redirect(append_sid($redirect_url, true));
@@ -123,16 +125,16 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
-	elseif((isset($_GET['logout']) || isset($_POST['logout'])) && $userdata['session_logged_in'])
+	elseif((isset($_GET['logout']) || isset($_POST['logout'])) && $user->data['session_logged_in'])
 	{
 		// session id check
-		if (($sid == '') || ($sid != $userdata['session_id']))
+		if (($sid == '') || ($sid != $user->data['session_id']))
 		{
 			message_die(GENERAL_ERROR, 'Invalid_session');
 		}
-		if($userdata['session_logged_in'])
+		if($user->data['session_logged_in'])
 		{
-			session_end($userdata['session_id'], $userdata['user_id']);
+			$user->session_kill();
 		}
 
 		$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
@@ -148,9 +150,9 @@ else
 {
 	// Do a full login page dohickey if user not already logged in
 	include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
-	$jr_admin_userdata = jr_admin_get_user_info($userdata['user_id']);
+	$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
 
-	if(!$userdata['session_logged_in'] || (isset($_GET['admin']) && $userdata['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || ($userdata['user_level'] == ADMIN) || (($userdata['user_cms_level'] >= CMS_PUBLISHER)))))
+	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || ($user->data['user_level'] == ADMIN) || (($user->data['user_cms_level'] >= CMS_PUBLISHER)))))
 	{
 		$skip_nav_cat = true;
 
@@ -186,7 +188,7 @@ else
 			}
 		}
 
-		$username = ($userdata['user_id'] != ANONYMOUS) ? $userdata['username'] : '';
+		$username = ($user->data['user_id'] != ANONYMOUS) ? $user->data['username'] : '';
 
 		$s_hidden_fields = '<input type="hidden" name="redirect" value="' . htmlspecialchars($forward_page) . '" />';
 		$s_hidden_fields .= (isset($_GET['admin'])) ? '<input type="hidden" name="admin" value="1" />' : '';

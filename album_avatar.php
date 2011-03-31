@@ -22,8 +22,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -37,13 +38,13 @@ if ($pic_id <= 0)
 }
 
 // Is the user logged in.
-if (!$userdata['session_logged_in'])
+if (!$user->data['session_logged_in'])
 {
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=album_avatar.' . PHP_EXT . '?pic_id=' . $pic_id));
 }
 
 // Is the user allowed avatars
-if (!$userdata['user_allowavatar'])
+if (!$user->data['user_allowavatar'])
 {
 	message_die(GENERAL_MESSAGE, "Avatars are not allowed.");
 }
@@ -96,7 +97,7 @@ if ($album_user_access['view'] == 0)
 }
 
 // Check Pic Approval
-if ($userdata['user_level'] != ADMIN)
+if ($user->data['user_level'] != ADMIN)
 {
 	if( ($thiscat['cat_approval'] == ADMIN) or (($thiscat['cat_approval'] == MOD) and !$album_user_access['moderator']) )
 	{
@@ -183,10 +184,10 @@ if($album_config['gd_version'] > 0)
 // Well that worked ok, lets update the users profile and tell 'em.
 $sql = "UPDATE ". USERS_TABLE ."
 		SET user_avatar = '" . $db-sql_escape($avatar_filename) . "', user_avatar_type = '1'
-		WHERE user_id = '" . $userdata['user_id'] . "'";
+		WHERE user_id = '" . $user->data['user_id'] . "'";
 $result = $db->sql_query($sql);
 
-@unlink(@phpbb_realpath('./' . $config['avatar_path']) . '/' . $userdata['user_avatar']);
+@unlink(@phpbb_realpath('./' . $config['avatar_path']) . '/' . $user->data['user_avatar']);
 
 $message = 'Your profile avatar has been updated.<br />Click <a href="album_cat.' . PHP_EXT . '?cat_id=' . $cat_id . '&amp;user_id=' . $user_id . '">here</a> to go to image category.<br />Click <a href="album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . '&amp;user_id=' . $user_id . '">here</a> to go to image.<br />';
 message_die(GENERAL_MESSAGE, $message);

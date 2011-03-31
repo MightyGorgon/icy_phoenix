@@ -39,8 +39,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 $sid = request_var('sid', '');
@@ -48,7 +49,7 @@ $mode = request_var('mode', '');
 $user_id = request_var('uid', 0);
 
 // Ensure that a user is not logged in
-if ($userdata['session_logged_in'])
+if ($user->data['session_logged_in'])
 {
 	message_die(GENERAL_MESSAGE, $lang['ctracker_login_logged']);
 }

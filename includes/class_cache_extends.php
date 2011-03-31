@@ -384,9 +384,9 @@ class ip_cache extends acm
 	*/
 	function obtain_today_visitors()
 	{
-		global $db, $config, $lang, $userdata;
+		global $db, $config, $lang, $user;
 
-		if (($today_visitors = $this->get('_today_visitors_' . $config['board_timezone'] . '_' . $userdata['user_level'])) === false)
+		if (($today_visitors = $this->get('_today_visitors_' . $config['board_timezone'] . '_' . $user->data['user_level'])) === false)
 		{
 
 			$today_visitors['admins'] = '';
@@ -438,8 +438,8 @@ class ip_cache extends acm
 					$today_visitors['last_hour']++;
 				}
 				$colored_user = colorize_username($todayrow['user_id'], $todayrow['username'], $todayrow['user_color'], $todayrow['user_active']);
-				$colored_user = (($todayrow['user_allow_viewonline']) ? $colored_user : (($userdata['user_level'] == ADMIN) ? '<i>' . $colored_user . '</i>' : ''));
-				if ($todayrow['user_allow_viewonline'] || ($userdata['user_level'] == ADMIN))
+				$colored_user = (($todayrow['user_allow_viewonline']) ? $colored_user : (($user->data['user_level'] == ADMIN) ? '<i>' . $colored_user . '</i>' : ''));
+				if ($todayrow['user_allow_viewonline'] || ($user->data['user_level'] == ADMIN))
 				{
 					switch ($todayrow['user_level'])
 					{
@@ -471,7 +471,7 @@ class ip_cache extends acm
 			//You can set once per day... but that is too restrictive... better once every hour!
 			//$expiry = create_date_midnight(time(), $config['board_timezone']) - time() + 86400;
 			$expiry = 3600 - ((int) gmdate('i') * 60) - (int) gmdate('s');
-			$this->put('_today_visitors_' . $config['board_timezone'] . '_' . $userdata['user_level'], $today_visitors, $expiry);
+			$this->put('_today_visitors_' . $config['board_timezone'] . '_' . $user->data['user_level'], $today_visitors, $expiry);
 		}
 
 		return $today_visitors;

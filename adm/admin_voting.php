@@ -197,8 +197,8 @@ while ($row = $db->sql_fetchrow($result))
 		$vote_duration = (date('Y/m/d', $vote_start)) . ' - ' . (date('Y/m/d', $vote_end)) . $lang['POLL_COMPLETED'];
 	}
 
-	$user = '';
-	$users = '';
+	$target_user = '';
+	$target_users = '';
 	$user_option_arr = '';
 
 	if (sizeof($voter_arr[$topic_id]) > 0)
@@ -207,7 +207,7 @@ while ($row = $db->sql_fetchrow($result))
 		foreach($voter_arr[$topic_id] as $user_id => $option_id)
 		{
 			$current_username = colorize_username($users_arr[$user_id]['user_id'], $users_arr[$user_id]['username'], $users_arr[$user_id]['user_color'], $users_arr[$user_id]['user_active']);
-			$user .= $current_username . ', ';
+			$target_user .= $current_username . ', ';
 			$users_added[] = $user_id;
 			foreach ($option_id as $result_id)
 			{
@@ -217,14 +217,14 @@ while ($row = $db->sql_fetchrow($result))
 				}
 			}
 		}
-		$user = substr($user, '0', strrpos($user, ', '));
+		$target_user = substr($target_user, '0', strrpos($target_user, ', '));
 	}
 
 	$template->assign_block_vars('votes', array(
 		'COLOR' => $topic_row_color,
 		'LINK' => IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id,
 		'DESCRIPTION' => $vote_text,
-		'USER' => $user,
+		'USER' => $target_user,
 		'ENDDATE' => $vote_end,
 		'VOTE_DURATION' => $vote_duration,
 		'VOTE_ID' => $topic_id
@@ -237,13 +237,13 @@ while ($row = $db->sql_fetchrow($result))
 		{
 			$option_text = $elem['poll_option_text'];
 			$option_result = $elem['poll_option_total'];
-			$user = $user_option_arr[$vote_option_id];
-			$user = substr($user, '0', strrpos($user, ', '));
+			$target_user = $user_option_arr[$vote_option_id];
+			$target_user = substr($target_user, '0', strrpos($target_user, ', '));
 
 			$template->assign_block_vars('votes.detail', array(
 				'OPTION' => $option_text,
 				'RESULT' => $option_result,
-				'USER' => $user
+				'USER' => $target_user
 				)
 			);
 		}

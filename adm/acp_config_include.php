@@ -220,7 +220,7 @@ while (list($config_name, $config_data) = @each($acp_modules[$menu_name]['data']
 
 	// overwrite user choice
 	$override = '';
-	if (!empty($input) && !empty($config_data['user']) && isset($userdata[$config_data['user']]))
+	if (!empty($input) && !empty($config_data['user']) && isset($user->data[$config_data['user']]))
 	{
 		$override = '';
 		@reset($class_settings->list_yes_no);

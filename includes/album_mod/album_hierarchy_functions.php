@@ -59,7 +59,7 @@ require_once(ALBUM_MOD_PATH . 'album_hierarchy_sql.' . PHP_EXT);
 //-----------------------------------------------
 function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_level = -1, $column_offset=1)
 {
-	global $db, $template, $images, $userdata, $lang, $user_id, $album_data;
+	global $db, $template, $images, $user, $lang, $user_id, $album_data;
 
 	static $username = '';
 
@@ -135,7 +135,7 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 			'INC_SPAN' => $max_level - $level + 1 , // + $column_offset,
 
 			'U_CAT_EDIT' => append_sid(album_append_uid($admin_url . '?action=edit&amp;cat_id=' . $cat_id)),
-			'U_CAT_DELETE' => ($is_root && $userdata['user_level'] != ADMIN) ? '' : append_sid(album_append_uid("$admin_url?action=delete&amp;cat_id=$cat_id")),
+			'U_CAT_DELETE' => ($is_root && $user->data['user_level'] != ADMIN) ? '' : append_sid(album_append_uid("$admin_url?action=delete&amp;cat_id=$cat_id")),
 			'U_CAT_MOVE_UP' => ($is_root) ? '' : append_sid(album_append_uid($admin_url . '?action=move&amp;move=-15&amp;cat_id=' . $cat_id)),
 			'U_CAT_MOVE_DOWN' => ($is_root) ? '' : append_sid(album_append_uid($admin_url . '?action=move&amp;move=15&amp;cat_id=' . $cat_id)),
 			'U_VIEWCAT' => append_sid(album_append_uid($admin_url . '?action=edit&amp;cat_id=' . $cat_id)),
@@ -143,7 +143,7 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 			'L_MOVE_UP' => ($is_root) ? '' : $lang['Move_up'],
 			'L_MOVE_DOWN' => ($is_root) ? '' : $lang['Move_down'],
 			'L_EDIT' => $lang['Edit'],
-			'L_DELETE' => ($is_root && $userdata['user_level'] != ADMIN) ? '' : $lang['Delete']
+			'L_DELETE' => ($is_root && $user->data['user_level'] != ADMIN) ? '' : $lang['Delete']
 			)
 		);
 
@@ -208,7 +208,7 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 // --------------------------------
 function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, $real_level = ALBUM_ROOT_CATEGORY, $max_level = ALBUM_ROOT_CATEGORY, $newestpic = NULL)
 {
-	global $template, $db, $config, $album_config, $lang, $images, $userdata, $album_data;
+	global $template, $db, $config, $album_config, $lang, $images, $user, $album_data;
 
 	// init some variables
 	$display = false;
@@ -418,7 +418,7 @@ function album_build_index($user_id, &$keys, $cur_cat_id = ALBUM_ROOT_CATEGORY, 
 		{
 			$cat_img = (intval(sizeof($sub_cats)) >0) ? $images['forum_sub_read'] : $cat_img = $images['forum_nor_read'];
 		}
-		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($userdata['user_id'] == ANONYMOUS)))
+		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 		{
 			$cat_url = append_sid(str_replace ('--', '-', make_url_friendly(album_get_object_lang($cur_cat_id, 'name')) . '-ac' . $cat_id . '.html'));
 		}
@@ -1152,7 +1152,7 @@ function album_validate_jumpbox_selection($cat_id)
 //-----------------------------------------------
 function album_build_jumpbox($cat_id, $user_id = ALBUM_PUBLIC_GALLERY, $auth_key = ALBUM_AUTH_VIEW)
 {
-	global $lang, $album_data , $userdata;
+	global $lang, $album_data , $user;
 
 	if (sizeof($album_data['data']) == 0)
 	{
@@ -1178,7 +1178,7 @@ function album_build_jumpbox($cat_id, $user_id = ALBUM_PUBLIC_GALLERY, $auth_key
 	$res .= album_get_tree_option($cat_id, $auth_key, ALBUM_SELECTBOX_INCLUDE_ROOT);
 	$res .= '</select>';
 	$res .= '&nbsp;<input type="submit" class="liteoption" value="'. $lang['Go'] .'" />';
-	$res .= '<input type="hidden" name="sid" value="'. $userdata['session_id'] .'" />';
+	$res .= '<input type="hidden" name="sid" value="'. $user->data['session_id'] .'" />';
 	$res .= ($user_id != ALBUM_PUBLIC_GALLERY) ? '<input type="hidden" name="user_id" value="'. $user_id .'" />' : '';
 	$res .= '</form>';
 
@@ -1266,7 +1266,7 @@ function album_build_url_parameters($parameters)
 //-----------------------------------------------
 function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_header = false, $show_public_footer = false, $force_display = false)
 {
-	global $lang, $config, $template, $images, $album_data, $album_config, $userdata;
+	global $lang, $config, $template, $images, $album_data, $album_config, $user;
 	$keys = array();
 
 	// for testing ONLY
@@ -1319,8 +1319,8 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 			$template->assign_block_vars('catheader', array(
 					'L_CATEGORY' => $lang['Category'],
 					'L_PUBLIC_CATS' => (!$is_personal_gallery) ? $lang['Public_Categories'] : sprintf($lang['Personal_Gallery_Of_User'], album_get_user_name($user_id)),
-					'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $userdata['user_id'])),
-					//'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($userdata['user_id']) . 'user_id=' . $userdata['user_id'])),
+					'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $user->data['user_id'])),
+					//'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($user->data['user_id']) . 'user_id=' . $user->data['user_id'])),
 					'L_YOUR_PERSONAL_GALLERY' => $lang['Your_Personal_Gallery'],
 
 					'U_USERS_PERSONAL_GALLERIES' => append_sid(album_append_uid('album_personal_index.' . PHP_EXT)),
@@ -1334,8 +1334,8 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 			if ($show_public_footer == true)
 			{
 				$template->assign_block_vars('catfooter.cat_public_footer', array(
-					'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $userdata['user_id'])),
-					//'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($userdata['user_id']) . 'user_id=' . $userdata['user_id'])),
+					'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $user->data['user_id'])),
+					//'U_YOUR_PERSONAL_GALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($user->data['user_id']) . 'user_id=' . $user->data['user_id'])),
 					'L_YOUR_PERSONAL_GALLERY' => $lang['Your_Personal_Gallery'],
 
 					'U_USERS_PERSONAL_GALLERIES' => append_sid(album_append_uid('album_personal_index.' . PHP_EXT)),

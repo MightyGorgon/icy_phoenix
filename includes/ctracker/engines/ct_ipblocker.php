@@ -57,8 +57,8 @@ if ($config['ctracker_ipblock_enabled'])
 	$ctracker_config->load_blocklist();
 
 	// Fetch IP UserAgent and Remote Host
-	$ct_client_ip   = $client_ip;
-	$ct_user_agent  = $_SERVER['HTTP_USER_AGENT'];
+	$ct_client_ip = $user_ip;
+	$ct_user_agent = $_SERVER['HTTP_USER_AGENT'];
 	$ct_remote_host = $_SERVER['REMOTE_HOST'];
 
 	/*

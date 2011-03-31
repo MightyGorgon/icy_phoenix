@@ -19,7 +19,7 @@ class pafiledb_category extends pafiledb_public
 {
 	function main($action)
 	{
-		global $template, $lang, $pafiledb_config, $userdata, $config;
+		global $template, $lang, $pafiledb_config, $user, $config;
 
 		// =======================================================
 		// Get the id
@@ -74,7 +74,7 @@ class pafiledb_category extends pafiledb_public
 
 		if((!$this->auth[$cat_id]['auth_read']) && (!$show_category))
 		{
-			if (!$userdata['session_logged_in'])
+			if (!$user->data['session_logged_in'])
 			{
 				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=dload.' . PHP_EXT . '&action=category&cat_id=' . $cat_id, true));
 			}

@@ -22,8 +22,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
-$userdata = session_pagestart($user_ip);
-init_userprefs($userdata);
+$user->session_begin();
+//$auth->acl($user->data);
+$user->setup();
 // End session management
 
 // Get general album information
@@ -50,7 +51,7 @@ $count = ($count <= 0) ? 25 : $count;
 // Start check permissions
 $sql_allowed_cat = '';
 $check_sel = ($admin_mode) ? 0 : 1;
-if($userdata['user_level'] != ADMIN)
+if($user->data['user_level'] != ADMIN)
 {
 	$album_user_access = personal_gallery_access(true, false);
 	$not_allowed_cat = ($album_user_access['view'] == 1) ? '' : '0';

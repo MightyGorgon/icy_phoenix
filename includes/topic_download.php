@@ -30,7 +30,7 @@ $line = '-----------------------------------';
 
 while ($row = $db->sql_fetchrow($result))
 {
-	$is_auth_read = auth(AUTH_ALL, $row['forum_id'], $userdata);
+	$is_auth_read = auth(AUTH_ALL, $row['forum_id'], $user->data);
 
 	$poster_id = $row['user_id'];
 	$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : $row['username'];
@@ -43,9 +43,9 @@ while ($row = $db->sql_fetchrow($result))
 	$message = strip_tags($message);
 	$message = preg_replace('/\[url\]|\[\/url\]/si', '', $message);
 	$message = preg_replace('/\:[0-9a-z\:]+\]/si', ']', $message);
-	if($userdata['session_logged_in'] && !$userdata['is_bot'])
+	if($user->data['session_logged_in'] && !$user->data['is_bot'])
 	{
-		if (($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD))
+		if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 		{
 			$show = true;
 		}
@@ -54,7 +54,7 @@ while ($row = $db->sql_fetchrow($result))
 			$sql = "SELECT p.poster_id, p.topic_id
 				FROM " . POSTS_TABLE . " p
 				WHERE p.topic_id = '" . $topic_id . "'
-				AND p.poster_id = '" . $userdata['user_id'] . "'";
+				AND p.poster_id = '" . $user->data['user_id'] . "'";
 			$resultat = $db->sql_query($sql);
 			$show = $db->sql_numrows($resultat) ? true : false;
 		}
