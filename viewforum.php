@@ -473,7 +473,7 @@ else
 // Generate a 'Show topics in previous x days' select box. If the topicsdays var is sent then get its value,
 // find the number of topics with dates newer than it (to properly handle pagination) and alter the main query
 $previous_days = array(0, 1, 7, 14, 30, 90, 180, 364);
-$previous_days_text = array($lang['All_Topics'], $lang['1_Day'], $lang['7_Days'], $lang['2_Weeks'], $lang['1_Month'], $lang['3_Months'], $lang['6_Months'], $lang['1_Year']);
+$previous_days_text = array($lang['ALL_TOPICS'], $lang['1_DAY'], $lang['7_DAYS'], $lang['2_WEEKS'], $lang['1_MONTH'], $lang['3_MONTHS'], $lang['6_MONTHS'], $lang['1_YEAR']);
 
 $topic_days = request_var('topicdays', 0);
 if (!empty($topic_days))

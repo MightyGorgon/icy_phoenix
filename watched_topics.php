@@ -43,10 +43,10 @@ if (!$user->data['session_logged_in'])
 // are we un-watching some topics?
 if (isset($_POST['unwatch_list']))
 {
-	$topic_ids = implode(',', $_POST['unwatch_list']);
+	$topic_ids = $_POST['unwatch_list'];
 	$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
-		WHERE topic_id IN(" .  $topic_ids . ")
-		AND user_id = " . $user->data['user_id'];
+		WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
+			AND user_id = " . $user->data['user_id'];
 	$result = $db->sql_query($sql);
 }
 

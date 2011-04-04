@@ -461,7 +461,7 @@ switch($mode)
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
 
-		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
+		$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 		$mcp_topic->topic_lock_unlock($topics, $mode, $forum_id);
 
 		if(!empty($topic_id))
@@ -497,7 +497,7 @@ switch($mode)
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
 
-		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
+		$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 		$mcp_topic->topic_switch_status($topics, $mode);
 
 		if(!empty($topic_id))

@@ -188,8 +188,8 @@
 <!-- ENDIF -->
 <tr>
 	<td class="cat" colspan="2">
-		<form method="post" action="{S_POST_DAYS_ACTION}" style="display:inline;">
-		<span class="genmed">{L_DISPLAY_POSTS}:</span>&nbsp;{S_SELECT_POST_DAYS}&nbsp;{S_SELECT_POST_ORDER}&nbsp;<input type="submit" value="{L_GO}" class="liteoption jumpbox" name="submit" />
+		<form method="post" action="{S_POST_DAYS_ACTION}" style="display: inline;">
+		<span class="genmed">{L_DISPLAY_POSTS}:</span>&nbsp;{S_SELECT_SORT_DAYS}&nbsp;{S_SELECT_SORT_KEY}&nbsp;{S_SELECT_SORT_DIR}&nbsp;<input type="submit" value="{L_GO}" class="liteoption jumpbox" name="submit" />
 		</form>
 	</td>
 </tr>

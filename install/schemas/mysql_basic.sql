@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.15.68');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.16.69');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
@@ -173,6 +173,7 @@ INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('show_p
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Yahoo! Slurp', '<b style="color:#d22;">Yahoo!</b><b style="color:#24b;"> Slurp</b>', 'Yahoo! Slurp', '66.106, 68.142, 72.30, 74.6, 202.160.180');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Google', '<b style="color:#24b;">G</b><b style="color:#d22;">o</b><b style="color:#eb0;">o</b><b style="color:#24b;">g</b><b style="color:#393;">l</b><b style="color:#d22;">e</b>', 'Googlebot', '66.249');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('MSN', '<b style="color:#468;">MSN</b>', 'msnbot/', '207.66.146, 207.46, 65.54.188, 65.54.246, 65.54.165, 65.55.210, 65.55.213');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Bing', '<b style="color:#468;">Bing</b>', 'bingbot/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('LiveBot', '<b style="color:#468;">LiveBot</b>', 'LiveBot', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('AdsBot [Google]', '', 'AdsBot-Google', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Google Adsense', '<b style="color:#24b;">G</b><b style="color:#d22;">o</b><b style="color:#eb0;">o</b><b style="color:#24b;">g</b><b style="color:#393;">l</b><b style="color:#d22;">e</b><b style="color:#d22;"> Adsense</b>', 'Mediapartners-Google', '');
@@ -948,9 +949,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smtp_port', 
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_likes_posts', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_admins_only', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attachments_stats', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_lock_hour', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_birthdays_interval', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_birthdays_last_run', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('robots_index_topics_no_replies', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('limit_load', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('limit_search_load', '0');

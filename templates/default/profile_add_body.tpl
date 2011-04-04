@@ -316,6 +316,18 @@
 	<td class="row1"><span class="gen">{L_HOT_THRESHOLD}:</span></td>
 	<td class="row2"><input class="post" type="text" name="user_hot_threshold" size="3" maxlength="4" value="{HOT_TOPIC}" /></td>
 </tr>
+<tr>
+	<td class="row1"><span class="gen">{L_VIEW_POSTS_DAYS}:</span></td>
+	<td class="row2">{USER_POST_SHOW_DAYS_SELECT}</td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_VIEW_POSTS_KEY}:</span></td>
+	<td class="row2">{USER_POST_SORTBY_TYPE_SELECT}</td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_VIEW_POSTS_DIR}:</span></td>
+	<td class="row2">{USER_POST_SORTBY_DIR_SELECT}</td>
+</tr>
 <!-- BEGIN switch_upi2db_is_on -->
 	<tr>
 		<th class="thSides" colspan="2">{L_UPI2DB_SYSTEM}</th>

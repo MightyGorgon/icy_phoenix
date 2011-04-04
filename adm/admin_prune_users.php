@@ -68,15 +68,15 @@ $sql_up[5] = ' AND user_posts = \'0\' AND user_lastvisit < ' . (time() - (86400 
 // ********************************************************************************
 // ****************** Do not change any thing below *******************************
 
-$options = '<option value="1">&nbsp;' . $lang['1_Day'] . '</option>
-	<option value="7">&nbsp;' . $lang['7_Days'] . '</option>
-	<option value="14">&nbsp;' . $lang['2_Weeks'] . '</option>
-	<option value="21">&nbsp;' . sprintf($lang['X_Weeks'], 3) . '</option>
-	<option value="30">&nbsp;' . $lang['1_Month'] . '</option>
-	<option value="60">&nbsp;' . sprintf($lang['X_Months'], 2) . '</option>
-	<option value="90">&nbsp;' . $lang['3_Months'] . '</option>
-	<option value="180">&nbsp;' . $lang['6_Months'] . '</option>
-	<option value="365">&nbsp;' . $lang['1_Year'] . '</option>
+$options = '<option value="1">&nbsp;' . $lang['1_DAY'] . '</option>
+	<option value="7">&nbsp;' . $lang['7_DAYS'] . '</option>
+	<option value="14">&nbsp;' . $lang['2_WEEKS'] . '</option>
+	<option value="21">&nbsp;' . sprintf($lang['X_WEEKS'], 3) . '</option>
+	<option value="30">&nbsp;' . $lang['1_MONTH'] . '</option>
+	<option value="60">&nbsp;' . sprintf($lang['X_MONTHS'], 2) . '</option>
+	<option value="90">&nbsp;' . $lang['3_MONTHS'] . '</option>
+	<option value="180">&nbsp;' . $lang['6_MONTHS'] . '</option>
+	<option value="365">&nbsp;' . $lang['1_YEAR'] . '</option>
 </select>';
 
 // Generate page
@@ -93,7 +93,7 @@ while (!empty($sql_up[$n]))
 	// make a extra option if the parsed days value does not already exisit
 	if (!strpos($options, 'value="' . $days[$n]))
 	{
-		$options = '<option value="' . $days[$n] . '">&nbsp;' . sprintf($lang['X_Days'], $days[$n]) . '</option>' . $options;
+		$options = '<option value="' . $days[$n] . '">&nbsp;' . sprintf($lang['X_DAYS'], $days[$n]) . '</option>' . $options;
 	}
 	$select[$n] = '<select name="days_' . $n . '" size="1" onchange="SetDays();" class="gensmall">' . str_replace('value="' . $days[$n] . '">&nbsp;', 'value="' . $days[$n] . '" selected="selected">&nbsp;*', $options);
 

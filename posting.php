@@ -2166,7 +2166,7 @@ $template->assign_vars(array(
 	'L_TOPIC_DESCRIPTION' => $lang['Topic_description'],
 
 	'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . PHP_EXT . '?mode=text2shield'),
-	'U_VIEWTOPIC' => ($mode == 'reply') ? append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append . '&amp;postorder=desc') : '',
+	'U_VIEWTOPIC' => ($mode == 'reply') ? append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append . '&amp;sd=d') : '',
 	'U_REVIEW_TOPIC' => ($mode == 'reply') ? append_sid('posting.' . PHP_EXT . '?mode=topicreview&amp;' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) : '',
 
 	// AJAX Features - BEGIN

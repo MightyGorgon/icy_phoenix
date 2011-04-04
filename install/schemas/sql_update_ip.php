@@ -71,6 +71,7 @@ switch ($req_version)
 	case '131467': $current_ip_version = '1.3.14.67'; break;
 	case '131568': $current_ip_version = '1.3.15.68'; break;
 	case '131669': $current_ip_version = '1.3.16.69'; break;
+	case '131770': $current_ip_version = '1.3.17.70'; break;
 }
 
 // Icy Phoenix Part...
@@ -4180,9 +4181,20 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.15.68 */
 		case '1.3.15.68':
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Bing', '<b style=\"color:#468;\">Bing</b>', 'bingbot/', '')";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_post_sortby_dir` varchar(1) DEFAULT 'a' NOT NULL AFTER `user_posts_per_page`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_post_sortby_type` varchar(1) DEFAULT 't' NOT NULL AFTER `user_posts_per_page`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_post_show_days` smallint(4) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_posts_per_page`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_topic_sortby_dir` varchar(1) DEFAULT 'd' NOT NULL AFTER `user_posts_per_page`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_topic_sortby_type` varchar(1) DEFAULT 't' NOT NULL AFTER `user_posts_per_page`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_topic_show_days` smallint(4) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_posts_per_page`";
 
 		/* Updating from IP 1.3.16.69 */
 		case '1.3.16.69':
+
+		/* Updating from IP 1.3.17.70 */
+		case '1.3.17.70':
 
 	}
 

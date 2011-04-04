@@ -2101,7 +2101,7 @@ class cms_admin
 	*/
 	function get_user_cms_id()
 	{
-		global $db, $user, $auth;
+		global $db, $user, $cms_auth;
 
 		$sql = "SELECT cu_id FROM " . CMS_USERS_TABLE . " WHERE cu_user_id = '" . $user->data['user_id'] . "'";
 		$result = $db->sql_query($sql);
@@ -2109,7 +2109,7 @@ class cms_admin
 		$db->sql_freeresult($result);
 		$user_cms_id =  !empty($row['cu_id']) ? $row['cu_id'] : false;
 
-		return $auth->acl_get('cms_view', $this->cms_id) ? true : $user_cms_id;
+		return $cms_auth->acl_get('cms_view', $this->cms_id) ? true : $user_cms_id;
 	}
 
 	/**

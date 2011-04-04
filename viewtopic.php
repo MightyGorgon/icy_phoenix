@@ -61,9 +61,84 @@ $page_number = ($page_number < 1) ? 0 : $page_number;
 
 $start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
-$post_order = strtolower(request_var('postorder', 'asc'));
-$post_order = check_var_value($post_order, array('asc', 'desc'));
-$post_time_order = strtoupper($post_order);
+$sort_days_array = array(0, 1, 7, 14, 30, 90, 180, 365);
+$sort_days_lang_array = array(0 => $lang['ALL_POSTS'], 1 => $lang['1_DAY'], 7 => $lang['7_DAYS'], 14 => $lang['2_WEEKS'], 30 => $lang['1_MONTH'], 90 => $lang['3_MONTHS'], 180 => $lang['6_MONTHS'], 365 => $lang['1_YEAR']);
+$sort_key_array = array('t', 's', 'a');
+$sort_key_lang_array = array('t' => $lang['POST_TIME'], 's' => $lang['SUBJECT'], 'a' => $lang['AUTHOR']);
+// In Icy Phoenix we still prefer sorting by time instead by ID... it could lead to collateral problems I know...
+//$sort_key_sql_array = array('t' => 'p.post_id', 's' => 'p.post_subject', 'a' => 'u.username_clean');
+$sort_key_sql_array = array('t' => 'p.post_time', 's' => 'p.post_subject', 'a' => 'u.username_clean');
+$sort_dir_array = array('a', 'd');
+$sort_dir_lang_array = array('a' => $lang['ASCENDING'], 'd' => $lang['DESCENDING']);
+$sort_dir_sql_array = array('a' => 'ASC', 'd' => 'DESC');
+
+$default_sort_days = (!empty($user->data['user_post_show_days'])) ? $user->data['user_post_show_days'] : $sort_days_array[0];
+$default_sort_key = (!empty($user->data['user_post_sortby_type'])) ? $user->data['user_post_sortby_type'] : $sort_key_array[0];
+$default_sort_dir = (!empty($user->data['user_post_sortby_dir'])) ? $user->data['user_post_sortby_dir'] : $sort_dir_array[0];
+
+$sort_days = request_var('st', $default_sort_days);
+$sort_days = check_var_value($sort_days, $sort_days_array);
+$sort_key = request_var('sk', $default_sort_key);
+$sort_key = check_var_value($sort_key, $sort_key_array);
+$sort_key_sql = $sort_key_sql_array[$sort_key];
+$sort_dir = strtolower(request_var('sd', $default_sort_dir));
+$sort_dir = check_var_value($sort_dir, $sort_dir_array);
+$sort_dir_sql = $sort_dir_sql_array[$sort_dir];
+
+// Backward compatibility
+if (check_http_var_exists('postorder', true))
+{
+	$sort_dir_array_old = array('asc', 'desc');
+	$sort_dir = strtolower(request_var('postorder', $sort_dir_array_old[0]));
+	$sort_dir = check_var_value($sort_dir, $sort_dir_array_old);
+	$sort_dir = ($sort_dir == 'asc') ? 'a' : 'd';
+	$sort_dir_sql = $sort_dir_sql_array[$sort_dir];
+}
+
+if (check_http_var_exists('postdays', true))
+{
+	$sort_days = request_var('postdays', $default_sort_days);
+	$sort_days = check_var_value($sort_days, $sort_days_array);
+}
+
+$vt_sort_append_array = array();
+if ($sort_days != $sort_days_array[0])
+{
+	$vt_sort_append_array['st'] = $sort_days;
+}
+if ($sort_key != $sort_key_array[0])
+{
+	$vt_sort_append_array['sk'] = $sort_key;
+}
+if ($sort_dir != $sort_dir_array[0])
+{
+	$vt_sort_append_array['sd'] = $sort_dir;
+}
+
+$vt_sort_append = '';
+$vt_sort_append_red = '';
+if (!empty($vt_sort_append_array))
+{
+	foreach ($vt_sort_append_array as $k => $v)
+	{
+		$vt_sort_append = '&amp;' . $k . '=' . $v;
+		$vt_sort_append_red = '&' . $k . '=' . $v;
+	}
+}
+
+$select_post_array = array('st' => 'sort_days', 'sk' => 'sort_key', 'sd' => 'sort_dir');
+$select_post_array_output = array();
+foreach ($select_post_array as $s_key => $s_name)
+{
+	$select_post_array_output[$s_key] = '<select name="' . $s_key . '">';
+	foreach (${$s_name . '_lang_array'} as $k => $v)
+	{
+		$selected = (${$s_name} == $k) ? ' selected="selected"' : '';
+		$select_post_array_output[$s_key] .= '<option value="' . $k . '"' . $selected . '>' . $v . '</option>';
+	}
+	$select_post_array_output[$s_key] .= '</select>';
+	${'select_' . $s_name} = $select_post_array_output[$s_key];
+}
 
 $sid = request_var('sid', '');
 
@@ -273,7 +348,7 @@ $setbm = request_var('setbm', '');
 $removebm = request_var('removebm', '');
 if ((!empty($setbm) || !empty($removebm)) && !$user->data['is_bot'])
 {
-	$redirect = CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red . '&start=' . $start . '&postdays=' . $post_days . '&postorder=' . $post_order . '&highlight=' . urlencode($_GET['highlight']);
+	$redirect = CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red . '&start=' . $start . $vt_sort_append_red . '&highlight=' . urlencode($_GET['highlight']);
 	if ($user->data['session_logged_in'])
 	{
 		if (!empty($setbm))
@@ -477,13 +552,10 @@ else
 }
 
 // Generate a 'Show posts in previous x days' select box. If the postdays var is POSTed then get it's value, find the number of topics with dates newer than it (to properly handle pagination) and alter the main query
-$previous_days = array(0, 1, 7, 14, 30, 90, 180, 364);
-$previous_days_text = array($lang['All_Posts'], $lang['1_Day'], $lang['7_Days'], $lang['2_Weeks'], $lang['1_Month'], $lang['3_Months'], $lang['6_Months'], $lang['1_Year']);
-
-$post_days = request_var('postdays', 0);
-if(!empty($post_days))
+if(!empty($sort_days))
 {
-	$min_post_time = time() - (intval($post_days) * 86400);
+	$start = 0;
+	$min_post_time = time() - (intval($sort_days) * 86400);
 
 	$sql = "SELECT COUNT(p.post_id) AS num_posts
 		FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
@@ -493,39 +565,13 @@ if(!empty($post_days))
 	$result = $db->sql_query($sql);
 	$total_replies = ($row = $db->sql_fetchrow($result)) ? intval($row['num_posts']) : 0;
 	$limit_posts_time = "AND p.post_time >= " . $min_post_time . " ";
-
-	if (!empty($post_days))
-	{
-		$start = 0;
-	}
 }
 else
 {
+	$sort_days = 0;
 	$total_replies = intval($forum_topic_data['topic_replies']) + 1;
-
 	$limit_posts_time = '';
-	$post_days = 0;
 }
-
-$select_post_days = '<select name="postdays">';
-for($i = 0; $i < sizeof($previous_days); $i++)
-{
-	$selected = ($post_days == $previous_days[$i]) ? ' selected="selected"' : '';
-	$select_post_days .= '<option value="' . $previous_days[$i] . '"' . $selected . '>' . $previous_days_text[$i] . '</option>';
-}
-$select_post_days .= '</select>';
-
-// Decide how to order the post display
-$select_post_order = '<select name="postorder">';
-if ($post_time_order == 'ASC')
-{
-	$select_post_order .= '<option value="asc" selected="selected">' . $lang['Oldest_First'] . '</option><option value="desc">' . $lang['Newest_First'] . '</option>';
-}
-else
-{
-	$select_post_order .= '<option value="asc">' . $lang['Oldest_First'] . '</option><option value="desc" selected="selected">' . $lang['Newest_First'] . '</option>';
-}
-$select_post_order .= '</select>';
 
 $user_ids = array();
 $user_ids2 = array();
@@ -595,7 +641,7 @@ $sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, 
 		AND u.user_id = p.poster_id
 		" . $limit_posts_time . "
 		" . $self_sql . "
-	ORDER BY p.post_time $post_time_order
+	ORDER BY " . $sort_key_sql . " " . $sort_dir_sql . "
 	LIMIT " . $start . ", " . $config['posts_per_page'];
 
 // MG Cash MOD For IP - BEGIN
@@ -985,7 +1031,7 @@ if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 	$template->assign_vars(array(
 		'L_BOOKMARK_ACTION' => $set_rem_bookmark,
 		'IMG_BOOKMARK' => $bookmark_img,
-		'U_BOOKMARK_ACTION' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . urlencode($_GET['highlight']) . $bm_action)
+		'U_BOOKMARK_ACTION' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start . $vt_sort_append . '&amp;highlight=' . urlencode($_GET['highlight']) . $bm_action)
 		)
 	);
 }
@@ -1012,7 +1058,7 @@ if ($total_replies > (10 * $config['posts_per_page']))
 
 // If we've got a hightlight set pass it on to pagination,
 // I get annoyed when I lose my highlight after the first page.
-$pagination = ($highlight != '') ? generate_pagination(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order . '&amp;highlight=' . $highlight, $total_replies, $config['posts_per_page'], $start) : generate_pagination(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;postdays=' . $post_days . '&amp;postorder=' . $post_order, $total_replies, $config['posts_per_page'], $start);
+$pagination = ($highlight != '') ? generate_pagination(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . $vt_sort_append . '&amp;highlight=' . $highlight, $total_replies, $config['posts_per_page'], $start) : generate_pagination(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . $vt_sort_append, $total_replies, $config['posts_per_page'], $start);
 $current_page = get_page($total_replies, $config['posts_per_page'], $start);
 $watch_topic_url = 'topic_view_users.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append;
 
@@ -1167,8 +1213,9 @@ $template->assign_vars(array(
 	'IMG_OFFTOPIC' => $images['icon_offtopic'],
 
 	'S_TOPIC_LINK' => POST_TOPIC_URL,
-	'S_SELECT_POST_DAYS' => $select_post_days,
-	'S_SELECT_POST_ORDER' => $select_post_order,
+	'S_SELECT_SORT_DAYS' => $select_sort_days,
+	'S_SELECT_SORT_KEY' => $select_sort_key,
+	'S_SELECT_SORT_DIR' => $select_sort_dir,
 	'S_POST_DAYS_ACTION' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start),
 	'S_AUTH_LIST' => $s_auth_can,
 	'S_TOPIC_ADMIN' => $topic_mod,
@@ -1178,7 +1225,7 @@ $template->assign_vars(array(
 	'S_WATCH_TOPIC' => !empty($s_watching_topic) ? $s_watching_topic : '',
 	'S_WATCH_TOPIC_IMG' => !empty($s_watching_topic_img) ? $s_watching_topic_img : '',
 
-	'U_VIEW_TOPIC' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . (!empty($start) ? ('&amp;start=' . $start) : '') . (!empty($post_days) ? ('&amp;postdays=' . $post_days) : '') . (!empty($post_order) ? ('&amp;postorder=' . $post_order) : '') . (!empty($highlight) ? ('&amp;highlight=' . $highlight) : '') . (($kb_mode == true) ? '&amp;kb=on' : '')),
+	'U_VIEW_TOPIC' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . (!empty($start) ? ('&amp;start=' . $start) : '') . $vt_sort_append . (!empty($highlight) ? ('&amp;highlight=' . $highlight) : '') . (($kb_mode == true) ? '&amp;kb=on' : '')),
 	'U_VIEW_TOPIC_BASE' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append),
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	'U_MARK_ALWAYS_READ' => $mark_always_read,

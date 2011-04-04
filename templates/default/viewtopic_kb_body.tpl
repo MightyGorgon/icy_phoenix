@@ -100,14 +100,7 @@ function open_postreview(ref)
 <tr>
 	<td class="cat" colspan="2">
 		<form method="post" action="{S_POST_DAYS_ACTION}" style="display: inline;">
-			<center>
-			<table cellspacing="0" cellpadding="0">
-				<tr>
-					<td valign="middle" nowrap="nowrap"><span class="genmed">{L_DISPLAY_POSTS}: </span></td>
-					<td valign="middle"> {S_SELECT_POST_DAYS} {S_SELECT_POST_ORDER} <input type="submit" value="{L_GO}" class="liteoption jumpbox" name="submit" /></td>
-				</tr>
-			</table>
-			</center>
+		<span class="genmed">{L_DISPLAY_POSTS}:</span>&nbsp;{S_SELECT_SORT_DAYS}&nbsp;{S_SELECT_SORT_KEY}&nbsp;{S_SELECT_SORT_DIR}&nbsp;<input type="submit" value="{L_GO}" class="liteoption jumpbox" name="submit" />
 		</form>
 	</td>
 </tr>

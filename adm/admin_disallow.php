@@ -79,13 +79,13 @@ $disallowed = $db->sql_fetchrowset($result);
 // Ok now generate the info for the template, which will be put out no matter what mode we are in.
 $disallow_select = '<select name="disallowed_id">';
 
-if(trim($disallowed) == '')
+if(empty($disallowed) || !is_array($disallowed))
 {
 	$disallow_select .= '<option value="">' . $lang['no_disallowed'] . '</option>';
 }
 else
 {
-	for( $i = 0; $i < sizeof($disallowed); $i++ )
+	for($i = 0; $i < sizeof($disallowed); $i++)
 	{
 		$disallow_select .= '<option value="' . $disallowed[$i]['disallow_id'] . '">' . $disallowed[$i]['disallow_username'] . '</option>';
 	}

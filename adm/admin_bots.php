@@ -49,11 +49,11 @@ $bot_sort_order = request_var('sort_order', '');
 
 if($mode == 'save')
 {
-	if($bot_name == '')
+	if(empty($bot_name))
 	{
 		message_die(GENERAL_MESSAGE, $lang['ERR_BOT_ADD']);
 	}
-	elseif (($bot_agent == '') && ($bot_ip == ''))
+	elseif (empty($bot_agent) && empty($bot_ip))
 	{
 		message_die(GENERAL_MESSAGE, $lang['ERR_BOT_ADD']);
 	}
@@ -74,12 +74,12 @@ if($mode == 'save')
 
 	$where_sql = ' WHERE bot_id = ' . $bot_id;
 
-	if(($bot_id > 0) && !empty($update_sql))
+	if(($bot_id > 0) && !empty($sql_update))
 	{
 		$message = $lang['BOT_UPDATED'];
 		$sql = "UPDATE " . $input_table . " SET " . $sql_update . $where_sql;
 	}
-	elseif(!empty($input_fields_sql))
+	elseif(!empty($sql_insert))
 	{
 		$message = $lang['BOT_ADDED'];
 		$sql = "INSERT INTO " . $input_table . " " . $sql_insert;

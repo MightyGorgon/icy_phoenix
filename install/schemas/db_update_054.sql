@@ -751,13 +751,26 @@ UPDATE `phpbb_guestbooks_posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_i
 
 
 
+########################################
+##              BUILD 069             ##
+########################################
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Bing', '<b style="color:#468;">Bing</b>', 'bingbot/', '');
+
+ALTER TABLE `phpbb_users` ADD `user_post_sortby_dir` varchar(1) DEFAULT 'a' NOT NULL AFTER `user_posts_per_page`;
+ALTER TABLE `phpbb_users` ADD `user_post_sortby_type` varchar(1) DEFAULT 't' NOT NULL AFTER `user_posts_per_page`;
+ALTER TABLE `phpbb_users` ADD `user_post_show_days` smallint(4) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_posts_per_page`;
+ALTER TABLE `phpbb_users` ADD `user_topic_sortby_dir` varchar(1) DEFAULT 'd' NOT NULL AFTER `user_posts_per_page`;
+ALTER TABLE `phpbb_users` ADD `user_topic_sortby_type` varchar(1) DEFAULT 't' NOT NULL AFTER `user_posts_per_page`;
+ALTER TABLE `phpbb_users` ADD `user_topic_show_days` smallint(4) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_posts_per_page`;
+
+
 
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.15.68' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.16.69' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

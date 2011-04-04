@@ -1860,7 +1860,7 @@ for($i = 0; $i < sizeof($sort_by_types); $i++)
 
 // Search time
 $previous_days = array(0, 1, 7, 14, 30, 90, 180, 364);
-$previous_days_text = array($lang['All_Posts'], $lang['1_Day'], $lang['7_Days'], $lang['2_Weeks'], $lang['1_Month'], $lang['3_Months'], $lang['6_Months'], $lang['1_Year']);
+$previous_days_text = array($lang['ALL_POSTS'], $lang['1_DAY'], $lang['7_DAYS'], $lang['2_WEEKS'], $lang['1_MONTH'], $lang['3_MONTHS'], $lang['6_MONTHS'], $lang['1_YEAR']);
 
 $s_time = '';
 for($i = 0; $i < sizeof($previous_days); $i++)

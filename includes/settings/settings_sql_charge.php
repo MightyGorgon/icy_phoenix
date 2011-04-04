@@ -59,8 +59,8 @@ $settings_data = array(
 	'active_sessions' => array(
 		'lang_key' => 'IP_active_sessions',
 		'explain' => 'IP_active_sessions_explain',
-		'type' => 'VARCHAR',
-		'default' => '0',
+		'type' => 'INT',
+		'default' => 0,
 		),
 
 	'global_disable_upi2db' => array(
@@ -170,8 +170,8 @@ $settings_data = array(
 
 	'last_logins_n' => array(
 		'lang_key' => 'IP_last_logins_n',
-		'type' => 'VARCHAR',
-		'default' => '10',
+		'type' => 'INT',
+		'default' => 10,
 		),
 
 	'index_top_posters' => array(
@@ -200,8 +200,8 @@ $settings_data = array(
 
 	'last_msgs_n' => array(
 		'lang_key' => 'IP_last_msgs_n',
-		'type' => 'VARCHAR',
-		'default' => '10',
+		'type' => 'INT',
+		'default' => 10,
 		),
 
 	'last_msgs_x' => array(

@@ -168,6 +168,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_showavatars = request_post_var('user_showavatars', 1);
 		$user_showsignatures = request_post_var('user_showsignatures', 1);
 		$user_allowswearywords = request_post_var('user_allowswearywords', 0);
+
 		$user_topics_per_page = request_post_var('user_topics_per_page', $config['topics_per_page']);
 		$user_posts_per_page = request_post_var('user_posts_per_page', $config['posts_per_page']);
 		$user_hot_threshold = request_post_var('user_hot_threshold', $config['hot_threshold']);
@@ -175,6 +176,20 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_topics_per_page = ($user_topics_per_page > 100) ? 100 : $user_topics_per_page;
 		$user_posts_per_page = ($user_posts_per_page > 50) ? 50 : $user_posts_per_page;
 		$user_hot_threshold = ($user_posts_per_page > 50) ? 50 : $user_posts_per_page;
+
+		$user_topic_show_days = (!empty($this_userdata['user_topic_show_days']) ? $this_userdata['user_topic_show_days'] : 0);
+		$user_topic_sortby_type = (!empty($this_userdata['user_topic_sortby_type']) ? $this_userdata['user_topic_sortby_type'] : 't');
+		$user_topic_sortby_dir = (!empty($this_userdata['user_topic_sortby_dir']) ? $this_userdata['user_topic_sortby_dir'] : 'd');
+		$user_post_show_days = (!empty($this_userdata['user_post_show_days']) ? $this_userdata['user_post_show_days'] : 0);
+		$user_post_sortby_type = (!empty($this_userdata['user_post_sortby_type']) ? $this_userdata['user_post_sortby_type'] : 't');
+		$user_post_sortby_dir = (!empty($this_userdata['user_post_sortby_dir']) ? $this_userdata['user_post_sortby_dir'] : 'a');
+
+		$user_topic_show_days = request_post_var('user_topic_show_days', $user_topic_show_days);
+		$user_topic_sortby_type = request_post_var('user_topic_sortby_type', $user_topic_sortby_type);
+		$user_topic_sortby_dir = request_post_var('user_topic_sortby_dir', $user_topic_sortby_dir);
+		$user_post_show_days = request_post_var('user_post_show_days', $user_post_show_days);
+		$user_post_sortby_type = request_post_var('user_post_sortby_type', $user_post_sortby_type);
+		$user_post_sortby_dir = request_post_var('user_post_sortby_dir', $user_post_sortby_dir);
 
 		$allowhtml = request_post_var('allowhtml', $config['allow_html']);
 		$allowbbcode = request_post_var('allowbbcode', $config['allow_bbcode']);
@@ -714,7 +729,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			// PROFILE EDIT BRIDGE - END
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = $next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', trim($aim))) . "', user_facebook = '" . $db->sql_escape($facebook) . "', user_icq = '" . $db->sql_escape($icq) . "', user_jabber = '" . $db->sql_escape($jabber) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_twitter = '" . $db->sql_escape($twitter) . "', user_yim = '" . $db->sql_escape($yim) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_active = $user_status, user_mask = $user_mask, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
+				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = $next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', trim($aim))) . "', user_facebook = '" . $db->sql_escape($facebook) . "', user_icq = '" . $db->sql_escape($icq) . "', user_jabber = '" . $db->sql_escape($jabber) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_twitter = '" . $db->sql_escape($twitter) . "', user_yim = '" . $db->sql_escape($yim) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_topic_show_days = '" . $db->sql_escape($user_topic_show_days) . "', user_topic_sortby_type = '" . $db->sql_escape($user_topic_sortby_type) . "', user_topic_sortby_dir = '" . $db->sql_escape($user_topic_sortby_dir) . "', user_post_show_days = '" . $db->sql_escape($user_post_show_days) . "', user_post_sortby_type = '" . $db->sql_escape($user_post_sortby_type) . "', user_post_sortby_dir = '" . $db->sql_escape($user_post_sortby_dir) . "', user_active = $user_status, user_mask = $user_mask, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
 				WHERE user_id = '" . $user_id . "'";
 			$result = $db->sql_query($sql);
 
@@ -737,7 +752,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			// We remove all stored login keys since the password has been updated and change the current one (if applicable)
 			if (!empty($passwd_sql))
 			{
-				session_reset_keys($user_id, $user->ip);
+				$user->reset_login_keys($user_id);
 			}
 
 			// Custom Profile Fields - BEGIN
@@ -915,6 +930,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_showavatars = $this_userdata['user_showavatars'];
 		$user_showsignatures = $this_userdata['user_showsignatures'];
 		$user_allowswearywords = $this_userdata['user_allowswearywords'];
+
 		$user_topics_per_page = $this_userdata['user_topics_per_page'];
 		$user_posts_per_page = $this_userdata['user_posts_per_page'];
 		$user_hot_threshold = $this_userdata['user_hot_threshold'];
@@ -922,6 +938,13 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_topics_per_page = ($user_topics_per_page > 100) ? 100 : $user_topics_per_page;
 		$user_posts_per_page = ($user_posts_per_page > 50) ? 50 : $user_posts_per_page;
 		$user_hot_threshold = ($user_posts_per_page > 50) ? 50 : $user_posts_per_page;
+
+		$user_topic_show_days = (!empty($this_userdata['user_topic_show_days']) ? $this_userdata['user_topic_show_days'] : 0);
+		$user_topic_sortby_type = (!empty($this_userdata['user_topic_sortby_type']) ? $this_userdata['user_topic_sortby_type'] : 't');
+		$user_topic_sortby_dir = (!empty($this_userdata['user_topic_sortby_dir']) ? $this_userdata['user_topic_sortby_dir'] : 'd');
+		$user_post_show_days = (!empty($this_userdata['user_post_show_days']) ? $this_userdata['user_post_show_days'] : 0);
+		$user_post_sortby_type = (!empty($this_userdata['user_post_sortby_type']) ? $this_userdata['user_post_sortby_type'] : 't');
+		$user_post_sortby_dir = (!empty($this_userdata['user_post_sortby_dir']) ? $this_userdata['user_post_sortby_dir'] : 'a');
 
 		$allowhtml = $this_userdata['user_allowhtml'];
 		$allowbbcode = $this_userdata['user_allowbbcode'];
@@ -1093,6 +1116,15 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				'user_ycard' => $user_ycard,
 				'user_allowpm' => $user_allowpm,
 				'user_allowavatar' => $user_allowavatar,
+				'user_topics_per_page' => $user_topics_per_page,
+				'user_posts_per_page' => $user_posts_per_page,
+				'user_hot_threshold' => $user_hot_threshold,
+				'user_topic_show_days' => $user_topic_show_days,
+				'user_topic_sortby_type' => $user_topic_sortby_type,
+				'user_topic_sortby_dir' => $user_topic_sortby_dir,
+				'user_post_show_days' => $user_post_show_days,
+				'user_post_sortby_type' => $user_post_sortby_type,
+				'user_post_sortby_dir' => $user_post_sortby_dir,
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				'user_upi2db_disable' => $user_upi2db_disable,
 //<!-- END Unread Post Information to Database Mod -->
@@ -1506,6 +1538,50 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				break;
 		}
 
+		// TOPICS / POSTS - SORTING - BEGIN
+		$sort_dir_text = array('a' => $lang['ASCENDING'], 'd' => $lang['DESCENDING']);
+
+		// Topic ordering options
+		$limit_topic_days = array(0 => $lang['ALL_TOPICS'], 1 => $lang['1_DAY'], 7 => $lang['7_DAYS'], 14 => $lang['2_WEEKS'], 30 => $lang['1_MONTH'], 90 => $lang['3_MONTHS'], 180 => $lang['6_MONTHS'], 365 => $lang['1_YEAR']);
+
+		$sort_by_topic_text = array('a' => $lang['AUTHOR'], 't' => $lang['POST_TIME'], 'r' => $lang['REPLIES'], 's' => $lang['SUBJECT'], 'v' => $lang['VIEWS']);
+		$sort_by_topic_sql = array('a' => 't.topic_first_poster_name', 't' => 't.topic_last_post_time', 'r' => 't.topic_replies', 's' => 't.topic_title', 'v' => 't.topic_views');
+
+		// Post ordering options
+		$limit_post_days = array(0 => $lang['ALL_POSTS'], 1 => $lang['1_DAY'], 7 => $lang['7_DAYS'], 14 => $lang['2_WEEKS'], 30 => $lang['1_MONTH'], 90 => $lang['3_MONTHS'], 180 => $lang['6_MONTHS'], 365 => $lang['1_YEAR']);
+
+		$sort_by_post_text = array('a' => $lang['AUTHOR'], 't' => $lang['POST_TIME'], 's' => $lang['SUBJECT']);
+		$sort_by_post_sql = array('a' => 'u.username_clean', 't' => 'p.post_id', 's' => 'p.post_subject');
+
+		$_options = array('topic', 'post');
+		foreach ($_options as $sort_option)
+		{
+			${'user_' . $sort_option . '_show_days_select'} = '<select name="user_' . $sort_option . '_show_days">';
+			foreach (${'limit_' . $sort_option . '_days'} as $day => $text)
+			{
+				$selected = (${'user_' . $sort_option . '_show_days'} == $day) ? ' selected="selected"' : '';
+				${'user_' . $sort_option . '_show_days_select'} .= '<option value="' . $day . '"' . $selected . '>' . $text . '</option>';
+			}
+			${'user_' . $sort_option . '_show_days_select'} .= '</select>';
+
+			${'user_' . $sort_option . '_sortby_type_select'} = '<select name="user_' . $sort_option . '_sortby_type">';
+			foreach (${'sort_by_' . $sort_option . '_text'} as $key => $text)
+			{
+				$selected = (${'user_' . $sort_option . '_sortby_type'} == $key) ? ' selected="selected"' : '';
+				${'user_' . $sort_option . '_sortby_type_select'} .= '<option value="' . $key . '"' . $selected . '>' . $text . '</option>';
+			}
+			${'user_' . $sort_option . '_sortby_type_select'} .= '</select>';
+
+			${'user_' . $sort_option . '_sortby_dir_select'} = '<select name="user_' . $sort_option . '_sortby_dir">';
+			foreach ($sort_dir_text as $key => $value)
+			{
+				$selected = (${'user_' . $sort_option . '_sortby_dir'} == $key) ? ' selected="selected"' : '';
+				${'user_' . $sort_option . '_sortby_dir_select'} .= '<option value="' . $key . '"' . $selected . '>' . $value . '</option>';
+			}
+			${'user_' . $sort_option . '_sortby_dir_select'} .= '</select>';
+		}
+		// TOPICS / POSTS - SORTING - END
+
 		// Let's do an overall check for settings/versions which would prevent us from doing file uploads...
 		$ini_val = (phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 		$form_enctype = (!@$ini_val('file_uploads') || (phpversion() == '4.0.4pl1') || !$config['allow_avatar_upload'] || ((phpversion() < '4.0.3') && @$ini_val('open_basedir') != '')) ? '' : 'enctype="multipart/form-data"';
@@ -1580,6 +1656,12 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			'POSTS_PER_PAGE' => !$user_posts_per_page ? $config['posts_per_page'] : $user_posts_per_page,
 			'TOPICS_PER_PAGE' => !$user_topics_per_page ? $config['topics_per_page'] : $user_topics_per_page,
 			'HOT_TOPIC' => !$user_hot_threshold ? $config['hot_threshold'] : $user_hot_threshold,
+			'USER_TOPIC_SHOW_DAYS_SELECT' => $user_topic_show_days_select,
+			'USER_TOPIC_SORTBY_TYPE_SELECT' => $user_topic_sortby_type_select,
+			'USER_TOPIC_SORTBY_DIR_SELECT' => $user_topic_sortby_dir_select,
+			'USER_POST_SHOW_DAYS_SELECT' => $user_post_show_days_select,
+			'USER_POST_SORTBY_TYPE_SELECT' => $user_post_sortby_type_select,
+			'USER_POST_SORTBY_DIR_SELECT' => $user_post_sortby_dir_select,
 
 			'AVATAR' => $avatar,
 			'GRAVATAR' => ($user_avatar_type == USER_GRAVATAR) ? $user->data['user_avatar'] : '',

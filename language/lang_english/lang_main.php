@@ -97,13 +97,13 @@ $lang = array_merge($lang, array(
 	'Hours' => 'Hours',
 	'Message' => 'Message',
 
-	'1_Day' => '1 Day',
-	'7_Days' => '7 Days',
-	'2_Weeks' => '2 Weeks',
-	'1_Month' => '1 Month',
-	'3_Months' => '3 Months',
-	'6_Months' => '6 Months',
-	'1_Year' => '1 Year',
+	'1_DAY' => '1 Day',
+	'7_DAYS' => '7 Days',
+	'2_WEEKS' => '2 Weeks',
+	'1_MONTH' => '1 Month',
+	'3_MONTHS' => '3 Months',
+	'6_MONTHS' => '6 Months',
+	'1_YEAR' => '1 Year',
 
 	'Go' => 'Go',
 	'Jump_to' => 'Jump to',
@@ -273,7 +273,7 @@ $lang = array_merge($lang, array(
 	'Reached_on_error' => 'You have reached this page in error.',
 
 	'Display_topics' => 'Display topics from previous',
-	'All_Topics' => 'All Topics',
+	'ALL_TOPICS' => 'All Topics',
 
 	'Topic_News_nb' => 'News',
 	'Topic_global_announcement_nb' => 'Global Announcement',
@@ -339,7 +339,7 @@ $lang = array_merge($lang, array(
 	'No_posts_topic' => 'No posts exist for this topic',
 
 	'Display_posts' => 'Display posts from previous',
-	'All_Posts' => 'All Posts',
+	'ALL_POSTS' => 'All Posts',
 	'Newest_First' => 'Newest First',
 	'Oldest_First' => 'Oldest First',
 
@@ -921,10 +921,10 @@ $lang = array_merge($lang, array(
 	'Topics_Unlocked' => 'The selected topics have been unlocked.',
 	'No_Topics_Moved' => 'No topics were moved.',
 
-	'Confirm_delete_topic' => 'Are you sure you want to remove the selected topic/s?',
-	'Confirm_lock_topic' => 'Are you sure you want to lock the selected topic/s?',
-	'Confirm_unlock_topic' => 'Are you sure you want to unlock the selected topic/s?',
-	'Confirm_move_topic' => 'Are you sure you want to move the selected topic/s?',
+	'Confirm_delete_topic' => 'Are you sure you want to remove the selected topics?',
+	'Confirm_lock_topic' => 'Are you sure you want to lock the selected topics?',
+	'Confirm_unlock_topic' => 'Are you sure you want to unlock the selected topics?',
+	'Confirm_move_topic' => 'Are you sure you want to move the selected topics?',
 
 	'Move_to_forum' => 'Move to forum',
 	'Leave_shadow_topic' => 'Leave shadow topic in old forum.',
@@ -1329,7 +1329,7 @@ $lang = array_merge($lang, array(
 	'Recent_wrong_mode' => 'You have selected a wrong mode.',
 	'Recent_click_return' => 'Click %sHere%s to return to recent site.',
 
-	'Profile_view_option' => 'Pop up window on Profile View',
+	'Profile_view_option' => 'Pop up window on profile view',
 	'Profile_viewed' => 'My Profile Views',
 
 // BEGIN Disable Registration MOD
@@ -1352,9 +1352,9 @@ $lang = array_merge($lang, array(
 
 	'Forbidden_characters' => 'Allowed characters for usernames are a-z, 0-9, -, _ and spaces.',
 
-	'Topics_per_page' => 'Topics Per Page',
-	'Posts_per_page' => 'Posts Per Page',
-	'Hot_threshold' => 'Popular Posts Threshold',
+	'Topics_per_page' => 'Topics per page',
+	'Posts_per_page' => 'Posts per page',
+	'Hot_threshold' => 'Popular posts threshold',
 
 	'Mod_CP_first_post' => 'First Post',
 	'Mod_CP_topic_count' => '<b>%s</b> topic found.',
@@ -1928,10 +1928,10 @@ $lang = array_merge($lang, array(
 
 /* lang_prune_users.php - BEGIN */
 // add to prune inactive
-	'X_Days' => '%d Days',
-	'X_Weeks' => '%d Weeks',
-	'X_Months' => '%d Months',
-	'X_Years' => '%d Years',
+	'X_DAYS' => '%d Days',
+	'X_WEEKS' => '%d Weeks',
+	'X_MONTHS' => '%d Months',
+	'X_YEARS' => '%d Years',
 
 	'Confirm_delete_user' => 'Are you really sure that you want to delete this User?',
 	'Prune_no_users' => 'No users deleted',
@@ -2379,6 +2379,19 @@ $lang = array_merge($lang, array(
 	'EXTRA_STATS_SHOW' => 'Show Extra Statistics',
 	'EXTRA_STATS_HIDE' => 'Hide Extra Statistics',
 	'RESERVED' => 'Reserved',
+
+	'VIEW_TOPICS_DAYS' => 'Display topics from previous days',
+	'VIEW_TOPICS_DIR' => 'Display topic order direction',
+	'VIEW_TOPICS_KEY' => 'Display topics ordering by',
+	'VIEW_POSTS_DAYS' => 'Display posts from previous days',
+	'VIEW_POSTS_DIR' => 'Display post order direction',
+	'VIEW_POSTS_KEY' => 'Display posts ordering by',
+
+	'AUTHOR' => 'Author',
+	'POST_TIME' => 'Time',
+	'REPLIES' => 'Replies',
+	'SUBJECT' => 'Subject',
+	'VIEWS' => 'Views',
 
 	)
 );
