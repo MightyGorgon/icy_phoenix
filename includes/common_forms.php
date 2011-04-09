@@ -107,7 +107,7 @@ $sort_dir_select_box = $class_form->build_select_box($select_name, $default, $so
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$n_items_default = $config['topics_per_page'];
+$n_items_default = !empty($n_items_overlay) ? $n_items_overlay : $config['topics_per_page'];
 $n_items = request_var('n_items', $n_items_default);
 $n_items = ($n_items < 0) ? $n_items_default : $n_items;
 // OTHER VARS - END

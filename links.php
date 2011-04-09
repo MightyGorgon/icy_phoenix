@@ -291,7 +291,7 @@ if ($t == 'sub_pages')
 	$mode_types = array('link_joined', 'link_hits', 'link_title', 'link_desc');
 	$mode = (in_array($mode, $mode_types) ? $mode : $mode_types[0]);
 
-	$sort_order = request_var('order', $album_config['sort_order']);
+	$sort_order = request_var('order', 'DESC');
 	$sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
 
 	$select_sort_mode = '<select name="mode">';

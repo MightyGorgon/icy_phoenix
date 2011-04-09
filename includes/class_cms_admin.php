@@ -1658,7 +1658,7 @@ class cms_admin
 			}
 			else
 			{
-				if($data['locked'])
+				if(!empty($data['locked']))
 				{
 					message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 				}
@@ -1717,6 +1717,15 @@ class cms_admin
 
 					$message .= '<br /><br />' . $lang['Layout_BP_added'];
 				}
+			}
+			else
+			{
+				if(!empty($data['locked']))
+				{
+					message_die(GENERAL_ERROR, $lang['Not_Authorized']);
+				}
+
+				$class_db->insert_item($data);
 			}
 
 			$message .= $lang['Layout_added'];

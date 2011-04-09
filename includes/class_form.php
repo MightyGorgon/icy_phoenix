@@ -102,19 +102,12 @@ class class_form
 				break;
 
 			case 'TINYINT':
-				$input = '<input type="text" name="' . $name . '" maxlength="3" size="3" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
-				break;
-
 			case 'SMALLINT':
-				$input = '<input type="text" name="' . $name . '" maxlength="5" size="5" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
-				break;
-
 			case 'MEDIUMINT':
-				$input = '<input type="text" name="' . $name . '" maxlength="9" size="9" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
-				break;
-
 			case 'INT':
-				$input = '<input type="text" name="' . $name . '" maxlength="13" size="13" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
+			case 'FLOAT':
+				$field_length = $this->set_number_length($properties['type']);
+				$input = '<input type="text" name="' . $name . '" maxlength="' . $field_length . '" size="' . $field_length . '" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
 				break;
 
 			case 'TINYTEXT':
@@ -178,6 +171,9 @@ class class_form
 				return false;
 
 			case 'integer':
+				return 0;
+
+			case 'float':
 				return 0;
 
 			case 'double':
@@ -262,6 +258,10 @@ class class_form
 				$config_value = (int) ($config_value);
 				break;
 
+			case 'FLOAT':
+				$config_value = (float) ($config_value);
+				break;
+
 			case 'TINYTEXT':
 			case 'PASSWORD':
 			case 'VARCHAR':
@@ -285,6 +285,41 @@ class class_form
 		}
 
 		return $config_value;
+	}
+
+	/*
+	* Set number length
+	*/
+	function set_number_length($number_type)
+	{
+		switch ($number_type)
+		{
+			case 'TINYINT':
+				$length = 3;
+				break;
+
+			case 'SMALLINT':
+				$length = 5;
+				break;
+
+			case 'MEDIUMINT':
+				$length = 9;
+				break;
+
+			case 'INT':
+				$length = 13;
+				break;
+
+			case 'FLOAT':
+				$length = 13;
+				break;
+
+			default:
+				$length = 13;
+				break;
+		}
+
+		return $legth;
 	}
 
 	/*
@@ -429,6 +464,9 @@ class class_form
 				// Apply number format if needed
 				if (!empty($v['number_format']))
 				{
+					$v['number_format']['decimals'] = isset($v['number_format']['decimals']) ? $v['number_format']['decimals'] : (isset($lang['NUMBER_FORMAT_DECIMALS']) ? $lang['NUMBER_FORMAT_DECIMALS'] : 0);
+					$v['number_format']['decimals_sep'] = !empty($v['number_format']['decimals_sep']) ? $v['number_format']['decimals_sep'] : (isset($lang['NUMBER_FORMAT_DECIMALS_SEP']) ? $lang['NUMBER_FORMAT_DECIMALS'] : ',');
+					$v['number_format']['thousands_sep'] = !empty($v['number_format']['thousands_sep']) ? $v['number_format']['thousands_sep'] : (isset($lang['NUMBER_FORMAT_THOUSANDS_SEP']) ? $lang['NUMBER_FORMAT_DECIMALS'] : '.');
 					$value = number_format($inputs_array[$k], $v['number_format']['decimals'], $v['number_format']['decimals_sep'], $v['number_format']['thousands_sep']);
 				}
 

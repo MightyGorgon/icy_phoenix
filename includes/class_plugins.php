@@ -24,8 +24,10 @@ class class_plugins
 	var $plugin_dir = '';
 
 	var $plugins_path = '';
+	var $plugins_settings_path = '';
 
 	var $config = array();
+	var $settings = array();
 	var $modules = array();
 	var $list_yes_no = array('Yes' => 1, 'No' => 0);
 
@@ -35,6 +37,7 @@ class class_plugins
 	function class_plugins()
 	{
 		$this->plugins_path = IP_ROOT_PATH . PLUGINS_PATH;
+		$this->plugins_settings_path = 'settings';
 	}
 
 	/**
@@ -557,6 +560,52 @@ class class_plugins
 	{
 		global $lang;
 		return ((!empty($key) && isset($lang[$key])) ? $lang[$key] : $key);
+	}
+
+	/*
+	* Get plugin settings
+	*/
+	function get_plugin_db_settings($plugin_dir)
+	{
+		global $db, $cache, $config, $lang;
+
+		// Search for settings...
+		$plugins_settings_path = IP_ROOT_PATH . PLUGINS_PATH . basename($plugin_dir) . '/' . $this->plugins_settings_path . '/';
+		$dir = @opendir($plugins_settings_path);
+
+		$list_yes_no = $this->list_yes_no;
+		$current_time = time();
+
+		if ($dir)
+		{
+			while (($file = @readdir($dir)) !== false)
+			{
+				if ((strpos($file, 'db_settings_') === 0) && (substr($file, -(strlen(PHP_EXT) + 1)) === '.' . PHP_EXT))
+				{
+					@include($plugins_settings_path . $file);
+
+					$table_name = !empty($table_name) ? $table_name : substr(substr($file, 0, strlen($file) - (strlen(PHP_EXT) + 1)), strlen('db_settings_'));
+
+					// Make sure every field has auths and defaults...
+					foreach ($table_fields as $k => $v)
+					{
+						$table_fields[$k]['admin_level'] = (isset($table_fields[$k]['admin_level']) ? $table_fields[$k]['admin_level'] : AUTH_FOUNDER);
+						$table_fields[$k]['input_level'] = (isset($table_fields[$k]['input_level']) ? $table_fields[$k]['input_level'] : AUTH_FOUNDER);
+						$table_fields[$k]['edit_level'] = (isset($table_fields[$k]['edit_level']) ? $table_fields[$k]['edit_level'] : AUTH_FOUNDER);
+						$table_fields[$k]['view_level'] = (isset($table_fields[$k]['view_level']) ? $table_fields[$k]['view_level'] : AUTH_FOUNDER);
+						$table_fields[$k]['default'] = (isset($table_fields[$k]['default']) ? $table_fields[$k]['default'] : 0);
+					}
+
+					if (!empty($table_name) && !empty($table_fields))
+					{
+						$this->settings[$plugin_dir]['db_tables'][$table_name] = $table_fields;
+					}
+				}
+			}
+			@closedir($dir);
+		}
+
+		return true;
 	}
 
 	/**
