@@ -465,8 +465,8 @@ class class_form
 				if (!empty($v['number_format']))
 				{
 					$v['number_format']['decimals'] = isset($v['number_format']['decimals']) ? $v['number_format']['decimals'] : (isset($lang['NUMBER_FORMAT_DECIMALS']) ? $lang['NUMBER_FORMAT_DECIMALS'] : 0);
-					$v['number_format']['decimals_sep'] = !empty($v['number_format']['decimals_sep']) ? $v['number_format']['decimals_sep'] : (isset($lang['NUMBER_FORMAT_DECIMALS_SEP']) ? $lang['NUMBER_FORMAT_DECIMALS'] : ',');
-					$v['number_format']['thousands_sep'] = !empty($v['number_format']['thousands_sep']) ? $v['number_format']['thousands_sep'] : (isset($lang['NUMBER_FORMAT_THOUSANDS_SEP']) ? $lang['NUMBER_FORMAT_DECIMALS'] : '.');
+					$v['number_format']['decimals_sep'] = !empty($v['number_format']['decimals_sep']) ? $v['number_format']['decimals_sep'] : (isset($lang['NUMBER_FORMAT_DECIMALS_SEP']) ? $lang['NUMBER_FORMAT_DECIMALS_SEP'] : ',');
+					$v['number_format']['thousands_sep'] = !empty($v['number_format']['thousands_sep']) ? $v['number_format']['thousands_sep'] : (isset($lang['NUMBER_FORMAT_THOUSANDS_SEP']) ? $lang['NUMBER_FORMAT_THOUSANDS_SEP'] : '.');
 					$value = number_format($inputs_array[$k], $v['number_format']['decimals'], $v['number_format']['decimals_sep'], $v['number_format']['thousands_sep']);
 				}
 
@@ -517,6 +517,11 @@ class class_form
 				if ($v['is_image'])
 				{
 					$value = '<a href="' . append_sid($inputs_array[$k]) . '"><img src="' . append_sid('posted_img_thumbnail.' . PHP_EXT . '?pic_id=' . urlencode($inputs_array[$k]) . (isset($v['thumbnail_size']) ? ('&amp;thumbnail_size=' . intval($v['thumbnail_size'])) : '')) . '" alt="" /></a>';
+				}
+
+				if (!empty($v['display_func']) && function_exists($v['display_func']))
+				{
+					$value = $v['display_func']($inputs_array[$k]);
 				}
 				// SPECIAL PROCESSING - END
 

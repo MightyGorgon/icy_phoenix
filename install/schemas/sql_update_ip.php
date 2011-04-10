@@ -74,6 +74,9 @@ switch ($req_version)
 	case '131770': $current_ip_version = '1.3.17.70'; break;
 }
 
+// We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
+$sql[] = "SET storage_engine=MYISAM";
+
 // Icy Phoenix Part...
 if (substr($mode, 0, 6) == 'update')
 {

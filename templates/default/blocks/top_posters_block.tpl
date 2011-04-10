@@ -12,6 +12,6 @@
 <br />
 <!-- ELSE -->
 <!-- BEGIN topposter -->
-<div style="float:right;">[<b><a href="{topposter.U_VIEWPOSTS}" class="gensmall">{topposter.POSTS}</a></b>]</div>{topposter.USERNAME}&nbsp;<br />
+<div style="float: right;">[<b><a href="{topposter.U_VIEWPOSTS}" class="gensmall">{topposter.POSTS}</a></b>]</div>{topposter.USERNAME}&nbsp;<br clear="all" />
 <!-- END topposter -->
 <!-- ENDIF -->

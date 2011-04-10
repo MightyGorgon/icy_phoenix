@@ -1,3 +1,5 @@
+SET storage_engine=MYISAM;
+
 ## `phpbb_acronyms`
 
 CREATE TABLE `phpbb_acronyms` (

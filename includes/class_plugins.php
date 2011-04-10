@@ -56,6 +56,12 @@ class class_plugins
 			{
 				if (!empty($plugin_install_data[$version]['sql']))
 				{
+					// We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
+					$sql_engine = "SET storage_engine=MYISAM";
+					$db->sql_return_on_error(true);
+					$db->sql_query($sql_engine);
+					$db->sql_return_on_error(false);
+
 					foreach ($plugin_install_data[$version]['sql'] as $sql_statement)
 					{
 						$error = array();
