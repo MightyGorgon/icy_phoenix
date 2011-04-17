@@ -131,16 +131,17 @@ function jr_admin_get_module_list($user_module_list = false)
 
 	//Read all the modules
 	$setmodules = 1;
-	$dir = @opendir(IP_ROOT_PATH . ADM . '/');
-	$pattern = "/^admin_.+\.$phpEx$/";
-	while (($file = @readdir($dir)) !== false)
+	$main_acp_dir = @opendir(IP_ROOT_PATH . ADM . '/');
+	$main_acp_pattern = "/^admin_.+\.$phpEx$/";
+	while (($main_acp_file = @readdir($main_acp_dir)) !== false)
 	{
-		if (preg_match($pattern, $file))
+		if (preg_match($main_acp_pattern, $main_acp_file))
 		{
-			include_once(IP_ROOT_PATH . ADM . '/' . $file);
+			//echo($main_acp_file . '<br />');
+			include_once(IP_ROOT_PATH . ADM . '/' . $main_acp_file);
 		}
 	}
-	@closedir($dir);
+	@closedir($main_acp_dir);
 
 	// PLUGINS ADMIN MODULES - BEGIN
 	$plugins_dir = @opendir(IP_ROOT_PATH . PLUGINS_PATH);
@@ -153,12 +154,13 @@ function jr_admin_get_module_list($user_module_list = false)
 			if (is_dir($plugin_adm_path))
 			{
 				$plugin_adm_dir = @opendir($plugin_adm_path);
-				$pattern = "/^admin_.+\.$phpEx$/";
-				while (($file = @readdir($plugin_adm_dir)) !== false)
+				$plugin_acp_pattern = "/^admin_.+\.$phpEx$/";
+				while (($plugin_acp_file = @readdir($plugin_adm_dir)) !== false)
 				{
-					if (preg_match($pattern, $file))
+					if (preg_match($plugin_acp_pattern, $plugin_acp_file))
 					{
-						include_once($plugin_adm_path . $file);
+						//echo($plugin_acp_file . '<br />');
+						include_once($plugin_adm_path . $plugin_acp_file);
 					}
 				}
 				@closedir($plugin_adm_dir);

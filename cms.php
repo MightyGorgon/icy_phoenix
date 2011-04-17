@@ -20,15 +20,15 @@ include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
 $config['jquery_ui'] = true;
 
-$js_temp = array('js/cms.js');
-$js_include = (!empty($js_include) && is_array($js_include)) ? array_merge($js_include, $js_temp) : $js_temp;
-unset($js_temp);
-
 // Start session management
 $user->session_begin();
 //$auth->acl($user->data);
 $user->setup();
 // End session management
+
+$js_temp = array('js/cms.js');
+$template->js_include = array_merge($template->js_include, $js_temp);
+unset($js_temp);
 
 $mode_array = array('blocks', 'config', 'layouts', 'layouts_special', 'smilies', 'block_settings');
 $action_array = array('add', 'delete', 'edit', 'editglobal', 'list', 'save');

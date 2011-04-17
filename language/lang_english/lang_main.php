@@ -46,6 +46,10 @@ $lang['BBC_IP_CREDITS_STATIC'] = '
 <b><i>Junior Developer</i></b><br />
 <br />
 <br />
+<span style="color: #ff5500;"><b>Informpro</b></span><br />
+<b><i>Junior Developer</i></b><br />
+<br />
+<br />
 <b><i>Valued Contributors</i></b><br />
 <span style="color: #228822;"><b>Andrea75</b></span><br />
 <span style="color: #dd2222;"><b>Artie</b></span><br />

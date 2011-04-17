@@ -3472,7 +3472,6 @@ function page_header($title = '', $parse_template = false)
 	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
-	global $css_include, $css_style_include, $js_include;
 	global $forum_id, $topic_id;
 	global $unread;
 
@@ -3684,39 +3683,6 @@ function page_header($title = '', $parse_template = false)
 	$nav_links_html .= '<link rel="alternate" type="application/rss+xml" title="RSS" href="' . $rss_url . $rss_url_append . '" />' . "\n";
 	$nav_links_html .= '<link rel="alternate" type="application/atom+xml" title="Atom" href="' . $rss_url . '?atom' . $rss_a_url_append . '" />' . "\n";
 	// RSS Autodiscovery - END
-
-	if(!empty($css_style_include) && is_array($css_style_include))
-	{
-		for ($i = 0; $i < sizeof($css_style_include); $i++)
-		{
-			$template->assign_block_vars('css_style_include', array(
-				'CSS_FILE' => $css_style_include[$i],
-				)
-			);
-		}
-	}
-
-	if(!empty($css_include) && is_array($css_include))
-	{
-		for ($i = 0; $i < sizeof($css_include); $i++)
-		{
-			$template->assign_block_vars('css_include', array(
-				'CSS_FILE' => $css_include[$i],
-				)
-			);
-		}
-	}
-
-	if(!empty($js_include) && is_array($js_include))
-	{
-		for ($i = 0; $i < sizeof($js_include); $i++)
-		{
-			$template->assign_block_vars('js_include', array(
-				'JS_FILE' => $js_include[$i],
-				)
-			);
-		}
-	}
 
 	// Time Management - BEGIN
 	// Format Timezone. We are unable to use array_pop here, because of PHP3 compatibility
@@ -4572,7 +4538,6 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
-	global $css_include, $css_style_include, $js_include;
 	global $cms_acp_url;
 	global $unread;
 
@@ -5396,7 +5361,6 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	global $meta_content;
 	global $nav_pgm, $nav_add_page_title, $skip_nav_cat, $start;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
-	global $css_include, $css_style_include, $js_include;
 	*/
 
 	//+MOD: Fix message_die for multiple errors MOD

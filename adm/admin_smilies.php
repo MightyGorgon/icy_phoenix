@@ -588,13 +588,13 @@ else
 	);
 
 	// Loop throuh the rows of smilies setting block vars for the template.
-	for($i = 0; $i < sizeof($smilies); $i++)
+	for($i = 0, $c = sizeof($smilies); $i < $c; $i++)
 	{
 		// Replace htmlentites for < and > with actual character.
 		$smilies[$i]['code'] = str_replace('&lt;', '<', $smilies[$i]['code']);
 		$smilies[$i]['code'] = str_replace('&gt;', '>', $smilies[$i]['code']);
 
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = !($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
 
 		$template->assign_block_vars('smiles', array(
 			'ROW_CLASS' => $row_class,

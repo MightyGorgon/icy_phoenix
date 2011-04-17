@@ -767,14 +767,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$template->assign_var('S_SLIDESHOW', true);
 
 		$css_temp = array('fap_slideshow.css');
-		if(is_array($css_include))
-		{
-			$css_include = array_merge($css_include, $css_temp);
-		}
-		else
-		{
-			$css_include = $css_temp;
-		}
+		$template->css_include = array_merge($template->css_include, $css_temp);
 		unset($css_temp);
 
 		$slideshow_delay = request_var('slideshow', 0);

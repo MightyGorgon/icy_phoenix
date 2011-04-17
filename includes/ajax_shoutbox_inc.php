@@ -435,7 +435,7 @@ $template->assign_vars(array(
 	'L_USERS' => $lang['Online_registered'],
 	'L_TOP_SHOUTERS' => $lang['Top_Ten_Shouters'],
 	'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
-	'U_ARCHIVE' => append_sid('ajax_chat.' . PHP_EXT . '?mode=archive')
+	'U_ARCHIVE' => append_sid(CMS_PAGE_AJAX_CHAT . '?mode=archive')
 	)
 );
 

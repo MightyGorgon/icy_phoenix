@@ -388,7 +388,7 @@ class Results
 	function assign_template_block_vars($blockname)
 	{
 		global $template;
-		$this->var_data[$blockname . '.'][] = $template->_tpldata[$blockname . '.'][sizeof($template->_tpldata[$blockname . '.'])-1];
+		$this->var_data[$blockname . '.'][] = end($template->_tpldata[$blockname . '.']);
 	}
 
 	// Get Variable from Cache

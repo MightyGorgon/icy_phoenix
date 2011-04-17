@@ -160,6 +160,11 @@ class Template {
 	// style configuration
 	var $style_config = array();
 
+	// extra CSS and JS
+	var $css_style_include = array();
+	var $css_include = array();
+	var $js_include = array();
+
 	// list of switches that are known typos in some mods.
 	// when error checking is enabled these errors will be auto-fixed.
 	// format:
@@ -482,7 +487,6 @@ class Template {
 		return true;
 	}
 
-
 	/**
 	* Assigns template filename for handle.
 	*/
@@ -623,6 +627,7 @@ class Template {
 	function pparse($handle)
 	{
 		global $config;
+
 		// Mighty Gorgon - Extra Debug - BEGIN
 		if (defined('DEBUG_EXTRA') && !empty($_REQUEST['explain']))
 		{
@@ -633,6 +638,12 @@ class Template {
 			}
 		}
 		// Mighty Gorgon - Extra Debug - END
+
+		if (!defined('CSS_JS_PARSED'))
+		{
+			$this->add_css_js();
+		}
+
 		// parsing header if there is one
 		if($this->preparse || $this->postparse)
 		{
@@ -651,6 +662,7 @@ class Template {
 				$this->pparse($str);
 			}
 		}
+
 		// checking if handle exists
 		if (empty($this->files[$handle]) && empty($this->files_cache[$handle]))
 		{
@@ -658,6 +670,7 @@ class Template {
 		}
 		$this->xs_startup();
 		$force_recompile = empty($this->uncompiled_code[$handle]) ? false : true;
+
 		// checking if php file exists.
 		if (!empty($this->files_cache[$handle]) && !$force_recompile)
 		{
@@ -665,10 +678,12 @@ class Template {
 			$this->execute($this->files_cache[$handle], '', $handle);
 			return true;
 		}
+
 		if (!$this->loadfile($handle))
 		{
 			die("Template->pparse(): Couldn't load template file for handle $handle");
 		}
+
 		// actually compile the template now.
 		if (empty($this->compiled_code[$handle]))
 		{
@@ -682,6 +697,7 @@ class Template {
 				$this->compiled_code[$handle] = $this->compile2($this->uncompiled_code[$handle], '', '');
 			}
 		}
+
 		// Run the compiled code.
 		if (empty($this->files_cache[$handle]) || $force_recompile)
 		{
@@ -692,6 +708,50 @@ class Template {
 			$this->execute($this->files_cache[$handle], '', $handle);
 		}
 		return true;
+	}
+
+	/**
+	* Extra CSS and JS
+	*/
+	function add_css_js()
+	{
+		if (!defined('CSS_JS_PARSED'))
+		{
+			define('CSS_JS_PARSED', true);
+		}
+
+		if(is_array($this->css_style_include) && !empty($this->css_style_include))
+		{
+			for ($i = 0; $i < sizeof($this->css_style_include); $i++)
+			{
+				$this->assign_block_vars('css_style_include', array(
+					'CSS_FILE' => $this->css_style_include[$i],
+					)
+				);
+			}
+		}
+
+		if(is_array($this->css_include) && !empty($this->css_include))
+		{
+			for ($i = 0; $i < sizeof($this->css_include); $i++)
+			{
+				$this->assign_block_vars('css_include', array(
+					'CSS_FILE' => $this->css_include[$i],
+					)
+				);
+			}
+		}
+
+		if(is_array($this->js_include) && !empty($this->js_include))
+		{
+			for ($i = 0; $i < sizeof($this->js_include); $i++)
+			{
+				$this->assign_block_vars('js_include', array(
+					'JS_FILE' => $this->js_include[$i],
+					)
+				);
+			}
+		}
 	}
 
 	/**

@@ -554,15 +554,22 @@ class cms_admin
 			$b_rows = $this->get_blocks_from_layouts($this->block_layout_field, $l_id_list, $sql_no_gb);
 			$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
 
-			for($i = 0; $i < $b_count; $i++)
+			if (!empty($b_count))
 			{
-				$b_active = empty($blocks_upd) ? 0 : (in_array($b_rows[$i]['bid'], $blocks_upd) ? 1 : 0);
-				$sql = "UPDATE " . $this->tables['blocks_table'] . "
-								SET active = '" . $b_active . "'
-								WHERE bid = '" . $b_rows[$i]['bid'] . "'";
-				$result = $db->sql_query($sql);
+				$db->sql_transaction();
+				for($i = 0; $i < $b_count; $i++)
+				{
+					$b_active = empty($blocks_upd) ? 0 : (in_array($b_rows[$i]['bid'], $blocks_upd) ? 1 : 0);
+					$b_weight = (isset($_POST['weight'][$b_rows[$i]['bid']]) ? intval($_POST['weight'][$b_rows[$i]['bid']]) : $b_rows[$i]['weight']);
+					$sql = "UPDATE " . $this->tables['blocks_table'] . "
+									SET active = '" . $b_active . "', weight = '" . $b_weight . "'
+									WHERE bid = '" . $b_rows[$i]['bid'] . "'";
+					$result = $db->sql_query($sql);
+				}
+				$db->sql_transaction('commit');
+				$this->fix_weight_blocks($this->id_var_value, $this->table_name);
 			}
-			$this->fix_weight_blocks($this->id_var_value, $this->table_name);
+
 			redirect(append_sid($this->root . '?mode=' . $this->mode . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . $action_append));
 		}
 
@@ -683,6 +690,18 @@ class cms_admin
 			{
 				$else_counter = 0;
 				$pos_change = false;
+
+				// InformPro - BEGIN
+				// used for "block parent", later
+				// bfp = block for parent
+				$bs_rows = $this->get_installed_blocks();
+				$bfp_rows = array();
+				foreach ($bs_rows as $bfp_row)
+				{
+					$bfp_rows[$bfp_row['bs_id']] = $bfp_row['name'];
+				}
+				// InformPro - END
+
 				for($i = 0; $i < $b_count; $i++)
 				{
 					if (($b_rows[$i]['layout_special'] != 0) && ($this->action == 'editglobal'))
@@ -733,6 +752,12 @@ class cms_admin
 							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
 							'VIEW' => $b_view,
 
+						// InformPro - BEGIN
+							'BLOCK_PARENT' => $bfp_rows[$b_rows[$i]['bs_id']],
+							'WEIGHT' => $b_rows[$i]['weight'],
+							'BLOCK_TIP' => $lang['CMS_BLOCK_PARENT'] . ': ' . htmlspecialchars($bfp_rows[$b_rows[$i]['bs_id']]) . htmlspecialchars('<br />') . "\r\n" . $lang['B_BORDER'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_TITLEBAR'] . ': ' . (($b_rows[$i]['titlebar']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_LOCAL'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_BACKGROUND'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']),
+							// InformPro - END
+
 							'U_EDIT_BS' => append_sid($this->root . '?mode=block_settings&amp;action=edit&amp;&amp;bs_id=' . $bs_id),
 							'U_EDIT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=edit&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $b_id),
 							'U_DELETE' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=delete&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $b_id),
@@ -745,7 +770,18 @@ class cms_admin
 						{
 							$template->assign_block_vars('jq_sort', array(
 								'ID' => $this->sort_sid_prefix . $b_rows[$i]['bposition'],
-								'PROP' => 'containment: "#' . $this->sort_cid_prefix . $b_rows[$i]['bposition'] . '", handle: "img.sort-handler", axis: "y"',
+								//'PROP' => 'containment: "#' . $this->sort_cid_prefix . $b_rows[$i]['bposition'] . '", handle: "img.sort-handler", axis: "y"',
+								// InformPro - BEGIN
+								'PROP' => 'containment: "#' . $this->sort_cid_prefix . $b_rows[$i]['bposition'] . '", handle: "img.sort-handler", axis: "y",
+									stop: function (event, ui)
+									{
+										var pos = 0;
+										$("li", "#' . $this->sort_sid_prefix . $b_rows[$i]['bposition'] . '").each(function ()
+										{
+											$(this).find("input.block_weight").val(++pos);
+										});
+									}',
+								// InformPro - END
 								)
 							);
 						}
@@ -2470,6 +2506,7 @@ class cms_admin
 
 		for($i = 0; $i < $count; $i++)
 		{
+			// InformPro: to do... totally rewrite this, first using ONE SELECT WHERE (layout = and bpos = ) or (layout =..) THEN transaction
 			$sql = "SELECT bid FROM ". $this->tables['blocks_table'] . " WHERE layout = '" . $layout_value . "'" . $layout_special_sql . " AND bposition = '" . $rows[$i]['bposition'] . "' ORDER BY weight ASC";
 			$result1 = $db->sql_query($sql);
 

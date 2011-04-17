@@ -169,7 +169,7 @@ function build_icons_list($select_name = 'icon_img_sel', $input_name = 'icon_img
 		while($file = readdir($dir))
 		{
 			$file_split = explode('.', strtolower($file));
-			$extension = $file_split[sizeof($file_split) - 1];
+			$extension = end($file_split);
 			if(in_array($extension, $types))
 			{
 				$file1[$l] = $file;

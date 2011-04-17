@@ -30,6 +30,8 @@ define('CTRACKER_DISABLED', true);
 // Include files
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
+$config['jquery_ui'] = true;
+
 // Start session management
 $user->session_begin();
 //$auth->acl($user->data);

@@ -60,11 +60,31 @@
 //<![CDATA[
 var box_begin = '<div id="result-box" style="height: 16px; border: solid 1px #228822; background: #77dd99;"><span class="text_green">';
 var box_end = '<\/span><\/div>';
+var box_updated = box_begin;
+var page_url = ip_root_path;
+
+var sort_info_box = jQuery('#sort-info-box');
+var stats_modules = jQuery('#stats_modules');
+box_updated += '{L_MODULES_UPDATED}';
+box_updated += box_end;
+page_url += 'cms_db_update.';
+page_url += php_ext;
+
 function update_order()
 {
-	var request_options = {method: 'post', parameters: 'mode=update_modules_order&' + Sortable.serialize("stats_modules") + '&sid=' + S_SID};
-	new Ajax.Request(ip_root_path + 'cms_db_update.' + php_ext, request_options);
+	$.post(page_url, 'mode=update_modules_order&' + stats_modules.sortable('serialize') + '&sid=' + S_SID);
 }
-Sortable.create('stats_modules', {onUpdate:function(){update_order(); $('sort-info-box').innerHTML = box_begin + '{L_MODULES_UPDATED}' + box_end; new Effect.Highlight('result-box', {duration: 0.5}); window.setTimeout("new Effect.Fade('result-box',{duration: 0.5})", 2500);}});
+stats_modules.sortable(
+{
+	update: function ()
+	{
+		update_order();
+		sort_info_box.html(box_updated);
+		setTimeout(function ()
+		{
+			sort_info_box.html('');
+		}, 2500);
+	}
+}).disableSelection();
 //]]>
 </script>

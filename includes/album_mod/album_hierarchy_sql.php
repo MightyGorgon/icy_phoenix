@@ -299,13 +299,13 @@ function album_get_nonexisting_personal_gallery_info()
 
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$album_user_ids .= ($album_user_ids == '') ? $row['user_id'] : ',' . $row['user_id'];
+		$album_user_ids[] = $row['user_id'];
 	}
 
 	// get user names and user ids for info list
-	$sql = "SELECT user_id, username
+	$sql = "SELECT user_id, username, user_color, user_active
 			FROM ". USERS_TABLE . "
-			WHERE user_id NOT IN (" . $album_user_ids .")";
+			WHERE " . $db->sql_in_set('user_id', $album_user_ids, true); //NOT IN
 			// AND user_id <> " . ANONYMOUS;
 	$result = $db->sql_query($sql);
 

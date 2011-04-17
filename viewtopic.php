@@ -1329,19 +1329,19 @@ if (empty($config['disable_likes_posts']) && $forum_topic_data['forum_likes'] &&
 }
 // Mighty Gorgon - POSTS LIKES - END
 
-// Mighty Gorgon - Feedbacks - BEGIN
+// Mighty Gorgon - Feedback - BEGIN
 $feedback_disabled = true;
-if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugins']['feedbacks']['dir']))
+if (!empty($config['plugins']['feedback']['enabled']) && !empty($config['plugins']['feedback']['dir']))
 {
-	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['feedbacks']['dir'] . 'common.' . PHP_EXT);
-	$feedbacks_allowed_forums = explode(',', PLUGINS_FEEDBACKS_FORUMS);
+	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['feedback']['dir'] . 'common.' . PHP_EXT);
+	$feedback_allowed_forums = explode(',', PLUGINS_FEEDBACK_FORUMS);
 	$feedback_disabled = false;
-	if (!in_array($forum_id, $feedbacks_allowed_forums))
+	if (!in_array($forum_id, $feedback_allowed_forums))
 	{
 		$feedback_disabled = true;
 	}
 }
-// Mighty Gorgon - Feedbacks - END
+// Mighty Gorgon - Feedback - END
 
 // Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
 $ip_display_auth = ip_display_auth($user->data, true);
@@ -2163,32 +2163,32 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 	// Mighty Gorgon - POSTS LIKES - END
 
-	// Mighty Gorgon - Feedbacks - BEGIN
-	$feedbacks_received = '';
+	// Mighty Gorgon - Feedback - BEGIN
+	$feedback_received = '';
 	$feedback_add = '';
-	if (!empty($config['plugins']['feedbacks']['enabled']) && !$feedback_disabled)
+	if (!empty($config['plugins']['feedback']['enabled']) && !$feedback_disabled)
 	{
-		$feedbacks_details = get_user_feedbacks_received($postrow[$i]['user_id']);
-		if ($feedbacks_details['feedbacks_count'] > 0)
+		$feedback_details = get_user_feedback_received($postrow[$i]['user_id']);
+		if ($feedback_details['feedback_count'] > 0)
 		{
-			$feedbacks_average = (($feedbacks_details['feedbacks_count'] > 0) ? (round($feedbacks_details['feedbacks_sum'] / $feedbacks_details['feedbacks_count'], 1)) : 0);
-			$feedbacks_average_img = IP_ROOT_PATH . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
-			$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ($lang['FEEDBACKS_RECEIVED'] . ': [ <a href="' . append_sid(PLUGINS_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]<br /><img src="' . $feedbacks_average_img . '" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" /><br />') : '');
+			$feedback_average = (($feedback_details['feedback_count'] > 0) ? (round($feedback_details['feedback_sum'] / $feedback_details['feedback_count'], 1)) : 0);
+			$feedback_average_img = IP_ROOT_PATH . 'images/feedback/' . build_feedback_rating_image($feedback_average);
+			$feedback_received = (($feedback_details['feedback_count'] > 0) ? ($lang['FEEDBACK_RECEIVED'] . ': [ <a href="' . append_sid(PLUGINS_FEEDBACK_FILE . '?' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $feedback_details['feedback_count'] . '</a> ]<br /><img src="' . $feedback_average_img . '" alt="' . $feedback_average . '" title="' . $feedback_average . '" /><br />') : '');
 		}
-		if (can_user_give_feedbacks_topic($user->data['user_id'], $topic_id) && can_user_give_feedbacks_global($user->data['user_id'], $topic_id) && ($user->data['user_id'] != $postrow[$i]['user_id']))
+		if (can_user_give_feedback_topic($user->data['user_id'], $topic_id) && can_user_give_feedback_global($user->data['user_id'], $topic_id) && ($user->data['user_id'] != $postrow[$i]['user_id']))
 		{
-			$feedback_add = '&nbsp;&nbsp;<a href="' . append_sid(PLUGINS_FEEDBACKS_FILE . '?mode=input&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $lang['FEEDBACK_ADD'] . '</a><br />';
+			$feedback_add = '&nbsp;&nbsp;<a href="' . append_sid(PLUGINS_FEEDBACK_FILE . '?mode=input&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_USERS_URL . '=' . $postrow[$i]['user_id']) . '">' . $lang['FEEDBACK_ADD'] . '</a><br />';
 		}
 	}
-	// Mighty Gorgon - Feedbacks - END
+	// Mighty Gorgon - Feedback - END
 
 	// Again this will be handled by the templating code at some point
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
 	$template->assign_block_vars('postrow', array(
-		// Mighty Gorgon - Feedbacks - BEGIN
-		'FEEDBACKS' => $feedbacks_received . $feedback_add,
-		// Mighty Gorgon - Feedbacks - END
+		// Mighty Gorgon - Feedback - BEGIN
+		'FEEDBACK' => $feedback_received . $feedback_add,
+		// Mighty Gorgon - Feedback - END
 		'ROW_CLASS' => $row_class,
 		'POSTER_NAME' => $poster,
 		'POSTER_NAME_QQ' => $poster_qq,

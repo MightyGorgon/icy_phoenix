@@ -440,7 +440,6 @@ function pafiledb_page_header($page_title)
 	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
-	global $css_include, $css_style_include, $js_include;
 
 	global $pafiledb, $pafiledb_config, $action;
 	global $admin_level, $level_prior, $debug;
@@ -558,7 +557,6 @@ function pafiledb_page_footer()
 	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
-	global $css_include, $css_style_include, $js_include;
 
 	global $pafiledb, $pafiledb_config, $action;
 	global $admin_level, $level_prior, $debug;

@@ -554,27 +554,27 @@ $breadcrumbs_links_right = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_a
 
 display_upload_attach_box_limits($profiledata['user_id']);
 
-// Mighty Gorgon - Feedbacks - BEGIN
-$feedbacks_received = '';
-if (!empty($config['plugins']['feedbacks']['enabled']) && !empty($config['plugins']['feedbacks']['dir']))
+// Mighty Gorgon - Feedback - BEGIN
+$feedback_received = '';
+if (!empty($config['plugins']['feedback']['enabled']) && !empty($config['plugins']['feedback']['dir']))
 {
-	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['feedbacks']['dir'] . 'common.' . PHP_EXT);
-	$feedbacks_details = get_user_feedbacks_received($profiledata['user_id']);
-	if ($feedbacks_details['feedbacks_count'] > 0)
+	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['feedback']['dir'] . 'common.' . PHP_EXT);
+	$feedback_details = get_user_feedback_received($profiledata['user_id']);
+	if ($feedback_details['feedback_count'] > 0)
 	{
-		$feedbacks_average = (($feedbacks_details['feedbacks_count'] > 0) ? (round($feedbacks_details['feedbacks_sum'] / $feedbacks_details['feedbacks_count'], 1)) : 0);
-		$feedbacks_average_img = IP_ROOT_PATH . 'images/feedbacks/' . build_feedback_rating_image($feedbacks_average);
-		$feedbacks_received = (($feedbacks_details['feedbacks_count'] > 0) ? ('[ <a href="' . append_sid(PLUGINS_FEEDBACKS_FILE . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedbacks_details['feedbacks_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedbacks_average_img . '" style="vertical-align: middle;" alt="' . $feedbacks_average . '" title="' . $feedbacks_average . '" />') : '');
+		$feedback_average = (($feedback_details['feedback_count'] > 0) ? (round($feedback_details['feedback_sum'] / $feedback_details['feedback_count'], 1)) : 0);
+		$feedback_average_img = IP_ROOT_PATH . 'images/feedback/' . build_feedback_rating_image($feedback_average);
+		$feedback_received = (($feedback_details['feedback_count'] > 0) ? ('[ <a href="' . append_sid(PLUGINS_FEEDBACK_FILE . '?' . POST_USERS_URL . '=' . $profiledata['user_id']) . '">' . $feedback_details['feedback_count'] . '</a> ]&nbsp;&nbsp;<img src="' . $feedback_average_img . '" style="vertical-align: middle;" alt="' . $feedback_average . '" title="' . $feedback_average . '" />') : '');
 	}
 }
-// Mighty Gorgon - Feedbacks - END
+// Mighty Gorgon - Feedback - END
 
 $is_friend = user_check_friend_foe($profiledata['user_id'], true);
 
 $template->assign_vars(array(
-	// Mighty Gorgon - Feedbacks - BEGIN
-	'FEEDBACKS' => $feedbacks_received,
-	// Mighty Gorgon - Feedbacks - END
+	// Mighty Gorgon - Feedback - BEGIN
+	'FEEDBACK' => $feedback_received,
+	// Mighty Gorgon - Feedback - END
 	'USERNAME' => $profiledata['username'],
 	'JOINED' => create_date($lang['JOINED_DATE_FORMAT'], $profiledata['user_regdate'], $config['board_timezone']),
 

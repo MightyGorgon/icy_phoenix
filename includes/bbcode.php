@@ -728,9 +728,9 @@ class bbcode
 					$pic_id = str_replace('http://', '', str_replace('https://', '', $pic_id));
 					$pic_path[] = array();
 					$pic_path = explode('/', $pic_id);
-					$pic_filename = $pic_path[sizeof($pic_path) - 1];
+					$pic_filename = end($pic_path);
 					$file_part = explode('.', strtolower($pic_filename));
-					$pic_filetype = $file_part[sizeof($file_part) - 1];
+					$pic_filetype = end($file_part);
 					$thumb_ext_array = array('gif', 'jpg', 'png');
 					if (in_array($pic_filetype, $thumb_ext_array))
 					{

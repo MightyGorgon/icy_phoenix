@@ -78,7 +78,7 @@
 			<!-- ENDIF -->
 			{postrow.POSTER_AGE}
 			{postrow.POSTER_FROM_FULL}<br />
-			<!-- IF postrow.FEEDBACKS -->{postrow.FEEDBACKS}<!-- ENDIF -->
+			<!-- IF postrow.FEEDBACK -->{postrow.FEEDBACK}<!-- ENDIF -->
 			<!-- IF not S_BOT -->
 			<!-- BEGIN switch_poster_info -->
 			{postrow.CASH}<br />

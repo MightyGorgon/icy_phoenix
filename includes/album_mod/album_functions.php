@@ -878,12 +878,12 @@ function picture_quick_thumb($pic_filename, $pic_thumbnail, $thumbnail_file)
 		{
 			$pic_path[] = array();
 			$pic_path = explode('/', $pic_filename);
-			$pic_filename = $pic_path[sizeof($pic_path) - 1];
+			$pic_filename = end($pic_path);
 		}
 	}
 
 	$file_part = explode('.', strtolower($pic_filename));
-	$pic_filetype = $file_part[sizeof($file_part) - 1];
+	$pic_filetype = end($file_part);
 	$pic_filename_only = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
 	$pic_base_path = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 	$pic_extra_path = '';
@@ -927,12 +927,12 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 		{
 			$pic_path[] = array();
 			$pic_path = explode('/', $pic_info['filename']);
-			$pic_info['filename'] = $pic_path[sizeof($pic_path) - 1];
+			$pic_info['filename'] = end($pic_path);
 		}
 	}
 
 	$file_part = explode('.', strtolower($pic_info['filename']));
-	$pic_info['filetype'] = $file_part[sizeof($file_part) - 1];
+	$pic_info['filetype'] = end($file_part);
 	$pic_info['filename_only'] = substr($pic_info['filename'], 0, strlen($pic_info['filename']) - strlen($pic_info['filetype']) - 1);
 	$pic_info['base_path'] = IP_ROOT_PATH . ALBUM_UPLOAD_PATH;
 	$pic_info['base_t_s_path'] = IP_ROOT_PATH . ALBUM_CACHE_PATH;

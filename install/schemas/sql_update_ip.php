@@ -3995,9 +3995,13 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_likes` tinyint(1) NOT NULL DEFAULT '0' AFTER `forum_thanks`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`";
 
+		// Still not sure which one of this code will do the trick... anyway it's not really important... :-)
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\"', '\"')";
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\'\", \"'\")";
-
+		/*
+		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\\\"', '\\\"')";
+		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\\'\", \"\'\")";
+		*/
 
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':

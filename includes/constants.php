@@ -31,6 +31,8 @@ define('ONLY_FOUNDER_ACP', false);
 // If the constant is deleted then every admin is able to access the Full ACP
 define('MAIN_ADMINS_ID', '2');
 
+define('EMAILER_DISABLED', false);
+
 // CRON - BEGIN
 // Cron refresh time: seconds needed to a cron job to be considered DIED
 define('CRON_REFRESH', 900);

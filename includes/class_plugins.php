@@ -552,7 +552,7 @@ class class_plugins
 
 		$tpl_path = $tpl_base_path . 'default/' . $tpl_file;
 		$tpl_temp_file = $tpl_base_path . $theme['template_name'] . '/' . $tpl_file;
-		if (file_exists($tpl_temp_file))
+		if (@file_exists($tpl_temp_file))
 		{
 			$tpl_path = $tpl_temp_file;
 		}

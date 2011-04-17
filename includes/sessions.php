@@ -103,10 +103,12 @@ class session
 		// Default IP if REMOTE_ADDR is invalid
 		$this->ip = '127.0.0.1';
 
+		$format_ipv4 = get_preg_expression('ipv4');
+		$format_ipv6 = get_preg_expression('ipv6');
 		foreach ($ips as $ip)
 		{
 			// check IPv4 first, the IPv6 is hopefully only going to be used very seldomly
-			if (!empty($ip) && !preg_match(get_preg_expression('ipv4'), $ip) && !preg_match(get_preg_expression('ipv6'), $ip))
+			if (!empty($ip) && !preg_match($format_ipv4, $ip) && !preg_match($format_ipv6, $ip))
 			{
 				// Just break
 				break;
@@ -117,7 +119,7 @@ class session
 			{
 				$ipv4 = substr($ip, 7);
 
-				if (preg_match(get_preg_expression('ipv4'), $ipv4))
+				if (preg_match($format_ipv4, $ipv4))
 				{
 					$ip = $ipv4;
 				}

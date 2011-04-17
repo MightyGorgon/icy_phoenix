@@ -37,7 +37,7 @@ check_page_auth($cms_page['page_id'], $cms_auth_level);
 $gen_simple_header = true;
 
 $js_temp = array('jquery/jquery_ajax_upload.js');
-$js_include = (!empty($js_include) && is_array($js_include)) ? array_merge($js_include, $js_temp) : $js_temp;
+$template->js_include = array_merge($template->js_include, $js_temp);
 unset($js_temp);
 
 $server_path = create_server_url();

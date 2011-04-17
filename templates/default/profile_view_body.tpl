@@ -157,10 +157,10 @@
 						<td class="row1"><span class="genmed">{THANKS_RECEIVED}</span></td>
 					</tr>
 					<!-- END show_thanks_profile -->
-					<!-- IF FEEDBACKS -->
+					<!-- IF FEEDBACK -->
 					<tr>
-						<td class="row2" valign="top" width="30%"><b><span class="genmed">{L_FEEDBACKS_RECEIVED}</span></b></td>
-						<td class="row1">{FEEDBACKS}</td>
+						<td class="row2" valign="top" width="30%"><b><span class="genmed">{L_FEEDBACK_RECEIVED}</span></b></td>
+						<td class="row1">{FEEDBACK}</td>
 					</tr>
 					<!-- ENDIF -->
 					<!-- IF S_ADMIN_MOD -->

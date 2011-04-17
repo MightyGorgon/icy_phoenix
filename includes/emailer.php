@@ -266,6 +266,11 @@ class emailer
 	{
 		global $db, $config, $lang;
 
+		if (defined('EMAILER_DISABLED') && !empty(EMAILER_DISABLED))
+		{
+			return false;
+		}
+
 		/*
 		if (empty($config['email_enable']))
 		{
@@ -294,9 +299,10 @@ class emailer
 		}
 		*/
 
-		$encode_eol = ($config['smtp_delivery']) ? "\r\n" : $this->eol;
+		$encode_eol = !empty($config['smtp_delivery']) ? "\r\n" : $this->eol;
 
 		// Old Icy Phoenix Code - BEGIN
+		// Note: this is for {} parsing
 		// Escape all quotes, else the eval will fail.
 		$this->msg = str_replace("'", "\'", $this->msg);
 		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);

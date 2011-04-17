@@ -146,10 +146,10 @@ switch ($mode)
 			AJAX_message_die($result_ar);
 			exit;
 		}
-		if (!empty($_POST['stats_modules']))
+		if (!empty($_POST['item']))
 		{
 			$item_order = 0;
-			foreach($_POST['stats_modules'] as $module_item_id)
+			foreach($_POST['item'] as $module_item_id)
 			{
 				$item_order++;
 				$sql = "UPDATE " . MODULES_TABLE . " SET display_order = '" . ($item_order * 10) . "' WHERE module_id = '" . $module_item_id . "'";
@@ -176,10 +176,10 @@ switch ($mode)
 			AJAX_message_die($result_ar);
 			exit;
 		}
-		if (!empty($_POST['smileys']))
+		if (!empty($_POST['item']))
 		{
 			$item_order = 0;
-			foreach($_POST['smileys'] as $smiley_item_id)
+			foreach($_POST['item'] as $smiley_item_id)
 			{
 				$item_order++;
 				$sql = "UPDATE " . SMILIES_TABLE . " SET smilies_order = '" . $item_order . "' WHERE smilies_id = '" . $smiley_item_id . "'";

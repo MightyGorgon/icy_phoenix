@@ -72,42 +72,12 @@ $ajax_blur = '';
 $ajax_user_check = !empty($config['ajax_features']) ? 'onkeyup="AJAXUsernameSearch(this.value, 0);"' : '';
 // Mighty Gorgon - AJAX Features - End
 
+// Not needed anymore...
+/*
 $js_temp = array('js/prototype.js', 'scriptaculous/scriptaculous.js', 'scriptaculous/unittest.js');
-$js_include = (!empty($js_include) && is_array($js_include)) ? array_merge($js_include, $js_temp) : $js_temp;
+$template->js_include = array_merge($template->js_include, $js_temp);
 unset($js_temp);
-
-if(is_array($css_style_include))
-{
-	for ($i = 0; $i < sizeof($css_style_include); $i++)
-	{
-		$template->assign_block_vars('css_style_include', array(
-			'CSS_FILE' => $css_style_include[$i],
-			)
-		);
-	}
-}
-
-if(is_array($css_include))
-{
-	for ($i = 0; $i < sizeof($css_include); $i++)
-	{
-		$template->assign_block_vars('css_include', array(
-			'CSS_FILE' => $css_include[$i],
-			)
-		);
-	}
-}
-
-if(is_array($js_include))
-{
-	for ($i = 0; $i < sizeof($js_include); $i++)
-	{
-		$template->assign_block_vars('js_include', array(
-			'JS_FILE' => $js_include[$i],
-			)
-		);
-	}
-}
+*/
 
 //
 // The following assigns all _common_ variables that may be used at any point
