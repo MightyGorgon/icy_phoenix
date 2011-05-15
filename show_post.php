@@ -29,7 +29,8 @@ $post_id = request_var(POST_POST_URL, 0);
 
 if (empty($post_id))
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 $download = (isset($_GET['download'])) ? $_GET['download'] : '';
 
@@ -68,7 +69,8 @@ if (isset($_GET['view']))
 
 if (!isset($post_id))
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 
 // Get topic info ...
@@ -82,7 +84,8 @@ $result = $db->sql_query($sql);
 $tmp = '';
 if (!($forum_row = $db->sql_fetchrow($result)))
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 
 $forum_id = $forum_row['forum_id'];
@@ -432,7 +435,8 @@ if ($row = $db->sql_fetchrow($result))
 }
 else
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist', '', __LINE__, __FILE__, $sql);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC', '', __LINE__, __FILE__, $sql);
 }
 
 $gen_simple_header = true;

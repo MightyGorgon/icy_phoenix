@@ -105,11 +105,11 @@ function Collapse_Expand_All(collapse)
 	<td width="5%" class="row1 row-center" valign="middle"><span class="gensmall">{row.POSTS}</span></td>
 	<td width="25%" class="row1 row-center">
 		{row.S_HIDDEN_FIELDS}
-		<a href="{row.U_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>
-		<a href="{row.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a>
-		<a href="{row.U_MOVEUP}"><img src="../images/cms/arrow_up.png" alt="{L_MOVEUP}" title="{L_MOVEUP}" /></a>
-		<a href="{row.U_MOVEDW}"><img src="../images/cms/arrow_down.png" alt="{L_MOVEDW}" title="{L_MOVEDW}" /></a>
-		<a href="{row.U_RESYNC}"><img src="../images/cms/b_refresh.png" alt="{L_RESYNC}" title="{L_RESYNC}" /></a>
+		<a href="{row.U_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>
+		<a href="{row.U_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a>
+		<a href="{row.U_MOVEUP}"><img src="{IMG_CMS_ARROW_UP}" alt="{L_MOVEUP}" title="{L_MOVEUP}" /></a>
+		<a href="{row.U_MOVEDW}"><img src="{IMG_CMS_ARROW_DOWN}" alt="{L_MOVEDW}" title="{L_MOVEDW}" /></a>
+		<a href="{row.U_RESYNC}"><img src="{IMG_CMS_ICON_REFRESH}" alt="{L_RESYNC}" title="{L_RESYNC}" /></a>
 	</td>
 </tr>
 <!-- END row -->

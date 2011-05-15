@@ -155,8 +155,7 @@ $template->assign_vars(array(
 	)
 );
 
-// Work around for "current" Apache 2 + PHP module which seems to not
-// cope with private cache control setting
+// Work around for "current" Apache 2 + PHP module which seems to not cope with private cache control setting
 if (!defined('AJAX_HEADERS'))
 {
 	if (!empty($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Apache/2'))

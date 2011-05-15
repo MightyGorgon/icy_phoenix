@@ -19,10 +19,10 @@ $user->session_begin();
 $user->setup();
 // End session management
 
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_features.' . PHP_EXT);
+setup_extra_lang(array('lang_features'));
 
-$img_true = '<img src="images/cms/b_ok.png" alt="True" />';
-$img_false = '<img src="images/cms/b_cancel.png" alt="False" />';
+$img_true = '<img src="' . IP_ROOT_PATH . $images['cms_icon_ok'] . '" alt="True" />';
+$img_false = '<img src="' . IP_ROOT_PATH . $images['cms_icon_cancel'] . '" alt="False" />';
 
 $features_array = array(
 

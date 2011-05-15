@@ -119,7 +119,8 @@ if (empty($thiscat) && ($album_user_id != ALBUM_PUBLIC_GALLERY))
 	else
 	{
 		// generate mesage saying that the user specified doesn't exists
-		message_die(GENERAL_ERROR, $lang['No_user_id_specified']);
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_ERROR, 'NO_USER');
 	}
 }
 

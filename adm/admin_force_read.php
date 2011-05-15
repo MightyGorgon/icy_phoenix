@@ -38,7 +38,7 @@ elseif(isset($_POST['logs']))
 	$mode = 'users';
 }
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_ftr.' . PHP_EXT);
+setup_extra_lang(array('lang_ftr'));
 
 $update = $_POST['update'];
 

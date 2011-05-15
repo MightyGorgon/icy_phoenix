@@ -26,7 +26,7 @@ $user->session_begin();
 $user->setup();
 // End session management
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_attach.' . PHP_EXT);
+setup_extra_lang(array('lang_admin_attach'));
 
 $cms_page['page_id'] = 'attachments';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);

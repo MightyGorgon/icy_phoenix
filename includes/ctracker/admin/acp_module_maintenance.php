@@ -32,11 +32,19 @@ if (!defined('IN_ICYPHOENIX') || !defined('CTRACKER_ACP'))
 	die('Hacking attempt!');
 }
 
-if (!function_exists('get_ip_version'))
+if (!function_exists('obtain_latest_version_info'))
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_versions.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 }
-$latest_ip_version = get_ip_version();
+$latest_ip_version = obtain_latest_version_info();
+$version_up_to_date = false;
+if (!empty($latest_ip_version))
+{
+	$latest_version_info = explode("\n", $latest_ip_version);
+	$latest_version = str_replace('rc', 'RC', strtolower(trim($latest_version_info[0])));
+	$current_version = str_replace('rc', 'RC', strtolower($config['ip_version']));
+	$version_up_to_date = version_compare($current_version, $latest_version, '<') ? false : true;
+}
 
 /*
 * Template file association
@@ -358,8 +366,8 @@ $template->assign_vars(array(
 
 	'L_SEC_INFO_4' => $lang['ctracker_ma_scheck_4'],
 	'L_SEC_INFO_V4' => $config['ip_version'],
-	'L_SEC_INFO_OV4' => $latest_ip_version,
-	'L_SEC_INFO_D4' => ($config['ip_version'] >= $latest_ip_version)? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
+	'L_SEC_INFO_OV4' => !empty($latest_version) ? $latest_version : '0.0.0',
+	'L_SEC_INFO_D4' => ($version_up_to_date) ? $lang['ctracker_ma_secure'] : $lang['ctracker_ma_warning'],
 
 	'L_SEC_INFO_4a' => $lang['ctracker_ma_scheck_4a'],
 	'L_SEC_INFO_V4a' => ($config['enable_confirm'] == 1)? $lang['ctracker_ma_on'] : $lang['ctracker_ma_off'],

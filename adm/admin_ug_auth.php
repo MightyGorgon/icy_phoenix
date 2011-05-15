@@ -536,7 +536,8 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 		$this_userdata = get_userdata($username, true);
 		if (!is_array($this_userdata))
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 		$user_id = $this_userdata['user_id'];
 	}

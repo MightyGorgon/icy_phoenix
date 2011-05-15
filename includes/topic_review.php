@@ -29,7 +29,8 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 	{
 		if (!isset($topic_id) || !$topic_id)
 		{
-			message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 		}
 
 		// Get topic info ...
@@ -43,7 +44,8 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 
 		if (!($forum_row = $db->sql_fetchrow($result)))
 		{
-			message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 		}
 		$db->sql_freeresult($result);
 
@@ -202,7 +204,8 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 	}
 	else
 	{
-		message_die(GENERAL_MESSAGE, 'Topic_post_not_exist', '', __LINE__, __FILE__, $sql);
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_TOPIC', '', __LINE__, __FILE__, $sql);
 	}
 	$db->sql_freeresult($result);
 

@@ -31,7 +31,8 @@ if (!defined('IN_ICYPHOENIX'))
 $username = album_get_user_name($album_user_id);
 if (empty($username))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 // ------------------------------------

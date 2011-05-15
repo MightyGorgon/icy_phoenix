@@ -522,8 +522,8 @@ else
 			$counting_list = array();
 			$counting_list = count_users_in_group($row['group_id']);
 
-			$g_move = '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=0') . '"><img src="../images/cms/arrow_up.png" alt="' . $lang['Move_Up'] . '" title="' . $lang['Move_Up'] . '" /></a>';
-			$g_move .= '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=1') . '"><img src="../images/cms/arrow_down.png" alt="' . $lang['Move_Down'] . '" title="' . $lang['Move_Down'] . '" /></a>';
+			$g_move = '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=0') . '"><img src="' . $images['cms_arrow_up'] . '" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" /></a>';
+			$g_move .= '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=1') . '"><img src="' . $images['cms_arrow_down'] . '" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" /></a>';
 
 			$class = ($row_counter % 2) ? $theme['td_class2'] : $theme['td_class1'];
 

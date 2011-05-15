@@ -107,110 +107,6 @@ function get_block_info($blocks_table, $b_id)
 }
 
 /*
-* Create CMS block
-*/
-function make_cms_block($l_id, $b_id, $b_i, $b_count, $b_position_l, $invalid)
-{
-	global $db, $images, $lang;
-
-	if (empty($b_id))
-	{
-		return false;
-	}
-
-	$source_file = 'cms.';
-	$cms_type_id = '1';
-	$cms_block_table = CMS_BLOCKS_TABLE;
-
-	$sql = "SELECT * FROM " . $cms_block_table . " WHERE bid = " . $b_id . "";
-	$result = $db->sql_query($sql);
-	$b_row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-
-	switch ($b_row['view'])
-	{
-		case '0':
-			$b_view = '[ ' . $lang['B_ALL'] . ' ]';
-			break;
-		case '1':
-			$b_view = '[ ' . $lang['B_GUESTS'] . ' ]';
-			break;
-		case '2':
-			$b_view = '[ ' . $lang['B_REG'] . ' ]';
-			break;
-		case '3':
-			$b_view = '[ ' . $lang['B_MOD'] . ' ]';
-			break;
-		case '4':
-			$b_view = '[ ' . $lang['B_ADMIN'] . ' ]';
-			break;
-	}
-
-	if(!empty($b_row['groups']))
-	{
-		$groups = get_groups_names($b_row['groups']);
-	}
-	else
-	{
-		$groups = '[ ' . $lang['B_ALL'] . ' ]';
-	}
-	$b_content = (empty($b_row['blockfile'])) ? $lang['B_Text'] : $lang['B_File'];
-	$b_type = (empty($b_row['blockfile'])) ? (($b_row['type']) ? '(' . $lang['B_BBCode'] . ')' : '(' . $lang['B_HTML'] . ')') : '&nbsp;';
-
-	$img_active = ($b_row['active']) ? $images['turn_on'] : $images['turn_off'];
-	$img_border = ($b_row['border']) ? $images['border_on'] : $images['border_off'];
-	$img_titlebar = ($b_row['titlebar']) ? $images['titlebar_on'] : $images['titlebar_off'];
-	$img_local = ($b_row['local']) ? $images['local_on'] : $images['local_off'];
-	$img_background = ($b_row['background']) ? $images['background_on'] : $images['background_off'];
-
-	$hidden_fields = '';
-	$hidden_fields .= '<input type="hidden" id="active_' . $b_id . '" value="' . $b_row['active'] . '" />';
-	$hidden_fields .= '<input type="hidden" id="border_' . $b_id . '" value="' . $b_row['border'] . '" />';
-	$hidden_fields .= '<input type="hidden" id="titlebar_' . $b_id . '" value="' . $b_row['titlebar'] . '" />';
-	$hidden_fields .= '<input type="hidden" id="local_' . $b_id . '" value="' . $b_row['local'] . '" />';
-	$hidden_fields .= '<input type="hidden" id="background_' . $b_id . '" value="' . $b_row['background'] . '" />';
-
-	$u_move = '<img class="handle" src="' . $images['block_move'] . '" alt="' . $lang['BLOCK_MOVE'] . '" title="' . $lang['BLOCK_MOVE'] . '" style="vertical-align: middle; cursor: move;"/>&nbsp;';
-
-	$u_active = '<img src="' . $img_active . '" alt="' . $lang['TURN_ACTIVE'] . '" title="' . $lang['TURN_ACTIVE'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 0, ' . $b_id . ', ' . $cms_type_id . ')"/>';
-	$u_border = '<img src="' . $img_border . '" alt="' . $lang['TURN_BORDER'] . '" title="' . $lang['TURN_BORDER'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 1, ' . $b_id . ', ' . $cms_type_id . ')"/>';
-	$u_titlebar = '<img src="' . $img_titlebar . '" alt="' . $lang['TURN_TITLEBAR'] . '" title="' . $lang['TURN_TITLEBAR'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 2, ' . $b_id . ', ' . $cms_type_id . ')"/>';
-	$u_local = '<img src="' . $img_local . '" alt="' . $lang['TURN_LOCAL'] . '" title="' . $lang['TURN_LOCAL'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 3, ' . $b_id . ', ' . $cms_type_id . ')"/>';
-	$u_background = '<img src="' . $img_background . '" alt="' . $lang['TURN_BACKGROUND'] . '" title="' . $lang['TURN_BACKGROUND'] . '" style="cursor: pointer;" onclick="ChangeStatus(this, 4, ' . $b_id . ', ' . $cms_type_id . ')"/>';
-
-	$u_edit = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks&amp;action=edit&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['Block_Edit'] . '" title="' . $lang['Block_Edit'] . '"/></a>';
-	$u_delete = '<a href="' . append_sid($source_file . PHP_EXT . '?mode=blocks&amp;action=delete&amp;l_id=' . $l_id . '&amp;b_id=' . $b_id) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CMS_Delete'] . '" title="' . $lang['CMS_Delete'] . '"/></a>';
-
-	$block_class = (!$invalid) ? 'sortable-list-div' : 'sortable-invalid-list-div';
-
-	$output = '';
-	if ($b_i == 0)
-	{
-		$output .= '<div class="' . $block_class . '"><span>' . $b_position_l . '</span><ul class="sortable-list" id="list_' . $b_row['bposition'] . '">';
-	}
-	$output .= '<li class="cms-content" id="list_' . $b_row['bposition'] . '_id' . $b_id . '" >';
-	$output .= '<div class="row1" style="min-height: 24px;">';
-	$output .= '<div style="text-align: center; float: left;">' . $u_move . '</div>';
-	$output .= '<div style="text-align: center;"><b>' . $b_row['title'] . '</b></div>';
-	$output .= '</div>';
-	$output .= '<div class="container row1">';
-	$output .= '<div class="left">' . $u_border . $u_titlebar . $u_local . $u_background . '<br />';
-	$output .= $b_content . '&nbsp;' . $b_type . '</div>';
-	$output .= '<div class="right">' . $u_active . '&nbsp;' . $u_edit . '&nbsp;' . $u_delete .'&nbsp;</div>';
-	$output .= '<div class="clearCol"></div></div>';
-	$output .= '<div class="row1" style="text-align: center; color: red;">' . $b_view . '</div>';
-	$output .= '<div class="row1" style="text-align: center; color: blue;">' . $groups . '</div>';
-	$output .= $hidden_fields;
-
-	$output .= '</li>';
-	if ($b_i == ($b_count - 1))
-	{
-		$output .= '</ul></div>';
-	}
-	return $output;
-}
-
-/*
 * Create CMS field
 */
 function create_cms_field($config_array)
@@ -342,27 +238,21 @@ function create_cms_field_tpl($config_array, $check_save = false)
 */
 function get_all_usergroups($info_groups = '')
 {
-	global $db;
+	global $db, $cache;
 
 	$group = '';
 	$checked = '';
-	if ($info_groups != '')
+	if (!empty($info_groups))
 	{
 		$group_array = explode(",", $info_groups);
 	}
 
-	$sql = "SELECT group_id, group_name FROM " . GROUPS_TABLE . " WHERE group_single_user = 0 ORDER BY group_id";
-	$result = $db->sql_query($sql);
-
-	while ($row = $db->sql_fetchrow($result))
+	$groups = get_groups_list();
+	foreach ($groups as $group_id => $group_name)
 	{
-		if ($info_groups != '')
-		{
-			$checked = (in_array($row['group_id'], $group_array)) ? ' checked="checked"' : '';
-		}
-		$group .= '<input type="checkbox" name="group' . strval($row['group_id']) . '"' . $checked . ' />&nbsp;' . $row['group_name'] . '&nbsp;<br />';
+		$checked = (empty($info_groups) || in_array($group_id, $group_array)) ? ' checked="checked"' : '';
+		$group .= '<input type="checkbox" name="group' . strval($group_id) . '"' . $checked . ' />&nbsp;' . $group_name . '&nbsp;<br />';
 	}
-	$db->sql_freeresult($result);
 
 	return $group;
 }
@@ -372,7 +262,7 @@ function get_all_usergroups($info_groups = '')
 */
 function get_max_group_id()
 {
-	global $db;
+	global $db, $cache;
 
 	$sql = "SELECT MAX(group_id) max_group_id FROM " . GROUPS_TABLE . " WHERE group_single_user = 0";
 	$result = $db->sql_query($sql);
@@ -383,27 +273,51 @@ function get_max_group_id()
 	return $max_group_id;
 }
 
+/*
+* Get selected groups
+*/
 function get_selected_groups()
 {
-	$max_group_id = get_max_group_id();
-	$b_group = '';
-	$not_first = false;
-	for($i = 1; $i <= $max_group_id; $i++)
+	global $db, $cache;
+
+	$selected_groups_result = '';
+	$selected_groups = array();
+
+	$groups = get_groups_list();
+
+	foreach ($groups as $group_id => $group_name)
 	{
-		if(isset($_POST['group' . strval($i)]))
+		if(isset($_POST['group' . strval($group_id)]))
 		{
-			if($not_first)
-			{
-				$b_group .= ',' . strval($i);
-			}
-			else
-			{
-				$b_group .= strval($i);
-				$not_first = true;
-			}
+			$selected_groups[] = strval($group_id);
 		}
 	}
-	return $b_group;
+
+	if (!empty($selected_groups) && (sizeof($groups) != sizeof($selected_groups)))
+	{
+		$selected_groups_result = implode(',', $selected_groups);
+	}
+
+	return $selected_groups_result;
+}
+
+/*
+* Get groups list
+*/
+function get_groups_list()
+{
+	global $db, $cache;
+
+	$groups = array();
+	$sql = "SELECT group_id, group_name FROM " . GROUPS_TABLE . " WHERE group_single_user = 0 ORDER BY group_id";
+	$result = $db->sql_query($sql);
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$groups[$row['group_id']] = $row['group_name'];
+	}
+	$db->sql_freeresult($result);
+
+	return $groups;
 }
 
 /*
@@ -411,7 +325,7 @@ function get_selected_groups()
 */
 function get_groups_names($groups_ids)
 {
-	global $db;
+	global $db, $cache;
 
 	$sql = "SELECT group_name FROM " . GROUPS_TABLE . " WHERE group_id IN (" . $groups_ids . ")";
 	$result = $db->sql_query($sql);

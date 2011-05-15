@@ -50,7 +50,8 @@ if (isset($_POST['submit']))
 
 	if(!$this_userdata)
 	{
-		message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_USER');
 	}
 
 

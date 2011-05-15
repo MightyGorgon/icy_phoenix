@@ -19,7 +19,8 @@ function ip_user_kill($user_id)
 
 	if (!($this_userdata = get_userdata($user_id)))
 	{
-		message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_USER');
 	}
 
 	if($user->data['user_id'] != $user_id)
@@ -40,13 +41,6 @@ function ip_user_kill($user_id)
 			SET poster_id = " . DELETED . ", post_username = '" . $db->sql_escape($this_userdata['username']) . "'
 			WHERE poster_id = " . $user_id;
 		$db->sql_query($sql);
-
-		// Start add - Fully integrated shoutbox MOD
-		$sql = "UPDATE " . SHOUTBOX_TABLE . "
-			SET shout_user_id = " . DELETED . ", shout_username = '" . $db->sql_escape($username) . "'
-			WHERE shout_user_id = " . $user_id;
-			$db->sql_query($sql);
-		// End add - Fully integrated shoutbox MOD
 
 		$sql = "UPDATE " . TOPICS_TABLE . "
 			SET topic_poster = " . DELETED . "
@@ -128,6 +122,13 @@ function ip_user_kill($user_id)
 
 		$sql = "DELETE FROM " . SUDOKU_USERS . " WHERE user_id = " . $user_id;
 		$db->sql_query($sql);
+
+		// Start add - Fully integrated shoutbox MOD
+		$sql = "UPDATE " . SHOUTBOX_TABLE . "
+			SET shout_user_id = " . DELETED . ", shout_username = '" . $db->sql_escape($username) . "'
+			WHERE shout_user_id = " . $user_id;
+			$db->sql_query($sql);
+		// End add - Fully integrated shoutbox MOD
 
 		// Event Registration - BEGIN
 		$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE registration_user_id = " . $user_id;

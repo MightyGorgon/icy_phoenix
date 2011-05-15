@@ -289,14 +289,14 @@ class StatisticsDB
 
 		if (!$this->db_cached)
 		{
-			$sql = "UPDATE " . MODULES_TABLE . "
+			$sql = "UPDATE " . STATS_MODULES_TABLE . "
 			SET module_db_cache = ''
 			WHERE module_id = " . $module_id;
 		}
 		else
 		{
 			$data = new cached_db($this->numrows_data, $this->fetchrowset_data, $this->fetchrow_data);
-			$sql = "UPDATE " . MODULES_TABLE . "
+			$sql = "UPDATE " . STATS_MODULES_TABLE . "
 			SET module_db_cache = '" . $this->sql_escape(serialize($data)) . "',
 			module_cache_time = " . time() . "
 			WHERE module_id = " . $module_id;
@@ -454,14 +454,14 @@ class Results
 
 		if (!$this->result_enabled)
 		{
-			$sql = "UPDATE " . MODULES_TABLE . "
+			$sql = "UPDATE " . STATS_MODULES_TABLE . "
 			SET module_result_cache = ''
 			WHERE module_id = " . $module_id;
 		}
 		else
 		{
 			$data = new cached_result($this->var_data);
-			$sql = "UPDATE " . MODULES_TABLE . "
+			$sql = "UPDATE " . STATS_MODULES_TABLE . "
 			SET module_result_cache = '" . $this->sql_escape(serialize($data)) . "',
 			module_cache_time = " . time() . "
 			WHERE module_id = " . $module_id;

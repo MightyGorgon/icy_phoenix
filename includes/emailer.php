@@ -266,7 +266,7 @@ class emailer
 	{
 		global $db, $config, $lang;
 
-		if (defined('EMAILER_DISABLED') && !empty(EMAILER_DISABLED))
+		if (defined('EMAILER_DISABLED') && EMAILER_DISABLED)
 		{
 			return false;
 		}

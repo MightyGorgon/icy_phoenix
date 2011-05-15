@@ -171,7 +171,8 @@ class class_mcp_topic
 		$new_forum_id = $this->fix_forum_id($new_forum_id);
 		if (($old_forum_id <= 0) || ($new_forum_id <= 0))
 		{
-			message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_FORUM');
 		}
 
 		if($new_forum_id != $old_forum_id)
@@ -438,7 +439,8 @@ class class_mcp_topic
 
 		if ($new_forum_id <= 0)
 		{
-			message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_FORUM');
 		}
 
 		if ($split_beyond)
@@ -653,7 +655,8 @@ class class_mcp_topic
 
 		if ($id <= 0)
 		{
-			message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_FORUM');
 		}
 
 		$sql = "SELECT forum_name FROM " . FORUMS_TABLE . " WHERE forum_id = " . $id;

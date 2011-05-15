@@ -2,7 +2,7 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_ads.png" alt="{L_ADS_TITLE}" title="{L_ADS_TITLE}" /></td>
+	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_ads.png" alt="{L_ADS_TITLE}" title="{L_ADS_TITLE}" /></td>
 	<td class="row1" valign="top"><h1>{L_ADS_TITLE}</h1><span class="genmed">{L_ADS_TITLE_EXPLAIN}</span></td>
 </tr>
 </table>
@@ -40,7 +40,7 @@
 	<td class="{ads.ROW_CLASS} row-center" style="background: none;"><span class="gensmall">{ads.AD_POSITION}</span></td>
 	<td class="{ads.ROW_CLASS} row-center" style="background: none;"><span class="gensmall">{ads.AD_AUTH}</span></td>
 	<td class="{ads.ROW_CLASS} row-center" style="background: none;" nowrap="nowrap"><span class="gensmall">{ads.AD_FORMAT}</span></td>
-	<td class="{ads.ROW_CLASS} row-center" style="background: none; width: 80px;"><b class="gensmall"><a href="{ads.U_EDIT}"><img src="images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{ads.U_DELETE}"><img src="images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></b></td>
+	<td class="{ads.ROW_CLASS} row-center" style="background: none; width: 80px;"><b class="gensmall"><a href="{ads.U_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{ads.U_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a></b></td>
 </tr>
 <!-- END ads -->
 <!-- BEGIN no_ads -->

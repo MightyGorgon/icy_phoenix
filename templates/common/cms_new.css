@@ -5,6 +5,7 @@
 @import url("cms_menu.css");
 @import url("cms_tabs.css");
 @import url("cms_users.css");
+@import url("cms_editor.css");
 
 html {
 	font-family: "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;

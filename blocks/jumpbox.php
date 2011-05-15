@@ -26,7 +26,7 @@ if(!function_exists('cms_block_jumpbox'))
 	{
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars;
 
-		include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
+		setup_extra_lang(array('lang_dyn_menu'));
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'

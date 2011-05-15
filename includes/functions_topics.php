@@ -206,12 +206,12 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 
 		// check against stopwords start
 		@include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
-		$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
-		$synonym_array = array();
+		stopwords_synonyms_init();
+		$synonyms_array = array();
 		// check against stopwords end
 
 		$title_search = '';
-		$title_search_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_title, $stopword_array, $synonym_array), 'search') : split(' ', $topic_title);
+		$title_search_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_title, $stopwords_array, $synonyms_array), 'search') : split(' ', $topic_title);
 
 		for ($i = 0; $i < sizeof($title_search_array); $i++)
 		{
@@ -229,7 +229,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 		if ($config['similar_stopwords'])
 		{
 			$topicdesc = '';
-			$topic_desc_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_desc, $stopword_array, $synonym_array), 'search') : split(' ', $topic_desc);
+			$topic_desc_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_desc, $stopwords_array, $synonyms_array), 'search') : split(' ', $topic_desc);
 			for ($i = 0; $i < sizeof($topic_desc_array); $i++)
 			{
 				$topicdesc .= (($topicdesc == '') ? '': ' ') . $topic_desc_array[$i];

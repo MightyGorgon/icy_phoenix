@@ -382,7 +382,7 @@ class auth
 
 		// If this user is founder we're going to force fill the admin options ...
 		//if ($user_data['user_type'] == USER_FOUNDER)
-		if ($user_data['user_level'] == ADMIN)
+		if (($user_data['user_level'] == ADMIN) && !empty($this->acl_options['global']))
 		{
 			foreach ($this->acl_options['global'] as $opt => $id)
 			{

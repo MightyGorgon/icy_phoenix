@@ -2,7 +2,7 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_edit.png" alt="{L_CMS_PAGES}" title="{L_CMS_PAGES}" /></td>
+	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_edit.png" alt="{L_CMS_PAGES}" title="{L_CMS_PAGES}" /></td>
 	<td class="row1" valign="top"><h1>{L_CMS_PAGES}</h1><span class="genmed">{L_LAYOUT_TEXT}</span></td>
 </tr>
 </table>
@@ -42,7 +42,7 @@
 		</tr>
 		<!-- ENDIF -->
 		<tr>
-			<td class="row1">{L_CMS_FILENAME}<!-- IF not S_LAYOUT_SPECIAL --><br /><span class="gensmall">{L_CMS_FILENAME_EXPLAIN}</span><br /><span class="gensmall">{L_CMS_FILENAME_AUTH}</span><!-- ENDIF --></td>
+			<td class="row1">{L_CMS_FILENAME}<!-- IF not S_LAYOUT_SPECIAL --><br /><span class="gensmall">{L_CMS_FILENAME_EXPLAIN}</span><!-- IF L_CMS_FILENAME_AUTH --><br /><span class="gensmall">{L_CMS_FILENAME_AUTH}</span><!-- ENDIF --><!-- ENDIF --></td>
 			<td class="row2"><input type="text" maxlength="100" size="30" name="filename" value="{FILENAME}" class="post" /></td>
 		</tr>
 		<tr>

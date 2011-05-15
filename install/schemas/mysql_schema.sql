@@ -1010,6 +1010,49 @@ CREATE TABLE `phpbb_megamail` (
 
 ## --------------------------------------------------------
 
+## `phpbb_moderator_cache`
+
+CREATE TABLE `phpbb_moderator_cache` (
+	`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`username` varchar(255) DEFAULT '' NOT NULL,
+	`group_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`group_name` varchar(255) DEFAULT '' NOT NULL,
+	`display_on_index` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	KEY `disp_idx` (`display_on_index`),
+	KEY `forum_id` (`forum_id`)
+);
+
+## `phpbb_moderator_cache`
+
+
+## --------------------------------------------------------
+
+## `phpbb_modules`
+
+CREATE TABLE `phpbb_modules` (
+	`module_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
+	`module_enabled` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	`module_display` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	`module_basename` varchar(255) DEFAULT '' NOT NULL,
+	`module_class` varchar(10) DEFAULT '' NOT NULL,
+	`parent_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`left_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`right_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`module_langname` varchar(255) DEFAULT '' NOT NULL,
+	`module_mode` varchar(255) DEFAULT '' NOT NULL,
+	`module_auth` varchar(255) DEFAULT '' NOT NULL,
+	PRIMARY KEY (`module_id`),
+	KEY `left_right_id` (`left_id`, `right_id`),
+	KEY `module_enabled` (`module_enabled`),
+	KEY `class_left_id` (`module_class`, `left_id`)
+);
+
+## `phpbb_modules`
+
+
+## --------------------------------------------------------
+
 ## `phpbb_news`
 
 CREATE TABLE `phpbb_news` (

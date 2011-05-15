@@ -165,7 +165,7 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 		{
 			$result_ar = array(
 				'result' => AJAX_PM_USERNAME_ERROR,
-				'error_msg' => $lang['No_such_user']
+				'error_msg' => $lang['NO_USER']
 			);
 			AJAX_message_die($result_ar);
 		}

@@ -27,6 +27,12 @@ $user->session_begin();
 $user->setup();
 // End session management
 
+// If a bot gets redirected here is almost due to an error or a wrong page management... let's output an Error 404 code
+if (!empty($user->data['is_bot']))
+{
+	redirect(append_sid(CMS_PAGE_ERRORS . '?code=404', true));
+}
+
 // session id check
 $sid = request_var('sid', '');
 

@@ -26,7 +26,7 @@ if(!function_exists('cms_block_ads'))
 	{
 		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 
-		include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_ads.' . PHP_EXT);
+		setup_extra_lang(array('lang_main_ads'));
 
 		$banner_var_all = '';
 		$banner_var_guests = '';

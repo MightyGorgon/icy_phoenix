@@ -140,8 +140,8 @@ function album_display_admin_index($cur = ALBUM_ROOT_CATEGORY, $level = 0, $max_
 			'U_CAT_MOVE_DOWN' => ($is_root) ? '' : append_sid(album_append_uid($admin_url . '?action=move&amp;move=15&amp;cat_id=' . $cat_id)),
 			'U_VIEWCAT' => append_sid(album_append_uid($admin_url . '?action=edit&amp;cat_id=' . $cat_id)),
 
-			'L_MOVE_UP' => ($is_root) ? '' : $lang['Move_up'],
-			'L_MOVE_DOWN' => ($is_root) ? '' : $lang['Move_down'],
+			'L_MOVE_UP' => ($is_root) ? '' : $lang['MOVE_UP'],
+			'L_MOVE_DOWN' => ($is_root) ? '' : $lang['MOVE_DOWN'],
 			'L_EDIT' => $lang['Edit'],
 			'L_DELETE' => ($is_root && $user->data['user_level'] != ADMIN) ? '' : $lang['Delete']
 			)

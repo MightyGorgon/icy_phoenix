@@ -140,7 +140,7 @@ if(empty($forum_id))
 	// Output the selection table if no forum id was specified
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_select_body.tpl'));
 
-	$select_list = make_forum_select(POST_FORUM_URL, false, '', true);
+	$select_list = ip_make_forum_select(POST_FORUM_URL, false, '', true);
 
 	$template->assign_vars(array(
 		'L_AUTH_TITLE' => $lang['Auth_Control_Forum'],

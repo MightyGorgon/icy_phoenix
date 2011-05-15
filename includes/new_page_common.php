@@ -88,7 +88,7 @@ while ($row = $db->sql_fetchrow($layout_result))
 	$layout_row = $row;
 }
 $db->sql_freeresult($layout_result);
-$layout_name = $cms_default_page ? false : $meta_content['page_title'] . ' :: ' . $layout_row['name'];
+$layout_name = $cms_default_page ? false : (!empty($layout_row['name']) ? $layout_row['name'] : (!empty($meta_content['page_title']) ? $meta_content['page_title'] : false));
 $layout_template = $layout_row['template'];
 $cms_page['global_blocks'] = ($layout_row['global_blocks'] == 0) ? false : true;
 $cms_page['page_nav'] = ($layout_row['page_nav'] == 0) ? false : true;
@@ -153,8 +153,8 @@ if (!$cms_default_page)
 
 if (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] >= CMS_CONTENT_MANAGER))
 {
-	$cms_acp_url = '<br /><br /><div style="text-align:center;">';
-	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout) . '">' . $lang['CMS_ACP'] . '</a>';
+	$cms_acp_url = '<br /><br /><div style="text-align: center;">';
+	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout . (!empty($user->session_id) ? ('&amp;sid=' . $user->session_id) : '')) . '">' . $lang['CMS_ACP'] . '</a>';
 	$cms_acp_url .= '</div>';
 }
 else

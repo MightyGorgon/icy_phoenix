@@ -27,7 +27,9 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_pafiledb.' . PHP_EXT);
+
+setup_extra_lang(array('lang_admin_pafiledb'));
+
 include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $this_dir = IP_ROOT_PATH . DOWNLOADS_PATH;

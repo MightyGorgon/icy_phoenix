@@ -273,7 +273,6 @@ $lang = array_merge($lang, array(
 // Viewforum
 	'View_forum' => 'View Forum',
 
-	'Forum_not_exist' => 'The forum you selected does not exist.',
 	'Reached_on_error' => 'You have reached this page in error.',
 
 	'Display_topics' => 'Display topics from previous',
@@ -339,7 +338,6 @@ $lang = array_merge($lang, array(
 
 	'No_newer_topics' => 'There are no newer topics in this forum',
 	'No_older_topics' => 'There are no older topics in this forum',
-	'Topic_post_not_exist' => 'The topic or post you requested does not exist',
 	'No_posts_topic' => 'No posts exist for this topic',
 
 	'Display_posts' => 'Display posts from previous',
@@ -519,7 +517,6 @@ $lang = array_merge($lang, array(
 	'PM_disabled' => 'Private messaging has been disabled on this board.',
 	'Cannot_send_privmsg' => 'Sorry, but the administrator has prevented you from sending private messages.',
 	'No_to_user' => 'You must specify a username to whom to send this message.',
-	'No_such_user' => 'Sorry, but no such user exists.',
 
 	'Disable_HTML_pm' => 'Disable HTML in this message',
 	'Disable_ACRO_AUTO_pm' => 'Disable Acronyms and Autolinks in this message',
@@ -594,7 +591,6 @@ $lang = array_merge($lang, array(
 	'Search_user_posts' => 'Find all posts by %s', // Find all posts by username
 	'Search_user_topics_started' => 'Find all topics started by %s', // Find all topics started by username
 
-	'No_user_id_specified' => 'Sorry, but that user does not exist.',
 	'Wrong_Profile' => 'You cannot modify a profile that is not your own.',
 
 // Invision View Profile - BEGIN
@@ -1567,22 +1563,22 @@ $lang = array_merge($lang, array(
 	'Login_Hidden' => 'Hidden',
 	'Login_Visible' => 'Visible',
 	'Login_Default' => 'Default',
-	'Errors_Not_Found' => 'The requested address cannot be found on this server',
-	'Errors_000' => 'Unknown error',
-	'Errors_000_Full' => 'The requested address returns an unknown error code.<br />Errors have been registered to the log file and we will check what the problem is.',
-	'Errors_400' => 'Error 400',
-	'Errors_400_Full' => 'The requested address is not a valid address.',
-	'Errors_401' => 'Error 401 - Authorization Error',
-	'Errors_401_Full' => 'You are receiving this message because you are not authorized to access this address.',
-	'Errors_403' => 'Error 403',
-	'Errors_403_Full' => 'Access to this address is forbidden.',
-	'Errors_404' => 'Error 404 - File Not Found',
-	'Errors_404_Full' => 'The address you have requested is not available on this server. You may have misspelled the address, or what you are looking for may have been removed.',
-	'Errors_500' => 'Error 500 - Configuration error',
-	'Errors_500_Full' => 'The address you have requested returns a configuration error.<br />Errors have been registered to the log file, and we will check what the problem is as soon as possible.',
-	'Errors_Email_Subject' => 'Errors: ',
-	'Errors_Email_Addrress_Prefix' => 'xs_errors',
-	'Errors_Email_Body' => 'An error has occurred on your site. Please check the log file.',
+	'ERRORS_NOT_FOUND' => 'The requested address cannot be found on this server',
+	'ERRORS_000' => 'Unknown error',
+	'ERRORS_000_FULL' => 'The requested address returns an unknown error code.<br />Errors have been registered to the log file and we will check what the problem is.',
+	'ERRORS_400' => 'Error 400',
+	'ERRORS_400_FULL' => 'The requested address is not a valid address.',
+	'ERRORS_401' => 'Error 401 - Authorization Error',
+	'ERRORS_401_FULL' => 'You are receiving this message because you are not authorized to access this address.',
+	'ERRORS_403' => 'Error 403',
+	'ERRORS_403_FULL' => 'Access to this address is forbidden.',
+	'ERRORS_404' => 'Error 404 - File Not Found',
+	'ERRORS_404_FULL' => 'The address you have requested is not available on this server. You may have misspelled the address, or what you are looking for may have been removed.',
+	'ERRORS_500' => 'Error 500 - Configuration error',
+	'ERRORS_500_FULL' => 'The address you have requested returns a configuration error.<br />Errors have been registered to the log file, and we will check what the problem is as soon as possible.',
+	'ERRORS_EMAIL_SUBJECT' => 'Errors: ',
+	'ERRORS_EMAIL_ADDRRESS_PREFIX' => 'errors_management',
+	'ERRORS_EMAIL_BODY' => 'An error has occurred on your site. Please check the log file.',
 	'Remote_avatar_no_image' => 'The image %s does not exist',
 	'Remote_avatar_error_filesize' => 'The image is over the size limit for avatars (%d Bytes)',
 	'Remote_avatar_error_dimension' => 'The image is over the dimension limit for avatars (%d x %d pixels)',
@@ -2396,6 +2392,18 @@ $lang = array_merge($lang, array(
 	'REPLIES' => 'Replies',
 	'SUBJECT' => 'Subject',
 	'VIEWS' => 'Views',
+
+	'INVALID' => 'Invalid data.',
+	'TOO_LARGE' => 'The value you entered is too large.',
+	'TOO_LONG' => 'The value you entered is too long.',
+	'TOO_SHORT' => 'The value you entered is too short.',
+	'TOO_SMALL' => 'The value you entered is too small.',
+	'WRONG_DATA' => 'Invalid data.',
+
+	'ERROR_NO_ATTACHMENT' => 'The file you are trying to download does not exist.',
+	'NO_FORUM' => 'The forum you selected does not exist.',
+	'NO_TOPIC' => 'The topic or post you requested does not exist.',
+	'NO_USER' => 'Sorry, but that user does not exist.',
 
 	)
 );

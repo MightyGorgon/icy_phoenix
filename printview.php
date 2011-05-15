@@ -52,7 +52,8 @@ $topic_id = ($topic_id > 0) ? $topic_id : 0;
 if(empty($topic_id))
 {
 	ob_end_clean();
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 
 $start = request_var('start', 0);
@@ -71,7 +72,8 @@ $result = $db->sql_query($sql);
 if(!($forum_row = $db->sql_fetchrow($result)))
 {
 	ob_end_clean();
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 $forum_id = $forum_row['forum_id'];
 $forum_name = $forum_row['forum_name'];

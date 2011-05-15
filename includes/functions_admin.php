@@ -389,7 +389,7 @@ function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port 
 				{
 					$get_info = true;
 				}
-				else if (stripos($line, '404 not found') !== false)
+				elseif (stripos($line, '404 not found') !== false)
 				{
 					$errstr = $lang['FILE_NOT_FOUND'] . ': ' . $filename;
 					return false;
@@ -402,6 +402,7 @@ function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port 
 	{
 		if ($errstr)
 		{
+			$errstr = utf8_convert_message($errstr);
 			return false;
 		}
 		else
@@ -412,6 +413,44 @@ function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port 
 	}
 
 	return $file_info;
+}
+
+/**
+* Obtains the latest version information
+*
+* @param bool $force_update Ignores cached data. Defaults to false.
+* @param bool $warn_fail Trigger a warning if obtaining the latest version information fails. Defaults to false.
+* @param int $ttl Cache version information for $ttl seconds. Defaults to 86400 (24 hours).
+*
+* @return string | false Version info on success, false on failure.
+*/
+function obtain_latest_version_info($force_update = false, $warn_fail = false, $ttl = 86400)
+{
+	global $cache;
+
+	$info = $cache->get('versioncheck');
+
+	if (($info === false) || $force_update)
+	{
+		$errstr = '';
+		$errno = 0;
+
+		$info = get_remote_file('www.icyphoenix.com', '/version', 'ip2x.txt', $errstr, $errno);
+
+		if ($info === false)
+		{
+			$cache->destroy('versioncheck');
+			if ($warn_fail)
+			{
+				trigger_error($errstr, E_USER_WARNING);
+			}
+			return false;
+		}
+
+		$cache->put('versioncheck', $info, $ttl);
+	}
+
+	return $info;
 }
 
 /**

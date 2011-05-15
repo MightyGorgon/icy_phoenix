@@ -169,7 +169,8 @@ $download = request_get_var('download', '');
 
 if (empty($topic_id) && empty($post_id))
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 
 // Find topic id if user requested a newer or older topic
@@ -281,7 +282,8 @@ $result = $db->sql_query($sql);
 
 if (!($forum_topic_data = $db->sql_fetchrow($result)))
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 $db->sql_freeresult($result);
 

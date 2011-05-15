@@ -303,7 +303,8 @@ switch ($mode)
 	case 'newtopic':
 		if (empty($forum_id))
 		{
-			message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_FORUM');
 		}
 
 		$sql = "SELECT f.*, fr.*

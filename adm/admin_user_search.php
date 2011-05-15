@@ -29,7 +29,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_user_search.' . PHP_EXT);
+setup_extra_lang(array('lang_user_search'));
 
 $meta_content['page_title'] = $lang['Search_users_advanced'];
 

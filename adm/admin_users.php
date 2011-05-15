@@ -81,7 +81,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 		if (!($this_userdata = get_userdata($user_id)))
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		if($_POST['deleteuser'] && ($user->data['user_id'] != $user_id))
@@ -868,7 +869,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		}
 		if(empty($this_userdata))
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		// Now parse and display it as a template

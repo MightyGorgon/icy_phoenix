@@ -140,7 +140,8 @@ else // we have a single letter, so let's sort alphabetically...
 $forum_row = $tree['data'][$tree['keys'][POST_FORUM_URL . $forum_id]];
 if (empty($forum_row))
 {
-	message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_FORUM');
 }
 
 $meta_content = array();
@@ -152,7 +153,8 @@ $selected_id = POST_FORUM_URL . $forum_id;
 $CH_this = isset($tree['keys'][$selected_id]) ? $tree['keys'][$selected_id] : -1;
 if (($CH_this > -1) && !empty($tree['data'][$CH_this]['forum_link']))
 {
-	message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_FORUM');
 }
 
 // Start auth check
@@ -168,7 +170,7 @@ if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 	}
 
 	// The user is not authed to read this forum ...
-	$message = (!$is_auth['auth_view']) ? $lang['Forum_not_exist'] : sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
+	$message = (!$is_auth['auth_view']) ? $lang['NO_FORUM'] : sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
 
 	message_die(GENERAL_MESSAGE, $message);
 }

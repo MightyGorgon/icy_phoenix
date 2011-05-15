@@ -23,9 +23,9 @@ $user->session_begin();
 $user->setup();
 // End session management
 
-if (!function_exists('get_ip_version'))
+if (!function_exists('obtain_latest_version_info'))
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_versions.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 }
 
 include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
@@ -54,10 +54,14 @@ $check_update = $config['enable_xs_version_check'];
 
 if(!empty($check_update))
 {
-	$latest_ip_version = get_ip_version();
+	$latest_ip_version = obtain_latest_version_info();
 	if (!empty($latest_ip_version))
 	{
-		if ($latest_ip_version == $config['ip_version'])
+		$latest_version_info = explode("\n", $latest_ip_version);
+		$latest_version = str_replace('rc', 'RC', strtolower(trim($latest_version_info[0])));
+		$current_version = str_replace('rc', 'RC', strtolower($config['ip_version']));
+		$version_up_to_date = version_compare($current_version, $latest_version, '<') ? false : true;
+		if ($version_up_to_date)
 		{
 			$version_info = '<span class="text_green">' . $lang['Version_up_to_date_ip'] . '</span>';
 		}
@@ -99,7 +103,6 @@ $template->assign_vars(array(
 	'U_PORTAL' => append_sid('../' . CMS_PAGE_HOME),
 	'U_ADMIN_INDEX' => append_sid('index.' . PHP_EXT . '?pane=right'),
 	'U_CMS' => append_sid('../cms.' . PHP_EXT),
-	'U_MSQD' => append_sid('../msqd/'),
 	'U_CACHE_CLEAR' => append_sid('admin_board_clearcache.' . PHP_EXT . '?pane=right'),
 
 	'U_IP_MAIN' => '<a href="http://www.icyphoenix.com" target="_blank">' . $lang['IcyPhoenix_Main'] . '</a>',

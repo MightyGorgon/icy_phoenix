@@ -41,7 +41,8 @@ if (($sid == '') || ($sid != $user->data['session_id']))
 $user_id = request_var(POST_USERS_URL, 0);
 if (empty($user_id))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 $profiledata = get_userdata($user_id);

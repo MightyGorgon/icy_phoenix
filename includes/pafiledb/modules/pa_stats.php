@@ -115,7 +115,7 @@ class pafiledb_stats extends pafiledb_public
 
 		$avgdls = @round($totaldls/$num['files']);
 
-		require(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_pafiledb.' . PHP_EXT);
+		setup_extra_lang(array('lang_pafiledb'));
 
 		$lang['Stats_text'] = str_replace("{total_files}", $num['files'], $lang['Stats_text']);
 		$lang['Stats_text'] = str_replace("{total_categories}", $num['cats'], $lang['Stats_text']);

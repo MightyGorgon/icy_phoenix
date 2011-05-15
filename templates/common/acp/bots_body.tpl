@@ -25,7 +25,7 @@
 	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:50px;"><input type="checkbox" name="bots[]" value="{bots.BOT_ID}"{bots.BOT_ACTIVE_CHECKED} /></td>
 	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:90px;" nowrap="nowrap"><span class="gensmall">{bots.BOT_LAST_VISIT}</span></td>
 	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:50px;" nowrap="nowrap"><b class="gensmall">{bots.BOT_COUNTER}</b></td>
-	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:80px;"><b class="gensmall"><a href="{bots.U_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{bots.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></b></td>
+	<td class="{bots.ROW_CLASS} row-center" style="background: none;width:80px;"><b class="gensmall"><a href="{bots.U_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{bots.U_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a></b></td>
 </tr>
 <!-- END bots -->
 <!-- BEGIN no_bots -->

@@ -789,10 +789,10 @@ elseif($mode == 'menu_block')
 
 				$append_url = '&amp;mi_id=' . $cat_item_data['menu_item_id'] . '&amp;m_id=' . $m_id . '&amp;item_type=category_item';
 
-				$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['arrows_cms_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
-				$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['arrows_cms_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
-				$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_EDIT'] . '" title="' . $lang['CMS_EDIT'] . '" /></a>&nbsp;';
-				$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete&amp;cat_id=' . $cat_item_data['cat_id'] . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_DELETE'] . '" title="' . $lang['CSM_DELETE'] . '" /></a>';
+				$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['cms_arrow_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
+				$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['cms_arrow_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
+				$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['cms_icon_edit'] . '" alt="' . $lang['CMS_EDIT'] . '" title="' . $lang['CMS_EDIT'] . '" /></a>&nbsp;';
+				$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete&amp;cat_id=' . $cat_item_data['cat_id'] . $append_url) . '"><img src="' . $images['cms_icon_delete'] . '" alt="' . $lang['CSM_DELETE'] . '" title="' . $lang['CSM_DELETE'] . '" /></a>';
 
 				if ((sizeof($cat_item) == 1) && ($cat_counter == 1))
 				{
@@ -859,10 +859,10 @@ elseif($mode == 'menu_block')
 
 						$append_url = '&amp;mi_id=' . $menu_cat_item_data['menu_item_id'] . '&amp;m_id=' . $m_id . '&amp;cat_parent_id=' . $menu_cat_item_data['cat_parent_id'];
 
-						$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['arrows_cms_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
-						$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['arrows_cms_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
-						$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_EDIT'] . '" title="' . $lang['CMS_EDIT'] . '" /></a>&nbsp;';
-						$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete' . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_DELETE'] . '" title="' . $lang['CSM_DELETE'] . '" /></a>';
+						$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['cms_arrow_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
+						$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['cms_arrow_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
+						$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['cms_icon_edit'] . '" alt="' . $lang['CMS_EDIT'] . '" title="' . $lang['CMS_EDIT'] . '" /></a>&nbsp;';
+						$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete' . $append_url) . '"><img src="' . $images['cms_icon_delete'] . '" alt="' . $lang['CSM_DELETE'] . '" title="' . $lang['CSM_DELETE'] . '" /></a>';
 
 						if ((sizeof($menu_cat[$cat_id]) == 1) && ($item_counter == 1))
 						{

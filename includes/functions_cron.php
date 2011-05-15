@@ -138,6 +138,7 @@ function tidy_database()
 	{
 		$current_time = time();
 
+		// Tables optimization
 		@ignore_user_abort();
 		// Get tables list
 		$all_tables = array();
@@ -157,6 +158,28 @@ function tidy_database()
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
 		}
+
+		// Here we check permission consistency
+		// Sometimes, it can happen permission tables having forums listed which do not exist
+		$sql = 'SELECT forum_id
+			FROM ' . FORUMS_TABLE;
+		$result = $db->sql_query($sql);
+
+		$forum_ids = array(0);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$forum_ids[] = $row['forum_id'];
+		}
+		$db->sql_freeresult($result);
+
+		// Delete those rows from the acl tables not having listed the forums above
+		$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
+			WHERE ' . $db->sql_in_set('forum_id', $forum_ids, true);
+		$db->sql_query($sql);
+
+		$sql = 'DELETE FROM ' . ACL_USERS_TABLE . '
+			WHERE ' . $db->sql_in_set('forum_id', $forum_ids, true);
+		$db->sql_query($sql);
 
 		if (CRON_DEBUG == false)
 		{

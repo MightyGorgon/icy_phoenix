@@ -102,7 +102,8 @@ if ($row = $db->sql_fetchrow($result))
 }
 else
 {
-	message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 ?>

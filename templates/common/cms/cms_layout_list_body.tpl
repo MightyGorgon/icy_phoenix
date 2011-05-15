@@ -2,7 +2,7 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_cms.png" alt="{L_CMS_TITLE}" title="{L_CMS_TITLE}" /></td>
+	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_cms.png" alt="{L_CMS_TITLE}" title="{L_CMS_TITLE}" /></td>
 	<td class="row1" valign="top"><h1>{L_LAYOUT_TITLE}</h1><span class="genmed">{L_LAYOUT_TEXT}</span></td>
 </tr>
 </table>
@@ -36,9 +36,9 @@ window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);
 <tr class="{layout.l_row.ROW_CLASS} {layout.l_row.ROW_CLASS}h" style="background-image: none;">
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><b>{layout.l_row.LAYOUT_ID}</b></td>
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;" nowrap="nowrap">
-		<a href="{layout.l_row.U_LAYOUT}"><img src="{IMG_LAYOUT_BLOCKS_EDIT}" alt="{L_CMS_CONFIGURE_BLOCKS}" title="{L_CMS_CONFIGURE_BLOCKS}" style="margin-right: 3px;" /></a><a href="{layout.l_row.U_PREVIEW_LAYOUT}"><img src="{IMG_LAYOUT_PREVIEW}" alt="{L_PREVIEW}" title="{L_PREVIEW}" style="margin-right: 3px;" /></a><!-- IF not layout.l_row.LOCKED  --><!-- IF S_L_EDIT --><a href="{layout.l_row.U_EDIT_LAYOUT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" style="margin-right: 3px;" /></a><!-- ENDIF --><!-- IF S_L_DELETE --><a href="{layout.l_row.U_DELETE_LAYOUT}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a><!-- ENDIF --><!-- ENDIF -->
+		<a href="{layout.l_row.U_LAYOUT}"><img src="{IMG_CMS_ICON_BLOCKS}" alt="{L_CMS_CONFIGURE_BLOCKS}" title="{L_CMS_CONFIGURE_BLOCKS}" style="margin-right: 3px;" /></a><a href="{layout.l_row.U_PREVIEW_LAYOUT}"><img src="{IMG_CMS_ICON_PREVIEW}" alt="{L_PREVIEW}" title="{L_PREVIEW}" style="margin-right: 3px;" /></a><!-- IF not layout.l_row.LOCKED  --><!-- IF S_L_EDIT --><a href="{layout.l_row.U_EDIT_LAYOUT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" style="margin-right: 3px;" /></a><!-- ENDIF --><!-- IF S_L_DELETE --><a href="{layout.l_row.U_DELETE_LAYOUT}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a><!-- ENDIF --><!-- ENDIF -->
 	</td>
-	<td class="{layout.l_row.ROW_CLASS}" style="background: none;{layout.l_row.ROW_DEFAULT_STYLE}"><a href="{layout.l_row.U_LAYOUT}">{layout.l_row.LAYOUT_NAME}</a></td>
+	<td class="{layout.l_row.ROW_CLASS}" style="background: none;{layout.l_row.ROW_DEFAULT_STYLE}"><!-- IF layout.l_row.U_COPY --><a href="{layout.l_row.U_COPY}" style="display: inline-block; float: right;" class="cms-button-small">{L_COPY_LAYOUT}</a><!-- ENDIF --><a href="{layout.l_row.U_LAYOUT}">{layout.l_row.LAYOUT_NAME}</a></td>
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><!-- IF layout.l_row.LAYOUT_FILENAME -->{layout.l_row.LAYOUT_FILENAME}<!-- ELSE -->&nbsp;<!-- ENDIF --></td>
 	<!-- IF not S_LAYOUT_SPECIAL --><td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">{layout.l_row.LAYOUT_TEMPLATE}</td><!-- ENDIF -->
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">{layout.l_row.PAGE_AUTH}</td>

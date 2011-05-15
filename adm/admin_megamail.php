@@ -279,7 +279,7 @@ if (!empty($mail_id) && !empty($mail_session_id))
 	}
 	else
 	{
-		$message = ($process_groups ? $lang['Group_not_exist'] : $lang['No_such_user']);
+		$message = ($process_groups ? $lang['Group_not_exist'] : $lang['NO_USER']);
 		$error = true;
 		$error_msg .= (!empty($error_msg)) ? '<br />' . $message : $message;
 	}

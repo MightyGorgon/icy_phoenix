@@ -148,13 +148,15 @@ switch ($mode)
 		}
 		if (!empty($_POST['item']))
 		{
+			$db->sql_transaction();
 			$item_order = 0;
 			foreach($_POST['item'] as $module_item_id)
 			{
 				$item_order++;
-				$sql = "UPDATE " . MODULES_TABLE . " SET display_order = '" . ($item_order * 10) . "' WHERE module_id = '" . $module_item_id . "'";
+				$sql = "UPDATE " . STATS_MODULES_TABLE . " SET display_order = '" . ($item_order * 10) . "' WHERE module_id = '" . $module_item_id . "'";
 				$result = $db->sql_query($sql);
 			}
+			$db->sql_transaction('commit');
 		}
 		else
 		{
@@ -178,6 +180,7 @@ switch ($mode)
 		}
 		if (!empty($_POST['item']))
 		{
+			$db->sql_transaction();
 			$item_order = 0;
 			foreach($_POST['item'] as $smiley_item_id)
 			{
@@ -185,6 +188,7 @@ switch ($mode)
 				$sql = "UPDATE " . SMILIES_TABLE . " SET smilies_order = '" . $item_order . "' WHERE smilies_id = '" . $smiley_item_id . "'";
 				$result = $db->sql_query($sql);
 			}
+			$db->sql_transaction('commit');
 			$cache->destroy('_smileys');
 			$db->clear_cache('smileys_');
 		}

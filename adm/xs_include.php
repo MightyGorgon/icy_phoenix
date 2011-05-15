@@ -33,12 +33,7 @@ define('XS_INCLUDED', true);
 if(!defined('XS_LANG_INCLUDED'))
 {
 	global $config, $lang;
-	$xs_lang_file = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_xs.' . PHP_EXT;
-	if( !@file_exists($xs_lang_file) )
-	{	// load english version if there is no translation to current language
-		$xs_lang_file = IP_ROOT_PATH . 'language/lang_english/lang_xs.' . PHP_EXT;
-	}
-	include($xs_lang_file);
+	setup_extra_lang(array('lang_xs'));
 	define('XS_LANG_INCLUDED', true);
 }
 

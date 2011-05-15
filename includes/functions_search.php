@@ -106,13 +106,13 @@ function split_words($entry, $mode = 'post')
 function add_search_words($mode, $post_id, $post_text, $post_title = '')
 {
 	global $db, $config, $lang;
+	global $stopwords_array, $synonyms_array;
 
-	$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
-	$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
+	stopwords_synonyms_init();
 
 	$search_raw_words = array();
-	$search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopword_array, $synonym_array));
-	$search_raw_words['title'] = split_words(clean_words('post', $post_title, $stopword_array, $synonym_array));
+	$search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopwords_array, $synonyms_array));
+	$search_raw_words['title'] = split_words(clean_words('post', $post_title, $stopwords_array, $synonyms_array));
 
 	@set_time_limit(0);
 

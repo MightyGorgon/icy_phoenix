@@ -74,8 +74,6 @@ $lang = array_merge($lang, array(
 	'Installed' => 'Installed',
 	'Uninstall' => 'Uninstall',
 	'Uninstalled' => 'Uninstalled',
-	'Move_up' => 'Move Up',
-	'Move_down' => 'Move Down',
 	'Update_time' => 'Update Time',
 	'Auth_settings_updated' => 'Authorization Settings - [These are always updated]',
 

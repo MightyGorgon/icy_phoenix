@@ -62,7 +62,7 @@ $sort_order_select_array = array();
 $sort_order_select_lang_array = array();
 foreach ($table_fields as $k => $v)
 {
-	$is_auth = (!in_array($v['type'], array('TEXT', 'HTMLTEXT')) && check_auth_level($v['view_level']));
+	$is_auth = (!in_array($v['type'], array('TEXT', 'HTMLTEXT', 'PASSWORD')) && check_auth_level($v['view_level']));
 	if ($is_auth)
 	{
 		$sort_order_array[] = $k;

@@ -37,8 +37,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
 // the language files....
-require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
+setup_extra_lang(array('lang_album_main', 'lang_album_admin'));
 
 // the debugging functions and the actual ACP helper functions...
 require_once(ALBUM_MOD_PATH . 'album_hierarchy_debug.' . PHP_EXT);

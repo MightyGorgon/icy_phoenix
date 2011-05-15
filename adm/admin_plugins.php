@@ -150,13 +150,13 @@ else
 			);
 
 			$install_link = append_sid(THIS_PAGE . '?plugin_dir=' . htmlspecialchars(urlencode($plugin['dir'])) . '&amp;mode=save&amp;action=install');
-			$install_img = '<a href="' . $install_link . '" class="text_green" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_INSTALL'] . '&nbsp;<img src="' . IP_ROOT_PATH . 'images/cms/b_add.png" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_INSTALL'] . '" title="' . $lang['PLUGINS_INSTALL'] . '" /></a>';
+			$install_img = '<a href="' . $install_link . '" class="text_green" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_INSTALL'] . '&nbsp;<img src="' . $images['cms_icon_add'] . '" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_INSTALL'] . '" title="' . $lang['PLUGINS_INSTALL'] . '" /></a>';
 
 			$update_link = append_sid(THIS_PAGE . '?plugin_dir=' . htmlspecialchars(urlencode($plugin['dir'])) . '&amp;mode=save&amp;action=update');
-			$update_img = '<a href="' . $update_link . '" class="text_green" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_UPGRADE'] . '&nbsp;<img src="' . IP_ROOT_PATH . 'images/cms/b_refresh.png" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_UPGRADE'] . '" title="' . $lang['PLUGINS_UPGRADE'] . '" /></a>';
+			$update_img = '<a href="' . $update_link . '" class="text_green" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_UPGRADE'] . '&nbsp;<img src="' . $images['cms_icon_refresh'] . '" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_UPGRADE'] . '" title="' . $lang['PLUGINS_UPGRADE'] . '" /></a>';
 
 			$uninstall_link = append_sid(THIS_PAGE . '?plugin_dir=' . htmlspecialchars(urlencode($plugin['dir'])) . '&amp;mode=save&amp;action=uninstall');
-			$uninstall_img = '<a href="' . $uninstall_link . '" class="text_red" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_UNINSTALL'] . '&nbsp;<img src="' . IP_ROOT_PATH . 'images/cms/b_delete.png" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_UNINSTALL'] . '" title="' . $lang['PLUGINS_UNINSTALL'] . '" /></a>';
+			$uninstall_img = '<a href="' . $uninstall_link . '" class="text_red" style="text-decoration: none; vertical-align: middle;">&nbsp;' . $lang['PLUGINS_UNINSTALL'] . '&nbsp;<img src="' . $images['cms_icon_delete'] . '" style="text-decoration: none; vertical-align: middle;" alt="' . $lang['PLUGINS_UNINSTALL'] . '" title="' . $lang['PLUGINS_UNINSTALL'] . '" /></a>';
 
 			$plugin_up_to_date = version_compare($plugins_config[$plugin['config']]['plugin_version'], $plugin['version'], '=');
 			$plugin_installed = !empty($plugins_config[$plugin['config']]['plugin_version']) ? true : false;

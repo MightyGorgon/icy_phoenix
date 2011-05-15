@@ -77,7 +77,7 @@ function compileForm(m_id)
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.BATCHWAIT}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.SENDER}</td>
 	<td class="{mail_sessions.ROW} row-center">{mail_sessions.STATUS}</td>
-	<td class="{mail_sessions.ROW} row-center"><a href="{mail_sessions.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
+	<td class="{mail_sessions.ROW} row-center"><a href="{mail_sessions.U_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
 </tr>
 <!-- END mail_sessions -->
 <!-- BEGIN switch_no_sessions -->

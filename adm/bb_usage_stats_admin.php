@@ -22,9 +22,9 @@ if (!defined('IN_ICYPHOENIX'))
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 include(IP_ROOT_PATH . 'includes/bb_usage_stats_constants.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bb_usage_stats.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/bb_usage_stats_functions.' . PHP_EXT);
 
+setup_extra_lang(array('lang_bb_usage_stats'));
 
 /******************************************************************************
  * Creates the select list for the Board Usage Stats Special Access Group

@@ -26,19 +26,22 @@ $target_user_id = request_get_var(POST_USERS_URL, ANONYMOUS);
 
 if (empty($target_user_id) || ($target_user_id == ANONYMOUS))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 $profiledata = get_userdata($target_user_id);
 if (empty($profiledata) || empty($profiledata['user_id']))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 // We force the user to be active to show its profile... or we require the viewer to be admin!
 if (empty($profiledata['user_active']) && ($user->data['user_level'] != ADMIN))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 // Update the profile view list

@@ -106,11 +106,10 @@ class pafiledb_search extends pafiledb_public
 				}
 				elseif ($search_keywords != '')
 				{
-					$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
-					$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
+					stopwords_synonyms_init();
 
 					$split_search = array();
-					$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', stripslashes($search_keywords), $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
+					$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', stripslashes($search_keywords), $stopwords_array, $synonyms_array), 'search') : split(' ', $search_keywords);
 
 					$word_count = 0;
 					$current_match_type = 'or';

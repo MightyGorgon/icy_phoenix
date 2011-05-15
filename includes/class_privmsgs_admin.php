@@ -287,30 +287,6 @@ class aprvmUtils
 	}
 
 	/**
-	* @return boolean
-	* @param filename string
-	* @desc Tries to locate and include the specified language file.  Do not include the .php extension!
-	*/
-	function find_lang_file($filename)
-	{
-		global $lang, $config;
-
-		if (file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $filename . '.' . PHP_EXT))
-		{
-			include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $filename . '.' . PHP_EXT);
-		}
-		elseif (file_exists(IP_ROOT_PATH . 'language/lang_english/' . $filename . '.' . PHP_EXT))
-		{
-			include_once(IP_ROOT_PATH . 'language/lang_english/' . $filename . '.' . PHP_EXT);
-		}
-		else
-		{
-			message_die(GENERAL_ERROR, "Unable to find a suitable language file for $filename!", '');
-		}
-		return true;
-	}
-
-	/**
 	* @return void
 	* @desc Prints a sytlized line of copyright for module
 	*/

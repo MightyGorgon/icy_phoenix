@@ -19,7 +19,7 @@ $user->session_begin();
 $user->setup();
 // End session management
 
-@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+setup_extra_lang(array('lang_bbcb_mg'));
 
 $mode = request_var('mode', '');
 

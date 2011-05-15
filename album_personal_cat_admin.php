@@ -30,9 +30,7 @@ $user->setup();
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
-require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
-require(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.' . PHP_EXT);
+setup_extra_lang(array('lang_album_main', 'lang_album_admin', 'lang_admin'));
 
 $meta_content['page_title'] = $lang['Personal_Cat_Admin'];
 $meta_content['description'] = '';
@@ -60,7 +58,8 @@ if(isset($_POST['cat_id']) || isset($_GET['cat_id']))
 $username = album_get_user_name($album_user_id);
 if (empty($username))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 // ------------------------------------------------------------------------

@@ -1261,13 +1261,13 @@ elseif ($submit || $refresh || ($mode != ''))
 			if (!$result)
 			{
 				$error = true;
-				$error_msg = $lang['No_such_user'];
+				$error_msg = $lang['NO_USER'];
 			}
 
 			if (!($to_userdata = $db->sql_fetchrow($result)))
 			{
 				$error = true;
-				$error_msg = $lang['No_such_user'];
+				$error_msg = $lang['NO_USER'];
 			}
 		}
 		else
@@ -1552,7 +1552,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			if (!$result)
 			{
 				$error = true;
-				$error_msg = $lang['No_such_user'];
+				$error_msg = $lang['NO_USER'];
 			}
 
 			if ($row = $db->sql_fetchrow($result))

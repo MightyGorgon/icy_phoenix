@@ -77,23 +77,31 @@ class class_form
 				}
 				break;
 
+			case 'DATE_INPUT_JQUI':
 			case 'DATE_INPUT':
-				$input_time = (!empty($properties['default']) ? $properties['default'] : $current_time);
-				$tf = $this->explode_unix_time($input_time);
-				$input = $this->date_input($name, $tf['year'], $tf['month'], $tf['day']);
-				break;
-
 			case 'TIME_INPUT':
-				$input_time = (!empty($properties['default']) ? $properties['default'] : $current_time);
-				$tf = $this->explode_unix_time($input_time);
-				$input = $this->time_input($name, $tf['hour'], $tf['minute'], $tf['second']);
-				break;
-
 			case 'DATE_TIME_INPUT':
 				$input_time = (!empty($properties['default']) ? $properties['default'] : $current_time);
 				$tf = $this->explode_unix_time($input_time);
-				$input = $this->date_input($name, $tf['year'], $tf['month'], $tf['day']);
-				$input .= $this->time_input($name, $tf['hour'], $tf['minute'], $tf['second']);
+				$select_date = $this->date_input($name, $tf['year'], $tf['month'], $tf['day']);
+				$select_time = $this->time_input($name, $tf['hour'], $tf['minute'], $tf['second']);
+				switch ($properties['type'])
+				{
+					case 'DATE_INPUT_JQUI':
+						$jquery_ui = '<script type="text/javascript">$(function() { $.datepicker.setDefaults( $.datepicker.regional["' . $lang['HEADER_JQUERY_LANG'] . '"] ); $( "#' . $name . '" ).datepicker({ dateFormat: "yy/mm/dd", changeMonth: true, changeYear: true }); });</script>';
+						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="45" class="post" value="' . $default . '" />';
+						break;
+					case 'DATE_INPUT':
+						$input = $select_date;
+						break;
+					case 'TIME_INPUT':
+						$input = $select_time;
+						break;
+					case 'DATE_TIME_INPUT':
+					default:
+						$input = $select_date . $select_time;
+						break;
+				}
 				break;
 
 			case 'USERNAME_INPUT':

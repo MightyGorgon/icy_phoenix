@@ -37,7 +37,8 @@ $class_topics->var_init(true);
 
 if ((empty($like) && empty($topic_id)) || (!empty($like) && empty($post_id)))
 {
-	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 
 if (!$user->data['session_logged_in'])
@@ -66,7 +67,8 @@ $forum_topic_data = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 if (empty($forum_topic_data))
 {
-	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 $forum_id = $forum_topic_data['forum_id'];
 

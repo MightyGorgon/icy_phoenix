@@ -19,8 +19,6 @@ if (!defined('IN_ICYPHOENIX'))
 require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $nuff_http = nuff_http_vars();
 
-//include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-
 /*
 if ($album_config['enable_nuffimage'] == 1)
 {

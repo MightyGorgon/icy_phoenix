@@ -94,7 +94,8 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 		$this_userdata = get_userdata($username);
 		if (!$this_userdata)
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		$user_list[] = $this_userdata['user_id'];

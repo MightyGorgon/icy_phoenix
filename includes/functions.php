@@ -854,6 +854,87 @@ function unique_id($extra = 'c')
 	return substr($val, 4, 16);
 }
 
+
+/**
+* Return formatted string for filesizes
+*
+* @param int $value filesize in bytes
+* @param bool $string_only true if language string should be returned
+* @param array $allowed_units only allow these units (data array indexes)
+*
+* @return mixed data array if $string_only is false
+* @author bantu
+*/
+function get_formatted_filesize($value, $string_only = true, $allowed_units = false)
+{
+	global $lang;
+
+	$available_units = array(
+		'gb' => array(
+			'min' => 1073741824, // pow(2, 30)
+			'index' => 3,
+			'si_unit' => 'GB',
+			'iec_unit' => 'GIB',
+		),
+		'mb' => array(
+			'min' => 1048576, // pow(2, 20)
+			'index' => 2,
+			'si_unit' => 'MB',
+			'iec_unit' => 'MIB',
+		),
+		'kb' => array(
+			'min' => 1024, // pow(2, 10)
+			'index' => 1,
+			'si_unit' => 'KB',
+			'iec_unit' => 'KIB',
+		),
+		'b' => array(
+			'min' => 0,
+			'index' => 0,
+			'si_unit' => 'BYTES', // Language index
+			'iec_unit' => 'BYTES', // Language index
+		),
+	);
+
+	foreach ($available_units as $si_identifier => $unit_info)
+	{
+		if (!empty($allowed_units) && ($si_identifier != 'b') && !in_array($si_identifier, $allowed_units))
+		{
+			continue;
+		}
+
+		if ($value >= $unit_info['min'])
+		{
+			$unit_info['si_identifier'] = $si_identifier;
+
+			break;
+		}
+	}
+	unset($available_units);
+
+	for ($i = 0; $i < $unit_info['index']; $i++)
+	{
+		$value /= 1024;
+	}
+	$value = round($value, 2);
+
+	// Lookup units in language dictionary
+	$unit_info['si_unit'] = (isset($lang[$unit_info['si_unit']])) ? $lang[$unit_info['si_unit']] : $unit_info['si_unit'];
+	$unit_info['iec_unit'] = (isset($lang[$unit_info['iec_unit']])) ? $lang[$unit_info['iec_unit']] : $unit_info['iec_unit'];
+
+	// Default to IEC
+	$unit_info['unit'] = $unit_info['iec_unit'];
+
+	if (!$string_only)
+	{
+		$unit_info['value'] = $value;
+
+		return $unit_info;
+	}
+
+	return $value . ' ' . $unit_info['unit'];
+}
+
 /**
 *
 * @version Version 0.1 / slightly modified for phpBB 3.0.x (using $H$ as hash type identifier)
@@ -1995,7 +2076,7 @@ function setup_basic_lang()
 */
 function setup_extra_lang($lang_files_array, $lang_base_path = '', $lang_override = '')
 {
-	global $config, $lang;
+	global $config, $lang, $faq, $mtnc;
 
 	if (empty($lang_files_array))
 	{
@@ -2024,6 +2105,36 @@ function setup_extra_lang($lang_files_array, $lang_base_path = '', $lang_overrid
 	}
 
 	return true;
+}
+
+/**
+* Merge $lang with $user->lang
+*/
+function merge_user_lang()
+{
+	global $user, $lang;
+
+	$user->lang = array_merge($user->lang, $lang);
+
+	return true;
+}
+
+/**
+* Stopwords, Synonyms, INIT
+*/
+function stopwords_synonyms_init()
+{
+	global $config, $stopwords_array, $synonyms_array;
+
+	if (empty($stopwords_array))
+	{
+		$stopwords_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
+	}
+
+	if (empty($synonyms_array))
+	{
+		$synonyms_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
+	}
 }
 
 /**
@@ -2864,7 +2975,7 @@ function AJAX_headers()
 
 function AJAX_message_die($data_ar)
 {
-	global $template, $db;
+	global $template, $db, $cache, $config;
 
 	if (!headers_sent())
 	{
@@ -2891,11 +3002,8 @@ function AJAX_message_die($data_ar)
 
 	$template->pparse('ajax_result');
 
-	// Close our DB connection.
-	if (!empty($db))
-	{
-		$db->sql_close();
-	}
+	garbage_collection();
+	exit_handler();
 	exit;
 }
 // Ajaxed - END
@@ -3928,7 +4036,7 @@ function page_header($title = '', $parse_template = false)
 				$digest_server_url = create_server_url();
 				define('DIGEST_SITE_URL', $digest_server_url);
 			}
-			@include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_digests.' . PHP_EXT);
+			setup_extra_lang(array('lang_digests'));
 			if ($user->data['session_logged_in'])
 			{
 				$template->assign_block_vars('switch_show_digests', array());
@@ -4277,6 +4385,17 @@ function page_header($title = '', $parse_template = false)
 		'DOCTYPE_HTML' => $doctype_html,
 		'NAV_LINKS' => $nav_links_html,
 
+		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
+		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
+		'S_HEADER_DROPDOWN' => ($config['switch_header_dropdown'] ? true : false),
+		'S_HEADER_DD_LOGGED_IN' => (($config['switch_header_dropdown'] && $user->data['upi2db_access']) ? true : false),
+
+		// AJAX Features - BEGIN
+		'S_AJAX_FEATURES' => (!empty($config['ajax_features']) ? true : false),
+		'S_AJAX_USER_CHECK' => $ajax_user_check,
+		'S_AJAX_USER_CHECK_ALT' => $ajax_user_check_alt,
+		// AJAX Features - END
+
 		'U_LOGIN_LOGOUT' => append_sid(IP_ROOT_PATH . $u_login_logout),
 
 		//<!-- BEGIN Unread Post Information to Database Mod -->
@@ -4324,11 +4443,6 @@ function page_header($title = '', $parse_template = false)
 		'L_NEWS' => $lang['News_Cmx'],
 		'L_USERGROUPS' => $lang['Usergroups'],
 		'L_BOARD_DISABLE' => $lang['Board_disabled'],
-
-		// AJAX Features - BEGIN
-		'S_AJAX_USER_CHECK' => $ajax_user_check,
-		'S_AJAX_USER_CHECK_ALT' => $ajax_user_check_alt,
-		// AJAX Features - END
 
 		// Ajax Shoutbox - BEGIN
 		'L_AJAX_SHOUTBOX' => $lang['Ajax_Chat'],
@@ -4417,22 +4531,6 @@ function page_header($title = '', $parse_template = false)
 		'BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? '&nbsp;' : $breadcrumbs_links_right),
 		)
 	);
-
-	// Mighty Gorgon - CMS IMAGES - BEGIN
-	if (defined('IN_CMS'))
-	{
-		$template->assign_vars(array(
-			'IMG_LAYOUT_BLOCKS_EDIT' => $images['layout_blocks_edit'],
-			'IMG_LAYOUT_PREVIEW' => $images['layout_preview'],
-			'IMG_BLOCK_EDIT' => $images['block_edit'],
-			'IMG_BLOCK_DELETE' => $images['block_delete'],
-			'IMG_CMS_ARROW_MOVE' => $images['block_move_s'],
-			'IMG_CMS_ARROW_UP' => $images['arrows_cms_up'],
-			'IMG_CMS_ARROW_DOWN' => $images['arrows_cms_down'],
-			)
-		);
-	}
-	// Mighty Gorgon - CMS IMAGES - END
 
 	if ($config['board_disable'] && ($user->data['user_level'] == ADMIN))
 	{
@@ -5291,6 +5389,11 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 		case E_USER_WARNING:
 		case E_USER_NOTICE:
 			define('IN_ERROR_HANDLER', true);
+			$status_not_found_array = array('ERROR_NO_ATTACHMENT', 'NO_FORUM', 'NO_TOPIC', 'NO_USER');
+			if (in_array($msg_text, $status_not_found_array))
+			{
+				if (!defined('STATUS_404')) define('STATUS_404', true);
+			}
 			message_die($msg_code, $msg_text, $msg_title, $errline, $errfile, '');
 	}
 }
@@ -5423,10 +5526,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 	$sql_store = $sql;
 
-	//
-	// Get SQL error if we are debugging. Do this as soon as possible to prevent
-	// subsequent queries from overwriting the status of sql_error()
-	//
+	// Get SQL error if we are debugging. Do this as soon as possible to prevent subsequent queries from overwriting the status of sql_error()
 	if (DEBUG && (($msg_code == GENERAL_ERROR) || ($msg_code == CRITICAL_ERROR)))
 	{
 		$sql_error = $db->sql_error();
@@ -5524,10 +5624,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 			break;
 
 		case CRITICAL_ERROR:
-			//
-			// Critical errors mean we cannot rely on _ANY_ DB information being
-			// available so we're going to dump out a simple echo'd statement
-			//
+			// Critical errors mean we cannot rely on _ANY_ DB information being available so we're going to dump out a simple echo'd statement
 
 			// We force english to make sure we have at least the default language
 			$config['default_lang'] = 'english';
@@ -5587,6 +5684,11 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 	if ($msg_code != CRITICAL_ERROR)
 	{
+		if (defined('STATUS_404'))
+		{
+			send_status_line(404, 'Not Found');
+		}
+
 		if (!empty($lang[$msg_text]))
 		{
 			$msg_text = $lang[$msg_text];

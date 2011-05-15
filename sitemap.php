@@ -173,7 +173,7 @@ else
 						AND t.forum_id IN (" . $forumids . ") $wheresql
 						ORDER BY t.topic_id " . $config['sitemap_sort'] . "
 						LIMIT " . $config['sitemap_topic_limit'];
-		$result = $db->sql_query($sql, 0, 'topics_sitemap_', TOPICS_CACHE_FOLDER);
+		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -223,7 +223,7 @@ else
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'
 							ORDER BY file_time DESC";
-		$result = $db->sql_query($sql, 0, 'sitemap_files_');
+		$result = $db->sql_query($sql);
 		$dl_priority = $config['sitemap_announce_priority'];
 		$dl_change = 'never';
 		while ($dl_sitemap = $db->sql_fetchrow($result))
@@ -310,7 +310,7 @@ else
 							WHERE p.pic_cat_id IN (" . $allowed_cat . ") $wheresql
 							ORDER BY p.pic_id " . $config['sitemap_sort'] . "
 							LIMIT " . $config['sitemap_topic_limit'];
-			$result = $db->sql_query($sql, 0, 'sitemap_pics_');
+			$result = $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
 			{

@@ -36,7 +36,8 @@ $user->setup();
 // End session management
 
 include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_digests.' . PHP_EXT);
+
+setup_extra_lang(array('lang_digests'));
 
 if (empty($config['cron_digests_interval']) || ($config['cron_digests_interval'] == -1))
 {

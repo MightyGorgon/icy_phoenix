@@ -50,7 +50,8 @@ if (isset($_POST['submit']))
 		$this_userdata = get_userdata($username, true);
 		if(!$this_userdata)
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		// CrackerTracker v5.x
@@ -80,7 +81,8 @@ if (isset($_POST['submit']))
 		$temp_userdata = get_userdata($founder_id, false);
 		if(!$temp_userdata)
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		if (in_array($temp_userdata['user_email'], $email_list_temp))

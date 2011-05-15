@@ -97,7 +97,7 @@ define('IS_ICYPHOENIX', true);
 if(defined('IS_ICYPHOENIX'))
 {
 	// Include moved to functions... to avoid including wrong lang file ($config['default_lang'] is only assigned after session request)
-	//@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+	//setup_extra_lang(array('lang_bbcb_mg'));
 }
 else
 {

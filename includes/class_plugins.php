@@ -68,12 +68,13 @@ class class_plugins
 						$message = '';
 						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql_statement);
-						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							$error = $db->sql_error();
 							$message = $error['message'];
 						}
+						// This has to be here, otherwise we are not able to catch all errors by using $db->sql_error()
+						$db->sql_return_on_error(false);
 						$sql_results[] = array(
 							'sql' => $sql_statement,
 							'message' => htmlspecialchars($message),
@@ -214,10 +215,15 @@ class class_plugins
 	*/
 	function get_plugin_info($plugin_dir)
 	{
+		global $lang;
+
 		$plugin_info = array();
 		$plugin_info_file = $this->plugins_path . $plugin_dir . '/info.' . PHP_EXT;
 		if (file_exists($plugin_info_file))
 		{
+			$plugin_info_lang_path = $this->plugins_path . $plugin_dir . '/language/';
+			setup_extra_lang(array('lang_info'), $plugin_info_lang_path);
+
 			@include($plugin_info_file);
 			$plugin_info = array(
 				'dir' => $plugin_dir,

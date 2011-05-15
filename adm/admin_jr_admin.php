@@ -35,9 +35,9 @@ include_once('pagestart.' . PHP_EXT);
 
 setup_extra_lang(array('lang_jr_admin'));
 
-/****************************************************************************
-/** Module Actual Start
-/***************************************************************************/
+/**************************************************************************
+* Module Actual Start
+**************************************************************************/
 /* If for some reason you need to disable the version check in THIS HACK ONLY,
 change the blow to true instead of false.  No other hacks will be affected
 by this change.
@@ -46,17 +46,17 @@ define('DISABLE_VERSION_CHECK', false);
 /* Debugging for this file */
 $debug = false;
 
-/****************************************************************************
-/** Constants and Main Vars.
-/***************************************************************************/
+/**************************************************************************
+* Constants and Main Vars.
+**************************************************************************/
 $status_message = '';
 //Check for color groups mod
 define('UPDATE_MODULE_PREFIX', 'update_module_');
 $update_find_pattern = "/^.+_" . UPDATE_MODULE_PREFIX . "/";
 
-/*******************************************************************************************
-/** Get parameters.  'var_name' => 'default'
-/******************************************************************************************/
+/**************************************************************************
+* Get parameters.  'var_name' => 'default'
+**************************************************************************/
 if ($debug)
 {
 	//Dump out the get and post vars if in debug mode
@@ -409,14 +409,14 @@ if ($status_message != '')
 	);
 }
 /************************************************************************
-** Begin The Version Check Feature
+* Begin The Version Check Feature
 ************************************************************************/
 if (file_exists(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT) && !DISABLE_VERSION_CHECK)
 {
 	include(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT);
 }
 /************************************************************************
-** End The Version Check Feature
+* End The Version Check Feature
 ************************************************************************/
 
 $template->pparse('body');

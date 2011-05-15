@@ -2,7 +2,7 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_block.png" alt="{L_CMS_MENU_TITLE}" title="{L_CMS_MENU_TITLE}" /></td>
+	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_block.png" alt="{L_CMS_MENU_TITLE}" title="{L_CMS_MENU_TITLE}" /></td>
 	<td class="row1" valign="top"><h1>{L_CMS_MENU_TITLE}</h1><span class="genmed">{L_CMS_MENU_EXPLAIN}</span></td>
 </tr>
 </table>
@@ -40,15 +40,15 @@
 			<th align="center" style="width: 20px;"><input type="checkbox" name="cb_mid[]" value="{cat_row.CAT_CB_ID}"{cat_row.CAT_CHECKED} /></th>
 			<th style="width: 290px;">{cat_row.CAT_ICON}<b>{cat_row.CAT_ITEM}</b></th>
 			<th align="center"><b>{cat_row.CAT_DESC}</b></th>
-			<!-- <td class="row1" style="padding-left:5px;"><b>{cat_row.CAT_DESC}</b></td> -->
 		</tr>
 		</table>
 		<ul id="list_{cat_row.CAT_CB_ID}" style="margin: 0px; padding: 0px; list-style-type: none;">
 		<!-- BEGIN menu_row -->
-		<li id="item_{cat_row.menu_row.MENU_CB_ID}" style="cursor: move;">
+		<li id="item_{cat_row.menu_row.MENU_CB_ID}">
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr class="row1h">
 			<td class="row1 row-center" style="padding: 0px; background: none; width: 110px;">
+				<a class="icon-edit-move" href="javascript:void(0);"></a>
 				{cat_row.menu_row.U_MOVE_UP}
 				{cat_row.menu_row.U_MOVE_DOWN}
 				{cat_row.menu_row.U_EDIT}
@@ -77,22 +77,18 @@
 </table>
 </form>
 
-<div id="sort-info-box" class="row-center" style="position: fixed; top: 0px; right: 25px; z-index: 1; background: none; border: none; width: 300px; padding: 3px;"></div>
-
 <script type="text/javascript">
 //<![CDATA[
-var box_begin = '<div id="result-box" style="height: 16px; border: solid 1px #228822; background: #77dd99;"><span class="text_green">';
-var box_end = '<\/span><\/div>';
 <!-- BEGIN cat_row -->
 function update_order_{cat_row.CAT_CB_ID}()
 {
 	var request_options = {method: 'post', parameters: 'mode=update_menu_order&cat=' + {cat_row.CAT_CB_ID} + '&' + Sortable.serialize("list_{cat_row.CAT_CB_ID}") + '&sid=' + S_SID};
 	new Ajax.Request(ip_root_path + 'cms_db_update.' + php_ext, request_options);
 }
-Sortable.create('list_{cat_row.CAT_CB_ID}', {onUpdate:function(){update_order_{cat_row.CAT_CB_ID}(); $('sort-info-box').innerHTML = box_begin + '{L_MENU_UPDATED}' + box_end; new Effect.Highlight('result-box', {duration: 0.5}); window.setTimeout("new Effect.Fade('result-box',{duration: 0.5})", 2500);}});
-//Sortable.create("list_{cat_row.CAT_CB_ID}", {onUpdate:function(){new Ajax.Updater('sort-info-box', 'cms_db_update.php', {asynchronous: true, evalScripts: true, onComplete: function(request){new Effect.Highlight("result-box",{duration: 0.5});}, parameters: 'mode=update_menu_order&cat=' + {cat_row.CAT_CB_ID} + '&' + Sortable.serialize("list_{cat_row.CAT_CB_ID}") + '&sid=' + S_SID})}});
+Sortable.create('list_{cat_row.CAT_CB_ID}', {handle: 'icon-edit-move', onUpdate: function(){update_order_{cat_row.CAT_CB_ID}(); $('sort-info-box').innerHTML = box_begin + '{L_MENU_UPDATED}' + box_end; new Effect.Highlight('result-box', {duration: 0.5}); window.setTimeout("new Effect.Fade('result-box',{duration: 0.5})", 2500);}});
 <!-- END cat_row -->
 //]]>
 </script>
 
+<!-- INCLUDE ../common/cms/cms_info_box.tpl -->
 <!-- INCLUDE ../common/cms/page_footer.tpl -->

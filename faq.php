@@ -57,7 +57,8 @@ else
 	$lang_file = 'lang_faq';
 	$l_title = $lang['FAQ'];
 }
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT);
+
+setup_extra_lang(array($lang_file));
 
 // Pull the array data from the lang pack
 $j = 0;

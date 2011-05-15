@@ -136,16 +136,16 @@ $zero_array = array('rules_in_viewforum', 'rules_in_viewtopic', 'rules_in_postin
 // list for pull down menu and check of values :
 //		value => lang key entry
 $forum_type_list = array(
-	POST_CAT_URL			=> 'Category',
-	POST_FORUM_URL		=> 'Forum',
-	POST_FLINK_URL		=> 'Forum_link'
+	POST_CAT_URL => 'Category',
+	POST_FORUM_URL => 'Forum',
+	POST_FLINK_URL => 'Forum_link'
 );
 
 // forum status
 //		value => lang key entry
 $forum_status_list = array(
-	FORUM_UNLOCKED		=> 'Status_unlocked',
-	FORUM_LOCKED			=> 'Status_locked'
+	FORUM_UNLOCKED => 'Status_unlocked',
+	FORUM_LOCKED => 'Status_locked'
 );
 
 // prune functions
@@ -1375,20 +1375,20 @@ if ($mode == '')
 
 		'L_EDIT' => $lang['Edit'],
 		'L_DELETE' => $lang['Delete'],
-		'L_MOVEUP' => $lang['Move_up'],
-		'L_MOVEDW' => $lang['Move_down'],
+		'L_MOVEUP' => $lang['MOVE_UP'],
+		'L_MOVEDW' => $lang['MOVE_DOWN'],
 		'IMG_MOVEUP' => $images['acp_up_arrow2'],
 		'IMG_MOVEDW' => $images['acp_down_arrow2'],
 		'L_EXPAND' => $lang['Forum_Expand'],
 		'L_COLLAPSE' => $lang['Forum_Collapse'],
 		'L_EXPAND_ALL' => $lang['Forum_Expand_all'],
 		'L_COLLAPSE_ALL' => $lang['Forum_Collapse_all'],
-		'L_RESYNC' => $lang['Resync'],
+		'L_RESYNC' => $lang['RESYNC'],
 
 		'L_CREATE_FORUM' => $lang['Create_forum'],
 		'L_EDIT_FORUM' => $lang['Edit_forum'],
 		'L_DELETE_FORUM' => $lang['Forum_delete'],
-		'L_RESYNC_FORUM' => $lang['Resync'],
+		'L_RESYNC_FORUM' => $lang['RESYNC'],
 
 		'NO_SUBFORUMS' => $lang['No_subforums'],
 		)

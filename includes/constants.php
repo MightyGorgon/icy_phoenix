@@ -69,6 +69,7 @@ define('UPI2DB_RESYNC_TIME', 30); // Seconds needed to refresh UPI2DB data...
 // Pages
 define('CMS_PAGE_CMS', 'cms.' . PHP_EXT);
 define('CMS_PAGE_LOGIN', 'login_ip.' . PHP_EXT);
+define('CMS_PAGE_ERRORS', 'errors.' . PHP_EXT);
 define('CMS_PAGE_HOME', 'index.' . PHP_EXT);
 define('CMS_PAGE_FORUM', 'forum.' . PHP_EXT);
 define('CMS_PAGE_VIEWFORUM', 'viewforum.' . PHP_EXT);
@@ -471,7 +472,8 @@ define('LIW_CACHE_TABLE', $table_prefix . 'liw_cache');
 define('LOGINS_TABLE', $table_prefix . 'logins');
 define('LOG_TABLE', $table_prefix . 'log');
 define('LOGS_TABLE', $table_prefix . 'logs');
-define('MODULES_TABLE', $table_prefix . 'stats_modules');
+define('MODERATOR_CACHE_TABLE', $table_prefix . 'moderator_cache');
+define('MODULES_TABLE', $table_prefix . 'modules');
 define('NEWS_TABLE', $table_prefix . 'news');
 define('NOTES_ADMIN_TABLE',$table_prefix . 'notes');
 define('PLUGINS_TABLE', $table_prefix . 'plugins');
@@ -496,6 +498,7 @@ define('SHOUTBOX_TABLE', $table_prefix . 'shout');
 define('SITE_HISTORY_TABLE', $table_prefix . 'site_history');
 define('SMILIES_TABLE', $table_prefix . 'smilies');
 define('STATS_CONFIG_TABLE', $table_prefix . 'stats_config');
+define('STATS_MODULES_TABLE', $table_prefix . 'stats_modules');
 define('SUDOKU_SESSIONS', $table_prefix . 'sudoku_sessions');
 define('SUDOKU_SOLUTIONS', $table_prefix . 'sudoku_solutions');
 define('SUDOKU_STARTS', $table_prefix . 'sudoku_starts');

@@ -129,10 +129,10 @@ if($mode == '' || ($mode == 'cat_order') || ($mode == 'sync') || ($mode == 'sync
 		'L_CREATE_CATEGORY' => $lang['Create_category'],
 		'L_EDIT' => $lang['Edit'],
 		'L_DELETE' => $lang['Delete'],
-		'L_MOVE_UP' => $lang['Move_up'],
-		'L_MOVE_DOWN' => $lang['Move_down'],
+		'L_MOVE_UP' => $lang['MOVE_UP'],
+		'L_MOVE_DOWN' => $lang['MOVE_DOWN'],
 		'L_SUB_CAT' => $lang['Sub_category'],
-		'L_RESYNC' => $lang['Resync']
+		'L_RESYNC' => $lang['RESYNC']
 		)
 	);
 	admin_cat_main($cat_id);

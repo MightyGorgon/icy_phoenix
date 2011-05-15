@@ -172,7 +172,8 @@ if(!empty($topic_id))
 	$db->sql_return_on_error(false);
 	if(!$result)
 	{
-		message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 	}
 	$topic_row = $db->sql_fetchrow($result);
 	$forum_topics = ($topic_row['forum_topics'] == '0') ? '1' : $topic_row['forum_topics'];
@@ -187,14 +188,16 @@ elseif(!empty($forum_id))
 	$db->sql_return_on_error(false);
 	if(!$result)
 	{
-		message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_FORUM');
 	}
 	$topic_row = $db->sql_fetchrow($result);
 	$forum_topics = $topic_row['total_topics'];
 }
 else
 {
-	message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_FORUM');
 }
 
 // Start session management
@@ -442,7 +445,7 @@ switch($mode)
 				'L_LEAVESHADOW' => $lang['Leave_shadow_topic'],
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
-				'S_FORUM_SELECT' => make_forum_select('new_forum', $forum_id),
+				'S_FORUM_SELECT' => ip_make_forum_select('new_forum', $forum_id),
 				'S_MODCP_ACTION' => append_sid('modcp.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields,
 				)
@@ -614,7 +617,7 @@ switch($mode)
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_TOPIC_SELECT' => make_topic_select('new_topic', $forum_id),
+				'S_TOPIC_SELECT' => ip_make_topic_select('new_topic', $forum_id),
 				'S_MODCP_ACTION' => append_sid('modcp.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields
 				)
@@ -685,7 +688,7 @@ switch($mode)
 					'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id),
 					'S_SPLIT_ACTION' => append_sid('modcp.' . PHP_EXT),
 					'S_HIDDEN_FIELDS' => $s_hidden_fields,
-					'S_FORUM_SELECT' => make_forum_select('new_forum_id', false, $forum_id),
+					'S_FORUM_SELECT' => ip_make_forum_select('new_forum_id', false, $forum_id),
 					)
 				);
 

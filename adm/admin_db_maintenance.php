@@ -68,11 +68,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 $timer = getmicrotime();
 
 // Get language file for this mod
-if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT)))
-{
-	$config['default_lang'] = 'english';
-}
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT);
+setup_extra_lang(array('lang_dbmtnc'));
 
 // Set up variables and constants
 $function = request_var('function', '');
@@ -3065,30 +3061,29 @@ switch($mode_id)
 					case 4: // use advanced method if we have PHP 4+ (we can make use of the advanced array functions)
 						$post_size = strlen($row['post_text']) + strlen($row['post_subject']); // needed for controlling array size
 						// get stopword and synonym array
-						$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_stopwords.txt");
-						$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_synonyms.txt");
-						if (!is_array($stopword_array))
+						stopwords_synonyms_init();
+						if (!is_array($stopwords_array))
 						{
-							$stopword_array = array();
+							$stopwords_array = array();
 						}
-						if (!is_array($synonym_array))
+						if (!is_array($synonyms_array))
 						{
-							$synonym_array = array();
+							$synonyms_array = array();
 						}
 						$empty_array = array(); // We'll need this array for passing it to the clean_words function
 						// Convert arrays
-						for ($i = 0; $i < sizeof($stopword_array); $i++)
+						for ($i = 0; $i < sizeof($stopwords_array); $i++)
 						{
-							$stopword_array[$i] = trim(strtolower($stopword_array[$i]));
+							$stopwords_array[$i] = trim(strtolower($stopwords_array[$i]));
 						}
 						$result_array = array(array(), array());
-						for ($i = 0; $i < sizeof($synonym_array); $i++)
+						for ($i = 0; $i < sizeof($synonyms_array); $i++)
 						{
-							list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_array[$i])));
+							list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonyms_array[$i])));
 							$result_array[0][] = trim($replace_synonym);
 							$result_array[1][] = trim($match_synonym);
 						}
-						$synonym_array = $result_array;
+						$synonyms_array = $result_array;
 						$result_array = array(array(), array(), array());
 						$i = 0;
 						while ($row && ($post_size <= $config['dbmtnc_rebuildcfg_maxmemory'] * 1024 || $i < $config['dbmtnc_rebuildcfg_minposts']))

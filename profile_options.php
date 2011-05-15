@@ -55,7 +55,8 @@ else
 
 	if (!$target_userdata = $db->sql_fetchrow($result))
 	{
-		message_die(GENERAL_INFO, $lang['No_such_user']);
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_INFO, $lang['NO_USER']);
 	}
 	$target_userdata['user_level'] = ($target_userdata['user_level'] == JUNIOR_ADMIN) ? ADMIN : $target_userdata['user_level'];
 }

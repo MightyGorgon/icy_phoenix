@@ -496,8 +496,8 @@ $template->assign_vars(array(
 
 	'L_EDIT' => $lang['Edit'],
 	'L_DELETE' => $lang['Delete'],
-	'L_MOVE_UP' => $lang['Move_up'],
-	'L_MOVE_DOWN' => $lang['Move_down'],
+	'L_MOVE_UP' => $lang['MOVE_UP'],
+	'L_MOVE_DOWN' => $lang['MOVE_DOWN'],
 
 	'L_NO_QUESTIONS' => $lang['faq_no_quests'],
 	'L_NO_BLOCKS' => $lang['faq_no_blocks']

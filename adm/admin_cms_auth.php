@@ -22,7 +22,8 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_cms.' . PHP_EXT);
+
+setup_extra_lang(array('lang_cms'));
 
 //Start Quick Administrator User Options and Information MOD
 $redirect = request_var('redirect', '');
@@ -36,7 +37,8 @@ if (!empty($username))
 	$this_userdata = get_userdata($username, true);
 	if (!is_array($this_userdata))
 	{
-		message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_USER');
 	}
 	$user_id = $this_userdata['user_id'];
 }

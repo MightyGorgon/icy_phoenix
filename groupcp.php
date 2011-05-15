@@ -69,7 +69,7 @@ if (isset($_POST['groupstatus']) && $group_id)
 		$redirect_url = append_sid(CMS_PAGE_FORUM);
 		meta_refresh(3, $redirect_url);
 
-		$message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+		$message = $lang['Not_group_moderator'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $message);
 	}
@@ -79,10 +79,10 @@ if (isset($_POST['groupstatus']) && $group_id)
 		WHERE group_id = '" . $group_id . "'";
 	$result = $db->sql_query($sql);
 
-	$redirect_url = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id);
+	$redirect_url = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id);
 	meta_refresh(3, $redirect_url);
 
-	$message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+	$message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 	$db->clear_cache('groups_', USERS_CACHE_FOLDER);
 
@@ -101,10 +101,10 @@ elseif (isset($_POST['colorize_all']) && $group_id)
 
 	update_all_users_colors_ranks($group_id);
 
-	$redirect_url = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id);
+	$redirect_url = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id);
 	meta_refresh(3, $redirect_url);
 
-	$message = $lang['Group_members_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+	$message = $lang['Group_members_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -138,7 +138,7 @@ elseif (isset($_POST['joingroup']) && $group_id)
 					$redirect_url = append_sid(CMS_PAGE_FORUM);
 					meta_refresh(3, $redirect_url);
 
-					$message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+					$message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 					message_die(GENERAL_MESSAGE, $message);
 				}
@@ -150,7 +150,7 @@ elseif (isset($_POST['joingroup']) && $group_id)
 			$redirect_url = append_sid(CMS_PAGE_FORUM);
 			meta_refresh(3, $redirect_url);
 
-			$message = $lang['This_closed_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+			$message = $lang['This_closed_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		}
@@ -210,7 +210,7 @@ elseif (isset($_POST['joingroup']) && $group_id)
 		meta_refresh(3, $redirect_url);
 	}
 
-	$message = ($is_autogroup_enable) ? $lang['Group_added'] : $lang['Group_joined'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+	$message = ($is_autogroup_enable) ? $lang['Group_added'] : $lang['Group_joined'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -236,7 +236,7 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 	// Check for confirmation of unsub.
 	if ($cancel)
 	{
-		redirect(append_sid('groupcp.' . PHP_EXT, true));
+		redirect(append_sid(CMS_PAGE_GROUP_CP, true));
 	}
 	elseif (!$user->data['session_logged_in'])
 	{
@@ -278,7 +278,7 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 		$redirect_url = append_sid(CMS_PAGE_FORUM);
 		meta_refresh(3, $redirect_url);
 
-		$message = $lang['Unsub_success'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+		$message = $lang['Unsub_success'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 		$db->clear_cache();
 
@@ -292,14 +292,14 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 		$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
 		$nav_server_url = create_server_url();
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('groupcp.' . PHP_EXT) . '" class="nav-current">' . $lang['Group_Control_Panel'] . '</a>';
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_GROUP_CP) . '" class="nav-current">' . $lang['Group_Control_Panel'] . '</a>';
 
 		$template->assign_vars(array(
 			'MESSAGE_TITLE' => $lang['Confirm'],
 			'MESSAGE_TEXT' => $unsub_msg,
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
-			'S_CONFIRM_ACTION' => append_sid('groupcp.' . PHP_EXT),
+			'S_CONFIRM_ACTION' => append_sid(CMS_PAGE_GROUP_CP),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields
 			)
 		);
@@ -368,10 +368,10 @@ elseif ($group_id)
 
 				if (!($row = $db->sql_fetchrow($result)))
 				{
-					$redirect_url = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id);
+					$redirect_url = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id);
 					meta_refresh(3, $redirect_url);
 
-					$message = $lang['Could_not_add_user'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+					$message = $lang['Could_not_add_user'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 					message_die(GENERAL_MESSAGE, $message);
 				}
@@ -380,10 +380,10 @@ elseif ($group_id)
 
 				if ($row['user_id'] == ANONYMOUS)
 				{
-					$redirect_url = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id);
+					$redirect_url = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id);
 					meta_refresh(3, $redirect_url);
 
-					$message = $lang['Could_not_anon_user'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+					$message = $lang['Could_not_anon_user'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 					message_die(GENERAL_MESSAGE, $message);
 				}
@@ -452,10 +452,10 @@ elseif ($group_id)
 				}
 				else
 				{
-					$redirect_url = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id);
+					$redirect_url = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id);
 					meta_refresh(3, $redirect_url);
 
-					$message = $lang['User_is_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+					$message = $lang['User_is_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 					message_die(GENERAL_MESSAGE, $message);
 				}
@@ -521,10 +521,10 @@ elseif ($group_id)
 							WHERE user_id IN ($sql_in)";
 						$db->sql_query($sql_users);
 
-						$redirect_url = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id);
+						$redirect_url = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id);
 						meta_refresh(3, $redirect_url);
 
-						$message = $lang['Group_members_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+						$message = $lang['Group_members_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 						message_die(GENERAL_MESSAGE, $message);
 					}
@@ -806,7 +806,7 @@ elseif ($group_id)
 	$meta_content['description'] = '';
 	$meta_content['keywords'] = '';
 	$nav_server_url = create_server_url();
-	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('groupcp.' . PHP_EXT) . '">' . $lang['Group_Control_Panel'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $group_info['group_name'] . '</a>';
+	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_GROUP_CP) . '">' . $lang['Group_Control_Panel'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $group_info['group_name'] . '</a>';
 	page_header($meta_content['page_title'], true);
 
 	// Load templates
@@ -927,7 +927,7 @@ elseif ($group_id)
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
 		'S_MODE_SELECT' => $select_sort_mode,
 		'S_ORDER_SELECT' => $select_sort_order,
-		'S_GROUPCP_ACTION' => append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id)
+		'S_GROUPCP_ACTION' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id)
 		)
 	);
 
@@ -1019,7 +1019,7 @@ elseif ($group_id)
 	$current_page = (!$members_count) ? 1 : ceil($members_count / $config['topics_per_page']);
 
 	$template->assign_vars(array(
-		'PAGINATION' => generate_pagination('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_id, $members_count, $config['topics_per_page'], $start),
+		'PAGINATION' => generate_pagination(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id, $members_count, $config['topics_per_page'], $start),
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), $current_page),
 		'L_GOTO_PAGE' => $lang['Goto_page']
 		)
@@ -1166,7 +1166,7 @@ else
 					'GROUP_ID' => $row['group_id'],
 					'GROUP_NAME' => $row['group_name'],
 					'GROUP_DES' => $row['group_description'],
-					'GROUP_URL' => append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']),
+					'GROUP_URL' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']),
 					'GROUP_COLOR_STYLE' => ($group_color ? ' style="color:' . $group_color . ';font-weight:bold;text-decoration:none;"' : ' style="font-weight:bold;text-decoration:none;"'),
 					)
 				);
@@ -1197,7 +1197,7 @@ else
 					'GROUP_ID' => $row['group_id'],
 					'GROUP_NAME' => $row['group_name'],
 					'GROUP_DES' => $row['group_description'],
-					'GROUP_URL' => append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']),
+					'GROUP_URL' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']),
 					'GROUP_COLOR_STYLE' => ($group_color ? ' style="color:' . $group_color . ';font-weight:bold;text-decoration:none;"' : ' style="font-weight:bold;text-decoration:none;"'),
 					)
 				);
@@ -1232,7 +1232,7 @@ else
 					'GROUP_ID' => $row['group_id'],
 					'GROUP_NAME' => $row['group_name'],
 					'GROUP_DES' => $row['group_description'],
-					'GROUP_URL' => append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']),
+					'GROUP_URL' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']),
 					'GROUP_COLOR_STYLE' => ($group_color ? ' style="color:' . $group_color . ';font-weight:bold;text-decoration:none;"' : ' style="font-weight:bold;text-decoration:none;"'),
 					)
 				);
@@ -1249,7 +1249,7 @@ else
 		$meta_content['description'] = '';
 		$meta_content['keywords'] = '';
 		$nav_server_url = create_server_url();
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('groupcp.' . PHP_EXT) . '" class="nav-current">' . $lang['Group_Control_Panel'] . '</a>';
+		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_GROUP_CP) . '" class="nav-current">' . $lang['Group_Control_Panel'] . '</a>';
 		page_header($meta_content['page_title'], true);
 
 		$template->set_filenames(array('user' => 'groupcp_user_body.tpl'));
@@ -1289,7 +1289,7 @@ else
 			'L_UNSUBSCRIBE' => $lang['Unsubscribe'],
 			'L_VIEW_INFORMATION' => $lang['View_Information'],
 
-			'S_USERGROUP_ACTION' => append_sid('groupcp.' . PHP_EXT),
+			'S_USERGROUP_ACTION' => append_sid(CMS_PAGE_GROUP_CP),
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
 
 			'GROUP_LIST_SELECT' => $s_group_list,

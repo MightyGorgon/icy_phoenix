@@ -46,14 +46,16 @@ elseif (!empty($topic_id))
 }
 else
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 // Get topic and post info ...
 $result = $db->sql_query($sql);
 $post_data = $db->sql_fetchrow($result);
 if (empty($post_data))
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 $db->sql_freeresult($result);
 

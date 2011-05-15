@@ -25,13 +25,14 @@ if(!function_exists('cms_block_dyn_menu'))
 	function cms_block_dyn_menu()
 	{
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars;
+
 		include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
 
 		$template->_tpldata['cat_row.'] = array();
 		$template->_tpldata['menu_row.'] = array();
 		$template->_tpldata['show_hide.'] = array();
 
-		include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dyn_menu.' . PHP_EXT);
+		setup_extra_lang(array('lang_dyn_menu'));
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'

@@ -570,8 +570,8 @@ else
 		'L_EXPORT_PACK' => $lang['export_smile_pack'],
 		// Smilies ORDER BEGIN
 		'L_MOVE' => $lang['Move'],
-		'L_MOVE_UP' => $lang['Move_up'],
-		'L_MOVE_DOWN' => $lang['Move_down'],
+		'L_MOVE_UP' => $lang['MOVE_UP'],
+		'L_MOVE_DOWN' => $lang['MOVE_DOWN'],
 		'L_MOVE_TOP' => $lang['Move_top'],
 		'L_MOVE_END' => $lang['Move_end'],
 		'L_POSITION_NEW_SMILIES' => $lang['position_new_smilies'],

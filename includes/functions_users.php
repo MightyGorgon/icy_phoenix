@@ -366,6 +366,43 @@ function generate_ranks($user_row, $ranks_array)
 	return $user_ranks;
 }
 
+/**
+* Updates a username across all relevant tables/fields
+*
+* @param string $old_name the old/current username
+* @param string $new_name the new username
+*/
+function user_update_name($old_name, $new_name)
+{
+	global $config, $db, $cache;
+
+	$update_ary = array(
+		FORUMS_TABLE => array('forum_last_poster_name'),
+		MODERATOR_CACHE_TABLE => array('username'),
+		POSTS_TABLE => array('post_username'),
+		TOPICS_TABLE => array('topic_first_poster_name', 'topic_last_poster_name'),
+	);
+
+	foreach ($update_ary as $table => $field_ary)
+	{
+		foreach ($field_ary as $field)
+		{
+			$sql = "UPDATE $table
+				SET $field = '" . $db->sql_escape($new_name) . "'
+				WHERE $field = '" . $db->sql_escape($old_name) . "'";
+			$db->sql_query($sql);
+		}
+	}
+
+	if ($config['newest_username'] == $old_name)
+	{
+		set_config('newest_username', $new_name, true);
+	}
+
+	// Because some tables/caches use username-specific data we need to purge this here.
+	$cache->destroy('sql', MODERATOR_CACHE_TABLE);
+}
+
 /*
 * Fake User Profile
 */

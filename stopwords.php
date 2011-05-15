@@ -40,7 +40,7 @@ if($user->data['user_level'] != ADMIN)
 	message_die(GENERAL_MESSAGE, 'You are not authorized to access this page');
 }
 
-$stopwords_array = file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
+stopwords_synonyms_init();
 
 $exclude_list = '';
 foreach($stopwords_array as $curr_word)

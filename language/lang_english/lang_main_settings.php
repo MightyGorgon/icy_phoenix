@@ -62,8 +62,10 @@ $lang['PrivacyDisclaimer'] = 'You specifically agree that your personal data wil
 
 $lang['ENCODING'] = 'UTF-8';
 $lang['DIRECTION'] = 'ltr';
+$lang['USER_LANG'] = 'en-gb';
 $lang['HEADER_LANG'] = 'en-gb';
 $lang['HEADER_XML_LANG'] = 'en-gb';
+$lang['HEADER_JQUERY_LANG'] = 'en-GB';
 $lang['LEFT'] = 'left';
 $lang['RIGHT'] = 'right';
 $lang['DATE_FORMAT'] = 'd F y H:i'; // This should be changed to the default date format for your language, php date() format

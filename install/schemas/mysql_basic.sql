@@ -1820,36 +1820,116 @@ INSERT INTO phpbb_dl_ext_blacklist (extention) VALUES
 
 
 ## AUTH SYSTEM - BEGIN
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (1, 'cms_', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (2, 'cms_view', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (3, 'cms_edit', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (4, 'cms_l_new', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (5, 'cms_l_edit', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (6, 'cms_l_delete', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (7, 'cms_b_new', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (8, 'cms_b_edit', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (9, 'cms_b_delete', 0, 1, 0);
+# -- CMS related auth options
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (1, 'cms_', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (2, 'cms_view', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (3, 'cms_edit', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (4, 'cms_l_add', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (5, 'cms_l_edit', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (6, 'cms_l_delete', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (7, 'cms_b_add', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (8, 'cms_b_edit', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (9, 'cms_b_delete', 0, 1, 0);
 
-INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (1, 'CMS_CONTENT_MANAGER', 'CMS_CONTENT_MANAGER_TEXT', 'cms_', 1);
-INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (2, 'CMS_REVIEWER', 'CMS_REVIEWER_TEXT', 'cms_', 2);
-INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (3, 'CMS_PUBLISHER', 'CMS_PUBLISHER_TEXT', 'cms_', 3);
+# -- Admin related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_modules', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_roles', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_aauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_mauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_uauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_fauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_authgroups', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_authusers', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_viewauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_group', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_user', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_board', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_server', 1);
 
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 2, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 3, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 4, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 5, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 6, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 7, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 8, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 9, 1);
+# -- Moderator related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_local, is_global) VALUES ('m_', 1, 1);
+INSERT INTO phpbb_acl_options (auth_option, is_local, is_global) VALUES ('m_topicdelete', 1, 1);
 
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 2, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 4, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 5, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 7, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 8, 1);
+# -- User related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('u_', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('u_html', 1);
 
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 2, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 4, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 7, 1);
+# -- Forum related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_html', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_topicdelete', 1);
+
+# -- Standard auth roles
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (1, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cms_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (2, 'ROLE_CMS_REVIEWER', 'ROLE_CMS_REVIEWER_DESCRIPTION', 'cms_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (3, 'ROLE_CMS_PUBLISHER', 'ROLE_CMS_PUBLISHER_DESCRIPTION', 'cms_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (4, 'ROLE_CMS_USER', 'ROLE_CMS_USER_DESCRIPTION', 'cms_', 4);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (5, 'ROLE_CMS_GUEST', 'ROLE_CMS_GUEST_DESCRIPTION', 'cms_', 5);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (6, 'ROLE_ADMIN_FULL', 'ROLE_ADMIN_FULL_DESCRIPTION', 'a_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (7, 'ROLE_ADMIN_STANDARD', 'ROLE_ADMIN_STANDARD_DESCRIPTION', 'a_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (8, 'ROLE_MOD_FULL', 'ROLE_MOD_FULL_DESCRIPTION', 'm_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (9, 'ROLE_MOD_STANDARD', 'ROLE_MOD_STANDARD_DESCRIPTION', 'm_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (10, 'ROLE_MOD_SIMPLE', 'ROLE_MOD_SIMPLE_DESCRIPTION', 'm_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (11, 'ROLE_USER_FULL', 'ROLE_USER_FULL_DESCRIPTION', 'u_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (12, 'ROLE_USER_STANDARD', 'ROLE_USER_STANDARD_DESCRIPTION', 'u_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (13, 'ROLE_USER_LIMITED', 'ROLE_USER_LIMITED_DESCRIPTION', 'u_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (14, 'ROLE_FORUM_FULL', 'ROLE_FORUM_FULL_DESCRIPTION', 'f_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (15, 'ROLE_FORUM_STANDARD', 'ROLE_FORUM_STANDARD_DESCRIPTION', 'f_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (16, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3);
+
+# -- Roles data
+
+# CMS Content Manager (cms_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 1, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cms_%';
+
+# CMS Reviewer (cms_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 2, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cms_%' AND auth_option NOT IN ('cms_edit', 'cms_l_delete', 'cms_b_delete');
+
+# CMS Publisher (cms_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 3, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cms_%' AND auth_option NOT IN ('cms_edit', 'cms_l_add', 'cms_l_delete', 'cms_b_add', 'cms_b_delete');
+
+# CMS User (cms_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 4, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option = 'cms_view';
+
+# CMS Guest (cms_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 5, auth_option_id, 0 FROM phpbb_acl_options WHERE auth_option = 'cms_view';
+
+# Full Admin (a_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 6, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'a_%';
+
+# Standard Admin (a_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 7, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'a_%' AND auth_option NOT IN ('a_server', 'a_modules', 'a_aauth', 'a_roles');
+
+# Full Moderator (m_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 8, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%';
+
+# Standard Moderator (m_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 9, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%' AND auth_option NOT IN ('m_topicdelete');
+
+# Simple Moderator (m_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 10, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%' AND auth_option IN ('m_', 'm_topicdelete');
+
+# All Features (u_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 11, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%';
+
+# Standard Features (u_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 12, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html');
+
+# Limited Features (u_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 13, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html');
+
+# Full Access (f_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 14, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'f_%';
+
+# Standard Access (f_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 15, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'f_%' AND auth_option NOT IN ('f_html');
+
+# No Access (f_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 16, auth_option_id, 0 FROM phpbb_acl_options WHERE auth_option = 'f_';
+
+# Permissions
+
+# Admin user - full features for ACP
+INSERT INTO phpbb_acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 6, 0 FROM phpbb_users WHERE user_level = 1;
 ## AUTH SYSTEM - END

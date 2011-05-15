@@ -2,7 +2,7 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_settings.png" alt="{L_CONFIGURATION_TITLE}" title="{L_CONFIGURATION_TITLE}" /></td>
+	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_settings.png" alt="{L_CONFIGURATION_TITLE}" title="{L_CONFIGURATION_TITLE}" /></td>
 	<td class="row1" valign="top"><h1>{L_CONFIGURATION_TITLE}</h1><span class="genmed">{L_CONFIGURATION_EXPLAIN}</span></td>
 </tr>
 </table>

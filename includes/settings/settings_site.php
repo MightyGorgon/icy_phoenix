@@ -15,7 +15,10 @@ if (!defined('IN_ICYPHOENIX'))
 
 if (defined('IN_ADMIN'))
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+	if (!function_exists('style_select'))
+	{
+		include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+	}
 }
 
 $settings_details = array();
@@ -102,7 +105,7 @@ $settings_data = array(
 		'lang_key' => 'Report_forum',
 		'explain' => 'Report_forum_explain',
 		'get_func' => 'forums_select_box',
-		'default' => 'f5',
+		'default' => 'f4',
 		),
 
 	'bin_forum' => array(
