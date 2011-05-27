@@ -579,7 +579,7 @@ class class_plugins
 	*/
 	function get_plugin_db_settings($plugin_dir)
 	{
-		global $db, $cache, $config, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		// Search for settings...
 		$plugins_settings_path = IP_ROOT_PATH . PLUGINS_PATH . basename($plugin_dir) . '/' . $this->plugins_settings_path . '/';

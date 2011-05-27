@@ -20,6 +20,9 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+$mem_limit = img_check_mem_limit();
+@ini_set('memory_limit', $mem_limit);
+
 class ImgObj
 {
 	var $ImageID;
@@ -1936,13 +1939,13 @@ class ImgObj
 * Function get_full_image_info
 */
 
-define ('IMAGE_WIDTH', 'width');
-define ('IMAGE_HEIGHT', 'height');
-define ('IMAGE_TYPE', 'type');
-define ('IMAGE_ATTR', 'attr');
-define ('IMAGE_BITS', 'bits');
-define ('IMAGE_CHANNELS', 'channels');
-define ('IMAGE_MIME', 'mime');
+define('IMAGE_WIDTH', 'width');
+define('IMAGE_HEIGHT', 'height');
+define('IMAGE_TYPE', 'type');
+define('IMAGE_ATTR', 'attr');
+define('IMAGE_BITS', 'bits');
+define('IMAGE_CHANNELS', 'channels');
+define('IMAGE_MIME', 'mime');
 
 /**
 * mixed get_full_image_info(file $file [, string $out])
@@ -2092,6 +2095,38 @@ function any_url_exists($url)
 	{
 		return false;
 	}
+}
+
+/**
+* Check MEM Limit... used to set higher memory usage when processing images
+*/
+function img_check_mem_limit()
+{
+	$mem_limit = @ini_get('memory_limit');
+	if (!empty($mem_limit))
+	{
+		$unit = strtolower(substr($mem_limit, -1, 1));
+		$mem_limit = (int) $mem_limit;
+
+		if ($unit == 'k')
+		{
+			$mem_limit = floor($mem_limit / 1024);
+		}
+		elseif ($unit == 'g')
+		{
+			$mem_limit *= 1024;
+		}
+		elseif (is_numeric($unit))
+		{
+			$mem_limit = floor((int) ($mem_limit . $unit) / 1048576);
+		}
+		$mem_limit = max(128, $mem_limit) . 'M';
+	}
+	else
+	{
+		$mem_limit = '128M';
+	}
+	return $mem_limit;
 }
 
 /*

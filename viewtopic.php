@@ -1751,14 +1751,7 @@ for($i = 0; $i < $total_posts; $i++)
 		}
 		else
 		{
-			for($n = 0; $n < sizeof($ranks_array['bannedrow']); $n++)
-			{
-				if ($ranks_array['bannedrow'][$n]['ban_userid'] == $poster_id)
-				{
-					$is_banned = true;
-					break;
-				}
-			}
+			$is_banned = (isset($ranks_array['bannedrow'][$poster_id])) ? true : false;
 			if (($user_warnings > $config['max_user_bancard']) || $is_banned)
 			{
 				$card_img = '<img src="' . $images['icon_r_cards'] . '" alt="' . $lang['Banned'] . '" title="' . $lang['Banned'] . '">';

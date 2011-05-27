@@ -283,24 +283,17 @@ function generate_ranks($user_row, $ranks_array)
 
 	if (!$is_guest && !empty($ranks_array['bannedrow']))
 	{
-		for($j = 0; $j < sizeof($ranks_array['bannedrow']); $j++)
-		{
-			if ($ranks_array['bannedrow'][$j]['ban_userid'] == $user_row['user_id'])
-			{
-				$is_banned = true;
-				break;
-			}
-		}
+		$is_banned = (isset($ranks_array['bannedrow'][$user_row['user_id']])) ? true : false;
 	}
 
-	for($j = 0; $j < sizeof($ranks_array['ranksrow']); $j++)
+	foreach ($ranks_array['ranksrow'] as $rank_key => $rank_data)
 	{
-		$rank_tmp = $ranks_array['ranksrow'][$j]['rank_title'];
-		$rank_img_tmp = ($ranks_array['ranksrow'][$j]['rank_image']) ? '<img src="' . $ranks_array['ranksrow'][$j]['rank_image'] . '" alt="' . $rank_tmp . '" title="' . $rank_tmp . '" />' : '';
-		$rank_tmp = (empty($ranks_array['ranksrow'][$j]['rank_show_title']) && !empty($rank_img_tmp)) ? '' : $rank_tmp;
+		$rank_tmp = $rank_data['rank_title'];
+		$rank_img_tmp = ($rank_data['rank_image']) ? '<img src="' . $rank_data['rank_image'] . '" alt="' . $rank_tmp . '" title="' . $rank_tmp . '" />' : '';
+		$rank_tmp = (empty($rank_data['rank_show_title']) && !empty($rank_img_tmp)) ? '' : $rank_tmp;
 		if (!empty($is_guest))
 		{
-			if ($ranks_array['ranksrow'][$j]['rank_special'] == '2')
+			if ($rank_data['rank_special'] == '2')
 			{
 				$user_ranks['rank_01'] = $rank_tmp;
 				$user_ranks['rank_01_img'] = $rank_img_tmp;
@@ -311,7 +304,7 @@ function generate_ranks($user_row, $ranks_array)
 		}
 		elseif (!empty($is_banned))
 		{
-			if ($ranks_array['ranksrow'][$j]['rank_special'] == '3')
+			if ($rank_data['rank_special'] == '3')
 			{
 				$user_ranks['rank_01'] = $rank_tmp;
 				$user_ranks['rank_01_img'] = $rank_img_tmp;
@@ -326,22 +319,22 @@ function generate_ranks($user_row, $ranks_array)
 
 			for($k = 0; $k < sizeof($user_fields_array); $k++)
 			{
-				switch ($ranks_array['ranksrow'][$j]['rank_special'])
+				switch ($rank_data['rank_special'])
 				{
 					case '1':
-						if ($user_row[$user_fields_array[$k]] == $ranks_array['ranksrow'][$j]['rank_id'])
+						if ($user_row[$user_fields_array[$k]] == $rank_data['rank_id'])
 						{
 							$rank_sw = true;
 						}
 						break;
 					case '0':
-						if (($user_row[$user_fields_array[$k]] == '0') && ($user_row['user_posts'] >= $ranks_array['ranksrow'][$j]['rank_min']))
+						if (($user_row[$user_fields_array[$k]] == '0') && ($user_row['user_posts'] >= $rank_data['rank_min']))
 						{
 							$rank_sw = true;
 						}
 						break;
 					case '-1':
-						if (($user_row[$user_fields_array[$k]] == '-1') && ($day_diff >= $ranks_array['ranksrow'][$j]['rank_min']))
+						if (($user_row[$user_fields_array[$k]] == '-1') && ($day_diff >= $rank_data['rank_min']))
 						{
 							$rank_sw = true;
 						}

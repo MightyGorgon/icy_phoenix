@@ -3,8 +3,8 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
-	<td class="row1" valign="top"><h1>{L_BLOCKS_TITLE} - {LAYOUT_NAME}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
+	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
+	<td class="row1 c-r-r" valign="top"><h1>{L_BLOCKS_TITLE} - {LAYOUT_NAME}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
 </tr>
 </table>
 <script type="text/javascript">
@@ -12,7 +12,7 @@
 var cmsEditorData = {JSON_DATA};
 // ]]>
 </script>
-<div id="cms-editor-header"></div>
+
 <!-- IF S_GLOBAL_LAYOUT -->
 
 <!-- BEGIN gheader_blocks_row -->{gheader_blocks_row.CMS_BLOCK}<!-- END gheader_blocks_row -->
@@ -23,8 +23,8 @@ var cmsEditorData = {JSON_DATA};
 	</td>
 	<td style="vertical-align: top;">
 		<!-- BEGIN ghtop_blocks_row -->{ghtop_blocks_row.CMS_BLOCK}<!-- END ghtop_blocks_row -->
-		<div class="cms-editor-container">{L_B_DISPLAY}</div>
 		<!-- BEGIN ghbottom_blocks_row -->{ghbottom_blocks_row.CMS_BLOCK}<!-- END ghbottom_blocks_row -->
+		<div class="cms-editor-container">{L_B_DISPLAY}</div>
 	</td>
 	<td width="180" style="padding-left: 7px; vertical-align: top;">
 		<!-- BEGIN ghright_blocks_row -->{ghright_blocks_row.CMS_BLOCK}<!-- END ghright_blocks_row -->
@@ -56,6 +56,9 @@ var cmsEditorData = {JSON_DATA};
 <!-- ELSE -->
 <?php $this->pparse('layout_blocks'); ?>
 <!-- ENDIF -->
+
+<div id="cms-editor-header"></div>
+
 <div id="cms-editor-footer"></div>
 
 <!-- INCLUDE ../common/cms/cms_info_box.tpl -->

@@ -335,7 +335,7 @@ class ip_cache extends acm
 			$result = $from_cache ? $db->sql_query($sql, 0, 'ban_', USERS_CACHE_FOLDER) : $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$ranks['bannedrow'][] = $row;
+				$ranks['bannedrow'][$row['ban_userid']] = $row;
 			}
 			$db->sql_freeresult($result);
 
@@ -343,7 +343,7 @@ class ip_cache extends acm
 			$result = $from_cache ? $db->sql_query($sql, 0, 'ranks_') : $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$ranks['ranksrow'][] = $row;
+				$ranks['ranksrow'][$row['rank_id']] = $row;
 			}
 			$db->sql_freeresult($result);
 

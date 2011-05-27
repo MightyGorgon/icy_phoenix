@@ -9,7 +9,7 @@
 </tr>
 <!-- BEGIN no_cat_parent -->
 <!-- IF no_cat_parent.IS_HIGHER_CAT -->
-<tr><td class="forum-buttons2" align="left" colspan="4"><img src="{CAT_BLOCK_IMG}" style="vertical-align:middle;" alt="" />&nbsp;<span><a href="{no_cat_parent.U_CAT}">{no_cat_parent.CAT_NAME}</a></span></td></tr>
+<tr><td class="forum-buttons2" align="left" colspan="4"><img src="{CAT_BLOCK_IMG}" style="vertical-align: middle;" alt="" />&nbsp;<span><a href="{no_cat_parent.U_CAT}">{no_cat_parent.CAT_NAME}</a></span></td></tr>
 <!-- ELSE -->
 <tr>
 	<td class="row1 row-center" width="30" style="padding-right:5px;"><a href="{no_cat_parent.U_CAT}" class="cattitle"><img src="{no_cat_parent.CAT_IMAGE}" alt="{no_cat_parent.CAT_NEW_FILE}" /></a></td>

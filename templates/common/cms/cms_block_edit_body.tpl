@@ -4,8 +4,8 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_PAGE_02}" title="{L_BLOCKS_PAGE_02}" /></td>
-	<td class="row1" valign="top"><h1>{L_BLOCKS_PAGE_02}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
+	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_PAGE_02}" title="{L_BLOCKS_PAGE_02}" /></td>
+	<td class="row1 c-r-r" valign="top"><h1>{L_BLOCKS_PAGE_02}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
 </tr>
 </table>
 
@@ -32,7 +32,6 @@
 	<td class="cat" align="center">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="save" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
-		<!-- <input type="submit" name="reset" class="liteoption" value="{L_RESET}" /> -->
 		<input type="reset" name="reset" class="liteoption" value="{L_RESET}" />
 	</td>
 </tr>

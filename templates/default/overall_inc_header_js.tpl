@@ -80,6 +80,11 @@ window.onunload = function()
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-i18n.min.js" type="text/javascript"></script>
 <!-- ENDIF -->
 
+<!-- IF S_JQUERY_UI_TP -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-timepicker.css" type="text/css" media="screen" />
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-timepicker.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
 <!-- IF S_JQ_CYCLE_SLIDESHOW -->
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_cycle_all_compressed.js" type="text/javascript"></script>
 <!-- ENDIF -->

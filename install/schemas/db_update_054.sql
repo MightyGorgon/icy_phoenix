@@ -887,6 +887,14 @@ INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 
 INSERT INTO phpbb_acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 6, 0 FROM phpbb_users WHERE user_level = 1;
 ## AUTH SYSTEM - END
 
+UPDATE phpbb_cms_blocks SET active = 0 WHERE bposition IN ('hh', 'hl', 'hc', 'fc', 'fr', 'ff');
+
+
+
+########################################
+##              BUILD 071             ##
+########################################
+
 
 
 
@@ -897,7 +905,7 @@ INSERT INTO phpbb_acl_users (user_id, forum_id, auth_option_id, auth_role_id, au
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.17.70' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.18.71' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

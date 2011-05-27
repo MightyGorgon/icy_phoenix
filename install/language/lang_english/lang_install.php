@@ -17,7 +17,7 @@ $lang = array_merge($lang, array(
 	'ENCODING' => 'UTF-8',
 	'DIRECTION' => 'ltr',
 	'HEADER_LANG' => 'en-gb',
-	'HEADER_XML_LANG' => 'en-gb',
+	'HEADER_LANG_XML' => 'en-gb',
 	'LEFT' => 'left',
 	'RIGHT' => 'right',
 

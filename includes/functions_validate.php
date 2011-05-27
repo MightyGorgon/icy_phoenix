@@ -110,7 +110,7 @@ function validate_num($num, $optional = false, $min = 0, $max = 1E99)
 function validate_date($date_string, $optional = false)
 {
 	$date = explode('-', $date_string);
-	if ((empty($date) || sizeof($date) != 3) && $optional)
+	if ((empty($date) || (sizeof($date) != 3)) && $optional)
 	{
 		return false;
 	}

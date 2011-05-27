@@ -21,6 +21,7 @@
 	margin: 0px;
 	padding: 0px;
 }
+
 .chromestyle ul li a {
 	color: #000000;
 	padding: 4px;
@@ -46,7 +47,7 @@
 }
 
 .dropmenudiv {
-	position:absolute;
+	position: absolute;
 	top: 0;
 	border: 1px solid #cccccc;
 	font: normal 11px Verdana;

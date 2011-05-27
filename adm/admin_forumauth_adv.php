@@ -13,7 +13,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1200_Forums']['122_Permissions_Adv'] = $file;
+	$module['1200_Forums']['122_Permissions_Adv'] = $filename;
 	return;
 }
 

@@ -642,7 +642,8 @@ class bbcode
 				$params['src'] = $item['params']['param'];
 				$img_url = $params['src'];
 				$img_url_enc = urlencode(ip_utf8_decode($params['src']));
-				$params['alt'] = $content;
+				$path_parts = pathinfo($img_url);
+				$params['alt'] = (!empty($content) ? $content : ip_clean_string($path_parts['filename'], $lang['ENCODING'], true));
 			}
 			// [img src=blah alt=blah width=123][/img]
 			elseif(isset($item['params']['src']))
@@ -650,7 +651,8 @@ class bbcode
 				$params['src'] = $item['params']['src'];
 				$img_url = $params['src'];
 				$img_url_enc = urlencode(ip_utf8_decode($params['src']));
-				$params['alt'] = isset($item['params']['alt']) ? $item['params']['alt'] : $content;
+				$path_parts = pathinfo($img_url);
+				$params['alt'] = (isset($item['params']['alt']) ? $item['params']['alt'] : (!empty($content) ? $content : ip_clean_string($path_parts['filename'], $lang['ENCODING'], true)));
 				for($i = 0; $i < sizeof($extras); $i++)
 				{
 					if(!empty($item['params'][$extras[$i]]))
@@ -676,6 +678,8 @@ class bbcode
 				$params['src'] = $content;
 				$img_url = $params['src'];
 				$img_url_enc = urlencode(ip_utf8_decode($params['src']));
+				$path_parts = pathinfo($img_url);
+				$params['alt'] = (isset($item['params']['alt']) ? $item['params']['alt'] : (isset($params['title']) ? $params['title'] : ip_clean_string($path_parts['filename'], $lang['ENCODING'], true)));
 				// LIW - BEGIN
 				if (($config['liw_enabled'] == 1) && ($max_image_width > 0) && ($config['thumbnail_posts'] == 0))
 				{
@@ -691,7 +695,6 @@ class bbcode
 					}
 				}
 				// LIW - END
-				$params['alt'] = isset($item['params']['alt']) ? $item['params']['alt'] : (isset($params['title']) ? $params['title'] : 'Image');
 				for($i = 0; $i < sizeof($extras); $i++)
 				{
 					if(!empty($item['params'][$extras[$i]]))

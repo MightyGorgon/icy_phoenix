@@ -16,7 +16,7 @@
 	<td align="center">
 	<br />
 	{AVATAR_IMG}<br /><br /><span class="gensmall">
-	<input type="hidden" name="redirect" value="{U_PORTAL}" />
+	<input type="hidden" name="redirect" value="{U_PORTAL_NOSID}" />
 	{L_USERNAME}:<br />
 	<input class="post" type="text" name="username" size="15" />
 	<br />

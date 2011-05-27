@@ -8,6 +8,7 @@ CSS for blocks editor
 	padding: 3px;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 	padding-top: 30px;
 	min-height: 50px;
 	border: solid 1px #dde8ee;
@@ -194,6 +195,7 @@ Buttons
 	color: #333333;
 	border-radius: 6px;
 	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 	margin: 1px 4px 1px 0;
 	padding: 3px 6px;
 	font-size: 11px;
@@ -206,6 +208,19 @@ Buttons
 	border-color: #dd2222;
 	color: #dd2222;
 }
+
+/* TRANSITIONS - BEGIN */
+#forumtable .block-title-edit a, .cms-block-extra .buttons a, #forumtable a.cms-button-small {
+	transition-property: border-color, background-color, color;
+	transition-duration: 0.5s;
+	-webkit-transition-property: border-color, background-color, color;
+	-webkit-transition-duration: 0.5s;
+	-o-transition-property: border-color, background-color, color;
+	-o-transition-duration: 0.5s;
+	-moz-transition-property: border-color, background-color, color;
+	-moz-transition-duration: 0.5s;
+}
+/* TRANSITIONS - END */
 
 /*
 Parent block
@@ -258,6 +273,7 @@ Add block
 #forumtable div.add-form, div.cms-block-extra p.status, #forumtable div.move-all-form {
 	border-radius: 6px;
 	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 	border: solid 1px #dde8ee;
 	background-color: #f2f5f8;
 	margin: 0;

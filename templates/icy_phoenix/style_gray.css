@@ -157,8 +157,6 @@ hr {
 .forum-buttons2 a, .forum-buttons2 a:visited { color: #880000; font-weight: bold; text-decoration: none; }
 .forum-buttons2 a:hover, .forum-buttons2 a:active { color: #660066; font-weight: bold; text-decoration: none; }
 
-.header-search { padding: 5px; }
-
 /* footer */
 #copyright {
 	padding-left: 4px;
@@ -939,28 +937,6 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 }
 
 /* News Block */
-.forumline .news-header, .forumlinenb .news-header {
-	background: #c8c8c8 url('images/gray/bg_th_gray.gif');
-	border: solid 1px #dddddd;
-	border-right-color: #dddddd;
-	border-bottom-color: #dddddd;
-	padding: 0;
-	text-align: left;
-	vertical-align: top;
-	height: 27px;
-}
-
-.forumline .news-header span, .forumlinenb .news-header span {
-	background: url('images/gray/little_box.gif') top left no-repeat;
-	padding-left: 17px;
-	color: #444444;
-	display: block;
-	padding-top: 2px;
-	font-weight: bold;
-	font-size: 12px;
-	line-height: 1.5em;
-}
-
 .row-news-tickers b { color: #444444; }
 
 .copyright {
@@ -976,21 +952,6 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 	padding-bottom: 4px;*/
 	font-size: 9px;
 	color: #444444;
-}
-
-.activity-links {
-	color: #888888;
-	text-align: right;
-	background: #ffffff url('images/gray/bg_nav2.gif') top left repeat-x;
-	padding: 8px 30px 0px 10px;
-	font-size: 10px;
-	line-height: 1.4em;
-}
-
-.activity-links-left {
-	position: relative;
-	float: left;
-	text-align: left;
 }
 
 /* edit notes */

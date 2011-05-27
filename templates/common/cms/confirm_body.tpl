@@ -12,6 +12,8 @@
 		</form>
 	</td>
 </tr>
+<tr><td class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
+<tr><td class="cat" align="center">&nbsp;</td></tr>
 </table>
 
 <br clear="all" />

@@ -245,68 +245,16 @@ b.date-yesterday, .last-post em { color: #22cc33; font-weight: bold; font-style:
 }
 
 /* MG COLORS CLASSES */
-.foundercolor,
-a.foundercolor,
-a.foundercolor:link,
-a.foundercolor:active,
-a.foundercolor:visited { color: #ff5500; font-weight: bold; }
-
-a.foundercolor:hover { color: #cc3333; text-decoration: underline; }
-
-.admincolor,
-a.admincolor,
-a.admincolor:link,
-a.admincolor:active,
-a.admincolor:visited { color: #dd2222; font-weight: bold; }
-
-a.admincolor:hover { color: #cc3333; text-decoration: underline; }
-
-.modcolor,
-a.modcolor,
-a.modcolor:link,
-a.modcolor:active,
-a.modcolor:visited { color: #228844; font-weight: bold; }
-
-a.modcolor:hover { color: #cc3333; text-decoration: underline; }
-
-.usercolor,
-a.usercolor,
-a.usercolor:link,
-a.usercolor:active,
-a.usercolor:visited { color: #224488; font-weight: bold; }
-
-a.usercolor:hover { color: #cc3333; text-decoration: underline; }
-
-.topic_glo,
-a.topic_glo,
-a.topic_glo:link,
-a.topic_glo:active,
-a.topic_glo:visited { color: #ff5500; font-weight: bold; }
-
+.topic_glo, a.topic_glo, a.topic_glo:link, a.topic_glo:active, a.topic_glo:visited { color: #ff5500; font-weight: bold; }
 a.topic_glo:hover { color: #cc3333; text-decoration: underline; }
 
-.topic_ann,
-a.topic_ann,
-a.topic_ann:link,
-a.topic_ann:active,
-a.topic_ann:visited { color: #dd2222; font-weight: bold; }
-
+.topic_ann, a.topic_ann, a.topic_ann:link, a.topic_ann:active, a.topic_ann:visited { color: #dd2222; font-weight: bold; }
 a.topic_ann:hover { color: #cc3333; text-decoration: underline; }
 
-.topic_imp,
-a.topic_imp,
-a.topic_imp:link,
-a.topic_imp:active,
-a.topic_imp:visited { color: #228844; font-weight: bold; }
-
+.topic_imp, a.topic_imp, a.topic_imp:link, a.topic_imp:active, a.topic_imp:visited { color: #228844; font-weight: bold; }
 a.topic_imp:hover { color: #cc3333; text-decoration: underline; }
 
-.topic_nor,
-a.topic_nor,
-a.topic_nor:link,
-a.topic_nor:active,
-a.topic_nor:visited { color: #224488; font-weight: bold; }
-
+.topic_nor, a.topic_nor, a.topic_nor:link, a.topic_nor:active, a.topic_nor:visited { color: #224488; font-weight: bold; }
 a.topic_nor:hover { color: #cc3333; text-decoration: underline; }
 /* STYLE COLORS - END */
 

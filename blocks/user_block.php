@@ -59,6 +59,7 @@ if(!function_exists('cms_block_user_block'))
 		$s_last_visit = create_date($config['default_dateformat'], $user->data['user_lastvisit'], $config['board_timezone']);
 
 		$template->assign_vars(array(
+			'U_PORTAL_NOSID' => CMS_PAGE_HOME,
 			'AVATAR_IMG' => $avatar_img,
 			'U_NAME_LINK' => $name_link,
 			'LAST_VISIT_DATE' => sprintf($lang['You_last_visit'], $s_last_visit),

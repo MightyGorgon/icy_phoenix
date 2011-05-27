@@ -418,6 +418,11 @@ if (($cms_admin->mode == 'layouts_special') || ($cms_admin->mode == 'layouts'))
 			$cms_admin->update_layout();
 		}
 
+		if(isset($_GET['changes_saved']))
+		{
+			$template->assign_var('CMS_CHANGES_SAVED', true);
+		}
+
 		$template_to_parse = CMS_TPL . 'cms_layout_list_body.tpl';
 		$template->assign_var('CMS_PAGE_TITLE', $lang['CMS_PAGES']);
 
@@ -613,7 +618,7 @@ if ($cms_admin->mode == 'auth')
 			'ROW_CLASS' => $row_class,
 			'USERNAME' => $input,
 			'CMS_ROLES' => $cms_roles_select,
-			'BUTTON' => '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '"class="cms_button_lite" />',
+			'BUTTON' => '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="liteoption" />',
 			)
 		);
 	}
@@ -637,7 +642,7 @@ if ($cms_admin->mode == 'auth')
 			if (($cms_admin->action == 'editrole') && ($data['user_id'] == $cms_admin->user_id) && ($user->data['user_id'] != $cms_admin->user_id))
 			{
 				$cms_role = $class_form->build_select_box('role', $data['auth_role_id'], $cms_role_langs['ID'], $cms_role_langs['NAME']);
-				$button = '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="cms_button_lite" />';
+				$button = '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="liteoption" />';
 			}
 			else
 			{
@@ -650,8 +655,8 @@ if ($cms_admin->mode == 'auth')
 				}
 				else
 				{
-					$button = '<div class="cms_button_lite" onclick="window.location.href=\'' . $button_link_delete . '\'">' . strtoupper($lang['B_DELETE']) . '</div>';
-					$button .= '<div class="cms_button_lite" onclick="window.location.href=\'' . $button_link_edit . '\'">' . strtoupper($lang['B_EDIT']) . '</div>';
+					$button = '<a class="cms-button-small" onclick="window.location.href=\'' . $button_link_edit . '\'" href="javascript:void(0);">' . strtoupper($lang['B_EDIT']) . '</a>';
+					$button .= '<a class="cms-button-small" onclick="window.location.href=\'' . $button_link_delete . '\'" href="javascript:void(0);">' . strtoupper($lang['B_DELETE']) . '</a>';
 				}
 			}
 
@@ -675,7 +680,7 @@ if ($cms_admin->mode == 'auth')
 
 	if ($cms_admin->action == 'add')
 	{
-		$button = '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="cms_button_lite" />';
+		$button = '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="liteoption" />';
 		$input = '<input type="text" name="username" id="username" maxlength="255" size="25" class="post" />';
 		$input .= '<img src="' . $images['cms_icon_search'] . '" alt="' . $lang['Find_username'] . '" title="' . $lang['Find_username'] . '" style="cursor: pointer; vertical-align: middle;" onclick="window.open(\'' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser') . '\', \'_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
 
@@ -703,7 +708,7 @@ if ($cms_admin->mode == 'auth')
 	$result = $db->sql_query($sql);
 	while($row = $db->sql_fetchrow($result))
 	{
-		$user_auth_array[$row['user_id']][$row['auth_option_id']] =	$row['auth_setting'];
+		$user_auth_array[$row['user_id']][$row['auth_option_id']] = $row['auth_setting'];
 	}
 	$db->sql_freeresult($result);
 
@@ -714,12 +719,12 @@ if ($cms_admin->mode == 'auth')
 			$row_class = ($row_class == $theme['td_class1']) ? $theme['td_class2'] : $theme['td_class1'];
 			if(($cms_admin->action == 'edit') && ($cms_admin->user_id == $id) && ($user->data['user_id'] != $cms_admin->user_id))
 			{
-				$button =  '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="cms_button_lite" />';
+				$button =  '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="liteoption" />';
 			}
 			else
 			{
 				$button_link = append_sid($cms_admin->root . '?mode=auth&amp;action=edit&amp;user_id=' . $id);
-				$button = '<div class="cms_button_lite" onclick="window.location.href=\'' . $button_link . '\'">' . strtoupper($lang['B_EDIT']) . '</div>';
+				$button = '<a class="cms-button-small" onclick="window.location.href=\'' . $button_link . '\'" href="javascript:void(0);">' . strtoupper($lang['B_EDIT']) . '</a>';
 			}
 
 			$template->assign_block_vars('users', array(

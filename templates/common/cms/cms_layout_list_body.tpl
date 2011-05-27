@@ -2,20 +2,18 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_cms.png" alt="{L_CMS_TITLE}" title="{L_CMS_TITLE}" /></td>
-	<td class="row1" valign="top"><h1>{L_LAYOUT_TITLE}</h1><span class="genmed">{L_LAYOUT_TEXT}</span></td>
+	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_cms.png" alt="{L_CMS_TITLE}" title="{L_CMS_TITLE}" /></td>
+	<td class="row1 c-r-r" valign="top"><h1>{L_LAYOUT_TITLE}</h1><span class="genmed">{L_LAYOUT_TEXT}</span></td>
 </tr>
 </table>
 
 <!-- IF CMS_CHANGES_SAVED -->
 <script type="text/javascript">
 // <![CDATA[
-window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);
+setTimeout(function() { $('#box-updated').fadeOut(1000); }, 3000);
 // ]]>
 </script>
-<div id="box-updated" class="row-center" style=" position: fixed; top: 0px; right: 0px; z-index: 1; background: none; border: none; width: 300px; padding: 3px;">
-	<div id="result-box" style="height: 16px; border: solid 1px green; background: #00ff00;"><span class="text_green">{L_CMS_CHANGES_SAVED}</span></div>
-</div>
+<div id="box-updated" class="row-center" style="position: fixed; top: 10px; right: 20px; z-index: 1; background: none; border: none; height: 26px; width: 300px; padding: 3px;"><div id="result-box" class="rmbox rmb-green"><p class="rmb-center">{L_CMS_CHANGES_SAVED}</p></div></div>
 <!-- ENDIF -->
 
 <!-- BEGIN layout -->
@@ -28,7 +26,7 @@ window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);
 	<th>{L_CMS_FILENAME}</th>
 	<!-- IF not S_LAYOUT_SPECIAL --><th>{L_CMS_TEMPLATE}</th><!-- ENDIF -->
 	<th style="width: 120px;" nowrap="nowrap">{L_CMS_PERMISSIONS}</th>
-	<th style="width: 95px;" nowrap="nowrap">{L_CMS_GLOBAL_BLOCKS}</th>
+	<!-- <th style="width: 95px;" nowrap="nowrap">{L_CMS_GLOBAL_BLOCKS}</th> -->
 	<th style="width: 90px;" nowrap="nowrap">{L_CMS_BREADCRUMBS}</th>
 	<th style="width: 70px;" nowrap="nowrap">{L_CMS_BLOCKS}</th>
 </tr>
@@ -42,7 +40,7 @@ window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><!-- IF layout.l_row.LAYOUT_FILENAME -->{layout.l_row.LAYOUT_FILENAME}<!-- ELSE -->&nbsp;<!-- ENDIF --></td>
 	<!-- IF not S_LAYOUT_SPECIAL --><td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">{layout.l_row.LAYOUT_TEMPLATE}</td><!-- ENDIF -->
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">{layout.l_row.PAGE_AUTH}</td>
-	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="layout_gb[]" value="{layout.l_row.LAYOUT_ID}"{layout.l_row.GB_CHECKED} /></td>
+	<!-- <td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="layout_gb[]" value="{layout.l_row.LAYOUT_ID}"{layout.l_row.GB_CHECKED} /></td> -->
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;"><input type="checkbox" name="layout_bc[]" value="{layout.l_row.LAYOUT_ID}"{layout.l_row.BC_CHECKED} /></td>
 	<td class="{layout.l_row.ROW_CLASS} row-center" style="background: none;">[&nbsp;{layout.l_row.LAYOUT_BLOCKS}&nbsp;]</td>
 </tr>

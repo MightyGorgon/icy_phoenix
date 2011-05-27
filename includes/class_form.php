@@ -88,8 +88,8 @@ class class_form
 				switch ($properties['type'])
 				{
 					case 'DATE_INPUT_JQUI':
-						$jquery_ui = '<script type="text/javascript">$(function() { $.datepicker.setDefaults( $.datepicker.regional["' . $lang['HEADER_JQUERY_LANG'] . '"] ); $( "#' . $name . '" ).datepicker({ dateFormat: "yy/mm/dd", changeMonth: true, changeYear: true }); });</script>';
-						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="45" class="post" value="' . $default . '" />';
+						$jquery_ui = '<script type="text/javascript">$(function() { $.datepicker.setDefaults( $.datepicker.regional["' . $lang['HEADER_LANG_JQUERY'] . '"] ); $( "#' . $name . '" ).datepicker({ dateFormat: "' . $lang['DATE_FORMAT_DATE_JQUI_JQ'] . '", changeMonth: true, changeYear: true }); });</script>';
+						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="12" size="20" readonly="readonly" class="post" value="' . create_date($lang['DATE_FORMAT_DATE_JQUI_PHP'], $default, $config['board_timezone']) . '" />';
 						break;
 					case 'DATE_INPUT':
 						$input = $select_date;
@@ -335,18 +335,28 @@ class class_form
 	*/
 	function create_inputs_array(&$table_fields, &$inputs_array, &$current_time, &$item_id, $mode, $action)
 	{
+		global $lang;
+
 		foreach ($table_fields as $k => $v)
 		{
-			if (($v['type'] != 'HIDDEN') && isset($v['is_time']) && $v['is_time'])
+			if (($v['type'] != 'HIDDEN') && ((isset($v['is_time']) && $v['is_time']) || (isset($v['is_date']) && $v['is_date'])))
 			{
-				$date_time_array = array('year', 'month', 'day', 'hour', 'minute', 'second');
-				$input_time = (!empty($v['default']) ? $v['default'] : $current_time);
-				$tf = $this->explode_unix_time($input_time);
-				$var_fragment = array();
-				foreach ($date_time_array as $time_fragment)
+				if (in_array($v['type'], array('DATE_INPUT_JQUI')))
 				{
-					$var_name = $k . '_' . $time_fragment;
-					$var_fragment[$time_fragment] = request_var($var_name, $tf[$time_fragment]);
+					$inputs_array[$k] = request_var($k, $v['default']);
+					$var_fragment = strutime($inputs_array[$k], $lang['DATE_FORMAT_DATE_JQUI_PHP']);
+				}
+				else
+				{
+					$date_time_array = array('year', 'month', 'day', 'hour', 'minute', 'second');
+					$input_time = (!empty($v['default']) ? $v['default'] : $current_time);
+					$tf = $this->explode_unix_time($input_time);
+					$var_fragment = array();
+					foreach ($date_time_array as $time_fragment)
+					{
+						$var_name = $k . '_' . $time_fragment;
+						$var_fragment[$time_fragment] = request_var($var_name, $tf[$time_fragment]);
+					}
 				}
 				$inputs_array[$k] = $this->implode_unix_time($var_fragment['year'], $var_fragment['month'], $var_fragment['day'], $var_fragment['hour'], $var_fragment['minute'], $var_fragment['second']);
 			}
@@ -508,6 +518,11 @@ class class_form
 					$value = create_date_ip($config['default_dateformat'], $inputs_array[$k], $config['board_timezone']);
 				}
 
+				if ($v['is_date'])
+				{
+					$value = create_date($lang['DATE_FORMAT_DATE_JQUI_PHP'], $inputs_array[$k], $config['board_timezone']);
+				}
+
 				// Create user link (with user_id)
 				if ($v['is_user_id'])
 				{
@@ -644,6 +659,17 @@ class class_form
 		$target_username = empty($target_userdata) ? '' : $target_userdata['username'];
 
 		return $target_username;
+	}
+
+	/**
+	* Search for a field in the DB
+	*/
+	function field_search($name, $default, $search_url, $search_mode)
+	{
+		$input = '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="45" readonly="readonly" class="post" value="' . $default . '" />';
+		$input .= '<input type="submit" name="' . $name . '_search_button" value="' . $lang['Find'] . '" class="mainoption" onclick="window.open(\'' . append_sid($search_url . '?mode=' . $search_mode . '&amp;target_form_name=input_form&amp;target_element_name=' . $name) . '\', \'_field_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
+
+		return $input;
 	}
 
 	/*

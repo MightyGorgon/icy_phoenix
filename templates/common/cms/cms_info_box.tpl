@@ -2,8 +2,10 @@
 
 <script type="text/javascript">
 //<![CDATA[
-var box_begin = '<div id="result-box" class="text_green_cont"><span class="text_green">';
-var box_end = '<\/span><\/div>';
+//var box_begin = '<div id="result-box" class="text_green_cont"><span class="text_green">';
+//var box_end = '<\/span><\/div>';
+var box_begin = '<div id="result-box" class="rmbox rmb-green"><p class="rmb-center">';
+var box_end = '<\/p><\/div>';
 //]]>
 </script>
 

@@ -827,9 +827,9 @@ class cms_admin
 			'urls' => $this->ajax_urls(),
 			'edit' => append_sid($this->root . '?mode=block_settings&action=edit&bs_id={ID}', true),
 			'post' => array(
-			'url' => append_sid($this->root),
-			'mode' => $this->mode,
-			$this->id_var_name => $this->id_var_value
+				'url' => append_sid($this->root),
+				'mode' => $this->mode,
+				$this->id_var_name => $this->id_var_value
 			)
 		);
 
@@ -2131,7 +2131,7 @@ class cms_admin
 			$sql = "UPDATE " . $this->table_name . " SET view = " . $view_value . ", global_blocks = " . $gb_value . ", page_nav = " . $bc_value . " WHERE " . $this->field_name . " = " . $l_rows[$i][$this->field_name];
 			$result = $db->sql_query($sql);
 		}
-		redirect(append_sid($this->root . '?mode=' . $this->mode_layout_name . $action_append));
+		redirect(append_sid($this->root . '?mode=' . $this->mode_layout_name . $action_append . '&amp;changes_saved=true'));
 
 		return true;
 	}

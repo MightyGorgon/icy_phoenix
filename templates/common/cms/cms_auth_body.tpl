@@ -2,73 +2,80 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_users_auth.png" alt="{L_CMS_AUTH}" title="{L_CMS_AUTH}" /></td>
-	<td class="row1" valign="top"><h1>{L_CMS_AUTH}</h1><span class="genmed">{L_CMS_AUTH_TEXT}</span></td>
+	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_users_auth.png" alt="{L_CMS_AUTH}" title="{L_CMS_AUTH}" /></td>
+	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_AUTH}</h1><span class="genmed">{L_CMS_AUTH_TEXT}</span></td>
 </tr>
 </table>
 
 <form method="post" name="post" action="{S_AUTH_ACTION}">
-<table width="100%" cellspacing="5" cellpadding="0">
-	<tr>
-		<td valign="top">
-		<div class="cms_auth">
-			<div class="cms_button" onclick="window.location.href='{U_AUTH_ADD}'">{L_CMS_AUTH_ADD}</div>
-			<div class="box_title">{L_CMS_AUTH_XP}</div>
-			<div style="clear: both;"></div>
+<table width="100%" cellspacing="0" cellpadding="0">
+<tr>
+	<td width="50%" valign="top" style="width: 50%; vertical-align: top; padding-right: 5px;">
+		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+		<tr><th colspan="2">{L_CMS_AUTH_XP}</th></tr>
+		<tr>
 			<!-- IF NO_AUTH -->
-			{L_CMS_NO_AUTH}
+			<td class="row1 row-center" colspan="2">{L_CMS_NO_AUTH}</td>
 			<!-- ELSE -->
-			<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-			<tr>
-				<th width="200">{L_CMS_USER}</th>
-				<th>{L_CMS_AUTH}</th>
-			</tr>
-			<!-- BEGIN users -->
-			<tr class="{users.ROW_CLASS} {users.ROW_CLASS}h" style="background-image: none;">
-				<td class="{users.ROW_CLASS} row-center" style="background: none;"><b>{users.USERNAME}</b></td>
-				<td class="{users.ROW_CLASS}" style="background: none;">
-					{users.BUTTON}
-					<!-- BEGIN auth -->
-					<div class="{users.auth.AUTH_CLASS}">{users.auth.AUTH_CHECKBOX}&nbsp;{users.auth.AUTH_NAME}</div>
-					<!-- END auth -->
-				</td>
-			</tr>
-			<!-- END users -->
-			</table>
+			<td class="row1 row-center">
+				<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+				<tr>
+					<th width="200">{L_CMS_USER}</th>
+					<th>{L_CMS_AUTH}</th>
+				</tr>
+				<!-- BEGIN users -->
+				<tr class="{users.ROW_CLASS} {users.ROW_CLASS}h">
+					<td class="{users.ROW_CLASS} row-center"><b>{users.USERNAME}</b><br /><br />{users.BUTTON}</td>
+					<td class="{users.ROW_CLASS}">
+						<!-- BEGIN auth -->
+						<div class="{users.auth.AUTH_CLASS}">{users.auth.AUTH_CHECKBOX}&nbsp;{users.auth.AUTH_NAME}</div>
+						<!-- END auth -->
+					</td>
+				</tr>
+				<!-- END users -->
+				</table>
+			</td>
 			<!-- ENDIF -->
-		</div>
-		</td>
-		<td width="50%" valign="top">
-		<div class="cms_auth">
-			<div class="cms_button" onclick="window.location.href='{U_AUTH_ADDROLE}'">{L_CMS_AUTH_ADD}</div>
-			<div class="box_title">{L_CMS_ROLES}</div>
-			<div style="clear:both"></div>
+		</tr>
+		<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
+		<tr><td class="cat" colspan="2" align="center"><a class="cms-button-small" onclick="window.location.href='{U_AUTH_ADD}'" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
+		</table>
+	</td>
+	<td width="50%" valign="top" style="width: 50%; vertical-align: top; padding-left: 5px;">
+		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+		<tr><th colspan="2">{L_CMS_ROLES}</th></tr>
+		<tr>
 			<!-- IF NO_ROLE -->
-			{L_CMS_NO_ROLE}<hr/>
+			<td class="row1 row-center" colspan="2">{L_CMS_NO_AUTH}</td>
 			<!-- ELSE -->
-			<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-			<tr>
-				<th width="200">{L_CMS_USER}</th>
-				<th>{L_CMS_ROLE}</th>
-			</tr>
-			<!-- BEGIN roles -->
-			<tr class="{roles.ROW_CLASS} {roles.ROW_CLASS}h" style="background-image: none;">
-				<td class="{roles.ROW_CLASS} row-center" style="background: none;"><b>{roles.USERNAME}</b></td>
-				<td class="{roles.ROW_CLASS} row-center" style="background: none;">
-					<div style="float: right;">{roles.BUTTON}</div>
-					{roles.CMS_ROLES}
-				</td>
-			</tr>
-			<!-- END roles -->
-			</table>
+			<td class="row1 row-center">
+				<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+				<tr>
+					<th width="200">{L_CMS_USER}</th>
+					<th>{L_CMS_ROLE}</th>
+				</tr>
+				<!-- BEGIN roles -->
+				<tr class="{roles.ROW_CLASS} {roles.ROW_CLASS}h">
+					<td class="{roles.ROW_CLASS} row-center"><b>{roles.USERNAME}</b></td>
+					<td class="{roles.ROW_CLASS} row-center">
+						<div style="float: right;">{roles.BUTTON}</div>
+						{roles.CMS_ROLES}
+					</td>
+				</tr>
+				<!-- END roles -->
+				</table>
+				<!-- BEGIN roles_desc -->
+				<div style="margin-top: 3px;"><b>{roles_desc.ROLE_NAME}</b></div>
+				<div class="gensmall">{roles_desc.ROLE_DESC}</div>
+				<!-- END roles_desc -->
+			</td>
 			<!-- ENDIF -->
-			<!-- BEGIN roles_desc -->
-			<div style="margin-top: 3px;"><b>{roles_desc.ROLE_NAME}</b></div>
-			<div class="gensmall">{roles_desc.ROLE_DESC}</div>
-			<!-- END roles_desc -->
-		</div>
-		</td>
-	</tr>
+		</tr>
+		<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
+		<tr><td class="cat" colspan="2" align="center"><a class="cms-button-small" onclick="window.location.href='{U_AUTH_ADDROLE}'" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
+		</table>
+	</td>
+</tr>
 </table>
 {S_HIDDEN_FIELDS}
 </form>

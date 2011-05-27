@@ -1788,7 +1788,7 @@ function redirect($url, $return = false)
 		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 		$lang_dir = !empty($lang['DIRECTION']) ? $lang['DIRECTION'] : 'ltr';
 		$header_lang = !empty($lang['HEADER_LANG']) ? $lang['HEADER_LANG'] : 'en-gb';
-		$xml_header_lang = !empty($lang['HEADER_XML_LANG']) ? $lang['HEADER_XML_LANG'] : 'en-gb';
+		$xml_header_lang = !empty($lang['HEADER_LANG_XML']) ? $lang['HEADER_LANG_XML'] : 'en-gb';
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
 		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang_dir . '" lang="' . $header_lang . '" xml:lang="' . $xml_header_lang . '">';
 		echo '<head>';
@@ -2327,6 +2327,39 @@ function dateserial($year, $month, $day, $hour, $minute, $timezone = 'UTC')
 	return $date_serial;
 }
 */
+
+/*
+* strutime function which should convert some time formats into fragments of time
+* (basic idea taken from here: http://it.php.net/manual/en/function.strptime.php)
+*/
+function strutime($date, $format)
+{
+	$masks = array(
+		'Y' => '(?P<Y>[0-9]{4})',
+		'm' => '(?P<m>[0-9]{2})',
+		'd' => '(?P<d>[0-9]{2})',
+		'H' => '(?P<H>[0-9]{2})',
+		'M' => '(?P<M>[0-9]{2})',
+		'S' => '(?P<S>[0-9]{2})',
+	);
+
+	$rexep = "#" . strtr(preg_quote($format), $masks) . "#";
+	if(!preg_match($rexep, $date, $out))
+	{
+		return false;
+	}
+
+	$ret = array(
+		'year' => !empty($out['Y']) ? (int) $out['Y'] : 0,
+		'month' => !empty($out['m']) ? (int) (int) $out['m'] : 0,
+		'day' => !empty($out['d']) ? (int) (int) $out['d'] : 0,
+		'hour' => !empty($out['H']) ? (int) (int) $out['H'] : 0,
+		'minute' => !empty($out['M']) ? (int) (int) $out['M'] : 0,
+		'second' => !empty($out['S']) ? (int) (int) $out['S'] : 0,
+	);
+
+	return $ret;
+}
 
 /*
 * Get DST
@@ -3714,7 +3747,7 @@ function page_header($title = '', $parse_template = false)
 	$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 	$lang_dir = !empty($lang['DIRECTION']) ? $lang['DIRECTION'] : 'ltr';
 	$header_lang = !empty($lang['HEADER_LANG']) ? $lang['HEADER_LANG'] : 'en-gb';
-	$xml_header_lang = !empty($lang['HEADER_XML_LANG']) ? $lang['HEADER_XML_LANG'] : 'en-gb';
+	$xml_header_lang = !empty($lang['HEADER_LANG_XML']) ? $lang['HEADER_LANG_XML'] : 'en-gb';
 	$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n";
 	//$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' . "\n";
 	$doctype_html .= '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang_dir . '" lang="' . $header_lang . '" xml:lang="' . $xml_header_lang . '">' . "\n";

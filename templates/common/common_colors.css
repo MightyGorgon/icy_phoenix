@@ -1,18 +1,21 @@
-/* MG - BEGIN */
-.text_cont_center {
-	display: block;
-	clear: both;
-	text-align: center;
-	vertical-align: middle;
-	margin: 0 auto;
-	/*margin: 50px;*/
-}
+/* ROUNDED MSG BOX - BEGIN */
+/* rmbox => rounded message box */
+div.rmbox { border-radius: 3px 3px 3px 3px; -moz-border-radius: 3px 3px 3px 3px; -webkit-border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; margin: 5px 15px 2px; padding: 0 0.6em; }
+div.rmbox p { font-size: 12px; line-height: 140%; margin: 0.5em 0; padding: 2px; }
+div.rmbox p.rmb-center { font-weight: bold; text-align: center !important; vertical-align: middle; }
 
-.text_blue_cont, .text_gray_cont, .text_green_cont, .text_orange_cont, .text_red_cont, .text_yellow_cont {
-	border-style: solid;
-	border-width: 1px;
-	padding: 10px;
-}
+div.rmb-blue { background-color: #e8eeff; border-color: #0000cc; }
+div.rmb-gray { background-color: #eeeeee; border-color: #999999; }
+div.rmb-green { background-color: #e8ffee; border-color: #00cc00; }
+div.rmb-orange { background-color: #ffaa55; border-color: #ff5500; }
+div.rmb-red { background-color: #ffeee8; border-color: #cc0000; }
+div.rmb-yellow { background-color: #ffffdd; border-color: #e8dd55; }
+/* ROUNDED MSG BOX - END */
+
+/* TEXT BOX - BEGIN */
+.text_cont_center { display: block; clear: both; text-align: center; vertical-align: middle; margin: 0 auto; /*margin: 50px;*/ }
+
+.text_blue_cont, .text_gray_cont, .text_green_cont, .text_orange_cont, .text_red_cont, .text_yellow_cont { border-style: solid; border-width: 1px; padding: 10px; }
 
 .text_blue_cont { background-color: #aaccee; border-color: #557799; }
 .text_gray_cont { background-color: #dddddd; border-color: #888888; }
@@ -21,50 +24,27 @@
 .text_red_cont { background-color: #ff7777; border-color: #dd2222; }
 .text_yellow_cont { background-color: #ffffaa; border-color: #ff7777; }
 
-.text_blue,
-a.text_blue,
-a.text_blue:link,
-a.text_blue:active,
-a.text_blue:visited { color: #557799; font-weight: bold; }
+.text_blue, a.text_blue, a.text_blue:link, a.text_blue:active, a.text_blue:visited { color: #557799; font-weight: bold; }
 a.text_blue:hover { color: #557799; text-decoration: underline; }
 
-.text_gray,
-a.text_gray,
-a.text_gray:link,
-a.text_gray:active,
-a.text_gray:visited { color: #888888; font-weight: bold; }
+.text_gray, a.text_gray, a.text_gray:link, a.text_gray:active, a.text_gray:visited { color: #888888; font-weight: bold; }
 a.text_gray:hover { color: #888888; text-decoration: underline; }
 
-.text_green,
-a.text_green,
-a.text_green:link,
-a.text_green:active,
-a.text_green:visited { color: #228822; font-weight: bold; }
+.text_green, a.text_green, a.text_green:link, a.text_green:active, a.text_green:visited { color: #228822; font-weight: bold; }
 a.text_green:hover { color: #228822; text-decoration: underline; }
 
-.text_orange,
-a.text_orange,
-a.text_orange:link,
-a.text_orange:active,
-a.text_orange:visited { color: #ff5500; font-weight: bold; }
+.text_orange, a.text_orange, a.text_orange:link, a.text_orange:active, a.text_orange:visited { color: #ff5500; font-weight: bold; }
 a.text_orange:hover { color: #ff5500; text-decoration: underline; }
 
-.text_red,
-a.text_red,
-a.text_red:link,
-a.text_red:active,
-a.text_red:visited { color: #dd2222; font-weight: bold; }
+.text_red, a.text_red, a.text_red:link, a.text_red:active, a.text_red:visited { color: #dd2222; font-weight: bold; }
 a.text_red:hover { color: #dd2222; text-decoration: underline; }
 
-.text_yellow,
-a.text_yellow,
-a.text_yellow:link,
-a.text_yellow:active,
-a.text_yellow:visited { color: #ffffaa; font-weight: bold; }
+.text_yellow, a.text_yellow, a.text_yellow:link, a.text_yellow:active, a.text_yellow:visited { color: #ffffaa; font-weight: bold; }
 a.text_yellow:hover { color: #ffffaa; text-decoration: underline; }
+/* TEXT BOX - END */
 
+/* POST-IT - BEGIN */
 .post-it-row1 { background: #ffffff url('images/bg_post_it_01.gif') repeat-x top !important; }
 .post-it-row2 { background: #ffffff url('images/bg_post_it_02.gif') repeat-x top !important; }
 .post-it-row3 { background: #ffffff url('images/bg_post_it_03.gif') repeat-x top !important; }
-/* MG - END */
-
+/* POST-IT - END */

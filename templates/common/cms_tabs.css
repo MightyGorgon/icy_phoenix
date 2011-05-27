@@ -1,5 +1,4 @@
-/* CP tabbed menu
-----------------------------------------*/
+/* TABBED MENU - BEGIN */
 #tabs {
 	line-height: normal;
 	/*margin: 20px 0 -1px 7px;*/
@@ -83,7 +82,9 @@
 	background-position: 100% 0;
 }
 
-/* Mini tabbed menu used in MCP
+/* TABBED MENU - END */
+
+/* MINI TABBED MENU - BEGIN */
 ----------------------------------------*/
 #minitabs {
 	line-height: normal;
@@ -120,4 +121,5 @@
 #minitabs li.activetab a, #minitabs li.activetab a:hover {
 	color: #333333;
 }
+/* MINI TABBED MENU - END */
 

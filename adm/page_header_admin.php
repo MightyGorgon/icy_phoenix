@@ -106,7 +106,11 @@ $template->assign_vars(array(
 	'SITENAME' => $config['sitename'],
 	'PAGE_TITLE' => $meta_content['page_title'],
 
+	'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
+	'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
+
 	// AJAX Features - BEGIN
+	'S_AJAX_FEATURES' => (!empty($config['ajax_features']) ? true : false),
 	'S_AJAX_BLUR' => $ajax_blur,
 	'S_AJAX_USER_CHECK' => $ajax_user_check,
 	// AJAX Features - END
