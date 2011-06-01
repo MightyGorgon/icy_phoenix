@@ -116,10 +116,10 @@ switch ($mode)
 			AJAX_message_die($result_ar);
 			exit;
 		}
-		if (($cat > 0) && !empty($_POST['list_' . $cat]))
+		if (($cat > 0) && !empty($_POST['item']))
 		{
 			$item_order = 0;
-			foreach($_POST['list_' . $cat] as $menu_item_id)
+			foreach($_POST['item'] as $menu_item_id)
 			{
 				$item_order++;
 				$sql = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $menu_item_id . "'";
