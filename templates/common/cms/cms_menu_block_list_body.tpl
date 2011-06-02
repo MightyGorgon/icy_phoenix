@@ -79,13 +79,36 @@
 
 <script type="text/javascript">
 //<![CDATA[
-<!-- BEGIN cat_row -->
-function update_order_{cat_row.CAT_CB_ID}()
+var sort_info_box = $('sort-info-box'),
+	box_updated = '<div id="result-box" style="height: 16px; border: solid 1px #228822; background: #77dd99;"><span class="text_green">{L_MENU_UPDATED}<\/span><\/span>',
+	lists = {},
+	page_url = ip_root_path;
+page_url += 'cms_db_update.';
+page_url += php_ext;
+
+function update_order(cat)
 {
-	var request_options = {method: 'post', parameters: 'mode=update_menu_order&cat=' + {cat_row.CAT_CB_ID} + '&' + Sortable.serialize("list_{cat_row.CAT_CB_ID}") + '&sid=' + S_SID};
-	new Ajax.Request(ip_root_path + 'cms_db_update.' + php_ext, request_options);
+	var request_options = 'mode=update_menu_order&cat=';
+	request_options += cat;
+	request_options += '&';
+	request_options += lists[cat].sortable('serialize');
+	request_options += '&sid=';
+	request_options += S_SID;
+	$.post(page_url, request_options);
 }
-Sortable.create('list_{cat_row.CAT_CB_ID}', {handle: 'icon-edit-move', onUpdate: function(){update_order_{cat_row.CAT_CB_ID}(); $('sort-info-box').show(); $('sort-info-box').innerHTML = box_begin + '{L_MENU_UPDATED}' + box_end; new Effect.Highlight('result-box', {duration: 0.5}); window.setTimeout("new Effect.Fade('sort-info-box', {duration: 0.5})", 2500);}});
+
+<!-- BEGIN cat_row -->
+lists[{cat_row.CAT_CB_ID}] = $('#list_{cat_row.CAT_CB_ID}');
+
+lists[{cat_row.CAT_CB_ID}].sortable(
+{
+	update: function()
+	{
+		update_order({cat_row.CAT_CB_ID});
+		sort_info_box.show().html(box_updated);
+		setTimeout({ sort_info_box.html('').hide(); }, 2500);
+	}
+}).disableSelection();
 <!-- END cat_row -->
 //]]>
 </script>
