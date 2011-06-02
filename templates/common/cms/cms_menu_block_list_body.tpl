@@ -86,10 +86,6 @@ var sort_info_box = $('sort-info-box'),
 page_url += 'cms_db_update.';
 page_url += php_ext;
 
-
-<!-- BEGIN cat_row -->
-lists[{cat_row.CAT_CB_ID}] = $('#list_{cat_row.CAT_CB_ID}');
-
 function update_order(cat)
 {
 	var request_options = 'mode=update_menu_order&cat=';
@@ -100,6 +96,10 @@ function update_order(cat)
 	request_options += S_SID;
 	$.post(page_url, request_options);
 }
+
+<!-- BEGIN cat_row -->
+lists[{cat_row.CAT_CB_ID}] = $('#list_{cat_row.CAT_CB_ID}');
+
 lists[{cat_row.CAT_CB_ID}].sortable(
 {
 	update: function()
