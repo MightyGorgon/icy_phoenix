@@ -187,6 +187,13 @@ for ($i = 0; $i < sizeof($cron_queue); $i++)
 				$skip_this = true;
 			}
 		break;
+
+		case 'birthdays':
+			if (empty($config['cron_birthdays_interval']))
+			{
+				$skip_this = true;
+			}
+		break;
 	}
 
 	if ($skip_this)

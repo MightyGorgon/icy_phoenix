@@ -76,7 +76,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 
 if (($config['url_rw'] || $config['url_rw_guests']) && !function_exists('make_url_friendly'))
 {
-	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
 if (empty($bbcode) || !class_exists('bbcode'))

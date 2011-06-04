@@ -59,14 +59,13 @@
 					<td class="{roles.ROW_CLASS} row-center"><b>{roles.USERNAME}</b></td>
 					<td class="{roles.ROW_CLASS} row-center">
 						<div style="float: right;">{roles.BUTTON}</div>
-						{roles.CMS_ROLES}
+						<b>{roles.CMS_ROLES}</b>
 					</td>
 				</tr>
 				<!-- END roles -->
 				</table>
 				<!-- BEGIN roles_desc -->
-				<div style="margin-top: 3px;"><b>{roles_desc.ROLE_NAME}</b></div>
-				<div class="gensmall">{roles_desc.ROLE_DESC}</div>
+				<div style="margin-top: 3px; text-align: left;"><b>{roles_desc.ROLE_NAME}</b>: <span class="gensmall">{roles_desc.ROLE_DESC}</span></div>
 				<!-- END roles_desc -->
 			</td>
 			<!-- ENDIF -->

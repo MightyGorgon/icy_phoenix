@@ -36,6 +36,12 @@ function process_digests()
 	global $db, $cache, $config, $user, $lang, $table_prefix;
 
 	// Digests - BEGIN
+	if (!defined('DIGEST_SITE_URL'))
+	{
+		$digest_server_url = create_server_url();
+		define('DIGEST_SITE_URL', $digest_server_url);
+	}
+
 	if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0))
 	{
 		// MG PHP Cron Emulation For Digests - BEGIN

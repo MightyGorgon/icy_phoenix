@@ -31,7 +31,7 @@ $user->session_begin();
 $user->setup();
 // End session management
 
-$js_temp = array('js/cms.js', 'js/prototype.js', 'scriptaculous/scriptaculous.js', 'scriptaculous/unittest.js');
+$js_temp = array('js/cms.js');
 $template->js_include = array_merge($template->js_include, $js_temp);
 unset($js_temp);
 
