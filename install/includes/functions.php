@@ -1185,7 +1185,8 @@ function remove_common($mode, $fraction, $word_id_list = array())
 	global $db;
 
 	$sql = "SELECT COUNT(post_id) AS total_posts
-		FROM " . POSTS_TABLE;
+		FROM " . POSTS_TABLE . "
+		WHERE deleted = 0";
 	if ( !($result = $db->sql_query($sql)) )
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain post count', '', __LINE__, __FILE__, $sql);
@@ -1411,7 +1412,7 @@ function sync($type, $id = false)
 			case 'forum':
 			$sql = "SELECT MAX(post_id) AS last_post, COUNT(post_id) AS total
 				FROM " . POSTS_TABLE . "
-				WHERE forum_id = $id";
+				WHERE forum_id = $id AND deleted = 0";
 			if ( !($result = $db->sql_query($sql)) )
 			{
 				message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
@@ -1450,7 +1451,7 @@ function sync($type, $id = false)
 		case 'topic':
 			$sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
 				FROM " . POSTS_TABLE . "
-				WHERE topic_id = $id";
+				WHERE topic_id = $id AND deleted = 0";
 			if ( !($result = $db->sql_query($sql)) )
 			{
 				message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);

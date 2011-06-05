@@ -74,12 +74,15 @@ class class_mcp_topic
 		}
 		$db->sql_freeresult($result);
 
-		$sql = "DELETE FROM " . TOPICS_TABLE . "
+		$sql = "UPDATE " . TOPICS_TABLE . "
+			SET deleted = 1, deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $user->data['username'] . "'
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
 			OR " . $db->sql_in_set('topic_moved_id', $topics_ids);
+		*/
 		$db->sql_transaction('begin');
 		$db->sql_query($sql);
 
+		/*
 		$sql = "DELETE FROM " . THANKS_TABLE . "
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
@@ -95,6 +98,7 @@ class class_mcp_topic
 		$sql = "DELETE FROM " . REGISTRATION_DESC_TABLE . "
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
+		*/
 
 		// TAGS - BEGIN
 		@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
@@ -125,6 +129,14 @@ class class_mcp_topic
 		$db->sql_query($sql);
 		// UPI2DB - END
 
+		$sql = "DELETE FROM " . DRAFTS_TABLE . "
+			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+		$db->sql_query($sql);
+
+		$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
+			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+		$db->sql_query($sql);
+		/*
 		$sql = "DELETE FROM " . RATINGS_TABLE . "
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
@@ -133,19 +145,13 @@ class class_mcp_topic
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
 
-		$sql = "DELETE FROM " . DRAFTS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
 		$sql = "DELETE FROM " . POSTS_LIKES_TABLE . "
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
+		*/
 
-		$sql = "DELETE FROM " . POSTS_TABLE . "
+		$sql = "UPDATE " . POSTS_TABLE . "
+			SET deleted = 1, deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $db->sql_escape($user->data['username']) . "'
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
 
@@ -617,11 +623,13 @@ class class_mcp_topic
 		$sql = "UPDATE " . TOPICS_TABLE . " SET " . $sql_update . " WHERE " . $db->sql_in_set('topic_id', $topics);
 		$db->sql_query($sql);
 
+		/*
 		$sql = "DELETE FROM " . POLL_OPTIONS_TABLE . " WHERE " . $db->sql_in_set('topic_id', $topics);
 		$db->sql_query($sql);
 
 		$sql = "DELETE FROM " . POLL_VOTES_TABLE . " WHERE " . $db->sql_in_set('topic_id', $topics);
 		$db->sql_query($sql);
+		*/
 
 		empty_cache_folders(POSTS_CACHE_FOLDER);
 	}

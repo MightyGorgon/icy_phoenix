@@ -332,7 +332,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					{
 						$sql = "SELECT post_id
 							FROM " . POSTS_TABLE . "
-							WHERE post_time >= " . $user->data['user_lastvisit'];
+							WHERE deleted = 0 AND post_time >= " . $user->data['user_lastvisit'];
 					}
 					else
 					{
@@ -359,13 +359,13 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							{
 								$sql = "SELECT post_id
 									FROM " . POSTS_TABLE . "
-									WHERE topic_id IN (" . $sql_where . ")";
+									WHERE deleted = 0 AND topic_id IN (" . $sql_where . ")";
 							}
 							if(($search_id == 'upi2db') && ($s2 != 'perm'))
 							{
 								$sql = "SELECT post_id
 									FROM " . POSTS_TABLE . "
-									WHERE (post_id IN (" . $sql_where . ") OR post_id IN (" . $sql_where2 . "))";
+									WHERE deleted = 0 AND (post_id IN (" . $sql_where . ") OR post_id IN (" . $sql_where2 . "))";
 							}
 							if(empty($sql_where) && empty($sql_where2))
 							{
@@ -433,6 +433,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$sql = "SELECT post_id
 						FROM " . POSTS_TABLE . "
 						WHERE post_time >= $search_date
+						AND deleted = 0
 						AND post_time < $nix_tomorrow";
 
 				$show_results = 'posts';
@@ -597,7 +598,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							$search_add_sql .= ($only_bluecards) ? " AND p.post_bluecard > 0" : '';
 							$sql = "SELECT p.post_id
 								FROM " . POSTS_TABLE . " p
-								WHERE " . $search_add_sql;
+								WHERE p.deleted = 0 AND " . $search_add_sql;
 						}
 						$result = $db->sql_query($sql);
 

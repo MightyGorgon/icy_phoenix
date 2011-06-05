@@ -82,6 +82,7 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 		WHERE p.topic_id = $topic_id
 			AND p.poster_id = u.user_id
+			AND p.deleted = 0
 		ORDER BY p.post_time DESC
 		LIMIT " . $config['posts_per_page'];
 	$result = $db->sql_query($sql);

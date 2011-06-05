@@ -22,9 +22,10 @@ if ($config['forum_tags_type'])
 	$sql = 'SELECT w.word_text, COUNT(*) AS word_count
 		FROM ' . SEARCH_WORD_TABLE . ' AS w, ' . SEARCH_MATCH_TABLE . ' AS m, ' . POSTS_TABLE . ' AS p, ' . TOPICS_TABLE . ' AS t
 		WHERE m.word_id = w.word_id
-		AND m.post_id = p.post_id
-		AND p.topic_id = t.topic_id
-		AND t.forum_id = ' . $forum_id . '
+			AND m.post_id = p.post_id
+			AND p.topic_id = t.topic_id
+			AND p.deleted = 0
+			AND t.forum_id = ' . $forum_id . '
 		GROUP BY m.word_id
 		ORDER BY word_count DESC
 		LIMIT ' . intval($config['word_graph_max_words']);

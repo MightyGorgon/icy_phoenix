@@ -310,6 +310,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 				AND u.user_id = p.poster_id
 				AND lp.post_id = t.topic_last_post_id
 				AND lu.user_id = lp.poster_id
+				AND p.deleted = 0
 				AND t.topic_calendar_time < $end_date
 				AND (t.topic_calendar_time + t.topic_calendar_duration) >= $start_date
 				AND t.topic_status <> " . TOPIC_MOVED . "

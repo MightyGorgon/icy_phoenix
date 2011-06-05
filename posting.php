@@ -366,6 +366,7 @@ switch ($mode)
 				AND t.topic_id = p.topic_id
 				AND f.forum_id = p.forum_id
 				AND fr.forum_id = p.forum_id
+				AND t.deleted = 0
 				" . $where_sql . "
 			LIMIT 1";
 		break;
@@ -1590,7 +1591,7 @@ else
 	$postreport = request_var('postreport', 0);
 	if ($postreport)
 	{
-		$sql = 'SELECT topic_id FROM ' . POSTS_TABLE . ' WHERE post_id = ' . $postreport;
+		$sql = 'SELECT topic_id FROM ' . POSTS_TABLE . ' WHERE deleted = 0 AND post_id = ' . $postreport;
 		$result = $db->sql_query($sql);
 		$post_details = $db->sql_fetchrow($result);
 		$post_topic_id = $post_details['topic_id'];

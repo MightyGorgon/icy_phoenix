@@ -161,6 +161,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 						AND p.poster_id = u2.user_id
 						AND p.post_id = t.topic_last_post_id
 						AND t.topic_poster = u.user_id
+						AND p.deleted = 0
 						AND t.topic_status <> " . TOPIC_MOVED . "
 					GROUP BY t.topic_id
 					ORDER BY p.post_time";
@@ -263,6 +264,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 					AND t.forum_id = f.forum_id
 					AND p.poster_id = u2.user_id
 					AND p.post_id = t.topic_last_post_id
+					AND p.deleted = 0
 					AND t.topic_poster = u.user_id
 					AND t.topic_status <> " . TOPIC_MOVED . "
 				GROUP BY t.topic_id

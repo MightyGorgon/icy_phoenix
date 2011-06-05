@@ -292,6 +292,7 @@ if (sizeof($attachments) > 0)
 				$sql = "SELECT t.topic_title
 					FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 					WHERE p.post_id = " . (int) $ids[$j]['post_id'] . " AND p.topic_id = t.topic_id
+					AND p.deleted = 0 AND t.deleted = 0
 					GROUP BY t.topic_id, t.topic_title";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);

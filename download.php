@@ -288,7 +288,7 @@ for ($i = 0; $i < $num_auth_pages && $authorized == false; $i++)
 	{
 		$sql = 'SELECT forum_id
 			FROM ' . POSTS_TABLE . '
-			WHERE post_id = ' . (int) $auth_pages[$i]['post_id'];
+			WHERE deleted = 0 AND post_id = ' . (int) $auth_pages[$i]['post_id'];
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$forum_id = $row['forum_id'];

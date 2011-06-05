@@ -1880,9 +1880,10 @@ class bbcode
 				}
 				else
 				{
-					$sql = "SELECT p.poster_id, p.topic_id
+					$sql = "SELECT p.poster_id, p.topic_id, p.deleted
 						FROM " . POSTS_TABLE . " p
 						WHERE p.topic_id = " . intval($topic_id) . "
+						AND p.deleted = 0
 						AND p.poster_id = " . $user->data['user_id'];
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);

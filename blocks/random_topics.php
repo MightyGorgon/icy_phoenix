@@ -76,13 +76,14 @@ if(!function_exists('cms_block_random_topics'))
 			$allowed_forums_sql = '';
 		}
 
-		$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, u.user_active, u.user_color, f.forum_name
+		$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, u.user_active, u.user_color, f.forum_name, p.deleted
 			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p, " . USERS_TABLE . " AS u, " . FORUMS_TABLE . " AS f
 			WHERE t.topic_status <> 2
 				" . $allowed_forums_sql . "
 				AND f.forum_id = t.forum_id
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
+				AND p.deleted = 0
 			ORDER BY RAND()
 			LIMIT " . $cms_config_vars['md_num_random_topics'][$block_id];
 		$result = $db->sql_query($sql);

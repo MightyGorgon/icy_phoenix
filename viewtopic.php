@@ -241,6 +241,7 @@ if (!empty($view) &&  empty($post_id))
 				t2.topic_id = '" . $topic_id . "'
 				AND t.forum_id = t2.forum_id
 				AND t.topic_moved_id = 0
+				AND t.deleted = 0
 				AND t.topic_last_post_id $sql_condition t2.topic_last_post_id
 			ORDER BY t.topic_last_post_id $sql_ordering
 			LIMIT 1";
@@ -433,6 +434,13 @@ if ($similar_topics_enabled)
 $is_auth = array();
 $is_auth = $tree['auth'][POST_FORUM_URL . $forum_id];
 
+
+if (!($is_auth['auth_mod']) && ($forum_topic_data['deleted']))
+{
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
+}
+
 if (!$is_auth['auth_read'])
 {
 	if (!$user->data['session_logged_in'])
@@ -559,10 +567,12 @@ if(!empty($sort_days))
 	$start = 0;
 	$min_post_time = time() - (intval($sort_days) * 86400);
 
+	$deleted_where = $is_auth['auth_mod'] ? '' : ' AND p.deleted = 0';
 	$sql = "SELECT COUNT(p.post_id) AS num_posts
 		FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 		WHERE t.topic_id = " . $topic_id . "
 			AND p.topic_id = t.topic_id
+			$deleted_where
 			AND p.post_time >= " . $min_post_time;
 	$result = $db->sql_query($sql);
 	$total_replies = ($row = $db->sql_fetchrow($result)) ? intval($row['num_posts']) : 0;
@@ -635,12 +645,14 @@ else
 $self_sql_tables = (intval($is_auth['auth_read']) == AUTH_SELF) ? ', ' . USERS_TABLE . ' u2' : '';
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = u2.user_id AND (u2.user_id = '" . $user->data['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
+$deleted_where = $is_auth['auth_mod'] ? '' : ' AND p.deleted = 0';
 
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos, p.deleted
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 	WHERE p.topic_id = $topic_id
 		AND t.topic_id = p.topic_id
 		AND u.user_id = p.poster_id
+		" . $deleted_where . "
 		" . $limit_posts_time . "
 		" . $self_sql . "
 	ORDER BY " . $sort_key_sql . " " . $sort_dir_sql . "

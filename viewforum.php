@@ -20,7 +20,7 @@ define('ATTACH_DISPLAY', true);
 define('IN_VIEWFORUM', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
-if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+if (!defined('PHP_EXT')) define('PHP_EXT', ssubstr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
@@ -307,7 +307,7 @@ if ($mark_read == 'topics')
 
 			$sql = "SELECT MAX(post_time) AS last_post
 				FROM " . POSTS_TABLE . "
-				WHERE forum_id = " . $forum_id;
+				WHERE deleted = 0 AND forum_id = " . $forum_id;
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
@@ -390,7 +390,7 @@ if($user->data['session_logged_in'] && !$user->data['is_bot'])
 
 	$sql = "SELECT notify_status
 	FROM " . FORUMS_WATCH_TABLE . "
-	WHERE forum_id = $forum_id
+	WHERE forum_id = $forum_id $deleted_where
 		AND user_id = " . $user->data['user_id'] . "
 	LIMIT 1";
 	$result = $db->sql_query($sql);
@@ -480,10 +480,12 @@ $topic_days = request_var('topicdays', 0);
 if (!empty($topic_days))
 {
 	$min_topic_time = time() - ($topic_days * 86400);
+	$deleted_where = $is_auth['auth_mod'] ? '' : ' AND t.deleted = 0 AND p.deleted = 0';
 
 	$sql = "SELECT COUNT(t.topic_id) AS forum_topics
 		FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 		WHERE t.forum_id = " . $forum_id . "
+			$deleted_where
 			AND p.post_id = t.topic_last_post_id
 			AND p.post_time >= $min_topic_time";
 	$result = $db->sql_query($sql);
@@ -501,9 +503,10 @@ else
 	// Topics Sorting - BEGIN
 	if (!empty($start_letter))
 	{
+		$deleted_where = $is_auth['auth_mod'] ? '' : ' AND t.deleted = 0';
 		$sql = "SELECT COUNT(topic_id) AS forum_topics
 			FROM " . TOPICS_TABLE . " t
-			WHERE t.forum_id = '" . $forum_id . "'
+			WHERE t.forum_id = '" . $forum_id . "' $deleted_where
 				" . $start_letter_sql . "
 			ORDER BY " . $sort_order_sql;
 		$result = $db->sql_query($sql);
@@ -536,12 +539,14 @@ if(!$user->data['upi2db_access'])
 //<!-- END Unread Post Information to Database Mod -->
 
 	// All GLOBAL announcement data, this keeps GLOBAL announcements on each viewforum page...
-	$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username
+	$deleted_where = $is_auth['auth_mod'] ? '' : ' AND t.deleted = 0 AND p.deleted = 0';
+	$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username, t.deleted
 					FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2
 					WHERE t.topic_poster = u.user_id
 						AND p.post_id = t.topic_last_post_id
 						AND p.poster_id = u2.user_id
 						AND t.topic_type = " . POST_GLOBAL_ANNOUNCE . "
+						$deleted_where
 						" . $start_letter_sql . "
 					ORDER BY " . $sort_order_sql;
 	$result = $db->sql_query($sql);
@@ -562,13 +567,15 @@ if(!$user->data['upi2db_access'])
 //{
 //<!-- END Unread Post Information to Database Mod -->
 	// All announcement data, this keeps announcements on each viewforum page...
-	$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username
+	$deleted_where = $is_auth['auth_mod'] ? '' : ' AND t.deleted = 0';
+	$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username, t.deleted
 					FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2
 					WHERE t.forum_id = $forum_id
 						AND t.topic_poster = u.user_id
 						AND p.post_id = t.topic_last_post_id
 						AND p.poster_id = u2.user_id
 						AND t.topic_type = " . POST_ANNOUNCE . "
+						$deleted_where AND p.deleted = 0
 						" . $start_letter_sql . "
 					ORDER BY " . $sort_order_sql;
 	$result = $db->sql_query($sql);
@@ -604,7 +611,9 @@ else
 //$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = '" . $user->data['user_id'] . "'" : '';
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND (t.topic_poster = '" . $user->data['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
-$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_mask as user_mask2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time, p2.post_edit_time, p.enable_bbcode, p.enable_html, p.enable_smilies
+$deleted_where = $is_auth['auth_mod'] ? '' : ' AND t.deleted = 0';
+
+$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_mask as user_mask2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time, p2.post_edit_time, p.enable_bbcode, p.enable_html, p.enable_smilies, t.deleted
 				FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2
 				WHERE $upi2db_post_global_announce
 					AND t.topic_poster = u.user_id
@@ -612,6 +621,7 @@ $sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_co
 					AND p2.post_id = t.topic_last_post_id
 					AND u2.user_id = p2.poster_id
 					$self_sql
+					$deleted_where AND p.deleted = 0
 					$upi2db_post_announce
 					$start_letter_sql
 				ORDER BY t.topic_type DESC, " . $sort_order_sql . "
@@ -746,7 +756,7 @@ if((isset($cached1) && $cached1) || (isset($cached2) && $cached2))
 	}
 	if(sizeof($update_list))
 	{
-		$sql = "SELECT topic_id, topic_views FROM " . TOPICS_TABLE . " WHERE topic_id IN (" . implode(', ', $update_list) . ")";
+		$sql = "SELECT topic_id, topic_views FROM " . TOPICS_TABLE . " WHERE topic_id IN (" . implode(', ', $update_list) . ") AND deleted = 0";
 		$list = array();
 		$result = $db->sql_query($sql);
 		while($row = $db->sql_fetchrow($result))

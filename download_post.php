@@ -33,7 +33,7 @@ if(!$post_id)
 }
 
 // get post
-$sql = "SELECT * FROM " . POSTS_TABLE . " WHERE post_id = " . $post_id;
+$sql = "SELECT * FROM " . POSTS_TABLE . " WHERE deleted = 0 AND post_id = " . $post_id;
 $db->sql_return_on_error(true);
 $result = $db->sql_query($sql);
 $db->sql_return_on_error(false);

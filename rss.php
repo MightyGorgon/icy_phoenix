@@ -61,7 +61,7 @@ if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']))
 		ExitWithHeader('304 Not Modified');
 	}
 }
-$sql = "SELECT MAX(post_time) as pt FROM ". POSTS_TABLE;
+$sql = "SELECT MAX(post_time) as pt FROM ". POSTS_TABLE . " WHERE deleted = 0";
 $db->sql_return_on_error(true);
 $result = $db->sql_query($sql);
 $db->sql_return_on_error(false);

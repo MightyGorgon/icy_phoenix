@@ -188,7 +188,7 @@ function get_unpruned_post_count($user_id)
 {
 	global $db;
 
-	$sql = "SELECT DISTINCT p.poster_id, COUNT(p.poster_id) AS post_count FROM " . POSTS_TABLE . " AS p WHERE p.poster_id = $user_id GROUP BY p.poster_id";
+	$sql = "SELECT DISTINCT p.poster_id, COUNT(p.poster_id) AS post_count FROM " . POSTS_TABLE . " AS p WHERE p.deleted = 0 AND p.poster_id = $user_id GROUP BY p.poster_id";
 	$result = $db->sql_query($sql);
 
 	$post_count = 0;
@@ -271,7 +271,7 @@ function &get_forum_usage_rows($user_id, $user_posts, $show_all_forums)
 	$topics_watched_rows = & get_topics_watched_rows($user_id);
 
 	/* Next, retrieve user's forum usage info */
-	$sql = "SELECT f.forum_id, f.forum_name, p.poster_id, COUNT(p.poster_id) AS forum_post_count, (COUNT(p.poster_id) / $user_posts)*100 AS forum_post_pct FROM " . POSTS_TABLE . " AS p INNER JOIN " . FORUMS_TABLE . " AS f ON f.forum_id = p.forum_id GROUP BY p.forum_id, p.poster_id HAVING (p.poster_id = $user_id) ORDER BY f.forum_id";
+	$sql = "SELECT f.forum_id, f.forum_name, p.poster_id, COUNT(p.poster_id) AS forum_post_count, (COUNT(p.poster_id) / $user_posts)*100 AS forum_post_pct FROM " . POSTS_TABLE . " AS p INNER JOIN " . FORUMS_TABLE . " AS f ON f.forum_id = p.forum_id GROUP BY p.forum_id, p.poster_id HAVING (p.poster_id = $user_id) AND p.deleted = 0 ORDER BY f.forum_id";
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))

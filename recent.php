@@ -126,7 +126,7 @@ $sql_start = "SELECT DISTINCT(t.topic_id), t.*, p.poster_id, p.post_username AS 
 			LEFT OUTER JOIN " . FORUMS_TABLE . " f ON (f.forum_id = p.forum_id)
 			LEFT OUTER JOIN " . USERS_TABLE . " u ON (u.user_id = p.poster_id)
 			LEFT OUTER JOIN " . USERS_TABLE . " u2 ON (u2.user_id = t.topic_poster)
-		WHERE ";
+		WHERE p.deleted = 0 AND t.deleted = 0 AND";
 $sql_where = $where_forums . " AND p.post_id = t.topic_last_post_id AND t.topic_status <> " . TOPIC_MOVED;
 $sql_end = "LIMIT $start, $topic_limit";
 

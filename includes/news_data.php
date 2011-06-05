@@ -306,6 +306,7 @@ class NewsDataAccess
 				AND t.forum_id = f.forum_id
 				AND t.topic_poster = u.user_id
 				AND t.news_id = n.news_id
+				AND p.deleted = 0
 				AND t.topic_id = ' . $article_id . '
 				' . $auth_sql . '
 			LIMIT 1';
@@ -397,6 +398,7 @@ class NewsDataAccess
 			WHERE p.topic_id = ' . $topic_id . '
 				AND p.post_id <> t.topic_first_post_id
 				AND t.topic_id = p.topic_id
+				AND p.deleted = 0
 				' . $auth_sql;
 		$result = $this->db->sql_query($sql);
 		if($row = $this->db->sql_fetchrow($result))
@@ -472,6 +474,7 @@ class NewsDataAccess
 			WHERE p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
 				' . $ubid_sql . '
+				AND p.deleted = 0
 				AND u.user_id = t.topic_poster
 				AND n.news_id = t.news_id
 				AND t.news_id > 0
@@ -727,6 +730,7 @@ class NewsDataAccess
 			FROM ' . TOPICS_TABLE . ' AS t, ' . FORUMS_TABLE . ' AS f, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n, ' . POSTS_TABLE . ' AS p
 			WHERE p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
+				AND p.deleted = 0
 				' . $ubid_sql . '
 				AND u.user_id = t.topic_poster
 				AND n.news_id = t.news_id
