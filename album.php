@@ -233,14 +233,14 @@ else
 {
 	if ($album_view_mode == ALBUM_VIEW_LIST)
 	{
-		include (ALBUM_MOD_PATH . 'album_memberlist.' . PHP_EXT);
+		include(ALBUM_MOD_PATH . 'album_memberlist.' . PHP_EXT);
 	}
 	else
 	{
 		// include our special personal gallery files
 		// this file holds all the code to handle personal galleries
 		// except moderation and management of personal gallery categories.
-		include (ALBUM_MOD_PATH . 'album_personal.' . PHP_EXT);
+		include(ALBUM_MOD_PATH . 'album_personal.' . PHP_EXT);
 	}
 }
 

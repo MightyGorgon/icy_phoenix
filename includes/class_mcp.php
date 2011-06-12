@@ -21,7 +21,7 @@ class class_mcp_topic
 	/**
 	* Delete topic(s)
 	*/
-	function topic_delete($topics, $forum_id)
+	function topic_delete($topics, $forum_id, $method = class_topics::SOFT_DELETE)
 	{
 		global $db, $cache, $lang;
 
@@ -67,100 +67,99 @@ class class_mcp_topic
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$result = $db->sql_query($sql);
 
-		$post_id_sql = '';
+		$post_ids = array();
 		while($row = $db->sql_fetchrow($result))
 		{
-			$post_id_sql .= (($post_id_sql != '') ? ', ' : '') . intval($row['post_id']);
+			$post_ids[] = intval($row['post_id']);
 		}
 		$db->sql_freeresult($result);
 
 		$sql = "UPDATE " . TOPICS_TABLE . "
-			SET deleted = 1, deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $user->data['username'] . "'
+			SET deleted = " . $method . ", deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $user->data['username'] . "'
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
 			OR " . $db->sql_in_set('topic_moved_id', $topics_ids);
-		*/
 		$db->sql_transaction('begin');
 		$db->sql_query($sql);
 
-		/*
-		$sql = "DELETE FROM " . THANKS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . BOOKMARK_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . REGISTRATION_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . REGISTRATION_DESC_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-		*/
-
-		// TAGS - BEGIN
-		@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
-		$class_topics_tags = new class_topics_tags();
-		$tags = $class_topics_tags->get_topics_tags($topics);
-
-		if (sizeof($tags) > 0)
+		if ($method == class_topics::RAW_DELETE)
 		{
-			for ($i = 0; $i < sizeof($topics); $i++)
+			$sql = "DELETE FROM " . THANKS_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . BOOKMARK_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . REGISTRATION_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . REGISTRATION_DESC_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			// TAGS - BEGIN
+			@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
+			$class_topics_tags = new class_topics_tags();
+			$tags = $class_topics_tags->get_topics_tags($topics);
+
+			if (sizeof($tags) > 0)
 			{
-				$class_topics_tags->remove_tag_from_match($tags, $topics[$i]);
+				for ($i = 0; $i < sizeof($topics); $i++)
+				{
+					$class_topics_tags->remove_tag_from_match($tags, $topics[$i]);
+				}
+				$class_topics_tags->update_tag_entry($tags);
 			}
-			$class_topics_tags->update_tag_entry($tags);
+			// TAGS - END
+
+			// UPI2DB - BEGIN
+			$sql = "DELETE FROM " . UPI2DB_ALWAYS_READ_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+			// UPI2DB - END
+
+			$sql = "DELETE FROM " . DRAFTS_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+		
+			$sql = "DELETE FROM " . RATINGS_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . TOPIC_VIEW_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . POSTS_LIKES_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
+			$db->sql_query($sql);
+
+			if($post_ids)
+			{
+				remove_search_post($post_ids);
+			}
+
+			$this->topic_poll_delete($topics);
 		}
-		// TAGS - END
-
-		// UPI2DB - BEGIN
-		$sql = "DELETE FROM " . UPI2DB_ALWAYS_READ_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-		// UPI2DB - END
-
-		$sql = "DELETE FROM " . DRAFTS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-		/*
-		$sql = "DELETE FROM " . RATINGS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . TOPIC_VIEW_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . POSTS_LIKES_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-		*/
 
 		$sql = "UPDATE " . POSTS_TABLE . "
-			SET deleted = 1, deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $db->sql_escape($user->data['username']) . "'
+			SET deleted = " . $method . ", deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $db->sql_escape($user->data['username']) . "'
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
-
-		if($post_id_sql != '')
-		{
-			remove_search_post($post_id_sql);
-		}
-
-		$this->topic_poll_delete($topics);
 		$db->sql_transaction('commit');
 
 		$this->cache_resync(array($forum_id), 0);

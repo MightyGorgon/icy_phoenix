@@ -155,7 +155,7 @@ function sync($type, $id = false)
 		case 'topic':
 			$sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
 				FROM " . POSTS_TABLE . "
-				WHERE deleted = 0 AND topic_id = $id";
+				topic_id = $id";
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))

@@ -75,7 +75,7 @@ if (isset($_POST['submit']))
 		$email_list_temp = explode(',', $ban_emails);
 
 		// CrackerTracker v5.x
-		include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/ctracker/constants.' . PHP_EXT);
 
 		$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 		$temp_userdata = get_userdata($founder_id, false);

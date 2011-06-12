@@ -2460,7 +2460,7 @@ function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 	$midnight = create_date_midnight($gmepoch, $tz);
 
 	$output_date = '';
-	$format_hour = 'H.i';
+	$format_hour = 'H:i';
 	if ($gmepoch > $midnight)
 	{
 		$format = ($day_only) ? $format : $format_hour;

@@ -145,7 +145,7 @@ else
 		$sql = "SELECT p.post_time, p.poster_id, u.user_id, u.username, u.user_active, u.user_color, p.deleted
 						FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 						WHERE p.post_id = '" . $post_id . "'
-							AND p.deleted = false
+							AND p.deleted = 0
 							AND u.user_id = p.poster_id";
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))

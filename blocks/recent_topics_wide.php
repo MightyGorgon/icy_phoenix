@@ -41,7 +41,7 @@ if(!function_exists('cms_block_recent_topics_wide'))
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
 				AND f.forum_id = t.forum_id
-				AND p.deleted = false
+				AND p.deleted = 0
 				$extra
 			ORDER BY p.post_time DESC
 			LIMIT " . $cms_config_vars['md_num_recent_topics_wide'][$block_id];

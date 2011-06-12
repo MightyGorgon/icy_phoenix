@@ -18,6 +18,8 @@ if (!defined('IN_ICYPHOENIX'))
 */
 class class_topics
 {
+	const SOFT_DELETE = 1,
+		RAW_DELETE = 2;
 
 	var $cat_id = 0;
 	var $forum_id = 0;

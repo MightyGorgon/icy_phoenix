@@ -567,7 +567,7 @@ if(!empty($sort_days))
 	$start = 0;
 	$min_post_time = time() - (intval($sort_days) * 86400);
 
-	$deleted_where = $is_auth['auth_mod'] ? '' : ' AND p.deleted = 0';
+	$deleted_where = $is_auth['auth_mod'] ? 'AND p.deleted != 2' : ' AND p.deleted = 0';
 	$sql = "SELECT COUNT(p.post_id) AS num_posts
 		FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
 		WHERE t.topic_id = " . $topic_id . "
@@ -645,14 +645,13 @@ else
 $self_sql_tables = (intval($is_auth['auth_read']) == AUTH_SELF) ? ', ' . USERS_TABLE . ' u2' : '';
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = u2.user_id AND (u2.user_id = '" . $user->data['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
-$deleted_where = $is_auth['auth_mod'] ? '' : ' AND p.deleted = 0';
 
 $sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos, p.deleted
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 	WHERE p.topic_id = $topic_id
 		AND t.topic_id = p.topic_id
 		AND u.user_id = p.poster_id
-		" . $deleted_where . "
+		AND p.deleted != 2
 		" . $limit_posts_time . "
 		" . $self_sql . "
 	ORDER BY " . $sort_key_sql . " " . $sort_dir_sql . "
@@ -672,7 +671,7 @@ if ($row = $db->sql_fetchrow($result))
 {
 	do
 	{
-		if($row['user_id'] > 0)
+		if($row['user_id'] > 0 && ($is_auth['auth_mod'] || $row['deleted'] == '0'))
 		{
 			$user_ids[$row['user_id']] = $row['username'];
 		}
@@ -680,7 +679,10 @@ if ($row = $db->sql_fetchrow($result))
 	}
 	while ($row = $db->sql_fetchrow($result));
 	$db->sql_freeresult($result);
-	$total_posts = sizeof($postrow);
+	if (!($total_posts = sizeof($postrow)))
+	{ //it looks like ... But it's not ! (yeah, it's evil.)
+		message_die(GENERAL_MESSAGE, $lang['No_posts_topic']);
+	}
 }
 else
 {
@@ -2293,6 +2295,10 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_QUOTE' => $quote_url,
 		'U_EDIT' => $edit_url,
 		'U_DELETE' => $delpost_url,
+
+		'DELETED' => $postrow[$i]['deleted'],
+		'POST_IS_DELETED' => sprintf($lang['POST_IS_DELETED'], '<a href="'.append_sid(CMS_PAGE_PROFILE . '?' . POST_USERS_URL . '=' . $postrow[$i]['deleter_user_id']).'">', colorize_username($postrow[$i]['deleter_user_id'], $postrow[$i]['deleter_username']), '</a>', create_date_ip('H:i:s Y/m/d', $postrow[$i]['deleted_time'], $config['board_timezone'])),
+		'DELETER_USERNAME' => $postrow[$i]['deleter_username'],
 
 		'L_MINI_POST_ALT' => $mini_post_alt,
 		'NOTES_COUNT' => sizeof($notes_list),

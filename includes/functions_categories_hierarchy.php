@@ -1497,7 +1497,7 @@ function make_cat_nav_tree($cur, $pgm = '', $meta_content = '', $nav_class = 'na
 		elseif ($type == POST_POST_URL)
 		{
 			$sql_from = ", " . POSTS_TABLE . " p";
-			$sql_where = " WHERE p.deleted = 0 t.topic_id = p.topic_id AND p.post_id = " . $id . " LIMIT 1";
+			$sql_where = " WHERE p.deleted = 0 AND t.topic_id = p.topic_id AND p.post_id = " . $id . " LIMIT 1";
 		}
 
 		if (empty($meta_content['forum_id']) || empty($meta_content['topic_title']))
