@@ -117,7 +117,7 @@ if($mark_read == 'forums')
 				if ($tree['type'][ $keys['idx'][$i] ] == POST_FORUM_URL)
 				{
 					$forum_id = $tree['id'][ $keys['idx'][$i] ];
-					$sql = "SELECT MAX(post_time) AS last_post FROM " . POSTS_TABLE . " WHERE deleted = 0 AND forum_id = '" . $forum_id . "'";
+					$sql = "SELECT MAX(post_time) AS last_post FROM " . POSTS_TABLE . " WHERE post_approval = " . POST_APPROVED . " AND forum_id = '" . $forum_id . "'";
 					$result = $db->sql_query($sql);
 					if ($row = $db->sql_fetchrow($result))
 					{
@@ -396,7 +396,7 @@ if (($config['display_viewonline'] == 2) || (($viewcat < 0) && ($config['display
 					AND t.topic_status <> 2
 					AND p.post_id = t.topic_last_post_id
 					AND p.poster_id = u.user_id
-					AND p.deleted = 0
+					AND p.post_approval = " . POST_APPROVED . "
 				ORDER BY p.post_id DESC
 				LIMIT " . intval($config['last_msgs_n']);
 		$result = $db->sql_query($sql);

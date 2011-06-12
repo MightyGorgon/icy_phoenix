@@ -349,7 +349,7 @@ if ($config['online_last_msgs'] == 1)
 			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p, " . USERS_TABLE . " AS u, " . FORUMS_TABLE . " AS f
 			WHERE t.forum_id NOT IN (" . $except_forums . ")
 				AND t.topic_status <> 2
-				AND t.deleted = 0 AND p.deleted = 0
+				AND p.post_approval = " . POST_APPROVED . "
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
 				AND f.forum_id = t.forum_id

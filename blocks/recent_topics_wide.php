@@ -34,14 +34,14 @@ if(!function_exists('cms_block_recent_topics_wide'))
 		//$extra = "AND t.topic_time <= $current_time";
 		$extra = '';
 
-		$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, u.user_active, u.user_color, f.forum_name, p.deleted
+		$sql = "SELECT t.topic_id, t.topic_title, t.topic_last_post_id, t.forum_id, p.post_id, p.poster_id, p.post_time, u.user_id, u.username, u.user_active, u.user_color, f.forum_name, p.post_approval
 			FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p, " . USERS_TABLE . " AS u, " . FORUMS_TABLE . " AS f
 			WHERE t.forum_id NOT IN (" . $except_forums . ")
 				AND t.topic_status <> 2
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
 				AND f.forum_id = t.forum_id
-				AND p.deleted = 0
+				AND p.post_approval = " . POST_APPROVED . "
 				$extra
 			ORDER BY p.post_time DESC
 			LIMIT " . $cms_config_vars['md_num_recent_topics_wide'][$block_id];

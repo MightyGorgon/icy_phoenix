@@ -21,7 +21,7 @@ class class_mcp_topic
 	/**
 	* Delete topic(s)
 	*/
-	function topic_delete($topics, $forum_id, $method = class_topics::SOFT_DELETE)
+	function topic_delete($topics, $forum_id, $method = POST_UNAPPROVE)
 	{
 		global $db, $cache, $lang;
 
@@ -75,13 +75,13 @@ class class_mcp_topic
 		$db->sql_freeresult($result);
 
 		$sql = "UPDATE " . TOPICS_TABLE . "
-			SET deleted = " . $method . ", deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $user->data['username'] . "'
+			SET post_approval = " . $method . ", deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $user->data['username'] . "'
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
 			OR " . $db->sql_in_set('topic_moved_id', $topics_ids);
 		$db->sql_transaction('begin');
 		$db->sql_query($sql);
 
-		if ($method == class_topics::RAW_DELETE)
+		if ($method == POST_DELETED)
 		{
 			$sql = "DELETE FROM " . THANKS_TABLE . "
 				WHERE " . $db->sql_in_set('topic_id', $topics_ids);
@@ -157,7 +157,7 @@ class class_mcp_topic
 		}
 
 		$sql = "UPDATE " . POSTS_TABLE . "
-			SET deleted = " . $method . ", deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $db->sql_escape($user->data['username']) . "'
+			SET post_approval = " . $method . ", deleter_user_id = '" . $user->data['user_id'] . "', deleter_username = '" . $db->sql_escape($user->data['username']) . "'
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
 		$db->sql_transaction('commit');

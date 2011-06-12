@@ -171,7 +171,7 @@ else
 						FROM " . TOPICS_TABLE . " AS t, " . POSTS_TABLE . " AS p
 						WHERE t.topic_last_post_id = p.post_id
 						AND t.forum_id IN (" . $forumids . ") $wheresql
-						AND t.deleted = 0 AND p.deleted = 0
+						AND p.post_approval = " . POST_APPROVED . "
 						ORDER BY t.topic_id " . $config['sitemap_sort'] . "
 						LIMIT " . $config['sitemap_topic_limit'];
 		$result = $db->sql_query($sql);

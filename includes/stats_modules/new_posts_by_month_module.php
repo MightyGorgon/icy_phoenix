@@ -36,7 +36,7 @@ $template->assign_vars(array(
 
 $sql = 'SELECT YEAR(FROM_UNIXTIME(post_time)) as aar, MONTH(FROM_UNIXTIME(post_time)) as mnd, COUNT(*) AS ant
 	FROM ' . POSTS_TABLE . '
-	WHERE deleted = 0
+	WHERE post_approval = ' . POST_APPROVED . '
 	GROUP BY YEAR(FROM_UNIXTIME(post_time)),MONTH(FROM_UNIXTIME(post_time))
 	ORDER BY post_time';
 $result = $stat_db->sql_query($sql);

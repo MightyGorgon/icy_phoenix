@@ -24,7 +24,7 @@ if ($config['forum_tags_type'])
 		WHERE m.word_id = w.word_id
 			AND m.post_id = p.post_id
 			AND p.topic_id = t.topic_id
-			AND p.deleted = 0
+			AND p.post_approval = ' . POST_APPROVED . '
 			AND t.forum_id = ' . $forum_id . '
 		GROUP BY m.word_id
 		ORDER BY word_count DESC

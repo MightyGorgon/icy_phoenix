@@ -148,7 +148,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 
 		if(isset($topic_id) && $last_post_time)
 		{
-			$sql = "SELECT post_time FROM " . POSTS_TABLE . " WHERE deleted = 0 AND topic_id = '" . $topic_id . "' ORDER BY post_time DESC LIMIT 0, 1";
+			$sql = "SELECT post_time FROM " . POSTS_TABLE . " WHERE post_approval = " . POST_APPROVED . " AND topic_id = '" . $topic_id . "' ORDER BY post_time DESC LIMIT 0, 1";
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
@@ -178,7 +178,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 			$sql = "SELECT poster_id FROM " . POSTS_TABLE . "
 							WHERE topic_id = '" . $topic_id . "'
 							AND post_time > " . (time() - 86400) . "
-							AND deleted = 0
+							AND post_approval = 0
 						ORDER BY post_time DESC
 						LIMIT 0, 1";
 			$db->sql_return_on_error(true);
@@ -645,7 +645,7 @@ function get_forum_last_post_id($forum_id)
 
 	$sql = "SELECT MAX(post_id) AS last_post_id
 		FROM " . POSTS_TABLE . "
-		WHERE deleted = 0 AND forum_id = " . $forum_id;
+		WHERE post_approval = " . POST_APPROVED . " AND forum_id = " . $forum_id;
 	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
@@ -886,7 +886,7 @@ function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_a
  *
  * @todo remove it (use class_mcp instead)
  */
-function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, $method = class_topics::SOFT_DELETE)
+function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, $method = POST_UNAPPROVE)
 {
 	global $db, $cache, $config, $lang, $user;
 
@@ -900,10 +900,10 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		// MG Cash MOD For IP - END
 		include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
-		$sql = "UPDATE " . POSTS_TABLE . " SET deleted = 1, deleter_user_id = " . $user->data['user_id'] . ", deleter_username = '" . $db->sql_escape($user->data['username']) . "', deleted_time = " . time() . " WHERE post_id = $post_id";
+		$sql = "UPDATE " . POSTS_TABLE . " SET post_approval = " . $mode . ", deleter_user_id = " . $user->data['user_id'] . ", deleter_username = '" . $db->sql_escape($user->data['username']) . "', deleted_time = " . time() . " WHERE post_id = $post_id";
 		$db->sql_query($sql);
 
-		if ($mode == class_topics::RAW_DELETE)
+		if ($mode == POST_DELETED)
 		{
 			// Event Registration - BEGIN
 			if ($post_data['first_post'])
@@ -928,11 +928,13 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			{
 				if ($post_data['first_post'])
 				{
+					/*
 					$forum_update_sql .= ', forum_topics = forum_topics - 1';
 					$sql = "UPDATE " . TOPICS_TABLE . "
 						SET deleted = 1, deleter_user_id = " . $user->data['user_id'] . ", deleter_username = '" . $db->sql_escape($user->data['username']) . "', deleted_time = " . time() . "
 						WHERE topic_id = $topic_id";
 					$db->sql_query($sql);
+					*/
 					$sql = "DELETE FROM " . TOPICS_TABLE . "
 						WHERE topic_moved_id = $topic_id";
 					$db->sql_query($sql);

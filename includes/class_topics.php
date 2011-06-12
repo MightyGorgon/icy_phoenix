@@ -18,9 +18,6 @@ if (!defined('IN_ICYPHOENIX'))
 */
 class class_topics
 {
-	const SOFT_DELETE = 1,
-		RAW_DELETE = 2;
-
 	var $cat_id = 0;
 	var $forum_id = 0;
 	var $topic_id = 0;
@@ -383,7 +380,7 @@ class class_topics
 				$s_topic_ids = implode(', ', $topic_ids);
 				$sql = "SELECT DISTINCT topic_id FROM " . POSTS_TABLE . "
 						WHERE topic_id IN (" . $s_topic_ids . ")
-							AND deleted = 0
+							AND post_approval = " . POST_APPROVED . "
 							AND poster_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 
@@ -479,7 +476,7 @@ class class_topics
 					FROM " . POSTS_TABLE . " AS p, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
 					WHERE p.post_id = '" . $single_post_id . "'
 						" . $add_to_sql . "
-						AND p.deleted = 0
+						AND p.post_approval = " . POST_APPROVED . "
 						AND t.topic_id = p.topic_id
 						AND p.poster_id = u.user_id";
 		}
@@ -490,7 +487,7 @@ class class_topics
 					WHERE t.topic_time <= " . time() . "
 						" . $add_to_sql . "
 						AND t.topic_poster = u.user_id
-						AND p.deleted = 0
+						AND p.post_approval = " . POST_APPROVED . "
 						AND t.topic_first_post_id = p.post_id
 						AND t.topic_status <> 2
 					ORDER BY " . $order_sql . $limit_sql;

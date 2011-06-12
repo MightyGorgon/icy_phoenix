@@ -30,7 +30,7 @@ function create_meta_content()
 							WHERE p.post_id = '" . $meta_content['post_id'] . "'
 								AND t.topic_id = p.topic_id
 								AND f.forum_id = p.forum_id
-								AND p.deleted = 0
+								AND p.post_approval = " . POST_APPROVED . "
 							LIMIT 1";
 			// Mighty Gorgon: shall we cache this as well? Maybe too many files... better avoid...
 			//$result = $db->sql_query($sql, 0, 'posts_meta_', TOPICS_CACHE_FOLDER);

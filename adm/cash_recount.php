@@ -71,9 +71,9 @@ if (isset($_POST['cids']))
 		if ($userlist['user_id'] != ANONYMOUS)
 		{
 			$c_user = new cash_user($userlist[$i]['user_id'],$userlist[$i]);
-			$sql = "SELECT t.forum_id, t.topic_id, t.topic_poster, t.topic_replies, count(p.post_id) AS user_replies, p.deleted
+			$sql = "SELECT t.forum_id, t.topic_id, t.topic_poster, t.topic_replies, count(p.post_id) AS user_replies, p.post_approval
 					FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
-					WHERE t.topic_id = p.topic_id AND p.poster_id = " . $c_user->id() . " AND deleted = 0
+					WHERE t.topic_id = p.topic_id AND p.poster_id = " . $c_user->id() . " AND post_approval = " . POST_APPROVED . "
 					GROUP BY t.topic_id";
 			$result = $db->sql_query($sql);
 

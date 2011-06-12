@@ -89,8 +89,7 @@ if ($watch_count > 0)
 			AND p.poster_id = last.user_id
 			AND f.forum_id = t.forum_id
 			AND w.user_id = " . $user->data['user_id'] . "
-			AND p.deleted = 0
-			AND t.deleted = 0
+			AND p.post_approval = " . POST_APPROVED . "
 		ORDER BY t.topic_last_post_id DESC
 		LIMIT $start, " . $config['topics_per_page'];
 	$result = $db->sql_query($sql);

@@ -36,7 +36,7 @@ function attachment_sync_topic($topic_id)
 	$sql = 'SELECT post_id
 		FROM ' . POSTS_TABLE . "
 		WHERE topic_id = $topic_id
-		AND deleted != 2
+		AND post_approval != " . POST_DELETED . "
 		GROUP BY post_id";
 	$result = $db->sql_query($sql);
 	$post_list = $db->sql_fetchrowset($result);

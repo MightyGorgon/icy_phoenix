@@ -171,7 +171,7 @@ function get_forum_most_active($user_id)
 		{
 			$sql_most = "SELECT *
 				FROM " . POSTS_TABLE . "
-				WHERE forum_id = " . $f_id . " AND deleted = 0 AND poster_id = " . $user_id;
+				WHERE forum_id = " . $f_id . " AND post_approval = " . POST_APPROVAL . " AND poster_id = " . $user_id;
 			$result = $db->sql_query($sql_most);
 
 			if ($db->sql_numrows($result) > $most_active_posts)

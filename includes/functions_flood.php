@@ -25,7 +25,7 @@ function check_flood_posting($return = false)
 		$where_sql = ($user->data['user_id'] == ANONYMOUS) ? ("poster_ip = '" . $db->sql_escape($user->ip) . "'") : ('poster_id = ' . $user->data['user_id']);
 		$sql = "SELECT MAX(post_time) AS last_post_time
 			FROM " . POSTS_TABLE . "
-			WHERE deleted = 0 AND $where_sql";
+			WHERE post_approval = " . POST_APPROVED . " AND $where_sql";
 		$result = $db->sql_query($sql);
 		if ($row = $db->sql_fetchrow($result))
 		{

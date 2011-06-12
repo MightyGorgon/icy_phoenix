@@ -182,6 +182,11 @@ define('POST_USERS_URL', 'u');
 define('STYLE_URL', 's');
 define('LANG_URL', 'l');
 
+//POST APPROVAL
+define('POST_UNAPPROVED', 0);
+define('POST_APPROVED', 1);
+define('POST_DELETED', 2);
+
 // Error codes
 define('GENERAL_MESSAGE', 200);
 define('GENERAL_ERROR', 202);

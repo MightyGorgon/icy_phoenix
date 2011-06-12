@@ -307,7 +307,7 @@ if ($mark_read == 'topics')
 
 			$sql = "SELECT MAX(post_time) AS last_post
 				FROM " . POSTS_TABLE . "
-				WHERE deleted = 0 AND forum_id = " . $forum_id;
+				WHERE post_approval = " . POST_APPROVED . " AND forum_id = " . $forum_id;
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
@@ -480,7 +480,7 @@ $topic_days = request_var('topicdays', 0);
 if (!empty($topic_days))
 {
 	$min_topic_time = time() - ($topic_days * 86400);
-	$deleted_where = $is_auth['auth_mod'] ? ' AND p.deleted != 2' : ' AND p.deleted = 0';
+	$deleted_where = $is_auth['auth_mod'] ? ' AND p.post_approval != ' . POST_DELETEd : ' AND p.post_approval = ' . POST_APPROVED;
 
 	$sql = "SELECT COUNT(t.topic_id) AS forum_topics
 		FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
@@ -539,7 +539,7 @@ if (!$user->data['upi2db_access'])
 //<!-- END Unread Post Information to Database Mod -->
 
 	// All GLOBAL announcement data, this keeps GLOBAL announcements on each viewforum page...
-	$deleted_where = 'AND p.deleted ' . ($is_auth['auth_mod'] ? '!= 2' : '= 0');
+	$deleted_where = 'AND p.post_approval ' . ($is_auth['auth_mod'] ? '!= ' . POST_DELETED : '= ' . POST_APPROVED);
 	$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username
 					FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2
 					WHERE t.topic_poster = u.user_id
@@ -575,7 +575,7 @@ if (!$user->data['upi2db_access'])
 						AND p.post_id = t.topic_last_post_id
 						AND p.poster_id = u2.user_id
 						AND t.topic_type = " . POST_ANNOUNCE . "
-						$deleted_where AND p.deleted = 0
+						$deleted_where AND p.post_approval = " . POST_APPROVED . "
 						" . $start_letter_sql . "
 					ORDER BY " . $sort_order_sql;
 	$result = $db->sql_query($sql);
@@ -611,7 +611,7 @@ else
 //$self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = '" . $user->data['user_id'] . "'" : '';
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND (t.topic_poster = '" . $user->data['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
-$deleted_where = $is_auth['auth_mod'] ? ' AND p.deleted != 2' : ' AND p.deleted = 0';
+$deleted_where = $is_auth['auth_mod'] ? ' AND p.post_approval != ' . POST_DELETED : ' AND p.post_approval = ' . POST_APPROVED;
 
 $sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_mask as user_mask2, u2.user_color as user_color2, p.post_username, p2.post_username AS post_username2, p2.post_time, p2.post_edit_time, p.enable_bbcode, p.enable_html, p.enable_smilies
 				FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . POSTS_TABLE . " p2, " . USERS_TABLE . " u2

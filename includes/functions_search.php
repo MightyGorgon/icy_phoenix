@@ -213,7 +213,7 @@ function remove_common($mode, $fraction, $word_id_list = array())
 
 	$sql = "SELECT COUNT(post_id) AS total_posts
 		FROM " . POSTS_TABLE . "
-		WHERE deleted = 0";
+		WHERE post_approval = " . POST_APPROVED;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 

@@ -19,7 +19,7 @@ $sql = "SELECT u.user_id, u.username, p.*
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 	WHERE p.topic_id = " . $topic_id . "
 		" . $sql_download . "
-		AND p.deleted = 0
+		AND p.post_approval = " . POST_APPROVED . "
 		AND u.user_id = p.poster_id
 		ORDER BY p.post_time ASC, p.post_id ASC";
 $result = $db->sql_query($sql);

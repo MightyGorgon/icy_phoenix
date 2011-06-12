@@ -4017,7 +4017,7 @@ function page_header($title = '', $parse_template = false)
 			$sql = "SELECT COUNT(post_id) as total
 				FROM " . POSTS_TABLE . "
 				WHERE post_time >= " . $user->data['user_lastvisit'] . $auth_forum . "
-					AND deleted = 0
+					AND post_approval = " . POST_APPROVED . "
 					AND poster_id != " . $user->data['user_id'];
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);

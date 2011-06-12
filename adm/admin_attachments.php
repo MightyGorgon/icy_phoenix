@@ -948,7 +948,7 @@ if ($mode == 'sync')
 		WHERE a.user_id_2 = 0
 			AND p.post_id = a.post_id
 			AND a.user_id_1 <> p.poster_id
-			AND p.deleted != 2';
+			AND p.post_approval != ' . POST_DELETED;
 	$result = $db->sql_query($sql);
 
 	echo '<br />';

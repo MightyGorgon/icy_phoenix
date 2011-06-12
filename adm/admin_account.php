@@ -315,7 +315,7 @@ if($row = $db->sql_fetchrow($result))
 
 		$sql_posts_count = "SELECT COUNT(post_id) AS total_posts
 			FROM " . POSTS_TABLE . "
-			WHERE deleted = 0
+			WHERE post_approval = " . POST_APPROVED . "
 				AND poster_id = " . $user_id;
 		$result_posts = $db->sql_query($sql_posts_count);
 		$row_posts = $db->sql_fetchrow($result_posts);

@@ -82,7 +82,7 @@ if (sizeof($forum_ids) > 0)
 {
 	$sql = "SELECT a.post_id, t.topic_title, d.*
 	FROM " . $attach_table . " a, " . $attach_desc_table . " d, "  . * . " p, " . TOPICS_TABLE . " t
-	WHERE (a.post_id = p.post_id) AND p.deleted = 0 AND (p.forum_id IN (" . implode(', ', $forum_ids) . ")) AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
+	WHERE (a.post_id = p.post_id) AND p.post_approval = " . POST_APPROVED . " AND (p.forum_id IN (" . implode(', ', $forum_ids) . ")) AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
 	ORDER BY $order_by";
 	$result = $stat_db->sql_query($sql);
 	$attachments = $stat_db->sql_fetchrowset($result);

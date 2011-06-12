@@ -42,7 +42,7 @@ if (isset($_GET['view']))
 		$sql_condition = ($_GET['view'] == 'next') ? '>' : '<';
 		$sql_ordering = ($_GET['view'] == 'next') ? 'ASC' : 'DESC';
 
-		$sql = "SELECT topic_id, post_time FROM " . POSTS_TABLE . " WHERE deleted = 0 AND post_id = " . $post_id . " LIMIT 1";
+		$sql = "SELECT topic_id, post_time FROM " . POSTS_TABLE . " WHERE post_approval = " . POST_APPROVED . " AND post_id = " . $post_id . " LIMIT 1";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$topic_id = $row['topic_id'];

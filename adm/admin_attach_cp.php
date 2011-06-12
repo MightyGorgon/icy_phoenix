@@ -335,7 +335,7 @@ if ($view == 'stats')
 
 	$sql = "SELECT p.topic_id
 		FROM " . ATTACHMENTS_TABLE . " a, " . POSTS_TABLE . " p
-		WHERE a.post_id = p.post_id AND p.deleted != 2
+		WHERE a.post_id = p.post_id AND p.post_approval != " . POST_DELETED . "
 		GROUP BY p.topic_id";
 	$result = $db->sql_query($sql);
 	$number_of_topics = $db->sql_numrows($result);
@@ -679,7 +679,7 @@ if ($view == 'attachments')
 				{
 					$sql = "SELECT t.topic_title
 						FROM " . TOPICS_TABLE . " t, " . POSTS_TABLE . " p
-						WHERE p.post_id = " . intval($ids[$j]['post_id']) . " AND p.topic_id = t.topic_id AND p.deleted != 2
+						WHERE p.post_id = " . intval($ids[$j]['post_id']) . " AND p.topic_id = t.topic_id AND p.post_approval != " . POST_DELETED . " 
 						GROUP BY t.topic_id, t.topic_title";
 					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrow($result);

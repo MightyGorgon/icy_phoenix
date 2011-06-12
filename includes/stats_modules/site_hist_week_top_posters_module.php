@@ -52,7 +52,7 @@ $sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, count(u.user_
 	WHERE (u.user_id = p.poster_id)
 		AND (p.post_time > '" . $time_thisweek_poster . "')
 		AND (u.user_id <> " . ANONYMOUS . ")
-		AND p.deleted = 0
+		AND p.post_approval = " . POST_APPROVED . "
 	GROUP BY u.user_id
 	ORDER BY user_posts DESC
 	LIMIT " . $return_limit;

@@ -1288,9 +1288,9 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 				message_die(GENERAL_MESSAGE, $error_msg);
 			}
 			$delete_mode = request_var('delete_mode', 0);
-			if (!in_array($delete_mode, array(class_topics::SOFT_DELETE, class_topics::RAW_DELETE)))
+			if (!in_array($delete_mode, array(POST_UNAPPROVED, POST_DELETED)))
 			{
-				$delete_mode = class_topics::SOFT_DELETE;
+				$delete_mode = POST_UNAPPROVED;
 			}
 			delete_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $delete_mode);
 			break;
@@ -1595,7 +1595,7 @@ else
 	$postreport = request_var('postreport', 0);
 	if ($postreport)
 	{
-		$sql = 'SELECT topic_id FROM ' . POSTS_TABLE . ' WHERE deleted = 0 AND post_id = ' . $postreport;
+		$sql = 'SELECT topic_id FROM ' . POSTS_TABLE . ' WHERE post_approval = ' . POST_APPROVED . ' AND post_id = ' . $postreport;
 		$result = $db->sql_query($sql);
 		$post_details = $db->sql_fetchrow($result);
 		$post_topic_id = $post_details['topic_id'];

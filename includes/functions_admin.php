@@ -125,7 +125,7 @@ function sync($type, $id = false)
 		case 'forum':
 			$sql = "SELECT MAX(post_id) AS last_post, COUNT(post_id) AS total
 				FROM " . POSTS_TABLE . "
-				WHERE deleted = 0 AND forum_id = " . $id;
+				WHERE post_approval = " . POST_APPROVED . " AND forum_id = " . $id;
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
