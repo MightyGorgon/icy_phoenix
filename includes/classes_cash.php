@@ -596,6 +596,7 @@ if (defined('CM_POSTING'))
 					FROM " . POSTS_TABLE . "
 					WHERE poster_id = $poster_id
 						AND post_time > $interval
+						AND deleted = 0
 					GROUP BY forum_id";
 				$result = $db->sql_query($sql);
 

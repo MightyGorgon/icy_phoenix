@@ -344,7 +344,7 @@ switch ($mode)
 		// MG Cash MOD For IP - BEGIN
 		if (!empty($config['plugins']['cash']['enabled']))
 		{
-			$temp = $submit;
+			$temp_submit = $submit;
 			$submit = !(!$submit || (isset($config['cash_disable']) && !$config['cash_disable'] && (($mode == 'editpost') || ($mode == 'delete'))));
 		}
 		// MG Cash MOD For IP - END
@@ -355,8 +355,8 @@ switch ($mode)
 		// MG Cash MOD For IP - BEGIN
 		if (!empty($config['plugins']['cash']['enabled']))
 		{
-			$submit = $temp;
-			unset($temp);
+			$submit = $temp_submit;
+			unset($temp_submit);
 		}
 		// MG Cash MOD For IP - END
 
@@ -1287,7 +1287,12 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			{
 				message_die(GENERAL_MESSAGE, $error_msg);
 			}
-			delete_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id);
+			$delete_mode = request_var('delete_mode', 0);
+			if (!in_array($delete_mode, array(class_topics::SOFT_DELETE, class_topics::RAW_DELETE)))
+			{
+				$delete_mode = class_topics::SOFT_DELETE;
+			}
+			delete_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $delete_mode);
 			break;
 	}
 
@@ -1590,7 +1595,7 @@ else
 	$postreport = request_var('postreport', 0);
 	if ($postreport)
 	{
-		$sql = 'SELECT topic_id FROM ' . POSTS_TABLE . ' WHERE post_id = ' . $postreport;
+		$sql = 'SELECT topic_id FROM ' . POSTS_TABLE . ' WHERE deleted = 0 AND post_id = ' . $postreport;
 		$result = $db->sql_query($sql);
 		$post_details = $db->sql_fetchrow($result);
 		$post_topic_id = $post_details['topic_id'];

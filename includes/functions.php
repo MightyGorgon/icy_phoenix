@@ -2460,7 +2460,7 @@ function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 	$midnight = create_date_midnight($gmepoch, $tz);
 
 	$output_date = '';
-	$format_hour = 'H.i';
+	$format_hour = 'H:i';
 	if ($gmepoch > $midnight)
 	{
 		$format = ($day_only) ? $format : $format_hour;
@@ -4017,7 +4017,8 @@ function page_header($title = '', $parse_template = false)
 			$sql = "SELECT COUNT(post_id) as total
 				FROM " . POSTS_TABLE . "
 				WHERE post_time >= " . $user->data['user_lastvisit'] . $auth_forum . "
-				AND poster_id != " . $user->data['user_id'];
+					AND deleted = 0
+					AND poster_id != " . $user->data['user_id'];
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);

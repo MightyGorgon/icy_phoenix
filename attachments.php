@@ -305,7 +305,7 @@ else
 	{
 		$sql = "SELECT a.post_id, t.topic_title, d.*
 			FROM " . $attach_table . " a, " . $attach_desc_table . " d, " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
-			WHERE (a.post_id = p.post_id) AND (p.forum_id IN (" . implode(', ', $forum_ids) . ")) AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
+			WHERE p.deleted = 0 AND (a.post_id = p.post_id) AND (p.forum_id IN (" . implode(', ', $forum_ids) . ")) AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
 			ORDER BY $order_by";
 		$result = $db->sql_query($sql);
 	}
@@ -313,7 +313,7 @@ else
 	{
 		$sql = "SELECT a.post_id, t.topic_title, d.*
 			FROM " . $attach_table . " a, " . $attach_desc_table . " d, " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
-			WHERE (a.post_id = p.post_id) AND (p.forum_id = " . $forum_id . ") AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
+			WHERE p.deleted = 0 AND (a.post_id = p.post_id) AND (p.forum_id = " . $forum_id . ") AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id)
 			ORDER BY $order_by";
 		$result = $db->sql_query($sql);
 	}
@@ -418,7 +418,7 @@ else
 		$gen_pagination = true;
 		$sql = "SELECT count(*) AS total
 			FROM " . $attach_table . " a, " . POSTS_TABLE . " p
-			WHERE (a.post_id = p.post_id) AND (p.forum_id IN (" . implode(', ', $forum_ids) . "))";
+			WHERE (a.post_id = p.post_id) AND (p.forum_id IN (" . implode(', ', $forum_ids) . ")) AND p.deleted = 0";
 		$result = $db->sql_query($sql);
 	}
 	elseif (($is_auth_ary[$forum_id]['auth_read']) && ($is_download_auth_ary[$forum_id]['auth_download']) && ($num_attachments > 0))
@@ -426,7 +426,7 @@ else
 		$gen_pagination = true;
 		$sql = "SELECT count(*) AS total
 			FROM " . $attach_table . " a, " . POSTS_TABLE . " p
-			WHERE (a.post_id = p.post_id) AND (p.forum_id = " . $forum_id . ")";
+			WHERE (a.post_id = p.post_id) AND (p.forum_id = " . $forum_id . ") AND p.deleted = 0";
 		$result = $db->sql_query($sql);
 	}
 	$pagination_append = POST_FORUM_URL . '=' . $forum_id . '&amp;';

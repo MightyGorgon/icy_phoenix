@@ -21,7 +21,7 @@ $template->assign_vars(array(
 );
 
 // get total posts
-$sql = "SELECT COUNT(post_id) as total_posts FROM " . POSTS_TABLE;
+$sql = "SELECT COUNT(post_id) as total_posts FROM " . POSTS_TABLE . "WHERE deleted = 0";
 $result = $stat_db->sql_query($sql);
 $row = $stat_db->sql_fetchrow($result);
 $total_posts = $row['total_posts'];

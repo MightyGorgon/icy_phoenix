@@ -30,6 +30,7 @@ $nyear *= 12;
 // New posts by Months.
 $sql = 'SELECT MONTH(FROM_UNIXTIME(post_time)) as mon, YEAR(FROM_UNIXTIME(post_time)) as year,COUNT(*) AS ant
 	FROM ' . POSTS_TABLE . '
+	WHERE deleted = 0
 	GROUP BY year,mon
 	ORDER BY year DESC, mon DESC
 	LIMIT 0,'. $nyear;
@@ -40,6 +41,7 @@ $posts_data = $stat_db->sql_fetchrowset($result);
 // New topics by Months.
 $sql = 'SELECT MONTH(FROM_UNIXTIME(topic_time)) as mon,  YEAR(FROM_UNIXTIME(topic_time)) as year,COUNT(*) AS ant
 	FROM ' . TOPICS_TABLE . '
+	WHERE deleted = 0
 	GROUP BY year,mon
 	ORDER BY year DESC, mon DESC
 	LIMIT 0,'. $nyear;

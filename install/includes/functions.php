@@ -288,7 +288,7 @@ function init_userprefs($userdata)
 		$default_lang = ltrim(basename(rtrim($config['default_lang'])), "'");
 	}
 
-	if ( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.'.PHP_EXT)) )
+	if ( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.' . PHP_EXT)) )
 	{
 		if ( $userdata['user_id'] != ANONYMOUS )
 		{
@@ -303,7 +303,7 @@ function init_userprefs($userdata)
 			$default_lang = 'english';
 		}
 
-		if ( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.'.PHP_EXT)) )
+		if ( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $default_lang . '/lang_main.' . PHP_EXT)) )
 		{
 			message_die(CRITICAL_ERROR, 'Could not locate valid language pack');
 		}
@@ -342,7 +342,7 @@ function init_userprefs($userdata)
 
 	if ( defined('IN_ADMIN') )
 	{
-		if( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.'.PHP_EXT)) )
+		if( !file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin.' . PHP_EXT)) )
 		{
 			$config['default_lang'] = 'english';
 		}
@@ -723,11 +723,11 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		{
 			if ( !empty($config['default_lang']) )
 			{
-				include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main.'.PHP_EXT);
+				include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main.' . PHP_EXT);
 			}
 			else
 			{
-				include(IP_ROOT_PATH . 'language/lang_english/lang_main.'.PHP_EXT);
+				include(IP_ROOT_PATH . 'language/lang_english/lang_main.' . PHP_EXT);
 			}
 		}
 
@@ -741,11 +741,11 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		//
 		if ( !defined('IN_ADMIN') )
 		{
-			include(IP_ROOT_PATH . 'includes/page_header.'.PHP_EXT);
+			include(IP_ROOT_PATH . 'includes/page_header.' . PHP_EXT);
 		}
 		else
 		{
-			include(IP_ROOT_PATH . 'admin/page_header_admin.'.PHP_EXT);
+			include(IP_ROOT_PATH . 'admin/page_header_admin.' . PHP_EXT);
 		}
 	}
 
@@ -782,7 +782,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 			// Critical errors mean we cannot rely on _ANY_ DB information being
 			// available so we're going to dump out a simple echo'd statement
 			//
-			include(IP_ROOT_PATH . 'language/lang_english/lang_main.'.PHP_EXT);
+			include(IP_ROOT_PATH . 'language/lang_english/lang_main.' . PHP_EXT);
 
 			if ( $msg_text == '' )
 			{
@@ -837,11 +837,11 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 		if ( !defined('IN_ADMIN') )
 		{
-			include(IP_ROOT_PATH . 'includes/page_tail.'.PHP_EXT);
+			include(IP_ROOT_PATH . 'includes/page_tail.' . PHP_EXT);
 		}
 		else
 		{
-			include(IP_ROOT_PATH . 'admin/page_footer_admin.'.PHP_EXT);
+			include(IP_ROOT_PATH . 'admin/page_footer_admin.' . PHP_EXT);
 		}
 	}
 	else
@@ -860,7 +860,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 // dougk_ff7 <October 5, 2002>
 function phpbb_realpath($path)
 {
-	return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.'.PHP_EXT)) ? $path : @realpath($path);
+	return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
 }
 
 function redirect($url, $return = false)
@@ -1185,7 +1185,8 @@ function remove_common($mode, $fraction, $word_id_list = array())
 	global $db;
 
 	$sql = "SELECT COUNT(post_id) AS total_posts
-		FROM " . POSTS_TABLE;
+		FROM " . POSTS_TABLE . "
+		WHERE deleted = 0";
 	if ( !($result = $db->sql_query($sql)) )
 	{
 		message_die(GENERAL_ERROR, 'Could not obtain post count', '', __LINE__, __FILE__, $sql);
@@ -1411,7 +1412,7 @@ function sync($type, $id = false)
 			case 'forum':
 			$sql = "SELECT MAX(post_id) AS last_post, COUNT(post_id) AS total
 				FROM " . POSTS_TABLE . "
-				WHERE forum_id = $id";
+				WHERE forum_id = $id AND deleted = 0";
 			if ( !($result = $db->sql_query($sql)) )
 			{
 				message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);
@@ -1450,7 +1451,7 @@ function sync($type, $id = false)
 		case 'topic':
 			$sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
 				FROM " . POSTS_TABLE . "
-				WHERE topic_id = $id";
+				WHERE topic_id = $id AND deleted = 0";
 			if ( !($result = $db->sql_query($sql)) )
 			{
 				message_die(GENERAL_ERROR, 'Could not get post ID', '', __LINE__, __FILE__, $sql);

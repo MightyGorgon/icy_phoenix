@@ -154,6 +154,11 @@
 			<div class="extra-top-padding" style="position: relative; float: left; text-align: left; vertical-align: middle;">
 				{postrow.PROFILE_IMG}{postrow.PM_IMG}{postrow.EMAIL_IMG}{postrow.WWW_IMG}{postrow.ALBUM_IMG}&nbsp;
 			</div>
+			<!-- IF postrow.DELETED -->
+			<div class="extra-top-padding" style="position: relative; float: center; text-align: left; vertical-align: middle;">
+				{postrow.POST_IS_DELETED}&nbsp;
+			</div>
+			<!-- ENDIF -->
 			<!-- IF not S_BOT -->
 			<!-- BEGIN switch_quick_quote -->
 			<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27,true,false);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a><a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27,true,false);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>

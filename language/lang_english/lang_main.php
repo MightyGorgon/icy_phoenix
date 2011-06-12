@@ -836,6 +836,7 @@ $lang = array_merge($lang, array(
 	'Sort_Topic_Title' => 'Topic Title',
 	'Sort_Author' => 'Author',
 	'Sort_Forum' => 'Forum',
+	'POST_IS_DELETED' => 'Post deleted by %s<b>%s</b>%s on %s.', //first => link, second => deleter's name, third => link end, fourth => date
 
 	'Display_results' => 'Display results as',
 	'All_available' => 'All available',

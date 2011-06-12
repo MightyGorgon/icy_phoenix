@@ -109,6 +109,7 @@ function get_attachment_details($attach_id)
 			AND s.attach_id = a.attach_id
 			AND a.post_id > 0
 			AND p.post_id = a.post_id
+			AND p.deleted = 0
 		LIMIT 1";
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);

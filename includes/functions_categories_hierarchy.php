@@ -476,7 +476,7 @@ function read_tree($force = false)
 
 			$sql = "SELECT p.forum_id, p.topic_id, p.post_time
 						FROM " . POSTS_TABLE . " p
-						WHERE (p.post_time > " . $user_lastvisit . ")
+						WHERE (p.post_time > " . $user_lastvisit . ") AND p.deleted = 0
 						ORDER BY p.post_time DESC
 						" . $sql_limit;
 			//$result = (CACHE_CH_SQL ? $db->sql_query($sql, 3600, 'posts_', POSTS_CACHE_FOLDER) : $db->sql_query($sql));
@@ -1497,7 +1497,7 @@ function make_cat_nav_tree($cur, $pgm = '', $meta_content = '', $nav_class = 'na
 		elseif ($type == POST_POST_URL)
 		{
 			$sql_from = ", " . POSTS_TABLE . " p";
-			$sql_where = " WHERE t.topic_id = p.topic_id AND p.post_id = " . $id . " LIMIT 1";
+			$sql_where = " WHERE p.deleted = 0 AND t.topic_id = p.topic_id AND p.post_id = " . $id . " LIMIT 1";
 		}
 
 		if (empty($meta_content['forum_id']) || empty($meta_content['topic_title']))

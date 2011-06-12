@@ -122,6 +122,7 @@ else
 		WHERE t.forum_id IN (" . $allowed_forums . ")
 				AND u.user_id = t.topic_poster
 				AND p.post_id = t.topic_first_post_id
+				AND p.deleted = 0
 				" . $sql_news . "
 		ORDER BY " . $sql_sort . "
 		LIMIT " . $news_items;

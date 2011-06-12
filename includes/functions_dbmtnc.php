@@ -809,7 +809,7 @@ function throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = '')
 
 	// Include Tail and exit
 	echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT) . '">' . $lang['Back_to_DB_Maintenance'] . '</a></p>' . "\n");
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . 'page_footer_admin.' . PHP_EXT);
 	exit;
 }
 
@@ -1272,7 +1272,7 @@ function get_word_id($word)
 	$db->sql_return_on_error(false);
 	if (!$result)
 	{
-		include('./page_header_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . 'page_header_admin.' . PHP_EXT);
 		throw_error("Couldn't get search word data!", __LINE__, __FILE__, $sql);
 	}
 	if ($row = $db->sql_fetchrow($result)) // Word was found
@@ -1294,7 +1294,7 @@ function get_word_id($word)
 		$db->sql_return_on_error(false);
 		if (!$result)
 		{
-			include('./page_header_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . 'page_header_admin.' . PHP_EXT);
 			throw_error("Couldn't insert search word data!", __LINE__, __FILE__, $sql);
 		}
 		return $db->sql_nextid();

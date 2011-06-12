@@ -212,7 +212,8 @@ function remove_common($mode, $fraction, $word_id_list = array())
 	global $db;
 
 	$sql = "SELECT COUNT(post_id) AS total_posts
-		FROM " . POSTS_TABLE;
+		FROM " . POSTS_TABLE . "
+		WHERE deleted = 0";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 
@@ -271,6 +272,8 @@ function remove_search_post($post_id_sql, $remove_subject = true, $remove_messag
 {
 	global $db;
 
+	$post_id_sql = is_array($post_id_sql) ? $db->sql_in_set('post_id', $post_id_sql) : 'post_id IN (' . $post_id_sql . ')';
+
 	$words_removed = false;
 
 	$where_sql = '';
@@ -281,7 +284,7 @@ function remove_search_post($post_id_sql, $remove_subject = true, $remove_messag
 
 	$sql = "SELECT word_id
 		FROM " . SEARCH_MATCH_TABLE . "
-		WHERE post_id IN ($post_id_sql)
+		WHERE $post_id_sql
 		$where_sql
 		GROUP BY word_id";
 	$db->sql_return_on_error(true);

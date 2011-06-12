@@ -74,7 +74,7 @@ if (!$statistics->result_cache_used)
 
 	$sql = "SELECT post_text
 	FROM " . POSTS_TABLE . "
-	WHERE " . $where_query . "
+	WHERE " . $where_query . " AND deleted = 0
 	GROUP BY post_text";
 	$result = $stat_db->sql_query($sql);
 	$rows = $stat_db->sql_fetchrowset($result);

@@ -182,6 +182,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			$s_topic_ids = implode(', ', $topic_ids);
 			$sql = "SELECT DISTINCT topic_id FROM " . POSTS_TABLE . "
 					WHERE topic_id IN ($s_topic_ids)
+						AND deleted = 0
 						AND poster_id = " . $user->data['user_id'];
 			$result = $db->sql_query($sql);
 

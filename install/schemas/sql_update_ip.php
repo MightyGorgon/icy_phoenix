@@ -4324,7 +4324,9 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.18.71 */
 		case '1.3.18.71':
-
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `deleted` boolean";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `deleter_user_id` int(9)";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `deleter_user_username` varchar(255)";
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

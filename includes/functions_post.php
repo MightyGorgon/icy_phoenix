@@ -148,7 +148,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 
 		if(isset($topic_id) && $last_post_time)
 		{
-			$sql = "SELECT post_time FROM " . POSTS_TABLE . " WHERE topic_id = '" . $topic_id . "' ORDER BY post_time DESC LIMIT 0, 1";
+			$sql = "SELECT post_time FROM " . POSTS_TABLE . " WHERE deleted = 0 AND topic_id = '" . $topic_id . "' ORDER BY post_time DESC LIMIT 0, 1";
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
@@ -178,8 +178,9 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 			$sql = "SELECT poster_id FROM " . POSTS_TABLE . "
 							WHERE topic_id = '" . $topic_id . "'
 							AND post_time > " . (time() - 86400) . "
-							ORDER BY post_time DESC
-							LIMIT 0, 1";
+							AND deleted = 0
+						ORDER BY post_time DESC
+						LIMIT 0, 1";
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
@@ -623,7 +624,7 @@ function get_first_last_post_id($topic_id)
 
 	$sql = "SELECT MAX(post_id) AS last_post_id, MIN(post_id) AS first_post_id, COUNT(post_id) - 1 AS replies
 		FROM " . POSTS_TABLE . "
-		WHERE topic_id = " . $topic_id;
+		WHERE deleted = 0 AND topic_id = " . $topic_id;
 	$result = $db->sql_query($sql);
 	if ($row = $db->sql_fetchrow($result))
 	{
@@ -644,7 +645,7 @@ function get_forum_last_post_id($forum_id)
 
 	$sql = "SELECT MAX(post_id) AS last_post_id
 		FROM " . POSTS_TABLE . "
-		WHERE forum_id = " . $forum_id;
+		WHERE deleted = 0 AND forum_id = " . $forum_id;
 	$result = $db->sql_query($sql);
 
 	if ($row = $db->sql_fetchrow($result))
@@ -880,10 +881,12 @@ function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_a
 	return;
 }
 
-/*
-* Delete a post/poll
-*/
-function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id)
+/**
+ * Delete a post/poll
+ *
+ * @todo remove it (use class_mcp instead)
+ */
+function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, $method = class_topics::SOFT_DELETE)
 {
 	global $db, $cache, $config, $lang, $user;
 
@@ -897,52 +900,58 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		// MG Cash MOD For IP - END
 		include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
-		$sql = "DELETE FROM " . POSTS_TABLE . " WHERE post_id = $post_id";
+		$sql = "UPDATE " . POSTS_TABLE . " SET deleted = 1, deleter_user_id = " . $user->data['user_id'] . ", deleter_username = '" . $db->sql_escape($user->data['username']) . "', deleted_time = " . time() . " WHERE post_id = $post_id";
 		$db->sql_query($sql);
 
-		// Event Registration - BEGIN
-		if ($post_data['first_post'])
+		if ($mode == class_topics::RAW_DELETE)
 		{
-			$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE topic_id = $topic_id";
-			$db->sql_query($sql);
-
-			$sql = "DELETE FROM " . REGISTRATION_DESC_TABLE . " WHERE topic_id = $topic_id";
-			$db->sql_query($sql);
-		}
-		// Event Registration - END
-
-//<!-- BEGIN Unread Post Information to Database Mod -->
-		$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . " WHERE post_id = $post_id";
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . " WHERE post_id = $post_id";
-		$db->sql_query($sql);
-//<!-- END Unread Post Information to Database Mod -->
-
-		if ($post_data['last_post'])
-		{
+			// Event Registration - BEGIN
 			if ($post_data['first_post'])
 			{
-				$forum_update_sql .= ', forum_topics = forum_topics - 1';
-				$sql = "DELETE FROM " . TOPICS_TABLE . "
-					WHERE topic_id = $topic_id
-						OR topic_moved_id = $topic_id";
+				$sql = "DELETE FROM " . REGISTRATION_TABLE . " WHERE topic_id = $topic_id";
 				$db->sql_query($sql);
 
-				$sql = "DELETE FROM " . THANKS_TABLE . " WHERE topic_id = $topic_id";
-				$db->sql_query($sql);
-
-				$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . " WHERE topic_id = $topic_id";
-				$db->sql_query($sql);
-
-				$sql = "DELETE FROM " . BOOKMARK_TABLE . " WHERE topic_id = $topic_id";
+				$sql = "DELETE FROM " . REGISTRATION_DESC_TABLE . " WHERE topic_id = $topic_id";
 				$db->sql_query($sql);
 			}
+			// Event Registration - END
+
+	//<!-- BEGIN Unread Post Information to Database Mod -->
+			$sql = "DELETE FROM " . UPI2DB_LAST_POSTS_TABLE . " WHERE post_id = $post_id";
+			$db->sql_query($sql);
+
+			$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . " WHERE post_id = $post_id";
+			$db->sql_query($sql);
+	//<!-- END Unread Post Information to Database Mod -->
+
+			if ($post_data['last_post'])
+			{
+				if ($post_data['first_post'])
+				{
+					$forum_update_sql .= ', forum_topics = forum_topics - 1';
+					$sql = "UPDATE " . TOPICS_TABLE . "
+						SET deleted = 1, deleter_user_id = " . $user->data['user_id'] . ", deleter_username = '" . $db->sql_escape($user->data['username']) . "', deleted_time = " . time() . "
+						WHERE topic_id = $topic_id";
+					$db->sql_query($sql);
+					$sql = "DELETE FROM " . TOPICS_TABLE . "
+						WHERE topic_moved_id = $topic_id";
+					$db->sql_query($sql);
+
+					$sql = "DELETE FROM " . THANKS_TABLE . " WHERE topic_id = $topic_id";
+					$db->sql_query($sql);
+
+					$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . " WHERE topic_id = $topic_id";
+					$db->sql_query($sql);
+
+					$sql = "DELETE FROM " . BOOKMARK_TABLE . " WHERE topic_id = $topic_id";
+					$db->sql_query($sql);
+				}
+			}
+			remove_search_post($post_id);
 		}
 
 		empty_cache_folders(POSTS_CACHE_FOLDER);
 		empty_cache_folders(FORUMS_CACHE_FOLDER);
-		remove_search_post($post_id);
 	}
 
 	if (($mode == 'poll_delete') || (($mode == 'delete') && $post_data['first_post'] && $post_data['last_post']) && $post_data['has_poll'] && $post_data['edit_poll'])

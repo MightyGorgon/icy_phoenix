@@ -31,7 +31,7 @@ require('pagestart.' . PHP_EXT);
 
 setup_extra_lang(array('lang_rate'));
 
-require(IP_ROOT_PATH . 'includes/functions_rate.php');
+require(IP_ROOT_PATH . 'includes/functions_rate.' . PHP_EXT);
 
 $mode = request_var('mode', '');
 $admin_message = request_var('admin_message', '', true);

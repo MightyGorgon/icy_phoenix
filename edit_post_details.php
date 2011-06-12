@@ -102,7 +102,7 @@ else
 	{
 		$sql = "SELECT p.topic_id
 						FROM " . POSTS_TABLE . " p
-						WHERE p.post_id = '" . $post_id . "'";
+						WHERE p.deleted = 0 AND p.post_id = '" . $post_id . "'";
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -142,9 +142,10 @@ else
 	{
 		$topic_post_time = 'post';
 
-		$sql = "SELECT p.post_time, p.poster_id, u.user_id, u.username, u.user_active, u.user_color
+		$sql = "SELECT p.post_time, p.poster_id, u.user_id, u.username, u.user_active, u.user_color, p.deleted
 						FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
 						WHERE p.post_id = '" . $post_id . "'
+							AND p.deleted = 0
 							AND u.user_id = p.poster_id";
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
