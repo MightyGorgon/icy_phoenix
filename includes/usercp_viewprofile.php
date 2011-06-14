@@ -987,7 +987,7 @@ if (!empty($ip_display_auth))
 
 	// All IP addresses this user has posted from section
 	$total_ips = 0;
-	$sql = 'SELECT poster_ip, COUNT(*) AS postings FROM ' . POSTS_TABLE . ' WHERE post_approval = ' . POST_APPROVAL . ' AND poster_id = "' . $profiledata['user_id'] . '" GROUP BY poster_ip ORDER BY ' . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . ' DESC';
+	$sql = 'SELECT poster_ip, COUNT(*) AS postings FROM ' . POSTS_TABLE . ' WHERE post_approval = ' . POST_APPROVED . ' AND poster_id = "' . $profiledata['user_id'] . '" GROUP BY poster_ip ORDER BY ' . ((SQL_LAYER == 'msaccess') ? 'COUNT(*)' : 'postings') . ' DESC';
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))

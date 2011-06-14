@@ -4326,8 +4326,8 @@ if (substr($mode, 0, 6) == 'update')
 		case '1.3.18.71':
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `post_approval` tinyint(1) DEFAULT 1";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `deleter_user_id` int(9)";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `deleter_username` varchar(255)";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `deleted_time` int(9)";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `deleter_user_username` varchar(255)";
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";
