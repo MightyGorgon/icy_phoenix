@@ -40,33 +40,39 @@ define('POST_FLINK_URL', 'l');
 // fields in forums table, except auths ones:
 //		table_field => form_field
 $forums_fields_list = array(
-	'forum_id'							=> 'id',
-	'forum_type'						=> 'forum_type',
-	'parent_id'							=> 'main_id',
-	'main_type'							=> 'main_type',
-	'forum_order'						=> 'order',
-	'forum_name'						=> 'name',
-	'forum_name_clean'			=> 'name_clean',
-	'forum_desc'						=> 'desc',
-	'forum_status'					=> 'status',
-	'forum_thanks'					=> 'forum_thanks',
-	'forum_likes'						=> 'forum_likes',
-	'forum_limit_edit_time'	=> 'forum_limit_edit_time',
-	'forum_similar_topics'	=> 'forum_similar_topics',
-	'forum_topic_views'			=> 'forum_topic_views',
-	'forum_tags'						=> 'forum_tags',
-	'forum_sort_box'				=> 'forum_sort_box',
-	'forum_kb_mode'					=> 'forum_kb_mode',
-	'forum_index_icons'			=> 'forum_index_icons',
-	'forum_notify'					=> 'forum_notify',
-	'forum_postcount'				=> 'forum_postcount',
-	'forum_rules'						=> 'forum_rules',
-	'prune_enable'					=> 'prune_enable',
-	'forum_link'						=> 'link',
-	'forum_link_internal'		=> 'link_internal',
-	'forum_link_hit_count'	=> 'link_hit_count',
-	'forum_link_hit'				=> 'link_hit',
-	'icon'									=> 'icon',
+	'forum_id'										=> 'id',
+	'forum_type'									=> 'forum_type',
+	'parent_id'										=> 'main_id',
+	'main_type'										=> 'main_type',
+	'forum_order'									=> 'order',
+	'forum_name'									=> 'name',
+	'forum_name_clean'						=> 'name_clean',
+	'forum_desc'									=> 'desc',
+	'forum_status'								=> 'status',
+	'forum_thanks'								=> 'forum_thanks',
+	'forum_likes'									=> 'forum_likes',
+	'forum_limit_edit_time'				=> 'forum_limit_edit_time',
+	'forum_similar_topics'				=> 'forum_similar_topics',
+	'forum_topic_views'						=> 'forum_topic_views',
+	'forum_tags'									=> 'forum_tags',
+	'forum_sort_box'							=> 'forum_sort_box',
+	'forum_kb_mode'								=> 'forum_kb_mode',
+	'forum_index_icons'						=> 'forum_index_icons',
+	'forum_notify'								=> 'forum_notify',
+	'forum_postcount'							=> 'forum_postcount',
+	'forum_rules_switch'					=> 'forum_rules_switch',
+	'forum_rules'									=> 'forum_rules',
+	'forum_rules_custom_title'		=> 'forum_rules_custom_title',
+	'forum_rules_display_title'		=> 'forum_rules_display_title',
+	'forum_rules_in_viewforum'		=> 'forum_rules_in_viewforum',
+	'forum_rules_in_viewtopic'		=> 'forum_rules_in_viewtopic',
+	'forum_rules_in_posting'			=> 'forum_rules_in_posting',
+	'prune_enable'								=> 'prune_enable',
+	'forum_link'									=> 'link',
+	'forum_link_internal'					=> 'link_internal',
+	'forum_link_hit_count'				=> 'link_hit_count',
+	'forum_link_hit'							=> 'link_hit',
+	'icon'												=> 'icon',
 );
 
 // fields in categories table:
@@ -85,53 +91,39 @@ $categories_fields_list = array(
 
 // type of the form fields
 $fields_type = array(
-	'type'									=> 'VARCHAR',
-	'id'										=> 'INTEGER',
-	'main_id'								=> 'INTEGER',
-	'main_type'							=> 'VARCHAR',
-	'order'									=> 'INTEGER',
-	'name'									=> 'HTML',
-	'name_clean'						=> 'VARCHAR',
-	'desc'									=> 'HTML',
-	'icon'									=> 'HTML',
-	'status'								=> 'INTEGER',
-	'forum_thanks'					=> 'INTEGER',
-	'forum_likes'					=> 'INTEGER',
-	'forum_limit_edit_time'	=> 'INTEGER',
-	'forum_sort_box'				=> 'INTEGER',
-	'forum_kb_mode'					=> 'INTEGER',
-	'forum_index_icons'			=> 'INTEGER',
-	'forum_notify'					=> 'INTEGER',
-	'forum_rules'						=> 'INTEGER',
-	'forum_postcount'				=> 'INTEGER',
-	'enable'								=> 'INTEGER',
-	'link'									=> 'HTML',
-	'link_internal'					=> 'INTEGER',
-	'link_hit_count'				=> 'INTEGER',
-	'link_hit'							=> 'INTEGER',
+	'type'												=> 'VARCHAR',
+	'id'													=> 'INTEGER',
+	'main_id'											=> 'INTEGER',
+	'main_type'										=> 'VARCHAR',
+	'order'												=> 'INTEGER',
+	'name'												=> 'HTML',
+	'name_clean'									=> 'VARCHAR',
+	'desc'												=> 'HTML',
+	'icon'												=> 'HTML',
+	'status'											=> 'INTEGER',
+	'forum_thanks'								=> 'INTEGER',
+	'forum_likes'									=> 'INTEGER',
+	'forum_limit_edit_time'				=> 'INTEGER',
+	'forum_sort_box'							=> 'INTEGER',
+	'forum_kb_mode'								=> 'INTEGER',
+	'forum_index_icons'						=> 'INTEGER',
+	'forum_notify'								=> 'INTEGER',
+	'forum_rules_switch'					=> 'INTEGER',
+	'forum_rules'									=> 'HTML',
+	'forum_rules_custom_title'		=> 'VARCHAR',
+	'forum_rules_display_title'		=> 'INTEGER_CB',
+	'forum_rules_in_viewforum'		=> 'INTEGER_CB',
+	'forum_rules_in_viewtopic'		=> 'INTEGER_CB',
+	'forum_rules_in_posting'			=> 'INTEGER_CB',
+	'forum_postcount'							=> 'INTEGER',
+	'enable'											=> 'INTEGER',
+	'link'												=> 'HTML',
+	'link_internal'								=> 'INTEGER',
+	'link_hit_count'							=> 'INTEGER',
+	'link_hit'										=> 'INTEGER',
 );
 
-$rules_fields_list = array(
-	'forum_id'							=> 'id',
-	'rules'									=> 'rules',
-	'rules_display_title'		=> 'rules_display_title',
-	'rules_custom_title'		=> 'rules_custom_title',
-	'rules_in_viewforum'		=> 'rules_in_viewforum',
-	'rules_in_viewtopic'		=> 'rules_in_viewtopic',
-	'rules_in_posting'			=> 'rules_in_posting',
-);
-
-$rules_fields_type = array(
-	'id'										=> 'INTEGER',
-	'rules'									=> 'TEXT',
-	'rules_display_title'		=> 'INTEGER',
-	'rules_custom_title'		=> 'VARCHAR',
-	'rules_in_viewforum'		=> 'INTEGER',
-	'rules_in_viewtopic'		=> 'INTEGER',
-	'rules_in_posting'			=> 'INTEGER',
-);
-
-$zero_array = array('rules_in_viewforum', 'rules_in_viewtopic', 'rules_in_posting');
+$zero_array = array('forum_rules_in_viewforum', 'forum_rules_in_viewtopic', 'forum_rules_in_posting');
 
 // list for pull down menu and check of values :
 //		value => lang key entry
@@ -323,26 +315,12 @@ if ($mode == 'resync')
 	exit;
 }
 
-// handle edition
+// handle edit
 if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 {
 	$CH_this = isset($tree['keys'][$fid]) ? $fid : '';
 	$idx = isset($tree['keys'][$fid]) ? $tree['keys'][$fid] : '';
 	$item = array();
-
-	// LOAD RULES INTO A NEW ARRAY
-	$forum_info = array();
-	$sql = "SELECT * FROM " . FORUMS_RULES_TABLE;
-	$result = $db->sql_query($sql);
-
-	while ($forum_info = $db->sql_fetchrow($result))
-	{
-		foreach ($forum_info as $k => $v)
-		{
-			$forums_array[$forum_info['forum_id']][$k] = $v;
-		}
-	}
-	$db->sql_freeresult($result);
 
 	//-------------------------
 	// get values from memory
@@ -352,19 +330,15 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	$old_id = empty($CH_this) ? 0 : intval(substr($fid, 1));
 
 	// choose the appropriate list of field (forums or categories table)
-	$process_forum_rules = false;
 	switch ($old_type)
 	{
 		case POST_FORUM_URL:
-			$process_forum_rules = true;
 			$fields_list = 'forums_fields_list';
 			break;
 		case POST_CAT_URL:
-			$process_forum_rules = false;
 			$fields_list = 'categories_fields_list';
 			break;
 		default:
-			$process_forum_rules = true;
 			$fields_list = 'forums_fields_list';
 			break;
 	}
@@ -375,15 +349,6 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	{
 		$item[$process_field] = empty($CH_this) ? '' : trim($tree['data'][$idx][$table_field]);
 		//echo($process_field . ' = ' . $item[$process_field] . '<br />');
-	}
-
-	if ($process_forum_rules)
-	{
-		@reset($rules_fields_list);
-		while (list($table_field, $process_field) = @each($rules_fields_list))
-		{
-			$item[$process_field] = empty($CH_this) ? '' : trim($forums_array[$item['id']][$table_field]);
-		}
 	}
 
 	// add fields not present in the list or having a special treatment
@@ -479,37 +444,32 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	}
 
 	//-------------------------
-	// get values from form
+	// Get values from form
 	//-------------------------
-	// type
+	// Type
 	$item['type'] = isset($_POST['type']) ? $_POST['type'] : $item['type'];
 	if (!isset($forum_type_list[ $item['type'] ]))
 	{
 		$item['type'] = POST_FORUM_URL;
 	}
 
-	// choose the appropriate list of field (forums or categories table)
-	$process_forum_rules = false;
+	// Choose the appropriate list of field (forums or categories table)
 	switch ($item['type'])
 	{
 		case POST_FLINK_URL:
 			$item['forum_type'] = FORUM_LINK;
-			$process_forum_rules = true;
 			$fields_list = 'forums_fields_list';
 			break;
 		case POST_FORUM_URL:
 			$item['forum_type'] = FORUM_POST;
-			$process_forum_rules = true;
 			$fields_list = 'forums_fields_list';
 			break;
 		case POST_CAT_URL:
 			$item['forum_type'] = FORUM_CAT;
-			$process_forum_rules = true;
 			$fields_list = 'categories_fields_list';
 			break;
 		default:
 			$item['forum_type'] = FORUM_POST;
-			$process_forum_rules = true;
 			$fields_list = 'forums_fields_list';
 			break;
 	}
@@ -518,13 +478,22 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	@reset($$fields_list);
 	while (list($table_field, $process_field) = @each($$fields_list))
 	{
-		if (isset($_POST[$process_field]))
+		// Set correct value for checkboxes
+		if (($submit) && ($fields_type[$process_field] == 'INTEGER_CB'))
 		{
-			// get field from form
+			$form_field = isset($_POST[$process_field]) ? 1 : 0;
+			$item[$process_field] = $form_field;
+		}
+		elseif (isset($_POST[$process_field]))
+		{
+			// Get field from form
 			switch ($fields_type[$process_field])
 			{
 				case 'INTEGER':
 					$form_field = request_var($process_field, 0);
+					break;
+				case 'INTEGER_CB':
+					$form_field = isset($_POST[$process_field]) ? 1 : 0;
 					break;
 				case 'HTML':
 					$form_field = request_var($process_field, '', true);
@@ -536,39 +505,6 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			}
 			// store
 			$item[$process_field] = $form_field;
-		}
-	}
-
-	if ($process_forum_rules)
-	{
-		@reset($rules_fields_list);
-		while (list($table_field, $process_field) = @each($rules_fields_list))
-		{
-			// set to zero
-			if ($submit && in_array($process_field, $zero_array))
-			{
-				$item[$process_field] = 0;
-			}
-
-			if (isset($_POST[$process_field]))
-			{
-				// get field from form
-				switch ($fields_type[$process_field])
-				{
-					case 'INTEGER':
-						$form_field = request_var($process_field, 0);
-						break;
-					case 'HTML':
-						$form_field = request_var($process_field, '', true);
-						$form_field = htmlspecialchars_decode($form_field, ENT_COMPAT);
-						break;
-					default:
-						$form_field = request_var($process_field, '', true);
-						break;
-				}
-				// store
-				$item[$process_field] = $form_field;
-			}
 		}
 	}
 
@@ -885,53 +821,18 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 
 		if (!$delete_forum)
 		{
-			// Insert rules only for forums?
-			//if ($item['type'] == POST_FORUM_URL)
-			if (true)
-			{
-				// rules fields
-				$fields_list = 'rules_fields_list';
-				$sql_fields = '';
-				$sql_values = '';
-				$sql_update = '';
-
-				@reset($$fields_list);
-				while (list($table_field, $process_field) = @each($$fields_list))
-				{
-					$table_value = ($rules_fields_type[$process_field] == 'INTEGER') ? intval($item[$process_field]) : sprintf("'%s'", $db->sql_escape(str_replace('\"', '"', $item[$process_field])));
-					$sql_fields .= (empty($sql_fields) ? '' : ', ') . $table_field;
-					$sql_values .= (empty($sql_values) ? '' : ', ') . $table_value;
-					$sql_update .= (empty($sql_update) ? '' : ', ') . $table_field . '=' . $table_value;
-				}
-
-				// build the final sql request
-				$table = FORUMS_RULES_TABLE;
-				$index_field = 'forum_id';
-				$index_value = intval($item['id']);
-				if ($new_item)
-				{
-					$sql = "INSERT INTO " . $table . " (" . $sql_fields . ") VALUES(" . $sql_values . ")";
-				}
-				else
-				{
-					$sql = "UPDATE " . $table . " SET " . $sql_update . " WHERE " . $index_field . " = " . $index_value;
-				}
-				//echo($sql . '<br />');
-				$db->sql_query($sql);
-			}
-
 			// update
 			$fields_list = ($item['type'] == POST_FORUM_URL) ? 'forums_fields_list' : 'categories_fields_list';
 			$sql_fields = '';
 			$sql_values = '';
 			$sql_update = '';
 
-			$item['forum_rules'] = 0;
+			$item['forum_rules_switch'] = 0;
 			for ($i = 0; $i < sizeof($zero_array); $i++)
 			{
-				$item['forum_rules'] = (($item[$zero_array[$i]] != 0) ? 1 : $item['forum_rules']);
+				$item['forum_rules_switch'] = (!empty($item[$zero_array[$i]]) ? 1 : $item['forum_rules_switch']);
 			}
-			//echo($item['forum_rules'] . '<br />');
+			//echo($item['forum_rules_switch'] . '<br />');
 
 			// if we are editing a forum / cat it is better to unset the id
 			if (!$new_item)
@@ -944,7 +845,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			@reset($$fields_list);
 			while (list($table_field, $process_field) = @each($$fields_list))
 			{
-				$table_value = ($fields_type[$process_field] == 'INTEGER') ? intval($item[$process_field]) : sprintf("'%s'", $db->sql_escape(str_replace('\"', '"', $item[$process_field])));
+				$table_value = (($fields_type[$process_field] == 'INTEGER') || ($fields_type[$process_field] == 'INTEGER_CB')) ? intval($item[$process_field]) : sprintf("'%s'", $db->sql_escape(str_replace('\"', '"', $item[$process_field])));
 				$sql_fields .= (empty($sql_fields) ? '' : ', ') . $table_field;
 				$sql_values .= (empty($sql_values) ? '' : ', ') . $table_value;
 				$sql_update .= (empty($sql_update) ? '' : ', ') . $table_field . '=' . $table_value;
@@ -1203,13 +1104,13 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			'FORUM_NOTIFY_NO' => !$item['forum_notify'] ? ' checked="checked"' : '',
 			'FORUM_POST_COUNT_YES' => ($item['forum_postcount']) ? ' checked="checked"' : '',
 			'FORUM_POST_COUNT_NO' => (!$item['forum_postcount']) ? ' checked="checked"' : '',
-			'FORUM_RULES' => $item['forum_rules'] ? ' checked="checked"' : '',
-			'RULES' => $item['rules'],
-			'RULES_CUSTOM_TITLE' => $item['rules_custom_title'],
-			'S_RULES_DISPLAY_TITLE_ENABLED' => $item['rules_display_title'] ? 'checked="checked"' : '',
-			'S_RULES_VIEWFORUM_ENABLED' => $item['rules_in_viewforum'] ? 'checked="checked"' : '',
-			'S_RULES_VIEWTOPIC_ENABLED' => $item['rules_in_viewtopic'] ? 'checked="checked"' : '',
-			'S_RULES_POSTING_ENABLED' => $item['rules_in_posting'] ? 'checked="checked"' : '',
+			'FORUM_RULES' => $item['forum_rules_switch'] ? ' checked="checked"' : '',
+			'RULES' => $item['forum_rules'],
+			'RULES_CUSTOM_TITLE' => $item['forum_rules_custom_title'],
+			'S_RULES_DISPLAY_TITLE_ENABLED' => !empty($item['forum_rules_display_title']) ? 'checked="checked"' : '',
+			'S_RULES_VIEWFORUM_ENABLED' => !empty($item['forum_rules_in_viewforum']) ? 'checked="checked"' : '',
+			'S_RULES_VIEWTOPIC_ENABLED' => !empty($item['forum_rules_in_viewtopic']) ? 'checked="checked"' : '',
+			'S_RULES_POSTING_ENABLED' => !empty($item['forum_rules_in_posting']) ? 'checked="checked"' : '',
 			'LINK_INTERNAL_YES' => $item['link_internal'] ? 'checked="checked"' : '',
 			'LINK_INTERNAL_NO' => !$item['link_internal'] ? 'checked="checked"' : '',
 			'LINK_COUNT_YES' => $item['link_hit_count'] ? 'checked="checked"' : '',

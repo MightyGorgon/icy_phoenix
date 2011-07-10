@@ -95,7 +95,7 @@ elseif (!empty($user_id))
 	$s_hidden_fields .= '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="cms_level" value="true" />';
 
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_cms_body.tpl'));
 
@@ -116,7 +116,7 @@ elseif (!empty($user_id))
 else
 {
 	// Select a user/group
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'user_select_body.tpl'));
 	$template->assign_vars(array(
@@ -137,6 +137,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -2405,6 +2405,8 @@ $lang = array_merge($lang, array(
 	'NO_TOPIC' => 'The topic or post you requested does not exist.',
 	'NO_USER' => 'Sorry, but that user does not exist.',
 
+	'AJAX_SEARCH' => 'Search...',
+
 	)
 );
 

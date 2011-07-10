@@ -35,7 +35,7 @@ if (! strtolower(@ini_get('safe_mode')))
 }
 
 // Generate page
-include('./page_header_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 $template->set_filenames(array('body' => ADM_TPL . 'yahoo_search_body.tpl'));
 
@@ -338,6 +338,6 @@ else
 	$template->pparse('body');
 }
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

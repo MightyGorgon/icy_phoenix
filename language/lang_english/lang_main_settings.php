@@ -81,6 +81,8 @@ $lang['JOINED_DATE_FORMAT'] = 'F Y'; // Date format of Joined date, php date() f
 $lang['NUMBER_FORMAT_DECIMALS'] = 0;
 $lang['NUMBER_FORMAT_DECIMALS_SEP'] = '.';
 $lang['NUMBER_FORMAT_THOUSANDS_SEP'] = ',';
+$lang['NUMBER_FORMAT_DATE_SEP'] = '/';
+$lang['NUMBER_FORMAT_TIME_SEP'] = ':';
 
 // This is optional, if you would like a _SHORT_ message output
 // along with our copyright message indicating you are the translator

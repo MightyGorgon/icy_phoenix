@@ -894,7 +894,21 @@ UPDATE phpbb_cms_blocks SET active = 0 WHERE bposition IN ('hh', 'hl', 'hc', 'fc
 ########################################
 ##              BUILD 071             ##
 ########################################
+ALTER TABLE `phpbb_logs` CHANGE `log_desc` `log_desc` mediumtext NOT NULL;
 
+ALTER TABLE `phpbb_forums` CHANGE `forum_rules` `forum_rules_switch` tinyint(1) unsigned NOT NULL DEFAULT '0';
+ALTER TABLE `phpbb_forums` ADD `forum_rules_in_posting` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules_in_viewtopic` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules_in_viewforum` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules_custom_title` varchar(80) NOT NULL DEFAULT '' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules_display_title` tinyint(1) NOT NULL DEFAULT '1' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules` text NOT NULL AFTER `forum_rules_switch`;
+
+UPDATE phpbb_forums f, phpbb_forums_rules fr
+SET f.forum_rules = fr.rules, f.forum_rules_display_title = fr.rules_display_title, f.forum_rules_custom_title = fr.rules_custom_title, f.forum_rules_in_viewforum = fr.rules_in_viewforum, f.forum_rules_in_viewtopic = fr.rules_in_viewtopic, f.forum_rules_in_posting = fr.rules_in_posting
+WHERE f.forum_id = fr.forum_id;
+
+DROP TABLE `phpbb_forums_rules`;
 
 
 

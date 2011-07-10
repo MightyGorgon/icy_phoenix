@@ -2406,14 +2406,6 @@ class ip_page
 		{
 			$sql_ary = array(
 				'forum_id' => $max_forum_id,
-				'rules' => '',
-			);
-
-			$sql = 'INSERT INTO ' . FORUMS_RULES_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
-
-			$sql_ary = array(
-				'forum_id' => $max_forum_id,
 				'parent_id' => empty($row['cat_main']) ? 0 : $row['cat_main'],
 				'main_type' => empty($row['cat_main_type']) ? 'c' : $row['cat_main_type'],
 				'forum_order' => $row['cat_order'], //$max_forum_order

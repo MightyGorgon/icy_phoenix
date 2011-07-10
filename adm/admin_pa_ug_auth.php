@@ -518,7 +518,7 @@ elseif ((($mode == 'user') && (isset($_POST['username']) || $user_id)) || (($mod
 	$s_hidden_fields .= ($mode == 'user') ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
 
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
 
@@ -749,7 +749,7 @@ elseif((($mode == 'glob_user') && (isset($_POST['username']) || $user_id)) || ((
 	$s_hidden_fields .= ($mode == 'glob_user') ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
 
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
 
@@ -796,7 +796,7 @@ elseif((($mode == 'glob_user') && (isset($_POST['username']) || $user_id)) || ((
 else
 {
 	// Select a user/group
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ($mode == 'user' || $mode == 'glob_user') ? ADM_TPL . 'user_select_body.tpl' : ADM_TPL . 'auth_select_body.tpl'));
 
@@ -857,6 +857,6 @@ $template->display('body');
 
 $pafiledb->_pafiledb();
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

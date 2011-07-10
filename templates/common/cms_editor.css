@@ -1,6 +1,4 @@
-/*
-CSS for blocks editor
-*/
+/* CSS FOR BLOCKS EDITOR - BEGIN */
 #forumtable ul.cms-editor-container, div.cms-editor-container {
 	display: block;
 	list-style-type: none;
@@ -146,10 +144,9 @@ p.block-title a.edit-delete {
 #forumtable li.cms-editor-block li.checked, #forumtable ul.options li.checked {
 	background: url("images/cms_icon_ok.png") 0 50% no-repeat;
 }
+/* CSS FOR BLOCKS EDITOR - END */
 
-/*
-Edit block title
-*/
+/* EDIT BLOCK TITLE - BEGIN */
 #forumtable .block-title-edit {
 	font-size: 11px;
 	font-weight: normal;
@@ -183,10 +180,9 @@ Edit block title
 	background-color: #eeeeee;
 	color: #333333;
 }
+/* EDIT BLOCK TITLE - END */
 
-/*
-Buttons
-*/
+/* BUTTONS - BEGIN */
 #forumtable .block-title-edit a, #forumtable .block-title-edit a:visited, .cms-block-extra .buttons a, .cms-block-extra .buttons a:visited, #forumtable a.cms-button-small, #forumtable a.cms-button-small:visited {
 	display: inline-block;
 	text-decoration: none;
@@ -208,6 +204,7 @@ Buttons
 	border-color: #dd2222;
 	color: #dd2222;
 }
+/* BUTTONS - END */
 
 /* TRANSITIONS - BEGIN */
 #forumtable .block-title-edit a, .cms-block-extra .buttons a, #forumtable a.cms-button-small {
@@ -222,9 +219,7 @@ Buttons
 }
 /* TRANSITIONS - END */
 
-/*
-Parent block
-*/
+/* PARENT BLOCK - BEGIN */
 #forumtable li.cms-editor-block p.block-parent, #forumtable li.cms-editor-block div.block-parent-info {
 	margin: 0;
 	padding: 2px;
@@ -241,10 +236,9 @@ Parent block
 	display: inline-block;
 	padding-right: 2px;
 }
+/* PARENT BLOCK - END */
 
-/*
-Notice
-*/
+/* NOTICE - BEGIN */
 #cms-editor-header {
 	border: 1px solid transparent;
 	margin: 5px 0;
@@ -266,10 +260,9 @@ Notice
 	border-color: #e99898;
 	color: #000000;
 }
+/* NOTICE - END */
 
-/*
-Add block
-*/
+/* ADD BLOCK - BEGIN */
 #forumtable div.add-form, div.cms-block-extra p.status, #forumtable div.move-all-form {
 	border-radius: 6px;
 	-moz-border-radius: 6px;
@@ -316,10 +309,9 @@ div.cms-block-extra p.status {
 	text-align: center;
 	padding: 30px 20px;
 }
+/* ADD BLOCK - END */
 
-/*
-Block settings page
-*/
+/* BLOCK SETTINGS PAGE - BEGIN */
 ul.cms-blocks-list {
 	list-style-type: none;
 	margin: 0;
@@ -336,7 +328,8 @@ li.cms-block-item {
 }
 
 li.cms-block-item:hover {
-	background-color: #f4f6f8;
+	/*background-color: #f4f6f8;*/
+	background-color: #ffffdd;
 }
 
 #forumtable li.cms-block-item p.block-title, #forumtable li.cms-block-item p.block-type, #forumtable li.cms-block-item p.block-view {
@@ -420,10 +413,9 @@ li.cms-block-item p.block-title, li.cms-block-item p.block-type, li.cms-block-it
 #forumtable li.cms-block-item ul.used-list li.note {
 	padding-left: 3px;
 }
+/* BLOCK SETTINGS PAGE - END */
 
-/*
-Edit block type
-*/
+/* EDIT BLOCK TYPE - BEGIN */
 #forumtable div.block-change-type {
 	clear: left;
 	margin-left: 25%;
@@ -475,10 +467,9 @@ div.block-type-content p.buttons {
 	color: #999999;
 	background-image: none;
 }
+/* EDIT BLOCK TYPE - END */
 
-/*
-Edit groups list
-*/
+/* EDIT GROUPS LIST - BEGIN */
 #forumtable div.block-change-groups, #forumtable div.block-change-view {
 	margin-left: 75%;
 	padding-left: 9px;
@@ -491,4 +482,5 @@ Edit groups list
 	margin-left: 50%;
 	padding-left: 6px;
 }
+/* EDIT GROUPS LIST - END */
 

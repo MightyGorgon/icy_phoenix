@@ -307,10 +307,9 @@ switch ($mode)
 			message_die(GENERAL_MESSAGE, 'NO_FORUM');
 		}
 
-		$sql = "SELECT f.*, fr.*
-			FROM " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr
+		$sql = "SELECT f.*
+			FROM " . FORUMS_TABLE . " f
 			WHERE f.forum_id = " . $forum_id . "
-				AND fr.forum_id = f.forum_id
 			LIMIT 1";
 		break;
 	case 'thank':
@@ -324,11 +323,10 @@ switch ($mode)
 			message_die(GENERAL_MESSAGE, $lang['No_topic_id']);
 		}
 
-		$sql = "SELECT f.*, fr.*, t.*
-			FROM " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr, " . TOPICS_TABLE . " t
+		$sql = "SELECT f.*, t.*
+			FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t
 			WHERE t.topic_id = " . $topic_id . "
 				AND f.forum_id = t.forum_id
-				AND fr.forum_id = t.forum_id
 			LIMIT 1";
 		break;
 
@@ -360,12 +358,11 @@ switch ($mode)
 		}
 		// MG Cash MOD For IP - END
 
-		$sql = "SELECT f.*, fr.*, t.*, p.*" . $select_sql . "
-			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr" . $from_sql . "
+		$sql = "SELECT f.*, t.*, p.*" . $select_sql . "
+			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f" . $from_sql . "
 			WHERE p.post_id = " . $post_id . "
 				AND t.topic_id = p.topic_id
 				AND f.forum_id = p.forum_id
-				AND fr.forum_id = p.forum_id
 				" . $where_sql . "
 			LIMIT 1";
 		break;
@@ -2033,10 +2030,10 @@ $template->set_filenames(array(
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 
 $rules_bbcode = '';
-if (!empty($post_info['rules_in_posting']))
+if (!empty($post_info['forum_rules_in_posting']))
 {
 	//BBcode Parsing for Olympus rules Start
-	$rules_bbcode = $post_info['rules'];
+	$rules_bbcode = $post_info['forum_rules'];
 	$bbcode->allow_html = true;
 	$bbcode->allow_bbcode = true;
 	$bbcode->allow_smilies = true;
@@ -2045,7 +2042,7 @@ if (!empty($post_info['rules_in_posting']))
 
 	$template->assign_vars(array(
 		'S_FORUM_RULES' => true,
-		'S_FORUM_RULES_TITLE' => ($post_info['rules_display_title']) ? true : false
+		'S_FORUM_RULES_TITLE' => ($post_info['forum_rules_display_title']) ? true : false
 		)
 	);
 }
@@ -2054,7 +2051,7 @@ $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_NAME' => $forum_name,
 	'FORUM_RULES' => $rules_bbcode,
-	'L_FORUM_RULES' => (empty($post_info['rules_custom_title'])) ? $lang['Forum_Rules'] : $post_info['rules_custom_title'],
+	'L_FORUM_RULES' => (empty($post_info['forum_rules_custom_title'])) ? $lang['Forum_Rules'] : $post_info['forum_rules_custom_title'],
 	'L_POST_A' => $page_title_alt,
 	'L_POST_SUBJECT' => $lang['Post_subject'],
 	'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id)

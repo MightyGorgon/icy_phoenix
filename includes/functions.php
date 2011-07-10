@@ -2351,11 +2351,11 @@ function strutime($date, $format)
 
 	$ret = array(
 		'year' => !empty($out['Y']) ? (int) $out['Y'] : 0,
-		'month' => !empty($out['m']) ? (int) (int) $out['m'] : 0,
-		'day' => !empty($out['d']) ? (int) (int) $out['d'] : 0,
-		'hour' => !empty($out['H']) ? (int) (int) $out['H'] : 0,
-		'minute' => !empty($out['M']) ? (int) (int) $out['M'] : 0,
-		'second' => !empty($out['S']) ? (int) (int) $out['S'] : 0,
+		'month' => !empty($out['m']) ? (int) $out['m'] : 0,
+		'day' => !empty($out['d']) ? (int) $out['d'] : 0,
+		'hour' => !empty($out['H']) ? (int) $out['H'] : 0,
+		'minute' => !empty($out['M']) ? (int) $out['M'] : 0,
+		'second' => !empty($out['S']) ? (int) $out['S'] : 0,
 	);
 
 	return $ret;
@@ -2473,6 +2473,119 @@ function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 	}
 	$output_date = $output_date . (($day_only && !empty($output_date)) ? '' : create_date($format, $gmepoch, $tz));
 	return $output_date;
+}
+
+/*
+* Converts time fragments to MySQL dates ready for DB storage
+*/
+function create_date_mysql_db($date_fragments, $format)
+{
+	$date_fragments = array(
+		'year' => !empty($date_fragments['year']) ? (string) $date_fragments['year'] : '0000',
+		'month' => !empty($date_fragments['month']) ? (string) $date_fragments['month'] : '00',
+		'day' => !empty($date_fragments['day']) ? (string) $date_fragments['day'] : '00',
+		'hour' => !empty($date_fragments['hour']) ? (string) $date_fragments['hour'] : '00',
+		'minute' => !empty($date_fragments['minute']) ? (string) $date_fragments['minute'] : '00',
+		'second' => !empty($date_fragments['second']) ? (string) $date_fragments['second'] : '00',
+	);
+
+	$date_sep = '-';
+	$time_sep = ':';
+	$mysql_date = $date_fragments['year'] . $date_sep . $date_fragments['month'] . $date_sep . $date_fragments['day'];
+	$mysql_time = $date_fragments['hour'] . $time_sep . $date_fragments['minute'] . $time_sep . $date_fragments['second'];
+
+	switch ($format)
+	{
+		case 'date':
+			$mysql_date_db = $mysql_date;
+			break;
+
+		case 'time':
+			$mysql_date_db = $mysql_time;
+			break;
+
+		default:
+			$mysql_date_db = $mysql_date . ' ' . $mysql_time;
+			break;
+	}
+
+	return $mysql_date_db;
+}
+
+/*
+* Convert unix to MySQL dates
+*/
+function create_date_mysql($time, $output = 'datetime', $tz = false)
+{
+	global $config, $lang;
+
+	$tz = ($tz === false) ? $config['board_timezone'] : $tz;
+
+	switch ($output)
+	{
+		case 'date':
+			$mysql_date = create_date('Y-m-d', $time, $tz);
+			break;
+
+		case 'time':
+			$mysql_date = create_date('H:i:s', $time, $tz);
+			break;
+
+		default:
+			$mysql_date = create_date('Y-m-d H:i:s', $time, $tz);
+			break;
+	}
+
+	return $mysql_date;
+}
+
+/*
+* Format MySQL dates
+*/
+function format_date_mysql($time, $output = 'datetime', $reverse = false, $date_sep = '-', $time_sep = ':')
+{
+	global $config, $lang;
+
+	$date_sep = (!empty($date_sep) ? $date_sep : (!empty($lang['NUMBER_FORMAT_DATE_SEP']) ? $lang['NUMBER_FORMAT_DATE_SEP'] : '-'));
+	$time_sep = (!empty($time_sep) ? $time_sep : (!empty($lang['NUMBER_FORMAT_TIME_SEP']) ? $lang['NUMBER_FORMAT_TIME_SEP'] : ':'));
+
+	$mysql_date = $time;
+
+	switch ($output)
+	{
+		case 'date':
+			$mysql_date = !empty($reverse) ? str_replace('-', $date_sep, $mysql_date) : str_replace($date_sep, '-', $mysql_date);
+			break;
+
+		case 'time':
+			$mysql_date = !empty($reverse) ? str_replace(':', $time_sep, $mysql_date) : str_replace($time_sep, ':', $mysql_date);
+			break;
+
+		default:
+			$mysql_date = !empty($reverse) ? str_replace(array('-', ':'), array($date_sep, $time_sep), $mysql_date) : str_replace(array($date_sep, $time_sep), array('-', ':'), $mysql_date);
+			break;
+	}
+
+	return $mysql_date;
+}
+
+/*
+* Convert time in hours in decimal format
+*/
+function convert_time_to_decimal($time, $time_sep = ':')
+{
+	$time_decimal = $time;
+	$time_fragments = explode($time_sep, $time);
+	if (sizeof($time_fragments) > 1)
+	{
+		$time_decimal = (int) $time_fragments[0] + ((int) $time_fragments[1] / 60);
+		if (sizeof($time_fragments) == 3)
+		{
+			$time_decimal = $time_decimal + ((int) $time_fragments[2] / 3600);
+		}
+	}
+
+	return $time_decimal;
 }
 
 // Birthday - BEGIN
@@ -2996,44 +3109,54 @@ function bots_table_update($bot_id)
 }
 
 // Ajaxed - BEGIN
-function AJAX_headers()
+function AJAX_headers($json = false)
 {
 	//No caching whatsoever
-	header('Content-Type: application/xml');
+	if (empty($json))
+	{
+		header('Content-Type: application/xml');
+	}
 	header('Expires: Thu, 15 Aug 1984 13:30:00 GMT');
 	header('Last-Modified: '. gmdate('D, d M Y H:i:s') .' GMT');
 	header('Cache-Control: no-cache, must-revalidate');  // HTTP/1.1
 	header('Pragma: no-cache');                          // HTTP/1.0
 }
 
-function AJAX_message_die($data_ar)
+function AJAX_message_die($data_ar, $json = false)
 {
 	global $template, $db, $cache, $config;
 
 	if (!headers_sent())
 	{
-		AJAX_headers();
+		AJAX_headers($json);
 	}
 
-	$template->set_filenames(array('ajax_result' => 'ajax_result.tpl'));
-
-	foreach($data_ar as $key => $value)
+	if (!empty($json))
 	{
-		if ($value !== '')
-		{
-			$value = utf8_encode(htmlspecialchars($value));
-			// Get special characters in posts back ;)
-			$value = preg_replace('#&amp;\#(\d{1,4});#i', '&#\1;', $value);
-
-			$template->assign_block_vars('tag', array(
-				'TAGNAME' => $key,
-				'VALUE' => $value
-				)
-			);
-		}
+		echo(json_encode($data_ar));
 	}
+	else
+	{
+		$template->set_filenames(array('ajax_result' => 'ajax_result.tpl'));
 
-	$template->pparse('ajax_result');
+		foreach($data_ar as $key => $value)
+		{
+			if ($value !== '')
+			{
+				$value = utf8_encode(htmlspecialchars($value));
+				// Get special characters in posts back ;)
+				$value = preg_replace('#&amp;\#(\d{1,4});#i', '&#\1;', $value);
+
+				$template->assign_block_vars('tag', array(
+					'TAGNAME' => $key,
+					'VALUE' => $value
+					)
+				);
+			}
+		}
+
+		$template->pparse('ajax_result');
+	}
 
 	garbage_collection();
 	exit_handler();
@@ -4419,6 +4542,7 @@ function page_header($title = '', $parse_template = false)
 		'NAV_LINKS' => $nav_links_html,
 
 		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
+		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
 		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
 		'S_HEADER_DROPDOWN' => ($config['switch_header_dropdown'] ? true : false),
 		'S_HEADER_DD_LOGGED_IN' => (($config['switch_header_dropdown'] && $user->data['upi2db_access']) ? true : false),

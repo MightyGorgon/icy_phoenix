@@ -19,6 +19,8 @@ $user->session_begin();
 $user->setup();
 // End session management
 
+$config['jquery_ui'] = true;
+
 // CMS - BEGIN
 $cms_page['page_id'] = 'tags';
 $cms_page['page_nav'] = (isset($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? $cms_config_layouts[$cms_page['page_id']]['page_nav'] : true);
@@ -263,7 +265,7 @@ $template->assign_vars(array(
 	'S_SORT_ORDER_SELECT' => $sort_order_select_box,
 	'S_SORT_DIR_SELECT' => $sort_dir_select_box,
 
-	'U_TAGS_SEARCH_PAGE' => append_sid('tags_search.' . PHP_EXT),
+	'U_TAGS_SEARCH_PAGE' => append_sid(CMS_PAGE_TAGS),
 	'U_TAGS' => append_sid(CMS_PAGE_TAGS),
 	)
 );

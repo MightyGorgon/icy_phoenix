@@ -146,6 +146,6 @@ $template->assign_vars(array(
 $template->pparse('body');
 
 echo '<div align="center"><span class="copyright">Advanced Visual Confirmation &copy; 2006 <a href="http://www.amigalink.de" target="_blank">AmigaLink</a></span></div>';
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

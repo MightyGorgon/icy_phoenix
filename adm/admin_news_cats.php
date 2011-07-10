@@ -23,7 +23,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-include_once (IP_ROOT_PATH . 'includes/news_data.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/news_data.' . PHP_EXT);
 
 // Check to see what mode we should operate in.
 $mode = request_var('mode', '');
@@ -263,6 +263,6 @@ else
 }
 
 // Page	Footer
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -882,25 +882,12 @@ $template_to_parse = ($kb_mode) ? 'viewforum_kb_body.tpl' : 'viewforum_body.tpl'
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 
 $rules_bbcode = '';
-if ($forum_row['forum_rules'])
+if (!empty($forum_row['forum_rules_switch']))
 {
-	$sql = "SELECT fr.*
-		FROM " . FORUMS_RULES_TABLE . " fr
-		WHERE fr.forum_id = " . $forum_row['forum_id'] . "
-		LIMIT 1";
-	$result = $db->sql_query($sql, 0, 'forums_rules_', FORUMS_CACHE_FOLDER);
-
-	$forum_info = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$forum_info = $row;
-	}
-	$db->sql_freeresult($result);
-
-	if (isset($forum_info['rules_in_viewforum']) && $forum_info['rules_in_viewforum'])
+	if (isset($forum_row['forum_rules_in_viewforum']) && $forum_row['forum_rules_in_viewforum'])
 	{
 		//BBcode Parsing for Olympus rules Start
-		$rules_bbcode = $forum_info['rules'];
+		$rules_bbcode = $forum_row['forum_rules'];
 		$bbcode->allow_html = true;
 		$bbcode->allow_bbcode = true;
 		$bbcode->allow_smilies = true;
@@ -909,7 +896,7 @@ if ($forum_row['forum_rules'])
 
 		$template->assign_vars(array(
 			'S_FORUM_RULES' => true,
-			'S_FORUM_RULES_TITLE' => ($forum_info['rules_display_title']) ? true : false
+			'S_FORUM_RULES_TITLE' => ($forum_row['forum_rules_display_title']) ? true : false
 			)
 		);
 	}

@@ -315,6 +315,11 @@ define('POST_ANNOUNCE', 2);
 define('POST_GLOBAL_ANNOUNCE', 3);
 define('POST_NEWS', 4);
 
+// Post status
+define('ITEM_UNAPPROVED', 0);
+define('ITEM_APPROVED', 1);
+define('ITEM_DELETED', 2);
+
 // Private messaging
 define('PRIVMSGS_READ_MAIL', 0);
 define('PRIVMSGS_NEW_MAIL', 1);
@@ -458,7 +463,6 @@ define('DRAFTS_TABLE', $table_prefix . 'drafts');
 define('FLAG_TABLE', $table_prefix . 'flags');
 define('FORCE_READ_USERS_TABLE', $table_prefix . 'force_read_users');
 define('FORUMS_TABLE', $table_prefix . 'forums');
-define('FORUMS_RULES_TABLE', $table_prefix . 'forums_rules');
 define('FORUMS_WATCH_TABLE', $table_prefix . 'forums_watch');
 define('GOOGLE_BOT_DETECTOR_TABLE', $table_prefix . 'google_bot_detector');
 define('GROUPS_TABLE', $table_prefix . 'groups');

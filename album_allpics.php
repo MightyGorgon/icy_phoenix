@@ -156,7 +156,7 @@ $meta_content['keywords'] = '';
 /*
 if ($album_view_mode == ALBUM_VIEW_ALL_PICS)
 {
-	include (ALBUM_MOD_PATH . 'album_allpics.' . PHP_EXT);
+	include(ALBUM_MOD_PATH . 'album_allpics.' . PHP_EXT);
 }
 */
 

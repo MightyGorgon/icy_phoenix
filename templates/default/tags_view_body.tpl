@@ -1,7 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <br />
-<!-- INCLUDE tags_search_js.tpl -->
+<!-- INCLUDE tags_search_jq.tpl -->
 <h2 style="text-align: left;"><a href="{U_TAG_RESULTS}" style="text-decoration: none;">{L_TAG_RESULTS}</a></h2>
 <br clear="all" />
 

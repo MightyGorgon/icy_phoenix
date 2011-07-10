@@ -310,7 +310,7 @@ if($mode != '')
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 }
 
 // Show the default page
@@ -374,6 +374,6 @@ for($i = 0; $i < $rank_count; $i++)
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

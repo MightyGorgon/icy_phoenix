@@ -1310,14 +1310,6 @@ INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `r
 INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `right_id`, `forum_parents`, `main_type`, `forum_name`, `forum_desc`, `forum_status`, `forum_order`, `forum_posts`, `forum_topics`, `forum_last_post_id`, `forum_notify`, `forum_postcount`, `forum_link`, `forum_link_internal`, `forum_link_hit_count`, `forum_link_hit`, `icon`, `prune_next`, `prune_enable`, `auth_view`, `auth_read`, `auth_post`, `auth_reply`, `auth_edit`, `auth_delete`, `auth_sticky`, `auth_announce`, `auth_globalannounce`, `auth_news`, `auth_cal`, `auth_vote`, `auth_pollcreate`, `auth_attachments`, `auth_download`, `auth_ban`, `auth_greencard`, `auth_bluecard`, `auth_rate`) VALUES (4, 1, 2, 6, 7, '', 'c', 'Reporting', 'All reports should be inserted here.', 0, 40, 0, 0, 0, 1, 1, NULL, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 3, 1, 3, 3, 3, 1, 3, 1, 0, 3, 3, 1, 1);
 INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `right_id`, `forum_parents`, `main_type`, `forum_name`, `forum_desc`, `forum_status`, `forum_order`, `forum_posts`, `forum_topics`, `forum_last_post_id`, `forum_notify`, `forum_postcount`, `forum_link`, `forum_link_internal`, `forum_link_hit_count`, `forum_link_hit`, `icon`, `prune_next`, `prune_enable`, `auth_view`, `auth_read`, `auth_post`, `auth_reply`, `auth_edit`, `auth_delete`, `auth_sticky`, `auth_announce`, `auth_globalannounce`, `auth_news`, `auth_cal`, `auth_vote`, `auth_pollcreate`, `auth_attachments`, `auth_download`, `auth_ban`, `auth_greencard`, `auth_bluecard`, `auth_rate`) VALUES (5, 1, 2, 8, 9, '', 'c', 'Recycle', 'Recycle bin forum.', 0, 50, 0, 0, 0, 1, 1, NULL, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 3, 1, 3, 3, 3, 1, 3, 1, 0, 3, 3, 1, 1);
 
-## `phpbb_forums_rules`
-##
-INSERT INTO `phpbb_forums_rules` (`forum_id`, `rules`) VALUES (1, '');
-INSERT INTO `phpbb_forums_rules` (`forum_id`, `rules`) VALUES (2, '');
-INSERT INTO `phpbb_forums_rules` (`forum_id`, `rules`) VALUES (3, '');
-INSERT INTO `phpbb_forums_rules` (`forum_id`, `rules`) VALUES (4, '');
-INSERT INTO `phpbb_forums_rules` (`forum_id`, `rules`) VALUES (5, '');
-
 ## `phpbb_forums_watch`
 ##
 

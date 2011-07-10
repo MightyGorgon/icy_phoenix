@@ -1151,7 +1151,7 @@ CREATE TABLE `phpbb_logs` (
 	`log_page` varchar(255) NOT NULL default '',
 	`log_user_id` int(10) NOT NULL,
 	`log_action` varchar(60) NOT NULL default '',
-	`log_desc` varchar(255) NOT NULL default '',
+	`log_desc` mediumtext NOT NULL,
 	`log_target` int(10) NOT NULL default '0',
 	PRIMARY KEY  (`log_id`)
 );
@@ -1464,24 +1464,8 @@ CREATE TABLE `___forums___` (
 	KEY `forum_last_post_id` (`forum_last_post_id`)
 );
 
-CREATE TABLE `phpbb_forums_rules` (
-	`forum_id` smallint(5) unsigned NOT NULL default '0',
-	`rules` TEXT NOT NULL,
-	`rules_display_title` tinyint(1) NOT NULL default '1',
-	`rules_custom_title` varchar(80) NOT NULL default '',
-	`rules_in_viewforum` tinyint(1) unsigned NOT NULL default '0',
-	`rules_in_viewtopic` tinyint(1) unsigned NOT NULL default '0',
-	`rules_in_posting` tinyint(1) unsigned NOT NULL default '0',
-	PRIMARY KEY (`forum_id`)
-);
-
 INSERT INTO `___forums___`
 SELECT f.forum_id, f.cat_id, f.main_type, f.forum_name, f.forum_desc, f.forum_status, f.forum_order, f.forum_posts, f.forum_topics, f.forum_last_post_id, f.forum_postcount, f.thank, f.forum_notify, 0, 0, 0, 0, 0, 1, forum_link, f.forum_link_internal, f.forum_link_hit_count, f.forum_link_hit, f.icon, f.prune_next, f.prune_enable, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_globalannounce, f.auth_news, f.auth_cal, f.auth_vote, f.auth_pollcreate, f.auth_attachments, f.auth_download, f.auth_ban, f.auth_greencard, f.auth_bluecard, f.auth_rate
-FROM `phpbb_forums` f
-ORDER BY f.forum_id;
-
-INSERT INTO `phpbb_forums_rules`
-SELECT f.forum_id, f.forum_rules, f.rules_display_title, f.rules_custom_title, f.rules_in_viewforum, f.rules_in_viewtopic, f.rules_in_posting
 FROM `phpbb_forums` f
 ORDER BY f.forum_id;
 

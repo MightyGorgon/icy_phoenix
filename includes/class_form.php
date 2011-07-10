@@ -19,15 +19,39 @@ if (!defined('IN_ICYPHOENIX'))
 class class_form
 {
 
+	var $date_format_jq = 'yy/mm/dd';
+	var $date_format_php = 'Y/m/d';
+	var $date_sep = '/';
+	var $time_sep = ':';
+
+
+	/**
+	* Instantiate the class
+	*/
+	function class_form()
+	{
+		// Better force the format, to make sure everything is working fine...
+		/*
+		global $lang;
+
+		$this->date_format_jq = $lang['DATE_FORMAT_DATE_JQUI_JQ'];
+		$this->date_format_php = $lang['DATE_FORMAT_DATE_JQUI_PHP'];
+		$this->date_sep = $lang['NUMBER_FORMAT_DATE_SEP'];
+		$this->time_sep = $lang['NUMBER_FORMAT_TIME_SEP'];
+		*/
+	}
+
+
 	/*
 	* Create_input
 	*/
 	function create_input($name, $properties)
 	{
-		global $config, $lang;
+		global $user, $config, $lang;
 
 		$input = '';
 		$default = !empty($properties['default']) ? (is_array($properties['default']) ? array_map('htmlspecialchars', $properties['default']) : htmlspecialchars($properties['default'])) : '';
+		$readonly = !empty($properties['readonly']) ? ' readonly="readonly"' : '';
 
 		switch ($properties['type'])
 		{
@@ -78,6 +102,7 @@ class class_form
 				break;
 
 			case 'DATE_INPUT_JQUI':
+			case 'TIME_INPUT_JQUI':
 			case 'DATE_INPUT':
 			case 'TIME_INPUT':
 			case 'DATE_TIME_INPUT':
@@ -85,11 +110,18 @@ class class_form
 				$tf = $this->explode_unix_time($input_time);
 				$select_date = $this->date_input($name, $tf['year'], $tf['month'], $tf['day']);
 				$select_time = $this->time_input($name, $tf['hour'], $tf['minute'], $tf['second']);
+
 				switch ($properties['type'])
 				{
 					case 'DATE_INPUT_JQUI':
-						$jquery_ui = '<script type="text/javascript">$(function() { $.datepicker.setDefaults( $.datepicker.regional["' . $lang['HEADER_LANG_JQUERY'] . '"] ); $( "#' . $name . '" ).datepicker({ dateFormat: "' . $lang['DATE_FORMAT_DATE_JQUI_JQ'] . '", changeMonth: true, changeYear: true }); });</script>';
-						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="12" size="20" readonly="readonly" class="post" value="' . create_date($lang['DATE_FORMAT_DATE_JQUI_PHP'], $default, $config['board_timezone']) . '" />';
+						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql($default, 'date', true, $this->date_sep, $this->time_sep) : create_date($this->date_format_php, $default, $config['board_timezone']);
+						$jquery_ui = '<script type="text/javascript">$(function() { $.datepicker.setDefaults( $.datepicker.regional["' . $lang['HEADER_LANG_JQUERY'] . '"] ); $("#' . $name . '").datepicker({ dateFormat: "' . $this->date_format_jq . '", changeMonth: true, changeYear: true }); });</script>';
+						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="12" size="16" readonly="readonly" class="post" value="' . $default . '" />';
+						break;
+					case 'TIME_INPUT_JQUI':
+						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql($default, 'time', true, $this->date_sep, $this->time_sep) : create_date($this->date_format_php, $default, $config['board_timezone']);
+						$jquery_ui = '<script type="text/javascript">$(function() { $.timepicker.setDefaults( $.timepicker.regional["' . $lang['HEADER_LANG_JQUERY'] . '"] ); $("#' . $name . '").timepicker({ timeSeparator: "' . $this->time_sep . '" }); });</script>';
+						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="8" size="12" readonly="readonly" class="post" value="' . $default . '" />';
 						break;
 					case 'DATE_INPUT':
 						$input = $select_date;
@@ -105,8 +137,69 @@ class class_form
 				break;
 
 			case 'USERNAME_INPUT':
-				$input = '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="45" class="post" value="' . $default . '" />';
+				$input = '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="30" class="post" value="' . $default . '" />';
 				$input .= '<input type="submit" name="' . $name . '_search_button" value="' . $lang['Find_username'] . '" class="mainoption" onclick="window.open(\'' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser&amp;target_form_name=input_form&amp;target_element_name=' . $name) . '\', \'_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
+				break;
+
+			case 'USERNAME_INPUT_JQUI':
+				$worker_id = $default;
+				$worker_data = get_userdata($worker_id, false);
+				$worker_name = htmlspecialchars($worker_data['username']);
+				$worker_field_id = $name . '_jqui';
+				$worker_field_name = $name . '_jqui';
+				$worker_field_id_hidden = $name;
+				$worker_field_name_hidden = $name;
+				$worker_jquery_ui = '<script type="text/javascript">
+				$(function()
+				{
+					$("#' . $worker_field_id . '").autocomplete(
+					{
+						source: "ajax.php?mode=user_search_json&json=1&sid=' . $user->data['session_id'] . '",
+						minLength: 2,
+						select: function(event, ui)
+						{
+							if (ui.item)
+							{
+								$("#' . $worker_field_id_hidden . '").val(ui.item.id);
+							}
+						}
+					});
+				});
+				</script>';
+				$worker_input_hidden = '<input type="hidden" name="' . $worker_field_name_hidden . '" id="' . $worker_field_id_hidden . '" value="' . $worker_id . '" />';
+				$input = $worker_jquery_ui . $worker_input_hidden . '<input type="text" name="' . $worker_field_name . '" id="' . $worker_field_id . '" maxlength="255" size="30" class="post" value="' . $worker_name . '" />';
+				break;
+
+			case 'AJAX_INPUT_JQUI':
+				$ajax_input_id = $default;
+				$ajax_input_data = $properties['ajax_get_func']($ajax_input_id);
+				$ajax_input_value = ((is_array($ajax_input_data) && !empty($ajax_input_data)) ? $ajax_input_data['value'] : $ajax_input_data);
+				$ajax_input_name = htmlspecialchars($ajax_input_value);
+				$ajax_input_field_id = $name . '_jqui';
+				$ajax_input_field_name = $name . '_jqui';
+				$ajax_input_field_id_hidden = $name;
+				$ajax_input_field_name_hidden = $name;
+				$ajax_input_field_id_extra = $properties['ajax_callback_input_extra'];
+				$ajax_input_jquery_ui = '<script type="text/javascript">
+				$(function()
+				{
+					$("#' . $ajax_input_field_id . '").autocomplete(
+					{
+						source: "ajax.php?mode=' . $properties['ajax_mode'] . '&json=1' . (!empty($properties['ajax_plugin']) ? ('&plugin=' . $properties['ajax_plugin']) : '') . '&sid=' . $user->data['session_id'] . '",
+						minLength: 2,
+						select: function(event, ui)
+						{
+							if (ui.item)
+							{
+								$("#' . $ajax_input_field_id_hidden . '").val(ui.item.id);
+								' . (!empty($ajax_input_field_id_extra) ? 'if (ui.item.extra) { $("#' . $ajax_input_field_id_extra . '").val(ui.item.extra); }' : '') . '
+							}
+						}
+					});
+				});
+				</script>';
+				$ajax_input_input_hidden = '<input type="hidden" name="' . $ajax_input_field_name_hidden . '" id="' . $ajax_input_field_id_hidden . '" value="' . $ajax_input_id . '" />';
+				$input = $ajax_input_jquery_ui . $ajax_input_input_hidden . '<input type="text" name="' . $ajax_input_field_name . '" id="' . $ajax_input_field_id . '" maxlength="255" size="30" class="post" value="' . $ajax_input_name . '" />';
 				break;
 
 			case 'TINYINT':
@@ -115,7 +208,7 @@ class class_form
 			case 'INT':
 			case 'FLOAT':
 				$field_length = $this->set_number_length($properties['type']);
-				$input = '<input type="text" name="' . $name . '" maxlength="' . $field_length . '" size="' . $field_length . '" class="post" value="' . (empty($default) ? 0 : $default) . '" />';
+				$input = '<input type="text" name="' . $name . '" maxlength="' . $field_length . '" size="' . $field_length . '" class="post" value="' . (empty($default) ? 0 : $default) . '"' . $readonly . ' />';
 				break;
 
 			case 'TINYTEXT':
@@ -125,7 +218,7 @@ class class_form
 				$maxlength = ($properties['type'] == 'TINYTEXT') ? 20 : 255;
 				$size = ($properties['type'] == 'TINYTEXT') ? 20 : 45;
 				$default = !in_array($properties['type'], array('HTMLVARCHAR')) ? htmlspecialchars_decode($default, ENT_COMPAT) : $default;
-				$input = '<input type="' . (($properties['type'] == 'PASSWORD') ? 'password' : 'text') . '" name="' . $name . '" maxlength="' . $maxlength . '" size="' . $size . '" class="post" value="' . $default . '" />';
+				$input = '<input type="' . (($properties['type'] == 'PASSWORD') ? 'password' : 'text') . '" name="' . $name . '" maxlength="' . $maxlength . '" size="' . $size . '" class="post" value="' . $default . '"' . $readonly . ' />';
 				break;
 
 			case 'TEXT':
@@ -144,8 +237,50 @@ class class_form
 
 		}
 
+		if (!empty($properties['input_extra']))
+		{
+			$id_extra = $properties['input_extra']['id'];
+			$name_extra = $properties['input_extra']['name'];
+			$default_extra = (!empty($properties['input_extra']['default_func']) ? $properties['input_extra']['default_func']() : $properties['input_extra']['default']);
+			$readonly_extra = !empty($properties['input_extra']['readonly']) ? ' readonly="readonly"' : '';
+
+			switch ($properties['input_extra']['type'])
+			{
+
+				case 'HIDDEN':
+					$input_extra = '<input type="hidden" name="' . $name_extra . '" ' . (!empty($id_extra) ? ('id="' . $id_extra . '" ') : '') . 'value="' . $default_extra . '" />';
+					break;
+
+				case 'TINYINT':
+				case 'SMALLINT':
+				case 'MEDIUMINT':
+				case 'INT':
+				case 'FLOAT':
+					$field_length = $this->set_number_length($properties['type']);
+					$input_extra = '<input type="text" name="' . $name_extra . '" ' . (!empty($id_extra) ? ('id="' . $id_extra . '" ') : '') . 'maxlength="' . $field_length . '" size="' . $field_length . '" class="post" value="' . (empty($default_extra) ? 0 : $default_extra) . '"' . $readonly_extra . ' />';
+					break;
+
+				case 'TINYTEXT':
+				case 'VARCHAR':
+					$maxlength = ($properties['input_extra']['type'] == 'TINYTEXT') ? 20 : 255;
+					$size = ($properties['input_extra']['type'] == 'TINYTEXT') ? 20 : 45;
+					$input_extra = '<input type="text" name="' . $name_extra . '" ' . (!empty($id_extra) ? ('id="' . $id_extra . '" ') : '') . 'maxlength="' . $maxlength . '" size="' . $size . '" class="post" value="' . $default_extra . '"' . $readonly_extra . ' />';
+					break;
+
+				case 'FUNCTION':
+				default:
+					if (!empty($properties['input_extra']['get_func']) && function_exists($properties['input_extra']['get_func']))
+					{
+						$input_extra = $properties['input_extra']['get_func']($name_extra, $default_extra);
+					}
+					break;
+			}
+
+			$input = $input . '&nbsp;&nbsp;' . $input_extra;
+		}
+
 		/*
-		// dump to template
+		// Dump to template
 		$template->assign_block_vars('field', array(
 			'L_NAME' => $this->get_lang($properties['lang_key']),
 			'L_EXPLAIN' => !empty($properties['explain']) ? $this->get_lang($properties['explain']) : '',
@@ -155,7 +290,7 @@ class class_form
 		*/
 
 		/*
-		// to be used within a cycle
+		// To be used within a cycle
 		$template->assign_block_vars('field', array(
 			'L_NAME' => $class_form->get_lang($v['lang_key']),
 			'L_EXPLAIN' => !empty($v['explain']) ? $class_form->get_lang($v['explain']) : '',
@@ -339,26 +474,37 @@ class class_form
 
 		foreach ($table_fields as $k => $v)
 		{
-			if (($v['type'] != 'HIDDEN') && ((isset($v['is_time']) && $v['is_time']) || (isset($v['is_date']) && $v['is_date'])))
+			if (($v['type'] != 'HIDDEN') && (!empty($v['is_time']) || !empty($v['is_date'])))
 			{
-				if (in_array($v['type'], array('DATE_INPUT_JQUI')))
+				if (($v['datetime_format'] == 'mysql') || ($v['type'] == 'TIME_INPUT_JQUI'))
 				{
 					$inputs_array[$k] = request_var($k, $v['default']);
-					$var_fragment = strutime($inputs_array[$k], $lang['DATE_FORMAT_DATE_JQUI_PHP']);
+					if (in_array($v['type'], array('DATE_INPUT_JQUI', 'TIME_INPUT_JQUI')))
+					{
+						$inputs_array[$k] = format_date_mysql($inputs_array[$k], 'date', false, $this->date_sep, $this->time_sep);
+					}
 				}
 				else
 				{
-					$date_time_array = array('year', 'month', 'day', 'hour', 'minute', 'second');
-					$input_time = (!empty($v['default']) ? $v['default'] : $current_time);
-					$tf = $this->explode_unix_time($input_time);
-					$var_fragment = array();
-					foreach ($date_time_array as $time_fragment)
+					if (in_array($v['type'], array('DATE_INPUT_JQUI')))
 					{
-						$var_name = $k . '_' . $time_fragment;
-						$var_fragment[$time_fragment] = request_var($var_name, $tf[$time_fragment]);
+						$inputs_array[$k] = request_var($k, $v['default']);
+						$var_fragment = strutime($inputs_array[$k], $this->date_format_php);
 					}
+					else
+					{
+						$date_time_array = array('year', 'month', 'day', 'hour', 'minute', 'second');
+						$input_time = (!empty($v['default']) ? $v['default'] : $current_time);
+						$tf = $this->explode_unix_time($input_time);
+						$var_fragment = array();
+						foreach ($date_time_array as $time_fragment)
+						{
+							$var_name = $k . '_' . $time_fragment;
+							$var_fragment[$time_fragment] = request_var($var_name, $tf[$time_fragment]);
+						}
+					}
+					$inputs_array[$k] = $this->implode_unix_time($var_fragment['year'], $var_fragment['month'], $var_fragment['day'], $var_fragment['hour'], $var_fragment['minute'], $var_fragment['second']);
 				}
-				$inputs_array[$k] = $this->implode_unix_time($var_fragment['year'], $var_fragment['month'], $var_fragment['day'], $var_fragment['hour'], $var_fragment['minute'], $var_fragment['second']);
 			}
 			else
 			{
@@ -513,14 +659,25 @@ class class_form
 				}
 
 				// Convert dates and times
-				if ($v['is_time'])
+				$v['datetime_format'] = !empty($v['datetime_format']) ? $v['datetime_format'] : 'unix';
+				switch ($v['datetime_format'])
 				{
-					$value = create_date_ip($config['default_dateformat'], $inputs_array[$k], $config['board_timezone']);
-				}
+					case 'mysql':
+						$output = !empty($v['is_date']) ? 'date' : (!empty($v['is_time']) ? 'time' : 'datetime');
+						$value = format_date_mysql($inputs_array[$k], $output, true, $this->date_sep, $this->time_sep);
+						break;
 
-				if ($v['is_date'])
-				{
-					$value = create_date($lang['DATE_FORMAT_DATE_JQUI_PHP'], $inputs_array[$k], $config['board_timezone']);
+					default:
+						if (!empty($v['is_time']))
+						{
+							$value = create_date_ip($config['default_dateformat'], $inputs_array[$k], $config['board_timezone']);
+						}
+
+						if (!empty($v['is_date']))
+						{
+							$value = create_date($this->date_format_php, $inputs_array[$k], $config['board_timezone']);
+						}
+						break;
 				}
 
 				// Create user link (with user_id)
@@ -534,6 +691,12 @@ class class_form
 				{
 					$target_userid = $this->get_user_id($inputs_array[$k]);
 					$value = colorize_username($target_userid);
+				}
+
+				// Create user link (with username)
+				if ($v['type'] == 'PASSWORD')
+				{
+					$value = '********';
 				}
 
 				// Create thumbnails for images
@@ -764,6 +927,75 @@ class class_form
 		$time_input .= '&nbsp;' . $lang['TIME_SECOND'] . ':&nbsp;' . $this->build_select_box($select_name, $default, $options_array, $options_langs_array, '');
 
 		return $time_input;
+	}
+
+	/*
+	* Explode time fragments from UNIX or MySQL time
+	*/
+	function explode_time($time, $format = 'unix')
+	{
+		switch ($format)
+		{
+			case 'mysql':
+				$time_fragments = $this->explode_mysql_time($time);
+				break;
+
+			default:
+				$time_fragments = $this->explode_unix_time($time);
+				break;
+		}
+
+		return $time_fragments;
+	}
+
+	/*
+	* Explode time fragments from MySQL time
+	*/
+	function explode_mysql_time($time)
+	{
+		$time_fragments = array(
+			'year' => '0000',
+			'month' => '00',
+			'day' => '00',
+			'hour' => '00',
+			'minute' => '00',
+			'second' => '00',
+		);
+
+		switch (strlen($time))
+		{
+			// DATE only
+			case 10:
+				$mysql_date = explode('-', $time);
+				$time_fragments['year'] = !empty($mysql_date[0]) ? $mysql_date[0] : '0000';
+				$time_fragments['month'] = !empty($mysql_date[1]) ? $mysql_date[1] : '00';
+				$time_fragments['day'] = !empty($mysql_date[2]) ? $mysql_date[2] : '00';
+				break;
+
+			// TIME only
+			case 8:
+				$mysql_time = explode(':', $time);
+				$time_fragments['hour'] = !empty($mysql_time[0]) ? $mysql_time[0] : '00';
+				$time_fragments['minute'] = !empty($mysql_time[1]) ? $mysql_time[1] : '00';
+				$time_fragments['second'] = !empty($mysql_time[2]) ? $mysql_time[2] : '00';
+				break;
+
+			// DATETIME field
+			default:
+				$mysql_time_full = explode(' ', $time);
+
+				$mysql_date = explode('-', $mysql_time_full[0]);
+				$time_fragments['year'] = !empty($mysql_date[0]) ? $mysql_date[0] : '0000';
+				$time_fragments['month'] = !empty($mysql_date[1]) ? $mysql_date[1] : '00';
+				$time_fragments['day'] = !empty($mysql_date[2]) ? $mysql_date[2] : '00';
+
+				$mysql_time = explode(':', $mysql_time_full[1]);
+				$time_fragments['hour'] = !empty($mysql_time[0]) ? $mysql_time[0] : '00';
+				$time_fragments['minute'] = !empty($mysql_time[1]) ? $mysql_time[1] : '00';
+				$time_fragments['second'] = !empty($mysql_time[2]) ? $mysql_time[2] : '00';
+				break;
+		}
+		return $time_fragments;
 	}
 
 	/*

@@ -81,7 +81,7 @@ if(!isset($_POST['confirm']) && !KILL_CONFIRM)
 		)
 	);
 	$template->pparse('confirm');
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	exit();
 }
 

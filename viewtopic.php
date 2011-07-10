@@ -270,12 +270,11 @@ $count_sql = (!$post_id ? '' : (", COUNT(p2.post_id) AS prev_posts"));
 $order_sql = (!$post_id ? '' : ("GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard ORDER BY p.post_id ASC"));
 
 // Let's try to query all fields for topics and forums... it should not require too much resources as we are querying only one row
-//$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_thanks, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.forum_rules, f.auth_ban, f.auth_greencard, f.auth_bluecard, fr.*" . $count_sql . "
-$sql = "SELECT t.*, f.*, fr.*" . $count_sql . "
-	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr" . $join_sql_table . "
+//$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_thanks, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard" . $count_sql . "
+$sql = "SELECT t.*, f.*" . $count_sql . "
+	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f" . $join_sql_table . "
 	WHERE $join_sql
 		AND f.forum_id = t.forum_id
-		AND fr.forum_id = t.forum_id
 		$order_sql";
 attach_setup_viewtopic_auth($order_sql, $sql);
 $result = $db->sql_query($sql);
@@ -1065,10 +1064,10 @@ $current_page = get_page($total_replies, $config['posts_per_page'], $start);
 $watch_topic_url = 'topic_view_users.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append;
 
 $rules_bbcode = '';
-if ($forum_topic_data['rules_in_viewtopic'])
+if ($forum_topic_data['forum_rules_in_viewtopic'])
 {
 	//BBcode Parsing for Olympus rules Start
-	$rules_bbcode = $forum_topic_data['rules'];
+	$rules_bbcode = $forum_topic_data['forum_rules'];
 	$bbcode->allow_html = true;
 	$bbcode->allow_bbcode = true;
 	$bbcode->allow_smilies = true;
@@ -1077,7 +1076,7 @@ if ($forum_topic_data['rules_in_viewtopic'])
 
 	$template->assign_vars(array(
 		'S_FORUM_RULES' => true,
-		'S_FORUM_RULES_TITLE' => ($forum_topic_data['rules_display_title']) ? true : false
+		'S_FORUM_RULES_TITLE' => ($forum_topic_data['forum_rules_display_title']) ? true : false
 		)
 	);
 }
@@ -1197,7 +1196,7 @@ $template->assign_vars(array(
 	'L_SPLIT_TOPIC' => $lang['Split_topic'],
 	'L_DELETE_TOPIC' => $lang['Delete_topic'],
 	'L_GOTO_PAGE' => $lang['Goto_page'],
-	'L_FORUM_RULES' => (empty($forum_topic_data['rules_custom_title'])) ? $lang['Forum_Rules'] : $forum_topic_data['rules_custom_title'],
+	'L_FORUM_RULES' => (empty($forum_topic_data['forum_rules_custom_title'])) ? $lang['Forum_Rules'] : $forum_topic_data['forum_rules_custom_title'],
 	'L_PERMISSIONS_LIST' => $lang['Permissions_List'],
 	'L_TELL' => $lang['TELL_FRIEND'],
 	'L_TOPIC_RATING' => $lang['TopicUseful'],

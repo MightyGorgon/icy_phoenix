@@ -116,6 +116,6 @@ $template->assign_vars(array(
 include(IP_ROOT_PATH . ADM . '/bb_usage_stats_admin.' . PHP_EXT);
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

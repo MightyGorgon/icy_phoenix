@@ -106,7 +106,7 @@ if (($mode_id == 'start') || ($mode_id == 'perform'))
 }
 if ($function != 'perform_rebuild') // Don't send header when rebuilding the search index
 {
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 }
 
 switch($mode_id)
@@ -2052,7 +2052,7 @@ switch($mode_id)
 					echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=synchronize_post_direct&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Must_synchronize'] . "</a></p>\n");
 					// Send Information about processing time
 					echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-					include('./page_footer_admin.' . PHP_EXT);
+					include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 					exit;
 				}
 				else
@@ -2928,7 +2928,7 @@ switch($mode_id)
 				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Can_start_rebuilding'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 
@@ -2961,7 +2961,7 @@ switch($mode_id)
 				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Can_start_rebuilding'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 
@@ -3017,7 +3017,7 @@ switch($mode_id)
 				$db->sql_return_on_error(false);
 				if (!$result)
 				{
-					include('./page_header_admin.' . PHP_EXT);
+					include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 					throw_error("Couldn't get post data!", __LINE__, __FILE__, $sql);
 				}
 				// Get first record
@@ -3025,7 +3025,7 @@ switch($mode_id)
 				if (!$row) // Yeah! we reached the end of the posts - finish actions and exit
 				{
 					$db->sql_freeresult($result);
-					include('./page_header_admin.' . PHP_EXT);
+					include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 					set_config('dbmtnc_rebuild_pos', '-1', false);
 					set_config('dbmtnc_rebuild_end', '0', false);
 
@@ -3044,7 +3044,7 @@ switch($mode_id)
 					echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT) . '">' . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
 					// Send Information about processing time
 					echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-					include('./page_footer_admin.' . PHP_EXT);
+					include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 					exit;
 				}
 				$last_post = 0;
@@ -3145,7 +3145,7 @@ switch($mode_id)
 								$db->sql_return_on_error(false);
 								if (!$result_tmp)
 								{
-									include('./page_header_admin.' . PHP_EXT);
+									include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 									throw_error("Couldn't insert into search match!", __LINE__, __FILE__, $sql);
 								}
 							}
@@ -3163,7 +3163,7 @@ switch($mode_id)
 				$redirect_url = append_sid(ADM . '/admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=perform_rebuild&amp;db_state=' . $db_state);
 				meta_refresh(3, $redirect_url);
 
-				include('./page_header_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 				$db->sql_freeresult($result);
 				// Get Statistics
 				$posts_total = 0;
@@ -3201,7 +3201,7 @@ switch($mode_id)
 				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . '">' . $lang['Click_or_wait_to_proceed'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 
@@ -3249,7 +3249,7 @@ switch($mode_id)
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 
@@ -4368,6 +4368,6 @@ switch($mode_id)
 		break;
 }
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

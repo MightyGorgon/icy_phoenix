@@ -904,7 +904,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 	}
 
 	// Dump in the page header ...
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_ug_body.tpl'));
 
@@ -963,7 +963,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 else
 {
 	// Select a user/group
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . (($mode == 'user') ? 'user_select_body.tpl' : 'auth_select_body.tpl')));
 
@@ -1019,6 +1019,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

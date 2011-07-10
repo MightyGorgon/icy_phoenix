@@ -145,7 +145,7 @@ if(empty($language))
 	);
 
 	$template->pparse('body');
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	exit;
 }
 
@@ -199,7 +199,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('confirm');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 			exit;
 
@@ -239,7 +239,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 			exit;
 
@@ -319,7 +319,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 			exit;
 
 		// actually create the question when the user submits the new question form
@@ -367,7 +367,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 			exit;
 
 		case 'quest_do_edit':
@@ -422,7 +422,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('confirm');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 			exit;
 
 		// delete is confirmed or rejected
@@ -553,6 +553,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

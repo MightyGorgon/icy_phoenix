@@ -2951,7 +2951,7 @@ if (substr($mode, 0, 6) == 'update')
 			`log_page` varchar(255) NOT NULL default '',
 			`log_user_id` int(10) NOT NULL,
 			`log_action` varchar(60) NOT NULL default '',
-			`log_desc` varchar(255) NOT NULL default '',
+			`log_desc` mediumtext NOT NULL,
 			`log_target` int(10) NOT NULL default '0',
 			PRIMARY KEY (`log_id`)
 		)";
@@ -4321,6 +4321,21 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.17.70 */
 		case '1.3.17.70':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "logs` CHANGE `log_desc` `log_desc` mediumtext NOT NULL";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` CHANGE `forum_rules` `forum_rules_switch` tinyint(1) unsigned NOT NULL DEFAULT '0'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_posting` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_viewtopic` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_viewforum` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_custom_title` varchar(80) NOT NULL DEFAULT '' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_display_title` tinyint(1) NOT NULL DEFAULT '1' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules` text NOT NULL AFTER `forum_rules_switch`";
+
+		$sql[] = "UPDATE " . $table_prefix . "forums f, " . $table_prefix . "forums_rules fr
+		SET f.forum_rules = fr.rules, f.forum_rules_display_title = fr.rules_display_title, f.forum_rules_custom_title = fr.rules_custom_title, f.forum_rules_in_viewforum = fr.rules_in_viewforum, f.forum_rules_in_viewtopic = fr.rules_in_viewtopic, f.forum_rules_in_posting = fr.rules_in_posting
+		WHERE f.forum_id = fr.forum_id";
+
+		$sql[] = "DROP TABLE `" . $table_prefix . "forums_rules`";
 
 		/* Updating from IP 1.3.18.71 */
 		case '1.3.18.71':

@@ -809,7 +809,7 @@ function throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = '')
 
 	// Include Tail and exit
 	echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT) . '">' . $lang['Back_to_DB_Maintenance'] . '</a></p>' . "\n");
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	exit;
 }
 
@@ -1149,15 +1149,6 @@ function create_forum()
 		}
 		$next_forum_order = $row['forum_order'] + 10;
 
-		$sql = "INSERT INTO " . FORUMS_RULES_TABLE . " (forum_id, rules) VALUES ('" . $next_forum_id . "', '')";
-		$db->sql_return_on_error(true);
-		$result = $db->sql_query($sql);
-		$db->sql_return_on_error(false);
-		if (!$result)
-		{
-			throw_error("Couldn't update forums rules data!", __LINE__, __FILE__, $sql);
-		}
-
 		$forum_permission = AUTH_ADMIN;
 		$sql = 'INSERT INTO ' . FORUMS_TABLE . " (forum_id, forum_type, parent_id, forum_name, forum_desc, forum_status, forum_order, forum_posts, forum_topics, forum_last_post_id, prune_next, prune_enable, auth_view, auth_read, auth_post, auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, auth_pollcreate, auth_attachments)
 			VALUES ($next_forum_id, " . FORUM_POST . ", $cat_id, '" . $db->sql_escape($lang['New_forum_name']) . "', '', " . FORUM_LOCKED . ", $next_forum_order, 0, 0, 0, NULL, 0, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, 0)";
@@ -1272,7 +1263,7 @@ function get_word_id($word)
 	$db->sql_return_on_error(false);
 	if (!$result)
 	{
-		include('./page_header_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT)
 		throw_error("Couldn't get search word data!", __LINE__, __FILE__, $sql);
 	}
 	if ($row = $db->sql_fetchrow($result)) // Word was found
@@ -1294,7 +1285,7 @@ function get_word_id($word)
 		$db->sql_return_on_error(false);
 		if (!$result)
 		{
-			include('./page_header_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 			throw_error("Couldn't insert search word data!", __LINE__, __FILE__, $sql);
 		}
 		return $db->sql_nextid();

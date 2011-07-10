@@ -135,22 +135,22 @@ function update_icon(newimage)
 <tr><th colspan="2">{L_MOD_OS_FORUMRULES}</th></tr>
 <tr>
 	<td class="row1"><span class="genmed"><b>{L_RULES_DISPLAY_TITLE}</b></span></td>
-	<td class="row2"><input type="checkbox" name="rules_display_title" value="1" {S_RULES_DISPLAY_TITLE_ENABLED} />&nbsp;<span class="genmed">{L_ENABLED}</span></td>
+	<td class="row2"><input type="checkbox" name="forum_rules_display_title" value="1" {S_RULES_DISPLAY_TITLE_ENABLED} />&nbsp;<span class="genmed">{L_ENABLED}</span></td>
 </tr>
 <tr>
 	<td class="row1"><span class="genmed"><b>{L_RULES_CUSTOM_TITLE}</b></span></td>
-	<td class="row2"><input type="text" name="rules_custom_title" value="{RULES_CUSTOM_TITLE}" size="50" maxlength="80" class="post" /></td>
+	<td class="row2"><input type="text" name="forum_rules_custom_title" value="{RULES_CUSTOM_TITLE}" size="50" maxlength="80" class="post" /></td>
 </tr>
 <tr>
 	<td class="row1" valign="top"><span class="genmed"><b>{L_FORUM_RULES}</b></span></td>
-	<td class="row2"><textarea rows="8" cols="70" name="rules" class="post">{RULES}</textarea></td>
+	<td class="row2"><textarea rows="8" cols="70" name="forum_rules" class="post">{RULES}</textarea></td>
 </tr>
 <tr>
 	<td class="row1" valign="top"><span class="genmed"><b>{L_RULES_APPEAR_IN}</b></span></td>
 	<td class="row2">
-		<input type="checkbox" name="rules_in_viewforum" value="1" {S_RULES_VIEWFORUM_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_VIEWFORUM}</span><br />
-		<input type="checkbox" name="rules_in_viewtopic" value="1" {S_RULES_VIEWTOPIC_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_VIEWTOPIC}</span><br />
-		<input type="checkbox" name="rules_in_posting" value="1" {S_RULES_POSTING_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_POSTING}</span><br />
+		<input type="checkbox" name="forum_rules_in_viewforum" value="1" {S_RULES_VIEWFORUM_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_VIEWFORUM}</span><br />
+		<input type="checkbox" name="forum_rules_in_viewtopic" value="1" {S_RULES_VIEWTOPIC_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_VIEWTOPIC}</span><br />
+		<input type="checkbox" name="forum_rules_in_posting" value="1" {S_RULES_POSTING_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_POSTING}</span><br />
 	</td>
 </tr>
 <!-- END forum -->

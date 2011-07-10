@@ -27,7 +27,8 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'Title_ads' => 'Ads',
-	'Title_ads_tla' => 'Ads',
+	'Title_ads_tla' => 'Ads TLA',
+	'Title_ads_tla_new' => 'Ads TLA New',
 	'Title_album' => 'Album',
 	'Title_birthdays' => 'Birthdays',
 	'Title_calendar' => 'Calendar',
