@@ -182,23 +182,6 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
-	/*
-	'cms_dock' => array(
-		'lang_key' => 'IP_cms_dock',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-		),
-	*/
-
-	'cms_style' => array(
-		'lang_key' => 'IP_cms_style',
-		'explain' => 'IP_cms_style_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-		),
-
 	'split_ga_ann_sticky' => array(
 		'lang_key' => 'IP_split_ga_ann_sticky',
 		'explain' => 'IP_split_ga_ann_sticky_explain',

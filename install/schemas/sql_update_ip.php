@@ -73,6 +73,7 @@ switch ($req_version)
 	case '131669': $current_ip_version = '1.3.16.69'; break;
 	case '131770': $current_ip_version = '1.3.17.70'; break;
 	case '131871': $current_ip_version = '1.3.18.71'; break;
+	case '131972': $current_ip_version = '1.3.19.72'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -2554,7 +2555,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "UPDATE `" . $table_prefix . "users` SET `user_session_page` = 'index.php'";
 		$sql[] = "UPDATE `" . $table_prefix . "sessions` SET `session_page` = 'index.php'";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('show_forums_online_users', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('cms_dock', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('allow_drafts', '1')";
 		$sql[] = "CREATE TABLE `" . $table_prefix . "drafts` (
 			`draft_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
@@ -2914,10 +2914,6 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.2.3.30 */
 		case '1.2.3.30':
-		/*
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_config` (bid, config_name, config_value) VALUES ('0', 'cms_style', '1')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_variable` (`bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (0, 'CMS Style', 'Select the CMS Style', 'cms_style', 'Yes,No', '1,0', 3, '@Portal Config')";
-		*/
 		// Someone may not have this... better check!
 		$sql_tmp = "SELECT * FROM " . $table_prefix . "cms_block_variable WHERE config_name = 'default_portal'";
 		$result_tmp = $db->sql_query($sql_tmp);
@@ -2926,7 +2922,6 @@ if (substr($mode, 0, 6) == 'update')
 			$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_variable` (`bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (0, 'Default Portal', 'Default Portal', 'default_portal', '', '', 1, '@Portal Config')";
 		}
 		$db->sql_freeresult($result_tmp);
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('cms_style', '0')";
 
 		/* Updating from IP 1.2.4.31 */
 		case '1.2.4.31':
@@ -3126,8 +3121,8 @@ if (substr($mode, 0, 6) == 'update')
 				`poster_ip` varchar(40) NOT NULL default '',
 				`post_username` varchar(25) default NULL,
 				`post_subject` varchar(255) default NULL,
-				`post_text` TEXT NOT NULL,
-				`post_text_compiled` TEXT NOT NULL,
+				`post_text` MEDIUMTEXT NOT NULL,
+				`post_text_compiled` MEDIUMTEXT NOT NULL,
 				`enable_bbcode` tinyint(1) NOT NULL default '1',
 				`enable_html` tinyint(1) NOT NULL default '0',
 				`enable_smilies` tinyint(1) NOT NULL default '1',
@@ -3147,7 +3142,7 @@ if (substr($mode, 0, 6) == 'update')
 			)";
 
 			// Needed for standard phpBB
-			$sql[] = "ALTER TABLE `" . $table_prefix . "posts_text` ADD `post_text_compiled` TEXT NOT NULL AFTER `post_text`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "posts_text` ADD `post_text_compiled` MEDIUMTEXT NOT NULL AFTER `post_text`";
 			$sql[] = "ALTER TABLE `" . $table_prefix . "posts_text` ADD `edit_notes` MEDIUMTEXT NOT NULL AFTER `post_text_compiled`";
 
 			$sql[] = "INSERT INTO `___posts___`
@@ -4036,7 +4031,7 @@ if (substr($mode, 0, 6) == 'update')
 			)";
 
 			$sql[] = "INSERT INTO `___sessions___`
-			SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_browser, s.session_page, s.session_logged_in, 0, 0, '', 1, 0, s.session_admin
+			SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_user_agent, s.session_page, s.session_logged_in, 0, 0, '', 1, 0, s.session_admin
 			FROM `" . $table_prefix . "sessions` s
 			ORDER BY s.session_id";
 
@@ -4339,6 +4334,30 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.18.71 */
 		case '1.3.18.71':
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'cms_dock'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'cms_style'";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_flickr` varchar(255) DEFAULT '' NOT NULL AFTER `user_twitter`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_googleplus` varchar(255) DEFAULT '' NOT NULL AFTER `user_flickr`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_youtube` varchar(255) DEFAULT '' NOT NULL AFTER `user_googleplus`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_linkedin` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_style` `user_style` MEDIUMINT(8) NULL DEFAULT NULL";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_keywords', 'your keywords, comma, separated')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_keywords_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_description', 'Your Site Description')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_description_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_author', 'Author')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_author_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_copyright', 'Copyright')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_copyright_switch', '1')";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_text` `post_text` MEDIUMTEXT NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_text_compiled` `post_text_compiled` MEDIUMTEXT NOT NULL";
+
+		/* Updating from IP 1.3.19.72 */
+		case '1.3.19.72':
 
 	}
 

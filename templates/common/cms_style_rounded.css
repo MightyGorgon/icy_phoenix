@@ -225,6 +225,8 @@ li.code-row { white-space: normal; border-top: 1px #dddddd solid; color: #bbbbbb
 div.code li.code-row-highlight { color: #ff5500; border-color: #d8d8d8; }
 div.code li.code-row-highlight .code-row-text, div.code span.code-row-highlight { color: #ff5500; }
 li.code-row-first { border-top: none; }
+
+code, code.inline { color: #225599; background-color: #ffffff; border: 1px solid #009900; }
 /* BBCODES - END */
 
 /* OVERFLOWS - BEGIN */

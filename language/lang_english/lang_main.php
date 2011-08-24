@@ -2407,6 +2407,11 @@ $lang = array_merge($lang, array(
 
 	'AJAX_SEARCH' => 'Search...',
 
+	'FLICKR' => 'Flickr',
+	'GOOGLEPLUS' => 'Google Plus',
+	'LINKEDIN' => 'LinkedIn',
+	'YOUTUBE' => 'YouTube',
+
 	)
 );
 
@@ -2584,6 +2589,14 @@ $lang['datetime'] = array(
 	'Thu' => 'Thu',
 	'Fri' => 'Fri',
 	'Sat' => 'Sat',
+
+	'SUN_S' => 'Su',
+	'MON_S' => 'Mo',
+	'TUE_S' => 'Tu',
+	'WED_S' => 'We',
+	'THU_S' => 'Th',
+	'FRI_S' => 'Fr',
+	'SAT_S' => 'Sa',
 
 	'January' => 'January',
 	'February' => 'February',

@@ -35,6 +35,12 @@ class pafiledb_public extends pafiledb
 		{
 			$this->module_name = $module_name;
 
+			if (!file_exists(IP_ROOT_PATH . PA_FILE_DB_PATH . 'modules/pa_' . $module_name . '.' . PHP_EXT))
+			{
+				global $lang;
+				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+			}
+
 			require_once(IP_ROOT_PATH . PA_FILE_DB_PATH . 'modules/pa_' . $module_name . '.' . PHP_EXT);
 			eval('$this->modules[' . $module_name . '] = new pafiledb_' . $module_name . '();');
 
@@ -1037,7 +1043,7 @@ class pafiledb
 			}
 			else
 			{
-				$url_file = append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
+				$url_file = append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_rowset[$i]['file_id']);
 			}
 
 			//$url_file = append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
@@ -1058,7 +1064,8 @@ class pafiledb
 				'IS_NEW_FILE' => $is_new,
 				'XS_NEW' => $xs_new,
 				'U_CAT' => $cat_url,
-				'U_FILE' => $url_file
+				'U_FILE' => $url_file,
+				'U_FILE_EDIT' => append_sid('dload.' . PHP_EXT . '?action=user_upload&amp;file_id=' . $file_rowset[$i]['file_id'])
 				)
 			);
 			$filelist = true;

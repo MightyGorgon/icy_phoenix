@@ -522,7 +522,6 @@ $default_config = array(
 	'bots_legend' => '1',
 	'show_social_bookmarks' => '0',
 	'show_forums_online_users' => '0',
-	'cms_dock' => '0',
 	'allow_drafts' => '1',
 	'main_admin_id' => '2',
 	'allow_mods_edit_admin_posts' => '1',
@@ -543,7 +542,6 @@ $default_config = array(
 	'write_digests_log' => '0',
 	'no_bump' => '0',
 	'link_this_topic' => '0',
-	'cms_style' => '0',
 	'show_alpha_bar' => '0',
 	'db_log_actions' => '1',
 	'show_topic_description' => '0',
@@ -696,6 +694,14 @@ $default_config = array(
 	'session_last_gc' => '0',
 	'active_sessions' => '0',
 	'form_token_lifetime' => '7200',
+	'site_meta_keywords' => 'your keywords, comma, separated',
+	'site_meta_keywords_switch' => '1',
+	'site_meta_description' => 'Your Site Description',
+	'site_meta_description_switch' => '1',
+	'site_meta_author' => 'Author',
+	'site_meta_author_switch' => '1',
+	'site_meta_copyright' => 'Copyright',
+	'site_meta_copyright_switch' => '1',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,
@@ -1263,7 +1269,7 @@ function get_word_id($word)
 	$db->sql_return_on_error(false);
 	if (!$result)
 	{
-		include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT)
+		include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 		throw_error("Couldn't get search word data!", __LINE__, __FILE__, $sql);
 	}
 	if ($row = $db->sql_fetchrow($result)) // Word was found

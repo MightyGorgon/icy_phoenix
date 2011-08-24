@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.18.71');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.19.72');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
@@ -309,29 +309,28 @@ INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `
 ##
 
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (1, 0, 'Default Portal', 'Default Portal', 'default_portal', '', '', 1, '@Portal Config');
-##INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (2, 0, 'CMS Style', 'Select the CMS Style', 'cms_style', 'Yes,No', '1,0', 3, '@Portal Config');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (3, 0, 'Header width', 'Width of forum-wide left column in pixels', 'header_width', '', '', 1, '@Portal Config');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (4, 0, 'Footer width', 'Width of forum-wide right column in pixels', 'footer_width', '', '', 1, '@Portal Config');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (5, 2, 'Number of recent topics', 'number of topics displayed', 'md_num_recent_topics', '', '', 1, 'recent_topics');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (6, 2, 'Recent Topics Style', 'choose static display or scrolling display', 'md_recent_topics_style', 'Scroll,Static', '1,0', 3, 'recent_topics');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (7, 3, 'Poll To Display', 'Choose if you want to show latest poll, random or a specific poll', 'md_poll_type', 'Newest,Random,Specific', '0,1,2', 3, 'poll');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (8, 3, 'Poll Forum ID(s)', 'Type the forum ID(s) comma delimited if you\'ve choosen latest or random poll', 'md_poll_forum_id', '', '', 1, 'poll');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (9, 3, 'Poll Topic ID', 'Type the topic ID if you\'ve choosen specific poll', 'md_poll_topic_id', '', '', 1, 'poll');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (10, 3, 'Poll Bar Length', 'decrease/increase the value for 1 vote bar length', 'md_poll_bar_length', '', '', 1, 'poll');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (11, 7, 'Number of Top Posters', '', 'md_total_poster', '', '', 1, 'top_posters');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (12, 8, 'Search option text', 'Text displayed as the default option', 'md_search_option_text', '', '', 1, 'search');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (13, 10, 'Category to retrieve pics from', 'Enter 0 for all categories or comma delimited entries', 'md_cat_id', '', '', 1, 'album');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (14, 10, 'Display from what galleries?', '', 'md_pics_all', 'Public,Public and Personal', '0,1', 3, 'album');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (15, 10, 'Random or newest pics?', '', 'md_pics_sort', 'Newest,Random', '0,1', 3, 'album');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (16, 10, 'Number of images to display', '', 'md_pics_number', '', '', 1, 'album');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (17, 10, 'Number of columns', '', 'md_pics_cols_number', '1,2,3,4,5', '1,2,3,4,5', 3, 'album');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (18, 10, 'Number of rows', '', 'md_pics_rows_number', '1,2,3,4', '1,2,3,4', 3, 'album');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (19, 11, 'Links -> Style', 'choose static display or scrolling display', 'md_links_style', 'Scroll,Static', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (20, 11, 'Links -> Own (Top)', 'show your own link button above other buttons', 'md_links_own1', 'Yes,No', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (21, 11, 'Links -> Own (Bottom)', 'show your own link button below other buttons', 'md_links_own2', 'Yes,No', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (22, 11, 'Links -> Code', 'show HTML for your own link button', 'md_links_code', 'Yes,No', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (23, 13, 'Maximum Words', 'Select the maximum number of words to display', 'md_wordgraph_words', '', '', 1, 'wordgraph');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (24, 13, 'Enable Word Counts', 'Display the total number of words next to each word', 'md_wordgraph_count', 'Yes,No', '1,0', 3, 'wordgraph');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (2, 0, 'Header width', 'Width of forum-wide left column in pixels', 'header_width', '', '', 1, '@Portal Config');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (3, 0, 'Footer width', 'Width of forum-wide right column in pixels', 'footer_width', '', '', 1, '@Portal Config');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (4, 2, 'Number of recent topics', 'number of topics displayed', 'md_num_recent_topics', '', '', 1, 'recent_topics');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (5, 2, 'Recent Topics Style', 'choose static display or scrolling display', 'md_recent_topics_style', 'Scroll,Static', '1,0', 3, 'recent_topics');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (6, 3, 'Poll To Display', 'Choose if you want to show latest poll, random or a specific poll', 'md_poll_type', 'Newest,Random,Specific', '0,1,2', 3, 'poll');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (7, 3, 'Poll Forum ID(s)', 'Type the forum ID(s) comma delimited if you\'ve choosen latest or random poll', 'md_poll_forum_id', '', '', 1, 'poll');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (8, 3, 'Poll Topic ID', 'Type the topic ID if you\'ve choosen specific poll', 'md_poll_topic_id', '', '', 1, 'poll');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (9, 3, 'Poll Bar Length', 'decrease/increase the value for 1 vote bar length', 'md_poll_bar_length', '', '', 1, 'poll');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (10, 7, 'Number of Top Posters', '', 'md_total_poster', '', '', 1, 'top_posters');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (11, 8, 'Search option text', 'Text displayed as the default option', 'md_search_option_text', '', '', 1, 'search');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (12, 10, 'Category to retrieve pics from', 'Enter 0 for all categories or comma delimited entries', 'md_cat_id', '', '', 1, 'album');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (13, 10, 'Display from what galleries?', '', 'md_pics_all', 'Public,Public and Personal', '0,1', 3, 'album');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (14, 10, 'Random or newest pics?', '', 'md_pics_sort', 'Newest,Random', '0,1', 3, 'album');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (15, 10, 'Number of images to display', '', 'md_pics_number', '', '', 1, 'album');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (16, 10, 'Number of columns', '', 'md_pics_cols_number', '1,2,3,4,5', '1,2,3,4,5', 3, 'album');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (17, 10, 'Number of rows', '', 'md_pics_rows_number', '1,2,3,4', '1,2,3,4', 3, 'album');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (18, 11, 'Links -> Style', 'choose static display or scrolling display', 'md_links_style', 'Scroll,Static', '1,0', 3, 'links');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (19, 11, 'Links -> Own (Top)', 'show your own link button above other buttons', 'md_links_own1', 'Yes,No', '1,0', 3, 'links');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (20, 11, 'Links -> Own (Bottom)', 'show your own link button below other buttons', 'md_links_own2', 'Yes,No', '1,0', 3, 'links');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (21, 11, 'Links -> Code', 'show HTML for your own link button', 'md_links_code', 'Yes,No', '1,0', 3, 'links');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (22, 13, 'Maximum Words', 'Select the maximum number of words to display', 'md_wordgraph_words', '', '', 1, 'wordgraph');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (23, 13, 'Enable Word Counts', 'Display the total number of words next to each word', 'md_wordgraph_count', 'Yes,No', '1,0', 3, 'wordgraph');
 
 ## `phpbb_cms_blocks`
 ##
@@ -355,29 +354,28 @@ INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layou
 ##
 
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (1, 0, 'default_portal', '1');
-##INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (2, 0, 'cms_style', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (3, 0, 'header_width', '180');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (4, 0, 'footer_width', '150');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (5, 2, 'md_recent_topics_style', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (6, 2, 'md_num_recent_topics', '10');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (7, 3, 'md_poll_type', '0');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (8, 3, 'md_poll_forum_id', '');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (9, 3, 'md_poll_topic_id', '');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (10, 3, 'md_poll_bar_length', '65');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (11, 7, 'md_total_poster', '5');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (12, 8, 'md_search_option_text', 'Icy Phoenix');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (13, 10, 'md_cat_id', '0');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (14, 10, 'md_pics_all', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (15, 10, 'md_pics_sort', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (16, 10, 'md_pics_number', '3');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (17, 10, 'md_pics_cols_number', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (18, 10, 'md_pics_rows_number', '3');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (19, 11, 'md_links_style', '0');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (20, 11, 'md_links_own1', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (21, 11, 'md_links_own2', '0');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (22, 11, 'md_links_code', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (23, 13, 'md_wordgraph_words', '250');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (24, 13, 'md_wordgraph_count', '1');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (2, 0, 'header_width', '180');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (3, 0, 'footer_width', '150');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (4, 2, 'md_recent_topics_style', '1');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (5, 2, 'md_num_recent_topics', '10');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (6, 3, 'md_poll_type', '0');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (7, 3, 'md_poll_forum_id', '');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (8, 3, 'md_poll_topic_id', '');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (9, 3, 'md_poll_bar_length', '65');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (10, 7, 'md_total_poster', '5');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (11, 8, 'md_search_option_text', 'Icy Phoenix');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (12, 10, 'md_cat_id', '0');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (13, 10, 'md_pics_all', '1');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (14, 10, 'md_pics_sort', '1');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (15, 10, 'md_pics_number', '3');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (16, 10, 'md_pics_cols_number', '1');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (17, 10, 'md_pics_rows_number', '3');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (18, 11, 'md_links_style', '0');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (19, 11, 'md_links_own1', '1');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (20, 11, 'md_links_own2', '0');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (21, 11, 'md_links_code', '1');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (22, 13, 'md_wordgraph_words', '250');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (23, 13, 'md_wordgraph_count', '1');
 
 ## `phpbb_cms_layout`
 ##
@@ -741,7 +739,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bots_color',
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('bots_legend', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_social_bookmarks', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_forums_online_users', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_dock', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_drafts', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('main_admin_id', '2');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_mods_edit_admin_posts', '1');
@@ -762,7 +759,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('write_errors
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('write_digests_log', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('no_bump', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('link_this_topic', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_style', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_alpha_bar', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('db_log_actions', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_topic_description', '0');
@@ -790,6 +786,8 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_topics_
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_topics_last_run', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sessions_interval', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_sessions_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_site_history_interval', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_site_history_last_run', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_count', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_show_begin_for', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_db_show_not_optimized', '0');
@@ -824,8 +822,28 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('display_tags
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_moderators_edit_tags', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_custom_bbcodes', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('forum_tags_type', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_site_history_interval', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cron_site_history_last_run', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smtp_port', '25');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_likes_posts', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_admins_only', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attachments_stats', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('robots_index_topics_no_replies', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('limit_load', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('limit_search_load', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_check', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('browser_check', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('referer_validation', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('force_server_vars', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_last_gc', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('active_sessions', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('form_token_lifetime', '7200');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_keywords', 'your keywords, comma, separated');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_keywords_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_description', 'Your Site Description');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_description_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_author', 'Author');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_author_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_copyright', 'Copyright');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_copyright_switch', '1');
 ## ATTACHMENTS - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upload_dir', 'files');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upload_img', 'images/attach_post.png');
@@ -943,20 +961,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_fore
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_foreground_lattice_y', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('captcha_lattice_color', '#FFFFFF');
 ## CAPTCHA Settings - END
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smtp_port', '25');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_likes_posts', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_admins_only', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('attachments_stats', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('robots_index_topics_no_replies', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('limit_load', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('limit_search_load', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_check', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('browser_check', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('referer_validation', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('force_server_vars', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_last_gc', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('active_sessions', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('form_token_lifetime', '7200');
 
 ## `phpbb_ctracker_ipblocker`
 ##
@@ -1303,8 +1307,8 @@ INSERT INTO `phpbb_forbidden_extensions` (`ext_id`, `extension`) VALUES (7, 'cgi
 
 ## `phpbb_forums`
 ##
-INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `right_id`, `forum_parents`, `main_type`, `forum_name`, `forum_order`, `forum_desc`, `icon`) VALUES (1, 0, 0, 1, 4, '', 'c', 'Test category 1', 10, '', NULL);
-INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `right_id`, `forum_parents`, `main_type`, `forum_name`, `forum_order`, `forum_desc`, `icon`) VALUES (2, 0, 0, 5, 10, '', 'c', 'Reporting', 30, '', NULL);
+INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `right_id`, `forum_parents`, `main_type`, `forum_name`, `forum_order`, `forum_desc`, `icon`) VALUES (1, 0, 0, 1, 4, '', 'c', 'Test category 1', 10, '', '');
+INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `right_id`, `forum_parents`, `main_type`, `forum_name`, `forum_order`, `forum_desc`, `icon`) VALUES (2, 0, 0, 5, 10, '', 'c', 'Reporting', 30, '', '');
 
 INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `right_id`, `forum_parents`, `main_type`, `forum_name`, `forum_desc`, `forum_status`, `forum_order`, `forum_posts`, `forum_topics`, `forum_last_post_id`, `forum_notify`, `forum_postcount`, `forum_link`, `forum_link_internal`, `forum_link_hit_count`, `forum_link_hit`, `icon`, `prune_next`, `prune_enable`, `auth_view`, `auth_read`, `auth_post`, `auth_reply`, `auth_edit`, `auth_delete`, `auth_sticky`, `auth_announce`, `auth_globalannounce`, `auth_news`, `auth_cal`, `auth_vote`, `auth_pollcreate`, `auth_attachments`, `auth_download`, `auth_ban`, `auth_greencard`, `auth_bluecard`, `auth_rate`) VALUES (3, 1, 1, 2, 3, '', 'c', 'Test Forum 1', 'This is just a test forum.', 0, 20, 2, 2, 2, 1, 1, NULL, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 3, 1, 3, 3, 3, 1, 3, 1, 0, 3, 3, 1, 1);
 INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `right_id`, `forum_parents`, `main_type`, `forum_name`, `forum_desc`, `forum_status`, `forum_order`, `forum_posts`, `forum_topics`, `forum_last_post_id`, `forum_notify`, `forum_postcount`, `forum_link`, `forum_link_internal`, `forum_link_hit_count`, `forum_link_hit`, `icon`, `prune_next`, `prune_enable`, `auth_view`, `auth_read`, `auth_post`, `auth_reply`, `auth_edit`, `auth_delete`, `auth_sticky`, `auth_announce`, `auth_globalannounce`, `auth_news`, `auth_cal`, `auth_vote`, `auth_pollcreate`, `auth_attachments`, `auth_download`, `auth_ban`, `auth_greencard`, `auth_bluecard`, `auth_rate`) VALUES (4, 1, 2, 6, 7, '', 'c', 'Reporting', 'All reports should be inserted here.', 0, 40, 0, 0, 0, 1, 1, NULL, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 3, 1, 3, 3, 3, 1, 3, 1, 0, 3, 3, 1, 1);
@@ -1320,7 +1324,7 @@ INSERT INTO `phpbb_forums` (`forum_id`, `forum_type`, `parent_id`, `left_id`, `r
 ##
 INSERT INTO `phpbb_groups` (`group_id`, `group_type`, `group_name`, `group_description`, `group_moderator`, `group_single_user`, `group_color`, `group_count`, `group_count_max`, `group_count_enable`, `upi2db_on`, `upi2db_min_posts`, `upi2db_min_regdays`) VALUES (1, 1, 'Anonymous', 'Personal User', 0, 1, '', 99999999, 99999999, 0, 1, 0, 0);
 INSERT INTO `phpbb_groups` (`group_id`, `group_type`, `group_name`, `group_description`, `group_moderator`, `group_single_user`, `group_color`, `group_count`, `group_count_max`, `group_count_enable`, `upi2db_on`, `upi2db_min_posts`, `upi2db_min_regdays`) VALUES (2, 1, 'Admin', 'Personal User', 0, 1, '', 99999999, 99999999, 0, 1, 0, 0);
-INSERT INTO `phpbb_groups` (`group_id`, `group_type`, `group_name`, `group_description`, `group_moderator`, `group_single_user`, `group_color`, `group_legend`, `group_legend_order`, `group_count`, `group_count_max`, `group_count_enable`, `upi2db_on`, `upi2db_min_posts`, `upi2db_min_regdays`) VALUES (3, 1, 'Administrators', 'Administrators', 2, 0, '#DD2222', '1', '1', 99999999, 99999999, 0, 1, 0, 0);
+INSERT INTO `phpbb_groups` (`group_id`, `group_type`, `group_name`, `group_description`, `group_moderator`, `group_single_user`, `group_color`, `group_legend`, `group_legend_order`, `group_count`, `group_count_max`, `group_count_enable`, `upi2db_on`, `upi2db_min_posts`, `upi2db_min_regdays`) VALUES (3, 1, 'Administrators', 'Administrators', 2, 0, '#dd2222', '1', '1', 99999999, 99999999, 0, 1, 0, 0);
 INSERT INTO `phpbb_groups` (`group_id`, `group_type`, `group_name`, `group_description`, `group_moderator`, `group_single_user`, `group_color`, `group_legend`, `group_legend_order`, `group_count`, `group_count_max`, `group_count_enable`, `upi2db_on`, `upi2db_min_posts`, `upi2db_min_regdays`) VALUES (4, 1, 'Moderators', 'Moderators', 2, 0, '#228844', '1', '2', 99999999, 99999999, 0, 1, 0, 0);
 INSERT INTO `phpbb_groups` (`group_id`, `group_type`, `group_name`, `group_description`, `group_moderator`, `group_single_user`, `group_color`, `group_legend`, `group_legend_order`, `group_count`, `group_count_max`, `group_count_enable`, `upi2db_on`, `upi2db_min_posts`, `upi2db_min_regdays`) VALUES (5, 0, 'Users', 'All Users', 2, 0, '#224488', '1', '3', 0, 99999999, 0, 1, 0, 0);
 
@@ -1510,8 +1514,8 @@ INSERT INTO `phpbb_pa_config` (`config_name`, `config_value`) VALUES ('pm_notify
 
 ## `phpbb_posts`
 ##
-INSERT INTO `phpbb_posts` (`post_id`, `topic_id`, `forum_id`, `poster_id`, `post_time`, `poster_ip`, `post_username`, `enable_bbcode`, `enable_html`, `enable_smilies`, `enable_sig`, `post_edit_time`, `post_edit_count`, `post_attachment`, `post_bluecard`, `enable_autolinks_acronyms`, `post_subject`, `post_text`, `post_text_compiled`, `edit_notes`) VALUES (1, 1, 3, 2, 1241136000, '127.0.0.1', '', 1, 0, 1, 0, 1129068420, 0, 0, NULL, 1, 'Welcome to Icy Phoenix', 'If you can read this Topic it seems that you have successfully installed your new Forum using [b]Icy Phoenix[/b]. You should now visit the Admin Control Panel to configure some Settings. In ACP you can set the main settings and preferences for the whole sites (styles, languages, time, forums, download, users, album, etc.) while in CMS section you can configure options regarding the site pages (define permissions, add blocks, create new pages, create new menu, etc.). You may also want to configure [b].htaccess[/b] and [b]lang_main_settings.php[/b] (for each installed lang) to fine tune some other preferences, like error reporting, url rewrite, keywords, welcome message, charset and so on. Since everything seems to work fine you are now free to delete this Topic, this Forum and also the Category.\r\n\r\nShould you need any help you can refer to [url]http://www.icyphoenix.com/[/url] for support.\r\n\r\nThank you for choosing Icy Phoenix and remember to backup your db periodically.', '', NULL);
-INSERT INTO `phpbb_posts` (`post_id`, `topic_id`, `forum_id`, `poster_id`, `post_time`, `poster_ip`, `post_username`, `enable_bbcode`, `enable_html`, `enable_smilies`, `enable_sig`, `post_edit_time`, `post_edit_count`, `post_attachment`, `post_bluecard`, `enable_autolinks_acronyms`, `post_subject`, `post_text`, `post_text_compiled`, `edit_notes`) VALUES (2, 2, 3, 2, 1241136000, '127.0.0.1', '', 1, 0, 1, 0, 1129111805, 0, 0, NULL, 1, 'Sample News Post in Home Page', 'As you can see this Topic is Attached to a News Category which is displayed in the Home Page. You can simply create News Postings in Home Page by Posting a Topic and select the News Category into which the News Message should be posted.\r\n\r\nHave Fun...', '', NULL);
+INSERT INTO `phpbb_posts` (`post_id`, `topic_id`, `forum_id`, `poster_id`, `post_time`, `poster_ip`, `post_username`, `enable_bbcode`, `enable_html`, `enable_smilies`, `enable_sig`, `post_edit_time`, `post_edit_count`, `post_attachment`, `post_bluecard`, `enable_autolinks_acronyms`, `post_subject`, `post_text`, `post_text_compiled`, `edit_notes`) VALUES (1, 1, 3, 2, 1241136000, '127.0.0.1', '', 1, 0, 1, 0, 1129068420, 0, 0, NULL, 1, 'Welcome to Icy Phoenix', 'If you can read this Topic it seems that you have successfully installed your new Forum using [b]Icy Phoenix[/b]. You should now visit the Admin Control Panel to configure some Settings. In ACP you can set the main settings and preferences for the whole sites (styles, languages, time, forums, download, users, album, etc.) while in CMS section you can configure options regarding the site pages (define permissions, add blocks, create new pages, create new menu, etc.). You may also want to configure [b].htaccess[/b] and [b]lang_main_settings.php[/b] (for each installed lang) to fine tune some other preferences, like error reporting, url rewrite, keywords, welcome message, charset and so on. Since everything seems to work fine you are now free to delete this Topic, this Forum and also the Category.\r\n\r\nShould you need any help you can refer to [url]http://www.icyphoenix.com/[/url] for support.\r\n\r\nThank you for choosing Icy Phoenix and remember to backup your db periodically.', '', '');
+INSERT INTO `phpbb_posts` (`post_id`, `topic_id`, `forum_id`, `poster_id`, `post_time`, `poster_ip`, `post_username`, `enable_bbcode`, `enable_html`, `enable_smilies`, `enable_sig`, `post_edit_time`, `post_edit_count`, `post_attachment`, `post_bluecard`, `enable_autolinks_acronyms`, `post_subject`, `post_text`, `post_text_compiled`, `edit_notes`) VALUES (2, 2, 3, 2, 1241136000, '127.0.0.1', '', 1, 0, 1, 0, 1129111805, 0, 0, NULL, 1, 'Sample News Post in Home Page', 'As you can see this Topic is Attached to a News Category which is displayed in the Home Page. You can simply create News Postings in Home Page by Posting a Topic and select the News Category into which the News Message should be posted.\r\n\r\nHave Fun...', '', '');
 
 ## `phpbb_privmsgs`
 ##

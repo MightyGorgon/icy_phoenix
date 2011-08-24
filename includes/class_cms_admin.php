@@ -1113,7 +1113,7 @@ class cms_admin
 
 			$select_name = 'blockfile';
 			$default = $b_info['blockfile'];
-			$select_js = ($cms_ajax) ? ' id="blockfile" onchange="javascript:ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=\'+this.form.blockfile.options[this.form.blockfile.selectedIndex].value, \'block_config\');"' : '';
+			$select_js = '';
 
 			$blockfile = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 			$locked = !empty($b_info['locked']) ? true : false;

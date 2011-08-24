@@ -146,7 +146,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	{
 		$last_post_time = intval($_POST['post_time']);
 
-		if(isset($topic_id) && $last_post_time)
+		if(!empty($topic_id) && $last_post_time)
 		{
 			$sql = "SELECT post_time FROM " . POSTS_TABLE . " WHERE topic_id = '" . $topic_id . "' ORDER BY post_time DESC LIMIT 0, 1";
 			$db->sql_return_on_error(true);
@@ -173,7 +173,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	$no_bump = ((($config['no_bump'] == 1) && ($user->data['user_level'] != ADMIN)) || (($config['no_bump'] == 2) && ($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD))) ? true : false;
 	if((($mode == 'reply') || ($mode == 'quote')) && ($no_bump == true) && ($new_post_while_posting == false))
 	{
-		if(isset($topic_id))
+		if(!empty($topic_id))
 		{
 			$sql = "SELECT poster_id FROM " . POSTS_TABLE . "
 							WHERE topic_id = '" . $topic_id . "'

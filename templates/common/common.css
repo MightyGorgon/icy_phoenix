@@ -49,6 +49,11 @@ hr.dashed { border-top: 1px dashed #cccccc; margin: 10px 0; }
 a.nav-menu-link { vertical-align: top; text-decoration: none; }
 /* NAV MENU - END */
 
+/* BBCODES - BEGIN */
+code, code.inline { font-size: 0.9em; font-style: normal; line-height: 1.4em; padding: 1px 3px 1px 3px; font-family: 'Courier New', Courier, Monaco, 'Andale Mono', monospace, sans-serif; }
+code.inline { display: inline; }
+/* BBCODES - END */
+
 /* TEXT AND OVERFLOWS - BEGIN */
 /*
 .gen { font-size: 1.2em; }
@@ -79,6 +84,14 @@ blockquote, .post-text blockquote, .code-content { overflow: auto; }
 
 .highlight-w { color: #dd2222; background-color: #ffffaa; font-weight: bold; }
 /* TEXT AND OVERFLOWS - END */
+
+/* BOLD, BORDERS - BEGIN */
+.force-bold { font-weight: bold !important; }
+.force-no-bold { font-weight: normal !important; }
+.force-borders { border-width: 1px !important; }
+.force-no-borders { border-width: 0px !important; }
+.force-no-bg { background-image: none !important; background-color: transparent !important; }
+/* BOLD, BORDERS - END */
 
 /* ALIGNMENT - BEGIN */
 .align-spacer { clear: both; display: block; margin-bottom: 2px; }

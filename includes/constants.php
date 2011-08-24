@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.18.71');
+define('ICYPHOENIX_VERSION', '1.3.19.72');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -51,7 +51,7 @@ define('CACHE_TOPICS_META', false); // Caching Topics Meta KW And Descriptions O
 define('CACHE_BAN_INFO', false); // Caching Ban informations for each user ON/OFF => TRUE/FALSE (if you have thousands of users, better switch it off)
 define('CACHE_COLORIZE', false); // Caching Users Colors ON/OFF => TRUE/FALSE (if you have thousands of users, better switch it off)
 define('CACHE_FILES_PER_STEP', 500); // The number of files that will be deleted per step when emptying cache folder to avoid timeout
-define('META_TAGS_ATTACH', false); // Attach standard META TAGS (defined in lang_main_settings) to the ones specific for that page? ON/OFF => TRUE/FALSE
+define('META_TAGS_ATTACH', false); // Attach standard META TAGS (defined in lang_main_settings or DB) to the ones specific for that page? ON/OFF => TRUE/FALSE
 
 // Script Time Limit: if your site is large you may want to set a time limit to force scripts shut down and avoid server overload
 define('TIME_LIMIT', 30); // Script Time Limit in seconds

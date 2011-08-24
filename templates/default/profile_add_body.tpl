@@ -88,12 +88,24 @@
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="facebook" size="20" maxlength="255" value="{FACEBOOK}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_FLICKR}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="flickr" size="20" maxlength="255" value="{FLICKR}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_GOOGLEPLUS}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="googleplus" size="20" maxlength="255" value="{GOOGLEPLUS}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_ICQ_NUMBER}:</span></td>
 	<td class="row2"><input type="text" name="icq" class="post" style="width: 100px;" size="10" maxlength="15" value="{ICQ}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_JABBER}:</span></td>
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="jabber" size="20" maxlength="255" value="{JABBER}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_LINKEDIN}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="linkedin" size="20" maxlength="255" value="{LINKEDIN}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_MESSENGER}:</span></td>
@@ -110,6 +122,10 @@
 <tr>
 	<td class="row1"><span class="gen">{L_YAHOO}:</span></td>
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="yim" size="20" maxlength="255" value="{YIM}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_YOUTUBE}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="youtube" size="20" maxlength="255" value="{YOUTUBE}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_WEBSITE}:</span></td>

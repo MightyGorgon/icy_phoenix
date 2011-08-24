@@ -79,22 +79,6 @@ $action = (isset($_POST['save']) ? 'save' : $action);
 $action = (isset($_POST['add_cat']) ? 'add' : $action);
 $action = (in_array($action, $action_array) ? $action : false);
 
-$cms_ajax = request_var('cms_ajax', '');
-$cms_ajax = (empty($cms_ajax) && (($_COOKIE['cms_ajax'] == 'true') || ($_COOKIE['cms_ajax'] == 'false')) ? $_COOKIE['cms_ajax'] : $cms_ajax);
-$cms_ajax = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
-if (($cms_ajax && ($_COOKIE['cms_ajax'] != 'true')) || (!$cms_ajax && ($_COOKIE['cms_ajax'] != 'false')))
-{
-	@setcookie('cms_ajax', ($cms_ajax ? 'true' : 'false'), time() + 31536000);
-}
-$config['cms_style'] = $cms_ajax ? 1 : 0;
-$cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$template->assign_vars(array(
-	'U_CMS_AJAX_SWITCH' => append_sid(CMS_PAGE_CMS . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
-	'L_CMS_AJAX_SWITCH' => !empty($cms_ajax) ? $lang['CMS_AJAX_DISABLE'] : $lang['CMS_AJAX_ENABLE'],
-	)
-);
-
 $mi_id = (isset($_GET['mi_id']) ? intval($_GET['mi_id']) : (isset($_POST['mi_id']) ? intval($_POST['mi_id']) : false));
 $m_id = (isset($_GET['m_id']) ? intval($_GET['m_id']) : (isset($_POST['m_id']) ? intval($_POST['m_id']) : false));
 
@@ -111,15 +95,6 @@ $template->assign_vars(array(
 	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
-
-if($config['cms_dock'])
-{
-	$template->assign_block_vars('cms_dock_on', array());
-}
-else
-{
-	$template->assign_block_vars('cms_dock_off', array());
-}
 
 /* TABS - BEGIN */
 $cms_admin->generate_tabs('menu');

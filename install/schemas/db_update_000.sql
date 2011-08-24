@@ -712,7 +712,6 @@ INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_b
 UPDATE `phpbb_users` SET `user_session_page` = 'index.php';
 UPDATE `phpbb_sessions` SET `session_page` = 'index.php';
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_forums_online_users', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_dock', '0');
 
 
 
@@ -1107,11 +1106,8 @@ INSERT INTO `phpbb_cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('
 ########################################
 ##              BUILD 031             ##
 ########################################
-##INSERT INTO `phpbb_cms_config` (`bid`, `config_name`, `config_value`) VALUES (0, 'cms_style', '1');
-##INSERT INTO `phpbb_cms_block_variable` (`bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (0, 'CMS Style', 'Select the CMS Style', 'cms_style', 'Yes,No', '1,0', 3, '@Portal Config');
 ## Someone may not have this!!!
 ##INSERT INTO `phpbb_cms_block_variable` (`bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (0, 'Default Portal', 'Default Portal', 'default_portal', '', '', 1, '@Portal Config');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_style', '0');
 
 
 
@@ -1341,8 +1337,8 @@ CREATE TABLE `___posts___` (
 	`poster_ip` varchar(40) NOT NULL default '',
 	`post_username` varchar(25) default NULL,
 	`post_subject` varchar(255) default NULL,
-	`post_text` TEXT NOT NULL,
-	`post_text_compiled` TEXT NOT NULL,
+	`post_text` MEDIUMTEXT NOT NULL,
+	`post_text_compiled` MEDIUMTEXT NOT NULL,
 	`enable_bbcode` tinyint(1) NOT NULL default '1',
 	`enable_html` tinyint(1) NOT NULL default '0',
 	`enable_smilies` tinyint(1) NOT NULL default '1',
@@ -1362,7 +1358,7 @@ CREATE TABLE `___posts___` (
 );
 
 ## Needed for standard phpBB
-##ALTER TABLE `phpbb_posts_text` ADD `post_text_compiled` TEXT NOT NULL AFTER `post_text`;
+##ALTER TABLE `phpbb_posts_text` ADD `post_text_compiled` MEDIUMTEXT NOT NULL AFTER `post_text`;
 ##ALTER TABLE `phpbb_posts_text` ADD `edit_notes` MEDIUMTEXT NOT NULL AFTER `post_text_compiled`;
 
 INSERT INTO `___posts___`

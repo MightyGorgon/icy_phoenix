@@ -30,7 +30,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 
 	$date_format = ($date_format == false) ? $lang['JOINED_DATE_FORMAT'] : $date_format;
 
-	$info_array = array('avatar', 'first_name', 'last_name', 'from', 'posts', 'joined', 'gender', 'flag', 'style', 'age', 'birthday', 'avatar', 'profile_url', 'profile_img', 'profile', 'pm_url', 'pm_img', 'pm', 'search_url', 'search_img', 'search', 'ip_url', 'ip_img', 'ip', 'email_url', 'email_img', 'email', 'www_url', 'www_img', 'www', 'facebook_url', 'facebook_img', 'facebook', 'twitter_url', 'twitter_img', 'twitter', 'aim_url', 'aim_img', 'aim', 'icq_url', 'icq_status_img', 'icq_img', 'icq', 'jabber_url', 'jabber_img', 'jabber', 'msn_url', 'msn_img', 'msn', 'skype_url', 'skype_img', 'skype', 'yahoo_url', 'yahoo_img', 'yahoo', 'online_status_url', 'online_status_class', 'online_status_img', 'online_status');
+	$info_array = array('avatar', 'first_name', 'last_name', 'from', 'posts', 'joined', 'gender', 'flag', 'style', 'age', 'birthday', 'avatar', 'profile_url', 'profile_img', 'profile', 'pm_url', 'pm_img', 'pm', 'search_url', 'search_img', 'search', 'ip_url', 'ip_img', 'ip', 'email_url', 'email_img', 'email', 'www_url', 'www_img', 'www', 'facebook_url', 'facebook_img', 'facebook', 'twitter_url', 'twitter_img', 'twitter', 'googleplus_url', 'googleplus_img', 'googleplus', 'flickr_url', 'flickr_img', 'flickr', 'youtube_url', 'youtube_img', 'youtube', 'linkedin_url', 'linkedin_img', 'linkedin', 'aim_url', 'aim_img', 'aim', 'icq_url', 'icq_status_img', 'icq_img', 'icq', 'jabber_url', 'jabber_img', 'jabber', 'msn_url', 'msn_img', 'msn', 'skype_url', 'skype_img', 'skype', 'yahoo_url', 'yahoo_img', 'yahoo', 'online_status_url', 'online_status_class', 'online_status_img', 'online_status');
 
 	// Initialize everything...
 	$user_info = array();
@@ -97,12 +97,16 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 		'chat' => 'id',
 		'aim' => 'aim',
 		'facebook' => 'facebook',
+		'flickr' => 'flickr',
+		'googleplus' => 'googleplus',
 		'icq' => 'icq',
 		'jabber' => 'jabber',
+		'linkedin' => 'linkedin',
 		'msn' => 'msnm',
 		'skype' => 'skype',
 		'twitter' => 'twitter',
 		'yahoo' => 'yim',
+		'youtube' => 'youtube',
 	);
 
 	$all_ims = array();
@@ -428,12 +432,16 @@ function user_profile_mask(&$user_data)
 	$user_data['user_website'] = '';
 	$user_data['user_aim'] = '';
 	$user_data['user_facebook'] = '';
+	$user_data['user_flickr'] = '';
+	$user_data['user_googleplus'] = '';
 	$user_data['user_icq'] = '';
 	$user_data['user_jabber'] = '';
+	$user_data['user_linkedin'] = '';
 	$user_data['user_msnm'] = '';
 	$user_data['user_skype'] = '';
 	$user_data['user_twitter'] = '';
 	$user_data['user_yim'] = '';
+	$user_data['user_youtube'] = '';
 	$user_data['user_gender'] = 0;
 	$user_data['user_allow_viewonline'] = 0;
 	$user_data['user_session_time'] = 0;

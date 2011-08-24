@@ -598,7 +598,7 @@ CREATE TABLE `___sessions___` (
 );
 
 INSERT INTO `___sessions___`
-SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_browser, s.session_page, s.session_logged_in, 0, 0, 0, '', 1, 0, s.session_admin
+SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_user_agent, s.session_page, s.session_logged_in, 0, 0, 0, '', 1, 0, s.session_admin
 FROM `phpbb_sessions` s
 ORDER BY s.session_id;
 
@@ -912,6 +912,31 @@ DROP TABLE `phpbb_forums_rules`;
 
 
 
+########################################
+##              BUILD 072             ##
+########################################
+DELETE FROM `phpbb_config` WHERE config_name = "cms_dock";
+DELETE FROM `phpbb_config` WHERE config_name = "cms_style";
+
+ALTER TABLE `phpbb_users` ADD `user_flickr` varchar(255) DEFAULT '' NOT NULL AFTER `user_twitter`;
+ALTER TABLE `phpbb_users` ADD `user_googleplus` varchar(255) DEFAULT '' NOT NULL AFTER `user_flickr`;
+ALTER TABLE `phpbb_users` ADD `user_youtube` varchar(255) DEFAULT '' NOT NULL AFTER `user_googleplus`;
+ALTER TABLE `phpbb_users` ADD `user_linkedin` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`;
+
+ALTER TABLE `phpbb_users` CHANGE `user_style` `user_style` MEDIUMINT(8) NULL DEFAULT NULL;
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_keywords', 'your keywords, comma, separated');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_keywords_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_description', 'Your Site Description');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_description_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_author', 'Author');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_author_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_copyright', 'Copyright');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_copyright_switch', '1');
+
+ALTER TABLE `phpbb_posts` CHANGE `post_text` `post_text` MEDIUMTEXT NOT NULL;
+ALTER TABLE `phpbb_posts` CHANGE `post_text_compiled` `post_text_compiled` MEDIUMTEXT NOT NULL;
+
 
 
 #####################
@@ -919,7 +944,7 @@ DROP TABLE `phpbb_forums_rules`;
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.18.71' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.19.72' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
