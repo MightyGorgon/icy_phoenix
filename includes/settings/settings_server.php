@@ -61,6 +61,62 @@ $settings_data = array(
 		'default' => '',
 		),
 
+	'site_meta_keywords' => array(
+		'lang_key' => 'SITE_META_KEYWORDS',
+		'type' => 'VARCHAR',
+		'default' => '',
+		),
+
+	'site_meta_keywords_switch' => array(
+		'lang_key' => 'SITE_META_KEYWORDS_SWITCH',
+		'explain' => 'SITE_META_KEYWORDS_SWITCH_EXPLAIN',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
+	'site_meta_description' => array(
+		'lang_key' => 'SITE_META_DESCRIPTION',
+		'type' => 'VARCHAR',
+		'default' => '',
+		),
+
+	'site_meta_description_switch' => array(
+		'lang_key' => 'SITE_META_DESCRIPTION_SWITCH',
+		'explain' => 'SITE_META_DESCRIPTION_SWITCH_EXPLAIN',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
+	'site_meta_author' => array(
+		'lang_key' => 'SITE_META_AUTHOR',
+		'type' => 'VARCHAR',
+		'default' => '',
+		),
+
+	'site_meta_author_switch' => array(
+		'lang_key' => 'SITE_META_AUTHOR_SWITCH',
+		'explain' => 'SITE_META_AUTHOR_SWITCH_EXPLAIN',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
+	'site_meta_copyright' => array(
+		'lang_key' => 'SITE_META_COPYRIGHT',
+		'type' => 'VARCHAR',
+		'default' => '',
+		),
+
+	'site_meta_copyright_switch' => array(
+		'lang_key' => 'SITE_META_COPYRIGHT_SWITCH',
+		'explain' => 'SITE_META_COPYRIGHT_SWITCH_EXPLAIN',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
 	'board_disable' => array(
 		'lang_key' => 'Board_disable',
 		'explain' => 'Board_disable_explain',

@@ -807,6 +807,8 @@ li.code-row-first {
 	border-top: none;
 }
 
+code, code.inline { color: #225599; background-color: #ffffff; border: 1px solid #cccccc; }
+
 /* inputs */
 form {
 	display: inline;

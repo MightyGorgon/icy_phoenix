@@ -54,6 +54,8 @@
 			div.code li.code-row-highlight { color: #ff2222; border-color: #d8d8d8; }
 			div.code li.code-row-highlight .code-row-text, div.code span.code-row-highlight { color: #ff2222; }
 			li.code-row-first { border-top: none; }
+			code, code.inline { color: #444444; background-color: #ffffff; border: 1px solid #cccccc; font-size: 0.9em; font-style: normal; line-height: 1.4em; padding: 3px; font-family: 'Courier New', Courier, Monaco, 'Andale Mono', monospace, sans-serif; }
+			code.inline { display: inline; }
 		</style>
 	</head>
 	<body>

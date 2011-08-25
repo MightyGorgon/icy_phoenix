@@ -863,6 +863,8 @@ li.code-row-first {
 	border-top: none;
 }
 
+code, code.inline { color: #225599; background-color: #ffffff; border: 1px solid #009900; }
+
 /* inputs */
 .helpline {
 	background-color: #f8f8f8;

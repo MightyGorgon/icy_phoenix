@@ -120,12 +120,16 @@ if(!function_exists('cms_block_random_user'))
 				'chat' => 'id',
 				'aim' => 'aim',
 				'facebook' => 'facebook',
+				'flickr' => 'flickr',
+				'googleplus' => 'googleplus',
 				'icq' => 'icq',
 				'jabber' => 'jabber',
+				'linkedin' => 'linkedin',
 				'msn' => 'msnm',
 				'skype' => 'skype',
 				'twitter' => 'twitter',
 				'yahoo' => 'yim',
+				'youtube' => 'youtube',
 			);
 
 			$all_ims = array();

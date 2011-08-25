@@ -24,23 +24,23 @@
 
 
 /**
- *
- * Template class. By Nathan Codding of the phpBB group.
- * The interface was originally inspired by PHPLib templates,
- * and the template file formats are quite similar.
- *
- * eXtreme Styles mod by CyberAlien.
- *
- * IF, ELSEIF, ENDIF tags are backported from phpBB 2.2
- *
- * Documentation for this mod can be found here:
- * http://www.stsoftware.biz/forum
- *
- * Support for eXtreme Styles mod is provided at http://www.stsoftware.biz/forum
- *
- * Thanks to DMaJ007 for idea on how to include some extra tags.
- *
- */
+*
+* Template class. By Nathan Codding of the phpBB group.
+* The interface was originally inspired by PHPLib templates,
+* and the template file formats are quite similar.
+*
+* eXtreme Styles mod by CyberAlien.
+*
+* IF, ELSEIF, ENDIF tags are backported from phpBB 2.2
+*
+* Documentation for this mod can be found here:
+* http://www.stsoftware.biz/forum
+*
+* Support for eXtreme Styles mod is provided at http://www.stsoftware.biz/forum
+*
+* Thanks to DMaJ007 for idea on how to include some extra tags.
+*
+*/
 
 if (!defined('IN_ICYPHOENIX'))
 {
@@ -317,8 +317,12 @@ class Template {
 		// Mighty Gorgon - Common TPL - END
 		if(!empty($this->tpl))
 		{
-			//$file = $this->tpldir . $cfg_path . '/xs.cfg';
-			$file = $this->tpldir . $this->tpldef . '/xs.cfg';
+			if($this->tpldef != $cfg_path)
+			{
+				$file = $this->tpldir . $this->tpldef . '/xs.cfg';
+				$this->load_replacements($file);
+			}
+			$file = $this->tpldir . $cfg_path . '/xs.cfg';
 			$this->load_replacements($file);
 		}
 		if($old_root !== $this->root)
@@ -435,9 +439,20 @@ class Template {
 	function make_filename($filename, $xs_include = false)
 	{
 		// Check replacements list
-		if(!$xs_include && isset($this->replace[$filename]))
+		if(isset($this->replace[$filename]))
 		{
-			$filename = $this->replace[$filename];
+			if(!$xs_include)
+			{
+				$filename = $this->replace[$filename];
+				if($filename === false)
+				{
+					return false;
+				}
+			}
+			elseif($this->replace[$filename] === false)
+			{
+				return false;
+			}
 		}
 		// Check if it's an absolute or relative path.
 		if ((substr($filename, 0, 1) !== '/') && (substr($filename, 1, 1) !== ':'))
@@ -509,7 +524,7 @@ class Template {
 		// checking if we have valid filename
 		if(!$this->files[$handle])
 		{
-			if($xs_include || $quiet)
+			if(($this->files[$handle] === false) || $xs_include || $quiet)
 			{
 				return false;
 			}
@@ -670,6 +685,11 @@ class Template {
 		// checking if handle exists
 		if (empty($this->files[$handle]) && empty($this->files_cache[$handle]))
 		{
+			if(isset($this->files[$handle]) && ($this->files[$handle] === false))
+			{
+				// skip file
+				return true;
+			}
 			die("Template->loadfile(): No files found for handle $handle");
 		}
 		$this->xs_startup();

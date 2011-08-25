@@ -72,23 +72,6 @@ $cms_type = 'cms_standard';
 
 $preview_block = isset($_POST['preview']) ? true : false;
 
-$cms_ajax = request_var('cms_ajax', '');
-$cms_ajax = (empty($cms_ajax) && (($_COOKIE['cms_ajax'] == 'true') || ($_COOKIE['cms_ajax'] == 'false')) ? $_COOKIE['cms_ajax'] : $cms_ajax);
-$cms_ajax = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
-if (($cms_ajax && ($_COOKIE['cms_ajax'] != 'true')) || (!$cms_ajax && ($_COOKIE['cms_ajax'] != 'false')))
-{
-	@setcookie('cms_ajax', ($cms_ajax ? 'true' : 'false'), time() + 31536000);
-}
-//$config['cms_style'] = $cms_ajax ? 1 : 0;
-$config['cms_style'] = 0;
-$cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$template->assign_vars(array(
-	'U_CMS_AJAX_SWITCH' => append_sid($cms_admin->root . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
-	'L_CMS_AJAX_SWITCH' => !empty($cms_ajax) ? $lang['CMS_AJAX_DISABLE'] : $lang['CMS_AJAX_ENABLE'],
-	)
-);
-
 if ($cms_admin->mode == 'smilies')
 {
 	generate_smilies('window');
@@ -128,15 +111,6 @@ $template->assign_vars(array(
 	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
-
-if ($config['cms_dock'])
-{
-	$template->assign_block_vars('cms_dock_on', array());
-}
-else
-{
-	$template->assign_block_vars('cms_dock_off', array());
-}
 
 $cms_admin->s_hidden_fields = '';
 $cms_admin->s_append_url = '';

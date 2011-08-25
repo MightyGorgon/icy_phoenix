@@ -11,7 +11,7 @@
 			[ <a href="{FORM_ACTION}?mode=yesterday" class="mainmenu">{L_YESTERDAY}</a> ]
 			[ <a href="{FORM_ACTION}?mode=last24" class="mainmenu">{L_LAST24}</a> ]
 			[ <a href="{FORM_ACTION}?mode=lastweek" class="mainmenu">{L_LASTWEEK}</a> ]
-			[ <a href="#" class="mainmenu">{L_LAST}</a> <input type="hidden" name="mode" value="lastXdays" />
+			[ <a href="javascript:document.form.submit();" class="mainmenu">{L_LAST}</a> <input type="hidden" name="mode" value="lastXdays" />
 			<input type="text" name="amount_days" size="2" value="{AMOUNT_DAYS}" maxlength="3" class="post" />
 			<a href="javascript:document.form.submit();" class="mainmenu">{L_DAYS}</a> ]
 		</form>

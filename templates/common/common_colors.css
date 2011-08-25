@@ -43,6 +43,11 @@ a.text_red:hover { color: #dd2222; text-decoration: underline; }
 a.text_yellow:hover { color: #ffffaa; text-decoration: underline; }
 /* TEXT BOX - END */
 
+/* GRAY - BEGIN */
+.gray_bg { background-color: #888888 !important; }
+.gray_txt { color: #888888 !important; }
+/* GRAY - END */
+
 /* POST-IT - BEGIN */
 .post-it-row1 { background: #ffffff url('images/bg_post_it_01.gif') repeat-x top !important; }
 .post-it-row2 { background: #ffffff url('images/bg_post_it_02.gif') repeat-x top !important; }

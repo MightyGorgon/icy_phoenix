@@ -231,6 +231,7 @@ class bbcode
 		'ot'					=> array('nested' => true, 'inurl' => false),
 		'code'				=> array('nested' => false, 'inurl' => false),
 		'codeblock'		=> array('nested' => false, 'inurl' => false),
+		'c'						=> array('nested' => false, 'inurl' => false),
 
 		'img'					=> array('nested' => false, 'inurl' => true),
 		'albumimg'		=> array('nested' => false, 'inurl' => true),
@@ -285,26 +286,26 @@ class bbcode
 	);
 
 	var $allowed_html = array(
-		'b'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'strong'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'em'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'i'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'u'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'tt'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'strike'		=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'sup'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
-		'sub'				=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'b'						=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'strong'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'em'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'i'						=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'u'						=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'tt'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'strike'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'sup'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
+		'sub'					=> array('nested' => true, 'inurl' => true, 'allow_empty' => false),
 
-		'div'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'span'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'center'		=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'hr'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'div'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'span'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'center'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'hr'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 
-		'a'					=> array('nested' => false, 'inurl' => false),
-		'ul'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'ol'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'li'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
-		'blockquote' => array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'a'						=> array('nested' => false, 'inurl' => false),
+		'ul'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'ol'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'li'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'blockquote'	=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 
 		'table'			=> array('nested' => true, 'inurl' => false),
 		/*
@@ -1457,6 +1458,18 @@ class bbcode
 				'valid' => true,
 				'start' => $html,
 				'end' => '</div></blockquote>'
+			);
+		}
+
+		// INLINE CODE
+		if($tag === 'c')
+		{
+			$extras = $this->allow_styling ? array('style', 'name') : array('name');
+			$html = '<code class="inline"' . $this->add_extras($item['params'], $extras) . '>';
+			return array(
+				'valid' => true,
+				'start' => $html,
+				'end' => '</code>'
 			);
 		}
 

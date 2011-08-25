@@ -1496,12 +1496,16 @@ for($i = 0; $i < $total_posts; $i++)
 			'chat' => 'id',
 			'aim' => 'aim',
 			'facebook' => 'facebook',
+			'flickr' => 'flickr',
+			'googleplus' => 'googleplus',
 			'icq' => 'icq',
 			'jabber' => 'jabber',
+			'linkedin' => 'linkedin',
 			'msn' => 'msnm',
 			'skype' => 'skype',
 			'twitter' => 'twitter',
 			'yahoo' => 'yim',
+			'youtube' => 'youtube',
 		);
 
 		$all_ims = array();

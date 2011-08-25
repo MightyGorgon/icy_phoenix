@@ -739,7 +739,7 @@ class session
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $row['recent_time'] . ", user_lastpage = '" . $db->sql_escape($row['session_page']) . "'
+				SET user_lastvisit = " . (int) $row['recent_time'] . ", user_session_page = '" . $db->sql_escape($row['session_page']) . "'
 				WHERE user_id = " . (int) $row['session_user_id'];
 			$db->sql_query($sql);
 
@@ -1106,7 +1106,7 @@ class session
 		if ($row)
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $row['session_time'] . ", user_lastpage = '" . $db->sql_escape($row['session_page']) . "'
+				SET user_lastvisit = " . (int) $row['session_time'] . ", user_session_page = '" . $db->sql_escape($row['session_page']) . "'
 				WHERE user_id = " . (int) $user_id;
 			$db->sql_query($sql);
 		}
@@ -1516,7 +1516,8 @@ class user extends session
 		if (empty($config['override_user_style']))
 		{
 			// Mighty Gorgon - Change Style - BEGIN
-			$test_style = request_var(STYLE_URL, 0);
+			// Check cookie as well!!!
+			$test_style = request_var(STYLE_URL, 0, false, true);
 			if ($test_style > 0)
 			{
 				$config['default_style'] = urldecode($test_style);
@@ -1533,7 +1534,18 @@ class user extends session
 			}
 			// Mighty Gorgon - Change Style - END
 
-			$style = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_style'] > 0)) ? $this->data['user_style'] : $config['default_style'];
+			$style = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_style'] > 0) && empty($change_style)) ? $this->data['user_style'] : $config['default_style'];
+
+			// Temporary: Mobile Style - BEGIN
+			/*
+			// Maybe we should move this check above the if (empty($config['override_user_style']))
+			$is_mobile = is_mobile();
+			if (!empty($user->is_mobile))
+			{
+				$style = 500;
+			}
+			*/
+			// Temporary: Mobile Style - END
 
 			if ($theme = setup_style($style, $current_default_style))
 			{

@@ -366,12 +366,16 @@ $im_links_array = array(
 	'chat' => 'id',
 	'aim' => 'aim',
 	'facebook' => 'facebook',
+	'flickr' => 'flickr',
+	'googleplus' => 'googleplus',
 	'icq' => 'icq',
 	'jabber' => 'jabber',
+	'linkedin' => 'linkedin',
 	'msn' => 'msnm',
 	'skype' => 'skype',
 	'twitter' => 'twitter',
 	'yahoo' => 'yim',
+	'youtube' => 'youtube',
 );
 
 $all_ims = array();
@@ -654,12 +658,16 @@ $template->assign_vars(array(
 	'ICON_CHAT' => $all_ims['chat']['icon'],
 	'ICON_AIM' => $all_ims['aim']['icon'],
 	'ICON_FACEBOOK' => $all_ims['facebook']['icon'],
+	'ICON_FLICKR' => $all_ims['flickr']['icon'],
+	'ICON_GOOGLEPLUS' => $all_ims['googleplus']['icon'],
 	'ICON_ICQ' => $all_ims['icq']['icon'],
 	'ICON_JABBER' => $all_ims['jabber']['icon'],
+	'ICON_LINKEDIN' => $all_ims['linkedin']['icon'],
 	'ICON_MSN' => $all_ims['msn']['icon'],
 	'ICON_SKYPE' => $all_ims['skype']['icon'],
 	'ICON_TWITTER' => $all_ims['twitter']['icon'],
 	'ICON_YAHOO' => $all_ims['yahoo']['icon'],
+	'ICON_YOUTUBE' => $all_ims['youtube']['icon'],
 
 	//'LOCATION' => ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;',
 	'LOCATION' => $location,

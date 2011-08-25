@@ -23,6 +23,9 @@ $user->session_begin();
 $user->setup();
 // End session management
 
+// Force all active content BBCodes OFF!
+$config['switch_bbcb_active_content'] = 0;
+
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
