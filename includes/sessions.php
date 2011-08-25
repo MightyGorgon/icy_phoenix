@@ -1513,56 +1513,83 @@ class user extends session
 		$current_default_style = $config['default_style'];
 		$change_style = false;
 
-		if (empty($config['override_user_style']))
+		$is_mobile = is_mobile();
+		// For debugging purpose you can force this to true
+		//$this->data['is_mobile'] = true;
+
+		// We need to store somewhere if the user has the mobile style enabled... so we can output a link to switch between mobile style and norma style
+		$this->data['mobile_style'] = false;
+		$disable_mobile_style = false;
+
+		// MOBILE STYLE DISABLING - BEGIN
+		// Let's check if the user wants to disable the mobile style
+		if(isset($_GET['mob']))
 		{
-			// Mighty Gorgon - Change Style - BEGIN
-			// Check cookie as well!!!
-			$test_style = request_var(STYLE_URL, 0, false, true);
-			if ($test_style > 0)
-			{
-				$config['default_style'] = urldecode($test_style);
-				$config['default_style'] = (check_style_exists($config['default_style']) == false) ? $current_default_style : $config['default_style'];
-				setcookie($config['cookie_name'] . '_style', $config['default_style'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-				$change_style = true;
-			}
-			else
-			{
-				if (isset($_COOKIE[$config['cookie_name'] . '_style']) && (check_style_exists($_COOKIE[$config['cookie_name'] . '_style']) != false))
-				{
-					$config['default_style'] = $_COOKIE[$config['cookie_name'] . '_style'];
-				}
-			}
-			// Mighty Gorgon - Change Style - END
+			$mob_get = (isset($_GET['mob']) && (intval($_GET['mob']) == 0)) ? 0 : 1;
+			$_GET['mob'] = $mob_get;
+			@setcookie('mob', $mob_get, time() + 31536000);
+			$_COOKIE['mob'] = $mob_get;
 
-			$style = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_style'] > 0) && empty($change_style)) ? $this->data['user_style'] : $config['default_style'];
-
-			// Temporary: Mobile Style - BEGIN
-			/*
-			// Maybe we should move this check above the if (empty($config['override_user_style']))
-			$is_mobile = is_mobile();
-			if (!empty($user->is_mobile))
+			if (empty($mob_get))
 			{
-				$style = 500;
-			}
-			*/
-			// Temporary: Mobile Style - END
-
-			if ($theme = setup_style($style, $current_default_style))
-			{
-				if (($this->data['user_id'] != ANONYMOUS) && !empty($change_style))
-				{
-					// user logged in --> save new style ID in user profile
-					$sql = "UPDATE " . USERS_TABLE . "
-						SET user_style = " . $theme['themes_id'] . "
-						WHERE user_id = " . $this->data['user_id'];
-					$db->sql_query($sql);
-					$this->data['user_style'] = $theme['themes_id'];
-				}
-				return;
+				$disable_mobile_style = true;
 			}
 		}
 
-		$theme = setup_style($config['default_style'], $current_default_style);
+		$mob_cok = (isset($_COOKIE['mob']) && (intval($_COOKIE['mob']) == 0)) ? false : true;
+		if (empty($mob_cok))
+		{
+			$disable_mobile_style = true;
+		}
+		// MOBILE STYLE DISABLING - END
+
+		if (empty($disable_mobile_style) && !empty($this->data['is_mobile']) && !defined('IN_CMS') && !defined('IN_ADMIN'))
+		{
+			$this->data['mobile_style'] = true;
+			$theme = setup_mobile_style();
+		}
+		else
+		{
+			if (empty($config['override_user_style']))
+			{
+				// Mighty Gorgon - Change Style - BEGIN
+				// Check cookie as well!!!
+				$test_style = request_var(STYLE_URL, 0, false, true);
+				if ($test_style > 0)
+				{
+					$config['default_style'] = urldecode($test_style);
+					$config['default_style'] = (check_style_exists($config['default_style']) == false) ? $current_default_style : $config['default_style'];
+					setcookie($config['cookie_name'] . '_style', $config['default_style'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+					$change_style = true;
+				}
+				else
+				{
+					if (isset($_COOKIE[$config['cookie_name'] . '_style']) && (check_style_exists($_COOKIE[$config['cookie_name'] . '_style']) != false))
+					{
+						$config['default_style'] = $_COOKIE[$config['cookie_name'] . '_style'];
+					}
+				}
+				// Mighty Gorgon - Change Style - END
+
+				$style = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_style'] > 0) && empty($change_style)) ? $this->data['user_style'] : $config['default_style'];
+
+				if ($theme = setup_style($style, $current_default_style))
+				{
+					if (($this->data['user_id'] != ANONYMOUS) && !empty($change_style))
+					{
+						// user logged in --> save new style ID in user profile
+						$sql = "UPDATE " . USERS_TABLE . "
+							SET user_style = " . $theme['themes_id'] . "
+							WHERE user_id = " . $this->data['user_id'];
+						$db->sql_query($sql);
+						$this->data['user_style'] = $theme['themes_id'];
+					}
+					return;
+				}
+			}
+
+			$theme = setup_style($config['default_style'], $current_default_style);
+		}
 
 		return;
 	}

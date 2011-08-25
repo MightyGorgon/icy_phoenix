@@ -2215,6 +2215,7 @@ function setup_style($style_id, $current_default_style)
 	unset($row);
 	$all_styles_array[$style_id] = $template_row;
 	$row = $template_row;
+
 	$template_path = 'templates/';
 	$template_name = $row['template_name'];
 
@@ -2233,6 +2234,47 @@ function setup_style($style_id, $current_default_style)
 		}
 		// Mighty Gorgon - Common TPL - END
 		$current_template_cfg = IP_ROOT_PATH . $template_path . $cfg_path . '/' . $cfg_name . '.cfg';
+		@include($current_template_cfg);
+
+		if (!defined('TEMPLATE_CONFIG'))
+		{
+			message_die(CRITICAL_ERROR, "Could not open $current_template_cfg", '', __LINE__, __FILE__);
+		}
+	}
+
+	return $row;
+}
+
+/**
+* Setup the mobile style
+*/
+function setup_mobile_style()
+{
+	global $db, $config, $template, $images;
+
+	$row = array(
+		'themes_id' => 0,
+		'template_name' => 'mobile',
+		'style_name' => 'Mobile',
+		'head_stylesheet' => 'style_white.css',
+		'body_background' => 'white',
+		'body_bgcolor' => '',
+		'tr_class1' => 'row1',
+		'tr_class2' => 'row2',
+		'tr_class3' => 'row3',
+		'td_class1' => 'row1',
+		'td_class2' => 'row2',
+		'td_class3' => 'row3',
+	);
+	$template_path = 'templates/';
+	$template_name = $row['template_name'];
+
+	$template = new Template(IP_ROOT_PATH . $template_path . $template_name);
+
+	if ($template)
+	{
+		$current_template_path = $template_path . $template_name;
+		$current_template_cfg = IP_ROOT_PATH . $template_path . $template_name . '/' . $template_name . '.cfg';
 		@include($current_template_cfg);
 
 		if (!defined('TEMPLATE_CONFIG'))
@@ -3030,12 +3072,13 @@ function is_mobile()
 		return false;
 	}
 
+	if (!empty($user)) $user->is_mobile = false;
+
 	$browser = (!empty($user) && !empty($user->browser)) ? $user->browser : (!empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
 	$browser_lc = strtolower($browser);
 
 	if (strpos(strtolower($browser), 'windows') !== false)
 	{
-		if (!empty($user)) $user->is_mobile = false;
 		return false;
 	}
 
