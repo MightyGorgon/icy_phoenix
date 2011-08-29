@@ -63,8 +63,8 @@
     require_once (IP_ROOT_PATH .'/includes/pclzip.lib.'.PHP_EXT);
 
                  $archive = new PclZip($source);
-    if ($archive->extract(PCLZIP_OPT_PATH, '../', 
-                        PCLZIP_OPT_REMOVE_PATH, $name[0].'/ip_root/') == 0) { 
+    if ($archive->extract(PCLZIP_OPT_PATH, IP_ROOT_PATH, 
+                        PCLZIP_OPT_REMOVE_PATH, $name[0]) == 0) { 
     die("Error : ".$archive->errorInfo(true)); 
   }
   
