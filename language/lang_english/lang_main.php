@@ -2412,6 +2412,9 @@ $lang = array_merge($lang, array(
 	'LINKEDIN' => 'LinkedIn',
 	'YOUTUBE' => 'YouTube',
 
+	'MOBILE_STYLE_ENABLE' => 'Enable Mobile Friendly Style',
+	'MOBILE_STYLE_DISABLE' => 'Disable Mobile Friendly Style',
+
 	)
 );
 

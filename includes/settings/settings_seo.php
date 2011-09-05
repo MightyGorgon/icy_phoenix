@@ -60,6 +60,16 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
+	/*
+	'seo_cyrillic' => array(
+		'lang_key' => 'IP_seo_cyrillic',
+		'explain' => 'IP_seo_cyrillic_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => $this->list_yes_no,
+		),
+	*/
+
 	'adsense_code' => array(
 		'lang_key' => 'IP_adsense_code',
 		'explain' => 'IP_adsense_code_explain',

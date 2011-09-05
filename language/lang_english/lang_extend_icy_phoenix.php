@@ -374,6 +374,9 @@ if ($lang_extend_admin)
 		'IP_lofi_bots' => 'LoFi For Bots',
 		'IP_lofi_bots_explain' => 'By enabling this option LoFi will be enabled for bots.',
 
+		'IP_seo_cyrillic' => 'Cyrillic Chars Conversion',
+		'IP_seo_cyrillic_explain' => 'By enabling this option some cyrillic characters will be converted to latin characters (not in posts, but in keywords, tags and where the clean strings function is used).',
+
 		'IP_adsense_code' => 'Google AdSense Publisher Code',
 		'IP_adsense_code_explain' => 'Insert here your Google AdSense Publisher Code and it will be inserted in the Google Search page. If you don\'t want to use it, just leave this field blank.',
 

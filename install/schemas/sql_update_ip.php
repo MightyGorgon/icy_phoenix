@@ -74,6 +74,7 @@ switch ($req_version)
 	case '131770': $current_ip_version = '1.3.17.70'; break;
 	case '131871': $current_ip_version = '1.3.18.71'; break;
 	case '131972': $current_ip_version = '1.3.19.72'; break;
+	case '132073': $current_ip_version = '1.3.20.73'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4199,15 +4200,15 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_users`";
 
 		// CMS related auth options
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (1, 'cms_', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (2, 'cms_view', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (3, 'cms_edit', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (4, 'cms_l_add', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (5, 'cms_l_edit', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (6, 'cms_l_delete', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (7, 'cms_b_add', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (8, 'cms_b_edit', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (9, 'cms_b_delete', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (1, 'cms_', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (2, 'cms_view', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (3, 'cms_edit', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (4, 'cms_l_add', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (5, 'cms_l_edit', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (6, 'cms_l_delete', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (7, 'cms_b_add', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (8, 'cms_b_edit', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (9, 'cms_b_delete', 1, 0, 0)";
 
 		// Admin related auth options
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_', 1)";
@@ -4358,6 +4359,10 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.19.72 */
 		case '1.3.19.72':
+		$sql[] = "UPDATE `" . $table_prefix . "acl_options` SET is_global = 1, is_local = 0 WHERE auth_option LIKE 'cms_%'";
+
+		/* Updating from IP 1.3.20.73 */
+		case '1.3.20.73':
 
 	}
 

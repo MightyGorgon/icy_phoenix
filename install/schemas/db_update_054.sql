@@ -774,15 +774,15 @@ TRUNCATE TABLE `phpbb_acl_roles_data`;
 TRUNCATE TABLE `phpbb_acl_users`;
 
 # -- CMS related auth options
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (1, 'cms_', 0, 1, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (2, 'cms_view', 0, 1, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (3, 'cms_edit', 0, 1, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (4, 'cms_l_add', 0, 1, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (5, 'cms_l_edit', 0, 1, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (6, 'cms_l_delete', 0, 1, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (7, 'cms_b_add', 0, 1, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (8, 'cms_b_edit', 0, 1, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (9, 'cms_b_delete', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (1, 'cms_', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (2, 'cms_view', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (3, 'cms_edit', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (4, 'cms_l_add', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (5, 'cms_l_edit', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (6, 'cms_l_delete', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (7, 'cms_b_add', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (8, 'cms_b_edit', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (9, 'cms_b_delete', 1, 0, 0);
 
 # -- Admin related auth options
 INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_', 1);
@@ -939,12 +939,19 @@ ALTER TABLE `phpbb_posts` CHANGE `post_text_compiled` `post_text_compiled` MEDIU
 
 
 
+########################################
+##              BUILD 073             ##
+########################################
+UPDATE phpbb_acl_options SET is_global = 1, is_local = 0 WHERE auth_option LIKE 'cms_%';
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.19.72' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.20.73' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

@@ -47,6 +47,13 @@ class class_plugins
 	{
 		global $db, $config, $table_prefix;
 
+		// Include install functions file... if any!
+		$plugin_functions_install_file = $this->plugins_path . $plugin_data['dir'] . '/includes/functions_install.' . PHP_EXT;
+		if (file_exists($plugin_functions_install_file))
+		{
+			@include($plugin_functions_install_file);
+		}
+
 		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
@@ -113,6 +120,13 @@ class class_plugins
 	{
 		global $db, $config, $table_prefix;
 
+		// Include install functions file... if any!
+		$plugin_functions_install_file = $this->plugins_path . $plugin_data['dir'] . '/includes/functions_install.' . PHP_EXT;
+		if (file_exists($plugin_functions_install_file))
+		{
+			@include($plugin_functions_install_file);
+		}
+
 		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
@@ -172,6 +186,13 @@ class class_plugins
 	function uninstall($plugin_data, $clear_cache = true)
 	{
 		global $db, $config, $table_prefix;
+
+		// Include install functions file... if any!
+		$plugin_functions_install_file = $this->plugins_path . $plugin_data['dir'] . '/includes/functions_install.' . PHP_EXT;
+		if (file_exists($plugin_functions_install_file))
+		{
+			@include($plugin_functions_install_file);
+		}
 
 		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
@@ -235,6 +256,23 @@ class class_plugins
 		}
 
 		return $plugin_info;
+	}
+
+	/*
+	* Get plugin auth data
+	*/
+	function get_plugin_auth_data($plugin_dir)
+	{
+		global $config, $table_prefix;
+
+		$auth_data = array();
+		$plugin_install_file = $this->plugins_path . $plugin_dir . '/install/install.' . PHP_EXT;
+		if (file_exists($plugin_install_file))
+		{
+			@include($plugin_install_file);
+		}
+
+		return $auth_data;
 	}
 
 	/*

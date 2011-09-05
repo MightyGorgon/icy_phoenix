@@ -23,6 +23,19 @@ require('pagestart.' . PHP_EXT);
 
 define('THIS_PAGE', 'admin_plugins.' . PHP_EXT);
 
+// NEW AUTH - BEGIN
+// To be removed when auth integration has been completed!
+if (!class_exists('auth'))
+{
+	@include(IP_ROOT_PATH . 'includes/class_auth.' . PHP_EXT);
+}
+if (empty($auth))
+{
+	$auth = new auth();
+	$auth->acl($user->data);
+}
+// NEW AUTH - END
+
 // FORM CLASS - BEGIN
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();

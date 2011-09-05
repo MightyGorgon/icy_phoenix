@@ -1546,6 +1546,7 @@ class user extends session
 		if (empty($disable_mobile_style) && !empty($this->data['is_mobile']) && !defined('IN_CMS') && !defined('IN_ADMIN'))
 		{
 			$this->data['mobile_style'] = true;
+			@setcookie('mob', 1, time() + 31536000);
 			$theme = setup_mobile_style();
 		}
 		else

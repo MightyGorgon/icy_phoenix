@@ -144,7 +144,6 @@ class auth_admin extends auth
 					$auth2 = &$auth;
 				}
 
-
 				$hold_ary[$userdata['user_id']] = array();
 				foreach ($forum_ids as $f_id)
 				{
@@ -266,7 +265,7 @@ class auth_admin extends auth
 	*/
 	function display_mask($mode, $permission_type, &$hold_ary, $user_mode = 'user', $local = false, $group_display = true)
 	{
-		global $template, $user, $db;
+		global $db, $template, $user, $lang;
 
 		// Define names for template loops, might be able to be set
 		$tpl_pmask = 'p_mask';
@@ -458,7 +457,8 @@ class auth_admin extends auth
 					'S_VIEW' => ($mode == 'view') ? true : false,
 					'S_NUM_OBJECTS' => sizeof($content_array),
 					'S_USER_MODE' => ($user_mode == 'user') ? true : false,
-					'S_GROUP_MODE' => ($user_mode == 'group') ? true : false)
+					'S_GROUP_MODE' => ($user_mode == 'group') ? true : false
+					)
 				);
 
 				@reset($content_array);
@@ -544,7 +544,8 @@ class auth_admin extends auth
 					'S_VIEW' => ($mode == 'view') ? true : false,
 					'S_NUM_OBJECTS' => sizeof($content_array),
 					'S_USER_MODE' => ($user_mode == 'user') ? true : false,
-					'S_GROUP_MODE' => ($user_mode == 'group') ? true : false)
+					'S_GROUP_MODE' => ($user_mode == 'group') ? true : false
+					)
 				);
 
 				@reset($content_array);
@@ -610,7 +611,7 @@ class auth_admin extends auth
 	*/
 	function display_role_mask(&$hold_ary)
 	{
-		global $db, $template, $user, $phpbb_admin_path;
+		global $db, $template, $user, $lang, $phpbb_admin_path;
 
 		if (!sizeof($hold_ary))
 		{
