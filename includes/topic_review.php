@@ -57,7 +57,7 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 
 		// Start session management
 		$user->session_begin();
-		//$auth->acl($user->data);
+		$auth->acl($user->data);
 		$user->setup();
 		// End session management
 

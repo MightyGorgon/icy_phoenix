@@ -65,7 +65,7 @@ if (!isset($_POST['install_step']))
 
 			// Start session management
 			$user->session_begin(false);
-			//$auth->acl($user->data);
+			$auth->acl($user->data);
 			$user->setup();
 			// End session management
 

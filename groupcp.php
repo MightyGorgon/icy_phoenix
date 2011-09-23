@@ -24,7 +24,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -860,7 +860,6 @@ elseif ($group_id)
 		'L_SELECT' => $lang['Select'],
 		'L_REMOVE_SELECTED' => $lang['Remove_selected'],
 		'L_ADD_MEMBER' => $lang['Add_member'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 		'L_COLORIZE_ALL' => $lang['Colorize_All'],
 		'L_COLORIZE_SELECTED' => $lang['Colorize_Selected'],
 

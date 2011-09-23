@@ -1,4 +1,4 @@
-<div id="sort-info-box" class="row-center" style="position: fixed; top: 10px; right: 20px; z-index: 1; background: none; border: none; height: 26px; width: 300px; padding: 3px;"></div>
+<div id="sort-info-box" class="row-center" style="position: fixed; top: 45px; right: 10px; z-index: 1; background: none; border: none; height: 26px; width: 300px; padding: 3px;"></div>
 
 <script type="text/javascript">
 //<![CDATA[

@@ -531,7 +531,7 @@ $lang = array_merge($lang, array(
 
 	'Notification_subject' => 'New Private Message has arrived!',
 
-	'Find_username' => 'Find a username',
+	'FIND_USERNAME' => 'Find a username',
 	'Find' => 'Find',
 	'No_match' => 'No matches found.',
 
@@ -2414,6 +2414,11 @@ $lang = array_merge($lang, array(
 
 	'MOBILE_STYLE_ENABLE' => 'Enable Mobile Friendly Style',
 	'MOBILE_STYLE_DISABLE' => 'Disable Mobile Friendly Style',
+
+	'INVALID_SESSION' => 'Invalid session. If the problem persist, please contact an administrator.',
+
+	'BACK_TO_TOP' => 'Top',
+	'BACK_TO_PREV' => 'Back to previous page',
 
 	)
 );

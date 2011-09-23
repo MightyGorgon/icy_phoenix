@@ -144,7 +144,7 @@ if(($user_id == ANONYMOUS) && AUTOLOGIN)
 {
 	// Start session management
 	$user->session_begin();
-	//$auth->acl($user->data);
+	$auth->acl($user->data);
 	$user->setup();
 	// End session management
 	$user_id = $user->data['user_id'];

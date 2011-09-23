@@ -232,6 +232,43 @@ class class_plugins
 	}
 
 	/*
+	* Setup plugin lang
+	*/
+	function setup_lang($plugin_dir, $lang_type = '')
+	{
+		global $user, $lang;
+
+		$files_to_include = array();
+		$plugin_lang_path = $this->plugins_path . $plugin_dir . 'language/';
+
+		switch ($lang_type)
+		{
+			case 'permissions':
+				$filenames = array('lang_permissions');
+				break;
+
+			default:
+				$filenames = array('lang_plugin', 'lang_permissions');
+				break;
+		}
+
+		foreach ($filenames as $filename)
+		{
+			if (is_dir($plugin_lang_path))
+			{
+				$files_to_include[] = $filename;
+			}
+		}
+
+		if (!empty($files_to_include))
+		{
+			setup_extra_lang($files_to_include, $plugin_lang_path);
+		}
+
+		return true;
+	}
+
+	/*
 	* Get plugin info
 	*/
 	function get_plugin_info($plugin_dir)

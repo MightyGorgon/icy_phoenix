@@ -29,7 +29,7 @@ include(IP_ROOT_PATH . 'includes/class_stats_module.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 

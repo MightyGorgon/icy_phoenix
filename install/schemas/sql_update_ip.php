@@ -75,6 +75,7 @@ switch ($req_version)
 	case '131871': $current_ip_version = '1.3.18.71'; break;
 	case '131972': $current_ip_version = '1.3.19.72'; break;
 	case '132073': $current_ip_version = '1.3.20.73'; break;
+	case '132174': $current_ip_version = '1.3.21.74'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4192,6 +4193,55 @@ if (substr($mode, 0, 6) == 'update')
 			KEY `class_left_id` (`module_class`, `left_id`)
 		)";
 
+		$sql[] = "UPDATE " . $table_prefix . "cms_blocks SET active = 0 WHERE bposition IN ('hh', 'hl', 'hc', 'fc', 'fr', 'ff')";
+
+		/* Updating from IP 1.3.17.70 */
+		case '1.3.17.70':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "logs` CHANGE `log_desc` `log_desc` mediumtext NOT NULL";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` CHANGE `forum_rules` `forum_rules_switch` tinyint(1) unsigned NOT NULL DEFAULT '0'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_posting` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_viewtopic` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_viewforum` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_custom_title` varchar(80) NOT NULL DEFAULT '' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_display_title` tinyint(1) NOT NULL DEFAULT '1' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules` text NOT NULL AFTER `forum_rules_switch`";
+
+		$sql[] = "UPDATE " . $table_prefix . "forums f, " . $table_prefix . "forums_rules fr
+		SET f.forum_rules = fr.rules, f.forum_rules_display_title = fr.rules_display_title, f.forum_rules_custom_title = fr.rules_custom_title, f.forum_rules_in_viewforum = fr.rules_in_viewforum, f.forum_rules_in_viewtopic = fr.rules_in_viewtopic, f.forum_rules_in_posting = fr.rules_in_posting
+		WHERE f.forum_id = fr.forum_id";
+
+		$sql[] = "DROP TABLE `" . $table_prefix . "forums_rules`";
+
+		/* Updating from IP 1.3.18.71 */
+		case '1.3.18.71':
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'cms_dock'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'cms_style'";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_flickr` varchar(255) DEFAULT '' NOT NULL AFTER `user_twitter`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_googleplus` varchar(255) DEFAULT '' NOT NULL AFTER `user_flickr`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_youtube` varchar(255) DEFAULT '' NOT NULL AFTER `user_googleplus`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_linkedin` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_style` `user_style` MEDIUMINT(8) NULL DEFAULT NULL";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_keywords', 'your keywords, comma, separated')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_keywords_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_description', 'Your Site Description')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_description_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_author', 'Author')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_author_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_copyright', 'Copyright')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_copyright_switch', '1')";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_text` `post_text` MEDIUMTEXT NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_text_compiled` `post_text_compiled` MEDIUMTEXT NOT NULL";
+
+		/* Updating from IP 1.3.19.72 */
+		case '1.3.19.72':
+
+		/* Updating from IP 1.3.20.73 */
+		case '1.3.20.73':
 		// AUTH SYSTEM - BEGIN
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_groups`";
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_options`";
@@ -4200,15 +4250,15 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_users`";
 
 		// CMS related auth options
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (1, 'cms_', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (2, 'cms_view', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (3, 'cms_edit', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (4, 'cms_l_add', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (5, 'cms_l_edit', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (6, 'cms_l_delete', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (7, 'cms_b_add', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (8, 'cms_b_edit', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (9, 'cms_b_delete', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_view', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_edit', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_add', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_edit', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_delete', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_add', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_edit', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_delete', 1, 0, 0)";
 
 		// Admin related auth options
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_', 1)";
@@ -4239,6 +4289,12 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local) VALUES ('f_html', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local) VALUES ('f_topicdelete', 1)";
 
+		// Plugins related auth options
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_input', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_edit', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_delete', 1)";
+
 		// Standard auth roles
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (1, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cms_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (2, 'ROLE_CMS_REVIEWER', 'ROLE_CMS_REVIEWER_DESCRIPTION', 'cms_', 2)";
@@ -4256,6 +4312,9 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (14, 'ROLE_FORUM_FULL', 'ROLE_FORUM_FULL_DESCRIPTION', 'f_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (15, 'ROLE_FORUM_STANDARD', 'ROLE_FORUM_STANDARD_DESCRIPTION', 'f_', 2)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (16, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (17, 'ROLE_PLUGINS_FULL', 'ROLE_PLUGINS_FULL_DESCRIPTION', 'f_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (18, 'ROLE_PLUGINS_STANDARD', 'ROLE_PLUGINS_STANDARD_DESCRIPTION', 'f_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (19, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS', 'f_', 3)";
 
 		// Roles data
 
@@ -4307,62 +4366,25 @@ if (substr($mode, 0, 6) == 'update')
 		// No Access (f_)
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 16, auth_option_id, 0 FROM " . $table_prefix . "acl_options WHERE auth_option = 'f_'";
 
+		// Full Access (pl_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 17, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'pl_%'";
+
+		// Standard Access (pl_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 18, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'pl_%' AND auth_option NOT IN ('pl_delete')";
+
+		// No Access (pl_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 19, auth_option_id, 0 FROM " . $table_prefix . "acl_options WHERE auth_option = 'pl_'";
+
 		// Permissions
 
 		// Admin user - full features for ACP
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 6, 0 FROM " . $table_prefix . "users WHERE user_level = 1";
 		// AUTH SYSTEM - END
 
-		$sql[] = "UPDATE " . $table_prefix . "cms_blocks SET active = 0 WHERE bposition IN ('hh', 'hl', 'hc', 'fc', 'fr', 'ff')";
-
-		/* Updating from IP 1.3.17.70 */
-		case '1.3.17.70':
-		$sql[] = "ALTER TABLE `" . $table_prefix . "logs` CHANGE `log_desc` `log_desc` mediumtext NOT NULL";
-
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` CHANGE `forum_rules` `forum_rules_switch` tinyint(1) unsigned NOT NULL DEFAULT '0'";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_posting` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_viewtopic` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_viewforum` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_custom_title` varchar(80) NOT NULL DEFAULT '' AFTER `forum_rules_switch`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_display_title` tinyint(1) NOT NULL DEFAULT '1' AFTER `forum_rules_switch`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules` text NOT NULL AFTER `forum_rules_switch`";
-
-		$sql[] = "UPDATE " . $table_prefix . "forums f, " . $table_prefix . "forums_rules fr
-		SET f.forum_rules = fr.rules, f.forum_rules_display_title = fr.rules_display_title, f.forum_rules_custom_title = fr.rules_custom_title, f.forum_rules_in_viewforum = fr.rules_in_viewforum, f.forum_rules_in_viewtopic = fr.rules_in_viewtopic, f.forum_rules_in_posting = fr.rules_in_posting
-		WHERE f.forum_id = fr.forum_id";
-
-		$sql[] = "DROP TABLE `" . $table_prefix . "forums_rules`";
-
-		/* Updating from IP 1.3.18.71 */
-		case '1.3.18.71':
-		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'cms_dock'";
-		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'cms_style'";
-
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_flickr` varchar(255) DEFAULT '' NOT NULL AFTER `user_twitter`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_googleplus` varchar(255) DEFAULT '' NOT NULL AFTER `user_flickr`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_youtube` varchar(255) DEFAULT '' NOT NULL AFTER `user_googleplus`";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_linkedin` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
-
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_style` `user_style` MEDIUMINT(8) NULL DEFAULT NULL";
-
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_keywords', 'your keywords, comma, separated')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_keywords_switch', '1')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_description', 'Your Site Description')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_description_switch', '1')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_author', 'Author')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_author_switch', '1')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_copyright', 'Copyright')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_copyright_switch', '1')";
-
-		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_text` `post_text` MEDIUMTEXT NOT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_text_compiled` `post_text_compiled` MEDIUMTEXT NOT NULL";
-
-		/* Updating from IP 1.3.19.72 */
-		case '1.3.19.72':
 		$sql[] = "UPDATE `" . $table_prefix . "acl_options` SET is_global = 1, is_local = 0 WHERE auth_option LIKE 'cms_%'";
 
-		/* Updating from IP 1.3.20.73 */
-		case '1.3.20.73':
+		/* Updating from IP 1.3.21.74 */
+		case '1.3.21.74':
 
 	}
 

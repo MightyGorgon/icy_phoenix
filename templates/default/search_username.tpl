@@ -30,7 +30,8 @@ function refresh_username(selected_username)
 		return;
 	}
 	//opener.document.forms['post'].username.value = selected_username;
-	target_element.value = selected_username;
+	//target_element.value = selected_username;
+	target_element.value = (target_element.value.length && target_element.type == "textarea") ? target_element.value + "\n" + selected_username : selected_username;
 	opener.focus();
 	window.close();
 }

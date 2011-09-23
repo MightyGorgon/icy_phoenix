@@ -20,7 +20,7 @@ $config['ajax_features'] = false;
 
 // Start session management
 $user->session_begin(false);
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 

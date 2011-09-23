@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.20.73');
+define('ICYPHOENIX_VERSION', '1.3.21.74');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -291,6 +291,8 @@ define('LOGIN_ERROR_PASSWORD_CONVERT', 15);
 define('GROUP_OPEN', 0);
 define('GROUP_CLOSED', 1);
 define('GROUP_HIDDEN', 2);
+define('GROUP_SPECIAL', 3);
+define('GROUP_FREE', 4);
 
 // Forum types
 define('FORUM_CAT', 0);

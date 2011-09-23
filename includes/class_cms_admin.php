@@ -41,48 +41,10 @@ class cms_admin
 	}
 
 	/*
-	* Check CMS version
-	*/
-	function check_version()
-	{
-		global $db, $cache, $config, $user, $lang, $template, $table_prefix;
-
-		if ($config['cms_rev'] != '2')
-		{
-			if(!isset($_POST['confirm']))
-			{
-				$template->assign_vars(array(
-					'L_YES' => $lang['YES'],
-					'L_NO' => $lang['NO'],
-
-					'MESSAGE_TITLE' => $lang['Confirm'],
-					'MESSAGE_TEXT' => 'Aggiornare CMS?',
-
-					'S_CONFIRM_ACTION' => append_sid($this->root . $this->s_append_url),
-					'S_HIDDEN_FIELDS' => $this->s_hidden_fields
-					)
-				);
-				full_page_generation(CMS_TPL . 'confirm_body.tpl', $lang['Confirm'], '', '');
-			}
-			else
-			{
-				include(IP_ROOT_PATH . 'includes/cms_updates.' . PHP_EXT);
-				foreach($sql as $sql_data)
-				{
-					$result = $db->sql_query($sql_data);
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/*
 	* Init CMS vars
 	*/
 	function init_vars($mode_array, $action_array)
 	{
-		//$this->check_version();
 		if (defined('IN_CMS_USERS'))
 		{
 			$this->tables = array(

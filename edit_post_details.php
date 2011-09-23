@@ -16,7 +16,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -254,7 +254,6 @@ else
 		'L_TIME' => ($topic_post_time == 'topic') ? $lang['Topic_time_xs'] : $lang['Post_time'],
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 
 		'U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser'),
 

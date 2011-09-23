@@ -26,7 +26,7 @@ $lang['Delete_file'] = 'Please delete this script and the install directory now!
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 

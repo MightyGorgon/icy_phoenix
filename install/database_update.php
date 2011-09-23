@@ -48,7 +48,7 @@ if (defined('IP_INSTALLED') || defined('PHPBB_INSTALLED'))
 
 		// Start session management
 		$user->session_begin(false);
-		//$auth->acl($user->data);
+		$auth->acl($user->data);
 		$user->setup();
 		// End session management
 

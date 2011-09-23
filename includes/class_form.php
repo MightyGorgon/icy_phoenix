@@ -138,7 +138,7 @@ class class_form
 
 			case 'USERNAME_INPUT':
 				$input = '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="30" class="post" value="' . $default . '" />';
-				$input .= '<input type="submit" name="' . $name . '_search_button" value="' . $lang['Find_username'] . '" class="mainoption" onclick="window.open(\'' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser&amp;target_form_name=input_form&amp;target_element_name=' . $name) . '\', \'_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
+				$input .= '<input type="submit" name="' . $name . '_search_button" value="' . $lang['FIND_USERNAME'] . '" class="mainoption" onclick="window.open(\'' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser&amp;target_form_name=input_form&amp;target_element_name=' . $name) . '\', \'_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
 				break;
 
 			case 'USERNAME_INPUT_JQUI':

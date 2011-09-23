@@ -133,6 +133,24 @@ function append_sid($url, $non_html_amp = false, $char_conversion = false, $para
 
 }
 
+/**
+* Re-Apply session id after page reloads
+*/
+function reapply_sid($url)
+{
+	// Remove previously added sid
+	if (strpos($url, 'sid=') !== false)
+	{
+		$phpEx = PHP_EXT;
+		// All kind of links
+		$url = preg_replace('/(\?)?(&amp;|&)?sid=[a-z0-9]+/', '', $url);
+		// if the sid was the first param, make the old second as first ones
+		$url = preg_replace("/$phpEx(&amp;|&)+?/", "$phpEx?", $url);
+	}
+
+	return append_sid($url);
+}
+
 /*
 * extract_current_page
 * function backported from phpBB3 - Olympus
@@ -1436,6 +1454,89 @@ function utf_cyr_to_latin($string, $reverse = false)
 	return $string;
 }
 
+/**
+* Generate back link
+*/
+function page_back_link($u_action)
+{
+	global $lang;
+	return '<br /><br /><a href="' . $u_action . '">&laquo; ' . $lang['BACK_TO_PREV'] . '</a>';
+}
+
+/**
+* Build Confirm box
+* @param boolean $check True for checking if confirmed (without any additional parameters) and false for displaying the confirm box
+* @param string $title Title/Message used for confirm box.
+* message text is _CONFIRM appended to title.
+* If title cannot be found in user->lang a default one is displayed
+* If title_CONFIRM cannot be found in user->lang the text given is used.
+* @param string $hidden Hidden variables
+* @param string $html_body Template used for confirm box
+* @param string $u_action Custom form action
+*/
+function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_body.tpl', $u_action = '')
+{
+	global $db, $user, $lang, $template;
+
+	if (isset($_POST['cancel']))
+	{
+		return false;
+	}
+
+	$confirm = false;
+	if (isset($_POST['confirm']))
+	{
+		// language frontier
+		if ($_POST['confirm'] === $lang['YES'])
+		{
+			$confirm = true;
+		}
+	}
+
+	if ($check && $confirm)
+	{
+		$user_id = request_var('confirm_uid', 0);
+		$session_id = request_var('sess', '');
+
+		if (($user_id != $user->data['user_id']) || ($session_id != $user->session_id))
+		{
+			return false;
+		}
+
+		return true;
+	}
+	elseif ($check)
+	{
+		return false;
+	}
+
+	$s_hidden_fields = build_hidden_fields(array(
+		'confirm_uid' => $user->data['user_id'],
+		'sess' => $user->session_id,
+		'sid' => $user->session_id,
+		)
+	);
+
+	// re-add sid / transform & to &amp; for user->page (user->page is always using &)
+	$use_page = ($u_action) ? IP_ROOT_PATH . $u_action : IP_ROOT_PATH . str_replace('&', '&amp;', $user->page['page']);
+	$u_action = reapply_sid($use_page);
+	$u_action .= ((strpos($u_action, '?') === false) ? '?' : '&amp;');
+
+	$confirm_title = (!isset($lang[$title])) ? $lang['Confirm'] : $lang[$title];
+
+	$template->assign_vars(array(
+		'MESSAGE_TITLE' => $confirm_title,
+		'MESSAGE_TEXT' => (!isset($lang[$title . '_CONFIRM'])) ? $title : $lang[$title . '_CONFIRM'],
+
+		'YES_VALUE' => $lang['YES'],
+		'S_CONFIRM_ACTION' => $u_action,
+		'S_HIDDEN_FIELDS' => $hidden . $s_hidden_fields
+		)
+	);
+
+	full_page_generation($html_body, $confirm_title, '', '');
+}
+
 /*
 * jumpbox() : replace the original phpBB make_jumpbox()
 */
@@ -2146,11 +2247,11 @@ function setup_extra_lang($lang_files_array, $lang_base_path = '', $lang_overrid
 		$default_lang_file = $lang_base_path . 'lang_english/' . $lang_files_array[$i] . '.' . PHP_EXT;
 		if (@file_exists($user_lang_file))
 		{
-			@include_once($user_lang_file);
+			@include($user_lang_file);
 		}
 		elseif (@file_exists($default_lang_file))
 		{
-			@include_once($default_lang_file);
+			@include($default_lang_file);
 		}
 	}
 
@@ -5891,7 +5992,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	{
 		// Start session management
 		$user->session_begin();
-		//$auth->acl($user->data);
+		$auth->acl($user->data);
 		$user->setup();
 		// End session management
 	}

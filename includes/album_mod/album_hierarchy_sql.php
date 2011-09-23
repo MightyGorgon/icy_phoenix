@@ -881,7 +881,7 @@ function album_get_moderator_info($cat)
 	{
 		for ($j = 0; $j < sizeof($grouprows); $j++)
 		{
-			$group_link = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
+			$group_link = '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
 			$moderators .= ($moderators == '') ? $group_link : ', ' . $group_link;
 		}
 	}

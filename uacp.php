@@ -27,14 +27,14 @@ $sid = request_var('sid', '');
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
 // session id check
 if (($sid == '') || ($sid != $user->data['session_id']))
 {
-	message_die(GENERAL_ERROR, 'Invalid_session');
+	message_die(GENERAL_ERROR, 'INVALID_SESSION');
 }
 
 // Obtain initial var settings

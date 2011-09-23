@@ -148,7 +148,6 @@ if (check_http_var_exists('edit', false) || isset($_POST['new']))
 		'L_GROUP_RANK' => $lang['group_rank'],
 		'L_GROUP_COLOR' => $lang['group_color'],
 		'L_GROUP_LEGEND' => $lang['group_legend'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 		'L_GROUP_STATUS' => $lang['group_status'],
 		'L_GROUP_OPEN' => $lang['group_open'],
 		'L_GROUP_CLOSED' => $lang['group_closed'],

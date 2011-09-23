@@ -908,7 +908,7 @@ if (sizeof($groups) > 0)
 		// groupe visible : afficher
 		if ($is_ok)
 		{
-			$u_group_name = append_sid('groupcp.' . PHP_EXT . '?g=' . $groups[$i]['group_id']);
+			$u_group_name = append_sid(CMS_PAGE_GROUP_CP . '?g=' . $groups[$i]['group_id']);
 			$l_group_name = $groups[$i]['group_name'];
 			$l_group_desc = $groups[$i]['group_description'];
 			$template->assign_block_vars('groups', array(

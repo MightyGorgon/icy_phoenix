@@ -24,7 +24,7 @@ $config['jquery_ui'] = true;
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -67,6 +67,8 @@ include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks', 'lang_permissions'));
+
+$page_title = $lang['CMS_TITLE'];
 
 $cms_type = 'cms_standard';
 
@@ -450,308 +452,80 @@ if($cms_admin->mode == 'config')
 //if (($cms_admin->mode == 'auth') && ($cms_auth->acl_get('cms_edit', $cms_admin->cms_id)))
 if ($cms_admin->mode == 'auth')
 {
-	$template_to_parse = CMS_TPL . 'cms_auth_body.tpl';
-	$cms_role_langs = cms_role_langs();
+	$css_temp = array('cms_auth.css');
+	$template->css_include = array_merge($template->css_include, $css_temp);
+	unset($css_temp);
 
-	if($cms_admin->user_id)
+	include_once(IP_ROOT_PATH . 'includes/functions_admin_phpbb3.' . PHP_EXT);
+
+	$roles_admin = request_var('roles_admin', 0);
+
+	if (empty($roles_admin))
 	{
-		$cms_admin->s_hidden_fields .= '<input type="hidden" name="user_id" value="' . $cms_admin->user_id . '">';
+		include_once(IP_ROOT_PATH . 'includes/class_cms_permissions.' . PHP_EXT);
+		$cms_permissions = new cms_permissions();
+
+		$pmode = request_var('pmode', '');
+		$pmode_array = array('intro', 'setting_cms_user_global', 'setting_cms_group_global', 'setting_plugins_user_global', 'setting_plugins_group_global', 'setting_user_global', 'setting_group_global', 'setting_user_local', 'setting_group_local', 'setting_admin_global', 'setting_mod_global', 'view_admin_global', 'view_user_global', 'view_mod_global');
+		$pmode = in_array($pmode, $pmode_array) ? $pmode : $pmode_array[0];
+		$cms_permissions->main(0, $pmode);
+
+		$template_to_parse = CMS_TPL . $cms_permissions->tpl_name;
+		$page_title = $lang[$cms_permissions->page_title];
 	}
-
-	switch ($cms_admin->action)
+	else
 	{
-		case 'addrole':
-		case 'editrole':
-			$cms_admin->s_hidden_fields .= '<input type="hidden" name="in_role" value="1" />';
-			break;
-		default:
-			$cms_admin->s_hidden_fields .= '<input type="hidden" name="in_role" value="0" />';
-			break;
-	}
+		include_once(IP_ROOT_PATH . 'includes/class_cms_permissions_roles.' . PHP_EXT);
+		$cms_permissions_roles = new cms_permissions_roles();
 
-	if($cms_admin->action == 'save')
-	{
-		$class_db->main_db_table = ACL_USERS_TABLE;
+		$rmode = request_var('rmode', '');
+		$rmode_array = array('admin_roles', 'cms_roles', 'mod_roles', 'plugins_roles', 'user_roles');
+		$rmode = in_array($rmode, $rmode_array) ? $rmode : $rmode_array[0];
+		$cms_permissions_roles->main(0, $rmode);
 
-		$s_in_role = request_var('in_role', 0) ? true : false;
-
-		if(($cms_admin->user_id) || isset($_POST['username']))
-		{
-			$sql_where = $s_in_role ? ' AND auth_role_id <> 0' : ' AND auth_role_id = 0';
-
-			if ($cms_admin->user_id)
-			{
-				$sql = "DELETE FROM " . ACL_USERS_TABLE . " WHERE user_id = '" . $cms_admin->user_id . "' AND forum_id = '" . $cms_admin->cms_id . "' " . $sql_where . "";
-				$result = $db->sql_query($sql);
-			}
-			else
-			{
-				$this_userdata = get_userdata(request_var('username', ''), true);
-
-				if (!is_array($this_userdata))
-				{
-					if (!defined('STATUS_404')) define('STATUS_404', true);
-					message_die(GENERAL_MESSAGE, 'NO_USER');
-				}
-
-				if ($this_userdata['user_id'] == $user->data['user_id'])
-				{
-					redirect(append_sid($cms_admin->root . '?mode=auth'));
-				}
-				$cms_admin->user_id = $this_userdata['user_id'];
-			}
-
-			$data = array(
-				'user_id' => $cms_admin->user_id,
-				'forum_id' => $cms_admin->cms_id,
-			);
-
-			if($s_in_role)
-			{
-				$sql = "SELECT * FROM " . ACL_USERS_TABLE . " WHERE user_id = '" . $cms_admin->user_id . "' AND forum_id = '" . $cms_admin->cms_id . "' AND auth_role_id <> 0";
-				$result = $db->sql_query($sql);
-				$row = $db->sql_fetchrow($result);
-				$db->sql_freeresult($result);
-
-				if(empty($row))
-				{
-					$new_role = isset($_POST['role']) ? request_var('role', 0) : false;
-					if($new_role)
-					{
-						$data['auth_role_id'] = $new_role;
-						$class_db->insert_item($data);
-					}
-				}
-			}
-			else
-			{
-				$auth_array = array();
-				//$auth_array = $_POST['auth'];
-				$auth_array = request_var('auth', array(0));
-				//die(print_r($auth_array));
-				$data['auth_setting'] = '1';
-
-				if (!empty($auth_array))
-				{
-					foreach($auth_array as $k => $update_data)
-					{
-						$data['auth_option_id'] = $k;
-						$class_db->insert_item($data);
-					}
-				}
-			}
-		}
-		redirect(append_sid($cms_admin->root . '?mode=auth'));
-	}
-
-	if(($cms_admin->action == 'delete') && ($cms_admin->user_id) && ($user->data['user_id'] != $cms_admin->user_id))
-	{
-		if(!isset($_POST['confirm']))
-		{
-			$template->assign_vars(array(
-				'L_YES' => $lang['YES'],
-				'L_NO' => $lang['NO'],
-
-				'MESSAGE_TITLE' => $lang['Confirm'],
-				'MESSAGE_TEXT' => $lang['Confirm_delete_item'],
-
-				'S_CONFIRM_ACTION' => append_sid($cms_admin->root . $cms_admin->s_append_url),
-				'S_HIDDEN_FIELDS' => $cms_admin->s_hidden_fields
-				)
-			);
-			full_page_generation(CMS_TPL . 'confirm_body.tpl', $lang['Confirm'], '', '');
-		}
-		else
-		{
-			if($cms_admin->user_id != 0)
-			{
-				$sql = "DELETE FROM " . ACL_USERS_TABLE . " WHERE user_id = '" . $cms_admin->user_id . "' AND forum_id = '" . $cms_admin->cms_id . "' AND auth_role_id <>0";
-				$result = $db->sql_query($sql);
-			}
-			redirect(append_sid($cms_admin->root . '?mode=auth'));
-		}
+		$template_to_parse = CMS_TPL . $cms_permissions_roles->tpl_name;
+		$page_title = $lang[$cms_permissions_roles->page_title];
 	}
 
 	$template->assign_vars(array(
-		'U_AUTH_ADD' => append_sid($cms_admin->root . '?mode=auth&amp;action=add'),
-		'U_AUTH_ADDROLE' => append_sid($cms_admin->root . '?mode=auth&amp;action=addrole'),
-		'S_AUTH_ACTION' => append_sid($cms_admin->root . $cms_admin->s_append_url),
-		'S_HIDDEN_FIELDS' => $cms_admin->s_hidden_fields
+		'S_CMS_ACTION' => append_sid($cms_admin->root . '?mode=auth&amp;pmode=' . $pmode),
+		'U_CMS_BASE_URL' => append_sid($cms_admin->root . '?mode=auth'),
+
+/*
+		'ICON_MOVE_UP' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_up.gif" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" />',
+		'ICON_MOVE_UP_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_up_disabled.gif" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" />',
+		'ICON_MOVE_DOWN' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_down.gif" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" />',
+		'ICON_MOVE_DOWN_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_down_disabled.gif" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" />',
+		'ICON_EDIT' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_edit.gif" alt="' . $lang['EDIT'] . '" title="' . $lang['EDIT'] . '" />',
+		'ICON_EDIT_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_edit_disabled.gif" alt="' . $lang['EDIT'] . '" title="' . $lang['EDIT'] . '" />',
+		'ICON_DELETE' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_delete.gif" alt="' . $lang['DELETE'] . '" title="' . $lang['DELETE'] . '" />',
+		'ICON_DELETE_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_delete_disabled.gif" alt="' . $lang['DELETE'] . '" title="' . $lang['DELETE'] . '" />',
+		'ICON_SYNC' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_sync.gif" alt="' . $lang['RESYNC'] . '" title="' . $lang['RESYNC'] . '" />',
+		'ICON_SYNC_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_sync_disabled.gif" alt="' . $lang['RESYNC'] . '" title="' . $lang['RESYNC'] . '" />',
+*/
+
+		'ICON_MOVE_UP' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_arrow_up.png" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" />',
+		'ICON_MOVE_UP_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_arrow_up_gray.png" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" />',
+		'ICON_MOVE_DOWN' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_arrow_down.png" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" />',
+		'ICON_MOVE_DOWN_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_arrow_down_gray.png" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" />',
+		'ICON_EDIT' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_edit.png" alt="' . $lang['EDIT'] . '" title="' . $lang['EDIT'] . '" />',
+		'ICON_EDIT_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_edit.png" alt="' . $lang['EDIT'] . '" title="' . $lang['EDIT'] . '" />',
+		'ICON_DELETE' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_delete.png" alt="' . $lang['DELETE'] . '" title="' . $lang['DELETE'] . '" />',
+		'ICON_DELETE_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_delete.png" alt="' . $lang['DELETE'] . '" title="' . $lang['DELETE'] . '" />',
+		'ICON_SYNC' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_refresh.png" alt="' . $lang['RESYNC'] . '" title="' . $lang['RESYNC'] . '" />',
+		'ICON_SYNC_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_refresh.png" alt="' . $lang['RESYNC'] . '" title="' . $lang['RESYNC'] . '" />',
+
+		'IMG_USER_SEARCH' => $images['cms_icon_search'],
 		)
 	);
-
-	if ($cms_admin->action == 'addrole')
-	{
-		$row_class = ($row_class == $theme['td_class1']) ? $theme['td_class2'] : $theme['td_class1'];
-		$input = '<input type="text" name="username" id="username" maxlength="255" size="25" class="post" />';
-		$input .= '<img src="' . $images['cms_icon_search'] . '" alt="' . $lang['Find_username'] . '" title="' . $lang['Find_username'] . '" style="cursor: pointer; vertical-align: middle;" onclick="window.open(\'' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser') . '\', \'_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
-
-		$cms_roles_select = $class_form->build_select_box('role', false, $cms_role_langs['ID'], $cms_role_langs['NAME']);
-
-		$template->assign_block_vars('roles', array(
-			'ROW_CLASS' => $row_class,
-			'USERNAME' => $input,
-			'CMS_ROLES' => $cms_roles_select,
-			'BUTTON' => '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="liteoption" />',
-			)
-		);
-	}
-
-	$sql = "SELECT au.*
-					FROM " . ACL_USERS_TABLE . " au, " . ACL_ROLES_TABLE . " ar
-					WHERE au.forum_id = '" . $cms_admin->cms_id . "'
-						AND au.auth_role_id = ar.role_id
-						AND au.auth_role_id <> 0
-						AND ar.role_type LIKE 'cms_%'";
-	$result = $db->sql_query($sql);
-	$rows = $db->sql_fetchrowset($result);
-	$db->sql_freeresult($result);
-
-	if (!empty($rows))
-	{
-		foreach($rows as $data)
-		{
-			$row_class = ($row_class == $theme['td_class1']) ? $theme['td_class2'] : $theme['td_class1'];
-
-			if (($cms_admin->action == 'editrole') && ($data['user_id'] == $cms_admin->user_id) && ($user->data['user_id'] != $cms_admin->user_id))
-			{
-				$cms_role = $class_form->build_select_box('role', $data['auth_role_id'], $cms_role_langs['ID'], $cms_role_langs['NAME']);
-				$button = '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="liteoption" />';
-			}
-			else
-			{
-				$cms_role = '<div style="margin-top:3px">' . $cms_role_langs['NAME_ARRAY'][$data['auth_role_id']] . '</div>';
-				$button_link_edit = append_sid($cms_admin->root . '?mode=auth&amp;action=editrole&amp;user_id=' . $data['user_id']);
-				$button_link_delete = append_sid($cms_admin->root . '?mode=auth&amp;action=delete&amp;user_id=' . $data['user_id']);
-				if ($data['user_id'] == $user->data['user_id'])
-				{
-					$button = '';
-				}
-				else
-				{
-					$button = '<a class="cms-button-small" onclick="window.location.href=\'' . $button_link_edit . '\'" href="javascript:void(0);">' . strtoupper($lang['B_EDIT']) . '</a>';
-					$button .= '<a class="cms-button-small" onclick="window.location.href=\'' . $button_link_delete . '\'" href="javascript:void(0);">' . strtoupper($lang['B_DELETE']) . '</a>';
-				}
-			}
-
-			$template->assign_block_vars('roles', array(
-				'ROW_CLASS' => $row_class,
-				'USERNAME' => colorize_username($data['user_id']),
-				'CMS_ROLES' => $cms_role,
-				'BUTTON' => $button,
-				)
-			);
-		}
-	}
-	elseif ($cms_admin->action != 'addrole')
-	{
-		$template->assign_var('NO_ROLE', true);
-	}
-
-	$cms_auth_langs_array = $cms_auth->auth_langs('cms_');
-
-	$row_class = $theme['td_class1'];
-
-	if ($cms_admin->action == 'add')
-	{
-		$button = '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="liteoption" />';
-		$input = '<input type="text" name="username" id="username" maxlength="255" size="25" class="post" />';
-		$input .= '<img src="' . $images['cms_icon_search'] . '" alt="' . $lang['Find_username'] . '" title="' . $lang['Find_username'] . '" style="cursor: pointer; vertical-align: middle;" onclick="window.open(\'' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser') . '\', \'_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
-
-		$template->assign_block_vars('users', array(
-				'ROW_CLASS' => $row_class,
-				'USERNAME' => $input,
-				'BUTTON' => $button,
-			)
-		);
-
-		foreach($cms_auth_langs_array as $k => $data)
-		{
-			$auth_checkbox = '<input type="checkbox" name="auth[' . $k . ']">';
-
-			$template->assign_block_vars('users.auth', array(
-				'AUTH_CHECKBOX' => $auth_checkbox,
-				'AUTH_CLASS' => '',
-				'AUTH_NAME' => $cms_auth_langs_array[$k],
-				)
-			);
-		}
-	}
-
-	$sql = "SELECT * FROM " . ACL_USERS_TABLE . " WHERE forum_id = '" . $cms_admin->cms_id . "' AND auth_role_id = 0 ORDER BY user_id";
-	$result = $db->sql_query($sql);
-	while($row = $db->sql_fetchrow($result))
-	{
-		$user_auth_array[$row['user_id']][$row['auth_option_id']] = $row['auth_setting'];
-	}
-	$db->sql_freeresult($result);
-
-	if(!empty($user_auth_array))
-	{
-		foreach($user_auth_array as $id => $auth_data)
-		{
-			$row_class = ($row_class == $theme['td_class1']) ? $theme['td_class2'] : $theme['td_class1'];
-			if(($cms_admin->action == 'edit') && ($cms_admin->user_id == $id) && ($user->data['user_id'] != $cms_admin->user_id))
-			{
-				$button =  '<input type="submit" name="save" value="' . strtoupper($lang['CMS_SAVE']) . '" class="liteoption" />';
-			}
-			else
-			{
-				$button_link = append_sid($cms_admin->root . '?mode=auth&amp;action=edit&amp;user_id=' . $id);
-				$button = '<a class="cms-button-small" onclick="window.location.href=\'' . $button_link . '\'" href="javascript:void(0);">' . strtoupper($lang['B_EDIT']) . '</a>';
-			}
-
-			$template->assign_block_vars('users', array(
-				'ROW_CLASS' => $row_class,
-				'USERNAME' => colorize_username($id),
-				'BUTTON' => $button,
-				)
-			);
-
-			foreach($cms_auth_langs_array as $k => $data)
-			{
-				if (($cms_admin->action == 'edit') && $cms_admin->user_id == $id)
-				{
-					$is_checked = $auth_data[$k] ? 'checked="checked"' : '';
-					$auth_checkbox = '<input type="checkbox" name="auth[' . $k . ']" ' . $is_checked . '>';
-					$auth_class = '';
-				}
-				else
-				{
-					$auth_checkbox = '';
-					$auth_class = $auth_data[$k] ? 'auth_yes' : 'auth_no';
-				}
-
-				$template->assign_block_vars('users.auth', array(
-					'AUTH_CHECKBOX' => $auth_checkbox,
-					'AUTH_CLASS' => $auth_class,
-					'AUTH_NAME' => $cms_auth_langs_array[$k],
-					)
-				);
-			}
-		}
-	}
-	elseif ($cms_admin->action != 'add')
-	{
-		$template->assign_var('NO_AUTH', true);
-	}
-
-	foreach ($cms_role_langs['ID'] as $id_data)
-	{
-		$template->assign_block_vars('roles_desc', array(
-			'ROLE_NAME' => $cms_role_langs['NAME_ARRAY'][$id_data],
-			'ROLE_DESC' => $cms_role_langs['DESC_ARRAY'][$id_data],
-			)
-		);
-	}
 }
 
-if (($cms_admin->mode == false))
+if (empty($cms_admin->mode))
 {
 	$template_to_parse = CMS_TPL . 'cms_index_body.tpl';
 	$template->assign_var('CMS_PAGE_TITLE', false);
 }
 
-full_page_generation($template_to_parse, $lang['CMS_TITLE'], '', '');
+full_page_generation($template_to_parse, $page_title, '', '');
 
 ?>

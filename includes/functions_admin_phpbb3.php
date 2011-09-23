@@ -688,6 +688,75 @@ function size_select_options($size_compare)
 }
 
 /**
+* Obtain either the members of a specified group, the groups the specified user is subscribed to
+* or checking if a specified user is in a specified group. This function does not return pending memberships.
+*
+* Note: Never use this more than once... first group your users/groups
+*/
+function group_memberships($group_id_ary = false, $user_id_ary = false, $return_bool = false)
+{
+	global $db;
+
+	if (!$group_id_ary && !$user_id_ary)
+	{
+		return true;
+	}
+
+	if ($user_id_ary)
+	{
+		$user_id_ary = (!is_array($user_id_ary)) ? array($user_id_ary) : $user_id_ary;
+	}
+
+	if ($group_id_ary)
+	{
+		$group_id_ary = (!is_array($group_id_ary)) ? array($group_id_ary) : $group_id_ary;
+	}
+
+	$sql = 'SELECT ug.*, u.username, u.username_clean, u.user_email
+		FROM ' . USER_GROUP_TABLE . ' ug, ' . USERS_TABLE . ' u
+		WHERE ug.user_id = u.user_id
+			AND ug.user_pending = 0 AND ';
+
+	if ($group_id_ary)
+	{
+		$sql .= ' ' . $db->sql_in_set('ug.group_id', $group_id_ary);
+	}
+
+	if ($user_id_ary)
+	{
+		$sql .= ($group_id_ary) ? ' AND ' : ' ';
+		$sql .= $db->sql_in_set('ug.user_id', $user_id_ary);
+	}
+
+	$result = ($return_bool) ? $db->sql_query_limit($sql, 1) : $db->sql_query($sql);
+
+	$row = $db->sql_fetchrow($result);
+
+	if ($return_bool)
+	{
+		$db->sql_freeresult($result);
+		return ($row) ? true : false;
+	}
+
+	if (!$row)
+	{
+		return false;
+	}
+
+	$return = array();
+
+	do
+	{
+		$return[] = $row;
+	}
+	while ($row = $db->sql_fetchrow($result));
+
+	$db->sql_freeresult($result);
+
+	return $return;
+}
+
+/**
 * Generate list of groups (option fields without select)
 *
 * @param int $group_id The default group id to mark as selected
@@ -698,25 +767,25 @@ function size_select_options($size_compare)
 */
 function group_select_options($group_id, $exclude_ids = false, $manage_founder = false)
 {
-	global $db, $user, $config;
+	global $db, $config, $user;
 
 	$exclude_sql = ($exclude_ids !== false && sizeof($exclude_ids)) ? 'WHERE ' . $db->sql_in_set('group_id', array_map('intval', $exclude_ids), true) : '';
-	$sql_and = (!$config['coppa_enable']) ? (($exclude_sql) ? ' AND ' : ' WHERE ') . "group_name <> 'REGISTERED_COPPA'" : '';
-	$sql_founder = ($manage_founder !== false) ? (($exclude_sql || $sql_and) ? ' AND ' : ' WHERE ') . 'group_founder_manage = ' . (int) $manage_founder : '';
+	$sql_and = (($exclude_sql || $sql_and) ? ' AND ' : ' WHERE ') . ' group_single_user = 0 ';
+	$sql_founder = '';
 
-	$sql = 'SELECT group_id, group_name, group_type
+	$sql = 'SELECT group_id, group_name
 		FROM ' . GROUPS_TABLE . "
 		$exclude_sql
 		$sql_and
 		$sql_founder
-		ORDER BY group_type DESC, group_name ASC";
+		ORDER BY group_name ASC";
 	$result = $db->sql_query($sql);
 
 	$s_group_options = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$selected = ($row['group_id'] == $group_id) ? ' selected="selected"' : '';
-		$s_group_options .= '<option' . (($row['group_type'] == GROUP_SPECIAL) ? ' class="sep"' : '') . ' value="' . $row['group_id'] . '"' . $selected . '>' . (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) . '</option>';
+		$s_group_options .= '<option value="' . $row['group_id'] . '"' . $selected . '>' . $row['group_name'] . '</option>';
 	}
 	$db->sql_freeresult($result);
 
@@ -1336,8 +1405,37 @@ function add_permission_language()
 	global $user;
 
 	// First of all, our own file. We need to include it as the first file because it presets all relevant variables.
-	$user->add_lang('acp/permissions_phpbb');
+	// MIGHTY GORGON - LANG - BEGIN
+	global $class_plugins;
+	global $db, $cache, $lang;
 
+	setup_extra_lang(array('lang_cms_permissions', 'lang_permissions'));
+
+	// Add Plugins Lang!
+	if (!class_exists('class_plugins'))
+	{
+		@include(IP_ROOT_PATH . 'includes/class_plugins.' . PHP_EXT);
+	}
+
+	if (empty($class_plugins))
+	{
+		$class_plugins = new class_plugins();
+	}
+
+	foreach ($cache->obtain_plugins_config() as $k => $plugin)
+	{
+		if (!empty($plugin['plugin_enabled']))
+		{
+			$class_plugins->setup_lang($plugin['plugin_dir'] . '/', 'permissions');
+		}
+	}
+
+	// Merge $lang with $user->lang
+	merge_user_lang();
+	// MIGHTY GORGON - LANG - END
+
+	// CODE REMOVED
+	/*
 	$files_to_add = array();
 
 	// Now search in acp and mods folder for permissions_ files.
@@ -1349,7 +1447,7 @@ function add_permission_language()
 		{
 			while (($file = readdir($dh)) !== false)
 			{
-				if ($file !== 'permissions_phpbb.' . PHP_EXT && strpos($file, 'permissions_') === 0 && substr($file, -(strlen($phpEx) + 1)) === '.' . PHP_EXT)
+				if (($file !== 'permissions_phpbb.' . PHP_EXT) && (strpos($file, 'permissions_') === 0) && (substr($file, -(strlen(PHP_EXT) + 1)) === '.' . PHP_EXT))
 				{
 					$files_to_add[] = $path . substr($file, 0, -(strlen(PHP_EXT) + 1));
 				}
@@ -1364,7 +1462,10 @@ function add_permission_language()
 	}
 
 	$user->add_lang($files_to_add);
+	*/
+
 	return true;
+
 }
 
 /**

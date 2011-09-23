@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -193,7 +193,7 @@ if (($album_user_id == ALBUM_PUBLIC_GALLERY) && ($thiscat['cat_moderator_groups'
 	{
 		for ($j = 0; $j < sizeof($grouprows); $j++)
 		{
-			$group_link = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?'. POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
+			$group_link = '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?'. POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
 
 			$moderators_list .= ($moderators_list == '') ? $group_link : ', ' . $group_link;
 		}

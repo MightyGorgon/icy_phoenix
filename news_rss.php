@@ -30,7 +30,7 @@ if( $config['allow_rss'] != 1 )
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 

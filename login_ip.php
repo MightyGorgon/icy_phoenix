@@ -23,7 +23,7 @@ if (!class_exists('ct_database'))
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -134,9 +134,10 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 	elseif((isset($_GET['logout']) || isset($_POST['logout'])) && $user->data['session_logged_in'])
 	{
 		// session id check
-		if (($sid == '') || ($sid != $user->data['session_id']))
+		if (empty($sid) || ($sid != $user->data['session_id']))
 		{
-			message_die(GENERAL_ERROR, 'Invalid_session');
+			//message_die(GENERAL_ERROR, 'INVALID_SESSION');
+			trigger_error('INVALID_SESSION');
 		}
 		if($user->data['session_logged_in'])
 		{

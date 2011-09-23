@@ -1428,7 +1428,7 @@ function display_index($cur = 'Root')
 			}
 			for ($i = 0; $i < sizeof($data['group_id']); $i++)
 			{
-				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
+				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
 			}
 		}
 	}

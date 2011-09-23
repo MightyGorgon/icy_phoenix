@@ -1090,7 +1090,7 @@ $lang = array_merge($lang, array(
 	'IcyPhoenix_Code_Changes' => 'Code Changes Mod',
 	'IcyPhoenix_Updates' => 'Icy Phoenix Updates',
 	'PhpBB_Upgrade' => 'phpBB Upgrade',
-	'Header_Welcome' => 'Welcome on Icy Phoenix Administration Control Panel',
+	'Header_Welcome' => 'Welcome to Icy Phoenix Administration Control Panel',
 
 	'Prune_users' => 'Prune users',
 	'Prune_Overview' => 'Pruning Overview',
@@ -1967,9 +1967,6 @@ $lang = array_merge($lang, array(
 
 	'FORUM_LIMIT_EDIT_TIME' => 'Limit User Post Edit Time',
 	'FORUM_LIMIT_EDIT_TIME_EXPLAIN' => 'By enabling this option users will be allowed to edit own messages only within the limit set in Posts configuration of Icy Phoenix (ACP &raquo; Configuration &raquo; Main Settings &raquo; Posting And Messages)',
-
-	'BACK_TO_TOP' => 'Top',
-	'BACK_TO_PREV' => 'Back to previous page',
 
 	// Custom BBCodes - BEGIN
 	'BBCODES_CUSTOM_BBCODES' => 'Custom BBCodes',

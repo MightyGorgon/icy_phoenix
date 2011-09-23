@@ -627,7 +627,7 @@ class phpbb_captcha_qa
 			{
 				$this->acp_delete_question($question_id);
 
-				trigger_error($lang['QUESTION_DELETED'] . adm_back_link($list_url));
+				trigger_error($lang['QUESTION_DELETED'] . page_back_link($list_url));
 			}
 			else
 			{
@@ -680,7 +680,7 @@ class phpbb_captcha_qa
 				}
 				else
 				{
-					trigger_error($lang['FORM_INVALID'] . adm_back_link($list_url));
+					trigger_error($lang['FORM_INVALID'] . page_back_link($list_url));
 				}
 			}
 			else
@@ -715,12 +715,12 @@ class phpbb_captcha_qa
 					}
 
 					add_log('admin', 'LOG_CONFIG_VISUAL');
-					trigger_error($lang['CONFIG_UPDATED'] . adm_back_link($list_url));
+					trigger_error($lang['CONFIG_UPDATED'] . page_back_link($list_url));
 				}
 			}
 			else if ($submit)
 			{
-				trigger_error($lang['FORM_INVALID'] . adm_back_link($list_url));
+				trigger_error($lang['FORM_INVALID'] . page_back_link($list_url));
 			}
 		}
 	}

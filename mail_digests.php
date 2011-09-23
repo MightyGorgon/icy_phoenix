@@ -39,7 +39,7 @@ if (!defined('PHP_DIGESTS_CRON'))
 
 	// Start session management
 	$user->session_begin();
-	//$auth->acl($user->data);
+	$auth->acl($user->data);
 	$user->setup();
 	// End session management
 
@@ -58,7 +58,7 @@ if (empty($user->data))
 {
 	// Start session management
 	$user->session_begin();
-	//$auth->acl($user->data);
+	$auth->acl($user->data);
 	$user->setup();
 	// End session management
 }

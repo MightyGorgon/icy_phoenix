@@ -338,7 +338,7 @@ switch($mode)
 					$group_name = $group_name_row['group_name'];
 
 					$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path']));
-					$script_name = ($script_name != '') ? $script_name . '/groupcp.' . PHP_EXT : 'groupcp.' . PHP_EXT;
+					$script_name = (($script_name != '') ? $script_name . '/' : '') . CMS_PAGE_GROUP_CP;
 					$server_name = trim($config['server_name']);
 					$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
 					$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
@@ -594,7 +594,7 @@ switch($mode)
 					'GROUP_NAME' => $group_row['group_name'],
 					'GROUP_COLOR' => 'style="font-weight: bold; text-decoration: none;' . (($group_row['group_color'] != '') ? ('color: ' . $group_row['group_color'] . ';') : '') . '"',
 					'GROUP_STATUS' => $group_status,
-					'U_GROUP' => append_sid(IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_row['group_id'])
+					'U_GROUP' => append_sid(IP_ROOT_PATH . CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_row['group_id'])
 					)
 				);
 				$g++;

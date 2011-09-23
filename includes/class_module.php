@@ -435,6 +435,13 @@ class p_master
 		$module_path = $this->include_path . $this->p_class;
 		$icat = request_var('icat', '');
 
+		// MIGHTY GORGON - DEBUG - BEGIN
+		/*
+		print_r($this);
+		die('<br />');
+		*/
+		// MIGHTY GORGON - DEBUG - END
+
 		if ($this->active_module === false)
 		{
 			trigger_error('Module not accessible', E_USER_ERROR);

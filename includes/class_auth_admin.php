@@ -645,7 +645,7 @@ class auth_admin extends auth
 
 			if (isset($auth_ary['users']) && sizeof($auth_ary['users']))
 			{
-				$sql = 'SELECT user_id, username
+				$sql = 'SELECT user_id, username, user_color, user_active
 					FROM ' . USERS_TABLE . '
 					WHERE ' . $db->sql_in_set('user_id', $auth_ary['users']) . '
 					ORDER BY username_clean ASC';
@@ -656,7 +656,8 @@ class auth_admin extends auth
 					$template->assign_block_vars('role_mask.users', array(
 						'USER_ID' => $row['user_id'],
 						'USERNAME' => $row['username'],
-						'U_PROFILE' => append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id'])
+						'U_PROFILE' => append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
+						'USERNAME_FULL' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 						)
 					);
 				}
@@ -665,7 +666,7 @@ class auth_admin extends auth
 
 			if (isset($auth_ary['groups']) && sizeof($auth_ary['groups']))
 			{
-				$sql = 'SELECT group_id, group_name, group_type
+				$sql = 'SELECT group_id, group_name, group_color
 					FROM ' . GROUPS_TABLE . '
 					WHERE ' . $db->sql_in_set('group_id', $auth_ary['groups']) . '
 					ORDER BY group_type ASC, group_name';
@@ -675,7 +676,10 @@ class auth_admin extends auth
 				{
 					$template->assign_block_vars('role_mask.groups', array(
 						'GROUP_ID' => $row['group_id'],
-						'GROUP_NAME' => ($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name'],
+						'GROUP_NAME' => $row['group_name'],
+						'GROUP_COLOR' => $row['group_color'],
+						'GROUP_FULL' => '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight: bold; text-decoration: none;' . (check_valid_color($row['group_color']) ? ('color: ' . check_valid_color($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>',
+
 						'U_PROFILE' => append_sid(IP_ROOT_PATH . CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id'])
 						)
 					);

@@ -1013,7 +1013,7 @@ function generate_smilies($mode)
 	{
 		// Start session management
 		$user->session_begin();
-		//$auth->acl($user->data);
+		$auth->acl($user->data);
 		$user->setup();
 		// End session management
 

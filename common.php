@@ -181,6 +181,7 @@ require(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/sessions.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_auth.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
@@ -197,6 +198,7 @@ if (defined('IN_ADMIN'))
 $cache = new ip_cache();
 $class_settings = new class_settings();
 $user = new user();
+$auth = new auth();
 $ip_cms = new ip_cms();
 $ip_cms->init_vars();
 

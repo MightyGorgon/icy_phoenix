@@ -375,7 +375,6 @@ else
 		'L_UNBAN_EMAIL_EXPLAIN' => $lang['Unban_email_explain'],
 		'L_USERNAME' => $lang['Username'],
 		'L_LOOK_UP' => $lang['Look_up_User'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 
 		'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser'),
 		'S_UNBAN_USERLIST_SELECT' => $select_userlist,

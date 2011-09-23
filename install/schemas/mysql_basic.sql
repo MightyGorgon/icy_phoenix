@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.20.73');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '1.3.21.74');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
@@ -1815,15 +1815,15 @@ INSERT INTO phpbb_dl_ext_blacklist (extention) VALUES
 
 ## AUTH SYSTEM - BEGIN
 # -- CMS related auth options
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (1, 'cms_', 1, 0, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (2, 'cms_view', 1, 0, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (3, 'cms_edit', 1, 0, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (4, 'cms_l_add', 1, 0, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (5, 'cms_l_edit', 1, 0, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (6, 'cms_l_delete', 1, 0, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (7, 'cms_b_add', 1, 0, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (8, 'cms_b_edit', 1, 0, 0);
-INSERT INTO phpbb_acl_options (auth_option_id, auth_option, is_global, is_local, founder_only) VALUES (9, 'cms_b_delete', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_view', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_edit', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_add', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_edit', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_delete', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_add', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_edit', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_delete', 1, 0, 0);
 
 # -- Admin related auth options
 INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_', 1);
@@ -1854,6 +1854,12 @@ INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_', 1);
 INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_html', 1);
 INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_topicdelete', 1);
 
+# -- Plugins related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_input', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_edit', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_delete', 1);
+
 # -- Standard auth roles
 INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (1, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cms_', 1);
 INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (2, 'ROLE_CMS_REVIEWER', 'ROLE_CMS_REVIEWER_DESCRIPTION', 'cms_', 2);
@@ -1871,6 +1877,9 @@ INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, ro
 INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (14, 'ROLE_FORUM_FULL', 'ROLE_FORUM_FULL_DESCRIPTION', 'f_', 1);
 INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (15, 'ROLE_FORUM_STANDARD', 'ROLE_FORUM_STANDARD_DESCRIPTION', 'f_', 2);
 INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (16, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (17, 'ROLE_PLUGINS_FULL', 'ROLE_PLUGINS_FULL_DESCRIPTION', 'pl_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (18, 'ROLE_PLUGINS_STANDARD', 'ROLE_PLUGINS_STANDARD_DESCRIPTION', 'pl_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (19, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS', 'pl_', 3);
 
 # -- Roles data
 
@@ -1921,6 +1930,15 @@ INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 
 
 # No Access (f_)
 INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 16, auth_option_id, 0 FROM phpbb_acl_options WHERE auth_option = 'f_';
+
+# Full Access (pl_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 17, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'pl_%';
+
+# Standard Access (pl_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 18, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'pl_%' AND auth_option NOT IN ('pl_delete');
+
+# No Access (pl_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 19, auth_option_id, 0 FROM phpbb_acl_options WHERE auth_option = 'pl_';
 
 # Permissions
 

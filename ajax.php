@@ -26,7 +26,7 @@ define('AJAX_HEADERS', true);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 

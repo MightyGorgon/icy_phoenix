@@ -744,6 +744,7 @@ class Template {
 			define('CSS_JS_PARSED', true);
 		}
 
+		// Include custom CSS from templates/CURRENT_TPL folder
 		if(is_array($this->css_style_include) && !empty($this->css_style_include))
 		{
 			for ($i = 0; $i < sizeof($this->css_style_include); $i++)
@@ -755,6 +756,7 @@ class Template {
 			}
 		}
 
+		// Include custom CSS from templates/common folder
 		if(is_array($this->css_include) && !empty($this->css_include))
 		{
 			for ($i = 0; $i < sizeof($this->css_include); $i++)
@@ -766,6 +768,7 @@ class Template {
 			}
 		}
 
+		// Include custom JS from templates/common folder
 		if(is_array($this->js_include) && !empty($this->js_include))
 		{
 			for ($i = 0; $i < sizeof($this->js_include); $i++)

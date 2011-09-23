@@ -57,7 +57,7 @@ class pafiledb_email extends pafiledb_public
 			$sid = request_post_var('sid', '');
 			if (empty($sid) || ($sid != $user->data['session_id']))
 			{
-				message_die(GENERAL_ERROR, 'Invalid_session');
+				message_die(GENERAL_ERROR, 'INVALID_SESSION');
 			}
 			$error = false;
 

@@ -29,7 +29,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
 // Do not update users last page entry
 // Start session management
 $user->session_begin(false);
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 

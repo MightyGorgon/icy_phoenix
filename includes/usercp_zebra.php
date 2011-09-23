@@ -211,7 +211,6 @@ $template->assign_vars(array(
 	'L_SELECT' => $lang['Select'],
 	'L_REMOVE_SELECTED' => $lang['Remove_selected'],
 	'L_ADD_MEMBER' => $lang['Add_member'],
-	'L_FIND_USERNAME' => $lang['Find_username'],
 
 	'L_ADD_FOES' => $lang['ADD_FOES'],
 	'L_ADD_FOES_EXPLAIN' => $lang['ADD_FOES_EXPLAIN'],

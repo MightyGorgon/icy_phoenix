@@ -243,7 +243,7 @@ function send_file_to_browser($attachment, $upload_dir)
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 

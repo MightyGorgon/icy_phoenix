@@ -382,7 +382,6 @@ elseif (isset($_POST['add']) || ($mode == 'edit'))
 		{
 			$template->assign_block_vars('username_row', array(
 				'L_USERNAME' => $lang['Username'],
-				'L_FIND_USERNAME' => $lang['Find_username'],
 				'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser'),
 				'USERNAME' => $row['username']
 				)
@@ -465,7 +464,6 @@ elseif (isset($_POST['add']) || ($mode == 'edit'))
 
 		$template->assign_block_vars('username_row', array(
 			'L_USERNAME' => $lang['Username'],
-			'L_FIND_USERNAME' => $lang['Find_username'],
 			'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser')
 			)
 		);

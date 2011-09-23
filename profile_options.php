@@ -25,7 +25,7 @@ $class_form = new class_form();
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -182,7 +182,7 @@ if ($submit)
 	// session id check
 	if ($sid != $user->data['session_id'])
 	{
-		message_die(GENERAL_ERROR, 'Invalid_session');
+		message_die(GENERAL_ERROR, 'INVALID_SESSION');
 	}
 
 	// init for error

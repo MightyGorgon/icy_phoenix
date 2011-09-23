@@ -102,7 +102,7 @@ $folder = check_var_value($folder, $folders_array);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -1920,7 +1920,6 @@ elseif ($submit || $refresh || ($mode != ''))
 		'L_SUBMIT' => $lang['Submit'],
 		'L_CANCEL' => $lang['Cancel'],
 		'L_POST_A' => $post_a,
-		'L_FIND_USERNAME' => $lang['Find_username'],
 		'L_FIND' => $lang['Find'],
 		'L_DISABLE_HTML' => $lang['Disable_HTML_pm'],
 		'L_DISABLE_ACRO_AUTO' => $lang['Disable_ACRO_AUTO_pm'],

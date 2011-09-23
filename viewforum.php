@@ -59,7 +59,7 @@ $mark_read = request_var('mark', '');
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -373,7 +373,7 @@ for ($i = 0; $i < sizeof($tree['mods'][$idx]['user_id']); $i++)
 for ($i = 0; $i < sizeof($tree['mods'][$idx]['group_id']); $i++)
 {
 	$group_color_style = ' style="font-weight: bold; text-decoration: none;' . (($tree['mods'][$idx]['group_color'][$i] != '') ? 'color: ' . $tree['mods'][$idx]['group_color'][$i] . ';"' : '"');
-	$moderators[] = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color_style . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
+	$moderators[] = '<a href="' . append_sid( CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color_style . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
 }
 
 $l_moderators = (sizeof($moderators) == 1) ? $lang['Moderator'] : $lang['Moderators'];

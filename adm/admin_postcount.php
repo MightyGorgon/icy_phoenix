@@ -82,7 +82,6 @@ else
 		'L_USER_EXPLAIN' => $lang['Post_count_explain'],
 		'L_USER_SELECT' => $lang['Select_a_User'],
 		'L_LOOK_UP' => $lang['Look_up_user'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 
 		'U_SEARCH_USER' => append_sid('./../' . CMS_PAGE_SEARCH . '?mode=searchuser'),
 

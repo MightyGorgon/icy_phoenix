@@ -120,7 +120,6 @@ else
 
 	$template->set_filenames(array('body' => ADM_TPL . 'user_select_body.tpl'));
 	$template->assign_vars(array(
-		'L_FIND_USERNAME' => $lang['Find_username'],
 		'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser')
 		)
 	);

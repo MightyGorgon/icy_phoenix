@@ -709,7 +709,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	{
 		// Start session management
 		$user->session_begin();
-		//$auth->acl($user->data);
+		$auth->acl($user->data);
 		$user->setup();
 		// End session management
 	}

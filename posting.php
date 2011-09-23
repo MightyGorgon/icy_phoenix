@@ -188,7 +188,7 @@ elseif ($mode == 'smilies')
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
