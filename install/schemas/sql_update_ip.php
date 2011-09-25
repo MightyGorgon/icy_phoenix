@@ -76,6 +76,7 @@ switch ($req_version)
 	case '131972': $current_ip_version = '1.3.19.72'; break;
 	case '132073': $current_ip_version = '1.3.20.73'; break;
 	case '132174': $current_ip_version = '1.3.21.74'; break;
+	case '132275': $current_ip_version = '1.3.22.75'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -2046,8 +2047,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('use_old_pics_gen', '0');";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('show_last_comments', '0');";
 
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_cms_level` TINYINT(4) DEFAULT '0' NOT NULL";
-
 		$sql[] = "UPDATE " . $table_prefix . "stats_config SET config_value = 'includes/stat_modules' WHERE config_name = 'modules_dir'";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "digest_subscriptions` (
@@ -2132,7 +2131,6 @@ if (substr($mode, 0, 6) == 'update')
 			`titlebar` tinyint(1) NOT NULL default '1',
 			`background` tinyint(1) NOT NULL default '1',
 			`local` tinyint(1) NOT NULL default '0',
-			`edit_auth` tinyint(1) NOT NULL default '5',
 			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`bid`)
 		)";
@@ -2152,7 +2150,6 @@ if (substr($mode, 0, 6) == 'update')
 			`template` varchar(100) NOT NULL default '',
 			`global_blocks` tinyint(1) NOT NULL default '0',
 			`view` tinyint(1) NOT NULL default '0',
-			`edit_auth` tinyint(1) NOT NULL default '5',
 			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`lid`)
 		)";
@@ -2521,7 +2518,6 @@ if (substr($mode, 0, 6) == 'update')
 			`template` varchar(100) NOT NULL default '',
 			`global_blocks` tinyint(1) NOT NULL default '0',
 			`view` tinyint(1) NOT NULL default '0',
-			`edit_auth` tinyint(1) NOT NULL default '5',
 			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`lsid`),
 			UNIQUE KEY `page_id` (`page_id`)
@@ -3845,14 +3841,13 @@ if (substr($mode, 0, 6) == 'update')
 			`blockfile` varchar(255) NOT NULL default '',
 			`view` tinyint(1) NOT NULL default 0,
 			`type` tinyint(1) NOT NULL default 1,
-			`edit_auth` tinyint(1) NOT NULL default 5,
 			`groups` tinytext NOT NULL,
 			`locked` tinyint(1) NOT NULL DEFAULT 1,
 			PRIMARY KEY (`bs_id`)
 		)";
 
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_settings`
-		SELECT b.bid, 0, b.title, b.content, b.blockfile, b.view, b.type, b.edit_auth, b.groups, 1
+		SELECT b.bid, 0, b.title, b.content, b.blockfile, b.view, b.type, b.groups, 1
 		FROM `" . $table_prefix . "cms_blocks` b
 		ORDER BY b.bid";
 
@@ -4242,6 +4237,15 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.20.73 */
 		case '1.3.20.73':
+
+		/* Updating from IP 1.3.21.74 */
+		case '1.3.21.74':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `user_cms_level`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_block_settings` DROP `edit_auth`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `edit_auth`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` DROP `edit_auth`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` DROP `edit_auth`";
+
 		// AUTH SYSTEM - BEGIN
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_groups`";
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_options`";
@@ -4249,18 +4253,28 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_roles_data`";
 		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_users`";
 
-		// CMS related auth options
+		// -- CMS related auth options
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_view', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_edit', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_add', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_edit', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_l_delete', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_add', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_edit', 1, 0, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_b_delete', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_admin', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_settings', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_layouts', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_layouts_special', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_blocks', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_blocks_global', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_permissions', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_menu', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_ads', 1, 0, 0)";
 
-		// Admin related auth options
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsl_', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsl_admin', 0, 1, 0)";
+
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsls_', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsls_admin', 0, 1, 0)";
+
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsb_', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsb_admin', 0, 1, 0)";
+
+		// -- Admin related auth options
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_modules', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_roles', 1)";
@@ -4273,118 +4287,121 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_viewauth', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_group', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_user', 1)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_board', 1)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_server', 1)";
 
-		// Moderator related auth options
+		// -- Moderator related auth options
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local, is_global) VALUES ('m_', 1, 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local, is_global) VALUES ('m_topicdelete', 1, 1)";
 
-		// User related auth options
+		// -- User related auth options
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('u_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('u_html', 1)";
 
-		// Forum related auth options
+		// -- Forum related auth options
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local) VALUES ('f_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local) VALUES ('f_html', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local) VALUES ('f_topicdelete', 1)";
 
-		// Plugins related auth options
+		// -- Plugins related auth options
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_admin', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_input', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_edit', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_delete', 1)";
 
-		// Standard auth roles
+		// -- Standard auth roles
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (1, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cms_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (2, 'ROLE_CMS_REVIEWER', 'ROLE_CMS_REVIEWER_DESCRIPTION', 'cms_', 2)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (3, 'ROLE_CMS_PUBLISHER', 'ROLE_CMS_PUBLISHER_DESCRIPTION', 'cms_', 3)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (4, 'ROLE_CMS_USER', 'ROLE_CMS_USER_DESCRIPTION', 'cms_', 4)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (5, 'ROLE_CMS_GUEST', 'ROLE_CMS_GUEST_DESCRIPTION', 'cms_', 5)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (6, 'ROLE_ADMIN_FULL', 'ROLE_ADMIN_FULL_DESCRIPTION', 'a_', 1)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (7, 'ROLE_ADMIN_STANDARD', 'ROLE_ADMIN_STANDARD_DESCRIPTION', 'a_', 2)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (8, 'ROLE_MOD_FULL', 'ROLE_MOD_FULL_DESCRIPTION', 'm_', 1)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (9, 'ROLE_MOD_STANDARD', 'ROLE_MOD_STANDARD_DESCRIPTION', 'm_', 2)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (10, 'ROLE_MOD_SIMPLE', 'ROLE_MOD_SIMPLE_DESCRIPTION', 'm_', 3)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (11, 'ROLE_USER_FULL', 'ROLE_USER_FULL_DESCRIPTION', 'u_', 1)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (12, 'ROLE_USER_STANDARD', 'ROLE_USER_STANDARD_DESCRIPTION', 'u_', 2)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (13, 'ROLE_USER_LIMITED', 'ROLE_USER_LIMITED_DESCRIPTION', 'u_', 3)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (14, 'ROLE_FORUM_FULL', 'ROLE_FORUM_FULL_DESCRIPTION', 'f_', 1)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (15, 'ROLE_FORUM_STANDARD', 'ROLE_FORUM_STANDARD_DESCRIPTION', 'f_', 2)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (16, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (17, 'ROLE_PLUGINS_FULL', 'ROLE_PLUGINS_FULL_DESCRIPTION', 'f_', 1)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (18, 'ROLE_PLUGINS_STANDARD', 'ROLE_PLUGINS_STANDARD_DESCRIPTION', 'f_', 2)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (19, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS', 'f_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (4, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsl_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (5, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsls_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (6, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsb_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (7, 'ROLE_ADMIN_FULL', 'ROLE_ADMIN_FULL_DESCRIPTION', 'a_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (8, 'ROLE_ADMIN_STANDARD', 'ROLE_ADMIN_STANDARD_DESCRIPTION', 'a_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (9, 'ROLE_MOD_FULL', 'ROLE_MOD_FULL_DESCRIPTION', 'm_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (10, 'ROLE_MOD_STANDARD', 'ROLE_MOD_STANDARD_DESCRIPTION', 'm_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (11, 'ROLE_MOD_SIMPLE', 'ROLE_MOD_SIMPLE_DESCRIPTION', 'm_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (12, 'ROLE_USER_FULL', 'ROLE_USER_FULL_DESCRIPTION', 'u_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (13, 'ROLE_USER_STANDARD', 'ROLE_USER_STANDARD_DESCRIPTION', 'u_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (14, 'ROLE_USER_LIMITED', 'ROLE_USER_LIMITED_DESCRIPTION', 'u_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (15, 'ROLE_FORUM_FULL', 'ROLE_FORUM_FULL_DESCRIPTION', 'f_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (16, 'ROLE_FORUM_STANDARD', 'ROLE_FORUM_STANDARD_DESCRIPTION', 'f_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (17, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (18, 'ROLE_PLUGINS_FULL', 'ROLE_PLUGINS_FULL_DESCRIPTION', 'pl_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (19, 'ROLE_PLUGINS_STANDARD', 'ROLE_PLUGINS_STANDARD_DESCRIPTION', 'pl_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (20, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS', 'pl_', 3)";
 
-		// Roles data
+		// -- Roles data
 
 		// CMS Content Manager (cms_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 1, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'cms_%'";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 1, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cms_%' AND is_global = 1";
 
 		// CMS Reviewer (cms_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 2, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'cms_%' AND auth_option NOT IN ('cms_edit', 'cms_l_delete', 'cms_b_delete')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 2, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cms_%' AND auth_option NOT IN ('cms_admin', 'cms_settings', 'cms_permissions', 'cms_menu', 'cms_ads') AND is_global = 1";
 
 		// CMS Publisher (cms_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 3, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'cms_%' AND auth_option NOT IN ('cms_edit', 'cms_l_add', 'cms_l_delete', 'cms_b_add', 'cms_b_delete')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 3, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option = 'cms_blocks' AND is_global = 1";
 
-		// CMS User (cms_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 4, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option = 'cms_view'";
+		// CMS Content Manager Layouts (cmsl_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 4, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmsl_%' AND is_local = 1";
 
-		// CMS Guest (cms_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 5, auth_option_id, 0 FROM " . $table_prefix . "acl_options WHERE auth_option = 'cms_view'";
+		// CMS Content Manager Special Layouts (cmsls_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 5, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmsls_%' AND is_local = 1";
+
+		// CMS Content Manager Blocks (cmsb_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 6, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmsb_%' AND is_local = 1";
 
 		// Full Admin (a_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 6, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'a_%'";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 7, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'a_%'";
 
 		// Standard Admin (a_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 7, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'a_%' AND auth_option NOT IN ('a_server', 'a_modules', 'a_aauth', 'a_roles')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 8, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'a_%' AND auth_option NOT IN ('a_modules', 'a_aauth', 'a_roles')";
 
 		// Full Moderator (m_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 8, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'm_%'";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 9, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%'";
 
 		// Standard Moderator (m_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 9, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'm_%' AND auth_option NOT IN ('m_topicdelete')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 10, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%' AND auth_option NOT IN ('m_topicdelete')";
 
 		// Simple Moderator (m_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 10, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'm_%' AND auth_option IN ('m_', 'm_topicdelete')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 11, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%' AND auth_option IN ('m_', 'm_topicdelete')";
 
 		// All Features (u_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 11, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'u_%'";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 12, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%'";
 
 		// Standard Features (u_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 12, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 13, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html')";
 
 		// Limited Features (u_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 13, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 14, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html')";
 
 		// Full Access (f_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 14, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'f_%'";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 15, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'f_%'";
 
 		// Standard Access (f_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 15, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'f_%' AND auth_option NOT IN ('f_html')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 16, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'f_%' AND auth_option NOT IN ('f_html')";
 
 		// No Access (f_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 16, auth_option_id, 0 FROM " . $table_prefix . "acl_options WHERE auth_option = 'f_'";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 17, auth_option_id, 0 FROM phpbb_acl_options WHERE auth_option = 'f_'";
 
 		// Full Access (pl_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 17, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'pl_%'";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 18, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'pl_%'";
 
 		// Standard Access (pl_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 18, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'pl_%' AND auth_option NOT IN ('pl_delete')";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 19, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'pl_%' AND auth_option NOT IN ('pl_admin', 'pl_delete')";
 
 		// No Access (pl_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 19, auth_option_id, 0 FROM " . $table_prefix . "acl_options WHERE auth_option = 'pl_'";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 20, auth_option_id, 0 FROM phpbb_acl_options WHERE auth_option = 'pl_'";
 
 		// Permissions
 
-		// Admin user - full features for ACP
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 6, 0 FROM " . $table_prefix . "users WHERE user_level = 1";
+		// Admin users - full features
+		//$sql[] = "INSERT INTO " . $table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 1, 0 FROM phpbb_users WHERE user_level = 1";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 7, 0 FROM phpbb_users WHERE user_level = 1";
+		//$sql[] = "INSERT INTO " . $table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 18, 0 FROM phpbb_users WHERE user_level = 1";
 		// AUTH SYSTEM - END
 
-		$sql[] = "UPDATE `" . $table_prefix . "acl_options` SET is_global = 1, is_local = 0 WHERE auth_option LIKE 'cms_%'";
-
-		/* Updating from IP 1.3.21.74 */
-		case '1.3.21.74':
+		/* Updating from IP 1.3.22.75 */
+		case '1.3.22.75':
 
 	}
 

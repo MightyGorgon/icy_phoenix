@@ -1,4 +1,4 @@
-<!-- INCLUDE simple_header.html -->
+<!-- INCLUDE ../common/cms/page_header.tpl -->
 
 <div style="background-color: #fff; padding: 10px; margin-top: 10px;" class="permissions">
 
@@ -55,4 +55,4 @@
 
 </div>
 
-<!-- INCLUDE simple_footer.html -->
+<!-- INCLUDE ../common/cms/page_footer.tpl -->

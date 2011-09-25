@@ -18,7 +18,7 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b_id = '')
 {
-	global $user;
+	global $db, $cache, $config, $user, $lang, $auth;
 
 	// If the user is admin... give immediate access and exit!
 	if ($user->data['user_level'] == ADMIN)
@@ -32,35 +32,49 @@ function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b
 	switch ($cms_page)
 	{
 		case 'cms':
-			if ($mode == 'blocks')
+			switch ($mode)
 			{
-				if ((($action == 'list') || ($action == 'edit') || ($action == 'save') || empty($action)) && !isset($_POST['action_update']))
-				{
-					$is_auth = ($user->data['user_cms_level'] < CMS_PUBLISHER) ? false : true;
-				}
-				else
-				{
-					$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
-				}
+				case 'blocks':
+					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks_global')) ? true : false;
+				break;
+
+				case 'block_settings':
+					// OLD IF... left here to be checked...
+					//if ((($action == 'list') || ($action == 'edit') || ($action == 'save') || empty($action)) && !isset($_POST['action_update']))
+					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks')) ? true : false;
+				break;
+
+				case 'layouts':
+				case 'layouts_adv':
+					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_layouts')) ? true : false;
+				break;
+
+				case 'layouts_special':
+					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_layouts_special')) ? true : false;
+				break;
+
+				case 'config':
+					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_settings')) ? true : false;
+				break;
+
+				default:
+					$is_auth = $auth->acl_get('cms_admin') ? true : false;
+				break;
 			}
-			elseif (($mode == 'layouts') || ($mode == 'layouts_adv') || ($mode == 'layouts_special'))
-			{
-				$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
-			}
-			else
-			{
-				$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
-			}
-			break;
+		break;
+
 		case 'cms_ads':
-			$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
-			break;
+			$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_ads')) ? true : false;
+		break;
+
 		case 'cms_auth':
-			$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
-			break;
+			$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_permissions')) ? true : false;
+		break;
+
 		case 'cms_menu':
-			$is_auth = ($user->data['user_cms_level'] < CMS_CONTENT_MANAGER) ? false : true;
-			break;
+			$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_menu')) ? true : false;
+		break;
+
 		default:
 			return false;
 	}

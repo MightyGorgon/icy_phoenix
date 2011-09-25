@@ -17,6 +17,7 @@ class cms_permissions
 {
 	var $u_action;
 	var $permission_dropdown;
+	var $id_type;
 
 	function main($id, $mode)
 	{
@@ -32,6 +33,15 @@ class cms_permissions
 		$action = key($action);
 		$action = (isset($_POST['psubmit'])) ? 'apply_permissions' : $action;
 
+		$all_forums = request_var('all_forums', 0);
+		$subforum_id = request_var('subforum_id', 0);
+		$forum_id = request_var('forum_id', array(0));
+
+		$id_type = request_var('id_type', '');
+		$id_types_array = array('forum', 'block', 'layout', 'layout_special');
+		$id_type = in_array($id_type, $id_types_array) ? $id_type : $id_types_array[0];
+		$this->id_type = $id_type;
+
 		$username = request_var('username', array(''), true);
 		$usernames = request_var('usernames', '', true);
 		$user_id = request_var('user_id', array(0));
@@ -44,6 +54,26 @@ class cms_permissions
 
 		$this->tpl_name = 'cms_permissions.tpl';
 		$this->u_action = append_sid($cms_admin->root . '?mode=auth&amp;pmode=' . $mode);
+
+		/*
+		// Trace has other vars
+		if ($mode == 'trace')
+		{
+			$user_id = request_var('u', 0);
+			$forum_id = request_var('f', 0);
+			$permission = request_var('auth', '');
+
+			$this->tpl_name = 'cms_permission_trace.tpl';
+
+			if ($user_id && isset($auth_admin->acl_options['id'][$permission]))
+			{
+				$this->page_title = sprintf($user->lang['TRACE_PERMISSION'], $user->lang['acl_' . $permission]['lang']);
+				$this->permission_trace($user_id, $forum_id, $permission);
+				return;
+			}
+			trigger_error('NO_MODE', E_USER_ERROR);
+		}
+		*/
 
 		// If select all groups is set, we pre-build the group id array (this option is used for other screens to link to the permission settings screen)
 		if ($select_all_groups)
@@ -96,32 +126,56 @@ class cms_permissions
 
 		switch ($mode)
 		{
-			case 'setting_cms_user_global':
-			case 'setting_cms_group_global':
-				$this->permission_dropdown = array('cms_');
-				$permission_victim = ($mode == 'setting_cms_user_global') ? array('user') : array('group');
-				$this->page_title = ($mode == 'setting_cms_user_global') ? 'CMS_PERMISSIONS_CMS_USERS' : 'CMS_PERMISSIONS_CMS_GROUPS';
-			break;
-
-			case 'setting_plugins_user_global':
-			case 'setting_plugins_group_global':
-				$this->permission_dropdown = array('pl_');
-				$permission_victim = ($mode == 'setting_plugins_user_global') ? array('user') : array('group');
-				$this->page_title = ($mode == 'setting_plugins_user_global') ? 'CMS_PERMISSIONS_PLUGINS_USERS' : 'CMS_PERMISSIONS_PLUGINS_GROUPS';
-			break;
-
-			case 'setting_user_global':
-			case 'setting_group_global':
-				$this->permission_dropdown = array('u_');
-				$permission_victim = ($mode == 'setting_user_global') ? array('user') : array('group');
-				$this->page_title = ($mode == 'setting_user_global') ? 'CMS_PERMISSIONS_USERS' : 'CMS_PERMISSIONS_GROUPS';
-			break;
-
 			case 'setting_admin_global':
 			case 'setting_mod_global':
 				$this->permission_dropdown = (strpos($mode, '_admin_') !== false) ? array('a_') : array('m_');
 				$permission_victim = array('usergroup');
 				$this->page_title = ($mode == 'setting_admin_global') ? 'CMS_PERMISSIONS_ADMINS' : 'CMS_PERMISSIONS_MODS';
+			break;
+
+			case 'setting_cms_user_global':
+			case 'setting_cms_group_global':
+				$this->permission_dropdown = array('cms_', 'pl_', 'u_');
+				$permission_victim = array('usergroup');
+				//$permission_victim = ($mode == 'setting_cms_user_global') ? array('user') : array('group');
+				$this->page_title = ($mode == 'setting_cms_user_global') ? 'CMS_PERMISSIONS_CMS_USERS' : 'CMS_PERMISSIONS_CMS_GROUPS';
+			break;
+
+			case 'setting_cms_user_local':
+			case 'setting_cms_group_local':
+				$this->permission_dropdown = ($this->id_type == 'layout') ? array('cmsl_') : (($this->id_type == 'layout_special') ? array('cmsls_') : array('cmsb_'));
+				$permission_victim = array('cms', 'usergroup');
+				//$permission_victim = ($mode == 'setting_cms_user_local') ? array('user') : array('group');
+				$this->page_title = ($mode == 'setting_cms_user_local') ? 'CMS_PERMISSIONS_CMS_USERS' : 'CMS_PERMISSIONS_CMS_GROUPS';
+			break;
+
+			case 'setting_plugins_user_global':
+			case 'setting_plugins_group_global':
+				$this->permission_dropdown = array('pl_', 'cms_', 'u_');
+				$permission_victim = array('usergroup');
+				//$permission_victim = ($mode == 'setting_plugins_user_global') ? array('user') : array('group');
+				$this->page_title = ($mode == 'setting_plugins_user_global') ? 'CMS_PERMISSIONS_PLUGINS_USERS' : 'CMS_PERMISSIONS_PLUGINS_GROUPS';
+			break;
+
+			case 'setting_user_global':
+			case 'setting_group_global':
+				$this->permission_dropdown = array('u_', 'cms_', 'pl_');
+				$permission_victim = ($mode == 'setting_user_global') ? array('user') : array('group');
+				$this->page_title = ($mode == 'setting_user_global') ? 'CMS_PERMISSIONS_USERS' : 'CMS_PERMISSIONS_GROUPS';
+			break;
+
+			case 'setting_user_local':
+			case 'setting_group_local':
+				$this->permission_dropdown = array('f_', 'm_');
+				$permission_victim = ($mode == 'setting_user_local') ? array('user') : array('group');
+				$this->page_title = ($mode == 'setting_user_local') ? 'ACP_USERS_FORUM_PERMISSIONS' : 'ACP_GROUPS_FORUM_PERMISSIONS';
+			break;
+
+			case 'setting_mod_local':
+			case 'setting_forum_local':
+				$this->permission_dropdown = ($mode == 'setting_mod_local') ? array('m_') : array('f_');
+				$permission_victim = array('forums', 'usergroup');
+				$this->page_title = ($mode == 'setting_mod_local') ? 'ACP_FORUM_MODERATORS' : 'ACP_FORUM_PERMISSIONS';
 			break;
 
 			case 'view_admin_global':
@@ -130,6 +184,13 @@ class cms_permissions
 				$this->permission_dropdown = ($mode == 'view_admin_global') ? array('a_') : (($mode == 'view_user_global') ? array('u_') : array('m_'));
 				$permission_victim = array('usergroup_view');
 				$this->page_title = ($mode == 'view_admin_global') ? 'CMS_PERMISSIONS_ADMINS' : (($mode == 'view_user_global') ? 'CMS_PERMISSIONS_USERS' : 'CMS_PERMISSIONS_MODS');
+			break;
+
+			case 'view_mod_local':
+			case 'view_forum_local':
+				$this->permission_dropdown = ($mode == 'view_mod_local') ? array('m_') : array('f_');
+				$permission_victim = array('usergroup_view');
+				$this->page_title = ($mode == 'view_mod_local') ? 'ACP_VIEW_FORUM_MOD_PERMISSIONS' : 'ACP_VIEW_FORUM_PERMISSIONS';
 			break;
 
 			default:
@@ -165,7 +226,7 @@ class cms_permissions
 
 						if ($all_users || $all_groups)
 						{
-							$items = $this->retrieve_defined_user_groups($permission_scope, $permission_type);
+							$items = $this->retrieve_defined_user_groups($permission_scope, $forum_id, $permission_type);
 
 							if ($all_users && sizeof($items['user_ids']))
 							{
@@ -179,7 +240,7 @@ class cms_permissions
 
 						if (sizeof($user_id) || sizeof($group_id))
 						{
-							$this->remove_permissions($mode, $permission_type, $auth_admin, $user_id, $group_id);
+							$this->remove_permissions($mode, $permission_type, $auth_admin, $user_id, $group_id, $forum_id);
 						}
 						else
 						{
@@ -191,6 +252,10 @@ class cms_permissions
 						if (isset($_POST['cancel']))
 						{
 							$u_redirect = $this->u_action . '&amp;type=' . $permission_type;
+							foreach ($forum_id as $fid)
+							{
+								$u_redirect .= '&amp;forum_id[]=' . $fid;
+							}
 							redirect($u_redirect);
 						}
 
@@ -200,6 +265,8 @@ class cms_permissions
 							'paction' => array($action => 1),
 							'user_id' => $user_id,
 							'group_id' => $group_id,
+							'forum_id' => $forum_id,
+							'id_type' => $this->id_type,
 							'type' => $permission_type,
 						);
 						if (isset($_POST['all_users']))
@@ -242,20 +309,71 @@ class cms_permissions
 			}
 		}
 
-
 		// Setting permissions screen
-		$s_hidden_fields = build_hidden_fields(array(
+		$s_hidden_fields_array = array(
 			'user_id' => $user_id,
 			'group_id' => $group_id,
-			'type' => $permission_type
-			)
+			'forum_id' => $forum_id,
 		);
+
+		$s_hidden_fields = build_hidden_fields($s_hidden_fields_array);
+
+		$s_hidden_fields_extra = true;
 
 		// Go through the screens/options needed and present them in correct order
 		foreach ($permission_victim as $victim)
 		{
 			switch ($victim)
 			{
+				case 'cms':
+
+					if (sizeof($forum_id))
+					{
+						$this->check_existence($this->id_type, $forum_id);
+						continue 2;
+					}
+
+					// We don't have anything selected, so we need to unset these types, because they will be set properly in template...
+					$s_hidden_fields_extra = false;
+					unset($s_hidden_fields_array['id_type']);
+					unset($s_hidden_fields_array['type']);
+
+					$ids = array();
+					$ids_data = array();
+					$types_array = array(
+						'l' => 'layout',
+						'ls' => 'layout_special',
+						'b' => 'block'
+					);
+					foreach ($types_array as $type_key => $type_value)
+					{
+						$s_options = '';
+						$ids_data = $this->check_existence($type_value, $ids, true);
+						foreach ($ids_data as $id_data)
+						{
+							$option_name = $id_data['name'];
+							if ($type_key == 'ls')
+							{
+								$option_name = isset($lang['auth_view_' . strtolower($option_name)]) ? $lang['auth_view_' . strtolower($option_name)] : (isset($lang['cms_page_name_' . strtolower($option_name)]) ? $lang['cms_page_name_' . strtolower($option_name)] : ucfirst($option_name));
+							}
+
+							$s_options .= '<option value="' . (int) $id_data['id'] . '">' . $option_name . '</option>';
+						}
+
+						$template->assign_vars(array(
+							'S_CMS_' . strtoupper($type_key) . '_OPTIONS' => $s_options
+							)
+						);
+
+					}
+
+					$template->assign_vars(array(
+						'S_SELECT_CMS' => true,
+						)
+					);
+
+				break;
+
 				case 'user':
 				case 'group':
 
@@ -303,7 +421,7 @@ class cms_permissions
 					}
 
 					// Now we check the users... because the "all"-selection is different here (all defined users/groups)
-					$items = $this->retrieve_defined_user_groups($permission_scope, $permission_type);
+					$items = $this->retrieve_defined_user_groups($permission_scope, $forum_id, $permission_type);
 
 					if ($all_users && sizeof($items['user_ids']))
 					{
@@ -328,6 +446,34 @@ class cms_permissions
 					);
 
 				break;
+			}
+
+			// Let the item names being displayed
+			if (sizeof($forum_id))
+			{
+				$ids_data = $this->check_existence($this->id_type, $forum_id);
+
+				$forum_names = array();
+				foreach ($ids_data as $id_data)
+				{
+					$forum_names[] = $id_data['name'];
+				}
+
+				$template->assign_vars(array(
+					'S_FORUM_NAMES' => (sizeof($forum_names)) ? true : false,
+					'FORUM_NAMES' => implode(', ', $forum_names)
+					)
+				);
+			}
+
+			if (!empty($s_hidden_fields_extra))
+			{
+				// Setting other hidden fields
+				$s_hidden_fields_array = array(
+					'id_type' => $this->id_type,
+					'type' => $permission_type
+				);
+				$s_hidden_fields .= build_hidden_fields($s_hidden_fields_array);
 			}
 
 			// The S_ALLOW_SELECT parameter below is a measure to lower memory usage.
@@ -372,7 +518,7 @@ class cms_permissions
 				)
 			);
 
-			$hold_ary = $auth_admin->get_mask('set', (sizeof($user_id)) ? $user_id : false, (sizeof($group_id)) ? $group_id : false, false, $permission_type, $permission_scope, ACL_NO);
+			$hold_ary = $auth_admin->get_mask('set', (sizeof($user_id)) ? $user_id : false, (sizeof($group_id)) ? $group_id : false, (sizeof($forum_id)) ? $forum_id : false, $permission_type, $permission_scope, ACL_NO);
 			$auth_admin->display_mask('set', $permission_type, $hold_ary, ((sizeof($user_id)) ? 'user' : 'group'), (($permission_scope == 'local') ? true : false));
 		}
 		else
@@ -382,7 +528,7 @@ class cms_permissions
 				)
 			);
 
-			$hold_ary = $auth_admin->get_mask('view', (sizeof($user_id)) ? $user_id : false, (sizeof($group_id)) ? $group_id : false, false, $permission_type, $permission_scope, ACL_NEVER);
+			$hold_ary = $auth_admin->get_mask('view', (sizeof($user_id)) ? $user_id : false, (sizeof($group_id)) ? $group_id : false, (sizeof($forum_id)) ? $forum_id : false, $permission_type, $permission_scope, ACL_NEVER);
 			$auth_admin->display_mask('view', $permission_type, $hold_ary, ((sizeof($user_id)) ? 'user' : 'group'), (($permission_scope == 'local') ? true : false));
 		}
 	}
@@ -397,10 +543,13 @@ class cms_permissions
 		$s_dropdown_options = '';
 		foreach ($options as $setting)
 		{
+			// Mighty Gorgon: we don't check permissions yet...
+			/*
 			if (!$auth->acl_get('a_' . str_replace('_', '', $setting) . 'auth'))
 			{
 				continue;
 			}
+			*/
 
 			$selected = ($setting == $default_option) ? ' selected="selected"' : '';
 			$l_setting = (isset($user->lang['permission_type'][$permission_scope][$setting])) ? $user->lang['permission_type'][$permission_scope][$setting] : $user->lang['permission_type'][$setting];
@@ -413,7 +562,7 @@ class cms_permissions
 	/**
 	* Check if selected items exist. Remove not found ids and if empty return error.
 	*/
-	function check_existence($mode, &$ids)
+	function check_existence($mode, &$ids, $all_ids = false)
 	{
 		global $db, $user;
 
@@ -421,31 +570,82 @@ class cms_permissions
 		{
 			case 'user':
 				$table = USERS_TABLE;
-				$sql_id = 'user_id';
+				$sql_select = array(
+					'id' => 'user_id',
+					'name' => 'username'
+				);
+				$sql_where = '';
 			break;
 
 			case 'group':
 				$table = GROUPS_TABLE;
-				$sql_id = 'group_id';
+				$sql_select = array(
+					'id' => 'group_id',
+					'name' => 'group_name'
+				);
+				$sql_where = ' group_single_user = 0 ';
+			break;
+
+			case 'layout':
+				$table = CMS_LAYOUT_TABLE;
+				$sql_select = array(
+					'id' => 'lid',
+					'name' => 'name'
+				);
+				$sql_where = '';
+			break;
+
+			case 'layout_special':
+				$table = CMS_LAYOUT_SPECIAL_TABLE;
+				$sql_select = array(
+					'id' => 'lsid',
+					'name' => 'name'
+				);
+				$sql_where = '';
+			break;
+
+			case 'block':
+				$table = CMS_BLOCKS_TABLE;
+				$sql_select = array(
+					'id' => 'bid',
+					'name' => 'title'
+				);
+				$sql_where = '';
 			break;
 
 			case 'forum':
 				$table = FORUMS_TABLE;
-				$sql_id = 'forum_id';
+				$sql_select = array(
+					'id' => 'forum_id',
+					'name' => 'forum_name'
+				);
+				$sql_where = '';
 			break;
 		}
 
-		if (sizeof($ids))
+		if (!empty($all_ids) || sizeof($ids))
 		{
-			$sql = "SELECT $sql_id
-				FROM $table
-				WHERE " . $db->sql_in_set($sql_id, $ids);
+			if (!empty($all_ids))
+			{
+				$sql_where = !empty($sql_where) ? (" WHERE " . $sql_where) : "";
+			}
+			else
+			{
+				$sql_where = " WHERE " . $db->sql_in_set($sql_select['id'], $ids) . " " . (!empty($sql_where) ? (" AND " . $sql_where) : "");
+			}
+
+			$sql = "SELECT " . $sql_select['id'] . ", " . $sql_select['name'] . "
+				FROM " . $table . "
+				" . $sql_where . "
+				ORDER BY LOWER(" . $sql_select['name'] . ") ASC";
 			$result = $db->sql_query($sql);
 
 			$ids = array();
+			$ids_data = array();
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$ids[] = (int) $row[$sql_id];
+				$ids[] = (int) $row[$sql_select['id']];
+				$ids_data[] = array('id' => (int) $row[$sql_select['id']], 'name' => $row[$sql_select['name']]);
 			}
 			$db->sql_freeresult($result);
 		}
@@ -454,6 +654,8 @@ class cms_permissions
 		{
 			trigger_error($user->lang['SELECTED_' . strtoupper($mode) . '_NOT_EXIST'] . page_back_link($this->u_action), E_USER_WARNING);
 		}
+
+		return $ids_data;
 	}
 
 	/**
@@ -544,7 +746,7 @@ class cms_permissions
 		}
 
 		// Remove users who are now moderators or admins from everyones foes list
-		if ($permission_type == 'm_' || $permission_type == 'a_')
+		if (($permission_type == 'm_') || ($permission_type == 'a_'))
 		{
 			// MIGHTY GORGON: We don't use foes...
 			//update_foes($group_id, $user_id);
@@ -622,7 +824,14 @@ class cms_permissions
 		$redirect_url = $this->u_action;
 		meta_refresh(3, $redirect_url);
 
-		trigger_error($user->lang['AUTH_UPDATED'] . page_back_link($this->u_action));
+		if (($mode == 'setting_forum_local') || ($mode == 'setting_mod_local'))
+		{
+			trigger_error($user->lang['AUTH_UPDATED'] . page_back_link($this->u_action . '&amp;forum_id[]=' . implode('&amp;forum_id[]=', $forum_ids)));
+		}
+		else
+		{
+			trigger_error($user->lang['AUTH_UPDATED'] . page_back_link($this->u_action));
+		}
 	}
 
 	/**
@@ -666,7 +875,7 @@ class cms_permissions
 	/**
 	* Remove permissions
 	*/
-	function remove_permissions($mode, $permission_type, &$auth_admin, &$user_id, &$group_id)
+	function remove_permissions($mode, $permission_type, &$auth_admin, &$user_id, &$group_id, &$forum_id)
 	{
 		global $db, $user, $auth;
 
@@ -687,9 +896,16 @@ class cms_permissions
 			cache_moderators();
 		}
 
-		$this->log_action($mode, 'del', $permission_type, $ug_type, (($ug_type == 'user') ? $user_id : $group_id), array(0 => 0));
+		$this->log_action($mode, 'del', $permission_type, $ug_type, (($ug_type == 'user') ? $user_id : $group_id), (sizeof($forum_id) ? $forum_id : array(0 => 0)));
 
-		trigger_error($user->lang['AUTH_UPDATED'] . page_back_link($this->u_action));
+		if (($mode == 'setting_forum_local') || ($mode == 'setting_mod_local'))
+		{
+			trigger_error($user->lang['AUTH_UPDATED'] . page_back_link($this->u_action . '&amp;forum_id[]=' . implode('&amp;forum_id[]=', $forum_id)));
+		}
+		else
+		{
+			trigger_error($user->lang['AUTH_UPDATED'] . page_back_link($this->u_action));
+		}
 	}
 
 	/**
@@ -730,9 +946,11 @@ class cms_permissions
 	/**
 	* Get already assigned users/groups
 	*/
-	function retrieve_defined_user_groups($permission_scope, $permission_type)
+	function retrieve_defined_user_groups($permission_scope, $forum_id, $permission_type)
 	{
 		global $db, $user;
+
+		$sql_forum_id = ($permission_scope == 'global') ? 'AND a.forum_id = 0' : ((sizeof($forum_id)) ? 'AND ' . $db->sql_in_set('a.forum_id', $forum_id) : 'AND a.forum_id <> 0');
 
 		// Permission options are only able to be a permission set... therefore we will pre-fetch the possible options and also the possible roles
 		$option_ids = $role_ids = array();
@@ -779,6 +997,7 @@ class cms_permissions
 		$sql = 'SELECT DISTINCT u.user_id, u.username, u.username_clean, u.user_regdate
 			FROM ' . USERS_TABLE . ' u, ' . ACL_USERS_TABLE . " a
 			WHERE u.user_id = a.user_id
+				$sql_forum_id
 				$sql_where
 			ORDER BY u.username_clean, u.user_regdate ASC";
 		$result = $db->sql_query($sql);
@@ -796,6 +1015,7 @@ class cms_permissions
 			FROM ' . GROUPS_TABLE . ' g, ' . ACL_GROUPS_TABLE . " a
 			WHERE g.group_id = a.group_id
 				AND g.group_single_user = 0
+				$sql_forum_id
 				$sql_where
 			ORDER BY g.group_name ASC";
 		$result = $db->sql_query($sql);

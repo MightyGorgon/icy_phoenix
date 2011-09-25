@@ -89,7 +89,7 @@ if(isset($_POST['cancel']) || isset($_POST['reset']))
 	redirect(append_sid('cms_menu.' . PHP_EXT . $s_append_url, true));
 }
 
-$show_cms_menu = (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
+$show_cms_menu = (($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_admin') || $auth->acl_get('cms_menu')) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 	'S_SHOW_CMS_MENU' => $show_cms_menu

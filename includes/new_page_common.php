@@ -151,7 +151,7 @@ if (!$cms_default_page)
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
 }
 
-if (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] >= CMS_CONTENT_MANAGER))
+if (($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_admin'))
 {
 	$cms_acp_url = '<br /><br /><div style="text-align: center;">';
 	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout . (!empty($user->session_id) ? ('&amp;sid=' . $user->session_id) : '')) . '">' . $lang['CMS_ACP'] . '</a>';

@@ -17,7 +17,7 @@
 
 <!-- BEGIN p_mask -->
 <div class="clearfix"></div>
-<h3 style="text-align: left;">{p_mask.NAME}<!-- IF p_mask.S_LOCAL --> <span class="small"> [{p_mask.L_ACL_TYPE}]</span><!-- ENDIF --></h3>
+<h3 style="text-align: left;">{p_mask.NAME}<!-- IF p_mask.S_LOCAL --> <span class="gensmall"> [{p_mask.L_ACL_TYPE}]</span><!-- ENDIF --></h3>
 
 <!-- BEGIN f_mask -->
 <div class="clearfix"></div>

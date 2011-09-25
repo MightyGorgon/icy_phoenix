@@ -91,6 +91,9 @@ $lang = array_merge($lang, array(
 	'permission_type' => array(
 		'a_' => 'Admin permissions',
 		'cms_' => 'CMS permissions',
+		'cmsl_' => 'CMS pages permissions',
+		'cmsls_' => 'CMS standard pages permissions',
+		'cmsb_' => 'CMS blocks permissions',
 		'f_' => 'Forum permissions',
 		'm_' => 'Moderator permissions',
 		'pl_' => 'Plugins permissions',
@@ -105,9 +108,6 @@ $lang = array_merge($lang, array(
 
 // Admin Permissions
 $lang = array_merge($lang, array(
-	'acl_a_board' => array('lang' => 'Can alter board settings/check for updates', 'cat' => 'settings'),
-	'acl_a_server' => array('lang' => 'Can alter server/communication settings', 'cat' => 'settings'),
-
 	'acl_a_user' => array('lang' => 'Can manage users<br /><em>This also includes seeing the users browser agent within the viewonline list.</em>', 'cat' => 'user_group'),
 	'acl_a_group' => array('lang' => 'Can manage groups', 'cat' => 'user_group'),
 
@@ -125,16 +125,22 @@ $lang = array_merge($lang, array(
 
 // CMS Permissions
 $lang = array_merge($lang, array(
-	'acl_cms_view' => array('lang' => 'Can access CMS Management', 'cat' => 'cms'),
-	'acl_cms_edit' => array('lang' => 'Can edit settings in CMS', 'cat' => 'cms'),
+	'acl_cms_admin' => array('lang' => 'Can access CMS Management', 'cat' => 'cms'),
+	'acl_cms_settings' => array('lang' => 'Can manage CMS Settings', 'cat' => 'cms'),
+	'acl_cms_layouts' => array('lang' => 'Can manage CMS Pages', 'cat' => 'cms'),
+	'acl_cms_layouts_special' => array('lang' => 'Can manage Standard Pages', 'cat' => 'cms'),
+	'acl_cms_blocks' => array('lang' => 'Can manage Blocks', 'cat' => 'cms'),
+	'acl_cms_blocks_global' => array('lang' => 'Can manage Global Blocks', 'cat' => 'cms'),
+	'acl_cms_permissions' => array('lang' => 'Can manage Permissions', 'cat' => 'cms'),
+	'acl_cms_menu' => array('lang' => 'Can manage Navigation Menu', 'cat' => 'cms'),
+	'acl_cms_ads' => array('lang' => 'Can manage Advertising', 'cat' => 'cms'),
 
-	'acl_cms_l_add' => array('lang' => 'Can create CMS Pages', 'cat' => 'layouts'),
-	'acl_cms_l_edit' => array('lang' => 'Can edit CMS Pages', 'cat' => 'layouts'),
-	'acl_cms_l_delete' => array('lang' => 'Can delete CMS Pages', 'cat' => 'layouts'),
+	// Only Local
+	'acl_cmsl_admin' => array('lang' => 'Can manage page content', 'cat' => 'layouts'),
 
-	'acl_cms_b_add' => array('lang' => 'Can add blocks in CMS Pages', 'cat' => 'blocks'),
-	'acl_cms_b_edit' => array('lang' => 'Can edit blocks in CMS Pages', 'cat' => 'blocks'),
-	'acl_cms_b_delete' => array('lang' => 'Can delete blocks in CMS Pages', 'cat' => 'blocks'),
+	'acl_cmsls_admin' => array('lang' => 'Can manage page content', 'cat' => 'layouts'),
+
+	'acl_cmsb_admin' => array('lang' => 'Can manage block content', 'cat' => 'blocks'),
 	)
 );
 
@@ -154,7 +160,8 @@ $lang = array_merge($lang, array(
 
 // Plugins Permissions
 $lang = array_merge($lang, array(
-	'acl_pl_input' => array('lang' => 'Can insert contents in Plugins', 'cat' => 'plugins_actions'),
+	'acl_pl_admin' => array('lang' => 'Can manage content in Plugins', 'cat' => 'plugins_actions'),
+	'acl_pl_input' => array('lang' => 'Can insert content in Plugins', 'cat' => 'plugins_actions'),
 	'acl_pl_edit' => array('lang' => 'Can edit content in Plugins', 'cat' => 'plugins_actions'),
 	'acl_pl_delete' => array('lang' => 'Can remove content in Plugins', 'cat' => 'plugins_actions'),
 	)

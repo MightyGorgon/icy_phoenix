@@ -75,6 +75,10 @@ $lang = array_merge($lang, array(
 	'ACL_TYPE_GLOBAL_M_' => 'Global Moderator permissions',
 	'ACL_TYPE_GLOBAL_PL_' => 'Plugins permissions',
 	'ACL_TYPE_GLOBAL_U_' => 'User permissions',
+	'ACL_TYPE_LOCAL_CMS_' => 'CMS permissions',
+	'ACL_TYPE_LOCAL_CMSL_' => 'CMS pages permissions',
+	'ACL_TYPE_LOCAL_CMSLS_' => 'CMS standard pages permissions',
+	'ACL_TYPE_LOCAL_CMSB_' => 'CMS blocks permissions',
 	'ACL_TYPE_LOCAL_F_' => 'Forum permissions',
 	'ACL_TYPE_LOCAL_M_' => 'Forum Moderator permissions',
 
@@ -145,8 +149,13 @@ $lang = array_merge($lang, array(
 
 	'GROUPS_NOT_ASSIGNED' => 'No group assigned to this role',
 
+	'ITEMS_SELECTED' => 'Items selected',
+
 	'LOOK_UP_GROUP' => 'Look up usergroup',
 	'LOOK_UP_USER' => 'Look up user',
+	'LOOK_UP_CMS_L' => 'Select page',
+	'LOOK_UP_CMS_LS' => 'Select standard page',
+	'LOOK_UP_CMS_B' => 'Select block',
 
 	'MANAGE_GROUPS' => 'Manage groups',
 	'MANAGE_USERS' => 'Manage users',
@@ -232,6 +241,10 @@ $lang = array_merge($lang, array(
 	'ROLE_NAME_ALREADY_EXIST' => 'A role named <strong>%s</strong> already exist for the specified permission type.',
 	'ROLE_NOT_ASSIGNED' => 'Role has not been assigned yet.',
 
+	'SELECTED_BLOCK_NOT_EXIST' => 'The selected block(s) do not exist.',
+	'SELECTED_LAYOUT_NOT_EXIST' => 'The selected CMS page(s) do not exist.',
+	'SELECTED_LAYOUT_SPECIAL_NOT_EXIST' => 'The selected standard page(s) do not exist.',
+
 	'SELECTED_FORUM_NOT_EXIST' => 'The selected forum(s) do not exist.',
 	'SELECTED_GROUP_NOT_EXIST' => 'The selected group(s) do not exist.',
 	'SELECTED_USER_NOT_EXIST' => 'The selected user(s) do not exist.',
@@ -291,6 +304,7 @@ $lang = array_merge($lang, array(
 	'USERS_NOT_ASSIGNED' => 'No user assigned to this role',
 	'USER_IS_MEMBER_OF_DEFAULT' => 'is a member of the following pre-defined groups',
 	'USER_IS_MEMBER_OF_CUSTOM' => 'is a member of the following user defined groups',
+	'USERNAMES_EXPLAIN' => 'Place each username on a separate line.',
 
 	'VIEW_ASSIGNED_ITEMS' => 'View assigned items',
 	'VIEW_LOCAL_PERMS' => 'Local permissions',

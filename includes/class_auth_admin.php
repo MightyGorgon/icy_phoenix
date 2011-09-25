@@ -78,11 +78,13 @@ class auth_admin extends auth
 	function get_mask($mode, $user_id = false, $group_id = false, $forum_id = false, $auth_option = false, $scope = false, $acl_fill = ACL_NEVER)
 	{
 		global $db, $user;
+		// Mighty Gorgon: we need to define this here to be allowed to use the class later...
+		global $cms_permissions;
 
 		$hold_ary = array();
 		$view_user_mask = ($mode == 'view' && $group_id === false) ? true : false;
 
-		if ($auth_option === false || $scope === false)
+		if (($auth_option === false) || ($scope === false))
 		{
 			return array();
 		}
@@ -109,17 +111,31 @@ class auth_admin extends auth
 		$compare_options = array_diff(preg_replace('/^((?!' . $auth_option . ').+)|(' . $auth_option . ')$/', '', array_keys($this->acl_options[$scope])), array(''));
 
 		// If forum_ids is false and the scope is local we actually want to have all forums within the array
-		if ($scope == 'local' && !sizeof($forum_ids))
+		if (($scope == 'local') && !sizeof($forum_ids))
 		{
-			$sql = 'SELECT forum_id
-				FROM ' . FORUMS_TABLE;
-			$result = $db->sql_query($sql, 120);
-
-			while ($row = $db->sql_fetchrow($result))
+			// Mighty Gorgon: phpBB only uses local for forums, while we want to use this magic feature also for CMS!!!
+			if (!empty($cms_permissions->id_type) && method_exists($cms_permissions, 'check_existence'))
 			{
-				$forum_ids[] = (int) $row['forum_id'];
+				$ids = array();
+				$ids_data = $cms_permissions->check_existence($cms_permissions->id_type, $ids, true);
+
+				foreach ($ids_data as $id_data)
+				{
+					$forum_ids[] = (int) $id_data['id'];
+				}
 			}
-			$db->sql_freeresult($result);
+			else
+			{
+				$sql = 'SELECT forum_id
+					FROM ' . FORUMS_TABLE;
+				$result = $db->sql_query($sql, 120);
+
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$forum_ids[] = (int) $row['forum_id'];
+				}
+				$db->sql_freeresult($result);
+			}
 		}
 
 		if ($view_user_mask)
@@ -218,7 +234,60 @@ class auth_admin extends auth
 			$hold_ary[($group_id !== false) ? $group_id : $user_id][(int) $forum_id] = $compare_options;
 		}
 
+		// Mighty Gorgon: phpBB only uses forum_id to identify ids for permissions, we use a trick to make sure we set only the proper permission for the required id... maybe not elegant, but functional!
+		// Found another workaround... temporarily disabled!
+		/*
+		if (($scope == 'local') && !empty($cms_permissions->id_type))
+		{
+			$this->sanitize_permissions_array($hold_ary, $cms_permissions->id_type);
+		}
+		*/
+
 		return $hold_ary;
+	}
+
+
+	/**
+	* Sanitize $hold_ary to filter proper local permission in CMS
+	*/
+	function sanitize_permissions_array(&$hold_ary, $id_type = 'forum')
+	{
+		switch ($id_type)
+		{
+			case 'forum':
+				$p_id_unset_array = array('cmsl_', 'cmsls_', 'cmsb_');
+			break;
+
+			case 'layout':
+				$p_id_unset_array = array('f_', 'cmsls_', 'cmsb_');
+			break;
+
+			case 'layout_special':
+				$p_id_unset_array = array('f_', 'cmsl_', 'cmsb_');
+			break;
+
+			case 'block':
+				$p_id_unset_array = array('f_', 'cmsl_', 'cmsls_');
+			break;
+
+		}
+
+		foreach ($hold_ary as $ug_id => $row)
+		{
+			foreach ($row as $id => $options)
+			{
+				foreach ($options as $option_id => $option_value)
+				{
+					foreach ($p_id_unset_array as $id_prefix)
+					{
+						if (strpos($option_id, $id_prefix) === 0)
+						{
+							unset($hold_ary[$ug_id][$id][$option_id]);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -288,9 +357,10 @@ class auth_admin extends auth
 		}
 		else
 		{
-			$sql = 'SELECT group_id as ug_id, group_name as ug_name, group_type
+			$sql = 'SELECT group_id as ug_id, group_name as ug_name
 				FROM ' . GROUPS_TABLE . '
 				WHERE ' . $db->sql_in_set('group_id', array_keys($hold_ary)) . '
+					AND group_single_user = 0
 				ORDER BY group_type DESC, group_name ASC';
 		}
 		$result = $db->sql_query($sql);
@@ -298,7 +368,7 @@ class auth_admin extends auth
 		$ug_names_ary = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$ug_names_ary[$row['ug_id']] = ($user_mode == 'user') ? $row['ug_name'] : (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['ug_name']] : $row['ug_name']);
+			$ug_names_ary[$row['ug_id']] = $row['ug_name'];
 		}
 		$db->sql_freeresult($result);
 
@@ -313,16 +383,32 @@ class auth_admin extends auth
 		$forum_names_ary = array();
 		if ($local)
 		{
-			$forum_names_ary = make_forum_select(false, false, true, false, false, false, true);
+			global $cms_permissions;
 
-			// Remove the disabled ones, since we do not create an option field here...
-			foreach ($forum_names_ary as $key => $value)
+			if (!empty($cms_permissions->id_type) && method_exists($cms_permissions, 'check_existence'))
 			{
-				if (!$value['disabled'])
+				$ids = array();
+				$ids_data = $cms_permissions->check_existence($cms_permissions->id_type, $ids, true);
+
+				$forum_names_ary = array();
+				foreach ($ids_data as $id_data)
 				{
-					continue;
+					$forum_names_ary[$id_data['id']] = array('forum_name' => $id_data['name']);
 				}
-				unset($forum_names_ary[$key]);
+			}
+			else
+			{
+				$forum_names_ary = make_forum_select(false, false, true, false, false, false, true);
+
+				// Remove the disabled ones, since we do not create an option field here...
+				foreach ($forum_names_ary as $key => $value)
+				{
+					if (!$value['disabled'])
+					{
+						continue;
+					}
+					unset($forum_names_ary[$key]);
+				}
 			}
 		}
 		else
@@ -387,9 +473,10 @@ class auth_admin extends auth
 		$user_groups_default = $user_groups_custom = array();
 		if ($user_mode == 'user' && $group_display)
 		{
-			$sql = 'SELECT group_id, group_name, group_type
+			$sql = 'SELECT group_id, group_name
 				FROM ' . GROUPS_TABLE . '
-				ORDER BY group_type DESC, group_name ASC';
+				WHERE group_single_user = 0
+				ORDER BY group_name ASC';
 			$result = $db->sql_query($sql);
 
 			$groups = array();
@@ -406,14 +493,7 @@ class auth_admin extends auth
 			{
 				foreach ($memberships as $row)
 				{
-					if ($groups[$row['group_id']]['group_type'] == GROUP_SPECIAL)
-					{
-						$user_groups_default[$row['user_id']][] = $user->lang['G_' . $groups[$row['group_id']]['group_name']];
-					}
-					else
-					{
-						$user_groups_custom[$row['user_id']][] = $groups[$row['group_id']]['group_name'];
-					}
+					$user_groups_custom[$row['user_id']][] = $groups[$row['group_id']]['group_name'];
 				}
 			}
 			unset($memberships, $groups);
@@ -534,8 +614,8 @@ class auth_admin extends auth
 					'NAME' => $ug_name,
 					'CATEGORIES' => implode('</th><th>', $categories),
 
-					'USER_GROUPS_DEFAULT' => ($user_mode == 'user' && isset($user_groups_default[$ug_id]) && sizeof($user_groups_default[$ug_id])) ? implode(', ', $user_groups_default[$ug_id]) : '',
-					'USER_GROUPS_CUSTOM' => ($user_mode == 'user' && isset($user_groups_custom[$ug_id]) && sizeof($user_groups_custom[$ug_id])) ? implode(', ', $user_groups_custom[$ug_id]) : '',
+					'USER_GROUPS_DEFAULT' => (($user_mode == 'user') && isset($user_groups_default[$ug_id]) && sizeof($user_groups_default[$ug_id])) ? implode(', ', $user_groups_default[$ug_id]) : '',
+					'USER_GROUPS_CUSTOM' => (($user_mode == 'user') && isset($user_groups_custom[$ug_id]) && sizeof($user_groups_custom[$ug_id])) ? implode(', ', $user_groups_custom[$ug_id]) : '',
 					'L_ACL_TYPE' => $l_acl_type,
 
 					'S_LOCAL' => ($local) ? true : false,

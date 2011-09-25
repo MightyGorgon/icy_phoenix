@@ -8,6 +8,19 @@
 *
 */
 
+/*
+//Some references needed to finish integration... will remove later! I hope! :-p
+
+//'cms_', 'cms_admin', 'cms_settings', 'cms_layouts', 'cms_layouts_special', 'cms_blocks', 'cms_blocks_global', 'cms_permissions', 'cms_menu', 'cms_ads'
+//'cmsl_', 'cmsl_admin'
+//'cmsls_', 'cmsls_admin'
+//'cmsb_', 'cmsb_admin'
+
+//$auth->acl_get('cms_admin')
+//$auth->acl_get('cmsb_admin', $b_id)
+//($user->data['user_level'] == ADMIN)
+*/
+
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
 define('CTRACKER_DISABLED', true);
@@ -97,7 +110,7 @@ if(isset($_POST['cancel']))
 	redirect(append_sid($cms_admin->root, true));
 }
 
-$show_cms_menu = (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
+$show_cms_menu = (($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_') || $auth->acl_get('a_')) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 
@@ -449,7 +462,7 @@ if($cms_admin->mode == 'config')
 	);
 }
 
-//if (($cms_admin->mode == 'auth') && ($cms_auth->acl_get('cms_edit', $cms_admin->cms_id)))
+//if (($cms_admin->mode == 'auth') && ($auth->acl_get('cms_edit')))
 if ($cms_admin->mode == 'auth')
 {
 	$css_temp = array('cms_auth.css');
@@ -466,7 +479,7 @@ if ($cms_admin->mode == 'auth')
 		$cms_permissions = new cms_permissions();
 
 		$pmode = request_var('pmode', '');
-		$pmode_array = array('intro', 'setting_cms_user_global', 'setting_cms_group_global', 'setting_plugins_user_global', 'setting_plugins_group_global', 'setting_user_global', 'setting_group_global', 'setting_user_local', 'setting_group_local', 'setting_admin_global', 'setting_mod_global', 'view_admin_global', 'view_user_global', 'view_mod_global');
+		$pmode_array = array('intro', 'setting_cms_user_global', 'setting_cms_group_global', 'setting_cms_user_local', 'setting_cms_group_local', 'setting_plugins_user_global', 'setting_plugins_group_global', 'setting_user_global', 'setting_group_global', 'setting_user_local', 'setting_group_local', 'setting_admin_global', 'setting_mod_global', 'view_admin_global', 'view_user_global', 'view_mod_global');
 		$pmode = in_array($pmode, $pmode_array) ? $pmode : $pmode_array[0];
 		$cms_permissions->main(0, $pmode);
 

@@ -607,7 +607,6 @@ class cms_admin
 			'titlebar' => 'intval',
 			'background' => 'intval',
 			'local' => 'intval',
-			'edit_auth' => 'intval'
 		);
 		switch($action)
 		{
@@ -1457,7 +1456,6 @@ class cms_admin
 			'blockfile' => 'strval',
 			'view' => 'intval',
 			'type' => 'intval',
-			'edit_auth' => 'intval',
 			'groups' => 'strval',
 			'locked' => 'intval'
 		);
@@ -1526,7 +1524,7 @@ class cms_admin
 		{
 			$layouts_special[$row['lsid']] = array(
 				'lsid' => $row['lsid'],
-				'name' => isset($lang['auth_view_' . $row['name']]) ? $lang['auth_view_' . $row['name']] : ucfirst($row['name']),
+				'name' => isset($lang['auth_view_' . $row['name']]) ? $lang['auth_view_' . $row['name']] : (isset($lang['cms_page_name_' . strtolower($row['name'])]) ? $lang['cms_page_name_' . strtolower($row['name'])] : ucfirst($row['name'])),
 				'url' => append_sid($this->root . '?mode=blocks&ls_id=' . $row['lsid'])
 			);
 		}
@@ -1728,17 +1726,6 @@ class cms_admin
 			$select_js = '';
 			$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
-			$select_name = 'edit_auth';
-			$default = empty($l_info['edit_auth']) ? 0 : $l_info['edit_auth'];
-			/*
-			$options_array = array(0, 1, 2, 3, 4, 5);
-			$options_langs_array = array($lang['CMS_Guest'], $lang['CMS_Reg'], $lang['CMS_VIP'], $lang['CMS_Publisher'], $lang['CMS_Reviewer'], $lang['CMS_Content_Manager']);
-			*/
-			$options_array = array(3, 4, 5);
-			$options_langs_array = array($lang['CMS_PUBLISHER'], $lang['CMS_REVIEWER'], $lang['CMS_CONTENT_MANAGER']);
-			$select_js = '';
-			$edit_auth = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
-
 			$group = get_all_usergroups($l_info['groups']);
 			if(empty($group))
 			{
@@ -1752,7 +1739,6 @@ class cms_admin
 				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
 
-			$edit_auth = '';
 			$group = '';
 			$default = empty($l_info['view']) ? 0 : $l_info['view'];
 			$view = auth_select('view', $default);
@@ -1764,7 +1750,7 @@ class cms_admin
 			'PAGE_ID' => (empty($l_info['page_id']) ? '' : $l_info['page_id']),
 			'TEMPLATE' => $layout_details,
 			'VIEW' => $view,
-			'EDIT_AUTH' => $edit_auth,
+			'U_EDIT_AUTH' => append_sid($this->root . '?mode=auth&amp;pmode=setting_cms_user_local&amp;id_type=' . ($is_layout_special ? 'layout_special' : 'layout') . '&amp;forum_id[]=' . ($is_layout_special ? $l_info['lsid'] : $l_info['lid'])),
 			'GROUPS' => $group,
 			'GLOBAL_BLOCKS' => ((!empty($l_info['global_blocks']) && $l_info['global_blocks']) ? 'checked="checked"' : ''),
 			'NOT_GLOBAL_BLOCKS' => (empty($l_info['global_blocks'])) ? 'checked="checked"' : '',
@@ -1798,7 +1784,6 @@ class cms_admin
 		if (!$is_layout_special)
 		{
 			$inputs_array['template'] = '';
-			$inputs_array['edit_auth'] = '';
 		}
 		else
 		{
@@ -2176,25 +2161,31 @@ class cms_admin
 		for($i = 0; $i < $l_count; $i++)
 		{
 			$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
-			$lang_var = 'auth_view_' . $l_rows[$i]['name'];
 			$layout_id = $l_rows[$i][$this->field_name];
-			$layout_name = ($is_layout_special ? (isset($lang[$lang_var]) ? htmlspecialchars($lang[$lang_var]) : htmlspecialchars($l_rows[$i]['name'])) : htmlspecialchars($l_rows[$i]['name']));
+			$layout_name = ($is_layout_special ? (isset($lang['auth_view_' . $l_rows[$i]['name']]) ? $lang['auth_view_' . $l_rows[$i]['name']] : (isset($lang['cms_page_name_' . strtolower($l_rows[$i]['name'])]) ? $lang['cms_page_name_' . strtolower($l_rows[$i]['name'])] : ucfirst($l_rows[$i]['name']))) : ucfirst($l_rows[$i]['name']));
+			//$layout_name = htmlspecialchars($layout_name);
 			$layout_filename = $l_rows[$i]['filename'];
 			$layout_preview = ($is_layout_special ? (empty($layout_filename) ? '#' : append_sid($layout_filename)) : (empty($layout_filename) ? (CMS_PAGE_HOME . '?page=' . $layout_id) : append_sid($layout_filename)));
 			$layout_locked = false;
 
 			$select_name = 'auth_view_' . $layout_id;
 			$default = $l_rows[$i]['view'];
-			$options_array = array(0, 1, 2, 3, 4);
-			$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
 			$select_js = '';
-			$auth_view_select_box = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
 			if ($is_layout_special)
 			{
 				$layout_locked = !empty($l_rows[$i]['locked']) ? true : false;
-				$auth_view_select_box = auth_select('auth_view_' . $layout_id, $l_rows[$i]['view']);
+
+				$options_array = array(AUTH_ALL, AUTH_REG, AUTH_MOD, AUTH_ADMIN);
+				$options_langs_array = array($lang['B_ALL'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
 			}
+			else
+			{
+				$options_array = array(0, 1, 2, 3, 4);
+				$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
+			}
+
+			$auth_view_select_box = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
 			$template->assign_block_vars('layout.l_row', array(
 				'ROW_CLASS' => $row_class,
@@ -2212,6 +2203,7 @@ class cms_admin
 
 				'U_PREVIEW_LAYOUT' => $layout_preview,
 				'U_EDIT_LAYOUT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;' . $this->id_var_name . '=' . $layout_id . '&amp;action=edit'),
+				'U_EDIT_AUTH' => append_sid($this->root . '?mode=auth&amp;pmode=setting_cms_user_local&amp;id_type=' . ($is_layout_special ? 'layout_special' : 'layout') . '&amp;forum_id[]=' . $layout_id),
 				'U_DELETE_LAYOUT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;' . $this->id_var_name . '=' . $layout_id . '&amp;action=delete'),
 				'U_LAYOUT' => append_sid($this->root . '?mode=' . $this->mode_blocks_name . '&amp;' . $this->id_var_name . '=' . $layout_id),
 				'U_COPY' => $is_layout_special ? '' : append_sid($this->root . '?mode=' . $this->mode . '&amp;' . $this->id_var_name . '=' . $layout_id . '&amp;action=clone'),
@@ -2235,11 +2227,8 @@ class cms_admin
 			return true;
 		}
 
-		$sql = "SELECT edit_auth FROM " . $this->table_name . " WHERE " . $this->field_name . " = '" . $this->id_var_value . "'";
-		$result = $db->sql_query($sql);
-		$l_row = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-		$is_auth = (($l_row['edit_auth'] <= $user->data['user_cms_level']) ? true : false);
+		$cms_auth_level_req = ($this->field_name == 'lid') ? 'cms_layouts' : 'cms_layouts_special';
+		$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get($cms_auth_level_req) || $auth->acl_get('cmsb_admin', $this->id_var_value)) ? true : false;
 
 		return $is_auth;
 	}
@@ -2440,7 +2429,7 @@ class cms_admin
 	*/
 	function get_block_edit_auth()
 	{
-		global $db, $user;
+		global $db, $user, $auth;
 
 		// If the user is admin... give immediate access and exit!
 		if ($user->data['user_level'] == ADMIN)
@@ -2448,11 +2437,7 @@ class cms_admin
 			return true;
 		}
 
-		$sql = "SELECT edit_auth FROM " . $this->table_name . " WHERE " . $this->field_name . " = '" . $this->id_var_value . "'";
-		$result = $db->sql_query($sql);
-		$b_row = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-		$is_auth = (($b_row['edit_auth'] <= $user->data['user_cms_level']) ? true : false);
+		$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks') || $auth->acl_get('cmsb_admin', $this->id_var_value)) ? true : false;
 
 		return $is_auth;
 	}
@@ -2736,7 +2721,6 @@ class cms_admin
 	{
 		global $db, $user;
 
-		//$cms_level_sql = " AND edit_auth <= " . $user->data['user_cms_level'] . " ";
 		$user_sql = "";
 		if (defined('IN_CMS_USERS') && ($this->action == 'editglobal'))
 		{

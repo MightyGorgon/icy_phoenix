@@ -131,8 +131,6 @@ ALTER TABLE `phpbb_album_cat` ADD `cat_wm` TEXT AFTER `cat_desc`;
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('set_memory', '0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('lb_preview', '0');
 
-ALTER TABLE `phpbb_users` ADD `user_cms_level` TINYINT( 4 ) DEFAULT '0' NOT NULL;
-
 UPDATE phpbb_stats_config SET config_value = 'includes/stat_modules' WHERE config_name = 'modules_dir';
 
 
@@ -223,7 +221,6 @@ CREATE TABLE `phpbb_cms_blocks` (
   `titlebar` tinyint(1) NOT NULL default '1',
   `background` tinyint(1) NOT NULL default '1',
   `local` tinyint(1) NOT NULL default '0',
-  `edit_auth` tinyint(1) NOT NULL default '5',
   `groups` TINYTEXT NOT NULL,
   PRIMARY KEY  (`bid`)
 );
@@ -243,7 +240,6 @@ CREATE TABLE `phpbb_cms_layout` (
   `template` varchar(100) NOT NULL default '',
   `global_blocks` tinyint(1) NOT NULL default '0',
   `view` tinyint(1) NOT NULL default '0',
-  `edit_auth` tinyint(1) NOT NULL default '5',
   `groups` TINYTEXT NOT NULL,
   PRIMARY KEY  (`lid`)
 );
@@ -674,7 +670,6 @@ CREATE TABLE `phpbb_cms_layout_special` (
 	`page_nav` tinyint(1) NOT NULL DEFAULT '1',
 	`config_vars` TEXT NOT NULL,
 	`view` tinyint(1) NOT NULL DEFAULT '0',
-	`edit_auth` tinyint(1) NOT NULL DEFAULT '5',
 	`groups` TINYTEXT NOT NULL,
 	PRIMARY KEY (`lsid`),
 	UNIQUE KEY `page_id` (`page_id`)

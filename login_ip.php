@@ -159,7 +159,7 @@ else
 	include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 	$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
 
-	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || ($user->data['user_level'] == ADMIN) || (($user->data['user_cms_level'] >= CMS_PUBLISHER)))))
+	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || ($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_') || $auth->acl_get('a_'))))
 	{
 		$skip_nav_cat = true;
 

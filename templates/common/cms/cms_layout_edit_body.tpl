@@ -9,7 +9,7 @@
 
 <form method="post" action="{S_LAYOUT_ACTION}">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-<tr><th colspan="2">&nbsp;{L_EDIT_LAYOUT}&nbsp;</th></tr>
+<tr><th colspan="2">&nbsp;{L_LAYOUT_EDIT}&nbsp;</th></tr>
 <!-- IF not S_LAYOUT_SPECIAL -->
 <tr class="row1 row1h">
 	<td class="row1" colspan="2" style="text-align: center;">
@@ -65,7 +65,7 @@
 <!-- IF not S_LAYOUT_SPECIAL -->
 <tr class="row1 row1h">
 	<td class="row1">{L_PERMISSIONS}</td>
-	<td class="row2">{EDIT_AUTH}</td>
+	<td class="row2"><a href="{U_EDIT_AUTH}">{L_CMS_PERMISSIONS_AUTH_EDIT_SET}</a></td>
 </tr>
 <tr class="row1 row1h">
 	<td class="row1">{L_B_GROUPS}</td>

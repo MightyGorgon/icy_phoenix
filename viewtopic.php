@@ -1757,7 +1757,7 @@ for($i = 0; $i < $total_posts; $i++)
 			$is_banned = (isset($ranks_array['bannedrow'][$poster_id])) ? true : false;
 			if (($user_warnings > $config['max_user_bancard']) || $is_banned)
 			{
-				$card_img = '<img src="' . $images['icon_r_cards'] . '" alt="' . $lang['Banned'] . '" title="' . $lang['Banned'] . '">';
+				$card_img = '<img src="' . $images['icon_r_cards'] . '" alt="' . $lang['Banned'] . '" title="' . $lang['Banned'] . '" />';
 			}
 			else
 			{

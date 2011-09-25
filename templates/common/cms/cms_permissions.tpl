@@ -10,13 +10,19 @@
 <!-- IF S_INTRO -->
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="2">{L_CMS_PERMISSIONS}</th></tr>
+<!--
 <tr class="row1 row1h">
 	<td class="row1" style="width: 200px;"><a href="{U_CMS_BASE_URL}&amp;pmode=setting_admin_global"><b>{L_CMS_AUTH_ADMINS}</b></a></td>
 	<td class="row1">{L_CMS_AUTH_ADMINS_EXPLAIN}</td>
 </tr>
+-->
 <tr class="row1 row1h">
-	<td class="row1"><a href="{U_CMS_BASE_URL}&amp;pmode=setting_cms_user_global"><b>{L_CMS_AUTH_CMS_USERS_GROUPS}</b></a></td>
+	<td class="row1" style="width: 200px;"><a href="{U_CMS_BASE_URL}&amp;pmode=setting_cms_user_global"><b>{L_CMS_AUTH_CMS_USERS_GROUPS}</b></a></td>
 	<td class="row1">{L_CMS_AUTH_CMS_USERS_GROUPS_EXPLAIN}</td>
+</tr>
+<tr class="row1 row1h">
+	<td class="row1"><a href="{U_CMS_BASE_URL}&amp;pmode=setting_cms_user_local"><b>{L_CMS_AUTH_CMS_USERS_GROUPS_LOCAL}</b></a></td>
+	<td class="row1">{L_CMS_AUTH_CMS_USERS_GROUPS_LOCAL_EXPLAIN}</td>
 </tr>
 <!--
 <tr class="row1 row1h">
@@ -40,12 +46,14 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr><th colspan="2">{L_CMS_PERMISSIONS_ROLES}</th></tr>
+<!--
 <tr class="row1 row1h">
 	<td class="row1" style="width: 200px;"><a href="{U_CMS_BASE_URL}&amp;rmode=admin_roles&amp;roles_admin=1"><b>{L_ACP_ADMIN_ROLES}</b></a></td>
 	<td class="row1">{L_ACP_ADMIN_ROLES_EXPLAIN}</td>
 </tr>
+-->
 <tr class="row1 row1h">
-	<td class="row1"><a href="{U_CMS_BASE_URL}&amp;rmode=cms_roles&amp;roles_admin=1"><b>{L_ACP_CMS_ROLES}</b></a></td>
+	<td class="row1" style="width: 200px;"><a href="{U_CMS_BASE_URL}&amp;rmode=cms_roles&amp;roles_admin=1"><b>{L_ACP_CMS_ROLES}</b></a></td>
 	<td class="row1">{L_ACP_CMS_ROLES_EXPLAIN}</td>
 </tr>
 <!--
@@ -73,7 +81,69 @@
 <h2 style="text-align: left;">{L_TITLE}</h2>
 <br clear="all" />
 
-<!-- IF (S_SELECT_USER and S_CAN_SELECT_USER) or (S_SELECT_GROUP and S_CAN_SELECT_GROUP) -->
+<!-- IF S_FORUM_NAMES --><p><strong>{L_ITEMS_SELECTED}:</strong> {FORUM_NAMES}</p><!-- ENDIF -->
+<br clear="all" />
+
+<!-- IF S_SELECT_CMS -->
+
+	<form id="select_victim_l" method="post" action="{U_ACTION}">
+
+	<fieldset class="permissions phpbb">
+		<legend class="phpbb">{L_LOOK_UP_CMS_L}</legend>
+		<dl>
+			<dt><label for="cmsl">{L_LOOK_UP_CMS_L}:</label></dt>
+			<dd style="text-align: right;">
+				<select id="cmsl" name="forum_id[]">{S_CMS_L_OPTIONS}</select>
+				{S_HIDDEN_FIELDS}
+				{S_FORM_TOKEN}
+				<input type="hidden" name="type" value="cmsl_" />
+				<input type="hidden" name="id_type" value="layout" />
+				<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
+			</dd>
+		</dl>
+	</fieldset>
+
+	</form>
+
+	<form id="select_victim_ls" method="post" action="{U_ACTION}">
+
+	<fieldset class="permissions phpbb">
+		<legend class="phpbb">{L_LOOK_UP_CMS_LS}</legend>
+		<dl>
+			<dt><label for="cmsls">{L_LOOK_UP_CMS_LS}:</label></dt>
+			<dd style="text-align: right;">
+				<select id="cmsls" name="forum_id[]">{S_CMS_LS_OPTIONS}</select>
+				{S_HIDDEN_FIELDS}
+				{S_FORM_TOKEN}
+				<input type="hidden" name="type" value="cmsls_" />
+				<input type="hidden" name="id_type" value="layout_special" />
+				<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
+			</dd>
+		</dl>
+	</fieldset>
+
+	</form>
+
+	<form id="select_victim_b" method="post" action="{U_ACTION}">
+
+	<fieldset class="permissions phpbb">
+		<legend class="phpbb">{L_LOOK_UP_CMS_B}</legend>
+		<dl>
+			<dt><label for="cmsb">{L_LOOK_UP_CMS_B}:</label></dt>
+			<dd style="text-align: right;">
+				<select id="cmsb" name="forum_id[]">{S_CMS_B_OPTIONS}</select>
+				{S_HIDDEN_FIELDS}
+				{S_FORM_TOKEN}
+				<input type="hidden" name="type" value="cmsb_" />
+				<input type="hidden" name="id_type" value="block" />
+				<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
+			</dd>
+		</dl>
+	</fieldset>
+
+	</form>
+
+<!-- ELSEIF (S_SELECT_USER and S_CAN_SELECT_USER) or (S_SELECT_GROUP and S_CAN_SELECT_GROUP) -->
 
 	<!-- IF S_SELECT_USER and S_CAN_SELECT_USER -->
 	<form id="select_victim_user" method="post" action="{U_ACTION_USERS}">
@@ -308,17 +378,13 @@
 <!-- IF S_PERMISSION_DROPDOWN -->
 	<form id="pselect" method="post" action="{U_ACTION}">
 
-	<fieldset class="permissions phpbb quick" style="float: left;">
+	<fieldset class="permissions phpbb quick">
 		{S_HIDDEN_FIELDS}
 		{S_FORM_TOKEN}
-		{L_SELECT_TYPE}: <select name="type">{S_PERMISSION_DROPDOWN}</select>
-
-		<input class="liteoption" type="submit" name="submit" value="{L_GO}" />
+		{L_SELECT_TYPE}: <select name="type">{S_PERMISSION_DROPDOWN}</select>&nbsp;&nbsp;<input class="liteoption" type="submit" name="submit" value="{L_GO}" />
 	</fieldset>
 	</form>
 <!-- ENDIF -->
-
-<br /><br />
 
 <!-- include tooltip file -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/tooltip.js"></script>
@@ -334,7 +400,7 @@
 
 <!-- INCLUDE ../common/cms/cms_permission_mask.tpl -->
 
-<br /><br />
+<br clear="all" /><br />
 
 <fieldset class="permissions phpbb quick" style="float: {S_CONTENT_FLOW_END};">
 	<input class="mainoption" type="submit" name="paction[apply_all_permissions]" value="{L_APPLY_ALL_PERMISSIONS}" />
@@ -342,7 +408,7 @@
 	{S_FORM_TOKEN}
 </fieldset>
 
-<br /><br />
+<br clear="all" /><br />
 
 </form>
 

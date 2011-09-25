@@ -2131,7 +2131,6 @@ CREATE TABLE `phpbb_users` (
 	`user_regdate` INT(11) NOT NULL DEFAULT '0',
 	`user_type` TINYINT(2) DEFAULT '0' NOT NULL,
 	`user_level` TINYINT(4) DEFAULT '0',
-	`user_cms_level` TINYINT(4) DEFAULT '0',
 	`user_posts` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
 	`user_timezone` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
 	`user_style` MEDIUMINT(8) DEFAULT NULL,
@@ -2447,7 +2446,6 @@ CREATE TABLE `phpbb_cms_block_settings` (
 	`blockfile` VARCHAR(255) NOT NULL default '',
 	`view` TINYINT(1) NOT NULL default 0,
 	`type` TINYINT(1) NOT NULL default 1,
-	`edit_auth` TINYINT(1) NOT NULL default 5,
 	`groups` tinytext NOT NULL,
 	`locked` TINYINT(1) NOT NULL DEFAULT 1,
 	PRIMARY KEY (`bs_id`)
@@ -2480,7 +2478,6 @@ CREATE TABLE `phpbb_cms_blocks` (
 	`titlebar` TINYINT(1) NOT NULL DEFAULT '1',
 	`background` TINYINT(1) NOT NULL DEFAULT '1',
 	`local` TINYINT(1) NOT NULL DEFAULT '0',
-	`edit_auth` TINYINT(1) NOT NULL DEFAULT '5',
 	PRIMARY KEY (`bid`)
 );
 
@@ -2502,7 +2499,6 @@ CREATE TABLE `phpbb_cms_layout` (
 	`page_nav` TINYINT(1) NOT NULL DEFAULT '1',
 	`config_vars` TEXT NOT NULL,
 	`view` TINYINT(1) NOT NULL DEFAULT '0',
-	`edit_auth` TINYINT(1) NOT NULL DEFAULT '5',
 	`groups` TINYTEXT NOT NULL,
 	PRIMARY KEY (`lid`)
 );
@@ -2518,7 +2514,6 @@ CREATE TABLE `phpbb_cms_layout_special` (
 	`page_nav` TINYINT(1) NOT NULL DEFAULT '1',
 	`config_vars` TEXT NOT NULL,
 	`view` TINYINT(1) NOT NULL DEFAULT '0',
-	`edit_auth` TINYINT(1) NOT NULL DEFAULT '5',
 	`groups` TINYTEXT NOT NULL,
 	PRIMARY KEY (`lsid`),
 	UNIQUE KEY `page_id` (`page_id`)
