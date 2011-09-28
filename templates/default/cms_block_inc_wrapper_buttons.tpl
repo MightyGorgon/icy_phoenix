@@ -1,3 +1,4 @@
+<!-- IF B_ADMIN --><div class="block-container"><a class="block-edit-link" href="{B_EDIT_LINK}"><img src="{IMG_CMS_ICON_EDIT}" alt="" title="{L_CMS_EDIT_PARENT_BLOCK}" /></a><!-- ENDIF -->
 <!-- IF BORDER -->
 <table width="100%" class="forum-buttons" style="background: none; background-image: none;" align="center" cellspacing="0" cellpadding="0">
 <!-- ELSE -->
@@ -13,3 +14,4 @@
 </td>
 </tr>
 </table>
+<!-- IF B_ADMIN --></div><!-- ENDIF -->

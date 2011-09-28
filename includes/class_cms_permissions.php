@@ -143,7 +143,7 @@ class cms_permissions
 
 			case 'setting_cms_user_local':
 			case 'setting_cms_group_local':
-				$this->permission_dropdown = ($this->id_type == 'layout') ? array('cmsl_') : (($this->id_type == 'layout_special') ? array('cmsls_') : array('cmsb_'));
+				$this->permission_dropdown = ($this->id_type == 'layout') ? array('cmsl_') : (($this->id_type == 'layout_special') ? array('cmss_') : array('cmsb_'));
 				$permission_victim = array('cms', 'usergroup');
 				//$permission_victim = ($mode == 'setting_cms_user_local') ? array('user') : array('group');
 				$this->page_title = ($mode == 'setting_cms_user_local') ? 'CMS_PERMISSIONS_CMS_USERS' : 'CMS_PERMISSIONS_CMS_GROUPS';
@@ -342,7 +342,7 @@ class cms_permissions
 					$ids_data = array();
 					$types_array = array(
 						'l' => 'layout',
-						'ls' => 'layout_special',
+						's' => 'layout_special',
 						'b' => 'block'
 					);
 					foreach ($types_array as $type_key => $type_value)
@@ -352,12 +352,12 @@ class cms_permissions
 						foreach ($ids_data as $id_data)
 						{
 							$option_name = $id_data['name'];
-							if ($type_key == 'ls')
+							if ($type_key == 's')
 							{
 								$option_name = isset($lang['auth_view_' . strtolower($option_name)]) ? $lang['auth_view_' . strtolower($option_name)] : (isset($lang['cms_page_name_' . strtolower($option_name)]) ? $lang['cms_page_name_' . strtolower($option_name)] : ucfirst($option_name));
 							}
 
-							$s_options .= '<option value="' . (int) $id_data['id'] . '">' . $option_name . '</option>';
+							$s_options .= '<option value="' . (int) $id_data['id'] . '">' . $option_name . ' [' . (int) $id_data['id'] . ']' . '</option>';
 						}
 
 						$template->assign_vars(array(

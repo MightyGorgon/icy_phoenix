@@ -77,6 +77,7 @@ switch ($req_version)
 	case '132073': $current_ip_version = '1.3.20.73'; break;
 	case '132174': $current_ip_version = '1.3.21.74'; break;
 	case '132275': $current_ip_version = '1.3.22.75'; break;
+	case '132376': $current_ip_version = '1.3.23.76'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4268,8 +4269,8 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsl_', 0, 1, 0)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsl_admin', 0, 1, 0)";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsls_', 0, 1, 0)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsls_admin', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmss_', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmss_admin', 0, 1, 0)";
 
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsb_', 0, 1, 0)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsb_admin', 0, 1, 0)";
@@ -4313,7 +4314,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (2, 'ROLE_CMS_REVIEWER', 'ROLE_CMS_REVIEWER_DESCRIPTION', 'cms_', 2)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (3, 'ROLE_CMS_PUBLISHER', 'ROLE_CMS_PUBLISHER_DESCRIPTION', 'cms_', 3)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (4, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsl_', 1)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (5, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsls_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (5, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmss_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (6, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsb_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (7, 'ROLE_ADMIN_FULL', 'ROLE_ADMIN_FULL_DESCRIPTION', 'a_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (8, 'ROLE_ADMIN_STANDARD', 'ROLE_ADMIN_STANDARD_DESCRIPTION', 'a_', 2)";
@@ -4344,8 +4345,8 @@ if (substr($mode, 0, 6) == 'update')
 		// CMS Content Manager Layouts (cmsl_)
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 4, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmsl_%' AND is_local = 1";
 
-		// CMS Content Manager Special Layouts (cmsls_)
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 5, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmsls_%' AND is_local = 1";
+		// CMS Content Manager Special Layouts (cmss_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 5, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmss_%' AND is_local = 1";
 
 		// CMS Content Manager Blocks (cmsb_)
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 6, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmsb_%' AND is_local = 1";
@@ -4402,6 +4403,15 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.22.75 */
 		case '1.3.22.75':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_cms_auth` text NOT NULL AFTER `user_mask`";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_posts_number', '5')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_disable_url', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_hide_signature', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_post_edit_interval', '60')";
+
+
+		/* Updating from IP 1.3.23.76 */
+		case '1.3.23.76':
 
 	}
 

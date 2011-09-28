@@ -255,11 +255,11 @@ class auth_admin extends auth
 		switch ($id_type)
 		{
 			case 'forum':
-				$p_id_unset_array = array('cmsl_', 'cmsls_', 'cmsb_');
+				$p_id_unset_array = array('cmsl_', 'cmss_', 'cmsb_');
 			break;
 
 			case 'layout':
-				$p_id_unset_array = array('f_', 'cmsls_', 'cmsb_');
+				$p_id_unset_array = array('f_', 'cmss_', 'cmsb_');
 			break;
 
 			case 'layout_special':
@@ -267,7 +267,7 @@ class auth_admin extends auth
 			break;
 
 			case 'block':
-				$p_id_unset_array = array('f_', 'cmsl_', 'cmsls_');
+				$p_id_unset_array = array('f_', 'cmsl_', 'cmss_');
 			break;
 
 		}

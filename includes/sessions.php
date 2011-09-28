@@ -1333,6 +1333,32 @@ class user extends session
 			$config['topics_per_page'] = !empty($this->data['user_topics_per_page']) ? $this->data['user_topics_per_page'] : $config['topics_per_page'];
 			$config['posts_per_page'] = !empty($this->data['user_posts_per_page']) ? $this->data['user_posts_per_page'] : $config['posts_per_page'];
 			$config['hot_threshold'] = !empty($this->data['user_hot_threshold']) ? $this->data['user_hot_threshold'] : $config['hot_threshold'];
+
+			// Store CMS AUTH - BEGIN
+			if (empty($this->data['user_cms_auth']))
+			{
+				$auth_array = array();
+				$auth_to_get_array = array('cmsl_admin', 'cmss_admin', 'cmsb_admin');
+				foreach ($auth_to_get_array as $auth_to_get)
+				{
+					$auth_getf = $auth->acl_getf($auth_to_get, true);
+					foreach ($auth_getf as $auth_id => $auth_value)
+					{
+						$auth_array[$auth_to_get][$auth_id] = $auth_value[$auth_to_get];
+					}
+				}
+
+				$this->data['user_cms_auth'] = $auth_array;
+				$sql = "UPDATE " . USERS_TABLE . "
+					SET user_cms_auth = '" . $db->sql_escape(serialize($this->data['user_cms_auth'])) . "'
+					WHERE user_id = " . $this->data['user_id'];
+				$db->sql_query($sql);
+			}
+			else
+			{
+				$this->data['user_cms_auth'] = unserialize($this->data['user_cms_auth']);
+			}
+			// Store CMS AUTH - END
 		}
 		else
 		{

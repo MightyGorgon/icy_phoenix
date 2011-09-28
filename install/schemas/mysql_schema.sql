@@ -2113,6 +2113,7 @@ CREATE TABLE `phpbb_users` (
 	`user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`user_active` TINYINT(1) DEFAULT '1',
 	`user_mask` TINYINT(1) DEFAULT '0',
+	`user_cms_auth` TEXT NOT NULL,
 	`user_permissions` MEDIUMTEXT NOT NULL,
 	`user_perm_from` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`username` VARCHAR(36) NOT NULL DEFAULT '',

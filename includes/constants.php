@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.22.75');
+define('ICYPHOENIX_VERSION', '1.3.23.76');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -235,25 +235,7 @@ define('AUTH_RATE', 19);
 define('HIDDEN_CAT', 0); // NOTE: change this value to the forum id, of the forum, witch you would like to be hidden
 
 // CMS Styles
-define('CMS_STD', 0);
 define('CMS_USERS', 1);
-
-// CMS Levels
-define('CMS_GUEST', 0);
-define('CMS_REG', 1);
-define('CMS_VIP', 2);
-define('CMS_PUBLISHER', 3);
-define('CMS_REVIEWER', 4);
-define('CMS_CONTENT_MANAGER', 5);
-
-// CMS AUTH Levels
-define('CMS_AUTH_NONE', -1);
-define('CMS_AUTH_ALL', 0);
-define('CMS_AUTH_REG', 1);
-define('CMS_AUTH_VIP', 2);
-define('CMS_AUTH_PUBLISHER', 3);
-define('CMS_AUTH_REVIEWER', 4);
-define('CMS_AUTH_CONTENT_MANAGER', 5);
 
 // User related
 define('USER_ACTIVATION_NONE', 0);

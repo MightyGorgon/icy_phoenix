@@ -67,6 +67,15 @@ class ip_cms
 		}
 		else
 		{
+			/*
+			* Move these to constants if you want to use...
+			* define('CMS_AUTH_ALL', 0); // Everyone
+			* define('CMS_AUTH_GUESTS_ONLY', 1); // Guests Only (Registered won't see this!)
+			* define('CMS_AUTH_REG', 2); // Registered
+			* define('CMS_AUTH_MOD', 3); // Moderators and Admins
+			* define('CMS_AUTH_ADMIN', 4); // Admins
+			* define('CMS_AUTH_FOUNDER', 5); // Founders
+			*/
 			// User is not a guest here...
 			switch($user->data['user_level'])
 			{
@@ -116,8 +125,10 @@ class ip_cms
 	*/
 	function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, $type = '')
 	{
-		global $db, $cache, $config, $template, $user, $lang, $bbcode;
+		global $db, $cache, $config, $auth, $user, $lang, $bbcode, $template;
 		global $cms_config_vars, $cms_config_layouts, $cms_config_global_blocks, $block_id;
+
+		$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
 
 		if(!$is_special)
 		{
@@ -390,8 +401,18 @@ class ip_cms
 					$output_block = $message;
 				}
 
+				$b_admin_vars = array();
+				if ($is_admin || !empty($user->data['user_cms_auth']['cmsb_admin'][$block_id]))
+				{
+					$b_admin_vars = array(
+						'B_ADMIN' => true,
+						'B_EDIT_LINK' => append_sid(CMS_PAGE_CMS . '?mode=block_settings&amp;action=edit&amp;bs_id=' . $block_id),
+					);
+				}
+
 				$block_handle = 'block_' . $block_info[$b_counter]['bid'];
 				$template->set_filenames(array($block_handle => $empty_block_tpl));
+				$template->assign_vars($b_admin_vars);
 				$template->assign_vars(array(
 					'POSITION' => $position,
 					'OUTPUT' => $output_block,
@@ -402,6 +423,7 @@ class ip_cms
 					)
 				);
 				$cms_block = $template->get_var_from_handle($block_handle);
+				$template->assign_block_vars($position_prefix . 'blocks_row', $b_admin_vars);
 				$template->assign_block_vars($position_prefix . 'blocks_row', array(
 					'CMS_BLOCK' => $cms_block,
 					'OUTPUT' => $output_block

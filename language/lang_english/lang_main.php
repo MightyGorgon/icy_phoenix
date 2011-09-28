@@ -1789,8 +1789,8 @@ $lang = array_merge($lang, array(
 // MG CMS - BEGIN
 	'CMS_TITLE' => 'CMS',
 	'CMS_MANAGEMENT' => 'CMS Management',
-	'CMS_CONFIG' => 'CMS Configuration',
-	'CMS_SETTINGS' => 'CMS Settings',
+	'CMS_CONFIG' => 'Configuration',
+	'CMS_SETTINGS' => 'Settings',
 	'CMS_ACP' => 'Edit This Page',
 	'CUSTOM_PAGE' => 'Customized Page',
 // MG CMS - END
@@ -2419,6 +2419,8 @@ $lang = array_merge($lang, array(
 
 	'BACK_TO_TOP' => 'Top',
 	'BACK_TO_PREV' => 'Back to previous page',
+
+	'CMS_EDIT_PARENT_BLOCK' => 'Edit Parent Block',
 
 	)
 );

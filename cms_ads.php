@@ -19,15 +19,15 @@ include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
 $config['jquery_ui'] = true;
 
-$cms_admin = new cms_admin();
-$cms_admin->root = CMS_PAGE_CMS;
-//$cms_admin->init_vars($mode_array, $action_array);
-
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup();
 // End session management
+
+$cms_admin = new cms_admin();
+$cms_admin->root = CMS_PAGE_CMS;
+//$cms_admin->init_vars($mode_array, $action_array);
 
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();
@@ -97,10 +97,8 @@ $ad_sort_by_array = array('ad_position', 'ad_id', 'ad_title', 'ad_auth', 'ad_for
 $ad_sort_by = in_array($ad_sort_by, $ad_sort_by_array) ? $ad_sort_by : $ad_sort_by_array[0];
 $ad_sort_order = request_var('sort_order', '');
 
-$show_cms_menu = (($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_admin') || $auth->acl_get('cms_ads')) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
-	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
 

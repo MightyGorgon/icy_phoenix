@@ -159,7 +159,24 @@ else
 	include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 	$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
 
-	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || ($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_') || $auth->acl_get('a_'))))
+	$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+	$is_cms_auth = $auth->acl_get('cms_') ? true : false;
+	if (empty($is_admin) && empty($is_cms_auth))
+	{
+		$cms_mode_array = array('block_settings', 'blocks', 'layouts', 'layouts_special');
+		$cms_mode = request_var('mode', '');
+		$cms_lid = request_var('l_id', 0);
+		$cms_sid = request_var('ls_id', 0);
+		$cms_bid = request_var('b_id', 0);
+		if (in_array($cms_mode, $cms_mode_array))
+		{
+			$is_cms_auth = (!empty($cms_lid) && !empty($user->data['user_cms_auth']['cmsl_admin'][$cms_lid])) ? true : $is_cms_auth;
+			$is_cms_auth = (!empty($cms_lid) && !empty($user->data['user_cms_auth']['cmss_admin'][$cms_sid])) ? true : $is_cms_auth;
+			$is_cms_auth = (!empty($cms_lid) && !empty($user->data['user_cms_auth']['cmsb_admin'][$cms_bid])) ? true : $is_cms_auth;
+		}
+	}
+
+	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || $is_admin || $is_cms_auth)))
 	{
 		$skip_nav_cat = true;
 

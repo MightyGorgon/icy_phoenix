@@ -49,7 +49,7 @@ var cmsSettings = {
 	{
 		var html = '<li class="cms-block-item" id="cms-block-' + data.bs_id + '">';
 		// title
-		html += '<p class="block-title"><span class="block-title-value">' + data.name + '</span><a href="' + cmsSettings.data.edit.replace('{ID}', data.bs_id) + '" class="edit-parent" title="' + cmsEditorLang.editBlockSettingsAlt + '"></a><a href="javascript:void(0);" class="edit-title" onclick="cmsSettings.toggleChangeTitle(' + data.bs_id + ', true); return false;" title="' + cmsEditorLang.tipTitle + '"></a><a href="' + cmsSettings.data.remove.replace('{ID}', data.bs_id) + '" class="edit-delete" title="' + cmsEditorLang.tipDelete + '"></a>';
+		html += '<p class="block-title"><span class="block-title-value">' + data.name + '</span><span class="gensmall">' + '&nbsp;[' + data.bs_id + ']' + '</span><a href="' + cmsSettings.data.edit.replace('{ID}', data.bs_id) + '" class="edit-parent" title="' + cmsEditorLang.editBlockSettingsAlt + '"></a><a href="javascript:void(0);" class="edit-title" onclick="cmsSettings.toggleChangeTitle(' + data.bs_id + ', true); return false;" title="' + cmsEditorLang.tipTitle + '"></a><a href="' + cmsSettings.data.remove.replace('{ID}', data.bs_id) + '" class="edit-delete" title="' + cmsEditorLang.tipDelete + '"></a>';
 		// rename form
 		html += '<span class="block-title-edit" style="display: none;"><input id="block-title-' + data.bs_id + '" type="text" /><a href="javascript:void(0);" onclick="cmsSettings.changeTitle(' + data.bs_id + '); return false;">' + cmsEditorLang.buttonChange + '</a><a href="javascript:void(0);" onclick="cmsSettings.toggleChangeTitle(' + data.bs_id + ', false); return false;">' + cmsEditorLang.buttonCancel + '</a></span>';
 		html += '</p>';
@@ -622,7 +622,8 @@ var cmsEditor = {
 			else
 			{
 				parent[title] ++;
-				data.all[i].name += ' (' + parent[title] + ')';
+				// Mighty Gorgon: better avoid this and add the ID between square brackets!
+				//data.all[i].name += ' (' + parent[title] + ')';
 			}
 		}
 		// set new data
@@ -749,7 +750,7 @@ var cmsEditor = {
 				found = true;
 				html += ' selected="selected"';
 			}
-			html += '>' + (cmsEditor.data.all[i].name.length > 20 ? (cmsEditor.data.all[i].name.substring(0, 20) + '...') : cmsEditor.data.all[i].name) + '</option>';
+			html += '>' + (cmsEditor.data.all[i].name.length > 17 ? (cmsEditor.data.all[i].name.substring(0, 17) + '...') : cmsEditor.data.all[i].name) + ' [' + cmsEditor.data.all[i].bs_id + ']</option>';
 		}
 		if(!found)
 		{
@@ -925,7 +926,7 @@ var cmsEditor = {
 					'<dt>' + cmsEditorLang.parentBlock + '</dt><dd><select id="add-form-' + key + '-parent">';
 			for(var i = 0; i < cmsEditor.data.all.length; i++)
 			{
-				html += '<option value="' + cmsEditor.data.all[i].bs_id + '">' + cmsEditor.data.all[i].name + '</option>';
+				html += '<option value="' + cmsEditor.data.all[i].bs_id + '">' + (cmsEditor.data.all[i].name.length > 17 ? (cmsEditor.data.all[i].name.substring(0, 17) + '...') : cmsEditor.data.all[i].name) + ' [' + cmsEditor.data.all[i].bs_id + ']</option>';
 			}
 			html += '</select> <a href="' + cmsEditor.data.urls.blocks + '" class="cms-button-small">' + cmsEditorLang.manageBlocks + '</a></dd>' +
 				'</dl>' +

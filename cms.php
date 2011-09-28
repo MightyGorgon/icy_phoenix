@@ -8,19 +8,6 @@
 *
 */
 
-/*
-//Some references needed to finish integration... will remove later! I hope! :-p
-
-//'cms_', 'cms_admin', 'cms_settings', 'cms_layouts', 'cms_layouts_special', 'cms_blocks', 'cms_blocks_global', 'cms_permissions', 'cms_menu', 'cms_ads'
-//'cmsl_', 'cmsl_admin'
-//'cmsls_', 'cmsls_admin'
-//'cmsb_', 'cmsb_admin'
-
-//$auth->acl_get('cms_admin')
-//$auth->acl_get('cmsb_admin', $b_id)
-//($user->data['user_level'] == ADMIN)
-*/
-
 // CTracker_Ignore: File Checked By Human
 define('IN_CMS', true);
 define('CTRACKER_DISABLED', true);
@@ -29,7 +16,6 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/class_cms_auth.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_cms_admin.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
@@ -47,9 +33,6 @@ unset($js_temp);
 
 $mode_array = array('blocks', 'config', 'layouts', 'layouts_special', 'smilies', 'block_settings', 'auth');
 $action_array = array('add', 'delete', 'edit', 'editglobal', 'list', 'save', 'clone', 'addrole', 'editrole');
-
-$cms_auth = new cms_auth();
-$cms_auth->acl();
 
 $cms_admin = new cms_admin();
 $cms_admin->root = CMS_PAGE_CMS;
@@ -110,7 +93,6 @@ if(isset($_POST['cancel']))
 	redirect(append_sid($cms_admin->root, true));
 }
 
-$show_cms_menu = (($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_') || $auth->acl_get('a_')) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 
@@ -122,8 +104,6 @@ $template->assign_vars(array(
 	'S_B_ADD' => true,
 	'S_B_EDIT' => true,
 	'S_B_DELETE' => true,
-
-	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
 

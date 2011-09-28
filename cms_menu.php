@@ -21,15 +21,15 @@ include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
 $config['jquery_ui'] = true;
 
-$cms_admin = new cms_admin();
-$cms_admin->root = CMS_PAGE_CMS;
-//$cms_admin->init_vars($mode_array, $action_array);
-
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup();
 // End session management
+
+$cms_admin = new cms_admin();
+$cms_admin->root = CMS_PAGE_CMS;
+//$cms_admin->init_vars($mode_array, $action_array);
 
 $js_temp = array('js/cms.js');
 $template->js_include = array_merge($template->js_include, $js_temp);
@@ -89,10 +89,8 @@ if(isset($_POST['cancel']) || isset($_POST['reset']))
 	redirect(append_sid('cms_menu.' . PHP_EXT . $s_append_url, true));
 }
 
-$show_cms_menu = (($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_admin') || $auth->acl_get('cms_menu')) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
-	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
 

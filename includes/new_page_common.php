@@ -151,15 +151,13 @@ if (!$cms_default_page)
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
 }
 
-if (($user->data['user_level'] == ADMIN) || $auth->acl_get('cms_admin'))
+$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+$cms_acp_url = '';
+if ($is_admin || $auth->acl_get('cms_admin') || !empty($user->data['user_cms_auth']['cmsl_admin'][$layout]))
 {
 	$cms_acp_url = '<br /><br /><div style="text-align: center;">';
 	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout . (!empty($user->session_id) ? ('&amp;sid=' . $user->session_id) : '')) . '">' . $lang['CMS_ACP'] . '</a>';
 	$cms_acp_url .= '</div>';
-}
-else
-{
-	$cms_acp_url = '';
 }
 
 $layout_name_add = '';

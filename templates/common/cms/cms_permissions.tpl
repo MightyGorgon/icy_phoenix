@@ -91,7 +91,7 @@
 	<fieldset class="permissions phpbb">
 		<legend class="phpbb">{L_LOOK_UP_CMS_L}</legend>
 		<dl>
-			<dt><label for="cmsl">{L_LOOK_UP_CMS_L}:</label></dt>
+			<dt><label for="cmsl">{L_LOOK_UP_CMS_L}:</label><br /><br /><span class="gensmall">{L_LOOK_UP_CMS_L_EXPLAIN}</span><br />&nbsp;</dt>
 			<dd style="text-align: right;">
 				<select id="cmsl" name="forum_id[]">{S_CMS_L_OPTIONS}</select>
 				{S_HIDDEN_FIELDS}
@@ -108,14 +108,14 @@
 	<form id="select_victim_ls" method="post" action="{U_ACTION}">
 
 	<fieldset class="permissions phpbb">
-		<legend class="phpbb">{L_LOOK_UP_CMS_LS}</legend>
+		<legend class="phpbb">{L_LOOK_UP_CMS_S}</legend>
 		<dl>
-			<dt><label for="cmsls">{L_LOOK_UP_CMS_LS}:</label></dt>
+			<dt><label for="cmss">{L_LOOK_UP_CMS_S}:</label><br /><br /><span class="gensmall">{L_LOOK_UP_CMS_S_EXPLAIN}</span><br />&nbsp;</dt>
 			<dd style="text-align: right;">
-				<select id="cmsls" name="forum_id[]">{S_CMS_LS_OPTIONS}</select>
+				<select id="cmss" name="forum_id[]">{S_CMS_S_OPTIONS}</select>
 				{S_HIDDEN_FIELDS}
 				{S_FORM_TOKEN}
-				<input type="hidden" name="type" value="cmsls_" />
+				<input type="hidden" name="type" value="cmss_" />
 				<input type="hidden" name="id_type" value="layout_special" />
 				<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
 			</dd>
@@ -129,7 +129,7 @@
 	<fieldset class="permissions phpbb">
 		<legend class="phpbb">{L_LOOK_UP_CMS_B}</legend>
 		<dl>
-			<dt><label for="cmsb">{L_LOOK_UP_CMS_B}:</label></dt>
+			<dt><label for="cmsb">{L_LOOK_UP_CMS_B}:</label><br /><br /><span class="gensmall">{L_LOOK_UP_CMS_B_EXPLAIN}</span><br />&nbsp;</dt>
 			<dd style="text-align: right;">
 				<select id="cmsb" name="forum_id[]">{S_CMS_B_OPTIONS}</select>
 				{S_HIDDEN_FIELDS}
@@ -152,14 +152,13 @@
 		<legend class="phpbb">{L_LOOK_UP_USER}</legend>
 		<dl>
 			<dt><label for="username">{L_FIND_USERNAME}:</label></dt>
-			<dd><input type="text" name="username[]" id="username" maxlength="255" size="25" class="post" />&nbsp;<img src="{IMG_USER_SEARCH}" alt="{L_FIND_USERNAME}" title="{L_FIND_USERNAME}" style="cursor: pointer; vertical-align: middle;" onclick="window.open('{U_FIND_USERNAME}&amp;target_form_name=select_victim_user', '_search', 'width=400,height=250,resizable=yes'); return false;" /></dd>
+			<dd style="text-align: right;">
+				<img src="{IMG_USER_SEARCH}" alt="{L_FIND_USERNAME}" title="{L_FIND_USERNAME}" style="cursor: pointer; vertical-align: middle;" onclick="window.open('{U_FIND_USERNAME}&amp;target_form_name=select_victim_user', '_search', 'width=400,height=250,resizable=yes'); return false;" />&nbsp;<input type="text" name="username[]" id="username" maxlength="255" size="25" class="post" />&nbsp;
+				{S_HIDDEN_FIELDS}
+				{S_FORM_TOKEN}
+				<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
+			</dd>
 		</dl>
-
-		<p class="quick">
-			{S_HIDDEN_FIELDS}
-			{S_FORM_TOKEN}
-			<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
-		</p>
 	</fieldset>
 
 	</form>
@@ -172,14 +171,13 @@
 		<legend class="phpbb">{L_LOOK_UP_GROUP}</legend>
 		<dl>
 			<dt><label for="group">{L_LOOK_UP_GROUP}:</label></dt>
-			<dd><select name="group_id[]" id="group">{S_GROUP_OPTIONS}</select></dd>
+			<dd style="text-align: right;">
+				<select name="group_id[]" id="group">{S_GROUP_OPTIONS}</select>&nbsp;
+				{S_HIDDEN_FIELDS}
+				{S_FORM_TOKEN}
+				<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
+			</dd>
 		</dl>
-
-		<p class="quick">
-			{S_HIDDEN_FIELDS}
-			{S_FORM_TOKEN}
-			<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />
-		</p>
 	</fieldset>
 
 	</form>

@@ -31,13 +31,41 @@ class cms_admin
 
 	var $menu_images_root = 'templates/common/images/menu/';
 
+	var $is_auth = array();
 
 	/**
 	* Some defaults
 	*/
 	function cms_admin()
 	{
+		global $db, $cache, $config, $auth, $user, $lang, $template;
+
 		$this->root = CMS_PAGE_CMS;
+
+		$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+
+		$this->is_auth['cms_admin'] = ($is_admin || $auth->acl_get('cms_admin')) ? true : false;
+		$this->is_auth['cms_ads'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_ads')) ? true : false;
+		$this->is_auth['cms_blocks'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks')) ? true : false;
+		$this->is_auth['cms_blocks_global'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks_global')) ? true : false;
+		$this->is_auth['cms_layouts'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_layouts')) ? true : false;
+		$this->is_auth['cms_layouts_special'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_layouts_special')) ? true : false;
+		$this->is_auth['cms_menu'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_menu')) ? true : false;
+		$this->is_auth['cms_permissions'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_permissions')) ? true : false;
+		$this->is_auth['cms_settings'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_settings')) ? true : false;
+
+		$template->assign_vars(array(
+			'S_AUTH_CMS_ADMIN' => $this->is_auth['cms_admin'],
+			'S_AUTH_CMS_ADS' => $this->is_auth['cms_ads'],
+			'S_AUTH_CMS_BLOCKS' => $this->is_auth['cms_blocks'],
+			'S_AUTH_CMS_BLOCKS_GLOBAL' => $this->is_auth['cms_blocks_global'],
+			'S_AUTH_CMS_LAYOUTS' => $this->is_auth['cms_layouts'],
+			'S_AUTH_CMS_LAYOUTS_SPECIAL' => $this->is_auth['cms_layouts_special'],
+			'S_AUTH_CMS_MENU' => $this->is_auth['cms_menu'],
+			'S_AUTH_CMS_PERMISSIONS' => $this->is_auth['cms_permissions'],
+			'S_AUTH_CMS_SETTINGS' => $this->is_auth['cms_settings'],
+			)
+		);
 	}
 
 	/*
@@ -226,19 +254,53 @@ class cms_admin
 	*/
 	function generate_tabs($mode)
 	{
-		global $db, $cache, $config, $user, $lang, $template;
+		global $db, $cache, $config, $auth, $user, $lang, $template;
 
 		$tabs_array = array();
 
+		$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+
 		$tabs_array[] = array('TITLE' => $lang['CMS_TITLE'], 'MODE' => false, 'LINK' => append_sid(IP_ROOT_PATH . $this->root), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_home.png', 'TIP' => $lang['CMS_TIP_TITLE'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_CUSTOM_PAGES'], 'MODE' => 'layouts', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_custom_pages.png', 'TIP' => $lang['CMS_TIP_CUSTOM_PAGES'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_STANDARD_PAGES'], 'MODE' => 'layouts_special', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts_special'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_standard_pages.png', 'TIP' => $lang['CMS_TIP_STANDARD_PAGES'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_BLOCK_SETTINGS'], 'MODE' => 'block_settings', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=block_settings'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks.png', 'TIP' => $lang['CMS_TIP_BLOCK_SETTINGS'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_GLOBAL_BLOCKS'], 'MODE' => 'blocks', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=blocks&amp;l_id=0&amp;action=editglobal'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks_global.png', 'TIP' => $lang['CMS_TIP_GLOBAL_BLOCKS'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_AUTH'], 'MODE' => 'auth', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=auth'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_permissions.png', 'TIP' => $lang['CMS_TIP_AUTH'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_CONFIG'], 'MODE' => 'config', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=config'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_settings.png', 'TIP' => $lang['CMS_TIP_CONFIG'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_MENU_PAGE'], 'MODE' => 'menu', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_menu.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_menu.png', 'TIP' => $lang['CMS_TIP_MENU'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_ADS'], 'MODE' => 'ads', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_ads.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_ads.png', 'TIP' => $lang['CMS_TIP_ADS'], 'AUTH' => AUTH_REG);
+
+		if ($this->is_auth['cms_layouts'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_CUSTOM_PAGES'], 'MODE' => 'layouts', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_custom_pages.png', 'TIP' => $lang['CMS_TIP_CUSTOM_PAGES'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_layouts_special'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_STANDARD_PAGES'], 'MODE' => 'layouts_special', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts_special'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_standard_pages.png', 'TIP' => $lang['CMS_TIP_STANDARD_PAGES'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_blocks'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_BLOCK_SETTINGS'], 'MODE' => 'block_settings', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=block_settings'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks.png', 'TIP' => $lang['CMS_TIP_BLOCK_SETTINGS'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_blocks_global'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_GLOBAL_BLOCKS'], 'MODE' => 'blocks', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=blocks&amp;l_id=0&amp;action=editglobal'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks_global.png', 'TIP' => $lang['CMS_TIP_GLOBAL_BLOCKS'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_permissions'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_AUTH'], 'MODE' => 'auth', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=auth'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_permissions.png', 'TIP' => $lang['CMS_TIP_AUTH'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_settings'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_CONFIG'], 'MODE' => 'config', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=config'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_settings.png', 'TIP' => $lang['CMS_TIP_CONFIG'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_menu'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_MENU_PAGE'], 'MODE' => 'menu', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_menu.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_menu.png', 'TIP' => $lang['CMS_TIP_MENU'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_ads'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_ADS'], 'MODE' => 'ads', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_ads.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_ads.png', 'TIP' => $lang['CMS_TIP_ADS'], 'AUTH' => AUTH_REG);
+		}
 
 		$tabs_counter = 0;
 		$current_nav = false;

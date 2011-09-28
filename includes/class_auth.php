@@ -509,7 +509,7 @@ class auth
 		}
 
 		$sql = 'UPDATE ' . USERS_TABLE . "
-			SET user_permissions = '',
+			SET user_cms_auth = '', user_permissions = '',
 				user_perm_from = 0
 			$where_sql";
 		$db->sql_query($sql);

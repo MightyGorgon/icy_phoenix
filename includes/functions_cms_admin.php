@@ -16,9 +16,9 @@ if (!defined('IN_ICYPHOENIX'))
 /**
 * Check CMS permissions required to access current page
 */
-function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b_id = '')
+function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = 0, $b_id = 0)
 {
-	global $db, $cache, $config, $user, $lang, $auth;
+	global $db, $cache, $config, $auth, $user, $lang;
 
 	// If the user is admin... give immediate access and exit!
 	if ($user->data['user_level'] == ADMIN)
@@ -35,18 +35,18 @@ function get_cms_access_auth($cms_page, $mode = '', $action = '', $l_id = '', $b
 			switch ($mode)
 			{
 				case 'blocks':
-					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks_global')) ? true : false;
+					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks_global') || (!empty($l_id) && !empty($user->data['user_cms_auth']['cmsl_admin'][$l_id]))) ? true : false;
 				break;
 
 				case 'block_settings':
 					// OLD IF... left here to be checked...
 					//if ((($action == 'list') || ($action == 'edit') || ($action == 'save') || empty($action)) && !isset($_POST['action_update']))
-					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks')) ? true : false;
+					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks') || (!empty($b_id) && !empty($user->data['user_cms_auth']['cmsb_admin'][$b_id]))) ? true : false;
 				break;
 
 				case 'layouts':
 				case 'layouts_adv':
-					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_layouts')) ? true : false;
+					$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_layouts') || (!empty($l_id) && !empty($user->data['user_cms_auth']['cmsl_admin'][$l_id]))) ? true : false;
 				break;
 
 				case 'layouts_special':

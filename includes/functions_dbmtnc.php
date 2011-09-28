@@ -702,6 +702,10 @@ $default_config = array(
 	'site_meta_author_switch' => '1',
 	'site_meta_copyright' => 'Copyright',
 	'site_meta_copyright_switch' => '1',
+	'spam_posts_number' => '5',
+	'spam_disable_url' => '1',
+	'spam_hide_signature' => '1',
+	'spam_post_edit_interval' => '60',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

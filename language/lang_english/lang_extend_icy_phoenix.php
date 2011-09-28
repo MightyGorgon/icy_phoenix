@@ -209,6 +209,33 @@ if ($lang_extend_admin)
 		'IP_show_random_quote' => 'Random Quotes :: Forum Index',
 		'IP_show_random_quote_explain' => 'Enabling this option will enable random quotes to be shown on <b>Forum Index</b>',
 
+// Spam Section
+		'IP_spam_measures_header' => 'Spam Measures',
+
+		'IP_spam_posts_number' => 'SPAM - Minimum Number Of Posts To Avoid Spam Measures',
+		'IP_spam_posts_number_explain' => 'Until a user reaches the specified number of posts spam measures will be kept in place (those with SPAM prefix here below)',
+		'IP_spam_p_0' => 'Disabled',
+		'IP_spam_p_3' => '3',
+		'IP_spam_p_5' => '5',
+		'IP_spam_p_10' => '10',
+		'IP_spam_p_20' => '20',
+
+		'IP_spam_disable_url' => 'SPAM - Disable URLs In Posts',
+		'IP_spam_disable_url_explain' => 'This feature remove all URLs in posts and replace HTTP with H**P, this feature will remain in place for a minimum of posts specified in the field above. Administrators will see the original message anyway.',
+
+		'IP_spam_hide_signature' => 'SPAM - Disable Signature In Posts',
+		'IP_spam_hide_signature_explain' => 'This feature will hide the signature for all those users who didn\'t reach a minimum of posts specified in the field above. Administrators will see the signature anyway.',
+
+		'IP_spam_post_edit_interval' => 'SPAM - Disable Post Edit',
+		'IP_spam_post_edit_interval_explain' => 'By enabling this feature, all users who didn\'t reach the required amount of posts will not be able to edit their posts after the specified interval',
+		'IP_time_15m' => '15 Minutes',
+		'IP_time_30m' => '30 Minutes',
+		'IP_time_1h' => '1 Hour',
+		'IP_time_2h' => '2 Hours',
+		'IP_time_6h' => '6 Hours',
+		'IP_time_12h' => '12 Hours',
+		'IP_time_24h' => '24 Hours',
+
 // TAB - Posting
 		'IP_posts_precompiled' => 'Disable Precompiled Posts For Guests',
 		'IP_posts_precompiled_explain' => 'By enabling this option viewtopic will always parse posts text without using the precompiled text for guests (this is slower, but it can be useful in some cases).',
@@ -222,8 +249,8 @@ if ($lang_extend_admin)
 		'IP_allow_mods_edit_admin_posts' => 'Can Moderators edit Admin posts?',
 		'IP_allow_mods_edit_admin_posts_explain' => 'Allow moderators to edit admin posts',
 
-		'IP_forum_limit_edit_time_interval' => 'Limit Edit Time Interval (Minutes)',
-		'IP_forum_limit_edit_time_interval_explain' => 'This sets the time interval for users to be allowed to edit own messages. Set to ZERO for no limits (feature should be enabled on a per forum basis in Forums Management)',
+		'IP_forum_limit_edit_time_interval' => 'Limit Edit Time Interval',
+		'IP_forum_limit_edit_time_interval_explain' => 'This sets the time interval for users to be allowed to edit own messages. Set to ZERO for no limits (feature should be enabled on a per forum basis in Forums Management). This setting will be applied to all users regardless to their number of posts, so it is different from the similar antispam feature which applies only for users who didn\'t reach a certain amount of posts.',
 
 		'IP_force_large_caps_mods' => 'ProperCase subjects',
 		'IP_force_large_caps_mods_explain' => 'Topic subjects will be converted to proper case for all users except admins',

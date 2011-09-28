@@ -2180,6 +2180,15 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 	// Mighty Gorgon - Feedback - END
 
+	// Antispam Measures - BEGIN
+	$is_spam_measure_enabled = (($user->data['user_level'] != ADMIN) && (intval($config['spam_posts_number']) > 0) && ($poster_posts < (int) $config['spam_posts_number'])) ? true : false;
+	if ($is_spam_measure_enabled)
+	{
+		$message = !empty($config['spam_disable_url']) ? str_replace(array('http://', 'www.'), array('h**p://', '***.'), $bbcode->strip_only($message, array('a'))) : $message;
+		$user_sig = !empty($config['spam_hide_signature']) ? '' : $user_sig;
+	}
+	// Antispam Measures - END
+
 	// Again this will be handled by the templating code at some point
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 

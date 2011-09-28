@@ -171,20 +171,6 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
-	'flood_interval' => array(
-		'lang_key' => 'Flood_Interval',
-		'explain' => 'Flood_Interval_explain',
-		'type' => 'SMALLINT',
-		'default' => 15,
-		),
-
-	'search_flood_interval' => array(
-		'lang_key' => 'Search_Flood_Interval',
-		'explain' => 'Search_Flood_Interval_explain',
-		'type' => 'SMALLINT',
-		'default' => 25,
-		),
-
 	'topics_per_page' => array(
 		'lang_key' => 'Topics_per_page',
 		'type' => 'SMALLINT',
@@ -235,13 +221,6 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
-	'forum_limit_edit_time_interval' => array(
-		'lang_key' => 'IP_forum_limit_edit_time_interval',
-		'explain' => 'IP_forum_limit_edit_time_interval_explain',
-		'type' => 'VARCHAR',
-		'default' => '1440',
-		),
-
 	'force_large_caps_mods' => array(
 		'lang_key' => 'IP_force_large_caps_mods',
 		'explain' => 'IP_force_large_caps_mods_explain',
@@ -256,18 +235,6 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
-
-	'no_bump' => array(
-		'lang_key' => 'IP_no_bump',
-		'explain' => 'IP_no_bump_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => array(
-			'No' => 0,
-			'Yes' => 1,
-			'MODS_ALLOWED' => 2,
-			),
 		),
 
 	'max_link_bookmarks' => array(
@@ -365,6 +332,101 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
+		),
+
+	'spam_posts_number' => array(
+		'lang_key' => 'IP_spam_posts_number',
+		'explain' => 'IP_spam_posts_number_explain',
+		'separator' => 'IP_spam_measures_header',
+		'type' => 'LIST_DROP',
+		'default' => 5,
+		'values' => array(
+			'IP_spam_p_0' => 0,
+			'IP_spam_p_3' => 3,
+			'IP_spam_p_5' => 5,
+			'IP_spam_p_10' => 10,
+			'IP_spam_p_20' => 20,
+			),
+		),
+
+	'spam_disable_url' => array(
+		'lang_key' => 'IP_spam_disable_url',
+		'explain' => 'IP_spam_disable_url_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
+	'spam_hide_signature' => array(
+		'lang_key' => 'IP_spam_hide_signature',
+		'explain' => 'IP_spam_hide_signature_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
+	// Time in minutes
+	'spam_post_edit_interval' => array(
+		'lang_key' => 'IP_spam_post_edit_interval',
+		'explain' => 'IP_spam_post_edit_interval_explain',
+		'type' => 'LIST_DROP',
+		'default' => 60,
+		'values' => array(
+			'IP_spam_p_0' => 0,
+			'IP_time_15m' => 15,
+			'IP_time_30m' => 30,
+			'IP_time_1h' => 60,
+			'IP_time_2h' => 120,
+			'IP_time_6h' => 360,
+			'IP_time_12h' => 720,
+			'IP_time_24h' => 1440,
+			),
+		),
+
+	// Time in seconds
+	'flood_interval' => array(
+		'lang_key' => 'Flood_Interval',
+		'explain' => 'Flood_Interval_explain',
+		'type' => 'SMALLINT',
+		'default' => 15,
+		),
+
+	// Time in seconds
+	'search_flood_interval' => array(
+		'lang_key' => 'Search_Flood_Interval',
+		'explain' => 'Search_Flood_Interval_explain',
+		'type' => 'SMALLINT',
+		'default' => 25,
+		),
+
+	// Time in minutes
+	'forum_limit_edit_time_interval' => array(
+		'lang_key' => 'IP_forum_limit_edit_time_interval',
+		'explain' => 'IP_forum_limit_edit_time_interval_explain',
+		'type' => 'LIST_DROP',
+		'default' => 900,
+		'values' => array(
+			'IP_spam_p_0' => 0,
+			'IP_time_15m' => 15,
+			'IP_time_30m' => 30,
+			'IP_time_1h' => 60,
+			'IP_time_2h' => 120,
+			'IP_time_6h' => 360,
+			'IP_time_12h' => 720,
+			'IP_time_24h' => 1440,
+			),
+		),
+
+	'no_bump' => array(
+		'lang_key' => 'IP_no_bump',
+		'explain' => 'IP_no_bump_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => array(
+			'No' => 0,
+			'Yes' => 1,
+			'MODS_ALLOWED' => 2,
+			),
 		),
 
 );

@@ -413,9 +413,11 @@ if ($result && $post_info)
 	}
 
 	// LIMIT POST EDIT TIME - BEGIN
-	if (($mode == 'editpost') && $post_info['forum_limit_edit_time'] && ($user->data['user_level'] != ADMIN) && !$is_auth['auth_mod'] && (intval($config['forum_limit_edit_time_interval']) > 0) && !$submit)
+	$is_global_limit_edit_enabled = ($post_info['forum_limit_edit_time'] && (intval($config['forum_limit_edit_time_interval']) > 0)) ? true : false;
+	$is_spam_limit_edit_enabled = ((intval($config['spam_posts_number']) > 0) && ($user->data['user_posts'] < (int) $config['spam_posts_number']) && (intval($config['spam_post_edit_interval']) > 0)) ? true : false;
+	if (($mode == 'editpost') && ($user->data['user_level'] != ADMIN) && !$is_auth['auth_mod'] && !$submit && ($is_global_limit_edit_enabled || $is_spam_limit_edit_enabled))
 	{
-		if (intval($config['forum_limit_edit_time_interval']) < ((time() - $post_info['post_time']) / 60))
+		if (($is_global_limit_edit_enabled && (intval($config['forum_limit_edit_time_interval']) < ((time() - $post_info['post_time']) / 60))) || ($is_spam_limit_edit_enabled && (intval($config['spam_post_edit_interval']) < ((time() - $post_info['post_time']) / 60))))
 		{
 			$message = sprintf($lang['LIMIT_EDIT_TIME_WARN'], intval($config['forum_limit_edit_time_interval'])) . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post_id) . '#' . $post_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);

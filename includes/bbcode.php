@@ -3810,6 +3810,36 @@ class bbcode
 	}
 
 	/*
+	* Strip only specified tags
+	* $tags array of tags
+	* $strip_content if set to true, also text within the specified tag is removed
+	*/
+	function strip_only($text, $tags, $strip_content = false)
+	{
+		if (empty($text) || empty($tags))
+		{
+			return $text;
+		}
+
+		$content = '';
+		if(!is_array($tags))
+		{
+			$tags = array($tags);
+		}
+
+		foreach($tags as $tag)
+		{
+			if ($strip_content)
+			{
+				$content = '(.+</' . $tag . '[^>]*>|)';
+			}
+			$text = preg_replace('#</?' . $tag . '[^>]*>' . $content . '#is', '', $text);
+		}
+
+		return $text;
+	}
+
+	/*
 	* Undo HTML special chars
 	*/
 	function undo_htmlspecialchars($input, $full_undo = false)
