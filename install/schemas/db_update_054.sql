@@ -998,6 +998,7 @@ INSERT INTO phpbb_acl_users (user_id, forum_id, auth_option_id, auth_role_id, au
 ##              BUILD 076             ##
 ########################################
 ALTER TABLE `phpbb_users` ADD `user_cms_auth` TEXT NOT NULL AFTER `user_mask`;
+ALTER TABLE `phpbb_users` DROP `user_lastlogon`;
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_posts_number', '5');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_disable_url', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_hide_signature', '1');

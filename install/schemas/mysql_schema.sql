@@ -2198,7 +2198,6 @@ CREATE TABLE `phpbb_users` (
 	`user_color_group` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
 	`user_color` VARCHAR(16) NOT NULL DEFAULT '',
 	`user_gender` TINYINT(4) NOT NULL DEFAULT '0',
-	`user_lastlogon` INT(11) NOT NULL DEFAULT '0',
 	`user_totaltime` INT(11) DEFAULT '0',
 	`user_totallogon` INT(11) DEFAULT '0',
 	`user_totalpages` INT(11) DEFAULT '0',

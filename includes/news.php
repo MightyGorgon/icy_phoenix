@@ -163,6 +163,12 @@ class NewsModule
 				$ubid_link = request_var('ubid', 0);
 				$ubid_link = !empty($ubid_link) ? ('ubid=' . $ubid_link . '&amp;') : '';
 
+				$format = 'r';
+				$gmepoch = $article['post_time'];
+				$tz = $timezone;
+				$news_dst_sec = get_dst($gmepoch, $tz);
+				$news_date = @gmdate($format, $gmepoch + (3600 * $tz) + $news_dst_sec);
+
 				// Convert and clean special chars!
 				$topic_title = htmlspecialchars_clean($article['topic_title']);
 				$this->setBlockVariables('articles', array(
@@ -177,7 +183,7 @@ class NewsModule
 					'COUNT_VIEWS' => $article['topic_views'],
 					'CAT_IMG' => $this->root_path . $config['news_path'] . '/' . $article['news_image'],
 					'POST_DATE' => create_date_ip($dateformat, $article['post_time'], $timezone, true),
-					'RFC_POST_DATE' => create_date_ip('r', $article['post_time'], $timezone, true),
+					'RFC_POST_DATE' => $news_date,
 					'L_POSTER' => colorize_username($article['user_id'], $article['username'], $article['user_color'], $article['user_active']),
 					'L_COMMENTS' => $article['topic_replies'],
 					/*

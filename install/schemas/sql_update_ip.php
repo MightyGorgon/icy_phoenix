@@ -867,7 +867,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_display_viewonline` TINYINT(1) DEFAULT '2' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_color_group` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_gender` TINYINT(4) DEFAULT '0' NOT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_lastlogon` INT(11) DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_totaltime` INT(11) DEFAULT '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_totallogon` INT(11) DEFAULT '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_totalpages` INT(11) DEFAULT '0'";
@@ -4404,6 +4403,7 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.3.22.75 */
 		case '1.3.22.75':
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_cms_auth` text NOT NULL AFTER `user_mask`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `user_lastlogon`";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_posts_number', '5')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_disable_url', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_hide_signature', '1')";

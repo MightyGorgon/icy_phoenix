@@ -178,7 +178,7 @@ if (!empty($mail_id) && !empty($mail_session_id))
 	$process_groups = (($group_id == -1) || ($group_id == -2)) ? false : true;
 	if ($group_id == -2)
 	{
-		$sql_non_recent_login = "AND u.user_lastlogon < '" . (time() - (86400 * DAYS_INACTIVE)) . "'";
+		$sql_non_recent_login = "AND u.user_lastvisit < '" . (time() - (86400 * DAYS_INACTIVE)) . "'";
 	}
 
 	//Now, let's see if we reached the upperlimit, if yes adjust the batch_size

@@ -591,11 +591,11 @@ $template->assign_vars(array(
 
 	// Start add - Last visit MOD
 	'L_LOGON' => $lang['Last_logon'],
-	'LAST_LOGON' => (($user->data['user_level'] == ADMIN) || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastlogon'])? create_date($config['default_dateformat'], $profiledata['user_lastlogon'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
+	'LAST_LOGON' => (($user->data['user_level'] == ADMIN) || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastvisit'])? create_date($config['default_dateformat'], $profiledata['user_lastvisit'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
 	'L_TOTAL_ONLINE_TIME' => $lang['Total_online_time'],
 	'TOTAL_ONLINE_TIME' => make_hours($profiledata['user_totaltime']),
 	'L_LAST_ONLINE_TIME' => $lang['Last_online_time'],
-	'LAST_ONLINE_TIME' => make_hours($profiledata['user_session_time'] - $profiledata['user_lastlogon']),
+	'LAST_ONLINE_TIME' => make_hours($profiledata['user_session_time'] - $profiledata['user_lastvisit']),
 	'L_NUMBER_OF_VISIT' => $lang['Number_of_visit'],
 	'NUMBER_OF_VISIT' => ($profiledata['user_totallogon'] > 0) ? $profiledata['user_totallogon'] : $lang['None'],
 	'L_NUMBER_OF_PAGES' => $lang['Number_of_pages'],

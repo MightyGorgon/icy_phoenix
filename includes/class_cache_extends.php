@@ -421,7 +421,7 @@ class ip_cache extends acm
 			$db->sql_freeresult($result);
 
 			// Changed sorting by username_clean instead of username
-			$sql = 'SELECT user_id, username, user_active, user_color, user_allow_viewonline, user_level, user_lastlogon
+			$sql = 'SELECT user_id, username, user_active, user_color, user_allow_viewonline, user_level, user_lastvisit
 							FROM ' . USERS_TABLE . '
 							WHERE user_id != "' . ANONYMOUS . '"
 								AND user_session_time >= ' . $timetoday . '
@@ -433,7 +433,7 @@ class ip_cache extends acm
 			{
 				$todayrow['user_level'] = ($todayrow['user_level'] == JUNIOR_ADMIN) ? ADMIN : $todayrow['user_level'];
 				$style_color = '';
-				if ($todayrow['user_lastlogon'] >= $time1Hour)
+				if ($todayrow['user_lastvisit'] >= $time1Hour)
 				{
 					$today_visitors['last_hour']++;
 				}

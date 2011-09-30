@@ -961,7 +961,7 @@ else
 								WHERE u.user_id = ug.user_id
 									AND ug.group_id = g.group_id
 									AND g.group_id = aa.group_id
-									AND aa.forum_id = ". $moderators_forum ."
+									AND aa.forum_id = " . $moderators_forum . "
 									AND aa.auth_mod = 1
 									AND u.user_id <> " . ANONYMOUS;
 
@@ -969,7 +969,7 @@ else
 								WHERE u.user_id = ug.user_id
 									AND ug.group_id = g.group_id
 									AND g.group_id = aa.group_id
-									AND aa.forum_id = ". $moderators_forum ."
+									AND aa.forum_id = " . $moderators_forum . "
 									AND aa.auth_mod = 1
 									AND u.user_id <> ".ANONYMOUS."
 								GROUP BY u.user_id, u.username, u.user_email, u.user_posts, u.user_regdate, u.user_level, u.user_active, u.user_lastvisit";

@@ -370,10 +370,10 @@ if ($config['online_last_msgs'] == 1)
 	}
 
 	// Last Seen - BEGIN
-	//$sql = "SELECT username, user_id, user_lastlogon, user_level, user_allow_viewonline FROM " . USERS_TABLE . " WHERE user_id > 0 ORDER BY user_lastlogon DESC LIMIT 10";
-	$sql = "SELECT username, user_id, user_active, user_color, user_lastlogon, user_level, user_allow_viewonline
+	$sql = "SELECT username, user_id, user_active, user_color, user_lastvisit, user_level, user_allow_viewonline
 					FROM " . USERS_TABLE . "
-					WHERE user_id > 0 ORDER BY user_lastlogon DESC
+					WHERE user_id <> " . ANONYMOUS . "
+					ORDER BY user_lastvisit DESC
 					LIMIT " . intval($config['last_msgs_n']);
 	$result = $db->sql_query($sql);
 	$number_last_seen = $db->sql_numrows($result);
@@ -398,8 +398,8 @@ if ($config['online_last_msgs'] == 1)
 		$template->assign_block_vars('switch_show_recent.last_seen_row', array(
 				'U_LSEEN_LINK' => ($last_seen_row[$i]['user_allow_viewonline']) ? $username : (($user->data[user_level] == ADMIN) ? '<i>' . $username . '</i>' : $username),
 				'L_LSEEN_USERNAME' => $username_text,
-				'L_LSEEN_TIME' => create_date_ip($config['default_dateformat'], $last_seen_row[$i]['user_lastlogon'], $config['board_timezone']),
-				//'L_LSEEN_TIME' => gmdate("d.m.Y - H:i", $last_seen_row[$i]['user_lastlogon']),
+				'L_LSEEN_TIME' => create_date_ip($config['default_dateformat'], $last_seen_row[$i]['user_lastvisit'], $config['board_timezone']),
+				//'L_LSEEN_TIME' => gmdate("d.m.Y - H:i", $last_seen_row[$i]['user_lastvisit']),
 			)
 		);
 	}

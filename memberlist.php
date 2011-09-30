@@ -98,7 +98,7 @@ if ($user->data['user_level'] == ADMIN)
 if (!empty($user->data['session_logged_in']))
 {
 	$sort_array['l'] = array('lang' => $lang['SORT_LASTLOGON'], 'mode' => 'lastlogon', 'sql' => 'u.user_session_time');
-	//$sort_array['l'] = array('lang' => $lang['SORT_LASTLOGON'], 'mode' => 'lastlogon', 'sql' => 'u.user_lastlogon');
+	//$sort_array['l'] = array('lang' => $lang['SORT_LASTLOGON'], 'mode' => 'lastlogon', 'sql' => 'u.user_lastvisit');
 }
 
 // MG Cash MOD For IP - BEGIN
@@ -213,7 +213,7 @@ if ((($action == 'searchuser') || sizeof(array_intersect(array_keys($_GET), $sea
 	$sql_where .= ($yahoo) ? ' AND u.user_yim ' . $db->sql_like_expression(str_replace('*', $db->any_char, $yahoo)) . ' ' : '';
 	$sql_where .= (is_numeric($count) && isset($find_key_match[$count_select])) ? ' AND u.user_posts ' . $find_key_match[$count_select] . ' ' . (int) $count . ' ' : '';
 	$sql_where .= (sizeof($joined) > 1 && isset($find_key_match[$joined_select])) ? " AND u.user_regdate " . $find_key_match[$joined_select] . ' ' . gmmktime(0, 0, 0, intval($joined[1]), intval($joined[2]), intval($joined[0])) : '';
-	$sql_where .= (!empty($user->data['session_logged_in']) && sizeof($active) > 1 && isset($find_key_match[$active_select])) ? " AND u.user_lastlogon " . $find_key_match[$active_select] . ' ' . gmmktime(0, 0, 0, $active[1], intval($active[2]), intval($active[0])) : '';
+	$sql_where .= (!empty($user->data['session_logged_in']) && sizeof($active) > 1 && isset($find_key_match[$active_select])) ? " AND u.user_lastvisit " . $find_key_match[$active_select] . ' ' . gmmktime(0, 0, 0, $active[1], intval($active[2]), intval($active[0])) : '';
 	$sql_where .= ($search_group_id) ? " AND u.user_id = ug.user_id AND ug.group_id = $search_group_id AND ug.user_pending = 0 " : '';
 
 	if ($ipdomain && ($user->data['user_level'] == ADMIN))
@@ -519,7 +519,7 @@ if (sizeof($user_list))
 	}
 
 	//$sql = "SELECT u.*" . $sql_style_select . "
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang" . $sql_style_select . "
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang" . $sql_style_select . "
 		FROM " . USERS_TABLE . " u" . $sql_style_from . "
 		WHERE " . $db->sql_in_set('u.user_id', $user_list) . " " . $sql_style_where;
 	// MG Cash MOD For IP - BEGIN
@@ -534,10 +534,10 @@ if (sizeof($user_list))
 	$id_cache = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$row['last_visit'] = (!empty($row['user_session_time'])) ? $row['user_session_time'] : $row['user_lastlogon'];
+		$row['last_visit'] = (!empty($row['user_session_time'])) ? $row['user_session_time'] : $row['user_lastvisit'];
 		//phpBB 3 way to get sessions... currently disabled!
 		//$row['session_time'] = (!empty($session_times[$row['user_id']])) ? $session_times[$row['user_id']] : 0;
-		//$row['last_visit'] = (!empty($row['session_time'])) ? $row['session_time'] : $row['user_lastlogon'];
+		//$row['last_visit'] = (!empty($row['session_time'])) ? $row['session_time'] : $row['user_lastvisit'];
 
 		$id_cache[$row['user_id']] = $row;
 	}

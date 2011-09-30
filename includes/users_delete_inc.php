@@ -86,7 +86,7 @@ switch ($mode)
 		$sql = "FROM " . USERS_TABLE . "
 						WHERE user_id <> '" . ANONYMOUS . "'
 							AND user_posts = '0'
-							AND user_lastlogon < '" . (time() - (86400 * 180)) . "'
+							AND user_lastvisit < '" . (time() - (86400 * 180)) . "'
 							AND user_regdate < '" . (time() - (86400 * $days)) . "'";
 		break;
 
@@ -95,7 +95,7 @@ switch ($mode)
 		$sql = "FROM " . USERS_TABLE . "
 						WHERE user_id <> '" . ANONYMOUS . "'
 							AND user_posts = '0'
-							AND user_lastlogon < '" . (time() - (86400 * $days)) . "'
+							AND user_lastvisit < '" . (time() - (86400 * $days)) . "'
 							AND user_regdate < '" . (time() - (86400 * $days)) . "'";
 		break;
 

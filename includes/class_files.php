@@ -117,7 +117,7 @@ class class_files
 	{
 		$file_details = array();
 		$file_details = pathinfo($file_name);
-		$file_details['clean_name'] = $this->clean_string($file_details['filename'], true) . '.' . $this->clean_string($file_details['extension']);
+		$file_details['clean_name'] = $this->clean_string($file_details['filename'], true) . (!empty($file_details['extension']) ? ('.' . $this->clean_string($file_details['extension'])) : '');
 		return $file_details;
 	}
 
@@ -387,7 +387,7 @@ class class_files
 							$process_file = true;
 						}
 
-						if (!empty($allowed_extensions) && in_array(strtolower($file_details['extension']), $allowed_extensions))
+						if (!empty($file_details['extension']) && !empty($allowed_extensions) && in_array(strtolower($file_details['extension']), $allowed_extensions))
 						{
 							$process_file = true;
 						}

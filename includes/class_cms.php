@@ -148,12 +148,7 @@ class ip_cms
 
 		if (!defined('CMS_BLOCKS_LANG_INCLUDED'))
 		{
-			$include_lang = $config['default_lang'];
-			if(!@file_exists(IP_ROOT_PATH . 'language/lang_' . $include_lang . '/lang_blocks.' . PHP_EXT))
-			{
-				$include_lang = 'english';
-			}
-			include_once(IP_ROOT_PATH . 'language/lang_' . $include_lang . '/lang_blocks.' . PHP_EXT);
+			setup_extra_lang(array('lang_blocks'));
 			define('CMS_BLOCKS_LANG_INCLUDED', true);
 		}
 
@@ -271,6 +266,7 @@ class ip_cms
 					$temp_pos = 'tt';
 					break;
 			}
+			$config['cms_block_pos'] = $temp_pos;
 			if ($is_special && !$global_blocks)
 			{
 				$sql_where = "AND layout_special = " . $layout;
@@ -406,7 +402,7 @@ class ip_cms
 				{
 					$b_admin_vars = array(
 						'B_ADMIN' => true,
-						'B_EDIT_LINK' => append_sid(CMS_PAGE_CMS . '?mode=block_settings&amp;action=edit&amp;bs_id=' . $block_id),
+						'B_EDIT_LINK' => append_sid(CMS_PAGE_CMS . '?mode=block_settings&amp;action=edit&amp;bs_id=' . $block_id . '&amp;sid=' . $user->data['session_id']),
 					);
 				}
 
