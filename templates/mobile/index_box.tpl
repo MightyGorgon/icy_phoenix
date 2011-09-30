@@ -24,16 +24,16 @@ for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
 <!-- BEGIN catrow -->
 <!-- BEGIN cathead -->
 <div class="forum-cat">
-    {catrow.cathead.CAT_TITLE}
+	{catrow.cathead.CAT_TITLE}
 </div>
 <!-- END cathead -->
 <!-- BEGIN forumrow -->
 <div class="forum{forumrow.LINK_CLASS}" onclick="document.location.href='{catrow.forumrow.U_VIEWFORUM}'; return false;">
-    <p><a href="{catrow.forumrow.U_VIEWFORUM}">{catrow.forumrow.FORUM_NAME}</a></p>
+	<p><a href="{catrow.forumrow.U_VIEWFORUM}">{catrow.forumrow.FORUM_NAME}</a></p>
 	<!-- BEGIN forum_link_no -->
 	<p>
-	    <span class="extra" title="{L_TOPICS}, {L_POSTS}">{catrow.forumrow.TOPICS}, {catrow.forumrow.POSTS}</span>
-    </p>
+		<span class="extra" title="{L_TOPICS}, {L_POSTS}">{catrow.forumrow.TOPICS}, {catrow.forumrow.POSTS}</span>
+	</p>
 	<!-- END forum_link_no -->
 </div>	
 <!-- END forumrow -->

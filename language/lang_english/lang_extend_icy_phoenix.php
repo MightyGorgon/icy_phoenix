@@ -61,6 +61,10 @@ if ($lang_extend_admin)
 		'SITE_META_COPYRIGHT_SWITCH' => 'Enable Meta Copyright From DB',
 		'SITE_META_COPYRIGHT_SWITCH_EXPLAIN' => 'If you enable meta copyright, then copyright specified above will be used in html pages instead of the copyright defined in <i>lang_main_settings.php</i>.',
 
+// TAB - SITE
+		'IP_mobile_style_disable' => 'Disable Mobile Devices Dectection',
+		'IP_mobile_style_disable_explain' => 'Usually when a mobile device connect to the site, the <b>Mobile</b> style is automatically enabled (it could be manually switched off by each user). If you want to disable this automatic detection, just select this option.',
+
 // TAB - Icy Phoenix
 		'IP_enable_xs_version_check' => 'Enable Icy Phoenix Version Check',
 		'IP_enable_xs_version_check_explain' => 'Enable this option to check if a newer Icy Phoenix version is available to download each time you enter the ACP. Disabling this option may speed up ACP loading a bit. <br /><b>Note:</b> This check is done just once per day and then cached.',

@@ -619,7 +619,7 @@ class class_topics
 	*/
 	function remove_poll($topic_id)
 	{
-		global $db, $cache, $config, $user;
+		global $db, $cache, $config, $user, $lang;
 
 		$sql_ary = array(
 			'poll_title' => '',
@@ -640,6 +640,8 @@ class class_topics
 
 		$sql = "DELETE FROM " . POLL_VOTES_TABLE . " WHERE topic_id = " . (int) $topic_id;
 		$db->sql_query($sql);
+
+		empty_cache_folders(POSTS_CACHE_FOLDER);
 	}
 
 	/**

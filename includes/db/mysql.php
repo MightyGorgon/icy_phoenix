@@ -112,10 +112,16 @@ class sql_db
 			$result = false;
 		}
 
-		// make db connection UTF-8 aware
+		// make db connection UTF-8 aware and set the engine to MYISAM
 		if ($this->db_connect_id)
 		{
 			@mysql_query("SET NAMES 'utf8'");
+			@mysql_query("SET storage_engine = MyISAM");
+			/*
+			// Mighty Gorgon: other useful MyISAM references
+			//ALTER TABLE table_name ENGINE = MyISAM;
+			//SELECT CONCAT('ALTER TABLE ',table_schema,'.',table_name,' engine = MyISAM;') FROM information_schema.tables WHERE engine = 'InnoDB';
+			*/
 		}
 
 		$this->sql_server_version = $this->sql_server_info(true);

@@ -19,10 +19,10 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_online.' . PHP_EXT);
 // Mighty Gorgon - HTTP AGENTS - BEGIN
 include_once(IP_ROOT_PATH . 'includes/functions_mg_http.' . PHP_EXT);
 // Mighty Gorgon - HTTP AGENTS - END
-include_once(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
@@ -92,13 +92,7 @@ else
 */
 
 // Get user list
-// Changed sorting by username_clean instead of username
-$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_time, s.session_page, s.session_forum_id, s.session_topic_id, s.session_ip, s.session_browser
-	FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
-	WHERE u.user_id = s.session_user_id
-	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
-	ORDER BY u.username_clean ASC, s.session_ip ASC";
-$result = $db->sql_query($sql);
+$online_users = get_online_users(false, true, '');
 
 $guest_users = 0;
 $registered_users = 0;
@@ -107,9 +101,8 @@ $hidden_users = 0;
 $reg_counter = 0;
 $guest_counter = 0;
 $prev_user = 0;
-$prev_ip = '';
-
-while($row = $db->sql_fetchrow($result))
+$session_ip_array = array();
+foreach ($online_users as $row)
 {
 	$view_online = false;
 	$is_auth_view = false;
@@ -147,8 +140,11 @@ while($row = $db->sql_fetchrow($result))
 	}
 	else
 	{
-		if ($row['session_ip'] != $prev_ip)
+		// Skip multiple sessions for one user
+		if (!empty($row['session_ip']) && !in_array($row['session_ip'], $session_ip_array))
 		{
+			$session_ip_array[] = $row['session_ip'];
+
 			// MG BOTS Parsing - BEGIN
 			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_browser']);
 			if ($bot_name_tmp['name'] != false)
@@ -166,8 +162,6 @@ while($row = $db->sql_fetchrow($result))
 			$which_row = 'guest_user_row';
 		}
 	}
-
-	$prev_ip = $row['session_ip'];
 
 	if ($view_online)
 	{

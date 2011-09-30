@@ -67,14 +67,12 @@ else
 	$user_forum_sql = '';
 }
 
-// Changed sorting by username_clean instead of username
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip, s.session_browser
-	FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
-	WHERE u.user_id = s.session_user_id
-	AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
-		$user_forum_sql
-	ORDER BY u.username_clean ASC, s.session_ip ASC";
-$result = $db->sql_query($sql);
+
+if (!function_exists('get_online_users'))
+{
+	@include_once(IP_ROOT_PATH . 'includes/functions_online.' . PHP_EXT);
+}
+$online_users = get_online_users(false, false, $user_forum_sql);
 
 $userlist_ary = array();
 $userlist_visible = array();
@@ -82,10 +80,9 @@ $tmp_bots_array = array();
 
 $prev_user_id = 0;
 $prev_user_ip = '';
-$prev_session_ip = '';
-while($row = $db->sql_fetchrow($result))
+$session_ip_array = array();
+foreach ($online_users as $row)
 {
-
 	// User is logged in and therefore not a guest
 	if ($row['session_logged_in'])
 	{
@@ -113,8 +110,10 @@ while($row = $db->sql_fetchrow($result))
 	else
 	{
 		// Skip multiple sessions for one user
-		if (($row['session_ip'] != $prev_session_ip) || ($user->data['session_ip'] != ''))
+		if (!empty($row['session_ip']) && !in_array($row['session_ip'], $session_ip_array))
 		{
+			$session_ip_array[] = $row['session_ip'];
+
 			$guests_online++;
 			// MG BOTS Parsing - BEGIN
 			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_browser']);
@@ -129,9 +128,7 @@ while($row = $db->sql_fetchrow($result))
 			// MG BOTS Parsing - END
 		}
 	}
-	$prev_session_ip = $row['session_ip'];
 }
-$db->sql_freeresult($result);
 
 if (empty($online_botlist))
 {

@@ -27,7 +27,7 @@ $meta_content['page_title'] = 'phpBB 3 Importing Process';
 
 $modes_array = array('main', 'forums', 'users', 'posts');
 $mode = request_var('mode', '');
-$mode = !in_array($mode, $mode_array) ? $mode[0] : $mode;
+$mode = !in_array($mode, $mode_array) ? $modes_array[0] : $mode;
 
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
@@ -300,6 +300,8 @@ full_page_generation('message_body.tpl', 'phpBB 3 Porting', '', '');
 
 function add_user($user_data, $batch_process = true, $is_admin = false)
 {
+	global $db, $cache, $config, $user, $lang;
+
 	$sql = "INSERT INTO " . USERS_TABLE . " " . $db->sql_build_insert_update($user_data, true);
 	$db->sql_return_on_error(true);
 	$db->sql_transaction('begin');

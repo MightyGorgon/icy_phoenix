@@ -601,7 +601,7 @@ class class_mcp_topic
 	*/
 	function topic_poll_delete($topics)
 	{
-		global $db, $cache, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		$sql_ary = array(
 			'poll_title' => '',

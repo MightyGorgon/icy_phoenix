@@ -3,8 +3,8 @@
 <!-- ENDIF -->
 
 <div class="block">
-    <h2>{MESSAGE_TITLE}</h2>
-    {MESSAGE_TEXT}
+	<h2>{MESSAGE_TITLE}</h2>
+	{MESSAGE_TEXT}
 </div>
 
 <!-- IF not HAS_DIED -->

@@ -6,15 +6,15 @@
 {CPL_MENU_OUTPUT}
 
 <div class="block">
-    <div class="popup">
-        <a href="javascript:void(0);" class="gradient">{L_INBOX}</a>
-        <ul class="menu">
+	<div class="popup">
+		<a href="javascript:void(0);" class="gradient">{L_INBOX}</a>
+		<ul class="menu">
 			<li>{INBOX}</li>
 			<li>{SENTBOX}</li>
 			<li>{OUTBOX}</li>
 			<li>{SAVEBOX}</li>
-        </ul>
-    </div>
+		</ul>
+	</div>
 </div>
 
 <!-- END switch_privmsg -->
@@ -38,13 +38,13 @@
 
 <!-- IF S_FORUM_RULES -->
 <div class="block">
-    <!-- IF S_FORUM_RULES_TITLE --><h2>{L_FORUM_RULES}</h2><!-- ENDIF -->
-    {FORUM_RULES}
+	<!-- IF S_FORUM_RULES_TITLE --><h2>{L_FORUM_RULES}</h2><!-- ENDIF -->
+	{FORUM_RULES}
 </div>
 <!-- ENDIF -->
 
 <div class="block-empty">
-    <h2>{L_POST_A}</h2>
+	<h2>{L_POST_A}</h2>
 <table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN switch_username_select -->
 <tr>

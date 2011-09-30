@@ -45,7 +45,7 @@ function append_sid($url, $non_html_amp = false, $char_conversion = false, $para
 		return $url;
 	}
 
-	// Developers using the hook function need to globalise the $_SID and $_EXTRA_URL on their own and also handle it appropiatly.
+	// Developers using the hook function need to globalise the $_SID and $_EXTRA_URL on their own and also handle it appropriately.
 	// They could mimick most of what is within this function
 	if (!empty($phpbb_hook) && $phpbb_hook->call_hook(__FUNCTION__, $url, $params, $is_amp, $session_id))
 	{
@@ -130,7 +130,6 @@ function append_sid($url, $non_html_amp = false, $char_conversion = false, $para
 	// Append session id and parameters (even if they are empty)
 	// If parameters are empty, the developer can still append his/her parameters without caring about the delimiter
 	return $url . (($append_url) ? $url_delim . $append_url . $amp_delim : $url_delim) . $params . ((!$session_id) ? '' : $amp_delim . 'sid=' . $session_id) . $anchor;
-
 }
 
 /**
@@ -368,12 +367,13 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 		$_REQUEST[$var_name] = isset($_POST[$var_name]) ? $_POST[$var_name] : $_GET[$var_name];
 	}
 
-	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name])))
+	$super_global = ($cookie) ? '_COOKIE' : '_REQUEST';
+	if (!isset($GLOBALS[$super_global][$var_name]) || is_array($GLOBALS[$super_global][$var_name]) != is_array($default))
 	{
 		return (is_array($default)) ? array() : $default;
 	}
 
-	$var = $_REQUEST[$var_name];
+	$var = $GLOBALS[$super_global][$var_name];
 	if (!is_array($default))
 	{
 		$type = gettype($default);
@@ -410,7 +410,7 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 					{
 						$_v = null;
 					}
-					set_var($_k, $_k, $sub_key_type);
+					set_var($_k, $_k, $sub_key_type, $multibyte);
 					set_var($var[$k][$_k], $_v, $sub_type, $multibyte);
 				}
 			}
@@ -3210,7 +3210,12 @@ function board_stats()
 */
 function is_mobile()
 {
-	global $user;
+	global $config, $user;
+
+	if (!empty($config['mobile_style_disable']))
+	{
+		return false;
+	}
 
 	if (!empty($user) && !empty($user->data['is_mobile']))
 	{
@@ -5256,9 +5261,9 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 			);
 
 			/*
-			$gen_log_file = IP_ROOT_PATH . 'cache/gen_log.txt';
+			$gen_log_file = IP_ROOT_PATH . MAIN_CACHE_FOLDER . '/gen_log.txt';
 			$fp = fopen ($gen_log_file, "a+");
-			fwrite($fp, $gentime . "\t" . $memory_usage . "\n");
+			fwrite($fp, (!empty($gentime) ? $gentime : '0') . "\t" . (!empty($memory_usage) ? $memory_usage : '0') . "\t" . $user->page['page'] . "\n");
 			fclose($fp);
 			*/
 		}

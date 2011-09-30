@@ -41,14 +41,14 @@ function checkForm()
 
 <!-- BEGIN linkrow1 -->
 <div class="forum" onclick="window.location.href='{linkrow1.LINK_URL}'; return false;">
-    <p><a href="{linkrow1.LINK_URL}" class="forumlink">{linkrow1.LINK_TITLE}</a></p>
-    <p><span class="extra">{linkrow1.LINK_NUMBER}</span></p>
+	<p><a href="{linkrow1.LINK_URL}" class="forumlink">{linkrow1.LINK_TITLE}</a></p>
+	<p><span class="extra">{linkrow1.LINK_NUMBER}</span></p>
 </div>
 <!-- END linkrow1 -->
 <!-- BEGIN linkrow0 -->
 <div class="forum" onclick="window.location.href='{linkrow0.LINK_URL}'; return false;">
-    <p><a href="{linkrow0.LINK_URL}" class="forumlink">{linkrow0.LINK_TITLE}</a></p>
-    <p><span class="extra">{linkrow0.LINK_NUMBER}</span></p>
+	<p><a href="{linkrow0.LINK_URL}" class="forumlink">{linkrow0.LINK_TITLE}</a></p>
+	<p><span class="extra">{linkrow0.LINK_NUMBER}</span></p>
 </div>
 <!-- END linkrow0 -->
 

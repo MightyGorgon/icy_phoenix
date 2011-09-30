@@ -50,6 +50,14 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
+	'mobile_style_disable' => array(
+		'lang_key' => 'IP_mobile_style_disable',
+		'explain' => 'IP_mobile_style_disable_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => $this->list_yes_no,
+		),
+
 	'default_lang' => array(
 		'lang_key' => 'Default_language',
 		'get_func' => 'language_select',

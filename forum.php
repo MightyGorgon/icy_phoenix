@@ -430,7 +430,10 @@ if (($config['display_viewonline'] == 2) || (($viewcat < 0) && ($config['display
 
 	if ($config['index_top_posters'] == true)
 	{
-		include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+		if (!function_exists('top_posters'))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+		}
 		$template->assign_block_vars('top_posters', array(
 			'TOP_POSTERS' => top_posters(8, true, true, false),
 			)

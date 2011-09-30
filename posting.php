@@ -567,7 +567,14 @@ if ($result && $post_info)
 
 	if ($mode == 'poll_delete')
 	{
-		message_die(GENERAL_MESSAGE, $lang['No_such_post']);
+		$meta = '';
+		$message = '';
+		delete_post($mode, $post_data, $message, $meta, $forum_id, $topic_id, $post_id);
+
+		$redirect_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id);
+		meta_refresh(3, $redirect_url);
+
+		message_die(GENERAL_MESSAGE, $message);
 	}
 
 	// BEGIN cmx_slash_news_mod
@@ -1011,7 +1018,10 @@ elseif ($mode == 'vote')
 
 		if ($user->data['session_logged_in'] && ($user->data['bot_id'] === false))
 		{
-			set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
+			if (function_exists('set_cookie'))
+			{
+				set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
+			}
 		}
 
 		$sql = "UPDATE " . TOPICS_TABLE . "

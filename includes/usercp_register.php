@@ -1681,7 +1681,6 @@ else
 	// Custom Profile Fields - BEGIN
 	if ($mode == 'register')
 	{
-
 		$template_to_parse = 'profile_register_body.tpl';
 		if ($config['enable_confirm'])
 		{

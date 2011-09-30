@@ -1,5 +1,5 @@
 <div class="block">
-    <h2>{NEWS_TITLE}</h2>
+	<h2>{NEWS_TITLE}</h2>
 	<!-- BEGIN switch_news_ticker -->
 		<!-- BEGIN switch_ticker_subtitle -->
 		<p>{XS_NEWS_TICKERS_TITLE}</p>

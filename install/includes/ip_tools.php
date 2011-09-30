@@ -568,10 +568,10 @@ switch ($mode_test)
 		if (defined('FIX_FORUMS') && FIX_FORUMS)
 		{
 			$page_framework->convert_forums();
-			if (function_exists('empty_cache_folders'))
-			{
-				empty_cache_folders();
-			}
+		}
+		if (function_exists('empty_cache_folders'))
+		{
+			empty_cache_folders();
 		}
 		$page_framework->table_begin($lang['IcyPhoenix'] . ' - ' . $lang['UpdateInProgress'], 'row-post');
 		echo('<div class="post-text">' . "\n");

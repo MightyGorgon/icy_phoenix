@@ -706,6 +706,7 @@ $default_config = array(
 	'spam_disable_url' => '1',
 	'spam_hide_signature' => '1',
 	'spam_post_edit_interval' => '60',
+	'mobile_style_disable' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

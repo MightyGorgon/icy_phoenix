@@ -952,10 +952,10 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
 		}
 		$class_topics = new class_topics();
-		$class_topics->class_topics($topic_id);
+		$class_topics->remove_poll($topic_id);
 	}
 
-	if ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post'])
+	if (($mode == 'delete') && $post_data['first_post'] && $post_data['last_post'])
 	{
 		$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">';
 		$message = $lang['Deleted'];
