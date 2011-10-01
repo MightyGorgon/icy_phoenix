@@ -733,7 +733,8 @@ var cmsEditor = {
 	{
 		var id = 'block-item-' + data.bid,
 			html = '<li id="' + id + '" class="cms-editor-block">',
-			keys = {'active': cmsEditorLang.optionEnabled, 'border': cmsEditorLang.optionBorder, 'titlebar': cmsEditorLang.optionTitle, 'local': cmsEditorLang.optionLocal, 'background': cmsEditorLang.optionBackground};
+			keys = {'active': cmsEditorLang.optionEnabled, 'border': cmsEditorLang.optionBorder, 'titlebar': cmsEditorLang.optionTitle, 'local': cmsEditorLang.optionLocal, 'background': cmsEditorLang.optionBackground},
+			keysExplain = {'active': cmsEditorLang.optionEnabledExplain, 'border': cmsEditorLang.optionBorderExplain, 'titlebar': cmsEditorLang.optionTitleExplain, 'local': cmsEditorLang.optionLocalExplain, 'background': cmsEditorLang.optionBackgroundExplain};
 		html += '<p class="block-title"><span>' + data.title + '</span>';
 		html += '<a class="edit-move" href="javascript:void(0);" title="' + cmsEditorLang.tipMove + '"></a>';
 		html += '<a class="edit-title" href="javascript:void(0);" onclick="cmsEditor.toggleChangeTitle(' + data.bid + ', true); return false;" title="' + cmsEditorLang.tipTitle + '"></a>';
@@ -762,7 +763,7 @@ var cmsEditor = {
 		for(var key in keys)
 		{
 			if(data[key] == '0') data[key] = false;
-			html += '<li class="block-' + key + (data[key] ? ' checked' : '') + '"><a href="javascript:void(0);" onclick="cmsEditor.blockOption(\'' + key + '\', ' + data.bid + '); return false;">' + keys[key] + '</a></li>';
+			html += '<li class="block-' + key + (data[key] ? ' checked' : '') + '"><a href="javascript:void(0);" onclick="cmsEditor.blockOption(\'' + key + '\', ' + data.bid + '); return false;" title="' + keysExplain[key] + '">' + keys[key] + '</a></li>';
 		}
 		html += '</ul>';
 		html += '</li>';

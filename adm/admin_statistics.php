@@ -454,7 +454,6 @@ if ($mode == 'manage')
 		'L_MODULE_NAME' => $lang['Module_file_name'],
 		'L_STATUS' => $lang['Status'],
 		'L_UPDATE_TIME' => $lang['Update_time'],
-		'L_AUTO_SET' => $lang['Auto_set_update_time'],
 		'L_UPDATE_MODULES' => $lang['Update_Modules'],
 		'L_GO' => $lang['Go'],
 		'S_ACTION' => append_sid('admin_statistics.' . PHP_EXT),

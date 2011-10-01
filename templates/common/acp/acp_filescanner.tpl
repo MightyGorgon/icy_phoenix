@@ -5,8 +5,8 @@
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2">{L_FUNC_HEADER}</th></tr>
 <tr>
-	<td class="row1 row-center" width="50%"><span class="gen"><a href="{U_LINK_OPTION_1}"><img src="{IMG_ICON_1}" alt="{L_ALT_TEXT}" title="{L_ALT_TEXT}" /><br />{L_OPTION_1}</a></span></td>
-	<td class="row2 row-center" width="50%"><span class="gen"><a href="{U_LINK_OPTION_2}"><img src="{IMG_ICON_2}" alt="{L_ALT_TEXT}" title="{L_ALT_TEXT}" /><br />{L_OPTION_2}</a></span></td>
+	<td class="row1 row-center" width="50%"><span class="gen"><a href="{U_LINK_OPTION_1}"><img src="{IMG_ICON_1}" alt="{L_OPTION_1}" title="{L_OPTION_1}" /><br />{L_OPTION_1}</a></span></td>
+	<td class="row2 row-center" width="50%"><span class="gen"><a href="{U_LINK_OPTION_2}"><img src="{IMG_ICON_2}" alt="{L_OPTION_2}" title="{L_OPTION_2}" /><br />{L_OPTION_2}</a></span></td>
 </tr>
 <tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>

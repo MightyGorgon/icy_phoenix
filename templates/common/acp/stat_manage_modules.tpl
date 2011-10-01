@@ -13,7 +13,8 @@
 <br />
 
 <table class="forumline" width="80%" align="center" cellspacing="0" cellpadding="0" border="0">
-<tr><td class="row3 row-center"><span class="gen">{L_AUTO_SET}<br /><a href="{U_AUTO_SET}" class="gen">{L_GO}</a></td></tr>
+<tr><td class="row3 row-center"><span class="genmed">{L_AUTO_SET_UPDATE_TIME}<br /><br /><a href="{U_AUTO_SET}">{L_GO}</a></span></td></tr>
+<tr><td class="row3 row-center"><span class="gensmall">{L_STAT_BLOCKS_SORT}</span></td></tr>
 </table>
 
 <br />
@@ -24,7 +25,7 @@
 	<td class="row1" style="padding: 0px;" valign="top">
 		<table class="nav-div" width="100%" align="center" style="padding: 0px;" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<th style="text-align: center; width: 110px;">#</th>
+			<th style="text-align: center; width: 110px;">{L_ACTIONS}</th>
 			<th style="text-align: center;">{L_NAME}</th>
 			<th style="text-align: center; width: 240px;">{L_MODULE_NAME}</th>
 			<th style="text-align: center; width: 80px;">{L_STATUS}</th>
