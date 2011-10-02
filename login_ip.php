@@ -159,7 +159,9 @@ else
 	include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 	$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
 
-	$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+	// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+	//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+	$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
 	$is_cms_auth = $auth->acl_get('cms_') ? true : false;
 	if (empty($is_admin) && empty($is_cms_auth))
 	{

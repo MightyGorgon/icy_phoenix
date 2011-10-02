@@ -3,9 +3,13 @@
 {IMG_THL}{IMG_THC}<span class="forumlink">{SITENAME} - {REGISTRATION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1">
-		<br /><div class="post-text">{AGREEMENT}</div><br clear="all" /><br /><br />
-		<br /><div class="post-text">{L_PRIVACY_DISCLAIMER}</div><br clear="all" /><br /><br /><br />
-		<label><input type="checkbox" name="privacy" />&nbsp;{AGREE_CHECKBOX}</label><br clear="all" /><br />
+		<div class="post-text">{AGREEMENT}</div><br clear="all" /><br /><br />
+	</td>
+</tr>
+<tr>
+	<td class="row1">
+		<div class="post-text"><b>{L_PRIVACY_DISCLAIMER}</b></div><br clear="all" /><br />
+		<label>&nbsp;<input type="checkbox" name="privacy" />&nbsp;<i>{AGREE_CHECKBOX}</i></label><br clear="all" /><br />
 	</td>
 </tr>
 <tr>

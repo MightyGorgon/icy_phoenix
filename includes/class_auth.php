@@ -427,24 +427,27 @@ class auth
 				$ary_key = (!$f) ? 'global' : 'local';
 
 				$bitstring = array();
-				foreach ($this->acl_options[$ary_key] as $opt => $id)
+				if (!empty($this->acl_options[$ary_key]))
 				{
-					if (isset($auth_ary[$this->acl_options['id'][$opt]]))
+					foreach ($this->acl_options[$ary_key] as $opt => $id)
 					{
-						$bitstring[$id] = $auth_ary[$this->acl_options['id'][$opt]];
-
-						$option_key = substr($opt, 0, strpos($opt, '_') + 1);
-
-						// If one option is allowed, the global permission for this option has to be allowed too
-						// example: if the user has the a_ permission this means he has one or more a_* permissions
-						if (($auth_ary[$this->acl_options['id'][$opt]] == ACL_YES) && (!isset($bitstring[$this->acl_options[$ary_key][$option_key]]) || ($bitstring[$this->acl_options[$ary_key][$option_key]] == ACL_NEVER)))
+						if (isset($auth_ary[$this->acl_options['id'][$opt]]))
 						{
-							$bitstring[$this->acl_options[$ary_key][$option_key]] = ACL_YES;
+							$bitstring[$id] = $auth_ary[$this->acl_options['id'][$opt]];
+
+							$option_key = substr($opt, 0, strpos($opt, '_') + 1);
+
+							// If one option is allowed, the global permission for this option has to be allowed too
+							// example: if the user has the a_ permission this means he has one or more a_* permissions
+							if (($auth_ary[$this->acl_options['id'][$opt]] == ACL_YES) && (!isset($bitstring[$this->acl_options[$ary_key][$option_key]]) || ($bitstring[$this->acl_options[$ary_key][$option_key]] == ACL_NEVER)))
+							{
+								$bitstring[$this->acl_options[$ary_key][$option_key]] = ACL_YES;
+							}
 						}
-					}
-					else
-					{
-						$bitstring[$id] = ACL_NEVER;
+						else
+						{
+							$bitstring[$id] = ACL_NEVER;
+						}
 					}
 				}
 

@@ -122,9 +122,9 @@ class class_topics
 	/*
 	* Builds icons for topics
 	*/
-	function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $topic_replies, $topic_news_id, $poll_start, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies, $unread)
+	function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $topic_replies, $topic_news_id, $poll_start, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies)
 	{
-		//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
+		//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies);
 		global $config, $lang, $images, $user, $tracking_topics, $tracking_forums, $forum_id_append, $topic_id_append;
 
 		$topic_link = array();
@@ -229,7 +229,7 @@ class class_topics
 		{
 			//-----------------------------------------------------------
 			//<!-- BEGIN Unread Post Information to Database Mod -->
-			if(!$user->data['upi2db_access'] || !is_array($unread))
+			if(!$user->data['upi2db_access'] || !is_array($user->data['upi2db_unread']))
 			{
 			//<!-- END Unread Post Information to Database Mod -->
 			//------------------------------------------------------------
@@ -278,7 +278,7 @@ class class_topics
 			}
 			else
 			{
-				$upi_calc = $this->upi_calc_unread_simple($unread, $topic_link['topic_id']);
+				$upi_calc = $this->upi_calc_unread_simple($topic_link['topic_id']);
 				$unread_topics = $upi_calc['unread'];
 				//$topic_link['type'] = $upi_calc['upi_prefix'] . $topic_link['type'];
 				$upi_calc['newest_post_id'] = $post_id;
@@ -320,31 +320,31 @@ class class_topics
 	/*
 	* UPI get unread messages
 	*/
-	function upi_calc_unread_simple($unread, $topic_id)
+	function upi_calc_unread_simple($topic_id)
 	{
 		global $user, $lang;
 
 		$upi2db_status = '';
-		if (in_array($topic_id, $unread['new_topics']) || in_array($topic_id, $unread['edit_topics']))
+		if (!empty($user->data['upi2db_unread']) && (in_array($topic_id, $user->data['upi2db_unread']['new_topics']) || in_array($topic_id, $user->data['upi2db_unread']['edit_topics'])))
 		{
-			if((in_array($topic_id, $unread['new_topics']) && in_array($topic_id, $unread['edit_topics'])) && $user->data['user_upi2db_new_word'] && $user->data['user_upi2db_edit_word'])
+			if((in_array($topic_id, $user->data['upi2db_unread']['new_topics']) && in_array($topic_id, $user->data['upi2db_unread']['edit_topics'])) && $user->data['user_upi2db_new_word'] && $user->data['user_upi2db_edit_word'])
 			{
 				$upi2db_status = $lang['upi2db_post_edit'] . $lang['upi2db_post_and'] . $lang['upi2db_post_new'] . ': ';
 			}
 			else
 			{
-				if(in_array($topic_id, $unread['new_topics']) && $user->data['user_upi2db_new_word'])
+				if(in_array($topic_id, $user->data['upi2db_unread']['new_topics']) && $user->data['user_upi2db_new_word'])
 				{
 					$upi2db_status = $lang['upi2db_post_new'] . ': ';
 				}
 
-				if(in_array($topic_id, $unread['edit_topics']) && $user->data['user_upi2db_edit_word'])
+				if(in_array($topic_id, $user->data['upi2db_unread']['edit_topics']) && $user->data['user_upi2db_edit_word'])
 				{
 					$upi2db_status = $lang['upi2db_post_edit'] . ': ';
 				}
 			}
-			$min_new_post_id = (empty($unread[$topic_id]['new_posts'])) ? '99999999' : min($unread[$topic_id]['new_posts']);
-			$min_edit_post_id = (empty($unread[$topic_id]['edit_posts'])) ? '99999999' : min($unread[$topic_id]['edit_posts']);
+			$min_new_post_id = (empty($user->data['upi2db_unread'][$topic_id]['new_posts'])) ? '99999999' : min($user->data['upi2db_unread'][$topic_id]['new_posts']);
+			$min_edit_post_id = (empty($user->data['upi2db_unread'][$topic_id]['edit_posts'])) ? '99999999' : min($user->data['upi2db_unread'][$topic_id]['edit_posts']);
 			$post_id = ($min_edit_post_id >= $min_new_post_id) ? $min_new_post_id : $min_edit_post_id;
 			$upi_calc['unread'] = true;
 			$upi_calc['upi_prefix'] = $upi2db_status;

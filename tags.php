@@ -130,14 +130,14 @@ if ($mode == 'view')
 	//<!-- BEGIN Unread Post Information to Database Mod -->
 	if($user->data['upi2db_access'])
 	{
-		if (empty($unread))
+		if (!defined('UPI2DB_UNREAD'))
 		{
-			$unread = unread();
+			$user->data['upi2db_unread'] = upi2db_unread();
 		}
-		$count_new_posts = sizeof($unread['new_posts']);
-		$count_edit_posts = sizeof($unread['edit_posts']);
-		$count_always_read = sizeof($unread['always_read']['topics']);
-		$count_mark_unread = sizeof($unread['mark_posts']);
+		$count_new_posts = sizeof($user->data['upi2db_unread']['new_posts']);
+		$count_edit_posts = sizeof($user->data['upi2db_unread']['edit_posts']);
+		$count_always_read = sizeof($user->data['upi2db_unread']['always_read']['topics']);
+		$count_mark_unread = sizeof($user->data['upi2db_unread']['mark_posts']);
 	}
 	//<!-- END Unread Post Information to Database Mod -->
 
@@ -167,7 +167,7 @@ if ($mode == 'view')
 		$word_censor = censor_text($topic['topic_title']);
 		$topic_title = ((empty($topic['title_compl_infos'])) ? '' : $topic['title_compl_infos'] . ' ') . ((strlen($topic['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...');
 
-		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic['topic_id'], $topic['topic_type'], $topic['topic_reg'], $topic['topic_replies'], $topic['news_id'], $topic['poll_start'], $topic['topic_status'], $topic['topic_moved_id'], $topic['post_time'], $user_replied, $replies, $unread);
+		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic['topic_id'], $topic['topic_type'], $topic['topic_reg'], $topic['topic_replies'], $topic['news_id'], $topic['poll_start'], $topic['topic_status'], $topic['topic_moved_id'], $topic['post_time'], $user_replied, $replies);
 
 		$topic_id = $topic_link['topic_id'];
 		$topic_id_append = $topic_link['topic_id_append'];

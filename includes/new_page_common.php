@@ -151,7 +151,9 @@ if (!$cms_default_page)
 	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
 }
 
-$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
 $cms_acp_url = '';
 if ($is_admin || $auth->acl_get('cms_admin') || !empty($user->data['user_cms_auth']['cmsl_admin'][$layout]))
 {

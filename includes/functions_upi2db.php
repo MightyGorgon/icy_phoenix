@@ -132,15 +132,21 @@ if(!function_exists('delete_old_data'))
 //################################### unread ##########################################
 // Version 1.0.0
 
-if(!function_exists('unread'))
+if(!function_exists('upi2db_unread'))
 {
-	function unread()
+	function upi2db_unread()
 	{
 		global $db, $cache, $config, $user;
 
+		if (!defined('UPI2DB_UNREAD'))
+		{
+			define('UPI2DB_UNREAD', true);
+		}
+
 		if(!$user->data['session_logged_in'])
 		{
-			return;
+			$user->data['upi2db_unread'] = array();
+			return array();
 		}
 
 		$user_id = $user->data['user_id'];
@@ -243,6 +249,7 @@ if(!function_exists('unread'))
 			$db->sql_query($sql);
 		}
 
+		$user->data['upi2db_unread'] = $unread;
 		return $unread;
 	}
 }
@@ -987,11 +994,10 @@ if(!function_exists('marking_posts'))
 {
 	function marking_posts($forum_id = '')
 	{
-		global $db, $config, $user;
+		global $db, $config, $cache, $user, $lang;
 
 		$user_id = $user->data['user_id'];
-
-		$mp_forum = (empty($forum_id)) ? "" : " AND forum_id = '" . $forum_id . "'";
+		$mp_forum = (!empty($forum_id) ? (" AND forum_id = '" . $db->sql_escape($forum_id) . "'") : "");
 
 		// Edited By Mighty Gorgon - BEGIN
 		if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
@@ -1003,8 +1009,15 @@ if(!function_exists('marking_posts'))
 			$sql_add_mar = " AND topic_type != '" . POST_STICKY . "' AND topic_type != '" . POST_ANNOUNCE . "' AND topic_type != '" . POST_GLOBAL_ANNOUNCE . "'";
 		}
 
-		$auth_forum_read = auth_forum_read($user_data);
-		$sql_forum_auth = !empty($auth_forum_read) ? " OR (forum_id NOT IN(" . $auth_forum_read . "))" : "";
+		$sql_forum_auth = '';
+		// Mighty Gorgon: why shall we need this?
+		/*
+		if (!empty($forum_id))
+		{
+			$auth_forum_read = auth_forum_read($user->data);
+			$sql_forum_auth = !empty($auth_forum_read) ? " OR (forum_id NOT IN(" . $auth_forum_read . "))" : "";
+		}
+		*/
 		// Edited By Mighty Gorgon - END
 
 		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . "

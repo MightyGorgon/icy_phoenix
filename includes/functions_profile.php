@@ -142,12 +142,12 @@ function make_hours($base_time)
 
 function get_forum_most_active($user_id)
 {
-	global $db, $user;
+	global $db, $cache, $config, $auth, $user;
 
 	$user_id = (int) $user_id;
 	if (empty($user_id))
 	{
-		message_die(GENERAL_MESSAGE, $lang['User_not_exist']);
+		return $user_most_active;
 	}
 
 	$most_active_id = array();
@@ -169,17 +169,18 @@ function get_forum_most_active($user_id)
 		$is_auth = auth(AUTH_VIEW, $f_id, $user->data);
 		if ($is_auth['auth_view'] == 1)
 		{
-			$sql_most = "SELECT *
+			$sql = "SELECT *
 				FROM " . POSTS_TABLE . "
 				WHERE forum_id = " . $f_id . " AND poster_id = " . $user_id;
-			$result = $db->sql_query($sql_most);
+			$result = $db->sql_query($sql);
 
 			if ($db->sql_numrows($result) > $most_active_posts)
 			{
 				$most_active_posts = $db->sql_numrows($result);
-				$most_active_foren_id = $i;
-				$most_active_forum_name = $most_active_name[$i];
+				$most_active_foren_id = $f_id;
+				$most_active_forum_name = $most_active_name[$f_id];
 			}
+			$db->sql_freeresult($result);
 		}
 	}
 

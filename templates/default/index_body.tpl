@@ -50,7 +50,7 @@ if(GetCookie(tmp) == '2')
 <tr>
 	<td class="row1">
 		<span class="gensmall">
-		{L_Online_today}<br />
+		{L_ONLINE_TODAY}<br />
 		{L_USERS_TODAY}{L_USERS_LASTHOUR}<br />
 		{ADMINS_TODAY_LIST}<br />
 		{MODS_TODAY_LIST}<br />

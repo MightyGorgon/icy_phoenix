@@ -164,9 +164,6 @@ $gen_simple_header = false;
 $breadcrumbs_address = '';
 $breadcrumbs_links_left = '';
 $breadcrumbs_links_right = '';
-//<!-- BEGIN Unread Post Information to Database Mod -->
-$unread = array();
-//<!-- END Unread Post Information to Database Mod -->
 
 require(IP_ROOT_PATH . 'config.' . PHP_EXT);
 

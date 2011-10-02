@@ -54,6 +54,17 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+// Comment this if you run it outside Icy Phoenix
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+if (!defined('ICYPHOENIX_VERSION') @include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
+if (!class_exists('emailer') @include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+if (!defined('DIGEST_VERSION') @include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
+if (!function_exists('append_sid') @include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+if (!function_exists('check_mem_limit') @include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+if (!function_exists('auth') @include(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
+if (!defined('PHP_DIGESTS_FUNCTIONS_CRON') @include(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
+
 if (empty($user->data))
 {
 	// Start session management
@@ -63,25 +74,14 @@ if (empty($user->data))
 	// End session management
 }
 
-// Comment this if you run it outside Icy Phoenix
-if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
-if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-include_once(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
-
 if (($config['url_rw'] || $config['url_rw_guests']) && !function_exists('make_url_friendly'))
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
 if (empty($bbcode) || !class_exists('bbcode'))
 {
-	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 }
 
 setup_extra_lang(array('lang_digests'));
@@ -397,11 +397,6 @@ while ($row = $db->sql_fetchrow($result))
 				$this_msg = preg_replace('/\\n/', '<br />', $this_msg);
 				$msg .= $this_msg . $line_break;
 				*/
-				if (empty($bbcode) && class_exists('bbcode'))
-				{
-					unset($bbcode);
-					$bbcode = new bbcode();
-				}
 				$bbcode->allow_html = (isset($config['allow_html']) ? $config['allow_html'] : false);
 				$bbcode->allow_bbcode = (isset($config['allow_bbcode']) ? $config['allow_bbcode'] : true);
 				$bbcode->allow_smilies = (isset($config['allow_smilies']) ? $config['allow_smilies'] : true);
@@ -469,7 +464,7 @@ while ($row = $db->sql_fetchrow($result))
 	if (($msg_count > 0) || ($row['send_on_no_messages'] == 'YES'))
 	{
 
-		if (!(is_object($emailer)))
+		if (!is_object($emailer))
 		{
 			$emailer = new emailer();
 		}

@@ -831,11 +831,11 @@ if($user->data['upi2db_access'])
 	$unread_edit_posts = 0;
 	for($i = 0; $i < $total_posts; $i++)
 	{
-		if (sizeof($unread[$topic_id]['new_posts']) && in_array($postrow[$i]['post_id'], $unread[$topic_id]['new_posts']))
+		if (sizeof($user->data['upi2db_unread'][$topic_id]['new_posts']) && in_array($postrow[$i]['post_id'], $user->data['upi2db_unread'][$topic_id]['new_posts']))
 		{
 			++$unread_new_posts;
 		}
-		if (sizeof($unread[$topic_id]['edit_posts']) && in_array($postrow[$i]['post_id'], $unread[$topic_id]['edit_posts']))
+		if (sizeof($user->data['upi2db_unread'][$topic_id]['edit_posts']) && in_array($postrow[$i]['post_id'], $user->data['upi2db_unread'][$topic_id]['edit_posts']))
 		{
 			++$unread_edit_posts;
 		}
@@ -1040,9 +1040,9 @@ if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 //<!-- BEGIN Unread Post Information to Database Mod -->
 if($user->data['upi2db_access'])
 {
-	//$mark_always_read = mark_always_read($forum_topic_data['topic_type'], $topic_id, $forum_id, 'viewforum', 'txt', $unread);
-	$s_mark_ar = mark_always_read_vt_ip($forum_topic_data['topic_type'], $topic_id, $forum_id, 'txt', $unread);
-	$s_mark_ar_img = mark_always_read_vt_ip($forum_topic_data['topic_type'], $topic_id, $forum_id, 'img', $unread);
+	//$mark_always_read = mark_always_read($forum_topic_data['topic_type'], $topic_id, $forum_id, 'viewforum', 'txt', $user->data['upi2db_unread']);
+	$s_mark_ar = mark_always_read_vt_ip($forum_topic_data['topic_type'], $topic_id, $forum_id, 'txt', $user->data['upi2db_unread']);
+	$s_mark_ar_img = mark_always_read_vt_ip($forum_topic_data['topic_type'], $topic_id, $forum_id, 'img', $user->data['upi2db_unread']);
 }
 else
 {
@@ -1415,7 +1415,7 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 	else
 	{
-		viewtopic_calc_unread($unread, $topic_id, $postrow[$i]['post_id'], $forum_id, $mini_post_img, $mini_post_alt, $unread_color, $read_posts);
+		viewtopic_calc_unread($user->data['upi2db_unread'], $topic_id, $postrow[$i]['post_id'], $forum_id, $mini_post_img, $mini_post_alt, $unread_color, $read_posts);
 	}
 //<!-- END Unread Post Information to Database Mod -->
 
@@ -2079,7 +2079,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$post_edit_max = ($postrow[$i]['post_time'] >= $postrow[$i]['post_edit_time']) ? $postrow[$i]['post_time'] : $postrow[$i]['post_edit_time'];
 		$post_time_max = (empty($config['upi2db_edit_as_new'])) ? $postrow[$i]['post_time'] : $post_edit_max;
 		$post_id = $postrow[$i]['post_id'];
-		$mark_topic_unread = mark_post_viewtopic($post_time_max, $unread, $topic_id, $forum_id, $post_id, $except_time, $forum_topic_data['topic_type']);
+		$mark_topic_unread = mark_post_viewtopic($post_time_max, $user->data['upi2db_unread'], $topic_id, $forum_id, $post_id, $except_time, $forum_topic_data['topic_type']);
 	}
 	else
 	{
@@ -2186,6 +2186,31 @@ for($i = 0; $i < $total_posts; $i++)
 	{
 		$message = !empty($config['spam_disable_url']) ? str_replace(array('http://', 'www.'), array('h**p://', '***.'), $bbcode->strip_only($message, array('a'))) : $message;
 		$user_sig = !empty($config['spam_hide_signature']) ? '' : $user_sig;
+		$email_url = '';
+		$email_img = '';
+		$email = '';
+		$www_url = '';
+		$www_img = '';
+		$www = '';
+		$aim_url = '';
+		$aim_img = '';
+		$aim = '';
+		$icq_url = '';
+		$icq_status_img = '';
+		$icq_img = '';
+		$icq = '';
+		$msn_url = '';
+		$msn_img = '';
+		$msn = '';
+		$skype_url = '';
+		$skype_img = '';
+		$skype = '';
+		$yahoo_url = '';
+		$yahoo_img = '';
+		$yahoo = '';
+		$album_url = '';
+		$album_img = '';
+		$album = '';
 	}
 	// Antispam Measures - END
 

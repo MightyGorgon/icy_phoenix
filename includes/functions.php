@@ -3160,7 +3160,8 @@ function board_stats()
 	$sql = "SELECT COUNT(user_id) AS user_total FROM " . USERS_TABLE . " WHERE user_id > 0";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-	$max_users = intval($row['user_total']);
+	$db->sql_freeresult($result);
+	$max_users = (int) $row['user_total'];
 
 	// update
 	if ($config['max_users'] != $max_users)
@@ -3178,7 +3179,8 @@ function board_stats()
 		LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-	$newest_user_id = intval($row['user_id']);
+	$db->sql_freeresult($result);
+	$newest_user_id = (int) $row['user_id'];
 
 	if ($config['last_user_id'] != $newest_user_id)
 	{
@@ -3191,8 +3193,9 @@ function board_stats()
 	$sql = "SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total FROM " . FORUMS_TABLE;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-	$max_topics = intval($row['topic_total']);
-	$max_posts = intval($row['post_total']);
+	$db->sql_freeresult($result);
+	$max_topics = (int) $row['topic_total'];
+	$max_posts = (int) $row['post_total'];
 
 	// update
 	if ($config['max_topics'] != $max_topics)
@@ -4024,7 +4027,6 @@ function page_header($title = '', $parse_template = false)
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $forum_id, $topic_id;
-	global $unread;
 
 	if (defined('HEADER_INC'))
 	{
@@ -4456,7 +4458,7 @@ function page_header($title = '', $parse_template = false)
 		$u_display_new = array();
 		if($user->data['upi2db_access'])
 		{
-			$u_display_new = index_display_new($unread);
+			$u_display_new = index_display_new($user->data['upi2db_unread']);
 			$template->assign_block_vars('switch_upi2db_on', array());
 			$upi2db_first_use = ($user->data['user_upi2db_datasync'] == '0') ? ('<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n" . 'alert ("' . $lang['upi2db_first_use_txt'] . '");' . "\n" . '// ]]>' . "\n" . '</script>') : '';
 		}
@@ -5079,7 +5081,6 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $cms_acp_url;
-	global $unread;
 
 	$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
 	$config['url_rw_runtime'] = (isset($config['url_rw_runtime']) ? $config['url_rw_runtime'] : (($config['url_rw'] || ($config['url_rw_guests'] && ($user->data['user_id'] == ANONYMOUS))) ? true : false));

@@ -117,19 +117,23 @@ if ($user->data['upi2db_access'])
 	$topic_id_append = (!empty($t) ? (POST_TOPIC_URL . '=' . $t) : '');
 	$post_id_append = (!empty($p) ? (POST_POST_URL . '=' . $p) : '');
 
-	$unread = unread();
+	if (!defined('UPI2DB_UNREAD'))
+	{
+		$user->data['upi2db_unread'] = upi2db_unread();
+	}
+
 	$except_time = except_time();
 
 	if($do || $always_read)
 	{
 		if($do)
 		{
-			$mark_read_text = set_unread($t, $f, $p, $unread, $do, $tt);
+			$mark_read_text = set_unread($t, $f, $p, $user->data['upi2db_unread'], $do, $tt);
 		}
 
 		if($always_read)
 		{
-			$mark_read_text = always_read($t, $always_read, $unread);
+			$mark_read_text = always_read($t, $always_read, $user->data['upi2db_unread']);
 		}
 
 		$redirect_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append);
@@ -650,47 +654,47 @@ if($user->data['upi2db_access'])
 	{
 		while($row = $db->sql_fetchrow($result))
 		{
-			if(isset($unread['edit_topics']) && isset($unread['always_read']['topics']) && in_array($row['topic_id'], $unread['edit_topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
+			if(isset($user->data['upi2db_unread']['edit_topics']) && isset($user->data['upi2db_unread']['always_read']['topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_gae[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_gan[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['edit_topics']) && isset($unread['always_read']['topics']) && in_array($row['topic_id'], $unread['edit_topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['edit_topics']) && isset($user->data['upi2db_unread']['always_read']['topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
 			{
 				$topic_rowset_ae[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
 			{
 				$topic_rowset_an[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['edit_topics']) && isset($unread['always_read']['topics']) && in_array($row['topic_id'], $unread['edit_topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_STICKY)
+			elseif(isset($user->data['upi2db_unread']['edit_topics']) && isset($user->data['upi2db_unread']['always_read']['topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_STICKY)
 			{
 				$topic_rowset_se[] = $row;
 				$total_topics++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_STICKY)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_STICKY)
 			{
 				$topic_rowset_sn[] = $row;
 				$total_topics++;
 			}
-			elseif(isset($unread['edit_topics']) && isset($unread['always_read']['topics']) && in_array($row['topic_id'], $unread['edit_topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] != POST_STICKY && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['edit_topics']) && isset($user->data['upi2db_unread']['always_read']['topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] != POST_STICKY && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_ne[] = $row;
 				$total_topics++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] != POST_STICKY && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] != POST_STICKY && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_nn[] = $row;
 				$total_topics++;
 			}
-			if(in_array($row['topic_id'], $unread['always_read']['topics']))
+			if(in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']))
 			{
 				$topic_rowset_ar[] = $row;
 				$total_topics++;
@@ -702,17 +706,17 @@ if($user->data['upi2db_access'])
 	{
 		while($row = $db->sql_fetchrow($result))
 		{
-			if(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
+			if(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_gan[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
 			{
 				$topic_rowset_an[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_nn[] = $row;
 				$total_topics++;
@@ -832,7 +836,7 @@ if($can_watch_forum)
 //<!-- BEGIN Unread Post Information to Database Mod -->
 if($user->data['upi2db_access'])
 {
-	if(!in_array($forum_id, $unread['always_read']['forums']))
+	if(!in_array($forum_id, $user->data['upi2db_unread']['always_read']['forums']))
 	{
 		$mark_as_read = '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
 		$mark_always_read = '<a href="' . append_sid(CMS_PAGE_FORUM . '?forum_id=' . $forum_id . $kb_mode_append . '&amp;always_read=set') . '">' . $lang['upi2db_always_read_forum_short'] . '</a>';
@@ -1055,7 +1059,7 @@ if($total_topics)
 		$replies = $topic_rowset[$i]['topic_replies'];
 		$topic_type = $topic_rowset[$i]['topic_type'];
 
-		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
+		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies);
 
 		$topic_id = $topic_link['topic_id'];
 		$topic_id_append = $topic_link['topic_id_append'];
@@ -1180,7 +1184,7 @@ if($total_topics)
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		if($user->data['upi2db_access'])
 		{
-			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $unread, $start, $topic_link['image']);
+			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $user->data['upi2db_unread'], $start, $topic_link['image']);
 		}
 		else
 		{

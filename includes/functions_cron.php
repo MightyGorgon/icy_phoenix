@@ -33,7 +33,8 @@ function unlock_cron()
 */
 function process_digests()
 {
-	global $db, $cache, $config, $user, $lang, $table_prefix;
+	global $db, $cache, $config, $auth, $user, $lang, $bbcode;
+	global $template, $images, $table_prefix;
 
 	// Digests - BEGIN
 	if (!defined('DIGEST_SITE_URL'))
@@ -58,6 +59,7 @@ function process_digests()
 				{
 					set_config('cron_lock_hour', 1);
 					define('PHP_DIGESTS_CRON', true);
+					define('PHP_DIGESTS_FUNCTIONS_CRON', true);
 					include_once(IP_ROOT_PATH . 'mail_digests.' . PHP_EXT);
 				}
 			}
@@ -77,7 +79,8 @@ function process_digests()
 */
 function process_birthdays()
 {
-	global $db, $cache, $config, $lang;
+	global $db, $cache, $config, $auth, $user, $lang, $bbcode;
+	global $template, $images, $table_prefix;
 
 	if (!empty($config['cron_birthdays_interval']))
 	{

@@ -129,7 +129,7 @@ if ($watch_count > 0)
 
 			$replies = $watch_rows[$i]['topic_replies'];
 
-			$topic_link = $class_topics->build_topic_icon_link($watch_rows[$i]['forum_id'], $watch_rows[$i]['topic_id'], $watch_rows[$i]['topic_type'], $watch_rows[$i]['topic_reg'], $watch_rows[$i]['topic_replies'], $watch_rows[$i]['news_id'], $watch_rows[$i]['poll_start'], $watch_rows[$i]['topic_status'], $watch_rows[$i]['topic_moved_id'], $watch_rows[$i]['post_time'], $user_replied, $replies, $unread);
+			$topic_link = $class_topics->build_topic_icon_link($watch_rows[$i]['forum_id'], $watch_rows[$i]['topic_id'], $watch_rows[$i]['topic_type'], $watch_rows[$i]['topic_reg'], $watch_rows[$i]['topic_replies'], $watch_rows[$i]['news_id'], $watch_rows[$i]['poll_start'], $watch_rows[$i]['topic_status'], $watch_rows[$i]['topic_moved_id'], $watch_rows[$i]['post_time'], $user_replied, $replies);
 
 			$topic_pagination = generate_topic_pagination($forum_id, $topic_id, $replies);
 

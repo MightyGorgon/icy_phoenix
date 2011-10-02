@@ -391,14 +391,13 @@ function read_tree($force = false)
 {
 
 	global $db, $config, $user, $tree;
-	global $unread;
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	if($user->data['upi2db_access'])
 	{
-		if (empty($unread))
+		if (!defined('UPI2DB_UNREAD'))
 		{
-			$unread = unread();
+			$user->data['upi2db_unread'] = upi2db_unread();
 		}
 	}
 //<!-- END Unread Post Information to Database Mod -->
@@ -549,7 +548,7 @@ function read_tree($force = false)
 			{
 				$unread_topics = false;
 				$forum_id = $tree['id'][$i];
-				if(in_array($forum_id, $unread['forums']) || in_array('A', $unread['forums']))
+				if(in_array($forum_id, $user->data['upi2db_unread']['forums']) || in_array('A', $user->data['upi2db_unread']['forums']))
 				{
 					$unread_topics = true;
 				}
@@ -573,24 +572,18 @@ function set_tree_user_auth()
 	if ($config['show_forums_online_users'] == true)
 	{
 
-		$sql = "SELECT s.session_page
+		$sql = "SELECT DISTINCT(s.session_ip), s.session_forum_id
 			FROM " . SESSIONS_TABLE . " s
-			WHERE s.session_time >= " . (time() - ONLINE_REFRESH);
+			WHERE s.session_time >= " . (time() - ONLINE_REFRESH) . "
+				AND s.session_forum_id <> 0
+				GROUP BY s.session_ip
+				ORDER BY s.session_forum_id ASC";
 		$result = $db->sql_query($sql);
 
 		$forum_online = array();
 		while($row = $db->sql_fetchrow($result))
 		{
-			if ((strpos($row['session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($row['session_page'], CMS_PAGE_VIEWTOPIC) !== false))
-			{
-				$results = array();
-				ereg('_f_=([0-9]*)x', $row['session_page'], $results);
-				if (!empty($results[0]))
-				{
-					$forum_id = str_replace(array('_f_=', 'x'), array('', ''), $results[0]);
-					$forum_online[$forum_id] = (empty($forum_online[$forum_id])) ? 1 : ($forum_online[$forum_id] + 1);
-				}
-			}
+			$forum_online[$row['session_forum_id']] = (empty($forum_online[$row['session_forum_id']])) ? 1 : ($forum_online[$row['session_forum_id']] + 1);
 		}
 	}
 	$db->sql_freeresult($result);
@@ -685,11 +678,12 @@ function set_tree_user_auth()
 			$tree['data'][$i]['tree.forum_topics'] = 0;
 			$tree['data'][$i]['tree.forum_online'] = 0;
 		}
+
 		if ($auth_view)
 		{
 			$tree['data'][$i]['tree.forum_posts'] += isset($tree['data'][$i]['forum_posts']) ? $tree['data'][$i]['forum_posts'] : 0;
 			$tree['data'][$i]['tree.forum_topics'] += isset($tree['data'][$i]['forum_topics']) ? $tree['data'][$i]['forum_topics'] : 0;
-			$tree['data'][$i]['tree.forum_online'] += (empty($forum_online[$i]) ? 0 : $forum_online[$i]);
+			$tree['data'][$i]['tree.forum_online'] += (empty($forum_online[$tree['id'][$i]]) ? 0 : (int) $forum_online[$tree['id'][$i]]);
 		}
 
 		// grant the main level
@@ -891,12 +885,13 @@ function get_max_depth($cur = 'Root', $all = false, $level = -1, &$keys, $max = 
 //--------------------------------------------------------------------------------------------------
 function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $real_level = -1, $max_level = -1, &$keys)
 {
-	global $template, $db, $cache, $config, $lang, $images, $theme;
+	global $template, $db, $cache, $config, $user, $lang, $images, $theme;
 	global $tree, $bbcode, $lofi;
-//<!-- BEGIN Unread Post Information to Database Mod -->
-	global $user, $unread;
-//<!-- END Unread Post Information to Database Mod -->
-	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+
+	if (empty($bbcode))
+	{
+		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	}
 
 	// init
 	$display = false;
@@ -1228,7 +1223,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 				if(!$data['tree.unread_topics'] && !$sub)
 				{
-					if(is_array($unread['always_read']['forums']) && !in_array($forum_id, $unread['always_read']['forums']))
+					if(is_array($user->data['upi2db_unread']['always_read']['forums']) && !in_array($forum_id, $user->data['upi2db_unread']['always_read']['forums']))
 					{
 						$mark_always_read = '<a href="' . append_sid(CMS_PAGE_FORUM . '?forum_id=' . $forum_id . '&amp;always_read=set') . '"><img src="' . $folder_image . '" alt="' . $lang['upi2db_always_read_forum']. '" title="' . $lang['upi2db_always_read_forum'] . '" /></a>';
 					}

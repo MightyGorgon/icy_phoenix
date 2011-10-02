@@ -97,20 +97,20 @@ if($user->data['upi2db_access'])
 
 	$mar_topic_id = request_var('mar_topic_id', array(0));
 
-	if (empty($unread))
+	if (!defined('UPI2DB_UNREAD'))
 	{
-		$unread = unread();
+		$user->data['upi2db_unread'] = upi2db_unread();
 	}
 
 	if($always_read || $do || ($mar && !empty($mar_topic_id)))
 	{
 		if($always_read)
 		{
-			$mark_read_text = always_read($t, $always_read, $unread);
+			$mark_read_text = always_read($t, $always_read, $user->data['upi2db_unread']);
 		}
 		if($do)
 		{
-			$mark_read_text = set_unread($t, $f, $p, $unread, $do, $tt);
+			$mark_read_text = set_unread($t, $f, $p, $user->data['upi2db_unread'], $do, $tt);
 		}
 		if($mar && !empty($mar_topic_id))
 		{
@@ -124,10 +124,10 @@ if($user->data['upi2db_access'])
 		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_search'], '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_mode . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
-	$count_new_posts = sizeof($unread['new_posts']);
-	$count_edit_posts = sizeof($unread['edit_posts']);
-	$count_always_read = sizeof($unread['always_read']['topics']);
-	$count_mark_unread = sizeof($unread['mark_posts']);
+	$count_new_posts = sizeof($user->data['upi2db_unread']['new_posts']);
+	$count_edit_posts = sizeof($user->data['upi2db_unread']['edit_posts']);
+	$count_always_read = sizeof($user->data['upi2db_unread']['always_read']['topics']);
+	$count_mark_unread = sizeof($user->data['upi2db_unread']['mark_posts']);
 }
 //<!-- END Unread Post Information to Database Mod -->
 
@@ -341,16 +341,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							switch($s2)
 							{
 								case 'perm':
-								$sql_where = (sizeof($unread['always_read']['topics']) == 0) ? 0 : implode(',', $unread['always_read']['topics']);
+								$sql_where = (sizeof($user->data['upi2db_unread']['always_read']['topics']) == 0) ? 0 : implode(',', $user->data['upi2db_unread']['always_read']['topics']);
 								break;
 
 								case 'new':
-								$sql_where = (sizeof($unread['new_posts']) == 0) ? 0 : implode(',', $unread['new_posts']);
-								$sql_where2 = (sizeof($unread['edit_posts']) == 0) ? 0 : implode(',', $unread['edit_posts']);
+								$sql_where = (sizeof($user->data['upi2db_unread']['new_posts']) == 0) ? 0 : implode(',', $user->data['upi2db_unread']['new_posts']);
+								$sql_where2 = (sizeof($user->data['upi2db_unread']['edit_posts']) == 0) ? 0 : implode(',', $user->data['upi2db_unread']['edit_posts']);
 								break;
 
 								case 'mark':
-								$sql_where = (sizeof($unread['mark_posts']) == 0) ? 0 : implode(',', $unread['mark_posts']);
+								$sql_where = (sizeof($user->data['upi2db_unread']['mark_posts']) == 0) ? 0 : implode(',', $user->data['upi2db_unread']['mark_posts']);
 								$sql_where2 = 0;
 								break;
 							}
@@ -1135,7 +1135,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			{
 				if($config['upi2db_edit_topic_first'])
 				{
-					if(isset($unread['edit_topics']) && in_array($row['topic_id'], $unread['edit_topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
+					if(isset($user->data['upi2db_unread']['edit_topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
 					{
 						$searchset_gae[] = $row;
 					}
@@ -1143,7 +1143,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					{
 						$searchset_gan[] = $row;
 					}
-					elseif(isset($unread['edit_topics']) && in_array($row['topic_id'], $unread['edit_topics']) && $row['topic_type'] == POST_ANNOUNCE)
+					elseif(isset($user->data['upi2db_unread']['edit_topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && $row['topic_type'] == POST_ANNOUNCE)
 					{
 						$searchset_ae[] = $row;
 					}
@@ -1151,7 +1151,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					{
 						$searchset_an[] = $row;
 					}
-					elseif(isset($unread['edit_topics']) && in_array($row['topic_id'], $unread['edit_topics']) && $row['topic_type'] == POST_STICKY)
+					elseif(isset($user->data['upi2db_unread']['edit_topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && $row['topic_type'] == POST_STICKY)
 					{
 						$searchset_se[] = $row;
 					}
@@ -1159,7 +1159,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					{
 						$searchset_sn[] = $row;
 					}
-					elseif(isset($unread['edit_topics']) && in_array($row['topic_id'], $unread['edit_topics']) && $row['topic_type'] != POST_GLOBAL_ANNOUNCE && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_STICKY)
+					elseif(isset($user->data['upi2db_unread']['edit_topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && $row['topic_type'] != POST_GLOBAL_ANNOUNCE && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_STICKY)
 					{
 						$searchset_e[] = $row;
 					}
@@ -1475,7 +1475,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 				else
 				{
-					search_calc_unread_ip($unread, $topic_id, $searchset, $i, $mini_post_img, $mini_post_alt, $unread_color, $folder_image, $folder_alt);
+					search_calc_unread_ip($user->data['upi2db_unread'], $topic_id, $searchset, $i, $mini_post_img, $mini_post_alt, $unread_color, $folder_image, $folder_alt);
 				}
 				if($user->data['upi2db_access'])
 				{
@@ -1553,7 +1553,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$views = $searchset[$i]['topic_views'];
 				$replies = $searchset[$i]['topic_replies'];
 
-				$topic_link = $class_topics->build_topic_icon_link($searchset[$i]['forum_id'], $searchset[$i]['topic_id'], $searchset[$i]['topic_type'], $searchset[$i]['topic_reg'], $searchset[$i]['topic_replies'], $searchset[$i]['news_id'], $searchset[$i]['poll_start'], $searchset[$i]['topic_status'], $searchset[$i]['topic_moved_id'], $searchset[$i]['post_time'], $user_replied, $replies, $unread);
+				$topic_link = $class_topics->build_topic_icon_link($searchset[$i]['forum_id'], $searchset[$i]['topic_id'], $searchset[$i]['topic_type'], $searchset[$i]['topic_reg'], $searchset[$i]['topic_replies'], $searchset[$i]['news_id'], $searchset[$i]['poll_start'], $searchset[$i]['topic_status'], $searchset[$i]['topic_moved_id'], $searchset[$i]['post_time'], $user_replied, $replies);
 
 				$topic_id = $topic_link['topic_id'];
 				$topic_id_append = $topic_link['topic_id_append'];
@@ -1677,7 +1677,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				if($user->data['upi2db_access'])
 				{
-					$mark_always_read = mark_always_read($searchset[$i]['topic_type'], $topic_id, $forum_id, 'search', 'icon', $unread, $start, $topic_link['image'], $search_mode, $s2);
+					$mark_always_read = mark_always_read($searchset[$i]['topic_type'], $topic_id, $forum_id, 'search', 'icon', $user->data['upi2db_unread'], $start, $topic_link['image'], $search_mode, $s2);
 				}
 				else
 				{

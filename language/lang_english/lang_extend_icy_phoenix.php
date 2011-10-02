@@ -227,8 +227,8 @@ if ($lang_extend_admin)
 		'IP_spam_disable_url' => 'SPAM - Disable URLs In Posts',
 		'IP_spam_disable_url_explain' => 'This feature remove all URLs in posts and replace HTTP with H**P, this feature will remain in place for a minimum of posts specified in the field above. Administrators will see the original message anyway.',
 
-		'IP_spam_hide_signature' => 'SPAM - Disable Signature In Posts',
-		'IP_spam_hide_signature_explain' => 'This feature will hide the signature for all those users who didn\'t reach a minimum of posts specified in the field above. Administrators will see the signature anyway.',
+		'IP_spam_hide_signature' => 'SPAM - Disable Signature And Web In Posts',
+		'IP_spam_hide_signature_explain' => 'This feature will hide the signature and personal website information for all those users who didn\'t reach a minimum of posts specified in the field above. Administrators will see the signature anyway.',
 
 		'IP_spam_post_edit_interval' => 'SPAM - Disable Post Edit',
 		'IP_spam_post_edit_interval_explain' => 'By enabling this feature, all users who didn\'t reach the required amount of posts will not be able to edit their posts after the specified interval',

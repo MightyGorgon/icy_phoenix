@@ -180,7 +180,6 @@ $sql ="SELECT * FROM " . TOPICS_TABLE . "
 		WHERE poll_title <> ''
 		ORDER BY " . $order_by;
 $result = $db->sql_query($sql);
-$num_polls = $db->sql_numrows($result);
 
 $i = 0;
 while ($row = $db->sql_fetchrow($result))
@@ -262,6 +261,12 @@ while ($row = $db->sql_fetchrow($result))
 
 }
 $db->sql_freeresult($result);
+
+// Get all polls
+$sql ="SELECT topic_id FROM " . TOPICS_TABLE . "
+		WHERE poll_title <> ''";
+$result = $db->sql_query($sql);
+$num_polls = $db->sql_numrows($result);
 
 // Pagination routine
 if ($num_polls > 0)

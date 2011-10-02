@@ -116,14 +116,21 @@ if (!empty($show_extra_stats) && $view_bb_usage_allowed)
 
 	$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 
+	$forum_cats = get_root_categories_rows();
+	$forum_cats_array = array();
+	foreach ($forum_cats as $forum_cat)
+	{
+		$forum_cats_array[$forum_cat['forum_id']] = $forum_cat['forum_id'];
+	}
+
 	/* Retrieve user's forum usage data */
-	$forum_usage_rows =& get_forum_usage_rows($profiledata['user_id'], $profiledata['user_posts'], ($viewoptions & BBUS_VIEWOPTION_SHOW_ALL_FORUMS));
+	$forum_usage_rows = &get_forum_usage_rows($profiledata['user_id'], $profiledata['user_posts'], ($viewoptions & BBUS_VIEWOPTION_SHOW_ALL_FORUMS));
 
 	/* Retrieve user's topic start data */
-	$forum_topic_starts_rows =& get_forum_topic_starts_rows($profiledata['user_id']);
+	$forum_topic_starts_rows = &get_forum_topic_starts_rows($profiledata['user_id']);
 
 	/* Retrieve section summary information */
-	$section_usage_rows =& get_section_usage_rows($forum_usage_rows, $forum_topic_starts_rows);
+	$section_usage_rows = &get_section_usage_rows($forum_usage_rows, $forum_topic_starts_rows);
 
 	/* Set the file handles to include bb_usage_stats.tpl */
 	$template->set_filenames(array('bb_usage_stats_template' => 'bb_usage_stats.tpl'));
@@ -137,7 +144,8 @@ if (!empty($show_extra_stats) && $view_bb_usage_allowed)
 	}
 
 	/* If any forum usage results were returned: */
-	if ($forum_usage_rows) {
+	if ($forum_usage_rows)
+	{
 		$prscale = (isset($_POST['prscale'])) ? $_POST['prscale'] : $config[BBUS_CONFIGPROP_PRSCALE_NAME];
 		$trscale = (isset($_POST['trscale'])) ? $_POST['trscale'] : $config[BBUS_CONFIGPROP_TRSCALE_NAME];
 
@@ -145,7 +153,7 @@ if (!empty($show_extra_stats) && $view_bb_usage_allowed)
 		$last_cat_id = -1;
 		for ($i = 0; $i < sizeof($forum_usage_rows); $i++)
 		{
-			$forum_topic_starts = & get_forum_topic_starts($forum_topic_starts_rows, $forum_usage_rows[$i]['forum_id']);
+			$forum_topic_starts = &get_forum_topic_starts($forum_topic_starts_rows, $forum_usage_rows[$i]['forum_id']);
 
 			// The *_per_day calculations assume $memberdays has already been calculated in usercp_viewprofile.php
 			$forum_post_rate = sprintf("%01.2f", ($forum_usage_rows[$i]['forum_post_count'] / $memberdays)*$prscale);
@@ -153,9 +161,12 @@ if (!empty($show_extra_stats) && $view_bb_usage_allowed)
 
 			/* If the section id has changed, set it. */
 			$cur_cat_id = $forum_usage_rows[$i]['parent_id'];
-			if ($cur_cat_id != $last_cat_id)
+			// Mighty Gorgon: with the new category system we may just check if the parent is 0!
+			$cur_cat_root_parent = (in_array($forum_usage_rows[$i]['parent_id'], $forum_cats_array) ? true : false);
+			$cat_changed = ($cur_cat_id == $last_cat_id) ? false : true;
+			if ($cur_cat_root_parent && $cat_changed)
 			{
-				$section_row = & get_section_usage_row($section_usage_rows, $cur_cat_id);
+				$section_row = &get_section_usage_row($section_usage_rows, $cur_cat_id);
 
 				/* Avoid Div By Zero */
 				if ($profiledata['user_posts'] <= 0)
@@ -203,8 +214,8 @@ if (!empty($show_extra_stats) && $view_bb_usage_allowed)
 						)
 					);
 				}
+				$last_cat_id = $cur_cat_id;
 			}
-			$last_cat_id = $cur_cat_id;
 
 			if (!isset($forum_usage_rows[$i]['watch_count']))
 			{

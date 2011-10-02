@@ -252,13 +252,51 @@ class session
 							{
 								$db->sql_return_on_error(true);
 								$sql = "UPDATE " . USERS_TABLE . "
-									SET user_session_time = " . $this->time_now . ", user_session_page = '" . substr($this->page['page'], 0, 254) . "', user_browser = '" . substr($this->browser, 0, 254) . "', user_totalpages = user_totalpages + 1, user_totaltime = user_totaltime + (" . $this->time_now . " - " . $this->data['session_time'] . ")
+									SET user_session_time = " . $this->time_now . ", user_session_page = '" . $db->sql_escape(substr($this->page['page'], 0, 254)) . "', user_browser = '" . $db->sql_escape(substr($this->browser, 0, 254)) . "', user_totalpages = user_totalpages + 1, user_totaltime = user_totaltime + (" . $this->time_now . " - " . $this->data['session_time'] . ")
 									WHERE user_id = " . $this->data['user_id'];
 								$db->sql_query($sql);
 								$db->sql_return_on_error(false);
+
+								// Start Advanced IP Tools Pack MOD
+								if (empty($config['disable_logins']))
+								{
+									$sql_logins_ary = array(
+										'login_userid' => $this->data['user_id'],
+										'login_ip' => $this->ip,
+										'login_user_agent' => substr($this->browser, 0, 254),
+										'login_time' => $this->time_now,
+									);
+									$db->sql_return_on_error(true);
+									$sql = "INSERT INTO " . LOGINS_TABLE . " " . $db->sql_build_insert_update($sql_logins_ary, true);
+									$db->sql_query($sql);
+									$db->sql_return_on_error(false);
+
+									// Now get the results in groups based on how many topics per page parameter set in the admin panel
+									$sql = "SELECT * FROM " . LOGINS_TABLE . " WHERE login_userid = " . $this->data['user_id'] . " ORDER BY login_id ASC";
+									$db->sql_query($sql);
+									$user_logins = $db->sql_numrows($result);
+									$max_logins = $config['last_logins_n'];
+
+									if (!empty($user_logins))
+									{
+										if($user_logins > $max_logins)
+										{
+											$login_rows = $db->sql_fetchrowset($result);
+											$logins_to_kill = array();
+											for($i = 0; $i < ($user_logins - $max_logins); $i++)
+											{
+												$logins_to_kill[] = $login_rows[$i]['login_id'];
+											}
+											$db->sql_return_on_error(true);
+											$sql = "DELETE FROM " . LOGINS_TABLE . " WHERE login_id IN (" . implode(',', $logins_to_kill) . ")";
+											$db->sql_query($sql);
+											$db->sql_return_on_error(false);
+										}
+									}
+								}
+								// End Advanced IP Tools Pack MOD
 							}
 							// ICY PHOENIX - END
-
 						}
 
 						// Replaced by Mighty Gorgon
@@ -390,7 +428,7 @@ class session
 
 		if ($this->data['user_id'] != ANONYMOUS)
 		{
-			$this->data['session_last_visit'] = (isset($this->data['session_time']) && $this->data['session_time']) ? $this->data['session_time'] : (($this->data['user_lastvisit']) ? $this->data['user_lastvisit'] : time());
+			$this->data['session_last_visit'] = (isset($this->data['session_time']) && $this->data['session_time']) ? $this->data['session_time'] : (($this->data['user_lastvisit']) ? $this->data['user_lastvisit'] : $this->time_now);
 		}
 		else
 		{
@@ -453,7 +491,8 @@ class session
 				// Only update session DB a minute or so after last update or if page changes
 				if ((($this->time_now - $this->data['session_time']) > SESSION_REFRESH) || ($this->update_session_page && ($this->data['session_page'] != $this->page['page'])))
 				{
-					$this->data['session_time'] = $this->data['session_last_visit'] = $this->time_now;
+					$this->data['session_time'] = $this->time_now;
+					$this->data['session_last_visit'] = $this->time_now;
 
 					$sql_ary = array('session_time' => $this->time_now, 'session_last_visit' => $this->time_now, 'session_admin' => 0);
 
@@ -469,7 +508,7 @@ class session
 						WHERE session_id = '" . $db->sql_escape($this->session_id) . "'";
 					$db->sql_query($sql);
 
-					// Update the last visit time
+					// Update the last visit time even if it is a bot...
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_lastvisit = " . (int) $this->data['session_time'] . "
 						WHERE user_id = " . (int) $this->data['user_id'];
@@ -582,7 +621,7 @@ class session
 		$_SID = $this->session_id;
 		$this->data = array_merge($this->data, $sql_ary);
 
-		if (!$bot)
+		if (empty($this->data['is_bot']))
 		{
 			$cookie_expire = $this->time_now + (($config['max_autologin_time']) ? 86400 * (int) $config['max_autologin_time'] : 31536000);
 
@@ -612,7 +651,8 @@ class session
 		}
 		else
 		{
-			$this->data['session_time'] = $this->data['session_last_visit'] = $this->time_now;
+			$this->data['session_time'] = $this->time_now;
+			$this->data['session_last_visit'] = $this->time_now;
 
 			// Update the last visit time
 			$sql = "UPDATE " . USERS_TABLE . "
@@ -1298,7 +1338,7 @@ class user extends session
 		global $db, $cache, $config, $auth, $template;
 		// We need $lang declared as global to make sure we do not miss extra $lang vars added using this function
 		global $theme, $images, $lang, $nav_separator;
-		global $class_settings, $tree, $unread;
+		global $class_settings, $tree;
 
 		// Get all settings
 		$class_settings->setup_settings();
@@ -1408,13 +1448,16 @@ class user extends session
 		// MG Logs - END
 
 		//<!-- BEGIN Unread Post Information to Database Mod -->
-		$unread = array();
 		if (!defined('IN_CMS') && $this->data['upi2db_access'])
 		{
-			if (empty($unread))
+			if (!defined('UPI2DB_UNREAD'))
 			{
-				$unread = unread();
+				$this->data['upi2db_unread'] = upi2db_unread();
 			}
+		}
+		else
+		{
+			$this->data['upi2db_unread'] = array();
 		}
 		//<!-- END Unread Post Information to Database Mod -->
 
@@ -1581,7 +1624,7 @@ class user extends session
 			{
 				// Mighty Gorgon - Change Style - BEGIN
 				// Check cookie as well!!!
-				$test_style = request_var(STYLE_URL, 0, false, true);
+				$test_style = request_var(STYLE_URL, 0);
 				if ($test_style > 0)
 				{
 					$config['default_style'] = urldecode($test_style);

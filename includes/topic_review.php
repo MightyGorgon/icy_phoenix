@@ -22,7 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 function topic_review($forum_id, $topic_id, $is_inline_review)
 {
-	global $db, $config, $template, $images, $theme, $user, $lang, $bbcode, $tree;
+	global $db, $config, $auth, $user, $lang, $template, $images, $theme, $bbcode, $tree;
 	global $user_ip, $starttime, $gen_simple_header;
 
 	if (!$is_inline_review)

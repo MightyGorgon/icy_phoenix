@@ -42,7 +42,9 @@ class cms_admin
 
 		$this->root = CMS_PAGE_CMS;
 
-		$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+		// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+		//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+		$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
 
 		$this->is_auth['cms_admin'] = ($is_admin || $auth->acl_get('cms_admin')) ? true : false;
 		$this->is_auth['cms_ads'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_ads')) ? true : false;
@@ -258,7 +260,9 @@ class cms_admin
 
 		$tabs_array = array();
 
-		$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+		// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+		//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+		$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
 
 		$tabs_array[] = array('TITLE' => $lang['CMS_TITLE'], 'MODE' => false, 'LINK' => append_sid(IP_ROOT_PATH . $this->root), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_home.png', 'TIP' => $lang['CMS_TIP_TITLE'], 'AUTH' => AUTH_REG);
 

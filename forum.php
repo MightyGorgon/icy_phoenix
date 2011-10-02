@@ -42,8 +42,8 @@ if($user->data['upi2db_access'])
 {
 	// Mighty Gorgon: are these two vars really needed? After a quick global search, they are not needed... so I comment them!
 	/*
-	$always_read_topics_string = explode(',', $unread['always_read']['topics']);
-	$always_read_forums_string = explode(',', $unread['always_read']['forums']);
+	$always_read_topics_string = explode(',', $user->data['upi2db_unread']['always_read']['topics']);
+	$always_read_forums_string = explode(',', $user->data['upi2db_unread']['always_read']['forums']);
 	*/
 
 	if (!empty($mark_always_read))
@@ -70,7 +70,7 @@ setup_extra_lang(array('lang_main_link'));
 $viewcat = (!empty($_GET[POST_CAT_URL]) ? intval($_GET[POST_CAT_URL]) : -1);
 $viewcat = (($viewcat <= 0) ? -1 : $viewcat);
 $viewcatkey = ($viewcat < 0) ? 'Root' : POST_CAT_URL . $viewcat;
-$mark_read = request_var('mode', '');
+$mark_read = request_var('mark', '');
 
 // Handle marking posts
 if($mark_read == 'forums')
@@ -350,7 +350,6 @@ $template->assign_vars(array(
 	'L_CAT_NEW_POSTS' => $lang['Cat_new_posts'],
 	'L_NO_NEW_POSTS_LOCKED' => $lang['No_new_posts_locked'],
 	'L_NEW_POSTS_LOCKED' => $lang['New_posts_locked'],
-	'L_ONLINE_EXPLAIN' => $lang['Online_explain'],
 
 	'FORUMINDEX_BANNER_ELEMENT' => $forumindex_banner_element,
 

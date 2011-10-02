@@ -479,7 +479,7 @@ if ($user_sig != '')
 }
 
 
-if ($profiledata['user_id'])
+if (!empty($profiledata['user_id']))
 {
 	$user_most_active = get_forum_most_active($profiledata['user_id']);
 	$user_most_active_forum_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . urlencode($user_most_active['forum_id']));

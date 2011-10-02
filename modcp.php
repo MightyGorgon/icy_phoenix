@@ -1074,7 +1074,6 @@ switch($mode)
 		// check if user replied to the topic
 		define('USER_REPLIED_ICON', true);
 		$user_topics = $class_topics->user_replied_array($topic_rowset);
-		$is_unread = false;
 		// MG User Replied - END
 
 		for($i = 0; $i < $total_topics; $i++)
@@ -1104,7 +1103,7 @@ switch($mode)
 			$replies = $topic_rowset[$i]['topic_replies'];
 			$topic_type = $topic_rowset[$i]['topic_type'];
 
-			$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $is_unread);
+			$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies);
 
 			if (!$topic_rowset[$i]['topic_status'] == TOPIC_MOVED)
 			{

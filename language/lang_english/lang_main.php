@@ -883,8 +883,8 @@ $lang = array_merge($lang, array(
 	'Guest_user_online' => 'There is %d Guest user online', // There is 1 Guest user online
 	'No_users_browsing' => 'There are no users currently browsing this forum',
 
-	'Online_explain' => 'This data is based on users active over the past ' . intval(ONLINE_REFRESH / 60) . ' minutes',
-	'Online_today' => 'This data is based on users active today',
+	'ONLINE_EXPLAIN' => 'This data is based on users active over the past ' . intval(ONLINE_REFRESH / 60) . ' minutes',
+	'ONLINE_TODAY' => 'This data is based on users active today',
 
 	'Forum_Location' => 'Forum Location',
 	'Last_updated' => 'Last Updated',
@@ -1783,7 +1783,7 @@ $lang = array_merge($lang, array(
 	'UserSport' => 'Sport/Team',
 	'UserMusic' => 'Music/Groups',
 	'UserNoInfo' => 'No Information Available',
-	'Last_Seen' => 'Last Online',
+	'LAST_SEEN' => 'Last Online',
 // New MG - END
 
 // MG CMS - BEGIN
