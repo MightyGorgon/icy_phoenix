@@ -40,12 +40,45 @@ define('CRON_DEBUG', false);
 $mem_limit = check_mem_limit();
 @ini_set('memory_limit', $mem_limit);
 
+if (CRON_DEBUG == false)
+{
+	// Output transparent gif
+	header('Cache-Control: no-cache');
+	header('Content-type: image/gif');
+	header('Content-length: 43');
+
+	echo base64_decode('R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==');
+
+	// Flush here to prevent browser from showing the page as loading while running cron.
+	flush();
+}
+
+// We query cron_* config values to make sure we don't get cached values!
+$sql = "SELECT * FROM " . CONFIG_TABLE . " WHERE config_name LIKE 'cron_%'";
+$result = $db->sql_query($sql);
+$cron_config = $db->sql_fetchrowset($result);
+$db->sql_freeresult($result);
+
+foreach ($cron_config as $row)
+{
+	$config[$row['config_name']] = $row['config_value'];
+}
+
+// CRON QUICK DEBUG - BEGIN
 /*
-$cron_types = array('queue', 'digests', 'birthdays', 'files', 'database', 'cache', 'sql', 'users', 'topics', 'sessions');
-$cron_functions = array('queue', 'process_digests', 'process_files', 'tidy_database', 'tidy_cache', 'tidy_sql', 'tidy_users', 'tidy_topics', 'tidy_sessions');
+$config['cron_lock'] = 0;
+$config['cron_lock_hour'] = 0;
+$config['cron_digests_last_run'] = 0;
 */
-$cron_types = array('digests', 'birthdays', 'files', 'database', 'cache', 'sql', 'users', 'topics');
-$cron_functions = array('process_digests', 'process_birthdays', 'process_files', 'tidy_database', 'tidy_cache', 'tidy_sql', 'tidy_users', 'tidy_topics');
+// CRON QUICK DEBUG - END
+
+/*
+// Shall we add queue as well?
+$cron_types = array('queue');
+$cron_functions = array('queue');
+*/
+$cron_types = array('digests', 'birthdays', 'files', 'database', 'cache', 'sql', 'users', 'topics', 'sessions');
+$cron_functions = array('process_digests', 'process_birthdays', 'process_files', 'tidy_database', 'tidy_cache', 'tidy_sql', 'tidy_users', 'tidy_topics', 'tidy_sessions');
 $cron_queue = array();
 $cron_queue_functions = array();
 
@@ -118,28 +151,15 @@ else
 	define('CRON_REAL_PATH', IP_ROOT_PATH);
 }
 
-if (CRON_DEBUG == false)
-{
-	// Output transparent gif
-	header('Cache-Control: no-cache');
-	header('Content-type: image/gif');
-	header('Content-length: 43');
-
-	echo base64_decode('R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==');
-
-	// test without flush ;)
-	// flush();
-}
-
 if (!isset($config['cron_lock']))
 {
 	set_config('cron_lock', '0');
 }
 
-// make sure cron doesn't run multiple times in parallel
+// Make sure cron doesn't run multiple times in parallel
 if (!empty($config['cron_lock']))
 {
-	// if the other process is running more than CRON_REFRESH already we have to assume it aborted without cleaning the lock
+	// If the other process is running more than CRON_REFRESH already we have to assume it aborted without cleaning the lock
 	$time = explode(' ', $config['cron_lock']);
 	$time = $time[0];
 

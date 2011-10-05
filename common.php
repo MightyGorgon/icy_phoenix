@@ -27,7 +27,7 @@ error_reporting(E_ALL ^ E_NOTICE); // Report all errors, except notices
 
 //@ini_set('memory_limit', '24M');
 
-// Mighty Gorgon - Debug - BEGIN
+// MIGHTY GORGON - DEBUG - BEGIN
 @define('DEBUG', true); // Debugging ON/OFF => TRUE/FALSE
 @define('DEBUG_EXTRA', true); // Extra Debugging ON/OFF => TRUE/FALSE
 if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
@@ -38,7 +38,7 @@ if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 		$base_memory_usage = @memory_get_usage();
 	}
 }
-// Mighty Gorgon - Debug - END
+// MIGHTY GORGON - DEBUG - END
 
 /*
 * Remove variables created by register_globals from the global scope

@@ -20,11 +20,17 @@ function unlock_cron()
 {
 	global $db, $cache;
 
+/*
+// Shall we keep this?
 	$sql = "UPDATE " . CONFIG_TABLE . "
 		SET config_value = '0'
 		WHERE config_name = 'cron_lock'
 			AND config_value = '" . $db->sql_escape(CRON_ID) . "'";
 	$db->sql_query($sql);
+*/
+	set_config('cron_lock', 0);
+	set_config('cron_lock_hour', 0);
+
 	$cache->destroy('config');
 }
 
@@ -34,7 +40,7 @@ function unlock_cron()
 function process_digests()
 {
 	global $db, $cache, $config, $auth, $user, $lang, $bbcode;
-	global $template, $images, $table_prefix;
+	global $template, $images, $theme, $table_prefix;
 
 	// Digests - BEGIN
 	if (!defined('DIGEST_SITE_URL'))
@@ -52,12 +58,13 @@ function process_digests()
 		{
 			if ((time() - $config['cron_digests_last_run']) > CRON_REFRESH)
 			{
-				$config['cron_digests_last_run'] = ($config['cron_digests_last_run'] == 0) ? (time() - 3600) : $config['cron_digests_last_run'];
+				$config['cron_digests_last_run'] = empty($config['cron_digests_last_run']) ? (time() - 3600) : $config['cron_digests_last_run'];
 				$last_send_time = @getdate($config['cron_digests_last_run']);
 				$cur_time = @getdate();
 				if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0) && ($cur_time['hours'] != $last_send_time['hours']))
 				{
-					set_config('cron_lock_hour', 1);
+					$cron_lock_hour_id = defined('CRON_ID') ? CRON_ID : 1;
+					set_config('cron_lock_hour', $cron_lock_hour_id);
 					define('PHP_DIGESTS_CRON', true);
 					define('PHP_DIGESTS_FUNCTIONS_CRON', true);
 					include_once(IP_ROOT_PATH . 'mail_digests.' . PHP_EXT);
@@ -96,7 +103,8 @@ function process_birthdays()
 				$cur_time = @getdate();
 				if (!empty($config['cron_birthdays_interval']) && ($config['cron_birthdays_interval'] > 0) && ($cur_time['hours'] != $last_send_time['hours']))
 				{
-					set_config('cron_lock_hour', 1);
+					$cron_lock_hour_id = defined('CRON_ID') ? CRON_ID : 1;
+					set_config('cron_lock_hour', $cron_lock_hour_id);
 					if (!function_exists('birthday_email_send'))
 					{
 						include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
@@ -119,6 +127,8 @@ function process_birthdays()
 */
 function process_files()
 {
+	global $db, $cache, $config, $user;
+
 	$files_array = array();
 	$files_array = explode(',', CRON_FILES);
 	foreach ($files_array as $cron_file)
@@ -137,7 +147,8 @@ function process_files()
 */
 function tidy_database()
 {
-	global $dbname, $db, $config, $user;
+	global $db, $cache, $config, $user;
+	global $dbname;
 
 	$is_allowed = true;
 	// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
@@ -203,6 +214,8 @@ function tidy_database()
 */
 function tidy_cache()
 {
+	global $db, $cache, $config;
+
 	empty_cache_folders(MAIN_CACHE_FOLDER);
 	if (CRON_DEBUG == false)
 	{
@@ -215,6 +228,8 @@ function tidy_cache()
 */
 function tidy_sql()
 {
+	global $db, $cache, $config;
+
 	empty_cache_folders(SQL_CACHE_FOLDER);
 	if (CRON_DEBUG == false)
 	{
@@ -227,6 +242,8 @@ function tidy_sql()
 */
 function tidy_users()
 {
+	global $db, $cache, $config;
+
 	empty_cache_folders(USERS_CACHE_FOLDER);
 	if (CRON_DEBUG == false)
 	{
@@ -239,6 +256,8 @@ function tidy_users()
 */
 function tidy_topics()
 {
+	global $db, $cache, $config;
+
 	empty_cache_folders(POSTS_CACHE_FOLDER);
 	empty_cache_folders(TOPICS_CACHE_FOLDER);
 	empty_cache_folders(FORUMS_CACHE_FOLDER);
@@ -253,29 +272,17 @@ function tidy_topics()
 */
 function tidy_sessions()
 {
-	global $db;
-	/*
-	$sql = "DELETE FROM " . SESSIONS_TABLE;
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
+	global $db, $cache, $config, $auth, $user;
 
-	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE;
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
+	$user->session_gc();
 
-	$sql = "DELETE FROM " . SEARCH_TABLE;
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-	*/
+	$current_time = time();
 
 	if (CRON_DEBUG == false)
 	{
-		set_config('cron_session_last_run', time());
+		set_config('session_last_gc', $current_time);
+		set_config('cron_session_last_run', $current_time);
 	}
-
 }
 
 ?>

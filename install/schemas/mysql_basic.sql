@@ -849,6 +849,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_disable
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_hide_signature', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_post_edit_interval', '60');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('mobile_style_disable', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_gc', '3600');
 
 ## ATTACHMENTS - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upload_dir', 'files');

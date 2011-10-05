@@ -4023,7 +4023,7 @@ function page_header($title = '', $parse_template = false)
 	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $forum_id, $topic_id;
@@ -4741,7 +4741,7 @@ function page_header($title = '', $parse_template = false)
 			'L_RECENT' => $lang['Recent_topics'],
 			'L_WATCHED_TOPICS' => $lang['Watched_Topics'],
 			'L_BOOKMARKS' => $lang['Bookmarks'],
-			'L_DIGESTS' => $lang['Digests'],
+			'L_DIGESTS' => $lang['DIGESTS'],
 			'L_DRAFTS' => $lang['Drafts'],
 
 			// Mighty Gorgon - Random Quote - Begin
@@ -5077,7 +5077,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 	global $cms_acp_url;
@@ -5164,11 +5164,11 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	);
 
 	// Mighty Gorgon - CRON - BEGIN
-	if ($config['cron_global_switch'] && !defined('IN_CRON') && !defined('IN_ADMIN') && !defined('IN_CMS') && !$config['board_disable'])
+	if ($config['cron_global_switch'] && !defined('IN_CRON') && !defined('IN_ADMIN') && !defined('IN_CMS') && empty($config['board_disable']))
 	{
 		$cron_time = time();
 		$cron_append = '';
-		$cron_types = array('files', 'database', 'cache', 'sql', 'users', 'topics');
+		$cron_types = array('files', 'database', 'cache', 'sql', 'users', 'topics', 'sessions');
 
 		for ($i = 0; $i < sizeof($cron_types); $i++)
 		{
@@ -5184,7 +5184,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		$cur_time = @getdate();
 		foreach ($hour_cron_types as $hour_cron_type)
 		{
-			$config['cron_' . $hour_cron_type . '_last_run'] = ($config['cron_' . $hour_cron_type . '_last_run'] == 0) ? (time() - 3600) : $config['cron_' . $hour_cron_type . '_last_run'];
+			$config['cron_' . $hour_cron_type . '_last_run'] = !empty($config['cron_' . $hour_cron_type . '_last_run']) ? $config['cron_' . $hour_cron_type . '_last_run'] : (time() - 3600);
 			$last_send_time = @getdate($config['cron_' . $hour_cron_type . '_last_run']);
 			if (!empty($config['cron_' . $hour_cron_type . '_interval']) && ($config['cron_' . $hour_cron_type . '_interval'] > 0) && ($cur_time['hours'] != $last_send_time['hours']))
 			{
@@ -5901,7 +5901,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 {
 	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
-	global $gen_simple_header, $session_length, $starttime, $base_memory_usage, $do_gzip_compress;
+	global $gen_simple_header, $starttime, $base_memory_usage, $do_gzip_compress;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $nav_separator, $nav_links;
 	// Global vars needed by page header, but since we are in message_die better use default values instead of the assigned ones in case we are dying before including page_header.php

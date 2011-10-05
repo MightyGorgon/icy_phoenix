@@ -19,10 +19,7 @@
 			<td align="left">&nbsp;</td>
 			<td align="left" nowrap="nowrap" style="padding-bottom: 20px;">
 				<span class="gensmall">
-					<a href="{U_REGISTER}" class="gensmall">{L_REGISTER}</a>&nbsp;&#8226;&nbsp;<a href="{U_SEND_PASSWORD}" class="gensmall">{L_SEND_PASSWORD}</a>
-					<!-- BEGIN switch_resend_activation_email -->
-					&nbsp;&#8226;&nbsp;<a href="{U_RESEND_ACTIVATION_EMAIL}" class="gensmall">{L_RESEND_ACTIVATION_EMAIL}</a>
-					<!-- END switch_resend_activation_email -->
+					<a href="{U_REGISTER}" class="gensmall">{L_REGISTER}</a>&nbsp;&#8226;&nbsp;<a href="{U_SEND_PASSWORD}" class="gensmall">{L_SEND_PASSWORD}</a><!-- IF S_SWITCH_RESEND_ACTIVATION_EMAIL -->&nbsp;&#8226;&nbsp;<a href="{U_RESEND_ACTIVATION_EMAIL}" class="gensmall">{L_RESEND_ACTIVATION_EMAIL}</a><!-- ENDIF -->
 				</span>
 			</td>
 		</tr>

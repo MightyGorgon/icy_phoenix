@@ -107,7 +107,6 @@ $settings_data = array(
 		'values' => $this->list_time_intervals,
 		),
 
-/*
 	'cron_sessions_interval' => array(
 		'lang_key' => 'IP_cron_sessions_interval',
 		'explain' => 'IP_cron_sessions_interval_explain',
@@ -115,7 +114,6 @@ $settings_data = array(
 		'default' => 0,
 		'values' => $this->list_time_intervals,
 		),
-*/
 
 );
 

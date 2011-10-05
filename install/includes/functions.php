@@ -666,7 +666,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
 	global $db, $config, $template, $theme, $images, $lang, $nav_links, $gen_simple_header;
-	global $user, $user_ip, $session_length;
+	global $user, $user_ip;
 	global $starttime;
 
 	if(defined('HAS_DIED'))

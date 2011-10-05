@@ -2125,10 +2125,13 @@ else
 
 	// Visual Confirmation
 	$confirm_image = '';
-	if (!empty($config['enable_confirm']) && $mode == 'register')
+	if (!empty($config['enable_confirm']) && ($mode == 'register'))
 	{
-		$sql = "SELECT session_id
-			FROM " . SESSIONS_TABLE;
+
+		// Clean some old sessions first!
+		$user->session_gc();
+
+		$sql = "SELECT session_id FROM " . SESSIONS_TABLE;
 		$result = $db->sql_query($sql);
 
 		if ($row = $db->sql_fetchrow($result))

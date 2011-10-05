@@ -437,7 +437,7 @@ function pafiledb_page_header($page_title)
 	global $db, $cache, $config, $template, $images, $theme, $user, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 
@@ -554,7 +554,7 @@ function pafiledb_page_footer()
 	global $db, $cache, $config, $template, $images, $theme, $user, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
 	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
 

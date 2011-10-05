@@ -65,7 +65,10 @@ class class_captcha
 	*/
 	function clear_confirm_table()
 	{
-		global $db, $cache;
+		global $db, $cache, $config, $auth, $user;
+
+		// Clean some old sessions first!
+		$user->session_gc();
 
 		// Request all active sessions
 		$sql = "SELECT session_id FROM " . SESSIONS_TABLE;

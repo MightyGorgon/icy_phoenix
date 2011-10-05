@@ -998,7 +998,7 @@ function get_userdata_notifications($target_user, $force_str = false)
 function generate_smilies($mode)
 {
 	global $db, $cache, $config, $auth, $user, $lang, $template, $images, $theme;
-	global $session_length, $starttime, $gen_simple_header;
+	global $starttime, $gen_simple_header;
 
 	$inline_columns = $config['smilie_columns'];
 	$inline_rows = $config['smilie_rows'];

@@ -251,7 +251,7 @@ function build_default_link_auth($default_id)
 		'26' => '2', //$lang['upi2db_marked'],
 		'27' => '2', //$lang['upi2db_perm_read'],
 		'28' => '2', //$lang['Posts'] .': '. $lang['New2'] . ' - ' . $lang['upi2db_u'] . ' - ' . $lang['upi2db_m'] . ' - ' . $lang['upi2db_p'],
-		'29' => '2', //$lang['Digests'],
+		'29' => '2', //$lang['DIGESTS'],
 		'30' => '0', //$lang['Hacks_List'],
 		'31' => '0', //$lang['Referrers'],
 		'32' => '0', //$lang['Who_is_Online'],

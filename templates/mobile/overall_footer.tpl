@@ -9,7 +9,7 @@
 </div>
 <div id="page-footer" class="gradient">
 <p class="left">{COPYRIGHT_LINK}</p>
-<p class="right"><!-- IF S_MOBILE -->{MOBILE_STYLE}&nbsp;&bull;&nbsp;<!-- ENDIF -->{TEMPLATE_COPYRIGHT_LINK}</p>
+<p class="right"><!-- IF S_MOBILE -->{MOBILE_STYLE}<!-- ENDIF -->{TEMPLATE_COPYRIGHT_LINK}</p>
 </div>
 </body>
 </html>

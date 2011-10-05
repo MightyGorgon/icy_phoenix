@@ -47,7 +47,7 @@ function build_default_link_array()
 		'26' => $lang['upi2db_marked'],
 		'27' => $lang['upi2db_perm_read'],
 		'28' => $lang['Posts'] . ': ' . $lang['New2'] . ' - ' . $lang['upi2db_u'] . ' - ' . $lang['upi2db_m'] . ' - ' . $lang['upi2db_p'],
-		'29' => $lang['Digests'],
+		'29' => $lang['DIGESTS'],
 		'30' => $lang['Hacks_List'],
 		'31' => $lang['Referrers'],
 		'32' => $lang['Who_is_Online'],

@@ -240,7 +240,7 @@ else
 
 		if (!isset($_GET['admin']) && ($config['require_activation'] == USER_ACTIVATION_SELF))
 		{
-			$template->assign_block_vars('switch_resend_activation_email', array());
+			$template->assign_var('S_SWITCH_RESEND_ACTIVATION_EMAIL', true);
 		}
 
 		if (!isset($_GET['admin']))

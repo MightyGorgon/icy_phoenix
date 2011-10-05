@@ -256,45 +256,6 @@ class session
 									WHERE user_id = " . $this->data['user_id'];
 								$db->sql_query($sql);
 								$db->sql_return_on_error(false);
-
-								// Start Advanced IP Tools Pack MOD
-								if (empty($config['disable_logins']))
-								{
-									$sql_logins_ary = array(
-										'login_userid' => $this->data['user_id'],
-										'login_ip' => $this->ip,
-										'login_user_agent' => substr($this->browser, 0, 254),
-										'login_time' => $this->time_now,
-									);
-									$db->sql_return_on_error(true);
-									$sql = "INSERT INTO " . LOGINS_TABLE . " " . $db->sql_build_insert_update($sql_logins_ary, true);
-									$db->sql_query($sql);
-									$db->sql_return_on_error(false);
-
-									// Now get the results in groups based on how many topics per page parameter set in the admin panel
-									$sql = "SELECT * FROM " . LOGINS_TABLE . " WHERE login_userid = " . $this->data['user_id'] . " ORDER BY login_id ASC";
-									$db->sql_query($sql);
-									$user_logins = $db->sql_numrows($result);
-									$max_logins = $config['last_logins_n'];
-
-									if (!empty($user_logins))
-									{
-										if($user_logins > $max_logins)
-										{
-											$login_rows = $db->sql_fetchrowset($result);
-											$logins_to_kill = array();
-											for($i = 0; $i < ($user_logins - $max_logins); $i++)
-											{
-												$logins_to_kill[] = $login_rows[$i]['login_id'];
-											}
-											$db->sql_return_on_error(true);
-											$sql = "DELETE FROM " . LOGINS_TABLE . " WHERE login_id IN (" . implode(',', $logins_to_kill) . ")";
-											$db->sql_query($sql);
-											$db->sql_return_on_error(false);
-										}
-									}
-								}
-								// End Advanced IP Tools Pack MOD
 							}
 							// ICY PHOENIX - END
 						}
@@ -354,14 +315,13 @@ class session
 
 		$this->data = array();
 
-		/*
-		// Garbage collection ... remove old sessions updating user information
-		// if necessary. It means (potentially) 11 queries but only infrequently
-		if ($this->time_now > $config['session_last_gc'] + $config['session_gc'])
+		$config['session_gc'] = $config['cron_sessions_interval'];
+		$config['session_last_gc'] = $config['cron_sessions_last_run'];
+		// Garbage collection ... remove old sessions updating user information if necessary. It means (potentially) 11 queries but only infrequently
+		if ($this->time_now > ($config['session_last_gc'] + $config['session_gc']))
 		{
 			$this->session_gc();
 		}
-		*/
 
 		// Do we allow autologin on this board? No? Then override anything that may be requested here
 		if (!$config['allow_autologin'])
@@ -648,6 +608,48 @@ class session
 					WHERE user_id = " . (int) $this->data['user_id'];
 				$db->sql_query($sql);
 			}
+
+			// Start Advanced IP Tools Pack MOD
+			if (empty($config['disable_logins']))
+			{
+				$sql_logins_ary = array(
+					'login_userid' => $this->data['user_id'],
+					'login_ip' => $this->ip,
+					'login_user_agent' => substr($this->browser, 0, 254),
+					'login_time' => $this->time_now,
+				);
+				$db->sql_return_on_error(true);
+				$sql = "INSERT INTO " . LOGINS_TABLE . " " . $db->sql_build_insert_update($sql_logins_ary, true);
+				$db->sql_query($sql);
+				$db->sql_return_on_error(false);
+
+				$max_logins = (int) $config['last_logins_n'];
+				$limit_sql = (!empty($max_logins) && ($max_logins > 0)) ? (" LIMIT 0, " . $max_logins . " ") : "";
+				$sql = "SELECT login_id FROM " . LOGINS_TABLE . "
+								WHERE login_userid = " . $this->data['user_id'] . "
+								ORDER BY login_id DESC" .
+								$limit_sql;
+				$result = $db->sql_query($sql);
+				$user_logins = $db->sql_numrows($result);
+				$last_logins = $db->sql_fectchrowset($result);
+				$db->sql_freeresult($result);
+
+				if (!empty($user_logins) && ($user_logins > $max_logins))
+				{
+					$logins_to_keep = array();
+					foreach ($last_logins as $login_row)
+					{
+						$logins_to_keep[] = $login_row['login_id'];
+					}
+					$db->sql_return_on_error(true);
+					$sql = "DELETE FROM " . LOGINS_TABLE . "
+									WHERE login_id NOT IN (" . implode(',', $logins_to_keep) . ")
+										AND login_userid = " . $this->data['user_id'];
+					$db->sql_query($sql);
+					$db->sql_return_on_error(false);
+				}
+			}
+			// End Advanced IP Tools Pack MOD
 		}
 		else
 		{
@@ -751,7 +753,7 @@ class session
 	*/
 	function session_gc()
 	{
-		global $db, $config;
+		global $db, $cache, $config;
 
 		$batch_size = 10;
 
@@ -760,7 +762,24 @@ class session
 			$this->time_now = time();
 		}
 
-		// Firstly, delete guest sessions
+		// Remove old keys for users not logging in so frequently... 30 days should be fine!!!
+		$max_autologin_time = !empty($config['max_autologin_time']) ? $config['max_autologin_time'] : 30;
+
+		$sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . "
+			WHERE last_login < " . ($current_time - (86400 * (int) $max_autologin_time));
+		$db->sql_query($sql);
+
+		// Remove all sessions which are 2 days old from AJAX Chat table
+		$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+			WHERE session_time < " . (int) ($current_time - (86400 * 2));
+		$db->sql_query($sql);
+
+		// Remove all sessions which are 2 days old from search table
+		$sql = "DELETE FROM " . SEARCH_TABLE . "
+			WHERE search_time < " . (int) ($current_time - (86400 * 2));
+		$db->sql_query($sql);
+
+		// Delete Guest sessions
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
 			WHERE session_user_id = " . ANONYMOUS . "
 				AND session_time < " . (int) ($this->time_now - $config['session_length']);
@@ -801,6 +820,7 @@ class session
 		{
 			// Less than 10 users, update gc timer ... else we want gc called again to delete other sessions
 			set_config('session_last_gc', $this->time_now, true);
+			set_config('cron_sessions_last_run', $this->time_now, true);
 
 			if ($config['max_autologin_time'])
 			{

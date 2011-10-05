@@ -266,6 +266,10 @@ if (ENABLE_VISUAL_CONFIRM && !$user->data['session_logged_in'])
 {
 	// Visual Confirmation
 	$confirm_image = '';
+
+	// Clean some old sessions first!
+	$user->session_gc();
+
 	$sql = "SELECT session_id
 		FROM " . SESSIONS_TABLE;
 	$result = $db->sql_query($sql);

@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		if ($create_new)
 		{
 			// default values if no digest subscription for user
-			$digest_type = 'DAY';
+			$digest_type = 'NONE';
 			$format = 'HTML';
 			$show_text = 'YES';
 			$show_mine = 'YES';
@@ -122,55 +122,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			'S_POST_ACTION' => append_sid('digests.' . PHP_EXT),
 			'DIGEST_CREATE_NEW_VALUE' => ($create_new) ? '1' : '0',
 			'L_DIGEST_TYPE' => $lang['digest_wanted'],
+			'NONE_CHECKED' => ($digest_type == 'NONE') ? 'checked="checked"' : '',
 			'L_NONE' => $lang['digest_none'],
-			'DAY_CHECKED' => ($digest_type=='DAY') ? 'checked="checked"' : '',
+			'DAY_CHECKED' => ($digest_type == 'DAY') ? 'checked="checked"' : '',
 			'L_DAILY' => $lang['digest_daily'],
-			'WEEK_CHECKED' => ($digest_type=='WEEK') ? 'checked="checked"' : '',
+			'WEEK_CHECKED' => ($digest_type == 'WEEK') ? 'checked="checked"' : '',
 			'L_WEEKLY' => $lang['digest_weekly'],
 			'L_FORMAT' => $lang['digest_format'],
-			'HTML_CHECKED' => ($format=='HTML') ? 'checked="checked"' : '',
+			'HTML_CHECKED' => ($format == 'HTML') ? 'checked="checked"' : '',
 			'L_HTML' => $lang['digest_html'],
-			'TEXT_CHECKED' => ($format=='TEXT') ? 'checked="checked"' : '',
+			'TEXT_CHECKED' => ($format == 'TEXT') ? 'checked="checked"' : '',
 			'L_TEXT' => $lang['digest_text'],
 			'L_SHOW_TEXT' => $lang['digest_excerpt'],
-			'SHOW_TEXT_YES_CHECKED' => ($show_text=='YES') ? 'checked="checked"' : '',
+			'SHOW_TEXT_YES_CHECKED' => ($show_text == 'YES') ? 'checked="checked"' : '',
 			'L_YES' => $lang['digest_yes'],
-			'SHOW_TEXT_NO_CHECKED' => ($show_text=='NO') ? 'checked="checked"' : '',
+			'SHOW_TEXT_NO_CHECKED' => ($show_text == 'NO') ? 'checked="checked"' : '',
 			'L_NO' => $lang['digest_no'],
 			'L_SHOW_MINE' => $lang['digest_l_show_my_messages'],
-			'SHOW_MINE_YES_CHECKED' => ($show_mine=='YES') ? 'checked="checked"' : '',
-			'SHOW_MINE_NO_CHECKED' => ($show_mine=='NO') ? 'checked="checked"' : '',
+			'SHOW_MINE_YES_CHECKED' => ($show_mine == 'YES') ? 'checked="checked"' : '',
+			'SHOW_MINE_NO_CHECKED' => ($show_mine == 'NO') ? 'checked="checked"' : '',
 			'L_NEW_ONLY' => $lang['digest_l_show_new_only'],
-			'NEW_ONLY_YES_CHECKED' => ($new_only=='TRUE') ? 'checked="checked"' : '',
-			'NEW_ONLY_NO_CHECKED' => ($new_only=='FALSE') ? 'checked="checked"' : '',
+			'NEW_ONLY_YES_CHECKED' => ($new_only == 'TRUE') ? 'checked="checked"' : '',
+			'NEW_ONLY_NO_CHECKED' => ($new_only == 'FALSE') ? 'checked="checked"' : '',
 			'L_SEND_ON_NO_MESSAGES' => $lang['digest_send_if_no_msgs'],
-			'SEND_ON_NO_MESSAGES_YES_CHECKED' => ($send_on_no_messages=='YES') ? 'checked="checked"' : '',
-			'SEND_ON_NO_MESSAGES_NO_CHECKED' => ($send_on_no_messages=='NO') ? 'checked="checked"' : '',
+			'SEND_ON_NO_MESSAGES_YES_CHECKED' => ($send_on_no_messages == 'YES') ? 'checked="checked"' : '',
+			'SEND_ON_NO_MESSAGES_NO_CHECKED' => ($send_on_no_messages == 'NO') ? 'checked="checked"' : '',
 			'L_SEND_HOUR' => $lang['digest_hour_to_send'],
-			'MIDNIGHT_SELECTED' => ($send_hour=='0') ? 'selected="selected"' : '',
-			'1AM_SELECTED' => ($send_hour=='1') ? 'selected="selected"' : '',
-			'2AM_SELECTED' => ($send_hour=='2') ? 'selected="selected"' : '',
-			'3AM_SELECTED' => ($send_hour=='3') ? 'selected="selected"' : '',
-			'4AM_SELECTED' => ($send_hour=='4') ? 'selected="selected"' : '',
-			'5AM_SELECTED' => ($send_hour=='5') ? 'selected="selected"' : '',
-			'6AM_SELECTED' => ($send_hour=='6') ? 'selected="selected"' : '',
-			'7AM_SELECTED' => ($send_hour=='7') ? 'selected="selected"' : '',
-			'8AM_SELECTED' => ($send_hour=='8') ? 'selected="selected"' : '',
-			'9AM_SELECTED' => ($send_hour=='9') ? 'selected="selected"' : '',
-			'10AM_SELECTED' => ($send_hour=='10') ? 'selected="selected"' : '',
-			'11AM_SELECTED' => ($send_hour=='11') ? 'selected="selected"' : '',
-			'12PM_SELECTED' => ($send_hour=='12') ? 'selected="selected"' : '',
-			'1PM_SELECTED' => ($send_hour=='13') ? 'selected="selected"' : '',
-			'2PM_SELECTED' => ($send_hour=='14') ? 'selected="selected"' : '',
-			'3PM_SELECTED' => ($send_hour=='15') ? 'selected="selected"' : '',
-			'4PM_SELECTED' => ($send_hour=='16') ? 'selected="selected"' : '',
-			'5PM_SELECTED' => ($send_hour=='17') ? 'selected="selected"' : '',
-			'6PM_SELECTED' => ($send_hour=='18') ? 'selected="selected"' : '',
-			'7PM_SELECTED' => ($send_hour=='19') ? 'selected="selected"' : '',
-			'8PM_SELECTED' => ($send_hour=='20') ? 'selected="selected"' : '',
-			'9PM_SELECTED' => ($send_hour=='21') ? 'selected="selected"' : '',
-			'10PM_SELECTED' => ($send_hour=='22') ? 'selected="selected"' : '',
-			'11PM_SELECTED' => ($send_hour=='23') ? 'selected="selected"' : '',
+			'MIDNIGHT_SELECTED' => ($send_hour == '0') ? 'selected="selected"' : '',
+			'1AM_SELECTED' => ($send_hour == '1') ? 'selected="selected"' : '',
+			'2AM_SELECTED' => ($send_hour == '2') ? 'selected="selected"' : '',
+			'3AM_SELECTED' => ($send_hour == '3') ? 'selected="selected"' : '',
+			'4AM_SELECTED' => ($send_hour == '4') ? 'selected="selected"' : '',
+			'5AM_SELECTED' => ($send_hour == '5') ? 'selected="selected"' : '',
+			'6AM_SELECTED' => ($send_hour == '6') ? 'selected="selected"' : '',
+			'7AM_SELECTED' => ($send_hour == '7') ? 'selected="selected"' : '',
+			'8AM_SELECTED' => ($send_hour == '8') ? 'selected="selected"' : '',
+			'9AM_SELECTED' => ($send_hour == '9') ? 'selected="selected"' : '',
+			'10AM_SELECTED' => ($send_hour == '10') ? 'selected="selected"' : '',
+			'11AM_SELECTED' => ($send_hour == '11') ? 'selected="selected"' : '',
+			'12PM_SELECTED' => ($send_hour == '12') ? 'selected="selected"' : '',
+			'1PM_SELECTED' => ($send_hour == '13') ? 'selected="selected"' : '',
+			'2PM_SELECTED' => ($send_hour == '14') ? 'selected="selected"' : '',
+			'3PM_SELECTED' => ($send_hour == '15') ? 'selected="selected"' : '',
+			'4PM_SELECTED' => ($send_hour == '16') ? 'selected="selected"' : '',
+			'5PM_SELECTED' => ($send_hour == '17') ? 'selected="selected"' : '',
+			'6PM_SELECTED' => ($send_hour == '18') ? 'selected="selected"' : '',
+			'7PM_SELECTED' => ($send_hour == '19') ? 'selected="selected"' : '',
+			'8PM_SELECTED' => ($send_hour == '20') ? 'selected="selected"' : '',
+			'9PM_SELECTED' => ($send_hour == '21') ? 'selected="selected"' : '',
+			'10PM_SELECTED' => ($send_hour == '22') ? 'selected="selected"' : '',
+			'11PM_SELECTED' => ($send_hour == '23') ? 'selected="selected"' : '',
 			'L_MIDNIGHT' => $lang['digest_midnight'],
 			'L_1AM' => $lang['digest_1am'],
 			'L_2AM' => $lang['digest_2am'],
@@ -195,12 +196,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 			'L_9PM' => $lang['digest_9pm'],
 			'L_10PM' => $lang['digest_10pm'],
 			'L_11PM' => $lang['digest_11pm'],
-			'50_SELECTED' => ($text_length=='50') ? 'selected="selected"' : '',
-			'100_SELECTED' => ($text_length=='100') ? 'selected="selected"' : '',
-			'150_SELECTED' => ($text_length=='150') ? 'selected="selected"' : '',
-			'300_SELECTED' => ($text_length=='300') ? 'selected="selected"' : '',
-			'600_SELECTED' => ($text_length=='600') ? 'selected="selected"' : '',
-			'MAX_SELECTED' => ($text_length=='32000') ? 'selected="selected"' : '',
+			'50_SELECTED' => ($text_length == '50') ? 'selected="selected"' : '',
+			'100_SELECTED' => ($text_length == '100') ? 'selected="selected"' : '',
+			'150_SELECTED' => ($text_length == '150') ? 'selected="selected"' : '',
+			'300_SELECTED' => ($text_length == '300') ? 'selected="selected"' : '',
+			'600_SELECTED' => ($text_length == '600') ? 'selected="selected"' : '',
+			'MAX_SELECTED' => ($text_length == '32000') ? 'selected="selected"' : '',
 			'L_TEXT_LENGTH' => $lang['digest_size'],
 			'L_50' => $lang['digest_size_50'],
 			'L_100' => $lang['digest_size_100'],
@@ -234,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		$cat_orders = array();
 		$forum_orders = array();
 
-		$i=0;
+		$i = 0;
 		while ($row = $db->sql_fetchrow ($result))
 		{
 			$forum_ids[$i] = $row['forum_id'];
@@ -245,9 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		}
 		$db->sql_freeresult ($result);
 
-		// Now we need to add to our forums array other forums that may be private for which
-		// the user has access.
-
+		// Now we need to add to our forums array other forums that may be private for which the user has access.
 		$sql = 'SELECT DISTINCT a.forum_id, f.forum_name, c.forum_order AS cat_order, f.forum_order
 			FROM ' . AUTH_ACCESS_TABLE . ' a, ' . USER_GROUP_TABLE . ' ug, ' . FORUMS_TABLE . ' f, ' . FORUMS_TABLE . ' c
 			WHERE ug.user_id = ' . $user->data['user_id'] . '
@@ -273,10 +272,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		array_multisort($cat_orders, SORT_ASC, $forum_orders, SORT_ASC, $forum_ids, SORT_ASC, $forum_names, SORT_ASC);
 
 		// now print the forums on the web page, each forum being a checkbox with appropriate label
-		for ($j=0; $j<=$i; $j++)
+		for ($j = 0; $j <= $i; $j++)
 		{
 			// Don't print if a duplicate
-			if (!(($j>0) && ($cat_orders[$j] == $cat_orders[$j-1]) && ($forum_orders[$j] == $forum_orders[$j-1])))
+			if (!(($j>0) && ($cat_orders[$j] == $cat_orders[$j - 1]) && ($forum_orders[$j] == $forum_orders[$j - 1])))
 			{
 				// Is this forum currently subscribed? If so it needs to be checkmarked
 				if (!($all_forums_new))
@@ -302,7 +301,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 				$template->assign_block_vars('forums', array(
 					'FORUM_NAME' => 'forum_' . $forum_ids [$j],
 					'CHECKED' => ($forum_checked || $create_new) ? 'checked="checked"' : '',
-					'FORUM_LABEL' => $forum_names[$j]));
+					'FORUM_LABEL' => $forum_names[$j]
+					)
+				);
 			}
 		}
 
@@ -311,10 +312,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 else
 {
 
-	// The user has submitted the form. This logic takes the necessary action to update the database
-	// and gives an appropriate confirmation message.
-
-	if ($_POST['digest_type'] == 'NONE')
+	// The user has submitted the form. This logic takes the necessary action to update the database and gives an appropriate confirmation message.
+	$digest_type_post = request_var('digest_type', '');
+	if ($digest_type_post == 'NONE')
 	{
 
 		// user no longer wants a digest
@@ -395,29 +395,25 @@ else
 
 	}
 
-	$template_to_parse = 'digests_post.tpl';
-
 	// Show appropriate confirmation message
 	$confim_message = '<br /><br />' . sprintf($lang['digest_click_return'], '<a href="' . append_sid('digests.' . PHP_EXT) . '">', '</a>');
 	if ($update_type == 'unsubscribe')
 	{
-		$confim_message = $lang['digest_unsubscribe'] . $confim_message;
+		$message = $lang['digest_unsubscribe'] . $confim_message;
 	}
 	elseif ($update_type == 'create')
 	{
-		$confim_message = $lang['digest_create'] . $confim_message;
+		$message = $lang['digest_create'] . $confim_message;
 	}
 	else
 	{
-		$confim_message = $lang['digest_modify'] . $confim_message;
+		$message = $lang['digest_modify'] . $confim_message;
 	}
-	$template->assign_vars(array(
-		'CREATE_MODIFY_UNSUBSCRIBE_MSG' => $confim_message,
-		'U_INDEX' => append_sid(CMS_PAGE_FORUM),
-		'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename'])
-		)
-	);
 
+	$redirect_url = append_sid('digests.' . PHP_EXT);
+	meta_refresh(3, $redirect_url);
+
+	message_die(GENERAL_MESSAGE, $message);
 }
 
 full_page_generation($template_to_parse, $lang['digest_page_title'], '', '');

@@ -21,7 +21,7 @@ class pafiledb_post_comment extends pafiledb_public
 	{
 		global $db, $cache, $config, $template, $images, $theme, $user, $lang, $bbcode, $bbcode_tpl;
 		global $html_entities_match, $html_entities_replace, $unhtml_specialchars_match, $unhtml_specialchars_replace;
-		global $pafiledb_functions, $pafiledb_config, $view_pic_upload, $session_length, $starttime, $post_image_lang;
+		global $pafiledb_functions, $pafiledb_config, $view_pic_upload, $starttime, $post_image_lang;
 
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);

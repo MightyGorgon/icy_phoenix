@@ -383,7 +383,7 @@ if ($config['online_last_msgs'] == 1)
 		$username_text = $last_seen_row[$i]['username'];
 		if($last_seen_row[$i]['user_allow_viewonline'] != 1)
 		{
-			if($user->data['user_level'] == ADMIN)
+			if(($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $last_seen_row[$i]['user_id']))
 			{
 				$username = '<i>' . $username . '</i>';
 			}

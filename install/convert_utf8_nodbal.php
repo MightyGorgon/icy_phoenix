@@ -15,7 +15,7 @@
 * http://www.mysqlperformanceblog.com/2007/12/18/fixing-column-encoding-mess-in-mysql/
 */
 
-die('Comment this line...');
+//die('Comment this line...');
 
 if (php_sapi_name() === 'cli')
 {
@@ -25,6 +25,9 @@ if (php_sapi_name() === 'cli')
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+
+@set_time_limit(0);
+@ini_set('memory_limit', '32M');
 
 require IP_ROOT_PATH . 'config.' . PHP_EXT;
 
@@ -79,5 +82,8 @@ $sql = "ALTER TABLE {$table_prefix}search_wordlist CHANGE word_text varchar(50) 
 $db->query($sql) or die(mysql_error());
 
 $db->close();
+
+flush();
+die('<br /><br />Conversion completed successfully, you can now proceed with the update.');
 
 ?>
