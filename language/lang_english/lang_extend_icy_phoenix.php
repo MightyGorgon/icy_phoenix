@@ -518,6 +518,9 @@ if ($lang_extend_admin)
 		'IP_cron_topics_interval' => 'Tidy Topics Cache Cron Interval',
 		'IP_cron_topics_interval_explain' => 'Topics cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_topics_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_topics_last_run']), $config['board_timezone'])) . '</b>',
 
+		'IP_cron_sessions_interval' => 'Tidy Sessions Cron Interval',
+		'IP_cron_sessions_interval_explain' => 'Sessions tables are cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_sessions_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_sessions_last_run']), $config['board_timezone'])) . '</b>',
+
 		'Cron_Disabled' => 'Disabled',
 		'Cron_Server' => 'Server Cron',
 		'15M' => '15 Minutes',
