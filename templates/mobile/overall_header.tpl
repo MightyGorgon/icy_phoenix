@@ -35,11 +35,12 @@
 			<li><a href="{FULL_SITE_PATH}{U_REGISTER}">{L_REGISTER}</a></li>
 			<!-- ENDIF -->
 			<li><a href="{FULL_SITE_PATH}{U_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT2}</a></li>
+			<!-- IF S_MOBILE --><li>{MOBILE_STYLE}</li><!-- ENDIF -->
 		</ul>
 	</div>
 </div>
 <div id="page-body">
-	
+
 {TOP_HTML_BLOCK}
 <!-- IF GH_BLOCK --><!-- BEGIN gheader_blocks_row -->{gheader_blocks_row.CMS_BLOCK}<!-- END gheader_blocks_row --><!-- ENDIF -->
 
