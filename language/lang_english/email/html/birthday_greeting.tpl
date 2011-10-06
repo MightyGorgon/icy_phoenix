@@ -1,9 +1,9 @@
-Subject: Happy Birthday
+Subject: Happy Birthday From {SITENAME}
 Charset: iso-8859-1
 <br /><font face="Verdana" size="2">
 Hi <b>{USERNAME}</b>,<br /><br />
 
-We would like to wish you congratulations on reaching {USER_AGE} years old today.<br /><br />
+We at <a href="{SITE_URL}">{SITENAME}</a> would like to wish you a Happy Birthday.<br /><br />
 
 <a href="{SITE_URL}">{SITENAME}</a><br /><br /><br />
 

@@ -1,6 +1,6 @@
 Hi {USERNAME},
 
-We would like to wish you congratulations on reaching {USER_AGE} years old today.
+We at {SITENAME} would like to wish you a Happy Birthday.
 
 {EMAIL_SIG}
 

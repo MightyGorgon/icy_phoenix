@@ -241,13 +241,7 @@ if (!empty($ip_display_auth))
 	if (!empty($ip_address))
 	{
 		$ip_address = $db->sql_escape($ip_address);
-		$ip_pieces = explode('.', $ip_address);
-		$ip_pieces_count = sizeof($ip_pieces) - 1;
-
-		for ($i = 0; $i <= $ip_pieces_count; $i++)
-		{
-			$search_ip .= ($ip_pieces[$i] == '*') ? '%' : sprintf('%02x', $ip_pieces[$i]);
-		}
+		$search_ip = str_replace('*', '%', $ip_address);
 	}
 	else
 	{

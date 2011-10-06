@@ -223,7 +223,9 @@ if(!function_exists('cms_block_dyn_menu'))
 			}
 		}
 
-		if ($cms_config_vars['md_menu_show_hide'][$block_id] == true)
+		$show_hide_switch = (empty($user->data['is_bot']) && !empty($cms_config_vars['md_menu_show_hide'][$block_id])) ? true : false;
+
+		if (!empty($show_hide_switch))
 		{
 			$template->assign_block_vars('show_hide_switch', array(
 				)

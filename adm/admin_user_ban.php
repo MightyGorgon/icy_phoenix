@@ -171,7 +171,7 @@ if (isset($_POST['submit']))
 	}
 
 	// Now we'll delete all entries from the session table with any of the banned user or IP info just entered into the ban table ... this will force a session initialisation resulting in an instant ban
-	if ($kill_session_sql != '')
+	if (!empty($kill_session_sql))
 	{
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
 			WHERE $kill_session_sql";

@@ -25,9 +25,9 @@ $user->setup();
 
 $meta_content['page_title'] = 'phpBB 3 Importing Process';
 
-$modes_array = array('main', 'forums', 'users', 'posts');
+$mode_array = array('main', 'forums', 'users', 'posts');
 $mode = request_var('mode', '');
-$mode = !in_array($mode, $mode_array) ? $modes_array[0] : $mode;
+$mode = !in_array($mode, $mode_array) ? $mode_array[0] : $mode;
 
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;

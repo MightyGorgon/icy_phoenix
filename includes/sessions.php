@@ -631,7 +631,7 @@ class session
 								$limit_sql;
 				$result = $db->sql_query($sql);
 				$user_logins = $db->sql_numrows($result);
-				$last_logins = $db->sql_fectchrowset($result);
+				$last_logins = $db->sql_fetchrowset($result);
 				$db->sql_freeresult($result);
 
 				if (!empty($user_logins) && ($user_logins > $max_logins))
@@ -779,10 +779,10 @@ class session
 			WHERE search_time < " . (int) ($current_time - (86400 * 2));
 		$db->sql_query($sql);
 
-		// Delete Guest sessions
+		// Delete Guest sessions which are at least 2 days old from sessions table (at least one day is needed for statistics)
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
 			WHERE session_user_id = " . ANONYMOUS . "
-				AND session_time < " . (int) ($this->time_now - $config['session_length']);
+				AND session_time < " . (int) ($this->time_now - $config['session_length'] - (86400 * 2));
 		$db->sql_query($sql);
 
 		// Get expired sessions, only most recent for each user
@@ -809,10 +809,10 @@ class session
 
 		if (sizeof($del_user_id))
 		{
-			// Delete expired sessions
+			// Delete expired sessions from more than 2 days (at least one day is needed for statistics)
 			$sql = "DELETE FROM " . SESSIONS_TABLE . "
 				WHERE " . $db->sql_in_set('session_user_id', $del_user_id) . "
-					AND session_time < " . ($this->time_now - $config['session_length']);
+					AND session_time < " . (int) ($this->time_now - $config['session_length'] - (86400 * 2));
 			$db->sql_query($sql);
 		}
 

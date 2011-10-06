@@ -26,7 +26,7 @@ if(!function_exists('cms_block_nav_links'))
 	{
 		global $config, $template, $user, $lang, $cms_page, $cms_page_blocks;
 
-		$switch_cms_show_hide = ($config['cms_block_pos'] == 'hl') ? true : false;
+		$switch_cms_show_hide = (empty($user->data['is_bot']) && ($config['cms_block_pos'] == 'hl')) ? true : false;
 
 		if(!defined('HAS_DIED') && !defined('IN_LOGIN') && ($cms_page['global_blocks'] || $cms_page_blocks || $switch_cms_show_hide))
 		{

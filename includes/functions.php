@@ -3242,7 +3242,7 @@ function is_mobile()
 	}
 
 	// Just a quick check on most common browsers...
-	if(preg_match('/(android|blackberry|fennec|htc_|iphone|ipod|mobile|midp|mmp|phone|symbian|smartphone|up.browser|up.link|wap)/i', $browser_lc))
+	if(preg_match('/(android|blackberry|fennec|htc_|iphone|ipod|mobile|midp|mmp|opera mini|opera mobi|phone|symbian|smartphone|up.browser|up.link|wap)/i', $browser_lc))
 	{
 		if (!empty($user)) $user->data['is_mobile'] = true;
 		return true;
@@ -3260,11 +3260,11 @@ function is_mobile()
 		'blaz', 'brew', 'cell', 'cldc', 'cmd-', 'dang', 'doco', 'eric', 'hipt', 'inno',
 		'ipaq', 'java', 'jigs', 'kddi', 'keji', 'leno', 'lg-c', 'lg-d', 'lg-g', 'lge-',
 		'maui', 'maxo', 'midp', 'mits', 'mmef', 'mobi', 'mot-', 'moto', 'mwbp', 'nec-',
-		'newt', 'noki', 'oper', 'palm', 'pana', 'pant', 'phil', 'play', 'port', 'prox',
-		'qwap', 'sage', 'sams', 'sany', 'sch-', 'sec-', 'send', 'seri', 'sgh-', 'shar',
-		'sie-', 'siem', 'smal', 'smar', 'sony', 'sph-', 'symb', 't-mo', 'teli', 'tim-',
-		'tosh', 'tsm-', 'upg1', 'upsi', 'vk-v', 'voda', 'wap-', 'wapa', 'wapi', 'wapp',
-		'wapr', 'webc', 'winw', 'winw', 'xda', 'xda-'
+		'newt', 'noki', 'palm', 'pana', 'pant', 'phil', 'play', 'port', 'prox', 'qwap',
+		'sage', 'sams', 'sany', 'sch-', 'sec-', 'send', 'seri', 'sgh-', 'shar', 'sie-',
+		'siem', 'smal', 'smar', 'sony', 'sph-', 'symb', 't-mo', 'teli', 'tim-', 'tosh',
+		'tsm-', 'upg1', 'upsi', 'vk-v', 'voda', 'wap-', 'wapa', 'wapi', 'wapp', 'wapr',
+		'webc', 'winw', 'winw', 'xda', 'xda-'
 	);
 
 	if(in_array($mobile_ua, $mobile_agents))
@@ -3295,7 +3295,6 @@ function is_mobile()
 
 	return false;
 }
-
 
 /*
 * MG BOTS Parsing Function

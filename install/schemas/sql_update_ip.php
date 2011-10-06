@@ -78,7 +78,8 @@ switch ($req_version)
 	case '132174': $current_ip_version = '1.3.21.74'; break;
 	case '132275': $current_ip_version = '1.3.22.75'; break;
 	case '132376': $current_ip_version = '1.3.23.76'; break;
-	case '132477': $current_ip_version = '1.3.24.74'; break;
+	case '132477': $current_ip_version = '1.3.24.77'; break;
+	case '132578': $current_ip_version = '1.3.28.78'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4410,13 +4411,16 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_hide_signature', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_post_edit_interval', '60')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('mobile_style_disable', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('session_gc', '3600')";
 
 		/* Updating from IP 1.3.23.76 */
 		case '1.3.23.76':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('session_gc', '3600')";
 
 		/* Updating from IP 1.3.24.77 */
 		case '1.3.24.77':
+
+		/* Updating from IP 1.3.25.78 */
+		case '1.3.25.78':
 
 	}
 

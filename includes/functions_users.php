@@ -545,7 +545,10 @@ function birthday_email_send()
 {
 	global $db, $cache, $config, $lang;
 
-	include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+	if (!class_exists('emailer'))
+	{
+		@include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+	}
 	$server_url = create_server_url();
 
 	$birthdays_list = get_birthdays_list_email();
@@ -557,8 +560,6 @@ function birthday_email_send()
 		{
 			// Birthday Email - BEGIN
 			setup_extra_lang(array('lang_cron_vars'), '', $v['user_lang']);
-			$email_subject = sprintf($lang['BIRTHDAY_GREETING_EMAIL_SUBJECT'], $config['sitename']);
-			$pm_date = gmdate('U');
 
 			$year = create_date('Y', time(), $v['user_timezone']);
 			$date_today = create_date('Ymd', time(), $v['user_timezone']);
@@ -571,7 +572,9 @@ function birthday_email_send()
 				$user_age--;
 			}
 
-			$email_text = sprintf($lang['BIRTHDAY_GREETING_EMAIL_CONTENT'], $user_age);
+			$email_subject = sprintf($lang['BIRTHDAY_GREETING_EMAIL_SUBJECT'], $config['sitename']);
+			//$email_text = sprintf($lang['BIRTHDAY_GREETING_EMAIL_CONTENT_AGE'], $user_age);
+			$email_text = sprintf($lang['BIRTHDAY_GREETING_EMAIL_CONTENT'], $config['sitename']);
 
 			// Send the email!
 			$emailer = new emailer();
