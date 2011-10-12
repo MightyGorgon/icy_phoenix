@@ -1,5 +1,3 @@
-Charset: iso-8859-1
-
 Hello,
 
 The following is an email sent to you by {FROM_USERNAME} members of "{SITENAME}".

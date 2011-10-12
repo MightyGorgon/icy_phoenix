@@ -29,7 +29,8 @@ class class_captcha
 	{
 		global $db, $cache, $config, $template, $user, $lang;
 
-		$this->clear_confirm_table();
+		// Clean old sessions and old confirm codes
+		$user->confirm_gc();
 
 		// Generate the required confirmation code
 		$confirm_image = '';
@@ -58,38 +59,6 @@ class class_captcha
 
 		$return_array = array('confirm_id' => $confirm_id, 'confirm_image' => $confirm_image);
 		return $return_array;
-	}
-
-	/*
-	* Clear confirm table for expired sessions
-	*/
-	function clear_confirm_table()
-	{
-		global $db, $cache, $config, $auth, $user;
-
-		// Clean some old sessions first!
-		$user->session_gc();
-
-		// Request all active sessions
-		$sql = "SELECT session_id FROM " . SESSIONS_TABLE;
-		$result = $db->sql_query($sql);
-
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$confirm_sql = '';
-			do
-			{
-				$confirm_sql .= (($confirm_sql != '') ? ', ' : '') . "'" . $row['session_id'] . "'";
-			}
-			while ($row = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
-
-			// Remove expired sessions
-			$sql_del = "DELETE FROM " . CONFIRM_TABLE . " WHERE session_id NOT IN (" . $confirm_sql . ")";
-			$result_del = $db->sql_query($sql_del);
-		}
-
-		return true;
 	}
 
 	/*

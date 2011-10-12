@@ -161,9 +161,7 @@ $lang = array();
 $tree = array();
 $nav_links = array();
 $gen_simple_header = false;
-$breadcrumbs_address = '';
-$breadcrumbs_links_left = '';
-$breadcrumbs_links_right = '';
+$breadcrumbs = array();
 
 require(IP_ROOT_PATH . 'config.' . PHP_EXT);
 

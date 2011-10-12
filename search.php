@@ -1246,8 +1246,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$meta_content['description'] = '';
 		$meta_content['keywords'] = '';
 		$nav_server_url = create_server_url();
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . $nav_main_url . '" class="nav-current">' . $nav_main_lang . '</a>';
-		$breadcrumbs_links_right = '<span class="gensmall">' . $l_search_matches . '</span>';
+		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . $nav_main_url . '" class="nav-current">' . $nav_main_lang . '</a>';
+		$breadcrumbs['bottom_right_links'] = '<span class="gensmall">' . $l_search_matches . '</span>';
 		include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
 		if ($show_results == 'bookmarks')
@@ -1864,7 +1864,7 @@ for($i = 0; $i < sizeof($previous_days); $i++)
 }
 $l_only_bluecards = ($user->data['user_level'] >= ADMIN) ? '<input type="checkbox" name="only_bluecards" />&nbsp;' . $lang['Search_only_bluecards'] : '' ;
 
-$breadcrumbs_links_right = '<span class="gensmall"><a href="' . append_sid('gsearch.' . PHP_EXT) . '">' . $lang['GSEARCH_ENGINE'] . '</a></span>';
+$breadcrumbs['bottom_right_links'] = '<span class="gensmall"><a href="' . append_sid('gsearch.' . PHP_EXT) . '">' . $lang['GSEARCH_ENGINE'] . '</a></span>';
 
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 

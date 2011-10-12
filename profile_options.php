@@ -222,7 +222,7 @@ else
 	$pcp_section = $class_settings->get_lang($mod_name) . (!empty($sub_name) ? ' - ' . $class_settings->get_lang($sub_name) : '');
 	$link_name = $pcp_section;
 	$nav_server_url = create_server_url();
-	$breadcrumbs_address = $nav_separator . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($nav_separator . '<a class="nav-current" href="' . $nav_server_url . $return_link . '">' . $link_name . '</a>') : '');
+	$breadcrumbs['address'] = $nav_separator . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($nav_separator . '<a class="nav-current" href="' . $nav_server_url . $return_link . '">' . $link_name . '</a>') : '');
 	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
 	// header

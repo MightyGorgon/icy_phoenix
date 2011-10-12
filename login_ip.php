@@ -37,7 +37,7 @@ if (!empty($user->data['is_bot']))
 $sid = request_var('sid', '');
 
 $redirect = request_var('redirect', '', true);
-$redirect_url = (!empty($redirect) ? urldecode(str_replace(array('&amp;', '?', PHP_EXT . '&'), array('&', '&', PHP_EXT . '?'), $redirect)) : '');
+$redirect_url = (!empty($redirect) ? urldecode(str_replace(array('&amp;', '?', PHP_EXT . '&'), array('&', '&', PHP_EXT . '?'), $redirect)) : CMS_LOGIN_REDIRECT_PAGE);
 
 if (strstr($redirect_url, "\n") || strstr($redirect_url, "\r") || strstr($redirect_url, ';url'))
 {
@@ -94,7 +94,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 
 				if(!empty($user->session_id))
 				{
-					$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
+					$redirect_url = empty($redirect_url) ? CMS_LOGIN_REDIRECT_PAGE : $redirect_url;
 					redirect(append_sid($redirect_url, true));
 				}
 				else
@@ -144,12 +144,12 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 			$user->session_kill();
 		}
 
-		$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
+		$redirect_url = empty($redirect_url) ? CMS_LOGIN_REDIRECT_PAGE : $redirect_url;
 		redirect(append_sid($redirect_url, true));
 	}
 	else
 	{
-		$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
+		$redirect_url = empty($redirect_url) ? CMS_LOGIN_REDIRECT_PAGE : $redirect_url;
 		redirect(append_sid($redirect_url, true));
 	}
 }
@@ -182,7 +182,7 @@ else
 	{
 		$skip_nav_cat = true;
 
-		if($redirect_url != '')
+		if(!empty($redirect_url))
 		{
 			$forward_to = $_SERVER['QUERY_STRING'];
 

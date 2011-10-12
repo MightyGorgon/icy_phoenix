@@ -347,6 +347,8 @@ $lang = array_merge($lang, array(
 	'Cookie_secure' => 'Cookie secure',
 	'Cookie_secure_explain' => 'If your server is running via SSL, set this to enabled, else leave as disabled',
 	'Session_length' => 'Session length [ seconds ]',
+	'SESSION_LAST_VISIT_RESET' => 'Last Visit Refresh If Session Expired',
+	'SESSION_LAST_VISIT_RESET_EXPLAIN' => 'If you enable this option, Last Visit time for use will be updated even after if session expires. Otherwise Last Visit time will be updated only if autologin is enabled and the maximum login time has been reached.',
 
 // Visual Confirmation
 	'Visual_confirm' => 'Enable Visual Confirmation',

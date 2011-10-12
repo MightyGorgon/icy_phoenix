@@ -291,7 +291,7 @@ build_groups_list_template();
 if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
 	$nav_server_url = create_server_url();
-	$breadcrumbs_links_right = '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM . '?mark=forums') . '">' . $lang['Mark_all_forums'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=newposts') . '">' . $lang['Search_new'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=egosearch') . '">' . $lang['Search_your_posts'] . '</a>';
+	$breadcrumbs['bottom_right_links'] = '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM . '?mark=forums') . '">' . $lang['Mark_all_forums'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=newposts') . '">' . $lang['Search_new'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=egosearch') . '">' . $lang['Search_your_posts'] . '</a>';
 }
 
 $forumindex_banner_element = get_ad('fix');

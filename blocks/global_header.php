@@ -27,6 +27,8 @@ if(!function_exists('cms_block_global_header'))
 		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $user, $lang, $block_id, $cms_config_vars;
 
 		include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
+		// Before starting with the loop... let's load the full menu links array!
+		$default_links_array = default_links_array();
 
 		$template->_tpldata['header_row.'] = array();
 		$template->_tpldata['menu.'] = array();

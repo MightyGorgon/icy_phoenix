@@ -221,7 +221,7 @@ if (($mode == 'register') && (!isset($_POST['agreed']) || !isset($_POST['privacy
 {
 	$link_name = $lang['Register'];
 	$nav_server_url = create_server_url();
-	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE . '?mode=register') . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+	$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE . '?mode=register') . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 	page_header('', true);
 	if (isset($_POST['agreed']))
 	{
@@ -1480,7 +1480,7 @@ else
 $link_name = (($cp_section == '') ? '' : $cp_section);
 $link_url = (($cp_section == '') ? '#' : append_sid(CMS_PAGE_PROFILE . '?mode=editprofile&amp;cpl_mode=' . $cpl_mode));
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $main_nav . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="' . $link_url . '">' . $link_name . '</a>') : '');
+$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $main_nav . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="' . $link_url . '">' . $link_name . '</a>') : '');
 
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 
@@ -2128,26 +2128,8 @@ else
 	if (!empty($config['enable_confirm']) && ($mode == 'register'))
 	{
 
-		// Clean some old sessions first!
-		$user->session_gc();
-
-		$sql = "SELECT session_id FROM " . SESSIONS_TABLE;
-		$result = $db->sql_query($sql);
-
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$confirm_sql = '';
-			do
-			{
-				$confirm_sql .= (($confirm_sql != '') ? ', ' : '') . "'" . $row['session_id'] . "'";
-			}
-			while ($row = $db->sql_fetchrow($result));
-
-			$sql = "DELETE FROM " . CONFIRM_TABLE . "
-				WHERE session_id NOT IN (" . $confirm_sql . ")";
-			$db->sql_query($sql);
-		}
-		$db->sql_freeresult($result);
+		// Clean old sessions and old confirm codes
+		$user->confirm_gc();
 
 		$sql = "SELECT COUNT(session_id) AS attempts
 			FROM " . CONFIRM_TABLE . "

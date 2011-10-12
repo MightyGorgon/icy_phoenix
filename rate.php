@@ -65,8 +65,8 @@ switch($rate_mode)
 if ($rate_mode == 'detailed')
 {
 	$nav_server_url = create_server_url();
-	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('rate.' . PHP_EXT) . '">' . $lang['Rating'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">' . id_to_value($topic_id, 'topic') . '</a>';
-	$breadcrumbs_links_right = '<span class="gensmall">' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>') . '</span>';
+	$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('rate.' . PHP_EXT) . '">' . $lang['Rating'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">' . id_to_value($topic_id, 'topic') . '</a>';
+	$breadcrumbs['bottom_right_links'] = '<span class="gensmall">' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>') . '</span>';
 }
 
 page_header($meta_content['page_title'], true);

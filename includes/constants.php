@@ -102,6 +102,8 @@ define('CMS_PAGE_KB', 'kb.' . PHP_EXT);
 define('CMS_PAGE_CONTACT_US', 'contact_us.' . PHP_EXT);
 define('CMS_PAGE_CREDITS', 'credits.' . PHP_EXT);
 define('CMS_PAGE_TAGS', 'tags.' . PHP_EXT);
+// You can customize this page to be able to redirect users wherever you like after logout or login with redirect var not set
+define('CMS_LOGIN_REDIRECT_PAGE', CMS_PAGE_HOME);
 
 // Paths
 define('ADM', 'adm');
@@ -192,6 +194,16 @@ define('CRITICAL_ERROR', 204);
 define('ACL_NEVER', 0);
 define('ACL_YES', 1);
 define('ACL_NO', -1);
+
+// CMS Auth
+define('AUTH_CMS_NONE', -1);
+define('AUTH_CMS_ALL', 0);
+define('AUTH_CMS_GUESTS_ONLY', 1);
+define('AUTH_CMS_REG', 2);
+define('AUTH_CMS_MOD', 3);
+define('AUTH_CMS_ADMIN', 4);
+define('AUTH_CMS_FOUNDER', 5);
+define('AUTH_CMS_OWNER', 6);
 
 // Auth settings - Levels
 define('AUTH_NONE', -1);

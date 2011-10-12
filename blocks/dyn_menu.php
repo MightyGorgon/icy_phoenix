@@ -27,6 +27,8 @@ if(!function_exists('cms_block_dyn_menu'))
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars;
 
 		include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
+		// Before starting with the loop... let's load the full menu links array!
+		$default_links_array = default_links_array();
 
 		$template->_tpldata['cat_row.'] = array();
 		$template->_tpldata['menu_row.'] = array();
@@ -39,7 +41,6 @@ if(!function_exists('cms_block_dyn_menu'))
 							LIMIT 1";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
-		//$row = $db->sql_fetchrow($result);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			break;
@@ -111,7 +112,6 @@ if(!function_exists('cms_block_dyn_menu'))
 
 			if ($cat_allowed)
 			{
-				//echo($cat_item_data['menu_name'] . '<br />');
 				$cat_id = ($cat_item_data['cat_id']);
 				if (($cat_item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$cat_item_data['menu_name_lang']]))
 				{
@@ -122,7 +122,6 @@ if(!function_exists('cms_block_dyn_menu'))
 					$cat_name = (($cat_item_data['menu_name'] != '') ? htmlspecialchars(stripslashes($cat_item_data['menu_name'])) : 'cat_item' . $cat_item_data['cat_id']);
 				}
 				$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="" title="' . $cat_name . '" style="vertical-align: middle;" />&nbsp;&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;&nbsp;');
-				//$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="" title="' . $cat_name . '" style="vertical-align: middle;" />&nbsp;&nbsp;' : '&nbsp;');
 				if ($cat_item_data['menu_link'] != '')
 				{
 					$cat_link = append_sid($cat_item_data['menu_link']);
@@ -177,8 +176,6 @@ if(!function_exists('cms_block_dyn_menu'))
 
 						if ($menu_allowed)
 						{
-							//echo($menu_cat_item_data['menu_name'] . '<br />');
-							//$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />');
 							$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;');
 							if ($menu_cat_item_data['menu_default'] == '0')
 							{
@@ -199,15 +196,11 @@ if(!function_exists('cms_block_dyn_menu'))
 								{
 									$menu_link = append_sid(htmlspecialchars($menu_cat_item_data['menu_link']));
 								}
-								//$menu_url = '<td align="center" width="8">' . $menu_icon . '</td><td class="genmed" align="left"><a href="' . $menu_link . '">' . $menu_name . '</a></td>';
-								//$menu_url = '<a href="' . $menu_link . '">' . $menu_name . '</a>';
 								$menu_url = '<div class="genmed" align="left"><a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a></div>';
 							}
 							else
 							{
 								$menu_url_temp = build_complete_url($menu_cat_item_data['menu_default'], $block_id, $menu_cat_item_data['menu_link'], $menu_icon);
-								//$menu_url = (($menu_url_temp != '') ? '<td align="center" width="8">' . $menu_icon . '</td><td class="genmed" align="left">' . $menu_url_temp . '</td>' : '');
-								//$menu_url = (($menu_url_temp != '') ? $menu_url_temp : '');
 								$menu_url = (($menu_url_temp != '') ? '<div class="genmed" align="left">' . $menu_url_temp . '</div>' : '');
 							}
 

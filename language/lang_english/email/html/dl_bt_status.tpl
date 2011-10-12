@@ -1,5 +1,4 @@
 Subject: New Status for Bug Report on <b>{SITENAME}</b>
-Charset: iso-8859-1
 
 <br /><font face="Verdana" size="2">
 Hello <b>{USERNAME}</b>,<br /><br />

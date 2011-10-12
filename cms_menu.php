@@ -144,6 +144,9 @@ $mi_menu_icon_input_name = 'menu_icon';
 //echo($s_hidden_fields);
 //echo($s_append_url);
 
+// Before starting with the loop... let's load the full menu links array!
+$default_links_array = default_links_array();
+
 if($mode == 'menu_item')
 {
 	if(($action == 'add') || ($action == 'edit'))
@@ -250,17 +253,17 @@ if($mode == 'menu_item')
 
 				if($item_type != 'category_item')
 				{
-					$link_default_array = build_default_link_array();
-					$mi_menu_default ='';
+					$mi_menu_default = '';
 					$mi_menu_disabled = ($m_info['menu_default'] != 0) ? 'disabled' : '';
-					for ($i = 0; $i < sizeof($link_default_array); $i++)
+					foreach ($default_links_array as $k => $v)
 					{
-						$mi_menu_default .= '<option value="' . $i .'"';
-						if($m_info['menu_default'] == $i)
+						$mi_menu_lang = !empty($lang[$v['lang']]) ? $lang[$v['lang']] : $v['lang'];
+						$mi_menu_default .= '<option value="' . $k .'"';
+						if($m_info['menu_default'] == $k)
 						{
 							$mi_menu_default .= ' selected="selected"';
 						}
-						$mi_menu_default .= '>' . $link_default_array[$i] . '</option>';
+						$mi_menu_default .= '>' . $mi_menu_lang . '</option>';
 					}
 				}
 
@@ -358,17 +361,17 @@ if($mode == 'menu_item')
 
 			if($item_type != 'category_item')
 			{
-				$link_default_array = build_default_link_array();
-				$mi_menu_default ='';
+				$mi_menu_default = '';
 				$mi_menu_disabled = ($m_info['menu_default'] != 0) ? 'disabled' : '';
-				for ($i = 0; $i < sizeof($link_default_array); $i++)
+				foreach ($default_links_array as $k => $v)
 				{
-					$mi_menu_default .= '<option value="' . $i .'"';
-					if($m_info['menu_default'] == $i)
+					$mi_menu_lang = !empty($lang[$v['lang']]) ? $lang[$v['lang']] : $v['lang'];
+					$mi_menu_default .= '<option value="' . $k .'"';
+					if($m_info['menu_default'] == $k)
 					{
 						$mi_menu_default .= ' selected="selected"';
 					}
-					$mi_menu_default .= '>' . $link_default_array[$i] . '</option>';
+					$mi_menu_default .= '>' . $mi_menu_lang . '</option>';
 				}
 			}
 
@@ -491,13 +494,14 @@ if($mode == 'menu_item')
 		$mi_menu_icon = request_post_var('menu_icon', '', true);
 		$mi_menu_desc = request_post_var('menu_desc', '', true);
 		$mi_menu_default = request_post_var('menu_default', 0);
-		if ($mi_menu_default > '0')
+		if ($mi_menu_default > 0)
 		{
-			$mi_menu_name = build_default_link_name($mi_menu_default);
+			$mi_menu_name_lang_value = $lang[$default_links_array[$mi_menu_default]['lang']];
+			$mi_menu_name = !empty($mi_menu_name_lang_value) ? $mi_menu_name_lang_value : $lang['MENU_EMPTY_LINK'];
 			$mi_menu_name_lang = '';
-			$mi_menu_link = build_default_link_url($mi_menu_default);
+			$mi_menu_link = isset($default_links_array[$mi_menu_default]['link']) ? $default_links_array[$mi_menu_default]['link'] : CMS_PAGE_FORUM;
 			$mi_menu_link_external = '0';
-			$mi_auth_view = build_default_link_auth($mi_menu_default);
+			$mi_auth_view = isset($default_links_array[$mi_menu_default]['auth']) ? $default_links_array[$mi_menu_default]['auth'] : AUTH_CMS_ADMIN;
 		}
 		else
 		{

@@ -6,7 +6,7 @@ for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
 	$catrow_item = &$this->_tpldata['catrow.'][$catrow_i];
 	// check for new messages
 	$new_msg = false;
-	$forumrow_count = ( isset($catrow_item['forumrow.']) ) ? count($catrow_item['forumrow.']) : 0;
+	$forumrow_count = isset($catrow_item['forumrow.']) ? count($catrow_item['forumrow.']) : 0;
 	for ($forumrow_i = 0; $forumrow_i < $forumrow_count; $forumrow_i++)
 	{
 		$forumrow_item = &$catrow_item['forumrow.'][$forumrow_i];

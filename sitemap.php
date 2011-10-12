@@ -16,8 +16,6 @@ include_once(IP_ROOT_PATH . 'includes/class_archives.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 @set_time_limit(0);
-$mem_limit = check_mem_limit();
-@ini_set('memory_limit', $mem_limit);
 @ini_set('max_execution_time', '3600');
 
 // Start session management
@@ -338,9 +336,11 @@ else
 	}
 	// MG SITEMAP - ALBUM - END
 
+	$mem_limit = check_mem_limit();
+	@ini_set('memory_limit', $mem_limit);
 	$xml_content = $xml_sitemap_header . $xml_sitemap_body . $xml_sitemap_footer;
 
-	// We close the connections here since we are not using page_footer...
+
 	garbage_collection();
 
 	// GZip - BEGIN

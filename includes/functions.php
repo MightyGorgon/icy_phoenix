@@ -2655,12 +2655,12 @@ function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 	$output_date = '';
 	$time_sep = !empty($lang['NUMBER_FORMAT_TIME_SEP']) ? $lang['NUMBER_FORMAT_TIME_SEP'] : ':';
 	$format_hour = 'H' . $time_sep . 'i';
-	if ($gmepoch > $midnight)
+	if (($gmepoch >= $midnight) && ($gmepoch < ($midnight + 86400)))
 	{
 		$format = ($day_only) ? $format : $format_hour;
 		$output_date = ($day_only) ? $lang['TODAY'] : ($lang['Today_at'] . ' ');
 	}
-	elseif ($gmepoch > ($midnight - 86400))
+	elseif (($gmepoch < $midnight) && ($gmepoch >= ($midnight - 86400)))
 	{
 		$format = ($day_only) ? $format : $format_hour;
 		$output_date = ($day_only) ? $lang['YESTERDAY'] : ($lang['Yesterday_at'] . ' ');
@@ -2736,7 +2736,7 @@ function create_date_mysql($time, $output = 'datetime', $tz = false)
 /*
 * Format MySQL dates
 */
-function format_date_mysql($time, $output = 'datetime', $reverse = false, $date_sep = '-', $time_sep = ':')
+function format_date_mysql($time, $output = 'datetime', $reverse = false, $date_sep = '-', $time_sep = ':', $unix_convert = false)
 {
 	global $config, $lang;
 
@@ -2749,15 +2749,38 @@ function format_date_mysql($time, $output = 'datetime', $reverse = false, $date_
 	{
 		case 'date':
 			$mysql_date = !empty($reverse) ? str_replace('-', $date_sep, $mysql_date) : str_replace($date_sep, '-', $mysql_date);
+			if (!empty($unix_convert))
+			{
+				$date_format = $lang['DATE_FORMAT_DATE'];
+				$mysql_date = gmmktime(0, 0, 0, substr($mysql_date, 5, 2), substr($mysql_date, 8, 2), substr($mysql_date, 0, 4));
+			}
 			break;
 
 		case 'time':
 			$mysql_date = !empty($reverse) ? str_replace(':', $time_sep, $mysql_date) : str_replace($time_sep, ':', $mysql_date);
+			if (!empty($unix_convert))
+			{
+				$date_format = $lang['DATE_FORMAT_TIME'];
+				$mysql_date = gmmktime(substr($mysql_date, 11, 2), substr($mysql_date, 14, 2), substr($mysql_date, 17, 2), 1, 1, 1970);
+			}
 			break;
 
 		default:
 			$mysql_date = !empty($reverse) ? str_replace(array('-', ':'), array($date_sep, $time_sep), $mysql_date) : str_replace(array($date_sep, $time_sep), array('-', ':'), $mysql_date);
+			if (!empty($unix_convert))
+			{
+				$date_format = $config['default_dateformat'];
+				$mysql_date = gmmktime(substr($mysql_date, 11, 2), substr($mysql_date, 14, 2), substr($mysql_date, 17, 2), substr($mysql_date, 5, 2), substr($mysql_date, 8, 2), substr($mysql_date, 0, 4));
+			}
 			break;
+	}
+
+	if (!empty($unix_convert))
+	{
+		// We need to force '+0' and subtract DST, because we are dealing with MySQL dates here... these are not to be converted into local time!
+		$date_format = !empty($date_format) ? $date_format : $config['default_dateformat'];
+		$dst_sec = get_dst($mysql_date, $config['board_timezone']);
+		$mysql_date = create_date($date_format, $mysql_date - $dst_sec, '+0');
 	}
 
 	return $mysql_date;
@@ -4024,7 +4047,7 @@ function page_header($title = '', $parse_template = false)
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 	global $forum_id, $topic_id;
 
 	if (defined('HEADER_INC'))
@@ -4435,8 +4458,8 @@ function page_header($title = '', $parse_template = false)
 				$row = $db->sql_fetchrow($result);
 				$lang['Search_new'] = $lang['Search_new'] . ' (' . $row['total'] . ')';
 				$lang['New'] = $lang['New'] . ' (' . $row['total'] . ')';
-				$lang['New2'] = $lang['New_Label'] . ' (' . $row['total'] . ')';
-				$lang['New3'] = $lang['New_Messages_Label'] . ' (' . $row['total'] . ')';
+				$lang['NEW_POSTS_SHORT'] = $lang['New_Label'] . ' (' . $row['total'] . ')';
+				$lang['NEW_POSTS_LONG'] = $lang['New_Messages_Label'] . ' (' . $row['total'] . ')';
 				$lang['Search_new2'] = $lang['Search_new2'] . ' (' . $row['total'] . ')';
 				$lang['Search_new_p'] = $lang['Search_new_p'] . ' (' . $row['total'] . ')';
 				$db->sql_freeresult($result);
@@ -4444,8 +4467,8 @@ function page_header($title = '', $parse_template = false)
 		}
 		else
 		{
-			$lang['New2'] = $lang['New_Label'];
-			$lang['New3'] = $lang['New_Messages_Label'];
+			$lang['NEW_POSTS_SHORT'] = $lang['New_Label'];
+			$lang['NEW_POSTS_LONG'] = $lang['New_Messages_Label'];
 		}
 	}
 	// LOGGED IN CHECK - END
@@ -4713,8 +4736,8 @@ function page_header($title = '', $parse_template = false)
 			'L_SEARCH_NEW' => $lang['Search_new'],
 			'L_SEARCH_NEW2' => $lang['Search_new2'],
 			'L_NEW' => $lang['New'],
-			'L_NEW2' => (empty($lang['New2']) ? $lang['New_Label'] : $lang['New2']),
-			'L_NEW3' => (empty($lang['New3']) ? $lang['New_Messages_Label'] : $lang['New3']),
+			'L_NEW2' => (empty($lang['NEW_POSTS_SHORT']) ? $lang['New_Label'] : $lang['NEW_POSTS_SHORT']),
+			'L_NEW3' => (empty($lang['NEW_POSTS_LONG']) ? $lang['New_Messages_Label'] : $lang['NEW_POSTS_LONG']),
 			'L_POSTS' => $lang['Posts'],
 		//<!-- BEGIN Unread Post Information to Database Mod -->
 			'L_DISPLAY_ALL' => (!empty($u_display_new) ? $u_display_new['all'] : ''),
@@ -4954,10 +4977,10 @@ function page_header($title = '', $parse_template = false)
 	{
 		$nav_server_url = create_server_url();
 		$nav_cat_desc = $nav_separator . $nav_cat_desc;
-		$breadcrumbs_address = $nav_separator . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM) . '">' . $lang['Forum'] . '</a>' . $nav_cat_desc;
+		$breadcrumbs['address'] = $nav_separator . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM) . '">' . $lang['Forum'] . '</a>' . $nav_cat_desc;
 		if (isset($nav_add_page_title) && ($nav_add_page_title == true))
 		{
-			$breadcrumbs_address = $breadcrumbs_address . $nav_separator . '<a href="#" class="nav-current">' . $meta_content['page_title'] . '</a>';
+			$breadcrumbs['address'] = $breadcrumbs['address'] . $nav_separator . '<a href="#" class="nav-current">' . $meta_content['page_title'] . '</a>';
 		}
 	}
 
@@ -4967,11 +4990,11 @@ function page_header($title = '', $parse_template = false)
 		'S_PAGE_NAV' => (isset($cms_page['page_nav']) ? $cms_page['page_nav'] : true),
 		'NAV_SEPARATOR' => $nav_separator,
 		'NAV_CAT_DESC' => $nav_cat_desc,
-		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
-		'S_BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : true),
-		'BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : $breadcrumbs_links_left),
-		'S_BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? false : true),
-		'BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? '&nbsp;' : $breadcrumbs_links_right),
+		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs['address']) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs['address']),
+		'S_BREADCRUMBS_BOTTOM_LEFT_LINKS' => (empty($breadcrumbs['bottom_left_links']) ? false : true),
+		'BREADCRUMBS_BOTTOM_LEFT_LINKS' => (empty($breadcrumbs['bottom_left_links']) ? '&nbsp;' : $breadcrumbs['bottom_left_links']),
+		'S_BREADCRUMBS_BOTTOM_RIGHT_LINKS' => (empty($breadcrumbs['bottom_right_links']) ? false : true),
+		'BREADCRUMBS_BOTTOM_RIGHT_LINKS' => (empty($breadcrumbs['bottom_right_links']) ? '&nbsp;' : $breadcrumbs['bottom_right_links']),
 		)
 	);
 
@@ -5078,7 +5101,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 	global $cms_acp_url;
 
 	$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
@@ -5907,7 +5930,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	/*
 	global $meta_content;
 	global $nav_pgm, $nav_add_page_title, $skip_nav_cat, $start;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 	*/
 
 	//+MOD: Fix message_die for multiple errors MOD

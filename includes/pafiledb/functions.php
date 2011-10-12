@@ -439,7 +439,7 @@ function pafiledb_page_header($page_title)
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 
 	global $pafiledb, $pafiledb_config, $action;
 	global $admin_level, $level_prior, $debug;
@@ -481,8 +481,8 @@ function pafiledb_page_header($page_title)
 		{
 			$bc_nav_links = $pafiledb->generate_category_nav_links($cat_id, $file_id);
 		}
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '"' . (($bc_nav_links == '') ? ' class="nav-current"' : '') . '>' . $lang['Downloads'] . '</a>' . $bc_nav_links;
-		$breadcrumbs_links_right = '';
+		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '"' . (($bc_nav_links == '') ? ' class="nav-current"' : '') . '>' . $lang['Downloads'] . '</a>' . $bc_nav_links;
+		$breadcrumbs['bottom_right_links'] = '';
 		page_header($meta_content['page_title'], true);
 	}
 
@@ -556,7 +556,7 @@ function pafiledb_page_footer()
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 
 	global $pafiledb, $pafiledb_config, $action;
 	global $admin_level, $level_prior, $debug;

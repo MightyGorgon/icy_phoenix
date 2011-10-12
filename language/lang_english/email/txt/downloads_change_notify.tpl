@@ -1,5 +1,4 @@
 Subject: Changed Download
-Charset: iso-8859-1
 
 Hello {USERNAME},
 

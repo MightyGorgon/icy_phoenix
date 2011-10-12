@@ -53,7 +53,7 @@ function get_user_os($http_user_agent_str)
 		if (strpos($http_user_agent_str, 'Windows NT 6.1'))
 		{
 			$user_os_ver = 'Windows 7';
-			$user_os_img .= 'winlong.png';
+			$user_os_img .= 'win7.png';
 		}
 		elseif (strpos($http_user_agent_str, 'Windows NT 6.0'))
 		{
@@ -80,6 +80,26 @@ function get_user_os($http_user_agent_str)
 			$user_os_ver = 'Windows';
 			$user_os_img .= 'win.png';
 		}
+	}
+	elseif (strpos($http_user_agent_str, 'SymbianOS') || strpos($http_user_agent_str, 'SymbOS'))
+	{
+		$user_os_ver = 'SymbianOS';
+		$user_os_img .= 'symbian.png';
+	}
+	elseif (strpos($http_user_agent_str, 'Android'))
+	{
+		$user_os_ver = 'Android';
+		$user_os_img .= 'android.png';
+	}
+	elseif (strpos($http_user_agent_str, 'iPhone'))
+	{
+		$user_os_ver = 'iPhone';
+		$user_os_img .= 'iphone.png';
+	}
+		elseif (strpos($http_user_agent_str, 'iPad'))
+	{
+		$user_os_ver = 'iPad';
+		$user_os_img .= 'ipad.png';
 	}
 	elseif (strpos($http_user_agent_str, 'Mac'))
 	{
@@ -196,10 +216,20 @@ function get_user_browser($http_user_agent_str)
 		$user_browser_ver = 'Firefox ' . $log_version[1];
 		$user_browser_img .= 'firefox.png';
 	}
-	elseif (ereg('Chrome/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
+	elseif (ereg('Chromium/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
+	{
+		$user_browser_ver = 'Chromium ' . $log_version[1];
+		$user_browser_img .= 'chromium.png';
+	}
+	elseif (ereg('Chrome/([0-9]{1,2}.[0-9]{1,2})', $http_user_agent_str, $log_version))
 	{
 		$user_browser_ver = 'Chrome ' . $log_version[1];
 		$user_browser_img .= 'chrome.png';
+	}
+	elseif (ereg('Safari/', $http_user_agent_str, $log_version))
+	{
+		$user_browser_ver = 'Safari ' . $log_version[1];
+		$user_browser_img .= 'safari.png';
 	}
 	elseif (ereg('Mozilla/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
 	{

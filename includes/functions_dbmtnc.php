@@ -708,6 +708,7 @@ $default_config = array(
 	'spam_post_edit_interval' => '60',
 	'mobile_style_disable' => '0',
 	'session_gc' => '3600',
+	'session_last_visit_reset' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

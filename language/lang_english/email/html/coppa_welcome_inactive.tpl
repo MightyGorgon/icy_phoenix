@@ -1,7 +1,7 @@
-Subject: Welcome to {SITENAME} Forums
-Charset: iso-8859-1
+Subject: Welcome to {SITENAME}
+
 <br /><font face="Verdana" size="2">
-Welcome to <b>{SITENAME}</b> Forums
+Welcome to <b>{SITENAME}</b>
 <br /><br />
 In compliance with the COPPA act your account is currently inactive.<br /><br />
 

@@ -25,10 +25,10 @@
 		<div class="topic-title-hide-flow"><div style="float: right; display: inline; vertical-align: top; margin-top: 0px !important; padding-top: 0px !important; padding-right: 3px;">{row.TOPIC_TYPE_ICON}</div>{row.NEWEST_POST_IMG}<span class="topiclink{row.CLASS_NEW}"><a href="{row.U_VIEW_TOPIC}" class="{row.TOPIC_CLASS}">{row.TOPIC_TITLE}</a></span><br /><span class="gensmall">{L_TAGS_TEXT}:&nbsp;{row.TOPIC_TAGS}</span></div>
 		{row.GOTO_PAGE_FULL}
 	</td>
-	<td class="row3 row-center-small" nowrap="nowrap" style="padding-top: 0px; padding-left: 2px; padding-right: 2px;">{row.FIRST_TIME}<br />{row.FIRST_AUTHOR}</td>
+	<td class="row3 row-center-small" nowrap="nowrap" style="padding-top: 0px; padding-left: 2px; padding-right: 2px;">{row.FIRST_POST_TIME}<br />{row.FIRST_AUTHOR}</td>
 	<td class="row2 row-center-small">{row.VIEWS}</td>
 	<td class="row2 row-center-small">{row.REPLIES}</td>
-	<td class="row3 row-center-small" style="padding-top: 0px; padding-left: 2px; padding-right: 2px;" nowrap="nowrap">{row.LAST_TIME}<br />{row.LAST_AUTHOR}&nbsp;{row.LAST_URL}</td>
+	<td class="row3 row-center-small" style="padding-top: 0px; padding-left: 2px; padding-right: 2px;" nowrap="nowrap">{row.LAST_POST_TIME}<br />{row.LAST_AUTHOR}&nbsp;{row.LAST_URL}</td>
 </tr>
 <!-- END row -->
 <!-- BEGIN switch_no_topics -->

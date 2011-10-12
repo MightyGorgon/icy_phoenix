@@ -1,5 +1,4 @@
 Subject: Your account is now blocked
-Charset: iso-8859-1
 
 Hello, {WARNED_POSTER} 
 

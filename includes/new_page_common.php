@@ -148,7 +148,7 @@ if(empty($layout_template))
 if (!$cms_default_page)
 {
 	$meta_content['page_title'] = (!empty($layout_name) ? $layout_name : $config['sitename']);
-	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
+	$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
 }
 
 // Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP

@@ -51,6 +51,7 @@ function bbcb_vars_reassign_end()
 
 			<span class="genmed">&nbsp;&nbsp;</span>
 			<a href="javascript:bbcb_vars_reassign_start();BBCquote();bbcb_vars_reassign_end();" accesskey="q"><img border="0" src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}quote{BBCB_MG_IMG_EXT}" name="quote" onmouseover="helpline('quote')" alt="{L_BBCB_MG_QUOTE}" title="{L_BBCB_MG_QUOTE}" class="bbimages" /></a>
+			<a href="javascript:bbcb_vars_reassign_start();BBCcode();bbcb_vars_reassign_end();" accesskey="c"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}code{BBCB_MG_IMG_EXT}" name="code" onmouseover="helpline('code')" alt="{L_BBCB_MG_CODE}" title="{L_BBCB_MG_CODE}" class="bbimages" /></a>
 
 			<span class="genmed">&nbsp;&nbsp;</span>
 			<a href="javascript:bbcb_vars_reassign_start();BBCurl();bbcb_vars_reassign_end();" accesskey="w"><img border="0" src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}url{BBCB_MG_IMG_EXT}" name="url" onmouseover="helpline('url')" alt="{L_BBCB_MG_URL}" title="{L_BBCB_MG_URL}" class="bbimages" /></a>

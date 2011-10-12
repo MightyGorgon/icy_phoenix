@@ -338,7 +338,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	{
 		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+		$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
 	if ($album_config['show_slideshow'] && ($total_pics > 0))
@@ -346,7 +346,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		$first_pic_id = album_get_first_pic_id($cat_id);
 		$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . '&amp;slideshow=5'));
 		$slideshow_link_full = '[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]';
-		$breadcrumbs_links_right = $slideshow_link_full;
+		$breadcrumbs['bottom_right_links'] = $slideshow_link_full;
 	}
 	else
 	{
@@ -405,7 +405,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	{
 		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+		$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 	*/
 

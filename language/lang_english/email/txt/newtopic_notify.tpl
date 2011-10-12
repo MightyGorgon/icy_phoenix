@@ -1,5 +1,4 @@
 Subject: New Topic Notification for forum "{FORUM_NAME}" - {TOPIC_TITLE}
-Charset: iso-8859-1
 
 Hello,
 

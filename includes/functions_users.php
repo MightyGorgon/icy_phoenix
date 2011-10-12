@@ -611,6 +611,7 @@ function birthday_email_send()
 		}
 		// Birthday - END
 	}
+	// We reset the lang again for default lang...
 	setup_extra_lang(array('lang_cron_vars'));
 }
 

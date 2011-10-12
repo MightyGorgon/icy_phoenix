@@ -1,5 +1,5 @@
 Subject: New pic comment posted to {PIC_TITLE}
-Charset: iso-8859-1
+
 <br /><font face="Verdana" size="2">
 Hello,
 <br /><br />

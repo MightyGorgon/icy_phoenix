@@ -114,12 +114,12 @@ class class_form
 				switch ($properties['type'])
 				{
 					case 'DATE_INPUT_JQUI':
-						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql($default, 'date', true, $this->date_sep, $this->time_sep) : create_date($this->date_format_php, $default, $config['board_timezone']);
+						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql($default, 'date', true, $this->date_sep, $this->time_sep, false) : create_date($this->date_format_php, $default, $config['board_timezone']);
 						$jquery_ui = '<script type="text/javascript">$(function() { $.datepicker.setDefaults( $.datepicker.regional["' . $lang['HEADER_LANG_JQUERY'] . '"] ); $("#' . $name . '").datepicker({ dateFormat: "' . $this->date_format_jq . '", changeMonth: true, changeYear: true }); });</script>';
 						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="12" size="16" readonly="readonly" class="post" value="' . $default . '" />';
 						break;
 					case 'TIME_INPUT_JQUI':
-						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql($default, 'time', true, $this->date_sep, $this->time_sep) : create_date($this->date_format_php, $default, $config['board_timezone']);
+						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql($default, 'time', true, $this->date_sep, $this->time_sep, false) : create_date($this->date_format_php, $default, $config['board_timezone']);
 						$jquery_ui = '<script type="text/javascript">$(function() { $.timepicker.setDefaults( $.timepicker.regional["' . $lang['HEADER_LANG_JQUERY'] . '"] ); $("#' . $name . '").timepicker({ timeSeparator: "' . $this->time_sep . '" }); });</script>';
 						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="8" size="12" readonly="readonly" class="post" value="' . $default . '" />';
 						break;
@@ -481,7 +481,7 @@ class class_form
 					$inputs_array[$k] = request_var($k, $v['default']);
 					if (in_array($v['type'], array('DATE_INPUT_JQUI', 'TIME_INPUT_JQUI')))
 					{
-						$inputs_array[$k] = format_date_mysql($inputs_array[$k], 'date', false, $this->date_sep, $this->time_sep);
+						$inputs_array[$k] = format_date_mysql($inputs_array[$k], 'date', false, $this->date_sep, $this->time_sep, false);
 					}
 				}
 				else
@@ -508,9 +508,10 @@ class class_form
 			}
 			else
 			{
-				$multibyte = (in_array($v['type'], array('HIDDEN', 'VARCHAR', 'HTMLVARCHAR', 'TEXT', 'HTMLTEXT'))) ? true : false;
+				$multibyte = (isset($v['type']) && in_array($v['type'], array('HIDDEN', 'VARCHAR', 'HTMLVARCHAR', 'TEXT', 'HTMLTEXT'))) ? true : false;
+				$html_decode = (isset($v['type']) && in_array($v['type'], array('HTMLVARCHAR', 'HTMLTEXT'))) ? true : false;
 				$inputs_array[$k] = request_var($k, $v['default'], $multibyte);
-				//$inputs_array[$k] = is_string($inputs_array[$k]) ? addslashes($inputs_array[$k]) : $inputs_array[$k];
+				$inputs_array[$k] = $html_decode ? htmlspecialchars_decode($inputs_array[$k]) : $inputs_array[$k];
 			}
 
 			// We want to force each value the user isn't allowed to add/edit to the default value
@@ -529,8 +530,8 @@ class class_form
 		$vars_data = array();
 		foreach ($data_array as $k => $v)
 		{
-			$html_decode = (isset($v['type']) && in_array($v['type'], array('HTMLVARCHAR', 'HTMLTEXT'))) ? true : false;
 			$multibyte = (isset($v['type']) && in_array($v['type'], array('HIDDEN', 'VARCHAR', 'HTMLVARCHAR', 'TEXT', 'HTMLTEXT'))) ? true : false;
+			$html_decode = (isset($v['type']) && in_array($v['type'], array('HTMLVARCHAR', 'HTMLTEXT'))) ? true : false;
 			$vars_data[$k] = request_var($k, $v['default'], $multibyte);
 			$vars_data[$k] = $html_decode ? htmlspecialchars_decode($vars_data[$k], ENT_COMPAT) : $vars_data[$k];
 			$data_array[$k]['default'] = $vars_data[$k];
@@ -590,15 +591,14 @@ class class_form
 	/*
 	* Build item view page
 	*/
-	function create_view_page(&$table_fields, &$inputs_array, $items_row)
+	function create_view_page(&$table_fields, &$inputs_array, $items_row, $template_row = 'field')
 	{
 		global $config, $template, $theme, $lang, $bbcode;
 
 		foreach ($table_fields as $k => $v)
 		{
 			$inputs_array[$k] = (isset($items_row[$k]) ? $items_row[$k] : $v['default']);
-			//$inputs_array[$k] = is_string($inputs_array[$k]) ? stripslashes($inputs_array[$k]) : $inputs_array[$k];
-			// We convert HTML entities only if we do not need to pars HTML...
+			// We convert HTML entities only if we do not need to parse HTML...
 			if (is_string($inputs_array[$k]) && !empty($v['html_parse']))
 			{
 				$value = htmlspecialchars_decode($inputs_array[$k], ENT_COMPAT);
@@ -664,7 +664,8 @@ class class_form
 				{
 					case 'mysql':
 						$output = !empty($v['is_date']) ? 'date' : (!empty($v['is_time']) ? 'time' : 'datetime');
-						$value = format_date_mysql($inputs_array[$k], $output, true, $this->date_sep, $this->time_sep);
+						$unix_convert = !empty($v['datetime_format_convert']) ? true : false;
+						$value = format_date_mysql($inputs_array[$k], $output, true, $this->date_sep, $this->time_sep, $unix_convert);
 						break;
 
 					default:
@@ -712,7 +713,8 @@ class class_form
 				// SPECIAL PROCESSING - END
 
 				$class = (empty($class) || ($class == $theme['td_class2'])) ? $theme['td_class1'] : $theme['td_class2'];
-				$template->assign_block_vars('field', array(
+				$template_row = empty($template_row) ? 'field' : (string) $template_row;
+				$template->assign_block_vars($template_row, array(
 					'CLASS' => $class,
 					'L_NAME' => $this->get_lang($v['lang_key']),
 					'L_EXPLAIN' => !empty($v['explain']) ? $this->get_lang($v['explain']) : '',

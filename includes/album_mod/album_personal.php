@@ -143,7 +143,7 @@ if ($album_view_mode != ALBUM_VIEW_ALL)
 	{
 		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+		$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
 	$cat_ids = $cat_id;
@@ -158,7 +158,7 @@ else
 	{
 		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+		$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
 	if (album_get_personal_root_id($album_user_id) != $cat_id)
@@ -209,7 +209,7 @@ if ($total_pics == 0)
 	{
 		$ext_address = ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>';
 		$album_nav_cat_desc .= $ext_address;
-		$breadcrumbs_address .= $ext_address;
+		$breadcrumbs['address'] .= $ext_address;
 	}
 }
 

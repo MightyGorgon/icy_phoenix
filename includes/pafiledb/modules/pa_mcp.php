@@ -42,7 +42,7 @@ class pafiledb_mcp extends pafiledb_public
 		{
 			$mode = $mode_js;
 			$cat_id = request_var('cat_js_id', 0);
-			$cat_id = !empty($cat_id) : $cat_id : request_var('cat_id', 0);
+			$cat_id = !empty($cat_id) ? $cat_id : request_var('cat_id', 0);
 		}
 		else
 		{

@@ -873,13 +873,13 @@ if (!$config['board_disable'] || ($config['board_disable'] && ($user->data['user
 $meta_content['page_title'] = $forum_row['forum_name'];
 $meta_content['description'] = '';
 $meta_content['keywords'] = '';
-$breadcrumbs_links_right = '';
+$breadcrumbs['bottom_right_links'] = '';
 if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
-	$breadcrumbs_links_left = $marked_as_read;
-	$breadcrumbs_links_right = (($mark_as_read != '') ? ($mark_as_read . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . $s_watching_forum . (($mark_always_read != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;' . $mark_always_read) : '');
+	$breadcrumbs['bottom_left_links'] = $marked_as_read;
+	$breadcrumbs['bottom_right_links'] = (($mark_as_read != '') ? ($mark_as_read . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . $s_watching_forum . (($mark_always_read != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;' . $mark_always_read) : '');
 }
-$breadcrumbs_links_right .= (($breadcrumbs_links_right != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid('viewforumlist.' . PHP_EXT . '?' . $forum_id_append) . '">' . $lang['VF_ALL_TOPICS'] . '</a>';
+$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid('viewforumlist.' . PHP_EXT . '?' . $forum_id_append) . '">' . $lang['VF_ALL_TOPICS'] . '</a>';
 
 $template_to_parse = ($kb_mode) ? 'viewforum_kb_body.tpl' : 'viewforum_body.tpl';
 

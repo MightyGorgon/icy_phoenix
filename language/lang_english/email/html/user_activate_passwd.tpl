@@ -1,5 +1,5 @@
 Subject: New password activation
-Charset: iso-8859-1
+
 <br /><font face="Verdana" size="2">
 Hello <b>{USERNAME}</b>,<br /><br />
 You are receiving this email because you have (or someone pretending to be you has) requested a new password be sent for your account on <b>{SITENAME}</b>.<br />

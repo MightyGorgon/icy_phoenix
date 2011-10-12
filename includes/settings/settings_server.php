@@ -261,6 +261,14 @@ $settings_data = array(
 		'default' => 3600,
 		),
 
+	'session_last_visit_reset' => array(
+		'lang_key' => 'SESSION_LAST_VISIT_RESET',
+		'explain' => 'SESSION_LAST_VISIT_RESET_EXPLAIN',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => $this->list_yes_no,
+		),
+
 	'coppa_fax' => array(
 		'lang_key' => 'COPPA_fax',
 		'separator' => 'COPPA_settings',

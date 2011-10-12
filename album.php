@@ -91,7 +91,7 @@ if ($album_nav_cat_desc != '')
 {
 	$nav_server_url = create_server_url();
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+	$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 }
 // --------------------------------
 // Build allowed category-list (for recent pics after here)
@@ -198,7 +198,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	}
 
 	$template->assign_vars(array(
-		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
+		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs['address']) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs['address']),
 
 		'ALBUM_NAV' => $album_nav_cat_desc,
 		'S_COLS' => $cols,

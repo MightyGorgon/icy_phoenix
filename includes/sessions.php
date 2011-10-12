@@ -202,22 +202,35 @@ class session
 				{
 					$session_expired = false;
 
+					$autologin_expired = (!empty($config['max_autologin_time']) && ($this->data['session_time'] < ($this->time_now - (86400 * (int) $config['max_autologin_time']) + SESSION_REFRESH))) ? true : false;
+
 					if (!$session_expired)
 					{
 						// Check the session length timeframe if autologin is not enabled.
 						// Else check the autologin length... and also removing those having autologin enabled but no longer allowed site-wide.
-						if (!$this->data['session_autologin'])
+						if (empty($this->data['session_autologin']))
 						{
 							if ($this->data['session_time'] < ($this->time_now - ($config['session_length'] + SESSION_REFRESH)))
 							{
 								$session_expired = true;
 							}
 						}
-						elseif (!$config['allow_autologin'] || ($config['max_autologin_time'] && ($this->data['session_time'] < ($this->time_now - (86400 * (int) $config['max_autologin_time']) + SESSION_REFRESH))))
+						elseif (empty($config['allow_autologin']) || $autologin_expired)
 						{
 							$session_expired = true;
 						}
 					}
+
+					// ICY PHOENIX - BEGIN
+					// Refresh last visit time for those users having autologin enabled or those users with session expired (only if config for this has been set)
+					if (($this->data['user_id'] != ANONYMOUS) && ((!empty($config['session_last_visit_reset']) && $session_expired) || (!empty($config['allow_autologin']) && $autologin_expired)))
+					{
+						$sql = "UPDATE " . USERS_TABLE . "
+							SET user_lastvisit = " . (int) $this->data['session_time'] . "
+							WHERE user_id = " . (int) $this->data['user_id'];
+						$db->sql_query($sql);
+					}
+					// ICY PHOENIX - END
 
 					if (!$session_expired)
 					{
@@ -326,7 +339,8 @@ class session
 		// Do we allow autologin on this board? No? Then override anything that may be requested here
 		if (!$config['allow_autologin'])
 		{
-			$this->cookie_data['k'] = $persist_login = false;
+			$this->cookie_data['k'] = false;
+			$persist_login = false;
 		}
 
 		$user_logged_in = false;
@@ -427,7 +441,7 @@ class session
 		// ICY PHOENIX - END
 
 		// If our friend is a bot, we re-assign a previously assigned session
-		if ($this->data['is_bot'] && $this->data['session_id'])
+		if ($this->data['is_bot'] && !empty($this->data['session_id']))
 		{
 			// Only assign the current session if the ip and browser match...
 			if ((strpos($this->ip, ':') !== false) && (strpos($this->data['session_ip'], ':') !== false))
@@ -468,11 +482,7 @@ class session
 						WHERE session_id = '" . $db->sql_escape($this->session_id) . "'";
 					$db->sql_query($sql);
 
-					// Update the last visit time even if it is a bot...
-					$sql = "UPDATE " . USERS_TABLE . "
-						SET user_lastvisit = " . (int) $this->data['session_time'] . "
-						WHERE user_id = " . (int) $this->data['user_id'];
-					$db->sql_query($sql);
+					$this->bots_session_gc(false);
 				}
 
 				// Mighty Gorgon: I'm still not sure if I want to keep 'sid=' in Icy Phoenix as well... maybe better removing it!!!
@@ -557,7 +567,10 @@ class session
 			$this->data['session_created'] = true;
 		}
 
-		$this->session_id = $this->data['session_id'] = md5(unique_id());
+		$this->bots_session_gc(true);
+
+		$this->session_id = md5(unique_id());
+		$this->data['session_id'] = $this->session_id;
 
 		$sql_ary['session_id'] = (string) $this->session_id;
 		$sql_ary['session_page'] = (string) substr($this->page['page'], 0, 254);
@@ -567,6 +580,17 @@ class session
 
 		$sql = "INSERT INTO " . SESSIONS_TABLE . " " . $db->sql_build_array('INSERT', $sql_ary);
 		$db->sql_query($sql);
+
+		// ICY PHOENIX - BEGIN
+		// Make sure every non guest user has a last_visit time...
+		if (($this->data['user_id'] != ANONYMOUS) && empty($this->data['user_lastvisit']))
+		{
+			$sql = "UPDATE " . USERS_TABLE . "
+				SET user_lastvisit = " . (int) $this->time_now . "
+				WHERE user_id = " . (int) $this->data['user_id'];
+			$db->sql_query($sql);
+		}
+		// ICY PHOENIX - END
 
 		$db->sql_return_on_error(false);
 
@@ -610,7 +634,7 @@ class session
 			}
 
 			// Start Advanced IP Tools Pack MOD
-			if (empty($config['disable_logins']))
+			if (empty($config['disable_logins']) && !empty($this->data['session_logged_in']))
 			{
 				$sql_logins_ary = array(
 					'login_userid' => $this->data['user_id'],
@@ -655,12 +679,6 @@ class session
 		{
 			$this->data['session_time'] = $this->time_now;
 			$this->data['session_last_visit'] = $this->time_now;
-
-			// Update the last visit time
-			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $this->data['session_time'] . "
-				WHERE user_id = " . (int) $this->data['user_id'];
-			$db->sql_query($sql);
 
 			// Mighty Gorgon: I'm still not sure if I want to keep 'sid=' in Icy Phoenix as well... maybe better removing it!!!
 			//$SID = 'sid=';
@@ -812,7 +830,8 @@ class session
 			// Delete expired sessions from more than 2 days (at least one day is needed for statistics)
 			$sql = "DELETE FROM " . SESSIONS_TABLE . "
 				WHERE " . $db->sql_in_set('session_user_id', $del_user_id) . "
-					AND session_time < " . (int) ($this->time_now - $config['session_length'] - (86400 * 2));
+					AND session_time < " . (int) ($this->time_now - $config['session_length'] - (86400 * 2
+						));
 			$db->sql_query($sql);
 		}
 
@@ -839,7 +858,67 @@ class session
 			*/
 		}
 
-		return;
+		return true;
+	}
+
+	/**
+	* Bots session garbage collection
+	*
+	* This is needed to avoid bots filling up the whole sessions table due to SID removal... this is needed because in Icy Phoenix bots don't have USER_ID but are guests!
+	*/
+	function bots_session_gc($clear_all = false)
+	{
+		global $db, $cache, $config;
+
+		if (!$this->time_now)
+		{
+			$this->time_now = time();
+		}
+
+		$sql_extra = empty($clear_all) ? (" AND session_id <> '" . $db->sql_escape($this->session_id) . "' ") : '';
+
+		if (!empty($this->browser))
+		{
+			$u_browser = trim(strtolower(substr($this->browser, 0, 254)));
+			$db->sql_query("DELETE FROM " . SESSIONS_TABLE . " WHERE session_browser = " . $u_browser . $sql_extra . " AND session_user_id = " . ANONYMOUS . " AND session_time < " . ($this->time_now - ONLINE_REFRESH));
+		}
+		if (!empty($this->ip))
+		{
+			$db->sql_query("DELETE FROM " . SESSIONS_TABLE . " WHERE session_ip = " . $this->ip . $sql_extra . " AND session_user_id = " . ANONYMOUS . " AND session_time < " . ($this->time_now - ONLINE_REFRESH));
+		}
+	}
+
+	/**
+	* Confirm table garbage collection
+	*/
+	function confirm_gc()
+	{
+		global $db, $cache, $config;
+
+		// Clean some old sessions first!
+		$this->session_gc();
+
+		// We need to limit this SQL or we may have issue when sessions table has many records
+		$limit = 1000;
+		// We also query only those sessions in the last two hours... if a user didn't use its code, maybe he didn't need anymore... ;-)
+		$sql = "SELECT session_id FROM " . SESSIONS_TABLE . " WHERE session_time > " . (int) (time() - 7200) . " LIMIT " . (int) $limit;
+		$result = $db->sql_query($sql);
+		$sessions_ids = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+
+		if (!empty($sessions_ids))
+		{
+			$confirm_sql = '';
+			foreach ($sessions_ids as $session_id)
+			{
+				$confirm_sql .= (!empty($confirm_sql) ? ', ' : '') . "'" . $session_id . "'";
+			}
+			$sql = "DELETE FROM " . CONFIRM_TABLE . "
+				WHERE session_id NOT IN (" . $confirm_sql . ")";
+			$db->sql_query($sql);
+		}
+
+		return true;
 	}
 
 	/**

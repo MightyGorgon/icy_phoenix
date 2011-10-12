@@ -2422,6 +2422,15 @@ $lang = array_merge($lang, array(
 
 	'CMS_EDIT_PARENT_BLOCK' => 'Edit Parent Block',
 
+	'UPI2DB_DISABLED' => 'UPI2DB Disabled',
+	'UPI2DB_LINK_U' => 'UPI2DB Unread',
+	'UPI2DB_LINK_M' => 'UPI2DB Marked',
+	'UPI2DB_LINK_P' => 'UPI2DB Permanent Read',
+	'UPI2DB_LINK_FULL' => 'UPI2DB Full Info',
+	'NEW_POSTS_LINK' => 'New Posts',
+	'LOGIN_LOGOUT_LINK' => 'Login/Logout',
+	'MENU_EMPTY_LINK' => 'Empty Link',
+
 	)
 );
 

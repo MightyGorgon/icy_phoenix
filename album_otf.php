@@ -153,7 +153,7 @@ if($user->data['user_level'] == ADMIN)
 // Upload To Album - END
 
 $nav_server_url = create_server_url();
-$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid('album_otf.' . PHP_EXT) . '">' . $lang['Pic_Gallery'] . '</a>';
+$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid('album_otf.' . PHP_EXT) . '">' . $lang['Pic_Gallery'] . '</a>';
 
 // Upload To Album - BEGIN
 $upload_counter = 0;

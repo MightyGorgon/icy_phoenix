@@ -27,6 +27,8 @@ if(!function_exists('cms_block_index'))
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars;
 
 		include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
+		// Before starting with the loop... let's load the full menu links array!
+		$default_links_array = default_links_array();
 
 		$template->_tpldata['index_row.'] = array();
 		$template->_tpldata['menu_row.'] = array();
@@ -242,7 +244,7 @@ if(!function_exists('cms_block_index'))
 							'MENU_ITEM' => $menu_name,
 							'MENU_URL' => $menu_url,
 							'MENU_DESC' => $menu_desc,
-						)
+							)
 						);
 					}
 				}

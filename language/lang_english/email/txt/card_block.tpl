@@ -1,13 +1,12 @@
 Subject: Your account is now blocked
-Charset: iso-8859-1
 
-Hello, {WARNED_POSTER} 
+Hello, {WARNED_POSTER}
 
-You account on {SITENAME} has been blocked for {BLOCK_TIME}. 
+You account on {SITENAME} has been blocked for {BLOCK_TIME}.
 
-The reasons for this can be numerous, you have been blocked because of this post {POST_URL} that you have made. 
-If you don't see why you've been blocked you could try to contact {WARNER}, who blocked you, explaining your post, 
-and that you don't understand why you have been blocked. 
+The reasons for this can be numerous, you have been blocked because of this post {POST_URL} that you have made.
+If you don't see why you've been blocked you could try to contact {WARNER}, who blocked you, explaining your post,
+and that you don't understand why you have been blocked.
 
 
-{EMAIL_SIG}  
+{EMAIL_SIG}

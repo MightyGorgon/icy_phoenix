@@ -1,5 +1,5 @@
 Subject: You have been added to this usergroup
-Charset: iso-8859-1
+
 <br /><font face="Verdana" size="2">
 Congratulations,<br /><br />
 

@@ -117,7 +117,7 @@ if ($mode == 'view')
 		trigger_error('TAGS_NO_TAG', E_USER_NOTICE);
 	}
 
-	$breadcrumbs_links_right .= (($breadcrumbs_links_right != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
+	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
 
 	$template_to_parse = 'tags_view_body.tpl';
 
@@ -204,10 +204,10 @@ if ($mode == 'view')
 			'TOPIC_TAGS' => $topic_tags_links,
 
 			'REPLIES' => $replies,
-			//'FIRST_TIME' => sprintf($lang['Recent_first'], $first_time),
-			'FIRST_TIME' => $first_time,
+			//'FIRST_POST_TIME' => sprintf($lang['Recent_first'], $first_time),
+			'FIRST_POST_TIME' => $first_time,
 			'FIRST_AUTHOR' => $first_author,
-			'LAST_TIME' => $last_time,
+			'LAST_POST_TIME' => $last_time,
 			'LAST_AUTHOR' => $last_author,
 			'LAST_URL' => $last_url,
 			'FORUM_NAME' => $topic['forum_name'],
@@ -233,7 +233,7 @@ else
 {
 	$template_to_parse = 'tags_list_body.tpl';
 
-	$breadcrumbs_links_right .= (($breadcrumbs_links_right != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=' . (($mode == 'cloud') ? 'list' : 'cloud')) . '">' . (($mode == 'cloud') ? $lang['TOPIC_TAGS_LIST'] : $lang['TOPIC_TAGS_CLOUDS']) . '</a>';
+	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=' . (($mode == 'cloud') ? 'list' : 'cloud')) . '">' . (($mode == 'cloud') ? $lang['TOPIC_TAGS_LIST'] : $lang['TOPIC_TAGS_CLOUDS']) . '</a>';
 
 	$per_page = ($mode == 'cloud') ? $config['word_graph_max_words'] : $per_page;
 	$num_items = $class_topics_tags->get_total_tags();

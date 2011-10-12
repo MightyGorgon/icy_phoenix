@@ -101,7 +101,7 @@ $psort = request_var('psort', $psort_types[0]);
 $psort = check_var_value($psort, $psort_types);
 
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('recent.' . PHP_EXT) . '" class="nav-current">' . $lang['Recent_topics'] . '</a>';
+$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('recent.' . PHP_EXT) . '" class="nav-current">' . $lang['Recent_topics'] . '</a>';
 
 $except_forums = build_exclusion_forums_list();
 
@@ -342,10 +342,10 @@ for($i = 0; $i < sizeof($line); $i++)
 
 		'L_REPLIES' => $lang['Replies'],
 		'REPLIES' => $replies,
-		//'FIRST_TIME' => sprintf($lang['Recent_first'], $first_time),
-		'FIRST_TIME' => $first_time,
+		//'FIRST_POST_TIME' => sprintf($lang['Recent_first'], $first_time),
+		'FIRST_POST_TIME' => $first_time,
 		'FIRST_AUTHOR' => $first_author,
-		'LAST_TIME' => $last_time,
+		'LAST_POST_TIME' => $last_time,
 		'LAST_AUTHOR' => $last_author,
 		'LAST_URL' => $last_url,
 		'FORUM_NAME' => $line[$i]['forum_name'],

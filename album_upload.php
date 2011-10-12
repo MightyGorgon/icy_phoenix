@@ -289,7 +289,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	// Start output of page
 	$nav_server_url = create_server_url();
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '" class="nav-current">' . $thiscat['cat_title'] . '</a>';
-	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+	$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 
 	// make sure that if we have disabled dynamic generation and pre-generated upload fields
 	// we should then at least make sure we create at least on upload field.

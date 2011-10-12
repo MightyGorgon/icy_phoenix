@@ -88,8 +88,8 @@ $db->sql_freeresult($result);
 
 // Output the basic page
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('links.' . PHP_EXT) . '"' . (($t == 'sub_pages') ? '' : ' class="nav-current"') . '>' . $lang['Site_links'] . '</a>' . (($t == 'sub_pages') ? ($lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('links.' . PHP_EXT . '?cat=' . $cat) . '" class="nav-current"' . '>' . $current_cat_title . '</a>') : '');
-$breadcrumbs_links_right = '<a href="' . append_sid('links.' . PHP_EXT . '?t=search') . '">' . $lang['Search_site'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . append_sid('links.' . PHP_EXT . '?t=pop') . '">' . $lang['Descend_by_hits'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . append_sid('links.' . PHP_EXT . '?t=new') . '">' . $lang['Descend_by_joindate'] . '</a>';
+$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('links.' . PHP_EXT) . '"' . (($t == 'sub_pages') ? '' : ' class="nav-current"') . '>' . $lang['Site_links'] . '</a>' . (($t == 'sub_pages') ? ($lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('links.' . PHP_EXT . '?cat=' . $cat) . '" class="nav-current"' . '>' . $current_cat_title . '</a>') : '');
+$breadcrumbs['bottom_right_links'] = '<a href="' . append_sid('links.' . PHP_EXT . '?t=search') . '">' . $lang['Search_site'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . append_sid('links.' . PHP_EXT . '?t=pop') . '">' . $lang['Descend_by_hits'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . append_sid('links.' . PHP_EXT . '?t=new') . '">' . $lang['Descend_by_joindate'] . '</a>';
 
 switch($t)
 {

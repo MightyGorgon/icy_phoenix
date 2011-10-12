@@ -267,26 +267,8 @@ if (ENABLE_VISUAL_CONFIRM && !$user->data['session_logged_in'])
 	// Visual Confirmation
 	$confirm_image = '';
 
-	// Clean some old sessions first!
-	$user->session_gc();
-
-	$sql = "SELECT session_id
-		FROM " . SESSIONS_TABLE;
-	$result = $db->sql_query($sql);
-
-	if ($row = $db->sql_fetchrow($result))
-	{
-		$confirm_sql = '';
-		do
-		{
-			$confirm_sql .= (($confirm_sql != '') ? ', ' : '') . "'" . $row['session_id'] . "'";
-		}
-		while ($row = $db->sql_fetchrow($result));
-		$db->sql_freeresult($result);
-
-		$sql_del = "DELETE FROM " . CONFIRM_TABLE . " WHERE session_id NOT IN (" . $confirm_sql . ")";
-		$result_del = $db->sql_query($sql_del);
-	}
+	// Clean old sessions and old confirm codes
+	$user->confirm_gc();
 
 	$sql = "SELECT COUNT(session_id) AS attempts
 		FROM " . CONFIRM_TABLE . "
