@@ -281,7 +281,7 @@ function tidy_sessions()
 	if (CRON_DEBUG == false)
 	{
 		set_config('session_last_gc', $current_time);
-		set_config('cron_session_last_run', $current_time);
+		set_config('cron_sessions_last_run', $current_time);
 	}
 }
 
