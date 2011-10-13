@@ -4427,6 +4427,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Radian 6', '', 'www.radian6.com/', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Soso Spider', '', 'Sosospider', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Synthesio Crawler', '', 'synthesio', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Vik Spider', '', 'vikspider', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('WangID Spider', '', 'WangIDSpider/', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('YandexBot 3.0', '', 'yandex.com/bots', '')";
 
