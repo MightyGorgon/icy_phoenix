@@ -385,7 +385,7 @@ while ($row = $db->sql_fetchrow($result))
 		}
 		else
 		{
-			$post_url = DIGEST_SITE_URL . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $row2['topic_id'] . '#p' . $row2['post_id'];
+			$post_url = DIGEST_SITE_URL . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $row2['post_id'] . '#p' . $row2['post_id'];
 		}
 		if ($html)
 		{

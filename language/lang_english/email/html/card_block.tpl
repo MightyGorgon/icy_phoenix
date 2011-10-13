@@ -3,7 +3,7 @@ Subject: Your account is now blocked
 <br /><font face="Verdana" size="2">
 Hello, <b>{WARNED_POSTER}</b><br /><br />
 
-You account on <b>{SITENAME}</b> has been blocked for <b>{BLOCK_TIME}</b>. <br /><br />
+Your account on <b>{SITENAME}</b> has been blocked for <b>{BLOCK_TIME}</b>. <br /><br />
 
 The reasons for this can be numerous, you have been blocked because of this post <br /><br />
 

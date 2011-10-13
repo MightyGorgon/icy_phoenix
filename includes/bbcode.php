@@ -139,7 +139,7 @@ else
 	$lang['FILE_NOT_AUTH'] = 'You are not authorized to download this file';
 }
 
-$urls_local = array(
+$local_urls = array(
 	'http://www.' . $config['server_name'] . $config['script_path'],
 	'http://' . $config['server_name'] . $config['script_path']
 );
@@ -380,12 +380,12 @@ class bbcode
 	*/
 	function process_tag(&$item)
 	{
-		global $db, $cache, $config, $user, $lang, $topic_id, $urls_local;
+		global $db, $cache, $config, $user, $lang, $topic_id, $local_urls;
 
 		if (function_exists('create_server_url'))
 		{
 			$server_url = create_server_url();
-			$urls_local = empty($urls_local) ? array($server_url) : array_merge(array($server_url), $urls_local);
+			$local_urls = empty($local_urls) ? array($server_url) : array_merge(array($server_url), $local_urls);
 		}
 		else
 		{
@@ -1269,28 +1269,25 @@ class bbcode
 			{
 				$url = substr($url, 0, strlen($url) - 1);
 			}
+
 			// check if url is local
-			$url_local = false;
-			for($i = 0; $i < sizeof($urls_local); $i++)
+			$is_local_url = false;
+			if (!empty($local_urls))
 			{
-				if(strlen($url) > strlen($urls_local[$i]) && strpos($url, $urls_local[$i]) === 0)
+				foreach ($local_urls as $local_url)
 				{
-					$url_local = true;
-					// Local Urls
-					//$url = substr($url, strlen($urls_local[$i]));
-					// Full Path
-					$url = $url;
+					if((strlen($url) > strlen($local_url)) && strpos($url, $local_url) === 0)
+					{
+						$is_local_url = true;
+					}
 				}
 			}
-			if(!$url_local)
+			if(empty($is_local_url) && (strpos($url, ':') === false))
 			{
-				if(strpos($url, ':') === false)
-				{
-					$url_local = true;
-				}
+				$is_local_url = true;
 			}
 			// generate html
-			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($url_local ? '' : (' target="_blank"' . (!empty($item['params']['nofollow']) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
+			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($is_local_url ? '' : (' target="_blank"' . (!empty($item['params']['nofollow']) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
 
 			if ($config['disable_html_guests'] && !$user->data['session_logged_in'])
 			{

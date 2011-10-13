@@ -225,17 +225,13 @@ elseif ($mode == 'unban')
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
-	// Get user basic data
-	$sql = 'SELECT user_active, user_warnings FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
-	$result = $db->sql_query($sql);
-	$the_user = $db->sql_fetchrow($result);
 
 	// remove the user from ban list
 	$sql = 'DELETE FROM ' . BANLIST_TABLE . ' WHERE ban_userid = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
 	// update the user table with new status
-	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "0" WHERE user_id = "' . $poster_id . '"';
+	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "0",  user_active = "1" WHERE user_id = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
 	$message = $lang['Ban_update_green'] . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id) . '">', '</a>');
@@ -266,9 +262,10 @@ elseif ($mode == 'ban')
 		$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ($poster_id)";
 		$result = $db->sql_query($sql);
 		// update the user table with new status
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '" WHERE user_id="' . $poster_id . '"';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '",  user_active = "0" WHERE user_id="' . $poster_id . '"';
 		$result = $db->sql_query($sql);
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET session_logged_in = "0" WHERE session_user_id="' . $poster_id . '"';
+		// Better kill all the sessions!
+		$sql = 'DELETE FROM ' . SESSIONS_TABLE . ' WHERE session_user_id="' . $poster_id . '"';
 		$result = $db->sql_query($sql);
 		$message = $lang['Ban_update_red'];
 		$e_temp = 'ban_block';
@@ -280,7 +277,7 @@ elseif ($mode == 'ban')
 	}
 	else
 	{
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '" WHERE user_id="' . $poster_id . '"';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '",  user_active = "0" WHERE user_id="' . $poster_id . '"';
 		$result = $db->sql_query($sql);
 		$no_error = false;
 		$already_banned = true;

@@ -181,33 +181,21 @@ $meta_content['page_title'] = ($mode == 'editprofile') ? $lang['Profile'] : $lan
 $meta_content['description'] = '';
 $meta_content['keywords'] = '';
 
-// Block DNSBL Blacklisted Registrants (by TerraFrost) - BEGIN
-$blacklist_enabled = ($config['disable_registration_ip_check'] == 1) ? false : true;
-if (($mode == 'register') && (isset($_POST['submit'])) && !empty($blacklist_enabled))
+// DNSBL CHECK - BEGIN
+if (!empty($config['check_dnsbl']))
 {
-	$remote_address = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
-	$remote_address = (!empty($remote_address) && ($remote_address != '::1')) ? $remote_address : '127.0.0.1';
-	$rev = implode('.',array_reverse(explode('.', $remote_address)));
-
-	$lookup = "$rev.l1.spews.dnsbl.sorbs.net";
-	if ($lookup != gethostbyname($lookup))
+	if (($dnsbl = $user->check_dnsbl('register')) !== false)
 	{
-		message_die(GENERAL_MESSAGE, strtr($lang['dsbl'],array('%url%' => "http://www.spews.org/ask.cgi?x=" . htmlspecialchars(urlencode($remote_address)))));
+		$error[] = sprintf($lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1], $dnsbl[1]);
 	}
 
-	$lookup = "$rev.sbl-xbl.spamhaus.org";
-	if ($lookup != gethostbyname($lookup))
+	if (!empty($error))
 	{
-		message_die(GENERAL_MESSAGE, strtr($lang['dsbl'],array('%url%' => "http://www.spamhaus.org/query/bl?ip=" . htmlspecialchars(urlencode($remote_address)))));
-	}
-
-	$lookup = "$rev.list.dsbl.org";
-	if ($lookup != gethostbyname($lookup))
-	{
-		message_die(GENERAL_MESSAGE, strtr($lang['dsbl'],array('%url%' => "http://dsbl.org/listing?" . htmlspecialchars(urlencode($remote_address)))));
+		$message = implode('<br />', $error);
+		message_die(GENERAL_MESSAGE, $message);
 	}
 }
-// Block DNSBL Blacklisted Registrants (by TerraFrost) - END
+// DNSBL CHECK - END
 
 $cpl_mode = isset($_GET['cpl_mode']) ? request_get_var('cpl_mode', '') : request_var('cpl_mode', '');
 

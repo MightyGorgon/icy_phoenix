@@ -1572,7 +1572,6 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from 049 */
 		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_registration_ip_check', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_html_guests', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_email_error', '1')";
 
@@ -4419,6 +4418,9 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.3.24.77 */
 		case '1.3.24.77':
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0')";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'disable_registration_ip_check'";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Jike Spider', '', 'jikespider', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Magpie Crawler', '', 'www.brandwatch.net', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('P3W Bot', '', 'www.p3w.it', '')";

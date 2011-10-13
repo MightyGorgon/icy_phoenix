@@ -1755,7 +1755,7 @@ for($i = 0; $i < $total_posts; $i++)
 		else
 		{
 			$is_banned = (isset($ranks_array['bannedrow'][$poster_id])) ? true : false;
-			if (($user_warnings > $config['max_user_bancard']) || $is_banned)
+			if (($user_warnings >= $config['max_user_bancard']) || $is_banned)
 			{
 				$card_img = '<img src="' . $images['icon_r_cards'] . '" alt="' . $lang['Banned'] . '" title="' . $lang['Banned'] . '" />';
 			}
@@ -1768,7 +1768,7 @@ for($i = 0; $i < $total_posts; $i++)
 			}
 		}
 
-		if (($user_warnings <= $config['max_user_bancard']) && $is_auth['auth_ban'])
+		if (($user_warnings < $config['max_user_bancard']) && $is_auth['auth_ban'])
 		{
 			$yel_card_img = '<img src="' . $images['icon_y_card'] . '" alt="' . sprintf($lang['Give_Y_card'], $user_warnings + 1) . '" />';
 			$yel_card_action = 'return confirm(\'' . sprintf($lang['Yellow_card_warning'], $current_user) . '\')';
@@ -2184,7 +2184,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$is_spam_measure_enabled = (($user->data['user_level'] != ADMIN) && (intval($config['spam_posts_number']) > 0) && ($postrow[$i]['user_posts'] < (int) $config['spam_posts_number'])) ? true : false;
 	if ($is_spam_measure_enabled)
 	{
-		$message = !empty($config['spam_disable_url']) ? str_replace(array('http://', 'www.'), array('h**p://', '***.'), $bbcode->strip_only($message, array('a'))) : $message;
+		$message = !empty($config['spam_disable_url']) ? str_replace(array('http://', 'www.'), array('h**p://', '***.'), $bbcode->strip_only($message, array('a', 'img'))) : $message;
 		$user_sig = !empty($config['spam_hide_signature']) ? '' : $user_sig;
 		$email_url = '';
 		$email_img = '';

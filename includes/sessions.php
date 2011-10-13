@@ -773,7 +773,7 @@ class session
 	{
 		global $db, $cache, $config;
 
-		$batch_size = 10;
+		$batch_size = 20;
 
 		if (!$this->time_now)
 		{
@@ -830,8 +830,7 @@ class session
 			// Delete expired sessions from more than 2 days (at least one day is needed for statistics)
 			$sql = "DELETE FROM " . SESSIONS_TABLE . "
 				WHERE " . $db->sql_in_set('session_user_id', $del_user_id) . "
-					AND session_time < " . (int) ($this->time_now - $config['session_length'] - (86400 * 2
-						));
+					AND session_time < " . (int) ($this->time_now - $config['session_length'] - (86400 * 2));
 			$db->sql_query($sql);
 		}
 
@@ -899,9 +898,9 @@ class session
 		$this->session_gc();
 
 		// We need to limit this SQL or we may have issue when sessions table has many records
-		$limit = 1000;
+		$limit = 2000;
 		// We also query only those sessions in the last two hours... if a user didn't use its code, maybe he didn't need anymore... ;-)
-		$sql = "SELECT session_id FROM " . SESSIONS_TABLE . " WHERE session_time > " . (int) (time() - 7200) . " LIMIT " . (int) $limit;
+		$sql = "SELECT session_id FROM " . SESSIONS_TABLE . " WHERE session_time > " . (int) (time() - 7200) . " ORDER BY session_time DESC LIMIT " . (int) $limit;
 		$result = $db->sql_query($sql);
 		$sessions_ids = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
@@ -953,7 +952,7 @@ class session
 	*/
 	function check_ban($user_id = false, $user_ips = false, $user_email = false, $return = false)
 	{
-		global $config, $db;
+		global $config, $cache, $db, $lang;
 
 		if (defined('IN_CHECK_BAN'))
 		{
@@ -1009,7 +1008,6 @@ class session
 		$ban_triggered_by = 'user';
 		while ($row = $db->sql_fetchrow($result))
 		{
-
 			if (($row['ban_userid'] == ANONYMOUS) && ($row['ban_ip'] == '') && ($row['ban_email'] == null))
 			{
 				$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid = '" . ANONYMOUS . "'";
@@ -1122,6 +1120,8 @@ class session
 	*/
 	function check_dnsbl($mode, $ip = false)
 	{
+		global $config;
+
 		if ($ip === false)
 		{
 			$ip = $this->ip;

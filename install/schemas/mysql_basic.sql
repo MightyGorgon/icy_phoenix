@@ -630,7 +630,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('visit_counte
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('word_graph_max_words', '250');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('word_graph_word_counts', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('search_min_chars', '3');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_registration_ip_check', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('extra_max', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('extra_display', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upi2db_max_permanent_topics', '20');
@@ -859,6 +858,8 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_post_ed
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('mobile_style_disable', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_gc', '3600');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0');
 
 ## ATTACHMENTS - BEGIN
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upload_dir', 'files');

@@ -1018,6 +1018,9 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_gc',
 ##              BUILD 078             ##
 ########################################
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0');
+DELETE FROM `phpbb_config` WHERE `config_name` = 'disable_registration_ip_check';
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Jike Spider', '', 'jikespider', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Magpie Crawler', '', 'www.brandwatch.net', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('P3W Bot', '', 'www.p3w.it', '');

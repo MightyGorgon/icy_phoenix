@@ -345,7 +345,6 @@ $default_config = array(
 	'word_graph_max_words' => '100',
 	'word_graph_word_counts' => '1',
 	'search_min_chars' => '3',
-	'disable_registration_ip_check' => '1',
 	'extra_max' => '0',
 	'extra_display' => '0',
 	'upi2db_max_permanent_topics' => '20',
@@ -709,6 +708,8 @@ $default_config = array(
 	'mobile_style_disable' => '0',
 	'session_gc' => '3600',
 	'session_last_visit_reset' => '0',
+	'check_dnsbl' => '1',
+	'check_dnsbl_posting' => '1',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

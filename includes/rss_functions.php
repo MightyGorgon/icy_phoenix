@@ -135,7 +135,7 @@ function ExitWithHeader($output,$message='')
 
 function rss_session_begin($user_id, $user_ip)
 {
-	global $db, $config;
+	global $db, $cache, $config, $user;
 	$page_array = extract_current_page(IP_ROOT_PATH);
 
 	$forum_id = request_var(POST_FORUM_URL, 0);
@@ -177,7 +177,7 @@ function rss_session_begin($user_id, $user_ip)
 	}
 	$login = ($user_id != ANONYMOUS) ? 1 : 0;
 
-	$is_banned = check_ban($user_id, $user->ip, $user->data['user_email'], true);
+	$is_banned = $user->check_ban($user_id, $user->ip, $user->data['user_email'], true);
 
 	if ($is_banned)
 	{

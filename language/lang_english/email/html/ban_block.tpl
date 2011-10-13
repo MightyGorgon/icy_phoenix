@@ -3,7 +3,7 @@ Subject: Your account is now blocked
 <br /><font face="Verdana" size="2">
 Hello, <b>{WARNED_POSTER}</b><br /><br />
 
-You account on <b>{SITENAME}</b> has been blocked.
+Your account on <b>{SITENAME}</b> has been blocked.
 <br /><br />
 The reasons for this can be numerous, this final warning is given because of this post:<br /><br />
 <a href="{POST_URL}" target="_blank">{POST_URL}</a><br /><br />

@@ -5921,7 +5921,7 @@ function html_message($msg_title, $msg_text, $return_url)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
+	global $db, $cache, $config, $auth, $user, $lang, $template, $images, $theme, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $gen_simple_header, $starttime, $base_memory_usage, $do_gzip_compress;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;

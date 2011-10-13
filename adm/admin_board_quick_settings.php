@@ -152,7 +152,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'liw_sig_enabled'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '500' WHERE `config_name` = 'liw_max_width'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'liw_attach_enabled'";
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'disable_registration_ip_check'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'check_dnsbl'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'use_captcha'";
 
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'allow_html'";
@@ -276,7 +276,7 @@ if (substr($mode, 0, 3) == 'set')
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '7' WHERE `config_name` = 'birthday_check_day'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'xs_use_cache'";
 
-		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'disable_registration_ip_check'";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'check_dnsbl'";
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '0' WHERE `config_name` = 'use_captcha'";
 
 		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_value` = '1' WHERE `config_name` = 'forum_wordgraph'";

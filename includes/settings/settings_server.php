@@ -145,11 +145,19 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
-	'disable_registration_ip_check' => array(
-		'lang_key' => 'Disable_Registration_IP_Check',
-		'explain' => 'Disable_Registration_IP_Check_Explain',
+	'check_dnsbl' => array(
+		'lang_key' => 'ENABLE_CHECK_DNSBL',
+		'explain' => 'ENABLE_CHECK_DNSBL_EXPLAIN',
 		'type' => 'LIST_RADIO',
 		'default' => 1,
+		'values' => $this->list_yes_no,
+		),
+
+	'check_dnsbl_posting' => array(
+		'lang_key' => 'ENABLE_CHECK_DNSBL_POSTING',
+		'explain' => 'ENABLE_CHECK_DNSBL_POSTING_EXPLAIN',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
 		'values' => $this->list_yes_no,
 		),
 

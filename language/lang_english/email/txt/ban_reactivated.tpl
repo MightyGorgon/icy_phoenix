@@ -2,6 +2,6 @@ Subject: Your account has been re-activated
 
 Hello, {WARNED_POSTER} 
 
-You account on {SITENAME} is now reactivated 
+Your account on {SITENAME} is now reactivated 
 
 {EMAIL_SIG}  

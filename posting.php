@@ -192,6 +192,22 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
+// DNSBL CHECK - BEGIN
+if (!empty($config['check_dnsbl_posting']) && in_array($mode, array('newtopic', 'reply', 'editpost')) && !empty($submit))
+{
+	if (($dnsbl = $user->check_dnsbl('post')) !== false)
+	{
+		$error[] = sprintf($lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1], $dnsbl[1]);
+	}
+
+	if (!empty($error))
+	{
+		$message = implode('<br />', $error);
+		message_die(GENERAL_MESSAGE, $message);
+	}
+}
+// DNSBL CHECK - END
+
 // Was cancel pressed? If so then redirect to the appropriate page, no point in continuing with any further checks
 if (isset($_POST['cancel']))
 {
