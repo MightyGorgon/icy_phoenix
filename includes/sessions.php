@@ -879,11 +879,21 @@ class session
 		if (!empty($this->browser))
 		{
 			$u_browser = trim(strtolower(substr($this->browser, 0, 254)));
-			$db->sql_query("DELETE FROM " . SESSIONS_TABLE . " WHERE session_browser = " . $u_browser . $sql_extra . " AND session_user_id = " . ANONYMOUS . " AND session_time < " . ($this->time_now - ONLINE_REFRESH));
+			$sql = "DELETE FROM " . SESSIONS_TABLE . "
+							WHERE session_browser = '" . $db->sql_escape($u_browser) . "'"
+								. $sql_extra . "
+								AND session_user_id = " . ANONYMOUS . "
+								AND session_time < " . ($this->time_now - ONLINE_REFRESH);
+			$db->sql_query($sql);
 		}
 		if (!empty($this->ip))
 		{
-			$db->sql_query("DELETE FROM " . SESSIONS_TABLE . " WHERE session_ip = " . $this->ip . $sql_extra . " AND session_user_id = " . ANONYMOUS . " AND session_time < " . ($this->time_now - ONLINE_REFRESH));
+			$sql = "DELETE FROM " . SESSIONS_TABLE . "
+							WHERE session_ip = '" . $db->sql_escape($this->ip) . "'"
+								. $sql_extra . "
+								AND session_user_id = " . ANONYMOUS . "
+								AND session_time < " . ($this->time_now - ONLINE_REFRESH);
+			$db->sql_query($sql);
 		}
 	}
 
