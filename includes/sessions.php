@@ -773,33 +773,37 @@ class session
 			$this->time_now = time();
 		}
 
+		// Set here the desired time you would like to keep sessions...
+		$session_remove_limit = 86400 * 2;
+		$session_length = (int) $config['session_length'];
+
 		// Remove old keys for users not logging in so frequently... 30 days should be fine!!!
 		$max_autologin_time = !empty($config['max_autologin_time']) ? $config['max_autologin_time'] : 30;
 
 		$sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . "
-			WHERE last_login < " . ($current_time - (86400 * (int) $max_autologin_time));
+			WHERE last_login < " . ($this->time_now - (86400 * (int) $max_autologin_time));
 		$db->sql_query($sql);
 
-		// Remove all sessions which are 2 days old from AJAX Chat table
+		// Remove all sessions which are X days old from AJAX Chat table
 		$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-			WHERE session_time < " . (int) ($current_time - (86400 * 2));
+			WHERE session_time < " . (int) ($this->time_now - $session_remove_limit);
 		$db->sql_query($sql);
 
-		// Remove all sessions which are 2 days old from search table
+		// Remove all sessions which are X days old from search table
 		$sql = "DELETE FROM " . SEARCH_TABLE . "
-			WHERE search_time < " . (int) ($current_time - (86400 * 2));
+			WHERE search_time < " . (int) ($this->time_now - $session_remove_limit);
 		$db->sql_query($sql);
 
-		// Delete Guest sessions which are at least 2 days old from sessions table (at least one day is needed for statistics)
+		// Delete Guest sessions which are at least X days old from sessions table (at least one day is needed for statistics)
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
 			WHERE session_user_id = " . ANONYMOUS . "
-				AND session_time < " . (int) ($this->time_now - $config['session_length'] - (86400 * 2));
+				AND session_time < " . (int) ($this->time_now - $session_length - $session_remove_limit);
 		$db->sql_query($sql);
 
 		// Get expired sessions, only most recent for each user
 		$sql = "SELECT session_user_id, session_page, MAX(session_time) AS recent_time
 			FROM " . SESSIONS_TABLE . "
-			WHERE session_time < " . (int) ($this->time_now - $config['session_length']) . "
+			WHERE session_time < " . (int) ($this->time_now - $session_length) . "
 			GROUP BY session_user_id, session_page";
 		$result = $db->sql_query_limit($sql, $batch_size);
 
@@ -823,7 +827,7 @@ class session
 			// Delete expired sessions from more than 2 days (at least one day is needed for statistics)
 			$sql = "DELETE FROM " . SESSIONS_TABLE . "
 				WHERE " . $db->sql_in_set('session_user_id', $del_user_id) . "
-					AND session_time < " . (int) ($this->time_now - $config['session_length'] - (86400 * 2));
+					AND session_time < " . (int) ($this->time_now - $session_length - $session_remove_limit);
 			$db->sql_query($sql);
 		}
 
