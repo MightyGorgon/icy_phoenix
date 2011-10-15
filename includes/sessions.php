@@ -157,22 +157,9 @@ class session
 			$this->data = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
-			// ICY PHOENIX - BEGIN
-			$this->bots_process();
-			if (isset($this->data['user_level']) && ($this->data['user_level'] == JUNIOR_ADMIN))
-			{
-				define('IS_JUNIOR_ADMIN', true);
-				$this->data['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
-			}
-			// ICY PHOENIX - END
-
 			// Did the session exist in the DB?
 			if (isset($this->data['user_id']))
 			{
-				// Validate IP length according to admin ... enforces an IP
-				// check on bots if admin requires this
-				//$quadcheck = ($config['ip_check_bot'] && $this->data['user_type'] & USER_BOT) ? 4 : $config['ip_check'];
-
 				if ((strpos($this->ip, ':') !== false) && (strpos($this->data['session_ip'], ':') !== false))
 				{
 					$s_ip = short_ipv6($this->data['session_ip'], $config['ip_check']);
@@ -200,9 +187,12 @@ class session
 
 				if (($u_ip === $s_ip) && ($s_browser === $u_browser) && $referer_valid)
 				{
+					// Some useful boolean checks... defined here for future easy of use
 					$session_expired = false;
-
-					$autologin_expired = (!empty($config['max_autologin_time']) && ($this->data['session_time'] < ($this->time_now - (86400 * (int) $config['max_autologin_time']) + SESSION_REFRESH))) ? true : false;
+					$session_refresh_time = (int) SESSION_REFRESH;
+					$autologin_expired = (!empty($config['max_autologin_time']) && ($this->data['session_time'] < ($this->time_now - (86400 * (int) $config['max_autologin_time']) + $session_refresh_time))) ? true : false;
+					$session_time_expired = ($this->data['session_time'] < ($this->time_now - ((int) $config['session_length'] + $session_refresh_time))) ? true : false;
+					$session_refresh = ($this->data['session_time'] < ($this->time_now - $session_refresh_time)) ? true : false;
 
 					if (!$session_expired)
 					{
@@ -210,7 +200,7 @@ class session
 						// Else check the autologin length... and also removing those having autologin enabled but no longer allowed site-wide.
 						if (empty($this->data['session_autologin']))
 						{
-							if ($this->data['session_time'] < ($this->time_now - ($config['session_length'] + SESSION_REFRESH)))
+							if ($session_time_expired)
 							{
 								$session_expired = true;
 							}
@@ -222,8 +212,16 @@ class session
 					}
 
 					// ICY PHOENIX - BEGIN
-					// Refresh last visit time for those users having autologin enabled or those users with session expired (only if config for this has been set)
-					if (($this->data['user_id'] != ANONYMOUS) && ((!empty($config['session_last_visit_reset']) && $session_expired) || (!empty($config['allow_autologin']) && $autologin_expired)))
+					// This portion of code needs to stay here (after isset($this->data['user_id']) )... otherwise we are potentially going to instantiate some $user->data even if $user->data is still empty
+					$this->bots_process();
+					if (isset($this->data['user_id']) && ($this->data['user_id'] != ANONYMOUS) && isset($this->data['user_level']) && ($this->data['user_level'] == JUNIOR_ADMIN))
+					{
+						define('IS_JUNIOR_ADMIN', true);
+						$this->data['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
+					}
+
+					// Refresh last visit time for those users having autologin enabled or those users with session time expired (only if config for this has been set)
+					if (($this->data['user_id'] != ANONYMOUS) && ((!empty($config['session_last_visit_reset']) && $session_time_expired) || (!empty($config['allow_autologin']) && $autologin_expired) || empty($this->data['user_lastvisit'])))
 					{
 						$sql = "UPDATE " . USERS_TABLE . "
 							SET user_lastvisit = " . (int) $this->data['session_time'] . "
@@ -235,22 +233,30 @@ class session
 					if (!$session_expired)
 					{
 						// Only update session DB a minute or so after last update or if page changes
-						if (((($this->time_now - $this->data['session_time']) > SESSION_REFRESH) || ($this->update_session_page && ($this->data['session_page'] != $this->page['page']))) && empty($_REQUEST['explain']))
+						// Mighty Gorgon: in Icy Phoenix we give maximum priority to $this->update_session_page, because we don't want the session to be updated for thumbnails or other special features!
+						if ($this->update_session_page && ($session_refresh || ($this->data['session_page'] != $this->page['page'])) && empty($_REQUEST['explain']))
 						{
-							$sql_ary = array('session_time' => $this->time_now);
+							$sql_ary = array();
 
-							if ($this->update_session_page)
+							// ICY PHOENIX - BEGIN
+							// Update $user->data
+							$this->data['user_session_time'] = $this->time_now;
+							$this->data['user_session_page'] = (string) substr($this->page['page'], 0, 254);
+							$this->data['user_browser'] = (string) substr($this->browser, 0, 254);
+							$this->data['user_totalpages'] = (int) $this->data['user_totalpages'] + 1;
+							$this->data['user_totaltime'] = (int) $this->data['user_totaltime'] + $this->time_now - $this->data['session_time'];
+							// ICY PHOENIX - END
+
+							// A little trick to reset session_admin on session re-usage
+							if (!defined('IN_ADMIN') && !defined('IN_CMS') && $session_time_expired)
 							{
-								// A little trick to reset session_admin on session re-usage
-								if (!defined('IN_ADMIN') && !defined('IN_CMS') && (($current_time - $this->data['session_time']) > ($config['session_length'] + SESSION_REFRESH)))
-								{
-									$sql_ary['session_admin'] = 0;
-								}
-								$sql_ary['session_page'] = (string) substr($this->page['page'], 0, 254);
-								$sql_ary['session_browser'] = (string) substr($this->browser, 0, 254);
-								$sql_ary['session_forum_id'] = $this->page['forum'];
-								$sql_ary['session_topic_id'] = $this->page['topic'];
+								$sql_ary['session_admin'] = 0;
 							}
+							$sql_ary['session_time'] = $this->time_now;
+							$sql_ary['session_page'] = $this->data['user_session_page'];
+							$sql_ary['session_browser'] = $this->data['user_browser'];
+							$sql_ary['session_forum_id'] = $this->page['forum'];
+							$sql_ary['session_topic_id'] = $this->page['topic'];
 
 							$db->sql_return_on_error(true);
 
@@ -258,42 +264,37 @@ class session
 								WHERE session_id = '" . $db->sql_escape($this->session_id) . "'";
 							$result = $db->sql_query($sql);
 
-							$db->sql_return_on_error(false);
-
 							// ICY PHOENIX - BEGIN
 							if ($this->data['user_id'] != ANONYMOUS)
 							{
-								$db->sql_return_on_error(true);
-								$sql = "UPDATE " . USERS_TABLE . "
-									SET user_session_time = " . $this->time_now . ", user_session_page = '" . $db->sql_escape(substr($this->page['page'], 0, 254)) . "', user_browser = '" . $db->sql_escape(substr($this->browser, 0, 254)) . "', user_totalpages = user_totalpages + 1, user_totaltime = user_totaltime + (" . $this->time_now . " - " . $this->data['session_time'] . ")
+								$sql_ary = array();
+								$sql_ary['user_session_time'] = $this->data['user_session_time'];
+								$sql_ary['user_session_page'] = $this->data['user_session_page'];
+								$sql_ary['user_browser'] = $this->data['user_browser'];
+								$sql_ary['user_totalpages'] = $this->data['user_totalpages'];
+								$sql_ary['user_totaltime'] = $this->data['user_totaltime'];
+
+								$sql = "UPDATE " . USERS_TABLE . " SET " . $db->sql_build_array('UPDATE', $sql_ary) . "
 									WHERE user_id = " . $this->data['user_id'];
-								$db->sql_query($sql);
-								$db->sql_return_on_error(false);
+								$result = $db->sql_query($sql);
 							}
 							// ICY PHOENIX - END
+
+							$db->sql_return_on_error(false);
 						}
 
-						// Replaced by Mighty Gorgon
-						//$this->data['is_registered'] = (($this->data['user_id'] != ANONYMOUS) && (($this->data['user_type'] == USER_NORMAL) || ($this->data['user_type'] == USER_FOUNDER))) ? true : false;
 						$this->data['is_registered'] = (empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
+						$this->data['session_logged_in'] = $this->data['is_registered'];
 						$this->data['user_lang'] = basename($this->data['user_lang']);
 
-						// ICY PHOENIX - BEGIN
-						// Shall we decide to include BOT here...
-						//$this->data['session_logged_in'] = (((empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS)) || (!empty($this->data['is_bot']) && !empty($config['bots_reg_auth']))) && ($this->data['user_type'] != USER_INACTIVE)) ? true : false;
-						// Replaced by Mighty Gorgon
-						//$this->data['session_logged_in'] = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_type'] != USER_INACTIVE)) ? true : false;
-						$this->data['session_logged_in'] = (($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
-
 						$this->upi2db();
-						// ICY PHOENIX - END
 
 						return true;
 					}
 				}
 				else
 				{
-					// Added logging temporarly to help debug bugs...
+					// Added logging temporarily to help debug bugs...
 					if (defined('DEBUG_EXTRA') && ($this->data['user_id'] != ANONYMOUS))
 					{
 						if ($referer_valid)
@@ -328,15 +329,16 @@ class session
 
 		$this->data = array();
 
-		$config['session_gc'] = $config['cron_sessions_interval'];
-		$config['session_last_gc'] = $config['cron_sessions_last_run'];
+		$config['session_gc'] = (int) $config['cron_sessions_interval'];
+		$config['session_last_gc'] = (int) $config['cron_sessions_last_run'];
+
 		// Garbage collection ... remove old sessions updating user information if necessary. It means (potentially) 11 queries but only infrequently
 		if ($this->time_now > ($config['session_last_gc'] + $config['session_gc']))
 		{
 			$this->session_gc();
 		}
 
-		// Do we allow autologin on this board? No? Then override anything that may be requested here
+		// Do we allow autologin on this site? No? Then override anything that may be requested here
 		if (!$config['allow_autologin'])
 		{
 			$this->cookie_data['k'] = false;
@@ -349,8 +351,6 @@ class session
 		// Else if we've been passed a user_id we'll grab data based on that
 		if (isset($this->cookie_data['k']) && $this->cookie_data['k'] && $this->cookie_data['u'] && !sizeof($this->data))
 		{
-			// Replaced by Mighty Gorgon
-			//		AND u.user_type IN (" . USER_NORMAL . ", " . USER_FOUNDER . ")
 			$sql = "SELECT u.*
 				FROM " . USERS_TABLE . " u, " . SESSIONS_KEYS_TABLE . " k
 				WHERE u.user_id = " . (int) $this->cookie_data['u'] . "
@@ -367,8 +367,6 @@ class session
 			$this->cookie_data['k'] = '';
 			$this->cookie_data['u'] = $user_id;
 
-			// Replaced by Mighty Gorgon
-			//		AND user_type IN (" . USER_NORMAL . ", " . USER_FOUNDER . ")
 			$sql = "SELECT *
 				FROM " . USERS_TABLE . "
 				WHERE user_id = " . (int) $this->cookie_data['u'] . "
@@ -402,13 +400,14 @@ class session
 
 		if ($this->data['user_id'] != ANONYMOUS)
 		{
-			$this->data['session_last_visit'] = (isset($this->data['session_time']) && $this->data['session_time']) ? $this->data['session_time'] : (($this->data['user_lastvisit']) ? $this->data['user_lastvisit'] : $this->time_now);
+			$this->data['session_last_visit'] = !empty($this->data['user_lastvisit']) ? $this->data['user_lastvisit'] : $this->time_now;
 		}
 		else
 		{
 			// Bot user, if they have a SID in the Request URI we need to get rid of it otherwise they'll index this page with the SID, duplicate content oh my!
 			if (isset($_GET['sid']) && !empty($this->data['is_bot']))
 			{
+				send_status_line(301, 'Moved Permanently');
 				redirect(build_url(array('sid')));
 			}
 			$this->data['session_last_visit'] = $this->time_now;
@@ -418,47 +417,57 @@ class session
 		$this->data['user_id'] = (int) $this->data['user_id'];
 
 		// At this stage we should have a filled data array, defined cookie u and k data.
-		// data array should contain recent session info if we're a real user and a recent session exists in which case session_id will also be set
+		// data array should contain recent session info if we have a real user and a recent session exists in which case session_id will also be set
 
 		// Is user banned? Are they excluded? Won't return on ban, exists within method
-		// Replaced by Mighty Gorgon
-		//if ($this->data['user_type'] != USER_FOUNDER)
 		if ($this->data['user_level'] != ADMIN)
 		{
 			$ban_email = (($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_email'])) ? $this->data['user_email'] : false;
 			$this->check_ban($this->data['user_id'], $this->ip, $ban_email);
 		}
 
-		// Replaced by Mighty Gorgon
-		//$this->data['is_registered'] = (empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS) && (($this->data['user_type'] == USER_NORMAL) || ($this->data['user_type'] == USER_FOUNDER))) ? true : false;
 		$this->data['is_registered'] = (empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
-		// ICY PHOENIX - BEGIN
-		// Shall we decide to include BOT here...
-		//$this->data['session_logged_in'] = (((empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS)) || (!empty($this->data['is_bot']) && !empty($config['bots_reg_auth']))) && ($this->data['user_type'] != USER_INACTIVE)) ? true : false;
-		// Replaced by Mighty Gorgon
-		//$this->data['session_logged_in'] = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_type'] != USER_INACTIVE)) ? true : false;
-		$this->data['session_logged_in'] = (($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
-		// ICY PHOENIX - END
+		$this->data['session_logged_in'] = $this->data['is_registered'];
 
 		// If our friend is a bot, we re-assign a previously assigned session
-		if ($this->data['is_bot'] && !empty($this->data['session_id']))
+		if ($this->data['is_bot'])
 		{
-			// Only assign the current session if the ip and browser match...
-			if ((strpos($this->ip, ':') !== false) && (strpos($this->data['session_ip'], ':') !== false))
+			// ICY PHOENIX - BEGIN
+			// We give bots always the same session if it is not yet expired.
+			$sql_fields = array();
+			$sql_extra = '';
+			if (!empty($this->browser))
 			{
-				$s_ip = short_ipv6($this->data['session_ip'], $config['ip_check']);
-				$u_ip = short_ipv6($this->ip, $config['ip_check']);
+				$u_browser = trim(strtolower(substr($this->browser, 0, 254)));
+				$sql_fields[] = "s.session_browser = '" . $db->sql_escape($u_browser) . "'";
 			}
-			else
+			if (!empty($this->ip))
 			{
-				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, $config['ip_check']));
-				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, $config['ip_check']));
+				$u_ip = $this->ip;
+				$sql_fields[] = "s.session_ip = '" . $db->sql_escape($u_ip) . "'";
 			}
+			if (!empty($sql_fields))
+			{
+				foreach ($sql_fields as $sql_field)
+				{
+					$sql_extra .= (empty($sql_extra) ? " WHERE " : " AND ") ? $sql_field : '';
+				}
+				if (!empty($sql_extra))
+				{
+					$bot_data = array();
+					$sql = "SELECT s.* FROM " . SESSIONS_TABLE . $sql_extra . " AND s.session_time > " . ($this->time_now - ((int) $config['session_length'] + (int) SESSION_REFRESH));
+					$result = $db->sql_query($sql);
+					$bot_data = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
+					if (!empty($bot_data))
+					{
+						$this->data = array_merge($this->data, $bot_data);
+					}
+				}
+			}
+			// ICY PHOENIX - END
 
-			$s_browser = ($config['browser_check']) ? trim(strtolower(substr($this->data['session_browser'], 0, 254))) : '';
-			$u_browser = ($config['browser_check']) ? trim(strtolower(substr($this->browser, 0, 254))) : '';
-
-			if (($u_ip === $s_ip) && ($s_browser === $u_browser))
+			if (!empty($this->data['session_id']))
 			{
 				$this->session_id = $this->data['session_id'];
 
@@ -467,21 +476,8 @@ class session
 				{
 					$this->data['session_time'] = $this->time_now;
 					$this->data['session_last_visit'] = $this->time_now;
-
-					$sql_ary = array('session_time' => $this->time_now, 'session_last_visit' => $this->time_now, 'session_admin' => 0);
-
-					if ($this->update_session_page)
-					{
-						$sql_ary['session_page'] = (string) substr($this->page['page'], 0, 254);
-						$sql_ary['session_browser'] = (string) substr($this->browser, 0, 254);
-						$sql_ary['session_forum_id'] = $this->page['forum'];
-						$sql_ary['session_topic_id'] = $this->page['topic'];
-					}
-
-					$sql = "UPDATE " . SESSIONS_TABLE . " SET " . $db->sql_build_array('UPDATE', $sql_ary) . "
-						WHERE session_id = '" . $db->sql_escape($this->session_id) . "'";
-					$db->sql_query($sql);
-
+					$this->data['is_registered'] = false;
+					$this->data['session_logged_in'] = $this->data['is_registered'];
 					$this->bots_session_gc(false);
 				}
 
@@ -493,8 +489,7 @@ class session
 			}
 			else
 			{
-				// If the ip and browser does not match make sure we only have one bot assigned to one session
-				$db->sql_query("DELETE FROM " . SESSIONS_TABLE . " WHERE session_user_id = " . $this->data['user_id']);
+				$this->bots_session_gc(true);
 			}
 		}
 
@@ -559,15 +554,13 @@ class session
 //		$db->sql_return_on_error(false);
 
 		// Something quite important: session_page always holds the *last* page visited, except for the *first* visit.
-		// We are not able to simply have an empty session_page btw, therefore we need to tell phpBB how to detect this special case.
-		// If the session id is empty, we have a completely new one and will set an "identifier" here. This identifier is able to be checked later.
+		// We are not able to simply have an empty session_page btw, therefore we need to detect this special case.
+		// If the session id is empty, we have a completely new one and will set an "identifier" that we can check later if needed.
 		if (empty($this->data['session_id']))
 		{
 			// This is a temporary variable, only set for the very first visit
 			$this->data['session_created'] = true;
 		}
-
-		$this->bots_session_gc(true);
 
 		$this->session_id = md5(unique_id());
 		$this->data['session_id'] = $this->session_id;
@@ -580,17 +573,6 @@ class session
 
 		$sql = "INSERT INTO " . SESSIONS_TABLE . " " . $db->sql_build_array('INSERT', $sql_ary);
 		$db->sql_query($sql);
-
-		// ICY PHOENIX - BEGIN
-		// Make sure every non guest user has a last_visit time...
-		if (($this->data['user_id'] != ANONYMOUS) && empty($this->data['user_lastvisit']))
-		{
-			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $this->time_now . "
-				WHERE user_id = " . (int) $this->data['user_id'];
-			$db->sql_query($sql);
-		}
-		// ICY PHOENIX - END
 
 		$db->sql_return_on_error(false);
 
@@ -623,15 +605,26 @@ class session
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
+			// ICY PHOENIX - BEGIN
+			$sql_ary = array();
+			if ($this->data['user_id'] != ANONYMOUS)
+			{
+				$this->data['user_totallogon'] = (int) $this->data['user_totallogon'] + 1;
+				$sql_ary['user_totallogon'] = $this->data['user_totallogon'];
+			}
 			if (((int) $row['sessions'] <= 1) || empty($this->data['user_form_salt']))
 			{
 				$this->data['user_form_salt'] = unique_id();
-				// Update the form key
-				$sql = "UPDATE " . USERS_TABLE . "
-					SET user_form_salt = '" . $db->sql_escape($this->data['user_form_salt']) . "'
-					WHERE user_id = " . (int) $this->data['user_id'];
-				$db->sql_query($sql);
+				$sql_ary['user_form_salt'] = $this->data['user_form_salt'];
 			}
+
+			if (sizeof($sql_ary))
+			{
+				$sql = "UPDATE " . USERS_TABLE . " SET " . $db->sql_build_array('UPDATE', $sql_ary) . "
+					WHERE user_id = " . $this->data['user_id'];
+				$result = $db->sql_query($sql);
+			}
+			// ICY PHOENIX - END
 
 			// Start Advanced IP Tools Pack MOD
 			if (empty($config['disable_logins']) && !empty($this->data['session_logged_in']))
@@ -773,7 +766,7 @@ class session
 	{
 		global $db, $cache, $config;
 
-		$batch_size = 20;
+		$batch_size = 10;
 
 		if (!$this->time_now)
 		{
@@ -1334,16 +1327,19 @@ class session
 	{
 		global $config;
 
-		$this->data['is_bot'] = false;
-		$this->data['bot_id'] = false;
-		if ($this->data['user_id'] == ANONYMOUS)
+		if (!empty($this->data))
 		{
-			$bot_name_tmp = bots_parse($this->ip, $config['bots_color'], $this->browser, true);
-			$this->data['bot_id'] = $bot_name_tmp['name'];
-			if ($this->data['bot_id'] !== false)
+			$this->data['is_bot'] = false;
+			$this->data['bot_id'] = false;
+			if ($this->data['user_id'] == ANONYMOUS)
 			{
-				$this->data['is_bot'] = true;
-				bots_table_update($bot_name_tmp['id']);
+				$bot_name_tmp = bots_parse($this->ip, $config['bots_color'], $this->browser, true);
+				$this->data['bot_id'] = $bot_name_tmp['name'];
+				if ($this->data['bot_id'] !== false)
+				{
+					$this->data['is_bot'] = true;
+					bots_table_update($bot_name_tmp['id']);
+				}
 			}
 		}
 	}

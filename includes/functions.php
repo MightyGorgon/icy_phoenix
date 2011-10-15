@@ -4506,33 +4506,6 @@ function page_header($title = '', $parse_template = false)
 			{
 				$template->assign_block_vars('switch_show_digests', array());
 			}
-
-			// Mighty Gorgon: try again with cron.php to see if this time Digests are working fine...
-			/*
-			// DIGESTS TEMP CODE - BEGIN
-			// MG PHP Cron Emulation For Digests - BEGIN
-			$is_allowed = true;
-			// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
-			$is_allowed = (!$user->data['session_logged_in']) ? true : false;
-			$digests_pages_array = array(CMS_PAGE_PROFILE, CMS_PAGE_POSTING);
-			if ($is_allowed && !in_array($page_url['basename'], $digests_pages_array))
-			{
-				if ((time() - $config['cron_digests_last_run']) > CRON_REFRESH)
-				{
-					$config['cron_digests_last_run'] = ($config['cron_digests_last_run'] == 0) ? (time() - 3600) : $config['cron_digests_last_run'];
-					$last_send_time = @getdate($config['cron_digests_last_run']);
-					$cur_time = @getdate();
-					if ($cur_time['hours'] <> $last_send_time['hours'])
-					{
-						set_config('cron_lock_hour', 1);
-						define('PHP_DIGESTS_CRON', true);
-						include_once(IP_ROOT_PATH . 'mail_digests.' . PHP_EXT);
-					}
-				}
-			}
-			// MG PHP Cron Emulation For Digests - END
-			// DIGESTS TEMP CODE - END
-			*/
 		}
 		// Digests - END
 
@@ -5059,6 +5032,7 @@ function page_header($title = '', $parse_template = false)
 
 	if (($user->data['user_level'] != ADMIN) && $config['board_disable'] && !defined('HAS_DIED') && !defined('IN_ADMIN') && !defined('IN_LOGIN'))
 	{
+		if (!defined('STATUS_503')) define('STATUS_503', true);
 		if($config['board_disable_mess_st'])
 		{
 			message_die(GENERAL_MESSAGE, $config['board_disable_message']);
@@ -6154,6 +6128,11 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		if (defined('STATUS_404'))
 		{
 			send_status_line(404, 'Not Found');
+		}
+
+		if (defined('STATUS_503'))
+		{
+			send_status_line(503, 'Service Unavailable');
 		}
 
 		if (!empty($lang[$msg_text]))
