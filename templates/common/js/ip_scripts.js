@@ -830,8 +830,9 @@ function hon_rate(rate, max)
 
 function submit_rate()
 {
-	document.ratingform.submit();
-	//document.forms['ratingform'].submit();
+	//document.ratingform.submit();
+	document.forms['ratingform'].submit();
+
 	return true;
 }
 // Dynamic Rating - END

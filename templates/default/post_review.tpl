@@ -10,7 +10,7 @@ function open_postreview(ref)
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<span class="forumlink"><!-- BEGIN postrow -->{postrow.POST_SUBJECT}&nbsp;[<a href="{postrow.DOWNLOAD_POST}">{L_DOWNLOAD_POST}</a>]<!-- END postrow --></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink"><!-- BEGIN postrow -->{postrow.POST_SUBJECT}<!-- IF not S_BOT -->&nbsp;[<a href="{postrow.DOWNLOAD_POST}">{L_DOWNLOAD_POST}</a>]<!-- ENDIF --><!-- END postrow --></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th nowrap="nowrap">{L_AUTHOR}</th>
 	<th nowrap="nowrap">{L_MESSAGE}</th>
@@ -19,9 +19,11 @@ function open_postreview(ref)
 <tr>
 	<td class="row-post-author" nowrap="nowrap">
 		<span class="post-name"><a name="p{postrow.U_POST_ID}"></a>{postrow.POSTER_NAME}</span><br />
+		<!-- IF not S_BOT -->
 		<div class="post-rank">
 			<div class="center-block-text"><b>{postrow.USER_RANK_01}{postrow.USER_RANK_01_IMG}{postrow.USER_RANK_02}{postrow.USER_RANK_02_IMG}{postrow.USER_RANK_03}{postrow.USER_RANK_03_IMG}{postrow.USER_RANK_04}{postrow.USER_RANK_04_IMG}{postrow.USER_RANK_05}{postrow.USER_RANK_05_IMG}</b></div>
 		</div>
+		<!-- ENDIF -->
 		<span class="post-images">{postrow.POSTER_AVATAR}</span>
 		<div class="post-details">
 			{postrow.ONLINE_STATUS_IMG} {postrow.AIM_IMG} {postrow.ICQ_IMG} {postrow.MSN_IMG} {postrow.SKYPE_IMG} {postrow.YIM_IMG}<br />

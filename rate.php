@@ -31,9 +31,8 @@ $forum_top = request_var('forum_top', '');
 $topic_id = request_var('topic_id', 0);
 $rating = request_post_var('rating', 0);
 
-/*******************************************************************************************
-/** Page Titles if Specific!
-/******************************************************************************************/
+// Page Titles if Specific!
+
 $meta_content['description'] = '';
 $meta_content['keywords'] = '';
 switch($rate_mode)
@@ -59,9 +58,9 @@ switch($rate_mode)
 		$meta_content['page_title'] = sprintf($lang['Top_Topics'], $config['large_rating_return_limit']);
 		break;
 }
-/*******************************************************************************************
-/** Include Header (It Contains Rate Functions).
-/******************************************************************************************/
+
+// Include Header (It Contains Rate Functions).
+
 if ($rate_mode == 'detailed')
 {
 	$nav_server_url = create_server_url();
@@ -69,11 +68,13 @@ if ($rate_mode == 'detailed')
 	$breadcrumbs['bottom_right_links'] = '<span class="gensmall">' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>') . '</span>';
 }
 
-page_header($meta_content['page_title'], true);
+// Display modes, for if the page is called seperately
 
-/*******************************************************************************************
-/** Display modes, for if the page is called seperately
-/******************************************************************************************/
+if (!in_array($rate_mode, array('rate', 'rerate')))
+{
+	page_header($meta_content['page_title'], true);
+}
+
 switch($rate_mode)
 {
 	case 'rate':
@@ -89,8 +90,12 @@ switch($rate_mode)
 		ratings_large();
 		break;
 }
-nivisec_copyright();
 
-page_footer(true, '', true);
+if (!in_array($rate_mode, array('rate', 'rerate')))
+{
+	nivisec_copyright();
+
+	page_footer(true, '', true);
+}
 
 ?>

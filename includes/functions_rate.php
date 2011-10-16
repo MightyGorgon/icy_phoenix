@@ -289,6 +289,7 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 			$result3 = $db->sql_query($sql3);
 		}
 	}
+
 	$message = $lang['Topic_Rated'] . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -805,17 +806,19 @@ function ratings_view_topic()
 				{
 					$rate_class = 'img-rate-off';
 				}
+				$hover_action = 'set_rate(' . $i . ',' . $config['rating_max'] . ');';
+				$click_action = $hover_action . ' submit_rate(); return false;';
 				if ($rating_inserted == false)
 				{
 					$template->assign_block_vars('rate_link.rate_row', array(
-						'RATE_LINK' => '<a href="#" onclick="return false;" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
+						'RATE_LINK' => '<a href="#" onclick="' . $click_action . '" class="' . $rate_class . '" onmouseover="' . $hover_action . '" id="rate' . $i . '">&nbsp;</a>'
 						)
 					);
 				}
 				else
 				{
 					$template->assign_block_vars('rerate_link.rate_row', array(
-						'RATE_LINK' => '<a href="#" onclick="return false;" class="' . $rate_class . '" onmouseover="set_rate(' . $i . ',' . $config['rating_max'] . ');" id="rate' . $i . '">&nbsp;</a>'
+						'RATE_LINK' => '<a href="#" onclick="' . $click_action . '" class="' . $rate_class . '" onmouseover="' . $hover_action . '" id="rate' . $i . '">&nbsp;</a>'
 						)
 					);
 				}

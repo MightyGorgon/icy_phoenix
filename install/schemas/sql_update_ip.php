@@ -4434,6 +4434,8 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.25.78 */
 		case '1.3.25.78':
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Ezooms', '', 'Ezooms/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Archive ORG BOT', '', 'www.archive.org/', '')";
 
 		/* Updating from IP 1.3.26.79 */
 		case '1.3.26.79':

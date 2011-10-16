@@ -52,6 +52,7 @@
 	<td class="row-post-author">
 		<span class="post-name"><a id="p{postrow.U_POST_ID}"></a>{postrow.POSTER_ONLINE_STATUS_IMG}&nbsp;{postrow.POSTER_NAME}&nbsp;{postrow.POSTER_GENDER}</span>
 		<br />
+		<!-- IF not S_BOT -->
 		<div class="center-block-text">
 			<div class="post-rank">
 			<b>
@@ -64,6 +65,7 @@
 			</div>
 		</div>
 		{postrow.CARD_IMG}
+		<!-- ENDIF -->
 		<!-- BEGIN switch_showavatars -->
 		<span class="post-images"><a href="javascript:quotename(%27[b]{postrow.POSTER_NAME_QR}[/b],%27);">{postrow.POSTER_AVATAR}</a></span>
 		<!-- END switch_showavatars -->
