@@ -452,12 +452,12 @@ class session
 			{
 				foreach ($sql_fields as $sql_field)
 				{
-					$sql_extra .= (empty($sql_extra) ? " WHERE " : " AND ") ? $sql_field : '';
+					$sql_extra .= (empty($sql_extra) ? " WHERE " : " AND ") . $sql_field;
 				}
 				if (!empty($sql_extra))
 				{
 					$bot_data = array();
-					$sql = "SELECT s.* FROM " . SESSIONS_TABLE . $sql_extra . " AND s.session_time > " . ($this->time_now - ((int) $config['session_length'] + (int) SESSION_REFRESH));
+					$sql = "SELECT s.* FROM " . SESSIONS_TABLE . " s " . $sql_extra . " AND s.session_time > " . ($this->time_now - ((int) $config['session_length'] + (int) SESSION_REFRESH));
 					$result = $db->sql_query($sql);
 					$bot_data = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);

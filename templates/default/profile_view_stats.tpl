@@ -1,4 +1,6 @@
+<!-- IF S_POSTS_SECTION -->
 {BB_USAGE_STATS_TEMPLATE}
+<!-- ENDIF -->
 
 <!-- BEGIN switch_display_ips -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_OTHER_REGISTERED_IPS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

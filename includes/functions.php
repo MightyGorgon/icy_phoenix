@@ -3327,7 +3327,7 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 	global $db, $lang;
 	/*
 	// Testing!!!
-	$browser = 'msnbot/ ciao';
+	$browser = 'mgbot/ 1.0';
 	$bot_name = 'MG';
 	return $bot_name;
 	*/
@@ -3361,8 +3361,9 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 		if (!empty($active_bots[$i]['bot_agent']) && preg_match('#' . str_replace('\*', '.*?', preg_quote($active_bots[$i]['bot_agent'], '#')) . '#i', $browser))
 		{
 			$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
-			if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
+			if (!empty($check_inactive) && ($active_bots[$i]['bot_active'] == 0))
 			{
+				if (!defined('STATUS_503')) define('STATUS_503', true);
 				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
 			return array('name' => $bot_name, 'id' => $active_bots[$i]['bot_id']);
@@ -3375,8 +3376,9 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 				if (strpos($ip_address, trim($bot_ip)) === 0)
 				{
 					$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
-					if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
+					if (!empty($check_inactive) && ($active_bots[$i]['bot_active'] == 0))
 					{
+						if (!defined('STATUS_503')) define('STATUS_503', true);
 						message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 					}
 					return array('name' => $bot_name, 'id' => $active_bots[$i]['bot_id']);

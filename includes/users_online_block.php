@@ -113,8 +113,8 @@ foreach ($online_users as $row)
 		if (!empty($row['session_ip']) && !in_array($row['session_ip'], $session_ip_array))
 		{
 			$session_ip_array[] = $row['session_ip'];
-
 			$guests_online++;
+
 			// MG BOTS Parsing - BEGIN
 			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_browser']);
 			if ($bot_name_tmp['name'] != false)

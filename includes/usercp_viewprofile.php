@@ -616,6 +616,7 @@ $template->assign_vars(array(
 	// Mighty Gorgon - Multiple Ranks - END
 	'POSTS_PER_DAY' => $posts_per_day,
 	'POSTS' => $profiledata['user_posts'],
+	'S_POSTS_SECTION' => ($profiledata['user_posts'] > 0) ? true : false,
 	'PERCENTAGE' => $percentage . '%',
 	'POST_DAY_STATS' => sprintf($lang['User_post_day_stats'], $posts_per_day),
 	'POST_PERCENT_STATS' => sprintf($lang['User_post_pct_stats'], $percentage),
@@ -685,7 +686,6 @@ $template->assign_vars(array(
 	// Start add - Gender MOD
 	'GENDER' => $gender,
 	// End add - Gender MOD
-
 
 	// BIRTHDAY - BEGIN
 	'BIRTHDAY' => $user_birthday,

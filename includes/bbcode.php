@@ -1265,7 +1265,7 @@ class bbcode
 			// remove extra characters at the end
 			$last_char = substr($url, strlen($url) - 1);
 			$last_char_i = ord($last_char);
-			if(($last_char_i > 32 && $last_char_i < 47) || ($last_char_i > 57 && $last_char_i < 65))
+			if((($last_char_i > 32) && ($last_char_i < 47)) || (($last_char_i > 57) && ($last_char_i < 65)))
 			{
 				$url = substr($url, 0, strlen($url) - 1);
 			}
@@ -1287,7 +1287,7 @@ class bbcode
 				$is_local_url = true;
 			}
 			// generate html
-			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($is_local_url ? '' : (' target="_blank"' . (!empty($item['params']['nofollow']) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
+			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($is_local_url ? '' : (' target="_blank"' . ((!empty($item['params']['nofollow']) || $this->is_sig) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
 
 			if ($config['disable_html_guests'] && !$user->data['session_logged_in'])
 			{

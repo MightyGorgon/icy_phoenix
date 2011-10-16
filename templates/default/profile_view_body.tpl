@@ -130,6 +130,7 @@
 						<td width="33%" class="row2" valign="top"><b><span class="genmed">{L_INVISION_POSTS}</span></b></td>
 						<td width="64%" class="row1"><span class="genmed"><b>{POSTS}</b>&nbsp;{INVISION_POST_PERCENT_STATS}</span></td>
 					</tr>
+					<!-- IF S_POSTS_SECTION -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_PPD_STATS}</span></b></td>
 						<td class="row1"><span class="genmed">{INVISION_POST_DAY_STATS}</span></td>
@@ -138,14 +139,17 @@
 						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_MOST_ACTIVE}</span></b></td>
 						<td class="row1"><span class="genmed"><a href="{INVISION_MOST_ACTIVE_FORUM_URL}">{INVISION_MOST_ACTIVE_FORUM_NAME}</a><br />{L_INVISION_MOST_ACTIVE_POSTS}</span></td>
 					</tr>
+					<!-- ENDIF -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_RECENT_USER_ACTIVITY}</span></b></td>
 						<td class="row1">
 							<!-- IF S_EXTRA_STATS_AUTH -->
 							<span class="genmed">[ <a href="{U_EXTRA_STATS}">{L_EXTRA_STATS}</a> ]</span><br />
 							<!-- ENDIF -->
+							<!-- IF S_POSTS_SECTION -->
 							<span class="genmed">[ <a href="{U_USER_RECENT_TOPICS}">{L_USER_TOPICS_STARTED}</a> ]</span><br />
 							<span class="genmed">[ <a href="{U_USER_RECENT_POSTS}">{L_USER_POSTS}</a> ]</span><br />
+							<!-- ENDIF -->
 							<!-- IF S_ADMIN -->
 							<span class="genmed">[ <a href="{U_USER_RECENT_TOPICS_VIEW}">{L_USER_TOPICS_VIEWS}</a> ]</span>
 							<!-- ENDIF -->

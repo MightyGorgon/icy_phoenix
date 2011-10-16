@@ -175,7 +175,7 @@ if (!function_exists('nivisec_copyright'))
 */
 function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 {
-	global $db, $config, $user, $template, $lang;
+	global $db, $config, $cache, $user, $template, $lang;
 
 	if (!empty($_POST['thanks_user']))
 	{

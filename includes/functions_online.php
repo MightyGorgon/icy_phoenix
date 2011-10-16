@@ -22,10 +22,10 @@ function get_online_users($reg_only, $extra_info, $forum_sql = '')
 	global $db, $cache, $config, $user, $lang;
 
 	$reg_only_sql = empty($reg_only) ? '' : (" AND u.user_id <> " . ANONYMOUS . " AND s.session_logged_in = 1 ");
-	$extra_info_sql = empty($extra_info) ? '' : (", u.user_session_time, u.user_session_page, s.session_start, s.session_browser, s.session_page, s.session_forum_id, s.session_topic_id");
+	$extra_info_sql = empty($extra_info) ? '' : (", u.user_session_time, u.user_session_page, s.session_start, s.session_page, s.session_forum_id, s.session_topic_id");
 
 	// Changed sorting by username_clean instead of username
-	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip, s.session_time" . $extra_info_sql . "
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip, s.session_time, s.session_browser" . $extra_info_sql . "
 		FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
 		WHERE u.user_id = s.session_user_id
 		AND s.session_time >= " . (time() - ONLINE_REFRESH) . "

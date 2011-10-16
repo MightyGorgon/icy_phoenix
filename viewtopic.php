@@ -1488,8 +1488,8 @@ for($i = 0; $i < $total_posts; $i++)
 			$email = '';
 		}
 
-		$www_img = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
-		$www = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank">' . $lang['Website'] . '</a>' : '';
+		$www_img = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
+		$www = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank" rel="nofollow">' . $lang['Website'] . '</a>' : '';
 		$www_url = ($postrow[$i]['user_website']) ? $postrow[$i]['user_website'] : '';
 
 		$im_links_array = array(
@@ -1530,7 +1530,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$aim = $all_ims['aim']['plain'];
 		$aim_url = $all_ims['aim']['url'];
 
-		$icq_status_img = (!empty($postrow[$i]['user_icq'])) ? '<a href="http://wwp.icq.com/' . $postrow[$i]['user_icq'] . '#pager"><img src="http://web.icq.com/whitepages/online?icq=' . $postrow[$i]['user_icq'] . '&amp;img=5" width="18" height="18" /></a>' : '';
+		$icq_status_img = (!empty($postrow[$i]['user_icq'])) ? '<a href="http://wwp.icq.com/' . $postrow[$i]['user_icq'] . '#pager" rel="nofollow"><img src="http://web.icq.com/whitepages/online?icq=' . $postrow[$i]['user_icq'] . '&amp;img=5" width="18" height="18" /></a>' : '';
 		$icq_img = $all_ims['icq']['img'];
 		$icq = $all_ims['icq']['plain'];
 		$icq_url = $all_ims['icq']['url'];
