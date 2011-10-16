@@ -1376,10 +1376,10 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		}
 		if (($mode == 'newtopic') || ($mode == 'reply'))
 		{
-			$tracking_topics = (!empty($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 			$tracking_forums = (!empty($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+			$tracking_topics = (!empty($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
-			if (sizeof($tracking_topics) + sizeof($tracking_forums) == 100 && empty($tracking_topics[$topic_id]))
+			if (((sizeof($tracking_topics) + sizeof($tracking_forums)) >= 150) && empty($tracking_topics[$topic_id]))
 			{
 				asort($tracking_topics);
 				unset($tracking_topics[key($tracking_topics)]);
@@ -1387,7 +1387,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 			$tracking_topics[$topic_id] = time();
 
-			setcookie($config['cookie_name'] . '_t', serialize($tracking_topics), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+			$user->set_cookie('t', serialize($tracking_topics), $user->cookie_expire);
 		}
 
 		// MOD: Redirect to Post (normal post) - BEGIN

@@ -23,8 +23,8 @@ $user->setup();
 $subs_forums_list_sql = 'SELECT forum_id FROM ' . FORUMS_WATCH_TABLE . ' WHERE user_id = ' . $user->data['user_id'] . ' AND notify_status = 0';
 $subs_forums_list = $db->sql_query($subs_forums_list_sql);
 
-$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 $tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
 $subscribed_forums_count = 0;
 while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))

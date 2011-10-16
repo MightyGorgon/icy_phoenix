@@ -88,8 +88,8 @@ $features_array = array(
 	'registration' => array(
 		'coppa' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'l_r_a' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
-		'username_lenght' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
-		'pass_lenght' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
+		'username_length' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'pass_length' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'l_u_c' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		's_p_c_r' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'f_p_c' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),

@@ -97,8 +97,8 @@ if ($watch_count > 0)
 	// are we currently watching any topics?
 	if ($watch_rows)
 	{
-		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] .'_t'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_t']) : array();
-		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
+		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
 		// MG User Replied - BEGIN
 		// check if user replied to the topic

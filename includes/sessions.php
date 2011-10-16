@@ -23,6 +23,7 @@ if (!defined('IN_ICYPHOENIX'))
 class session
 {
 	var $cookie_data = array();
+	var $cookie_expire = 0;
 	var $page = array();
 	var $data = array();
 	var $browser = '';
@@ -57,6 +58,7 @@ class session
 		// Give us some basic information
 		$this->time_now = time();
 		$this->cookie_data = array('u' => 0, 'k' => '');
+		$this->cookie_expire = $this->time_now + (($config['max_autologin_time']) ? 86400 * (int) $config['max_autologin_time'] : 31536000);
 		$this->update_session_page = (empty($update_session_page) || defined('IMG_THUMB')) ? false : true;
 		//$this->browser = (!empty($_SERVER['HTTP_USER_AGENT'])) ? htmlspecialchars((string) $_SERVER['HTTP_USER_AGENT']) : '';
 		$this->browser = (!empty($_SERVER['HTTP_USER_AGENT'])) ? (string) $_SERVER['HTTP_USER_AGENT'] : '';
@@ -589,13 +591,9 @@ class session
 
 		if (empty($this->data['is_bot']))
 		{
-			$cookie_expire = $this->time_now + (($config['max_autologin_time']) ? 86400 * (int) $config['max_autologin_time'] : 31536000);
-
-			$this->set_cookie('u', $this->cookie_data['u'], $cookie_expire);
-			$this->set_cookie('k', $this->cookie_data['k'], $cookie_expire);
-			$this->set_cookie('sid', $this->session_id, $cookie_expire);
-
-			unset($cookie_expire);
+			$this->set_cookie('u', $this->cookie_data['u'], $this->cookie_expire);
+			$this->set_cookie('k', $this->cookie_data['k'], $this->cookie_expire);
+			$this->set_cookie('sid', $this->session_id, $this->cookie_expire);
 
 			$sql = "SELECT COUNT(session_id) AS sessions
 					FROM " . SESSIONS_TABLE . "
@@ -932,13 +930,16 @@ class session
 	*
 	* Sets a cookie of the given name with the specified data for the given length of time. If no time is specified, a session cookie will be set.
 	*
-	* @param string $name		Name of the cookie, will be automatically prefixed with the phpBB cookie name. track becomes [cookie_name]_track then.
-	* @param string $cookiedata	The data to hold within the cookie
-	* @param int $cookietime	The expiration time as UNIX timestamp. If 0 is provided, a session cookie is set.
+	* @param string $name Name of the cookie, will be automatically prefixed with the phpBB cookie name. track becomes [cookie_name]_track then.
+	* @param string $cookiedata The data to hold within the cookie
+	* @param int $cookietime The expiration time as UNIX timestamp. If 0 is provided, a session cookie is set.
 	*/
 	function set_cookie($name, $cookiedata, $cookietime)
 	{
 		global $config;
+
+		// Old setcookie version...
+		//setcookie($config['cookie_name'] . '_' . $name, $cookiedata, $cookietime, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
 
 		$name_data = rawurlencode($config['cookie_name'] . '_' . $name) . '=' . rawurlencode($cookiedata);
 		$expire = gmdate('D, d-M-Y H:i:s \\G\\M\\T', $cookietime);
@@ -955,7 +956,7 @@ class session
 	* this routine does not return on finding a banned user, it outputs a relevant
 	* message and stops execution.
 	*
-	* @param string|array	$user_ips	Can contain a string with one IP or an array of multiple IPs
+	* @param string|array $user_ips Can contain a string with one IP or an array of multiple IPs
 	*/
 	function check_ban($user_id = false, $user_ips = false, $user_email = false, $return = false)
 	{
@@ -1458,7 +1459,7 @@ class user extends session
 		{
 			$test_language = str_replace(array('.', '/'), '', urldecode($test_language));
 			$config['default_lang'] = file_exists(@phpbb_realpath($this->lang_path . 'lang_' . basename($test_language) . '/lang_main.' . PHP_EXT)) ? $test_language : $config['default_lang'];
-			setcookie($config['cookie_name'] . '_lang', $config['default_lang'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+			$this->set_cookie('lang', $config['default_lang'], $user->cookie_expire);
 		}
 		else
 		{
@@ -1705,8 +1706,8 @@ class user extends session
 		{
 			$mob_get = (isset($_GET['mob']) && (intval($_GET['mob']) == 0)) ? 0 : 1;
 			$_GET['mob'] = $mob_get;
-			@setcookie('mob', $mob_get, time() + 31536000);
-			$_COOKIE['mob'] = $mob_get;
+			$this->set_cookie('mob', $mob_get, $user->cookie_expire);
+			$_COOKIE[$config['cookie_name'] . '_mob'] = $mob_get;
 
 			if (empty($mob_get))
 			{
@@ -1714,7 +1715,7 @@ class user extends session
 			}
 		}
 
-		$mob_cok = (isset($_COOKIE['mob']) && (intval($_COOKIE['mob']) == 0)) ? false : true;
+		$mob_cok = (isset($_COOKIE[$config['cookie_name'] . '_mob']) && (intval($_COOKIE[$config['cookie_name'] . '_mob']) == 0)) ? false : true;
 		if (empty($mob_cok))
 		{
 			$disable_mobile_style = true;
@@ -1724,7 +1725,7 @@ class user extends session
 		if (empty($disable_mobile_style) && !empty($this->data['is_mobile']) && !defined('IN_CMS') && !defined('IN_ADMIN'))
 		{
 			$this->data['mobile_style'] = true;
-			@setcookie('mob', 1, time() + 31536000);
+			$this->set_cookie('mob', 1, $user->cookie_expire);
 			$theme = setup_mobile_style();
 		}
 		else
@@ -1738,7 +1739,7 @@ class user extends session
 				{
 					$config['default_style'] = urldecode($test_style);
 					$config['default_style'] = (check_style_exists($config['default_style']) == false) ? $current_default_style : $config['default_style'];
-					setcookie($config['cookie_name'] . '_style', $config['default_style'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+					$this->set_cookie('style', $config['default_style'], $user->cookie_expire);
 					$change_style = true;
 				}
 				else

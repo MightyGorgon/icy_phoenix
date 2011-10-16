@@ -91,7 +91,7 @@ if($mark_read == 'forums')
 			//<!-- BEGIN Unread Post Information to Database Mod -->
 			if(!$user->data['upi2db_access'])
 			{
-				setcookie($config['cookie_name'] . '_f_all', time(), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+				$user->set_cookie('f_all', time(), $user->cookie_expire);
 			}
 			else
 			{
@@ -114,9 +114,9 @@ if($mark_read == 'forums')
 			// mark each forums
 			for ($i = 0; $i < sizeof($keys['id']); $i++)
 			{
-				if ($tree['type'][ $keys['idx'][$i] ] == POST_FORUM_URL)
+				if ($tree['type'][$keys['idx'][$i]] == POST_FORUM_URL)
 				{
-					$forum_id = $tree['id'][ $keys['idx'][$i] ];
+					$forum_id = $tree['id'][$keys['idx'][$i]];
 					$sql = "SELECT MAX(post_time) AS last_post FROM " . POSTS_TABLE . " WHERE forum_id = '" . $forum_id . "'";
 					$result = $db->sql_query($sql);
 					if ($row = $db->sql_fetchrow($result))
@@ -124,7 +124,7 @@ if($mark_read == 'forums')
 						$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
 						$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
-						if ((sizeof($tracking_forums) + sizeof($tracking_topics)) >= 150 && empty($tracking_forums[$forum_id]))
+						if (((sizeof($tracking_forums) + sizeof($tracking_topics)) >= 150) && empty($tracking_forums[$forum_id]))
 						{
 							asort($tracking_forums);
 							unset($tracking_forums[key($tracking_forums)]);
@@ -133,7 +133,7 @@ if($mark_read == 'forums')
 						if ($row['last_post'] > $user->data['user_lastvisit'])
 						{
 							$tracking_forums[$forum_id] = time();
-							setcookie($config['cookie_name'] . '_f', serialize($tracking_forums), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+							$user->set_cookie('f', serialize($tracking_forums), $user->cookie_expire);
 						}
 					}
 				}

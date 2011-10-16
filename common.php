@@ -300,7 +300,7 @@ if ($config['admin_protect'])
 	founder_protect($founder_id);
 }
 
-if ((isset($_GET['lofi']) && (intval($_GET['lofi']) == 1)) || (isset($_COOKIE['lofi']) && (intval($_COOKIE['lofi']) == 1)))
+if ((isset($_GET['lofi']) && (intval($_GET['lofi']) == 1)) || (isset($_COOKIE[$config['cookie_name'] . '_lofi']) && (intval($_COOKIE[$config['cookie_name'] . '_lofi']) == 1)))
 {
 	$lofi = 1;
 }

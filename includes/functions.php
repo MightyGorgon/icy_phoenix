@@ -5136,8 +5136,8 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 
 	//Begin Lo-Fi Mod
 	$path_parts = pathinfo($_SERVER['SCRIPT_NAME']);
-	$lofi = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars(str_replace(array('&lofi=0', '&lofi=1', 'lofi=0', 'lofi=1'), array('', '', '', ''), $_SERVER['QUERY_STRING'])) . '&amp;lofi=' . (empty($_COOKIE['lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE['lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a>';
-	$mobile_style = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars(str_replace(array('&mob=0', '&mob=1', 'mob=0', 'mob=1'), array('', '', '', ''), $_SERVER['QUERY_STRING'])) . '&amp;mob=' . (!empty($_COOKIE['mob']) ? '0' : '1')) . '">' . (!empty($_COOKIE['mob']) ? ($lang['MOBILE_STYLE_DISABLE']) : ($lang['MOBILE_STYLE_ENABLE'])) . '</a>';
+	$lofi = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars(str_replace(array('&lofi=0', '&lofi=1', 'lofi=0', 'lofi=1'), array('', '', '', ''), $_SERVER['QUERY_STRING'])) . '&amp;lofi=' . (empty($_COOKIE[$config['cookie_name'] . '_lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE[$config['cookie_name'] . '_lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a>';
+	$mobile_style = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars(str_replace(array('&mob=0', '&mob=1', 'mob=0', 'mob=1'), array('', '', '', ''), $_SERVER['QUERY_STRING'])) . '&amp;mob=' . (!empty($_COOKIE[$config['cookie_name'] . '_mob']) ? '0' : '1')) . '">' . (!empty($_COOKIE[$config['cookie_name'] . '_mob']) ? ($lang['MOBILE_STYLE_DISABLE']) : ($lang['MOBILE_STYLE_ENABLE'])) . '</a>';
 	$template->assign_vars(array(
 		'L_LOFI' => $lang['Lofi'],
 		'L_FULL_VERSION' => $lang['Full_Version'],

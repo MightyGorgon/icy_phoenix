@@ -1326,8 +1326,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		$highlight_active = urlencode(trim($highlight_active));
 
-		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
 		if ($show_results == 'posts')
 		{
@@ -1432,7 +1432,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if(!$user->data['upi2db_access'])
 				{
 //<!-- END Unread Post Information to Database Mod -->
-					if ($user->data['session_logged_in'] && $searchset[$i]['post_time'] > $user->data['user_lastvisit'])
+					if ($user->data['session_logged_in'] && ($searchset[$i]['post_time'] > $user->data['user_lastvisit']))
 					{
 						if (!empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]))
 						{

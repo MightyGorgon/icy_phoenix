@@ -28,8 +28,8 @@ $template->assign_block_vars('similar', array(
 for($i = 0; $i < $count_similar; $i++)
 {
 	$similar = $similar_topics[$i];
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] .'_t'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_t']) : array();
-	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
+	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 	$topic_type =  ($similar['topic_type'] == POST_ANNOUNCE) ? $lang['Topic_Announcement'] .' ': '';
 	$topic_type .= ($similar['topic_type'] == POST_STICKY) ? $lang['Topic_Sticky'] .' ': '';
 	$topic_type .= (!empty($similar['poll_start'])) ? $lang['Topic_Poll'] .' ': '';
@@ -77,7 +77,7 @@ for($i = 0; $i < $count_similar; $i++)
 	{
 		if($similar['post_time'] > $user->data['user_lastvisit'])
 		{
-			if(!empty($tracking_topics) || !empty($tracking_forums) || isset($_COOKIE[$config['cookie_name'] .'_f_all']))
+			if(!empty($tracking_topics) || !empty($tracking_forums) || isset($_COOKIE[$config['cookie_name'] . '_f_all']))
 			{
 				$unread_topics = true;
 				if(!empty($tracking_topics[$topic_id]))
@@ -94,9 +94,9 @@ for($i = 0; $i < $count_similar; $i++)
 						$unread_topics = false;
 					}
 				}
-				if(isset($_COOKIE[$config['cookie_name'] .'_f_all']))
+				if(isset($_COOKIE[$config['cookie_name'] . '_f_all']))
 				{
-					if(intval($_COOKIE[$config['cookie_name'] .'_f_all']) >= $similar['post_time'])
+					if(intval($_COOKIE[$config['cookie_name'] . '_f_all']) >= $similar['post_time'])
 					{
 						$unread_topics = false;
 					}

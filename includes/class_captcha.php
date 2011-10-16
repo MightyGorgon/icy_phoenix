@@ -20,7 +20,7 @@ class class_captcha
 {
 
 	var $attempts_limit = 3;
-	var $code_lenght = 6;
+	var $code_length = 6;
 
 	/*
 	* Creates CAPTCHA image
@@ -38,7 +38,7 @@ class class_captcha
 		// 0 (zero) could get confused with O (the letter) so we change it
 		//$code = substr(str_replace(array('0'), array('Z'), strtoupper(base_convert($code, 16, 35))), 2, 6);
 		// Easiest to read charset... some letters and numbers may be ambiguous
-		$code = substr(str_replace(array('0', '1', '2', '5', 'O', 'I', 'Z', 'S'), array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), strtoupper(base_convert($code, 16, 35))), 2, $this->code_lenght);
+		$code = substr(str_replace(array('0', '1', '2', '5', 'O', 'I', 'Z', 'S'), array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), strtoupper(base_convert($code, 16, 35))), 2, $this->code_length);
 		$confirm_id = md5(uniqid($user->ip));
 		$sql = "INSERT INTO " . CONFIRM_TABLE . " (confirm_id, session_id, code)
 			VALUES ('" . $db->sql_escape($confirm_id) . "', '" . $db->sql_escape($user->data['session_id']) . "', '" . $db->sql_escape($code) . "')";
@@ -51,7 +51,7 @@ class class_captcha
 			'S_CAPTCHA' => true,
 			'CONFIRM_IMG' => $confirm_image,
 			'CAPTCHA_HIDDEN' => '<input type="hidden" name="confirm_id" value="' . $confirm_id . '" />',
-			'CAPTCHA_CODE_LENGHT' => $this->code_lenght,
+			'CAPTCHA_CODE_LENGTH' => $this->code_length,
 
 			'L_CONFIRM_CODE_IMPAIRED' => sprintf($lang['CONFIRM_CODE_IMPAIRED'], '<a href="mailto:' . $config['board_email'] . '">', '</a>'),
 			)

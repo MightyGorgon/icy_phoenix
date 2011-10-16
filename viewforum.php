@@ -328,7 +328,7 @@ if ($mark_read == 'topics')
 				if ($row['last_post'] > $user->data['user_lastvisit'])
 				{
 					$tracking_forums[$forum_id] = time();
-					setcookie($config['cookie_name'] . '_f', serialize($tracking_forums), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+					$user->set_cookie('f', serialize($tracking_forums), $user->cookie_expire);
 				}
 			}
 		//<!-- BEGIN Unread Post Information to Database Mod -->
@@ -348,8 +348,8 @@ if ($mark_read == 'topics')
 }
 // End handle marking posts
 
-$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : '';
 $tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : '';
+$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : '';
 
 // Do the forum Prune
 if ($is_auth['auth_mod'] && $config['prune_enable'])

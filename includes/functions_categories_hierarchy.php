@@ -403,8 +403,8 @@ function read_tree($force = false)
 //<!-- END Unread Post Information to Database Mod -->
 
 	// read the user cookie
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 	$tracking_all = (isset($_COOKIE[$config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$config['cookie_name'] . '_f_all']) : -1;
 
 	// try the cache

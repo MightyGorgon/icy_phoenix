@@ -797,8 +797,8 @@ if ($show_thanks_button && ($postrow[0]['topic_poster'] != $user->data['user_id'
 // Set a cookie for this topic
 if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
 	if (!empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]))
 	{
@@ -821,7 +821,7 @@ if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 
 	$tracking_topics[$topic_id] = time();
 
-	setcookie($config['cookie_name'] . '_t', serialize($tracking_topics), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+	$user->set_cookie('t', serialize($tracking_topics), $user->cookie_expire);
 }
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
