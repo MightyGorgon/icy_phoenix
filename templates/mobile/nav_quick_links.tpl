@@ -42,7 +42,7 @@
 		<a href="javascript:void(0);" class="gradient">{L_INFO_LINKS}</a>
 		<ul class="menu">
 			<li><a href="{U_CREDITS}">{L_LINK_CREDITS}</a></li>
-			<li><a href="{U_REFERRERS}">{L_LINK_REFERRERS}</a></li>
+			<li><a href="{U_REFERERS}">{L_LINK_REFERERS}</a></li>
 			<li><a href="{U_VIEWONLINE}">{L_LINK_VIEWONLINE}</a></li>
 			<li><a href="{U_STATISTICS}">{L_LINK_STATISTICS}</a></li>
 			<li><a href="{U_DELETE_COOKIES}">{L_LINK_DELETE_COOKIES}</a></li>

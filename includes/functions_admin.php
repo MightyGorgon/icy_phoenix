@@ -312,7 +312,9 @@ function match_ips($ip_list_match)
 		}
 		elseif (preg_match('/^([0-9]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})$/', trim($ip_list_temp[$i])))
 		{
-			$ip_list[] = str_replace('*', '255', trim($ip_list_temp[$i]));
+			// Mighty Gorgon: we don't use this replacement any more...
+			//$ip_list[] = str_replace('*', '255', trim($ip_list_temp[$i]));
+			$ip_list[] = trim($ip_list_temp[$i]);
 		}
 	}
 

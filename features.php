@@ -373,9 +373,9 @@ $features_array = array(
 	'features_seo' => array(
 		'feat_url_rewrite' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 		'feat_rss' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
-		'feat_referrers' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
-		'feat_referrers' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
-		'feat_referrers' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
+		'feat_referers_tracking' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
+		'feat_bots_tracking' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
+		'feat_browser_tracking' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 		'feat_banners' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 	),
 

@@ -23,11 +23,6 @@ require('pagestart.' . PHP_EXT);
 
 define('THIS_PAGE', 'admin_plugins.' . PHP_EXT);
 
-// FORM CLASS - BEGIN
-include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
-$class_form = new class_form();
-// FORM CLASS - END
-
 // PLUGINS CLASS - BEGIN
 include(IP_ROOT_PATH . 'includes/class_plugins.' . PHP_EXT);
 $class_plugins = new class_plugins();

@@ -170,8 +170,8 @@ if ($lang_extend_admin)
 		'IP_disable_topic_view' => 'Disable "Who read this topic" (Global Switch)',
 		'IP_disable_topic_view_explain' => 'This option allows you to disable &quot;Who read this topic&quot; feature (this saves SQL space).',
 
-		'IP_disable_referrers' => 'Disable Referrers',
-		'IP_disable_referrers_explain' => 'This option allows you to disable Referrers feature (this saves SQL space).',
+		'IP_disable_referers' => 'Disable Referers',
+		'IP_disable_referers_explain' => 'This option allows you to disable Referers feature (this saves SQL space).',
 
 		'IP_disable_logins' => 'Disable Logins Recording',
 		'IP_disable_logins_explain' => 'By enabling this option User\'s Logins will no longer be recorded.',

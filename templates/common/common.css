@@ -65,6 +65,8 @@ code.inline { display: inline; }
 .gen { font-size: 12px; }
 .genmed { font-size: 11px; }
 .gensmall { font-size: 10px; }
+.genmini { font-size: 9px; }
+.genmicro { font-size: 8px; }
 .gennull{ font-size: 0px; }
 
 .row-post-text { }

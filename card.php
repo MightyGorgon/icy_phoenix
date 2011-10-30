@@ -22,18 +22,18 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Find what we are to do
 $mode = (isset($_POST['report_x'])) ? 'report' :
-		((isset($_POST['report_reset_x'])) ? 'report_reset' :
-			((isset($_POST['ban_x'])) ? 'ban' :
-				((isset($_POST['unban_x'])) ? 'unban' :
-					((isset($_POST['warn_x'])) ? 'warn' :
-						((isset($_POST['block_x'])) ? 'block' :
-							((isset($_GET['mode'])) ? $_GET['mode'] : ''
-							)
-						)
+((isset($_POST['report_reset_x'])) ? 'report_reset' :
+	((isset($_POST['ban_x'])) ? 'ban' :
+		((isset($_POST['unban_x'])) ? 'unban' :
+			((isset($_POST['warn_x'])) ? 'warn' :
+				((isset($_POST['block_x'])) ? 'block' :
+					((isset($_GET['mode'])) ? $_GET['mode'] : ''
 					)
 				)
 			)
-		);
+		)
+	)
+);
 
 if (empty($mode))
 {
@@ -67,7 +67,7 @@ if (!empty($post_id))
 
 	// post mode
 	$forum_id = $result['forum_id'];
-	$poster_id = $result['poster_id'];
+	$poster_id = (int) $result['poster_id'];
 }
 elseif ($user_id)
 {
@@ -78,7 +78,7 @@ elseif ($user_id)
 	install extra permission mod, in order to enable this feature
 	*/
 	//$forum_id = PAGE_CARD;
-	$poster_id = $user_id;
+	$poster_id = (int) $user_id;
 }
 
 // Start session management
@@ -156,7 +156,7 @@ elseif ($mode == 'report')
 	$sql = "SELECT u.user_id, u.username, u.user_email, u.user_lang
 		FROM " . USERS_TABLE . " u
 		WHERE u.user_level = '" . ADMIN . "'
-			OR  u.user_level = '" . JUNIOR_ADMIN . "'";
+			OR u.user_level = '" . JUNIOR_ADMIN . "'";
 	$result = $db->sql_query($sql);
 	$total_admins = $db->sql_numrows($result);
 	$admins_rowset = $db->sql_fetchrowset($result);
@@ -259,7 +259,12 @@ elseif ($mode == 'ban')
 	if ((!$db->sql_fetchrowset($result)) && ($poster_id != ANONYMOUS))
 	{
 		// insert the user in the ban list
-		$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ($poster_id)";
+		$ban_insert_array = array(
+			'ban_userid' => $poster_id,
+			'ban_by_userid' => $user->data['user_id'],
+			'ban_start' => time()
+		);
+		$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
 		$result = $db->sql_query($sql);
 		// update the user table with new status
 		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '",  user_active = "0" WHERE user_id="' . $poster_id . '"';
@@ -302,7 +307,7 @@ elseif ($mode == 'warn')
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = user_warnings + 1 WHERE user_id = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
-	// se if the user are to be banned, if so do it ...
+	// check if the user are to be banned, if so do it ...
 	if (($the_user['user_warnings'] + 1) >= $config['max_user_bancard'])
 	{
 		$sql = 'SELECT ban_userid FROM ' . BANLIST_TABLE . ' WHERE ban_userid = "' . $poster_id . '"';
@@ -310,7 +315,14 @@ elseif ($mode == 'warn')
 		if ((!$db->sql_fetchrowset($result)) && ($poster_id != ANONYMOUS))
 		{
 			// insert the user in the ban list
-			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ($poster_id)";
+			$ban_insert_array = array(
+				'ban_userid' => $poster_id,
+				'ban_by_userid' => $user->data['user_id'],
+				'ban_start' => time()
+			);
+			$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
+			$result = $db->sql_query($sql);
+			$sql = "UPDATE " . USERS_TABLE . " SET user_warnings = " . $config['max_user_bancard'] . " WHERE user_id = " . $poster_id;
 			$result = $db->sql_query($sql);
 			// update the user table with new status
 			$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET session_logged_in = "0" WHERE session_user_id = "' . $poster_id . '"';

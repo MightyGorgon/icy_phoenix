@@ -1566,20 +1566,21 @@ CREATE TABLE `phpbb_rate_results` (
 
 ## --------------------------------------------------------
 
-## `phpbb_referrers`
+## `phpbb_referers`
 
-CREATE TABLE `phpbb_referrers` (
-	`referrer_id` INT(11) NOT NULL auto_increment,
-	`referrer_host` VARCHAR(255) NOT NULL DEFAULT '',
-	`referrer_url` VARCHAR(255) NOT NULL DEFAULT '',
-	`referrer_ip` VARCHAR(40) NOT NULL DEFAULT '',
-	`referrer_hits` INT(11) NOT NULL DEFAULT '1',
-	`referrer_firstvisit` INT(11) NOT NULL DEFAULT '0',
-	`referrer_lastvisit` INT(11) NOT NULL DEFAULT '0',
-	PRIMARY KEY (`referrer_id`)
+CREATE TABLE `phpbb_referers` (
+	`id` INT(11) NOT NULL auto_increment,
+	`host` VARCHAR(255) NOT NULL DEFAULT '',
+	`url` VARCHAR(255) NOT NULL DEFAULT '',
+	`t_url` VARCHAR(255) NOT NULL DEFAULT '',
+	`ip` VARCHAR(40) NOT NULL DEFAULT '',
+	`hits` INT(11) NOT NULL DEFAULT '1',
+	`firstvisit` INT(11) NOT NULL DEFAULT '0',
+	`lastvisit` INT(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`)
 );
 
-## `phpbb_referrers`
+## `phpbb_referers`
 
 
 ## --------------------------------------------------------

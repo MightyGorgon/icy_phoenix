@@ -1180,7 +1180,7 @@ $lang = array_merge($lang, array(
 	'auth_view_ranks' => 'Ranks',
 	'auth_view_statistics' => 'Statistics',
 	'auth_view_recent' => 'Recent Topics',
-	'auth_view_referrers' => 'Referrers',
+	'auth_view_referers' => 'Referers',
 	'auth_view_rules' => 'Rules',
 	'auth_view_site_hist' => 'Site History',
 	'auth_view_shoutbox' => 'Shoutbox',
@@ -2283,11 +2283,11 @@ $lang['120_FAQ_Board'] = 'Site FAQ'; // admin_faq_editor.php
 $lang['130_FAQ_Rules'] = 'Site Rules'; // admin_faq_editor.php
 
 // INFO
-$lang['2400_INFO'] = 'Info'; // admin_logs.php, admin_phpinfo.php, admin_gd_info.php, admin_referrers.php, admin_google_bot_detector.php
+$lang['2400_INFO'] = 'Info'; // admin_logs.php, admin_phpinfo.php, admin_gd_info.php, admin_referers.php, admin_google_bot_detector.php
 $lang['110_Actions_LOG'] = 'Actions Log'; // admin_logs.php
 $lang['120_PHP_INFO'] = 'PHP Info'; // admin_phpinfo.php
 $lang['130_GD_Info'] = 'GD Info'; // admin_gd_info.php
-$lang['140_HTTP_REF'] = 'HTTP Referrers'; // admin_referrers.php
+$lang['140_HTTP_REF'] = 'HTTP Referers'; // admin_referers.php
 $lang['150_Google_BOT'] = 'Google Bot Detector'; // admin_google_bot_detector.php
 
 // STATS

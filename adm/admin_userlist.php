@@ -182,7 +182,15 @@ switch($mode)
 					message_die(GENERAL_ERROR, 'Could not ban anonymous user');
 				}
 
-				$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ('$user_id')";
+				$ban_insert_array = array(
+					'ban_userid' => $user_id,
+					'ban_by_userid' => $user->data['user_id'],
+					'ban_start' => time()
+				);
+				$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
+				$result = $db->sql_query($sql);
+
+				$sql = "UPDATE " . USERS_TABLE . " SET user_warnings = " . $config['max_user_bancard'] . " WHERE user_id = " . $user_id;
 				$result = $db->sql_query($sql);
 
 				unset($user_id);

@@ -137,10 +137,10 @@ function get_online_page($page_id)
 		$location['url'] = CMS_PAGE_RECENT;
 		return $location;
 	}
-	elseif (strpos($page_id, CMS_PAGE_REFERRERS) !== false)
+	elseif (strpos($page_id, CMS_PAGE_REFERERS) !== false)
 	{
-		$location['lang'] = $lang['Viewing_Referrers'];
-		$location['url'] = CMS_PAGE_REFERRERS;
+		$location['lang'] = $lang['VIEWING_REFERERS'];
+		$location['url'] = CMS_PAGE_REFERERS;
 		return $location;
 	}
 	elseif (strpos($page_id, 'links') !== false)

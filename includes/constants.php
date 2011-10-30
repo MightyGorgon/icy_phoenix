@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.26.79');
+define('ICYPHOENIX_VERSION', '1.3.27.80');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -95,7 +95,7 @@ define('CMS_PAGE_LINKS', 'links.' . PHP_EXT);
 define('CMS_PAGE_STATISTICS', 'statistics.' . PHP_EXT);
 define('CMS_PAGE_CALENDAR', 'calendar.' . PHP_EXT);
 define('CMS_PAGE_RECENT', 'recent.' . PHP_EXT);
-define('CMS_PAGE_REFERRERS', 'referrers.' . PHP_EXT);
+define('CMS_PAGE_REFERERS', 'referers.' . PHP_EXT);
 define('CMS_PAGE_AJAX_CHAT', 'ajax_chat.' . PHP_EXT);
 define('CMS_PAGE_SHOUTBOX', 'shoutbox_max.' . PHP_EXT);
 define('CMS_PAGE_KB', 'kb.' . PHP_EXT);
@@ -488,7 +488,7 @@ define('PROFILE_VIEW_TABLE', $table_prefix . 'profile_view');
 define('PRUNE_TABLE', $table_prefix . 'forum_prune');
 define('RANKS_TABLE', $table_prefix . 'ranks');
 define('RATINGS_TABLE', $table_prefix . 'rate_results');
-define('REFERRERS_TABLE', $table_prefix . 'referrers');
+define('REFERERS_TABLE', $table_prefix . 'referers');
 define('SEARCH_MATCH_TABLE', $table_prefix . 'search_wordmatch');
 define('SEARCH_TABLE', $table_prefix . 'search_results');
 define('SEARCH_WORD_TABLE', $table_prefix . 'search_wordlist');

@@ -60,7 +60,7 @@ function checkForm()
 		<!-- END linkrow0 -->
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 		<div align="center" style="font-family: Verdana; font-size: 10px; letter-spacing: -1px">
-			<br />Links MOD v1.2.2 by <a href="http://www.phpbb2.de" target="_blank">phpBB2.de</a> and OOHOO and <a href="http://mail.dhjh.tcc.edu.tw/~gzqbyr/" target="_blank">CRLin</a>.
+			<br />Links MOD v1.2.2 by <a href="http://www.phpbb2.de" target="_blank">phpBB2.de</a> and OOHOO and CRLin.
 		</div>
 	</td>
 </tr>

@@ -193,7 +193,7 @@ if(GetCookie(tmp) == '2')
 				</tr>
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed" align="left"><a href="{U_REFERRERS}">{L_LINK_REFERRERS}</a></td>
+					<td class="genmed" align="left"><a href="{U_REFERERS}">{L_LINK_REFERERS}</a></td>
 				</tr>
 				<tr>
 					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>

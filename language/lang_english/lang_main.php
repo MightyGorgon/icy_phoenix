@@ -1301,10 +1301,6 @@ $lang = array_merge($lang, array(
 	'Confirm_delete_edit_note' => 'Are you sure you want to delete this edit note?',
 	'Edit_note_deleted' => 'The edit note was successfully deleted.',
 // End Edit Notes MOD
-//Referrers Mod
-	'Referrers' => 'Http Referrers',
-	'Viewing_Referrers' => 'Viewing Referrers',
-//Referrers Mod End
 
 	'Recent_topics' => 'Recent Topics',
 	'Recent_today' => 'Today',
@@ -1625,7 +1621,7 @@ $lang = array_merge($lang, array(
 	'Last_Used_IP' => 'Last Used IP',
 	'Last_Used_OS' => 'OS',
 	'Last_Used_Browser' => 'Browser',
-	'Last_Used_Referer' => 'Referrer',
+	'Last_Used_Referer' => 'Referer',
 // Mighty Gorgon - HTTP AGENTS - END
 // Mighty Gorgon - Enhanced Online - BEGIN
 	'Users_Admins' => 'Administrators',
@@ -1730,7 +1726,7 @@ $lang = array_merge($lang, array(
 	'LINK_DIGESTS' => 'Digests',
 
 	'LINK_CREDITS' => 'Credits',
-	'LINK_REFERRERS' => 'HTTP Referrers',
+	'LINK_REFERERS' => 'HTTP Referers',
 	'LINK_VIEWONLINE' => 'Online Users',
 	'LINK_STATISTICS' => 'Statistics',
 	'LINK_DELETE_COOKIES' => 'Delete Cookies',
@@ -1911,20 +1907,24 @@ $lang = array_merge($lang, array(
 	'Top_Visiting_Users' => 'Most Time Spent Users',
 /* lang_site_hist.php - END */
 
-/* lang_referrers.php - BEGIN */
-	'Referrers_Title' => 'Http Referrers Management',
-	'Referrers_Cleared' => 'Referrers Cleared',
-	'Referrers_Clear' => 'Delete All',
-	'Click_Return_Referrers' => 'Click %sHere%s to return to Referrers',
-	'Referrers' => 'Http Referrers',
-	'Referrer_host' => 'Referrer\'s Host',
-	'Referrer_url' => 'Referrer\'s Url',
-	'Referrer_ip' => 'Referrer\'s IP',
-	'Referrer_hits' => 'Hits',
-	'Referrer_first' => 'First Visit',
-	'Referrer_last' => 'Last Visit',
-	'Viewing_Referrers' => 'Viewing Referrers',
-/* lang_referrers.php - END */
+/* lang_referers.php - BEGIN */
+	'REFERERS' => 'Http Referers',
+	'VIEWING_REFERERS' => 'Viewing Referers',
+	'REFERERS_TITLE' => 'Http Referers Management',
+	'REFERERS_CLEARED' => 'Referers Cleared',
+	'REFERERS_CLEAR' => 'Delete All',
+	'CLICK_RETURN_REFERERS' => 'Click %sHere%s to return to Referers',
+	'REFERER_HOST' => 'Host',
+	'REFERER_URL' => 'URL',
+	'REFERER_T_URL' => 'Visited URL',
+	'REFERER_IP' => 'IP',
+	'REFERER_HITS' => 'Hits',
+	'REFERER_FIRST' => 'First Visit',
+	'REFERER_LAST' => 'Last Visit',
+	'REFERER_DELETE' => 'Delete',
+	'REFERER_KILL' => 'Remove from DB (use * for wildcard)',
+	'REFERER_GROUP_BY' => 'Group By',
+/* lang_referers.php - END */
 
 /* lang_prune_users.php - BEGIN */
 // add to prune inactive
@@ -2432,6 +2432,8 @@ $lang = array_merge($lang, array(
 	'MENU_EMPTY_LINK' => 'Empty Link',
 
 	'IP_BLACKLISTED' => 'Your IP %s has been blocked because it is blacklisted. For details please see <a href="%s">%s</a>.',
+
+	'PRINTABLE_VERSION' => 'Printable Version',
 
 	)
 );

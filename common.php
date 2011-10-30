@@ -289,11 +289,6 @@ if (!empty($config['url_rw']) || !empty($config['url_rw_guests']))
 	@include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
-if (empty($config['disable_referrers']))
-{
-	@include_once(IP_ROOT_PATH . 'includes/functions_referrers.' . PHP_EXT);
-}
-
 if ($config['admin_protect'])
 {
 	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());

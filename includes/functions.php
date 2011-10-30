@@ -267,7 +267,7 @@ function extract_current_hostname()
 	// Get hostname
 	$host = (!empty($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : ((!empty($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : getenv('SERVER_NAME'));
 
-	// Should be a string and lowered
+	// Should be a lowercase string
 	$host = (string) strtolower($host);
 
 	// If host is equal the cookie domain or the server name (if config is set), then we assume it is valid
@@ -4876,7 +4876,6 @@ function page_header($title = '', $parse_template = false)
 		'L_WHO_IS_ONLINE' => $lang['Who_is_Online'],
 		'L_MEMBERLIST' => $lang['Memberlist'],
 		'L_FAQ' => $lang['FAQ'],
-		'L_REFERRERS' => $lang['Referrers'],
 		'L_ADV_SEARCH' => $lang['Adv_Search'],
 		'L_SEARCH_EXPLAIN' => $lang['Search_Explain'],
 

@@ -32,7 +32,7 @@ require('pagestart.' . PHP_EXT);
 // Set Overall Variables
 $mode = request_var('mode', '');
 
-$show = request_var('show', 'username');
+$show = request_var('show', 'all');
 $order = request_var('order', 'ASC');
 $order = check_var_value($order, array('ASC', 'DESC'));
 
@@ -162,10 +162,15 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 				$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . "session_user_id = " . $user_list[$i];
 
 				$sql = "INSERT INTO ". BANLIST_TABLE ." (ban_userid, ban_start, ban_end, ban_by_userid, ban_priv_reason, ban_pub_reason_mode, ban_pub_reason)
-					VALUES (" . $user_list[$i] . ", $ban_start, $ban_end, $ban_by_userid, '" . $db->sql_escape($ban_priv_reason) . "', " . $db->sql_escape($ban_pub_reason_mode) . ", '" . $db->sql_escape($ban_pub_reason) . "')";
+					VALUES (" . (int) $user_list[$i] . ", $ban_start, $ban_end, $ban_by_userid, '" . $db->sql_escape($ban_priv_reason) . "', " . $db->sql_escape($ban_pub_reason_mode) . ", '" . $db->sql_escape($ban_pub_reason) . "')";
 				if (!$db->sql_query ($sql))
 				{
 					message_die (GENERAL_ERROR, "Couldn't insert ban_userid info into database", "", __LINE__, __FILE__, $sql);
+				}
+				if (!empty($user_list[$i]))
+				{
+					$sql = "UPDATE " . USERS_TABLE . " SET user_warnings = " . $config['max_user_bancard'] . " WHERE user_id = " . (int) $user_list[$i];
+					$result = $db->sql_query($sql);
 				}
 			}
 		}
@@ -190,6 +195,8 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 
 			if (!$in_banlist)
 			{
+				// Mighty Gorgon: we don't use this replacement any more...
+				/*
 				if (preg_match('/(255\.)|(\.255)/is', $ip_list[$i]))
 				{
 					$kill_ip_sql = "session_ip LIKE '" . str_replace('.', '', preg_replace('/(255\.)|(\.255)/is', '%', $ip_list[$i])) . "'";
@@ -198,6 +205,8 @@ elseif (isset($_POST['submit_add']) || isset($_POST['submit_update']))
 				{
 					$kill_ip_sql = "session_ip = '" . $db->sql_escape($ip_list[$i]) . "'";
 				}
+				*/
+				$kill_ip_sql = "session_ip = '" . $db->sql_escape($ip_list[$i]) . "'";
 
 				$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . $kill_ip_sql;
 
@@ -283,7 +292,9 @@ elseif ($_GET['mode'] == 'view_reasons')
 	{
 		$template->assign_block_vars('ban_ip', array(
 			'L_IP' => $lang['BM_IP'],
-			'IP' => str_replace('255', '*', $row['ban_ip'])
+			// Mighty Gorgon: we don't use this replacement any more...
+			//'IP' => str_replace('255', '*', $row['ban_ip'])
+			'IP' => $row['ban_ip']
 			)
 		);
 	}
@@ -392,7 +403,9 @@ elseif (isset($_POST['add']) || ($mode == 'edit'))
 			$template->assign_block_vars('ip_row', array(
 				'L_IP_OR_HOSTNAME' => $lang['IP_hostname'],
 				'L_BAN_IP_EXPLAIN' => $lang['Ban_IP_explain'],
-				'BAN_IP' => (!empty($row['ban_ip'])) ? str_replace('255', '*', $row['ban_ip']) : ''
+				// Mighty Gorgon: we don't use this replacement any more...
+				//'BAN_IP' => (!empty($row['ban_ip'])) ? str_replace('255', '*', $row['ban_ip']) : ''
+				'BAN_IP' => (!empty($row['ban_ip'])) ? $row['ban_ip'] : ''
 				)
 			);
 		}
@@ -539,7 +552,7 @@ else
 				WHERE u.user_id = b.ban_userid
 					AND b.ban_userid != 0
 					AND u.user_id != ". ANONYMOUS;
-			$sql = "SELECT b.*, u.username
+			$sql = "SELECT b.*, u.user_id, u.username
 				FROM ". BANLIST_TABLE ." b, ". USERS_TABLE ." u
 				WHERE u.user_id = b.ban_userid
 					AND b.ban_userid != 0
@@ -598,7 +611,7 @@ else
 
 			$count_sql = "SELECT COUNT(*) AS total
 				FROM ". BANLIST_TABLE;
-			$sql = "SELECT b.*, u.username
+			$sql = "SELECT b.*, u.user_id, u.username
 				FROM ". BANLIST_TABLE ." b LEFT JOIN ". USERS_TABLE ." u
 				ON b.ban_userid = u.user_id
 				ORDER BY ban_id $order LIMIT $start, ". $config['topics_per_page'];
@@ -616,25 +629,7 @@ else
 	for ($i = 0; $row = $db->sql_fetchrow ($result); $i++)
 	{
 		$ban_id = $row['ban_id'];
-
-		if (isset($row['ban_by_userid']))
-		{
-			$sql = "SELECT username FROM ". USERS_TABLE ." WHERE user_id = '". $row['ban_by_userid'] ."'";
-
-			if (!($sub_result = $db->sql_query ($sql)))
-			{
-				message_die (GENERAL_ERROR, 'Could not select username', '', __LINE__, __FILE__, $sql);
-			}
-
-			$username_row = $db->sql_fetchrow ($sub_result);
-
-			$ban_by = $username_row['username'];
-		}
-		else
-		{
-			$ban_by = '-';
-		}
-
+		$ban_by = !empty($row['ban_by_userid']) ? colorize_username($row['ban_by_userid']) : '-';
 		$ban_start = (isset($row['ban_start'])) ? create_date($lang['DATE_FORMAT'], $row['ban_start'], $config['board_timezone']) : '-';
 		$ban_end = (isset($row['ban_end'])) ? create_date($lang['DATE_FORMAT'], $row['ban_end'], $config['board_timezone']) : '-';
 		$ban_reason = (isset($row['ban_priv_reason']) || isset($row['ban_pub_reason'])) ? "<a href=\"javascript:void (0);\" onclick=\"window.open ('" . append_sid('admin_user_bantron.' . PHP_EXT . '?mode=view_reasons&amp;ban_id=' . $ban_id) . "','ban_reason','scrollbars=yes,width=540,height=450')\">" . $lang['View'] . '</a>' : '-';
@@ -662,7 +657,9 @@ else
 
 			case 'ip':
 				$template->assign_block_vars('rowlist.ip_content', array(
-					'IP' => str_replace('255', '*', $row['ban_ip'])
+					// Mighty Gorgon: we don't use this replacement any more...
+					//'IP' => str_replace('255', '*', $row['ban_ip'])
+					'IP' => $row['ban_ip']
 					)
 				);
 
@@ -683,7 +680,9 @@ else
 				);
 
 				$template->assign_block_vars('rowlist.ip_content', array(
-					'IP' => (empty ($row['ban_ip'])) ? '-' : str_replace('255', '*', $row['ban_ip'])
+					// Mighty Gorgon: we don't use this replacement any more...
+					//'IP' => (empty ($row['ban_ip'])) ? '-' : str_replace('255', '*', $row['ban_ip'])
+					'IP' => (empty ($row['ban_ip'])) ? '-' : $row['ban_ip']
 					)
 				);
 

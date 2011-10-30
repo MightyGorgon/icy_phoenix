@@ -38,6 +38,11 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
+// FORM CLASS - BEGIN
+include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
+$class_form = new class_form();
+// FORM CLASS - END
+
 include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 
 if (!$user->data['session_logged_in'])

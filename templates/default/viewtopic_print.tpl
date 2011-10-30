@@ -1,21 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset={S_CONTENT_ENCODING}" />
-	<meta http-equiv="Content-Style-Type" content="text/css" />
-	<title>{SITENAME} :: {PAGE_TITLE}</title>
-	<script type="text/javascript" src="{T_COMMON_TPL_PATH}js/ip_scripts.js"></script>
-	<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}print_version.css" type="text/css" />
-	<!-- IE conditional comments: http://msdn.microsoft.com/workshop/author/dhtml/overview/ccomment_ovw.asp -->
-	<!--[if IE]>
-	<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}common_ie.css" type="text/css" />
-	<![endif]-->
+<!-- INCLUDE print_header.tpl -->
 
-	<!--[if lt IE 7]>
-	<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/pngfix.js"></script>
-	<![endif]-->
-</head>
-<body>
 <!-- <div style="margin: 0 auto; display: block; width: 960px !important;"> -->
 <div style="margin: 0 auto; display: block; width: 680px !important;">
 <div class="forumline" style="width: 100%;">
@@ -41,10 +25,7 @@
 <br clear="all" />
 </div>
 <!-- END postrow -->
-<br />
-<div align="center"><br />Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></div>
 </div>
 </div>
-{GOOGLE_ANALYTICS}
-</body>
-</html>
+
+<!-- INCLUDE print_footer.tpl -->

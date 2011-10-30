@@ -267,7 +267,7 @@ elseif ($mode == 'read')
 		else
 		{
 			$message = ($_GET['view'] == 'next') ? $lang['No_newer_pm'] : $lang['No_older_pm'];
-			$mes = $message . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+			$mes = $message . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $mes);
 		}
 	}
@@ -647,7 +647,7 @@ elseif ($mode == 'read')
 
 	// Mighty Gorgon - Multiple Ranks - BEGIN
 	$user_ranks = generate_ranks($privmsg, $ranks_array);
-	if (($user_ranks['rank_01_html'] == '') && ($user_ranks['rank_01_img_html']  == '') && ($user_ranks['rank_02_html'] == '') && ($user_ranks['rank_02_img_html'] == '') && ($user_ranks['rank_03_html'] == '') && ($user_ranks['rank_03_img_html'] == '') && ($user_ranks['rank_04_html'] == '') && ($user_ranks['rank_04_img_html'] == '') && ($user_ranks['rank_05_html'] == '') && ($user_ranks['rank_05_img_html'] == ''))
+	if (($user_ranks['rank_01_html'] == '') && ($user_ranks['rank_01_img_html'] == '') && ($user_ranks['rank_02_html'] == '') && ($user_ranks['rank_02_img_html'] == '') && ($user_ranks['rank_03_html'] == '') && ($user_ranks['rank_03_img_html'] == '') && ($user_ranks['rank_04_html'] == '') && ($user_ranks['rank_04_img_html'] == '') && ($user_ranks['rank_05_html'] == '') && ($user_ranks['rank_05_img_html'] == ''))
 	{
 		$user_ranks['rank_01_html'] = '&nbsp;';
 	}
@@ -1614,7 +1614,7 @@ elseif ($submit || $refresh || ($mode != ''))
 				$privmsg_message = str_replace('<br />', "\n", $privmsg_message);
 				//$privmsg_message = preg_replace('#</textarea>#si', '&lt;/textarea&gt;', $privmsg_message);
 
-				$msg_date =  create_date_ip($config['default_dateformat'], $privmsg['privmsgs_date'], $config['board_timezone']);
+				$msg_date = create_date_ip($config['default_dateformat'], $privmsg['privmsgs_date'], $config['board_timezone']);
 
 				$privmsg_message = '[quote user="' . $to_username . '"]' . $privmsg_message . '[/quote]';
 
@@ -1930,7 +1930,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		'L_POST_HIGHLIGHT' => $lang['PostHighlight'],
 
 		'S_HTML_CHECKED' => (!$html_on) ? ' checked="checked"' : '',
-		'S_ACRO_AUTO_CHECKED' => (!$acro_auto_on) ?  ' checked="checked"' : '' ,
+		'S_ACRO_AUTO_CHECKED' => (!$acro_auto_on) ? ' checked="checked"' : '' ,
 		'S_BBCODE_CHECKED' => (!$bbcode_on) ? ' checked="checked"' : '',
 		'S_SMILIES_CHECKED' => (!$smilies_on) ? ' checked="checked"' : '',
 		'S_SIGNATURE_CHECKED' => ($attach_sig) ? ' checked="checked"' : '',
@@ -2023,35 +2023,35 @@ switch($folder)
 {
  case 'inbox':
 		$sql_tot .= "WHERE privmsgs_to_userid = " . $user->data['user_id'] . " $search_sql
-			AND (privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
+			AND (privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_READ_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 
 		$sql .= "WHERE pm.privmsgs_to_userid = " . $user->data['user_id'] . " $search_sql
 			AND u.user_id = pm.privmsgs_from_userid
-			AND (pm.privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
+			AND (pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 				OR pm.privmsgs_type = " . PRIVMSGS_READ_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 		break;
 
 	case 'outbox':
 		$sql_tot .= "WHERE privmsgs_from_userid = " . $user->data['user_id'] . " $search_sql
-			AND (privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
+			AND (privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 
 		$sql .= "WHERE pm.privmsgs_from_userid = " . $user->data['user_id'] . " $search_sql
 			AND u.user_id = pm.privmsgs_to_userid
-			AND (pm.privmsgs_type =  " . PRIVMSGS_NEW_MAIL . "
+			AND (pm.privmsgs_type = " . PRIVMSGS_NEW_MAIL . "
 				OR privmsgs_type = " . PRIVMSGS_UNREAD_MAIL . ")";
 		break;
 
 	case 'sentbox':
 		$sql_tot .= "WHERE privmsgs_from_userid = " . $user->data['user_id'] . " $search_sql
-			AND privmsgs_type =  " . PRIVMSGS_SENT_MAIL;
+			AND privmsgs_type = " . PRIVMSGS_SENT_MAIL;
 
 		$sql .= "WHERE pm.privmsgs_from_userid = " . $user->data['user_id'] . " $search_sql
 			AND u.user_id = pm.privmsgs_to_userid
-			AND pm.privmsgs_type =  " . PRIVMSGS_SENT_MAIL;
+			AND pm.privmsgs_type = " . PRIVMSGS_SENT_MAIL;
 		break;
 
 	case 'savebox':

@@ -672,7 +672,7 @@ ALTER TABLE `phpbb_posts` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DE
 ALTER TABLE `phpbb_privmsgs` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_privmsgs_archive` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_rate_results` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT '';
-ALTER TABLE `phpbb_referrers` CHANGE `referrer_ip` `referrer_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_referers` CHANGE `ip` `ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_registration` CHANGE `registration_user_ip` `registration_user_ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_sessions` CHANGE `session_ip` `session_ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_sessions_keys` CHANGE `last_ip` `last_ip` varchar(40) NOT NULL DEFAULT '';
@@ -704,7 +704,7 @@ UPDATE `phpbb_posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10))
 UPDATE `phpbb_privmsgs` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10));
 UPDATE `phpbb_privmsgs_archive` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10));
 UPDATE `phpbb_rate_results` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10));
-UPDATE `phpbb_referrers` ip SET ip.referrer_ip = INET_NTOA(CONV(ip.referrer_ip, 16, 10));
+UPDATE `phpbb_referers` ip SET ip.ip = INET_NTOA(CONV(ip.ip, 16, 10));
 UPDATE `phpbb_registration` ip SET ip.registration_user_ip = INET_NTOA(CONV(ip.registration_user_ip, 16, 10));
 UPDATE `phpbb_sessions` ip SET ip.session_ip = INET_NTOA(CONV(ip.session_ip, 16, 10));
 UPDATE `phpbb_sessions_keys` ip SET ip.last_ip = INET_NTOA(CONV(ip.last_ip, 16, 10));
@@ -1038,6 +1038,26 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 ########################################
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Ezooms', '', 'Ezooms/', '');
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Archive ORG BOT', '', 'www.archive.org/', '');
+UPDATE `phpbb_config` SET `config_name` = 'disable_referers' WHERE `config_name` = 'disable_referrers';
+UPDATE `phpbb_cms_layout_special` SET `page_id` = 'referers', `name` = 'referers', `filename` = 'referers.php' WHERE `page_id` = 'referrers';
+DROP TABLE `phpbb_referrers`;
+CREATE TABLE `phpbb_referers` (
+	`id` INT(11) NOT NULL auto_increment,
+	`host` VARCHAR(255) NOT NULL DEFAULT '',
+	`url` VARCHAR(255) NOT NULL DEFAULT '',
+	`t_url` VARCHAR(255) NOT NULL DEFAULT '',
+	`ip` VARCHAR(40) NOT NULL DEFAULT '',
+	`hits` INT(11) NOT NULL DEFAULT '1',
+	`firstvisit` INT(11) NOT NULL DEFAULT '0',
+	`lastvisit` INT(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`)
+);
+
+
+
+########################################
+##              BUILD 080             ##
+########################################
 
 
 
@@ -1046,7 +1066,7 @@ INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.26.79' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.27.80' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

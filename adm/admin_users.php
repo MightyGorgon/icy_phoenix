@@ -708,7 +708,12 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				if ((!$db->sql_fetchrowset($result)) && ($user_id != ANONYMOUS))
 				{
 					// insert the user in the ban list
-					$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ($user_id)";
+					$ban_insert_array = array(
+						'ban_userid' => $user_id,
+						'ban_by_userid' => $user->data['user_id'],
+						'ban_start' => time()
+					);
+					$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
 					$result = $db->sql_query($sql);
 					$no_error_ban = true;
 				}

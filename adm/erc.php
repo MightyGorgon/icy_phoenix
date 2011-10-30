@@ -144,7 +144,7 @@ if ($lg == '')
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html;">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta http-equiv="Content-Style-Type" content="text/css">
 	<title><?php echo $lang['ERC']; ?></title>
 	<link rel="stylesheet" href="../templates/common/acp.css" type="text/css" />

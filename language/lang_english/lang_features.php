@@ -438,9 +438,9 @@ $lang = array_merge($lang, array(
 
 	'item_feat_url_rewrite' => 'SEO Optimization and URL Rewrite',
 	'item_feat_rss' => 'RSS Feed',
-	'item_feat_referrers' => 'Referrers Tracking',
-	'item_feat_referrers' => 'Bots Tracking',
-	'item_feat_referrers' => 'Browsers And OS Detection',
+	'item_feat_referers_tracking' => 'Referers Tracking',
+	'item_feat_bots_tracking' => 'Bots Tracking',
+	'item_feat_browser_tracking' => 'Browsers And OS Detection',
 	'item_feat_banners' => 'Banners And Ads Management',
 
 /*********/

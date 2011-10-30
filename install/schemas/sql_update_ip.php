@@ -81,6 +81,7 @@ switch ($req_version)
 	case '132477': $current_ip_version = '1.3.24.77'; break;
 	case '132578': $current_ip_version = '1.3.25.78'; break;
 	case '132679': $current_ip_version = '1.3.26.79'; break;
+	case '132780': $current_ip_version = '1.3.27.80'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -755,15 +756,15 @@ if (substr($mode, 0, 6) == 'update')
 			KEY `topic_id` (`topic_id`)
 		)";
 
-		$sql[] = "CREATE TABLE `" . $table_prefix . "referrers` (
-			`referrer_id` int(11) NOT NULL auto_increment,
-			`referrer_host` varchar(255) NOT NULL default '',
-			`referrer_url` varchar(255) NOT NULL default '',
-			`referrer_ip` varchar(40) NOT NULL default '',
-			`referrer_hits` int(11) NOT NULL default '1',
-			`referrer_firstvisit` int(11) NOT NULL default '0',
-			`referrer_lastvisit` int(11) NOT NULL default '0',
-			PRIMARY KEY (`referrer_id`)
+		$sql[] = "CREATE TABLE `" . $table_prefix . "referers` (
+			`id` int(11) NOT NULL auto_increment,
+			`host` varchar(255) NOT NULL default '',
+			`url` varchar(255) NOT NULL default '',
+			`ip` varchar(40) NOT NULL default '',
+			`hits` int(11) NOT NULL default '1',
+			`firstvisit` int(11) NOT NULL default '0',
+			`lastvisit` int(11) NOT NULL default '0',
+			PRIMARY KEY (`id`)
 		)";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` ADD `session_browser` VARCHAR(255) NOT NULL";
@@ -1372,7 +1373,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_config` VALUES ('validator', 'validator_admin')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_config` VALUES ('pm_notify', '0')";
 
-		$sql[] = "INSERT INTO `" . $table_prefix . "referrers` VALUES (1, 'icyphoenix.com', 'http://icyphoenix.com', '127.0.0.1', 1, 1121336515, 1121336515)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "referers` VALUES (1, 'icyphoenix.com', 'http://icyphoenix.com', '127.0.0.1', 1, 1121336515, 1121336515)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('return_limit', '10')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('version', '2.1.5')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('modules_dir', 'includes/stat_modules')";
@@ -2364,7 +2365,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('global_disable_censor', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_topic_view', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('page_title_simple', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_referrers', '0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_referers', '0')";
 
 		$sql_tmp = "SELECT * FROM " . $table_prefix . "config_mg";
 		$result_tmp = $db->sql_query($sql_tmp);
@@ -2545,7 +2546,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, '', 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('referrers', 'referrers', 'referrers.php', 0, '', 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('referers', 'referers', 'referers.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('shoutbox', 'shoutbox', 'shoutbox_max.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('kb', 'kb', 'kb.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('contact_us', 'contact_us', 'contact_us.php', 0, '', 0, '')";
@@ -3506,7 +3507,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, '', 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('referrers', 'referrers', 'referrers.php', 0, '', 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('referers', 'referers', 'referers.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('shoutbox', 'shoutbox', 'shoutbox_max.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('kb', 'kb', 'kb.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('contact_us', 'contact_us', 'contact_us.php', 0, '', 0, '')";
@@ -4106,7 +4107,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "privmsgs` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "privmsgs_archive` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "rate_results` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT ''";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "referrers` CHANGE `referrer_ip` `referrer_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "referers` CHANGE `ip` `ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "registration` CHANGE `registration_user_ip` `registration_user_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` CHANGE `session_ip` `session_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions_keys` CHANGE `last_ip` `last_ip` varchar(40) NOT NULL DEFAULT ''";
@@ -4138,7 +4139,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "UPDATE `" . $table_prefix . "privmsgs` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "privmsgs_archive` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "rate_results` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10))";
-		$sql[] = "UPDATE `" . $table_prefix . "referrers` ip SET ip.referrer_ip = INET_NTOA(CONV(ip.referrer_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "referers` ip SET ip.ip = INET_NTOA(CONV(ip.ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "registration` ip SET ip.registration_user_ip = INET_NTOA(CONV(ip.registration_user_ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "sessions` ip SET ip.session_ip = INET_NTOA(CONV(ip.session_ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "sessions_keys` ip SET ip.last_ip = INET_NTOA(CONV(ip.last_ip, 16, 10))";
@@ -4436,9 +4437,26 @@ if (substr($mode, 0, 6) == 'update')
 		case '1.3.25.78':
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Ezooms', '', 'Ezooms/', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Archive ORG BOT', '', 'www.archive.org/', '')";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_name` = 'disable_referers' WHERE `config_name` = 'disable_referrers'";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_layout_special` SET `page_id` = 'referers', `name` = 'referers', `filename` = 'referers.php' WHERE `page_id` = 'referrers'";
+		$sql[] = "DROP TABLE `" . $table_prefix . "referrers`";
+		$sql[] = "CREATE TABLE `" . $table_prefix . "referers` (
+			`id` INT(11) NOT NULL auto_increment,
+			`host` VARCHAR(255) NOT NULL DEFAULT '',
+			`url` VARCHAR(255) NOT NULL DEFAULT '',
+			`t_url` VARCHAR(255) NOT NULL DEFAULT '',
+			`ip` VARCHAR(40) NOT NULL DEFAULT '',
+			`hits` INT(11) NOT NULL DEFAULT '1',
+			`firstvisit` INT(11) NOT NULL DEFAULT '0',
+			`lastvisit` INT(11) NOT NULL DEFAULT '0',
+			PRIMARY KEY (`id`)
+		)";
 
 		/* Updating from IP 1.3.26.79 */
 		case '1.3.26.79':
+
+		/* Updating from IP 1.3.27.80 */
+		case '1.3.27.80':
 
 	}
 

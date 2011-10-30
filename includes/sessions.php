@@ -428,6 +428,12 @@ class session
 			$this->check_ban($this->data['user_id'], $this->ip, $ban_email);
 		}
 
+		// Mighty Gorgon: add to referers only if the user doesn't have a session... this is why this code is in session_create and not in session_begin
+		if (empty($config['disable_referers']) && !empty($this->referer))
+		{
+			$this->process_referer();
+		}
+
 		$this->data['is_registered'] = (empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
 		$this->data['session_logged_in'] = $this->data['is_registered'];
 
@@ -1344,6 +1350,83 @@ class session
 				{
 					$this->data['is_bot'] = true;
 					bots_table_update($bot_name_tmp['id']);
+				}
+			}
+		}
+	}
+
+	/**
+	* Process referers
+	*/
+	function process_referer()
+	{
+		global $db, $cache, $config;
+
+		if (!empty($this->referer))
+		{
+			$this_page = $this->page;
+			$this_page_url = preg_replace('/(\?)?(&amp;|&)?sid=[a-z0-9]+/', '', $this_page['page_full']);
+
+			$ref_url = $this->referer;
+			$ref_url_array = parse_url($ref_url);
+			$ref_host = $ref_url_array['host'];
+
+			$ref_process = true;
+
+			if (strpos(strtolower($ref_url), strtolower($this->host . $config['script_path'])) !== false)
+			{
+				$ref_process = false;
+			}
+
+			if (strpos(strtolower($ref_host), str_replace('/', '', strtolower($config['server_name']))) !== false)
+			{
+				$ref_process = false;
+			}
+
+			if (!empty($ref_process))
+			{
+				include(IP_ROOT_PATH . 'includes/blacklist.' . PHP_EXT);
+				if (!empty($blacklist['host']))
+				{
+					foreach ($blacklist['host'] as $blacklist_entry)
+					{
+						if (strpos(strtolower($ref_host), strtolower($blacklist_entry)) !== false)
+						{
+							$ref_process = false;
+							break;
+						}
+					}
+				}
+
+				if (!empty($ref_process))
+				{
+					$sql_where_extra = !empty($this_page_url) ? (" AND t_url = '" . $db->sql_escape($this_page_url) . "' ") : "";
+					$sql = "SELECT url FROM " . REFERERS_TABLE . " WHERE url = '" . $db->sql_escape($ref_url) . "'" . $sql_where_extra . " LIMIT 1";
+					$result = $db->sql_query($sql);
+					$row = $db->sql_fetchrow($result);
+
+					if (empty($row))
+					{
+						$ref_insert_array = array(
+							'host' => $ref_host,
+							'url' => $ref_url,
+							't_url' => $this_page_url,
+							'ip' => $this->ip,
+							'hits' => 1,
+							'firstvisit' => time(),
+							'lastvisit' => time(),
+						);
+
+						$sql = "INSERT INTO " . REFERERS_TABLE . " " . $db->sql_build_insert_update($ref_insert_array, true);
+						$result = $db->sql_query($sql);
+					}
+					else
+					{
+						$sql = "UPDATE " . REFERERS_TABLE . "
+							SET hits = hits + 1, lastvisit = " . time() . ", ip = '" . $db->sql_escape($user_ip) . "'
+							WHERE url = '" . $db->sql_escape($ref_url) . "'" . $sql_where_extra;
+						$result = $db->sql_query($sql);
+					}
 				}
 			}
 		}

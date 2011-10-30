@@ -152,9 +152,9 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 		),
 
-	'disable_referrers' => array(
-		'lang_key' => 'IP_disable_referrers',
-		'explain' => 'IP_disable_referrers_explain',
+	'disable_referers' => array(
+		'lang_key' => 'IP_disable_referers',
+		'explain' => 'IP_disable_referers_explain',
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,

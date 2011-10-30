@@ -49,7 +49,7 @@ function default_links_array()
 		28 => array('lang' => 'UPI2DB_LINK_FULL', 'link' => '', 'auth' => AUTH_CMS_REG, 'function' => 'upi2db_menu_links(\'full\')'),
 		29 => array('lang' => 'DIGESTS', 'link' => 'digests.' . PHP_EXT, 'auth' => AUTH_CMS_REG),
 		30 => array('lang' => 'Hacks_List', 'link' => CMS_PAGE_CREDITS, 'auth' => AUTH_CMS_ALL),
-		31 => array('lang' => 'Referrers', 'link' => CMS_PAGE_REFERRERS, 'auth' => AUTH_CMS_ALL),
+		31 => array('lang' => 'REFERERS', 'link' => CMS_PAGE_REFERERS, 'auth' => AUTH_CMS_ALL),
 		32 => array('lang' => 'Who_is_Online', 'link' => CMS_PAGE_VIEWONLINE, 'auth' => AUTH_CMS_ALL),
 		33 => array('lang' => 'Statistics', 'link' => CMS_PAGE_STATISTICS, 'auth' => AUTH_CMS_ALL),
 		34 => array('lang' => 'RSS', 'link' => 'rss.' . PHP_EXT, 'auth' => AUTH_CMS_ALL),
@@ -77,11 +77,17 @@ function build_complete_url($default_id, $block_id, $link, $menu_icon)
 	{
 		$default_links_array = default_links_array();
 	}
+
 	if (!empty($default_links_array[$default_id]['function']))
 	{
 		$eval_f = $default_links_array[$default_id]['function'];
 		eval('$new_link_array = ' . $eval_f . ';');
 		$default_links_array[$default_id] = $new_link_array;
+	}
+
+	if (!empty($default_links_array[$default_id]['noicon']))
+	{
+		$menu_icon = '';
 	}
 
 	if (!empty($default_links_array[$default_id]['full_link']))
@@ -157,10 +163,9 @@ function select_style_lang_link($select_type)
 {
 	global $db, $cache, $config, $user, $lang, $template, $theme, $images;
 
-	$select_type = '';
 	$link = array('lang' => 'Profile', 'link' => CMS_PAGE_PROFILE_MAIN, 'auth' => AUTH_CMS_REG);
 
-	if(empty($config['select_theme']) && empty($config['select_lang']))
+	if(!defined('IN_CMS') && ((($select_type == 'style') && empty($config['select_theme'])) || (($select_type == 'lang') && empty($config['select_lang']))))
 	{
 		return $link;
 	}
@@ -196,12 +201,11 @@ function select_style_lang_link($select_type)
 			$lang_icon = '<img src="language/lang_' . $displayname . '/flag.png" alt="" title="" style="vertical-align: middle;" />&nbsp;';
 			$full_link .= '<a href="' . $lang_url . '">' . $lang_icon . $lang_name . '&nbsp;<br /></a>';
 		}
-		$link = array('full_link' => $full_link, 'lang' => 'Change_Style', 'link' => CMS_PAGE_PROFILE_MAIN, 'auth' => AUTH_CMS_ALL);
+		$link = array('full_link' => $full_link, 'lang' => 'Change_Lang', 'link' => CMS_PAGE_PROFILE_MAIN, 'auth' => AUTH_CMS_GUESTS_ONLY, 'noicon' => true);
 	}
 
 	return $link;
 }
-
 
 /**
 * login_logout_link()
