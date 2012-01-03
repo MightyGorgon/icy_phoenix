@@ -39,7 +39,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-//==== Start: Functions
+// Functions - BEGIN
 if(!function_exists('admin_db_calculate'))
 {
 	function admin_db_calculate($size)
@@ -87,7 +87,7 @@ if(!function_exists('admin_db_prepare_sql'))
 		return trim($output);
 	}
 }
-//==== End: Functions
+// Functions - END
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 $is_allowed = check_acp_module_access();
