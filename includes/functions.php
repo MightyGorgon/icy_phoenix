@@ -1335,7 +1335,13 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 	}
 
 	// Convert back all HTML entities into their aliases
-	$text = htmlentities($text, ENT_COMPAT, $charset);
+	// Mighty Gorgon: added a workaround for some special case... :-(
+	$text_tmp = $text;
+	$text = @htmlentities($text, ENT_COMPAT, $charset);
+	if (!empty($text_tmp) && empty($text))
+	{
+		$text = htmlentities($text_tmp);
+	}
 
 	// Replace some known HTML entities
 	$find = array(
@@ -1351,6 +1357,10 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 		'š', 'Š', // 'š','Š'
 		'&#273;', '&#272;', // ?', '?', // 'dj','dj'
 		'`', '‘', '’',
+		'&#196;', '&#228;', // Ä, ä
+		'&#214;', '&#246;', // Ö, ö
+		'&#220;', '&#252;', // Ü, ü
+
 	);
 
 	$repl = array(
@@ -1362,10 +1372,13 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 		'z', 'z', 'z', 'z',
 		'oe', 'oe', 'oe',
 		'ae', 'ae',
-		'sz', 'sz',
+		'ss', 'ss',
 		's', 's',
 		'dj', 'dj',
 		'-', '-', '-',
+		'ae', 'ae',
+		'oe', 'oe',
+		'ue', 'ue',
 	);
 
 	$text = str_replace($find, $repl, $text);
@@ -2736,51 +2749,48 @@ function create_date_mysql($time, $output = 'datetime', $tz = false)
 /*
 * Format MySQL dates
 */
-function format_date_mysql($time, $output = 'datetime', $reverse = false, $date_sep = '-', $time_sep = ':', $unix_convert = false)
+function format_date_mysql_php($mysql_date, $format = 'datetime', $output = 'mysql')
 {
 	global $config, $lang;
 
-	$date_sep = (!empty($date_sep) ? $date_sep : (!empty($lang['NUMBER_FORMAT_DATE_SEP']) ? $lang['NUMBER_FORMAT_DATE_SEP'] : '-'));
-	$time_sep = (!empty($time_sep) ? $time_sep : (!empty($lang['NUMBER_FORMAT_TIME_SEP']) ? $lang['NUMBER_FORMAT_TIME_SEP'] : ':'));
+	$date_format = $lang['DATE_FORMAT_DATE_MYSQL_PHP'];
+	$mysql_date_sep = ((empty($lang['NUMBER_FORMAT_DATE_SEP']) || ($output == 'mysql')) ? '-' : $lang['NUMBER_FORMAT_DATE_SEP']);
+	$mysql_time_sep = ((empty($lang['NUMBER_FORMAT_TIME_SEP']) || ($output == 'mysql')) ? ':' : $lang['NUMBER_FORMAT_TIME_SEP']);
 
-	$mysql_date = $time;
+	if (($format == 'datetime') || ($format == 'date'))
+	{
+		// Mighty Gorgon: we suppose dates are always with leading zeroes and in one of the following formats: dd/mm/yyyy, mm/dd/yyyy, yyyy/mm/dd
+		switch ($date_format)
+		{
+			case 'dmy':
+				$mysql_date_only = ($output == 'mysql') ? (substr($mysql_date, 6, 4) . $mysql_date_sep . substr($mysql_date, 3, 2) . $mysql_date_sep . substr($mysql_date, 0, 2)) : (substr($mysql_date, 8, 2) . $mysql_date_sep . substr($mysql_date, 5, 2) . $mysql_date_sep . substr($mysql_date, 0, 4));
+			break;
 
-	switch ($output)
+			case 'mdy':
+				$mysql_date_only = ($output == 'mysql') ? (substr($mysql_date, 6, 4) . $mysql_date_sep . substr($mysql_date, 0, 2) . $mysql_date_sep . substr($mysql_date, 3, 2)) : (substr($mysql_date, 5, 2) . $mysql_date_sep . substr($mysql_date, 8, 2) . $mysql_date_sep . substr($mysql_date, 0, 4));
+			break;
+
+			case 'ymd':
+			default:
+				$mysql_date_only = ($output == 'mysql') ? (substr($mysql_date, 0, 4) . $mysql_date_sep . substr($mysql_date, 5, 2) . $mysql_date_sep . substr($mysql_date, 8, 2)) : (substr($mysql_date, 0, 4) . $mysql_date_sep . substr($mysql_date, 5, 2) . $mysql_date_sep . substr($mysql_date, 8, 2));
+			break;
+		}
+	}
+
+	switch ($format)
 	{
 		case 'date':
-			$mysql_date = !empty($reverse) ? str_replace('-', $date_sep, $mysql_date) : str_replace($date_sep, '-', $mysql_date);
-			if (!empty($unix_convert))
-			{
-				$date_format = $lang['DATE_FORMAT_DATE'];
-				$mysql_date = gmmktime(0, 0, 0, substr($mysql_date, 5, 2), substr($mysql_date, 8, 2), substr($mysql_date, 0, 4));
-			}
+			$mysql_date = $mysql_date_only;
 			break;
 
 		case 'time':
-			$mysql_date = !empty($reverse) ? str_replace(':', $time_sep, $mysql_date) : str_replace($time_sep, ':', $mysql_date);
-			if (!empty($unix_convert))
-			{
-				$date_format = $lang['DATE_FORMAT_TIME'];
-				$mysql_date = gmmktime(substr($mysql_date, 11, 2), substr($mysql_date, 14, 2), substr($mysql_date, 17, 2), 1, 1, 1970);
-			}
+			// Mighty Gorgon: we suppose time is always in the following format: hh:mm:ss
+			$mysql_date = empty($mysql_date) ? ('00' . $mysql_time_sep . '00' . $mysql_time_sep . '00') : (substr($mysql_date, 0, 2) . $mysql_time_sep . substr($mysql_date, 3, 2) . $mysql_time_sep . substr($mysql_date, 6, 2));
 			break;
 
 		default:
-			$mysql_date = !empty($reverse) ? str_replace(array('-', ':'), array($date_sep, $time_sep), $mysql_date) : str_replace(array($date_sep, $time_sep), array('-', ':'), $mysql_date);
-			if (!empty($unix_convert))
-			{
-				$date_format = $config['default_dateformat'];
-				$mysql_date = gmmktime(substr($mysql_date, 11, 2), substr($mysql_date, 14, 2), substr($mysql_date, 17, 2), substr($mysql_date, 5, 2), substr($mysql_date, 8, 2), substr($mysql_date, 0, 4));
-			}
+			$mysql_date = $mysql_date_only . ' ' . substr($mysql_date, 12, 2) . $mysql_time_sep . substr($mysql_date, 15, 2) . $mysql_time_sep . substr($mysql_date, 18, 2);
 			break;
-	}
-
-	if (!empty($unix_convert))
-	{
-		// We need to force '+0' and subtract DST, because we are dealing with MySQL dates here... these are not to be converted into local time!
-		$date_format = !empty($date_format) ? $date_format : $config['default_dateformat'];
-		$dst_sec = get_dst($mysql_date, $config['board_timezone']);
-		$mysql_date = create_date($date_format, $mysql_date - $dst_sec, '+0');
 	}
 
 	return $mysql_date;
@@ -3544,9 +3554,9 @@ function clear_user_color_cache($user_id)
 }
 
 /**
- * Create a profile link for the user with his own color
+* Create a profile link for the user with his own color
 */
-function colorize_username($user_id, $username = '', $user_color = '', $user_active = true, $no_profile = false, $get_only_color_style = false, $from_db = false, $force_cache = false)
+function colorize_username($user_id, $username = '', $user_color = '', $user_active = true, $no_profile = false, $get_only_color_style = false, $from_db = false, $force_cache = false, $alt_link_url = '')
 {
 	global $db, $config, $lang;
 
@@ -3572,8 +3582,9 @@ function colorize_username($user_id, $username = '', $user_color = '', $user_act
 	}
 
 	$username = (($user_id == ANONYMOUS) || empty($username)) ? $lang['Guest'] : str_replace('&amp;amp;', '&amp;', htmlspecialchars($username));
+	$user_link_url = !empty($alt_link_url) ? str_replace('$USER_ID', $user_id, $alt_link_url) : ((defined('USER_LINK_URL_OVERRIDE')) ? str_replace('$USER_ID', $user_id, USER_LINK_URL_OVERRIDE) : (CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id));
 	$user_link_style = '';
-	$user_link_begin = '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '"';
+	$user_link_begin = '<a href="' . append_sid(IP_ROOT_PATH . $user_link_url) . '"';
 	$user_link_end = '>' . $username . '</a>';
 
 	if (!$user_active || $is_guest)
@@ -4821,12 +4832,14 @@ function page_header($title = '', $parse_template = false)
 	}
 
 	// The following assigns all _common_ variables that may be used at any point in a template.
+	$current_time = create_date($config['default_dateformat'], time(), $config['board_timezone']);
 	$template->assign_vars(array(
 		'DOCTYPE_HTML' => $doctype_html,
 		'NAV_LINKS' => $nav_links_html,
 
 		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
 		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
 		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
 		'S_HEADER_DROPDOWN' => ($config['switch_header_dropdown'] ? true : false),
 		'S_HEADER_DD_LOGGED_IN' => (($config['switch_header_dropdown'] && $user->data['upi2db_access']) ? true : false),
@@ -4838,6 +4851,7 @@ function page_header($title = '', $parse_template = false)
 		// AJAX Features - END
 
 		'U_LOGIN_LOGOUT' => append_sid(IP_ROOT_PATH . $u_login_logout),
+		'USER_USERNAME' => $user->data['session_logged_in'] ? htmlspecialchars($user->data['username']) : $lang['Guest'],
 
 		//<!-- BEGIN Unread Post Information to Database Mod -->
 		'UPI2DB_FIRST_USE' => $upi2db_first_use,
@@ -4847,7 +4861,8 @@ function page_header($title = '', $parse_template = false)
 		'PAGE_TITLE' => ($config['page_title_simple'] ? $meta_content['page_title_clean'] : $meta_content['page_title']),
 		'META_TAG' => $phpbb_meta,
 		'LAST_VISIT_DATE' => sprintf($lang['You_last_visit'], $s_last_visit),
-		'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
+		'CURRENT_TIME' => sprintf($lang['Current_time'], $current_time),
+		'CURRENT_TIME_ONLY' => $current_time,
 		'S_TIMEZONE' => $time_message,
 
 		'PRIVATE_MESSAGE_INFO' => $l_privmsgs_text,

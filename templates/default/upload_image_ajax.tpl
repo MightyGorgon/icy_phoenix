@@ -1,5 +1,33 @@
 <!-- INCLUDE simple_header.tpl -->
 
+<script type="text/javascript">
+// <![CDATA[
+var form_name_original = form_name;
+var text_name_original = text_name;
+var form_name_thisform = '{BBCB_FORM_NAME}';
+var text_name_thisform = '{BBCB_TEXT_NAME}';
+
+{JAVASCRIPT_LANG_VARS}
+
+s_help = "{L_BBCODE_S_HELP}";
+s_s_help = "{L_BBCODE_S_HELP}";
+
+var bbcb_mg_img_path = "{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/bbcb_mg/images/gif/";
+var bbcb_mg_img_ext = ".gif";
+
+function bbcb_vars_reassign_start()
+{
+	form_name = form_name_thisform;
+	text_name = text_name_thisform;
+}
+
+function bbcb_vars_reassign_end()
+{
+	form_name = form_name_original;
+	text_name = text_name_original;
+}
+// ]]>
+</script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg_small.js"></script>
 
 <script type="text/javascript">

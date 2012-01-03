@@ -20,25 +20,33 @@ class class_form
 {
 
 	var $date_format_jq = 'yy/mm/dd';
+	var $time_format_jq = 'hh:ss';
 	var $date_format_php = 'Y/m/d';
+	var $time_format_php = 'H:i';
 	var $date_sep = '/';
 	var $time_sep = ':';
 
+/*
+	// Mighty Gorgon: overwrite some defaults for this plugin...
+	$class_form->date_format_jq = 'yy-mm-dd';
+	$class_form->date_format_php = 'Y-m-d';
+	$class_form->date_sep = '-';
+	$class_form->time_sep = ':';
+*/
 
 	/**
 	* Instantiate the class
 	*/
 	function class_form()
 	{
-		// Better force the format, to make sure everything is working fine...
-		/*
 		global $lang;
 
 		$this->date_format_jq = $lang['DATE_FORMAT_DATE_JQUI_JQ'];
+		$this->time_format_jq = $lang['DATE_FORMAT_TIME_JQUI_JQ'];
 		$this->date_format_php = $lang['DATE_FORMAT_DATE_JQUI_PHP'];
+		$this->time_format_php = $lang['DATE_FORMAT_TIME_JQUI_PHP'];
 		$this->date_sep = $lang['NUMBER_FORMAT_DATE_SEP'];
 		$this->time_sep = $lang['NUMBER_FORMAT_TIME_SEP'];
-		*/
 	}
 
 
@@ -114,12 +122,12 @@ class class_form
 				switch ($properties['type'])
 				{
 					case 'DATE_INPUT_JQUI':
-						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql($default, 'date', true, $this->date_sep, $this->time_sep, false) : create_date($this->date_format_php, $default, $config['board_timezone']);
+						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql_php($default, 'date', 'php') : create_date($this->date_format_php, $default, $config['board_timezone']);
 						$jquery_ui = '<script type="text/javascript">$(function() { $.datepicker.setDefaults( $.datepicker.regional["' . $lang['HEADER_LANG_JQUERY'] . '"] ); $("#' . $name . '").datepicker({ dateFormat: "' . $this->date_format_jq . '", changeMonth: true, changeYear: true }); });</script>';
 						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="12" size="16" readonly="readonly" class="post" value="' . $default . '" />';
 						break;
 					case 'TIME_INPUT_JQUI':
-						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql($default, 'time', true, $this->date_sep, $this->time_sep, false) : create_date($this->date_format_php, $default, $config['board_timezone']);
+						$default = ($properties['datetime_format'] == 'mysql') ? format_date_mysql_php($default, 'time', 'php') : create_date($this->time_format_php, $default, $config['board_timezone']);
 						$jquery_ui = '<script type="text/javascript">$(function() { $.timepicker.setDefaults( $.timepicker.regional["' . $lang['HEADER_LANG_JQUERY'] . '"] ); $("#' . $name . '").timepicker({ timeSeparator: "' . $this->time_sep . '" }); });</script>';
 						$input = $jquery_ui . '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="8" size="12" readonly="readonly" class="post" value="' . $default . '" />';
 						break;
@@ -137,7 +145,9 @@ class class_form
 				break;
 
 			case 'USERNAME_INPUT':
-				$input = '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="30" class="post" value="' . $default . '" />';
+				$user_data = get_userdata($default, false);
+				$username = !empty($user_data) ? $user_data['username'] : '';
+				$input = '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="30" class="post" value="' . htmlspecialchars($username) . '" />';
 				$input .= '<input type="submit" name="' . $name . '_search_button" value="' . $lang['FIND_USERNAME'] . '" class="mainoption" onclick="window.open(\'' . append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser&amp;target_form_name=input_form&amp;target_element_name=' . $name) . '\', \'_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
 				break;
 
@@ -481,7 +491,8 @@ class class_form
 					$inputs_array[$k] = request_var($k, $v['default']);
 					if (in_array($v['type'], array('DATE_INPUT_JQUI', 'TIME_INPUT_JQUI')))
 					{
-						$inputs_array[$k] = format_date_mysql($inputs_array[$k], 'date', false, $this->date_sep, $this->time_sep, false);
+						$output = ($v['type'] == 'DATE_INPUT_JQUI') ? 'date' : 'time';
+						$inputs_array[$k] = format_date_mysql_php($inputs_array[$k], $output, 'mysql');
 					}
 				}
 				else
@@ -664,8 +675,7 @@ class class_form
 				{
 					case 'mysql':
 						$output = !empty($v['is_date']) ? 'date' : (!empty($v['is_time']) ? 'time' : 'datetime');
-						$unix_convert = !empty($v['datetime_format_convert']) ? true : false;
-						$value = format_date_mysql($inputs_array[$k], $output, true, $this->date_sep, $this->time_sep, $unix_convert);
+						$value = format_date_mysql_php($inputs_array[$k], $output, 'php');
 						break;
 
 					default:

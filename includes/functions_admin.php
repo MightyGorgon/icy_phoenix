@@ -70,11 +70,11 @@ function fix_config_values($config_name, $config_value)
 // Synchronise functions for forums/topics
 function sync($type, $id = false)
 {
-	global $db, $cache;
+	global $db, $cache, $config;
 
 	switch($type)
 	{
-		case 'all forums':
+		case 'all_forums':
 			$sql = "SELECT forum_id
 				FROM " . FORUMS_TABLE;
 			$result = $db->sql_query($sql);
@@ -93,7 +93,7 @@ function sync($type, $id = false)
 
 			break;
 
-		case 'all topics':
+		case 'all_topics':
 			$sql = "SELECT topic_id
 				FROM " . TOPICS_TABLE;
 			$result = $db->sql_query($sql);
@@ -116,7 +116,7 @@ function sync($type, $id = false)
 		case 'forum':
 			$sql = "SELECT MAX(post_id) AS last_post, COUNT(post_id) AS total
 				FROM " . POSTS_TABLE . "
-				WHERE forum_id = " . $id;
+				WHERE forum_id = " . (int) $id;
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
@@ -132,13 +132,13 @@ function sync($type, $id = false)
 
 			$sql = "SELECT COUNT(topic_id) AS total
 				FROM " . TOPICS_TABLE . "
-				WHERE forum_id = " . $id;
+				WHERE forum_id = " . (int) $id;
 			$result = $db->sql_query($sql);
 			$total_topics = ($row = $db->sql_fetchrow($result)) ? (($row['total']) ? $row['total'] : 0) : 0;
 
 			$sql = "UPDATE " . FORUMS_TABLE . "
 				SET forum_last_post_id = $last_post, forum_posts = $total_posts, forum_topics = $total_topics
-				WHERE forum_id = " . $id;
+				WHERE forum_id = " . (int) $id;
 			$db->sql_query($sql);
 
 			break;
@@ -146,7 +146,7 @@ function sync($type, $id = false)
 		case 'topic':
 			$sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
 				FROM " . POSTS_TABLE . "
-				WHERE topic_id = $id";
+				WHERE topic_id = " . (int) $id;
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
@@ -165,14 +165,14 @@ function sync($type, $id = false)
 					// Check if it is a move stub
 					$sql = 'SELECT topic_moved_id
 						FROM ' . TOPICS_TABLE . "
-						WHERE topic_id = $id";
+						WHERE topic_id = " . (int) $id;
 					$result = $db->sql_query($sql);
 
 					if ($row = $db->sql_fetchrow($result))
 					{
 						if (!$row['topic_moved_id'])
 						{
-							$sql = 'DELETE FROM ' . TOPICS_TABLE . " WHERE topic_id = $id";
+							$sql = 'DELETE FROM ' . TOPICS_TABLE . " WHERE topic_id = " . (int) $id;
 							$db->sql_query($sql);
 						}
 					}
@@ -185,7 +185,6 @@ function sync($type, $id = false)
 			break;
 	}
 
-	global $config;
 	board_stats();
 	return true;
 }
@@ -196,7 +195,7 @@ function duplicate_auth($source_id, $target_id)
 	global $db, $forum_auth_fields;
 
 	$sql = "SELECT * FROM " . FORUMS_TABLE . "
-					WHERE forum_id = '" . intval($source_id) . "'";
+					WHERE forum_id = " . (int) $source_id;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -222,7 +221,7 @@ function duplicate_auth($source_id, $target_id)
 
 	$sql = "UPDATE " . FORUMS_TABLE . "
 		SET ". $auth_sql . "
-		WHERE forum_id = '" . intval($target_id) . "'";
+		WHERE forum_id = " . (int) $target_id;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);

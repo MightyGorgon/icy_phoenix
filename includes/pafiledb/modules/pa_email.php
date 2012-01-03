@@ -75,16 +75,19 @@ class pafiledb_email extends pafiledb_public
 			$username = request_var('fname', '', true);
 			$sender_name = request_var('sname', '', true);
 
-			if (!$user->data['session_logged_in'] || ($user->data['session_logged_in'] && ($sender_name != $user->data['username'])))
+			//if (!$user->data['session_logged_in'] || ($user->data['session_logged_in'] && ($sender_name != $user->data['username'])))
+			if (!$user->data['session_logged_in'])
 			{
+				// Mighty Gorgon: is this really needed?
+				/*
 				include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-
-				$result = validate_username($username);
+				$result = validate_username($sender_name);
 				if ($result['error'])
 				{
 					$error = true;
 					$error_msg .= (!empty($error_msg)) ? '<br />' . $result['error_msg'] : $result['error_msg'];
 				}
+				*/
 			}
 			else
 			{

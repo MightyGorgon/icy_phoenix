@@ -1,4 +1,6 @@
+<!-- IF not S_HEADER_PROCESSED -->
 <!-- INCLUDE overall_header.tpl -->
+<!-- ENDIF -->
 
 <form name="input_form" method="post" action="{S_MODE_ACTION}">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PAGE_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -24,4 +26,6 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 
+<!-- IF not S_HEADER_PROCESSED -->
 <!-- INCLUDE overall_footer.tpl -->
+<!-- ENDIF -->

@@ -113,11 +113,14 @@ class class_db
 	/*
 	* Get total items
 	*/
-	function get_total_items()
+	function get_total_items($sql_where_extra = '', $filter_item = '', $filter_item_value = '')
 	{
 		global $db, $cache;
 
-		$sql = "SELECT COUNT(*) AS total FROM " . $this->main_db_table;
+		$sql_filter_by = (!empty($filter_item) ? (" WHERE " . $filter_item . " = " . $db->sql_validate_value($filter_item_value) . " ") : '');
+		$sql_where_extra = (!empty($sql_where_extra) ? ((empty($sql_filter_by) ? " WHERE " : " AND ") . $sql_where_extra) : '');
+
+		$sql = "SELECT COUNT(*) AS total FROM " . $this->main_db_table . $sql_filter_by . $sql_where_extra;
 		$result = $db->sql_query($sql);
 
 		$total_items = 0;

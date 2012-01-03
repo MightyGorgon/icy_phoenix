@@ -205,21 +205,24 @@ switch($pmaction)
 			{
 				$priv_msgs_id_sql_list .= ($priv_msgs_id_sql_list != '') ? ', '.$row['privmsgs_id'] : $row['privmsgs_id'];
 			}
+			$removed_counter = 0;
 			if ($priv_msgs_id_sql_list != '')
 			{
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				$db->sql_query($sql);
+				$removed_counter += $db->sql_affectedrows();
 
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
 					WHERE privmsgs_id  IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				$db->sql_query($sql);
+				$removed_counter += $db->sql_affectedrows();
 			}
 
 			$status_message .= $lang['Removed_Old'];
-			$status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
+			$status_message .= sprintf($lang['Affected_Rows'], $removed_counter);
 		}
 	}
 	case 'remove_sent':
@@ -236,21 +239,24 @@ switch($pmaction)
 			{
 				$priv_msgs_id_sql_list .= ($priv_msgs_id_sql_list != '') ? ', '.$row['privmsgs_id'] : $row['privmsgs_id'];
 			}
+			$removed_counter = 0;
 			if ($priv_msgs_id_sql_list != '')
 			{
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				$db->sql_query($sql);
+				$removed_counter += $db->sql_affectedrows();
 
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
 					WHERE privmsgs_id  IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				$db->sql_query($sql);
+				$removed_counter += $db->sql_affectedrows();
 			}
 
 			$status_message .= $lang['Removed_Sent'];
-			$status_message .= sprintf($lang['Affected_Rows'], $db->sql_affectedrows());
+			$status_message .= sprintf($lang['Affected_Rows'], $removed_counter);
 		}
 	}
 	default:

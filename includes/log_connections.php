@@ -33,14 +33,12 @@ mgl_write_log('L', $mgl_sitename, $mgl_subject, $mgl_log_file, $mgl_notification
 
 function mgl_write_log($action, $sitename, $subject, $log_file, $notification_email)
 {
-	global $REQUEST_URI, $REMOTE_ADDR, $HTTP_USER_AGENT, $REDIRECT_ERROR_NOTES, $SERVER_NAME, $HTTP_REFERER;
 	global $user;
 
 	$remote_address = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
 	$remote_address = (!empty($remote_address) && ($remote_address != '::1')) ? $remote_address : '127.0.0.1';
 	$user_agent_log = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
-	$referer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getenv('HTTP_REFERER');
-	$referer = ($referer == '') ? $HTTP_REFERER : $referer;
+	$referer = (!empty($_SERVER['HTTP_REFERER'])) ? (string) $_SERVER['HTTP_REFERER'] : '';
 	$referer = preg_replace('/[?&]{1}sid=[A-Za-z0-9]{32}/', '', $referer);
 	$script_name = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : getenv('REQUEST_URI');
 	$script_name = preg_replace('/[?&]{1}sid=[A-Za-z0-9]{32}/', '', $script_name);

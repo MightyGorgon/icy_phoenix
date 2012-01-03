@@ -22,7 +22,7 @@
 </tr>
 <tr>
 	<td class="row1" nowrap="nowrap" valign="top"><strong>{L_LINK_DESC}</strong></td>
-	<td class="row2" valign="top"><textarea name="link_desc" cols="30" rows="5" class="post" maxsize="120">{LINK_DESC}</textarea>{LINK_LOGO_IMG}</td>
+	<td class="row2" valign="top">{LINK_LOGO_IMG}<br /><br /><textarea name="link_desc" cols="30" rows="5" class="post" maxsize="120">{LINK_DESC}</textarea></td>
 </tr>
 <tr><th colspan="2">{L_LINK_ADV_SETTING}</th></tr>
 <tr> 

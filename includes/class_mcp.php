@@ -158,6 +158,13 @@ class class_mcp_topic
 		$db->sql_transaction('commit');
 
 		$this->cache_resync(array($forum_id), 0);
+
+		if (!function_exists('sync'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+		}
+		sync('all_forums');
+
 	}
 
 	/**

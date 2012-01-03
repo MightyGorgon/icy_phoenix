@@ -66,12 +66,18 @@ if (USERS_SUBFOLDERS_IMG)
 
 $template_to_parse = 'upload_image_ajax.tpl';
 
+$bbcb_form_name = request_var('bbcb_form_name', 'post');
+$bbcb_text_name = request_var('bbcb_text_name', 'message');
+
 $template->assign_vars(array(
 	'S_UPLOAD_DIR' => $upload_dir,
 	'S_USER_UPLOAD_DIR' => $user_upload_dir,
 	'S_AJAX_UPLOAD' => 'ajax_upload.' . PHP_EXT,
 	'S_ALLOWED_EXTENSIONS' => $allowed_extensions,
 	'S_MAX_FILE_SIZE' => $max_file_size,
+
+	'BBCB_FORM_NAME' => htmlspecialchars($bbcb_form_name),
+	'BBCB_TEXT_NAME' => htmlspecialchars($bbcb_text_name),
 
 	'L_BBCODE' => $lang['BBCode'],
 	'L_BBCODE_DES' => $lang['Uploaded_Image_BBC'],

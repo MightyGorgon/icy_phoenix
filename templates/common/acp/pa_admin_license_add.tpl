@@ -6,11 +6,11 @@
 <tr><th colspan="2">{L_ALICENSETITLE}</th></tr>
 <tr>
 	<td width="50%" class="row1"><strong>{L_LNAME}</strong></td>
-	<td class="row2"><input type="text" class="post" size="50" name="form[name]" /></td>
+	<td class="row2"><input type="text" class="post" size="50" name="license_name" /></td>
 </tr>
 <tr>
 	<td class="row1"><strong>{L_LTEXT}</strong></td>
-	<td class="row2"><textarea name="form[text]" cols="50" rows="10" class="forminput"></textarea></td>
+	<td class="row2"><textarea name="license_text" cols="50" rows="10" class="forminput"></textarea></td>
 </tr>
 <tr>
 	<td align="center" class="cat" colspan="2">

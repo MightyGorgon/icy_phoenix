@@ -968,6 +968,15 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	$message .=  '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 
+	if (!empty($forum_id))
+	{
+		if (!function_exists('sync'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+		}
+		sync('forum', $forum_id);
+	}
+
 	empty_cache_folders(POSTS_CACHE_FOLDER);
 	empty_cache_folders(FORUMS_CACHE_FOLDER);
 	board_stats();

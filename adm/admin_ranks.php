@@ -350,10 +350,10 @@ for($i = 0; $i < $rank_count; $i++)
 	if(($special_rank > 0) || ($special_rank == '-2'))
 	// Mighty Gorgon - Multiple Ranks - END
 	{
-		$rank_min = $rank_max = "-";
+		$rank_min = $rank_max = '-';
 	}
 
-	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+	$row_class = ($i % 2) ? $theme['td_class2'] : $theme['td_class1'];
 
 	// Mighty Gorgon - Multiple Ranks - BEGIN
 	$rank_is_special = ($special_rank > 0) ? $lang['Yes'] : $lang['No'];

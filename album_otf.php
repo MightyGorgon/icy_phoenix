@@ -122,7 +122,11 @@ if($user->data['user_level'] == ADMIN)
 	$template->assign_block_vars('upload_allowed', array());
 
 	$cat_id = ALBUM_ROOT_CATEGORY;
+	$personal_gallery_list = '';
 	album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
+
+	// Better removing this code... it's better to create the Personal Gallery if we wish to upload content in it!
+	/*
 	$userinfo = album_get_nonexisting_personal_gallery_info();
 	$count = sizeof($userinfo);
 	for($idx = 0; $idx < $count; $idx++)
@@ -139,6 +143,8 @@ if($user->data['user_level'] == ADMIN)
 	{
 		$personal_gallery_list = '<option value="' . ALBUM_JUMPBOX_SEPARATOR . '">------------------------------</option>' . $personal_gallery_list;
 	}
+	*/
+
 	$temp_tree = album_get_tree_option($cat_id, ALBUM_AUTH_VIEW_AND_UPLOAD) . $personal_gallery_list;
 	if ($temp_tree == '')
 	{

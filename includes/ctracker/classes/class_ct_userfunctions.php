@@ -353,7 +353,8 @@ class ct_userfunctions
 		}
 
 		// Remove Profile data
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_allowavatar = 0, user_email=\'info@example.com\', user_icq = \'\', user_website=\'\', user_from=\'\', user_sig=\'\', user_aim=\'\', user_yim=\'\', user_msnm=\'\', user_occ=\'\', user_interests=\'\' WHERE user_id = ' . $user->data['user_id'];
+		// Removed user_email = 'info@example.com'
+		$sql = "UPDATE " . USERS_TABLE . " SET user_allowavatar = 0, user_icq = '', user_website = '', user_from = '', user_sig = '', user_aim = '', user_yim = '', user_msnm = '', user_occ = '', user_interests = '' WHERE user_id = " . $user->data['user_id'];
 		if (!$result = $db->sql_query($sql))
 		{
 			message_die(GENERAL_ERROR, $lang['ctracker_error_updating_userdata'], '', __LINE__, __FILE__, $sql);

@@ -66,7 +66,7 @@ $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 $per_page = request_var('per_page', 0);
-$per_page = (($per_page < 20) || ($per_page > 300)) ? $config['topics_per_page'] : $per_page;
+$per_page = (empty($per_page) || ($per_page < 20) || ($per_page > 300)) ? $config['topics_per_page'] : $per_page;
 
 $s_hidden_fields = '';
 

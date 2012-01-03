@@ -42,11 +42,10 @@ if(!empty($license))
 
 			if ($add == 'do')
 			{
-				$form = request_var('form', array(''), true);
+				$license_name = request_var('license_name', '', true);
+				$license_text = request_var('license_text', '', true);
 
-				//$form['text'] = str_replace("\n", "<br />", $form['text']);
-
-				$sql = "INSERT INTO " . PA_LICENSE_TABLE . " VALUES('NULL', '" . $db->sql_escape($form['name']) . "', '" . $db->sql_escape($form['text']) . "')";
+				$sql = "INSERT INTO " . PA_LICENSE_TABLE . " VALUES('NULL', '" . $db->sql_escape($license_name) . "', '" . $db->sql_escape($license_text) . "')";
 				$db->sql_query($sql);
 
 				$message = $lang['Licenseadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_license.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -79,13 +78,12 @@ if(!empty($license))
 
 			if ($edit == 'do')
 			{
-				$form = request_var('form', array(''), true);
+				$license_name = request_var('license_name', '', true);
+				$license_text = request_var('license_text', '', true);
 
 				$id = request_var('id', 0);
 
-				//$form['text'] = str_replace("\n", "<br />", $form['text']);
-
-				$sql = "UPDATE " . PA_LICENSE_TABLE . " SET license_name = '" . $db->sql_escape($form['name']) . "', license_text = '" . $db->sql_escape($form['text']) . "' WHERE license_id = '" . $id . "'";
+				$sql = "UPDATE " . PA_LICENSE_TABLE . " SET license_name = '" . $db->sql_escape($license_name) . "', license_text = '" . $db->sql_escape($license_text) . "' WHERE license_id = '" . $id . "'";
 				$db->sql_query($sql);
 
 				$message = $lang['Licenseedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_license." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');

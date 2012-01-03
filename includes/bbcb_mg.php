@@ -85,6 +85,17 @@ if (isset($bbcbmg_in_acp))
 	//$bbcbmg_path_prefix = ($bbcbmg_in_acp == true) ? '../' : '';
 }
 
+$external_form_url_append = array();
+if (!empty($template->vars['BBCB_FORM_NAME']))
+{
+	$external_form_url_append[] = 'bbcb_form_name=' . htmlspecialchars($template->vars['BBCB_FORM_NAME']);
+}
+if (!empty($template->vars['BBCB_TEXT_NAME']))
+{
+	$external_form_url_append[] = 'bbcb_text_name=' . htmlspecialchars($template->vars['BBCB_TEXT_NAME']);
+}
+$external_form_url_append_text = trim(implode('&amp;', $external_form_url_append));
+
 $template->assign_vars(array(
 	'JAVASCRIPT_LANG_VARS' => $lang['JAVASCRIPT_LANG_VARS'],
 	'BBCB_MG_PATH_PREFIX' => $bbcbmg_path_prefix,
@@ -103,7 +114,7 @@ $template->assign_vars(array(
 	'U_BBCODE_COLORPICKER' => append_sid('bbcb_mg_cp.' . PHP_EXT),
 	'U_BBCODE_POSTIMAGE' => $post_image_lang,
 	//'U_BBCODE_POSTICYIMAGE' => append_sid('upload.' . PHP_EXT),
-	'U_BBCODE_POSTICYIMAGE' => append_sid('upload_ajax.' . PHP_EXT),
+	'U_BBCODE_POSTICYIMAGE' => append_sid('upload_ajax.' . PHP_EXT . (!empty($external_form_url_append_text) ? ('?' . $external_form_url_append_text) : '')),
 
 	'L_BBCODE_B_HELP' => $lang['bbcode_b_help'],
 	'L_BBCODE_I_HELP' => $lang['bbcode_i_help'],

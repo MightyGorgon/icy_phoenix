@@ -1,4 +1,6 @@
+<!-- IF not S_HEADER_PROCESSED -->
 <!-- INCLUDE overall_header.tpl -->
+<!-- ENDIF -->
 
 <!-- IF L_ITEM_TITLE --><div class="topic-title-hide-flow-header" style="text-align: left;"><h2><a href="{U_ITEM_TITLE}" style="text-decoration: none;">{L_ITEM_TITLE}</a></h2></div><br /><!-- ENDIF -->
 
@@ -50,4 +52,6 @@
 
 {EXTRA_CONTENT_BOTTOM}
 
+<!-- IF not S_HEADER_PROCESSED -->
 <!-- INCLUDE overall_footer.tpl -->
+<!-- ENDIF -->

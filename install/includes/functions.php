@@ -1380,7 +1380,7 @@ function sync($type, $id = false)
 
 	switch($type)
 	{
-		case 'all forums':
+		case 'all_forums':
 			$sql = "SELECT forum_id
 				FROM " . FORUMS_TABLE;
 			if ( !($result = $db->sql_query($sql)) )
@@ -1394,7 +1394,7 @@ function sync($type, $id = false)
 			}
 			break;
 
-		case 'all topics':
+		case 'all_topics':
 			$sql = "SELECT topic_id
 				FROM " . TOPICS_TABLE;
 			if ( !($result = $db->sql_query($sql)) )

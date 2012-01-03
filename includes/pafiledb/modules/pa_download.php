@@ -82,13 +82,9 @@ class pafiledb_download extends pafiledb_public
 		//=========================================================================
 
 
-		$url_referer = trim(getenv('HTTP_REFERER'));
-		if ($url_referer == '')
-		{
-			$url_referer = trim($_SERVER['HTTP_REFERER']);
-		}
+		$url_referer = (!empty($_SERVER['HTTP_REFERER'])) ? (string) $_SERVER['HTTP_REFERER'] : '';
 
-		if(($pafiledb_config['hotlink_prevent']) and (!empty($url_referer)))
+		if(($pafiledb_config['hotlink_prevent']) && (!empty($url_referer)))
 		{
 			$check_referer = explode('?', $url_referer);
 			$check_referer = trim($check_referer[0]);
@@ -108,9 +104,10 @@ class pafiledb_download extends pafiledb_public
 			{
 				$good_referers[$i] = trim($good_referers[$i]);
 
-				if((strstr($check_referer, $good_referers[$i])) and ($good_referers[$i] != ''))
+				if(!empty($good_referers[$i]) && (strstr($check_referer, $good_referers[$i]) !== false))
 				{
 					$errored = false;
+					break;
 				}
 			}
 

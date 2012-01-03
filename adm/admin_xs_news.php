@@ -385,7 +385,8 @@ if(!empty($mode))
 			else
 			{
 				// Set template files
-				$template->set_filenames(array('confirm' => XS_TPL_PATH . 'news_confirm_body.tpl'));
+				$template->set_filenames(array('confirm' => ADM_TPL . 'confirm_body.tpl'));
+				//$template->set_filenames(array('confirm' => XS_TPL_PATH . 'news_confirm_body.tpl'));
 
 				$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" /><input type="hidden" name="id" value="' . $news_id . '" />';
 

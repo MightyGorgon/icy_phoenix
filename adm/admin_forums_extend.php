@@ -38,87 +38,87 @@ define('POST_FLINK_URL', 'l');
 // fields in forums table, except auths ones:
 //		table_field => form_field
 $forums_fields_list = array(
-	'forum_id' => 'id',
-	'forum_type' => 'forum_type',
-	'parent_id' => 'main_id',
-	'main_type' => 'main_type',
-	'forum_order' => 'order',
-	'forum_name' => 'name',
-	'forum_name_clean' => 'name_clean',
-	'forum_desc' => 'desc',
-	'forum_status' => 'status',
-	'forum_thanks' => 'forum_thanks',
-	'forum_likes' => 'forum_likes',
-	'forum_limit_edit_time' => 'forum_limit_edit_time',
-	'forum_similar_topics' => 'forum_similar_topics',
-	'forum_topic_views' => 'forum_topic_views',
-	'forum_tags' => 'forum_tags',
-	'forum_sort_box' => 'forum_sort_box',
-	'forum_kb_mode' => 'forum_kb_mode',
-	'forum_index_icons' => 'forum_index_icons',
-	'forum_notify' => 'forum_notify',
-	'forum_postcount' => 'forum_postcount',
-	'forum_rules_switch' => 'forum_rules_switch',
-	'forum_rules' => 'forum_rules',
-	'forum_rules_custom_title' => 'forum_rules_custom_title',
-	'forum_rules_display_title' => 'forum_rules_display_title',
-	'forum_rules_in_viewforum' => 'forum_rules_in_viewforum',
-	'forum_rules_in_viewtopic' => 'forum_rules_in_viewtopic',
-	'forum_rules_in_posting' => 'forum_rules_in_posting',
-	'prune_enable' => 'prune_enable',
-	'forum_link' => 'link',
-	'forum_link_internal' => 'link_internal',
-	'forum_link_hit_count' => 'link_hit_count',
-	'forum_link_hit' => 'link_hit',
-	'icon' => 'icon',
+	'forum_id'										=> 'id',
+	'forum_type'									=> 'forum_type',
+	'parent_id'										=> 'main_id',
+	'main_type'										=> 'main_type',
+	'forum_order'									=> 'order',
+	'forum_name'									=> 'name',
+	'forum_name_clean'						=> 'name_clean',
+	'forum_desc'									=> 'desc',
+	'forum_status'								=> 'status',
+	'forum_thanks'								=> 'forum_thanks',
+	'forum_likes'									=> 'forum_likes',
+	'forum_limit_edit_time'				=> 'forum_limit_edit_time',
+	'forum_similar_topics'				=> 'forum_similar_topics',
+	'forum_topic_views'						=> 'forum_topic_views',
+	'forum_tags'									=> 'forum_tags',
+	'forum_sort_box'							=> 'forum_sort_box',
+	'forum_kb_mode'								=> 'forum_kb_mode',
+	'forum_index_icons'						=> 'forum_index_icons',
+	'forum_notify'								=> 'forum_notify',
+	'forum_postcount'							=> 'forum_postcount',
+	'forum_rules_switch'					=> 'forum_rules_switch',
+	'forum_rules'									=> 'forum_rules',
+	'forum_rules_custom_title'		=> 'forum_rules_custom_title',
+	'forum_rules_display_title'		=> 'forum_rules_display_title',
+	'forum_rules_in_viewforum'		=> 'forum_rules_in_viewforum',
+	'forum_rules_in_viewtopic'		=> 'forum_rules_in_viewtopic',
+	'forum_rules_in_posting'			=> 'forum_rules_in_posting',
+	'prune_enable'								=> 'prune_enable',
+	'forum_link'									=> 'link',
+	'forum_link_internal'					=> 'link_internal',
+	'forum_link_hit_count'				=> 'link_hit_count',
+	'forum_link_hit'							=> 'link_hit',
+	'icon'												=> 'icon',
 );
 
 // fields in categories table:
 //		table_field => form_field
 $categories_fields_list = array(
-	'forum_id' => 'id',
-	'forum_type' => 'forum_type',
-	'parent_id' => 'main_id',
-	'main_type' => 'main_type',
-	'forum_order' => 'order',
-	'forum_name' => 'name',
-	'forum_name_clean' => 'name_clean',
-	'forum_desc' => 'desc',
-	'icon' => 'icon',
+	'forum_id'							=> 'id',
+	'forum_type'						=> 'forum_type',
+	'parent_id'							=> 'main_id',
+	'main_type'							=> 'main_type',
+	'forum_order'						=> 'order',
+	'forum_name'						=> 'name',
+	'forum_name_clean'			=> 'name_clean',
+	'forum_desc'						=> 'desc',
+	'icon'									=> 'icon',
 );
 
 // type of the form fields
 $fields_type = array(
-	'type' => 'VARCHAR',
-	'id' => 'INTEGER',
-	'main_id' => 'INTEGER',
-	'main_type' => 'VARCHAR',
-	'order'	=> 'INTEGER',
-	'name' => 'HTML',
-	'name_clean' => 'VARCHAR',
-	'desc' => 'HTML',
-	'icon' => 'HTML',
-	'status' => 'INTEGER',
-	'forum_thanks' => 'INTEGER',
-	'forum_likes' => 'INTEGER',
-	'forum_limit_edit_time' => 'INTEGER',
-	'forum_sort_box' => 'INTEGER',
-	'forum_kb_mode' => 'INTEGER',
-	'forum_index_icons' => 'INTEGER',
-	'forum_notify' => 'INTEGER',
-	'forum_rules_switch' => 'INTEGER',
-	'forum_rules' => 'HTML',
-	'forum_rules_custom_title' => 'VARCHAR',
-	'forum_rules_display_title' => 'INTEGER_CB',
-	'forum_rules_in_viewforum' => 'INTEGER_CB',
-	'forum_rules_in_viewtopic' => 'INTEGER_CB',
-	'forum_rules_in_posting' => 'INTEGER_CB',
-	'forum_postcount' => 'INTEGER',
-	'enable' => 'INTEGER',
-	'link' => 'HTML',
-	'link_internal' => 'INTEGER',
-	'link_hit_count' => 'INTEGER',
-	'link_hit' => 'INTEGER',
+	'type'												=> 'VARCHAR',
+	'id'													=> 'INTEGER',
+	'main_id'											=> 'INTEGER',
+	'main_type'										=> 'VARCHAR',
+	'order'												=> 'INTEGER',
+	'name'												=> 'HTML',
+	'name_clean'									=> 'VARCHAR',
+	'desc'												=> 'HTML',
+	'icon'												=> 'HTML',
+	'status'											=> 'INTEGER',
+	'forum_thanks'								=> 'INTEGER',
+	'forum_likes'									=> 'INTEGER',
+	'forum_limit_edit_time'				=> 'INTEGER',
+	'forum_sort_box'							=> 'INTEGER',
+	'forum_kb_mode'								=> 'INTEGER',
+	'forum_index_icons'						=> 'INTEGER',
+	'forum_notify'								=> 'INTEGER',
+	'forum_rules_switch'					=> 'INTEGER',
+	'forum_rules'									=> 'HTML',
+	'forum_rules_custom_title'		=> 'VARCHAR',
+	'forum_rules_display_title'		=> 'INTEGER_CB',
+	'forum_rules_in_viewforum'		=> 'INTEGER_CB',
+	'forum_rules_in_viewtopic'		=> 'INTEGER_CB',
+	'forum_rules_in_posting'			=> 'INTEGER_CB',
+	'forum_postcount'							=> 'INTEGER',
+	'enable'											=> 'INTEGER',
+	'link'												=> 'HTML',
+	'link_internal'								=> 'INTEGER',
+	'link_hit_count'							=> 'INTEGER',
+	'link_hit'										=> 'INTEGER',
 );
 
 $zero_array = array('forum_rules_in_viewforum', 'forum_rules_in_viewtopic', 'forum_rules_in_posting');
@@ -245,12 +245,8 @@ if (isset($tree['keys'][$fid]) && !empty($tree['main'][ $tree['keys'][$fid] ]) &
 	$selected_id = $tree['main'][ $tree['keys'][$fid] ];
 }
 
-/**
-*
-* Process
-* Move up/down
-*
-*/
+// Process
+// move up/down
 if (($mode == 'moveup') || ($mode == 'movedw'))
 {
 	$prec = '';
@@ -322,12 +318,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	$idx = isset($tree['keys'][$fid]) ? $tree['keys'][$fid] : '';
 	$item = array();
 
-	/**
-	*
-	* Get values from memory
-	* Get type and id
-	*
-	*/
+	// Get values from memory
+	// Get type and id
 	$old_type = empty($CH_this) ? POST_FORUM_URL : substr($fid, 0, 1);
 	$old_id = empty($CH_this) ? 0 : intval(substr($fid, 1));
 
@@ -445,12 +437,9 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		}
 	}
 
-	/**
-	*
-	* Get values from form
-	* Type
-	*
-	**/
+	// Get values from form
+
+	// Type
 	$item['type'] = isset($_POST['type']) ? $_POST['type'] : $item['type'];
 	if (!isset($forum_type_list[ $item['type'] ]))
 	{
@@ -478,7 +467,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			break;
 	}
 
-	// get value from form
+	// Get values from form
 	@reset($$fields_list);
 	while (list($table_field, $process_field) = @each($$fields_list))
 	{

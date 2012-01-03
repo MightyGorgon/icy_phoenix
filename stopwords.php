@@ -37,7 +37,7 @@ if(!$user->data['session_logged_in'])
 
 if($user->data['user_level'] != ADMIN)
 {
-	message_die(GENERAL_MESSAGE, 'You are not authorized to access this page');
+	message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 }
 
 stopwords_synonyms_init();
