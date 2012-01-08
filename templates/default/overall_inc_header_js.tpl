@@ -58,7 +58,7 @@ window.onload = function()
 	{
 		eval(onload_functions[i]);
 	}
-}
+};
 
 window.onunload = function()
 {
@@ -66,7 +66,7 @@ window.onunload = function()
 	{
 		eval(onunload_functions[i]);
 	}
-}
+};
 // ]]>
 </script>
 

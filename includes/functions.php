@@ -1312,7 +1312,10 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 {
 	$charset = empty($charset) ? 'utf-8' : $charset;
 
-	// Function needed to convert some of the cyrillic characters into latin correspondent characters
+	// Function needed to convert some of the German characters into Latin correspondent characters
+	$text = utf_ger_to_latin($text, false);
+
+	// Function needed to convert some of the Cyrillic characters into Latin correspondent characters
 	$text = utf_cyr_to_latin($text, false);
 
 	// Remove all HTML tags and convert to lowercase
@@ -1351,16 +1354,12 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 		'&#317;', '&#318;', // L, l
 		'&#327;', '&#328;', // N, n
 		'&#381;', '&#382;', 'Ž', 'ž', // z
+		'&#223;', '&#946;', 'ß', // ß
 		'œ', '&#338;', '&#339;', // OE, oe
 		'&#198;', '&#230;', // AE, ae
-		'&#223;', '&#946;', // ß
 		'š', 'Š', // 'š','Š'
 		'&#273;', '&#272;', // ?', '?', // 'dj','dj'
 		'`', '‘', '’',
-		'&#196;', '&#228;', // Ä, ä
-		'&#214;', '&#246;', // Ö, ö
-		'&#220;', '&#252;', // Ü, ü
-
 	);
 
 	$repl = array(
@@ -1370,15 +1369,12 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 		'l', 'l',
 		'n', 'n',
 		'z', 'z', 'z', 'z',
+		'ss', 'ss', 'ss',
 		'oe', 'oe', 'oe',
 		'ae', 'ae',
-		'ss', 'ss',
 		's', 's',
 		'dj', 'dj',
 		'-', '-', '-',
-		'ae', 'ae',
-		'oe', 'oe',
-		'ue', 'ue',
 	);
 
 	$text = str_replace($find, $repl, $text);
@@ -1421,6 +1417,30 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 }
 
 /**
+* German to Latin chars conversion
+*/
+function utf_ger_to_latin($string, $reverse = false)
+{
+	$ger  = array(
+		'&#223;', '&#946;', 'ß', // ß
+		'&#196;', '&#228;', 'Ä', 'ä', // Ä, ä
+		'&#214;', '&#246;', 'Ö', 'ö', // Ö, ö
+		'&#220;', '&#252;', 'Ü', 'ü', // Ü, ü
+	);
+
+	$lat = array(
+		'ss', 'ss', 'ss',
+		'ae', 'ae', 'ae', 'ae',
+		'oe', 'oe', 'oe', 'oe',
+		'ue', 'ue', 'ue', 'ue',
+	);
+
+	$string = !empty($reverse) ? str_replace($lat, $ger, $string) : str_replace($ger, $lat, $string);
+
+	return $string;
+}
+
+/**
 * Cyrillic to Latin chars conversion
 */
 function utf_cyr_to_latin($string, $reverse = false)
@@ -1455,14 +1475,7 @@ function utf_cyr_to_latin($string, $reverse = false)
 		'Sht', 'A', 'Y', 'Yu', 'Ya'
 	);
 
-	if (!empty($reverse))
-	{
-		$string = str_replace($lat, $cyr, $string);
-	}
-	else
-	{
-		$string = str_replace($cyr, $lat, $string);
-	}
+	$string = !empty($reverse) ? str_replace($lat, $cyr, $string) : str_replace($cyr, $lat, $string);
 
 	return $string;
 }
