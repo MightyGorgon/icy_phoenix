@@ -1809,6 +1809,7 @@ class user extends session
 		{
 			$this->data['mobile_style'] = true;
 			$this->set_cookie('mob', 1, $user->cookie_expire);
+			$_COOKIE[$config['cookie_name'] . '_mob'] = 1;
 			$theme = setup_mobile_style();
 		}
 		else

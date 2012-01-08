@@ -1126,7 +1126,7 @@ class pafiledb
 
 	function update_add_cat($cat_id = false)
 	{
-		global $db, $lang;
+		global $db, $cache, $config, $lang;
 
 		$cat_name = request_post_var('cat_name', '');
 		$cat_desc = request_post_var('cat_desc', '');
@@ -1151,10 +1151,16 @@ class pafiledb
 
 		if(sizeof($this->error))
 		{
-			return;
+			$err_messages = '';
+			foreach ($this->error as $error_lang)
+			{
+				$err_messages .= $error_lang . '<br /><br />';
+			}
+			$message = $err_messages . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>');
+			message_die(GENERAL_MESSAGE, $message);
 		}
 
-		if(!$cat_id)
+		if(empty($cat_id))
 		{
 			$cat_order = 0;
 			if(!empty($this->subcat_rowset[$cat_parent]))
@@ -1178,9 +1184,8 @@ class pafiledb
 		{
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET cat_name = '" . $db->sql_escape($cat_name) . "', cat_desc = '" . $db->sql_escape($cat_desc) . "', cat_parent = $cat_parent, cat_allow_file = $cat_allow_file, cat_allow_ratings = $cat_allow_ratings, cat_allow_comments = $cat_allow_comments
-				WHERE cat_id = $cat_id";
+				WHERE cat_id = " . (int) $cat_id;
 			$db->sql_query($sql);
-
 			if($cat_parent != $this->cat_rowset[$cat_id]['cat_parent'])
 			{
 				$this->reorder_cat($this->cat_rowset[$cat_id]['cat_parent']);

@@ -35,24 +35,23 @@ $mode = request_var('mode', '');
 $cat_id = request_var('cat_id', 0);
 $cat_id_other = request_var('cat_id_other', 0);
 
-if(($mode == 'do_add') && !$cat_id)
+if($mode == 'do_add')
 {
-	$cat_id = $pafiledb->update_add_cat();
-	$mode = 'add';
-	if(!sizeof($pafiledb->error))
+	if (!empty($cat_id))
 	{
-		$pafiledb->_pafiledb();
-		$message = $lang['Catadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $cat_id) . '">', '</a>');
-		message_die(GENERAL_MESSAGE, $message);
+		$lang_var = $lang['Catedited'];
 	}
-}
-elseif($mode == 'do_add' && $cat_id)
-{
+	else
+	{
+		$lang_var = $lang['Catadded'];
+		$mode = 'add';
+	}
+
 	$cat_id = $pafiledb->update_add_cat($cat_id);
 	if(!sizeof($pafiledb->error))
 	{
 		$pafiledb->_pafiledb();
-		$message = $lang['Catedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $cat_id) . '">', '</a>');
+		$message = $lang_var . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_edit_permissions'], '<a href="' . append_sid('admin_pa_catauth.' . PHP_EXT . '?cat_id=' . $cat_id) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -123,7 +122,7 @@ $template->assign_vars(array(
 	)
 );
 
-if($mode == '' || ($mode == 'cat_order') || ($mode == 'sync') || ($mode == 'sync_all'))
+if(empty($mode) || ($mode == 'cat_order') || ($mode == 'sync') || ($mode == 'sync_all'))
 {
 	$template->assign_vars(array(
 		'L_CREATE_CATEGORY' => $lang['Create_category'],
@@ -143,7 +142,7 @@ elseif(($mode == 'add') || ($mode == 'edit'))
 	{
 		if(!$_POST['cat_parent'])
 		{
-			$cat_list .= '<option value="0" selected>' . $lang['None'] . '</option>';
+			$cat_list .= '<option value="0" selected="selected">' . $lang['None'] . '</option>';
 		}
 		else
 		{
@@ -165,7 +164,7 @@ elseif(($mode == 'add') || ($mode == 'edit'))
 	{
 		if (!$pafiledb->cat_rowset[$cat_id]['cat_parent'])
 		{
-			$cat_list .= '<option value="0" selected>' . $lang['None'] . '</option>\n';
+			$cat_list .= '<option value="0" selected="selected">' . $lang['None'] . '</option>\n';
 		}
 		else
 		{
