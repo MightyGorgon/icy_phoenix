@@ -1,108 +1,6 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-<!--
-// Delete shout from DB
-function deleteShout(shout_id)
-{
-	// Ask for confirmation for the deletion of the shout
-	if(confirm("{L_CONFIRM}"))
-	{
-		httpDeleteChat = getHTTPObject();
-		param = 'act=del&sh=' + shout_id;
-		httpDeleteChat.open("POST", '{U_ACTION}', true);
-		httpDeleteChat.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-		httpDeleteChat.onreadystatechange = handlehResponse;
-		httpDeleteChat.send(param);
-		var x = document.getElementById('tbody' + shout_id);
-		x.parentNode.removeChild(x);
-	}
-}
-
-function getHTTPObject()
-{
-	var xmlhttp;
-	/*@cc_on
-	@if (@_jscript_version >= 5)
-		try
-		{
-			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		}
-		catch (e)
-		{
-			try
-			{
-				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			catch (E)
-			{
-				xmlhttp = false;
-			}
-		}
-	@else
-	xmlhttp = false;
-	@end @*/
-	if (!xmlhttp && (typeof XMLHttpRequest != 'undefined') )
-	{
-		try
-		{
-			xmlhttp = new XMLHttpRequest();
-		}
-		catch (e)
-		{
-			xmlhttp = false;
-		}
-	}
-	return xmlhttp;
-}
-
-function handlehResponse()
-{
-	if (httpDeleteChat.readyState == 4)
-	{
-		if (httpDeleteChat.status == 200)
-		{
-			var xmldoc;
-			var arr = new Array();
-			if (xmldoc = httpDeleteChat.responseXML)
-			{
-				var root, field;
-				root = xmldoc.getElementsByTagName('response').item(0);
-				for (var iNode = 0; iNode < root.childNodes.length; iNode++)
-				{
-					var node = root.childNodes.item(iNode);
-					if(node.tagName != undefined)
-					{
-						for (i = 0; i < node.childNodes.length; i++)
-						{
-							var sibl = node.childNodes.item(i);
-							for (x = 0; x < sibl.childNodes.length; x++)
-							{
-								if (sibl.childNodes.length > 0)
-								{
-									sibl2 = sibl.childNodes.item(0);
-									field = sibl.tagName;
-									if (field != undefined)
-									{
-										arr[field] = sibl2.data;
-										if ((arr['error_status'] == 1) && (field == 'error_msg'))
-										{
-											alert(arr['error_msg']);
-											return false;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-//-->
-</script>
-
+<!-- INCLUDE ajax_shoutbox_functions_js.tpl -->
 <table align="center" width="100%" cellspacing="0" cellpadding="0">
 <tr valign="top">
 	<td width="67%">
@@ -110,12 +8,12 @@ function handlehResponse()
 		<div style="float: right; text-align: right;"><span class="pagination">{pag.PAGINATION}</span></div>&nbsp;
 		<!-- END pag -->
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
-			<tr><th colspan="2">{L_SHOUTS}</th></tr>
+			<tr><th colspan="2"><img src="{T_COMMON_TPL_PATH}images/act_indicator.gif" id="indicator" alt="" style="visibility: hidden;" />&nbsp;{L_SHOUTS}</th></tr>
 			<!-- BEGIN shouts -->
-			<tbody id="tbody{shouts.ID}">
+			<tbody id="{L_SHOUT_PREFIX}{shouts.ID}">
 				<tr>
 					<td class="row2" colspan="2" nowrap="nowrap" valign="middle">
-						<span style="float: right;">{shouts.DELETE_IMG} {shouts.IP_IMG}</span>
+						<!-- IF shouts.DELETE_IMG --><span style="float: right;">{shouts.DELETE_IMG}</span><!-- ENDIF -->
 						<span class="post-text">{L_AUTHOR}: <b>{shouts.SHOUTER}</b></span>
 					</td>
 				</tr>
