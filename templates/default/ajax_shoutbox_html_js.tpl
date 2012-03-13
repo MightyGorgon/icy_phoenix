@@ -1,6 +1,6 @@
 <!-- BEGIN view_shoutbox -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/fat.js"></script>
-<script type="text/javascript"><!--//
+<script type="text/javascript">//<![CDATA[
 
 //
 // window event callback functions
@@ -160,6 +160,6 @@ function playsound(soundfile)
 	}
 }
 
-//-->
+//]]>
 </script>
 <!-- END view_shoutbox -->

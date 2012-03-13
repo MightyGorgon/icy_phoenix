@@ -27,8 +27,8 @@ if (!defined('CTRACKER_DISABLE_OUTPUT'))
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-// Decide whether XML or JSON is to be used
-$response_type = (isset($config['shoutbox_response_type'])) ? $config['shoutbox_response_type'] : 'xml'; // 'json' or 'json'
+// Decide whether XML or JSON is to be used - JSON preferred
+$response_type = (function_exists('json_decode') && is_array(json_decode('{"a":1}', true))) ? 'json' : 'xml';
 
 // Lets see what we do, if nothing define show the shoutbox
 $action = request_var('act', '');

@@ -26,8 +26,8 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
-// Decide whether XML or JSON is to be used
-$response_type = (isset($config['shoutbox_response_type'])) ? $config['shoutbox_response_type'] : 'xml'; // 'xml' or 'json'
+// Decide whether XML or JSON is to be used - JSON preferred
+$response_type = (function_exists('json_decode') && is_array(json_decode('{"a":1}', true))) ? 'json' : 'xml';
 
 $mode_types = array('archive');
 $mode = request_var('mode', '');

@@ -1,5 +1,5 @@
 <!-- BEGIN view_shoutbox -->
-<script type="text/javascript"><!--//
+<script type="text/javascript">//<![CDATA[
 // Based in the  XHTML live Chat (http://www.plasticshore.com)
 // This script is published under a creative commons license
 // license: http://creativecommons.org/licenses/by-nc-sa/2.0/
@@ -42,7 +42,10 @@ ajaxContext.checkOnlineUsers = function(users)
 	// clear the validity
 	for (var id in this.currentUsers)
 	{
-		this.currentUsers[id].valid = false;
+		if (this.currentUsers.hasOwnProperty(id))
+		{  
+			this.currentUsers[id].valid = false;
+		}
 	}
 	// add or update current users
 	for (var index = 0; index < users.length; index++) 
@@ -87,10 +90,10 @@ ajaxContext.updateShouts = function()
 	var maxId = this.lastId;
 	for (var id in this.currentShouts)
 	{
-		var shout = this.currentShouts[id]; 
-		if (shout.id > maxId)
-		{
-			maxId = shout.id;
+		if (this.currentShouts.hasOwnProperty(id))
+		{  
+			var shout = this.currentShouts[id]; 
+			maxId = (shout.id > maxId) ? shout.id : maxId;
 		}
 	}
 	this.lastId = maxId;
@@ -103,29 +106,35 @@ ajaxContext.updateUsers = function()
 	var deletedUsers = new Object();
 	for (var id in this.currentUsers)
 	{
-		var user = this.currentUsers[id];
-		if (user.isNew)
+		if (this.currentUsers.hasOwnProperty(id))
 		{
-			list.append(insertNewUser(id, user));
-			highlightUser(id);
+			var user = this.currentUsers[id];
+			if (user.isNew)
+			{
+				list.append(insertNewUser(id, user));
+				highlightUser(id);
+			}
+			else if (!user.valid)
+			{
+				deletedUsers[id] = user;
+			}
+			user.isNew = false;
+			user.valid = false;
 		}
-		else if (!user.valid)
-		{
-			deletedUsers[id] = user;
-		}
-		user.isNew = false;
-		user.valid = false;
 	}
 	for (var id in deletedUsers)
 	{
-		$("#" + id).remove();
-		delete this.currentUsers[id];
+		if (deletedUsers.hasOwnProperty(id))
+		{
+			$("#" + id).remove();
+			delete this.currentUsers[id];
+		}
 	}
 };
 
 // Starts the update timer
 ajaxContext.startUpdates = function(delay) {
-	if (typeof(this.updateTimer) != "undefined")
+	if (typeof this.updateTimer != "undefined")
 	{
 		clearTimeout(this.updateTimer);
 	} 
@@ -134,7 +143,7 @@ ajaxContext.startUpdates = function(delay) {
 
 // update error handler
 ajaxContext.updateError = function(jqXHR, status, error) {
-	error = ((typeof(error) == "string" && error != "")) ? "Update: " + error : "Update";
+	error = (typeof error == "string" && error != "") ? "Update: " + error : "Update";
 	this.stdError(jqXHR, status, error);
 	this.startUpdates(1000); // restart the updater 
 	ajaxContext = this; // jQuery clones the context
@@ -143,7 +152,7 @@ ajaxContext.updateError = function(jqXHR, status, error) {
 
 // send comment error handler
 ajaxContext.sendError = function(jqXHR, status, error) {
-	error = ((typeof(error) == "string" && error != "")) ? "Send: " + error : "Send";
+	error = (typeof error == "string" && error != "") ? "Send: " + error : "Send";
 	this.stdError(jqXHR, status, error);
 	setTimeout(sendComment, 1000); // try again
 	ajaxContext = this; // jQuery clones the context
@@ -171,7 +180,7 @@ ajaxContext.chatSuccess = function(data, status, jqXHR) {
 		{
 			this.updateUsers();
 		}
-		if (typeof(this.doneFunction) == 'function')
+		if (typeof this.doneFunction == 'function')
 		{
 			return this.doneFunction.call(this);
 		}
@@ -194,7 +203,7 @@ ajaxContext.setChatParameters = function(action) {
 
 <!-- BEGIN onload -->
 var oldOnLoad = window.onload;
-if (typeof(oldOnLoad) == 'function')
+if (typeof oldOnLoad == 'function')
 {
 	window.onload = function(evt) {
 		oldOnLoad(evt);
@@ -212,7 +221,7 @@ else
 
 // Both needed as Opera does not handle onbeforeload
 var oldOnUnload = window.onunload;
-if (typeof(oldOnUnload) == 'function')
+if (typeof oldOnUnload == 'function')
 {
 	window.onunload = function(evt) {
 		leaveChat(evt);
@@ -229,7 +238,7 @@ else
 }
 
 var oldOnBeforeUnload = window.onbeforeunload;
-if (typeof(oldOnBeforeUnload) == 'function')
+if (typeof oldOnBeforeUnload == 'function')
 {
 	window.onbeforeunload = function(evt) {
 		leaveChat(evt);
@@ -308,9 +317,10 @@ function receiveChatData()
 function sendComment()
 {
 	var inputText = $("#chatbarText");
-	var text = encodeURIComponent(inputText.val());
+	var text = inputText.val();
 	if (text != "")
 	{
+		text = encodeURIComponent(text);
 		var context = ajaxContext;
 		context.stopUpdates();
 
@@ -341,6 +351,6 @@ function sendComment()
 		$.ajax(context);
 	}
 }
-//-->
+//]]>
 </script>
 <!-- END view_shoutbox -->
