@@ -28,6 +28,7 @@
 		<total>{online_stats.TOTAL}</total>
 		<guests>{online_stats.GUESTS}</guests>
 		<reg>{online_stats.REG}</reg>
+		<sig>{online_stats.SIG}</sig>
 	</onstats>
 	<!-- END online_stats -->
 </response>

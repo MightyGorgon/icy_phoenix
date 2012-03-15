@@ -81,7 +81,7 @@ function pseudo_die($error, $error_msg)
 		)
 	);
 
-	$template->pparse('xml');
+	$template->pparse('xhr');
 	die();
 }
 
@@ -106,7 +106,7 @@ function update_session(&$error_msg)
 	}
 
 	// Guest are reconized by their IP
-	if(!$user->data['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
 	}
@@ -128,7 +128,7 @@ function update_session(&$error_msg)
 	}
 
 	// We need to decide if we create an entry or update a previous one
-	if($row = $db->sql_fetchrow($result))
+	if ($row = $db->sql_fetchrow($result))
 	{
 		$current_session_id = $row['session_id'];
 		$sql = "UPDATE " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
@@ -160,8 +160,50 @@ function update_session(&$error_msg)
 	{
 		$error_msg = 'Could not update Shoutbox session data';
 	}
-
 }
+
+// remove a Shoutbox session
+function remove_session(&$error_msg)
+{
+	global $db, $user, $user_ip;
+	$guest_sql = '';
+ 
+	// Guest are reconized by their IP
+	if (!$user->data['session_logged_in'])
+	{
+		$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
+	}
+
+	// Only get session data if the user was online less than SESSION_REFRESH seconds ago
+	$time_ago = time() - SESSION_REFRESH; // 120 seconds
+	$sql = 'SELECT session_id
+			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
+			WHERE session_user_id = ' . $user->data['user_id'] . '
+				AND session_time >= ' . $time_ago . '
+				' . $guest_sql . '
+			LIMIT 1';
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
+	{
+		$error_msg = 'Can\'t read shoutbox session data';
+	}
+
+	// We need to delete a previous existing entry only
+	if ($row = $db->sql_fetchrow($result))
+	{
+		$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+				WHERE session_id = " . $row['session_id'];
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
+		{
+			$error_msg = 'Could not delete Shoutbox session data';
+		}
+	}
+ }
 
 // Get max session_id
 function get_ajax_chat_max_session_id()

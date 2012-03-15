@@ -27,6 +27,9 @@ if (!defined('CTRACKER_DISABLE_OUTPUT'))
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
+// Decide whether XML or JSON is to be used - JSON preferred
+$response_type = (function_exists('json_decode') && is_array(json_decode('{"a":1}', true))) ? 'json' : 'xml';
+
 // Lets see what we do, if nothing define show the shoutbox
 $action = request_var('act', '');
 
@@ -39,7 +42,7 @@ if (!defined('AJAX_CHAT_ROOM'))
 	$chat_room_users = explode('|', $chat_room);
 	$chat_room_users_count = sizeof($chat_room_users);
 	$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
-	if(($user->data['user_level'] != ADMIN) && !empty($chat_room) && !in_array($user->data['user_id'], $chat_room_users))
+	if (($user->data['user_level'] != ADMIN) && !empty($chat_room) && !in_array($user->data['user_id'], $chat_room_users))
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
 	}
@@ -47,7 +50,7 @@ if (!defined('AJAX_CHAT_ROOM'))
 	$private_chat = true;
 }
 
-if(!empty($action))
+if (!empty($action))
 {
 	define('AJAX_HEADERS', true);
 	// Headers are sent to prevent browsers from caching... IE is still resistent sometimes
@@ -55,10 +58,17 @@ if(!empty($action))
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . 'GMT');
 	header('Cache-Control: no-cache, must-revalidate');
 	header('Pragma: no-cache');
-	header('Content-type: text/xml; charset=UTF-8');
 
-	// Define the XML Template
-	$template->set_filenames(array('xml' => 'ajax_shoutbox_xml.tpl'));
+	if ($response_type == 'xml') // can be 'xml' or 'json'
+	{
+		header('Content-type: text/xml; charset=UTF-8');
+		$template->set_filenames(array('xhr' => 'ajax_shoutbox_xml.tpl'));
+	}
+	else
+	{
+		header('Content-type: application/json; charset=UTF-8');
+		$template->set_filenames(array('xhr' => 'ajax_shoutbox_json.tpl'));
+	}
 
 	$error = AJAX_SHOUTBOX_NO_ERROR;
 	$error_msg = '';
@@ -70,154 +80,14 @@ if(!empty($action))
 		$db->sql_query($sql);
 	}
 
-	// Code for getting data
-	if($action == 'read')
-	{
-		// Stop guest from reading the shoutbox if they aren't allowed
-		if (($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
-		{
-			pseudo_die(SHOUTBOX_NO_ERROR, $lang['Shoutbox_no_auth']);
-		}
-
-		// Update session data and online list
-		if(isset($_POST['su']))
-		{
-			update_session($error_msg);
-
-			// Only get session data if the user was online SESSION_REFRESH seconds ago
-			$time_ago = time() - SESSION_REFRESH;
-
-			// Read session data for update
-			$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
-			FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-			WHERE s.session_time >= " . $time_ago . "
-				AND s.session_user_id = u.user_id
-			ORDER BY case u.user_level when 0 then 10 else u.user_level end";
-			$result = $db->sql_query($sql);
-
-			// Set all counters to 0
-			$reg_online_counter = $guest_online_counter = $online_counter = 0;
-			while($online = $db->sql_fetchrow($result))
-			{
-				if($online['user_id'] != ANONYMOUS)
-				{
-					$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
-					$template->assign_block_vars('online_list', array(
-						'USER' => $online['username'],
-						'USER_ID' => $online['user_id'],
-						'LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
-						'LINK_STYLE' => $style_color,
-						)
-					);
-					$reg_online_counter++;
-				}
-				else
-				{
-					$guest_online_counter++;
-				}
-				$online_counter++;
-			}
-
-			$template->assign_block_vars('online_stats', array(
-				'TOTAL' => $online_counter,
-				'GUESTS' => $guest_online_counter++,
-				'REG' => $reg_online_counter
-				)
-			);
-		}
-
-		// If the request does not provide the id of the last know message the id is set to 0
-		$lastID = request_var('lastID', 0);
-
-		$limit_sql = '';
-		// Check if there is a limit else, show all shouts
-		if($config['display_shouts'] > 0)
-		{
-			// Gets a limited number of entries
-			$limit_sql = " LIMIT " . $config['display_shouts'];
-		}
-
-		$sql = "SELECT s.*, u.username, u.user_active, u.user_color
-				FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
-				WHERE s.shout_id > " . $lastID . "
-					AND s.user_id = u.user_id
-					AND " . $chat_room_sql . "
-				ORDER BY s.shout_id DESC" . $limit_sql;
-		$results = $db->sql_query($sql);
-		$row = $db->sql_fetchrowset($results);
-
-		if(!(empty($row)))
-		{
-			$row = array_reverse($row);
-		}
-		else
-		{
-			// This is just to know that there are no shouts in the database but it's not an error
-			pseudo_die(SHOUTBOX_NO_ERROR, $lang['Shoutbox_empty']);
-		}
-
-		for($x = 0; $x < sizeof($row); $x++)
-		{
-			$id = $row[$x]['shout_id'];
-			//$time = utf8_encode(create_date($config['default_dateformat'], $row[$x]['shout_time'], $config['board_timezone']));
-			$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
-			//$time = utf8_encode(gmdate('Y/m/d - H.i.s', $row[$x]['shout_time']));
-
-			if ($row[$x]['user_id'] == ANONYMOUS)
-			{
-				$shouter = utf8_encode($row[$x]['shouter_name']);
-				$shouter_link = -1;
-			}
-			else
-			{
-				$shouter = utf8_encode($row[$x]['username']);
-				$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
-			}
-
-			$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], $row[$x]['user_active'], false, true);
-			/*
-			$shouter = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], $row[$x]['user_active']);
-			$shouter = preg_replace(array('<', '>'), array('mg_tag_open', 'mg_tag_close'), $shouter);
-			$shouter_link = '-1';
-			*/
-
-			//$message = stripslashes($row[$x]['shout_text']);
-			//$message = utf8_encode($row[$x]['shout_text']);
-			$message = $row[$x]['shout_text'];
-			$message = censor_text($message);
-
-			//$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
-			// Forced HTML to false to avoid problems
-			$bbcode->allow_html = false;
-			$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-			$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
-			/*
-			$bbcode->allow_html = true;
-			$bbcode->allow_bbcode = true;
-			$bbcode->allow_smilies = true;
-			*/
-			$message = $bbcode->parse($message);
-
-			//$message = preg_replace(array('<', '>'), array('mg_tag_open', 'mg_tag_close'), $message);
-
-			$template->assign_block_vars('shouts', array(
-				'ID' => $id,
-				'SHOUTER' => $shouter,
-				'SHOUTER_ID' => $row[$x]['user_id'],
-				'SHOUTER_COLOR' => $shouter_color,
-				'SHOUTER_LINK' => $shouter_link,
-				'MESSAGE' => $message,
-				'DATE' => $time
-				)
-			);
-		}
-	}
 	// Code for sending data
-	elseif ($action == 'add')
+	if ($action == 'add')
 	{
 		$shouter = request_var('nm', '', true);
+		$shouter = urldecode($shouter); // reverse the Javascript encodeURIComponent()
 		$shouter = htmlspecialchars_decode($shouter, ENT_COMPAT);
 		$message = request_var('co', '', true);
+		$message = urldecode($message); // reverse the Javascript encodeURIComponent()
 		$message = htmlspecialchars_decode($message, ENT_COMPAT);
 		$shout_time = time();
 
@@ -271,10 +141,9 @@ if(!empty($action))
 		}
 
 		// Some weird conversion of the data inputed
-		if($user->data['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
 			$shouter = '';
-			//$shouter = colorize_username($user->data['user_id'], $user->data['username'], $user->data['user_color'], $user->data['user_active']);
 		}
 		else
 		{
@@ -306,31 +175,7 @@ if(!empty($action))
 				}
 			}
 		}
-
-		$message = strip_tags($message);
-
-		// we don't want users shouting images so we take them out before parsing the bbcodes
-		//$message = @ereg_replace("\\[img\\]([^\[]*)\\[/img\\]", '', $message);
-
-		/*
-		// The message is cut of after 500 letters
-		if (strlen($message) > 500)
-		{
-			$message = substr($message, 0, 500);
-		}
-		*/
-
-		//$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
-		// Forced HTML to false to avoid problems
-		$bbcode->allow_html = false;
-		$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
-		//$message = addslashes($bbcode->parse($message));
-		$message = $bbcode->parse($message);
-		$message = str_replace('http://', 'http:_/_/', $message);
-		$message = str_replace('www.', 'http:_/_/www.', $message);
-		$message = str_replace('http:_/_/http:_/_/', 'http:_/_/', $message);
-
+		
 		// Only if a name and a message have been provides the information is added to the db
 		if ($message != '')
 		{
@@ -342,21 +187,17 @@ if(!empty($action))
 			$db->sql_return_on_error(false);
 			if (!$result)
 			{
-				/*
-				$error = AJAX_SHOUTBOX_ERROR;
-				$error_msg = $lang['Shoutbox_unable'];
-				$template->pparse('xml');
-				*/
 				pseudo_die(SHOUTBOX_ERROR, $lang['Shoutbox_unable']);
 			}
 
 			// Only do this if there is a limit.
-			if($config['stored_shouts'] > 1)
+			if ($config['stored_shouts'] > 1)
 			{
 				$limit = $config['stored_shouts'] - 1;
 				// Keep the database with the selected number of entrys.
 				$sql = "SELECT s.shout_id
 						FROM " . AJAX_SHOUTBOX_TABLE . " s
+						WHERE s.shout_id > 0
 							AND " . $chat_room_sql . "
 						ORDER BY s.shout_id DESC
 						LIMIT " . $limit . ", 1";
@@ -378,13 +219,197 @@ if(!empty($action))
 			$error_msg = $lang['Empty_message'];
 		}
 	}
+	// Code for getting data - also after a successful add
+	if (($action == 'read') || ($action == 'add' && $error == AJAX_SHOUTBOX_NO_ERROR))
+	{
+		// Stop guest from reading the shoutbox if they aren't allowed
+		if (($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
+		{
+			pseudo_die(AJAX_SHOUTBOX_NO_ERROR, $lang['Shoutbox_no_auth']);
+		}
+
+		// Always update the session on a read - even if data is not asked for
+		update_session($error_msg);
+		if ($error_msg != '')
+		{
+			pseudo_die(AJAX_SHOUTBOX_ERROR, $error_msg);
+		}
+
+		// Update session data and online list
+		if (isset($_POST['su']))
+		{
+
+			// Only get session data if the user was online twice the read request time ao
+			$time_ago = time() - ($config['shoutbox_refreshtime'] * 2);
+
+			// Read session data for update
+			$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
+			FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
+			WHERE s.session_time >= " . $time_ago . "
+				AND s.session_user_id = u.user_id
+			ORDER BY case u.user_level when 0 then 10 else u.user_level end";
+			$result = $db->sql_query($sql);
+
+			// Set all counters to 0
+			$reg_online_counter = $guest_online_counter = $online_counter = 0;
+			$online_list = array();
+			while ($online = $db->sql_fetchrow($result))
+			{
+				if($online['user_id'] != ANONYMOUS)
+				{
+					$online_list[$online['user_id']] = $online;
+					$reg_online_counter++;
+				}
+				else
+				{
+					$guest_online_counter++;
+				}
+				$online_counter++;
+			}
+
+			// Check if anything has changed
+			$online_keys = array_keys($online_list);
+			sort($online_keys, SORT_STRING);
+			$signature = md5(implode(',', $online_keys));
+			$sig = request_var('sig', '');
+
+			if ($signature != $sig)
+			{
+				foreach ($online_list as $name => $online)
+				{
+					$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
+					if ($response_type == 'xml')
+					{
+						$template->assign_block_vars('online_list', array(
+							'USER' => $online['username'],
+							'USER_ID' => $online['user_id'],
+							'LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
+							'LINK_STYLE' => $style_color,
+							)
+						);
+					}
+					else
+					{
+						$json_user = array(
+							'user_id' => $online['user_id'],
+							'username' => $online['username'],
+							'user_link' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
+							'link_style' => $style_color,
+						);
+						$template->assign_block_vars('online_list', array(
+							'user' => json_encode($json_user)
+							)
+						);
+					}
+				}
+				$template->assign_block_vars('online_stats', array(
+					'TOTAL' => $online_counter,
+					'GUESTS' => $guest_online_counter,
+					'REG' => $reg_online_counter,
+					'SIG' => $signature
+					)
+				);
+			}
+		}
+
+		// If the request does not provide the id of the last know message the id is set to 0
+		$lastID = request_var('lastID', 0);
+
+		$limit_sql = '';
+		// Check if there is a limit else, show all shouts
+		if ($config['display_shouts'] > 0)
+		{
+			// Gets a limited number of entries
+			$limit_sql = " LIMIT " . $config['display_shouts'];
+		}
+
+		$sql = "SELECT s.*, u.username, u.user_active, u.user_color
+				FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
+				WHERE s.shout_id > " . $lastID . "
+					AND s.user_id = u.user_id
+					AND " . $chat_room_sql . "
+				ORDER BY s.shout_id DESC" . $limit_sql;
+		$results = $db->sql_query($sql);
+		$row = $db->sql_fetchrowset($results);
+
+		if (!(empty($row)))
+		{
+			$row = array_reverse($row);
+		}
+		else
+		{
+			// This is just to know that there are no shouts in the database but it's not an error
+			pseudo_die(AJAX_SHOUTBOX_NO_ERROR, $lang['Shoutbox_empty']);
+		}
+
+		for ($x = 0; $x < sizeof($row); $x++)
+		{
+			$id = $row[$x]['shout_id'];
+			$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
+
+			if ($row[$x]['user_id'] == ANONYMOUS)
+			{
+				$shouter = utf8_encode($row[$x]['shouter_name']);
+				$shouter_link = -1;
+			}
+			else
+			{
+				$shouter = utf8_encode($row[$x]['username']);
+				$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
+			}
+
+			$shouter = urlencode($shouter); // for Javascript
+			$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], $row[$x]['user_active'], false, true);
+
+			$message = $row[$x]['shout_text'];
+			$message = strip_tags($message);
+			$message = censor_text($message);
+
+			// Forced HTML to false to avoid problems
+			$bbcode->allow_html = false;
+			$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+			$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+			$message = $bbcode->parse($message);
+
+			$message = urlencode($message); // for Javascript
+
+			if ($response_type == 'xml')
+			{
+				$template->assign_block_vars('shouts', array(
+					'ID' => $id,
+					'SHOUTER' => $shouter,
+					'SHOUTER_ID' => $row[$x]['user_id'],
+					'SHOUTER_COLOR' => $shouter_color,
+					'SHOUTER_LINK' => $shouter_link,
+					'MESSAGE' => $message,
+					'DATE' => $time
+					)
+				);
+			}
+			else
+			{
+				$json_shout = array(
+					'id' => $id,
+					'shouter' => $shouter,
+					'shouter_id' => $row[$x]['user_id'],
+					'shouter_color' => $shouter_color,
+					'shouter_link' => $shouter_link,
+					'msg' => $message,
+					'date' => $time
+				);
+				$template->assign_block_vars('shouts', array(
+					'shout' => json_encode($json_shout)
+					)
+				);
+			}
+		}
+	}
 	// Code for Deleting Data
 	elseif ($action == 'del')
 	{
-		if(($user->data['user_level'] == ADMIN) && ($user->data['session_logged_in']))
+		if (($user->data['user_level'] == ADMIN) && ($user->data['session_logged_in']))
 		{
 			$shout_id = request_var('sh', 0);
-
 			$sql = 'DELETE FROM ' . AJAX_SHOUTBOX_TABLE . ' WHERE shout_id =' . $shout_id;
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
@@ -396,8 +421,23 @@ if(!empty($action))
 			}
 		}
 	}
+	// Code to leave the chat room
+	elseif ($action == 'leave')
+	{
+		remove_session($error_msg);
+		if ($error_msg != '')
+		{
+			pseudo_die(AJAX_SHOUTBOX_ERROR, $error_msg);
+		}
+	}
+	else {
+			pseudo_die(AJAX_SHOUTBOX_ERROR, "unknown action");
+	}
+
+	// Send back the XHR response
 	pseudo_die($error, $error_msg);
 }
+
 if (!$shoutbox_template_parse)
 {
 	// Load templates
@@ -429,17 +469,20 @@ $template->assign_vars(array(
 	'L_SUMBIT' => $lang['Submit'],
 	'L_ARCHIVE' => $lang['Ajax_Archive'],
 	'L_UNABLE' => $lang['Shoutbox_unable'],
+	'L_TIMEOUT' => $lang['Shoutbox_timeout'],
 	'L_WIO' => $lang['Who_is_Chatting'],
 	'L_GUESTS' =>  $lang['Online_guests'],
 	'L_TOTAL' => $lang['Online_total'],
 	'L_USERS' => $lang['Online_registered'],
 	'L_TOP_SHOUTERS' => $lang['Top_Ten_Shouters'],
 	'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
+	'L_SHOUT_PREFIX' => 'shout-',
+	'L_USER_PREFIX' => 'user-',
 	'U_ARCHIVE' => append_sid(CMS_PAGE_AJAX_CHAT . '?mode=archive')
 	)
 );
 
-if($config['shout_allow_guest'] > 0)
+if ($config['shout_allow_guest'] > 0)
 {
 	// Guest and Users may see the shoutbox
 	$template->assign_block_vars('view_shoutbox', array(
@@ -454,11 +497,11 @@ if($config['shout_allow_guest'] > 0)
 		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
-	if($config['shout_allow_guest'] == 1)
+	if ($config['shout_allow_guest'] == 1)
 	{
 		// Guest and users may shout.
 		$template->assign_block_vars('view_shoutbox.shout_allowed', array());
-		if(!($user->data['session_logged_in']))
+		if (!($user->data['session_logged_in']))
 		{
 			// Only guests need to enter a username
 			$template->assign_block_vars('view_shoutbox.shout_allowed.guest_shouter', array());
@@ -467,7 +510,7 @@ if($config['shout_allow_guest'] > 0)
 	else
 	{
 		// Only registered users may shout.
-		if($user->data['session_logged_in'])
+		if ($user->data['session_logged_in'])
 		{
 			$template->assign_block_vars('view_shoutbox.shout_allowed', array());
 		}
@@ -476,7 +519,7 @@ if($config['shout_allow_guest'] > 0)
 else
 {
 	// Only registered users may see/shout
-	if($user->data['session_logged_in'])
+	if ($user->data['session_logged_in'])
 	{
 		$template->assign_block_vars('view_shoutbox', array(
 			'BOX_WIDTH' => $shoutbox_width,
@@ -486,6 +529,7 @@ else
 			'TABLE_WIDTH' => $shoutbox_table_width,
 			'TABLE_HEIGHT' => $shoutbox_table_height,
 			'REFRESH_TIME' => $config['shoutbox_refreshtime'],
+			'RESPONSE_TYPE' => $response_type,
 			'CHAT_ROOM' => $chat_room,
 			'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 			)
@@ -501,7 +545,7 @@ else
 
 $template->assign_block_vars('view_shoutbox.onload', array());
 
-if($user->data['user_level'] == ADMIN)
+if ($user->data['user_level'] == ADMIN)
 {
 	$template->assign_block_vars('view_shoutbox.user_is_admin', array());
 }
