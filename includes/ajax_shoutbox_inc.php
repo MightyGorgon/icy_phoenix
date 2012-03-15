@@ -228,17 +228,19 @@ if (!empty($action))
 			pseudo_die(AJAX_SHOUTBOX_NO_ERROR, $lang['Shoutbox_no_auth']);
 		}
 
+		// Always update the session on a read - even if data is not asked for
+		update_session($error_msg);
+		if ($error_msg != '')
+		{
+			pseudo_die(AJAX_SHOUTBOX_ERROR, $error_msg);
+		}
+
 		// Update session data and online list
 		if (isset($_POST['su']))
 		{
-			update_session($error_msg);
-			if ($error_msg != '')
-			{
-				pseudo_die(AJAX_SHOUTBOX_ERROR, $error_msg);
-			}
 
-			// Only get session data if the user was online SESSION_REFRESH seconds ago
-			$time_ago = time() - SESSION_REFRESH;
+			// Only get session data if the user was online twice the read request time ao
+			$time_ago = time() - ($config['shoutbox_refreshtime'] * 2);
 
 			// Read session data for update
 			$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
@@ -492,7 +494,7 @@ if ($config['shout_allow_guest'] > 0)
 		'TABLE_HEIGHT' => $shoutbox_table_height,
 		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 		'CHAT_ROOM' => $chat_room,
-		'U_ACTION' => IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT
+		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
 	if ($config['shout_allow_guest'] == 1)
@@ -529,7 +531,7 @@ else
 			'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 			'RESPONSE_TYPE' => $response_type,
 			'CHAT_ROOM' => $chat_room,
-			'U_ACTION' => IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT
+			'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 			)
 		);
 		$template->assign_block_vars('view_shoutbox.shout_allowed', array());

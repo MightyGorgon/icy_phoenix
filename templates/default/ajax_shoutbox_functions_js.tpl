@@ -90,7 +90,6 @@ var ajaxContext = {
 	// Sets the common AJAX parameters
 	setParameters: function(action) {
 		this.data = {
-			sid: "{S_SID}",
 			act: action
 		};
 	},

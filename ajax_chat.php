@@ -148,7 +148,7 @@ else
 		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 		'RESPONSE_TYPE' => $response_type,
 		'CHAT_ROOM' => $chat_room,
-		'U_ACTION' => IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT
+		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
 
