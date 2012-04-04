@@ -35,7 +35,7 @@ $breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . appe
 
 $mode = request_var('mode', '', true);
 $search = request_var('search', '', true);
-$search_escaped = $db->sql_escape($search);
+$search_escaped = $db->sql_escape(strtolower($search));
 
 if (!empty($search_escaped))
 {
@@ -48,19 +48,19 @@ if (!empty($search_escaped))
 
 	if ($mode == 'user')
 	{
-		$where = "AND p.pic_username LIKE '%" . $search_escaped . "%'";
+		$where = "AND LOWER(p.pic_username) LIKE '%" . $search_escaped . "%'";
 	}
 	elseif ($mode == 'name')
 	{
-		$where = "AND p.pic_title LIKE '%" . $search_escaped . "%'";
+		$where = "AND LOWER(p.pic_title) LIKE '%" . $search_escaped . "%'";
 	}
 	elseif ($mode == 'desc')
 	{
-		$where = "AND p.pic_desc LIKE '%" . $search_escaped . "%'";
+		$where = "AND LOWER(p.pic_desc) LIKE '%" . $search_escaped . "%'";
 	}
 	elseif ($mode == 'name_desc')
 	{
-		$where = "AND (p.pic_desc LIKE '%" . $search_escaped . "%' OR p.pic_title LIKE '%" . $search_escaped . "%')";
+		$where = "AND (LOWER(p.pic_desc) LIKE '%" . $search_escaped . "%' OR LOWER(p.pic_title) LIKE '%" . $search_escaped . "%')";
 	}
 	else
 	{

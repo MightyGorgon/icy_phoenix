@@ -125,26 +125,6 @@ if($user->data['user_level'] == ADMIN)
 	$personal_gallery_list = '';
 	album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
 
-	// Better removing this code... it's better to create the Personal Gallery if we wish to upload content in it!
-	/*
-	$userinfo = album_get_nonexisting_personal_gallery_info();
-	$count = sizeof($userinfo);
-	for($idx = 0; $idx < $count; $idx++)
-	{
-		$personal_gallery = init_personal_gallery_cat($userinfo[$idx]['user_id']);
-		$album_user_access = album_permissions($userinfo[$idx]['user_id'], 0, ALBUM_AUTH_CREATE_PERSONAL, $personal_gallery);
-		if (album_check_permission($album_user_access, ALBUM_AUTH_CREATE_PERSONAL) == true)
-		{
-			$selected = (($user->data['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
-			$personal_gallery_list .= '<option value="-' . $userinfo[$idx]['user_id'] . '" ' . $selected . '>' . sprintf($lang['Personal_Gallery_Of_User'], $userinfo[$idx]['username']) . '</option>';
-		}
-	}
-	if (!empty($personal_gallery_list))
-	{
-		$personal_gallery_list = '<option value="' . ALBUM_JUMPBOX_SEPARATOR . '">------------------------------</option>' . $personal_gallery_list;
-	}
-	*/
-
 	$temp_tree = album_get_tree_option($cat_id, ALBUM_AUTH_VIEW_AND_UPLOAD) . $personal_gallery_list;
 	if ($temp_tree == '')
 	{

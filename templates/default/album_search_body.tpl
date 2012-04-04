@@ -34,7 +34,17 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <table class="empty-table" width="100%" align="center" cellspacing="0">
-<tr><td align="right"><span class="gensmall">{S_TIMEZONE}</span></td></tr>
+<tr>
+	<td align="left"><span class="gensmall">{S_TIMEZONE}</span></td>
+	<td align="right" valign="top">
+		<!-- IF PAGINATION -->
+		<span class="gen">{PAGE_NUMBER}</span><br />
+		<span class="pagination">{PAGINATION}</span>
+		<!-- ELSE -->
+		&nbsp;
+		<!-- ENDIF -->
+	</td>
+</tr>
 </table>
 <!-- END switch_search_results -->
 <br />

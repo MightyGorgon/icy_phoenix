@@ -561,6 +561,7 @@ $lang = array_merge($lang, array(
 
 	'Use_sub_forum' => 'Index packing',
 	'Index_packing_explain' => 'Choose the level of packing you want for the index',
+	'List' => 'List',
 	'Medium' => 'Medium',
 	'Full' => 'Full',
 	'Split_categories' => 'Split categories on index',

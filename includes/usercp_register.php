@@ -74,7 +74,7 @@ $profile_security->handle_profile();
 // Load agreement template since user has not yet agreed to registration conditions/coppa
 function show_coppa()
 {
-	global $user, $template, $config, $lang;
+	global $config, $user, $template, $lang;
 
 	// Load the appropriate Rules file
 	$lang_file = 'lang_rules';
@@ -113,6 +113,11 @@ function show_coppa()
 		}
 	}
 
+	if (!function_exists('language_select'))
+	{
+		@include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+	}
+
 	$template->set_filenames(array('body' => 'agreement.tpl'));
 
 	$template->assign_vars(array(
@@ -125,6 +130,9 @@ function show_coppa()
 		'AGREE_UNDER_13' => $lang['Agree_under_13'],
 		'DO_NOT_AGREE' => $lang['Agree_not'],
 		'AGREE_CHECKBOX' => $lang['Agree_checkbox'],
+
+		'S_LANG_CHANGE_ACTION' => append_sid(CMS_PAGE_PROFILE . '?mode=register'),
+		'LANGUAGE_SELECT' => language_select('l', $config['default_lang']),
 
 		'L_RULES_TITLE' => $l_title,
 		'L_BACK_TO_TOP' => $lang['Back_to_top'],

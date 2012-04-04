@@ -972,6 +972,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			message_die(GENERAL_MESSAGE, $lang['No_search_match']);
 		}
 
+		//0 = post_time, 1; 2 = title, 3 = author, 4 = forum
+		$sort_by = request_var('sort_by', 0);
+		$sort_dir = request_var('sort_dir', '');
+		$sort_dir = ($sort_dir == 'ASC') ? $sort_dir : 'DESC';
+
 		// Delete old data from the search result table
 		$sql = 'DELETE FROM ' . SEARCH_TABLE . ' WHERE search_time < ' . ($current_time - (int) $config['session_length']);
 		$result = $db->sql_query($sql);
@@ -1009,6 +1014,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		unset($store_search_data);
 
 		mt_srand ((double) microtime() * 1000000);
+		$search_type = $search_id; //create a save
 		$search_id = mt_rand();
 
 		$sql = "UPDATE " . SEARCH_TABLE . "
@@ -1086,10 +1092,14 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		switch ($sort_by)
 		{
 			case 1:
-				$sql .= ($show_results == 'posts') ? 'p.post_subject' : 't.topic_title';
+				if ($show_results == 'posts')
+				{
+					$sql .= 'p.post_subject';
 				break;
+				}
 			case 2:
 				$sql .= 't.topic_title';
+				$sort_by = 2;
 				break;
 			case 3:
 				$sql .= 'u.username';
@@ -1099,8 +1109,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				break;
 			default:
 				$sql .= ($show_results == 'posts') ? 'p.post_time' : 'p2.post_time';
+				$sort_by = 0;
 				break;
 		}
+
+		$template->assign_vars(array(
+				'U_SELF' => CMS_PAGE_SEARCH . '?search_id=' . $search_type . '&amp;s2=' . $s2,
+				'U_SELF_SORT' => CMS_PAGE_SEARCH . '?search_id=' . $search_type . '&amp;s2=' . $s2 . '&amp;sort_by=' . $sort_by,
+			)
+		);
+
 		$sql .= " $sort_dir LIMIT $start, " . $per_page;
 		$result = $db->sql_query($sql);
 
@@ -1778,6 +1796,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$template->assign_vars(array(
 			'PAGINATION' => generate_pagination($base_url, $total_match_count, $per_page, $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $per_page) + 1), ceil($total_match_count / $per_page)),
+			'SORT_BY' => $sort_by,
+			'SORT_DIR' => $sort_dir,
 
 			'L_AUTHOR' => $lang['Author'],
 			'L_MESSAGE' => $lang['Message'],
@@ -1794,7 +1814,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			'L_MARK_ALL' => $lang['Mark_all'],
 			'L_SUBMIT_MARK_READ' => $lang['upi2db_submit_mark_read'],
 //<!-- END Unread Post Information to Database Mod -->
-			'L_LASTPOST' => '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_id . $search_url_add) . '">' . $lang['Last_Post'] . '</a>',
+			'L_LASTPOST' => ($search_type == 'upi2db') ? $lang['Last_Post'] : ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_type . $search_url_add) . '">' . $lang['Last_Post'] . '</a>'),
 			'L_SELECT' => $lang['Select'],
 			'L_POSTED' => $lang['Posted'],
 			'L_SUBJECT' => $lang['Subject'],

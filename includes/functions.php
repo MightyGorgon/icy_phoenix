@@ -2253,7 +2253,7 @@ function setup_basic_lang()
 */
 function setup_extra_lang($lang_files_array, $lang_base_path = '', $lang_override = '')
 {
-	global $config, $lang, $faq, $mtnc;
+	global $config, $lang, $images, $faq, $mtnc;
 
 	if (empty($lang_files_array))
 	{

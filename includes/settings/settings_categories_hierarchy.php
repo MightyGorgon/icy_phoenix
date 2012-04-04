@@ -38,6 +38,7 @@ $settings_data = array(
 			'None' => 0,
 			'Medium' => 1,
 			'Full' => 2,
+			'List' => 3,
 			),
 		),
 

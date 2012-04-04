@@ -626,8 +626,8 @@ $lang = array_merge($lang, array(
 	'Always_notify' => 'Always notify me of replies',
 	'Always_notify_explain' => 'Sends an e-mail when someone replies to a topic you have posted in. This can be changed whenever you post.',
 
-	'Board_style' => 'Board Style',
-	'Board_lang' => 'Board Language',
+	'Board_style' => 'Style',
+	'Board_lang' => 'Language',
 	'No_themes' => 'No Themes In database',
 	'Timezone' => 'Timezone',
 	'Date_format' => 'Date format',
@@ -1827,6 +1827,7 @@ $lang = array_merge($lang, array(
 	'Shoutbox_loading' => 'Loading Shoutbox...',
 // Errors
 	'Shoutbox_unable' => 'Sorry, the action couldn\'t be done. Please try again.',
+	'Shoutbox_timeout' => 'Sorry, the server is not responding. Please try again.',
 	'Shoutbox_empty' => 'No messages in Database',
 	'Shoutbox_no_mode' => 'No valid mode specified',
 // Archive
