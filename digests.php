@@ -416,6 +416,9 @@ else
 	message_die(GENERAL_MESSAGE, $message);
 }
 
+// Generate the page
+include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
+
 full_page_generation($template_to_parse, $lang['digest_page_title'], '', '');
 
 ?>
