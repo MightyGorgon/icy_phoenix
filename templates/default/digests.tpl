@@ -1,9 +1,8 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-// <![CDATA[
+<script type="text/javascript">//<![CDATA[
 
-function toggleAllForums ()
+function toggleAllForums()
 {
 	// If any particular forum is selected, this will unselect the all forums checkbox
 	if (document.subscribe.all_forums.checked)
@@ -13,7 +12,7 @@ function toggleAllForums ()
 	return;
 }
 
-function unCheckSubscribedForums (checkbox)
+function unCheckSubscribedForums(checkbox)
 {
 	// If all forums checkbox is checked, must uncheck all the individual forums.
 	is_checked = checkbox.checked;
@@ -76,7 +75,7 @@ function unsubscribeCheck()
 	return process_form;
 }
 
-// ]]>
+//]]>
 </script>
 
 <form name="subscribe" action="{S_POST_ACTION}" method="post" onsubmit="return unsubscribeCheck();">
