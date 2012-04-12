@@ -27,7 +27,7 @@ $cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_p
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $upload_dir = POSTED_IMAGES_PATH;
-$filetypes = 'jpg,gif,png';
+$filetypes = 'jpg,jpeg,gif,png';
 $maxsize = (1000 * 1024);
 
 /* Results:
