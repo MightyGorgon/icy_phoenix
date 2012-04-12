@@ -1206,6 +1206,12 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 				'U_PIC_SP' => $pic_sp_link,
 				'U_PIC_DL' => $pic_dl_link,
 
+				'THUMBNAIL' => $thumbnail_file,
+				'PIC_PREVIEW_HS' => $pic_preview_hs,
+				'PIC_PREVIEW' => $pic_preview,
+				'DESC' => $picrow[$j]['pic_desc'],
+				'APPROVAL' => $approval_link,
+
 				'VIEW' => $picrow[$j]['pic_view_count'],
 
 				'RATING' => ($album_config['rate'] == 1) ?('<a href="' . append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '"' . $image_rating_link_style . '>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
@@ -1392,6 +1398,11 @@ function album_build_recent_pics($cats)
 						'U_PIC_SP' => $pic_sp_link,
 						'U_PIC_DL' => $pic_dl_link,
 
+						'THUMBNAIL' => $thumbnail_file,
+						'PIC_PREVIEW_HS' => $pic_preview_hs,
+						'PIC_PREVIEW' => $pic_preview,
+						'DESC' => $picrow[$j]['pic_desc'],
+
 						'VIEW' => $picrow[$j]['pic_view_count'],
 
 						'RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
@@ -1528,31 +1539,36 @@ function album_build_highest_rated_pics($cats)
 						$template->assign_block_vars('highest_pics_block.highest_pics.highest_detail', array(
 							'PIC_ID' => $picrow[$j]['pic_id'],
 							'PIC_TITLE' => $picrow[$j]['pic_title'],
-							'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $picrow[$j]['pic_title'] . '</a>',
-							'H_POSTER' => $highest_poster,
-							'H_TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
+							'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $picrow[$j]['pic_title'] . '</a>',
+							'POSTER' => $highest_poster,
+							'TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
 
 							'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 							'U_PIC_SP' => $pic_sp_link,
 							'U_PIC_DL' => $pic_dl_link,
 
-							'H_VIEW' => $picrow[$j]['pic_view_count'],
+							'THUMBNAIL' => $thumbnail_file,
+							'PIC_PREVIEW_HS' => $pic_preview_hs,
+							'PIC_PREVIEW' => $pic_preview,
+							'DESC' => $picrow[$j]['pic_desc'],
 
-							'H_RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
+							'VIEW' => $picrow[$j]['pic_view_count'],
 
-							'H_COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+							'RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 
-							'H_IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
+							'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+
+							'IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
 							)
 						);
 					}
 				}
 			}
-		}
-		elseif ($rated_images == 0)
-		{
-			// No Pics Found
-			$template->assign_block_vars('highest_pics_block.no_pics', array());
+			if ($rated_images == 0)
+			{
+				// No Pics Found
+				$template->assign_block_vars('highest_pics_block.no_pics', array());
+			}
 		}
 		else
 		{
@@ -1670,21 +1686,26 @@ function album_build_most_viewed_pics($cats)
 					$template->assign_block_vars('mostviewed_pics_block.mostviewed_pics.mostviewed_detail', array(
 						'PIC_ID' => $picrow[$j]['pic_id'],
 						'PIC_TITLE' => $picrow[$j]['pic_title'],
-						'H_TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
-						'H_POSTER' => $picrow_poster,
-						'H_TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
+						'TITLE' => '<a href = "' . append_sid(album_append_uid($album_show_pic_url . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . htmlspecialchars($picrow[$j]['pic_title']) . '</a>',
+						'POSTER' => $picrow_poster,
+						'TIME' => create_date_ip($config['default_dateformat'], $picrow[$j]['pic_time'], $config['board_timezone']),
 
 						'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 						'U_PIC_SP' => $pic_sp_link,
 						'U_PIC_DL' => $pic_dl_link,
 
-						'H_VIEW' => $picrow[$j]['pic_view_count'],
+						'THUMBNAIL' => $thumbnail_file,
+						'PIC_PREVIEW_HS' => $pic_preview_hs,
+						'PIC_PREVIEW' => $pic_preview,
+						'DESC' => $picrow[$j]['pic_desc'],
 
-						'H_RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
+						'VIEW' => $picrow[$j]['pic_view_count'],
 
-						'H_COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+						'RATING' => ($album_config['rate'] == 1) ? ('<a href="'. append_sid(album_append_uid($album_rate_pic_url .'?pic_id='. $picrow[$j]['pic_id'])) . '" ' . $image_rating_link_style .'>' . $lang['Rating'] . '</a>: ' . $image_rating . '<br />') : '',
 
-						'H_IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
+						'COMMENTS' => ($album_config['comment'] == 1) ? ('<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $picrow[$j]['pic_id'])) . '">' . $lang['Comments'] . '</a>: ' . $image_comment . '<br />') : '',
+
+						'IP' => ($user->data['user_level'] == ADMIN) ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($picrow[$j]['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($picrow[$j]['pic_user_ip']) .'</a><br />' : ''
 						)
 					);
 			 	}
@@ -1813,6 +1834,11 @@ function album_build_random_pics($cats)
 						'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
 						'U_PIC_SP' => $pic_sp_link,
 						'U_PIC_DL' => $pic_dl_link,
+
+						'THUMBNAIL' => $thumbnail_file,
+						'PIC_PREVIEW_HS' => $pic_preview_hs,
+						'PIC_PREVIEW' => $pic_preview,
+						'DESC' => $picrow[$j]['pic_desc'],
 
 						'VIEW' => $picrow[$j]['pic_view_count'],
 
