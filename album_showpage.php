@@ -96,6 +96,7 @@ if ($is_slideshow)
 	$gen_simple_header = true;
 	$show_template = 'album_slideshow_body.tpl';
 	$nuffimage_pic = ($picm == false) ? 'album_pic.' : 'album_picm.';
+	$nuff_display = false;
 }
 else
 {
@@ -107,6 +108,7 @@ else
 		$show_template = 'album_pic_nuffed_body.tpl';
 		$nuffimage_vars = '&amp;nuffimage=true';
 		$nuffimage_pic = 'album_pic_nuffed.';
+		$nuff_display = true;
 		$nuff_http_full_string = $nuff_http['full_string'];
 		$template->assign_block_vars('disable_pic_nuffed', array(
 			'L_PIC_UNNUFFED_CLICK' => $lang['Nuff_UnClick'],
@@ -119,6 +121,7 @@ else
 		$show_template = 'album_showpage_body.tpl';
 		$nuffimage_vars = '';
 		$nuffimage_pic = ($picm == false) ? 'album_pic.' : 'album_picm.';
+		$nuff_display = false;
 		$nuff_http_full_string = '';
 	}
 }
@@ -315,6 +318,7 @@ if (!$album_config['invert_nav_arrows'])
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
+				'CLASS' => ($i == $new_pic_array_id) ? 'image-current' : 'image',
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #ff5522;' : '',
 				)
 			);
@@ -353,6 +357,7 @@ else
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
+				'CLASS' => ($i == $new_pic_array_id) ? 'image-current' : 'image',
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
 				)
 			);
@@ -902,6 +907,12 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	}
 
 	// Mighty Gorgon - Pic Size - BEGIN
+	$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
+	$pic_thumbnail_path = $pic_info['thumbnail_m_fullpath'];
+	$pic_thumbnail_size = @getimagesize($pic_thumbnail_path);
+	$pic_thumbnail_width = $pic_thumbnail_size[0];
+	$pic_thumbnail_height = $pic_thumbnail_size[1];
+
 	$pic_fullpath = ALBUM_UPLOAD_PATH . $thispic['pic_filename'];
 	$pic_size = @getimagesize($pic_fullpath);
 	$pic_width = $pic_size[0];
@@ -974,6 +985,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id']));
 	$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $thispic['pic_id']));
 
+	$pic_full_set = ($picm == false || $nuff_display == true);
+
 	$template->assign_vars(array(
 		'CAT_TITLE' => $thispic['cat_title'],
 		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
@@ -992,9 +1005,9 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'U_PIC_SP' => $pic_sp_link,
 		'U_PIC_DL' => $pic_dl_link,
 		//'U_PIC_L1' => ($picm == false) ? '' : '<a href="album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $nuffimage_vars . '">',
-		'U_PIC_L1' => ($picm == false) ? '' : '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $sort_append . $nuffimage_vars)) . '">',
-		'U_PIC_L2' => ($picm == false) ? '' : '</a>',
-		'U_PIC_CLICK' => ($picm == false) ? '' : $lang['Click_enlarge'],
+		'U_PIC_L1' => ($pic_full_set) ? '' : '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $sort_append . $nuffimage_vars)) . '">',
+		'U_PIC_L2' => ($pic_full_set) ? '' : '</a>',
+		'U_PIC_CLICK' => ($pic_full_set) ? '' : $lang['Click_enlarge'],
 		'U_PIC_THUMB' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $pic_id . $sort_append)),
 		'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . PHP_EXT . '?mode=text2shield'),
 
@@ -1007,17 +1020,17 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'L_PIC_DETAILS' => $lang['Pic_Details'],
 		'L_PIC_SIZE' => $lang['Pic_Size'],
 		'L_PIC_TYPE' => $lang['Pic_Type'],
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $pic_thumbnail_height,
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $pic_thumbnail_width,
 		'PIC_SIZE' => $pic_width . ' x ' . $pic_height . ' (' . intval($pic_filesize/1024) . 'KB)',
 		'PIC_TYPE' => strtoupper(substr($thispic['pic_filename'], strlen($thispic['pic_filename']) - 3, 3)),
 		// Mighty Gorgon - Pic Size - END
-
-		//'PIC_RATING' => $image_rating . (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : ''),
-		'PIC_RATING' => $image_rating . (($own_pic_rate == true) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
 
 		'PIC_ID' => $pic_id,
 		'PIC_BBCODE' => '[albumimg]' . $pic_id . '[/albumimg]',
 		'PIC_TITLE' => $thispic['pic_title'],
 		'PIC_DESC' => $pic_desc,
+		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 		'POSTER' => $poster,
 
@@ -1071,8 +1084,9 @@ if(empty($comment_text) && !isset($_POST['rating']))
 
 		// Rating
 		//'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($already_rated) ? $lang['Already_rated'] : $lang['Please_Rate_It']),
-		'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($own_pic_rate == true) ? $lang['Own_Pic_Rate'] : (($already_rated == true) ? $lang['Already_rated'] : $lang['Please_Rate_It'])),
-		'PIC_RATING' => $image_rating . (($own_pic_rate == true) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
+		'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : ((($own_pic_rate == true) && ($user->data['user_level'] != ADMIN)) ? $lang['Own_Pic_Rate'] : ((($already_rated == true) && ($user->data['user_level'] != ADMIN)) ? $lang['Already_rated'] : $lang['Please_Rate_It'])),
+		'PIC_RATING' => $image_rating . ((($own_pic_rate == true) && ($user->data['user_level'] != ADMIN)) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : ((($already_rated == true) && ($user->data['user_level'] != ADMIN)) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
+
 		'L_CURRENT_RATING' => $lang['Current_Rating'],
 		'L_PLEASE_RATE_IT' => $lang['Please_Rate_It']
 		)
