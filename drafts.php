@@ -207,8 +207,9 @@ if ($no_drafts == false)
 			$draft_load = 'loadp';
 			$draft_cat_link = append_sid(IP_ROOT_PATH . CMS_PAGE_PRIVMSG);
 			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']);
+			$draft_subject = $draft_row[$i]['draft_subject'] ? $draft_row[$i]['draft_subject'] : '...'; // Missing subject produces an empty link
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $lang['Drafts_NPM'] . '</a>';
-			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row[$i]['draft_subject'] . '</a>';
+			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_subject . '</a>';
 		}
 
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
