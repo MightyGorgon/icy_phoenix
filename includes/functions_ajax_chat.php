@@ -86,16 +86,16 @@ function pseudo_die($error, $error_msg)
 }
 
 // Update and return Shoutbox sessions data
-function update_session(&$error_msg)
+function update_session(&$error_msg, $refresh = true)
 {
-	global $db, $cache, $user, $lang;
+	global $db, $cache, $config, $user, $lang;
 	$guest_sql = '';
 	$online_counter = 0;
 	$reg_online_counter = 0;
 	$guest_online_counter = 0;
 
 	// First clean old data... so we should have a light table...
-	$clean_time = time() - 86400;
+	$clean_time = time() -  floor($config['shoutbox_refreshtime'] / 1000 * 3);
 	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " WHERE session_time < " . $clean_time;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -105,60 +105,63 @@ function update_session(&$error_msg)
 		$error_msg = 'Could not update Shoutbox session data';
 	}
 
-	// Guest are reconized by their IP
-	if (!$user->data['session_logged_in'])
+	if ($refresh)
 	{
-		$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
-	}
+		// Guest are reconized by their IP
+		if (!$user->data['session_logged_in'])
+		{
+			$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
+		}
 
-	// Only get session data if the user was online SESSION_REFRESH seconds ago
-	$time_ago = time() - SESSION_REFRESH;
-	$sql = 'SELECT session_id
-			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
-			WHERE session_user_id = ' . $user->data['user_id'] . '
-				AND session_time >= ' . $time_ago . '
-				' . $guest_sql . '
-			LIMIT 1';
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-	if (!$result)
-	{
-		$error_msg = 'Can\'t read shoutbox session data';
-	}
+		// Only get session data if the user was online twice the refresh time seconds ago
+		$time_ago = time() - floor($config['shoutbox_refreshtime'] / 1000 * 2);
+		$sql = 'SELECT session_id
+				FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
+				WHERE session_user_id = ' . $user->data['user_id'] . '
+					AND session_time >= ' . $time_ago . '
+					' . $guest_sql . '
+				LIMIT 1';
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
+		{
+			$error_msg = 'Can\'t read shoutbox session data';
+		}
 
-	// We need to decide if we create an entry or update a previous one
-	if ($row = $db->sql_fetchrow($result))
-	{
-		$current_session_id = $row['session_id'];
-		$sql = "UPDATE " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-				SET session_ip = '" . $db->sql_escape($user->ip) . "',
-				session_time = " . time() . "
-				WHERE session_id = " . $row['session_id'];
-	}
-	else
-	{
-		$current_session_id = get_ajax_chat_max_session_id() + 1;
-		$sql = "INSERT INTO " . AJAX_SHOUTBOX_SESSIONS_TABLE . " (session_id, session_user_id, session_username, session_ip, session_start, session_time)
-			VALUES (" . $current_session_id . ", " . $user->data['user_id'] . ", '" . ($user->data['session_logged_in'] ? $user->data['username'] : '') . "', '" . $db->sql_escape($user->ip) . "', " . time() . ", " . time() . ")";
-	}
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-	if (!$result)
-	{
-		$error_msg = 'Could not update Shoutbox session data';
-	}
+		// We need to decide if we create an entry or update a previous one
+		if ($row = $db->sql_fetchrow($result))
+		{
+			$current_session_id = $row['session_id'];
+			$sql = "UPDATE " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+					SET session_ip = '" . $db->sql_escape($user->ip) . "',
+					session_time = " . time() . "
+					WHERE session_id = " . $row['session_id'];
+		}
+		else
+		{
+			$current_session_id = get_ajax_chat_max_session_id() + 1;
+			$sql = "INSERT INTO " . AJAX_SHOUTBOX_SESSIONS_TABLE . " (session_id, session_user_id, session_username, session_ip, session_start, session_time)
+				VALUES (" . $current_session_id . ", " . $user->data['user_id'] . ", '" . ($user->data['session_logged_in'] ? $user->data['username'] : '') . "', '" . $db->sql_escape($user->ip) . "', " . time() . ", " . time() . ")";
+		}
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
+		{
+			$error_msg = 'Could not update Shoutbox session data';
+		}
 
-	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-			WHERE session_user_id = " . $user->data['user_id'] . "
-				AND session_id <> " . $current_session_id;
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-	if (!$result)
-	{
-		$error_msg = 'Could not update Shoutbox session data';
+		$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+				WHERE session_user_id = " . $user->data['user_id'] . "
+					AND session_id <> " . $current_session_id;
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
+		{
+			$error_msg = 'Could not update Shoutbox session data';
+		}
 	}
 }
 
@@ -174,8 +177,8 @@ function remove_session(&$error_msg)
 		$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
 	}
 
-	// Only get session data if the user was online less than SESSION_REFRESH seconds ago
-	$time_ago = time() - SESSION_REFRESH; // 120 seconds
+	// Only get session data if the user was online less than twice refresh time seconds ago
+	$time_ago = time() - floor($config['shoutbox_refreshtime'] / 1000 * 2);
 	$sql = 'SELECT session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
 			WHERE session_user_id = ' . $user->data['user_id'] . '
@@ -203,7 +206,7 @@ function remove_session(&$error_msg)
 			$error_msg = 'Could not delete Shoutbox session data';
 		}
 	}
- }
+}
 
 // Get max session_id
 function get_ajax_chat_max_session_id()
