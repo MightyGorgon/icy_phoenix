@@ -185,7 +185,8 @@ if (!empty($search_escaped))
 			'L_TCATEGORY' => $lang['Pic_Cat'],
 			'L_TTITLE' => $lang['Pic_Image'],
 			'L_TSUBMITER' => $lang['Author'],
-			'L_TSUBMITED' => $lang['Time']
+			'L_TSUBMITED' => $lang['Time'],
+			'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 			)
 		);
 	}
