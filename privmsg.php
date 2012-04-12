@@ -631,7 +631,7 @@ elseif ($mode == 'read')
 
 	if ($privmsg['privmsgs_attach_sig'] && $user_sig != '')
 	{
-		$signature = '<br /><br />' . $config['sig_line'] . '<br />' . $user_sig;
+		$signature = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 	}
 
 	$post_subject = censor_text($post_subject);
@@ -671,9 +671,9 @@ elseif ($mode == 'read')
 		'POST_DATE' => $post_date,
 		'MESSAGE' => $private_message,
 		'PLAIN_MESSAGE' => $plain_message,
+		'SIGNATURE' => $signature,
 		'POSTER_RANK' => $poster_rank,
 		'RANK_IMAGE' => $rank_image,
-		'SIGNATURE' => $signature,
 		'POSTER_GENDER' => $user_info['gender'],
 
 		'PROFILE_URL' => $user_info['profile_url'],
@@ -715,6 +715,7 @@ elseif ($mode == 'read')
 		'ONLINE_STATUS_IMG' => $user_info['online_status_img'],
 		'ONLINE_STATUS' => $user_info['online_status'],
 		'L_ONLINE_STATUS' => $user_info['online_status_lang'],
+		'L_READ_MESSAGE' => $lang['Read_pm'],
 		)
 	);
 
@@ -1668,7 +1669,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			}
 		}
 
-		$preview_subject = censor_text($preview_subject);
+		$preview_subject = censor_text($privmsg_subject);
 		$preview_message = censor_text($preview_message);
 
 		if ($attach_sig && ($user_sig != ''))
@@ -1686,9 +1687,10 @@ elseif ($submit || $refresh || ($mode != ''))
 		$bbcode->allow_smilies = ($smilies_on ? true : false);
 		$preview_message = $bbcode->parse($preview_message);
 
+		$signature = '';
 		if ($attach_sig && $user_sig != '')
 		{
-			$preview_message = $preview_message . '<br />' . $config['sig_line'] . '<br />' . $user_sig;
+			$signature = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 		}
 
 		if($acro_auto_on)
@@ -1714,6 +1716,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			'MESSAGE_FROM' => $user->data['username'],
 			'POST_DATE' => create_date_ip($config['default_dateformat'], time(), $config['board_timezone']),
 			'MESSAGE' => $preview_message,
+			'SIGNATURE' => $signature,
 			'PLAIN_MESSAGE' => $plain_message,
 
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
@@ -1899,10 +1902,11 @@ elseif ($submit || $refresh || ($mode != ''))
 		'OUTBOX' => $outbox_url,
 		'SAVEBOX' => $savebox_url,
 
+		'S_IS_PM' => 1,
+
 		// AJAX Features - BEGIN
 		'S_AJAX_BLUR' => $ajax_blur,
 		'S_AJAX_PM_USER_CHECK' => $ajax_pm_user_check,
-		'S_IS_PM' => 1,
 		'S_DISPLAY_PREVIEW' => ($preview) ? '' : 'style="display:none;"',
 		'S_EDIT_POST_ID' => ($mode == 'edit') ? $privmsg_id : 0,
 		'L_EMPTY_SUBJECT' => $lang['Empty_subject'],
