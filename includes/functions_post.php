@@ -1155,6 +1155,11 @@ function generate_smilies($mode)
 		}
 	}
 
+	$template->assign_vars(array(
+		'DISPLAY_MODE' => ($mode == 'window') ? 'window' : 'inline',
+		)
+	);
+
 	if ($mode == 'window')
 	{
 		$template->pparse('smiliesbody');
