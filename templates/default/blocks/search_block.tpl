@@ -1,5 +1,4 @@
-<script type="text/javascript">
-<!--
+<script type="text/javascript">//<![CDATA[
 function checkSearch()
 {
 	if (document.search_block.search_engine.value == 'google')
@@ -12,8 +11,9 @@ function checkSearch()
 		return true;
 	}
 }
-//-->
+//]]>
 </script>
+
 <form name="search_block" method="post" action="{U_SEARCH}" onsubmit="return checkSearch()">
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr><td align="center"><br /><span class="gensmall">{L_SEARCH2}</span></td></tr>
