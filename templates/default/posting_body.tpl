@@ -3,26 +3,24 @@
 <!-- END switch_privmsg -->
 
 <!-- IF S_AJAX_FEATURES -->
-<script type="text/javascript">
-<!--
+<script type="text/javascript">//<![CDATA[
 var L_RESULTS = '{L_SEARCH_RESULTS}';
 var L_RESULT = '{L_SEARCH_RESULT}';
 var L_MORE_MATCHES = '{L_MORE_MATCHES}';
 var L_AJAX_NO_RESULTS = '{L_AJAX_NO_RESULTS}';
-//-->
+//]]>
 </script>
 
 <!-- <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script> -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_postfunctions.js"></script>
 <!-- ENDIF -->
 
-<script type="text/javascript">
-<!--
+<script type="text/javascript">//<![CDATA[
 function attach_rules(forum_id)
 {
 	window.open('{U_ATTACH_RULES}' + forum_id + '&sid={S_SID}', '_attach_rules', 'height=200,width=500,resizable=no,scrollbars=yes');
 }
-//-->
+//]]>
 </script>
 
 <!-- BEGIN switch_privmsg -->
