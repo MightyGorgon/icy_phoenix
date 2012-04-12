@@ -64,9 +64,9 @@
 </tr>
 <tr>
 <!-- BEGIN highest_detail -->
-	<td class="row1"><span class="gensmall">{highest_pics_block.highest_pics.highest_detail.H_TITLE}{L_FILE_DESC}: {highest_pics_block.highest_pics.highest_detail.H_DESC}<br />
-		{L_POSTER}: {highest_pics_block.highest_pics.highest_detail.H_POSTER}, {L_VIEW}: {highest_pics_block.highest_pics.highest_detail.H_VIEW}<br />{L_POSTED}: {highest_pics_block.highest_pics.highest_detail.H_TIME}<br />
-		{highest_pics_block.highest_pics.highest_detail.H_RATING}{highest_pics_block.highest_pics.highest_detail.H_COMMENTS}</span>
+	<td class="row1"><span class="gensmall">{highest_pics_block.highest_pics.highest_detail.TITLE}{L_FILE_DESC}: {highest_pics_block.highest_pics.highest_detail.DESC}<br />
+		{L_POSTER}: {highest_pics_block.highest_pics.highest_detail.POSTER}, {L_VIEW}: {highest_pics_block.highest_pics.highest_detail.VIEW}<br />{L_POSTED}: {highest_pics_block.highest_pics.highest_detail.TIME}<br />
+		{highest_pics_block.highest_pics.highest_detail.RATING}{highest_pics_block.highest_pics.highest_detail.COMMENTS}</span>
 	</td>
 <!-- END highest_detail -->
 </tr>
