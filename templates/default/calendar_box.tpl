@@ -1,6 +1,5 @@
 <!-- The javascript presents here comes from MyCalendar 2.2.6 from MojavLinux -->
-<script type="text/javascript">
-// <![CDATA[
+<script type="text/javascript">//<![CDATA[
 var agt = navigator.userAgent.toLowerCase();
 var originalFirstChild;
 
@@ -60,7 +59,7 @@ function destroyTitle()
 		document.body.removeChild(document.body.firstChild);
 	}
 }
-// ]]>
+//]]>
 </script>
 
 <!-- BEGIN _calendar_box -->
@@ -70,14 +69,13 @@ function destroyTitle()
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 <div id="calendarbox">
-<script type="text/javascript">
-<!--
+<script type="text/javascript">//<![CDATA[
 tmp = 'calendarbox';
 if(GetCookie(tmp) == '2')
 {
 	ShowHide('calendarbox', 'calendarbox_h', 'calendarbox');
 }
-//-->
+//]]>
 </script>
 {IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_HIDE}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN switch_full_month -->
