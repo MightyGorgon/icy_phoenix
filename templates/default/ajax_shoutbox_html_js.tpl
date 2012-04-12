@@ -41,7 +41,7 @@ function insertNewShout(id, shout)
 	output += "<td width=\"140\"><div style=\"text-align: center;\"><span class=\"gensmall\"><i>" +
 		shout.date + "<\/i><\/span><\/div><\/td>";
 	output += "<td><div class=\"post-text post-text-hide-flow post-text-chat\"><b>" +
-		shout.shouter_name + "</b>: " + shout.text + "<\/div><\/td>";
+		shout.shouter_name + "</b>: " + shout.msg + "<\/div><\/td>";
 
 	<!-- BEGIN user_is_admin -->
 	output += "<td width=\"100\"><div style=\"text-align: center;\">" +
@@ -49,7 +49,7 @@ function insertNewShout(id, shout)
 		shout.id + ");\">" + '{DELETE_IMG}' + "<\/a><\/span><\/div><\/td>";
 	<!-- END user_is_admin -->
 
-	output += "</tr>"
+	output += "</tr>";
 	return output;
 }
 
@@ -59,7 +59,7 @@ function insertNewUser(id, user)
 	var output = "<span id=\"" + id + "\"";
 	output += " style=\"text-align: left; display: " +
 		((show_inline == true) ? "inline" : "block") + "; margin-right: 5px;\">";
-	output += "<a href=\"" + user.link + " class=\"gensmall\" target=\"_blank\" " +
+	output += "<a href=\"" + user.link + "\" class=\"gensmall\" {S_TARGET} " +
 		user.style + ">" + user.username + "<\/a>";
 	output += "</span>";
 	return output;
@@ -85,7 +85,7 @@ function highlightUser(id)
 	Fat.fade_element(id, 30, 2000, '#ff5500');
 }
 
-// Signal that something chaged on the page
+// Signal that something changed on the page
 function chatDataChanged()
 {
 	playsound(sound_url);
