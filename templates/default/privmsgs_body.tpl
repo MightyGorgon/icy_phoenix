@@ -3,8 +3,7 @@
 {CPL_MENU_OUTPUT}
 <form method="post" name="privmsg_list" action="{S_PRIVMSGS_ACTION}">
 
-<script type="text/javascript">
-<!--
+<script type="text/javascript">//<![CDATA[
 //
 // Should really check the browser to stop this whining ...
 //
@@ -15,7 +14,7 @@ function select_switch(status)
 		document.privmsg_list.elements[i].checked = status;
 	}
 }
-//-->
+//]]>
 </script>
 
 <div class="forumline" style="padding-left:3px;padding-right:3px;margin-top:5px;margin-bottom:5px;">
