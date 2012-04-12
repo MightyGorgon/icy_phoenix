@@ -44,7 +44,7 @@ $server_path = create_server_url();
 $upload_dir = POSTED_IMAGES_PATH;
 $user_upload_dir = '';
 $allowed_extensions = 'gif|jpg|jpeg|png';
-$max_file_size = (1000 * 1024);
+$max_file_size = (1024 * 1024);
 
 if (USERS_SUBFOLDERS_IMG)
 {
@@ -97,7 +97,8 @@ $template->assign_vars(array(
 	'L_UPLOADING' => $lang['Uploading'],
 	'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 	'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
-	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.',
+	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.<br />' .
+		$lang['Upload_File_Max_Size'] . ' ' . floor($max_file_size / 1024) . $lang['KB'] . '.',
 	)
 );
 
