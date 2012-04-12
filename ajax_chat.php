@@ -63,8 +63,8 @@ if (empty($mode))
 	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
 	$ajax_archive_link = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 
-	$cms_page_id_tmp = 'ajax_chat';
 	// Import settings from other vars if set... or force global blocks to off since this may be run as stand alone
+	$cms_page_id_tmp = 'ajax_chat';
 	$cms_page['page_nav'] = isset($cms_page['page_nav']) ? $cms_page['page_nav'] : true;
 	$cms_page['global_blocks'] = isset($cms_page['global_blocks']) ? $cms_page['global_blocks'] : false;
 	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
@@ -74,14 +74,16 @@ if (empty($mode))
 
 	$template_to_parse = 'ajax_chat_body.tpl';
 	$template->assign_vars(array(
+		'L_PAGE_TITLE' => $lang['Ajax_Chat'],
 		'L_WIO' => $lang['Who_is_Chatting'],
 		'L_GUESTS' =>  $lang['Online_guests'],
 		'L_TOTAL' => $lang['Online_total'],
 		'L_USERS' => $lang['Online_registered'],
 		'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
 		'DELETE_IMG' => '<img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" />',
-		'L_SHOUT_PREFIX' => 'shout-',
-		'L_USER_PREFIX' => 'user-'
+		'L_SHOUT_PREFIX' => 'shout_',
+		'L_USER_PREFIX' => 'user_',
+		'S_TARGET' => 'target=\"_blank\"',
 		)
 	);
 
@@ -100,9 +102,8 @@ else
 	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
 	$ajax_chat_link = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 
-	$cms_page_id_tmp = 'ajax_chat_archive';
-
 	// Import settings from other vars if set... or force global blocks to off since this may be run as stand alone
+	$cms_page_id_tmp = 'ajax_chat_archive';
 	$cms_page['page_nav'] = isset($cms_page['page_nav']) ? $cms_page['page_nav'] : true;
 	$cms_page['global_blocks'] = isset($cms_page['global_blocks']) ? $cms_page['global_blocks'] : false;
 	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
@@ -116,8 +117,45 @@ else
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
+	$start = request_get_var('start', 0);
+	$start = ($start < 0) ? 0 : $start;
+
+	// Make Pagination and collect some extra data
+	$sql = 'SELECT COUNT(s.shout_id) as stored_shouts, MAX(s.shout_id) as total_shouts
+					FROM ' . AJAX_SHOUTBOX_TABLE . ' s
+					WHERE ' . $chat_room_sql;
+	$result = $db->sql_query($sql);
+
+	$num_items = $db->sql_fetchrow($result);
+
+	$pagination = generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive', $num_items['stored_shouts'], $config['posts_per_page'], $start);
+	if($pagination != '')
+	{
+		$template->assign_block_vars('pag', array(
+			'PAGINATION' => $pagination
+			)
+		);
+	}
+
+	// Get my shouts
+	$sql = "SELECT COUNT(s.shout_id) as count
+			FROM " . AJAX_SHOUTBOX_TABLE . " s
+			WHERE s.user_id = " . $user->data['user_id'] . "
+				AND " . $chat_room_sql;
+	$result = $db->sql_query($sql);
+	$myshouts = $db->sql_fetchrow($result);
+
+	// Get the shouts count for the last 24 hours
+	$yesterday = time() - (24 * 60 * 60);
+	$sql = "SELECT COUNT(s.shout_id) as count
+			FROM " . AJAX_SHOUTBOX_TABLE . " s
+			WHERE s.shout_time >= " . $yesterday . "
+				AND " . $chat_room_sql;
+	$result = $db->sql_query($sql);
+	$today = $db->sql_fetchrow($result);
+
 	$template->assign_vars(array(
-		'CHAT_ROOM' => $chat_room,
+		'L_PAGE_TITLE' => $lang['Ajax_Archive'],
 		'L_AUTHOR' => $lang['Author'],
 		'L_SHOUTS' => $lang['Shouts'],
 		'L_STATS' =>$lang['Statistics'],
@@ -140,7 +178,8 @@ else
 		'L_USERS' => $lang['Online_registered'],
 		'L_TOP_SHOUTERS' => $lang['Top_Ten_Shouters'],
 		'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
-		'L_SHOUT_PREFIX' => 'shout-'
+		'L_SHOUT_PREFIX' => 'shout_',
+		'L_USER_PREFIX' => 'user_'
 		)
 	);
 
@@ -148,51 +187,17 @@ else
 		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 		'RESPONSE_TYPE' => $response_type,
 		'CHAT_ROOM' => $chat_room,
+		'UPDATE_MODE' => 'archive',
 		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
 
-	$start = request_get_var('start', 0);
-	$start = ($start < 0) ? 0 : $start;
-
-	// Make Pagination and collect some extra data
-	$sql = 'SELECT COUNT(s.shout_id) as stored_shouts, MAX(s.shout_id) as total_shouts
-					FROM ' . AJAX_SHOUTBOX_TABLE . ' s
-					WHERE ' . $chat_room_sql;
-	$result = $db->sql_query($sql);
-
-	$num_items = $db->sql_fetchrow($result);
-
-	$pagination = generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive', $num_items['stored_shouts'], $config['posts_per_page'], $start);
-	if($pagination != '')
-	{
-		$template->assign_block_vars('pag', array(
-			'PAGINATION' => $pagination
-			)
-		);
-	}
+	$template->assign_block_vars('view_shoutbox.onload', array());
 
 	if ($user->data['user_level'] == ADMIN)
 	{
 		$template->assign_block_vars('view_shoutbox.user_is_admin', array());
 	}
-
-	// Get my shouts
-	$sql = "SELECT COUNT(s.shout_id) as count
-			FROM " . AJAX_SHOUTBOX_TABLE . " s
-			WHERE s.user_id = " . $user->data['user_id'] . "
-				AND " . $chat_room_sql;
-	$result = $db->sql_query($sql);
-	$myshouts = $db->sql_fetchrow($result);
-
-	// Get the shouts count for the last 24 hours
-	$yesterday = time() - (24 * 60 * 60);
-	$sql = "SELECT COUNT(s.shout_id) as count
-			FROM " . AJAX_SHOUTBOX_TABLE . " s
-			WHERE s.shout_time >= " . $yesterday . "
-				AND " . $chat_room_sql;
-	$result = $db->sql_query($sql);
-	$today = $db->sql_fetchrow($result);
 
 	// Get Who is Online in the shoutbox
 	// Only get session data if the user was online SESSION_REFRESH seconds ago
@@ -211,10 +216,9 @@ else
 	{
 		if($online['user_id'] != ANONYMOUS)
 		{
-			$username = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active']);
 			$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
 			$template->assign_block_vars('online_list', array(
-				'USERNAME' => $username,
+				'USERNAME' => $online['username'],
 				'USER' => $online['username'],
 				'USER_ID' => $online['user_id'],
 				'LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
@@ -294,13 +298,13 @@ else
 
 		if ($row[$x]['user_id'] == ANONYMOUS)
 		{
-			$shouter = utf8dec($row[$x]['username']);
+			$shouter = $row[$x]['username'];
 			$shouter_link = false;
 			$shouter_color = '';
 		}
 		else
 		{
-			$shouter = utf8dec($row[$x]['username']);
+			$shouter = $row[$x]['username'];
 			$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
 			$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], true, false, true);
 		}
@@ -316,7 +320,7 @@ else
 
 		if ($user->data['session_logged_in'] && ($user->data['user_level'] == ADMIN))
 		{
-			$temp_url = 'javascript: removeShout(' . $id . ')';
+			$temp_url = 'javascript:removeShout(' . $id . ')';
 			$delpost_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';
 		}
 		else
