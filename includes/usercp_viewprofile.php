@@ -282,6 +282,11 @@ if ($show_latest_pics)
 					'U_PIC_SP' => $pic_sp_link,
 					'U_PIC_DL' => $pic_dl_link,
 
+					'THUMBNAIL' => $pic_thumbnail,
+					'PIC_PREVIEW_HS' => $pic_preview_hs,
+					'PIC_PREVIEW' => $pic_preview,
+					'DESC' => $pic_desc,
+
 					'VIEW' => $pic_views,
 					)
 				);
@@ -654,9 +659,7 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yahoo_img,
 	'YIM' => $yahoo,
 	'U_YIM' => $yahoo_url,
-	'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
 
-	'ICON_CHAT' => $all_ims['chat']['icon'],
 	'ICON_AIM' => $all_ims['aim']['icon'],
 	'ICON_FACEBOOK' => $all_ims['facebook']['icon'],
 	'ICON_FLICKR' => $all_ims['flickr']['icon'],
@@ -742,9 +745,11 @@ $template->assign_vars(array(
 	'L_NO_PICS' => $lang['No_Pics'],
 	'L_RECENT_PUBLIC_PICS' => $lang['Recent_Public_Pics'],
 	'S_COLS' => $album_config['cols_per_page'],
-	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100 / $album_config['cols_per_page']) . '%',
 	//'S_COL_WIDTH' => (100/$album_config['cols_per_page']) . '%',
+	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100 / $album_config['cols_per_page']) . '%',
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 	// Mighty Gorgon - Full Album Pack - END
+
 	// Start add - Online/Offline/Hidden Mod
 	'ONLINE_STATUS_IMG' => $online_status_img,
 	'L_ONLINE_STATUS' => $lang['Online_status'],
@@ -800,6 +805,16 @@ $template->assign_vars(array(
 	)
 );
 
+// Don't chat with yourself - it's antisocial
+if ($user->data['user_id'] != $profiledata['user_id'])
+{
+	$template->assign_vars(array(
+		'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
+
+		'ICON_CHAT' => $all_ims['chat']['icon'],
+		)
+	);
+}
 
 // Custom Profile Fields - BEGIN
 // Include Language
@@ -809,8 +824,6 @@ include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 $profile_data = get_fields('WHERE view_in_profile = ' . VIEW_IN_PROFILE . ' AND users_can_view = ' . ALLOW_VIEW);
 $profile_names = array();
 
-$abouts = array();
-$contacts = array();
 foreach($profile_data as $field)
 {
 	$name = $field['field_name'];
@@ -839,23 +852,22 @@ foreach($profile_data as $field)
 
 	if($location == 1)
 	{
-		$contacts[] = '<td valign="top" class="' . $theme['td_class2'] . '"><b><span class="genmed">' . $field_name . '</span></b></td><td class="' . $theme['td_class1'] . ' post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
+		$template->assign_block_vars('custom_contact', array(
+			'NAME' => $field_name,
+			'VALUE' => $profile_names[$name],
+			)
+		);
 	}
 	else
 	{
-		$abouts[] = '<td valign="top" class="' . $theme['td_class2'] . '"><b><span class="genmed">' . $field_name . '</span></b></td><td class="' . $theme['td_class1'] . ' post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
+		$template->assign_block_vars('custom_about', array(
+			'NAME' => $field_name,
+			'VALUE' => $profile_names[$name],
+			)
+		);
 	}
 }
 
-foreach($abouts as $about_field)
-{
-	$template->assign_block_vars('custom_about',array('ABOUT' => $about_field));
-}
-
-foreach($contacts as $contact_field)
-{
-	$template->assign_block_vars('custom_contact',array('CONTACT' => $contact_field));
-}
 // Custom Profile Fields - END
 
 //====================================================================== |
