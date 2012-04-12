@@ -355,6 +355,11 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'U_PIC_SP' => $pic_sp_link,
 				'U_PIC_DL' => $pic_dl_link,
 
+				'THUMBNAIL' => $thumbnail_file,
+				'PIC_PREVIEW_HS' => $pic_preview_hs,
+				'PIC_PREVIEW' => $pic_preview,
+				'DESC' => $picrow[$j]['pic_desc'],
+
 				'CATEGORY' => $picrow[$j]['cat_title'],
 				'U_PIC_CAT' => $image_cat_url,
 
@@ -460,6 +465,7 @@ $template->assign_vars(array(
 
 	'S_COLS' => $album_config['cols_per_page'],
 	'S_COL_WIDTH' => (100/$album_config['cols_per_page']) . '%',
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 	'L_NO_PICTURES_BY_USER' => $lang['No_Pics'],
 	'U_MEMBERLIST_GALLERY' => append_sid(album_append_uid('album_allpics.' . PHP_EXT . '?mode=' . $album_view_mode . '&amp;type=' . $album_view_type)),
