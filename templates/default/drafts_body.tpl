@@ -1,7 +1,6 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-<!--
+<script type="text/javascript">//<![CDATA[
 function setCheckboxes(theForm, elementName, isChecked)
 {
 	var chkboxes = document.forms[theForm].elements[elementName];
@@ -20,7 +19,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 	}
 	return true;
 }
-//-->
+//]]>
 </script>
 <form name="drafts_form" id="drafts_form" method="post" action="{S_FORM_ACTION}">
 <input type="hidden" name="mode" value="editprofile" />
