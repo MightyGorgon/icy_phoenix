@@ -56,6 +56,7 @@ $template->assign_vars(array(
 	'S_FORM_ACTION' => append_sid(IP_ROOT_PATH . 'watched_topics.' . PHP_EXT),
 	'L_NO_WATCHED_TOPICS' => $lang['No_Watched_Topics'],
 	'L_FORUM' => $lang['Forum'],
+	'L_VIEWS' => $lang['Views'],
 	'L_REPLIES' => $lang['Replies'],
 	'L_STARTED' => $lang['Watched_Topics_Started'],
 	'L_LAST_POST' => $lang['Last_Post'],
@@ -128,6 +129,7 @@ if ($watch_count > 0)
 			$news_label = ($watch_rows[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 
 			$replies = $watch_rows[$i]['topic_replies'];
+			$views = $watch_rows[$i]['topic_views'];
 
 			$topic_link = $class_topics->build_topic_icon_link($watch_rows[$i]['forum_id'], $watch_rows[$i]['topic_id'], $watch_rows[$i]['topic_type'], $watch_rows[$i]['topic_reg'], $watch_rows[$i]['topic_replies'], $watch_rows[$i]['news_id'], $watch_rows[$i]['poll_start'], $watch_rows[$i]['topic_status'], $watch_rows[$i]['topic_moved_id'], $watch_rows[$i]['post_time'], $user_replied, $replies);
 
@@ -140,7 +142,7 @@ if ($watch_count > 0)
 				'TOPIC_ID' => $topic_id,
 				'TOPIC_FOLDER_IMG' => $topic_link['image'],
 				'L_TOPIC_FOLDER_ALT' => $topic_link['image_alt'],
-				'TOPIC_AUTHOR' => $topic_author,
+				'TOPIC_AUTHOR' => $topic_poster,
 				'TOPIC_TITLE' => $watch_rows[$i]['topic_title'],
 				'TOPIC_TYPE' => $topic_link['type'],
 				'TOPIC_TYPE_ICON' => $topic_link['icon'],
@@ -149,17 +151,25 @@ if ($watch_count > 0)
 				'NEWEST_POST_IMG' => $topic_link['newest_post_img'],
 				'L_NEWS' => $news_label,
 				'TOPIC_ATTACHMENT_IMG' => topic_attachment_image($watch_rows[$i]['topic_attachment']),
-
-				'S_WATCHED_TOPIC_ID' => $watch_rows[$i]['topic_id'],
-				'S_WATCHED_TOPIC' => $watch_rows[$i]['topic_title'],
-				'S_WATCHED_TOPIC_REPLIES' => $watch_rows[$i]['topic_replies'],
-				'S_WATCHED_TOPIC_START' => create_date_ip($config['default_dateformat'], $watch_rows[$i]['topic_time'], $config['board_timezone']),
-				'S_WATCHED_TOPIC_LAST' => create_date_ip($config['default_dateformat'], $watch_rows[$i]['post_time'], $config['board_timezone']),
 				'FORUM_NAME' => $watch_rows[$i]['forum_name'],
-				'TOPIC_POSTER' => $topic_poster,
-				'LAST_POSTER' => $last_poster,
+				'REPLIES' => $replies,
+				'VIEWS' => $views,
+				'FIRST_POST_TIME' => create_date_ip($config['default_dateformat'], $watch_rows[$i]['topic_time'], $config['board_timezone']),
+				'LAST_POST_TIME' => create_date_ip($config['default_dateformat'], $watch_rows[$i]['post_time'], $config['board_timezone']),
+				'LAST_POST_AUTHOR' => $last_poster,
 				'GOTO_PAGE' => $topic_pagination['base'],
 				'GOTO_PAGE_FULL' => $topic_pagination['full'],
+
+				// gratuitous name changes
+				'S_WATCHED_TOPIC_ID' => $watch_rows[$i]['topic_id'],
+				'S_WATCHED_TOPIC' => $watch_rows[$i]['topic_title'],
+				'S_WATCHED_TOPIC_REPLIES' => $replies,
+				'S_WATCHED_TOPIC_VIEWS' => $views,
+				'S_WATCHED_TOPIC_START' => create_date_ip($config['default_dateformat'], $watch_rows[$i]['topic_time'], $config['board_timezone']),
+				'S_WATCHED_TOPIC_LAST' => create_date_ip($config['default_dateformat'], $watch_rows[$i]['post_time'], $config['board_timezone']),
+				'TOPIC_POSTER' => $topic_poster,
+				'LAST_POSTER' => $last_poster,
+				// end gratuitous name changes
 
 				'U_VIEW_FORUM' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWFORUM . '?' . $forum_id_append),
 				'U_VIEW_TOPIC' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append),
