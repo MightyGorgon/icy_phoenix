@@ -170,6 +170,7 @@ $search_fields = request_var('search_fields', '');
 $search_fields = check_var_value($search_fields, $search_fields_types);
 
 $search_cat = request_var('search_cat', -1);
+$search_forum = request_var('search_forum', -1);
 
 $search_thanks = request_var('search_thanks', 0);
 $search_thanks = (($search_thanks >= '2') && empty($config['disable_thanks_topics'])) ? $search_thanks : false;
@@ -395,6 +396,20 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$sort_dir = 'DESC';
 			}
 			//End Advanced IP Tools Pack MOD
+			elseif ($search_cat != -1)
+			{
+				$sql = "SELECT post_id FROM " . POSTS_TABLE . " p, " . FORUMS_TABLE . " f WHERE p.forum_id = f.forum_id AND f.parent_id = $search_cat";
+				$show_results = 'posts';
+				$sort_by = 0;
+				$sort_dir = 'DESC';
+			}
+			elseif ($search_forum != -1)
+			{
+				$sql = "SELECT post_id FROM " . POSTS_TABLE . " WHERE forum_id = $search_forum";
+				$show_results = 'posts';
+				$sort_by = 0;
+				$sort_dir = 'DESC';
+			}
 			elseif ($search_id == 'egosearch')
 			{
 				if ($user->data['session_logged_in'])
@@ -1396,7 +1411,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$bbcode->allow_bbcode = $config['allow_bbcode'] && $searchset[$i]['enable_bbcode'];
 					$bbcode->allow_smilies = $config['allow_smilies'] && $searchset[$i]['enable_smilies'];
 					$bbcode->code_post_id = $searchset[$i]['post_id'];
-					$message = $bbcode->parse($message, '', false, $clean_tags);
+					$message = $bbcode->parse($message); // there is a better truncation mechanism now , '', false, $clean_tags);
 					$bbcode->code_post_id = 0;
 				}
 				else
@@ -1406,7 +1421,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				if ($return_chars != -1)
 				{
-					$message = (strlen($message) > $return_chars) ? substr($message, 0, $return_chars) . ' ...' : $message;
+					//$message = (strlen($message) > $return_chars) ? substr($message, 0, $return_chars) . ' ...' : $message;
+					$message = truncate_html_string($message, $return_chars);
 				}
 
 				if ($highlight_active)
