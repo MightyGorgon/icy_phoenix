@@ -11,7 +11,7 @@
 .box
 {
 	width: {view_shoutbox.BOX_WIDTH};
-	height: {view_shoutbox.BOX_HEIGHT};
+	/* height: {view_shoutbox.BOX_HEIGHT}; */
 	text-align: center;
 	margin: 0px auto;
 }
@@ -19,12 +19,15 @@
 {
 	width: {view_shoutbox.DIV_WIDTH};
 	height: {view_shoutbox.DIV_HEIGHT};
+	text-align: center;
 	overflow: auto;
+	margin: 0px auto;
 }
-#outputList
+#output_list
 {
-	width: {view_shoutbox.TABLE_WIDTH};
+	/* width: {view_shoutbox.TABLE_WIDTH}; */
 	height: {view_shoutbox.TABLE_HEIGHT};
+	text-align: left;
 }
 </style>
 
@@ -54,15 +57,14 @@
 		<!-- END shout_allowed -->
 		<tr>
 			<td class="row2">
-			<b>{L_WIO}:</b>&nbsp;<span class="gensmall">{L_TOTAL}:&nbsp;<b><span id="total-count">0</span></b>&nbsp;-&nbsp;{L_USERS}:&nbsp;<b><span id="user-count">0</span></b>&nbsp;-&nbsp;{L_GUESTS}:&nbsp;<b><span id="guests-count">0</span></b></span><br />
-			<span class="post-text" id="online-list"></span>
+			<b>{L_WIO}:</b>&nbsp;<span class="gensmall">{L_TOTAL}:&nbsp;<b><span id="total_c">0</span></b>&nbsp;-&nbsp;{L_USERS}:&nbsp;<b><span id="users_c">0</span></b>&nbsp;-&nbsp;{L_GUESTS}:&nbsp;<b><span id="guests_c">0</span></b></span><br />
+			<span class="post-text" id="online_list"></span>
 			</td>
 		</tr>
 		<tr>
 			<td class="row1 row-center">
 				<div class="shouts">
-					<table id="output-list" class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0">
-
+					<table id="output_list" class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0">
 					</table>
 					<br style="clear: both;" />
 				</div>
