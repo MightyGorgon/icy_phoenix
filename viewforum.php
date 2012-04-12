@@ -927,11 +927,13 @@ $sort_dir_append = '&amp;sort_dir=' . $sort_dir;
 $sort_dir_append_rev = '&amp;sort_dir=' . (($sort_dir == 'ASC') ? 'DESC' : 'ASC');
 $topic_days_append = ($topic_days == 0) ? '' : ('&amp;topicdays=' . $topic_days);
 $this_forum_address = CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append . $topic_days_append . $start_letter_append;
+$icon_img = empty($forum_row['icon']) ? '' : (isset($images[$forum_row['icon']]) ? $images[$forum_row['icon']] : $forum_row['icon']);
 
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
 	'FORUM_NAME' => $forum_row['forum_name'],
+	'FORUM_ICON_IMG' => $icon_img,
 	'FORUM_RULES' => $rules_bbcode,
 	'MODERATORS' => $forum_moderators,
 	'POST_IMG' => ($forum_row['forum_status'] == FORUM_LOCKED) ? $images['post_locked'] : $images['post_new'],
