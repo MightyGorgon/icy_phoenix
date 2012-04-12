@@ -363,7 +363,7 @@ switch ($mode)
 		}
 		// MG Cash MOD For IP - END
 
-		$select_sql = (!$submit) ? ', u.username, u.user_id, u.user_sig, u.user_level' : '';
+		$select_sql = (!$submit) ? ', u.username, u.user_id, u.user_sig, u.user_level, u.user_active, u.user_color' : '';
 		$from_sql = (!$submit) ? ", " . USERS_TABLE . " u" : '';
 		$where_sql = (!$submit) ? "AND u.user_id = p.poster_id" : '';
 		// MG Cash MOD For IP - BEGIN
@@ -1562,7 +1562,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		// End Autolinks For phpBB Mod
 		if($attach_sig && ($user_sig != ''))
 		{
-			$user_sig = '<br /><br />' . $config['sig_line'] . '<br />' . $user_sig;
+			$user_sig = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 		}
 
 		//$preview_message = str_replace("\n", '<br />', $preview_message);
@@ -1581,6 +1581,11 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 			$preview_subject .= get_calendar_title($topic_calendar_time, $topic_calendar_duration_preview);
 		}
 		$attachment_mod['posting']->preview_attachments();
+
+		if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post']))
+		{
+			$template->assign_var('S_POSTING_TOPIC', true);
+		}
 
 		//$preview_subject = strtr($preview_subject, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		$template->assign_vars(array(
@@ -2195,10 +2200,11 @@ $template->assign_vars(array(
 	'U_VIEWTOPIC' => ($mode == 'reply') ? append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append . '&amp;sd=d') : '',
 	'U_REVIEW_TOPIC' => ($mode == 'reply') ? append_sid('posting.' . PHP_EXT . '?mode=topicreview&amp;' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) : '',
 
+	'S_IS_PM' => 0,
+
 	// AJAX Features - BEGIN
 	'S_AJAX_BLUR' => $ajax_blur,
 	'S_AJAX_PM_USER_CHECK' => $ajax_pm_user_check,
-	'S_IS_PM' => 0,
 	'S_DISPLAY_PREVIEW' => ($preview) ? '' : 'style="display:none;"',
 	'S_EDIT_POST_ID' => ($mode == 'editpost') ? $post_id : 0,
 	'L_SEARCH_RESULTS' => $lang['AJAX_search_results'],
