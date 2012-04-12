@@ -1,6 +1,29 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <!-- INCLUDE ajax_shoutbox_functions_js.tpl -->
+<!-- INCLUDE ajax_shoutbox_html_js.tpl -->
+
+<!-- BEGIN view_shoutbox -->
+<script type="text/javascript">//<![CDATA[
+
+// Based in part on the XHTML live Chat (http://www.plasticshore.com)
+// This script is published under a creative commons license
+// license: http://creativecommons.org/licenses/by-nc-sa/2.0/
+
+// Refresh interval
+REFRESH_TIME *= 2; // slower here, speed is not essential
+
+// Initialises the form and starts the polling object
+function initChat(evt)
+{
+	sound_flag = false; // do things quietly
+	receiveChatData(); // initiates the first data query
+	return true;
+}
+//]]>
+</script>
+<!-- END view_shoutbox -->
+
 <table align="center" width="100%" cellspacing="0" cellpadding="0">
 <tr valign="top">
 	<td width="67%">
@@ -8,7 +31,7 @@
 		<div style="float: right; text-align: right;"><span class="pagination">{pag.PAGINATION}</span></div>&nbsp;
 		<!-- END pag -->
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
-			<tr><th colspan="2"><img src="{T_COMMON_TPL_PATH}images/act_indicator.gif" id="indicator" alt="" style="visibility: hidden;" />&nbsp;{L_SHOUTS}</th></tr>
+			<tr><th colspan="2">{L_SHOUTS}</th></tr>
 			<!-- BEGIN shouts -->
 			<tbody id="{L_SHOUT_PREFIX}{shouts.ID}">
 				<tr>
@@ -49,14 +72,20 @@
 		</table>
 		<br /><br />
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
-			<tr><th>{L_WIO}</th></tr>
+			<tr><th><img src="{T_COMMON_TPL_PATH}images/act_indicator.gif" id="indicator" alt="" style="visibility: hidden;" />&nbsp;{L_WIO}</th></tr>
 			<tr>
-				<td class="row1"><span class="post-text" id="online_list"><!-- BEGIN online_list -->&nbsp;&#8226;&nbsp;{online_list.USERNAME}<br /><!-- END online_list --></span></td>
+				<td class="row1 row-center" id="online_list">
+					<!-- BEGIN online_list -->
+					<!--
+					<span id="{L_USER_PREFIX}{online_list.USER_ID}" style="text-align: left; margin-right: 5px;"><a href="{online_list.LINK}" class="gensmall" {online_list.LINK_STYLE}>{online_list.USERNAME}</a></span>
+					-->
+					<!-- END online_list -->
+				</td>
 			</tr>
 			<tr>
 				<td class="row2 row-center">
 					<span class="gensmall">
-						{L_TOTAL}:<b><span id="total_c">{TOTAL_COUNTER}</span></b> {L_USERS}:<b><span id="users_c">{REGISTERED_COUNTER}</span></b> {L_GUESTS}:<b><span id="guests_c">{GUEST_COUNTER}</span></b><br>{L_SHOUTBOX_ONLINE_EXPLAIN}
+						{L_TOTAL}:<b><span id="total_c">{TOTAL_COUNTER}</span></b> {L_USERS}:<b><span id="users_c">{REGISTERED_COUNTER}</span></b> {L_GUESTS}:<b><span id="guests_c">{GUEST_COUNTER}</span></b><br><!--{L_SHOUTBOX_ONLINE_EXPLAIN}-->
 					</span>
 				</td>
 			</tr>
