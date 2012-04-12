@@ -96,9 +96,12 @@ if (isset($_POST['selected_id']) || isset($_GET['fid']))
 	}
 }
 
+$calendar_start_date = create_date('F Y', cal_date($start_date, $config['board_timezone']));
+
 // Header
 $template->assign_vars(array(
 	'L_CALENDAR' => $lang['Calendar'],
+	'L_CALENDAR_START_DATE' => $calendar_start_date,
 	'U_CALENDAR' => append_sid('calendar.' . PHP_EXT),
 	)
 );
