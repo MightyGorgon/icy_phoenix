@@ -49,7 +49,6 @@ if(!function_exists('cms_block_album'))
 		exit;
 		*/
 		include_once(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
-		global $album_config;
 
 		$sql = "SELECT c.*, COUNT(p.pic_id) AS count
 				FROM " . ALBUM_CAT_TABLE . " AS c
@@ -290,8 +289,11 @@ if(!function_exists('cms_block_album'))
 		$template->assign_vars(array(
 			//'S_COL_WIDTH' => (100 / $cms_config_vars['md_pics_number'][$block_id]) . '%',
 			'S_COL_WIDTH' => (100 / (($cms_config_vars['md_pics_cols_number'][$block_id] == 0) ? 4 : $cms_config_vars['md_pics_cols_number'][$block_id])) . '%',
+			'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
+
 			'TARGET_BLANK' => ($album_config['fullpic_popup']) ? 'target="_blank"' : '',
 
+			'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
 			'S_HIGHSLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
 			'S_JQ_NIVO_SLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
 			'S_SLIDER_ID' => 'cms_slider_' . $block_id,
@@ -303,7 +305,7 @@ if(!function_exists('cms_block_album'))
 			'L_POSTER' => $lang['Poster'],
 			'L_POSTED' => $lang['Posted'],
 			'U_ALBUM' => append_sid('album.' . PHP_EXT),
-			'L_ALBUM' => $lang['Album']
+			'L_ALBUM' => $lang['Album'],
 			)
 		);
 
