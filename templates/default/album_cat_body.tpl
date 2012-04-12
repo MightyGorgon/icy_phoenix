@@ -204,15 +204,15 @@
 <!-- BEGIN mostviewed_detail -->
 	<td class="row2 row-center">
 		<span class="gensmall">
-			{L_POSTER}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_POSTER}<br />
+			{L_POSTER}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.POSTER}<br />
 			{L_PIC_TITLE}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_SP}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_TITLE}</a><br />
 			{L_DOWNLOAD}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_DL}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_TITLE}</a><br />
 			{L_PIC_ID}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_ID}<br />
-			{L_POSTED}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_TIME}<br />
-			{L_VIEW}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_VIEW}<br />
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_RATING}
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_COMMENTS}
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_IP}
+			{L_POSTED}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.TIME}<br />
+			{L_VIEW}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.VIEW}<br />
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.RATING}
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS}
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP}
 		</span>
 	</td>
 <!-- END mostviewed_detail -->
