@@ -387,12 +387,14 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		if ($has_sub_cats && ($album_config['show_recent_instead_of_nopics'] == 1))
 		{
 			album_build_recent_pics($allowed_cat);
+			$template->assign_vars(array('S_NO_PICS' => '1'));
 		}
 		else
 		{
 			$template->assign_block_vars('index_pics_block', array());
 			$template->assign_block_vars('index_pics_block.no_pics', array());
 			$template->assign_block_vars('index_pics_block.enable_gallery_title', array());
+			$template->assign_vars(array('S_NO_PICS' => '1'));
 		}
 	}
 	// END thumbnails table
@@ -472,6 +474,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 
 		'S_COLS' => $album_config['cols_per_page'],
 		'S_COL_WIDTH' => (100 / $album_config['cols_per_page']) . '%',
+		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 		'L_VIEW' => $lang['View'],
 		'L_POSTER' => $lang['Pic_Poster'],
