@@ -175,7 +175,7 @@ if (empty($topic_id) && empty($post_id))
 
 // Find topic id if user requested a newer or older topic
 $view = request_get_var('view', '');
-if (!empty($view) &&  empty($post_id))
+if (!empty($view) && empty($post_id))
 {
 	if ($view == 'newest')
 	{
@@ -271,10 +271,10 @@ $order_sql = (!$post_id ? '' : ("GROUP BY p.post_id, t.topic_id, t.topic_title, 
 
 // Let's try to query all fields for topics and forums... it should not require too much resources as we are querying only one row
 //$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_thanks, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard" . $count_sql . "
-$sql = "SELECT t.*, f.*" . $count_sql . "
-	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f" . $join_sql_table . "
+$sql = "SELECT t.*, f.*, u.*" . $count_sql . "
+	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f," . USERS_TABLE . " u" . $join_sql_table . "
 	WHERE $join_sql
-		AND f.forum_id = t.forum_id
+		AND f.forum_id = t.forum_id AND t.topic_poster = u.user_id
 		$order_sql";
 attach_setup_viewtopic_auth($order_sql, $sql);
 $result = $db->sql_query($sql);
@@ -298,6 +298,25 @@ $topic_time = $forum_topic_data['topic_time'];
 $topic_first_post_id = intval($forum_topic_data['topic_first_post_id']);
 $topic_calendar_time = intval($forum_topic_data['topic_calendar_time']);
 $topic_calendar_duration = intval($forum_topic_data['topic_calendar_duration']);
+
+// Topic poster information
+$topic_started = create_date_ip($lang['DATE_FORMAT_VF'], $forum_topic_data['topic_time'], $config['board_timezone'], true);
+$topic_username = colorize_username($forum_topic_data['user_id'], $forum_topic_data['username'], $forum_topic_data['user_color'], $forum_topic_data['user_active']);
+$topic_avatar_img = user_get_avatar($forum_topic_data['user_id'], $forum_topic_data['user_level'], $forum_topic_data['user_avatar'], $forum_topic_data['user_avatar_type'], $forum_topic_data['user_allowavatar']);
+$topic_user_from_flag = $$forum_topic_data['user_from_flag'] ? '<img src="images/flags/' . $forum_topic_data['user_from_flag'] . '" alt="' . $forum_topic_data['user_from_flag'] . '" title="' . $forum_topic_data['user_from'] . '" />' : '';
+switch ($forum_topic_data['user_gender'])
+{
+	case 1:
+		$topic_user_gender_image = '<img src="' . $images['icon_minigender_male'] . '" alt="' . $lang['Gender'].  ': ' . $lang['Male'] . '" title="' . $lang['Gender'] . ': ' . $lang['Male'] . '" />';
+		break;
+	case 2:
+		$topic_user_gender_image = '<img src="' . $images['icon_minigender_female'] . '" alt="' . $lang['Gender']. ': ' . $lang['Female'] . '" title="' . $lang['Gender'] . ': ' . $lang['Female'] . '" />';
+		break;
+	default:
+		$topic_user_gender_image = '';
+}
+$topic_user_joined = create_date($lang['JOINED_DATE_FORMAT'], $forum_topic_data['user_regdate'], $config['board_timezone']);
+$topic_user_posts = $forum_topic_data['user_posts'];
 
 $meta_content = array();
 $meta_content = $class_topics->meta_content_init($forum_topic_data, 'topic');
@@ -1130,6 +1149,17 @@ $template->assign_vars(array(
 	'TOPIC_ID_FULL' => POST_TOPIC_URL . $topic_id,
 	'TOPIC_TITLE' => $topic_title,
 	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 80) . '...' : $topic_title),
+
+	'TOPIC_POSTED_TIME' => $topic_started,
+	'TOPIC_AUTHOR_NAME' => $topic_username,
+	'TOPIC_AUTHOR_AVATAR' => $topic_avatar_img,
+	'TOPIC_AUTHOR_FROM' => $topic_user_from_flag,
+	'TOPIC_AUTHOR_GENDER' => $topic_user_gender_image,
+	'TOPIC_AUTHOR_JOINED' => $topic_user_joined,
+	'TOPIC_AUTHOR_POSTS' => $topic_user_posts,
+	'TOPIC_VIEWS' => $forum_topic_data['topic_views'],
+	'TOPIC_REPLIES' => $forum_topic_data['topic_replies'],
+
 	'PAGINATION' => $pagination,
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / intval($config['posts_per_page'])) + 1), ceil($total_replies / intval($config['posts_per_page']))),
 
@@ -1172,6 +1202,8 @@ $template->assign_vars(array(
 	'L_ARTICLE' => $lang['Article'],
 	'L_COMMENTS' => $lang['Comments'],
 	'L_POSTED' => $lang['Posted'],
+	'L_REPLIES' => $lang['Replies'],
+	'L_VIEWS' => $lang['Views'],
 	'L_POST_SUBJECT' => $lang['Post_subject'],
 	'L_VIEW_NEXT_TOPIC' => $lang['View_next_topic'],
 	'L_VIEW_PREVIOUS_TOPIC' => $lang['View_previous_topic'],
@@ -2092,6 +2124,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$post_edit_link = append_sid('edit_post_details.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']);
 	$post_edit_string_short = ($user->data['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $post_date . '</a>') : '';
 	$post_edit_string = ($user->data['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $lang['Edit_post_time_xs'] . '</a>') : '';
+	$single_post_number = $i + 1 + $start;
 	$single_post = '<a href="#_Single_Post_View" onclick="open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\'); return false;" style="text-decoration: none;">#' . ($i + 1 + $start) . '</a>';
 	$single_post_share = '<a href="#" onclick="popup(\'share.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_share\'); return false;" style="text-decoration: none;">' . $lang['SHARE'] . '</a>';
 	$single_post_like_list = '<a href="#" onclick="popup(\'topic_view_users.' . PHP_EXT . '?like=1&amp;' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_like\'); return false;" style="text-decoration: none;" title="' . $lang['LIKE_RECAP'] . '">' . '{USERS_LIKE}' . '</a>';
@@ -2323,6 +2356,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'NOTES_COUNT' => sizeof($notes_list),
 		'NOTES_DATA' => $postrow[$i]['edit_notes'],
 		'DOWNLOAD_POST' => append_sid(CMS_PAGE_VIEWTOPIC . '?download=' . $postrow[$i]['post_id'] . '&amp;' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append),
+		'SINGLE_POST_NUMBER' => $single_post_number,
 		'SINGLE_POST' => $single_post,
 		'SINGLE_POST_SHARE' => $single_post_share,
 		'READER_LIKES' => $reader_likes,
