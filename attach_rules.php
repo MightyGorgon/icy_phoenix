@@ -30,19 +30,20 @@ $forum_id = request_var('f', 0);
 $privmsg = (!$forum_id) ? true : false;
 
 // Display the allowed Extension Groups and Upload Size
+$auth_user = array();
 if ($privmsg)
 {
-	$auth['auth_attachments'] = ($user->data['user_level'] != ADMIN) ? intval($config['allow_pm_attach']) : true;
-	$auth['auth_view'] = true;
+	$auth_user['auth_attachments'] = ($user->data['user_level'] != ADMIN) ? intval($config['allow_pm_attach']) : true;
+	$auth_user['auth_view'] = true;
 	$_max_filesize = $config['max_filesize_pm'];
 }
 else
 {
-	$auth = auth(AUTH_ALL, $forum_id, $user->data);
+	$auth_user = auth(AUTH_ALL, $forum_id, $user->data);
 	$_max_filesize = $config['max_filesize'];
 }
 
-if (!($auth['auth_attachments'] && $auth['auth_view']))
+if (!($auth_user['auth_attachments'] && $auth_user['auth_view']))
 {
 	message_die(GENERAL_ERROR, 'You are not allowed to call this file (ID:2)');
 }
