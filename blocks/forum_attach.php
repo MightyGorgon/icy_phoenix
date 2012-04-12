@@ -60,7 +60,7 @@ if(!function_exists('cms_block_forum_attach'))
 		);
 
 		// $only_auth_view must have the opposite value of $cms_config_vars['md_ignore_auth_view'][$block_id]
-		$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) ? true : false);
+		$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) || ($cms_config_vars['md_ignore_auth_view'][$block_id] == true)) ? false : true;
 		if ($cms_config_vars['md_single_post_retrieve'][$block_id])
 		{
 			$single_post_id = request_var('post_id', 0);
@@ -97,6 +97,7 @@ if(!function_exists('cms_block_forum_attach'))
 			$topic_title = htmlspecialchars_clean($fetchposts[$i]['topic_title']);
 			$template->assign_block_vars('articles_fp', array(
 				'TOPIC_ID' => $fetchposts[$i]['topic_id'],
+				'FORUM_ID' => $fetchposts[$i]['forum_id'],
 				'TITLE' => $topic_title,
 				'POSTER' => $fetchposts[$i]['username'],
 				'POSTER_CG' => colorize_username($fetchposts[$i]['user_id'], $fetchposts[$i]['username'], $fetchposts[$i]['user_color'], $fetchposts[$i]['user_active']),
