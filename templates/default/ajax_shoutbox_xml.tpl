@@ -7,6 +7,7 @@
 	<!-- BEGIN shouts -->
 	<shout>
 		<id>{shouts.ID}</id>
+		<room>{shouts.ROOM}</room>
 		<shouter>{shouts.SHOUTER}</shouter>
 		<shouter_id>{shouts.SHOUTER_ID}</shouter_id>
 		<shouter_link>{shouts.SHOUTER_LINK}</shouter_link>

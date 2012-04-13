@@ -33,21 +33,42 @@ $response_type = (function_exists('json_decode') && is_array(json_decode('{"a":1
 // Lets see what we do, if nothing define show the shoutbox
 $action = request_var('act', '');
 
-$private_chat = false;
 if (!defined('AJAX_CHAT_ROOM'))
 {
+	$private_chat = false;
 	$chat_room = request_var('chat_room', '');
-	$chat_room = preg_replace('/[^0-9|]+/', '', trim($chat_room));
-	$chat_room_users = array();
-	$chat_room_users = explode('|', $chat_room);
+	$chat_room_users = array_map('intval', explode('|', $chat_room));
 	$chat_room_users_count = sizeof($chat_room_users);
-	$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
-	if (($user->data['user_level'] != ADMIN) && !empty($chat_room) && !in_array($user->data['user_id'], $chat_room_users))
+
+	if ($chat_room !== '')
 	{
-		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
+		// validate chat room
+		if (count($chat_room_users) < 2)
+		{
+			// Less than 2 users in chat room
+			message_die(GENERAL_ERROR, $lang['INVALID']);
+		}
+		sort($chat_room_users);
+		$chat_last_user = 0;
+		foreach ($chat_room_users as $chat_user)
+		{
+			if ($chat_user <= $chat_last_user)
+			{
+				// Same user cannot be twice in a room or invalid user id
+				message_die(GENERAL_ERROR, $lang['INVALID']);
+			}
+			$chat_last_user = $chat_user;
+		}
+		$chat_room = implode('|', $chat_room_users);
+		if ($user->data['user_level'] != ADMIN && !in_array($user->data['user_id'], $chat_room_users))
+		{
+			// Current user is not in that chat room
+			message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
+		}
+		$private_chat = true;
 	}
+	$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
 	define('AJAX_CHAT_ROOM', true);
-	$private_chat = true;
 }
 
 if (!empty($action))
@@ -116,7 +137,9 @@ if (!empty($action))
 		{
 			if($online['user_id'] != ANONYMOUS)
 			{
-				$online_list[$online['user_id']] = $online;
+				$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
+				$online['user_style_color'] = $style_color;
+				$online_list[$online['username']] = $online;
 				$reg_online_counter++;
 			}
 			else
@@ -127,23 +150,22 @@ if (!empty($action))
 		}
 
 		// Check if anything has changed
+		ksort($online_list);
 		$online_keys = array_keys($online_list);
-		sort($online_keys, SORT_STRING);
 		$signature = md5(implode(',', $online_keys));
 		$sig = request_var('sig', '');
 
 		if ($signature != $sig)
 		{
-			foreach ($online_list as $name => $online)
+			foreach ($online_list as $online)
 			{
-				$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
 				if ($response_type == 'xml')
 				{
 					$template->assign_block_vars('online_list', array(
 						'USER' => $online['username'],
 						'USER_ID' => $online['user_id'],
 						'LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
-						'LINK_STYLE' => $style_color,
+						'LINK_STYLE' => $online['user_style_color'],
 						)
 					);
 				}
@@ -153,7 +175,7 @@ if (!empty($action))
 						'user_id' => $online['user_id'],
 						'username' => $online['username'],
 						'user_link' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
-						'link_style' => $style_color,
+						'link_style' => $online['user_style_color'],
 					);
 					$template->assign_block_vars('online_list', array(
 						'user' => @json_encode($json_user),
@@ -183,11 +205,10 @@ if (!empty($action))
 				$limit_sql = " LIMIT " . $config['display_shouts'];
 			}
 
-			$sql = "SELECT s.*, u.username, u.user_active, u.user_color
+			$sql = "SELECT s.*, u.user_id, u.username, u.user_active, u.user_color, u.user_level
 					FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
 					WHERE s.shout_id > " . $lastID . "
 						AND s.user_id = u.user_id
-						AND " . $chat_room_sql . "
 					ORDER BY s.shout_id DESC" . $limit_sql;
 			$results = $db->sql_query($sql);
 			$row = $db->sql_fetchrowset($results);
@@ -206,6 +227,22 @@ if (!empty($action))
 			{
 				$id = $row[$x]['shout_id'];
 				$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
+
+				// Check permissions
+				if ($row[$x]['shout_room'] != '')
+				{
+					if (!$user->data['session_logged_in'])
+					{
+						// Guests should not see private rooms
+						continue;
+					}
+					$in_room = explode('|', $row[$x]['shout_room']);
+					if (!in_array($user->data['user_id'], $in_room))
+					{
+						// Current users is not in this room
+						continue;
+					}
+				}
 
 				if ($row[$x]['user_id'] == ANONYMOUS)
 				{
@@ -236,6 +273,7 @@ if (!empty($action))
 				{
 					$template->assign_block_vars('shouts', array(
 						'ID' => $id,
+						'ROOM' => ($row[$x]['shout_room'] == '') ? 'all' : $row[$x]['shout_room'],
 						'SHOUTER' => $shouter,
 						'SHOUTER_ID' => $row[$x]['user_id'],
 						'SHOUTER_COLOR' => $shouter_color,
@@ -249,6 +287,7 @@ if (!empty($action))
 				{
 					$json_shout = array(
 						'id' => $id,
+						'room' => ($row[$x]['shout_room'] == '') ? 'all' : $row[$x]['shout_room'],
 						'shouter' => $shouter,
 						'shouter_id' => $row[$x]['user_id'],
 						'shouter_color' => $shouter_color,
@@ -474,7 +513,8 @@ $template->assign_vars(array(
 	'DELETE_IMG' => '<img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" />',
 	'L_SHOUT_PREFIX' => 'shout_',
 	'L_USER_PREFIX' => 'user_',
-	'U_ARCHIVE' => append_sid(CMS_PAGE_AJAX_CHAT . '?mode=archive')
+	'L_ROOM_PREFIX' => 'room_',
+	'U_ARCHIVE' => append_sid(CMS_PAGE_AJAX_CHAT . '?mode=archive'),
 	)
 );
 
@@ -492,6 +532,7 @@ if ($config['shout_allow_guest'] > 0)
 		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 		'RESPONSE_TYPE' => $response_type,
 		'CHAT_ROOM' => $chat_room,
+		'USER_ID' => $user->data['user_id'],
 		'UPDATE_MODE' => 'chat',
 		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
@@ -531,6 +572,7 @@ else
 			'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 			'RESPONSE_TYPE' => $response_type,
 			'CHAT_ROOM' => $chat_room,
+			'USER_ID' => $user->data['user_id'],
 			'UPDATE_MODE' => 'chat',
 			'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 			)

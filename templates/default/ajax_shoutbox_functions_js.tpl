@@ -15,6 +15,7 @@ var ERROR_RESPONSE = "{L_UNABLE}";
 // HTML id prefixes
 var SHOUT_PREFIX = "{L_SHOUT_PREFIX}";
 var USER_PREFIX = "{L_USER_PREFIX}";
+var ROOM_PREFIX = "{L_ROOM_PREFIX}";
 
 <!-- BEGIN onload -->
 var oldOnLoad = window.onload;
@@ -92,6 +93,12 @@ var AjaxContext = {
 	// initial value will be replaced by the latest user list signature
 	lastSig: "",
 
+	// shout row 'zebra' classes
+	zebra: {
+		odd: "odd",
+		even: "even"
+	},
+
 	// List of current shouts (the array is associative)
 	currentShouts: new Object(),
 	shoutsParsed: false,
@@ -102,6 +109,9 @@ var AjaxContext = {
 
 	// Private chat room
 	chatRoom: "{view_shoutbox.CHAT_ROOM}",
+
+	// Private chat room user id
+	chatUser: "{view_shoutbox.USER_ID}",
 
 	// Parse the XML document, executing code for each matched element
 	// Returns true if successful, otherwise false.
@@ -205,7 +215,7 @@ var AjaxContext = {
 	// Standard error handler
 	stdError: function(jqXHR, status, error) {
 		// See http://ilikestuffblog.com/2009/11/30/how-to-distinguish-a-user-aborted-ajax-call-from-an-error/
-		if (jqXHR.getAllResponseHeaders())
+		if (jqXHR.getAllResponseHeaders() || status == "timeout")
 		{
 			var message = (status == "timeout") ? ERROR_TIMEOUT : ERROR_RESPONSE;
 			if (typeof error == "string" && error != "")
@@ -244,8 +254,23 @@ var AjaxContext = {
 				this.shoutsParsed = true;
 				var link = shout.shouter_link;
 				shout.shouter_name = (link != "-1") ? "<a href=\"" + link + "\" {S_TARGET}" + shout.shouter_color + ">" + shout.shouter + "<\/a>" : shout.shouter;
+				var roomId = (typeof shout.room == 'string' && shout.room != '') ? shout.room.replace(/\|/g, '-') : 'all';
+				var tableId = 'outputList-' + roomId;
+				var table = $('#' + tableId);
+				if (!table.length)
+				{
+					// add new chat tab
+					table = addChatTab(shout.room);
+				}
+				var cssClass = this.zebra.odd;
+				var firstShout = $("#" + tableId + " tr:first");
+				if (firstShout.length)
+				{
+					cssClass = (firstShout.prop("class") == this.zebra.odd) ? this.zebra.even : this.zebra.odd;
+				}
+				shout.cssClass = cssClass;
 				var html = insertNewShout(id, shout)
-				$("#output_list").prepend(html);
+				table.prepend(html);
 				highlightShout(id, this.lastId != -1);
 				this.currentShouts[id] = shout;
 			}

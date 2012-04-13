@@ -1272,7 +1272,7 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 	// for testing ONLY
 	if (album_is_debug_enabled() == true)
 	{
-		if (strcmp($cur_cat_id,'Root') == 0)
+		if (strcmp($cur_cat_id, 'Root') == 0)
 		{
 			die('WRONG ROOT VALUE');
 		}
@@ -1304,6 +1304,12 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 		$display = true;
 	}
 
+	// Added so that, even if there are no public galleries, the member or user galleries can be reached
+	if (($force_display) && (!$is_personal_gallery) && (!$display))
+	{
+		$display = true;
+	}
+
 	// lets do some debugging..
 	if (album_is_debug_enabled() == true)
 	{
@@ -1330,7 +1336,7 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 
 			$cols_span = album_generate_index_columns($username);
 
-			// but we need to specific ly specify if we want to show the public gallery header
+			// but we need to specificly specify if we want to show the public gallery header
 			if ($show_public_footer == true)
 			{
 				$template->assign_block_vars('catfooter.cat_public_footer', array(
@@ -1362,10 +1368,11 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 
 			}
 		}
+
 		$template->assign_var_from_handle('ALBUM_BOARD_INDEX', 'album');
 	}
 
-		return $display;
+	return $display;
 }
 
 //-----------------------------------------------
@@ -1528,7 +1535,7 @@ function album_generate_index_columns()
 		)
 	);
 
-	// and if we are shoing header, then also show footer
+	// and if we are showing header, then also show footer
 	$template->assign_block_vars('catfooter', array());
 
 	// substract 1, since the first column shouldn't be included,

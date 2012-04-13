@@ -11,7 +11,6 @@
 // window.onload event
 function chatOnLoad(evt)
 {
-	get_colors();
 	return true;
 }
 
@@ -28,16 +27,34 @@ function chatOnUnload(evt)
 }
 <!-- END onload -->
 
+// Shout row 'zebra' classes
+AjaxContext.zebra = {
+	odd: "row1",
+	even: "row2"
+};
+
 //
 // DOM insertion callbacks
 //
 
+// Write the HTML for a new chatroom tab
+function insertChatTab(roomId, room, title)
+{
+	var output = " [<a href=\"#\" id=\"chat-tab-" + roomId + "\" onclick=\"activateChatTab('" + room + "'); return false;\">" + title + "</a>] ";
+	return output;
+}
+
+// Write the HTML for a new chatroom container
+function insertChatContainer(tableId)
+{
+	var output = "<table id=\"" + tableId + "\" class=\"shoutlist forumline\" width=\"100%\" align=\"center\" cellspacing=\"0\" cellpadding=\"0\" style=\"display: none;\"></table>";
+	return output;
+}
+
 // Write the HTML as a string for a new shout
 function insertNewShout(id, shout)
 {
-	var output = "<tr id=\"" + id + "\"";
-	output += " style=\"background-color: " +
-		((current_class == "row2") ? row1_color : row2_color) + ";\">";
+	var output = "<tr id=\"" + id + "\" class=\"" + shout.cssClass + "\">";
 	output += "<td width=\"140\"><div style=\"text-align: center;\"><span class=\"gensmall\"><i>" +
 		shout.date + "<\/i><\/span><\/div><\/td>";
 	output += "<td><div class=\"post-text post-text-hide-flow post-text-chat\"><b>" +
@@ -57,10 +74,9 @@ function insertNewShout(id, shout)
 function insertNewUser(id, user)
 {
 	var output = "<span id=\"" + id + "\"";
-	output += " style=\"text-align: left; display: " +
-		((show_inline == true) ? "inline" : "block") + "; margin-right: 5px;\">";
+	output += " style=\"text-align: left; display: inline; margin-right: 5px;\">";
 	output += "<a href=\"" + user.link + "\" class=\"gensmall\" {S_TARGET} " +
-		user.style + ">" + user.username + "<\/a>";
+		user.style + ">" + user.username + "<\/a><span class=\"comma\">,</span>";
 	output += "</span>";
 	return output;
 }
@@ -88,60 +104,15 @@ function highlightUser(id)
 // Signal that something changed on the page
 function chatDataChanged()
 {
+	$('#online_list > span > .comma').show();
+	$('#online_list > span:last > .comma').hide();
 	playsound(sound_url);
-}
-
-//
-// default style specific code
-//
-
-var show_inline = true;
-var current_class = 'row2';
-var cssRules, row1_color, row2_color, update_online;
-
-// Get the background colors from css classes
-function get_colors()
-{
-	var rules = new Array();
-	if (document.styleSheets[0].cssRules)
-	{
-		rules = document.styleSheets[0].cssRules
-	}
-	else if (document.styleSheets[0].rules)
-	{
-		rules = document.styleSheets[0].rules
-	}
-
-	for (x = 0; x < rules.length; x++)
-	{
-		if(rules[x].selectorText == "td.row1")
-		{
-			row1_color = rules[x].style.backgroundColor;
-		}
-		else if (rules[x].selectorText == "td.row2")
-		{
-			row2_color = rules[x].style.backgroundColor;
-		}
-	}
 }
 
 function classChanger(id)
 {
-	var obj = document.getElementById(id);
-	obj.childNodes[0].className = current_class;
-	obj.childNodes[1].className = current_class;
-	<!-- BEGIN user_is_admin -->
-	obj.childNodes[2].className = current_class;
-	<!-- END user_is_admin -->
-
-	if(current_class == "row2")
-	{
-		current_class = "row1";
-	}
-	else
-	{
-		current_class = "row2";
-	}
+	var item = $('#' + id);
+	item.find('td').prop('class', item.data('class'));
 }
 
 var sound_ver = parseInt(navigator.appVersion);

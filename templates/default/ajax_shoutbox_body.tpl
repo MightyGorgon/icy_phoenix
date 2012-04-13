@@ -23,11 +23,12 @@
 	overflow: auto;
 	margin: 0px auto;
 }
-#output_list
+.shoutlist
 {
 	/* width: {view_shoutbox.TABLE_WIDTH}; */
-	height: {view_shoutbox.TABLE_HEIGHT};
+	/* height: {view_shoutbox.TABLE_HEIGHT}; */
 	text-align: left;
+	margin: 0;
 }
 </style>
 
@@ -63,24 +64,20 @@
 		</tr>
 		<tr>
 			<td class="row1 row-center">
-				<div class="shouts">
-					<table id="output_list" class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0">
-					</table>
-					<br style="clear: both;" />
-				</div>
+				<div class="tabs" id="shoutsTabs"></div>
+				<div class="shouts" id="shoutsContainer"><br style="clear: both;" /></div>
 			</td>
 		</tr>
 		<!-- BEGIN shout_allowed -->
 		<!-- END shout_allowed -->
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-		<script type="text/javascript">
-		<!--
+		<script type="text/javascript">//<![CDATA[
 		tmp = 'ajax_chat';
 		if(GetCookie(tmp) == '2')
 		{
 			ShowHide('ajax_chat','ajax_chat_h','ajax_chat');
 		}
-		//-->
+		//]]>
 		</script>
 		</div>
 	</div>

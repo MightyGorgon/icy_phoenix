@@ -13,13 +13,14 @@
 // Refresh interval
 REFRESH_TIME *= 2; // slower here, speed is not essential
 
-// Initialises the form and starts the polling object
-function initChat(evt)
+// Initialises the polling object
+function initChat()
 {
 	sound_flag = false; // do things quietly
 	receiveChatData(); // initiates the first data query
 	return true;
 }
+initChat();
 //]]>
 </script>
 <!-- END view_shoutbox -->

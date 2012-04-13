@@ -39,15 +39,39 @@ if (($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_AJAX_CHAT, true));
 }
 
+$private_chat = false;
 $chat_room = request_var('chat_room', '');
-$chat_room = preg_replace('/[^0-9|]+/', '', trim($chat_room));
-$chat_room_users = array();
-$chat_room_users = explode('|', $chat_room);
-$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
-if (($user->data['user_level'] != ADMIN) && !empty($chat_room) && !in_array($user->data['user_id'], $chat_room_users))
+$chat_room_users = array_map('intval', explode('|', $chat_room));
+$chat_room_users_count = sizeof($chat_room_users);
+
+if ($chat_room !== '')
 {
-	message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
+	// validate chat room
+	if (count($chat_room_users) < 2)
+	{
+		// Less than 2 users in chat room
+		message_die(GENERAL_ERROR, $lang['INVALID']);
+	}
+	sort($chat_room_users);
+	$chat_last_user = 0;
+	foreach ($chat_room_users as $chat_user)
+	{
+		if ($chat_user <= $chat_last_user)
+		{
+			// Same user cannot be twice in a room or invalid user id
+			message_die(GENERAL_ERROR, $lang['INVALID']);
+		}
+		$chat_last_user = $chat_user;
+	}
+	$chat_room = implode('|', $chat_room_users);
+	if ($user->data['user_level'] != ADMIN && !in_array($user->data['user_id'], $chat_room_users))
+	{
+		// Current user is not in that chat room
+		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
+	}
+	$private_chat = true;
 }
+$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
 define('AJAX_CHAT_ROOM', true);
 
 // Show shoutbox with header and footer if the user didn't request anything else
@@ -83,6 +107,7 @@ if (empty($mode))
 		'DELETE_IMG' => '<img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" />',
 		'L_SHOUT_PREFIX' => 'shout_',
 		'L_USER_PREFIX' => 'user_',
+		'L_ROOM_PREFIX' => 'room_',
 		'S_TARGET' => 'target=\"_blank\"',
 		)
 	);
@@ -179,7 +204,8 @@ else
 		'L_TOP_SHOUTERS' => $lang['Top_Ten_Shouters'],
 		'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
 		'L_SHOUT_PREFIX' => 'shout_',
-		'L_USER_PREFIX' => 'user_'
+		'L_USER_PREFIX' => 'user_',
+		'L_ROOM_PREFIX' => 'room_',
 		)
 	);
 
@@ -191,8 +217,6 @@ else
 		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
 		)
 	);
-
-	$template->assign_block_vars('view_shoutbox.onload', array());
 
 	if ($user->data['user_level'] == ADMIN)
 	{
