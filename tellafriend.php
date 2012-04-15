@@ -24,22 +24,25 @@ $user->setup();
 
 $topic_title = request_var('topic_title', '', true);
 $topic_id = request_var('topic_id', 0);
-$friendname = request_var('friendname', '', true);
+$topic_link = request_var('topic_link', '');
 $message = request_var('message', '', true);
 $PHP_SELF = $_SERVER['SCRIPT_NAME'];
 
 if (!$user->data['session_logged_in'])
 {
-	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id, true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id .'&article_url=' . urlencode($article_url), true));
 }
 
-if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
+if (empty($topic_link))
 {
-	$topic_link = create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html';
-}
-else
-{
-	$topic_link = create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id;
+	if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
+	{
+		$topic_link = create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html';
+	}
+	else
+	{
+		$topic_link = create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id;
+	}
 }
 
 $mail_body = str_replace("{TOPIC}", htmlspecialchars_decode($topic_title), $lang['TELL_FRIEND_BODY']);
@@ -69,7 +72,6 @@ if (isset($_POST['submit']))
 
 	$friendemail = request_var('friendemail', '', true);
 	$friendname = request_var('friendname', '', true);
-	$topic_title = request_var('topic_title', '', true);
 	$message = request_var('message', '', true);
 	// We need to check if HTML emails are enabled so we can correctly escape content and linebreaks
 	if (!empty($config['html_email']))
@@ -91,7 +93,7 @@ if (isset($_POST['submit']))
 	else
 	{
 		$error = true;
-		$error_msg = $lang['Tell_Friend_Wrong_Email'];
+		$error_msg = $lang['TELL_FRIEND_WRONG_EMAIL'];
 	}
 
 	if (!$error)
