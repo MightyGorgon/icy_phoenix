@@ -414,7 +414,7 @@ class class_topics
 	/*
 	* Fetch posts
 	*/
-	function fetch_posts($forum_sql, $number_of_posts, $text_length, $show_portal = false, $random_mode = false, $single_post = false, $only_auth_view = true)
+	function fetch_posts($forum_sql, $number_of_posts, $text_length, $show_portal = false, $random_mode = false, $single_post = false, $only_auth_view = true, $alphabetic = false)
 	{
 		global $db, $cache, $config, $user, $bbcode, $lofi;
 
@@ -455,6 +455,10 @@ class class_topics
 		{
 			$order_sql = 'RAND()';
 		}
+		elseif (!empty($alphabetic))
+		{
+			$order_sql = 't.topic_title ASC';
+		}
 		else
 		{
 			$order_sql = 't.topic_time DESC';
@@ -472,7 +476,7 @@ class class_topics
 		if (!empty($single_post))
 		{
 			$single_post_id = $forum_sql;
-			$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
+			$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_first_post_id, t.topic_attachment, t.topic_views, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
 					FROM " . POSTS_TABLE . " AS p, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
 					WHERE p.post_id = '" . $single_post_id . "'
 						" . $add_to_sql . "
@@ -481,7 +485,7 @@ class class_topics
 		}
 		else
 		{
-			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
+			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_views, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
 					FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
 					WHERE t.topic_time <= " . time() . "
 						" . $add_to_sql . "
@@ -508,6 +512,8 @@ class class_topics
 				$message = $posts[$i]['post_text'];
 				$posts[$i]['forum_id'] = $row['forum_id'];
 				$posts[$i]['topic_id'] = $row['topic_id'];
+				$posts[$i]['topic_first_post_id'] = $row['topic_first_post_id'];
+				$posts[$i]['topic_views'] = $row['topic_views'];
 				$posts[$i]['topic_replies'] = $row['topic_replies'];
 				$posts[$i]['topic_time'] = create_date_ip($config['default_dateformat'], $row['topic_time'], $config['board_timezone']);
 				$posts[$i]['topic_title'] = $row['topic_title'];
