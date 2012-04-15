@@ -77,7 +77,17 @@ if(!function_exists('cms_block_forum_attach'))
 		}
 		else
 		{
-			$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_posts_forum_id'][$block_id], $cms_config_vars['md_num_posts'][$block_id], $cms_config_vars['md_posts_length'][$block_id], $cms_config_vars['md_posts_show_portal'][$block_id], $cms_config_vars['md_posts_random'][$block_id], false, $only_auth_view);
+			$random = false;
+			$alphabetic = false;
+			if ($cms_config_vars['md_posts_random'][$block_id] == 1)
+			{
+				$random = true;
+			}
+			elseif ($cms_config_vars['md_posts_random'][$block_id] == 2)
+			{
+				$alphabetic = true;
+			}
+			$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_posts_forum_id'][$block_id], $cms_config_vars['md_num_posts'][$block_id], $cms_config_vars['md_posts_length'][$block_id], $cms_config_vars['md_posts_show_portal'][$block_id], $random, false, $only_auth_view, $alphabetic);
 		}
 
 		for($i = 0; $i < sizeof($fetchposts); $i++)
