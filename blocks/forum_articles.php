@@ -79,6 +79,7 @@ if (!function_exists('cms_block_forum_articles'))
 
 		// $only_auth_view must have the opposite value of $cms_config_vars['md_ignore_auth_view'][$block_id]
 		$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) || ($cms_config_vars['md_ignore_auth_view'][$block_id] == true)) ? false : true;
+
 		$single_post_id = request_var('post_id', 0);
 		if (!empty($single_post_id)) // single post
 		{
@@ -115,7 +116,7 @@ if (!function_exists('cms_block_forum_articles'))
 					{
 						$index_url .= '?page=' . request_var('page', 0);
 					}
-					$breadcrumbs['address'] .= $lang['Nav_Separator'] . '<a href="' . append_sid($index_url) . '" class="nav-current">' . $meta_content['page_title_clean'] . '</a>';
+					$breadcrumbs['address'] .= $lang['Nav_Separator'] . '<a href="' . append_sid($index_url) . '">' . $meta_content['page_title_clean'] . '</a>';
 				}
 				$breadcrumbs['address'] .= $lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $topic_title . '</a>';
 			}
