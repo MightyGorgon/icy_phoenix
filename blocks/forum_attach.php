@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if(!function_exists('cms_block_forum_attach'))
+if (!function_exists('cms_block_forum_attach'))
 {
 	function cms_block_forum_attach()
 	{
@@ -73,24 +73,14 @@ if(!function_exists('cms_block_forum_attach'))
 				$single_post_id = $cms_config_vars['md_single_post_id'][$block_id];
 			}
 
-			$fetchposts = $class_topics->fetch_posts($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, false, true, $only_auth_view);
+			$fetchposts = $class_topics->fetch_posts($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, 0, true, $only_auth_view);
 		}
 		else
 		{
-			$random = false;
-			$alphabetic = false;
-			if ($cms_config_vars['md_posts_random'][$block_id] == 1)
-			{
-				$random = true;
-			}
-			elseif ($cms_config_vars['md_posts_random'][$block_id] == 2)
-			{
-				$alphabetic = true;
-			}
-			$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_posts_forum_id'][$block_id], $cms_config_vars['md_num_posts'][$block_id], $cms_config_vars['md_posts_length'][$block_id], $cms_config_vars['md_posts_show_portal'][$block_id], $random, false, $only_auth_view, $alphabetic);
+			$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_posts_forum_id'][$block_id], $cms_config_vars['md_num_posts'][$block_id], $cms_config_vars['md_posts_length'][$block_id], $cms_config_vars['md_posts_show_portal'][$block_id], $cms_config_vars['md_posts_random'][$block_id], false, $only_auth_view);
 		}
 
-		for($i = 0; $i < sizeof($fetchposts); $i++)
+		for ($i = 0; $i < sizeof($fetchposts); $i++)
 		{
 			init_display_post_attachments($fetchposts[$i]['topic_attachment'], $fetchposts[$i], true, $block_id);
 			$open_bracket = '';
@@ -118,7 +108,7 @@ if(!function_exists('cms_block_forum_attach'))
 				'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
 				'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
 				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
-				'U_READ_FULL' => append_sid($index_file . '?article=' . $i),
+				'U_READ_FULL' => append_sid($index_file . '?article=' . $i), // JHL never used thankfully - I don't think it would work
 				'L_READ_FULL' => $read_full,
 				'OPEN' => $open_bracket,
 				'CLOSE' => $close_bracket,
