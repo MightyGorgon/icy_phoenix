@@ -177,10 +177,8 @@ if ($watch_count > 0)
 			);
 		}
 
-		$pagination = generate_pagination('watched_topics.' . PHP_EXT . '?mode=watched_topics', $watch_count, $config['topics_per_page'], $start);
-
 		$template->assign_vars(array(
-			'PAGINATION' => $pagination,
+			'PAGINATION' => generate_pagination('watched_topics.' . PHP_EXT . '?mode=watched_topics', $watch_count, $config['topics_per_page'], $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($watch_count / $config['topics_per_page'])),
 			'L_GOTO_PAGE' => $lang['Goto_page']
 			)

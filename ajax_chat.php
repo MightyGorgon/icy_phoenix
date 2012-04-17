@@ -153,14 +153,10 @@ else
 
 	$num_items = $db->sql_fetchrow($result);
 
-	$pagination = generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive', $num_items['stored_shouts'], $config['posts_per_page'], $start);
-	if($pagination != '')
-	{
-		$template->assign_block_vars('pag', array(
-			'PAGINATION' => $pagination
-			)
-		);
-	}
+	$template->assign_vars(array(
+		'PAGINATION' => generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive', $num_items['stored_shouts'], $config['posts_per_page'], $start),
+		)
+	);
 
 	// Get my shouts
 	$sql = "SELECT COUNT(s.shout_id) as count

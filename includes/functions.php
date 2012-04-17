@@ -3062,7 +3062,11 @@ function generate_topic_pagination($forum_id, $topic_id, $replies, $per_page = 0
 		$topic_pagination['base'] = '<span class="gotopage">' . $goto_page . '</span>';
 		$topic_pagination['full'] = '<span class="gotopage">' . $goto_page_prefix . ' ' . $lang['Goto_page'] . $goto_page . $goto_page_suffix . '</span>';
 	}
-
+	else
+	{
+		$topic_pagination['base'] = '&nbsp;';
+		$topic_pagination['full'] = '&nbsp;';
+	}
 	return $topic_pagination;
 }
 

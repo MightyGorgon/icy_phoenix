@@ -28,9 +28,9 @@ initChat();
 <table align="center" width="100%" cellspacing="0" cellpadding="0">
 <tr valign="top">
 	<td width="67%">
-		<!-- BEGIN pag -->
-		<div style="float: right; text-align: right;"><span class="pagination">{pag.PAGINATION}</span></div>&nbsp;
-		<!-- END pag -->
+		<!-- IF PAGINATION != '&nbsp;' -->
+		<div style="float: right; text-align: right;"><span class="pagination">{PAGINATION}</span></div>&nbsp;
+		<!-- ENDIF -->
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><th colspan="2">{L_SHOUTS}</th></tr>
 			<!-- BEGIN shouts -->

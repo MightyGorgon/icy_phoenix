@@ -138,10 +138,11 @@ $sql = "SELECT COUNT(DISTINCT u.user_id) AS total
 			AND c.cat_user_id = u.user_id
 			AND c.cat_id = p.pic_cat_id";
 $result = $db->sql_query($sql);
+$pagination = '&nbsp;';
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_galleries = $total['total'];
-	$pagination = generate_pagination('album_personal_index.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_galleries, $config['topics_per_page'], $start) . '&nbsp;';
+	$pagination = generate_pagination('album_personal_index.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_galleries, $config['topics_per_page'], $start);
 }
 
 $template->assign_vars(array(

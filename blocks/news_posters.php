@@ -203,11 +203,8 @@ if(!function_exists('cms_block_news_posters'))
 			$db->sql_freeresult($result);
 
 			$number_of_page = (ceil($total_news_posters / $per_page) == 0) ? 1 : ceil($total_news_posters / $per_page);
-			$pagination = generate_pagination($base_url, $total_news_posters, $per_page, $start);
-			$pagination = ((empty($pagination) || ($pagination == '&nbsp;')) ? false : $pagination);
-
 			$template->assign_vars(array(
-				'PAGINATION' => $pagination,
+				'PAGINATION' => generate_pagination($base_url, $total_news_posters, $per_page, $start),
 				'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $per_page) + 1), $number_of_page),
 				'L_GOTO_PAGE' => $lang['Goto_page']
 				)

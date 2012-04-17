@@ -1125,8 +1125,6 @@ function generate_smilies($mode)
 				$template->assign_block_vars('switch_smilies_extra', array());
 			}
 
-			$pagination = generate_pagination('posting.' . PHP_EXT . '?mode=smilies', $num_smilies, $per_page, $start, false);
-
 			$select_smileys_pp = '<select name="smilies_per_page" onchange="SetSmileysPerPage();" class="gensmall">';
 			$select_smileys_pp .= '<option value="' . ($window_columns * $window_rows) . '"' . (($smilies_per_page == ($window_columns * $window_rows)) ? ' selected="selected"' : '') . '>' . ($window_columns * $window_rows) . '</option>';
 			$select_smileys_pp .= '<option value="50"' . (($smilies_per_page == 50) ? ' selected="selected"' : '') . '>50</option>';
@@ -1148,7 +1146,7 @@ function generate_smilies($mode)
 
 				'DEFAULT_SMILEYS_PER_PAGE' => $window_columns * $window_rows,
 				'SELECT_SMILEYS_PP' => $select_smileys_pp,
-				'PAGINATION' => $pagination,
+				'PAGINATION' => generate_pagination('posting.' . PHP_EXT . '?mode=smilies', $num_smilies, $per_page, $start, false),
 				'S_SMILIES_COLSPAN' => $s_colspan
 				)
 			);

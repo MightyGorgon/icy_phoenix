@@ -177,10 +177,11 @@ while($row = $db->sql_fetchrow($result))
 
 $sql = !empty($total_sql) ? $total_sql : ("SELECT count(*) AS total FROM " . REFERERS_TABLE);
 $result = $db->sql_query($sql);
+$pagination = '&nbsp;';
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_referers = $total['total'];
-	$pagination = generate_pagination('referers.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_dir . '&amp;group_by=' . $group_by, $total_referers , $config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('referers.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_dir . '&amp;group_by=' . $group_by, $total_referers , $config['topics_per_page'], $start);
 }
 $db->sql_freeresult($result);
 

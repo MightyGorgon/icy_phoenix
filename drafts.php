@@ -228,10 +228,8 @@ if ($no_drafts == false)
 			)
 		);
 	}
-	$pagination = generate_pagination('drafts.' . PHP_EXT . '?mode=list', $drafts_count, $config['topics_per_page'], $start);
-
 	$template->assign_vars(array(
-		'PAGINATION' => $pagination,
+		'PAGINATION' => generate_pagination('drafts.' . PHP_EXT . '?mode=list', $drafts_count, $config['topics_per_page'], $start),
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($drafts_count / $config['topics_per_page'])),
 		'L_GOTO_PAGE' => $lang['Goto_page']
 		)
