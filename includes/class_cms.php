@@ -132,19 +132,18 @@ class ip_cms
 		//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
 		$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
 
+		$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 		if(!$is_special)
 		{
 			$id_var_name = 'l_id';
 			$table_name = $this->tables['layout_table'];
 			$field_name = 'lid';
-			$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 		}
 		else
 		{
 			$id_var_name = 'ls_id';
 			$table_name = $this->tables['layout_special_table'];
 			$field_name = 'lsid';
-			$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 			$layout = (isset($cms_config_layouts[$layout][$field_name]) ? $cms_config_layouts[$layout][$field_name] : 0);
 		}
 
@@ -368,6 +367,7 @@ class ip_cms
 					$title_string = $block_info[$b_counter]['title'];
 				}
 
+				$content_type = 'block';
 				if(!empty($block_info[$b_counter]['blockfile']))
 				{
 					$block_handle = $block_name . '_block_' . $block_info[$b_counter]['bid'];
@@ -378,6 +378,7 @@ class ip_cms
 				}
 				else
 				{
+					$content_type = 'text';
 					$message = $block_info[$b_counter]['content'];
 					if($block_info[$b_counter]['type'] == true)
 					{
@@ -416,6 +417,7 @@ class ip_cms
 				$template->assign_vars($b_admin_vars);
 				$template->assign_vars(array(
 					'POSITION' => $position,
+					'CONTENT_TYPE' => $content_type,
 					'OUTPUT' => $output_block,
 					'TITLE_CONTENT' => (($title_string == '') ? '&nbsp;' : $title_string),
 					'TITLE' => (($block_info[$b_counter]['titlebar'] == 1) ? true : false),
