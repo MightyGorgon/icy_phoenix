@@ -478,22 +478,6 @@ if (!$shoutbox_template_parse)
 	$template->set_filenames(array('shoutbox' => 'ajax_shoutbox_body.tpl'));
 }
 
-// Use special dimensions to the else use default.
-$shoutbox_width = request_var('width', 690);
-$shoutbox_height = request_var('height', 350);
-if(($shoutbox_width <= 0) || ($shoutbox_height <= 0))
-{
-	$shoutbox_width = 690;
-	$shoutbox_height = 350;
-}
-
-/* Results need a fixed width a height for the overflow. */
-$shoutbox_div_width = floor(0.95 * $shoutbox_width);
-$shoutbox_div_height = floor(0.85 * $shoutbox_height);
-
-$shoutbox_table_width = $shoutbox_div_width - 30;
-$shoutbox_table_height = $shoutbox_div_height - 25;
-
 $template->assign_vars(array(
 	'L_SHOUTBOX' => $lang['Ajax_Shoutbox'],
 	'L_USERNAME' => $lang['Username'],
@@ -522,13 +506,6 @@ if ($config['shout_allow_guest'] > 0)
 {
 	// Guest and Users may see the shoutbox
 	$template->assign_block_vars('view_shoutbox', array(
-		'BOX_WIDTH' => '' . $shoutbox_width . 'px',
-		'BOX_HEIGHT' => '' . $shoutbox_height . 'px',
-		'DIV_WIDTH' => '' . $shoutbox_div_width . 'px',
-		'DIV_HEIGHT' => '' . $shoutbox_div_height . 'px',
-		'TABLE_WIDTH' => '' . $shoutbox_table_width . 'px',
-		'TABLE_HEIGHT' => '' . $shoutbox_table_height . 'px',
-
 		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 		'RESPONSE_TYPE' => $response_type,
 		'CHAT_ROOM' => $chat_room,
@@ -562,13 +539,6 @@ else
 	if ($user->data['session_logged_in'])
 	{
 		$template->assign_block_vars('view_shoutbox', array(
-			'BOX_WIDTH' => '' . $shoutbox_width . 'px',
-			'BOX_HEIGHT' => '' . $shoutbox_height . 'px',
-			'DIV_WIDTH' => '' . $shoutbox_div_width . 'px',
-			'DIV_HEIGHT' => '' . $shoutbox_div_height . 'px',
-			'TABLE_WIDTH' => '' . $shoutbox_table_width . 'px',
-			'TABLE_HEIGHT' => '' . $shoutbox_table_height . 'px',
-
 			'REFRESH_TIME' => $config['shoutbox_refreshtime'],
 			'RESPONSE_TYPE' => $response_type,
 			'CHAT_ROOM' => $chat_room,

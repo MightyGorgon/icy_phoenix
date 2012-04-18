@@ -7,34 +7,9 @@
 <!-- INCLUDE ajax_shoutbox_html_js.tpl -->
 
 <!-- BEGIN view_shoutbox -->
-<style type="text/css">
-.box
-{
-	width: {view_shoutbox.BOX_WIDTH};
-	/* height: {view_shoutbox.BOX_HEIGHT}; */
-	text-align: center;
-	margin: 0px auto;
-}
-.shouts
-{
-	width: {view_shoutbox.DIV_WIDTH};
-	height: {view_shoutbox.DIV_HEIGHT};
-	text-align: center;
-	overflow: auto;
-	margin: 0px auto;
-}
-.shoutlist
-{
-	/* width: {view_shoutbox.TABLE_WIDTH}; */
-	/* height: {view_shoutbox.TABLE_HEIGHT}; */
-	text-align: left;
-	margin: 0;
-}
-</style>
-
 <span id="notify" style="height: 0px;">&nbsp;</span>
 <div align="center">
-	<div class="box" align="center">
+	<div class="chat-box" align="center">
 		<div id="ajax_chat_h" style="display: none;">
 		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_SHOW}" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 		<tr><td>&nbsp;</td></tr>
@@ -65,7 +40,7 @@
 		<tr>
 			<td class="row1 row-center">
 				<div class="tabs" id="shoutsTabs"></div>
-				<div class="shouts" id="shoutsContainer"><br style="clear: both;" /></div>
+				<div class="chat-shouts" id="shoutsContainer"><br style="clear: both;" /></div>
 			</td>
 		</tr>
 		<!-- BEGIN shout_allowed -->
