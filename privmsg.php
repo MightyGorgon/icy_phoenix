@@ -719,6 +719,17 @@ elseif ($mode == 'read')
 		)
 	);
 
+	if (!function_exists('generate_smilies_row'))
+	{
+		include_once(IP_ROOT_PATH . 'includes/functions_bbcode.' . PHP_EXT);
+	}
+	generate_smilies_row();
+	$template->assign_vars(array(
+		'L_SMILEYS_MORE' => $lang['More_emoticons'],
+		'U_SMILEYS_MORE' => append_sid('posting.' . PHP_EXT . '?mode=smilies'),
+		)
+	);
+
 	full_page_generation($template_to_parse, $lang['Read_pm'], '', '');
 }
 elseif (($delete && $mark_list) || $delete_all)
@@ -1837,17 +1848,8 @@ elseif ($submit || $refresh || ($mode != ''))
 		$prv_msg_review = $lang['private_msg_review_error'];
 	}
 
-	if($_GET['mode'] == 'reply')
-	{
-		$block_var_switch = 'switch_prv_msg_review';
-	}
-	else
-	{
-		$block_var_switch = '';
-	}
-
-	$template->assign_block_vars($block_var_switch, array(
-		'PRIVATE_MSG_REVIEW' => $prv_msg_review,
+	$template->assign_block_vars('switch_prv_msg_review', array(
+		'MESSAGE' => $prv_msg_review,
 		'PRIVATE_MSG_TITLE' => $lang['private_msg_review_title']
 		)
 	);
