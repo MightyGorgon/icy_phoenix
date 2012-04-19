@@ -52,9 +52,15 @@
 			{L_PIC_CAT}: <a href="{picrow.pic_detail.U_PIC_CAT}" {TARGET_BLANK}>{picrow.pic_detail.CATEGORY}</a><br />
 			{L_POSTED}: {picrow.pic_detail.TIME}<br />
 			{L_VIEW}: {picrow.pic_detail.VIEW}<br />
-			{picrow.pic_detail.RATING}
-			{picrow.pic_detail.COMMENTS}
-			{picrow.pic_detail.IP}
+			<!-- IF picrow.pic_detail.RATING --> 
+			{picrow.pic_detail.RATING}<br />
+			<!-- ENDIF -->
+			<!-- IF picrow.pic_detail.COMMENTS --> 
+			{picrow.pic_detail.COMMENTS}<br />
+			<!-- ENDIF -->
+			<!-- IF picrow.pic_detail.IP --> 
+			{picrow.pic_detail.IP}<br />
+			<!-- ENDIF -->
 			{picrow.pic_detail.EDIT}
 			{picrow.pic_detail.DELETE}
 			{picrow.pic_detail.LOCK}

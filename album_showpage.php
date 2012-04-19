@@ -231,30 +231,22 @@ if ($pic_array_id == ($total_pic_count - 1))
 // PREVIOUS & NEXT
 // ------------------------------------
 $pic_id_old = $total_pic_rows[$pic_array_id]['pic_id'];
-if(isset($_GET['mode']) && ($_GET['mode'] == 'next'))
+$no_prev_pic = false;
+$no_next_pic = false;
+if (isset($_GET['mode']) && ($_GET['mode'] == 'next'))
 {
 	$new_pic_array_id = $pic_array_id - 1;
 	if ($new_pic_array_id == 0)
 	{
 		$no_prev_pic = true;
 	}
-	else
-	{
-		$no_prev_pic = false;
-		$no_next_pic = false;
-	}
 }
-elseif(isset($_GET['mode']) && ($_GET['mode'] == 'prev'))
+elseif (isset($_GET['mode']) && ($_GET['mode'] == 'prev'))
 {
 	$new_pic_array_id = $pic_array_id + 1;
 	if ($new_pic_array_id == ($total_pic_count - 1))
 	{
 		$no_next_pic = true;
-	}
-	else
-	{
-		$no_next_pic = false;
-		$no_prev_pic = false;
 	}
 }
 else
@@ -265,8 +257,9 @@ $pic_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_id'];
 $pic_cat_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_cat_id'];
 $pic_time_tmp = $total_pic_rows[$new_pic_array_id]['pic_time'];
 $pic_user_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_user_id'];
+
 $next_pic_count = ($total_pic_count - $new_pic_array_id - 1);
-$prev_pic_count = ($new_pic_array_id);
+$prev_pic_count = $new_pic_array_id;
 
 if(isset($_GET['mode']))
 {
@@ -288,8 +281,10 @@ if ($album_config['show_pics_nav'] == 1)
 
 if (!$album_config['invert_nav_arrows'])
 {
+
 	$max_pic_counter = min(($total_pic_count - 1), ($new_pic_array_id + 2));
 	$min_pic_counter = max(0, ($new_pic_array_id - 2));
+
 	for($i = $min_pic_counter; $i <= $max_pic_counter; $i++)
 	{
 		$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']));
@@ -315,6 +310,7 @@ if (!$album_config['invert_nav_arrows'])
 				'U_PIC_THUMB' => $thumbnail_file,
 				'U_PIC_LINK' => ($i == $new_pic_array_id) ? '#' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append)),
 				'U_PIC_LINK_HS' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])),
+
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
@@ -327,8 +323,10 @@ if (!$album_config['invert_nav_arrows'])
 }
 else
 {
+
 	$max_pic_counter = max(0, ($new_pic_array_id - 2));
 	$min_pic_counter = min(($total_pic_count - 1), ($new_pic_array_id + 2));
+
 	for($i = $min_pic_counter; $i >= $max_pic_counter; $i--)
 	{
 		$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']));

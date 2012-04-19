@@ -111,7 +111,7 @@ if (($album_user_id != ALBUM_PUBLIC_GALLERY) && !album_check_user_exists($album_
 	redirect(append_sid(album_append_uid('album.' . PHP_EXT)));
 }
 
-$read_options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
+$read_options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES | ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
 $catrows = album_read_tree($album_user_id, $read_options);
 
 // check if the category exists in the album_tree data

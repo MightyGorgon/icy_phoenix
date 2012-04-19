@@ -83,9 +83,15 @@
 			{L_POSTER}: {index_pics_block.picrow.pic_detail.POSTER}<br />
 			{L_POSTED}: {index_pics_block.picrow.pic_detail.TIME}<br />
 			{L_VIEW}: {index_pics_block.picrow.pic_detail.VIEW}<br />
-			{index_pics_block.picrow.pic_detail.RATING}
-			{index_pics_block.picrow.pic_detail.COMMENTS}
-			{index_pics_block.picrow.pic_detail.IP}
+			<!-- IF index_pics_block.picrow.pic_detail.RATING --> 
+			{index_pics_block.picrow.pic_detail.RATING}<br />
+			<!-- ENDIF -->
+			<!-- IF index_pics_block.picrow.pic_detail.COMMENTS --> 
+			{index_pics_block.picrow.pic_detail.COMMENTS}<br />
+			<!-- ENDIF -->
+			<!-- IF index_pics_block.picrow.pic_detail.IP --> 
+			{index_pics_block.picrow.pic_detail.IP}<br />
+			<!-- ENDIF -->
 			{index_pics_block.picrow.pic_detail.EDIT} {index_pics_block.picrow.pic_detail.DELETE} {index_pics_block.picrow.pic_detail.LOCK} {index_pics_block.picrow.pic_detail.MOVE} {index_pics_block.picrow.pic_detail.COPY} {index_pics_block.picrow.pic_detail.AVATAR_PIC} <!-- {index_pics_block.picrow.pic_detail.IMG_BBCODE} -->
 		</div>
 	</td>
@@ -171,8 +177,12 @@
 			{L_PIC_ID}: {recent_pics_block.recent_pics.recent_detail.PIC_ID}<br />
 			{L_POSTED}: {recent_pics_block.recent_pics.recent_detail.TIME}<br />
 			{L_VIEW}: {recent_pics_block.recent_pics.recent_detail.VIEW}<br />
-			{recent_pics_block.recent_pics.recent_detail.RATING}
-			{recent_pics_block.recent_pics.recent_detail.COMMENTS}
+			<!-- IF recent_pics_block.recent_pics.recent_detail.RATING --> 
+			{recent_pics_block.recent_pics.recent_detail.RATING}<br />
+			<!-- ENDIF -->
+			<!-- IF recent_pics_block.recent_pics.recent_detail.COMMENTS --> 
+			{recent_pics_block.recent_pics.recent_detail.COMMENTS}<br />
+			<!-- ENDIF -->
 			{recent_pics_block.recent_pics.recent_detail.IP}
 		</span>
 	</td>
@@ -210,8 +220,12 @@
 			{L_PIC_ID}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_ID}<br />
 			{L_POSTED}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.TIME}<br />
 			{L_VIEW}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.VIEW}<br />
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.RATING}
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS}
+			<!-- IF mostviewed_pics_block.mostviewed_pics.mostviewed_detail.RATING --> 
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.RATING}<br />
+			<!-- ENDIF -->
+			<!-- IF mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS --> 
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS}<br />
+			<!-- ENDIF -->
 			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP}
 		</span>
 	</td>

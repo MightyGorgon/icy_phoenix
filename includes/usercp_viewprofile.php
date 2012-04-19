@@ -151,16 +151,14 @@ $user_browser = get_user_browser($profiledata['user_browser']);
 // Mighty Gorgon - HTTP AGENTS - END
 
 // Mighty Gorgon - Full Album Pack - BEGIN
+include(IP_ROOT_PATH . 'includes/album_mod/album_functions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/album_mod/album_hierarchy_functions.' . PHP_EXT);
 $cms_page_id_tmp = 'album';
 $cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
 $show_latest_pics = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 if ($show_latest_pics)
 {
 	setup_extra_lang(array('lang_album_main'));
-
-	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
-	$album_rate_pic_url = $album_show_pic_url;
-	$album_comment_pic_url = $album_show_pic_url;
 
 	$sql = "SELECT * FROM " . ALBUM_CONFIG_TABLE;
 	$result = $db->sql_query($sql, 0, 'album_config_');
@@ -239,57 +237,23 @@ if ($show_latest_pics)
 					$pic_preview = 'onmouseover="showtrail(\'' . append_sid('album_picm.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']) . '\',\'' . addslashes($recentrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 				}
 
-				$pic_sp_link = append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-				$pic_dl_link = append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-
-				// Temporarily force to TRUE
-				$album_user_access['view'] = true;
-				if ($album_user_access['view'] == false)
-				{
-					$pic_title = '&nbsp;';
-					$pic_desc = '&nbsp;';
-					$pic_thumbnail = $images['no_thumbnail'];
-					$pic_views = 0;
-				}
-				else
-				{
-					$pic_title = $recentrow[$j]['pic_title'];
-					$pic_desc = $recentrow[$j]['pic_desc'];
-					$pic_thumbnail = append_sid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-					$pic_views = $recentrow[$j]['pic_view_count'];
-				}
-
-				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
-					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
-					'U_PIC_SP' => $pic_sp_link,
-					'U_PIC_DL' => $pic_dl_link,
-
-					'THUMBNAIL' => $pic_thumbnail,
+				$template_vars = array(
 					'PIC_PREVIEW_HS' => $pic_preview_hs,
 					'PIC_PREVIEW' => $pic_preview,
-					'DESC' => $pic_desc
-					)
 				);
+				album_build_column_vars(&$template_vars, $recentrow[$j]);
+				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', $template_vars);
 
 				$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
-				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
-					'PIC_TITLE' => $pic_title,
-					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $pic_title . '</a>',
+
+				$template_vars = array(
 					'POSTER' => $recent_poster,
-					'TIME' => create_date($config['default_dateformat'], $recentrow[$j]['pic_time'], $config['board_timezone']),
-
-					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
-					'U_PIC_SP' => $pic_sp_link,
-					'U_PIC_DL' => $pic_dl_link,
-
-					'THUMBNAIL' => $pic_thumbnail,
 					'PIC_PREVIEW_HS' => $pic_preview_hs,
 					'PIC_PREVIEW' => $pic_preview,
-					'DESC' => $pic_desc,
-
-					'VIEW' => $pic_views,
-					)
+					'GROUP_NAME' => 'profile',
 				);
+				album_build_detail_vars(&$template_vars, $recentrow[$j]);
+				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', $template_vars);
 			}
 		}
 	}
