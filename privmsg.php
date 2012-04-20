@@ -505,6 +505,7 @@ elseif ($mode == 'read')
 		'L_FLAG' => $lang['Flag'],
 		'L_SUBJECT' => $lang['Subject'],
 		'L_QUICK_QUOTE' => $lang['QuickQuote'],
+		'L_OFFTOPIC' => $lang['OffTopic'],
 		'L_POSTED' => $lang['Posted'],
 		'L_DATE' => $lang['Date'],
 		'L_FROM' => $lang['From'],
@@ -1822,37 +1823,39 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 
 	/* Start Private Message Review By aUsTiN */
-	$post_to_review = $_GET['p'];
-
-	$q = "SELECT *
-			FROM " . PRIVMSGS_TABLE . "
-			WHERE privmsgs_id = '" . $post_to_review . "'";
-	$r = $db->sql_query($q);
-	$row = $db->sql_fetchrow($r);
-
-	$prv_msg_review = $row['privmsgs_text'];
-	$bbcode->allow_html = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['privmsgs_enable_html'];
-	$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
-	$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
-	$prv_msg_review = $bbcode->parse($prv_msg_review);
-	if ($row['privmsgs_enable_autolinks_acronyms'])
+	$post_to_review = request_var('p', '');
+  if ($post_to_review > 0)
 	{
-		$prv_msg_review = $bbcode->acronym_pass($prv_msg_review);
-		$prv_msg_review = $bbcode->autolink_text($prv_msg_review, '999999');
+		$q = "SELECT *
+				FROM " . PRIVMSGS_TABLE . "
+				WHERE privmsgs_id = '" . $post_to_review . "'";
+		$r = $db->sql_query($q);
+		$row = $db->sql_fetchrow($r);
+
+		$prv_msg_review = $row['privmsgs_text'];
+		$bbcode->allow_html = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['privmsgs_enable_html'];
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
+		$prv_msg_review = $bbcode->parse($prv_msg_review);
+		if ($row['privmsgs_enable_autolinks_acronyms'])
+		{
+			$prv_msg_review = $bbcode->acronym_pass($prv_msg_review);
+			$prv_msg_review = $bbcode->autolink_text($prv_msg_review, '999999');
+		}
+
+		$prv_msg_review = censor_text($prv_msg_review);
+
+		if(!$prv_msg_review)
+		{
+			$prv_msg_review = $lang['private_msg_review_error'];
+		}
+
+		$template->assign_block_vars('switch_prv_msg_review', array(
+			'MESSAGE' => $prv_msg_review,
+			'PRIVATE_MSG_TITLE' => $lang['private_msg_review_title']
+			)
+		);
 	}
-
-	$prv_msg_review = censor_text($prv_msg_review);
-
-	if(!$prv_msg_review)
-	{
-		$prv_msg_review = $lang['private_msg_review_error'];
-	}
-
-	$template->assign_block_vars('switch_prv_msg_review', array(
-		'MESSAGE' => $prv_msg_review,
-		'PRIVATE_MSG_TITLE' => $lang['private_msg_review_title']
-		)
-	);
 	/* End Private Message Review By aUsTiN */
 
 	// Send smilies to template

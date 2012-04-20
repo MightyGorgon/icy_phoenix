@@ -66,20 +66,37 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 			$self_registered = $reg_info[$u]['registration_status'];
 		}
 		$current_user = colorize_username($reg_info[$u]['user_id'], $reg_info[$u]['username'], $reg_info[$u]['user_color'], $reg_info[$u]['user_active']);
+		$user_registered = create_date_ip($config['default_dateformat'], $reg_info[$u]['registration_time'], $config['board_timezone']);
+		$reg_option_data = '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . $user_registered . '</td></tr>';
 		if ($reg_info[$u]['registration_status'] == REG_OPTION1)
 		{
 			$option1_count++;
-			$reg_option1_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($config['default_dateformat'], $reg_info[$u]['registration_time'], $config['board_timezone']) . '</td></tr>';
+			$template->assign_block_vars('reg_option1_users', array(
+				'USER' => $current_user,
+				'DATE' => $user_registered,
+				)
+			);
+			$reg_option1_data .= $reg_option_data;
 		}
 		elseif ($reg_info[$u]['registration_status'] == REG_OPTION2)
 		{
 			$option2_count++;
-			$reg_option2_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($config['default_dateformat'], $reg_info[$u]['registration_time'], $config['board_timezone']) . '</td></tr>';
+			$template->assign_block_vars('reg_option2_users', array(
+				'USER' => $current_user,
+				'DATE' => $user_registered,
+				)
+			);
+			$reg_option2_data .= $reg_option_data;
 		}
 		elseif ($reg_info[$u]['registration_status'] == REG_OPTION3)
 		{
 			$option3_count++;
-			$reg_option3_data .= '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . create_date_ip($config['default_dateformat'], $reg_info[$u]['registration_time'], $config['board_timezone']) . '</td></tr>';
+			$template->assign_block_vars('reg_option3_users', array(
+				'USER' => $current_user,
+				'DATE' => $user_registered,
+				)
+			);
+			$reg_option3_data .= $reg_option_data;
 		}
 	}
 

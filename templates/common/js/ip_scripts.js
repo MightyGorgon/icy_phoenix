@@ -337,6 +337,13 @@ function links_me()
 // Images, Links, Popup, FORM - END
 
 // Quick Quote - BEGIN
+function showQuickEditor()
+{
+	document.getElementById('quick_reply').style.display = "";
+	document.post.message.focus();
+	return;
+}
+
 function addquote(post_id, tag, quickr, parentf)
 {
 	if (quickr)
