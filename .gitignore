@@ -1,0 +1,6 @@
+logs/logfile_attempt_counter.txt
+logs/logfile_blocklist.txt
+logs/logfile_debug_mode.txt
+logs/logfile_malformed_logins.txt
+logs/logfile_spammer.txt
+logs/logfile_worms.txt
