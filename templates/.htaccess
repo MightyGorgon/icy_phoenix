@@ -1,5 +1,0 @@
-<Files ~ "\.tpl$">
-	Order allow,deny
-	Deny from all
-	Satisfy All
-</Files>
