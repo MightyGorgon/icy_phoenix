@@ -231,8 +231,6 @@ if ($pic_array_id == ($total_pic_count - 1))
 // PREVIOUS & NEXT
 // ------------------------------------
 $pic_id_old = $total_pic_rows[$pic_array_id]['pic_id'];
-$no_prev_pic = false;
-$no_next_pic = false;
 if (isset($_GET['mode']) && ($_GET['mode'] == 'next'))
 {
 	$new_pic_array_id = $pic_array_id - 1;
