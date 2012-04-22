@@ -84,8 +84,10 @@ switch ($album_view_type)
 $sort_method = request_var('sort_method', $sort_method_default);
 $sort_method = check_var_value($sort_method, array('pic_id', 'pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+
+$sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
 switch ($sort_method)
 {

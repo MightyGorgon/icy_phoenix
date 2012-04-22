@@ -220,8 +220,10 @@ $start = ($start < 0) ? 0 : $start;
 $sort_method = request_var('sort_method', $album_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+
+$sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
 switch ($sort_method)
 {
@@ -358,7 +360,6 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	if ($total_pics > 0)
 	{
 		album_build_picture_table($album_user_id, $cat_id, $thiscat, $auth_data, $start, $sort_method, $sort_order, $total_pics);
-
 
 		// Last Comments
 		if ($album_config['show_last_comments'] == 1)

@@ -1050,6 +1050,10 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 	$sort_methods_array = array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment');
 	$sort_method = in_array($sort_method, $sort_methods_array) ? $sort_method : $album_config['sort_method'];
+	$sort_order_array = array('ASC', 'DESC');
+	$sort_order = in_array($sort_order, $sort_order_array) ? $sort_order : $album_config['sort_order'];
+
+	$sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
 	switch ($sort_method)
 	{
@@ -1154,7 +1158,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 				'PIC_PREVIEW' => $pic_preview,
 				'APPROVAL' => $approval_link,
 			);
-			album_build_column_vars(&$template_vars, $picrow[$j], '&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method);
+			album_build_column_vars(&$template_vars, $picrow[$j], $sort_append);
 			$template->assign_block_vars('index_pics_block.picrow.piccol', $template_vars);
 
 			if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
@@ -1187,7 +1191,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 				'IMG_BBCODE' => (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $picrow[$j]['pic_user_id'])) ? '<br /><a href="javasript://" OnClick="window.clipboardData.setData(\'Text\', \'[albumimg]' . $picrow[$j]['pic_id'] . '[/albumimg]\'); return false;">' . $lang['BBCode_Copy'] . '</a>' : ''
 			);
-			album_build_detail_vars(&$template_vars, $picrow[$j], '', $user_rights);
+			album_build_detail_vars(&$template_vars, $picrow[$j], $sort_append, $user_rights);
 			$template->assign_block_vars('index_pics_block.picrow.pic_detail', $template_vars);
 
 			// Mighty Gorgon - Slideshow - BEGIN
@@ -1228,7 +1232,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 	}
 
 	$template->assign_vars(array(
-		'PAGINATION' => generate_pagination(append_sid(album_append_uid($album_pagination_page_url . '?cat_id=' . intval($cat_ids) . '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order . $viewmode)), $total_pics, $pics_per_page, $start),
+		'PAGINATION' => generate_pagination(append_sid(album_append_uid($album_pagination_page_url . '?cat_id=' . intval($cat_ids) . $sort_append . $viewmode)), $total_pics, $pics_per_page, $start),
 		'SLIDESHOW' => $slideshow_link_full,
 		$waiting = ($tot_unapproved == 0) ? "" : $tot_unapproved . $lang['Waiting'],
 		'WAITING' => ($user->data['user_level'] == ADMIN) ? (($tot_unapproved == 0) ? '&nbsp;' : '<br /><span class="gensmall"><b>' . $tot_unapproved . $lang['Waiting'] . '</b></span>') : '&nbsp;',

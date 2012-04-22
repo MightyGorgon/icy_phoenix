@@ -62,6 +62,13 @@ function album_generate_config_settings_box($config_data)
 		'ALBUM_CATEGORY_SORTING_ASC' => ($new['album_category_sorting_direction'] == 'ASC') ? 'checked="checked"' : '',
 		'ALBUM_CATEGORY_SORTING_DESC' => ($new['album_category_sorting_direction'] == 'DESC') ? 'checked="checked"' : '',
 
+		'ALBUM_PICTURE_SORTING_TIME' => ($new['sort_method'] == 'pic_time') ? 'checked="checked"' : '',
+		'ALBUM_PICTURE_SORTING_TITLE' => ($new['sort_method'] == 'pic_title') ? 'checked="checked"' : '',
+		'ALBUM_PICTURE_SORTING_VIEW' => ($new['sort_method'] == 'pic_view_count') ? 'checked="checked"' : '',
+
+		'ALBUM_PICTURE_SORTING_ASC' => ($new['sort_order'] == 'ASC') ? 'checked="checked"' : '',
+		'ALBUM_PICTURE_SORTING_DESC' => ($new['sort_order'] == 'DESC') ? 'checked="checked"' : '',
+
 		'SET_MEMORY' => $new['set_memory'],
 
 		'SHOW_RECENT_IN_SUBCATS_ENABLED' => ($new['show_recent_in_subcats'] == 1) ? 'checked="checked"' : '',
@@ -173,6 +180,15 @@ function album_generate_config_settings_box($config_data)
 		'L_ALBUM_CATEGORY_DIRECTION' => $lang['Album_Category_Sorting_Direction'],
 		'L_ALBUM_CATEGORY_SORTING_ASC' => $lang['Album_Category_Sorting_Asc'],
 		'L_ALBUM_CATEGORY_SORTING_DESC' => $lang['Album_Category_Sorting_Desc'],
+
+		'L_ALBUM_PICTURE_SORTING' => $lang['Album_Picture_Sorting'],
+		'L_ALBUM_PICTURE_SORTING_TIME' => $lang['Album_Picture_Sorting_Time'],
+		'L_ALBUM_PICTURE_SORTING_TITLE' => $lang['Album_Picture_Sorting_Title'],
+		'L_ALBUM_PICTURE_SORTING_VIEW' => $lang['Album_Picture_Sorting_View'],
+
+		'L_ALBUM_PICTURE_DIRECTION' => $lang['Album_Picture_Sorting_Direction'],
+		'L_ALBUM_PICTURE_SORTING_ASC' => $lang['Album_Picture_Sorting_Asc'],
+		'L_ALBUM_PICTURE_SORTING_DESC' => $lang['Album_Picture_Sorting_Desc'],
 
 		'L_SHOW_RECENT_IN_SUBCATS' => $lang['Show_Recent_In_Subcats'],
 		'L_SHOW_RECENT_INSTEAD_OF_NOPICS' => $lang['Show_Recent_Instead_of_NoPics'],

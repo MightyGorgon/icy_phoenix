@@ -772,12 +772,14 @@ $template->assign_vars(array(
 // Don't chat with yourself - it's antisocial
 if ($user->data['user_id'] != $profiledata['user_id'])
 {
+	/* JHL TEMP - waiting for ACP configuration flag
 	$template->assign_vars(array(
 		'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
 
 		'ICON_CHAT' => $all_ims['chat']['icon'],
 		)
 	);
+	*/
 }
 
 // Custom Profile Fields - BEGIN

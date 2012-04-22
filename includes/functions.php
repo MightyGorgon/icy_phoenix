@@ -4890,9 +4890,12 @@ function page_header($title = '', $parse_template = false)
 		'PRIVMSG_IMG' => $icon_pm,
 		'NEW_PM_SWITCH' => $new_pm_switch,
 
+
+		/* JHL TEMP - waiting for ACP configuration flag
 		'PRIVATE_CHAT_IMG' => $icon_private_chat,
 		'U_PRIVATE_CHAT' => $u_private_chat,
 		'NEW_PRIVATE_CHAT_SWITCH' => $new_private_chat_switch,
+		*/
 
 		'L_USERNAME' => $lang['Username'],
 		'L_PASSWORD' => $lang['Password'],

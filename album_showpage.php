@@ -80,7 +80,7 @@ else
 $sort_method = request_var('sort_method', $album_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'pic_view_count'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value(strtoupper($sort_order), array('ASC', 'DESC'));
 
 $sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
@@ -782,8 +782,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
 
 			$next_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=next&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
 			$prev_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
@@ -820,8 +820,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Next_Pic'] . '" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Prev_Pic'] . '" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Prev_Pic'] . '" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Next_Pic'] . '" /></a>' : '';
 		}
 		else
 		{

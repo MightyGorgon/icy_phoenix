@@ -102,7 +102,7 @@ $lang = array_merge($lang, array(
 	'Show_OTF_Link' => 'Show "Album OTF" link on Album Index',
 	'Show_AllPics_Link' => 'Show "All Pics" link on Album Index',
 	'Show_PG_Link' => 'Show "Personal Galleries" link on Album Index',
-
+Album_Category_Sorting
 // 02 - Personal Galleries
 	'Personal_Galleries' => 'Personal Galleries',
 	'Album_personal_gallery_title' => 'Personal Gallery',
@@ -174,6 +174,14 @@ $lang = array_merge($lang, array(
 	'Album_Category_Sorting_Direction' => 'Sorting direction (only valid for ID and Name sorting)',
 	'Album_Category_Sorting_Asc' => 'Ascending',
 	'Album_Category_Sorting_Desc' => 'Descending',
+
+	'Album_Picture_Sorting' => 'Sorting of the album pictures',
+	'Album_Picture_Sorting_Time' => 'Time',
+	'Album_Picture_Sorting_Title' => 'Image',
+	'Album_Picture_Sorting_View' => 'View',
+	'Album_Picture_Sorting_Direction' => 'Sorting direction',
+	'Album_Picture_Sorting_Asc' => 'Ascending',
+	'Album_Picture_Sorting_Desc' => 'Descending',
 
 // 07 - Clear Cache
 	'Clear_Cache_Tab' => 'Cache',
