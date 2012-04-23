@@ -175,9 +175,10 @@ while($row = $db->sql_fetchrow($result))
 	$i++;
 }
 
+$pagination = '&nbsp;';
+
 $sql = !empty($total_sql) ? $total_sql : ("SELECT count(*) AS total FROM " . REFERERS_TABLE);
 $result = $db->sql_query($sql);
-$pagination = '&nbsp;';
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_referers = $total['total'];

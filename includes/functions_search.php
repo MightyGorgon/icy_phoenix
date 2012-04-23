@@ -432,17 +432,17 @@ function truncate_html_string($text, $length, $ellipsis = '...')
 	while ($printed_length < $length && preg_match('{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}', $text, $match, PREG_OFFSET_CAPTURE, $position))
 	{
 		list($tag, $tag_position) = $match[0];
-	
+
 		// append text leading up to the tag.
 		$str = substr($text, $position, $tag_position - $position);
 		if ($printed_length + strlen($str) > $length)
 		{
 			break;
 		}
-	
+
 		$clean_text .= $str;
 		$printed_length += strlen($str);
-	
+
 		if ($tag[0] == '&')
 		{
 			// Handle the entity.
@@ -456,10 +456,10 @@ function truncate_html_string($text, $length, $ellipsis = '...')
 			if ($tag[1] == '/')
 			{
 				// This is a closing tag.
-	
+
 				$opening_tag = array_pop($tags);
 				assert($opening_tag == $tag_name); // check that tags are properly nested.
-	
+
 				$clean_text .= $tag;
 			}
 			else if ($tag[strlen($tag) - 2] == '/')
@@ -474,11 +474,11 @@ function truncate_html_string($text, $length, $ellipsis = '...')
 				$tags[] = $tag_name;
 			}
 		}
-	
+
 		// Continue after the tag.
 		$position = $tag_position + strlen($tag);
 	}
-	
+
 	// Print any remaining text.
 	if ($printed_length < $length && $position < strlen($text))
 	{
@@ -487,11 +487,11 @@ function truncate_html_string($text, $length, $ellipsis = '...')
 		while ($utf8_length < $max_length)
 		{
 			$char = substr($text, $position + $utf8_length, 1);
-			// UTF-8 character encoding
+			// UTF-8 character encoding - BEGIN
 			$code = ord($char);
-		  if ($code >= 0x80)
+			if ($code >= 0x80)
 			{
-			  if ($code < 0xE0)
+				if ($code < 0xE0)
 				{
 					// Two byte
 					if (($max_length - $utf8_length) >= 2)
@@ -520,15 +520,16 @@ function truncate_html_string($text, $length, $ellipsis = '...')
 			{
 				$utf8_length = $utf8_length + 1;
 			}
+			// UTF-8 character encoding - END
 		}
 		$clean_text .= substr($text, $position, $utf8_length);
 	}
 	$clean_text .= $ellipsis;
-	
+
 	// Close any open tags.
 	while (!empty($tags))
 	{
-		$clean_text .= '</'. array_pop($tags) .'>';
+		$clean_text .= '</' . array_pop($tags) . '>';
 	}
 	return $clean_text;
 }

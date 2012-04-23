@@ -58,6 +58,8 @@ if(!function_exists('cms_block_forum'))
 			$cms_config_vars['md_news_length'][$block_id] = 0;
 		}
 
+		// Mighty Gorgon: edited by JHL, I still need to check the impacts on the auth system
+		//$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_news_forum_id'][$block_id], $cms_config_vars['md_num_news'][$block_id], $cms_config_vars['md_news_length'][$block_id], false, false, false, false);
 		$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_news_forum_id'][$block_id], $cms_config_vars['md_num_news'][$block_id], $cms_config_vars['md_news_length'][$block_id]);
 
 		for ($i = 0; $i < sizeof($fetchposts); $i++)

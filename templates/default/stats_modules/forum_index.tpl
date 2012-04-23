@@ -1,1 +1,1 @@
-<!-- Don't INCLUDE breadcrumbs_main.tpl -->
+<!-- INCLUDE breadcrumbs_main.tpl -->

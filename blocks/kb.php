@@ -68,6 +68,8 @@ if(!function_exists('cms_block_kb'))
 			$template->assign_block_vars('kb_article', array());
 
 			$forum_id = request_var(POST_FORUM_URL, 0);
+			// Mighty Gorgon: edited by JHL, I still need to check the impacts on the auth system
+			//$fetchposts = $class_topics->fetch_posts($forum_id, 0, 0, false, false, false, false);
 			$fetchposts = $class_topics->fetch_posts($forum_id, 0, 0);
 
 			$id = (isset($_GET[POST_TOPIC_URL])) ? intval($_GET[POST_TOPIC_URL]) : intval($_POST[POST_TOPIC_URL]);
@@ -106,6 +108,8 @@ if(!function_exists('cms_block_kb'))
 				$template->assign_block_vars('kb_list', array());
 
 				$forum_id = request_var(POST_FORUM_URL, 0);
+				// Mighty Gorgon: edited by JHL, I still need to check the impacts on the auth system
+				//$fetchposts = $class_topics->fetch_posts($forum_id, 0, 0, false, false, false, false);
 				$fetchposts = $class_topics->fetch_posts($forum_id, 0, 0);
 
 				for ($i = 0; $i < sizeof($fetchposts); $i++)

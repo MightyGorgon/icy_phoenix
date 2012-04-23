@@ -1,6 +1,7 @@
 <!-- BEGIN view_shoutbox -->
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/fat.js"></script>
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 //
 // window event callback functions
@@ -116,21 +117,23 @@ function classChanger(id)
 }
 
 var sound_ver = parseInt(navigator.appVersion);
-var sound_ie4 =  ((sound_ver > 3) && (navigator.appName != "Netscape")) ? 1 : 0;
+var sound_ie4 = ((sound_ver > 3) && (navigator.appName != "Netscape")) ? 1 : 0;
 var sound_ns3 = ((sound_ver == 3) && (navigator.appName == "Netscape")) ? 1 : 0;
-var sound_ns4 =  ((sound_ver > 3) && (navigator.appName == "Netscape")) ? 1 : 0;
+var sound_ns4 = ((sound_ver > 3) && (navigator.appName == "Netscape")) ? 1 : 0;
 var sound_flag = ((sound_ns3 || sound_ns4) && (!navigator.javaEnabled() || !navigator.mimeTypes['audio/wav'])) ? false : true;
 
-var sound_url = "{FULL_SITE_PATH}/templates/default/notify.wav";
+var sound_url = "{FULL_SITE_PATH}/notify.wav";
 
 function playsound(soundfile)
 {
+	$("#ac_notify").jPlayer("play");
 	if (sound_flag)
 	{
-		$("#notify").empty().prepend("<embed src=\"" + soundfile + "\" autostart=\"true\" hidden=\"true\" loop=\"false\">");
+		// OLD notify code... commented out... let's wait HTML 5!
+		//$("#notify").empty().prepend("<embed src=\"" + soundfile + "\" autostart=\"true\" hidden=\"true\" loop=\"false\">");
 	}
 }
 
-//]]>
+// ]]>
 </script>
 <!-- END view_shoutbox -->

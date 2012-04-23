@@ -274,7 +274,7 @@ switch($pmaction)
 		while($row = $db->sql_fetchrow($result))
 		{
 			$view_url = (!$config['aprvmView']) ? append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) : '#';
-			$onclick_url = ($config['aprvmView']) ? "JavaScript:window.open('" . append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) . "','_privmsg','width=550,height=450,resizable=yes')" : '';
+			$onclick_url = ($config['aprvmView']) ? "javascript:window.open('" . append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) . "', '_privmsg', 'width=550,height=450,resizable=yes')" : '';
 			$template->assign_block_vars('msgrow', array(
 				'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
 				'ATTACHMENT_INFO' => (defined('ATTACH_VERSION')) ? 'Not Here Yet' : '',

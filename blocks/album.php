@@ -49,6 +49,7 @@ if(!function_exists('cms_block_album'))
 		exit;
 		*/
 		include_once(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+		global $album_config;
 
 		$sql = "SELECT c.*, COUNT(p.pic_id) AS count
 				FROM " . ALBUM_CAT_TABLE . " AS c
@@ -305,7 +306,7 @@ if(!function_exists('cms_block_album'))
 			'L_POSTER' => $lang['Poster'],
 			'L_POSTED' => $lang['Posted'],
 			'U_ALBUM' => append_sid('album.' . PHP_EXT),
-			'L_ALBUM' => $lang['Album'],
+			'L_ALBUM' => $lang['Album']
 			)
 		);
 

@@ -40,7 +40,7 @@ $album_config['hon_rate_sep'] = false;
 
 $rate_point = request_var('hon_rating', 0);
 
-//if user havent rated a picture, show page, else update database
+//if user hasn't rated a picture, show page, else update database
 if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 {
 	// ------------------------------------
@@ -153,14 +153,16 @@ if (($rate_point < 1) || ($rate_point > $album_config['rate_scale']))
 	$image_rating = ImageRating($thispic['rating']);
 
 	//hot or not rating
-	if (CanRated($pic_id, $user->data['user_id']))
+	if (CanRate($pic_id, $user->data['user_id']))
 	{
 		$template->assign_block_vars('hon_rating', array());
 
 		for ($i = 0; $i < $album_config['rate_scale']; $i++)
 		{
 			$template->assign_block_vars('hon_rating.hon_row', array(
-				'VALUE' => ($i + 1)));
+				'VALUE' => ($i + 1)
+				)
+			);
 		}
 	}
 	else

@@ -1,6 +1,7 @@
 <!-- INCLUDE simple_header.tpl -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 var form_name_original = form_name;
 var text_name_original = text_name;
 var form_name_thisform = '{BBCB_FORM_NAME}';
@@ -25,11 +26,12 @@ function bbcb_vars_reassign_end()
 	form_name = form_name_original;
 	text_name = text_name_original;
 }
-//]]>
+// ]]>
 </script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg_small.js"></script>
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 	$(function(){
 		var btnUpload = $('#upload');
 		var status = $('#status');
@@ -80,7 +82,7 @@ function bbcb_vars_reassign_end()
 		});
 
 	});
-//]]>
+// ]]>
 </script>
 
 <form action="{S_ACTION}" name="upload_ajax_form" method="post" enctype="multipart/form-data">

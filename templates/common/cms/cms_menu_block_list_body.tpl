@@ -80,7 +80,7 @@
 <!-- INCLUDE ../common/cms/cms_info_box.tpl -->
 
 <script type="text/javascript">
-//<![CDATA[
+// <![CDATA[
 var box_updated = '';
 var page_url = '';
 var request_options = '';
@@ -104,7 +104,7 @@ lists[{cat_row.CAT_CB_ID}].sortable(
 	handle: '.icon-edit-move'
 }).disableSelection();
 <!-- END cat_row -->
-//]]>
+// ]]>
 </script>
 
 <!-- INCLUDE ../common/cms/page_footer.tpl -->

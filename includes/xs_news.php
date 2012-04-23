@@ -116,7 +116,7 @@ if($config['xs_show_news'] != false)
 	}
 
 	$template->assign_vars(array(
-		'XS_HAS_NEWS_ITEMS' => ($news_displayed > 0)
+		'XS_HAS_NEWS_ITEMS' => ($news_displayed > 0) ? true : false
 		)
 	);
 
@@ -326,7 +326,7 @@ if($config['xs_show_news'] != false)
 	}
 
 	$template->assign_vars(array(
-		'XS_HAS_NEWS_TICKERS' => ($tick_displayed > 0)
+		'XS_HAS_NEWS_TICKERS' => ($tick_displayed > 0) ? true : false
 		)
 	);
 

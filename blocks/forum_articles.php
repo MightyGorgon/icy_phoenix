@@ -60,7 +60,7 @@ if (!function_exists('cms_block_forum_articles'))
 		else {
 			$prefix = '?';
 		}
- 
+
 		$meta_content['page_title_clean'] = empty($meta_content['page_title_clean']) ? strip_tags($meta_content['page_title']) : $meta_content['page_title_clean'];
 
 		$template->set_filenames(array('forum_articles_block' => 'blocks/forum_articles_block.tpl'));

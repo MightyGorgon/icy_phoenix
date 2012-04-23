@@ -36,7 +36,6 @@ $mode = (!in_array($mode, $mode_types) ? '' : $mode);
 // Give guest a notice so they know they aren't allowed to use the shoutbox.
 if (($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
 {
-	//message_die(GENERAL_ERROR, $lang['Shoutbox_no_auth']);
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_AJAX_CHAT, true));
 }
 
@@ -65,7 +64,7 @@ if ($chat_room !== '')
 		$chat_last_user = $chat_user;
 	}
 	$chat_room = implode('|', $chat_room_users);
-	if ($user->data['user_level'] != ADMIN && !in_array($user->data['user_id'], $chat_room_users))
+	if (($user->data['user_level'] != ADMIN) && !in_array($user->data['user_id'], $chat_room_users))
 	{
 		// Current user is not in that chat room
 		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);

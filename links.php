@@ -256,8 +256,8 @@ if (($t == 'pop') || ($t == 'new'))
 		WHERE link_active = 1";
 	$result = $db->sql_query($sql);
 
-	$pagination = '&nbsp;';
 	$total_links = 10;
+	$pagination = '&nbsp;';
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$total_links = $row['total'];
@@ -506,8 +506,8 @@ if ($t == 'search')
 				AND (link_title LIKE '%" . $db->sql_escape($search_keywords) . "%' OR link_desc LIKE '%" . $db->sql_escape($search_keywords) . "%')";
 		$result = $db->sql_query($sql);
 
-		$pagination = '&nbsp;';
 		$total_links = 10;
+		$pagination = '&nbsp;';
 		if ($row = $db->sql_fetchrow($result))
 		{
 			$total_links = $row['total'];

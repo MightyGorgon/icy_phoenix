@@ -4,7 +4,8 @@
 <!-- INCLUDE ajax_shoutbox_html_js.tpl -->
 
 <!-- BEGIN view_shoutbox -->
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 // Based in part on the XHTML live Chat (http://www.plasticshore.com)
 // This script is published under a creative commons license
@@ -21,7 +22,7 @@ function initChat()
 	return true;
 }
 initChat();
-//]]>
+// ]]>
 </script>
 <!-- END view_shoutbox -->
 

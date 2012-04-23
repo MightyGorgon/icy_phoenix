@@ -1,11 +1,12 @@
 <!-- IF S_STYLES_SELECT -->
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function SetTheme_{MAIN_MENU_ID}()
 {
 	document.ChangeTheme_{MAIN_MENU_ID}.submit();
 	return true;
 }
-//]]>
+// ]]>
 </script>
 <!-- ENDIF -->
 <!-- BEGIN show_hide_switch -->
@@ -53,13 +54,14 @@ if(GetCookie(tmp) == '2')
 			</div>
 		</div>
 		<div id="menu_cat_{cat_row.CAT_ID}" class="js-sh-box">
-			<script type="text/javascript">//<![CDATA[
+			<script type="text/javascript">
+			// <![CDATA[
 			tmp = 'menu_cat_{cat_row.CAT_ID}';
 			if(GetCookie(tmp) == '2')
 			{
 				ShowHide('menu_cat_{cat_row.CAT_ID}', 'menu_cat_{cat_row.CAT_ID}_h', 'menu_cat_{cat_row.CAT_ID}');
 			}
-			//]]>
+			// ]]>
 			</script>
 		</div>
 	</td>

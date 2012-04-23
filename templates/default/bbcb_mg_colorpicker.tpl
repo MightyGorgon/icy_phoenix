@@ -65,7 +65,8 @@
 <img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-brightness.png" alt="" />
 <img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/map-hue.png" alt="" />
 </div>
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 Event.observe(window,'load',function()
 {
@@ -74,7 +75,7 @@ Event.observe(window,'load',function()
 	//ShowHide('cp_mappoint');
 	//ShowHide('cp_arrows');
 });
-//]]>
+// ]]>
 </script>
 
 <!-- INCLUDE simple_footer.tpl -->

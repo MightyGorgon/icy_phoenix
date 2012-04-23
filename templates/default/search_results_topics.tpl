@@ -1,6 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function select_switch(status)
 {
 	for (i = 0; i < document.post.length; i++)
@@ -8,7 +9,7 @@ function select_switch(status)
 		document.post.elements[i].checked = status;
 	}
 }
-//]]>
+// ]]>
 </script>
 <form action="{S_POST_ACTION}" method="post" name="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

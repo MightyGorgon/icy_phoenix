@@ -23,6 +23,10 @@
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{css_include.CSS_FILE}" type="text/css" />
 <!-- END css_include -->
 
+<!-- IF IS_PROSILVER -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_TPL_PATH}style_css.{PHP_EXT}?color={CSS_COLOR}&amp;lang={CURRENT_TPL_LANG}" type="text/css" />
+<!-- ENDIF -->
+
 <!-- INCLUDE overall_inc_header_js.tpl -->
 
 <!-- IF S_NIFTY -->

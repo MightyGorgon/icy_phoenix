@@ -231,7 +231,9 @@ if ($pic_array_id == ($total_pic_count - 1))
 // PREVIOUS & NEXT
 // ------------------------------------
 $pic_id_old = $total_pic_rows[$pic_array_id]['pic_id'];
-if (isset($_GET['mode']) && ($_GET['mode'] == 'next'))
+$no_prev_pic = false;
+$no_next_pic = false;
+if(isset($_GET['mode']) && ($_GET['mode'] == 'next'))
 {
 	$new_pic_array_id = $pic_array_id - 1;
 	if ($new_pic_array_id == 0)
@@ -239,7 +241,7 @@ if (isset($_GET['mode']) && ($_GET['mode'] == 'next'))
 		$no_prev_pic = true;
 	}
 }
-elseif (isset($_GET['mode']) && ($_GET['mode'] == 'prev'))
+elseif(isset($_GET['mode']) && ($_GET['mode'] == 'prev'))
 {
 	$new_pic_array_id = $pic_array_id + 1;
 	if ($new_pic_array_id == ($total_pic_count - 1))
@@ -255,7 +257,6 @@ $pic_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_id'];
 $pic_cat_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_cat_id'];
 $pic_time_tmp = $total_pic_rows[$new_pic_array_id]['pic_time'];
 $pic_user_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_user_id'];
-
 $next_pic_count = ($total_pic_count - $new_pic_array_id - 1);
 $prev_pic_count = $new_pic_array_id;
 
@@ -279,10 +280,8 @@ if ($album_config['show_pics_nav'] == 1)
 
 if (!$album_config['invert_nav_arrows'])
 {
-
 	$max_pic_counter = min(($total_pic_count - 1), ($new_pic_array_id + 2));
 	$min_pic_counter = max(0, ($new_pic_array_id - 2));
-
 	for($i = $min_pic_counter; $i <= $max_pic_counter; $i++)
 	{
 		$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']));
@@ -308,7 +307,6 @@ if (!$album_config['invert_nav_arrows'])
 				'U_PIC_THUMB' => $thumbnail_file,
 				'U_PIC_LINK' => ($i == $new_pic_array_id) ? '#' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append)),
 				'U_PIC_LINK_HS' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])),
-
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
@@ -321,10 +319,8 @@ if (!$album_config['invert_nav_arrows'])
 }
 else
 {
-
 	$max_pic_counter = max(0, ($new_pic_array_id - 2));
 	$min_pic_counter = min(($total_pic_count - 1), ($new_pic_array_id + 2));
-
 	for($i = $min_pic_counter; $i >= $max_pic_counter; $i--)
 	{
 		$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']));
@@ -780,8 +776,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
 
 			$next_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=next&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
 			$prev_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
@@ -818,8 +814,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Prev_Pic'] . '" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Next_Pic'] . '" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Next_Pic'] . '" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Prev_Pic'] . '" /></a>' : '';
 		}
 		else
 		{
@@ -903,6 +899,12 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	}
 
 	// Mighty Gorgon - Pic Size - BEGIN
+	$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
+	$pic_thumbnail_path = $pic_info['thumbnail_m_fullpath'];
+	$pic_thumbnail_size = @getimagesize($pic_thumbnail_path);
+	$pic_thumbnail_width = $pic_thumbnail_size[0];
+	$pic_thumbnail_height = $pic_thumbnail_size[1];
+
 	$pic_fullpath = ALBUM_UPLOAD_PATH . $thispic['pic_filename'];
 	$pic_size = @getimagesize($pic_fullpath);
 	$pic_width = $pic_size[0];
@@ -975,7 +977,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id']));
 	$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $thispic['pic_id']));
 
-	$pic_full_set = ($picm == false || $nuff_display == true);
+	$pic_full_set = (($picm == false) || ($nuff_display == true)) ? true : false;
 
 	$template->assign_vars(array(
 		'CAT_TITLE' => $thispic['cat_title'],
@@ -1010,8 +1012,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'L_PIC_DETAILS' => $lang['Pic_Details'],
 		'L_PIC_SIZE' => $lang['Pic_Size'],
 		'L_PIC_TYPE' => $lang['Pic_Type'],
-		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $album_config['midthumb_height'],
-		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $album_config['midthumb_width'],
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $pic_thumbnail_height,
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $pic_thumbnail_width,
 		'PIC_SIZE' => $pic_width . ' x ' . $pic_height . ' (' . intval($pic_filesize/1024) . 'KB)',
 		'PIC_TYPE' => strtoupper(substr($thispic['pic_filename'], strlen($thispic['pic_filename']) - 3, 3)),
 		// Mighty Gorgon - Pic Size - END

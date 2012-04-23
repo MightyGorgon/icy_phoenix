@@ -24,25 +24,22 @@ $user->setup();
 
 $topic_title = request_var('topic_title', '', true);
 $topic_id = request_var('topic_id', 0);
-$topic_link = request_var('topic_link', '');
+$topic_link = request_var('topic_link', '', true);
 $message = request_var('message', '', true);
 $PHP_SELF = $_SERVER['SCRIPT_NAME'];
 
 if (!$user->data['session_logged_in'])
 {
-	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id .'&article_url=' . urlencode($article_url), true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id .'&topic_link=' . urlencode($topic_link), true));
 }
 
-if (empty($topic_link))
+if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
 {
-	if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
-	{
-		$topic_link = create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html';
-	}
-	else
-	{
-		$topic_link = create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id;
-	}
+	$topic_link = create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html';
+}
+else
+{
+	$topic_link = create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id;
 }
 
 $mail_body = str_replace("{TOPIC}", htmlspecialchars_decode($topic_title), $lang['TELL_FRIEND_BODY']);

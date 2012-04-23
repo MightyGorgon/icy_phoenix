@@ -228,7 +228,7 @@ $result = $db->sql_query($sql);
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_referers = $total['total'];
-	$pagination = generate_pagination('admin_referers.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_dir . '&amp;group_by=' . $group_by, $total_referers , $config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_referers.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_dir . '&amp;group_by=' . $group_by, $total_referers , $config['topics_per_page'], $start) . '&nbsp;';
 }
 $db->sql_freeresult($result);
 

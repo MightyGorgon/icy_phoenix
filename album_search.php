@@ -143,7 +143,7 @@ if (!empty($search_escaped))
 				$cat_id = $row['cat_id'];
 				//$cat_id = album_get_personal_root_id($album_user_id);
 
-				$check_permissions = ALBUM_AUTH_VIEW | ALBUM_AUTH_RATE | ALBUM_AUTH_COMMENT | ALBUM_AUTH_EDIT | ALBUM_AUTH_DELETE;
+				$check_permissions = ALBUM_AUTH_VIEW|ALBUM_AUTH_RATE|ALBUM_AUTH_COMMENT|ALBUM_AUTH_EDIT|ALBUM_AUTH_DELETE;
 				$auth_data = album_permissions($album_user_id, $cat_id, $check_permissions, $row);
 				//$auth_data = album_get_auth_data($cat_id);
 
@@ -170,7 +170,7 @@ if (!empty($search_escaped))
 						'U_PIC_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
 						'GROUP_NAME' => 'all',
 					);
-					album_build_detail_vars(&$template_vars, $row);
+					album_build_detail_vars($template_vars, $row);
 					$template->assign_block_vars('switch_search_results.search_results', $template_vars);
 
 					$in[$numres] = $row['pic_id'];

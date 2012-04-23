@@ -119,7 +119,7 @@ if (substr($mode, 0, 6) == 'update')
 			`pic_desc` TEXT NOT NULL,
 			`pic_user_id` mediumint(8) NOT NULL default '0',
 			`pic_username` varchar(32) NULL default '',
-			`pic_user_ip` varchar(8) NOT NULL default '0',
+			`pic_user_ip` varchar(40) NOT NULL default '',
 			`pic_time` int(11) unsigned NOT NULL default '0',
 			`pic_cat_id` mediumint(8) unsigned NOT NULL default '1',
 			`pic_view_count` int(11) unsigned NOT NULL default '0',
@@ -4458,6 +4458,8 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.27.80 */
 		case '1.3.27.80':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "album` CHANGE `pic_user_ip` `pic_user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "UPDATE `" . $table_prefix . "album` ip SET ip.pic_user_ip = INET_NTOA(CONV(ip.pic_user_ip, 16, 10))";
 
 		/* Updating from IP 1.3.28.81 */
 		case '1.3.28.81':

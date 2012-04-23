@@ -702,7 +702,7 @@ else
 
 	$num_bans = $db->sql_fetchrow ($result);
 
-	$pagination = generate_pagination('admin_user_bantron.' . PHP_EXT . '?show=' . $show . '&amp;order=' . $order, $num_bans['total'], $config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_user_bantron.' . PHP_EXT . '?show=' . $show . '&amp;order=' . $order, $num_bans['total'], $config['topics_per_page'], $start) . '&nbsp;';
 
 	$template->assign_vars(array(
 		'PAGINATION' => $pagination,

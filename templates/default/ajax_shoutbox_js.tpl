@@ -1,5 +1,6 @@
 <!-- BEGIN view_shoutbox -->
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 // Based in part on the XHTML live Chat (http://www.plasticshore.com)
 // This script is published under a creative commons license
@@ -47,11 +48,11 @@ function checkName()
 // Create new chat window
 function addChatTab(room)
 {
-	var roomId = (typeof room == 'string' && room != '') ? room.replace(/\|/g, '-') : 'all';
+	var roomId = (typeof room == 'string' && room != '') ? room.replace(/\|/g, '-') : 'public';
 	var tableId = 'outputList-' + roomId;
-	var title = 'all';
+	var title = 'public';
 	// tab title
-	if (roomId != 'all')
+	if (roomId != 'public')
 	{
 		// find all users participating in conversation
 		var list = room.split('|');
@@ -67,7 +68,7 @@ function addChatTab(room)
 	}
 	// add tab
 	var html = insertChatTab(roomId, room, title);
-	if (roomId == 'all')
+	if (roomId == 'public')
 	{
 		$('#shoutsTabs').prepend(html);
 	}
@@ -83,20 +84,20 @@ function addChatTab(room)
 
 function activateChatTab(room)
 {
-	var roomId = (typeof room == 'string' && room != '') ? room.replace(/\|/g, '-') : 'all';
+	var roomId = (typeof room == 'string' && room != '') ? room.replace(/\|/g, '-') : 'public';
 	var tableId = 'outputList-' + roomId;
 	// find tab
 	var tab = $('#chat-tab-' + roomId);
 	if (!tab.length || tab.hasClass('active')) return;
 	// hide active tab and table
-	var oldId = (AjaxContext.chatRoom == '') ? 'all' : AjaxContext.chatRoom.replace(/\|/g, '-');
+	var oldId = (AjaxContext.chatRoom == '') ? 'public' : AjaxContext.chatRoom.replace(/\|/g, '-');
 	$('#chat-tab-' + oldId).removeClass('active');
 	$('#outputList-' + oldId).hide();
 	// show new tab and table
 	tab.addClass('active');
 	$('#outputList-' + roomId).show();
-	AjaxContext.chatRoom = (room === 'all') ? '' : room;
+	AjaxContext.chatRoom = (room === 'public') ? '' : room;
 }
-//]]>
+// ]]>
 </script>
 <!-- END view_shoutbox -->

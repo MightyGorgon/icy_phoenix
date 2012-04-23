@@ -1,13 +1,14 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function select_switch(status)
 {
 	$("[type='checkbox']").each(function(index, element) {
 		element.checked = status;
 	});
 }
-//]]>
+// ]]>
 </script>
 
 <form method="post" name="attach_list" action="{S_MODE_ACTION}">

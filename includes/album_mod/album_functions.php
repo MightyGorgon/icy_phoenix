@@ -665,7 +665,6 @@ function ImageRating($rating, $css_style = 'border-style:none')
 			$r = '';
 			for ($temp = 1; $temp <= $rating; $temp++)
 			{
-				//$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rank.gif" style="' . $css_style . '" alt="" />';
 				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" alt="" />';
 			}
 			return ($r);
@@ -693,24 +692,23 @@ function ImageRating($rating, $css_style = 'border-style:none')
 			$r = '';
 			for ($temp = 1; $temp <= $rating; $temp++)
 			{
-				//$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rank.gif" style="' . $css_style . '" alt="" />';
-				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" alt="" />;';
+				$r .= '<img src="' . ALBUM_MOD_IMG_PATH . 'rating_star.png" style="' . $css_style . '" alt="" />';
 			}
 		}
 		return (round($rating, 2) . '&nbsp;' . $r);
 	}
 }
 
-function CanRated ($picID, $userID)
+function CanRate($picID, $userID)
 {
-//PRE: deside if user can rate things on hot or not
+	//PRE: decide if user can rate things on hot or not
 	global $db, $user, $album_config;
 
-	if (! $user->data['session_logged_in'] && $album_config['hon_rate_users'] == 1)
+	if (!$user->data['session_logged_in'] && ($album_config['hon_rate_users'] == 1))
 	{
 		$allowed = true;
 	}
-	elseif ($user->data['session_logged_in'] && $album_config['hon_rate_times'] == 0)
+	elseif ($user->data['session_logged_in'] && ($album_config['hon_rate_times'] == 0))
 	{
 		$sql = "SELECT *
 					FROM ". ALBUM_RATE_TABLE ."
@@ -725,7 +723,7 @@ function CanRated ($picID, $userID)
 		}
 		else
 		{
-			$allowed =  true;
+			$allowed = true;
 		}
 	}
 	else
@@ -1010,34 +1008,10 @@ function pic_info($pic_filename, $pic_thumbnail, $pic_title = '')
 	return $pic_info;
 }
 
-if (!function_exists('setFlag'))
-{
-	function setFlag($flags, $flag)
-	{
-		return $flags | $flag;
-	}
-}
-
-if (!function_exists('clearFlag'))
-{
-	function clearFlag($flags, $flag)
-	{
-		return ($flags & ~$flag);
-	}
-}
-
-if (!function_exists('checkFlag'))
-{
-	function checkFlag($flags, $flag)
-	{
-		return (($flags & $flag) == $flag) ? true : false;
-	}
-}
-
-// Builds the common picture column template variables
+// JHL - Builds the common picture column template variables
 function album_build_column_vars(&$result, $data, $page_params = '')
 {
-	global $album_config;
+	global $config, $user, $lang, $album_config;
 
 	$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $data['pic_id'])); // album_hierarchy_functions
 	if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
@@ -1056,10 +1030,10 @@ function album_build_column_vars(&$result, $data, $page_params = '')
 	$result['DESC'] = htmlspecialchars($data['pic_desc']);
 }
 
-// Builds the common picture details template data
+// JHL - Builds the common picture details template data
 function album_build_detail_vars(&$result, $data, $page_params = '', $auth_rights = false)
 {
-	global $album_config, $config, $lang, $user;
+	global $config, $user, $lang, $album_config;
 
 	album_build_column_vars(&$result, $data, $page_params);
 
@@ -1068,7 +1042,7 @@ function album_build_detail_vars(&$result, $data, $page_params = '', $auth_right
 	{
 		$image_rating = ImageRating($data['rating']);
 		$image_rating_link_class = ($image_rating == $lang['Not_rated']) ? '' : 'class="rated"';
- 		$rating = $lang['Rating'] . ' : <a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $data['pic_id'] . $page_params)) . '" ' . $image_rating_link_class . '>' . $image_rating . '</a>';
+		$rating = $lang['Rating'] . ' : <a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $data['pic_id'] . $page_params)) . '" ' . $image_rating_link_class . '>' . $image_rating . '</a>';
 	}
 
 	$comments = '';
@@ -1095,13 +1069,38 @@ function album_build_detail_vars(&$result, $data, $page_params = '', $auth_right
 		);
 	}
 	$can_edit = (($user->data['user_level'] == ADMIN) or ($user->data['user_id'] == $data['pic_user_id']));
-	$result['EDIT'] = ($can_edit && $auth_rights['edit']) ? '<a href="'. append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $data['pic_id'])) . '">' . $lang['Edit_pic'] . '</a>' : '';
-	$result['DELETE'] = ($can_edit && $auth_rights['delete']) ? '<a href="'. append_sid(album_append_uid('album_delete.' . PHP_EXT . '?pic_id=' . $data['pic_id'])) . '">' . $lang['Delete_pic'] . '</a>' : '';
+	$result['EDIT'] = ($can_edit && $auth_rights['edit']) ? '<a href="' . append_sid(album_append_uid('album_edit.' . PHP_EXT . '?pic_id=' . $data['pic_id'])) . '">' . $lang['Edit_pic'] . '</a>' : '';
+	$result['DELETE'] = ($can_edit && $auth_rights['delete']) ? '<a href="' . append_sid(album_append_uid('album_delete.' . PHP_EXT . '?pic_id=' . $data['pic_id'])) . '">' . $lang['Delete_pic'] . '</a>' : '';
 
 	$is_admin = ($user->data['user_level'] == ADMIN);
-	$result['LOCK'] = ($is_admin && $auth_rights['admin']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=lock&amp;pic_id=' . $data['pic_id'])) . '">' . $lang['Lock'] . '</a>' : '';
-	$result['MOVE'] = ($is_admin && $auth_rights['admin']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;pic_id=' . $data['pic_id'])) . '">' . $lang['Move'] . '</a>' : '';
-	$result['COPY'] = ($is_admin && $auth_rights['admin']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;pic_id=' . $data['pic_id'])) . '">' . $lang['Copy'] . '</a>' : '';
-	$result['IP'] = $is_admin ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($data['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($data['pic_user_ip']) . '</a>' : '';
+	$result['LOCK'] = (($is_admin && $auth_rights['admin']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=lock&amp;pic_id=' . $data['pic_id'])) . '">' . $lang['Lock'] . '</a>' : '');
+	$result['MOVE'] = (($is_admin && $auth_rights['admin']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;pic_id=' . $data['pic_id'])) . '">' . $lang['Move'] . '</a>' : '');
+	$result['COPY'] = (($is_admin && $auth_rights['admin']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;pic_id=' . $data['pic_id'])) . '">' . $lang['Copy'] . '</a>' : '');
+	$result['IP'] = ($is_admin ? $lang['IP_Address'] . ': <a href="http://whois.sc/' . htmlspecialchars(urlencode($data['pic_user_ip'])) . '" target="_blank">' . htmlspecialchars($data['pic_user_ip']) . '</a>' : '');
 }
+
+if (!function_exists('setFlag'))
+{
+	function setFlag($flags, $flag)
+	{
+		return $flags | $flag;
+	}
+}
+
+if (!function_exists('clearFlag'))
+{
+	function clearFlag($flags, $flag)
+	{
+		return ($flags & ~$flag);
+	}
+}
+
+if (!function_exists('checkFlag'))
+{
+	function checkFlag($flags, $flag)
+	{
+		return (($flags & $flag) == $flag) ? true : false;
+	}
+}
+
 ?>

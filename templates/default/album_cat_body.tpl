@@ -170,7 +170,7 @@
 <tr>
 	<!-- BEGIN recent_detail -->
 	<td class="row2 row-center">
-		<span class="gensmall">
+		<div class="gensmall">
 			{L_POSTER}: {recent_pics_block.recent_pics.recent_detail.POSTER}<br />
 			{L_PIC_TITLE}: <a href="{recent_pics_block.recent_pics.recent_detail.U_PIC_SP}">{recent_pics_block.recent_pics.recent_detail.PIC_TITLE}</a><br />
 			{L_DOWNLOAD}: <a href="{recent_pics_block.recent_pics.recent_detail.U_PIC_DL}">{recent_pics_block.recent_pics.recent_detail.PIC_TITLE}</a><br />
@@ -183,8 +183,10 @@
 			<!-- IF recent_pics_block.recent_pics.recent_detail.COMMENTS --> 
 			{recent_pics_block.recent_pics.recent_detail.COMMENTS}<br />
 			<!-- ENDIF -->
-			{recent_pics_block.recent_pics.recent_detail.IP}
-		</span>
+			<!-- IF recent_pics_block.recent_pics.recent_detail.IP --> 
+			{recent_pics_block.recent_pics.recent_detail.IP}<br />
+			<!-- ENDIF -->
+		</div>
 	</td>
 	<!-- END recent_detail -->
 </tr>
@@ -213,7 +215,7 @@
 <tr>
 <!-- BEGIN mostviewed_detail -->
 	<td class="row2 row-center">
-		<span class="gensmall">
+		<div class="gensmall">
 			{L_POSTER}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.POSTER}<br />
 			{L_PIC_TITLE}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_SP}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_TITLE}</a><br />
 			{L_DOWNLOAD}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_DL}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_TITLE}</a><br />
@@ -226,8 +228,10 @@
 			<!-- IF mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS --> 
 			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS}<br />
 			<!-- ENDIF -->
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP}
-		</span>
+			<!-- IF mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP --> 
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP}<br />
+			<!-- ENDIF -->
+		</div>
 	</td>
 <!-- END mostviewed_detail -->
 </tr>

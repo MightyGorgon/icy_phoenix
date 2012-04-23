@@ -241,7 +241,7 @@ if ($show_latest_pics)
 					'PIC_PREVIEW_HS' => $pic_preview_hs,
 					'PIC_PREVIEW' => $pic_preview,
 				);
-				album_build_column_vars(&$template_vars, $recentrow[$j]);
+				album_build_column_vars($template_vars, $recentrow[$j]);
 				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', $template_vars);
 
 				$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
@@ -252,7 +252,7 @@ if ($show_latest_pics)
 					'PIC_PREVIEW' => $pic_preview,
 					'GROUP_NAME' => 'profile',
 				);
-				album_build_detail_vars(&$template_vars, $recentrow[$j]);
+				album_build_detail_vars($template_vars, $recentrow[$j]);
 				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', $template_vars);
 			}
 		}
@@ -623,7 +623,9 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yahoo_img,
 	'YIM' => $yahoo,
 	'U_YIM' => $yahoo_url,
+	'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
 
+	'ICON_CHAT' => $all_ims['chat']['icon'],
 	'ICON_AIM' => $all_ims['aim']['icon'],
 	'ICON_FACEBOOK' => $all_ims['facebook']['icon'],
 	'ICON_FLICKR' => $all_ims['flickr']['icon'],
@@ -713,7 +715,6 @@ $template->assign_vars(array(
 	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100 / $album_config['cols_per_page']) . '%',
 	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 	// Mighty Gorgon - Full Album Pack - END
-
 	// Start add - Online/Offline/Hidden Mod
 	'ONLINE_STATUS_IMG' => $online_status_img,
 	'L_ONLINE_STATUS' => $lang['Online_status'],
@@ -772,14 +773,12 @@ $template->assign_vars(array(
 // Don't chat with yourself - it's antisocial
 if ($user->data['user_id'] != $profiledata['user_id'])
 {
-	/* JHL TEMP - waiting for ACP configuration flag
 	$template->assign_vars(array(
 		'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
 
 		'ICON_CHAT' => $all_ims['chat']['icon'],
 		)
 	);
-	*/
 }
 
 // Custom Profile Fields - BEGIN

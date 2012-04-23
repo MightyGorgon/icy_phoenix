@@ -152,8 +152,7 @@ else
 		'S_ACTION' => append_sid('upload.' . PHP_EXT),
 		'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 		'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
-		'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.<br />' .
-			$lang['Upload_File_Max_Size'] . ' ' . floor($maxsize / 1024) . $lang['KB'] . '.',
+		'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.<br />' . $lang['Upload_File_Max_Size'] . ' ' . floor($maxsize / 1024) . $lang['KB'] . '.',
 		'L_SUBMIT' => $lang['Submit'],
 		)
 	);

@@ -45,7 +45,7 @@
 <tr>
 	<!-- BEGIN pic_detail -->
 	<td class="row2">
-		<span class="gensmall">
+		<div class="gensmall">
 			{L_PIC_TITLE}: <a href="{picrow.pic_detail.U_PIC_SP}" {TARGET_BLANK}>{picrow.pic_detail.TITLE}</a><br />
 			{L_DOWNLOAD}: <a href="{picrow.pic_detail.U_PIC_DL}" {TARGET_BLANK}>{picrow.pic_detail.TITLE}</a><br />
 			{L_PIC_ID}: {picrow.pic_detail.PIC_ID}<br />
@@ -66,7 +66,7 @@
 			{picrow.pic_detail.LOCK}
 			{picrow.pic_detail.MOVE}
 			{picrow.pic_detail.COPY}
-		</span>
+		</div>
 	</td>
 	<!-- END pic_detail -->
 </tr>

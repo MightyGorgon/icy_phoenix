@@ -57,7 +57,7 @@ CREATE TABLE `phpbb_album` (
 	`pic_desc` TEXT NOT NULL,
 	`pic_user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`pic_username` VARCHAR(32) DEFAULT '',
-	`pic_user_ip` VARCHAR(8) NOT NULL DEFAULT '0',
+	`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
 	`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',
 	`pic_cat_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '1',
 	`pic_view_count` INT(11) unsigned NOT NULL DEFAULT '0',

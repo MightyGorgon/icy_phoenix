@@ -1,6 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 function checkForm(form) {
 
@@ -25,7 +26,7 @@ function checkForm(form) {
 		return false;
 	}
 }
-//]]>
+// ]]>
 </script>
 
 <form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this)">

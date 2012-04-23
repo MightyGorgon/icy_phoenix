@@ -175,7 +175,7 @@ switch ($mode)
 		if ($row = $db->sql_fetchrow($result))
 		{
 			$total_links = $row['total'];
-			$pagination = generate_pagination('admin_links.' . PHP_EXT . '?mode=' . $mode . '&amp;search_keywords=' . urlencode($search_keywords), $total_links, $linkspp, $start). '&nbsp;';
+			$pagination = generate_pagination('admin_links.' . PHP_EXT . '?mode=' . $mode . '&amp;search_keywords=' . urlencode($search_keywords), $total_links, $linkspp, $start) . '&nbsp;';
 		}
 
 		$template->assign_vars(array(

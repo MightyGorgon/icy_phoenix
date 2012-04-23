@@ -1,4 +1,5 @@
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function img_popup(image_url, image_width, image_height, popup_rand)
 {
 	screenwidth = false;
@@ -24,7 +25,7 @@ function img_popup(image_url, image_width, image_height, popup_rand)
 		window.open(image_url,'limit_image_mod_popup_img_' + popup_rand,'resizable=yes,top=0,left=0,screenX=0,screenY=0,height=' + (image_height + 30) + ',width=' + (image_width + 30), false);
 	}
 }
-//]]>
+// ]]>
 </script>
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PREVIEW}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>

@@ -35,7 +35,6 @@ $settings_data = array(
 		'default' => 1,
 		'user' => 'user_sub_forum',
 		'values' => array(
-			'List' => 3, // JHL 09/March/2012
 			'None' => 0,
 			'Medium' => 1,
 			'Full' => 2,

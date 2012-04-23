@@ -188,7 +188,7 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
 			);
-			album_build_column_vars(&$template_vars, $picrow[$j]);
+			album_build_column_vars($template_vars, $picrow[$j]);
 			$template->assign_block_vars('picrow.piccol', $template_vars);
 
 			// is a personal category that the picture belongs to AND
@@ -212,7 +212,7 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'U_PIC_CAT' => $image_cat_url,
 				'GROUP_NAME' => 'memberlist',
 			);
-			album_build_detail_vars(&$template_vars, $picrow[$j]);
+			album_build_detail_vars($template_vars, $picrow[$j]);
 			// $template_vars['TITLE'] = htmlspecialchars($picrow[$j]['pic_title']);
 			$template->assign_block_vars('picrow.pic_detail', $template_vars);
 		}
@@ -233,7 +233,6 @@ else
 	$template->assign_block_vars('no_pics', array());
 	$template->assign_vars(array('S_NO_PICS' => '1'));
 }
-
 
 /*
 +----------------------------------------------------------

@@ -606,7 +606,7 @@ $lang = array_merge($lang, array(
 	'Invision_Signature' => 'Signature',
 	'Invision_Website' => 'Home Page',
 	'Invision_Total_Posts' => 'Total Cumulative Posts',
-	'Invision_User_post_pct_stats' => '%.2f%% of total forum posts',
+	'Invision_User_post_pct_stats' => '( %.2f%% of total forum posts )',
 	'Invision_User_post_day_stats' => '%.2f posts per day',
 	'Invision_Search_user_posts' => 'Find all posts by this member',
 	'Invision_Posting_details' => 'Posting Details',
@@ -2048,8 +2048,6 @@ $lang = array_merge($lang, array(
 	'Drafts_NM' => 'Reply',
 	'Drafts_NPM' => 'Private Message',
 
-	'Full_editor' => 'Switch to full Editor',
-
 	'CannotEditAdminsPosts' => 'You cannot edit admins posts',
 	'Random_Number' => 'Random Number',
 
@@ -2439,6 +2437,8 @@ $lang = array_merge($lang, array(
 	'IP_BLACKLISTED' => 'Your IP %s has been blocked because it is blacklisted. For details please see <a href="%s">%s</a>.',
 
 	'PRINTABLE_VERSION' => 'Printable Version',
+
+	'FULL_EDITOR' => 'Switch to full Editor',
 
 	)
 );

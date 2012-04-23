@@ -1064,6 +1064,8 @@ CREATE TABLE `phpbb_referers` (
 ########################################
 ##              BUILD 081             ##
 ########################################
+ALTER TABLE `phpbb_album` CHANGE `pic_user_ip` `pic_user_ip` varchar(40) NOT NULL DEFAULT '';
+UPDATE `phpbb_album` ip SET ip.pic_user_ip = INET_NTOA(CONV(ip.pic_user_ip, 16, 10));
 
 
 

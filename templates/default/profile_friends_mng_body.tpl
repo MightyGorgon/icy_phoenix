@@ -4,7 +4,8 @@
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <!-- ENDIF -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 function add_username(selected_username)
 {
@@ -17,7 +18,7 @@ function add_username(selected_username)
 		document.forms['post'].add.value = document.forms['post'].add.value + "\n" + selected_username;
 	}
 }
-//]]>
+// ]]>
 </script>
 
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->

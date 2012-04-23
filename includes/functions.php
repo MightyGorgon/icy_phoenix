@@ -3067,6 +3067,7 @@ function generate_topic_pagination($forum_id, $topic_id, $replies, $per_page = 0
 		$topic_pagination['base'] = '&nbsp;';
 		$topic_pagination['full'] = '&nbsp;';
 	}
+
 	return $topic_pagination;
 }
 
@@ -3846,7 +3847,7 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 		$im_lang = !empty($im_lang) ? $im_lang : (!empty($available_im[$im_type]['lang']) ? $lang[$available_im[$im_type]['lang']] : '');
 	}
 
-	$link_title = ($im_type == 'chat') ? '' : ' - ' . $im_id;
+	$link_title = ($im_type == 'chat') ? '' : (' - ' . $im_id);
 	$link_title = $im_lang . $link_title;
 	$link_content = !empty($im_img) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '"' . (empty($im_url) ? '' : (' title="' . $im_id . '"')) . ' />') : $im_lang;
 	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '" title="' . $link_title . '">' . $link_content . '</a>');
@@ -4374,7 +4375,7 @@ function page_header($title = '', $parse_template = false)
 		}
 
 		$u_login_logout = CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $user->data['session_id'];
-		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ')';
+		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ') ';
 		$l_login_logout2 = $lang['Logout'];
 		$s_last_visit = create_date($config['default_dateformat'], $user->data['user_lastvisit'], $config['board_timezone']);
 
@@ -4890,12 +4891,9 @@ function page_header($title = '', $parse_template = false)
 		'PRIVMSG_IMG' => $icon_pm,
 		'NEW_PM_SWITCH' => $new_pm_switch,
 
-
-		/* JHL TEMP - waiting for ACP configuration flag
 		'PRIVATE_CHAT_IMG' => $icon_private_chat,
 		'U_PRIVATE_CHAT' => $u_private_chat,
 		'NEW_PRIVATE_CHAT_SWITCH' => $new_private_chat_switch,
-		*/
 
 		'L_USERNAME' => $lang['Username'],
 		'L_PASSWORD' => $lang['Password'],

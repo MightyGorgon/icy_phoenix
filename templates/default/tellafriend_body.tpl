@@ -32,8 +32,8 @@
 		<br />
 		<div class="center-block-text">
 			<input type="hidden" name="topic_id" size="25" maxlength="100" value="{TOPIC_ID}" />
-			<input type="hidden" name="topic_title" size="25" maxlength="100" value="{TOPIC_TITLE}" />
-			<input type="hidden" name="topic_link" size="25" maxlength="200" value="{TOPIC_LINK}" />
+			<input type="hidden" name="topic_title" size="25" maxlength="220" value="{TOPIC_TITLE}" />
+			<input type="hidden" name="topic_link" size="25" maxlength="220" value="{TOPIC_LINK}" />
 			<input type="submit" name="submit" class="mainoption" value="{L_SUBMIT}" />
 		</div>
 	<br />

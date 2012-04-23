@@ -171,6 +171,9 @@ if ($watch_count > 0)
 				'LAST_POSTER' => $last_poster,
 				// end gratuitous name changes
 
+				'GOTO_PAGE' => $topic_pagination['base'],
+				'GOTO_PAGE_FULL' => $topic_pagination['full'],
+
 				'U_VIEW_FORUM' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWFORUM . '?' . $forum_id_append),
 				'U_VIEW_TOPIC' => append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append),
 				)
