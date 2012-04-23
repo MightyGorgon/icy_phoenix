@@ -414,7 +414,7 @@ class class_topics
 	/*
 	* Fetch posts
 	*/
-	function fetch_posts($forum_sql, $number_of_posts, $text_length, $show_portal = false, $random_mode = false, $single_post = false, $only_auth_view = true)
+	function fetch_posts($forum_sql, $number_of_posts, $text_length, $show_portal = false, $sort_mode = 0, $single_post = false, $only_auth_view = true)
 	{
 		global $db, $cache, $config, $user, $bbcode, $lofi;
 
@@ -451,9 +451,13 @@ class class_topics
 			$add_to_sql .= ' AND t.topic_show_portal = 1';
 		}
 
-		if (!empty($random_mode))
+		if ($sort_mode == 1)
 		{
 			$order_sql = 'RAND()';
+		}
+		elseif ($sort_mode == 2)
+		{
+			$order_sql = 't.topic_title ASC';
 		}
 		else
 		{
@@ -472,7 +476,7 @@ class class_topics
 		if (!empty($single_post))
 		{
 			$single_post_id = $forum_sql;
-			$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
+			$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_first_post_id, t.topic_attachment, t.topic_views, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
 					FROM " . POSTS_TABLE . " AS p, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
 					WHERE p.post_id = '" . $single_post_id . "'
 						" . $add_to_sql . "
@@ -481,7 +485,7 @@ class class_topics
 		}
 		else
 		{
-			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
+			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_views, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
 					FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
 					WHERE t.topic_time <= " . time() . "
 						" . $add_to_sql . "
@@ -504,10 +508,15 @@ class class_topics
 				$posts[$i]['enable_html'] = $row['enable_html'];
 				$posts[$i]['enable_smilies'] = $row['enable_smilies'];
 				$posts[$i]['enable_autolinks_acronyms'] = $row['enable_autolinks_acronyms'];
-				$posts[$i]['post_text'] = $row['post_text'];
-				$message = $posts[$i]['post_text'];
+				if ($text_length >= 0)
+				{
+					$posts[$i]['post_text'] = $row['post_text'];
+					$message = $posts[$i]['post_text'];
+				}
 				$posts[$i]['forum_id'] = $row['forum_id'];
 				$posts[$i]['topic_id'] = $row['topic_id'];
+				$posts[$i]['topic_first_post_id'] = $row['topic_first_post_id'];
+				$posts[$i]['topic_views'] = $row['topic_views'];
 				$posts[$i]['topic_replies'] = $row['topic_replies'];
 				$posts[$i]['topic_time'] = create_date_ip($config['default_dateformat'], $row['topic_time'], $config['board_timezone']);
 				$posts[$i]['topic_title'] = $row['topic_title'];
@@ -519,43 +528,46 @@ class class_topics
 				$posts[$i]['post_id'] = $row['post_id'];
 				$posts[$i]['post_attachment'] = $row['post_attachment'];
 
-				$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
-
-				$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
-				$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
-				$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
-
-				$clean_tags = false;
-				if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))
+				if ($text_length >= 0)
 				{
-					$clean_tags = true;
-					$posts[$i]['striped'] = 1;
-				}
+					$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
 
-				if ($message_compiled === false)
-				{
-					$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
-				}
-				else
-				{
-					$posts[$i]['post_text'] = $message_compiled;
-				}
+					$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
+					$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
+					$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
 
-				if ($clean_tags == true)
-				{
-					$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? (substr($posts[$i]['post_text'], 0, $text_length) . ' ...') : $posts[$i]['post_text'];
-				}
+					$clean_tags = false;
+					if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))
+					{
+						$clean_tags = true;
+						$posts[$i]['striped'] = 1;
+					}
 
-				$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
-				$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
+					if ($message_compiled === false)
+					{
+						$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
+					}
+					else
+					{
+						$posts[$i]['post_text'] = $message_compiled;
+					}
 
-				//Acronyms, AutoLinks - BEGIN
-				if ($posts[$i]['enable_autolinks_acronyms'])
-				{
-					$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
-					$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
+					if ($clean_tags == true)
+					{
+						$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? (substr($posts[$i]['post_text'], 0, $text_length) . ' ...') : $posts[$i]['post_text'];
+					}
+
+					$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
+					$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
+
+					//Acronyms, AutoLinks - BEGIN
+					if ($posts[$i]['enable_autolinks_acronyms'])
+					{
+						$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
+						$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
+					}
+					//Acronyms, AutoLinks - END
 				}
-				//Acronyms, AutoLinks - END
 				$i++;
 			}
 			while ($row = $db->sql_fetchrow($result));

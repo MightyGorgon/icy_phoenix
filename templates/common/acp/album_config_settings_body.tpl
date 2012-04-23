@@ -27,6 +27,14 @@
 	<td class="row2"><span class="genmed"><input onchange="setChange();" type="radio" {ALBUM_CATEGORY_SORTING_ASC} name="album_category_sorting_direction" value="ASC" />{L_ALBUM_CATEGORY_SORTING_ASC}&nbsp;&nbsp;<input onchange="setChange();" type="radio" {ALBUM_CATEGORY_SORTING_DESC} name="album_category_sorting_direction" value="DESC" />{L_ALBUM_CATEGORY_SORTING_DESC}</span></td>
 </tr>
 <tr>
+	<td class="row1"><span class="genmed">{L_ALBUM_PICTURE_SORTING}</span></td>
+	<td class="row2"><span class="genmed"><input onchange="setChange();" type="radio" {ALBUM_PICTURE_SORTING_TIME} name="sort_method" value="pic_time" />{L_ALBUM_PICTURE_SORTING_TIME}&nbsp;&nbsp;<input onchange="setChange();" type="radio" {ALBUM_PICTURE_SORTING_TITLE} name="sort_method" value="pic_title" />{L_ALBUM_PICTURE_SORTING_TITLE}&nbsp;&nbsp;<input onchange="setChange();" type="radio" {ALBUM_PICTURE_SORTING_VIEW} name="sort_method" value="pic_view_count" />{L_ALBUM_PICTURE_SORTING_VIEW}</span></td>
+</tr>
+<tr>
+	<td class="row1"><span class="genmed">{L_ALBUM_PICTURE_DIRECTION}</span></td>
+	<td class="row2"><span class="genmed"><input onchange="setChange();" type="radio" {ALBUM_PICTURE_SORTING_ASC} name="sort_order" value="ASC" />{L_ALBUM_PICTURE_SORTING_ASC}&nbsp;&nbsp;<input onchange="setChange();" type="radio" {ALBUM_PICTURE_SORTING_DESC} name="sort_order" value="DESC" />{L_ALBUM_PICTURE_SORTING_DESC}</span></td>
+</tr>
+<tr>
 	<td class="row1"><span class="genmed">{L_SHOW_RECENT_IN_SUBCATS}</span></td>
 	<td class="row2"><span class="genmed"><input onchange="setChange();" type="radio" {SHOW_RECENT_IN_SUBCATS_ENABLED} name="show_recent_in_subcats" value="1" />{L_YES}&nbsp;&nbsp;<input onchange="setChange();" type="radio" {SHOW_RECENT_IN_SUBCATS_DISABLED} name="show_recent_in_subcats" value="0" />{L_NO}</span></td>
 </tr>

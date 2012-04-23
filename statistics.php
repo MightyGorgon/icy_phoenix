@@ -151,7 +151,7 @@ for ($__count = 0; $__count < sizeof($__stat_module_rows); $__count++)
 
 		$template->pparse($__tpl_name);
 
-		print '<br />';
+		// print '<br />';
 	}
 }
 

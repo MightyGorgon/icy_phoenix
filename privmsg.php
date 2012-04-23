@@ -505,6 +505,7 @@ elseif ($mode == 'read')
 		'L_FLAG' => $lang['Flag'],
 		'L_SUBJECT' => $lang['Subject'],
 		'L_QUICK_QUOTE' => $lang['QuickQuote'],
+		'L_OFFTOPIC' => $lang['OffTopic'],
 		'L_POSTED' => $lang['Posted'],
 		'L_DATE' => $lang['Date'],
 		'L_FROM' => $lang['From'],
@@ -631,7 +632,7 @@ elseif ($mode == 'read')
 
 	if ($privmsg['privmsgs_attach_sig'] && $user_sig != '')
 	{
-		$signature = '<br /><br />' . $config['sig_line'] . '<br />' . $user_sig;
+		$signature = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 	}
 
 	$post_subject = censor_text($post_subject);
@@ -671,9 +672,9 @@ elseif ($mode == 'read')
 		'POST_DATE' => $post_date,
 		'MESSAGE' => $private_message,
 		'PLAIN_MESSAGE' => $plain_message,
+		'SIGNATURE' => $signature,
 		'POSTER_RANK' => $poster_rank,
 		'RANK_IMAGE' => $rank_image,
-		'SIGNATURE' => $signature,
 		'POSTER_GENDER' => $user_info['gender'],
 
 		'PROFILE_URL' => $user_info['profile_url'],
@@ -715,6 +716,18 @@ elseif ($mode == 'read')
 		'ONLINE_STATUS_IMG' => $user_info['online_status_img'],
 		'ONLINE_STATUS' => $user_info['online_status'],
 		'L_ONLINE_STATUS' => $user_info['online_status_lang'],
+		'L_READ_MESSAGE' => $lang['Read_pm'],
+		)
+	);
+
+	if (!function_exists('generate_smilies_row'))
+	{
+		include_once(IP_ROOT_PATH . 'includes/functions_bbcode.' . PHP_EXT);
+	}
+	generate_smilies_row();
+	$template->assign_vars(array(
+		'L_SMILEYS_MORE' => $lang['More_emoticons'],
+		'U_SMILEYS_MORE' => append_sid('posting.' . PHP_EXT . '?mode=smilies'),
 		)
 	);
 
@@ -1668,7 +1681,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			}
 		}
 
-		$preview_subject = censor_text($preview_subject);
+		$preview_subject = censor_text($privmsg_subject);
 		$preview_message = censor_text($preview_message);
 
 		if ($attach_sig && ($user_sig != ''))
@@ -1686,9 +1699,10 @@ elseif ($submit || $refresh || ($mode != ''))
 		$bbcode->allow_smilies = ($smilies_on ? true : false);
 		$preview_message = $bbcode->parse($preview_message);
 
+		$signature = '';
 		if ($attach_sig && $user_sig != '')
 		{
-			$preview_message = $preview_message . '<br />' . $config['sig_line'] . '<br />' . $user_sig;
+			$signature = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 		}
 
 		if($acro_auto_on)
@@ -1714,6 +1728,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			'MESSAGE_FROM' => $user->data['username'],
 			'POST_DATE' => create_date_ip($config['default_dateformat'], time(), $config['board_timezone']),
 			'MESSAGE' => $preview_message,
+			'SIGNATURE' => $signature,
 			'PLAIN_MESSAGE' => $plain_message,
 
 			'S_HIDDEN_FIELDS' => $s_hidden_fields,
@@ -1808,46 +1823,39 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 
 	/* Start Private Message Review By aUsTiN */
-	$post_to_review = $_GET['p'];
-
-	$q = "SELECT *
-			FROM " . PRIVMSGS_TABLE . "
-			WHERE privmsgs_id = '" . $post_to_review . "'";
-	$r = $db->sql_query($q);
-	$row = $db->sql_fetchrow($r);
-
-	$prv_msg_review = $row['privmsgs_text'];
-	$bbcode->allow_html = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['privmsgs_enable_html'];
-	$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
-	$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
-	$prv_msg_review = $bbcode->parse($prv_msg_review);
-	if ($row['privmsgs_enable_autolinks_acronyms'])
+	$post_to_review = request_var('p', '');
+  if ($post_to_review > 0)
 	{
-		$prv_msg_review = $bbcode->acronym_pass($prv_msg_review);
-		$prv_msg_review = $bbcode->autolink_text($prv_msg_review, '999999');
-	}
+		$q = "SELECT *
+				FROM " . PRIVMSGS_TABLE . "
+				WHERE privmsgs_id = '" . $post_to_review . "'";
+		$r = $db->sql_query($q);
+		$row = $db->sql_fetchrow($r);
 
-	$prv_msg_review = censor_text($prv_msg_review);
+		$prv_msg_review = $row['privmsgs_text'];
+		$bbcode->allow_html = (($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $row['privmsgs_enable_html'];
+		$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
+		$prv_msg_review = $bbcode->parse($prv_msg_review);
+		if ($row['privmsgs_enable_autolinks_acronyms'])
+		{
+			$prv_msg_review = $bbcode->acronym_pass($prv_msg_review);
+			$prv_msg_review = $bbcode->autolink_text($prv_msg_review, '999999');
+		}
 
-	if(!$prv_msg_review)
-	{
-		$prv_msg_review = $lang['private_msg_review_error'];
-	}
+		$prv_msg_review = censor_text($prv_msg_review);
 
-	if($_GET['mode'] == 'reply')
-	{
-		$block_var_switch = 'switch_prv_msg_review';
-	}
-	else
-	{
-		$block_var_switch = '';
-	}
+		if(!$prv_msg_review)
+		{
+			$prv_msg_review = $lang['private_msg_review_error'];
+		}
 
-	$template->assign_block_vars($block_var_switch, array(
-		'PRIVATE_MSG_REVIEW' => $prv_msg_review,
-		'PRIVATE_MSG_TITLE' => $lang['private_msg_review_title']
-		)
-	);
+		$template->assign_block_vars('switch_prv_msg_review', array(
+			'MESSAGE' => $prv_msg_review,
+			'PRIVATE_MSG_TITLE' => $lang['private_msg_review_title']
+			)
+		);
+	}
 	/* End Private Message Review By aUsTiN */
 
 	// Send smilies to template
@@ -1899,10 +1907,11 @@ elseif ($submit || $refresh || ($mode != ''))
 		'OUTBOX' => $outbox_url,
 		'SAVEBOX' => $savebox_url,
 
+		'S_IS_PM' => 1,
+
 		// AJAX Features - BEGIN
 		'S_AJAX_BLUR' => $ajax_blur,
 		'S_AJAX_PM_USER_CHECK' => $ajax_pm_user_check,
-		'S_IS_PM' => 1,
 		'S_DISPLAY_PREVIEW' => ($preview) ? '' : 'style="display:none;"',
 		'S_EDIT_POST_ID' => ($mode == 'edit') ? $privmsg_id : 0,
 		'L_EMPTY_SUBJECT' => $lang['Empty_subject'],

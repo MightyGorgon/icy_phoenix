@@ -115,7 +115,12 @@ if($config['xs_show_news'] != false)
 		}
 	}
 
-	if($news_displayed == 0)
+	$template->assign_vars(array(
+		'XS_HAS_NEWS_ITEMS' => ($news_displayed > 0)
+		)
+	);
+
+	if ($news_displayed == 0)
 	{
 		$template->assign_block_vars('newsitem', array(
 			'NEWS_ITEM_DATE' => create_date($date_format, time(), $config['board_timezone']),
@@ -319,6 +324,11 @@ if($config['xs_show_news'] != false)
 			);
 		}
 	}
+
+	$template->assign_vars(array(
+		'XS_HAS_NEWS_TICKERS' => ($tick_displayed > 0)
+		)
+	);
 
 	if(isset($config['xs_nav_version']))
 	{

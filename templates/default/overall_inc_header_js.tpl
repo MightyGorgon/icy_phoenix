@@ -1,8 +1,32 @@
-<script type="text/javascript">
-// <![CDATA[
+<!-- This goes first, so that the other scripts can be 'jQuerized' -->
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_compressed.js"></script>
+
+<!-- IF S_JQUERY_UI -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/themes/{S_JQUERY_UI_STYLE}/jquery-ui.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-ip.css" type="text/css" media="screen" />
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-i18n.min.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
+<!-- IF S_JQUERY_UI_TP -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-timepicker.css" type="text/css" media="screen" />
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-timepicker.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
+<!-- IF S_JQ_CYCLE_SLIDESHOW -->
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_cycle_all_compressed.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
+<!-- IF S_JQ_NIVO_SLIDER -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_custom.css" type="text/css" media="screen" />
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_compressed.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
+<script type="text/javascript">//<![CDATA[
 // OS / BROWSER VARS - BEGIN
 // Check for Browser & Platform for PC & IE specific bits
 // More details from: http://www.mozilla.org/docs/web-developer/sniffer/browser_type.html
+
 var clientPC = navigator.userAgent.toLowerCase(); // Get client info
 var clientVer = parseInt(navigator.appVersion); // Get browser version
 
@@ -67,33 +91,12 @@ window.onunload = function()
 		eval(onunload_functions[i]);
 	}
 };
-// ]]>
+
+//]]>
 </script>
 
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ip_scripts.js"></script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/run_active_content.js"></script>
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_compressed.js"></script>
-
-<!-- IF S_JQUERY_UI -->
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/themes/{S_JQUERY_UI_STYLE}/jquery-ui.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-ip.css" type="text/css" media="screen" />
-<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui.min.js" type="text/javascript"></script>
-<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-i18n.min.js" type="text/javascript"></script>
-<!-- ENDIF -->
-
-<!-- IF S_JQUERY_UI_TP -->
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-timepicker.css" type="text/css" media="screen" />
-<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-timepicker.js" type="text/javascript"></script>
-<!-- ENDIF -->
-
-<!-- IF S_JQ_CYCLE_SLIDESHOW -->
-<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_cycle_all_compressed.js" type="text/javascript"></script>
-<!-- ENDIF -->
-
-<!-- IF S_JQ_NIVO_SLIDER -->
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_custom.css" type="text/css" media="screen" />
-<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_compressed.js" type="text/javascript"></script>
-<!-- ENDIF -->
 
 <!-- IE conditional comments: http://msdn.microsoft.com/workshop/author/dhtml/overview/ccomment_ovw.asp -->
 <!--[if IE]>
@@ -110,7 +113,7 @@ window.onunload = function()
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/highslide-ie6.css" type="text/css" />
 <![endif]-->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/highslide-full.packed.js"></script>
-<script type="text/javascript">
+<script type="text/javascript">//<![CDATA[
 hs.graphicsDir = '{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/graphics/';
 hs.align = 'center';
 hs.transitions = ['expand', 'crossfade'];
@@ -124,6 +127,13 @@ hs.dimmingOpacity = 0.75;
 
 // Add the controlbar
 hs.addSlideshow({
+	<!-- IF S_HIGHSLIDER -->
+	thumbstrip: {
+		position: 'above',
+		mode: 'horizontal',
+		relativeTo: 'expander'
+	},
+	<!-- ENDIF -->
 	//slideshowGroup: 'group1',
 	interval: 5000,
 	repeat: false,
@@ -134,26 +144,17 @@ hs.addSlideshow({
 		position: 'bottom center',
 		hideOnMouseOut: true
 	}
-	<!-- IF S_HIGHSLIDER -->
-	,
-	thumbstrip: {
-		position: 'above',
-		mode: 'horizontal',
-		relativeTo: 'expander'
-	}
-	<!-- ENDIF -->
 });
+//]]>
 </script>
 <!-- ENDIF -->
 
 <!-- IF S_AJAX_FEATURES -->
-<script type="text/javascript">
-<!--
+<script type="text/javascript">//<![CDATA[
 var ajax_core_defined = 0;
 var ajax_page_charset = '{S_CONTENT_ENCODING}';
-//-->
+//]]>
 </script>
-
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script>
 <!-- ENDIF -->
 

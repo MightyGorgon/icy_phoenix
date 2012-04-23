@@ -111,7 +111,7 @@ if (($album_user_id != ALBUM_PUBLIC_GALLERY) && !album_check_user_exists($album_
 	redirect(append_sid(album_append_uid('album.' . PHP_EXT)));
 }
 
-$read_options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
+$read_options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES | ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
 $catrows = album_read_tree($album_user_id, $read_options);
 
 // check if the category exists in the album_tree data
@@ -220,8 +220,10 @@ $start = ($start < 0) ? 0 : $start;
 $sort_method = request_var('sort_method', $album_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+
+$sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
 switch ($sort_method)
 {
@@ -359,7 +361,6 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	{
 		album_build_picture_table($album_user_id, $cat_id, $thiscat, $auth_data, $start, $sort_method, $sort_order, $total_pics);
 
-
 		// Last Comments
 		if ($album_config['show_last_comments'] == 1)
 		{
@@ -387,12 +388,14 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		if ($has_sub_cats && ($album_config['show_recent_instead_of_nopics'] == 1))
 		{
 			album_build_recent_pics($allowed_cat);
+			$template->assign_vars(array('S_NO_PICS' => '1'));
 		}
 		else
 		{
 			$template->assign_block_vars('index_pics_block', array());
 			$template->assign_block_vars('index_pics_block.no_pics', array());
 			$template->assign_block_vars('index_pics_block.enable_gallery_title', array());
+			$template->assign_vars(array('S_NO_PICS' => '1'));
 		}
 	}
 	// END thumbnails table
@@ -472,6 +475,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 
 		'S_COLS' => $album_config['cols_per_page'],
 		'S_COL_WIDTH' => (100 / $album_config['cols_per_page']) . '%',
+		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 		'L_VIEW' => $lang['View'],
 		'L_POSTER' => $lang['Pic_Poster'],

@@ -1124,9 +1124,13 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 			// links to sub-levels
 			$links = '';
+<<<<<<< HEAD
 			// JHL 2012/03/09
 			//if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && (intval($config['sub_level_links']) > 0))
 			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && ((intval($config['sub_level_links']) > 0) && ($sub_forum != 3)))
+=======
+			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && ((intval($config['sub_level_links']) > 0) && ($sub_forum != 3))) // JHL 09/March/2012
+>>>>>>> b361b318bfb1067df03dc7139ddffe933c9c4605
 			{
 				for ($j = 0; $j < sizeof($tree['sub'][$cur]); $j++) if ($tree['auth'][$tree['sub'][$cur][$j]]['auth_view'])
 				{
@@ -1286,8 +1290,12 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				*/
 				'FORUM_NAME' => $title,
 				'FORUM_DESC' => $desc,
+<<<<<<< HEAD
 				// JHL 2012/03/09
 				'FORUM_TYPE' => ($type == POST_FORUM_URL) ? 'forum' : 'category',
+=======
+				'FORUM_TYPE' => ($type == POST_FORUM_URL) ? 'forum' : 'category', // JHL 09/March/2012
+>>>>>>> b361b318bfb1067df03dc7139ddffe933c9c4605
 				'POSTS' => $data['tree.forum_posts'],
 				'TOPICS' => $data['tree.forum_topics'],
 				'ONLINE' => (($config['show_forums_online_users'] == true) ? ('<br />' . $lang['Online'] . ':&nbsp;' . $data['tree.forum_online']) : ''),

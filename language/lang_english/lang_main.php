@@ -606,7 +606,7 @@ $lang = array_merge($lang, array(
 	'Invision_Signature' => 'Signature',
 	'Invision_Website' => 'Home Page',
 	'Invision_Total_Posts' => 'Total Cumulative Posts',
-	'Invision_User_post_pct_stats' => '( %.2f%% of total forum posts )',
+	'Invision_User_post_pct_stats' => '%.2f%% of total forum posts',
 	'Invision_User_post_day_stats' => '%.2f posts per day',
 	'Invision_Search_user_posts' => 'Find all posts by this member',
 	'Invision_Posting_details' => 'Posting Details',
@@ -1969,6 +1969,7 @@ $lang = array_merge($lang, array(
 	'Upload_File_Error_Size' => 'File size not allowed!',
 	'Upload_File_Error_Type' => 'File type not allowed!',
 	'Upload_File_Type_Allowed' => 'Only these file types may be uploaded',
+	'Upload_File_Max_Size' => 'The maximum single file size allowed is',
 	'Upload_Insert_Image' => 'Insert BBCode',
 	'Upload_Close' => 'Close',
 	'BBCode' => 'BBCode',
@@ -2046,6 +2047,8 @@ $lang = array_merge($lang, array(
 	'Drafts_NT' => 'New topic',
 	'Drafts_NM' => 'Reply',
 	'Drafts_NPM' => 'Private Message',
+
+	'Full_editor' => 'Switch to full Editor',
 
 	'CannotEditAdminsPosts' => 'You cannot edit admins posts',
 	'Random_Number' => 'Random Number',
@@ -2401,6 +2404,7 @@ $lang = array_merge($lang, array(
 	'TOO_SMALL' => 'The value you entered is too small.',
 	'WRONG_DATA' => 'Invalid data.',
 
+	'ATTACHMENTS' => 'Attachments',
 	'ERROR_NO_ATTACHMENT' => 'The file you are trying to download does not exist.',
 	'NO_FORUM' => 'The forum you selected does not exist.',
 	'NO_TOPIC' => 'The topic or post you requested does not exist.',

@@ -256,15 +256,12 @@ if (($t == 'pop') || ($t == 'new'))
 		WHERE link_active = 1";
 	$result = $db->sql_query($sql);
 
+	$pagination = '&nbsp;';
+	$total_links = 10;
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$total_links = $row['total'];
-		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t, $total_links, $links_config['linkspp'], $start) . '&nbsp;';
-	}
-	else
-	{
-		$pagination = '&nbsp;';
-		$total_links = 10;
+		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t, $total_links, $links_config['linkspp'], $start);
 	}
 	$db->sql_freeresult($result);
 
@@ -401,7 +398,7 @@ if ($t == 'sub_pages')
 	if ($row = $db->sql_fetchrow($result))
 	{
 		$total_links = $row['total'];
-		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;cat=' . $cat . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_links, $links_config['linkspp'], $start). '&nbsp;';
+		$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;cat=' . $cat . '&amp;mode=' . $mode . '&amp;order=' . $sort_order, $total_links, $links_config['linkspp'], $start);
 	}
 	$db->sql_freeresult($result);
 
@@ -509,15 +506,12 @@ if ($t == 'search')
 				AND (link_title LIKE '%" . $db->sql_escape($search_keywords) . "%' OR link_desc LIKE '%" . $db->sql_escape($search_keywords) . "%')";
 		$result = $db->sql_query($sql);
 
+		$pagination = '&nbsp;';
+		$total_links = 10;
 		if ($row = $db->sql_fetchrow($result))
 		{
 			$total_links = $row['total'];
-			$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;search_keywords=' . urlencode($search_keywords), $total_links, $links_config['linkspp'], $start). '&nbsp;';
-		}
-		else
-		{
-			$pagination = '&nbsp;';
-			$total_links = 10;
+			$pagination = generate_pagination('links.' . PHP_EXT . '?t=' . $t . '&amp;search_keywords=' . urlencode($search_keywords), $total_links, $links_config['linkspp'], $start);
 		}
 		$db->sql_freeresult($result);
 	}

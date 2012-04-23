@@ -406,12 +406,20 @@ if (sizeof($attachments) > 0)
 // Generate Pagination
 if ($do_pagination && $total_rows > $config['topics_per_page'])
 {
-	$pagination = generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $user->data['session_id'], $total_rows, $config['topics_per_page'], $start).'&nbsp;';
-
 	$template->assign_vars(array(
-		'PAGINATION' => $pagination,
+		'PAGINATION' => generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $user->data['session_id'], $total_rows, $config['topics_per_page'], $start),
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_rows / $config['topics_per_page'])),
-		'L_GOTO_PAGE' => $lang['Goto_page'])
+		'L_GOTO_PAGE' => $lang['Goto_page']
+		)
+	);
+}
+else
+{
+	$template->assign_vars(array(
+		'PAGINATION' => '&nbsp;',
+		'PAGE_NUMBER' => '&nbsp;',
+		'L_GOTO_PAGE' => $lang['Goto_page']
+		)
 	);
 }
 

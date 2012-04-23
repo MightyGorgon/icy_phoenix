@@ -81,11 +81,11 @@ if ($album_user_id != ALBUM_PUBLIC_GALLERY)
 	}
 }
 
-$catrows = array ();
-$options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
+$catrows = array();
+$options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES | ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
 $catrows = album_read_tree($album_user_id, $options);
 
-album_read_tree($album_user_id);
+//album_read_tree($album_user_id);
 $album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav' , $album_user_id);
 if ($album_nav_cat_desc != '')
 {
@@ -120,8 +120,10 @@ $start = ($start < 0) ? 0 : $start;
 $sort_method = request_var('sort_method', $album_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+
+$sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
 // ------------------------------------
 // additional sorting options
@@ -203,6 +205,8 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		'ALBUM_NAV' => $album_nav_cat_desc,
 		'S_COLS' => $cols,
 		'S_COL_WIDTH' => $cols_width,
+		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
+
 		'TARGET_BLANK' => ($album_config['fullpic_popup']) ? 'target="_blank"' : '',
 		'L_RAND_PICS' => $lang['Random_Pictures'],
 		'L_HI_RATINGS' => $lang['Highest_Rated_Pictures'],

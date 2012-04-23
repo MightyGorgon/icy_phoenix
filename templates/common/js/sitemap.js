@@ -1,28 +1,38 @@
-if(window.addEventListener)
+/* Example initialisers
+
+function initSitemap() {
+	sitemap('h2', 'ul');
+}
+function initReadPrefs() {
+	readPrefs('h2');
+}
+*/
+
+if (window.addEventListener)
 {
-	window.addEventListener('load', sitemap, false);
-	window.addEventListener('load', readPrefs, false);
+	window.addEventListener('load', initSitemap, false);
+	window.addEventListener('load', initReadPrefs, false);
 }
 else
 {
 	window.attachEvent('onload', function() {
-		sitemap();
-		readPrefs();
+		initSitemap();
+		initReadPrefs();
 		})
 }
 
 // ::: START MAKE SITEMAP INTERACTIVE :::
 
-function sitemap()
+function sitemap(headers, lists)
 {
-	// grab all h2 elements
-	var h = document.getElementsByTagName('h2');
-	// grab all unordered lists
-	var u = document.getElementsByTagName('ul');
+	// grab all header elements
+	var h = document.getElementsByTagName(headers);
+	// grab all list elements
+	var u = document.getElementsByTagName(lists);
 
 	for(i = 0; i < u.length; i++)
 	{
-		// hide all unordered lists with 'sitemap' class
+		// hide all lists with 'sitemap' class
 		if(u[i].className == 'sitemap')
 		{
 			u[i].style.display = 'none';
@@ -55,11 +65,11 @@ function sitemap()
 
 				ul.style.display = 'none';
 
-				// make clicking new image hide/show child unordered list
+				// make clicking new image hide/show child list
 				img.onclick = function()
 				{
 					li = this.parentNode;
-					ul = li.getElementsByTagName('ul')[0];
+					ul = li.getElementsByTagName(lists)[0];
 					var ulStatus = (ul.style.display == 'none') ? 'block' : 'none';
 					ul.style.display = ulStatus;
 
@@ -76,7 +86,7 @@ function sitemap()
 		if((h[x].className == 'sitemap') || (h[x].className == 'maximise') || (h[x].className == 'minimise'))
 		{
 			// assign unique IDS to each h2 element
-			h[x].id = 'h2' + x;
+			h[x].id = headers + x;
 			h[x].className = 'maximise';
 
 			// make h2 element show/hide unordered list when clicked
@@ -96,7 +106,7 @@ function sitemap()
 				this.className = hStatus;
 
 				// set cookie
-				return writePrefs(this.id,ulStatus);
+				return writePrefs(this.id, ulStatus);
 			}
 		}
 	}
@@ -106,7 +116,7 @@ function sitemap()
 
 // ::: START WRITE HIDE/SHOW COOKIE :::
 
-function writePrefs(section,tf)
+function writePrefs(section, tf)
 {
 	var cookieName = section;
 	var today = new Date();
@@ -134,10 +144,10 @@ function writePrefs(section,tf)
 
 // ::: START READ HIDE/SHOW COOKIE :::
 
-function readPrefs()
+function readPrefs(headers)
 {
-	// grab all h2 elements
-	var h = document.getElementsByTagName('h2');
+	// grab all header elements
+	var h = document.getElementsByTagName(headers);
 
 	// check cookie for hide/show preferences
 	for(i = 0; i < h.length; i++)
@@ -146,7 +156,7 @@ function readPrefs()
 		{
 			// gets the element after the h2 heading
 			var ul = h[i].nextSibling;
-			h[i].id = 'h2' + i;
+			h[i].id = headers + i;
 
 			// makes sure ul is an element, not a blank space or carriage return
 			while (ul.nodeType != 1)
@@ -154,7 +164,7 @@ function readPrefs()
 				ul = ul.nextSibling;
 			}
 
-			var cookieName = 'h2' + i;
+			var cookieName = headers + i;
 
 			if (document.cookie.length > 0)
 			{
@@ -171,9 +181,9 @@ function readPrefs()
 
 					// sets dispaly status to equal that which was in the cookie
 					var secStatus = (secValue == 'none') ? 'none' : 'block';
-					var h2Img = (secValue == 'none') ? 'maximise' : 'minimise';
+					var headersImg = (secValue == 'none') ? 'maximise' : 'minimise';
 
-					document.getElementById(cookieName).className = h2Img;
+					document.getElementById(cookieName).className = headersImg;
 					ul.style.display = secStatus;
 				}
 			}

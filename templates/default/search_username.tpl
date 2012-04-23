@@ -4,27 +4,14 @@
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <!-- ENDIF -->
 
-<script type="text/javascript">
-// <![CDATA[
+<script type="text/javascript">//<![CDATA[
 function refresh_username(selected_username)
 {
 	target_form_name = '{S_TARGET_FORM_NAME}';
 	target_element_name = '{S_TARGET_ELEMENT_NAME}';
 
-	var doc;
-
-	if (document.forms[target_form_name])
-	{
-		doc = document;
-	}
-	else
-	{
-		doc = opener.document;
-	}
-
+	var doc = (document.forms[target_form_name]) ? document : opener.document;
 	var target_element = doc.forms[target_form_name].elements[target_element_name];
-
-
 	if (selected_username == '-1')
 	{
 		return;
@@ -35,7 +22,7 @@ function refresh_username(selected_username)
 	opener.focus();
 	window.close();
 }
-// ]]>
+//]]>
 </script>
 
 <form method="post" name="search" action="{S_SEARCH_ACTION}">

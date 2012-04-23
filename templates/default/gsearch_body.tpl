@@ -15,7 +15,8 @@
 			{S_ADSENSE_CODE}
 			<input type="hidden" name="sitesearch" value="{S_SEARCH_DOMAIN}" />
 			<input type="hidden" name="cof" value="FORID:9" />
-			<input type="hidden" name="ie" value="ISO-8859-1" />
+			<input type="hidden" name="ie" value="{S_CONTENT_ENCODING}" />
+			<input type="hidden" name="hl" value="{S_LANGUAGE}" />
 			<input type="hidden" name="newwindow" value="1" />
 			<input type="text" class="post search" name="q" size="60" onclick="if(this.value=='{L_SEARCH}')this.value='';" onblur="if(this.value=='')this.value='{L_SEARCH}';" value="{L_SEARCH}" />
 			<input type="submit" class="post" name="sa" value="{L_SEARCH}" />
@@ -33,12 +34,13 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 
-<script type="text/javascript">
+<script type="text/javascript">//<![CDATA[
 var googleSearchIframeName = "cse-search-results";
 var googleSearchFormName = "cse-search-box";
 var googleSearchFrameWidth = 600;
 var googleSearchDomain = "www.google.com";
 var googleSearchPath = "/cse";
+//]]>
 </script>
 <script type="text/javascript" src="http://www.google.com/afsonline/show_afs_search.js"></script>
 

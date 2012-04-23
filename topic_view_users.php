@@ -279,7 +279,7 @@ if (($mode != 'topten') || ($config['topics_per_page'] < 10))
 	if ($total = $db->sql_fetchrow($result))
 	{
 		$total_members = $total['total'];
-		$pagination = generate_pagination($base_url_full, $total_members, $config['topics_per_page'], $start) . '&nbsp;';
+		$pagination = generate_pagination($base_url_full, $total_members, $config['topics_per_page'], $start);
 	}
 }
 else

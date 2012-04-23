@@ -26,26 +26,53 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
+// Decide whether XML or JSON is to be used - JSON preferred
+$response_type = (function_exists('json_decode') && is_array(json_decode('{"a":1}', true))) ? 'json' : 'xml';
+
 $mode_types = array('archive');
 $mode = request_var('mode', '');
 $mode = (!in_array($mode, $mode_types) ? '' : $mode);
 
 // Give guest a notice so they know they aren't allowed to use the shoutbox.
-if(($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
+if (($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
 {
 	//message_die(GENERAL_ERROR, $lang['Shoutbox_no_auth']);
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_AJAX_CHAT, true));
 }
 
+$private_chat = false;
 $chat_room = request_var('chat_room', '');
-$chat_room = preg_replace('/[^0-9|]+/', '', trim($chat_room));
-$chat_room_users = array();
-$chat_room_users = explode('|', $chat_room);
-$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
-if(($user->data['user_level'] != ADMIN) && !empty($chat_room) && !in_array($user->data['user_id'], $chat_room_users))
+$chat_room_users = array_map('intval', explode('|', $chat_room));
+$chat_room_users_count = sizeof($chat_room_users);
+
+if ($chat_room !== '')
 {
-	message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
+	// validate chat room
+	if (count($chat_room_users) < 2)
+	{
+		// Less than 2 users in chat room
+		message_die(GENERAL_ERROR, $lang['INVALID']);
+	}
+	sort($chat_room_users);
+	$chat_last_user = 0;
+	foreach ($chat_room_users as $chat_user)
+	{
+		if ($chat_user <= $chat_last_user)
+		{
+			// Same user cannot be twice in a room or invalid user id
+			message_die(GENERAL_ERROR, $lang['INVALID']);
+		}
+		$chat_last_user = $chat_user;
+	}
+	$chat_room = implode('|', $chat_room_users);
+	if ($user->data['user_level'] != ADMIN && !in_array($user->data['user_id'], $chat_room_users))
+	{
+		// Current user is not in that chat room
+		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
+	}
+	$private_chat = true;
 }
+$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
 define('AJAX_CHAT_ROOM', true);
 
 // Show shoutbox with header and footer if the user didn't request anything else
@@ -61,8 +88,8 @@ if (empty($mode))
 	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
 	$ajax_archive_link = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 
-	$cms_page_id_tmp = 'ajax_chat';
 	// Import settings from other vars if set... or force global blocks to off since this may be run as stand alone
+	$cms_page_id_tmp = 'ajax_chat';
 	$cms_page['page_nav'] = isset($cms_page['page_nav']) ? $cms_page['page_nav'] : true;
 	$cms_page['global_blocks'] = isset($cms_page['global_blocks']) ? $cms_page['global_blocks'] : false;
 	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
@@ -71,13 +98,18 @@ if (empty($mode))
 	$breadcrumbs['bottom_right_links'] = '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>' . (($ajax_archive_link == true) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;' . '<a href="' . append_sid('ajax_chat.' . PHP_EXT . '?mode=archive') . '">' . $lang['Ajax_Archive'] . '</a>') : '');
 
 	$template_to_parse = 'ajax_chat_body.tpl';
-
 	$template->assign_vars(array(
+		'L_PAGE_TITLE' => $lang['Ajax_Chat'],
 		'L_WIO' => $lang['Who_is_Chatting'],
 		'L_GUESTS' =>  $lang['Online_guests'],
 		'L_TOTAL' => $lang['Online_total'],
 		'L_USERS' => $lang['Online_registered'],
-		'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain']
+		'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
+		'DELETE_IMG' => '<img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" />',
+		'L_SHOUT_PREFIX' => 'shout_',
+		'L_USER_PREFIX' => 'user_',
+		'L_ROOM_PREFIX' => 'room_',
+		'S_TARGET' => 'target=\"_blank\"',
 		)
 	);
 
@@ -91,27 +123,25 @@ else
 		$cms_page['page_id'] = 'ajax_chat_archive';
 	}
 	// Set as tmp value to not overwrite page id if included as a block...
-	$cms_page_id_tmp = 'ajax_chat_archive';
+	// Check before the chat link, so we can then use $cms_page_id_tmp for deciding what template to use
+	$cms_page_id_tmp = 'ajax_chat';
+	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
+	$ajax_chat_link = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
+
 	// Import settings from other vars if set... or force global blocks to off since this may be run as stand alone
+	$cms_page_id_tmp = 'ajax_chat_archive';
 	$cms_page['page_nav'] = isset($cms_page['page_nav']) ? $cms_page['page_nav'] : true;
 	$cms_page['global_blocks'] = isset($cms_page['global_blocks']) ? $cms_page['global_blocks'] : false;
 	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
 	check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp);
 
-	$breadcrumbs['bottom_right_links'] = '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>';
+	$breadcrumbs['bottom_right_links'] = (($ajax_chat_link == true) ? '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;' : '') . '<a href="' . append_sid('ajax_chat.' . PHP_EXT . '?mode=archive') . '">' . $lang['Ajax_Archive'] . '</a>';
 	$template_to_parse = 'ajax_chat_archive.tpl';
 
 	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
 	// Include Post functions and BBCodes
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
-
-	$template->assign_block_vars('view_shoutbox', array(
-		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
-		'CHAT_ROOM' => $chat_room,
-		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
-		)
-	);
 
 	$start = request_get_var('start', 0);
 	$start = ($start < 0) ? 0 : $start;
@@ -124,15 +154,10 @@ else
 
 	$num_items = $db->sql_fetchrow($result);
 
-	$pagination = generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive', $num_items['stored_shouts'], $config['posts_per_page'], $start);
-
-	if($pagination != '')
-	{
-		$template->assign_block_vars('pag', array(
-			'PAGINATION' => $pagination
-			)
-		);
-	}
+	$template->assign_vars(array(
+		'PAGINATION' => generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive', $num_items['stored_shouts'], $config['posts_per_page'], $start),
+		)
+	);
 
 	// Get my shouts
 	$sql = "SELECT COUNT(s.shout_id) as count
@@ -152,13 +177,14 @@ else
 	$today = $db->sql_fetchrow($result);
 
 	$template->assign_vars(array(
-		'CHAT_ROOM' => $chat_room,
-		'U_ACTION' => append_sid('ajax_shoutbox.' . PHP_EXT . '?act=del'),
+		'L_PAGE_TITLE' => $lang['Ajax_Archive'],
 		'L_AUTHOR' => $lang['Author'],
 		'L_SHOUTS' => $lang['Shouts'],
 		'L_STATS' =>$lang['Statistics'],
 		'L_ARCHIVE' => $lang['Ajax_Archive'],
 		'L_CONFIRM' => $lang['Confirm_delete_pm'],
+		'L_UNABLE' => $lang['Shoutbox_unable'],
+		'L_TIMEOUT' => $lang['Shoutbox_timeout'],
 		'TOTAL_SHOUTS' => $num_items['total_shouts'],
 		'L_TOTAL_SHOUTS' => $lang['Total_shouts'],
 		'STORED_SHOUTS' => $num_items['stored_shouts'],
@@ -173,9 +199,26 @@ else
 		'L_TOTAL' => $lang['Online_total'],
 		'L_USERS' => $lang['Online_registered'],
 		'L_TOP_SHOUTERS' => $lang['Top_Ten_Shouters'],
-		'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain']
+		'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
+		'L_SHOUT_PREFIX' => 'shout_',
+		'L_USER_PREFIX' => 'user_',
+		'L_ROOM_PREFIX' => 'room_',
 		)
 	);
+
+	$template->assign_block_vars('view_shoutbox', array(
+		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
+		'RESPONSE_TYPE' => $response_type,
+		'CHAT_ROOM' => $chat_room,
+		'UPDATE_MODE' => 'archive',
+		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
+		)
+	);
+
+	if ($user->data['user_level'] == ADMIN)
+	{
+		$template->assign_block_vars('view_shoutbox.user_is_admin', array());
+	}
 
 	// Get Who is Online in the shoutbox
 	// Only get session data if the user was online SESSION_REFRESH seconds ago
@@ -194,10 +237,9 @@ else
 	{
 		if($online['user_id'] != ANONYMOUS)
 		{
-			$username = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active']);
 			$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
 			$template->assign_block_vars('online_list', array(
-				'USERNAME' => $username,
+				'USERNAME' => $online['username'],
 				'USER' => $online['username'],
 				'USER_ID' => $online['user_id'],
 				'LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
@@ -273,42 +315,33 @@ else
 	for($x = 0; $x < sizeof($row); $x++)
 	{
 		$id = $row[$x]['shout_id'];
-		//$time = utf8_encode(create_date($config['default_dateformat'], $row[$x]['shout_time'], $config['board_timezone']));
 		$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
-		//$time = utf8_encode(gmdate('Y/m/d - H.i.s', $row[$x]['shout_time']));
 
 		if ($row[$x]['user_id'] == ANONYMOUS)
 		{
-			$shouter = utf8dec($row[$x]['username']);
+			$shouter = $row[$x]['username'];
 			$shouter_link = false;
 			$shouter_color = '';
 		}
 		else
 		{
-			$shouter = utf8dec($row[$x]['username']);
+			$shouter = $row[$x]['username'];
 			$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
 			$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], true, false, true);
 		}
 
-		//$message = stripslashes($row[$x]['shout_text']);
-		$message = utf8dec($row[$x]['shout_text']);
-
-		// BBCodes parsing not needed in this case!
-		/*
-		// Word Censor.
+		$message = $row[$x]['shout_text'];
+		$message = strip_tags($message);
 		$message = censor_text($message);
 
-		$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? true : false;
+		$bbcode->allow_html = false;
 		$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
 		$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 		$message = $bbcode->parse($message);
 
-		//$message = preg_replace(array('<', '>'), array('mg_tag_open', 'mg_tag_close'), $message);
-		*/
-
-		if($user->data['session_logged_in'] && ($user->data['user_level'] == ADMIN))
+		if ($user->data['session_logged_in'] && ($user->data['user_level'] == ADMIN))
 		{
-			$temp_url = 'javascript: deleteShout(' . $id . ')';
+			$temp_url = 'javascript:removeShout(' . $id . ')';
 			$delpost_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';
 		}
 		else
@@ -337,6 +370,6 @@ else
 	}
 }
 
-full_page_generation($template_to_parse, $lang['Ajax_Chat'], '', '');
+full_page_generation($template_to_parse, ($template_to_parse == 'ajax_chat_body.tpl') ? $lang['Ajax_Chat'] : $lang['Ajax_Archive'], '', '');
 
 ?>

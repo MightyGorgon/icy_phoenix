@@ -151,16 +151,14 @@ $user_browser = get_user_browser($profiledata['user_browser']);
 // Mighty Gorgon - HTTP AGENTS - END
 
 // Mighty Gorgon - Full Album Pack - BEGIN
+include(IP_ROOT_PATH . 'includes/album_mod/album_functions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/album_mod/album_hierarchy_functions.' . PHP_EXT);
 $cms_page_id_tmp = 'album';
 $cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
 $show_latest_pics = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 if ($show_latest_pics)
 {
 	setup_extra_lang(array('lang_album_main'));
-
-	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
-	$album_rate_pic_url = $album_show_pic_url;
-	$album_comment_pic_url = $album_show_pic_url;
 
 	$sql = "SELECT * FROM " . ALBUM_CONFIG_TABLE;
 	$result = $db->sql_query($sql, 0, 'album_config_');
@@ -239,52 +237,23 @@ if ($show_latest_pics)
 					$pic_preview = 'onmouseover="showtrail(\'' . append_sid('album_picm.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']) . '\',\'' . addslashes($recentrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 				}
 
-				$pic_sp_link = append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-				$pic_dl_link = append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-
-				// Temporarily force to TRUE
-				$album_user_access['view'] = true;
-				if ($album_user_access['view'] == false)
-				{
-					$pic_title = '&nbsp;';
-					$pic_desc = '&nbsp;';
-					$pic_thumbnail = $images['no_thumbnail'];
-					$pic_views = 0;
-				}
-				else
-				{
-					$pic_title = $recentrow[$j]['pic_title'];
-					$pic_desc = $recentrow[$j]['pic_desc'];
-					$pic_thumbnail = append_sid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-					$pic_views = $recentrow[$j]['pic_view_count'];
-				}
-
-				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
-					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
-					'U_PIC_SP' => $pic_sp_link,
-					'U_PIC_DL' => $pic_dl_link,
-
-					'THUMBNAIL' => $pic_thumbnail,
+				$template_vars = array(
 					'PIC_PREVIEW_HS' => $pic_preview_hs,
 					'PIC_PREVIEW' => $pic_preview,
-					'DESC' => $pic_desc
-					)
 				);
+				album_build_column_vars(&$template_vars, $recentrow[$j]);
+				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', $template_vars);
 
 				$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
-				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
-					'PIC_TITLE' => $pic_title,
-					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $pic_title . '</a>',
+
+				$template_vars = array(
 					'POSTER' => $recent_poster,
-					'TIME' => create_date($config['default_dateformat'], $recentrow[$j]['pic_time'], $config['board_timezone']),
-
-					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
-					'U_PIC_SP' => $pic_sp_link,
-					'U_PIC_DL' => $pic_dl_link,
-
-					'VIEW' => $pic_views,
-					)
+					'PIC_PREVIEW_HS' => $pic_preview_hs,
+					'PIC_PREVIEW' => $pic_preview,
+					'GROUP_NAME' => 'profile',
 				);
+				album_build_detail_vars(&$template_vars, $recentrow[$j]);
+				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', $template_vars);
 			}
 		}
 	}
@@ -654,9 +623,7 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yahoo_img,
 	'YIM' => $yahoo,
 	'U_YIM' => $yahoo_url,
-	'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
 
-	'ICON_CHAT' => $all_ims['chat']['icon'],
 	'ICON_AIM' => $all_ims['aim']['icon'],
 	'ICON_FACEBOOK' => $all_ims['facebook']['icon'],
 	'ICON_FLICKR' => $all_ims['flickr']['icon'],
@@ -742,9 +709,11 @@ $template->assign_vars(array(
 	'L_NO_PICS' => $lang['No_Pics'],
 	'L_RECENT_PUBLIC_PICS' => $lang['Recent_Public_Pics'],
 	'S_COLS' => $album_config['cols_per_page'],
-	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100 / $album_config['cols_per_page']) . '%',
 	//'S_COL_WIDTH' => (100/$album_config['cols_per_page']) . '%',
+	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100 / $album_config['cols_per_page']) . '%',
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 	// Mighty Gorgon - Full Album Pack - END
+
 	// Start add - Online/Offline/Hidden Mod
 	'ONLINE_STATUS_IMG' => $online_status_img,
 	'L_ONLINE_STATUS' => $lang['Online_status'],
@@ -800,6 +769,18 @@ $template->assign_vars(array(
 	)
 );
 
+// Don't chat with yourself - it's antisocial
+if ($user->data['user_id'] != $profiledata['user_id'])
+{
+	/* JHL TEMP - waiting for ACP configuration flag
+	$template->assign_vars(array(
+		'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
+
+		'ICON_CHAT' => $all_ims['chat']['icon'],
+		)
+	);
+	*/
+}
 
 // Custom Profile Fields - BEGIN
 // Include Language
@@ -809,8 +790,6 @@ include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 $profile_data = get_fields('WHERE view_in_profile = ' . VIEW_IN_PROFILE . ' AND users_can_view = ' . ALLOW_VIEW);
 $profile_names = array();
 
-$abouts = array();
-$contacts = array();
 foreach($profile_data as $field)
 {
 	$name = $field['field_name'];
@@ -839,23 +818,22 @@ foreach($profile_data as $field)
 
 	if($location == 1)
 	{
-		$contacts[] = '<td valign="top" class="' . $theme['td_class2'] . '"><b><span class="genmed">' . $field_name . '</span></b></td><td class="' . $theme['td_class1'] . ' post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
+		$template->assign_block_vars('custom_contact', array(
+			'NAME' => $field_name,
+			'VALUE' => $profile_names[$name],
+			)
+		);
 	}
 	else
 	{
-		$abouts[] = '<td valign="top" class="' . $theme['td_class2'] . '"><b><span class="genmed">' . $field_name . '</span></b></td><td class="' . $theme['td_class1'] . ' post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
+		$template->assign_block_vars('custom_about', array(
+			'NAME' => $field_name,
+			'VALUE' => $profile_names[$name],
+			)
+		);
 	}
 }
 
-foreach($abouts as $about_field)
-{
-	$template->assign_block_vars('custom_about',array('ABOUT' => $about_field));
-}
-
-foreach($contacts as $contact_field)
-{
-	$template->assign_block_vars('custom_contact',array('CONTACT' => $contact_field));
-}
 // Custom Profile Fields - END
 
 //====================================================================== |

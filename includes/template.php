@@ -72,7 +72,7 @@ define('XS_TAG_ENDIF', 8);
 define('XS_TAG_DEFINE', 9);
 define('XS_TAG_UNDEFINE', 10);
 define('XS_TAG_BEGINELSE', 11);
-
+define('XS_TAG_ALIAS', 12);
 
 class Template {
 	var $classname = 'Template';
@@ -1201,6 +1201,10 @@ class Template {
 					{
 						$keyword_type = XS_TAG_BEGINELSE;
 					}
+					elseif($keyword === 'ALIAS')
+					{
+						$keyword_type = XS_TAG_ALIAS;
+					}
 				}
 			}
 			if(!$keyword_type)
@@ -1533,6 +1537,31 @@ class Template {
 				{
 					$compiled[] = $keyword_str;
 				}
+			}
+			/*
+			* <!-- ALIAS -->
+			*/
+			if ($keyword_type == XS_TAG_ALIAS)
+			{
+				$params = explode(' ', $params_str);
+				$num_params = sizeof($params);
+				if($num_params != 2)
+				{
+					$compiled[] = $keyword_str;
+					continue;
+				}
+				$var_alias = $params[0];
+				$var_org = '$this->_tpldata';
+				for ($i = 1; $i <= $block_nesting_level; $i++)
+				{
+					$var_org .= '[\'' . $block_names[$i] . '.\'][$' . $block_names[$i] . '_i]';
+				}
+				$var_org .= '[\'' . $params[1] . '.\']';
+				$line = '<' . '?php // alias ' . $var_alias . ' = ' . $params[1] . "\n\n";
+				$line .= '$this->_tpldata[\'' . $var_alias . '.\'] = &' . $var_org . ';' . "\n";
+				$line .= "\n" . '?' . '>';
+				$compiled[] = $line;
+				continue;
 			}
 		}
 

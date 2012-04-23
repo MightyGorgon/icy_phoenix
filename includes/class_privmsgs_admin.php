@@ -276,10 +276,8 @@ class aprvmUtils
 		$total = $db->sql_fetchrow($result);
 		$total_pms = ($total['total'] > 0) ? $total['total'] : 1;
 
-		$pagination = generate_pagination($this->urlPage, $total_pms, $topics_per_pg, $start) . '&nbsp;';
-
 		$template->assign_vars(array(
-			'PAGINATION' => $pagination,
+			'PAGINATION' => generate_pagination($this->urlPage, $total_pms, $topics_per_pg, $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $topics_per_pg) + 1), ceil($total_pms / $topics_per_pg)),
 			'L_GOTO_PAGE' => $lang['Goto_page']
 			)

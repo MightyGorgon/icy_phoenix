@@ -297,3 +297,25 @@ ul.sitemap li ul li { margin-left: 0.5cm; padding-left: 5px; }
 @media all and (min-width: 0px) { html>body input.post { height: 18px; } }
 @media all and (min-width: 0px) { html>body input.jumpbox { height: 15px; } }
 */
+
+/* Ajax chat specific styles */
+.chat-box {
+	width: 690px;
+	/* height: 350px; */
+	text-align: center;
+	margin: 0px auto;
+}
+.chat-shouts {
+	width: 655px;
+	height: 297px;
+	text-align: center;
+	overflow: auto;
+	margin: 0px auto;
+}
+.chat-shoutlist {
+	/* width: 625px; */
+	/* height: 272px; */
+	text-align: left;
+	margin: 0;
+}
+

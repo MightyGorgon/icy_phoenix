@@ -80,7 +80,7 @@ else
 $sort_method = request_var('sort_method', $album_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'pic_view_count'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value(strtoupper($sort_order), array('ASC', 'DESC'));
 
 $sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
@@ -96,6 +96,7 @@ if ($is_slideshow)
 	$gen_simple_header = true;
 	$show_template = 'album_slideshow_body.tpl';
 	$nuffimage_pic = ($picm == false) ? 'album_pic.' : 'album_picm.';
+	$nuff_display = false;
 }
 else
 {
@@ -107,6 +108,7 @@ else
 		$show_template = 'album_pic_nuffed_body.tpl';
 		$nuffimage_vars = '&amp;nuffimage=true';
 		$nuffimage_pic = 'album_pic_nuffed.';
+		$nuff_display = true;
 		$nuff_http_full_string = $nuff_http['full_string'];
 		$template->assign_block_vars('disable_pic_nuffed', array(
 			'L_PIC_UNNUFFED_CLICK' => $lang['Nuff_UnClick'],
@@ -119,6 +121,7 @@ else
 		$show_template = 'album_showpage_body.tpl';
 		$nuffimage_vars = '';
 		$nuffimage_pic = ($picm == false) ? 'album_pic.' : 'album_picm.';
+		$nuff_display = false;
 		$nuff_http_full_string = '';
 	}
 }
@@ -228,30 +231,20 @@ if ($pic_array_id == ($total_pic_count - 1))
 // PREVIOUS & NEXT
 // ------------------------------------
 $pic_id_old = $total_pic_rows[$pic_array_id]['pic_id'];
-if(isset($_GET['mode']) && ($_GET['mode'] == 'next'))
+if (isset($_GET['mode']) && ($_GET['mode'] == 'next'))
 {
 	$new_pic_array_id = $pic_array_id - 1;
 	if ($new_pic_array_id == 0)
 	{
 		$no_prev_pic = true;
 	}
-	else
-	{
-		$no_prev_pic = false;
-		$no_next_pic = false;
-	}
 }
-elseif(isset($_GET['mode']) && ($_GET['mode'] == 'prev'))
+elseif (isset($_GET['mode']) && ($_GET['mode'] == 'prev'))
 {
 	$new_pic_array_id = $pic_array_id + 1;
 	if ($new_pic_array_id == ($total_pic_count - 1))
 	{
 		$no_next_pic = true;
-	}
-	else
-	{
-		$no_next_pic = false;
-		$no_prev_pic = false;
 	}
 }
 else
@@ -262,8 +255,9 @@ $pic_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_id'];
 $pic_cat_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_cat_id'];
 $pic_time_tmp = $total_pic_rows[$new_pic_array_id]['pic_time'];
 $pic_user_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_user_id'];
+
 $next_pic_count = ($total_pic_count - $new_pic_array_id - 1);
-$prev_pic_count = ($new_pic_array_id);
+$prev_pic_count = $new_pic_array_id;
 
 if(isset($_GET['mode']))
 {
@@ -285,8 +279,10 @@ if ($album_config['show_pics_nav'] == 1)
 
 if (!$album_config['invert_nav_arrows'])
 {
+
 	$max_pic_counter = min(($total_pic_count - 1), ($new_pic_array_id + 2));
 	$min_pic_counter = max(0, ($new_pic_array_id - 2));
+
 	for($i = $min_pic_counter; $i <= $max_pic_counter; $i++)
 	{
 		$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']));
@@ -312,9 +308,11 @@ if (!$album_config['invert_nav_arrows'])
 				'U_PIC_THUMB' => $thumbnail_file,
 				'U_PIC_LINK' => ($i == $new_pic_array_id) ? '#' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append)),
 				'U_PIC_LINK_HS' => append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id'])),
+
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
+				'CLASS' => ($i == $new_pic_array_id) ? 'image-current' : 'image',
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #ff5522;' : '',
 				)
 			);
@@ -323,8 +321,10 @@ if (!$album_config['invert_nav_arrows'])
 }
 else
 {
+
 	$max_pic_counter = max(0, ($new_pic_array_id - 2));
 	$min_pic_counter = min(($total_pic_count - 1), ($new_pic_array_id + 2));
+
 	for($i = $min_pic_counter; $i >= $max_pic_counter; $i--)
 	{
 		$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $total_pic_rows[$i]['pic_id']));
@@ -353,6 +353,7 @@ else
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
+				'CLASS' => ($i == $new_pic_array_id) ? 'image-current' : 'image',
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
 				)
 			);
@@ -779,8 +780,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" alt="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" alt="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" /></a>' : '';
 
 			$next_pic_url = ($no_prev_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=next&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . $full_size_param . $sort_append)) . '#TopPic';
 			$prev_pic_url = ($no_next_pic == false) ? append_sid(album_append_uid($pic_base_link . '&amp;mode=prev&amp;slideshow=' . $slideshow_delay)) . '#TopPic' : append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $last_pic_id . $full_size_param . $sort_append)) . '#TopPic';
@@ -817,8 +818,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$pic_base_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append;
 		if ($album_config['invert_nav_arrows'] == 0)
 		{
-			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Next_Pic'] . '" /></a>' : '';
-			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Prev_Pic'] . '" /></a>' : '';
+			$next_pic = ($no_prev_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=next' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_left_arrow3'] . '" title="' . $lang['Prev_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Prev_Pic'] . '" /></a>' : '';
+			$prev_pic = ($no_next_pic == false) ? '<a href="' . append_sid(album_append_uid($pic_base_link . '&amp;mode=prev' . $nuffimage_vars)) . '#TopPic" style="background-image: none; display: inline;"><img src="' . $images['icon_right_arrow3'] . '" title="' . $lang['Next_Pic'] . '" style="border:0px;vertical-align:middle;" alt="' . $lang['Next_Pic'] . '" /></a>' : '';
 		}
 		else
 		{
@@ -912,10 +913,10 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	if (($album_config['show_exif'] == 1) && (function_exists('exif_read_data')))
 	{
 		//echo(function_exists(exif_read_data));
-		$template->assign_block_vars('switch_exif_enabled', array());
 		$xif = @exif_read_data($pic_fullpath, 0, true);
 		if (!empty($xif[IFD0]) || !empty($xif[EXIF]))
 		{
+			$template->assign_block_vars('switch_exif_enabled', array());
 			include_once(ALBUM_MOD_PATH . 'album_exif_info.' . PHP_EXT);
 		}
 	}
@@ -974,6 +975,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id']));
 	$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $thispic['pic_id']));
 
+	$pic_full_set = ($picm == false || $nuff_display == true);
+
 	$template->assign_vars(array(
 		'CAT_TITLE' => $thispic['cat_title'],
 		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
@@ -992,9 +995,9 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'U_PIC_SP' => $pic_sp_link,
 		'U_PIC_DL' => $pic_dl_link,
 		//'U_PIC_L1' => ($picm == false) ? '' : '<a href="album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $nuffimage_vars . '">',
-		'U_PIC_L1' => ($picm == false) ? '' : '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $sort_append . $nuffimage_vars)) . '">',
-		'U_PIC_L2' => ($picm == false) ? '' : '</a>',
-		'U_PIC_CLICK' => ($picm == false) ? '' : $lang['Click_enlarge'],
+		'U_PIC_L1' => ($pic_full_set) ? '' : '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $sort_append . $nuffimage_vars)) . '">',
+		'U_PIC_L2' => ($pic_full_set) ? '' : '</a>',
+		'U_PIC_CLICK' => ($pic_full_set) ? '' : $lang['Click_enlarge'],
 		'U_PIC_THUMB' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $pic_id . $sort_append)),
 		'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . PHP_EXT . '?mode=text2shield'),
 
@@ -1007,17 +1010,17 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'L_PIC_DETAILS' => $lang['Pic_Details'],
 		'L_PIC_SIZE' => $lang['Pic_Size'],
 		'L_PIC_TYPE' => $lang['Pic_Type'],
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $album_config['midthumb_height'],
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $album_config['midthumb_width'],
 		'PIC_SIZE' => $pic_width . ' x ' . $pic_height . ' (' . intval($pic_filesize/1024) . 'KB)',
 		'PIC_TYPE' => strtoupper(substr($thispic['pic_filename'], strlen($thispic['pic_filename']) - 3, 3)),
 		// Mighty Gorgon - Pic Size - END
-
-		//'PIC_RATING' => $image_rating . (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : ''),
-		'PIC_RATING' => $image_rating . (($own_pic_rate == true) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
 
 		'PIC_ID' => $pic_id,
 		'PIC_BBCODE' => '[albumimg]' . $pic_id . '[/albumimg]',
 		'PIC_TITLE' => $thispic['pic_title'],
 		'PIC_DESC' => $pic_desc,
+		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 		'POSTER' => $poster,
 
@@ -1071,8 +1074,9 @@ if(empty($comment_text) && !isset($_POST['rating']))
 
 		// Rating
 		//'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($already_rated) ? $lang['Already_rated'] : $lang['Please_Rate_It']),
-		'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($own_pic_rate == true) ? $lang['Own_Pic_Rate'] : (($already_rated == true) ? $lang['Already_rated'] : $lang['Please_Rate_It'])),
-		'PIC_RATING' => $image_rating . (($own_pic_rate == true) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
+		'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : ((($own_pic_rate == true) && ($user->data['user_level'] != ADMIN)) ? $lang['Own_Pic_Rate'] : ((($already_rated == true) && ($user->data['user_level'] != ADMIN)) ? $lang['Already_rated'] : $lang['Please_Rate_It'])),
+		'PIC_RATING' => $image_rating . ((($own_pic_rate == true) && ($user->data['user_level'] != ADMIN)) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : ((($already_rated == true) && ($user->data['user_level'] != ADMIN)) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
+
 		'L_CURRENT_RATING' => $lang['Current_Rating'],
 		'L_PLEASE_RATE_IT' => $lang['Please_Rate_It']
 		)

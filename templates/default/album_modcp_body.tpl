@@ -1,33 +1,47 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-<!--
-// tested with IE4+ and FireFox 0.8+
-function checkBox(field)
+<script type="text/javascript">//<![CDATA[
+function checkAll(field)
 {
-	checkBoxes = field.form["pic_id[]"];
-	checkButton = field.form["checkButton"];
-
-	for (i = 0; i < checkBoxes.length; i++)
-	{
-		checkBoxes[i].checked = (checkButton.value == "{L_CHECK_ALL}") ? true : false;
-	}
-	return (checkButton.value == "{L_CHECK_ALL}") ? "{L_UNCHECK_ALL}" : "{L_CHECK_ALL}";
+	$("[type='checkbox']").each(function(index, element) {
+		element.checked = true;
+	});
 }
 
-function checkBoxInverse(field)
+function checkReverse()
 {
-	checkBoxes = field.form["pic_id[]"];
-
-	for (i = 0; i < checkBoxes.length; i++)
-	{
-		checkBoxes[i].checked = (checkBoxes[i].checked) ? false : true;
-	}
+	$("[type='checkbox']").each(function(index, element) {
+		element.checked = !element.checked;
+	});
 }
-// -->
+
+function checkSelected()
+{
+	var selected = false;
+	$("[type='checkbox']").each(function(index, element) {
+		if (element.checked)
+		{
+			selected = true;
+		}
+	});
+
+	/* Message needs to be added
+	if (!selected)
+	{
+		alert("{None_selected}"); // Not quite right, but close enough
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	*/
+	return true;
+}
+//]]>
 </script>
 
-<form name="modcp" action="{S_ALBUM_ACTION}" method="post">
+<form name="modcp" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkSelected();">
 <div style="margin-top: 5px; text-align: right;">
 <span class="gensmall">{L_SELECT_SORT_METHOD}:
 <select name="sort_method">
@@ -87,8 +101,8 @@ function checkBoxInverse(field)
 		{APPROVAL_BUTTON}
 		{UNAPPROVAL_BUTTON}
 		&nbsp;&nbsp;
-		<input type="button" class="liteoption" name="checkButton" value="{L_CHECK_ALL}" onclick="this.value=checkBox(this)">
-		<input type="button" class="liteoption" name="inverseButton" value="{L_INVERSE_SELECTION}" onclick="checkBoxInverse(this)">
+		<input type="button" class="liteoption" name="checkButton" value="{L_CHECK_ALL}" onclick="checkAll();">
+		<input type="button" class="liteoption" name="inverseButton" value="{L_INVERSE_SELECTION}" onclick="checkReverse();">
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

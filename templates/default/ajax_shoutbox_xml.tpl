@@ -7,6 +7,7 @@
 	<!-- BEGIN shouts -->
 	<shout>
 		<id>{shouts.ID}</id>
+		<room>{shouts.ROOM}</room>
 		<shouter>{shouts.SHOUTER}</shouter>
 		<shouter_id>{shouts.SHOUTER_ID}</shouter_id>
 		<shouter_link>{shouts.SHOUTER_LINK}</shouter_link>
@@ -28,6 +29,7 @@
 		<total>{online_stats.TOTAL}</total>
 		<guests>{online_stats.GUESTS}</guests>
 		<reg>{online_stats.REG}</reg>
+		<sig>{online_stats.SIG}</sig>
 	</onstats>
 	<!-- END online_stats -->
 </response>

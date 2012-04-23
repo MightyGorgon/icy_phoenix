@@ -407,6 +407,7 @@ $template->assign_vars(array(
 	'S_ACTION' => append_sid('posted_img_list.' . PHP_EXT),
 	'S_COLSPAN' => $s_colspan,
 	'S_COLWIDTH' => $s_colwidth,
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 	)
 );
 

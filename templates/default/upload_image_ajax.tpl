@@ -1,7 +1,6 @@
 <!-- INCLUDE simple_header.tpl -->
 
-<script type="text/javascript">
-// <![CDATA[
+<script type="text/javascript">//<![CDATA[
 var form_name_original = form_name;
 var text_name_original = text_name;
 var form_name_thisform = '{BBCB_FORM_NAME}';
@@ -26,12 +25,11 @@ function bbcb_vars_reassign_end()
 	form_name = form_name_original;
 	text_name = text_name_original;
 }
-// ]]>
+//]]>
 </script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg_small.js"></script>
 
-<script type="text/javascript">
-// <![CDATA[
+<script type="text/javascript">//<![CDATA[
 	$(function(){
 		var btnUpload = $('#upload');
 		var status = $('#status');
@@ -39,21 +37,21 @@ function bbcb_vars_reassign_end()
 		new AjaxUpload(btnUpload, {
 			action: '{S_AJAX_UPLOAD}',
 			name: 'userfile',
-			onSubmit: function(file, ext){
+			onSubmit: function(file, ext) {
 				// extension is not allowed
-				if (! (ext && /^({S_ALLOWED_EXTENSIONS})$/.test(ext)))
+				if (!(ext && /^({S_ALLOWED_EXTENSIONS})$/.test(ext)))
 				{
 					status.html('<span class="text_red">{L_ALLOWED_EXT_JS}<\/span>');
 					return false;
 				}
 				status.html('{IMG_LOADING_JS}');
 			},
-			onComplete: function(file, response){
+			onComplete: function(file, response) {
 				//On completion clear the status
 				status.html('');
 				//Add uploaded file to list
 				var res_array = response.split("|");
-				if(res_array[0] == '1')
+				if (res_array[0] == '1')
 				{
 					pic_counter++;
 					img_bbcode = '{IMG_BBCODE}';
@@ -63,11 +61,11 @@ function bbcb_vars_reassign_end()
 				else
 				{
 					var error_message = '';
-					if(res_array[0] == '5')
+					if (res_array[0] == '5')
 					{
 						error_message = '{L_UPLOAD_ERROR_SIZE}<br />';
 					}
-					else if(res_array[0] == '3')
+					else if (res_array[0] == '3')
 					{
 						error_message = '{L_UPLOAD_ERROR_TYPE}<br />';
 					}
@@ -82,7 +80,7 @@ function bbcb_vars_reassign_end()
 		});
 
 	});
-// ]]>
+//]]>
 </script>
 
 <form action="{S_ACTION}" name="upload_ajax_form" method="post" enctype="multipart/form-data">

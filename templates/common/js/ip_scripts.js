@@ -327,7 +327,7 @@ function popup_open(mypage, myname, w, h, scroll)
 
 function rss_news_help()
 {
-	window.open("rss_news_help.php?", '_rss_news_help', 'height=550,width=700,resizable=no,scrollbars=yes');
+	window.open("rss_news_help.php?", '_rss_news_help', 'height=600,width=700,resizable=no,scrollbars=yes');
 }
 
 function links_me()
@@ -337,6 +337,13 @@ function links_me()
 // Images, Links, Popup, FORM - END
 
 // Quick Quote - BEGIN
+function showQuickEditor()
+{
+	document.getElementById('quick_reply').style.display = "";
+	document.post.message.focus();
+	return;
+}
+
 function addquote(post_id, tag, quickr, parentf)
 {
 	if (quickr)

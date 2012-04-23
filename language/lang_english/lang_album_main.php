@@ -227,7 +227,7 @@ $lang = array_merge($lang, array(
 	'Comment_too_long' => 'Your comment is too long',
 	'Comment_delete_confirm' => 'Are you sure you want to delete this comment?',
 	'Pic_Locked' => 'Sorry, this pic was locked. So you cannot post a comment for this pic anymore',
-	'Post_your_comment' => 'Please Enter Your Comment!',
+	'Post_your_comment' => 'Please Enter Your Comment',
 
 // Personal Gallery
 	'Personal_Gallery_Explain' => 'You can view the personal galleries of other members by clicking on the link in their profiles',

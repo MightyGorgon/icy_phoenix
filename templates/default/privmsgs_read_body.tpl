@@ -4,14 +4,14 @@
 global $user, $config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
 $post_subject = (((strlen($post_subject) > 0) && ((substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX']) || (substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX_OLD']))) ? '' : $lang['REPLY_PREFIX']) . $post_subject;
 $this->vars['qr_subject'] = $post_subject;
-$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="ShowHide(\'quick_reply\', \'quick_reply2\'); return false;"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
+$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="showQuickEditor(); return false;" title="' . $lang['Post_a_reply'] . '"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
 $this->vars['privmsgs_id'] = $privmsgs_id;
 
 ob_start();
 ?>
 <div id="quick_reply" style="display: none; position: relative; ">
 <a name="quick"></a>
-<form method="post" action="{S_PRIVMSGS_ACTION}" name="post">
+<form method="post" action="{S_PRIVMSGS_ACTION}&amp;p={PM_ID}" name="post">
 {S_HIDDEN_FIELDS}
 <input type="hidden" name="post_time" value="<?php echo time(); ?>" />
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

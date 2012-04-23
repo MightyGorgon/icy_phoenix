@@ -1,15 +1,15 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
-<script type="text/javascript">
-<!--
+<script type="text/javascript">//<![CDATA[
+
 function openAllSmiles()
 {
 	smiles = window.open('{U_SMILEYS_MORE}', '_xs_smileys', 'width=600,height=400,resizable=yes,scrollbars=yes');
 	smiles.focus();
 	return false;
 }
-//-->
+//]]>
 </script>
 
 <!-- BEGIN postrow -->
@@ -119,7 +119,7 @@ if($can_reply)
 {
 	// quick reply button
 	global $images;
-	$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="ShowHide(\'quick_reply\', \'quick_reply2\'); return false;"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Quick_Reply'] . '" title="' . $lang['Quick_Reply'] . '" /></a>';
+	$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="showQuickEditor(); return false;" title="' . $lang['Post_a_reply'] . '"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Quick_Reply'] . '" title="' . $lang['Quick_Reply'] . '" /></a>';
 	// quick reply form
 	ob_start();
 ?>

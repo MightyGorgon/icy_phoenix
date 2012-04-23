@@ -10,12 +10,11 @@
 <!-- INCLUDE social_bookmarks.tpl -->
 </table>
 </div>{IMG_TBR}
-<script type="text/javascript">
-<!--
+<script type="text/javascript"><![CDATA[
 tmp = 'social_bookmarks';
 if(GetCookie(tmp) == '2')
 {
 	ShowHide('social_bookmarks', 'social_bookmarks_h', 'social_bookmarks');
 }
-//-->
+//]]>
 </script>

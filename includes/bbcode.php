@@ -3675,6 +3675,23 @@ class bbcode
 		for ($i = 0; $i < $length; $i++)
 		{
 			$char = substr($text, $i, 1);
+			// UTF-8 character encoding
+			$code = ord($char);
+		  if ($code >= 0x80)
+			{
+			  if ($code < 0xE0)
+				{
+					// Two byte
+					$char = substr($text, $i, 2);
+					$i = $i + 1;
+				}
+				elseif ($code1 < 0xF0)
+				{
+					// Three byte
+					$char = substr($text, $i, 3);
+					$i = $i + 2;
+				}
+			}
 			if (!$TAG_OPEN)
 			{
 				if ($char == '<')
@@ -3776,6 +3793,23 @@ class bbcode
 		for ($i = 0; $i < $length; $i++)
 		{
 			$char = substr($text, $i, 1);
+			// UTF-8 character encoding
+			$code = ord($char);
+		  if ($code >= 0x80)
+			{
+			  if ($code < 0xE0)
+				{
+					// Two byte
+					$char = substr($text, $i, 2);
+					$i = $i + 1;
+				}
+				elseif ($code1 < 0xF0)
+				{
+					// Three byte
+					$char = substr($text, $i, 3);
+					$i = $i + 2;
+				}
+			}
 			if (!$TAG_OPEN)
 			{
 				if ($char == '<')

@@ -4,6 +4,7 @@
 		<div class="post-subject">{POST_SUBJECT}&nbsp;</div>
 		<div class="post-text post-text-hide-flow">
 			{MESSAGE}
+			{SIGNATURE}
 			<!-- BEGIN postrow -->
 			<br />
 			{ATTACHMENTS}

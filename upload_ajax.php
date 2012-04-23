@@ -33,6 +33,9 @@ $cms_page['global_blocks'] = false;
 $cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_pic_upload'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
+// Get general album information
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+
 // We need to keep it here... so also error messages will initialize it correctly!
 $gen_simple_header = true;
 
@@ -44,7 +47,7 @@ $server_path = create_server_url();
 $upload_dir = POSTED_IMAGES_PATH;
 $user_upload_dir = '';
 $allowed_extensions = 'gif|jpg|jpeg|png';
-$max_file_size = (1000 * 1024);
+$max_file_size = (1024 * 1024);
 
 if (USERS_SUBFOLDERS_IMG)
 {
@@ -75,6 +78,7 @@ $template->assign_vars(array(
 	'S_AJAX_UPLOAD' => 'ajax_upload.' . PHP_EXT,
 	'S_ALLOWED_EXTENSIONS' => $allowed_extensions,
 	'S_MAX_FILE_SIZE' => $max_file_size,
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 	'BBCB_FORM_NAME' => htmlspecialchars($bbcb_form_name),
 	'BBCB_TEXT_NAME' => htmlspecialchars($bbcb_text_name),
@@ -97,7 +101,8 @@ $template->assign_vars(array(
 	'L_UPLOADING' => $lang['Uploading'],
 	'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 	'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
-	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.',
+	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.<br />' .
+		$lang['Upload_File_Max_Size'] . ' ' . floor($max_file_size / 1024) . $lang['KB'] . '.',
 	)
 );
 

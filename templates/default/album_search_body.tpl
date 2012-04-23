@@ -1,9 +1,8 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<!-- BEGIN switch_search -->
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="right" valign="middle">{ALBUM_SEARCH_BOX}</td></tr></table>
 <!-- BEGIN switch_search_results -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}&nbsp;{L_NRESULTS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="right" valign="middle">{ALBUM_SEARCH_BOX}</td></tr></table>
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}&nbsp;{L_TRESULTS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<th nowrap="nowrap">&nbsp;</th>
 		<th nowrap="nowrap" width="25%">{L_TCATEGORY}</th>
@@ -21,10 +20,10 @@
 		</div></div>
 		</center>
 	</td>
-	<td class="row1h row-forum" onclick="window.location.href='{switch_search_results.search_results.U_CAT}'"><a href="{switch_search_results.search_results.U_CAT}" class="genmed"><b>{switch_search_results.search_results.L_CAT}</b></a></td>
-	<td class="row1"><a href="{switch_search_results.search_results.U_PIC_SP}" class="genmed">{switch_search_results.search_results.L_PIC}</a></td>
+	<td class="row1h row-forum" onclick="window.location.href='{switch_search_results.search_results.U_PIC_CAT}'"><a href="{switch_search_results.search_results.U_PIC_CAT}" class="genmed"><b>{switch_search_results.search_results.CATEGORY}</b></a></td>
+	<td class="row1"><a href="{switch_search_results.search_results.U_PIC_SP}" class="genmed">{switch_search_results.search_results.PIC_TITLE}</a></td>
 	<td class="row1 row-center"><a href="{switch_search_results.search_results.U_PROFILE}" class="genmed"><b>{switch_search_results.search_results.L_USERNAME}</b></a></td>
-	<td class="row1 row-center"><span class="gensmall">{switch_search_results.search_results.L_TIME}</span></td>
+	<td class="row1 row-center"><span class="gensmall">{switch_search_results.search_results.TIME}</span></td>
 	</tr>
 	<!-- END search_results -->
 
@@ -46,7 +45,9 @@
 	</td>
 </tr>
 </table>
+
 <!-- END switch_search_results -->
+
 <br />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}

@@ -45,8 +45,6 @@ $result = $db->sql_query($sql);
 $total = $db->sql_numrows($result);
 $db->sql_freeresult($result);
 
-$pagination = generate_pagination('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $user_id, $total, $config['posts_per_page'], $start);
-
 $sql = "SELECT p.*, u.username, u.user_active, u.user_color, u.user_level, u.user_avatar_type, u.user_allowavatar, u.user_avatar
 				FROM " . PROFILE_VIEW_TABLE . " p, " . USERS_TABLE . " u
 				WHERE p.viewer_id = u.user_id
@@ -69,7 +67,7 @@ while ($row = $db->sql_fetchrow($result))
 }
 
 $template->assign_vars(array(
-	'PAGINATION' => $pagination,
+	'PAGINATION' => generate_pagination('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $user_id, $total, $config['posts_per_page'], $start),
 	'PROFILE' => '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" class="nav-current">' . $profile['username'] . '</a>',
 	'L_VIEW_TITLE' => $meta_content['page_title'],
 	'L_VIEWER' => $lang['Username'],

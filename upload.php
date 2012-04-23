@@ -34,8 +34,8 @@ $cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_p
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $upload_dir = POSTED_IMAGES_PATH;
-$filetypes = 'jpg,gif,png';
-$maxsize = (1000 * 1024);
+$filetypes = 'jpg,jpeg,gif,png';
+$maxsize = (1024 * 1024);
 
 // We need to keep it here... so also error messages will initialize it correctly!
 $gen_simple_header = true;
@@ -152,7 +152,8 @@ else
 		'S_ACTION' => append_sid('upload.' . PHP_EXT),
 		'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 		'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
-		'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.',
+		'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.<br />' .
+			$lang['Upload_File_Max_Size'] . ' ' . floor($maxsize / 1024) . $lang['KB'] . '.',
 		'L_SUBMIT' => $lang['Submit'],
 		)
 	);

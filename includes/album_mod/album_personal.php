@@ -298,11 +298,14 @@ if ($total_pics == 0)
 	if (($album_config['personal_show_recent_instead_of_nopics'] == 1) && ($total_pics > 0))
 	{
 		album_build_recent_pics($allowed_cat);
+		$template->assign_vars(array('S_NO_PICS' => '1'));
 	}
 	else
 	{
+		$total_pics = 0;
 		$template->assign_block_vars('index_pics_block', array());
 		$template->assign_block_vars('index_pics_block.no_pics', array());
+		$template->assign_vars(array('S_NO_PICS' => '1'));
 	}
 
 	if (($is_root_cat) && (!$has_sub_cats))
@@ -456,6 +459,7 @@ $template->assign_vars(array(
 
 	'S_COLS' => $album_config['cols_per_page'],
 	'S_COL_WIDTH' => (100 / $album_config['cols_per_page']) . '%',
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 	'L_VIEW' => $lang['View'],
 	'L_PIC_CAT' => $lang['Pic_Cat'],

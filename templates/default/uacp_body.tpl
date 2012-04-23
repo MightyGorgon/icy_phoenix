@@ -1,14 +1,13 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-// Should really check the browser to stop this whining ...
+<script type="text/javascript">//<![CDATA[
 function select_switch(status)
 {
-	for (i = 0; i < document.attach_list.length; i++)
-	{
-		document.attach_list.elements[i].checked = status;
-	}
+	$("[type='checkbox']").each(function(index, element) {
+		element.checked = status;
+	});
 }
+//]]>
 </script>
 
 <form method="post" name="attach_list" action="{S_MODE_ACTION}">
