@@ -903,12 +903,6 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	}
 
 	// Mighty Gorgon - Pic Size - BEGIN
-	$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
-	$pic_thumbnail_path = $pic_info['thumbnail_m_fullpath'];
-	$pic_thumbnail_size = @getimagesize($pic_thumbnail_path);
-	$pic_thumbnail_width = $pic_thumbnail_size[0];
-	$pic_thumbnail_height = $pic_thumbnail_size[1];
-
 	$pic_fullpath = ALBUM_UPLOAD_PATH . $thispic['pic_filename'];
 	$pic_size = @getimagesize($pic_fullpath);
 	$pic_width = $pic_size[0];
@@ -919,10 +913,10 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	if (($album_config['show_exif'] == 1) && (function_exists('exif_read_data')))
 	{
 		//echo(function_exists(exif_read_data));
-		$template->assign_block_vars('switch_exif_enabled', array());
 		$xif = @exif_read_data($pic_fullpath, 0, true);
 		if (!empty($xif[IFD0]) || !empty($xif[EXIF]))
 		{
+			$template->assign_block_vars('switch_exif_enabled', array());
 			include_once(ALBUM_MOD_PATH . 'album_exif_info.' . PHP_EXT);
 		}
 	}
@@ -1016,8 +1010,8 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'L_PIC_DETAILS' => $lang['Pic_Details'],
 		'L_PIC_SIZE' => $lang['Pic_Size'],
 		'L_PIC_TYPE' => $lang['Pic_Type'],
-		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $pic_thumbnail_height,
-		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $pic_thumbnail_width,
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $album_config['midthumb_height'],
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $album_config['midthumb_width'],
 		'PIC_SIZE' => $pic_width . ' x ' . $pic_height . ' (' . intval($pic_filesize/1024) . 'KB)',
 		'PIC_TYPE' => strtoupper(substr($thispic['pic_filename'], strlen($thispic['pic_filename']) - 3, 3)),
 		// Mighty Gorgon - Pic Size - END
