@@ -271,7 +271,7 @@ $num_polls = $db->sql_numrows($result);
 // Pagination routine
 if ($num_polls > 0)
 {
-	$pagination = generate_pagination('admin_voting.' . PHP_EXT . '?mode=' . $sort_field . '&amp;order=' . $sort_order, $num_polls, $config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_voting.' . PHP_EXT . '?mode=' . $sort_field . '&amp;order=' . $sort_order, $num_polls, $config['topics_per_page'], $start) . '&nbsp;';
 }
 
 $template->assign_vars(array(

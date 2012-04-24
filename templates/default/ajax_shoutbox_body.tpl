@@ -7,7 +7,13 @@
 <!-- INCLUDE ajax_shoutbox_html_js.tpl -->
 
 <!-- BEGIN view_shoutbox -->
-<span id="notify" style="height: 0px;">&nbsp;</span>
+
+<!-- OLD notify code... commented out... let's wait HTML 5! -->
+<!-- <span id="notify" style="height: 0px;">&nbsp;</span> -->
+
+<!-- USING jPlayer -->
+<div id="ac_notify"></div>
+
 <div align="center">
 	<div class="chat-box" align="center">
 		<div id="ajax_chat_h" style="display: none;">
@@ -46,13 +52,14 @@
 		<!-- BEGIN shout_allowed -->
 		<!-- END shout_allowed -->
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-		<script type="text/javascript">//<![CDATA[
+		<script type="text/javascript">
+		// <![CDATA[
 		tmp = 'ajax_chat';
 		if(GetCookie(tmp) == '2')
 		{
 			ShowHide('ajax_chat','ajax_chat_h','ajax_chat');
 		}
-		//]]>
+		// ]]>
 		</script>
 		</div>
 	</div>

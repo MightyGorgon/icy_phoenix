@@ -901,6 +901,10 @@ if (($mode != 'topten') || ($users_per_page < 10))
 {
 	$pagination = generate_pagination(CMS_PAGE_MEMBERLIST . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;users_per_page=' . $users_per_page . (!empty($alphanum) ? '&amp;alphanum=' . htmlspecialchars($alphanum) : ''), $total_users, $users_per_page, $start);
 }
+else
+{
+	$total_users = 10;
+}
 
 $template->assign_vars(array(
 	'PAGINATION' => $pagination,

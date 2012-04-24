@@ -62,12 +62,16 @@ function album_generate_config_settings_box($config_data)
 		'ALBUM_CATEGORY_SORTING_ASC' => ($new['album_category_sorting_direction'] == 'ASC') ? 'checked="checked"' : '',
 		'ALBUM_CATEGORY_SORTING_DESC' => ($new['album_category_sorting_direction'] == 'DESC') ? 'checked="checked"' : '',
 
-		'ALBUM_PICTURE_SORTING_TIME' => ($new['sort_method'] == 'pic_time') ? 'checked="checked"' : '',
-		'ALBUM_PICTURE_SORTING_TITLE' => ($new['sort_method'] == 'pic_title') ? 'checked="checked"' : '',
-		'ALBUM_PICTURE_SORTING_VIEW' => ($new['sort_method'] == 'pic_view_count') ? 'checked="checked"' : '',
+		'SORT_TIME' => ($new['sort_method'] == 'pic_time') ? 'selected="selected"' : '',
+		'SORT_PIC_TITLE' => ($new['sort_method'] == 'pic_title') ? 'selected="selected"' : '',
+		'SORT_USERNAME' => ($new['sort_method'] == 'pic_user_id') ? 'selected="selected"' : '',
+		'SORT_VIEW' => ($new['sort_method'] == 'pic_view_count') ? 'selected="selected"' : '',
+		'SORT_RATING' => ($new['sort_method'] == 'rating') ? 'selected="selected"' : '',
+		'SORT_COMMENTS' => ($new['sort_method'] == 'comments') ? 'selected="selected"' : '',
+		'SORT_NEW_COMMENT' => ($new['sort_method'] == 'new_comment') ? 'selected="selected"' : '',
 
-		'ALBUM_PICTURE_SORTING_ASC' => ($new['sort_order'] == 'ASC') ? 'checked="checked"' : '',
-		'ALBUM_PICTURE_SORTING_DESC' => ($new['sort_order'] == 'DESC') ? 'checked="checked"' : '',
+		'SORT_ASC' => ($new['sort_order'] == 'ASC') ? 'selected="selected"' : '',
+		'SORT_DESC' => ($new['sort_order'] == 'DESC') ? 'selected="selected"' : '',
 
 		'SET_MEMORY' => $new['set_memory'],
 
@@ -182,13 +186,18 @@ function album_generate_config_settings_box($config_data)
 		'L_ALBUM_CATEGORY_SORTING_DESC' => $lang['Album_Category_Sorting_Desc'],
 
 		'L_ALBUM_PICTURE_SORTING' => $lang['Album_Picture_Sorting'],
-		'L_ALBUM_PICTURE_SORTING_TIME' => $lang['Album_Picture_Sorting_Time'],
-		'L_ALBUM_PICTURE_SORTING_TITLE' => $lang['Album_Picture_Sorting_Title'],
-		'L_ALBUM_PICTURE_SORTING_VIEW' => $lang['Album_Picture_Sorting_View'],
+		'L_TIME' => $lang['Time'],
+		'L_PIC_TITLE' => $lang['Pic_Title'],
+		'L_USERNAME' => $lang['SORT_USERNAME'],
+		'L_VIEW' => $lang['View'],
+		'L_RATING' => $lang['Rating'],
+		'L_COMMENTS' => $lang['Comments'],
+		'L_NEW_COMMENT' => $lang['New_Comment'],
 
 		'L_ALBUM_PICTURE_DIRECTION' => $lang['Album_Picture_Sorting_Direction'],
-		'L_ALBUM_PICTURE_SORTING_ASC' => $lang['Album_Picture_Sorting_Asc'],
-		'L_ALBUM_PICTURE_SORTING_DESC' => $lang['Album_Picture_Sorting_Desc'],
+		'L_DEFAULT_SORT_ORDER' => $lang['Default_Sort_Order'],
+		'L_ASC' => $lang['Sort_Ascending'],
+		'L_DESC' => $lang['Sort_Descending'],
 
 		'L_SHOW_RECENT_IN_SUBCATS' => $lang['Show_Recent_In_Subcats'],
 		'L_SHOW_RECENT_INSTEAD_OF_NOPICS' => $lang['Show_Recent_Instead_of_NoPics'],

@@ -20,9 +20,9 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /*
-	From php.net comments
-	by ivanmaz(remove) at mech dot math dot msu dot su
-	UTF8 to Cyrillic Win-1251 Convertor
+* From php.net comments
+* by ivanmaz(remove) at mech dot math dot msu dot su
+* UTF8 to Cyrillic Win-1251 Convertor
 */
 function utf8dec($s)
 {
@@ -68,7 +68,7 @@ function utf8dec($s)
 			$out .= $c1;
 		}
 	}
- return $out;
+	return $out;
 }
 
 // A fast way to stop running the script and displaying the xml response
@@ -170,7 +170,7 @@ function remove_session(&$error_msg)
 {
 	global $db, $user, $user_ip;
 	$guest_sql = '';
- 
+
 	// Guest are reconized by their IP
 	if (!$user->data['session_logged_in'])
 	{

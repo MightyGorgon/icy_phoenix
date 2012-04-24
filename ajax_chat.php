@@ -64,7 +64,7 @@ if ($chat_room !== '')
 		$chat_last_user = $chat_user;
 	}
 	$chat_room = implode('|', $chat_room_users);
-	if ($user->data['user_level'] != ADMIN && !in_array($user->data['user_id'], $chat_room_users))
+	if (($user->data['user_level'] != ADMIN) && !in_array($user->data['user_id'], $chat_room_users))
 	{
 		// Current user is not in that chat room
 		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);

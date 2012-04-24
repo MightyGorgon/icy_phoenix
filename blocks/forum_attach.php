@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if (!function_exists('cms_block_forum_attach'))
+if(!function_exists('cms_block_forum_attach'))
 {
 	function cms_block_forum_attach()
 	{
@@ -60,6 +60,8 @@ if (!function_exists('cms_block_forum_attach'))
 		);
 
 		// $only_auth_view must have the opposite value of $cms_config_vars['md_ignore_auth_view'][$block_id]
+		// Suggested by JHL - To Be Verified!
+		//$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) ? true : false);
 		$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) || ($cms_config_vars['md_ignore_auth_view'][$block_id] == true)) ? false : true;
 		if ($cms_config_vars['md_single_post_retrieve'][$block_id])
 		{
@@ -73,6 +75,8 @@ if (!function_exists('cms_block_forum_attach'))
 				$single_post_id = $cms_config_vars['md_single_post_id'][$block_id];
 			}
 
+			// Mighty Gorgon: edited by JHL, I still need to check the impacts of this amendment
+			//$fetchposts = $class_topics->fetch_posts($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, false, true, $only_auth_view);
 			$fetchposts = $class_topics->fetch_posts($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, 0, true, $only_auth_view);
 		}
 		else
@@ -80,7 +84,7 @@ if (!function_exists('cms_block_forum_attach'))
 			$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_posts_forum_id'][$block_id], $cms_config_vars['md_num_posts'][$block_id], $cms_config_vars['md_posts_length'][$block_id], $cms_config_vars['md_posts_show_portal'][$block_id], $cms_config_vars['md_posts_random'][$block_id], false, $only_auth_view);
 		}
 
-		for ($i = 0; $i < sizeof($fetchposts); $i++)
+		for($i = 0; $i < sizeof($fetchposts); $i++)
 		{
 			init_display_post_attachments($fetchposts[$i]['topic_attachment'], $fetchposts[$i], true, $block_id);
 			$open_bracket = '';

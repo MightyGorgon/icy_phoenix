@@ -964,7 +964,9 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	if ($sub_forum > 0)
 	{
 		$pull_down = false;
-		if ( ($real_level == 0) && ( ($sub_forum == 1) || ($sub_forum == 3) ) ) // JHL 09/March/2012
+		// JHL 2012/03/09
+		//if (($real_level == 0) && ($sub_forum == 1))
+		if (($real_level == 0) && (($sub_forum == 1) || ($sub_forum == 3)))
 		{
 			$pull_down = true;
 		}
@@ -1122,7 +1124,9 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 			// links to sub-levels
 			$links = '';
-			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && ((intval($config['sub_level_links']) > 0) && ($sub_forum != 3))) // JHL 09/March/2012
+			// JHL 2012/03/09
+			//if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && (intval($config['sub_level_links']) > 0))
+			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && ((intval($config['sub_level_links']) > 0) && ($sub_forum != 3)))
 			{
 				for ($j = 0; $j < sizeof($tree['sub'][$cur]); $j++) if ($tree['auth'][$tree['sub'][$cur][$j]]['auth_view'])
 				{
@@ -1282,7 +1286,8 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				*/
 				'FORUM_NAME' => $title,
 				'FORUM_DESC' => $desc,
-				'FORUM_TYPE' => ($type == POST_FORUM_URL) ? 'forum' : 'category', // JHL 09/March/2012
+				// JHL 2012/03/09
+				'FORUM_TYPE' => ($type == POST_FORUM_URL) ? 'forum' : 'category',
 				'POSTS' => $data['tree.forum_posts'],
 				'TOPICS' => $data['tree.forum_topics'],
 				'ONLINE' => (($config['show_forums_online_users'] == true) ? ('<br />' . $lang['Online'] . ':&nbsp;' . $data['tree.forum_online']) : ''),

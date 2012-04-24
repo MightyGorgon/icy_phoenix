@@ -1,5 +1,6 @@
 <!-- BEGIN view_shoutbox -->
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 // Based in part on the XHTML live Chat (http://www.plasticshore.com)
 // This script is published under a creative commons license
@@ -21,7 +22,8 @@ var ROOM_PREFIX = "{L_ROOM_PREFIX}";
 var oldOnLoad = window.onload;
 if (typeof oldOnLoad == 'function')
 {
-	window.onload = function(evt) {
+	window.onload = function(evt)
+	{
 		oldOnLoad(evt);
 		chatOnLoad(evt);
 		initChat(evt);
@@ -29,7 +31,8 @@ if (typeof oldOnLoad == 'function')
 }
 else
 {
-	window.onload = function(evt) {
+	window.onload = function(evt)
+	{
 		chatOnLoad(evt);
 		initChat(evt);
 	};
@@ -39,7 +42,8 @@ else
 var oldOnUnload = window.onunload;
 if (typeof oldOnUnload == 'function')
 {
-	window.onunload = function(evt) {
+	window.onunload = function(evt)
+	{
 		leaveChat(evt);
 		chatOnUnload(evt);
 		oldOnUnload(evt);
@@ -47,7 +51,8 @@ if (typeof oldOnUnload == 'function')
 }
 else
 {
-	window.onunload = function(evt) {
+	window.onunload = function(evt)
+	{
 		leaveChat(evt);
 		chatOnUnload(evt);
 	};
@@ -56,7 +61,8 @@ else
 var oldOnBeforeUnload = window.onbeforeunload;
 if (typeof oldOnBeforeUnload == 'function')
 {
-	window.onbeforeunload = function(evt) {
+	window.onbeforeunload = function(evt)
+	{
 		leaveChat(evt);
 		chatOnBeforeUnload(evt);
 		oldOnBeforeUnload(evt);		
@@ -64,7 +70,8 @@ if (typeof oldOnBeforeUnload == 'function')
 }
 else
 {
-	window.onbeforeunload = function(evt) {
+	window.onbeforeunload = function(evt)
+	{
 		leaveChat(evt);
 		chatOnBeforeUnload(evt);
 	};
@@ -254,7 +261,7 @@ var AjaxContext = {
 				this.shoutsParsed = true;
 				var link = shout.shouter_link;
 				shout.shouter_name = (link != "-1") ? "<a href=\"" + link + "\" {S_TARGET}" + shout.shouter_color + ">" + shout.shouter + "<\/a>" : shout.shouter;
-				var roomId = (typeof shout.room == 'string' && shout.room != '') ? shout.room.replace(/\|/g, '-') : 'all';
+				var roomId = (typeof shout.room == 'string' && shout.room != '') ? shout.room.replace(/\|/g, '-') : 'public';
 				var tableId = 'outputList-' + roomId;
 				var table = $('#' + tableId);
 				if (!table.length)
@@ -286,7 +293,7 @@ var AjaxContext = {
 		for (var id in this.currentUsers)
 		{
 			if (this.currentUsers.hasOwnProperty(id))
-			{  
+			{
 				this.currentUsers[id].valid = false;
 			}
 		}
@@ -528,6 +535,32 @@ function leaveChat(evt)
 	$.ajax(context);
 	return true;
 }
-//]]>
+// ]]>
 </script>
+
+<!-- JPLAYER - START -->
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_jplayer_compressed.js"></script>
+<script type="text/javascript">
+// <![CDATA[
+$(document).ready(function(){
+	// Local copy of jQuery selectors, for performance.
+	var ac_jPlayer = $("#ac_notify");
+
+	// Instance jPlayer
+	ac_jPlayer.jPlayer({
+		ready: function () {
+			ac_jPlayer.jPlayer("setMedia", {
+				mp3: "{FULL_SITE_PATH}notify.mp3",
+				wav: "{FULL_SITE_PATH}notify.wav"
+			});
+		},
+		supplied: "mp3, wav",
+		swfPath: '{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jplayer.swf',
+		wmode: "window"
+	});
+});
+// ]]>
+</script>
+<!-- JPLAYER - END -->
+
 <!-- END view_shoutbox -->

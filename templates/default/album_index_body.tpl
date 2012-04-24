@@ -19,17 +19,17 @@
 	<tr>
 		<!-- BEGIN pic_detail -->
 		<td class="row2 row-center">
-			<span class="gensmall">
+			<div class="gensmall">
 				{L_PIC_TITLE}: <a href="{personal_picrow.pic_detail.U_PIC_SP}">{personal_picrow.pic_detail.PIC_TITLE}</a><br />
 				{L_DOWNLOAD}: <a href="{personal_picrow.pic_detail.U_PIC_DL}">{personal_picrow.pic_detail.PIC_TITLE}</a><br />
 				{L_PIC_ID}: {personal_picrow.pic_detail.PIC_ID}<br />
 				{L_POSTED}: {personal_picrow.pic_detail.TIME}<br />
 				{L_VIEW}: {picrpersonal_picrowow.pic_detail.VIEW}<br />
-				{personal_picrow.pic_detail.RATING}
-				{personal_picrow.pic_detail.COMMENTS}
-				{personal_picrow.pic_detail.IP}
+				{personal_picrow.pic_detail.RATING}<br />
+				{personal_picrow.pic_detail.COMMENTS}<br />
+				{personal_picrow.pic_detail.IP}<br />
 				{personal_picrow.pic_detail.EDIT} {personal_picrow.pic_detail.DELETE} {personal_picrow.pic_detail.LOCK}
-			</span>
+			</div>
 		</td>
 		<!-- END pic_detail -->
 	</tr>
@@ -84,17 +84,17 @@
 	<tr>
 		<!-- BEGIN recent_detail -->
 		<td class="row2 row-center">
-			<span class="gensmall">
+			<div class="gensmall">
 				{L_POSTER}: {recent_pics_block.recent_pics.recent_detail.POSTER}<br />
 				{L_PIC_TITLE}: <a href="{recent_pics_block.recent_pics.recent_detail.U_PIC_SP}">{recent_pics_block.recent_pics.recent_detail.PIC_TITLE}</a><br />
 				{L_DOWNLOAD}: <a href="{recent_pics_block.recent_pics.recent_detail.U_PIC_DL}">{recent_pics_block.recent_pics.recent_detail.PIC_TITLE}</a><br />
 				{L_PIC_ID}: {recent_pics_block.recent_pics.recent_detail.PIC_ID}<br />
 				{L_POSTED}: {recent_pics_block.recent_pics.recent_detail.TIME}<br />
 				{L_VIEW}: {recent_pics_block.recent_pics.recent_detail.VIEW}<br />
-				{recent_pics_block.recent_pics.recent_detail.RATING}
-				{recent_pics_block.recent_pics.recent_detail.COMMENTS}
-				{recent_pics_block.recent_pics.recent_detail.IP}
-			</span>
+				{recent_pics_block.recent_pics.recent_detail.RATING}<br />
+				{recent_pics_block.recent_pics.recent_detail.COMMENTS}<br />
+				{recent_pics_block.recent_pics.recent_detail.IP}<br />
+			</div>
 		</td>
 		<!-- END recent_detail -->
 	</tr>
@@ -123,17 +123,17 @@
 	<tr>
 		<!-- BEGIN highest_detail -->
 		<td class="row2 row-center">
-			<span class="gensmall">
+			<div class="gensmall">
 				{L_POSTER}: {highest_pics_block.highest_pics.highest_detail.POSTER}<br />
 				{L_PIC_TITLE}: <a href="{highest_pics_block.highest_pics.highest_detail.U_PIC_SP}">{highest_pics_block.highest_pics.highest_detail.PIC_TITLE}</a><br />
 				{L_DOWNLOAD}: <a href="{highest_pics_block.highest_pics.highest_detail.U_PIC_DL}">{highest_pics_block.highest_pics.highest_detail.PIC_TITLE}</a><br />
 				{L_PIC_ID}: {highest_pics_block.highest_pics.highest_detail.PIC_ID}<br />
 				{L_POSTED}: {highest_pics_block.highest_pics.highest_detail.TIME}<br />
 				{L_VIEW}: {highest_pics_block.highest_pics.highest_detail.VIEW}<br />
-				{highest_pics_block.highest_pics.highest_detail.RATING}
-				{highest_pics_block.highest_pics.highest_detail.COMMENTS}
-				{highest_pics_block.highest_pics.highest_detail.IP}
-			</span>
+				{highest_pics_block.highest_pics.highest_detail.RATING}<br />
+				{highest_pics_block.highest_pics.highest_detail.COMMENTS}<br />
+				{highest_pics_block.highest_pics.highest_detail.IP}<br />
+			</div>
 		</td>
 	<!-- END highest_detail -->
 	</tr>
@@ -162,17 +162,17 @@
 	<tr>
 		<!-- BEGIN mostviewed_detail -->
 		<td class="row2 row-center">
-			<span class="gensmall">
+			<div class="gensmall">
 				{L_POSTER}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.POSTER}<br />
 				{L_PIC_TITLE}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_SP}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_TITLE}</a><br />
 				{L_DOWNLOAD}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_DL}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_TITLE}</a><br />
 				{L_PIC_ID}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_ID}<br />
 				{L_POSTED}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.TIME}<br />
 				{L_VIEW}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.VIEW}<br />
-				{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.RATING}
-				{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS}
-				{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP}
-			</span>
+				{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.RATING}<br />
+				{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS}<br />
+				{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP}<br />
+			</div>
 		</td>
 		<!-- END mostviewed_detail -->
 	</tr>
@@ -201,17 +201,17 @@
 	<tr>
 		<!-- BEGIN rand_detail -->
 		<td class="row2 row-center">
-			<span class="gensmall">
+			<div class="gensmall">
 				{L_POSTER}: {random_pics_block.rand_pics.rand_detail.POSTER}<br />
 				{L_PIC_TITLE}: <a href="{random_pics_block.rand_pics.rand_detail.U_PIC_SP}">{random_pics_block.rand_pics.rand_detail.PIC_TITLE}</a><br />
 				{L_DOWNLOAD}: <a href="{random_pics_block.rand_pics.rand_detail.U_PIC_DL}">{random_pics_block.rand_pics.rand_detail.PIC_TITLE}</a><br />
 				{L_PIC_ID}: {random_pics_block.rand_pics.rand_detail.PIC_ID}<br />
 				{L_POSTED}: {random_pics_block.rand_pics.rand_detail.TIME}<br />
 				{L_VIEW}: {random_pics_block.rand_pics.rand_detail.VIEW}<br />
-				{random_pics_block.rand_pics.rand_detail.RATING}
-				{random_pics_block.rand_pics.rand_detail.COMMENTS}
-				{random_pics_block.rand_pics.rand_detail.IP}
-			</span>
+				{random_pics_block.rand_pics.rand_detail.RATING}<br />
+				{random_pics_block.rand_pics.rand_detail.COMMENTS}<br />
+				{random_pics_block.rand_pics.rand_detail.IP}<br />
+			</div>
 		</td>
 		<!-- END rand_detail -->
 	</tr>

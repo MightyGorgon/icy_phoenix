@@ -191,7 +191,10 @@ function select_style_lang_link($select_type)
 	else
 	{
 		$full_link = '';
-		@include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+		if (!function_exists('language_select'))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+		}
 		$lang_installed = language_select(LANG_URL, $config['default_lang'], 'language', true);
 		while (list($displayname) = @each($lang_installed))
 		{

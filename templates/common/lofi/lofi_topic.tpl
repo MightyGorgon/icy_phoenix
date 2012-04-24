@@ -40,7 +40,7 @@ for ($postrow_i = 0; $postrow_i < $postrow_count; $postrow_i++)
 if($can_reply)
 {
 	// quick reply button
-		$this->vars['LOFI_QUICK_REPLY'] = '<a href="javascript:ShowHide(\'quick_reply\',\'quick_reply2\');" class="nav">' . $lang['quick_lofi'] . '</a>';
+		$this->vars['LOFI_QUICK_REPLY'] = '<a href="javascript:showQuickEditor();" class="nav">' . $lang['quick_lofi'] . '</a>';
 	// quick reply form
 	ob_start();
 ?>

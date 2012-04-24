@@ -2253,7 +2253,7 @@ function setup_basic_lang()
 */
 function setup_extra_lang($lang_files_array, $lang_base_path = '', $lang_override = '')
 {
-	global $config, $lang, $faq, $mtnc;
+	global $config, $lang, $images, $faq, $mtnc;
 
 	if (empty($lang_files_array))
 	{
@@ -3067,6 +3067,7 @@ function generate_topic_pagination($forum_id, $topic_id, $replies, $per_page = 0
 		$topic_pagination['base'] = '&nbsp;';
 		$topic_pagination['full'] = '&nbsp;';
 	}
+
 	return $topic_pagination;
 }
 
@@ -3846,7 +3847,7 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 		$im_lang = !empty($im_lang) ? $im_lang : (!empty($available_im[$im_type]['lang']) ? $lang[$available_im[$im_type]['lang']] : '');
 	}
 
-	$link_title = ($im_type == 'chat') ? '' : ' - ' . $im_id;
+	$link_title = ($im_type == 'chat') ? '' : (' - ' . $im_id);
 	$link_title = $im_lang . $link_title;
 	$link_content = !empty($im_img) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '"' . (empty($im_url) ? '' : (' title="' . $im_id . '"')) . ' />') : $im_lang;
 	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '" title="' . $link_title . '">' . $link_content . '</a>');
@@ -4374,7 +4375,7 @@ function page_header($title = '', $parse_template = false)
 		}
 
 		$u_login_logout = CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $user->data['session_id'];
-		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ')';
+		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ') ';
 		$l_login_logout2 = $lang['Logout'];
 		$s_last_visit = create_date($config['default_dateformat'], $user->data['user_lastvisit'], $config['board_timezone']);
 
@@ -4890,12 +4891,9 @@ function page_header($title = '', $parse_template = false)
 		'PRIVMSG_IMG' => $icon_pm,
 		'NEW_PM_SWITCH' => $new_pm_switch,
 
-
-		/* JHL TEMP - waiting for ACP configuration flag
 		'PRIVATE_CHAT_IMG' => $icon_private_chat,
 		'U_PRIVATE_CHAT' => $u_private_chat,
 		'NEW_PRIVATE_CHAT_SWITCH' => $new_private_chat_switch,
-		*/
 
 		'L_USERNAME' => $lang['Username'],
 		'L_PASSWORD' => $lang['Password'],
@@ -6229,6 +6227,126 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	exit_handler();
 
 	exit;
+}
+
+//
+// Truncates HTML strings cleanly
+// Taken from code in http://stackoverflow.com/questions/1193500/php-truncate-html-ignoring-tags
+//
+function truncate_html_string($text, $length, $ellipsis = '...')
+{
+	if (strlen(preg_replace(array('/<.*?>/', '/&#?[a-zA-Z0-9]+;/'), array('', ' '), $text)) <= $length)
+	{
+		return $text;
+	}
+
+	$printed_length = 0;
+	$position = 0;
+	$tags = array();
+	$clean_text = '';
+	while ($printed_length < $length && preg_match('{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}', $text, $match, PREG_OFFSET_CAPTURE, $position))
+	{
+		list($tag, $tag_position) = $match[0];
+
+		// append text leading up to the tag.
+		$str = substr($text, $position, $tag_position - $position);
+		if ($printed_length + strlen($str) > $length)
+		{
+			break;
+		}
+
+		$clean_text .= $str;
+		$printed_length += strlen($str);
+
+		if ($tag[0] == '&')
+		{
+			// Handle the entity.
+			$clean_text .= $tag;
+			$printed_length++;
+		}
+		else
+		{
+			// Handle the tag.
+			$tag_name = $match[1][0];
+			if ($tag[1] == '/')
+			{
+				// This is a closing tag.
+
+				$opening_tag = array_pop($tags);
+				assert($opening_tag == $tag_name); // check that tags are properly nested.
+
+				$clean_text .= $tag;
+			}
+			else if ($tag[strlen($tag) - 2] == '/')
+			{
+				// Self-closing tag.
+				$clean_text .= $tag;
+			}
+			else
+			{
+				// Opening tag.
+				$clean_text .= $tag;
+				$tags[] = $tag_name;
+			}
+		}
+
+		// Continue after the tag.
+		$position = $tag_position + strlen($tag);
+	}
+
+	// Print any remaining text.
+	if ($printed_length < $length && $position < strlen($text))
+	{
+		$max_length = $length - $printed_length;
+		$utf8_length = 0;
+		while ($utf8_length < $max_length)
+		{
+			$char = substr($text, $position + $utf8_length, 1);
+			// UTF-8 character encoding - BEGIN
+			$code = ord($char);
+			if ($code >= 0x80)
+			{
+				if ($code < 0xE0)
+				{
+					// Two byte
+					if (($max_length - $utf8_length) >= 2)
+					{
+						$utf8_length = $utf8_length + 2;
+					}
+					else
+					{
+						break;
+					}
+				}
+				elseif ($code1 < 0xF0)
+				{
+					// Three byte
+					if (($max_length - $utf8_length) >= 3)
+					{
+						$utf8_length = $utf8_length + 3;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				$utf8_length = $utf8_length + 1;
+			}
+			// UTF-8 character encoding - END
+		}
+		$clean_text .= substr($text, $position, $utf8_length);
+	}
+	$clean_text .= $ellipsis;
+
+	// Close any open tags.
+	while (!empty($tags))
+	{
+		$clean_text .= '</' . array_pop($tags) . '>';
+	}
+	return $clean_text;
 }
 
 ?>

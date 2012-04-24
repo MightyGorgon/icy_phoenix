@@ -1368,7 +1368,6 @@ function album_display_index($user_id, $cur_cat_id = ALBUM_ROOT_CATEGORY, $show_
 
 			}
 		}
-
 		$template->assign_var_from_handle('ALBUM_BOARD_INDEX', 'album');
 	}
 

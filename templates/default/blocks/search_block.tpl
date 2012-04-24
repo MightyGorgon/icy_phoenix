@@ -1,4 +1,5 @@
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function checkSearch()
 {
 	if (document.search_block.search_engine.value == 'google')
@@ -11,7 +12,7 @@ function checkSearch()
 		return true;
 	}
 }
-//]]>
+// ]]>
 </script>
 
 <form name="search_block" method="post" action="{U_SEARCH}" onsubmit="return checkSearch()">

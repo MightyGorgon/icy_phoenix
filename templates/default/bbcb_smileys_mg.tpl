@@ -7,14 +7,9 @@
 	<!-- END smilies_col -->
 </tr>
 <!-- END smilies_row -->
-<tr>
-	<td class="cat" colspan="{S_SMILIES_COLSPAN}" align="center">
-		<!-- BEGIN switch_smilies_extra -->
-		<input type="button" class="liteoption" name="smiles_button" value="{L_MORE_SMILIES}" onclick="openAllSmiles();" /><br />
-		<!-- END switch_smilies_extra -->
-		<input type="button" class="liteoption" value="{L_SMILEY_CREATOR}" style="width: 135px" onclick="window.open('{U_SMILEY_CREATOR}','_phpbbcreatesmileys','height=400,width=500,resizable=yes,scrollbars=yes'); return false;" />
-	</td>
-</tr>
+<!-- BEGIN switch_smilies_extra -->
+<tr><td class="cat" colspan="{S_SMILIES_COLSPAN}" align="center"><input type="button" class="liteoption" name="smiles_button" value="{L_MORE_SMILIES}" onclick="openAllSmiles();" /><br /><input type="button" class="liteoption" value="{L_SMILEY_CREATOR}" style="width: 135px" onclick="window.open('{U_SMILEY_CREATOR}','_phpbbcreatesmileys','height=400,width=500,resizable=yes,scrollbars=yes'); return false;" /></td></tr>
+<!-- END switch_smilies_extra -->
 </table>
 
 <!-- BEGIN switch_sm_pic_upload -->

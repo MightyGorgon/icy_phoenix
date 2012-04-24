@@ -453,14 +453,17 @@ class class_topics
 
 		if ($sort_mode == 1)
 		{
+			// Random
 			$order_sql = 'RAND()';
 		}
 		elseif ($sort_mode == 2)
 		{
+			// Alphabetical
 			$order_sql = 't.topic_title ASC';
 		}
 		else
 		{
+			// Recent
 			$order_sql = 't.topic_time DESC';
 		}
 
@@ -508,11 +511,7 @@ class class_topics
 				$posts[$i]['enable_html'] = $row['enable_html'];
 				$posts[$i]['enable_smilies'] = $row['enable_smilies'];
 				$posts[$i]['enable_autolinks_acronyms'] = $row['enable_autolinks_acronyms'];
-				if ($text_length >= 0)
-				{
-					$posts[$i]['post_text'] = $row['post_text'];
-					$message = $posts[$i]['post_text'];
-				}
+				$posts[$i]['post_text'] = $row['post_text'];
 				$posts[$i]['forum_id'] = $row['forum_id'];
 				$posts[$i]['topic_id'] = $row['topic_id'];
 				$posts[$i]['topic_first_post_id'] = $row['topic_first_post_id'];
@@ -530,6 +529,7 @@ class class_topics
 
 				if ($text_length >= 0)
 				{
+					$message = $posts[$i]['post_text'];
 					$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
 
 					$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
@@ -543,21 +543,13 @@ class class_topics
 						$posts[$i]['striped'] = 1;
 					}
 
-					if ($message_compiled === false)
+					$posts[$i]['post_text'] = ($message_compiled === false) ? $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags) : $message_compiled;
+
+					if (!empty($clean_tags))
 					{
-						$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
-					}
-					else
-					{
-						$posts[$i]['post_text'] = $message_compiled;
+						$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? truncate_html_string($posts[$i]['post_text'], $text_length) : $posts[$i]['post_text'];
 					}
 
-					if ($clean_tags == true)
-					{
-						$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? (substr($posts[$i]['post_text'], 0, $text_length) . ' ...') : $posts[$i]['post_text'];
-					}
-
-					$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
 					$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
 
 					//Acronyms, AutoLinks - BEGIN
@@ -568,6 +560,8 @@ class class_topics
 					}
 					//Acronyms, AutoLinks - END
 				}
+				$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
+
 				$i++;
 			}
 			while ($row = $db->sql_fetchrow($result));

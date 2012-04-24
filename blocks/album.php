@@ -305,7 +305,7 @@ if(!function_exists('cms_block_album'))
 			'L_POSTER' => $lang['Poster'],
 			'L_POSTED' => $lang['Posted'],
 			'U_ALBUM' => append_sid('album.' . PHP_EXT),
-			'L_ALBUM' => $lang['Album'],
+			'L_ALBUM' => $lang['Album']
 			)
 		);
 

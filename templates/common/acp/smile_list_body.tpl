@@ -51,7 +51,7 @@
 <div id="sort-info-box" class="row-center" style="position: fixed; top: 10px; right: 10px; z-index: 1; background: none; border: none; width: 300px; padding: 3px;"></div>
 
 <script type="text/javascript">
-//<![CDATA[
+// <![CDATA[
 //var box_begin = '<div id="result-box" style="height: 16px; border: solid 1px #228822; background: #77dd99;"><span class="text_green">';
 //var box_end = '<\/span><\/div>';
 var box_begin = '<div id="result-box" class="rmbox rmb-green"><p class="rmb-center">';
@@ -86,5 +86,5 @@ function update_order()
 {
 	$.post(page_url, 'mode=update_smileys_order&' + smileys.sortable('serialize') + '&sid=' + S_SID);
 }
-//]]>
+// ]]>
 </script>

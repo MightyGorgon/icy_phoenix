@@ -1061,12 +1061,20 @@ CREATE TABLE `phpbb_referers` (
 
 
 
+########################################
+##              BUILD 081             ##
+########################################
+ALTER TABLE `phpbb_album` CHANGE `pic_user_ip` `pic_user_ip` varchar(40) NOT NULL DEFAULT '';
+UPDATE `phpbb_album` ip SET ip.pic_user_ip = INET_NTOA(CONV(ip.pic_user_ip, 16, 10));
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.27.80' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '1.3.28.81' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

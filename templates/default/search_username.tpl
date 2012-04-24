@@ -4,7 +4,8 @@
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <!-- ENDIF -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function refresh_username(selected_username)
 {
 	target_form_name = '{S_TARGET_FORM_NAME}';
@@ -22,7 +23,7 @@ function refresh_username(selected_username)
 	opener.focus();
 	window.close();
 }
-//]]>
+// ]]>
 </script>
 
 <form method="post" name="search" action="{S_SEARCH_ACTION}">

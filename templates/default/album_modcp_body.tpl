@@ -1,6 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function checkAll(field)
 {
 	$("[type='checkbox']").each(function(index, element) {
@@ -38,7 +39,7 @@ function checkSelected()
 	*/
 	return true;
 }
-//]]>
+// ]]>
 </script>
 
 <form name="modcp" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkSelected();">

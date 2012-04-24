@@ -1,4 +1,5 @@
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 function verifyUsername(username)
 {

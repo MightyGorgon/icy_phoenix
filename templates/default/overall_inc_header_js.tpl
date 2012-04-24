@@ -22,11 +22,11 @@
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_compressed.js" type="text/javascript"></script>
 <!-- ENDIF -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 // OS / BROWSER VARS - BEGIN
 // Check for Browser & Platform for PC & IE specific bits
 // More details from: http://www.mozilla.org/docs/web-developer/sniffer/browser_type.html
-
 var clientPC = navigator.userAgent.toLowerCase(); // Get client info
 var clientVer = parseInt(navigator.appVersion); // Get browser version
 
@@ -92,7 +92,7 @@ window.onunload = function()
 	}
 };
 
-//]]>
+// ]]>
 </script>
 
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ip_scripts.js"></script>
@@ -113,7 +113,8 @@ window.onunload = function()
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/highslide-ie6.css" type="text/css" />
 <![endif]-->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/highslide-full.packed.js"></script>
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 hs.graphicsDir = '{FULL_SITE_PATH}{T_COMMON_TPL_PATH}highslide/graphics/';
 hs.align = 'center';
 hs.transitions = ['expand', 'crossfade'];
@@ -145,16 +146,18 @@ hs.addSlideshow({
 		hideOnMouseOut: true
 	}
 });
-//]]>
+// ]]>
 </script>
 <!-- ENDIF -->
 
 <!-- IF S_AJAX_FEATURES -->
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 var ajax_core_defined = 0;
 var ajax_page_charset = '{S_CONTENT_ENCODING}';
-//]]>
+// ]]>
 </script>
+
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script>
 <!-- ENDIF -->
 

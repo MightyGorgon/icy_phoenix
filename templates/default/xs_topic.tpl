@@ -1,15 +1,15 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
-<script type="text/javascript">//<![CDATA[
-
+<script type="text/javascript">
+// <![CDATA[
 function openAllSmiles()
 {
 	smiles = window.open('{U_SMILEYS_MORE}', '_xs_smileys', 'width=600,height=400,resizable=yes,scrollbars=yes');
 	smiles.focus();
 	return false;
 }
-//]]>
+// ]]>
 </script>
 
 <!-- BEGIN postrow -->

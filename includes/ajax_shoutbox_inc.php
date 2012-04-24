@@ -60,7 +60,7 @@ if (!defined('AJAX_CHAT_ROOM'))
 			$chat_last_user = $chat_user;
 		}
 		$chat_room = implode('|', $chat_room_users);
-		if ($user->data['user_level'] != ADMIN && !in_array($user->data['user_id'], $chat_room_users))
+		if (($user->data['user_level'] != ADMIN) && !in_array($user->data['user_id'], $chat_room_users))
 		{
 			// Current user is not in that chat room
 			message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
@@ -273,7 +273,7 @@ if (!empty($action))
 				{
 					$template->assign_block_vars('shouts', array(
 						'ID' => $id,
-						'ROOM' => ($row[$x]['shout_room'] == '') ? 'all' : $row[$x]['shout_room'],
+						'ROOM' => ($row[$x]['shout_room'] == '') ? 'public' : $row[$x]['shout_room'],
 						'SHOUTER' => $shouter,
 						'SHOUTER_ID' => $row[$x]['user_id'],
 						'SHOUTER_COLOR' => $shouter_color,
@@ -287,7 +287,7 @@ if (!empty($action))
 				{
 					$json_shout = array(
 						'id' => $id,
-						'room' => ($row[$x]['shout_room'] == '') ? 'all' : $row[$x]['shout_room'],
+						'room' => ($row[$x]['shout_room'] == '') ? 'public' : $row[$x]['shout_room'],
 						'shouter' => $shouter,
 						'shouter_id' => $row[$x]['user_id'],
 						'shouter_color' => $shouter_color,
@@ -394,7 +394,7 @@ if (!empty($action))
 				}
 			}
 		}
-		
+
 		// Only if a name and a message have been provides the information is added to the db
 		if ($message != '')
 		{

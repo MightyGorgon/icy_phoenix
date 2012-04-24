@@ -362,7 +362,7 @@ $row 	= $db->sql_fetchrowset($r);
 if ($rows)
 	{
 $total 			= $rows;
-$pagination 	= generate_pagination($_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $order .'&amp;way='. $way .'&amp;sid='. $user->data['session_id'], $rows, 30, $start). '&nbsp;';
+$pagination 	= generate_pagination($_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $order .'&amp;way='. $way .'&amp;sid='. $user->data['session_id'], $rows, 30, $start) . '&nbsp;';
 	}
 else
 	$pagination = '&nbsp;';

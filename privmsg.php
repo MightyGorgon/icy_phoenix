@@ -1823,8 +1823,9 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 
 	/* Start Private Message Review By aUsTiN */
-	$post_to_review = request_var('p', '');
-  if ($post_to_review > 0)
+	//$post_to_review = $_GET['p'];
+	$post_to_review = request_var('p', 0);
+	if ($post_to_review > 0)
 	{
 		$q = "SELECT *
 				FROM " . PRIVMSGS_TABLE . "
@@ -1850,8 +1851,17 @@ elseif ($submit || $refresh || ($mode != ''))
 			$prv_msg_review = $lang['private_msg_review_error'];
 		}
 
-		$template->assign_block_vars('switch_prv_msg_review', array(
-			'MESSAGE' => $prv_msg_review,
+		if($_GET['mode'] == 'reply')
+		{
+			$block_var_switch = 'switch_prv_msg_review';
+		}
+		else
+		{
+			$block_var_switch = '';
+		}
+
+		$template->assign_block_vars($block_var_switch, array(
+			'PRIVATE_MSG_REVIEW' => $prv_msg_review,
 			'PRIVATE_MSG_TITLE' => $lang['private_msg_review_title']
 			)
 		);

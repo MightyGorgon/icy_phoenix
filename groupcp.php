@@ -1016,6 +1016,7 @@ elseif ($group_id)
 	}
 
 	$current_page = (!$members_count) ? 1 : ceil($members_count / $config['topics_per_page']);
+
 	$template->assign_vars(array(
 		'PAGINATION' => generate_pagination(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id, $members_count, $config['topics_per_page'], $start),
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), $current_page),

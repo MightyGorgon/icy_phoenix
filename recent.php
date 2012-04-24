@@ -373,7 +373,7 @@ if ($psort != $psort_types[0])
 {
 	$base_url .= '&amp;psort=' . $psort;
 }
-$pagination = generate_pagination($base_url, $total_topics, $topic_limit, $start);
+$pagination = generate_pagination($base_url, $total_topics, $topic_limit, $start) . '&nbsp;';
 
 if($total_topics == '0')
 {
@@ -396,7 +396,7 @@ $template->assign_vars(array(
 	'U_SORT_TIME' => append_sid('recent.' . PHP_EXT . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=time&amp;start=' . $start . (!empty($user_id) ? ('&amp;' . POST_USERS_URL . '=' . $user_id) : '')),
 	'AMOUNT_DAYS' => $amount_days,
 	'FORM_ACTION' => append_sid('recent.' . PHP_EXT),
-	'PAGINATION' => $pagination,
+	'PAGINATION' => ($total_topics != '0') ? $pagination : '&nbsp;',
 	'PAGE_NUMBER' => ($total_topics != '0') ? sprintf($lang['Page_of'], (floor($start / $topic_limit) + 1), ceil($total_topics / $topic_limit)) : '&nbsp;',
 	)
 );

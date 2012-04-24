@@ -54,16 +54,18 @@
 </tr>
 <tr>
 	<!-- BEGIN pic_detail -->
-	<td class="row2 row-center"><span class="gensmall">
+	<td class="row2 row-center">
+	<div class="gensmall">
 		{L_PIC_TITLE}: <a href="{picrow.pic_detail.U_PIC_SP}">{picrow.pic_detail.TITLE}</a><br />
 		{L_DOWNLOAD}: <a href="{picrow.pic_detail.U_PIC_DL}">{picrow.pic_detail.TITLE}</a><br />
 		{L_PIC_ID}: {picrow.pic_detail.PIC_ID}<br />
 		{L_POSTED}: {picrow.pic_detail.TIME}<br />
 		{L_VIEW}: {picrow.pic_detail.VIEW}<br />
-		{picrow.pic_detail.RATING}
-		{picrow.pic_detail.COMMENTS}
-		{picrow.pic_detail.IP}
-		{picrow.pic_detail.EDIT}&nbsp;&nbsp;{picrow.pic_detail.DELETE}&nbsp;&nbsp;{picrow.pic_detail.LOCK}</span>
+		{picrow.pic_detail.RATING}<br />
+		{picrow.pic_detail.COMMENTS}<br />
+		{picrow.pic_detail.IP}<br />
+		{picrow.pic_detail.EDIT}&nbsp;&nbsp;{picrow.pic_detail.DELETE}&nbsp;&nbsp;{picrow.pic_detail.LOCK}
+	</div>
 	</td>
 	<!-- END pic_detail -->
 </tr>

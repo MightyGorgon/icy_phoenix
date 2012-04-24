@@ -102,7 +102,7 @@ $lang = array_merge($lang, array(
 	'Show_OTF_Link' => 'Show "Album OTF" link on Album Index',
 	'Show_AllPics_Link' => 'Show "All Pics" link on Album Index',
 	'Show_PG_Link' => 'Show "Personal Galleries" link on Album Index',
-Album_Category_Sorting
+
 // 02 - Personal Galleries
 	'Personal_Galleries' => 'Personal Galleries',
 	'Album_personal_gallery_title' => 'Personal Gallery',
@@ -167,21 +167,16 @@ Album_Category_Sorting
 	'Use_Old_Thumbnails_Explain' => 'If you enable this feature, you will use the old thumbnails functions to generate small and mid thumbnails and a quick full pic loading. You should use this feature only if you are having problems without enabling it.',
 
 // 06 - Sorting
-	'Album_Category_Sorting' => 'Sorting of the album categories',
+	'Album_Category_Sorting' => 'Album Categories Sorting',
 	'Album_Category_Sorting_Id' => 'ID',
 	'Album_Category_Sorting_Name' => 'Name',
 	'Album_Category_Sorting_Order' => 'Sort Order (default)',
-	'Album_Category_Sorting_Direction' => 'Sorting direction (only valid for ID and Name sorting)',
+	'Album_Category_Sorting_Direction' => 'Album Categories Sorting Direction',
 	'Album_Category_Sorting_Asc' => 'Ascending',
 	'Album_Category_Sorting_Desc' => 'Descending',
 
-	'Album_Picture_Sorting' => 'Sorting of the album pictures',
-	'Album_Picture_Sorting_Time' => 'Time',
-	'Album_Picture_Sorting_Title' => 'Image',
-	'Album_Picture_Sorting_View' => 'View',
-	'Album_Picture_Sorting_Direction' => 'Sorting direction',
-	'Album_Picture_Sorting_Asc' => 'Ascending',
-	'Album_Picture_Sorting_Desc' => 'Descending',
+	'Album_Picture_Sorting' => 'Album Pictures Sorting',
+	'Album_Picture_Sorting_Direction' => 'Album Pictures Sorting Direction',
 
 // 07 - Clear Cache
 	'Clear_Cache_Tab' => 'Cache',

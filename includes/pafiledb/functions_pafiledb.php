@@ -740,7 +740,7 @@ class pafiledb
 				$redirect = ($cat_id != PA_ROOT_CAT) ? 'dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $cat_id : 'dload.' . PHP_EXT;
 				redirect(append_sid(CMS_PAGE_LOGIN. '?redirect=' . $redirect, true));
 			}
-			message_die(GENERAL_ERROR, 'Either you are not allowed to view any category, or there is no category in the database');
+			message_die(GENERAL_MESSAGE, $lang['No_dl_categories_exists']);
 		}
 
 		$template->assign_vars(array(

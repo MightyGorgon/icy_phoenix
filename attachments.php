@@ -432,31 +432,25 @@ else
 	$pagination_append = POST_FORUM_URL . '=' . $forum_id . '&amp;';
 }
 
+$pagination = '&nbsp;';
+$page_number = '&nbsp;';
 if ($gen_pagination)
 {
 	if ($total = $db->sql_fetchrow($result))
 	{
 		$total = $total['total'];
 		$pagination = generate_pagination(append_sid('attachments.' . PHP_EXT . '?' . $pagination_append . 'mode=' . $mode . '&amp;order=' . $sort_order), $total, $config['topics_per_page'], $start);
+		$page_number = sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total / $config['topics_per_page']));
 	}
 	$db->sql_freeresult($result);
+}
 
-	$template->assign_vars(array(
-		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total / $config['topics_per_page'])),
-		'L_GOTO_PAGE' => $lang['Goto_page']
-		)
-	);
-}
-else
-{
-	$template->assign_vars(array(
-		'PAGINATION' => '&nbsp;',
-		'PAGE_NUMBER' => '&nbsp;',
-		'L_GOTO_PAGE' => $lang['Goto_page']
-		)
-	);
-}
+$template->assign_vars(array(
+	'PAGINATION' => $pagination,
+	'PAGE_NUMBER' => $page_number,
+	'L_GOTO_PAGE' => $lang['Goto_page']
+	)
+);
 
 full_page_generation($template_to_parse, $lang['Downloads'], '', '');
 

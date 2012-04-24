@@ -244,6 +244,9 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	// Build categories select
 	// --------------------------------
 	album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
+	$personal_gallery_list = '';
+	// Mighty Gorgon: I don't know why this code is here... let's comment it out!
+	/*
 	if($user->data['session_logged_in'])
 	{
 		// build fake list of personal galleries (these will get created when needed later automatically
@@ -256,14 +259,12 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		//End Replace
 		{
 			// Is user allowed to create this personal gallery?
-			// NOTE : that it isn't necessary to create the $personal_gallery variable first,
-			//        it will be generated inside the album_permissions function if needed
-			//        but here it's done to make the code easier to read
+			// NOTE : that it isn't necessary to create the $personal_gallery variable first, it will be generated inside the album_permissions function if needed but here it's done to make the code easier to read
 			$personal_gallery = init_personal_gallery_cat($userinfo[$idx]['user_id']);
 			$album_user_access = album_permissions($userinfo[$idx]['user_id'], 0, ALBUM_AUTH_CREATE_PERSONAL, $personal_gallery);
 			if (album_check_permission($album_user_access, ALBUM_AUTH_CREATE_PERSONAL) == true)
 			{
-				$selected = (($user->data['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
+				$selected = (($user->data['user_id'] == $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
 				$personal_gallery_list .= '<option value="-' . $userinfo[$idx]['user_id'] . '" ' . $selected . '>' . sprintf($lang['Personal_Gallery_Of_User'], $userinfo[$idx]['username']) . '</option>';
 			}
 		}
@@ -273,6 +274,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 			$personal_gallery_list = '<option value="' . ALBUM_JUMPBOX_SEPARATOR . '">------------------------------</option>' . $personal_gallery_list;
 		}
 	}
+	*/
 
 	$temp_tree = album_get_tree_option($cat_id, ALBUM_AUTH_VIEW_AND_UPLOAD) . $personal_gallery_list;
 	if ($temp_tree == '')

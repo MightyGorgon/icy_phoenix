@@ -1,6 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function select_switch(status)
 {
 	for (i = 0; i < document.post.length; i++)
@@ -8,18 +9,34 @@ function select_switch(status)
 		document.post.elements[i].checked = status;
 	}
 }
-//]]>
+// ]]>
 </script>
 <form action="{S_POST_ACTION}" method="post" name="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th width="18">&nbsp;</th>
-	<th>{L_FORUM}</th>
-	<th>{L_TOPICS}</th>
+	<!-- IF SORT_BY == 4 -->
+	<th><a href="{U_SELF_SORT}&amp;sort_dir=<!-- IF SORT_DIR == 'ASC' -->DESC"><img src="{IMG_CMS_ARROW_UP}" alt="" /><!-- ELSE -->ASC"><img src="{IMG_CMS_ARROW_DOWN}" alt="" /><!-- ENDIF -->{L_FORUM}</a></th>
+	<!-- ELSE -->
+	<th><a href="{U_SELF}&amp;sort_by=4">{L_FORUM}</a></th>
+	<!-- ENDIF -->
+	<!-- IF SORT_BY == 2 -->
+	<th><a href="{U_SELF_SORT}&amp;sort_dir=<!-- IF SORT_DIR == 'ASC' -->DESC"><img src="{IMG_CMS_ARROW_UP}" alt="" /><!-- ELSE -->ASC"><img src="{IMG_CMS_ARROW_DOWN}" alt="" /><!-- ENDIF -->{L_TOPICS}</a></th>
+	<!-- ELSE -->
+	<th><a href="{U_SELF}&amp;sort_by=2">{L_TOPICS}</a></th>
+	<!-- ENDIF -->
 	<th>{L_REPLIES}</th>
-	<th>{L_AUTHOR}</th>
+	<!-- IF SORT_BY == 3 -->
+	<th><a href="{U_SELF_SORT}&amp;sort_dir=<!-- IF SORT_DIR == 'ASC' -->DESC"><img src="{IMG_CMS_ARROW_UP}" alt="" /><!-- ELSE -->ASC"><img src="{IMG_CMS_ARROW_DOWN}" alt="" /><!-- ENDIF -->{L_AUTHOR}</a></th>
+	<!-- ELSE -->
+	<th><a href="{U_SELF}&amp;sort_by=3">{L_AUTHOR}</a></th>
+	<!-- ENDIF -->
 	<th>{L_VIEWS}</th>
-	<th>{L_LASTPOST}</th>
+	<!-- IF SORT_BY == 0 -->
+	<th><a href="{U_SELF_SORT}&amp;sort_dir=<!-- IF SORT_DIR == 'ASC' -->DESC"><img src="{IMG_CMS_ARROW_UP}" alt="" /><!-- ELSE -->ASC"><img src="{IMG_CMS_ARROW_DOWN}" alt="" /><!-- ENDIF -->{L_LASTPOST}</a></th>
+	<!-- ELSE -->
+	<th><a href="{U_SELF}&amp;sort_by=0">{L_LASTPOST}</a></th>
+	<!-- ENDIF -->
 	<!-- BEGIN switch_upi2db_on -->
 	<th>{L_MAR}</th>
 	<!-- END switch_upi2db_on -->

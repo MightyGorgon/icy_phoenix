@@ -3,24 +3,26 @@
 <!-- END switch_privmsg -->
 
 <!-- IF S_AJAX_FEATURES -->
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 var L_RESULTS = '{L_SEARCH_RESULTS}';
 var L_RESULT = '{L_SEARCH_RESULT}';
 var L_MORE_MATCHES = '{L_MORE_MATCHES}';
 var L_AJAX_NO_RESULTS = '{L_AJAX_NO_RESULTS}';
-//]]>
+// ]]>
 </script>
 
 <!-- <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script> -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_postfunctions.js"></script>
 <!-- ENDIF -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 function attach_rules(forum_id)
 {
 	window.open('{U_ATTACH_RULES}' + forum_id + '&sid={S_SID}', '_attach_rules', 'height=200,width=500,resizable=no,scrollbars=yes');
 }
-//]]>
+// ]]>
 </script>
 
 <!-- BEGIN switch_privmsg -->
@@ -46,7 +48,7 @@ function attach_rules(forum_id)
 <!-- BEGIN switch_prv_msg_review -->
 <table class="forumline" width="100%" cellspacing="0">
 <tr><td class="row-header" colspan="2"><span>{switch_prv_msg_review.PRIVATE_MSG_TITLE}</span></td></tr>
-<tr><td align="left" valign="top" colspan="2" width="65%" class="row2"><div class="post-text post-text-hide-flow">{switch_prv_msg_review.MESSAGE}</div></td></tr>
+<tr><td align="left" valign="top" colspan="2" width="65%" class="row2"><div class="post-text post-text-hide-flow">{switch_prv_msg_review.PRIVATE_MSG_REVIEW}</div></td></tr>
 </table>
 <!-- END switch_prv_msg_review -->
 <form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this);" {S_FORM_ENCTYPE}>

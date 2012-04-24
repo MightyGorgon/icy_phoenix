@@ -1,6 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 function toggleAllForums()
 {
@@ -75,7 +76,7 @@ function unsubscribeCheck()
 	return process_form;
 }
 
-//]]>
+// ]]>
 </script>
 
 <form name="subscribe" action="{S_POST_ACTION}" method="post" onsubmit="return unsubscribeCheck();">

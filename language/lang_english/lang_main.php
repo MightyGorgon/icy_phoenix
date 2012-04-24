@@ -606,7 +606,7 @@ $lang = array_merge($lang, array(
 	'Invision_Signature' => 'Signature',
 	'Invision_Website' => 'Home Page',
 	'Invision_Total_Posts' => 'Total Cumulative Posts',
-	'Invision_User_post_pct_stats' => '%.2f%% of total forum posts',
+	'Invision_User_post_pct_stats' => '( %.2f%% of total forum posts )',
 	'Invision_User_post_day_stats' => '%.2f posts per day',
 	'Invision_Search_user_posts' => 'Find all posts by this member',
 	'Invision_Posting_details' => 'Posting Details',
@@ -626,8 +626,8 @@ $lang = array_merge($lang, array(
 	'Always_notify' => 'Always notify me of replies',
 	'Always_notify_explain' => 'Sends an e-mail when someone replies to a topic you have posted in. This can be changed whenever you post.',
 
-	'Board_style' => 'Board Style',
-	'Board_lang' => 'Board Language',
+	'Board_style' => 'Style',
+	'Board_lang' => 'Language',
 	'No_themes' => 'No Themes In database',
 	'Timezone' => 'Timezone',
 	'Date_format' => 'Date format',
@@ -1827,6 +1827,7 @@ $lang = array_merge($lang, array(
 	'Shoutbox_loading' => 'Loading Shoutbox...',
 // Errors
 	'Shoutbox_unable' => 'Sorry, the action couldn\'t be done. Please try again.',
+	'Shoutbox_timeout' => 'Sorry, the server is not responding. Please try again.',
 	'Shoutbox_empty' => 'No messages in Database',
 	'Shoutbox_no_mode' => 'No valid mode specified',
 // Archive
@@ -2046,8 +2047,6 @@ $lang = array_merge($lang, array(
 	'Drafts_NT' => 'New topic',
 	'Drafts_NM' => 'Reply',
 	'Drafts_NPM' => 'Private Message',
-
-	'Full_editor' => 'Switch to full Editor',
 
 	'CannotEditAdminsPosts' => 'You cannot edit admins posts',
 	'Random_Number' => 'Random Number',
@@ -2438,6 +2437,8 @@ $lang = array_merge($lang, array(
 	'IP_BLACKLISTED' => 'Your IP %s has been blocked because it is blacklisted. For details please see <a href="%s">%s</a>.',
 
 	'PRINTABLE_VERSION' => 'Printable Version',
+
+	'FULL_EDITOR' => 'Switch to full Editor',
 
 	)
 );

@@ -46,7 +46,7 @@ switch ($album_view_mode)
 $album_user_id = ALBUM_PUBLIC_GALLERY;
 //$album_user_id = ALBUM_ROOT_CATEGORY;
 $catrows = array ();
-$options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES | ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
+$options = ($album_view_mode == ALBUM_VIEW_LIST) ? (ALBUM_READ_ALL_CATEGORIES | ALBUM_AUTH_VIEW) : ALBUM_AUTH_VIEW;
 $catrows = album_read_tree($album_user_id, $options);
 
 album_read_tree($album_user_id);
@@ -300,7 +300,7 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => $pic_preview,
 			);
-			album_build_column_vars(&$template_vars, $picrow[$j], '&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method);
+			album_build_column_vars($template_vars, $picrow[$j], '&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method);
 			$template->assign_block_vars('picrow.piccol', $template_vars);
 
 			// is a personal category that the picture belongs to AND
@@ -323,7 +323,7 @@ if ($total_pics > 0 && !empty($allowed_cat))
 				'U_PIC_CAT' => $image_cat_url,
 				'GROUP_NAME' => 'all',
 			);
-			album_build_detail_vars(&$template_vars, $picrow[$j], '&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method);
+			album_build_detail_vars($template_vars, $picrow[$j], '&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method);
 			$template->assign_block_vars('picrow.pic_detail', $template_vars);
 		}
 	}

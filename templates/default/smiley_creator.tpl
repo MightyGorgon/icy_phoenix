@@ -1,6 +1,7 @@
 <!-- INCLUDE simple_header.tpl -->
 
-<script type="text/javascript">//<![CDATA[
+<script type="text/javascript">
+// <![CDATA[
 
 function makeshield()
 {
@@ -86,7 +87,7 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 	txtarea.focus();
 }
 
-//]]>
+// ]]>
 </script>
 
 <form name="shielderstellung">

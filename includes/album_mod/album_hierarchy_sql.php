@@ -144,7 +144,7 @@ function album_read_tree($user_id = ALBUM_PUBLIC_GALLERY, $options = ALBUM_AUTH_
 	$db->sql_freeresult($result);
 
 	// build the tree
-	$album_data  = array();
+	$album_data = array();
 	album_build_tree($cats, $parents);
 
 	// populate the authentication data to the album tree
@@ -226,7 +226,7 @@ function album_init_personal_gallery($user_id)
 	$parents[$row['parent']][] = $idx;
 
 	// build the tree
-	$album_data  = array();
+	$album_data = array();
 	album_build_tree($cats, $parents);
 
 	// populate the authentication data to the album tree
@@ -481,7 +481,7 @@ function album_move_tree($cat_id, $move, $user_id = ALBUM_PUBLIC_GALLERY)
 	}
 
 	// rebuild the tree
-	$album_data  = array();
+	$album_data = array();
 	album_build_tree($cats, $parents);
 
 	// ------------------------------------------------------------------------
@@ -532,13 +532,13 @@ function album_no_newest_pictures($check_date, $cats, $exclude_cat_id = 0)
 	// are we checking months ?
 	if (strstr($check_date,'M') != false)
 	{
-		$multiplier = (30 * 24 * 60 * 60);  // in my world a month is always 30 days ;)
+		$multiplier = (30 * 24 * 60 * 60); // in my world a month is always 30 days ;)
 	}
 
 	// are we checking weeks ?
 	if (strstr($check_date,'W') != false)
 	{
-	 	$multiplier = (7 * 24 * 60 * 60);  // in my world a month is always 30 days ;)
+	 	$multiplier = (7 * 24 * 60 * 60); // in my world a month is always 30 days ;)
 	}
 
 		// are we checking days (default) ? - yes if multiplier is zero
@@ -638,7 +638,7 @@ function album_check_user_exists($user_id)
 	}
 
 	$tmpusername = album_get_user_name($user_id);
-	return  (!empty($tmpusername)) ? true : false;
+	return (!empty($tmpusername)) ? true : false;
 }
 
 // ------------------------------------------------------------------------
@@ -695,7 +695,7 @@ function album_get_last_pic_info($cats, &$last_pic_id)
 	// OK, we may do a query now... get last picture information
 	$sql = "SELECT p.pic_id, p.pic_title, p.pic_user_id, p.pic_username, p.pic_time, p.pic_cat_id, u.user_id, u.username, u.user_active, u.user_color
 			FROM " . ALBUM_TABLE . " AS p
-			LEFT JOIN " . USERS_TABLE . " AS u  ON p.pic_user_id = u.user_id
+			LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 			WHERE p.pic_cat_id IN (" . $categories .") $pic_approval_sql
 			ORDER BY p.pic_time DESC
 			LIMIT 1";
@@ -1158,7 +1158,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 				'PIC_PREVIEW' => $pic_preview,
 				'APPROVAL' => $approval_link,
 			);
-			album_build_column_vars(&$template_vars, $picrow[$j], $sort_append);
+			album_build_column_vars($template_vars, $picrow[$j], $sort_append);
 			$template->assign_block_vars('index_pics_block.picrow.piccol', $template_vars);
 
 			if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
@@ -1191,7 +1191,7 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 
 				'IMG_BBCODE' => (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $picrow[$j]['pic_user_id'])) ? '<br /><a href="javasript://" OnClick="window.clipboardData.setData(\'Text\', \'[albumimg]' . $picrow[$j]['pic_id'] . '[/albumimg]\'); return false;">' . $lang['BBCode_Copy'] . '</a>' : ''
 			);
-			album_build_detail_vars(&$template_vars, $picrow[$j], $sort_append, $user_rights);
+			album_build_detail_vars($template_vars, $picrow[$j], $sort_append, $user_rights);
 			$template->assign_block_vars('index_pics_block.picrow.pic_detail', $template_vars);
 
 			// Mighty Gorgon - Slideshow - BEGIN
@@ -1240,7 +1240,6 @@ function album_build_picture_table($user_id, $cat_ids, $AH_thiscat, $auth_data, 
 		)
 	);
 }
-
 
 // ------------------------------------------------------------------------
 // Creates the table for recent pictures
@@ -1308,7 +1307,7 @@ function album_build_recent_pics($cats)
 						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
 					);
-					album_build_column_vars(&$template_vars, $picrow[$j]);
+					album_build_column_vars($template_vars, $picrow[$j]);
 					$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', $template_vars);
 
 					if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
@@ -1326,7 +1325,7 @@ function album_build_recent_pics($cats)
 						'PIC_PREVIEW' => $pic_preview,
 						'GROUP_NAME' => 'recent',
 					);
-					album_build_detail_vars(&$template_vars, $picrow[$j]);
+					album_build_detail_vars($template_vars, $picrow[$j]);
 					$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', $template_vars);
 				}
 			}
@@ -1412,17 +1411,17 @@ function album_build_highest_rated_pics($cats)
 							'PIC_PREVIEW_HS' => $pic_preview_hs,
 							'PIC_PREVIEW' => $pic_preview,
 						);
-						album_build_column_vars(&$template_vars, $picrow[$j]);
+						album_build_column_vars($template_vars, $picrow[$j]);
 						$template->assign_block_vars('highest_pics_block.highest_pics.highest_col', $template_vars);
 
-						if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
-						{
-							$highest_poster = ($picrow[$j]['pic_username'] == '') ? $lang['Guest'] : $picrow[$j]['pic_username'];
-						}
-						else
-						{
-							$highest_poster = colorize_username($picrow[$j]['user_id'], $picrow[$j]['username'], $picrow[$j]['user_color'], $picrow[$j]['user_active']);
-						}
+					if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
+					{
+						$highest_poster = ($picrow[$j]['pic_username'] == '') ? $lang['Guest'] : $picrow[$j]['pic_username'];
+					}
+					else
+					{
+						$highest_poster = colorize_username($picrow[$j]['user_id'], $picrow[$j]['username'], $picrow[$j]['user_color'], $picrow[$j]['user_active']);
+					}
 
 						$rated_images++;
 						$template_vars = array(
@@ -1431,7 +1430,7 @@ function album_build_highest_rated_pics($cats)
 							'PIC_PREVIEW' => $pic_preview,
 							'GROUP_NAME' => 'rated',
 						);
-						album_build_detail_vars(&$template_vars, $picrow[$j]);
+						album_build_detail_vars($template_vars, $picrow[$j]);
 						$template->assign_block_vars('highest_pics_block.highest_pics.highest_detail', $template_vars);
 					}
 				}
@@ -1456,7 +1455,6 @@ function album_build_highest_rated_pics($cats)
 		$template->assign_block_vars('highest_pics_block.no_pics', array());
 	}
 }
-
 
 // ------------------------------------------------------------------------
 // Creates the table for most viewed pictures
@@ -1521,7 +1519,7 @@ function album_build_most_viewed_pics($cats)
 						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
 					);
-					album_build_column_vars(&$template_vars, $picrow[$j]);
+					album_build_column_vars($template_vars, $picrow[$j]);
 					$template->assign_block_vars('mostviewed_pics_block.mostviewed_pics.mostviewed_col', $template_vars);
 
 					if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
@@ -1539,7 +1537,7 @@ function album_build_most_viewed_pics($cats)
 						'PIC_PREVIEW' => $pic_preview,
 						'GROUP_NAME' => 'viewed',
 					);
-					album_build_detail_vars(&$template_vars, $picrow[$j]);
+					album_build_detail_vars($template_vars, $picrow[$j]);
 					$template->assign_block_vars('mostviewed_pics_block.mostviewed_pics.mostviewed_detail', $template_vars);
 			 	}
 			}
@@ -1622,7 +1620,7 @@ function album_build_random_pics($cats)
 						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
 					);
-					album_build_column_vars(&$template_vars, $picrow[$j]);
+					album_build_column_vars($template_vars, $picrow[$j]);
 					$template->assign_block_vars('random_pics_block.rand_pics.rand_col', $template_vars);
 
 					if(($picrow[$j]['user_id'] == ALBUM_GUEST) || ($picrow[$j]['username'] == ''))
@@ -1640,7 +1638,7 @@ function album_build_random_pics($cats)
 						'PIC_PREVIEW' => $pic_preview,
 						'GROUP_NAME' => 'random',
 					);
-					album_build_detail_vars(&$template_vars, $picrow[$j]);
+					album_build_detail_vars($template_vars, $picrow[$j]);
 					$template->assign_block_vars('random_pics_block.rand_pics.rand_detail', $template_vars);
 				}
 			}
@@ -1659,7 +1657,6 @@ function album_build_random_pics($cats)
 		$template->assign_block_vars('random_pics_block.no_pics', array());
 	}
 }
-
 
 function album_build_last_comments_info($cats)
 {
@@ -1753,7 +1750,7 @@ function album_build_last_comments_info($cats)
 				'COMMENT_TEXT' => $commentsrow[$i]['comment_text'],
 				'GROUP_NAME' => 'comments',
 			);
-			album_build_detail_vars(&$template_vars, $commentsrow[$i]);
+			album_build_detail_vars($template_vars, $commentsrow[$i]);
 
 			// Overwrite the picture time with the comment time
 			$template_vars['TIME'] = create_date_ip($config['default_dateformat'], $commentsrow[$i]['comment_time'], $config['board_timezone']);
