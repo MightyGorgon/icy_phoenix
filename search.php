@@ -1411,7 +1411,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$bbcode->allow_bbcode = $config['allow_bbcode'] && $searchset[$i]['enable_bbcode'];
 					$bbcode->allow_smilies = $config['allow_smilies'] && $searchset[$i]['enable_smilies'];
 					$bbcode->code_post_id = $searchset[$i]['post_id'];
-					$message = $bbcode->parse($message); // there is a better truncation mechanism now , '', false, $clean_tags);
+					$message = $bbcode->parse($message, '', false, $clean_tags);
 					$bbcode->code_post_id = 0;
 				}
 				else
