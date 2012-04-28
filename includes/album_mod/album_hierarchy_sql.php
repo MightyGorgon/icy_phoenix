@@ -665,6 +665,29 @@ function album_get_user_name($user_id)
 }
 
 // ------------------------------------------------------------------------
+// Returns the user
+// ------------------------------------------------------------------------
+function album_get_user($user_id)
+{
+	global $db;
+
+	if ($user_id == ALBUM_PUBLIC_GALLERY)
+	{
+		return array();
+	}
+
+	$sql = "SELECT *
+			FROM ". USERS_TABLE ."
+			WHERE user_id = $user_id
+			LIMIT 1";
+	$result = $db->sql_query($sql);
+	$row = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+
+	return $row;
+}
+
+// ------------------------------------------------------------------------
 // Get last picture info from database in the specified categories ($cats)
 // Functions is based on the SP mod by CLowN
 // ------------------------------------------------------------------------
