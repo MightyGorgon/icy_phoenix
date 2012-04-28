@@ -1843,7 +1843,14 @@ $lang = array_merge($lang, array(
 	'Online_registered' => 'Users',
 	'Online_guests' => 'Guests',
 	'Who_is_Chatting' => 'Who is Chatting',
+	'Start_Private_Chat' => 'Click on the name to start a private chat',
 	'Shoutbox_online_explain' => 'This data is based on users active over the past thirty seconds',
+// Chat rooms
+	'Shout_rooms' => 'Rooms',
+	'Admin_rooms' => 'All rooms',
+	'Public_room' => 'Public room',
+	'Private_room' => 'Private room',
+	'My_id' => 'Me',
 // Ajax Shoutbox - END
 
 	'Contact_us' => 'Contact Us',
