@@ -373,7 +373,7 @@ if ($psort != $psort_types[0])
 {
 	$base_url .= '&amp;psort=' . $psort;
 }
-$pagination = generate_pagination($base_url, $total_topics, $topic_limit, $start) . '&nbsp;';
+$pagination = generate_pagination($base_url, $total_topics, $topic_limit, $start);
 
 if($total_topics == '0')
 {
