@@ -26,6 +26,12 @@ if (!defined('CTRACKER_DISABLE_OUTPUT'))
 
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
+
+//
+// JHL 24/04/2012 the database shout_room format - nnnn|nnnn - has been changed to |nnnn|nnnn| using
+// update ip_ajax_shoutbox set shout_room = concat(concat('|', shout_room), '|') where shout_room like '%|%'
+//
 
 // Decide whether XML or JSON is to be used - JSON preferred
 $response_type = (function_exists('json_decode') && is_array(json_decode('{"a":1}', true))) ? 'json' : 'xml';
@@ -35,6 +41,7 @@ $action = request_var('act', '');
 
 if (!defined('AJAX_CHAT_ROOM'))
 {
+	$chat_room_sql = " s.shout_room = '' ";
 	$private_chat = false;
 	$chat_room = request_var('chat_room', '');
 	$chat_room_users = array_map('intval', explode('|', $chat_room));
@@ -66,9 +73,9 @@ if (!defined('AJAX_CHAT_ROOM'))
 			message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
 		}
 		$private_chat = true;
+		$chat_room_sql = " s.shout_room = '|" . $chat_room . "|' ";
+		define('AJAX_CHAT_ROOM', true);
 	}
-	$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
-	define('AJAX_CHAT_ROOM', true);
 }
 
 if (!empty($action))
@@ -94,12 +101,14 @@ if (!empty($action))
 	$error = AJAX_SHOUTBOX_NO_ERROR;
 	$error_msg = '';
 
+	// JHL this is in the wrong place - we might need to send this information back to the Ajax caller -START
 	// Delete alert for poster if present
 	if ($private_chat && !empty($user->data['user_private_chat_alert']))
 	{
-		$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '0' WHERE user_id = " . $user->data['user_id'];
+		$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '' WHERE user_id = " . $user->data['user_id'];
 		$db->sql_query($sql);
 	}
+	// JHL this is in the wrong place - we might need to send this information back to the Ajax caller - END
 
 	// Code for getting data
 	if ($action == 'read')
@@ -118,28 +127,52 @@ if (!empty($action))
 			pseudo_die(AJAX_SHOUTBOX_ERROR, $error_msg);
 		}
 
-		// Update session data and online list
-		// Only get session data if the user was online twice the refresh time seconds ago
+		// Guest are reconized by their IP
+		$guest_sql = '';
+		$is_guest = false;
+		if (!$user->data['session_logged_in'])
+		{
+			$is_guest = true;
+			$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
+		}
+
+		// Update session data and online list - only get session data if the user was online twice the refresh time seconds ago
 		$time_ago = time() - ($config['shoutbox_refreshtime'] / 1000 * 2);
 
 		// Read session data for update
 		$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
 		FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
 		WHERE s.session_time >= " . $time_ago . "
-			AND s.session_user_id = u.user_id
+			AND s.session_user_id = u.user_id" . $guest_sql . "
 		ORDER BY case u.user_level when 0 then 10 else u.user_level end";
 		$result = $db->sql_query($sql);
 
 		// Set all counters to 0
 		$reg_online_counter = $guest_online_counter = $online_counter = 0;
 		$online_list = array();
+
+		// Default anonymous user
+		$online_user = array(
+			'user_id' => ANONYMOUS,
+			'username' => $lang['My_id'],
+			'user_style_color' => '',
+		);
 		while ($online = $db->sql_fetchrow($result))
 		{
 			if($online['user_id'] != ANONYMOUS)
 			{
 				$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
 				$online['user_style_color'] = $style_color;
-				$online_list[$online['username']] = $online;
+
+				if ($online['user_id'] != $user->data['user_id'])
+				{
+					$online_list[$online['username']] = $online;
+				}
+				else
+				{
+					$online['username'] = $lang['My_id'];
+					$online_user = $online;
+				}
 				$reg_online_counter++;
 			}
 			else
@@ -152,20 +185,53 @@ if (!empty($action))
 		// Check if anything has changed
 		ksort($online_list);
 		$online_keys = array_keys($online_list);
-		$signature = md5(implode(',', $online_keys));
+		$signature = md5(implode(',', $online_keys) . ',' . $online_counter . ',' . $guest_online_counter . ',' . $reg_online_counter);
 		$sig = request_var('sig', '');
 
 		if ($signature != $sig)
 		{
-			foreach ($online_list as $online)
+			// Start with the user
+			if ($update_mode == 'chat')
 			{
 				if ($response_type == 'xml')
 				{
 					$template->assign_block_vars('online_list', array(
-						'USER' => $online['username'],
+						'USER_ID' => $online_user['user_id'],
+						'USERNAME' => $online_user['username'],
+						'USER_STYLE' => $online_user['user_style_color'],
+						'CHAT_LINK' => ''
+						)
+					);
+				}
+				else
+				{
+					$json_user = array(
+						'user_id' => $online_user['user_id'],
+						'username' => $online_user['username'],
+						'user_style' => $online_user['user_style_color'],
+						'chat_link' => ''
+					);
+					$template->assign_block_vars('online_list', array(
+						'user' => @json_encode($json_user)
+						)
+					);
+				}
+			}
+
+			foreach ($online_list as $online)
+			{
+				$chat_link = '';
+				if ($user->data['session_logged_in'] && $update_mode == 'chat')
+				{
+					$chat_link = 'javascript:addAndActivateChatTab(\'' . min($user->data['user_id'], $online['user_id']) . '|' . max($user->data['user_id'], $online['user_id']) . '\');';
+				}
+				if ($response_type == 'xml')
+				{
+					$template->assign_block_vars('online_list', array(
 						'USER_ID' => $online['user_id'],
-						'LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
-						'LINK_STYLE' => $online['user_style_color'],
+						'USERNAME' => $online['username'],
+						'USER_STYLE' => $online['user_style_color'],
+						'CHAT_LINK' => $chat_link,
 						)
 					);
 				}
@@ -174,11 +240,11 @@ if (!empty($action))
 					$json_user = array(
 						'user_id' => $online['user_id'],
 						'username' => $online['username'],
-						'user_link' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
-						'link_style' => $online['user_style_color'],
+						'user_style' => $online['user_style_color'],
+						'chat_link' => $chat_link,
 					);
 					$template->assign_block_vars('online_list', array(
-						'user' => @json_encode($json_user),
+						'user' => @json_encode($json_user)
 						)
 					);
 				}
@@ -197,22 +263,28 @@ if (!empty($action))
 			// If the request does not provide the id of the last know message the id is set to 0
 			$lastID = request_var('lastID', 0);
 
-			$limit_sql = '';
 			// Check if there is a limit else, show all shouts
+			$limit_sql = '';
 			if ($config['display_shouts'] > 0)
 			{
 				// Gets a limited number of entries
 				$limit_sql = " LIMIT " . $config['display_shouts'];
 			}
 
+			$chatroom_sql = "s.shout_room = ''";
+			if ($user->data['session_logged_in'])
+			{
+				$chatroom_sql = "(s.shout_room = '' OR s.shout_room like '%|" . $user->data['user_id'] . "|%')";
+			}
 			$sql = "SELECT s.*, u.user_id, u.username, u.user_active, u.user_color, u.user_level
 					FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
 					WHERE s.shout_id > " . $lastID . "
 						AND s.user_id = u.user_id
+						AND " . $chatroom_sql ."
 					ORDER BY s.shout_id DESC" . $limit_sql;
 			$results = $db->sql_query($sql);
 			$row = $db->sql_fetchrowset($results);
-
+			$rooms = array();
 			if (!(empty($row)))
 			{
 				$row = array_reverse($row);
@@ -228,20 +300,9 @@ if (!empty($action))
 				$id = $row[$x]['shout_id'];
 				$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
 
-				// Check permissions
 				if ($row[$x]['shout_room'] != '')
 				{
-					if (!$user->data['session_logged_in'])
-					{
-						// Guests should not see private rooms
-						continue;
-					}
-					$in_room = explode('|', $row[$x]['shout_room']);
-					if (!in_array($user->data['user_id'], $in_room))
-					{
-						// Current users is not in this room
-						continue;
-					}
+					$rooms[]['shout_room'] = $row[$x]['shout_room'];
 				}
 
 				if ($row[$x]['user_id'] == ANONYMOUS)
@@ -251,7 +312,7 @@ if (!empty($action))
 				}
 				else
 				{
-					$shouter = $row[$x]['username'];
+					$shouter = ($user->data['session_logged_in'] && $row[$x]['user_id'] == $user->data['user_id']) ? $lang['My_id'] : $row[$x]['username'];
 					$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
 				}
 
@@ -267,13 +328,11 @@ if (!empty($action))
 				$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
 				$message = $bbcode->parse($message);
 
-				//$message = rawurlencode($message); // for Javascript
-
 				if ($response_type == 'xml')
 				{
 					$template->assign_block_vars('shouts', array(
 						'ID' => $id,
-						'ROOM' => ($row[$x]['shout_room'] == '') ? 'public' : $row[$x]['shout_room'],
+						'ROOM' => ($row[$x]['shout_room'] == '') ? '' : substr($row[$x]['shout_room'], 1, -1),
 						'SHOUTER' => $shouter,
 						'SHOUTER_ID' => $row[$x]['user_id'],
 						'SHOUTER_COLOR' => $shouter_color,
@@ -287,7 +346,7 @@ if (!empty($action))
 				{
 					$json_shout = array(
 						'id' => $id,
-						'room' => ($row[$x]['shout_room'] == '') ? 'public' : $row[$x]['shout_room'],
+						'room' => ($row[$x]['shout_room'] == '') ? '' : substr($row[$x]['shout_room'], 1, -1),
 						'shouter' => $shouter,
 						'shouter_id' => $row[$x]['user_id'],
 						'shouter_color' => $shouter_color,
@@ -296,7 +355,35 @@ if (!empty($action))
 						'date' => $time
 					);
 					$template->assign_block_vars('shouts', array(
-						'shout' => @json_encode($json_shout),
+						'shout' => @json_encode($json_shout)
+						)
+					);
+				}
+			}
+
+			$room_users = get_chat_room_users($rooms, $chat_room, '');
+			$room_list_ids = $room_users['room_list_ids'];
+			$room_styled_list_ids = $room_users['styled_list_ids'];
+			foreach ($room_list_ids as $user_id => $username)
+			{
+				if ($response_type == 'xml')
+				{
+					$template->assign_block_vars('room_users', array(
+						'USERNAME' => $username,
+						'USER_ID' => $user_id,
+						'USER_STYLE' => $room_styled_list_ids[$user_id]
+						)
+					);
+				}
+				else
+				{
+					$json_room_user = array(
+						'username' => $username,
+						'user_id' => $user_id,
+						'user_style' => $room_styled_list_ids[$user_id]
+					);
+					$template->assign_block_vars('room_users', array(
+						'user' => @json_encode($json_room_user)
 						)
 					);
 				}
@@ -352,11 +439,15 @@ if (!empty($action))
 				}
 			}
 
+			// JHL this is in the wrong place - we're responding to an Ajax call - START
+			/*
 			if (sizeof($alert_users_array) > 0)
 			{
 				$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '" . $chat_room . "' WHERE " . $db->sql_in_set('user_id', $alert_users_array);
 				$db->sql_query($sql);
 			}
+			*/
+			// JHL this is in the wrong place - we're responding to an Ajax call - END
 		}
 
 		// Some weird conversion of the data inputed
@@ -399,7 +490,12 @@ if (!empty($action))
 		if ($message != '')
 		{
 			// Add new data
-			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time, shout_room) VALUES (" . $user->data['user_id'] . ", '" . $db->sql_escape($shouter) . "', '" . $db->sql_escape($message) . "', '" . $db->sql_escape($user_ip) . "', " . $shout_time . ", '" . $chat_room . "')";
+			$sql_chat_room = $chat_room;
+			if ($sql_chat_room != '')
+			{
+				$sql_chat_room = '|' . $sql_chat_room . '|';
+			}
+			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time, shout_room) VALUES (" . $user->data['user_id'] . ", '" . $db->sql_escape($shouter) . "', '" . $db->sql_escape($message) . "', '" . $db->sql_escape($user_ip) . "', " . $shout_time . ", '" . $sql_chat_room . "')";
 
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
@@ -489,12 +585,17 @@ $template->assign_vars(array(
 	'L_UNABLE' => $lang['Shoutbox_unable'],
 	'L_TIMEOUT' => $lang['Shoutbox_timeout'],
 	'L_WIO' => $lang['Who_is_Chatting'],
+	'L_START_PRIVATE_CHAT' => $lang['Start_Private_Chat'],
 	'L_GUESTS' =>  $lang['Online_guests'],
 	'L_TOTAL' => $lang['Online_total'],
 	'L_USERS' => $lang['Online_registered'],
 	'L_TOP_SHOUTERS' => $lang['Top_Ten_Shouters'],
 	'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
 	'DELETE_IMG' => '<img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" />',
+	'L_SHOUTBOX_EMPTY' => $lang['Shoutbox_empty'],
+	'L_SHOUT_ROOMS' => $lang['Shout_rooms'],
+	'L_PUBLIC_ROOM' => $lang['Public_room'],
+	'L_PRIVATE_ROOM' => $lang['Private_room'],
 	'L_SHOUT_PREFIX' => 'shout_',
 	'L_USER_PREFIX' => 'user_',
 	'L_ROOM_PREFIX' => 'room_',
@@ -551,7 +652,6 @@ else
 	}
 	else
 	{
-		//message_die(GENERAL_MESSAGE, $lang['Shoutbox_no_auth']);
 		pseudo_die(GENERAL_MESSAGE, $lang['Shoutbox_no_auth']);
 	}
 }
@@ -573,6 +673,32 @@ $template->assign_vars(array(
 );
 $template->assign_var_from_handle('BBCB_MG_SMALL', 'bbcb_mg');
 // BBCBMG - END
+
+// Add the chatroom users
+$private_users = '{ }';
+if ($chat_room != '')
+{
+	$rooms = array();
+	$rooms[]['shout_room'] = '|' . $chat_room . '|';
+	$room_users = get_chat_room_users($rooms, $chat_room, '');
+	$room_list_ids = $room_users['room_list_ids'];
+	$room_styled_list_ids = $room_users['styled_list_ids'];
+
+	$private_users = '{';
+	$comma = ' ';
+	foreach ($room_list_ids as $user_id => $username)
+	{
+		$private_users .= $comma . '"' . $user_id . '": { ';
+		$private_users .= 'id: ' . $user_id . ', username: "' . addslashes($username) . '", style: "' . addslashes($room_styled_list_ids[$user_id]) . '"';
+		$private_users .= ' }';
+		$comma = ', ';
+	}
+	$private_users .= ' }';
+}
+$template->assign_vars(array(
+	'PRIVATE_USERS' => $private_users
+	)
+);
 
 if ($shoutbox_template_parse)
 {

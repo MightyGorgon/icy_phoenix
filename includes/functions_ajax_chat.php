@@ -208,6 +208,30 @@ function remove_session(&$error_msg)
 	}
 }
 
+// Checks if a user is in the chat session
+function user_in_chat_session($id)
+{
+	global $db, $config;
+
+	// Only get session data if the user was online twice the refresh time seconds ago
+	$time_ago = time() - floor($config['shoutbox_refreshtime'] / 1000 * 2);
+	$sql = 'SELECT session_id
+			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
+			WHERE session_user_id = ' . $id . '
+				AND session_time >= ' . $time_ago . '
+			LIMIT 1';
+	$result = $db->sql_query($sql);
+	if (!$result)
+	{
+		return false;
+	}
+	if ($row = $db->sql_fetchrow($result))
+	{
+		return true;
+	}
+	return false;
+}
+
 // Get max session_id
 function get_ajax_chat_max_session_id()
 {
@@ -230,6 +254,99 @@ function get_ajax_chat_max_session_id()
 	{
 		return 0;
 	}
+}
+
+// Given a list of rooms, produce a list of users in those rooms
+//
+// $rooms the list of rooms
+// $chat_room the current chat room
+// $chat_link the chat room link 
+function get_chat_room_users($rooms, $chat_room, $chat_link)
+{
+	global $db, $lang, $user;
+	$chatroom_title = $lang['Public_room'];
+	$chatroom_userlist = '';
+	$result = array();
+	$result['rooms'] = array();
+	$room_class = '';
+	if ($chat_room == '')
+	{
+		$room_class = ' class="active"';
+	}
+	$result['rooms'][] = array(
+		'NAME' => $lang['Public_room'],
+		'LIST' => '',
+		'STYLED_LIST' => '',
+		'CLASS' => $room_class,
+		'LINK' => append_sid($chat_link)
+	);
+	$room_list_ids = array();
+	$room_styled_list_ids = array();
+	if (!empty($rooms))
+	{
+		$room_users = '|';
+		for($x = 0; $x < sizeof($rooms); $x++)
+		{
+			$room_users .= substr($rooms[$x]['shout_room'], 1);
+		}
+		$room_users = str_replace('|', ', ', substr($room_users, 1, -1));
+		$sql = "SELECT DISTINCT user_id, username, user_color, user_active
+				FROM " . USERS_TABLE . "
+				WHERE user_id in(" . $room_users . ")";
+		$results = $db->sql_query($sql);
+		$users = $db->sql_fetchrowset($results);
+
+		for($x = 0; $x < sizeof($users); $x++)
+		{
+			if($user->data['session_logged_in'] && $users[$x]['user_id'] == $user->data['user_id'])
+			{
+				$room_list_ids[$users[$x]['user_id']] = $lang['My_id'];
+				$room_styled_list_ids[$users[$x]['user_id']] = colorize_username($users[$x]['user_id'], $lang['My_id'], $users[$x]['user_color'], $users[$x]['user_active'], false, true);
+			}
+			else
+			{
+				$room_list_ids[$users[$x]['user_id']] = $users[$x]['username'];
+				$room_styled_list_ids[$users[$x]['user_id']] = colorize_username($users[$x]['user_id'], $users[$x]['username'], $users[$x]['user_color'], $users[$x]['user_active'], false, true);
+			}
+		}
+		for($x = 0; $x < sizeof($rooms); $x++)
+		{
+			$list = '';
+			$styled_list = '';
+			$comma = '';
+			$room = substr($rooms[$x]['shout_room'], 1, -1);
+			$room_class = '';
+			if ($room == $chat_room)
+			{
+				$room_class = ' class="active"';
+			}
+			$room_users = array_map('intval', explode('|', $room));
+			foreach ($room_users as $room_user)
+			{
+				$list .= $comma . $room_list_ids[$room_user];
+				$styled_list .= $comma . '<span ' . $room_colored_list_ids[$room_user] . '>' . $room_list_ids[$room_user] . '</span>';
+				$comma = ', ';
+			}
+			$result['rooms'][] = array(
+				'NAME' => $lang['Private_room'],
+				'LIST' => $list,
+				'STYLED_LIST' => $styled_list,
+				'CLASS' => $room_class,
+				'LINK' => append_sid($chat_link . '&amp;chat_room=' . $room)
+			);
+
+			if ($room == $chat_room)
+			{
+				$chatroom_title = $lang['Private_room'];
+				$chatroom_userlist = $colored_list;
+			}
+		}
+	}
+	$result['room_list_ids'] = $room_list_ids;
+	$result['styled_list_ids'] = $room_styled_list_ids;
+	$result['title'] = $chatroom_title;
+	$result['userlist'] = $chatroom_userlist;
+	return $result;
 }
 
 ?>

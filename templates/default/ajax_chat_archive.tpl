@@ -33,7 +33,18 @@ initChat();
 		<div style="float: right; text-align: right;"><span class="pagination">{PAGINATION}</span></div>&nbsp;
 		<!-- ENDIF -->
 		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
-			<tr><th colspan="2">{L_SHOUTS}</th></tr>
+			<tr><th colspan="2">{L_SHOUT_ROOMS}</th></tr>
+			<tr>
+				<td colspan="2" class="chat-tabs">
+					<!-- BEGIN rooms -->
+						<a href="{rooms.LINK}"{rooms.CLASS} style="white-space: nowrap;">{rooms.NAME}<!-- IF rooms.STYLED_LIST -->: ({rooms.STYLED_LIST})<!-- ENDIF --></a>
+					<!-- END rooms -->
+				</td>
+			</tr>
+			<tr><th colspan="2">{L_SHOUTS} - {L_SHOUT_ROOM_TITLE}<!-- IF L_SHOUT_ROOM_LIST --> {L_SHOUT_ROOM_LIST}<!-- ENDIF --></th></tr>
+			<!-- BEGIN no_shouts -->
+			<tr><td class="row-center" colspan="2">{L_SHOUTBOX_EMPTY}</td></tr>
+			<!-- END no_shouts -->
 			<!-- BEGIN shouts -->
 			<tbody id="{L_SHOUT_PREFIX}{shouts.ID}">
 				<tr>

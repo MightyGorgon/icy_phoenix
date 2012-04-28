@@ -19,6 +19,7 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
@@ -43,7 +44,7 @@ $private_chat = false;
 $chat_room = request_var('chat_room', '');
 $chat_room_users = array_map('intval', explode('|', $chat_room));
 $chat_room_users_count = sizeof($chat_room_users);
-
+$chat_room_sql = " s.shout_room = '' ";
 if ($chat_room !== '')
 {
 	// validate chat room
@@ -70,9 +71,9 @@ if ($chat_room !== '')
 		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
 	}
 	$private_chat = true;
+	$chat_room_sql = " s.shout_room = '|" . $chat_room . "|' ";
+	define('AJAX_CHAT_ROOM', true);
 }
-$chat_room_sql = " s.shout_room = '" . $chat_room . "' ";
-define('AJAX_CHAT_ROOM', true);
 
 // Show shoutbox with header and footer if the user didn't request anything else
 if (empty($mode))
@@ -142,19 +143,18 @@ else
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-	$start = request_get_var('start', 0);
-	$start = ($start < 0) ? 0 : $start;
-
 	// Make Pagination and collect some extra data
 	$sql = 'SELECT COUNT(s.shout_id) as stored_shouts, MAX(s.shout_id) as total_shouts
 					FROM ' . AJAX_SHOUTBOX_TABLE . ' s
 					WHERE ' . $chat_room_sql;
 	$result = $db->sql_query($sql);
-
 	$num_items = $db->sql_fetchrow($result);
 
+	$start = request_get_var('start', 0);
+	$start = ($start < 0) ? 0 : $start;
+
 	$template->assign_vars(array(
-		'PAGINATION' => generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive', $num_items['stored_shouts'], $config['posts_per_page'], $start),
+		'PAGINATION' => generate_pagination('ajax_chat.' . PHP_EXT . '?mode=archive&amp;chat_room=' . $chat_room, $num_items['stored_shouts'], $config['posts_per_page'], $start),
 		)
 	);
 
@@ -202,6 +202,7 @@ else
 		'L_SHOUT_PREFIX' => 'shout_',
 		'L_USER_PREFIX' => 'user_',
 		'L_ROOM_PREFIX' => 'room_',
+		'PRIVATE_USERS' => '{ }'
 		)
 	);
 
@@ -214,14 +215,17 @@ else
 		)
 	);
 
+	$admin_mode = false;
 	if ($user->data['user_level'] == ADMIN)
 	{
+		$admin_mode = request_var('admin', 0);
+		$admin_mode = empty($admin_mode) ? false : true;
 		$template->assign_block_vars('view_shoutbox.user_is_admin', array());
 	}
 
 	// Get Who is Online in the shoutbox
-	// Only get session data if the user was online SESSION_REFRESH seconds ago
-	$time_ago = time() - SESSION_REFRESH;
+	// Only get session data if the user was online (refreshtime * 2) seconds ago
+	$time_ago = time() - floor($config['shoutbox_refreshtime'] / 1000 * 2);
 
 	// Set all counters to 0
 	$reg_online_counter = $guest_online_counter = $online_counter = 0;
@@ -283,90 +287,127 @@ else
 	}
 
 	// Gets the shouts for display
-	if (!empty($_GET['full']))
-	{
-		$sql = "SELECT s.*, u.username, u.user_color
-				FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
-				WHERE s.user_id = u.user_id
-					AND " . $chat_room_sql . "
-				ORDER BY s.shout_id ASC";
-	}
-	else
-	{
-		$sql = "SELECT s.*, u.username, u.user_color
-				FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
-				WHERE s.user_id = u.user_id
-					AND " . $chat_room_sql . "
-				ORDER BY s.shout_id DESC
-				LIMIT " . $start . ", " . $config['posts_per_page'];
-	}
-
+	$chatroom_title = $lang['Public_room'];
+	$chatroom_userlist = '';
+	$sql = "SELECT s.*, u.username, u.user_color
+			FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
+			WHERE s.user_id = u.user_id
+				AND " . $chat_room_sql . "
+			ORDER BY s.shout_id DESC
+			LIMIT " . $start . ", " . $config['posts_per_page'];
 	$results = $db->sql_query($sql);
 	$row = $db->sql_fetchrowset($results);
 
 	if(empty($row))
 	{
-		// This is just to know that there are no shouts in the database.
-		$msg = $lang['Shoutbox_empty'];
-		message_die(GENERAL_MESSAGE, $msg);
+		$template->assign_block_vars('no_shouts', array());
 	}
-
-	for($x = 0; $x < sizeof($row); $x++)
+	else
 	{
-		$id = $row[$x]['shout_id'];
-		$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
-
-		if ($row[$x]['user_id'] == ANONYMOUS)
+		for($x = 0; $x < sizeof($row); $x++)
 		{
-			$shouter = $row[$x]['username'];
-			$shouter_link = false;
-			$shouter_color = '';
-		}
-		else
-		{
-			$shouter = $row[$x]['username'];
-			$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
-			$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], true, false, true);
+			$id = $row[$x]['shout_id'];
+			$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
+
+			if ($row[$x]['user_id'] == ANONYMOUS)
+			{
+				$shouter = $row[$x]['username'];
+				$shouter_link = false;
+				$shouter_color = '';
+			}
+			else
+			{
+				$shouter = $row[$x]['username'];
+				$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
+				$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], true, false, true);
+			}
+
+			$message = $row[$x]['shout_text'];
+			$message = strip_tags($message);
+			$message = censor_text($message);
+
+			$bbcode->allow_html = false;
+			$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
+			$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
+			$message = $bbcode->parse($message);
+
+			if ($user->data['session_logged_in'] && ($user->data['user_level'] == ADMIN))
+			{
+				$temp_url = 'javascript:removeShout(' . $id . ');';
+				$delpost_img = '<a href="#" onclick="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';
+			}
+			else
+			{
+				$temp_url = '';
+				$delpost_img = '';
+			}
+
+			if($shouter_link != false)
+			{
+				$shouter_html = '<a href="' . $shouter_link . '" class="postlink"' . $shouter_color . '>' . $shouter . '</a>';
+			}
+			else
+			{
+				$shouter_html = $shouter;
+			}
+
+			$template->assign_block_vars('shouts', array(
+				'ID' => $id,
+				'SHOUTER' => $shouter_html,
+				'MESSAGE' => $message,
+				'DELETE_IMG' => $delpost_img,
+				'DATE' => $time
+				)
+			);
 		}
 
-		$message = $row[$x]['shout_text'];
-		$message = strip_tags($message);
-		$message = censor_text($message);
-
-		$bbcode->allow_html = false;
-		$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? true : false;
-		$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? true : false;
-		$message = $bbcode->parse($message);
-
-		if ($user->data['session_logged_in'] && ($user->data['user_level'] == ADMIN))
+		// Gets the chat_rooms for display
+		$archive_link = '?mode=archive';
+		if ($user->data['user_level'] == ADMIN)
 		{
-			$temp_url = 'javascript:removeShout(' . $id . ')';
-			$delpost_img = '<a href="' . $temp_url . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete_post'] . '" title="' . $lang['Delete_post'] . '" /></a>';
-		}
-		else
-		{
-			$temp_url = '';
-			$delpost_img = '';
-		}
+			$template->assign_block_vars('rooms', array(
+				'NAME' => $lang['Admin_rooms'],
+				'LIST' => '',
+				'STYLED_LIST' => '',
+				'LINK' => append_sid('ajax_chat.' . PHP_EXT . $archive_link . '&amp;admin=1')
+				)
+			);
 
-		if($shouter_link != false)
-		{
-			$shouter_html = '<a href="' . $shouter_link . '" class="postlink"' . $shouter_color . '>' . $shouter . '</a>';
+			$admin_mode = request_var('admin', '');
+			if (!empty($admin_mode))
+			{
+				$admin_mode = true;
+				$archive_link .= '&amp;admin=1';
+			}
+			else
+			{
+				$admin_mode = false;
+			}
 		}
-		else
+		$room_filter = ($admin_mode == true) ? "shout_room != ''" : "shout_room like '%|" . $user->data['user_id'] . "|%'";
+		$sql = "SELECT DISTINCT shout_room
+				FROM " . AJAX_SHOUTBOX_TABLE . "
+				WHERE " . $room_filter . "
+				ORDER BY shout_id DESC";
+		$results = $db->sql_query($sql);
+		$rooms = $db->sql_fetchrowset($results);
+		$room_users = get_chat_room_users($rooms, $chat_room, $archive_link);
+		$chatroom_title = $room_users['title'];
+		$chatroom_userlist = $room_users['userlist'];
+		$rooms = $room_users['rooms'];
+		foreach ($rooms as $room)
 		{
-			$shouter_html = $shouter;
+			$template->assign_block_vars('rooms', $room);
 		}
-
-		$template->assign_block_vars('shouts', array(
-			'ID' => $id,
-			'SHOUTER' => $shouter_html,
-			'MESSAGE' => $message,
-			'DELETE_IMG' => $delpost_img,
-			'DATE' => $time
-			)
-		);
 	}
+
+	$template->assign_vars(array(
+		'L_SHOUTBOX_EMPTY' => $lang['Shoutbox_empty'],
+		'L_SHOUT_ROOMS' => $lang['Shout_rooms'],
+		'L_SHOUT_ROOM_TITLE' => $chatroom_title,
+		'L_SHOUT_ROOM_LIST' => $chatroom_userlist
+		)
+	);
 }
 
 full_page_generation($template_to_parse, ($template_to_parse == 'ajax_chat_body.tpl') ? $lang['Ajax_Chat'] : $lang['Ajax_Archive'], '', '');
