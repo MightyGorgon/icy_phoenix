@@ -3840,7 +3840,7 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 			{
 				return '';
 			}
-			$im_ref = '#" onclick="window.open(\'' . append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']))) . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;';
+			$im_ref = append_sid('ajax_chat.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']))) . '" target="_chat';
 		}
 
 		$im_img = (!empty($im_img) && !empty($im_icon)) ? $im_icon : false;
@@ -4375,7 +4375,7 @@ function page_header($title = '', $parse_template = false)
 		}
 
 		$u_login_logout = CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $user->data['session_id'];
-		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ') ';
+		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ')';
 		$l_login_logout2 = $lang['Logout'];
 		$s_last_visit = create_date($config['default_dateformat'], $user->data['user_lastvisit'], $config['board_timezone']);
 
@@ -4441,7 +4441,7 @@ function page_header($title = '', $parse_template = false)
 			{
 				$new_private_chat_switch = true;
 				$icon_private_chat = $images['private_chat_alert'];
-				$u_private_chat = append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . $user->data['user_private_chat_alert']);
+				$u_private_chat = append_sid('ajax_chat.' . PHP_EXT . '?chat_room=' . $user->data['user_private_chat_alert']);
 			}
 
 			if ($user->data['user_unread_privmsg'])
