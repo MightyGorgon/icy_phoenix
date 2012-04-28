@@ -31,12 +31,13 @@ if (!defined('IN_ICYPHOENIX'))
 // ------------------------------------------------------------------------
 // Get the name of this user
 // ------------------------------------------------------------------------
-$username = album_get_user_name($album_user_id);
-if (empty($username))
+$album_user = album_get_user($album_user_id);
+if (empty($album_user))
 {
 	if (!defined('STATUS_404')) define('STATUS_404', true);
 	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
+$username = $album_user['username'];
 
 $moderators_list = empty($moderators_list) ? $username : ',' . $username;
 
@@ -408,6 +409,8 @@ $template->assign_vars(array(
 	'CAT_TITLE' => ($is_root_cat || $album_view_mode == ALBUM_VIEW_ALL) ? htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User'], $username)) : $thiscat['cat_title'],
 	'ALBUM_NAVIGATION_ARROW' => ALBUM_NAV_ARROW,
 	'NAV_CAT_DESC' => $album_nav_cat_desc,
+
+	'ALBUM_AUTHOR_AVATAR' => user_get_avatar($album_user['user_id'], $album_user['user_level'], $album_user['user_avatar'], $album_user['user_avatar_type'], $album_user['user_allowavatar']),
 
 	'L_PERSONAL_GALLERY_EXPLAIN' => $lang['Personal_Gallery_Explain'],
 
