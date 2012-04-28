@@ -1,7 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function checkForm(formObj)
 {
 	formErrors = false;
@@ -18,8 +18,9 @@ function checkForm(formObj)
 		alert(formErrors);
 		return false;
 	}
+	return true;
 }
-//-->
+// ]]>
 </script>
 
 <form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this)">
