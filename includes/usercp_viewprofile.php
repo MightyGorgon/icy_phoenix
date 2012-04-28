@@ -623,9 +623,12 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yahoo_img,
 	'YIM' => $yahoo,
 	'U_YIM' => $yahoo_url,
-	'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
 
-	'ICON_CHAT' => $all_ims['chat']['icon'],
+	// JHL this is added below, taking into account further tests (such as not chatting with yourself) - Start
+	//'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
+	//'ICON_CHAT' => $all_ims['chat']['icon'],
+	// JHL this is added below, taking into account further tests (such as not chatting with yourself) - End
+
 	'ICON_AIM' => $all_ims['aim']['icon'],
 	'ICON_FACEBOOK' => $all_ims['facebook']['icon'],
 	'ICON_FLICKR' => $all_ims['flickr']['icon'],
@@ -771,16 +774,22 @@ $template->assign_vars(array(
 );
 
 // Don't chat with yourself - it's antisocial
-if ($user->data['user_id'] != $profiledata['user_id'])
+if ($user->data['session_logged_in'] && $user->data['user_id'] != $profiledata['user_id'])
 {
-	$template->assign_vars(array(
-		'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
-
-		'ICON_CHAT' => $all_ims['chat']['icon'],
-		)
-	);
+	if (!function_exists('user_in_chat_session'))
+	{
+		include(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
+	}
+	// Only if the user is in the chat room
+	if (user_in_chat_session($profiledata['user_id']))
+	{
+		$template->assign_vars(array(
+			'U_AJAX_SHOUTBOX_PVT_LINK' => append_sid('ajax_chat.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))),
+			'ICON_CHAT' => $all_ims['chat']['icon']
+			)
+		);
+	}
 }
-
 // Custom Profile Fields - BEGIN
 // Include Language
 setup_extra_lang(array('lang_profile_fields'));
