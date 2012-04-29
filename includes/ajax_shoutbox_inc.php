@@ -605,7 +605,7 @@ if ($config['shout_allow_guest'] > 0)
 {
 	// Guest and Users may see the shoutbox
 	$template->assign_block_vars('view_shoutbox', array(
-		'REFRESH_TIME' => (int) $config['ajax_chat_session_refresh'] * 1000,
+		'REFRESH_TIME' => (int) $config['ajax_chat_msgs_refresh'] * 1000,
 		'RESPONSE_TYPE' => $response_type,
 		'CHAT_ROOM' => $chat_room,
 		'USER_ID' => $user->data['user_id'],
@@ -638,7 +638,7 @@ else
 	if ($user->data['session_logged_in'])
 	{
 		$template->assign_block_vars('view_shoutbox', array(
-			'REFRESH_TIME' => (int) $config['ajax_chat_session_refresh'] * 1000,
+			'REFRESH_TIME' => (int) $config['ajax_chat_msgs_refresh'] * 1000,
 			'RESPONSE_TYPE' => $response_type,
 			'CHAT_ROOM' => $chat_room,
 			'USER_ID' => $user->data['user_id'],
