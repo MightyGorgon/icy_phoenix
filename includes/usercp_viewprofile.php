@@ -768,8 +768,8 @@ $template->assign_vars(array(
 	)
 );
 
-// Don't chat with yourself - it's antisocial
-if ($user->data['session_logged_in'] && ($user->data['user_id'] != $profiledata['user_id']))
+// Profiled user must be online, so must the current user, and the profiled user must not the currently logged in user
+if (($user_online_status != 'offline') && $user->data['session_logged_in'] && ($user->data['user_id'] != $profiledata['user_id']))
 {
 	$display_chat_link = true;
 	if (!empty($config['ajax_chat_check_online']))
@@ -783,13 +783,16 @@ if ($user->data['session_logged_in'] && ($user->data['user_id'] != $profiledata[
 		$display_chat_link = !empty($is_user_in_chat) ? true : false;
 	}
 
-	$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
-	$ajax_chat_room = 'chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']));
 	if ($display_chat_link)
 	{
+		$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
+		$ajax_chat_room = 'chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']));
+		$ajax_chat_link = append_sid($ajax_chat_page . '?' . $ajax_chat_room);
+		$ajax_chat_ref = !empty($config['ajax_chat_link_type']) ? ($ajax_chat_link . '" target="_chat') : ('#" onclick="window.open(\'' . $ajax_chat_link . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;');
 		$template->assign_vars(array(
-			'U_AJAX_SHOUTBOX_PVT_LINK' => append_sid($ajax_chat_page . '?' . $ajax_chat_room),
-			'ICON_CHAT' => $all_ims['chat']['icon']
+			'U_AJAX_SHOUTBOX_PVT_LINK' => $ajax_chat_ref,
+			'ICON_CHAT' => $all_ims['chat']['icon'],
+			'U_CHAT' => $all_ims['chat']['url']
 			)
 		);
 	}
