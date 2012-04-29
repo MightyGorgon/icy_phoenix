@@ -527,8 +527,10 @@ class class_topics
 				$posts[$i]['post_id'] = $row['post_id'];
 				$posts[$i]['post_attachment'] = $row['post_attachment'];
 
-				$message = $posts[$i]['post_text'];
-				$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
+				if ($text_length >= 0)
+				{
+					$message = $posts[$i]['post_text'];
+					$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
 
 				$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
 				$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
@@ -541,15 +543,14 @@ class class_topics
 					$posts[$i]['striped'] = 1;
 				}
 
-				$posts[$i]['post_text'] = ($message_compiled === false) ? $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags) : $message_compiled;
+					$posts[$i]['post_text'] = ($message_compiled === false) ? $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags) : $message_compiled;
 
-				if (!empty($clean_tags))
-				{
-					$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? (substr($posts[$i]['post_text'], 0, $text_length) . ' ...') : $posts[$i]['post_text'];
-				}
+					if (!empty($clean_tags))
+					{
+						$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? truncate_html_string($posts[$i]['post_text'], $text_length) : $posts[$i]['post_text'];
+					}
 
-				$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
-				$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
+					$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
 
 				//Acronyms, AutoLinks - BEGIN
 				if ($posts[$i]['enable_autolinks_acronyms'])
@@ -558,6 +559,8 @@ class class_topics
 					$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
 				}
 				//Acronyms, AutoLinks - END
+				$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
+
 				$i++;
 			}
 			while ($row = $db->sql_fetchrow($result));

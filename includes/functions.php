@@ -3840,7 +3840,7 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 			{
 				return '';
 			}
-			$im_ref = '#" onclick="window.open(\'' . append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']))) . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;';
+			$im_ref = append_sid('ajax_chat.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']))) . '" target="_chat';
 		}
 
 		$im_img = (!empty($im_img) && !empty($im_icon)) ? $im_icon : false;
@@ -4441,7 +4441,7 @@ function page_header($title = '', $parse_template = false)
 			{
 				$new_private_chat_switch = true;
 				$icon_private_chat = $images['private_chat_alert'];
-				$u_private_chat = append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . $user->data['user_private_chat_alert']);
+				$u_private_chat = append_sid('ajax_chat.' . PHP_EXT . '?chat_room=' . $user->data['user_private_chat_alert']);
 			}
 
 			if ($user->data['user_unread_privmsg'])
@@ -6227,6 +6227,126 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	exit_handler();
 
 	exit;
+}
+
+//
+// Truncates HTML strings cleanly
+// Taken from code in http://stackoverflow.com/questions/1193500/php-truncate-html-ignoring-tags
+//
+function truncate_html_string($text, $length, $ellipsis = '...')
+{
+	if (strlen(preg_replace(array('/<.*?>/', '/&#?[a-zA-Z0-9]+;/'), array('', ' '), $text)) <= $length)
+	{
+		return $text;
+	}
+
+	$printed_length = 0;
+	$position = 0;
+	$tags = array();
+	$clean_text = '';
+	while ($printed_length < $length && preg_match('{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}', $text, $match, PREG_OFFSET_CAPTURE, $position))
+	{
+		list($tag, $tag_position) = $match[0];
+
+		// append text leading up to the tag.
+		$str = substr($text, $position, $tag_position - $position);
+		if ($printed_length + strlen($str) > $length)
+		{
+			break;
+		}
+
+		$clean_text .= $str;
+		$printed_length += strlen($str);
+
+		if ($tag[0] == '&')
+		{
+			// Handle the entity.
+			$clean_text .= $tag;
+			$printed_length++;
+		}
+		else
+		{
+			// Handle the tag.
+			$tag_name = $match[1][0];
+			if ($tag[1] == '/')
+			{
+				// This is a closing tag.
+
+				$opening_tag = array_pop($tags);
+				assert($opening_tag == $tag_name); // check that tags are properly nested.
+
+				$clean_text .= $tag;
+			}
+			else if ($tag[strlen($tag) - 2] == '/')
+			{
+				// Self-closing tag.
+				$clean_text .= $tag;
+			}
+			else
+			{
+				// Opening tag.
+				$clean_text .= $tag;
+				$tags[] = $tag_name;
+			}
+		}
+
+		// Continue after the tag.
+		$position = $tag_position + strlen($tag);
+	}
+
+	// Print any remaining text.
+	if ($printed_length < $length && $position < strlen($text))
+	{
+		$max_length = $length - $printed_length;
+		$utf8_length = 0;
+		while ($utf8_length < $max_length)
+		{
+			$char = substr($text, $position + $utf8_length, 1);
+			// UTF-8 character encoding - BEGIN
+			$code = ord($char);
+			if ($code >= 0x80)
+			{
+				if ($code < 0xE0)
+				{
+					// Two byte
+					if (($max_length - $utf8_length) >= 2)
+					{
+						$utf8_length = $utf8_length + 2;
+					}
+					else
+					{
+						break;
+					}
+				}
+				elseif ($code1 < 0xF0)
+				{
+					// Three byte
+					if (($max_length - $utf8_length) >= 3)
+					{
+						$utf8_length = $utf8_length + 3;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				$utf8_length = $utf8_length + 1;
+			}
+			// UTF-8 character encoding - END
+		}
+		$clean_text .= substr($text, $position, $utf8_length);
+	}
+	$clean_text .= $ellipsis;
+
+	// Close any open tags.
+	while (!empty($tags))
+	{
+		$clean_text .= '</' . array_pop($tags) . '>';
+	}
+	return $clean_text;
 }
 
 ?>

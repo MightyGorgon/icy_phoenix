@@ -18,6 +18,11 @@ var SHOUT_PREFIX = "{L_SHOUT_PREFIX}";
 var USER_PREFIX = "{L_USER_PREFIX}";
 var ROOM_PREFIX = "{L_ROOM_PREFIX}";
 
+// Room titles
+var PUBLIC_CHATROOM = "{L_PUBLIC_ROOM}";
+var PRIVATE_CHATROOM = "{L_PRIVATE_ROOM}";
+var START_PRIVATE_CHAT = "{L_START_PRIVATE_CHAT}";
+
 <!-- BEGIN onload -->
 var oldOnLoad = window.onload;
 if (typeof oldOnLoad == 'function')
@@ -114,17 +119,19 @@ var AjaxContext = {
 	currentUsers: new Object(),
 	usersParsed: false,
 
+	// List of users in the private chatrooms
+	privateUsers: {PRIVATE_USERS},
+
 	// Private chat room
 	chatRoom: "{view_shoutbox.CHAT_ROOM}",
 
-	// Private chat room user id
-	chatUser: "{view_shoutbox.USER_ID}",
-
 	// Parse the XML document, executing code for each matched element
 	// Returns true if successful, otherwise false.
-	parseXMLDocument: function(doc, functions) {
-		for (var name in functions)
+	parseXMLDocument: function(doc, functionList, functions) {
+		functionList = functionList.split(",");
+		for (var index = 0; index < functionList.length; index++)
 		{
+			var name = functionList[index];
 			if (functions.hasOwnProperty(name))
 			{  
 				var list = new Array();
@@ -155,10 +162,12 @@ var AjaxContext = {
 
 	// Parse the JSON document, executing code for each matched element
 	// Returns true if successful, otherwise false.
-	parseJSONDocument: function(doc, functions) {
+	parseJSONDocument: function(doc, functionList, functions) {
+		functionList = functionList.split(",");
 		var response = doc.response;
-		for (var name in functions)
+		for (var index = 0; index < functionList.length; index++)
 		{
+			var name = functionList[index];
 			if ((functions.hasOwnProperty(name)) && (typeof response[name] != "undefined"))
 			{
 				if (!functions[name].call(this, response[name]))
@@ -238,7 +247,7 @@ var AjaxContext = {
 	stdSuccess: function(data, status, jqXHR) {
 		var functions = { status: this.checkErrorStatus };
 		var parseDocument = (this.dataType == "xml") ? this.parseXMLDocument : this.parseJSONDocument;
-		if (parseDocument.call(this, data, functions))
+		if (parseDocument.call(this, data, "status", functions))
 		{
 			if (typeof this.doneFunction == 'function')
 			{
@@ -246,6 +255,23 @@ var AjaxContext = {
 			}
 		}
 		return false;
+	},
+
+	// Read the romm user list
+	// Returns false if an error occurred, otherwise true
+	checkRoomUsers: function(users) {
+		// add private chatroom users
+		for (var index = 0; index < users.length; index++) 
+		{
+			var user = users[index];
+			user.user_id = parseInt(user.user_id);
+			this.privateUsers[user.user_id] = {
+				id: user.user_id,
+				username: user.username,
+				style: user.user_style
+			};
+		}
+		return true;
 	},
 
 	// Check and display the shouts (if any)
@@ -261,14 +287,16 @@ var AjaxContext = {
 				this.shoutsParsed = true;
 				var link = shout.shouter_link;
 				shout.shouter_name = (link != "-1") ? "<a href=\"" + link + "\" {S_TARGET}" + shout.shouter_color + ">" + shout.shouter + "<\/a>" : shout.shouter;
-				var roomId = (typeof shout.room == 'string' && shout.room != '') ? shout.room.replace(/\|/g, '-') : 'public';
-				var tableId = 'outputList-' + roomId;
-				var table = $('#' + tableId);
+				var roomId = (typeof shout.room == "string" && shout.room != "") ? shout.room.replace(/\|/g, "-") : "public";
+				var tableId = "outputList-" + roomId;
+				var table = $("#" + tableId);
 				if (!table.length)
 				{
 					// add new chat tab
-					table = addChatTab(shout.room);
+					table = addChatTab(shout.room, this.privateUsers);
 				}
+				chatTabNewShout(shout.room);
+
 				var cssClass = this.zebra.odd;
 				var firstShout = $("#" + tableId + " tr:first");
 				if (firstShout.length)
@@ -309,14 +337,16 @@ var AjaxContext = {
 			}
 			else
 			{
-				this.currentUsers[id] = {
+				var newUser = {
 					id: user.user_id,
 					username: user.username,
-					link: user.user_link,
-					style: user.link_style,
+					link: user.chat_link,
+					style: user.user_style,
 					isNew: true,
 					valid: true
 				};
+				this.currentUsers[id] = newUser;
+				this.privateUsers[user.user_id] = newUser;
 			}
 		}
 		this.usersParsed = true;
@@ -402,13 +432,14 @@ var AjaxContext = {
 		this.shoutsParsed = false;
 		this.usersParsed = false;
 		var functions = { 
+			user: this.checkRoomUsers,
 			status: this.checkErrorStatus,
 			shout: this.checkShouts,
 			online: this.checkOnlineUsers,
 			onstats: this.checkStatistics
 		};
 		var parseDocument = (this.dataType == "xml") ? this.parseXMLDocument : this.parseJSONDocument;
-		if (parseDocument.call(this, data, functions))
+		if (parseDocument.call(this, data, "status,user,online,onstats,shout", functions))
 		{
 			if (this.shoutsParsed)
 			{
@@ -542,7 +573,7 @@ function leaveChat(evt)
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_jplayer_compressed.js"></script>
 <script type="text/javascript">
 // <![CDATA[
-$(document).ready(function(){
+$(document).ready(function() {
 	// Local copy of jQuery selectors, for performance.
 	var ac_jPlayer = $("#ac_notify");
 

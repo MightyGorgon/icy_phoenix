@@ -17,7 +17,11 @@ function initChat(evt)
 <!-- BEGIN guest_shouter -->
 	checkName(); // checks the initial value of the input name
 <!-- END guest_shouter -->
-	addChatTab(AjaxContext.chatRoom); // add default tab
+	addChatTab("", ""); // add public tab
+	if (AjaxContext.chatRoom != "") // add private tab
+	{
+		addChatTab(AjaxContext.chatRoom, AjaxContext.privateUsers);
+	}
 	activateChatTab(AjaxContext.chatRoom);
 	receiveChatData(); // initiates the first data query
 	return true;
@@ -40,64 +44,106 @@ function checkName()
 	var name = $("#name");
 	if (name.val() == "")
 	{
-		name.val('guest_' + Math.floor(Math.random() * 10000));
+		name.val("guest_" + Math.floor(Math.random() * 10000));
 	}
 }
 <!-- END guest_shouter -->
 
-// Create new chat window
-function addChatTab(room)
+// Convert the room to an identifier
+function roomToId(room)
 {
-	var roomId = (typeof room == 'string' && room != '') ? room.replace(/\|/g, '-') : 'public';
-	var tableId = 'outputList-' + roomId;
-	var title = 'public';
+	return (typeof room == "string" && room != "") ? room.replace("|", "-") : "public";
+}
+
+// Create new chatroom window
+function addChatTab(room, users)
+{
+	// already exists?
+	var roomId = roomToId(room);
+	var tableId = "outputList-" + roomId;
+	var table = $("#" + tableId);
+	if (table.length)
+	{
+		return table;
+	}
+
 	// tab title
-	if (roomId != 'public')
+	var title = PUBLIC_CHATROOM;
+	if (roomId != "public")
 	{
 		// find all users participating in conversation
-		var list = room.split('|');
-		var users = '';
+		var list = room.split("|");
+		var usernames = "";
+		var comma = "";
 		for (var i = 0; i < list.length; i++)
 		{
-			if (list[i] != AjaxContext.chatUser)
-			{
-				users += (users.length ? ', ' : '') + list[i];
-			}
+			var id = parseInt(list[i]);
+			usernames += comma + insertChatTabUser(users[id]);
+			comma = ", ";
 		}
-		title = users;
+		title = PRIVATE_CHATROOM + " (" + usernames + ")";
 	}
 	// add tab
 	var html = insertChatTab(roomId, room, title);
-	if (roomId == 'public')
+	if (roomId == "public")
 	{
-		$('#shoutsTabs').prepend(html);
+		$("#shoutsTabs").prepend(html);
 	}
 	else
 	{
-		$('#shoutsTabs').append(html);
+		$("#shoutsTabs").append(html);
 	}
+
 	// add tab container table
 	html = insertChatContainer(tableId);
-	$('#shoutsContainer').prepend(html);
-	return $('#' + tableId).data('room', room);
+	$("#shoutsContainer").prepend(html);
+	return $("#" + tableId).data("room", room);
 }
 
+// Activate the chatroom window
 function activateChatTab(room)
 {
-	var roomId = (typeof room == 'string' && room != '') ? room.replace(/\|/g, '-') : 'public';
-	var tableId = 'outputList-' + roomId;
 	// find tab
-	var tab = $('#chat-tab-' + roomId);
-	if (!tab.length || tab.hasClass('active')) return;
+	var roomId = roomToId(room);
+	var tab = $("#chat-tab-" + roomId);
+	if (!tab.length || tab.hasClass("active")) {
+		return;
+	}
+
 	// hide active tab and table
-	var oldId = (AjaxContext.chatRoom == '') ? 'public' : AjaxContext.chatRoom.replace(/\|/g, '-');
-	$('#chat-tab-' + oldId).removeClass('active');
-	$('#outputList-' + oldId).hide();
+	var oldId = roomToId(AjaxContext.chatRoom);
+	$("#chat-tab-" + oldId).removeClass("active");
+	$("#outputList-" + oldId).hide();
+
 	// show new tab and table
-	tab.addClass('active');
-	$('#outputList-' + roomId).show();
-	AjaxContext.chatRoom = (room === 'public') ? '' : room;
+	if (tab.hasClass("new-shout"))
+	{
+		tab.removeClass("new-shout");
+	}
+	tab.addClass("active");
+	$("#outputList-" + roomId).show();
+	AjaxContext.chatRoom = room;
 }
+
+// Add and activate chat room  - used to open (or reopen) a private chat room
+function addAndActivateChatTab(room)
+{
+	addChatTab(room, AjaxContext.privateUsers);
+	activateChatTab(room);
+}
+
+// A new shout has been added to a chatroom window
+function chatTabNewShout(room)
+{
+	var roomId = roomToId(room);
+	var tab = $("#chat-tab-" + roomId);
+	if (!tab.length || tab.hasClass("active") || tab.hasClass("new-shout"))
+	{
+		return;
+	}
+	tab.addClass("new-shout");
+}
+
 // ]]>
 </script>
 <!-- END view_shoutbox -->

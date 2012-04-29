@@ -38,10 +38,17 @@ AjaxContext.zebra = {
 // DOM insertion callbacks
 //
 
+// Write the HTML for a new chatroom user
+function insertChatTabUser(user)
+{
+	var output = "<span" + user.style + ">" + user.username + "</span>";
+	return output;
+}
+
 // Write the HTML for a new chatroom tab
 function insertChatTab(roomId, room, title)
 {
-	var output = " [<a href=\"#\" id=\"chat-tab-" + roomId + "\" onclick=\"activateChatTab('" + room + "'); return false;\">" + title + "</a>] ";
+	var output = " <a href=\"#\" id=\"chat-tab-" + roomId + "\" style=\"white-space: nowrap;\" onclick=\"javascript:activateChatTab('" + room + "');\">" + title + "</a> ";
 	return output;
 }
 
@@ -71,13 +78,21 @@ function insertNewShout(id, shout)
 	return output;
 }
 
-// Write the HTML as a string for a new user
+// Write the HTML as a string for a new online user
 function insertNewUser(id, user)
 {
 	var output = "<span id=\"" + id + "\"";
 	output += " style=\"text-align: left; display: inline; margin-right: 5px;\">";
-	output += "<a href=\"" + user.link + "\" class=\"gensmall\" {S_TARGET} " +
-		user.style + ">" + user.username + "<\/a><span class=\"comma\">,</span>";
+	if (user.link != "")
+	{
+		output += "<a href=\"#\" onclick=\"" + user.link + "\" class=\"gensmall\"" +
+			" alt=\"" + START_PRIVATE_CHAT + "\" title=\"" + START_PRIVATE_CHAT + 
+			"\"" + user.style + ">" + user.username + "<\/a><span class=\"comma\">,</span>";
+	}
+	else
+	{
+		output += "<span class=\"gensmall\"" + user.style + ">" + user.username + "<\/span><span class=\"comma\">,</span>";
+	}
 	output += "</span>";
 	return output;
 }
@@ -96,7 +111,7 @@ function highlightShout(id, isNew)
 	}
 }
 
-// Highlight the newly added user
+// Highlight the newly added online user
 function highlightUser(id)
 {
 	Fat.fade_element(id, 30, 2000, '#ff5500');
@@ -107,7 +122,7 @@ function chatDataChanged()
 {
 	$('#online_list > span > .comma').show();
 	$('#online_list > span:last > .comma').hide();
-	playsound(sound_url);
+	playsound();
 }
 
 function classChanger(id)
@@ -116,22 +131,9 @@ function classChanger(id)
 	item.find('td').prop('class', item.data('class'));
 }
 
-var sound_ver = parseInt(navigator.appVersion);
-var sound_ie4 = ((sound_ver > 3) && (navigator.appName != "Netscape")) ? 1 : 0;
-var sound_ns3 = ((sound_ver == 3) && (navigator.appName == "Netscape")) ? 1 : 0;
-var sound_ns4 = ((sound_ver > 3) && (navigator.appName == "Netscape")) ? 1 : 0;
-var sound_flag = ((sound_ns3 || sound_ns4) && (!navigator.javaEnabled() || !navigator.mimeTypes['audio/wav'])) ? false : true;
-
-var sound_url = "{FULL_SITE_PATH}/notify.wav";
-
-function playsound(soundfile)
+function playsound()
 {
 	$("#ac_notify").jPlayer("play");
-	if (sound_flag)
-	{
-		// OLD notify code... commented out... let's wait HTML 5!
-		//$("#notify").empty().prepend("<embed src=\"" + soundfile + "\" autostart=\"true\" hidden=\"true\" loop=\"false\">");
-	}
 }
 
 // ]]>

@@ -1824,8 +1824,9 @@ elseif ($submit || $refresh || ($mode != ''))
 
 	/* Start Private Message Review By aUsTiN */
 	//$post_to_review = $_GET['p'];
-	$post_to_review = request_var('p', 0);
-	if ($post_to_review > 0)
+	$post_to_review = request_var(POST_POST_URL, 0);
+	$review_mode = request_var('mode', '');
+	if (($post_to_review > 0) && ($review_mode == 'reply'))
 	{
 		$q = "SELECT *
 				FROM " . PRIVMSGS_TABLE . "

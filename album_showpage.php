@@ -396,7 +396,7 @@ if(!empty($comment_id) && $album_config['comment'] == 1)
 // Get this pic info and current category info
 // ------------------------------------
 
-$sql = "SELECT p.*, ac.*, u.user_id, u.username, u.user_active, u.user_color, u.user_rank, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments_count
+$sql = "SELECT p.*, ac.*, u.user_id, u.username, u.user_active, u.user_color, u.user_rank, u.user_level, u.user_avatar, u.user_avatar_type, u.user_allowavatar, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments_count
 		FROM " . ALBUM_CAT_TABLE . " AS ac, " . ALBUM_TABLE . " AS p
 			LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 			LEFT JOIN " . ALBUM_COMMENT_TABLE . " AS c ON p.pic_id = c.comment_pic_id
@@ -979,6 +979,15 @@ if(empty($comment_text) && !isset($_POST['rating']))
 
 	$pic_full_set = (($picm == false) || ($nuff_display == true)) ? true : false;
 
+	$user_info = array();
+	$user_info = generate_user_info($thispic);
+	foreach ($user_info as $k => $v)
+	{
+		$$k = $v;
+	}
+
+	$poster_avatar = $user_info['avatar'];
+
 	$template->assign_vars(array(
 		'CAT_TITLE' => $thispic['cat_title'],
 		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
@@ -1025,6 +1034,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 		'POSTER' => $poster,
+		'POSTER_AVATAR' => $poster_avatar,
 
 		'PIC_TIME' => create_date_ip($config['default_dateformat'], $thispic['pic_time'], $config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],

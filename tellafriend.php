@@ -24,13 +24,13 @@ $user->setup();
 
 $topic_title = request_var('topic_title', '', true);
 $topic_id = request_var('topic_id', 0);
-$topic_link = request_var('topic_link', '', true);
+$topic_url = request_var('topic_url', '', true);
 $message = request_var('message', '', true);
 $PHP_SELF = $_SERVER['SCRIPT_NAME'];
 
 if (!$user->data['session_logged_in'])
 {
-	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id .'&topic_link=' . urlencode($topic_link), true));
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . 'tellafriend.' . PHP_EXT . '&topic_title=' . urlencode($topic_title) . '&topic_id=' . $topic_id .'&topic_url=' . urlencode($topic_url), true));
 }
 
 if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
@@ -40,6 +40,12 @@ if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
 else
 {
 	$topic_link = create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id;
+}
+
+// Was an URl sent instead of a topic id?
+if ($topic_id == 0 && $topic_url != '')
+{
+	$topic_link = create_server_url() . $topic_url;
 }
 
 $mail_body = str_replace("{TOPIC}", htmlspecialchars_decode($topic_title), $lang['TELL_FRIEND_BODY']);
@@ -58,6 +64,7 @@ $template->assign_vars(array(
 
 	'TOPIC_TITLE' => $topic_title,
 	'TOPIC_ID' => $topic_id,
+	'TOPIC_URL' => $topic_url,
 	'TOPIC_LINK' => $topic_link,
 	)
 );

@@ -45,7 +45,7 @@ if(GetCookie(tmp) == '2')
 	</td>
 </tr>
 <!-- BEGIN switch_ac_online -->
-<tr><td class="row1" valign="middle"><span class="gensmall">{AC_LIST_TEXT}&nbsp;{AC_LIST}&nbsp;[&nbsp;<a href="{U_AJAX_SHOUTBOX_PP}" target="_blank">{L_AJAX_SHOUTBOX}</a>&nbsp;]</span></td></tr>
+<tr><td class="row1" valign="middle"><span class="gensmall">{AC_LIST_TEXT}&nbsp;{AC_LIST}&nbsp;[&nbsp;<a href="{U_AJAX_SHOUTBOX}" target="_blank">{L_AJAX_SHOUTBOX}</a>&nbsp;]</span></td></tr>
 <!-- END switch_ac_online -->
 <tr>
 	<td class="row1">

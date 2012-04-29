@@ -122,7 +122,7 @@ function get_online_page($page_id)
 	elseif (strpos($page_id, 'ajax_') !== false)
 	{
 		$location['lang'] = $lang['Ajax_Shoutbox'];
-		$location['url'] = 'ajax_shoutbox.' . PHP_EXT;
+		$location['url'] = 'ajax_chat.' . PHP_EXT;
 		return $location;
 	}
 	elseif (strpos($page_id, 'shoutbox') !== false)
