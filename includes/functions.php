@@ -3783,7 +3783,7 @@ function get_gravatar($email)
 */
 function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = false, $im_url = false, $im_status = false, $im_lang = false)
 {
-	global $user, $lang, $images;
+	global $config, $user, $lang, $images;
 
 	$available_im = array(
 		'chat' => array('field' => 'user_id', 'lang' => 'AJAX_SHOUTBOX_PVT_LINK', 'icon_tpl' => 'icon_im_chat', 'icon_tpl_vt' => 'icon_im_chat', 'url' => '{REF}'),
@@ -3840,7 +3840,12 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 			{
 				return '';
 			}
-			$im_ref = append_sid('ajax_chat.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']))) . '" target="_chat';
+
+			$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
+			$ajax_chat_room = 'chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']));
+			$ajax_chat_link = append_sid($ajax_chat_page . '?' . $ajax_chat_room);
+
+			$im_ref = !empty($config['ajax_chat_link_type']) ? ($ajax_chat_link . '" target="_chat') : ('#" onclick="window.open(\'' . $ajax_chat_link . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;');
 		}
 
 		$im_img = (!empty($im_img) && !empty($im_icon)) ? $im_icon : false;
@@ -4375,7 +4380,7 @@ function page_header($title = '', $parse_template = false)
 		}
 
 		$u_login_logout = CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $user->data['session_id'];
-		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ') ';
+		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ')';
 		$l_login_logout2 = $lang['Logout'];
 		$s_last_visit = create_date($config['default_dateformat'], $user->data['user_lastvisit'], $config['board_timezone']);
 
@@ -4441,7 +4446,12 @@ function page_header($title = '', $parse_template = false)
 			{
 				$new_private_chat_switch = true;
 				$icon_private_chat = $images['private_chat_alert'];
-				$u_private_chat = append_sid('ajax_chat.' . PHP_EXT . '?chat_room=' . $user->data['user_private_chat_alert']);
+
+				$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
+				$ajax_chat_room = 'chat_room=' . $user->data['user_private_chat_alert'];
+				$ajax_chat_link = append_sid($ajax_chat_page . '?' . $ajax_chat_room);
+
+				$u_private_chat = $ajax_chat_link;
 			}
 
 			if ($user->data['user_unread_privmsg'])

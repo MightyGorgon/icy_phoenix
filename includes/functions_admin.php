@@ -64,6 +64,19 @@ function fix_config_values($config_name, $config_value)
 		}
 	}
 
+	// AJAX CHAT - BEGIN
+	if ($config_name == 'ajax_chat_msgs_refresh')
+	{
+		// Just make sure ajax_chat_msgs_refresh is not below 1 second
+		$config_value = ((int) $config_value < 1) ? 1 : $config_value;
+	}
+	if ($config_name == 'ajax_chat_session_refresh')
+	{
+		// Just make sure ajax_chat_session_refresh is not below 5 seconds
+		$config_value = ((int) $config_value < 5) ? 5 : $config_value;
+	}
+	// AJAX CHAT - END
+
 	return $config_value;
 }
 

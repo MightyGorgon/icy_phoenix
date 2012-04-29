@@ -669,7 +669,7 @@ function album_get_user_name($user_id)
 // ------------------------------------------------------------------------
 function album_get_user($user_id)
 {
-	global $db;
+	global $db, $cache;
 
 	if ($user_id == ALBUM_PUBLIC_GALLERY)
 	{

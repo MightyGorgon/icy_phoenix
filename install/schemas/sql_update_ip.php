@@ -2249,7 +2249,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('shoutbox_floodinterval', '3')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('display_shouts', '20')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('stored_shouts', '1000')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('shoutbox_refreshtime', '5000')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('shout_allow_guest', '0')";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "ajax_shoutbox` (
@@ -4460,6 +4459,13 @@ if (substr($mode, 0, 6) == 'update')
 		case '1.3.27.80':
 		$sql[] = "ALTER TABLE `" . $table_prefix . "album` CHANGE `pic_user_ip` `pic_user_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "UPDATE `" . $table_prefix . "album` ip SET ip.pic_user_ip = INET_NTOA(CONV(ip.pic_user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "ajax_shoutbox` SET shout_room = CONCAT(CONCAT('|', shout_room), '|') WHERE shout_room LIKE '%|%'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'shoutbox_refreshtime'";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_msgs_refresh', '5')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_session_refresh', '10')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_link_type', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_notification', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_check_online', '0')";
 
 		/* Updating from IP 1.3.28.81 */
 		case '1.3.28.81':

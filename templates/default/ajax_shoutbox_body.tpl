@@ -8,6 +8,9 @@
 
 <!-- BEGIN view_shoutbox -->
 
+<!-- OLD notify code... commented out... let's wait HTML 5! -->
+<!-- <span id="notify" style="height: 0px;">&nbsp;</span> -->
+
 <!-- USING jPlayer -->
 <div id="ac_notify" style="height: 0;">&nbsp;</div>
 

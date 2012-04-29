@@ -93,7 +93,6 @@ function addChatTab(room, users)
 	{
 		$("#shoutsTabs").append(html);
 	}
-
 	// add tab container table
 	html = insertChatContainer(tableId);
 	$("#shoutsContainer").prepend(html);

@@ -1852,16 +1852,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			$prv_msg_review = $lang['private_msg_review_error'];
 		}
 
-		if($_GET['mode'] == 'reply')
-		{
-			$block_var_switch = 'switch_prv_msg_review';
-		}
-		else
-		{
-			$block_var_switch = '';
-		}
-
-		$template->assign_block_vars($block_var_switch, array(
+		$template->assign_block_vars('switch_prv_msg_review', array(
 			'PRIVATE_MSG_REVIEW' => $prv_msg_review,
 			'PRIVATE_MSG_TITLE' => $lang['private_msg_review_title']
 			)

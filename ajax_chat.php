@@ -101,7 +101,7 @@ if (empty($mode))
 	$template->assign_vars(array(
 		'L_PAGE_TITLE' => $lang['Ajax_Chat'],
 		'L_WIO' => $lang['Who_is_Chatting'],
-		'L_GUESTS' =>  $lang['Online_guests'],
+		'L_GUESTS' => $lang['Online_guests'],
 		'L_TOTAL' => $lang['Online_total'],
 		'L_USERS' => $lang['Online_registered'],
 		'L_SHOUTBOX_ONLINE_EXPLAIN' => $lang['Shoutbox_online_explain'],
@@ -148,6 +148,7 @@ else
 					FROM ' . AJAX_SHOUTBOX_TABLE . ' s
 					WHERE ' . $chat_room_sql;
 	$result = $db->sql_query($sql);
+
 	$num_items = $db->sql_fetchrow($result);
 
 	$start = request_get_var('start', 0);
@@ -207,11 +208,11 @@ else
 	);
 
 	$template->assign_block_vars('view_shoutbox', array(
-		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
+		'REFRESH_TIME' => (int) $config['ajax_chat_msgs_refresh'] * 1000,
 		'RESPONSE_TYPE' => $response_type,
 		'CHAT_ROOM' => $chat_room,
 		'UPDATE_MODE' => 'archive',
-		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
+		'U_ACTION' => append_sid(IP_ROOT_PATH . CMS_PAGE_AJAX_SHOUTBOX)
 		)
 	);
 
@@ -224,8 +225,10 @@ else
 	}
 
 	// Get Who is Online in the shoutbox
-	// Only get session data if the user was online (refreshtime * 2) seconds ago
-	$time_ago = time() - floor($config['shoutbox_refreshtime'] / 1000 * 2);
+	// Only get session data if the user was online SESSION_REFRESH seconds ago
+	//$time_ago = time() - SESSION_REFRESH;
+	// Only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+	$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
 
 	// Set all counters to 0
 	$reg_online_counter = $guest_online_counter = $online_counter = 0;
@@ -400,7 +403,6 @@ else
 			$template->assign_block_vars('rooms', $room);
 		}
 	}
-
 	$template->assign_vars(array(
 		'L_SHOUTBOX_EMPTY' => $lang['Shoutbox_empty'],
 		'L_SHOUT_ROOMS' => $lang['Shout_rooms'],

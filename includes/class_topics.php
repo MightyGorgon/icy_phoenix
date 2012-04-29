@@ -532,16 +532,16 @@ class class_topics
 					$message = $posts[$i]['post_text'];
 					$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
 
-				$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
-				$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
-				$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
+					$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
+					$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
+					$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
 
-				$clean_tags = false;
-				if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))
-				{
-					$clean_tags = true;
-					$posts[$i]['striped'] = 1;
-				}
+					$clean_tags = false;
+					if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))
+					{
+						$clean_tags = true;
+						$posts[$i]['striped'] = 1;
+					}
 
 					$posts[$i]['post_text'] = ($message_compiled === false) ? $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags) : $message_compiled;
 
@@ -552,13 +552,14 @@ class class_topics
 
 					$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
 
-				//Acronyms, AutoLinks - BEGIN
-				if ($posts[$i]['enable_autolinks_acronyms'])
-				{
-					$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
-					$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
+					//Acronyms, AutoLinks - BEGIN
+					if ($posts[$i]['enable_autolinks_acronyms'])
+					{
+						$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
+						$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
+					}
+					//Acronyms, AutoLinks - END
 				}
-				//Acronyms, AutoLinks - END
 				$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
 
 				$i++;

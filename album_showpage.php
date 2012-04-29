@@ -231,6 +231,7 @@ if ($pic_array_id == ($total_pic_count - 1))
 // PREVIOUS & NEXT
 // ------------------------------------
 $pic_id_old = $total_pic_rows[$pic_array_id]['pic_id'];
+// Mighty Gorgon: JHL suggests to remove these two vars from here... but I think they have to stay!
 $no_prev_pic = false;
 $no_next_pic = false;
 if(isset($_GET['mode']) && ($_GET['mode'] == 'next'))
@@ -899,6 +900,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	}
 
 	// Mighty Gorgon - Pic Size - BEGIN
+	// Mighty Gorgon: JHL wants to remove this code by replacing the size with the ones added in album_config, but it's better to keep this code, to make sure proportions are always respected
 	$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
 	$pic_thumbnail_path = $pic_info['thumbnail_m_fullpath'];
 	$pic_thumbnail_size = @getimagesize($pic_thumbnail_path);
@@ -1021,6 +1023,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'L_PIC_DETAILS' => $lang['Pic_Details'],
 		'L_PIC_SIZE' => $lang['Pic_Size'],
 		'L_PIC_TYPE' => $lang['Pic_Type'],
+		// Mighty Gorgon: JHL wants to remove this code by replacing the size with the ones added in album_config, but it's better to keep this code, to make sure proportions are always respected
 		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $pic_thumbnail_height,
 		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $pic_thumbnail_width,
 		'PIC_SIZE' => $pic_width . ' x ' . $pic_height . ' (' . intval($pic_filesize/1024) . 'KB)',

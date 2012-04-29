@@ -1066,6 +1066,13 @@ CREATE TABLE `phpbb_referers` (
 ########################################
 ALTER TABLE `phpbb_album` CHANGE `pic_user_ip` `pic_user_ip` varchar(40) NOT NULL DEFAULT '';
 UPDATE `phpbb_album` ip SET ip.pic_user_ip = INET_NTOA(CONV(ip.pic_user_ip, 16, 10));
+UPDATE `phpbb_ajax_shoutbox` SET shout_room = CONCAT(CONCAT('|', shout_room), '|') WHERE shout_room LIKE '%|%';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'shoutbox_refreshtime';
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_msgs_refresh', '5');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_session_refresh', '10');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_link_type', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_notification', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_check_online', '0');
 
 
 

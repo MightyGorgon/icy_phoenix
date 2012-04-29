@@ -231,10 +231,10 @@ var AjaxContext = {
 	// Standard error handler
 	stdError: function(jqXHR, status, error) {
 		// See http://ilikestuffblog.com/2009/11/30/how-to-distinguish-a-user-aborted-ajax-call-from-an-error/
-		if (jqXHR.getAllResponseHeaders() || status == "timeout")
+		if (jqXHR.getAllResponseHeaders() || (status == "timeout"))
 		{
 			var message = (status == "timeout") ? ERROR_TIMEOUT : ERROR_RESPONSE;
-			if (typeof error == "string" && error != "")
+			if (typeof error == "string" && (error != ""))
 			{
 				message += "(" + error + ")";
 			}

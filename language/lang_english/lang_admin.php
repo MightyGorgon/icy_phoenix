@@ -1353,8 +1353,6 @@ $lang = array_merge($lang, array(
 	'Shout_guest_allowed' => 'Guest Allowed',
 	'Shoutbox_flood' => 'Flood Interval',
 	'Shoutbox_flood_explain' => 'Number of seconds a user must wait between shouts.',
-	'Shoutbox_refreshtime' => 'Refresh rate',
-	'Shoutbox_refresh_explain' => 'Time in milliseconds for the shoutbox to read new messages.<br /><i>This value should be over the 1000 milliseconds.</i>',
 // Ajax Shoutbox - END
 
 /* lang_postcount.php - BEGIN */
@@ -2064,6 +2062,19 @@ $lang = array_merge($lang, array(
 
 	'RANK_SHOW_TITLE' => 'Display rank title',
 	'RANK_SHOW_TITLE_EXPLAIN' => 'By disabling this option only rank image will be shown',
+
+	'AJAX_CHAT_MSGS_REFRESH' => 'Refresh Time Interval',
+	'AJAX_CHAT_MSGS_REFRESH_EXPLAIN' => 'Please enter the time interval in seconds for the system to check for new chat messages. This value should not be below 2 seconds (it will be forced to 1 second if a lower value is set).',
+	'AJAX_CHAT_SESSION_REFRESH' => 'Session Length',
+	'AJAX_CHAT_SESSION_REFRESH_EXPLAIN' => 'Please enter the chat session duration. This value is used to check if users in chat left the conversation. This value should not be below 10 seconds (this value will be forced to be 5 seconds if a lower value is set).',
+	'AJAX_CHAT_LINK_TYPE' => 'Chat Window Format',
+	'AJAX_CHAT_LINK_TYPE_EXPLAIN' => 'Please specify if you want a simplified chat window or a window with full header and footer (simplified is cleaner and faster).',
+	'AJAX_CHAT_LINK_TYPE_SIMPLE' => 'Simplified',
+	'AJAX_CHAT_LINK_TYPE_FULL' => 'Full',
+	'AJAX_CHAT_NOTIFICATION' => 'Private Chat Notification',
+	'AJAX_CHAT_NOTIFICATION_EXPLAIN' => 'If you enable this option, a notification will be sent to the user in case of Private Chat Request.',
+	'AJAX_CHAT_CHECK_ONLINE' => 'Private Chat Link Only For Online Users',
+	'AJAX_CHAT_CHECK_ONLINE_EXPLAIN' => 'If you enable this option, the Private Chat link will be displayed only for users already in chat, otherwise it will be displayed for all users online in the site.',
 
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'IP_CONFIGURATION' => 'Icy Phoenix Settings',

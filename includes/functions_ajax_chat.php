@@ -95,7 +95,8 @@ function update_session(&$error_msg, $refresh = true)
 	$guest_online_counter = 0;
 
 	// First clean old data... so we should have a light table...
-	$clean_time = time() -  floor($config['shoutbox_refreshtime'] / 1000 * 3);
+	// Just double chat session refresh time to make sure we are not removing sessions for users still active...
+	$clean_time = time() - ((int) $config['ajax_chat_session_refresh'] * 2);
 	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " WHERE session_time < " . $clean_time;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -113,8 +114,8 @@ function update_session(&$error_msg, $refresh = true)
 			$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
 		}
 
-		// Only get session data if the user was online twice the refresh time seconds ago
-		$time_ago = time() - floor($config['shoutbox_refreshtime'] / 1000 * 2);
+		// Only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+		$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
 		$sql = 'SELECT session_id
 				FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
 				WHERE session_user_id = ' . $user->data['user_id'] . '
@@ -177,8 +178,8 @@ function remove_session(&$error_msg)
 		$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
 	}
 
-	// Only get session data if the user was online less than twice refresh time seconds ago
-	$time_ago = time() - floor($config['shoutbox_refreshtime'] / 1000 * 2);
+	// Only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+	$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
 	$sql = 'SELECT session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
 			WHERE session_user_id = ' . $user->data['user_id'] . '
@@ -211,10 +212,10 @@ function remove_session(&$error_msg)
 // Checks if a user is in the chat session
 function user_in_chat_session($id)
 {
-	global $db, $config;
+	global $db, $cache, $config;
 
-	// Only get session data if the user was online twice the refresh time seconds ago
-	$time_ago = time() - floor($config['shoutbox_refreshtime'] / 1000 * 2);
+	// Only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+	$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
 	$sql = 'SELECT session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
 			WHERE session_user_id = ' . $id . '
@@ -263,7 +264,7 @@ function get_ajax_chat_max_session_id()
 // $chat_link the chat room link
 function get_chat_room_users($rooms, $chat_room, $chat_link)
 {
-	global $db, $lang, $user;
+	global $db, $cache, $user, $lang;
 	$chatroom_title = $lang['Public_room'];
 	$chatroom_userlist = '';
 	$result = array();

@@ -336,7 +336,6 @@ INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('show_l
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('shoutbox_floodinterval', '3');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('display_shouts', '20');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('stored_shouts', '1000');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('shoutbox_refreshtime', '5000');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('shout_allow_guest', '0');
 CREATE TABLE phpbb_ajax_shoutbox (
 	shout_id MEDIUMINT(9) UNSIGNED NOT NULL AUTO_INCREMENT,

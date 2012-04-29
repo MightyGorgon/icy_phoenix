@@ -25,6 +25,8 @@ class class_form
 	var $time_format_php = 'H:i';
 	var $date_sep = '/';
 	var $time_sep = ':';
+	var $decimal_sep = '.';
+	var $thousands_sep = ',';
 
 /*
 	// Mighty Gorgon: overwrite some defaults for this plugin...
@@ -412,6 +414,7 @@ class class_form
 				break;
 
 			case 'FLOAT':
+				$config_value = str_replace(',', '.', $config_value);
 				$config_value = (float) ($config_value);
 				break;
 

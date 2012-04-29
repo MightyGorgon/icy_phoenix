@@ -427,7 +427,6 @@ $default_config = array(
 	'shoutbox_floodinterval' => '3',
 	'display_shouts' => '5',
 	'stored_shouts' => '20',
-	'shoutbox_refreshtime' => '5000',
 	'shout_allow_guest' => '2',
 	'upi2db_max_new_posts_admin' => '0',
 	'upi2db_max_new_posts_mod' => '2000',
@@ -710,6 +709,11 @@ $default_config = array(
 	'session_last_visit_reset' => '0',
 	'check_dnsbl' => '1',
 	'check_dnsbl_posting' => '1',
+	'ajax_chat_msgs_refresh' => '5',
+	'ajax_chat_session_refresh' => '10',
+	'ajax_chat_link_type' => '0',
+	'ajax_chat_notification' => '1',
+	'ajax_chat_check_online' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

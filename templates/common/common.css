@@ -13,6 +13,11 @@ h4 { font-size: 1.2em; }
 h5 { font-size: 1.1em; }
 h6 { font-size: 1em; }
 
+/* LISTS - BEGIN */
+ul.nobull, ul.hnobull { list-style: none; margin: 0; padding: 0; }
+ul.hnobull li { display: block; float: left; margin: 0; padding: 2px; }
+/* LISTS - END */
+
 /* XHTML compliant, define border in CSS */
 table, img, .forumline img, .forumlinenb img { border: none; }
 
@@ -109,7 +114,7 @@ blockquote, .post-text blockquote, .code-content { overflow: auto; }
 .va-middle { vertical-align: middle; }
 .va-bottom { vertical-align: bottom; }
 .clear { clear: both; }
-/* ALIGNMENT - BEGIN */
+/* ALIGNMENT - END */
 
 /* MAIN TABLES - BEGIN */
 .graph table{ border: none; margin: 0px; }
@@ -264,9 +269,9 @@ ul.no-bullet { list-style: none; list-style-type: none; }
 .chat-shouts { width: 655px; height: 297px; text-align: center; overflow: auto; margin: 0px auto; }
 .chat-shoutlist { /* width: 625px; */ /* height: 272px; */ text-align: left; margin: 0; }
 .chat-tabs { line-height: 240%; }
-.chat-tabs a { padding: 2px; background-color: #c0c0c0; border: 2px solid gray; }
-.chat-tabs a.active { background-color: white; border: 2px solid black; }
-.chat-tabs a.new-shout { background-color: white; border: 2px solid green; }
+.chat-tabs a { padding: 2px; background-color: #cccccc; border: 1px solid #888888; }
+.chat-tabs a.active { background-color: #ffffff; border: 1px solid #228822; }
+.chat-tabs a.new-shout { background-color: #ffffff; border: 2px solid #ff5500; }
 /* AJAX CHAT - END */
 
 /* SITEMAP - BEGIN */

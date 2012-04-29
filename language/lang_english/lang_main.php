@@ -606,7 +606,7 @@ $lang = array_merge($lang, array(
 	'Invision_Signature' => 'Signature',
 	'Invision_Website' => 'Home Page',
 	'Invision_Total_Posts' => 'Total Cumulative Posts',
-	'Invision_User_post_pct_stats' => '( %.2f%% of total forum posts )',
+	'Invision_User_post_pct_stats' => '(%.2f%% of total forum posts)',
 	'Invision_User_post_day_stats' => '%.2f posts per day',
 	'Invision_Search_user_posts' => 'Find all posts by this member',
 	'Invision_Posting_details' => 'Posting Details',
@@ -1826,7 +1826,7 @@ $lang = array_merge($lang, array(
 	'Shoutbox_no_auth' => 'Sorry, only registered users may use the shoutbox',
 	'Shoutbox_loading' => 'Loading Shoutbox...',
 // Errors
-	'Shoutbox_unable' => 'Sorry, the action couldn\'t be done. Please try again.',
+	'Shoutbox_unable' => 'Sorry, the action could not be performed. Please try again.',
 	'Shoutbox_timeout' => 'Sorry, the server is not responding. Please try again.',
 	'Shoutbox_empty' => 'No messages in Database',
 	'Shoutbox_no_mode' => 'No valid mode specified',
@@ -1843,8 +1843,8 @@ $lang = array_merge($lang, array(
 	'Online_registered' => 'Users',
 	'Online_guests' => 'Guests',
 	'Who_is_Chatting' => 'Who is Chatting',
-	'Start_Private_Chat' => 'Click on the name to start a private chat',
 	'Shoutbox_online_explain' => 'This data is based on users active over the past thirty seconds',
+	'Start_Private_Chat' => 'Click on the name to start a private chat',
 // Chat rooms
 	'Shout_rooms' => 'Rooms',
 	'Admin_rooms' => 'All rooms',

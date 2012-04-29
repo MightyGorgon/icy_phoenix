@@ -43,7 +43,7 @@ else
 }
 
 // Was an URl sent instead of a topic id?
-if ($topic_id == 0 && $topic_url != '')
+if (($topic_id == 0) && ($topic_url != ''))
 {
 	$topic_link = create_server_url() . $topic_url;
 }

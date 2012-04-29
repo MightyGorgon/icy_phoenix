@@ -28,11 +28,6 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
 
-//
-// JHL 24/04/2012 the database shout_room format - nnnn|nnnn - has been changed to |nnnn|nnnn| using
-// update ip_ajax_shoutbox set shout_room = concat(concat('|', shout_room), '|') where shout_room like '%|%'
-//
-
 // Decide whether XML or JSON is to be used - JSON preferred
 $response_type = (function_exists('json_decode') && is_array(json_decode('{"a":1}', true))) ? 'json' : 'xml';
 
@@ -101,12 +96,14 @@ if (!empty($action))
 	$error = AJAX_SHOUTBOX_NO_ERROR;
 	$error_msg = '';
 
-	// JHL this is in the wrong place - we might need to send this information back to the Ajax caller -START
+	// JHL this is in the wrong place - we might need to send this information back to the Ajax caller - START
 	// Delete alert for poster if present
 	if ($private_chat && !empty($user->data['user_private_chat_alert']))
 	{
 		$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '' WHERE user_id = " . $user->data['user_id'];
+		$db->sql_return_on_error(true);
 		$db->sql_query($sql);
+		$db->sql_return_on_error(false);
 	}
 	// JHL this is in the wrong place - we might need to send this information back to the Ajax caller - END
 
@@ -136,8 +133,8 @@ if (!empty($action))
 			$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
 		}
 
-		// Update session data and online list - only get session data if the user was online twice the refresh time seconds ago
-		$time_ago = time() - ($config['shoutbox_refreshtime'] / 1000 * 2);
+		// Update session data and online list - only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+		$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
 
 		// Read session data for update
 		$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
@@ -408,7 +405,7 @@ if (!empty($action))
 		{
 			if ($row = $db->sql_fetchrow($result))
 			{
-				if (($shout_time - intval($row['last_shout'])) < $config['shoutbox_floodinterval'])
+				if (($shout_time - intval($row['last_shout'])) < (int) $config['shoutbox_floodinterval'])
 				{
 					// Display error
 					$error = AJAX_SHOUTBOX_ERROR;
@@ -418,13 +415,14 @@ if (!empty($action))
 		}
 
 		// Alert other users that somebody is willing to chat with them
-		if ($private_chat)
+		if ($private_chat && !empty($config['ajax_chat_notification']))
 		{
-			// It omits users that have been active for the last 5 minutes (300 seconds)
+			// Omits users that are active in chat
+			$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
 			$sql = "SELECT session_user_id
 					FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
 					WHERE " . $db->sql_in_set('session_user_id', $chat_room_users) . "
-						AND session_time < " . (time() - 300) . "
+						AND session_time < " . $time_ago . "
 					ORDER BY session_user_id ASC";
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrowset($result);
@@ -440,13 +438,13 @@ if (!empty($action))
 			}
 
 			// JHL this is in the wrong place - we're responding to an Ajax call - START
-			/*
 			if (sizeof($alert_users_array) > 0)
 			{
 				$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '" . $chat_room . "' WHERE " . $db->sql_in_set('user_id', $alert_users_array);
+				$db->sql_return_on_error(true);
 				$db->sql_query($sql);
+				$db->sql_return_on_error(false);
 			}
-			*/
 			// JHL this is in the wrong place - we're responding to an Ajax call - END
 		}
 
@@ -509,7 +507,7 @@ if (!empty($action))
 			if ($config['stored_shouts'] > 1)
 			{
 				$limit = $config['stored_shouts'] - 1;
-				// Keep the database with the selected number of entrys.
+				// Keep the database with the selected number of entries
 				$sql = "SELECT s.shout_id
 						FROM " . AJAX_SHOUTBOX_TABLE . " s
 						WHERE s.shout_id > 0
@@ -607,12 +605,12 @@ if ($config['shout_allow_guest'] > 0)
 {
 	// Guest and Users may see the shoutbox
 	$template->assign_block_vars('view_shoutbox', array(
-		'REFRESH_TIME' => $config['shoutbox_refreshtime'],
+		'REFRESH_TIME' => (int) $config['ajax_chat_session_refresh'] * 1000,
 		'RESPONSE_TYPE' => $response_type,
 		'CHAT_ROOM' => $chat_room,
 		'USER_ID' => $user->data['user_id'],
 		'UPDATE_MODE' => 'chat',
-		'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
+		'U_ACTION' => append_sid(IP_ROOT_PATH . CMS_PAGE_AJAX_SHOUTBOX)
 		)
 	);
 	if ($config['shout_allow_guest'] == 1)
@@ -640,12 +638,12 @@ else
 	if ($user->data['session_logged_in'])
 	{
 		$template->assign_block_vars('view_shoutbox', array(
-			'REFRESH_TIME' => $config['shoutbox_refreshtime'],
+			'REFRESH_TIME' => (int) $config['ajax_chat_session_refresh'] * 1000,
 			'RESPONSE_TYPE' => $response_type,
 			'CHAT_ROOM' => $chat_room,
 			'USER_ID' => $user->data['user_id'],
 			'UPDATE_MODE' => 'chat',
-			'U_ACTION' => append_sid(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT)
+			'U_ACTION' => append_sid(IP_ROOT_PATH . CMS_PAGE_AJAX_SHOUTBOX)
 			)
 		);
 		$template->assign_block_vars('view_shoutbox.shout_allowed', array());
