@@ -149,7 +149,7 @@ if (!empty($action))
 		$online_list = array();
 
 		// Default anonymous user
-		$online_user = array(
+		$online_user = ($update_mode != 'chat') ? array() : array(
 			'user_id' => ANONYMOUS,
 			'username' => $lang['My_id'],
 			'user_style_color' => '',
@@ -188,7 +188,7 @@ if (!empty($action))
 		if ($signature != $sig)
 		{
 			// Start with the user
-			if ($update_mode == 'chat')
+			if (!empty($online_user))
 			{
 				if ($response_type == 'xml')
 				{
@@ -218,9 +218,9 @@ if (!empty($action))
 			foreach ($online_list as $online)
 			{
 				$chat_link = '';
-				if ($user->data['session_logged_in'] && $update_mode == 'chat')
+				if ($update_mode == 'chat' && $user->data['session_logged_in'] && $update_mode == 'chat')
 				{
-					$chat_link = 'javascript:addAndActivateChatTab(\'' . min($user->data['user_id'], $online['user_id']) . '|' . max($user->data['user_id'], $online['user_id']) . '\');';
+					$chat_link = 'javascript:ChatRoomContext.addAndActivateChatTab(\'' . min($user->data['user_id'], $online['user_id']) . '|' . max($user->data['user_id'], $online['user_id']) . '\');';
 				}
 				if ($response_type == 'xml')
 				{

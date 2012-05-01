@@ -224,34 +224,48 @@ else
 		$template->assign_block_vars('view_shoutbox.user_is_admin', array());
 	}
 
-	// Get Who is Online in the shoutbox
-	// Only get session data if the user was online SESSION_REFRESH seconds ago
-	//$time_ago = time() - SESSION_REFRESH;
-	// Only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+	// Guest are reconized by their IP
+	$guest_sql = '';
+	$is_guest = false;
+	if (!$user->data['session_logged_in'])
+	{
+		$is_guest = true;
+		$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
+	}
+
+	// Update session data and online list - only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
 	$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
+
+	// Read session data for update
+	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
+	FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
+	WHERE s.session_time >= " . $time_ago . "
+		AND s.session_user_id = u.user_id" . $guest_sql . "
+	ORDER BY case u.user_level when 0 then 10 else u.user_level end";
+	$result = $db->sql_query($sql);
 
 	// Set all counters to 0
 	$reg_online_counter = $guest_online_counter = $online_counter = 0;
+	$online_list = array();
 
-	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color
-		FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-		WHERE s.session_time >= " . $time_ago . "
-			AND s.session_user_id = u.user_id";
-
-	$result = $db->sql_query($sql);
+	// Default online user
+	$online_user = array();
 	while($online = $db->sql_fetchrow($result))
 	{
 		if($online['user_id'] != ANONYMOUS)
 		{
 			$style_color = colorize_username($online['user_id'], $online['username'], $online['user_color'], $online['user_active'], false, true);
-			$template->assign_block_vars('online_list', array(
-				'USERNAME' => $online['username'],
-				'USER' => $online['username'],
-				'USER_ID' => $online['user_id'],
-				'LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $online['user_id']),
-				'LINK_STYLE' => $style_color,
-				)
-			);
+			$online['user_style_color'] = $style_color;
+
+			if ($online['user_id'] != $user->data['user_id'])
+			{
+				$online_list[$online['username']] = $online;
+			}
+			else
+			{
+				$online['username'] = $lang['My_id'];
+				$online_user = $online;
+			}
 			$reg_online_counter++;
 		}
 		else
@@ -259,6 +273,66 @@ else
 			$guest_online_counter++;
 		}
 		$online_counter++;
+	}
+
+	// Check if anything has changed
+	ksort($online_list);
+	$online_keys = array_keys($online_list);
+
+	// Start with the user
+	if (!empty($online_user))
+	{
+		if ($response_type == 'xml')
+		{
+			$template->assign_block_vars('online_list', array(
+				'USER_ID' => $online_user['user_id'],
+				'USERNAME' => $online_user['username'],
+				'USER_STYLE' => $online_user['user_style_color'],
+				'CHAT_LINK' => ''
+				)
+			);
+		}
+		else
+		{
+			$json_user = array(
+				'user_id' => $online_user['user_id'],
+				'username' => $online_user['username'],
+				'user_style' => $online_user['user_style_color'],
+				'chat_link' => ''
+			);
+			$template->assign_block_vars('online_list', array(
+				'user' => @json_encode($json_user)
+				)
+			);
+		}
+	}
+
+	foreach ($online_list as $online)
+	{
+		$chat_link = '';
+		if ($response_type == 'xml')
+		{
+			$template->assign_block_vars('online_list', array(
+				'USER_ID' => $online['user_id'],
+				'USERNAME' => $online['username'],
+				'USER_STYLE' => $online['user_style_color'],
+				'CHAT_LINK' => $chat_link,
+				)
+			);
+		}
+		else
+		{
+			$json_user = array(
+				'user_id' => $online['user_id'],
+				'username' => $online['username'],
+				'user_style' => $online['user_style_color'],
+				'chat_link' => $chat_link,
+			);
+			$template->assign_block_vars('online_list', array(
+				'user' => @json_encode($json_user)
+				)
+			);
+		}
 	}
 
 	$template->assign_vars(array(
@@ -281,9 +355,20 @@ else
 	$result = $db->sql_query($sql);
 	while($top_shouters = $db->sql_fetchrow($result))
 	{
+		if ($top_shouters['user_id'] == ANONYMOUS)
+		{
+			$shouter = $top_shouters['username'];
+			$shouter_link = '';
+		}
+		else
+		{
+			$shouter = ($user->data['session_logged_in'] && $top_shouters['user_id'] == $user->data['user_id']) ? $lang['My_id'] : $top_shouters['username'];
+			$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $top_shouters['user_id']);
+		}
+
 		$template->assign_block_vars('top_shouters', array(
-			'USERNAME' => colorize_username($top_shouters['user_id'], $top_shouters['username'], $top_shouters['user_color']),
-			//'USER_LINK' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $top_shouters['user_id']),
+			'USERNAME' => colorize_username($top_shouters['user_id'], $shouter, $top_shouters['user_color']),
+			'USER_LINK' => $shouter_link,
 			'USER_SHOUTS' => $top_shouters['user_shouts']
 			)
 		);
@@ -320,9 +405,9 @@ else
 			}
 			else
 			{
-				$shouter = $row[$x]['username'];
+				$shouter = ($user->data['session_logged_in'] && $row[$x]['user_id'] == $user->data['user_id']) ? $lang['My_id'] : $row[$x]['username'];
 				$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
-				$shouter_color = colorize_username($row[$x]['user_id'], $row[$x]['username'], $row[$x]['user_color'], true, false, true);
+				$shouter_color = colorize_username($row[$x]['user_id'], $shouter, $row[$x]['user_color'], true, false, true);
 			}
 
 			$message = $row[$x]['shout_text'];

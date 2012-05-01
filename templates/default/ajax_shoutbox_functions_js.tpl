@@ -8,6 +8,7 @@
 
 // Refresh interval
 var REFRESH_TIME = {view_shoutbox.REFRESH_TIME};
+var FLASH_TIME = (REFRESH_TIME * 3) / 4;
 
 // Error messages
 var ERROR_TIMEOUT = "{L_TIMEOUT}";
@@ -122,9 +123,6 @@ var AjaxContext = {
 	// List of users in the private chatrooms
 	privateUsers: {PRIVATE_USERS},
 
-	// Private chat room
-	chatRoom: "{view_shoutbox.CHAT_ROOM}",
-
 	// Parse the XML document, executing code for each matched element
 	// Returns true if successful, otherwise false.
 	parseXMLDocument: function(doc, functionList, functions) {
@@ -194,7 +192,7 @@ var AjaxContext = {
 			act: action,
 			lastID: this.lastId,
 			sig: this.lastSig,
-			chat_room: this.chatRoom,
+			chat_room: ChatRoomContext.chatRoom,
 			update_mode: "{view_shoutbox.UPDATE_MODE}"
 		};
 	},
@@ -293,9 +291,9 @@ var AjaxContext = {
 				if (!table.length)
 				{
 					// add new chat tab
-					table = addChatTab(shout.room, this.privateUsers);
+					table = ChatRoomContext.addChatTab(shout.room, this.privateUsers);
 				}
-				chatTabNewShout(shout.room);
+				ChatRoomContext.chatTabNewShout(shout.room);
 
 				var cssClass = this.zebra.odd;
 				var firstShout = $("#" + tableId + " tr:first");
@@ -464,6 +462,101 @@ var AjaxContext = {
 		this.stdError(jqXHR, status, error);
 		$("#submit").attr("disabled", false);
 		return true;
+	}
+};
+
+// The chat room context
+var ChatRoomContext = {
+	// Private chat room
+	chatRoom: "{view_shoutbox.CHAT_ROOM}",
+
+	// Convert the room to an identifier
+	roomToId: function(room) {
+		return (typeof room == "string" && room != "") ? room.replace("|", "-") : "public";
+	},
+
+	// Create new chatroom window
+	addChatTab: function(room, users) {
+		// already exists?
+		var roomId = this.roomToId(room);
+		var tableId = "outputList-" + roomId;
+		var table = $("#" + tableId);
+		if (table.length)
+		{
+			return table;
+		}
+
+		// tab title
+		var title = PUBLIC_CHATROOM;
+		if (roomId != "public")
+		{
+			// find all users participating in conversation
+			var list = room.split("|");
+			var usernames = "";
+			var comma = "";
+			for (var i = 0; i < list.length; i++)
+			{
+				var id = parseInt(list[i]);
+				usernames += comma + insertChatTabUser(users[id]);
+				comma = ", ";
+			}
+			title = PRIVATE_CHATROOM + " (" + usernames + ")";
+		}
+		// add tab
+		var html = insertChatTab(roomId, room, title);
+		if (roomId == "public")
+		{
+			$("#shoutsTabs").prepend(html);
+		}
+		else
+		{
+			$("#shoutsTabs").append(html);
+		}
+		// add tab container table
+		html = insertChatContainer(tableId);
+		$("#shoutsContainer").prepend(html);
+		return $("#" + tableId).data("room", room);
+	},
+
+	// Activate the chatroom window
+	activateChatTab: function(room) {
+		// find tab
+		var roomId = this.roomToId(room);
+		var tab = $("#chat-tab-" + roomId);
+		if (!tab.length || tab.hasClass("active")) {
+			return;
+		}
+
+		// hide active tab and table
+		var oldId = this.roomToId(this.chatRoom);
+		$("#chat-tab-" + oldId).removeClass("active");
+		$("#outputList-" + oldId).hide();
+
+		// show new tab and table
+		if (tab.hasClass("new-shout"))
+		{
+			tab.removeClass("new-shout");
+		}
+		tab.addClass("active");
+		$("#outputList-" + roomId).show();
+		this.chatRoom = room;
+	},
+
+	// Add and activate chat room  - used to open (or reopen) a private chat room
+	addAndActivateChatTab: function(room) {
+		this.addChatTab(room, AjaxContext.privateUsers);
+		this.activateChatTab(room);
+	},
+
+	// A new shout has been added to a chatroom window
+	chatTabNewShout: function(room) {
+		var roomId = this.roomToId(room);
+		var tab = $("#chat-tab-" + roomId);
+		if (!tab.length || tab.hasClass("active") || tab.hasClass("new-shout"))
+		{
+			return;
+		}
+		tab.addClass("new-shout");
 	}
 };
 
