@@ -2654,6 +2654,29 @@ class bbcode
 			}
 			return false;
 		}
+		// rgb(ddd, ddd, ddd)
+		if(!$hex_only && (substr($color, 0, 4) === 'rgb('))
+		{
+			$valid = true;
+			preg_replace_callback('#^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$#', function($matches)
+				{
+					if (sizeof($matches) != 4)
+					{
+						$valid = false;
+					}
+					else
+					{
+						$red = (int)$matches[1];
+						$green = (int)$matches[2];
+						$blue = (int)$matches[3];
+						if (($red < 0 || $red > 255) || ($green < 0 || $green > 255) || ($blue < 0 || $blue > 255))
+						{
+							$valid = false;
+						}
+					}
+				}, $color);
+			return $valid ? $color : false;
+		}
 		// color with missing #
 		if(preg_match('/^[0-9a-f]+$/', $color))
 		{
