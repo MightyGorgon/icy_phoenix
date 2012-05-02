@@ -40,14 +40,25 @@ $admin_message = request_var('admin_message', '', true);
 if ($mode == 'config')
 {
 	$configs_name = array(
-		allow_ext_rating,
-		rating_max,
-		allow_rerate,
-		check_anon_ip_when_rating,
-		min_rates_number,
-		index_rating_return,
-		large_rating_return_limit,
-		header_rating_return_limit
+		'allow_ext_rating' => 0,
+		'rating_max' => 10,
+		'allow_rerate' => 0,
+		'check_anon_ip_when_rating' => 1,
+		'min_rates_number' => 5,
+		'index_rating_return' => 10,
+		'large_rating_return_limit' => 10,
+		'header_rating_return_limit' => 10
+	);
+
+	$configs_desc_index = array(
+		'allow_ext_rating' => 0,
+		'rating_max' => 1,
+		'allow_rerate' => 2,
+		'check_anon_ip_when_rating' => 3,
+		'min_rates_number' => 4,
+		'index_rating_return' => 5,
+		'large_rating_return_limit' => 6,
+		'header_rating_return_limit' => 7
 	);
 
 	$configs_desc = array(
@@ -62,14 +73,13 @@ if ($mode == 'config')
 	);
 
 	//Update config values if needed
-	for($i = 0; $i < sizeof($configs_name); $i++)
+	foreach($configs_name as $config_name => $config_default)
 	{
-		$config_name = $configs_name[$i];
-		$config_value = request_var($configs_name[$i], '', true);
-		if(check_http_var_exists($config_name, false))
+		$config_value = request_var($config_name, $config_default, true);
+		set_config($config_name, $config_value, false);
+		if (check_http_var_exists($config_name, false))
 		{
-			set_config($config_name, $new[$config_name], false);
-			$admin_message .= '<br />' . $lang['Update'] . ':&nbsp;&nbsp;&nbsp;' . $configs_desc[$i];
+			$admin_message .= '<br />' . $lang['Update'] . ':&nbsp;&nbsp;&nbsp;' . $configs_desc[$configs_desc_index[$config_name]];
 		}
 	}
 	$cache->destroy('config');
@@ -94,14 +104,15 @@ if ($mode == 'config')
 	$min_rates_number = '<input class="post" type="text" size="5" maxlength="10" name="min_rates_number" value="'. $config['min_rates_number'] . '" />';
 
 	$configs_sumbits = array(
-	$allow_ext_rating,
-	$max_rating,
-	$allow_rerate,
-	$check_anon_ip,
-	$min_rates_number,
-	$main_page_number,
-	$big_page_number,
-	$header_page_number);
+		$allow_ext_rating,
+		$max_rating,
+		$allow_rerate,
+		$check_anon_ip,
+		$min_rates_number,
+		$main_page_number,
+		$big_page_number,
+		$header_page_number
+	);
 
 	//Set Configs for template
 	for($i = 0; $i < sizeof($configs_sumbits); $i++)
