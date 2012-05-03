@@ -45,7 +45,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'ip_admins_only' => array(
 		'lang_key' => 'IP_ip_admins_only',
@@ -53,7 +53,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'db_log_actions' => array(
 		'lang_key' => 'IP_db_log_actions',
@@ -64,8 +64,8 @@ $settings_data = array(
 			'DB_LOG_ALL' => 2,
 			'Yes' => 1,
 			'No' => 0,
-			),
 		),
+	),
 
 	'mg_log_actions' => array(
 		'lang_key' => 'IP_mg_log_actions',
@@ -73,7 +73,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'write_errors_log' => array(
 		'lang_key' => 'IP_write_errors_log',
@@ -81,7 +81,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'write_digests_log' => array(
 		'lang_key' => 'IP_write_digests_log',
@@ -89,14 +89,14 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'logs_path' => array(
 		'lang_key' => 'IP_logs_path',
 		'explain' => 'IP_logs_path_explain',
 		'type' => 'VARCHAR',
 		'default' => 'logs',
-		),
+	),
 
 );
 

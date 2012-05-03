@@ -160,7 +160,7 @@ if (!function_exists('nivisec_copyright'))
 		global $template;
 
 		$template->assign_vars(array(
-			'NIVISEC_COPYRIGHT' => '<div class="copyright" style="text-align:center;">Ratings Module &copy; 2001-2003 <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.</div>'
+			'NIVISEC_COPYRIGHT' => '<div class="copyright" style="text-align:center;">Ratings Module &copy; 2001-2003 <a href="http://www.nivisec.com">Nivisec.com</a>.</div>'
 			)
 		);
 	}
@@ -646,8 +646,11 @@ function ratings_detailed($topic_id)
 		)
 	);
 
-	// JHL $template->set_filenames(array('body' => 'rate_detailed.tpl'));
-	// JHL $template->pparse('body');
+	// JHL: Template vars commented out to use standard TPL features
+	/*
+	$template->set_filenames(array('body' => 'rate_detailed.tpl'));
+	$template->pparse('body');
+	*/
 }
 
 /**
@@ -757,8 +760,11 @@ function ratings_large()
 		)
 	);
 
-	// JHL $template->set_filenames(array('body' => 'rate_main.tpl'));
-	// JHL $template->pparse('body');
+	// JHL: Template vars commented out to use standard TPL features
+	/*
+	$template->set_filenames(array('body' => 'rate_main.tpl'));
+	$template->pparse('body');
+	*/
 }
 
 function ratings_view_topic()

@@ -3836,8 +3836,8 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 		$im_ref = str_replace('{REF}', $im_ref, $available_im[$im_type]['url']);
 		if ($im_type == 'chat')
 		{
-			// JHL No chat icon if the user is anonymous, or the profiled user is offline
-			if (empty($user->data['session_logged_in']) || ($user_data['user_session_time'] < (time() - $config['online_time'])))
+			// JHL: No chat icon if the user is anonymous, or the profiled user is offline
+			if (empty($user->data['session_logged_in']) || empty($user_data['user_session_time']) || ($user_data['user_session_time'] < (time() - $config['online_time'])))
 			{
 				return '';
 			}

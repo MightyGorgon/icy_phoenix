@@ -2682,7 +2682,24 @@ class bbcode
 			// text color
 			return $color;
 		}
+
 		// rgb(ddd, ddd, ddd) color
+		// OLD RGB FUNCTION
+		/*
+		if((substr($color, 0, 4) === 'rgb(') && preg_match('/^rgb\([0-9]+,[0-9]+,[0-9]+\)$/', $color))
+		{
+			$colors = explode(',', substr($color, 4, strlen($color) - 5));
+			for($i = 0; $i < 3; $i++)
+			{
+				if($colors[$i] > 255)
+				{
+					return false;
+				}
+			}
+			return sprintf('#%02X%02X%02X', $colors[0], $colors[1], $colors[2]);
+		}
+		*/
+
 		if(substr($color, 0, 4) === 'rgb(')
 		{
 			$valid = true;
@@ -2694,10 +2711,10 @@ class bbcode
 					}
 					else
 					{
-						$red = (int)$matches[1];
-						$green = (int)$matches[2];
-						$blue = (int)$matches[3];
-						if ($red > 255 || $green > 255 || $blue > 255)
+						$red = (int) $matches[1];
+						$green = (int) $matches[2];
+						$blue = (int) $matches[3];
+						if (($red > 255) || ($green > 255) || ($blue > 255))
 						{
 							$valid = false;
 						}

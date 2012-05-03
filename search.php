@@ -47,7 +47,8 @@ if (($_GET['search_id'] != 'unanswered') && !$user->data['session_logged_in'] &&
 	$google_q = request_var('search_keywords', '', true);
 	$google_sitesearch = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
 	$google_cof = 'FORID:9';
-	$google_ie = 'ISO-8859-1';
+	//$google_ie = 'ISO-8859-1';
+	$google_ie = 'UTF-8';
 	$google_url_append = '?q=' . urlencode($google_q) . '&sitesearch=' . $google_sitesearch . '&cof=' . $google_cof . '&ie=' . $google_ie;
 	redirect(append_sid('gsearch.' . PHP_EXT . (!empty($google_q) ? $google_url_append : ''), true));
 }

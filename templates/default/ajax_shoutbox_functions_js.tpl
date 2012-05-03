@@ -277,6 +277,7 @@ var AjaxContext = {
 					table = ChatRoomContext.addChatTab(shout.room, this.privateUsers);
 				}
 				ChatRoomContext.chatTabNewShout(shout.room);
+
 				var cssClass = this.zebra.odd;
 				var firstShout = $("#" + tableId + " tr:first");
 				if (firstShout.length)
@@ -289,7 +290,7 @@ var AjaxContext = {
 				this.currentShouts[id] = shout;
 				newShouts.push(shout);
 			}
-		}
+			}
 		// highlight after all the shouts have been added
 		for (var index = 0; index < newShouts.length; index++) 
 		{
@@ -303,6 +304,7 @@ var AjaxContext = {
 	// Check and display the online users (if any)
 	// Returns false if an error occurred, otherwise true
 	checkOnlineUsers: function(users) {
+
 		// clear the validity
 		for (var id in this.currentUsers)
 		{
@@ -588,28 +590,28 @@ function receiveChatData()
 	{
 		UpdaterContext.receivingChatData = true;
 		UpdaterContext.stopUpdates();
-		context.error = context.updateError;
-		context.success = context.updateSuccess;
+	context.error = context.updateError;
+	context.success = context.updateSuccess;
 		context.complete = function(jqXHR, status) {
 			throbber(false);
 			UpdaterContext.receivingChatData = false;
 		};
-		context.doneFunction = function() {
-			if (this.shoutsParsed || this.usersParsed)
-			{
-				chatDataChanged();
-			}
+	context.doneFunction = function() {
+		if (this.shoutsParsed || this.usersParsed)
+		{
+			chatDataChanged();
+		}
 			if (typeof UpdaterContext.updateTimer == "undefined")
 			{
 				UpdaterContext.startUpdates(REFRESH_TIME); // restart the updater
 			}
-			AjaxContext = this;
-			return true;
-		};
+		AjaxContext = this;
+		return true;
+	};
 
-		context.setUpdateParameters("read");
-		$.ajax(context);
-	}
+	context.setUpdateParameters("read");
+	$.ajax(context);
+}
 	else
 	{
 		UpdaterContext.startUpdates(250); // restart the updater 

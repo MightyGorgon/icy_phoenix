@@ -212,7 +212,6 @@ $last_pic_id = $total_pic_rows[$total_pic_count - 1]['pic_id'];
 // ------------------------------------
 // PREVIOUS & NEXT
 // ------------------------------------
-
 // JHL these variables were being reset after some tests had been made - now moved up to the correct position
 $no_prev_pic = false;
 $no_next_pic = false;
@@ -901,9 +900,12 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	}
 
 	// Mighty Gorgon - Pic Size - BEGIN
-	/* JHL this code was added and now removed by me because it is a brainfart for two reasons
-		 - the thumbnail may not yet exist (!)
-		 - the displayed page format would change as the real thumnail sizes may differ
+	/*
+	* JHL: this code was added and now removed by me because it is a brainfart for two reasons
+	* - the thumbnail may not yet exist (!)
+	* - the displayed page format would change as the real thumnail sizes may differ
+	*/
+	/*
 	$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
 	$pic_thumbnail_path = $pic_info['thumbnail_m_fullpath'];
 	$pic_thumbnail_size = @getimagesize($pic_thumbnail_path);
@@ -1027,9 +1029,13 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'L_PIC_SIZE' => $lang['Pic_Size'],
 		'L_PIC_TYPE' => $lang['Pic_Type'],
 		// Mighty Gorgon: JHL wants to remove this code by replacing the size with the ones added in album_config, but it's better to keep this code, to make sure proportions are always respected
-		// No see the reasoning above at line 902
- 		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $album_config['midthumb_height'],
- 		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $album_config['midthumb_width'],
+		// JHL: No, see the reasoning above
+		/*
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $pic_thumbnail_height,
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $pic_thumbnail_width,
+		*/
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $album_config['midthumb_height'],
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $album_config['midthumb_width'],
 		'PIC_SIZE' => $pic_width . ' x ' . $pic_height . ' (' . intval($pic_filesize/1024) . 'KB)',
 		'PIC_TYPE' => strtoupper(substr($thispic['pic_filename'], strlen($thispic['pic_filename']) - 3, 3)),
 		// Mighty Gorgon - Pic Size - END

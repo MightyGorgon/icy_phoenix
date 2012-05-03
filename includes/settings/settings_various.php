@@ -34,7 +34,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'privmsg_disable' => array(
 		'lang_key' => 'Disable_privmsg',
@@ -43,33 +43,33 @@ $settings_data = array(
 		'values' => array(
 			'Enabled' => 0,
 			'Disabled' => 1,
-			),
 		),
+	),
 
 	'max_inbox_privmsgs' => array(
 		'lang_key' => 'Inbox_limits',
 		'type' => 'SMALLINT',
 		'default' => 50,
-		),
+	),
 
 	'max_sentbox_privmsgs' => array(
 		'lang_key' => 'Sentbox_limits',
 		'type' => 'SMALLINT',
 		'default' => 25,
-		),
+	),
 
 	'max_savebox_privmsgs' => array(
 		'lang_key' => 'Savebox_limits',
 		'type' => 'SMALLINT',
 		'default' => 50,
-		),
+	),
 
 	'disable_email_error' => array(
 		'lang_key' => 'IP_disable_email_error',
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'html_email' => array(
 		'lang_key' => 'IP_html_email',
@@ -77,7 +77,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'emails_only_to_admins' => array(
 		'lang_key' => 'IP_emails_only_to_admins',
@@ -85,7 +85,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'ajax_features' => array(
 		'lang_key' => 'IP_ajax_features',
@@ -93,7 +93,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'ajax_checks_register' => array(
 		'lang_key' => 'IP_ajax_checks_register',
@@ -101,7 +101,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'inactive_users_memberlists' => array(
 		'lang_key' => 'IP_inactive_users_memberlists',
@@ -109,14 +109,14 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'page_gen' => array(
 		'lang_key' => 'IP_page_gen',
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'switch_header_dropdown' => array(
 		'lang_key' => 'IP_switch_header_dropdown',
@@ -124,7 +124,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'show_alpha_bar' => array(
 		'lang_key' => 'IP_show_alpha_bar',
@@ -132,7 +132,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'show_rss_forum_icon' => array(
 		'lang_key' => 'IP_show_rss_forum_icon',
@@ -140,7 +140,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'allow_mods_view_self' => array(
 		'lang_key' => 'IP_allow_mods_view_self',
@@ -148,7 +148,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'xmas_fx' => array(
 		'lang_key' => 'IP_xmas_fx',
@@ -156,7 +156,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'xmas_gfx' => array(
 		'lang_key' => 'IP_xmas_gfx',
@@ -164,7 +164,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'select_theme' => array(
 		'lang_key' => 'IP_select_theme',
@@ -172,7 +172,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'select_lang' => array(
 		'lang_key' => 'IP_select_lang',
@@ -180,7 +180,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'split_ga_ann_sticky' => array(
 		'lang_key' => 'IP_split_ga_ann_sticky',
@@ -192,8 +192,8 @@ $settings_data = array(
 			'IP_split_topic_1' => 1,
 			'IP_split_topic_2' => 2,
 			'IP_split_topic_3' => 3,
-			),
 		),
+	),
 
 );
 

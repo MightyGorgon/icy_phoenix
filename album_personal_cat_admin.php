@@ -161,7 +161,7 @@ function showResultMessage($in_message)
 // ------------------------------------------------------------------------
 
 // JHL set the correct breadcrumbs
-$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_ALBUM) .'" class="nav">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT)) . '" class="nav">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>' . ALBUM_NAV_ARROW . '<a href="#" class="nav-current">' . $lang['Personal_Cat_Admin'] . '</a>';
+$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_ALBUM) . '" class="nav">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT)) . '" class="nav">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>' . ALBUM_NAV_ARROW . '<a href="#" class="nav-current">' . $lang['Personal_Cat_Admin'] . '</a>';
 if(!isset($_POST['mode']))
 {
 	if(!isset($_GET['action']))
@@ -494,7 +494,6 @@ else
 				'L_PANEL_TITLE' => $lang['Create_category']
 				)
 			);
-
 			full_page_generation('album_personal_cat_new_body.tpl', $lang['Album'], '', '');
 		}
 		else

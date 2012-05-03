@@ -35,7 +35,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 	*/
 
 	/*
@@ -45,7 +45,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 	*/
 
 	'site_history' => array(
@@ -54,14 +54,14 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'active_sessions' => array(
 		'lang_key' => 'IP_active_sessions',
 		'explain' => 'IP_active_sessions_explain',
 		'type' => 'INT',
 		'default' => 0,
-		),
+	),
 
 	'global_disable_upi2db' => array(
 		'lang_key' => 'IP_global_disable_upi2db',
@@ -69,7 +69,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'enable_own_icons' => array(
 		'lang_key' => 'IP_enable_own_icons',
@@ -77,7 +77,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'show_forums_online_users' => array(
 		'lang_key' => 'IP_show_forums_online_users',
@@ -85,56 +85,56 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'google_bot_detector' => array(
 		'lang_key' => 'IP_google_bot_detector',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'gsearch_guests' => array(
 		'lang_key' => 'IP_gsearch_guests',
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'visit_counter_switch' => array(
 		'lang_key' => 'IP_visit_counter_switch',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'enable_new_messages_number' => array(
 		'lang_key' => 'IP_enable_new_messages_number',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'disable_thanks_topics' => array(
 		'lang_key' => 'IP_disable_thanks_topics',
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'show_thanks_profile' => array(
 		'lang_key' => 'IP_show_thanks_profile',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'show_thanks_viewtopic' => array(
 		'lang_key' => 'IP_show_thanks_viewtopic',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'disable_likes_posts' => array(
 		'lang_key' => 'IP_disable_likes_posts',
@@ -142,7 +142,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'disable_topic_view' => array(
 		'lang_key' => 'IP_disable_topic_view',
@@ -150,7 +150,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'disable_referers' => array(
 		'lang_key' => 'IP_disable_referers',
@@ -158,7 +158,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'disable_logins' => array(
 		'lang_key' => 'IP_disable_logins',
@@ -166,13 +166,13 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'last_logins_n' => array(
 		'lang_key' => 'IP_last_logins_n',
 		'type' => 'INT',
 		'default' => 10,
-		),
+	),
 
 	'index_top_posters' => array(
 		'lang_key' => 'IP_index_top_posters',
@@ -180,7 +180,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'index_last_msgs' => array(
 		'lang_key' => 'IP_index_last_msgs',
@@ -188,7 +188,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'online_last_msgs' => array(
 		'lang_key' => 'IP_online_last_msgs',
@@ -196,20 +196,20 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'last_msgs_n' => array(
 		'lang_key' => 'IP_last_msgs_n',
 		'type' => 'INT',
 		'default' => 10,
-		),
+	),
 
 	'last_msgs_x' => array(
 		'lang_key' => 'IP_last_msgs_x',
 		'explain' => 'IP_last_msgs_x_explain',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'show_chat_online' => array(
 		'lang_key' => 'IP_show_chat_online',
@@ -217,7 +217,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'index_shoutbox' => array(
 		'lang_key' => 'IP_index_shoutbox',
@@ -225,7 +225,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'online_shoutbox' => array(
 		'lang_key' => 'IP_online_shoutbox',
@@ -233,7 +233,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'img_shoutbox' => array(
 		'lang_key' => 'IP_img_shoutbox',
@@ -241,7 +241,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'index_links' => array(
 		'lang_key' => 'IP_index_links',
@@ -249,7 +249,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'index_birthday' => array(
 		'lang_key' => 'IP_index_birthday',
@@ -257,7 +257,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'show_random_quote' => array(
 		'lang_key' => 'IP_show_random_quote',
@@ -265,7 +265,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 );
 

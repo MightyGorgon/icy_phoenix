@@ -126,7 +126,7 @@ initChat();
 				<td class="row1"><a href="{top_shouters.USER_LINK}" class="forumlink">{top_shouters.USERNAME}</a></td>
 				<!-- ELSE -->
 				<td class="row1"><span class="forumlink">{top_shouters.USERNAME}</span></td>
-				<!-- ENDIF top_shouters.USER_LINK -->
+				<!-- ENDIF -->
 				<td class="row1"><span class="post-text">{top_shouters.USER_SHOUTS}</span></td>
 			</tr>
 		<!-- END top_shouters -->

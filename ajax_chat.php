@@ -238,8 +238,8 @@ else
 
 	// Read session data for update
 	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
-	FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-	WHERE s.session_time >= " . $time_ago . "
+		FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
+		WHERE s.session_time >= " . $time_ago . "
 		AND s.session_user_id = u.user_id" . $guest_sql . "
 	ORDER BY case u.user_level when 0 then 10 else u.user_level end";
 	$result = $db->sql_query($sql);
@@ -395,7 +395,7 @@ else
 		for($x = 0; $x < sizeof($row); $x++)
 		{
 			$id = $row[$x]['shout_id'];
-			$time = utf8_encode(create_date('d M Y - H:i:s', $row[$x]['shout_time'], $config['board_timezone']));
+			$time = utf8_encode(create_date($lang['DATE_FORMAT_CHAT'], $row[$x]['shout_time'], $config['board_timezone']));
 
 			if ($row[$x]['user_id'] == ANONYMOUS)
 			{
@@ -405,7 +405,7 @@ else
 			}
 			else
 			{
-				$shouter = ($user->data['session_logged_in'] && $row[$x]['user_id'] == $user->data['user_id']) ? $lang['My_id'] : $row[$x]['username'];
+				$shouter = ($user->data['session_logged_in'] && ($row[$x]['user_id'] == $user->data['user_id'])) ? $lang['My_id'] : $row[$x]['username'];
 				$shouter_link = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;u=' . $row[$x]['user_id']);
 				$shouter_color = colorize_username($row[$x]['user_id'], $shouter, $row[$x]['user_color'], true, false, true);
 			}

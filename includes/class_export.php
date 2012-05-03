@@ -31,6 +31,9 @@ class class_export
 	{
 	}
 
+	/*
+	* Main function to export content as a file downloadable into a browser
+	*/
 	function export($field_names, $field_values)
 	{
 		$this->field_names = $field_names;
@@ -57,6 +60,9 @@ class class_export
 		exit;
 	}
 
+	/*
+	* Export as a CSV
+	*/
 	function export_csv($csv_excel)
 	{
 		$this->export_mimetype = 'text/csv';
@@ -72,7 +78,7 @@ class class_export
 			{
 				$string .= $this->text_delimiter . $field_name . $this->text_delimiter . $this->field_delimiter;
 			}
-			$string = substr($string, 0, strlen($string)-1) . $newline;
+			$string = substr($string, 0, -1) . $newline;
 		}
 
 		for ($i = 0; $i < sizeof($this->field_values); $i++)
@@ -82,11 +88,25 @@ class class_export
 			{
 				$string .= $this->text_delimiter . $field_value . $this->text_delimiter . $this->field_delimiter;
 			}
-			$string = substr($string, 0, strlen($string)-1);
+			$string = substr($string, 0, -1);
 		}
 
 		return $string;
 	}
+
+	/*
+	* Export as a CSV file
+	*/
+	function export_csv_file($handle)
+	{
+		$fp = @fopen($handle, 'w');
+		foreach ($this->field_values as $datarow)
+		{
+			@fputcsv($fp, $datarow, $this->field_delimiter, $this->text_delimiter);
+		}
+		@fclose($fp);
+	}
+
 }
 
 ?>

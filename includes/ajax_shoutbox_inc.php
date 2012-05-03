@@ -149,11 +149,12 @@ if (!empty($action))
 		$online_list = array();
 
 		// Default anonymous user
-		$online_user = ($update_mode != 'chat') ? array() : array(
+		$online_user = array(
 			'user_id' => ANONYMOUS,
 			'username' => $lang['My_id'],
 			'user_style_color' => '',
 		);
+		$online_user = ($update_mode != 'chat') ? array() : $online_user;
 		while ($online = $db->sql_fetchrow($result))
 		{
 			if($online['user_id'] != ANONYMOUS)
@@ -218,7 +219,7 @@ if (!empty($action))
 			foreach ($online_list as $online)
 			{
 				$chat_link = '';
-				if ($update_mode == 'chat' && $user->data['session_logged_in'] && $update_mode == 'chat')
+				if ($user->data['session_logged_in'] && ($update_mode == 'chat'))
 				{
 					$chat_link = 'javascript:ChatRoomContext.addAndActivateChatTab(\'' . min($user->data['user_id'], $online['user_id']) . '|' . max($user->data['user_id'], $online['user_id']) . '\');';
 				}
@@ -295,7 +296,7 @@ if (!empty($action))
 			for ($x = 0; $x < sizeof($row); $x++)
 			{
 				$id = $row[$x]['shout_id'];
-				$time = utf8_encode(create_date('d M Y - H:i:s', $row[$x]['shout_time'], $config['board_timezone']));
+				$time = utf8_encode(create_date($lang['DATE_FORMAT_CHAT'], $row[$x]['shout_time'], $config['board_timezone']));
 
 				if ($row[$x]['shout_room'] != '')
 				{
