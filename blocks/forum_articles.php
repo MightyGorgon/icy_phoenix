@@ -100,7 +100,7 @@ if (!function_exists('cms_block_forum_articles'))
 					'VIEWS' => $fetchposts[$i]['topic_views'],
 					'TEXT' => $fetchposts[$i]['post_text'],
 					'U_PRINT_TOPIC' => append_sid('printarticle.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
-					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_url=' . urlencode($topic_link)),
+					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_url=' . urlencode(ip_utf8_decode($topic_link))),
 					)
 				);
 				display_attachments($fetchposts[$i]['post_id'], 'articles');

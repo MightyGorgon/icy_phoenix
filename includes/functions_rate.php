@@ -153,12 +153,16 @@ if (!function_exists('last_rating_info'))
 if (!function_exists('nivisec_copyright'))
 {
 	/**
-	* @return void
 	* @desc Prints a sytlized line of copyright for module
 	*/
 	function nivisec_copyright()
 	{
-		print '<br /><div class="copyright" style="text-align:center;">Ratings Module &copy; 2001-2003 <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.</div>';
+		global $template;
+
+		$template->assign_vars(array(
+			'NIVISEC_COPYRIGHT' => '<div class="copyright" style="text-align:center;">Ratings Module &copy; 2001-2003 <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.</div>'
+			)
+		);
 	}
 }
 
@@ -518,7 +522,7 @@ function auth_rated_topics()
 	$sql = "SELECT forum_id, forum_name
 					FROM " . FORUMS_TABLE . "
 					WHERE auth_rate <> -1
-						AND f.forum_type = " . FORUM_POST;
+						AND forum_type = " . FORUM_POST;
 	$result = $db->sql_query($sql, 0, 'rate_auth_');
 	$forums_row = $db->sql_fetchrowset($result);
 
@@ -553,7 +557,7 @@ function auth_rated_topics()
 * @param return_limit int [optional]
 * @desc Returns the top rated topics viewable by the current user, limit of $return_limit
 */
-function top_rated_topics($return_limit = '10', $forum_id = '-1')
+function top_rated_topics($return_limit = 10, $forum_id = -1)
 {
 	global $db, $config;
 
@@ -563,7 +567,7 @@ function top_rated_topics($return_limit = '10', $forum_id = '-1')
 	{
 		$sql = "SELECT AVG(rating) AS average, COUNT(rating) AS rating_number, MIN(rating) AS min, MAX(rating) AS max, topic_id
 			FROM " . RATINGS_TABLE . "
-			WHERE topic_id IN ($auth_topic_list)
+			WHERE topic_id IN (" . $auth_topic_list .")
 			GROUP BY topic_id DESC
 			HAVING rating_number >= " . $config['min_rates_number'] . "
 			ORDER BY average DESC
@@ -573,9 +577,9 @@ function top_rated_topics($return_limit = '10', $forum_id = '-1')
 	{
 		$sql = "SELECT AVG(r.rating) AS average, COUNT(r.rating) AS rating_number, MIN(r.rating) AS min, MAX(r.rating) AS max, r.topic_id
 			FROM " . RATINGS_TABLE . " r, " . TOPICS_TABLE . " t
-			WHERE r.topic_id IN ($auth_topic_list)
+			WHERE r.topic_id IN (" . $auth_topic_list . ")
 			AND r.topic_id = t.topic_id
-			AND t.forum_id = '" . $forum_id . "'
+			AND t.forum_id = " . $forum_id . "
 			GROUP BY r.topic_id DESC
 			HAVING rating_number >= " . $config['min_rates_number'] . "
 			ORDER BY average DESC
@@ -642,8 +646,8 @@ function ratings_detailed($topic_id)
 		)
 	);
 
-	$template->set_filenames(array('body' => 'rate_detailed.tpl'));
-	$template->pparse('body');
+	// JHL $template->set_filenames(array('body' => 'rate_detailed.tpl'));
+	// JHL $template->pparse('body');
 }
 
 /**
@@ -753,8 +757,8 @@ function ratings_large()
 		)
 	);
 
-	$template->set_filenames(array('body' => 'rate_main.tpl'));
-	$template->pparse('body');
+	// JHL $template->set_filenames(array('body' => 'rate_main.tpl'));
+	// JHL $template->pparse('body');
 }
 
 function ratings_view_topic()
