@@ -263,7 +263,8 @@ if (empty($mode))
 				'RATING' => ($picrow[$i]['rating'] == 0) ? $lang['Not_rated'] : round($picrow[$i]['rating'], 2),
 				'COMMENTS' => $picrow[$i]['comments'],
 				'LOCK' => ($picrow[$i]['pic_lock'] == 0) ? '' : $lang['Locked'],
-				'APPROVAL' => ($picrow[$i]['pic_approval'] == 0) ? $lang['Not_approved'] : $lang['Approved']
+				'APPROVAL' => ($picrow[$i]['pic_approval'] == 0) ? $lang['Not_approved'] : $lang['Approved'],
+				'CHECKED' => (!is_array($pic_id) && ($pic_id == $picrow[$i]['pic_id'])) ? ' checked="checked"' : ''
 				)
 			);
 		}

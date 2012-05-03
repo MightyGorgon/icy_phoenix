@@ -137,7 +137,7 @@ else
 }
 
 // ------------------------------------------------------------------------
-//  A common function to generate the 'sucess' or 'failure' message
+//  A common function to generate the 'success' or 'failure' message
 // ------------------------------------------------------------------------
 function showResultMessage($in_message)
 {
@@ -159,6 +159,9 @@ function showResultMessage($in_message)
 // ------------------------------------------------------------------------
 // now start processing the page...
 // ------------------------------------------------------------------------
+
+// JHL set the correct breadcrumbs
+$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_ALBUM) .'" class="nav">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT)) . '" class="nav">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>' . ALBUM_NAV_ARROW . '<a href="#" class="nav-current">' . $lang['Personal_Cat_Admin'] . '</a>';
 if(!isset($_POST['mode']))
 {
 	if(!isset($_GET['action']))
@@ -211,7 +214,7 @@ if(!isset($_POST['mode']))
 				$template->assign_vars(array('DISABLE_CREATION' => 'disabled'));
 			}
 		}
-		// ------------------------------------------
+
 		full_page_generation('album_personal_cat_body.tpl', $lang['Album'], '', '');
 	}
 	else
@@ -334,6 +337,7 @@ if(!isset($_POST['mode']))
 				'L_PANEL_TITLE' => $lang['Edit_Category']
 				)
 			);
+
 			full_page_generation('album_personal_cat_new_body.tpl', $lang['Album'], '', '');
 		}
 		elseif($_GET['action'] == 'delete')
@@ -390,10 +394,18 @@ if(!isset($_POST['mode']))
 				'U_PERSONAL_ALBUM' => append_sid(album_append_uid('album.' . PHP_EXT)),
 				'U_PERSONAL_CAT_ADMIN' => append_sid(album_append_uid('album_personal_cat_admin.' . PHP_EXT . '?cat_id=' . $cat_id)),
 
+				'ALBUM_PUBLIC_GALLERY' => intval(ALBUM_JUMPBOX_PUBLIC_GALLERY),
+				'ALBUM_ROOT_CATEGORY' => intval(ALBUM_ROOT_CATEGORY),
+				'ALBUM_USERS_GALLERY' => intval(ALBUM_JUMPBOX_USERS_GALLERY),
+				'ALBUM_JUMPBOX_SEPARATOR' => intval(ALBUM_JUMPBOX_SEPARATOR),
+				'SELF_REFERENCE' => $cat_id,
+				'L_NO_VALID_CAT_SELECTED' => $lang['No_valid_category_selected'],
+
 				'S_CAT_TITLE' => stripslashes($thiscat['cat_title']),
 				'S_SELECT_TO' => $select_to
 				)
 			);
+
 			full_page_generation('album_personal_cat_delete_body.tpl', $lang['Album'], '', '');
 		}
 		elseif($_GET['action'] == 'move')
@@ -482,6 +494,7 @@ else
 				'L_PANEL_TITLE' => $lang['Create_category']
 				)
 			);
+
 			full_page_generation('album_personal_cat_new_body.tpl', $lang['Album'], '', '');
 		}
 		else
