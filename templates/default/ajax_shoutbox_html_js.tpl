@@ -48,7 +48,7 @@ function insertChatTabUser(user)
 // Write the HTML for a new chatroom tab
 function insertChatTab(roomId, room, title)
 {
-	var output = " <a href=\"#\" id=\"chat-tab-" + roomId + "\" style=\"white-space: nowrap;\" onclick=\"javascript:activateChatTab('" + room + "');\">" + title + "</a> ";
+	var output = " <a href=\"#\" id=\"chat-tab-" + roomId + "\" style=\"white-space: nowrap;\" onclick=\"javascript:ChatRoomContext.activateChatTab('" + room + "');\">" + title + "</a> ";
 	return output;
 }
 
@@ -102,8 +102,8 @@ function highlightShout(id, isNew)
 {
 	if (isNew)
 	{
-		Fat.fade_element(id, 30, 2000, '#ff5500');
-		setTimeout("classChanger('" + id + "');", 2000);
+		Fat.fade_element(id, 30, FLASH_TIME, '#ff5500');
+		setTimeout("classChanger('" + id + "');", (FLASH_TIME + 100));
 	}
 	else
 	{
@@ -114,7 +114,7 @@ function highlightShout(id, isNew)
 // Highlight the newly added online user
 function highlightUser(id)
 {
-	Fat.fade_element(id, 30, 2000, '#ff5500');
+	Fat.fade_element(id, 30, FLASH_TIME, '#ff5500');
 }
 
 // Signal that something changed on the page

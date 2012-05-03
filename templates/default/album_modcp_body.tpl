@@ -88,7 +88,7 @@ function checkSelected()
 	<td class="row1 row-center"><span class="genmed">{picrow.COMMENTS}</span></td>
 	<td class="row1 row-center"><span class="genmed">{picrow.LOCK}</span></td>
 	<td class="row1 row-center"><span class="genmed">{picrow.APPROVAL}</span></td>
-	<td class="row1 row-center"><span class="genmed"><input type="checkbox" name="pic_id[]" value="{picrow.PIC_ID}" /></span></td>
+	<td class="row1 row-center"><span class="genmed"><input type="checkbox" name="pic_id[]" value="{picrow.PIC_ID}"{picrow.CHECKED} /></span></td>
 </tr>
 <!-- END picrow -->
 <tr>
