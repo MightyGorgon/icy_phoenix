@@ -203,7 +203,7 @@ else
 		'L_SHOUT_PREFIX' => 'shout_',
 		'L_USER_PREFIX' => 'user_',
 		'L_ROOM_PREFIX' => 'room_',
-		'PRIVATE_USERS' => '{ }'
+		'PRIVATE_USERS' => '{ }' // Javascript object syntax
 		)
 	);
 
@@ -395,7 +395,7 @@ else
 		for($x = 0; $x < sizeof($row); $x++)
 		{
 			$id = $row[$x]['shout_id'];
-			$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
+			$time = utf8_encode(create_date('d M Y - H:i:s', $row[$x]['shout_time'], $config['board_timezone']));
 
 			if ($row[$x]['user_id'] == ANONYMOUS)
 			{

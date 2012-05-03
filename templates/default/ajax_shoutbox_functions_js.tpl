@@ -108,8 +108,8 @@ var AjaxContext = {
 
 	// shout row 'zebra' classes
 	zebra: {
-		odd: "odd",
-		even: "even"
+		odd: "shout-odd",
+		even: "shout-even"
 	},
 
 	// List of current shouts (the array is associative)
@@ -197,24 +197,6 @@ var AjaxContext = {
 		};
 	},
 
-	// The update timer
-	updaterTimer: undefined,
-
-	// Stop the update timer
-	stopUpdates: function() {
-		if (typeof this.updateTimer != "undefined")
-		{
-			clearTimeout(this.updateTimer);
-			this.updateTimer = undefined;
-		} 
-	},
-
-	// Starts the update timer
-	startUpdates: function(delay) {
-		this.stopUpdates();
-		this.updateTimer = setTimeout(receiveChatData, delay);
-	},
-
 	// Check and display the error status (if any)
 	// Returns false if an error occurred, otherwise true
 	checkErrorStatus: function(result) {
@@ -275,6 +257,7 @@ var AjaxContext = {
 	// Check and display the shouts (if any)
 	// Returns false if an error occurred, otherwise true
 	checkShouts: function(shouts)	{
+		var newShouts = new Array();
 		for (var index = 0; index < shouts.length; index++) 
 		{
 			var shout = shouts[index];
@@ -285,7 +268,7 @@ var AjaxContext = {
 				this.shoutsParsed = true;
 				var link = shout.shouter_link;
 				shout.shouter_name = (link != "-1") ? "<a href=\"" + link + "\" {S_TARGET}" + shout.shouter_color + ">" + shout.shouter + "<\/a>" : shout.shouter;
-				var roomId = (typeof shout.room == "string" && shout.room != "") ? shout.room.replace(/\|/g, "-") : "public";
+				var roomId = ChatRoomContext.roomToId(shout.room);
 				var tableId = "outputList-" + roomId;
 				var table = $("#" + tableId);
 				if (!table.length)
@@ -294,19 +277,25 @@ var AjaxContext = {
 					table = ChatRoomContext.addChatTab(shout.room, this.privateUsers);
 				}
 				ChatRoomContext.chatTabNewShout(shout.room);
-
 				var cssClass = this.zebra.odd;
 				var firstShout = $("#" + tableId + " tr:first");
 				if (firstShout.length)
 				{
-					cssClass = (firstShout.prop("class") == this.zebra.odd) ? this.zebra.even : this.zebra.odd;
+					cssClass = (firstShout.hasClass(this.zebra.odd)) ? this.zebra.even : this.zebra.odd;
 				}
 				shout.cssClass = cssClass;
 				var html = insertNewShout(id, shout)
 				table.prepend(html);
-				highlightShout(id, this.lastId != -1);
 				this.currentShouts[id] = shout;
+				newShouts.push(shout);
 			}
+		}
+		// highlight after all the shouts have been added
+		for (var index = 0; index < newShouts.length; index++) 
+		{
+			var shout = newShouts[index];
+			var id = SHOUT_PREFIX + shout.id;
+			highlightShout(id, this.lastId != -1);
 		}
 		return true;
 	},
@@ -314,7 +303,6 @@ var AjaxContext = {
 	// Check and display the online users (if any)
 	// Returns false if an error occurred, otherwise true
 	checkOnlineUsers: function(users) {
-
 		// clear the validity
 		for (var id in this.currentUsers)
 		{
@@ -420,7 +408,8 @@ var AjaxContext = {
 	updateError: function(jqXHR, status, error) {
 		error = (typeof error == "string" && error != "") ? "Update: " + error : "Update";
 		this.stdError(jqXHR, status, error);
-		this.startUpdates(1000); // restart the updater 
+		UpdaterContext.receivingChatData = false;
+		UpdaterContext.startUpdates(500); // restart the updater 
 		AjaxContext = this; // jQuery clones the context
 		return true;
 	},
@@ -462,6 +451,31 @@ var AjaxContext = {
 		this.stdError(jqXHR, status, error);
 		$("#submit").attr("disabled", false);
 		return true;
+	}
+};
+
+// The Updater context
+var UpdaterContext = {
+
+	// Mutex flag for the chat data requester
+	receivingChatData: false,
+
+	// The update timer
+	updaterTimer: undefined,
+
+	// Stop the update timer
+	stopUpdates: function() {
+		if (typeof this.updateTimer != "undefined")
+		{
+			clearTimeout(this.updateTimer);
+			this.updateTimer = undefined;
+		} 
+	},
+
+	// Starts the update timer
+	startUpdates: function(delay) {
+		this.stopUpdates();
+		this.updateTimer = setTimeout(receiveChatData, delay);
 	}
 };
 
@@ -570,20 +584,36 @@ function throbber(state)
 function receiveChatData()
 {
 	var context = AjaxContext;
-	context.error = context.updateError;
-	context.success = context.updateSuccess;
-	context.doneFunction = function() {
-		if (this.shoutsParsed || this.usersParsed)
-		{
-			chatDataChanged();
-		}
-		this.startUpdates(REFRESH_TIME); // restart the updater 
-		AjaxContext = this;
-		return true;
-	};
+	if (!UpdaterContext.receivingChatData)
+	{
+		UpdaterContext.receivingChatData = true;
+		UpdaterContext.stopUpdates();
+		context.error = context.updateError;
+		context.success = context.updateSuccess;
+		context.complete = function(jqXHR, status) {
+			throbber(false);
+			UpdaterContext.receivingChatData = false;
+		};
+		context.doneFunction = function() {
+			if (this.shoutsParsed || this.usersParsed)
+			{
+				chatDataChanged();
+			}
+			if (typeof UpdaterContext.updateTimer == "undefined")
+			{
+				UpdaterContext.startUpdates(REFRESH_TIME); // restart the updater
+			}
+			AjaxContext = this;
+			return true;
+		};
 
-	context.setUpdateParameters("read");
-	$.ajax(context);
+		context.setUpdateParameters("read");
+		$.ajax(context);
+	}
+	else
+	{
+		UpdaterContext.startUpdates(250); // restart the updater 
+	}
 }
 
 <!-- BEGIN user_is_admin -->
@@ -596,6 +626,9 @@ function removeShout(shoutId)
 		var context = jQuery.extend(new Object(), AjaxContext);
 		context.error = context.stdError;
 		context.success = context.stdSuccess;	
+		context.complete = function(jqXHR, status) {
+			throbber(false);
+		};
 		context.doneFunction = function() {
 			$("#" + SHOUT_PREFIX + shoutId).remove();
 			return true;
@@ -628,11 +661,14 @@ function sendComment()
 		var submit = $("#submit");
 		context.error = AjaxContext.sendError;
 		context.success = AjaxContext.stdSuccess;
+		context.complete = function(jqXHR, status) {
+			throbber(false);
+		};
 		context.doneFunction = function() {
 			inputText.val("");
 			inputText.focus();
 			submit.attr("disabled", false);
-			AjaxContext.startUpdates(100); // restart the updater 
+			receiveChatData(); // show the results immediately
 			return true;
 		};
 
@@ -654,6 +690,8 @@ function leaveChat(evt)
 	};
 	context.success = function(data, status, jqXHR) {
 		return true;
+	};
+	context.complete = function(jqXHR, status) {
 	};
 	context.setParameters("leave");
 	$.ajax(context);

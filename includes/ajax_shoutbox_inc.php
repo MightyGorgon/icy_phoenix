@@ -295,7 +295,7 @@ if (!empty($action))
 			for ($x = 0; $x < sizeof($row); $x++)
 			{
 				$id = $row[$x]['shout_id'];
-				$time = utf8_encode(create_date('Y/m/d - H.i.s', $row[$x]['shout_time'], $config['board_timezone']));
+				$time = utf8_encode(create_date('d M Y - H:i:s', $row[$x]['shout_time'], $config['board_timezone']));
 
 				if ($row[$x]['shout_room'] != '')
 				{
