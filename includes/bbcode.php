@@ -2682,7 +2682,10 @@ class bbcode
 			// text color
 			return $color;
 		}
-		// rgb color
+
+		// rgb(ddd, ddd, ddd) color
+		// OLD RGB FUNCTION
+		/*
 		if((substr($color, 0, 4) === 'rgb(') && preg_match('/^rgb\([0-9]+,[0-9]+,[0-9]+\)$/', $color))
 		{
 			$colors = explode(',', substr($color, 4, strlen($color) - 5));
@@ -2695,7 +2698,35 @@ class bbcode
 			}
 			return sprintf('#%02X%02X%02X', $colors[0], $colors[1], $colors[2]);
 		}
+		*/
+
+		if(substr($color, 0, 4) === 'rgb(')
+		{
+			$valid = preg_replace_callback('#^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$#', 'bbcode::valid_rgb_match', $color);
+			return !empty($valid) ? $color : false;
+		}
 		return false;
+	}
+
+	// Check for valid RGB match
+	function valid_rgb_match($matches)
+	{
+		$valid = true;
+		if (sizeof($matches) != 4)
+		{
+			$valid = false;
+		}
+		else
+		{
+			$red = (int) $matches[1];
+			$green = (int) $matches[2];
+			$blue = (int) $matches[3];
+			if (($red > 255) || ($green > 255) || ($blue > 255))
+			{
+				$valid = false;
+			}
+		}
+		return $valid;
 	}
 
 	// Parse style

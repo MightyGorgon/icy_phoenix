@@ -12,7 +12,14 @@
 // license: http://creativecommons.org/licenses/by-nc-sa/2.0/
 
 // Refresh interval
-REFRESH_TIME *= 2; // slower here, speed is not essential
+REFRESH_TIME *= 3; // slower here, speed is not essential
+
+// Signal that something changed on the page
+function chatDataChanged()
+{
+	// Sound effects not required here
+	// playsound();
+}
 
 // Initialises the polling object
 function initChat()
@@ -25,6 +32,9 @@ initChat();
 // ]]>
 </script>
 <!-- END view_shoutbox -->
+
+<!-- USING jPlayer -->
+<div id="ac_notify" style="height: 0;">&nbsp;</div>
 
 <table align="center" width="100%" cellspacing="0" cellpadding="0">
 <tr valign="top">
@@ -112,7 +122,11 @@ initChat();
 			</tr>
 		<!-- BEGIN top_shouters -->
 			<tr>
+				<!-- IF top_shouters.USER_LINK -->
 				<td class="row1"><a href="{top_shouters.USER_LINK}" class="forumlink">{top_shouters.USERNAME}</a></td>
+				<!-- ELSE -->
+				<td class="row1"><span class="forumlink">{top_shouters.USERNAME}</span></td>
+				<!-- ENDIF -->
 				<td class="row1"><span class="post-text">{top_shouters.USER_SHOUTS}</span></td>
 			</tr>
 		<!-- END top_shouters -->

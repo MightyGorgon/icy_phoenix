@@ -414,8 +414,7 @@ class class_form
 				break;
 
 			case 'FLOAT':
-				$config_value = str_replace(',', '.', $config_value);
-				$config_value = (float) ($config_value);
+				$config_value = (float) str_replace(',', '.', $config_value);
 				break;
 
 			case 'TINYTEXT':

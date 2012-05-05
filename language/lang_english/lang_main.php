@@ -2444,6 +2444,7 @@ $lang = array_merge($lang, array(
 	'IP_BLACKLISTED' => 'Your IP %s has been blocked because it is blacklisted. For details please see <a href="%s">%s</a>.',
 
 	'PRINTABLE_VERSION' => 'Printable Version',
+	'CHANGE_FONT_SIZE' => 'Change Font Size',
 
 	'FULL_EDITOR' => 'Switch to full Editor',
 

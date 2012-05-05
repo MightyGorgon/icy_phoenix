@@ -34,7 +34,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'cron_digests_interval' => array(
 		'lang_key' => 'IP_cron_digests_interval',
@@ -45,8 +45,8 @@ $settings_data = array(
 			'Cron_Server' => -1,
 			'Cron_Disabled' => 0,
 			'1H' => 3600,
-			),
 		),
+	),
 
 	'cron_birthdays_interval' => array(
 		'lang_key' => 'IP_cron_birthdays_interval',
@@ -56,8 +56,8 @@ $settings_data = array(
 		'values' => array(
 			'Cron_Disabled' => 0,
 			'1H' => 3600,
-			),
 		),
+	),
 
 	'cron_files_interval' => array(
 		'lang_key' => 'IP_cron_files_interval',
@@ -65,7 +65,7 @@ $settings_data = array(
 		'type' => 'LIST_DROP',
 		'default' => 0,
 		'values' => $this->list_time_intervals,
-		),
+	),
 
 	'cron_database_interval' => array(
 		'lang_key' => 'IP_cron_database_interval',
@@ -73,7 +73,7 @@ $settings_data = array(
 		'type' => 'LIST_DROP',
 		'default' => 0,
 		'values' => $this->list_time_intervals,
-		),
+	),
 
 	'cron_cache_interval' => array(
 		'lang_key' => 'IP_cron_cache_interval',
@@ -81,7 +81,7 @@ $settings_data = array(
 		'type' => 'LIST_DROP',
 		'default' => 0,
 		'values' => $this->list_time_intervals,
-		),
+	),
 
 	'cron_sql_interval' => array(
 		'lang_key' => 'IP_cron_sql_interval',
@@ -89,7 +89,7 @@ $settings_data = array(
 		'type' => 'LIST_DROP',
 		'default' => 0,
 		'values' => $this->list_time_intervals,
-		),
+	),
 
 	'cron_users_interval' => array(
 		'lang_key' => 'IP_cron_users_interval',
@@ -97,7 +97,7 @@ $settings_data = array(
 		'type' => 'LIST_DROP',
 		'default' => 0,
 		'values' => $this->list_time_intervals,
-		),
+	),
 
 	'cron_topics_interval' => array(
 		'lang_key' => 'IP_cron_topics_interval',
@@ -105,7 +105,7 @@ $settings_data = array(
 		'type' => 'LIST_DROP',
 		'default' => 0,
 		'values' => $this->list_time_intervals,
-		),
+	),
 
 	'cron_sessions_interval' => array(
 		'lang_key' => 'IP_cron_sessions_interval',
@@ -113,7 +113,7 @@ $settings_data = array(
 		'type' => 'LIST_DROP',
 		'default' => 0,
 		'values' => $this->list_time_intervals,
-		),
+	),
 
 );
 

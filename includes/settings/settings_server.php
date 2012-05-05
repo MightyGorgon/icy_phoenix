@@ -33,39 +33,39 @@ $settings_data = array(
 		'explain' => 'Server_name_explain',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'server_port' => array(
 		'lang_key' => 'Server_port',
 		'explain' => 'Server_port_explain',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'script_path' => array(
 		'lang_key' => 'Script_path',
 		'explain' => 'Script_path_explain',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'sitename' => array(
 		'lang_key' => 'Site_name',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'site_desc' => array(
 		'lang_key' => 'Site_desc',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'site_meta_keywords' => array(
 		'lang_key' => 'SITE_META_KEYWORDS',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'site_meta_keywords_switch' => array(
 		'lang_key' => 'SITE_META_KEYWORDS_SWITCH',
@@ -73,13 +73,13 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'site_meta_description' => array(
 		'lang_key' => 'SITE_META_DESCRIPTION',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'site_meta_description_switch' => array(
 		'lang_key' => 'SITE_META_DESCRIPTION_SWITCH',
@@ -87,13 +87,13 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'site_meta_author' => array(
 		'lang_key' => 'SITE_META_AUTHOR',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'site_meta_author_switch' => array(
 		'lang_key' => 'SITE_META_AUTHOR_SWITCH',
@@ -101,13 +101,13 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'site_meta_copyright' => array(
 		'lang_key' => 'SITE_META_COPYRIGHT',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'site_meta_copyright_switch' => array(
 		'lang_key' => 'SITE_META_COPYRIGHT_SWITCH',
@@ -115,7 +115,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'board_disable' => array(
 		'lang_key' => 'Board_disable',
@@ -123,27 +123,27 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'board_disable_mess_st' => array(
 		'lang_key' => 'board_disable_message',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'board_disable_message' => array(
 		'lang_key' => 'board_disable_message_texte',
 		'type' => 'HTMLVARCHAR',
 		'default' => '',
-		),
+	),
 
 	'gzip_compress' => array(
 		'lang_key' => 'Enable_gzip',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'check_dnsbl' => array(
 		'lang_key' => 'ENABLE_CHECK_DNSBL',
@@ -151,7 +151,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'check_dnsbl_posting' => array(
 		'lang_key' => 'ENABLE_CHECK_DNSBL_POSTING',
@@ -159,7 +159,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'registration_status' => array(
 		'lang_key' => 'registration_status',
@@ -167,14 +167,14 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'registration_closed' => array(
 		'lang_key' => 'registration_closed',
 		'explain' => 'registration_closed_explain',
 		'type' => 'HTMLVARCHAR',
 		'default' => '',
-		),
+	),
 
 	'require_activation' => array(
 		'lang_key' => 'Acct_activation',
@@ -184,8 +184,8 @@ $settings_data = array(
 			'Acc_None' => USER_ACTIVATION_NONE,
 			'Acc_User' => USER_ACTIVATION_SELF,
 			'Acc_Admin' => USER_ACTIVATION_ADMIN,
-			),
 		),
+	),
 
 	'enable_confirm' => array(
 		'lang_key' => 'Visual_confirm',
@@ -193,7 +193,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'use_captcha' => array(
 		'lang_key' => 'Use_Captcha',
@@ -201,7 +201,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'allow_autologin' => array(
 		'lang_key' => 'Allow_autologin',
@@ -209,28 +209,28 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'max_autologin_time' => array(
 		'lang_key' => 'Autologin_time',
 		'explain' => 'Autologin_time_explain',
 		'type' => 'SMALLINT',
 		'default' => 0,
-		),
+	),
 
 	'max_login_attempts' => array(
 		'lang_key' => 'Max_login_attempts',
 		'explain' => 'Max_login_attempts_explain',
 		'type' => 'SMALLINT',
 		'default' => 5,
-		),
+	),
 
 	'login_reset_time' => array(
 		'lang_key' => 'Login_reset_time',
 		'explain' => 'Login_reset_time_explain',
 		'type' => 'SMALLINT',
 		'default' => 30,
-		),
+	),
 
 	'cookie_domain' => array(
 		'lang_key' => 'Cookie_domain',
@@ -238,19 +238,19 @@ $settings_data = array(
 		'separator_explain' => 'Cookie_settings_explain',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'cookie_name' => array(
 		'lang_key' => 'Cookie_name',
 		'type' => 'TINYTEXT',
 		'default' => '',
-		),
+	),
 
 	'cookie_path' => array(
 		'lang_key' => 'Cookie_path',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'cookie_secure' => array(
 		'lang_key' => 'Cookie_secure',
@@ -260,14 +260,14 @@ $settings_data = array(
 		'values' => array(
 			'Disabled' => 0,
 			'Enabled' => 1,
-			),
 		),
+	),
 
 	'session_length' => array(
 		'lang_key' => 'Session_length',
 		'type' => 'SMALLINT',
 		'default' => 3600,
-		),
+	),
 
 	'session_last_visit_reset' => array(
 		'lang_key' => 'SESSION_LAST_VISIT_RESET',
@@ -275,21 +275,21 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'coppa_fax' => array(
 		'lang_key' => 'COPPA_fax',
 		'separator' => 'COPPA_settings',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'coppa_mail' => array(
 		'lang_key' => 'COPPA_mail',
 		'explain' => 'COPPA_mail_explain',
 		'type' => 'TEXT',
 		'default' => '',
-		),
+	),
 
 	'board_email_form' => array(
 		'lang_key' => 'Board_email_form',
@@ -300,21 +300,21 @@ $settings_data = array(
 		'values' => array(
 			'Enabled' => 1,
 			'Disabled' => 0,
-			),
 		),
+	),
 
 	'board_email' => array(
 		'lang_key' => 'Admin_email',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'board_email_sig' => array(
 		'lang_key' => 'Email_sig',
 		'explain' => 'Email_sig_explain',
 		'type' => 'HTMLTEXT',
 		'default' => '',
-		),
+	),
 
 	'smtp_delivery' => array(
 		'lang_key' => 'Use_SMTP',
@@ -322,33 +322,33 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'smtp_host' => array(
 		'lang_key' => 'SMTP_server',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'smtp_port' => array(
 		'lang_key' => 'SMTP_port',
 		'type' => 'VARCHAR',
 		'default' => '25',
-		),
+	),
 
 	'smtp_username' => array(
 		'lang_key' => 'SMTP_username',
 		'explain' => 'SMTP_username_explain',
 		'type' => 'VARCHAR',
 		'default' => '',
-		),
+	),
 
 	'smtp_password' => array(
 		'lang_key' => 'SMTP_password',
 		'explain' => 'SMTP_password_explain',
 		'type' => 'PASSWORD',
 		'default' => '',
-		),
+	),
 
 );
 

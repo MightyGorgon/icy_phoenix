@@ -70,11 +70,6 @@ if ($rate_mode == 'detailed')
 
 // Display modes, for if the page is called seperately
 
-if (!in_array($rate_mode, array('rate', 'rerate')))
-{
-	page_header($meta_content['page_title'], true);
-}
-
 switch($rate_mode)
 {
 	case 'rate':
@@ -85,17 +80,18 @@ switch($rate_mode)
 	break;
 	case 'detailed':
 		ratings_detailed($topic_id);
+		nivisec_copyright();
+		page_header();
+		$template->set_filenames(array('body' => 'rate_detailed.tpl'));
+		page_footer();
 		break;
 	default:
 		ratings_large();
+		nivisec_copyright();
+		page_header();
+		$template->set_filenames(array('body' => 'rate_main.tpl'));
+		page_footer();
 		break;
-}
-
-if (!in_array($rate_mode, array('rate', 'rerate')))
-{
-	nivisec_copyright();
-
-	page_footer(true, '', true);
 }
 
 ?>

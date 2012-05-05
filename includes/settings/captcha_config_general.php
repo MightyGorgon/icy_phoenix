@@ -34,7 +34,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 	'captcha_config_02' => array(
 		'lang_key' => 'CAPTCHA_CONFIG_02',
@@ -42,7 +42,7 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
-		),
+	),
 
 );
 

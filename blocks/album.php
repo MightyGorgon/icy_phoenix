@@ -24,7 +24,7 @@ if(!function_exists('cms_block_album'))
 {
 	function cms_block_album()
 	{
-		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page;
+		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page, $album_config;
 
 		$cms_page_id_tmp = 'album';
 		$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);

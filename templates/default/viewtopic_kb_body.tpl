@@ -15,7 +15,7 @@ function open_postreview(ref)
 {
 	height = screen.height / 2.23;
 	width = screen.width / 2;
-	window.open(ref,'_phpbbpostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
+	window.open(ref,'_ippostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
 	return;
 }
 //-->

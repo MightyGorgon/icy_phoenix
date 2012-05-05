@@ -15,179 +15,106 @@ if (!defined('IN_ICYPHOENIX'))
 
 function get_http_user_agent()
 {
-	if (!empty($_SERVER['HTTP_USER_AGENT']))
-	{
-		$HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
-	}
-	else
-	{
-		$HTTP_USER_AGENT = '';
-	}
-
+	$HTTP_USER_AGENT = (!empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
 	return $HTTP_USER_AGENT;
 }
 
-
 function get_user_referer()
 {
-	if (!empty($_SERVER['HTTP_REFERER']))
-	{
-		$HTTP_REFERER = $_SERVER['HTTP_REFERER'];
-	}
-	else
-	{
-		$HTTP_REFERER = '';
-	}
-
+	$HTTP_REFERER = (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
 	return $HTTP_REFERER;
 }
-
 
 function get_user_os($http_user_agent_str)
 {
 	global $lang;
-	$user_os_img = 'images/http_agents/os/';
 
-	if (strpos($http_user_agent_str, 'Win'))
+	$user_os_img_path = 'images/http_agents/os/';
+	$user_os_ver = $lang['UNKNOWN'];
+	$user_os_img = $user_os_img_path . 'unknown.png';
+
+	$os = array(
+		'windows' => array(
+			'main' => array('str_pos' => array('Win'), 'name' => 'Windows', 'icon' => 'windows.png'),
+			'sub' => array(
+				'windows_seven' => array('str_pos' => array('Windows NT 6.1'), 'name' => 'Windows 7', 'icon' => 'windows_seven.png'),
+				'windows_vista' => array('str_pos' => array('Windows NT 6.0'), 'name' => 'Windows Vista', 'icon' => 'windows_vista.png'),
+				'windows_2003' => array('str_pos' => array('Windows NT 5.2'), 'name' => 'Windows 2003', 'icon' => 'windows_2003.png'),
+				'windows_xp' => array('str_pos' => array('Windows NT 5.1'), 'name' => 'Windows XP', 'icon' => 'windows_xp.png'),
+				'windows_2000' => array('str_pos' => array('Windows NT 5.0'), 'name' => 'Windows 2000', 'icon' => 'windows_2000.png'),
+			),
+		),
+		'ipad' => array('main' => array('str_pos' => array('iPad'), 'name' => 'iPad', 'icon' => 'ipad_2.png')),
+		'iphone' => array('main' => array('str_pos' => array('iPhone'), 'name' => 'iPhone', 'icon' => 'iphone_4.png')),
+		'mac' => array('main' => array('str_pos' => array('Mac'), 'name' => 'Mac', 'icon' => 'mac_osx.png')),
+		'android' => array('main' => array('str_pos' => array('Android'), 'name' => 'Android', 'icon' => 'android.png')),
+		'symbian' => array('main' => array('str_pos' => array('Symb'), 'name' => 'Symbian OS', 'icon' => 'symbian.png')),
+		'linux' => array(
+			'main' => array('str_pos' => array('Linux'), 'name' => 'Linux', 'icon' => 'linux.png'),
+			'sub' => array(
+				'linux_slackware' => array('str_pos' => array('Slackware'), 'name' => 'Slackware Linux', 'icon' => 'linux_slackware.png'),
+				'linux_mandrake' => array('str_pos' => array('Mandrake'), 'name' => 'Mandrake Linux', 'icon' => 'linux_mandrake.png'),
+				'linux_mandriva' => array('str_pos' => array('Mandriva'), 'name' => 'Mandriva Linux', 'icon' => 'linux_mandriva.png'),
+				'linux_suse' => array('str_pos' => array('SuSE'), 'name' => 'SuSE Linux', 'icon' => 'linux_suse.png'),
+				'linux_novell' => array('str_pos' => array('Novell'), 'name' => 'Novell Linux', 'icon' => 'linux_novell.png'),
+				'linux_ubuntu' => array('str_pos' => array('Ubuntu'), 'name' => 'Ubuntu Linux', 'icon' => 'linux_ubuntu.png'),
+				'linux_kubuntu' => array('str_pos' => array('Kubuntu'), 'name' => 'Kubuntu Linux', 'icon' => 'linux_kubuntu.png'),
+				'linux_xubuntu' => array('str_pos' => array('Xubuntu'), 'name' => 'Xubuntu Linux', 'icon' => 'linux_xubuntu.png'),
+				'linux_edubuntu' => array('str_pos' => array('Edubuntu'), 'name' => 'Edubuntu Linux', 'icon' => 'linux_edubuntu.png'),
+				'linux_debian' => array('str_pos' => array('Debian'), 'name' => 'Debian Linux', 'icon' => 'linux_debian.png'),
+				'linux_redhat' => array('str_pos' => array('Red Hat'), 'name' => 'Red Hat Linux', 'icon' => 'linux_redhat.png'),
+				'linux_gentoo' => array('str_pos' => array('Gentoo'), 'name' => 'Gentoo Linux', 'icon' => 'linux_gentoo.png'),
+				'linux_fedora' => array('str_pos' => array('Fedora'), 'name' => 'Fedora Linux', 'icon' => 'linux_fedora.png'),
+			),
+		),
+		'unix' => array('main' => array('str_pos' => array('Unix'), 'name' => 'Unix', 'icon' => 'unix.png')),
+		'nintendo' => array('main' => array('str_pos' => array('Nintendo'), 'name' => 'Nintendo', 'icon' => 'nintendo.png')),
+	);
+
+	$os_processed = false;
+	foreach ($os as $os_data)
 	{
-		if (strpos($http_user_agent_str, 'Windows NT 6.1'))
+		if (!empty($os_data['main']['str_pos']) && is_array($os_data['main']['str_pos']))
 		{
-			$user_os_ver = 'Windows 7';
-			$user_os_img .= 'win7.png';
+			foreach ($os_data['main']['str_pos'] as $os_str_pos)
+			{
+				if (strpos(strtolower($http_user_agent_str), strtolower($os_str_pos)) !== false)
+				{
+					$user_os_ver = $os_data['main']['name'];
+					if (!empty($os_data['main']['icon']))
+					{
+						$user_os_img = $user_os_img_path . $os_data['main']['icon'];
+					}
+					$os_processed = true;
+					break 1;
+				}
+			}
 		}
-		elseif (strpos($http_user_agent_str, 'Windows NT 6.0'))
+		if (!empty($os_processed) && !empty($os_data['sub']) && is_array($os_data['sub']))
 		{
-			$user_os_ver = 'Windows Vista';
-			$user_os_img .= 'winlong.png';
+			foreach ($os_data['sub'] as $sub_os_data)
+			{
+				if (!empty($sub_os_data['str_pos']) && is_array($sub_os_data['str_pos']))
+				{
+					foreach ($sub_os_data['str_pos'] as $sub_os_str_pos)
+					{
+						if (strpos(strtolower($http_user_agent_str), strtolower($sub_os_str_pos)) !== false)
+						{
+							$user_os_ver = $sub_os_data['name'];
+							if (!empty($sub_os_data['icon']))
+							{
+								$user_os_img = $user_os_img_path . $sub_os_data['icon'];
+							}
+							break 3;
+						}
+					}
+				}
+			}
 		}
-		elseif (strpos($http_user_agent_str, 'Windows NT 5.2'))
+		if (!empty($os_processed))
 		{
-			$user_os_ver = 'Windows 2003';
-			$user_os_img .= 'win2003.png';
+			break 1;
 		}
-		elseif (strpos($http_user_agent_str, 'Windows NT 5.1'))
-		{
-			$user_os_ver = 'Windows XP';
-			$user_os_img .= 'winxp.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Windows NT 5.0'))
-		{
-			$user_os_ver = 'Windows 2000';
-			$user_os_img .= 'win2000.png';
-		}
-		else
-		{
-			$user_os_ver = 'Windows';
-			$user_os_img .= 'win.png';
-		}
-	}
-	elseif (strpos($http_user_agent_str, 'SymbianOS') || strpos($http_user_agent_str, 'SymbOS'))
-	{
-		$user_os_ver = 'SymbianOS';
-		$user_os_img .= 'symbian.png';
-	}
-	elseif (strpos($http_user_agent_str, 'Android'))
-	{
-		$user_os_ver = 'Android';
-		$user_os_img .= 'android.png';
-	}
-	elseif (strpos($http_user_agent_str, 'iPhone'))
-	{
-		$user_os_ver = 'iPhone';
-		$user_os_img .= 'iphone.png';
-	}
-		elseif (strpos($http_user_agent_str, 'iPad'))
-	{
-		$user_os_ver = 'iPad';
-		$user_os_img .= 'ipad.png';
-	}
-	elseif (strpos($http_user_agent_str, 'Mac'))
-	{
-		$user_os_ver = 'Mac';
-		$user_os_img .= 'mac.png';
-	}
-	elseif (strpos($http_user_agent_str, 'Linux'))
-	{
-		if (strpos($http_user_agent_str, 'Slackware'))
-		{
-			$user_os_ver = 'Slackware Linux';
-			$user_os_img .= 'slackware.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Mandrake'))
-		{
-			$user_os_ver = 'Mandrake Linux';
-			$user_os_img .= 'mandrake.png';
-		}
-		elseif (strpos($http_user_agent_str, 'SuSE'))
-		{
-			$user_os_ver = 'SuSE Linux';
-			$user_os_img .= 'suse.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Novell'))
-		{
-			$user_os_ver = 'Novell Linux';
-			$user_os_img .= 'novell.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Ubuntu'))
-		{
-			$user_os_ver = 'Ubuntu Linux';
-			$user_os_img .= 'ubuntu.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Kubuntu'))
-		{
-			$user_os_ver = 'Kubuntu Linux';
-			$user_os_img .= 'kubuntu.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Xubuntu'))
-		{
-			$user_os_ver = 'Xubuntu Linux';
-			$user_os_img .= 'xubuntu.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Edubuntu'))
-		{
-			$user_os_ver = 'Edubuntu Linux';
-			$user_os_img .= 'edubuntu.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Debian'))
-		{
-			$user_os_ver = 'Debian Linux';
-			$user_os_img .= 'debian.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Red Hat'))
-		{
-			$user_os_ver = 'Red Hat Linux';
-			$user_os_img .= 'redhat.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Gentoo'))
-		{
-			$user_os_ver = 'Gentoo Linux';
-			$user_os_img .= 'gentoo.png';
-		}
-		elseif (strpos($http_user_agent_str, 'Fedora'))
-		{
-			$user_os_ver = 'Fedora Linux';
-			$user_os_img .= 'fedora.png';
-		}
-		else
-		{
-			$user_os_ver = 'Linux';
-			$user_os_img .= 'linux.png';
-		}
-	}
-	elseif (strpos($http_user_agent_str, 'Unix'))
-	{
-		$user_os_ver = 'Unix';
-		$user_os_img .= 'unix.png';
-	}
-	elseif (strpos($http_user_agent_str, 'Nintendo DS'))
-	{
-		$user_os_ver = 'Nintendo DS';
-		$user_os_img .= 'unknown.png';
-	}
-	else
-	{
-		$user_os_ver = $lang['UNKNOWN'];
-		$user_os_img .= 'unknown.png';
 	}
 
 	$user_os['os'] = $user_os_ver;
@@ -195,61 +122,80 @@ function get_user_os($http_user_agent_str)
 	return $user_os;
 }
 
-
 function get_user_browser($http_user_agent_str)
 {
 	global $lang;
-	$user_browser_img = 'images/http_agents/browsers/';
 
-	if (ereg('MSIE ([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
+	$user_browser_img_path = 'images/http_agents/browsers/';
+	$user_browser_ver = $lang['UNKNOWN'];
+	$user_browser_img = $user_browser_img_path . 'unknown.png';
+
+	// Order is important... do not move browsers unless you know what you are doing!!!
+	$browsers = array(
+		'msie' => array('regex' => array('/MSIE ([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'MS Internet Explorer', 'icon' => 'msie.png'),
+		'opera' => array('regex' => array('/Opera\/([0-9]{1,2}.[0-9]{1,4})/', '/Opera ([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => true, 'name' => 'Opera', 'icon' => 'opera.png'),
+		'firefox' => array('regex' => array('/Firefox\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Firefox', 'icon' => 'firefox.png'),
+		// Iron must be before Chrome
+		'iron' => array('regex' => array('/Iron\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Iron', 'icon' => 'iron.png'),
+		// Chromium must be before Chrome
+		'chromium' => array('regex' => array('/Chromium\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Chromium', 'icon' => 'chromium.png'),
+		// ChromePlus must be before Chrome
+		'chrome_plus' => array('regex' => array('/ChromePlus\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'ChromePlus', 'icon' => 'chrome_plus.png'),
+		// CoolNovo must be before Chrome
+		'coolnovo' => array('regex' => array('/CoolNovo\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'CoolNovo', 'icon' => 'coolnovo.png'),
+		'chrome' => array('regex' => array('/Chrome\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Chrome', 'icon' => 'chrome.png'),
+		'safari' => array('regex' => array('/Safari\/([0-9]{1,5}.[0-9]{1,5})/'), 'check_version' => true, 'name' => 'Safari', 'icon' => 'safari.png'),
+		'konqueror' => array('regex' => array('/Konqueror\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Konqueror', 'icon' => 'konqueror.png'),
+		// Mozilla must be the last one!!!
+		'mozilla' => array('regex' => array('/Mozilla\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Mozilla', 'icon' => 'mozilla.png'),
+	);
+
+	foreach ($browsers as $browser_data)
 	{
-		$user_browser_ver = 'MSIE ' . $log_version[1];
-		$user_browser_img .= 'msie.png';
-	}
-	elseif (ereg('Opera/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version) || ereg('Opera ([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
-	{
-		$user_browser_ver = 'Opera ' . $log_version[1];
-		$user_browser_img .= 'opera.png';
-	}
-	elseif (ereg('Firefox/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
-	{
-		$user_browser_ver = 'Firefox ' . $log_version[1];
-		$user_browser_img .= 'firefox.png';
-	}
-	elseif (ereg('Chromium/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
-	{
-		$user_browser_ver = 'Chromium ' . $log_version[1];
-		$user_browser_img .= 'chromium.png';
-	}
-	elseif (ereg('Chrome/([0-9]{1,2}.[0-9]{1,2})', $http_user_agent_str, $log_version))
-	{
-		$user_browser_ver = 'Chrome ' . $log_version[1];
-		$user_browser_img .= 'chrome.png';
-	}
-	elseif (ereg('Safari/', $http_user_agent_str, $log_version))
-	{
-		$user_browser_ver = 'Safari ' . $log_version[1];
-		$user_browser_img .= 'safari.png';
-	}
-	elseif (ereg('Mozilla/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
-	{
-		$user_browser_ver = 'Mozilla ' . $log_version[1];
-		$user_browser_img .= 'mozilla.png';
-	}
-	elseif (ereg('Konqueror/([0-9].[0-9]{1,2})', $http_user_agent_str, $log_version))
-	{
-		$user_browser_ver = 'Konqueror ' . $log_version[1];
-		$user_browser_img .= 'konqueror.png';
-	}
-	else
-	{
-		$user_browser_ver = $lang['UNKNOWN'];
-		$user_browser_img .= 'unknown.png';
+		if (!empty($browser_data['regex']) && is_array($browser_data['regex']))
+		{
+			foreach ($browser_data['regex'] as $browser_regex)
+			{
+				if (!empty($browser_regex))
+				{
+					if (preg_match($browser_regex, $http_user_agent_str, $log_version))
+					{
+						$version_f = '';
+						$version = '';
+						if (!empty($browser_data['check_version']))
+						{
+							$version_f = get_user_browser_version($http_user_agent_str);
+						}
+						$version = (!empty($version_f) ? $version_f : (!empty($log_version[1]) ? $log_version[1] : ''));
+						if (!empty($browser_data['name']))
+						{
+							$user_browser_ver = $browser_data['name'] . (!empty($version) ? (' ' . $version) : '');
+							if (!empty($browser_data['icon']))
+							{
+								$user_browser_img = $user_browser_img_path . $browser_data['icon'];
+							}
+						}
+						break 2;
+					}
+				}
+			}
+		}
 	}
 
 	$user_browser['browser'] = $user_browser_ver;
 	$user_browser['img'] = '<img src="' . $user_browser_img . '" alt="' . $user_browser_ver . '" title="' . $user_browser_ver . '" />';
 	return $user_browser;
+}
+
+function get_user_browser_version($http_user_agent_str)
+{
+	$version = '';
+	if (preg_match('/Version\/([0-9]{1,2}.[0-9]{1,4})/', $http_user_agent_str, $log_version))
+	{
+		$version = $log_version[1];
+	}
+
+	return $version;
 }
 
 ?>

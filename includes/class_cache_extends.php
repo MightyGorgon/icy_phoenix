@@ -279,7 +279,7 @@ class ip_cache extends acm
 		{
 			$styles = array();
 			//$sql = "SELECT * FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
-			$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
+			$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY LOWER(style_name), themes_id";
 			$result = $from_cache ? $db->sql_query($sql, 0, 'styles_') : $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))

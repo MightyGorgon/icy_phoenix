@@ -3836,7 +3836,8 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 		$im_ref = str_replace('{REF}', $im_ref, $available_im[$im_type]['url']);
 		if ($im_type == 'chat')
 		{
-			if (empty($user->data['session_logged_in']))
+			// JHL: No chat icon if the user is anonymous, or the profiled user is offline
+			if (empty($user->data['session_logged_in']) || empty($user_data['user_session_time']) || ($user_data['user_session_time'] < (time() - $config['online_time'])))
 			{
 				return '';
 			}
@@ -4450,8 +4451,8 @@ function page_header($title = '', $parse_template = false)
 				$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
 				$ajax_chat_room = 'chat_room=' . $user->data['user_private_chat_alert'];
 				$ajax_chat_link = append_sid($ajax_chat_page . '?' . $ajax_chat_room);
-
-				$u_private_chat = $ajax_chat_link;
+				$ajax_chat_ref = !empty($config['ajax_chat_link_type']) ? ($ajax_chat_link . '" target="_chat') : ('#" onclick="window.open(\'' . $ajax_chat_link . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); $(\'#shoutbox_pvt_alert\').css(\'display\', \'none\'); return false;');
+				$u_private_chat = $ajax_chat_ref;
 			}
 
 			if ($user->data['user_unread_privmsg'])

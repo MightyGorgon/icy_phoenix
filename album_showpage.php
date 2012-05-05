@@ -209,6 +209,12 @@ else
 $first_pic_id = $total_pic_rows[0]['pic_id'];
 $last_pic_id = $total_pic_rows[$total_pic_count - 1]['pic_id'];
 
+// ------------------------------------
+// PREVIOUS & NEXT
+// ------------------------------------
+// JHL these variables were being reset after some tests had been made - now moved up to the correct position
+$no_prev_pic = false;
+$no_next_pic = false;
 if ($pic_array_id == 0)
 {
 	$no_prev_pic = true;
@@ -227,13 +233,7 @@ if ($pic_array_id == ($total_pic_count - 1))
 	}
 }
 
-// ------------------------------------
-// PREVIOUS & NEXT
-// ------------------------------------
 $pic_id_old = $total_pic_rows[$pic_array_id]['pic_id'];
-// Mighty Gorgon: JHL suggests to remove these two vars from here... but I think they have to stay!
-$no_prev_pic = false;
-$no_next_pic = false;
 if(isset($_GET['mode']) && ($_GET['mode'] == 'next'))
 {
 	$new_pic_array_id = $pic_array_id - 1;
@@ -900,13 +900,18 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	}
 
 	// Mighty Gorgon - Pic Size - BEGIN
-	// Mighty Gorgon: JHL wants to remove this code by replacing the size with the ones added in album_config, but it's better to keep this code, to make sure proportions are always respected
+	/*
+	* JHL: this code was added and now removed by me because it is a brainfart for two reasons
+	* - the thumbnail may not yet exist (!)
+	* - the displayed page format would change as the real thumnail sizes may differ
+	*/
+	/*
 	$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
 	$pic_thumbnail_path = $pic_info['thumbnail_m_fullpath'];
 	$pic_thumbnail_size = @getimagesize($pic_thumbnail_path);
 	$pic_thumbnail_width = $pic_thumbnail_size[0];
 	$pic_thumbnail_height = $pic_thumbnail_size[1];
-
+	*/
 	$pic_fullpath = ALBUM_UPLOAD_PATH . $thispic['pic_filename'];
 	$pic_size = @getimagesize($pic_fullpath);
 	$pic_width = $pic_size[0];
@@ -1024,8 +1029,13 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'L_PIC_SIZE' => $lang['Pic_Size'],
 		'L_PIC_TYPE' => $lang['Pic_Type'],
 		// Mighty Gorgon: JHL wants to remove this code by replacing the size with the ones added in album_config, but it's better to keep this code, to make sure proportions are always respected
+		// JHL: No, see the reasoning above
+		/*
 		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $pic_thumbnail_height,
 		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $pic_thumbnail_width,
+		*/
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $album_config['midthumb_height'],
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $album_config['midthumb_width'],
 		'PIC_SIZE' => $pic_width . ' x ' . $pic_height . ' (' . intval($pic_filesize/1024) . 'KB)',
 		'PIC_TYPE' => strtoupper(substr($thispic['pic_filename'], strlen($thispic['pic_filename']) - 3, 3)),
 		// Mighty Gorgon - Pic Size - END
@@ -1103,11 +1113,14 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$template->assign_block_vars('social_bookmarks', array());
 	}
 	$topic_title_enc = urlencode(ip_utf8_decode($thispic['pic_title']));
-	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append));
+	$topic_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append;
+
+	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . $topic_link));
 	$template->assign_vars(array(
 		// Social Bookmarks - BEGIN
 		'TOPIC_TITLE_ENC' => $topic_title_enc,
 		'TOPIC_URL_ENC' => $topic_url_enc,
+		'U_TELL' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . $topic_title_enc . '&amp;topic_url=' . urlencode(ip_utf8_decode(str_replace('&amp;', '&', $topic_link)))),
 		'L_SHARE_TOPIC' => $lang['ShareThisTopic'],
 		// Social Bookmarks - END
 		)
