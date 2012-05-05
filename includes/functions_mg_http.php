@@ -143,6 +143,7 @@ function get_user_browser($http_user_agent_str)
 		'chrome_plus' => array('regex' => array('/ChromePlus\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'ChromePlus', 'icon' => 'chrome_plus.png'),
 		// CoolNovo must be before Chrome
 		'coolnovo' => array('regex' => array('/CoolNovo\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'CoolNovo', 'icon' => 'coolnovo.png'),
+		// Chrome must be before Safari
 		'chrome' => array('regex' => array('/Chrome\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Chrome', 'icon' => 'chrome.png'),
 		'safari' => array('regex' => array('/Safari\/([0-9]{1,5}.[0-9]{1,5})/'), 'check_version' => true, 'name' => 'Safari', 'icon' => 'safari.png'),
 		'konqueror' => array('regex' => array('/Konqueror\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Konqueror', 'icon' => 'konqueror.png'),

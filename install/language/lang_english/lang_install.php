@@ -271,24 +271,35 @@ $lang = array_merge($lang, array(
 
 $lang['BBC_IP_CREDITS_STATIC'] = '
 <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="./style/icy_phoenix_small.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br />
-<span style="color: #ff5500;"><b>Mighty Gorgon</b></span><br />
-<i>(Luca Libralato)</i><br />
-<b><i>Developer</i></b><br />
-Interests: Heroes Of Might And Magic III, 69, #FF5522<br />
-Location: Homer\'s Head<br />
+<!-- <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="http://www.icyphoenix.com/images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br /> -->
+<span style="color: #dd2222;"><b>Mighty Gorgon</b></span>&nbsp;<i>(Luca Libralato)</i><br />
+<b><i>Project Manager And Main Developer</i></b><br />
 <br />
 <br />
-<span style="color: #dd2222;"><b>Bicet</b></span><br />
-<b><i>phpBB XS Developer</i></b><br />
+<span style="color: #dd2222;"><b>The Steffen</b></span><br />
+<b><i>Site Administrator</i></b><br />
 <br />
 <br />
-<span style="color: #dd2222;"><b>hpl</b></span><br />
-<b><i>Some Special Contributions</i></b><br />
+<span style="color: #228822;"><b>Joshua203</b></span><br />
+<b><i>Staff Leader And Global Moderator</i></b><br />
+<br />
+<br />
+<span style="color: #ff5500;"><b>KasLimon</b></span><br />
+<b><i>Junior Developer</i></b><br />
+<br />
+<br />
+<span style="color: #ff5500;"><b>Informpro</b></span><br />
+<b><i>Junior Developer</i></b><br />
+<br />
+<br />
+<span style="color: #ff5500;"><b>jhl</b></span><br />
+<b><i>Junior Developer</i></b><br />
 <br />
 <br />
 <b><i>Valued Contributors</i></b><br />
 <span style="color: #228822;"><b>Andrea75</b></span><br />
 <span style="color: #dd2222;"><b>Artie</b></span><br />
+<span style="color: #dd2222;"><b>Bicet</b></span>&nbsp;<i>(phpBB XS Developer)</i><br />
 <span style="color: #0000bb;"><b>brandsrus</b></span><br />
 <span style="color: #228822;"><b>buldo</b></span><br />
 <span style="color: #228822;"><b>casimedicos</b></span><br />
@@ -298,22 +309,23 @@ Location: Homer\'s Head<br />
 <span style="color: #228822;"><b>DWho</b></span><br />
 <span style="color: #228822;"><b>fracs</b></span><br />
 <span style="color: #880088;"><b>ganesh</b></span><br />
+<span style="color: #880088;"><b>Hans</b></span><br />
+<span style="color: #ff5500;"><b>hpl</b></span>&nbsp;<i>(Junior Developer)</i><br />
 <span style="color: #228822;"><b>JANU1535</b></span><br />
 <span style="color: #880088;"><b>jz</b></span><br />
-<span style="color: #228822;"><b>KasLimon</b></span><br />
 <span style="color: #aaff00;"><b>KugeLSichA</b></span><br />
 <span style="color: #0000bb;"><b>Limun</b></span><br />
 <span style="color: #880088;"><b>Lopalong</b></span><br />
 <span style="color: #228822;"><b>moreteavicar</b></span><br />
+<span style="color: #880088;"><b>mort</b></span><br />
 <span style="color: #228822;"><b>novice programmer</b></span><br />
 <span style="color: #228822;"><b>ThE KuKa</b></span><br />
 <span style="color: #ff7700;"><b>TheSteffen</b></span><br />
 <span style="color: #0000bb;"><b>Tom</b></span><br />
+<span style="color: #aaff00;"><b>TuningBEB2008</b></span><br />
 <span style="color: #228822;"><b>z3d0</b></span><br />
 <span style="color: #228822;"><b>Zuker</b></span><br />
 <br />
-Interests: Icy Phoenix<br />
-Location: <a href="http://www.icyphoenix.com/">http://www.icyphoenix.com</a>
 ';
 
 $lang['BBC_IP_CREDITS'] = '<div class="center-block"><marquee behavior="scroll" direction="up" scrolldelay="120">' . $lang['BBC_IP_CREDITS_STATIC'] . '</marquee></div>';

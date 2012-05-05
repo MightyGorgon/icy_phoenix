@@ -83,6 +83,7 @@ switch ($req_version)
 	case '132679': $current_ip_version = '1.3.26.79'; break;
 	case '132780': $current_ip_version = '1.3.27.80'; break;
 	case '132881': $current_ip_version = '1.3.28.81'; break;
+	case '132982': $current_ip_version = '1.3.29.82'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -3959,12 +3960,12 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`";
 
 		// Still not sure which one of this code will do the trick... anyway it's not really important... :-)
+		/*
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\"', '\"')";
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\'\", \"'\")";
-		/*
+		*/
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\\\"', '\\\"')";
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\\'\", \"\'\")";
-		*/
 
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
@@ -4469,6 +4470,9 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.28.81 */
 		case '1.3.28.81':
+
+		/* Updating from IP 1.3.29.82 */
+		case '1.3.29.82':
 
 	}
 

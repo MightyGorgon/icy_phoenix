@@ -912,7 +912,7 @@ if ($forum_row['auth_rate'] != -1)
 	$template->assign_block_vars('rating_switch', array());
 }
 
-if ($config['forum_wordgraph'] && $forum_row['forum_tags'])
+if ($config['forum_wordgraph'] && !empty($forum_row['forum_tags']))
 {
 	include(IP_ROOT_PATH . 'includes/forum_wordgraph.' . PHP_EXT);
 }
