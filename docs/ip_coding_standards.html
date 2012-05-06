@@ -347,7 +347,7 @@ $bool = ($i &lt; 7 &amp;&amp; ($j &lt; 8 || $k == 4));
 
 <b>Quoting strings:</b>
 <p>There are two different ways to quote strings in PHP - either with single quotes or with double quotes. The main difference is that the parser does variable interpolation in double-quoted strings, but not in single quoted strings. Because of this, you should <em>always</em> use single quotes <em>unless</em> you specifically need variable interpolation to be done on that string. This way, we can save the parser the trouble of parsing a bunch of strings where no interpolation needs to be done.</p>
-<p>Also, if you are using a string variable as part of a function call, you do not need to enclose that variable in quotes. Again, this will just make unnecessary work for the parser. Note, however, that nearly all of the escape sequences that exist for double-quoted strings will not work with single-quoted strings. Be careful, and feel free to break this guideline if it's making your code easier to read.
+<p>Also, if you are using a string variable as part of a function call, you do not need to enclose that variable in quotes. Again, this will just make unnecessary work for the parser. Note, however, that nearly all of the escape sequences that exist for double-quoted strings will not work with single-quoted strings. Be careful, and feel free to break this guideline if it's making your code easier to read.</p>
 <p>Examples:</p>
 <br />
 
