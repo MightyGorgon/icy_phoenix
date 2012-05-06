@@ -75,27 +75,24 @@ if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 	message_die(GENERAL_MESSAGE, sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']));
 }
 
-$share_append = (empty($link_topic) ? ($post_id_append . $post_id_append_url): $topic_id_append);
-$share_append_rw = (empty($link_topic) ? ('-vp' . $post_id . '.html' . $post_id_append_url) : ('-vt' . $topic_id . '.html'));
-
 $topic_title = $post_data['topic_title'];
 $topic_title_enc = urlencode(ip_utf8_decode($topic_title));
+
 // URL Rewrite - BEGIN
 // Rewrite Social Bookmars URLs if any of URL Rewrite rules has been enabled
 // Forum ID and KB Mode removed from topic_url_enc to avoid compatibility problems with redirects in tell a friend
 if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
 {
-	$topic_url = append_sid(make_url_friendly($topic_title) . $share_append_rw);
-	$topic_url_ltt = htmlspecialchars((create_server_url() . make_url_friendly($topic_title) . $share_append_rw));
-	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . make_url_friendly($topic_title) . $share_append_rw));
+	$topic_url = create_server_url() . make_url_friendly($topic_title) . (empty($link_topic) ? ('-vp' . $post_id . '.html' . $post_id_append_url) : ('-vt' . $topic_id . '.html'));
 }
 else
 {
-	$topic_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $share_append);
-	$topic_url_ltt = htmlspecialchars(ip_utf8_decode(create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . $share_append));
-	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . $share_append));
+	$topic_url = create_server_url() . ip_build_url(CMS_PAGE_VIEWTOPIC, array($topic_id_append, $post_id_append), false) . $post_id_append_url;
 }
+$topic_url_ltt = htmlspecialchars($topic_url);
+$topic_url_enc = urlencode(ip_utf8_decode($topic_url));
 // URL Rewrite - END
+
 // Convert and clean special chars!
 $topic_title = htmlspecialchars_clean($topic_title);
 $template->assign_vars(array(
@@ -110,7 +107,6 @@ $template->assign_vars(array(
 
 	'S_SHARE_BOX' => true,
 
-	'U_TOPIC' => $topic_url,
 	'U_TELL' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . $topic_title_enc . '&amp;topic_id=' . $topic_id),
 
 	'L_AUTHOR' => $lang['Author'],

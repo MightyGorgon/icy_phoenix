@@ -654,7 +654,7 @@ $self_sql_tables = (intval($is_auth['auth_read']) == AUTH_SELF) ? ', ' . USERS_T
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = u2.user_id AND (u2.user_id = '" . $user->data['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
 
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 	WHERE p.topic_id = $topic_id
 		AND t.topic_id = p.topic_id
@@ -1124,20 +1124,22 @@ if ($config['display_tags_box'])
 }
 
 $topic_title_enc = urlencode(ip_utf8_decode($topic_title));
+
 // URL Rewrite - BEGIN
 // Rewrite Social Bookmars URLs if any of URL Rewrite rules has been enabled
 // Forum ID and KB Mode removed from topic_url_enc to avoid compatibility problems with redirects in tell a friend
 if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
 {
-	$topic_url_ltt = htmlspecialchars((create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html') . ($kb_mode ? ('?' . $kb_mode_append) : ''));
-	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html'));
+	$topic_url = create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html' . ($kb_mode ? ('?' . $kb_mode_append) : '');
 }
 else
 {
-	$topic_url_ltt = htmlspecialchars(ip_utf8_decode(create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
-	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . CMS_PAGE_VIEWTOPIC . '?' . $topic_id_append));
+	$topic_url = create_server_url() . ip_build_url(CMS_PAGE_VIEWTOPIC, array($forum_id_append, $topic_id_append), false) . $kb_mode_append_red;
 }
+$topic_url_ltt = htmlspecialchars($topic_url);
+$topic_url_enc = urlencode(ip_utf8_decode($topic_url));
 // URL Rewrite - END
+
 // Convert and clean special chars!
 $topic_title = htmlspecialchars_clean($topic_title);
 $template->assign_vars(array(
@@ -1391,6 +1393,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$user_pic_count = $postrow[$i]['user_personal_pics_count'];
 	$poster = ($poster_id == ANONYMOUS) ? $lang['Guest'] : colorize_username($postrow[$i]['user_id'], $postrow[$i]['username'], $postrow[$i]['user_color'], $postrow[$i]['user_active']);
 	$poster_qq = ($poster_id == ANONYMOUS) ? $lang['Guest'] : $postrow[$i]['username'];
+	$poster_full_name = (!empty($postrow[$i]['user_first_name']) ? ($postrow[$i]['user_first_name'] . (!empty($postrow[$i]['user_last_name']) ? (' ' . $postrow[$i]['user_last_name']) : '')) : '');
 	// BIRTHDAY - BEGIN
 	$poster_age = '';
 	if ($config['birthday_viewtopic'])
@@ -2256,6 +2259,7 @@ for($i = 0; $i < $total_posts; $i++)
 		// Mighty Gorgon - Feedback - END
 		'ROW_CLASS' => $row_class,
 		'POSTER_NAME' => $poster,
+		'POSTER_FULL_NAME' => $poster_full_name,
 		'POSTER_NAME_QQ' => $poster_qq,
 		'POSTER_NAME_QR' => str_replace(array(' ', '?', '&'), array('%20', '%3F', '%26'), $poster_qq),
 		//'POSTER_NAME_QR' => htmlspecialchars($poster_qq),

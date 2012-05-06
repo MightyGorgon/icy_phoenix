@@ -185,7 +185,7 @@ if (($t == 'pop') || ($t == 'new'))
 	}
 
 	// Grab link categories
-	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
+	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order ASC";
 	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
@@ -439,7 +439,7 @@ if ($t == 'search')
 	}
 
 	// Grab link categories
-	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
+	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order ASC";
 	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
@@ -537,27 +537,29 @@ $template->assign_vars(array(
 );
 
 // Grab link categories
-$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
+$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order ASC";
 $result = $db->sql_query($sql);
 
-// Separate link categories into 2 columns
-$i = 0;
 if ($row = $db->sql_fetchrow($result))
 {
+	$row_class = '';
 	do
 	{
-		$i = ($i + 1) % 2;
 		$link_categories[$row['cat_id']] = $row['cat_title'];
 		$sql = "SELECT link_category FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
 			AND link_category = '" . $row['cat_id'] . "'";
-		$linknum = $db->sql_query($sql);
-		$template->assign_block_vars('linkrow' . $i, array(
+		$links_result = $db->sql_query($sql);
+		$links_number = $db->sql_numrows($links_result);
+		$row_class = ip_zebra_rows($row_class);
+		$template->assign_block_vars('linkrow', array(
+			'ROW_CLASS' => $row_class,
 			'LINK_URL' => append_sid('links.' . PHP_EXT . '?t=sub_pages&amp;cat=' . $row['cat_id']),
 			'LINK_TITLE' => $row['cat_title'],
-			'LINK_NUMBER' => $db->sql_numrows($linknum)
+			'LINK_NUMBER' => $links_number
 			)
 		);
+		$db->sql_freeresult($links_result);
 	}
 	while ($row = $db->sql_fetchrow($result));
 	$db->sql_freeresult($result);

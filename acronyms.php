@@ -27,21 +27,20 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
-$i = 0;
+$row_class = '';
 $sql = "SELECT * FROM " . ACRONYMS_TABLE . " ORDER BY acronym ASC";
 $result = $db->sql_query($sql);
 while($acronym_row = $db->sql_fetchrow($result))
 {
 	$acronym = $acronym_row['acronym'];
 	$description = $acronym_row['description'];
-	$class = ($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
+	$row_class = ip_zebra_rows($row_class);
 	$template->assign_block_vars('acronym_row', array(
-		'ROW_CLASS' => $class,
+		'ROW_CLASS' => $row_class,
 		'ACRONYM' => $acronym,
 		'DESCRIPTION' => $description,
 		)
 	);
-	$i++;
 }
 
 $template->assign_vars(array(

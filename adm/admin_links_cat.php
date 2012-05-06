@@ -34,9 +34,9 @@ require('pagestart.' . PHP_EXT);
 // --------------------------
 // This function will sort the order of all categories
 //
-if(!function_exists('reorder_cat'))
+if(!function_exists('links_reorder_cat'))
 {
-	function reorder_cat()
+	function links_reorder_cat()
 	{
 		global $db;
 
@@ -85,7 +85,7 @@ if(empty($mode))
 		);
 
 		$sql = "SELECT *
-				FROM ". LINK_CATEGORIES_TABLE ."
+				FROM " . LINK_CATEGORIES_TABLE . "
 				ORDER BY cat_order ASC";
 		$result = $db->sql_query($sql);
 
@@ -96,8 +96,9 @@ if(empty($mode))
 
 		for($i = 0; $i < sizeof($catrow); $i++)
 		{
+			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 			$template->assign_block_vars('catrow', array(
-				'COLOR' => ($i % 2) ? 'row1' : 'row2',
+				'ROW_CLASS' => $row_class,
 				'TITLE' => $catrow[$i]['cat_title'],
 				'S_MOVE_UP' => append_sid('admin_links_cat.' . PHP_EXT . '?action=move&amp;move=-15&amp;cat_id=' . $catrow[$i]['cat_id']),
 				'S_MOVE_DOWN' => append_sid('admin_links_cat.' . PHP_EXT . '?action=move&amp;move=15&amp;cat_id=' . $catrow[$i]['cat_id']),
@@ -118,8 +119,8 @@ if(empty($mode))
 			$cat_id = request_var('cat_id', 0);
 
 			$sql = "SELECT *
-					FROM ". LINK_CATEGORIES_TABLE ."
-					WHERE cat_id = '$cat_id'";
+					FROM " . LINK_CATEGORIES_TABLE . "
+					WHERE cat_id = '" . $cat_id . "'";
 			$result = $db->sql_query($sql);
 
 			if($db->sql_numrows($result) == 0)
@@ -152,7 +153,7 @@ if(empty($mode))
 			$cat_id = request_var('cat_id', 0);
 
 			$sql = "SELECT cat_id, cat_title, cat_order
-					FROM ". LINK_CATEGORIES_TABLE ."
+					FROM " . LINK_CATEGORIES_TABLE . "
 					ORDER BY cat_order ASC";
 			$result = $db->sql_query($sql);
 
@@ -205,9 +206,9 @@ if(empty($mode))
 
 			$sql = "UPDATE ". LINK_CATEGORIES_TABLE ."
 					SET cat_order = cat_order + $move
-					WHERE cat_id = $cat_id";
+					WHERE cat_id = '" . $cat_id . "'";
 			$result = $db->sql_query($sql);
-			reorder_cat();
+			links_reorder_cat();
 
 			// Return a message...
 			$message = $lang['Category_changed_order'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], '<a href="' . append_sid('admin_links_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -245,7 +246,7 @@ else
 			$cat_title = request_var('cat_title', '', true);
 
 			// Get the last ordered category
-			$sql = "SELECT cat_order FROM ". LINK_CATEGORIES_TABLE ."
+			$sql = "SELECT cat_order FROM " . LINK_CATEGORIES_TABLE . "
 					ORDER BY cat_order DESC
 					LIMIT 1";
 			$result = $db->sql_query($sql);
@@ -254,8 +255,8 @@ else
 			$cat_order = $last_order + 10;
 
 			// Here we insert a new row into the db
-			$sql = "INSERT INTO ". LINK_CATEGORIES_TABLE ." (cat_title, cat_order)
-					VALUES ('" . $db->sql_escape($cat_title) . "', '$cat_order')";
+			$sql = "INSERT INTO " . LINK_CATEGORIES_TABLE . " (cat_title, cat_order)
+					VALUES ('" . $db->sql_escape($cat_title) . "', '" . $cat_order . "')";
 			$result = $db->sql_query($sql);
 
 			// Return a message...
@@ -271,9 +272,9 @@ else
 		$cat_title = request_var('cat_title', '', true);
 
 		// Now we update this row
-		$sql = "UPDATE ". LINK_CATEGORIES_TABLE ."
+		$sql = "UPDATE " . LINK_CATEGORIES_TABLE . "
 				SET cat_title = '" . $db->sql_escape($cat_title) . "'
-				WHERE cat_id = '$cat_id'";
+				WHERE cat_id = '" . $cat_id . "'";
 		$result = $db->sql_query($sql);
 
 		// Return a message...
@@ -290,8 +291,8 @@ else
 		{
 			// Get file information of all pics in this category
 			$sql = "SELECT *
-					FROM ". LINKS_TABLE ."
-					WHERE link_category = '$cat_id'";
+					FROM " . LINKS_TABLE . "
+					WHERE link_category = '" . $cat_id . "'";
 			$result = $db->sql_query($sql);
 
 			$catrow = array();
@@ -303,20 +304,17 @@ else
 
 			if(sizeof($catrow) != 0) // if this category is not empty
 			{
-
-				// Delete pic entries in db
-				$sql = "DELETE FROM ". LINKS_TABLE ."
-						WHERE link_category = '$cat_id'";
+				// Delete entries in db
+				$sql = "DELETE FROM " . LINKS_TABLE . " WHERE link_category = '" . $cat_id . "'";
 				$result = $db->sql_query($sql);
 			}
 
 			// This category is now emptied, we can remove it!
-			$sql = "DELETE FROM ". LINK_CATEGORIES_TABLE ."
-					WHERE cat_id = '$cat_id'";
+			$sql = "DELETE FROM " . LINK_CATEGORIES_TABLE . " WHERE cat_id = '" . $cat_id . "'";
 			$result = $db->sql_query($sql);
 
 			// Re-order the rest of categories
-			reorder_cat();
+			links_reorder_cat();
 
 			// Return a message...
 			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], '<a href="' . append_sid('admin_links_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
@@ -325,18 +323,17 @@ else
 		}
 		else // Move content...
 		{
-			$sql = "UPDATE ". LINKS_TABLE ."
-					SET pic_cat_id = '$target'
-					WHERE pic_cat_id = '$cat_id'";
+			$sql = "UPDATE " . LINKS_TABLE . "
+					SET pic_cat_id = '" . $target . "'
+					WHERE pic_cat_id = '" . $cat_id . "'";
 			$result = $db->sql_query($sql);
 
 			// This category is now emptied, we can remove it!
-			$sql = "DELETE FROM ". LINK_CATEGORIES_TABLE ."
-					WHERE cat_id = '$cat_id'";
+			$sql = "DELETE FROM " . LINK_CATEGORIES_TABLE . " WHERE cat_id = '" . $cat_id . "'";
 			$result = $db->sql_query($sql);
 
 			// Re-order the rest of categories
-			reorder_cat();
+			links_reorder_cat();
 
 			// Return a message...
 			$message = $lang['Category_deleted'] . '<br /><br />' . sprintf($lang['Click_return_link_category'], '<a href="' . append_sid('admin_links_cat.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');

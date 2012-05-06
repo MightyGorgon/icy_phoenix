@@ -150,6 +150,29 @@ function reapply_sid($url)
 	return append_sid($url);
 }
 
+/**
+* Build an URL with params
+*/
+function ip_build_url($url, $params = false, $html_amp = false)
+{
+	$amp_delim = !empty($html_amp) ? '&amp;' : '&';
+	$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+
+	if (!empty($params) && is_array($params))
+	{
+		foreach ($params as $param)
+		{
+			$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+			if (!empty($param))
+			{
+				$url .= $url_delim . $param;
+			}
+		}
+	}
+
+	return $url;
+}
+
 /*
 * extract_current_page
 * function backported from phpBB3 - Olympus
@@ -3088,10 +3111,22 @@ function generate_full_pagination($base_url, $num_items, $per_page, $start_item,
 	return true;
 }
 
-//
-// This does exactly what preg_quote() does in PHP 4-ish
-// If you just need the 1-parameter preg_quote call, then don't bother using this.
-//
+/**
+* Generate zebra rows
+*/
+function ip_zebra_rows($row_class)
+{
+	global $theme;
+	$row1_class = (!empty($theme['td_class1']) ? $theme['td_class1'] : 'row1');
+	$row2_class = (!empty($theme['td_class2']) ? $theme['td_class2'] : 'row2');
+	$row_class = (empty($row_class) || ($row_class == $row2_class)) ? $row1_class : $row2_class;
+	return $row_class;
+}
+
+/*
+* This does exactly what preg_quote() does in PHP 4-ish
+* If you just need the 1-parameter preg_quote call, then don't bother using this.
+*/
 function phpbb_preg_quote($str, $delimiter)
 {
 	$text = preg_quote($str);

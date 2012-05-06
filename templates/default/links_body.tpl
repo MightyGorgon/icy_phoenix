@@ -1,5 +1,5 @@
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function checkForm()
 {
 	formErrors = false;
@@ -33,7 +33,7 @@ function checkForm()
 
 	return true;
 }
-//-->
+// ]]>
 </script>
 
 <!-- INCLUDE overall_header.tpl -->

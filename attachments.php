@@ -330,9 +330,10 @@ else
 	}
 	$db->sql_freeresult($result);
 
+	$row_class = '';
 	for ($i = 0; $i < $num_attachments; $i++)
 	{
-		$class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 
 		$post_title = $attachments[$i]['topic_title'];
 		$post_title_2 = '';
@@ -398,7 +399,7 @@ else
 
 		$template->assign_block_vars('attachrow', array(
 			'ROW_NUMBER' => $i + ($_GET['start'] + 1),
-			'ROW_CLASS' => $class,
+			'ROW_CLASS' => $row_class,
 
 			'FILENAME' => $filename,
 			'COMMENT' => $comment_field,
