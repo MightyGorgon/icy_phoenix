@@ -36,7 +36,7 @@ if ($config['cash_adminnavbar'])
 
 $set = request_var('set', '');
 $submit = request_var('submit', '');
-if (!empty($submit)))
+if (!empty($submit))
 {
 	switch($submit)
 	{
