@@ -74,8 +74,26 @@ div.cms-editor-container {
 	padding: 0;
 }
 
-p.block-title a.edit-title, p.block-type a.edit-type, p.block-view a.edit-view, p.block-groups a.edit-groups {
+p.block-title a.edit-title, p.block-type a.edit-type {
 	background: url("images/cms_icon_edit.png") 0 0;
+	width: 16px;
+	height: 16px;
+}
+
+p.block-type a.edit-settings {
+	background: url("images/cms_icon_settings.png") 0 0;
+	width: 16px;
+	height: 16px;
+}
+
+p.block-view a.edit-view {
+	background: url("images/cms_icon_permissions.png") 0 0;
+	width: 16px;
+	height: 16px;
+}
+
+p.block-groups a.edit-groups {
+	background: url("images/cms_icon_groups_permissions.png") 0 0;
 	width: 16px;
 	height: 16px;
 }

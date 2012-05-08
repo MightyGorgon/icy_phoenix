@@ -49,12 +49,15 @@ var cmsSettings = {
 	{
 		var html = '<li class="cms-block-item" id="cms-block-' + data.bs_id + '">';
 		// title
+		// if you want to reduce the name length (use 5 chars extra just to have a more nice abbreviation): (data.name.length > 30 ? (data.name.substring(0, 25) + '...') : data.name)
 		html += '<p class="block-title"><span class="block-title-value">' + data.name + '</span><span class="gensmall">' + '&nbsp;[' + data.bs_id + ']' + '</span><a href="' + cmsSettings.data.edit.replace('{ID}', data.bs_id) + '" class="edit-parent" title="' + cmsEditorLang.editBlockSettingsAlt + '"></a><a href="javascript:void(0);" class="edit-title" onclick="cmsSettings.toggleChangeTitle(' + data.bs_id + ', true); return false;" title="' + cmsEditorLang.tipTitle + '"></a><a href="' + cmsSettings.data.remove.replace('{ID}', data.bs_id) + '" class="edit-delete" title="' + cmsEditorLang.tipDelete + '"></a>';
 		// rename form
 		html += '<span class="block-title-edit" style="display: none;"><input id="block-title-' + data.bs_id + '" type="text" /><a href="javascript:void(0);" onclick="cmsSettings.changeTitle(' + data.bs_id + '); return false;">' + cmsEditorLang.buttonChange + '</a><a href="javascript:void(0);" onclick="cmsSettings.toggleChangeTitle(' + data.bs_id + ', false); return false;">' + cmsEditorLang.buttonCancel + '</a></span>';
 		html += '</p>';
 		// type
-		html += '<p class="block-type"><span class="block-type-value">' + cmsSettings.blockType(data) + '</span><a href="javascript:void(0);" onclick="cmsSettings.editSettings(' + data.bs_id + '); return false;" class="cms-button-small edit-settings">' + cmsEditorLang.editBlockSettings + '</a><a title="' + cmsEditorLang.tipChangeType + '" href="javascript:void(0);" onclick="cmsSettings.toggleChangeType(' + data.bs_id + ', true); return false;" class="edit-type"></a></p>';
+		// if you want to reduce the name length: (cmsSettings.blockType(data).length > 30 ? (cmsSettings.blockType(data).substring(0, 25) + '...') : cmsSettings.blockType(data))
+		//html += '<p class="block-type"><span class="block-type-value">' + (cmsSettings.blockType(data).length > 30 ? (cmsSettings.blockType(data).substring(0, 25) + '...') : cmsSettings.blockType(data)) + '</span><a href="javascript:void(0);" onclick="cmsSettings.editSettings(' + data.bs_id + '); return false;" class="cms-button-small edit-settings">' + cmsEditorLang.editBlockSettings + '</a><a title="' + cmsEditorLang.tipChangeType + '" href="javascript:void(0);" onclick="cmsSettings.toggleChangeType(' + data.bs_id + ', true); return false;" class="edit-type"></a></p>';
+		html += '<p class="block-type"><span class="block-type-value">' + cmsSettings.blockType(data) + '</span><a title="' + cmsEditorLang.editBlockSettings + '" href="javascript:void(0);" onclick="cmsSettings.editSettings(' + data.bs_id + '); return false;" class="edit-settings"></a><a title="' + cmsEditorLang.tipChangeType + '" href="javascript:void(0);" onclick="cmsSettings.toggleChangeType(' + data.bs_id + ', true); return false;" class="edit-type"></a></p>';
 		// view permissions
 		html += '<p class="block-view"><span class="block-view-value">' + cmsEditorLang.viewedBy + ': ';
 		for(var i = 0; i < cmsSettings.data.view.length; i++)
@@ -780,7 +783,7 @@ var cmsEditor = {
 				found = true;
 				html += ' selected="selected"';
 			}
-			html += '>' + (cmsEditor.data.all[i].name.length > 17 ? (cmsEditor.data.all[i].name.substring(0, 17) + '...') : cmsEditor.data.all[i].name) + ' [' + cmsEditor.data.all[i].bs_id + ']</option>';
+			html += '>' + (cmsEditor.data.all[i].name.length > 22 ? (cmsEditor.data.all[i].name.substring(0, 17) + '...') : cmsEditor.data.all[i].name) + ' [' + cmsEditor.data.all[i].bs_id + ']</option>';
 		}
 		if(!found)
 		{
@@ -977,7 +980,7 @@ var cmsEditor = {
 					'<dt>' + cmsEditorLang.parentBlock + '</dt><dd><select id="add-form-' + key + '-parent">';
 			for(var i = 0; i < cmsEditor.data.all.length; i++)
 			{
-				html += '<option value="' + cmsEditor.data.all[i].bs_id + '">' + (cmsEditor.data.all[i].name.length > 17 ? (cmsEditor.data.all[i].name.substring(0, 17) + '...') : cmsEditor.data.all[i].name) + ' [' + cmsEditor.data.all[i].bs_id + ']</option>';
+				html += '<option value="' + cmsEditor.data.all[i].bs_id + '">' + (cmsEditor.data.all[i].name.length > 22 ? (cmsEditor.data.all[i].name.substring(0, 17) + '...') : cmsEditor.data.all[i].name) + ' [' + cmsEditor.data.all[i].bs_id + ']</option>';
 			}
 			html += '</select> <a href="' + cmsEditor.data.urls.blocks + '" class="cms-button-small">' + cmsEditorLang.manageBlocks + '</a></dd>' +
 				'</dl>' +

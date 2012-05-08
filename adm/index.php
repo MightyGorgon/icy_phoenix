@@ -529,7 +529,7 @@ elseif($acp_pane == 'right')
 	// End forum statistics
 
 	// Get users online information.
-	$onlinerow_reg = get_online_users(true, true, '');
+	$onlinerow_reg = get_online_users('site', true, true, '', 0, 0);
 
 	$sql = "SELECT session_page, session_forum_id, session_topic_id, session_logged_in, session_time, session_ip, session_start, session_browser
 		FROM " . SESSIONS_TABLE . "

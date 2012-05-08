@@ -64,6 +64,9 @@ while($file = @readdir($dir))
 }
 @closedir($dir);
 
+sort($smiley_images);
+sort($smiley_paks);
+
 // Select main mode
 if(check_http_var_exists('import_pack', false))
 {
@@ -600,6 +603,7 @@ else
 			'ROW_CLASS' => $row_class,
 
 			'SMILEY_ID' => $smilies[$i]['smilies_id'],
+			'SMILEY_URL' => $smilies[$i]['smile_url'],
 			'SMILEY_IMG' => IP_ROOT_PATH . $config['smilies_path'] . '/' . $smilies[$i]['smile_url'],
 			'CODE' => $smilies[$i]['code'],
 			'EMOT' => $smilies[$i]['emoticon'],

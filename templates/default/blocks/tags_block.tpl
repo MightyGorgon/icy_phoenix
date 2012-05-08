@@ -21,4 +21,4 @@ $(function()
 // ]]>
 </script>
 <!-- ENDIF -->
-<!-- BEGIN tags_loop --><span style="font-size: {tags_loop.TAG_FONT_SIZE}px;"><a href="{tags_loop.U_TAG_TEXT}" style="font-size: {tags_loop.TAG_FONT_SIZE}px;">{tags_loop.TAG_TEXT}<!-- IF S_TAGS_COUNT -->&nbsp;({tags_loop.TAG_COUNT})<!-- ENDIF --></a>&nbsp;&nbsp;</span><!-- END tags_loop -->
+<!-- BEGIN tags_loop --><span style="font-size: {tags_loop.TAG_FONT_SIZE}px;"><a href="{tags_loop.U_TAG_TEXT}" style="font-size: {tags_loop.TAG_FONT_SIZE}px;">{tags_loop.TAG_TEXT}<!-- IF S_TAGS_COUNT -->&nbsp;({tags_loop.TAG_COUNT})<!-- ENDIF --></a></span> <!-- END tags_loop -->

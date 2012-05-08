@@ -4613,8 +4613,7 @@ function page_header($title = '', $parse_template = false)
 		// Get basic (usernames + totals) online situation
 		$online_userlist = '';
 		$l_online_users = '';
-		$ac_online_text = '';
-		$ac_username_lists = '';
+		$ac_online_users = array('reg' => 0, 'guests' => 0, 'tot' => 0, 'list' => '', 'text' => '');
 		if (defined('SHOW_ONLINE') && !$user->data['is_bot'])
 		{
 			include(IP_ROOT_PATH . 'includes/users_online_block.' . PHP_EXT);
@@ -4903,9 +4902,6 @@ function page_header($title = '', $parse_template = false)
 		'DOCTYPE_HTML' => $doctype_html,
 		'NAV_LINKS' => $nav_links_html,
 
-		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
-		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
-		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
 		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
 		'S_HEADER_DROPDOWN' => ($config['switch_header_dropdown'] ? true : false),
 		'S_HEADER_DD_LOGGED_IN' => (($config['switch_header_dropdown'] && $user->data['upi2db_access']) ? true : false),
@@ -5348,6 +5344,14 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		}
 		// Page generation time - END
 	}
+
+	// Check jQuery UI here, in case we have changed jQuery UI switch within some blocks!
+	$template->assign_vars(array(
+		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
+		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
+		)
+	);
 
 	if ($parse_template || empty($template_to_parse))
 	{

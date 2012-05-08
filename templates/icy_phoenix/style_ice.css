@@ -941,27 +941,13 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 }
 
 /* edit notes */
-.post-notes {
-	border: solid 1px #999999;
-	margin: 0;
-	margin-top: 10px;
-	background-color: #f8f8f8;
-}
-
-.post-note {
-	background-color: #f0f0f0;
-	border: solid 1px #ffffff;
-	border-right-color: #dddddd;
-	border-bottom-color: #dddddd;
-	text-align: left;
-	font-size: 10px;
-	color: #666666;
-	padding: 2px;
-}
-
+.post-notes { border: solid 1px #999999; margin: 0; margin-top: 10px; background-color: #f8f8f8; }
+.post-note { background-color: #f0f0f0; border: solid 1px #ffffff; border-right-color: #dddddd; border-bottom-color: #dddddd; text-align: left; font-size: 10px; color: #666666; padding: 2px; }
 .post-note a, .post-note a:visited { color: #666666; text-decoration: underline; }
-
 .post-note a:hover, .post-note a:active { color: #113355; text-decoration: underline; }
-
 .post-note-delete { float: right; }
+
+.chat-tabs a { background-color: #f8f8f8 !important; border: 1px solid #666666 !important; }
+.chat-tabs a.active { background-color: #fafafa !important; border: 1px solid #ff5500 !important; }
+.chat-tabs a.new-shout { background-color: #fafafa !important; border: 2px solid #cc3333 !important; }
 

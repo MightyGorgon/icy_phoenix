@@ -25,7 +25,7 @@
 			<td class="{smiles.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 40px;"><a class="icon-edit-move-empty" href="javascript:void(0);"><img src="../templates/common/images/cms_icon_move.png" alt="{L_MOVE} " title="{L_MOVE}" /></a></td>
 			<td class="{smiles.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 170px;"><img src="{smiles.SMILEY_IMG}" alt="{smiles.CODE}" /></td>
 			<td class="{smiles.ROW_CLASS}" style="padding: 0px; background: none; width: 180px;">{smiles.CODE}</td>
-			<td class="{smiles.ROW_CLASS}" style="padding: 0px; background: none;">{smiles.EMOT}</td>
+			<td class="{smiles.ROW_CLASS}" style="padding: 0px; background: none;"><b>{smiles.EMOT}</b> - [{smiles.SMILEY_URL}]</td>
 			<td class="{smiles.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 160px;"><a href="{smiles.U_SMILEY_MOVE_TOP}"><img src="../templates/common/images/2uparrow.png" alt="{L_MOVE_TOP} " title="{L_MOVE_TOP}" /></a><a href="{smiles.U_SMILEY_MOVE_UP}"><img src="../templates/common/images/1uparrow.png" alt="{L_MOVE_UP} " title="{L_MOVE_UP}" /></a><a href="{smiles.U_SMILEY_MOVE_DOWN}"><img src="../templates/common/images/1downarrow.png" alt="{L_MOVE_DOWN} " title="{L_MOVE_DOWN}" /></a><a href="{smiles.U_SMILEY_MOVE_END}"><img src="../templates/common/images/2downarrow.png" alt="{L_MOVE_END} " title="{L_MOVE_END}" /></a>&nbsp;<a href="{smiles.U_SMILEY_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{smiles.U_SMILEY_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
 		</tr>
 		</table>
