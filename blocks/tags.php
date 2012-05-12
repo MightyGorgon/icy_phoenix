@@ -25,7 +25,7 @@ if(!function_exists('cms_block_tags'))
 {
 	function cms_block_tags()
 	{
-		global $db, $config, $template, $lang, $block_id, $cms_config_vars;
+		global $db, $cache, $config, $template, $lang, $block_id, $cms_config_vars;
 
 		$template->_tpldata['tags_loop.'] = array();
 

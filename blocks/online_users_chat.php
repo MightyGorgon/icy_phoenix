@@ -26,8 +26,10 @@ if(!function_exists('cms_block_online_users_chat'))
 	{
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix;
 
-		$online_time = 600;
-		$cache_time = 300;
+		$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
+		$ajax_chat_link = !empty($config['ajax_chat_link_type']) ? (append_sid($ajax_chat_page) . '" target="_chat') : ('#" onclick="window.open(\'' . append_sid($ajax_chat_page) . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;');
+		$online_time = 300;
+		$cache_time = 600;
 
 		// Initialize data
 		$online_users_array = array('reg' => 0, 'guests' => 0, 'tot' => 0, 'list' => '', 'text' => '', 'users' => array(), 'user_ids' => array());
@@ -82,13 +84,14 @@ if(!function_exists('cms_block_online_users_chat'))
 		$online_users_array['tot'] = sizeof($online_users_array['users']);
 		$online_users_array['text'] = empty($online_users_array['tot']) ? $lang['Reg_users_zero_total'] : (($online_users_array['tot'] == 1) ? $lang['Reg_user_total'] : (sprintf($lang['Reg_users_total'], $online_users_array['tot'])));
 
+		$online_users_text = '';
+		$switch_users_online = false;
 		if (empty($online_users_array['tot']))
 		{
-			$online_users_text = $lang['None'];
+			$online_users_text = $lang['CHAT_NO_USERS'];
 		}
 		else
 		{
-			$online_users_text = '';
 			foreach ($online_users_array['users'] as $k => $online_user_data)
 			{
 				$online_users_sort[$k] = $online_user_data['username_clean'];
@@ -98,25 +101,22 @@ if(!function_exists('cms_block_online_users_chat'))
 			{
 				$cu = $online_users_array['users'][$k];
 				$io = $cu['user_allow_viewonline'] ? true : false;
-				$online_users_text .= (empty($online_users_text) ? '' : ', ') . ($io ? '' : '<em>') . colorize_username($cu['user_id'], $cu['username'], $cu['user_color'], $cu['user_active'], true) . ($io ? '' : '</em>');
+				$user_link = '';
+				if ($user->data['session_logged_in'] && ($user->data['user_id'] != $cu['user_id']))
+				{
+					$chat_room = 'chat_room=' . (min($user->data['user_id'], $cu['user_id']) . '|' . max($user->data['user_id'], $cu['user_id']));
+					$chat_link = append_sid($ajax_chat_page . '?' . $ajax_chat_room);
+					$user_link = !empty($config['ajax_chat_link_type']) ? ($chat_link . '" target="_chat') : ('#" onclick="window.open(\'' . $chat_link . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;');
+				}
+				$online_users_text .= (empty($online_users_text) ? '' : ', ') . ($io ? '' : '<em>') . colorize_username($cu['user_id'], $cu['username'], $cu['user_color'], $cu['user_active'], false, false, false, false, $user_link) . ($io ? '' : '</em>');
 			}
+			$switch_users_online = !empty($online_users_text) ? true : false;
 		}
 
-
-
-
-
-// We need to use $alt_link_url to specify the link to connect to chat!
-//function colorize_username($user_id, $username = '', $user_color = '', $user_active = true, $no_profile = false, $get_only_color_style = false, $from_db = false, $force_cache = false, $alt_link_url = '')
-//	$user_link_url = !empty($alt_link_url) ? str_replace('$USER_ID', $user_id, $alt_link_url) : ((defined('USER_LINK_URL_OVERRIDE')) ? str_replace('$USER_ID', $user_id, USER_LINK_URL_OVERRIDE) : (CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id));
-
-
-
-
-
 		$template->assign_vars(array(
+			'S_USERS_ONLINE' => $switch_users_online,
 			'B_ONLINE_USERS_TEXT' => $online_users_text,
-			'B_U_CHAT' => append_sid(CMS_PAGE_AJAX_CHAT),
+			'B_U_CHAT' => $ajax_chat_link,
 			)
 		);
 	}

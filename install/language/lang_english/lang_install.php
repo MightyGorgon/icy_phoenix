@@ -271,7 +271,6 @@ $lang = array_merge($lang, array(
 
 $lang['BBC_IP_CREDITS_STATIC'] = '
 <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="./style/icy_phoenix_small.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br />
-<!-- <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="http://www.icyphoenix.com/images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br /> -->
 <span style="color: #dd2222;"><b>Mighty Gorgon</b></span>&nbsp;<i>(Luca Libralato)</i><br />
 <b><i>Project Manager And Main Developer</i></b><br />
 <br />
@@ -281,7 +280,7 @@ $lang['BBC_IP_CREDITS_STATIC'] = '
 <br />
 <br />
 <span style="color: #228822;"><b>Joshua203</b></span><br />
-<b><i>Staff Leader And Global Moderator</i></b><br />
+<b><i>Staff Leader</i></b><br />
 <br />
 <br />
 <span style="color: #ff5500;"><b>KasLimon</b></span><br />
@@ -297,34 +296,34 @@ $lang['BBC_IP_CREDITS_STATIC'] = '
 <br />
 <br />
 <b><i>Valued Contributors</i></b><br />
-<span style="color: #228822;"><b>Andrea75</b></span><br />
-<span style="color: #dd2222;"><b>Artie</b></span><br />
-<span style="color: #dd2222;"><b>Bicet</b></span>&nbsp;<i>(phpBB XS Developer)</i><br />
-<span style="color: #0000bb;"><b>brandsrus</b></span><br />
-<span style="color: #228822;"><b>buldo</b></span><br />
-<span style="color: #228822;"><b>casimedicos</b></span><br />
-<span style="color: #228822;"><b>Chaotic</b></span><br />
-<span style="color: #dd2222;"><b>CyberAlien</b></span><br />
-<span style="color: #228822;"><b>difus</b></span><br />
+<span style="color: #dd2222;"><b>Andrea75</b></span><br />
+<span style="color: #228822;"><b>Artie</b></span><br />
+<span style="color: #ff5500;"><b>Bicet</b></span>&nbsp;<i>(phpBB XS Developer)</i><br />
+<span style="color: #880088;"><b>brandsrus</b></span><br />
+<span style="color: #dd2222;"><b>buldo</b></span><br />
+<span style="color: #880088;"><b>casimedicos</b></span><br />
+<span style="color: #880088;"><b>Chaotic</b></span><br />
+<span style="color: #ff5500;"><b>CyberAlien</b></span>&nbsp;<i>(Many Contributions)</i><br />
+<span style="color: #880088;"><b>difus</b></span><br />
 <span style="color: #228822;"><b>DWho</b></span><br />
-<span style="color: #228822;"><b>fracs</b></span><br />
+<span style="color: #880088;"><b>fracs</b></span><br />
 <span style="color: #880088;"><b>ganesh</b></span><br />
 <span style="color: #880088;"><b>Hans</b></span><br />
 <span style="color: #ff5500;"><b>hpl</b></span>&nbsp;<i>(Junior Developer)</i><br />
-<span style="color: #228822;"><b>JANU1535</b></span><br />
+<span style="color: #880088;"><b>JANU1535</b></span><br />
 <span style="color: #880088;"><b>jz</b></span><br />
 <span style="color: #aaff00;"><b>KugeLSichA</b></span><br />
 <span style="color: #0000bb;"><b>Limun</b></span><br />
 <span style="color: #880088;"><b>Lopalong</b></span><br />
-<span style="color: #228822;"><b>moreteavicar</b></span><br />
+<span style="color: #880088;"><b>moreteavicar</b></span><br />
 <span style="color: #880088;"><b>mort</b></span><br />
-<span style="color: #228822;"><b>novice programmer</b></span><br />
-<span style="color: #228822;"><b>ThE KuKa</b></span><br />
-<span style="color: #ff7700;"><b>TheSteffen</b></span><br />
-<span style="color: #0000bb;"><b>Tom</b></span><br />
+<span style="color: #880088;"><b>novice programmer</b></span><br />
+<span style="color: #dd2222;"><b>ThE KuKa</b></span><br />
+<span style="color: #880088;"><b>Tom</b></span><br />
+<span style="color: #228822;"><b>TopoMotoV3X</b></span><br />
 <span style="color: #aaff00;"><b>TuningBEB2008</b></span><br />
-<span style="color: #228822;"><b>z3d0</b></span><br />
-<span style="color: #228822;"><b>Zuker</b></span><br />
+<span style="color: #880088;"><b>z3d0</b></span><br />
+<span style="color: #880088;"><b>Zuker</b></span><br />
 <br />
 ';
 

@@ -2227,7 +2227,6 @@ function setup_basic_lang()
 
 		$lang_files = array(
 			'lang_main',
-			'lang_main_settings',
 			'lang_bbcb_mg',
 			'lang_main_upi2db',
 			'lang_news',
@@ -2254,8 +2253,20 @@ function setup_basic_lang()
 			$lang_files = array_merge($lang_files, $lang_files_admin);
 		}
 
+		if (defined('IN_CMS'))
+		{
+			$lang_files_cms = array(
+				'lang_admin',
+				'lang_cms',
+				'lang_blocks',
+				'lang_permissions',
+			);
+			$lang_files = array_merge($lang_files, $lang_files_cms);
+		}
+
 		$lang_files = array_merge($lang_files, $cache->obtain_lang_files());
-		$lang_files = array_merge($lang_files, array('lang_user_created'));
+		// Make sure we keep these files as last inclusion... to be sure they override what is needed to be overridden!!!
+		$lang_files = array_merge($lang_files, array('lang_main_settings', 'lang_user_created'));
 
 		foreach ($lang_files as $lang_file)
 		{

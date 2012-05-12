@@ -1150,7 +1150,7 @@ $template->assign_vars(array(
 	'TOPIC_ID' => $topic_id,
 	'TOPIC_ID_FULL' => POST_TOPIC_URL . $topic_id,
 	'TOPIC_TITLE' => $topic_title,
-	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 80) . '...' : $topic_title),
+	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 75) . '...' : $topic_title),
 
 	'TOPIC_POSTED_TIME' => $topic_started,
 	'TOPIC_AUTHOR_NAME' => $topic_username,

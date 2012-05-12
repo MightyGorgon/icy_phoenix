@@ -566,7 +566,7 @@ function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $y
 */
 function get_birthdays_list($year = 0, $year_lt = false, $month = 0, $day = 0, $day_end = 0, $limit = 0, $show_inactive = false)
 {
-	global $db;
+	global $db, $cache, $config;
 
 	$sql_where = '';
 	if ($year_lt == false)
@@ -676,8 +676,9 @@ function get_birthdays_list_full()
 			}
 		}
 
-		$expiry = create_date_midnight(time(), $config['board_timezone']) - time() + 86400;
-		$cache->put('_birthdays_list_' . $config['board_timezone'], $birthdays_list, $expiry);
+		$current_time = time();
+		$cache_expiry = create_date_midnight($current_time, $config['board_timezone']) - $current_time + 86400;
+		$cache->put('_birthdays_list_' . $config['board_timezone'], $birthdays_list, $cache_expiry);
 	}
 
 	return $birthdays_list;

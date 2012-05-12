@@ -100,7 +100,7 @@ $template->assign_vars(array(
 	'TOPIC_ID' => $topic_id,
 	'POST_ID' => $post_id,
 	'TOPIC_TITLE' => $topic_title,
-	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 80) . '...' : $topic_title),
+	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 75) . '...' : $topic_title),
 	'TOPIC_TITLE_ENC' => $topic_title_enc,
 	'TOPIC_URL_ENC' => $topic_url_enc,
 	'TOPIC_URL_LTT' => $topic_url_ltt,

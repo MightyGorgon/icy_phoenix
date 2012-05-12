@@ -32,8 +32,6 @@ $cms_admin->root = CMS_PAGE_CMS;
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();
 
-setup_extra_lang(array('lang_admin', 'lang_cms'));
-
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
 $access_allowed = get_cms_access_auth('cms_ads');

@@ -1287,7 +1287,8 @@ class bbcode
 				$is_local_url = true;
 			}
 			// generate html
-			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($is_local_url ? '' : (' target="_blank"' . ((!empty($item['params']['nofollow']) || $this->is_sig) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
+			$url_target = ((isset($item['params']['target']) && (($item['params']['target'] != 0) || ($item['params']['target'] != 'false'))) ? true : false);
+			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . (($is_local_url && empty($url_target)) ? '' : (' target="_blank"' . ((!empty($item['params']['nofollow']) || $this->is_sig) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
 
 			if ($config['disable_html_guests'] && !$user->data['session_logged_in'])
 			{

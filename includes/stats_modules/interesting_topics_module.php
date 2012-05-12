@@ -25,7 +25,7 @@ $template->assign_vars(array(
 
 //All your code
 $auth_data_sql = '';
-$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE forum_type = ' . FORUM_POST;
+$sql = "SELECT forum_id FROM " . FORUMS_TABLE . " WHERE forum_type = " . FORUM_POST;
 $result = $stat_db->sql_query($sql);
 
 while ($row = $stat_db->sql_fetchrow($result))
@@ -37,12 +37,12 @@ while ($row = $stat_db->sql_fetchrow($result))
 	}
 }
 
-$sql = 'SELECT topic_id, topic_title, topic_replies, topic_views, topic_views / (topic_replies + 1) AS k
-	FROM ' . TOPICS_TABLE ."
+$sql = "SELECT topic_id, topic_title, topic_replies, topic_views, topic_views / (topic_replies + 1) AS k
+	FROM " . TOPICS_TABLE . "
 	WHERE forum_id IN ($auth_data_sql)
-	AND topic_status <>". TOPIC_MOVED . '
+	AND topic_status <>" . TOPIC_MOVED . "
 	ORDER BY k DESC
-	LIMIT ' . $return_limit;
+	LIMIT " . $return_limit;
 $result = $stat_db->sql_query($sql);
 $topic_data = $stat_db->sql_fetchrowset($result);
 
