@@ -860,7 +860,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_post_ed
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('mobile_style_disable', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_gc', '3600');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_msgs_refresh', '5');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_session_refresh', '10');

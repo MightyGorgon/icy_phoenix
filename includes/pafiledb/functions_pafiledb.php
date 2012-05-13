@@ -1128,8 +1128,8 @@ class pafiledb
 	{
 		global $db, $cache, $config, $lang;
 
-		$cat_name = request_post_var('cat_name', '');
-		$cat_desc = request_post_var('cat_desc', '');
+		$cat_name = request_post_var('cat_name', '', true);
+		$cat_desc = request_post_var('cat_desc', '', true);
 		$cat_parent = request_post_var('cat_parent', 0);
 		$cat_allow_file = request_post_var('cat_allow_file', 0);
 		// MX Addon

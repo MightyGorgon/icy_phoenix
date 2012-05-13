@@ -4424,7 +4424,7 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.3.24.77 */
 		case '1.3.24.77':
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0')";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'disable_registration_ip_check'";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Jike Spider', '', 'jikespider', '')";
