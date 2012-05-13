@@ -65,7 +65,7 @@ if(!function_exists('cms_block_links'))
 
 		$template->assign_vars(array(
 			'SITE_LOGO_WIDTH' => $links_config['width'],
-			<div>'SITE_LOGO_HEIGHT' =>$links_config['height'],</div>
+			'SITE_LOGO_HEIGHT' => $links_config['height'],
 			'U_SITE_LOGO' => $links_config['site_logo']
 			)
 		);
