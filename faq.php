@@ -103,10 +103,10 @@ for($i = 0; $i < sizeof($faq_block); $i++)
 			'BLOCK_TITLE' => $faq_block_titles[$i])
 		);
 
+		$row_class = '';
 		for($j = 0; $j < sizeof($faq_block[$i]); $j++)
 		{
-			$row_class = (!($j % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-
+			$row_class = ip_zebra_rows($row_class);
 			$template->assign_block_vars('faq_block.faq_row', array(
 				'ROW_CLASS' => $row_class,
 				'FAQ_QUESTION' => $faq_block[$i][$j]['question'],

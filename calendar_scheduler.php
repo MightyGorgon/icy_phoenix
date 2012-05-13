@@ -278,23 +278,22 @@ if (($nb_days % 7) > 0)
 	$nb_rows++;
 }
 
-$color = false;
 for ($j = 0; $j < $nb_rows; $j++)
 {
 	$template->assign_block_vars('row', array());
-	$color = !$color;
+	$row_class = '';
 	for ($i = 0; $i <= 6; $i++)
 	{
 		$cur = intval(gmdate('d', $offset));
-		$class = ($color) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 		if (($offset < $start_m) || ($offset >= $end_m))
 		{
 			$cur = '&nbsp;';
-			$class = $theme['td_class3'];
+			$row_class = $theme['td_class3'];
 		}
 		if ($offset == $today)
 		{
-			$class = 'quote';
+			$row_class = 'quote';
 		}
 		// Old condition removed...
 		//if ($days[$cur])
@@ -304,7 +303,7 @@ for ($j = 0; $j < $nb_rows; $j++)
 			$cur = sprintf('<a href="%s" class="gensmall"><b>%s</b></a>', $url, $cur);
 		}
 		$template->assign_block_vars('row.cell', array(
-			'CLASS' => $class,
+			'CLASS' => $row_class,
 			'DAY' => $cur,
 			)
 		);

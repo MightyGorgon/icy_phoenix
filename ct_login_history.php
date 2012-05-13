@@ -45,14 +45,15 @@ if ($config['ctracker_login_history'])
 {
 	$sql = 'SELECT * FROM ' . CTRACKER_LOGINHISTORY . ' WHERE ct_user_id = ' . $user->data['user_id'] . ' ORDER BY ct_login_time DESC';
 	$result = $db->sql_query($sql);
-	$count = 0;
 
+	$row_class = '';
+	$count = 0;
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$count++;
-
+		$row_class = ip_zebra_rows($row_class);
 		$template->assign_block_vars('login_output', array(
-			'ROW_CLASS' => ($count % 2 == 0)? $theme['td_class1'] : $theme['td_class2'],
+			'ROW_CLASS' => $row_class,
 			'VALUE_1' => $count,
 			'VALUE_2' => create_date($config['default_dateformat'], $row['ct_login_time'], $config['board_timezone']),
 			'VALUE_3' => $row['ct_login_ip']

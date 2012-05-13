@@ -32,7 +32,7 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', '');
 if (empty($pic_id))
 {
-	message_die(GENERAL_MESSAGE, 'No pics specified');
+	message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 $pic_id = urldecode($pic_id);
 $tmp_split = explode('/', $pic_id);
@@ -43,7 +43,7 @@ if ($pic_user_id > 0)
 }
 else
 {
-	message_die(GENERAL_MESSAGE, 'No pics specified');
+	message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
 // I have prefixed an underscore to the image thumbnail name because this thumb should remain small and it is not using the mid size like the standard posted_img_thumbnail

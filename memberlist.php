@@ -561,6 +561,7 @@ if (sizeof($user_list))
 		usort($user_list, '_sort_last_active');
 	}
 
+	$row_class = '';
 	for ($i = 0, $end = sizeof($user_list); $i < $end; ++$i)
 	{
 		$user_id = $user_list[$i];
@@ -694,7 +695,7 @@ if (sizeof($user_list))
 		}
 
 		$deluser_url = (($user->data['user_level'] == ADMIN) ? append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) : '');
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 		$template->assign_block_vars('memberrow', array(
 			'ROW_NUMBER' => $i + ($start + 1),
 			//'ROW_NUMBER' => $i + ($_GET['start'] + 1) . (($user->data['user_level'] == ADMIN) ? '&nbsp;<a href="' . append_sid('delete_users.' . PHP_EXT . '?mode=user_id&amp;del_user=' . $user_id) . '"><img src="' . $images['icon_delpost'] . '" alt="' . $lang['Delete'] . '" title="' . $lang['Delete'] . '" /></a>&nbsp;':''),

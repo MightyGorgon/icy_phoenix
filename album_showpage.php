@@ -51,7 +51,7 @@ if($mode == 'smilies')
 $pic_id = request_var('pic_id', 0);
 if ($pic_id <= 0)
 {
-	message_die(GENERAL_MESSAGE, 'No pics specified');
+	message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
 $comment_id = request_var('comment_id', 0);

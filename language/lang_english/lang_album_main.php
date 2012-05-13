@@ -211,6 +211,7 @@ $lang = array_merge($lang, array(
 	'Pics_unlocked_successfully' => 'Your pic(s) have been unlocked successfully',
 	'Pics_approved_successfully' => 'Your pic(s) have been approved successfully',
 	'Pics_unapproved_successfully' => 'Your pic(s) have been unapproved successfully',
+	'NO_PICS_SPECIFIED' => 'No pic(s) specified',
 
 // Rate
 	'Current_Rating' => 'Current Rating',

@@ -115,6 +115,7 @@ else
 	$config['disable_html_guests'] = 0;
 	$config['quote_iterations'] = 3;
 	$config['switch_bbcb_active_content'] = 1;
+	$user->data['is_bot'] = false;
 	$user->data['session_logged_in'] = 0;
 	$user->data['user_lang'] = 'english';
 	$lang['OpenNewWindow'] = 'Open in new window';
@@ -1425,7 +1426,7 @@ class bbcode
 			$html = '<blockquote class="quote"';
 			if(isset($item['params']['post']) && intval($item['params']['post']))
 			{
-				$post_rev = '[<a href="#" onclick="open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\'); return false;" class="genmed">' . $lang['ReviewPost'] . '</a>]';
+				$post_rev = ($user->data['is_bot'] ? '&nbsp;' : ('[<a href="#" onclick="open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\'); return false;" class="genmed">' . $lang['ReviewPost'] . '</a>]'));
 				$html .= ' cite="'. CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . intval($item['params']['post']) . '#p' . intval($item['params']['post']) . '"';
 			}
 			$html .= '>';

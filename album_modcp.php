@@ -389,7 +389,7 @@ else
 			// we must check POST method now
 			if (empty($pic_id))
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 			$pic_id_array = array();
 			if (!is_array($pic_id))
@@ -451,7 +451,7 @@ else
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 
 			// if we are trying to move picture(s) to root category or a
@@ -502,7 +502,7 @@ else
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No pics specified');
+			message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -555,7 +555,7 @@ else
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No pics specified');
+			message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -608,7 +608,7 @@ else
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No pics specified');
+			message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -650,7 +650,7 @@ else
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No pics specified');
+			message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -743,7 +743,7 @@ else
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 
 			// if we are trying to copy picture(s) to root category or a
@@ -849,7 +849,7 @@ else
 		{
 			if (empty($pic_id))
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 
 			$pic_id_array = array();
@@ -896,7 +896,7 @@ else
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 
 			// well, we got the array of pic_id but we must do a check to make sure all these

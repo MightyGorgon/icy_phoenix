@@ -262,9 +262,10 @@ else
 		)
 	);
 
+	$row_class = '';
 	for ($i = 0; $i < sizeof($ad_positions_array); $i++)
 	{
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 		$template->assign_block_vars('ads_cfg', array(
 			'ROW_CLASS' => $row_class,
 			'AD_CFG' => $ad_positions_lang_array[$i],
@@ -284,11 +285,12 @@ else
 		ORDER BY " . $sql_sort;
 	$result = $db->sql_query($sql);
 
+	$row_class = '';
 	$i = 0;
 	while($row = $db->sql_fetchrow($result))
 	{
 		$i++;
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 
 		$ad_auth_lang = $lang['AD_AUTH_GUESTS'];
 		switch ($row['ad_auth'])

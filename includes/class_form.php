@@ -559,6 +559,7 @@ class class_form
 	{
 		global $config, $template, $theme, $lang, $s_hidden_fields;
 
+		$row_class = '';
 		foreach ($table_fields as $k => $v)
 		{
 			$inputs_array[$k] = (isset($items_row[$k]) ? $items_row[$k] : $v['default']);
@@ -572,9 +573,9 @@ class class_form
 			}
 			else
 			{
-				$class = (empty($class) || ($class == $theme['td_class2'])) ? $theme['td_class1'] : $theme['td_class2'];
+				$row_class = ip_zebra_rows($row_class);
 				$template->assign_block_vars('field', array(
-					'CLASS' => $class,
+					'CLASS' => $row_class,
 					'L_NAME' => $this->get_lang($v['lang_key']),
 					'L_EXPLAIN' => isset($v['explain']) ? $this->get_lang($v['explain']) : '',
 					'S_BBCB' => ((isset($v['bbcode_box']) && $v['bbcode_box']) ? true : false),
@@ -608,6 +609,7 @@ class class_form
 	{
 		global $config, $template, $theme, $lang, $bbcode;
 
+		$row_class = '';
 		foreach ($table_fields as $k => $v)
 		{
 			$inputs_array[$k] = (isset($items_row[$k]) ? $items_row[$k] : $v['default']);
@@ -724,10 +726,10 @@ class class_form
 				}
 				// SPECIAL PROCESSING - END
 
-				$class = (empty($class) || ($class == $theme['td_class2'])) ? $theme['td_class1'] : $theme['td_class2'];
+				$row_class = ip_zebra_rows($row_class);
 				$template_row = empty($template_row) ? 'field' : (string) $template_row;
 				$template->assign_block_vars($template_row, array(
-					'CLASS' => $class,
+					'CLASS' => $row_class,
 					'L_NAME' => $this->get_lang($v['lang_key']),
 					'L_EXPLAIN' => !empty($v['explain']) ? $this->get_lang($v['explain']) : '',
 					'S_BBCB' => $s_bbcb ? true : false,

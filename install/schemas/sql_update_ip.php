@@ -85,6 +85,8 @@ switch ($req_version)
 	case '132881': $current_ip_version = '1.3.28.81'; break;
 	case '132982': $current_ip_version = '1.3.29.82'; break;
 	case '133083': $current_ip_version = '1.3.30.83'; break;
+	case '20084': $current_ip_version = '2.0.0.84'; break;
+	case '20084rc1': $current_ip_version = '2.0.0.84RC1'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4477,6 +4479,10 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.30.83 */
 		case '1.3.30.83':
+
+		/* Updating from IP 2.0.0.84RC1 */
+		case '2.0.0.84':
+		case '2.0.0.84RC1':
 
 	}
 
