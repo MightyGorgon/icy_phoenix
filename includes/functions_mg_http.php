@@ -34,9 +34,20 @@ function get_user_os($http_user_agent_str)
 	$user_os_img = $user_os_img_path . 'unknown.png';
 
 	$os = array(
+		'bot' => array(
+			'main' => array('str_pos' => array('bot','spider','crawler'), 'name' => 'Bot', 'icon' => 'bot.png'),
+			'sub' => array(
+				'bot_google' => array('str_pos' => array('Googlebot'), 'name' => 'Googlebot', 'icon' => 'bot.png'),
+				'bot_bing' => array('str_pos' => array('bingbot'), 'name' => 'Bingbot', 'icon' => 'bot.png'),
+				'bot_omgili' => array('str_pos' => array('omgilibot'), 'name' => 'Omgili Crawler', 'icon' => 'bot.png'),
+				'bot_baidu' => array('str_pos' => array('Baiduspider'), 'name' => 'Baidu Spider', 'icon' => 'bot.png'),
+				'bot_msn' => array('str_pos' => array('msnbot'), 'name' => 'MSN Bot', 'icon' => 'bot.png'),
+			),
+		),
 		'windows' => array(
 			'main' => array('str_pos' => array('Win'), 'name' => 'Windows', 'icon' => 'windows.png'),
 			'sub' => array(
+				'windows_8' => array('str_pos' => array('Windows NT 6.2'), 'name' => 'Windows 8', 'icon' => 'windows_8.png'),
 				'windows_seven' => array('str_pos' => array('Windows NT 6.1'), 'name' => 'Windows 7', 'icon' => 'windows_seven.png'),
 				'windows_vista' => array('str_pos' => array('Windows NT 6.0'), 'name' => 'Windows Vista', 'icon' => 'windows_vista.png'),
 				'windows_2003' => array('str_pos' => array('Windows NT 5.2'), 'name' => 'Windows 2003', 'icon' => 'windows_2003.png'),
@@ -145,6 +156,8 @@ function get_user_browser($http_user_agent_str)
 		'coolnovo' => array('regex' => array('/CoolNovo\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'CoolNovo', 'icon' => 'coolnovo.png'),
 		// Chrome must be before Safari
 		'chrome' => array('regex' => array('/Chrome\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Chrome', 'icon' => 'chrome.png'),
+		'gingerbread' => array('regex' => array('/\/GINGERBREAD/'), 'check_version' => true, 'name' => 'Gingerbread', 'icon' => 'gingerbread.png',),
+		'mobilesafari' => array('regex' => array('/Mobile Safari\/([0-9]{1,5}.[0-9]{1,5})/'), 'check_version' => true, 'name' => 'Safari Mobile', 'icon' => 'safari.png',),
 		'safari' => array('regex' => array('/Safari\/([0-9]{1,5}.[0-9]{1,5})/'), 'check_version' => true, 'name' => 'Safari', 'icon' => 'safari.png'),
 		'konqueror' => array('regex' => array('/Konqueror\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Konqueror', 'icon' => 'konqueror.png'),
 		// Mozilla must be the last one!!!
