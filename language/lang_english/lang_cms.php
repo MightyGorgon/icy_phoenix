@@ -446,6 +446,8 @@ $lang = array_merge($lang, array(
 	'cms_var_md_links_own1_explain' => 'Show your own link button above other buttons',
 	'cms_var_md_links_own2' => 'Links -> Own (Bottom)',
 	'cms_var_md_links_own2_explain' => 'Show your own link button below other buttons',
+	'cms_var_md_links_cat_id' => 'Category IDs',
+	'cms_var_md_links_cat_id_explain' => 'Please specify the categories IDs (comma separated) where you want the links to be displayed (0 = all)',
 	'cms_var_md_links_style' => 'Links -> Style',
 	'cms_var_md_links_style_explain' => 'Choose between static and scrolling',
 	'cms_var_md_jumpbox_align' => 'Alignment',
