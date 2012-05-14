@@ -80,7 +80,7 @@ if(!function_exists('cms_block_links'))
 		$sql = "SELECT link_id, link_title, link_logo_src
 			FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
-			AND link_logo_src <> ''
+				AND link_logo_src <> ''
 			" . $sql_extra . "
 			ORDER BY RAND()
 			LIMIT " . $links_config['display_logo_num'];

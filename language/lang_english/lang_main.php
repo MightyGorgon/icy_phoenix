@@ -2376,10 +2376,10 @@ $lang = array_merge($lang, array(
 	'LIKE_TIME' => 'Date',
 	'LIKE_RECAP' => 'Users who like this post',
 	'LIKE_COUNTER_YOU' => 'You like this post',
-	'LIKE_COUNTER_YOU_OTHERS_SINGLE' => 'You and another user like this post',
+	'LIKE_COUNTER_YOU_OTHERS_SINGLE' => 'You and %s user like this post',
 	'LIKE_COUNTER_YOU_OTHERS' => 'You and %s users like this post',
 	'LIKE_COUNTER_OTHERS' => '%s users like this post',
-	'LIKE_COUNTER_OTHERS_SINGLE' => 'One user likes this post',
+	'LIKE_COUNTER_OTHERS_SINGLE' => '%s user likes this post',
 
 	'FRIENDSHIP_STATUS' => 'Friendship status',
 	'FRIEND_ADD' => 'Add as a friend',

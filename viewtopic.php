@@ -2130,7 +2130,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$single_post_number = $i + 1 + $start;
 	$single_post = ($user->data['is_bot'] ? ('#' . $single_post_number) : ('<a href="#_Single_Post_View" onclick="open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\'); return false;" style="text-decoration: none;">#' . $single_post_number . '</a>'));
 	$single_post_share = '<a href="#" onclick="popup(\'share.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_share\'); return false;" style="text-decoration: none;">' . $lang['SHARE'] . '</a>';
-	$single_post_like_list = '<a href="#" onclick="popup(\'topic_view_users.' . PHP_EXT . '?like=1&amp;' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_like\'); return false;" style="text-decoration: none;" title="' . $lang['LIKE_RECAP'] . '">' . '{USERS_LIKE}' . '</a>';
+	$single_post_like_list = ($user->data['session_logged_in'] ? ('<a href="#" onclick="popup(\'topic_view_users.' . PHP_EXT . '?like=1&amp;' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_like\'); return false;" style="text-decoration: none;" title="' . $lang['LIKE_RECAP'] . '">' . '{USERS_LIKE}' . '</a>') : '{USERS_LIKE}');
 
 	// Mighty Gorgon - POSTS LIKES - BEGIN
 	$post_like_text = '';
@@ -2163,8 +2163,8 @@ for($i = 0; $i < $total_posts; $i++)
 			elseif ($post_like_text_single)
 			{
 				$single_post_like_list = str_replace('{USERS_LIKE}', 1, $single_post_like_list);
-				$post_like_text = $lang['LIKE_COUNTER_YOU_OTHERS_SINGLE'];
-				$post_like_text_js = $lang['LIKE_COUNTER_OTHERS_SINGLE'];
+				$post_like_text = sprintf($lang['LIKE_COUNTER_YOU_OTHERS_SINGLE'], $single_post_like_list);
+				$post_like_text_js = sprintf($lang['LIKE_COUNTER_OTHERS_SINGLE'], $single_post_like_list);
 			}
 			else
 			{
@@ -2184,8 +2184,8 @@ for($i = 0; $i < $total_posts; $i++)
 			elseif ($post_like_text_single)
 			{
 				$single_post_like_list = str_replace('{USERS_LIKE}', 1, $single_post_like_list);
-				$post_like_text = $lang['LIKE_COUNTER_OTHERS_SINGLE'];
-				$post_like_text_js = $lang['LIKE_COUNTER_YOU_OTHERS_SINGLE'];
+				$post_like_text = sprintf($lang['LIKE_COUNTER_OTHERS_SINGLE'], $single_post_like_list);
+				$post_like_text_js = sprintf($lang['LIKE_COUNTER_YOU_OTHERS_SINGLE'], $single_post_like_list);
 			}
 			else
 			{
