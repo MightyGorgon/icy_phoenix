@@ -1113,13 +1113,17 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$template->assign_block_vars('social_bookmarks', array());
 	}
 	$topic_title_enc = urlencode(ip_utf8_decode($thispic['pic_title']));
+	$topic_title_enc_utf8 = urlencode($thispic['pic_title']);
 	$topic_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append;
 
 	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . $topic_link));
+	$topic_url_enc_utf8 = urlencode(create_server_url() . $topic_link);
 	$template->assign_vars(array(
 		// Social Bookmarks - BEGIN
 		'TOPIC_TITLE_ENC' => $topic_title_enc,
+		'TOPIC_TITLE_ENC_UTF8' => $topic_title_enc_utf8,
 		'TOPIC_URL_ENC' => $topic_url_enc,
+		'TOPIC_URL_ENC_UTF8' => $topic_url_enc_utf8,
 		'U_TELL' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . $topic_title_enc . '&amp;topic_url=' . urlencode(ip_utf8_decode(str_replace('&amp;', '&', $topic_link)))),
 		'L_SHARE_TOPIC' => $lang['ShareThisTopic'],
 		// Social Bookmarks - END

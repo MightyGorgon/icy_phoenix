@@ -1124,6 +1124,7 @@ if ($config['display_tags_box'])
 }
 
 $topic_title_enc = urlencode(ip_utf8_decode($topic_title));
+$topic_title_enc_utf8 = urlencode($topic_title);
 
 // URL Rewrite - BEGIN
 // Rewrite Social Bookmars URLs if any of URL Rewrite rules has been enabled
@@ -1138,6 +1139,7 @@ else
 }
 $topic_url_ltt = htmlspecialchars($topic_url);
 $topic_url_enc = urlencode(ip_utf8_decode($topic_url));
+$topic_url_enc_utf8 = urlencode($topic_url);
 // URL Rewrite - END
 
 // Convert and clean special chars!
@@ -1171,7 +1173,9 @@ $template->assign_vars(array(
 	'IS_LOCKED' => $is_this_locked,
 
 	'TOPIC_TITLE_ENC' => $topic_title_enc,
+	'TOPIC_TITLE_ENC_UTF8' => $topic_title_enc_utf8,
 	'TOPIC_URL_ENC' => $topic_url_enc,
+	'TOPIC_URL_ENC_UTF8' => $topic_url_enc_utf8,
 	'TOPIC_URL_LTT' => $topic_url_ltt,
 	'L_DOWNLOAD_POST' => $lang['Download_post'],
 	'L_DOWNLOAD_TOPIC' => $lang['Download_topic'],
