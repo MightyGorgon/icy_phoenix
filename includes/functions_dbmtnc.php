@@ -1263,11 +1263,11 @@ function get_word_id($word)
 	global $stopword_array, $synonym_array;
 
 	// Check whether word is in stopword array
-	if (in_array($word, $stopword_array))
+	if (!empty($word) && !empty($stopword_array) && in_array($word, $stopword_array))
 	{
 		return NULL;
 	}
-	if (in_array($word, $synonym_array[1]))
+	if (!empty($word) && !empty($synonym_array[1]) && in_array($word, $synonym_array[1]))
 	{
 		$key = array_search($word, $synonym_array[1]);
 		$word = $synonym_array[0][$key];
