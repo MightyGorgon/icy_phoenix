@@ -77,6 +77,7 @@ if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 
 $topic_title = $post_data['topic_title'];
 $topic_title_enc = urlencode(ip_utf8_decode($topic_title));
+$topic_title_enc_utf8 = urlencode($topic_title);
 
 // URL Rewrite - BEGIN
 // Rewrite Social Bookmars URLs if any of URL Rewrite rules has been enabled
@@ -91,6 +92,7 @@ else
 }
 $topic_url_ltt = htmlspecialchars($topic_url);
 $topic_url_enc = urlencode(ip_utf8_decode($topic_url));
+$topic_url_enc_utf8 = urlencode($topic_url);
 // URL Rewrite - END
 
 // Convert and clean special chars!
@@ -102,7 +104,9 @@ $template->assign_vars(array(
 	'TOPIC_TITLE' => $topic_title,
 	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 75) . '...' : $topic_title),
 	'TOPIC_TITLE_ENC' => $topic_title_enc,
+	'TOPIC_TITLE_ENC_UTF8' => $topic_title_enc_utf8,
 	'TOPIC_URL_ENC' => $topic_url_enc,
+	'TOPIC_URL_ENC_UTF8' => $topic_url_enc_utf8,
 	'TOPIC_URL_LTT' => $topic_url_ltt,
 
 	'S_SHARE_BOX' => true,

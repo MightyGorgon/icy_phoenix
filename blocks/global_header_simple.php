@@ -33,8 +33,6 @@ if(!function_exists('cms_block_global_header_simple'))
 		$template->_tpldata['header_row.'] = array();
 		$template->_tpldata['header_desc.'] = array();
 
-		setup_extra_lang(array('lang_dyn_menu'));
-
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
 							LIMIT 1";

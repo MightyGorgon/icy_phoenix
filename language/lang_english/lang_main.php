@@ -180,6 +180,7 @@ $lang = array_merge($lang, array(
 	'Click_return_profile' => 'Click %sHere%s to return to User Profile',
 	'Click_return_preferences' => 'Click %sHere%s to return to Preferences',
 	'Click_return_group' => 'Click %sHere%s to return to group information',
+	'Click_return_drafts' => 'Click %sHere%s to return to Drafts',
 	'Click_return_inbox' => 'Click %sHere%s to return to your Inbox',
 	'Click_view_message' => 'Click %sHere%s to view your message',
 	'Click_view_privmsg' => 'Click %sHere%s to visit your Inbox',

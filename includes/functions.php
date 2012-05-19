@@ -2266,7 +2266,7 @@ function setup_basic_lang()
 
 		$lang_files = array_merge($lang_files, $cache->obtain_lang_files());
 		// Make sure we keep these files as last inclusion... to be sure they override what is needed to be overridden!!!
-		$lang_files = array_merge($lang_files, array('lang_main_settings', 'lang_user_created'));
+		$lang_files = array_merge($lang_files, array('lang_dyn_menu', 'lang_main_settings', 'lang_user_created'));
 
 		foreach ($lang_files as $lang_file)
 		{
@@ -4785,8 +4785,8 @@ function page_header($title = '', $parse_template = false)
 			'TOTAL_USERS_ONLINE' => $l_online_users,
 			'LOGGED_IN_USER_LIST' => $online_userlist,
 			'BOT_LIST' => !empty($online_botlist) ? $online_botlist : '',
-			'AC_LIST_TEXT' => $ac_online_text,
-			'AC_LIST' => $ac_username_lists,
+			'AC_LIST_TEXT' => $ac_online_users['text'],
+			'AC_LIST' => $ac_online_users['list'],
 			'RECORD_USERS' => sprintf($lang['Record_online_users'], $config['record_online_users'], create_date($config['default_dateformat'], $config['record_online_date'], $config['board_timezone'])),
 
 			'TOP_HTML_BLOCK' => $top_html_block_text,
