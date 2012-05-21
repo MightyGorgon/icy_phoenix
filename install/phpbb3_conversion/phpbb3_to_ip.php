@@ -32,6 +32,10 @@ $mode = !in_array($mode, $mode_array) ? $mode_array[0] : $mode;
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
+define('COL_RED', '#dd2222');
+define('COL_GREEN', '#228822');
+define('COL_BLUE', '#224488');
+
 define('SCRIPT_NAME', 'phpbb3_to_ip.' . PHP_EXT);
 define('SOURCE_FORUMS', 'phpbb_forums');
 define('SOURCE_TOPICS', 'phpbb_topics');
@@ -45,11 +49,49 @@ define('POSTS_PER_STEP', '1000');
 
 if ($mode == 'main')
 {
+	$tables_array = array(
+		'FORUMS' => array('exists' => 0, 'name' => SOURCE_FORUMS),
+		'TOPICS' => array('exists' => 0, 'name' => SOURCE_TOPICS),
+		'POSTS' => array('exists' => 0, 'name' => SOURCE_POSTS),
+		'USERS' => array('exists' => 0, 'name' => SOURCE_USERS)
+	);
+	foreach ($tables_array as $table_des => $table_data)
+	{
+		$sql = "SHOW TABLES LIKE '" . $table_data['name'] . "'";
+		$result = $db->sql_query($sql);
+		$table_row = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+		if (!empty($table_row))
+		{
+			$tables_array[$table_des]['exists'] = 1;
+		}
+	}
+
 	$redirect_url = append_sid(SCRIPT_NAME . '?mode=forums');
-	$message_info = '<br /><br /><span style="color:#228822;"><b>Welcome to phpBB 3 to Icy Phoenix import process</b></span><br /><br />';
-	$message_info .= '<br /><br /><span style="color:#224488;">This procedure has been design to import phpBB 3 data into an existing Icy Phoenix installation. Even if the whole process has been tested on a standard phpBB 3 installation, you should be aware that the process cannot be undone, so please make sure you have a backup of your DB before going on.</span><br /><br />';
-	$message_info .= '<br /><br /><span style="color:#224488;">Before going on, please make sure you edited some of the constants in this file to refer to phpBB 3 tables.</span><br /><br />';
-	$message_info .= '<br /><br /><span style="color:#dd2222;"><b>All data will be erased before trying to restore... if you are aware of that, please click this link to proceed:</b></span> <a href="' . $redirect_url . '">click here to begin</a><br /><br />';
+	$message_info = '<div style="text-align: left;">';
+	$message_info .= '<h2 style="color: ' . COL_GREEN . ';">Welcome to phpBB 3 to Icy Phoenix import process</h2>';
+	$message_info .= '<br /><br />';
+	$message_info .= '<p style="color: ' . COL_BLUE . ';">This procedure has been designed to import phpBB 3 data into an existing Icy Phoenix installation. Even if the whole process has been tested on a standard phpBB 3 installation, you should be aware that the process cannot be undone, so please make sure you have a backup of your DB before going on.</p>';
+	$message_info .= '<br /><br />';
+	$message_info .= '<div style="color: ' . COL_BLUE . ';">';
+	$message_info .= 'Before going on please make sure you have performed these steps:<br />';
+	$message_info .= '<ol style="margin-left: 20px;">';
+	$message_info .= '<li><span style="color: ' . COL_RED . ';">Make a full backup of your DB and keep it in a safe place, in case you will need to restore it</span></li>';
+	$message_info .= '<li>Make sure phpBB 3 tables are located in the same DB of this Icy Phoenix installation';
+	$message_info .= '<ul style="margin-left: 30px;">';
+	foreach ($tables_array as $table_des => $table_data)
+	{
+		$message_info .= '<li><span style="color: ' . (!empty($table_data['exists']) ? COL_GREEN : COL_RED) . ';">' . $table_des . ' table [ <i>' . $table_data['name'] . '</i> ] ' . (!empty($table_data['exists']) ? 'exists!' : 'doesn\'t exists!') . '</span></li>';
+	}
+	$message_info .= '</ul>';
+	$message_info .= '</li>';
+	$message_info .= '<li>Make sure constants at the beginning of this file have been properly edited to refer to phpBB 3 tables correctly</li>';
+	$message_info .= '</ol>';
+	$message_info .= '</div>';
+	$message_info .= '<br /><br />';
+	$message_info .= '<span style="color: ' . COL_RED . ';"><b>All data will be erased before trying to restore... if you are aware of that, please click this link to proceed:</b></span> <a href="' . $redirect_url . '">click here to begin</a>';
+	$message_info .= '<br /><br />';
+	$message_info .= '</div>';
 }
 
 if ($mode == 'forums')
@@ -64,7 +106,7 @@ if ($mode == 'forums')
 	$result = $db->sql_query($sql);
 
 	$sql_i = "INSERT INTO " . FORUMS_TABLE . "
-	SELECT f.forum_id, f.forum_type, f.parent_id, f2.forum_type, f.left_id, f.right_id, f.forum_parents,
+	SELECT f.forum_id, f.forum_type, f.parent_id, f.forum_type, f.left_id, f.right_id, f.forum_parents,
 	f.forum_name, f.forum_id, f.forum_desc, f.forum_status, 0, f.forum_posts, f.forum_topics, 0,
 	f.forum_last_post_id, f.forum_last_poster_id, f.forum_last_post_subject, f.forum_last_post_time, f.forum_last_poster_name, '',
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -73,16 +115,13 @@ if ($mode == 'forums')
 	0, 0, 0, 0, 0, 1,
 	3, 3, 3, 3, 3,
 	3, 3, 3, 1, 3, 3, 1, 1
-	FROM " . SOURCE_FORUMS . " f, " . SOURCE_FORUMS . " f2
-	WHERE f2.forum_id = f.parent_id";
+	FROM " . SOURCE_FORUMS . " AS f";
 	$result_i = $db->sql_query($sql_i);
 
-	$sql_i = "UPDATE " . FORUMS_TABLE . " SET f.main_type = 'f' WHERE f.main_type = 1";
+	$sql_i = "UPDATE " . FORUMS_TABLE . " AS f SET f.main_type = 'c' WHERE f.parent_id = 0";
 	$result_i = $db->sql_query($sql_i);
 
-	$sql_i = "UPDATE " . FORUMS_TABLE . " SET f.main_type = 'c' WHERE f.main_type = 0";
-	$result_i = $db->sql_query($sql_i);
-
+	$tmp_forums = array();
 	$sql_i = "SELECT * FROM " . FORUMS_TABLE . " ORDER BY left_id";
 	$result_i = $db->sql_query($sql_i);
 	$all_forums = $db->sql_fetchrowset($result_i);
@@ -90,9 +129,20 @@ if ($mode == 'forums')
 	$forum_order = 0;
 	foreach ($all_forums as $forum)
 	{
+		$tmp_forums[$forum['forum_id']] = $forum;
 		$forum_order += 10;
-		$sql_i = "UPDATE " . FORUMS_TABLE . " SET f.forum_order = " . $forum_order . " WHERE f.forum_id = " . $forum['forum_id'];
+		$sql_i = "UPDATE " . FORUMS_TABLE . " AS f SET f.forum_order = " . $forum_order . " WHERE f.forum_id = " . $forum['forum_id'];
 		$result_i = $db->sql_query($sql_i);
+	}
+
+	foreach ($tmp_forums as $forum_id => $forum_data)
+	{
+		if (!empty($forum_data['parent_id']))
+		{
+			$forum_type = (($tmp_forums[$forum_data['parent_id']]['forum_type'] == 1) ? 'f' : 'c');
+			$sql_i = "UPDATE " . FORUMS_TABLE . " AS f SET f.main_type = '" . $forum_type . "' WHERE f.forum_id = " . $forum_id;
+			$result_i = $db->sql_query($sql_i);
+		}
 	}
 
 	$sql_i = "INSERT INTO " . TOPICS_TABLE . " (topic_id, forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_type, topic_first_post_id, topic_last_post_id)
@@ -100,11 +150,21 @@ if ($mode == 'forums')
 	FROM " . SOURCE_TOPICS . " t";
 	$result_i = $db->sql_query($sql_i);
 
+	$sql_i = "SELECT MIN(forum_id) AS min_fid FROM " . TOPICS_TABLE . " WHERE forum_id > 0 LIMIT 1";
+	$result_i = $db->sql_query($sql_i);
+	$min_fid = $db->sql_fetchrow($result_i);
+	$db->sql_freeresult($result_i);
+	if (!empty($min_fid))
+	{
+		$sql_i = "UPDATE " . TOPICS_TABLE . " AS t SET t.forum_id = " . $min_fid['min_fid'] . " WHERE t.forum_id = 0";
+		$result_i = $db->sql_query($sql_i);
+	}
+
 	$redirect_url = append_sid(SCRIPT_NAME . '?mode=users&amp;start=0');
 	meta_refresh(SECONDS_PER_STEP, $redirect_url);
-	$message_info = '<br /><br /><span style="color:#228822;"><b>Forums and topics imported!</b></span><br /><br />';
-	$message_info .= '<br /><br /><span style="color:#224488;"><b>Proceeding to next step... importing users!</b></span><br /><br />';
-	$message_info .= '<br /><br /><span style="color:#dd2222;"><b>The script will proceed automatically, do not click anything!</b></span><br /><br />';
+	$message_info = '<br /><br /><span style="color: ' . COL_GREEN . ';"><b>Forums and topics imported!</b></span><br /><br />';
+	$message_info .= '<br /><br /><span style="color: ' . COL_BLUE . ';"><b>Proceeding to next step... importing users!</b></span><br /><br />';
+	$message_info .= '<br /><br /><span style="color: ' . COL_RED . ';"><b>The script will proceed automatically, do not click anything!</b></span><br /><br />';
 }
 
 if ($mode == 'users')
@@ -211,26 +271,26 @@ if ($mode == 'users')
 			'user_actkey' => 'user_actkey',
 		);
 		$user_added = add_user($user_data, true, false);
-		$output_msg .= '<li><span style="color:#228822;"><b>' . $user_data['username'] . '</b></span></li>' . "\n";
+		$output_msg .= '<li><span style="color: ' . COL_GREEN . ';"><b>' . $user_data['username'] . '</b></span></li>' . "\n";
 	}
 	$output_msg .= '</ul>' . "\n" . '</div>' . "\n";
 	$db->sql_freeresult($result);
 
 	if (($users_counter <= USERS_PER_STEP) && ($users_counter != 0))
 	{
-		$redirect_url = append_sid(SCRIPT_NAME . '?mode=users&amp:start=' . ($start + USERS_PER_STEP));
+		$redirect_url = append_sid(SCRIPT_NAME . '?mode=users&amp;start=' . ($start + USERS_PER_STEP));
 		meta_refresh(SECONDS_PER_STEP, $redirect_url);
-		$message_info = '<br /><br /><span style="color:#228822;"><b>Importing users...</b></span><br /><br />';
-		$message_info .= '<br /><br /><span style="color:#224488;"><b>Proceeding to next step...</b></span><br /><br />';
-		$message_info .= '<br /><br /><span style="color:#dd2222;"><b>The script will proceed automatically, do not click anything!</b></span><br /><br />';
+		$message_info = '<br /><br /><span style="color: ' . COL_GREEN . ';"><b>Importing users...</b></span><br /><br />';
+		$message_info .= '<br /><br /><span style="color: ' . COL_BLUE . ';"><b>Proceeding to next step...</b></span><br /><br />';
+		$message_info .= '<br /><br /><span style="color: ' . COL_RED . ';"><b>The script will proceed automatically, do not click anything!</b></span><br /><br />';
 	}
 	else
 	{
 		$redirect_url = append_sid(SCRIPT_NAME . '?mode=posts&amp;start=0');
 		meta_refresh(SECONDS_PER_STEP, $redirect_url);
-		$message_info = '<br /><br /><span style="color:#228822;"><b>All users imported!</b></span><br /><br />';
-		$message_info .= '<br /><br /><span style="color:#224488;"><b>Proceeding to next step... importing posts!</b></span><br /><br />';
-		$message_info .= '<br /><br /><span style="color:#dd2222;"><b>The script will proceed automatically, do not click anything!</b></span><br /><br />';
+		$message_info = '<br /><br /><span style="color: ' . COL_GREEN . ';"><b>All users imported!</b></span><br /><br />';
+		$message_info .= '<br /><br /><span style="color: ' . COL_BLUE . ';"><b>Proceeding to next step... importing posts!</b></span><br /><br />';
+		$message_info .= '<br /><br /><span style="color: ' . COL_RED . ';"><b>The script will proceed automatically, do not click anything!</b></span><br /><br />';
 	}
 }
 
@@ -254,25 +314,35 @@ if ($mode == 'posts')
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$posts_counter++;
-		$sql_i = "INSERT INTO " . POSTS_TABLE . " (`post_id`, `topic_id`, `forum_id`, `poster_id`, `post_time`, `poster_ip`, `post_username`, `enable_bbcode`, `enable_html`, `enable_smilies`, `enable_autolinks_acronyms`, `enable_sig`, `post_edit_time`, `post_edit_count`, `post_attachment`, `post_bluecard`, `post_subject`, `post_text`, `post_text_compiled`, `edit_notes`) VALUES ('" . $row['post_id'] . "', '" . $row['topic_id'] . "', '" . $row['forum_id'] . "', '" . $row['poster_id'] . "', '" . $row['post_time'] . "', '" . $row['poster_ip'] . "', '" . $row['post_username'] . "', '" . $row['enable_bbcode'] . "', 0, '" . $row['enable_smilies'] . "', 1, '" . $row['enable_sig'] . "', '" . $row['post_time'] . "', 0, 0, NULL, '" . $row['post_subject'] . "', '" . bbcode_bb3_adjust($row['post_text'], $row['bbcode_uid']) . "', '', NULL)";
+		$sql_i = "INSERT INTO " . POSTS_TABLE . " (`post_id`, `topic_id`, `forum_id`, `poster_id`, `post_time`, `poster_ip`, `post_username`, `enable_bbcode`, `enable_html`, `enable_smilies`, `enable_autolinks_acronyms`, `enable_sig`, `post_edit_time`, `post_edit_count`, `post_attachment`, `post_bluecard`, `post_subject`, `post_text`, `post_text_compiled`, `edit_notes`) VALUES ('" . $row['post_id'] . "', '" . $row['topic_id'] . "', '" . $row['forum_id'] . "', '" . $row['poster_id'] . "', '" . $row['post_time'] . "', '" . $row['poster_ip'] . "', '" . $row['post_username'] . "', '" . $row['enable_bbcode'] . "', 0, '" . $row['enable_smilies'] . "', 1, '" . $row['enable_sig'] . "', '" . $row['post_time'] . "', 0, 0, NULL, '" . $db->sql_escape($row['post_subject']) . "', '" . $db->sql_escape(bbcode_bb3_adjust($row['post_text'], $row['bbcode_uid'])) . "', '', '')";
 		$result_i = $db->sql_query($sql_i);
 
-		$output_msg .= '<li><span style="color:#228822;"><b>Post ' . $row['post_id'] . '</b></span></li>' . "\n";
+		$output_msg .= '<li><span style="color: ' . COL_GREEN . ';"><b>Post ' . $row['post_id'] . '</b></span></li>' . "\n";
 	}
 	$output_msg .= '</ul>' . "\n" . '</div>' . "\n";
 	$db->sql_freeresult($result);
 
 	if (($posts_counter <= POSTS_PER_STEP) && ($posts_counter != 0))
 	{
-		$redirect_url = append_sid(SCRIPT_NAME . '?mode=posts&amp:start=' . ($start + POSTS_PER_STEP));
+		$redirect_url = append_sid(SCRIPT_NAME . '?mode=posts&amp;start=' . ($start + POSTS_PER_STEP));
 		meta_refresh(SECONDS_PER_STEP, $redirect_url);
-		$message_info = '<br /><br /><span style="color:#228822;"><b>Importing users...</b></span><br /><br />';
-		$message_info .= '<br /><br /><span style="color:#224488;"><b>Proceeding to next step...</b></span><br /><br />';
-		$message_info .= '<br /><br /><span style="color:#dd2222;"><b>The script will proceed automatically, do not click anything!</b></span><br /><br />';
+		$message_info = '<br /><br /><span style="color: ' . COL_GREEN . ';"><b>Importing posts...</b></span><br /><br />';
+		$message_info .= '<br /><br /><span style="color: ' . COL_BLUE . ';"><b>Proceeding to next step...</b></span><br /><br />';
+		$message_info .= '<br /><br /><span style="color: ' . COL_RED . ';"><b>The script will proceed automatically, do not click anything!</b></span><br /><br />';
 	}
 	else
 	{
-		$message_info = '<br /><br /><span style="color:#228822;"><b>Import complete, enjoy your Icy Phoenix!</b></span><br /><br />';
+		$message_info = '<br /><br /><span style="color: ' . COL_GREEN . ';"><b>Import complete, enjoy your Icy Phoenix!</b></span><br /><br />';
+		if (!function_exists('empty_cache_folders'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+		}
+		empty_cache_folders();
+		if (!function_exists('sync'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+		}
+		sync('all_forums');
 	}
 
 	// Full one step, but missing bbcodes...
@@ -357,10 +427,12 @@ function bbcode_bb3_adjust($text, $bbcode_uid = '')
 		$text = str_replace('&quot;:' . $bbcode_uid, '"', $text);
 		$text = str_replace(':' . $bbcode_uid, '', $text);
 	}
-	$text = ereg_replace("<!-- s", "", ereg_replace(" --><img[^>]*><!-- s[^>]* -->", "", $text));
-	$text = ereg_replace("<!-- m --><a class=\"postlink\" href=\"", "", ereg_replace("\">[^>]*><!-- m -->", "", $text));
+	$text = preg_replace("/<!-- s/", "", preg_replace("/ --><img[^>]*><!-- s[^>]* -->/", "", $text));
+	$text = preg_replace("/<!-- m --><a class=\"postlink\" href=\"/", "", preg_replace("/\">[^>]*><!-- m -->/", "", $text));
+	$text = str_replace('[/*:m]', '', $text);
 	$text = str_replace('&quot;', '"', $text);
 	$text = str_replace('size=75', 'size=9', $text);
+	$text = str_replace('size=85', 'size=10', $text);
 	$text = str_replace('size=150', 'size=14', $text);
 	$text = str_replace('size=200', 'size=18', $text);
 	$text = str_replace('&amp;lt;', '&lt;', $text);
