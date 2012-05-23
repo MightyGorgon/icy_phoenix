@@ -39,6 +39,8 @@ define('COL_BLUE', '#224488');
 define('SCRIPT_NAME', 'phpbb3_to_ip.' . PHP_EXT);
 define('SOURCE_FORUMS', 'phpbb_forums');
 define('SOURCE_TOPICS', 'phpbb_topics');
+define('SOURCE_POLL_OPTIONS', 'phpbb_poll_options');
+define('SOURCE_POLL_VOTES', 'phpbb_poll_votes');
 define('SOURCE_POSTS', 'phpbb_posts');
 define('SOURCE_USERS', 'phpbb_users');
 
@@ -145,8 +147,8 @@ if ($mode == 'forums')
 		}
 	}
 
-	$sql_i = "INSERT INTO " . TOPICS_TABLE . " (topic_id, forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_type, topic_first_post_id, topic_last_post_id)
-	SELECT t.topic_id, t.forum_id, t.topic_title, t.topic_poster, t.topic_time, t.topic_views, t.topic_replies, t.topic_status, t.topic_type, t.topic_first_post_id, t.topic_last_post_id
+	$sql_i = "INSERT INTO " . TOPICS_TABLE . " (topic_id, forum_id, topic_title, topic_poster, topic_time, topic_views, topic_replies, topic_status, topic_type, topic_first_post_id, topic_last_post_id, poll_title, poll_start, poll_length, poll_max_options, poll_last_vote, poll_vote_change)
+	SELECT t.topic_id, t.forum_id, t.topic_title, t.topic_poster, t.topic_time, t.topic_views, t.topic_replies, t.topic_status, t.topic_type, t.topic_first_post_id, t.topic_last_post_id, t.poll_title, t.poll_start, t.poll_length, t.poll_max_options, t.poll_last_vote, t.poll_vote_change
 	FROM " . SOURCE_TOPICS . " t";
 	$result_i = $db->sql_query($sql_i);
 
@@ -154,11 +156,21 @@ if ($mode == 'forums')
 	$result_i = $db->sql_query($sql_i);
 	$min_fid = $db->sql_fetchrow($result_i);
 	$db->sql_freeresult($result_i);
-	if (!empty($min_fid))
+	if (!empty($min_fid['min_fid']))
 	{
 		$sql_i = "UPDATE " . TOPICS_TABLE . " AS t SET t.forum_id = " . $min_fid['min_fid'] . " WHERE t.forum_id = 0";
 		$result_i = $db->sql_query($sql_i);
 	}
+
+	$sql_i = "INSERT INTO " . POLL_OPTIONS_TABLE . " (poll_option_id, topic_id, poll_option_text, poll_option_total)
+	SELECT p.poll_option_id, p.topic_id, p.poll_option_text, p.poll_option_total
+	FROM " . SOURCE_POLL_OPTIONS . " p";
+	$result_i = $db->sql_query($sql_i);
+
+	$sql_i = "INSERT INTO " . POLL_VOTES_TABLE . " (topic_id, poll_option_id, vote_user_id, vote_user_ip)
+	SELECT p.topic_id, p.poll_option_id, p.vote_user_id, p.vote_user_ip
+	FROM " . SOURCE_POLL_VOTES . " p";
+	$result_i = $db->sql_query($sql_i);
 
 	$redirect_url = append_sid(SCRIPT_NAME . '?mode=users&amp;start=0');
 	meta_refresh(SECONDS_PER_STEP, $redirect_url);
@@ -196,6 +208,7 @@ if ($mode == 'users')
 			'user_rank' => 0,
 			'user_active' => 0,
 			'user_actkey' => 'user_actkey',
+			'user_posts' => 0,
 		);
 		$user_added = add_user($user_data, true, false);
 
@@ -214,24 +227,9 @@ if ($mode == 'users')
 
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$user_data = array(
-				'user_id' => $row['user_id'],
-				'username' => $row['username'],
-				'username_clean' => utf8_clean_string($row['username']),
-				'user_password' => $row['user_password'],
-				'user_regdate' => $row['user_regdate'],
-				'user_email' => $row['user_email'],
-				'user_email_hash' => $row['user_email_hash'],
-				'user_timezone' => $row['user_timezone'],
-				'user_dateformat' => $row['user_dateformat'],
-				'user_lang' => $config['default_lang'],
-				'user_style' => $config['default_style'],
-				'user_level' => 1,
-				'user_rank' => 0,
-				'user_active' => 1,
-				'user_actkey' => 'user_actkey',
-			);
-			$user_added = add_user($user_data, true, true);
+			$is_admin = true;
+			$user_data = gen_user_data($row, $is_admin);
+			$user_added = add_user($user_data, true, $is_admin);
 		}
 	}
 
@@ -253,24 +251,9 @@ if ($mode == 'users')
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$users_counter++;
-		$user_data = array(
-			'user_id' => $row['user_id'],
-			'username' => $row['username'],
-			'username_clean' => utf8_clean_string($row['username']),
-			'user_password' => $row['user_password'],
-			'user_regdate' => $row['user_regdate'],
-			'user_email' => $row['user_email'],
-			'user_email_hash' => $row['user_email_hash'],
-			'user_timezone' => $row['user_timezone'],
-			'user_dateformat' => $row['user_dateformat'],
-			'user_lang' => $config['default_lang'],
-			'user_style' => $config['default_style'],
-			'user_level' => 1,
-			'user_rank' => 0,
-			'user_active' => 1,
-			'user_actkey' => 'user_actkey',
-		);
-		$user_added = add_user($user_data, true, false);
+		$is_admin = false;
+		$user_data = gen_user_data($row, $is_admin);
+		$user_added = add_user($user_data, true, $is_admin);
 		$output_msg .= '<li><span style="color: ' . COL_GREEN . ';"><b>' . $user_data['username'] . '</b></span></li>' . "\n";
 	}
 	$output_msg .= '</ul>' . "\n" . '</div>' . "\n";
@@ -332,6 +315,16 @@ if ($mode == 'posts')
 	}
 	else
 	{
+		$sql_i = "SELECT MIN(forum_id) AS min_fid FROM " . POSTS_TABLE . " WHERE forum_id > 0 LIMIT 1";
+		$result_i = $db->sql_query($sql_i);
+		$min_fid = $db->sql_fetchrow($result_i);
+		$db->sql_freeresult($result_i);
+		if (!empty($min_fid['min_fid']))
+		{
+			$sql_i = "UPDATE " . POSTS_TABLE . " AS p SET p.forum_id = " . $min_fid['min_fid'] . " WHERE p.forum_id = 0";
+			$result_i = $db->sql_query($sql_i);
+		}
+
 		$message_info = '<br /><br /><span style="color: ' . COL_GREEN . ';"><b>Import complete, enjoy your Icy Phoenix!</b></span><br /><br />';
 		if (!function_exists('empty_cache_folders'))
 		{
@@ -368,53 +361,114 @@ message_die(GENERAL_MESSAGE, $message);
 
 full_page_generation('message_body.tpl', 'phpBB 3 Porting', '', '');
 
+function gen_user_data($user_row, $is_admin = false)
+{
+	global $config;
+
+	$user_data = array();
+
+	if (!empty($user_row))
+	{
+		$birthday_day = '';
+		$birthday_month = '';
+		$birthday_year = '';
+		$birthday_full = 999999;
+		if (!empty($user_row['user_birthday']) && (strpos($user_row['user_birthday'], '-') !== false))
+		{
+			$birthday_date = explode('-', $user_row['user_birthday']);
+			$birthday_day = $birthday_date[0];
+			$birthday_month = $birthday_date[1];
+			$birthday_year = $birthday_date[2];
+			if (!function_exists('mkrealdate'))
+			{
+				include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+			}
+			$birthday_full = mkrealdate($birthday_day, $birthday_month, $birthday_year);
+		}
+		$user_data = array(
+			'user_id' => $user_row['user_id'],
+			'username' => $user_row['username'],
+			'username_clean' => utf8_clean_string($user_row['username']),
+			'user_password' => $user_row['user_password'],
+			'user_regdate' => $user_row['user_regdate'],
+			'user_email' => $user_row['user_email'],
+			'user_email_hash' => $user_row['user_email_hash'],
+			'user_timezone' => $user_row['user_timezone'],
+			'user_dateformat' => $user_row['user_dateformat'],
+			'user_lang' => $config['default_lang'],
+			'user_style' => $config['default_style'],
+			'user_level' => !empty($is_admin) ? 1 : 0,
+			'user_rank' => 0,
+			'user_active' => 1,
+			'user_actkey' => 'user_actkey',
+			'user_posts' => $user_row['user_posts'],
+			'user_color' => (!empty($user_row['user_colour']) ? '#' . $user_row['user_colour'] : ''),
+			'ct_last_ip' => $user_row['user_ip'],
+			'ct_last_used_ip' => $user_row['user_ip'],
+			'user_registered_ip' => $user_row['user_ip'],
+			'user_from' => $user_row['user_from'],
+			'user_website' => $user_row['user_website'],
+			'user_birthday' => $birthday_full,
+			'user_birthday_y' => $birthday_year,
+			'user_birthday_m' => $birthday_month,
+			'user_birthday_d' => $birthday_day,
+		);
+	}
+
+	return $user_data;
+}
+
 function add_user($user_data, $batch_process = true, $is_admin = false)
 {
 	global $db, $cache, $config, $user, $lang;
 
-	$sql = "INSERT INTO " . USERS_TABLE . " " . $db->sql_build_insert_update($user_data, true);
-	$db->sql_return_on_error(true);
-	$db->sql_transaction('begin');
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-	if (!$result)
+	if (!empty($user_data))
 	{
-		if ($batch_process)
+		$sql = "INSERT INTO " . USERS_TABLE . " " . $db->sql_build_insert_update($user_data, true);
+		$db->sql_return_on_error(true);
+		$db->sql_transaction('begin');
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
-			return false;
+			if ($batch_process)
+			{
+				return false;
+			}
+			message_die(GENERAL_ERROR, 'Could not insert data into users table', '', __LINE__, __FILE__, $sql);
 		}
-		message_die(GENERAL_ERROR, 'Could not insert data into users table', '', __LINE__, __FILE__, $sql);
-	}
 
-	$group_name = empty($is_admin) ? '' : 'Admin';
-	$sql = "INSERT INTO " . GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator) VALUES ('" . $group_name . "', 'Personal User', 1, 0)";
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-	if (!$result)
-	{
-		if ($batch_process)
+		$group_name = empty($is_admin) ? '' : 'Admin';
+		$sql = "INSERT INTO " . GROUPS_TABLE . " (group_name, group_description, group_single_user, group_moderator) VALUES ('" . $group_name . "', 'Personal User', 1, 0)";
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
-			return false;
+			if ($batch_process)
+			{
+				return false;
+			}
+			message_die(GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql);
 		}
-		message_die(GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql);
-	}
-	$group_id = $db->sql_nextid();
+		$group_id = $db->sql_nextid();
 
-	$sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending) VALUES ($user_id, $group_id, 0)";
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_transaction('commit');
-	$db->sql_return_on_error(false);
-	if (!$result)
-	{
-		if ($batch_process)
+		$sql = "INSERT INTO " . USER_GROUP_TABLE . " (user_id, group_id, user_pending) VALUES ($user_id, $group_id, 0)";
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_transaction('commit');
+		$db->sql_return_on_error(false);
+		if (!$result)
 		{
-			return false;
+			if ($batch_process)
+			{
+				return false;
+			}
+			message_die(GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql);
 		}
-		message_die(GENERAL_ERROR, 'Could not insert data into groups table', '', __LINE__, __FILE__, $sql);
+		return true;
 	}
-	return true;
+	return false;
 }
 
 function bbcode_bb3_adjust($text, $bbcode_uid = '')
