@@ -5,10 +5,10 @@
 <!-- BEGIN pic_row -->
 <tr>
 <!-- BEGIN pic_column -->
-	<td class="row1g row-center" align="center">
+	<td width="25%" class="row1g row-center" align="center">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
-			<!-- IF S_HIGHSLIDE --><a href="{pic_row.pic_column.PIC_IMAGE}" class="highslide" onclick="return hs.expand(this)"><!-- ELSE --><a href="{pic_row.pic_column.PIC_IMAGE}"><!-- ENDIF --><img src="{pic_row.pic_column.PIC_THUMB}" alt="{pic_row.pic_column.PIC_NAME}" title="{pic_row.pic_column.PIC_BBC}" /></a>
+			<!-- IF S_HIGHSLIDE --><a href="{pic_row.pic_column.PIC_IMAGE}" class="highslide" onclick="return hs.expand(this)"><!-- ELSE --><a href="{pic_row.pic_column.PIC_IMAGE}"><!-- ENDIF --><img src="{pic_row.pic_column.PIC_THUMB}" width="150" alt="{pic_row.pic_column.PIC_NAME}" title="{pic_row.pic_column.PIC_BBC}" /></a>
 		</div></div></td></tr></table>
 		</center>
 		<br />
@@ -17,7 +17,7 @@
 	</td>
 <!-- END pic_column -->
 <!-- BEGIN pic_end_row -->
-	<td class="row1g row-center" align="center">&nbsp;</td>
+	<td width="25%" class="row1g row-center" align="center">&nbsp;</td>
 <!-- END pic_end_row -->
 </tr>
 <!-- END pic_row -->
