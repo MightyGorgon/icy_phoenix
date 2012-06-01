@@ -81,14 +81,20 @@ class class_export
 			$string = substr($string, 0, -1) . $newline;
 		}
 
-		for ($i = 0; $i < sizeof($this->field_values); $i++)
+		if (sizeof($this->field_values) > 0)
 		{
-			$string .= ($i == 0) ? '' : $newline;
-			foreach ($this->field_values[$i] as $field_value)
+			foreach ($this->field_values as $field_value)
 			{
-				$string .= $this->text_delimiter . $field_value . $this->text_delimiter . $this->field_delimiter;
+				foreach ($field_value as $field_id => $field_data)
+				{
+					foreach ($field_data as $field_type => $field_content)
+					{
+						$text_delimiter = (($field_type == 'str') ? $this->text_delimiter : '');
+						$string .= $text_delimiter . $field_content . $text_delimiter . $this->field_delimiter;
+					}
+				}
+				$string = substr($string, 0, -1) . $newline;
 			}
-			$string = substr($string, 0, -1);
 		}
 
 		return $string;

@@ -1018,7 +1018,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_gc',
 ##              BUILD 078             ##
 ########################################
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0');
 DELETE FROM `phpbb_config` WHERE `config_name` = 'disable_registration_ip_check';
 INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Jike Spider', '', 'jikespider', '');
@@ -1076,12 +1076,30 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_ch
 
 
 
+########################################
+##              BUILD 082             ##
+########################################
+
+
+
+########################################
+##              BUILD 083             ##
+########################################
+
+
+
+########################################
+##              BUILD 084             ##
+########################################
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.28.81' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.0.84RC1' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

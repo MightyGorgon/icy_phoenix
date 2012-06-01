@@ -50,8 +50,8 @@
 <!-- BEGIN postrow -->
 <tr>
 	<td class="row-post-author">
-		<span class="post-name"><a id="p{postrow.U_POST_ID}"></a>{postrow.POSTER_ONLINE_STATUS_IMG}&nbsp;{postrow.POSTER_NAME}&nbsp;{postrow.POSTER_GENDER}</span>
-		<br />
+		<span class="post-name"><a id="p{postrow.U_POST_ID}"></a>{postrow.POSTER_ONLINE_STATUS_IMG}&nbsp;{postrow.POSTER_NAME}&nbsp;{postrow.POSTER_GENDER}</span><br />
+		<!-- IF postrow.POSTER_FULL_NAME --><span class="post-details">{postrow.POSTER_FULL_NAME}</span><br /><!-- ENDIF -->
 		<!-- IF not S_BOT -->
 		<div class="center-block-text">
 			<div class="post-rank">

@@ -266,9 +266,8 @@ elseif ($mode == 'read')
 		}
 		else
 		{
-			$message = ($_GET['view'] == 'next') ? $lang['No_newer_pm'] : $lang['No_older_pm'];
-			$mes = $message . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
-			message_die(GENERAL_MESSAGE, $mes);
+			$output_message = (($_GET['view'] == 'next') ? $lang['No_newer_pm'] : $lang['No_older_pm']) . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+			message_die(GENERAL_MESSAGE, $output_message);
 		}
 	}
 	// END PM Navigation MOD
@@ -1247,19 +1246,19 @@ elseif ($submit || $refresh || ($mode != ''))
 		unset($row);
 	}
 
-	if ($submit)
+	if ($submit || ($draft && $draft_confirm))
 	{
+		$username = request_var('username', '', true);
+		$username = htmlspecialchars_decode($username, ENT_COMPAT);
+		$subject = !empty($draft_subject) ? $draft_subject : request_post_var('subject', '', true);
+		$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+
 		// session id check
 		if (($sid == '') || ($sid != $user->data['session_id']))
 		{
 			$error = true;
 			$error_msg .= ((!empty($error_msg)) ? '<br />' : '') . $lang['Session_invalid'];
 		}
-
-		$username = request_var('username', '', true);
-		$username = htmlspecialchars_decode($username, ENT_COMPAT);
-		$subject = !empty($draft_subject) ? $draft_subject : request_post_var('subject', '', true);
-		$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
 
 		if (!empty($username))
 		{
@@ -1312,20 +1311,22 @@ elseif ($submit || $refresh || ($mode != ''))
 		// Has admin prevented user from sending PM's?
 		if (!$user->data['user_allow_pm'])
 		{
-			$message = $lang['Cannot_send_privmsg'];
-			message_die(GENERAL_MESSAGE, $message);
+			$error_message = $lang['Cannot_send_privmsg'];
+			message_die(GENERAL_MESSAGE, $error_message);
 		}
 
 		// MG Drafts - BEGIN
 		if (($config['allow_drafts'] == true) && $draft && $draft_confirm && $user->data['session_logged_in'])
 		{
 			save_draft($draft_id, $user->data['user_id'], 0, 0, $privmsg_subject, $message);
-			$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+			$output_message = $lang['Drafts_Saved'];
+			$output_message .= '<br /><br />' . sprintf($lang['Click_return_drafts'], '<a href="' . append_sid(CMS_PAGE_DRAFTS) . '">', '</a>');
+			$output_message .= '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 			$redirect_url = append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox');
 			meta_refresh(3, $redirect_url);
 
-			message_die(GENERAL_MESSAGE, $message);
+			message_die(GENERAL_MESSAGE, $output_message);
 		}
 		// MG Drafts - END
 
@@ -1412,7 +1413,7 @@ elseif ($submit || $refresh || ($mode != ''))
 					}
 					else
 					{
-						$msg = $lang['Allow_PM_IN_SEND_ERROR'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+						$msg = $lang['Allow_PM_IN_SEND_ERROR'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 						message_die(GENERAL_MESSAGE, $msg);
 					}
 				}
@@ -1497,7 +1498,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		$redirect_url = append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox');
 		meta_refresh(3, $redirect_url);
 
-		$msg = $lang['Message_sent'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '">', '</a> ') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+		$msg = $lang['Message_sent'] . '<br /><br />' . sprintf($lang['Click_return_inbox'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 		message_die(GENERAL_MESSAGE, $msg);
 	}
@@ -1601,7 +1602,7 @@ elseif ($submit || $refresh || ($mode != ''))
 			$to_userid = $privmsg['user_id'];
 
 		}
-		elseif ($mode == 'reply' || $mode == 'quote')
+		elseif (($mode == 'reply') || ($mode == 'quote'))
 		{
 
 			$sql = "SELECT pm.privmsgs_subject, pm.privmsgs_date, pm.privmsgs_text, u.username, u.user_id
@@ -1641,10 +1642,10 @@ elseif ($submit || $refresh || ($mode != ''))
 	}
 
 	// Has admin prevented user from sending PM's?
-	if (!$user->data['user_allow_pm'] && $mode != 'edit')
+	if (!$user->data['user_allow_pm'] && ($mode != 'edit'))
 	{
-		$message = $lang['Cannot_send_privmsg'];
-		message_die(GENERAL_MESSAGE, $message);
+		$error_message = $lang['Cannot_send_privmsg'];
+		message_die(GENERAL_MESSAGE, $error_message);
 	}
 
 	// Start output, first preview, then errors then post form
@@ -1668,6 +1669,8 @@ elseif ($submit || $refresh || ($mode != ''))
 
 	if ($preview && !$error)
 	{
+		$privmsg_message = !empty($draft_message) ? $draft_message : $privmsg_message;
+		$privmsg_subject = !empty($draft_subject) ? $draft_subject : $privmsg_subject;
 
 		$preview_message = prepare_message($privmsg_message, $html_on, $bbcode_on, $smilies_on);
 		$privmsg_message = preg_replace($html_entities_match, $html_entities_replace, $privmsg_message);

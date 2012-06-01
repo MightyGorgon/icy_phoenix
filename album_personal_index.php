@@ -118,11 +118,13 @@ while($row = $db->sql_fetchrow($result))
 	$memberrow[] = $row;
 }
 
+$row_class = '';
 for ($i = 0; $i < sizeof($memberrow); $i++)
 {
 	$username = colorize_username($memberrow[$i]['user_id'], $memberrow[$i]['username'], $memberrow[$i]['user_color'], $memberrow[$i]['user_active'], true, false, false, false);
+	$row_class = ip_zebra_rows($row_class);
 	$template->assign_block_vars('memberrow', array(
-		'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
+		'ROW_CLASS' => $row_class,
 		'USERNAME' => $username,
 		'U_VIEWGALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $memberrow[$i]['user_id'])),
 		//'U_VIEWGALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($memberrow[$i]['user_id']) . 'user_id=' . $memberrow[$i]['user_id'])),

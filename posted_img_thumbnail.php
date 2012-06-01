@@ -33,7 +33,7 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', '');
 if (empty($pic_id))
 {
-	message_die(GENERAL_MESSAGE, 'No pics specified');
+	message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 $pic_id = urldecode($pic_id);
 

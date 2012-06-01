@@ -28,6 +28,27 @@ $settings_details = array(
 $settings_data = array();
 $settings_data = array(
 
+	'board_disable' => array(
+		'lang_key' => 'Board_disable',
+		'explain' => 'Board_disable_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => $this->list_yes_no,
+	),
+
+	'board_disable_mess_st' => array(
+		'lang_key' => 'board_disable_message',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => $this->list_yes_no,
+	),
+
+	'board_disable_message' => array(
+		'lang_key' => 'board_disable_message_texte',
+		'type' => 'HTMLVARCHAR',
+		'default' => '',
+	),
+
 	'server_name' => array(
 		'lang_key' => 'Server_name',
 		'explain' => 'Server_name_explain',
@@ -115,27 +136,6 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
-	),
-
-	'board_disable' => array(
-		'lang_key' => 'Board_disable',
-		'explain' => 'Board_disable_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-	),
-
-	'board_disable_mess_st' => array(
-		'lang_key' => 'board_disable_message',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-	),
-
-	'board_disable_message' => array(
-		'lang_key' => 'board_disable_message_texte',
-		'type' => 'HTMLVARCHAR',
-		'default' => '',
 	),
 
 	'gzip_compress' => array(

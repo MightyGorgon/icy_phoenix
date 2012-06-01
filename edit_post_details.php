@@ -77,6 +77,17 @@ if ($submit)
 		$poster_changed = change_poster_id($post_id, $new_poster);
 	}
 
+	if (!empty($post_id))
+	{
+		$sql = "SELECT forum_id, topic_id FROM " . POSTS_TABLE . " WHERE post_id = '" . $post_id . "' LIMIT 1";
+		$result = $db->sql_query($sql);
+		$post_data = $db->sql_fetchrow($result);
+		if (!empty($post_data['forum_id']) && !empty($post_data['topic_id']))
+		{
+			sync_topic_details($post_data['topic_id'], $post_data['forum_id'], false, false);
+		}
+	}
+
 	$template->assign_block_vars('submit_finished', array());
 	$template->assign_vars(array(
 		'L_POST_EDIT_TIME' => $lang['Edit_post_time'],

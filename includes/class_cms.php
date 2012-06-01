@@ -149,7 +149,8 @@ class ip_cms
 
 		if (!defined('CMS_BLOCKS_LANG_INCLUDED'))
 		{
-			setup_extra_lang(array('lang_blocks'));
+			// We add lang_user_created again here to make sure we override lang_blocks var with customized ones without having to edit lang_blocks directly...
+			setup_extra_lang(array('lang_blocks', 'lang_user_created'));
 			define('CMS_BLOCKS_LANG_INCLUDED', true);
 		}
 
@@ -358,9 +359,9 @@ class ip_cms
 
 				$block_name = $block_info[$b_counter]['blockfile'];
 
-				if(($block_info[$b_counter]['local'] == 1) && !empty($lang['Title_' . $block_name]))
+				if(($block_info[$b_counter]['local'] == 1) && !empty($lang['cms_block_' . $block_name]))
 				{
-					$title_string = $lang['Title_' . $block_name];
+					$title_string = $lang['cms_block_' . $block_name];
 				}
 				else
 				{

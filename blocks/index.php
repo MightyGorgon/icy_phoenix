@@ -35,8 +35,6 @@ if(!function_exists('cms_block_index'))
 		$template->_tpldata['index_col.'] = array();
 		$template->_tpldata['index_items.'] = array();
 
-		setup_extra_lang(array('lang_dyn_menu'));
-
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
 						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
 							LIMIT 1";

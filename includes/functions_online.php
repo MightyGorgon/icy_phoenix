@@ -17,24 +17,60 @@ if (!defined('IN_ICYPHOENIX'))
 * get_online_users()
 * Global function to get users online, used on index, viewforum, viewonline and ACP
 */
-function get_online_users($reg_only, $extra_info, $forum_sql = '')
+function get_online_users($online_type, $reg_only, $extra_info, $forum_sql = '', $online_time = 0, $cache_time = 0)
 {
 	global $db, $cache, $config, $user, $lang;
 
-	$reg_only_sql = empty($reg_only) ? '' : (" AND u.user_id <> " . ANONYMOUS . " AND s.session_logged_in = 1 ");
-	$extra_info_sql = empty($extra_info) ? '' : (", u.user_session_time, u.user_session_page, s.session_start, s.session_page, s.session_forum_id, s.session_topic_id");
+	// $online_users MUST be === false, otherwise the checks will fail!
+	$online_users = false;
+	$get_from_cache = false;
+	$online_time = empty($online_time) ? ONLINE_REFRESH : (int) $online_time;
+	$current_time = time();
+	$delta_time = $current_time - $online_time;
+	$cache_expiry = (int) $cache_time;
+	$cache_extension = (($online_type == 'chat') ? '_chat' : '_site') . ('_' . $cache_expiry);
 
-	// Changed sorting by username_clean instead of username
-	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_allow_viewonline, u.user_level, s.session_logged_in, s.session_ip, s.session_time, s.session_browser" . $extra_info_sql . "
-		FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
-		WHERE u.user_id = s.session_user_id
-		AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
-			$reg_only_sql
-			$forum_sql
-		ORDER BY u.username_clean ASC, s.session_ip ASC";
-	$result = $db->sql_query($sql);
-	$online_users = $db->sql_fetchrowset($result);
-	$db->sql_freeresult($result);
+	if (!empty($cache_time) && ($cache_time > 0))
+	{
+		$get_from_cache = true;
+		$online_users = $cache->get('_online_users' . $cache_extension);
+	}
+
+	if ($online_users === false)
+	{
+		// Initialize $online_users var again
+		$online_users = array();
+		$extra_info_sql = '';
+		if ($online_type == 'chat')
+		{
+			$sql_table = AJAX_SHOUTBOX_SESSIONS_TABLE;
+			$reg_only_sql = empty($reg_only) ? '' : (" AND u.user_id <> " . ANONYMOUS);
+			$forum_sql = '';
+		}
+		else
+		{
+			$sql_table = SESSIONS_TABLE;
+			$reg_only_sql = empty($reg_only) ? '' : (" AND u.user_id <> " . ANONYMOUS . " AND s.session_logged_in = 1 ");
+			$extra_info_sql = ", u.user_allow_viewonline, s.session_logged_in, s.session_ip, s.session_time, s.session_browser";
+			$extra_info_sql .= empty($extra_info) ? '' : (", u.user_session_time, u.user_session_page, s.session_start, s.session_page, s.session_forum_id, s.session_topic_id");
+		}
+
+		$sql = "SELECT u.user_id, u.username, u.username_clean, u.user_active, u.user_color, u.user_level" . $extra_info_sql . "
+			FROM " . USERS_TABLE . " u, " . $sql_table . " s
+			WHERE u.user_id = s.session_user_id
+				AND s.session_time >= " . (int) $delta_time . "
+				" . $reg_only_sql . "
+				" . $forum_sql . "
+			ORDER BY u.username_clean ASC, s.session_ip ASC";
+		$result = $db->sql_query($sql);
+		$online_users = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+
+		if (!empty($get_from_cache))
+		{
+			$cache->put('_online_users' . $cache_extension, $online_users, $cache_expiry);
+		}
+	}
 
 	return $online_users;
 }
@@ -121,7 +157,7 @@ function get_online_page($page_id)
 	}
 	elseif (strpos($page_id, 'ajax_') !== false)
 	{
-		$location['lang'] = $lang['Ajax_Shoutbox'];
+		$location['lang'] = $lang['LINK_AJAX_SHOUTBOX'];
 		$location['url'] = CMS_PAGE_AJAX_CHAT;
 		return $location;
 	}

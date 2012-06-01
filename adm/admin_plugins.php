@@ -107,7 +107,7 @@ if($mode == 'save')
 			{
 				$plugin_data = array();
 				$plugin_data = array('name' => $k);
-				$class_plugins->remove_config($plugin_data, false);
+				$class_plugins->remove_config($plugin_data, false, false);
 			}
 		}
 	}

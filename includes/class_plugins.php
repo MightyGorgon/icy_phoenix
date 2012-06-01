@@ -222,6 +222,7 @@ class class_plugins
 				eval($uninstall_function);
 			}
 		}
+		$this->remove_config(array('name' => $plugin_info['config']), true, false);
 
 		if ($clear_cache)
 		{
@@ -456,7 +457,6 @@ class class_plugins
 		$db->sql_return_on_error($return);
 		$db->sql_query($sql);
 		$db->sql_return_on_error(false);
-
 		if ($clear_cache)
 		{
 			$this->cache_clear();

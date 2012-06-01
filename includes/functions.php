@@ -150,6 +150,29 @@ function reapply_sid($url)
 	return append_sid($url);
 }
 
+/**
+* Build an URL with params
+*/
+function ip_build_url($url, $params = false, $html_amp = false)
+{
+	$amp_delim = !empty($html_amp) ? '&amp;' : '&';
+	$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+
+	if (!empty($params) && is_array($params))
+	{
+		foreach ($params as $param)
+		{
+			$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+			if (!empty($param))
+			{
+				$url .= $url_delim . $param;
+			}
+		}
+	}
+
+	return $url;
+}
+
 /*
 * extract_current_page
 * function backported from phpBB3 - Olympus
@@ -2204,7 +2227,6 @@ function setup_basic_lang()
 
 		$lang_files = array(
 			'lang_main',
-			'lang_main_settings',
 			'lang_bbcb_mg',
 			'lang_main_upi2db',
 			'lang_news',
@@ -2231,8 +2253,20 @@ function setup_basic_lang()
 			$lang_files = array_merge($lang_files, $lang_files_admin);
 		}
 
+		if (defined('IN_CMS'))
+		{
+			$lang_files_cms = array(
+				'lang_admin',
+				'lang_cms',
+				'lang_blocks',
+				'lang_permissions',
+			);
+			$lang_files = array_merge($lang_files, $lang_files_cms);
+		}
+
 		$lang_files = array_merge($lang_files, $cache->obtain_lang_files());
-		$lang_files = array_merge($lang_files, array('lang_user_created'));
+		// Make sure we keep these files as last inclusion... to be sure they override what is needed to be overridden!!!
+		$lang_files = array_merge($lang_files, array('lang_dyn_menu', 'lang_main_settings', 'lang_user_created'));
 
 		foreach ($lang_files as $lang_file)
 		{
@@ -3088,10 +3122,22 @@ function generate_full_pagination($base_url, $num_items, $per_page, $start_item,
 	return true;
 }
 
-//
-// This does exactly what preg_quote() does in PHP 4-ish
-// If you just need the 1-parameter preg_quote call, then don't bother using this.
-//
+/**
+* Generate zebra rows
+*/
+function ip_zebra_rows($row_class)
+{
+	global $theme;
+	$row1_class = (!empty($theme['td_class1']) ? $theme['td_class1'] : 'row1');
+	$row2_class = (!empty($theme['td_class2']) ? $theme['td_class2'] : 'row2');
+	$row_class = (empty($row_class) || ($row_class == $row2_class)) ? $row1_class : $row2_class;
+	return $row_class;
+}
+
+/*
+* This does exactly what preg_quote() does in PHP 4-ish
+* If you just need the 1-parameter preg_quote call, then don't bother using this.
+*/
 function phpbb_preg_quote($str, $delimiter)
 {
 	$text = preg_quote($str);
@@ -4578,8 +4624,7 @@ function page_header($title = '', $parse_template = false)
 		// Get basic (usernames + totals) online situation
 		$online_userlist = '';
 		$l_online_users = '';
-		$ac_online_text = '';
-		$ac_username_lists = '';
+		$ac_online_users = array('reg' => 0, 'guests' => 0, 'tot' => 0, 'list' => '', 'text' => '');
 		if (defined('SHOW_ONLINE') && !$user->data['is_bot'])
 		{
 			include(IP_ROOT_PATH . 'includes/users_online_block.' . PHP_EXT);
@@ -4740,8 +4785,8 @@ function page_header($title = '', $parse_template = false)
 			'TOTAL_USERS_ONLINE' => $l_online_users,
 			'LOGGED_IN_USER_LIST' => $online_userlist,
 			'BOT_LIST' => !empty($online_botlist) ? $online_botlist : '',
-			'AC_LIST_TEXT' => $ac_online_text,
-			'AC_LIST' => $ac_username_lists,
+			'AC_LIST_TEXT' => $ac_online_users['text'],
+			'AC_LIST' => $ac_online_users['list'],
 			'RECORD_USERS' => sprintf($lang['Record_online_users'], $config['record_online_users'], create_date($config['default_dateformat'], $config['record_online_date'], $config['board_timezone'])),
 
 			'TOP_HTML_BLOCK' => $top_html_block_text,
@@ -4868,9 +4913,6 @@ function page_header($title = '', $parse_template = false)
 		'DOCTYPE_HTML' => $doctype_html,
 		'NAV_LINKS' => $nav_links_html,
 
-		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
-		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
-		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
 		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
 		'S_HEADER_DROPDOWN' => ($config['switch_header_dropdown'] ? true : false),
 		'S_HEADER_DD_LOGGED_IN' => (($config['switch_header_dropdown'] && $user->data['upi2db_access']) ? true : false),
@@ -5313,6 +5355,14 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		}
 		// Page generation time - END
 	}
+
+	// Check jQuery UI here, in case we have changed jQuery UI switch within some blocks!
+	$template->assign_vars(array(
+		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
+		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
+		)
+	);
 
 	if ($parse_template || empty($template_to_parse))
 	{

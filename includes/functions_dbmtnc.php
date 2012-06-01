@@ -707,8 +707,8 @@ $default_config = array(
 	'mobile_style_disable' => '0',
 	'session_gc' => '3600',
 	'session_last_visit_reset' => '0',
-	'check_dnsbl' => '1',
-	'check_dnsbl_posting' => '1',
+	'check_dnsbl' => '0',
+	'check_dnsbl_posting' => '0',
 	'ajax_chat_msgs_refresh' => '5',
 	'ajax_chat_session_refresh' => '10',
 	'ajax_chat_link_type' => '0',
@@ -1263,11 +1263,11 @@ function get_word_id($word)
 	global $stopword_array, $synonym_array;
 
 	// Check whether word is in stopword array
-	if (in_array($word, $stopword_array))
+	if (!empty($word) && !empty($stopword_array) && in_array($word, $stopword_array))
 	{
 		return NULL;
 	}
-	if (in_array($word, $synonym_array[1]))
+	if (!empty($word) && !empty($synonym_array[1]) && in_array($word, $synonym_array[1]))
 	{
 		$key = array_search($word, $synonym_array[1]);
 		$word = $synonym_array[0][$key];

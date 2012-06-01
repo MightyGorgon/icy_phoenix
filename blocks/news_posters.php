@@ -60,7 +60,7 @@ if(!function_exists('cms_block_news_posters'))
 			'U_QUICK_LIST' => $base_url . '&amp;quick_list=true',
 			'U_NORMAL_LIST' => $base_url,
 
-			'L_NEWS_POSTERS' => $lang['Title_news_posters'],
+			'L_NEWS_POSTERS' => $lang['cms_block_news_posters'],
 			'L_USER_PROFILE' => $lang['Profile'],
 			'L_PM' => $lang['Private_Message'],
 			'L_USER_WWW' => $lang['Website'],

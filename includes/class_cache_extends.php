@@ -469,9 +469,9 @@ class ip_cache extends acm
 			$db->sql_freeresult($result);
 
 			//You can set once per day... but that is too restrictive... better once every hour!
-			//$expiry = create_date_midnight(time(), $config['board_timezone']) - time() + 86400;
-			$expiry = 3600 - ((int) gmdate('i') * 60) - (int) gmdate('s');
-			$this->put('_today_visitors_' . $config['board_timezone'] . '_' . $user->data['user_level'], $today_visitors, $expiry);
+			//$cache_expiry = create_date_midnight(time(), $config['board_timezone']) - time() + 86400;
+			$cache_expiry = 3600 - ((int) gmdate('i') * 60) - (int) gmdate('s');
+			$this->put('_today_visitors_' . $config['board_timezone'] . '_' . $user->data['user_level'], $today_visitors, $cache_expiry);
 		}
 
 		return $today_visitors;

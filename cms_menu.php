@@ -35,8 +35,6 @@ $js_temp = array('js/cms.js');
 $template->js_include = array_merge($template->js_include, $js_temp);
 unset($js_temp);
 
-setup_extra_lang(array('lang_cms', 'lang_dyn_menu'));
-
 $access_allowed = get_cms_access_auth('cms_menu');
 
 if (!$access_allowed)

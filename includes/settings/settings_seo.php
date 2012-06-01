@@ -175,8 +175,8 @@ $settings_data = array(
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => array(
-			'IP_forum_tags_type_tags' => '0',
-			'IP_forum_tags_type_wordgraph' => '1',
+			'IP_forum_tags_type_tags' => 0,
+			'IP_forum_tags_type_wordgraph' => 1,
 		),
 	),
 

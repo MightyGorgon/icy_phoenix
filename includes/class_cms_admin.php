@@ -981,6 +981,7 @@ class cms_admin
 				}
 				// InformPro - END
 
+				$row_class = '';
 				for($i = 0; $i < $b_count; $i++)
 				{
 					if (($b_rows[$i]['layout_special'] != 0) && ($this->action == 'editglobal'))
@@ -994,8 +995,6 @@ class cms_admin
 						$pos_change = (($i == 0) || ($b_position != $b_rows[$i]['bposition'])) ? true : false;
 						$b_position = $b_rows[$i]['bposition'];
 						$b_position_l = !empty($lang['cms_pos_' . $position[$b_position]]) ? $lang['cms_pos_' . $position[$b_position]] : $row['pkey'];
-
-						$row_class = (!($else_counter % 2)) ? $theme['td_class2'] : $theme['td_class1'];
 						$else_counter++;
 
 						if (($this->l_id == 0) && ($this->id_var_name == 'l_id'))
@@ -1007,6 +1006,7 @@ class cms_admin
 							$redirect_action = '&amp;action=list';
 						}
 
+						$row_class = ip_zebra_rows($row_class);
 						$template->assign_block_vars('blocks', array(
 							'ROW_CLASS' => $row_class,
 							'FIRST_ID' => ($i == 0) ? true : false,
@@ -1703,16 +1703,14 @@ class cms_admin
 
 		if ($b_count > 0)
 		{
+			$row_class = '';
 			for($i = 0; $i < $b_count; $i++)
 			{
 				$this->bs_id = $b_rows[$i]['bs_id'];
-
-				$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
-
 				$b_view = $this->get_block_view_name($b_rows[$i]['view']);
-
 				$groups = (!empty($b_rows[$i]['groups'])) ? get_groups_names($b_rows[$i]['groups']) : $lang['B_ALL'];
 
+				$row_class = ip_zebra_rows($row_class);
 				$template->assign_block_vars('blocks', array(
 						'ROW_CLASS' => $row_class,
 						'NAME' => trim($b_rows[$i]['name']),
@@ -2166,6 +2164,7 @@ class cms_admin
 		}
 		// copy it
 		unset($row['lid']);
+		$row['filename'] = '';
 		$sql = "INSERT INTO " . $this->tables['layout_table'] . " " . $db->sql_build_insert_update($row, true);
 		$result = $db->sql_query($sql);
 		$id = $db->sql_nextid();
@@ -2224,9 +2223,10 @@ class cms_admin
 			$default_portal_id = $c_row['config_value'];
 		}
 
+		$row_class = '';
 		for($i = 0; $i < $l_count; $i++)
 		{
-			$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
+			$row_class = ip_zebra_rows($row_class);
 			$layout_id = $l_rows[$i][$this->field_name];
 			$layout_name = ($is_layout_special ? (isset($lang['auth_view_' . $l_rows[$i]['name']]) ? $lang['auth_view_' . $l_rows[$i]['name']] : (isset($lang['cms_page_name_' . strtolower($l_rows[$i]['name'])]) ? $lang['cms_page_name_' . strtolower($l_rows[$i]['name'])] : ucfirst($l_rows[$i]['name']))) : ucfirst($l_rows[$i]['name']));
 			//$layout_name = htmlspecialchars($layout_name);
@@ -2341,7 +2341,7 @@ class cms_admin
 				$layout_details[$num_layout]['file'] = '<input type="radio" name="' . $layout_field . '" value="' . $file . '"';
 				if(!empty($l_info) && $l_info['template'] == $file)
 				{
-					$layout_details[$num_layout]['file'] .= 'checked="checked"';
+					$layout_details[$num_layout]['file'] .= ' checked="checked"';
 				}
 				$layout_details[$num_layout]['file'] .= '/>';
 				$num_layout++;

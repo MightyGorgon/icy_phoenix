@@ -152,6 +152,7 @@ if ($no_drafts == false)
 	$draft_row = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
+	$row_class = '';
 	for ($i = 0; $i < sizeof($draft_row); $i++)
 	{
 		if ($i == 0)
@@ -212,7 +213,7 @@ if ($no_drafts == false)
 			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_subject . '</a>';
 		}
 
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 		$template->assign_block_vars('draft_row', array(
 			'ROW_CLASS' => $row_class,
 			'S_DRAFT_ID' => $draft_row[$i]['draft_id'],

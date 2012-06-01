@@ -239,13 +239,14 @@ else
 	$num_items = $class_topics_tags->get_total_tags();
 	$tags = $class_topics_tags->get_tags($sort_order, $sort_dir, $start, $per_page);
 
+	$row_class = '';
 	$i = 0;
 	foreach ($tags as $tag)
 	{
-		$class = ($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 		$tag_font_size = intval(mt_rand(8, 14));
 		$template->assign_block_vars('row', array(
-			'CLASS' => $class,
+			'CLASS' => $row_class,
 			'ROW_NUMBER' => $i + 1,
 
 			'U_TAG_TEXT' => append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($tag['tag_text']))),

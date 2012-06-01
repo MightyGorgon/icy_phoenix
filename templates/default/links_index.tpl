@@ -1,7 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function checkForm()
 {
 	formErrors = false;
@@ -35,7 +35,7 @@ function checkForm()
 
 	return true;
 }
-//-->
+// ]]>
 </script>
 <!-- INCLUDE links_leftblock.tpl -->
 	<td width="100%" nowrap="nowrap" valign="top">
@@ -44,24 +44,15 @@ function checkForm()
 			<th colspan="2" width="75%">{L_LINK_CATEGORY}</th>
 			<th>{L_SITE_LINKS}</th>
 		</tr>
-		<!-- BEGIN linkrow1 -->
+		<!-- BEGIN linkrow -->
 		<tr>
-			<td class="row1 row-center" width="30" style="padding-right:5px;" nowrap="nowrap"><img src="{FOLDER_IMG}" alt="{linkrow1.LINK_TITLE}" title="{linkrow1.LINK_TITLE}" /></td>
-			<td class="row1h{catrow.forumrow.XS_NEW} row-forum" width="100%" onclick="window.location.href='{linkrow1.LINK_URL}'"><span class="forumlink"><a href="{linkrow1.LINK_URL}" class="forumlink">{linkrow1.LINK_TITLE}</a></span></td>
-			<td class="row2 row-center-small"><span class="genmed">{linkrow1.LINK_NUMBER}</span></td>
+			<td class="{linkrow.ROW_CLASS} row-center" width="30" style="padding-right:5px;" nowrap="nowrap"><img src="{FOLDER_IMG}" alt="{linkrow.LINK_TITLE}" title="{linkrow.LINK_TITLE}" /></td>
+			<td class="{linkrow.ROW_CLASS} row-forum" width="100%" onclick="window.location.href='{linkrow.LINK_URL}'"><span class="forumlink"><a href="{linkrow.LINK_URL}" class="forumlink">{linkrow.LINK_TITLE}</a></span></td>
+			<td class="{linkrow.ROW_CLASS} row-center-small"><span class="genmed">{linkrow.LINK_NUMBER}</span></td>
 		</tr>
-		<!-- END linkrow1 -->
-		<!-- BEGIN linkrow0 -->
-		<tr>
-			<td class="row1 row-center" width="30" style="padding-right:5px;" nowrap="nowrap"><img src="{FOLDER_IMG}" alt="{linkrow0.LINK_TITLE}" title="{linkrow0.LINK_TITLE}" /></td>
-			<td class="row1h{catrow.forumrow.XS_NEW} row-forum" width="100%" onclick="window.location.href='{linkrow0.LINK_URL}'"><span class="forumlink"><a href="{linkrow0.LINK_URL}" class="forumlink">{linkrow0.LINK_TITLE}</a></span></td>
-			<td class="row2 row-center"><span class="genmed">{linkrow0.LINK_NUMBER}</span></td>
-		</tr>
-		<!-- END linkrow0 -->
+		<!-- END linkrow -->
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-		<div align="center" style="font-family: Verdana; font-size: 10px; letter-spacing: -1px">
-			<br />Links MOD v1.2.2 by <a href="http://www.phpbb2.de" target="_blank">phpBB2.de</a> and OOHOO and CRLin.
-		</div>
+		<div align="center" style="font-family: Verdana; font-size: 10px; letter-spacing: -1px"><br />Links MOD v1.2.2 by <a href="http://www.phpbb2.de" target="_blank">phpBB2.de</a> and OOHOO and CRLin.</div>
 	</td>
 </tr>
 </table>

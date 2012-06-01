@@ -83,6 +83,10 @@ switch ($req_version)
 	case '132679': $current_ip_version = '1.3.26.79'; break;
 	case '132780': $current_ip_version = '1.3.27.80'; break;
 	case '132881': $current_ip_version = '1.3.28.81'; break;
+	case '132982': $current_ip_version = '1.3.29.82'; break;
+	case '133083': $current_ip_version = '1.3.30.83'; break;
+	case '20084': $current_ip_version = '2.0.0.84'; break;
+	case '20084rc1': $current_ip_version = '2.0.0.84RC1'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -3959,12 +3963,12 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`";
 
 		// Still not sure which one of this code will do the trick... anyway it's not really important... :-)
+		/*
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\"', '\"')";
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\'\", \"'\")";
-		/*
+		*/
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\\\"', '\\\"')";
 		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\\'\", \"\'\")";
-		*/
 
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
@@ -4420,7 +4424,7 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.3.24.77 */
 		case '1.3.24.77':
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0')";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'disable_registration_ip_check'";
 		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Jike Spider', '', 'jikespider', '')";
@@ -4469,6 +4473,16 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.28.81 */
 		case '1.3.28.81':
+
+		/* Updating from IP 1.3.29.82 */
+		case '1.3.29.82':
+
+		/* Updating from IP 1.3.30.83 */
+		case '1.3.30.83':
+
+		/* Updating from IP 2.0.0.84RC1 */
+		case '2.0.0.84':
+		case '2.0.0.84RC1':
 
 	}
 

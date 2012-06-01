@@ -979,3 +979,7 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 .post-note a:hover, .post-note a:active { color: #880000; text-decoration: underline; }
 .post-note-delete { float: right; }
 
+.chat-tabs a { background-color: #f8f8f8 !important; border: 1px solid #666666 !important; }
+.chat-tabs a.active { background-color: #fafafa !important; border: 1px solid #ff5522 !important; }
+.chat-tabs a.new-shout { background-color: #fafafa !important; border: 2px solid #880000 !important; }
+

@@ -1201,12 +1201,14 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			{
 				save_draft($draft_id, $user->data['user_id'], $forum_id, $topic_id, strip_tags($subject), $message);
 				//save_draft($draft_id, $user->data['user_id'], $forum_id, $topic_id, $db->sql_escape(strip_tags($subject)), $db->sql_escape($message));
-				$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
+				$output_message = $lang['Drafts_Saved'];
+				$output_message .= '<br /><br />' . sprintf($lang['Click_return_drafts'], '<a href="' . append_sid(CMS_PAGE_DRAFTS) . '">', '</a>');
+				$output_message .= '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 
 				$redirect_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id);
 				meta_refresh(3, $redirect_url);
 
-				message_die(GENERAL_MESSAGE, $message);
+				message_die(GENERAL_MESSAGE, $output_message);
 			}
 			// MG Drafts - END
 

@@ -185,7 +185,7 @@ if (($t == 'pop') || ($t == 'new'))
 	}
 
 	// Grab link categories
-	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
+	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order ASC";
 	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
@@ -210,15 +210,16 @@ if (($t == 'pop') || ($t == 'new'))
 
 	if ($row = $db->sql_fetchrow($result))
 	{
+		$row_class = '';
 		$i = 0;
 		do
 		{
-			// if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
+			//if (empty($row['link_logo_src'])) $row['link_logo_src'] = 'images/links/no_logo88a.gif';
 			if ($links_config['display_links_logo'])
 			{
 				if ($row['link_logo_src'])
 				{
-					$tmp = '<a href=' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $links_config['width'] . '" height="' . $links_config['height'] . '" border="0" hspace="1" /></a>';
+					$tmp = '<a href="' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . '" alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $links_config['width'] . '" height="' . $links_config['height'] . '" border="0" hspace="1" /></a>';
 				}
 				else
 				{
@@ -230,8 +231,7 @@ if (($t == 'pop') || ($t == 'new'))
 				$tmp = $lang['No_Display_Links_Logo'];
 			}
 
-			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-
+			$row_class = ip_zebra_rows($row_class);
 			$template->assign_block_vars('linkrow', array(
 				'ROW_CLASS' => $row_class,
 				'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']),
@@ -346,6 +346,7 @@ if ($t == 'sub_pages')
 
 	if ($row = $db->sql_fetchrow($result))
 	{
+		$row_class = '';
 		$i = 0;
 		do
 		{
@@ -366,8 +367,7 @@ if ($t == 'sub_pages')
 				$tmp = $lang['No_Display_Links_Logo'];
 			}
 
-			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-
+			$row_class = ip_zebra_rows($row_class);
 			$template->assign_block_vars('linkrow', array(
 				'ROW_CLASS' => $row_class,
 				'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']),
@@ -439,7 +439,7 @@ if ($t == 'search')
 	}
 
 	// Grab link categories
-	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
+	$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order ASC";
 	$result = $db->sql_query($sql);
 
 	while($row = $db->sql_fetchrow($result))
@@ -459,6 +459,7 @@ if ($t == 'search')
 
 		if ($row = $db->sql_fetchrow($result))
 		{
+			$row_class = '';
 			$i = 0;
 			do
 			{
@@ -467,7 +468,7 @@ if ($t == 'search')
 				{
 					if ($row['link_logo_src'])
 					{
-						$tmp = '<a href=' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . ' alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $links_config['width'] . '" height="' . $links_config['height'] . '" /></a>';
+						$tmp = '<a href="' . append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']) . '" alt="' . $row['link_desc'] . '" target="_blank"><img src="' . $row['link_logo_src'] . '" alt="' . $row['link_title'] . '" width="' . $links_config['width'] . '" height="' . $links_config['height'] . '" /></a>';
 					}
 					else
 					{
@@ -479,8 +480,7 @@ if ($t == 'search')
 					$tmp = $lang['No_Display_Links_Logo'];
 				}
 
-				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-
+				$row_class = ip_zebra_rows($row_class);
 				$template->assign_block_vars('linkrow', array(
 					'ROW_CLASS' => $row_class,
 					'LINK_URL' => append_sid('links.' . PHP_EXT . '?action=go&amp;link_id=' . $row['link_id']),
@@ -537,27 +537,29 @@ $template->assign_vars(array(
 );
 
 // Grab link categories
-$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";
+$sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order ASC";
 $result = $db->sql_query($sql);
 
-// Separate link categories into 2 columns
-$i = 0;
 if ($row = $db->sql_fetchrow($result))
 {
+	$row_class = '';
 	do
 	{
-		$i = ($i + 1) % 2;
 		$link_categories[$row['cat_id']] = $row['cat_title'];
 		$sql = "SELECT link_category FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
 			AND link_category = '" . $row['cat_id'] . "'";
-		$linknum = $db->sql_query($sql);
-		$template->assign_block_vars('linkrow' . $i, array(
+		$links_result = $db->sql_query($sql);
+		$links_number = $db->sql_numrows($links_result);
+		$row_class = ip_zebra_rows($row_class);
+		$template->assign_block_vars('linkrow', array(
+			'ROW_CLASS' => $row_class,
 			'LINK_URL' => append_sid('links.' . PHP_EXT . '?t=sub_pages&amp;cat=' . $row['cat_id']),
 			'LINK_TITLE' => $row['cat_title'],
-			'LINK_NUMBER' => $db->sql_numrows($linknum)
+			'LINK_NUMBER' => $links_number
 			)
 		);
+		$db->sql_freeresult($links_result);
 	}
 	while ($row = $db->sql_fetchrow($result));
 	$db->sql_freeresult($result);

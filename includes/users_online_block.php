@@ -13,39 +13,37 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+if (!function_exists('get_online_users'))
+{
+	@include_once(IP_ROOT_PATH . 'includes/functions_online.' . PHP_EXT);
+}
+
 if (defined('SHOW_ONLINE_CHAT') && $config['show_chat_online'])
 {
 	//$template->assign_block_vars('switch_ac_online', array());
 	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
-	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_level
-		FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " s, " . USERS_TABLE . " u
-		WHERE s.session_time >= " . (time() - SESSION_REFRESH) . "
-		AND s.session_user_id = u.user_id
-		ORDER BY case user_level when 0 then 10 else user_level end";
-	$result = $db->sql_query($sql);
 
-	// Set all counters to 0
-	$ac_reg_online_counter = $ac_guest_online_counter = $ac_online_counter = 0;
-	$ac_username_lists = '';
-	while($ac_online = $db->sql_fetchrow($result))
+	$online_users_chat = get_online_users('chat', false, false, '', 0, 0);
+	$ac_online_users = array('reg' => 0, 'guests' => 0, 'tot' => 0, 'list' => '', 'text' => '');
+	foreach ($online_users_chat as $user_in_chat)
 	{
-		if($ac_online['user_id'] != ANONYMOUS)
+		if($user_in_chat['user_id'] != ANONYMOUS)
 		{
-			$ac_username_lists .= (($ac_username_lists == '') ? '' : ', ') . colorize_username($ac_online['user_id'], $ac_online['username'], $ac_online['user_color'], $ac_online['user_active']);
-			$ac_reg_online_counter++;
+			$ac_online_users['list'] .= (($ac_online_users['list'] == '') ? '' : ', ') . colorize_username($user_in_chat['user_id'], $user_in_chat['username'], $user_in_chat['user_color'], $user_in_chat['user_active']);
+			$ac_online_users['reg']++;
 		}
 		else
 		{
-			$ac_guest_online_counter++;
+			$ac_online_users['guests']++;
 		}
-		$ac_online_counter++;
+		$ac_online_users['tot']++;
 	}
-	$ac_username_lists = ($ac_username_lists == '') ? '' : ('[ ' . $ac_username_lists . ' ]');
+	$ac_online_users['list'] = ($ac_online_users['list'] == '') ? '' : ('[ ' . $ac_online_users['list'] . ' ]');
 
-	$ac_t_user = ($ac_online_counter == 0) ? $lang['AC_Online_users_zero_total'] : (($ac_online_counter == 1) ? $lang['AC_Online_user_total'] : (sprintf($lang['AC_Online_users_total'], $ac_online_counter)));
-	$ac_r_user = ($ac_reg_online_counter == 0) ? $lang['Reg_users_zero_total'] : (($ac_reg_online_counter == 1) ? (sprintf($lang['Reg_user_total'], $ac_reg_online_counter)) : (sprintf($lang['Reg_users_total'], $ac_reg_online_counter)));
-	$ac_g_user = ($ac_guest_online_counter == 0) ? $lang['Guest_users_zero_total'] : (($ac_guest_online_counter == 0) ? (sprintf($lang['Guest_user_total'], $ac_guest_online_counter)) : (sprintf($lang['Guest_users_total'], $ac_guest_online_counter)));
-	$ac_online_text = $ac_t_user . $ac_r_user . $ac_g_user;
+	$ac_t_user = ($ac_online_users['tot'] == 0) ? $lang['AC_Online_users_zero_total'] : (($ac_online_users['tot'] == 1) ? $lang['AC_Online_user_total'] : (sprintf($lang['AC_Online_users_total'], $ac_online_users['tot'])));
+	$ac_r_user = ($ac_online_users['reg'] == 0) ? $lang['Reg_users_zero_total'] : (($ac_online_users['reg'] == 1) ? (sprintf($lang['Reg_user_total'], $ac_online_users['reg'])) : (sprintf($lang['Reg_users_total'], $ac_online_users['reg'])));
+	$ac_g_user = ($ac_online_users['guests'] == 0) ? $lang['Guest_users_zero_total'] : (($ac_online_users['guests'] == 0) ? (sprintf($lang['Guest_user_total'], $ac_online_users['guests'])) : (sprintf($lang['Guest_users_total'], $ac_online_users['guests'])));
+	$ac_online_users['text'] = $ac_t_user . $ac_r_user . $ac_g_user;
 }
 
 $logged_visible_online = 0;
@@ -67,20 +65,12 @@ else
 	$user_forum_sql = '';
 }
 
-
-if (!function_exists('get_online_users'))
-{
-	@include_once(IP_ROOT_PATH . 'includes/functions_online.' . PHP_EXT);
-}
-$online_users = get_online_users(false, false, $user_forum_sql);
-
-$userlist_ary = array();
-$userlist_visible = array();
-$tmp_bots_array = array();
+$online_users = get_online_users('site', false, false, $user_forum_sql, 0, 0);
 
 $prev_user_id = 0;
 $prev_user_ip = '';
 $session_ip_array = array();
+$tmp_bots_array = array();
 foreach ($online_users as $row)
 {
 	// User is logged in and therefore not a guest

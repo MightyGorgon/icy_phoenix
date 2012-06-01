@@ -36,8 +36,8 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', 0);
 if ($pic_id <= 0)
 {
-	die('No pics specified');
-	//message_die(GENERAL_MESSAGE, 'No pics specified');
+	die($lang['NO_PICS_SPECIFIED']);
+	//message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
 // ------------------------------------

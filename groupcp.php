@@ -933,6 +933,7 @@ elseif ($group_id)
 	// Dump out the remaining users
 	// Start replacement - Faster groupcp MOD
 	$i = -1;
+	$row_class = '';
 	while(!empty($group_members[++$i]['username']))
 	// End replacement - Faster groupcp MOD
 	{
@@ -944,8 +945,7 @@ elseif ($group_id)
 
 		if ($group_info['group_type'] != GROUP_HIDDEN || $is_group_member || $is_moderator)
 		{
-			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-
+			$row_class = ip_zebra_rows($row_class);
 			$template->assign_block_vars('memberrow', array(
 				'ROW_CLASS' => $row_class,
 				'USER_ID' => $user_id,
@@ -1042,18 +1042,15 @@ elseif ($group_id)
 		// Users pending in ONLY THIS GROUP (which is moderated by this user)
 		if ($modgroup_pending_count)
 		{
+			$row_class = '';
 			for($i = 0; $i < $modgroup_pending_count; $i++)
 			{
 				$username = $modgroup_pending_list[$i]['username'];
 				$user_id = $modgroup_pending_list[$i]['user_id'];
-
 				$user_info = array();
 				$user_info = generate_user_info($modgroup_pending_list[$i], $config['default_dateformat'], $is_moderator);
-
-				$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
-
+				$row_class = ip_zebra_rows($row_class);
 				$user_select = '<input type="checkbox" name="member[]" value="' . $user_id . '">';
-
 				$template->assign_block_vars('pending_members_row', array(
 					'ROW_CLASS' => $row_class,
 					'USER_ID' => $user_id,

@@ -62,8 +62,6 @@ include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
-setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks', 'lang_permissions'));
-
 $page_title = $lang['CMS_TITLE'];
 
 $cms_type = 'cms_standard';

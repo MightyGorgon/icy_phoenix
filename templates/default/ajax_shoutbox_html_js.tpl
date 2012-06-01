@@ -69,9 +69,15 @@ function insertNewShout(id, shout)
 		shout.shouter_name + "</b>: " + shout.msg + "<\/div><\/td>";
 
 	<!-- BEGIN user_is_admin -->
+	<!-- IF IS_PROSILVER -->
 	output += "<td width=\"100\"><div style=\"text-align: center;\">" +
-		"<span class=\"gensmall\"><a href=\"#\" onclick=\"javascript:removeShout(" +
-		shout.id + ");\">" + '{DELETE_IMG}' + "<\/a><\/span><\/div><\/td>";
+		"<ul class=\"profile-icons\" style=\"padding-left: 10px;\"><li class=\"delete-icon\"><a href=\"#\" onclick=\"javascript:removeShout(" + shout.id + ");\"><span>{L_DELETE}</span></a></li></ul>" +
+		"<\/div><\/td>";
+	<!-- ELSE -->
+	output += "<td width=\"100\"><div style=\"text-align: center;\">" +
+		"<a href=\"#\" onclick=\"javascript:removeShout(" + shout.id + ");\">" + '{DELETE_IMG}' + "<\/a>" +
+		"<\/div><\/td>";
+	<!-- ENDIF -->
 	<!-- END user_is_admin -->
 
 	output += "</tr>";

@@ -115,6 +115,7 @@ else
 	$config['disable_html_guests'] = 0;
 	$config['quote_iterations'] = 3;
 	$config['switch_bbcb_active_content'] = 1;
+	$user->data['is_bot'] = false;
 	$user->data['session_logged_in'] = 0;
 	$user->data['user_lang'] = 'english';
 	$lang['OpenNewWindow'] = 'Open in new window';
@@ -1287,7 +1288,8 @@ class bbcode
 				$is_local_url = true;
 			}
 			// generate html
-			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . ($is_local_url ? '' : (' target="_blank"' . ((!empty($item['params']['nofollow']) || $this->is_sig) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
+			$url_target = ((isset($item['params']['target']) && (($item['params']['target'] != 0) || ($item['params']['target'] != 'false'))) ? true : false);
+			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . (($is_local_url && empty($url_target)) ? '' : (' target="_blank"' . ((!empty($item['params']['nofollow']) || $this->is_sig) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
 
 			if ($config['disable_html_guests'] && !$user->data['session_logged_in'])
 			{
@@ -1424,7 +1426,7 @@ class bbcode
 			$html = '<blockquote class="quote"';
 			if(isset($item['params']['post']) && intval($item['params']['post']))
 			{
-				$post_rev = '[<a href="#" onclick="open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\'); return false;" class="genmed">' . $lang['ReviewPost'] . '</a>]';
+				$post_rev = ($user->data['is_bot'] ? '&nbsp;' : ('[<a href="#" onclick="open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\'); return false;" class="genmed">' . $lang['ReviewPost'] . '</a>]'));
 				$html .= ' cite="'. CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . intval($item['params']['post']) . '#p' . intval($item['params']['post']) . '"';
 			}
 			$html .= '>';
@@ -2702,27 +2704,31 @@ class bbcode
 
 		if(substr($color, 0, 4) === 'rgb(')
 		{
-			$valid = true;
-			preg_replace_callback('#^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$#', function($matches)
-				{
-					if (sizeof($matches) != 4)
-					{
-						$valid = false;
-					}
-					else
-					{
-						$red = (int) $matches[1];
-						$green = (int) $matches[2];
-						$blue = (int) $matches[3];
-						if (($red > 255) || ($green > 255) || ($blue > 255))
-						{
-							$valid = false;
-						}
-					}
-				}, $color);
-			return $valid ? $color : false;
+			$valid = preg_replace_callback('#^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$#', 'bbcode::valid_rgb_match', $color);
+			return !empty($valid) ? $color : false;
 		}
 		return false;
+	}
+
+	// Check for valid RGB match
+	function valid_rgb_match($matches)
+	{
+		$valid = true;
+		if (sizeof($matches) != 4)
+		{
+			$valid = false;
+		}
+		else
+		{
+			$red = (int) $matches[1];
+			$green = (int) $matches[2];
+			$blue = (int) $matches[3];
+			if (($red > 255) || ($green > 255) || ($blue > 255))
+			{
+				$valid = false;
+			}
+		}
+		return $valid;
 	}
 
 	// Parse style

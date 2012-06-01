@@ -90,7 +90,7 @@ else
 */
 
 // Get user list
-$online_users = get_online_users(false, true, '');
+$online_users = get_online_users('site', false, true, '', 0, 0);
 
 $guest_users = 0;
 $registered_users = 0;
