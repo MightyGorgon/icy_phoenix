@@ -3709,6 +3709,7 @@ class bbcode
 		{
 			$char = substr($text, $i, 1);
 			// UTF-8 character encoding - BEGIN
+			// See http://www.faqs.org/rfcs/rfc2279.html
 			$code = ord($char);
 			if ($code >= 0x80)
 			{
@@ -3718,11 +3719,29 @@ class bbcode
 					$char = substr($text, $i, 2);
 					$i = $i + 1;
 				}
-				elseif ($code1 < 0xF0)
+				elseif ($code < 0xF0)
 				{
 					// Three byte
 					$char = substr($text, $i, 3);
 					$i = $i + 2;
+				}
+				elseif ($code < 0xF8)
+				{
+					// Four byte
+					$char = substr($text, $i, 4);
+					$i = $i + 3;
+				}
+				elseif ($code < 0xFC)
+				{
+					// Five byte
+					$char = substr($text, $i, 5);
+					$i = $i + 4;
+				}
+				elseif ($code < 0xFE)
+				{
+					// Six byte
+					$char = substr($text, $i, 6);
+					$i = $i + 5;
 				}
 			}
 			// UTF-8 character encoding - END
@@ -3828,6 +3847,7 @@ class bbcode
 		{
 			$char = substr($text, $i, 1);
 			// UTF-8 character encoding - BEGIN
+			// See http://www.faqs.org/rfcs/rfc2279.html
 			$code = ord($char);
 			if ($code >= 0x80)
 			{
@@ -3837,11 +3857,29 @@ class bbcode
 					$char = substr($text, $i, 2);
 					$i = $i + 1;
 				}
-				elseif ($code1 < 0xF0)
+				elseif ($code < 0xF0)
 				{
 					// Three byte
 					$char = substr($text, $i, 3);
 					$i = $i + 2;
+				}
+				elseif ($code < 0xF8)
+				{
+					// Four byte
+					$char = substr($text, $i, 4);
+					$i = $i + 3;
+				}
+				elseif ($code < 0xFC)
+				{
+					// Five byte
+					$char = substr($text, $i, 5);
+					$i = $i + 4;
+				}
+				elseif ($code < 0xFE)
+				{
+					// Six byte
+					$char = substr($text, $i, 6);
+					$i = $i + 5;
 				}
 			}
 			// UTF-8 character encoding - END
