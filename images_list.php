@@ -48,7 +48,7 @@ $mode = (($user->data['user_level'] == ADMIN) && in_array($mode, $mode_array)) ?
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
-$pic_user_id = (($user->data['user_level'] == ADMIN) ? request_var('user', $user->data['user_id']) : $user->data['user_id']);
+$pic_user_id = (($user->data['user_level'] == ADMIN) ? request_var('pic_user_id', $user->data['user_id']) : $user->data['user_id']);
 
 if (($user->data['user_level'] == ADMIN) && ($mode == 'delete') && !empty($pic_id))
 {
@@ -138,7 +138,7 @@ $template->assign_vars(array(
 );
 
 $template->assign_vars(array(
-	'PAGINATION' => generate_pagination(append_sid(CMS_PAGE_IMAGES . '?sort=standard' . (!empty($mode) ? ('&amp;mode=' . $mode) : '')), $total_pics, $pics_per_page, $start),
+	'PAGINATION' => generate_pagination(append_sid(CMS_PAGE_IMAGES . '?sort=standard&amp;pic_user_id=' . $pic_user_id . (!empty($mode) ? ('&amp;mode=' . $mode) : '')), $total_pics, $pics_per_page, $start),
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 	)
 );
