@@ -94,7 +94,7 @@ $cms_page['global_blocks'] = ($layout_row['global_blocks'] == 0) ? false : true;
 $cms_page['page_nav'] = ($layout_row['page_nav'] == 0) ? false : true;
 
 $is_auth_view = false;
-$auth_level = $ip_cms->cms_blocks_view();
+$auth_level = $ip_cms->cms_auth_view();
 $is_auth_view = in_array($layout_row['view'], $auth_level);
 
 if(!$is_auth_view)

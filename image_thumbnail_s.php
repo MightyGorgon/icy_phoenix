@@ -32,26 +32,25 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', '');
 if (empty($pic_id))
 {
-	message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
+	image_no_thumbnail('no_thumb.jpg');
+	exit;
+	//die($lang['NO_PICS_SPECIFIED']);
+	//message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 $pic_id = urldecode($pic_id);
 $tmp_split = explode('/', $pic_id);
 $pic_user_id = intval((int) $tmp_split[0]);
-if ($pic_user_id > 0)
+if ($pic_user_id < 0)
 {
-	$pic_user_id = $pic_user_id;
-}
-else
-{
-	message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
+	image_no_thumbnail('no_thumb.jpg');
+	exit;
+	//message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
-// I have prefixed an underscore to the image thumbnail name because this thumb should remain small and it is not using the mid size like the standard posted_img_thumbnail
-// Without that prefix thumbnails with different size will get mixed
 $pic_filename = $tmp_split[1];
 $pic_fullpath = POSTED_IMAGES_PATH . $pic_user_id . '/' . $pic_filename;
-$pic_thumbnail = '_thumb_' . $pic_filename;
-$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_PATH . $pic_thumbnail;
+$pic_thumbnail = 'thumb_' . $pic_filename;
+$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $pic_thumbnail;
 $file_part = explode('.', strtolower($pic_filename));
 $pic_filetype = $file_part[sizeof($file_part) - 1];
 $pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
@@ -59,10 +58,10 @@ $pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 
 if (USERS_SUBFOLDERS_IMG == true)
 {
-	$pic_thumbnail_path = POSTED_IMAGES_THUMBS_PATH . $pic_user_id . '/';
+	$pic_thumbnail_path = POSTED_IMAGES_THUMBS_S_PATH . $pic_user_id . '/';
 	if (is_dir($pic_thumbnail_path))
 	{
-		$pic_thumbnail = '_' . $pic_filename;
+		$pic_thumbnail = $pic_filename;
 		$pic_thumbnail_fullpath = $pic_thumbnail_path . '/' . $pic_thumbnail;
 	}
 	else
@@ -70,68 +69,33 @@ if (USERS_SUBFOLDERS_IMG == true)
 		$dir_creation = @mkdir($pic_thumbnail_path, 0777);
 		if ($dir_creation == true)
 		{
-			$pic_thumbnail = '_' . $pic_filename;
+			$pic_thumbnail = $pic_filename;
 			$pic_thumbnail_fullpath = $pic_thumbnail_path . '/' . $pic_thumbnail;
 		}
 	}
 }
 
-switch ($pic_filetype)
+if (!in_array($pic_filetype, array('gif', 'jpg', 'jpeg', 'png')))
 {
-	case 'gif':
-		break;
-	case 'jpg':
-		break;
-	case 'png':
-		break;
-	default:
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($images['no_thumbnail']);
-		exit;
-		break;
+	image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
+	exit;
 }
 
 // --------------------------------
 // Check thumbnail cache. If cache is available we will SEND & EXIT
 // --------------------------------
 
-if( ($album_config['thumbnail_cache'] == 1) && file_exists($pic_thumbnail_fullpath))
+if(($album_config['thumbnail_cache'] == 1) && file_exists($pic_thumbnail_fullpath))
 {
-	/*
-	$Image = new ImgObj();
-	$Image->ReadSourceFile($pic_thumbnail_fullpath);
-	$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'thumb_', '', $album_config['thumbnail_quality']);
-	$Image->Destroy();
-	exit;
-	*/
-	switch ($pic_filetype)
-	{
-		case 'gif':
-			$file_header = 'Content-type: image/gif';
-			break;
-		case 'jpg':
-			$file_header = 'Content-type: image/jpeg';
-			break;
-		case 'png':
-			$file_header = 'Content-type: image/png';
-			break;
-		default:
-			header('Content-type: image/jpeg');
-			header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-			readfile($images['no_thumbnail']);
-			exit;
-			break;
-	}
-	header($file_header);
-	header('Content-Disposition: filename=thumb_' .$pic_title_reg . '.' . $pic_filetype);
-	readfile($pic_thumbnail_fullpath);
+	image_output($pic_thumbnail_fullpath, $pic_title_reg, $pic_filetype, 'thumb_');
 	exit;
 }
 
-if(!file_exists($pic_fullpath))
+if(!@file_exists($pic_fullpath))
 {
-	message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
+	image_no_thumbnail('no_thumb.jpg');
+	exit;
+	//message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
 }
 
 $pic_size = @getimagesize($pic_fullpath);
@@ -142,34 +106,7 @@ if(($pic_width < $album_config['thumbnail_size']) && ($pic_height < $album_confi
 {
 	$copy_success = @copy($pic_fullpath, $pic_thumbnail_fullpath);
 	@chmod($pic_thumbnail_fullpath, 0777);
-	/*
-	$Image = new ImgObj();
-	$Image->ReadSourceFile($pic_fullpath);
-	$Image->SendToBrowser($pic_title_reg, $pic_filetype, '', '', $album_config['thumbnail_quality']);
-	$Image->Destroy();
-	exit;
-	*/
-	switch ($pic_filetype)
-	{
-		case 'gif':
-			$file_header = 'Content-type: image/gif';
-			break;
-		case 'jpg':
-			$file_header = 'Content-type: image/jpeg';
-			break;
-		case 'png':
-			$file_header = 'Content-type: image/png';
-			break;
-		default:
-			header('Content-type: image/jpeg');
-			header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-			readfile($images['no_thumbnail']);
-			exit;
-			break;
-	}
-	header($file_header);
-	header('Content-Disposition: filename=thumb_' .$pic_title_reg . '.' . $pic_filetype);
-	readfile($pic_fullpath);
+	image_output($pic_fullpath, $pic_title_reg, $pic_filetype, 'thumb_');
 	exit;
 }
 else
@@ -195,9 +132,7 @@ else
 		switch ($pic_filetype)
 		{
 			case 'gif':
-				header('Content-type: image/jpeg');
-				header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-				readfile($images['no_thumbnail']);
+				image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
 				exit;
 				break;
 		}
@@ -256,10 +191,8 @@ else
 				@imagepng($thumbnail);
 				break;
 			default:
-				header('Content-type: image/jpeg');
-				header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-				readfile($images['no_thumbnail']);
-				break;
+				image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
+				exit;
 		}
 		exit;
 	}
@@ -315,9 +248,7 @@ else
 	else
 	{
 		$Image->Destroy();
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
 		exit;
 	}
 }

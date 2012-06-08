@@ -2512,4 +2512,46 @@ function create_thumb($source_pic, $allowed_extensions, $t_width, $t_height, $t_
 	return true;
 }
 
+/**
+* No Thumbnail function
+*/
+function image_no_thumbnail($filename = 'no_thumb.jpg')
+{
+	global $images;
+	$filename = (empty($filename) ? 'no_thumb.jpg' : $filename);
+	header('Content-type: image/jpeg');
+	header('Content-Disposition: filename=' . $filename);
+	readfile($images['no_thumbnail']);
+	exit;
+}
+
+/**
+* No Thumbnail function
+*/
+function image_output($pic_fullpath, $pic_title_reg, $pic_filetype, $pic_prefix = 'thumb_')
+{
+	global $images;
+	$pic_name_output = $pic_prefix . $pic_title_reg . '.' . $pic_filetype;
+	switch ($pic_filetype)
+	{
+		case 'gif':
+			$file_header = 'Content-type: image/gif';
+			break;
+		case 'jpg':
+			$file_header = 'Content-type: image/jpeg';
+			break;
+		case 'png':
+			$file_header = 'Content-type: image/png';
+			break;
+		default:
+			image_no_thumbnail($pic_name_output);
+			exit;
+			break;
+	}
+	header($file_header);
+	header('Content-Disposition: filename=' . $pic_name_output);
+	readfile($pic_fullpath);
+	exit;
+}
+
 ?>

@@ -25,10 +25,14 @@ if(!function_exists('cms_block_dyn_menu'))
 	function cms_block_dyn_menu()
 	{
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars;
+		global $ip_cms;
 
-		include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
 		// Before starting with the loop... let's load the full menu links array!
-		$default_links_array = default_links_array();
+		if (!function_exists('cms_menu_default_links_array'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
+		}
+		$default_links_array = cms_menu_default_links_array();
 
 		$template->_tpldata['cat_row.'] = array();
 		$template->_tpldata['menu_row.'] = array();
@@ -62,6 +66,8 @@ if(!function_exists('cms_block_dyn_menu'))
 		$menu_cat = array();
 		$cat_item = array();
 		$menu_item = array();
+		$auth_levels = $ip_cms->cms_auth_view();
+
 		while ($menu_item = $db->sql_fetchrow($result))
 		{
 			if ($menu_item['cat_id'] > 0)
@@ -83,32 +89,11 @@ if(!function_exists('cms_block_dyn_menu'))
 			}
 			else
 			{
-				$cat_allowed = true;
 				$auth_level_req = $cat_item_data['auth_view'];
-				switch($auth_level_req)
-				{
-					case '0':
-						$cat_allowed = true;
-						break;
-					case '1':
-						$cat_allowed = ($user->data['session_logged_in'] ? false : true);
-						break;
-					case '2':
-						$cat_allowed = ($user->data['session_logged_in'] ? true : false);
-						break;
-					case '3':
-						$cat_allowed = ((($user->data['user_level'] == MOD) || ($user->data['user_level'] == ADMIN)) ? true : false);
-						break;
-					case '4':
-						$cat_allowed = (($user->data['user_level'] == ADMIN) ? true : false);
-						break;
-					default:
-						$cat_allowed = true;
-						break;
-				}
+				$cat_allowed = in_array($auth_level_req, $auth_levels) ? true : false;
 			}
 
-			if ($cat_allowed)
+			if (!empty($cat_allowed))
 			{
 				$cat_id = ($cat_item_data['cat_id']);
 				if (($cat_item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$cat_item_data['menu_name_lang']]))
@@ -147,65 +132,18 @@ if(!function_exists('cms_block_dyn_menu'))
 						}
 						else
 						{
-							$menu_allowed = true;
 							$auth_level_req = $menu_cat_item_data['auth_view'];
-							switch($auth_level_req)
-							{
-								case '0':
-									$menu_allowed = true;
-									break;
-								case '1':
-									$menu_allowed = ($user->data['session_logged_in'] ? false : true);
-									break;
-								case '2':
-									$menu_allowed = ($user->data['session_logged_in'] ? true : false);
-									break;
-								case '3':
-									$menu_allowed = ((($user->data['user_level'] == MOD) || ($user->data['user_level'] == ADMIN)) ? true : false);
-									break;
-								case '4':
-									$menu_allowed = (($user->data['user_level'] == ADMIN) ? true : false);
-									break;
-								default:
-									$menu_allowed = true;
-									break;
-							}
+							$menu_allowed = in_array($auth_level_req, $auth_levels) ? true : false;
 						}
 
 						if ($menu_allowed)
 						{
-							$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />&nbsp;');
-							if ($menu_cat_item_data['menu_default'] == '0')
-							{
-								if (($menu_cat_item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$menu_cat_item_data['menu_name_lang']]))
-								{
-									$menu_name = $lang['menu_item'][$menu_cat_item_data['menu_name_lang']];
-								}
-								else
-								{
-									$menu_name = (($menu_cat_item_data['menu_name'] != '') ? htmlspecialchars(stripslashes($menu_cat_item_data['menu_name'])) : 'cat_item' . $menu_cat_item_data['cat_id']);
-								}
-								if ($menu_cat_item_data['menu_link_external'] == true)
-								{
-									$menu_link = htmlspecialchars($menu_cat_item_data['menu_link']);
-									$menu_link .= '" target="_blank';
-								}
-								else
-								{
-									$menu_link = append_sid(htmlspecialchars($menu_cat_item_data['menu_link']));
-								}
-								$menu_url = '<div class="genmed" align="left"><a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a></div>';
-							}
-							else
-							{
-								$menu_url_temp = build_complete_url($menu_cat_item_data['menu_default'], $block_id, $menu_cat_item_data['menu_link'], $menu_icon);
-								$menu_url = (($menu_url_temp != '') ? '<div class="genmed" align="left">' . $menu_url_temp . '</div>' : '');
-							}
-
+							$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id);
 							$template->assign_block_vars('cat_row.menu_row', array(
-								'MENU_ITEM' => $menu_name,
-								'MENU_ICON' => $menu_icon,
-								'MENU_URL' => $menu_url,
+								'MENU_ICON' => $menu_link['icon'],
+								'MENU_ITEM' => $menu_link['name'],
+								'MENU_LINK' => $menu_link['link'],
+								'MENU_URL' => $menu_link['url'],
 								)
 							);
 						}

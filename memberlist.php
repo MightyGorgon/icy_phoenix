@@ -519,7 +519,7 @@ if (sizeof($user_list))
 	}
 
 	//$sql = "SELECT u.*" . $sql_style_select . "
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang" . $sql_style_select . "
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang" . $sql_style_select . "
 		FROM " . USERS_TABLE . " u" . $sql_style_from . "
 		WHERE " . $db->sql_in_set('u.user_id', $user_list) . " " . $sql_style_where;
 	// MG Cash MOD For IP - BEGIN

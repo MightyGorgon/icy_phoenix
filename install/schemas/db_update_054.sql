@@ -1094,12 +1094,36 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_ch
 
 
 
+########################################
+##              BUILD 085             ##
+########################################
+ALTER TABLE `phpbb_users` CHANGE `user_viewemail` `user_allow_viewemail` TINYINT(1) NOT NULL DEFAULT '0';
+CREATE TABLE `phpbb_images` (
+	`pic_id` INT(11) unsigned NOT NULL auto_increment,
+	`pic_filename` VARCHAR(255) NOT NULL DEFAULT '',
+	`pic_size` INT(15) unsigned NOT NULL DEFAULT '0',
+	`pic_title` VARCHAR(255) NOT NULL DEFAULT '',
+	`pic_desc` TEXT NOT NULL,
+	`pic_user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+	`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
+	`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',
+	`pic_approval` TINYINT(3) NOT NULL DEFAULT '1',
+	PRIMARY KEY (`pic_id`),
+	KEY `pic_user_id` (`pic_user_id`),
+	KEY `pic_time` (`pic_time`)
+);
+
+UPDATE `phpbb_cms_nav_menu` SET `menu_link` = 'images_list.php' WHERE `menu_link` = 'posted_img_list.php';
+
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.0.84RC1' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.0.85RC2' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

@@ -143,7 +143,7 @@ $mi_menu_icon_input_name = 'menu_icon';
 //echo($s_append_url);
 
 // Before starting with the loop... let's load the full menu links array!
-$default_links_array = default_links_array();
+$default_links_array = cms_menu_default_links_array();
 
 if($mode == 'menu_item')
 {
@@ -232,14 +232,12 @@ if($mode == 'menu_item')
 
 				//$mi_menu_name_lang = $m_info['menu_name_lang'];
 				$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
-				foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
+				if (!empty($lang['menu_item']))
 				{
-					$mi_menu_name_lang .= '<option value="' . $lk .'"';
-					if($lk == $m_info['menu_name_lang'])
+					foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
 					{
-						$mi_menu_name_lang .= ' selected="selected"';
+						$mi_menu_name_lang .= '<option value="' . $lk . '"' . (($lk == $m_info['menu_name_lang']) ? ' selected="selected"' : '') . '>' . $mi_menu_name_lang_key . '</option>';
 					}
-					$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
 				}
 
 				$mi_menu_name = $m_info['menu_name'];
@@ -256,12 +254,7 @@ if($mode == 'menu_item')
 					foreach ($default_links_array as $k => $v)
 					{
 						$mi_menu_lang = !empty($lang[$v['lang']]) ? $lang[$v['lang']] : $v['lang'];
-						$mi_menu_default .= '<option value="' . $k .'"';
-						if($m_info['menu_default'] == $k)
-						{
-							$mi_menu_default .= ' selected="selected"';
-						}
-						$mi_menu_default .= '>' . $mi_menu_lang . '</option>';
+						$mi_menu_default .= '<option value="' . $k . '"' . (($m_info['menu_default'] == $k) ? ' selected="selected"' : '') . '>' . $mi_menu_lang . '</option>';
 					}
 				}
 
@@ -271,18 +264,14 @@ if($mode == 'menu_item')
 					'1' => $lang['B_GUESTS'],
 					'2' => $lang['B_REG'],
 					'3' => $lang['B_MOD'],
-					'4' => $lang['B_ADMIN']
+					'4' => $lang['B_ADMIN'],
+					'8' => $lang['B_ALL_NO_BOTS'],
 				);
 
 				$mi_auth_view ='';
-				for ($i = 0; $i < sizeof($view_array); $i++)
+				foreach ($view_array as $view_k => $view_lang)
 				{
-					$mi_auth_view .= '<option value="' . $i .'"';
-					if($m_info['auth_view'] == $i)
-					{
-						$mi_auth_view .= ' selected="selected"';
-					}
-					$mi_auth_view .= '>' . $view_array[$i] . '</option>';
+					$mi_auth_view .= '<option value="' . $view_k . '"' . (($m_info['auth_view'] == $view_k) ? ' selected="selected"' : '') . '>' . $view_lang . '</option>';
 				}
 
 				//$mi_auth_view_group = $m_info['auth_view_group'];
@@ -329,8 +318,7 @@ if($mode == 'menu_item')
 				{
 					$parent_cat_item_parsed = true;
 					$row['menu_name'] = !empty($lang['cat_item_' . $row['menu_name_lang']]) ? $lang['cat_item_' . $row['menu_name_lang']] : $row['menu_name'];
-					$mi_cat_parent_id .= '<option value="' . $row['cat_id'] . '"';
-					$mi_cat_parent_id .= '>' . $row['menu_name'] . '</option>';
+					$mi_cat_parent_id .= '<option value="' . $row['cat_id'] . '">' . $row['menu_name'] . '</option>';
 				}
 				if ($parent_cat_item_parsed == false)
 				{
@@ -346,8 +334,7 @@ if($mode == 'menu_item')
 			$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
 			foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
 			{
-				$mi_menu_name_lang .= '<option value="' . $lk .'"';
-				$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
+				$mi_menu_name_lang .= '<option value="' . $lk .'">' . $mi_menu_name_lang_key . '</option>';
 			}
 
 			$mi_menu_status = '1';
@@ -364,12 +351,7 @@ if($mode == 'menu_item')
 				foreach ($default_links_array as $k => $v)
 				{
 					$mi_menu_lang = !empty($lang[$v['lang']]) ? $lang[$v['lang']] : $v['lang'];
-					$mi_menu_default .= '<option value="' . $k .'"';
-					if($m_info['menu_default'] == $k)
-					{
-						$mi_menu_default .= ' selected="selected"';
-					}
-					$mi_menu_default .= '>' . $mi_menu_lang . '</option>';
+					$mi_menu_default .= '<option value="' . $k . '"' . (($m_info['menu_default'] == $k) ? ' selected="selected"' : '') . '>' . $mi_menu_lang . '</option>';
 				}
 			}
 
@@ -379,14 +361,14 @@ if($mode == 'menu_item')
 				'1' => $lang['B_GUESTS'],
 				'2' => $lang['B_REG'],
 				'3' => $lang['B_MOD'],
-				'4' => $lang['B_ADMIN']
+				'4' => $lang['B_ADMIN'],
+				'8' => $lang['B_ALL_NO_BOTS'],
 			);
 
 			$mi_auth_view ='';
-			for ($i = 0; $i < sizeof($view_array); $i++)
+			foreach ($view_array as $view_k => $view_lang)
 			{
-				$mi_auth_view .= '<option value="' . $i .'"';
-				$mi_auth_view .= ' />' . $view_array[$i] . '</option>';
+				$mi_auth_view .= '<option value="' . $view_k . '">' . $view_lang . '</option>';
 			}
 
 			//$mi_auth_view_group = $m_info['auth_view_group'];
@@ -829,7 +811,7 @@ elseif($mode == 'menu_block')
 						}
 						else
 						{
-							$menu_url = build_complete_url($menu_cat_item_data['menu_default'], '', $menu_cat_item_data['menu_link'], $menu_icon);
+							$menu_url = cms_menu_build_complete_url($menu_cat_item_data['menu_default'], '', $menu_cat_item_data['menu_link'], $menu_icon);
 						}
 
 						$append_url = '&amp;mi_id=' . $menu_cat_item_data['menu_item_id'] . '&amp;m_id=' . $m_id . '&amp;cat_parent_id=' . $menu_cat_item_data['cat_parent_id'];
@@ -919,14 +901,17 @@ elseif (($mode == 'menu_list') || ($mode == false))
 				$mi_menu_name = $m_info['menu_name'];
 				$mi_menu_desc = $m_info['menu_desc'];
 				$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
-				foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
+				if (!empty($lang['menu_item']))
 				{
-					$mi_menu_name_lang .= '<option value="' . $lk .'" ';
-					if($lk == $m_info['menu_name_lang'])
+					foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
 					{
-						$mi_menu_name_lang .= 'selected="selected"';
+						$mi_menu_name_lang .= '<option value="' . $lk .'" ';
+						if($lk == $m_info['menu_name_lang'])
+						{
+							$mi_menu_name_lang .= 'selected="selected"';
+						}
+						$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
 					}
-					$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
 				}
 			}
 			else
@@ -937,10 +922,13 @@ elseif (($mode == 'menu_list') || ($mode == false))
 		else
 		{
 			$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
-			foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
+			if (!empty($lang['menu_item']))
 			{
-				$mi_menu_name_lang .= '<option value="' . $lk . '"';
-				$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
+				foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
+				{
+					$mi_menu_name_lang .= '<option value="' . $lk . '"';
+					$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
+				}
 			}
 		}
 

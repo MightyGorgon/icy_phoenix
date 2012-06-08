@@ -58,7 +58,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 		}
 		$user_info['email'] = '&nbsp;';
 	}
-	elseif (!empty($row['user_viewemail']) || $is_moderator || $user->data['user_level'] == ADMIN)
+	elseif (!empty($row['user_allow_viewemail']) || $is_moderator || $user->data['user_level'] == ADMIN)
 	{
 		$user_info['email_url'] = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
 		$user_info['email_img'] = '<a href="' . $user_info['email_url'] . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
@@ -428,7 +428,7 @@ function user_profile_mask(&$user_data)
 	$user_data['user_rank_3'] = '-2';
 	$user_data['user_rank_4'] = '-2';
 	$user_data['user_rank_5'] = '-2';
-	$user_data['user_viewemail'] = 0;
+	$user_data['user_allow_viewemail'] = 0;
 	$user_data['user_website'] = '';
 	$user_data['user_aim'] = '';
 	$user_data['user_facebook'] = '';

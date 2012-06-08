@@ -305,7 +305,7 @@ $pm = '<a href="' . $pm_url . '">' . $lang['Send_private_message'] . '</a>';
 $email_url = '';
 if (empty($user->data['user_id']) || ($user->data['user_id'] == ANONYMOUS))
 {
-	if (!empty($profiledata['user_viewemail']))
+	if (!empty($profiledata['user_allow_viewemail']))
 	{
 		$email_img = '<img src="' . $images['icon_email'] . '" alt="' . $lang['Hidden_email'] . '" title="' . $lang['Hidden_email'] . '" />';
 	}
@@ -315,7 +315,7 @@ if (empty($user->data['user_id']) || ($user->data['user_id'] == ANONYMOUS))
 	}
 	$email = '&nbsp;';
 }
-elseif (!empty($profiledata['user_viewemail']) || $user->data['user_level'] == ADMIN)
+elseif (!empty($profiledata['user_allow_viewemail']) || $user->data['user_level'] == ADMIN)
 {
 	$email_url = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $profiledata['user_id']) : 'mailto:' . $profiledata['user_email'];
 	$email_img = '<a href="' . $email_url . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';

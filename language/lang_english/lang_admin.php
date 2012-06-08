@@ -1282,9 +1282,9 @@ $lang = array_merge($lang, array(
 	'add_field_view_disclaimer' => 'All of these settings will be treated as "no" if users are not allowed to view this field',
 
 	'add_field_name' => 'Field Name',
-	'add_field_name_explain' => 'Enter the name you want to associate with this field.',
+	'add_field_name_explain' => 'Enter the name you want to associate with this field. You can customize the output for several language by editing <b>language/lang_XXX/lang_profile_fields.php</b>.',
 	'add_field_description' => 'Field Description',
-	'add_field_description_explain' => 'Enter a description you wish to associate with this field. It will be displayed in small text below the field name, just like this text is.',
+	'add_field_description_explain' => 'Enter a description you wish to associate with this field. It will be displayed in small text below the field name, just like this text is. You can customize the output for several language by editing <b>language/lang_XXX/lang_profile_fields.php</b>.',
 	'add_field_type' => 'Field Type',
 	'add_field_type_explain' => 'Select the type of profile field you want to add. Examples of each field type are shown to the far right.',
 	'edit_field_type_explain' => 'Select the type of profile field you want to change this field to. Examples of each field type are shown to the far right.',

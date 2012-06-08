@@ -13,7 +13,10 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-function default_links_array()
+/*
+* Default Links Array
+*/
+function cms_menu_default_links_array()
 {
 	global $lang;
 
@@ -32,7 +35,7 @@ function default_links_array()
 		11 => array('lang' => 'Downloads', 'link' => CMS_PAGE_DL_DEFAULT, 'auth' => AUTH_CMS_ALL),
 		12 => array('lang' => 'Bookmarks', 'link' => CMS_PAGE_SEARCH . '?search_id=bookmarks', 'auth' => AUTH_CMS_REG),
 		13 => array('lang' => 'Drafts', 'link' => CMS_PAGE_DRAFTS, 'auth' => AUTH_CMS_REG),
-		14 => array('lang' => 'Uploaded_Images_Local', 'link' => 'posted_img_list.' . PHP_EXT, 'auth' => AUTH_CMS_REG),
+		14 => array('lang' => 'Uploaded_Images_Local', 'link' => CMS_PAGE_IMAGES, 'auth' => AUTH_CMS_REG),
 		15 => array('lang' => 'Ajax_Chat', 'link' => CMS_PAGE_AJAX_CHAT, 'auth' => AUTH_CMS_ALL),
 		16 => array('lang' => 'Links', 'link' => CMS_PAGE_LINKS, 'auth' => AUTH_CMS_ALL),
 		17 => array('lang' => 'KB_title', 'link' => 'kb.' . PHP_EXT, 'auth' => AUTH_CMS_ALL),
@@ -68,14 +71,66 @@ function default_links_array()
 	return $default_links_array;
 }
 
-function build_complete_url($default_id, $block_id, $link, $menu_icon)
+/*
+* Build Link URL
+*/
+function cms_menu_build_link($item_data, $block_id)
 {
-	global $db, $cache, $template, $config, $user, $lang, $theme, $images;
+	global $db, $cache, $config, $user, $lang, $template, $theme, $images;
+	global $default_links_array;
+
+	$menu_link = array(
+		'icon' => '',
+		'name' => '',
+		'link' => '',
+		'url' => ''
+	);
+
+	$menu_link['icon'] = '<img src="' . (($item_data['menu_icon'] != '') ? $item_data['menu_icon'] : $images['nav_menu_sep']) . '" alt="" title="" style="vertical-align: middle;" />&nbsp;';
+
+	if (($item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$item_data['menu_name_lang']]))
+	{
+		$menu_link['name'] = $lang['menu_item'][$item_data['menu_name_lang']];
+	}
+	else
+	{
+		$menu_link['name'] = (($item_data['menu_name'] != '') ? htmlspecialchars(stripslashes($item_data['menu_name'])) : ('cat_item' . $item_data['cat_id']));
+	}
+
+	if (empty($item_data['menu_default']))
+	{
+		if (!empty($item_data['menu_link_external']))
+		{
+			$menu_link['link'] = htmlspecialchars($item_data['menu_link']);
+			$menu_link['link'] .= '" target="_blank';
+		}
+		else
+		{
+			$menu_link['link'] = append_sid(htmlspecialchars($item_data['menu_link']));
+		}
+		$menu_link['url'] = (!empty($menu_link['link']) ? '<a href="' . $menu_link['link'] . '">' . $menu_link['icon'] . $menu_link['name'] . '</a>' : '');
+	}
+	else
+	{
+		$menu_link['link'] = cms_menu_build_complete_url($item_data['menu_default'], $block_id, $item_data['menu_link'], $menu_link['icon']);
+		$menu_link['url'] = (!empty($menu_link['link']) ? $menu_link['link'] : '');
+	}
+	$menu_link['url'] = (!empty($menu_link['url']) ? '<div class="genmed" align="left">' . $menu_link['url'] . '</div>' : '');
+
+	return $menu_link;
+}
+
+/*
+* Build Complete URL
+*/
+function cms_menu_build_complete_url($default_id, $block_id, $link, $menu_icon)
+{
+	global $db, $cache, $config, $user, $lang, $template, $theme, $images;
 	global $default_links_array;
 
 	if (empty($default_links_array))
 	{
-		$default_links_array = default_links_array();
+		$default_links_array = cms_menu_default_links_array();
 	}
 
 	if (!empty($default_links_array[$default_id]['function']))

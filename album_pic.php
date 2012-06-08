@@ -36,7 +36,9 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', 0);
 if ($pic_id <= 0)
 {
-	die($lang['NO_PICS_SPECIFIED']);
+	image_no_thumbnail('no_thumb.jpg');
+	exit;
+	//die($lang['NO_PICS_SPECIFIED']);
 	//message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
@@ -125,13 +127,9 @@ if (($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'
 
 	if ($errored)
 	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
-		/*
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail('no_thumb.jpg');
 		exit;
-		*/
+		//message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 	}
 }
 
@@ -164,34 +162,24 @@ switch ($pic_info['filetype'])
 		$file_header = 'Content-type: image/png';
 		break;
 	default:
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail($pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		exit;
 		break;
 }
 
-if ((($pic_info['filetype'] == 'jpg') || ($pic_info['filetype'] == 'png')) && ($apply_wm == false))
+$is_wm = (($apply_wm == true) && @file_exists($pic_info['thumbnail_w_f_fullpath'])) ? true : false;
+if (($pic_info['filetype'] == 'gif') || ((($pic_info['filetype'] == 'jpg') || ($pic_info['filetype'] == 'png')) && ($apply_wm == false)) || $is_wm)
 {
 	header($file_header);
 	header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-	readfile($pic_info['fullpath']);
-	exit;
-}
-
-if ($pic_info['filetype'] == 'gif')
-{
-	header($file_header);
-	header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-	readfile($pic_info['fullpath']);
-	exit;
-}
-
-if(($apply_wm == true) && file_exists($pic_info['thumbnail_w_f_fullpath']))
-{
-	header($file_header);
-	header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-	readfile($pic_info['thumbnail_w_f_fullpath']);
+	if ($is_wm)
+	{
+		readfile($pic_info['thumbnail_w_f_fullpath']);
+	}
+	else
+	{
+		readfile($pic_info['fullpath']);
+	}
 	exit;
 }
 

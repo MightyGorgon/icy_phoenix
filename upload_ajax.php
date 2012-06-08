@@ -26,6 +26,9 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
+include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
+$class_images = new class_images();
+
 // This page is not in layout special...
 $cms_page['page_id'] = 'pic_upload';
 $cms_page['page_nav'] = false;
@@ -63,6 +66,36 @@ if (USERS_SUBFOLDERS_IMG)
 		{
 			$user_upload_dir = $user->data['user_id'] . '/';
 			$upload_dir = $upload_dir . $user_upload_dir;
+		}
+	}
+}
+
+$show_last_images = true;
+if ($show_last_images && ($user->data['user_id'] != ANONYMOUS))
+{
+	$n_pics = 3;
+	$images_data = $class_images->get_user_images($user->data['user_id'], 'i.pic_id DESC', 0, $n_pics);
+	if (!empty($images_data))
+	{
+		$pics_parsed = 0;
+		foreach ($images_data as $image_data)
+		{
+			$pics_parsed++;
+			// We are checking for small thumbnails... added an underscore to distinguish those small thumbs respect to mid sized!
+			$pic_img_sub_path = (USERS_SUBFOLDERS_IMG && (!empty($image_data['pic_user_id'])) ? ($image_data['pic_user_id'] . '/') : '') . $image_data['pic_filename'];
+			$pic_img_url = POSTED_IMAGES_PATH . $pic_img_sub_path;
+			$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $pic_img_sub_path;
+			$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL . '?pic_id=' . urlencode($pic_img_sub_path)));
+			$image_data['pic_title'] = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
+
+			$template->assign_block_vars('pic_img', array(
+				'PIC_IMAGE' => $pic_img_url,
+				'PIC_THUMB' => $pic_img_thumb,
+				'PIC_BBC_INPUT' => 'bbcode_box_r_' . $pics_parsed,
+				'PIC_BBC' => '[img]' . $server_path . substr($pic_img_url, strlen(IP_ROOT_PATH)) . '[/img]',
+				'PIC_NAME' => $image_data['pic_title']
+				)
+			);
 		}
 	}
 }

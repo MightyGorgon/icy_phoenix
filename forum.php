@@ -444,7 +444,7 @@ if (($config['display_viewonline'] == 2) || (($viewcat < 0) && ($config['display
 $display = display_index($viewcatkey);
 
 // check shoutbox permissions and display only to authorized users
-$auth_level_req = (isset($cms_config_layouts['shoutbox']['view']) ? $cms_config_layouts['shoutbox']['view'] : AUTH_ALL);
+$auth_level_req = ((isset($cms_config_layouts['shoutbox']['view']) && ($cms_config_layouts['shoutbox']['view'] != AUTH_CMS_ALL_NO_BOTS)) ? $cms_config_layouts['shoutbox']['view'] : AUTH_ALL);
 if (($config['index_shoutbox'] && (($user->data['user_level'] + 1) >= $auth_level_req) && $user->data['session_logged_in'] && !$user->data['is_bot']) || ($config['index_shoutbox'] && ($user->data['user_level'] == ADMIN)))
 {
 	$template->assign_vars(array('S_SHOUTBOX' => true));

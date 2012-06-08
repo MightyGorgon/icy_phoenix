@@ -362,6 +362,7 @@ Disallow: /includes/
 Disallow: /language/
 Disallow: /logs/
 Disallow: /pafiledb/
+Disallow: /plugins/
 Disallow: /templates/
 Disallow: /album_delete.php
 Disallow: /album_edit.php
@@ -375,10 +376,10 @@ Disallow: /common.php
 Disallow: /config.php
 Disallow: /groupcp.php
 Disallow: /login_ip.php
-#Disallow: /memberlist.php
+Disallow: /memberlist.php
 Disallow: /modcp.php
 Disallow: /posting.php
-#Disallow: /printview.php
+Disallow: /printview.php
 Disallow: /privmsg.php
 #Disallow: /profile.php
 Disallow: /ranks.php

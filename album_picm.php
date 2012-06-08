@@ -37,7 +37,9 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', 0);
 if ($pic_id <= 0)
 {
-	die($lang['NO_PICS_SPECIFIED']);
+	image_no_thumbnail('no_thumb.jpg');
+	exit;
+	//die($lang['NO_PICS_SPECIFIED']);
 	//message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
@@ -128,13 +130,9 @@ if (($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'
 
 	if ($errored)
 	{
-		message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
-		/*
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail($pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		exit;
-		*/
+		//message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 	}
 }
 
@@ -155,36 +153,9 @@ $result = $db->sql_query($sql);
 // --------------------------------
 // Check thumbnail cache. If cache is available we will SEND & EXIT
 // --------------------------------
-if(($album_config['midthumb_cache'] == true) && file_exists($pic_info['thumbnail_m_fullpath']))
+if(($album_config['midthumb_cache'] == true) && @file_exists($pic_info['thumbnail_m_fullpath']))
 {
-	/*
-	$Image = new ImgObj();
-	$Image->ReadSourceFile($pic_info['thumbnail_m_fullpath']);
-	$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], 'mid_', '', $album_config['thumbnail_quality']);
-	$Image->Destroy();
-	exit;
-	*/
-	switch ($pic_info['filetype'])
-	{
-		case 'gif':
-			$file_header = 'Content-type: image/gif';
-			break;
-		case 'jpg':
-			$file_header = 'Content-type: image/jpeg';
-			break;
-		case 'png':
-			$file_header = 'Content-type: image/png';
-			break;
-		default:
-			header('Content-type: image/jpeg');
-			header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-			readfile($images['no_thumbnail']);
-			exit;
-			break;
-	}
-	header($file_header);
-	header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-	readfile($pic_info['thumbnail_m_fullpath']);
+	image_output($pic_info['thumbnail_m_fullpath'], $pic_info['title_reg'], $pic_info['filetype'], 'mid_');
 	exit;
 }
 
@@ -251,9 +222,8 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 				@imagepng($thumbnail);
 				break;
 			default:
-				header('Content-type: image/jpeg');
-				header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-				readfile($images['no_thumbnail']);
+				image_no_thumbnail('mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
+				exit;
 				break;
 		}
 		exit;
@@ -350,9 +320,8 @@ else
 				@imagepng($thumbnail);
 				break;
 			default:
-				header('Content-type: image/jpeg');
-				header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-				readfile($images['no_thumbnail']);
+				image_no_thumbnail('mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
+				exit;
 				break;
 		}
 		exit;
@@ -424,34 +393,12 @@ else
 		// It seems you have not GD installed :(
 		if ($album_config['show_img_no_gd'] == false)
 		{
-			header('Content-type: image/jpeg');
-			header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-			readfile($images['no_thumbnail']);
+			image_no_thumbnail('mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 			exit;
 		}
 		else
 		{
-			switch ($pic_info['filetype'])
-			{
-				case 'gif':
-					$file_header = 'Content-type: image/gif';
-					break;
-				case 'jpg':
-					$file_header = 'Content-type: image/jpeg';
-					break;
-				case 'png':
-					$file_header = 'Content-type: image/png';
-					break;
-				default:
-					header('Content-type: image/jpeg');
-					header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-					readfile($images['no_thumbnail']);
-					exit;
-					break;
-			}
-			header($file_header);
-			header('Content-Disposition: filename=mid_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-			readfile($pic_info['fullpath']);
+			image_output($pic_info['fullpath'], $pic_info['title_reg'], $pic_info['filetype'], 'mid_');
 			exit;
 		}
 	}

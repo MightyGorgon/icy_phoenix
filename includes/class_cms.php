@@ -54,41 +54,49 @@ class ip_cms
 	}
 
 	/*
-	* Checks if the user is allowed to view the block
+	* Checks if the user is allowed to view the element
 	*/
-	function cms_blocks_view()
+	function cms_auth_view()
 	{
 		global $user, $config;
 
-		$is_reg = ((!empty($config['bots_reg_auth']) && $user->data['is_bot']) || $user->data['session_logged_in']) ? true : false;
-		if (!$is_reg)
+		/*
+		* Move these to constants if you want to use...
+		* define('CMS_AUTH_ALL', 0); // Everyone
+		* define('CMS_AUTH_GUESTS_ONLY', 1); // Guests Only (Registered won't see this!)
+		* define('CMS_AUTH_REG', 2); // Registered Users Only
+		* define('CMS_AUTH_MOD', 3); // Moderators And Admins
+		* define('CMS_AUTH_ADMIN', 4); // Admins Only
+		* define('CMS_AUTH_FOUNDER', 5); // Founders Only (NOT USED)
+		* define('CMS_AUTH_ALL_NO_BOTS', 8); // Everyone but BOTs
+		*/
+
+		if (empty($user->data['session_logged_in']))
 		{
-			$result = array(0, 1);
+			if ($user->data['is_bot'])
+			{
+				$result = (!empty($config['bots_reg_auth']) ? array(0, 1, 2) :  array(0, 1));
+			}
+			else
+			{
+				$result = array(0, 1, 8);
+			}
 		}
 		else
 		{
-			/*
-			* Move these to constants if you want to use...
-			* define('CMS_AUTH_ALL', 0); // Everyone
-			* define('CMS_AUTH_GUESTS_ONLY', 1); // Guests Only (Registered won't see this!)
-			* define('CMS_AUTH_REG', 2); // Registered
-			* define('CMS_AUTH_MOD', 3); // Moderators and Admins
-			* define('CMS_AUTH_ADMIN', 4); // Admins
-			* define('CMS_AUTH_FOUNDER', 5); // Founders
-			*/
 			// User is not a guest here...
 			switch($user->data['user_level'])
 			{
 				case ADMIN:
 					// If you want admin to see also GUEST ONLY blocks you need to use these settings...
-					//$result = array(0, 1, 2, 3, 4);
-					$result = array(0, 2, 3, 4);
+					//$result = array(0, 1, 2, 3, 4, 5, 8);
+					$result = array(0, 2, 3, 4, 5, 8);
 					break;
 				case MOD:
-					$result = array(0, 2, 3);
+					$result = array(0, 2, 3, 8);
 					break;
 				default:
-					$result = array(0, 2);
+					$result = array(0, 2, 8);
 					break;
 			}
 		}
@@ -188,7 +196,7 @@ class ip_cms
 					" . $this->tables['block_settings_table'] . " AS s
 					WHERE b.layout = " . $layout . "
 					AND b.active = 1
-					AND " . $db->sql_in_set('s.view', $this->cms_blocks_view()) . "
+					AND " . $db->sql_in_set('s.view', $this->cms_auth_view()) . "
 					AND b.bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
 					AND b.bs_id = s.bs_id
 					ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
@@ -199,7 +207,7 @@ class ip_cms
 					FROM " . $this->tables['blocks_table'] . "
 					WHERE layout = " . $layout . "
 					AND active = 1
-					AND " . $db->sql_in_set('view', $this->cms_blocks_view()) . "
+					AND " . $db->sql_in_set('view', $this->cms_auth_view()) . "
 					AND bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
 					ORDER BY bposition ASC, layout ASC, layout_special ASC, weight ASC";
 			}
@@ -306,7 +314,7 @@ class ip_cms
 				WHERE layout = 0
 				" . $sql_where . "
 				AND active = 1
-				AND " . $db->sql_in_set('view', $this->cms_blocks_view()) . "
+				AND " . $db->sql_in_set('view', $this->cms_auth_view()) . "
 				AND bposition = '" . $temp_pos . "'
 				ORDER BY layout ASC, weight ASC";
 			$block_im_result = $db->sql_query($sql, 0, 'cms_blocks_', CMS_CACHE_FOLDER);
@@ -433,7 +441,6 @@ class ip_cms
 					'OUTPUT' => $output_block
 					)
 				);
-
 			}
 		}
 		return true;

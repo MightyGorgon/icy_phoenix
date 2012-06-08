@@ -49,20 +49,10 @@ $pic_filetype = $file_part[sizeof($file_part) - 1];
 $pic_title = substr($pic_filename, 0, strlen($pic_filename) - strlen($pic_filetype) - 1);
 $pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 
-switch ($pic_filetype)
+if (!in_array($pic_filetype, array('gif', 'jpg', 'jpeg', 'png')))
 {
-	case 'gif':
-		break;
-	case 'jpg':
-		break;
-	case 'png':
-		break;
-	default:
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($images['no_thumbnail']);
-		exit;
-		break;
+	image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
+	exit;
 }
 
 // --------------------------------
@@ -71,34 +61,7 @@ switch ($pic_filetype)
 
 if(($album_config['thumbnail_cache'] == 1) && file_exists($pic_thumbnail_fullpath))
 {
-	/*
-	$Image = new ImgObj();
-	$Image->ReadSourceFile($pic_thumbnail_fullpath);
-	$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'thumb_', '', $album_config['thumbnail_quality']);
-	$Image->Destroy();
-	exit;
-	*/
-	switch ($pic_filetype)
-	{
-		case 'gif':
-			$file_header = 'Content-type: image/gif';
-			break;
-		case 'jpg':
-			$file_header = 'Content-type: image/jpeg';
-			break;
-		case 'png':
-			$file_header = 'Content-type: image/png';
-			break;
-		default:
-			header('Content-type: image/jpeg');
-			header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-			readfile($images['no_thumbnail']);
-			exit;
-			break;
-	}
-	header($file_header);
-	header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-	readfile($pic_thumbnail_fullpath);
+	image_output($pic_thumbnail_fullpath, $pic_title_reg, $pic_filetype, 'thumb_');
 	exit;
 }
 
@@ -115,34 +78,7 @@ if(($pic_width < $album_config['thumbnail_size']) && ($pic_height < $album_confi
 {
 	$copy_success = @copy($pic_fullpath, $pic_thumbnail_fullpath);
 	@chmod($pic_thumbnail_fullpath, 0777);
-	/*
-	$Image = new ImgObj();
-	$Image->ReadSourceFile($pic_fullpath);
-	$Image->SendToBrowser($pic_title_reg, $pic_filetype, '', '', $album_config['thumbnail_quality']);
-	$Image->Destroy();
-	exit;
-	*/
-	switch ($pic_filetype)
-	{
-		case 'gif':
-			$file_header = 'Content-type: image/gif';
-			break;
-		case 'jpg':
-			$file_header = 'Content-type: image/jpeg';
-			break;
-		case 'png':
-			$file_header = 'Content-type: image/png';
-			break;
-		default:
-			header('Content-type: image/jpeg');
-			header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-			readfile($images['no_thumbnail']);
-			exit;
-			break;
-	}
-	header($file_header);
-	header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-	readfile($pic_fullpath);
+	image_output($pic_fullpath, $pic_title_reg, $pic_filetype, 'thumb_');
 	exit;
 }
 else
@@ -168,9 +104,7 @@ else
 		switch ($pic_filetype)
 		{
 			case 'gif':
-				header('Content-type: image/jpeg');
-				header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-				readfile($images['no_thumbnail']);
+				image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
 				exit;
 				break;
 		}
@@ -229,9 +163,8 @@ else
 				@imagepng($thumbnail);
 				break;
 			default:
-				header('Content-type: image/jpeg');
-				header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-				readfile($images['no_thumbnail']);
+				image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
+				exit;
 				break;
 		}
 		exit;
@@ -288,9 +221,7 @@ else
 	else
 	{
 		$Image->Destroy();
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
 		exit;
 	}
 }

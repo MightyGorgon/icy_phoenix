@@ -25,6 +25,7 @@ if(!function_exists('cms_block_kb'))
 	function cms_block_kb()
 	{
 		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $user, $lang, $block_id, $cms_config_vars;
+		global $ip_cms;
 
 		if (!class_exists('class_topics'))
 		{
@@ -173,6 +174,8 @@ if(!function_exists('cms_block_kb'))
 				$menu_cat = array();
 				$cat_item = array();
 				$menu_item = array();
+				$auth_levels = $ip_cms->cms_auth_view();
+
 				while ($menu_item = $db->sql_fetchrow($result))
 				{
 					if ($menu_item['cat_id'] > 0)
@@ -194,32 +197,11 @@ if(!function_exists('cms_block_kb'))
 					}
 					else
 					{
-						$cat_allowed = true;
 						$auth_level_req = $cat_item_data['auth_view'];
-						switch($auth_level_req)
-						{
-							case '0':
-								$cat_allowed = true;
-								break;
-							case '1':
-								$cat_allowed = ($user->data['session_logged_in'] ? false : true);
-								break;
-							case '2':
-								$cat_allowed = ($user->data['session_logged_in'] ? true : false);
-								break;
-							case '3':
-								$cat_allowed = ((($user->data['user_level'] == MOD) || ($user->data['user_level'] == ADMIN)) ? true : false);
-								break;
-							case '4':
-								$cat_allowed = (($user->data['user_level'] == ADMIN)? true : false);
-								break;
-							default:
-								$cat_allowed = true;
-								break;
-						}
+						$cat_allowed = in_array($auth_level_req, $auth_levels) ? true : false;
 					}
 
-					if ($cat_allowed == true)
+					if (!empty($cat_allowed))
 					{
 						//echo($cat_item_data['menu_name'] . '<br />');
 						$cat_id = ($cat_item_data['cat_id']);
@@ -258,32 +240,11 @@ if(!function_exists('cms_block_kb'))
 							}
 							else
 							{
-								$menu_allowed = true;
 								$auth_level_req = $menu_cat_item_data['auth_view'];
-								switch($auth_level_req)
-								{
-									case '0':
-										$menu_allowed = true;
-										break;
-									case '1':
-										$menu_allowed = ($user->data['session_logged_in'] ? false : true);
-										break;
-									case '2':
-										$menu_allowed = ($user->data['session_logged_in'] ? true : false);
-										break;
-									case '3':
-										$menu_allowed = ((($user->data['user_level'] == MOD) || ($user->data['user_level'] == ADMIN)) ? true : false);
-										break;
-									case '4':
-										$menu_allowed = (($user->data['user_level'] == ADMIN)? true : false);
-										break;
-									default:
-										$menu_allowed = true;
-										break;
-								}
+								$menu_allowed = in_array($auth_level_req, $auth_levels) ? true : false;
 							}
 
-							if ($menu_allowed == true)
+							if (!empty($menu_allowed))
 							{
 								//echo($menu_cat_item_data['menu_name'] . '<br />');
 								if (($menu_cat_item_data['menu_name_lang'] != '') && isset($lang[$menu_cat_item_data['menu_name_lang']]))

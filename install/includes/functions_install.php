@@ -638,20 +638,6 @@ class mg_functions
 
 	function old_bbcode_replace($text)
 	{
-		$rep_array = array(
-			'[xs]' => BBC_IP_CREDITS,
-			'[ipstaff]' => BBC_IP_CREDITS,
-			'[ipstaffstatic]' => BBC_IP_CREDITS_STATIC,
-			'[ipoverview]' => BBC_Overview,
-			'[iplicense]' => BBC_License,
-			'[iprequirements]' => BBC_Requirements,
-			'[ipinstall]' => BBC_Fresh_Installation,
-			'[upgrade]' => BBC_Upgrade_phpbb,
-			'[upgradebb]' => BBC_Upgrade_phpbb,
-			'[upgradexs]' => BBC_Upgrade_XS,
-			'[upgradeip]' => BBC_Upgrade_IP,
-		);
-
 		$look_up_array = array(
 			'[xs]',
 			'[ipstaff]',
@@ -685,6 +671,37 @@ class mg_functions
 		return $text;
 	}
 
+	function old_bbcode_replace_ip2($text)
+	{
+		$look_up_array = array(
+			'[langvar]BBC_IP_CREDITS[/langvar]',
+			'[langvar]BBC_IP_CREDITS_STATIC[/langvar]',
+			'[langvar]BBC_Overview[/langvar]',
+			'[langvar]BBC_License[/langvar]',
+			'[langvar]BBC_Requirements[/langvar]',
+			'[langvar]BBC_Fresh_Installation[/langvar]',
+			'[langvar]BBC_Upgrade_phpbb[/langvar]',
+			'[langvar]BBC_Upgrade_XS[/langvar]',
+			'[langvar]BBC_Upgrade_IP[/langvar]',
+		);
+
+		$replacement_array = array(
+			'[url=docs/readme_english.html#license]Readme[/url]',
+			'[url=docs/readme_english.html#license]Readme[/url]',
+			'[url=docs/readme_english.html#overview]Readme[/url]',
+			'[url=docs/readme_english.html#license]Readme[/url]',
+			'[url=docs/readme_english.html#requirements]Readme[/url]',
+			'[url=docs/readme_english.html#fresh_installation]Readme[/url]',
+			'[url=docs/readme_english.html#upgrade_phpbb]Readme[/url]',
+			'[url=docs/readme_english.html#upgrade_xs]Readme[/url]',
+			'[url=docs/readme_english.html#upgrade_ip]Readme[/url]',
+		);
+
+		$text = str_replace($look_up_array, $replacement_array, $text);
+
+		return $text;
+	}
+
 	function bbcuid_clean($text, $id = false)
 	{
 		if ($id != false)
@@ -703,19 +720,59 @@ class mg_functions
 		return $text;
 	}
 
-	function img_replace($text)
+	/*
+	* Creates a short url to be used in replace
+	*/
+	function create_short_server_url()
 	{
+		// usage: $server_url = create_short_server_url();
 		global $config;
+
+		if (!empty($config['short_site_url']))
+		{
+			return $config['short_site_url'];
+		}
+
 		$server_name = trim($config['server_name']);
 		$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
 		$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
 		$server_url = $server_name . $server_port . $script_name . '/';
 		$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
 		//$server_url = 'icyphoenix.com/';
-		$server_url_input = str_replace('/', '\/', $server_url);
-		$look_up = "/" . $server_url_input . "files\/posted_images\/user_([0-9]{1,6})_/";
-		$replacement = $server_url . "files/posted_images/$1/";
+
+		while(substr($server_url, -1, 1) == '/')
+		{
+			$server_url = substr($server_url, 0, -1);
+		}
+		$server_url = $server_url . '/';
+
+		$config['short_site_url'] = $server_url;
+		return $server_url;
+	}
+
+	function img_replace($text)
+	{
+		global $config;
+		// We changed the constant, so we cannot use it any more...
+		//$posted_images_folder = str_replace(IP_ROOT_PATH, '', POSTED_IMAGES_PATH);
+		$posted_images_folder = 'files/posted_images/';
+		$server_url = mg_functions::create_short_server_url();
+		$look_up = "/" . str_replace('/', '\/', $server_url . $posted_images_folder) . "user_([0-9]{1,6})_/";
+		$replacement = $server_url . $posted_images_folder . "$1/";
 		$text = preg_replace($look_up, $replacement, $text);
+		return $text;
+	}
+
+	function img_replace_ip2($text)
+	{
+		global $config;
+		$old_folder = 'files/posted_images/';
+		$new_folder = str_replace(IP_ROOT_PATH, '', POSTED_IMAGES_PATH);
+		$server_url = mg_functions::create_short_server_url();
+		$look_up = "/" . str_replace('/', '\/', $server_url . $old_folder) . "([0-9]{1,6})\//";
+		$replacement = $server_url . $new_folder . "$1/";
+		$text = preg_replace($look_up, $replacement, $text);
+		$text = str_replace(array('posted_img_list.php', 'posted_img_list_thumbnail.php', 'posted_img_thumbnail.php'), array('images_list.php', 'image_thumbnail_s.php', 'image_thumbnail.php'), $text);
 		return $text;
 	}
 }
@@ -1973,7 +2030,7 @@ class ip_page
 				$table_output .= '<br clear="all" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
-				$table_output .= '<div class="post-text" style="width:90%">' . "\n";
+				$table_output .= '<div class="post-text" style="width: 90%;">' . "\n";
 				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
 				$table_output .= $pics_moved . "\n";
 				$table_output .= '</ul>' . "\n";
@@ -2008,9 +2065,9 @@ class ip_page
 		return $table_output;
 	}
 
-	function fix_posts($action)
+	function fix_content_ip($action_mode, $action)
 	{
-		global $db, $config, $lang, $language;
+		global $db, $cache, $config, $user, $lang, $language;
 		global $wip, $search_word, $replacement_word;
 		global $remove_bbcode_uid, $remove_guess_bbcode_uid, $fix_posted_images;
 		global $posts_number, $post_start, $total_posts, $total_posts_modified;
@@ -2019,15 +2076,74 @@ class ip_page
 
 		$table_output = '';
 
+		switch ($action_mode)
+		{
+			case 'fix_posts':
+			case 'fix_posts_ip2':
+				$db_table = POSTS_TABLE;
+				$db_update_table = POSTS_TABLE;
+				$db_update_field = 'post_text';
+				$db_update_field_id = 'post_id';
+				if ($action_mode == 'fix_posts')
+				{
+					if (defined('POSTS_TEXT_TABLE'))
+					{
+						$sql_tmp = "SHOW TABLES LIKE " . POSTS_TEXT_TABLE;
+						$result_tmp = $db->sql_query($sql_tmp);
+						if ($row = $db->sql_fetchrow($result_tmp))
+						{
+							$db_update_table = POSTS_TEXT_TABLE;
+						}
+					}
+				}
+				$sql_total = "SELECT * FROM " . $db_table;
+				$sql_step_by_step = "SELECT *
+					FROM " . $db_table . "
+					ORDER BY " . $db_update_field_id . " ASC
+					LIMIT " . $post_start . ", " . $posts_number;
+				$lang_fix_complete = $lang['FixingPostsComplete'];
+				$lang_fix_modified = $lang['FixingPostsModified'];
+				$lang_fix_from = $lang['FixingPostsFrom'];
+				$lang_fix_total = $lang['FixingPostsTotal'];
+				$lang_fix_title = (($action_mode == 'fix_posts_ip2') ? $lang['FixPosts_IP2'] : $lang['FixPosts']);
+				$lang_fix_posts_per_step = $lang['PostsPerStep'];
+				$lang_fix_start_from = $lang['StartFrom'];
+			break;
+
+			case 'fix_signatures':
+			case 'fix_signatures_ip2':
+				$db_table = USERS_TABLE;
+				$db_update_table = USERS_TABLE;
+				$db_update_field = 'user_sig';
+				$db_update_field_id = 'user_id';
+				$sql_total = "SELECT * FROM " . $db_table;
+				$sql_step_by_step = "SELECT user_id, user_sig, user_sig_bbcode_uid
+					FROM " . $db_table . "
+					ORDER BY user_id ASC
+					LIMIT " . $post_start . ", " . $posts_number;
+				$lang_fix_complete = $lang['FixingSignaturesComplete'];
+				$lang_fix_modified = $lang['FixingSignaturesModified'];
+				$lang_fix_from = $lang['FixingSignaturesFrom'];
+				$lang_fix_total = $lang['FixingSignaturesTotal'];
+				$lang_fix_title = (($action_mode == 'fix_signatures_ip2') ? $lang['FixSignatures_IP2'] : $lang['FixSignatures']);
+				$lang_fix_posts_per_step = $lang['SignaturesPerStep'];
+				$lang_fix_start_from = $lang['StartFromSignature'];
+			break;
+
+			default:
+				die('No mode specified');
+			break;
+		}
+
 		switch ($action)
 		{
 			case 'fix':
 				if ($total_posts == 0)
 				{
-					$sql = "SELECT * FROM " . POSTS_TABLE;
+					$sql = $sql_total;
 					if (!($result = $db->sql_query($sql)))
 					{
-						die('Could not obtain total posts numbers');
+						die('Could not obtain total items numbers');
 					}
 					$row = $db->sql_fetchrow($result);
 					$total_posts = $db->sql_numrows($result);
@@ -2040,8 +2156,8 @@ class ip_page
 					$table_output .= '<br /><br />' . "\n";
 					$table_output .= '<div class="post-text">' . "\n";
 					$table_output .= '<ul type="circle" style="align: left;">' . "\n";
-					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingPostsComplete'] . '</b></span></li>' . "\n";
-					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_posts_modified . $lang['FixingPostsModified'] . '</b></span></li>' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang_fix_complete . '</b></span></li>' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_posts_modified . $lang_fix_modified . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
 					$table_output .= '<br clear="all" />' . "\n";
@@ -2055,59 +2171,53 @@ class ip_page
 				$smileys_replace_sets = mg_functions::smileys_replace_sets($smileys_list);
 				*/
 
-				$sql = "SELECT *
-					FROM " . POSTS_TABLE . "
-					ORDER BY post_id ASC
-					LIMIT " . $post_start . ", " . $posts_number;
+				$sql = $sql_step_by_step;
 				$result = $db->sql_query($sql);
 
 				while ($row = $db->sql_fetchrow($result))
 				{
-					$post_text_f = $row['post_text'];
-					$post_text_f = ((defined('STRIP') && STRIP)? stripslashes($post_text_f) : $post_text_f);
-					$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
+					$item_id = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? $row['user_id'] : $row['post_id'];
+					$bbcode_uid = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? $row['user_sig_bbcode_uid'] : $row['bbcode_uid'];
+					$post_text_f = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? $row['user_sig'] : $row['post_text'];
+
+					//$post_text_f = ((defined('STRIP') && STRIP)? stripslashes($post_text_f) : $post_text_f);
+
+					if (!empty($search_word))
+					{
+						$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
+					}
 
 					// Special function which converts smileys to [IMG] BBCode
 					//$post_text_f = mg_functions::smileys_replace($post_text_f, $smileys_replace_sets);
-
 					// Special function which performs custom text replace, you need to customize it...
 					//$post_text_f = mg_functions::custom_text_replace($post_text_f);
 
-					$post_text_f = mg_functions::old_bbcode_replace($post_text_f);
-
-					if ($remove_bbcode_uid && !empty($row['bbcode_uid']))
+					switch ($action_mode)
 					{
-						$post_text_f = mg_functions::bbcuid_clean($post_text_f, $row['bbcode_uid']);
+						case 'fix_posts':
+						case 'fix_signatures':
+							$post_text_f = mg_functions::old_bbcode_replace($post_text_f);
+							$post_text_f = ($remove_bbcode_uid && !empty($bbcode_uid)) ? mg_functions::bbcuid_clean($post_text_f, $bbcode_uid) : $post_text_f;
+							$post_text_f = ($remove_guess_bbcode_uid) ? mg_functions::bbcuid_clean($post_text_f, false) : $post_text_f;
+							$post_text_f = ($fix_posted_images && !empty($config)) ? mg_functions::img_replace($post_text_f) : $post_text_f;
+						break;
+
+						case 'fix_posts_ip2':
+						case 'fix_signatures_ip2':
+							$post_text_f = mg_functions::old_bbcode_replace_ip2($post_text_f);
+							$post_text_f = mg_functions::img_replace_ip2($post_text_f);
+						break;
+
+						default:
+							die('No mode specified');
 					}
 
-					if ($remove_guess_bbcode_uid)
-					{
-						$post_text_f = mg_functions::bbcuid_clean($post_text_f, false);
-					}
+					//$post_text_f = ((defined('STRIP') && STRIP)? addslashes($post_text_f) : $post_text_f);
 
-					if ($fix_posted_images && !empty($config))
-					{
-						$post_text_f = mg_functions::img_replace($post_text_f);
-					}
-
-					$real_posts_table = POSTS_TABLE;
-					if (defined('POSTS_TEXT_TABLE'))
-					{
-						$sql_tmp = "SHOW TABLES LIKE " . POSTS_TEXT_TABLE;
-						$result_tmp = $db->sql_query($sql_tmp);
-						if ($row = $db->sql_fetchrow($result_tmp))
-						{
-							$real_posts_table = POSTS_TEXT_TABLE;
-						}
-					}
-
-					$post_text_f = ((defined('STRIP') && STRIP)? addslashes($post_text_f) : $post_text_f);
-
-					$sql_update = "UPDATE " . $real_posts_table . " SET post_text = '" . $post_text_f . "' WHERE post_id = '" . $row['post_id'] . "'";
-
+					$sql_update = "UPDATE " . $db_update_table . " SET " . $db_update_field . " = '" . $db->sql_escape($post_text_f) . "' WHERE " . $db_update_field_id . " = " . $item_id;
 					if (!$result_new = $db->sql_query($sql_update))
 					{
-						die('Error in editing posts...');
+						die('Error in editing content...');
 					}
 
 					$total_posts_modified++;
@@ -2121,7 +2231,7 @@ class ip_page
 				$table_output .= '<br /><br />' . "\n";
 				$table_output .= '<div class="post-text">' . "\n";
 				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
-				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . sprintf($lang['FixingPostsFrom'], ($post_start + 1), ((($post_start + $posts_number) > $total_posts) ? $total_posts : ($post_start + $posts_number))) . '</b></span></li>' . "\n";
+				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . sprintf($lang_fix_from, ($post_start + 1), ((($post_start + $posts_number) > $total_posts) ? $total_posts : ($post_start + $posts_number))) . '</b></span></li>' . "\n";
 				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingPostsTotal'], $total_posts_modified, $total_posts) . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
@@ -2131,12 +2241,12 @@ class ip_page
 				// Increase $post_start to process the other posts
 				$post_start = ($post_start + $posts_number);
 
-				break;
+			break;
 
 			default:
-				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
+				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=' . $action_mode . '&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
 				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
-				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixPosts'] . '</span></td></tr>' . "\n";
+				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang_fix_title . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['SearchWhat'] . '&nbsp;</span></td>' . "\n";
 				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="search_word" value="" size="80" /></span></td>' . "\n";
@@ -2146,163 +2256,25 @@ class ip_page
 				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="replacement_word" value="" size="80" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="row1"><span class="genmed">' . $lang['PostsPerStep'] . '&nbsp;</span></td>' . "\n";
+				$table_output .= '	<td class="row1"><span class="genmed">' . $lang_fix_posts_per_step . '&nbsp;</span></td>' . "\n";
 				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="posts_number" value="100" size="10" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="row2"><span class="genmed">' . $lang['StartFrom'] . '&nbsp;</span></td>' . "\n";
+				$table_output .= '	<td class="row2"><span class="genmed">' . $lang_fix_start_from . '&nbsp;</span></td>' . "\n";
 				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="post_start" value="0" size="10" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
-				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="row1" colspan="2">' . "\n";
-				$table_output .= '	<div style="text-align: left;padding:5px;">' . "\n";
-				$table_output .= '	<label><input type="checkbox" name="remove_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID'] . '</label><br />' . "\n";
-				$table_output .= '	<label><input type="checkbox" name="remove_guess_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID_Guess'] . '</label><br />' . "\n";
-				$table_output .= '	<label><input type="checkbox" name="fix_posted_images" />&nbsp;' . $lang['FixPostedImagesPaths'] . '</label><br />' . "\n";
-				$table_output .= '	</div>' . "\n";
-				$table_output .= '	</td>' . "\n";
-				$table_output .= '</tr>' . "\n";
-				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
-				$table_output .= '</tr>' . "\n";
-				$table_output .= '</table>' . "\n";
-				$table_output .= '</form>' . "\n";
-		}
-
-		return $table_output;
-	}
-
-	function fix_signatures($action)
-	{
-		global $db, $config, $lang, $language;
-		global $wip, $search_word, $replacement_word;
-		global $remove_bbcode_uid, $remove_guess_bbcode_uid, $fix_posted_images;
-		global $posts_number, $post_start, $total_posts, $total_posts_modified;
-
-		$lang_append = '&amp;lang=' . $language;
-
-		$table_output = '';
-
-		switch ($action)
-		{
-			case 'fix':
-				if ($total_posts == 0)
+				if (in_array($action_mode, array('fix_posts', 'fix_signatures')))
 				{
-					$sql = "SELECT user_id FROM " . USERS_TABLE;
-					if (!($result = $db->sql_query($sql)))
-					{
-						die('Could not obtain total users');
-					}
-					$row = $db->sql_fetchrow($result);
-					$total_posts = $db->sql_numrows($result);
-					$total_posts_modified = 0;
+					$table_output .= '<tr>' . "\n";
+					$table_output .= '	<td class="row1" colspan="2">' . "\n";
+					$table_output .= '	<div style="text-align: left; padding: 5px;">' . "\n";
+					$table_output .= '	<label><input type="checkbox" name="remove_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID'] . '</label><br />' . "\n";
+					$table_output .= '	<label><input type="checkbox" name="remove_guess_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID_Guess'] . '</label><br />' . "\n";
+					$table_output .= '	<label><input type="checkbox" name="fix_posted_images" />&nbsp;' . $lang['FixPostedImagesPaths'] . '</label><br />' . "\n";
+					$table_output .= '	</div>' . "\n";
+					$table_output .= '	</td>' . "\n";
+					$table_output .= '</tr>' . "\n";
 				}
-
-				if ($total_posts_modified >= $total_posts)
-				{
-					$wip = false;
-					$table_output .= '<br /><br />' . "\n";
-					$table_output .= '<div class="post-text">' . "\n";
-					$table_output .= '<ul type="circle" style="align: left;">' . "\n";
-					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingSignaturesComplete'] . '</b></span></li>' . "\n";
-					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_posts_modified . $lang['FixingSignaturesModified'] . '</b></span></li>' . "\n";
-					$table_output .= '</ul>' . "\n";
-					$table_output .= '</div>' . "\n";
-					$table_output .= '<br clear="all" />' . "\n";
-					$table_output .= '<br /><br />' . "\n";
-					return $table_output;
-				}
-
-				$sql = "SELECT *
-					FROM " . USERS_TABLE . "
-					ORDER BY user_id ASC
-					LIMIT " . $post_start . ", " . $posts_number;
-				$result = $db->sql_query($sql);
-
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$post_text_f = $row['user_sig'];
-					$post_text_f = ((defined('STRIP') && STRIP)? stripslashes($post_text_f) : $post_text_f);
-					$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
-
-					$post_text_f = mg_functions::old_bbcode_replace($post_text_f);
-
-					if ($remove_bbcode_uid && !empty($row['user_sig_bbcode_uid']))
-					{
-						$post_text_f = mg_functions::bbcuid_clean($post_text_f, $row['user_sig_bbcode_uid']);
-					}
-
-					if ($remove_guess_bbcode_uid)
-					{
-						$post_text_f = mg_functions::bbcuid_clean($post_text_f, false);
-					}
-
-					if ($fix_posted_images && !empty($config))
-					{
-						$post_text_f = mg_functions::img_replace($post_text_f);
-					}
-
-					$post_text_f = ((defined('STRIP') && STRIP)? addslashes($post_text_f) : $post_text_f);
-
-					$sql_update = "UPDATE " . USERS_TABLE . " SET user_sig = '" . $post_text_f . "' WHERE user_id = '" . $row['user_id'] . "'";
-
-					if (!$result_new = $db->sql_query($sql_update))
-					{
-						die('Error in editing users...');
-					}
-
-					$total_posts_modified++;
-				}
-
-				if ($total_posts_modified > $total_posts)
-				{
-					$total_posts_modified = $total_posts;
-				}
-
-				$table_output .= '<br /><br />' . "\n";
-				$table_output .= '<div class="post-text">' . "\n";
-				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
-				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . sprintf($lang['FixingSignaturesFrom'], ($post_start + 1), ((($post_start + $posts_number) > $total_posts) ? $total_posts : ($post_start + $posts_number))) . '</b></span></li>' . "\n";
-				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingSignaturesTotal'], $total_posts_modified, $total_posts) . '</b></span></li>' . "\n";
-				$table_output .= '</ul>' . "\n";
-				$table_output .= '</div>' . "\n";
-				$table_output .= '<br clear="all" />' . "\n";
-				$table_output .= '<br /><br />' . "\n";
-
-				// Increase $post_start to process the other posts
-				$post_start = ($post_start + $posts_number);
-
-				break;
-
-			default:
-				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_signatures&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
-				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
-				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixSignatures'] . '</span></td></tr>' . "\n";
-				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['SearchWhat'] . '&nbsp;</span></td>' . "\n";
-				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="search_word" value="" size="80" /></span></td>' . "\n";
-				$table_output .= '</tr>' . "\n";
-				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="row2"><span class="genmed">' . $lang['ReplaceWith'] . '&nbsp;</span></td>' . "\n";
-				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="replacement_word" value="" size="80" /></span></td>' . "\n";
-				$table_output .= '</tr>' . "\n";
-				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="row1"><span class="genmed">' . $lang['SignaturesPerStep'] . '&nbsp;</span></td>' . "\n";
-				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="posts_number" value="100" size="10" /></span></td>' . "\n";
-				$table_output .= '</tr>' . "\n";
-				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="row2"><span class="genmed">' . $lang['StartFromSignature'] . '&nbsp;</span></td>' . "\n";
-				$table_output .= '	<td class="row2"><span class="genmed"><input type="text" class="post" name="post_start" value="0" size="10" /></span></td>' . "\n";
-				$table_output .= '</tr>' . "\n";
-				$table_output .= '<tr>' . "\n";
-				$table_output .= '	<td class="row1" colspan="2">' . "\n";
-				$table_output .= '	<div style="text-align: left;padding:5px;">' . "\n";
-				$table_output .= '	<label><input type="checkbox" name="remove_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID'] . '</label><br />' . "\n";
-				$table_output .= '	<label><input type="checkbox" name="remove_guess_bbcode_uid" />&nbsp;' . $lang['RemoveBBCodeUID_Guess'] . '</label><br />' . "\n";
-				$table_output .= '	<label><input type="checkbox" name="fix_posted_images" />&nbsp;' . $lang['FixPostedImagesPaths'] . '</label><br />' . "\n";
-				$table_output .= '	</div>' . "\n";
-				$table_output .= '	</td>' . "\n";
-				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
@@ -2633,7 +2605,7 @@ class ip_page
 				$dir = @opendir($posted_images_folder);
 				while($file = readdir($dir))
 				{
-					if (!is_dir($file))
+					if (!is_dir($posted_images_folder . $file))
 					{
 						$process_item = (($file != '.') && ($file != '..') && (!is_dir($posted_images_folder . $file)) && (!is_link($posted_images_folder . $file))) ? true : false;
 						if($process_item)
@@ -2686,7 +2658,7 @@ class ip_page
 					return $table_output;
 				}
 
-				$table_output .= '<div class="post-text" style="width:90%">' . "\n";
+				$table_output .= '<div class="post-text" style="width: 90%;">' . "\n";
 				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
 				$table_output .= $pics_moved . "\n";
 				$table_output .= '</ul>' . "\n";
@@ -2724,10 +2696,140 @@ class ip_page
 			default:
 				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=ren_move_images&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
 				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
-				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixPics'] . '</span></td></tr>' . "\n";
+				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['RenMovePics'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['PicsPerStep'] . '&nbsp;</span></td>' . "\n";
 				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="pics_number" value="100" size="10" /></span></td>' . "\n";
+				$table_output .= '</tr>' . "\n";
+				$table_output .= '<tr>' . "\n";
+				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
+				$table_output .= '</tr>' . "\n";
+				$table_output .= '</table>' . "\n";
+				$table_output .= '</form>' . "\n";
+		}
+
+		return $table_output;
+	}
+
+	/**
+	* Add uploaded images to DB
+	*/
+	function add_uploaded_images_to_db($action)
+	{
+		global $db, $cache, $config, $user, $lang, $language;
+		global $wip;
+		global $pics_number, $pic_start, $total_pics, $total_pics_modified;
+
+		include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
+		$class_images = new class_images();
+
+		$lang_append = '&amp;lang=' . $language;
+
+		$table_output = '';
+		$pics_moved = '';
+
+		switch ($action)
+		{
+			case 'fix':
+				$posted_images_folder = POSTED_IMAGES_PATH;
+				if ($total_pics == 0)
+				{
+					$total_pics_modified = 0;
+				}
+
+				if (($all_pics_array = $cache->get('_uploaded_images')) === false)
+				{
+					$all_pics_array = array();
+					$dir = @opendir($posted_images_folder);
+					while($file = readdir($dir))
+					{
+						$item_path = $posted_images_folder . $file;
+						$process_item = (($file != '.') && ($file != '..') && (is_dir($item_path)) && (!is_link($item_path))) ? true : false;
+						if ($process_item)
+						{
+							$sub_dir = @opendir($item_path);
+							while($sub_file = readdir($sub_dir))
+							{
+								$item_sub_path = $file . '/' . $sub_file;
+								$item_sub_path_full = $posted_images_folder . $item_sub_path;
+								$process_item = (($sub_file != '.') && ($sub_file != '..') && (!is_dir($item_sub_path_full)) && (!is_link($item_sub_path_full))) ? true : false;
+								if($process_item && preg_match('/(\.gif$|\.tif$|\.png$|\.jpg$|\.jpeg$)$/is', $sub_file))
+								{
+									$all_pics_array[] = $item_sub_path;
+								}
+							}
+						}
+					}
+					$cache->put('_uploaded_images', $all_pics_array);
+				}
+				$total_pics = sizeof($all_pics_array);
+
+				if ($total_pics_modified >= $total_pics)
+				{
+					$wip = false;
+					$table_output .= '<br /><br />' . "\n";
+					$table_output .= '<div class="post-text">' . "\n";
+					$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingPicsComplete'] . '</b></span></li>' . "\n";
+					$table_output .= '</ul>' . "\n";
+					$table_output .= '</div>' . "\n";
+					$table_output .= '<br clear="all" />' . "\n";
+					$table_output .= '<br /><br />' . "\n";
+					return $table_output;
+				}
+
+				$pics_updated = '';
+				for ($i = $pic_start; $i < ($pic_start + $pics_number); $i++)
+				{
+					if (!empty($all_pics_array[$i]))
+					{
+						$image_data_tmp = explode('/', $all_pics_array[$i]);
+						$image_details = $class_images->get_image_details($posted_images_folder . $all_pics_array[$i]);
+						$image_data = array(
+							'pic_filename' => $image_data_tmp[1],
+							'pic_size' => $image_details['size'],
+							'pic_title' => $image_data_tmp[1],
+							'pic_desc' => $image_data_tmp[1],
+							'pic_user_id' => $image_data_tmp[0],
+							'pic_user_ip' => '0.0.0.0',
+							'pic_time' => $image_details['time'],
+						);
+						//print_r($image_data);
+						$image_submit = $class_images->submit_image($image_data, 'insert');
+						$pics_updated .= '<li>' . $all_pics_array[$i] . '</li>';
+					}
+					$total_pics_modified++;
+				}
+
+				if ($total_pics_modified > $total_pics)
+				{
+					$total_pics_modified = $total_pics;
+				}
+
+				$table_output .= '<div class="post-text" style="width: 90%;">' . "\n";
+				$table_output .= '<ul type="circle" style="align: left;">' . "\n";
+				$table_output .= $pics_updated . "\n";
+				$table_output .= '</ul>' . "\n";
+				$table_output .= '</div>' . "\n";
+				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br /><br />' . "\n";
+
+				// Increase $post_start to process the other posts
+				$pic_start = ($pic_start + $pics_number);
+
+			break;
+
+			default:
+				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=add_uploaded_images_to_db&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
+				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['AddPostedPicsDB'] . '</span></td></tr>' . "\n";
+				$table_output .= '<tr>' . "\n";
+				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['PicsPerStep'] . '&nbsp;</span></td>' . "\n";
+				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="pics_number" value="100" size="10" /></span></td>' . "\n";
+				$table_output .= '</tr>' . "\n";
+				$table_output .= '<tr>' . "\n";
+				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['PicStartFrom'] . '&nbsp;</span></td>' . "\n";
+				$table_output .= '	<td class="row1"><span class="genmed"><input type="text" class="post" name="pic_start" value="0" size="10" /></span></td>' . "\n";
 				$table_output .= '</tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="cat" colspan="2" style="border-right-width: 0px; border-bottom-width: 0px;"><input type="submit" class="mainoption" name="submit" value="' . $lang['Start'] . '" /></td>' . "\n";
@@ -2822,7 +2924,15 @@ class ip_page
 
 		$table_update_options .= '<div class="genmed"><br /><ol type="1">' . "\n";
 		$table_update_options .= '<li><span class="text_red"><strong>' . $lang['MakeFullBackup'] . '</strong></span><br /><br /></li>' . "\n";
+
 		//$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_gray">' . $lang['Update_phpBB'] . '</span></a><br /><br /></li>' . "\n";
+
+		$table_update_options .= '<li><span class="text_red">' . $lang['Upload_NewFiles'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts_ip2' . $lang_append) . '"><span class="text_orange">' . $lang['FixPosts_IP2'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_signatures_ip2' . $lang_append) . '"><span class="text_orange">' . $lang['FixSignatures_IP2'] . '</span></a><br /><br /></li>' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=add_uploaded_images_to_db' . $lang_append) . '"><span class="text_orange">' . $lang['AddPostedPicsDB'] . '</span></a><br /><br /></li>' . "\n";
+		// Updating to Icy Phoenix 1.3
+		/*
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_forums' . $lang_append) . '"><span class="text_orange">' . $lang['FixForums'] . '</span></a><br /><br /></li>' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts' . $lang_append) . '"><span class="text_orange">' . $lang['Remove_BBCodeUID'] . '</span></a><br /><br /></li>' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_orange">' . $lang['Merge_PostsTables'] . '</span></a><br /><br /></li>' . "\n";
@@ -2833,11 +2943,12 @@ class ip_page
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_images_album' . $lang_append) . '"><span class="text_blue">' . $lang['MoveImagesAlbum'] . '</span></a><br /><br /></li>' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=ren_move_images' . $lang_append) . '"><span class="text_blue">' . $lang['MoveImages'] . '</span></a><br /><br /></li>' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=clean_old_files' . $lang_append) . '"><span class="text_green">' . $lang['Clean_OldFiles'] . '</span></a><br /><br /></li>' . "\n";
+		*/
 		$table_update_options .= '</ol></div>' . "\n";
 
 		$table_update_options .= '<br />' . "\n";
 
-		$table_update_options .= '<div class="forumline" style="width:700px;padding:5px;">' . "\n";
+		$table_update_options .= '<div class="forumline" style="width: 700px; padding: 5px;">' . "\n";
 		$table_update_options .= '<strong>' . $lang['ColorsLegend'] . '</strong><br />' . "\n";
 		$table_update_options .= '<div class="gensmall"><ul>' . "\n";
 		$table_update_options .= '<li><span class="text_red">' . $lang['ColorsLegendRed'] . '</span></li>' . "\n";
@@ -2880,38 +2991,46 @@ class ip_page
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $lang_append) . '"><span class="text_red">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_phpBB'] . '</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_11015' . $lang_append) . '"><span class="text_orange">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.1.0.15</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12027' . $lang_append) . '"><span class="text_green">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.0.27</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12229' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.2.29</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12734' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.7.34</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_12936' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.9.36</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121239' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.12.39</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121542' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.15.42</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_121845' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.2.18.45</span></a><br /><br /></li>' . "\n";
 		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_13053' . $lang_append) . '"><span class="text_blue">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.3.0.53</span></a><br /><br /></li>' . "\n";
-		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_13356' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 1.3.3.56 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
+		$update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update_20084' . $lang_append) . '"><span class="text_gray">' . $lang['Upgrade_From'] . ' ' . $lang['Upgrade_From_Version'] . ' 2.0.0.84RC1 (' . $lang['Upgrade_Higher'] . ')</span></a><br /><br /></li>' . "\n";
 		$update_options .= '</ul></div>' . "\n";
 
 		// Output the spoiler
 		$table_update_options .= $this->spoiler('update_options', $update_options, false);
+
+		// CHMOD
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color: #008888; font-weight: bold;">' . $lang['CHMOD_Files'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=chmod' . $lang_append) . '"><span class="text_red">' . $lang['CHMOD_Apply'] . '</span></a><br /><span class="gensmall">' . $lang['CHMOD_Apply_Warn'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
+		// Fix Posts IP 2.0
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color: #228822; font-weight: bold;">' . $lang['FixPosts_IP2'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts_ip2' . $lang_append) . '"><span class="text_red">' . $lang['FixPosts_IP2_Explain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
+		// Fix Signatures IP 2.0
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color: #ffdd22; font-weight: bold;">' . $lang['FixSignatures_IP2'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_signatures_ip2' . $lang_append) . '"><span class="text_red">' . $lang['FixSignatures_IP2_Explain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
+		// Add Posted Pics To DB
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color: #aa0022; font-weight: bold;">' . $lang['AddPostedPicsDB'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=add_uploaded_images_to_db' . $lang_append) . '"><span class="text_red">' . $lang['AddPostedPicsDBExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
 
 		// Fix Forums
 		$table_update_options .= '<br /><br />' . "\n";
 		$table_update_options .= '<span style="color: #dd2222; font-weight: bold;">' . $lang['FixForums'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_forums' . $lang_append) . '"><span class="text_red">' . $lang['FixForumsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
-		$table_update_options .= '</ul></div>' . "\n";
-
-		// Fix Posts
-		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color: #228822; font-weight: bold;">' . $lang['FixPosts'] . '</span><br />' . "\n";
-		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts' . $lang_append) . '"><span class="text_red">' . $lang['FixPostsExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
-		$table_update_options .= '</ul></div>' . "\n";
-
-		// Fix Signatures
-		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color: #ffdd22; font-weight: bold;">' . $lang['FixSignatures'] . '</span><br />' . "\n";
-		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_signatures' . $lang_append) . '"><span class="text_red">' . $lang['FixSignaturesExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Fix Pics
@@ -2935,18 +3054,25 @@ class ip_page
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_birthdays' . $lang_append) . '"><span class="text_red">' . $lang['FixBirthdaysExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
+		// Fix Posts
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color: #006600; font-weight: bold;">' . $lang['FixPosts'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_posts' . $lang_append) . '"><span class="text_red">' . $lang['FixPosts_Explain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
+		// Fix Signatures
+		$table_update_options .= '<br /><br />' . "\n";
+		$table_update_options .= '<span style="color: #ddaa00; font-weight: bold;">' . $lang['FixSignatures'] . '</span><br />' . "\n";
+		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
+		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_signatures' . $lang_append) . '"><span class="text_red">' . $lang['FixSignatures_Explain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
+		$table_update_options .= '</ul></div>' . "\n";
+
 		// Fix Constants
 		$table_update_options .= '<br /><br />' . "\n";
 		$table_update_options .= '<span style="color: #0033cc; font-weight: bold;">' . $lang['FixConstantsInFiles'] . '</span><br />' . "\n";
 		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
 		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_constants' . $lang_append) . '"><span class="text_red">' . $lang['FixConstantsInFilesExplain'] . '</span></a><br /><span class="gensmall">' . $lang['ActionUndone'] . '</span><br /><br /></li>' . "\n";
-		$table_update_options .= '</ul></div>' . "\n";
-
-		// CHMOD
-		$table_update_options .= '<br /><br />' . "\n";
-		$table_update_options .= '<span style="color: #008888; font-weight: bold;">' . $lang['CHMOD_Files'] . '</span><br />' . "\n";
-		$table_update_options .= '<div class="genmed"><br /><ul type="circle">' . "\n";
-		$table_update_options .= '<li><a href="' . ip_functions::append_sid(THIS_FILE . '?mode=chmod' . $lang_append) . '"><span class="text_red">' . $lang['CHMOD_Apply'] . '</span></a><br /><span class="gensmall">' . $lang['CHMOD_Apply_Warn'] . '</span><br /><br /></li>' . "\n";
 		$table_update_options .= '</ul></div>' . "\n";
 
 		// Clean Old Files

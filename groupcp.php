@@ -670,7 +670,7 @@ elseif ($group_id)
 	$db->sql_freeresult($result);
 
 	// Get moderator details for this group
-	$sql = "SELECT username, user_id, user_active, user_color, user_color_group, user_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_icq, user_aim, user_yim, user_msnm, user_allow_viewonline, user_session_time
+	$sql = "SELECT username, user_id, user_active, user_color, user_color_group, user_allow_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_icq, user_aim, user_yim, user_msnm, user_allow_viewonline, user_session_time
 		FROM " . USERS_TABLE . "
 		WHERE user_id = " . $group_info['group_moderator'];
 	$result = $db->sql_query($sql);
@@ -679,7 +679,7 @@ elseif ($group_id)
 
 	// Get user information for this group
 	// Changed sorting by username_clean instead of username
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
 		FROM " . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug
 		WHERE ug.group_id = $group_id
 			AND u.user_id = ug.user_id
@@ -690,7 +690,7 @@ elseif ($group_id)
 	$group_members = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_allow_viewonline, u.user_session_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_allow_viewonline, u.user_session_time
 		FROM " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u
 		WHERE ug.group_id = $group_id
 			AND ug.user_pending = 1

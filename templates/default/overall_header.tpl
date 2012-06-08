@@ -14,7 +14,7 @@
 <script type="text/javascript">
 
 /***********************************************
-* AnyLink Drop Down Menu- © Dynamic Drive (www.dynamicdrive.com)
+* AnyLink Drop Down Menu- Â© Dynamic Drive (www.dynamicdrive.com)
 * This notice MUST stay intact for legal use
 * Visit http://www.dynamicdrive.com/ for full source code
 ***********************************************/

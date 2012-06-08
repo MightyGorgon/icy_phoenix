@@ -273,7 +273,7 @@ elseif ($mode == 'read')
 	// END PM Navigation MOD
 
 	// Major query obtains the message ...
-	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u.user_active AS user_active_1, u.user_color AS user_color_1, u2.username AS username_2, u2.user_id AS user_id_2, u2.user_active AS user_active_2, u2.user_color AS user_color_2, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allow_viewonline, u.user_session_time, u.user_from, u.user_gender, pm.*
+	$sql = "SELECT u.username AS username_1, u.user_id AS user_id_1, u.user_active AS user_active_1, u.user_color AS user_color_1, u2.username AS username_2, u2.user_id AS user_id_2, u2.user_active AS user_active_2, u2.user_color AS user_color_2, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_allow_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allow_viewonline, u.user_session_time, u.user_from, u.user_gender, pm.*
 		FROM " . PRIVMSGS_TABLE . " pm, " . USERS_TABLE . " u, " . USERS_TABLE . " u2
 		WHERE pm.privmsgs_id = $privmsgs_id
 			$pm_sql_user

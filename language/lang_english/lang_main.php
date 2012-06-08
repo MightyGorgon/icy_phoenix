@@ -1723,7 +1723,7 @@ $lang = array_merge($lang, array(
 	'LINK_DOWNLOADS' => 'Downloads',
 	'LINK_BOOKMARKS' => 'Bookmarks',
 	'LINK_DRAFTS' => 'Drafts',
-	'LINK_UPLOADED_IMAGES' => 'Uploaded Images',
+	'LINK_UPLOADED_IMAGES' => 'Personal Images',
 	'LINK_AJAX_SHOUTBOX' => 'Chat',
 	'LINK_LINKS' => 'Links',
 	'LINK_CONTACT_US' => 'Contact Us',
@@ -1978,7 +1978,7 @@ $lang = array_merge($lang, array(
 
 	'Uploading' => 'Uploading...',
 	'Upload_Image_Local' => 'Upload Image',
-	'Uploaded_Images_Local' => 'Uploaded Images',
+	'Uploaded_Images_Local' => 'Personal Images',
 	'Upload_Image_Local_Explain' => 'Select the file to be uploaded',
 	'Uploaded_Image_Success' => 'The image has been uploaded successfully.',
 	'Uploaded_Image_BBC' => 'You can use this BBCode to post this image.',
