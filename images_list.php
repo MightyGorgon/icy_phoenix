@@ -138,7 +138,7 @@ $template->assign_vars(array(
 );
 
 $template->assign_vars(array(
-	'PAGINATION' => generate_pagination(append_sid(CMS_PAGE_IMAGES . '?sort=standard'), $total_pics, $pics_per_page, $start),
+	'PAGINATION' => generate_pagination(append_sid(CMS_PAGE_IMAGES . '?sort=standard' . (!empty($mode) ? ('&amp;mode=' . $mode) : '')), $total_pics, $pics_per_page, $start),
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pics_per_page) + 1), ceil($total_pics / $pics_per_page))
 	)
 );

@@ -77,21 +77,17 @@ class class_images
 
 		$images = array();
 
+		$order_sql = " ORDER BY " . (!empty($order_by) ? $order_by : "i.pic_time DESC");
+		$limit_sql = (!empty($n_items) ? (" LIMIT " . (!empty($start) ? ($start . ", " . $n_items) : ($n_items . " "))) : "");
 
-		if (!empty($user_id))
-		{
-			$order_sql = " ORDER BY " . (!empty($order_by) ? $order_by : "i.pic_time DESC");
-			$limit_sql = (!empty($n_items) ? (" LIMIT " . (!empty($start) ? ($start . ", " . $n_items) : ($n_items . " "))) : "");
-
-			$sql = "SELECT i.*, u.user_id, u.username, u.user_active, u.user_color, u.user_level, u.user_rank, u.user_first_name, u.user_last_name
-							FROM " . IMAGES_TABLE . " i, " . USERS_TABLE . " u
-							WHERE i.pic_user_id = u.user_id"
-							. $order_sql
-							. $limit_sql;
-			$result = $db->sql_query($sql);
-			$images = $db->sql_fetchrowset($result);
-			$db->sql_freeresult($result);
-		}
+		$sql = "SELECT i.*, u.user_id, u.username, u.user_active, u.user_color, u.user_level, u.user_rank, u.user_first_name, u.user_last_name
+						FROM " . IMAGES_TABLE . " i, " . USERS_TABLE . " u
+						WHERE i.pic_user_id = u.user_id"
+						. $order_sql
+						. $limit_sql;
+		$result = $db->sql_query($sql);
+		$images = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
 
 		return $images;
 	}
