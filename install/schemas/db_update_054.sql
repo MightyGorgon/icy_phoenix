@@ -1115,6 +1115,18 @@ CREATE TABLE `phpbb_images` (
 
 UPDATE `phpbb_cms_nav_menu` SET `menu_link` = 'images_list.php' WHERE `menu_link` = 'posted_img_list.php';
 
+UPDATE `phpbb_posts` SET `post_text` = REPLACE(`post_text`,'posted_images/','images/');
+UPDATE `phpbb_posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list.php','images_list.php');
+UPDATE `phpbb_posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list_thumbnail.php','image_thumbnail_s.php');
+UPDATE `phpbb_posts` SET `post_text` = REPLACE(`post_text`,'posted_img_thumbnail.php','image_thumbnail.php');
+UPDATE `phpbb_posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_images/','images/');
+UPDATE `phpbb_posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list.php','images_list.php');
+UPDATE `phpbb_posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list_thumbnail.php','image_thumbnail_s.php');
+UPDATE `phpbb_posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_thumbnail.php','image_thumbnail.php');
+UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`,'posted_images/','images/');
+UPDATE `phpbb_users` SET `user_sig` = REPLACE(`user_sig`,'posted_images/','images/');
+# UPDATE `phpbb_bugs_posts` SET `post_text` = REPLACE(`post_text`,'posted_images/','images/');
+# UPDATE `phpbb_hon` SET `hon_description` = REPLACE(`hon_description`,'posted_images/','images/');
 
 
 

@@ -80,9 +80,17 @@ class class_images
 		$order_sql = " ORDER BY " . (!empty($order_by) ? $order_by : "i.pic_time DESC");
 		$limit_sql = (!empty($n_items) ? (" LIMIT " . (!empty($start) ? ($start . ", " . $n_items) : ($n_items . " "))) : "");
 
+		// Query only existing users...
+		/*
 		$sql = "SELECT i.*, u.user_id, u.username, u.user_active, u.user_color, u.user_level, u.user_rank, u.user_first_name, u.user_last_name
 						FROM " . IMAGES_TABLE . " i, " . USERS_TABLE . " u
 						WHERE i.pic_user_id = u.user_id"
+						. $order_sql
+						. $limit_sql;
+		*/
+		// Query all images, regardless if the user still exists or not...
+		$sql = "SELECT i.*, u.user_id, u.username, u.user_active, u.user_color, u.user_level, u.user_rank, u.user_first_name, u.user_last_name
+						FROM " . IMAGES_TABLE . " AS i LEFT JOIN " . USERS_TABLE . " AS u ON i.pic_user_id = u.user_id"
 						. $order_sql
 						. $limit_sql;
 		$result = $db->sql_query($sql);

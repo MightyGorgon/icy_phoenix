@@ -131,7 +131,7 @@ $config['thumbnail_size'] = $req_thumb_size;
 // --------------------------------
 // Check thumbnail cache. If cache is available we will SEND & EXIT
 // --------------------------------
-// Do not use CACHE if is specified CACHE in the url: posted_img_thumbnail.php?pic_id=XXX&cache=false
+// Do not use CACHE if cache=false parameter is passed through the url: posted_img_thumbnail.php?pic_id=XXX&cache=false
 if(!empty($_GET['cache']))
 {
 	$config['thumbnail_cache'] = ($_GET['cache'] == 'false') ? false : $config['thumbnail_cache'];

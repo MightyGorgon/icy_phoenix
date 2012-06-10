@@ -4520,6 +4520,16 @@ if (substr($mode, 0, 6) == 'update')
 		)";
 
 		$sql[] = "UPDATE `" . $table_prefix . "cms_nav_menu` SET `menu_link` = 'images_list.php' WHERE `menu_link` = 'posted_img_list.php'";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list.php','images_list.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list_thumbnail.php','image_thumbnail_s.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_thumbnail.php','image_thumbnail.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list.php','images_list.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list_thumbnail.php','image_thumbnail_s.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_thumbnail.php','image_thumbnail.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "users` SET `user_sig` = REPLACE(`user_sig`,'posted_images/','images/')";
 
 		/* Updating from IP 2.0.0.85RC2 */
 		case '2.0.0.85':

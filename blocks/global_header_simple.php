@@ -118,7 +118,7 @@ if(!function_exists('cms_block_global_header_simple'))
 						}
 						else
 						{
-							$menu_sep = ($cms_config_vars['md_show_sep_icon'][$block_id] == true) ? '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />' : '';
+							$menu_sep = ($cms_config_vars['md_show_sep_icon'][$block_id] == true) ? '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />' : '';
 						}
 
 						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id);
@@ -137,7 +137,7 @@ if(!function_exists('cms_block_global_header_simple'))
 							'MENU_ITEM' => $menu_link['name'],
 							'MENU_LINK' => $menu_link['link'],
 							'MENU_URL' => $menu_link['url'],
-							'MENU_DESC' => $menu_desc,
+							'MENU_DESC' => str_replace("'", "\'", $menu_desc),
 							)
 						);
 					}

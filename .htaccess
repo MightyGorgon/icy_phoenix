@@ -47,7 +47,7 @@ RewriteEngine On
 #Make sure the whole site goes to www.mysite.com instead of mysite.com. This is good for the search engines
 #Edit and uncomment the below lines for your own site.
 #Make sure to replace icyphoenix.com with your site address.
-#RewriteCond %{HTTP_HOST} ^icyphoenix.com
+#RewriteCond %{HTTP_HOST} ^icyphoenix.com [NC]
 #RewriteRule (.*) http://www.icyphoenix.com/$1 [R=301,L]
 
 #Permanent redirection (the first line is the old domain, the second one is the new domain)

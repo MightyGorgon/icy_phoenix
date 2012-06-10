@@ -115,7 +115,7 @@ function cms_menu_build_link($item_data, $block_id)
 		$menu_link['link'] = cms_menu_build_complete_url($item_data['menu_default'], $block_id, $item_data['menu_link'], $menu_link['icon']);
 		$menu_link['url'] = (!empty($menu_link['link']) ? $menu_link['link'] : '');
 	}
-	$menu_link['url'] = (!empty($menu_link['url']) ? '<div class="genmed" align="left">' . $menu_link['url'] . '</div>' : '');
+	$menu_link['url'] = (!empty($menu_link['url']) ? '<span class="genmed" style="text-align: left;">' . $menu_link['url'] . '</span>' : '');
 
 	return $menu_link;
 }
