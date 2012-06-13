@@ -49,7 +49,7 @@ if(GetCookie(tmp) == '2')
 		<div id="menu_cat_{cat_row.CAT_ID}_h" class="nav-menu">
 			<div class="nav-div" style="padding: 2px;">
 				<!-- BEGIN menu_row -->
-				{cat_row.menu_row.MENU_URL}
+				<div style="text-align: left;">{cat_row.menu_row.MENU_URL}</div>
 				<!-- END menu_row -->
 			</div>
 		</div>

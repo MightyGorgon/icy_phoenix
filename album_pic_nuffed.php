@@ -29,7 +29,9 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', 0);
 if ($pic_id <= 0)
 {
-	die($lang['NO_PICS_SPECIFIED']);
+	image_no_thumbnail('no_thumb.jpg');
+	exit;
+	//die($lang['NO_PICS_SPECIFIED']);
 	//message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
@@ -113,9 +115,7 @@ if(($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER']
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		/*
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail($pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		exit;
 		*/
 	}

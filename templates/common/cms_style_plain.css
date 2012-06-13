@@ -21,6 +21,10 @@
 .forumline-no { border: solid 1px #444444; background-color: #f8f8f8; }
 .forumline-no2 { background-color: #f8f8f8; }
 
+.forum-buttons { text-align: center; vertical-align: middle; font-size: 11px; font-weight: bold; color: #113355; height: 25px; background: #acbccd url('images/bg_th.gif') top left repeat-x; border-top: solid 1px #cc3333; border-bottom: solid 1px #cc3333; }
+.forum-buttons a, .forum-buttons a:visited { color: #113355; font-weight: bold; text-decoration: none; vertical-align: top; }
+.forum-buttons a:hover, .forum-buttons a:active { color: #cc3333; font-weight: bold; text-decoration: none; vertical-align: top; }
+
 .row1, .row2, .row3, .row4, .row1h, .row1h-new, .row1hHover, .row1h-newHover, .row2h, .row2h-new, .row2hHover, .row2h-newHover, .row3h { border: solid 1px #ffffff; border-right-color: #dddddd; border-bottom-color: #dddddd; text-align: left; }
 .row1, .row1h, .row1h-new, .row1hHover, .row1h-newHover { background-color: #f8f8f8; }
 .row2, .row2h, .row2h-new, .row2hHover, .row2h-newHover { background-color: #f4f4f4; }

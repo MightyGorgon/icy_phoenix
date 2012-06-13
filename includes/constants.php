@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.0.0.84RC1');
+define('ICYPHOENIX_VERSION', '2.0.0.85RC2');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -92,6 +92,9 @@ define('CMS_PAGE_DOWNLOADS', 'downloads.' . PHP_EXT);
 define('CMS_PAGE_DL_DEFAULT', CMS_PAGE_DLOAD);
 //define('CMS_PAGE_DL_DEFAULT', CMS_PAGE_DOWNLOADS);
 define('CMS_PAGE_ALBUM', 'album.' . PHP_EXT);
+define('CMS_PAGE_IMAGES', 'images_list.' . PHP_EXT);
+define('CMS_PAGE_IMAGE_THUMBNAIL', 'image_thumbnail.' . PHP_EXT);
+define('CMS_PAGE_IMAGE_THUMBNAIL_S', 'image_thumbnail_s.' . PHP_EXT);
 define('CMS_PAGE_LINKS', 'links.' . PHP_EXT);
 define('CMS_PAGE_STATISTICS', 'statistics.' . PHP_EXT);
 define('CMS_PAGE_CALENDAR', 'calendar.' . PHP_EXT);
@@ -122,8 +125,9 @@ define('ATTACH_MOD_PATH', 'includes/attach_mod/');
 define('DOWNLOADS_PATH', 'downloads/');
 define('PA_FILE_DB_PATH', 'includes/pafiledb/');
 define('FILES_ICONS_DIR', 'images/files/');
-define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
+define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/images/');
 define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
+define('POSTED_IMAGES_THUMBS_S_PATH', POSTED_IMAGES_THUMBS_PATH . 's/');
 define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
 define('CMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'cms/');
 define('FORUMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'forums/');
@@ -140,7 +144,7 @@ define('UPI2DB_PATH', IP_ROOT_PATH . 'includes/upi2db/');
 // Mighty Gorgon - Constants Pages And Paths - END
 
 // Mighty Gorgon - FAP - BEGIN
-define('USERS_SUBFOLDERS_IMG', true); // Creates users subfolders for posted images
+define('USERS_SUBFOLDERS_IMG', true); // Creates users subfolders for uploaded images
 define('USERS_SUBFOLDERS_ALBUM', true); // Creates users subfolders for images in album
 define('ALBUM_MOD_PATH', IP_ROOT_PATH . 'includes/album_mod/');
 define('ALBUM_MOD_IMG_PATH', IP_ROOT_PATH . 'images/album/');
@@ -206,6 +210,7 @@ define('AUTH_CMS_MOD', 3);
 define('AUTH_CMS_ADMIN', 4);
 define('AUTH_CMS_FOUNDER', 5);
 define('AUTH_CMS_OWNER', 6);
+define('AUTH_CMS_ALL_NO_BOTS', 8);
 
 // Auth settings - Levels
 define('AUTH_NONE', -1);
@@ -467,6 +472,7 @@ define('GROUPS_TABLE', $table_prefix . 'groups');
 define('HACKS_LIST_TABLE', $table_prefix . 'hacks_list');
 define('JR_ADMIN_TABLE', $table_prefix . 'jr_admin_users');
 define('KB_ARTICLES_TABLE', $table_prefix . 'kb_articles');
+define('IMAGES_TABLE', $table_prefix . 'images');
 define('LINK_CATEGORIES_TABLE', $table_prefix . 'link_categories');
 define('LINK_CONFIG_TABLE', $table_prefix . 'link_config');
 define('LINKS_TABLE', $table_prefix . 'links');

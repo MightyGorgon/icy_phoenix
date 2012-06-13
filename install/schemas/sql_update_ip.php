@@ -87,6 +87,8 @@ switch ($req_version)
 	case '133083': $current_ip_version = '1.3.30.83'; break;
 	case '20084': $current_ip_version = '2.0.0.84'; break;
 	case '20084rc1': $current_ip_version = '2.0.0.84RC1'; break;
+	case '20085': $current_ip_version = '2.0.0.85'; break;
+	case '20085rc2': $current_ip_version = '2.0.0.85RC2'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4483,6 +4485,55 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 2.0.0.84RC1 */
 		case '2.0.0.84':
 		case '2.0.0.84RC1':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_viewemail` `user_allow_viewemail` TINYINT(1) NOT NULL DEFAULT '0'";
+
+		if (!defined('POSTED_IMAGES_PATH')) define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/images/');
+		if (!defined('POSTED_IMAGES_THUMBS_PATH')) define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
+		if (!defined('POSTED_IMAGES_THUMBS_S_PATH')) define('POSTED_IMAGES_THUMBS_S_PATH', POSTED_IMAGES_THUMBS_PATH . 's/');
+		if (!@file_exists(POSTED_IMAGES_THUMBS_S_PATH))
+		{
+			$new_folder = substr(POSTED_IMAGES_THUMBS_S_PATH, 0, -1);
+			$dir_creation = @mkdir(POSTED_IMAGES_THUMBS_S_PATH, 0777);
+		}
+		if (!@file_exists(POSTED_IMAGES_PATH))
+		{
+			// We need to remove last trailing slash "/"
+			$old_folder = IP_ROOT_PATH . 'files/posted_images';
+			$new_folder = substr(POSTED_IMAGES_PATH, 0, -1);
+			$dir_rename = rename($old_folder, $new_folder);
+			@chmod($new_folder, 0777);
+		}
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "images` (
+			`pic_id` INT(11) unsigned NOT NULL auto_increment,
+			`pic_filename` VARCHAR(255) NOT NULL DEFAULT '',
+			`pic_size` INT(15) unsigned NOT NULL DEFAULT '0',
+			`pic_title` VARCHAR(255) NOT NULL DEFAULT '',
+			`pic_desc` TEXT NOT NULL,
+			`pic_user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+			`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
+			`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',
+			`pic_approval` TINYINT(3) NOT NULL DEFAULT '1',
+			PRIMARY KEY (`pic_id`),
+			KEY `pic_user_id` (`pic_user_id`),
+			KEY `pic_time` (`pic_time`)
+		)";
+
+		$sql[] = "UPDATE `" . $table_prefix . "cms_nav_menu` SET `menu_link` = 'images_list.php' WHERE `menu_link` = 'posted_img_list.php'";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list.php','images_list.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list_thumbnail.php','image_thumbnail_s.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_thumbnail.php','image_thumbnail.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list.php','images_list.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list_thumbnail.php','image_thumbnail_s.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_thumbnail.php','image_thumbnail.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "users` SET `user_sig` = REPLACE(`user_sig`,'posted_images/','images/')";
+
+		/* Updating from IP 2.0.0.85RC2 */
+		case '2.0.0.85':
+		case '2.0.0.85RC2':
 
 	}
 

@@ -58,7 +58,7 @@ function bbcb_vars_reassign_end()
 					pic_counter++;
 					img_bbcode = '{IMG_BBCODE}';
 					//$('<div><\/div>').appendTo('#files').html('<img src="{S_UPLOAD_DIR}' + file + '" alt="" /><br />' + '<span class="text_green">' + file + '<\/span>').addClass('picframe-cont');
-					$('<div><\/div>').appendTo('#files').html('<img src="posted_img_list_thumbnail.' + php_ext + '?pic_id=' + escape('{S_USER_UPLOAD_DIR}' + res_array[1]) + '" alt="" /><br />' + '<input class="post" name="bbci_' + pic_counter + '" size="80" maxlength="200" value="' + img_bbcode.replace('___IMAGE___', res_array[1]) + '" style="width: 160px; max-width: 160px;" type="text" readonly="readonly" onclick="this.form.bbci_' + pic_counter + '.focus(); this.form.bbci_' + pic_counter + '.select();" />' + '<br /><input type="button" class="mainoption" value="{L_INSERT_BBC}" onclick="bbcb_ui_vars_reassign_start(); emoticon_sc(this.form.bbci_' + pic_counter + '.value); bbcb_ui_vars_reassign_end();" />').addClass('picframe-cont');
+					$('<div><\/div>').appendTo('#files').html('<img src="image_thumbnail_s.' + php_ext + '?pic_id=' + escape('{S_USER_UPLOAD_DIR}' + res_array[1]) + '" alt="" /><br />' + '<input class="post" name="bbci_' + pic_counter + '" size="80" maxlength="200" value="' + img_bbcode.replace('___IMAGE___', res_array[1]) + '" style="width: 160px; max-width: 160px;" type="text" readonly="readonly" onclick="this.form.bbci_' + pic_counter + '.focus(); this.form.bbci_' + pic_counter + '.select();" />' + '<br /><input type="button" class="mainoption" value="{L_INSERT_BBC}" onclick="bbcb_ui_vars_reassign_start(); emoticon_sc(this.form.bbci_' + pic_counter + '.value); bbcb_ui_vars_reassign_end();" />').addClass('picframe-cont');
 				}
 				else
 				{
@@ -92,7 +92,11 @@ function bbcb_vars_reassign_end()
 		{L_UPLOAD_IMAGE_EXPLAIN}&nbsp;<input id="upload" type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" /><br />
 		<span class="gensmall"><i>{L_ALLOWED_EXT}</i></span><br /><br />
 		<span id="status"></span>
-		<div id="files"></div>
+		<div id="files">
+		<!-- BEGIN pic_img -->
+		<div class="picframe-cont"><img src="{pic_img.PIC_THUMB}" alt="{pic_img.PIC_NAME}" title="{pic_img.PIC_BBC}" /><br /><input class="post" name="{pic_img.PIC_BBC_INPUT}" size="20" maxlength="200" value="{pic_img.PIC_BBC}" type="text" readonly="readonly" onclick="this.form.{pic_img.PIC_BBC_INPUT}.focus(); this.form.{pic_img.PIC_BBC_INPUT}.select();" /><br /><input type="button" class="mainoption" value="{L_INSERT_BBC}" onclick="bbcb_ui_vars_reassign_start(); emoticon_sc(this.form.{pic_img.PIC_BBC_INPUT}.value); bbcb_ui_vars_reassign_end();" /></div>
+		<!-- END pic_img -->
+		</div>
 		<br />
 	</td>
 </tr>

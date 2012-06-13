@@ -717,7 +717,7 @@ class class_form
 				// Create thumbnails for images
 				if ($v['is_image'])
 				{
-					$value = '<a href="' . append_sid($inputs_array[$k]) . '"><img src="' . append_sid('posted_img_thumbnail.' . PHP_EXT . '?pic_id=' . urlencode($inputs_array[$k]) . (isset($v['thumbnail_size']) ? ('&amp;thumbnail_size=' . intval($v['thumbnail_size'])) : '')) . '" alt="" /></a>';
+					$value = '<a href="' . append_sid($inputs_array[$k]) . '"><img src="' . append_sid(CMS_PAGE_IMAGE_THUMBNAIL . '?pic_id=' . urlencode($inputs_array[$k]) . (isset($v['thumbnail_size']) ? ('&amp;thumbnail_size=' . intval($v['thumbnail_size'])) : '')) . '" alt="" /></a>';
 				}
 
 				if (!empty($v['display_func']) && function_exists($v['display_func']))

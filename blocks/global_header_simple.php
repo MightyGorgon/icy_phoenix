@@ -25,10 +25,14 @@ if(!function_exists('cms_block_global_header_simple'))
 	function cms_block_global_header_simple()
 	{
 		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $user, $lang, $block_id, $cms_config_vars;
+		global $ip_cms;
 
-		include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
 		// Before starting with the loop... let's load the full menu links array!
-		$default_links_array = default_links_array();
+		if (!function_exists('cms_menu_default_links_array'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/functions_cms_menu.' . PHP_EXT);
+		}
+		$default_links_array = cms_menu_default_links_array();
 
 		$template->_tpldata['header_row.'] = array();
 		$template->_tpldata['header_desc.'] = array();
@@ -64,6 +68,7 @@ if(!function_exists('cms_block_global_header_simple'))
 		$menu_item = array();
 		$print_cat= array();
 		$first_item = 0;
+		$auth_levels = $ip_cms->cms_auth_view();
 
 		while ($menu_item = $db->sql_fetchrow($result))
 		{
@@ -86,29 +91,8 @@ if(!function_exists('cms_block_global_header_simple'))
 			}
 			else
 			{
-				$cat_allowed = true;
 				$auth_level_req = $cat_item_data['auth_view'];
-				switch($auth_level_req)
-				{
-					case '0':
-						$cat_allowed = true;
-						break;
-					case '1':
-						$cat_allowed = ($user->data['session_logged_in'] ? false : true);
-						break;
-					case '2':
-						$cat_allowed = ($user->data['session_logged_in'] ? true : false);
-						break;
-					case '3':
-						$cat_allowed = ((($user->data['user_level'] == MOD) || ($user->data['user_level'] == ADMIN)) ? true : false);
-						break;
-					case '4':
-						$cat_allowed = (($user->data['user_level'] == ADMIN) ? true : false);
-						break;
-					default:
-						$cat_allowed = true;
-						break;
-				}
+				$cat_allowed = in_array($auth_level_req, $auth_levels) ? true : false;
 
 				$cat_id = ($cat_item_data['cat_id']);
 
@@ -120,32 +104,11 @@ if(!function_exists('cms_block_global_header_simple'))
 					}
 					else
 					{
-						$menu_allowed = true;
 						$auth_level_req = $menu_cat_item_data['auth_view'];
-						switch($auth_level_req)
-						{
-							case '0':
-								$menu_allowed = true;
-								break;
-							case '1':
-								$menu_allowed = ($user->data['session_logged_in'] ? false : true);
-								break;
-							case '2':
-								$menu_allowed = ($user->data['session_logged_in'] ? true : false);
-								break;
-							case '3':
-								$menu_allowed = ((($user->data['user_level'] == MOD) || ($user->data['user_level'] == ADMIN)) ? true : false);
-								break;
-							case '4':
-								$menu_allowed = (($user->data['user_level'] == ADMIN) ? true : false);
-								break;
-							default:
-								$menu_allowed = true;
-								break;
-						}
+						$menu_allowed = in_array($auth_level_req, $auth_levels) ? true : false;
 					}
 
-					if ($menu_allowed == true)
+					if (!empty($menu_allowed))
 					{
 						//echo($menu_cat_item_data['menu_name'] . '<br />');
 						if ($first_item == 0)
@@ -155,46 +118,26 @@ if(!function_exists('cms_block_global_header_simple'))
 						}
 						else
 						{
-							$menu_sep = ($cms_config_vars['md_show_sep_icon'][$block_id] == true) ? '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />' : '';
+							$menu_sep = ($cms_config_vars['md_show_sep_icon'][$block_id] == true) ? '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />' : '';
 						}
-						if ($cms_config_vars['md_show_links_icon'][$block_id] == true)
+
+						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id);
+						if (empty($cms_config_vars['md_show_links_icon'][$block_id]))
 						{
-							$menu_icon = (($menu_cat_item_data['menu_icon'] != '') ? '<img src="' . $menu_cat_item_data['menu_icon'] . '" alt="" title="" style="vertical-align:middle;" />&nbsp;' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align:middle;" />&nbsp;');
+							$menu_link['icon'] = '';
 						}
-						if ($menu_cat_item_data['menu_default'] == 0)
-						{
-							if (($menu_cat_item_data['menu_name_lang'] != '') && isset($lang['menu_item'][$menu_cat_item_data['menu_name_lang']]))
-							{
-								$menu_name = $lang['menu_item'][$menu_cat_item_data['menu_name_lang']];
-							}
-							else
-							{
-								$menu_name = (($menu_cat_item_data['menu_name'] != '') ? stripslashes($menu_cat_item_data['menu_name']) : 'cat_item' . $menu_cat_item_data['cat_id']);
-							}
-							if ($menu_cat_item_data['menu_link_external'] == true)
-							{
-								$menu_link = $menu_cat_item_data['menu_link'];
-								$menu_link .= '" target="_blank';
-							}
-							else
-							{
-								$menu_link = append_sid($menu_cat_item_data['menu_link']);
-							}
-							$menu_url = '<a href="' . $menu_link . '">' . $menu_icon . $menu_name . '</a>';
-						}
-						else
-						{
-							$menu_url = build_complete_url($menu_cat_item_data['menu_default'], $block_id, $menu_cat_item_data['menu_link'], $menu_icon);
-						}
-						if ($cms_config_vars['md_show_desc'][$block_id] == true)
+						if (!empty($cms_config_vars['md_show_desc'][$block_id]))
 						{
 							$menu_desc = $menu_cat_item_data['menu_desc'];
 						}
+
 						$template->assign_block_vars('header_row', array(
 							'MENU_SEP' => $menu_sep,
-							'MENU_ICON' => $menu_icon,
-							'MENU_URL' => $menu_url,
-							'MENU_DESC' => $menu_desc,
+							'MENU_ICON' => $menu_link['icon'],
+							'MENU_ITEM' => $menu_link['name'],
+							'MENU_LINK' => $menu_link['link'],
+							'MENU_URL' => $menu_link['url'],
+							'MENU_DESC' => str_replace("'", "\'", $menu_desc),
 							)
 						);
 					}

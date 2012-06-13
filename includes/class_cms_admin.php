@@ -1031,7 +1031,7 @@ class cms_admin
 							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
 							'VIEW' => $b_view,
 
-						// InformPro - BEGIN
+							// InformPro - BEGIN
 							'BLOCK_PARENT' => $bfp_rows[$b_rows[$i]['bs_id']],
 							'WEIGHT' => $b_rows[$i]['weight'],
 							'BLOCK_TIP' => $lang['CMS_BLOCK_PARENT'] . ': ' . htmlspecialchars($bfp_rows[$b_rows[$i]['bs_id']]) . htmlspecialchars('<br />') . "\r\n" . $lang['B_BORDER'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_TITLEBAR'] . ': ' . (($b_rows[$i]['titlebar']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_LOCAL'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_BACKGROUND'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']),
@@ -1163,8 +1163,8 @@ class cms_admin
 
 		$select_name = 'view';
 		$default = $b_info['view'];
-		$options_array = array(0, 1, 2, 3, 4);
-		$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
+		$options_array = array(0, 1, 2, 3, 4, 8);
+		$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN'], $lang['B_ALL_NO_BOTS']);
 		$select_js = '';
 		$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
@@ -1666,7 +1666,8 @@ class cms_admin
 			'rows' => $blocks,
 			'list' => $list,
 			'blist' => $blist,
-			'view' => array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']),
+			'view_id' => array(0, 1, 2, 3, 4, 8),
+			'view' => array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN'], $lang['B_ALL_NO_BOTS']),
 			'groups' => $groups,
 			'remove' => append_sid($this->root . '?mode=block_settings&action=delete&bs_id={ID}'),
 			'edit' => append_sid($this->root . '?mode=block_settings&action=edit&bs_id={ID}', true),
@@ -1785,8 +1786,8 @@ class cms_admin
 
 			$select_name = 'view';
 			$default = empty($l_info['view']) ? 0 : $l_info['view'];
-			$options_array = array(0, 1, 2, 3, 4);
-			$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
+			$options_array = array(0, 1, 2, 3, 4, 8);
+			$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN'], $lang['B_ALL_NO_BOTS']);
 			$select_js = '';
 			$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
@@ -2241,7 +2242,6 @@ class cms_admin
 			if ($is_layout_special)
 			{
 				$layout_locked = !empty($l_rows[$i]['locked']) ? true : false;
-
 				$options_array = array(AUTH_ALL, AUTH_REG, AUTH_MOD, AUTH_ADMIN);
 				$options_langs_array = array($lang['B_ALL'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
 			}
@@ -2599,6 +2599,12 @@ class cms_admin
 				break;
 			case '4':
 				$b_view = $lang['B_ADMIN'];
+				break;
+			case '8':
+				$b_view = $lang['B_ALL_NO_BOTS'];
+				break;
+			default:
+				$b_view = $lang['B_ALL'];
 				break;
 		}
 		return $b_view;

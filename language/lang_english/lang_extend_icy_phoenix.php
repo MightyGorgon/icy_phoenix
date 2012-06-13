@@ -264,7 +264,7 @@ if ($lang_extend_admin)
 
 		'IP_no_bump' => 'Forbid bumping within 24 hours',
 		'IP_no_bump_explain' => 'Enabling this option last posters won\'t be able to post within 24 hours from their last post unless someone else has posted a reply (never applies to admins)',
-		'MODS_ALLOWED' => 'Moderators Can Posts',
+		'MODS_ALLOWED' => 'Moderators Can Post',
 
 		'IP_robots_index_topics_no_replies' => 'Enable Robots Indexing Topics No Replies',
 		'IP_robots_index_topics_no_replies_explain' => 'Enabling this option will enable indexing for topics with no replies, otherwise topics with no replies will not be indexed',
@@ -338,7 +338,7 @@ if ($lang_extend_admin)
 		'IP_thumbnail_posts' => 'Thumbnails in posts',
 		'IP_thumbnail_posts_explain' => 'With this option a thumbnail will be shown instead of a full picture when an image is posted using IMG BBCode',
 
-		'IP_show_pic_size_on_thumb' => 'Show the pic size on thumbnail',
+		'IP_show_pic_size_on_thumb' => 'Show image size on thumbnail',
 
 		'IP_thumbnail_highslide' => 'Use HighSlide to show images if thumbnails are enabled',
 		'IP_thumbnail_highslide_explain' => 'Opens the image in front of the current page instead of opening it in a new window. More about <a href="http://www.highslide.com/" target="_blank">HighSlide JS...</a><br />Make sure you empty the precompiled posts after changing this setting!',

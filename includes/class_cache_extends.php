@@ -79,7 +79,7 @@ class ip_cache extends acm
 	{
 		global $db, $config, $ip_cms, $cms_config_vars;
 
-		$auth_level = $ip_cms->cms_blocks_view();
+		$auth_level = $ip_cms->cms_auth_view();
 		$auth_level_suffix = implode('', $auth_level);
 		if (($cms_config = $this->get('_cms_global_blocks_config_' . $auth_level_suffix)) === false)
 		{

@@ -33,7 +33,10 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', '');
 if (empty($pic_id))
 {
-	message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
+	image_no_thumbnail('no_thumb.jpg');
+	exit;
+	//die($lang['NO_PICS_SPECIFIED']);
+	//message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 $pic_id = urldecode($pic_id);
 
@@ -70,11 +73,9 @@ if (!in_array($pic_filetype, $thumb_ext_array))
 	$image_processed = true;
 	$pic_size = get_full_image_info($pic_fullpath);
 
-	if($pic_size == false)
+	if(empty($pic_size))
 	{
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
 		exit;
 	}
 
@@ -127,28 +128,10 @@ if (USERS_SUBFOLDERS_IMG == true)
 // This is needed to set up the new thumbnail size if requested via $_GET
 $config['thumbnail_size'] = $req_thumb_size;
 
-/*
-switch ($pic_filetype)
-{
-	case 'gif':
-		break;
-	case 'jpg':
-		break;
-	case 'png':
-		break;
-	default:
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($images['no_thumbnail']);
-		exit;
-		break;
-}
-*/
-
 // --------------------------------
 // Check thumbnail cache. If cache is available we will SEND & EXIT
 // --------------------------------
-// Do not use CACHE if is specified CACHE in the url: posted_img_thumbnail.php?pic_id=XXX&cache=false
+// Do not use CACHE if cache=false parameter is passed through the url: posted_img_thumbnail.php?pic_id=XXX&cache=false
 if(!empty($_GET['cache']))
 {
 	$config['thumbnail_cache'] = ($_GET['cache'] == 'false') ? false : $config['thumbnail_cache'];
@@ -156,34 +139,7 @@ if(!empty($_GET['cache']))
 
 if(($config['thumbnail_cache'] == true) && file_exists($pic_thumbnail_fullpath))
 {
-	/*
-	$Image = new ImgObj();
-	$Image->ReadSourceFile($pic_thumbnail_fullpath);
-	$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'thumb_', '', $config['thumbnail_quality']);
-	$Image->Destroy();
-	exit;
-	*/
-	switch($pic_filetype)
-	{
-		case 'gif':
-			$file_header = 'Content-type: image/gif';
-			break;
-		case 'jpg':
-			$file_header = 'Content-type: image/jpeg';
-			break;
-		case 'png':
-			$file_header = 'Content-type: image/png';
-			break;
-		default:
-			header('Content-type: image/jpeg');
-			header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-			readfile($images['no_thumbnail']);
-			exit;
-			break;
-	}
-	header($file_header);
-	header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-	readfile($pic_thumbnail_fullpath);
+	image_output($pic_thumbnail_fullpath, $pic_title_reg, $pic_filetype, 'thumb_');
 	exit;
 }
 
@@ -216,30 +172,22 @@ if(!$pic_exists && any_url_exists($pic_fullpath))
 
 if(!$pic_exists)
 {
-	header('Content-type: image/jpeg');
-	header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-	readfile($images['no_thumbnail']);
+	image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
 	exit;
-	//message_die(GENERAL_MESSAGE, $lang['Pic_not_exist']);
-	//die($pic_fullpath);
 }
 
 if ($image_processed == false)
 {
 	$pic_size = get_full_image_info($pic_fullpath, null, $pic_local);
-
-	if($pic_size == false)
+	if(empty($pic_size))
 	{
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
 		exit;
 	}
 
 	$pic_width = $pic_size['width'];
 	$pic_height = $pic_size['height'];
 	$pic_filetype = strtolower($pic_size['type']);
-	//die($pic_filetype);
 }
 
 // ------------------------------------
@@ -252,34 +200,7 @@ if(($pic_width < $config['thumbnail_size']) && ($pic_height < $config['thumbnail
 		$copy_success = @copy($pic_fullpath, $pic_thumbnail_fullpath);
 		@chmod($pic_thumbnail_fullpath, 0777);
 	}
-	/*
-	$Image = new ImgObj();
-	$Image->ReadSourceFile($pic_fullpath);
-	$Image->SendToBrowser($pic_title_reg, $pic_filetype, '', '', $config['thumbnail_quality']);
-	$Image->Destroy();
-	exit;
-	*/
-	switch ($pic_filetype)
-	{
-		case 'gif':
-			$file_header = 'Content-type: image/gif';
-			break;
-		case 'jpg':
-			$file_header = 'Content-type: image/jpeg';
-			break;
-		case 'png':
-			$file_header = 'Content-type: image/png';
-			break;
-		default:
-			header('Content-type: image/jpeg');
-			header('Content-Disposition: filename=' . $pic_title_reg . '.' . $pic_filetype);
-			readfile($images['no_thumbnail']);
-			exit;
-			break;
-	}
-	header($file_header);
-	header('Content-Disposition: filename=' . $pic_title_reg . '.' . $pic_filetype);
-	readfile($pic_fullpath);
+	image_output($pic_fullpath, $pic_title_reg, $pic_filetype, '');
 	exit;
 }
 else
@@ -348,9 +269,7 @@ else
 	else
 	{
 		$Image->Destroy();
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_title_reg . '.' . $pic_filetype);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail('thumb_' . $pic_title_reg . '.' . $pic_filetype);
 		exit;
 	}
 }

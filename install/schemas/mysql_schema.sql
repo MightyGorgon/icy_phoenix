@@ -2143,7 +2143,6 @@ CREATE TABLE `phpbb_users` (
 	`user_last_privmsg` INT(11) NOT NULL DEFAULT '0',
 	`user_private_chat_alert` VARCHAR(255) NOT NULL DEFAULT '0',
 	`user_emailtime` INT(11) DEFAULT NULL,
-	`user_viewemail` TINYINT(1) DEFAULT NULL,
 	`user_profile_view_popup` TINYINT(1) DEFAULT '0',
 	`user_attachsig` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_setbm` TINYINT(1) NOT NULL DEFAULT '0',
@@ -2154,6 +2153,7 @@ CREATE TABLE `phpbb_users` (
 	`user_allowavatar` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_allow_pm` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_allow_pm_in` TINYINT(1) NOT NULL DEFAULT '1',
+	`user_allow_viewemail` TINYINT(1) NOT NULL DEFAULT '0',
 	`user_allow_mass_email` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_allow_viewonline` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_notify` TINYINT(1) NOT NULL DEFAULT '1',
@@ -2925,3 +2925,22 @@ CREATE TABLE `phpbb_acl_users` (
 );
 
 ## AUTH SYSTEM - END
+
+## IMAGES - END
+
+CREATE TABLE `phpbb_images` (
+	`pic_id` INT(11) unsigned NOT NULL auto_increment,
+	`pic_filename` VARCHAR(255) NOT NULL DEFAULT '',
+	`pic_size` INT(15) unsigned NOT NULL DEFAULT '0',
+	`pic_title` VARCHAR(255) NOT NULL DEFAULT '',
+	`pic_desc` TEXT NOT NULL,
+	`pic_user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+	`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
+	`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',
+	`pic_approval` TINYINT(3) NOT NULL DEFAULT '1',
+	PRIMARY KEY (`pic_id`),
+	KEY `pic_user_id` (`pic_user_id`),
+	KEY `pic_time` (`pic_time`)
+);
+
+## IMAGES - END

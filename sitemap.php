@@ -122,6 +122,19 @@ else
 	$xml_sitemap_footer = '
 </urlset>';
 
+	$sitemap_pages = array(CMS_PAGE_FORUM, CMS_PAGE_DLOAD, CMS_PAGE_ALBUM, CMS_PAGE_LINKS, CMS_PAGE_TAGS);
+	$sitemap_pages_change = 'always';
+	$sitemap_pages_priority = '1.0';
+	foreach ($sitemap_pages as $sitemap_page)
+	{
+		$xml_sitemap_body .= '
+		<url>
+			<loc>' . $server_url . $sitemap_page . '</loc>
+			<changefreq>' . $sitemap_pages_change . '</changefreq>
+			<priority>' . $sitemap_pages_priority . '</priority>
+		</url>';
+	}
+
 	// MG SITEMAP - FORUM - BEGIN
 	//Get a list of publicly viewable forums
 	$forumids = '';
@@ -323,12 +336,12 @@ else
 					$url = $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'];
 				}
 				$xml_sitemap_body .= '
-		<url>
-			<loc>' . $url . '</loc>
-			<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
-			<changefreq>' . $pic_change . '</changefreq>
-			<priority>' . $pic_priority . '</priority>
-		</url>';
+	<url>
+		<loc>' . $url . '</loc>
+		<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
+		<changefreq>' . $pic_change . '</changefreq>
+		<priority>' . $pic_priority . '</priority>
+	</url>';
 				$lastpic = $row['pic_id'];
 			}
 			$db->sql_freeresult();

@@ -1,6 +1,7 @@
 /*
 * Icy Phoenix jQuery CMS
 * Luca Libralato
+* Vjacheslav Trushkin
 */
 
 jQuery(document).ready(function()
@@ -234,7 +235,7 @@ var cmsSettings = {
 			var html = '<div class="block-change-view"><ul>';
 			for(var i = 0; i < cmsSettings.data.view.length; i++)
 			{
-				html += '<li class="row-' + i + '"><a href="javascript:void(0);" onclick="cmsSettings.checkView(' + id + ', ' + i + '); return false;">' + cmsSettings.data.view[i] + '</a></li>';
+				html += '<li class="row-' + cmsSettings.data.view_id[i] + '"><a href="javascript:void(0);" onclick="cmsSettings.checkView(' + id + ', ' + cmsSettings.data.view_id[i] + '); return false;">' + cmsSettings.data.view[i] + '</a></li>';
 			}
 			html += '</ul>';
 			html += '</div>';
@@ -243,7 +244,7 @@ var cmsSettings = {
 			block.find('li.row-' + data.view).addClass('checked');
 			for(var i = 0; i < cmsSettings.data.view.length; i++)
 			{
-				row.find('li.row-' + i).data('key', i);
+				row.find('li.row-' + cmsSettings.data.view_id[i]).data('key', cmsSettings.data.view_id[i]);
 			}
 		}
 		else
@@ -771,7 +772,7 @@ var cmsEditor = {
 		html += '<a class="edit-move" href="javascript:void(0);" title="' + cmsEditorLang.tipMove + '"></a>';
 		html += '<a class="edit-title" href="javascript:void(0);" onclick="cmsEditor.toggleChangeTitle(' + data.bid + ', true); return false;" title="' + cmsEditorLang.tipTitle + '"></a>';
 		html += '<a class="edit-delete" href="javascript:void(0);" onclick="if(confirm(cmsEditorLang.confirmDelete)) { cmsEditor.removeItem(' + data.bid + '); } return false;" title="' + cmsEditorLang.tipDelete + '"></a>';
-			html += '</p>';
+		html += '</p>';
 		html += '<p class="block-title-edit"><input type="text" id="title-' + data.bid + '" value="" /><a href="javascript:void(0);" onclick="cmsEditor.changeTitle(' + data.bid + '); return false;">' + cmsEditorLang.buttonChange + '</a><a href="javascript:void(0);" onclick="cmsEditor.toggleChangeTitle(' + data.bid + ', false); return false;">' + cmsEditorLang.buttonCancel + '</a></p>';
 		html += '<p class="block-parent"><span>' + cmsEditorLang.parentBlock + '</span><select id="parent-' + data.bid + '"><option value="-1">' + cmsEditorLang.manageBlocks + '</option><option value="-1" disabled="disabled">----------</option>';
 		var found = false;
@@ -974,10 +975,10 @@ var cmsEditor = {
 				'local': cmsEditorLang.optionLocal,
 				'background': cmsEditorLang.optionBackground
 			},
-				html = '<div class="add-form">' +
-				'<dl>' +
-					'<dt>' + cmsEditorLang.blockTitle + ':</dt><dd><input type="text" class="post" id="add-form-' + key + '-title" /></dd>' +
-					'<dt>' + cmsEditorLang.parentBlock + '</dt><dd><select id="add-form-' + key + '-parent">';
+			html = '<div class="add-form">' +
+			'<dl>' +
+				'<dt>' + cmsEditorLang.blockTitle + ':</dt><dd><input type="text" class="post" id="add-form-' + key + '-title" /></dd>' +
+				'<dt>' + cmsEditorLang.parentBlock + '</dt><dd><select id="add-form-' + key + '-parent">';
 			for(var i = 0; i < cmsEditor.data.all.length; i++)
 			{
 				html += '<option value="' + cmsEditor.data.all[i].bs_id + '">' + (cmsEditor.data.all[i].name.length > 22 ? (cmsEditor.data.all[i].name.substring(0, 17) + '...') : cmsEditor.data.all[i].name) + ' [' + cmsEditor.data.all[i].bs_id + ']</option>';

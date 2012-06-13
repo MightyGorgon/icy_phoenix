@@ -93,6 +93,7 @@ $lang = array_merge($lang, array(
 	'B_Cachetime' => 'Cache Duration',
 	'B_GROUPS' => 'Usergroups',
 	'B_ALL' => 'All',
+	'B_ALL_NO_BOTS' => 'All But BOTs',
 	'B_GUESTS' => 'Guests Only',
 	'B_REG' => 'Registered Users',
 	'B_MOD' => 'Moderators',

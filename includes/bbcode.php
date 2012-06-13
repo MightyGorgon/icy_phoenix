@@ -774,7 +774,7 @@ class bbcode
 				}
 				if (($thumb_exists == false) || ($cache_image == false))
 				{
-					$params['src'] = $server_url . 'posted_img_thumbnail.' . PHP_EXT . '?' . $cache_append . 'pic_id=' . $img_url_enc;
+					$params['src'] = $server_url . CMS_PAGE_IMAGE_THUMBNAIL . '?' . $cache_append . 'pic_id=' . $img_url_enc;
 				}
 			}
 

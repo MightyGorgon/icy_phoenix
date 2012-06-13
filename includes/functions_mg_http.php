@@ -160,6 +160,7 @@ function get_user_browser($http_user_agent_str)
 		'mobilesafari' => array('regex' => array('/Mobile Safari\/([0-9]{1,5}.[0-9]{1,5})/'), 'check_version' => true, 'name' => 'Safari Mobile', 'icon' => 'safari.png',),
 		'safari' => array('regex' => array('/Safari\/([0-9]{1,5}.[0-9]{1,5})/'), 'check_version' => true, 'name' => 'Safari', 'icon' => 'safari.png'),
 		'konqueror' => array('regex' => array('/Konqueror\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Konqueror', 'icon' => 'konqueror.png'),
+		'facebook' => array('regex' => array('/facebookexternalhit\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => true, 'name' => 'Facebook', 'icon' => 'facebook.png'),
 		// Mozilla must be the last one!!!
 		'mozilla' => array('regex' => array('/Mozilla\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Mozilla', 'icon' => 'mozilla.png'),
 	);

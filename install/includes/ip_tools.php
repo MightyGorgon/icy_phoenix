@@ -25,7 +25,7 @@ else
 
 if (!defined('IP_DB_UPDATE'))
 {
-	$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_birthdays', 'fix_constants', 'fix_forums', 'fix_images_album', 'fix_posts', 'fix_signatures', 'ren_move_images', 'update_phpbb', 'update');
+	$mode_array = array('start', 'chmod', 'clean_old_files', 'fix_birthdays', 'fix_constants', 'fix_forums', 'fix_images_album', 'fix_posts', 'fix_posts_ip2', 'fix_signatures', 'fix_signatures_ip2', 'ren_move_images', 'add_uploaded_images_to_db', 'update_phpbb', 'update');
 }
 else
 {
@@ -62,7 +62,8 @@ switch ($mode_test)
 		echo('<br clear="all" />' . "\n");
 		echo('<br /><br />' . "\n");
 		$page_framework->page_footer(false);
-		break;
+
+	break;
 
 	case 'clean_old_files':
 
@@ -96,7 +97,8 @@ switch ($mode_test)
 		}
 		echo('<br /><br />' . "\n");
 		$page_framework->page_footer(false);
-		break;
+
+	break;
 
 	case 'fix_birthdays':
 
@@ -110,15 +112,10 @@ switch ($mode_test)
 		if (substr($action, 0, 3) == 'fix')
 		{
 			$fix_results = $page_framework->fix_birthdays($action);
-
 			$url_append = '';
-
 			$url_append .= ($wip ? ('wip=true&amp;') : '');
-
 			$url_append .= 'birthdays_number=' . $birthdays_number . '&amp;' . 'birthday_start=' . $birthday_start . '&amp;' . 'total_birthdays=' . $total_birthdays . '&amp;' . 'total_birthdays_modified=' . $total_birthdays_modified;
-
 			$lang_append = '&amp;lang=' . $language;
-
 			$tmp_url = THIS_FILE . '?' . 'mode=' . $mode . '&amp;action=' . $action . '&amp;' . $url_append . $lang_append;
 			$meta_refresh = '';
 			if ($wip !== false)
@@ -163,7 +160,8 @@ switch ($mode_test)
 		}
 		echo('<br /><br />' . "\n");
 		$page_framework->page_footer(false);
-		break;
+
+	break;
 
 	case 'fix_constants':
 
@@ -197,7 +195,8 @@ switch ($mode_test)
 		}
 		echo('<br /><br />' . "\n");
 		$page_framework->page_footer(false);
-		break;
+
+	break;
 
 	case 'fix_forums':
 
@@ -231,7 +230,8 @@ switch ($mode_test)
 		}
 		echo('<br /><br />' . "\n");
 		$page_framework->page_footer(false);
-		break;
+
+	break;
 
 	case 'fix_images_album':
 
@@ -244,15 +244,10 @@ switch ($mode_test)
 		if (substr($action, 0, 3) == 'fix')
 		{
 			$fix_results = $page_framework->fix_pics($action);
-
 			$url_append = '';
-
 			$url_append .= ($wip ? ('wip=true&amp;') : '');
-
 			$url_append .= 'pics_number=' . $pics_number . '&amp;' . 'pic_start=' . $pic_start . '&amp;' . 'total_pics=' . $total_pics . '&amp;' . 'total_pics_modified=' . $total_pics_modified;
-
 			$lang_append = '&amp;lang=' . $language;
-
 			$tmp_url = THIS_FILE . '?' . 'mode=' . $mode . '&amp;action=' . $action . '&amp;' . $url_append . $lang_append;
 			$meta_refresh = '';
 			if ($wip !== false)
@@ -297,9 +292,13 @@ switch ($mode_test)
 		}
 		echo('<br /><br />' . "\n");
 		$page_framework->page_footer(false);
-		break;
+
+	break;
 
 	case 'fix_posts':
+	case 'fix_posts_ip2':
+	case 'fix_signatures':
+	case 'fix_signatures_ip2':
 
 		$wip = $ip_functions->request_var('wip', false);
 		$search_word = urldecode($ip_functions->request_var('search_word', ''));
@@ -316,22 +315,16 @@ switch ($mode_test)
 
 		if (substr($action, 0, 3) == 'fix')
 		{
-			$fix_results = $page_framework->fix_posts($action);
-
+			$fix_results = $page_framework->fix_content_ip($mode, $action);
 			$url_append = '';
-
 			$url_append .= ($wip ? ('wip=true&amp;') : '');
 			$url_append .= ($remove_bbcode_uid ? ('remove_bbcode_uid=true&amp;') : '');
 			$url_append .= ($remove_guess_bbcode_uid ? ('remove_guess_bbcode_uid=true&amp;') : '');
 			$url_append .= ($fix_posted_images ? ('fix_posted_images=true&amp;') : '');
-
 			$url_append .= 'search_word=' . urlencode($search_word) . '&amp;' . 'replacement_word=' . urlencode($replacement_word);
-
 			$url_append .= '&amp;';
 			$url_append .= 'posts_number=' . $posts_number . '&amp;' . 'post_start=' . $post_start . '&amp;' . 'total_posts=' . $total_posts . '&amp;' . 'total_posts_modified=' . $total_posts_modified;
-
 			$lang_append = '&amp;lang=' . $language;
-
 			$tmp_url = THIS_FILE . '?' . 'mode=' . $mode . '&amp;action=' . $action . '&amp;' . $url_append . $lang_append;
 			$meta_refresh = '';
 			if ($wip !== false)
@@ -348,12 +341,16 @@ switch ($mode_test)
 			echo('<br /><br />' . "\n");
 			if ($wip === false)
 			{
-				$box_message = $lang['FixingPostsComplete'] . '<br /><br />' . sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+				$box_message = (in_array($mode, array('fix_signatures', 'fix_signatures_ip2')) ? $lang['FixingSignaturesComplete'] : $lang['FixingPostsComplete']) . '<br /><br />' . sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
 				$page_framework->box('green', 'green', $box_message);
 			}
 			else
 			{
 				$box_message = $lang['FixingPostsInProgress'] . '<br /><br />' . $lang['FixingPostsInProgressRedirect'] . '<br /><br />' . sprintf($lang['FixingPostsInProgressRedirectClick'], '<a href="' . $ip_functions->append_sid($tmp_url) . '">', '</a>');
+				if (in_array($mode, array('fix_signatures', 'fix_signatures_ip2')))
+				{
+					$box_message = $lang['FixingSignaturesInProgress'] . '<br /><br />' . $lang['FixingPostsInProgressRedirect'] . '<br /><br />' . sprintf($lang['FixingPostsInProgressRedirectClick'], '<a href="' . $ip_functions->append_sid($tmp_url) . '">', '</a>');
+				}
 				$page_framework->box('yellow', 'red', $box_message);
 			}
 			echo('<br clear="all" />' . "\n");
@@ -366,7 +363,7 @@ switch ($mode_test)
 			$box_message = $lang['ActionUndone'];
 			$page_framework->box('red', 'red', $box_message);
 			echo('<br /><br />' . "\n");
-			echo($page_framework->fix_posts($action));
+			echo($page_framework->fix_content_ip($mode, $action));
 			echo('<br clear="all" />' . "\n");
 			echo('<br /><br />' . "\n");
 			$box_message = sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
@@ -376,41 +373,24 @@ switch ($mode_test)
 		}
 		echo('<br /><br />' . "\n");
 		$page_framework->page_footer(false);
-		break;
 
-	case 'fix_signatures':
+	break;
+
+	case 'add_uploaded_images_to_db':
 
 		$wip = $ip_functions->request_var('wip', false);
-		$search_word = urldecode($ip_functions->request_var('search_word', ''));
-		$replacement_word = urldecode($ip_functions->request_var('replacement_word', ''));
-
-		$remove_bbcode_uid = $ip_functions->request_var('remove_bbcode_uid', false);
-		$remove_guess_bbcode_uid = $ip_functions->request_var('remove_guess_bbcode_uid', false);
-		$fix_posted_images = $ip_functions->request_var('fix_posted_images', false);
-
-		$posts_number = $ip_functions->request_var('posts_number', 0);
-		$post_start = $ip_functions->request_var('post_start', 0);
-		$total_posts = $ip_functions->request_var('total_posts', 0);
-		$total_posts_modified = $ip_functions->request_var('total_posts_modified', 0);
+		$pics_number = $ip_functions->request_var('pics_number', 0);
+		$pic_start = $ip_functions->request_var('pic_start', 0);
+		$total_pics = $ip_functions->request_var('total_pics', 0);
+		$total_pics_modified = $ip_functions->request_var('total_pics_modified', 0);
 
 		if (substr($action, 0, 3) == 'fix')
 		{
-			$fix_results = $page_framework->fix_signatures($action);
-
+			$fix_results = $page_framework->add_uploaded_images_to_db($action);
 			$url_append = '';
-
 			$url_append .= ($wip ? ('wip=true&amp;') : '');
-			$url_append .= ($remove_bbcode_uid ? ('remove_bbcode_uid=true&amp;') : '');
-			$url_append .= ($remove_guess_bbcode_uid ? ('remove_guess_bbcode_uid=true&amp;') : '');
-			$url_append .= ($fix_posted_images ? ('fix_posted_images=true&amp;') : '');
-
-			$url_append .= 'search_word=' . urlencode($search_word) . '&amp;' . 'replacement_word=' . urlencode($replacement_word);
-
-			$url_append .= '&amp;';
-			$url_append .= 'posts_number=' . $posts_number . '&amp;' . 'post_start=' . $post_start . '&amp;' . 'total_posts=' . $total_posts . '&amp;' . 'total_posts_modified=' . $total_posts_modified;
-
+			$url_append .= 'pics_number=' . $pics_number . '&amp;' . 'pic_start=' . $pic_start . '&amp;' . 'total_pics=' . $total_pics . '&amp;' . 'total_pics_modified=' . $total_pics_modified;
 			$lang_append = '&amp;lang=' . $language;
-
 			$tmp_url = THIS_FILE . '?' . 'mode=' . $mode . '&amp;action=' . $action . '&amp;' . $url_append . $lang_append;
 			$meta_refresh = '';
 			if ($wip !== false)
@@ -427,12 +407,12 @@ switch ($mode_test)
 			echo('<br /><br />' . "\n");
 			if ($wip === false)
 			{
-				$box_message = $lang['FixingSignaturesComplete'] . '<br /><br />' . sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
+				$box_message = $lang['FixingPicsComplete'] . '<br /><br />' . sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
 				$page_framework->box('green', 'green', $box_message);
 			}
 			else
 			{
-				$box_message = $lang['FixingSignaturesInProgress'] . '<br /><br />' . $lang['FixingPostsInProgressRedirect'] . '<br /><br />' . sprintf($lang['FixingPostsInProgressRedirectClick'], '<a href="' . $ip_functions->append_sid($tmp_url) . '">', '</a>');
+				$box_message = $lang['FixingPicsInProgress'] . '<br /><br />' . $lang['FixingPicsInProgressRedirect'] . '<br /><br />' . sprintf($lang['FixingPicsInProgressRedirectClick'], '<a href="' . $ip_functions->append_sid($tmp_url) . '">', '</a>');
 				$page_framework->box('yellow', 'red', $box_message);
 			}
 			echo('<br clear="all" />' . "\n");
@@ -445,7 +425,7 @@ switch ($mode_test)
 			$box_message = $lang['ActionUndone'];
 			$page_framework->box('red', 'red', $box_message);
 			echo('<br /><br />' . "\n");
-			echo($page_framework->fix_signatures($action));
+			echo($page_framework->add_uploaded_images_to_db($action));
 			echo('<br clear="all" />' . "\n");
 			echo('<br /><br />' . "\n");
 			$box_message = sprintf($lang['ClickReturn'], '<a href="' . $ip_functions->append_sid(THIS_FILE) . '">', '</a>');
@@ -466,15 +446,10 @@ switch ($mode_test)
 		if (substr($action, 0, 3) == 'fix')
 		{
 			$fix_results = $page_framework->ren_move_images($action);
-
 			$url_append = '';
-
 			$url_append .= ($wip ? ('wip=true&amp;') : '');
-
 			$url_append .= 'pics_number=' . $pics_number . '&amp;' . 'total_pics_modified=' . $total_pics_modified;
-
 			$lang_append = '&amp;lang=' . $language;
-
 			$tmp_url = THIS_FILE . '?' . 'mode=' . $mode . '&amp;action=' . $action . '&amp;' . $url_append . $lang_append;
 			$meta_refresh = '';
 			if ($wip !== false)

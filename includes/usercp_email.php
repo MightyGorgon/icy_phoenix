@@ -44,7 +44,7 @@ if (!$user->data['session_logged_in'])
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=email&' . POST_USERS_URL . '=' . $user_id_dest, true));
 }
 
-$sql = "SELECT username, user_email, user_viewemail, user_lang, user_level
+$sql = "SELECT username, user_email, user_allow_viewemail, user_lang, user_level
 	FROM " . USERS_TABLE . "
 	WHERE user_id = $user_id_dest";
 $result = $db->sql_query($sql);
@@ -65,7 +65,7 @@ if ($row = $db->sql_fetchrow($result))
 		}
 	}
 
-	if ($row['user_viewemail'] || ($user->data['user_level'] == ADMIN))
+	if ($row['user_allow_viewemail'] || ($user->data['user_level'] == ADMIN))
 	{
 		check_flood_email(false);
 

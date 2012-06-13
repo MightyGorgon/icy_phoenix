@@ -58,6 +58,9 @@ $files_array = array(
 	'db_generator.php',
 	'edit_post_time.php',
 	'fetchposts.php',
+	'posted_img_list.php',
+	'posted_img_list_thumbnail.php',
+	'posted_img_thumbnail.php'
 	'referrers.php',
 	'site_hist.php',
 	'subscp.php',

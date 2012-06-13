@@ -16,8 +16,9 @@ if (!defined('IN_ICYPHOENIX'))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('MAIN_CACHE_FOLDER')) define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
 if (!defined('UPLOADS_CACHE_FOLDER')) define('UPLOADS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'uploads/');
-if (!defined('POSTED_IMAGES_PATH')) define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
+if (!defined('POSTED_IMAGES_PATH')) define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/images/');
 if (!defined('POSTED_IMAGES_THUMBS_PATH')) define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
+if (!defined('POSTED_IMAGES_THUMBS_S_PATH')) define('POSTED_IMAGES_THUMBS_S_PATH', POSTED_IMAGES_THUMBS_PATH . 's/');
 /*
 */
 

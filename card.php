@@ -359,7 +359,7 @@ if ($no_error)
 	{
 		$server_url = create_server_url();
 		$viewtopic_server_url = $server_url . CMS_PAGE_VIEWTOPIC;
-		$from_email = ($user->data['user_email'] && $user->data['user_viewemail']) ? $user->data['user_email'] : $config['board_email'];
+		$from_email = ($user->data['user_email'] && $user->data['user_allow_viewemail']) ? $user->data['user_email'] : $config['board_email'];
 
 		include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer();

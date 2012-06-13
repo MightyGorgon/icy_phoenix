@@ -1,9 +1,10 @@
 Basic info on how to use this file:
 
 1. Lock your phpBB 3 board
-2. Make a full DB backup of your phpBB 3
-3. Install Icy Phoenix on the same DB, but with different table prefix (best would be to have Icy Phoenix tables with "ip_" prefix and phpBB 3 tables with "phpbb_" prefix)
-4. Edit the constant in "phpbb3_to_ip.php" file to reflect the correct prefix and name in case you need it
+2. Make a full backup of your phpBB 3
+3. Install Icy Phoenix on the same DB (if you want to install on the same phpBB 3 folder you should first delete/move phpBB 3 files), but with different table prefix (best would be to have Icy Phoenix tables with "ip_" prefix and phpBB 3 tables with "phpbb_" prefix)
+4. Edit the constants definitions in "phpbb3_to_ip.php" file to reflect the correct prefix and name in case you need it
 5. Upload "phpbb3_to_ip.php" to your Icy Phoenix root and launch it
 6. When the conversion ends, you should have all users, forums, topics and posts in your Icy Phoenix DB
+7. Login to Icy Phoenix and run almost all DB Maintenance scripts in ACP (you may need to alter the constants.php if your main admin id is not 2, or you won't see this menu!)
 

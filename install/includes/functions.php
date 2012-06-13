@@ -1033,19 +1033,19 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 
 	$word = array();
 	$word_insert_sql = array();
-	while ( list($word_in, $search_matches) = @each($search_raw_words) )
+	while (list($word_in, $search_matches) = @each($search_raw_words))
 	{
 		$word_insert_sql[$word_in] = '';
-		if ( !empty($search_matches) )
+		if (!empty($search_matches))
 		{
 			for ($i = 0; $i < sizeof($search_matches); $i++)
 			{
 				$search_matches[$i] = trim($search_matches[$i]);
 
-				if( $search_matches[$i] != '' )
+				if($search_matches[$i] != '')
 				{
 					$word[] = $search_matches[$i];
-					if ( !strstr($word_insert_sql[$word_in], "'" . $search_matches[$i] . "'") )
+					if (!strstr($word_insert_sql[$word_in], "'" . $search_matches[$i] . "'"))
 					{
 						$word_insert_sql[$word_in] .= ( $word_insert_sql[$word_in] != "" ) ? ", '" . $search_matches[$i] . "'" : "'" . $search_matches[$i] . "'";
 					}
