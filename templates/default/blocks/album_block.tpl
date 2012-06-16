@@ -41,7 +41,7 @@ var {HS_GALLERY_ID} = {
 	<td class="row1 row-center" width="{S_COL_WIDTH}">
 		<span class="genmed" style="line-height:150%">
 			<b>{recent_pics.recent_detail.TITLE}</b><br />
-			<a href="{recent_pics.recent_detail.U_PIC}" {TARGET_BLANK}><img src="{recent_pics.recent_detail.THUMBNAIL}" alt="{recent_pics.recent_detail.TITLE}" title="{recent_pics.recent_detail.TITLE}" /></a><br />
+			<!-- IF S_HIGHSLIDE --><a href="{recent_pics.recent_detail.U_PIC}" class="highslide" onclick="return hs.expand(this)" {TARGET_BLANK}><!-- ELSE --><a href="{recent_pics.recent_detail.U_PIC}" {TARGET_BLANK}><!-- ENDIF --><img src="{recent_pics.recent_detail.THUMBNAIL}" alt="{recent_pics.recent_detail.TITLE}" title="{recent_pics.recent_detail.TITLE}" /></a><br />
 			<b>{recent_pics.recent_detail.POSTER}</b><br />
 			{recent_pics.recent_detail.TIME}
 		</span>
