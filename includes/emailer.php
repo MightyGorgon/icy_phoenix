@@ -481,15 +481,11 @@ class emailer
 				$mail_header = fread($fd, filesize($tpl_header));
 				fclose($fd);
 
-				// Mighty Gorgon - Add Site Url - BEGIN
-				$site_url = (($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://') . trim($config['server_name']) . (($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '') . preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path'])) . '/';
-				if (substr($site_url, (strlen($site_url) - 1), 1) <> '/')
-				{
-					$site_url = $site_url . '/';
-				}
-				$mail_header = str_replace('{ROOT}', $site_url, $mail_header);
+				// Mighty Gorgon - Add Server URL - BEGIN
+				$server_url = create_server_url();
+				$mail_header = str_replace('{ROOT}', $server_url, $mail_header);
 				$mail_header = str_replace('{SITENAME}', $config['sitename'], $mail_header);
-				// Mighty Gorgon - Add Site Url - END
+				// Mighty Gorgon - Add Server URL - END
 
 				$tpl_footer = IP_ROOT_PATH . $email_lang_folder . $email_format_folder . 'html_mail_footer.tpl';
 				if (!($fd = @fopen($tpl_footer, 'r')))

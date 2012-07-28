@@ -712,7 +712,7 @@ class session
 			}
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $this->data['session_time'] . "
+				SET user_lastvisit = " . (int) $this->data['session_time'] . ", user_private_chat_alert = ''
 				WHERE user_id = " . (int) $this->data['user_id'];
 			$db->sql_query($sql);
 

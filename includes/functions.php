@@ -1840,7 +1840,7 @@ function create_server_url($without_script_path = false)
 	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
 	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
 	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-	$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
+	$script_name = ($script_name == '') ? '' : '/' . $script_name;
 	$server_url = $server_protocol . $server_name . $server_port . ($without_script_path ? '' : $script_name);
 	while(substr($server_url, -1, 1) == '/')
 	{

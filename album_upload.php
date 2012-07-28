@@ -1237,12 +1237,7 @@ else
 
 			include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
-			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-			$server_name = trim($config['server_name']);
-			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-			$script_name = ($script_name == '') ? '' : $script_name . '/';
-			$server_path = $server_protocol . $server_name . $server_port . $script_name;
+			$server_url = create_server_url();
 
 			$sql = "SELECT user_id, user_notify_pm, user_email, user_lang, user_active, username, user_level
 				FROM " . USERS_TABLE . " AS u
@@ -1271,7 +1266,7 @@ else
 						'PIC_APPROVAL' => ($pic_approval ? $lang['Approvation_OK'] : $lang['Approvation_NO']),
 						'DATE' => create_date($config['default_dateformat'], time(), $config['board_timezone']),
 						'SUBJECT' => $lang['Email_Notification'],
-						'U_PIC' => $server_path . 'album_showpage.' . PHP_EXT . '?pic_id=' . $new_pic_id['pic_id']
+						'U_PIC' => $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $new_pic_id['pic_id']
 						)
 					);
 

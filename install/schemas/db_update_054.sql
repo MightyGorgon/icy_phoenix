@@ -1135,7 +1135,7 @@ UPDATE `phpbb_users` SET `user_sig` = REPLACE(`user_sig`,'posted_images/','image
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.0.85RC2' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.0.86' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

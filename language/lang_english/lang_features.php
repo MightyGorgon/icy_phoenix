@@ -53,12 +53,12 @@ $lang = array_merge($lang, array(
 
 	'item_latest' => 'Latest Version',
 	'bb2_latest' => '2.0.22',
-	'ip_latest' => '1.3.0.53a',
+	'ip_latest' => '2.0.0.86',
 	'bb3_latest' => '3.0.6',
 
 	'item_release' => 'Release Date',
 	'bb2_release' => '2008/02/17',
-	'ip_release' => '2010/01/17',
+	'ip_release' => '2012/07/28',
 	'bb3_release' => '2009/11/17',
 
 /*********/

@@ -930,12 +930,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		}
 	}
 
-	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-	$server_name = trim($config['server_name']);
-	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-	$script_name = ($script_name == '') ? '' : $script_name . '/';
-	$server_path = $server_protocol . $server_name . $server_port . $script_name;
+	$server_url = create_server_url();
 
 	$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $pic_id));
 	if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
@@ -1006,7 +1001,7 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'MOVE' => ($auth_data['moderator']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;pic_id=' . $thispic['pic_id'])) . '">' . $move_link_content . '</a>' : '',
 		'COPY' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;pic_id=' . $thispic['pic_id'])) . '">' . $copy_link_content . '</a>' : '',
 
-		'U_PIC_FULL_URL' => $server_path . $pic_fullpath,
+		'U_PIC_FULL_URL' => $server_url . $pic_fullpath,
 
 		//'U_PIC' => append_sid(album_append_uid($nuffimage_pic . PHP_EXT . '?pic_id=' . $pic_id . $sort_append . $full_size_param . $nuff_http_full_string)),
 		'U_PIC' => $pic_link,
