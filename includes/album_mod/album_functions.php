@@ -1032,7 +1032,7 @@ function album_build_detail_vars(&$result, $data, $page_params = '', $auth_right
 {
 	global $config, $user, $lang, $album_config;
 
-	album_build_column_vars(&$result, $data, $page_params);
+	album_build_column_vars($result, $data, $page_params);
 
 	$rating = '';
 	if ($album_config['rate'] == 1)
