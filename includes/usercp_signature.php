@@ -19,6 +19,11 @@ $html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
 $bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
 $smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
+if (!class_exists('bbcode') || empty($bbcode))
+{
+	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+}
+
 $bbcode->allow_html = $html_on;
 $bbcode->allow_bbcode = $bbcode_on;
 $bbcode->allow_smilies = $smilies_on;

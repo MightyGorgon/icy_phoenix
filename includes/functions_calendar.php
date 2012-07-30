@@ -202,7 +202,7 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 {
 	global $tree, $template, $lang, $images, $user, $db, $cache, $config, $bbcode;
 
-	if (empty($bbcode) || !class_exists('bbcode'))
+	if (!class_exists('bbcode') || empty($bbcode))
 	{
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	}
