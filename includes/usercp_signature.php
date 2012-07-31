@@ -14,20 +14,18 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-// get the board & user settings ...
-$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
+// if cancel pressed then redirect to the index page
+if (isset($_POST['cancel']))
+{
+	$redirect = CMS_PAGE_FORUM;
+	redirect(append_sid($redirect, true));
+}
 
 if (!class_exists('bbcode') || empty($bbcode))
 {
 	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 }
-
-$bbcode->allow_html = $html_on;
-$bbcode->allow_bbcode = $bbcode_on;
-$bbcode->allow_smilies = $smilies_on;
-$bbcode->is_sig = true;
+include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 $signature = request_var('message', '', true);
 if (empty($signature))
@@ -41,23 +39,15 @@ $mode = request_var('mode', '');
 $submit = request_var('save', '');
 $preview = request_var('preview', '');
 
-// if cancel pressed then redirect to the index page
-if (isset($_POST['cancel']))
-{
-	$redirect = CMS_PAGE_FORUM;
+// get the board & user settings ...
+$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
+$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
+$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
-// redirect 2.0.4 only
-	redirect(append_sid($redirect, true));
-
-// redirect 2.0.x
-//	$header_location = (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE'))) ? 'Refresh: 0; URL=' : 'Location: ';
-//	header($header_location . append_sid($redirect, true));
-//	exit;
-
-}
-
-include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+$bbcode->allow_html = $html_on;
+$bbcode->allow_bbcode = $bbcode_on;
+$bbcode->allow_smilies = $smilies_on;
+$bbcode->is_sig = true;
 
 $link_name = $lang['Signature'];
 $nav_server_url = create_server_url();
