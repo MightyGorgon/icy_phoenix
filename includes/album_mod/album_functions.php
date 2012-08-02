@@ -798,11 +798,8 @@ function album_comment_notify($pic_id)
 			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 			$emailer = new emailer();
 
-			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-			$script_name = ($script_name != '') ? $script_name . '/album_showpage.' . PHP_EXT : 'album_showpage.' . PHP_EXT;
-			$server_name = trim($config['server_name']);
-			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
+			$server_url = create_server_url();
+			$album_showpage_url = $server_url . 'album_showpage.' . PHP_EXT;
 
 			@reset($bcc_list_ary);
 			while (list($user_lang, $bcc_list) = each($bcc_list_ary))
@@ -826,8 +823,8 @@ function album_comment_notify($pic_id)
 					'EMAIL_SIG' => $email_sig,
 					'SITENAME' => $config['sitename'],
 					'PIC_TITLE' => $pic_title,
-					'U_PIC' => $server_protocol . $server_name . $server_port . $script_name . '?pic_id=' . $pic_id,
-					'U_STOP_WATCHING_COMMENT' => $server_protocol . $server_name . $server_port . $script_name . '?pic_id=' . $pic_id . '&unwatch=comment'
+					'U_PIC' => $album_showpage_url . '?pic_id=' . $pic_id,
+					'U_STOP_WATCHING_COMMENT' => $album_showpage_url . '?pic_id=' . $pic_id . '&unwatch=comment'
 					)
 				);
 
@@ -1035,7 +1032,7 @@ function album_build_detail_vars(&$result, $data, $page_params = '', $auth_right
 {
 	global $config, $user, $lang, $album_config;
 
-	album_build_column_vars(&$result, $data, $page_params);
+	album_build_column_vars($result, $data, $page_params);
 
 	$rating = '';
 	if ($album_config['rate'] == 1)

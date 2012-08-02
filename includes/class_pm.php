@@ -127,11 +127,8 @@ class class_pm
 		}
 		else
 		{
-			$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path']));
-			$script_name = ($script_name != '') ? $script_name . '/privmsg.' . PHP_EXT : CMS_PAGE_PRIVMSG;
-			$server_name = trim($config['server_name']);
-			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
+			$server_url = create_server_url();
+			$privmsg_url = $server_url . CMS_PAGE_PRIVMSG;
 
 			$recipient_username = empty($recipient_username) ? $lang['User'] : $recipient_username;
 			$email_sig = create_signature($config['board_email_sig']);
@@ -145,7 +142,7 @@ class class_pm
 				'SUBJECT' => $pm_subject,
 				'PRIV_MSG_TEXT' => $email_text,
 				'FROM_USERNAME' => $user->data['username'],
-				'U_INBOX' => $server_protocol . $server_name . $server_port . $script_name . '?folder=inbox'
+				'U_INBOX' => $privmsg_url . '?folder=inbox'
 				)
 			);
 		}

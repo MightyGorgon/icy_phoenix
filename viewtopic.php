@@ -2570,6 +2570,7 @@ if ($topic_useful_box)
 
 if ($posts_like_enabled)
 {
+	$config['ajax_features'] = true;
 	$template->assign_vars(array(
 		'S_POSTS_LIKES' => true,
 		)

@@ -34,7 +34,7 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 
 $account_delete_id = request_var('account_delete', 0);
 $account_delete_id = ($account_delete_id <= 2) ? false : $account_delete_id;
-if (!empty($account_delete_id))
+if (!empty($account_delete_id) && ($user->data['user_level'] != ADMIN))
 {
 	if (!$user->data['session_logged_in'] || ($account_delete_id == false) || ($account_delete_id != $user->data['user_id']))
 	{
@@ -87,18 +87,35 @@ $subject = request_var('subject', '', true);
 $subject = htmlspecialchars_decode($subject, ENT_COMPAT);
 $message = request_var('message', '', true);
 
-// We need to check if HTML emails are enabled so we can correctly escape content and linebreaks
-$message = !empty($config['html_email']) ? $message : str_replace(array('&lt;br&gt;', '&lt;br/&gt;', '&lt;br /&gt;'), array('<br />', '<br />', '<br />'), htmlspecialchars_decode($message, ENT_COMPAT));
 if ($account_delete)
 {
-	$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $user->data['username']) . "\r\n<hr />\r\n\r\n" . $message;
+	$sender = empty($sender) ? $user->data['user_email'] : $sender;
 }
-$linebreaks_search = array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/");
-$linebreaks_replace = !empty($config['html_email']) ? array("\r\n", "\r\n", "<br />\r\n") : array("\r\n", "\r\n", "\r\n");
-$message = preg_replace($linebreaks_search, $linebreaks_replace, $message);
 
 if (isset($_POST['submit']))
 {
+	// First make sure we have the right format for HTML and TEXT emails
+	$message = !empty($config['html_email']) ? $message : htmlspecialchars_decode($message, ENT_COMPAT);
+
+	// Correctly escape content and linebreaks (we always allow linebreaks and separators)
+	$message = str_replace(array('&lt;br&gt;', '&lt;br/&gt;', '&lt;br /&gt;'), array('<br />', '<br />', '<br />'), $message);
+	$message = str_replace(array('&lt;hr&gt;', '&lt;hr/&gt;', '&lt;hr /&gt;'), array('<hr />', '<hr />', '<hr />'), $message);
+
+	if ($account_delete)
+	{
+		$message = sprintf($lang['ACCOUNT_DELETION_REQUEST'], $user->data['username']) . "\r\n<hr />\r\n\r\n" . $message;
+	}
+
+	if (empty($config['html_email']))
+	{
+		$message = str_replace(array("\r\n<hr />\r\n", "\r\n<hr />", "<hr />\r\n"), "<hr />", $message);
+		$message = str_replace("<hr />", "\r\n__________\r\n", $message);
+	}
+
+	$linebreaks_search = array("/<br \/>\r\n/", "/<br>\r\n/", "/(\r\n|\n|\r)/");
+	$linebreaks_replace = !empty($config['html_email']) ? array("\r\n", "\r\n", "<br />\r\n") : array("\r\n", "\r\n", "\r\n");
+	$message = preg_replace($linebreaks_search, $linebreaks_replace, $message);
+
 	$error = false;
 
 	if (ENABLE_VISUAL_CONFIRM && !$user->data['session_logged_in'])

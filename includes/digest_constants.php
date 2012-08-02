@@ -55,15 +55,20 @@ unset ($protocol);
 
 function create_digest_server_url()
 {
-	// usage: $server_url = create_server_url();
+	// usage: $server_url = create_digest_server_url();
 	global $config;
 
+	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
+	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
 	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-	$server_name = trim($config['server_name']);
-	$server_protocol = ( $config['cookie_secure'] ) ? 'https://' : 'http://';
-	$server_port = ( $config['server_port'] <> 80 ) ? ':' . trim($config['server_port']) . '/' : '/';
-	$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
-	$server_url = ( substr($server_url, strlen($server_url) - 2, 2) == '//' ) ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
+	$script_name = ($script_name == '') ? '' : '/' . $script_name;
+	$server_url = $server_protocol . $server_name . $server_port . $script_name;
+	while(substr($server_url, -1, 1) == '/')
+	{
+		$server_url = substr($server_url, 0, -1);
+	}
+	$server_url = $server_url . '/';
 
 	return $server_url;
 }

@@ -30,7 +30,7 @@ function attach_rules(forum_id)
 <table width="100%" align="center" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%" align="center" style="vertical-align: top;">
-		<div class="forumline" style="margin-left: 5%; margin-right: 5%px;">
+		<div class="forumline" style="margin-left: 5%; margin-right: 5%;">
 		<table width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td width="25%" align="center">{INBOX_IMG}<br /><span class="forumlink">{INBOX}</span></td>

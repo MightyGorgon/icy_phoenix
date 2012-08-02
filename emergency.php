@@ -46,11 +46,11 @@
 die("<img src=\"admin/console/console_pic.png\" border=\"0\" alt=\"ECON\" title=\"ECON\"><br /><br /><b>Emergency Console Blocked!</b><br />See more instructions in this file!");
 
 /*
- * Define some vars & constants we need
- */
+* Define some vars & constants we need
+*/
 define('IN_ICYPHOENIX', true);
-
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 
 error_reporting (E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
 set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
@@ -120,13 +120,12 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 }
 
 /*
- * Include some files we need for the Emergency Console
- */
+* Include some files we need for the Emergency Console
+*/
 include(IP_ROOT_PATH . 'config.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/db/' . $dbms . '.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
 define('PREFIX', $table_prefix);
-
 
 /*
 * DB Connection, Template and Adminclass
@@ -280,8 +279,8 @@ $template->assign_vars(array(
 $template->pparse('ct_body');
 
 /*
- * Disconnect from Database
- */
+* Disconnect from Database
+*/
 if (!empty($db))
 {
 	$db->sql_close();

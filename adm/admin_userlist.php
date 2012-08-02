@@ -345,13 +345,8 @@ switch($mode)
 					$group_name_row = $db->sql_fetchrow($result);
 					$group_name = $group_name_row['group_name'];
 
-					$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path']));
-					$script_name = (($script_name != '') ? $script_name . '/' : '') . CMS_PAGE_GROUP_CP;
-					$server_name = trim($config['server_name']);
-					$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-					$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-
-					$server_url = $server_protocol . $server_name . $server_port . $script_name;
+					$server_url = create_server_url();
+					$groupcp_url = $server_url . CMS_PAGE_GROUP_CP;
 
 					$emailer->use_template('group_added', $row['user_lang']);
 					$emailer->to($row['user_email']);
@@ -362,7 +357,7 @@ switch($mode)
 						'SITENAME' => $config['sitename'],
 						'GROUP_NAME' => $group_name,
 						'EMAIL_SIG' => $email_sig,
-						'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
+						'U_GROUPCP' => $groupcp_url . '?' . POST_GROUPS_URL . '=' . $group_id
 						)
 					);
 					$emailer->send();

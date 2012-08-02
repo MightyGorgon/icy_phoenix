@@ -263,9 +263,14 @@ class ip_functions
 		$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
 		$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
 		$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-		$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
-		$server_url = $server_protocol . $server_name . $server_port . $script_name . '/';
-		$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
+		$script_name = ($script_name == '') ? '' : '/' . $script_name;
+		$server_url = $server_protocol . $server_name . $server_port . $script_name;
+		while(substr($server_url, -1, 1) == '/')
+		{
+			$server_url = substr($server_url, 0, -1);
+		}
+		$server_url = $server_url . '/';
+
 		//$server_url = 'icyphoenix.com/';
 
 		return $server_url;
@@ -721,7 +726,7 @@ class mg_functions
 	}
 
 	/*
-	* Creates a short url to be used in replace
+	* Creates a short url to be used in replace, without server_protocol
 	*/
 	function create_short_server_url()
 	{
@@ -733,18 +738,20 @@ class mg_functions
 			return $config['short_site_url'];
 		}
 
-		$server_name = trim($config['server_name']);
-		$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
+		$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
+		$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
+		$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
 		$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-		$server_url = $server_name . $server_port . $script_name . '/';
-		$server_url = (substr($server_url, strlen($server_url) - 2, 2) == '//') ? substr($server_url, 0, strlen($server_url) - 1) : $server_url;
-		//$server_url = 'icyphoenix.com/';
-
+		$script_name = ($script_name == '') ? '' : '/' . $script_name;
+		//$server_url = $server_protocol . $server_name . $server_port . $script_name;
+		$server_url = $server_name . $server_port . $script_name;
 		while(substr($server_url, -1, 1) == '/')
 		{
 			$server_url = substr($server_url, 0, -1);
 		}
 		$server_url = $server_url . '/';
+
+		//$server_url = 'icyphoenix.com/';
 
 		$config['short_site_url'] = $server_url;
 		return $server_url;

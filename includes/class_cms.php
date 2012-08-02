@@ -391,7 +391,7 @@ class ip_cms
 					$message = $block_info[$b_counter]['content'];
 					if($block_info[$b_counter]['type'] == true)
 					{
-						if (empty($bbcode) || !class_exists('bbcode'))
+						if (!class_exists('bbcode') || empty($bbcode))
 						{
 							@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 						}

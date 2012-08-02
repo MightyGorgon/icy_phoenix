@@ -85,7 +85,7 @@ function smiley_text($message)
 	return $message;
 }
 
-if (empty($bbcode) || !class_exists('bbcode'))
+if (!class_exists('bbcode') || empty($bbcode))
 {
 	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 }
