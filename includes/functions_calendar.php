@@ -334,6 +334,15 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		$result = $db->sql_query($sql);
 	}
 
+	if (!class_exists('bbcode') || empty($bbcode))
+	{
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	}
+
+	$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0;
+	$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0;
+	$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0;
+
 	// read the items
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -360,7 +369,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		$topic_title = censor_text($topic_title);
 		$message = censor_text($message);
 
-		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		$short_title = (strlen($topic_title) > $topic_title_length + 3) ? substr($topic_title, 0, $topic_title_length) . '...' : $topic_title;
 		// Convert and clean special chars!
 		$topic_title = htmlspecialchars_clean($topic_title);
@@ -368,7 +376,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		// SMILEYS IN TITLE - BEGIN
 		if ($config['smilies_topic_title'] && !$lofi)
 		{
-			$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 			$topic_title = $bbcode->parse_only_smilies($topic_title);
 			$short_title = $bbcode->parse_only_smilies($short_title);
 		}
@@ -388,14 +395,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		{
 			$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
 		}
-
-		$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-		$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-		$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
-
-		$bbcode->allow_html = $html_on;
-		$bbcode->allow_bbcode = $bbcode_on;
-		$bbcode->allow_smilies = $smilies_on;
 
 		$message = $bbcode->parse($message);
 

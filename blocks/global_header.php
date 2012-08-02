@@ -133,8 +133,9 @@ if(!function_exists('cms_block_global_header'))
 					}
 					else
 					{
-					$auth_level_req = $menu_cat_item_data['auth_view'];
-					$menu_allowed = in_array($auth_level_req, $auth_levels) ? true : false;
+						$auth_level_req = $menu_cat_item_data['auth_view'];
+						$menu_allowed = in_array($auth_level_req, $auth_levels) ? true : false;
+					}
 
 					if (!empty($menu_allowed))
 					{
