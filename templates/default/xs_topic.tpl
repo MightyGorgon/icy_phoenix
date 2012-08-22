@@ -119,7 +119,7 @@ if($can_reply)
 {
 	// quick reply button
 	global $images;
-	$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="showQuickEditor(); return false;" title="' . $lang['Post_a_reply'] . '"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Quick_Reply'] . '" title="' . $lang['Quick_Reply'] . '" /></a>';
+	$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="javascript:showQuickEditor();" title="' . $lang['Post_a_reply'] . '"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Quick_Reply'] . '" title="' . $lang['Quick_Reply'] . '" /></a>';
 	// quick reply form
 	ob_start();
 ?>
