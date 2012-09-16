@@ -21,6 +21,19 @@
 
 	<script type="text/javascript">
 	// <![CDATA[
+	var print_page_width = '760px';
+
+	function change_page_width()
+	{
+		print_page_width = (print_page_width == '1280px') ? '760px' : ((print_page_width == '760px') ? '960px' : '1280px');
+		item_width('print-body', print_page_width);
+		return 1;
+	}
+	// ]]>
+	</script>
+
+	<script type="text/javascript">
+	// <![CDATA[
 	var S_SID = '{S_SID}';
 	var FULL_SITE_PATH = '{FULL_SITE_PATH}';
 	var ip_root_path = '{IP_ROOT_PATH}';
@@ -38,6 +51,7 @@
 	var CMS_PAGE_SEARCH = '{CMS_PAGE_SEARCH}';
 	var form_name = 'post';
 	var text_name = 'message';
+	var print_page_width = '760px';
 	var onload_functions = new Array();
 	var onunload_functions = new Array();
 
@@ -64,7 +78,10 @@
 	</script>
 
 	<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ip_scripts.js"></script>
+	<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ip_print.js"></script>
 	<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/styleswitcher.js"></script>
 </head>
 <body>
-<div align="center"><a title="{L_CHANGE_FONT_SIZE}" onkeypress="return fontsizeup(event);" onclick="fontsizeup(); return false;" href="#">[+/-]</a></div>
+<!-- IF S_PRINT_SIZE -->
+<div align="center"><a title="{L_CHANGE_FONT_SIZE}" onkeypress="return fontsizeup(event);" onclick="fontsizeup(); return false;" href="#">[+/-]</a>&nbsp;<a title="{L_CHANGE_PAGE_SIZE}" onclick="change_page_width(); return false;" href="#">[*]</a></div>
+<!-- ENDIF -->

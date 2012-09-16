@@ -42,7 +42,7 @@ if ($cancel)
 
 $mode = request_var('mode', '');
 
-$delimeter  = '=+:';
+$delimiter = '=+:';
 
 // Read a listing of uploaded smilies for use in the add or edit smliey code...
 $dir = @opendir(IP_ROOT_PATH . $config['smilies_path']);
@@ -126,7 +126,7 @@ if(check_http_var_exists('import_pack', false))
 //Smilies Order End
 		for($i = 0; $i < sizeof($fcontents); $i++)
 		{
-			$smile_data = explode($delimeter, trim(addslashes($fcontents[$i])));
+			$smile_data = explode($delimiter, trim(addslashes($fcontents[$i])));
 
 			for($j = 2; $j < sizeof($smile_data); $j++)
 			{
@@ -227,8 +227,8 @@ elseif(check_http_var_exists('export_pack', false))
 		$smile_pak = '';
 		for($i = 0; $i < sizeof($resultset); $i++)
 		{
-			$smile_pak .= $resultset[$i]['smile_url'] . $delimeter;
-			$smile_pak .= $resultset[$i]['emoticon'] . $delimeter;
+			$smile_pak .= $resultset[$i]['smile_url'] . $delimiter;
+			$smile_pak .= $resultset[$i]['emoticon'] . $delimiter;
 			$smile_pak .= $resultset[$i]['code'] . "\n";
 		}
 

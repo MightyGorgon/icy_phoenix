@@ -293,7 +293,7 @@ $topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '')
 
 $forum_name = get_object_lang(POST_FORUM_URL . $forum_id, 'name');
 $topic_title = $forum_topic_data['topic_title'];
-$topic_title_prefix = (empty($forum_topic_data['title_compl_infos'])) ? '' : $forum_topic_data['title_compl_infos'] . ' ';
+$topic_title_prefix = (empty($forum_topic_data['title_compl_infos'])) ? '' : trim($forum_topic_data['title_compl_infos']) . ' ';
 $topic_time = $forum_topic_data['topic_time'];
 $topic_first_post_id = intval($forum_topic_data['topic_first_post_id']);
 $topic_calendar_time = intval($forum_topic_data['topic_calendar_time']);
@@ -2389,6 +2389,8 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_B_CARD' => $b_card_img,
 		'S_CARD' => ($phpbb_styles) ? $card_action : append_sid('card.' . PHP_EXT),
 
+		'S_FIRST_POST' => ($postrow[$i]['post_id'] == $topic_first_post_id) ? true : false,
+
 		'U_TOPIC_ID' => $topic_id,
 		'U_POST_ID' => $postrow[$i]['post_id']
 		)
@@ -2472,7 +2474,6 @@ for($i = 0; $i < $total_posts; $i++)
 
 	if ($i == 0)
 	{
-
 		$viewtopic_banner_text = get_ad('vtx');
 		if (!empty($viewtopic_banner_text))
 		{

@@ -324,11 +324,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if ($user->data['session_logged_in'])
 				{
 //<!-- BEGIN Unread Post Information to Database Mod -->
-					if(!$user->data['upi2db_access'] || $search_id == 'newposts')
+					if(!$user->data['upi2db_access'] || ($search_id == 'newposts'))
 					{
 						$sql = "SELECT post_id
 							FROM " . POSTS_TABLE . "
-							WHERE post_time >= " . $user->data['user_lastvisit'];
+							WHERE post_time >= " . $user->data['user_lastvisit'] . "
+							AND poster_id != " . $user->data['user_id'];
 					}
 					else
 					{
@@ -376,7 +377,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_SEARCH . '&search_id=newposts', true));
 				}
 //<!-- BEGIN Unread Post Information to Database Mod -->
-				if(($search_id == 'upi2db') && ($s2 == 'mark'))
+				if(($search_id == 'newposts') || (($search_id == 'upi2db') && ($s2 == 'mark')))
 				{
 					$show_results = 'posts';
 				}

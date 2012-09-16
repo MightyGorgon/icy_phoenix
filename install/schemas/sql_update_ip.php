@@ -3967,11 +3967,11 @@ if (substr($mode, 0, 6) == 'update')
 
 		// Still not sure which one of this code will do the trick... anyway it's not really important... :-)
 		/*
-		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\"', '\"')";
-		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\'\", \"'\")";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\"', '\"')";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\'\", \"'\")";
 		*/
-		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\\\"', '\\\"')";
-		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\\'\", \"\'\")";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\\\"', '\\\"')";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\\'\", \"\'\")";
 
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
@@ -4038,7 +4038,7 @@ if (substr($mode, 0, 6) == 'update')
 			)";
 
 			$sql[] = "INSERT INTO `___sessions___`
-			SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_user_agent, s.session_page, s.session_logged_in, 0, 0, '', 1, 0, s.session_admin
+			SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_user_agent, s.session_page, s.session_logged_in, 0, 0, " . time() . ", '', 1, 0, s.session_admin
 			FROM `" . $table_prefix . "sessions` s
 			ORDER BY s.session_id";
 

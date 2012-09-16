@@ -279,7 +279,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 	{
 		$gotit = true;
 		$size = @filesize($filename);
-		if($size > (1048575 * 6))
+		if($size > (1048575 * 512))
 		{
 			return false;
 		}
@@ -345,9 +345,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 	header('Pragma: public');
 	header('Content-Transfer-Encoding: none');
 
-	//
 	// Send out the Headers
-	//
 	if ($browser_agent == 'ie')
 	{
 		header('Content-Type: ' . $mimetype . '; name="' . $real_filename . '"');
@@ -359,9 +357,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 		header('Content-Disposition: attachment; filename=' . $real_filename);
 	}
 
-	//
 	// Now send the File Contents to the Browser
-	//
 	if ($gotit)
 	{
 		if ($size)

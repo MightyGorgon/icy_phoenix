@@ -751,7 +751,7 @@ function phpbb_optionset($bit, $set, $data)
 	{
 		$data += 1 << $bit;
 	}
-	else if (!$set && ($data & 1 << $bit))
+	elseif (!$set && ($data & 1 << $bit))
 	{
 		$data -= 1 << $bit;
 	}
@@ -894,7 +894,6 @@ function unique_id($extra = 'c')
 
 	return substr($val, 4, 16);
 }
-
 
 /**
 * Return formatted string for filesizes
@@ -1831,11 +1830,6 @@ function create_server_url($without_script_path = false)
 	// usage: $server_url = create_server_url();
 	global $config;
 
-	if (!empty($config['current_site_url']))
-	{
-		return $config['current_site_url'];
-	}
-
 	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
 	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
 	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
@@ -1848,7 +1842,6 @@ function create_server_url($without_script_path = false)
 	}
 	$server_url = $server_url . '/';
 
-	$config['current_site_url'] = $server_url;
 	return $server_url;
 }
 
@@ -1917,7 +1910,7 @@ function build_url($strip_vars = false)
 
 	// We need to be cautious here.
 	// On some situations, the redirect path is an absolute URL, sometimes a relative path
-	// For a relative path, let's prefix it with $phpbb_root_path to point to the correct location,
+	// For a relative path, let's prefix it with IP_ROOT_PATH to point to the correct location,
 	// else we use the URL directly.
 	$url_parts = @parse_url($redirect);
 
@@ -1939,15 +1932,52 @@ function build_url($strip_vars = false)
 */
 function redirect($url, $return = false)
 {
-	global $db, $config, $lang;
+	global $db, $cache, $config, $user, $lang;
+
+	if (empty($lang))
+	{
+		setup_basic_lang();
+	}
 
 	if (!$return)
 	{
 		garbage_collection();
 	}
 
+	$server_url = create_server_url();
+
 	// Make sure no &amp;'s are in, this will break the redirect
 	$url = str_replace('&amp;', '&', $url);
+
+	// Determine which type of redirect we need to handle...
+	$url_parts = @parse_url($url);
+
+	if ($url_parts === false)
+	{
+		// Malformed url, redirect to current page...
+		$url = $server_url . $user->page['page'];
+	}
+	else
+	{
+		// Relative uri
+		/*
+		$pathinfo = pathinfo($url);
+		// Is the uri not pointing to the current directory?
+		if ($pathinfo['dirname'] != '.')
+		{
+			//$url = str_replace('../', '', $url);
+		}
+		*/
+
+		$url = preg_replace('#^\/?(.*?)\/?$#', '/\1', trim($url));
+		// Strip ./ and / from the beginning
+		$url = str_replace('./', '', $url);
+		$url = ($url && substr($url, 0, 1) == '/') ? substr($url, 1) : $url;
+		//die($url);
+
+		// Create full url path
+		$url = $server_url . $url;
+	}
 
 	// Make sure no linebreaks are there... to prevent http response splitting for PHP < 4.4.2
 	if ((strpos(urldecode($url), "\n") !== false) || (strpos(urldecode($url), "\r") !== false) || (strpos($url, ';') !== false))
@@ -1955,15 +1985,6 @@ function redirect($url, $return = false)
 		message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url');
 		//trigger_error('Tried to redirect to potentially insecure url.', E_USER_ERROR);
 	}
-
-	$server_url = create_server_url();
-	$url = preg_replace('#^\/?(.*?)\/?$#', '/\1', trim($url));
-	// Strip ./ and / from the beginning
-	$url = str_replace('./', '', $url);
-	$url = ($url && substr($url, 0, 1) == '/') ? substr($url, 1) : $url;
-
-	// Create full url path
-	$url = $server_url . $url;
 
 	// Now, also check the protocol and for a valid url the last time...
 	$allowed_protocols = array('http', 'https', 'ftp', 'ftps');
@@ -5356,8 +5377,9 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		// Page generation time - END
 	}
 
-	// Check jQuery UI here, in case we have changed jQuery UI switch within some blocks!
+	// Check for some switches here, in case we have changed/reset these swiches somewhere through the code or CMS blocks!
 	$template->assign_vars(array(
+		'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
 		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
 		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
 		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),

@@ -23,6 +23,7 @@ class class_export
 
 	var $field_delimiter = ',';
 	var $text_delimiter = '"';
+	var $decimal_delimiter = '.';
 
 	var $field_names = array();
 	var $field_values = array();
@@ -72,6 +73,12 @@ class class_export
 
 		$string = '';
 
+		if (($this->decimal_delimiter == ',') && ($this->field_delimiter == $this->decimal_delimiter))
+		{
+			$this->field_delimiter = ';';
+			$this->decimal_delimiter = ',';
+		}
+
 		if (sizeof($this->field_names) > 0)
 		{
 			foreach ($this->field_names as $field_name)
@@ -90,6 +97,7 @@ class class_export
 					foreach ($field_data as $field_type => $field_content)
 					{
 						$text_delimiter = (($field_type == 'str') ? $this->text_delimiter : '');
+						$field_content = ((($field_type == 'val') && ($this->decimal_delimiter == ',')) ? str_replace('.', ',', $field_content) : $field_content);
 						$string .= $text_delimiter . $field_content . $text_delimiter . $this->field_delimiter;
 					}
 				}

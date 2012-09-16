@@ -1,11 +1,11 @@
 <h1>{L_USER_TITLE}</h1>
 <p>{L_USER_EXPLAIN}</p>
 
-<form action="{S_PROFILE_ACTION}" method="post">
+<form action="{S_ACP_PROFILE_ACTION}" method="post">
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="{S_COLSPAN}" height="25" valign="middle">{L_AVATAR_GALLERY}</th></tr>
 <tr>
-	<td class="cat" align="center" valign="middle" colspan="6" height="28"><span class="genmed">{L_CATEGORY}:&nbsp;<select name="avatarcategory">{S_OPTIONS_CATEGORIES}</select>&nbsp;<input type="submit" class="liteoption" value="{L_GO}" name="avatargallery" /></span></td>
+	<td class="cat" align="center" valign="middle" colspan="6" height="28"><span class="genmed">{L_CATEGORY}:&nbsp;{S_CATEGORY_SELECT}&nbsp;<input type="submit" class="liteoption" value="{L_GO}" name="avatargallery" /></span></td>
 </tr>
 <!-- BEGIN avatar_row -->
 <tr>

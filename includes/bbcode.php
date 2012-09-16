@@ -117,7 +117,6 @@ else
 	$config['switch_bbcb_active_content'] = 1;
 	$user->data['is_bot'] = false;
 	$user->data['session_logged_in'] = 0;
-	$user->data['user_lang'] = 'english';
 	$lang['OpenNewWindow'] = 'Open in new window';
 	$lang['Click_enlarge_pic'] = 'Click to enlarge the image';
 	$lang['Links_For_Guests'] = 'You must be logged in to see this link';
@@ -763,9 +762,10 @@ class bbcode
 				{
 					if ($item['params']['cache'] == 'false')
 					{
+						//$bbc_eamp = '&amp;';
+						$bbc_eamp = '&';
 						$cache_image = false;
-						//$cache_append = 'cache=false&amp;';
-						$cache_append = 'cache=false&';
+						$cache_append = 'cache=false' . $bbc_eamp . 'rand=' . md5(rand()) . $bbc_eamp;
 					}
 					else
 					{
@@ -1992,7 +1992,7 @@ class bbcode
 				$language = $item['params']['param'];
 			}
 
-			$content = ($user->data['user_lang'] != $language) ? '' : $content;
+			$content = ($config['default_lang'] != $language) ? '' : $content;
 
 			// We need this trick to process BBCodes withing language BBCode
 			if(empty($content))
@@ -3628,7 +3628,8 @@ class bbcode
 		switch ($mode)
 		{
 			case 'email':
-				return '(?:[a-z0-9\'\.\-_\+\|]++|&amp;)+@[a-z0-9\-]+\.(?:[a-z0-9\-]+\.)*[a-z]+';
+				//return '(?:[a-z0-9\'\.\-_\+\|]++|&amp;)+@[a-z0-9\-]+\.(?:[a-z0-9\-]+\.)*[a-z]+';
+				return '([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*(?:[\w\!\#$\%\'\*\+\-\/\=\?\^\`{\|\}\~]|&amp;)+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,63})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)';
 			break;
 
 			case 'bbcode_htm':
@@ -4073,11 +4074,11 @@ class bbcode
 		$text = preg_replace($look_up_array, "", $text);
 
 		// [QUOTE] and [/QUOTE]
-	 /*
+		/*
 		$text = str_replace("[quote]","", $text);
 		$text = str_replace("[/quote]", "", $text);
 		$text = preg_replace("/\[quote=(?:\"?([^\"]*)\"?)\]/si", "", $text);
-	 */
+		*/
 
 		// Remove our padding from the string..
 		$text = substr($text, 1);
@@ -4085,11 +4086,12 @@ class bbcode
 		return $text;
 	}
 
+	/*
+	* This function will strip from a message some BBCodes, all BBCodes $uid, and some other formattings.
+	* The result will be suitable for email sendings.
+	*/
 	function plain_message($text, $id = false)
 	{
-		// This function will strip from a message some BBCodes,
-		// all BBCodes $uid, and some other formattings.
-		// The result will be suitable for email sendings.
 		$text = $this->bbcode_killer($text, $id);
 		//$text = preg_replace("/\r\n/", "<br />", $text);
 		$text = preg_replace("/\r\n/", "\n", $text);
@@ -4108,13 +4110,13 @@ class bbcode
 			for ($i = 0; $i < sizeof($tags); $i++)
 			{
 				$tags[$i] = ($tags[$i] == '*') ? '\*' : $tags[$i];
-				$text = @ereg_replace("\[" . $tags[$i] . "[^]^[]*\]", '', $text);
-				$text = @ereg_replace("\[(/?)[^]^[]" . $tags[$i] . "\]", '', $text);
+				$text = preg_replace("/\[" . $tags[$i] . "[^]^[]*\]/", '', $text);
+				$text = preg_replace("/\[(/?)[^]^[]" . $tags[$i] . "\]/", '', $text);
 			}
 		}
 		else
 		{
-			$text = @ereg_replace("\[(/?)[^]^[]*\]", '', $text);
+			$text = preg_replace("/\[(/?)[^]^[]*\]/", '', $text);
 		}
 
 		$text = nl2br($text);

@@ -36,5 +36,15 @@
 #tabs .activetab a span {
 	padding-bottom: 7px;
 }
+
+/* #minitabs fix for IE */
+.tabs-container {
+	zoom: 1;
+}
+
+#minitabs {
+	white-space: nowrap;
+	*min-width: 50%;
+}
 /*
 */

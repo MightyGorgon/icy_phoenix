@@ -413,55 +413,66 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 		$my_counter++;
 		$my_used_list[$my_counter] = $row['user_avatar'];
 	}
-
 	$db->sql_freeresult($result);
 
-	$dir = @opendir($config['avatar_gallery_path']);
+	$dir = @opendir(IP_ROOT_PATH . $config['avatar_gallery_path']);
 
+	$avatar_folders = array();
 	$avatar_images = array();
 	while($file = @readdir($dir))
 	{
 		if(($file != '.') && ($file != '..') && !is_file($config['avatar_gallery_path'] . '/' . $file) && !is_link($config['avatar_gallery_path'] . '/' . $file))
 		{
-			$sub_dir = @opendir($config['avatar_gallery_path'] . '/' . $file);
+			$avatar_folders[] = $file;
+		}
+	}
+	@closedir($dir);
 
-			$avatar_row_count = 0;
-			$avatar_col_count = 0;
-			while($sub_file = @readdir($sub_dir))
+	if (empty($avatar_folders))
+	{
+		message_die(GENERAL_MESSAGE, 'NO_AVATAR_GALLERY');
+	}
+
+	@sort($avatar_folders);
+	@reset($avatar_folders);
+
+	foreach ($avatar_folders as $avatar_folder)
+	{
+		$sub_dir = @opendir(IP_ROOT_PATH . $config['avatar_gallery_path'] . '/' . $avatar_folder);
+
+		$avatar_row_count = 0;
+		$avatar_col_count = 0;
+		while($sub_file = @readdir($sub_dir))
+		{
+		$my_checker = 0;
+		for ($i = 1; $i<= $my_counter; $i++)
+		{
+			$my_temp = $avatar_folder . '/' . $sub_file;
+			if ($my_temp == $my_used_list[$i])
 			{
-			$my_checker = 0;
-			for ($i = 1; $i<= $my_counter; $i++)
-			{
-				$my_temp = $file . '/' . $sub_file;
-				if ($my_temp == $my_used_list[$i])
-				{
-					$my_checker = 1;
-				}
-				if ($my_checker==1)
-				{
-					break;
-				}
+				$my_checker = 1;
 			}
-				if ($my_checker == 0)
+			if ($my_checker==1)
+			{
+				break;
+			}
+		}
+			if ($my_checker == 0)
+			{
+				if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $sub_file))
 				{
-					if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $sub_file))
+					$avatar_images[$avatar_folder][$avatar_row_count][$avatar_col_count] = $sub_file;
+					$avatar_name[$avatar_folder][$avatar_row_count][$avatar_col_count] = ucfirst(str_replace("_", " ", preg_replace('/^(.*)\..*$/', '\1', $sub_file)));
+					$avatar_col_count++;
+					if($avatar_col_count == 5)
 					{
-						$avatar_images[$file][$avatar_row_count][$avatar_col_count] = $sub_file;
-						$avatar_name[$file][$avatar_row_count][$avatar_col_count] = ucfirst(str_replace("_", " ", preg_replace('/^(.*)\..*$/', '\1', $sub_file)));
-						$avatar_col_count++;
-						if($avatar_col_count == 5)
-						{
-							$avatar_row_count++;
-							$avatar_col_count = 0;
-						}
+						$avatar_row_count++;
+						$avatar_col_count = 0;
 					}
 				}
 			}
 		}
 	}
-
-	@closedir($dir);
-
 	@ksort($avatar_images);
 	@reset($avatar_images);
 
@@ -492,7 +503,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 		for($j = 0; $j < sizeof($avatar_images[$category][$i]); $j++)
 		{
 			$template->assign_block_vars('avatar_row.avatar_column', array(
-				'AVATAR_IMAGE' => $config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j],
+				'AVATAR_IMAGE' => IP_ROOT_PATH . $config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j],
 				'AVATAR_NAME' => $avatar_name[$category][$i][$j]
 				)
 			);
@@ -524,6 +535,10 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 		'S_CATEGORY_SELECT' => $s_categories,
 		'S_COLSPAN' => $s_colspan,
 		'S_PROFILE_ACTION' => append_sid(CMS_PAGE_PROFILE . '?mode=' . $mode . '&amp;cpl_mode=avatar'),
+
+		'L_USER_TITLE' => $lang['User_admin'],
+		'L_USER_EXPLAIN' => $lang['User_admin_explain'],
+		'S_ACP_PROFILE_ACTION' => append_sid('admin_users.' . PHP_EXT . '?mode=' . $mode),
 
 		'S_HIDDEN_FIELDS' => $s_hidden_vars
 		)

@@ -137,7 +137,7 @@ function errors_notification($action, $result, $sitename, $subject, $errors_log,
 
 	$date = gmdate('Y/m/d - H:i:s');
 
-	if ( ($action == 'L') || ($action == 'LM') )
+	if (($action == 'L') || ($action == 'LM'))
 	{
 		$message = '[' . $date . ']';
 		$message .= ' [URL: ' . $script_name . ' ]';

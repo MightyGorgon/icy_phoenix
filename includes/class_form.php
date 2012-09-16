@@ -88,6 +88,14 @@ class class_form
 				}
 				break;
 
+			/*
+			case 'SINGLE_CHECKBOX':
+				$selected = ((int) $properties['value'] & $default) ? ' checked="checked"' : '';
+				$l_key = $this->get_lang($properties['label']);
+				$input .= '<label><input type="checkbox" name="' . $name . '" value="' . $val . '"' . $selected . ' />&nbsp;' . $l_key. '</label><br />';
+				break;
+			*/
+
 			case 'LIST_DROP':
 				@reset($properties['values']);
 				while (list($key, $val) = @each($properties['values']))

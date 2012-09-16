@@ -603,7 +603,7 @@ class Template {
 		$template = $theme['template_name'];
 		global $$template;
 		$theme_info = &$$template;
-		$exclude_tpl_array = array('def_tree_def.tpl');
+		$exclude_tpl_array = array('def_tree_def.tpl', 'rss_body.tpl');
 		//die(basename($this->files[$handle]));
 		if($config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
 		{

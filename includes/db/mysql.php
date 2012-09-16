@@ -484,6 +484,75 @@ class sql_db
 	}
 
 	/**
+	* Gets the estimated number of rows in a specified table.
+	* @param string $table_name		Table name
+	* @return string Number of rows in $table_name. Prefixed with ~ if estimated (otherwise exact).
+	*/
+	function get_estimated_row_count($table_name)
+	{
+		$table_status = $this->get_table_status($table_name);
+
+		if (isset($table_status['Engine']))
+		{
+			if ($table_status['Engine'] === 'MyISAM')
+			{
+				return $table_status['Rows'];
+			}
+			elseif (($table_status['Engine'] === 'InnoDB') && ($table_status['Rows'] > 100000))
+			{
+				return '~' . $table_status['Rows'];
+			}
+		}
+		return $this->get_row_count($table_name);
+	}
+
+	/**
+	* Gets the exact number of rows in a specified table.
+	* @param string $table_name Table name
+	* @return string Exact number of rows in $table_name.
+	*/
+	function get_row_count($table_name)
+	{
+		$table_status = $this->get_table_status($table_name);
+		if (isset($table_status['Engine']) && ($table_status['Engine'] === 'MyISAM'))
+		{
+			return $table_status['Rows'];
+		}
+
+		$sql = 'SELECT COUNT(*) AS rows_total FROM ' . $this->sql_escape($table_name);
+		$result = $this->sql_query($sql);
+		$rows_total = $this->sql_fetchfield('rows_total');
+		$this->sql_freeresult($result);
+
+		return $rows_total;
+	}
+
+	/**
+	* Gets some information about the specified table.
+	* @param string $table_name Table name
+	* @return array
+	*/
+	function get_table_status($table_name)
+	{
+		$sql = "SHOW TABLE STATUS LIKE '" . $this->sql_escape($table_name) . "'";
+		$result = $this->sql_query($sql);
+		$table_status = $this->sql_fetchrow($result);
+		$this->sql_freeresult($result);
+
+		return $table_status;
+	}
+
+	/**
+	* Run LOWER() on DB column of type text (i.e. neither varchar nor char).
+	* @param string $column_name The column name to use
+	* @return string A SQL statement like "LOWER($column_name)"
+	*/
+	function sql_lower_text($column_name)
+	{
+		return "LOWER($column_name)";
+	}
+
+	/**
 	* Get last inserted id after insert statement
 	*/
 	function sql_nextid()
@@ -540,7 +609,6 @@ class sql_db
 
 	/**
 	* Build sql statement from array for select and select distinct statements
-	*
 	* Possible query values: SELECT, SELECT_DISTINCT
 	*/
 	function sql_build_query($query, $array)

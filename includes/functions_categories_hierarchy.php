@@ -993,7 +993,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			);
 			$template->assign_block_vars('catrow.cathead', array(
 				'CAT_TITLE' => get_object_lang($cur, 'name'),
-				'CAT_DESC' => @ereg_replace('<[^>]+>', '', get_object_lang($cur, 'desc')),
+				'CAT_DESC' => preg_replace('/<[^>]+>/', '', get_object_lang($cur, 'desc')),
 
 				'CLASS_CATLEFT' => $class_catLeft,
 				'CLASS_CAT' => $class_cat,
@@ -1148,7 +1148,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 							break;
 					}
 					$link = '';
-					$wdesc = @ereg_replace('<[^>]+>', '', $wdesc);
+					$wdesc = preg_replace('/<[^>]+>/', '', $wdesc);
 
 
 					if (intval($config['sub_level_links']) == 2)

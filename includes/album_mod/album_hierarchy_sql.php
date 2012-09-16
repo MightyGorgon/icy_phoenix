@@ -548,7 +548,7 @@ function album_no_newest_pictures($check_date, $cats, $exclude_cat_id = 0)
 	}
 
 	// remove all the alpha characters from the string, since they aren't needed anymore
-	$check_date = @ereg_replace("[A-Z]+", "", trim($check_date));
+	$check_date = preg_replace('/[A-Z]+/', '', trim($check_date));
 
 	// doa final test to see if it's a valid checkm further more
 	// if intval should return 0 then we will not find any images

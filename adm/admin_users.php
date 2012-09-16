@@ -655,7 +655,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		{
 			$avatar_sql = ", user_avatar = '" . $db->sql_escape(ltrim(basename($user_avatar_category), "'") . '/' . ltrim(basename($user_avatar_local), "'")) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
 		}
-		elseif($user_gravatar != '' && $avatar_sql == '' && !$error)
+		elseif(($user_gravatar != '') && ($avatar_sql == '') && !$error)
 		{
 			$avatar_sql = ", user_avatar = '" . $db->sql_escape($user_gravatar) . "', user_avatar_type = " . USER_GRAVATAR;
 		}
@@ -987,7 +987,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 		$coppa = false;
 
-		$html_status =  ($this_userdata['user_allowhtml']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+		$html_status = ($this_userdata['user_allowhtml']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
 		$bbcode_status = ($this_userdata['user_allowbbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
 		$smilies_status = ($this_userdata['user_allowsmile']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 	}
@@ -996,91 +996,30 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 	{
 		if(!$error)
 		{
+			include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
+
 			$user_id = $selected_user_id;
+			$this_userdata = get_userdata($user_id);
+			$username = empty($username) ? $this_userdata['username'] : $username;
+			$interests = empty($interests) ? $this_userdata['user_interests'] : $interests;
 
 			$template->set_filenames(array('body' => ADM_TPL . 'user_avatar_gallery.tpl'));
 
-			$dir = @opendir("../" . $config['avatar_gallery_path']);
+			$avatar_category = request_post_var('avatarcategory', '');
 
-			$avatar_images = array();
-			while($file = @readdir($dir))
-			{
-				if(($file != '.') && ($file != '..') && !is_file(@phpbb_realpath('./../' . $config['avatar_gallery_path'] . '/' . $file)) && !is_link(@phpbb_realpath('./../' . $config['avatar_gallery_path'] . '/' . $file)))
-				{
-					$sub_dir = @opendir('../' . $config['avatar_gallery_path'] . '/' . $file);
-
-					$avatar_row_count = 0;
-					$avatar_col_count = 0;
-
-					while($sub_file = @readdir($sub_dir))
-					{
-						if(preg_match("/(\.gif$|\.png$|\.jpg)$/is", $sub_file))
-						{
-							$avatar_images[$file][$avatar_row_count][$avatar_col_count] = $sub_file;
-
-							$avatar_col_count++;
-							if($avatar_col_count == 5)
-							{
-								$avatar_row_count++;
-								$avatar_col_count = 0;
-							}
-						}
-					}
-				}
-			}
-
-			@closedir($dir);
-
-			if(isset($_POST['avatarcategory']))
-			{
-				$category = htmlspecialchars($_POST['avatarcategory']);
-			}
-			else
-			{
-				list($category,) = each($avatar_images);
-			}
-			@reset($avatar_images);
-
-			$s_categories = "";
-			while(list($key) = each($avatar_images))
-			{
-				$selected = ($key == $category) ? 'selected="selected"' : '';
-				if(sizeof($avatar_images[$key]))
-				{
-					$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
-				}
-			}
-
-			$s_colspan = 0;
-			for($i = 0; $i < sizeof($avatar_images[$category]); $i++)
-			{
-				$template->assign_block_vars('avatar_row', array());
-
-				$s_colspan = max($s_colspan, sizeof($avatar_images[$category][$i]));
-
-				for($j = 0; $j < sizeof($avatar_images[$category][$i]); $j++)
-				{
-					$template->assign_block_vars('avatar_row.avatar_column', array(
-						'AVATAR_IMAGE' => '../' . $config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j])
-					);
-
-					$template->assign_block_vars('avatar_row.avatar_option_column', array(
-						'S_OPTIONS_AVATAR' => $avatar_images[$category][$i][$j])
-					);
-				}
-			}
-
-			$coppa = ((!$_POST['coppa'] && !$_GET['coppa']) || $mode == 'register') ? 0 : true;
+			display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $aim, $facebook, $flickr, $googleplus, $icq, $jabber, $linkedin, $msn, $skype, $twitter, $yim, $youtube, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
 
 			$s_hidden_fields = '';
 
 			$hidden_fields_array = array(
 				'mode' => 'edit',
 				'agreed' => 'true',
-				'avatarcatname' => $category,
+				'avatarcatname' => $avatar_category,
 				'coppa' => $coppa,
+				'u' => $user_id,
 				'id' => $user_id,
 				'username' => $username,
+				'acp_username' => $username,
 				'email' => $email,
 				'aim' => $aim,
 				'facebook' => $facebook,
@@ -1100,7 +1039,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				'user_first_name' => $user_first_name,
 				'user_last_name' => $user_last_name,
 				'occupation' => $occupation,
-				'insterests' => $interests,
+				'interests' => $interests,
 				'birthday' => $birthday,
 				'next_birthday_greeting' => $next_birthday_greeting,
 				'selfdes' => $selfdes,
@@ -1155,23 +1094,9 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				'user_color' => $user_color,
 			);
 
-			foreach ($hidden_fields_array as $k => $v)
-			{
-				$s_hidden_fields .= '<input type="hidden" name="' . $k . '" value="' . $v . '" />';
-			}
+			$s_hidden_fields = build_hidden_fields($hidden_fields_array, false, false);
 
 			$template->assign_vars(array(
-				'L_USER_TITLE' => $lang['User_admin'],
-				'L_USER_EXPLAIN' => $lang['User_admin_explain'],
-				'L_AVATAR_GALLERY' => $lang['Avatar_gallery'],
-				'L_SELECT_AVATAR' => $lang['Select_avatar'],
-				'L_RETURN_PROFILE' => $lang['Return_profile'],
-				'L_CATEGORY' => $lang['Select_category'],
-				'L_GO' => $lang['Go'],
-
-				'S_OPTIONS_CATEGORIES' => $s_categories,
-				'S_COLSPAN' => $s_colspan,
-				'S_PROFILE_ACTION' => append_sid('admin_users.' . PHP_EXT . '?mode=' . $mode),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);

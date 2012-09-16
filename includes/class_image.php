@@ -2512,6 +2512,128 @@ function create_thumb($source_pic, $allowed_extensions, $t_width, $t_height, $t_
 	return true;
 }
 
+/*
+* create_thumb_forced
+* Thumbnails creation forced to a specific size: if image is larger, it will be resized, extra space will be black; if image is smaller, it will be placed over a black frame.
+*/
+function create_thumb_forced($source_pic, $t_width, $t_height, $t_suffix = '', $t_path = '', $t_quality = '75', $force_size = false, $allowed_extensions = 'gif,jpg,jpeg,png')
+{
+	$allowed_extensions = explode(',', $allowed_extensions);
+	$file_details = array();
+	$pic_fullpath = str_replace(array(' '), array('%20'), $source_pic);
+	$file_details = $this->get_file_details($source_pic);
+	$pic_filename = $file_details['name_full'];
+	$pic_title = $file_details['name'];
+	$pic_filetype = $file_details['ext'];
+	$pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
+	$pic_thumbnail = $pic_title . $t_suffix . '.' . $pic_filetype;
+	if (!in_array($pic_filetype, $allowed_extensions))
+	{
+		return false;
+	}
+
+	$pic_size = $this->get_full_image_info($source_pic);
+	if($pic_size == false)
+	{
+		return false;
+	}
+
+	$pic_width = $pic_size['width'];
+	$pic_height = $pic_size['height'];
+	$pic_filetype_new = strtolower($pic_size['type']);
+	$pic_thumbnail_fullpath = (($t_path == '') ? './' : $t_path) . $pic_thumbnail;
+
+	switch($pic_filetype_new)
+	{
+		case 'gif':
+			$img_tmp = @imagecreatefromgif($source_pic);
+			break;
+		case 'jpg':
+			$img_tmp = @imagecreatefromjpeg($source_pic);
+			break;
+		case 'png':
+			$img_tmp = @imagecreatefrompng($source_pic);
+			break;
+		default:
+			return false;
+			break;
+	}
+
+	$pic_ratio = $pic_width / $pic_height;
+	$t_ratio = $t_width / $t_height;
+	$dest_width = (int) $t_width;
+	$dest_height = (int) $t_height;
+
+	if (($pic_width <= $t_width) && ($pic_height <= $t_height))
+	{
+		$dest_width = $pic_width;
+		$dest_height = $pic_height;
+	}
+	else
+	{
+		if ($pic_ratio > $t_ratio)
+		{
+			$dest_height = round($t_width / $pic_ratio, 0);
+		}
+		else
+		{
+			$dest_width = round($t_height * $pic_ratio, 0);
+		}
+	}
+
+	// Generate thumbnail properly
+	$img_t_new = @imagecreatetruecolor($dest_width, $dest_height);
+	if (!$img_t_new)
+	{
+		return false;
+	}
+	@imagealphablending($img_t_new, false);
+	@imagecopyresampled($img_t_new, $img_tmp, 0, 0, 0, 0, $dest_width, $dest_height, $pic_width, $pic_height);
+	@imagesavealpha($img_t_new, true);
+
+	// Put thumbnail on black canvas
+	$img_new = @imagecreatetruecolor($t_width, $t_height);
+	if (!$img_new)
+	{
+		return false;
+	}
+	$t_x_offset = round(($t_width - $dest_width) / 2, 0);
+	$t_y_offset = round(($t_height - $dest_height) / 2, 0);
+	@imagealphablending($img_new, false);
+	@imagecopyresampled($img_new, $img_t_new, $t_x_offset, $t_y_offset, 0, 0, $t_width, $t_height, $t_width, $t_height);
+	@imagesavealpha($img_new, true);
+
+	if (($t_path != '') && !file_exists($t_path))
+	{
+		@mkdir($t_path, 0777);
+	}
+
+	// If you want all thumbnails to be forced as JPG you can decomment these lines
+	/*
+	imagejpeg($img_new, $pic_thumbnail_fullpath, '75');
+	return true;
+	exit;
+	*/
+
+	switch ($pic_filetype)
+	{
+		case 'jpg':
+			@imagejpeg($img_new, $pic_thumbnail_fullpath, '75');
+			break;
+		case 'png':
+			@imagepng($img_new, $pic_thumbnail_fullpath);
+			break;
+		case 'gif':
+			@imagegif($img_new, $pic_thumbnail_fullpath);
+			break;
+		default:
+			return false;
+			exit;
+	}
+	@chmod($pic_thumbnail_fullpath, 0755);
+	return true;
+}
+
 /**
 * No Thumbnail function
 */

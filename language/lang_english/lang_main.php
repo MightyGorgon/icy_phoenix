@@ -583,7 +583,8 @@ $lang = array_merge($lang, array(
 	'Profile_info' => 'Profile Information',
 	'Profile_info_warn' => 'This information will be publicly viewable',
 	'Avatar_panel' => 'Avatar Control Panel',
-	'Avatar_gallery' => 'Avatar gallery',
+	'Avatar_gallery' => 'Avatar Gallery',
+	'NO_AVATAR_GALLERY' => 'No Avatar Gallery Available',
 
 	'Website' => 'Website',
 	'Location' => 'Location',
@@ -2291,7 +2292,6 @@ $lang = array_merge($lang, array(
 	// COMMON DB - BEGIN
 	'SELECT_SORT_METHOD' => 'Sort by',
 	'ORDER' => 'Sort method',
-	'SUBMIT' => 'Submit',
 	'DATE' => 'Date',
 	'USERID' => 'User ID',
 	'USERNAME' => 'Username',
@@ -2457,6 +2457,7 @@ $lang = array_merge($lang, array(
 
 	'PRINTABLE_VERSION' => 'Printable Version',
 	'CHANGE_FONT_SIZE' => 'Change Font Size',
+	'CHANGE_PAGE_SIZE' => 'Change Page Size',
 
 	'FULL_EDITOR' => 'Switch to full Editor',
 

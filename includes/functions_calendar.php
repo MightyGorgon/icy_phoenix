@@ -337,6 +337,10 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 	if (!class_exists('bbcode') || empty($bbcode))
 	{
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		if (empty($bbcode))
+		{
+			$bbcode = new bbcode();
+		}
 	}
 
 	$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0;

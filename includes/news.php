@@ -689,12 +689,12 @@ class NewsModule
 	// {{{ trimText()
 
 	/**
-	* Post based on a delimeter present in the source text.
+	* Post based on a delimiter present in the source text.
 	*
 	* @access public
 	*
 	* @param string $source The string to be trimmed.
-	* @param string $delim The delimeter used to mark the break in text.
+	* @param string $delim The delimiter used to mark the break in text.
 	*
 	* @return string The resulting trimmed string.
 	*/

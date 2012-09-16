@@ -106,6 +106,7 @@ $template->assign_vars(array(
 	'SITENAME' => $config['sitename'],
 	'PAGE_TITLE' => $meta_content['page_title'],
 
+	'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
 	'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
 	'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
 	'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),

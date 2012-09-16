@@ -68,6 +68,10 @@ if (defined('BASIC_COMMON'))
 	include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 	*/
 	include(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
+
+	include(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
+	$cache = new ip_cache();
 }
 
 if (defined('INSTALLING_ICYPHOENIX'))
