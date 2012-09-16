@@ -1003,7 +1003,7 @@ class bbcode
 
 				$html .= '<div class="mg_attachtitle"' . $style . '>' . $params['title'] . '</div>';
 				$html .= '<div class="mg_attachdiv"><table width="100%" cellpadding="0" cellspacing="0" border="0">';
-				$html .= '<tr><td width="15%"><b class="gensmall">' . $lang['Description'] . ':</b></td><td width="75%"><span class="gensmall">' . $params['description'] . '</span></td><td rowspan="3" width="10%" class="row-center"><img src="' . $params['icon'] . '" alt="' . $params['description'] . '" /><br /><a href="' . append_sid($download_url) . '"><b>' . $lang['Download'] . '</b></a></td></tr>';
+				$html .= '<tr><td width="15%"><b class="gensmall">' . $lang['Description'] . ':</b></td><td width="75%"><span class="gensmall">' . $params['description'] . '</span></td><td rowspan="3" width="10%" class="row-center"><img src="' . $params['icon'] . '" alt="' . $params['description'] . '" /><br /><a href="' . append_sid($download_url) . '" title="' . $lang['Download'] . ' ' . $params['title'] . '"><b>' . $lang['Download'] . '</b></a></td></tr>';
 				$html .= '<tr><td><b class="gensmall">' . $lang['FILESIZE'] . ':</b></td><td><span class="gensmall">' . round(($attachment_details['filesize'] / 1024), 2) . ' KB</span></td></tr>';
 				$html .= '<tr><td><b class="gensmall">' . $lang['DOWNLOADED'] . ':</b></td><td><span class="gensmall">' . $attachment_details['download_count'] . '</span></td></tr>';
 				$html .= '</table></div>';

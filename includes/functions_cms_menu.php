@@ -99,15 +99,9 @@ function cms_menu_build_link($item_data, $block_id)
 
 	if (empty($item_data['menu_default']))
 	{
-		if (!empty($item_data['menu_link_external']))
-		{
-			$menu_link['link'] = htmlspecialchars($item_data['menu_link']);
-			$menu_link['link'] .= '" target="_blank';
-		}
-		else
-		{
-			$menu_link['link'] = append_sid(htmlspecialchars($item_data['menu_link']));
-		}
+		//$menu_link['link'] = htmlspecialchars($item_data['menu_link']);
+		$menu_link['link'] = $item_data['menu_link'];
+		$menu_link['link'] = (!empty($item_data['menu_link_external']) ? ($menu_link['link'] . '" target="_blank') : append_sid($menu_link['link']));
 		$menu_link['url'] = (!empty($menu_link['link']) ? '<a href="' . $menu_link['link'] . '">' . $menu_link['icon'] . $menu_link['name'] . '</a>' : '');
 	}
 	else
