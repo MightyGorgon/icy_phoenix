@@ -373,7 +373,9 @@ if(!empty($mode))
 		case 'quest_do_edit':
 			$old_block_no = request_var('old_block', 0);
 			$question = request_var('quest_title', '', true);
+			$question = htmlspecialchars_decode($question, ENT_COMPAT);
 			$answer = request_var('answer', '', true);
+			$answer = htmlspecialchars_decode($answer, ENT_COMPAT);
 			$answer = str_replace("\n", '<br />', $answer);
 
 			if($block_no == $old_block_no)
