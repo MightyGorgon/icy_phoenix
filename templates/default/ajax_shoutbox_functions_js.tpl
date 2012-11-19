@@ -648,7 +648,7 @@ function removeShout(shoutId)
 function sendComment()
 {
 	var inputText = $("#chatbarText");
-	var text = inputText.val().trim();
+	var text = $.trim(inputText.val());
 	if (text != "")
 	{
 		var context = jQuery.extend(new Object(), AjaxContext);
