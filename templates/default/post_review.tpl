@@ -10,7 +10,7 @@ function open_postreview(ref)
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<span class="forumlink"><!-- BEGIN postrow -->{postrow.POST_SUBJECT}<!-- IF not S_BOT -->&nbsp;[<a href="{postrow.DOWNLOAD_POST}">{L_DOWNLOAD_POST}</a>]<!-- ENDIF --><!-- END postrow --></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink"><!-- BEGIN postrow -->{postrow.POST_SUBJECT}<!-- END postrow --></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<th nowrap="nowrap">{L_AUTHOR}</th>
 	<th nowrap="nowrap">{L_MESSAGE}</th>

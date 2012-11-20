@@ -101,7 +101,7 @@ if ($is_slideshow)
 else
 {
 	//$show_template = 'album_showpage_body.tpl';
-	if ((isset($_GET['nuffimage']) || isset($_POST['nuffimage'])) & ($album_config['enable_nuffimage'] == 1))
+	if ((isset($_GET['nuffimage']) || isset($_POST['nuffimage'])) && ($album_config['enable_nuffimage'] == 1))
 	{
 		include(ALBUM_MOD_PATH . 'album_nuffimage_box.' . PHP_EXT);
 		$template->assign_var_from_handle('NUFFIMAGE_BOX', 'nuffimage_box');

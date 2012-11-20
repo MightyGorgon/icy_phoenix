@@ -33,7 +33,7 @@ function checkStatus(focusState)
 {
 	var text = $("#chatbarText");
 	var submit = $("#submit");
-	submit.attr("disabled", ($.trim((text.val()) != "") || (focusState == "active")) ? false : true);
+	submit.attr("disabled", (($.trim(text.val()) != "") || (focusState == "active")) ? false : true);
 }
 <!-- END shout_allowed -->
 

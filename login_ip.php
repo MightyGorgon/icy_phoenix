@@ -181,12 +181,10 @@ else
 	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || $is_admin || $is_cms_auth)))
 	{
 		$skip_nav_cat = true;
-
 		if(!empty($redirect_url))
 		{
 			$forward_to = $_SERVER['QUERY_STRING'];
-
-			if(preg_match("/^redirect=([a-z0-9\.#\/\?&=\+\-_]+)/si", $forward_to, $forward_matches))
+			if(preg_match("/^redirect=([a-z0-9\.#\/\?%&=\+\-_]+)/si", $forward_to, $forward_matches))
 			{
 				$forward_to = (!empty($forward_matches[3])) ? $forward_matches[3] : $forward_matches[1];
 				$forward_match = explode('&', $forward_to);

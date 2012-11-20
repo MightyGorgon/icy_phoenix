@@ -318,7 +318,10 @@ if ($guest_users == 0)
 		)
 	);
 }
-if ($config['online_shoutbox'] == 1)
+
+// check shoutbox permissions and display only to authorized users
+$auth_level_req = ((isset($cms_config_layouts['shoutbox']['view']) && ($cms_config_layouts['shoutbox']['view'] != AUTH_CMS_ALL_NO_BOTS)) ? $cms_config_layouts['shoutbox']['view'] : AUTH_ALL);
+if ((!empty($config['online_shoutbox']) && (($user->data['user_level'] + 1) >= $auth_level_req) && $user->data['session_logged_in'] && !$user->data['is_bot']) || (!empty($config['online_shoutbox']) && ($user->data['user_level'] == ADMIN)))
 {
 	$template->assign_vars(array('S_SHOUTBOX' => true));
 }

@@ -1,6 +1,6 @@
 /* ROUNDED MSG BOX - BEGIN */
 /* rmbox => rounded message box */
-div.rmbox { border-radius: 3px 3px 3px 3px; -moz-border-radius: 3px 3px 3px 3px; -webkit-border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; margin: 5px 15px 2px; padding: 0 0.6em; }
+div.rmbox { border-radius: 3px 3px 3px 3px; border-style: solid; border-width: 1px; margin: 5px 15px 2px; padding: 0 0.6em; }
 div.rmbox p { font-size: 12px; line-height: 140%; margin: 0.5em 0; padding: 2px; }
 div.rmbox p.rmb-center { font-weight: bold; text-align: center !important; vertical-align: middle; }
 

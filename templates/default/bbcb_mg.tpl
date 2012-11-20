@@ -25,22 +25,22 @@ function openAllSmiles()
 	<td width="100%" align="left" nowrap="nowrap">
 		&nbsp;
 		<select style="height: 18px;" name="ft" onchange="BBCft(); this.selectedIndex=0;" onmouseover="helpline('ft')">
-			<option value="" class="genmed" style="font-family:Verdana;">{L_FONT_TYPE}</option>
-			<option value="Arial" class="genmed" style="font-family:Arial;">{L_FONT_ARIAL}</option>
-			<option value="Comic Sans MS" class="genmed" style="font-family:'Comic Sans MS';">{L_FONT_COMIC_SANS_MS}</option>
-			<option value="Courier New" class="genmed" style="font-family:'Courier New';">{L_FONT_COURIER_NEW}</option>
-			<option value="Impact" class="genmed" style="font-family:Impact;">{L_FONT_IMPACT}</option>
-			<option value="Lucida Console" class="genmed" style="font-family:'Lucida Console';">{L_FONT_LUCIDA_CONSOLE}</option>
-			<option value="Lucida Sans Unicode" class="genmed" style="font-family:'Lucida Sans Unicode';">{L_FONT_LUCIDA_SANS_UNICODE}</option>
-			<option value="Microsoft Sans Serif" class="genmed" style="font-family:'Microsoft Sans Serif';">{L_FONT_MICROSOFT_SANS_SERIF}</option>
-			<option value="Symbol" class="genmed" style="font-family:Symbol;">{L_FONT_SYMBOL}</option>
-			<option value="Tahoma" class="genmed" style="font-family:Tahoma;">{L_FONT_TAHOMA}</option>
-			<option value="Times New Roman" class="genmed" style="font-family:'Times New Roman';">{L_FONT_TIMES_NEW_ROMAN}</option>
-			<option value="Traditional Arabic" class="genmed" style="font-family:'Traditional Arabic';">{L_FONT_TRADITIONAL_ARABIC}</option>
-			<option value="Trebuchet MS" class="genmed" style="font-family:'Trebuchet MS';">{L_FONT_TREBUCHET_MS}</option>
-			<option value="Verdana" class="genmed" style="font-family:Verdana;">{L_FONT_VERDANA}</option>
-			<option value="Webdings" class="genmed" style="font-family:Webdings;">{L_FONT_WEBDINGS}</option>
-			<option value="Wingdings" class="genmed" style="font-family:Wingdings;">{L_FONT_WINGDINGS}</option>
+			<option value="" class="genmed" style="font-family: Verdana;">{L_FONT_TYPE}</option>
+			<option value="Arial" class="genmed" style="font-family: Arial;">{L_FONT_ARIAL}</option>
+			<option value="Comic Sans MS" class="genmed" style="font-family: 'Comic Sans MS';">{L_FONT_COMIC_SANS_MS}</option>
+			<option value="Courier New" class="genmed" style="font-family: 'Courier New';">{L_FONT_COURIER_NEW}</option>
+			<option value="Impact" class="genmed" style="font-family: Impact;">{L_FONT_IMPACT}</option>
+			<option value="Lucida Console" class="genmed" style="font-family: 'Lucida Console';">{L_FONT_LUCIDA_CONSOLE}</option>
+			<option value="Lucida Sans Unicode" class="genmed" style="font-family: 'Lucida Sans Unicode';">{L_FONT_LUCIDA_SANS_UNICODE}</option>
+			<option value="Microsoft Sans Serif" class="genmed" style="font-family: 'Microsoft Sans Serif';">{L_FONT_MICROSOFT_SANS_SERIF}</option>
+			<option value="Symbol" class="genmed" style="font-family: Symbol;">{L_FONT_SYMBOL}</option>
+			<option value="Tahoma" class="genmed" style="font-family: Tahoma;">{L_FONT_TAHOMA}</option>
+			<option value="Times New Roman" class="genmed" style="font-family: 'Times New Roman';">{L_FONT_TIMES_NEW_ROMAN}</option>
+			<option value="Traditional Arabic" class="genmed" style="font-family: 'Traditional Arabic';">{L_FONT_TRADITIONAL_ARABIC}</option>
+			<option value="Trebuchet MS" class="genmed" style="font-family: 'Trebuchet MS';">{L_FONT_TREBUCHET_MS}</option>
+			<option value="Verdana" class="genmed" style="font-family: Verdana;">{L_FONT_VERDANA}</option>
+			<option value="Webdings" class="genmed" style="font-family: Webdings;">{L_FONT_WEBDINGS}</option>
+			<option value="Wingdings" class="genmed" style="font-family: Wingdings;">{L_FONT_WINGDINGS}</option>
 		</select>
 		&nbsp;
 		<select style="height: 18px;" name="fs" onchange="BBCfs(); this.selectedIndex=0;" onmouseover="helpline('fs')">
@@ -91,7 +91,7 @@ function openAllSmiles()
 			<option style="color: black;" value="black" class="genmed">{L_COLOR_BLACK}</option>
 		</select>
 		<!-- IF S_COLORPICKER -->
-		<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 530, 420, '_color_picker'); return false;"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" style="vertical-align: middle;" class="bbimages" /></a>
+		<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 640, 480, '_color_picker'); return false;"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" style="vertical-align: middle;" class="bbimages" /></a>
 		<!-- ENDIF -->
 	</td>
 	<td width="20%" align="right" nowrap="nowrap" valign="middle">

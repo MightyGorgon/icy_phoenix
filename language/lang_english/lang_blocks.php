@@ -48,6 +48,7 @@ $lang = array_merge($lang, array(
 	'cms_block_full_search' => 'Full Search',
 	'cms_block_global_header' => 'Global Header',
 	'cms_block_global_header_simple' => 'Global Header Simple',
+	'cms_block_global_header_simple_menu' => 'Header Menu',
 	'cms_block_gsearch' => 'Google Search',
 	'cms_block_gsearch_hor' => 'Google Search Horizontal',
 	'cms_block_index' => 'Site Map',

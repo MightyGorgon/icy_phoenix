@@ -1387,6 +1387,7 @@ CREATE TABLE `phpbb_posts` (
 	`post_attachment` TINYINT(1) NOT NULL DEFAULT '0',
 	`post_bluecard` TINYINT(1) DEFAULT NULL,
 	`post_likes` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
+	`post_images` MEDIUMTEXT NOT NULL,
 	PRIMARY KEY (`post_id`),
 	KEY `forum_id` (`forum_id`),
 	KEY `topic_id` (`topic_id`),

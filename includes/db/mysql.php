@@ -1106,7 +1106,7 @@ class sql_db
 </head>
 
 <body>
-<a name="top"></a>
+<a name="top" id="top"></a>
 <div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
 <div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
@@ -1147,7 +1147,7 @@ class sql_db
 				<td nowrap="nowrap" width="45%" align="left">
 					<br /><span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span><br /><br />
 				</td>
-				<td nowrap="nowrap" align="center"><div style="text-align:center;">&nbsp;</div></td>
+				<td nowrap="nowrap" align="center"><div style="text-align: center;">&nbsp;</div></td>
 				<td nowrap="nowrap" width="45%" align="right">
 					<br /><span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span><br /><br />
 				</td>

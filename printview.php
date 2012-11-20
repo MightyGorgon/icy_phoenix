@@ -49,7 +49,11 @@ $topic_id = request_var(POST_TOPIC_URL, 0);
 $topic_id = empty($topic_id) ? request_var('topic', 0) : $topic_id;
 $topic_id = ($topic_id > 0) ? $topic_id : 0;
 
-if(empty($topic_id))
+$post_id = request_var(POST_POST_URL, 0);
+$post_id = empty($post_id) ? request_var('post', 0) : $post_id;
+$post_id = ($post_id > 0) ? $post_id : 0;
+
+if(empty($topic_id) && empty($post_id))
 {
 	ob_end_clean();
 	if (!defined('STATUS_404')) define('STATUS_404', true);
@@ -64,10 +68,21 @@ $post_order = ($post_order == 'DESC') ? 'DESC' : 'ASC';
 
 $template->set_filenames(array('body' => 'viewtopic_print.tpl'));
 
-$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read
-	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
-	WHERE t.topic_id = '" . $topic_id . "'
-		AND f.forum_id = t.forum_id";
+if (!empty($topic_id))
+{
+	$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read
+		FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
+		WHERE t.topic_id = '" . $db->sql_escape($topic_id) . "'
+			AND f.forum_id = t.forum_id";
+}
+else
+{
+	$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read
+		FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
+		WHERE p.post_id = '" . $db->sql_escape($post_id) . "'
+			AND t.topic_id = p.topic_id
+			AND f.forum_id = p.forum_id";
+}
 $result = $db->sql_query($sql);
 
 if(!($forum_row = $db->sql_fetchrow($result)))
@@ -99,12 +114,23 @@ if(!$is_auth['auth_read'])
 // End auth check
 
 // Right we have auth checked and a topic id so we can fetch the topic data.
-$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_allow_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*
-	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
-	WHERE p.topic_id = $topic_id
-		AND u.user_id = p.poster_id
-	ORDER BY p.post_time $post_order
-	LIMIT $start, $limit";
+if (!empty($topic_id))
+{
+	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_allow_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*
+		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
+		WHERE p.topic_id = '" . $db->sql_escape($topic_id) . "'
+			AND u.user_id = p.poster_id
+		ORDER BY p.post_time $post_order
+		LIMIT $start, $limit";
+}
+else
+{
+	$is_article = 1;
+	$sql = "SELECT u.username, u.user_id, u.user_posts, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_regdate, u.user_msnm, u.user_allow_viewemail, u.user_rank, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, p.*
+		FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u
+		WHERE p.post_id = '" . $db->sql_escape($post_id) . "'
+			AND u.user_id = p.poster_id";
+}
 $result = $db->sql_query($sql);
 
 if(!$total_posts = $db->sql_numrows($result))

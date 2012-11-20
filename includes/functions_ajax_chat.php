@@ -75,6 +75,7 @@ function utf8dec($s)
 function pseudo_die($error, $error_msg)
 {
 	global $template;
+
 	$template->assign_vars(array(
 		'ERROR_STATUS' => $error,
 		'ERROR_MSG' => utf8_encode($error_msg)
@@ -89,6 +90,7 @@ function pseudo_die($error, $error_msg)
 function update_session(&$error_msg, $refresh = true)
 {
 	global $db, $cache, $config, $user, $lang;
+
 	$guest_sql = '';
 	$online_counter = 0;
 	$reg_online_counter = 0;
@@ -164,6 +166,15 @@ function update_session(&$error_msg, $refresh = true)
 			$error_msg = 'Could not update Shoutbox session data';
 		}
 	}
+
+	if (!empty($user->data['user_private_chat_alert']))
+	{
+		$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '' WHERE user_id = " . $user->data['user_id'];
+		$db->sql_return_on_error(true);
+		$db->sql_query($sql);
+		$db->sql_return_on_error(false);
+	}
+
 }
 
 // remove a Shoutbox session
@@ -237,6 +248,7 @@ function user_in_chat_session($id)
 function get_ajax_chat_max_session_id()
 {
 	global $db, $cache;
+
 	$sql = 'SELECT MAX(session_id) AS max_session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE;
 	$db->sql_return_on_error(true);
@@ -265,12 +277,15 @@ function get_ajax_chat_max_session_id()
 function get_chat_room_users($rooms, $chat_room, $chat_link)
 {
 	global $db, $cache, $user, $lang;
+
 	$chatroom_title = $lang['Public_room'];
 	$chatroom_userlist = '';
 	$result = array();
 	$result['rooms'] = array();
 	$room_class = '';
-	if ($chat_room == '')
+	$chat_room_all = request_var('all_rooms', 0);
+	$chat_room_all = !empty($chat_room_all) ? true : false;
+	if (($chat_room == '') && empty($chat_room_all))
 	{
 		$room_class = ' class="active"';
 	}
@@ -285,62 +300,60 @@ function get_chat_room_users($rooms, $chat_room, $chat_link)
 	$room_styled_list_ids = array();
 	if (!empty($rooms))
 	{
-		$room_users = '|';
-		for($x = 0; $x < sizeof($rooms); $x++)
+		$room_users_list = '';
+		foreach ($rooms as $room)
 		{
-			$room_users .= substr($rooms[$x]['shout_room'], 1);
+			$room_users_list .= $room['shout_room'];
 		}
-		$room_users = str_replace('|', ', ', substr($room_users, 1, -1));
+		$room_users_sql = array_unique(array_filter(array_map('intval', explode('|', $room_users_list))));
 		$sql = "SELECT DISTINCT user_id, username, user_color, user_active
 				FROM " . USERS_TABLE . "
-				WHERE user_id in(" . $room_users . ")";
+				WHERE " . $db->sql_in_set('user_id', $room_users_sql);
 		$results = $db->sql_query($sql);
 		$users = $db->sql_fetchrowset($results);
 
-		for($x = 0; $x < sizeof($users); $x++)
+		foreach ($users as $chat_user)
 		{
-			if($user->data['session_logged_in'] && $users[$x]['user_id'] == $user->data['user_id'])
+			if($user->data['session_logged_in'] && ($chat_user['user_id'] == $user->data['user_id']))
 			{
-				$room_list_ids[$users[$x]['user_id']] = $lang['My_id'];
-				$room_styled_list_ids[$users[$x]['user_id']] = colorize_username($users[$x]['user_id'], $lang['My_id'], $users[$x]['user_color'], $users[$x]['user_active'], false, true);
+				$room_list_ids[$chat_user['user_id']] = $lang['My_id'];
+				$room_styled_list_ids[$chat_user['user_id']] = colorize_username($chat_user['user_id'], $lang['My_id'], $chat_user['user_color'], $chat_user['user_active'], false, true);
 			}
 			else
 			{
-				$room_list_ids[$users[$x]['user_id']] = $users[$x]['username'];
-				$room_styled_list_ids[$users[$x]['user_id']] = colorize_username($users[$x]['user_id'], $users[$x]['username'], $users[$x]['user_color'], $users[$x]['user_active'], false, true);
+				$room_list_ids[$chat_user['user_id']] = $chat_user['username'];
+				$room_styled_list_ids[$chat_user['user_id']] = colorize_username($chat_user['user_id'], $chat_user['username'], $chat_user['user_color'], $chat_user['user_active'], false, true);
 			}
 		}
-		for($x = 0; $x < sizeof($rooms); $x++)
+
+		foreach ($rooms as $room)
 		{
+			$comma = '';
 			$list = '';
 			$styled_list = '';
-			$comma = '';
-			$room = substr($rooms[$x]['shout_room'], 1, -1);
 			$room_class = '';
-			if ($room == $chat_room)
-			{
-				$room_class = ' class="active"';
-			}
-			$room_users = array_map('intval', explode('|', $room));
+
+			$current_room = $room['shout_room'];
+			$room_users = array_unique(array_filter(array_map('intval', explode('|', $room['shout_room']))));
 			foreach ($room_users as $room_user)
 			{
 				$list .= $comma . $room_list_ids[$room_user];
-				$styled_list .= $comma . '<span ' . $room_colored_list_ids[$room_user] . '>' . $room_list_ids[$room_user] . '</span>';
+				$styled_list .= $comma . '<span ' . $room_styled_list_ids[$room_user] . '>' . $room_list_ids[$room_user] . '</span>';
 				$comma = ', ';
+			}
+			if ($current_room == ('|' . $chat_room . '|'))
+			{
+				$room_class = ' class="active"';
+				$chatroom_title = $lang['Private_room'];
+				$chatroom_userlist = $styled_list;
 			}
 			$result['rooms'][] = array(
 				'NAME' => $lang['Private_room'],
 				'LIST' => $list,
 				'STYLED_LIST' => $styled_list,
 				'CLASS' => $room_class,
-				'LINK' => append_sid($chat_link . '&amp;chat_room=' . $room)
+				'LINK' => append_sid($chat_link . '&amp;chat_room=' . implode('|', $room_users))
 			);
-
-			if ($room == $chat_room)
-			{
-				$chatroom_title = $lang['Private_room'];
-				$chatroom_userlist = $colored_list;
-			}
 		}
 	}
 	$result['room_list_ids'] = $room_list_ids;

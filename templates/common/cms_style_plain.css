@@ -185,7 +185,7 @@ select option { background-color: #f0f0f0; color: #333333; }
 /* CSS BUTTONS - BEGIN */
 .css-button-wrap { }
 div.css-button-wrap div.forumline { border: solid 1px #ddd8ee; }
-div.css-button-wrap div.forumline, .css-button-body { background: #f8f8f8 url('./images/bg_input_sprite.gif') top left repeat-x !important; border-radius: 6px 6px 6px 6px; -moz-border-radius: 6px 6px 6px 6px; -webkit-border-radius: 6px 6px 6px 6px; }
+div.css-button-wrap div.forumline, .css-button-body { background: #f8f8f8 url('./images/bg_input_sprite.gif') top left repeat-x !important; border-radius: 6px 6px 6px 6px; }
 div.css-button-wrap div.forumline div.row1h, .css-button-body { line-height: 1.6em; }
 .css-button-body { vertical-align: middle; height: 20px; }
 div.css-button-wrap div.forumline:hover { border: solid 1px #dd2222; color: #dd2222; }

@@ -1645,17 +1645,17 @@ function BBCft()
 		theSelection = document.selection.createRange().text;
 		if (theSelection != '')
 		{
-			document.selection.createRange().text = "[font=" + document.forms[form_name].ft.value+"]" + theSelection + "[/font]";
+			document.selection.createRange().text = "[font=\"" + document.forms[form_name].ft.value + "\"]" + theSelection + "[/font]";
 			document.forms[form_name].elements[text_name].focus();
 			return;
 		}
 	}
 	else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0))
 	{
-		mozInsert(txtarea, "[font=" + document.forms[form_name].ft.value+"]", "[/font]");
+		mozInsert(txtarea, "[font=\"" + document.forms[form_name].ft.value + "\"]", "[/font]");
 		return;
 	}
-	ToAdd = "[font=" + document.forms[form_name].ft.value+"]"+" " + "[/font]";
+	ToAdd = "[font=\"" + document.forms[form_name].ft.value + "\"]" + " " + "[/font]";
 	PostWrite(ToAdd);
 }
 

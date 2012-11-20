@@ -31,7 +31,7 @@ function links_me()
 <tr>
 	<td>
 	<!-- BEGIN links_row -->
-	<div class="genmed" style="text-align:center;"><a href="{static.links_row.LINK_HREF}" target="_blank"><img src="{static.links_row.LINK_LOGO_SRC}" alt="{static.links_row.LINK_TITLE}" title="{static.links_row.LINK_TITLE}" width="{SITE_LOGO_WIDTH}" height="{SITE_LOGO_HEIGHT}" border="0" vspace="3" /></a></div><br />
+	<div class="genmed" style="text-align: center;"><a href="{static.links_row.LINK_HREF}" target="_blank"><img src="{static.links_row.LINK_LOGO_SRC}" alt="{static.links_row.LINK_TITLE}" title="{static.links_row.LINK_TITLE}" width="{SITE_LOGO_WIDTH}" height="{SITE_LOGO_HEIGHT}" border="0" vspace="3" /></a></div><br />
 	<!-- END links_row -->
 	</td>
 </tr>

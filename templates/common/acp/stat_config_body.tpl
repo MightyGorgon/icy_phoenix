@@ -36,4 +36,4 @@
 <!--
 	This copyright information must be displayed as per the licence you agreed by using this modification!
 -->
-<br /><div class="copyright" style="text-align:center;">{VERSION_INFO}<br />{INSTALL_INFO}</div>
+<br /><div class="copyright" style="text-align: center;">{VERSION_INFO}<br />{INSTALL_INFO}</div>

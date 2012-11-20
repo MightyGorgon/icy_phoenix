@@ -69,7 +69,7 @@ switch($mode)
 		// see if cancel has been hit and redirect if it has shouldn't get to this point if it has been hit but do this just in case
 		if ($cancel)
 		{
-			redirect(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT);
+			redirect(ADM . '/admin_userlist.' . PHP_EXT);
 		}
 
 		//
@@ -132,7 +132,7 @@ switch($mode)
 		// see if cancel has been hit and redirect if it has shouldn't get to this point if it has been hit but do this just in case
 		if ($cancel)
 		{
-			redirect(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT);
+			redirect(ADM . '/admin_userlist.' . PHP_EXT);
 		}
 
 		// check confirm and either ban or show confirm message

@@ -478,6 +478,37 @@ class ip_cache extends acm
 	}
 
 	/**
+	* Obtain fonts files...
+	*/
+	function obtain_fonts()
+	{
+		if (($fonts_files = $this->get('_fonts')) === false)
+		{
+			$fonts_files = array();
+
+			// Now search for fonts...
+			$dir = @opendir(FONTS_DIR);
+
+			if ($dir)
+			{
+				while (($file = @readdir($dir)) !== false)
+				{
+					if ((substr($file, -4) === '.otf') || (substr($file, -4) === '.ttf'))
+					{
+						//$fonts_files[] = substr($file, 0, -4);
+						$fonts_files[] = $file;
+					}
+				}
+				@closedir($dir);
+			}
+
+			$this->put('_fonts', $fonts_files);
+		}
+
+		return $fonts_files;
+	}
+
+	/**
 	* Obtain settings files...
 	*/
 	function obtain_settings()

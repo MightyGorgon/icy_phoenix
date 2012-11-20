@@ -138,7 +138,7 @@ if(!function_exists('cms_block_dyn_menu'))
 
 						if ($menu_allowed)
 						{
-							$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id);
+							$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id, true);
 							$template->assign_block_vars('cat_row.menu_row', array(
 								'MENU_ICON' => $menu_link['icon'],
 								'MENU_ITEM' => $menu_link['name'],

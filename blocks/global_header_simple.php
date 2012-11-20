@@ -121,7 +121,7 @@ if(!function_exists('cms_block_global_header_simple'))
 							$menu_sep = ($cms_config_vars['md_show_sep_icon'][$block_id] == true) ? '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />' : '';
 						}
 
-						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id);
+						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id, true);
 						if (empty($cms_config_vars['md_show_links_icon'][$block_id]))
 						{
 							$menu_link['icon'] = '';

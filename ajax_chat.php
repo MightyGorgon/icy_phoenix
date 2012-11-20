@@ -41,14 +41,16 @@ if (($config['shout_allow_guest'] == 0) && !$user->data['session_logged_in'])
 }
 
 $private_chat = false;
+$chat_room_all = request_var('all_rooms', 0);
+$chat_room_all = (($user->data['user_level'] == ADMIN) && !empty($chat_room_all)) ? true : false;
 $chat_room = request_var('chat_room', '');
-$chat_room_users = array_map('intval', explode('|', $chat_room));
+$chat_room_users = array_unique(array_filter(array_map('intval', explode('|', $chat_room))));
 $chat_room_users_count = sizeof($chat_room_users);
 $chat_room_sql = " s.shout_room = '' ";
-if ($chat_room !== '')
+if (!empty($chat_room))
 {
 	// validate chat room
-	if (count($chat_room_users) < 2)
+	if ($chat_room_users_count < 2)
 	{
 		// Less than 2 users in chat room
 		message_die(GENERAL_ERROR, $lang['INVALID']);
@@ -64,13 +66,13 @@ if ($chat_room !== '')
 		}
 		$chat_last_user = $chat_user;
 	}
-	$chat_room = implode('|', $chat_room_users);
 	if (($user->data['user_level'] != ADMIN) && !in_array($user->data['user_id'], $chat_room_users))
 	{
 		// Current user is not in that chat room
 		message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
 	}
 	$private_chat = true;
+	$chat_room = implode('|', $chat_room_users);
 	$chat_room_sql = " s.shout_room = '|" . $chat_room . "|' ";
 	define('AJAX_CHAT_ROOM', true);
 }
@@ -144,9 +146,8 @@ else
 	include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 	// Make Pagination and collect some extra data
-	$sql = 'SELECT COUNT(s.shout_id) as stored_shouts, MAX(s.shout_id) as total_shouts
-					FROM ' . AJAX_SHOUTBOX_TABLE . ' s
-					WHERE ' . $chat_room_sql;
+	$sql = "SELECT COUNT(s.shout_id) as stored_shouts, MAX(s.shout_id) as total_shouts
+					FROM " . AJAX_SHOUTBOX_TABLE . " s " . (!empty($chat_room_all) ? "" : " WHERE " . $chat_room_sql);
 	$result = $db->sql_query($sql);
 
 	$num_items = $db->sql_fetchrow($result);
@@ -162,8 +163,7 @@ else
 	// Get my shouts
 	$sql = "SELECT COUNT(s.shout_id) as count
 			FROM " . AJAX_SHOUTBOX_TABLE . " s
-			WHERE s.user_id = " . $user->data['user_id'] . "
-				AND " . $chat_room_sql;
+			WHERE s.user_id = " . $user->data['user_id'] . (!empty($chat_room_all) ? "" : " AND " . $chat_room_sql);
 	$result = $db->sql_query($sql);
 	$myshouts = $db->sql_fetchrow($result);
 
@@ -171,8 +171,7 @@ else
 	$yesterday = time() - (24 * 60 * 60);
 	$sql = "SELECT COUNT(s.shout_id) as count
 			FROM " . AJAX_SHOUTBOX_TABLE . " s
-			WHERE s.shout_time >= " . $yesterday . "
-				AND " . $chat_room_sql;
+			WHERE s.shout_time >= " . $yesterday . (!empty($chat_room_all) ? "" : " AND " . $chat_room_sql);
 	$result = $db->sql_query($sql);
 	$today = $db->sql_fetchrow($result);
 
@@ -345,8 +344,7 @@ else
 	// Get the top ten shouters
 	$sql = "SELECT COUNT(*) AS user_shouts, s.user_id, u.username, u.user_color
 			FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
-			WHERE s.user_id != " . ANONYMOUS . "
-				AND " . $chat_room_sql . "
+			WHERE s.user_id != " . ANONYMOUS . (!empty($chat_room_all) ? "" : " AND " . $chat_room_sql) . "
 				AND u.user_id = s.user_id
 			GROUP BY u.user_id
 			ORDER BY user_shouts DESC
@@ -379,8 +377,7 @@ else
 	$chatroom_userlist = '';
 	$sql = "SELECT s.*, u.username, u.user_color
 			FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
-			WHERE s.user_id = u.user_id
-				AND " . $chat_room_sql . "
+			WHERE s.user_id = u.user_id" . (!empty($chat_room_all) ? "" : " AND " . $chat_room_sql) . "
 			ORDER BY s.shout_id DESC
 			LIMIT " . $start . ", " . $config['posts_per_page'];
 	$results = $db->sql_query($sql);
@@ -457,7 +454,8 @@ else
 				'NAME' => $lang['Admin_rooms'],
 				'LIST' => '',
 				'STYLED_LIST' => '',
-				'LINK' => append_sid('ajax_chat.' . PHP_EXT . $archive_link . '&amp;admin=1')
+				'CLASS' => !empty($chat_room_all) ? ' class="active"' : '',
+				'LINK' => append_sid('ajax_chat.' . PHP_EXT . $archive_link . '&amp;admin=1&amp;all_rooms=1')
 				)
 			);
 
@@ -472,7 +470,7 @@ else
 				$admin_mode = false;
 			}
 		}
-		$room_filter = ($admin_mode == true) ? "shout_room != ''" : "shout_room like '%|" . $user->data['user_id'] . "|%'";
+		$room_filter = ($admin_mode == true) ? "shout_room != ''" : "shout_room LIKE '%|" . $user->data['user_id'] . "|%'";
 		$sql = "SELECT DISTINCT shout_room
 				FROM " . AJAX_SHOUTBOX_TABLE . "
 				WHERE " . $room_filter . "

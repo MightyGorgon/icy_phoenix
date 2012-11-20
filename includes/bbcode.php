@@ -725,8 +725,11 @@ class bbcode
 			if (!$is_smiley && $config['thumbnail_posts'] && ($liw_bypass == false))
 			{
 				$thumb_exists = false;
+				$thumb_processed = false;
+				$is_light_view = false;
 				if($config['thumbnail_cache'])
 				{
+					$thumb_processed = true;
 					$pic_id = $img_url;
 					$pic_fullpath = str_replace(array(' '), array('%20'), $pic_id);
 					$pic_id = str_replace('http://', '', str_replace('https://', '', $pic_id));
@@ -749,6 +752,16 @@ class bbcode
 							$pic_thumbnail = $pic_filename;
 						}
 						$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_PATH . $user_dir . $pic_thumbnail;
+						// Light View - BEGIN
+						$light_view = request_var('light_view', 0);
+						// Force to false for debugging purpose...
+						$light_view = 0;
+						if (!empty($light_view) && !empty($user_dir))
+						{
+							$is_light_view = true;
+							$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $user_dir . $pic_thumbnail;
+						}
+						// Light View - END
 						if(file_exists($pic_thumbnail_fullpath))
 						{
 							$thumb_exists = true;
@@ -774,7 +787,15 @@ class bbcode
 				}
 				if (($thumb_exists == false) || ($cache_image == false))
 				{
-					$params['src'] = $server_url . CMS_PAGE_IMAGE_THUMBNAIL . '?' . $cache_append . 'pic_id=' . $img_url_enc;
+					$pic_thumbnail_script = $server_url . CMS_PAGE_IMAGE_THUMBNAIL . '?' . $cache_append . 'pic_id=' . $img_url_enc;
+					// Light View - BEGIN
+					if (!empty($thumb_processed) && !empty($is_light_view))
+					{
+						$img_url_enc = $user_dir . $pic_thumbnail;
+						$pic_thumbnail_script = $server_url . CMS_PAGE_IMAGE_THUMBNAIL_S . '?' . $cache_append . 'pic_id=' . $img_url_enc;
+					}
+					// Light View - END
+					$params['src'] = $pic_thumbnail_script;
 				}
 			}
 
@@ -799,6 +820,12 @@ class bbcode
 				$html = $this->process_text($params['alt']);
 			}
 			*/
+			// Light View - BEGIN
+			if (!empty($thumb_processed) && !empty($is_light_view))
+			{
+				$item['inurl'] = true;
+			}
+			// Light View - END
 			if(empty($item['inurl']) && !$is_smiley)
 			{
 				if ($this->allow_hs && $config['thumbnail_posts'] && $config['thumbnail_highslide'])
@@ -1012,7 +1039,7 @@ class bbcode
 			{
 				$style = ($color || $bgcolor) ? (' style="' . ($color ? 'color: ' . $color . ';' : '') . ($bgcolor ? 'background-color: ' . $bgcolor . ';' : '') . '"') : '';
 				$html .= '<div class="mg_attachtitle"' . $style . '>' . $lang['Not_Authorized'] . '</div>';
-				$html .= '<div class="mg_attachdiv"><div style="text-align:center;">' . $lang['FILE_NOT_AUTH'] . '</div></div>';
+				$html .= '<div class="mg_attachdiv"><div style="text-align: center;">' . $lang['FILE_NOT_AUTH'] . '</div></div>';
 			}
 
 			return array(
@@ -1127,33 +1154,36 @@ class bbcode
 		// FONT
 		if($tag === 'font')
 		{
+			$fonts = array(
+				'Arial',
+				'Arial Black',
+				'Comic Sans MS',
+				'Courier New',
+				'Impact',
+				'Lucida Console',
+				'Lucida Sans Unicode',
+				'Microsoft Sans Serif',
+				'Symbol',
+				'Tahoma',
+				'Times New Roman',
+				'Traditional Arabic',
+				'Trebuchet MS',
+				'Verdana',
+				'Webdings',
+				'Wingdings'
+			);
+			if (defined('FONTS_DIR'))
+			{
+				foreach ($cache->obtain_fonts() as $font_file)
+				{
+					$fonts[] = substr($font_file, 0, -4);
+				}
+			}
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 			$default_param = 'Verdana';
 			$font = (isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['font']) ? $item['params']['font'] : $default_param));
-			if ($font === 'Arial' ||
-				$font === 'Arial Black' ||
-				$font === 'Comic Sans MS' ||
-				$font === 'Courier New' ||
-				$font === 'Impact' ||
-				$font === 'Lucida Console' ||
-				$font === 'Lucida Sans Unicode' ||
-				$font === 'Microsoft Sans Serif' ||
-				$font === 'Symbol' ||
-				$font === 'Tahoma' ||
-				$font === 'Times New Roman' ||
-				$font === 'Traditional Arabic' ||
-				$font === 'Trebuchet MS' ||
-				$font === 'Verdana' ||
-				$font === 'Webdings' ||
-				$font === 'Wingdings')
-			{
-				$font = $font;
-			}
-			else
-			{
-				$font = 'Verdana';
-			}
-			$html = '<span style="font-family:' . $font . ';">';
+			$font = in_array($font, $fonts) ? $font : $default_param;
+			$html = '<span style="font-family: \'' . $font . '\';">';
 			return array(
 				'valid' => true,
 				'start' => $html,
@@ -1379,15 +1409,22 @@ class bbcode
 			{
 				$str = $url;
 			}
-			$noscript = '<noscript>' . htmlspecialchars(str_replace(array('@', '.'), array(' [at] ', ' [dot] '), $str)) . '</noscript>';
-			// make javascript from it
-			$html = BBCODE_NOSMILIES_START . '<script type="text/javascript">' . "\n" . '<!--' . "\n";
-			for($i = 0; $i<strlen($email); $i+=5)
+			if (defined('IN_AJAX_CHAT'))
 			{
-				$str = substr($email, $i, 5);
-				$html .= 'document.write(\'' . addslashes($str) . '\');' . "\n";
+				$html = htmlspecialchars(str_replace(array('@', '.'), array(' [at] ', ' [dot] '), $str));
 			}
-			$html .= "\n" . '//-->' . "\n" . '</script>' . $noscript . BBCODE_NOSMILIES_END;
+			else
+			{
+				$noscript = '<noscript>' . htmlspecialchars(str_replace(array('@', '.'), array(' [at] ', ' [dot] '), $str)) . '</noscript>';
+				// make javascript from it
+				$html = BBCODE_NOSMILIES_START . '<script type="text/javascript">' . "\n" . '<!--' . "\n";
+				for($i = 0; $i<strlen($email); $i+=5)
+				{
+					$str = substr($email, $i, 5);
+					$html .= 'document.write(\'' . addslashes($str) . '\');' . "\n";
+				}
+				$html .= "\n" . '//-->' . "\n" . '</script>' . $noscript . BBCODE_NOSMILIES_END;
+			}
 			return array(
 				'valid' => true,
 				'html' => $html,
@@ -1639,9 +1676,9 @@ class bbcode
 				}
 				$code_id = substr(md5($content . mt_rand()), 0, 8);
 				$str = BBCODE_NOSMILIES_START . '<div class="code">';
-				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position:relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\', \'codehdr2_' . $code_id . '\', \'\'); return false;">' . $lang['Hide'] . '</a>]</div>';
-				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
-				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position:relative;"><ol class="code-list" start="' . $start . '">' . $html . '</ol></div></div>' . BBCODE_NOSMILIES_END;
+				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\', \'codehdr2_' . $code_id . '\', \'\'); return false;">' . $lang['Hide'] . '</a>]</div>';
+				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
+				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><ol class="code-list" start="' . $start . '">' . $html . '</ol></div></div>' . BBCODE_NOSMILIES_END;
 				// check highlight
 				// format: highlight="1,2,3-10"
 				if(isset($item['params']['highlight']))
@@ -1758,7 +1795,7 @@ class bbcode
 				}
 				$code_id = substr(md5($content . mt_rand()), 0, 8);
 				$str = BBCODE_NOSMILIES_START . '<div class="code">';
-				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position:relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
+				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
 				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
 				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
 
@@ -1861,7 +1898,7 @@ class bbcode
 			$code_id = substr(md5($content . mt_rand()), 0, 8);
 			$str = BBCODE_NOSMILIES_START . '<div class="code">';
 			$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
-			$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position:relative;display:none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
+			$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
 			$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
 
 			$this->code_counter++;
@@ -3422,7 +3459,9 @@ class bbcode
 		// if bbcode and html are disabled then return unprocessed text
 		if(!$this->allow_bbcode && !$this->allow_html)
 		{
-			$this->html = $this->text;
+			// Mighty Gorgon: I had to add htmlspecialchars to text, otherwise users were able to post html by disabling both HTML and BBCodes in topics... still to be fully verified...
+			//$this->html = $this->text;
+			$this->html = htmlspecialchars($this->text);
 			$this->process_smilies();
 			return $this->html;
 		}
@@ -4066,6 +4105,7 @@ class bbcode
 			"/\[url=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "/\[\/url\]/si",
 			"/\[web=([a-z0-9\-\.,\?!%\*_\/:;~\\&$@\/=\+]+)\]/si", "/\[\/web\]/si",
 			"/\[font=(Arial|Arial Black|Arial Bold|Arial Bold Italic|Arial Italic|Comic Sans MS|Comic Sans MS Bold|Courier New|Courier New Bold|Courier New Bold Italic|Courier New Italic|Impact|Lucida Console|Lucida Sans Unicode|Microsoft Sans Serif|Symbol|Tahoma|Tahoma Bold|Times New Roman|Times New Roman Bold|Times New Roman Bold Italic|Times New Roman Italic|Traditional Arabic|Trebuchet MS|Trebuchet MS Bold|Trebuchet MS Bold Italic|Trebuchet MS Italic|Verdana|Verdana Bold|Verdana Bold Italic|Verdana Italic|Webdings|Wingdings|)\]/si", "/\[\/font\]/si",
+			"/\[font=\"(Arial|Arial Black|Arial Bold|Arial Bold Italic|Arial Italic|Comic Sans MS|Comic Sans MS Bold|Courier New|Courier New Bold|Courier New Bold Italic|Courier New Italic|Impact|Lucida Console|Lucida Sans Unicode|Microsoft Sans Serif|Symbol|Tahoma|Tahoma Bold|Times New Roman|Times New Roman Bold|Times New Roman Bold Italic|Times New Roman Italic|Traditional Arabic|Trebuchet MS|Trebuchet MS Bold|Trebuchet MS Bold Italic|Trebuchet MS Italic|Verdana|Verdana Bold|Verdana Bold Italic|Verdana Italic|Webdings|Wingdings|)\"\]/si", "/\[\/font\]/si",
 			"/\[marq=(left|right|up|down)\]/si", "/\[\/marq\]/si",
 			"/\[marquee direction=(left|right|up|down)\]/si", "/\[\/marquee\]/si",
 			"/\[align=(left|center|right|justify)\]/si", "/\[\/align\]/si",

@@ -1130,6 +1130,37 @@ class ImgObj
 		return true;
 	}
 
+	/**
+	* Converts hexidecimal color value to rgb values and returns as array/string
+	*
+	* @param string $hex
+	* @param bool $asString
+	* @return array|string
+	*/
+	function hex2rgb($hex, $asString = false)
+	{
+		// strip off any leading #
+		if (0 === strpos($hex, '#'))
+		{
+			$hex = substr($hex, 1);
+		}
+		elseif (0 === strpos($hex, '&H'))
+		{
+			$hex = substr($hex, 2);
+		}
+
+		// break into hex 3-tuple
+		$cutpoint = ceil(strlen($hex) / 2) - 1;
+		$rgb = explode(':', wordwrap($hex, $cutpoint, ':', $cutpoint), 3);
+
+		// convert each tuple to decimal
+		$rgb[0] = (isset($rgb[0]) ? hexdec($rgb[0]) : 0);
+		$rgb[1] = (isset($rgb[1]) ? hexdec($rgb[1]) : 0);
+		$rgb[2] = (isset($rgb[2]) ? hexdec($rgb[2]) : 0);
+
+		return ($asString ? "{$rgb[0]} {$rgb[1]} {$rgb[2]}" : $rgb);
+	}
+
 	// function to convert rgb to hls values
 	function rgb2hls($rgb)
 	{
@@ -1258,6 +1289,7 @@ class ImgObj
 		imagefilledrectangle($this->ImageID, 0, $this->ImageHeight()-16, $this->ImageWidth(), $this->ImageHeight(), 0);
 		imagestring($this->ImageID, 1, $text_x, $text_y, $text, $text_colour);
 		$this->ChangeFlag = true;
+		return true;
 	}
 
 	//****************************************************************************
@@ -1817,6 +1849,75 @@ class ImgObj
 	}
 
 	//****************************************************************************
+	// Function to create a reflection on the image
+	//   Usage : Reflection(40, 40, 50, false, '#a4a4a4')
+	//****************************************************************************
+	/**
+	* Creates Apple-style reflection under image, optionally adding a border to main image
+	*
+	* @param int $percent
+	* @param int $reflection
+	* @param int $white
+	* @param bool $border
+	* @param string $borderColor
+	*/
+	function Reflection($percent = 40, $reflection = 40, $white = 50, $border = false, $border_color = '#a4a4a4')
+	{
+		$width = $this->ImageWidth();
+		$height = $this->ImageHeight();
+
+		$reflection_height = intval($height * ($reflection / 100));
+		$new_height = $height + $reflection_height;
+		$reflected_part = $height * ($percent / 100);
+
+		$temp_img = imagecreatetruecolor($width, $new_height);
+		imagealphablending($temp_img, true);
+
+		$color_to_paint = imagecolorallocatealpha($temp_img, 255, 255, 255, 0);
+		imagefilledrectangle($temp_img, 0, 0, $width, $new_height, $color_to_paint);
+
+		imagecopyresampled($temp_img, $this->ImageID, 0, 0, 0, $reflected_part, $width, $reflection_height, $width, ($height - $reflected_part));
+
+		// FLIP - BEGIN
+		// Flip the image
+		$x_i = imagesx($temp_img);
+		$y_i = imagesy($temp_img);
+		for($x = 0; $x < $x_i; $x++)
+		{
+			for($y = 0; $y < $y_i; $y++)
+			{
+				imagecopy($temp_img, $temp_img, $x, $y_i - $y - 1, $x, $y, 1, 1);
+			}
+		}
+		// FLIP - END
+
+		imagecopy($temp_img, $this->ImageID, 0, 0, 0, 0, $width, $height);
+
+		imagealphablending($temp_img, true);
+
+		for($i = 0; $i < $reflection_height; $i++)
+		{
+			$color_to_paint = imagecolorallocatealpha($temp_img, 255, 255, 255, ($i / $reflection_height * - 1 + 1) * $white);
+			imagefilledrectangle($temp_img, 0, $height + $i, $width , $height + $i, $color_to_paint);
+		}
+
+		if($border == true)
+		{
+			$rgb = $this->hex2rgb($border_color, false);
+			$color_to_paint = imagecolorallocate($temp_img, $rgb[0], $rgb[1], $rgb[2]);
+			imageline($temp_img, 0, 0, $width, 0, $color_to_paint); //top line
+			imageline($temp_img, 0, $height, $width, $height, $color_to_paint); //bottom line
+			imageline($temp_img, 0, 0, 0, $height, $color_to_paint); //left line
+			imageline($temp_img, $width - 1, 0, $width - 1, $height, $color_to_paint); //right line
+		}
+
+		$this->DestroyImage();
+		$this->ImageID = $temp_img;
+		$this->ChangeFlag = true;
+		return true;
+	}
+
+	//****************************************************************************
 	// Function to convert to stereogram
 	//   Usage : Stereogram(0=grayscale, 1=colour)
 	//****************************************************************************
@@ -2178,7 +2279,7 @@ function nuff_http_vars()
 	$nuff_http_full_string = '';
 	foreach ($nuff_http as $k => $v)
 	{
-		$nuff_http_full_string .= '&' . $k . '=' . $v;
+		$nuff_http_full_string .= '&amp;' . $k . '=' . $v;
 	}
 
 	$nuff_http['full_string'] = $nuff_http_full_string;

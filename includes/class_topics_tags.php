@@ -378,14 +378,14 @@ class class_topics_tags
 	{
 		global $db, $lang;
 
-		$sql = "DELETE FROM " . TOPICS_TAGS_LIST_TABLE . " WHERE tag_count = 0";
+		$sql = "DELETE FROM " . TOPICS_TAGS_LIST_TABLE . " WHERE tag_count <= 0";
 		$result = $db->sql_query($sql);
 
 		return true;
 	}
 
 	/*
-	* Delete all tags for selected topics
+	* Delete tags for selected topic
 	*/
 	function remove_tag_from_match($tags_ids_array, $topic_id)
 	{
@@ -420,6 +420,7 @@ class class_topics_tags
 				$tag_id = $this->update_tag_entry($tag_id, false);
 			}
 		}
+		$db->sql_freeresult($result);
 		$this->remove_zero_tags();
 
 		return true;
@@ -448,9 +449,116 @@ class class_topics_tags
 				$tag_id = $this->update_tag_entry($tag_id, false);
 			}
 		}
+		$db->sql_freeresult($result);
 		$this->remove_zero_tags();
 
 		return true;
+	}
+
+	/*
+	* Replace a tag with another one
+	*/
+	function replace_tag($tag_old, $tag_new)
+	{
+		global $db, $lang;
+
+		$topics_data = array();
+		$tag_new = substr(ip_clean_string($tag_new, $lang['ENCODING'], true), 0, 50);
+
+		// Get all topics with $tag_old
+		$sql = "SELECT tag_id
+						FROM " . TOPICS_TAGS_LIST_TABLE . "
+						WHERE tag_text = '" . $db->sql_escape($tag_old) . "'";
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if ($result)
+		{
+			$row = $db->sql_fetchrow($result);
+			$tag_old_id = (int) $row['tag_id'];
+			$db->sql_freeresult($result);
+
+			if (!empty($tag_old_id))
+			{
+				// Let's get all topics now...
+				$sql = "SELECT m.topic_id, t.forum_id, t.topic_tags, t.topic_title
+								FROM " . TOPICS_TAGS_MATCH_TABLE . " m, " . TOPICS_TABLE . " t
+								WHERE m.tag_id = " . $tag_old_id . "
+									AND t.topic_id = m.topic_id";
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql);
+				$db->sql_return_on_error(false);
+				if ($result)
+				{
+					// Now that we know that $tag_old exists, and there are topics with that tag... let's check if $tag_new exists and create the new entry where needed
+					$tag_new_id = 0;
+					$sql_tag = "SELECT tag_id
+									FROM " . TOPICS_TAGS_LIST_TABLE . "
+									WHERE tag_text = '" . $db->sql_escape($tag_new) . "'";
+					$db->sql_return_on_error(true);
+					$result_tag = $db->sql_query($sql_tag);
+					$db->sql_return_on_error(false);
+					if ($result_tag)
+					{
+						$row = $db->sql_fetchrow($result_tag);
+						$tag_new_id = (int) $row['tag_id'];
+						$db->sql_freeresult($result_tag);
+					}
+					if (empty($tag_new_id))
+					{
+						$tag_new_id = false;
+						$sql_ary = array('tag_text' => $tag_new, 'tag_count' => 0);
+						$sql_tag = "INSERT INTO " . TOPICS_TAGS_LIST_TABLE . " " . $db->sql_build_array('INSERT', $sql_ary);
+						$db->sql_query($sql_tag);
+						$tag_new_id = $db->sql_nextid();
+					}
+
+					// Let's loop now!
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$topics_data[] = $row;
+						$forum_id = $row['forum_id'];
+						$topic_id = $row['topic_id'];
+						$topics_array = array($topic_id);
+						$tags = $this->get_topics_tags($topics_array);
+						if (!in_array($tag_new, $tags))
+						{
+							$sql_add = "UPDATE " . TOPICS_TAGS_LIST_TABLE . " SET tag_count = (tag_count + 1) WHERE tag_id = " . $tag_new_id;
+							$db->sql_query($sql_add);
+							if (!$this->check_tag_match_exists($tag_new_id, $topic_id))
+							{
+								$sql_ary = array('tag_id' => $tag_new_id, 'topic_id' => $topic_id, 'forum_id' => $forum_id);
+								$sql_add = "INSERT INTO " . TOPICS_TAGS_MATCH_TABLE . " " . $db->sql_build_array('INSERT', $sql_ary);
+								$db->sql_query($sql_add);
+							}
+						}
+						$sql_tc = "UPDATE " . TOPICS_TAGS_LIST_TABLE . " SET tag_count = (tag_count - 1) WHERE tag_id = " . $tag_old_id;
+						$db->sql_query($sql_tc);
+						$this->remove_tag_from_match(array($tag_old_id), $topic_id);
+						$new_tags_list = '';
+						$new_tags_list_ary = array();
+						foreach ($tags as $tag_text)
+						{
+							if ($tag_text != $tag_old)
+							{
+								$new_tags_list_ary[] = $tag_text;
+							}
+						}
+						if (!in_array($tag_new, $new_tags_list_ary))
+						{
+							$new_tags_list_ary[] = $tag_new;
+						}
+						$new_tags_list = implode(', ', $new_tags_list_ary);
+						$sql_topic = "UPDATE " . TOPICS_TABLE . " SET topic_tags = '" . $db->sql_escape($new_tags_list) . "' WHERE topic_id = " . $topic_id;
+						$db->sql_query($sql_topic);
+					}
+				}
+			}
+		}
+
+		$this->remove_zero_tags();
+
+		return $topics_data;
 	}
 
 }

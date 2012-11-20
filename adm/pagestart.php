@@ -31,7 +31,6 @@ define('CTRACKER_DISABLED', true);
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 $config['jquery_ui'] = true;
-
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
@@ -47,7 +46,8 @@ include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 
 if (!$user->data['session_logged_in'])
 {
-	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . ADM . '/index.' . PHP_EXT, true));
+	$redirect_append = '?redirect=' . urlencode(ADM . '/' . 'index.' . PHP_EXT) . '&admin=1';
+	redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . $redirect_append, true));
 }
 elseif (!jr_admin_secure(basename($_SERVER['REQUEST_URI'])))
 {
@@ -60,9 +60,10 @@ if ($session_id != $user->data['session_id'])
 	redirect('index.' . PHP_EXT . '?sid=' . $user->data['session_id']);
 }
 
-if (!$user->data['session_admin'])
+if (empty($user->data['session_admin']))
 {
-	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . ADM . '/index.' . PHP_EXT . '&admin=1', true));
+	$redirect_append = '?redirect=' . urlencode(ADM . '/' . 'index.' . PHP_EXT) . '&admin=1';
+	redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . $redirect_append, true));
 }
 
 if (empty($no_page_header))

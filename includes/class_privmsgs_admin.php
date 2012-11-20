@@ -290,7 +290,7 @@ class aprvmUtils
 	*/
 	function copyright()
 	{
-		printf('<br /><div class="copyright" style="text-align:center;"> %s &copy; %s <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.', $this->modName, $this->copyrightYear);
+		printf('<br /><div class="copyright" style="text-align: center;"> %s &copy; %s <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.', $this->modName, $this->copyrightYear);
 		printf('<br />PHP Version %s</div>', phpversion());
 	}
 

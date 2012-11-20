@@ -54,7 +54,7 @@ $tag_id = ($tag_id < 0) ? 0 : $tag_id;
 $tag_text = request_var('tag_text', '', true);
 $tag_text = ip_clean_string(urldecode(trim($tag_text)), $lang['ENCODING'], true);
 
-$mode_types = array('cloud', 'list', 'view');
+$mode_types = array('cloud', 'list', 'view', 'replace');
 $mode = request_var('mode', $mode_types[0]);
 $mode = check_var_value($mode, $mode_types);
 
@@ -223,11 +223,32 @@ if ($mode == 'view')
 		'L_VIEWS' => $lang['Views'],
 		'L_LASTPOST' => $lang['Last_Post'],
 		'L_REPLIES' => $lang['Replies'],
-		'L_TAG_RESULTS' => sprintf($lang['TAG_RESULTS'], htmlspecialchars($tag_text)),
+		'L_TAG_RESULTS' => sprintf($lang['TAG_RESULTS'], htmlspecialchars($tag_text) . ' (' . $num_items . ')'),
 
 		'U_TAG_RESULTS' => append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($tag_text))),
 		)
 	);
+}
+elseif ($mode == 'replace')
+{
+	if ($user->data['user_level'] != ADMIN)
+	{
+		message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
+	}
+
+	$template_to_parse = 'tags_replace_body.tpl';
+
+	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
+
+	$search_replace_submit = false;
+	if (isset($_POST['submit']))
+	{
+		$search_replace_submit = true;
+		$tag_old = request_var('tag_old', '', true);
+		$tag_new = request_var('tag_new', '', true);
+		$topics_data = $class_topics_tags->replace_tag($tag_old, $tag_new);
+		message_die(GENERAL_MESSAGE, sprintf($lang['TAGS_SEARCH_REPLACE_RESULT'], sizeof($topics_data)));
+	}
 }
 else
 {
@@ -267,6 +288,7 @@ $template->assign_vars(array(
 	'S_SORT_DIR_SELECT' => $sort_dir_select_box,
 
 	'U_TAGS_SEARCH_PAGE' => append_sid(CMS_PAGE_TAGS),
+	'U_TAGS_SEARCH_REPLACE' => append_sid(CMS_PAGE_TAGS . '?mode=replace'),
 	'U_TAGS' => append_sid(CMS_PAGE_TAGS),
 	)
 );

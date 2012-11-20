@@ -178,7 +178,7 @@ if (!function_exists('copyright_nivisec'))
 	*/
 	function copyright_nivisec($name, $year)
 	{
-		print '<br /><div class="copyright" style="text-align:center;">' . $name . ' &copy; ' . $year . ' <a href="http://www.nivisec.com">Nivisec.com</a></div>';
+		print '<br /><div class="copyright" style="text-align: center;">' . $name . ' &copy; ' . $year . ' <a href="http://www.nivisec.com">Nivisec.com</a></div>';
 	}
 }
 

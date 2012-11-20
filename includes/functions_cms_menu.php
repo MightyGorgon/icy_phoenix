@@ -74,10 +74,12 @@ function cms_menu_default_links_array()
 /*
 * Build Link URL
 */
-function cms_menu_build_link($item_data, $block_id)
+function cms_menu_build_link($item_data, $block_id, $show_icon = true)
 {
 	global $db, $cache, $config, $user, $lang, $template, $theme, $images;
 	global $default_links_array;
+
+	$show_icon = !empty($show_icon) ? true : false;
 
 	$menu_link = array(
 		'icon' => '',
@@ -102,11 +104,11 @@ function cms_menu_build_link($item_data, $block_id)
 		//$menu_link['link'] = htmlspecialchars($item_data['menu_link']);
 		$menu_link['link'] = $item_data['menu_link'];
 		$menu_link['link'] = (!empty($item_data['menu_link_external']) ? ($menu_link['link'] . '" target="_blank') : append_sid($menu_link['link']));
-		$menu_link['url'] = (!empty($menu_link['link']) ? '<a href="' . $menu_link['link'] . '">' . $menu_link['icon'] . $menu_link['name'] . '</a>' : '');
+		$menu_link['url'] = (!empty($menu_link['link']) ? '<a href="' . $menu_link['link'] . '">' . (!empty($show_icon) ? $menu_link['icon'] : '') . $menu_link['name'] . '</a>' : '');
 	}
 	else
 	{
-		$menu_link['link'] = cms_menu_build_complete_url($item_data['menu_default'], $block_id, $item_data['menu_link'], $menu_link['icon']);
+		$menu_link['link'] = cms_menu_build_complete_url($item_data['menu_default'], $block_id, $item_data['menu_link'], $menu_link['icon'], $show_icon);
 		$menu_link['url'] = (!empty($menu_link['link']) ? $menu_link['link'] : '');
 	}
 	$menu_link['url'] = (!empty($menu_link['url']) ? '<span class="genmed" style="text-align: left;">' . $menu_link['url'] . '</span>' : '');
@@ -117,7 +119,7 @@ function cms_menu_build_link($item_data, $block_id)
 /*
 * Build Complete URL
 */
-function cms_menu_build_complete_url($default_id, $block_id, $link, $menu_icon)
+function cms_menu_build_complete_url($default_id, $block_id, $link, $menu_icon, $show_icon = true)
 {
 	global $db, $cache, $config, $user, $lang, $template, $theme, $images;
 	global $default_links_array;
@@ -158,7 +160,7 @@ function cms_menu_build_complete_url($default_id, $block_id, $link, $menu_icon)
 			$menu_link = append_sid($default_links_array[$default_id]['link']);
 		}
 
-		$menu_url = '<a href="' . $menu_link . '"' . $menu_url_title . '>' . $menu_icon . htmlspecialchars($menu_name) . '</a>';
+		$menu_url = '<a href="' . $menu_link . '"' . $menu_url_title . '>' . (!empty($show_icon) ? $menu_icon : '') . htmlspecialchars($menu_name) . '</a>';
 	}
 
 	return $menu_url;

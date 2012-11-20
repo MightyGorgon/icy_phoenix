@@ -24,6 +24,8 @@ if (!defined('CTRACKER_DISABLE_OUTPUT'))
 	define('CTRACKER_DISABLE_OUTPUT', true);
 }
 
+define('IN_AJAX_CHAT', true);
+
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
@@ -39,13 +41,13 @@ if (!defined('AJAX_CHAT_ROOM'))
 	$chat_room_sql = " s.shout_room = '' ";
 	$private_chat = false;
 	$chat_room = request_var('chat_room', '');
-	$chat_room_users = array_map('intval', explode('|', $chat_room));
+	$chat_room_users = array_unique(array_filter(array_map('intval', explode('|', $chat_room))));
 	$chat_room_users_count = sizeof($chat_room_users);
 
 	if ($chat_room !== '')
 	{
 		// validate chat room
-		if (count($chat_room_users) < 2)
+		if ($chat_room_users_count < 2)
 		{
 			// Less than 2 users in chat room
 			message_die(GENERAL_ERROR, $lang['INVALID']);
@@ -61,12 +63,12 @@ if (!defined('AJAX_CHAT_ROOM'))
 			}
 			$chat_last_user = $chat_user;
 		}
-		$chat_room = implode('|', $chat_room_users);
 		if (($user->data['user_level'] != ADMIN) && !in_array($user->data['user_id'], $chat_room_users))
 		{
 			// Current user is not in that chat room
 			message_die(GENERAL_ERROR, $lang['Not_Auth_View']);
 		}
+		$chat_room = implode('|', $chat_room_users);
 		$private_chat = true;
 		$chat_room_sql = " s.shout_room = '|" . $chat_room . "|' ";
 		define('AJAX_CHAT_ROOM', true);
@@ -258,7 +260,7 @@ if (!empty($action))
 
 		if ($update_mode == 'chat')
 		{
-			// If the request does not provide the id of the last know message the id is set to 0
+			// If the request does not provide the id of the last known message the id is set to 0
 			$lastID = request_var('lastID', 0);
 
 			// Check if there is a limit else, show all shouts
@@ -272,7 +274,7 @@ if (!empty($action))
 			$chatroom_sql = "s.shout_room = ''";
 			if ($user->data['session_logged_in'])
 			{
-				$chatroom_sql = "(s.shout_room = '' OR s.shout_room like '%|" . $user->data['user_id'] . "|%')";
+				$chatroom_sql = "(s.shout_room = '' OR s.shout_room LIKE '%|" . $user->data['user_id'] . "|%')";
 			}
 			$sql = "SELECT s.*, u.user_id, u.username, u.user_active, u.user_color, u.user_level
 					FROM " . AJAX_SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
@@ -330,7 +332,7 @@ if (!empty($action))
 				{
 					$template->assign_block_vars('shouts', array(
 						'ID' => $id,
-						'ROOM' => ($row[$x]['shout_room'] == '') ? '' : substr($row[$x]['shout_room'], 1, -1),
+						'ROOM' => !empty($row[$x]['shout_room']) ? substr($row[$x]['shout_room'], 1, -1) : '',
 						'SHOUTER' => $shouter,
 						'SHOUTER_ID' => $row[$x]['user_id'],
 						'SHOUTER_COLOR' => $shouter_color,
@@ -344,7 +346,7 @@ if (!empty($action))
 				{
 					$json_shout = array(
 						'id' => $id,
-						'room' => ($row[$x]['shout_room'] == '') ? '' : substr($row[$x]['shout_room'], 1, -1),
+						'room' => !empty($row[$x]['shout_room']) ? substr($row[$x]['shout_room'], 1, -1) : '',
 						'shouter' => $shouter,
 						'shouter_id' => $row[$x]['user_id'],
 						'shouter_color' => $shouter_color,
@@ -489,10 +491,10 @@ if (!empty($action))
 		if ($message != '')
 		{
 			// Add new data
-			$sql_chat_room = $chat_room;
-			if ($sql_chat_room != '')
+			$sql_chat_room = '';
+			if (!empty($chat_room))
 			{
-				$sql_chat_room = '|' . $sql_chat_room . '|';
+				$sql_chat_room = '|' . $chat_room . '|';
 			}
 			$sql = "INSERT INTO " . AJAX_SHOUTBOX_TABLE . " (user_id, shouter_name, shout_text, shouter_ip, shout_time, shout_room) VALUES (" . $user->data['user_id'] . ", '" . $db->sql_escape($shouter) . "', '" . $db->sql_escape($message) . "', '" . $db->sql_escape($user_ip) . "', " . $shout_time . ", '" . $sql_chat_room . "')";
 

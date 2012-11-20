@@ -51,7 +51,7 @@ $mode = (isset($_POST['approve'])) ? 'do_approve' : $mode;
 $mode = (isset($_POST['unapprove'])) ? 'do_unapprove' : $mode;
 $mode = (empty($mode)) ? $mode_js : $mode;
 
-$mirrors = (isset($_POST['mirrors'])) ? true : 0;
+$mirrors = (isset($_POST['mirrors']) ? true : 0);
 
 $sort_method = request_var('sort_method', $pafiledb_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('file_name', 'file_time', 'file_dls', 'file_rating', 'file_update_time'), $pafiledb_config['sort_method']);
@@ -82,38 +82,38 @@ switch($mode)
 		$template_file = ADM_TPL . 'pa_admin_file.tpl';
 		$l_title = $lang['File_manage_title'];
 		$l_explain = $lang['Fileexplain'];
-		//$s_hidden_fields = '<input type="hidden" name="mode" value="add">';
+		//$s_hidden_fields = '<input type="hidden" name="mode" value="add" />';
 		break;
 	case 'add':
 		$template_file = ADM_TPL . 'pa_admin_file_edit.tpl';
 		$l_title = $lang['Afiletitle'];
 		$l_explain = $lang['Fileexplain'];
-		$s_hidden_fields = '<input type="hidden" name="mode" value="do_add">';
+		$s_hidden_fields = '<input type="hidden" name="mode" value="do_add" />';
 		break;
 	case 'edit':
 	case 'do_add':
 		$template_file = ADM_TPL . 'pa_admin_file_edit.tpl';
 		$l_title = $lang['Efiletitle'];
 		$l_explain = $lang['Fileexplain'];
-		$s_hidden_fields = '<input type="hidden" name="mode" value="do_add">';
-		$s_hidden_fields .= '<input type="hidden" name="file_id" value="' . $file_id . '">';
+		$s_hidden_fields = '<input type="hidden" name="mode" value="do_add" />';
+		$s_hidden_fields .= '<input type="hidden" name="file_id" value="' . $file_id . '" />';
 		break;
 	case 'maintenance':
 		$template_file = ADM_TPL . 'pa_admin_file_checker.tpl';
 		$l_title = $lang['File_checker'];
 		$l_explain = $lang['File_checker_explain'];
-		$s_hidden_fields = '<input type="hidden" name="mode" value="do_maintenace">';
+		$s_hidden_fields = '<input type="hidden" name="mode" value="do_maintenace" />';
 		break;
 	case 'mirrors':
 		$template_file = ADM_TPL . 'pa_admin_file_mirrors.tpl';
 		$l_title = $lang['Mirrors'];
 		$l_explain = $lang['Mirrors_explain'];
-		$s_hidden_fields = '<input type="hidden" name="mode" value="mirrors">';
-		$s_hidden_fields .= '<input type="hidden" name="file_id" value="' . $file_id . '">';
+		$s_hidden_fields = '<input type="hidden" name="mode" value="mirrors" />';
+		$s_hidden_fields .= '<input type="hidden" name="file_id" value="' . $file_id . '" />';
 		break;
 }
 
-if($mode == 'do_add' && !$file_id)
+if(($mode == 'do_add') && !$file_id)
 {
 	$file_id = $pafiledb->update_add_file();
 	$custom_fields->file_update_data($file_id);
@@ -121,11 +121,11 @@ if($mode == 'do_add' && !$file_id)
 	$mode = 'edit';
 	if(!$mirrors)
 	{
-		$message = $lang['Fileadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_file.php") . '">', '</a>');
+		$message = $lang['Fileadded'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_file.' . PHP_EXT) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
-elseif($mode == 'do_add' && $file_id)
+elseif(($mode == 'do_add') && $file_id)
 {
 	$file_id = $pafiledb->update_add_file($file_id);
 	$custom_fields->file_update_data($file_id);
@@ -133,7 +133,7 @@ elseif($mode == 'do_add' && $file_id)
 	$mode = 'edit';
 	if(!$mirrors)
 	{
-		$message = $lang['Fileedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid("admin_pa_file." . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
+		$message = $lang['Fileedited'] . '<br /><br />' . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_file.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
@@ -444,8 +444,8 @@ elseif(($mode == 'add') || ($mode == 'edit') || $mirrors)
 	else
 	{
 		$sql = 'SELECT *
-			FROM ' . PA_FILES_TABLE . "
-			WHERE file_id = $file_id";
+			FROM ' . PA_FILES_TABLE . '
+			WHERE file_id = ' . $file_id;
 		$result = $db->sql_query($sql);
 		$file_info = $db->sql_fetchrow($result);
 

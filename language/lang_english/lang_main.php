@@ -2461,6 +2461,16 @@ $lang = array_merge($lang, array(
 
 	'FULL_EDITOR' => 'Switch to full Editor',
 
+	'SN_SHOW_POSTS' => 'Show posts text',
+	'SN_SHOW_TOPICS' => 'Show topics only',
+
+	'NOT_LOGGED_IN_VIEW_PAGE' => 'You must be logged in to view this page.',
+
+	'TAGS_SEARCH_REPLACE' => 'Search And Replace Tags',
+	'TAGS_SEARCH_REPLACE_SRC' => 'Tag to be replaced',
+	'TAGS_SEARCH_REPLACE_TGT' => 'New Tag',
+	'TAGS_SEARCH_REPLACE_RESULT' => '%s Tags have been replaced',
+
 	)
 );
 

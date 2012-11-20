@@ -110,7 +110,7 @@ if(!function_exists('cms_block_forum_list'))
 			);
 		}
 		$template->assign_vars(array(
-			'TITLE' => $lang['cms_block_forum_list'],
+			'FL_TITLE' => $lang['cms_block_forum_list'],
 			)
 		);
 	}

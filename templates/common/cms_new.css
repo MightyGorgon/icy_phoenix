@@ -21,8 +21,6 @@ body { font-family: "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, 
 	/*display: table-cell;*/
 
 	border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
 
 	border-style: solid;
 	border-color: #dfdfdf;
@@ -53,8 +51,6 @@ body { font-family: "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, 
 
 .page-footer {
 	border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
 
 	background-color: #ffffff;
 	border-style: solid;
@@ -114,7 +110,7 @@ hr { border: 0px none #ffffff; border-top: 1px solid #444444; }
 /* FOOTER - END */
 
 /* HORIZONTAL MENU COLORS - BEGIN */
-.top-menu { height: 48px; width: 100%; margin: 0px; padding: 0px; border-radius: 0px 0px 10px 10px; -moz-border-radius: 0px 0px 10px 10px; -webkit-border-radius: 0px 0px 10px 10px; background-color: #ffffff; border-style: solid; border-color: #dfdfdf; border-width: 1px; margin-bottom: 10px; line-height: 1; }
+.top-menu { height: 48px; width: 100%; margin: 0px; padding: 0px; border-radius: 0px 0px 10px 10px; background-color: #ffffff; border-style: solid; border-color: #dfdfdf; border-width: 1px; margin-bottom: 10px; line-height: 1; }
 
 #horiz-menu { /* background: transparent url('./images/bg_transparent.png') 0 0 repeat; */ background-color: transparent; display: inline; }
 #horiz-menu ul ul { background-color: #ffffff; border-left: 1px solid #dddddd; border-right: 1px solid #dddddd; border-bottom: 1px solid #dddddd; }

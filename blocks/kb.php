@@ -85,7 +85,7 @@ if(!function_exists('cms_block_kb'))
 
 			$template->assign_vars(array(
 				'TOPIC_ID' => $fetchposts[$i]['topic_id'],
-				'TITLE' => $fetchposts[$i]['topic_title'],
+				'KB_TITLE' => $fetchposts[$i]['topic_title'],
 				'TOPIC_DESC' => $fetchposts[$i]['topic_desc'],
 				'POSTER' => $fetchposts[$i]['username'],
 				'POSTER_CG' => colorize_username($fetchposts[$i]['user_id'], $fetchposts[$i]['username'], $fetchposts[$i]['user_color'], $fetchposts[$i]['user_active']),
@@ -136,7 +136,7 @@ if(!function_exists('cms_block_kb'))
 					display_attachments($fetchposts[$i]['post_id'], 'articles_fp');
 				}
 				$template->assign_vars(array(
-					'TITLE' => $lang['Kb_name'],
+					'KB_TITLE' => $lang['Kb_name'],
 					)
 				);
 			}
@@ -280,7 +280,7 @@ if(!function_exists('cms_block_kb'))
 				}
 
 				$template->assign_vars(array(
-					'TITLE' => $lang['Kb_name'],
+					'KB_TITLE' => $lang['Kb_name'],
 					)
 				);
 			}

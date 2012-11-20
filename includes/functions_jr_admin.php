@@ -15,7 +15,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 define('EXPLODE_SEPARATOR_CHAR', '|');
 //define('JR_ADMIN_DIR', ADM .'/');
-define('COPYRIGHT_NIVISEC_FORMAT', '<br /><div class="copyright" style="text-align:center;"> %s &copy; %s <a href="http://www.nivisec.com">Nivisec.com</a></div>');
+define('COPYRIGHT_NIVISEC_FORMAT', '<br /><div class="copyright" style="text-align: center;"> %s &copy; %s <a href="http://www.nivisec.com">Nivisec.com</a></div>');
 
 
 if (!function_exists('copyright_nivisec'))

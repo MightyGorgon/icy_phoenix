@@ -178,8 +178,8 @@ if(GetCookie(tmp) == '2')
 <!-- ENDIF -->
 
 <br />
-<div class="center-block" style="text-align:center;margin:30px;">
-{IMG_TBL}<table class="forumlinenb" style="padding:2px;border-top-width:1px;" width="100%" cellspacing="0" cellpadding="2">
+<div class="center-block" style="text-align: center; margin: 30px;">
+{IMG_TBL}<table class="forumlinenb" style="padding: 2px; border-top-width: 1px;" width="100%" cellspacing="0" cellpadding="2">
 <tr>
 	<td class="row-center-small"><img src="{FORUM_NEW_CAT_IMG}" alt="{L_CAT_NEW_POSTS}" title="{L_CAT_NEW_POSTS}" /></td>
 	<td class="row-center-small" width="11%">{L_CAT_NEW_POSTS}</td>

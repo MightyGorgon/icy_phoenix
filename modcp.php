@@ -50,7 +50,7 @@ if (!empty($selected_id))
 	elseif (($type == POST_CAT_URL) || ($selected_id == 'Root'))
 	{
 		$parm = ($id != 0) ? '?' . POST_CAT_URL . '=' . $id : '';
-		redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM . $parm));
+		redirect(append_sid(CMS_PAGE_FORUM . $parm));
 		exit;
 	}
 }

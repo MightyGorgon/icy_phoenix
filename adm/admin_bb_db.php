@@ -132,7 +132,7 @@ echo '	<tr>';
 echo '		<td align="left" valign="middle" class="row2" colspan="15">';
 echo '			<span class="genmed">';
 echo '				' . $lang['db_sql_query_db'] . '<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=sql_change&amp;sid=' . $user->data['session_id'] . '"><img src="' . $images . 'b_sql.png" alt="" /></a>&nbsp;&nbsp;<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=explain_change&amp;sid=' . $user->data['session_id'] . '"><img src="' . $images . 'b_tipp.png" alt="' . $lang['db_explain'] . '" title="' . $lang['db_explain'] . '" /></a>';
-echo '				<div style="text-align:center;"><a href="' . append_sid($_SERVER['SCRIPT_NAME']) . '"><b>' . $dbname . '</b></a></div>';
+echo '				<div style="text-align: center;"><a href="' . append_sid($_SERVER['SCRIPT_NAME']) . '"><b>' . $dbname . '</b></a></div>';
 echo '			</span>';
 echo '		</td>';
 echo '	</tr>';

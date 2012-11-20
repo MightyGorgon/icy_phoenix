@@ -252,7 +252,7 @@ if (!empty($view) && empty($post_id))
 			$forum_id_append = (!empty($forum_id) ? (POST_FORUM_URL . '=' . $forum_id) : '');
 			$topic_id = intval($row['topic_id']);
 			$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
-			redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
+			redirect(append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . $kb_mode_append_red));
 		}
 		else
 		{

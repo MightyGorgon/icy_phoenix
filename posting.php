@@ -114,7 +114,7 @@ $post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
 
 $s_hidden_fields = '';
 $hidden_form_fields = '';
-$refresh = $preview || $poll_add || $poll_edit || $poll_delete || ($draft && !$draft_confirm);
+$refresh = !empty($preview) || $poll_add || $poll_edit || $poll_delete || ($draft && !$draft_confirm);
 
 // Set topic type
 //echo $topic_type;
@@ -1441,7 +1441,9 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	$username = htmlspecialchars_decode(request_post_var('username', '', true), ENT_COMPAT);
 	$subject = !empty($draft_subject) ? $draft_subject : request_post_var('subject', '', true);
 	$topic_desc = request_post_var('topic_desc', '', true);
-	$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+	// Mighty Gorgon: still under testing... if we are refreshing the page, it means that we need to keep the original message in the TEXTBOX, so we don't need to escape htmlspecialchars again...
+	//$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+	$message = !empty($draft_message) ? $draft_message : request_post_var('message', '', true);
 	$notes = htmlspecialchars_decode(request_post_var('notes', '', true), ENT_COMPAT);
 
 	$topic_title_clean = (empty($_POST['topic_title_clean']) ? $subject : request_post_var('topic_title_clean', '', true));
@@ -1517,11 +1519,13 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		$user_sig = (($post_info['user_sig'] != '') && $config['allow_sig']) ? $post_info['user_sig'] : '';
 	}
 
-	if($preview)
+	if(!empty($preview))
 	{
 		$preview_subject = $subject;
 		//$preview_message = prepare_message(unprepare_message($message), $html_on, $bbcode_on, $smilies_on);
-		$preview_message = htmlspecialchars($message);
+		// Mighty Gorgon: this line has been commented out because of some issues it could generate with previews... bbcode should be able to parse everything properly
+		//$preview_message = htmlspecialchars($message);
+		$preview_message = $message;
 		$preview_username = $username;
 
 		// Finalise processing as per viewtopic
@@ -1575,7 +1579,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		$template->set_filenames(array('preview' => 'posting_preview.tpl'));
 		if (!empty($topic_calendar_time))
 		{
-			$topic_calendar_duration_preview = $topic_calendar_duration-1;
+			$topic_calendar_duration_preview = $topic_calendar_duration - 1;
 			if ($topic_calendar_duration_preview < 0)
 			{
 				$topic_calendar_duration_preview = 0;
@@ -1592,11 +1596,12 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		//$preview_subject = strtr($preview_subject, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		$template->assign_vars(array(
 			'TOPIC_TITLE' => $preview_subject,
-			'POST_SUBJECT' => $preview_subject,
 			'POSTER_NAME' => $preview_username,
 			'POST_DATE' => create_date_ip($config['default_dateformat'], time(), $config['board_timezone']),
-			'MESSAGE' => $preview_message,
 			'USER_SIG' => ($attach_sig) ? $user_sig : '',
+
+			'PREVIEW_SUBJECT' => $preview_subject,
+			'PREVIEW_MESSAGE' => $preview_message,
 
 			'L_POST_SUBJECT' => $lang['Post_subject'],
 			'L_PREVIEW' => $lang['Preview'],
@@ -1718,7 +1723,7 @@ else
 			{
 				$search = array("/\[hide\](.*?)\[\/hide\]/");
 				$replace = array('[hide]' . $lang['xs_bbc_hide_quote_message'] . '[/hide]');
-				$message =  preg_replace($search, $replace, $message);
+				$message = preg_replace($search, $replace, $message);
 			}
 
 			$msg_date = create_date_ip($config['default_dateformat'], $postrow['post_time'], $config['board_timezone']);
@@ -2149,7 +2154,7 @@ if ($config['allow_drafts'] == true)
 // MG Drafts - END
 
 // Convert and clean special chars!
-$subject = htmlspecialchars_clean($subject);
+$subject = (($mode == 'editpost') ? $subject : htmlspecialchars_clean($subject));
 $topic_desc = !empty($topic_desc) ? htmlspecialchars_clean($topic_desc) : '';
 $topic_title_clean = (empty($topic_title_clean) ? $subject : trim($topic_title_clean));
 $topic_title_clean = substr(ip_clean_string($topic_title_clean, $lang['ENCODING']), 0, 254);

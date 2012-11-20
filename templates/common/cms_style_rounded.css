@@ -1,8 +1,6 @@
 /* ROUNDED BOXES - BEGIN */
 .roundedbox {
 	border-radius: 6px 6px 6px 6px;
-	-moz-border-radius: 6px 6px 6px 6px;
-	-webkit-border-radius: 6px 6px 6px 6px;
 
 	border-style: solid;
 	border-color: #dfdfdf;
@@ -24,8 +22,6 @@
 	text-shadow: 0 1px 0 #ffffff;
 
 	border-radius: 6px 6px 0px 0px;
-	-moz-border-radius: 6px 6px 0px 0px;
-	-webkit-border-radius: 6px 6px 0px 0px;
 
 	-moz-user-select: none;
 	/* cursor: pointer; */
@@ -45,11 +41,11 @@ div.roundedbox div.inside { margin-bottom: 10px; }
 div.inside-text { line-height: 1.3em; font-size: 12px; }
 div.roundedbox div.inside .forumlinenb { border-width: 0px !important; }
 
-div.roundedbox .forumlinenb { border-radius: 6px 6px 6px 6px; -moz-border-radius: 6px 6px 6px 6px; -webkit-border-radius: 6px 6px 6px 6px; border-width: 0px !important; }
+div.roundedbox .forumlinenb { border-radius: 6px 6px 6px 6px; border-width: 0px !important; }
 
 .fill-gradient { background-color: #ffffff !important; }
 
-.bottom-round { border-radius: 0px 0px 6px 6px; -moz-border-radius: 0px 0px 6px 6px; -webkit-border-radius: 0px 0px 6px 6px; }
+.bottom-round { border-radius: 0px 0px 6px 6px; }
 
 .roundedbox h3.rb-blue { background-image: url('./images/grad_blue.png'); background-color: #b6caee; }
 .roundedbox h3.rb-cyan { background-image: url('./images/grad_cyan.png'); background-color: #d3dff5; }
@@ -59,8 +55,8 @@ div.roundedbox .forumlinenb { border-radius: 6px 6px 6px 6px; -moz-border-radius
 .roundedbox h3.rb-red{ background-image: url('./images/grad_red.png'); background-color: #ffb2a5; }
 .roundedbox h3.rb-yellow { background-image: url('./images/grad_yellow.png'); background-color: #fffda5; }
 
-div.thumb { border-radius: 4px 4px 4px 4px; -moz-border-radius: 4px 4px 4px 4px; -webkit-border-radius: 4px 4px 4px 4px; }
-div.thumb div { border-radius: 4px 4px 4px 4px; -moz-border-radius: 4px 4px 4px 4px; -webkit-border-radius: 4px 4px 4px 4px; }
+div.thumb { border-radius: 4px 4px 4px 4px; }
+div.thumb div { border-radius: 4px 4px 4px 4px; }
 /* ROUNDED BOXES - END */
 
 /* VARIOUS - BEGIN */
@@ -144,21 +140,21 @@ div.thumb div { border-radius: 4px 4px 4px 4px; -moz-border-radius: 4px 4px 4px 
 table.forumline tr.row1h { background-image: none; }
 table.forumline tr.row1h td.row1, table.forumline tr.row1h td.row2, table.forumline tr.row2h td.row1, table.forumline tr.row2h td.row2 { background: none; }
 
-.no-rounded, table.cells-no-rounded tr td.row1, table.cells-no-rounded tr td.row2 { border-radius: 0px !important; -moz-border-radius: 0px !important; -webkit-border-radius: 0px !important; }
-.c-r-all { border-radius: 6px 6px 6px 6px; -moz-border-radius: 6px 6px 6px 6px; -webkit-border-radius: 6px 6px 6px 6px; }
-.c-r-tl { border-radius: 6px 0px 0px 0px; -moz-border-radius: 6px 0px 0px 0px; -webkit-border-radius: 6px 0px 0px 0px; }
-.c-r-t { border-radius: 6px 6px 0px 0px; -moz-border-radius: 6px 6px 0px 0px; -webkit-border-radius: 6px 6px 0px 0px; }
-.c-r-tr { border-radius: 0px 6px 0px 0px; -moz-border-radius: 0px 6px 0px 0px; -webkit-border-radius: 0px 6px 0px 0px; }
-.c-r-l { border-radius: 6px 0px 0px 6px; -moz-border-radius: 6px 0px 0px 6px; -webkit-border-radius: 6px 0px 0px 6px; }
-.c-r-r { border-radius: 0px 6px 6px 0px; -moz-border-radius: 0px 6px 6px 0px; -webkit-border-radius: 0px 6px 6px 0px; }
-.c-r-bl { border-radius: 0px 0px 0px 6px; -moz-border-radius: 0px 0px 0px 6px; -webkit-border-radius: 0px 0px 0px 6px; }
-.c-r-b { border-radius: 0px 0px 6px 6px; -moz-border-radius: 0px 0px 6px 6px; -webkit-border-radius: 0px 0px 6px 6px; }
-.c-r-br { border-radius: 0px 0px 6px 0px; -moz-border-radius: 0px 0px 6px 0px; -webkit-border-radius: 0px 0px 6px 0px; }
+.no-rounded, table.cells-no-rounded tr td.row1, table.cells-no-rounded tr td.row2 { border-radius: 0px !important; }
+.c-r-all { border-radius: 6px 6px 6px 6px; }
+.c-r-tl { border-radius: 6px 0px 0px 0px; }
+.c-r-t { border-radius: 6px 6px 0px 0px; }
+.c-r-tr { border-radius: 0px 6px 0px 0px; }
+.c-r-l { border-radius: 6px 0px 0px 6px; }
+.c-r-r { border-radius: 0px 6px 6px 0px; }
+.c-r-bl { border-radius: 0px 0px 0px 6px; }
+.c-r-b { border-radius: 0px 0px 6px 6px; }
+.c-r-br { border-radius: 0px 0px 6px 0px; }
 
-table.forumline, div.forumline { border-radius: 6px; -moz-border-radius: 6px; -webkit-border-radius: 6px; }
-/*.row1, .row2, .row3, .row4, .row1h, .row1h-new, .row1hHover, .row1h-newHover, .row2h, .row2h-new, .row2hHover, .row2h-newHover, .row3h, .row4, .row5, .row6 { border-radius: 6px; -moz-border-radius: 6px; -webkit-border-radius: 6px; }*/
-p.nav-header { border-radius: 6px 6px 0px 0px; -moz-border-radius: 6px 6px 0px 0px; -webkit-border-radius: 6px 6px 0px 0px; }
-.cat, div.nav-links { border-radius: 0px 0px 6px 6px; -moz-border-radius: 0px 0px 6px 6px; -webkit-border-radius: 0px 0px 6px 6px; }
+table.forumline, div.forumline { border-radius: 6px; }
+/*.row1, .row2, .row3, .row4, .row1h, .row1h-new, .row1hHover, .row1h-newHover, .row2h, .row2h-new, .row2hHover, .row2h-newHover, .row3h, .row4, .row5, .row6 { border-radius: 6px; }*/
+p.nav-header { border-radius: 6px 6px 0px 0px; }
+.cat, div.nav-links { border-radius: 0px 0px 6px 6px; }
 /* ROUNDED TABLES - END */
 
 /* FORUM INDEX - BEGIN */
@@ -247,7 +243,7 @@ code, code.inline { color: #225599; background-color: #ffffff; border: 1px solid
 
 /* FORMS - BEGIN */
 .helpline { background-color: #f8f8f8; border: solid 1px #ddd8ee; color: #666666; padding-left: 5px !important; }
-.helpline, input, textarea, select { border-radius: 6px; -moz-border-radius: 6px; -webkit-border-radius: 6px; }
+.helpline, input, textarea, select { border-radius: 6px; }
 
 label { color: #333333; }
 label:hover { color: #666666; }
@@ -303,7 +299,7 @@ input.search:hover, input.search:focus, input.search:active, input.search { back
 /* CSS BUTTONS - BEGIN */
 .css-button-wrap { }
 div.css-button-wrap div.forumline { border: solid 1px #ddd8ee; }
-div.css-button-wrap div.forumline, .css-button-body { background: #f8f8f8 url('./images/bg_input_sprite.gif') top left repeat-x !important; border-radius: 6px 6px 6px 6px; -moz-border-radius: 6px 6px 6px 6px; -webkit-border-radius: 6px 6px 6px 6px; }
+div.css-button-wrap div.forumline, .css-button-body { background: #f8f8f8 url('./images/bg_input_sprite.gif') top left repeat-x !important; border-radius: 6px 6px 6px 6px; }
 div.css-button-wrap div.forumline div.row1h, .css-button-body { line-height: 1.6em; }
 .css-button-body { vertical-align: middle; height: 20px; }
 div.css-button-wrap div.forumline:hover { border: solid 1px #dd2222; color: #dd2222; }

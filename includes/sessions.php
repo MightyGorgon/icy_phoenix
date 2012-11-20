@@ -68,6 +68,9 @@ class session
 		$this->host = extract_current_hostname();
 		$this->page = extract_current_page(IP_ROOT_PATH);
 
+		$session_cookie_empty = empty($_COOKIE[$config['cookie_name'] . '_sid']) ? true : false;
+		$session_get_empty = empty($_GET['sid']) ? true : false;
+		$session_empty = true;
 		if (isset($_COOKIE[$config['cookie_name'] . '_sid']) || isset($_COOKIE[$config['cookie_name'] . '_u']))
 		{
 			$this->cookie_data['u'] = request_var($config['cookie_name'] . '_u', 0, false, true);
@@ -79,17 +82,26 @@ class session
 			$SID = (defined('NEED_SID')) ? ('sid=' . $this->session_id) : '';
 			$_SID = (defined('NEED_SID')) ? $this->session_id : '';
 
-			if (empty($this->session_id))
-			{
-				$this->session_id = $_SID = request_var('sid', '');
-				$SID = 'sid=' . $this->session_id;
-				$this->cookie_data = array('u' => 0, 'k' => '');
-			}
+			$session_empty = empty($this->session_id) ? true : false;
 		}
-		else
+
+		// Mighty Gorgon: moved here this IF block... why it was so down in the code???
+		// if no session id is set, redirect to index.php
+		//if (defined('NEED_SID') && ($cookie_empty || (!isset($_GET['sid']) || ($this->session_id !== $_GET['sid']))))
+		if (defined('NEED_SID') && !defined('IN_LOGIN') && ($session_cookie_empty || $session_empty || !isset($_GET['sid']) || ((isset($_GET['sid']) && ($this->session_id !== $_GET['sid'])))))
 		{
-			$this->session_id = $_SID = request_var('sid', '');
+			// Mighty Gorgon: I don't know why it isn't working properly, returning blank page!!!
+			//send_status_line(401, 'Not authorized');
+			// Mighty Gorgon: removed append_sid as it seems the user doesn't have a valid SID!
+			redirect(IP_ROOT_PATH . 'index.' . PHP_EXT);
+		}
+
+		if ($session_empty)
+		{
+			$this->session_id = request_var('sid', '');
+			$_SID = $this->session_id;
 			$SID = 'sid=' . $this->session_id;
+			$this->cookie_data = array('u' => 0, 'k' => '');
 		}
 
 		$_EXTRA_URL = array();
@@ -109,26 +121,31 @@ class session
 		$format_ipv6 = get_preg_expression('ipv6');
 		foreach ($ips as $ip)
 		{
-			// check IPv4 first, the IPv6 is hopefully only going to be used very seldomly
-			if (!empty($ip) && !preg_match($format_ipv4, $ip) && !preg_match($format_ipv6, $ip))
+			if (preg_match($format_ipv4, $ip))
 			{
-				// Just break
+				$this->ip = $ip;
+			}
+			elseif (preg_match($format_ipv6, $ip))
+			{
+				// Quick check for IPv4-mapped address in IPv6
+				if (stripos($ip, '::ffff:') === 0)
+				{
+					$ipv4 = substr($ip, 7);
+
+					if (preg_match($format_ipv4, $ipv4))
+					{
+						$ip = $ipv4;
+					}
+				}
+
+				$this->ip = $ip;
+			}
+			else
+			{
+				// We want to use the last valid address in the chain
+				// Leave foreach loop when address is invalid
 				break;
 			}
-
-			// Quick check for IPv4-mapped address in IPv6
-			if (stripos($ip, '::ffff:') === 0)
-			{
-				$ipv4 = substr($ip, 7);
-
-				if (preg_match($format_ipv4, $ipv4))
-				{
-					$ip = $ipv4;
-				}
-			}
-
-			// Use the last in chain
-			$this->ip = $ip;
 		}
 
 		$this->load = false;
@@ -146,13 +163,6 @@ class session
 				set_config('limit_load', '0');
 				set_config('limit_search_load', '0');
 			}
-		}
-
-		// if no session id is set, redirect to index.php
-		if (defined('NEED_SID') && (!isset($_GET['sid']) || ($this->session_id !== $_GET['sid'])))
-		{
-			send_status_line(401, 'Not authorized');
-			redirect(append_sid(IP_ROOT_PATH . 'index.' . PHP_EXT));
 		}
 
 		// if session id is set
@@ -1763,7 +1773,7 @@ class user extends session
 			}
 			elseif (!$this->data['user_allow_viewonline'])
 			{
-				// the user wants to hide and is allowed to  -> cloaking device on.
+				// the user wants to hide and is allowed to -> cloaking device on.
 				if ($auth->acl_get('u_hideonline'))
 				{
 					$sql = 'UPDATE ' . SESSIONS_TABLE . '

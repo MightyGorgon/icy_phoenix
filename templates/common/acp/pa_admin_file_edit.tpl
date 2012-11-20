@@ -1,5 +1,5 @@
 <script type="text/javascript">
-<!--
+// <![CDATA[
 	var win = null;
 	var error_msg = "";
 	var mirror_mode = false;
@@ -33,14 +33,20 @@
 
 	if({ADD_MIRRORS})
 	{
-		new_window('{U_MIRRORS_PAGE}', 'fileupload', '600','450', 'center', 'front');
+		redirect_url = '{U_MIRRORS_PAGE}';
+		redirect_url = redirect_url.replace(/&amp;/g, '&');
+		//alert(redirect_url);
+		new_window(redirect_url, 'fileupload', '600', '450', 'center', 'front');
 	}
 
 	function checkAddForm()
 	{
 		if(mirror_mode)
 		{
-			new_window('{U_MIRRORS_PAGE}', 'fileupload', '600','450', 'center', 'front');
+			redirect_url = '{U_MIRRORS_PAGE}';
+			redirect_url = redirect_url.replace(/&amp;/g, '&');
+			//alert(redirect_url);
+			new_window(redirect_url, 'fileupload', '600', '450', 'center', 'front');
 			return false;
 		}
 
@@ -89,7 +95,7 @@
 			return true;
 		}
 	}
-// -->
+// ]]>
 </script>
 
 <h1>{L_FILE_TITLE}</h1>

@@ -483,7 +483,7 @@ function check_page_auth($cms_page_id, $cms_auth_level, $return = false)
 			{
 				$page_array = array();
 				$page_array = extract_current_page(IP_ROOT_PATH);
-				redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
+				redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
 			}
 			else
 			{

@@ -688,7 +688,9 @@ if (!function_exists('html_entity_decode'))
 */
 function htmlspecialchars_clean($string, $quote_style = ENT_NOQUOTES)
 {
-	return trim(str_replace(array('& ', '<', '%3C', '>', '%3E'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style)));
+	// Old version, to be verified why &amp; gets converted twice...
+	//return trim(str_replace(array('& ', '<', '%3C', '>', '%3E'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style)));
+	return trim(str_replace(array('& ', '<', '%3C', '>', '%3E', '{IP_EAMP_ESCAPE}'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;', '&amp;'), htmlspecialchars_decode(str_replace('&amp;', '{IP_EAMP_ESCAPE}', $string), $quote_style)));
 }
 
 /**
@@ -1929,10 +1931,13 @@ function build_url($strip_vars = false)
 *
 * @param string $url The url to redirect to
 * @param bool $return If true, do not redirect but return the sanitized URL. Default is no return.
+* @param bool $disable_cd_check If true, redirect() will redirect to an external domain. If false, the redirect point to the boards url if it does not match the current domain. Default is false.
 */
-function redirect($url, $return = false)
+function redirect($url, $return = false, $disable_cd_check = false)
 {
 	global $db, $cache, $config, $user, $lang;
+
+	$failover_flag = false;
 
 	if (empty($lang))
 	{
@@ -1948,7 +1953,6 @@ function redirect($url, $return = false)
 
 	// Make sure no &amp;'s are in, this will break the redirect
 	$url = str_replace('&amp;', '&', $url);
-
 	// Determine which type of redirect we need to handle...
 	$url_parts = @parse_url($url);
 
@@ -1957,26 +1961,96 @@ function redirect($url, $return = false)
 		// Malformed url, redirect to current page...
 		$url = $server_url . $user->page['page'];
 	}
+	elseif (!empty($url_parts['scheme']) && !empty($url_parts['host']))
+	{
+		// Attention: only able to redirect within the same domain if $disable_cd_check is false (yourdomain.com -> www.yourdomain.com will not work)
+		if (!$disable_cd_check && ($url_parts['host'] !== $user->host))
+		{
+			$url = $server_url;
+		}
+	}
+	elseif ($url[0] == '/')
+	{
+		// Absolute uri, prepend direct url...
+		$url = create_server_url(true) . $url;
+	}
 	else
 	{
 		// Relative uri
-		/*
 		$pathinfo = pathinfo($url);
-		// Is the uri not pointing to the current directory?
-		if ($pathinfo['dirname'] != '.')
+
+		if (!$disable_cd_check && !file_exists($pathinfo['dirname'] . '/'))
 		{
-			//$url = str_replace('../', '', $url);
+			$url = str_replace('../', '', $url);
+			$pathinfo = pathinfo($url);
+
+			if (!file_exists($pathinfo['dirname'] . '/'))
+			{
+				// fallback to "last known user page"
+				// at least this way we know the user does not leave the phpBB root
+				$url = $server_url . $user->page['page'];
+				$failover_flag = true;
+			}
 		}
-		*/
 
-		$url = preg_replace('#^\/?(.*?)\/?$#', '/\1', trim($url));
-		// Strip ./ and / from the beginning
-		$url = str_replace('./', '', $url);
-		$url = ($url && substr($url, 0, 1) == '/') ? substr($url, 1) : $url;
-		//die($url);
+		if (!$failover_flag)
+		{
+			// Is the uri pointing to the current directory?
+			if ($pathinfo['dirname'] == '.')
+			{
+				$url = str_replace('./', '', $url);
 
-		// Create full url path
-		$url = $server_url . $url;
+				// Strip / from the beginning
+				if ($url && (substr($url, 0, 1) == '/'))
+				{
+					$url = substr($url, 1);
+				}
+
+				if ($user->page['page_dir'])
+				{
+					$url = $server_url . $user->page['page_dir'] . '/' . $url;
+				}
+				else
+				{
+					$url = $server_url . $url;
+				}
+			}
+			else
+			{
+				// Used ./ before, but IP_ROOT_PATH is working better with urls within another root path
+				$root_dirs = explode('/', str_replace('\\', '/', phpbb_realpath(IP_ROOT_PATH)));
+				$page_dirs = explode('/', str_replace('\\', '/', phpbb_realpath($pathinfo['dirname'])));
+				$intersection = array_intersect_assoc($root_dirs, $page_dirs);
+
+				$root_dirs = array_diff_assoc($root_dirs, $intersection);
+				$page_dirs = array_diff_assoc($page_dirs, $intersection);
+
+				$dir = str_repeat('../', sizeof($root_dirs)) . implode('/', $page_dirs);
+
+				// Strip / from the end
+				if ($dir && substr($dir, -1, 1) == '/')
+				{
+					$dir = substr($dir, 0, -1);
+				}
+
+				// Strip / from the beginning
+				if ($dir && substr($dir, 0, 1) == '/')
+				{
+					$dir = substr($dir, 1);
+				}
+
+				$url = str_replace($pathinfo['dirname'] . '/', '', $url);
+
+				// Strip / from the beginning
+				if (substr($url, 0, 1) == '/')
+				{
+					$url = substr($url, 1);
+				}
+
+				$url = (!empty($dir) ? $dir . '/' : '') . $url;
+				$url = $server_url . $url;
+			}
+		}
 	}
 
 	// Make sure no linebreaks are there... to prevent http response splitting for PHP < 4.4.2
@@ -2220,9 +2294,9 @@ function send_status_line($code, $message)
 	}
 	else
 	{
-		if (isset($_SERVER['HTTP_VERSION']))
+		if (!empty($_SERVER['SERVER_PROTOCOL']))
 		{
-			$version = $_SERVER['HTTP_VERSION'];
+			$version = $_SERVER['SERVER_PROTOCOL'];
 		}
 		else
 		{

@@ -5,8 +5,6 @@
 	margin: 0;
 	padding: 3px;
 	border-radius: 6px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
 	padding-top: 30px;
 	min-height: 50px;
 	border: solid 1px #dde8ee;
@@ -208,8 +206,6 @@ p.block-title a.edit-delete {
 	background: url("images/bg_input_sprite.gif") repeat-x scroll left top #f8f8f8;
 	color: #333333;
 	border-radius: 6px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
 	margin: 1px 4px 1px 0;
 	padding: 3px 6px;
 	font-size: 11px;
@@ -283,8 +279,6 @@ p.block-title a.edit-delete {
 /* ADD BLOCK - BEGIN */
 #forumtable div.add-form, div.cms-block-extra p.status, #forumtable div.move-all-form {
 	border-radius: 6px;
-	-moz-border-radius: 6px;
-	-webkit-border-radius: 6px;
 	border: solid 1px #dde8ee;
 	background-color: #f2f5f8;
 	margin: 0;

@@ -393,7 +393,7 @@ class cms_admin
 		$b_background = (isset($_POST['background'])) ? request_post_var('background', 0) : ($b_info['background'] ? $b_info['background'] : 0);
 
 		$template->assign_vars(array(
-			'TITLE' => $b_title,
+			'CMS_TITLE' => $b_title,
 			'POSITION' => $position['select'],
 			'ACTIVE' => ($b_active) ? 'checked="checked"' : '',
 			'NOT_ACTIVE' => (!$b_active) ? 'checked="checked"' : '',

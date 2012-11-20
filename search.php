@@ -142,6 +142,7 @@ $mode = request_var('mode', '');
 $only_bluecards = (!empty($_POST['only_bluecards']) ? 1 : 0);
 $search_keywords = request_var('search_keywords', '', true);
 $search_id = request_get_var('search_id', '');
+$is_newposts = false;
 $search_author = request_var('search_author', '', true);
 
 if (!empty($search_author))
@@ -207,21 +208,24 @@ $search_date = request_var('d', 0);
 $show_results = request_var('show_results', 'posts');
 $show_results = check_var_value($show_results, array('posts', 'topics'));
 
+// $sr is used to allow users to override the default result displaying for new posts
+$sr_cn = $config['cookie_name'] . '_sr';
+if(isset($_GET['sr']))
+{
+	$sr_get = (isset($_GET['sr']) && ($_GET['sr'] == 't')) ? 't' : 'p';
+	$user->set_cookie('sr', $sr_get, $user->cookie_expire);
+	$_COOKIE[$sr_cn] = $sr_get;
+}
+
+$sr_cookie = (isset($_COOKIE[$sr_cn]) && ($_COOKIE[$sr_cn] == 't')) ? 't' : 'p';
+$sr = $sr_cookie;
+
 $return_chars = request_var('return_chars', 200);
 $return_chars = ($return_chars >= -1) ? $return_chars : 200;
 // MG: if the users chooses to show no chars from posts, then we force topics view.
 $show_results = ($return_chars == 0) ? 'topics' : $show_results;
 
 $is_ajax = request_var('is_ajax', 0);
-
-if ($show_results == 'topics')
-{
-	$header_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-	$template->assign_vars(array(
-		'SEARCH_HEADER' => $header_html,
-		)
-	);
-}
 
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
@@ -377,7 +381,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_SEARCH . '&search_id=newposts', true));
 				}
 //<!-- BEGIN Unread Post Information to Database Mod -->
-				if(($search_id == 'newposts') || (($search_id == 'upi2db') && ($s2 == 'mark')))
+				if($search_id == 'newposts')
+				{
+					$is_newposts = true;
+				}
+				if((($search_id == 'newposts') && ($sr != 't')) || (($search_id == 'upi2db') && ($s2 == 'mark')))
 				{
 					$show_results = 'posts';
 				}
@@ -1054,7 +1062,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		{
 			$sql = "SELECT search_array
 				FROM " . SEARCH_TABLE . "
-				WHERE search_id = $search_id
+				WHERE search_id = " . $search_id . "
 					AND session_id = '" . $user->data['session_id'] . "'";
 			$result = $db->sql_query($sql);
 
@@ -1283,6 +1291,10 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$nav_server_url = create_server_url();
 		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . $nav_main_url . '" class="nav-current">' . $nav_main_lang . '</a>';
 		$breadcrumbs['bottom_right_links'] = '<span class="gensmall">' . $l_search_matches . '</span>';
+		if (!empty($is_newposts))
+		{
+			$breadcrumbs['bottom_right_links'] .= '<span class="gensmall">&nbsp;&bull;&nbsp;<a href="' . append_sid('search.' . PHP_EXT . '?search_id=newposts&amp;sr=' . (($sr == 't') ? 'p' : 't')) . '">' . (($sr == 't') ? $lang['SN_SHOW_POSTS'] : $lang['SN_SHOW_TOPICS']) . '</a></span>';
+		}
 		include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
 		if ($show_results == 'bookmarks')
@@ -1935,6 +1947,7 @@ $template->assign_vars(array(
 	'L_TOPICS' => $lang['Topics'],
 	'L_POSTS' => $lang['Posts'],
 	'L_ONLY_BLUECARDS' => $l_only_bluecards,
+
 	'S_SEARCH_ACTION' => append_sid(CMS_PAGE_SEARCH . '?mode=results'),
 	'S_CHARACTER_OPTIONS' => $s_characters,
 	'S_FORUM_OPTIONS' => $s_forums,

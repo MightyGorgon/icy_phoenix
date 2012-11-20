@@ -26,6 +26,7 @@ $user->setup();
 
 // Start initial var setup
 $post_id = request_var(POST_POST_URL, 0);
+$light_view = request_var('light_view', 0);
 
 if (empty($post_id))
 {
@@ -37,7 +38,7 @@ $download = (isset($_GET['download'])) ? $_GET['download'] : '';
 // Find topic id if user requested a newer or older topic
 if (isset($_GET['view']))
 {
-	if ($_GET['view'] == 'next' || $_GET['view'] == 'previous')
+	if (($_GET['view'] == 'next') || ($_GET['view'] == 'previous'))
 	{
 		$sql_condition = ($_GET['view'] == 'next') ? '>' : '<';
 		$sql_ordering = ($_GET['view'] == 'next') ? 'ASC' : 'DESC';
@@ -224,6 +225,7 @@ if ($row = $db->sql_fetchrow($result))
 	{
 		$poster_id = $row['user_id'];
 		$poster = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
+		$poster_no_link = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active'], true);
 
 		$user_info = array();
 		$user_info = generate_user_info($row);
@@ -350,6 +352,7 @@ if ($row = $db->sql_fetchrow($result))
 			'DOWNLOAD_POST' => append_sid(CMS_PAGE_VIEWTOPIC . '?download=' . $row['post_id'] . '&amp;' . POST_TOPIC_URL . '=' .$topic_id),
 			'ROW_CLASS' => $row_class,
 			'POSTER_NAME' => $poster,
+			'POSTER_NAME_NL' => $poster_no_link,
 			// Mighty Gorgon - Multiple Ranks - BEGIN
 			'USER_RANK_01' => $user_ranks['rank_01_html'],
 			'USER_RANK_01_IMG' => $user_ranks['rank_01_img_html'],
@@ -439,7 +442,13 @@ else
 	message_die(GENERAL_MESSAGE, 'NO_TOPIC', '', __LINE__, __FILE__, $sql);
 }
 
+if (!empty($light_view))
+{
+	$template->assign_var('NO_PADDING', true);
+}
+
+$template_to_parse = (!empty($light_view) ? 'post_review_light.tpl' : 'post_review.tpl');
 $gen_simple_header = true;
-full_page_generation('post_review.tpl', $meta_content['page_title'], '', '');
+full_page_generation($template_to_parse, $meta_content['page_title'], '', '');
 
 ?>

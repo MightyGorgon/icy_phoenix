@@ -86,42 +86,33 @@ class pafiledb_functions
 		global $lang;
 		$curicons = 1;
 
-		if (empty($file_posticon) || ($file_posticon == 'none') || ($file_posticon == 'none.gif'))
-		{
-			$posticons .= '<input type="radio" name="posticon" value="none" checked="checked" /><a class="gensmall">' . $lang['None'] . '</a>&nbsp;';
-		}
-		else
-		{
-			$posticons .= '<input type="radio" name="posticon" value="none" /><a class="gensmall">' . $lang['None'] . '</a>&nbsp;';
-		}
+		$posticons = '<input type="radio" name="posticon" value="none"' . ((empty($file_posticon) || ($file_posticon == 'none') || ($file_posticon == 'none.gif')) ? ' checked="checked"' : '') . ' /><a class="gensmall">' . $lang['None'] . '</a>&nbsp;';
 
+		$file_icons = array();
 		$handle = @opendir(IP_ROOT_PATH . FILES_ICONS_DIR);
-
 		while ($icon = @readdir($handle))
 		{
 			$file_extensions = array('gif', 'jpg', 'jpeg', 'png');
 			$file_extension = substr(strrchr($icon, '.'), 1);
 			if (($icon != '.') && ($icon != '..') && in_array($file_extension, $file_extensions) && ($icon != 'spacer.gif') && !is_dir(IP_ROOT_PATH . $icon))
 			{
-				if ($file_posticon == $icon)
-				{
-					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" checked="checked" /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" alt="" />&nbsp;';
-				}
-				else
-				{
-					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" alt="" />&nbsp;';
-				}
-
-				$curicons++;
-
-				if ($curicons == 8)
-				{
-					$posticons .= '<br />';
-					$curicons = 0;
-				}
+				$file_icons[] = $icon;
 			}
 		}
 		@closedir($handle);
+		sort($file_icons);
+
+		foreach ($file_icons as $icon)
+		{
+			$posticons .= '<input type="radio" name="posticon" value="' . $icon . '"' . (($file_posticon == $icon) ? ' checked="checked"' : '') . ' /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" alt="" />&nbsp;';
+			$curicons++;
+			if ($curicons == 8)
+			{
+				$posticons .= '<br />';
+				$curicons = 0;
+			}
+		}
+
 		return $posticons;
 	}
 
@@ -131,11 +122,11 @@ class pafiledb_functions
 
 		if ($license_id == 0)
 		{
-			$list .= '<option calue="0" selected>' . $lang['None'] . '</option>';
+			$list .= '<option value="0" selected>' . $lang['None'] . '</option>';
 		}
 		else
 		{
-			$list .= '<option calue="0">' . $lang['None'] . '</option>';
+			$list .= '<option value="0">' . $lang['None'] . '</option>';
 		}
 
 		$sql = 'SELECT *

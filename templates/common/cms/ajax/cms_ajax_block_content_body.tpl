@@ -19,7 +19,7 @@
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td class="row1" width="200">{L_B_TITLE}</td>
-			<td class="row2"><input type="text" maxlength="60" size="30" name="title" value="{TITLE}" class="post" /></td>
+			<td class="row2"><input type="text" maxlength="60" size="30" name="title" value="{CMS_TITLE}" class="post" /></td>
 		</tr>
 		<tr>
 			<td class="row1">{L_B_POSITION}</td>

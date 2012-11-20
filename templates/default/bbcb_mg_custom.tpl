@@ -70,7 +70,7 @@ function bbcb_vars_reassign_end()
 			<a href="javascript:bbcb_vars_reassign_start();BBCgrad();bbcb_vars_reassign_end();"><img border="0" src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}grad{BBCB_MG_IMG_EXT}" name="rainb" onmouseover="helpline('grad')" alt="{L_BBCB_MG_GRAD}" title="{L_BBCB_MG_GRAD}" class="bbimages" /></a>
 			<!-- IF S_COLORPICKER -->
 			<!--
-			<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 530, 420, '_color_picker'); return false;"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" class="bbimages" /></a>
+			<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 640, 480, '_color_picker'); return false;"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" class="bbimages" /></a>
 			-->
 			<!-- ENDIF -->
 

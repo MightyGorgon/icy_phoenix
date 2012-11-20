@@ -5,7 +5,7 @@
 <div class="forumline" style="width: 100%;">
 <div class="genmed" style="text-align: right; float: right;">
 <!-- IF IS_ARTICLE -->
-<b>{TOPIC_TITLE}</b>
+<!-- <b>{TOPIC_TITLE}</b> -->
 <!-- ELSE -->
 <form name="printview_form" action="{S_ACTION}" method="post">
 <b><a href="{U_TOPIC}" class="topic_link">{TOPIC_TITLE}</a></b>&nbsp;&raquo;&nbsp;

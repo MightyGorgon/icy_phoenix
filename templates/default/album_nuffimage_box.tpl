@@ -42,7 +42,7 @@
 		<td class="row2 row-center" width="2%"><input type="checkbox" name="nuff_rotation" value="1" {NUFF_ROTATE_CHECKED} /></td>
 		<td class="row1" width="45%">
 			<span class="gen"><b>{L_NUFF_ROTATE}</b><br /><br /></span>
-			<input type="radio" name="nuff_rotation_d" value="0" checked="checked"><span class="gen">0</span>&nbsp;&nbsp;<input type="radio" name="nuff_rotation_d" value="90"><span class="gen">90</span>&nbsp;&nbsp;<input type="radio" name="nuff_rotation_d" value="180"><span class="gen">180</span>&nbsp;&nbsp;<input type="radio" name="nuff_rotation_d" value="270"><span class="gen">270</span>
+			<input type="radio" name="nuff_rotation_d" value="0" checked="checked" /><span class="gen">0</span>&nbsp;&nbsp;<input type="radio" name="nuff_rotation_d" value="90" /><span class="gen">90</span>&nbsp;&nbsp;<input type="radio" name="nuff_rotation_d" value="180" /><span class="gen">180</span>&nbsp;&nbsp;<input type="radio" name="nuff_rotation_d" value="270" /><span class="gen">270</span>
 		</td>
 		<td class="row2 row-center" width="2%">&nbsp;</td>
 		<td class="row1 row-center" width="2%"><img src="{IMG_RECOMPRESS}" alt="" /></td>

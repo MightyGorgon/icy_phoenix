@@ -281,7 +281,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	$current_time = time();
 
-	if (($user->data['user_level'] != ADMIN) && (($config['force_large_caps_mods'] == true) || ($user->data['user_level'] != MOD)))
+	if (($user->data['user_level'] != ADMIN) && (!empty($config['force_large_caps_mods']) || ($user->data['user_level'] != MOD)))
 	{
 		//$post_subject = strtolower($post_subject);
 		$post_subject = ucwords($post_subject);

@@ -216,7 +216,7 @@ var AjaxContext = {
 			var message = (status == "timeout") ? ERROR_TIMEOUT : ERROR_RESPONSE;
 			if (typeof error == "string" && (error != ""))
 			{
-				message += "(" + error + ")";
+				message += " (" + error + ")";
 			}
 			alert(status + ": " + message);
 		}
@@ -290,7 +290,7 @@ var AjaxContext = {
 				this.currentShouts[id] = shout;
 				newShouts.push(shout);
 			}
-			}
+		}
 		// highlight after all the shouts have been added
 		for (var index = 0; index < newShouts.length; index++) 
 		{
@@ -398,8 +398,8 @@ var AjaxContext = {
 		for (var id in this.currentShouts)
 		{
 			if (this.currentShouts.hasOwnProperty(id))
-			{  
-				var shout = this.currentShouts[id]; 
+			{
+				var shout = this.currentShouts[id];
 				maxId = (shout.id > maxId) ? shout.id : maxId;
 			}
 		}
@@ -590,21 +590,21 @@ function receiveChatData()
 	{
 		UpdaterContext.receivingChatData = true;
 		UpdaterContext.stopUpdates();
-	context.error = context.updateError;
-	context.success = context.updateSuccess;
+		context.error = context.updateError;
+		context.success = context.updateSuccess;
 		context.complete = function(jqXHR, status) {
 			throbber(false);
 			UpdaterContext.receivingChatData = false;
 		};
-	context.doneFunction = function() {
+		context.doneFunction = function() {
 		if (this.shoutsParsed || this.usersParsed)
 		{
 			chatDataChanged();
 		}
-			if (typeof UpdaterContext.updateTimer == "undefined")
-			{
-				UpdaterContext.startUpdates(REFRESH_TIME); // restart the updater
-			}
+		if (typeof UpdaterContext.updateTimer == "undefined")
+		{
+			UpdaterContext.startUpdates(REFRESH_TIME); // restart the updater
+		}
 		AjaxContext = this;
 		return true;
 	};

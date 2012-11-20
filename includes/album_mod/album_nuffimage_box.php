@@ -126,7 +126,7 @@ $template->assign_vars(array(
 	'NUFF_PIC_ID' => $pic_id,
 
 	//'HIDDEN_FIELDS_NUFF' => append_sid(album_append_uid(('album_pic_nuffed.' . PHP_EXT . '?pic_id=' . $pic_id . $nuff_mode)),
-	'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append)),
+	'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append . '&amp;nuffimage=true')),
 
 	//'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT)),
 	// This would be required in tpl if you want to hide pic id and nuffimage var.

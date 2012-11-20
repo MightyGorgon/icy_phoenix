@@ -120,17 +120,17 @@ if($mode == 'add')
 }
 elseif($mode == 'addfield')
 {
-	$s_hidden_fields = '<input type="hidden" name="field_type" value="' . $field_type . '">';
-	$s_hidden_fields .= '<input type="hidden" name="field_id" value="' . $field_id . '">';
-	$s_hidden_fields .= '<input type="hidden" name="mode" value="do_add">';
+	$s_hidden_fields = '<input type="hidden" name="field_type" value="' . $field_type . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="field_id" value="' . $field_id . '" />';
+	$s_hidden_fields .= '<input type="hidden" name="mode" value="do_add" />';
 }
 elseif($mode == 'edit')
 {
-	$s_hidden_fields = '<input type="hidden" name="mode" value="addfield">';
+	$s_hidden_fields = '<input type="hidden" name="mode" value="addfield" />';
 }
 elseif($mode == 'delete')
 {
-	$s_hidden_fields = '<input type="hidden" name="mode" value="delete">';
+	$s_hidden_fields = '<input type="hidden" name="mode" value="delete" />';
 }
 
 $template->assign_vars(array(

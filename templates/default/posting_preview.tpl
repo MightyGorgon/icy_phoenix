@@ -30,9 +30,9 @@ function img_popup(image_url, image_width, image_height, popup_rand)
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_PREVIEW}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row-post" width="100%">
-		<div class="post-subject">{POST_SUBJECT}&nbsp;</div>
+		<div class="post-subject">{PREVIEW_SUBJECT}&nbsp;</div>
 		<div class="post-text post-text-hide-flow">
-			{MESSAGE}
+			{PREVIEW_MESSAGE}
 			<!-- BEGIN postrow -->
 			<br />
 			{ATTACHMENTS}

@@ -11,5 +11,6 @@
 <p class="left">{COPYRIGHT_LINK}</p>
 <p class="right"><!-- IF S_MOBILE -->{MOBILE_STYLE}<!-- ENDIF -->{TEMPLATE_COPYRIGHT_LINK}</p>
 </div>
+{GOOGLE_ANALYTICS}
 </body>
 </html>

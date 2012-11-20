@@ -168,7 +168,7 @@ if(!function_exists('cms_block_index'))
 					if (!empty($menu_allowed))
 					{
 						//echo($menu_cat_item_data['menu_name'] . '<br />');
-						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id);
+						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id, true);
 						if (empty($cms_config_vars['md_show_links_icon'][$block_id]))
 						{
 							$menu_link['icon'] = '';

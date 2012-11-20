@@ -160,7 +160,7 @@ if (!function_exists('nivisec_copyright'))
 		global $template;
 
 		$template->assign_vars(array(
-			'NIVISEC_COPYRIGHT' => '<div class="copyright" style="text-align:center;">Ratings Module &copy; 2001-2003 <a href="http://www.nivisec.com">Nivisec.com</a>.</div>'
+			'NIVISEC_COPYRIGHT' => '<div class="copyright" style="text-align: center;">Ratings Module &copy; 2001-2003 <a href="http://www.nivisec.com">Nivisec.com</a>.</div>'
 			)
 		);
 	}

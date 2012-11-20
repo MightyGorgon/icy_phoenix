@@ -896,7 +896,7 @@ select option {
 input.search:hover, input.search:focus, input.search:active, input.search {
 	background-image: url('images/ice/icon_textbox_search.gif');
 	background-repeat: no-repeat;
-	background-position: left 1px;
+	background-position: left center;
 	padding-left: 17px;
 }
 

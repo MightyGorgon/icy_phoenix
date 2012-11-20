@@ -500,7 +500,7 @@ class NewsModule
 		$server_url = create_server_url();
 
 		$this->setVariables(array(
-			'TITLE' => $this->config['sitename'],
+			'NEWS_TITLE' => $this->config['sitename'],
 			'URL' => $server_url,
 			'FORUM_PATH' => $this->config['script_path'],
 			'DESC' => $this->config['news_rss_desc'],
@@ -567,7 +567,7 @@ class NewsModule
 
 		if($news_var == 'topics')
 		{
-			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Categories']));
+			$this->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Categories']));
 			$this->renderTopics();
 		}
 		elseif($news_var == 'archives')
@@ -577,7 +577,7 @@ class NewsModule
 			$day = request_var('day', 0);
 			$key = request_var('key', '');
 
-			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));
+			$this->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));
 			$this->renderArchives($year, $month, $day, $key);
 		}
 		else
@@ -592,7 +592,7 @@ class NewsModule
 				$this->is_topic = true;
 			}
 
-			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Articles']));
+			$this->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Articles']));
 			$this->renderArticles($topic_id);
 		}
 

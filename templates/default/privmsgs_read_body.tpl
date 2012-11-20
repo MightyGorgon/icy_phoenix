@@ -9,7 +9,7 @@ $this->vars['privmsgs_id'] = $privmsgs_id;
 
 ob_start();
 ?>
-<div id="quick_reply" style="display: none; position: relative; ">
+<div id="quick_reply" style="display: none; position: relative;">
 <a name="quick"></a>
 <form method="post" action="{S_PRIVMSGS_ACTION}&amp;{POST_POST_URL}={PM_ID}" name="post">
 {S_HIDDEN_FIELDS}
@@ -96,7 +96,7 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 {S_HIDDEN_FIELDS}
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="left" valign="middle"><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td></tr>
+<tr><td align="left" valign="middle"><!-- IF REPLY_PM_IMG --><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<!-- ENDIF --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td></tr>
 </table>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{POST_SUBJECT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -107,7 +107,7 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 	<tr>
 		<td class="row-post-author">
 			<span class="post-name">{MESSAGE_FROM}&nbsp;{POSTER_GENDER}</span><br />
-			<div class="post-rank"><b>{POSTER_RANK}</b>{RANK_IMAGE}</div>
+			<div class="post-rank"><!-- IF POSTER_RANK --><b>{POSTER_RANK}</b><!-- ENDIF -->{RANK_IMAGE}</div>
 			<span class="post-images">{POSTER_AVATAR}</span>
 			<div class="post-details">
 			{ONLINE_STATUS_IMG}{IP_IMG}{AIM_IMG}{ICQ_IMG}{MSN_IMG}{SKYPE_IMG}{YIM_IMG}<br />
@@ -158,7 +158,7 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 <br />
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td align="left"><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td>
+	<td align="left"><!-- IF REPLY_PM_IMG --><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<!-- ENDIF --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td>
 	<td align="right" valign="top" nowrap="nowrap">
 		<span class="gensmall">{S_TIMEZONE}</span>
 	</td>

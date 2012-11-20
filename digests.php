@@ -35,6 +35,11 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
+if (!$user->data['session_logged_in'])
+{
+	message_die(GENERAL_MESSAGE, $lang['NOT_LOGGED_IN_VIEW_PAGE']);
+}
+
 include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
 
 setup_extra_lang(array('lang_digests'));
@@ -57,7 +62,6 @@ $offset = $board_timezone - $user_timezone;
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
-
 	if ($user->data['session_logged_in'])
 	{
 		$template_to_parse = 'digests.tpl';
@@ -306,7 +310,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
 				);
 			}
 		}
-
 	}
 }
 else

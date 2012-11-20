@@ -148,23 +148,16 @@ a.block-edit-link { display: none; }
 
 /* FORMS - BEGIN */
 form { display: inline; }
-input, select, textarea { font-family: /*"Lucida Grande",*/ Verdana, Helvetica, Arial, sans-serif; font-size: 11px; margin: 0; /* box-sizing: content-box; */ -moz-box-sizing: content-box; }
-input, select { vertical-align: middle; }
+input, select, textarea { font-family: /*"Lucida Grande",*/ Verdana, Helvetica, Arial, sans-serif; font-size: 11px; margin: 0; /* box-sizing: content-box; -moz-box-sizing: content-box; */ }
+* html input, * html select, input, select { height: 20px; margin: 3px; vertical-align: middle; }
+* html input.mainoption, * html input.altoption, * html input.liteoption, input.mainoption, input.altoption, input.liteoption { padding: 0px 15px 3px 15px; }
+input[type='checkbox'] { margin-top: 1px !important; margin-bottom: 1px !important; }
+select option { height: 20px; padding-left: 3px; padding-right: 3px; vertical-align: middle; }
+select { cursor: pointer; }
 
 textarea { padding: 2px; cursor: text; overflow: auto; }
 .message-box { width: 98%; }
 .message-box textarea { width: 98%; /* font-family: "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif; font-size: 1.2em; color: #333333; */ }
-
-select { cursor: pointer; }
-option { padding-right: 1em; }
-
-/* inputs - fixing height and padding */
-* html input.mainoption, * html input.altoption, * html input.liteoption { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
-input.mainoption, input.altoption, input.liteoption { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
-input.post { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
-* html input.jumpbox { height: 20px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
-input.jumpbox { height: 18px; padding-left: 3px; padding-right: 3px; margin: 2px; vertical-align: middle; }
-select option { height: 16px; padding-left: 3px; padding-right: 3px; vertical-align: middle; }
 /* FORMS - END */
 
 /* IMG Fading - BEGIN */

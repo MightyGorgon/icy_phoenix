@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.0.0.87');
+define('ICYPHOENIX_VERSION', '2.0.1.87');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -125,6 +125,7 @@ define('ATTACH_MOD_PATH', 'includes/attach_mod/');
 define('DOWNLOADS_PATH', 'downloads/');
 define('PA_FILE_DB_PATH', 'includes/pafiledb/');
 define('FILES_ICONS_DIR', 'images/files/');
+define('FONTS_DIR', IP_ROOT_PATH . 'images/fonts/');
 define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/images/');
 define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
 define('POSTED_IMAGES_THUMBS_S_PATH', POSTED_IMAGES_THUMBS_PATH . 's/');

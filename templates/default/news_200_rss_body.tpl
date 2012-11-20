@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="{CONTENT_ENCODING}" ?>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:annotate="http://purl.org/rss/1.0/modules/annotate/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <channel>
-	<title>{TITLE}</title>
+	<title>{NEWS_TITLE}</title>
 	<link>{URL}</link>
 	<!-- BEGIN image -->
 	<image>
-		<title>{TITLE}</title>
+		<title>{NEWS_TITLE}</title>
 		<description>{image.IMAGE_TITLE}</description>
 		<url>{image.IMAGE}</url>
 		<link>{URL}</link>

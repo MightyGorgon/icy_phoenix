@@ -44,7 +44,7 @@ $mode = request_var('mode', '');
 
 $delimiter = '=+:';
 
-// Read a listing of uploaded smilies for use in the add or edit smliey code...
+// Read a listing of uploaded smilies for use in the add or edit smiley code...
 $dir = @opendir(IP_ROOT_PATH . $config['smilies_path']);
 while($file = @readdir($dir))
 {
@@ -64,8 +64,14 @@ while($file = @readdir($dir))
 }
 @closedir($dir);
 
-sort($smiley_images);
-sort($smiley_paks);
+if (!empty($smiley_images))
+{
+	sort($smiley_images);
+}
+if (!empty($smiley_paks))
+{
+	sort($smiley_paks);
+}
 
 // Select main mode
 if(check_http_var_exists('import_pack', false))

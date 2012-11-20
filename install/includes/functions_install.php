@@ -1146,7 +1146,7 @@ class ip_page
 		echo('	<![endif]-->' . "\n");
 		echo('</head>' . "\n");
 		echo('<body>' . "\n");
-		echo('<span><a name="top"></a></span>' . "\n");
+		echo('<span><a name="top" id="top"></a></span>' . "\n");
 		echo('<div id="global-wrapper"><div id="wrapper"><div id="wrapper1"><div id="wrapper2"><div id="wrapper3"><div id="wrapper4"><div id="wrapper5"><div id="wrapper6"><div id="wrapper7"><div id="wrapper-inner">' . "\n");
 
 		if ($write_form == true)
@@ -1206,7 +1206,7 @@ class ip_page
 			echo('</form>' . "\n");
 		}
 		echo('</div></div></div></div></div></div></div></div></div></div>' . "\n");
-		echo('<span><a name="bottom"></a></span>' . "\n");
+		echo('<span><a name="bottom" id="bottom"></a></span>' . "\n");
 		echo('</body>' . "\n");
 		echo('</html>');
 	}
@@ -1242,8 +1242,8 @@ class ip_page
 		$img_minimise = '';
 		if (!empty($spoiler_id))
 		{
-			$img_maximise = '<div class="max-min-right"><img src="style/maximise.gif" onclick="ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
-			$img_minimise = '<div class="max-min-right"><img src="style/minimise.gif" onclick="ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
+			$img_maximise = '<div class="max-min-right"><img src="style/switch_maximise.gif" onclick="ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
+			$img_minimise = '<div class="max-min-right"><img src="style/switch_minimise.gif" onclick="ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
 			echo('<div id="' . $spoiler_id . '_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row-header">' . $img_maximise . '<span>' . $header . '</span></td></tr></table></div>' . "\n");
 			echo('<div id="' . $spoiler_id . '">' . "\n");
 		}

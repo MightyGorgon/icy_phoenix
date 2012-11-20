@@ -1,5 +1,5 @@
 <script type="text/javascript">
-<!--
+// <![CDATA[
 	var error_msg = "";
 	var check_for_delete = false;
 	var delete_mirror = false;
@@ -73,7 +73,7 @@
 		}
 		return true;
 	}
-// -->
+// ]]>
 </script>
 
 <h1>{L_FILE_TITLE}</h1>
