@@ -17,7 +17,7 @@
 
 if (!defined('IN_ICYPHOENIX'))
 {
-	die('Hacking attempt');
+  die('Hacking attempt');
 }
 
 /*
@@ -1127,29 +1127,34 @@ class bbcode
 		// FONT
 		if($tag === 'font')
 		{
+			$fonts = array(
+				'Arial',
+				'Arial Black',
+				'Comic Sans MS',
+				'Courier New',
+				'Impact',
+				'Lucida Console',
+				'Lucida Sans Unicode',
+				'Microsoft Sans Serif',
+				'Symbol',
+				'Tahoma',
+				'Times New Roman',
+				'Traditional Arabic',
+				'Trebuchet MS',
+				'Verdana',
+				'Webdings',
+				'Wingdings'
+			);
+			foreach (glob('images/fonts/*.ttf') as $add_font)
+				$fonts[] = substr($add_font, 13, -4); //13 = images/fonts/ and -4 = .ttf
+			foreach (glob('images/fonts/*.otf') as $add_font)
+				$fonts[] = substr($add_font, 13, -4); //13 = images/fonts/ and -4 = .otf
+
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 			$default_param = 'Verdana';
 			$font = (isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['font']) ? $item['params']['font'] : $default_param));
-			if ($font === 'Arial' ||
-				$font === 'Arial Black' ||
-				$font === 'Comic Sans MS' ||
-				$font === 'Courier New' ||
-				$font === 'Impact' ||
-				$font === 'Lucida Console' ||
-				$font === 'Lucida Sans Unicode' ||
-				$font === 'Microsoft Sans Serif' ||
-				$font === 'Symbol' ||
-				$font === 'Tahoma' ||
-				$font === 'Times New Roman' ||
-				$font === 'Traditional Arabic' ||
-				$font === 'Trebuchet MS' ||
-				$font === 'Verdana' ||
-				$font === 'Webdings' ||
-				$font === 'Wingdings')
-			{
-				$font = $font;
-			}
-			else
+
+			if (!in_array($font, $fonts))
 			{
 				$font = 'Verdana';
 			}
