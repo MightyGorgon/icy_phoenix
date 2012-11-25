@@ -133,7 +133,7 @@ function remove_bookmark($topic_id)
 		WHERE topic_id IN (" . $topic_id . ") AND user_id = " . $user_id;
 	$db->sql_query($sql);
 
-	return;
+	return true;
 }
 /* functions_bookmark.php - END */
 

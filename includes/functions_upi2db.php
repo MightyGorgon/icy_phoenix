@@ -301,7 +301,7 @@ if(!function_exists('always_read'))
 
 if(!function_exists('mark_always_read'))
 {
-	function mark_always_read($topic_type, $topic_id, $forum_id, $file, $art, $unread, $start = false, $folder_image = false, $search_mode = false, $s2 = false)
+	function mark_always_read($topic_type, $topic_id, $forum_id, $file, $art, $unread, $start = false, $folder_image = false, $search_id = false, $s2 = false)
 	{
 		global $config, $user, $lang, $images;
 
@@ -325,7 +325,7 @@ if(!function_exists('mark_always_read'))
 		{
 			if(sizeof($ar_t) && in_array($topic_id, $ar_t))
 			{
-				$mark_always_url = append_sid($file . '.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;start=' . $start . '&amp;search_id=' . $search_mode . '&amp;s2=' . $s2 . '&amp;always_read=unset');
+				$mark_always_url = append_sid($file . '.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;start=' . $start . '&amp;search_id=' . $search_id . '&amp;s2=' . $s2 . '&amp;always_read=unset');
 				$mark_always_icon = '<a href="' . $mark_always_url . '">' . mar_icon($folder_image_ar, $lang['upi2db_always_read_unset']) . '</a>';
 				$mark_always_txt = '<a href="' . $mark_always_url . '">' . $lang['upi2db_always_read_unset'] . '</a>';
 			}
@@ -338,7 +338,7 @@ if(!function_exists('mark_always_read'))
 				}
 				else
 				{
-					$mark_always_url = append_sid($file . '.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;start=' . $start . '&amp;search_id=' . $search_mode . '&amp;s2=' . $s2 . '&amp;always_read=set');
+					$mark_always_url = append_sid($file . '.' . PHP_EXT . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;start=' . $start . '&amp;search_id=' . $search_id . '&amp;s2=' . $s2 . '&amp;always_read=set');
 					$mark_always_icon = '<a href="' . $mark_always_url . '">' . mar_icon($folder_image, $lang['upi2db_always_read']) . '</a>';
 					$mark_always_txt = '<a href="' . $mark_always_url . '">' . $lang['upi2db_always_read'] . '</a>';
 				}

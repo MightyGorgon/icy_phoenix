@@ -2191,6 +2191,28 @@ class bbcode
 				}
 				elseif ($tag === 'youtube')
 				{
+					//check URL type
+					$video_file = $content;
+					if (strpos($content, 'youtu.be') !== false)
+					{
+						// Short URL
+						// parse the URL to split it in parts
+						$parsed_url = parse_url($content);
+						// get the path and delete the initial / simbol
+						$video_file = str_replace('/', '', $parsed_url['path']);
+					}
+					elseif (strrpos($content, 'youtube') !== false)
+					{
+						// Long URL
+						// parse the URL to split it in parts
+						$parsed_url = parse_url($content);
+						// get the query part (vars) and parse them into name and value
+						parse_str($parsed_url['query'], $qvars);
+						// send the value to the destination var.
+						$video_file = $qvars['v'];
+					}
+					$video_file = preg_replace('/[^A-Za-z0-9]+/', '', $video_file);
+
 					$color_append = '';
 					if ($color_1 || $color_2)
 					{
@@ -2200,7 +2222,11 @@ class bbcode
 
 					$width = in_array($width, $width_array) ? $width : 640;
 					$height = in_array($height, $height_array) ? $height : 385;
-					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $content . $color_append . '" /><embed src="http://www.youtube.com/v/' . $content . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object><br /><a href="http://youtube.com/watch?v=' . $content . $color_append . '" target="_blank">Link</a><br />';
+					$video_link = '<br /><a href="http://youtube.com/watch?v=' . $video_file . $color_append . '" target="_blank">Link</a><br />';
+					// OLD OBJECT Version
+					//$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $video_file . $color_append . '" /><embed src="http://www.youtube.com/v/' . $video_file . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object>' . $video_link;
+					// IFRAME Version
+					$html = '<iframe width="' . $width . '" height="' . $height . '" src="http://www.youtube.com/embed/' . $video_file . '?autoplay=0' . $color_append . '" frameborder="0"></iframe>' . $video_link;
 				}
 				elseif ($tag === 'googlevideo')
 				{
