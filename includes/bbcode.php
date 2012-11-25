@@ -2211,7 +2211,7 @@ class bbcode
 						// send the value to the destination var.
 						$video_file = $qvars['v'];
 					}
-					$video_file = preg_replace('/[^A-Za-z0-9]+/', '', $video_file);
+					$video_file = preg_replace('/[^A-Za-z0-9_-]+/', '', $video_file);
 
 					$color_append = '';
 					if ($color_1 || $color_2)
