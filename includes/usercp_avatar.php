@@ -269,7 +269,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			if ($imgtype != '.gif')
 			{
 				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+				message_die(GENERAL_ERROR, $lang['UNABLE_TO_UPLOAD_AVATAR'], '', __LINE__, __FILE__);
 			}
 		break;
 
@@ -282,7 +282,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			if (($imgtype != '.jpg') && ($imgtype != '.jpeg'))
 			{
 				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+				message_die(GENERAL_ERROR, $lang['UNABLE_TO_UPLOAD_AVATAR'], '', __LINE__, __FILE__);
 			}
 		break;
 
@@ -291,24 +291,24 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			if ($imgtype != '.png')
 			{
 				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+				message_die(GENERAL_ERROR, $lang['UNABLE_TO_UPLOAD_AVATAR'], '', __LINE__, __FILE__);
 			}
 		break;
 
 		default:
 			@unlink($tmp_filename);
-			message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+			message_die(GENERAL_ERROR, $lang['UNABLE_TO_UPLOAD_AVATAR'], '', __LINE__, __FILE__);
 	}
 
 	// Automatic Avatar Resize - BEGIN
 	// If you want tu use Avatar Resize function, you have to change the line below and decomment the block named AUTOMATIC AVATAR RESIZE some lines below.
 	//if ($width > 0 && $height > 0)
 	// Automatic Avatar Resize - END
-	if ($width > 0 && $height > 0 && $width <= $config['avatar_max_width'] && $height <= $config['avatar_max_height'])
+	if (($width > 0) && ($height > 0) && ($width <= $config['avatar_max_width']) && ($height <= $config['avatar_max_height']))
 	{
 		$new_filename = uniqid(rand()) . $imgtype;
 
-		if ($mode == 'editprofile' && $current_type == USER_AVATAR_UPLOAD && $current_avatar != '')
+		if (($mode == 'editprofile') && ($current_type == USER_AVATAR_UPLOAD) && ($current_avatar != ''))
 		{
 			user_avatar_delete($current_type, $current_avatar);
 		}

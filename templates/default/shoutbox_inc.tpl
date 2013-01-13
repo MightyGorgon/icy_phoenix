@@ -5,20 +5,21 @@
 </tr>
 <!-- BEGIN shoutrow -->
 <tr>
-	<td class="row-post-author">
+	<td class="row-post-author" nowrap="nowrap">
 		<span class="post-name">{shoutrow.SHOUT_USERNAME}&nbsp;{shoutrow.GENDER}</span>
 		<br />
 		<div class="center-block-text"><div class="post-rank"><b>{shoutrow.RANK_IMAGE}</b></div></div>
 		<span class="post-images">{shoutrow.AVATAR}</span>
-		<!-- END switch_showavatars -->
+		<!--
 		<div class="post-details">
 			{shoutrow.JOINED}<br />
 			{shoutrow.POSTS}<br />
 			{shoutrow.FROM}<br />
 		</div>
+		-->
 		&nbsp;<br />
 	</td>
-	<td class="row-post" width="100%" height="100%">
+	<td class="row-post" width="90%" height="100%">
 		<div class="post-buttons-top post-buttons">{shoutrow.CENSOR_IMG}&nbsp;{shoutrow.DELETE_IMG}{shoutrow.IP_IMG}</div>
 		<div class="post-subject"><span class="genmed">{L_POSTED}:&nbsp;{shoutrow.TIME}</span></div>
 		<div class="post-text post-text-hide-flow">{shoutrow.SHOUT}{shoutrow.SIGNATURE}</div>

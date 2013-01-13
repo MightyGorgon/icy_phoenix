@@ -2124,7 +2124,8 @@ class ip_page
 				$db_update_field = 'user_sig';
 				$db_update_field_id = 'user_id';
 				$sql_total = "SELECT * FROM " . $db_table;
-				$sql_step_by_step = "SELECT user_id, user_sig, user_sig_bbcode_uid
+				// Removed user_sig_bbcode_uid
+				$sql_step_by_step = "SELECT user_id, user_sig
 					FROM " . $db_table . "
 					ORDER BY user_id ASC
 					LIMIT " . $post_start . ", " . $posts_number;
@@ -2184,7 +2185,7 @@ class ip_page
 				while ($row = $db->sql_fetchrow($result))
 				{
 					$item_id = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? $row['user_id'] : $row['post_id'];
-					$bbcode_uid = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? $row['user_sig_bbcode_uid'] : $row['bbcode_uid'];
+					$bbcode_uid = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? (!empty($row['user_sig_bbcode_uid']) ? $row['user_sig_bbcode_uid'] : '') :  (!empty($row['bbcode_uid']) ? $row['bbcode_uid'] : '');
 					$post_text_f = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? $row['user_sig'] : $row['post_text'];
 
 					//$post_text_f = ((defined('STRIP') && STRIP)? stripslashes($post_text_f) : $post_text_f);
@@ -2726,6 +2727,11 @@ class ip_page
 		global $db, $cache, $config, $user, $lang, $language;
 		global $wip;
 		global $pics_number, $pic_start, $total_pics, $total_pics_modified;
+
+		if (!defined('POSTED_IMAGES_PATH'))
+		{
+			include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
+		}
 
 		include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
 		$class_images = new class_images();

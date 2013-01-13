@@ -116,14 +116,14 @@ if ($safety == 1)
 		)
 	);
 
-	$files = opendir($this_dir);
-	while ($temp = readdir($files))
+	$files = @opendir($this_dir);
+	while ($temp = @readdir($files))
 	{
 		if (($temp == '.') || ($temp == '..'))
 		{
 			continue;
 		}
-		if (!is_file($this_dir . $temp))
+		if (!@is_file($this_dir . $temp))
 		{
 			continue;
 		}
@@ -143,7 +143,7 @@ if ($safety == 1)
 		}
 
 	}
-	closedir($files);
+	@closedir($files);
 
 	if($saved == 0)
 	{

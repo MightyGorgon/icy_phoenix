@@ -144,17 +144,18 @@ if ($refresh || $preview)
 			$bbcode->allow_html = ($config['allow_html'] ? true : false);
 			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $bbcode_on ? true : false);
 			$bbcode->allow_smilies = ($config['allow_smilies'] && $smilies_on ? true : false);
+
 			$preview_message = $bbcode->parse($preview_message);
+			//$preview_message = str_replace("\n", '<br />', $preview_message);
 
 			$preview_message = $bbcode->acronym_pass($preview_message);
 			$preview_message = $bbcode->autolink_text($preview_message, '999999');
 
-			$preview_message = str_replace("\n", '<br />', $preview_message);
 			$template->set_filenames(array('preview' => 'posting_preview.tpl'));
 			$template->assign_vars(array(
 				'USERNAME' => $username,
 				'POST_DATE' => create_date_ip($config['default_dateformat'], time(), $config['board_timezone']),
-				'MESSAGE' => $preview_message,
+				'PREVIEW_MESSAGE' => $preview_message,
 				'L_POSTED' => $lang['Posted'],
 				'L_PREVIEW' => $lang['Preview']
 				)
@@ -499,8 +500,9 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$bbcode->allow_smilies = ($config['allow_smilies'] && $shout != '' && $shout_row['enable_smilies'] ? true : false);
 
 	$shout = $bbcode->parse($shout);
+	//$shout = str_replace("\n", "\n<br />\n", $shout);
+
 	$shout = ((!$shout_row['shout_active']) ? $shout : ($lang['Shout_censor'] . ($is_auth['auth_mod'] ? ('<br /><hr /><br />' . $shout) : '')));
-	$shout = str_replace("\n", "\n<br />\n", $shout);
 
 	$shout = $bbcode->acronym_pass($shout);
 	$shout = $bbcode->autolink_text($shout, '999999');

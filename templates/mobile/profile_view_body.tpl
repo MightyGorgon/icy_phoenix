@@ -52,7 +52,10 @@
 						<td class="row1 post-buttons"><span class="genmed"><!-- IF S_LOGGED_IN and ICON_CHAT -->&nbsp;{ICON_CHAT}<!-- ENDIF --><!-- IF ICON_AIM -->&nbsp;{ICON_AIM}<!-- ENDIF --><!-- IF ICON_FACEBOOK -->&nbsp;{ICON_FACEBOOK}<!-- ENDIF --><!-- IF ICON_ICQ -->&nbsp;{ICON_ICQ}<!-- ENDIF --><!-- IF ICON_JABBER -->&nbsp;{ICON_JABBER}<!-- ENDIF --><!-- IF ICON_MSN -->&nbsp;{ICON_MSN}<!-- ENDIF --><!-- IF ICON_SKYPE -->&nbsp;{ICON_SKYPE}<!-- ENDIF --><!-- IF ICON_TWITTER -->&nbsp;{ICON_TWITTER}<!-- ENDIF --><!-- IF ICON_YAHOO -->&nbsp;{ICON_YAHOO}<!-- ENDIF -->&nbsp;</span></td>
 					</tr>
 					<!-- BEGIN custom_contact -->
-					<tr>{custom_contact.CONTACT}</tr>
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{custom_contact.NAME}</span></b></td>
+						<td class="row1 post-buttons"><span class="genmed">{custom_contact.VALUE}</span></td>
+					</tr>
 					<!-- END custom_contact -->
 				</table>
 			</td>
@@ -97,7 +100,10 @@
 						<td class="row1"><span class="genmed">{OCCUPATION}</span></td>
 					</tr>
 					<!-- BEGIN custom_about -->
-					<tr>{custom_about.ABOUT}</tr>
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{custom_about.NAME}</span></b></td>
+						<td class="row1 post-buttons"><span class="genmed">{custom_about.VALUE}</span></td>
+					</tr>
 					<!-- END custom_about -->
 					<tr>
 						<td class="row2" valign="top" width="30%"><b><span class="genmed">{L_INVISION_SIGNATURE}</span></b></td>
@@ -137,7 +143,7 @@
 					</tr>
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_MOST_ACTIVE}</span></b></td>
-						<td class="row1"><span class="genmed"><a href="{INVISION_MOST_ACTIVE_FORUM_URL}">{INVISION_MOST_ACTIVE_FORUM_NAME}</a><br />{L_INVISION_MOST_ACTIVE_POSTS}</span></td>
+						<td class="row1"><div class="genmed"><!-- IF INVISION_MOST_ACTIVE_FORUM_ID > 0 --><a href="{INVISION_MOST_ACTIVE_FORUM_URL}">{INVISION_MOST_ACTIVE_FORUM_NAME}</a><br />{L_INVISION_MOST_ACTIVE_POSTS}<!-- ELSE -->{L_NO_POSTS}<!-- ENDIF --></div></td>
 					</tr>
 					<!-- ENDIF -->
 					<tr>

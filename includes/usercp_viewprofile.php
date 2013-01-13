@@ -452,6 +452,7 @@ if (!empty($profiledata['user_id']))
 {
 	$user_most_active = get_forum_most_active($profiledata['user_id']);
 	$user_most_active_forum_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . urlencode($user_most_active['forum_id']));
+	$user_most_active_forum_id = $user_most_active['forum_id'];
 	$user_most_active_forum_name = $user_most_active['forum_name'];
 	$user_most_active_posts = $user_most_active['posts'];
 }
@@ -546,7 +547,6 @@ if (!empty($config['plugins']['feedback']['enabled']) && !empty($config['plugins
 // Mighty Gorgon - Feedback - END
 
 $is_friend = user_check_friend_foe($profiledata['user_id'], true);
-
 $template->assign_vars(array(
 	// Mighty Gorgon - Feedback - BEGIN
 	'FEEDBACK' => $feedback_received,
@@ -592,6 +592,7 @@ $template->assign_vars(array(
 	'THANKS_RECEIVED' => (($total_thanks_received > 0) ? ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_thanks=' . $profiledata['user_id']) . '">' . $total_thanks_received . '</a>') : $total_thanks_received),
 	'INVISION_AVATAR_IMG' => $avatar_img,
 	'INVISION_MOST_ACTIVE_FORUM_URL' => $user_most_active_forum_url,
+	'INVISION_MOST_ACTIVE_FORUM_ID' => $user_most_active_forum_id,
 	'INVISION_MOST_ACTIVE_FORUM_NAME' => $user_most_active_forum_name,
 	'INVISION_POST_DAY_STATS' => sprintf($lang['Invision_User_post_day_stats'], $posts_per_day),
 	'INVISION_POST_PERCENT_STATS' => sprintf($lang['Invision_User_post_pct_stats'], $percentage),
@@ -668,6 +669,7 @@ $template->assign_vars(array(
 	'L_TOTAL_POSTS' => $lang['Total_posts'],
 	'L_SEARCH_USER_POSTS' => htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])),
 	'L_SEARCH_USER_TOPICS' => htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])),
+	'L_NO_POSTS' => $lang['No_Posts'],
 	'L_CONTACT' => $lang['Contact'],
 	'L_EMAIL_ADDRESS' => $lang['Email_address'],
 	'L_EMAIL' => $lang['Email'],
@@ -849,7 +851,6 @@ foreach($profile_data as $field)
 		);
 	}
 }
-
 // Custom Profile Fields - END
 
 //====================================================================== |

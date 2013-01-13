@@ -484,7 +484,7 @@ if ($result && $post_info)
 			$poll_results_sum = 0;
 			if ($row = $db->sql_fetchrow($result))
 			{
-				$poll_title = $row['poll_option_text'];
+				$poll_title = $post_info['poll_title'];
 				$poll_start = $post_info['poll_start'];
 				$poll_length = $post_info['poll_length'] / 86400;
 				$poll_max_options = $post_info['poll_max_options'];

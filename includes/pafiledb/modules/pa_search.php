@@ -473,7 +473,7 @@ class pafiledb_search extends pafiledb_public
 					'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pafiledb_config['settings_file_page']) + 1), ceil($total_match_count / $pafiledb_config['settings_file_page'])),
 					'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 					'L_HOME' => $lang['Home'],
-					'U_INDEX' => append_sid(CMS_PAGE_HOME),
+					'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 					'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 					'L_HOME' => $lang['Home'],
 					'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
@@ -507,7 +507,7 @@ class pafiledb_search extends pafiledb_public
 
 				'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 
-				'U_INDEX' => append_sid(CMS_PAGE_HOME),
+				'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 				'L_HOME' => $lang['Home'],
 				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),

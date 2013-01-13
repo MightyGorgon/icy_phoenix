@@ -2471,6 +2471,8 @@ $lang = array_merge($lang, array(
 	'TAGS_SEARCH_REPLACE_TGT' => 'New Tag',
 	'TAGS_SEARCH_REPLACE_RESULT' => '%s Tags have been replaced',
 
+	'UNABLE_TO_UPLOAD_AVATAR' => 'Unable to upload the image, make sure the image is not too big and of allowed type.',
+
 	)
 );
 

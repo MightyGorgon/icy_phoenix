@@ -222,26 +222,32 @@ function display_text(id, text)
 function setWidth(elementID, tmpWidth)
 {
 	cellobject = document.getElementById(elementID);
-	if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+	if (cellobject)
 	{
-		cellobject.style.width = tmpWidth;
-	}
-	else
-	{
-		cellobject.width = tmpWidth;
+		if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+		{
+			cellobject.style.width = tmpWidth;
+		}
+		else
+		{
+			cellobject.width = tmpWidth;
+		}
 	}
 }
 
 function getWidth(elementID)
 {
 	cellobject = document.getElementById(elementID);
-	if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+	if (cellobject)
 	{
-		return cellobject.style.width;
-	}
-	else
-	{
-		return cellobject.width;
+		if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+		{
+			return cellobject.style.width;
+		}
+		else
+		{
+			return cellobject.width;
+		}
 	}
 }
 // Set Width - END

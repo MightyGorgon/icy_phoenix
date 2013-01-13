@@ -20,6 +20,18 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+if (!defined('STRIP'))
+{
+	// If we are on PHP >= 6.0.0 we do not need some code
+	if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
+	{
+		define('STRIP', false);
+	}
+	else
+	{
+		define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
+	}
+}
 
 /*
 * Append $SID to a url. Borrowed from phplib and modified. This is an extra routine utilised by the session code and acts as a wrapper around every single URL and form action.
@@ -3538,11 +3550,12 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 			return array('name' => $bot_name, 'id' => $active_bots[$i]['bot_id']);
 		}
 
-		if (!empty($active_bots[$i]['bot_ip']))
+		if (!empty($ip_address) && !empty($active_bots[$i]['bot_ip']))
 		{
 			foreach (explode(',', $active_bots[$i]['bot_ip']) as $bot_ip)
 			{
-				if (strpos($ip_address, trim($bot_ip)) === 0)
+				$bot_ip = trim($bot_ip);
+				if (!empty($bot_ip) && (strpos($ip_address, $bot_ip) === 0))
 				{
 					$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
 					if (!empty($check_inactive) && ($active_bots[$i]['bot_active'] == 0))

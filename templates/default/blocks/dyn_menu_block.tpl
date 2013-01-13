@@ -17,14 +17,13 @@ if(GetCookie(tmp) == '2')
 {
 	ShowHide('quick_links', 'quick_links2', 'quick_links');
 	setWidth('var_width', 16);
-	//setWidth('full_width', '100%');
 }
 //-->
 </script>
 <!-- END show_hide_switch -->
 {IMG_THL}{IMG_THC}
 <!-- BEGIN show_hide_switch -->
-<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links', 'quick_links2', 'quick_links'); setWidth('var_width',16); setWidth('full_width', '100%');" alt="{L_HIDE}" />
+<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links', 'quick_links2', 'quick_links'); setWidth('var_width',16); setWidth('full_width', '100%'); setWidth('full_width_cpl', '100%');" alt="{L_HIDE}" />
 <!-- END show_hide_switch -->
 <span class="forumlink">{MAIN_MENU_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 

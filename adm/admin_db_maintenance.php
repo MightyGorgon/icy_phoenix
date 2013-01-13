@@ -74,6 +74,11 @@ setup_extra_lang(array('lang_dbmtnc'));
 $function = request_var('function', '');
 $mode_id = request_var('mode', '');
 
+if (($mode_id == 'perform') && !isset($_POST['confirm']))
+{
+	$mode_id = '';
+}
+
 // Check for parameters
 reset ($config_data);
 while (list(, $value) = each ($config_data))
@@ -84,27 +89,15 @@ while (list(, $value) = each ($config_data))
 	}
 }
 
-//
-// Get form-data if specified and override old settings
-//
-if ($mode_id == 'perform')
-{
-	if (isset($_POST['confirm']))
-	{
-		$mode_id = 'perform';
-		$function = request_var('function', '');
-	}
-}
-
-//
 // Switch of GZIP-compression when necessary and send the page header
-//
 if (($mode_id == 'start') || ($mode_id == 'perform'))
 {
 	$config['gzip_compress'] = false;
 	$config['gzip_compress_runtime'] = false;
 }
-if ($function != 'perform_rebuild') // Don't send header when rebuilding the search index
+
+// Don't send header when rebuilding the search index
+if ($function != 'perform_rebuild')
 {
 	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 }

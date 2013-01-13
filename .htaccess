@@ -17,25 +17,6 @@ Order Allow,Deny
 Deny from All
 </Files>
 
-##################################
-#      Errors Pages - BEGIN      #
-##################################
-##################################
-# Decomment these lines to enable error document management.
-# You can add absolute path if you want always the correct path being parsed.
-# Something like:
-# ErrorDocument 400 http://www.icyphoenix.com/errors.php?code=400
-##################################
-ErrorDocument 400 /errors.php?code=400
-ErrorDocument 401 /errors.php?code=401
-ErrorDocument 403 /errors.php?code=403
-ErrorDocument 404 /errors.php?code=404
-ErrorDocument 500 /errors.php?code=500
-##################################
-#       Errors Pages - END       #
-##################################
-
-
 ### MOD REWRITE ###
 
 <IfModule mod_rewrite.c>
@@ -49,6 +30,13 @@ RewriteEngine On
 #Make sure to replace icyphoenix.com with your site address.
 #RewriteCond %{HTTP_HOST} ^icyphoenix.com [NC]
 #RewriteRule (.*) http://www.icyphoenix.com/$1 [R=301,L]
+
+#Permanent redirection of a folder: example --> www.domain.com/old/ --> www.domain.com/new/
+#RewriteRule old/(.*)$ new/$1 [R=301,L]
+
+#Permanent redirection from WWW to domain name only: example --> www.domain.com --> domain.com
+#RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+#RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
 
 #Permanent redirection (the first line is the old domain, the second one is the new domain)
 #RewriteCond %{HTTP_HOST} ^icyphoenix.com [NC]
@@ -125,3 +113,22 @@ RewriteRule ^.+-pbsl ./kb.php?mode=stats&stats=latest&%{QUERY_STRING} [L]
 ########## URL Rewrite - END
 
 </IfModule>
+
+##################################
+#      Errors Pages - BEGIN      #
+##################################
+##################################
+# Decomment these lines to enable error document management.
+# You can add absolute path if you want always the correct path being parsed.
+# Something like:
+# ErrorDocument 400 http://www.icyphoenix.com/errors.php?code=400
+##################################
+ErrorDocument 400 /errors.php?code=400
+ErrorDocument 401 /errors.php?code=401
+ErrorDocument 403 /errors.php?code=403
+ErrorDocument 404 /errors.php?code=404
+ErrorDocument 500 /errors.php?code=500
+##################################
+#       Errors Pages - END       #
+##################################
+

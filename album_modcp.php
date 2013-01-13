@@ -131,9 +131,7 @@ elseif(isset($_POST['copy']))
 {
 	$mode = 'copy';
 }
-
 // END $mode (select action)
-
 
 //album_read_tree($album_user_id);
 album_read_tree(ALBUM_ROOT_CATEGORY);
@@ -868,6 +866,8 @@ else
 			{
 				$hidden_field .= '<input name="pic_id[]" type="hidden" value="' . $pic_id_array[$i] . '" />' . "\n";
 			}
+			$hidden_field .= '<input name="mode" type="hidden" value="delete" />' . "\n";
+			$hidden_field .= '<input name="cat_id" type="hidden" value="' . (int) $cat_id . '" />' . "\n";
 
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
@@ -875,7 +875,7 @@ else
 				'S_HIDDEN_FIELDS' => $hidden_field,
 				'L_NO' => $lang['No'],
 				'L_YES' => $lang['Yes'],
-				'S_CONFIRM_ACTION' => append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=delete&amp;cat_id=' . $cat_id)),
+				'S_CONFIRM_ACTION' => append_sid(album_append_uid('album_modcp.' . PHP_EXT)),
 				)
 			);
 			full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');

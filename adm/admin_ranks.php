@@ -90,19 +90,39 @@ if($mode != '')
 		$rank_is_banned = ($rank_info['rank_special'] == '3') ? 'checked="checked"' : '';
 
 		$rank_path = '../images/ranks/';
-		if (is_dir($rank_path))
+
+		if (@is_dir($rank_path))
 		{
-			$dir = opendir($rank_path);
-			$l = 0;
-			while($file = readdir($dir))
+			$skip_files = array(
+				'.',
+				'..',
+				'.htaccess',
+				'index.htm',
+				'index.html',
+				'index.' . PHP_EXT,
+			);
+
+			$ranks_array = array();
+			$dir = @opendir($rank_path);
+			while($file = @readdir($dir))
 			{
-				if (strpos($file, '.gif') || strpos($file, '.png') || strpos($file, '.jpg'))
+				$file_part = explode('.', strtolower($file));
+				$file_ext = $file_part[sizeof($file_part) - 1];
+				if(!@is_dir($file) && !in_array($file, $skip_files) && in_array($file_ext, array('gif', 'jpg', 'png')))
 				{
-					$file1[$l] = $file;
-					$l++;
+					$ranks_array[] = $file;
 				}
 			}
-			closedir($dir);
+			@closedir($dir);
+			if (!empty($ranks_array))
+			{
+				sort($ranks_array);
+				reset($ranks_array);
+			}
+		}
+
+		if (!empty($ranks_array))
+		{
 			$ranks_list = '<select name="rank_image_sel" onchange="update_rank(this.options[selectedIndex].value);">';
 			if ($rank_info['rank_image'] == '')
 			{
@@ -113,11 +133,11 @@ if($mode != '')
 				$ranks_list .= '<option value="">' . $lang['No_Rank_Image'] . '</option>';
 				$ranks_list .= '<option value="' . $rank_info['rank_image'] . '" selected="selected">' . str_replace($rank_path, '', $rank_info['rank_image']) . '</option>';
 			}
-			for($k = 0; $k <= $l;$k++)
+			for($k = 0; $k <= sizeof($ranks_array); $k++)
 			{
-				if ($file1[$k] != "")
+				if ($ranks_array[$k] != "")
 				{
-					$ranks_list .= '<option value="images/ranks/' . $file1[$k] . '">images/ranks/' . $file1[$k] . '</option>';
+					$ranks_list .= '<option value="images/ranks/' . $ranks_array[$k] . '">images/ranks/' . $ranks_array[$k] . '</option>';
 				}
 			}
 			$rank_img_sp = (($rank_info['rank_image'] != '') ? ('../' . $rank_info['rank_image']) : $images['spacer']);
@@ -127,7 +147,6 @@ if($mode != '')
 			$ranks_list .= '<br /><br />';
 			$ranks_list .= '<input class="post" type="text" name="rank_image_path" size="40" maxlength="255" value="' . $rank_img_path . '" />';
 			$ranks_list .= '<br />';
-
 		}
 		else
 		{
@@ -213,7 +232,7 @@ if($mode != '')
 		// The rank image has to be a jpg, gif or png
 		if($rank_image != '')
 		{
-			if (!preg_match("/(\.gif|\.png|\.jpg)$/is", $rank_image))
+			if (!preg_match("/(\.gif|\.jpg|\.png)$/is", $rank_image))
 			{
 				$rank_image = '';
 			}

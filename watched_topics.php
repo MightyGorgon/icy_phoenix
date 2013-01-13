@@ -43,11 +43,15 @@ if (!$user->data['session_logged_in'])
 // are we un-watching some topics?
 if (isset($_POST['unwatch_list']))
 {
-	$topic_ids = $_POST['unwatch_list'];
-	$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
-		WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
-			AND user_id = " . $user->data['user_id'];
-	$result = $db->sql_query($sql);
+	//$topics_ids = $_POST['unwatch_list'];
+	$topics_ids = request_var('unwatch_list', array(0));
+	if (!empty($topics_ids))
+	{
+		$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
+			WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
+				AND user_id = " . $user->data['user_id'];
+		$result = $db->sql_query($sql);
+	}
 }
 
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);

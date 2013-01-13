@@ -27,6 +27,19 @@ include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
+if (!defined('STRIP'))
+{
+	// If we are on PHP >= 6.0.0 we do not need some code
+	if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
+	{
+		define('STRIP', false);
+	}
+	else
+	{
+		define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
+	}
+}
+
 @set_time_limit(0);
 $mem_limit = check_mem_limit();
 @ini_set('memory_limit', $mem_limit);

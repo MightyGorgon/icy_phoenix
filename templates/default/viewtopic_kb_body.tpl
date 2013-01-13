@@ -31,7 +31,7 @@ function open_postreview(ref)
 	<td class="row-post-buttons post-buttons" colspan="2">
 		<div class="post-buttons-top post-buttons">
 			<!-- IF not S_BOT -->
-			{postrow.QUOTE_IMG}&nbsp;{postrow.EDIT_IMG}&nbsp;{postrow.DELETE_IMG}&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
+			{postrow.QUOTE_IMG}&nbsp;{postrow.EDIT_IMG}&nbsp;{postrow.DELETE_IMG}&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
 			<!-- ELSE -->
 			&nbsp;
 			<!-- ENDIF -->
@@ -44,7 +44,6 @@ function open_postreview(ref)
 	<td class="row-post" height="100%" colspan="2">
 		&nbsp;
 		<div class="post-text post-text-hide-flow">{postrow.MESSAGE}<br />{postrow.ATTACHMENTS}</div>
-		</div>
 		<br /><br /><br />
 		<div style="margin-bottom: 2px; clear: both; display: block;">&nbsp;</div>
 		<!-- IF S_EDIT_NOTES -->

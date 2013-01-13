@@ -6,7 +6,6 @@ if(GetCookie(tmp) == '2')
 {
 	ShowHide('quick_links', 'quick_links2', 'quick_links');
 	setWidth('var_width', 16);
-	//setWidth('full_width', '100%');
 }
 //-->
 </script>
@@ -15,7 +14,7 @@ if(GetCookie(tmp) == '2')
 <form name="ChangeThemeLang" method="post" action="{REQUEST_URI}">
 {IMG_THL}{IMG_THC}
 <!-- IF SWITCH_CMS_SHOW_HIDE -->
-<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links', 'quick_links2', 'quick_links'); setWidth('var_width', 16); setWidth('full_width', '100%');" alt="{L_HIDE}" />
+<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links', 'quick_links2', 'quick_links'); setWidth('var_width', 16); setWidth('full_width', '100%'); setWidth('full_width_cpl', '100%');" alt="{L_HIDE}" />
 <!-- ENDIF -->
 <span class="forumlink">{L_QUICK_LINKS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 

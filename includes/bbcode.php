@@ -724,10 +724,18 @@ class bbcode
 
 			if (!$is_smiley && $config['thumbnail_posts'] && ($liw_bypass == false))
 			{
+				$process_thumb = !empty($config['thumbnail_cache']) ? true : false;
 				$thumb_exists = false;
 				$thumb_processed = false;
 				$is_light_view = false;
-				if($config['thumbnail_cache'])
+				if (isset($item['params']['thumb']))
+				{
+					if ($item['params']['thumb'] == 'false')
+					{
+						$process_thumb = false;
+					}
+				}
+				if(!empty($process_thumb))
 				{
 					$thumb_processed = true;
 					$pic_id = $img_url;
@@ -785,7 +793,7 @@ class bbcode
 						$cache_image = true;
 					}
 				}
-				if (($thumb_exists == false) || ($cache_image == false))
+				if (!empty($process_thumb) && (($thumb_exists == false) || ($cache_image == false)))
 				{
 					$pic_thumbnail_script = $server_url . CMS_PAGE_IMAGE_THUMBNAIL . '?' . $cache_append . 'pic_id=' . $img_url_enc;
 					// Light View - BEGIN
@@ -1417,13 +1425,15 @@ class bbcode
 			{
 				$noscript = '<noscript>' . htmlspecialchars(str_replace(array('@', '.'), array(' [at] ', ' [dot] '), $str)) . '</noscript>';
 				// make javascript from it
-				$html = BBCODE_NOSMILIES_START . '<script type="text/javascript">' . "\n" . '<!--' . "\n";
-				for($i = 0; $i<strlen($email); $i+=5)
+				$html = BBCODE_NOSMILIES_START . '<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n";
+				$bit_lenght = 5;
+				for($i = 0; $i < strlen($email); $i += $bit_lenght)
 				{
-					$str = substr($email, $i, 5);
-					$html .= 'document.write(\'' . addslashes($str) . '\');' . "\n";
+					$str = substr($email, $i, $bit_lenght);
+					//$str = preg_replace('/[^A-Za-z0-9_\-@.]+/', '_', $str);
+					$html .= 'document.write(\'' . str_replace('/', '\/', addslashes($str)) . '\');' . "\n";
 				}
-				$html .= "\n" . '//-->' . "\n" . '</script>' . $noscript . BBCODE_NOSMILIES_END;
+				$html .= "\n" . '// ]]>' . "\n" . '</script>' . "\n" . $noscript . BBCODE_NOSMILIES_END;
 			}
 			return array(
 				'valid' => true,

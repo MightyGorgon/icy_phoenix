@@ -971,10 +971,10 @@ class sql_db
 				global $msg_long_text;
 				$msg_long_text = $message;
 
-				trigger_error(false, E_USER_NOTICE);
+				@trigger_error(false, E_USER_NOTICE);
 			}
 
-			trigger_error($message, E_USER_NOTICE);
+			@trigger_error($message, E_USER_NOTICE);
 			/*
 			$msg_text = $message;
 			$msg_title = isset($lang['Error']) ? $lang['Error'] : 'Error';

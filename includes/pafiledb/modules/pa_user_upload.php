@@ -268,7 +268,7 @@ class pafiledb_user_upload extends pafiledb_public
 // MX Addon
 				'MODE' => $mode,
 
-				'U_INDEX' => append_sid(CMS_PAGE_HOME),
+				'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT)
 				)
 			);
