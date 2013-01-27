@@ -293,7 +293,7 @@ class pafiledb
 		if($this->cat_rowset[$cat_id]['parents_data'] == '')
 		{
 			$cat_nav = array();
-			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], &$cat_nav);
+			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], $cat_nav);
 
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET parents_data = '" . addslashes(serialize($cat_nav)) . "'
@@ -361,7 +361,7 @@ class pafiledb
 		if($this->cat_rowset[$cat_id]['parents_data'] == '')
 		{
 			$cat_nav = array();
-			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], &$cat_nav);
+			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], $cat_nav);
 		}
 		else
 		{
@@ -387,7 +387,7 @@ class pafiledb
 	{
 		if(!empty($this->cat_rowset[$parent_id]))
 		{
-			$this->category_nav($this->cat_rowset[$parent_id]['cat_parent'], &$cat_nav);
+			$this->category_nav($this->cat_rowset[$parent_id]['cat_parent'], $cat_nav);
 			$cat_nav[$parent_id] = $this->cat_rowset[$parent_id]['cat_name'];
 		}
 		return;
@@ -1426,7 +1426,7 @@ class pafiledb
 		global $db;
 
 		$cat_nav = array();
-		$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], &$cat_nav);
+		$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], $cat_nav);
 
 		$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 			SET parents_data = ''
