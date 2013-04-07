@@ -391,21 +391,20 @@ function read_tree($force = false)
 {
 
 	global $db, $config, $user, $tree;
-	global $unread;
 
 //<!-- BEGIN Unread Post Information to Database Mod -->
 	if($user->data['upi2db_access'])
 	{
-		if (empty($unread))
+		if (!defined('UPI2DB_UNREAD'))
 		{
-			$unread = unread();
+			$user->data['upi2db_unread'] = upi2db_unread();
 		}
 	}
 //<!-- END Unread Post Information to Database Mod -->
 
 	// read the user cookie
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 	$tracking_all = (isset($_COOKIE[$config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$config['cookie_name'] . '_f_all']) : -1;
 
 	// try the cache
@@ -549,7 +548,7 @@ function read_tree($force = false)
 			{
 				$unread_topics = false;
 				$forum_id = $tree['id'][$i];
-				if(in_array($forum_id, $unread['forums']) || in_array('A', $unread['forums']))
+				if(in_array($forum_id, $user->data['upi2db_unread']['forums']) || in_array('A', $user->data['upi2db_unread']['forums']))
 				{
 					$unread_topics = true;
 				}
@@ -573,24 +572,18 @@ function set_tree_user_auth()
 	if ($config['show_forums_online_users'] == true)
 	{
 
-		$sql = "SELECT s.session_page
+		$sql = "SELECT DISTINCT(s.session_ip), s.session_forum_id
 			FROM " . SESSIONS_TABLE . " s
-			WHERE s.session_time >= " . (time() - ONLINE_REFRESH);
+			WHERE s.session_time >= " . (time() - ONLINE_REFRESH) . "
+				AND s.session_forum_id <> 0
+				GROUP BY s.session_ip
+				ORDER BY s.session_forum_id ASC";
 		$result = $db->sql_query($sql);
 
 		$forum_online = array();
 		while($row = $db->sql_fetchrow($result))
 		{
-			if ((strpos($row['session_page'], CMS_PAGE_VIEWFORUM) !== false) || (strpos($row['session_page'], CMS_PAGE_VIEWTOPIC) !== false))
-			{
-				$results = array();
-				ereg('_f_=([0-9]*)x', $row['session_page'], $results);
-				if (!empty($results[0]))
-				{
-					$forum_id = str_replace(array('_f_=', 'x'), array('', ''), $results[0]);
-					$forum_online[$forum_id] = (empty($forum_online[$forum_id])) ? 1 : ($forum_online[$forum_id] + 1);
-				}
-			}
+			$forum_online[$row['session_forum_id']] = (empty($forum_online[$row['session_forum_id']])) ? 1 : ($forum_online[$row['session_forum_id']] + 1);
 		}
 	}
 	$db->sql_freeresult($result);
@@ -685,11 +678,12 @@ function set_tree_user_auth()
 			$tree['data'][$i]['tree.forum_topics'] = 0;
 			$tree['data'][$i]['tree.forum_online'] = 0;
 		}
+
 		if ($auth_view)
 		{
 			$tree['data'][$i]['tree.forum_posts'] += isset($tree['data'][$i]['forum_posts']) ? $tree['data'][$i]['forum_posts'] : 0;
 			$tree['data'][$i]['tree.forum_topics'] += isset($tree['data'][$i]['forum_topics']) ? $tree['data'][$i]['forum_topics'] : 0;
-			$tree['data'][$i]['tree.forum_online'] += (empty($forum_online[$i]) ? 0 : $forum_online[$i]);
+			$tree['data'][$i]['tree.forum_online'] += (empty($forum_online[$tree['id'][$i]]) ? 0 : (int) $forum_online[$tree['id'][$i]]);
 		}
 
 		// grant the main level
@@ -891,12 +885,13 @@ function get_max_depth($cur = 'Root', $all = false, $level = -1, &$keys, $max = 
 //--------------------------------------------------------------------------------------------------
 function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $real_level = -1, $max_level = -1, &$keys)
 {
-	global $template, $db, $cache, $config, $lang, $images, $theme;
+	global $template, $db, $cache, $config, $user, $lang, $images, $theme;
 	global $tree, $bbcode, $lofi;
-//<!-- BEGIN Unread Post Information to Database Mod -->
-	global $user, $unread;
-//<!-- END Unread Post Information to Database Mod -->
-	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+
+	if (empty($bbcode))
+	{
+		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	}
 
 	// init
 	$display = false;
@@ -969,7 +964,9 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 	if ($sub_forum > 0)
 	{
 		$pull_down = false;
-		if (($real_level == 0) && ($sub_forum == 1))
+		// JHL 2012/03/09
+		//if (($real_level == 0) && ($sub_forum == 1))
+		if (($real_level == 0) && (($sub_forum == 1) || ($sub_forum == 3)))
 		{
 			$pull_down = true;
 		}
@@ -996,7 +993,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			);
 			$template->assign_block_vars('catrow.cathead', array(
 				'CAT_TITLE' => get_object_lang($cur, 'name'),
-				'CAT_DESC' => @ereg_replace('<[^>]+>', '', get_object_lang($cur, 'desc')),
+				'CAT_DESC' => preg_replace('/<[^>]+>/', '', get_object_lang($cur, 'desc')),
 
 				'CLASS_CATLEFT' => $class_catLeft,
 				'CLASS_CAT' => $class_cat,
@@ -1127,7 +1124,9 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 			// links to sub-levels
 			$links = '';
-			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && (intval($config['sub_level_links']) > 0))
+			// JHL 2012/03/09
+			//if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && (intval($config['sub_level_links']) > 0))
+			if ($sub && (!$pull_down || (($type == POST_FORUM_URL) && ($sub_forum > 0))) && ((intval($config['sub_level_links']) > 0) && ($sub_forum != 3)))
 			{
 				for ($j = 0; $j < sizeof($tree['sub'][$cur]); $j++) if ($tree['auth'][$tree['sub'][$cur][$j]]['auth_view'])
 				{
@@ -1149,7 +1148,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 							break;
 					}
 					$link = '';
-					$wdesc = @ereg_replace('<[^>]+>', '', $wdesc);
+					$wdesc = preg_replace('/<[^>]+>/', '', $wdesc);
 
 
 					if (intval($config['sub_level_links']) == 2)
@@ -1228,7 +1227,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 				if(!$data['tree.unread_topics'] && !$sub)
 				{
-					if(is_array($unread['always_read']['forums']) && !in_array($forum_id, $unread['always_read']['forums']))
+					if(is_array($user->data['upi2db_unread']['always_read']['forums']) && !in_array($forum_id, $user->data['upi2db_unread']['always_read']['forums']))
 					{
 						$mark_always_read = '<a href="' . append_sid(CMS_PAGE_FORUM . '?forum_id=' . $forum_id . '&amp;always_read=set') . '"><img src="' . $folder_image . '" alt="' . $lang['upi2db_always_read_forum']. '" title="' . $lang['upi2db_always_read_forum'] . '" /></a>';
 					}
@@ -1287,6 +1286,8 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				*/
 				'FORUM_NAME' => $title,
 				'FORUM_DESC' => $desc,
+				// JHL 2012/03/09
+				'FORUM_TYPE' => ($type == POST_FORUM_URL) ? 'forum' : 'category',
 				'POSTS' => $data['tree.forum_posts'],
 				'TOPICS' => $data['tree.forum_topics'],
 				'ONLINE' => (($config['show_forums_online_users'] == true) ? ('<br />' . $lang['Online'] . ':&nbsp;' . $data['tree.forum_online']) : ''),
@@ -1428,7 +1429,7 @@ function display_index($cur = 'Root')
 			}
 			for ($i = 0; $i < sizeof($data['group_id']); $i++)
 			{
-				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
+				$forum_moderators[ $tree['id'][$idx] ][] = '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $data['group_id'][$i]) . '">' . $data['group_name'][$i] . '</a>';
 			}
 		}
 	}

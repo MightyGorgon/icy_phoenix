@@ -47,6 +47,13 @@ class class_plugins
 	{
 		global $db, $config, $table_prefix;
 
+		// Include install functions file... if any!
+		$plugin_functions_install_file = $this->plugins_path . $plugin_data['dir'] . '/includes/functions_install.' . PHP_EXT;
+		if (file_exists($plugin_functions_install_file))
+		{
+			@include($plugin_functions_install_file);
+		}
+
 		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
@@ -68,12 +75,13 @@ class class_plugins
 						$message = '';
 						$db->sql_return_on_error(true);
 						$result = $db->sql_query($sql_statement);
-						$db->sql_return_on_error(false);
 						if (!$result)
 						{
 							$error = $db->sql_error();
 							$message = $error['message'];
 						}
+						// This has to be here, otherwise we are not able to catch all errors by using $db->sql_error()
+						$db->sql_return_on_error(false);
 						$sql_results[] = array(
 							'sql' => $sql_statement,
 							'message' => htmlspecialchars($message),
@@ -111,6 +119,13 @@ class class_plugins
 	function update($plugin_data, $clear_cache = true)
 	{
 		global $db, $config, $table_prefix;
+
+		// Include install functions file... if any!
+		$plugin_functions_install_file = $this->plugins_path . $plugin_data['dir'] . '/includes/functions_install.' . PHP_EXT;
+		if (file_exists($plugin_functions_install_file))
+		{
+			@include($plugin_functions_install_file);
+		}
 
 		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
@@ -172,6 +187,13 @@ class class_plugins
 	{
 		global $db, $config, $table_prefix;
 
+		// Include install functions file... if any!
+		$plugin_functions_install_file = $this->plugins_path . $plugin_data['dir'] . '/includes/functions_install.' . PHP_EXT;
+		if (file_exists($plugin_functions_install_file))
+		{
+			@include($plugin_functions_install_file);
+		}
+
 		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_uninstall_data = $this->get_plugin_uninstall_data($plugin_data['dir']);
@@ -200,6 +222,7 @@ class class_plugins
 				eval($uninstall_function);
 			}
 		}
+		$this->remove_config(array('name' => $plugin_info['config']), true, false);
 
 		if ($clear_cache)
 		{
@@ -210,14 +233,56 @@ class class_plugins
 	}
 
 	/*
+	* Setup plugin lang
+	*/
+	function setup_lang($plugin_dir, $lang_type = '')
+	{
+		global $user, $lang;
+
+		$files_to_include = array();
+		$plugin_lang_path = $this->plugins_path . $plugin_dir . 'language/';
+
+		switch ($lang_type)
+		{
+			case 'permissions':
+				$filenames = array('lang_permissions');
+				break;
+
+			default:
+				$filenames = array('lang_plugin', 'lang_permissions');
+				break;
+		}
+
+		foreach ($filenames as $filename)
+		{
+			if (is_dir($plugin_lang_path))
+			{
+				$files_to_include[] = $filename;
+			}
+		}
+
+		if (!empty($files_to_include))
+		{
+			setup_extra_lang($files_to_include, $plugin_lang_path);
+		}
+
+		return true;
+	}
+
+	/*
 	* Get plugin info
 	*/
 	function get_plugin_info($plugin_dir)
 	{
+		global $lang;
+
 		$plugin_info = array();
 		$plugin_info_file = $this->plugins_path . $plugin_dir . '/info.' . PHP_EXT;
 		if (file_exists($plugin_info_file))
 		{
+			$plugin_info_lang_path = $this->plugins_path . $plugin_dir . '/language/';
+			setup_extra_lang(array('lang_info'), $plugin_info_lang_path);
+
 			@include($plugin_info_file);
 			$plugin_info = array(
 				'dir' => $plugin_dir,
@@ -229,6 +294,23 @@ class class_plugins
 		}
 
 		return $plugin_info;
+	}
+
+	/*
+	* Get plugin auth data
+	*/
+	function get_plugin_auth_data($plugin_dir)
+	{
+		global $config, $table_prefix;
+
+		$auth_data = array();
+		$plugin_install_file = $this->plugins_path . $plugin_dir . '/install/install.' . PHP_EXT;
+		if (file_exists($plugin_install_file))
+		{
+			@include($plugin_install_file);
+		}
+
+		return $auth_data;
 	}
 
 	/*
@@ -375,7 +457,6 @@ class class_plugins
 		$db->sql_return_on_error($return);
 		$db->sql_query($sql);
 		$db->sql_return_on_error(false);
-
 		if ($clear_cache)
 		{
 			$this->cache_clear();
@@ -573,7 +654,7 @@ class class_plugins
 	*/
 	function get_plugin_db_settings($plugin_dir)
 	{
-		global $db, $cache, $config, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		// Search for settings...
 		$plugins_settings_path = IP_ROOT_PATH . PLUGINS_PATH . basename($plugin_dir) . '/' . $this->plugins_settings_path . '/';

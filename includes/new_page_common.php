@@ -41,7 +41,7 @@ if (empty($user->data))
 {
 	// Start session management
 	$user->session_begin();
-	//$auth->acl($user->data);
+	$auth->acl($user->data);
 	$user->setup();
 	// End session management
 }
@@ -88,13 +88,13 @@ while ($row = $db->sql_fetchrow($layout_result))
 	$layout_row = $row;
 }
 $db->sql_freeresult($layout_result);
-$layout_name = $cms_default_page ? false : $meta_content['page_title'] . ' :: ' . $layout_row['name'];
+$layout_name = $cms_default_page ? false : (!empty($layout_row['name']) ? $layout_row['name'] : (!empty($meta_content['page_title']) ? $meta_content['page_title'] : false));
 $layout_template = $layout_row['template'];
 $cms_page['global_blocks'] = ($layout_row['global_blocks'] == 0) ? false : true;
 $cms_page['page_nav'] = ($layout_row['page_nav'] == 0) ? false : true;
 
 $is_auth_view = false;
-$auth_level = $ip_cms->cms_blocks_view();
+$auth_level = $ip_cms->cms_auth_view();
 $is_auth_view = in_array($layout_row['view'], $auth_level);
 
 if(!$is_auth_view)
@@ -120,7 +120,7 @@ if(!$is_auth_view)
 	{
 		$page_array = array();
 		$page_array = extract_current_page(IP_ROOT_PATH);
-		redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
+		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . str_replace(('.' . PHP_EXT . '?'), ('.' . PHP_EXT . '&'), $page_array['page']), true));
 	}
 	else
 	{
@@ -148,18 +148,18 @@ if(empty($layout_template))
 if (!$cms_default_page)
 {
 	$meta_content['page_title'] = (!empty($layout_name) ? $layout_name : $config['sitename']);
-	$breadcrumbs_address = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
+	$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $meta_content['page_title'] . '</a>';
 }
 
-if (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] >= CMS_CONTENT_MANAGER))
+// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
+$cms_acp_url = '';
+if ($is_admin || $auth->acl_get('cms_admin') || !empty($user->data['user_cms_auth']['cmsl_admin'][$layout]))
 {
-	$cms_acp_url = '<br /><br /><div style="text-align:center;">';
-	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout) . '">' . $lang['CMS_ACP'] . '</a>';
+	$cms_acp_url = '<br /><br /><div style="text-align: center;">';
+	$cms_acp_url .= '<a href="' . append_sid('cms.' . PHP_EXT . '?mode=blocks&amp;l_id=' . $layout . (!empty($user->session_id) ? ('&amp;sid=' . $user->session_id) : '')) . '">' . $lang['CMS_ACP'] . '</a>';
 	$cms_acp_url .= '</div>';
-}
-else
-{
-	$cms_acp_url = '';
 }
 
 $layout_name_add = '';

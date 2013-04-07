@@ -100,7 +100,7 @@ if(!function_exists('cms_block_random_user'))
 			}
 			// End add - Gender MOD
 
-			if (!empty($row['user_viewemail']) || ($user->data['user_level'] == ADMIN))
+			if (!empty($row['user_allow_viewemail']) || ($user->data['user_level'] == ADMIN))
 			{
 				$email_uri = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $user_id) : 'mailto:' . $row['user_email'];
 
@@ -120,12 +120,16 @@ if(!function_exists('cms_block_random_user'))
 				'chat' => 'id',
 				'aim' => 'aim',
 				'facebook' => 'facebook',
+				'flickr' => 'flickr',
+				'googleplus' => 'googleplus',
 				'icq' => 'icq',
 				'jabber' => 'jabber',
+				'linkedin' => 'linkedin',
 				'msn' => 'msnm',
 				'skype' => 'skype',
 				'twitter' => 'twitter',
 				'yahoo' => 'yim',
+				'youtube' => 'youtube',
 			);
 
 			$all_ims = array();

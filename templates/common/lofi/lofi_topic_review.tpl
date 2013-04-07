@@ -1,5 +1,5 @@
 <div class="index">
-	<div style="text-align:center;"><b><span class="cattitle">{L_TOPIC_REVIEW}</span></b></div><br />
+	<div style="text-align: center;"><b><span class="cattitle">{L_TOPIC_REVIEW}</span></b></div><br />
 	<!-- BEGIN postrow -->
 	<div class="postwrapper">
 		<div class="posttopbar">

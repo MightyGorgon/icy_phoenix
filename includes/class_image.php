@@ -20,6 +20,9 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+$mem_limit = img_check_mem_limit();
+@ini_set('memory_limit', $mem_limit);
+
 class ImgObj
 {
 	var $ImageID;
@@ -1127,6 +1130,37 @@ class ImgObj
 		return true;
 	}
 
+	/**
+	* Converts hexidecimal color value to rgb values and returns as array/string
+	*
+	* @param string $hex
+	* @param bool $asString
+	* @return array|string
+	*/
+	function hex2rgb($hex, $asString = false)
+	{
+		// strip off any leading #
+		if (0 === strpos($hex, '#'))
+		{
+			$hex = substr($hex, 1);
+		}
+		elseif (0 === strpos($hex, '&H'))
+		{
+			$hex = substr($hex, 2);
+		}
+
+		// break into hex 3-tuple
+		$cutpoint = ceil(strlen($hex) / 2) - 1;
+		$rgb = explode(':', wordwrap($hex, $cutpoint, ':', $cutpoint), 3);
+
+		// convert each tuple to decimal
+		$rgb[0] = (isset($rgb[0]) ? hexdec($rgb[0]) : 0);
+		$rgb[1] = (isset($rgb[1]) ? hexdec($rgb[1]) : 0);
+		$rgb[2] = (isset($rgb[2]) ? hexdec($rgb[2]) : 0);
+
+		return ($asString ? "{$rgb[0]} {$rgb[1]} {$rgb[2]}" : $rgb);
+	}
+
 	// function to convert rgb to hls values
 	function rgb2hls($rgb)
 	{
@@ -1255,6 +1289,7 @@ class ImgObj
 		imagefilledrectangle($this->ImageID, 0, $this->ImageHeight()-16, $this->ImageWidth(), $this->ImageHeight(), 0);
 		imagestring($this->ImageID, 1, $text_x, $text_y, $text, $text_colour);
 		$this->ChangeFlag = true;
+		return true;
 	}
 
 	//****************************************************************************
@@ -1814,6 +1849,75 @@ class ImgObj
 	}
 
 	//****************************************************************************
+	// Function to create a reflection on the image
+	//   Usage : Reflection(40, 40, 50, false, '#a4a4a4')
+	//****************************************************************************
+	/**
+	* Creates Apple-style reflection under image, optionally adding a border to main image
+	*
+	* @param int $percent
+	* @param int $reflection
+	* @param int $white
+	* @param bool $border
+	* @param string $borderColor
+	*/
+	function Reflection($percent = 40, $reflection = 40, $white = 50, $border = false, $border_color = '#a4a4a4')
+	{
+		$width = $this->ImageWidth();
+		$height = $this->ImageHeight();
+
+		$reflection_height = intval($height * ($reflection / 100));
+		$new_height = $height + $reflection_height;
+		$reflected_part = $height * ($percent / 100);
+
+		$temp_img = imagecreatetruecolor($width, $new_height);
+		imagealphablending($temp_img, true);
+
+		$color_to_paint = imagecolorallocatealpha($temp_img, 255, 255, 255, 0);
+		imagefilledrectangle($temp_img, 0, 0, $width, $new_height, $color_to_paint);
+
+		imagecopyresampled($temp_img, $this->ImageID, 0, 0, 0, $reflected_part, $width, $reflection_height, $width, ($height - $reflected_part));
+
+		// FLIP - BEGIN
+		// Flip the image
+		$x_i = imagesx($temp_img);
+		$y_i = imagesy($temp_img);
+		for($x = 0; $x < $x_i; $x++)
+		{
+			for($y = 0; $y < $y_i; $y++)
+			{
+				imagecopy($temp_img, $temp_img, $x, $y_i - $y - 1, $x, $y, 1, 1);
+			}
+		}
+		// FLIP - END
+
+		imagecopy($temp_img, $this->ImageID, 0, 0, 0, 0, $width, $height);
+
+		imagealphablending($temp_img, true);
+
+		for($i = 0; $i < $reflection_height; $i++)
+		{
+			$color_to_paint = imagecolorallocatealpha($temp_img, 255, 255, 255, ($i / $reflection_height * - 1 + 1) * $white);
+			imagefilledrectangle($temp_img, 0, $height + $i, $width , $height + $i, $color_to_paint);
+		}
+
+		if($border == true)
+		{
+			$rgb = $this->hex2rgb($border_color, false);
+			$color_to_paint = imagecolorallocate($temp_img, $rgb[0], $rgb[1], $rgb[2]);
+			imageline($temp_img, 0, 0, $width, 0, $color_to_paint); //top line
+			imageline($temp_img, 0, $height, $width, $height, $color_to_paint); //bottom line
+			imageline($temp_img, 0, 0, 0, $height, $color_to_paint); //left line
+			imageline($temp_img, $width - 1, 0, $width - 1, $height, $color_to_paint); //right line
+		}
+
+		$this->DestroyImage();
+		$this->ImageID = $temp_img;
+		$this->ChangeFlag = true;
+		return true;
+	}
+
+	//****************************************************************************
 	// Function to convert to stereogram
 	//   Usage : Stereogram(0=grayscale, 1=colour)
 	//****************************************************************************
@@ -1936,13 +2040,13 @@ class ImgObj
 * Function get_full_image_info
 */
 
-define ('IMAGE_WIDTH', 'width');
-define ('IMAGE_HEIGHT', 'height');
-define ('IMAGE_TYPE', 'type');
-define ('IMAGE_ATTR', 'attr');
-define ('IMAGE_BITS', 'bits');
-define ('IMAGE_CHANNELS', 'channels');
-define ('IMAGE_MIME', 'mime');
+define('IMAGE_WIDTH', 'width');
+define('IMAGE_HEIGHT', 'height');
+define('IMAGE_TYPE', 'type');
+define('IMAGE_ATTR', 'attr');
+define('IMAGE_BITS', 'bits');
+define('IMAGE_CHANNELS', 'channels');
+define('IMAGE_MIME', 'mime');
 
 /**
 * mixed get_full_image_info(file $file [, string $out])
@@ -2094,6 +2198,38 @@ function any_url_exists($url)
 	}
 }
 
+/**
+* Check MEM Limit... used to set higher memory usage when processing images
+*/
+function img_check_mem_limit()
+{
+	$mem_limit = @ini_get('memory_limit');
+	if (!empty($mem_limit))
+	{
+		$unit = strtolower(substr($mem_limit, -1, 1));
+		$mem_limit = (int) $mem_limit;
+
+		if ($unit == 'k')
+		{
+			$mem_limit = floor($mem_limit / 1024);
+		}
+		elseif ($unit == 'g')
+		{
+			$mem_limit *= 1024;
+		}
+		elseif (is_numeric($unit))
+		{
+			$mem_limit = floor((int) ($mem_limit . $unit) / 1048576);
+		}
+		$mem_limit = max(128, $mem_limit) . 'M';
+	}
+	else
+	{
+		$mem_limit = '128M';
+	}
+	return $mem_limit;
+}
+
 /*
 * Function nuff_http_vars needed to store all HTTP vars into one array
 */
@@ -2143,7 +2279,7 @@ function nuff_http_vars()
 	$nuff_http_full_string = '';
 	foreach ($nuff_http as $k => $v)
 	{
-		$nuff_http_full_string .= '&' . $k . '=' . $v;
+		$nuff_http_full_string .= '&amp;' . $k . '=' . $v;
 	}
 
 	$nuff_http['full_string'] = $nuff_http_full_string;
@@ -2475,6 +2611,170 @@ function create_thumb($source_pic, $allowed_extensions, $t_width, $t_height, $t_
 	@chmod($pic_thumbnail_fullpath, 0755);
 	@imagedestroy($img_new);
 	return true;
+}
+
+/*
+* create_thumb_forced
+* Thumbnails creation forced to a specific size: if image is larger, it will be resized, extra space will be black; if image is smaller, it will be placed over a black frame.
+*/
+function create_thumb_forced($source_pic, $t_width, $t_height, $t_suffix = '', $t_path = '', $t_quality = '75', $force_size = false, $allowed_extensions = 'gif,jpg,jpeg,png')
+{
+	$allowed_extensions = explode(',', $allowed_extensions);
+	$file_details = array();
+	$pic_fullpath = str_replace(array(' '), array('%20'), $source_pic);
+	$file_details = $this->get_file_details($source_pic);
+	$pic_filename = $file_details['name_full'];
+	$pic_title = $file_details['name'];
+	$pic_filetype = $file_details['ext'];
+	$pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
+	$pic_thumbnail = $pic_title . $t_suffix . '.' . $pic_filetype;
+	if (!in_array($pic_filetype, $allowed_extensions))
+	{
+		return false;
+	}
+
+	$pic_size = $this->get_full_image_info($source_pic);
+	if($pic_size == false)
+	{
+		return false;
+	}
+
+	$pic_width = $pic_size['width'];
+	$pic_height = $pic_size['height'];
+	$pic_filetype_new = strtolower($pic_size['type']);
+	$pic_thumbnail_fullpath = (($t_path == '') ? './' : $t_path) . $pic_thumbnail;
+
+	switch($pic_filetype_new)
+	{
+		case 'gif':
+			$img_tmp = @imagecreatefromgif($source_pic);
+			break;
+		case 'jpg':
+			$img_tmp = @imagecreatefromjpeg($source_pic);
+			break;
+		case 'png':
+			$img_tmp = @imagecreatefrompng($source_pic);
+			break;
+		default:
+			return false;
+			break;
+	}
+
+	$pic_ratio = $pic_width / $pic_height;
+	$t_ratio = $t_width / $t_height;
+	$dest_width = (int) $t_width;
+	$dest_height = (int) $t_height;
+
+	if (($pic_width <= $t_width) && ($pic_height <= $t_height))
+	{
+		$dest_width = $pic_width;
+		$dest_height = $pic_height;
+	}
+	else
+	{
+		if ($pic_ratio > $t_ratio)
+		{
+			$dest_height = round($t_width / $pic_ratio, 0);
+		}
+		else
+		{
+			$dest_width = round($t_height * $pic_ratio, 0);
+		}
+	}
+
+	// Generate thumbnail properly
+	$img_t_new = @imagecreatetruecolor($dest_width, $dest_height);
+	if (!$img_t_new)
+	{
+		return false;
+	}
+	@imagealphablending($img_t_new, false);
+	@imagecopyresampled($img_t_new, $img_tmp, 0, 0, 0, 0, $dest_width, $dest_height, $pic_width, $pic_height);
+	@imagesavealpha($img_t_new, true);
+
+	// Put thumbnail on black canvas
+	$img_new = @imagecreatetruecolor($t_width, $t_height);
+	if (!$img_new)
+	{
+		return false;
+	}
+	$t_x_offset = round(($t_width - $dest_width) / 2, 0);
+	$t_y_offset = round(($t_height - $dest_height) / 2, 0);
+	@imagealphablending($img_new, false);
+	@imagecopyresampled($img_new, $img_t_new, $t_x_offset, $t_y_offset, 0, 0, $t_width, $t_height, $t_width, $t_height);
+	@imagesavealpha($img_new, true);
+
+	if (($t_path != '') && !file_exists($t_path))
+	{
+		@mkdir($t_path, 0777);
+	}
+
+	// If you want all thumbnails to be forced as JPG you can decomment these lines
+	/*
+	imagejpeg($img_new, $pic_thumbnail_fullpath, '75');
+	return true;
+	exit;
+	*/
+
+	switch ($pic_filetype)
+	{
+		case 'jpg':
+			@imagejpeg($img_new, $pic_thumbnail_fullpath, '75');
+			break;
+		case 'png':
+			@imagepng($img_new, $pic_thumbnail_fullpath);
+			break;
+		case 'gif':
+			@imagegif($img_new, $pic_thumbnail_fullpath);
+			break;
+		default:
+			return false;
+			exit;
+	}
+	@chmod($pic_thumbnail_fullpath, 0755);
+	return true;
+}
+
+/**
+* No Thumbnail function
+*/
+function image_no_thumbnail($filename = 'no_thumb.jpg')
+{
+	global $images;
+	$filename = (empty($filename) ? 'no_thumb.jpg' : $filename);
+	header('Content-type: image/jpeg');
+	header('Content-Disposition: filename=' . $filename);
+	readfile($images['no_thumbnail']);
+	exit;
+}
+
+/**
+* No Thumbnail function
+*/
+function image_output($pic_fullpath, $pic_title_reg, $pic_filetype, $pic_prefix = 'thumb_')
+{
+	global $images;
+	$pic_name_output = $pic_prefix . $pic_title_reg . '.' . $pic_filetype;
+	switch ($pic_filetype)
+	{
+		case 'gif':
+			$file_header = 'Content-type: image/gif';
+			break;
+		case 'jpg':
+			$file_header = 'Content-type: image/jpeg';
+			break;
+		case 'png':
+			$file_header = 'Content-type: image/png';
+			break;
+		default:
+			image_no_thumbnail($pic_name_output);
+			exit;
+			break;
+	}
+	header($file_header);
+	header('Content-Disposition: filename=' . $pic_name_output);
+	readfile($pic_fullpath);
+	exit;
 }
 
 ?>

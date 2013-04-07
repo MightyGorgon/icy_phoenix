@@ -28,9 +28,9 @@ $nyear = 1;
 $nyear *= 12;
 
 // New posts by Months.
-$sql = 'SELECT MONTH(FROM_UNIXTIME(post_time)) as mon, YEAR(FROM_UNIXTIME(post_time)) as year,COUNT(*) AS ant
+$sql = 'SELECT MONTH(FROM_UNIXTIME(post_time)) as mon, YEAR(FROM_UNIXTIME(post_time)) as year, COUNT(*) AS ant
 	FROM ' . POSTS_TABLE . '
-	GROUP BY year,mon
+	GROUP BY year, mon
 	ORDER BY year DESC, mon DESC
 	LIMIT 0,'. $nyear;
 $result = $stat_db->sql_query($sql);
@@ -38,9 +38,9 @@ $posts_count = $stat_db->sql_numrows($result);
 $posts_data = $stat_db->sql_fetchrowset($result);
 
 // New topics by Months.
-$sql = 'SELECT MONTH(FROM_UNIXTIME(topic_time)) as mon,  YEAR(FROM_UNIXTIME(topic_time)) as year,COUNT(*) AS ant
+$sql = 'SELECT MONTH(FROM_UNIXTIME(topic_time)) as mon, YEAR(FROM_UNIXTIME(topic_time)) as year, COUNT(*) AS ant
 	FROM ' . TOPICS_TABLE . '
-	GROUP BY year,mon
+	GROUP BY year, mon
 	ORDER BY year DESC, mon DESC
 	LIMIT 0,'. $nyear;
 $result = $stat_db->sql_query($sql);
@@ -48,9 +48,9 @@ $topics_count = $stat_db->sql_numrows($result);
 $topics_data = $stat_db->sql_fetchrowset($result);
 
 // New users by days.
-$sql = 'SELECT MONTH(FROM_UNIXTIME(user_regdate)) as mon,  YEAR(FROM_UNIXTIME(user_regdate)) as year,COUNT(*) AS ant
+$sql = 'SELECT MONTH(FROM_UNIXTIME(user_regdate)) as mon, YEAR(FROM_UNIXTIME(user_regdate)) as year, COUNT(*) AS ant
 	FROM ' . USERS_TABLE . '
-	GROUP BY year,mon
+	GROUP BY year, mon
 	ORDER BY year DESC, mon DESC
 	LIMIT 0,' . $nyear;
 $result = $stat_db->sql_query($sql);

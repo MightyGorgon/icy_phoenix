@@ -23,7 +23,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -42,8 +42,8 @@ if($user->data['upi2db_access'])
 {
 	// Mighty Gorgon: are these two vars really needed? After a quick global search, they are not needed... so I comment them!
 	/*
-	$always_read_topics_string = explode(',', $unread['always_read']['topics']);
-	$always_read_forums_string = explode(',', $unread['always_read']['forums']);
+	$always_read_topics_string = explode(',', $user->data['upi2db_unread']['always_read']['topics']);
+	$always_read_forums_string = explode(',', $user->data['upi2db_unread']['always_read']['forums']);
 	*/
 
 	if (!empty($mark_always_read))
@@ -65,12 +65,12 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-require(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main_link.' . PHP_EXT);
+setup_extra_lang(array('lang_main_link'));
 
 $viewcat = (!empty($_GET[POST_CAT_URL]) ? intval($_GET[POST_CAT_URL]) : -1);
 $viewcat = (($viewcat <= 0) ? -1 : $viewcat);
 $viewcatkey = ($viewcat < 0) ? 'Root' : POST_CAT_URL . $viewcat;
-$mark_read = request_var('mode', '');
+$mark_read = request_var('mark', '');
 
 // Handle marking posts
 if($mark_read == 'forums')
@@ -91,7 +91,7 @@ if($mark_read == 'forums')
 			//<!-- BEGIN Unread Post Information to Database Mod -->
 			if(!$user->data['upi2db_access'])
 			{
-				setcookie($config['cookie_name'] . '_f_all', time(), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+				$user->set_cookie('f_all', time(), $user->cookie_expire);
 			}
 			else
 			{
@@ -114,9 +114,9 @@ if($mark_read == 'forums')
 			// mark each forums
 			for ($i = 0; $i < sizeof($keys['id']); $i++)
 			{
-				if ($tree['type'][ $keys['idx'][$i] ] == POST_FORUM_URL)
+				if ($tree['type'][$keys['idx'][$i]] == POST_FORUM_URL)
 				{
-					$forum_id = $tree['id'][ $keys['idx'][$i] ];
+					$forum_id = $tree['id'][$keys['idx'][$i]];
 					$sql = "SELECT MAX(post_time) AS last_post FROM " . POSTS_TABLE . " WHERE forum_id = '" . $forum_id . "'";
 					$result = $db->sql_query($sql);
 					if ($row = $db->sql_fetchrow($result))
@@ -124,7 +124,7 @@ if($mark_read == 'forums')
 						$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
 						$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
-						if ((sizeof($tracking_forums) + sizeof($tracking_topics)) >= 150 && empty($tracking_forums[$forum_id]))
+						if (((sizeof($tracking_forums) + sizeof($tracking_topics)) >= 150) && empty($tracking_forums[$forum_id]))
 						{
 							asort($tracking_forums);
 							unset($tracking_forums[key($tracking_forums)]);
@@ -133,7 +133,7 @@ if($mark_read == 'forums')
 						if ($row['last_post'] > $user->data['user_lastvisit'])
 						{
 							$tracking_forums[$forum_id] = time();
-							setcookie($config['cookie_name'] . '_f', serialize($tracking_forums), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+							$user->set_cookie('f', serialize($tracking_forums), $user->cookie_expire);
 						}
 					}
 				}
@@ -291,7 +291,7 @@ build_groups_list_template();
 if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
 	$nav_server_url = create_server_url();
-	$breadcrumbs_links_right = '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM . '?mark=forums') . '">' . $lang['Mark_all_forums'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=newposts') . '">' . $lang['Search_new'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=egosearch') . '">' . $lang['Search_your_posts'] . '</a>';
+	$breadcrumbs['bottom_right_links'] = '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM . '?mark=forums') . '">' . $lang['Mark_all_forums'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=newposts') . '">' . $lang['Search_new'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;<a href="' . $nav_server_url . append_sid(CMS_PAGE_SEARCH . '?search_id=egosearch') . '">' . $lang['Search_your_posts'] . '</a>';
 }
 
 $forumindex_banner_element = get_ad('fix');
@@ -350,7 +350,6 @@ $template->assign_vars(array(
 	'L_CAT_NEW_POSTS' => $lang['Cat_new_posts'],
 	'L_NO_NEW_POSTS_LOCKED' => $lang['No_new_posts_locked'],
 	'L_NEW_POSTS_LOCKED' => $lang['New_posts_locked'],
-	'L_ONLINE_EXPLAIN' => $lang['Online_explain'],
 
 	'FORUMINDEX_BANNER_ELEMENT' => $forumindex_banner_element,
 
@@ -430,7 +429,10 @@ if (($config['display_viewonline'] == 2) || (($viewcat < 0) && ($config['display
 
 	if ($config['index_top_posters'] == true)
 	{
-		include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+		if (!function_exists('top_posters'))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+		}
 		$template->assign_block_vars('top_posters', array(
 			'TOP_POSTERS' => top_posters(8, true, true, false),
 			)
@@ -442,8 +444,8 @@ if (($config['display_viewonline'] == 2) || (($viewcat < 0) && ($config['display
 $display = display_index($viewcatkey);
 
 // check shoutbox permissions and display only to authorized users
-$auth_level_req = (isset($cms_config_layouts['shoutbox']['view']) ? $cms_config_layouts['shoutbox']['view'] : AUTH_ALL);
-if (($config['index_shoutbox'] && (($user->data['user_level'] + 1) >= $auth_level_req) && $user->data['session_logged_in'] && !$user->data['is_bot']) || ($config['index_shoutbox'] && ($user->data['user_level'] == ADMIN)))
+$auth_level_req = ((isset($cms_config_layouts['shoutbox']['view']) && ($cms_config_layouts['shoutbox']['view'] != AUTH_CMS_ALL_NO_BOTS)) ? $cms_config_layouts['shoutbox']['view'] : AUTH_ALL);
+if ((!empty($config['index_shoutbox']) && (($user->data['user_level'] + 1) >= $auth_level_req) && $user->data['session_logged_in'] && !$user->data['is_bot']) || (!empty($config['index_shoutbox']) && ($user->data['user_level'] == ADMIN)))
 {
 	$template->assign_vars(array('S_SHOUTBOX' => true));
 }

@@ -21,15 +21,6 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /**
-* Generate back link for acp pages
-*/
-function adm_back_link($u_action)
-{
-	global $lang;
-	return '<br /><br /><a href="' . $u_action . '">&laquo; ' . $lang['BACK_TO_PREV'] . '</a>';
-}
-
-/**
 * Function needed to fix config values before passing them to DB
 */
 function fix_config_values($config_name, $config_value)
@@ -73,17 +64,30 @@ function fix_config_values($config_name, $config_value)
 		}
 	}
 
+	// AJAX CHAT - BEGIN
+	if ($config_name == 'ajax_chat_msgs_refresh')
+	{
+		// Just make sure ajax_chat_msgs_refresh is not below 1 second
+		$config_value = ((int) $config_value < 1) ? 1 : $config_value;
+	}
+	if ($config_name == 'ajax_chat_session_refresh')
+	{
+		// Just make sure ajax_chat_session_refresh is not below 5 seconds
+		$config_value = ((int) $config_value < 5) ? 5 : $config_value;
+	}
+	// AJAX CHAT - END
+
 	return $config_value;
 }
 
 // Synchronise functions for forums/topics
 function sync($type, $id = false)
 {
-	global $db, $cache;
+	global $db, $cache, $config;
 
 	switch($type)
 	{
-		case 'all forums':
+		case 'all_forums':
 			$sql = "SELECT forum_id
 				FROM " . FORUMS_TABLE;
 			$result = $db->sql_query($sql);
@@ -102,7 +106,7 @@ function sync($type, $id = false)
 
 			break;
 
-		case 'all topics':
+		case 'all_topics':
 			$sql = "SELECT topic_id
 				FROM " . TOPICS_TABLE;
 			$result = $db->sql_query($sql);
@@ -125,7 +129,7 @@ function sync($type, $id = false)
 		case 'forum':
 			$sql = "SELECT MAX(post_id) AS last_post, COUNT(post_id) AS total
 				FROM " . POSTS_TABLE . "
-				WHERE forum_id = " . $id;
+				WHERE forum_id = " . (int) $id;
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
@@ -141,13 +145,13 @@ function sync($type, $id = false)
 
 			$sql = "SELECT COUNT(topic_id) AS total
 				FROM " . TOPICS_TABLE . "
-				WHERE forum_id = " . $id;
+				WHERE forum_id = " . (int) $id;
 			$result = $db->sql_query($sql);
 			$total_topics = ($row = $db->sql_fetchrow($result)) ? (($row['total']) ? $row['total'] : 0) : 0;
 
 			$sql = "UPDATE " . FORUMS_TABLE . "
 				SET forum_last_post_id = $last_post, forum_posts = $total_posts, forum_topics = $total_topics
-				WHERE forum_id = " . $id;
+				WHERE forum_id = " . (int) $id;
 			$db->sql_query($sql);
 
 			break;
@@ -155,7 +159,7 @@ function sync($type, $id = false)
 		case 'topic':
 			$sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
 				FROM " . POSTS_TABLE . "
-				WHERE topic_id = $id";
+				WHERE topic_id = " . (int) $id;
 			$result = $db->sql_query($sql);
 
 			if ($row = $db->sql_fetchrow($result))
@@ -174,14 +178,14 @@ function sync($type, $id = false)
 					// Check if it is a move stub
 					$sql = 'SELECT topic_moved_id
 						FROM ' . TOPICS_TABLE . "
-						WHERE topic_id = $id";
+						WHERE topic_id = " . (int) $id;
 					$result = $db->sql_query($sql);
 
 					if ($row = $db->sql_fetchrow($result))
 					{
 						if (!$row['topic_moved_id'])
 						{
-							$sql = 'DELETE FROM ' . TOPICS_TABLE . " WHERE topic_id = $id";
+							$sql = 'DELETE FROM ' . TOPICS_TABLE . " WHERE topic_id = " . (int) $id;
 							$db->sql_query($sql);
 						}
 					}
@@ -194,7 +198,6 @@ function sync($type, $id = false)
 			break;
 	}
 
-	global $config;
 	board_stats();
 	return true;
 }
@@ -205,7 +208,7 @@ function duplicate_auth($source_id, $target_id)
 	global $db, $forum_auth_fields;
 
 	$sql = "SELECT * FROM " . FORUMS_TABLE . "
-					WHERE forum_id = '" . intval($source_id) . "'";
+					WHERE forum_id = " . (int) $source_id;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -231,7 +234,7 @@ function duplicate_auth($source_id, $target_id)
 
 	$sql = "UPDATE " . FORUMS_TABLE . "
 		SET ". $auth_sql . "
-		WHERE forum_id = '" . intval($target_id) . "'";
+		WHERE forum_id = " . (int) $target_id;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
 	$db->sql_return_on_error(false);
@@ -321,7 +324,9 @@ function match_ips($ip_list_match)
 		}
 		elseif (preg_match('/^([0-9]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})$/', trim($ip_list_temp[$i])))
 		{
-			$ip_list[] = str_replace('*', '255', trim($ip_list_temp[$i]));
+			// Mighty Gorgon: we don't use this replacement any more...
+			//$ip_list[] = str_replace('*', '255', trim($ip_list_temp[$i]));
+			$ip_list[] = trim($ip_list_temp[$i]);
 		}
 	}
 
@@ -389,7 +394,7 @@ function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port 
 				{
 					$get_info = true;
 				}
-				else if (stripos($line, '404 not found') !== false)
+				elseif (stripos($line, '404 not found') !== false)
 				{
 					$errstr = $lang['FILE_NOT_FOUND'] . ': ' . $filename;
 					return false;
@@ -402,6 +407,7 @@ function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port 
 	{
 		if ($errstr)
 		{
+			$errstr = utf8_convert_message($errstr);
 			return false;
 		}
 		else
@@ -412,6 +418,44 @@ function get_remote_file($host, $directory, $filename, &$errstr, &$errno, $port 
 	}
 
 	return $file_info;
+}
+
+/**
+* Obtains the latest version information
+*
+* @param bool $force_update Ignores cached data. Defaults to false.
+* @param bool $warn_fail Trigger a warning if obtaining the latest version information fails. Defaults to false.
+* @param int $ttl Cache version information for $ttl seconds. Defaults to 86400 (24 hours).
+*
+* @return string | false Version info on success, false on failure.
+*/
+function obtain_latest_version_info($force_update = false, $warn_fail = false, $ttl = 86400)
+{
+	global $cache;
+
+	$info = $cache->get('versioncheck');
+
+	if (($info === false) || $force_update)
+	{
+		$errstr = '';
+		$errno = 0;
+
+		$info = get_remote_file('www.icyphoenix.com', '/version', 'ip2x.txt', $errstr, $errno);
+
+		if ($info === false)
+		{
+			$cache->destroy('versioncheck');
+			if ($warn_fail)
+			{
+				trigger_error($errstr, E_USER_WARNING);
+			}
+			return false;
+		}
+
+		$cache->put('versioncheck', $info, $ttl);
+	}
+
+	return $info;
 }
 
 /**

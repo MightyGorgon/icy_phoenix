@@ -15,11 +15,11 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
-@include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bbcb_mg.' . PHP_EXT);
+setup_extra_lang(array('lang_bbcb_mg'));
 
 $mode = request_var('mode', '');
 

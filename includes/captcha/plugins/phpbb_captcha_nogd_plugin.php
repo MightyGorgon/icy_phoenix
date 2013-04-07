@@ -67,7 +67,7 @@ class phpbb_captcha_nogd extends phpbb_default_captcha
 	{
 		global $lang;
 
-		trigger_error($lang['CAPTCHA_NO_OPTIONS'] . adm_back_link($module->u_action));
+		trigger_error($lang['CAPTCHA_NO_OPTIONS'] . page_back_link($module->u_action));
 	}
 }
 

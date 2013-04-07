@@ -54,16 +54,33 @@ class ip_cms
 	}
 
 	/*
-	* Checks if the user is allowed to view the block
+	* Checks if the user is allowed to view the element
 	*/
-	function cms_blocks_view()
+	function cms_auth_view()
 	{
 		global $user, $config;
 
-		$is_reg = ((!empty($config['bots_reg_auth']) && $user->data['is_bot']) || $user->data['session_logged_in']) ? true : false;
-		if (!$is_reg)
+		/*
+		* Move these to constants if you want to use...
+		* define('CMS_AUTH_ALL', 0); // Everyone
+		* define('CMS_AUTH_GUESTS_ONLY', 1); // Guests Only (Registered won't see this!)
+		* define('CMS_AUTH_REG', 2); // Registered Users Only
+		* define('CMS_AUTH_MOD', 3); // Moderators And Admins
+		* define('CMS_AUTH_ADMIN', 4); // Admins Only
+		* define('CMS_AUTH_FOUNDER', 5); // Founders Only (NOT USED)
+		* define('CMS_AUTH_ALL_NO_BOTS', 8); // Everyone but BOTs
+		*/
+
+		if (empty($user->data['session_logged_in']))
 		{
-			$result = array(0, 1);
+			if ($user->data['is_bot'])
+			{
+				$result = (!empty($config['bots_reg_auth']) ? array(0, 1, 2) :  array(0, 1));
+			}
+			else
+			{
+				$result = array(0, 1, 8);
+			}
 		}
 		else
 		{
@@ -72,14 +89,14 @@ class ip_cms
 			{
 				case ADMIN:
 					// If you want admin to see also GUEST ONLY blocks you need to use these settings...
-					//$result = array(0, 1, 2, 3, 4);
-					$result = array(0, 2, 3, 4);
+					//$result = array(0, 1, 2, 3, 4, 5, 8);
+					$result = array(0, 2, 3, 4, 5, 8);
 					break;
 				case MOD:
-					$result = array(0, 2, 3);
+					$result = array(0, 2, 3, 8);
 					break;
 				default:
-					$result = array(0, 2);
+					$result = array(0, 2, 8);
 					break;
 			}
 		}
@@ -116,33 +133,32 @@ class ip_cms
 	*/
 	function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, $type = '')
 	{
-		global $db, $cache, $config, $template, $user, $lang, $bbcode;
+		global $db, $cache, $config, $auth, $user, $lang, $bbcode, $template;
 		global $cms_config_vars, $cms_config_layouts, $cms_config_global_blocks, $block_id;
 
+		// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+		//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+		$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
+
+		$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 		if(!$is_special)
 		{
 			$id_var_name = 'l_id';
 			$table_name = $this->tables['layout_table'];
 			$field_name = 'lid';
-			$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 		}
 		else
 		{
 			$id_var_name = 'ls_id';
 			$table_name = $this->tables['layout_special_table'];
 			$field_name = 'lsid';
-			$empty_block_tpl = 'cms_block_inc_wrapper.tpl';
 			$layout = (isset($cms_config_layouts[$layout][$field_name]) ? $cms_config_layouts[$layout][$field_name] : 0);
 		}
 
 		if (!defined('CMS_BLOCKS_LANG_INCLUDED'))
 		{
-			$include_lang = $config['default_lang'];
-			if(!@file_exists(IP_ROOT_PATH . 'language/lang_' . $include_lang . '/lang_blocks.' . PHP_EXT))
-			{
-				$include_lang = 'english';
-			}
-			include_once(IP_ROOT_PATH . 'language/lang_' . $include_lang . '/lang_blocks.' . PHP_EXT);
+			// We add lang_user_created again here to make sure we override lang_blocks var with customized ones without having to edit lang_blocks directly...
+			setup_extra_lang(array('lang_blocks', 'lang_user_created'));
 			define('CMS_BLOCKS_LANG_INCLUDED', true);
 		}
 
@@ -180,7 +196,7 @@ class ip_cms
 					" . $this->tables['block_settings_table'] . " AS s
 					WHERE b.layout = " . $layout . "
 					AND b.active = 1
-					AND " . $db->sql_in_set('s.view', $this->cms_blocks_view()) . "
+					AND " . $db->sql_in_set('s.view', $this->cms_auth_view()) . "
 					AND b.bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
 					AND b.bs_id = s.bs_id
 					ORDER BY b.bposition ASC, b.layout ASC, b.layout_special ASC, b.weight ASC";
@@ -191,7 +207,7 @@ class ip_cms
 					FROM " . $this->tables['blocks_table'] . "
 					WHERE layout = " . $layout . "
 					AND active = 1
-					AND " . $db->sql_in_set('view', $this->cms_blocks_view()) . "
+					AND " . $db->sql_in_set('view', $this->cms_auth_view()) . "
 					AND bposition NOT IN ('gh','gf','gt','gb','gl','gr','hh','hl','hc','fc','fr','ff')
 					ORDER BY bposition ASC, layout ASC, layout_special ASC, weight ASC";
 			}
@@ -260,6 +276,7 @@ class ip_cms
 					$temp_pos = 'tt';
 					break;
 			}
+			$config['cms_block_pos'] = $temp_pos;
 			if ($is_special && !$global_blocks)
 			{
 				$sql_where = "AND layout_special = " . $layout;
@@ -297,7 +314,7 @@ class ip_cms
 				WHERE layout = 0
 				" . $sql_where . "
 				AND active = 1
-				AND " . $db->sql_in_set('view', $this->cms_blocks_view()) . "
+				AND " . $db->sql_in_set('view', $this->cms_auth_view()) . "
 				AND bposition = '" . $temp_pos . "'
 				ORDER BY layout ASC, weight ASC";
 			$block_im_result = $db->sql_query($sql, 0, 'cms_blocks_', CMS_CACHE_FOLDER);
@@ -350,15 +367,16 @@ class ip_cms
 
 				$block_name = $block_info[$b_counter]['blockfile'];
 
-				if(($block_info[$b_counter]['local'] == 1) && !empty($lang['Title_' . $block_name]))
+				if(($block_info[$b_counter]['local'] == 1) && !empty($lang['cms_block_' . $block_name]))
 				{
-					$title_string = $lang['Title_' . $block_name];
+					$title_string = $lang['cms_block_' . $block_name];
 				}
 				else
 				{
 					$title_string = $block_info[$b_counter]['title'];
 				}
 
+				$content_type = 'block';
 				if(!empty($block_info[$b_counter]['blockfile']))
 				{
 					$block_handle = $block_name . '_block_' . $block_info[$b_counter]['bid'];
@@ -369,10 +387,14 @@ class ip_cms
 				}
 				else
 				{
+					$content_type = 'text';
 					$message = $block_info[$b_counter]['content'];
 					if($block_info[$b_counter]['type'] == true)
 					{
-						@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+						if (!class_exists('bbcode') || empty($bbcode))
+						{
+							@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+						}
 						//$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
 						$bbcode->allow_html = false;
 						$bbcode->allow_bbcode = true;
@@ -390,10 +412,21 @@ class ip_cms
 					$output_block = $message;
 				}
 
+				$b_admin_vars = array();
+				if ($is_admin || !empty($user->data['user_cms_auth']['cmsb_admin'][$block_id]))
+				{
+					$b_admin_vars = array(
+						'B_ADMIN' => true,
+						'B_EDIT_LINK' => append_sid(CMS_PAGE_CMS . '?mode=block_settings&amp;action=edit&amp;bs_id=' . $block_id . '&amp;sid=' . $user->data['session_id']),
+					);
+				}
+
 				$block_handle = 'block_' . $block_info[$b_counter]['bid'];
 				$template->set_filenames(array($block_handle => $empty_block_tpl));
+				$template->assign_vars($b_admin_vars);
 				$template->assign_vars(array(
 					'POSITION' => $position,
+					'CONTENT_TYPE' => $content_type,
 					'OUTPUT' => $output_block,
 					'TITLE_CONTENT' => (($title_string == '') ? '&nbsp;' : $title_string),
 					'TITLE' => (($block_info[$b_counter]['titlebar'] == 1) ? true : false),
@@ -402,12 +435,12 @@ class ip_cms
 					)
 				);
 				$cms_block = $template->get_var_from_handle($block_handle);
+				$template->assign_block_vars($position_prefix . 'blocks_row', $b_admin_vars);
 				$template->assign_block_vars($position_prefix . 'blocks_row', array(
 					'CMS_BLOCK' => $cms_block,
 					'OUTPUT' => $output_block
 					)
 				);
-
 			}
 		}
 		return true;

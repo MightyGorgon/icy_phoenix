@@ -27,21 +27,22 @@ $sid = request_var('sid', '');
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
 // session id check
 if (($sid == '') || ($sid != $user->data['session_id']))
 {
-	message_die(GENERAL_ERROR, 'Invalid_session');
+	message_die(GENERAL_ERROR, 'INVALID_SESSION');
 }
 
 // Obtain initial var settings
 $user_id = request_var(POST_USERS_URL, 0);
 if (empty($user_id))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 $profiledata = get_userdata($user_id);
@@ -403,16 +404,20 @@ if (sizeof($attachments) > 0)
 }
 
 // Generate Pagination
+$pagination = '&nbsp;';
+$page_number = '&nbsp;';
+
 if ($do_pagination && $total_rows > $config['topics_per_page'])
 {
-	$pagination = generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $user->data['session_id'], $total_rows, $config['topics_per_page'], $start).'&nbsp;';
-
-	$template->assign_vars(array(
-		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_rows / $config['topics_per_page'])),
-		'L_GOTO_PAGE' => $lang['Goto_page'])
-	);
+	$pagination = generate_pagination(IP_ROOT_PATH . 'uacp.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order . '&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;sid=' . $user->data['session_id'], $total_rows, $config['topics_per_page'], $start);
+	$page_number = sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_rows / $config['topics_per_page']));
 }
+$template->assign_vars(array(
+	'PAGINATION' => $pagination,
+	'PAGE_NUMBER' => $page_number,
+	'L_GOTO_PAGE' => $lang['Goto_page']
+	)
+);
 
 full_page_generation('uacp_body.tpl', $lang['User_acp_title'], '', '');
 

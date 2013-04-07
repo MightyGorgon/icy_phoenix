@@ -16,7 +16,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin(false);
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -53,14 +53,13 @@ else
 }
 $schriftheight += 2;
 
-
 $text = stripslashes($text);
 $text = str_replace('&lt;', '<', $text);
 $text = str_replace('&gt;', '>', $text);
 
 while(substr_count($text, '<'))
 {
-	$text = @ereg_replace(substr($text, strpos($text, '<'), (strpos($text, '>') - strpos($text, '<') + 1)), '', $text);
+	$text = str_replace(substr($text, strpos($text, '<'), (strpos($text, '>') - strpos($text, '<') + 1)), '', $text);
 }
 
 if(!$text)

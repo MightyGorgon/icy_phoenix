@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1200_Forums']['125_Permissions_Forum'] = $file;
+	$module['1200_Forums']['125_Permissions_Forum'] = $filename;
 	return;
 }
 
@@ -140,7 +140,7 @@ if(empty($forum_id))
 	// Output the selection table if no forum id was specified
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_select_body.tpl'));
 
-	$select_list = make_forum_select(POST_FORUM_URL, false, '', true);
+	$select_list = ip_make_forum_select(POST_FORUM_URL, false, '', true);
 
 	$template->assign_vars(array(
 		'L_AUTH_TITLE' => $lang['Auth_Control_Forum'],
@@ -280,10 +280,10 @@ else
 
 }
 
-include('./page_header_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

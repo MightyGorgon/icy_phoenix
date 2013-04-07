@@ -44,7 +44,7 @@ if (!$user->data['session_logged_in'])
 	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_PROFILE . '&mode=email&' . POST_USERS_URL . '=' . $user_id_dest, true));
 }
 
-$sql = "SELECT username, user_email, user_viewemail, user_lang, user_level
+$sql = "SELECT username, user_email, user_allow_viewemail, user_lang, user_level
 	FROM " . USERS_TABLE . "
 	WHERE user_id = $user_id_dest";
 $result = $db->sql_query($sql);
@@ -65,7 +65,7 @@ if ($row = $db->sql_fetchrow($result))
 		}
 	}
 
-	if ($row['user_viewemail'] || ($user->data['user_level'] == ADMIN))
+	if ($row['user_allow_viewemail'] || ($user->data['user_level'] == ADMIN))
 	{
 		check_flood_email(false);
 
@@ -151,7 +151,7 @@ if ($row = $db->sql_fetchrow($result))
 
 		$link_name = $lang['Send_email_msg'];
 		$nav_server_url = create_server_url();
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 
 		make_jumpbox(CMS_PAGE_VIEWFORUM);
 

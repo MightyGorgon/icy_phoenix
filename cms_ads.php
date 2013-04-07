@@ -19,20 +19,18 @@ include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
 $config['jquery_ui'] = true;
 
+// Start session management
+$user->session_begin();
+$auth->acl($user->data);
+$user->setup();
+// End session management
+
 $cms_admin = new cms_admin();
 $cms_admin->root = CMS_PAGE_CMS;
 //$cms_admin->init_vars($mode_array, $action_array);
 
-// Start session management
-$user->session_begin();
-//$auth->acl($user->data);
-$user->setup();
-// End session management
-
 include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
 $class_form = new class_form();
-
-setup_extra_lang(array('lang_admin', 'lang_cms'));
 
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
@@ -83,22 +81,6 @@ if ($update)
 	$mode = 'update';
 }
 
-$cms_ajax = request_var('cms_ajax', '');
-$cms_ajax = (empty($cms_ajax) && (($_COOKIE['cms_ajax'] == 'true') || ($_COOKIE['cms_ajax'] == 'false')) ? $_COOKIE['cms_ajax'] : $cms_ajax);
-$cms_ajax = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
-if (($cms_ajax && ($_COOKIE['cms_ajax'] != 'true')) || (!$cms_ajax && ($_COOKIE['cms_ajax'] != 'false')))
-{
-	@setcookie('cms_ajax', ($cms_ajax ? 'true' : 'false'), time() + 31536000);
-}
-$config['cms_style'] = $cms_ajax ? 1 : 0;
-$cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$template->assign_vars(array(
-	'U_CMS_AJAX_SWITCH' => append_sid(CMS_PAGE_CMS . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
-	'L_CMS_AJAX_SWITCH' => !empty($cms_ajax) ? $lang['CMS_AJAX_DISABLE'] : $lang['CMS_AJAX_ENABLE'],
-	)
-);
-
 $ad_id = request_var('ad_id', 0);
 $ad_title = request_var('ad_title', '', true);
 $ad_text = request_var('ad_text', '', true);
@@ -113,21 +95,10 @@ $ad_sort_by_array = array('ad_position', 'ad_id', 'ad_title', 'ad_auth', 'ad_for
 $ad_sort_by = in_array($ad_sort_by, $ad_sort_by_array) ? $ad_sort_by : $ad_sort_by_array[0];
 $ad_sort_order = request_var('sort_order', '');
 
-$show_cms_menu = (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
-	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
-
-if ($config['cms_dock'])
-{
-	$template->assign_block_vars('cms_dock_on', array());
-}
-else
-{
-	$template->assign_block_vars('cms_dock_off', array());
-}
 
 /* TABS - BEGIN */
 $cms_admin->generate_tabs('ads');
@@ -291,9 +262,10 @@ else
 		)
 	);
 
+	$row_class = '';
 	for ($i = 0; $i < sizeof($ad_positions_array); $i++)
 	{
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 		$template->assign_block_vars('ads_cfg', array(
 			'ROW_CLASS' => $row_class,
 			'AD_CFG' => $ad_positions_lang_array[$i],
@@ -313,11 +285,12 @@ else
 		ORDER BY " . $sql_sort;
 	$result = $db->sql_query($sql);
 
+	$row_class = '';
 	$i = 0;
 	while($row = $db->sql_fetchrow($result))
 	{
 		$i++;
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 
 		$ad_auth_lang = $lang['AD_AUTH_GUESTS'];
 		switch ($row['ad_auth'])

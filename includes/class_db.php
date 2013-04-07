@@ -27,7 +27,7 @@ class class_db
 	*/
 	function get_items($n_items, $start, $sort_order, $sort_dir, $sql_select_extra = '', $sql_from_extra = '', $sql_where_extra = '', $filter_item = '', $filter_item_value = '')
 	{
-		global $db;
+		global $db, $cache;
 
 		$sql_filter_by = (!empty($filter_item) ? (" WHERE i." . $filter_item . " = " . $db->sql_validate_value($filter_item_value) . " ") : '');
 		$sql_order_by = (!empty($sort_order) ? ((" ORDER BY i." . $sort_order . " ") . (!empty($sort_dir) ? ($sort_dir . " ") : '')) : '');
@@ -52,7 +52,7 @@ class class_db
 	*/
 	function get_item($item_id, $sql_select_extra = '', $sql_from_extra = '', $sql_where_extra = '')
 	{
-		global $db;
+		global $db, $cache;
 
 		$sql_where_extra = (!empty($sql_where_extra) ? (" AND " . $sql_where_extra) : '');
 
@@ -74,7 +74,7 @@ class class_db
 	*/
 	function insert_item($inputs_array)
 	{
-		global $db;
+		global $db, $cache;
 
 		$sql = "INSERT INTO " . $this->main_db_table . " " . $db->sql_build_insert_update($inputs_array, true);
 		$result = $db->sql_query($sql);
@@ -87,7 +87,7 @@ class class_db
 	*/
 	function update_item($item_id, $inputs_array)
 	{
-		global $db;
+		global $db, $cache;
 
 		$sql = "UPDATE " . $this->main_db_table . " SET
 			" . $db->sql_build_insert_update($inputs_array, false) . "
@@ -102,7 +102,7 @@ class class_db
 	*/
 	function delete_item($item_id)
 	{
-		global $db;
+		global $db, $cache;
 
 		$sql = "DELETE FROM " . $this->main_db_table . " WHERE " . $this->main_db_item . " = " . $item_id;
 		$result = $db->sql_query($sql);
@@ -113,11 +113,14 @@ class class_db
 	/*
 	* Get total items
 	*/
-	function get_total_items()
+	function get_total_items($sql_where_extra = '', $filter_item = '', $filter_item_value = '')
 	{
-		global $db;
+		global $db, $cache;
 
-		$sql = "SELECT COUNT(*) AS total FROM " . $this->main_db_table;
+		$sql_filter_by = (!empty($filter_item) ? (" WHERE " . $filter_item . " = " . $db->sql_validate_value($filter_item_value) . " ") : '');
+		$sql_where_extra = (!empty($sql_where_extra) ? ((empty($sql_filter_by) ? " WHERE " : " AND ") . $sql_where_extra) : '');
+
+		$sql = "SELECT COUNT(*) AS total FROM " . $this->main_db_table . $sql_filter_by . $sql_where_extra;
 		$result = $db->sql_query($sql);
 
 		$total_items = 0;
@@ -135,7 +138,7 @@ class class_db
 	*/
 	function change_items_order($item_id, $item_order_field, $move)
 	{
-		global $db;
+		global $db, $cache;
 
 		$move = ($move == 1) ? 1 : 0;
 		$order = ($move == 1) ? 'DESC' : 'ASC';

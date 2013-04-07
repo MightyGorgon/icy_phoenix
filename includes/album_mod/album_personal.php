@@ -31,11 +31,13 @@ if (!defined('IN_ICYPHOENIX'))
 // ------------------------------------------------------------------------
 // Get the name of this user
 // ------------------------------------------------------------------------
-$username = album_get_user_name($album_user_id);
-if (empty($username))
+$album_user = album_get_user($album_user_id);
+if (empty($album_user))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
+$username = $album_user['username'];
 
 $moderators_list = empty($moderators_list) ? $username : ',' . $username;
 
@@ -142,7 +144,7 @@ if ($album_view_mode != ALBUM_VIEW_ALL)
 	{
 		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+		$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
 	$cat_ids = $cat_id;
@@ -157,7 +159,7 @@ else
 	{
 		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+		$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
 	if (album_get_personal_root_id($album_user_id) != $cat_id)
@@ -208,7 +210,7 @@ if ($total_pics == 0)
 	{
 		$ext_address = ALBUM_NAV_ARROW . '<a href="' . append_sid(album_append_uid('album.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">' . sprintf($lang['Personal_Gallery_Of_User'], $username) . '</a>';
 		$album_nav_cat_desc .= $ext_address;
-		$breadcrumbs_address .= $ext_address;
+		$breadcrumbs['address'] .= $ext_address;
 	}
 }
 
@@ -297,11 +299,14 @@ if ($total_pics == 0)
 	if (($album_config['personal_show_recent_instead_of_nopics'] == 1) && ($total_pics > 0))
 	{
 		album_build_recent_pics($allowed_cat);
+		$template->assign_vars(array('S_NO_PICS' => '1'));
 	}
 	else
 	{
+		$total_pics = 0;
 		$template->assign_block_vars('index_pics_block', array());
 		$template->assign_block_vars('index_pics_block.no_pics', array());
+		$template->assign_vars(array('S_NO_PICS' => '1'));
 	}
 
 	if (($is_root_cat) && (!$has_sub_cats))
@@ -405,6 +410,8 @@ $template->assign_vars(array(
 	'ALBUM_NAVIGATION_ARROW' => ALBUM_NAV_ARROW,
 	'NAV_CAT_DESC' => $album_nav_cat_desc,
 
+	'ALBUM_AUTHOR_AVATAR' => user_get_avatar($album_user['user_id'], $album_user['user_level'], $album_user['user_avatar'], $album_user['user_avatar_type'], $album_user['user_allowavatar']),
+
 	'L_PERSONAL_GALLERY_EXPLAIN' => $lang['Personal_Gallery_Explain'],
 
 	'L_MODERATORS' => $lang['Moderators'],
@@ -455,6 +462,7 @@ $template->assign_vars(array(
 
 	'S_COLS' => $album_config['cols_per_page'],
 	'S_COL_WIDTH' => (100 / $album_config['cols_per_page']) . '%',
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 	'L_VIEW' => $lang['View'],
 	'L_PIC_CAT' => $lang['Pic_Cat'],

@@ -82,6 +82,6 @@ echo '<h1>PHP Info</h1>';
 echo $lang['Php_Info_Explain'] . '<br /><br />';
 echo $output;
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

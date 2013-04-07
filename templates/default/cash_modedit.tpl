@@ -2,7 +2,7 @@
 
 <form action="{S_MODEDIT_ACTION}" method="post">
 {IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th colspan="2" nowrap="nowrap">{TITLE}</th></tr>
+<tr><th colspan="2" nowrap="nowrap">{CASH_TITLE}</th></tr>
 <tr>
 	<td class="cat" width="30%" align="center"><b><span class="gen">{L_AMOUNT}</span></b></td>
 	<td class="cat" width="70%" align="center"><b><span class="gen">{L_MESSAGE}</span></b></td>

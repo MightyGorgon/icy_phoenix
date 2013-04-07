@@ -21,7 +21,7 @@ define('AJAX_HEADERS', true);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -116,10 +116,10 @@ switch ($mode)
 			AJAX_message_die($result_ar);
 			exit;
 		}
-		if (($cat > 0) && !empty($_POST['list_' . $cat]))
+		if (($cat > 0) && !empty($_POST['item']))
 		{
 			$item_order = 0;
-			foreach($_POST['list_' . $cat] as $menu_item_id)
+			foreach($_POST['item'] as $menu_item_id)
 			{
 				$item_order++;
 				$sql = "UPDATE " . CMS_NAV_MENU_TABLE . " SET menu_order = '" . $item_order . "' WHERE menu_item_id = '" . $menu_item_id . "'";
@@ -148,13 +148,15 @@ switch ($mode)
 		}
 		if (!empty($_POST['item']))
 		{
+			$db->sql_transaction();
 			$item_order = 0;
 			foreach($_POST['item'] as $module_item_id)
 			{
 				$item_order++;
-				$sql = "UPDATE " . MODULES_TABLE . " SET display_order = '" . ($item_order * 10) . "' WHERE module_id = '" . $module_item_id . "'";
+				$sql = "UPDATE " . STATS_MODULES_TABLE . " SET display_order = '" . ($item_order * 10) . "' WHERE module_id = '" . $module_item_id . "'";
 				$result = $db->sql_query($sql);
 			}
+			$db->sql_transaction('commit');
 		}
 		else
 		{
@@ -178,6 +180,7 @@ switch ($mode)
 		}
 		if (!empty($_POST['item']))
 		{
+			$db->sql_transaction();
 			$item_order = 0;
 			foreach($_POST['item'] as $smiley_item_id)
 			{
@@ -185,6 +188,7 @@ switch ($mode)
 				$sql = "UPDATE " . SMILIES_TABLE . " SET smilies_order = '" . $item_order . "' WHERE smilies_id = '" . $smiley_item_id . "'";
 				$result = $db->sql_query($sql);
 			}
+			$db->sql_transaction('commit');
 			$cache->destroy('_smileys');
 			$db->clear_cache('smileys_');
 		}

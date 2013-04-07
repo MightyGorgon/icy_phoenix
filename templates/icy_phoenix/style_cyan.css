@@ -151,8 +151,6 @@ hr {
 .forum-buttons2 a, .forum-buttons2 a:visited { color: #336699; font-weight: bold; text-decoration: none; }
 .forum-buttons2 a:hover, .forum-buttons2 a:active { color: #dd2222; font-weight: bold; text-decoration: none; }
 
-.header-search { padding: 5px; }
-
 /* footer */
 #copyright {
 	padding-left: 4px;
@@ -865,6 +863,8 @@ li.code-row-first {
 	border-top: none;
 }
 
+code, code.inline { color: #225599; background-color: #ffffff; border: 1px solid #009900; }
+
 /* inputs */
 .helpline {
 	background-color: #f8f8f8;
@@ -969,7 +969,7 @@ select option {
 input.search:hover, input.search:focus, input.search:active, input.search {
 	background-image: url('images/cyan/icon_textbox_search.gif');
 	background-repeat: no-repeat;
-	background-position: left 1px;
+	background-position: left center;
 	padding-left: 17px;
 }
 
@@ -996,31 +996,6 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 }
 
 /* News Block */
-.forumline .news-header, .forumlinenb .news-header {
-	background: #c8c8c8 url('images/cyan/bg_th.gif');
-	border: solid 1px #dddddd;
-	border-right-color: #dddddd;
-	border-bottom-color: #dddddd;
-	padding: 0;
-	text-align: left;
-	vertical-align: top;
-	height: 27px;
-}
-
-.forumline .news-header span, .forumlinenb .news-header span {
-	background: url('images/cyan/little_box.gif') no-repeat left;
-/* MG XMas */
-	/*background: url('images/cyan/xmas/little_box.gif') top left no-repeat;*/
-/* MG XMas */
-	padding-left: 24px;
-	color: #225599;
-	display: block;
-	padding-top: 6px;
-	font-weight: bold;
-	font-size: 12px;
-	line-height: 1.5em;
-}
-
 .row-news-tickers b { color: #225599; }
 
 .copyright {
@@ -1038,49 +1013,16 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 	color: #225599;
 }
 
-.activity-links {
-	color: #888888;
-	text-align: right;
-	background: #ffffff url('images/cyan/bg_nav2.gif') top left repeat-x;
-	padding: 8px 30px 0px 10px;
-	font-size: 10px;
-	line-height: 1.4em;
-}
-
-.activity-links-left {
-	position: relative;
-	float: left;
-	text-align: left;
-}
-
 /* edit notes */
-.post-notes {
-	/*
-	display: block;
-	clear: both;
-	vertical-align: bottom;
-	*/
-	border: solid 1px #999999;
-	padding: 0px;
-	margin-top: 3px;
-	background-color: #f8f8f8;
-}
-
-.post-note {
-	background-color: #f4f8fb;
-	border: solid 1px #ffffff;
-	border-right-color: #dddddd;
-	border-bottom-color: #dddddd;
-	text-align: left;
-	font-size: 10px;
-	color: #666666;
-	padding: 2px;
-}
-
+.post-notes { /* display: block; clear: both; vertical-align: bottom; */ border: solid 1px #999999; padding: 0px; margin-top: 3px; background-color: #f8f8f8; }
+.post-note { background-color: #f4f8fb; border: solid 1px #ffffff; border-right-color: #dddddd; border-bottom-color: #dddddd; text-align: left; font-size: 10px; color: #666666; padding: 2px; }
 .post-note a, .post-note a:visited { color: #666666; text-decoration: underline; }
-
 .post-note a:hover, .post-note a:active { color: #336699; text-decoration: underline; }
-
 .post-note-delete { float: right; }
 
 .extra-top-padding { padding-top: 1px; }
+
+.chat-tabs a { background-color: #fafafa !important; border: 1px solid #666666 !important; }
+.chat-tabs a.active { background-color: #e7e7e7 !important; border: 1px solid #ff5500 !important; }
+.chat-tabs a.new-shout { background-color: #e7e7e7 !important; border: 2px solid #dd2222 !important; }
+

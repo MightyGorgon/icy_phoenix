@@ -35,11 +35,15 @@ if (empty($lang) || !is_array($lang))
 $lang['BBC_IP_CREDITS_STATIC'] = '
 <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="http://www.icyphoenix.com/images/logo_ip.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br />
 <span style="color: #dd2222;"><b>Mighty Gorgon</b></span>&nbsp;<i>(Luca Libralato)</i><br />
-<b><i>Developer</i></b><br />
+<b><i>Project Manager And Main Developer</i></b><br />
 <br />
 <br />
-<span style="color: #ff5500;"><b>hpl</b></span><br />
-<b><i>Junior Developer</i></b><br />
+<span style="color: #dd2222;"><b>The Steffen</b></span><br />
+<b><i>Site Administrator</i></b><br />
+<br />
+<br />
+<span style="color: #228822;"><b>Joshua203</b></span><br />
+<b><i>Staff Leader</i></b><br />
 <br />
 <br />
 <span style="color: #ff5500;"><b>KasLimon</b></span><br />
@@ -50,32 +54,39 @@ $lang['BBC_IP_CREDITS_STATIC'] = '
 <b><i>Junior Developer</i></b><br />
 <br />
 <br />
+<span style="color: #ff5500;"><b>jhl</b></span><br />
+<b><i>Junior Developer</i></b><br />
+<br />
+<br />
 <b><i>Valued Contributors</i></b><br />
-<span style="color: #228822;"><b>Andrea75</b></span><br />
-<span style="color: #dd2222;"><b>Artie</b></span><br />
-<span style="color: #dd2222;"><b>Bicet</b></span>&nbsp;<i>(phpBB XS Developer)</i><br />
-<span style="color: #0000bb;"><b>brandsrus</b></span><br />
-<span style="color: #228822;"><b>buldo</b></span><br />
-<span style="color: #228822;"><b>casimedicos</b></span><br />
-<span style="color: #228822;"><b>Chaotic</b></span><br />
-<span style="color: #dd2222;"><b>CyberAlien</b></span><br />
-<span style="color: #228822;"><b>difus</b></span><br />
+<span style="color: #dd2222;"><b>Andrea75</b></span><br />
+<span style="color: #228822;"><b>Artie</b></span><br />
+<span style="color: #ff5500;"><b>Bicet</b></span>&nbsp;<i>(phpBB XS Developer)</i><br />
+<span style="color: #880088;"><b>brandsrus</b></span><br />
+<span style="color: #dd2222;"><b>buldo</b></span><br />
+<span style="color: #880088;"><b>casimedicos</b></span><br />
+<span style="color: #880088;"><b>Chaotic</b></span><br />
+<span style="color: #ff5500;"><b>CyberAlien</b></span>&nbsp;<i>(Many Contributions)</i><br />
+<span style="color: #880088;"><b>difus</b></span><br />
 <span style="color: #228822;"><b>DWho</b></span><br />
-<span style="color: #228822;"><b>fracs</b></span><br />
+<span style="color: #880088;"><b>fracs</b></span><br />
 <span style="color: #880088;"><b>ganesh</b></span><br />
-<span style="color: #228822;"><b>JANU1535</b></span><br />
+<span style="color: #880088;"><b>Hans</b></span><br />
+<span style="color: #ff5500;"><b>hpl</b></span>&nbsp;<i>(Junior Developer)</i><br />
+<span style="color: #880088;"><b>JANU1535</b></span><br />
 <span style="color: #880088;"><b>jz</b></span><br />
 <span style="color: #aaff00;"><b>KugeLSichA</b></span><br />
 <span style="color: #0000bb;"><b>Limun</b></span><br />
 <span style="color: #880088;"><b>Lopalong</b></span><br />
-<span style="color: #228822;"><b>moreteavicar</b></span><br />
-<span style="color: #228822;"><b>novice programmer</b></span><br />
-<span style="color: #228822;"><b>ThE KuKa</b></span><br />
-<span style="color: #ff7700;"><b>TheSteffen</b></span><br />
-<span style="color: #0000bb;"><b>Tom</b></span><br />
+<span style="color: #880088;"><b>moreteavicar</b></span><br />
+<span style="color: #880088;"><b>mort</b></span><br />
+<span style="color: #880088;"><b>novice programmer</b></span><br />
+<span style="color: #dd2222;"><b>ThE KuKa</b></span><br />
+<span style="color: #880088;"><b>Tom</b></span><br />
+<span style="color: #228822;"><b>TopoMotoV3X</b></span><br />
 <span style="color: #aaff00;"><b>TuningBEB2008</b></span><br />
-<span style="color: #228822;"><b>z3d0</b></span><br />
-<span style="color: #228822;"><b>Zuker</b></span><br />
+<span style="color: #880088;"><b>z3d0</b></span><br />
+<span style="color: #880088;"><b>Zuker</b></span><br />
 <br />
 ';
 
@@ -169,6 +180,7 @@ $lang = array_merge($lang, array(
 	'Click_return_profile' => 'Click %sHere%s to return to User Profile',
 	'Click_return_preferences' => 'Click %sHere%s to return to Preferences',
 	'Click_return_group' => 'Click %sHere%s to return to group information',
+	'Click_return_drafts' => 'Click %sHere%s to return to Drafts',
 	'Click_return_inbox' => 'Click %sHere%s to return to your Inbox',
 	'Click_view_message' => 'Click %sHere%s to view your message',
 	'Click_view_privmsg' => 'Click %sHere%s to visit your Inbox',
@@ -273,7 +285,6 @@ $lang = array_merge($lang, array(
 // Viewforum
 	'View_forum' => 'View Forum',
 
-	'Forum_not_exist' => 'The forum you selected does not exist.',
 	'Reached_on_error' => 'You have reached this page in error.',
 
 	'Display_topics' => 'Display topics from previous',
@@ -339,7 +350,6 @@ $lang = array_merge($lang, array(
 
 	'No_newer_topics' => 'There are no newer topics in this forum',
 	'No_older_topics' => 'There are no older topics in this forum',
-	'Topic_post_not_exist' => 'The topic or post you requested does not exist',
 	'No_posts_topic' => 'No posts exist for this topic',
 
 	'Display_posts' => 'Display posts from previous',
@@ -519,7 +529,6 @@ $lang = array_merge($lang, array(
 	'PM_disabled' => 'Private messaging has been disabled on this board.',
 	'Cannot_send_privmsg' => 'Sorry, but the administrator has prevented you from sending private messages.',
 	'No_to_user' => 'You must specify a username to whom to send this message.',
-	'No_such_user' => 'Sorry, but no such user exists.',
 
 	'Disable_HTML_pm' => 'Disable HTML in this message',
 	'Disable_ACRO_AUTO_pm' => 'Disable Acronyms and Autolinks in this message',
@@ -534,7 +543,7 @@ $lang = array_merge($lang, array(
 
 	'Notification_subject' => 'New Private Message has arrived!',
 
-	'Find_username' => 'Find a username',
+	'FIND_USERNAME' => 'Find a username',
 	'Find' => 'Find',
 	'No_match' => 'No matches found.',
 
@@ -574,7 +583,8 @@ $lang = array_merge($lang, array(
 	'Profile_info' => 'Profile Information',
 	'Profile_info_warn' => 'This information will be publicly viewable',
 	'Avatar_panel' => 'Avatar Control Panel',
-	'Avatar_gallery' => 'Avatar gallery',
+	'Avatar_gallery' => 'Avatar Gallery',
+	'NO_AVATAR_GALLERY' => 'No Avatar Gallery Available',
 
 	'Website' => 'Website',
 	'Location' => 'Location',
@@ -594,7 +604,6 @@ $lang = array_merge($lang, array(
 	'Search_user_posts' => 'Find all posts by %s', // Find all posts by username
 	'Search_user_topics_started' => 'Find all topics started by %s', // Find all topics started by username
 
-	'No_user_id_specified' => 'Sorry, but that user does not exist.',
 	'Wrong_Profile' => 'You cannot modify a profile that is not your own.',
 
 // Invision View Profile - BEGIN
@@ -610,7 +619,7 @@ $lang = array_merge($lang, array(
 	'Invision_Signature' => 'Signature',
 	'Invision_Website' => 'Home Page',
 	'Invision_Total_Posts' => 'Total Cumulative Posts',
-	'Invision_User_post_pct_stats' => '( %.2f%% of total forum posts )',
+	'Invision_User_post_pct_stats' => '(%.2f%% of total forum posts)',
 	'Invision_User_post_day_stats' => '%.2f posts per day',
 	'Invision_Search_user_posts' => 'Find all posts by this member',
 	'Invision_Posting_details' => 'Posting Details',
@@ -630,8 +639,8 @@ $lang = array_merge($lang, array(
 	'Always_notify' => 'Always notify me of replies',
 	'Always_notify_explain' => 'Sends an e-mail when someone replies to a topic you have posted in. This can be changed whenever you post.',
 
-	'Board_style' => 'Board Style',
-	'Board_lang' => 'Board Language',
+	'Board_style' => 'Style',
+	'Board_lang' => 'Language',
 	'No_themes' => 'No Themes In database',
 	'Timezone' => 'Timezone',
 	'Date_format' => 'Date format',
@@ -873,7 +882,7 @@ $lang = array_merge($lang, array(
 	'Not_Moderator' => 'You are not a moderator of this forum.',
 	'Not_Authorized' => 'Not Authorized',
 
-	'You_been_banned' => 'You have been banned from this forum.<br />Please contact the webmaster or board administrator for more information.',
+	'You_been_banned' => 'You have been banned from this website.<br />Please contact the webmaster or the administrator for more information.',
 
 // Viewonline
 	'Reg_users_zero_online' => 'There are 0 Registered users and ', // There are 5 Registered and
@@ -887,8 +896,8 @@ $lang = array_merge($lang, array(
 	'Guest_user_online' => 'There is %d Guest user online', // There is 1 Guest user online
 	'No_users_browsing' => 'There are no users currently browsing this forum',
 
-	'Online_explain' => 'This data is based on users active over the past ' . intval(ONLINE_REFRESH / 60) . ' minutes',
-	'Online_today' => 'This data is based on users active today',
+	'ONLINE_EXPLAIN' => 'This data is based on users active over the past ' . intval(ONLINE_REFRESH / 60) . ' minutes',
+	'ONLINE_TODAY' => 'This data is based on users active today',
 
 	'Forum_Location' => 'Forum Location',
 	'Last_updated' => 'Last Updated',
@@ -1305,10 +1314,6 @@ $lang = array_merge($lang, array(
 	'Confirm_delete_edit_note' => 'Are you sure you want to delete this edit note?',
 	'Edit_note_deleted' => 'The edit note was successfully deleted.',
 // End Edit Notes MOD
-//Referrers Mod
-	'Referrers' => 'Http Referrers',
-	'Viewing_Referrers' => 'Viewing Referrers',
-//Referrers Mod End
 
 	'Recent_topics' => 'Recent Topics',
 	'Recent_today' => 'Today',
@@ -1567,22 +1572,22 @@ $lang = array_merge($lang, array(
 	'Login_Hidden' => 'Hidden',
 	'Login_Visible' => 'Visible',
 	'Login_Default' => 'Default',
-	'Errors_Not_Found' => 'The requested address cannot be found on this server',
-	'Errors_000' => 'Unknown error',
-	'Errors_000_Full' => 'The requested address returns an unknown error code.<br />Errors have been registered to the log file and we will check what the problem is.',
-	'Errors_400' => 'Error 400',
-	'Errors_400_Full' => 'The requested address is not a valid address.',
-	'Errors_401' => 'Error 401 - Authorization Error',
-	'Errors_401_Full' => 'You are receiving this message because you are not authorized to access this address.',
-	'Errors_403' => 'Error 403',
-	'Errors_403_Full' => 'Access to this address is forbidden.',
-	'Errors_404' => 'Error 404 - File Not Found',
-	'Errors_404_Full' => 'The address you have requested is not available on this server. You may have misspelled the address, or what you are looking for may have been removed.',
-	'Errors_500' => 'Error 500 - Configuration error',
-	'Errors_500_Full' => 'The address you have requested returns a configuration error.<br />Errors have been registered to the log file, and we will check what the problem is as soon as possible.',
-	'Errors_Email_Subject' => 'Errors: ',
-	'Errors_Email_Addrress_Prefix' => 'xs_errors',
-	'Errors_Email_Body' => 'An error has occurred on your site. Please check the log file.',
+	'ERRORS_NOT_FOUND' => 'The requested address cannot be found on this server',
+	'ERRORS_000' => 'Unknown error',
+	'ERRORS_000_FULL' => 'The requested address returns an unknown error code.<br />Errors have been registered to the log file and we will check what the problem is.',
+	'ERRORS_400' => 'Error 400',
+	'ERRORS_400_FULL' => 'The requested address is not a valid address.',
+	'ERRORS_401' => 'Error 401 - Authorization Error',
+	'ERRORS_401_FULL' => 'You are receiving this message because you are not authorized to access this address.',
+	'ERRORS_403' => 'Error 403',
+	'ERRORS_403_FULL' => 'Access to this address is forbidden.',
+	'ERRORS_404' => 'Error 404 - File Not Found',
+	'ERRORS_404_FULL' => 'The address you have requested is not available on this server. You may have misspelled the address, or what you are looking for may have been removed.',
+	'ERRORS_500' => 'Error 500 - Configuration error',
+	'ERRORS_500_FULL' => 'The address you have requested returns a configuration error.<br />Errors have been registered to the log file, and we will check what the problem is as soon as possible.',
+	'ERRORS_EMAIL_SUBJECT' => 'Errors: ',
+	'ERRORS_EMAIL_ADDRRESS_PREFIX' => 'errors_management',
+	'ERRORS_EMAIL_BODY' => 'An error has occurred on your site. Please check the log file.',
 	'Remote_avatar_no_image' => 'The image %s does not exist',
 	'Remote_avatar_error_filesize' => 'The image is over the size limit for avatars (%d Bytes)',
 	'Remote_avatar_error_dimension' => 'The image is over the dimension limit for avatars (%d x %d pixels)',
@@ -1629,7 +1634,7 @@ $lang = array_merge($lang, array(
 	'Last_Used_IP' => 'Last Used IP',
 	'Last_Used_OS' => 'OS',
 	'Last_Used_Browser' => 'Browser',
-	'Last_Used_Referer' => 'Referrer',
+	'Last_Used_Referer' => 'Referer',
 // Mighty Gorgon - HTTP AGENTS - END
 // Mighty Gorgon - Enhanced Online - BEGIN
 	'Users_Admins' => 'Administrators',
@@ -1719,7 +1724,7 @@ $lang = array_merge($lang, array(
 	'LINK_DOWNLOADS' => 'Downloads',
 	'LINK_BOOKMARKS' => 'Bookmarks',
 	'LINK_DRAFTS' => 'Drafts',
-	'LINK_UPLOADED_IMAGES' => 'Uploaded Images',
+	'LINK_UPLOADED_IMAGES' => 'Personal Images',
 	'LINK_AJAX_SHOUTBOX' => 'Chat',
 	'LINK_LINKS' => 'Links',
 	'LINK_CONTACT_US' => 'Contact Us',
@@ -1734,7 +1739,7 @@ $lang = array_merge($lang, array(
 	'LINK_DIGESTS' => 'Digests',
 
 	'LINK_CREDITS' => 'Credits',
-	'LINK_REFERRERS' => 'HTTP Referrers',
+	'LINK_REFERERS' => 'HTTP Referers',
 	'LINK_VIEWONLINE' => 'Online Users',
 	'LINK_STATISTICS' => 'Statistics',
 	'LINK_DELETE_COOKIES' => 'Delete Cookies',
@@ -1787,14 +1792,14 @@ $lang = array_merge($lang, array(
 	'UserSport' => 'Sport/Team',
 	'UserMusic' => 'Music/Groups',
 	'UserNoInfo' => 'No Information Available',
-	'Last_Seen' => 'Last Online',
+	'LAST_SEEN' => 'Last Online',
 // New MG - END
 
 // MG CMS - BEGIN
 	'CMS_TITLE' => 'CMS',
 	'CMS_MANAGEMENT' => 'CMS Management',
-	'CMS_CONFIG' => 'CMS Configuration',
-	'CMS_SETTINGS' => 'CMS Settings',
+	'CMS_CONFIG' => 'Configuration',
+	'CMS_SETTINGS' => 'Settings',
 	'CMS_ACP' => 'Edit This Page',
 	'CUSTOM_PAGE' => 'Customized Page',
 // MG CMS - END
@@ -1802,7 +1807,7 @@ $lang = array_merge($lang, array(
 // Icy Phoenix - BUILD 001
 	'SimilarTopics' => 'Similar Topics',
 	'Chat' => 'Chat',
-	'Digests' => 'Digests',
+	'DIGESTS' => 'Digests',
 
 	'CPL_REG_INFO_EXPLAIN' => 'Username, email address and password',
 	'CPL_PROFILE_INFO_EXPLAIN' => 'General contacts information, messenger, birthday, interests and other information',
@@ -1834,7 +1839,8 @@ $lang = array_merge($lang, array(
 	'Shoutbox_no_auth' => 'Sorry, only registered users may use the shoutbox',
 	'Shoutbox_loading' => 'Loading Shoutbox...',
 // Errors
-	'Shoutbox_unable' => 'Sorry, the action couldn\'t be done. Please try again.',
+	'Shoutbox_unable' => 'Sorry, the action could not be performed. Please try again.',
+	'Shoutbox_timeout' => 'Sorry, the server is not responding. Please try again.',
 	'Shoutbox_empty' => 'No messages in Database',
 	'Shoutbox_no_mode' => 'No valid mode specified',
 // Archive
@@ -1851,6 +1857,13 @@ $lang = array_merge($lang, array(
 	'Online_guests' => 'Guests',
 	'Who_is_Chatting' => 'Who is Chatting',
 	'Shoutbox_online_explain' => 'This data is based on users active over the past thirty seconds',
+	'Start_Private_Chat' => 'Click on the name to start a private chat',
+// Chat rooms
+	'Shout_rooms' => 'Rooms',
+	'Admin_rooms' => 'All rooms',
+	'Public_room' => 'Public room',
+	'Private_room' => 'Private room',
+	'My_id' => 'Me',
 // Ajax Shoutbox - END
 
 	'Contact_us' => 'Contact Us',
@@ -1915,20 +1928,24 @@ $lang = array_merge($lang, array(
 	'Top_Visiting_Users' => 'Most Time Spent Users',
 /* lang_site_hist.php - END */
 
-/* lang_referrers.php - BEGIN */
-	'Referrers_Title' => 'Http Referrers Management',
-	'Referrers_Cleared' => 'Referrers Cleared',
-	'Referrers_Clear' => 'Delete All',
-	'Click_Return_Referrers' => 'Click %sHere%s to return to Referrers',
-	'Referrers' => 'Http Referrers',
-	'Referrer_host' => 'Referrer\'s Host',
-	'Referrer_url' => 'Referrer\'s Url',
-	'Referrer_ip' => 'Referrer\'s IP',
-	'Referrer_hits' => 'Hits',
-	'Referrer_first' => 'First Visit',
-	'Referrer_last' => 'Last Visit',
-	'Viewing_Referrers' => 'Viewing Referrers',
-/* lang_referrers.php - END */
+/* lang_referers.php - BEGIN */
+	'REFERERS' => 'Http Referers',
+	'VIEWING_REFERERS' => 'Viewing Referers',
+	'REFERERS_TITLE' => 'Http Referers Management',
+	'REFERERS_CLEARED' => 'Referers Cleared',
+	'REFERERS_CLEAR' => 'Delete All',
+	'CLICK_RETURN_REFERERS' => 'Click %sHere%s to return to Referers',
+	'REFERER_HOST' => 'Host',
+	'REFERER_URL' => 'URL',
+	'REFERER_T_URL' => 'Visited URL',
+	'REFERER_IP' => 'IP',
+	'REFERER_HITS' => 'Hits',
+	'REFERER_FIRST' => 'First Visit',
+	'REFERER_LAST' => 'Last Visit',
+	'REFERER_DELETE' => 'Delete',
+	'REFERER_KILL' => 'Remove from DB (use * for wildcard)',
+	'REFERER_GROUP_BY' => 'Group By',
+/* lang_referers.php - END */
 
 /* lang_prune_users.php - BEGIN */
 // add to prune inactive
@@ -1962,7 +1979,7 @@ $lang = array_merge($lang, array(
 
 	'Uploading' => 'Uploading...',
 	'Upload_Image_Local' => 'Upload Image',
-	'Uploaded_Images_Local' => 'Uploaded Images',
+	'Uploaded_Images_Local' => 'Personal Images',
 	'Upload_Image_Local_Explain' => 'Select the file to be uploaded',
 	'Uploaded_Image_Success' => 'The image has been uploaded successfully.',
 	'Uploaded_Image_BBC' => 'You can use this BBCode to post this image.',
@@ -1972,6 +1989,7 @@ $lang = array_merge($lang, array(
 	'Upload_File_Error_Size' => 'File size not allowed!',
 	'Upload_File_Error_Type' => 'File type not allowed!',
 	'Upload_File_Type_Allowed' => 'Only these file types may be uploaded',
+	'Upload_File_Max_Size' => 'The maximum single file size allowed is',
 	'Upload_Insert_Image' => 'Insert BBCode',
 	'Upload_Close' => 'Close',
 	'BBCode' => 'BBCode',
@@ -2274,7 +2292,6 @@ $lang = array_merge($lang, array(
 	// COMMON DB - BEGIN
 	'SELECT_SORT_METHOD' => 'Sort by',
 	'ORDER' => 'Sort method',
-	'SUBMIT' => 'Submit',
 	'DATE' => 'Date',
 	'USERID' => 'User ID',
 	'USERNAME' => 'Username',
@@ -2360,10 +2377,10 @@ $lang = array_merge($lang, array(
 	'LIKE_TIME' => 'Date',
 	'LIKE_RECAP' => 'Users who like this post',
 	'LIKE_COUNTER_YOU' => 'You like this post',
-	'LIKE_COUNTER_YOU_OTHERS_SINGLE' => 'You and another user like this post',
+	'LIKE_COUNTER_YOU_OTHERS_SINGLE' => 'You and %s user like this post',
 	'LIKE_COUNTER_YOU_OTHERS' => 'You and %s users like this post',
 	'LIKE_COUNTER_OTHERS' => '%s users like this post',
-	'LIKE_COUNTER_OTHERS_SINGLE' => 'One user likes this post',
+	'LIKE_COUNTER_OTHERS_SINGLE' => '%s user likes this post',
 
 	'FRIENDSHIP_STATUS' => 'Friendship status',
 	'FRIEND_ADD' => 'Add as a friend',
@@ -2396,6 +2413,65 @@ $lang = array_merge($lang, array(
 	'REPLIES' => 'Replies',
 	'SUBJECT' => 'Subject',
 	'VIEWS' => 'Views',
+
+	'INVALID' => 'Invalid data.',
+	'TOO_LARGE' => 'The value you entered is too large.',
+	'TOO_LONG' => 'The value you entered is too long.',
+	'TOO_SHORT' => 'The value you entered is too short.',
+	'TOO_SMALL' => 'The value you entered is too small.',
+	'WRONG_DATA' => 'Invalid data.',
+
+	'ATTACHMENTS' => 'Attachments',
+	'ERROR_NO_ATTACHMENT' => 'The file you are trying to download does not exist.',
+	'NO_FORUM' => 'The forum you selected does not exist.',
+	'NO_TOPIC' => 'The topic or post you requested does not exist.',
+	'NO_USER' => 'Sorry, but that user does not exist.',
+
+	'AJAX_SEARCH' => 'Search...',
+
+	'FLICKR' => 'Flickr',
+	'GOOGLEPLUS' => 'Google Plus',
+	'LINKEDIN' => 'LinkedIn',
+	'YOUTUBE' => 'YouTube',
+
+	'MOBILE_STYLE_ENABLE' => 'Enable Mobile Friendly Style',
+	'MOBILE_STYLE_DISABLE' => 'Disable Mobile Friendly Style',
+
+	'INVALID_SESSION' => 'Invalid session. If the problem persist, please contact an administrator.',
+
+	'BACK_TO_TOP' => 'Top',
+	'BACK_TO_PREV' => 'Back to previous page',
+
+	'CMS_EDIT_PARENT_BLOCK' => 'Edit Parent Block',
+
+	'UPI2DB_DISABLED' => 'UPI2DB Disabled',
+	'UPI2DB_LINK_U' => 'UPI2DB Unread',
+	'UPI2DB_LINK_M' => 'UPI2DB Marked',
+	'UPI2DB_LINK_P' => 'UPI2DB Permanent Read',
+	'UPI2DB_LINK_FULL' => 'UPI2DB Full Info',
+	'NEW_POSTS_LINK' => 'New Posts',
+	'LOGIN_LOGOUT_LINK' => 'Login/Logout',
+	'MENU_EMPTY_LINK' => 'Empty Link',
+
+	'IP_BLACKLISTED' => 'Your IP %s has been blocked because it is blacklisted. For details please see <a href="%s">%s</a>.',
+
+	'PRINTABLE_VERSION' => 'Printable Version',
+	'CHANGE_FONT_SIZE' => 'Change Font Size',
+	'CHANGE_PAGE_SIZE' => 'Change Page Size',
+
+	'FULL_EDITOR' => 'Switch to full Editor',
+
+	'SN_SHOW_POSTS' => 'Show posts text',
+	'SN_SHOW_TOPICS' => 'Show topics only',
+
+	'NOT_LOGGED_IN_VIEW_PAGE' => 'You must be logged in to view this page.',
+
+	'TAGS_SEARCH_REPLACE' => 'Search And Replace Tags',
+	'TAGS_SEARCH_REPLACE_SRC' => 'Tag to be replaced',
+	'TAGS_SEARCH_REPLACE_TGT' => 'New Tag',
+	'TAGS_SEARCH_REPLACE_RESULT' => '%s Tags have been replaced',
+
+	'UNABLE_TO_UPLOAD_AVATAR' => 'Unable to upload the image, make sure the image is not too big and of allowed type.',
 
 	)
 );
@@ -2574,6 +2650,14 @@ $lang['datetime'] = array(
 	'Thu' => 'Thu',
 	'Fri' => 'Fri',
 	'Sat' => 'Sat',
+
+	'SUN_S' => 'Su',
+	'MON_S' => 'Mo',
+	'TUE_S' => 'Tu',
+	'WED_S' => 'We',
+	'THU_S' => 'Th',
+	'FRI_S' => 'Fr',
+	'SAT_S' => 'Sa',
 
 	'January' => 'January',
 	'February' => 'February',

@@ -29,7 +29,7 @@ if (!defined('CASH_INCLUDE'))
 
 	// Cash Mod Constants
 	define('PERCHAR_DEC_BONUS',3);
-	define('CASH_LOG_ACTION_DELIMETER','@-@');
+	define('CASH_LOG_ACTION_DELIMITER','@-@');
 
 	define('CASH_EVENT_DELIM1','#');
 	define('CASH_EVENT_DELIM2','@');
@@ -272,7 +272,7 @@ function cash_array_chunk(&$array, $chunk_size)
 function cash_create_log($type, $action, $message = '')
 {
 	global $db;
-	$action = implode(CASH_LOG_ACTION_DELIMETER,$action);
+	$action = implode(CASH_LOG_ACTION_DELIMITER,$action);
 	$current_time = time();
 	$sql = "INSERT INTO " . CASH_LOGS_TABLE . "
 			(log_time, log_type, log_action, log_text)
@@ -288,12 +288,12 @@ function cash_clause($clause, $action)
 		// needs to survive the eval();
 		$clause = quoteslash($clause, '"');
 		$action = quoteslash($action, '"');
-		$action = explode(CASH_LOG_ACTION_DELIMETER, $action);
+		$action = explode(CASH_LOG_ACTION_DELIMITER, $action);
 		eval('$text = sprintf("' . $clause . '","' . implode('","', $action) . '");');
 	}
 	else
 	{
-		$action = explode(CASH_LOG_ACTION_DELIMETER,$action);
+		$action = explode(CASH_LOG_ACTION_DELIMITER,$action);
 		$text = call_user_func_array('sprintf',cash_array_merge(array($clause),$action));
 	}
 	$text = str_replace('&quot;','"',$text);

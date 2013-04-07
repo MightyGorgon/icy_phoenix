@@ -202,6 +202,11 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 {
 	global $tree, $template, $lang, $images, $user, $db, $cache, $config, $bbcode;
 
+	if (!class_exists('bbcode') || empty($bbcode))
+	{
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	}
+
 	// get some parameter
 	$topic_title_length = isset($config['calendar_title_length']) ? intval($config['calendar_title_length']) : 30;
 	$topic_text_length = isset($config['calendar_text_length']) ? intval($config['calendar_text_length']) : 200;
@@ -329,6 +334,19 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		$result = $db->sql_query($sql);
 	}
 
+	if (!class_exists('bbcode') || empty($bbcode))
+	{
+		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		if (empty($bbcode))
+		{
+			$bbcode = new bbcode();
+		}
+	}
+
+	$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0;
+	$bbcode->allow_bbcode = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0;
+	$bbcode->allow_smilies = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0;
+
 	// read the items
 	while ($row = $db->sql_fetchrow($result))
 	{
@@ -355,7 +373,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		$topic_title = censor_text($topic_title);
 		$message = censor_text($message);
 
-		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		$short_title = (strlen($topic_title) > $topic_title_length + 3) ? substr($topic_title, 0, $topic_title_length) . '...' : $topic_title;
 		// Convert and clean special chars!
 		$topic_title = htmlspecialchars_clean($topic_title);
@@ -363,7 +380,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		// SMILEYS IN TITLE - BEGIN
 		if ($config['smilies_topic_title'] && !$lofi)
 		{
-			$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
 			$topic_title = $bbcode->parse_only_smilies($topic_title);
 			$short_title = $bbcode->parse_only_smilies($short_title);
 		}
@@ -383,14 +399,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		{
 			$message = preg_replace('#(<)([\/]?.*?)(>)#is', "&lt;\\2&gt;", $message);
 		}
-
-		$html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
-		$bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
-		$smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
-
-		$bbcode->allow_html = $html_on;
-		$bbcode->allow_bbcode = $bbcode_on;
-		$bbcode->allow_smilies = $smilies_on;
 
 		$message = $bbcode->parse($message);
 
@@ -566,7 +574,7 @@ function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $y
 */
 function get_birthdays_list($year = 0, $year_lt = false, $month = 0, $day = 0, $day_end = 0, $limit = 0, $show_inactive = false)
 {
-	global $db;
+	global $db, $cache, $config;
 
 	$sql_where = '';
 	if ($year_lt == false)
@@ -676,8 +684,9 @@ function get_birthdays_list_full()
 			}
 		}
 
-		$expiry = create_date_midnight(time(), $config['board_timezone']) - time() + 86400;
-		$cache->put('_birthdays_list_' . $config['board_timezone'], $birthdays_list, $expiry);
+		$current_time = time();
+		$cache_expiry = create_date_midnight($current_time, $config['board_timezone']) - $current_time + 86400;
+		$cache->put('_birthdays_list_' . $config['board_timezone'], $birthdays_list, $cache_expiry);
 	}
 
 	return $birthdays_list;

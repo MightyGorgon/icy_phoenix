@@ -45,12 +45,12 @@ if(GetCookie(tmp) == '2')
 	</td>
 </tr>
 <!-- BEGIN switch_ac_online -->
-<tr><td class="row1" valign="middle"><span class="gensmall">{AC_LIST_TEXT}&nbsp;{AC_LIST}&nbsp;[&nbsp;<a href="{U_AJAX_SHOUTBOX_PP}" target="_blank">{L_AJAX_SHOUTBOX}</a>&nbsp;]</span></td></tr>
+<tr><td class="row1" valign="middle"><span class="gensmall">{AC_LIST_TEXT}&nbsp;{AC_LIST}&nbsp;[&nbsp;<a href="{U_AJAX_SHOUTBOX}" target="_blank">{L_AJAX_SHOUTBOX}</a>&nbsp;]</span></td></tr>
 <!-- END switch_ac_online -->
 <tr>
 	<td class="row1">
 		<span class="gensmall">
-		{L_Online_today}<br />
+		{L_ONLINE_TODAY}<br />
 		{L_USERS_TODAY}{L_USERS_LASTHOUR}<br />
 		{ADMINS_TODAY_LIST}<br />
 		{MODS_TODAY_LIST}<br />
@@ -178,8 +178,8 @@ if(GetCookie(tmp) == '2')
 <!-- ENDIF -->
 
 <br />
-<div class="center-block" style="text-align:center;margin:30px;">
-{IMG_TBL}<table class="forumlinenb" style="padding:2px;border-top-width:1px;" width="100%" cellspacing="0" cellpadding="2">
+<div class="center-block" style="text-align: center; margin: 30px;">
+{IMG_TBL}<table class="forumlinenb" style="padding: 2px; border-top-width: 1px;" width="100%" cellspacing="0" cellpadding="2">
 <tr>
 	<td class="row-center-small"><img src="{FORUM_NEW_CAT_IMG}" alt="{L_CAT_NEW_POSTS}" title="{L_CAT_NEW_POSTS}" /></td>
 	<td class="row-center-small" width="11%">{L_CAT_NEW_POSTS}</td>

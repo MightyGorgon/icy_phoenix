@@ -16,7 +16,7 @@
 	<![endif]-->
 </head>
 <body>
-<a name="top"></a>
+<a name="top" id="top"></a>
 <div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
 <div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
@@ -39,7 +39,7 @@
 
 <!-- CONTENT BEGIN -->
 		<table cellspacing="0" cellpadding="0" width="100%" class="forumline">
-		<tr><td class="row-header" colspan="3"><span>Icy Phoenix 1.3</span></td></tr>
+		<tr><td class="row-header" colspan="3"><span>Icy Phoenix 2.0</span></td></tr>
 		<tr><th><span>Table Of Contents</span></th></tr>
 		<tr>
 			<td class="row-post" colspan="3">
@@ -49,10 +49,12 @@
 					<li><a href="#license">License</a></li>
 					<li><a href="#requirements">Requirements</a></li>
 					<li><a href="#fresh_installation">Fresh Installation</a></li>
-					<li><a href="#upgrade_phpbb">Upgrade from phpBB 2.0.x</a></li>
-					<li><a href="#upgrade_xs">Upgrade from phpBB XS</a></li>
+					<li><a href="#upgrade_ip">Upgrade from IP 1.3.0.53 or above</a></li>
+					<li><a href="#upgrade_ip_027">Upgrade from IP 1.2.0.27</a></li>
 					<li><a href="#upgrade_ip_015">Upgrade from IP 1.1.0.15</a></li>
-					<li><a href="#upgrade_ip">Upgrade from IP 1.2.0.27 or above</a></li>
+					<li><a href="#upgrade_xs">Upgrade from phpBB XS</a></li>
+					<li><a href="#convert_phpbb3">Convert from phpBB 3.0.x</a></li>
+					<li><a href="#upgrade_phpbb">Upgrade from phpBB 2.0.x</a></li>
 					<li><a href="#support">Support</a></li>
 					<li><a href="#history">History</a></li>
 				</ul>
@@ -68,38 +70,37 @@
 				<br />
 				<div class="post-text">
 					<ul>
-						<li><span style="color: #00AA00;"><b>What is Icy Phoenix?</b></span><br /></li>
-						<li><span style="color: #0000AA;">Icy Phoenix is a CMS based on phpBB (a fully scalable and highly customisable open-source Bulletin Board package PHP based) plus many modifications and code integrations which add flexibility to the whole package. The official home page for phpBB is <a class="post-url" href="http://www.phpbb.com/" target="_blank">www.phpbb.com</a>. Icy Phoenix has some features originally developed for <acronym title="phpBB eXpertS">phpBB XS Project</acronym> which has been founded by Bicet and then developed by both Bicet and Mighty Gorgon. Icy Phoenix has been created by <a class="post-url" href="http://www.mightygorgon.com/" target="_blank">Mighty Gorgon</a> after he left the <acronym title="phpBB eXpertS">phpBB XS Project</acronym>.</span><br /><br /></li>
-						<li><span style="color: #00AA00;"><b>What are the main features of Icy Phoenix?</b></span><br /></li>
+						<li><span class="text_green"><b>What is Icy Phoenix?</b></span><br /></li>
+						<li><a class="post-url" href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> is a CMS based on phpBB (a fully scalable and highly customisable open-source Bulletin Board package PHP based) plus many modifications and code integrations which add flexibility to the whole package. The official home page for phpBB is <a class="post-url" href="http://www.phpbb.com/" target="_blank">www.phpbb.com</a>. Icy Phoenix has some features originally developed for <acronym title="phpBB eXpertS - Icy Phoenix Ancestor">phpBB XS</acronym> Project which has been founded by Bicet and then developed by both Bicet and Mighty Gorgon. Icy Phoenix has been created by <a class="post-url" href="http://www.mightygorgon.com/" target="_blank">Mighty Gorgon</a> after he left the <acronym title="phpBB eXpertS - Icy Phoenix Ancestor">phpBB XS</acronym> Project.<br /><br /></li>
+						<li><span class="text_green"><b>What are the main features of Icy Phoenix?</b></span><br /></li>
 						<li>
-							<span style="color: #0000AA;">Icy Phoenix has many features, most of them are listed in the <a class="post-url" href="http://www.icyphoenix.com/credits.php">Credits</a> on this site, but the main ones are:</span><br />
+							Icy Phoenix has many features, most of them are listed in the <a class="post-url" href="http://www.icyphoenix.com/features.php" target="_blank">Features Page</a> and in the <a class="post-url" href="http://www.icyphoenix.com/credits.php">Credits Page</a>. The main ones are:<br />
 							<ul>
-								<li><span style="color: #0000AA;">phpBB bulletin board and permission system</span><br /></li>
-								<li><span style="color: #0000AA;">CMS features allowing the creation of new pages and blocks (some of the functions are based on the abandoned IM Portal project)</span><br /></li>
-								<li><span style="color: #0000AA;">Overall template integration among all site sections</span><br /></li>
-								<li><span style="color: #0000AA;">Many ready to use features: Photo Gallery, Downloads, Knowledge Base, Links, Chat...</span><br /></li>
-								<li><span style="color: #0000AA;">Multi-language and multi-template ready</span><br /></li>
-								<li><span style="color: #0000AA;">Almost 100% XHTML and CSS W3C compliant</span><br /></li>
-								<li><span style="color: #0000AA;">...and many others...</span><br /></li>
+								<li>phpBB bulletin board and permission system</li>
+								<li>CMS features allowing the creation of new pages and blocks</li>
+								<li>Overall template integration among all site sections</li>
+								<li>Many ready to use features: Photo Gallery, Downloads, Knowledge Base, Links, Chat...</li>
+								<li>Multi-language and multi-template ready</li>
+								<li>Almost 100% XHTML and CSS W3C compliant</li>
+								<li>...and many others...</li>
 							</ul>
-							<br /><br />
+							<br />
 						</li>
-						<li><span style="color: #00AA00;"><b>Is Icy Phoenix supported for bugs, security issues, improvements?</b></span><br /></li>
-						<li><span style="color: #0000AA;">Icy Phoenix is an open source project. As like many open source projects it is developed by people using their free time. At the moment there are several persons in the staff willing to help and to contribute to this project. We hope the community will continue to grow and be able to provide all the necessary support to all the users who may need help.</span><br /><br /></li>
-						<li><span style="color: #00AA00;"><b>Is Icy Phoenix easy to install and upgrade from other platforms?</b></span><br /></li>
-						<li><span style="color: #0000AA;">Icy Phoenix has its own setup procedure which guides the user through the steps of the setup process. An upgrading file is provided to upgrade the package from standard phpBB and <acronym title="Icy Phoenix Ancestor">phpBB XS</acronym>. Hopefully an upgrade procedure from any other platform will be written in the future: at the moment the only way to upgrade from another pre-modded is by downgrading it to phpBB (has been written a procedure for this) and then run the provided upgrade procedure.</span><br /><br /></li>
-						<li><span style="color: #00AA00;"><b>Does Icy Phoenix have many templates?</b></span><br /></li>
-						<li><span style="color: #0000AA;">Yes, at the moment there are some free templates (some of them with multicolour variations) and we are working to create new ones. If you are interested in new templates you should regularly check the <a class="post-url" href="http://www.icyphoenix.com/" target="_blank">support forum</a>.</span><br /><br /></li>
-						<li><span style="color: #00AA00;"><b>Is Icy Phoenix multi-language?</b></span><br /></li>
-						<li><span style="color: #0000AA;">English is the main language of Icy Phoenix, but it has been translated into other languages (alphabetical order): Arabic, Catalan, Dutch, German, Italian, Spanish... and more to come! If you don't find your language listed here, please ask at the <a class="post-url" href="http://www.icyphoenix.com/" target="_blank">support forum</a>, maybe someone else is working on the translation you need and you would be welcome to join the translation team to give your contribution.</span><br /><br /></li>
-						<li><span style="color: #00AA00;"><b>Will Icy Phoenix be upgraded to phpBB 3?</b></span><br /></li>
-						<li><span style="color: #0000AA;">At the moment there is no plan to upgrade Icy Phoenix to phpBB 3, but things may change...</span><br /><br /></li>
-						<li><span style="color: #00AA00;"><b>May I join the Icy Phoenix Project?</b></span><br /></li>
-						<li><span style="color: #0000AA;">Of course. Icy Phoenix is an open source project, and anyone who is willing to give his own contribution on a stable basis may then apply to join the Team.</span><br /><br /></li>
+						<li><span class="text_green"><b>Is Icy Phoenix supported for bugs, security issues, improvements?</b></span><br /></li>
+						<li>Icy Phoenix is an open source project. As like many open source projects it is developed by people using their free time. At the moment there are several persons in the staff willing to help and to contribute to this project. We hope the community will continue to grow and be able to provide all the necessary support to all the users who may need help.<br /><br /></li>
+						<li><span class="text_green"><b>Is Icy Phoenix easy to install and upgrade from other platforms?</b></span><br /></li>
+						<li>Icy Phoenix has its own setup procedure which guides the user through the steps of the setup process. An upgrading file is provided to upgrade the package from standard phpBB and <acronym title="phpBB eXpertS - Icy Phoenix Ancestor">phpBB XS</acronym>. Hopefully an upgrade procedure from any other platform will be written in the future: at the moment the only way to upgrade from another platform is by downgrading to phpBB and then run the provided upgrade procedure.<br /><br /></li>
+						<li><span class="text_green"><b>Does Icy Phoenix have many templates?</b></span><br /></li>
+						<li>Yes, at the moment there are some free templates (some of them with multicolour variations) and we are working to create new ones. If you are interested in new templates you should regularly check the <a class="post-url" href="http://www.icyphoenix.com/forum.php" target="_blank">support forum</a> and <a class="post-url" href="http://www.icyphoenix.com/styles/" target="_blank">Stiles Section</a>.<br /><br /></li>
+						<li><span class="text_green"><b>Is Icy Phoenix multi-language?</b></span><br /></li>
+						<li>English is the main language of Icy Phoenix, but it has been translated into other languages (alphabetical order): Arabic, Catalan, Dutch, German, Italian, Spanish... and more to come! If you don't find your language listed here, please ask at the <a class="post-url" href="http://www.icyphoenix.com/forum.php" target="_blank">support forum</a>, maybe someone else is working on the translation you need and you would be welcome to join the translation team to give your contribution.<br /><br /></li>
+						<li><span class="text_green"><b>Will Icy Phoenix be upgraded to phpBB 3?</b></span><br /></li>
+						<li>The matter is quite complex. Even if the starting core was phpBB 2, many phpBB 3 features and core functions have been ported to Icy Phoenix: this means that currently Icy Phoenix is based on a version of phpBB which is an hybrid between phpBB 2 and phpBB 3. The code is highly optimized, it uses cache extensively, you shouldn't miss phpBB 3.<br /><br /></li>
+						<li><span class="text_green"><b>May I join the Icy Phoenix Project?</b></span><br /></li>
+						<li>Of course. Icy Phoenix is an open source project, and anyone who is willing to give his own contribution on a stable basis may then apply to join the Team.<br /></li>
 					</ul>
 					<br />
 				</div>
-				<br />
 			</td>
 		</tr>
 		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Top</a>&nbsp;&nbsp;</span></td></tr>
@@ -113,10 +114,10 @@
 				<div class="post-text">
 					<b>Icy Phoenix</b>, which has been created by Mighty Gorgon, is a CMS based on pre-modded version of phpBB plus several phpBB MODs, plus many features coded by Mighty Gorgon and Icy Phoenix Staff. Since phpBB is released under GNU, Icy Phoenix as well is released under the GNU License (you may read its term here: <a class="post-url" href="http://www.icyphoenix.com/docs/COPYING" target="_blank">GNU</a>)<br /><br />
 					Credits for all included MODs and their Authors could be found at this link: <a class="post-url" href="http://www.icyphoenix.com/credits.php" target="_blank">Credits</a>.<br /><br />
-					phpBB &copy; 2009 <a class="post-url" href="http://www.phpbb.com/" target="_blank">phpBB Group</a>.<br />
-					Icy Phoenix &copy; 2009 <a class="post-url" href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix Staff</a>.
+					phpBB &copy; 2012 <a class="post-url" href="http://www.phpbb.com/" target="_blank">phpBB Group</a>.<br />
+					Icy Phoenix &copy; 2012 <a class="post-url" href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix Staff</a>.
 				</div>
-				<br />
+				<br clear="all" /><br />
 			</td>
 		</tr>
 		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Top</a>&nbsp;&nbsp;</span></td></tr>
@@ -131,8 +132,8 @@
 					Before trying to install Icy Phoenix make sure you have the following <b>STRICTLY NEEDED</b> requirements:
 					<ul>
 						<li>At least 20 MB of free space in the folder you would like to install the package</li>
-						<li>Web server with PHP (4 or higher, better if 5.x or above) installed and running (works best on Linux + Apache)</li>
-						<li>MySQL (3 or higher, better if 5.x or above) database with at least 1MB of free space (of course the space needed depends on how big your site will be... 1MB is enough for a basic empty setup)</li>
+						<li>Web server with PHP (5.x or above) installed and running (works best on Linux + Apache)</li>
+						<li>MySQL (5.x or above) database with at least 5MB of free space (of course the space needed depends on how big your site will be... 5MB is enough for a basic empty setup)</li>
 						<li>Ability to set CHMOD permissions</li>
 					</ul>
 					<br /><br />
@@ -144,7 +145,7 @@
 						<li>Register Globals set to OFF</li>
 					</ul>
 				</div>
-				<br />
+				<br clear="all" /><br />
 			</td>
 		</tr>
 		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Top</a>&nbsp;&nbsp;</span></td></tr>
@@ -178,8 +179,9 @@
 							<li><b>files/album/med_cache/</b></li>
 							<li><b>files/album/users/</b></li>
 							<li><b>files/album/wm_cache/</b></li>
-							<li><b>files/posted_images/</b></li>
+							<li><b>files/images/</b></li>
 							<li><b>files/thumbs/</b></li>
+							<li><b>files/thumbs/s/</b></li>
 							<li><b>images/avatars/</b></li>
 							<li><b>logs/</b></li>
 							<li><b>logs/logfile_attempt_counter.txt</b></li>
@@ -188,30 +190,20 @@
 							<li><b>logs/logfile_malformed_logins.txt</b></li>
 							<li><b>logs/logfile_spammer.txt</b></li>
 							<li><b>logs/logfile_worms.txt</b></li>
-							<li><b>pafiledb/uploads/</b></li>
 							</ul>
 							<br />
 						</li>
-						<!--
-						<li>
-							Set the permissions to <span class="text_red">CHMOD 666</span> to the following files:<br />
-							<ul>
-								<li><b>language/lang_*/lang_extend.php</b></li>
-							</ul>
-							<br />
-						</li>
-						-->
-						<li>Launch the setup from the install folder: <b>install/install.php</b> (i.e. <a class="post-url" href="http://www.mysite.com/icyphoenix/install/install.php">http://www.mysite.com/forum/install/install.php</a>)</li>
+						<li>Launch the setup from the install folder: <b>install/install.php</b> (i.e. <i><u>http://www.mysite.com/forum/install/install.php</u></i>)</li>
 						<li>Follow all the instructions on the screen, fill all requested data and complete the setup.</li>
 						<li>Delete or rename <b>install</b> folder.</li>
-						<li>Customize files that may needs to be tweaked a bit for your site:
+						<li><a name="ip_customize"></a>Customize files and settings to correctly setup your site (some files needs to be edited manually, while most of the options may be set in ACP and CMS). Here is a short list of some files you may want to edit manually:
 							<ul>
-							<li><b>.htaccess</b>: settings about your domain and basic apache settings.</li>
-							<li><b>robots.txt</b>: change the path of your sitemap and customize basics bots rules.</li>
-							<li><b>favicon.ico</b> and <b>images/favicon.ico</b>: customize your site icon.</li>
-							<li><b>includes/constants.php</b>: customize some constants values and set your main admins id.</li>
-							<li><b>language/lang_XXX/lang_main_settings.php</b>: some important data about you, your site and basic settings.</li>
-							<li><b>templates/default/overall_header*.tpl</b>: you can customize here some parts of the appearance of your template (some of these settings may be changed in ACP and CMS, so you don't need to edit these files).</li>
+								<li><b>.htaccess</b>: settings about your domain and basic Apache settings.</li>
+								<li><b>robots.txt</b>: change the path of your sitemap and customize basics bots rules.</li>
+								<li><b>favicon.ico</b> and <b>images/favicon.ico</b>: customize your site icon.</li>
+								<li><b>includes/constants.php</b>: customize some constants values and set your main admins id.</li>
+								<li><b>language/lang_XXX/lang_main_settings.php</b>: some important data about you, your site and basic settings.</li>
+								<li><b>templates/default/overall_header*.tpl</b>: you can customize here some parts of the appearance of your template (some of these settings may be changed in ACP and CMS, so you don't need to edit these files).</li>
 							</ul>
 						</li>
 						<li>Customize options in ACP and CMS.</li>
@@ -225,34 +217,82 @@
 		</table>
 
 		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-		<tr><td class="row-header" colspan="3"><span><a name="upgrade_phpbb">Upgrade from standard phpBB 2.0.x</a></span></td></tr>
+		<tr><td class="row-header" colspan="3"><span><a name="upgrade_ip">Upgrade from Icy Phoenix 1.3.0.53 or above</a></span></td>
+		</tr>
 		<tr>
 			<td class="row-post" colspan="3">
 				<div class="post-text">
 					<br />
-					If you're already using phpBB, you can easily upgrade your board by following these instructions:<br />
+					If you're using Icy Phoenix 1.3.0.53 or above, you can upgrade your board by following these instructions:<br />
 					<ol type="1">
+						<li>Login as administrator.</li>
+						<li>Lock your site.</li>
 						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
 						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
-						<li>Copy your current <b>config.php</b> and keep it in a safe place.</li>
+						<li>Copy your current <b>.htaccess</b> (if you edited it) and <b>config.php</b> and keep them in a safe place.</li>
+						<li>You may also want to backup the customized pages you have created using the CMS (if you have created some).</li>
 						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
-						<li>Login as administrator.</li>
-						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
-						<li>Upload <b>install</b> folder to the root of your phpBB forum and launch <b>database_update.php</b> (i.e. http://www.mysite.com/phpbb/install/database_update.php).</li>
-						<li>Delete <b>install</b> folder.</li>
-						<li>Remove the following folders (make sure you don't have in those folders some files you may need for some mods you have installed in standard phpBB, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
+						<li>Rename the following folder:
 							<ul>
-								<li><b>admin</b></li>
-								<li><b>db</b></li>
+								<li><b>files/posted_images</b> ==&gt; <b>files/images</b></li>
+							</ul>
+						</li>
+						<li>Remove the following folders (make sure you don't have in those folders some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
+							<ul>
+								<li><b>adm</b></li>
 								<li><b>includes</b></li>
 								<li><b>language</b></li>
 								<li><b>templates</b></li>
 							</ul>
 						</li>
-						<li>Remove <b>all files</b> but <b>config.php</b> in your forum root (make sure you don't have some files you may need for some mods you have installed in standard phpBB, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where phpBB was installed and running. Pay attention that all older files eventually still there must be replaced by new ones.</li>
+						<li>Remove <b>all old Icy Phoenix files</b> making sure you are not deleting other stuff you may need! (In any case you should have a backup, right? <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
+						<li>When deleting files, please pay particular attention to custom files and folders like these:<br />
+							<ul>
+								<li><b>config.php</b></li>
+								<li><b>backup/</b></li>
+								<li><b>downloads/</b></li>
+								<li><b>images/</b></li>
+								<li><b>files/</b></li>
+								<li><b>logs/</b></li>
+							</ul>
+						</li>
+						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
+						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where Icy Phoenix was installed and running. Pay attention that all older files still there (if any) must be replaced by the new ones.</li>
 						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
-						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS).</li>
+						<li>Copy <b>install/convert_utf8_nodbal.php</b> to your <u><b>website root</b></u> and launch it, this is needed to convert your old DB to UTF-8 (i.e. <i><u>http://www.mysite.com/ip/convert_utf8_nodbal.php</u></i>).</li>
+						<li>Delete <b>convert_utf8_nodbal.php</b> from your root</li>
+						<li>Run <b>install/database_update.php</b> to update your DB (i.e. <i><u>http://www.mysite.com/ip/install/database_update.php</u></i>).</li>
+						<li>Run <b>install/install.php</b> since you need to run <b>Add Uploaded Images To DB (Upgrading from Icy Phoenix 1.3 or above)</b> to add all uploaded images to DB (i.e. <i><u>http://www.mysite.com/ip/install/install.php</u></i>).</li>
+						<li>Delete or rename <b>install</b> folder.</li>
+						<li>Customize your Icy Phoenix setup as listed here ==&gt; <a class="post-url" href="#ip_customize">Customizations</a>.</li>
+						<li>Unlock your site.</li>
+						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
+					</ol>
+					<br />
+				</div>
+			</td>
+		</tr>
+		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Top</a>&nbsp;&nbsp;</span></td></tr>
+		</table>
+
+		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+		<tr><td class="row-header" colspan="3"><span><a name="upgrade_ip_015">Upgrade from Icy Phoenix 1.1.0.15</a> or <a name="upgrade_ip_027">Upgrade from Icy Phoenix 1.2.0.27</a></span></td>
+		</tr>
+		<tr>
+			<td class="row-post" colspan="3">
+				<div class="post-text">
+					<br />
+					If you're using Icy Phoenix 1.1.0.15 or Icy Phoenix 1.2.0.27, you can upgrade your site by following these instructions:<br />
+					<ol type="1">
+						<li>Login as administrator.</li>
+						<li>Lock your site.</li>
+						<li>Rename the following folder:
+							<ul>
+								<li><b>pafiledb/uploads/</b> ==&gt; <b>downloads/</b></li>
+							</ul>
+						</li>
+						<li>At this stage, please follow the instructions listed here <a class="post-url" href="#upgrade_ip">Upgrade from Icy Phoenix 1.3.0.53 or above</a>.</li>
+						<li>Run <b>install/install.php</b> again since you may need to run most of the maintenance features listed in that page (i.e. <i><u>http://www.mysite.com/ip/install/install.php</u></i>).</li>
 						<li>Unlock your site.</li>
 						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
@@ -270,48 +310,17 @@
 			<td class="row-post" colspan="3">
 				<div class="post-text">
 					<br />
-					If you're using phpBB XS, you can upgrade your board by following these instructions (based on phpBB XS 058 standard setup):<br />
+					If you're using phpBB XS, you can upgrade your site by following these instructions (based on phpBB XS 058 standard setup):<br />
 					<ol type="1">
 						<li>Login as administrator.</li>
 						<li>Lock your site.</li>
-						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
-						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
-						<li>Copy your current <b>.htaccess</b> and <b>config.php</b> and keep them in a safe place.</li>
-						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
-						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
-						<li>Upload <b>install</b> folder to the root of your phpBB XS and launch <b>database_update.php</b> (i.e. http://www.mysite.com/xs/install/database_update.php).</li>
-						<li>Delete <b>install</b> folder.</li>
-						<li>Move the following folders:
+						<li>Rename the following folder:
 							<ul>
-								<li><b>album_mod/upload/*.*</b> ==> <b>files/album/*.*</b></li>
-								<li><b>pafiledb/uploads/*.*</b> ==> <b>downloads/*.*</b></li>
+								<li><b>album_mod/upload/</b> ==&gt; <b>files/album/</b></li>
+								<li><b>pafiledb/uploads/</b> ==&gt; <b>downloads/</b></li>
 							</ul>
-						</li>
-						<li>Remove the following folders (make sure you don't have in those folders some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
-							<ul>
-								<li><b>adm</b></li>
-								<li><b>album_mod</b></li>
-								<li><b>attach_mod</b></li>
-								<li><b>bb_usage_stats</b></li>
-								<li><b>captcha</b></li>
-								<li><b>ctracker</b></li>
-								<li><b>db</b></li>
-								<li><b>docs</b></li>
-								<li><b>errors</b></li>
-								<li><b>hl</b></li>
-								<li><b>includes</b></li>
-								<li><b>language</b></li>
-								<li><b>mo</b></li>
-								<li><b>mods</b></li>
-								<li><b>stat_modules</b></li>
-								<li><b>templates</b></li>
-								<li><b>xs_mod</b></li>
-							</ul>
-						</li>
-						<li>Remove <b>all files</b> but <b>config.php</b> in your phpBB XS root (make sure you don't have some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where phpBB XS was installed and running. Pay attention that all older files eventually still there must be replaced by new ones.</li>
-						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
-						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS).</li>
+						<li>At this stage, please follow the instructions listed here <a class="post-url" href="#upgrade_ip">Upgrade from Icy Phoenix 1.3.0.53 or above</a>.</li>
+						<li>Run <b>install/install.php</b> again since you may need to run most of the maintenance features listed in that page (i.e. <i><u>http://www.mysite.com/ip/install/install.php</u></i>).</li>
 						<li>Unlock your site.</li>
 						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
@@ -323,48 +332,22 @@
 		</table>
 
 		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-		<tr><td class="row-header" colspan="3"><span><a name="upgrade_ip_015">Upgrade from Icy Phoenix 1.1.0.15</a></span></td>
-		</tr>
+		<tr><td class="row-header" colspan="3"><span><a name="convert_phpbb3">Convert from phpBB 3.0.x</a></span></td></tr>
 		<tr>
 			<td class="row-post" colspan="3">
 				<div class="post-text">
 					<br />
-					If you're using Icy Phoenix 1.1.0.15, you can upgrade your board by following these instructions:<br />
+					If you're using phpBB 3.0.x, you can port to Icy Phoenix forums, topics, posts and users by using this procedure:<br />
 					<ol type="1">
-						<li>Login as administrator.</li>
-						<li>Lock your site.</li>
-						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
-						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
-						<li>Copy your current <b>.htaccess</b> and <b>config.php</b> and keep them in a safe place.</li>
-						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
-						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
-						<li>Upload <b>install</b> folder to the root of your Icy Phoenix and launch <b>database_update.php</b> (i.e. http://www.mysite.com/ip/install/database_update.php).</li>
-						<li>Move the following folders:
-							<ul>
-								<li><b>pafiledb/uploads/*.*</b> ==> <b>downloads/*.*</b></li>
-							</ul>
-						</li>
-						<li>Remove the following folders (make sure you don't have in those folders some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
-							<ul>
-								<li><b>adm</b></li>
-								<li><b>includes</b></li>
-								<li><b>language</b></li>
-								<li><b>templates</b></li>
-							</ul>
-						</li>
-						<li>Remove <b>all files</b> but <b>config.php</b> in your Icy Phoenix root (make sure you don't have some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where Icy Phoenix was installed and running. Pay attention that all older files still there (if any) must be replaced by the new ones.</li>
-						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
-						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS). Here is a short list of some files you may want to edit manually:
-							<ul>
-								<li><b>common.php</b></li>
-								<li><b>config.php</b></li>
-								<li><b>includes/constants.php</b></li>
-								<li><b>language/lang_***/lang_main_settings.php</b></li>
-							</ul>
-						</li>
-						<li>Run <b>install/install.php</b> and complete the update by renaming and moving images (both posted and in album) and replacing all old links in posts: the automated procedure should be able to perform all these actions automatically, just follow the instructions.</li>
-						<li>Delete <b>install</b> folder.</li>
+						<li>Login as administrator to phpBB 3 and lock the board from ACP.</li>
+						<li>Make a full backup of your phpBB 3 (both DB and files).</li>
+						<li>Install Icy Phoenix (<a class="post-url" href="#fresh_installation">Fresh Installation Instructions</a>) on the same DB phpBB 3 is installed, but with different table prefix (best would be to have Icy Phoenix tables with <i><b>ip_</b></i> prefix and phpBB 3 tables with <i><b>phpbb_</b></i> prefix). If you want to install Icy Phoenix on the same directory where phpBB 3 is, you should first delete/move phpBB 3 files. Sorry to remind again, but backup is very important before completing this stage!</li>
+						<li>Login as administrator to Icy Phoenix and lock the site from ACP.</li>
+						<li>Edit the constants definitions in <b>install/phpbb3_conversion/phpbb3_to_ip.php</b> file to reflect the correct prefix and name in case you need it.</li>
+						<li>Upload <b>install/phpbb3_conversion/phpbb3_to_ip.php</b> to your Icy Phoenix root and launch it (i.e. <i><u>http://www.mysite.com/ip/phpbb3_to_ip.php</u></i>).</li>
+						<li>When the conversion ends, you should have all users, forums, topics and posts in your Icy Phoenix DB.</li>
+						<li>Login to Icy Phoenix and run almost all DB Maintenance scripts in ACP (you may need to alter the <b>constants.php</b> if your main admin id is not 2, or you won't see this menu!).</li>
+						<li>Customize your Icy Phoenix setup as listed here ==&gt; <a class="post-url" href="#ip_customize">Customizations</a>.</li>
 						<li>Unlock your site.</li>
 						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
@@ -376,49 +359,17 @@
 		</table>
 
 		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-		<tr><td class="row-header" colspan="3"><span><a name="upgrade_ip">Upgrade from Icy Phoenix 1.2.0.27 or above</a></span></td>
-		</tr>
+		<tr><td class="row-header" colspan="3"><span><a name="upgrade_phpbb">Upgrade from standard phpBB 2.0.x</a></span></td></tr>
 		<tr>
 			<td class="row-post" colspan="3">
 				<div class="post-text">
 					<br />
-					If you're using Icy Phoenix 1.2.0.27 or above, you can upgrade your board by following these instructions:<br />
+					If you're using phpBB 2.0.x, you can easily upgrade your board by following these instructions:<br />
 					<ol type="1">
 						<li>Login as administrator.</li>
-						<li>Lock your site.</li>
-						<li><span class="text_red">Make a full backup of all files and database</span> (if you don't do a backup, don't dare to ask for support! <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />)</li>
-						<li>Did you backup everything? If you didn't make the backup, please, step back to the previous point.</li>
-						<li>Copy your current <b>.htaccess</b> (if you edit it) and <b>config.php</b> and keep them in a safe place.</li>
-						<li>You may also want to backup the customized pages you have created using the CMS (if you have created some).</li>
-						<li>Check again that your backup is ok and keep it in a safe place. <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" /></li>
-						<li>Unpack Icy Phoenix package to one folder on your HD.</li>
-						<li>Upload <b>install</b> folder to the root of your Icy Phoenix and launch <b>database_update.php</b> (i.e. http://www.mysite.com/ip/install/database_update.php).</li>
-						<li>Move the following folders:
-							<ul>
-								<li><b>pafiledb/uploads/*.*</b> ==> <b>downloads/*.*</b></li>
-							</ul>
-						</li>
-						<li>Remove the following folders (make sure you don't have in those folders some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />):
-							<ul>
-								<li><b>adm</b></li>
-								<li><b>includes</b></li>
-								<li><b>language</b></li>
-								<li><b>templates</b></li>
-							</ul>
-						</li>
-						<li>Remove <b>all files</b> but <b>config.php</b> in your Icy Phoenix root (make sure you don't have some files you may need for some mods you have installed, but in any case you should have a backup <img src="../images/smiles/icon_mrgreen.gif" alt="Backup Rules!" title="Backup Rules!" />).</li>
-						<li>Upload all Icy Phoenix files (all but <b>config.php</b>) in the same folder where Icy Phoenix was installed and running. Pay attention that all older files still there (if any) must be replaced by the new ones.</li>
-						<li>Apply all permissions listed in <a class="post-url" href="#fresh_installation">Fresh Installation</a>.</li>
-						<li>Customize what needs to be customized in files and db (some files needs to be edited manually, while most of the options may be set in ACP and CMS). Here is a short list of some files you may want to edit manually:
-							<ul>
-								<li><b>common.php</b></li>
-								<li><b>config.php</b></li>
-								<li><b>includes/constants.php</b></li>
-								<li><b>language/lang_***/lang_main_settings.php</b></li>
-							</ul>
-						</li>
-						<li>Run <b>install/install.php</b> and complete the update by renaming and moving images (both posted and in album) and replacing all old links in posts: the automated procedure should be able to perform all these actions automatically, just follow the instructions.</li>
-						<li>Delete <b>install</b> folder.</li>
+						<li>Lock your board.</li>
+						<li>At this stage, please follow the instructions listed here <a class="post-url" href="#upgrade_ip">Upgrade from Icy Phoenix 1.3.0.53 or above</a>.</li>
+						<li>Run <b>install/install.php</b> again since you may need to run most of the maintenance features listed in that page (i.e. <i><u>http://www.mysite.com/ip/install/install.php</u></i>).</li>
 						<li>Unlock your site.</li>
 						<li>Enjoy your New <b>Icy Phoenix</b> Site <img src="../images/smiles/icon_mrgreen.gif" alt="Enjoy!" title="Enjoy!" />.</li>
 					</ol>
@@ -434,8 +385,8 @@
 		<tr>
 			<td class="row-post" colspan="3">
 				<br />
-				<div class="post-text">For any query or support request, please refer to <a class="post-url" target="_blank" href="http://www.icyphoenix.com">http://www.icyphoenix.com/</a>.</div>
-				<br />
+				<div class="post-text">For any query or support request, please refer to <a class="post-url" target="_blank" href="http://www.icyphoenix.com/forum.php">Icy Phoenix Support Forum</a>.</div>
+				<br clear="all" /><br />
 			</td>
 		</tr>
 		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Top</a>&nbsp;&nbsp;</span></td></tr>
@@ -448,7 +399,6 @@
 			<td class="row-post" colspan="3">
 				<br />
 				<div class="post-text">
-					<br />
 					<i>Version 1.1.0.15 (2007/05/20)</i>
 					<ul><li>First stable release.</li></ul>
 					<br />
@@ -460,8 +410,11 @@
 					<i>Version 1.3.0.53 (2009/07/17)</i>
 					<ul><li>Third stable release.</li></ul>
 					<br />
+					<br />
+					<i>Version 2.0.0.86 (2012/07/28)</i>
+					<ul><li>Icy Phoenix 2.0 First stable release.</li></ul>
 				</div>
-				<br />
+				<br clear="all" /><br />
 			</td>
 		</tr>
 		<tr><td class="cat" colspan="3"><span style="float: right;">&nbsp;&nbsp;<a href="#top" class="gensmall">Top</a>&nbsp;&nbsp;</span></td></tr>
@@ -479,7 +432,7 @@
 				<td nowrap="nowrap" width="45%" align="left">
 					<br /><span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span><br /><br />
 				</td>
-				<td nowrap="nowrap" align="center"><div style="text-align:center;">&nbsp;</div></td>
+				<td nowrap="nowrap" align="center"><div style="text-align: center;">&nbsp;</div></td>
 				<td nowrap="nowrap" width="45%" align="right">
 					<br /><span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span><br /><br />
 				</td>
@@ -492,6 +445,6 @@
 </table>
 </div></div></div>
 </div>
-<a name="bottom"></a>
+<a name="bottom" id="bottom"></a>
 </body>
 </html>

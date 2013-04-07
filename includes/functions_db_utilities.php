@@ -73,7 +73,7 @@ function get_table_def_mysql($table, $crlf)
 		$schema_create .= ",$crlf";
 	}
 	// Drop the last ',$crlf' off ;)
-	$schema_create = @ereg_replace(',' . $crlf . '$', "", $schema_create);
+	$schema_create = preg_replace('/,' . $crlf . '$/', '', $schema_create);
 
 	// Get any Indexed fields from the database...
 	$result = $db->sql_query($key_query);

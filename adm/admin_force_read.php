@@ -38,7 +38,16 @@ elseif(isset($_POST['logs']))
 	$mode = 'users';
 }
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_ftr.' . PHP_EXT);
+setup_extra_lang(array('lang_ftr'));
+
+
+$topic_id = (int) $config['ftr_topic_number'];
+$topic_exists = check_topic_exists($topic_id);
+if (empty($topic_exists))
+{
+	set_config('ftr_disable', '1');
+	set_config('ftr_topic_number', '0');
+}
 
 $update = $_POST['update'];
 
@@ -175,12 +184,12 @@ elseif($mode == 'config')
 		echo '<br /><br />';
 
 		$q1 = "TRUNCATE " . FORCE_READ_USERS_TABLE;
-		$r1 =  $db->sql_query($q1);
+		$r1 = $db->sql_query($q1);
 		message_die(GENERAL_MESSAGE, $lang['Ftr_user_del_success'], $lang['Ftr_msg_success']);
 	}
 	elseif($update == 'save_config')
 	{
-		$topic = $_POST['topic'];
+		$topic_id = (int) $_POST['topic'];
 		$msg = $_POST['message'];
 
 		echo "<table class=\"forumline\" width=\"100%\" valign=\"middle\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
@@ -192,7 +201,7 @@ elseif($mode == 'config')
 		echo "</table>";
 		echo '<br /><br />';
 
-		set_config('ftr_topic_number', $topic, false);
+		set_config('ftr_topic_number', $topic_id, false);
 		set_config('ftr_message', $msg);
 		message_die(GENERAL_MESSAGE, $lang['Ftr_save_config_success'], $lang['Ftr_msg_success']);
 	}
@@ -226,7 +235,6 @@ elseif($mode == 'config')
 		{
 			$id = $row1['forum_id'];
 			$name = $row1['forum_name'];
-
 			echo "					<option value=\"$id\" name=\"change_config_2\">$name</option>";
 		}
 		echo "				</select>";
@@ -273,12 +281,11 @@ elseif($mode == 'config')
 		$q1 = "SELECT topic_id, topic_title
 			FROM ". TOPICS_TABLE ."
 			WHERE forum_id = '$forum_to_use'";
-		$r1 		= $db->sql_query($q1);
+		$r1 = $db->sql_query($q1);
 		while($row1 = $db->sql_fetchrow($r1))
 		{
 			$id = $row1['topic_id'];
 			$name = $row1['topic_title'];
-
 			echo "					<option value=\"$id\" name=\"topic\">$name</option>";
 		}
 		echo "				</select>";
@@ -318,17 +325,24 @@ elseif($mode == 'config')
 		echo "</table>";
 		echo '<br /><br />';
 
-		$topic = $config['ftr_topic_number'];
+		$topic = (int) $config['ftr_topic_number'];
+		$topic_name = '<i>' . $lang['Ftr_default2'] . '</i>';
 		$msg = $config['ftr_message'];
 		$active = $config['ftr_disable'] ? '0' : '1';
 		$effected = $config['ftr_all_users'];
 
-		$q1 = "SELECT topic_title
-			FROM " . TOPICS_TABLE . "
-			WHERE topic_id = " . $topic;
-		$r1 = $db->sql_query($q1);
-		$row1 = $db->sql_fetchrow($r1);
-		$topic_name = $row1['topic_title'];
+		if (!empty($topic))
+		{
+			$q1 = "SELECT topic_title
+				FROM " . TOPICS_TABLE . "
+				WHERE topic_id = " . $topic;
+			$r1 = $db->sql_query($q1);
+			$row1 = $db->sql_fetchrow($r1);
+			if (!empty($row1['topic_title']))
+			{
+				$topic_name = $row1['topic_title'];
+			}
+		}
 
 		$delete = append_sid('admin_force_read.' . PHP_EXT . '?mode=config');
 		echo "<form name=\"delete_u\" method=\"post\" action=\"$delete\">";
@@ -451,6 +465,24 @@ echo "			</span>";
 echo "		</td>";
 echo "	</tr>";
 echo "</table>";
+
+
+/**
+* Check if a topic exists
+*/
+function check_topic_exists($topic_id)
+{
+	global $db, $cache;
+
+	$q1 = "SELECT topic_id
+		FROM ". TOPICS_TABLE ."
+		WHERE topic_id = " . (int) $topic_id;
+	$r1 = $db->sql_query($q1);
+	$row1 = $db->sql_fetchrow($r1);
+	$db->sql_freeresult($r1);
+
+	return (!empty($row1['topic_id']) ? $row1['topic_id'] : 0);
+}
 
 include('page_footer_admin.' . PHP_EXT);
 ?>

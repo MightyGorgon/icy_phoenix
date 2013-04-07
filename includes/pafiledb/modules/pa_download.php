@@ -82,13 +82,9 @@ class pafiledb_download extends pafiledb_public
 		//=========================================================================
 
 
-		$url_referer = trim(getenv('HTTP_REFERER'));
-		if ($url_referer == '')
-		{
-			$url_referer = trim($_SERVER['HTTP_REFERER']);
-		}
+		$url_referer = (!empty($_SERVER['HTTP_REFERER'])) ? (string) $_SERVER['HTTP_REFERER'] : '';
 
-		if(($pafiledb_config['hotlink_prevent']) and (!empty($url_referer)))
+		if(($pafiledb_config['hotlink_prevent']) && (!empty($url_referer)))
 		{
 			$check_referer = explode('?', $url_referer);
 			$check_referer = trim($check_referer[0]);
@@ -108,9 +104,10 @@ class pafiledb_download extends pafiledb_public
 			{
 				$good_referers[$i] = trim($good_referers[$i]);
 
-				if((strstr($check_referer, $good_referers[$i])) and ($good_referers[$i] != ''))
+				if(!empty($good_referers[$i]) && (strstr($check_referer, $good_referers[$i]) !== false))
 				{
 					$errored = false;
+					break;
 				}
 			}
 
@@ -148,7 +145,7 @@ class pafiledb_download extends pafiledb_public
 				'L_HOME' => $lang['Home'],
 				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-				'U_INDEX' => append_sid(CMS_PAGE_HOME),
+				'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 
 				'FILE_NAME' => $file_data['file_name'],
@@ -282,7 +279,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 	{
 		$gotit = true;
 		$size = @filesize($filename);
-		if($size > (1048575 * 6))
+		if($size > (1048575 * 512))
 		{
 			return false;
 		}
@@ -348,9 +345,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 	header('Pragma: public');
 	header('Content-Transfer-Encoding: none');
 
-	//
 	// Send out the Headers
-	//
 	if ($browser_agent == 'ie')
 	{
 		header('Content-Type: ' . $mimetype . '; name="' . $real_filename . '"');
@@ -362,9 +357,7 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 		header('Content-Disposition: attachment; filename=' . $real_filename);
 	}
 
-	//
 	// Now send the File Contents to the Browser
-	//
 	if ($gotit)
 	{
 		if ($size)
@@ -412,7 +405,7 @@ function pa_redirect($file_url)
 		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_XML_LANG'] . '">';
+		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_LANG_XML'] . '">';
 		echo '<head>';
 		echo '<meta http-equiv="content-type" content="text/html; charset=' . $encoding_charset . '" />';
 		echo '<meta http-equiv="refresh" content="0; url=' . str_replace('&', '&amp;', $file_url) . '" />';

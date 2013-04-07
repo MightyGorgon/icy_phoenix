@@ -1,7 +1,7 @@
-Subject: Welcome to {SITENAME} Forums
-Charset: iso-8859-1
+Subject: Welcome to {SITENAME}
+
 <br /><font face="Verdana" size="2">
-Welcome to <b>{SITENAME}</b> Forums
+Welcome to <b>{SITENAME}</b>
 <br /><br />
 Please keep this email for your records. Your account information is as follows:
 <br /><br />

@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -111,7 +111,7 @@ if (($album_user_id != ALBUM_PUBLIC_GALLERY) && !album_check_user_exists($album_
 	redirect(append_sid(album_append_uid('album.' . PHP_EXT)));
 }
 
-$read_options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
+$read_options = ($album_view_mode == ALBUM_VIEW_LIST) ? (ALBUM_READ_ALL_CATEGORIES | ALBUM_AUTH_VIEW) : ALBUM_AUTH_VIEW;
 $catrows = album_read_tree($album_user_id, $read_options);
 
 // check if the category exists in the album_tree data
@@ -193,7 +193,7 @@ if (($album_user_id == ALBUM_PUBLIC_GALLERY) && ($thiscat['cat_moderator_groups'
 	{
 		for ($j = 0; $j < sizeof($grouprows); $j++)
 		{
-			$group_link = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?'. POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
+			$group_link = '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?'. POST_GROUPS_URL . '=' . $grouprows[$j]['group_id']) . '">' . $grouprows[$j]['group_name'] . '</a>';
 
 			$moderators_list .= ($moderators_list == '') ? $group_link : ', ' . $group_link;
 		}
@@ -220,8 +220,10 @@ $start = ($start < 0) ? 0 : $start;
 $sort_method = request_var('sort_method', $album_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+
+$sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
 switch ($sort_method)
 {
@@ -338,7 +340,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	{
 		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+		$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 
 	if ($album_config['show_slideshow'] && ($total_pics > 0))
@@ -346,7 +348,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		$first_pic_id = album_get_first_pic_id($cat_id);
 		$slideshow_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $first_pic_id . '&amp;slideshow=5'));
 		$slideshow_link_full = '[<a href="' . $slideshow_link . '">' . $lang['Slideshow'] . '</a>]';
-		$breadcrumbs_links_right = $slideshow_link_full;
+		$breadcrumbs['bottom_right_links'] = $slideshow_link_full;
 	}
 	else
 	{
@@ -358,7 +360,6 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	if ($total_pics > 0)
 	{
 		album_build_picture_table($album_user_id, $cat_id, $thiscat, $auth_data, $start, $sort_method, $sort_order, $total_pics);
-
 
 		// Last Comments
 		if ($album_config['show_last_comments'] == 1)
@@ -387,12 +388,14 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 		if ($has_sub_cats && ($album_config['show_recent_instead_of_nopics'] == 1))
 		{
 			album_build_recent_pics($allowed_cat);
+			$template->assign_vars(array('S_NO_PICS' => '1'));
 		}
 		else
 		{
 			$template->assign_block_vars('index_pics_block', array());
 			$template->assign_block_vars('index_pics_block.no_pics', array());
 			$template->assign_block_vars('index_pics_block.enable_gallery_title', array());
+			$template->assign_vars(array('S_NO_PICS' => '1'));
 		}
 	}
 	// END thumbnails table
@@ -405,7 +408,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	{
 		$nav_server_url = create_server_url();
 		$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-		$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+		$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 	}
 	*/
 
@@ -472,6 +475,7 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 
 		'S_COLS' => $album_config['cols_per_page'],
 		'S_COL_WIDTH' => (100 / $album_config['cols_per_page']) . '%',
+		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 		'L_VIEW' => $lang['View'],
 		'L_POSTER' => $lang['Pic_Poster'],

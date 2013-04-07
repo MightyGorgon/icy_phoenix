@@ -36,6 +36,13 @@ if(check_http_var_exists('confirm_clear_cache_main', false))
 		message_die(GENERAL_MESSAGE, $meta_tag . $message);
 	}
 
+	// Clean also data in global cache
+	$cache_data = array('config', 'config_plugins', 'config_plugins_config', 'config_style', 'newest_user');
+	foreach ($cache_data as $cache_data_section)
+	{
+		$cache->destroy($cache_data_section);
+	}
+
 	// Make sure cron is unlocked... just to make sure that it didn't hang somewhere in time... :-)
 	set_config('cron_lock', '0');
 	set_config('cron_lock_hour', 0);
@@ -98,6 +105,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

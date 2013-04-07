@@ -2,7 +2,7 @@
 
 <div class="forumline nav-div">
 	<p class="nav-header">
-		<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_REFERRERS}" class="nav-current">{L_REFERRERS}</a>
+		<a href="{U_INDEX}">{L_INDEX}</a>{NAV_SEP}<a href="{U_REFERERS}" class="nav-current">{L_REFERERS}</a>
 	</p>
 	<div class="nav-links">
 		<div class="nav-links-left">{CURRENT_TIME}</div>

@@ -15,7 +15,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 $template->assign_vars(array(
 	'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
-	'U_INDEX' => append_sid(CMS_PAGE_HOME),
+	'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 	'L_STATISTICS' => $lang['Statistics'],
 	'L_INDEX' => sprintf($lang['Forum_Index'], $config['sitename'])
 	)

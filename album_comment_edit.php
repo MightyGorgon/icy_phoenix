@@ -19,15 +19,26 @@ define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
 // Get general album information
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+
+include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
+include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+
+$mode = request_var('mode', '');
+if($mode == 'smilies')
+{
+	generate_smilies('window');
+	exit;
+}
 
 // ------------------------------------
 // Check feature enabled
@@ -79,7 +90,7 @@ $pic_id = $row['comment_pic_id'];
 // ------------------------------------
 // NOTE: we don't do a left join here against the category table
 // since ALL pictures belong to some category, if not then it's database error
-$sql = "SELECT p.*, cat.*, u.user_id, u.username, COUNT(c.comment_id) as comments_count
+$sql = "SELECT p.*, cat.*, u.user_id, u.username, u.user_active, u.user_color, u.user_rank, COUNT(c.comment_id) as comments_count
 		FROM ". ALBUM_CAT_TABLE ."  AS cat, ". ALBUM_TABLE ." AS p
 			LEFT JOIN ". USERS_TABLE ." AS u ON p.pic_user_id = u.user_id
 			LEFT JOIN ". ALBUM_COMMENT_TABLE ." AS c ON p.pic_id = c.comment_pic_id
@@ -90,7 +101,7 @@ $sql = "SELECT p.*, cat.*, u.user_id, u.username, COUNT(c.comment_id) as comment
 $result = $db->sql_query($sql);
 $thispic = $db->sql_fetchrow($result);
 
-$cat_id = $thispic['pic_cat_id'];
+$cat_id = ($thispic['pic_cat_id'] != 0) ? $thispic['pic_cat_id'] : $thispic['cat_id'];
 //$user_id = $thispic['pic_user_id'];
 $album_user_id = $thispic['cat_user_id'];
 
@@ -137,17 +148,23 @@ else
 | Main work here...
 +----------------------------------------------------------
 */
+album_read_tree($album_user_id);
+$album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav' , $album_user_id);
+if ($album_nav_cat_desc != '')
+{
+	$nav_server_url = create_server_url();
+	$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
+	$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+}
+
+$meta_content['page_title'] = $lang['Album'] . ' - ' . $thispic['pic_title'];
+$meta_content['description'] = $lang['Album'] . ' - ' . strip_tags($thispic['cat_title']) . ' - ' . $thispic['pic_title'] . ' - ' . $thispic['pic_desc'];
+$meta_content['keywords'] = $lang['Album'] . ', ' . strip_tags($thispic['cat_title']) . ', ' . $thispic['pic_title'] . ', ' . $thispic['pic_desc'] . ', ';
+
 if(empty($message))
 {
-	// Comments Screen
-	if(($thispic['pic_user_id'] == ALBUM_GUEST) || ($thispic['username'] == ''))
-	{
-		$poster = ($thispic['pic_username'] == '') ? $lang['Guest'] : $thispic['pic_username'];
-	}
-	else
-	{
-		$poster = '<a href="'. append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $thispic['user_id']) . '">' . $thispic['username'] . '</a>';
-	}
+
+	$poster = ($thispic['username'] == '') ? $lang['Guest'] : colorize_username($thispic['user_id'], $thispic['username'], $thispic['user_color'], $thispic['user_active']);
 
 	$template->assign_block_vars('switch_comment_post', array());
 
@@ -164,7 +181,6 @@ if(empty($message))
 	$smilies_count = $db->sql_numrows($result);
 	$smilies_data = $db->sql_fetchrowset($result);
 
-
 	for ($i = 1; $i < $smilies_count+1; $i++)
 	{
 		$template->assign_block_vars('switch_comment_post.smilies', array(
@@ -180,6 +196,22 @@ if(empty($message))
 		}
 	}
 
+	// BBCBMG - BEGIN
+	include(IP_ROOT_PATH . 'includes/bbcb_mg.' . PHP_EXT);
+	$template->assign_var_from_handle('BBCB_MG', 'bbcb_mg');
+	// BBCBMG - END
+	// BBCBMG SMILEYS - BEGIN
+	generate_smilies('inline');
+	include(IP_ROOT_PATH . 'includes/bbcb_smileys_mg.' . PHP_EXT);
+	$template->assign_var_from_handle('BBCB_SMILEYS_MG', 'bbcb_smileys_mg');
+	// BBCBMG SMILEYS - END
+
+	$pic_fullpath = ALBUM_UPLOAD_PATH . $thispic['pic_filename'];
+	$pic_size = @getimagesize($pic_fullpath);
+	$pic_width = $pic_size[0];
+	$pic_height = $pic_size[1];
+	$pic_filesize = @filesize($pic_fullpath);
+
 	$template->assign_vars(array(
 		'CAT_TITLE' => $thispic['cat_title'],
 		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
@@ -191,6 +223,8 @@ if(empty($message))
 		'PIC_TITLE' => $thispic['pic_title'],
 		'PIC_DESC' => nl2br($thispic['pic_desc']),
 		'POSTER' => $poster,
+		'PIC_HEIGHT' => $pic_height,
+		'PIC_WIDTH' => $pic_width,
 		'PIC_TIME' => create_date($config['default_dateformat'], $thispic['pic_time'], $config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],
 		'PIC_COMMENTS' => $total_comments,
@@ -217,7 +251,7 @@ if(empty($message))
 		'S_ALBUM_ACTION' => append_sid(album_append_uid('album_comment_edit.' . PHP_EXT . '?comment_id=' . $comment_id))
 		)
 	);
-	full_page_generation('album_comment_body.tpl', $lang['Album'], '', '');
+	full_page_generation('album_comment_body.tpl', $meta_content['page_title'], $meta_content['description'], $meta_content['keywords']);
 }
 else
 {

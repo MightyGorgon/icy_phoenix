@@ -131,8 +131,6 @@ ALTER TABLE `phpbb_album_cat` ADD `cat_wm` TEXT AFTER `cat_desc`;
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('set_memory', '0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('lb_preview', '0');
 
-ALTER TABLE `phpbb_users` ADD `user_cms_level` TINYINT( 4 ) DEFAULT '0' NOT NULL;
-
 UPDATE phpbb_stats_config SET config_value = 'includes/stat_modules' WHERE config_name = 'modules_dir';
 
 
@@ -223,7 +221,6 @@ CREATE TABLE `phpbb_cms_blocks` (
   `titlebar` tinyint(1) NOT NULL default '1',
   `background` tinyint(1) NOT NULL default '1',
   `local` tinyint(1) NOT NULL default '0',
-  `edit_auth` tinyint(1) NOT NULL default '5',
   `groups` TINYTEXT NOT NULL,
   PRIMARY KEY  (`bid`)
 );
@@ -243,7 +240,6 @@ CREATE TABLE `phpbb_cms_layout` (
   `template` varchar(100) NOT NULL default '',
   `global_blocks` tinyint(1) NOT NULL default '0',
   `view` tinyint(1) NOT NULL default '0',
-  `edit_auth` tinyint(1) NOT NULL default '5',
   `groups` TINYTEXT NOT NULL,
   PRIMARY KEY  (`lid`)
 );
@@ -340,7 +336,6 @@ INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('show_l
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('shoutbox_floodinterval', '3');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('display_shouts', '20');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('stored_shouts', '1000');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('shoutbox_refreshtime', '5000');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('shout_allow_guest', '0');
 CREATE TABLE phpbb_ajax_shoutbox (
 	shout_id MEDIUMINT(9) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -459,7 +454,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('global_disab
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('global_disable_censor', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_topic_view', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('page_title_simple', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_referrers', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_referers', '0');
 
 ALTER TABLE `phpbb_config` CHANGE `config_value` `config_value` TEXT;
 
@@ -674,7 +669,6 @@ CREATE TABLE `phpbb_cms_layout_special` (
 	`page_nav` tinyint(1) NOT NULL DEFAULT '1',
 	`config_vars` TEXT NOT NULL,
 	`view` tinyint(1) NOT NULL DEFAULT '0',
-	`edit_auth` tinyint(1) NOT NULL DEFAULT '5',
 	`groups` TINYTEXT NOT NULL,
 	PRIMARY KEY (`lsid`),
 	UNIQUE KEY `page_id` (`page_id`)
@@ -699,7 +693,7 @@ INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_b
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, 0, '');
-INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('referrers', 'referrers', 'referrers.php', 0, 0, '');
+INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('referers', 'referers', 'referers.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('shoutbox', 'shoutbox', 'shoutbox_max.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('kb', 'kb', 'kb.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('contact_us', 'contact_us', 'contact_us.php', 0, 0, '');
@@ -712,7 +706,6 @@ INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_b
 UPDATE `phpbb_users` SET `user_session_page` = 'index.php';
 UPDATE `phpbb_sessions` SET `session_page` = 'index.php';
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_forums_online_users', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_dock', '0');
 
 
 
@@ -1107,11 +1100,8 @@ INSERT INTO `phpbb_cms_block_position` (`pkey`, `bposition`, `layout`) VALUES ('
 ########################################
 ##              BUILD 031             ##
 ########################################
-##INSERT INTO `phpbb_cms_config` (`bid`, `config_name`, `config_value`) VALUES (0, 'cms_style', '1');
-##INSERT INTO `phpbb_cms_block_variable` (`bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (0, 'CMS Style', 'Select the CMS Style', 'cms_style', 'Yes,No', '1,0', 3, '@Portal Config');
 ## Someone may not have this!!!
 ##INSERT INTO `phpbb_cms_block_variable` (`bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (0, 'Default Portal', 'Default Portal', 'default_portal', '', '', 1, '@Portal Config');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_style', '0');
 
 
 
@@ -1151,7 +1141,7 @@ CREATE TABLE `phpbb_logs` (
 	`log_page` varchar(255) NOT NULL default '',
 	`log_user_id` int(10) NOT NULL,
 	`log_action` varchar(60) NOT NULL default '',
-	`log_desc` varchar(255) NOT NULL default '',
+	`log_desc` mediumtext NOT NULL,
 	`log_target` int(10) NOT NULL default '0',
 	PRIMARY KEY  (`log_id`)
 );
@@ -1341,8 +1331,8 @@ CREATE TABLE `___posts___` (
 	`poster_ip` varchar(40) NOT NULL default '',
 	`post_username` varchar(25) default NULL,
 	`post_subject` varchar(255) default NULL,
-	`post_text` TEXT NOT NULL,
-	`post_text_compiled` TEXT NOT NULL,
+	`post_text` MEDIUMTEXT NOT NULL,
+	`post_text_compiled` MEDIUMTEXT NOT NULL,
 	`enable_bbcode` tinyint(1) NOT NULL default '1',
 	`enable_html` tinyint(1) NOT NULL default '0',
 	`enable_smilies` tinyint(1) NOT NULL default '1',
@@ -1362,7 +1352,7 @@ CREATE TABLE `___posts___` (
 );
 
 ## Needed for standard phpBB
-##ALTER TABLE `phpbb_posts_text` ADD `post_text_compiled` TEXT NOT NULL AFTER `post_text`;
+##ALTER TABLE `phpbb_posts_text` ADD `post_text_compiled` MEDIUMTEXT NOT NULL AFTER `post_text`;
 ##ALTER TABLE `phpbb_posts_text` ADD `edit_notes` MEDIUMTEXT NOT NULL AFTER `post_text_compiled`;
 
 INSERT INTO `___posts___`
@@ -1464,24 +1454,8 @@ CREATE TABLE `___forums___` (
 	KEY `forum_last_post_id` (`forum_last_post_id`)
 );
 
-CREATE TABLE `phpbb_forums_rules` (
-	`forum_id` smallint(5) unsigned NOT NULL default '0',
-	`rules` TEXT NOT NULL,
-	`rules_display_title` tinyint(1) NOT NULL default '1',
-	`rules_custom_title` varchar(80) NOT NULL default '',
-	`rules_in_viewforum` tinyint(1) unsigned NOT NULL default '0',
-	`rules_in_viewtopic` tinyint(1) unsigned NOT NULL default '0',
-	`rules_in_posting` tinyint(1) unsigned NOT NULL default '0',
-	PRIMARY KEY (`forum_id`)
-);
-
 INSERT INTO `___forums___`
 SELECT f.forum_id, f.cat_id, f.main_type, f.forum_name, f.forum_desc, f.forum_status, f.forum_order, f.forum_posts, f.forum_topics, f.forum_last_post_id, f.forum_postcount, f.thank, f.forum_notify, 0, 0, 0, 0, 0, 1, forum_link, f.forum_link_internal, f.forum_link_hit_count, f.forum_link_hit, f.icon, f.prune_next, f.prune_enable, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_globalannounce, f.auth_news, f.auth_cal, f.auth_vote, f.auth_pollcreate, f.auth_attachments, f.auth_download, f.auth_ban, f.auth_greencard, f.auth_bluecard, f.auth_rate
-FROM `phpbb_forums` f
-ORDER BY f.forum_id;
-
-INSERT INTO `phpbb_forums_rules`
-SELECT f.forum_id, f.forum_rules, f.rules_display_title, f.rules_custom_title, f.rules_in_viewforum, f.rules_in_viewtopic, f.rules_in_posting
 FROM `phpbb_forums` f
 ORDER BY f.forum_id;
 
@@ -1743,7 +1717,7 @@ INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_b
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, 0, '');
-INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('referrers', 'referrers', 'referrers.php', 0, 0, '');
+INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('referers', 'referers', 'referers.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('shoutbox', 'shoutbox', 'shoutbox_max.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('kb', 'kb', 'kb.php', 0, 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `view`, `groups`) VALUES ('contact_us', 'contact_us', 'contact_us.php', 0, 0, '');

@@ -60,7 +60,7 @@ if(!function_exists('cms_block_news_posters'))
 			'U_QUICK_LIST' => $base_url . '&amp;quick_list=true',
 			'U_NORMAL_LIST' => $base_url,
 
-			'L_NEWS_POSTERS' => $lang['Title_news_posters'],
+			'L_NEWS_POSTERS' => $lang['cms_block_news_posters'],
 			'L_USER_PROFILE' => $lang['Profile'],
 			'L_PM' => $lang['Private_Message'],
 			'L_USER_WWW' => $lang['Website'],
@@ -203,11 +203,9 @@ if(!function_exists('cms_block_news_posters'))
 			$db->sql_freeresult($result);
 
 			$number_of_page = (ceil($total_news_posters / $per_page) == 0) ? 1 : ceil($total_news_posters / $per_page);
-			$pagination = generate_pagination($base_url, $total_news_posters, $per_page, $start);
-			$pagination = ((empty($pagination) || ($pagination == '&nbsp;')) ? false : $pagination);
 
 			$template->assign_vars(array(
-				'PAGINATION' => $pagination,
+				'PAGINATION' => generate_pagination($base_url, $total_news_posters, $per_page, $start),
 				'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $per_page) + 1), $number_of_page),
 				'L_GOTO_PAGE' => $lang['Goto_page']
 				)

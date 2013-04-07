@@ -22,7 +22,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 $no_page_header = true;
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'includes/functions_mg_online.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_mg_log_admin.' . PHP_EXT);
 
 setup_extra_lang(array('lang_admin_pafiledb'));
@@ -65,12 +64,12 @@ if($acp_pane == 'left')
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 }
 elseif($acp_pane == 'right')
 {
-
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/functions_online.' . PHP_EXT);
 
 	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 	$is_allowed = ($user->data['user_id'] == $founder_id) ? true : false;
@@ -530,15 +529,7 @@ elseif($acp_pane == 'right')
 	// End forum statistics
 
 	// Get users online information.
-	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_session_time, u.user_session_page, s.session_logged_in, s.session_ip, s.session_start, s.session_page, s.session_forum_id, s.session_topic_id, s.session_browser
-		FROM " . USERS_TABLE . " u, " . SESSIONS_TABLE . " s
-		WHERE s.session_logged_in = '1'
-			AND u.user_id = s.session_user_id
-			AND u.user_id <> " . ANONYMOUS . "
-			AND s.session_time >= " . (time() - ONLINE_REFRESH) . "
-		ORDER BY u.user_session_time DESC";
-	$result = $db->sql_query($sql);
-	$onlinerow_reg = $db->sql_fetchrowset($result);
+	$onlinerow_reg = get_online_users('site', true, true, '', 0, 0);
 
 	$sql = "SELECT session_page, session_forum_id, session_topic_id, session_logged_in, session_time, session_ip, session_start, session_browser
 		FROM " . SESSIONS_TABLE . "
@@ -781,7 +772,7 @@ elseif($acp_pane == 'right')
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 }
 else

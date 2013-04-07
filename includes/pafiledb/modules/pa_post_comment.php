@@ -21,7 +21,7 @@ class pafiledb_post_comment extends pafiledb_public
 	{
 		global $db, $cache, $config, $template, $images, $theme, $user, $lang, $bbcode, $bbcode_tpl;
 		global $html_entities_match, $html_entities_replace, $unhtml_specialchars_match, $unhtml_specialchars_replace;
-		global $pafiledb_functions, $pafiledb_config, $view_pic_upload, $session_length, $starttime, $post_image_lang;
+		global $pafiledb_functions, $pafiledb_config, $view_pic_upload, $starttime, $post_image_lang;
 
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
@@ -152,7 +152,7 @@ class pafiledb_post_comment extends pafiledb_public
 				'L_MSG_LENGTH_5' => $lang['Msg_length_5'],
 				'L_MSG_LENGTH_6' => $lang['Msg_length_6'],
 
-				'U_INDEX' => append_sid(CMS_PAGE_HOME),
+				'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 				'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 

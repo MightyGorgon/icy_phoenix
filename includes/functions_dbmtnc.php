@@ -101,6 +101,9 @@ $tables = array(
 	'logins',
 	'log',
 	'logs',
+	'megamail',
+	'moderator_cache',
+	'modules',
 	'news',
 	'notes',
 	'pa_auth',
@@ -127,7 +130,7 @@ $tables = array(
 	'quota_limits',
 	'ranks',
 	'rate_results',
-	'referrers',
+	'referers',
 	'registration',
 	'registration_desc',
 	'search_results',
@@ -342,7 +345,6 @@ $default_config = array(
 	'word_graph_max_words' => '100',
 	'word_graph_word_counts' => '1',
 	'search_min_chars' => '3',
-	'disable_registration_ip_check' => '1',
 	'extra_max' => '0',
 	'extra_display' => '0',
 	'upi2db_max_permanent_topics' => '20',
@@ -425,7 +427,6 @@ $default_config = array(
 	'shoutbox_floodinterval' => '3',
 	'display_shouts' => '5',
 	'stored_shouts' => '20',
-	'shoutbox_refreshtime' => '5000',
 	'shout_allow_guest' => '2',
 	'upi2db_max_new_posts_admin' => '0',
 	'upi2db_max_new_posts_mod' => '2000',
@@ -505,7 +506,7 @@ $default_config = array(
 	'global_disable_autolinks' => '1',
 	'global_disable_censor' => '1',
 	'disable_topic_view' => '1',
-	'disable_referrers' => '1',
+	'disable_referers' => '1',
 	'aprvmArchive' => '0',
 	'aprvmVersion' => '1.6.0',
 	'aprvmView' => '0',
@@ -519,7 +520,6 @@ $default_config = array(
 	'bots_legend' => '1',
 	'show_social_bookmarks' => '0',
 	'show_forums_online_users' => '0',
-	'cms_dock' => '0',
 	'allow_drafts' => '1',
 	'main_admin_id' => '2',
 	'allow_mods_edit_admin_posts' => '1',
@@ -540,7 +540,6 @@ $default_config = array(
 	'write_digests_log' => '0',
 	'no_bump' => '0',
 	'link_this_topic' => '0',
-	'cms_style' => '0',
 	'show_alpha_bar' => '0',
 	'db_log_actions' => '1',
 	'show_topic_description' => '0',
@@ -693,6 +692,28 @@ $default_config = array(
 	'session_last_gc' => '0',
 	'active_sessions' => '0',
 	'form_token_lifetime' => '7200',
+	'site_meta_keywords' => 'your keywords, comma, separated',
+	'site_meta_keywords_switch' => '1',
+	'site_meta_description' => 'Your Site Description',
+	'site_meta_description_switch' => '1',
+	'site_meta_author' => 'Author',
+	'site_meta_author_switch' => '1',
+	'site_meta_copyright' => 'Copyright',
+	'site_meta_copyright_switch' => '1',
+	'spam_posts_number' => '5',
+	'spam_disable_url' => '1',
+	'spam_hide_signature' => '1',
+	'spam_post_edit_interval' => '60',
+	'mobile_style_disable' => '0',
+	'session_gc' => '3600',
+	'session_last_visit_reset' => '0',
+	'check_dnsbl' => '0',
+	'check_dnsbl_posting' => '0',
+	'ajax_chat_msgs_refresh' => '5',
+	'ajax_chat_session_refresh' => '10',
+	'ajax_chat_link_type' => '0',
+	'ajax_chat_notification' => '1',
+	'ajax_chat_check_online' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,
@@ -806,7 +827,7 @@ function throw_error($msg_text = '', $err_line = '', $err_file = '', $sql = '')
 
 	// Include Tail and exit
 	echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT) . '">' . $lang['Back_to_DB_Maintenance'] . '</a></p>' . "\n");
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	exit;
 }
 
@@ -1146,15 +1167,6 @@ function create_forum()
 		}
 		$next_forum_order = $row['forum_order'] + 10;
 
-		$sql = "INSERT INTO " . FORUMS_RULES_TABLE . " (forum_id, rules) VALUES ('" . $next_forum_id . "', '')";
-		$db->sql_return_on_error(true);
-		$result = $db->sql_query($sql);
-		$db->sql_return_on_error(false);
-		if (!$result)
-		{
-			throw_error("Couldn't update forums rules data!", __LINE__, __FILE__, $sql);
-		}
-
 		$forum_permission = AUTH_ADMIN;
 		$sql = 'INSERT INTO ' . FORUMS_TABLE . " (forum_id, forum_type, parent_id, forum_name, forum_desc, forum_status, forum_order, forum_posts, forum_topics, forum_last_post_id, prune_next, prune_enable, auth_view, auth_read, auth_post, auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, auth_pollcreate, auth_attachments)
 			VALUES ($next_forum_id, " . FORUM_POST . ", $cat_id, '" . $db->sql_escape($lang['New_forum_name']) . "', '', " . FORUM_LOCKED . ", $next_forum_order, 0, 0, 0, NULL, 0, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, 0)";
@@ -1251,11 +1263,11 @@ function get_word_id($word)
 	global $stopword_array, $synonym_array;
 
 	// Check whether word is in stopword array
-	if (in_array($word, $stopword_array))
+	if (!empty($word) && !empty($stopword_array) && in_array($word, $stopword_array))
 	{
 		return NULL;
 	}
-	if (in_array($word, $synonym_array[1]))
+	if (!empty($word) && !empty($synonym_array[1]) && in_array($word, $synonym_array[1]))
 	{
 		$key = array_search($word, $synonym_array[1]);
 		$word = $synonym_array[0][$key];
@@ -1269,7 +1281,7 @@ function get_word_id($word)
 	$db->sql_return_on_error(false);
 	if (!$result)
 	{
-		include('./page_header_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 		throw_error("Couldn't get search word data!", __LINE__, __FILE__, $sql);
 	}
 	if ($row = $db->sql_fetchrow($result)) // Word was found
@@ -1291,7 +1303,7 @@ function get_word_id($word)
 		$db->sql_return_on_error(false);
 		if (!$result)
 		{
-			include('./page_header_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 			throw_error("Couldn't insert search word data!", __LINE__, __FILE__, $sql);
 		}
 		return $db->sql_nextid();

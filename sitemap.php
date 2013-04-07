@@ -16,13 +16,11 @@ include_once(IP_ROOT_PATH . 'includes/class_archives.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
 @set_time_limit(0);
-$mem_limit = check_mem_limit();
-@ini_set('memory_limit', $mem_limit);
 @ini_set('max_execution_time', '3600');
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -124,6 +122,19 @@ else
 	$xml_sitemap_footer = '
 </urlset>';
 
+	$sitemap_pages = array(CMS_PAGE_FORUM, CMS_PAGE_DLOAD, CMS_PAGE_ALBUM, CMS_PAGE_LINKS, CMS_PAGE_TAGS);
+	$sitemap_pages_change = 'always';
+	$sitemap_pages_priority = '1.0';
+	foreach ($sitemap_pages as $sitemap_page)
+	{
+		$xml_sitemap_body .= '
+		<url>
+			<loc>' . $server_url . $sitemap_page . '</loc>
+			<changefreq>' . $sitemap_pages_change . '</changefreq>
+			<priority>' . $sitemap_pages_priority . '</priority>
+		</url>';
+	}
+
 	// MG SITEMAP - FORUM - BEGIN
 	//Get a list of publicly viewable forums
 	$forumids = '';
@@ -173,7 +184,7 @@ else
 						AND t.forum_id IN (" . $forumids . ") $wheresql
 						ORDER BY t.topic_id " . $config['sitemap_sort'] . "
 						LIMIT " . $config['sitemap_topic_limit'];
-		$result = $db->sql_query($sql, 0, 'topics_sitemap_', TOPICS_CACHE_FOLDER);
+		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -223,7 +234,7 @@ else
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'
 							ORDER BY file_time DESC";
-		$result = $db->sql_query($sql, 0, 'sitemap_files_');
+		$result = $db->sql_query($sql);
 		$dl_priority = $config['sitemap_announce_priority'];
 		$dl_change = 'never';
 		while ($dl_sitemap = $db->sql_fetchrow($result))
@@ -310,7 +321,7 @@ else
 							WHERE p.pic_cat_id IN (" . $allowed_cat . ") $wheresql
 							ORDER BY p.pic_id " . $config['sitemap_sort'] . "
 							LIMIT " . $config['sitemap_topic_limit'];
-			$result = $db->sql_query($sql, 0, 'sitemap_pics_');
+			$result = $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -325,12 +336,12 @@ else
 					$url = $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'];
 				}
 				$xml_sitemap_body .= '
-		<url>
-			<loc>' . $url . '</loc>
-			<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
-			<changefreq>' . $pic_change . '</changefreq>
-			<priority>' . $pic_priority . '</priority>
-		</url>';
+	<url>
+		<loc>' . $url . '</loc>
+		<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
+		<changefreq>' . $pic_change . '</changefreq>
+		<priority>' . $pic_priority . '</priority>
+	</url>';
 				$lastpic = $row['pic_id'];
 			}
 			$db->sql_freeresult();
@@ -338,9 +349,11 @@ else
 	}
 	// MG SITEMAP - ALBUM - END
 
+	$mem_limit = check_mem_limit();
+	@ini_set('memory_limit', $mem_limit);
 	$xml_content = $xml_sitemap_header . $xml_sitemap_body . $xml_sitemap_footer;
 
-	// We close the connections here since we are not using page_footer...
+
 	garbage_collection();
 
 	// GZip - BEGIN

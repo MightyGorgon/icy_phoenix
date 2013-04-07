@@ -2,8 +2,8 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
-	<td class="row1" valign="top"><h1>{L_CMS_BLOCK_SETTINGS_TITLE}</h1><span class="genmed">{L_CMS_BLOCK_SETTINGS_TEXT}</span></td>
+	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
+	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_BLOCK_SETTINGS_TITLE}</h1><span class="genmed">{L_CMS_BLOCK_SETTINGS_TEXT}</span></td>
 </tr>
 </table>
 
@@ -26,8 +26,8 @@
 <tr class="{blocks.ROW_CLASS} {blocks.ROW_CLASS}h" style="background-image: none;">
 	<td class="{blocks.ROW_CLASS} row-center" style="background: none;">
 		<!-- IF blocks.S_MANAGE -->
-		<!-- IF S_B_EDIT --><a href="{blocks.U_EDIT}"><img src="{IMG_BLOCK_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<!-- ENDIF -->
-		<!-- IF S_B_DELETE --><a href="{blocks.U_DELETE}"><img src="{IMG_BLOCK_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a><!-- ENDIF -->
+		<!-- IF S_B_EDIT --><a href="{blocks.U_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<!-- ENDIF -->
+		<!-- IF S_B_DELETE --><a href="{blocks.U_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a><!-- ENDIF -->
 		<!-- ELSE -->-<!-- ENDIF -->
 	</td>
 	<td class="{blocks.ROW_CLASS}" style="background: none;"><a href="{blocks.U_EDIT}">{blocks.NAME}</a></td>

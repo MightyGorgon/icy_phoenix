@@ -49,41 +49,44 @@ while ($row = $db->sql_fetchrow($result))
 	$words_array[$word] = $word_count;
 }
 
-$minimum = 1000000;
-$maximum = -1000000;
-
-foreach (array_keys($words_array) as $word)
+if (!empty($words_array))
 {
-	if ($words_array[$word] > $maximum)
+	$minimum = 1000000;
+	$maximum = -1000000;
+
+	foreach (array_keys($words_array) as $word)
 	{
-		$maximum = $words_array[$word];
+		if ($words_array[$word] > $maximum)
+		{
+			$maximum = $words_array[$word];
+		}
+
+		if ($words_array[$word] < $minimum)
+		{
+			$minimum = $words_array[$word];
+		}
 	}
 
-	if ($words_array[$word] < $minimum)
-	{
-		$minimum = $words_array[$word];
-	}
-}
+	$words = array_keys($words_array);
+	sort($words);
 
-$words = array_keys($words_array);
-sort($words);
-
-$template->assign_block_vars('forum_wordgraph', array(
-	'L_WORDGRAPH' => $lang['Wordgraph'],
-	)
-);
-
-foreach ($words as $word)
-{
-	$ratio = intval(mt_rand(8, 14));
-	$template->assign_block_vars('forum_wordgraph.wordgraph_loop', array(
-		'WORD' => htmlspecialchars($word) . (($config['word_graph_word_counts']) ? (' (' . $words_array[$word] . ')') : ''),
-		'WORD_FONT_SIZE' => $ratio,
-		'WORD_SEARCH_URL' => $config['forum_tags_type'] ? append_sid(CMS_PAGE_SEARCH . '?search_keywords=' . htmlspecialchars(urlencode($word))) :  append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($word))),
+	$template->assign_block_vars('forum_wordgraph', array(
+		'L_WORDGRAPH' => $lang['Wordgraph'],
 		)
 	);
-}
 
-$template->assign_var_from_handle('FORUM_WORDGRAPH', 'forum_wordgraph');
+	foreach ($words as $word)
+	{
+		$ratio = intval(mt_rand(8, 14));
+		$template->assign_block_vars('forum_wordgraph.wordgraph_loop', array(
+			'WORD' => htmlspecialchars($word) . (($config['word_graph_word_counts']) ? (' (' . $words_array[$word] . ')') : ''),
+			'WORD_FONT_SIZE' => $ratio,
+			'WORD_SEARCH_URL' => $config['forum_tags_type'] ? append_sid(CMS_PAGE_SEARCH . '?search_keywords=' . htmlspecialchars(urlencode($word))) :  append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($word))),
+			)
+		);
+	}
+
+	$template->assign_var_from_handle('FORUM_WORDGRAPH', 'forum_wordgraph');
+}
 
 ?>

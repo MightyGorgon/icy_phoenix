@@ -87,7 +87,7 @@ function setQueryStringVal($var, $value)
 	}
 	else
 	{
-		$querystring = @ereg_replace("($var=[-][[:digit:]]{1,3})", $var . '=' . $value, $querystring);
+		$querystring = preg_replace("/($var=[-][[:digit:]]{1,3})/", $var . '=' . $value, $querystring);
 	}
 	return '?' . $querystring;
 }

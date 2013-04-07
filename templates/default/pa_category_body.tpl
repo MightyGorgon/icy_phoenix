@@ -10,7 +10,7 @@
 </tr>
 <!-- BEGIN no_cat_parent -->
 	<!-- IF no_cat_parent.IS_HIGHER_CAT -->
-	<tr><td class="forum-buttons2" align="left" colspan="4"><img src="{CAT_BLOCK_IMG}" style="vertical-align:middle;" />&nbsp;<span><a href="{no_cat_parent.U_CAT}">{no_cat_parent.CAT_NAME}</a></span></td></tr>
+	<tr><td class="forum-buttons2" align="left" colspan="4"><img src="{CAT_BLOCK_IMG}" style="vertical-align: middle;" />&nbsp;<span><a href="{no_cat_parent.U_CAT}">{no_cat_parent.CAT_NAME}</a></span></td></tr>
 	<!-- ELSE -->
 	<tr>
 		<td class="row1 row-center" width="30" style="padding-right:5px;"><a href="{no_cat_parent.U_CAT}" class="cattitle"><img src="{no_cat_parent.CAT_IMAGE}" alt="{no_cat_parent.CAT_NEW_FILE}" /></a></td>
@@ -44,14 +44,14 @@
 <!-- BEGIN file_rows -->
 <tr>
 	<td class="row1 row-center" width="30" style="padding-right: 5px;"><a href="{file_rows.U_FILE}" class="topiclink"><img src="{file_rows.PIN_IMAGE}" alt="" /></a></td>
-	<td class="row1h{file_rows.XS_NEW} row-forum" onclick="window.location.href='{file_rows.U_FILE}'" width="75%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span>&nbsp;
+	<td class="row1h{file_rows.XS_NEW} row-forum" onclick="window.location.href='{file_rows.U_FILE}'" width="75%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span><!-- IF S_ADMIN -->&nbsp;[&nbsp;<span class="gensmall"><a href="{file_rows.U_FILE_EDIT}">{L_EDIT}</a>&nbsp;]<!-- ENDIF -->
 	<!-- IF file_rows.IS_NEW_FILE -->
 	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}" /> -->
 	<!-- ENDIF -->
 	<br /><span class="genmed">{file_rows.FILE_DESC}</span></td>
 	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails">{file_rows.DATE}</td>
 	<td class="row2 row-center"><span class="postdetails">{file_rows.FILE_DLS}</td>
-	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{file_rows.RATING}.png" alt="" /></td>
+	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{file_rows.RATING}.png" alt="" /></span></td>
 	<td class="row2 row-center">
 	<!-- IF file_rows.HAS_SCREENSHOTS -->
 		<!-- IF file_rows.SS_AS_LINK -->

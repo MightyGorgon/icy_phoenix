@@ -24,7 +24,7 @@ include(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -51,7 +51,7 @@ if($mode == 'smilies')
 $pic_id = request_var('pic_id', 0);
 if ($pic_id <= 0)
 {
-	message_die(GENERAL_MESSAGE, 'No pics specified');
+	message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
 $comment_id = request_var('comment_id', 0);
@@ -80,7 +80,7 @@ else
 $sort_method = request_var('sort_method', $album_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'pic_view_count'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value(strtoupper($sort_order), array('ASC', 'DESC'));
 
 $sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
@@ -96,17 +96,19 @@ if ($is_slideshow)
 	$gen_simple_header = true;
 	$show_template = 'album_slideshow_body.tpl';
 	$nuffimage_pic = ($picm == false) ? 'album_pic.' : 'album_picm.';
+	$nuff_display = false;
 }
 else
 {
 	//$show_template = 'album_showpage_body.tpl';
-	if ((isset($_GET['nuffimage']) || isset($_POST['nuffimage'])) & ($album_config['enable_nuffimage'] == 1))
+	if ((isset($_GET['nuffimage']) || isset($_POST['nuffimage'])) && ($album_config['enable_nuffimage'] == 1))
 	{
 		include(ALBUM_MOD_PATH . 'album_nuffimage_box.' . PHP_EXT);
 		$template->assign_var_from_handle('NUFFIMAGE_BOX', 'nuffimage_box');
 		$show_template = 'album_pic_nuffed_body.tpl';
 		$nuffimage_vars = '&amp;nuffimage=true';
 		$nuffimage_pic = 'album_pic_nuffed.';
+		$nuff_display = true;
 		$nuff_http_full_string = $nuff_http['full_string'];
 		$template->assign_block_vars('disable_pic_nuffed', array(
 			'L_PIC_UNNUFFED_CLICK' => $lang['Nuff_UnClick'],
@@ -119,6 +121,7 @@ else
 		$show_template = 'album_showpage_body.tpl';
 		$nuffimage_vars = '';
 		$nuffimage_pic = ($picm == false) ? 'album_pic.' : 'album_picm.';
+		$nuff_display = false;
 		$nuff_http_full_string = '';
 	}
 }
@@ -206,6 +209,12 @@ else
 $first_pic_id = $total_pic_rows[0]['pic_id'];
 $last_pic_id = $total_pic_rows[$total_pic_count - 1]['pic_id'];
 
+// ------------------------------------
+// PREVIOUS & NEXT
+// ------------------------------------
+// JHL these variables were being reset after some tests had been made - now moved up to the correct position
+$no_prev_pic = false;
+$no_next_pic = false;
 if ($pic_array_id == 0)
 {
 	$no_prev_pic = true;
@@ -224,9 +233,6 @@ if ($pic_array_id == ($total_pic_count - 1))
 	}
 }
 
-// ------------------------------------
-// PREVIOUS & NEXT
-// ------------------------------------
 $pic_id_old = $total_pic_rows[$pic_array_id]['pic_id'];
 if(isset($_GET['mode']) && ($_GET['mode'] == 'next'))
 {
@@ -235,11 +241,6 @@ if(isset($_GET['mode']) && ($_GET['mode'] == 'next'))
 	{
 		$no_prev_pic = true;
 	}
-	else
-	{
-		$no_prev_pic = false;
-		$no_next_pic = false;
-	}
 }
 elseif(isset($_GET['mode']) && ($_GET['mode'] == 'prev'))
 {
@@ -247,11 +248,6 @@ elseif(isset($_GET['mode']) && ($_GET['mode'] == 'prev'))
 	if ($new_pic_array_id == ($total_pic_count - 1))
 	{
 		$no_next_pic = true;
-	}
-	else
-	{
-		$no_next_pic = false;
-		$no_prev_pic = false;
 	}
 }
 else
@@ -263,7 +259,7 @@ $pic_cat_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_cat_id'];
 $pic_time_tmp = $total_pic_rows[$new_pic_array_id]['pic_time'];
 $pic_user_id_tmp = $total_pic_rows[$new_pic_array_id]['pic_user_id'];
 $next_pic_count = ($total_pic_count - $new_pic_array_id - 1);
-$prev_pic_count = ($new_pic_array_id);
+$prev_pic_count = $new_pic_array_id;
 
 if(isset($_GET['mode']))
 {
@@ -315,6 +311,7 @@ if (!$album_config['invert_nav_arrows'])
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
+				'CLASS' => ($i == $new_pic_array_id) ? 'image-current' : 'image',
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #ff5522;' : '',
 				)
 			);
@@ -353,6 +350,7 @@ else
 				'PIC_TITLE' => $total_pic_rows[$i]['pic_title'],
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
+				'CLASS' => ($i == $new_pic_array_id) ? 'image-current' : 'image',
 				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
 				)
 			);
@@ -399,7 +397,7 @@ if(!empty($comment_id) && $album_config['comment'] == 1)
 // Get this pic info and current category info
 // ------------------------------------
 
-$sql = "SELECT p.*, ac.*, u.user_id, u.username, u.user_active, u.user_color, u.user_rank, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments_count
+$sql = "SELECT p.*, ac.*, u.user_id, u.username, u.user_active, u.user_color, u.user_rank, u.user_level, u.user_avatar, u.user_avatar_type, u.user_allowavatar, r.rate_pic_id, AVG(r.rate_point) AS rating, COUNT(DISTINCT c.comment_id) AS comments_count
 		FROM " . ALBUM_CAT_TABLE . " AS ac, " . ALBUM_TABLE . " AS p
 			LEFT JOIN " . USERS_TABLE . " AS u ON p.pic_user_id = u.user_id
 			LEFT JOIN " . ALBUM_COMMENT_TABLE . " AS c ON p.pic_id = c.comment_pic_id
@@ -550,7 +548,7 @@ if ($album_nav_cat_desc != '')
 {
 	$nav_server_url = create_server_url();
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+	$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 }
 
 if(empty($comment_text) && !isset($_POST['rating']))
@@ -902,6 +900,18 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	}
 
 	// Mighty Gorgon - Pic Size - BEGIN
+	/*
+	* JHL: this code was added and now removed by me because it is a brainfart for two reasons
+	* - the thumbnail may not yet exist (!)
+	* - the displayed page format would change as the real thumnail sizes may differ
+	*/
+	/*
+	$pic_info = pic_info($thispic['pic_filename'], $thispic['pic_thumbnail'], $thispic['pic_title']);
+	$pic_thumbnail_path = $pic_info['thumbnail_m_fullpath'];
+	$pic_thumbnail_size = @getimagesize($pic_thumbnail_path);
+	$pic_thumbnail_width = $pic_thumbnail_size[0];
+	$pic_thumbnail_height = $pic_thumbnail_size[1];
+	*/
 	$pic_fullpath = ALBUM_UPLOAD_PATH . $thispic['pic_filename'];
 	$pic_size = @getimagesize($pic_fullpath);
 	$pic_width = $pic_size[0];
@@ -912,20 +922,15 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	if (($album_config['show_exif'] == 1) && (function_exists('exif_read_data')))
 	{
 		//echo(function_exists(exif_read_data));
-		$template->assign_block_vars('switch_exif_enabled', array());
 		$xif = @exif_read_data($pic_fullpath, 0, true);
 		if (!empty($xif[IFD0]) || !empty($xif[EXIF]))
 		{
+			$template->assign_block_vars('switch_exif_enabled', array());
 			include_once(ALBUM_MOD_PATH . 'album_exif_info.' . PHP_EXT);
 		}
 	}
 
-	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-	$server_name = trim($config['server_name']);
-	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-	$script_name = ($script_name == '') ? '' : $script_name . '/';
-	$server_path = $server_protocol . $server_name . $server_port . $script_name;
+	$server_url = create_server_url();
 
 	$thumbnail_file = append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $pic_id));
 	if (($album_config['thumbnail_cache'] == true) && ($album_config['quick_thumbs'] == true))
@@ -974,6 +979,17 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id']));
 	$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $thispic['pic_id']));
 
+	$pic_full_set = (($picm == false) || ($nuff_display == true)) ? true : false;
+
+	$user_info = array();
+	$user_info = generate_user_info($thispic);
+	foreach ($user_info as $k => $v)
+	{
+		$$k = $v;
+	}
+
+	$poster_avatar = $user_info['avatar'];
+
 	$template->assign_vars(array(
 		'CAT_TITLE' => $thispic['cat_title'],
 		'U_VIEW_CAT' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)),
@@ -985,16 +1001,16 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'MOVE' => ($auth_data['moderator']) ? '<a href="' . append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=move&amp;pic_id=' . $thispic['pic_id'])) . '">' . $move_link_content . '</a>' : '',
 		'COPY' => ($auth_data['moderator']) ? '<a href="'. append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=copy&amp;pic_id=' . $thispic['pic_id'])) . '">' . $copy_link_content . '</a>' : '',
 
-		'U_PIC_FULL_URL' => $server_path . $pic_fullpath,
+		'U_PIC_FULL_URL' => $server_url . $pic_fullpath,
 
 		//'U_PIC' => append_sid(album_append_uid($nuffimage_pic . PHP_EXT . '?pic_id=' . $pic_id . $sort_append . $full_size_param . $nuff_http_full_string)),
 		'U_PIC' => $pic_link,
 		'U_PIC_SP' => $pic_sp_link,
 		'U_PIC_DL' => $pic_dl_link,
 		//'U_PIC_L1' => ($picm == false) ? '' : '<a href="album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $nuffimage_vars . '">',
-		'U_PIC_L1' => ($picm == false) ? '' : '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $sort_append . $nuffimage_vars)) . '">',
-		'U_PIC_L2' => ($picm == false) ? '' : '</a>',
-		'U_PIC_CLICK' => ($picm == false) ? '' : $lang['Click_enlarge'],
+		'U_PIC_L1' => ($pic_full_set) ? '' : '<a href="' . append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?full=true&amp;pic_id=' . $pic_id . $sort_append . $nuffimage_vars)) . '">',
+		'U_PIC_L2' => ($pic_full_set) ? '' : '</a>',
+		'U_PIC_CLICK' => ($pic_full_set) ? '' : $lang['Click_enlarge'],
 		'U_PIC_THUMB' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $pic_id . $sort_append)),
 		'U_SMILEY_CREATOR' => append_sid('smiley_creator.' . PHP_EXT . '?mode=text2shield'),
 
@@ -1007,19 +1023,26 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		'L_PIC_DETAILS' => $lang['Pic_Details'],
 		'L_PIC_SIZE' => $lang['Pic_Size'],
 		'L_PIC_TYPE' => $lang['Pic_Type'],
+		// Mighty Gorgon: JHL wants to remove this code by replacing the size with the ones added in album_config, but it's better to keep this code, to make sure proportions are always respected
+		// JHL: No, see the reasoning above
+		/*
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $pic_thumbnail_height,
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $pic_thumbnail_width,
+		*/
+		'PIC_HEIGHT' => ($pic_full_set) ? $pic_height : $album_config['midthumb_height'],
+		'PIC_WIDTH' => ($pic_full_set) ? $pic_width : $album_config['midthumb_width'],
 		'PIC_SIZE' => $pic_width . ' x ' . $pic_height . ' (' . intval($pic_filesize/1024) . 'KB)',
 		'PIC_TYPE' => strtoupper(substr($thispic['pic_filename'], strlen($thispic['pic_filename']) - 3, 3)),
 		// Mighty Gorgon - Pic Size - END
-
-		//'PIC_RATING' => $image_rating . (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : ''),
-		'PIC_RATING' => $image_rating . (($own_pic_rate == true) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
 
 		'PIC_ID' => $pic_id,
 		'PIC_BBCODE' => '[albumimg]' . $pic_id . '[/albumimg]',
 		'PIC_TITLE' => $thispic['pic_title'],
 		'PIC_DESC' => $pic_desc,
+		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
 		'POSTER' => $poster,
+		'POSTER_AVATAR' => $poster_avatar,
 
 		'PIC_TIME' => create_date_ip($config['default_dateformat'], $thispic['pic_time'], $config['board_timezone']),
 		'PIC_VIEW' => $thispic['pic_view_count'],
@@ -1071,8 +1094,9 @@ if(empty($comment_text) && !isset($_POST['rating']))
 
 		// Rating
 		//'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($already_rated) ? $lang['Already_rated'] : $lang['Please_Rate_It']),
-		'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : (($own_pic_rate == true) ? $lang['Own_Pic_Rate'] : (($already_rated == true) ? $lang['Already_rated'] : $lang['Please_Rate_It'])),
-		'PIC_RATING' => $image_rating . (($own_pic_rate == true) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : (($already_rated == true) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
+		'S_RATE_MSG' => (!$user->data['session_logged_in'] && $auth_data['rate'] == 0) ? $lang['Login_To_Vote'] : ((($own_pic_rate == true) && ($user->data['user_level'] != ADMIN)) ? $lang['Own_Pic_Rate'] : ((($already_rated == true) && ($user->data['user_level'] != ADMIN)) ? $lang['Already_rated'] : $lang['Please_Rate_It'])),
+		'PIC_RATING' => $image_rating . ((($own_pic_rate == true) && ($user->data['user_level'] != ADMIN)) ? '&nbsp;(' . $lang['Own_Pic_Rate'] . ')' : ((($already_rated == true) && ($user->data['user_level'] != ADMIN)) ? ('&nbsp;(' . $lang['Already_rated'] . ')') : '')),
+
 		'L_CURRENT_RATING' => $lang['Current_Rating'],
 		'L_PLEASE_RATE_IT' => $lang['Please_Rate_It']
 		)
@@ -1084,11 +1108,18 @@ if(empty($comment_text) && !isset($_POST['rating']))
 		$template->assign_block_vars('social_bookmarks', array());
 	}
 	$topic_title_enc = urlencode(ip_utf8_decode($thispic['pic_title']));
-	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . '&amp;mode=prev' . $nuffimage_vars . $sort_append));
+	$topic_title_enc_utf8 = urlencode($thispic['pic_title']);
+	$topic_link = 'album_showpage.' . PHP_EXT . '?pic_id=' . $thispic['pic_id'] . $full_size_param . $nuffimage_vars . $sort_append;
+
+	$topic_url_enc = urlencode(ip_utf8_decode(create_server_url() . $topic_link));
+	$topic_url_enc_utf8 = urlencode(create_server_url() . $topic_link);
 	$template->assign_vars(array(
 		// Social Bookmarks - BEGIN
 		'TOPIC_TITLE_ENC' => $topic_title_enc,
+		'TOPIC_TITLE_ENC_UTF8' => $topic_title_enc_utf8,
 		'TOPIC_URL_ENC' => $topic_url_enc,
+		'TOPIC_URL_ENC_UTF8' => $topic_url_enc_utf8,
+		'U_TELL' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . $topic_title_enc . '&amp;topic_url=' . urlencode(ip_utf8_decode(str_replace('&amp;', '&', $topic_link)))),
 		'L_SHARE_TOPIC' => $lang['ShareThisTopic'],
 		// Social Bookmarks - END
 		)

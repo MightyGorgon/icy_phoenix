@@ -15,6 +15,7 @@
 */
 
 define('IN_ICYPHOENIX', true);
+define('IN_AJAX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
@@ -25,7 +26,7 @@ define('AJAX_HEADERS', true);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -38,17 +39,43 @@ if ($sid != $user->data['session_id'])
 		'result' => AJAX_ERROR,
 		'error_msg' => 'Invalid session_id'
 	);
+	AJAX_headers();
 	AJAX_message_die($result_ar);
 }
 
 // Get mode
 $mode = request_var('mode', '');
+$plugin = request_var('plugin', '', true);
+$json = request_var('json', 0);
+$json = !empty($plugin) ? true : $json;
+$term = request_var('term', '', true);
 $search = request_var('search', 0);
 $username = request_var('username', '', true);
 $email = request_var('email', '', true);
 
 // Send AJAX headers - this is to prevent browsers from caching possible error pages
-AJAX_headers();
+AJAX_headers($json);
+
+if (!empty($plugin))
+{
+	$plugin_name = $plugin;
+	if (empty($config['plugins'][$plugin_name]['enabled']) || empty($config['plugins'][$plugin_name]['dir']) || !file_exists(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT) || !file_exists(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'includes/class_ajax.' . PHP_EXT))
+	{
+		$result_ar = array(
+			'id' => 0,
+			'value' => 'ERROR'
+		);
+		AJAX_message_die($result_ar, $json);
+	}
+
+	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT);
+	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'includes/class_ajax.' . PHP_EXT);
+	$class_ajax = new class_ajax();
+	$class_ajax->mode = $mode;
+	$class_ajax->json = $json;
+	$class_ajax->term = $term;
+	$class_ajax->ajax();
+}
 
 if ($mode == 'checkusername_post')
 {
@@ -165,7 +192,7 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 		{
 			$result_ar = array(
 				'result' => AJAX_PM_USERNAME_ERROR,
-				'error_msg' => $lang['No_such_user']
+				'error_msg' => $lang['NO_USER']
 			);
 			AJAX_message_die($result_ar);
 		}
@@ -189,7 +216,7 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 			$username_select .= '<option value="-1"> --- </option>';
 			for ($i = 0; $i < $username_count; $i++)
 			{
-				$username_select .= '<option value="'. $username_rows[$i]['username'] .'">'. $username_rows[$i]['username'] .'</option>';
+				$username_select .= '<option value="' . $username_rows[$i]['username'] . '">' . $username_rows[$i]['username'] . '</option>';
 			}
 			$username_select .= '</select>';
 
@@ -205,6 +232,101 @@ elseif (($mode == 'checkusername_pm') || ($mode == 'search_user'))
 		'result' => AJAX_OP_COMPLETED
 	);
 	AJAX_message_die($result_ar);
+}
+elseif ($mode == 'user_search_json')
+{
+	$username = $term;
+	if (empty($username))
+	{
+		$result_ar = array(
+			'id' => 0,
+			'value' => $lang['NO_USER']
+		);
+		AJAX_message_die($result_ar, $json);
+	}
+
+	$username = phpbb_clean_username($username);
+	$username = '*' . $username . '*';
+	$username = preg_replace('#\*#', '%', $username);
+
+	$sql = "SELECT user_id, username
+					FROM " . USERS_TABLE . "
+					WHERE username_clean LIKE '" . $db->sql_escape(utf8_clean_string($username)) . "'
+						AND user_id <> " . ANONYMOUS . "
+					ORDER BY username";
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
+	{
+		$result_ar = array(
+			'id' => 0,
+			'value' => $lang['NO_USER']
+		);
+		AJAX_message_die($result_ar, $json);
+	}
+	$users_rows = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+	$users_data = array();
+	if (!empty($users_rows))
+	{
+		foreach ($users_rows as $user_row)
+		{
+			$users_data[] = array(
+				'id' => $user_row['user_id'],
+				'value' => $user_row['username']
+			);
+		}
+	}
+
+	AJAX_message_die($users_data, $json);
+}
+elseif ($mode == 'tags_search_json')
+{
+	$tag_text = $term;
+	if (empty($tag_text) || ($tag_text == $lang['TAGS_SEARCH']))
+	{
+		$result_ar = array(
+			'id' => 0,
+			'value' => $lang['TAGS_SEARCH_NO_RESULTS']
+		);
+		AJAX_message_die($result_ar, $json);
+	}
+
+	$tag_text = ip_clean_string(urldecode(trim($tag_text)), $lang['ENCODING'], true);
+	$tag_text = '*' . $tag_text . '*';
+	$tag_text = preg_replace('#\*#', '%', $tag_text);
+
+	$tags_list = array();
+	$sql = "SELECT tag_id, tag_text FROM " . TOPICS_TAGS_LIST_TABLE . " WHERE tag_text LIKE '" . $db->sql_escape(utf8_clean_string($tag_text)) . "'";
+	$db->sql_return_on_error(true);
+	$result = $db->sql_query($sql);
+	$db->sql_return_on_error(false);
+	if (!$result)
+	{
+		$result_ar = array(
+			'id' => 0,
+			'value' => $lang['TAGS_SEARCH_NO_RESULTS']
+		);
+		AJAX_message_die($result_ar, $json);
+	}
+	$tags_list = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+	$tags_list_output = array();
+	if (!empty($tags_list))
+	{
+		$server_url = create_server_url();
+		foreach ($tags_list as $k => $v)
+		{
+			$tags_list_output[] = array(
+				'id' => $v['tag_id'],
+				'value' => $v['tag_text'],
+				'url' => $server_url . 'tags.' . PHP_EXT . '?mode=view&tag_text=' . htmlspecialchars(urlencode($v['tag_text']))
+			);
+		}
+	}
+
+	AJAX_message_die($tags_list_output, $json);
 }
 elseif ($mode == 'checkemail')
 {

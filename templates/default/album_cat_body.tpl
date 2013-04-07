@@ -83,9 +83,15 @@
 			{L_POSTER}: {index_pics_block.picrow.pic_detail.POSTER}<br />
 			{L_POSTED}: {index_pics_block.picrow.pic_detail.TIME}<br />
 			{L_VIEW}: {index_pics_block.picrow.pic_detail.VIEW}<br />
-			{index_pics_block.picrow.pic_detail.RATING}
-			{index_pics_block.picrow.pic_detail.COMMENTS}
-			{index_pics_block.picrow.pic_detail.IP}
+			<!-- IF index_pics_block.picrow.pic_detail.RATING --> 
+			{index_pics_block.picrow.pic_detail.RATING}<br />
+			<!-- ENDIF -->
+			<!-- IF index_pics_block.picrow.pic_detail.COMMENTS --> 
+			{index_pics_block.picrow.pic_detail.COMMENTS}<br />
+			<!-- ENDIF -->
+			<!-- IF index_pics_block.picrow.pic_detail.IP --> 
+			{index_pics_block.picrow.pic_detail.IP}<br />
+			<!-- ENDIF -->
 			{index_pics_block.picrow.pic_detail.EDIT} {index_pics_block.picrow.pic_detail.DELETE} {index_pics_block.picrow.pic_detail.LOCK} {index_pics_block.picrow.pic_detail.MOVE} {index_pics_block.picrow.pic_detail.COPY} {index_pics_block.picrow.pic_detail.AVATAR_PIC} <!-- {index_pics_block.picrow.pic_detail.IMG_BBCODE} -->
 		</div>
 	</td>
@@ -164,17 +170,23 @@
 <tr>
 	<!-- BEGIN recent_detail -->
 	<td class="row2 row-center">
-		<span class="gensmall">
+		<div class="gensmall">
 			{L_POSTER}: {recent_pics_block.recent_pics.recent_detail.POSTER}<br />
 			{L_PIC_TITLE}: <a href="{recent_pics_block.recent_pics.recent_detail.U_PIC_SP}">{recent_pics_block.recent_pics.recent_detail.PIC_TITLE}</a><br />
 			{L_DOWNLOAD}: <a href="{recent_pics_block.recent_pics.recent_detail.U_PIC_DL}">{recent_pics_block.recent_pics.recent_detail.PIC_TITLE}</a><br />
 			{L_PIC_ID}: {recent_pics_block.recent_pics.recent_detail.PIC_ID}<br />
 			{L_POSTED}: {recent_pics_block.recent_pics.recent_detail.TIME}<br />
 			{L_VIEW}: {recent_pics_block.recent_pics.recent_detail.VIEW}<br />
-			{recent_pics_block.recent_pics.recent_detail.RATING}
-			{recent_pics_block.recent_pics.recent_detail.COMMENTS}
-			{recent_pics_block.recent_pics.recent_detail.IP}
-		</span>
+			<!-- IF recent_pics_block.recent_pics.recent_detail.RATING --> 
+			{recent_pics_block.recent_pics.recent_detail.RATING}<br />
+			<!-- ENDIF -->
+			<!-- IF recent_pics_block.recent_pics.recent_detail.COMMENTS --> 
+			{recent_pics_block.recent_pics.recent_detail.COMMENTS}<br />
+			<!-- ENDIF -->
+			<!-- IF recent_pics_block.recent_pics.recent_detail.IP --> 
+			{recent_pics_block.recent_pics.recent_detail.IP}<br />
+			<!-- ENDIF -->
+		</div>
 	</td>
 	<!-- END recent_detail -->
 </tr>
@@ -203,17 +215,23 @@
 <tr>
 <!-- BEGIN mostviewed_detail -->
 	<td class="row2 row-center">
-		<span class="gensmall">
-			{L_POSTER}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_POSTER}<br />
+		<div class="gensmall">
+			{L_POSTER}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.POSTER}<br />
 			{L_PIC_TITLE}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_SP}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_TITLE}</a><br />
 			{L_DOWNLOAD}: <a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.U_PIC_DL}">{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_TITLE}</a><br />
 			{L_PIC_ID}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.PIC_ID}<br />
-			{L_POSTED}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_TIME}<br />
-			{L_VIEW}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_VIEW}<br />
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_RATING}
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_COMMENTS}
-			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.H_IP}
-		</span>
+			{L_POSTED}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.TIME}<br />
+			{L_VIEW}: {mostviewed_pics_block.mostviewed_pics.mostviewed_detail.VIEW}<br />
+			<!-- IF mostviewed_pics_block.mostviewed_pics.mostviewed_detail.RATING --> 
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.RATING}<br />
+			<!-- ENDIF -->
+			<!-- IF mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS --> 
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.COMMENTS}<br />
+			<!-- ENDIF -->
+			<!-- IF mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP --> 
+			{mostviewed_pics_block.mostviewed_pics.mostviewed_detail.IP}<br />
+			<!-- ENDIF -->
+		</div>
 	</td>
 <!-- END mostviewed_detail -->
 </tr>

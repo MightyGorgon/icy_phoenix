@@ -1,5 +1,4 @@
 Subject: New pic comment posted to {PIC_TITLE}
-Charset: iso-8859-1
 
 Hello,
 

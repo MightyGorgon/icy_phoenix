@@ -20,7 +20,7 @@ class class_captcha
 {
 
 	var $attempts_limit = 3;
-	var $code_lenght = 6;
+	var $code_length = 6;
 
 	/*
 	* Creates CAPTCHA image
@@ -29,7 +29,8 @@ class class_captcha
 	{
 		global $db, $cache, $config, $template, $user, $lang;
 
-		$this->clear_confirm_table();
+		// Clean old sessions and old confirm codes
+		$user->confirm_gc();
 
 		// Generate the required confirmation code
 		$confirm_image = '';
@@ -37,7 +38,7 @@ class class_captcha
 		// 0 (zero) could get confused with O (the letter) so we change it
 		//$code = substr(str_replace(array('0'), array('Z'), strtoupper(base_convert($code, 16, 35))), 2, 6);
 		// Easiest to read charset... some letters and numbers may be ambiguous
-		$code = substr(str_replace(array('0', '1', '2', '5', 'O', 'I', 'Z', 'S'), array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), strtoupper(base_convert($code, 16, 35))), 2, $this->code_lenght);
+		$code = substr(str_replace(array('0', '1', '2', '5', 'O', 'I', 'Z', 'S'), array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), strtoupper(base_convert($code, 16, 35))), 2, $this->code_length);
 		$confirm_id = md5(uniqid($user->ip));
 		$sql = "INSERT INTO " . CONFIRM_TABLE . " (confirm_id, session_id, code)
 			VALUES ('" . $db->sql_escape($confirm_id) . "', '" . $db->sql_escape($user->data['session_id']) . "', '" . $db->sql_escape($code) . "')";
@@ -50,7 +51,7 @@ class class_captcha
 			'S_CAPTCHA' => true,
 			'CONFIRM_IMG' => $confirm_image,
 			'CAPTCHA_HIDDEN' => '<input type="hidden" name="confirm_id" value="' . $confirm_id . '" />',
-			'CAPTCHA_CODE_LENGHT' => $this->code_lenght,
+			'CAPTCHA_CODE_LENGTH' => $this->code_length,
 
 			'L_CONFIRM_CODE_IMPAIRED' => sprintf($lang['CONFIRM_CODE_IMPAIRED'], '<a href="mailto:' . $config['board_email'] . '">', '</a>'),
 			)
@@ -58,35 +59,6 @@ class class_captcha
 
 		$return_array = array('confirm_id' => $confirm_id, 'confirm_image' => $confirm_image);
 		return $return_array;
-	}
-
-	/*
-	* Clear confirm table for expired sessions
-	*/
-	function clear_confirm_table()
-	{
-		global $db, $cache;
-
-		// Request all active sessions
-		$sql = "SELECT session_id FROM " . SESSIONS_TABLE;
-		$result = $db->sql_query($sql);
-
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$confirm_sql = '';
-			do
-			{
-				$confirm_sql .= (($confirm_sql != '') ? ', ' : '') . "'" . $row['session_id'] . "'";
-			}
-			while ($row = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
-
-			// Remove expired sessions
-			$sql_del = "DELETE FROM " . CONFIRM_TABLE . " WHERE session_id NOT IN (" . $confirm_sql . ")";
-			$result_del = $db->sql_query($sql_del);
-		}
-
-		return true;
 	}
 
 	/*

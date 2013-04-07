@@ -42,9 +42,9 @@ if ($cancel)
 
 $mode = request_var('mode', '');
 
-$delimeter  = '=+:';
+$delimiter = '=+:';
 
-// Read a listing of uploaded smilies for use in the add or edit smliey code...
+// Read a listing of uploaded smilies for use in the add or edit smiley code...
 $dir = @opendir(IP_ROOT_PATH . $config['smilies_path']);
 while($file = @readdir($dir))
 {
@@ -63,6 +63,15 @@ while($file = @readdir($dir))
 	}
 }
 @closedir($dir);
+
+if (!empty($smiley_images))
+{
+	sort($smiley_images);
+}
+if (!empty($smiley_paks))
+{
+	sort($smiley_paks);
+}
 
 // Select main mode
 if(check_http_var_exists('import_pack', false))
@@ -123,7 +132,7 @@ if(check_http_var_exists('import_pack', false))
 //Smilies Order End
 		for($i = 0; $i < sizeof($fcontents); $i++)
 		{
-			$smile_data = explode($delimeter, trim(addslashes($fcontents[$i])));
+			$smile_data = explode($delimiter, trim(addslashes($fcontents[$i])));
 
 			for($j = 2; $j < sizeof($smile_data); $j++)
 			{
@@ -224,8 +233,8 @@ elseif(check_http_var_exists('export_pack', false))
 		$smile_pak = '';
 		for($i = 0; $i < sizeof($resultset); $i++)
 		{
-			$smile_pak .= $resultset[$i]['smile_url'] . $delimeter;
-			$smile_pak .= $resultset[$i]['emoticon'] . $delimeter;
+			$smile_pak .= $resultset[$i]['smile_url'] . $delimiter;
+			$smile_pak .= $resultset[$i]['emoticon'] . $delimiter;
 			$smile_pak .= $resultset[$i]['code'] . "\n";
 		}
 
@@ -570,8 +579,8 @@ else
 		'L_EXPORT_PACK' => $lang['export_smile_pack'],
 		// Smilies ORDER BEGIN
 		'L_MOVE' => $lang['Move'],
-		'L_MOVE_UP' => $lang['Move_up'],
-		'L_MOVE_DOWN' => $lang['Move_down'],
+		'L_MOVE_UP' => $lang['MOVE_UP'],
+		'L_MOVE_DOWN' => $lang['MOVE_DOWN'],
 		'L_MOVE_TOP' => $lang['Move_top'],
 		'L_MOVE_END' => $lang['Move_end'],
 		'L_POSITION_NEW_SMILIES' => $lang['position_new_smilies'],
@@ -600,6 +609,7 @@ else
 			'ROW_CLASS' => $row_class,
 
 			'SMILEY_ID' => $smilies[$i]['smilies_id'],
+			'SMILEY_URL' => $smilies[$i]['smile_url'],
 			'SMILEY_IMG' => IP_ROOT_PATH . $config['smilies_path'] . '/' . $smilies[$i]['smile_url'],
 			'CODE' => $smilies[$i]['code'],
 			'EMOT' => $smilies[$i]['emoticon'],
@@ -620,6 +630,6 @@ else
 }
 
 // Page Footer
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

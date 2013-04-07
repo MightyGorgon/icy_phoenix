@@ -117,7 +117,7 @@ if(GetCookie(tmp) == '2')
 	<td class="row2" colspan="3">{NAMES_OF_ADMINISTRATORS}&nbsp;</td>
 </tr>
 <tr>
-	<td class="row3" nowrap width="10">&nbsp;</td>
+	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row1" nowrap="nowrap" colspan="2">{L_NUMBER_JUNIOR_ADMINISTRATORS}:</td>
 	<td class="row2" colspan="3">{NUMBER_OF_JUNIOR_ADMINISTRATORS}</td>
 </tr>

@@ -6,17 +6,16 @@
 <tr>
 	<th>&nbsp;{L_ACRONYM}&nbsp;</th>
 	<th>&nbsp;{L_DESCRIPTION}&nbsp;</th>
-	<th colspan="2">{L_ACTION}</th>
+	<th>{L_ACTION}</th>
 </tr>
 <!-- BEGIN acronyms -->
 <tr>
 	<td class="{acronyms.ROW_CLASS}">{acronyms.ACRONYM}</td>
 	<td class="{acronyms.ROW_CLASS}">{acronyms.DESCRIPTION}</td>
-	<td class="{acronyms.ROW_CLASS} row-center">&nbsp;<a href="{acronyms.U_ACRONYM_EDIT}">{L_EDIT}</a>&nbsp;</td>
-	<td class="{acronyms.ROW_CLASS} row-center">&nbsp;<a href="{acronyms.U_ACRONYM_DELETE}">{L_DELETE}</a>&nbsp;</td>
+	<td class="{acronyms.ROW_CLASS} row-center">&nbsp;<a href="{acronyms.U_ACRONYM_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{acronyms.U_ACRONYM_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a>&nbsp;</td>
 </tr>
 <!-- END acronyms -->
-<tr><td class="cat" colspan="4" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="add" value="{L_ADD_ACRONYM}" class="mainoption" /></td></tr>
+<tr><td class="cat" colspan="3" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="add" value="{L_ADD_ACRONYM}" class="mainoption" /></td></tr>
 </table>
 </form>
 <br />

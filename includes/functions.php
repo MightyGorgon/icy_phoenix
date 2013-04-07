@@ -20,6 +20,18 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+if (!defined('STRIP'))
+{
+	// If we are on PHP >= 6.0.0 we do not need some code
+	if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
+	{
+		define('STRIP', false);
+	}
+	else
+	{
+		define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
+	}
+}
 
 /*
 * Append $SID to a url. Borrowed from phplib and modified. This is an extra routine utilised by the session code and acts as a wrapper around every single URL and form action.
@@ -45,7 +57,7 @@ function append_sid($url, $non_html_amp = false, $char_conversion = false, $para
 		return $url;
 	}
 
-	// Developers using the hook function need to globalise the $_SID and $_EXTRA_URL on their own and also handle it appropiatly.
+	// Developers using the hook function need to globalise the $_SID and $_EXTRA_URL on their own and also handle it appropriately.
 	// They could mimick most of what is within this function
 	if (!empty($phpbb_hook) && $phpbb_hook->call_hook(__FUNCTION__, $url, $params, $is_amp, $session_id))
 	{
@@ -130,7 +142,47 @@ function append_sid($url, $non_html_amp = false, $char_conversion = false, $para
 	// Append session id and parameters (even if they are empty)
 	// If parameters are empty, the developer can still append his/her parameters without caring about the delimiter
 	return $url . (($append_url) ? $url_delim . $append_url . $amp_delim : $url_delim) . $params . ((!$session_id) ? '' : $amp_delim . 'sid=' . $session_id) . $anchor;
+}
 
+/**
+* Re-Apply session id after page reloads
+*/
+function reapply_sid($url)
+{
+	// Remove previously added sid
+	if (strpos($url, 'sid=') !== false)
+	{
+		$phpEx = PHP_EXT;
+		// All kind of links
+		$url = preg_replace('/(\?)?(&amp;|&)?sid=[a-z0-9]+/', '', $url);
+		// if the sid was the first param, make the old second as first ones
+		$url = preg_replace("/$phpEx(&amp;|&)+?/", "$phpEx?", $url);
+	}
+
+	return append_sid($url);
+}
+
+/**
+* Build an URL with params
+*/
+function ip_build_url($url, $params = false, $html_amp = false)
+{
+	$amp_delim = !empty($html_amp) ? '&amp;' : '&';
+	$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+
+	if (!empty($params) && is_array($params))
+	{
+		foreach ($params as $param)
+		{
+			$url_delim = (strpos($url, '?') === false) ? '?' : $amp_delim;
+			if (!empty($param))
+			{
+				$url .= $url_delim . $param;
+			}
+		}
+	}
+
+	return $url;
 }
 
 /*
@@ -250,7 +302,7 @@ function extract_current_hostname()
 	// Get hostname
 	$host = (!empty($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : ((!empty($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : getenv('SERVER_NAME'));
 
-	// Should be a string and lowered
+	// Should be a lowercase string
 	$host = (string) strtolower($host);
 
 	// If host is equal the cookie domain or the server name (if config is set), then we assume it is valid
@@ -350,12 +402,13 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 		$_REQUEST[$var_name] = isset($_POST[$var_name]) ? $_POST[$var_name] : $_GET[$var_name];
 	}
 
-	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name])))
+	$super_global = ($cookie) ? '_COOKIE' : '_REQUEST';
+	if (!isset($GLOBALS[$super_global][$var_name]) || is_array($GLOBALS[$super_global][$var_name]) != is_array($default))
 	{
 		return (is_array($default)) ? array() : $default;
 	}
 
-	$var = $_REQUEST[$var_name];
+	$var = $GLOBALS[$super_global][$var_name];
 	if (!is_array($default))
 	{
 		$type = gettype($default);
@@ -392,7 +445,7 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 					{
 						$_v = null;
 					}
-					set_var($_k, $_k, $sub_key_type);
+					set_var($_k, $_k, $sub_key_type, $multibyte);
 					set_var($var[$k][$_k], $_v, $sub_type, $multibyte);
 				}
 			}
@@ -647,7 +700,9 @@ if (!function_exists('html_entity_decode'))
 */
 function htmlspecialchars_clean($string, $quote_style = ENT_NOQUOTES)
 {
-	return trim(str_replace(array('& ', '<', '%3C', '>', '%3E'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style)));
+	// Old version, to be verified why &amp; gets converted twice...
+	//return trim(str_replace(array('& ', '<', '%3C', '>', '%3E'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;'), htmlspecialchars_decode($string, $quote_style)));
+	return trim(str_replace(array('& ', '<', '%3C', '>', '%3E', '{IP_EAMP_ESCAPE}'), array('&amp; ', '&lt;', '&lt;', '&gt;', '&gt;', '&amp;'), htmlspecialchars_decode(str_replace('&amp;', '{IP_EAMP_ESCAPE}', $string), $quote_style)));
 }
 
 /**
@@ -710,7 +765,7 @@ function phpbb_optionset($bit, $set, $data)
 	{
 		$data += 1 << $bit;
 	}
-	else if (!$set && ($data & 1 << $bit))
+	elseif (!$set && ($data & 1 << $bit))
 	{
 		$data -= 1 << $bit;
 	}
@@ -852,6 +907,86 @@ function unique_id($extra = 'c')
 	}
 
 	return substr($val, 4, 16);
+}
+
+/**
+* Return formatted string for filesizes
+*
+* @param int $value filesize in bytes
+* @param bool $string_only true if language string should be returned
+* @param array $allowed_units only allow these units (data array indexes)
+*
+* @return mixed data array if $string_only is false
+* @author bantu
+*/
+function get_formatted_filesize($value, $string_only = true, $allowed_units = false)
+{
+	global $lang;
+
+	$available_units = array(
+		'gb' => array(
+			'min' => 1073741824, // pow(2, 30)
+			'index' => 3,
+			'si_unit' => 'GB',
+			'iec_unit' => 'GIB',
+		),
+		'mb' => array(
+			'min' => 1048576, // pow(2, 20)
+			'index' => 2,
+			'si_unit' => 'MB',
+			'iec_unit' => 'MIB',
+		),
+		'kb' => array(
+			'min' => 1024, // pow(2, 10)
+			'index' => 1,
+			'si_unit' => 'KB',
+			'iec_unit' => 'KIB',
+		),
+		'b' => array(
+			'min' => 0,
+			'index' => 0,
+			'si_unit' => 'BYTES', // Language index
+			'iec_unit' => 'BYTES', // Language index
+		),
+	);
+
+	foreach ($available_units as $si_identifier => $unit_info)
+	{
+		if (!empty($allowed_units) && ($si_identifier != 'b') && !in_array($si_identifier, $allowed_units))
+		{
+			continue;
+		}
+
+		if ($value >= $unit_info['min'])
+		{
+			$unit_info['si_identifier'] = $si_identifier;
+
+			break;
+		}
+	}
+	unset($available_units);
+
+	for ($i = 0; $i < $unit_info['index']; $i++)
+	{
+		$value /= 1024;
+	}
+	$value = round($value, 2);
+
+	// Lookup units in language dictionary
+	$unit_info['si_unit'] = (isset($lang[$unit_info['si_unit']])) ? $lang[$unit_info['si_unit']] : $unit_info['si_unit'];
+	$unit_info['iec_unit'] = (isset($lang[$unit_info['iec_unit']])) ? $lang[$unit_info['iec_unit']] : $unit_info['iec_unit'];
+
+	// Default to IEC
+	$unit_info['unit'] = $unit_info['iec_unit'];
+
+	if (!$string_only)
+	{
+		$unit_info['value'] = $value;
+
+		return $unit_info;
+	}
+
+	return $value . ' ' . $unit_info['unit'];
 }
 
 /**
@@ -1213,6 +1348,12 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 {
 	$charset = empty($charset) ? 'utf-8' : $charset;
 
+	// Function needed to convert some of the German characters into Latin correspondent characters
+	$text = utf_ger_to_latin($text, false);
+
+	// Function needed to convert some of the Cyrillic characters into Latin correspondent characters
+	$text = utf_cyr_to_latin($text, false);
+
 	// Remove all HTML tags and convert to lowercase
 	$text = strtolower(strip_tags($text));
 
@@ -1233,7 +1374,13 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 	}
 
 	// Convert back all HTML entities into their aliases
-	$text = htmlentities($text, ENT_COMPAT, $charset);
+	// Mighty Gorgon: added a workaround for some special case... :-(
+	$text_tmp = $text;
+	$text = @htmlentities($text, ENT_COMPAT, $charset);
+	if (!empty($text_tmp) && empty($text))
+	{
+		$text = htmlentities($text_tmp);
+	}
 
 	// Replace some known HTML entities
 	$find = array(
@@ -1243,9 +1390,9 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 		'&#317;', '&#318;', // L, l
 		'&#327;', '&#328;', // N, n
 		'&#381;', '&#382;', 'Ž', 'ž', // z
+		'&#223;', '&#946;', 'ß', // ß
 		'œ', '&#338;', '&#339;', // OE, oe
 		'&#198;', '&#230;', // AE, ae
-		'&#223;', '&#946;', // ß
 		'š', 'Š', // 'š','Š'
 		'&#273;', '&#272;', // ?', '?', // 'dj','dj'
 		'`', '‘', '’',
@@ -1258,9 +1405,9 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 		'l', 'l',
 		'n', 'n',
 		'z', 'z', 'z', 'z',
+		'ss', 'ss', 'ss',
 		'oe', 'oe', 'oe',
 		'ae', 'ae',
-		'sz', 'sz',
 		's', 's',
 		'dj', 'dj',
 		'-', '-', '-',
@@ -1303,6 +1450,153 @@ function ip_clean_string($text, $charset = false, $extra_chars = false, $is_file
 	$text = preg_replace('!^[-_]|[-_]$!s', '', $text);
 
 	return $text;
+}
+
+/**
+* German to Latin chars conversion
+*/
+function utf_ger_to_latin($string, $reverse = false)
+{
+	$ger  = array(
+		'&#223;', '&#946;', 'ß', // ß
+		'&#196;', '&#228;', 'Ä', 'ä', // Ä, ä
+		'&#214;', '&#246;', 'Ö', 'ö', // Ö, ö
+		'&#220;', '&#252;', 'Ü', 'ü', // Ü, ü
+	);
+
+	$lat = array(
+		'ss', 'ss', 'ss',
+		'ae', 'ae', 'ae', 'ae',
+		'oe', 'oe', 'oe', 'oe',
+		'ue', 'ue', 'ue', 'ue',
+	);
+
+	$string = !empty($reverse) ? str_replace($lat, $ger, $string) : str_replace($ger, $lat, $string);
+
+	return $string;
+}
+
+/**
+* Cyrillic to Latin chars conversion
+*/
+function utf_cyr_to_latin($string, $reverse = false)
+{
+	$cyr  = array(
+		'а', 'б', 'в', 'г', 'д',
+		'e', 'ж', 'з', 'и', 'й',
+		'к', 'л', 'м', 'н', 'о',
+		'п', 'р', 'с', 'т', 'у',
+		'ф', 'х', 'ц', 'ч', 'ш',
+		'щ', 'ъ', 'ь', 'ю', 'я',
+		'А', 'Б', 'В', 'Г', 'Д',
+		'Е', 'Ж', 'З', 'И', 'Й',
+		'К', 'Л', 'М', 'Н', 'О',
+		'П', 'Р', 'С', 'Т', 'У',
+		'Ф', 'Х', 'Ц', 'Ч', 'Ш',
+		'Щ', 'Ъ', 'Ь', 'Ю', 'Я'
+	);
+
+	$lat = array(
+		'a', 'b', 'v', 'g', 'd',
+		'e', 'zh', 'z', 'i', 'y',
+		'k', 'l', 'm', 'n', 'o',
+		'p', 'r', 's', 't', 'u',
+		'f', 'h', 'ts', 'ch', 'sh',
+		'sht', 'a', 'y', 'yu', 'ya',
+		'A', 'B', 'V', 'G', 'D',
+		'E', 'Zh', 'Z', 'I', 'Y',
+		'K', 'L', 'M', 'N', 'O',
+		'P', 'R', 'S', 'T', 'U',
+		'F', 'H', 'Ts', 'Ch', 'Sh',
+		'Sht', 'A', 'Y', 'Yu', 'Ya'
+	);
+
+	$string = !empty($reverse) ? str_replace($lat, $cyr, $string) : str_replace($cyr, $lat, $string);
+
+	return $string;
+}
+
+/**
+* Generate back link
+*/
+function page_back_link($u_action)
+{
+	global $lang;
+	return '<br /><br /><a href="' . $u_action . '">&laquo; ' . $lang['BACK_TO_PREV'] . '</a>';
+}
+
+/**
+* Build Confirm box
+* @param boolean $check True for checking if confirmed (without any additional parameters) and false for displaying the confirm box
+* @param string $title Title/Message used for confirm box.
+* message text is _CONFIRM appended to title.
+* If title cannot be found in user->lang a default one is displayed
+* If title_CONFIRM cannot be found in user->lang the text given is used.
+* @param string $hidden Hidden variables
+* @param string $html_body Template used for confirm box
+* @param string $u_action Custom form action
+*/
+function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_body.tpl', $u_action = '')
+{
+	global $db, $user, $lang, $template;
+
+	if (isset($_POST['cancel']))
+	{
+		return false;
+	}
+
+	$confirm = false;
+	if (isset($_POST['confirm']))
+	{
+		// language frontier
+		if ($_POST['confirm'] === $lang['YES'])
+		{
+			$confirm = true;
+		}
+	}
+
+	if ($check && $confirm)
+	{
+		$user_id = request_var('confirm_uid', 0);
+		$session_id = request_var('sess', '');
+
+		if (($user_id != $user->data['user_id']) || ($session_id != $user->session_id))
+		{
+			return false;
+		}
+
+		return true;
+	}
+	elseif ($check)
+	{
+		return false;
+	}
+
+	$s_hidden_fields = build_hidden_fields(array(
+		'confirm_uid' => $user->data['user_id'],
+		'sess' => $user->session_id,
+		'sid' => $user->session_id,
+		)
+	);
+
+	// re-add sid / transform & to &amp; for user->page (user->page is always using &)
+	$use_page = ($u_action) ? IP_ROOT_PATH . $u_action : IP_ROOT_PATH . str_replace('&', '&amp;', $user->page['page']);
+	$u_action = reapply_sid($use_page);
+	$u_action .= ((strpos($u_action, '?') === false) ? '?' : '&amp;');
+
+	$confirm_title = (!isset($lang[$title])) ? $lang['Confirm'] : $lang[$title];
+
+	$template->assign_vars(array(
+		'MESSAGE_TITLE' => $confirm_title,
+		'MESSAGE_TEXT' => (!isset($lang[$title . '_CONFIRM'])) ? $title : $lang[$title . '_CONFIRM'],
+
+		'YES_VALUE' => $lang['YES'],
+		'S_CONFIRM_ACTION' => $u_action,
+		'S_HIDDEN_FIELDS' => $hidden . $s_hidden_fields
+		)
+	);
+
+	full_page_generation($html_body, $confirm_title, '', '');
 }
 
 /*
@@ -1550,16 +1844,11 @@ function create_server_url($without_script_path = false)
 	// usage: $server_url = create_server_url();
 	global $config;
 
-	if (!empty($config['current_site_url']))
-	{
-		return $config['current_site_url'];
-	}
-
 	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
 	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
 	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
 	$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-	$script_name = ($script_name == '') ? $script_name : '/' . $script_name;
+	$script_name = ($script_name == '') ? '' : '/' . $script_name;
 	$server_url = $server_protocol . $server_name . $server_port . ($without_script_path ? '' : $script_name);
 	while(substr($server_url, -1, 1) == '/')
 	{
@@ -1567,7 +1856,6 @@ function create_server_url($without_script_path = false)
 	}
 	$server_url = $server_url . '/';
 
-	$config['current_site_url'] = $server_url;
 	return $server_url;
 }
 
@@ -1636,7 +1924,7 @@ function build_url($strip_vars = false)
 
 	// We need to be cautious here.
 	// On some situations, the redirect path is an absolute URL, sometimes a relative path
-	// For a relative path, let's prefix it with $phpbb_root_path to point to the correct location,
+	// For a relative path, let's prefix it with IP_ROOT_PATH to point to the correct location,
 	// else we use the URL directly.
 	$url_parts = @parse_url($redirect);
 
@@ -1655,18 +1943,127 @@ function build_url($strip_vars = false)
 *
 * @param string $url The url to redirect to
 * @param bool $return If true, do not redirect but return the sanitized URL. Default is no return.
+* @param bool $disable_cd_check If true, redirect() will redirect to an external domain. If false, the redirect point to the boards url if it does not match the current domain. Default is false.
 */
-function redirect($url, $return = false)
+function redirect($url, $return = false, $disable_cd_check = false)
 {
-	global $db, $config, $lang;
+	global $db, $cache, $config, $user, $lang;
+
+	$failover_flag = false;
+
+	if (empty($lang))
+	{
+		setup_basic_lang();
+	}
 
 	if (!$return)
 	{
 		garbage_collection();
 	}
 
+	$server_url = create_server_url();
+
 	// Make sure no &amp;'s are in, this will break the redirect
 	$url = str_replace('&amp;', '&', $url);
+	// Determine which type of redirect we need to handle...
+	$url_parts = @parse_url($url);
+
+	if ($url_parts === false)
+	{
+		// Malformed url, redirect to current page...
+		$url = $server_url . $user->page['page'];
+	}
+	elseif (!empty($url_parts['scheme']) && !empty($url_parts['host']))
+	{
+		// Attention: only able to redirect within the same domain if $disable_cd_check is false (yourdomain.com -> www.yourdomain.com will not work)
+		if (!$disable_cd_check && ($url_parts['host'] !== $user->host))
+		{
+			$url = $server_url;
+		}
+	}
+	elseif ($url[0] == '/')
+	{
+		// Absolute uri, prepend direct url...
+		$url = create_server_url(true) . $url;
+	}
+	else
+	{
+		// Relative uri
+		$pathinfo = pathinfo($url);
+
+		if (!$disable_cd_check && !file_exists($pathinfo['dirname'] . '/'))
+		{
+			$url = str_replace('../', '', $url);
+			$pathinfo = pathinfo($url);
+
+			if (!file_exists($pathinfo['dirname'] . '/'))
+			{
+				// fallback to "last known user page"
+				// at least this way we know the user does not leave the phpBB root
+				$url = $server_url . $user->page['page'];
+				$failover_flag = true;
+			}
+		}
+
+		if (!$failover_flag)
+		{
+			// Is the uri pointing to the current directory?
+			if ($pathinfo['dirname'] == '.')
+			{
+				$url = str_replace('./', '', $url);
+
+				// Strip / from the beginning
+				if ($url && (substr($url, 0, 1) == '/'))
+				{
+					$url = substr($url, 1);
+				}
+
+				if ($user->page['page_dir'])
+				{
+					$url = $server_url . $user->page['page_dir'] . '/' . $url;
+				}
+				else
+				{
+					$url = $server_url . $url;
+				}
+			}
+			else
+			{
+				// Used ./ before, but IP_ROOT_PATH is working better with urls within another root path
+				$root_dirs = explode('/', str_replace('\\', '/', phpbb_realpath(IP_ROOT_PATH)));
+				$page_dirs = explode('/', str_replace('\\', '/', phpbb_realpath($pathinfo['dirname'])));
+				$intersection = array_intersect_assoc($root_dirs, $page_dirs);
+
+				$root_dirs = array_diff_assoc($root_dirs, $intersection);
+				$page_dirs = array_diff_assoc($page_dirs, $intersection);
+
+				$dir = str_repeat('../', sizeof($root_dirs)) . implode('/', $page_dirs);
+
+				// Strip / from the end
+				if ($dir && substr($dir, -1, 1) == '/')
+				{
+					$dir = substr($dir, 0, -1);
+				}
+
+				// Strip / from the beginning
+				if ($dir && substr($dir, 0, 1) == '/')
+				{
+					$dir = substr($dir, 1);
+				}
+
+				$url = str_replace($pathinfo['dirname'] . '/', '', $url);
+
+				// Strip / from the beginning
+				if (substr($url, 0, 1) == '/')
+				{
+					$url = substr($url, 1);
+				}
+
+				$url = (!empty($dir) ? $dir . '/' : '') . $url;
+				$url = $server_url . $url;
+			}
+		}
+	}
 
 	// Make sure no linebreaks are there... to prevent http response splitting for PHP < 4.4.2
 	if ((strpos(urldecode($url), "\n") !== false) || (strpos(urldecode($url), "\r") !== false) || (strpos($url, ';') !== false))
@@ -1674,15 +2071,6 @@ function redirect($url, $return = false)
 		message_die(GENERAL_ERROR, 'Tried to redirect to potentially insecure url');
 		//trigger_error('Tried to redirect to potentially insecure url.', E_USER_ERROR);
 	}
-
-	$server_url = create_server_url();
-	$url = preg_replace('#^\/?(.*?)\/?$#', '/\1', trim($url));
-	// Strip ./ and / from the beginning
-	$url = str_replace('./', '', $url);
-	$url = ($url && substr($url, 0, 1) == '/') ? substr($url, 1) : $url;
-
-	// Create full url path
-	$url = $server_url . $url;
 
 	// Now, also check the protocol and for a valid url the last time...
 	$allowed_protocols = array('http', 'https', 'ftp', 'ftps');
@@ -1707,7 +2095,7 @@ function redirect($url, $return = false)
 		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 		$lang_dir = !empty($lang['DIRECTION']) ? $lang['DIRECTION'] : 'ltr';
 		$header_lang = !empty($lang['HEADER_LANG']) ? $lang['HEADER_LANG'] : 'en-gb';
-		$xml_header_lang = !empty($lang['HEADER_XML_LANG']) ? $lang['HEADER_XML_LANG'] : 'en-gb';
+		$xml_header_lang = !empty($lang['HEADER_LANG_XML']) ? $lang['HEADER_LANG_XML'] : 'en-gb';
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
 		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang_dir . '" lang="' . $header_lang . '" xml:lang="' . $xml_header_lang . '">';
 		echo '<head>';
@@ -1918,9 +2306,9 @@ function send_status_line($code, $message)
 	}
 	else
 	{
-		if (isset($_SERVER['HTTP_VERSION']))
+		if (!empty($_SERVER['SERVER_PROTOCOL']))
 		{
-			$version = $_SERVER['HTTP_VERSION'];
+			$version = $_SERVER['SERVER_PROTOCOL'];
 		}
 		else
 		{
@@ -1946,7 +2334,6 @@ function setup_basic_lang()
 
 		$lang_files = array(
 			'lang_main',
-			'lang_main_settings',
 			'lang_bbcb_mg',
 			'lang_main_upi2db',
 			'lang_news',
@@ -1973,8 +2360,20 @@ function setup_basic_lang()
 			$lang_files = array_merge($lang_files, $lang_files_admin);
 		}
 
+		if (defined('IN_CMS'))
+		{
+			$lang_files_cms = array(
+				'lang_admin',
+				'lang_cms',
+				'lang_blocks',
+				'lang_permissions',
+			);
+			$lang_files = array_merge($lang_files, $lang_files_cms);
+		}
+
 		$lang_files = array_merge($lang_files, $cache->obtain_lang_files());
-		$lang_files = array_merge($lang_files, array('lang_user_created'));
+		// Make sure we keep these files as last inclusion... to be sure they override what is needed to be overridden!!!
+		$lang_files = array_merge($lang_files, array('lang_dyn_menu', 'lang_main_settings', 'lang_user_created'));
 
 		foreach ($lang_files as $lang_file)
 		{
@@ -1995,7 +2394,7 @@ function setup_basic_lang()
 */
 function setup_extra_lang($lang_files_array, $lang_base_path = '', $lang_override = '')
 {
-	global $config, $lang;
+	global $config, $lang, $images, $faq, $mtnc;
 
 	if (empty($lang_files_array))
 	{
@@ -2015,15 +2414,45 @@ function setup_extra_lang($lang_files_array, $lang_base_path = '', $lang_overrid
 		$default_lang_file = $lang_base_path . 'lang_english/' . $lang_files_array[$i] . '.' . PHP_EXT;
 		if (@file_exists($user_lang_file))
 		{
-			@include_once($user_lang_file);
+			@include($user_lang_file);
 		}
 		elseif (@file_exists($default_lang_file))
 		{
-			@include_once($default_lang_file);
+			@include($default_lang_file);
 		}
 	}
 
 	return true;
+}
+
+/**
+* Merge $lang with $user->lang
+*/
+function merge_user_lang()
+{
+	global $user, $lang;
+
+	$user->lang = array_merge($user->lang, $lang);
+
+	return true;
+}
+
+/**
+* Stopwords, Synonyms, INIT
+*/
+function stopwords_synonyms_init()
+{
+	global $config, $stopwords_array, $synonyms_array;
+
+	if (empty($stopwords_array))
+	{
+		$stopwords_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
+	}
+
+	if (empty($synonyms_array))
+	{
+		$synonyms_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
+	}
 }
 
 /**
@@ -2104,6 +2533,7 @@ function setup_style($style_id, $current_default_style)
 	unset($row);
 	$all_styles_array[$style_id] = $template_row;
 	$row = $template_row;
+
 	$template_path = 'templates/';
 	$template_name = $row['template_name'];
 
@@ -2122,6 +2552,47 @@ function setup_style($style_id, $current_default_style)
 		}
 		// Mighty Gorgon - Common TPL - END
 		$current_template_cfg = IP_ROOT_PATH . $template_path . $cfg_path . '/' . $cfg_name . '.cfg';
+		@include($current_template_cfg);
+
+		if (!defined('TEMPLATE_CONFIG'))
+		{
+			message_die(CRITICAL_ERROR, "Could not open $current_template_cfg", '', __LINE__, __FILE__);
+		}
+	}
+
+	return $row;
+}
+
+/**
+* Setup the mobile style
+*/
+function setup_mobile_style()
+{
+	global $db, $config, $template, $images;
+
+	$row = array(
+		'themes_id' => 0,
+		'template_name' => 'mobile',
+		'style_name' => 'Mobile',
+		'head_stylesheet' => 'style_white.css',
+		'body_background' => 'white',
+		'body_bgcolor' => '',
+		'tr_class1' => 'row1',
+		'tr_class2' => 'row2',
+		'tr_class3' => 'row3',
+		'td_class1' => 'row1',
+		'td_class2' => 'row2',
+		'td_class3' => 'row3',
+	);
+	$template_path = 'templates/';
+	$template_name = $row['template_name'];
+
+	$template = new Template(IP_ROOT_PATH . $template_path . $template_name);
+
+	if ($template)
+	{
+		$current_template_path = $template_path . $template_name;
+		$current_template_cfg = IP_ROOT_PATH . $template_path . $template_name . '/' . $template_name . '.cfg';
 		@include($current_template_cfg);
 
 		if (!defined('TEMPLATE_CONFIG'))
@@ -2216,6 +2687,39 @@ function dateserial($year, $month, $day, $hour, $minute, $timezone = 'UTC')
 	return $date_serial;
 }
 */
+
+/*
+* strutime function which should convert some time formats into fragments of time
+* (basic idea taken from here: http://it.php.net/manual/en/function.strptime.php)
+*/
+function strutime($date, $format)
+{
+	$masks = array(
+		'Y' => '(?P<Y>[0-9]{4})',
+		'm' => '(?P<m>[0-9]{2})',
+		'd' => '(?P<d>[0-9]{2})',
+		'H' => '(?P<H>[0-9]{2})',
+		'M' => '(?P<M>[0-9]{2})',
+		'S' => '(?P<S>[0-9]{2})',
+	);
+
+	$rexep = "#" . strtr(preg_quote($format), $masks) . "#";
+	if(!preg_match($rexep, $date, $out))
+	{
+		return false;
+	}
+
+	$ret = array(
+		'year' => !empty($out['Y']) ? (int) $out['Y'] : 0,
+		'month' => !empty($out['m']) ? (int) $out['m'] : 0,
+		'day' => !empty($out['d']) ? (int) $out['d'] : 0,
+		'hour' => !empty($out['H']) ? (int) $out['H'] : 0,
+		'minute' => !empty($out['M']) ? (int) $out['M'] : 0,
+		'second' => !empty($out['S']) ? (int) $out['S'] : 0,
+	);
+
+	return $ret;
+}
 
 /*
 * Get DST
@@ -2316,19 +2820,153 @@ function create_date_ip($format, $gmepoch, $tz = 0, $day_only = false)
 	$midnight = create_date_midnight($gmepoch, $tz);
 
 	$output_date = '';
-	$format_hour = 'H.i';
-	if ($gmepoch > $midnight)
+	$time_sep = !empty($lang['NUMBER_FORMAT_TIME_SEP']) ? $lang['NUMBER_FORMAT_TIME_SEP'] : ':';
+	$format_hour = 'H' . $time_sep . 'i';
+	if (($gmepoch >= $midnight) && ($gmepoch < ($midnight + 86400)))
 	{
 		$format = ($day_only) ? $format : $format_hour;
 		$output_date = ($day_only) ? $lang['TODAY'] : ($lang['Today_at'] . ' ');
 	}
-	elseif ($gmepoch > ($midnight - 86400))
+	elseif (($gmepoch < $midnight) && ($gmepoch >= ($midnight - 86400)))
 	{
 		$format = ($day_only) ? $format : $format_hour;
 		$output_date = ($day_only) ? $lang['YESTERDAY'] : ($lang['Yesterday_at'] . ' ');
 	}
 	$output_date = $output_date . (($day_only && !empty($output_date)) ? '' : create_date($format, $gmepoch, $tz));
 	return $output_date;
+}
+
+/*
+* Converts time fragments to MySQL dates ready for DB storage
+*/
+function create_date_mysql_db($date_fragments, $format)
+{
+	$date_fragments = array(
+		'year' => !empty($date_fragments['year']) ? (string) $date_fragments['year'] : '0000',
+		'month' => !empty($date_fragments['month']) ? (string) $date_fragments['month'] : '00',
+		'day' => !empty($date_fragments['day']) ? (string) $date_fragments['day'] : '00',
+		'hour' => !empty($date_fragments['hour']) ? (string) $date_fragments['hour'] : '00',
+		'minute' => !empty($date_fragments['minute']) ? (string) $date_fragments['minute'] : '00',
+		'second' => !empty($date_fragments['second']) ? (string) $date_fragments['second'] : '00',
+	);
+
+	$date_sep = '-';
+	$time_sep = ':';
+	$mysql_date = $date_fragments['year'] . $date_sep . $date_fragments['month'] . $date_sep . $date_fragments['day'];
+	$mysql_time = $date_fragments['hour'] . $time_sep . $date_fragments['minute'] . $time_sep . $date_fragments['second'];
+
+	switch ($format)
+	{
+		case 'date':
+			$mysql_date_db = $mysql_date;
+			break;
+
+		case 'time':
+			$mysql_date_db = $mysql_time;
+			break;
+
+		default:
+			$mysql_date_db = $mysql_date . ' ' . $mysql_time;
+			break;
+	}
+
+	return $mysql_date_db;
+}
+
+/*
+* Convert unix to MySQL dates
+*/
+function create_date_mysql($time, $output = 'datetime', $tz = false)
+{
+	global $config, $lang;
+
+	$tz = ($tz === false) ? $config['board_timezone'] : $tz;
+
+	switch ($output)
+	{
+		case 'date':
+			$mysql_date = create_date('Y-m-d', $time, $tz);
+			break;
+
+		case 'time':
+			$mysql_date = create_date('H:i:s', $time, $tz);
+			break;
+
+		default:
+			$mysql_date = create_date('Y-m-d H:i:s', $time, $tz);
+			break;
+	}
+
+	return $mysql_date;
+}
+
+/*
+* Format MySQL dates
+*/
+function format_date_mysql_php($mysql_date, $format = 'datetime', $output = 'mysql')
+{
+	global $config, $lang;
+
+	$date_format = $lang['DATE_FORMAT_DATE_MYSQL_PHP'];
+	$mysql_date_sep = ((empty($lang['NUMBER_FORMAT_DATE_SEP']) || ($output == 'mysql')) ? '-' : $lang['NUMBER_FORMAT_DATE_SEP']);
+	$mysql_time_sep = ((empty($lang['NUMBER_FORMAT_TIME_SEP']) || ($output == 'mysql')) ? ':' : $lang['NUMBER_FORMAT_TIME_SEP']);
+
+	if (($format == 'datetime') || ($format == 'date'))
+	{
+		// Mighty Gorgon: we suppose dates are always with leading zeroes and in one of the following formats: dd/mm/yyyy, mm/dd/yyyy, yyyy/mm/dd
+		switch ($date_format)
+		{
+			case 'dmy':
+				$mysql_date_only = ($output == 'mysql') ? (substr($mysql_date, 6, 4) . $mysql_date_sep . substr($mysql_date, 3, 2) . $mysql_date_sep . substr($mysql_date, 0, 2)) : (substr($mysql_date, 8, 2) . $mysql_date_sep . substr($mysql_date, 5, 2) . $mysql_date_sep . substr($mysql_date, 0, 4));
+			break;
+
+			case 'mdy':
+				$mysql_date_only = ($output == 'mysql') ? (substr($mysql_date, 6, 4) . $mysql_date_sep . substr($mysql_date, 0, 2) . $mysql_date_sep . substr($mysql_date, 3, 2)) : (substr($mysql_date, 5, 2) . $mysql_date_sep . substr($mysql_date, 8, 2) . $mysql_date_sep . substr($mysql_date, 0, 4));
+			break;
+
+			case 'ymd':
+			default:
+				$mysql_date_only = ($output == 'mysql') ? (substr($mysql_date, 0, 4) . $mysql_date_sep . substr($mysql_date, 5, 2) . $mysql_date_sep . substr($mysql_date, 8, 2)) : (substr($mysql_date, 0, 4) . $mysql_date_sep . substr($mysql_date, 5, 2) . $mysql_date_sep . substr($mysql_date, 8, 2));
+			break;
+		}
+	}
+
+	switch ($format)
+	{
+		case 'date':
+			$mysql_date = $mysql_date_only;
+			break;
+
+		case 'time':
+			// Mighty Gorgon: we suppose time is always in the following format: hh:mm:ss
+			$mysql_date = empty($mysql_date) ? ('00' . $mysql_time_sep . '00' . $mysql_time_sep . '00') : (substr($mysql_date, 0, 2) . $mysql_time_sep . substr($mysql_date, 3, 2) . $mysql_time_sep . substr($mysql_date, 6, 2));
+			break;
+
+		default:
+			$mysql_date = $mysql_date_only . ' ' . substr($mysql_date, 12, 2) . $mysql_time_sep . substr($mysql_date, 15, 2) . $mysql_time_sep . substr($mysql_date, 18, 2);
+			break;
+	}
+
+	return $mysql_date;
+}
+
+/*
+* Convert time in hours in decimal format
+*/
+function convert_time_to_decimal($time, $time_sep = ':')
+{
+	$time_decimal = $time;
+	$time_fragments = explode($time_sep, $time);
+	if (sizeof($time_fragments) > 1)
+	{
+		$time_decimal = (int) $time_fragments[0] + ((int) $time_fragments[1] / 60);
+		if (sizeof($time_fragments) == 3)
+		{
+			$time_decimal = $time_decimal + ((int) $time_fragments[2] / 3600);
+		}
+	}
+
+	return $time_decimal;
 }
 
 // Birthday - BEGIN
@@ -2565,6 +3203,11 @@ function generate_topic_pagination($forum_id, $topic_id, $replies, $per_page = 0
 		$topic_pagination['base'] = '<span class="gotopage">' . $goto_page . '</span>';
 		$topic_pagination['full'] = '<span class="gotopage">' . $goto_page_prefix . ' ' . $lang['Goto_page'] . $goto_page . $goto_page_suffix . '</span>';
 	}
+	else
+	{
+		$topic_pagination['base'] = '&nbsp;';
+		$topic_pagination['full'] = '&nbsp;';
+	}
 
 	return $topic_pagination;
 }
@@ -2586,10 +3229,22 @@ function generate_full_pagination($base_url, $num_items, $per_page, $start_item,
 	return true;
 }
 
-//
-// This does exactly what preg_quote() does in PHP 4-ish
-// If you just need the 1-parameter preg_quote call, then don't bother using this.
-//
+/**
+* Generate zebra rows
+*/
+function ip_zebra_rows($row_class)
+{
+	global $theme;
+	$row1_class = (!empty($theme['td_class1']) ? $theme['td_class1'] : 'row1');
+	$row2_class = (!empty($theme['td_class2']) ? $theme['td_class2'] : 'row2');
+	$row_class = (empty($row_class) || ($row_class == $row2_class)) ? $row1_class : $row2_class;
+	return $row_class;
+}
+
+/*
+* This does exactly what preg_quote() does in PHP 4-ish
+* If you just need the 1-parameter preg_quote call, then don't bother using this.
+*/
 function phpbb_preg_quote($str, $delimiter)
 {
 	$text = preg_quote($str);
@@ -2709,7 +3364,8 @@ function board_stats()
 	$sql = "SELECT COUNT(user_id) AS user_total FROM " . USERS_TABLE . " WHERE user_id > 0";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-	$max_users = intval($row['user_total']);
+	$db->sql_freeresult($result);
+	$max_users = (int) $row['user_total'];
 
 	// update
 	if ($config['max_users'] != $max_users)
@@ -2727,7 +3383,8 @@ function board_stats()
 		LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-	$newest_user_id = intval($row['user_id']);
+	$db->sql_freeresult($result);
+	$newest_user_id = (int) $row['user_id'];
 
 	if ($config['last_user_id'] != $newest_user_id)
 	{
@@ -2740,8 +3397,9 @@ function board_stats()
 	$sql = "SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total FROM " . FORUMS_TABLE;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
-	$max_topics = intval($row['topic_total']);
-	$max_posts = intval($row['post_total']);
+	$db->sql_freeresult($result);
+	$max_topics = (int) $row['topic_total'];
+	$max_posts = (int) $row['post_total'];
 
 	// update
 	if ($config['max_topics'] != $max_topics)
@@ -2755,6 +3413,94 @@ function board_stats()
 }
 
 /*
+* Check if the browser is from a mobile device
+*/
+function is_mobile()
+{
+	global $config, $user;
+
+	if (!empty($config['mobile_style_disable']))
+	{
+		return false;
+	}
+
+	if (!empty($user) && !empty($user->data['is_mobile']))
+	{
+		return true;
+	}
+
+	if (!empty($user) && !empty($user->data['is_bot']))
+	{
+		$user->data['is_mobile'] = false;
+		return false;
+	}
+
+	if (!empty($user)) $user->data['is_mobile'] = false;
+
+	$browser = (!empty($user) && !empty($user->browser)) ? $user->browser : (!empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
+	$browser_lc = strtolower($browser);
+
+	if (strpos($browser_lc, 'windows') !== false)
+	{
+		return false;
+	}
+
+	// Just a quick check on most common browsers...
+	if(preg_match('/(android|blackberry|fennec|htc_|iphone|ipod|mobile|midp|mmp|opera mini|opera mobi|phone|symbian|smartphone|up.browser|up.link|wap)/i', $browser_lc))
+	{
+		if (!empty($user)) $user->data['is_mobile'] = true;
+		return true;
+	}
+
+	if((strpos(strtolower($_SERVER['HTTP_ACCEPT']), 'application/vnd.wap.xhtml+xml') !== false) || ((isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE']))))
+	{
+		if (!empty($user)) $user->data['is_mobile'] = true;
+		return true;
+	}
+
+	$mobile_ua = substr($browser_lc, 0, 4);
+	$mobile_agents = array(
+		'w3c ', 'acs-', 'alav', 'alca', 'amoi', 'audi', 'avan', 'benq', 'bird', 'blac',
+		'blaz', 'brew', 'cell', 'cldc', 'cmd-', 'dang', 'doco', 'eric', 'hipt', 'inno',
+		'ipaq', 'java', 'jigs', 'kddi', 'keji', 'leno', 'lg-c', 'lg-d', 'lg-g', 'lge-',
+		'maui', 'maxo', 'midp', 'mits', 'mmef', 'mobi', 'mot-', 'moto', 'mwbp', 'nec-',
+		'newt', 'noki', 'palm', 'pana', 'pant', 'phil', 'play', 'port', 'prox', 'qwap',
+		'sage', 'sams', 'sany', 'sch-', 'sec-', 'send', 'seri', 'sgh-', 'shar', 'sie-',
+		'siem', 'smal', 'smar', 'sony', 'sph-', 'symb', 't-mo', 'teli', 'tim-', 'tosh',
+		'tsm-', 'upg1', 'upsi', 'vk-v', 'voda', 'wap-', 'wapa', 'wapi', 'wapp', 'wapr',
+		'webc', 'winw', 'winw', 'xda', 'xda-'
+	);
+
+	if(in_array($mobile_ua, $mobile_agents))
+	{
+		if (!empty($user)) $user->data['is_mobile'] = true;
+		return true;
+	}
+
+	if (strpos(strtolower($_SERVER['ALL_HTTP']), 'OperaMini') !== false)
+	{
+		if (!empty($user)) $user->data['is_mobile'] = true;
+		return true;
+	}
+
+	// OLD Basic Code
+	/*
+	if ((strpos($browser, 'Mobile') !== false) || (strpos($browser, 'Symbian') !== false) || (strpos($browser, 'Opera M') !== false) || (strpos($browser, 'Android') !== false) || (stripos($browser, 'HTC_') !== false) || (strpos($browser, 'Fennec/') !== false) || (stripos($browser, 'Blackberry') !== false))
+	*/
+
+	// Full big preg_match!
+	/*
+	if(preg_match('/android|avantgo|blackberry|blazer|compal|elaine|fennec|hiptop|htc_|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mobile|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i', $browser) || preg_match('/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i', substr($browser, 0, 4)))
+	{
+		if (!empty($user)) $user->data['is_mobile'] = true;
+		return true;
+	}
+	*/
+
+	return false;
+}
+
+/*
 * MG BOTS Parsing Function
 */
 function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $check_inactive = false)
@@ -2762,7 +3508,7 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 	global $db, $lang;
 	/*
 	// Testing!!!
-	$browser = 'msnbot/ ciao';
+	$browser = 'mgbot/ 1.0';
 	$bot_name = 'MG';
 	return $bot_name;
 	*/
@@ -2796,22 +3542,25 @@ function bots_parse($ip_address, $bot_color = '#888888', $browser = false, $chec
 		if (!empty($active_bots[$i]['bot_agent']) && preg_match('#' . str_replace('\*', '.*?', preg_quote($active_bots[$i]['bot_agent'], '#')) . '#i', $browser))
 		{
 			$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
-			if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
+			if (!empty($check_inactive) && ($active_bots[$i]['bot_active'] == 0))
 			{
+				if (!defined('STATUS_503')) define('STATUS_503', true);
 				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
 			return array('name' => $bot_name, 'id' => $active_bots[$i]['bot_id']);
 		}
 
-		if (!empty($active_bots[$i]['bot_ip']))
+		if (!empty($ip_address) && !empty($active_bots[$i]['bot_ip']))
 		{
 			foreach (explode(',', $active_bots[$i]['bot_ip']) as $bot_ip)
 			{
-				if (strpos($ip_address, trim($bot_ip)) === 0)
+				$bot_ip = trim($bot_ip);
+				if (!empty($bot_ip) && (strpos($ip_address, $bot_ip) === 0))
 				{
 					$bot_name = (!empty($active_bots[$i]['bot_color']) ? $active_bots[$i]['bot_color'] : ('<b style="color:' . $bot_color . '">' . $active_bots[$i]['bot_name'] . '</b>'));
-					if (($check_inactive == true) && ($active_bots[$i]['bot_active'] == 0))
+					if (!empty($check_inactive) && ($active_bots[$i]['bot_active'] == 0))
 					{
+						if (!defined('STATUS_503')) define('STATUS_503', true);
 						message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 					}
 					return array('name' => $bot_name, 'id' => $active_bots[$i]['bot_id']);
@@ -2852,50 +3601,57 @@ function bots_table_update($bot_id)
 }
 
 // Ajaxed - BEGIN
-function AJAX_headers()
+function AJAX_headers($json = false)
 {
 	//No caching whatsoever
-	header('Content-Type: application/xml');
+	if (empty($json))
+	{
+		header('Content-Type: application/xml');
+	}
 	header('Expires: Thu, 15 Aug 1984 13:30:00 GMT');
 	header('Last-Modified: '. gmdate('D, d M Y H:i:s') .' GMT');
 	header('Cache-Control: no-cache, must-revalidate');  // HTTP/1.1
 	header('Pragma: no-cache');                          // HTTP/1.0
 }
 
-function AJAX_message_die($data_ar)
+function AJAX_message_die($data_ar, $json = false)
 {
-	global $template, $db;
+	global $template, $db, $cache, $config;
 
 	if (!headers_sent())
 	{
-		AJAX_headers();
+		AJAX_headers($json);
 	}
 
-	$template->set_filenames(array('ajax_result' => 'ajax_result.tpl'));
-
-	foreach($data_ar as $key => $value)
+	if (!empty($json))
 	{
-		if ($value !== '')
+		echo(json_encode($data_ar));
+	}
+	else
+	{
+		$template->set_filenames(array('ajax_result' => 'ajax_result.tpl'));
+
+		foreach($data_ar as $key => $value)
 		{
-			$value = utf8_encode(htmlspecialchars($value));
-			// Get special characters in posts back ;)
-			$value = preg_replace('#&amp;\#(\d{1,4});#i', '&#\1;', $value);
+			if ($value !== '')
+			{
+				$value = utf8_encode(htmlspecialchars($value));
+				// Get special characters in posts back ;)
+				$value = preg_replace('#&amp;\#(\d{1,4});#i', '&#\1;', $value);
 
-			$template->assign_block_vars('tag', array(
-				'TAGNAME' => $key,
-				'VALUE' => $value
-				)
-			);
+				$template->assign_block_vars('tag', array(
+					'TAGNAME' => $key,
+					'VALUE' => $value
+					)
+				);
+			}
 		}
+
+		$template->pparse('ajax_result');
 	}
 
-	$template->pparse('ajax_result');
-
-	// Close our DB connection.
-	if (!empty($db))
-	{
-		$db->sql_close();
-	}
+	garbage_collection();
+	exit_handler();
 	exit;
 }
 // Ajaxed - END
@@ -2970,9 +3726,9 @@ function clear_user_color_cache($user_id)
 }
 
 /**
- * Create a profile link for the user with his own color
+* Create a profile link for the user with his own color
 */
-function colorize_username($user_id, $username = '', $user_color = '', $user_active = true, $no_profile = false, $get_only_color_style = false, $from_db = false, $force_cache = false)
+function colorize_username($user_id, $username = '', $user_color = '', $user_active = true, $no_profile = false, $get_only_color_style = false, $from_db = false, $force_cache = false, $alt_link_url = '')
 {
 	global $db, $config, $lang;
 
@@ -2998,8 +3754,9 @@ function colorize_username($user_id, $username = '', $user_color = '', $user_act
 	}
 
 	$username = (($user_id == ANONYMOUS) || empty($username)) ? $lang['Guest'] : str_replace('&amp;amp;', '&amp;', htmlspecialchars($username));
+	$user_link_url = !empty($alt_link_url) ? str_replace('$USER_ID', $user_id, $alt_link_url) : ((defined('USER_LINK_URL_OVERRIDE')) ? str_replace('$USER_ID', $user_id, USER_LINK_URL_OVERRIDE) : (CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id));
 	$user_link_style = '';
-	$user_link_begin = '<a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '"';
+	$user_link_begin = '<a href="' . append_sid(IP_ROOT_PATH . $user_link_url) . '"';
 	$user_link_end = '>' . $username . '</a>';
 
 	if (!$user_active || $is_guest)
@@ -3180,18 +3937,22 @@ function get_gravatar($email)
 */
 function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = false, $im_url = false, $im_status = false, $im_lang = false)
 {
-	global $user, $lang, $images;
+	global $config, $user, $lang, $images;
 
 	$available_im = array(
 		'chat' => array('field' => 'user_id', 'lang' => 'AJAX_SHOUTBOX_PVT_LINK', 'icon_tpl' => 'icon_im_chat', 'icon_tpl_vt' => 'icon_im_chat', 'url' => '{REF}'),
 		'aim' => array('field' => 'user_aim', 'lang' => 'AIM', 'icon_tpl' => 'icon_aim', 'icon_tpl_vt' => 'icon_aim2', 'url' => 'aim:goim?screenname={REF}&amp;message=Hello'),
 		'facebook' => array('field' => 'user_facebook', 'lang' => 'FACEBOOK', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
+		'flickr' => array('field' => 'user_flickr', 'lang' => 'FLICKR', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
+		'googleplus' => array('field' => 'user_googleplus', 'lang' => 'GOOGLEPLUS', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
 		'icq' => array('field' => 'user_icq', 'lang' => 'ICQ', 'icon_tpl' => 'icon_icq', 'icon_tpl_vt' => 'icon_icq2', 'url' => 'http://www.icq.com/people/webmsg.php?to={REF}'),
 		'jabber' => array('field' => 'user_jabber', 'lang' => 'JABBER', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
+		'linkedin' => array('field' => 'user_linkedin', 'lang' => 'LINKEDIN', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
 		'msn' => array('field' => 'user_msnm', 'lang' => 'MSNM', 'icon_tpl' => 'icon_msnm', 'icon_tpl_vt' => 'icon_msnm2', 'url' => 'http://spaces.live.com/{REF}'),
 		'skype' => array('field' => 'user_skype', 'lang' => 'SKYPE', 'icon_tpl' => 'icon_skype', 'icon_tpl_vt' => 'icon_skype2', 'url' => 'callto://{REF}'),
 		'twitter' => array('field' => 'user_twitter', 'lang' => 'TWITTER', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
-		'yahoo' => array('field' => 'user_yim', 'lang' => 'YIM', 'icon_tpl' => 'icon_yim', 'icon_tpl_vt' => 'icon_yim2', 'url' => 'http://edit.yahoo.com/config/send_webmesg?.target={REF}&amp;.src=pg')
+		'yahoo' => array('field' => 'user_yim', 'lang' => 'YIM', 'icon_tpl' => 'icon_yim', 'icon_tpl_vt' => 'icon_yim2', 'url' => 'http://edit.yahoo.com/config/send_webmesg?.target={REF}&amp;.src=pg'),
+		'youtube' => array('field' => 'user_youtube', 'lang' => 'YOUTUBE', 'icon_tpl' => '', 'icon_tpl_vt' => '', 'url' => '{REF}'),
 	);
 
 	// Default values
@@ -3229,19 +3990,27 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 		$im_ref = str_replace('{REF}', $im_ref, $available_im[$im_type]['url']);
 		if ($im_type == 'chat')
 		{
-			if (empty($user->data['session_logged_in']))
+			// JHL: No chat icon if the user is anonymous, or the profiled user is offline
+			if (empty($user->data['session_logged_in']) || empty($user_data['user_session_time']) || ($user_data['user_session_time'] < (time() - $config['online_time'])))
 			{
 				return '';
 			}
-			$im_ref = '#" onclick="window.open(\'' . append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']))) . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;';
+
+			$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
+			$ajax_chat_room = 'chat_room=' . (min($user->data['user_id'], $user_data['user_id']) . '|' . max($user->data['user_id'], $user_data['user_id']));
+			$ajax_chat_link = append_sid($ajax_chat_page . '?' . $ajax_chat_room);
+
+			$im_ref = !empty($config['ajax_chat_link_type']) ? ($ajax_chat_link . '" target="_chat') : ('#" onclick="window.open(\'' . $ajax_chat_link . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;');
 		}
 
 		$im_img = (!empty($im_img) && !empty($im_icon)) ? $im_icon : false;
 		$im_lang = !empty($im_lang) ? $im_lang : (!empty($available_im[$im_type]['lang']) ? $lang[$available_im[$im_type]['lang']] : '');
 	}
 
+	$link_title = ($im_type == 'chat') ? '' : (' - ' . $im_id);
+	$link_title = $im_lang . $link_title;
 	$link_content = !empty($im_img) ? ('<img src="' . $im_img . '" alt="' . $im_lang . '"' . (empty($im_url) ? '' : (' title="' . $im_id . '"')) . ' />') : $im_lang;
-	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '" title="' . $im_lang . ' - ' . $im_id . '">' . $link_content . '</a>');
+	$im_link = !empty($im_url) ? $im_ref : ('<a href="' . $im_ref . '" title="' . $link_title . '">' . $link_content . '</a>');
 
 	return $im_link;
 }
@@ -3469,11 +4238,10 @@ function page_header($title = '', $parse_template = false)
 	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 	global $forum_id, $topic_id;
-	global $unread;
 
 	if (defined('HEADER_INC'))
 	{
@@ -3510,14 +4278,6 @@ function page_header($title = '', $parse_template = false)
 		$cms_config_global_blocks = $cache->obtain_cms_global_blocks_config(false);
 	}
 
-	if (defined('IN_CMS'))
-	{
-		$config['cms_style'] = (!empty($_GET['cms_style']) ? ((intval($_GET['cms_style']) == 1) ? 1 : 0) : $config['cms_style']);
-		//$cms_style_std = ($config['cms_style'] == CMS_STD) ? true : false;
-		$cms_style_std = true;
-		$template->assign_var('CMS_STD_TPL', $cms_style_std);
-	}
-
 	//$server_url = create_server_url();
 	$page_url = pathinfo($_SERVER['SCRIPT_NAME']);
 	$page_query = $_SERVER['QUERY_STRING'];
@@ -3527,6 +4287,12 @@ function page_header($title = '', $parse_template = false)
 	$meta_content['page_title_clean'] = empty($meta_content['page_title_clean']) ? strip_tags($meta_content['page_title']) : $meta_content['page_title_clean'];
 
 	// DYNAMIC META TAGS - BEGIN
+	// Reset some defaults... to be sure some values are taken from DB properly
+	$lang['Default_META_Keywords'] = (!empty($config['site_meta_keywords_switch']) && !empty($config['site_meta_keywords'])) ? $config['site_meta_keywords'] : (!empty($lang['Default_META_Keywords']) ? $lang['Default_META_Keywords'] : strtolower(htmlspecialchars(strip_tags($config['sitename']))));
+	$lang['Default_META_Description'] = (!empty($config['site_meta_description_switch']) && !empty($config['site_meta_description'])) ? $config['site_meta_description'] : (!empty($lang['Default_META_Description']) ? $lang['Default_META_Description'] : htmlspecialchars(strip_tags($config['site_desc'])));
+	$lang['Default_META_Author'] = (!empty($config['site_meta_author_switch']) && !empty($config['site_meta_author'])) ? $config['site_meta_author'] : (!empty($lang['Default_META_Author']) ? $lang['Default_META_Author'] : htmlspecialchars(strip_tags($config['sitename'])));
+	$lang['Default_META_Copyright'] = (!empty($config['site_meta_copyright_switch']) && !empty($config['site_meta_copyright'])) ? $config['site_meta_copyright'] : (!empty($lang['Default_META_Copyright']) ? $lang['Default_META_Copyright'] : htmlspecialchars(strip_tags($config['sitename'])));
+
 	$meta_content_pages_array = array(CMS_PAGE_VIEWFORUM, CMS_PAGE_VIEWFORUMLIST, CMS_PAGE_VIEWTOPIC);
 	if (!in_array($page_url['basename'], $meta_content_pages_array))
 	{
@@ -3606,7 +4372,7 @@ function page_header($title = '', $parse_template = false)
 	$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 	$lang_dir = !empty($lang['DIRECTION']) ? $lang['DIRECTION'] : 'ltr';
 	$header_lang = !empty($lang['HEADER_LANG']) ? $lang['HEADER_LANG'] : 'en-gb';
-	$xml_header_lang = !empty($lang['HEADER_XML_LANG']) ? $lang['HEADER_XML_LANG'] : 'en-gb';
+	$xml_header_lang = !empty($lang['HEADER_LANG_XML']) ? $lang['HEADER_LANG_XML'] : 'en-gb';
 	$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n";
 	//$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' . "\n";
 	$doctype_html .= '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang_dir . '" lang="' . $header_lang . '" xml:lang="' . $xml_header_lang . '">' . "\n";
@@ -3769,7 +4535,7 @@ function page_header($title = '', $parse_template = false)
 		}
 
 		$u_login_logout = CMS_PAGE_LOGIN . '?logout=true&amp;sid=' . $user->data['session_id'];
-		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ') ';
+		$l_login_logout = $lang['Logout'] . ' (' . $user->data['username'] . ')';
 		$l_login_logout2 = $lang['Logout'];
 		$s_last_visit = create_date($config['default_dateformat'], $user->data['user_lastvisit'], $config['board_timezone']);
 
@@ -3835,7 +4601,12 @@ function page_header($title = '', $parse_template = false)
 			{
 				$new_private_chat_switch = true;
 				$icon_private_chat = $images['private_chat_alert'];
-				$u_private_chat = append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . $user->data['user_private_chat_alert']);
+
+				$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
+				$ajax_chat_room = 'chat_room=' . $user->data['user_private_chat_alert'];
+				$ajax_chat_link = append_sid($ajax_chat_page . '?' . $ajax_chat_room);
+				$ajax_chat_ref = !empty($config['ajax_chat_link_type']) ? ($ajax_chat_link . '" target="_chat') : ('#" onclick="window.open(\'' . $ajax_chat_link . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); $(\'#shoutbox_pvt_alert\').css(\'display\', \'none\'); return false;');
+				$u_private_chat = $ajax_chat_ref;
 			}
 
 			if ($user->data['user_unread_privmsg'])
@@ -3885,8 +4656,8 @@ function page_header($title = '', $parse_template = false)
 				$row = $db->sql_fetchrow($result);
 				$lang['Search_new'] = $lang['Search_new'] . ' (' . $row['total'] . ')';
 				$lang['New'] = $lang['New'] . ' (' . $row['total'] . ')';
-				$lang['New2'] = $lang['New_Label'] . ' (' . $row['total'] . ')';
-				$lang['New3'] = $lang['New_Messages_Label'] . ' (' . $row['total'] . ')';
+				$lang['NEW_POSTS_SHORT'] = $lang['New_Label'] . ' (' . $row['total'] . ')';
+				$lang['NEW_POSTS_LONG'] = $lang['New_Messages_Label'] . ' (' . $row['total'] . ')';
 				$lang['Search_new2'] = $lang['Search_new2'] . ' (' . $row['total'] . ')';
 				$lang['Search_new_p'] = $lang['Search_new_p'] . ' (' . $row['total'] . ')';
 				$db->sql_freeresult($result);
@@ -3894,8 +4665,8 @@ function page_header($title = '', $parse_template = false)
 		}
 		else
 		{
-			$lang['New2'] = $lang['New_Label'];
-			$lang['New3'] = $lang['New_Messages_Label'];
+			$lang['NEW_POSTS_SHORT'] = $lang['New_Label'];
+			$lang['NEW_POSTS_LONG'] = $lang['New_Messages_Label'];
 		}
 	}
 	// LOGGED IN CHECK - END
@@ -3907,7 +4678,7 @@ function page_header($title = '', $parse_template = false)
 		$u_display_new = array();
 		if($user->data['upi2db_access'])
 		{
-			$u_display_new = index_display_new($unread);
+			$u_display_new = index_display_new($user->data['upi2db_unread']);
 			$template->assign_block_vars('switch_upi2db_on', array());
 			$upi2db_first_use = ($user->data['user_upi2db_datasync'] == '0') ? ('<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n" . 'alert ("' . $lang['upi2db_first_use_txt'] . '");' . "\n" . '// ]]>' . "\n" . '</script>') : '';
 		}
@@ -3928,38 +4699,11 @@ function page_header($title = '', $parse_template = false)
 				$digest_server_url = create_server_url();
 				define('DIGEST_SITE_URL', $digest_server_url);
 			}
-			@include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_digests.' . PHP_EXT);
+			setup_extra_lang(array('lang_digests'));
 			if ($user->data['session_logged_in'])
 			{
 				$template->assign_block_vars('switch_show_digests', array());
 			}
-
-			// Mighty Gorgon: try again with cron.php to see if this time Digests are working fine...
-			/*
-			// DIGESTS TEMP CODE - BEGIN
-			// MG PHP Cron Emulation For Digests - BEGIN
-			$is_allowed = true;
-			// If you want to assign the extra SQL charge to non registered users only, decomment this line... ;-)
-			$is_allowed = (!$user->data['session_logged_in']) ? true : false;
-			$digests_pages_array = array(CMS_PAGE_PROFILE, CMS_PAGE_POSTING);
-			if ($is_allowed && !in_array($page_url['basename'], $digests_pages_array))
-			{
-				if ((time() - $config['cron_digests_last_run']) > CRON_REFRESH)
-				{
-					$config['cron_digests_last_run'] = ($config['cron_digests_last_run'] == 0) ? (time() - 3600) : $config['cron_digests_last_run'];
-					$last_send_time = @getdate($config['cron_digests_last_run']);
-					$cur_time = @getdate();
-					if ($cur_time['hours'] <> $last_send_time['hours'])
-					{
-						set_config('cron_lock_hour', 1);
-						define('PHP_DIGESTS_CRON', true);
-						include_once(IP_ROOT_PATH . 'mail_digests.' . PHP_EXT);
-					}
-				}
-			}
-			// MG PHP Cron Emulation For Digests - END
-			// DIGESTS TEMP CODE - END
-			*/
 		}
 		// Digests - END
 
@@ -3988,8 +4732,7 @@ function page_header($title = '', $parse_template = false)
 		// Get basic (usernames + totals) online situation
 		$online_userlist = '';
 		$l_online_users = '';
-		$ac_online_text = '';
-		$ac_username_lists = '';
+		$ac_online_users = array('reg' => 0, 'guests' => 0, 'tot' => 0, 'list' => '', 'text' => '');
 		if (defined('SHOW_ONLINE') && !$user->data['is_bot'])
 		{
 			include(IP_ROOT_PATH . 'includes/users_online_block.' . PHP_EXT);
@@ -4150,8 +4893,8 @@ function page_header($title = '', $parse_template = false)
 			'TOTAL_USERS_ONLINE' => $l_online_users,
 			'LOGGED_IN_USER_LIST' => $online_userlist,
 			'BOT_LIST' => !empty($online_botlist) ? $online_botlist : '',
-			'AC_LIST_TEXT' => $ac_online_text,
-			'AC_LIST' => $ac_username_lists,
+			'AC_LIST_TEXT' => $ac_online_users['text'],
+			'AC_LIST' => $ac_online_users['list'],
 			'RECORD_USERS' => sprintf($lang['Record_online_users'], $config['record_online_users'], create_date($config['default_dateformat'], $config['record_online_date'], $config['board_timezone'])),
 
 			'TOP_HTML_BLOCK' => $top_html_block_text,
@@ -4163,8 +4906,8 @@ function page_header($title = '', $parse_template = false)
 			'L_SEARCH_NEW' => $lang['Search_new'],
 			'L_SEARCH_NEW2' => $lang['Search_new2'],
 			'L_NEW' => $lang['New'],
-			'L_NEW2' => (empty($lang['New2']) ? $lang['New_Label'] : $lang['New2']),
-			'L_NEW3' => (empty($lang['New3']) ? $lang['New_Messages_Label'] : $lang['New3']),
+			'L_NEW2' => (empty($lang['NEW_POSTS_SHORT']) ? $lang['New_Label'] : $lang['NEW_POSTS_SHORT']),
+			'L_NEW3' => (empty($lang['NEW_POSTS_LONG']) ? $lang['New_Messages_Label'] : $lang['NEW_POSTS_LONG']),
 			'L_POSTS' => $lang['Posts'],
 		//<!-- BEGIN Unread Post Information to Database Mod -->
 			'L_DISPLAY_ALL' => (!empty($u_display_new) ? $u_display_new['all'] : ''),
@@ -4190,7 +4933,7 @@ function page_header($title = '', $parse_template = false)
 			'L_RECENT' => $lang['Recent_topics'],
 			'L_WATCHED_TOPICS' => $lang['Watched_Topics'],
 			'L_BOOKMARKS' => $lang['Bookmarks'],
-			'L_DIGESTS' => $lang['Digests'],
+			'L_DIGESTS' => $lang['DIGESTS'],
 			'L_DRAFTS' => $lang['Drafts'],
 
 			// Mighty Gorgon - Random Quote - Begin
@@ -4273,11 +5016,23 @@ function page_header($title = '', $parse_template = false)
 	}
 
 	// The following assigns all _common_ variables that may be used at any point in a template.
+	$current_time = create_date($config['default_dateformat'], time(), $config['board_timezone']);
 	$template->assign_vars(array(
 		'DOCTYPE_HTML' => $doctype_html,
 		'NAV_LINKS' => $nav_links_html,
 
+		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
+		'S_HEADER_DROPDOWN' => ($config['switch_header_dropdown'] ? true : false),
+		'S_HEADER_DD_LOGGED_IN' => (($config['switch_header_dropdown'] && $user->data['upi2db_access']) ? true : false),
+
+		// AJAX Features - BEGIN
+		'S_AJAX_FEATURES' => (!empty($config['ajax_features']) ? true : false),
+		'S_AJAX_USER_CHECK' => $ajax_user_check,
+		'S_AJAX_USER_CHECK_ALT' => $ajax_user_check_alt,
+		// AJAX Features - END
+
 		'U_LOGIN_LOGOUT' => append_sid(IP_ROOT_PATH . $u_login_logout),
+		'USER_USERNAME' => $user->data['session_logged_in'] ? htmlspecialchars($user->data['username']) : $lang['Guest'],
 
 		//<!-- BEGIN Unread Post Information to Database Mod -->
 		'UPI2DB_FIRST_USE' => $upi2db_first_use,
@@ -4287,7 +5042,8 @@ function page_header($title = '', $parse_template = false)
 		'PAGE_TITLE' => ($config['page_title_simple'] ? $meta_content['page_title_clean'] : $meta_content['page_title']),
 		'META_TAG' => $phpbb_meta,
 		'LAST_VISIT_DATE' => sprintf($lang['You_last_visit'], $s_last_visit),
-		'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
+		'CURRENT_TIME' => sprintf($lang['Current_time'], $current_time),
+		'CURRENT_TIME_ONLY' => $current_time,
 		'S_TIMEZONE' => $time_message,
 
 		'PRIVATE_MESSAGE_INFO' => $l_privmsgs_text,
@@ -4316,7 +5072,6 @@ function page_header($title = '', $parse_template = false)
 		'L_WHO_IS_ONLINE' => $lang['Who_is_Online'],
 		'L_MEMBERLIST' => $lang['Memberlist'],
 		'L_FAQ' => $lang['FAQ'],
-		'L_REFERRERS' => $lang['Referrers'],
 		'L_ADV_SEARCH' => $lang['Adv_Search'],
 		'L_SEARCH_EXPLAIN' => $lang['Search_Explain'],
 
@@ -4324,11 +5079,6 @@ function page_header($title = '', $parse_template = false)
 		'L_NEWS' => $lang['News_Cmx'],
 		'L_USERGROUPS' => $lang['Usergroups'],
 		'L_BOARD_DISABLE' => $lang['Board_disabled'],
-
-		// AJAX Features - BEGIN
-		'S_AJAX_USER_CHECK' => $ajax_user_check,
-		'S_AJAX_USER_CHECK_ALT' => $ajax_user_check_alt,
-		// AJAX Features - END
 
 		// Ajax Shoutbox - BEGIN
 		'L_AJAX_SHOUTBOX' => $lang['Ajax_Chat'],
@@ -4397,10 +5147,10 @@ function page_header($title = '', $parse_template = false)
 	{
 		$nav_server_url = create_server_url();
 		$nav_cat_desc = $nav_separator . $nav_cat_desc;
-		$breadcrumbs_address = $nav_separator . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM) . '">' . $lang['Forum'] . '</a>' . $nav_cat_desc;
+		$breadcrumbs['address'] = $nav_separator . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_FORUM) . '">' . $lang['Forum'] . '</a>' . $nav_cat_desc;
 		if (isset($nav_add_page_title) && ($nav_add_page_title == true))
 		{
-			$breadcrumbs_address = $breadcrumbs_address . $nav_separator . '<a href="#" class="nav-current">' . $meta_content['page_title'] . '</a>';
+			$breadcrumbs['address'] = $breadcrumbs['address'] . $nav_separator . '<a href="#" class="nav-current">' . $meta_content['page_title'] . '</a>';
 		}
 	}
 
@@ -4410,29 +5160,13 @@ function page_header($title = '', $parse_template = false)
 		'S_PAGE_NAV' => (isset($cms_page['page_nav']) ? $cms_page['page_nav'] : true),
 		'NAV_SEPARATOR' => $nav_separator,
 		'NAV_CAT_DESC' => $nav_cat_desc,
-		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
-		'S_BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : true),
-		'BREADCRUMBS_LINKS_LEFT' => (empty($breadcrumbs_links_left) ? false : $breadcrumbs_links_left),
-		'S_BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? false : true),
-		'BREADCRUMBS_LINKS_RIGHT' => (empty($breadcrumbs_links_right) ? '&nbsp;' : $breadcrumbs_links_right),
+		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs['address']) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs['address']),
+		'S_BREADCRUMBS_BOTTOM_LEFT_LINKS' => (empty($breadcrumbs['bottom_left_links']) ? false : true),
+		'BREADCRUMBS_BOTTOM_LEFT_LINKS' => (empty($breadcrumbs['bottom_left_links']) ? '&nbsp;' : $breadcrumbs['bottom_left_links']),
+		'S_BREADCRUMBS_BOTTOM_RIGHT_LINKS' => (empty($breadcrumbs['bottom_right_links']) ? false : true),
+		'BREADCRUMBS_BOTTOM_RIGHT_LINKS' => (empty($breadcrumbs['bottom_right_links']) ? '&nbsp;' : $breadcrumbs['bottom_right_links']),
 		)
 	);
-
-	// Mighty Gorgon - CMS IMAGES - BEGIN
-	if (defined('IN_CMS'))
-	{
-		$template->assign_vars(array(
-			'IMG_LAYOUT_BLOCKS_EDIT' => $images['layout_blocks_edit'],
-			'IMG_LAYOUT_PREVIEW' => $images['layout_preview'],
-			'IMG_BLOCK_EDIT' => $images['block_edit'],
-			'IMG_BLOCK_DELETE' => $images['block_delete'],
-			'IMG_CMS_ARROW_MOVE' => $images['block_move_s'],
-			'IMG_CMS_ARROW_UP' => $images['arrows_cms_up'],
-			'IMG_CMS_ARROW_DOWN' => $images['arrows_cms_down'],
-			)
-		);
-	}
-	// Mighty Gorgon - CMS IMAGES - END
 
 	if ($config['board_disable'] && ($user->data['user_level'] == ADMIN))
 	{
@@ -4495,6 +5229,7 @@ function page_header($title = '', $parse_template = false)
 
 	if (($user->data['user_level'] != ADMIN) && $config['board_disable'] && !defined('HAS_DIED') && !defined('IN_ADMIN') && !defined('IN_LOGIN'))
 	{
+		if (!defined('STATUS_503')) define('STATUS_503', true);
 		if($config['board_disable_mess_st'])
 		{
 			message_die(GENERAL_MESSAGE, $config['board_disable_message']);
@@ -4535,11 +5270,10 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 	global $cms_acp_url;
-	global $unread;
 
 	$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
 	$config['url_rw_runtime'] = (isset($config['url_rw_runtime']) ? $config['url_rw_runtime'] : (($config['url_rw'] || ($config['url_rw_guests'] && ($user->data['user_id'] == ANONYMOUS))) ? true : false));
@@ -4599,11 +5333,13 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 
 	//Begin Lo-Fi Mod
 	$path_parts = pathinfo($_SERVER['SCRIPT_NAME']);
-	$lofi = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars($_SERVER['QUERY_STRING']) . '&amp;lofi=' . (empty($_COOKIE['lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE['lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a>';
+	$lofi = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars(str_replace(array('&lofi=0', '&lofi=1', 'lofi=0', 'lofi=1'), array('', '', '', ''), $_SERVER['QUERY_STRING'])) . '&amp;lofi=' . (empty($_COOKIE[$config['cookie_name'] . '_lofi']) ? '1' : '0')) . '">' . (empty($_COOKIE[$config['cookie_name'] . '_lofi']) ? ($lang['Lofi']) : ($lang['Full_Version'])) . '</a>';
+	$mobile_style = '<a href="' . append_sid(IP_ROOT_PATH . $path_parts['basename'] . '?' . htmlspecialchars(str_replace(array('&mob=0', '&mob=1', 'mob=0', 'mob=1'), array('', '', '', ''), $_SERVER['QUERY_STRING'])) . '&amp;mob=' . (!empty($_COOKIE[$config['cookie_name'] . '_mob']) ? '0' : '1')) . '">' . (!empty($_COOKIE[$config['cookie_name'] . '_mob']) ? ($lang['MOBILE_STYLE_DISABLE']) : ($lang['MOBILE_STYLE_ENABLE'])) . '</a>';
 	$template->assign_vars(array(
 		'L_LOFI' => $lang['Lofi'],
 		'L_FULL_VERSION' => $lang['Full_Version'],
-		'LOFI' => $lofi
+		'LOFI' => $lofi . ($user->data['is_mobile'] ? ('&nbsp;&bull;&nbsp;' . $mobile_style) : ''),
+		'MOBILE_STYLE' => $mobile_style
 		)
 	);
 	//End Lo-Fi Mod
@@ -4621,11 +5357,11 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	);
 
 	// Mighty Gorgon - CRON - BEGIN
-	if ($config['cron_global_switch'] && !defined('IN_CRON') && !defined('IN_ADMIN') && !defined('IN_CMS') && !$config['board_disable'])
+	if ($config['cron_global_switch'] && !defined('IN_CRON') && !defined('IN_ADMIN') && !defined('IN_CMS') && empty($config['board_disable']))
 	{
 		$cron_time = time();
 		$cron_append = '';
-		$cron_types = array('files', 'database', 'cache', 'sql', 'users', 'topics');
+		$cron_types = array('files', 'database', 'cache', 'sql', 'users', 'topics', 'sessions');
 
 		for ($i = 0; $i < sizeof($cron_types); $i++)
 		{
@@ -4641,7 +5377,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		$cur_time = @getdate();
 		foreach ($hour_cron_types as $hour_cron_type)
 		{
-			$config['cron_' . $hour_cron_type . '_last_run'] = ($config['cron_' . $hour_cron_type . '_last_run'] == 0) ? (time() - 3600) : $config['cron_' . $hour_cron_type . '_last_run'];
+			$config['cron_' . $hour_cron_type . '_last_run'] = !empty($config['cron_' . $hour_cron_type . '_last_run']) ? $config['cron_' . $hour_cron_type . '_last_run'] : (time() - 3600);
 			$last_send_time = @getdate($config['cron_' . $hour_cron_type . '_last_run']);
 			if (!empty($config['cron_' . $hour_cron_type . '_interval']) && ($config['cron_' . $hour_cron_type . '_interval'] > 0) && ($cur_time['hours'] != $last_send_time['hours']))
 			{
@@ -4719,14 +5455,23 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 			);
 
 			/*
-			$gen_log_file = IP_ROOT_PATH . 'cache/gen_log.txt';
+			$gen_log_file = IP_ROOT_PATH . MAIN_CACHE_FOLDER . '/gen_log.txt';
 			$fp = fopen ($gen_log_file, "a+");
-			fwrite($fp, $gentime . "\t" . $memory_usage . "\n");
+			fwrite($fp, (!empty($gentime) ? $gentime : '0') . "\t" . (!empty($memory_usage) ? $memory_usage : '0') . "\t" . $user->page['page'] . "\n");
 			fclose($fp);
 			*/
 		}
 		// Page generation time - END
 	}
+
+	// Check for some switches here, in case we have changed/reset these swiches somewhere through the code or CMS blocks!
+	$template->assign_vars(array(
+		'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
+		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
+		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
+		)
+	);
 
 	if ($parse_template || empty($template_to_parse))
 	{
@@ -5291,6 +6036,11 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 		case E_USER_WARNING:
 		case E_USER_NOTICE:
 			define('IN_ERROR_HANDLER', true);
+			$status_not_found_array = array('ERROR_NO_ATTACHMENT', 'NO_FORUM', 'NO_TOPIC', 'NO_USER');
+			if (in_array($msg_text, $status_not_found_array))
+			{
+				if (!defined('STATUS_404')) define('STATUS_404', true);
+			}
 			message_die($msg_code, $msg_text, $msg_title, $errline, $errfile, '');
 	}
 }
@@ -5351,16 +6101,16 @@ function html_message($msg_title, $msg_text, $return_url)
 //
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
-	global $db, $cache, $config, $user, $template, $images, $theme, $lang, $tree;
+	global $db, $cache, $config, $auth, $user, $lang, $template, $images, $theme, $tree;
 	global $table_prefix, $SID, $_SID;
-	global $gen_simple_header, $session_length, $starttime, $base_memory_usage, $do_gzip_compress;
+	global $gen_simple_header, $starttime, $base_memory_usage, $do_gzip_compress;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
 	global $nav_separator, $nav_links;
 	// Global vars needed by page header, but since we are in message_die better use default values instead of the assigned ones in case we are dying before including page_header.php
 	/*
 	global $meta_content;
 	global $nav_pgm, $nav_add_page_title, $skip_nav_cat, $start;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 	*/
 
 	//+MOD: Fix message_die for multiple errors MOD
@@ -5423,10 +6173,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 	$sql_store = $sql;
 
-	//
-	// Get SQL error if we are debugging. Do this as soon as possible to prevent
-	// subsequent queries from overwriting the status of sql_error()
-	//
+	// Get SQL error if we are debugging. Do this as soon as possible to prevent subsequent queries from overwriting the status of sql_error()
 	if (DEBUG && (($msg_code == GENERAL_ERROR) || ($msg_code == CRITICAL_ERROR)))
 	{
 		$sql_error = $db->sql_error();
@@ -5453,7 +6200,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	{
 		// Start session management
 		$user->session_begin();
-		//$auth->acl($user->data);
+		$auth->acl($user->data);
 		$user->setup();
 		// End session management
 	}
@@ -5524,10 +6271,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 			break;
 
 		case CRITICAL_ERROR:
-			//
-			// Critical errors mean we cannot rely on _ANY_ DB information being
-			// available so we're going to dump out a simple echo'd statement
-			//
+			// Critical errors mean we cannot rely on _ANY_ DB information being available so we're going to dump out a simple echo'd statement
 
 			// We force english to make sure we have at least the default language
 			$config['default_lang'] = 'english';
@@ -5587,6 +6331,16 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 	if ($msg_code != CRITICAL_ERROR)
 	{
+		if (defined('STATUS_404'))
+		{
+			send_status_line(404, 'Not Found');
+		}
+
+		if (defined('STATUS_503'))
+		{
+			send_status_line(503, 'Service Unavailable');
+		}
+
 		if (!empty($lang[$msg_text]))
 		{
 			$msg_text = $lang[$msg_text];
@@ -5643,6 +6397,126 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	exit_handler();
 
 	exit;
+}
+
+//
+// Truncates HTML strings cleanly
+// Taken from code in http://stackoverflow.com/questions/1193500/php-truncate-html-ignoring-tags
+//
+function truncate_html_string($text, $length, $ellipsis = '...')
+{
+	if (strlen(preg_replace(array('/<.*?>/', '/&#?[a-zA-Z0-9]+;/'), array('', ' '), $text)) <= $length)
+	{
+		return $text;
+	}
+
+	$printed_length = 0;
+	$position = 0;
+	$tags = array();
+	$clean_text = '';
+	while ($printed_length < $length && preg_match('{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}', $text, $match, PREG_OFFSET_CAPTURE, $position))
+	{
+		list($tag, $tag_position) = $match[0];
+
+		// append text leading up to the tag.
+		$str = substr($text, $position, $tag_position - $position);
+		if ($printed_length + strlen($str) > $length)
+		{
+			break;
+		}
+
+		$clean_text .= $str;
+		$printed_length += strlen($str);
+
+		if ($tag[0] == '&')
+		{
+			// Handle the entity.
+			$clean_text .= $tag;
+			$printed_length++;
+		}
+		else
+		{
+			// Handle the tag.
+			$tag_name = $match[1][0];
+			if ($tag[1] == '/')
+			{
+				// This is a closing tag.
+
+				$opening_tag = array_pop($tags);
+				assert($opening_tag == $tag_name); // check that tags are properly nested.
+
+				$clean_text .= $tag;
+			}
+			else if ($tag[strlen($tag) - 2] == '/')
+			{
+				// Self-closing tag.
+				$clean_text .= $tag;
+			}
+			else
+			{
+				// Opening tag.
+				$clean_text .= $tag;
+				$tags[] = $tag_name;
+			}
+		}
+
+		// Continue after the tag.
+		$position = $tag_position + strlen($tag);
+	}
+
+	// Print any remaining text.
+	if ($printed_length < $length && $position < strlen($text))
+	{
+		$max_length = $length - $printed_length;
+		$utf8_length = 0;
+		while ($utf8_length < $max_length)
+		{
+			$char = substr($text, $position + $utf8_length, 1);
+			// UTF-8 character encoding - BEGIN
+			$code = ord($char);
+			if ($code >= 0x80)
+			{
+				if ($code < 0xE0)
+				{
+					// Two byte
+					if (($max_length - $utf8_length) >= 2)
+					{
+						$utf8_length = $utf8_length + 2;
+					}
+					else
+					{
+						break;
+					}
+				}
+				elseif ($code1 < 0xF0)
+				{
+					// Three byte
+					if (($max_length - $utf8_length) >= 3)
+					{
+						$utf8_length = $utf8_length + 3;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				$utf8_length = $utf8_length + 1;
+			}
+			// UTF-8 character encoding - END
+		}
+		$clean_text .= substr($text, $position, $utf8_length);
+	}
+	$clean_text .= $ellipsis;
+
+	// Close any open tags.
+	while (!empty($tags))
+	{
+		$clean_text .= '</' . array_pop($tags) . '>';
+	}
+	return $clean_text;
 }
 
 ?>

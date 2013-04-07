@@ -57,7 +57,7 @@ class pafiledb_email extends pafiledb_public
 			$sid = request_post_var('sid', '');
 			if (empty($sid) || ($sid != $user->data['session_id']))
 			{
-				message_die(GENERAL_ERROR, 'Invalid_session');
+				message_die(GENERAL_ERROR, 'INVALID_SESSION');
 			}
 			$error = false;
 
@@ -75,16 +75,19 @@ class pafiledb_email extends pafiledb_public
 			$username = request_var('fname', '', true);
 			$sender_name = request_var('sname', '', true);
 
-			if (!$user->data['session_logged_in'] || ($user->data['session_logged_in'] && ($sender_name != $user->data['username'])))
+			//if (!$user->data['session_logged_in'] || ($user->data['session_logged_in'] && ($sender_name != $user->data['username'])))
+			if (!$user->data['session_logged_in'])
 			{
+				// Mighty Gorgon: is this really needed?
+				/*
 				include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
-
-				$result = validate_username($username);
+				$result = validate_username($sender_name);
 				if ($result['error'])
 				{
 					$error = true;
 					$error_msg .= (!empty($error_msg)) ? '<br />' . $result['error_msg'] : $result['error_msg'];
 				}
+				*/
 			}
 			else
 			{
@@ -194,7 +197,7 @@ class pafiledb_email extends pafiledb_public
 			'L_EMPTY_SUBJECT_EMAIL' => $lang['Empty_subject_email'],
 			'L_EMPTY_MESSAGE_EMAIL' => $lang['Empty_message_email'],
 
-			'U_INDEX' => append_sid(CMS_PAGE_HOME),
+			'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 			'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 

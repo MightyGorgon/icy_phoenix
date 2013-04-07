@@ -20,9 +20,9 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /*
-	From php.net comments
-	by ivanmaz(remove) at mech dot math dot msu dot su
-	UTF8 to Cyrillic Win-1251 Convertor
+* From php.net comments
+* by ivanmaz(remove) at mech dot math dot msu dot su
+* UTF8 to Cyrillic Win-1251 Convertor
 */
 function utf8dec($s)
 {
@@ -68,34 +68,37 @@ function utf8dec($s)
 			$out .= $c1;
 		}
 	}
- return $out;
+	return $out;
 }
 
 // A fast way to stop running the script and displaying the xml response
 function pseudo_die($error, $error_msg)
 {
 	global $template;
+
 	$template->assign_vars(array(
 		'ERROR_STATUS' => $error,
 		'ERROR_MSG' => utf8_encode($error_msg)
 		)
 	);
 
-	$template->pparse('xml');
+	$template->pparse('xhr');
 	die();
 }
 
 // Update and return Shoutbox sessions data
-function update_session(&$error_msg)
+function update_session(&$error_msg, $refresh = true)
 {
-	global $db, $cache, $user, $lang;
+	global $db, $cache, $config, $user, $lang;
+
 	$guest_sql = '';
 	$online_counter = 0;
 	$reg_online_counter = 0;
 	$guest_online_counter = 0;
 
 	// First clean old data... so we should have a light table...
-	$clean_time = time() - 86400;
+	// Just double chat session refresh time to make sure we are not removing sessions for users still active...
+	$clean_time = time() - ((int) $config['ajax_chat_session_refresh'] * 2);
 	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . " WHERE session_time < " . $clean_time;
 	$db->sql_return_on_error(true);
 	$result = $db->sql_query($sql);
@@ -105,14 +108,89 @@ function update_session(&$error_msg)
 		$error_msg = 'Could not update Shoutbox session data';
 	}
 
+	if ($refresh)
+	{
+		// Guest are reconized by their IP
+		if (!$user->data['session_logged_in'])
+		{
+			$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
+		}
+
+		// Only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+		$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
+		$sql = 'SELECT session_id
+				FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
+				WHERE session_user_id = ' . $user->data['user_id'] . '
+					AND session_time >= ' . $time_ago . '
+					' . $guest_sql . '
+				LIMIT 1';
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
+		{
+			$error_msg = 'Can\'t read shoutbox session data';
+		}
+
+		// We need to decide if we create an entry or update a previous one
+		if ($row = $db->sql_fetchrow($result))
+		{
+			$current_session_id = $row['session_id'];
+			$sql = "UPDATE " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+					SET session_ip = '" . $db->sql_escape($user->ip) . "',
+					session_time = " . time() . "
+					WHERE session_id = " . $row['session_id'];
+		}
+		else
+		{
+			$current_session_id = get_ajax_chat_max_session_id() + 1;
+			$sql = "INSERT INTO " . AJAX_SHOUTBOX_SESSIONS_TABLE . " (session_id, session_user_id, session_username, session_ip, session_start, session_time)
+				VALUES (" . $current_session_id . ", " . $user->data['user_id'] . ", '" . ($user->data['session_logged_in'] ? $user->data['username'] : '') . "', '" . $db->sql_escape($user->ip) . "', " . time() . ", " . time() . ")";
+		}
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
+		{
+			$error_msg = 'Could not update Shoutbox session data';
+		}
+
+		$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+				WHERE session_user_id = " . $user->data['user_id'] . "
+					AND session_id <> " . $current_session_id;
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
+		{
+			$error_msg = 'Could not update Shoutbox session data';
+		}
+	}
+
+	if (!empty($user->data['user_private_chat_alert']))
+	{
+		$sql = "UPDATE " . USERS_TABLE . " SET user_private_chat_alert = '' WHERE user_id = " . $user->data['user_id'];
+		$db->sql_return_on_error(true);
+		$db->sql_query($sql);
+		$db->sql_return_on_error(false);
+	}
+
+}
+
+// remove a Shoutbox session
+function remove_session(&$error_msg)
+{
+	global $db, $user, $user_ip;
+	$guest_sql = '';
+
 	// Guest are reconized by their IP
-	if(!$user->data['session_logged_in'])
+	if (!$user->data['session_logged_in'])
 	{
 		$guest_sql = " AND session_ip = '" . $db->sql_escape($user->ip) . "'";
 	}
 
-	// Only get session data if the user was online SESSION_REFRESH seconds ago
-	$time_ago = time() - SESSION_REFRESH;
+	// Only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+	$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
 	$sql = 'SELECT session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
 			WHERE session_user_id = ' . $user->data['user_id'] . '
@@ -127,46 +205,50 @@ function update_session(&$error_msg)
 		$error_msg = 'Can\'t read shoutbox session data';
 	}
 
-	// We need to decide if we create an entry or update a previous one
-	if($row = $db->sql_fetchrow($result))
+	// We need to delete a previous existing entry only
+	if ($row = $db->sql_fetchrow($result))
 	{
-		$current_session_id = $row['session_id'];
-		$sql = "UPDATE " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-				SET session_ip = '" . $db->sql_escape($user->ip) . "',
-				session_time = " . time() . "
+		$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
 				WHERE session_id = " . $row['session_id'];
+		$db->sql_return_on_error(true);
+		$result = $db->sql_query($sql);
+		$db->sql_return_on_error(false);
+		if (!$result)
+		{
+			$error_msg = 'Could not delete Shoutbox session data';
+		}
 	}
-	else
-	{
-		$current_session_id = get_ajax_chat_max_session_id() + 1;
-		$sql = "INSERT INTO " . AJAX_SHOUTBOX_SESSIONS_TABLE . " (session_id, session_user_id, session_username, session_ip, session_start, session_time)
-			VALUES (" . $current_session_id . ", " . $user->data['user_id'] . ", '" . ($user->data['session_logged_in'] ? $user->data['username'] : '') . "', '" . $db->sql_escape($user->ip) . "', " . time() . ", " . time() . ")";
-	}
-	$db->sql_return_on_error(true);
+}
+
+// Checks if a user is in the chat session
+function user_in_chat_session($id)
+{
+	global $db, $cache, $config;
+
+	// Only get session data if the user was online $config['ajax_chat_session_refresh'] seconds ago
+	$time_ago = time() - (int) $config['ajax_chat_session_refresh'];
+	$sql = 'SELECT session_id
+			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE . '
+			WHERE session_user_id = ' . $id . '
+				AND session_time >= ' . $time_ago . '
+			LIMIT 1';
 	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
 	if (!$result)
 	{
-		$error_msg = 'Could not update Shoutbox session data';
+		return false;
 	}
-
-	$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
-			WHERE session_user_id = " . $user->data['user_id'] . "
-				AND session_id <> " . $current_session_id;
-	$db->sql_return_on_error(true);
-	$result = $db->sql_query($sql);
-	$db->sql_return_on_error(false);
-	if (!$result)
+	if ($row = $db->sql_fetchrow($result))
 	{
-		$error_msg = 'Could not update Shoutbox session data';
+		return true;
 	}
-
+	return false;
 }
 
 // Get max session_id
 function get_ajax_chat_max_session_id()
 {
 	global $db, $cache;
+
 	$sql = 'SELECT MAX(session_id) AS max_session_id
 			FROM ' . AJAX_SHOUTBOX_SESSIONS_TABLE;
 	$db->sql_return_on_error(true);
@@ -185,6 +267,100 @@ function get_ajax_chat_max_session_id()
 	{
 		return 0;
 	}
+}
+
+// Given a list of rooms, produce a list of users in those rooms
+//
+// $rooms the list of rooms
+// $chat_room the current chat room
+// $chat_link the chat room link
+function get_chat_room_users($rooms, $chat_room, $chat_link)
+{
+	global $db, $cache, $user, $lang;
+
+	$chatroom_title = $lang['Public_room'];
+	$chatroom_userlist = '';
+	$result = array();
+	$result['rooms'] = array();
+	$room_class = '';
+	$chat_room_all = request_var('all_rooms', 0);
+	$chat_room_all = !empty($chat_room_all) ? true : false;
+	if (($chat_room == '') && empty($chat_room_all))
+	{
+		$room_class = ' class="active"';
+	}
+	$result['rooms'][] = array(
+		'NAME' => $lang['Public_room'],
+		'LIST' => '',
+		'STYLED_LIST' => '',
+		'CLASS' => $room_class,
+		'LINK' => append_sid($chat_link)
+	);
+	$room_list_ids = array();
+	$room_styled_list_ids = array();
+	if (!empty($rooms))
+	{
+		$room_users_list = '';
+		foreach ($rooms as $room)
+		{
+			$room_users_list .= $room['shout_room'];
+		}
+		$room_users_sql = array_unique(array_filter(array_map('intval', explode('|', $room_users_list))));
+		$sql = "SELECT DISTINCT user_id, username, user_color, user_active
+				FROM " . USERS_TABLE . "
+				WHERE " . $db->sql_in_set('user_id', $room_users_sql);
+		$results = $db->sql_query($sql);
+		$users = $db->sql_fetchrowset($results);
+
+		foreach ($users as $chat_user)
+		{
+			if($user->data['session_logged_in'] && ($chat_user['user_id'] == $user->data['user_id']))
+			{
+				$room_list_ids[$chat_user['user_id']] = $lang['My_id'];
+				$room_styled_list_ids[$chat_user['user_id']] = colorize_username($chat_user['user_id'], $lang['My_id'], $chat_user['user_color'], $chat_user['user_active'], false, true);
+			}
+			else
+			{
+				$room_list_ids[$chat_user['user_id']] = $chat_user['username'];
+				$room_styled_list_ids[$chat_user['user_id']] = colorize_username($chat_user['user_id'], $chat_user['username'], $chat_user['user_color'], $chat_user['user_active'], false, true);
+			}
+		}
+
+		foreach ($rooms as $room)
+		{
+			$comma = '';
+			$list = '';
+			$styled_list = '';
+			$room_class = '';
+
+			$current_room = $room['shout_room'];
+			$room_users = array_unique(array_filter(array_map('intval', explode('|', $room['shout_room']))));
+			foreach ($room_users as $room_user)
+			{
+				$list .= $comma . $room_list_ids[$room_user];
+				$styled_list .= $comma . '<span ' . $room_styled_list_ids[$room_user] . '>' . $room_list_ids[$room_user] . '</span>';
+				$comma = ', ';
+			}
+			if ($current_room == ('|' . $chat_room . '|'))
+			{
+				$room_class = ' class="active"';
+				$chatroom_title = $lang['Private_room'];
+				$chatroom_userlist = $styled_list;
+			}
+			$result['rooms'][] = array(
+				'NAME' => $lang['Private_room'],
+				'LIST' => $list,
+				'STYLED_LIST' => $styled_list,
+				'CLASS' => $room_class,
+				'LINK' => append_sid($chat_link . '&amp;chat_room=' . implode('|', $room_users))
+			);
+		}
+	}
+	$result['room_list_ids'] = $room_list_ids;
+	$result['styled_list_ids'] = $room_styled_list_ids;
+	$result['title'] = $chatroom_title;
+	$result['userlist'] = $chatroom_userlist;
+	return $result;
 }
 
 ?>

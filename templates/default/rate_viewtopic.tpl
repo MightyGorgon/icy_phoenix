@@ -7,8 +7,14 @@
 		<span class="gensmall">{FULL_STATS_URL}&nbsp;</span><br /><br />
 
 		<div class="gen">
+<script type="text/javascript">
+function submitform()
+{
+	document.forms["ratingform"].submit();
+}
+</script>
 			<!-- BEGIN rerate -->
-			<form name="ratingform" method="post" action="{rerate.S_RATE_ACTION}">
+			<form id="ratingform" name="ratingform" method="post" action="{rerate.S_RATE_ACTION}">
 			{rerate.S_HIDDEN_FIELDS}{rerate.L_CHANGE_RATING}:&nbsp;
 			<!-- END rerate -->
 			<!-- BEGIN rerate_link -->
@@ -17,11 +23,11 @@
 			<!-- END rate_row -->
 			<!-- END rerate_link -->
 			<!-- BEGIN rerate -->
-			{rerate.S_RATE_SELECT}&nbsp;<input type="submit" name="submit" value="{rerate.L_RATE}" class="liteoption" />{rerate.RATE_TOPIC_USER}
+			{rerate.S_RATE_SELECT}&nbsp;<input type="submit" value="{rerate.L_RATE}" class="liteoption" />{rerate.RATE_TOPIC_USER}
 			<!-- END rerate -->
 
 			<!-- BEGIN rate -->
-			<form name="ratingform" method="post" action="{rate.S_RATE_ACTION}">
+			<form id="ratingform" name="ratingform" method="post" action="{rate.S_RATE_ACTION}">
 			{rate.S_HIDDEN_FIELDS}{rate.L_CHOOSE_RATING}:&nbsp;
 			<!-- END rate -->
 			<!-- BEGIN rate_link -->
@@ -30,7 +36,7 @@
 			<!-- END rate_row -->
 			<!-- END rate_link -->
 			<!-- BEGIN rate -->
-			{rate.S_RATE_SELECT}&nbsp;<input type="submit" name="submit" value="{rate.L_RATE}" class="liteoption" />
+			{rate.S_RATE_SELECT}&nbsp;<input type="submit" value="{rate.L_RATE}" class="liteoption" />
 			{rate.RATE_TOPIC_USER}
 			<!-- END rate -->
 

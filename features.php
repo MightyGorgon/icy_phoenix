@@ -15,14 +15,14 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
-include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_features.' . PHP_EXT);
+setup_extra_lang(array('lang_features'));
 
-$img_true = '<img src="images/cms/b_ok.png" alt="True" />';
-$img_false = '<img src="images/cms/b_cancel.png" alt="False" />';
+$img_true = '<img src="' . IP_ROOT_PATH . $images['cms_icon_ok'] . '" alt="True" />';
+$img_false = '<img src="' . IP_ROOT_PATH . $images['cms_icon_cancel'] . '" alt="False" />';
 
 $features_array = array(
 
@@ -35,7 +35,7 @@ $features_array = array(
 	),
 
 	'basic_features' => array(
-		'utf8' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'utf8' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'user_preferences' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'mod' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'admin' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
@@ -88,8 +88,8 @@ $features_array = array(
 	'registration' => array(
 		'coppa' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'l_r_a' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
-		'username_lenght' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
-		'pass_lenght' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
+		'username_length' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'pass_length' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'l_u_c' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		's_p_c_r' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'f_p_c' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
@@ -99,7 +99,7 @@ $features_array = array(
 	'posting' => array(
 		't_d_m' => array('bb2' => $lang['bb2_t_d_m'], 'ip' => $lang['ip_t_d_m'], 'bb3' => $lang['bb3_t_d_m']),
 		'bbcode' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
-		'bbcode_custom' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'bbcode_custom' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'html_in_post' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_false),
 		'emoticon' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'quoting' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
@@ -110,9 +110,9 @@ $features_array = array(
 		'attachments' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'p_d' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'polls' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
-		'm_p_o_v' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'm_p_o_v' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'u_b_p_t' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
-		'all_dis_v_c' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'all_dis_v_c' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'beaten_p_review' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'p_p' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'flood_control' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
@@ -137,7 +137,7 @@ $features_array = array(
 		'u_p_s' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'u_i_m' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'u_p_d' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
-		'm_list_search' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'm_list_search' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'u_m_v' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 	),
 
@@ -258,11 +258,11 @@ $features_array = array(
 		'manage_user_attachment' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'user_editing' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'list_group_index' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
-		'topic_icons' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'topic_icons' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'mass_e_mail' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'manage_report_reasons' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
 		'module_manage' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
-		'custom_bbcode' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'custom_bbcode' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'custom_profile_field' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'custom_profile_field_placement' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'custom_profile_data_types' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
@@ -311,7 +311,7 @@ $features_array = array(
 	'install' => array(
 		'install_wizard' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 		'update_wizard' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
-		'converter_wizard' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'converter_wizard' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'file_merge_diff_engine' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
 	),
 
@@ -323,9 +323,9 @@ $features_array = array(
 	'plugins' => array(
 		'auth_plug' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
 		'search_plug' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
-		'cache_plug' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'cache_plug' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'captcha_plug' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
-		'hooks_sys' => array('bb2' => $img_false, 'ip' => $img_false, 'bb3' => $img_true),
+		'hooks_sys' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
 		'expand_module' => array('bb2' => $img_true, 'ip' => $img_true, 'bb3' => $img_true),
 	),
 
@@ -373,9 +373,9 @@ $features_array = array(
 	'features_seo' => array(
 		'feat_url_rewrite' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 		'feat_rss' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
-		'feat_referrers' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
-		'feat_referrers' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
-		'feat_referrers' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
+		'feat_referers_tracking' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
+		'feat_bots_tracking' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_true),
+		'feat_browser_tracking' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 		'feat_banners' => array('bb2' => $img_false, 'ip' => $img_true, 'bb3' => $img_false),
 	),
 

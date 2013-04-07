@@ -27,6 +27,29 @@
 	<td class="row2"><span class="genmed"><input onchange="setChange();" type="radio" {ALBUM_CATEGORY_SORTING_ASC} name="album_category_sorting_direction" value="ASC" />{L_ALBUM_CATEGORY_SORTING_ASC}&nbsp;&nbsp;<input onchange="setChange();" type="radio" {ALBUM_CATEGORY_SORTING_DESC} name="album_category_sorting_direction" value="DESC" />{L_ALBUM_CATEGORY_SORTING_DESC}</span></td>
 </tr>
 <tr>
+	<td class="row1"><span class="genmed">{L_ALBUM_PICTURE_SORTING}</span></td>
+	<td class="row2">
+	<select name="sort_method" onchange="setChange();">
+		<option {SORT_TIME} value='pic_time'>{L_TIME}</option>
+		<option {SORT_PIC_TITLE} value='pic_title'>{L_PIC_TITLE}</option>
+		<option {SORT_USERNAME} value='username'>{L_USERNAME}</option>
+		<option {SORT_VIEW} value='pic_view_count'>{L_VIEW}</option>
+		<option {SORT_RATING} value='rating'>{L_RATING}</option>
+		<option {SORT_COMMENTS} value='comments'>{L_COMMENTS}</option>
+		<option {SORT_NEW_COMMENT} value='new_comment'>{L_NEW_COMMENT}</option>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td class="row1"><span class="genmed">{L_ALBUM_PICTURE_DIRECTION}</span></td>
+	<td class="row2">
+	<select name="sort_order">
+		<option {SORT_ASC} value='ASC'>{L_ASC}</option>
+		<option {SORT_DESC} value='DESC'>{L_DESC}</option>
+	</select>
+	</td>
+</tr>
+<tr>
 	<td class="row1"><span class="genmed">{L_SHOW_RECENT_IN_SUBCATS}</span></td>
 	<td class="row2"><span class="genmed"><input onchange="setChange();" type="radio" {SHOW_RECENT_IN_SUBCATS_ENABLED} name="show_recent_in_subcats" value="1" />{L_YES}&nbsp;&nbsp;<input onchange="setChange();" type="radio" {SHOW_RECENT_IN_SUBCATS_DISABLED} name="show_recent_in_subcats" value="0" />{L_NO}</span></td>
 </tr>

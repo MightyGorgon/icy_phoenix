@@ -297,7 +297,7 @@ function build_groups_list_array()
 		$i++;
 		$groups_list[$i]['group_id'] = $row['group_id'];
 		$groups_list[$i]['group_name'] = $row['group_name'];
-		$groups_list[$i]['group_url'] = append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']);
+		$groups_list[$i]['group_url'] = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']);
 		$groups_list[$i]['group_color'] = check_valid_color($row['group_color']);
 		$groups_list[$i]['group_color_style'] = ($groups_list[$i]['group_color'] ? ' style="color:' . $row['group_color'] . ';font-weight:bold;"' : ' style="font-weight:bold;"');
 	}
@@ -332,7 +332,7 @@ function build_groups_list_template()
 	$groups_list = '';
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight: bold; text-decoration: none;' . (check_valid_color($row['group_color']) ? ('color: ' . check_valid_color($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
+		$groups_list .= '&nbsp;<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight: bold; text-decoration: none;' . (check_valid_color($row['group_color']) ? ('color: ' . check_valid_color($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
 	}
 	$db->sql_freeresult($result);
 	if ($config['active_users_legend'] == true)

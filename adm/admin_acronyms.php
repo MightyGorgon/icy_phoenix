@@ -22,41 +22,26 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
+$modes_array = array('add', 'delete', 'edit', 'save');
 $mode = request_var('mode', '');
-if(empty($mode))
-{
-	// These could be entered via a form button
-	if(isset($_POST['add']))
-	{
-		$mode = 'add';
-	}
-	elseif(isset($_POST['save']))
-	{
-		$mode = 'save';
-	}
-	else
-	{
-		$mode = '';
-	}
-}
+$mode = in_array($mode, $modes_array) ? $mode : '';
+$mode = !empty($mode) ? $mode : (isset($_POST['add']) ? 'add' : (isset($_POST['save']) ? 'save' : ''));
+
+$acronym_id = request_var('id', 0);
+
+$s_hidden_fields = '';
 
 if(!empty($mode))
 {
-	if(($mode == 'edit') || ($mode == 'add'))
+	if(in_array($mode, array('edit', 'add')))
 	{
-		$acronym_id = request_var('id', 0);
-
 		$template->set_filenames(array('body' => ADM_TPL . 'acronyms_edit_body.tpl'));
-
-		$s_hidden_fields = '';
 
 		if($mode == 'edit')
 		{
-			if($acronym_id)
+			if(!empty($acronym_id))
 			{
-				$sql = 'SELECT *
-					FROM ' . ACRONYMS_TABLE . "
-					WHERE acronym_id = $acronym_id";
+				$sql = "SELECT * FROM " . ACRONYMS_TABLE . " WHERE acronym_id = " . (int) $acronym_id;
 				$result = $db->sql_query($sql);
 				$acronym_info = $db->sql_fetchrow($result);
 				$s_hidden_fields .= '<input type="hidden" name="id" value="' . $acronym_id . '" />';
@@ -85,24 +70,23 @@ if(!empty($mode))
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	}
 	elseif($mode == 'save')
 	{
-		$acronym_id = request_post_var('id', 0);
 		$acronym = request_post_var('acronym', '', true);
 		$description = request_post_var('description', '', true);
 
-		if(($acronym == '') || ($description == ''))
+		if(empty($acronym) || empty($description))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_enter_acronym']);
 		}
 
-		if($acronym_id)
+		if(!empty($acronym_id))
 		{
 			$sql = "UPDATE " . ACRONYMS_TABLE . "
 				SET acronym = '" . $db->sql_escape($acronym) . "', description = '" . $db->sql_escape($description) . "'
-				WHERE acronym_id = $acronym_id";
+				WHERE acronym_id = " . (int) $acronym_id;
 			$message = $lang['Acronym_updated'];
 		}
 		else
@@ -114,17 +98,13 @@ if(!empty($mode))
 			{
 				$message = 'Acronym already in Database.';
 				$message .= '<br /><br />' . sprintf($lang['Click_return_acronymadmin'], '<a href="' . append_sid('admin_acronyms.' . PHP_EXT) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid('index.' . PHP_EXT . '?pane=right') . '">', '</a>');
-
 				$db->sql_freeresult($result);
-
 				message_die(GENERAL_MESSAGE, $message);
 			}
 
 			$db->sql_freeresult($result);
-
 			$sql = "INSERT INTO " . ACRONYMS_TABLE . " (acronym, description)
 				VALUES ('" . $db->sql_escape($acronym) . "', '" . $db->sql_escape($description) . "')";
-
 			$message = $lang['Acronym_added'];
 		}
 
@@ -137,11 +117,9 @@ if(!empty($mode))
 	}
 	elseif($mode == 'delete')
 	{
-		$acronym_id = request_post_var('id', 0);
-
 		if(!empty($acronym_id))
 		{
-			$sql = "DELETE FROM " . ACRONYMS_TABLE . " WHERE acronym_id = $acronym_id";
+			$sql = "DELETE FROM " . ACRONYMS_TABLE . " WHERE acronym_id = " . (int) $acronym_id;
 			$result = $db->sql_query($sql);
 			$db->clear_cache('acronyms_', TOPICS_CACHE_FOLDER);
 
@@ -159,9 +137,7 @@ else
 {
 	$template->set_filenames(array('body' => ADM_TPL . 'acronyms_list_body.tpl'));
 
-	$sql = "SELECT *
-		FROM " . ACRONYMS_TABLE . "
-		ORDER BY acronym";
+	$sql = "SELECT * FROM " . ACRONYMS_TABLE . " ORDER BY acronym";
 	$result = $db->sql_query($sql);
 	$word_rows = $db->sql_fetchrowset($result);
 	$word_count = sizeof($word_rows);
@@ -176,7 +152,7 @@ else
 		'L_ADD_ACRONYM' => $lang['Add_new_acronym'],
 		'L_ACTION' => $lang['Action'],
 		'S_ACRONYM_ACTION' => append_sid('admin_acronyms.' . PHP_EXT),
-		'S_HIDDEN_FIELDS' => ''
+		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)
 	);
 
@@ -186,7 +162,7 @@ else
 		$description = $word_rows[$i]['description'];
 		$acronym_id = $word_rows[$i]['acronym_id'];
 
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ($i % 2) ? $theme['td_class2'] : $theme['td_class1'];
 
 		$template->assign_block_vars('acronyms', array(
 			'ROW_CLASS' => $row_class,
@@ -201,6 +177,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

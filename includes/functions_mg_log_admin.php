@@ -90,19 +90,19 @@ function parse_logs_action($log_id, $log_action_type, $log_desc, $log_username, 
 			break;
 		case 'GROUP_JOIN':
 			$group_name = get_group_name($log_action_array[0]);
-			$log_action['desc'] = $log_username . ' ' . $lang['LOGS_GROUP_JOIN'] . ' <a href="' . append_sid(IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>';
+			$log_action['desc'] = $log_username . ' ' . $lang['LOGS_GROUP_JOIN'] . ' <a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>';
 			break;
 		case 'GROUP_EDIT':
 			$group_name = get_group_name($log_action_array[0]);
-			$log_action['desc'] = $log_username . ' ' . sprintf($lang['LOGS_GROUP_EDIT'], $log_target) . ' <a href="' . append_sid(IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>';
+			$log_action['desc'] = $log_username . ' ' . sprintf($lang['LOGS_GROUP_EDIT'], $log_target) . ' <a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>';
 			break;
 		case 'GROUP_ADD':
 			$group_name = get_group_name($log_action_array[0]);
-			$log_action['desc'] = $log_username . ' ' . sprintf($lang['LOGS_GROUP_ADD'], $log_target) . ' <a href="' . append_sid(IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>';
+			$log_action['desc'] = $log_username . ' ' . sprintf($lang['LOGS_GROUP_ADD'], $log_target) . ' <a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>';
 			break;
 		case 'GROUP_TYPE':
 			$group_name = get_group_name($log_action_array[0]);
-			$log_action['desc'] = $log_username . ' ' . sprintf($lang['LOGS_GROUP_TYPE'], ' <a href="' . append_sid(IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>', $lang['LOGS_GROUP_TYPE_' . $log_action_array[1]]);
+			$log_action['desc'] = $log_username . ' ' . sprintf($lang['LOGS_GROUP_TYPE'], ' <a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>', $lang['LOGS_GROUP_TYPE_' . $log_action_array[1]]);
 			break;
 		case 'MESSAGE':
 			$log_action['desc'] = sprintf($lang['LOGS_MESSAGE'], $log_action_array[0]);
@@ -183,7 +183,7 @@ function parse_logs_action($log_id, $log_action_type, $log_desc, $log_username, 
 			break;
 		case 'ADMIN_GROUP_AUTH':
 			$group_name = get_group_name($log_action_array[0]);
-			$log_action['desc'] = $log_username . ' ' . $lang['LOGS_ADMIN_GROUP_AUTH'] . ' <a href="' . append_sid(IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>';
+			$log_action['desc'] = $log_username . ' ' . $lang['LOGS_ADMIN_GROUP_AUTH'] . ' <a href="' . append_sid(IP_ROOT_PATH . CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $log_action_array[0]) . '">' . htmlspecialchars($group_name) . '</a>';
 			break;
 		case 'ADMIN_USER_BAN':
 			$log_action['desc'] = $log_username . ' ' . $lang['LOGS_ADMIN_USER_BAN'] . ' => ' . $log_action_array[0] . ' (' . $log_target . ')';

@@ -60,7 +60,7 @@ if (!function_exists('renumbering_order'))
 	{
 		global $db;
 
-		$sql = "SELECT module_id FROM " . MODULES_TABLE . "
+		$sql = "SELECT module_id FROM " . STATS_MODULES_TABLE . "
 		ORDER BY display_order ASC";
 		$result = $db->sql_query($sql);
 
@@ -69,7 +69,7 @@ if (!function_exists('renumbering_order'))
 
 		while($row = $db->sql_fetchrow($result))
 		{
-			$sql = "UPDATE " . MODULES_TABLE . "
+			$sql = "UPDATE " . STATS_MODULES_TABLE . "
 			SET display_order = " . $i . "
 			WHERE module_id = " . $row['module_id'];
 			$db->sql_query($sql);
@@ -121,7 +121,7 @@ if(isset($_POST['update']))
 	$modules_upd = array();
 	$modules_upd = request_post_var('module_status', array(0));
 
-	$sql = "SELECT * FROM " . MODULES_TABLE . " ORDER BY module_id ASC";
+	$sql = "SELECT * FROM " . STATS_MODULES_TABLE . " ORDER BY module_id ASC";
 	$result = $db->sql_query($sql);
 	$m_rows = array();
 	$m_rows = $db->sql_fetchrowset($result);
@@ -131,7 +131,7 @@ if(isset($_POST['update']))
 	{
 		$update_time = request_post_var('module_time_' . $m_rows[$i]['module_id'], 0);
 		$m_active = empty($modules_upd) ? 0 : (in_array($m_rows[$i]['module_id'], $modules_upd) ? 1 : 0);
-		$sql = "UPDATE " . MODULES_TABLE . "
+		$sql = "UPDATE " . STATS_MODULES_TABLE . "
 						SET active = '" . $m_active . "', update_time = '" . $update_time . "'
 						WHERE module_id = '" . $m_rows[$i]['module_id'] . "'";
 		$result = $db->sql_query($sql);
@@ -144,7 +144,7 @@ if ($mode == 'order')
 	// Change order of modules in the DB
 	$move = request_var('move', 0);
 
-	$sql = "UPDATE " . MODULES_TABLE . "
+	$sql = "UPDATE " . STATS_MODULES_TABLE . "
 	SET display_order = display_order + $move
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
@@ -170,7 +170,7 @@ if ($submit && ($mode == 'config'))
 
 	if (!empty($_POST['clear_cache_set']))
 	{
-		$sql = "UPDATE " . MODULES_TABLE . "
+		$sql = "UPDATE " . STATS_MODULES_TABLE . "
 		SET module_info_time = 0,
 		module_cache_time = 0";
 		$result = $db->sql_query($sql);
@@ -237,12 +237,12 @@ if ($mode == 'install_activate')
 
 if ($mode == 'activate')
 {
-	$sql = "UPDATE " . MODULES_TABLE . "
+	$sql = "UPDATE " . STATS_MODULES_TABLE . "
 	SET active = 1
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 
-	$sql = "SELECT * FROM " . MODULES_TABLE . "
+	$sql = "SELECT * FROM " . STATS_MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result));
@@ -252,12 +252,12 @@ if ($mode == 'activate')
 
 if ($mode == 'deactivate')
 {
-	$sql = "UPDATE " . MODULES_TABLE . "
+	$sql = "UPDATE " . STATS_MODULES_TABLE . "
 	SET active = 0
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 
-	$sql = "SELECT * FROM " . MODULES_TABLE . "
+	$sql = "SELECT * FROM " . STATS_MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result));
@@ -267,12 +267,12 @@ if ($mode == 'deactivate')
 
 if ($mode == 'uninstall')
 {
-	$sql = "UPDATE " . MODULES_TABLE . "
+	$sql = "UPDATE " . STATS_MODULES_TABLE . "
 	SET installed = 0, active = 0
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 
-	$sql = "SELECT * FROM " . MODULES_TABLE . "
+	$sql = "SELECT * FROM " . STATS_MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result));
@@ -340,7 +340,7 @@ if ($mode == 'auto_set')
 		print '<span class="gen">Time consumed: ' . $stat_totaltime . ' - Queries executed: ' . $num_queries . ' - Recommended Update Time: ' . $update_time_recommend . '</span><br />';
 		print '<br />';
 
-		$sql = "UPDATE " . MODULES_TABLE . "
+		$sql = "UPDATE " . STATS_MODULES_TABLE . "
 		SET update_time = " . intval($update_time_recommend) . "
 		WHERE module_id = " . $module_id;
 		$result = $db->sql_query($sql);
@@ -355,7 +355,7 @@ if ($mode == 'manage')
 	$template->set_filenames(array('body' => ADM_TPL . 'stat_manage_modules.tpl'));
 
 	$sql = "SELECT MAX(display_order) as max, MIN(display_order) as min
-	FROM " . MODULES_TABLE;
+	FROM " . STATS_MODULES_TABLE;
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$curr_max = $row['max'];
@@ -365,7 +365,7 @@ if ($mode == 'manage')
 	update_module_list();
 
 	$sql = "SELECT *
-	FROM " . MODULES_TABLE . "
+	FROM " . STATS_MODULES_TABLE . "
 	ORDER BY display_order ASC";
 	$result = $db->sql_query($sql);
 	$rows = $db->sql_fetchrowset($result);
@@ -384,32 +384,32 @@ if ($mode == 'manage')
 		if ($rows[$i]['display_order'] != $curr_min)
 		{
 			$link = append_sid('admin_statistics.' . PHP_EXT . '?mode=order&amp;move=-15&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']);
-			//$move_up = '<a href="' . $link . '">' . $lang['Move_up'] . '</a>';
-			$move_up = '<a href="' . $link . '"><img src="../images/cms/arrow_up.png" alt="' . $lang['Move_up'] . '" title="' . $lang['Move_up'] . '" /></a>';
+			//$move_up = '<a href="' . $link . '">' . $lang['MOVE_UP'] . '</a>';
+			$move_up = '<a href="' . $link . '"><img src="' . $images['cms_arrow_up'] . '" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" /></a>';
 		}
 
 		if ($rows[$i]['display_order'] != $curr_max)
 		{
 			$link = append_sid('admin_statistics.' . PHP_EXT . '?mode=order&amp;move=15&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']);
-			//$move_down = '<a href="' . $link . '">' . $lang['Move_down'] . '</a>';
-			$move_down = '<a href="' . $link . '"><img src="../images/cms/arrow_down.png" alt="' . $lang['Move_down'] . '" title="' . $lang['Move_down'] . '" /></a>';
+			//$move_down = '<a href="' . $link . '">' . $lang['MOVE_DOWN'] . '</a>';
+			$move_down = '<a href="' . $link . '"><img src="' . $images['cms_arrow_down'] . '" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" /></a>';
 		}
 
 		if (intval($rows[$i]['installed']) == 1)
 		{
 			//$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Edit'] . '</a>';
 			//$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=uninstall&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Uninstall'] . '</a>';
-			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="../images/cms/b_edit.png" alt="' . $lang['Edit'] . '" title="' . $lang['Edit'] . '" /></a>';
+			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=edit&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="' . $images['cms_icon_edit'] . '" alt="' . $lang['Edit'] . '" title="' . $lang['Edit'] . '" /></a>';
 			$edit_install .= '&nbsp;';
-			$edit_install .= '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=uninstall&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="../images/cms/b_delete.png" alt="' . $lang['Uninstall'] . '" title="' . $lang['Uninstall'] . '" /></a>';
+			$edit_install .= '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=uninstall&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="' . $images['cms_icon_delete'] . '" alt="' . $lang['Uninstall'] . '" title="' . $lang['Uninstall'] . '" /></a>';
 		}
 		else
 		{
 			//$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install_activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . ' &amp; ' . $lang['Activate'] . '</a>';
 			//$edit_install .= '<br /><a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '">' . $lang['Install'] . '</a>';
-			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install_activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="../images/cms/b_refresh.png" alt="' . $lang['Install'] . ' &amp; ' . $lang['Activate'] . '" title="' . $lang['Install'] . ' &amp; ' . $lang['Activate'] . '" /></a>';
+			$edit_install = '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install_activate&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="' . $images['cms_icon_refresh'] . '" alt="' . $lang['Install'] . ' &amp; ' . $lang['Activate'] . '" title="' . $lang['Install'] . ' &amp; ' . $lang['Activate'] . '" /></a>';
 			$edit_install .= '&nbsp;';
-			$edit_install .= '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="../images/cms/b_add.png" alt="' . $lang['Install'] . '" title="' . $lang['Install'] . '" /></a>';
+			$edit_install .= '<a href="' . append_sid('admin_statistics.' . PHP_EXT . '?mode=install&amp;' . POST_FORUM_URL . '=' . $rows[$i]['module_id']) . '"><img src="' . $images['cms_icon_add'] . '" alt="' . $lang['Install'] . '" title="' . $lang['Install'] . '" /></a>';
 		}
 
 		$status_checked = '';
@@ -454,7 +454,6 @@ if ($mode == 'manage')
 		'L_MODULE_NAME' => $lang['Module_file_name'],
 		'L_STATUS' => $lang['Status'],
 		'L_UPDATE_TIME' => $lang['Update_time'],
-		'L_AUTO_SET' => $lang['Auto_set_update_time'],
 		'L_UPDATE_MODULES' => $lang['Update_Modules'],
 		'L_GO' => $lang['Go'],
 		'S_ACTION' => append_sid('admin_statistics.' . PHP_EXT),
@@ -470,7 +469,7 @@ if ($mode == 'install')
 	$errored = false;
 	$templated = false;
 
-	$sql = "SELECT * FROM " . MODULES_TABLE . "
+	$sql = "SELECT * FROM " . STATS_MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result), true);
@@ -567,7 +566,7 @@ if ($mode == 'install')
 
 		if (!$errored)
 		{
-			$sql = "UPDATE " . MODULES_TABLE . "
+			$sql = "UPDATE " . STATS_MODULES_TABLE . "
 			SET installed = 1, update_time = " . $default_update_time . "
 			WHERE module_id = " . $module_id;
 			$result = $db->sql_query($sql);
@@ -581,7 +580,7 @@ if ($mode == 'install')
 		{
 			if ($var == 'activate')
 			{
-				$sql = "UPDATE " . MODULES_TABLE . "
+				$sql = "UPDATE " . STATS_MODULES_TABLE . "
 				SET active = 1
 				WHERE module_id = " . $module_id;
 				$result = $db->sql_query($sql);
@@ -597,12 +596,12 @@ if ($submit && ($mode == 'edit'))
 {
 	$auth_value = (!empty($_POST['auth_fields'])) ? intval($_POST['auth_fields']) : 0;
 
-	$sql = "UPDATE " . MODULES_TABLE . "
+	$sql = "UPDATE " . STATS_MODULES_TABLE . "
 	SET auth_value = " . $auth_value . "
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 
-	$sql = "SELECT * FROM " . MODULES_TABLE . "
+	$sql = "SELECT * FROM " . STATS_MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 	$module_info = generate_module_info($db->sql_fetchrow($result));
@@ -611,7 +610,7 @@ if ($submit && ($mode == 'edit'))
 
 	if (intval($module_info['active']) != $update_value)
 	{
-		$sql = "UPDATE " . MODULES_TABLE . "
+		$sql = "UPDATE " . STATS_MODULES_TABLE . "
 		SET active = " . intval($update_value) . "
 		WHERE module_id = " . $module_id;
 		$result = $db->sql_query($sql);
@@ -622,7 +621,7 @@ if ($submit && ($mode == 'edit'))
 
 	if (intval($module_info['update_time']) != intval($update_value))
 	{
-		$sql = "UPDATE " . MODULES_TABLE . "
+		$sql = "UPDATE " . STATS_MODULES_TABLE . "
 		SET update_time = " . intval($update_value) . "
 		WHERE module_id = " . $module_id;
 		$result = $db->sql_query($sql);
@@ -631,7 +630,7 @@ if ($submit && ($mode == 'edit'))
 
 	if (isset($_POST['uninstall']) && (intval($_POST['uninstall']) == 0))
 	{
-		$sql = "UPDATE " . MODULES_TABLE . "
+		$sql = "UPDATE " . STATS_MODULES_TABLE . "
 		SET installed = 0, active = 0
 		WHERE module_id = " . $module_id;
 		$result = $db->sql_query($sql);
@@ -644,7 +643,7 @@ if ($mode == 'edit')
 	$template->set_filenames(array('body' => ADM_TPL . 'stat_edit_module.tpl'));
 
 	// Set up Preview Page
-	$sql = "SELECT * FROM " . MODULES_TABLE . "
+	$sql = "SELECT * FROM " . STATS_MODULES_TABLE . "
 	WHERE module_id = " . $module_id;
 	$result = $db->sql_query($sql);
 	$__stat_module_data[$module_id] = $db->sql_fetchrow($result);

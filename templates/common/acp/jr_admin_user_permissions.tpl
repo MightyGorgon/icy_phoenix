@@ -37,7 +37,7 @@ function toggle_check_all(main, sub_num)
 </table>
 
 <br />
-<div class="forumline" style="padding:5px;text-align:center;margin: 0 auto;">
+<div class="forumline" style="padding: 5px; text-align: center; margin: 0 auto;">
 <form name="user_permissions" action="{S_USER_PERM}" method="post">
 	<input type="hidden" name="username" value="{USERNAME}" />
 	<input type="hidden" name="mode" value="user" />

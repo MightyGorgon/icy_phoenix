@@ -27,7 +27,7 @@ error_reporting(E_ALL ^ E_NOTICE); // Report all errors, except notices
 
 //@ini_set('memory_limit', '24M');
 
-// Mighty Gorgon - Debug - BEGIN
+// MIGHTY GORGON - DEBUG - BEGIN
 @define('DEBUG', true); // Debugging ON/OFF => TRUE/FALSE
 @define('DEBUG_EXTRA', true); // Extra Debugging ON/OFF => TRUE/FALSE
 if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
@@ -38,7 +38,7 @@ if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 		$base_memory_usage = @memory_get_usage();
 	}
 }
-// Mighty Gorgon - Debug - END
+// MIGHTY GORGON - DEBUG - END
 
 /*
 * Remove variables created by register_globals from the global scope
@@ -161,12 +161,7 @@ $lang = array();
 $tree = array();
 $nav_links = array();
 $gen_simple_header = false;
-$breadcrumbs_address = '';
-$breadcrumbs_links_left = '';
-$breadcrumbs_links_right = '';
-//<!-- BEGIN Unread Post Information to Database Mod -->
-$unread = array();
-//<!-- END Unread Post Information to Database Mod -->
+$breadcrumbs = array();
 
 require(IP_ROOT_PATH . 'config.' . PHP_EXT);
 
@@ -181,6 +176,7 @@ require(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/template.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/sessions.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
+require(IP_ROOT_PATH . 'includes/class_auth.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
@@ -197,6 +193,7 @@ if (defined('IN_ADMIN'))
 $cache = new ip_cache();
 $class_settings = new class_settings();
 $user = new user();
+$auth = new auth();
 $ip_cms = new ip_cms();
 $ip_cms->init_vars();
 
@@ -292,18 +289,13 @@ if (!empty($config['url_rw']) || !empty($config['url_rw_guests']))
 	@include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
-if (empty($config['disable_referrers']))
-{
-	@include_once(IP_ROOT_PATH . 'includes/functions_referrers.' . PHP_EXT);
-}
-
 if ($config['admin_protect'])
 {
 	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 	founder_protect($founder_id);
 }
 
-if ((isset($_GET['lofi']) && (intval($_GET['lofi']) == 1)) || (isset($_COOKIE['lofi']) && (intval($_COOKIE['lofi']) == 1)))
+if ((isset($_GET['lofi']) && (intval($_GET['lofi']) == 1)) || (isset($_COOKIE[$config['cookie_name'] . '_lofi']) && (intval($_COOKIE[$config['cookie_name'] . '_lofi']) == 1)))
 {
 	$lofi = 1;
 }

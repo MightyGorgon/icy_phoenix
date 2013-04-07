@@ -42,7 +42,7 @@ class pafiledb_mcp extends pafiledb_public
 		{
 			$mode = $mode_js;
 			$cat_id = request_var('cat_js_id', 0);
-			$cat_id = !empty($cat_id) : $cat_id : request_var('cat_id', 0);
+			$cat_id = !empty($cat_id) ? $cat_id : request_var('cat_id', 0);
 		}
 		else
 		{
@@ -134,7 +134,7 @@ class pafiledb_mcp extends pafiledb_public
 				'L_HOME' => $lang['Home'],
 				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-				'U_INDEX' => append_sid(CMS_PAGE_HOME),
+				'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD_HOME' => append_sid('dload.php'),
 				'U_DOWNLOAD' => append_sid('dload.php'),
 				'DOWNLOAD' => $pafiledb_config['settings_dbname'],
@@ -415,7 +415,7 @@ class pafiledb_mcp extends pafiledb_public
 		$this->_pafiledb();
 
 		/* Original
-		include('./page_footer_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 		*/
 	}
 }

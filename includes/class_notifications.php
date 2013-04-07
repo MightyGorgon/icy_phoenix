@@ -294,9 +294,9 @@ class class_notifications
 		$exclude_sql = '';
 		for ($i = 0; $i < sizeof($row); $i++)
 		{
-			$exclude_sql .= (empty($exclude_sql) ? ',' : '') . $row[$i]['user_id'];
+			$exclude_sql .= (!empty($exclude_sql) ? ',' : '') . $row[$i]['user_id'];
 		}
-		$exclude_sql = empty($exclude_sql) ? ' AND u.user_id NOT IN (' . $exclude_sql . ')' : '';
+		$exclude_sql = !empty($exclude_sql) ? ' AND u.user_id NOT IN (' . $exclude_sql . ')' : '';
 
 		$sql = "SELECT u.user_id, u.user_level
 			FROM " . USERS_TABLE . " u, " . FORUMS_WATCH_TABLE . " fw

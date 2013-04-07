@@ -49,7 +49,7 @@ define('MOD_COOKIE_PREF_NAME', 'nivisec_phpbb2_mod_preferences');
 /** Get parameters.  'var_name' => 'default_value'
 /** Also get any saved cookie preferences.
 /******************************************************************************************/
-$preference_cookie = (isset($_COOKIE[MOD_COOKIE_PREF_NAME])) ? unserialize(stripslashes($_COOKIE[MOD_COOKIE_PREF_NAME])) : array();
+$preference_cookie = (isset($_COOKIE[$config['cookie_name'] . '_' . MOD_COOKIE_PREF_NAME])) ? unserialize(stripslashes($_COOKIE[$config['cookie_name'] . '_' . MOD_COOKIE_PREF_NAME])) : array();
 $preference_cookie['test'] = true;
 $params = array(
 	'start' => 0,
@@ -78,7 +78,7 @@ foreach($params as $var => $default)
 setting.  If this is disabled, settings will NEVER be saved */
 if(!DISABLE_PREFERENCE_SAVING && !$config['gzip_compress']) ob_start();
 
-@setcookie(MOD_COOKIE_PREF_NAME, serialize($preference_cookie), time() + 31536000, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+$user->set_cookie(MOD_COOKIE_PREF_NAME, serialize($preference_cookie), $user->cookie_expire);
 
 /* Flush the output buffer to display the page header, if the ob_start() is
 removed, this one must be removed as well or strange things will happen */

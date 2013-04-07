@@ -1,5 +1,5 @@
 Subject: Reactivate your account
-Charset: iso-8859-1
+
 <br /><font face="Verdana" size="2">
 Hello <b>{USERNAME}</b>,<br /><br />
 Your account on <b>"{SITENAME}"</b> has been deactivated, most likely due to changes made to your profile. <br /><br />

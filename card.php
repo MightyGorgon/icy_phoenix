@@ -22,18 +22,18 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Find what we are to do
 $mode = (isset($_POST['report_x'])) ? 'report' :
-		((isset($_POST['report_reset_x'])) ? 'report_reset' :
-			((isset($_POST['ban_x'])) ? 'ban' :
-				((isset($_POST['unban_x'])) ? 'unban' :
-					((isset($_POST['warn_x'])) ? 'warn' :
-						((isset($_POST['block_x'])) ? 'block' :
-							((isset($_GET['mode'])) ? $_GET['mode'] : ''
-							)
-						)
+((isset($_POST['report_reset_x'])) ? 'report_reset' :
+	((isset($_POST['ban_x'])) ? 'ban' :
+		((isset($_POST['unban_x'])) ? 'unban' :
+			((isset($_POST['warn_x'])) ? 'warn' :
+				((isset($_POST['block_x'])) ? 'block' :
+					((isset($_GET['mode'])) ? $_GET['mode'] : ''
 					)
 				)
 			)
-		);
+		)
+	)
+);
 
 if (empty($mode))
 {
@@ -67,7 +67,7 @@ if (!empty($post_id))
 
 	// post mode
 	$forum_id = $result['forum_id'];
-	$poster_id = $result['poster_id'];
+	$poster_id = (int) $result['poster_id'];
 }
 elseif ($user_id)
 {
@@ -78,12 +78,12 @@ elseif ($user_id)
 	install extra permission mod, in order to enable this feature
 	*/
 	//$forum_id = PAGE_CARD;
-	$poster_id = $user_id;
+	$poster_id = (int) $user_id;
 }
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -156,7 +156,7 @@ elseif ($mode == 'report')
 	$sql = "SELECT u.user_id, u.username, u.user_email, u.user_lang
 		FROM " . USERS_TABLE . " u
 		WHERE u.user_level = '" . ADMIN . "'
-			OR  u.user_level = '" . JUNIOR_ADMIN . "'";
+			OR u.user_level = '" . JUNIOR_ADMIN . "'";
 	$result = $db->sql_query($sql);
 	$total_admins = $db->sql_numrows($result);
 	$admins_rowset = $db->sql_fetchrowset($result);
@@ -225,17 +225,13 @@ elseif ($mode == 'unban')
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
-	// Get user basic data
-	$sql = 'SELECT user_active, user_warnings FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
-	$result = $db->sql_query($sql);
-	$the_user = $db->sql_fetchrow($result);
 
 	// remove the user from ban list
 	$sql = 'DELETE FROM ' . BANLIST_TABLE . ' WHERE ban_userid = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
 	// update the user table with new status
-	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "0" WHERE user_id = "' . $poster_id . '"';
+	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "0",  user_active = "1" WHERE user_id = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
 	$message = $lang['Ban_update_green'] . '<br /><br />' . sprintf($lang['Send_PM_user'], '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id) . '">', '</a>');
@@ -263,12 +259,18 @@ elseif ($mode == 'ban')
 	if ((!$db->sql_fetchrowset($result)) && ($poster_id != ANONYMOUS))
 	{
 		// insert the user in the ban list
-		$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ($poster_id)";
+		$ban_insert_array = array(
+			'ban_userid' => $poster_id,
+			'ban_by_userid' => $user->data['user_id'],
+			'ban_start' => time()
+		);
+		$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
 		$result = $db->sql_query($sql);
 		// update the user table with new status
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '" WHERE user_id="' . $poster_id . '"';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '",  user_active = "0" WHERE user_id="' . $poster_id . '"';
 		$result = $db->sql_query($sql);
-		$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET session_logged_in = "0" WHERE session_user_id="' . $poster_id . '"';
+		// Better kill all the sessions!
+		$sql = 'DELETE FROM ' . SESSIONS_TABLE . ' WHERE session_user_id="' . $poster_id . '"';
 		$result = $db->sql_query($sql);
 		$message = $lang['Ban_update_red'];
 		$e_temp = 'ban_block';
@@ -280,7 +282,7 @@ elseif ($mode == 'ban')
 	}
 	else
 	{
-		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '" WHERE user_id="' . $poster_id . '"';
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = "' . $config['max_user_bancard'] . '",  user_active = "0" WHERE user_id="' . $poster_id . '"';
 		$result = $db->sql_query($sql);
 		$no_error = false;
 		$already_banned = true;
@@ -305,7 +307,7 @@ elseif ($mode == 'warn')
 	$sql = 'UPDATE ' . USERS_TABLE . ' SET user_warnings = user_warnings + 1 WHERE user_id = "' . $poster_id . '"';
 	$result = $db->sql_query($sql);
 
-	// se if the user are to be banned, if so do it ...
+	// check if the user are to be banned, if so do it ...
 	if (($the_user['user_warnings'] + 1) >= $config['max_user_bancard'])
 	{
 		$sql = 'SELECT ban_userid FROM ' . BANLIST_TABLE . ' WHERE ban_userid = "' . $poster_id . '"';
@@ -313,7 +315,14 @@ elseif ($mode == 'warn')
 		if ((!$db->sql_fetchrowset($result)) && ($poster_id != ANONYMOUS))
 		{
 			// insert the user in the ban list
-			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ($poster_id)";
+			$ban_insert_array = array(
+				'ban_userid' => $poster_id,
+				'ban_by_userid' => $user->data['user_id'],
+				'ban_start' => time()
+			);
+			$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
+			$result = $db->sql_query($sql);
+			$sql = "UPDATE " . USERS_TABLE . " SET user_warnings = " . $config['max_user_bancard'] . " WHERE user_id = " . $poster_id;
 			$result = $db->sql_query($sql);
 			// update the user table with new status
 			$sql = 'UPDATE ' . SESSIONS_TABLE . ' SET session_logged_in = "0" WHERE session_user_id = "' . $poster_id . '"';
@@ -350,7 +359,7 @@ if ($no_error)
 	{
 		$server_url = create_server_url();
 		$viewtopic_server_url = $server_url . CMS_PAGE_VIEWTOPIC;
-		$from_email = ($user->data['user_email'] && $user->data['user_viewemail']) ? $user->data['user_email'] : $config['board_email'];
+		$from_email = ($user->data['user_email'] && $user->data['user_allow_viewemail']) ? $user->data['user_email'] : $config['board_email'];
 
 		include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer();

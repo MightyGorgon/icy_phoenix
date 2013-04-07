@@ -31,7 +31,7 @@
 	<td colspan="3" id="content">
 	<!-- IF S_LOGGED_IN -->
 	<!-- IF NEW_PM_SWITCH --><div class="popup{PRIVMSG_IMG}"><a href="{FULL_SITE_PATH}{U_PRIVATEMSGS}">{PRIVATE_MESSAGE_INFO}</a></div><!-- ENDIF -->
-	<!-- IF NEW_PRIVATE_CHAT_SWITCH --><div id="shoutbox_pvt_alert" class="popup{PRIVATE_CHAT_IMG}"><a href="#" class="gensmall" onclick="window.open('{U_PRIVATE_CHAT}', '_chat', 'width=720,height=600,resizable=yes'); document.getElementById('shoutbox_pvt_alert').style.display = 'none'; return false;">{L_AJAX_SHOUTBOX_PVT_ALERT}</a></div><!-- ENDIF -->
+	<!-- IF NEW_PRIVATE_CHAT_SWITCH --><div id="shoutbox_pvt_alert" class="popup{PRIVATE_CHAT_IMG}"><a class="gensmall" href="{U_PRIVATE_CHAT}">{L_AJAX_SHOUTBOX_PVT_ALERT}</a></div><!-- ENDIF -->
 	<!-- ENDIF -->
 	<!-- BEGIN switch_admin_disable_board -->
 	<table width="100%" align="center" cellspacing="0" cellpadding="10" border="0">
@@ -45,7 +45,7 @@
 	<tr>
 	<!-- IF HL_BLOCK -->
 	<td id="var_width" width="{HEADER_WIDTH}" style="width: {HEADER_WIDTH}px !important;" valign="top">
-	<div id="quick_links2" style="padding-top: 5px; display: none; margin-left: 0px; text-align: left; position: relative; float: left;"><a href="javascript:ShowHide('quick_links','quick_links2','quick_links');setWidth('var_width',{HEADER_WIDTH});setWidth('full_width','auto');" title="{L_SHOW} {L_QUICK_LINKS}"><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_SHOW} {L_QUICK_LINKS}" /></a></div>
+	<div id="quick_links2" style="padding-top: 5px; display: none; margin-left: 0px; text-align: left; position: relative; float: left;"><a href="javascript:ShowHide('quick_links','quick_links2','quick_links');setWidth('var_width',{HEADER_WIDTH});setWidth('full_width','auto');setWidth('full_width_cpl','auto');" title="{L_SHOW} {L_QUICK_LINKS}"><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_SHOW} {L_QUICK_LINKS}" /></a></div>
 	<div id="quick_links"><!-- BEGIN headerleft_blocks_row -->{headerleft_blocks_row.CMS_BLOCK}<!-- END headerleft_blocks_row --></div>
 	</td>
 	<td width="5"><img src="{SPACER}" alt="" width="5" height="10" /></td>
@@ -57,6 +57,7 @@
 	if((cellobject != null) && !is_ie && ((getWidth('var_width') == 16) | (getWidth('var_width') == '16px')))
 	{
 		setWidth('full_width', '100%');
+		setWidth('full_width_cpl', '100%');
 	}
 	// ]]>
 	</script>

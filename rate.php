@@ -19,7 +19,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -31,9 +31,8 @@ $forum_top = request_var('forum_top', '');
 $topic_id = request_var('topic_id', 0);
 $rating = request_post_var('rating', 0);
 
-/*******************************************************************************************
-/** Page Titles if Specific!
-/******************************************************************************************/
+// Page Titles if Specific!
+
 $meta_content['description'] = '';
 $meta_content['keywords'] = '';
 switch($rate_mode)
@@ -59,21 +58,18 @@ switch($rate_mode)
 		$meta_content['page_title'] = sprintf($lang['Top_Topics'], $config['large_rating_return_limit']);
 		break;
 }
-/*******************************************************************************************
-/** Include Header (It Contains Rate Functions).
-/******************************************************************************************/
+
+// Include Header (It Contains Rate Functions).
+
 if ($rate_mode == 'detailed')
 {
 	$nav_server_url = create_server_url();
-	$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('rate.' . PHP_EXT) . '">' . $lang['Rating'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">' . id_to_value($topic_id, 'topic') . '</a>';
-	$breadcrumbs_links_right = '<span class="gensmall">' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>') . '</span>';
+	$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('rate.' . PHP_EXT) . '">' . $lang['Rating'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">' . id_to_value($topic_id, 'topic') . '</a>';
+	$breadcrumbs['bottom_right_links'] = '<span class="gensmall">' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>') . '</span>';
 }
 
-page_header($meta_content['page_title'], true);
+// Display modes, for if the page is called seperately
 
-/*******************************************************************************************
-/** Display modes, for if the page is called seperately
-/******************************************************************************************/
 switch($rate_mode)
 {
 	case 'rate':
@@ -84,13 +80,18 @@ switch($rate_mode)
 	break;
 	case 'detailed':
 		ratings_detailed($topic_id);
+		nivisec_copyright();
+		page_header();
+		$template->set_filenames(array('body' => 'rate_detailed.tpl'));
+		page_footer();
 		break;
 	default:
 		ratings_large();
+		nivisec_copyright();
+		page_header();
+		$template->set_filenames(array('body' => 'rate_main.tpl'));
+		page_footer();
 		break;
 }
-nivisec_copyright();
-
-page_footer(true, '', true);
 
 ?>

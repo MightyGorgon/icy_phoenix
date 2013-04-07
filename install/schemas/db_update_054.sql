@@ -333,29 +333,6 @@ CREATE TABLE `phpbb_acl_users` (
 	KEY `auth_option_id` (`auth_option_id`),
 	KEY `auth_role_id` (`auth_role_id`)
 );
-
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (1, 'cms_', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (2, 'cms_view', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (3, 'cms_edit', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (4, 'cms_l_new', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (5, 'cms_l_edit', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (6, 'cms_l_delete', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (7, 'cms_b_new', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (8, 'cms_b_edit', 0, 1, 0);
-INSERT INTO `phpbb_acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (9, 'cms_b_delete', 0, 1, 0);
-
-INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (1, 'CMS_CONTENT_MANAGER', 'CMS_CONTENT_MANAGER_TEXT', 'cms_', 1);
-INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (2, 'CMS_REVIEWER', 'CMS_REVIEWER_TEXT', 'cms_', 2);
-INSERT INTO `phpbb_acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (3, 'CMS_PUBLISHER', 'CMS_PUBLISHER_TEXT', 'cms_', 3);
-
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 2, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 3, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 4, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 5, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 6, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 7, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 8, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 9, 1);
 ## AUTH SYSTEM - END
 
 ## DB FIX FOR HTMLSPECIALCHARS AND SLASHES
@@ -405,16 +382,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smtp_port', 
 ALTER TABLE `phpbb_plugins` ADD `plugin_version` VARCHAR(255) NOT NULL DEFAULT '' AFTER `plugin_name`;
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 2, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 4, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 5, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 7, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 8, 1);
-
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 2, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 4, 1);
-INSERT INTO `phpbb_acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 7, 1);
-
 ## NEW CMS - BEGIN
 CREATE TABLE `phpbb_cms_block_settings` (
 	`bs_id` int(10) NOT NULL AUTO_INCREMENT,
@@ -424,14 +391,13 @@ CREATE TABLE `phpbb_cms_block_settings` (
 	`blockfile` varchar(255) NOT NULL default '',
 	`view` tinyint(1) NOT NULL default 0,
 	`type` tinyint(1) NOT NULL default 1,
-	`edit_auth` tinyint(1) NOT NULL default 5,
 	`groups` tinytext NOT NULL,
 	`locked` tinyint(1) NOT NULL DEFAULT 1,
 	PRIMARY KEY (`bs_id`)
 );
 
 INSERT INTO `phpbb_cms_block_settings`
-SELECT b.bid, 0, b.title, b.content, b.blockfile, b.view, b.type, b.edit_auth, b.groups, 1
+SELECT b.bid, 0, b.title, b.content, b.blockfile, b.view, b.type, b.groups, 1
 FROM `phpbb_cms_blocks` b
 ORDER BY b.bid;
 
@@ -631,7 +597,7 @@ CREATE TABLE `___sessions___` (
 );
 
 INSERT INTO `___sessions___`
-SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_browser, s.session_page, s.session_logged_in, 0, 0, 0, '', 1, 0, s.session_admin
+SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_user_agent, s.session_page, s.session_logged_in, 0, 0, 0, '', 1, 0, s.session_admin
 FROM `phpbb_sessions` s
 ORDER BY s.session_id;
 
@@ -706,7 +672,7 @@ ALTER TABLE `phpbb_posts` CHANGE `poster_ip` `poster_ip` varchar(40) NOT NULL DE
 ALTER TABLE `phpbb_privmsgs` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_privmsgs_archive` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_rate_results` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT '';
-ALTER TABLE `phpbb_referrers` CHANGE `referrer_ip` `referrer_ip` varchar(40) NOT NULL DEFAULT '';
+ALTER TABLE `phpbb_referers` CHANGE `ip` `ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_registration` CHANGE `registration_user_ip` `registration_user_ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_sessions` CHANGE `session_ip` `session_ip` varchar(40) NOT NULL DEFAULT '';
 ALTER TABLE `phpbb_sessions_keys` CHANGE `last_ip` `last_ip` varchar(40) NOT NULL DEFAULT '';
@@ -738,7 +704,7 @@ UPDATE `phpbb_posts` ip SET ip.poster_ip = INET_NTOA(CONV(ip.poster_ip, 16, 10))
 UPDATE `phpbb_privmsgs` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10));
 UPDATE `phpbb_privmsgs_archive` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10));
 UPDATE `phpbb_rate_results` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10));
-UPDATE `phpbb_referrers` ip SET ip.referrer_ip = INET_NTOA(CONV(ip.referrer_ip, 16, 10));
+UPDATE `phpbb_referers` ip SET ip.ip = INET_NTOA(CONV(ip.ip, 16, 10));
 UPDATE `phpbb_registration` ip SET ip.registration_user_ip = INET_NTOA(CONV(ip.registration_user_ip, 16, 10));
 UPDATE `phpbb_sessions` ip SET ip.session_ip = INET_NTOA(CONV(ip.session_ip, 16, 10));
 UPDATE `phpbb_sessions_keys` ip SET ip.last_ip = INET_NTOA(CONV(ip.last_ip, 16, 10));
@@ -770,6 +736,417 @@ ALTER TABLE `phpbb_users` ADD `user_topic_show_days` smallint(4) UNSIGNED DEFAUL
 ########################################
 ##              BUILD 070             ##
 ########################################
+CREATE TABLE `phpbb_moderator_cache` (
+	`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`username` varchar(255) DEFAULT '' NOT NULL,
+	`group_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`group_name` varchar(255) DEFAULT '' NOT NULL,
+	`display_on_index` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	KEY `disp_idx` (`display_on_index`),
+	KEY `forum_id` (`forum_id`)
+);
+
+CREATE TABLE `phpbb_modules` (
+	`module_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
+	`module_enabled` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	`module_display` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+	`module_basename` varchar(255) DEFAULT '' NOT NULL,
+	`module_class` varchar(10) DEFAULT '' NOT NULL,
+	`parent_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`left_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`right_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+	`module_langname` varchar(255) DEFAULT '' NOT NULL,
+	`module_mode` varchar(255) DEFAULT '' NOT NULL,
+	`module_auth` varchar(255) DEFAULT '' NOT NULL,
+	PRIMARY KEY (`module_id`),
+	KEY `left_right_id` (`left_id`, `right_id`),
+	KEY `module_enabled` (`module_enabled`),
+	KEY `class_left_id` (`module_class`, `left_id`)
+);
+
+UPDATE phpbb_cms_blocks SET active = 0 WHERE bposition IN ('hh', 'hl', 'hc', 'fc', 'fr', 'ff');
+
+
+
+########################################
+##              BUILD 071             ##
+########################################
+ALTER TABLE `phpbb_logs` CHANGE `log_desc` `log_desc` mediumtext NOT NULL;
+
+ALTER TABLE `phpbb_forums` CHANGE `forum_rules` `forum_rules_switch` tinyint(1) unsigned NOT NULL DEFAULT '0';
+ALTER TABLE `phpbb_forums` ADD `forum_rules_in_posting` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules_in_viewtopic` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules_in_viewforum` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules_custom_title` varchar(80) NOT NULL DEFAULT '' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules_display_title` tinyint(1) NOT NULL DEFAULT '1' AFTER `forum_rules_switch`;
+ALTER TABLE `phpbb_forums` ADD `forum_rules` text NOT NULL AFTER `forum_rules_switch`;
+
+UPDATE phpbb_forums f, phpbb_forums_rules fr
+SET f.forum_rules = fr.rules, f.forum_rules_display_title = fr.rules_display_title, f.forum_rules_custom_title = fr.rules_custom_title, f.forum_rules_in_viewforum = fr.rules_in_viewforum, f.forum_rules_in_viewtopic = fr.rules_in_viewtopic, f.forum_rules_in_posting = fr.rules_in_posting
+WHERE f.forum_id = fr.forum_id;
+
+DROP TABLE `phpbb_forums_rules`;
+
+
+
+########################################
+##              BUILD 072             ##
+########################################
+DELETE FROM `phpbb_config` WHERE config_name = "cms_dock";
+DELETE FROM `phpbb_config` WHERE config_name = "cms_style";
+
+ALTER TABLE `phpbb_users` ADD `user_flickr` varchar(255) DEFAULT '' NOT NULL AFTER `user_twitter`;
+ALTER TABLE `phpbb_users` ADD `user_googleplus` varchar(255) DEFAULT '' NOT NULL AFTER `user_flickr`;
+ALTER TABLE `phpbb_users` ADD `user_youtube` varchar(255) DEFAULT '' NOT NULL AFTER `user_googleplus`;
+ALTER TABLE `phpbb_users` ADD `user_linkedin` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`;
+
+ALTER TABLE `phpbb_users` CHANGE `user_style` `user_style` MEDIUMINT(8) NULL DEFAULT NULL;
+
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_keywords', 'your keywords, comma, separated');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_keywords_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_description', 'Your Site Description');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_description_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_author', 'Author');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_author_switch', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_copyright', 'Copyright');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_meta_copyright_switch', '1');
+
+ALTER TABLE `phpbb_posts` CHANGE `post_text` `post_text` MEDIUMTEXT NOT NULL;
+ALTER TABLE `phpbb_posts` CHANGE `post_text_compiled` `post_text_compiled` MEDIUMTEXT NOT NULL;
+
+
+
+########################################
+##              BUILD 073             ##
+########################################
+
+
+
+########################################
+##              BUILD 074             ##
+########################################
+
+
+
+########################################
+##              BUILD 075             ##
+########################################
+ALTER TABLE `phpbb_users` DROP `user_cms_level`;
+ALTER TABLE `phpbb_cms_block_settings` DROP `edit_auth`;
+ALTER TABLE `phpbb_cms_blocks` DROP `edit_auth`;
+ALTER TABLE `phpbb_cms_layout` DROP `edit_auth`;
+ALTER TABLE `phpbb_cms_layout_special` DROP `edit_auth`;
+
+## AUTH SYSTEM - BEGIN
+TRUNCATE TABLE `phpbb_acl_groups`;
+TRUNCATE TABLE `phpbb_acl_options`;
+TRUNCATE TABLE `phpbb_acl_roles`;
+TRUNCATE TABLE `phpbb_acl_roles_data`;
+TRUNCATE TABLE `phpbb_acl_users`;
+
+# -- CMS related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_admin', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_settings', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_layouts', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_layouts_special', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_blocks', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_blocks_global', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_permissions', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_menu', 1, 0, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_ads', 1, 0, 0);
+
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsl_', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsl_admin', 0, 1, 0);
+
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmss_', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmss_admin', 0, 1, 0);
+
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsb_', 0, 1, 0);
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsb_admin', 0, 1, 0);
+
+# -- Admin related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_modules', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_roles', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_aauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_mauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_uauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_fauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_authgroups', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_authusers', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_viewauth', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_group', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('a_user', 1);
+
+# -- Moderator related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_local, is_global) VALUES ('m_', 1, 1);
+INSERT INTO phpbb_acl_options (auth_option, is_local, is_global) VALUES ('m_topicdelete', 1, 1);
+
+# -- User related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('u_', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('u_html', 1);
+
+# -- Forum related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_html', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_local) VALUES ('f_topicdelete', 1);
+
+# -- Plugins related auth options
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_admin', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_input', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_edit', 1);
+INSERT INTO phpbb_acl_options (auth_option, is_global) VALUES ('pl_delete', 1);
+
+# -- Standard auth roles
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (1, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cms_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (2, 'ROLE_CMS_REVIEWER', 'ROLE_CMS_REVIEWER_DESCRIPTION', 'cms_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (3, 'ROLE_CMS_PUBLISHER', 'ROLE_CMS_PUBLISHER_DESCRIPTION', 'cms_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (4, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsl_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (5, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmss_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (6, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsb_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (7, 'ROLE_ADMIN_FULL', 'ROLE_ADMIN_FULL_DESCRIPTION', 'a_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (8, 'ROLE_ADMIN_STANDARD', 'ROLE_ADMIN_STANDARD_DESCRIPTION', 'a_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (9, 'ROLE_MOD_FULL', 'ROLE_MOD_FULL_DESCRIPTION', 'm_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (10, 'ROLE_MOD_STANDARD', 'ROLE_MOD_STANDARD_DESCRIPTION', 'm_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (11, 'ROLE_MOD_SIMPLE', 'ROLE_MOD_SIMPLE_DESCRIPTION', 'm_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (12, 'ROLE_USER_FULL', 'ROLE_USER_FULL_DESCRIPTION', 'u_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (13, 'ROLE_USER_STANDARD', 'ROLE_USER_STANDARD_DESCRIPTION', 'u_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (14, 'ROLE_USER_LIMITED', 'ROLE_USER_LIMITED_DESCRIPTION', 'u_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (15, 'ROLE_FORUM_FULL', 'ROLE_FORUM_FULL_DESCRIPTION', 'f_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (16, 'ROLE_FORUM_STANDARD', 'ROLE_FORUM_STANDARD_DESCRIPTION', 'f_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (17, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (18, 'ROLE_PLUGINS_FULL', 'ROLE_PLUGINS_FULL_DESCRIPTION', 'pl_', 1);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (19, 'ROLE_PLUGINS_STANDARD', 'ROLE_PLUGINS_STANDARD_DESCRIPTION', 'pl_', 2);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (20, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS', 'pl_', 3);
+
+# -- Roles data
+
+# CMS Content Manager (cms_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 1, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cms_%' AND is_global = 1;
+
+# CMS Reviewer (cms_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 2, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cms_%' AND auth_option NOT IN ('cms_admin', 'cms_settings', 'cms_permissions', 'cms_menu', 'cms_ads') AND is_global = 1;
+
+# CMS Publisher (cms_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 3, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option = 'cms_blocks' AND is_global = 1;
+
+# CMS Content Manager Layouts (cmsl_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 4, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmsl_%' AND is_local = 1;
+
+# CMS Content Manager Special Layouts (cmss_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 5, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmss_%' AND is_local = 1;
+
+# CMS Content Manager Blocks (cmsb_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 6, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'cmsb_%' AND is_local = 1;
+
+# Full Admin (a_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 7, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'a_%';
+
+# Standard Admin (a_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 8, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'a_%' AND auth_option NOT IN ('a_modules', 'a_aauth', 'a_roles');
+
+# Full Moderator (m_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 9, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%';
+
+# Standard Moderator (m_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 10, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%' AND auth_option NOT IN ('m_topicdelete');
+
+# Simple Moderator (m_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 11, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'm_%' AND auth_option IN ('m_', 'm_topicdelete');
+
+# All Features (u_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 12, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%';
+
+# Standard Features (u_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 13, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html');
+
+# Limited Features (u_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 14, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html');
+
+# Full Access (f_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 15, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'f_%';
+
+# Standard Access (f_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 16, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'f_%' AND auth_option NOT IN ('f_html');
+
+# No Access (f_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 17, auth_option_id, 0 FROM phpbb_acl_options WHERE auth_option = 'f_';
+
+# Full Access (pl_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 18, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'pl_%';
+
+# Standard Access (pl_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 19, auth_option_id, 1 FROM phpbb_acl_options WHERE auth_option LIKE 'pl_%' AND auth_option NOT IN ('pl_admin', 'pl_delete');
+
+# No Access (pl_)
+INSERT INTO phpbb_acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 20, auth_option_id, 0 FROM phpbb_acl_options WHERE auth_option = 'pl_';
+
+# Permissions
+
+# Admin users - full features
+#INSERT INTO phpbb_acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 1, 0 FROM phpbb_users WHERE user_level = 1;
+INSERT INTO phpbb_acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 7, 0 FROM phpbb_users WHERE user_level = 1;
+#INSERT INTO phpbb_acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 18, 0 FROM phpbb_users WHERE user_level = 1;
+## AUTH SYSTEM - END
+
+
+
+########################################
+##              BUILD 076             ##
+########################################
+ALTER TABLE `phpbb_users` ADD `user_cms_auth` TEXT NOT NULL AFTER `user_mask`;
+ALTER TABLE `phpbb_users` DROP `user_lastlogon`;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_posts_number', '5');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_disable_url', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_hide_signature', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('spam_post_edit_interval', '60');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('mobile_style_disable', '0');
+
+
+
+########################################
+##              BUILD 077             ##
+########################################
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_gc', '3600');
+
+
+
+########################################
+##              BUILD 078             ##
+########################################
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0');
+DELETE FROM `phpbb_config` WHERE `config_name` = 'disable_registration_ip_check';
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Jike Spider', '', 'jikespider', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Magpie Crawler', '', 'www.brandwatch.net', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('P3W Bot', '', 'www.p3w.it', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Radian 6', '', 'www.radian6.com/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Soso Spider', '', 'Sosospider', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Synthesio Crawler', '', 'synthesio', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Vik Spider', '', 'vikspider', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('WangID Spider', '', 'WangIDSpider/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('YandexBot 3.0', '', 'yandex.com/bots', '');
+
+
+
+########################################
+##              BUILD 079             ##
+########################################
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Ezooms', '', 'Ezooms/', '');
+INSERT INTO `phpbb_bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Archive ORG BOT', '', 'www.archive.org/', '');
+UPDATE `phpbb_config` SET `config_name` = 'disable_referers' WHERE `config_name` = 'disable_referrers';
+UPDATE `phpbb_cms_layout_special` SET `page_id` = 'referers', `name` = 'referers', `filename` = 'referers.php' WHERE `page_id` = 'referrers';
+DROP TABLE `phpbb_referrers`;
+CREATE TABLE `phpbb_referers` (
+	`id` INT(11) NOT NULL auto_increment,
+	`host` VARCHAR(255) NOT NULL DEFAULT '',
+	`url` VARCHAR(255) NOT NULL DEFAULT '',
+	`t_url` VARCHAR(255) NOT NULL DEFAULT '',
+	`ip` VARCHAR(40) NOT NULL DEFAULT '',
+	`hits` INT(11) NOT NULL DEFAULT '1',
+	`firstvisit` INT(11) NOT NULL DEFAULT '0',
+	`lastvisit` INT(11) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`)
+);
+
+
+
+########################################
+##              BUILD 080             ##
+########################################
+
+
+
+########################################
+##              BUILD 081             ##
+########################################
+ALTER TABLE `phpbb_album` CHANGE `pic_user_ip` `pic_user_ip` varchar(40) NOT NULL DEFAULT '';
+UPDATE `phpbb_album` ip SET ip.pic_user_ip = INET_NTOA(CONV(ip.pic_user_ip, 16, 10));
+UPDATE `phpbb_ajax_shoutbox` SET shout_room = CONCAT(CONCAT('|', shout_room), '|') WHERE shout_room LIKE '%|%';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'shoutbox_refreshtime';
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_msgs_refresh', '5');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_session_refresh', '10');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_link_type', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_notification', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_check_online', '0');
+
+
+
+########################################
+##              BUILD 082             ##
+########################################
+
+
+
+########################################
+##              BUILD 083             ##
+########################################
+
+
+
+########################################
+##              BUILD 084             ##
+########################################
+
+
+
+########################################
+##              BUILD 085             ##
+########################################
+ALTER TABLE `phpbb_users` CHANGE `user_viewemail` `user_allow_viewemail` TINYINT(1) NOT NULL DEFAULT '0';
+CREATE TABLE `phpbb_images` (
+	`pic_id` INT(11) unsigned NOT NULL auto_increment,
+	`pic_filename` VARCHAR(255) NOT NULL DEFAULT '',
+	`pic_size` INT(15) unsigned NOT NULL DEFAULT '0',
+	`pic_title` VARCHAR(255) NOT NULL DEFAULT '',
+	`pic_desc` TEXT NOT NULL,
+	`pic_user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+	`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
+	`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',
+	`pic_approval` TINYINT(3) NOT NULL DEFAULT '1',
+	PRIMARY KEY (`pic_id`),
+	KEY `pic_user_id` (`pic_user_id`),
+	KEY `pic_time` (`pic_time`)
+);
+
+UPDATE `phpbb_cms_nav_menu` SET `menu_link` = 'images_list.php' WHERE `menu_link` = 'posted_img_list.php';
+
+UPDATE `phpbb_posts` SET `post_text` = REPLACE(`post_text`,'posted_images/','images/');
+UPDATE `phpbb_posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list.php','images_list.php');
+UPDATE `phpbb_posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list_thumbnail.php','image_thumbnail_s.php');
+UPDATE `phpbb_posts` SET `post_text` = REPLACE(`post_text`,'posted_img_thumbnail.php','image_thumbnail.php');
+UPDATE `phpbb_posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_images/','images/');
+UPDATE `phpbb_posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list.php','images_list.php');
+UPDATE `phpbb_posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list_thumbnail.php','image_thumbnail_s.php');
+UPDATE `phpbb_posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_thumbnail.php','image_thumbnail.php');
+UPDATE `phpbb_cms_block_settings` SET `content` = REPLACE(`content`,'posted_images/','images/');
+UPDATE `phpbb_users` SET `user_sig` = REPLACE(`user_sig`,'posted_images/','images/');
+# UPDATE `phpbb_bugs_posts` SET `post_text` = REPLACE(`post_text`,'posted_images/','images/');
+# UPDATE `phpbb_hon` SET `hon_description` = REPLACE(`hon_description`,'posted_images/','images/');
+
+
+
+########################################
+##              BUILD 086             ##
+########################################
+
+
+
+########################################
+##              BUILD 087             ##
+########################################
+ALTER TABLE `phpbb_posts` ADD `post_images` MEDIUMTEXT NOT NULL AFTER `post_likes`;
+##UPDATE `phpbb_ajax_shoutbox` SET `shout_room` = REPLACE(`shout_room`, '||', '|');
+
+
+
+########################################
+##              BUILD 088             ##
+########################################
 
 
 
@@ -778,7 +1155,7 @@ ALTER TABLE `phpbb_users` ADD `user_topic_show_days` smallint(4) UNSIGNED DEFAUL
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '1.3.17.70' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.1.87' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

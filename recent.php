@@ -20,7 +20,7 @@ $class_topics = new class_topics();
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -44,14 +44,14 @@ $set_days = '7'; // set default days (used for lastXdays mode)
 //<!-- BEGIN Unread Post Information to Database Mod -->
 if($user->data['upi2db_access'])
 {
-	if (empty($unread))
+	if (!defined('UPI2DB_UNREAD'))
 	{
-		$unread = unread();
+		$user->data['upi2db_unread'] = upi2db_unread();
 	}
-	$count_new_posts = sizeof($unread['new_posts']);
-	$count_edit_posts = sizeof($unread['edit_posts']);
-	$count_always_read = sizeof($unread['always_read']['topics']);
-	$count_mark_unread = sizeof($unread['mark_posts']);
+	$count_new_posts = sizeof($user->data['upi2db_unread']['new_posts']);
+	$count_edit_posts = sizeof($user->data['upi2db_unread']['edit_posts']);
+	$count_always_read = sizeof($user->data['upi2db_unread']['always_read']['topics']);
+	$count_mark_unread = sizeof($user->data['upi2db_unread']['mark_posts']);
 }
 //<!-- END Unread Post Information to Database Mod -->
 
@@ -101,7 +101,7 @@ $psort = request_var('psort', $psort_types[0]);
 $psort = check_var_value($psort, $psort_types);
 
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('recent.' . PHP_EXT) . '" class="nav-current">' . $lang['Recent_topics'] . '</a>';
+$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('recent.' . PHP_EXT) . '" class="nav-current">' . $lang['Recent_topics'] . '</a>';
 
 $except_forums = build_exclusion_forums_list();
 
@@ -247,8 +247,8 @@ while($row = $db->sql_fetchrow($result))
 }
 $db->sql_freeresult($result);
 
-$tracking_topics = (isset($_COOKIE[$config['cookie_name'] .'_t'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_t']) : array();
-$tracking_forums = (isset($_COOKIE[$config['cookie_name'] .'_f'])) ? unserialize($_COOKIE[$config['cookie_name'] .'_f']) : array();
+$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
 // MG User Replied - BEGIN
 // check if user replied to the topic
@@ -277,7 +277,7 @@ for($i = 0; $i < sizeof($line); $i++)
 	$views = $line[$i]['topic_views'];
 	$replies = $line[$i]['topic_replies'];
 
-	$topic_link = $class_topics->build_topic_icon_link($forum_id, $line[$i]['topic_id'], $line[$i]['topic_type'], $line[$i]['topic_reg'], $line[$i]['topic_replies'], $line[$i]['news_id'], $line[$i]['poll_start'], $line[$i]['topic_status'], $line[$i]['topic_moved_id'], $line[$i]['post_time'], $user_replied, $replies, $unread);
+	$topic_link = $class_topics->build_topic_icon_link($forum_id, $line[$i]['topic_id'], $line[$i]['topic_type'], $line[$i]['topic_reg'], $line[$i]['topic_replies'], $line[$i]['news_id'], $line[$i]['poll_start'], $line[$i]['topic_status'], $line[$i]['topic_moved_id'], $line[$i]['post_time'], $user_replied, $replies);
 
 	$topic_id = $topic_link['topic_id'];
 	$topic_id_append = $topic_link['topic_id_append'];
@@ -342,10 +342,10 @@ for($i = 0; $i < sizeof($line); $i++)
 
 		'L_REPLIES' => $lang['Replies'],
 		'REPLIES' => $replies,
-		//'FIRST_TIME' => sprintf($lang['Recent_first'], $first_time),
-		'FIRST_TIME' => $first_time,
+		//'FIRST_POST_TIME' => sprintf($lang['Recent_first'], $first_time),
+		'FIRST_POST_TIME' => $first_time,
 		'FIRST_AUTHOR' => $first_author,
-		'LAST_TIME' => $last_time,
+		'LAST_POST_TIME' => $last_time,
 		'LAST_AUTHOR' => $last_author,
 		'LAST_URL' => $last_url,
 		'FORUM_NAME' => $line[$i]['forum_name'],
@@ -373,7 +373,7 @@ if ($psort != $psort_types[0])
 {
 	$base_url .= '&amp;psort=' . $psort;
 }
-$pagination = generate_pagination($base_url, $total_topics, $topic_limit, $start) . '&nbsp;';
+$pagination = generate_pagination($base_url, $total_topics, $topic_limit, $start);
 
 if($total_topics == '0')
 {

@@ -23,7 +23,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -183,7 +183,7 @@ if($album_config['gd_version'] > 0)
 
 // Well that worked ok, lets update the users profile and tell 'em.
 $sql = "UPDATE ". USERS_TABLE ."
-		SET user_avatar = '" . $db-sql_escape($avatar_filename) . "', user_avatar_type = '1'
+		SET user_avatar = '" . $db->sql_escape($avatar_filename) . "', user_avatar_type = '1'
 		WHERE user_id = '" . $user->data['user_id'] . "'";
 $result = $db->sql_query($sql);
 

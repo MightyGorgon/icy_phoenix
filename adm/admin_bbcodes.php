@@ -102,7 +102,7 @@ if($mode != 'list')
 
 		if($data['bbcode_tag'] == '')
 		{
-			trigger_error($lang['BBCODES_NO_BBCODES_INPUT'] . adm_back_link($page_action), E_USER_WARNING);
+			trigger_error($lang['BBCODES_NO_BBCODES_INPUT'] . page_back_link($page_action), E_USER_WARNING);
 		}
 
 		if (substr($data['bbcode_tag'], -1) === '=')
@@ -116,22 +116,22 @@ if($mode != 'list')
 
 		if (!preg_match('%\\[' . $test . '[^]]*].*?\\[/' . $test . ']%s', $data['bbcode_match']))
 		{
-			trigger_error($lang['BBCODE_OPEN_ENDED_TAG'] . adm_back_link($page_action), E_USER_WARNING);
+			trigger_error($lang['BBCODE_OPEN_ENDED_TAG'] . page_back_link($page_action), E_USER_WARNING);
 		}
 
 		if (strlen($data['bbcode_tag']) > 16)
 		{
-			trigger_error($lang['BBCODE_TAG_TOO_LONG'] . adm_back_link($page_action), E_USER_WARNING);
+			trigger_error($lang['BBCODE_TAG_TOO_LONG'] . page_back_link($page_action), E_USER_WARNING);
 		}
 
 		if (strlen($data['bbcode_match']) > 4000)
 		{
-			trigger_error($lang['BBCODE_TAG_DEF_TOO_LONG'] . adm_back_link($page_action), E_USER_WARNING);
+			trigger_error($lang['BBCODE_TAG_DEF_TOO_LONG'] . page_back_link($page_action), E_USER_WARNING);
 		}
 
 		if (strlen($data['bbcode_helpline']) > 255)
 		{
-			trigger_error($lang['BBCODE_HELPLINE_TOO_LONG'] . adm_back_link($page_action), E_USER_WARNING);
+			trigger_error($lang['BBCODE_HELPLINE_TOO_LONG'] . page_back_link($page_action), E_USER_WARNING);
 		}
 
 		if(($data['bbcode_match'] == '') && ($data['bbcode_tpl'] == ''))
@@ -216,6 +216,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

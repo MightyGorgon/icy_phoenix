@@ -180,7 +180,8 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 
 			if (!$user_id && !$u_name)
 			{
-				message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+				if (!defined('STATUS_404')) define('STATUS_404', true);
+				message_die(GENERAL_MESSAGE, 'NO_USER');
 			}
 
 			if ($user_id)
@@ -201,7 +202,8 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 
 			if (!$user_id)
 			{
-				message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+				if (!defined('STATUS_404')) define('STATUS_404', true);
+				message_die(GENERAL_MESSAGE, 'NO_USER');
 			}
 		}
 	}

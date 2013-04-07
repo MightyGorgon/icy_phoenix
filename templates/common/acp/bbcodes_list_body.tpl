@@ -14,7 +14,7 @@
 <!-- BEGIN bbcode -->
 <tr>
 	<td class="{bbcode.ROW_CLASS}"><b>{bbcode.BBCODE_TAG}</b></td>
-	<td class="{bbcode.ROW_CLASS} row-center"><a href="{bbcode.U_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{bbcode.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
+	<td class="{bbcode.ROW_CLASS} row-center"><a href="{bbcode.U_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{bbcode.U_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
 </tr>
 <!-- END bbcode -->
 <!-- ENDIF -->

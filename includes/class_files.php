@@ -16,8 +16,9 @@ if (!defined('IN_ICYPHOENIX'))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('MAIN_CACHE_FOLDER')) define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
 if (!defined('UPLOADS_CACHE_FOLDER')) define('UPLOADS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'uploads/');
-if (!defined('POSTED_IMAGES_PATH')) define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
+if (!defined('POSTED_IMAGES_PATH')) define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/images/');
 if (!defined('POSTED_IMAGES_THUMBS_PATH')) define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
+if (!defined('POSTED_IMAGES_THUMBS_S_PATH')) define('POSTED_IMAGES_THUMBS_S_PATH', POSTED_IMAGES_THUMBS_PATH . 's/');
 /*
 */
 
@@ -117,7 +118,7 @@ class class_files
 	{
 		$file_details = array();
 		$file_details = pathinfo($file_name);
-		$file_details['clean_name'] = $this->clean_string($file_details['filename'], true) . '.' . $this->clean_string($file_details['extension']);
+		$file_details['clean_name'] = $this->clean_string($file_details['filename'], true) . (!empty($file_details['extension']) ? ('.' . $this->clean_string($file_details['extension'])) : '');
 		return $file_details;
 	}
 
@@ -387,7 +388,7 @@ class class_files
 							$process_file = true;
 						}
 
-						if (!empty($allowed_extensions) && in_array(strtolower($file_details['extension']), $allowed_extensions))
+						if (!empty($file_details['extension']) && !empty($allowed_extensions) && in_array(strtolower($file_details['extension']), $allowed_extensions))
 						{
 							$process_file = true;
 						}

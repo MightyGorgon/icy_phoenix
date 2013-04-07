@@ -26,11 +26,15 @@
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_tiptip.js" type="text/javascript"></script>
 <!-- EXTRA CMS JS - END -->
 
+<!-- EXTRA CMS JS - BEGIN -->
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_cms.js" type="text/javascript"></script>
+<!-- EXTRA CMS JS - END -->
+
 </head>
 <body>
 
 <div id="global-wrapper">
-<span><a name="top"></a></span>
+<span><a name="top" id="top"></a></span>
 
 <div class="top-menu">
 	<div id="horiz-menu">

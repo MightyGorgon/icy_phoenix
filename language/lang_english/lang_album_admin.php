@@ -62,7 +62,7 @@ $lang = array_merge($lang, array(
 	'Show_Download' => 'Show DOWNLOAD button (which enables the downloading of pictures in ZIP format) only to those who have UPLOAD permission in the Album (if you choose ALWAYS the button will be always available even if the users have no UPLOAD permissions)',
 	'Show_Slideshow' => 'Enable Slideshow feature',
 	'Show_Slideshow_Script' => 'Enable transition effects for Slideshow',
-	'Show_Pic_Size' => 'Show the pic size on thumbnail',
+	'Show_Pic_Size' => 'Show image size on thumbnail',
 	'Show_IMG_No_GD' => 'Show GIF thumbnails without using GD libraries (full images are loaded and then just shown resized).',
 	'Show_GIF_MidThumb' => 'Show full GIF images if Mid Thumb is enabled.',
 	'Show_Pics_Nav' => 'Show Picture Navigation Box in Show Page',
@@ -167,13 +167,16 @@ $lang = array_merge($lang, array(
 	'Use_Old_Thumbnails_Explain' => 'If you enable this feature, you will use the old thumbnails functions to generate small and mid thumbnails and a quick full pic loading. You should use this feature only if you are having problems without enabling it.',
 
 // 06 - Sorting
-	'Album_Category_Sorting' => 'Sorting of the album categories',
+	'Album_Category_Sorting' => 'Album Categories Sorting',
 	'Album_Category_Sorting_Id' => 'ID',
 	'Album_Category_Sorting_Name' => 'Name',
 	'Album_Category_Sorting_Order' => 'Sort Order (default)',
-	'Album_Category_Sorting_Direction' => 'Sorting direction (only valid for ID and Name sorting)',
+	'Album_Category_Sorting_Direction' => 'Album Categories Sorting Direction',
 	'Album_Category_Sorting_Asc' => 'Ascending',
 	'Album_Category_Sorting_Desc' => 'Descending',
+
+	'Album_Picture_Sorting' => 'Album Pictures Sorting',
+	'Album_Picture_Sorting_Direction' => 'Album Pictures Sorting Direction',
 
 // 07 - Clear Cache
 	'Clear_Cache_Tab' => 'Cache',

@@ -1,7 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function checkAlbumForm()
 {
 	formErrors = false;
@@ -25,7 +25,7 @@ function checkAlbumForm()
 		return true;
 	}
 }
-// -->
+// ]]>
 </script>
 <form name="editform" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkAlbumForm()">
 

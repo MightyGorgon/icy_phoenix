@@ -22,9 +22,12 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
+
+include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
+$class_images = new class_images();
 
 // This page is not in layout special...
 $cms_page['page_id'] = 'pic_upload';
@@ -32,6 +35,9 @@ $cms_page['page_nav'] = false;
 $cms_page['global_blocks'] = false;
 $cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_pic_upload'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
+
+// Get general album information
+include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 // We need to keep it here... so also error messages will initialize it correctly!
 $gen_simple_header = true;
@@ -44,7 +50,7 @@ $server_path = create_server_url();
 $upload_dir = POSTED_IMAGES_PATH;
 $user_upload_dir = '';
 $allowed_extensions = 'gif|jpg|jpeg|png';
-$max_file_size = (1000 * 1024);
+$max_file_size = (1024 * 1024);
 
 if (USERS_SUBFOLDERS_IMG)
 {
@@ -64,7 +70,40 @@ if (USERS_SUBFOLDERS_IMG)
 	}
 }
 
+$show_last_images = true;
+if ($show_last_images && ($user->data['user_id'] != ANONYMOUS))
+{
+	$n_pics = 3;
+	$images_data = $class_images->get_user_images($user->data['user_id'], 'i.pic_id DESC', 0, $n_pics);
+	if (!empty($images_data))
+	{
+		$pics_parsed = 0;
+		foreach ($images_data as $image_data)
+		{
+			$pics_parsed++;
+			// We are checking for small thumbnails... added an underscore to distinguish those small thumbs respect to mid sized!
+			$pic_img_sub_path = (USERS_SUBFOLDERS_IMG && (!empty($image_data['pic_user_id'])) ? ($image_data['pic_user_id'] . '/') : '') . $image_data['pic_filename'];
+			$pic_img_url = POSTED_IMAGES_PATH . $pic_img_sub_path;
+			$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $pic_img_sub_path;
+			$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL . '?pic_id=' . urlencode($pic_img_sub_path)));
+			$image_data['pic_title'] = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
+
+			$template->assign_block_vars('pic_img', array(
+				'PIC_IMAGE' => $pic_img_url,
+				'PIC_THUMB' => $pic_img_thumb,
+				'PIC_BBC_INPUT' => 'bbcode_box_r_' . $pics_parsed,
+				'PIC_BBC' => '[img]' . $server_path . substr($pic_img_url, strlen(IP_ROOT_PATH)) . '[/img]',
+				'PIC_NAME' => $image_data['pic_title']
+				)
+			);
+		}
+	}
+}
+
 $template_to_parse = 'upload_image_ajax.tpl';
+
+$bbcb_form_name = request_var('bbcb_form_name', 'post');
+$bbcb_text_name = request_var('bbcb_text_name', 'message');
 
 $template->assign_vars(array(
 	'S_UPLOAD_DIR' => $upload_dir,
@@ -72,6 +111,10 @@ $template->assign_vars(array(
 	'S_AJAX_UPLOAD' => 'ajax_upload.' . PHP_EXT,
 	'S_ALLOWED_EXTENSIONS' => $allowed_extensions,
 	'S_MAX_FILE_SIZE' => $max_file_size,
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
+
+	'BBCB_FORM_NAME' => htmlspecialchars($bbcb_form_name),
+	'BBCB_TEXT_NAME' => htmlspecialchars($bbcb_text_name),
 
 	'L_BBCODE' => $lang['BBCode'],
 	'L_BBCODE_DES' => $lang['Uploaded_Image_BBC'],
@@ -91,7 +134,7 @@ $template->assign_vars(array(
 	'L_UPLOADING' => $lang['Uploading'],
 	'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 	'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
-	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.',
+	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.<br />' . $lang['Upload_File_Max_Size'] . ' ' . floor($max_file_size / 1024) . $lang['KB'] . '.',
 	)
 );
 

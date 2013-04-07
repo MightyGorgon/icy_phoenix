@@ -106,7 +106,14 @@ $template->assign_vars(array(
 	'SITENAME' => $config['sitename'],
 	'PAGE_TITLE' => $meta_content['page_title'],
 
+	'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
+	'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
+	'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+	'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
+	'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
+
 	// AJAX Features - BEGIN
+	'S_AJAX_FEATURES' => (!empty($config['ajax_features']) ? true : false),
 	'S_AJAX_BLUR' => $ajax_blur,
 	'S_AJAX_USER_CHECK' => $ajax_user_check,
 	// AJAX Features - END
@@ -155,8 +162,7 @@ $template->assign_vars(array(
 	)
 );
 
-// Work around for "current" Apache 2 + PHP module which seems to not
-// cope with private cache control setting
+// Work around for "current" Apache 2 + PHP module which seems to not cope with private cache control setting
 if (!defined('AJAX_HEADERS'))
 {
 	if (!empty($_SERVER['SERVER_SOFTWARE']) && strstr($_SERVER['SERVER_SOFTWARE'], 'Apache/2'))

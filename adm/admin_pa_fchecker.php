@@ -27,7 +27,9 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_pafiledb.' . PHP_EXT);
+
+setup_extra_lang(array('lang_admin_pafiledb'));
+
 include(IP_ROOT_PATH . 'includes/pafiledb_common.' . PHP_EXT);
 
 $this_dir = IP_ROOT_PATH . DOWNLOADS_PATH;
@@ -114,14 +116,14 @@ if ($safety == 1)
 		)
 	);
 
-	$files = opendir($this_dir);
-	while ($temp = readdir($files))
+	$files = @opendir($this_dir);
+	while ($temp = @readdir($files))
 	{
 		if (($temp == '.') || ($temp == '..'))
 		{
 			continue;
 		}
-		if (!is_file($this_dir . $temp))
+		if (!@is_file($this_dir . $temp))
 		{
 			continue;
 		}
@@ -141,7 +143,7 @@ if ($safety == 1)
 		}
 
 	}
-	closedir($files);
+	@closedir($files);
 
 	if($saved == 0)
 	{
@@ -187,6 +189,6 @@ else
 	$template->pparse('admin');
 }
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

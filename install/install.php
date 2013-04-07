@@ -28,7 +28,10 @@ define('IN_ICYPHOENIX', true);
 //define('NO_FTP', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-define('THIS_PATH', '_install/');
+//define('THIS_PATH', '_install/');
+$this_path = dirname(__FILE__);
+$path_dirs = explode(DIRECTORY_SEPARATOR, $this_path);
+define('THIS_PATH', $path_dirs[sizeof($path_dirs) - 1]);
 define('THIS_FILE', 'install.' . PHP_EXT);
 //define('THIS_FILE', basename(__FILE__));
 require('includes/functions_install.' . PHP_EXT);
@@ -65,7 +68,7 @@ if (!isset($_POST['install_step']))
 
 			// Start session management
 			$user->session_begin(false);
-			//$auth->acl($user->data);
+			$auth->acl($user->data);
 			$user->setup();
 			// End session management
 

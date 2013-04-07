@@ -14,8 +14,8 @@ function goForm(form)
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
-	<td class="row1" valign="top"><h1>{L_BLOCKS_TITLE} - {LAYOUT_NAME}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
+	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
+	<td class="row1 c-r-r" valign="top"><h1>{L_BLOCKS_TITLE} - {LAYOUT_NAME}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
 </tr>
 </table>
 
@@ -35,8 +35,8 @@ function goForm(form)
 		// <![CDATA[
 			//var box_begin = '<div id="result-box" style="height: 16px; border: solid 1px green; background: #00ff00;"><span class="text_green">';
 			//var box_end = '<\/span><\/div>';
-			//$('sort-info-box').innerHTML = box_begin + '{L_BLOCKS_POSITION_UPDATED}' + box_end; new Effect.Highlight('result-box', {duration: 0.5}); window.setTimeout("new Effect.Fade('result-box',{duration: 0.5})", 2500);}});
-			window.setTimeout("new Effect.Fade('box-updated',{duration:0.5})", 2500);
+			//$('sort-info-box').innerHTML = box_begin + '{L_BLOCKS_POSITION_UPDATED}' + box_end; new Effect.Highlight('result-box', {duration: 0.5}); window.setTimeout("new Effect.Fade('result-box', {duration: 0.5})", 2500);}});
+			window.setTimeout("new Effect.Fade('box-updated', {duration: 0.5})", 2500);
 		// ]]>
 		</script>
 		<div id="box-updated" class="row-center" style=" position: fixed; top: 0px; right: 25px; z-index: 1; background: none; border: none; width: 300px; padding: 3px;">

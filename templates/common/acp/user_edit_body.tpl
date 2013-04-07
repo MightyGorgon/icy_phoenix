@@ -66,12 +66,24 @@ function ColorExample(ColorCode)
 	<td class="row2"><input class="post" type="text" name="facebook" size="20" maxlength="255" value="{FACEBOOK}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_FLICKR}</span></td>
+	<td class="row2"><input class="post" type="text" name="flickr" size="20" maxlength="255" value="{FLICKR}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_GOOGLEPLUS}</span></td>
+	<td class="row2"><input class="post" type="text" name="googleplus" size="20" maxlength="255" value="{GOOGLEPLUS}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_ICQ_NUMBER}</span></td>
 	<td class="row2"><input class="post" type="text" name="icq" size="10" maxlength="15" value="{ICQ}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_JABBER}</span></td>
 	<td class="row2"><input class="post" type="text" name="jabber" size="20" maxlength="255" value="{JABBER}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_LINKEDIN}</span></td>
+	<td class="row2"><input class="post" type="text" name="linkedin" size="20" maxlength="255" value="{LINKEDIN}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_MESSENGER}</span></td>
@@ -88,6 +100,10 @@ function ColorExample(ColorCode)
 <tr>
 	<td class="row1"><span class="gen">{L_YAHOO}</span></td>
 	<td class="row2"><input class="post" type="text" name="yim" size="20" maxlength="255" value="{YIM}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_YOUTUBE}</span></td>
+	<td class="row2"><input class="post" type="text" name="youtube" size="20" maxlength="255" value="{YOUTUBE}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_WEBSITE}</span></td>
@@ -490,16 +506,17 @@ function ColorExample(ColorCode)
 	<td class="row1"><span class="gen">{L_POSTCOUNT}:</span><br /><span class="gensmall">{L_POSTCOUNT_EXPLAIN}<br /></td>
 	<td class="row2"><input type="text" class="post" style="width: 40px;" name="user_posts" size="4" maxlength="7" value="{POSTS}" /></td>
 </tr>
+<tr><th colspan="2">&nbsp;</th></tr>
 <tr>
-	<td class="row1"><span class="gen">{L_USER_ACTIVE}</span></td>
+	<td class="row1"><span class="gen"><strong><i>{L_USER_ACTIVE}</i></strong></span></td>
 	<td class="row2"><input type="radio" name="user_status" value="1" {USER_ACTIVE_YES} /><span class="gen">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="user_status" value="0" {USER_ACTIVE_NO} /><span class="gen">{L_NO}</span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_INACTIVE_USER_FEATURE}</span><br /><span class="gensmall">{L_INACTIVE_USER_FEATURE_EXPLAIN}</span></td>
+	<td class="row1"><span class="gen"><i>{L_INACTIVE_USER_FEATURE}</i></span><br /><span class="gensmall">{L_INACTIVE_USER_FEATURE_EXPLAIN}</span></td>
 	<td class="row2"><input type="radio" name="user_mask" value="1" {USER_MASK_YES} /><span class="gen">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="user_mask" value="0" {USER_MASK_NO} /><span class="gen">{L_NO}</span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_DELETE_USER}</span></td>
+	<td class="row1"><span class="gen"><strong><i>{L_DELETE_USER}</i></strong></span></td>
 	<td class="row2"><input type="checkbox" name="deleteuser" />&nbsp;{L_DELETE_USER_EXPLAIN}</td>
 </tr>
 <tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>

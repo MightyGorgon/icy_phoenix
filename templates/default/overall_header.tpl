@@ -14,7 +14,7 @@
 <script type="text/javascript">
 
 /***********************************************
-* AnyLink Drop Down Menu- © Dynamic Drive (www.dynamicdrive.com)
+* AnyLink Drop Down Menu- Â© Dynamic Drive (www.dynamicdrive.com)
 * This notice MUST stay intact for legal use
 * Visit http://www.dynamicdrive.com/ for full source code
 ***********************************************/
@@ -55,7 +55,7 @@ if (hidemenu_onclick == "yes")
 <body>
 
 <div id="global-wrapper">
-<span><a name="top"></a></span>
+<span><a name="top" id="top"></a></span>
 {TOP_HTML_BLOCK}
 <!-- IF GH_BLOCK --><!-- BEGIN gheader_blocks_row -->{gheader_blocks_row.CMS_BLOCK}<!-- END gheader_blocks_row --><!-- ENDIF -->
 <!-- IF PROFILE_VIEW --><script type="text/javascript">window.open('{U_PROFILE_VIEW}','_blank','height=800,width=250,resizable=yes');</script><!-- ENDIF -->

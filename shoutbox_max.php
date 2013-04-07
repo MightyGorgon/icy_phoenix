@@ -19,9 +19,12 @@ define('NUM_SHOUT', 20);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
+
+// Force all active content BBCodes OFF!
+$config['switch_bbcb_active_content'] = 0;
 
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
@@ -141,17 +144,18 @@ if ($refresh || $preview)
 			$bbcode->allow_html = ($config['allow_html'] ? true : false);
 			$bbcode->allow_bbcode = ($config['allow_bbcode'] && $bbcode_on ? true : false);
 			$bbcode->allow_smilies = ($config['allow_smilies'] && $smilies_on ? true : false);
+
 			$preview_message = $bbcode->parse($preview_message);
+			//$preview_message = str_replace("\n", '<br />', $preview_message);
 
 			$preview_message = $bbcode->acronym_pass($preview_message);
 			$preview_message = $bbcode->autolink_text($preview_message, '999999');
 
-			$preview_message = str_replace("\n", '<br />', $preview_message);
 			$template->set_filenames(array('preview' => 'posting_preview.tpl'));
 			$template->assign_vars(array(
 				'USERNAME' => $username,
 				'POST_DATE' => create_date_ip($config['default_dateformat'], time(), $config['board_timezone']),
-				'MESSAGE' => $preview_message,
+				'PREVIEW_MESSAGE' => $preview_message,
 				'L_POSTED' => $lang['Posted'],
 				'L_PREVIEW' => $lang['Preview']
 				)
@@ -430,7 +434,7 @@ else
 }
 
 // display the shoutbox
-$sql = "SELECT s.*, u.username, u.user_id, u.user_active, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang
+$sql = "SELECT s.*, u.username, u.user_id, u.user_active, u.user_color, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang
 				FROM " . SHOUTBOX_TABLE . " s, " . USERS_TABLE . " u
 				WHERE s.shout_user_id = u.user_id
 				ORDER BY s.shout_session_time DESC
@@ -496,8 +500,9 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$bbcode->allow_smilies = ($config['allow_smilies'] && $shout != '' && $shout_row['enable_smilies'] ? true : false);
 
 	$shout = $bbcode->parse($shout);
+	//$shout = str_replace("\n", "\n<br />\n", $shout);
+
 	$shout = ((!$shout_row['shout_active']) ? $shout : ($lang['Shout_censor'] . ($is_auth['auth_mod'] ? ('<br /><hr /><br />' . $shout) : '')));
-	$shout = str_replace("\n", "\n<br />\n", $shout);
 
 	$shout = $bbcode->acronym_pass($shout);
 	$shout = $bbcode->autolink_text($shout, '999999');

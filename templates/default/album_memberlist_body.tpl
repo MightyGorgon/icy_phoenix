@@ -45,22 +45,28 @@
 <tr>
 	<!-- BEGIN pic_detail -->
 	<td class="row2">
-		<span class="gensmall">
+		<div class="gensmall">
 			{L_PIC_TITLE}: <a href="{picrow.pic_detail.U_PIC_SP}" {TARGET_BLANK}>{picrow.pic_detail.TITLE}</a><br />
 			{L_DOWNLOAD}: <a href="{picrow.pic_detail.U_PIC_DL}" {TARGET_BLANK}>{picrow.pic_detail.TITLE}</a><br />
 			{L_PIC_ID}: {picrow.pic_detail.PIC_ID}<br />
 			{L_PIC_CAT}: <a href="{picrow.pic_detail.U_PIC_CAT}" {TARGET_BLANK}>{picrow.pic_detail.CATEGORY}</a><br />
 			{L_POSTED}: {picrow.pic_detail.TIME}<br />
 			{L_VIEW}: {picrow.pic_detail.VIEW}<br />
-			{picrow.pic_detail.RATING}
-			{picrow.pic_detail.COMMENTS}
-			{picrow.pic_detail.IP}
+			<!-- IF picrow.pic_detail.RATING --> 
+			{picrow.pic_detail.RATING}<br />
+			<!-- ENDIF -->
+			<!-- IF picrow.pic_detail.COMMENTS --> 
+			{picrow.pic_detail.COMMENTS}<br />
+			<!-- ENDIF -->
+			<!-- IF picrow.pic_detail.IP --> 
+			{picrow.pic_detail.IP}<br />
+			<!-- ENDIF -->
 			{picrow.pic_detail.EDIT}
 			{picrow.pic_detail.DELETE}
 			{picrow.pic_detail.LOCK}
 			{picrow.pic_detail.MOVE}
 			{picrow.pic_detail.COPY}
-		</span>
+		</div>
 	</td>
 	<!-- END pic_detail -->
 </tr>

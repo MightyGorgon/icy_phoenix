@@ -1,10 +1,12 @@
 <!-- IF S_STYLES_SELECT -->
 <script type="text/javascript">
+// <![CDATA[
 function SetTheme_{MAIN_MENU_ID}()
 {
 	document.ChangeTheme_{MAIN_MENU_ID}.submit();
 	return true;
 }
+// ]]>
 </script>
 <!-- ENDIF -->
 <!-- BEGIN show_hide_switch -->
@@ -15,14 +17,13 @@ if(GetCookie(tmp) == '2')
 {
 	ShowHide('quick_links', 'quick_links2', 'quick_links');
 	setWidth('var_width', 16);
-	//setWidth('full_width', '100%');
 }
 //-->
 </script>
 <!-- END show_hide_switch -->
 {IMG_THL}{IMG_THC}
 <!-- BEGIN show_hide_switch -->
-<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links', 'quick_links2', 'quick_links'); setWidth('var_width',16); setWidth('full_width', '100%');" alt="{L_HIDE}" />
+<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links', 'quick_links2', 'quick_links'); setWidth('var_width',16); setWidth('full_width', '100%'); setWidth('full_width_cpl', '100%');" alt="{L_HIDE}" />
 <!-- END show_hide_switch -->
 <span class="forumlink">{MAIN_MENU_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 
@@ -47,19 +48,19 @@ if(GetCookie(tmp) == '2')
 		<div id="menu_cat_{cat_row.CAT_ID}_h" class="nav-menu">
 			<div class="nav-div" style="padding: 2px;">
 				<!-- BEGIN menu_row -->
-				{cat_row.menu_row.MENU_URL}
+				<div style="text-align: left;">{cat_row.menu_row.MENU_URL}</div>
 				<!-- END menu_row -->
 			</div>
 		</div>
 		<div id="menu_cat_{cat_row.CAT_ID}" class="js-sh-box">
 			<script type="text/javascript">
-			<!--
+			// <![CDATA[
 			tmp = 'menu_cat_{cat_row.CAT_ID}';
 			if(GetCookie(tmp) == '2')
 			{
 				ShowHide('menu_cat_{cat_row.CAT_ID}', 'menu_cat_{cat_row.CAT_ID}_h', 'menu_cat_{cat_row.CAT_ID}');
 			}
-			//-->
+			// ]]>
 			</script>
 		</div>
 	</td>

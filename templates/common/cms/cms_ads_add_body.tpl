@@ -2,13 +2,13 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_ads.png" alt="{L_ADS_TITLE}" title="{L_ADS_TITLE}" /></td>
-	<td class="row1" valign="top"><h1>{L_ADS_TITLE}</h1><span class="genmed">{L_ADS_TITLE_EXPLAIN}</span></td>
+	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_ads.png" alt="{L_ADS_TITLE}" title="{L_ADS_TITLE}" /></td>
+	<td class="row1 c-r-r" valign="top"><h1>{L_ADS_TITLE}</h1><span class="genmed">{L_ADS_TITLE_EXPLAIN}</span></td>
 </tr>
 </table>
 
 <form method="post" action="{S_ADS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline cells-no-rounded" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr><th colspan="2">{L_FORM_TITLE}</th></tr>
 <tr>
 	<td class="row1" style="width: 35%;"><strong>{L_AD_DES}</strong></td>
@@ -34,7 +34,8 @@
 	<td class="row1"><strong>{L_AD_STATUS}</strong><br /><span class="gensmall">{L_AD_STATUS_EXPLAIN}</span></td>
 	<td class="row2">{AD_ACTIVE}</td>
 </tr>
-<tr><td colspan="2" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
+<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
+<tr><td class="cat" align="center" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>
 </form>
 

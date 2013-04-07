@@ -67,9 +67,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 {
 	global $template, $db, $cache, $config, $user, $lang, $images, $theme;
 	global $tree, $bbcode, $user;
-	//<!-- BEGIN Unread Post Information to Database Mod -->
-	global $unread;
-	//<!-- END Unread Post Information to Database Mod -->
+
 	static $box_id;
 
 	// save template state
@@ -133,8 +131,8 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	}
 
 	// read the user cookie
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 	$tracking_all = (isset($_COOKIE[$config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$config['cookie_name'] . '_f_all']) : NULL;
 
 	// categories hierarchy v 2 compliancy
@@ -398,7 +396,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 				}
 				else
 				{
-					viewforum_calc_unread($unread, $topic_id, $topic_rowset, $i, $folder_new, $folder, $folder_alt, $folder_image, $newest_post_img, $upi2db_status);
+					viewforum_calc_unread($user->data['upi2db_unread'], $topic_id, $topic_rowset, $i, $folder_new, $folder, $folder_alt, $folder_image, $newest_post_img, $upi2db_status);
 				}
 				//<!-- END Unread Post Information to Database Mod -->
 			}
@@ -627,7 +625,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		//<!-- BEGIN Unread Post Information to Database Mod -->
 		if($user->data['upi2db_access'])
 		{
-			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $unread, $start, $folder_image);
+			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $user->data['upi2db_unread'], $start, $folder_image);
 		}
 		else
 		{

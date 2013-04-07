@@ -23,7 +23,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -40,11 +40,14 @@ if (!empty($google_q))
 	$template->assign_vars(array('GSEARCH_RESULTS' => true));
 }
 
+$search_lang = !empty($lang['HEADER_LANG']) ? $lang['HEADER_LANG'] : 'en-gb';
+
 $template->assign_vars(array(
 	'S_SEARCH_ACTION' => append_sid('gsearch.' . PHP_EXT),
 	'S_SEARCH_DOMAIN' => preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name'])),
 	//'S_SEARCH_DOMAIN' => 'icyphoenix.com',
 	'S_ADSENSE_CODE' => (!empty($config['adsense_code']) ? ('<input type="hidden" name="client" value="' . $config['adsense_code'] . '" />') : ''),
+	'S_LANGUAGE' => $search_lang,
 	'L_SEARCH' => $lang['Search']
 	)
 );

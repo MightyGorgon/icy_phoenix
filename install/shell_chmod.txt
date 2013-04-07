@@ -14,15 +14,16 @@ chmod 777 files/album/cache
 chmod 777 files/album/med_cache
 chmod 777 files/album/users
 chmod 777 files/album/wm_cache
-chmod 777 files/posted_images
+chmod 777 files/images
 chmod 777 files/screenshots
 chmod 777 files/thumbs
+chmod 777 files/thumbs/s
 chmod 777 images/avatars
 chmod 777 logs
-chmod 777 logs/logfile_attempt_counter.txt
-chmod 777 logs/logfile_blocklist.txt
-chmod 777 logs/logfile_debug_mode.txt
-chmod 777 logs/logfile_malformed_logins.txt
-chmod 777 logs/logfile_spammer.txt
-chmod 777 logs/logfile_worms.txt
+chmod 666 logs/logfile_attempt_counter.txt
+chmod 666 logs/logfile_blocklist.txt
+chmod 666 logs/logfile_debug_mode.txt
+chmod 666 logs/logfile_malformed_logins.txt
+chmod 666 logs/logfile_spammer.txt
+chmod 666 logs/logfile_worms.txt
 

@@ -30,7 +30,7 @@ if (!defined('PHP_DIGESTS_CRON'))
 {
 	// Comment this line to allow execution of mail_digests.php from address bar.
 	// Decomment it to block the execution
-	die('Hacking attempt');
+	die('This file cannot be run directly...');
 
 	define('IN_ICYPHOENIX', true);
 	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
@@ -39,7 +39,7 @@ if (!defined('PHP_DIGESTS_CRON'))
 
 	// Start session management
 	$user->session_begin();
-	//$auth->acl($user->data);
+	$auth->acl($user->data);
 	$user->setup();
 	// End session management
 
@@ -54,37 +54,43 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if (empty($user->data))
+// COMMON INCLUSIONS WHERE NEEDED - BEGIN
+// Comment at least the whole "IF" if you are going to run this file outside Icy Phoenix
+if (!defined('IN_CRON'))
 {
-	// Start session management
-	$user->session_begin();
-	//$auth->acl($user->data);
-	$user->setup();
-	// End session management
+	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
+	if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+	if (!defined('ICYPHOENIX_VERSION')) @include(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
+	if (!function_exists('append_sid')) @include(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
+	if (!function_exists('check_mem_limit')) @include(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+	if (!function_exists('auth')) @include(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
+	if (!defined('PHP_DIGESTS_FUNCTIONS_CRON')) @include(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
+
+	if (empty($user->data))
+	{
+		// Start session management
+		$user->session_begin();
+		$auth->acl($user->data);
+		$user->setup();
+		// End session management
+	}
+
+	if (($config['url_rw'] || $config['url_rw_guests']) && !function_exists('make_url_friendly'))
+	{
+		@include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
+	}
 }
 
-// Comment this if you run it outside Icy Phoenix
-if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
-if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-include_once(IP_ROOT_PATH . 'includes/constants.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/auth.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_cron.' . PHP_EXT);
-
-if (($config['url_rw'] || $config['url_rw_guests']) && !function_exists('make_url_friendly'))
+if (!class_exists('bbcode') || empty($bbcode))
 {
-	include(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
+	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 }
 
-if (empty($bbcode) || !class_exists('bbcode'))
-{
-	include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-}
+if (!class_exists('emailer')) @include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+if (!defined('DIGEST_VERSION')) @include(IP_ROOT_PATH . 'includes/digest_constants.' . PHP_EXT);
 
 setup_extra_lang(array('lang_digests'));
+// COMMON INCLUSIONS WHERE NEEDED - BEGIN
 
 @set_time_limit(0);
 $mem_limit = check_mem_limit();
@@ -104,9 +110,18 @@ $wday = $today['wday'];
 $current_hour = $today['hours'];
 $weekly_digest_text = ($wday == DIGEST_WEEKLY_DIGEST_DAY) ? " or (digest_type = 'WEEK' and send_hour = " . $current_hour . ")" : "";
 
-// Send a user a weekly digest only if it is the correct day and hour of the week for a weekly
-// digest, and any daily digest if the current hour of the day is the same as the hour wanted for the digest.
+// Retrieve a list of forum_ids that all registered users can access. Since digests go only to registered users it's important to include those forums not accessible to the general public but accessible to users.
+$sql = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE auth_read IN (' . AUTH_ALL . ', ' . AUTH_REG . ') AND forum_type = ' . FORUM_POST;
+$result = $db->sql_query($sql);
+$i = 0;
+while ($row = $db->sql_fetchrow($result))
+{
+	$valid_forums[$i] = $row['forum_id'];
+	$i++;
+}
+$db->sql_freeresult($result);
 
+// Send a user a weekly digest only if it is the correct day and hour of the week for a weekly digest, and any daily digest if the current hour of the day is the same as the hour wanted for the digest.
 /*
 $sql = "SELECT s.user_id, u.username, u.user_email, u.user_lastvisit, u.user_lang, s.digest_type, s.format, s.show_text, s.show_mine, s.new_only, s.send_on_no_messages, s.send_hour, s.text_length
 	FROM " . DIGEST_SUBSCRIPTIONS_TABLE . ' s, ' . USERS_TABLE . " u
@@ -115,20 +130,8 @@ $sql = "SELECT s.user_id, u.username, u.user_email, u.user_lastvisit, u.user_lan
 */
 $sql = "SELECT s.user_id, u.username, u.user_email, u.user_lastvisit, u.user_lang, s.digest_type, s.format, s.show_text, s.show_mine, s.new_only, s.send_on_no_messages, s.send_hour, s.text_length
 	FROM " . DIGEST_SUBSCRIPTIONS_TABLE . " s, " . USERS_TABLE . " u
-	WHERE s.user_id = u.user_id AND ((digest_type = 'DAY' AND send_hour = " . $current_hour . ')' . $weekly_digest_text . ')';
+	WHERE s.user_id = u.user_id AND ((digest_type = 'DAY' AND send_hour = " . $current_hour . ")" . $weekly_digest_text . ")";
 $result = $db->sql_query($sql);
-
-// Retrieve a list of forum_ids that all registered users can access. Since digests go only to registered users it's important to include those forums not accessible to the general public but accessible to users.
-$sql2 = 'SELECT forum_id FROM ' . FORUMS_TABLE . ' WHERE auth_read IN (' . AUTH_ALL . ', ' . AUTH_REG . ') AND forum_type = ' . FORUM_POST;
-$result2 = $db->sql_query($sql2);
-$i = 0;
-while ($row2 = $db->sql_fetchrow($result2))
-{
-	$valid_forums [$i] = $row2['forum_id'];
-	$i++;
-}
-
-$db->sql_freeresult($result2);
 
 // With each pass through the loop one user will receive a customized digest.
 $digests_sent = 0;
@@ -330,7 +333,7 @@ while ($row = $db->sql_fetchrow($result))
 		// Show name of forum only if it changes
 		if ($row2['forum_name'] <> $last_forum)
 		{
-			if ($config['url_rw'] == '1')
+			if (!empty($config['url_rw']))
 			{
 				$forum_url = DIGEST_SITE_URL . str_replace ('--', '-', make_url_friendly($row2['forum_name']) . '-vf' . $row2['forum_id'] . '.html');
 			}
@@ -356,7 +359,7 @@ while ($row = $db->sql_fetchrow($result))
 		// Show name of topic only if it changes
 		if ($row2['topic_title'] <> $last_topic)
 		{
-			if ($config['url_rw'] == '1')
+			if (!empty($config['url_rw']))
 			{
 				$topic_url = DIGEST_SITE_URL . str_replace ('--', '-', make_url_friendly($row2['topic_title']) . '-vt' . $row2['topic_id'] . '.html');
 			}
@@ -376,13 +379,13 @@ while ($row = $db->sql_fetchrow($result))
 		}
 
 		// Show message information
-		if ($config['url_rw'] == '1')
+		if (!empty($config['url_rw']))
 		{
 			$post_url = DIGEST_SITE_URL . str_replace ('--', '-', make_url_friendly($row2['topic_title']) . '-vp' . $row2['post_id'] . '.html#p' . $row2['post_id']);
 		}
 		else
 		{
-			$post_url = DIGEST_SITE_URL . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $row2['topic_id'] . '#p' . $row2['post_id'];
+			$post_url = DIGEST_SITE_URL . CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $row2['post_id'] . '#p' . $row2['post_id'];
 		}
 		if ($html)
 		{
@@ -397,11 +400,6 @@ while ($row = $db->sql_fetchrow($result))
 				$this_msg = preg_replace('/\\n/', '<br />', $this_msg);
 				$msg .= $this_msg . $line_break;
 				*/
-				if (empty($bbcode) && class_exists('bbcode'))
-				{
-					unset($bbcode);
-					$bbcode = new bbcode();
-				}
 				$bbcode->allow_html = (isset($config['allow_html']) ? $config['allow_html'] : false);
 				$bbcode->allow_bbcode = (isset($config['allow_bbcode']) ? $config['allow_bbcode'] : true);
 				$bbcode->allow_smilies = (isset($config['allow_smilies']) ? $config['allow_smilies'] : true);
@@ -469,7 +467,7 @@ while ($row = $db->sql_fetchrow($result))
 	if (($msg_count > 0) || ($row['send_on_no_messages'] == 'YES'))
 	{
 
-		if (!(is_object($emailer)))
+		if (!is_object($emailer))
 		{
 			$emailer = new emailer();
 		}
@@ -556,6 +554,7 @@ while ($row = $db->sql_fetchrow($result))
 		$digest_log_entry .= $lang['digest_a_digest_containing'] . ' ' . $msg_count . ' ' . $lang['digest_posts_was_sent_to'] . ' ' . $row['user_email'] . $break_type;
 	}
 }
+$db->sql_freeresult($result);
 
 // Summary information normally not seen, but can be captured via command line to a file
 if (DIGEST_SHOW_SUMMARY)
@@ -592,7 +591,7 @@ if (DIGEST_SHOW_SUMMARY)
 	else
 	{
 		// MG Digests LOG - BEGIN
-		if ($config['write_digests_log'] == true)
+		if (!empty($config['write_digests_log']))
 		{
 			//echo($summary_content);
 			$datecode = gmdate('Ymd');
@@ -611,8 +610,6 @@ if (DIGEST_SHOW_SUMMARY)
 		// MG Digests LOG - END
 	}
 }
-
-$db->sql_freeresult($result);
 
 set_config('cron_digests_last_run', time());
 set_config('cron_lock_hour', 0);

@@ -65,15 +65,23 @@ if(!function_exists('cms_block_links'))
 
 		$template->assign_vars(array(
 			'SITE_LOGO_WIDTH' => $links_config['width'],
-			'SITE_LOGO_HEIGHT' =>$links_config['height'],
+			'SITE_LOGO_HEIGHT' => $links_config['height'],
 			'U_SITE_LOGO' => $links_config['site_logo']
 			)
 		);
 
+		$sql_extra = '';
+		if (!empty($cms_config_vars['md_links_cat_id'][$block_id]))
+		{
+			$links_cats_array = explode(',', $cms_config_vars['md_links_cat_id'][$block_id]);
+			$sql_extra = " AND " . $db->sql_in_set('link_category', $links_cats_array);
+		}
+
 		$sql = "SELECT link_id, link_title, link_logo_src
 			FROM " . LINKS_TABLE . "
 			WHERE link_active = 1
-			AND link_logo_src <> ''
+				AND link_logo_src <> ''
+			" . $sql_extra . "
 			ORDER BY RAND()
 			LIMIT " . $links_config['display_logo_num'];
 

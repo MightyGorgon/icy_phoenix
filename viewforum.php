@@ -49,7 +49,7 @@ if (!empty($selected_id))
 	elseif (($type == POST_CAT_URL) || ($selected_id == 'Root'))
 	{
 		$parm = ($id != 0) ? '?' . POST_CAT_URL . '=' . $id : '';
-		redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM . $parm));
+		redirect(append_sid(CMS_PAGE_FORUM . $parm));
 		exit;
 	}
 }
@@ -59,7 +59,7 @@ $mark_read = request_var('mark', '');
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -117,19 +117,23 @@ if ($user->data['upi2db_access'])
 	$topic_id_append = (!empty($t) ? (POST_TOPIC_URL . '=' . $t) : '');
 	$post_id_append = (!empty($p) ? (POST_POST_URL . '=' . $p) : '');
 
-	$unread = unread();
+	if (!defined('UPI2DB_UNREAD'))
+	{
+		$user->data['upi2db_unread'] = upi2db_unread();
+	}
+
 	$except_time = except_time();
 
 	if($do || $always_read)
 	{
 		if($do)
 		{
-			$mark_read_text = set_unread($t, $f, $p, $unread, $do, $tt);
+			$mark_read_text = set_unread($t, $f, $p, $user->data['upi2db_unread'], $do, $tt);
 		}
 
 		if($always_read)
 		{
-			$mark_read_text = always_read($t, $always_read, $unread);
+			$mark_read_text = always_read($t, $always_read, $user->data['upi2db_unread']);
 		}
 
 		$redirect_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append);
@@ -222,7 +226,8 @@ else // we have a single letter, so let's sort alphabetically...
 $forum_row = $tree['data'][$tree['keys'][POST_FORUM_URL . $forum_id]];
 if (empty($forum_row))
 {
-	message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_FORUM');
 }
 
 $meta_content = array();
@@ -282,7 +287,7 @@ if (!$is_auth['auth_read'] || !$is_auth['auth_view'])
 	}
 
 	// The user is not authed to read this forum ...
-	$message = (!$is_auth['auth_view']) ? $lang['Forum_not_exist'] : sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
+	$message = (!$is_auth['auth_view']) ? $lang['NO_FORUM'] : sprintf($lang['Sorry_auth_read'], $is_auth['auth_read_type']);
 
 	message_die(GENERAL_MESSAGE, $message);
 }
@@ -323,7 +328,7 @@ if ($mark_read == 'topics')
 				if ($row['last_post'] > $user->data['user_lastvisit'])
 				{
 					$tracking_forums[$forum_id] = time();
-					setcookie($config['cookie_name'] . '_f', serialize($tracking_forums), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+					$user->set_cookie('f', serialize($tracking_forums), $user->cookie_expire);
 				}
 			}
 		//<!-- BEGIN Unread Post Information to Database Mod -->
@@ -343,8 +348,8 @@ if ($mark_read == 'topics')
 }
 // End handle marking posts
 
-$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : '';
 $tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : '';
+$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : '';
 
 // Do the forum Prune
 if ($is_auth['auth_mod'] && $config['prune_enable'])
@@ -372,7 +377,7 @@ for ($i = 0; $i < sizeof($tree['mods'][$idx]['user_id']); $i++)
 for ($i = 0; $i < sizeof($tree['mods'][$idx]['group_id']); $i++)
 {
 	$group_color_style = ' style="font-weight: bold; text-decoration: none;' . (($tree['mods'][$idx]['group_color'][$i] != '') ? 'color: ' . $tree['mods'][$idx]['group_color'][$i] . ';"' : '"');
-	$moderators[] = '<a href="' . append_sid('groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color_style . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
+	$moderators[] = '<a href="' . append_sid( CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color_style . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
 }
 
 $l_moderators = (sizeof($moderators) == 1) ? $lang['Moderator'] : $lang['Moderators'];
@@ -649,47 +654,47 @@ if($user->data['upi2db_access'])
 	{
 		while($row = $db->sql_fetchrow($result))
 		{
-			if(isset($unread['edit_topics']) && isset($unread['always_read']['topics']) && in_array($row['topic_id'], $unread['edit_topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
+			if(isset($user->data['upi2db_unread']['edit_topics']) && isset($user->data['upi2db_unread']['always_read']['topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_gae[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_gan[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['edit_topics']) && isset($unread['always_read']['topics']) && in_array($row['topic_id'], $unread['edit_topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['edit_topics']) && isset($user->data['upi2db_unread']['always_read']['topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
 			{
 				$topic_rowset_ae[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
 			{
 				$topic_rowset_an[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['edit_topics']) && isset($unread['always_read']['topics']) && in_array($row['topic_id'], $unread['edit_topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_STICKY)
+			elseif(isset($user->data['upi2db_unread']['edit_topics']) && isset($user->data['upi2db_unread']['always_read']['topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_STICKY)
 			{
 				$topic_rowset_se[] = $row;
 				$total_topics++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_STICKY)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_STICKY)
 			{
 				$topic_rowset_sn[] = $row;
 				$total_topics++;
 			}
-			elseif(isset($unread['edit_topics']) && isset($unread['always_read']['topics']) && in_array($row['topic_id'], $unread['edit_topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] != POST_STICKY && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['edit_topics']) && isset($user->data['upi2db_unread']['always_read']['topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] != POST_STICKY && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_ne[] = $row;
 				$total_topics++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] != POST_STICKY && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] != POST_STICKY && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_nn[] = $row;
 				$total_topics++;
 			}
-			if(in_array($row['topic_id'], $unread['always_read']['topics']))
+			if(in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']))
 			{
 				$topic_rowset_ar[] = $row;
 				$total_topics++;
@@ -701,17 +706,17 @@ if($user->data['upi2db_access'])
 	{
 		while($row = $db->sql_fetchrow($result))
 		{
-			if(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
+			if(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_gan[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] == POST_ANNOUNCE)
 			{
 				$topic_rowset_an[] = $row;
 				$total_announcements++;
 			}
-			elseif(isset($unread['always_read']['topics']) && !in_array($row['topic_id'], $unread['always_read']['topics']) && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
+			elseif(isset($user->data['upi2db_unread']['always_read']['topics']) && !in_array($row['topic_id'], $user->data['upi2db_unread']['always_read']['topics']) && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_GLOBAL_ANNOUNCE)
 			{
 				$topic_rowset_nn[] = $row;
 				$total_topics++;
@@ -831,7 +836,7 @@ if($can_watch_forum)
 //<!-- BEGIN Unread Post Information to Database Mod -->
 if($user->data['upi2db_access'])
 {
-	if(!in_array($forum_id, $unread['always_read']['forums']))
+	if(!in_array($forum_id, $user->data['upi2db_unread']['always_read']['forums']))
 	{
 		$mark_as_read = '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append . '&amp;mark=topics') . '">' . $lang['Mark_all_topics'] . '</a>';
 		$mark_always_read = '<a href="' . append_sid(CMS_PAGE_FORUM . '?forum_id=' . $forum_id . $kb_mode_append . '&amp;always_read=set') . '">' . $lang['upi2db_always_read_forum_short'] . '</a>';
@@ -868,38 +873,25 @@ if (!$config['board_disable'] || ($config['board_disable'] && ($user->data['user
 $meta_content['page_title'] = $forum_row['forum_name'];
 $meta_content['description'] = '';
 $meta_content['keywords'] = '';
-$breadcrumbs_links_right = '';
+$breadcrumbs['bottom_right_links'] = '';
 if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
-	$breadcrumbs_links_left = $marked_as_read;
-	$breadcrumbs_links_right = (($mark_as_read != '') ? ($mark_as_read . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . $s_watching_forum . (($mark_always_read != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;' . $mark_always_read) : '');
+	$breadcrumbs['bottom_left_links'] = $marked_as_read;
+	$breadcrumbs['bottom_right_links'] = (($mark_as_read != '') ? ($mark_as_read . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . $s_watching_forum . (($mark_always_read != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;' . $mark_always_read) : '');
 }
-$breadcrumbs_links_right .= (($breadcrumbs_links_right != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid('viewforumlist.' . PHP_EXT . '?' . $forum_id_append) . '">' . $lang['VF_ALL_TOPICS'] . '</a>';
+$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid('viewforumlist.' . PHP_EXT . '?' . $forum_id_append) . '">' . $lang['VF_ALL_TOPICS'] . '</a>';
 
 $template_to_parse = ($kb_mode) ? 'viewforum_kb_body.tpl' : 'viewforum_body.tpl';
 
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 
 $rules_bbcode = '';
-if ($forum_row['forum_rules'])
+if (!empty($forum_row['forum_rules_switch']))
 {
-	$sql = "SELECT fr.*
-		FROM " . FORUMS_RULES_TABLE . " fr
-		WHERE fr.forum_id = " . $forum_row['forum_id'] . "
-		LIMIT 1";
-	$result = $db->sql_query($sql, 0, 'forums_rules_', FORUMS_CACHE_FOLDER);
-
-	$forum_info = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$forum_info = $row;
-	}
-	$db->sql_freeresult($result);
-
-	if (isset($forum_info['rules_in_viewforum']) && $forum_info['rules_in_viewforum'])
+	if (isset($forum_row['forum_rules_in_viewforum']) && $forum_row['forum_rules_in_viewforum'])
 	{
 		//BBcode Parsing for Olympus rules Start
-		$rules_bbcode = $forum_info['rules'];
+		$rules_bbcode = $forum_row['forum_rules'];
 		$bbcode->allow_html = true;
 		$bbcode->allow_bbcode = true;
 		$bbcode->allow_smilies = true;
@@ -908,7 +900,7 @@ if ($forum_row['forum_rules'])
 
 		$template->assign_vars(array(
 			'S_FORUM_RULES' => true,
-			'S_FORUM_RULES_TITLE' => ($forum_info['rules_display_title']) ? true : false
+			'S_FORUM_RULES_TITLE' => ($forum_row['forum_rules_display_title']) ? true : false
 			)
 		);
 	}
@@ -920,7 +912,7 @@ if ($forum_row['auth_rate'] != -1)
 	$template->assign_block_vars('rating_switch', array());
 }
 
-if ($config['forum_wordgraph'] && $forum_row['forum_tags'])
+if ($config['forum_wordgraph'] && !empty($forum_row['forum_tags']))
 {
 	include(IP_ROOT_PATH . 'includes/forum_wordgraph.' . PHP_EXT);
 }
@@ -935,11 +927,13 @@ $sort_dir_append = '&amp;sort_dir=' . $sort_dir;
 $sort_dir_append_rev = '&amp;sort_dir=' . (($sort_dir == 'ASC') ? 'DESC' : 'ASC');
 $topic_days_append = ($topic_days == 0) ? '' : ('&amp;topicdays=' . $topic_days);
 $this_forum_address = CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append . $topic_days_append . $start_letter_append;
+$icon_img = empty($forum_row['icon']) ? '' : (isset($images[$forum_row['icon']]) ? $images[$forum_row['icon']] : $forum_row['icon']);
 
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
 	'FORUM_NAME' => $forum_row['forum_name'],
+	'FORUM_ICON_IMG' => $icon_img,
 	'FORUM_RULES' => $rules_bbcode,
 	'MODERATORS' => $forum_moderators,
 	'POST_IMG' => ($forum_row['forum_status'] == FORUM_LOCKED) ? $images['post_locked'] : $images['post_new'],
@@ -1067,7 +1061,7 @@ if($total_topics)
 		$replies = $topic_rowset[$i]['topic_replies'];
 		$topic_type = $topic_rowset[$i]['topic_type'];
 
-		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
+		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies);
 
 		$topic_id = $topic_link['topic_id'];
 		$topic_id_append = $topic_link['topic_id_append'];
@@ -1192,7 +1186,7 @@ if($total_topics)
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		if($user->data['upi2db_access'])
 		{
-			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $unread, $start, $topic_link['image']);
+			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $user->data['upi2db_unread'], $start, $topic_link['image']);
 		}
 		else
 		{

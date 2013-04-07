@@ -2,7 +2,7 @@
 <attach event="onpropertychange" onevent="checkPropertyChange()" />
 <attach event="ondetach" onevent="restore()" />
 <script>
-//<![CDATA[
+// <![CDATA[
 
 var doc = element.document;
 
@@ -152,6 +152,6 @@ function checkPropertyChange() {
 
 init();
 
-//]]>
+// ]]>
 </script>
 </component>

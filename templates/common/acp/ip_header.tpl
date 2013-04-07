@@ -7,7 +7,7 @@
 </head>
 <body id="header">
 
-	<div class="nav-links row-center" style="font-family: Arial, Helvetica, sans-serif; border-left-color: #dddddd;">
+	<div class="nav-links row-right" style="font-family: Arial, Helvetica, sans-serif; border-left-color: #dddddd;">
 		<div class="nav-links-left">{L_VERSION_INFORMATION}: {VERSION_INFO}</div>
 		<b>{L_HEADER_WELCOME}</b>
 	</div>

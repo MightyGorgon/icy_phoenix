@@ -22,11 +22,11 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_attach.' . PHP_EXT);
+setup_extra_lang(array('lang_admin_attach'));
 
 $cms_page['page_id'] = 'attachments';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
@@ -330,9 +330,10 @@ else
 	}
 	$db->sql_freeresult($result);
 
+	$row_class = '';
 	for ($i = 0; $i < $num_attachments; $i++)
 	{
-		$class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 
 		$post_title = $attachments[$i]['topic_title'];
 		$post_title_2 = '';
@@ -398,7 +399,7 @@ else
 
 		$template->assign_block_vars('attachrow', array(
 			'ROW_NUMBER' => $i + ($_GET['start'] + 1),
-			'ROW_CLASS' => $class,
+			'ROW_CLASS' => $row_class,
 
 			'FILENAME' => $filename,
 			'COMMENT' => $comment_field,
@@ -432,22 +433,25 @@ else
 	$pagination_append = POST_FORUM_URL . '=' . $forum_id . '&amp;';
 }
 
+$pagination = '&nbsp;';
+$page_number = '&nbsp;';
 if ($gen_pagination)
 {
 	if ($total = $db->sql_fetchrow($result))
 	{
 		$total = $total['total'];
-		$pagination = generate_pagination(append_sid('attachments.' . PHP_EXT . '?' . $pagination_append . 'mode=' . $mode . '&amp;order=' . $sort_order), $total, $config['topics_per_page'], $start) . '&nbsp;';
+		$pagination = generate_pagination(append_sid('attachments.' . PHP_EXT . '?' . $pagination_append . 'mode=' . $mode . '&amp;order=' . $sort_order), $total, $config['topics_per_page'], $start);
+		$page_number = sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total / $config['topics_per_page']));
 	}
 	$db->sql_freeresult($result);
-
-	$template->assign_vars(array(
-		'PAGINATION' => $pagination,
-		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total / $config['topics_per_page'])),
-		'L_GOTO_PAGE' => $lang['Goto_page']
-		)
-	);
 }
+
+$template->assign_vars(array(
+	'PAGINATION' => $pagination,
+	'PAGE_NUMBER' => $page_number,
+	'L_GOTO_PAGE' => $lang['Goto_page']
+	)
+);
 
 full_page_generation($template_to_parse, $lang['Downloads'], '', '');
 

@@ -185,14 +185,6 @@ function delete_item($old, $new = '', $topic_dest = '')
 		prune($old_id, 0, true); // Delete everything from forum
 	}
 
-	// Delete rules only for forums?
-	//if ($old_type == POST_FORUM_URL)
-	if (true)
-	{
-		$sql = "DELETE FROM " . FORUMS_RULES_TABLE . " WHERE forum_id = $old_id";
-		$db->sql_query($sql);
-	}
-
 	// delete the old one
 	$sql = "DELETE FROM " . FORUMS_TABLE . " WHERE forum_id = $old_id";
 	$db->sql_query($sql);

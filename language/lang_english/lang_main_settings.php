@@ -62,21 +62,31 @@ $lang['PrivacyDisclaimer'] = 'You specifically agree that your personal data wil
 
 $lang['ENCODING'] = 'UTF-8';
 $lang['DIRECTION'] = 'ltr';
+$lang['USER_LANG'] = 'en-gb';
 $lang['HEADER_LANG'] = 'en-gb';
-$lang['HEADER_XML_LANG'] = 'en-gb';
+$lang['HEADER_LANG_XML'] = 'en-gb';
+$lang['HEADER_LANG_JQUERY'] = 'en-GB';
 $lang['LEFT'] = 'left';
 $lang['RIGHT'] = 'right';
 $lang['DATE_FORMAT'] = 'd F y H:i'; // This should be changed to the default date format for your language, php date() format
 $lang['DATE_FORMAT_DATE'] = 'Y/m/d';
 $lang['DATE_FORMAT_TIME'] = 'H.i';
 $lang['DATE_FORMAT_MG'] = 'Y/m/d - H:i';
+$lang['DATE_FORMAT_CHAT'] = 'Y/m/d - H.i.s';
 $lang['DATE_FORMAT_VF'] = 'd M Y';
+$lang['DATE_FORMAT_DATE_JQUI_JQ'] = 'yy/mm/dd'; // You can only use one of these three formats: dd/mm/yy, mm/dd/yy, yy/mm/dd
+$lang['DATE_FORMAT_TIME_JQUI_JQ'] = 'hh:ss';
+$lang['DATE_FORMAT_DATE_JQUI_PHP'] = 'Y/m/d'; // You can only use one of these three formats: d/m/Y, m/d/Y, Y/m/d
+$lang['DATE_FORMAT_TIME_JQUI_PHP'] = 'H.i';
+$lang['DATE_FORMAT_DATE_MYSQL_PHP'] = 'ymd'; // You can only use one of these three formats: dmy, mdy, ymd (this is used to convert dates from MySQL and PHP and vice versa, all dates are with leading zeroes)
 $lang['DATE_FORMAT_BIRTHDAY'] = 'd F Y';
 $lang['DATE_FORMAT_CALENDAR'] = 'd F Y'; // This should be changed to the default date format for your language, php date() format
 $lang['JOINED_DATE_FORMAT'] = 'F Y'; // Date format of Joined date, php date() format
 $lang['NUMBER_FORMAT_DECIMALS'] = 0;
 $lang['NUMBER_FORMAT_DECIMALS_SEP'] = '.';
 $lang['NUMBER_FORMAT_THOUSANDS_SEP'] = ',';
+$lang['NUMBER_FORMAT_DATE_SEP'] = '/';
+$lang['NUMBER_FORMAT_TIME_SEP'] = ':';
 
 // This is optional, if you would like a _SHORT_ message output
 // along with our copyright message indicating you are the translator

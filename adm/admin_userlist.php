@@ -69,7 +69,7 @@ switch($mode)
 		// see if cancel has been hit and redirect if it has shouldn't get to this point if it has been hit but do this just in case
 		if ($cancel)
 		{
-			redirect(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT);
+			redirect(ADM . '/admin_userlist.' . PHP_EXT);
 		}
 
 		//
@@ -132,7 +132,7 @@ switch($mode)
 		// see if cancel has been hit and redirect if it has shouldn't get to this point if it has been hit but do this just in case
 		if ($cancel)
 		{
-			redirect(IP_ROOT_PATH . ADM . '/admin_userlist.' . PHP_EXT);
+			redirect(ADM . '/admin_userlist.' . PHP_EXT);
 		}
 
 		// check confirm and either ban or show confirm message
@@ -182,7 +182,15 @@ switch($mode)
 					message_die(GENERAL_ERROR, 'Could not ban anonymous user');
 				}
 
-				$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ('$user_id')";
+				$ban_insert_array = array(
+					'ban_userid' => $user_id,
+					'ban_by_userid' => $user->data['user_id'],
+					'ban_start' => time()
+				);
+				$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
+				$result = $db->sql_query($sql);
+
+				$sql = "UPDATE " . USERS_TABLE . " SET user_warnings = " . $config['max_user_bancard'] . " WHERE user_id = " . $user_id;
 				$result = $db->sql_query($sql);
 
 				unset($user_id);
@@ -337,13 +345,8 @@ switch($mode)
 					$group_name_row = $db->sql_fetchrow($result);
 					$group_name = $group_name_row['group_name'];
 
-					$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path']));
-					$script_name = ($script_name != '') ? $script_name . '/groupcp.' . PHP_EXT : 'groupcp.' . PHP_EXT;
-					$server_name = trim($config['server_name']);
-					$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-					$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-
-					$server_url = $server_protocol . $server_name . $server_port . $script_name;
+					$server_url = create_server_url();
+					$groupcp_url = $server_url . CMS_PAGE_GROUP_CP;
 
 					$emailer->use_template('group_added', $row['user_lang']);
 					$emailer->to($row['user_email']);
@@ -354,7 +357,7 @@ switch($mode)
 						'SITENAME' => $config['sitename'],
 						'GROUP_NAME' => $group_name,
 						'EMAIL_SIG' => $email_sig,
-						'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
+						'U_GROUPCP' => $groupcp_url . '?' . POST_GROUPS_URL . '=' . $group_id
 						)
 					);
 					$emailer->send();
@@ -594,7 +597,7 @@ switch($mode)
 					'GROUP_NAME' => $group_row['group_name'],
 					'GROUP_COLOR' => 'style="font-weight: bold; text-decoration: none;' . (($group_row['group_color'] != '') ? ('color: ' . $group_row['group_color'] . ';') : '') . '"',
 					'GROUP_STATUS' => $group_status,
-					'U_GROUP' => append_sid(IP_ROOT_PATH . 'groupcp.' . PHP_EXT . '?' . POST_GROUPS_URL . '=' . $group_row['group_id'])
+					'U_GROUP' => append_sid(IP_ROOT_PATH . CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_row['group_id'])
 					)
 				);
 				$g++;
@@ -635,6 +638,6 @@ switch($mode)
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

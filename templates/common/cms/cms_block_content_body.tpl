@@ -2,8 +2,8 @@
 
 <table class="forumline" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td class="row1 row-center" width="100" valign="middle"><img src="images/cms/cms_blocks.png" alt="{L_CMS_BLOCK_PAGE}" title="{L_CMS_BLOCK_PAGE}" /></td>
-	<td class="row1" valign="top"><h1>{L_CMS_BLOCK_PAGE}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
+	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_CMS_BLOCK_PAGE}" title="{L_CMS_BLOCK_PAGE}" /></td>
+	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_BLOCK_PAGE}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
 </tr>
 </table>
 
@@ -15,7 +15,7 @@
 		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td class="row1" width="200">{L_B_TITLE}</td>
-			<td class="row2"><input type="text" maxlength="60" size="30" name="title" value="{TITLE}" class="post" /></td>
+			<td class="row2"><input type="text" maxlength="60" size="30" name="title" value="{CMS_TITLE}" class="post" /></td>
 		</tr>
 		<tr>
 			<td class="row1" align="right">{L_CMS_BLOCK_PARENT}</td>
@@ -68,7 +68,6 @@
 	<td class="cat" align="center">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="save" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
-		<!-- <input type="submit" name="reset" class="liteoption" value="{L_RESET}" /> -->
 		<input type="reset" name="reset" class="liteoption" value="{L_RESET}" />
 	</td>
 </tr>

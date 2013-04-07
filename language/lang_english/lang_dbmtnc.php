@@ -220,7 +220,7 @@ $lang = array_merge($lang, array(
 	'Rebuild_Config' => 'Configuration of rebuilding of search index',
 	'Current_Rebuild_Config' => 'Configuration of current rebuilding',
 	'Rebuild_Settings_Explain' => 'These settings adjust the behaviour of DB Maintenance when rebuilding the search index.',
-	'Current_Rebuild_Settings_Explain' => 'These settings are used by DB Maintenance to store the position of the current rebuild. There is no need to adapt these settings under normal conditions.',
+	'Current_Rebuild_Settings_Explain' => 'These settings are used by DB Maintenance to store the position of the current rebuild. There is no need to change these settings under normal conditions.',
 	'Disallow_postcounter' => 'Disallow synchronization of user post counters',
 	'Disallow_postcounter_Explain' => 'This will disable the function to synchronize the user post counters. You can disallow this function if you do not want that pruned posts get subtracted from the post counters of the users.',
 	'Disallow_rebuild' => 'Disallow rebuilding of the search index',
@@ -546,4 +546,5 @@ $lang = array_merge($lang, array(
 	'dbmntc_Invalid_Option' => 'Invalid Option',
 	)
 );
+
 ?>

@@ -223,7 +223,7 @@
 			}
 		</script>
 		<br /><br />
-		<div style="text-align:center;"><span class="gen"><u>{L_OPTIONS}</u></span><br /><br /><span class="genmed">{RESET} || {BUY_NUMBER} {ADMIN_TOOLS}</span></div>
+		<div style="text-align: center;"><span class="gen"><u>{L_OPTIONS}</u></span><br /><br /><span class="genmed">{RESET} || {BUY_NUMBER} {ADMIN_TOOLS}</span></div>
 	</td>
 	<td align="center" valign="top" class="row2" width="50%">
 		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">

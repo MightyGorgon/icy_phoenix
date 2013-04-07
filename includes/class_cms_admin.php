@@ -29,52 +29,45 @@ class cms_admin
 	var $sort_sid_prefix = 's_'; // Sortables UL Container Prefix
 	var $sort_eid_prefix = 'e_'; // Sortables LI Element Prefix
 
-	var $menu_images_root = 'images/cms/menu/';
+	var $menu_images_root = 'templates/common/images/menu/';
 
+	var $is_auth = array();
 
 	/**
 	* Some defaults
 	*/
 	function cms_admin()
 	{
+		global $db, $cache, $config, $auth, $user, $lang, $template;
+
 		$this->root = CMS_PAGE_CMS;
-	}
 
-	/*
-	* Check CMS version
-	*/
-	function check_version()
-	{
-		global $db, $cache, $config, $user, $lang, $template, $table_prefix;
+		// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+		//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+		$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
 
-		if ($config['cms_rev'] != '2')
-		{
-			if(!isset($_POST['confirm']))
-			{
-				$template->assign_vars(array(
-					'L_YES' => $lang['YES'],
-					'L_NO' => $lang['NO'],
+		$this->is_auth['cms_admin'] = ($is_admin || $auth->acl_get('cms_admin')) ? true : false;
+		$this->is_auth['cms_ads'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_ads')) ? true : false;
+		$this->is_auth['cms_blocks'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks')) ? true : false;
+		$this->is_auth['cms_blocks_global'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks_global')) ? true : false;
+		$this->is_auth['cms_layouts'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_layouts')) ? true : false;
+		$this->is_auth['cms_layouts_special'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_layouts_special')) ? true : false;
+		$this->is_auth['cms_menu'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_menu')) ? true : false;
+		$this->is_auth['cms_permissions'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_permissions')) ? true : false;
+		$this->is_auth['cms_settings'] = ($is_admin || $auth->acl_get('cms_admin') || $auth->acl_get('cms_settings')) ? true : false;
 
-					'MESSAGE_TITLE' => $lang['Confirm'],
-					'MESSAGE_TEXT' => 'Aggiornare CMS?',
-
-					'S_CONFIRM_ACTION' => append_sid($this->root . $this->s_append_url),
-					'S_HIDDEN_FIELDS' => $this->s_hidden_fields
-					)
-				);
-				full_page_generation(CMS_TPL . 'confirm_body.tpl', $lang['Confirm'], '', '');
-			}
-			else
-			{
-				include(IP_ROOT_PATH . 'includes/cms_updates.' . PHP_EXT);
-				foreach($sql as $sql_data)
-				{
-					$result = $db->sql_query($sql_data);
-				}
-			}
-		}
-
-		return true;
+		$template->assign_vars(array(
+			'S_AUTH_CMS_ADMIN' => $this->is_auth['cms_admin'],
+			'S_AUTH_CMS_ADS' => $this->is_auth['cms_ads'],
+			'S_AUTH_CMS_BLOCKS' => $this->is_auth['cms_blocks'],
+			'S_AUTH_CMS_BLOCKS_GLOBAL' => $this->is_auth['cms_blocks_global'],
+			'S_AUTH_CMS_LAYOUTS' => $this->is_auth['cms_layouts'],
+			'S_AUTH_CMS_LAYOUTS_SPECIAL' => $this->is_auth['cms_layouts_special'],
+			'S_AUTH_CMS_MENU' => $this->is_auth['cms_menu'],
+			'S_AUTH_CMS_PERMISSIONS' => $this->is_auth['cms_permissions'],
+			'S_AUTH_CMS_SETTINGS' => $this->is_auth['cms_settings'],
+			)
+		);
 	}
 
 	/*
@@ -82,7 +75,6 @@ class cms_admin
 	*/
 	function init_vars($mode_array, $action_array)
 	{
-		//$this->check_version();
 		if (defined('IN_CMS_USERS'))
 		{
 			$this->tables = array(
@@ -264,18 +256,55 @@ class cms_admin
 	*/
 	function generate_tabs($mode)
 	{
-		global $db, $cache, $config, $user, $lang, $template;
+		global $db, $cache, $config, $auth, $user, $lang, $template;
 
 		$tabs_array = array();
 
+		// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+		//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+		$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
+
 		$tabs_array[] = array('TITLE' => $lang['CMS_TITLE'], 'MODE' => false, 'LINK' => append_sid(IP_ROOT_PATH . $this->root), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_home.png', 'TIP' => $lang['CMS_TIP_TITLE'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_CUSTOM_PAGES'], 'MODE' => 'layouts', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_custom_pages.png', 'TIP' => $lang['CMS_TIP_CUSTOM_PAGES'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_STANDARD_PAGES'], 'MODE' => 'layouts_special', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts_special'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_standard_pages.png', 'TIP' => $lang['CMS_TIP_STANDARD_PAGES'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_BLOCK_SETTINGS'], 'MODE' => 'block_settings', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=block_settings'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks.png', 'TIP' => $lang['CMS_TIP_BLOCK_SETTINGS'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_GLOBAL_BLOCKS'], 'MODE' => 'blocks', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=blocks&amp;l_id=0&amp;action=editglobal'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks_global.png', 'TIP' => $lang['CMS_TIP_GLOBAL_BLOCKS'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_CONFIG'], 'MODE' => 'config', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=config'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_settings.png', 'TIP' => $lang['CMS_TIP_CONFIG'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_MENU_PAGE'], 'MODE' => 'menu', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_menu.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_menu.png', 'TIP' => $lang['CMS_TIP_MENU'], 'AUTH' => AUTH_REG);
-		$tabs_array[] = array('TITLE' => $lang['CMS_ADS'], 'MODE' => 'ads', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_ads.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_ads.png', 'TIP' => $lang['CMS_TIP_ADS'], 'AUTH' => AUTH_REG);
+
+		if ($this->is_auth['cms_layouts'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_CUSTOM_PAGES'], 'MODE' => 'layouts', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_custom_pages.png', 'TIP' => $lang['CMS_TIP_CUSTOM_PAGES'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_layouts_special'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_STANDARD_PAGES'], 'MODE' => 'layouts_special', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=layouts_special'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_standard_pages.png', 'TIP' => $lang['CMS_TIP_STANDARD_PAGES'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_blocks'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_BLOCK_SETTINGS'], 'MODE' => 'block_settings', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=block_settings'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks.png', 'TIP' => $lang['CMS_TIP_BLOCK_SETTINGS'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_blocks_global'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_GLOBAL_BLOCKS'], 'MODE' => 'blocks', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=blocks&amp;l_id=0&amp;action=editglobal'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_blocks_global.png', 'TIP' => $lang['CMS_TIP_GLOBAL_BLOCKS'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_permissions'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_AUTH'], 'MODE' => 'auth', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=auth'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_permissions.png', 'TIP' => $lang['CMS_TIP_AUTH'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_settings'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_CONFIG'], 'MODE' => 'config', 'LINK' => append_sid(IP_ROOT_PATH . $this->root . '?mode=config'), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_settings.png', 'TIP' => $lang['CMS_TIP_CONFIG'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_menu'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_MENU_PAGE'], 'MODE' => 'menu', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_menu.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_menu.png', 'TIP' => $lang['CMS_TIP_MENU'], 'AUTH' => AUTH_REG);
+		}
+
+		if ($this->is_auth['cms_ads'])
+		{
+			$tabs_array[] = array('TITLE' => $lang['CMS_ADS'], 'MODE' => 'ads', 'LINK' => append_sid(IP_ROOT_PATH . 'cms_ads.' . PHP_EXT), 'ICON' => IP_ROOT_PATH . $this->menu_images_root . 'cms_ads.png', 'TIP' => $lang['CMS_TIP_ADS'], 'AUTH' => AUTH_REG);
+		}
 
 		$tabs_counter = 0;
 		$current_nav = false;
@@ -364,7 +393,7 @@ class cms_admin
 		$b_background = (isset($_POST['background'])) ? request_post_var('background', 0) : ($b_info['background'] ? $b_info['background'] : 0);
 
 		$template->assign_vars(array(
-			'TITLE' => $b_title,
+			'CMS_TITLE' => $b_title,
 			'POSITION' => $position['select'],
 			'ACTIVE' => ($b_active) ? 'checked="checked"' : '',
 			'NOT_ACTIVE' => (!$b_active) ? 'checked="checked"' : '',
@@ -616,6 +645,256 @@ class cms_admin
 	}
 
 	/*
+	* Generate URLs used in Ajax
+	*/
+	function ajax_urls()
+	{
+		// append_sid($this->root . '?mode=layouts&amp;action=edit' . '&amp;' . $this->id_var_name . '=' . $this->id_var_value)
+		return array(
+			'blocks' => append_sid($this->root . '?mode=block_settings', true)
+			);
+	}
+
+	/*
+	* Ajax action
+	*/
+	function show_blocks_list_action($action)
+	{
+		global $db, $lang;
+		$total = intval(request_var('total', 0));
+		if(!$total) return false;
+		$keys = array(
+			'bs_id' => 'intval',
+			'title' => 'strval',
+			'bposition' => 'strval',
+			'weight' => 'intval',
+			'active' => 'intval',
+			'border' => 'intval',
+			'titlebar' => 'intval',
+			'background' => 'intval',
+			'local' => 'intval',
+		);
+		switch($action)
+		{
+			case 'update':
+				for($i = 0; $i < $total; $i++)
+				{
+					$prefix = 'p' . $i . '_';
+					$id = intval(request_var($prefix . 'bid', 0));
+					if(!$id) return array('error' => true);
+					$update = '';
+					foreach($keys as $key => $func)
+					if(isset($_POST[$prefix . $key]))
+					{
+						$update .= (strlen($update) ? ', ' : '') . $key . '=\'' . $db->sql_escape($func($_POST[$prefix . $key])) . '\'';
+					}
+					if(strlen($update))
+					{
+						// update database
+						$sql = "UPDATE " . $this->tables['blocks_table'] . " SET " . $update . " WHERE " . $this->block_layout_field . " = '" . $this->id_var_value . "' AND bid = " . $id;
+						$db->sql_query($sql);
+					}
+				}
+				return array('changed' => $total);
+			case 'delete':
+				$ids = array();
+				for($i = 0; $i < $total; $i++)
+				{
+					$prefix = 'p' . $i . '_';
+					$id = intval(request_var($prefix . 'bid', 0));
+					if(!$id) return array('error' => true);
+					$ids[] = $id;
+				}
+				if(!count($ids)) return array('reload' => true);
+				$sql = "DELETE FROM " . $this->tables['blocks_table'] . " WHERE " . $this->block_layout_field . " = '" . $this->id_var_value . "' AND bid IN (" . implode(', ', $ids) . ")";
+				$db->sql_query($sql);
+				return array('changed' => $total);
+			case 'add':
+				// add new blocks
+				$ids = array();
+				for($i = 0; $i < $total; $i++)
+				{
+					$prefix = 'p' . $i . '_';
+					$vars = array();
+					foreach($keys as $key => $func)
+					if(isset($_POST[$prefix . $key]))
+					{
+						$vars[$key] = $db->sql_escape($func($_POST[$prefix . $key]));
+					}
+					$vars[$this->block_layout_field] = $this->id_var_value;
+					$sql = "INSERT INTO " . $this->tables['blocks_table'] . " " . $db->sql_build_insert_update($vars, true);
+					$result = $db->sql_query($sql);
+					$id = $db->sql_nextid();
+					if(!$id) return array('reload' => true);
+					$ids[] = $id;
+				}
+				if(!count($ids)) return array('reload' => true);
+				// get full block data from db
+				$sql = "SELECT * FROM " . $this->tables['blocks_table'] . " WHERE bid IN (" . implode(', ', $ids) . ")";
+				$result = $db->sql_query($sql);
+				$items = array();
+				while($row = $db->sql_fetchrow($result))
+				{
+					$items[] = $row;
+				}
+				$db->sql_freeresult($result);
+				return array('added' => true, 'items' => $items);
+			default:
+				return array('reload' => true);
+		}
+	}
+
+	/*
+	* Show blocks list
+	*/
+	function show_blocks_list_ajax()
+	{
+		//if(defined('CMS_NO_AJAX') || ($this->mode_layout_name == 'layouts_special') || (($this->mode != 'blocks') && ($this->action != 'editglobal')))
+		if(defined('CMS_NO_AJAX'))
+		{
+			// invalid action. use old function
+			return $this->show_blocks_list();
+		}
+		// get stuff
+		global $db, $template, $lang, $theme;
+
+		$l_info = $this->get_layout_info();
+		if(is_array($l_info))
+		{
+			$l_name = $l_info['name'];
+			$l_filename = $l_info['filename'];
+		}
+		else
+		{
+			$l_name = '';
+			$l_filename = '';
+		}
+
+		// json stuff
+		$j_request = request_var('json', false);
+		$action = request_var('json_action', '');
+		if(strlen($action))
+		{
+			$result = $this->show_blocks_list_action($action);
+			if(is_array($result)) return $result;
+		}
+
+		if ($this->action == 'editglobal')
+		{
+			$page_url = append_sid(CMS_PAGE_HOME);
+			$l_id_list = "'0'";
+		}
+		else
+		{
+			if ($this->id_var_name == 'l_id')
+			{
+				if (($l_filename != '') && file_exists($l_filename))
+				{
+					$page_url = append_sid($l_filename);
+				}
+				else
+				{
+					$page_url = (substr($l_name, strlen($l_name) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) ? append_sid($l_name) : append_sid(CMS_PAGE_HOME . '?page=' . $this->id_var_value);
+				}
+			}
+			else
+			{
+				$page_url = append_sid($l_filename);
+			}
+			$l_id_list = "'" . $this->id_var_value . "'";
+		}
+
+		if ($this->id_var_name == 'l_id')
+		{
+			$l_name = ($l_name == '') ? $lang['Portal'] : $l_name;
+		}
+		else
+		{
+			$l_name = $l_filename;
+		}
+
+		$template->assign_vars(array(
+			'JQ_SORT' => true,
+			'LAYOUT_NAME' => $l_name,
+			'PAGE_URL' => $page_url,
+			'PAGE' => strval($this->id_var_value),
+			'U_LAYOUT_EDIT' => (($this->block_layout_field == 'layout') ? append_sid($this->root . '?mode=layouts&amp;action=edit' . '&amp;' . $this->id_var_name . '=' . $this->id_var_value) : ''),
+			)
+		);
+		$sql_no_gb = ($this->action == 'editglobal') ? ' AND layout_special = 0 ' : '';
+		$b_rows = $this->get_blocks_from_layouts($this->block_layout_field, $l_id_list, $sql_no_gb);
+		$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
+
+		// Reassign $l_id_list
+		if ($this->id_var_name == 'l_id')
+		{
+			$l_id_list = "'" . $this->id_var_value . "', '0'";
+		}
+		else
+		{
+			$l_id_list = "'0'";
+		}
+
+		$position = $this->get_blocks_positions_layout($l_id_list);
+		if (!$b_count)
+		{
+			// no blocks
+			// return $j_request ? array('reload' => true) : false;
+		}
+
+		// generate result
+		$position_text = array();
+		foreach($position as $key => $value) $position_text[$key] = $lang['cms_pos_' . $value];
+		$json = array(
+			'info' => $l_info,
+			'pos' => $position,
+			'postext' => $position_text,
+			'rows' => $b_rows,
+			'blocks' => $this->get_parent_blocks(),
+			'urls' => $this->ajax_urls(),
+			'edit' => append_sid($this->root . '?mode=block_settings&action=edit&bs_id={ID}', true),
+			'post' => array(
+				'url' => append_sid($this->root),
+				'mode' => $this->mode,
+				$this->id_var_name => $this->id_var_value
+			)
+		);
+
+		if($this->action !== false)
+		{
+			$json['post']['action'] = $this->action;
+		}
+		// get list of available blocks
+		$bs_rows = $this->get_parent_blocks();
+		$json['all'] = $bs_rows;
+		if(!$j_request)
+		{
+			// non-ajax action
+			define('AJAX_CMS', true);
+			// echo '<pre>', htmlspecialchars(print_r($json, true)), '</pre>';
+			foreach($position as $key => $row)
+			{
+				$template->assign_block_vars($row . '_blocks_row', array('CMS_BLOCK' => '<ul class="cms-editor-container cms-block-' . $key . '"></ul>', 'OUTPUT' => '<ul class="cms-editor-container cms-block-' . $key . '"></ul>'));
+			}
+			$template->assign_vars(array('JSON_DATA' => json_encode($json)));
+			if(is_array($l_info) && ($this->mode_layout_name != 'layouts_special'))
+			{
+				$template->set_filenames(array('layout_blocks' => 'layout/' . $l_info['template']));
+			}
+			elseif($this->mode_layout_name == 'layouts_special')
+			{
+				$template->assign_vars(array('S_PAGE_LAYOUT' => true));
+			}
+			else
+			{
+				$template->assign_vars(array('S_GLOBAL_LAYOUT' => true));
+			}
+			return true;
+		}
+		return $json;
+	}
+
+	/*
 	* Show blocks list
 	*/
 	function show_blocks_list()
@@ -694,7 +973,7 @@ class cms_admin
 				// InformPro - BEGIN
 				// used for "block parent", later
 				// bfp = block for parent
-				$bs_rows = $this->get_installed_blocks();
+				$bs_rows = $this->get_parent_blocks();
 				$bfp_rows = array();
 				foreach ($bs_rows as $bfp_row)
 				{
@@ -702,6 +981,7 @@ class cms_admin
 				}
 				// InformPro - END
 
+				$row_class = '';
 				for($i = 0; $i < $b_count; $i++)
 				{
 					if (($b_rows[$i]['layout_special'] != 0) && ($this->action == 'editglobal'))
@@ -715,8 +995,6 @@ class cms_admin
 						$pos_change = (($i == 0) || ($b_position != $b_rows[$i]['bposition'])) ? true : false;
 						$b_position = $b_rows[$i]['bposition'];
 						$b_position_l = !empty($lang['cms_pos_' . $position[$b_position]]) ? $lang['cms_pos_' . $position[$b_position]] : $row['pkey'];
-
-						$row_class = (!($else_counter % 2)) ? $theme['td_class2'] : $theme['td_class1'];
 						$else_counter++;
 
 						if (($this->l_id == 0) && ($this->id_var_name == 'l_id'))
@@ -728,6 +1006,7 @@ class cms_admin
 							$redirect_action = '&amp;action=list';
 						}
 
+						$row_class = ip_zebra_rows($row_class);
 						$template->assign_block_vars('blocks', array(
 							'ROW_CLASS' => $row_class,
 							'FIRST_ID' => ($i == 0) ? true : false,
@@ -752,7 +1031,7 @@ class cms_admin
 							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
 							'VIEW' => $b_view,
 
-						// InformPro - BEGIN
+							// InformPro - BEGIN
 							'BLOCK_PARENT' => $bfp_rows[$b_rows[$i]['bs_id']],
 							'WEIGHT' => $b_rows[$i]['weight'],
 							'BLOCK_TIP' => $lang['CMS_BLOCK_PARENT'] . ': ' . htmlspecialchars($bfp_rows[$b_rows[$i]['bs_id']]) . htmlspecialchars('<br />') . "\r\n" . $lang['B_BORDER'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_TITLEBAR'] . ': ' . (($b_rows[$i]['titlebar']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_LOCAL'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_BACKGROUND'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']),
@@ -791,182 +1070,7 @@ class cms_admin
 			else
 			{
 				$template->assign_var('S_NO_BLOCKS', true);
-			}
-		}
-
-		return true;
-	}
-
-	/*
-	* Display page with blocks
-	*/
-	function display_blocks()
-	{
-		global $db, $cache, $template, $theme, $lang;
-
-		$l_info = $this->get_layout_info();
-		$l_name = $l_info['name'];
-		$l_filename = $l_info['filename'];
-		$l_template = $l_info['template'];
-
-		if ($this->action == 'editglobal')
-		{
-			$page_url = append_sid(CMS_PAGE_HOME);
-			$l_id_list = "'0'";
-		}
-		else
-		{
-			if ($this->id_var_name == 'l_id')
-			{
-				if (($l_filename != '') && file_exists($l_filename))
-				{
-					$page_url = append_sid($l_filename);
-				}
-				else
-				{
-					$page_url = (substr($l_name, strlen($l_name) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) ? append_sid($l_name) : append_sid(CMS_PAGE_HOME . '?page=' . $this->id_var_value);
-				}
-			}
-			else
-			{
-				$page_url = append_sid($l_filename);
-			}
-			$l_id_list = "'" . $this->id_var_value . "'";
-		}
-
-		if ($this->id_var_name == 'l_id')
-		{
-			$l_name = ($l_name == '') ? $lang['Portal'] : $l_name;
-		}
-		else
-		{
-			$l_name = $l_filename;
-		}
-
-		$template->assign_vars(array(
-			'JQ_SORT' => true,
-			'LAYOUT_NAME' => $l_name,
-			'PAGE_URL' => $page_url,
-			'PAGE' => strval($this->id_var_value),
-			'U_LAYOUT_EDIT' => (($this->block_layout_field == 'layout') ? append_sid($this->root . '?mode=layouts&amp;action=edit' . '&amp;' . $this->id_var_name . '=' . $this->id_var_value) : ''),
-			)
-		);
-
-		if (($this->mode == 'blocks') || ($this->action == 'editglobal'))
-		{
-			$b_rows = $this->get_blocks_from_layouts($this->block_layout_field, $l_id_list, '');
-			$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
-
-			// Reassign $l_id_list
-			if ($this->id_var_name == 'l_id')
-			{
-				$l_id_list = "'" . $this->id_var_value . "', '0'";
-			}
-			else
-			{
-				$l_id_list = "'0'";
-			}
-
-			$position = $this->get_blocks_positions_layout($l_id_list);
-
-			if (!empty($l_template))
-			{
-				$template->set_filenames(array('layout_blocks' => 'layout/' . $l_template));
-
-				$blocks = array();
-				$blocks_pos = array();
-				foreach ($position as $k => $v)
-				{
-					$blocks_pos[] = $v;
-				}
-				$b_position_array = "'" . implode("','", $blocks_pos) . "'";
-				$containment = '"list_' . implode('","list_', $blocks_pos) . '"';
-
-				foreach ($b_rows as $block)
-				{
-					if (!in_array($block['bposition'], $blocks_pos))
-					{
-						$temp_b_id = $this->b_id;
-						$temp_bs_id = $this->bs_id;
-						$this->b_id = $block['bs_id'];
-						$this->bs_id = $block['bid'];
-						$this->delete_block_force(false);
-						$this->b_id = $temp_b_id;
-						$this->bs_id = $temp_bs_id;
-					}
-					else
-					{
-						$blocks[$block['bposition']][] = $block;
-					}
-				}
-
-				foreach ($blocks_pos as $block_position)
-				{
-					$b_counter = 0;
-					$b_size = sizeof($blocks[$block_position]);
-					$block_position_l = !empty($lang['cms_pos_' . $block_position]) ? $lang['cms_pos_' . $block_position] : $block_position;
-					foreach ($blocks[$block_position] as $k => $v)
-					{
-						$process_block = (($v['layout_special'] != 0) && ($this->action == 'editglobal')) ? false : true;
-						if ($process_blocks)
-						{
-							$block_handle = 'block_' . $v['bid'];
-							$template->set_filenames(array($block_handle => CMS_TPL . 'cms_blocks_handler.tpl'));
-							$template->assign_vars('blocks', array(
-								'ROW_CLASS' => $row_class,
-								'FIRST_ID' => ($b_counter == 0) ? true : false,
-								'LAST_ID' => ($b_counter == ($b_size - 1)) ? true : false,
-								'SORT_CID' => $this->sort_cid_prefix . $block_position,
-								'SORT_SID' => $this->sort_sid_prefix . $block_position,
-								'SORT_EID' => $this->sort_eid_prefix . $v['bid'],
-								'POSITION_ID' => $block_position,
-								'TITLE' => trim($v['title']),
-								'BLOCK_CB_ID' => $v['bid'],
-								'ACTIVE' => ($v['active']) ? $lang['YES'] : $lang['NO'],
-								'BLOCK_CHECKED' => ($v['active']) ? ' checked="checked"' : '',
-								'TYPE' => (empty($v['blockfile'])) ? (($v['type']) ? $lang['B_BBCODE'] : $lang['B_HTML']) : '&nbsp;',
-								'BORDER' => ($v['border']) ? $lang['YES'] : $lang['NO'],
-								'TITLEBAR' => ($v['titlebar']) ? $lang['YES'] : $lang['NO'],
-								'LOCAL' => ($v['local']) ? $lang['YES'] : $lang['NO'],
-								'BACKGROUND' => ($v['background']) ? $lang['YES'] : $lang['NO'],
-								'GROUPS' => $groups,
-								'CONTENT' => (empty($v['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
-								'VIEW' => $v['view'],
-
-								'U_EDIT_BS' => append_sid($this->root . '?mode=block_settings&amp;action=edit&amp;&amp;bs_id=' . $v['bs_id']),
-								'U_EDIT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=edit&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $v['bid']),
-								'U_DELETE' => append_sid($this->root . '?mode=' . $this->mode . '&amp;action=delete&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;b_id=' . $v['bid']),
-								'U_MOVE_UP' => append_sid($this->root . '?mode=' . $this->mode . $redirect_action . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;move=1&amp;b_id=' . $v['bid'] . '&amp;weight=' . $v['weight'] . '&amp;pos=' . $block_position),
-								'U_MOVE_DOWN' => append_sid($this->root . '?mode=' . $this->mode . $redirect_action . '&amp;' . $this->id_var_name . '=' . $this->id_var_value . '&amp;move=0&amp;b_id=' . $v['bid'] . '&amp;weight=' . $v['weight'] . '&amp;pos=' . $block_position)
-								)
-							);
-							$blocks[$block_position][$b_counter]['output'] = $template->get_var_from_handle($block_handle);
-							$template->assign_block_vars($block_position . '_blocks_row', array(
-								'CMS_BLOCK' => $blocks[$block_position][$b_counter]['output'],
-								'OUTPUT' => $blocks[$block_position][$b_counter]['output'],
-								)
-							);
-							$b_counter++;
-
-							if ($b_counter == 0)
-							{
-								$output_block = '<div class="sortable-list-div">' . $block_position_l . '<ul class="sortable-list" id="list_' . $block_position . '"><li></li></ul></div>';
-								$template->assign_block_vars($block_position . '_blocks_row', array(
-									'CMS_BLOCK' => $output_block,
-									'OUTPUT' => $output_block,
-									)
-								);
-							}
-
-							$template->assign_block_vars('jq_sort', array(
-								'ID' => $this->sort_sid_prefix . $block_position,
-								'PROP' => 'containment: "#' . $this->sort_cid_prefix . $block_position . '", handle: "img.sort-handler", axis: "y"',
-								)
-							);
-
-						}
-					}
-				}
+				return false;
 			}
 		}
 
@@ -1036,7 +1140,7 @@ class cms_admin
 
 			$select_name = 'blockfile';
 			$default = $b_info['blockfile'];
-			$select_js = ($cms_ajax) ? ' id="blockfile" onchange="javascript:ajaxpage(\'cms_ajax.' . PHP_EXT . '\', \'?mode=block_config&amp;blockfile=\'+this.form.blockfile.options[this.form.blockfile.selectedIndex].value, \'block_config\');"' : '';
+			$select_js = '';
 
 			$blockfile = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 			$locked = !empty($b_info['locked']) ? true : false;
@@ -1059,8 +1163,8 @@ class cms_admin
 
 		$select_name = 'view';
 		$default = $b_info['view'];
-		$options_array = array(0, 1, 2, 3, 4);
-		$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
+		$options_array = array(0, 1, 2, 3, 4, 8);
+		$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN'], $lang['B_ALL_NO_BOTS']);
 		$select_js = '';
 		$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
@@ -1404,27 +1508,210 @@ class cms_admin
 	}
 
 	/*
+	* Ajax action
+	*/
+	function show_blocks_settings_action($action)
+	{
+		global $db, $lang;
+		$id = intval(request_var('bs_id', 0));
+		if(!$id) return false;
+		$keys = array(
+			'user_id' => 'intval',
+			'name' => 'strval',
+			'content' => 'strval',
+			'blockfile' => 'strval',
+			'view' => 'intval',
+			'type' => 'intval',
+			'groups' => 'strval',
+			'locked' => 'intval'
+		);
+		switch($action)
+		{
+			case 'update':
+				$update = '';
+				foreach($keys as $key => $func)
+				if(isset($_POST[$key]))
+				{
+					$update .= (strlen($update) ? ', ' : '') . $key . '=\'' . $db->sql_escape($func($_POST[$key])) . '\'';
+				}
+				if(strlen($update))
+				{
+					// update database
+					$sql = "UPDATE " . $this->tables['block_settings_table'] . " SET " . $update . " WHERE bs_id = " . $id;
+					$db->sql_query($sql);
+				}
+				return array('changed' => 1);
+			default:
+				return array('reload' => true);
+		}
+	}
+
+	/*
+	* Show blocks settings list
+	*/
+	function show_blocks_settings_list_ajax()
+	{
+		global $db, $template, $user, $lang;
+		if(defined('CMS_NO_AJAX'))
+		{
+			return $this->show_blocks_settings_list();
+		}
+		//return $this->show_blocks_settings_list();
+		// do stuff
+		$j_request = request_var('json', false);
+		$action = request_var('json_action', '');
+		if(strlen($action))
+		{
+			$result = $this->show_blocks_settings_action($action);
+			if(is_array($result))
+			{
+				return $result;
+			}
+		}
+		// get list of blocks
+		$blocks = $this->get_parent_blocks();
+		// get all layouts
+		$layouts = array();
+		$sql = "SELECT lid, name FROM " . $this->tables['layout_table'];
+		$result = $db->sql_query($sql);
+		while($row = $db->sql_fetchrow($result))
+		{
+			$layouts[$row['lid']] = array(
+				'lid' => $row['lid'],
+				'name' => $row['name'],
+				'url' => append_sid($this->root . '?mode=blocks&l_id=' . $row['lid'])
+			);
+		}
+		$db->sql_freeresult($result);
+		$layouts_special = array();
+		$sql = "SELECT lsid, name FROM " . $this->tables['layout_special_table'];
+		$result = $db->sql_query($sql);
+		while($row = $db->sql_fetchrow($result))
+		{
+			$layouts_special[$row['lsid']] = array(
+				'lsid' => $row['lsid'],
+				'name' => isset($lang['auth_view_' . $row['name']]) ? $lang['auth_view_' . $row['name']] : (isset($lang['cms_page_name_' . strtolower($row['name'])]) ? $lang['cms_page_name_' . strtolower($row['name'])] : ucfirst($row['name'])),
+				'url' => append_sid($this->root . '?mode=blocks&ls_id=' . $row['lsid'])
+			);
+		}
+		$db->sql_freeresult($result);
+		// get list of layouts where blocks used
+		$list = array();
+		$sql = "SELECT bs_id, layout, layout_special FROM " . $this->tables['blocks_table'];
+		$result = $db->sql_query($sql);
+		$global_url = append_sid($this->root . '?mode=blocks&l_id=0&action=editglobal');
+		while($row = $db->sql_fetchrow($result))
+		{
+			$bsid = intval($row['bs_id']);
+			$layout = intval($row['layout']);
+			$special = intval($row['layout_special']);
+			if(!isset($list[$bsid]) || !in_array($layout, $list[$bsid]))
+			{
+				if($layout)
+				{
+					// layout
+					$url = $layouts[$layout]['url'];
+					$name = $layouts[$layout]['name'];
+				}
+				elseif($special)
+				{
+					// special page
+					$url = $layouts_special[$special]['url'];
+					$name = $layouts_special[$special]['name'];
+				}
+				else
+				{
+					// global
+					$url = $global_url;
+					$name = $lang['CMS_GLOBAL_BLOCKS'];
+				}
+				// avoid adding duplicates
+				$found = false;
+				for($i=0; $i<count($list[$bsid]); $i++)
+				{
+					if($list[$bsid][$i]['url'] == $url) $found = true;
+				}
+				if(!$found)
+				{
+					$list[$bsid][] = array(
+						'bs_id' => $bsid,
+						'layout' => $layout,
+						'special' => $special,
+						'name' => $name,
+						'url' => $url
+					);
+				}
+			}
+		}
+		$db->sql_freeresult($result);
+		// blocks list
+		$blist = array();
+		if($user->data['user_level'] == ADMIN)
+		{
+			$blocks_array = $this->get_blocks_files_list();
+			foreach($blocks_array as $block_file)
+			{
+				$blist[BLOCKS_PREFIX . $block_file] = $block_file . (!empty($lang['cms_block_' . $block_file]) ? (' [' . $lang['cms_block_' . $block_file] . ']') : '');
+			}
+		}
+		else
+		{
+			$blist = false;
+		}
+		// groups list
+		$groups = get_groups_list();
+
+		// json data
+		$json = array(
+			'rows' => $blocks,
+			'list' => $list,
+			'blist' => $blist,
+			'view_id' => array(0, 1, 2, 3, 4, 8),
+			'view' => array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN'], $lang['B_ALL_NO_BOTS']),
+			'groups' => $groups,
+			'remove' => append_sid($this->root . '?mode=block_settings&action=delete&bs_id={ID}'),
+			'edit' => append_sid($this->root . '?mode=block_settings&action=edit&bs_id={ID}', true),
+			'post' => array(
+				'url' => append_sid($this->root),
+				'mode' => $this->mode
+			)
+		);
+		if($this->action !== false)
+		{
+			$json['post']['action'] = $this->action;
+		}
+		// return stuff
+		if(!$j_request)
+		{
+			// non-ajax action
+			define('AJAX_CMS', true);
+			// echo '<pre>', htmlspecialchars(print_r($json, true)), '</pre>';
+			$template->assign_vars(array('JSON_DATA' => json_encode($json)));
+			return true;
+		}
+		return $json;
+	}
+
+	/*
 	* Show blocks settings list
 	*/
 	function show_blocks_settings_list()
 	{
 		global $lang, $theme, $template, $user;
 
-		$b_rows = $this->get_installed_blocks();
+		$b_rows = $this->get_parent_blocks();
 		$b_count = !empty($b_rows) ? sizeof($b_rows) : 0;
 
 		if ($b_count > 0)
 		{
+			$row_class = '';
 			for($i = 0; $i < $b_count; $i++)
 			{
 				$this->bs_id = $b_rows[$i]['bs_id'];
-
-				$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
-
 				$b_view = $this->get_block_view_name($b_rows[$i]['view']);
-
 				$groups = (!empty($b_rows[$i]['groups'])) ? get_groups_names($b_rows[$i]['groups']) : $lang['B_ALL'];
 
+				$row_class = ip_zebra_rows($row_class);
 				$template->assign_block_vars('blocks', array(
 						'ROW_CLASS' => $row_class,
 						'NAME' => trim($b_rows[$i]['name']),
@@ -1499,23 +1786,12 @@ class cms_admin
 
 			$select_name = 'view';
 			$default = empty($l_info['view']) ? 0 : $l_info['view'];
-			$options_array = array(0, 1, 2, 3, 4);
-			$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
+			$options_array = array(0, 1, 2, 3, 4, 8);
+			$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN'], $lang['B_ALL_NO_BOTS']);
 			$select_js = '';
 			$view = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
-			$select_name = 'edit_auth';
-			$default = empty($l_info['edit_auth']) ? 0 : $l_info['edit_auth'];
-			/*
-			$options_array = array(0, 1, 2, 3, 4, 5);
-			$options_langs_array = array($lang['CMS_Guest'], $lang['CMS_Reg'], $lang['CMS_VIP'], $lang['CMS_Publisher'], $lang['CMS_Reviewer'], $lang['CMS_Content_Manager']);
-			*/
-			$options_array = array(3, 4, 5);
-			$options_langs_array = array($lang['CMS_PUBLISHER'], $lang['CMS_REVIEWER'], $lang['CMS_CONTENT_MANAGER']);
-			$select_js = '';
-			$edit_auth = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
-
-			$group = (!empty($l_info['groups'])) ? get_all_usergroups($l_info['groups']) : get_all_usergroups('');
+			$group = get_all_usergroups($l_info['groups']);
 			if(empty($group))
 			{
 				$group = '&nbsp;&nbsp;' . $lang['None'];
@@ -1528,19 +1804,18 @@ class cms_admin
 				message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 			}
 
-			$edit_auth = '';
 			$group = '';
 			$default = empty($l_info['view']) ? 0 : $l_info['view'];
 			$view = auth_select('view', $default);
 		}
 
 		$template->assign_vars(array(
-			'NAME' => (empty($l_info['name']) ? '' : htmlspecialchars($l_info['name'])),
+			'NAME' => (empty($l_info['name']) ? '' : $l_info['name']),
 			'FILENAME' => (empty($l_info['filename']) ? '' : $l_info['filename']),
 			'PAGE_ID' => (empty($l_info['page_id']) ? '' : $l_info['page_id']),
 			'TEMPLATE' => $layout_details,
 			'VIEW' => $view,
-			'EDIT_AUTH' => $edit_auth,
+			'U_EDIT_AUTH' => append_sid($this->root . '?mode=auth&amp;pmode=setting_cms_user_local&amp;id_type=' . ($is_layout_special ? 'layout_special' : 'layout') . '&amp;forum_id[]=' . ($is_layout_special ? $l_info['lsid'] : $l_info['lid'])),
 			'GROUPS' => $group,
 			'GLOBAL_BLOCKS' => ((!empty($l_info['global_blocks']) && $l_info['global_blocks']) ? 'checked="checked"' : ''),
 			'NOT_GLOBAL_BLOCKS' => (empty($l_info['global_blocks'])) ? 'checked="checked"' : '',
@@ -1574,7 +1849,6 @@ class cms_admin
 		if (!$is_layout_special)
 		{
 			$inputs_array['template'] = '';
-			$inputs_array['edit_auth'] = '';
 		}
 		else
 		{
@@ -1595,7 +1869,7 @@ class cms_admin
 
 			if(!$this->l_id)
 			{
-				$data['layout_cms_id'] = ($this->cms_id) ? $this->cms_id : 0;
+				$data['layout_cms_id'] = !empty($this->cms_id) ? $this->cms_id : 0;
 			}
 			if(($data['name'] == '') || ($data['template'] == ''))
 			{
@@ -1869,9 +2143,63 @@ class cms_admin
 			$sql = "UPDATE " . $this->table_name . " SET view = " . $view_value . ", global_blocks = " . $gb_value . ", page_nav = " . $bc_value . " WHERE " . $this->field_name . " = " . $l_rows[$i][$this->field_name];
 			$result = $db->sql_query($sql);
 		}
-		redirect(append_sid($this->root . '?mode=' . $this->mode_layout_name . $action_append));
+		redirect(append_sid($this->root . '?mode=' . $this->mode_layout_name . $action_append . '&amp;changes_saved=true'));
 
 		return true;
+	}
+
+	/*
+	* Clone layout
+	*/
+	function clone_layout()
+	{
+		global $lang, $db;
+		// get layout
+		$sql = "SELECT * FROM " . $this->tables['layout_table'] . " WHERE lid = " . $this->id_var_value;
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+		if($row === false)
+		{
+			message_die(GENERAL_MESSAGE, $lang['No_layout_selected']);
+		}
+		// copy it
+		unset($row['lid']);
+		$row['filename'] = '';
+		$sql = "INSERT INTO " . $this->tables['layout_table'] . " " . $db->sql_build_insert_update($row, true);
+		$result = $db->sql_query($sql);
+		$id = $db->sql_nextid();
+		if(!$id)
+		{
+			message_die(GENERAL_MESSAGE, $lang['No_layout_selected']);
+		}
+		// get all blocks
+		$sql = "SELECT * FROM " . $this->tables['blocks_table'] . " WHERE layout_special = 0 AND layout = " . $this->id_var_value;
+		$result = $db->sql_query($sql);
+		$rows = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+		for($i = 0; $i < count($rows); $i++)
+		{
+			$row = $rows[$i];
+			$row['layout'] = $id;
+			unset($row['bid']);
+			$sql = "INSERT INTO " . $this->tables['blocks_table'] . " " . $db->sql_build_insert_update($row, true);
+			$result = $db->sql_query($sql);
+		}
+		// copy positions
+		$sql = "SELECT * FROM " . $this->tables['block_position_table'] . " WHERE layout = " . $this->id_var_value;
+		$result = $db->sql_query($sql);
+		$rows = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+		for($i = 0; $i < count($rows); $i++)
+		{
+			$row = $rows[$i];
+			$row['layout'] = $id;
+			unset($row['bpid']);
+			$sql = "INSERT INTO " . $this->tables['block_position_table'] . " " . $db->sql_build_insert_update($row, true);
+			$result = $db->sql_query($sql);
+		}
+		redirect(append_sid($this->root . '?mode=layouts&amp;l_id=' . $id . '&amp;action=edit'));
 	}
 
 	/*
@@ -1896,28 +2224,34 @@ class cms_admin
 			$default_portal_id = $c_row['config_value'];
 		}
 
+		$row_class = '';
 		for($i = 0; $i < $l_count; $i++)
 		{
-			$row_class = (!($i % 2)) ? $theme['td_class2'] : $theme['td_class1'];
-			$lang_var = 'auth_view_' . $l_rows[$i]['name'];
+			$row_class = ip_zebra_rows($row_class);
 			$layout_id = $l_rows[$i][$this->field_name];
-			$layout_name = ($is_layout_special ? (isset($lang[$lang_var]) ? htmlspecialchars($lang[$lang_var]) : htmlspecialchars($l_rows[$i]['name'])) : htmlspecialchars($l_rows[$i]['name']));
+			$layout_name = ($is_layout_special ? (isset($lang['auth_view_' . $l_rows[$i]['name']]) ? $lang['auth_view_' . $l_rows[$i]['name']] : (isset($lang['cms_page_name_' . strtolower($l_rows[$i]['name'])]) ? $lang['cms_page_name_' . strtolower($l_rows[$i]['name'])] : ucfirst($l_rows[$i]['name']))) : ucfirst($l_rows[$i]['name']));
+			//$layout_name = htmlspecialchars($layout_name);
 			$layout_filename = $l_rows[$i]['filename'];
 			$layout_preview = ($is_layout_special ? (empty($layout_filename) ? '#' : append_sid($layout_filename)) : (empty($layout_filename) ? (CMS_PAGE_HOME . '?page=' . $layout_id) : append_sid($layout_filename)));
 			$layout_locked = false;
 
 			$select_name = 'auth_view_' . $layout_id;
 			$default = $l_rows[$i]['view'];
-			$options_array = array(0, 1, 2, 3, 4);
-			$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
 			$select_js = '';
-			$auth_view_select_box = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
 			if ($is_layout_special)
 			{
 				$layout_locked = !empty($l_rows[$i]['locked']) ? true : false;
-				$auth_view_select_box = auth_select('auth_view_' . $layout_id, $l_rows[$i]['view']);
+				$options_array = array(AUTH_ALL, AUTH_REG, AUTH_MOD, AUTH_ADMIN);
+				$options_langs_array = array($lang['B_ALL'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
 			}
+			else
+			{
+				$options_array = array(0, 1, 2, 3, 4);
+				$options_langs_array = array($lang['B_ALL'], $lang['B_GUESTS'], $lang['B_REG'], $lang['B_MOD'], $lang['B_ADMIN']);
+			}
+
+			$auth_view_select_box = $class_form->build_select_box($select_name, $default, $options_array, $options_langs_array, $select_js);
 
 			$template->assign_block_vars('layout.l_row', array(
 				'ROW_CLASS' => $row_class,
@@ -1935,8 +2269,10 @@ class cms_admin
 
 				'U_PREVIEW_LAYOUT' => $layout_preview,
 				'U_EDIT_LAYOUT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;' . $this->id_var_name . '=' . $layout_id . '&amp;action=edit'),
+				'U_EDIT_AUTH' => append_sid($this->root . '?mode=auth&amp;pmode=setting_cms_user_local&amp;id_type=' . ($is_layout_special ? 'layout_special' : 'layout') . '&amp;forum_id[]=' . $layout_id),
 				'U_DELETE_LAYOUT' => append_sid($this->root . '?mode=' . $this->mode . '&amp;' . $this->id_var_name . '=' . $layout_id . '&amp;action=delete'),
-				'U_LAYOUT' => append_sid($this->root . '?mode=' . $this->mode_blocks_name . '&amp;' . $this->id_var_name . '=' . $layout_id)
+				'U_LAYOUT' => append_sid($this->root . '?mode=' . $this->mode_blocks_name . '&amp;' . $this->id_var_name . '=' . $layout_id),
+				'U_COPY' => $is_layout_special ? '' : append_sid($this->root . '?mode=' . $this->mode . '&amp;' . $this->id_var_name . '=' . $layout_id . '&amp;action=clone'),
 				)
 			);
 		}
@@ -1957,11 +2293,8 @@ class cms_admin
 			return true;
 		}
 
-		$sql = "SELECT edit_auth FROM " . $this->table_name . " WHERE " . $this->field_name . " = '" . $this->id_var_value . "'";
-		$result = $db->sql_query($sql);
-		$l_row = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-		$is_auth = (($l_row['edit_auth'] <= $user->data['user_cms_level']) ? true : false);
+		$cms_auth_level_req = ($this->field_name == 'lid') ? 'cms_layouts' : 'cms_layouts_special';
+		$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get($cms_auth_level_req) || $auth->acl_get('cmsb_admin', $this->id_var_value)) ? true : false;
 
 		return $is_auth;
 	}
@@ -2008,7 +2341,7 @@ class cms_admin
 				$layout_details[$num_layout]['file'] = '<input type="radio" name="' . $layout_field . '" value="' . $file . '"';
 				if(!empty($l_info) && $l_info['template'] == $file)
 				{
-					$layout_details[$num_layout]['file'] .= 'checked="checked"';
+					$layout_details[$num_layout]['file'] .= ' checked="checked"';
 				}
 				$layout_details[$num_layout]['file'] .= '/>';
 				$num_layout++;
@@ -2162,7 +2495,7 @@ class cms_admin
 	*/
 	function get_block_edit_auth()
 	{
-		global $db, $user;
+		global $db, $user, $auth;
 
 		// If the user is admin... give immediate access and exit!
 		if ($user->data['user_level'] == ADMIN)
@@ -2170,11 +2503,7 @@ class cms_admin
 			return true;
 		}
 
-		$sql = "SELECT edit_auth FROM " . $this->table_name . " WHERE " . $this->field_name . " = '" . $this->id_var_value . "'";
-		$result = $db->sql_query($sql);
-		$b_row = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-		$is_auth = (($b_row['edit_auth'] <= $user->data['user_cms_level']) ? true : false);
+		$is_auth = ($auth->acl_get('cms_admin') || $auth->acl_get('cms_blocks') || $auth->acl_get('cmsb_admin', $this->id_var_value)) ? true : false;
 
 		return $is_auth;
 	}
@@ -2237,7 +2566,7 @@ class cms_admin
 	{
 		global $db;
 
-		$bs_rows = $this->get_installed_blocks();
+		$bs_rows = $this->get_parent_blocks();
 		foreach($bs_rows as $key => $data)
 		{
 			$bs_array['ID'][$key] = $data['bs_id'];
@@ -2271,14 +2600,20 @@ class cms_admin
 			case '4':
 				$b_view = $lang['B_ADMIN'];
 				break;
+			case '8':
+				$b_view = $lang['B_ALL_NO_BOTS'];
+				break;
+			default:
+				$b_view = $lang['B_ALL'];
+				break;
 		}
 		return $b_view;
 	}
 
 	/*
-	* Get installed blocks
+	* Get parent blocks
 	*/
-	function get_installed_blocks()
+	function get_parent_blocks()
 	{
 		global $db, $user;
 
@@ -2458,7 +2793,6 @@ class cms_admin
 	{
 		global $db, $user;
 
-		//$cms_level_sql = " AND edit_auth <= " . $user->data['user_cms_level'] . " ";
 		$user_sql = "";
 		if (defined('IN_CMS_USERS') && ($this->action == 'editglobal'))
 		{

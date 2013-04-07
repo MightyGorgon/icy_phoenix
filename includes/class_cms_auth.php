@@ -13,7 +13,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-class auth
+class cms_auth
 {
 	var $acl = array();
 	var $acl_options = array();

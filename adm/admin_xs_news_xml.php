@@ -111,7 +111,7 @@ if(!empty($mode))
 
 			}
 
-			$template->set_filenames(array('body' =>  XS_TPL_PATH . 'news_ticker_edit_body.tpl'));
+			$template->set_filenames(array('body' => XS_TPL_PATH . 'news_ticker_edit_body.tpl'));
 
 			$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" />';
 			$s_hidden_fields .= '<input type="hidden" name="id" value="' . $xml_id . '" />';
@@ -179,7 +179,7 @@ if(!empty($mode))
 			$next_id = $max_id + 1;
 
 			$sql = "INSERT INTO " . XS_NEWS_XML_TABLE . " (xml_id, xml_title, xml_show, xml_feed, xml_is_feed, xml_width, xml_height, xml_font, xml_speed, xml_direction" . ")
-				VALUES ('" . $next_id . "', '" . $db->sql_escape(request_post_var('xml_title', '', true)) . "', '" . intval($_POST['xml_show']) . "', '" . $db->sql_escape($xml_feed) . "', '" . intval($_POST['xml_is_feed']) . "', '" . $db->sql_escape(request_post_var($_POST['xml_width'], '')) . "', '" . $db->sql_escape(request_post_var($_POST['xml_height'], '')) . "', '" . $db->sql_escape(request_post_var($_POST['xml_font'], '')) . "', '" . $db->sql_escape(request_post_var($_POST['xml_speed'], '')) . "', '" . intval($_POST['xml_direction']) . "')";
+				VALUES ('" . $next_id . "', '" . $db->sql_escape(request_post_var('xml_title', '', true)) . "', '" . intval($_POST['xml_show']) . "', '" . $db->sql_escape($xml_feed) . "', '" . intval($_POST['xml_is_feed']) . "', '" . $db->sql_escape(request_post_var('xml_width', '')) . "', '" . $db->sql_escape(request_post_var('xml_height', '')) . "', '" . $db->sql_escape(request_post_var('xml_font', '')) . "', '" . $db->sql_escape(request_post_var('xml_speed', '')) . "', '" . intval($_POST['xml_direction']) . "')";
 			$result = $db->sql_query($sql);
 			$db->clear_cache('xs_');
 
@@ -194,7 +194,7 @@ if(!empty($mode))
 			$xml_feed = xsm_prepare_message($xml_feed);
 
 			$sql = "UPDATE " . XS_NEWS_XML_TABLE . "
-				SET xml_title = '" . $db->sql_escape(request_post_var($_POST['xml_title'], '', true)) . "', xml_show = " . intval($_POST['xml_show']) . ", xml_feed = '" . $db->sql_escape($xml_feed) . "', xml_is_feed = '" . intval($_POST['xml_is_feed']) . "', xml_width = '" . $db->sql_escape(request_post_var($_POST['xml_width'], '')). "', xml_height = '" . $db->sql_escape(request_post_var($_POST['xml_height'], '')). "', xml_font = '" . $db->sql_escape(request_post_var($_POST['xml_font'], '')). "', xml_speed = '" . $db->sql_escape(request_post_var($_POST['xml_speed'], '')). "', xml_direction = " . intval($_POST['xml_direction']). "
+				SET xml_title = '" . $db->sql_escape(request_post_var('xml_title', '', true)) . "', xml_show = " . intval($_POST['xml_show']) . ", xml_feed = '" . $db->sql_escape($xml_feed) . "', xml_is_feed = '" . intval($_POST['xml_is_feed']) . "', xml_width = '" . $db->sql_escape(request_post_var('xml_width', '')). "', xml_height = '" . $db->sql_escape(request_post_var('xml_height', '')). "', xml_font = '" . $db->sql_escape(request_post_var('xml_font', '')). "', xml_speed = '" . $db->sql_escape(request_post_var('xml_speed', '')). "', xml_direction = " . intval($_POST['xml_direction']). "
 				WHERE xml_id = " . intval($_POST['id']);
 			$result = $db->sql_query($sql);
 			$db->clear_cache('xs_');
@@ -230,9 +230,10 @@ if(!empty($mode))
 			else
 			{
 				// Set template files
-				$template->set_filenames(array('confirm' =>  XS_TPL_PATH . 'news_confirm_body.tpl'));
+				$template->set_filenames(array('confirm' => ADM_TPL . 'confirm_body.tpl'));
+				//$template->set_filenames(array('confirm' =>  XS_TPL_PATH . 'news_confirm_body.tpl'));
 
-				$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" /><input type="hidden" name="id" value="' . $news_id . '" />';
+				$s_hidden_fields = '<input type="hidden" name="mode" value="' . $newmode . '" /><input type="hidden" name="id" value="' . $xml_id . '" />';
 
 				$template->assign_vars(array(
 					'MESSAGE_TITLE' => $lang['Confirm'],
@@ -257,7 +258,7 @@ if(!empty($mode))
 
 	if ($show_index != true)
 	{
-		include('./page_footer_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 		exit;
 	}
 }
@@ -321,6 +322,6 @@ elseif($db->sql_numrows($q_xml) == 0)
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

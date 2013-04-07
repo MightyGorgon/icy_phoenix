@@ -81,7 +81,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 		if (!($this_userdata = get_userdata($user_id)))
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		if($_POST['deleteuser'] && ($user->data['user_id'] != $user_id))
@@ -115,12 +116,16 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			'email' => 'email',
 			'aim' => 'aim',
 			'facebook' => 'facebook',
+			'flickr' => 'flickr',
+			'googleplus' => 'googleplus',
 			'icq' => 'icq',
 			'jabber' => 'jabber',
+			'linkedin' => 'linkedin',
 			'msn' => 'msn',
 			'skype' => 'skype',
 			'twitter' => 'twitter',
 			'yim' => 'yim',
+			'youtube' => 'youtube',
 			'website' => 'website',
 			'location' => 'location',
 			'occupation' => 'occupation',
@@ -650,7 +655,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		{
 			$avatar_sql = ", user_avatar = '" . $db->sql_escape(ltrim(basename($user_avatar_category), "'") . '/' . ltrim(basename($user_avatar_local), "'")) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
 		}
-		elseif($user_gravatar != '' && $avatar_sql == '' && !$error)
+		elseif(($user_gravatar != '') && ($avatar_sql == '') && !$error)
 		{
 			$avatar_sql = ", user_avatar = '" . $db->sql_escape($user_gravatar) . "', user_avatar_type = " . USER_GRAVATAR;
 		}
@@ -703,7 +708,12 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				if ((!$db->sql_fetchrowset($result)) && ($user_id != ANONYMOUS))
 				{
 					// insert the user in the ban list
-					$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid) VALUES ($user_id)";
+					$ban_insert_array = array(
+						'ban_userid' => $user_id,
+						'ban_by_userid' => $user->data['user_id'],
+						'ban_start' => time()
+					);
+					$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
 					$result = $db->sql_query($sql);
 					$no_error_ban = true;
 				}
@@ -729,7 +739,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			// PROFILE EDIT BRIDGE - END
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = $next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', trim($aim))) . "', user_facebook = '" . $db->sql_escape($facebook) . "', user_icq = '" . $db->sql_escape($icq) . "', user_jabber = '" . $db->sql_escape($jabber) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_twitter = '" . $db->sql_escape($twitter) . "', user_yim = '" . $db->sql_escape($yim) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_topic_show_days = '" . $db->sql_escape($user_topic_show_days) . "', user_topic_sortby_type = '" . $db->sql_escape($user_topic_sortby_type) . "', user_topic_sortby_dir = '" . $db->sql_escape($user_topic_sortby_dir) . "', user_post_show_days = '" . $db->sql_escape($user_post_show_days) . "', user_post_sortby_type = '" . $db->sql_escape($user_post_sortby_type) . "', user_post_sortby_dir = '" . $db->sql_escape($user_post_sortby_dir) . "', user_active = $user_status, user_mask = $user_mask, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
+				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = $next_birthday_greeting, user_sig = '" . $db->sql_escape($signature) . "', user_allow_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', trim($aim))) . "', user_facebook = '" . $db->sql_escape($facebook) . "', user_flickr = '" . $db->sql_escape($flickr) . "', user_googleplus = '" . $db->sql_escape($googleplus) . "', user_icq = '" . $db->sql_escape($icq) . "', user_jabber = '" . $db->sql_escape($jabber) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_twitter = '" . $db->sql_escape($twitter) . "', user_yim = '" . $db->sql_escape($yim) . "', user_youtube = '" . $db->sql_escape($youtube) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowswearywords = $user_allowswearywords, user_showavatars = $user_showavatars, user_showsignatures = $user_showsignatures, user_allowsmile = $allowsmilies, user_allowhtml = $allowhtml, user_allowavatar = $user_allowavatar, user_upi2db_disable = $user_upi2db_disable, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_allow_pm = $user_allowpm, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_posts = $user_posts, user_timezone = '" . $db->sql_escape($user_timezone) . "', user_time_mode = '" . $db->sql_escape($time_mode) . "', user_dst_time_lag = '" . $db->sql_escape($dst_time_lag) . "', user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_topic_show_days = '" . $db->sql_escape($user_topic_show_days) . "', user_topic_sortby_type = '" . $db->sql_escape($user_topic_sortby_type) . "', user_topic_sortby_dir = '" . $db->sql_escape($user_topic_sortby_dir) . "', user_post_show_days = '" . $db->sql_escape($user_post_show_days) . "', user_post_sortby_type = '" . $db->sql_escape($user_post_sortby_type) . "', user_post_sortby_dir = '" . $db->sql_escape($user_post_sortby_dir) . "', user_active = $user_status, user_mask = $user_mask, user_warnings = $user_ycard, user_gender = '$gender', user_rank = '" . $user_rank . "', user_rank2 = '" . $user_rank2 . "', user_rank3 = '" . $user_rank3 . "', user_rank4 = '" . $user_rank4 . "', user_rank5 = '" . $user_rank5 . "', user_color_group = '" . $user_color_group . "', user_color = '" . $user_color . "'" . $avatar_sql . "
 				WHERE user_id = '" . $user_id . "'";
 			$result = $db->sql_query($sql);
 
@@ -868,7 +878,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		}
 		if(empty($this_userdata))
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		// Now parse and display it as a template
@@ -882,12 +893,15 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 		$aim = str_replace('+', ' ', $this_userdata['user_aim']);
 		$facebook = $this_userdata['user_facebook'];
+		$flickr = $this_userdata['user_flickr'];
+		$googleplus = $this_userdata['user_googleplus'];
 		$icq = $this_userdata['user_icq'];
 		$jabber = $this_userdata['user_jabber'];
 		$msn = $this_userdata['user_msnm'];
 		$skype = $this_userdata['user_skype'];
 		$twitter = $this_userdata['user_twitter'];
 		$yim = $this_userdata['user_yim'];
+		$youtube = $this_userdata['user_youtube'];
 
 		$website = $this_userdata['user_website'];
 		$location = $this_userdata['user_from'];
@@ -919,7 +933,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		// This should not be needed anymore...
 		//$signature = preg_replace($html_entities_match, $html_entities_replace, $signature);
 
-		$viewemail = $this_userdata['user_viewemail'];
+		$viewemail = $this_userdata['user_allow_viewemail'];
 		$allowmassemail = $this_userdata['user_allow_mass_email'];
 		$allowpmin = $this_userdata['user_allow_pm_in'];
 		$notifypm = $this_userdata['user_notify_pm'];
@@ -973,7 +987,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 		$coppa = false;
 
-		$html_status =  ($this_userdata['user_allowhtml']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+		$html_status = ($this_userdata['user_allowhtml']) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
 		$bbcode_status = ($this_userdata['user_allowbbcode']) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
 		$smilies_status = ($this_userdata['user_allowsmile']) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
 	}
@@ -982,100 +996,42 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 	{
 		if(!$error)
 		{
+			include(IP_ROOT_PATH . 'includes/usercp_avatar.' . PHP_EXT);
+
 			$user_id = $selected_user_id;
+			$this_userdata = get_userdata($user_id);
+			$username = empty($username) ? $this_userdata['username'] : $username;
+			$interests = empty($interests) ? $this_userdata['user_interests'] : $interests;
 
 			$template->set_filenames(array('body' => ADM_TPL . 'user_avatar_gallery.tpl'));
 
-			$dir = @opendir("../" . $config['avatar_gallery_path']);
+			$avatar_category = request_post_var('avatarcategory', '');
 
-			$avatar_images = array();
-			while($file = @readdir($dir))
-			{
-				if(($file != '.') && ($file != '..') && !is_file(@phpbb_realpath('./../' . $config['avatar_gallery_path'] . '/' . $file)) && !is_link(@phpbb_realpath('./../' . $config['avatar_gallery_path'] . '/' . $file)))
-				{
-					$sub_dir = @opendir('../' . $config['avatar_gallery_path'] . '/' . $file);
-
-					$avatar_row_count = 0;
-					$avatar_col_count = 0;
-
-					while($sub_file = @readdir($sub_dir))
-					{
-						if(preg_match("/(\.gif$|\.png$|\.jpg)$/is", $sub_file))
-						{
-							$avatar_images[$file][$avatar_row_count][$avatar_col_count] = $sub_file;
-
-							$avatar_col_count++;
-							if($avatar_col_count == 5)
-							{
-								$avatar_row_count++;
-								$avatar_col_count = 0;
-							}
-						}
-					}
-				}
-			}
-
-			@closedir($dir);
-
-			if(isset($_POST['avatarcategory']))
-			{
-				$category = htmlspecialchars($_POST['avatarcategory']);
-			}
-			else
-			{
-				list($category,) = each($avatar_images);
-			}
-			@reset($avatar_images);
-
-			$s_categories = "";
-			while(list($key) = each($avatar_images))
-			{
-				$selected = ($key == $category) ? 'selected="selected"' : '';
-				if(sizeof($avatar_images[$key]))
-				{
-					$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
-				}
-			}
-
-			$s_colspan = 0;
-			for($i = 0; $i < sizeof($avatar_images[$category]); $i++)
-			{
-				$template->assign_block_vars('avatar_row', array());
-
-				$s_colspan = max($s_colspan, sizeof($avatar_images[$category][$i]));
-
-				for($j = 0; $j < sizeof($avatar_images[$category][$i]); $j++)
-				{
-					$template->assign_block_vars('avatar_row.avatar_column', array(
-						'AVATAR_IMAGE' => '../' . $config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j])
-					);
-
-					$template->assign_block_vars('avatar_row.avatar_option_column', array(
-						'S_OPTIONS_AVATAR' => $avatar_images[$category][$i][$j])
-					);
-				}
-			}
-
-			$coppa = ((!$_POST['coppa'] && !$_GET['coppa']) || $mode == 'register') ? 0 : true;
+			display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $aim, $facebook, $flickr, $googleplus, $icq, $jabber, $linkedin, $msn, $skype, $twitter, $yim, $youtube, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
 
 			$s_hidden_fields = '';
 
 			$hidden_fields_array = array(
 				'mode' => 'edit',
 				'agreed' => 'true',
-				'avatarcatname' => $category,
+				'avatarcatname' => $avatar_category,
 				'coppa' => $coppa,
+				'u' => $user_id,
 				'id' => $user_id,
 				'username' => $username,
+				'acp_username' => $username,
 				'email' => $email,
 				'aim' => $aim,
 				'facebook' => $facebook,
+				'flickr' => $flickr,
+				'googleplus' => $googleplus,
 				'icq' => $icq,
 				'jabber' => $jabber,
 				'msn' => $msn,
 				'skype' => $skype,
 				'twitter' => $twitter,
 				'yim' => $yim,
+				'youtube' => $youtube,
 				'website' => $website,
 				'location' => $location,
 				'user_flag' => $user_flag,
@@ -1083,7 +1039,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				'user_first_name' => $user_first_name,
 				'user_last_name' => $user_last_name,
 				'occupation' => $occupation,
-				'insterests' => $interests,
+				'interests' => $interests,
 				'birthday' => $birthday,
 				'next_birthday_greeting' => $next_birthday_greeting,
 				'selfdes' => $selfdes,
@@ -1138,23 +1094,9 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				'user_color' => $user_color,
 			);
 
-			foreach ($hidden_fields_array as $k => $v)
-			{
-				$s_hidden_fields .= '<input type="hidden" name="' . $k . '" value="' . $v . '" />';
-			}
+			$s_hidden_fields = build_hidden_fields($hidden_fields_array, false, false);
 
 			$template->assign_vars(array(
-				'L_USER_TITLE' => $lang['User_admin'],
-				'L_USER_EXPLAIN' => $lang['User_admin_explain'],
-				'L_AVATAR_GALLERY' => $lang['Avatar_gallery'],
-				'L_SELECT_AVATAR' => $lang['Select_avatar'],
-				'L_RETURN_PROFILE' => $lang['Return_profile'],
-				'L_CATEGORY' => $lang['Select_category'],
-				'L_GO' => $lang['Go'],
-
-				'S_OPTIONS_CATEGORIES' => $s_categories,
-				'S_COLSPAN' => $s_colspan,
-				'S_PROFILE_ACTION' => append_sid('admin_users.' . PHP_EXT . '?mode=' . $mode),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -1591,12 +1533,16 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			'EMAIL' => $email,
 			'AIM' => $aim,
 			'FACEBOOK' => $facebook,
+			'FLICKR' => $flickr,
+			'GOOGLEPLUS' => $googleplus,
 			'ICQ' => $icq,
 			'JABBER' => $jabber,
+			'LINKEDIN' => $linkedin,
 			'MSN' => $msn,
 			'SKYPE' => $skype,
 			'TWITTER' => $twitter,
 			'YIM' => $yim,
+			'YOUTUBE' => $youtube,
 			'USER_FIRST_NAME' => $user_first_name,
 			'USER_LAST_NAME' => $user_last_name,
 			'OCCUPATION' => $occupation,
@@ -1865,7 +1811,6 @@ else
 		'L_USER_EXPLAIN' => $lang['User_admin_explain'],
 		'L_USER_SELECT' => $lang['Select_a_User'],
 		'L_LOOK_UP' => $lang['Look_up_user'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 
 		'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser'),
 
@@ -1876,6 +1821,6 @@ else
 
 }
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

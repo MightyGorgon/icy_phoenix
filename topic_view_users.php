@@ -16,7 +16,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -37,7 +37,8 @@ $class_topics->var_init(true);
 
 if ((empty($like) && empty($topic_id)) || (!empty($like) && empty($post_id)))
 {
-	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 
 if (!$user->data['session_logged_in'])
@@ -66,7 +67,8 @@ $forum_topic_data = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 if (empty($forum_topic_data))
 {
-	message_die(GENERAL_MESSAGE, $lang['Topic_post_not_exist']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 $forum_id = $forum_topic_data['forum_id'];
 
@@ -152,7 +154,7 @@ else
 
 if (!empty($like))
 {
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, pl.like_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, pl.like_time
 		FROM " . USERS_TABLE . " u, " . POSTS_LIKES_TABLE . " pl
 		WHERE u.user_id = pl.user_id
 			AND pl.post_id = " . $post_id . "
@@ -161,7 +163,7 @@ if (!empty($like))
 }
 else
 {
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastlogon, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, tv.view_time, tv.view_count
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_skype, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_from, u.user_from_flag, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_birthday, u.user_gender, u.user_allow_viewonline, u.user_lastvisit, u.user_session_time, u.user_style, u.user_lang, tv.view_time, tv.view_count
 		FROM " . USERS_TABLE . " u, " . TOPIC_VIEW_TABLE . " tv
 		WHERE u.user_id = tv.user_id
 			AND tv.topic_id = " . $topic_id . "
@@ -277,7 +279,7 @@ if (($mode != 'topten') || ($config['topics_per_page'] < 10))
 	if ($total = $db->sql_fetchrow($result))
 	{
 		$total_members = $total['total'];
-		$pagination = generate_pagination($base_url_full, $total_members, $config['topics_per_page'], $start) . '&nbsp;';
+		$pagination = generate_pagination($base_url_full, $total_members, $config['topics_per_page'], $start);
 	}
 }
 else

@@ -250,14 +250,14 @@ function init_display_template($template_var, $replacement, $filename = 'viewtop
 */
 function topic_attachment_image($switch_attachment)
 {
-	global $config, $is_auth;
+	global $config, $is_auth, $lang;
 
 	if (intval($switch_attachment) == 0 || (!($is_auth['auth_download'] && $is_auth['auth_view'])) || intval($config['disable_attachments_mod']) || $config['topic_icon'] == '')
 	{
 		return '';
 	}
 
-	$image = '<img src="' . $config['topic_icon'] . '" alt="" /> ';
+	$image = '<img src="' . $config['topic_icon'] . '" alt="' . $lang['ATTACHMENTS'] .'" title="' . $lang['ATTACHMENTS'] . '" /> ';
 
 	return $image;
 }

@@ -145,7 +145,7 @@ if(empty($language))
 	);
 
 	$template->pparse('body');
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	exit;
 }
 
@@ -199,7 +199,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('confirm');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 			exit;
 
@@ -239,7 +239,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 			exit;
 
@@ -319,7 +319,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 			exit;
 
 		// actually create the question when the user submits the new question form
@@ -367,13 +367,15 @@ if(!empty($mode))
 			);
 
 			$template->pparse('body');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 			exit;
 
 		case 'quest_do_edit':
 			$old_block_no = request_var('old_block', 0);
 			$question = request_var('quest_title', '', true);
+			$question = htmlspecialchars_decode($question, ENT_COMPAT);
 			$answer = request_var('answer', '', true);
+			$answer = htmlspecialchars_decode($answer, ENT_COMPAT);
 			$answer = str_replace("\n", '<br />', $answer);
 
 			if($block_no == $old_block_no)
@@ -422,7 +424,7 @@ if(!empty($mode))
 			);
 
 			$template->pparse('confirm');
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 			exit;
 
 		// delete is confirmed or rejected
@@ -496,8 +498,8 @@ $template->assign_vars(array(
 
 	'L_EDIT' => $lang['Edit'],
 	'L_DELETE' => $lang['Delete'],
-	'L_MOVE_UP' => $lang['Move_up'],
-	'L_MOVE_DOWN' => $lang['Move_down'],
+	'L_MOVE_UP' => $lang['MOVE_UP'],
+	'L_MOVE_DOWN' => $lang['MOVE_DOWN'],
 
 	'L_NO_QUESTIONS' => $lang['faq_no_quests'],
 	'L_NO_BLOCKS' => $lang['faq_no_blocks']
@@ -553,6 +555,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

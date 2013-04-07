@@ -1,5 +1,5 @@
 Subject: Post report
-Charset: iso-8859-1
+
 <br /><font face="Verdana" size="2">
 Report from <b>{SITENAME}</b><br /><br />
 

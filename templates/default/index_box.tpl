@@ -6,7 +6,7 @@ for($catrow_i = 0; $catrow_i < $catrow_count; $catrow_i++)
 	$catrow_item = &$this->_tpldata['catrow.'][$catrow_i];
 	// check for new messages
 	$new_msg = false;
-	$forumrow_count = ( isset($catrow_item['forumrow.']) ) ? count($catrow_item['forumrow.']) : 0;
+	$forumrow_count = isset($catrow_item['forumrow.']) ? count($catrow_item['forumrow.']) : 0;
 	for ($forumrow_i = 0; $forumrow_i < $forumrow_count; $forumrow_i++)
 	{
 		$forumrow_item = &$catrow_item['forumrow.'][$forumrow_i];
@@ -42,7 +42,7 @@ if(GetCookie(tmp) == '2')
 <!-- BEGIN cathead -->
 <tr>
 	<!-- BEGIN inc -->
-	<td width="46" class="{catrow.cathead.inc.INC_CLASS}"><img src="{SPACER}" width="46" height="0" /></td>
+	<td width="37" class="{catrow.cathead.inc.INC_CLASS}"><img src="{SPACER}" width="37" height="0" /></td>
 	<!-- END inc -->
 	<td class="{catrow.cathead.CLASS_CAT}" width="100%" colspan="{catrow.cathead.INC_SPAN}"><span class="cattitle"><a href="{catrow.cathead.U_VIEWCAT}" class="cattitle" title="{catrow.cathead.CAT_DESC}">{catrow.cathead.CAT_TITLE}</a></span></td>
 	<td class="{catrow.cathead.CLASS_ROWPIC}" colspan="3" align="right">&nbsp;</td>
@@ -65,7 +65,7 @@ if (ereg("c=", $_SERVER['REQUEST_URI']) || ereg("-vc", $_SERVER['REQUEST_URI']))
 <!-- BEGIN cathead -->
 <tr>
 	<!-- BEGIN inc -->
-	<td width="30" class="{catrow.cathead.inc.INC_CLASS}"><img src="{SPACER}" width="46" height="0" /></td>
+	<td width="37" class="{catrow.cathead.inc.INC_CLASS}"><img src="{SPACER}" width="37" height="0" /></td>
 	<!-- END inc -->
 	<td class="forum-buttons2" colspan="6" align="left"><img src="{CAT_BLOCK_IMG}" style="vertical-align: middle;" />&nbsp;<a href="{catrow.cathead.U_VIEWCAT}" title="{catrow.cathead.CAT_DESC}">{catrow.cathead.CAT_TITLE}</a></td>
 </tr>
@@ -76,7 +76,7 @@ if (ereg("c=", $_SERVER['REQUEST_URI']) || ereg("-vc", $_SERVER['REQUEST_URI']))
 <!-- BEGIN forumrow -->
 <tr>
 	<!-- BEGIN inc -->
-	<td width="46" class="{catrow.forumrow.inc.INC_CLASS}"{catrow.forumrow.LINKS_ROWSPAN}><img src="{SPACER}" width="46" height="0" alt="" /></td>
+	<td width="37" class="{catrow.forumrow.inc.INC_CLASS}"{catrow.forumrow.LINKS_ROWSPAN}><img src="{SPACER}" width="37" height="0" alt="" /></td>
 	<!-- END inc -->
 	<td class="{catrow.forumrow.INC_CLASS}" style="padding-left: 1px; padding-right: 3px; vertical-align: middle; min-height: 50px;" width="37" height="50"{catrow.forumrow.LINKS_ROWSPAN}>{catrow.forumrow.U_MARK_ALWAYS_READ}</td>
 	<td class="row1h{catrow.forumrow.LINK_CLASS} row-forum" width="100%" colspan="{catrow.forumrow.INC_SPAN}" onclick="window.location.href='{catrow.forumrow.U_VIEWFORUM}'">

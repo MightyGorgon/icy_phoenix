@@ -79,7 +79,7 @@ class ip_cache extends acm
 	{
 		global $db, $config, $ip_cms, $cms_config_vars;
 
-		$auth_level = $ip_cms->cms_blocks_view();
+		$auth_level = $ip_cms->cms_auth_view();
 		$auth_level_suffix = implode('', $auth_level);
 		if (($cms_config = $this->get('_cms_global_blocks_config_' . $auth_level_suffix)) === false)
 		{
@@ -279,7 +279,7 @@ class ip_cache extends acm
 		{
 			$styles = array();
 			//$sql = "SELECT * FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
-			$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY style_name, themes_id";
+			$sql = "SELECT themes_id, style_name FROM " . THEMES_TABLE . " ORDER BY LOWER(style_name), themes_id";
 			$result = $from_cache ? $db->sql_query($sql, 0, 'styles_') : $db->sql_query($sql);
 
 			while ($row = $db->sql_fetchrow($result))
@@ -335,7 +335,7 @@ class ip_cache extends acm
 			$result = $from_cache ? $db->sql_query($sql, 0, 'ban_', USERS_CACHE_FOLDER) : $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$ranks['bannedrow'][] = $row;
+				$ranks['bannedrow'][$row['ban_userid']] = $row;
 			}
 			$db->sql_freeresult($result);
 
@@ -343,7 +343,7 @@ class ip_cache extends acm
 			$result = $from_cache ? $db->sql_query($sql, 0, 'ranks_') : $db->sql_query($sql);
 			while ($row = $db->sql_fetchrow($result))
 			{
-				$ranks['ranksrow'][] = $row;
+				$ranks['ranksrow'][$row['rank_id']] = $row;
 			}
 			$db->sql_freeresult($result);
 
@@ -421,7 +421,7 @@ class ip_cache extends acm
 			$db->sql_freeresult($result);
 
 			// Changed sorting by username_clean instead of username
-			$sql = 'SELECT user_id, username, user_active, user_color, user_allow_viewonline, user_level, user_lastlogon
+			$sql = 'SELECT user_id, username, user_active, user_color, user_allow_viewonline, user_level, user_lastvisit
 							FROM ' . USERS_TABLE . '
 							WHERE user_id != "' . ANONYMOUS . '"
 								AND user_session_time >= ' . $timetoday . '
@@ -433,7 +433,7 @@ class ip_cache extends acm
 			{
 				$todayrow['user_level'] = ($todayrow['user_level'] == JUNIOR_ADMIN) ? ADMIN : $todayrow['user_level'];
 				$style_color = '';
-				if ($todayrow['user_lastlogon'] >= $time1Hour)
+				if ($todayrow['user_lastvisit'] >= $time1Hour)
 				{
 					$today_visitors['last_hour']++;
 				}
@@ -469,12 +469,43 @@ class ip_cache extends acm
 			$db->sql_freeresult($result);
 
 			//You can set once per day... but that is too restrictive... better once every hour!
-			//$expiry = create_date_midnight(time(), $config['board_timezone']) - time() + 86400;
-			$expiry = 3600 - ((int) gmdate('i') * 60) - (int) gmdate('s');
-			$this->put('_today_visitors_' . $config['board_timezone'] . '_' . $user->data['user_level'], $today_visitors, $expiry);
+			//$cache_expiry = create_date_midnight(time(), $config['board_timezone']) - time() + 86400;
+			$cache_expiry = 3600 - ((int) gmdate('i') * 60) - (int) gmdate('s');
+			$this->put('_today_visitors_' . $config['board_timezone'] . '_' . $user->data['user_level'], $today_visitors, $cache_expiry);
 		}
 
 		return $today_visitors;
+	}
+
+	/**
+	* Obtain fonts files...
+	*/
+	function obtain_fonts()
+	{
+		if (($fonts_files = $this->get('_fonts')) === false)
+		{
+			$fonts_files = array();
+
+			// Now search for fonts...
+			$dir = @opendir(FONTS_DIR);
+
+			if ($dir)
+			{
+				while (($file = @readdir($dir)) !== false)
+				{
+					if ((substr($file, -4) === '.otf') || (substr($file, -4) === '.ttf'))
+					{
+						//$fonts_files[] = substr($file, 0, -4);
+						$fonts_files[] = $file;
+					}
+				}
+				@closedir($dir);
+			}
+
+			$this->put('_fonts', $fonts_files);
+		}
+
+		return $fonts_files;
 	}
 
 	/**

@@ -102,7 +102,7 @@ if ($module_number == 99)
 }
 
 // Include default & CrackerTracker Admin Header
-include('./page_header_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/ctracker/admin/acp_header.' . PHP_EXT);
 
 // Include requested modules
@@ -151,6 +151,6 @@ switch ($module_number)
 
 // Include default & CrackerTracker Admin Footer
 include(IP_ROOT_PATH . 'includes/ctracker/admin/acp_footer.' . PHP_EXT);
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

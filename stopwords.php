@@ -21,7 +21,7 @@ include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -37,10 +37,10 @@ if(!$user->data['session_logged_in'])
 
 if($user->data['user_level'] != ADMIN)
 {
-	message_die(GENERAL_MESSAGE, 'You are not authorized to access this page');
+	message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 }
 
-$stopwords_array = file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
+stopwords_synonyms_init();
 
 $exclude_list = '';
 foreach($stopwords_array as $curr_word)

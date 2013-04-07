@@ -25,7 +25,7 @@ $class_form = new class_form();
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -55,7 +55,8 @@ else
 
 	if (!$target_userdata = $db->sql_fetchrow($result))
 	{
-		message_die(GENERAL_INFO, $lang['No_such_user']);
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_INFO, $lang['NO_USER']);
 	}
 	$target_userdata['user_level'] = ($target_userdata['user_level'] == JUNIOR_ADMIN) ? ADMIN : $target_userdata['user_level'];
 }
@@ -181,7 +182,7 @@ if ($submit)
 	// session id check
 	if ($sid != $user->data['session_id'])
 	{
-		message_die(GENERAL_ERROR, 'Invalid_session');
+		message_die(GENERAL_ERROR, 'INVALID_SESSION');
 	}
 
 	// init for error
@@ -221,7 +222,7 @@ else
 	$pcp_section = $class_settings->get_lang($mod_name) . (!empty($sub_name) ? ' - ' . $class_settings->get_lang($sub_name) : '');
 	$link_name = $pcp_section;
 	$nav_server_url = create_server_url();
-	$breadcrumbs_address = $nav_separator . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($nav_separator . '<a class="nav-current" href="' . $nav_server_url . $return_link . '">' . $link_name . '</a>') : '');
+	$breadcrumbs['address'] = $nav_separator . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($nav_separator . '<a class="nav-current" href="' . $nav_server_url . $return_link . '">' . $link_name . '</a>') : '');
 	include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
 	// header

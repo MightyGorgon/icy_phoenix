@@ -27,6 +27,19 @@ include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
+if (!defined('STRIP'))
+{
+	// If we are on PHP >= 6.0.0 we do not need some code
+	if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
+	{
+		define('STRIP', false);
+	}
+	else
+	{
+		define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
+	}
+}
+
 @set_time_limit(0);
 $mem_limit = check_mem_limit();
 @ini_set('memory_limit', $mem_limit);
@@ -144,7 +157,7 @@ if ($lg == '')
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html;">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta http-equiv="Content-Style-Type" content="text/css">
 	<title><?php echo $lang['ERC']; ?></title>
 	<link rel="stylesheet" href="../templates/common/acp.css" type="text/css" />
@@ -1058,7 +1071,7 @@ switch($mode)
 				else // anonymous user does not exist
 				{
 					// Recreate entry
-					$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_dateformat, user_actkey, user_newpasswd, user_notify, user_active)
+					$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_allow_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_dateformat, user_actkey, user_newpasswd, user_notify, user_active)
 						VALUES (" . ANONYMOUS . ", 'Anonymous', 0, 0, '', '', '', '', '', '', '', '', 0, NULL, '', '', '', 0, 0, 1, 0, 1, 0, 1, 1, NULL, '', '', 0, '', '', '', 0, 0)";
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);

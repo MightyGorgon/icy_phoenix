@@ -25,7 +25,7 @@ include(IP_ROOT_PATH . 'includes/functions_validate.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -119,7 +119,8 @@ if (empty($thiscat) && ($album_user_id != ALBUM_PUBLIC_GALLERY))
 	else
 	{
 		// generate mesage saying that the user specified doesn't exists
-		message_die(GENERAL_ERROR, $lang['No_user_id_specified']);
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_ERROR, 'NO_USER');
 	}
 }
 
@@ -243,6 +244,9 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	// Build categories select
 	// --------------------------------
 	album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
+	$personal_gallery_list = '';
+	// Mighty Gorgon: I don't know why this code is here... let's comment it out!
+	/*
 	if($user->data['session_logged_in'])
 	{
 		// build fake list of personal galleries (these will get created when needed later automatically
@@ -255,14 +259,12 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 		//End Replace
 		{
 			// Is user allowed to create this personal gallery?
-			// NOTE : that it isn't necessary to create the $personal_gallery variable first,
-			//        it will be generated inside the album_permissions function if needed
-			//        but here it's done to make the code easier to read
+			// NOTE : that it isn't necessary to create the $personal_gallery variable first, it will be generated inside the album_permissions function if needed but here it's done to make the code easier to read
 			$personal_gallery = init_personal_gallery_cat($userinfo[$idx]['user_id']);
 			$album_user_access = album_permissions($userinfo[$idx]['user_id'], 0, ALBUM_AUTH_CREATE_PERSONAL, $personal_gallery);
 			if (album_check_permission($album_user_access, ALBUM_AUTH_CREATE_PERSONAL) == true)
 			{
-				$selected = (($user->data['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
+				$selected = (($user->data['user_id'] == $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
 				$personal_gallery_list .= '<option value="-' . $userinfo[$idx]['user_id'] . '" ' . $selected . '>' . sprintf($lang['Personal_Gallery_Of_User'], $userinfo[$idx]['username']) . '</option>';
 			}
 		}
@@ -272,6 +274,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 			$personal_gallery_list = '<option value="' . ALBUM_JUMPBOX_SEPARATOR . '">------------------------------</option>' . $personal_gallery_list;
 		}
 	}
+	*/
 
 	$temp_tree = album_get_tree_option($cat_id, ALBUM_AUTH_VIEW_AND_UPLOAD) . $personal_gallery_list;
 	if ($temp_tree == '')
@@ -288,7 +291,7 @@ if(!isset($_POST['pic_title'])) // is it not submitted?
 	// Start output of page
 	$nav_server_url = create_server_url();
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '" class="nav-current">' . $thiscat['cat_title'] . '</a>';
-	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+	$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 
 	// make sure that if we have disabled dynamic generation and pre-generated upload fields
 	// we should then at least make sure we create at least on upload field.
@@ -1234,12 +1237,7 @@ else
 
 			include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 
-			$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-			$server_name = trim($config['server_name']);
-			$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) . '/' : '/';
-			$script_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['script_path']));
-			$script_name = ($script_name == '') ? '' : $script_name . '/';
-			$server_path = $server_protocol . $server_name . $server_port . $script_name;
+			$server_url = create_server_url();
 
 			$sql = "SELECT user_id, user_notify_pm, user_email, user_lang, user_active, username, user_level
 				FROM " . USERS_TABLE . " AS u
@@ -1268,7 +1266,7 @@ else
 						'PIC_APPROVAL' => ($pic_approval ? $lang['Approvation_OK'] : $lang['Approvation_NO']),
 						'DATE' => create_date($config['default_dateformat'], time(), $config['board_timezone']),
 						'SUBJECT' => $lang['Email_Notification'],
-						'U_PIC' => $server_path . 'album_showpage.' . PHP_EXT . '?pic_id=' . $new_pic_id['pic_id']
+						'U_PIC' => $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $new_pic_id['pic_id']
 						)
 					);
 

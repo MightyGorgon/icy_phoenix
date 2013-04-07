@@ -112,10 +112,16 @@ class sql_db
 			$result = false;
 		}
 
-		// make db connection UTF-8 aware
+		// make db connection UTF-8 aware and set the engine to MYISAM
 		if ($this->db_connect_id)
 		{
 			@mysql_query("SET NAMES 'utf8'");
+			@mysql_query("SET storage_engine = MyISAM");
+			/*
+			// Mighty Gorgon: other useful MyISAM references
+			//ALTER TABLE table_name ENGINE = MyISAM;
+			//SELECT CONCAT('ALTER TABLE ',table_schema,'.',table_name,' engine = MyISAM;') FROM information_schema.tables WHERE engine = 'InnoDB';
+			*/
 		}
 
 		$this->sql_server_version = $this->sql_server_info(true);
@@ -478,6 +484,75 @@ class sql_db
 	}
 
 	/**
+	* Gets the estimated number of rows in a specified table.
+	* @param string $table_name		Table name
+	* @return string Number of rows in $table_name. Prefixed with ~ if estimated (otherwise exact).
+	*/
+	function get_estimated_row_count($table_name)
+	{
+		$table_status = $this->get_table_status($table_name);
+
+		if (isset($table_status['Engine']))
+		{
+			if ($table_status['Engine'] === 'MyISAM')
+			{
+				return $table_status['Rows'];
+			}
+			elseif (($table_status['Engine'] === 'InnoDB') && ($table_status['Rows'] > 100000))
+			{
+				return '~' . $table_status['Rows'];
+			}
+		}
+		return $this->get_row_count($table_name);
+	}
+
+	/**
+	* Gets the exact number of rows in a specified table.
+	* @param string $table_name Table name
+	* @return string Exact number of rows in $table_name.
+	*/
+	function get_row_count($table_name)
+	{
+		$table_status = $this->get_table_status($table_name);
+		if (isset($table_status['Engine']) && ($table_status['Engine'] === 'MyISAM'))
+		{
+			return $table_status['Rows'];
+		}
+
+		$sql = 'SELECT COUNT(*) AS rows_total FROM ' . $this->sql_escape($table_name);
+		$result = $this->sql_query($sql);
+		$rows_total = $this->sql_fetchfield('rows_total');
+		$this->sql_freeresult($result);
+
+		return $rows_total;
+	}
+
+	/**
+	* Gets some information about the specified table.
+	* @param string $table_name Table name
+	* @return array
+	*/
+	function get_table_status($table_name)
+	{
+		$sql = "SHOW TABLE STATUS LIKE '" . $this->sql_escape($table_name) . "'";
+		$result = $this->sql_query($sql);
+		$table_status = $this->sql_fetchrow($result);
+		$this->sql_freeresult($result);
+
+		return $table_status;
+	}
+
+	/**
+	* Run LOWER() on DB column of type text (i.e. neither varchar nor char).
+	* @param string $column_name The column name to use
+	* @return string A SQL statement like "LOWER($column_name)"
+	*/
+	function sql_lower_text($column_name)
+	{
+		return "LOWER($column_name)";
+	}
+
+	/**
 	* Get last inserted id after insert statement
 	*/
 	function sql_nextid()
@@ -534,7 +609,6 @@ class sql_db
 
 	/**
 	* Build sql statement from array for select and select distinct statements
-	*
 	* Possible query values: SELECT, SELECT_DISTINCT
 	*/
 	function sql_build_query($query, $array)
@@ -897,10 +971,10 @@ class sql_db
 				global $msg_long_text;
 				$msg_long_text = $message;
 
-				trigger_error(false, E_USER_NOTICE);
+				@trigger_error(false, E_USER_NOTICE);
 			}
 
-			trigger_error($message, E_USER_NOTICE);
+			@trigger_error($message, E_USER_NOTICE);
 			/*
 			$msg_text = $message;
 			$msg_title = isset($lang['Error']) ? $lang['Error'] : 'Error';
@@ -1032,7 +1106,7 @@ class sql_db
 </head>
 
 <body>
-<a name="top"></a>
+<a name="top" id="top"></a>
 <div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
 <div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
@@ -1073,7 +1147,7 @@ class sql_db
 				<td nowrap="nowrap" width="45%" align="left">
 					<br /><span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span><br /><br />
 				</td>
-				<td nowrap="nowrap" align="center"><div style="text-align:center;">&nbsp;</div></td>
+				<td nowrap="nowrap" align="center"><div style="text-align: center;">&nbsp;</div></td>
 				<td nowrap="nowrap" width="45%" align="right">
 					<br /><span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span><br /><br />
 				</td>

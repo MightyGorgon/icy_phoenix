@@ -21,7 +21,8 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_bots.' . PHP_EXT);
+
+setup_extra_lang(array('lang_bots'));
 
 $mode_array = array('add', 'delete', 'save', 'update');
 $mode = request_var('mode', '');
@@ -246,6 +247,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

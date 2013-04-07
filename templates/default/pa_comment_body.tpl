@@ -36,7 +36,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row-post-date"><div style="text-align:center;">{text.TIME}</div></td>
+	<td class="row-post-date"><div style="text-align: center;">{text.TIME}</div></td>
 	<td class="row-post-buttons post-buttons">
 		<div style="text-align: right">
 			<div style="position: relative; float: left; text-align: left;">

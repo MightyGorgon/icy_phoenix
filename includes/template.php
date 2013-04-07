@@ -24,23 +24,23 @@
 
 
 /**
- *
- * Template class. By Nathan Codding of the phpBB group.
- * The interface was originally inspired by PHPLib templates,
- * and the template file formats are quite similar.
- *
- * eXtreme Styles mod by CyberAlien.
- *
- * IF, ELSEIF, ENDIF tags are backported from phpBB 2.2
- *
- * Documentation for this mod can be found here:
- * http://www.stsoftware.biz/forum
- *
- * Support for eXtreme Styles mod is provided at http://www.stsoftware.biz/forum
- *
- * Thanks to DMaJ007 for idea on how to include some extra tags.
- *
- */
+*
+* Template class. By Nathan Codding of the phpBB group.
+* The interface was originally inspired by PHPLib templates,
+* and the template file formats are quite similar.
+*
+* eXtreme Styles mod by CyberAlien.
+*
+* IF, ELSEIF, ENDIF tags are backported from phpBB 2.2
+*
+* Documentation for this mod can be found here:
+* http://www.stsoftware.biz/forum
+*
+* Support for eXtreme Styles mod is provided at http://www.stsoftware.biz/forum
+*
+* Thanks to DMaJ007 for idea on how to include some extra tags.
+*
+*/
 
 if (!defined('IN_ICYPHOENIX'))
 {
@@ -72,7 +72,7 @@ define('XS_TAG_ENDIF', 8);
 define('XS_TAG_DEFINE', 9);
 define('XS_TAG_UNDEFINE', 10);
 define('XS_TAG_BEGINELSE', 11);
-
+define('XS_TAG_ALIAS', 12);
 
 class Template {
 	var $classname = 'Template';
@@ -317,8 +317,12 @@ class Template {
 		// Mighty Gorgon - Common TPL - END
 		if(!empty($this->tpl))
 		{
-			//$file = $this->tpldir . $cfg_path . '/xs.cfg';
-			$file = $this->tpldir . $this->tpldef . '/xs.cfg';
+			if($this->tpldef != $cfg_path)
+			{
+				$file = $this->tpldir . $this->tpldef . '/xs.cfg';
+				$this->load_replacements($file);
+			}
+			$file = $this->tpldir . $cfg_path . '/xs.cfg';
 			$this->load_replacements($file);
 		}
 		if($old_root !== $this->root)
@@ -435,9 +439,20 @@ class Template {
 	function make_filename($filename, $xs_include = false)
 	{
 		// Check replacements list
-		if(!$xs_include && isset($this->replace[$filename]))
+		if(isset($this->replace[$filename]))
 		{
-			$filename = $this->replace[$filename];
+			if(!$xs_include)
+			{
+				$filename = $this->replace[$filename];
+				if($filename === false)
+				{
+					return false;
+				}
+			}
+			elseif($this->replace[$filename] === false)
+			{
+				return false;
+			}
 		}
 		// Check if it's an absolute or relative path.
 		if ((substr($filename, 0, 1) !== '/') && (substr($filename, 1, 1) !== ':'))
@@ -509,7 +524,7 @@ class Template {
 		// checking if we have valid filename
 		if(!$this->files[$handle])
 		{
-			if($xs_include || $quiet)
+			if(($this->files[$handle] === false) || $xs_include || $quiet)
 			{
 				return false;
 			}
@@ -570,7 +585,7 @@ class Template {
 		if(!empty($this->files_cache[$handle]) && !empty($config['xs_auto_recompile']))
 		{
 			$cache_time = @filemtime($this->files_cache[$handle]);
-			if(@filemtime($this->files[$handle]) > $cache_time || $config['xs_template_time'] > $cache_time)
+			if(@filemtime(($this->files[$handle]) > $cache_time) || ($config['xs_template_time'] > $cache_time))
 			{
 				// file was changed. don't use cache file (will be recompled if configuration allowes it)
 				$this->files_cache[$handle] = '';
@@ -588,7 +603,7 @@ class Template {
 		$template = $theme['template_name'];
 		global $$template;
 		$theme_info = &$$template;
-		$exclude_tpl_array = array('def_tree_def.tpl');
+		$exclude_tpl_array = array('def_tree_def.tpl', 'rss_body.tpl');
 		//die(basename($this->files[$handle]));
 		if($config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
 		{
@@ -600,6 +615,10 @@ class Template {
 		}
 		else
 		{
+			/*
+			die($this->files[$handle]);
+			die($code);
+			*/
 			eval($code);
 		}
 		if($config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))
@@ -666,6 +685,11 @@ class Template {
 		// checking if handle exists
 		if (empty($this->files[$handle]) && empty($this->files_cache[$handle]))
 		{
+			if(isset($this->files[$handle]) && ($this->files[$handle] === false))
+			{
+				// skip file
+				return true;
+			}
 			die("Template->loadfile(): No files found for handle $handle");
 		}
 		$this->xs_startup();
@@ -720,6 +744,7 @@ class Template {
 			define('CSS_JS_PARSED', true);
 		}
 
+		// Include custom CSS from templates/CURRENT_TPL folder
 		if(is_array($this->css_style_include) && !empty($this->css_style_include))
 		{
 			for ($i = 0; $i < sizeof($this->css_style_include); $i++)
@@ -731,6 +756,7 @@ class Template {
 			}
 		}
 
+		// Include custom CSS from templates/common folder
 		if(is_array($this->css_include) && !empty($this->css_include))
 		{
 			for ($i = 0; $i < sizeof($this->css_include); $i++)
@@ -742,6 +768,7 @@ class Template {
 			}
 		}
 
+		// Include custom JS from templates/common folder
 		if(is_array($this->js_include) && !empty($this->js_include))
 		{
 			for ($i = 0; $i < sizeof($this->js_include); $i++)
@@ -994,7 +1021,6 @@ class Template {
 		}
 
 		return $varref;
-
 	}
 
 
@@ -1038,6 +1064,9 @@ class Template {
 		}
 	}
 
+	/**
+	* compile_code
+	*/
 	function compile_code($filename, $code, $use_isset = false)
 	{
 		//	$filename - file to load code from. used if $code is empty
@@ -1171,6 +1200,10 @@ class Template {
 					elseif($keyword === 'BEGINELSE')
 					{
 						$keyword_type = XS_TAG_BEGINELSE;
+					}
+					elseif($keyword === 'ALIAS')
+					{
+						$keyword_type = XS_TAG_ALIAS;
 					}
 				}
 			}
@@ -1437,7 +1470,7 @@ class Template {
 			/*
 			* <!-- IF -->
 			*/
-			if($keyword_type == XS_TAG_IF || $keyword_type == XS_TAG_ELSEIF)
+			if(($keyword_type == XS_TAG_IF) || ($keyword_type == XS_TAG_ELSEIF))
 			{
 				if(!$count_if)
 				{
@@ -1461,7 +1494,7 @@ class Template {
 			/*
 			* <!-- ELSE -->
 			*/
-			if($keyword_type == XS_TAG_ELSE && $count_if > 0)
+			if(($keyword_type == XS_TAG_ELSE) && $count_if > 0)
 			{
 				$compiled[] = '<' . '?php } else { ?' . '>';
 				continue;
@@ -1480,7 +1513,7 @@ class Template {
 			*/
 			if($keyword_type == XS_TAG_DEFINE)
 			{
-				$str = $this->compile_tag_define($params_str);
+				$str = $this->compile_tag_define($params_str, true);
 				if($str)
 				{
 					$compiled[] = '<' . '?php ' . $str . ' ?' . '>';
@@ -1495,7 +1528,7 @@ class Template {
 			*/
 			if($keyword_type == XS_TAG_UNDEFINE)
 			{
-				$str = $this->compile_tag_undefine($params_str);
+				$str = $this->compile_tag_define($params_str, false);
 				if($str)
 				{
 					$compiled[] = '<' . '?php ' . $str . ' ?' . '>';
@@ -1504,6 +1537,31 @@ class Template {
 				{
 					$compiled[] = $keyword_str;
 				}
+			}
+			/*
+			* <!-- ALIAS -->
+			*/
+			if ($keyword_type == XS_TAG_ALIAS)
+			{
+				$params = explode(' ', $params_str);
+				$num_params = sizeof($params);
+				if($num_params != 2)
+				{
+					$compiled[] = $keyword_str;
+					continue;
+				}
+				$var_alias = $params[0];
+				$var_org = '$this->_tpldata';
+				for ($i = 1; $i <= $block_nesting_level; $i++)
+				{
+					$var_org .= '[\'' . $block_names[$i] . '.\'][$' . $block_names[$i] . '_i]';
+				}
+				$var_org .= '[\'' . $params[1] . '.\']';
+				$line = '<' . '?php // alias ' . $var_alias . ' = ' . $params[1] . "\n\n";
+				$line .= '$this->_tpldata[\'' . $var_alias . '.\'] = &' . $var_org . ';' . "\n";
+				$line .= "\n" . '?' . '>';
+				$compiled[] = $line;
+				continue;
 			}
 		}
 
@@ -1553,18 +1611,19 @@ class Template {
 		return $code;
 	}
 
-	//
-	// Compile IF tags - much of this is from Smarty with
-	// some adaptions for our block level methods
-	//
+	/**
+	* Compile IF tags - much of this is from Smarty with
+	* some adaptions for our block level methods
+	* @access private
+	*/
 	function compile_tag_if($tag_args, $elseif)
 	{
-		/* Tokenize args for 'if' tag. */
+		// Tokenize args for 'if' tag.
 		preg_match_all('/(?:
-										"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"         |
-										\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'     |
-										[(),]                                  |
-										[^\s(),]+)/x', $tag_args, $match);
+			"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"         |
+			\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'     |
+			[(),]                                  |
+			[^\s(),]+)/x', $tag_args, $match);
 
 		$tokens = $match[0];
 		$is_arg_stack = array();
@@ -1575,21 +1634,10 @@ class Template {
 
 			switch ($token)
 			{
-				case '!':
-				case '%':
 				case '!==':
-				case '==':
 				case '===':
-				case '>':
-				case '<':
-				case '!=':
-				case '<>':
 				case '<<':
 				case '>>':
-				case '<=':
-				case '>=':
-				case '&&':
-				case '||':
 				case '|':
 				case '^':
 				case '&':
@@ -1603,45 +1651,56 @@ class Template {
 				case '@':
 					break;
 
+				case '==':
 				case 'eq':
 					$token = '==';
 					break;
 
+				case '!=':
+				case '<>':
 				case 'ne':
 				case 'neq':
 					$token = '!=';
 					break;
 
+				case '<':
 				case 'lt':
 					$token = '<';
 					break;
 
+				case '<=':
 				case 'le':
 				case 'lte':
 					$token = '<=';
 					break;
 
+				case '>':
 				case 'gt':
 					$token = '>';
 					break;
 
+				case '>=':
 				case 'ge':
 				case 'gte':
 					$token = '>=';
 					break;
 
+				case '&&':
 				case 'and':
 					$token = '&&';
 					break;
 
+				case '||':
 				case 'or':
 					$token = '||';
 					break;
 
+				case '!':
 				case 'not':
 					$token = '!';
 					break;
 
+				case '%':
 				case 'mod':
 					$token = '%';
 					break;
@@ -1661,12 +1720,48 @@ class Template {
 					$i = $is_arg_start;
 
 				default:
-					if (preg_match('#^(([a-z0-9\-_]+?\.)+?)?(\$)?([A-Z]+[A-Z0-9\-_]+)$#s', $token, $varrefs))
+					if (preg_match('#^((?:[a-z0-9\-_]+\.)+)?(\$)?(?=[A-Z])([A-Z0-9\-_]+)#s', $token, $varrefs))
 					{
-						$token = (!empty($varrefs[1])) ? $this->generate_block_data_ref(substr($varrefs[1], 0, -1), true, $varrefs[3]) . '[\'' . $varrefs[4] . '\']' : (($varrefs[3]) ? '$this->_tpldata[\'DEFINE\'][\'.\'][\'' . $varrefs[4] . '\']' : '$this->vars[\'' . $varrefs[4] . '\']');
+						$token = (!empty($varrefs[1])) ? $this->generate_block_data_ref(substr($varrefs[1], 0, -1), true, $varrefs[2]) . '[\'' . $varrefs[3] . '\']' : (($varrefs[2]) ? '$this->_tpldata[\'DEFINE\'][\'.\'][\'' . $varrefs[3] . '\']' : '$this->vars[\'' . $varrefs[3] . '\']');
+					}
+					elseif (preg_match('#^\.((?:[a-z0-9\-_]+\.?)+)$#s', $token, $varrefs))
+					{
+						// Allow checking if loops are set with .loopname
+						// It is also possible to check the loop count by doing <!-- IF .loopname > 1 --> for example
+						$blocks = explode('.', $varrefs[1]);
+
+						// If the block is nested, we have a reference that we can grab.
+						// If the block is not nested, we just go and grab the block from _tpldata
+						if (sizeof($blocks) > 1)
+						{
+							$block = array_pop($blocks);
+							$namespace = implode('.', $blocks);
+							$varref = $this->generate_block_data_ref($namespace, true);
+
+							// Add the block reference for the last child.
+							$varref .= "['" . $block . "']";
+						}
+						else
+						{
+							$varref = '$this->_tpldata';
+
+							// Add the block reference for the last child.
+							$varref .= "['" . $blocks[0] . "']";
+						}
+						$token = "sizeof($varref)";
+					}
+					elseif (!empty($token))
+					{
+						$token = '(' . $token . ')';
 					}
 					break;
 			}
+		}
+
+		// If there are no valid tokens left or only control/compare characters left, we do skip this statement
+		if (!sizeof($tokens) || (str_replace(array(' ', '=', '!', '<', '>', '&', '|', '%', '(', ')'), '', implode('', $tokens)) == ''))
+		{
+			$tokens = array('false');
 		}
 
 		$code = (($elseif) ? '} elseif (' : 'if (') . (implode(' ', $tokens) . ') { ');
@@ -1674,7 +1769,11 @@ class Template {
 		return $code;
 	}
 
-	// This is from Smarty
+	/**
+	* parse expression
+	* This is from Smarty
+	* @access private
+	*/
 	function _parse_is_expr($is_arg, $tokens)
 	{
 		$expr_end = 0;
@@ -1701,9 +1800,9 @@ class Template {
 				}
 				else
 				{
-					$expr = "!($is_arg % 2)";
+					$expr = "!($is_arg & 1)";
 				}
-				break;
+			break;
 
 			case 'odd':
 				if (@$tokens[$expr_end] == 'by')
@@ -1714,9 +1813,9 @@ class Template {
 				}
 				else
 				{
-					$expr = "($is_arg % 2)";
+					$expr = "($is_arg & 1)";
 				}
-				break;
+			break;
 
 			case 'div':
 				if (@$tokens[$expr_end] == 'by')
@@ -1725,7 +1824,7 @@ class Template {
 					$expr_arg = $tokens[$expr_end++];
 					$expr = "!($is_arg % $expr_arg)";
 				}
-				break;
+			break;
 
 			default:
 				break;
@@ -1741,51 +1840,57 @@ class Template {
 		return $tokens;
 	}
 
-
-	function compile_tag_define($tag_args)
+	/**
+	* Compile DEFINE tags
+	* @access private
+	*/
+	function compile_tag_define($tag_args, $op)
 	{
-		preg_match('#^(([a-z0-9\-_]+?\.)+?)?\$([A-Z][A-Z0-9_\-]*?) = (\'?)(.*?)(\'?)$#', $tag_args, $match);
+		preg_match('#^((?:[a-z0-9\-_]+\.)+)?\$(?=[A-Z])([A-Z0-9_\-]*)(?: = (\'?)([^\']*)(\'?))?$#', $tag_args, $match);
 
-		if (empty($match[3]) || empty($match[5]))
+		if (empty($match[2]) || (!isset($match[4]) && $op))
 		{
 			return '';
+		}
+
+		if (!$op)
+		{
+			return 'unset(' . (($match[1]) ? $this->generate_block_data_ref(substr($match[1], 0, -1), true, true) . '[\'' . $match[2] . '\']' : '$this->_tpldata[\'DEFINE\'][\'.\'][\'' . $match[2] . '\']') . ');';
 		}
 
 		// Are we a string?
-		if ($match[4] && $match[6])
+		if ($match[3] && $match[5])
 		{
-			$match[5] = "'" . addslashes(str_replace(array('\\\'', '\\\\'), array('\'', '\\'), $match[5])) . "'";
+			$match[4] = str_replace(array('\\\'', '\\\\', '\''), array('\'', '\\', '\\\''), $match[4]);
+
+			// Compile reference, we allow template variables in defines...
+			$match[4] = $this->compile($match[4]);
+
+			// Now replace the php code
+			$match[4] = "'" . str_replace(array('<?php echo ', '; ?>'), array("' . ", " . '"), $match[4]) . "'";
 		}
 		else
 		{
-			preg_match('#(true|false|\.)#i', $match[5], $type);
+			preg_match('#true|false|\.#i', $match[4], $type);
 
-			switch (strtolower($type[1]))
+			switch (strtolower($type[0]))
 			{
 				case 'true':
 				case 'false':
-					$match[5] = strtoupper($match[5]);
-					break;
-				case '.';
-					$match[5] = doubleval($match[5]);
-					break;
+					$match[4] = strtoupper($match[4]);
+				break;
+
+				case '.':
+					$match[4] = doubleval($match[4]);
+				break;
+
 				default:
-					$match[5] = intval($match[5]);
-					break;
+					$match[4] = intval($match[4]);
+				break;
 			}
 		}
 
-		return (($match[1]) ? $this->generate_block_data_ref(substr($match[1], 0, -1), true, true) . '[\'' . $match[3] . '\']' : '$this->_tpldata[\'DEFINE\'][\'.\'][\'' . $match[3] . '\']') . ' = ' . $match[5] . ';';
-	}
-
-	function compile_tag_undefine($tag_args)
-	{
-		preg_match('#^(([a-z0-9\-_]+?\.)+?)?\$([A-Z][A-Z0-9_\-]*?)$#', $tag_args, $match);
-		if (empty($match[3]))
-		{
-			return '';
-		}
-		return 'unset(' . (($match[1]) ? $this->generate_block_data_ref(substr($match[1], 0, -1), true, true) . '[\'' . $match[3] . '\']' : '$this->_tpldata[\'DEFINE\'][\'.\'][\'' . $match[3] . '\']') . ');';
+		return (($match[1]) ? $this->generate_block_data_ref(substr($match[1], 0, -1), true, true) . '[\'' . $match[2] . '\']' : '$this->_tpldata[\'DEFINE\'][\'.\'][\'' . $match[2] . '\']') . ' = ' . $match[4] . ';';
 	}
 
 	/**

@@ -24,7 +24,7 @@ if(!function_exists('cms_block_album'))
 {
 	function cms_block_album()
 	{
-		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page;
+		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page, $album_config;
 
 		$cms_page_id_tmp = 'album';
 		$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
@@ -290,8 +290,11 @@ if(!function_exists('cms_block_album'))
 		$template->assign_vars(array(
 			//'S_COL_WIDTH' => (100 / $cms_config_vars['md_pics_number'][$block_id]) . '%',
 			'S_COL_WIDTH' => (100 / (($cms_config_vars['md_pics_cols_number'][$block_id] == 0) ? 4 : $cms_config_vars['md_pics_cols_number'][$block_id])) . '%',
+			'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
+
 			'TARGET_BLANK' => ($album_config['fullpic_popup']) ? 'target="_blank"' : '',
 
+			'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
 			'S_HIGHSLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
 			'S_JQ_NIVO_SLIDER' => (!empty($cms_config_vars['md_pics_slider'][$block_id]) ? true : false),
 			'S_SLIDER_ID' => 'cms_slider_' . $block_id,

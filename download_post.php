@@ -16,7 +16,7 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -28,7 +28,8 @@ $code_id = ($code_id < 0) ? 0 : $code_id;
 
 if(!$post_id)
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 
 // get post
@@ -38,11 +39,13 @@ $result = $db->sql_query($sql);
 $db->sql_return_on_error(false);
 if (!$result)
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 if (($postrow = $db->sql_fetchrow($result)) === false)
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 $db->sql_freeresult($result);
 
@@ -60,7 +63,8 @@ $bbcode->code_post_id = 0;
 
 if(!strlen($code_text))
 {
-	message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 }
 
 $code_text = $bbcode->undo_htmlspecialchars($code_text, true);

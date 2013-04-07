@@ -15,7 +15,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -63,7 +63,7 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 		if(!isset($_POST['confirm']))
 		{
 			$nav_server_url = create_server_url();
-			$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
+			$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
 
 			$ref_url = explode('/', $_SERVER['HTTP_REFERER']);
 
@@ -113,8 +113,8 @@ if (($draft_id > 0) || !empty($_POST['kill_drafts']))
 
 // Generate the page
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
-$breadcrumbs_links_right = '<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', true); return false;">' . $lang['Mark_all'] . '</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', false); return false;">' . $lang['Unmark_all'] . '</a>';
+$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '">' . $lang['Profile'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid('drafts.' . PHP_EXT) . '">' . $lang['Drafts'] . '</a>';
+$breadcrumbs['bottom_right_links'] = '<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', true); return false;">' . $lang['Mark_all'] . '</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes(\'drafts_form\', \'drafts_list[]\', false); return false;">' . $lang['Unmark_all'] . '</a>';
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
 $template->assign_vars(array(
@@ -152,6 +152,7 @@ if ($no_drafts == false)
 	$draft_row = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
+	$row_class = '';
 	for ($i = 0; $i < sizeof($draft_row); $i++)
 	{
 		if ($i == 0)
@@ -207,11 +208,12 @@ if ($no_drafts == false)
 			$draft_load = 'loadp';
 			$draft_cat_link = append_sid(IP_ROOT_PATH . CMS_PAGE_PRIVMSG);
 			$draft_title_link = append_sid(IP_ROOT_PATH . 'drafts.' . PHP_EXT . '?mode=' . $draft_load . '&amp;d=' . $draft_row[$i]['draft_id']);
+			$draft_subject = $draft_row[$i]['draft_subject'] ? $draft_row[$i]['draft_subject'] : '...'; // Missing subject produces an empty link
 			$draft_row[$i]['draft_cat'] = '<a href="' . $draft_cat_link . '">' . $lang['Drafts_NPM'] . '</a>';
-			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_row[$i]['draft_subject'] . '</a>';
+			$draft_row[$i]['draft_title'] = '<a href="' . $draft_title_link . '">' . $draft_subject . '</a>';
 		}
 
-		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 		$template->assign_block_vars('draft_row', array(
 			'ROW_CLASS' => $row_class,
 			'S_DRAFT_ID' => $draft_row[$i]['draft_id'],
@@ -227,10 +229,9 @@ if ($no_drafts == false)
 			)
 		);
 	}
-	$pagination = generate_pagination('drafts.' . PHP_EXT . '?mode=list', $drafts_count, $config['topics_per_page'], $start);
 
 	$template->assign_vars(array(
-		'PAGINATION' => $pagination,
+		'PAGINATION' => generate_pagination('drafts.' . PHP_EXT . '?mode=list', $drafts_count, $config['topics_per_page'], $start),
 		'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($drafts_count / $config['topics_per_page'])),
 		'L_GOTO_PAGE' => $lang['Goto_page']
 		)

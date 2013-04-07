@@ -1,5 +1,5 @@
 Subject: A request to join your group has been made
-Charset: iso-8859-1
+
 <br /><font face="Verdana" size="2">
 Dear <b>{GROUP_MODERATOR}</b>,<br /><br />
 

@@ -38,16 +38,21 @@ define('PARSE_CPL_NAV', true);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
-if (($_GET['search_id'] != 'unanswered') && !$user->data['session_logged_in'] && $config['gsearch_guests'])
+$search_id = request_var('search_id', '');
+$search_mode = request_var('search_mode', '');
+$search_mode = !empty($search_mode) ? $search_mode : $search_id;
+
+if (($search_id != 'unanswered') && !$user->data['session_logged_in'] && $config['gsearch_guests'])
 {
 	$google_q = request_var('search_keywords', '', true);
 	$google_sitesearch = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
 	$google_cof = 'FORID:9';
-	$google_ie = 'ISO-8859-1';
+	//$google_ie = 'ISO-8859-1';
+	$google_ie = 'UTF-8';
 	$google_url_append = '?q=' . urlencode($google_q) . '&sitesearch=' . $google_sitesearch . '&cof=' . $google_cof . '&ie=' . $google_ie;
 	redirect(append_sid('gsearch.' . PHP_EXT . (!empty($google_q) ? $google_url_append : ''), true));
 }
@@ -86,8 +91,6 @@ if($user->data['upi2db_access'])
 		'always_read' => 'always_read',
 		's2' => 's2',
 		'do' => 'do',
-		'search_id' => 'search_id',
-		'search_mode' => 'search_id',
 		'tt' => 'tt'
 	);
 	while(list($var, $param) = @each($params))
@@ -97,20 +100,20 @@ if($user->data['upi2db_access'])
 
 	$mar_topic_id = request_var('mar_topic_id', array(0));
 
-	if (empty($unread))
+	if (!defined('UPI2DB_UNREAD'))
 	{
-		$unread = unread();
+		$user->data['upi2db_unread'] = upi2db_unread();
 	}
 
 	if($always_read || $do || ($mar && !empty($mar_topic_id)))
 	{
 		if($always_read)
 		{
-			$mark_read_text = always_read($t, $always_read, $unread);
+			$mark_read_text = always_read($t, $always_read, $user->data['upi2db_unread']);
 		}
 		if($do)
 		{
-			$mark_read_text = set_unread($t, $f, $p, $unread, $do, $tt);
+			$mark_read_text = set_unread($t, $f, $p, $user->data['upi2db_unread'], $do, $tt);
 		}
 		if($mar && !empty($mar_topic_id))
 		{
@@ -118,16 +121,16 @@ if($user->data['upi2db_access'])
 			$mark_read_text = $lang['upi2db_submit_topic_mark_read'];
 		}
 
-		$redirect_url = append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_mode . (isset($s2) ? ('&amp;s2=' . $s2) : ''));
+		$redirect_url = append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_id . (isset($s2) ? ('&amp;s2=' . $s2) : ''));
 		meta_refresh(3, $redirect_url);
 
-		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_search'], '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_mode . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '">', '</a>');
+		$message = $mark_read_text . '<br /><br />' . sprintf($lang['Click_return_search'], '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_id . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '">', '</a>');
 		message_die(GENERAL_MESSAGE, $message);
 	}
-	$count_new_posts = sizeof($unread['new_posts']);
-	$count_edit_posts = sizeof($unread['edit_posts']);
-	$count_always_read = sizeof($unread['always_read']['topics']);
-	$count_mark_unread = sizeof($unread['mark_posts']);
+	$count_new_posts = sizeof($user->data['upi2db_unread']['new_posts']);
+	$count_edit_posts = sizeof($user->data['upi2db_unread']['edit_posts']);
+	$count_always_read = sizeof($user->data['upi2db_unread']['always_read']['topics']);
+	$count_mark_unread = sizeof($user->data['upi2db_unread']['mark_posts']);
 }
 //<!-- END Unread Post Information to Database Mod -->
 
@@ -140,7 +143,7 @@ check_page_auth($cms_page['page_id'], $cms_auth_level);
 $mode = request_var('mode', '');
 $only_bluecards = (!empty($_POST['only_bluecards']) ? 1 : 0);
 $search_keywords = request_var('search_keywords', '', true);
-$search_id = request_get_var('search_id', '');
+$is_newposts = false;
 $search_author = request_var('search_author', '', true);
 
 if (!empty($search_author))
@@ -154,7 +157,6 @@ else
 	$search_topic_starter = false;
 }
 
-$search_mode = !empty($search_mode) ? $search_mode : $search_id;
 if (isset($search_mode) && ($search_mode == 'bookmarks'))
 {
 	// TO DO: force to false, and decide if we would like to overwrite it with Profile Global Blocks settings...
@@ -170,6 +172,7 @@ $search_fields = request_var('search_fields', '');
 $search_fields = check_var_value($search_fields, $search_fields_types);
 
 $search_cat = request_var('search_cat', -1);
+$search_forum = request_var('search_forum', -1);
 
 $search_thanks = request_var('search_thanks', 0);
 $search_thanks = (($search_thanks >= '2') && empty($config['disable_thanks_topics'])) ? $search_thanks : false;
@@ -205,21 +208,24 @@ $search_date = request_var('d', 0);
 $show_results = request_var('show_results', 'posts');
 $show_results = check_var_value($show_results, array('posts', 'topics'));
 
+// $sr is used to allow users to override the default result displaying for new posts
+$sr_cn = $config['cookie_name'] . '_sr';
+if(isset($_GET['sr']))
+{
+	$sr_get = (isset($_GET['sr']) && ($_GET['sr'] == 't')) ? 't' : 'p';
+	$user->set_cookie('sr', $sr_get, $user->cookie_expire);
+	$_COOKIE[$sr_cn] = $sr_get;
+}
+
+$sr_cookie = (isset($_COOKIE[$sr_cn]) && ($_COOKIE[$sr_cn] == 't')) ? 't' : 'p';
+$sr = $sr_cookie;
+
 $return_chars = request_var('return_chars', 200);
 $return_chars = ($return_chars >= -1) ? $return_chars : 200;
 // MG: if the users chooses to show no chars from posts, then we force topics view.
 $show_results = ($return_chars == 0) ? 'topics' : $show_results;
 
 $is_ajax = request_var('is_ajax', 0);
-
-if ($show_results == 'topics')
-{
-	$header_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-	$template->assign_vars(array(
-		'SEARCH_HEADER' => $header_html,
-		)
-	);
-}
 
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
@@ -241,13 +247,7 @@ if (!empty($ip_display_auth))
 	if (!empty($ip_address))
 	{
 		$ip_address = $db->sql_escape($ip_address);
-		$ip_pieces = explode('.', $ip_address);
-		$ip_pieces_count = sizeof($ip_pieces) - 1;
-
-		for ($i = 0; $i <= $ip_pieces_count; $i++)
-		{
-			$search_ip .= ($ip_pieces[$i] == '*') ? '%' : sprintf('%02x', $ip_pieces[$i]);
-		}
+		$search_ip = str_replace('*', '%', $ip_address);
 	}
 	else
 	{
@@ -260,6 +260,11 @@ if (!empty($ip_display_auth))
 $multibyte_charset = 'utf-8, big5, shift_jis, euc-kr, gb2312';
 
 // Begin core code
+if (($search_mode == 'bookmarks') && !$user->data['session_logged_in'])
+{
+	redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_SEARCH . '?search_id=bookmarks&amp;search_mode=bookmarks', true));
+}
+
 if (($search_mode == 'bookmarks') && ($mode == 'removebm'))
 {
 	// Delete Bookmarks
@@ -267,17 +272,11 @@ if (($search_mode == 'bookmarks') && ($mode == 'removebm'))
 	if ($delete && isset($_POST['topic_id_list']))
 	{
 		$topics = request_post_var('topic_id_list', array(0));
-		for($i = 0; $i < sizeof($topics); $i++)
-		{
-			$topic_list .= (($topic_list != '') ? ', ' : '') . intval($topics[$i]);
-		}
+		$topic_list = implode(',', $topics);
 		if ($user->data['session_logged_in'])
 		{
 			remove_bookmark($topic_list);
-		}
-		else
-		{
-			redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_SEARCH . '?search_id=bookmarks', true));
+			redirect(append_sid(CMS_PAGE_SEARCH . '?search_id=bookmarks&amp;search_mode=bookmarks' . (!empty($start) ? ('&amp;start=' . $start) : ''), true));
 		}
 	}
 	// Reset settings
@@ -328,11 +327,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if ($user->data['session_logged_in'])
 				{
 //<!-- BEGIN Unread Post Information to Database Mod -->
-					if(!$user->data['upi2db_access'] || $search_id == 'newposts')
+					if(!$user->data['upi2db_access'] || ($search_id == 'newposts'))
 					{
 						$sql = "SELECT post_id
 							FROM " . POSTS_TABLE . "
-							WHERE post_time >= " . $user->data['user_lastvisit'];
+							WHERE post_time >= " . $user->data['user_lastvisit'] . "
+							AND poster_id != " . $user->data['user_id'];
 					}
 					else
 					{
@@ -341,16 +341,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							switch($s2)
 							{
 								case 'perm':
-								$sql_where = (sizeof($unread['always_read']['topics']) == 0) ? 0 : implode(',', $unread['always_read']['topics']);
+								$sql_where = (sizeof($user->data['upi2db_unread']['always_read']['topics']) == 0) ? 0 : implode(',', $user->data['upi2db_unread']['always_read']['topics']);
 								break;
 
 								case 'new':
-								$sql_where = (sizeof($unread['new_posts']) == 0) ? 0 : implode(',', $unread['new_posts']);
-								$sql_where2 = (sizeof($unread['edit_posts']) == 0) ? 0 : implode(',', $unread['edit_posts']);
+								$sql_where = (sizeof($user->data['upi2db_unread']['new_posts']) == 0) ? 0 : implode(',', $user->data['upi2db_unread']['new_posts']);
+								$sql_where2 = (sizeof($user->data['upi2db_unread']['edit_posts']) == 0) ? 0 : implode(',', $user->data['upi2db_unread']['edit_posts']);
 								break;
 
 								case 'mark':
-								$sql_where = (sizeof($unread['mark_posts']) == 0) ? 0 : implode(',', $unread['mark_posts']);
+								$sql_where = (sizeof($user->data['upi2db_unread']['mark_posts']) == 0) ? 0 : implode(',', $user->data['upi2db_unread']['mark_posts']);
 								$sql_where2 = 0;
 								break;
 							}
@@ -380,7 +380,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_SEARCH . '&search_id=newposts', true));
 				}
 //<!-- BEGIN Unread Post Information to Database Mod -->
-				if(($search_id == 'upi2db') && ($s2 == 'mark'))
+				if($search_id == 'newposts')
+				{
+					$is_newposts = true;
+				}
+				if((($search_id == 'newposts') && ($sr != 't')) || (($search_id == 'upi2db') && ($s2 == 'mark')))
 				{
 					$show_results = 'posts';
 				}
@@ -401,6 +405,20 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$sort_dir = 'DESC';
 			}
 			//End Advanced IP Tools Pack MOD
+			elseif ($search_cat != -1)
+			{
+				$sql = "SELECT post_id FROM " . POSTS_TABLE . " p, " . FORUMS_TABLE . " f WHERE p.forum_id = f.forum_id AND f.parent_id = $search_cat";
+				$show_results = 'posts';
+				$sort_by = 0;
+				$sort_dir = 'DESC';
+			}
+			elseif ($search_forum != -1)
+			{
+				$sql = "SELECT post_id FROM " . POSTS_TABLE . " WHERE forum_id = $search_forum";
+				$show_results = 'posts';
+				$sort_by = 0;
+				$sort_dir = 'DESC';
+			}
 			elseif ($search_id == 'egosearch')
 			{
 				if ($user->data['session_logged_in'])
@@ -521,12 +539,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 		elseif ($search_keywords != '')
 		{
-			$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
-			$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
+
+			stopwords_synonyms_init();
 
 			$split_search = array();
 			$stripped_keywords = stripslashes($search_keywords);
-			$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', $stripped_keywords, $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
+			$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', $stripped_keywords, $stopwords_array, $synonyms_array), 'search') : split(' ', $search_keywords);
 			unset($stripped_keywords);
 
 			$word_count = 0;
@@ -950,7 +968,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			}
 			else
 			{
-				redirect(append_sid(CMS_PAGE_LOGIN. '?redirect=' . CMS_PAGE_SEARCH . '?search_id=bookmarks', true));
+				redirect(append_sid(CMS_PAGE_LOGIN. '?redirect=' . CMS_PAGE_SEARCH . '?search_id=bookmarks&amp;search_mode=bookmarks', true));
 			}
 			$result = $db->sql_query($sql);
 
@@ -977,6 +995,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		{
 			message_die(GENERAL_MESSAGE, $lang['No_search_match']);
 		}
+
+		//0 = post_time, 1; 2 = title, 3 = author, 4 = forum
+		$sort_by = request_var('sort_by', 0);
+		$sort_dir = request_var('sort_dir', '');
+		$sort_dir = ($sort_dir == 'ASC') ? $sort_dir : 'DESC';
 
 		// Delete old data from the search result table
 		$sql = 'DELETE FROM ' . SEARCH_TABLE . ' WHERE search_time < ' . ($current_time - (int) $config['session_length']);
@@ -1015,6 +1038,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		unset($store_search_data);
 
 		mt_srand ((double) microtime() * 1000000);
+		$search_type = $search_id; //create a save
 		$search_id = mt_rand();
 
 		$sql = "UPDATE " . SEARCH_TABLE . "
@@ -1037,7 +1061,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		{
 			$sql = "SELECT search_array
 				FROM " . SEARCH_TABLE . "
-				WHERE search_id = $search_id
+				WHERE search_id = " . $search_id . "
 					AND session_id = '" . $user->data['session_id'] . "'";
 			$result = $db->sql_query($sql);
 
@@ -1092,10 +1116,14 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		switch ($sort_by)
 		{
 			case 1:
-				$sql .= ($show_results == 'posts') ? 'p.post_subject' : 't.topic_title';
+				if ($show_results == 'posts')
+				{
+					$sql .= 'p.post_subject';
 				break;
+				}
 			case 2:
 				$sql .= 't.topic_title';
+				$sort_by = 2;
 				break;
 			case 3:
 				$sql .= 'u.username';
@@ -1105,8 +1133,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				break;
 			default:
 				$sql .= ($show_results == 'posts') ? 'p.post_time' : 'p2.post_time';
+				$sort_by = 0;
 				break;
 		}
+
+		$template->assign_vars(array(
+				'U_SELF' => CMS_PAGE_SEARCH . '?search_id=' . $search_type . '&amp;s2=' . $s2,
+				'U_SELF_SORT' => CMS_PAGE_SEARCH . '?search_id=' . $search_type . '&amp;s2=' . $s2 . '&amp;sort_by=' . $sort_by,
+			)
+		);
+
 		$sql .= " $sort_dir LIMIT $start, " . $per_page;
 		$result = $db->sql_query($sql);
 
@@ -1135,7 +1171,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			{
 				if($config['upi2db_edit_topic_first'])
 				{
-					if(isset($unread['edit_topics']) && in_array($row['topic_id'], $unread['edit_topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
+					if(isset($user->data['upi2db_unread']['edit_topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && $row['topic_type'] == POST_GLOBAL_ANNOUNCE)
 					{
 						$searchset_gae[] = $row;
 					}
@@ -1143,7 +1179,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					{
 						$searchset_gan[] = $row;
 					}
-					elseif(isset($unread['edit_topics']) && in_array($row['topic_id'], $unread['edit_topics']) && $row['topic_type'] == POST_ANNOUNCE)
+					elseif(isset($user->data['upi2db_unread']['edit_topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && $row['topic_type'] == POST_ANNOUNCE)
 					{
 						$searchset_ae[] = $row;
 					}
@@ -1151,7 +1187,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					{
 						$searchset_an[] = $row;
 					}
-					elseif(isset($unread['edit_topics']) && in_array($row['topic_id'], $unread['edit_topics']) && $row['topic_type'] == POST_STICKY)
+					elseif(isset($user->data['upi2db_unread']['edit_topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && $row['topic_type'] == POST_STICKY)
 					{
 						$searchset_se[] = $row;
 					}
@@ -1159,7 +1195,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					{
 						$searchset_sn[] = $row;
 					}
-					elseif(isset($unread['edit_topics']) && in_array($row['topic_id'], $unread['edit_topics']) && $row['topic_type'] != POST_GLOBAL_ANNOUNCE && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_STICKY)
+					elseif(isset($user->data['upi2db_unread']['edit_topics']) && in_array($row['topic_id'], $user->data['upi2db_unread']['edit_topics']) && $row['topic_type'] != POST_GLOBAL_ANNOUNCE && $row['topic_type'] != POST_ANNOUNCE && $row['topic_type'] != POST_STICKY)
 					{
 						$searchset_e[] = $row;
 					}
@@ -1252,8 +1288,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$meta_content['description'] = '';
 		$meta_content['keywords'] = '';
 		$nav_server_url = create_server_url();
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . $nav_main_url . '" class="nav-current">' . $nav_main_lang . '</a>';
-		$breadcrumbs_links_right = '<span class="gensmall">' . $l_search_matches . '</span>';
+		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . $nav_main_url . '" class="nav-current">' . $nav_main_lang . '</a>';
+		$breadcrumbs['bottom_right_links'] = '<span class="gensmall">' . $l_search_matches . '</span>';
+		if (!empty($is_newposts))
+		{
+			$breadcrumbs['bottom_right_links'] .= '<span class="gensmall">&nbsp;&bull;&nbsp;<a href="' . append_sid('search.' . PHP_EXT . '?search_id=newposts&amp;sr=' . (($sr == 't') ? 'p' : 't')) . '">' . (($sr == 't') ? $lang['SN_SHOW_POSTS'] : $lang['SN_SHOW_TOPICS']) . '</a></span>';
+		}
 		include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
 		if ($show_results == 'bookmarks')
@@ -1276,7 +1316,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			//$s_hidden_fields = '<input type="hidden" name="mode" value="removebm" />';
 			$template->assign_vars(array(
 				'L_DELETE' => $lang['Delete'],
-				'S_BM_ACTION' => append_sid(CMS_PAGE_SEARCH . '?search_id=bookmarks&amp;mode=removebm&amp;start=' . $start),
+				'S_BM_ACTION' => append_sid(CMS_PAGE_SEARCH . '?search_id=bookmarks&amp;search_mode=bookmarks&amp;mode=removebm' . (!empty($start) ? ('&amp;start=' . $start) : '')),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -1300,16 +1340,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			{
 				$split_word = $split_search[$j];
 
-				if ($split_word != 'and' && $split_word != 'or' && $split_word != 'not')
+				if (($split_word != 'and') && ($split_word != 'or') && ($split_word != 'not'))
 				{
 					$highlight_match[] = '#\b(' . str_replace("*", "([\w]+)?", $split_word) . ')\b#is';
 					// Added by MG: creation of $highlight_match_string
 					$words[] = $split_word;
 					$highlight_active .= " " . $split_word;
 
-					for ($k = 0; $k < sizeof($synonym_array); $k++)
+					for ($k = 0; $k < sizeof($synonyms_array); $k++)
 					{
-						list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_array[$k])));
+						list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonyms_array[$k])));
 
 						if ($replace_synonym == $split_word)
 						{
@@ -1332,8 +1372,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		$highlight_active = urlencode(trim($highlight_active));
 
-		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
 		if ($show_results == 'posts')
 		{
@@ -1412,7 +1452,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				if ($return_chars != -1)
 				{
-					$message = (strlen($message) > $return_chars) ? substr($message, 0, $return_chars) . ' ...' : $message;
+					//$message = (strlen($message) > $return_chars) ? substr($message, 0, $return_chars) . ' ...' : $message;
+					$message = truncate_html_string($message, $return_chars);
 				}
 
 				if ($highlight_active)
@@ -1438,7 +1479,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if(!$user->data['upi2db_access'])
 				{
 //<!-- END Unread Post Information to Database Mod -->
-					if ($user->data['session_logged_in'] && $searchset[$i]['post_time'] > $user->data['user_lastvisit'])
+					if ($user->data['session_logged_in'] && ($searchset[$i]['post_time'] > $user->data['user_lastvisit']))
 					{
 						if (!empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]))
 						{
@@ -1475,7 +1516,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 				else
 				{
-					search_calc_unread_ip($unread, $topic_id, $searchset, $i, $mini_post_img, $mini_post_alt, $unread_color, $folder_image, $folder_alt);
+					search_calc_unread_ip($user->data['upi2db_unread'], $topic_id, $searchset, $i, $mini_post_img, $mini_post_alt, $unread_color, $folder_image, $folder_alt);
 				}
 				if($user->data['upi2db_access'])
 				{
@@ -1553,7 +1594,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$views = $searchset[$i]['topic_views'];
 				$replies = $searchset[$i]['topic_replies'];
 
-				$topic_link = $class_topics->build_topic_icon_link($searchset[$i]['forum_id'], $searchset[$i]['topic_id'], $searchset[$i]['topic_type'], $searchset[$i]['topic_reg'], $searchset[$i]['topic_replies'], $searchset[$i]['news_id'], $searchset[$i]['poll_start'], $searchset[$i]['topic_status'], $searchset[$i]['topic_moved_id'], $searchset[$i]['post_time'], $user_replied, $replies, $unread);
+				$topic_link = $class_topics->build_topic_icon_link($searchset[$i]['forum_id'], $searchset[$i]['topic_id'], $searchset[$i]['topic_type'], $searchset[$i]['topic_reg'], $searchset[$i]['topic_replies'], $searchset[$i]['news_id'], $searchset[$i]['poll_start'], $searchset[$i]['topic_status'], $searchset[$i]['topic_moved_id'], $searchset[$i]['post_time'], $user_replied, $replies);
 
 				$topic_id = $topic_link['topic_id'];
 				$topic_id_append = $topic_link['topic_id_append'];
@@ -1677,7 +1718,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 //<!-- BEGIN Unread Post Information to Database Mod -->
 				if($user->data['upi2db_access'])
 				{
-					$mark_always_read = mark_always_read($searchset[$i]['topic_type'], $topic_id, $forum_id, 'search', 'icon', $unread, $start, $topic_link['image'], $search_mode, $s2);
+					$mark_always_read = mark_always_read($searchset[$i]['topic_type'], $topic_id, $forum_id, 'search', 'icon', $user->data['upi2db_unread'], $start, $topic_link['image'], $search_id, $s2);
 				}
 				else
 				{
@@ -1740,7 +1781,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'REG_OPTIONS' => $regoptions,
 					'REG_USER_OWN_REG' => $reg_user_own_reg,
 					// Event Registration - END
-
 					'GOTO_PAGE' => $topic_pagination['base'],
 					'GOTO_PAGE_FULL' => $topic_pagination['full'],
 					'REPLIES' => $replies,
@@ -1784,6 +1824,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		$template->assign_vars(array(
 			'PAGINATION' => generate_pagination($base_url, $total_match_count, $per_page, $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $per_page) + 1), ceil($total_match_count / $per_page)),
+			'SORT_BY' => $sort_by,
+			'SORT_DIR' => $sort_dir,
 
 			'L_AUTHOR' => $lang['Author'],
 			'L_MESSAGE' => $lang['Message'],
@@ -1800,7 +1842,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			'L_MARK_ALL' => $lang['Mark_all'],
 			'L_SUBMIT_MARK_READ' => $lang['upi2db_submit_mark_read'],
 //<!-- END Unread Post Information to Database Mod -->
-			'L_LASTPOST' => '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_id . $search_url_add) . '">' . $lang['Last_Post'] . '</a>',
+			'L_LASTPOST' => ($search_type == 'upi2db') ? $lang['Last_Post'] : ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_type . $search_url_add) . '">' . $lang['Last_Post'] . '</a>'),
 			'L_SELECT' => $lang['Select'],
 			'L_POSTED' => $lang['Posted'],
 			'L_SUBJECT' => $lang['Subject'],
@@ -1870,7 +1912,7 @@ for($i = 0; $i < sizeof($previous_days); $i++)
 }
 $l_only_bluecards = ($user->data['user_level'] >= ADMIN) ? '<input type="checkbox" name="only_bluecards" />&nbsp;' . $lang['Search_only_bluecards'] : '' ;
 
-$breadcrumbs_links_right = '<span class="gensmall"><a href="' . append_sid('gsearch.' . PHP_EXT) . '">' . $lang['GSEARCH_ENGINE'] . '</a></span>';
+$breadcrumbs['bottom_right_links'] = '<span class="gensmall"><a href="' . append_sid('gsearch.' . PHP_EXT) . '">' . $lang['GSEARCH_ENGINE'] . '</a></span>';
 
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 
@@ -1903,6 +1945,7 @@ $template->assign_vars(array(
 	'L_TOPICS' => $lang['Topics'],
 	'L_POSTS' => $lang['Posts'],
 	'L_ONLY_BLUECARDS' => $l_only_bluecards,
+
 	'S_SEARCH_ACTION' => append_sid(CMS_PAGE_SEARCH . '?mode=results'),
 	'S_CHARACTER_OPTIONS' => $s_characters,
 	'S_FORUM_OPTIONS' => $s_forums,

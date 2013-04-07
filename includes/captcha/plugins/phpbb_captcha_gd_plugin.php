@@ -124,11 +124,11 @@ class phpbb_captcha_gd extends phpbb_default_captcha
 			}
 
 			//add_log('admin', 'LOG_CONFIG_VISUAL');
-			trigger_error($lang['CONFIG_UPDATED'] . adm_back_link($module->u_action));
+			trigger_error($lang['CONFIG_UPDATED'] . page_back_link($module->u_action));
 		}
 		else if ($submit)
 		{
-			trigger_error($lang['FORM_INVALID'] . adm_back_link($module->u_action));
+			trigger_error($lang['FORM_INVALID'] . page_back_link($module->u_action));
 		}
 		else
 		{

@@ -536,7 +536,8 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 		$this_userdata = get_userdata($username, true);
 		if (!is_array($this_userdata))
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 		$user_id = $this_userdata['user_id'];
 	}
@@ -903,7 +904,7 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 	}
 
 	// Dump in the page header ...
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'auth_ug_body.tpl'));
 
@@ -962,14 +963,13 @@ elseif (($mode == 'user' && (isset($_POST['username']) || $user_id)) || (($mode 
 else
 {
 	// Select a user/group
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . (($mode == 'user') ? 'user_select_body.tpl' : 'auth_select_body.tpl')));
 
 	if ($mode == 'user')
 	{
 		$template->assign_vars(array(
-			'L_FIND_USERNAME' => $lang['Find_username'],
 			'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser')
 			)
 		);
@@ -1018,6 +1018,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

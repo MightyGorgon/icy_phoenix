@@ -35,4 +35,7 @@
 </table>
 </form>
 
+<!-- Do not remove this copyright notice -->
+{NIVISEC_COPYRIGHT}
+
 <!-- INCLUDE overall_footer.tpl -->

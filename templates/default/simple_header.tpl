@@ -29,19 +29,12 @@
 
 <!-- INCLUDE overall_inc_header_js.tpl -->
 
-<!-- IF S_NIFTY -->
-<!-- Nifty Start -->
-<!-- <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}nifty/nifty_corners.css" type="text/css" /> -->
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}nifty/nifty_cube.js"></script>
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}nifty/nifty_layout.js"></script>
-<!-- Nifty End -->
-<!-- ENDIF -->
-
 </head>
-<body <!-- IF S_SLIDESHOW_SCRIPT -->onload="runSlideShow()"<!-- ENDIF -->>
-<a name="top"></a>
+<body<!-- IF S_SLIDESHOW_SCRIPT --> onload="runSlideShow()"<!-- ENDIF --><!-- IF NO_PADDING --> style="margin: 0 !important; padding: 0 !important;"<!-- ENDIF -->>
+<a name="top" id="top"></a>
+<!-- IF not NO_PADDING --><div class="simple_header_wrapper"><!-- ENDIF -->
 <div class="rounded_line">
 <table id="forumtable" width="100%" cellspacing="0" style="width: 100% !important;">
 <tr>
-	<td id="content">
+	<td id="content"<!-- IF NO_PADDING --> style="margin: 0 !important; padding: 0 !important;"<!-- ENDIF -->>
 <!-- ENDIF -->

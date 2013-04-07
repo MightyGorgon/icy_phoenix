@@ -26,19 +26,22 @@ $target_user_id = request_get_var(POST_USERS_URL, ANONYMOUS);
 
 if (empty($target_user_id) || ($target_user_id == ANONYMOUS))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 $profiledata = get_userdata($target_user_id);
 if (empty($profiledata) || empty($profiledata['user_id']))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 // We force the user to be active to show its profile... or we require the viewer to be admin!
 if (empty($profiledata['user_active']) && ($user->data['user_level'] != ADMIN))
 {
-	message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
 // Update the profile view list
@@ -148,16 +151,14 @@ $user_browser = get_user_browser($profiledata['user_browser']);
 // Mighty Gorgon - HTTP AGENTS - END
 
 // Mighty Gorgon - Full Album Pack - BEGIN
+include(IP_ROOT_PATH . 'includes/album_mod/album_functions.' . PHP_EXT);
+include(IP_ROOT_PATH . 'includes/album_mod/album_hierarchy_functions.' . PHP_EXT);
 $cms_page_id_tmp = 'album';
 $cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
 $show_latest_pics = check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp, true);
 if ($show_latest_pics)
 {
 	setup_extra_lang(array('lang_album_main'));
-
-	$album_show_pic_url = 'album_showpage.' . PHP_EXT;
-	$album_rate_pic_url = $album_show_pic_url;
-	$album_comment_pic_url = $album_show_pic_url;
 
 	$sql = "SELECT * FROM " . ALBUM_CONFIG_TABLE;
 	$result = $db->sql_query($sql, 0, 'album_config_');
@@ -236,52 +237,23 @@ if ($show_latest_pics)
 					$pic_preview = 'onmouseover="showtrail(\'' . append_sid('album_picm.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']) . '\',\'' . addslashes($recentrow[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 				}
 
-				$pic_sp_link = append_sid('album_showpage.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-				$pic_dl_link = append_sid('album_pic.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-
-				// Temporarily force to TRUE
-				$album_user_access['view'] = true;
-				if ($album_user_access['view'] == false)
-				{
-					$pic_title = '&nbsp;';
-					$pic_desc = '&nbsp;';
-					$pic_thumbnail = $images['no_thumbnail'];
-					$pic_views = 0;
-				}
-				else
-				{
-					$pic_title = $recentrow[$j]['pic_title'];
-					$pic_desc = $recentrow[$j]['pic_desc'];
-					$pic_thumbnail = append_sid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $recentrow[$j]['pic_id']);
-					$pic_views = $recentrow[$j]['pic_view_count'];
-				}
-
-				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', array(
-					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
-					'U_PIC_SP' => $pic_sp_link,
-					'U_PIC_DL' => $pic_dl_link,
-
-					'THUMBNAIL' => $pic_thumbnail,
+				$template_vars = array(
 					'PIC_PREVIEW_HS' => $pic_preview_hs,
 					'PIC_PREVIEW' => $pic_preview,
-					'DESC' => $pic_desc
-					)
 				);
+				album_build_column_vars($template_vars, $recentrow[$j]);
+				$template->assign_block_vars('recent_pics_block.recent_pics.recent_col', $template_vars);
 
 				$recent_poster = colorize_username($recentrow[$j]['user_id'], $recentrow[$j]['username'], $recentrow[$j]['user_color'], $recentrow[$j]['user_active']);
-				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', array(
-					'PIC_TITLE' => $pic_title,
-					'TITLE' => '<a href = "' . $album_show_pic_url . '?pic_id=' . $recentrow[$j]['pic_id'] . '">' . $pic_title . '</a>',
+
+				$template_vars = array(
 					'POSTER' => $recent_poster,
-					'TIME' => create_date($config['default_dateformat'], $recentrow[$j]['pic_time'], $config['board_timezone']),
-
-					'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
-					'U_PIC_SP' => $pic_sp_link,
-					'U_PIC_DL' => $pic_dl_link,
-
-					'VIEW' => $pic_views,
-					)
+					'PIC_PREVIEW_HS' => $pic_preview_hs,
+					'PIC_PREVIEW' => $pic_preview,
+					'GROUP_NAME' => 'profile',
 				);
+				album_build_detail_vars($template_vars, $recentrow[$j]);
+				$template->assign_block_vars('recent_pics_block.recent_pics.recent_detail', $template_vars);
 			}
 		}
 	}
@@ -333,7 +305,7 @@ $pm = '<a href="' . $pm_url . '">' . $lang['Send_private_message'] . '</a>';
 $email_url = '';
 if (empty($user->data['user_id']) || ($user->data['user_id'] == ANONYMOUS))
 {
-	if (!empty($profiledata['user_viewemail']))
+	if (!empty($profiledata['user_allow_viewemail']))
 	{
 		$email_img = '<img src="' . $images['icon_email'] . '" alt="' . $lang['Hidden_email'] . '" title="' . $lang['Hidden_email'] . '" />';
 	}
@@ -343,7 +315,7 @@ if (empty($user->data['user_id']) || ($user->data['user_id'] == ANONYMOUS))
 	}
 	$email = '&nbsp;';
 }
-elseif (!empty($profiledata['user_viewemail']) || $user->data['user_level'] == ADMIN)
+elseif (!empty($profiledata['user_allow_viewemail']) || $user->data['user_level'] == ADMIN)
 {
 	$email_url = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $profiledata['user_id']) : 'mailto:' . $profiledata['user_email'];
 	$email_img = '<a href="' . $email_url . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
@@ -363,12 +335,16 @@ $im_links_array = array(
 	'chat' => 'id',
 	'aim' => 'aim',
 	'facebook' => 'facebook',
+	'flickr' => 'flickr',
+	'googleplus' => 'googleplus',
 	'icq' => 'icq',
 	'jabber' => 'jabber',
+	'linkedin' => 'linkedin',
 	'msn' => 'msnm',
 	'skype' => 'skype',
 	'twitter' => 'twitter',
 	'yahoo' => 'yim',
+	'youtube' => 'youtube',
 );
 
 $all_ims = array();
@@ -472,10 +448,11 @@ if ($user_sig != '')
 }
 
 
-if ($profiledata['user_id'])
+if (!empty($profiledata['user_id']))
 {
 	$user_most_active = get_forum_most_active($profiledata['user_id']);
 	$user_most_active_forum_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . urlencode($user_most_active['forum_id']));
+	$user_most_active_forum_id = $user_most_active['forum_id'];
 	$user_most_active_forum_name = $user_most_active['forum_name'];
 	$user_most_active_posts = $user_most_active['posts'];
 }
@@ -549,8 +526,8 @@ $u_search_author = urlencode(strtr($profiledata['username'], array_flip(get_html
 // Generate page
 $link_name = htmlspecialchars($profiledata['username']);
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
-$breadcrumbs_links_right = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author) . '">' . htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow)) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
+$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+$breadcrumbs['bottom_right_links'] = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author) . '">' . htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow)) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
 
 display_upload_attach_box_limits($profiledata['user_id']);
 
@@ -570,7 +547,6 @@ if (!empty($config['plugins']['feedback']['enabled']) && !empty($config['plugins
 // Mighty Gorgon - Feedback - END
 
 $is_friend = user_check_friend_foe($profiledata['user_id'], true);
-
 $template->assign_vars(array(
 	// Mighty Gorgon - Feedback - BEGIN
 	'FEEDBACK' => $feedback_received,
@@ -584,11 +560,11 @@ $template->assign_vars(array(
 
 	// Start add - Last visit MOD
 	'L_LOGON' => $lang['Last_logon'],
-	'LAST_LOGON' => (($user->data['user_level'] == ADMIN) || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastlogon'])? create_date($config['default_dateformat'], $profiledata['user_lastlogon'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
+	'LAST_LOGON' => (($user->data['user_level'] == ADMIN) || (!$config['hidde_last_logon'] && $profiledata['user_allow_viewonline'])) ? (($profiledata['user_lastvisit'])? create_date($config['default_dateformat'], $profiledata['user_lastvisit'], $config['board_timezone']):$lang['Never_last_logon']):$lang['Hidde_last_logon'],
 	'L_TOTAL_ONLINE_TIME' => $lang['Total_online_time'],
 	'TOTAL_ONLINE_TIME' => make_hours($profiledata['user_totaltime']),
 	'L_LAST_ONLINE_TIME' => $lang['Last_online_time'],
-	'LAST_ONLINE_TIME' => make_hours($profiledata['user_session_time'] - $profiledata['user_lastlogon']),
+	'LAST_ONLINE_TIME' => make_hours($profiledata['user_session_time'] - $profiledata['user_lastvisit']),
 	'L_NUMBER_OF_VISIT' => $lang['Number_of_visit'],
 	'NUMBER_OF_VISIT' => ($profiledata['user_totallogon'] > 0) ? $profiledata['user_totallogon'] : $lang['None'],
 	'L_NUMBER_OF_PAGES' => $lang['Number_of_pages'],
@@ -609,12 +585,14 @@ $template->assign_vars(array(
 	// Mighty Gorgon - Multiple Ranks - END
 	'POSTS_PER_DAY' => $posts_per_day,
 	'POSTS' => $profiledata['user_posts'],
+	'S_POSTS_SECTION' => ($profiledata['user_posts'] > 0) ? true : false,
 	'PERCENTAGE' => $percentage . '%',
 	'POST_DAY_STATS' => sprintf($lang['User_post_day_stats'], $posts_per_day),
 	'POST_PERCENT_STATS' => sprintf($lang['User_post_pct_stats'], $percentage),
 	'THANKS_RECEIVED' => (($total_thanks_received > 0) ? ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_thanks=' . $profiledata['user_id']) . '">' . $total_thanks_received . '</a>') : $total_thanks_received),
 	'INVISION_AVATAR_IMG' => $avatar_img,
 	'INVISION_MOST_ACTIVE_FORUM_URL' => $user_most_active_forum_url,
+	'INVISION_MOST_ACTIVE_FORUM_ID' => $user_most_active_forum_id,
 	'INVISION_MOST_ACTIVE_FORUM_NAME' => $user_most_active_forum_name,
 	'INVISION_POST_DAY_STATS' => sprintf($lang['Invision_User_post_day_stats'], $posts_per_day),
 	'INVISION_POST_PERCENT_STATS' => sprintf($lang['Invision_User_post_pct_stats'], $percentage),
@@ -646,17 +624,19 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yahoo_img,
 	'YIM' => $yahoo,
 	'U_YIM' => $yahoo_url,
-	'U_AJAX_SHOUTBOX_PVT_LINK' => ($user->data['session_logged_in'] ? append_sid('ajax_shoutbox.' . PHP_EXT . '?chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']))) : '#'),
 
-	'ICON_CHAT' => $all_ims['chat']['icon'],
 	'ICON_AIM' => $all_ims['aim']['icon'],
 	'ICON_FACEBOOK' => $all_ims['facebook']['icon'],
+	'ICON_FLICKR' => $all_ims['flickr']['icon'],
+	'ICON_GOOGLEPLUS' => $all_ims['googleplus']['icon'],
 	'ICON_ICQ' => $all_ims['icq']['icon'],
 	'ICON_JABBER' => $all_ims['jabber']['icon'],
+	'ICON_LINKEDIN' => $all_ims['linkedin']['icon'],
 	'ICON_MSN' => $all_ims['msn']['icon'],
 	'ICON_SKYPE' => $all_ims['skype']['icon'],
 	'ICON_TWITTER' => $all_ims['twitter']['icon'],
 	'ICON_YAHOO' => $all_ims['yahoo']['icon'],
+	'ICON_YOUTUBE' => $all_ims['youtube']['icon'],
 
 	//'LOCATION' => ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;',
 	'LOCATION' => $location,
@@ -675,7 +655,6 @@ $template->assign_vars(array(
 	'GENDER' => $gender,
 	// End add - Gender MOD
 
-
 	// BIRTHDAY - BEGIN
 	'BIRTHDAY' => $user_birthday,
 	// BIRTHDAY - END
@@ -690,6 +669,7 @@ $template->assign_vars(array(
 	'L_TOTAL_POSTS' => $lang['Total_posts'],
 	'L_SEARCH_USER_POSTS' => htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])),
 	'L_SEARCH_USER_TOPICS' => htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])),
+	'L_NO_POSTS' => $lang['No_Posts'],
 	'L_CONTACT' => $lang['Contact'],
 	'L_EMAIL_ADDRESS' => $lang['Email_address'],
 	'L_EMAIL' => $lang['Email'],
@@ -731,8 +711,9 @@ $template->assign_vars(array(
 	'L_NO_PICS' => $lang['No_Pics'],
 	'L_RECENT_PUBLIC_PICS' => $lang['Recent_Public_Pics'],
 	'S_COLS' => $album_config['cols_per_page'],
-	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100 / $album_config['cols_per_page']) . '%',
 	//'S_COL_WIDTH' => (100/$album_config['cols_per_page']) . '%',
+	'S_COL_WIDTH' => ($album_config['cols_per_page'] == 0) ? '100%' : (100 / $album_config['cols_per_page']) . '%',
+	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 	// Mighty Gorgon - Full Album Pack - END
 	// Start add - Online/Offline/Hidden Mod
 	'ONLINE_STATUS_IMG' => $online_status_img,
@@ -789,6 +770,35 @@ $template->assign_vars(array(
 	)
 );
 
+// Profiled user must be online, so must the current user, and the profiled user must not the currently logged in user
+if (($user_online_status != 'offline') && $user->data['session_logged_in'] && ($user->data['user_id'] != $profiledata['user_id']))
+{
+	$display_chat_link = true;
+	if (!empty($config['ajax_chat_check_online']))
+	{
+		if (!function_exists('user_in_chat_session'))
+		{
+			include(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
+		}
+		// Check if the user is in the chat room
+		$is_user_in_chat = user_in_chat_session($profiledata['user_id']);
+		$display_chat_link = !empty($is_user_in_chat) ? true : false;
+	}
+
+	if ($display_chat_link)
+	{
+		$ajax_chat_page = !empty($config['ajax_chat_link_type']) ? CMS_PAGE_AJAX_CHAT : CMS_PAGE_AJAX_SHOUTBOX;
+		$ajax_chat_room = 'chat_room=' . (min($user->data['user_id'], $profiledata['user_id']) . '|' . max($user->data['user_id'], $profiledata['user_id']));
+		$ajax_chat_link = append_sid($ajax_chat_page . '?' . $ajax_chat_room);
+		$ajax_chat_ref = !empty($config['ajax_chat_link_type']) ? ($ajax_chat_link . '" target="_chat') : ('#" onclick="window.open(\'' . $ajax_chat_link . '\', \'_chat\', \'width=720,height=600,resizable=yes\'); return false;');
+		$template->assign_vars(array(
+			'U_AJAX_SHOUTBOX_PVT_LINK' => $ajax_chat_ref,
+			'ICON_CHAT' => $all_ims['chat']['icon'],
+			'U_CHAT' => $all_ims['chat']['url']
+			)
+		);
+	}
+}
 
 // Custom Profile Fields - BEGIN
 // Include Language
@@ -798,8 +808,6 @@ include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 $profile_data = get_fields('WHERE view_in_profile = ' . VIEW_IN_PROFILE . ' AND users_can_view = ' . ALLOW_VIEW);
 $profile_names = array();
 
-$abouts = array();
-$contacts = array();
 foreach($profile_data as $field)
 {
 	$name = $field['field_name'];
@@ -828,22 +836,20 @@ foreach($profile_data as $field)
 
 	if($location == 1)
 	{
-		$contacts[] = '<td valign="top" class="' . $theme['td_class2'] . '"><b><span class="genmed">' . $field_name . '</span></b></td><td class="' . $theme['td_class1'] . ' post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
+		$template->assign_block_vars('custom_contact', array(
+			'NAME' => $field_name,
+			'VALUE' => $profile_names[$name],
+			)
+		);
 	}
 	else
 	{
-		$abouts[] = '<td valign="top" class="' . $theme['td_class2'] . '"><b><span class="genmed">' . $field_name . '</span></b></td><td class="' . $theme['td_class1'] . ' post-buttons"><span class="genmed">' . $profile_names[$name] . '&nbsp;</span></td>';
+		$template->assign_block_vars('custom_about', array(
+			'NAME' => $field_name,
+			'VALUE' => $profile_names[$name],
+			)
+		);
 	}
-}
-
-foreach($abouts as $about_field)
-{
-	$template->assign_block_vars('custom_about',array('ABOUT' => $about_field));
-}
-
-foreach($contacts as $contact_field)
-{
-	$template->assign_block_vars('custom_contact',array('CONTACT' => $contact_field));
 }
 // Custom Profile Fields - END
 
@@ -897,7 +903,7 @@ if (sizeof($groups) > 0)
 		// groupe visible : afficher
 		if ($is_ok)
 		{
-			$u_group_name = append_sid('groupcp.' . PHP_EXT . '?g=' . $groups[$i]['group_id']);
+			$u_group_name = append_sid(CMS_PAGE_GROUP_CP . '?g=' . $groups[$i]['group_id']);
 			$l_group_name = $groups[$i]['group_name'];
 			$l_group_desc = $groups[$i]['group_description'];
 			$template->assign_block_vars('groups', array(

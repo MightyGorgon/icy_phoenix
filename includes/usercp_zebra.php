@@ -192,7 +192,7 @@ $db->sql_freeresult($result);
 
 $link_name = $lang['UCP_ZEBRA_FRIENDS'];
 $nav_server_url = create_server_url();
-$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
+$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 
 if ($username_count > 0)
 {
@@ -211,7 +211,6 @@ $template->assign_vars(array(
 	'L_SELECT' => $lang['Select'],
 	'L_REMOVE_SELECTED' => $lang['Remove_selected'],
 	'L_ADD_MEMBER' => $lang['Add_member'],
-	'L_FIND_USERNAME' => $lang['Find_username'],
 
 	'L_ADD_FOES' => $lang['ADD_FOES'],
 	'L_ADD_FOES_EXPLAIN' => $lang['ADD_FOES_EXPLAIN'],

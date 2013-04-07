@@ -243,7 +243,7 @@ function send_file_to_browser($attachment, $upload_dir)
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -377,10 +377,7 @@ if (!$thumbnail)
 // Determine the 'presenting'-method
 if ($download_mode == PHYSICAL_LINK)
 {
-	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-	$server_name = preg_replace('/^\/?(.*?)\/?$/', '\1', trim($config['server_name']));
-	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
-	$script_name = preg_replace('/^\/?(.*?)\/?$/', '/\1', trim($config['script_path']));
+	$server_url = create_server_url();
 
 	if ($script_name[strlen($script_name)] != '/')
 	{
@@ -400,8 +397,8 @@ if ($download_mode == PHYSICAL_LINK)
 	else
 	{
 		$url = $upload_dir . '/' . $attachment['physical_filename'];
-//		$url = preg_replace('/^\/?(.*?\/)?$/', '\1', trim($url));
-		$redirect_path = $server_protocol . $server_name . $server_port . $script_name . $url;
+		//$url = preg_replace('/^\/?(.*?\/)?$/', '\1', trim($url));
+		$redirect_path = $server_url . $url;
 	}
 
 	// Redirect via an HTML form for PITA webservers

@@ -21,21 +21,19 @@ include_once(IP_ROOT_PATH . 'includes/class_cms_admin.' . PHP_EXT);
 
 $config['jquery_ui'] = true;
 
+// Start session management
+$user->session_begin();
+$auth->acl($user->data);
+$user->setup();
+// End session management
+
 $cms_admin = new cms_admin();
 $cms_admin->root = CMS_PAGE_CMS;
 //$cms_admin->init_vars($mode_array, $action_array);
 
-// Start session management
-$user->session_begin();
-//$auth->acl($user->data);
-$user->setup();
-// End session management
-
-$js_temp = array('js/cms.js', 'js/prototype.js', 'scriptaculous/scriptaculous.js', 'scriptaculous/unittest.js');
+$js_temp = array('js/cms.js');
 $template->js_include = array_merge($template->js_include, $js_temp);
 unset($js_temp);
-
-setup_extra_lang(array('lang_cms', 'lang_dyn_menu'));
 
 $access_allowed = get_cms_access_auth('cms_menu');
 
@@ -79,22 +77,6 @@ $action = (isset($_POST['save']) ? 'save' : $action);
 $action = (isset($_POST['add_cat']) ? 'add' : $action);
 $action = (in_array($action, $action_array) ? $action : false);
 
-$cms_ajax = request_var('cms_ajax', '');
-$cms_ajax = (empty($cms_ajax) && (($_COOKIE['cms_ajax'] == 'true') || ($_COOKIE['cms_ajax'] == 'false')) ? $_COOKIE['cms_ajax'] : $cms_ajax);
-$cms_ajax = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
-if (($cms_ajax && ($_COOKIE['cms_ajax'] != 'true')) || (!$cms_ajax && ($_COOKIE['cms_ajax'] != 'false')))
-{
-	@setcookie('cms_ajax', ($cms_ajax ? 'true' : 'false'), time() + 31536000);
-}
-$config['cms_style'] = $cms_ajax ? 1 : 0;
-$cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$template->assign_vars(array(
-	'U_CMS_AJAX_SWITCH' => append_sid(CMS_PAGE_CMS . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
-	'L_CMS_AJAX_SWITCH' => !empty($cms_ajax) ? $lang['CMS_AJAX_DISABLE'] : $lang['CMS_AJAX_ENABLE'],
-	)
-);
-
 $mi_id = (isset($_GET['mi_id']) ? intval($_GET['mi_id']) : (isset($_POST['mi_id']) ? intval($_POST['mi_id']) : false));
 $m_id = (isset($_GET['m_id']) ? intval($_GET['m_id']) : (isset($_POST['m_id']) ? intval($_POST['m_id']) : false));
 
@@ -105,21 +87,10 @@ if(isset($_POST['cancel']) || isset($_POST['reset']))
 	redirect(append_sid('cms_menu.' . PHP_EXT . $s_append_url, true));
 }
 
-$show_cms_menu = (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
-	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
-
-if($config['cms_dock'])
-{
-	$template->assign_block_vars('cms_dock_on', array());
-}
-else
-{
-	$template->assign_block_vars('cms_dock_off', array());
-}
 
 /* TABS - BEGIN */
 $cms_admin->generate_tabs('menu');
@@ -170,6 +141,9 @@ $mi_menu_icon_input_name = 'menu_icon';
 
 //echo($s_hidden_fields);
 //echo($s_append_url);
+
+// Before starting with the loop... let's load the full menu links array!
+$default_links_array = cms_menu_default_links_array();
 
 if($mode == 'menu_item')
 {
@@ -258,14 +232,12 @@ if($mode == 'menu_item')
 
 				//$mi_menu_name_lang = $m_info['menu_name_lang'];
 				$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
-				foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
+				if (!empty($lang['menu_item']))
 				{
-					$mi_menu_name_lang .= '<option value="' . $lk .'"';
-					if($lk == $m_info['menu_name_lang'])
+					foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
 					{
-						$mi_menu_name_lang .= ' selected="selected"';
+						$mi_menu_name_lang .= '<option value="' . $lk . '"' . (($lk == $m_info['menu_name_lang']) ? ' selected="selected"' : '') . '>' . $mi_menu_name_lang_key . '</option>';
 					}
-					$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
 				}
 
 				$mi_menu_name = $m_info['menu_name'];
@@ -277,17 +249,12 @@ if($mode == 'menu_item')
 
 				if($item_type != 'category_item')
 				{
-					$link_default_array = build_default_link_array();
-					$mi_menu_default ='';
+					$mi_menu_default = '';
 					$mi_menu_disabled = ($m_info['menu_default'] != 0) ? 'disabled' : '';
-					for ($i = 0; $i < sizeof($link_default_array); $i++)
+					foreach ($default_links_array as $k => $v)
 					{
-						$mi_menu_default .= '<option value="' . $i .'"';
-						if($m_info['menu_default'] == $i)
-						{
-							$mi_menu_default .= ' selected="selected"';
-						}
-						$mi_menu_default .= '>' . $link_default_array[$i] . '</option>';
+						$mi_menu_lang = !empty($lang[$v['lang']]) ? $lang[$v['lang']] : $v['lang'];
+						$mi_menu_default .= '<option value="' . $k . '"' . (($m_info['menu_default'] == $k) ? ' selected="selected"' : '') . '>' . $mi_menu_lang . '</option>';
 					}
 				}
 
@@ -297,18 +264,14 @@ if($mode == 'menu_item')
 					'1' => $lang['B_GUESTS'],
 					'2' => $lang['B_REG'],
 					'3' => $lang['B_MOD'],
-					'4' => $lang['B_ADMIN']
+					'4' => $lang['B_ADMIN'],
+					'8' => $lang['B_ALL_NO_BOTS'],
 				);
 
 				$mi_auth_view ='';
-				for ($i = 0; $i < sizeof($view_array); $i++)
+				foreach ($view_array as $view_k => $view_lang)
 				{
-					$mi_auth_view .= '<option value="' . $i .'"';
-					if($m_info['auth_view'] == $i)
-					{
-						$mi_auth_view .= ' selected="selected"';
-					}
-					$mi_auth_view .= '>' . $view_array[$i] . '</option>';
+					$mi_auth_view .= '<option value="' . $view_k . '"' . (($m_info['auth_view'] == $view_k) ? ' selected="selected"' : '') . '>' . $view_lang . '</option>';
 				}
 
 				//$mi_auth_view_group = $m_info['auth_view_group'];
@@ -355,8 +318,7 @@ if($mode == 'menu_item')
 				{
 					$parent_cat_item_parsed = true;
 					$row['menu_name'] = !empty($lang['cat_item_' . $row['menu_name_lang']]) ? $lang['cat_item_' . $row['menu_name_lang']] : $row['menu_name'];
-					$mi_cat_parent_id .= '<option value="' . $row['cat_id'] . '"';
-					$mi_cat_parent_id .= '>' . $row['menu_name'] . '</option>';
+					$mi_cat_parent_id .= '<option value="' . $row['cat_id'] . '">' . $row['menu_name'] . '</option>';
 				}
 				if ($parent_cat_item_parsed == false)
 				{
@@ -372,8 +334,7 @@ if($mode == 'menu_item')
 			$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
 			foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
 			{
-				$mi_menu_name_lang .= '<option value="' . $lk .'"';
-				$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
+				$mi_menu_name_lang .= '<option value="' . $lk .'">' . $mi_menu_name_lang_key . '</option>';
 			}
 
 			$mi_menu_status = '1';
@@ -385,17 +346,12 @@ if($mode == 'menu_item')
 
 			if($item_type != 'category_item')
 			{
-				$link_default_array = build_default_link_array();
-				$mi_menu_default ='';
+				$mi_menu_default = '';
 				$mi_menu_disabled = ($m_info['menu_default'] != 0) ? 'disabled' : '';
-				for ($i = 0; $i < sizeof($link_default_array); $i++)
+				foreach ($default_links_array as $k => $v)
 				{
-					$mi_menu_default .= '<option value="' . $i .'"';
-					if($m_info['menu_default'] == $i)
-					{
-						$mi_menu_default .= ' selected="selected"';
-					}
-					$mi_menu_default .= '>' . $link_default_array[$i] . '</option>';
+					$mi_menu_lang = !empty($lang[$v['lang']]) ? $lang[$v['lang']] : $v['lang'];
+					$mi_menu_default .= '<option value="' . $k . '"' . (($m_info['menu_default'] == $k) ? ' selected="selected"' : '') . '>' . $mi_menu_lang . '</option>';
 				}
 			}
 
@@ -405,14 +361,14 @@ if($mode == 'menu_item')
 				'1' => $lang['B_GUESTS'],
 				'2' => $lang['B_REG'],
 				'3' => $lang['B_MOD'],
-				'4' => $lang['B_ADMIN']
+				'4' => $lang['B_ADMIN'],
+				'8' => $lang['B_ALL_NO_BOTS'],
 			);
 
 			$mi_auth_view ='';
-			for ($i = 0; $i < sizeof($view_array); $i++)
+			foreach ($view_array as $view_k => $view_lang)
 			{
-				$mi_auth_view .= '<option value="' . $i .'"';
-				$mi_auth_view .= ' />' . $view_array[$i] . '</option>';
+				$mi_auth_view .= '<option value="' . $view_k . '">' . $view_lang . '</option>';
 			}
 
 			//$mi_auth_view_group = $m_info['auth_view_group'];
@@ -518,13 +474,14 @@ if($mode == 'menu_item')
 		$mi_menu_icon = request_post_var('menu_icon', '', true);
 		$mi_menu_desc = request_post_var('menu_desc', '', true);
 		$mi_menu_default = request_post_var('menu_default', 0);
-		if ($mi_menu_default > '0')
+		if ($mi_menu_default > 0)
 		{
-			$mi_menu_name = build_default_link_name($mi_menu_default);
+			$mi_menu_name_lang_value = $lang[$default_links_array[$mi_menu_default]['lang']];
+			$mi_menu_name = !empty($mi_menu_name_lang_value) ? $mi_menu_name_lang_value : $lang['MENU_EMPTY_LINK'];
 			$mi_menu_name_lang = '';
-			$mi_menu_link = build_default_link_url($mi_menu_default);
+			$mi_menu_link = isset($default_links_array[$mi_menu_default]['link']) ? $default_links_array[$mi_menu_default]['link'] : CMS_PAGE_FORUM;
 			$mi_menu_link_external = '0';
-			$mi_auth_view = build_default_link_auth($mi_menu_default);
+			$mi_auth_view = isset($default_links_array[$mi_menu_default]['auth']) ? $default_links_array[$mi_menu_default]['auth'] : AUTH_CMS_ADMIN;
 		}
 		else
 		{
@@ -789,10 +746,10 @@ elseif($mode == 'menu_block')
 
 				$append_url = '&amp;mi_id=' . $cat_item_data['menu_item_id'] . '&amp;m_id=' . $m_id . '&amp;item_type=category_item';
 
-				$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['arrows_cms_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
-				$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['arrows_cms_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
-				$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_EDIT'] . '" title="' . $lang['CMS_EDIT'] . '" /></a>&nbsp;';
-				$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete&amp;cat_id=' . $cat_item_data['cat_id'] . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_DELETE'] . '" title="' . $lang['CSM_DELETE'] . '" /></a>';
+				$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['cms_arrow_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
+				$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['cms_arrow_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
+				$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['cms_icon_edit'] . '" alt="' . $lang['CMS_EDIT'] . '" title="' . $lang['CMS_EDIT'] . '" /></a>&nbsp;';
+				$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete&amp;cat_id=' . $cat_item_data['cat_id'] . $append_url) . '"><img src="' . $images['cms_icon_delete'] . '" alt="' . $lang['CSM_DELETE'] . '" title="' . $lang['CSM_DELETE'] . '" /></a>';
 
 				if ((sizeof($cat_item) == 1) && ($cat_counter == 1))
 				{
@@ -854,15 +811,15 @@ elseif($mode == 'menu_block')
 						}
 						else
 						{
-							$menu_url = build_complete_url($menu_cat_item_data['menu_default'], '', $menu_cat_item_data['menu_link'], $menu_icon);
+							$menu_url = cms_menu_build_complete_url($menu_cat_item_data['menu_default'], '', $menu_cat_item_data['menu_link'], $menu_icon);
 						}
 
 						$append_url = '&amp;mi_id=' . $menu_cat_item_data['menu_item_id'] . '&amp;m_id=' . $m_id . '&amp;cat_parent_id=' . $menu_cat_item_data['cat_parent_id'];
 
-						$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['arrows_cms_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
-						$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['arrows_cms_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
-						$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['block_edit'] . '" alt="' . $lang['CMS_EDIT'] . '" title="' . $lang['CMS_EDIT'] . '" /></a>&nbsp;';
-						$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete' . $append_url) . '"><img src="' . $images['block_delete'] . '" alt="' . $lang['CSM_DELETE'] . '" title="' . $lang['CSM_DELETE'] . '" /></a>';
+						$b_move_up = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=0') . '"><img src="' . $images['cms_arrow_up'] . '" alt="' . $lang['B_Move_Up'] . '" title="' . $lang['B_Move_Up'] . '" /></a>&nbsp;';
+						$b_move_down = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_block' . $append_url . '&amp;move=1') . '"><img src="' . $images['cms_arrow_down'] . '" alt="' . $lang['B_Move_Down'] . '" title="' . $lang['B_Move_Down'] . '" /></a>&nbsp;';
+						$b_edit = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=edit' . $append_url) . '"><img src="' . $images['cms_icon_edit'] . '" alt="' . $lang['CMS_EDIT'] . '" title="' . $lang['CMS_EDIT'] . '" /></a>&nbsp;';
+						$b_delete = '<a href="' . append_sid('cms_menu.' . PHP_EXT . '?mode=menu_item&amp;action=delete' . $append_url) . '"><img src="' . $images['cms_icon_delete'] . '" alt="' . $lang['CSM_DELETE'] . '" title="' . $lang['CSM_DELETE'] . '" /></a>';
 
 						if ((sizeof($menu_cat[$cat_id]) == 1) && ($item_counter == 1))
 						{
@@ -944,14 +901,17 @@ elseif (($mode == 'menu_list') || ($mode == false))
 				$mi_menu_name = $m_info['menu_name'];
 				$mi_menu_desc = $m_info['menu_desc'];
 				$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
-				foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
+				if (!empty($lang['menu_item']))
 				{
-					$mi_menu_name_lang .= '<option value="' . $lk .'" ';
-					if($lk == $m_info['menu_name_lang'])
+					foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
 					{
-						$mi_menu_name_lang .= 'selected="selected"';
+						$mi_menu_name_lang .= '<option value="' . $lk .'" ';
+						if($lk == $m_info['menu_name_lang'])
+						{
+							$mi_menu_name_lang .= 'selected="selected"';
+						}
+						$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
 					}
-					$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
 				}
 			}
 			else
@@ -962,10 +922,13 @@ elseif (($mode == 'menu_list') || ($mode == false))
 		else
 		{
 			$mi_menu_name_lang = '<option value="">-- ' . $lang['CMS_Menu_No_lang_key'] . ' --</option>';
-			foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
+			if (!empty($lang['menu_item']))
 			{
-				$mi_menu_name_lang .= '<option value="' . $lk . '"';
-				$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
+				foreach($lang['menu_item'] as $lk => $mi_menu_name_lang_key)
+				{
+					$mi_menu_name_lang .= '<option value="' . $lk . '"';
+					$mi_menu_name_lang .= '>' . $mi_menu_name_lang_key . '</option>';
+				}
 			}
 		}
 

@@ -1,31 +1,32 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <script type="text/javascript">
-<!--
-function checkForm(formObj) {
+// <![CDATA[
 
-	formErrors = false;
+function checkForm(form) {
 
-	if (formObj.message.value.length < 2)
+	errors = false;
+
+	if (form.message.value.length < 2)
 	{
-		formErrors = "{L_EMPTY_MESSAGE_EMAIL}";
+		errors = "{L_EMPTY_MESSAGE_EMAIL}";
 	}
-	else if ( formObj.subject.value.length < 2)
+	else if (form.subject.value.length < 2)
 	{
-		formErrors = "{L_EMPTY_SUBJECT_EMAIL}";
+		errors = "{L_EMPTY_SUBJECT_EMAIL}";
 	}
-	else if ( formObj.sender.value.length < 2)
+	else if (form.sender.value.length < 2)
 	{
-		formErrors = "{L_EMPTY_SENDER_EMAIL}";
+		errors = "{L_EMPTY_SENDER_EMAIL}";
 	}
 
-	if (formErrors)
+	if (errors)
 	{
-		alert(formErrors);
+		alert(errors);
 		return false;
 	}
 }
-//-->
+// ]]>
 </script>
 
 <form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this)">

@@ -35,6 +35,12 @@ class pafiledb_public extends pafiledb
 		{
 			$this->module_name = $module_name;
 
+			if (!file_exists(IP_ROOT_PATH . PA_FILE_DB_PATH . 'modules/pa_' . $module_name . '.' . PHP_EXT))
+			{
+				global $lang;
+				message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
+			}
+
 			require_once(IP_ROOT_PATH . PA_FILE_DB_PATH . 'modules/pa_' . $module_name . '.' . PHP_EXT);
 			eval('$this->modules[' . $module_name . '] = new pafiledb_' . $module_name . '();');
 
@@ -287,7 +293,7 @@ class pafiledb
 		if($this->cat_rowset[$cat_id]['parents_data'] == '')
 		{
 			$cat_nav = array();
-			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], &$cat_nav);
+			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], $cat_nav);
 
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET parents_data = '" . addslashes(serialize($cat_nav)) . "'
@@ -355,7 +361,7 @@ class pafiledb
 		if($this->cat_rowset[$cat_id]['parents_data'] == '')
 		{
 			$cat_nav = array();
-			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], &$cat_nav);
+			$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], $cat_nav);
 		}
 		else
 		{
@@ -381,7 +387,7 @@ class pafiledb
 	{
 		if(!empty($this->cat_rowset[$parent_id]))
 		{
-			$this->category_nav($this->cat_rowset[$parent_id]['cat_parent'], &$cat_nav);
+			$this->category_nav($this->cat_rowset[$parent_id]['cat_parent'], $cat_nav);
 			$cat_nav[$parent_id] = $this->cat_rowset[$parent_id]['cat_name'];
 		}
 		return;
@@ -734,7 +740,7 @@ class pafiledb
 				$redirect = ($cat_id != PA_ROOT_CAT) ? 'dload.' . PHP_EXT . '?action=category&amp;cat_id=' . $cat_id : 'dload.' . PHP_EXT;
 				redirect(append_sid(CMS_PAGE_LOGIN. '?redirect=' . $redirect, true));
 			}
-			message_die(GENERAL_ERROR, 'Either you are not allowed to view any category, or there is no category in the database');
+			message_die(GENERAL_MESSAGE, $lang['No_dl_categories_exists']);
 		}
 
 		$template->assign_vars(array(
@@ -1037,7 +1043,7 @@ class pafiledb
 			}
 			else
 			{
-				$url_file = append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
+				$url_file = append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_rowset[$i]['file_id']);
 			}
 
 			//$url_file = append_sid('dload.' . PHP_EXT . '?action=file&file_id=' . $file_rowset[$i]['file_id']);
@@ -1058,7 +1064,8 @@ class pafiledb
 				'IS_NEW_FILE' => $is_new,
 				'XS_NEW' => $xs_new,
 				'U_CAT' => $cat_url,
-				'U_FILE' => $url_file
+				'U_FILE' => $url_file,
+				'U_FILE_EDIT' => append_sid('dload.' . PHP_EXT . '?action=user_upload&amp;file_id=' . $file_rowset[$i]['file_id'])
 				)
 			);
 			$filelist = true;
@@ -1119,10 +1126,10 @@ class pafiledb
 
 	function update_add_cat($cat_id = false)
 	{
-		global $db, $lang;
+		global $db, $cache, $config, $lang;
 
-		$cat_name = request_post_var('cat_name', '');
-		$cat_desc = request_post_var('cat_desc', '');
+		$cat_name = request_post_var('cat_name', '', true);
+		$cat_desc = request_post_var('cat_desc', '', true);
 		$cat_parent = request_post_var('cat_parent', 0);
 		$cat_allow_file = request_post_var('cat_allow_file', 0);
 		// MX Addon
@@ -1144,10 +1151,16 @@ class pafiledb
 
 		if(sizeof($this->error))
 		{
-			return;
+			$err_messages = '';
+			foreach ($this->error as $error_lang)
+			{
+				$err_messages .= $error_lang . '<br /><br />';
+			}
+			$message = $err_messages . sprintf($lang['Click_return'], '<a href="' . append_sid('admin_pa_category.' . PHP_EXT) . '">', '</a>');
+			message_die(GENERAL_MESSAGE, $message);
 		}
 
-		if(!$cat_id)
+		if(empty($cat_id))
 		{
 			$cat_order = 0;
 			if(!empty($this->subcat_rowset[$cat_parent]))
@@ -1171,9 +1184,8 @@ class pafiledb
 		{
 			$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 				SET cat_name = '" . $db->sql_escape($cat_name) . "', cat_desc = '" . $db->sql_escape($cat_desc) . "', cat_parent = $cat_parent, cat_allow_file = $cat_allow_file, cat_allow_ratings = $cat_allow_ratings, cat_allow_comments = $cat_allow_comments
-				WHERE cat_id = $cat_id";
+				WHERE cat_id = " . (int) $cat_id;
 			$db->sql_query($sql);
-
 			if($cat_parent != $this->cat_rowset[$cat_id]['cat_parent'])
 			{
 				$this->reorder_cat($this->cat_rowset[$cat_id]['cat_parent']);
@@ -1414,7 +1426,7 @@ class pafiledb
 		global $db;
 
 		$cat_nav = array();
-		$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], &$cat_nav);
+		$this->category_nav($this->cat_rowset[$cat_id]['cat_parent'], $cat_nav);
 
 		$sql = 'UPDATE ' . PA_CATEGORY_TABLE . "
 			SET parents_data = ''

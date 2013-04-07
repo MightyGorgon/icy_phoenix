@@ -4,12 +4,12 @@
 
 <!-- IF S_AJAX_FEATURES -->
 <script type="text/javascript">
-<!--
+// <![CDATA[
 var L_RESULTS = '{L_SEARCH_RESULTS}';
 var L_RESULT = '{L_SEARCH_RESULT}';
 var L_MORE_MATCHES = '{L_MORE_MATCHES}';
 var L_AJAX_NO_RESULTS = '{L_AJAX_NO_RESULTS}';
-//-->
+// ]]>
 </script>
 
 <!-- <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script> -->
@@ -17,12 +17,12 @@ var L_AJAX_NO_RESULTS = '{L_AJAX_NO_RESULTS}';
 <!-- ENDIF -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function attach_rules(forum_id)
 {
 	window.open('{U_ATTACH_RULES}' + forum_id + '&sid={S_SID}', '_attach_rules', 'height=200,width=500,resizable=no,scrollbars=yes');
 }
-//-->
+// ]]>
 </script>
 
 <!-- BEGIN switch_privmsg -->
@@ -30,7 +30,7 @@ function attach_rules(forum_id)
 <table width="100%" align="center" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%" align="center" style="vertical-align: top;">
-		<div class="forumline" style="margin-left: 5%; margin-right: 5%px;">
+		<div class="forumline" style="margin-left: 5%; margin-right: 5%;">
 		<table width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td width="25%" align="center">{INBOX_IMG}<br /><span class="forumlink">{INBOX}</span></td>

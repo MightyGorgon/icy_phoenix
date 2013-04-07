@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '1.3.17.70');
+define('ICYPHOENIX_VERSION', '2.0.1.87');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -51,7 +51,7 @@ define('CACHE_TOPICS_META', false); // Caching Topics Meta KW And Descriptions O
 define('CACHE_BAN_INFO', false); // Caching Ban informations for each user ON/OFF => TRUE/FALSE (if you have thousands of users, better switch it off)
 define('CACHE_COLORIZE', false); // Caching Users Colors ON/OFF => TRUE/FALSE (if you have thousands of users, better switch it off)
 define('CACHE_FILES_PER_STEP', 500); // The number of files that will be deleted per step when emptying cache folder to avoid timeout
-define('META_TAGS_ATTACH', false); // Attach standard META TAGS (defined in lang_main_settings) to the ones specific for that page? ON/OFF => TRUE/FALSE
+define('META_TAGS_ATTACH', false); // Attach standard META TAGS (defined in lang_main_settings or DB) to the ones specific for that page? ON/OFF => TRUE/FALSE
 
 // Script Time Limit: if your site is large you may want to set a time limit to force scripts shut down and avoid server overload
 define('TIME_LIMIT', 30); // Script Time Limit in seconds
@@ -69,6 +69,7 @@ define('UPI2DB_RESYNC_TIME', 30); // Seconds needed to refresh UPI2DB data...
 // Pages
 define('CMS_PAGE_CMS', 'cms.' . PHP_EXT);
 define('CMS_PAGE_LOGIN', 'login_ip.' . PHP_EXT);
+define('CMS_PAGE_ERRORS', 'errors.' . PHP_EXT);
 define('CMS_PAGE_HOME', 'index.' . PHP_EXT);
 define('CMS_PAGE_FORUM', 'forum.' . PHP_EXT);
 define('CMS_PAGE_VIEWFORUM', 'viewforum.' . PHP_EXT);
@@ -78,6 +79,7 @@ define('CMS_PAGE_VIEWONLINE', 'viewonline.' . PHP_EXT);
 define('CMS_PAGE_SEARCH', 'search.' . PHP_EXT);
 define('CMS_PAGE_PROFILE', 'profile.' . PHP_EXT);
 define('CMS_PAGE_PROFILE_MAIN', 'profile_main.' . PHP_EXT);
+define('CMS_PAGE_UCP', 'ucp.' . PHP_EXT);
 define('CMS_PAGE_POSTING', 'posting.' . PHP_EXT);
 define('CMS_PAGE_DRAFTS', 'drafts.' . PHP_EXT);
 define('CMS_PAGE_MEMBERLIST', 'memberlist.' . PHP_EXT);
@@ -90,17 +92,23 @@ define('CMS_PAGE_DOWNLOADS', 'downloads.' . PHP_EXT);
 define('CMS_PAGE_DL_DEFAULT', CMS_PAGE_DLOAD);
 //define('CMS_PAGE_DL_DEFAULT', CMS_PAGE_DOWNLOADS);
 define('CMS_PAGE_ALBUM', 'album.' . PHP_EXT);
+define('CMS_PAGE_IMAGES', 'images_list.' . PHP_EXT);
+define('CMS_PAGE_IMAGE_THUMBNAIL', 'image_thumbnail.' . PHP_EXT);
+define('CMS_PAGE_IMAGE_THUMBNAIL_S', 'image_thumbnail_s.' . PHP_EXT);
 define('CMS_PAGE_LINKS', 'links.' . PHP_EXT);
 define('CMS_PAGE_STATISTICS', 'statistics.' . PHP_EXT);
 define('CMS_PAGE_CALENDAR', 'calendar.' . PHP_EXT);
 define('CMS_PAGE_RECENT', 'recent.' . PHP_EXT);
-define('CMS_PAGE_REFERRERS', 'referrers.' . PHP_EXT);
+define('CMS_PAGE_REFERERS', 'referers.' . PHP_EXT);
 define('CMS_PAGE_AJAX_CHAT', 'ajax_chat.' . PHP_EXT);
+define('CMS_PAGE_AJAX_SHOUTBOX', 'ajax_shoutbox.' . PHP_EXT);
 define('CMS_PAGE_SHOUTBOX', 'shoutbox_max.' . PHP_EXT);
 define('CMS_PAGE_KB', 'kb.' . PHP_EXT);
 define('CMS_PAGE_CONTACT_US', 'contact_us.' . PHP_EXT);
 define('CMS_PAGE_CREDITS', 'credits.' . PHP_EXT);
 define('CMS_PAGE_TAGS', 'tags.' . PHP_EXT);
+// You can customize this page to be able to redirect users wherever you like after logout or login with redirect var not set
+define('CMS_LOGIN_REDIRECT_PAGE', CMS_PAGE_HOME);
 
 // Paths
 define('ADM', 'adm');
@@ -117,8 +125,10 @@ define('ATTACH_MOD_PATH', 'includes/attach_mod/');
 define('DOWNLOADS_PATH', 'downloads/');
 define('PA_FILE_DB_PATH', 'includes/pafiledb/');
 define('FILES_ICONS_DIR', 'images/files/');
-define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
+define('FONTS_DIR', IP_ROOT_PATH . 'images/fonts/');
+define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/images/');
 define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
+define('POSTED_IMAGES_THUMBS_S_PATH', POSTED_IMAGES_THUMBS_PATH . 's/');
 define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
 define('CMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'cms/');
 define('FORUMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'forums/');
@@ -135,7 +145,7 @@ define('UPI2DB_PATH', IP_ROOT_PATH . 'includes/upi2db/');
 // Mighty Gorgon - Constants Pages And Paths - END
 
 // Mighty Gorgon - FAP - BEGIN
-define('USERS_SUBFOLDERS_IMG', true); // Creates users subfolders for posted images
+define('USERS_SUBFOLDERS_IMG', true); // Creates users subfolders for uploaded images
 define('USERS_SUBFOLDERS_ALBUM', true); // Creates users subfolders for images in album
 define('ALBUM_MOD_PATH', IP_ROOT_PATH . 'includes/album_mod/');
 define('ALBUM_MOD_IMG_PATH', IP_ROOT_PATH . 'images/album/');
@@ -192,6 +202,17 @@ define('ACL_NEVER', 0);
 define('ACL_YES', 1);
 define('ACL_NO', -1);
 
+// CMS Auth
+define('AUTH_CMS_NONE', -1);
+define('AUTH_CMS_ALL', 0);
+define('AUTH_CMS_GUESTS_ONLY', 1);
+define('AUTH_CMS_REG', 2);
+define('AUTH_CMS_MOD', 3);
+define('AUTH_CMS_ADMIN', 4);
+define('AUTH_CMS_FOUNDER', 5);
+define('AUTH_CMS_OWNER', 6);
+define('AUTH_CMS_ALL_NO_BOTS', 8);
+
 // Auth settings - Levels
 define('AUTH_NONE', -1);
 define('AUTH_LIST_ALL', 0);
@@ -234,25 +255,7 @@ define('AUTH_RATE', 19);
 define('HIDDEN_CAT', 0); // NOTE: change this value to the forum id, of the forum, witch you would like to be hidden
 
 // CMS Styles
-define('CMS_STD', 0);
 define('CMS_USERS', 1);
-
-// CMS Levels
-define('CMS_GUEST', 0);
-define('CMS_REG', 1);
-define('CMS_VIP', 2);
-define('CMS_PUBLISHER', 3);
-define('CMS_REVIEWER', 4);
-define('CMS_CONTENT_MANAGER', 5);
-
-// CMS AUTH Levels
-define('CMS_AUTH_NONE', -1);
-define('CMS_AUTH_ALL', 0);
-define('CMS_AUTH_REG', 1);
-define('CMS_AUTH_VIP', 2);
-define('CMS_AUTH_PUBLISHER', 3);
-define('CMS_AUTH_REVIEWER', 4);
-define('CMS_AUTH_CONTENT_MANAGER', 5);
 
 // User related
 define('USER_ACTIVATION_NONE', 0);
@@ -290,6 +293,8 @@ define('LOGIN_ERROR_PASSWORD_CONVERT', 15);
 define('GROUP_OPEN', 0);
 define('GROUP_CLOSED', 1);
 define('GROUP_HIDDEN', 2);
+define('GROUP_SPECIAL', 3);
+define('GROUP_FREE', 4);
 
 // Forum types
 define('FORUM_CAT', 0);
@@ -313,6 +318,11 @@ define('POST_STICKY', 1);
 define('POST_ANNOUNCE', 2);
 define('POST_GLOBAL_ANNOUNCE', 3);
 define('POST_NEWS', 4);
+
+// Post status
+define('ITEM_UNAPPROVED', 0);
+define('ITEM_APPROVED', 1);
+define('ITEM_DELETED', 2);
 
 // Private messaging
 define('PRIVMSGS_READ_MAIL', 0);
@@ -457,13 +467,13 @@ define('DRAFTS_TABLE', $table_prefix . 'drafts');
 define('FLAG_TABLE', $table_prefix . 'flags');
 define('FORCE_READ_USERS_TABLE', $table_prefix . 'force_read_users');
 define('FORUMS_TABLE', $table_prefix . 'forums');
-define('FORUMS_RULES_TABLE', $table_prefix . 'forums_rules');
 define('FORUMS_WATCH_TABLE', $table_prefix . 'forums_watch');
 define('GOOGLE_BOT_DETECTOR_TABLE', $table_prefix . 'google_bot_detector');
 define('GROUPS_TABLE', $table_prefix . 'groups');
 define('HACKS_LIST_TABLE', $table_prefix . 'hacks_list');
 define('JR_ADMIN_TABLE', $table_prefix . 'jr_admin_users');
 define('KB_ARTICLES_TABLE', $table_prefix . 'kb_articles');
+define('IMAGES_TABLE', $table_prefix . 'images');
 define('LINK_CATEGORIES_TABLE', $table_prefix . 'link_categories');
 define('LINK_CONFIG_TABLE', $table_prefix . 'link_config');
 define('LINKS_TABLE', $table_prefix . 'links');
@@ -471,7 +481,8 @@ define('LIW_CACHE_TABLE', $table_prefix . 'liw_cache');
 define('LOGINS_TABLE', $table_prefix . 'logins');
 define('LOG_TABLE', $table_prefix . 'log');
 define('LOGS_TABLE', $table_prefix . 'logs');
-define('MODULES_TABLE', $table_prefix . 'stats_modules');
+define('MODERATOR_CACHE_TABLE', $table_prefix . 'moderator_cache');
+define('MODULES_TABLE', $table_prefix . 'modules');
 define('NEWS_TABLE', $table_prefix . 'news');
 define('NOTES_ADMIN_TABLE',$table_prefix . 'notes');
 define('PLUGINS_TABLE', $table_prefix . 'plugins');
@@ -486,7 +497,7 @@ define('PROFILE_VIEW_TABLE', $table_prefix . 'profile_view');
 define('PRUNE_TABLE', $table_prefix . 'forum_prune');
 define('RANKS_TABLE', $table_prefix . 'ranks');
 define('RATINGS_TABLE', $table_prefix . 'rate_results');
-define('REFERRERS_TABLE', $table_prefix . 'referrers');
+define('REFERERS_TABLE', $table_prefix . 'referers');
 define('SEARCH_MATCH_TABLE', $table_prefix . 'search_wordmatch');
 define('SEARCH_TABLE', $table_prefix . 'search_results');
 define('SEARCH_WORD_TABLE', $table_prefix . 'search_wordlist');
@@ -496,6 +507,7 @@ define('SHOUTBOX_TABLE', $table_prefix . 'shout');
 define('SITE_HISTORY_TABLE', $table_prefix . 'site_history');
 define('SMILIES_TABLE', $table_prefix . 'smilies');
 define('STATS_CONFIG_TABLE', $table_prefix . 'stats_config');
+define('STATS_MODULES_TABLE', $table_prefix . 'stats_modules');
 define('SUDOKU_SESSIONS', $table_prefix . 'sudoku_sessions');
 define('SUDOKU_SOLUTIONS', $table_prefix . 'sudoku_solutions');
 define('SUDOKU_STARTS', $table_prefix . 'sudoku_starts');

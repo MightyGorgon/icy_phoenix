@@ -106,11 +106,11 @@ class phpbb_recaptcha extends phpbb_default_captcha
 			}
 
 			add_log('admin', 'LOG_CONFIG_VISUAL');
-			trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($module->u_action));
+			trigger_error($user->lang['CONFIG_UPDATED'] . page_back_link($module->u_action));
 		}
 		elseif ($submit)
 		{
-			trigger_error($user->lang['FORM_INVALID'] . adm_back_link($module->u_action));
+			trigger_error($user->lang['FORM_INVALID'] . page_back_link($module->u_action));
 		}
 		else
 		{

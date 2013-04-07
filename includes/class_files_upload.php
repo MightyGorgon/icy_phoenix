@@ -13,8 +13,9 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if (!defined('POSTED_IMAGES_PATH')) define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/posted_images/');
+if (!defined('POSTED_IMAGES_PATH')) define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/images/');
 if (!defined('POSTED_IMAGES_THUMBS_PATH')) define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
+if (!defined('POSTED_IMAGES_THUMBS_S_PATH')) define('POSTED_IMAGES_THUMBS_S_PATH', POSTED_IMAGES_THUMBS_PATH . 's/');
 
 if (!defined('FILE_UPLOAD_NOT_UPLOADED')) define('FILE_UPLOAD_NOT_UPLOADED', 0);
 if (!defined('FILE_UPLOAD_UPLOADED')) define('FILE_UPLOAD_UPLOADED', 1);

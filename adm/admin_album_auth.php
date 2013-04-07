@@ -28,8 +28,8 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
+
+setup_extra_lang(array('lang_album_main', 'lang_album_admin'));
 
 require(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 $album_user_id = ALBUM_PUBLIC_GALLERY;
@@ -52,7 +52,7 @@ if(!isset($_POST['submit']))
 
 	$template->pparse('body');
 
-	include('./page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 }
 else
 {
@@ -138,7 +138,7 @@ else
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{

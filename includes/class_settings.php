@@ -146,7 +146,7 @@ class class_settings
 			if (!isset($config_data['user_only']) || !$config_data['user_only'])
 			{
 				// Create the key value
-				$config_value = (!empty($config_data['values']) ? $config_data['values'][$config_data['default']] : $config_data['default']);
+				$config_value = (isset($config_data['values'][$config_data['default']]) ? $config_data['values'][$config_data['default']] : $config_data['default']);
 				if (!isset($config[$config_key]))
 				{
 					$this->set_config($config_key, $config_value, true, true);

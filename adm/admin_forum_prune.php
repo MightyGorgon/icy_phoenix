@@ -114,7 +114,7 @@ else
 	{
 		// Output a selection table if no forum id has been specified.
 		$template->set_filenames(array('body' => ADM_TPL . 'forum_prune_select_body.tpl'));
-		$select_list = make_forum_select(POST_FORUM_URL, false, '', true);
+		$select_list = ip_make_forum_select(POST_FORUM_URL, false, '', true);
 
 		$template->assign_vars(array(
 			'L_FORUM_PRUNE' => $lang['Forum_Prune'],
@@ -152,6 +152,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

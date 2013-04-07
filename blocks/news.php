@@ -129,7 +129,7 @@ if(!function_exists('cms_block_news'))
 					);
 				}
 			}
-			$content->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Categories']));
+			$content->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Categories']));
 			$content->renderTopics();
 		}
 		elseif($news == 'archives')
@@ -140,7 +140,7 @@ if(!function_exists('cms_block_news'))
 			$key = request_var('key', '');
 
 			$template->assign_block_vars('news_archives', array());
-			$content->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));
+			$content->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));
 			$content->renderArchives($year, $month, $day, $key);
 		}
 		else
@@ -156,7 +156,7 @@ if(!function_exists('cms_block_news'))
 				$content->is_topic = true;
 			}
 
-			$content->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Articles']));
+			$content->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Articles']));
 			$content->renderArticles($topic_id);
 		}
 

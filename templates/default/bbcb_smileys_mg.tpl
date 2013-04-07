@@ -9,15 +9,13 @@
 <!-- END smilies_row -->
 <!-- BEGIN switch_smilies_extra -->
 <tr><td class="cat" colspan="{S_SMILIES_COLSPAN}" align="center"><input type="button" class="liteoption" name="smiles_button" value="{L_MORE_SMILIES}" onclick="openAllSmiles();" /></td></tr>
+<tr><td class="cat" colspan="{S_SMILIES_COLSPAN}" align="center"><input type="button" class="liteoption" value="{L_SMILEY_CREATOR}" style="width: 135px" onclick="window.open('{U_SMILEY_CREATOR}','_ipcreatesmileys','height=400,width=500,resizable=yes,scrollbars=yes'); return false;" /></td></tr>
 <!-- END switch_smilies_extra -->
-<tr><td class="cat" colspan="{S_SMILIES_COLSPAN}" align="center"><input type="button" class="liteoption" value="{L_SMILEY_CREATOR}" style="width: 135px" onclick="window.open('{U_SMILEY_CREATOR}','_phpbbcreatesmileys','height=400,width=500,resizable=yes,scrollbars=yes'); return false;" /></td></tr>
 </table>
 
 <!-- BEGIN switch_sm_pic_upload -->
-<br />
-<table class="forumline" width="90%" border="0" cellspacing="0" cellpadding="0">
-<tr><td class="cat" align="center"><input type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" style="width: 135px" onclick="window.open('{U_UPLOAD_IMAGE}','_upload_image','height=500,width=700,resizable=yes,scrollbars=no'); return false;" /></td></tr>
-</table>
+<br clear="all" />
+<div class="center-block"><input type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" style="width: 135px" onclick="window.open('{U_UPLOAD_IMAGE}','_upload_image','height=500,width=700,resizable=yes,scrollbars=no'); return false;" /></div>
 <!-- END switch_sm_pic_upload -->
 
 <!--

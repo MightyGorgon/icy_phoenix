@@ -31,7 +31,7 @@ function generate_text_for_display($text, $only_smileys = false, $censor = true,
 		$text = censor_text($text);
 	}
 
-	if (!class_exists('bbcode'))
+	if (!class_exists('bbcode') || empty($bbcode))
 	{
 		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 	}

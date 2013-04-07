@@ -15,7 +15,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -122,23 +122,9 @@ if($user->data['user_level'] == ADMIN)
 	$template->assign_block_vars('upload_allowed', array());
 
 	$cat_id = ALBUM_ROOT_CATEGORY;
+	$personal_gallery_list = '';
 	album_read_tree($user->data['user_id'], ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW_AND_UPLOAD);
-	$userinfo = album_get_nonexisting_personal_gallery_info();
-	$count = sizeof($userinfo);
-	for($idx = 0; $idx < $count; $idx++)
-	{
-		$personal_gallery = init_personal_gallery_cat($userinfo[$idx]['user_id']);
-		$album_user_access = album_permissions($userinfo[$idx]['user_id'], 0, ALBUM_AUTH_CREATE_PERSONAL, $personal_gallery);
-		if (album_check_permission($album_user_access, ALBUM_AUTH_CREATE_PERSONAL) == true)
-		{
-			$selected = (($user->data['user_id'] ==  $userinfo[$idx]['user_id'])) ? ' selected="selected"' : '';
-			$personal_gallery_list .= '<option value="-' . $userinfo[$idx]['user_id'] . '" ' . $selected . '>' . sprintf($lang['Personal_Gallery_Of_User'], $userinfo[$idx]['username']) . '</option>';
-		}
-	}
-	if (!empty($personal_gallery_list))
-	{
-		$personal_gallery_list = '<option value="' . ALBUM_JUMPBOX_SEPARATOR . '">------------------------------</option>' . $personal_gallery_list;
-	}
+
 	$temp_tree = album_get_tree_option($cat_id, ALBUM_AUTH_VIEW_AND_UPLOAD) . $personal_gallery_list;
 	if ($temp_tree == '')
 	{
@@ -153,7 +139,7 @@ if($user->data['user_level'] == ADMIN)
 // Upload To Album - END
 
 $nav_server_url = create_server_url();
-$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid('album_otf.' . PHP_EXT) . '">' . $lang['Pic_Gallery'] . '</a>';
+$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid('album_otf.' . PHP_EXT) . '">' . $lang['Pic_Gallery'] . '</a>';
 
 // Upload To Album - BEGIN
 $upload_counter = 0;

@@ -28,7 +28,7 @@ if(!function_exists('cms_block_ajax_shoutbox'))
 		$shoutbox_template_parse = false;
 		if(($config['shout_allow_guest'] <= 0) && !$user->data['session_logged_in'])
 		{
-			//include(IP_ROOT_PATH . 'ajax_shoutbox.' . PHP_EXT);
+			//include(IP_ROOT_PATH . CMS_PAGE_AJAX_SHOUTBOX);
 		}
 		else
 		{

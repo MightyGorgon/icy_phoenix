@@ -22,9 +22,9 @@ class class_users
 	/*
 	* Create user
 	*/
-	function create_user($username, $user_password, $user_email, $user_style, $user_lang, $user_dateformat, $user_timezone, $check_values = true, $batch_process = false)
+	function create_user($user_data, $check_values = true, $batch_process = false)
 	{
-		global $db, $config, $user, $lang;
+		global $db, $config, $cache, $user, $lang;
 
 		if ($check_values)
 		{
@@ -36,14 +36,14 @@ class class_users
 			$error = false;
 
 			// Validating username
-			if (empty($username))
+			if (empty($user_data['username']))
 			{
 				$error = true;
 				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Fields_empty'];
 			}
 			else
 			{
-				$result = validate_username($username);
+				$result = validate_username($user_data['username']);
 				if ($result['error'])
 				{
 					$error = true;
@@ -52,21 +52,21 @@ class class_users
 			}
 
 			// Validating password
-			if (empty($user_password))
+			if (empty($user_data['user_password']))
 			{
 				$error = true;
 				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Fields_empty'];
 			}
 
 			// Validating email
-			if (empty($user_email))
+			if (empty($user_data['user_email']))
 			{
 				$error = true;
 				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Fields_empty'];
 			}
 			else
 			{
-				$result = validate_email($user_email);
+				$result = validate_email($user_data['user_email']);
 				if ($result['error'])
 				{
 					$error = true;
@@ -109,21 +109,38 @@ class class_users
 
 		$user_id = $row['total'] + 1;
 
+		$user_data = array(
+			'user_id' => $user_id,
+			'username' => $user_data['username'],
+			'username_clean' => utf8_clean_string($user_data['username']),
+			'user_first_name' => !empty($user_data['user_first_name']) ? $user_data['user_first_name'] : '',
+			'user_last_name' => !empty($user_data['user_last_name']) ? $user_data['user_last_name'] : '',
+			'user_password' => phpbb_hash($user_data['user_password']),
+			'user_regdate' => !empty($user_data['user_regdate']) ? $user_data['user_regdate'] : time(),
+			'user_email' => $user_data['user_email'],
+			'user_phone' => !empty($user_data['user_phone']) ? $user_data['user_phone'] : '',
+			'user_timezone' => !empty($user_data['user_timezone']) ? $user_data['user_timezone'] : $config['board_timezone'],
+			'user_dateformat' => !empty($user_data['user_dateformat']) ? $user_data['user_dateformat'] : $config['default_dateformat'],
+			'user_lang' => !empty($user_data['user_lang']) ? $user_data['user_lang'] : $config['default_lang'],
+			'user_style' => !empty($user_data['user_style']) ? $user_data['user_style'] : $config['default_style'],
+			'user_level' => !empty($user_data['user_level']) ? $user_data['user_level'] : 0,
+			'user_rank' => !empty($user_data['user_rank']) ? $user_data['user_rank'] : 0,
+			'user_active' => !empty($user_data['user_active']) ? $user_data['user_active'] : 1,
+			'user_actkey' => !empty($user_data['user_actkey']) ? $user_data['user_actkey'] : 'user_actkey',
+		);
+
 		// PROFILE EDIT BRIDGE - BEGIN
 		$target_profile_data = array(
-			'user_id' => $user_id,
-			'username' => $username,
-			'password' => $user_password,
-			'email' => $user_email
+			'user_id' => $user_data['user_id'],
+			'username' => $user_data['username'],
+			'password' => $user_data['user_password'],
+			'email' => $user_data['user_email']
 		);
 		$this->profile_update($target_profile_data);
 		unset($target_profile_data);
 		// PROFILE EDIT BRIDGE - END
 
-		$user_password = md5($user_password);
-
-		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_regdate, user_password, user_email, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
-			VALUES ($user_id, '" . $db->sql_escape($username) . "', " . time() . ", '" . $db->sql_escape($user_password) . "', '" . $db->sql_escape($user_email) . "', $user_style, $user_timezone, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_lang) . "', 0, 1, 'user_actkey')";
+		$sql = "INSERT INTO " . USERS_TABLE . " " . $db->sql_build_insert_update($user_data, true);
 		$db->sql_return_on_error(true);
 		$db->sql_transaction('begin');
 		$result = $db->sql_query($sql);

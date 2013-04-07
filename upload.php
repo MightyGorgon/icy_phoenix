@@ -22,9 +22,12 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
+
+include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
+$class_images = new class_images();
 
 // This page is not in layout special...
 $cms_page['page_id'] = 'pic_upload';
@@ -34,8 +37,8 @@ $cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_p
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $upload_dir = POSTED_IMAGES_PATH;
-$filetypes = 'jpg,gif,png';
-$maxsize = (1000 * 1024);
+$filetypes = 'jpg,jpeg,gif,png';
+$maxsize = (1024 * 1024);
 
 // We need to keep it here... so also error messages will initialize it correctly!
 $gen_simple_header = true;
@@ -105,19 +108,6 @@ if(isset($_FILES['userfile']))
 		message_die(GENERAL_MESSAGE, $lang['Upload_File_Too_Big'] . ' ' . ($maxsize / 1000) . 'KB');
 	}
 
-	// Purge Cache File - BEGIN
-	$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_full.dat';
-	if(@is_file($cache_data_file))
-	{
-		@unlink($cache_data_file);
-	}
-	$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $user->data['user_id'] . '.dat';
-	if(@is_file($cache_data_file))
-	{
-		@unlink($cache_data_file);
-	}
-	// Purge Cache File - END
-
 	if(is_uploaded_file($filename_tmp))
 	{
 		@move_uploaded_file($filename_tmp, $upload_dir . $filename . '.' . $extension);
@@ -130,6 +120,17 @@ if(isset($_FILES['userfile']))
 		@unlink($upload_dir . $filename . '.' . $extension);
 		message_die(GENERAL_MESSAGE, $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.');
 	}
+
+	$image_data = array(
+		'pic_filename' => $filename . '.' . $extension,
+		'pic_size' => filesize($upload_dir . $filename . '.' . $extension),
+		'pic_title' => $filename . '.' . $extension,
+		'pic_desc' => $filename . '.' . $extension,
+		'pic_user_id' => $user->data['user_id'],
+		'pic_user_ip' => $user->ip,
+		'pic_time' => time(),
+	);
+	$image_submit = $class_images->submit_image($image_data, 'insert');
 
 	$template->assign_vars(array(
 		'S_ACTION' => append_sid('upload.' . PHP_EXT),
@@ -152,7 +153,7 @@ else
 		'S_ACTION' => append_sid('upload.' . PHP_EXT),
 		'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 		'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
-		'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.',
+		'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.<br />' . $lang['Upload_File_Max_Size'] . ' ' . floor($maxsize / 1024) . $lang['KB'] . '.',
 		'L_SUBMIT' => $lang['Submit'],
 		)
 	);

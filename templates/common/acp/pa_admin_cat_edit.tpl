@@ -37,11 +37,11 @@
 <tr><th colspan="2">{L_CAT_TITLE}</th></tr>
 <tr>
 	<td width="50%" class="row1"><strong>{L_CAT_NAME}</strong><br /><span class="gensmall">{L_CAT_NAME_INFO}</span></td>
-	<td class="row2"><input type="text" class="post" size="50" name="cat_name" value="{CAT_NAME}"></td>
+	<td class="row2"><input type="text" class="post" size="50" name="cat_name" value="{CAT_NAME}" /></td>
 </tr>
 <tr>
 	<td class="row1"><strong>{L_CAT_DESC}</strong><br /><span class="gensmall">{L_CAT_DESC_INFO}</span></td>
-	<td class="row2"><input type="text" class="post" size="50" name="cat_desc" value="{CAT_DESC}"></td>
+	<td class="row2"><input type="text" class="post" size="50" name="cat_desc" value="{CAT_DESC}" /></td>
 </tr>
 <tr>
 	<td class="row1"><strong>{L_CAT_PARENT}</strong><br /><span class="gensmall">{L_CAT_PARENT_INFO}</span></td>

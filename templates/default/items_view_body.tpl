@@ -1,4 +1,6 @@
+<!-- IF not S_HEADER_PROCESSED -->
 <!-- INCLUDE overall_header.tpl -->
+<!-- ENDIF -->
 
 <!-- IF L_ITEM_TITLE --><div class="topic-title-hide-flow-header" style="text-align: left;"><h2><a href="{U_ITEM_TITLE}" style="text-decoration: none;">{L_ITEM_TITLE}</a></h2></div><br /><!-- ENDIF -->
 
@@ -8,11 +10,11 @@
 <div class="css-button-wrap">
 
 <!-- IF S_INPUT_ALLOWED -->
-<div class="forumline css-button-left"><div class="row1h css-button-body" onclick="window.location.href='{U_ITEM_ADD}'"><img src="images/cms/b_add.png" alt="{L_DB_ITEM_ADD}" title="{L_DB_ITEM_ADD}" />&nbsp;<b>{L_DB_ITEM_ADD}</b>&nbsp;</div></div>
+<div class="forumline css-button-left"><div class="row1h css-button-body" onclick="window.location.href='{U_ITEM_ADD}'"><img src="{IMG_CMS_ICON_ADD}" alt="{L_DB_ITEM_ADD}" title="{L_DB_ITEM_ADD}" />&nbsp;<b>{L_DB_ITEM_ADD}</b>&nbsp;</div></div>
 <!-- ENDIF -->
 
 <!-- IF S_EDIT_ALLOWED -->
-<div class="forumline css-button-left"><div class="row1h css-button-body" onclick="window.location.href='{U_ITEM_EDIT}'"><img src="images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" />&nbsp;<b>{L_EDIT}</b>&nbsp;</div></div>
+<div class="forumline css-button-left"><div class="row1h css-button-body" onclick="window.location.href='{U_ITEM_EDIT}'"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" />&nbsp;<b>{L_EDIT}</b>&nbsp;</div></div>
 <!-- ENDIF -->
 
 &nbsp;
@@ -37,11 +39,11 @@
 <div class="css-button-wrap">
 
 <!-- IF S_INPUT_ALLOWED -->
-<div class="forumline css-button-left"><div class="row1h css-button-body" onclick="window.location.href='{U_ITEM_ADD}'"><img src="images/cms/b_add.png" alt="{L_DB_ITEM_ADD}" title="{L_DB_ITEM_ADD}" />&nbsp;<b>{L_DB_ITEM_ADD}</b>&nbsp;</div></div>
+<div class="forumline css-button-left"><div class="row1h css-button-body" onclick="window.location.href='{U_ITEM_ADD}'"><img src="{IMG_CMS_ICON_ADD}" alt="{L_DB_ITEM_ADD}" title="{L_DB_ITEM_ADD}" />&nbsp;<b>{L_DB_ITEM_ADD}</b>&nbsp;</div></div>
 <!-- ENDIF -->
 
 <!-- IF S_EDIT_ALLOWED -->
-<div class="forumline css-button-left"><div class="row1h css-button-body" onclick="window.location.href='{U_ITEM_EDIT}'"><img src="images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" />&nbsp;<b>{L_EDIT}</b>&nbsp;</div></div>
+<div class="forumline css-button-left"><div class="row1h css-button-body" onclick="window.location.href='{U_ITEM_EDIT}'"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" />&nbsp;<b>{L_EDIT}</b>&nbsp;</div></div>
 <!-- ENDIF -->
 
 &nbsp;
@@ -50,4 +52,6 @@
 
 {EXTRA_CONTENT_BOTTOM}
 
+<!-- IF not S_HEADER_PROCESSED -->
 <!-- INCLUDE overall_footer.tpl -->
+<!-- ENDIF -->

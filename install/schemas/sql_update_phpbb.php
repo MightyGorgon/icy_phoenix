@@ -273,7 +273,7 @@ switch ($current_phpbb_version)
 
 		unset($sql);
 
-		sync('all forums');
+		sync('all_forums');
 
 	case '.0.2':
 	case '.0.3':

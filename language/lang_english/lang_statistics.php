@@ -74,8 +74,6 @@ $lang = array_merge($lang, array(
 	'Installed' => 'Installed',
 	'Uninstall' => 'Uninstall',
 	'Uninstalled' => 'Uninstalled',
-	'Move_up' => 'Move Up',
-	'Move_down' => 'Move Down',
 	'Update_time' => 'Update Time',
 	'Auth_settings_updated' => 'Authorization Settings - [These are always updated]',
 
@@ -90,7 +88,8 @@ $lang = array_merge($lang, array(
 	'Status' => 'Status',
 	'Update_time_minutes' => 'Update Time in Minutes',
 	'Update_time_desc' => 'Time Interval (in Minutes) for refreshing the cached data with new Data.',
-	'Auto_set_update_time' => '<span class="genmed"><b>Determine and set recommended Update Times for every Installed (and Active) Module.</b></span><br /><span class="genmed"><b>Be aware: This may take a long time.</b></span><br /><span class="genmed"><i>Hint: You can adjust modules order using drag and drop.</i></span>',
+	'AUTO_SET_UPDATE_TIME' => '<b>Determine and set recommended Update Times for every Installed (and Active) Module.</b><br /><b>Be aware: This may take a long time.</b>',
+	'STAT_BLOCKS_SORT' => '<i>Hint: You can adjust modules order using drag and drop.</i>',
 	'Uninstall_module' => 'Uninstall Module',
 	'Uninstall_module_desc' => 'Marks the module with "not installed" status, so that you may re-install it with the install command.  It does not delete the module from your file system, you will manually need to delete the module folder to remove it completely.',
 	'Active_desc' => 'Option for if the Module is Active, so it is displayed depending on the set Permissions.',

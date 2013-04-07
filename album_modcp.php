@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -131,9 +131,7 @@ elseif(isset($_POST['copy']))
 {
 	$mode = 'copy';
 }
-
 // END $mode (select action)
-
 
 //album_read_tree($album_user_id);
 album_read_tree(ALBUM_ROOT_CATEGORY);
@@ -263,7 +261,8 @@ if (empty($mode))
 				'RATING' => ($picrow[$i]['rating'] == 0) ? $lang['Not_rated'] : round($picrow[$i]['rating'], 2),
 				'COMMENTS' => $picrow[$i]['comments'],
 				'LOCK' => ($picrow[$i]['pic_lock'] == 0) ? '' : $lang['Locked'],
-				'APPROVAL' => ($picrow[$i]['pic_approval'] == 0) ? $lang['Not_approved'] : $lang['Approved']
+				'APPROVAL' => ($picrow[$i]['pic_approval'] == 0) ? $lang['Not_approved'] : $lang['Approved'],
+				'CHECKED' => (!is_array($pic_id) && ($pic_id == $picrow[$i]['pic_id'])) ? ' checked="checked"' : ''
 				)
 			);
 		}
@@ -282,7 +281,7 @@ if (empty($mode))
 
 	// Start output of page (ModCP)
 	$nav_server_url = create_server_url();
-	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">' . $thiscat['cat_title'] . '</a>';
+	$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . ALBUM_NAV_ARROW . '<a class="nav-current" href="' . $nav_server_url . append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $cat_id)) . '">' . $thiscat['cat_title'] . '</a>';
 
 	$sort_rating_option = '';
 	$sort_username_option = '';
@@ -388,7 +387,7 @@ else
 			// we must check POST method now
 			if (empty($pic_id))
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 			$pic_id_array = array();
 			if (!is_array($pic_id))
@@ -450,7 +449,7 @@ else
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 
 			// if we are trying to move picture(s) to root category or a
@@ -501,7 +500,7 @@ else
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No pics specified');
+			message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -554,7 +553,7 @@ else
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No pics specified');
+			message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -607,7 +606,7 @@ else
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No pics specified');
+			message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -649,7 +648,7 @@ else
 		}
 		else
 		{
-			message_die(GENERAL_ERROR, 'No pics specified');
+			message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 		}
 
 		// well, we got the array of pic_id but we must do a check to make sure all these
@@ -742,7 +741,7 @@ else
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 
 			// if we are trying to copy picture(s) to root category or a
@@ -848,7 +847,7 @@ else
 		{
 			if (empty($pic_id))
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 
 			$pic_id_array = array();
@@ -867,6 +866,8 @@ else
 			{
 				$hidden_field .= '<input name="pic_id[]" type="hidden" value="' . $pic_id_array[$i] . '" />' . "\n";
 			}
+			$hidden_field .= '<input name="mode" type="hidden" value="delete" />' . "\n";
+			$hidden_field .= '<input name="cat_id" type="hidden" value="' . (int) $cat_id . '" />' . "\n";
 
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
@@ -874,7 +875,7 @@ else
 				'S_HIDDEN_FIELDS' => $hidden_field,
 				'L_NO' => $lang['No'],
 				'L_YES' => $lang['Yes'],
-				'S_CONFIRM_ACTION' => append_sid(album_append_uid('album_modcp.' . PHP_EXT . '?mode=delete&amp;cat_id=' . $cat_id)),
+				'S_CONFIRM_ACTION' => append_sid(album_append_uid('album_modcp.' . PHP_EXT)),
 				)
 			);
 			full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');
@@ -895,7 +896,7 @@ else
 			}
 			else
 			{
-				message_die(GENERAL_ERROR, 'No pics specified');
+				message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 			}
 
 			// well, we got the array of pic_id but we must do a check to make sure all these

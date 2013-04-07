@@ -64,7 +64,7 @@ function user_avatar_delete($avatar_type, $avatar_file)
 
 function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $avatar_category)
 {
-	global $config;
+	global $db, $cache, $config;
 
 	$avatar_filename = ltrim(basename($avatar_filename), "'");
 	$avatar_category = ltrim(basename($avatar_category), "'");
@@ -92,7 +92,7 @@ function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $ava
 
 function user_avatar_generator($mode, &$error, &$error_msg, $avatar_filename)
 {
-	global $db, $config;
+	global $db, $cache, $config;
 
 	$new_filename = uniqid(rand()) . '.gif';
 
@@ -106,7 +106,8 @@ function user_avatar_generator($mode, &$error, &$error_msg, $avatar_filename)
 
 function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 {
-	global $lang;
+	global $db, $cache, $config, $lang;
+
 	if (!preg_match('#^(http)|(ftp):\/\/#i', $avatar_filename))
 	{
 		$avatar_filename = 'http://' . $avatar_filename;
@@ -121,8 +122,6 @@ function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 	}
 
 // Start Remote Avatar Check Mod
-	global $config;
-
 	$remote_file = @fopen ($avatar_filename, 'rb');
 
 	if(!$remote_file)
@@ -166,7 +165,7 @@ function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 
 function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_type, &$error, &$error_msg, $avatar_filename, $avatar_realname, $avatar_filesize, $avatar_filetype)
 {
-	global $config, $db, $lang;
+	global $db, $cache, $config, $lang;
 
 	$ini_val = (@phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 
@@ -270,7 +269,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			if ($imgtype != '.gif')
 			{
 				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+				message_die(GENERAL_ERROR, $lang['UNABLE_TO_UPLOAD_AVATAR'], '', __LINE__, __FILE__);
 			}
 		break;
 
@@ -283,7 +282,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			if (($imgtype != '.jpg') && ($imgtype != '.jpeg'))
 			{
 				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+				message_die(GENERAL_ERROR, $lang['UNABLE_TO_UPLOAD_AVATAR'], '', __LINE__, __FILE__);
 			}
 		break;
 
@@ -292,24 +291,24 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			if ($imgtype != '.png')
 			{
 				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+				message_die(GENERAL_ERROR, $lang['UNABLE_TO_UPLOAD_AVATAR'], '', __LINE__, __FILE__);
 			}
 		break;
 
 		default:
 			@unlink($tmp_filename);
-			message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+			message_die(GENERAL_ERROR, $lang['UNABLE_TO_UPLOAD_AVATAR'], '', __LINE__, __FILE__);
 	}
 
 	// Automatic Avatar Resize - BEGIN
 	// If you want tu use Avatar Resize function, you have to change the line below and decomment the block named AUTOMATIC AVATAR RESIZE some lines below.
 	//if ($width > 0 && $height > 0)
 	// Automatic Avatar Resize - END
-	if ($width > 0 && $height > 0 && $width <= $config['avatar_max_width'] && $height <= $config['avatar_max_height'])
+	if (($width > 0) && ($height > 0) && ($width <= $config['avatar_max_width']) && ($height <= $config['avatar_max_height']))
 	{
 		$new_filename = uniqid(rand()) . $imgtype;
 
-		if ($mode == 'editprofile' && $current_type == USER_AVATAR_UPLOAD && $current_avatar != '')
+		if (($mode == 'editprofile') && ($current_type == USER_AVATAR_UPLOAD) && ($current_avatar != ''))
 		{
 			user_avatar_delete($current_type, $current_avatar);
 		}
@@ -398,9 +397,9 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 	return $avatar_sql;
 }
 
-function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$aim, &$facebook, &$icq, &$jabber, &$msn, &$skype, &$twitter, &$yim, &$website, &$location, &$user_flag, &$user_first_name, &$user_last_name, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
+function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$aim, &$facebook, &$flickr, &$googleplus, &$icq, &$jabber, &$linkedin, &$msn, &$skype, &$twitter, &$yim, &$youtube, &$website, &$location, &$user_flag, &$user_first_name, &$user_last_name, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
 {
-	global $config, $db, $template, $lang, $images, $theme;
+	global $db, $cache, $config, $template, $images, $theme, $lang;
 
 	$my_counter = 0;
 	$my_checker = 0;
@@ -414,55 +413,66 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 		$my_counter++;
 		$my_used_list[$my_counter] = $row['user_avatar'];
 	}
-
 	$db->sql_freeresult($result);
 
-	$dir = @opendir($config['avatar_gallery_path']);
+	$dir = @opendir(IP_ROOT_PATH . $config['avatar_gallery_path']);
 
+	$avatar_folders = array();
 	$avatar_images = array();
 	while($file = @readdir($dir))
 	{
 		if(($file != '.') && ($file != '..') && !is_file($config['avatar_gallery_path'] . '/' . $file) && !is_link($config['avatar_gallery_path'] . '/' . $file))
 		{
-			$sub_dir = @opendir($config['avatar_gallery_path'] . '/' . $file);
+			$avatar_folders[] = $file;
+		}
+	}
+	@closedir($dir);
 
-			$avatar_row_count = 0;
-			$avatar_col_count = 0;
-			while($sub_file = @readdir($sub_dir))
+	if (empty($avatar_folders))
+	{
+		message_die(GENERAL_MESSAGE, 'NO_AVATAR_GALLERY');
+	}
+
+	@sort($avatar_folders);
+	@reset($avatar_folders);
+
+	foreach ($avatar_folders as $avatar_folder)
+	{
+		$sub_dir = @opendir(IP_ROOT_PATH . $config['avatar_gallery_path'] . '/' . $avatar_folder);
+
+		$avatar_row_count = 0;
+		$avatar_col_count = 0;
+		while($sub_file = @readdir($sub_dir))
+		{
+		$my_checker = 0;
+		for ($i = 1; $i<= $my_counter; $i++)
+		{
+			$my_temp = $avatar_folder . '/' . $sub_file;
+			if ($my_temp == $my_used_list[$i])
 			{
-			$my_checker = 0;
-			for ($i = 1; $i<= $my_counter; $i++)
-			{
-				$my_temp = $file . '/' . $sub_file;
-				if ($my_temp == $my_used_list[$i])
-				{
-					$my_checker = 1;
-				}
-				if ($my_checker==1)
-				{
-					break;
-				}
+				$my_checker = 1;
 			}
-				if ($my_checker == 0)
+			if ($my_checker==1)
+			{
+				break;
+			}
+		}
+			if ($my_checker == 0)
+			{
+				if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $sub_file))
 				{
-					if(preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $sub_file))
+					$avatar_images[$avatar_folder][$avatar_row_count][$avatar_col_count] = $sub_file;
+					$avatar_name[$avatar_folder][$avatar_row_count][$avatar_col_count] = ucfirst(str_replace("_", " ", preg_replace('/^(.*)\..*$/', '\1', $sub_file)));
+					$avatar_col_count++;
+					if($avatar_col_count == 5)
 					{
-						$avatar_images[$file][$avatar_row_count][$avatar_col_count] = $sub_file;
-						$avatar_name[$file][$avatar_row_count][$avatar_col_count] = ucfirst(str_replace("_", " ", preg_replace('/^(.*)\..*$/', '\1', $sub_file)));
-						$avatar_col_count++;
-						if($avatar_col_count == 5)
-						{
-							$avatar_row_count++;
-							$avatar_col_count = 0;
-						}
+						$avatar_row_count++;
+						$avatar_col_count = 0;
 					}
 				}
 			}
 		}
 	}
-
-	@closedir($dir);
-
 	@ksort($avatar_images);
 	@reset($avatar_images);
 
@@ -493,7 +503,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 		for($j = 0; $j < sizeof($avatar_images[$category][$i]); $j++)
 		{
 			$template->assign_block_vars('avatar_row.avatar_column', array(
-				'AVATAR_IMAGE' => $config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j],
+				'AVATAR_IMAGE' => IP_ROOT_PATH . $config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j],
 				'AVATAR_NAME' => $avatar_name[$category][$i][$j]
 				)
 			);
@@ -504,7 +514,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 		}
 	}
 
-	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'aim', 'facebook', 'icq', 'jabber', 'msn', 'skype', 'twitter', 'yim', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
+	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'aim', 'facebook', 'flickr', 'googleplus', 'icq', 'jabber', 'linkedin', 'msn', 'skype', 'twitter', 'yim', 'youtube', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
 
 	$s_hidden_vars = '<input type="hidden" name="sid" value="' . $session_id . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="avatarcatname" value="' . $category . '" />';
 	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $user->data['user_id'] . '" />';
@@ -526,6 +536,10 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 		'S_COLSPAN' => $s_colspan,
 		'S_PROFILE_ACTION' => append_sid(CMS_PAGE_PROFILE . '?mode=' . $mode . '&amp;cpl_mode=avatar'),
 
+		'L_USER_TITLE' => $lang['User_admin'],
+		'L_USER_EXPLAIN' => $lang['User_admin_explain'],
+		'S_ACP_PROFILE_ACTION' => append_sid('admin_users.' . PHP_EXT . '?mode=' . $mode),
+
 		'S_HIDDEN_FIELDS' => $s_hidden_vars
 		)
 	);
@@ -533,11 +547,11 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 	return;
 }
 
-function display_avatar_generator($mode, &$avatar_filename, &$avatar_image, &$avatar_text, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$aim, &$facebook, &$icq, &$jabber, &$msn, &$skype, &$twitter, &$yim, &$website, &$location, &$user_flag, &$user_first_name, &$user_last_name, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
+function display_avatar_generator($mode, &$avatar_filename, &$avatar_image, &$avatar_text, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$aim, &$facebook, &$flickr, &$googleplus, &$icq, &$jabber, &$linkedin, &$msn, &$skype, &$twitter, &$yim, &$youtube, &$website, &$location, &$user_flag, &$user_first_name, &$user_last_name, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
 {
-	global $config, $db, $template, $lang, $images, $theme;
+	global $db, $cache, $config, $template, $images, $theme, $lang;
 
-	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'aim', 'facebook', 'icq', 'jabber', 'msn', 'skype', 'twitter', 'yim', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
+	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'aim', 'facebook', 'flickr', 'googleplus', 'icq', 'jabber', 'linkedin', 'msn', 'skype', 'twitter', 'yim', 'youtube', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
 	$s_hidden_vars = '<input type="hidden" name="sid" value="' . $session_id . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="avatar_filename" value="' . $avatar_filename . '" />';
 	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $user->data['user_id'] . '" />';
 

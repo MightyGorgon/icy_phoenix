@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -30,9 +30,9 @@ include(IP_ROOT_PATH . 'includes/functions_credits.' . PHP_EXT);
 
 $mode = request_var('mode', '', true);
 
-/*******************************************************************************************
-/** Parse for modes...
-/******************************************************************************************/
+/*
+* Parse for modes...
+*/
 setup_hacks_list_array();
 scan_hl_files();
 switch($mode)
@@ -43,11 +43,13 @@ switch($mode)
 				WHERE hack_hide = 'No'
 				ORDER BY hack_name ASC";
 		$result = $db->sql_query($sql, 0, 'credits_');
+		$row_class = '';
 		$i = 0;
 		while ($row = $db->sql_fetchrow($result))
 		{
+			$row_class = ip_zebra_rows($row_class);
 			$template->assign_block_vars('listrow', array(
-				'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
+				'ROW_CLASS' => $row_class,
 				'HACK_ID' => $row['hack_id'],
 				'HACK_AUTHOR' => ($row['hack_author_email'] != '') ? ((USE_CRYPTIC_EMAIL) ? $row['hack_author'] . '<br />' . cryptize_hl_email($row['hack_author_email']) : '<a href="mailto:' . $row['hack_author_email'] . '">' . $row['hack_author'] . '</a>') : $row['hack_author'],
 				'HACK_WEBSITE' => ($row['hack_author_website'] != '') ? '<a target="blank" href="' . $row['hack_author_website'] . '">' . $row['hack_author_website'] . '</a>' : $lang['No_Website'],
@@ -59,7 +61,7 @@ switch($mode)
 			);
 		}
 
-		if ($i == 0 || !isset($i))
+		if (empty($i))
 		{
 			$template->assign_block_vars('empty_switch', array());
 			$template->assign_var('L_NO_HACKS', $lang['No_Hacks']);
@@ -77,8 +79,6 @@ $template->assign_vars(array(
 	)
 );
 
-//$template->assign_block_vars('google_ad', array());
-//copyright_nivisec($meta_content['page_title'], '2003');
 full_page_generation('credits_display.tpl', $lang['Hacks_List'], '', '');
 
 ?>

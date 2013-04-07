@@ -24,7 +24,8 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/class_lang_user_created.' . PHP_EXT);
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_admin_extend_lang.' . PHP_EXT);
+
+setup_extra_lang(array('lang_admin_extend_lang'));
 
 @set_time_limit(0);
 $mem_limit = check_mem_limit();
@@ -758,6 +759,6 @@ if ($mode == '')
 
 // dump
 $template->pparse('body');
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

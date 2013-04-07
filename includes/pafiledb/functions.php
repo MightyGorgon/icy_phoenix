@@ -86,42 +86,33 @@ class pafiledb_functions
 		global $lang;
 		$curicons = 1;
 
-		if (empty($file_posticon) || ($file_posticon == 'none') || ($file_posticon == 'none.gif'))
-		{
-			$posticons .= '<input type="radio" name="posticon" value="none" checked="checked" /><a class="gensmall">' . $lang['None'] . '</a>&nbsp;';
-		}
-		else
-		{
-			$posticons .= '<input type="radio" name="posticon" value="none" /><a class="gensmall">' . $lang['None'] . '</a>&nbsp;';
-		}
+		$posticons = '<input type="radio" name="posticon" value="none"' . ((empty($file_posticon) || ($file_posticon == 'none') || ($file_posticon == 'none.gif')) ? ' checked="checked"' : '') . ' /><a class="gensmall">' . $lang['None'] . '</a>&nbsp;';
 
+		$file_icons = array();
 		$handle = @opendir(IP_ROOT_PATH . FILES_ICONS_DIR);
-
 		while ($icon = @readdir($handle))
 		{
 			$file_extensions = array('gif', 'jpg', 'jpeg', 'png');
 			$file_extension = substr(strrchr($icon, '.'), 1);
 			if (($icon != '.') && ($icon != '..') && in_array($file_extension, $file_extensions) && ($icon != 'spacer.gif') && !is_dir(IP_ROOT_PATH . $icon))
 			{
-				if ($file_posticon == $icon)
-				{
-					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" checked="checked" /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" alt="" />&nbsp;';
-				}
-				else
-				{
-					$posticons .= '<input type="radio" name="posticon" value="' . $icon . '" /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" alt="" />&nbsp;';
-				}
-
-				$curicons++;
-
-				if ($curicons == 8)
-				{
-					$posticons .= '<br />';
-					$curicons = 0;
-				}
+				$file_icons[] = $icon;
 			}
 		}
 		@closedir($handle);
+		sort($file_icons);
+
+		foreach ($file_icons as $icon)
+		{
+			$posticons .= '<input type="radio" name="posticon" value="' . $icon . '"' . (($file_posticon == $icon) ? ' checked="checked"' : '') . ' /><img src="' . IP_ROOT_PATH . FILES_ICONS_DIR . $icon . '" alt="" />&nbsp;';
+			$curicons++;
+			if ($curicons == 8)
+			{
+				$posticons .= '<br />';
+				$curicons = 0;
+			}
+		}
+
 		return $posticons;
 	}
 
@@ -131,11 +122,11 @@ class pafiledb_functions
 
 		if ($license_id == 0)
 		{
-			$list .= '<option calue="0" selected>' . $lang['None'] . '</option>';
+			$list .= '<option value="0" selected>' . $lang['None'] . '</option>';
 		}
 		else
 		{
-			$list .= '<option calue="0">' . $lang['None'] . '</option>';
+			$list .= '<option value="0">' . $lang['None'] . '</option>';
 		}
 
 		$sql = 'SELECT *
@@ -326,7 +317,7 @@ class pafiledb_functions
 			$path = $url['path'];
 			$port = (!empty($url['port'])) ? $url['port'] : 80;
 
-			$fp = @fsockopen($host, $port, &$errno, &$errstr, 20);
+			$fp = @fsockopen($host, $port, $errno, $errstr, 20);
 
 			if(!$fp)
 			{
@@ -437,9 +428,9 @@ function pafiledb_page_header($page_title)
 	global $db, $cache, $config, $template, $images, $theme, $user, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 
 	global $pafiledb, $pafiledb_config, $action;
 	global $admin_level, $level_prior, $debug;
@@ -481,8 +472,8 @@ function pafiledb_page_header($page_title)
 		{
 			$bc_nav_links = $pafiledb->generate_category_nav_links($cat_id, $file_id);
 		}
-		$breadcrumbs_address = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '"' . (($bc_nav_links == '') ? ' class="nav-current"' : '') . '>' . $lang['Downloads'] . '</a>' . $bc_nav_links;
-		$breadcrumbs_links_right = '';
+		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('dload.' . PHP_EXT) . '"' . (($bc_nav_links == '') ? ' class="nav-current"' : '') . '>' . $lang['Downloads'] . '</a>' . $bc_nav_links;
+		$breadcrumbs['bottom_right_links'] = '';
 		page_header($meta_content['page_title'], true);
 	}
 
@@ -554,9 +545,9 @@ function pafiledb_page_footer()
 	global $db, $cache, $config, $template, $images, $theme, $user, $lang, $tree;
 	global $table_prefix, $SID, $_SID;
 	global $ip_cms, $cms_config_vars, $cms_config_global_blocks, $cms_config_layouts, $cms_page;
-	global $session_length, $starttime, $base_memory_usage, $do_gzip_compress, $start;
+	global $starttime, $base_memory_usage, $do_gzip_compress, $start;
 	global $gen_simple_header, $meta_content, $nav_separator, $nav_links, $nav_pgm, $nav_add_page_title, $skip_nav_cat;
-	global $breadcrumbs_address, $breadcrumbs_links_left, $breadcrumbs_links_right;
+	global $breadcrumbs;
 
 	global $pafiledb, $pafiledb_config, $action;
 	global $admin_level, $level_prior, $debug;

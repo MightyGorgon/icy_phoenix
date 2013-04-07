@@ -15,7 +15,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 define('EXPLODE_SEPARATOR_CHAR', '|');
 //define('JR_ADMIN_DIR', ADM .'/');
-define('COPYRIGHT_NIVISEC_FORMAT', '<br /><div class="copyright" style="text-align:center;"> %s &copy; %s <a href="http://www.nivisec.com">Nivisec.com</a></div>');
+define('COPYRIGHT_NIVISEC_FORMAT', '<br /><div class="copyright" style="text-align: center;"> %s &copy; %s <a href="http://www.nivisec.com">Nivisec.com</a></div>');
 
 
 if (!function_exists('copyright_nivisec'))
@@ -147,11 +147,11 @@ function jr_admin_get_module_list($user_module_list = false)
 	$plugins_dir = @opendir(IP_ROOT_PATH . PLUGINS_PATH);
 	while (($plugins_subdir = @readdir($plugins_dir)) !== false)
 	{
-		$exclude_dirs = array('.', '..');
+		$exclude_dirs = array('.', '..', 'index.html', 'index.htm', '.htaccess');
 		if (!in_array($plugins_subdir, $exclude_dirs))
 		{
 			$plugin_adm_path = IP_ROOT_PATH . PLUGINS_PATH . $plugins_subdir . '/' . ADM . '/';
-			if (is_dir($plugin_adm_path))
+			if (!@is_file($plugin_adm_path) && !@is_link($plugin_adm_path) && @is_dir($plugin_adm_path))
 			{
 				$plugin_adm_dir = @opendir($plugin_adm_path);
 				$plugin_acp_pattern = "/^admin_.+\.$phpEx$/";

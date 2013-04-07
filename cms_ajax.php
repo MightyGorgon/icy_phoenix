@@ -21,7 +21,7 @@ $config['jquery_ui'] = true;
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -31,8 +31,6 @@ $class_form = new class_form();
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-
-setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks'));
 
 // Define constant to keep page_header.php from sending headers
 define('AJAX_HEADERS', true);

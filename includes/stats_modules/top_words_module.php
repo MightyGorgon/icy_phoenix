@@ -39,7 +39,7 @@ $words_data = $stat_db->sql_fetchrowset($result);
 $percentage = 0;
 $bar_percent = 0;
 
-$stopwords_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_stopwords.txt");
+stopwords_synonyms_init();
 @array_push($stopwords_array, 'quot');
 
 $template->_tpldata['stats_row.'] = array();

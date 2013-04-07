@@ -47,215 +47,66 @@ class phpbb_db_tools
 	* @var array
 	*/
 	var $dbms_type_map = array(
-		'mysql_41'	=> array(
-			'INT:'		=> 'int(%d)',
-			'BINT'		=> 'bigint(20)',
-			'UINT'		=> 'mediumint(8) UNSIGNED',
-			'UINT:'		=> 'int(%d) UNSIGNED',
-			'TINT:'		=> 'tinyint(%d)',
-			'USINT'		=> 'smallint(4) UNSIGNED',
-			'BOOL'		=> 'tinyint(1) UNSIGNED',
-			'VCHAR'		=> 'varchar(255)',
-			'VCHAR:'	=> 'varchar(%d)',
-			'CHAR:'		=> 'char(%d)',
-			'XSTEXT'	=> 'text',
-			'XSTEXT_UNI'=> 'varchar(100)',
-			'STEXT'		=> 'text',
-			'STEXT_UNI'	=> 'varchar(255)',
-			'TEXT'		=> 'text',
-			'TEXT_UNI'	=> 'text',
-			'MTEXT'		=> 'mediumtext',
-			'MTEXT_UNI'	=> 'mediumtext',
-			'TIMESTAMP'	=> 'int(11) UNSIGNED',
-			'DECIMAL'	=> 'decimal(5,2)',
-			'DECIMAL:'	=> 'decimal(%d,2)',
-			'PDECIMAL'	=> 'decimal(6,3)',
-			'PDECIMAL:'	=> 'decimal(%d,3)',
-			'VCHAR_UNI'	=> 'varchar(255)',
-			'VCHAR_UNI:'=> 'varchar(%d)',
-			'VCHAR_CI'	=> 'varchar(255)',
-			'VARBINARY'	=> 'varbinary(255)',
+		'mysql_41'			=> array(
+			'INT:'				=> 'int(%d)',
+			'BINT'				=> 'bigint(20)',
+			'UINT'				=> 'mediumint(8) UNSIGNED',
+			'UINT:'				=> 'int(%d) UNSIGNED',
+			'TINT:'				=> 'tinyint(%d)',
+			'USINT'				=> 'smallint(4) UNSIGNED',
+			'BOOL'				=> 'tinyint(1) UNSIGNED',
+			'VCHAR'				=> 'varchar(255)',
+			'VCHAR:'			=> 'varchar(%d)',
+			'CHAR:'				=> 'char(%d)',
+			'XSTEXT'			=> 'text',
+			'XSTEXT_UNI'	=> 'varchar(100)',
+			'STEXT'				=> 'text',
+			'STEXT_UNI'		=> 'varchar(255)',
+			'TEXT'				=> 'text',
+			'TEXT_UNI'		=> 'text',
+			'MTEXT'				=> 'mediumtext',
+			'MTEXT_UNI'		=> 'mediumtext',
+			'TIMESTAMP'		=> 'int(11) UNSIGNED',
+			'DECIMAL'			=> 'decimal(5,2)',
+			'DECIMAL:'		=> 'decimal(%d,2)',
+			'PDECIMAL'		=> 'decimal(6,3)',
+			'PDECIMAL:'		=> 'decimal(%d,3)',
+			'VCHAR_UNI'		=> 'varchar(255)',
+			'VCHAR_UNI:'	=> 'varchar(%d)',
+			'VCHAR_CI'		=> 'varchar(255)',
+			'VARBINARY'		=> 'varbinary(255)',
 		),
 
-		'mysql_40'	=> array(
-			'INT:'		=> 'int(%d)',
-			'BINT'		=> 'bigint(20)',
-			'UINT'		=> 'mediumint(8) UNSIGNED',
-			'UINT:'		=> 'int(%d) UNSIGNED',
-			'TINT:'		=> 'tinyint(%d)',
-			'USINT'		=> 'smallint(4) UNSIGNED',
-			'BOOL'		=> 'tinyint(1) UNSIGNED',
-			'VCHAR'		=> 'varbinary(255)',
-			'VCHAR:'	=> 'varbinary(%d)',
-			'CHAR:'		=> 'binary(%d)',
-			'XSTEXT'	=> 'blob',
-			'XSTEXT_UNI'=> 'blob',
-			'STEXT'		=> 'blob',
-			'STEXT_UNI'	=> 'blob',
-			'TEXT'		=> 'blob',
-			'TEXT_UNI'	=> 'blob',
-			'MTEXT'		=> 'mediumblob',
-			'MTEXT_UNI'	=> 'mediumblob',
-			'TIMESTAMP'	=> 'int(11) UNSIGNED',
-			'DECIMAL'	=> 'decimal(5,2)',
-			'DECIMAL:'	=> 'decimal(%d,2)',
-			'PDECIMAL'	=> 'decimal(6,3)',
-			'PDECIMAL:'	=> 'decimal(%d,3)',
-			'VCHAR_UNI'	=> 'blob',
-			'VCHAR_UNI:'=> array('varbinary(%d)', 'limit' => array('mult', 3, 255, 'blob')),
-			'VCHAR_CI'	=> 'blob',
-			'VARBINARY'	=> 'varbinary(255)',
+		'mysql_40'			=> array(
+			'INT:'				=> 'int(%d)',
+			'BINT'				=> 'bigint(20)',
+			'UINT'				=> 'mediumint(8) UNSIGNED',
+			'UINT:'				=> 'int(%d) UNSIGNED',
+			'TINT:'				=> 'tinyint(%d)',
+			'USINT'				=> 'smallint(4) UNSIGNED',
+			'BOOL'				=> 'tinyint(1) UNSIGNED',
+			'VCHAR'				=> 'varbinary(255)',
+			'VCHAR:'			=> 'varbinary(%d)',
+			'CHAR:'				=> 'binary(%d)',
+			'XSTEXT'			=> 'blob',
+			'XSTEXT_UNI'	=> 'blob',
+			'STEXT'				=> 'blob',
+			'STEXT_UNI'		=> 'blob',
+			'TEXT'				=> 'blob',
+			'TEXT_UNI'		=> 'blob',
+			'MTEXT'				=> 'mediumblob',
+			'MTEXT_UNI'		=> 'mediumblob',
+			'TIMESTAMP'		=> 'int(11) UNSIGNED',
+			'DECIMAL'			=> 'decimal(5,2)',
+			'DECIMAL:'		=> 'decimal(%d,2)',
+			'PDECIMAL'		=> 'decimal(6,3)',
+			'PDECIMAL:'		=> 'decimal(%d,3)',
+			'VCHAR_UNI'		=> 'blob',
+			'VCHAR_UNI:'	=> array('varbinary(%d)', 'limit' => array('mult', 3, 255, 'blob')),
+			'VCHAR_CI'		=> 'blob',
+			'VARBINARY'		=> 'varbinary(255)',
 		),
 
-		'firebird'	=> array(
-			'INT:'		=> 'INTEGER',
-			'BINT'		=> 'DOUBLE PRECISION',
-			'UINT'		=> 'INTEGER',
-			'UINT:'		=> 'INTEGER',
-			'TINT:'		=> 'INTEGER',
-			'USINT'		=> 'INTEGER',
-			'BOOL'		=> 'INTEGER',
-			'VCHAR'		=> 'VARCHAR(255) CHARACTER SET NONE',
-			'VCHAR:'	=> 'VARCHAR(%d) CHARACTER SET NONE',
-			'CHAR:'		=> 'CHAR(%d) CHARACTER SET NONE',
-			'XSTEXT'	=> 'BLOB SUB_TYPE TEXT CHARACTER SET NONE',
-			'STEXT'		=> 'BLOB SUB_TYPE TEXT CHARACTER SET NONE',
-			'TEXT'		=> 'BLOB SUB_TYPE TEXT CHARACTER SET NONE',
-			'MTEXT'		=> 'BLOB SUB_TYPE TEXT CHARACTER SET NONE',
-			'XSTEXT_UNI'=> 'VARCHAR(100) CHARACTER SET UTF8',
-			'STEXT_UNI'	=> 'VARCHAR(255) CHARACTER SET UTF8',
-			'TEXT_UNI'	=> 'BLOB SUB_TYPE TEXT CHARACTER SET UTF8',
-			'MTEXT_UNI'	=> 'BLOB SUB_TYPE TEXT CHARACTER SET UTF8',
-			'TIMESTAMP'	=> 'INTEGER',
-			'DECIMAL'	=> 'DOUBLE PRECISION',
-			'DECIMAL:'	=> 'DOUBLE PRECISION',
-			'PDECIMAL'	=> 'DOUBLE PRECISION',
-			'PDECIMAL:'	=> 'DOUBLE PRECISION',
-			'VCHAR_UNI'	=> 'VARCHAR(255) CHARACTER SET UTF8',
-			'VCHAR_UNI:'=> 'VARCHAR(%d) CHARACTER SET UTF8',
-			'VCHAR_CI'	=> 'VARCHAR(255) CHARACTER SET UTF8',
-			'VARBINARY'	=> 'CHAR(255) CHARACTER SET NONE',
-		),
-
-		'mssql'		=> array(
-			'INT:'		=> '[int]',
-			'BINT'		=> '[float]',
-			'UINT'		=> '[int]',
-			'UINT:'		=> '[int]',
-			'TINT:'		=> '[int]',
-			'USINT'		=> '[int]',
-			'BOOL'		=> '[int]',
-			'VCHAR'		=> '[varchar] (255)',
-			'VCHAR:'	=> '[varchar] (%d)',
-			'CHAR:'		=> '[char] (%d)',
-			'XSTEXT'	=> '[varchar] (1000)',
-			'STEXT'		=> '[varchar] (3000)',
-			'TEXT'		=> '[varchar] (8000)',
-			'MTEXT'		=> '[text]',
-			'XSTEXT_UNI'=> '[varchar] (100)',
-			'STEXT_UNI'	=> '[varchar] (255)',
-			'TEXT_UNI'	=> '[varchar] (4000)',
-			'MTEXT_UNI'	=> '[text]',
-			'TIMESTAMP'	=> '[int]',
-			'DECIMAL'	=> '[float]',
-			'DECIMAL:'	=> '[float]',
-			'PDECIMAL'	=> '[float]',
-			'PDECIMAL:'	=> '[float]',
-			'VCHAR_UNI'	=> '[varchar] (255)',
-			'VCHAR_UNI:'=> '[varchar] (%d)',
-			'VCHAR_CI'	=> '[varchar] (255)',
-			'VARBINARY'	=> '[varchar] (255)',
-		),
-
-		'oracle'	=> array(
-			'INT:'		=> 'number(%d)',
-			'BINT'		=> 'number(20)',
-			'UINT'		=> 'number(8)',
-			'UINT:'		=> 'number(%d)',
-			'TINT:'		=> 'number(%d)',
-			'USINT'		=> 'number(4)',
-			'BOOL'		=> 'number(1)',
-			'VCHAR'		=> 'varchar2(255)',
-			'VCHAR:'	=> 'varchar2(%d)',
-			'CHAR:'		=> 'char(%d)',
-			'XSTEXT'	=> 'varchar2(1000)',
-			'STEXT'		=> 'varchar2(3000)',
-			'TEXT'		=> 'clob',
-			'MTEXT'		=> 'clob',
-			'XSTEXT_UNI'=> 'varchar2(300)',
-			'STEXT_UNI'	=> 'varchar2(765)',
-			'TEXT_UNI'	=> 'clob',
-			'MTEXT_UNI'	=> 'clob',
-			'TIMESTAMP'	=> 'number(11)',
-			'DECIMAL'	=> 'number(5, 2)',
-			'DECIMAL:'	=> 'number(%d, 2)',
-			'PDECIMAL'	=> 'number(6, 3)',
-			'PDECIMAL:'	=> 'number(%d, 3)',
-			'VCHAR_UNI'	=> 'varchar2(765)',
-			'VCHAR_UNI:'=> array('varchar2(%d)', 'limit' => array('mult', 3, 765, 'clob')),
-			'VCHAR_CI'	=> 'varchar2(255)',
-			'VARBINARY'	=> 'raw(255)',
-		),
-
-		'sqlite'	=> array(
-			'INT:'		=> 'int(%d)',
-			'BINT'		=> 'bigint(20)',
-			'UINT'		=> 'INTEGER UNSIGNED', //'mediumint(8) UNSIGNED',
-			'UINT:'		=> 'INTEGER UNSIGNED', // 'int(%d) UNSIGNED',
-			'TINT:'		=> 'tinyint(%d)',
-			'USINT'		=> 'INTEGER UNSIGNED', //'mediumint(4) UNSIGNED',
-			'BOOL'		=> 'INTEGER UNSIGNED', //'tinyint(1) UNSIGNED',
-			'VCHAR'		=> 'varchar(255)',
-			'VCHAR:'	=> 'varchar(%d)',
-			'CHAR:'		=> 'char(%d)',
-			'XSTEXT'	=> 'text(65535)',
-			'STEXT'		=> 'text(65535)',
-			'TEXT'		=> 'text(65535)',
-			'MTEXT'		=> 'mediumtext(16777215)',
-			'XSTEXT_UNI'=> 'text(65535)',
-			'STEXT_UNI'	=> 'text(65535)',
-			'TEXT_UNI'	=> 'text(65535)',
-			'MTEXT_UNI'	=> 'mediumtext(16777215)',
-			'TIMESTAMP'	=> 'INTEGER UNSIGNED', //'int(11) UNSIGNED',
-			'DECIMAL'	=> 'decimal(5,2)',
-			'DECIMAL:'	=> 'decimal(%d,2)',
-			'PDECIMAL'	=> 'decimal(6,3)',
-			'PDECIMAL:'	=> 'decimal(%d,3)',
-			'VCHAR_UNI'	=> 'varchar(255)',
-			'VCHAR_UNI:'=> 'varchar(%d)',
-			'VCHAR_CI'	=> 'varchar(255)',
-			'VARBINARY'	=> 'blob',
-		),
-
-		'postgres'	=> array(
-			'INT:'		=> 'INT4',
-			'BINT'		=> 'INT8',
-			'UINT'		=> 'INT4', // unsigned
-			'UINT:'		=> 'INT4', // unsigned
-			'USINT'		=> 'INT2', // unsigned
-			'BOOL'		=> 'INT2', // unsigned
-			'TINT:'		=> 'INT2',
-			'VCHAR'		=> 'varchar(255)',
-			'VCHAR:'	=> 'varchar(%d)',
-			'CHAR:'		=> 'char(%d)',
-			'XSTEXT'	=> 'varchar(1000)',
-			'STEXT'		=> 'varchar(3000)',
-			'TEXT'		=> 'varchar(8000)',
-			'MTEXT'		=> 'TEXT',
-			'XSTEXT_UNI'=> 'varchar(100)',
-			'STEXT_UNI'	=> 'varchar(255)',
-			'TEXT_UNI'	=> 'varchar(4000)',
-			'MTEXT_UNI'	=> 'TEXT',
-			'TIMESTAMP'	=> 'INT4', // unsigned
-			'DECIMAL'	=> 'decimal(5,2)',
-			'DECIMAL:'	=> 'decimal(%d,2)',
-			'PDECIMAL'	=> 'decimal(6,3)',
-			'PDECIMAL:'	=> 'decimal(%d,3)',
-			'VCHAR_UNI'	=> 'varchar(255)',
-			'VCHAR_UNI:'=> 'varchar(%d)',
-			'VCHAR_CI'	=> 'varchar_ci',
-			'VARBINARY'	=> 'bytea',
-		),
 	);
 
 	/**
@@ -268,7 +119,7 @@ class phpbb_db_tools
 	* A list of supported DBMS. We change this class to support more DBMS, the DBMS itself only need to follow some rules.
 	* @var array
 	*/
-	var $supported_dbms = array('firebird', 'mssql', 'mysql_40', 'mysql_41', 'oracle', 'postgres', 'sqlite');
+	var $supported_dbms = array('mysql_40', 'mysql_41');
 
 	/**
 	* This is set to true if user only wants to return the 'to-be-executed' SQL statement(s) (as an array).
@@ -307,11 +158,6 @@ class phpbb_db_tools
 
 			case 'mysqli':
 				$this->sql_layer = 'mysql_41';
-			break;
-
-			case 'mssql':
-			case 'mssql_odbc':
-				$this->sql_layer = 'mssql';
 			break;
 
 			default:
@@ -374,10 +220,6 @@ class phpbb_db_tools
 		// Begin table sql statement
 		switch ($this->sql_layer)
 		{
-			case 'mssql':
-				$table_sql = 'CREATE TABLE [' . $table_name . '] (' . "\n";
-			break;
-
 			default:
 				$table_sql = 'CREATE TABLE ' . $table_name . ' (' . "\n";
 			break;
@@ -392,10 +234,6 @@ class phpbb_db_tools
 			// here we add the definition of the new column to the list of columns
 			switch ($this->sql_layer)
 			{
-				case 'mssql':
-					$columns[] = "\t [{$column_name}] " . $prepared_column['column_type_sql_default'];
-				break;
-
 				default:
 					$columns[] = "\t {$column_name} " . $prepared_column['column_type_sql'];
 				break;
@@ -423,20 +261,6 @@ class phpbb_db_tools
 		// this makes up all the columns in the create table statement
 		$table_sql .= implode(",\n", $columns);
 
-		// Close the table for two DBMS and add to the statements
-		switch ($this->sql_layer)
-		{
-			case 'firebird':
-				$table_sql .= "\n);";
-				$statements[] = $table_sql;
-			break;
-
-			case 'mssql':
-				$table_sql .= "\n) ON [PRIMARY]" . (($create_textimage) ? ' TEXTIMAGE_ON [PRIMARY]' : '');
-				$statements[] = $table_sql;
-			break;
-		}
-
 		// we have yet to create a primary key for this table,
 		// this means that we can add the one we really wanted instead
 		if (!$primary_key_gen)
@@ -449,34 +273,7 @@ class phpbb_db_tools
 					$table_data['PRIMARY_KEY'] = array($table_data['PRIMARY_KEY']);
 				}
 
-				switch ($this->sql_layer)
-				{
-					case 'mysql_40':
-					case 'mysql_41':
-					case 'postgres':
-					case 'sqlite':
-						$table_sql .= ",\n\t PRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . ')';
-					break;
-
-					case 'firebird':
-					case 'mssql':
-						// We need the data here
-						$old_return_statements = $this->return_statements;
-						$this->return_statements = true;
-
-						$primary_key_stmts = $this->sql_create_primary_key($table_name, $table_data['PRIMARY_KEY']);
-						foreach ($primary_key_stmts as $pk_stmt)
-						{
-							$statements[] = $pk_stmt;
-						}
-
-						$this->return_statements = $old_return_statements;
-					break;
-
-					case 'oracle':
-						$table_sql .= ",\n\t CONSTRAINT pk_{$table_name} PRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . ')';
-					break;
-				}
+				$table_sql .= ",\n\t PRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . ')';
 			}
 		}
 
@@ -490,54 +287,10 @@ class phpbb_db_tools
 			break;
 
 			case 'mysql_40':
-			case 'sqlite':
 				$table_sql .= "\n);";
 				$statements[] = $table_sql;
 			break;
 
-			case 'postgres':
-				// do we need to add a sequence for auto incrementing columns?
-				if ($create_sequence)
-				{
-					$statements[] = "CREATE SEQUENCE {$table_name}_seq;";
-				}
-
-				$table_sql .= "\n);";
-				$statements[] = $table_sql;
-			break;
-
-			case 'oracle':
-				$table_sql .= "\n);";
-				$statements[] = $table_sql;
-
-				// do we need to add a sequence and a tigger for auto incrementing columns?
-				if ($create_sequence)
-				{
-					// create the actual sequence
-					$statements[] = "CREATE SEQUENCE {$table_name}_seq";
-
-					// the trigger is the mechanism by which we increment the counter
-					$trigger = "CREATE OR REPLACE TRIGGER t_{$table_name}\n";
-					$trigger .= "BEFORE INSERT ON {$table_name}\n";
-					$trigger .= "FOR EACH ROW WHEN (\n";
-					$trigger .= "\tnew.{$create_sequence} IS NULL OR new.{$create_sequence} = 0\n";
-					$trigger .= ")\n";
-					$trigger .= "BEGIN\n";
-					$trigger .= "\tSELECT {$table_name}_seq.nextval\n";
-					$trigger .= "\tINTO :new.{$create_sequence}\n";
-					$trigger .= "\tFROM dual\n";
-					$trigger .= "END;";
-
-					$statements[] = $trigger;
-				}
-			break;
-
-			case 'firebird':
-				if ($create_sequence)
-				{
-					$statements[] = "CREATE SEQUENCE {$table_name}_seq;";
-				}
-			break;
 		}
 
 		// Write Keys
@@ -635,7 +388,7 @@ class phpbb_db_tools
 							$sqlite_data[$table]['add_columns'][] = $result;
 						}
 					}
-					else if ($this->return_statements)
+					elseif ($this->return_statements)
 					{
 						$statements = array_merge($statements, $result);
 					}
@@ -671,7 +424,7 @@ class phpbb_db_tools
 							$sqlite_data[$table]['add_columns'][] = $result;
 						}
 					}
-					else if ($this->return_statements)
+					elseif ($this->return_statements)
 					{
 						$statements = array_merge($statements, $result);
 					}
@@ -707,15 +460,7 @@ class phpbb_db_tools
 					if ($this->sql_column_exists($table, $column))
 					{
 						$result = $this->sql_column_remove($table, $column, true);
-
-						if ($sqlite)
-						{
-							$sqlite_data[$table]['drop_columns'][] = $result;
-						}
-						else if ($this->return_statements)
-						{
-							$statements = array_merge($statements, $result);
-						}
+						$statements = array_merge($statements, $result);
 					}
 				}
 			}
@@ -727,15 +472,7 @@ class phpbb_db_tools
 			foreach ($schema_changes['add_primary_keys'] as $table => $columns)
 			{
 				$result = $this->sql_create_primary_key($table, $columns, true);
-
-				if ($sqlite)
-				{
-					$sqlite_data[$table]['primary_key'] = $result;
-				}
-				else if ($this->return_statements)
-				{
-					$statements = array_merge($statements, $result);
-				}
+				$statements = array_merge($statements, $result);
 			}
 		}
 
@@ -898,7 +635,7 @@ class phpbb_db_tools
 					$new_table_cols[] = 'PRIMARY KEY (' . implode(', ', $sql_schema_changes['primary_key']) . ')';
 				}
 				// Add a new one or the old primary key
-				else if ($primary_key !== false)
+				elseif ($primary_key !== false)
 				{
 					$new_table_cols[] = $primary_key;
 				}
@@ -930,144 +667,20 @@ class phpbb_db_tools
 	*/
 	function sql_column_exists($table, $column_name)
 	{
-		switch ($this->sql_layer)
+		$sql = "SHOW COLUMNS FROM $table";
+		$result = $this->db->sql_query($sql);
+
+		while ($row = $this->db->sql_fetchrow($result))
 		{
-			case 'mysql_40':
-			case 'mysql_41':
-
-				$sql = "SHOW COLUMNS FROM $table";
-				$result = $this->db->sql_query($sql);
-
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					// lower case just in case
-					if (strtolower($row['Field']) == $column_name)
-					{
-						$this->db->sql_freeresult($result);
-						return true;
-					}
-				}
+			// lower case just in case
+			if (strtolower($row['Field']) == $column_name)
+			{
 				$this->db->sql_freeresult($result);
-				return false;
-			break;
-
-			// PostgreSQL has a way of doing this in a much simpler way but would
-			// not allow us to support all versions of PostgreSQL
-			case 'postgres':
-				$sql = "SELECT a.attname
-					FROM pg_class c, pg_attribute a
-					WHERE c.relname = '{$table}'
-						AND a.attnum > 0
-						AND a.attrelid = c.oid";
-				$result = $this->db->sql_query($sql);
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					// lower case just in case
-					if (strtolower($row['attname']) == $column_name)
-					{
-						$this->db->sql_freeresult($result);
-						return true;
-					}
-				}
-				$this->db->sql_freeresult($result);
-
-				return false;
-			break;
-
-			// same deal with PostgreSQL, we must perform more complex operations than
-			// we technically could
-			case 'mssql':
-				$sql = "SELECT c.name
-					FROM syscolumns c
-					LEFT JOIN sysobjects o ON c.id = o.id
-					WHERE o.name = '{$table}'";
-				$result = $this->db->sql_query($sql);
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					// lower case just in case
-					if (strtolower($row['name']) == $column_name)
-					{
-						$this->db->sql_freeresult($result);
-						return true;
-					}
-				}
-				$this->db->sql_freeresult($result);
-				return false;
-			break;
-
-			case 'oracle':
-				$sql = "SELECT column_name
-					FROM user_tab_columns
-					WHERE LOWER(table_name) = '" . strtolower($table) . "'";
-				$result = $this->db->sql_query($sql);
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					// lower case just in case
-					if (strtolower($row['column_name']) == $column_name)
-					{
-						$this->db->sql_freeresult($result);
-						return true;
-					}
-				}
-				$this->db->sql_freeresult($result);
-				return false;
-			break;
-
-			case 'firebird':
-				$sql = "SELECT RDB\$FIELD_NAME as FNAME
-					FROM RDB\$RELATION_FIELDS
-					WHERE RDB\$RELATION_NAME = '" . strtoupper($table) . "'";
-				$result = $this->db->sql_query($sql);
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					// lower case just in case
-					if (strtolower($row['fname']) == $column_name)
-					{
-						$this->db->sql_freeresult($result);
-						return true;
-					}
-				}
-				$this->db->sql_freeresult($result);
-				return false;
-			break;
-
-			// ugh, SQLite
-			case 'sqlite':
-				$sql = "SELECT sql
-					FROM sqlite_master
-					WHERE type = 'table'
-						AND name = '{$table}'";
-				$result = $this->db->sql_query($sql);
-
-				if (!$result)
-				{
-					return false;
-				}
-
-				$row = $this->db->sql_fetchrow($result);
-				$this->db->sql_freeresult($result);
-
-				preg_match('#\((.*)\)#s', $row['sql'], $matches);
-
-				$cols = trim($matches[1]);
-				$col_array = preg_split('/,(?![\s\w]+\))/m', $cols);
-
-				foreach ($col_array as $declaration)
-				{
-					$entities = preg_split('#\s+#', trim($declaration));
-					if ($entities[0] == 'PRIMARY')
-					{
-						continue;
-					}
-
-					if (strtolower($entities[0]) == $column_name)
-					{
-						return true;
-					}
-				}
-				return false;
-			break;
+				return true;
+			}
 		}
+		$this->db->sql_freeresult($result);
+		return false;
 	}
 
 	/**
@@ -1088,7 +701,7 @@ class phpbb_db_tools
 			{
 				$this->db->sql_transaction('begin');
 			}
-			else if ($sql === 'commit')
+			elseif ($sql === 'commit')
 			{
 				$this->db->sql_transaction('commit');
 			}
@@ -1165,161 +778,25 @@ class phpbb_db_tools
 
 		$return_array = array();
 
-		switch ($this->sql_layer)
+		$sql .= " {$column_type} ";
+
+		// For hexadecimal values do not use single quotes
+		if (!is_null($column_data[1]) && substr($column_type, -4) !== 'text' && substr($column_type, -4) !== 'blob')
 		{
-			case 'firebird':
-				$sql .= " {$column_type} ";
-				$return_array['column_type_sql_type'] = " {$column_type} ";
+			$sql .= (strpos($column_data[1], '0x') === 0) ? "DEFAULT {$column_data[1]} " : "DEFAULT '{$column_data[1]}' ";
+		}
+		$sql .= 'NOT NULL';
 
-				if (!is_null($column_data[1]))
-				{
-					$sql .= 'DEFAULT ' . ((is_numeric($column_data[1])) ? $column_data[1] : "'{$column_data[1]}'") . ' ';
-					$return_array['column_type_sql_default'] = ((is_numeric($column_data[1])) ? $column_data[1] : "'{$column_data[1]}'") . ' ';
-				}
-
-				$sql .= 'NOT NULL';
-
-				// This is a UNICODE column and thus should be given it's fair share
-				if (preg_match('/^X?STEXT_UNI|VCHAR_(CI|UNI:?)/', $column_data[0]))
-				{
-					$sql .= ' COLLATE UNICODE';
-				}
-
-				$return_array['auto_increment'] = false;
-				if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
-				{
-					$return_array['auto_increment'] = true;
-				}
-
-			break;
-
-			case 'mssql':
-				$sql .= " {$column_type} ";
-				$sql_default = " {$column_type} ";
-
-				// For adding columns we need the default definition
-				if (!is_null($column_data[1]))
-				{
-					// For hexadecimal values do not use single quotes
-					if (strpos($column_data[1], '0x') === 0)
-					{
-						$return_array['default'] = 'DEFAULT (' . $column_data[1] . ') ';
-						$sql_default .= $return_array['default'];
-					}
-					else
-					{
-						$return_array['default'] = 'DEFAULT (' . ((is_numeric($column_data[1])) ? $column_data[1] : "'{$column_data[1]}'") . ') ';
-						$sql_default .= $return_array['default'];
-					}
-				}
-
-				if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
-				{
-//					$sql .= 'IDENTITY (1, 1) ';
-					$sql_default .= 'IDENTITY (1, 1) ';
-				}
-
-				$return_array['textimage'] = $column_type === '[text]';
-
-				$sql .= 'NOT NULL';
-				$sql_default .= 'NOT NULL';
-
-				$return_array['column_type_sql_default'] = $sql_default;
-
-			break;
-
-			case 'mysql_40':
-			case 'mysql_41':
-				$sql .= " {$column_type} ";
-
-				// For hexadecimal values do not use single quotes
-				if (!is_null($column_data[1]) && substr($column_type, -4) !== 'text' && substr($column_type, -4) !== 'blob')
-				{
-					$sql .= (strpos($column_data[1], '0x') === 0) ? "DEFAULT {$column_data[1]} " : "DEFAULT '{$column_data[1]}' ";
-				}
-				$sql .= 'NOT NULL';
-
-				if (isset($column_data[2]))
-				{
-					if ($column_data[2] == 'auto_increment')
-					{
-						$sql .= ' auto_increment';
-					}
-					else if ($this->sql_layer === 'mysql_41' && $column_data[2] == 'true_sort')
-					{
-						$sql .= ' COLLATE utf8_unicode_ci';
-					}
-				}
-
-			break;
-
-			case 'oracle':
-				$sql .= " {$column_type} ";
-				$sql .= (!is_null($column_data[1])) ? "DEFAULT '{$column_data[1]}' " : '';
-
-				// In Oracle empty strings ('') are treated as NULL.
-				// Therefore in oracle we allow NULL's for all DEFAULT '' entries
-				// Oracle does not like setting NOT NULL on a column that is already NOT NULL (this happens only on number fields)
-				if (!preg_match('/number/i', $column_type))
-				{
-					$sql .= ($column_data[1] === '') ? '' : 'NOT NULL';
-				}
-
-				$return_array['auto_increment'] = false;
-				if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
-				{
-					$return_array['auto_increment'] = true;
-				}
-
-			break;
-
-			case 'postgres':
-				$return_array['column_type'] = $column_type;
-
-				$sql .= " {$column_type} ";
-
-				$return_array['auto_increment'] = false;
-				if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
-				{
-					$default_val = "nextval('{$table_name}_seq')";
-					$return_array['auto_increment'] = true;
-				}
-				else if (!is_null($column_data[1]))
-				{
-					$default_val = "'" . $column_data[1] . "'";
-					$return_array['null'] = 'NOT NULL';
-					$sql .= 'NOT NULL ';
-				}
-
-				$return_array['default'] = $default_val;
-
-				$sql .= "DEFAULT {$default_val}";
-
-				// Unsigned? Then add a CHECK contraint
-				if (in_array($orig_column_type, $this->unsigned_types))
-				{
-					$return_array['constraint'] = "CHECK ({$column_name} >= 0)";
-					$sql .= " CHECK ({$column_name} >= 0)";
-				}
-
-			break;
-
-			case 'sqlite':
-				$return_array['primary_key_set'] = false;
-				if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
-				{
-					$sql .= ' INTEGER PRIMARY KEY';
-					$return_array['primary_key_set'] = true;
-				}
-				else
-				{
-					$sql .= ' ' . $column_type;
-				}
-
-				$sql .= ' NOT NULL ';
-				$sql .= (!is_null($column_data[1])) ? "DEFAULT '{$column_data[1]}'" : '';
-
-			break;
+		if (isset($column_data[2]))
+		{
+			if ($column_data[2] == 'auto_increment')
+			{
+				$sql .= ' auto_increment';
+			}
+			elseif ($this->sql_layer === 'mysql_41' && $column_data[2] == 'true_sort')
+			{
+				$sql .= ' COLLATE utf8_unicode_ci';
+			}
 		}
 
 		$return_array['column_type_sql'] = $sql;
@@ -1335,94 +812,7 @@ class phpbb_db_tools
 		$column_data = $this->sql_prepare_column_data($table_name, $column_name, $column_data);
 		$statements = array();
 
-		switch ($this->sql_layer)
-		{
-			case 'firebird':
-				$statements[] = 'ALTER TABLE ' . $table_name . ' ADD "' . strtoupper($column_name) . '" ' . $column_data['column_type_sql'];
-			break;
-
-			case 'mssql':
-				$statements[] = 'ALTER TABLE [' . $table_name . '] ADD [' . $column_name . '] ' . $column_data['column_type_sql_default'];
-			break;
-
-			case 'mysql_40':
-			case 'mysql_41':
-				$statements[] = 'ALTER TABLE `' . $table_name . '` ADD COLUMN `' . $column_name . '` ' . $column_data['column_type_sql'];
-			break;
-
-			case 'oracle':
-				$statements[] = 'ALTER TABLE ' . $table_name . ' ADD ' . $column_name . ' ' . $column_data['column_type_sql'];
-			break;
-
-			case 'postgres':
-				$statements[] = 'ALTER TABLE ' . $table_name . ' ADD COLUMN "' . $column_name . '" ' . $column_data['column_type_sql'];
-			break;
-
-			case 'sqlite':
-
-				if ($inline && $this->return_statements)
-				{
-					return $column_name . ' ' . $column_data['column_type_sql'];
-				}
-
-				if (version_compare(sqlite_libversion(), '3.0') == -1)
-				{
-					$sql = "SELECT sql
-						FROM sqlite_master
-						WHERE type = 'table'
-							AND name = '{$table_name}'
-						ORDER BY type DESC, name;";
-					$result = $this->db->sql_query($sql);
-
-					if (!$result)
-					{
-						break;
-					}
-
-					$row = $this->db->sql_fetchrow($result);
-					$this->db->sql_freeresult($result);
-
-					$statements[] = 'begin';
-
-					// Create a backup table and populate it, destroy the existing one
-					$statements[] = preg_replace('#CREATE\s+TABLE\s+"?' . $table_name . '"?#i', 'CREATE TEMPORARY TABLE ' . $table_name . '_temp', $row['sql']);
-					$statements[] = 'INSERT INTO ' . $table_name . '_temp SELECT * FROM ' . $table_name;
-					$statements[] = 'DROP TABLE ' . $table_name;
-
-					preg_match('#\((.*)\)#s', $row['sql'], $matches);
-
-					$new_table_cols = trim($matches[1]);
-					$old_table_cols = preg_split('/,(?![\s\w]+\))/m', $new_table_cols);
-					$column_list = array();
-
-					foreach ($old_table_cols as $declaration)
-					{
-						$entities = preg_split('#\s+#', trim($declaration));
-						if ($entities[0] == 'PRIMARY')
-						{
-							continue;
-						}
-						$column_list[] = $entities[0];
-					}
-
-					$columns = implode(',', $column_list);
-
-					$new_table_cols = $column_name . ' ' . $column_data['column_type_sql'] . ',' . $new_table_cols;
-
-					// create a new table and fill it up. destroy the temp one
-					$statements[] = 'CREATE TABLE ' . $table_name . ' (' . $new_table_cols . ');';
-					$statements[] = 'INSERT INTO ' . $table_name . ' (' . $columns . ') SELECT ' . $columns . ' FROM ' . $table_name . '_temp;';
-					$statements[] = 'DROP TABLE ' . $table_name . '_temp';
-
-					$statements[] = 'commit';
-				}
-				else
-				{
-					$statements[] = 'ALTER TABLE ' . $table_name . ' ADD ' . $column_name . ' [' . $column_data['column_type_sql'] . ']';
-				}
-			break;
-		}
-
+		$statements[] = 'ALTER TABLE `' . $table_name . '` ADD COLUMN `' . $column_name . '` ' . $column_data['column_type_sql'];
 		return $this->_sql_run_sql($statements);
 	}
 
@@ -1433,94 +823,7 @@ class phpbb_db_tools
 	{
 		$statements = array();
 
-		switch ($this->sql_layer)
-		{
-			case 'firebird':
-				$statements[] = 'ALTER TABLE ' . $table_name . ' DROP "' . strtoupper($column_name) . '"';
-			break;
-
-			case 'mssql':
-				$statements[] = 'ALTER TABLE [' . $table_name . '] DROP COLUMN [' . $column_name . ']';
-			break;
-
-			case 'mysql_40':
-			case 'mysql_41':
-				$statements[] = 'ALTER TABLE `' . $table_name . '` DROP COLUMN `' . $column_name . '`';
-			break;
-
-			case 'oracle':
-				$statements[] = 'ALTER TABLE ' . $table_name . ' DROP ' . $column_name;
-			break;
-
-			case 'postgres':
-				$statements[] = 'ALTER TABLE ' . $table_name . ' DROP COLUMN "' . $column_name . '"';
-			break;
-
-			case 'sqlite':
-
-				if ($inline && $this->return_statements)
-				{
-					return $column_name;
-				}
-
-				if (version_compare(sqlite_libversion(), '3.0') == -1)
-				{
-					$sql = "SELECT sql
-						FROM sqlite_master
-						WHERE type = 'table'
-							AND name = '{$table_name}'
-						ORDER BY type DESC, name;";
-					$result = $this->db->sql_query($sql);
-
-					if (!$result)
-					{
-						break;
-					}
-
-					$row = $this->db->sql_fetchrow($result);
-					$this->db->sql_freeresult($result);
-
-					$statements[] = 'begin';
-
-					// Create a backup table and populate it, destroy the existing one
-					$statements[] = preg_replace('#CREATE\s+TABLE\s+"?' . $table_name . '"?#i', 'CREATE TEMPORARY TABLE ' . $table_name . '_temp', $row['sql']);
-					$statements[] = 'INSERT INTO ' . $table_name . '_temp SELECT * FROM ' . $table_name;
-					$statements[] = 'DROP TABLE ' . $table_name;
-
-					preg_match('#\((.*)\)#s', $row['sql'], $matches);
-
-					$new_table_cols = trim($matches[1]);
-					$old_table_cols = preg_split('/,(?![\s\w]+\))/m', $new_table_cols);
-					$column_list = array();
-
-					foreach ($old_table_cols as $declaration)
-					{
-						$entities = preg_split('#\s+#', trim($declaration));
-						if ($entities[0] == 'PRIMARY' || $entities[0] === $column_name)
-						{
-							continue;
-						}
-						$column_list[] = $entities[0];
-					}
-
-					$columns = implode(',', $column_list);
-
-					$new_table_cols = preg_replace('/' . $column_name . '[^,]+(?:,|$)/m', '', $new_table_cols);
-
-					// create a new table and fill it up. destroy the temp one
-					$statements[] = 'CREATE TABLE ' . $table_name . ' (' . $new_table_cols . ');';
-					$statements[] = 'INSERT INTO ' . $table_name . ' (' . $columns . ') SELECT ' . $columns . ' FROM ' . $table_name . '_temp;';
-					$statements[] = 'DROP TABLE ' . $table_name . '_temp';
-
-					$statements[] = 'commit';
-				}
-				else
-				{
-					$statements[] = 'ALTER TABLE ' . $table_name . ' DROP COLUMN ' . $column_name;
-				}
-			break;
-		}
-
+		$statements[] = 'ALTER TABLE `' . $table_name . '` DROP COLUMN `' . $column_name . '`';
 		return $this->_sql_run_sql($statements);
 	}
 
@@ -1531,25 +834,7 @@ class phpbb_db_tools
 	{
 		$statements = array();
 
-		switch ($this->sql_layer)
-		{
-			case 'mssql':
-				$statements[] = 'DROP INDEX ' . $table_name . '.' . $index_name;
-			break;
-
-			case 'mysql_40':
-			case 'mysql_41':
-				$statements[] = 'DROP INDEX ' . $index_name . ' ON ' . $table_name;
-			break;
-
-			case 'firebird':
-			case 'oracle':
-			case 'postgres':
-			case 'sqlite':
-				$statements[] = 'DROP INDEX ' . $table_name . '_' . $index_name;
-			break;
-		}
-
+		$statements[] = 'DROP INDEX ' . $index_name . ' ON ' . $table_name;
 		return $this->_sql_run_sql($statements);
 	}
 
@@ -1567,56 +852,6 @@ class phpbb_db_tools
 
 		// the most basic operation, get rid of the table
 		$statements[] = 'DROP TABLE ' . $table_name;
-
-		switch ($this->sql_layer)
-		{
-			case 'firebird':
-				$sql = 'SELECT RDB$GENERATOR_NAME as gen
-					FROM RDB$GENERATORS
-					WHERE RDB$SYSTEM_FLAG = 0
-						AND RDB$GENERATOR_NAME = \'' . strtoupper($table_name) . "_GEN'";
-				$result = $this->db->sql_query($sql);
-
-				// does a generator exist?
-				if ($row = $this->db->sql_fetchrow($result))
-				{
-					$statements[] = "DROP GENERATOR {$row['gen']};";
-				}
-				$this->db->sql_freeresult($result);
-			break;
-
-			case 'oracle':
-				$sql = 'SELECT A.REFERENCED_NAME
-					FROM USER_DEPENDENCIES A, USER_TRIGGERS B
-					WHERE A.REFERENCED_TYPE = \'SEQUENCE\'
-						AND A.NAME = B.TRIGGER_NAME
-						AND B.TABLE_NAME = \'' . strtoupper($table_name) . "'";
-				$result = $this->db->sql_query($sql);
-
-				// any sequences ref'd to this table's triggers?
-				while ($row = $this->db->sql_fetchrow($result))
-				{
-					$statements[] = "DROP SEQUENCE {$row['referenced_name']}";
-				}
-				$this->db->sql_freeresult($result);
-
-			case 'postgres':
-				// PGSQL does not "tightly" bind sequences and tables, we must guess...
-				$sql = "SELECT relname
-					FROM pg_class
-					WHERE relkind = 'S'
-						AND relname = '{$table_name}_seq'";
-				$result = $this->db->sql_query($sql);
-
-				// We don't even care about storing the results. We already know the answer if we get rows back.
-				if ($this->db->sql_fetchrow($result))
-				{
-					$statements[] =  "DROP SEQUENCE {$table_name}_seq;\n";
-				}
-				$this->db->sql_freeresult($result);
-			break;
-		}
-
 		return $this->_sql_run_sql($statements);
 	}
 
@@ -1627,84 +862,7 @@ class phpbb_db_tools
 	{
 		$statements = array();
 
-		switch ($this->sql_layer)
-		{
-			case 'firebird':
-			case 'postgres':
-			case 'mysql_40':
-			case 'mysql_41':
-				$statements[] = 'ALTER TABLE ' . $table_name . ' ADD PRIMARY KEY (' . implode(', ', $column) . ')';
-			break;
-
-			case 'mssql':
-				$sql = "ALTER TABLE [{$table_name}] WITH NOCHECK ADD ";
-				$sql .= "CONSTRAINT [PK_{$table_name}] PRIMARY KEY  CLUSTERED (";
-				$sql .= '[' . implode("],\n\t\t[", $column) . ']';
-				$sql .= ') ON [PRIMARY]';
-
-				$statements[] = $sql;
-			break;
-
-			case 'oracle':
-				$statements[] = 'ALTER TABLE ' . $table_name . 'add CONSTRAINT pk_' . $table_name . ' PRIMARY KEY (' . implode(', ', $column) . ')';
-			break;
-
-			case 'sqlite':
-
-				if ($inline && $this->return_statements)
-				{
-					return $column;
-				}
-
-				$sql = "SELECT sql
-					FROM sqlite_master
-					WHERE type = 'table'
-						AND name = '{$table_name}'
-					ORDER BY type DESC, name;";
-				$result = $this->db->sql_query($sql);
-
-				if (!$result)
-				{
-					break;
-				}
-
-				$row = $this->db->sql_fetchrow($result);
-				$this->db->sql_freeresult($result);
-
-				$statements[] = 'begin';
-
-				// Create a backup table and populate it, destroy the existing one
-				$statements[] = preg_replace('#CREATE\s+TABLE\s+"?' . $table_name . '"?#i', 'CREATE TEMPORARY TABLE ' . $table_name . '_temp', $row['sql']);
-				$statements[] = 'INSERT INTO ' . $table_name . '_temp SELECT * FROM ' . $table_name;
-				$statements[] = 'DROP TABLE ' . $table_name;
-
-				preg_match('#\((.*)\)#s', $row['sql'], $matches);
-
-				$new_table_cols = trim($matches[1]);
-				$old_table_cols = preg_split('/,(?![\s\w]+\))/m', $new_table_cols);
-				$column_list = array();
-
-				foreach ($old_table_cols as $declaration)
-				{
-					$entities = preg_split('#\s+#', trim($declaration));
-					if ($entities[0] == 'PRIMARY')
-					{
-						continue;
-					}
-					$column_list[] = $entities[0];
-				}
-
-				$columns = implode(',', $column_list);
-
-				// create a new table and fill it up. destroy the temp one
-				$statements[] = 'CREATE TABLE ' . $table_name . ' (' . $new_table_cols . ', PRIMARY KEY (' . implode(', ', $column) . '));';
-				$statements[] = 'INSERT INTO ' . $table_name . ' (' . $columns . ') SELECT ' . $columns . ' FROM ' . $table_name . '_temp;';
-				$statements[] = 'DROP TABLE ' . $table_name . '_temp';
-
-				$statements[] = 'commit';
-			break;
-		}
-
+		$statements[] = 'ALTER TABLE ' . $table_name . ' ADD PRIMARY KEY (' . implode(', ', $column) . ')';
 		return $this->_sql_run_sql($statements);
 	}
 
@@ -1715,25 +873,7 @@ class phpbb_db_tools
 	{
 		$statements = array();
 
-		switch ($this->sql_layer)
-		{
-			case 'firebird':
-			case 'postgres':
-			case 'oracle':
-			case 'sqlite':
-				$statements[] = 'CREATE UNIQUE INDEX ' . $table_name . '_' . $index_name . ' ON ' . $table_name . '(' . implode(', ', $column) . ')';
-			break;
-
-			case 'mysql_40':
-			case 'mysql_41':
-				$statements[] = 'CREATE UNIQUE INDEX ' . $index_name . ' ON ' . $table_name . '(' . implode(', ', $column) . ')';
-			break;
-
-			case 'mssql':
-				$statements[] = 'CREATE UNIQUE INDEX ' . $index_name . ' ON ' . $table_name . '(' . implode(', ', $column) . ') ON [PRIMARY]';
-			break;
-		}
-
+		$statements[] = 'CREATE UNIQUE INDEX ' . $index_name . ' ON ' . $table_name . '(' . implode(', ', $column) . ')';
 		return $this->_sql_run_sql($statements);
 	}
 
@@ -1744,25 +884,7 @@ class phpbb_db_tools
 	{
 		$statements = array();
 
-		switch ($this->sql_layer)
-		{
-			case 'firebird':
-			case 'postgres':
-			case 'oracle':
-			case 'sqlite':
-				$statements[] = 'CREATE INDEX ' . $table_name . '_' . $index_name . ' ON ' . $table_name . '(' . implode(', ', $column) . ')';
-			break;
-
-			case 'mysql_40':
-			case 'mysql_41':
-				$statements[] = 'CREATE INDEX ' . $index_name . ' ON ' . $table_name . '(' . implode(', ', $column) . ')';
-			break;
-
-			case 'mssql':
-				$statements[] = 'CREATE INDEX ' . $index_name . ' ON ' . $table_name . '(' . implode(', ', $column) . ') ON [PRIMARY]';
-			break;
-		}
-
+		$statements[] = 'CREATE INDEX ' . $index_name . ' ON ' . $table_name . '(' . implode(', ', $column) . ')';
 		return $this->_sql_run_sql($statements);
 	}
 
@@ -1791,68 +913,17 @@ class phpbb_db_tools
 		}
 		else
 		{
-			switch ($this->sql_layer)
-			{
-				case 'firebird':
-					$sql = "SELECT LOWER(RDB\$INDEX_NAME) as index_name
-						FROM RDB\$INDICES
-						WHERE RDB\$RELATION_NAME = '" . strtoupper($table_name) . "'
-							AND RDB\$UNIQUE_FLAG IS NULL
-							AND RDB\$FOREIGN_KEY IS NULL";
-					$col = 'index_name';
-				break;
-
-				case 'postgres':
-					$sql = "SELECT ic.relname as index_name
-						FROM pg_class bc, pg_class ic, pg_index i
-						WHERE (bc.oid = i.indrelid)
-							AND (ic.oid = i.indexrelid)
-							AND (bc.relname = '" . $table_name . "')
-							AND (i.indisunique != 't')
-							AND (i.indisprimary != 't')";
-					$col = 'index_name';
-				break;
-
-				case 'mysql_40':
-				case 'mysql_41':
-					$sql = 'SHOW KEYS
-						FROM ' . $table_name;
-					$col = 'Key_name';
-				break;
-
-				case 'oracle':
-					$sql = "SELECT index_name
-						FROM user_indexes
-						WHERE table_name = '" . strtoupper($table_name) . "'
-							AND generated = 'N'
-							AND uniqueness = 'NONUNIQUE'";
-					$col = 'index_name';
-				break;
-
-				case 'sqlite':
-					$sql = "PRAGMA index_info('" . $table_name . "');";
-					$col = 'name';
-				break;
-			}
+			$sql = 'SHOW KEYS
+				FROM ' . $table_name;
+			$col = 'Key_name';
 
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))
 			{
-				if (($this->sql_layer == 'mysql_40' || $this->sql_layer == 'mysql_41') && !$row['Non_unique'])
+				if (!$row['Non_unique'])
 				{
 					continue;
 				}
-
-				switch ($this->sql_layer)
-				{
-					case 'firebird':
-					case 'oracle':
-					case 'postgres':
-					case 'sqlite':
-						$row[$col] = substr($row[$col], strlen($table_name) + 1);
-					break;
-				}
-
 				$index_array[] = $row[$col];
 			}
 			$this->db->sql_freeresult($result);
@@ -1869,175 +940,7 @@ class phpbb_db_tools
 		$column_data = $this->sql_prepare_column_data($table_name, $column_name, $column_data);
 		$statements = array();
 
-		switch ($this->sql_layer)
-		{
-			case 'firebird':
-				// Change type...
-				if (!empty($column_data['column_type_sql_default']))
-				{
-					$statements[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN "' . strtoupper($column_name) . '" TYPE ' . ' ' . $column_data['column_type_sql_type'];
-					$statements[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN "' . strtoupper($column_name) . '" SET DEFAULT ' . ' ' . $column_data['column_type_sql_default'];
-				}
-				else
-				{
-					$statements[] = 'ALTER TABLE ' . $table_name . ' ALTER COLUMN "' . strtoupper($column_name) . '" TYPE ' . ' ' . $column_data['column_type_sql_type'];
-				}
-			break;
-
-			case 'mssql':
-				$statements[] = 'ALTER TABLE [' . $table_name . '] ALTER COLUMN [' . $column_name . '] ' . $column_data['column_type_sql'];
-
-				if (!empty($column_data['default']))
-				{
-					// Using TRANSACT-SQL for this statement because we do not want to have colliding data if statements are executed at a later stage
-					$statements[] = "DECLARE @drop_default_name VARCHAR(100), @cmd VARCHAR(1000)
-						SET @drop_default_name =
-							(SELECT so.name FROM sysobjects so
-							JOIN sysconstraints sc ON so.id = sc.constid
-							WHERE object_name(so.parent_obj) = '{$table_name}'
-								AND so.xtype = 'D'
-								AND sc.colid = (SELECT colid FROM syscolumns
-									WHERE id = object_id('{$table_name}')
-										AND name = '{$column_name}'))
-						IF @drop_default_name <> ''
-						BEGIN
-							SET @cmd = 'ALTER TABLE [{$table_name}] DROP CONSTRAINT [' + @drop_default_name + ']'
-							EXEC(@cmd)
-						END
-						SET @cmd = 'ALTER TABLE [{$table_name}] ADD CONSTRAINT [DF_{$table_name}_{$column_name}_1] {$column_data['default']} FOR [{$column_name}]'
-						EXEC(@cmd)";
-				}
-			break;
-
-			case 'mysql_40':
-			case 'mysql_41':
-				$statements[] = 'ALTER TABLE `' . $table_name . '` CHANGE `' . $column_name . '` `' . $column_name . '` ' . $column_data['column_type_sql'];
-			break;
-
-			case 'oracle':
-				$statements[] = 'ALTER TABLE ' . $table_name . ' MODIFY ' . $column_name . ' ' . $column_data['column_type_sql'];
-			break;
-
-			case 'postgres':
-				$sql = 'ALTER TABLE ' . $table_name . ' ';
-
-				$sql_array = array();
-				$sql_array[] = 'ALTER COLUMN ' . $column_name . ' TYPE ' . $column_data['column_type'];
-
-				if (isset($column_data['null']))
-				{
-					if ($column_data['null'] == 'NOT NULL')
-					{
-						$sql_array[] = 'ALTER COLUMN ' . $column_name . ' SET NOT NULL';
-					}
-					else if ($column_data['null'] == 'NULL')
-					{
-						$sql_array[] = 'ALTER COLUMN ' . $column_name . ' DROP NOT NULL';
-					}
-				}
-
-				if (isset($column_data['default']))
-				{
-					$sql_array[] = 'ALTER COLUMN ' . $column_name . ' SET DEFAULT ' . $column_data['default'];
-				}
-
-				// we don't want to double up on constraints if we change different number data types
-				if (isset($column_data['constraint']))
-				{
-					$constraint_sql = "SELECT consrc as constraint_data
-								FROM pg_constraint, pg_class bc
-								WHERE conrelid = bc.oid
-									AND bc.relname = '{$table_name}'
-									AND NOT EXISTS (
-										SELECT *
-											FROM pg_constraint as c, pg_inherits as i
-											WHERE i.inhrelid = pg_constraint.conrelid
-												AND c.conname = pg_constraint.conname
-												AND c.consrc = pg_constraint.consrc
-												AND c.conrelid = i.inhparent
-									)";
-
-					$constraint_exists = false;
-
-					$result = $this->db->sql_query($constraint_sql);
-					while ($row = $this->db->sql_fetchrow($result))
-					{
-						if (trim($row['constraint_data']) == trim($column_data['constraint']))
-						{
-							$constraint_exists = true;
-							break;
-						}
-					}
-					$this->db->sql_freeresult($result);
-
-					if (!$constraint_exists)
-					{
-						$sql_array[] = 'ADD ' . $column_data['constraint'];
-					}
-				}
-
-				$sql .= implode(', ', $sql_array);
-
-				$statements[] = $sql;
-			break;
-
-			case 'sqlite':
-
-				if ($inline && $this->return_statements)
-				{
-					return $column_name . ' ' . $column_data['column_type_sql'];
-				}
-
-				$sql = "SELECT sql
-					FROM sqlite_master
-					WHERE type = 'table'
-						AND name = '{$table_name}'
-					ORDER BY type DESC, name;";
-				$result = $this->db->sql_query($sql);
-
-				if (!$result)
-				{
-					break;
-				}
-
-				$row = $this->db->sql_fetchrow($result);
-				$this->db->sql_freeresult($result);
-
-				$statements[] = 'begin';
-
-				// Create a temp table and populate it, destroy the existing one
-				$statements[] = preg_replace('#CREATE\s+TABLE\s+"?' . $table_name . '"?#i', 'CREATE TEMPORARY TABLE ' . $table_name . '_temp', $row['sql']);
-				$statements[] = 'INSERT INTO ' . $table_name . '_temp SELECT * FROM ' . $table_name;
-				$statements[] = 'DROP TABLE ' . $table_name;
-
-				preg_match('#\((.*)\)#s', $row['sql'], $matches);
-
-				$new_table_cols = trim($matches[1]);
-				$old_table_cols = preg_split('/,(?![\s\w]+\))/m', $new_table_cols);
-				$column_list = array();
-
-				foreach ($old_table_cols as $key => $declaration)
-				{
-					$entities = preg_split('#\s+#', trim($declaration));
-					$column_list[] = $entities[0];
-					if ($entities[0] == $column_name)
-					{
-						$old_table_cols[$key] = $column_name . ' ' . $column_data['column_type_sql'];
-					}
-				}
-
-				$columns = implode(',', $column_list);
-
-				// create a new table and fill it up. destroy the temp one
-				$statements[] = 'CREATE TABLE ' . $table_name . ' (' . implode(',', $old_table_cols) . ');';
-				$statements[] = 'INSERT INTO ' . $table_name . ' (' . $columns . ') SELECT ' . $columns . ' FROM ' . $table_name . '_temp;';
-				$statements[] = 'DROP TABLE ' . $table_name . '_temp';
-
-				$statements[] = 'commit';
-
-			break;
-		}
-
+		$statements[] = 'ALTER TABLE `' . $table_name . '` CHANGE `' . $column_name . '` `' . $column_name . '` ' . $column_data['column_type_sql'];
 		return $this->_sql_run_sql($statements);
 	}
 }

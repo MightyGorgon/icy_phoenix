@@ -15,9 +15,11 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
+
+$config['jquery_ui'] = true;
 
 // CMS - BEGIN
 $cms_page['page_id'] = 'tags';
@@ -52,7 +54,7 @@ $tag_id = ($tag_id < 0) ? 0 : $tag_id;
 $tag_text = request_var('tag_text', '', true);
 $tag_text = ip_clean_string(urldecode(trim($tag_text)), $lang['ENCODING'], true);
 
-$mode_types = array('cloud', 'list', 'view');
+$mode_types = array('cloud', 'list', 'view', 'replace');
 $mode = request_var('mode', $mode_types[0]);
 $mode = check_var_value($mode, $mode_types);
 
@@ -64,7 +66,7 @@ $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
 $per_page = request_var('per_page', 0);
-$per_page = (($per_page < 20) || ($per_page > 300)) ? $config['topics_per_page'] : $per_page;
+$per_page = (empty($per_page) || ($per_page < 20) || ($per_page > 300)) ? $config['topics_per_page'] : $per_page;
 
 $s_hidden_fields = '';
 
@@ -115,7 +117,7 @@ if ($mode == 'view')
 		trigger_error('TAGS_NO_TAG', E_USER_NOTICE);
 	}
 
-	$breadcrumbs_links_right .= (($breadcrumbs_links_right != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
+	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
 
 	$template_to_parse = 'tags_view_body.tpl';
 
@@ -128,14 +130,14 @@ if ($mode == 'view')
 	//<!-- BEGIN Unread Post Information to Database Mod -->
 	if($user->data['upi2db_access'])
 	{
-		if (empty($unread))
+		if (!defined('UPI2DB_UNREAD'))
 		{
-			$unread = unread();
+			$user->data['upi2db_unread'] = upi2db_unread();
 		}
-		$count_new_posts = sizeof($unread['new_posts']);
-		$count_edit_posts = sizeof($unread['edit_posts']);
-		$count_always_read = sizeof($unread['always_read']['topics']);
-		$count_mark_unread = sizeof($unread['mark_posts']);
+		$count_new_posts = sizeof($user->data['upi2db_unread']['new_posts']);
+		$count_edit_posts = sizeof($user->data['upi2db_unread']['edit_posts']);
+		$count_always_read = sizeof($user->data['upi2db_unread']['always_read']['topics']);
+		$count_mark_unread = sizeof($user->data['upi2db_unread']['mark_posts']);
 	}
 	//<!-- END Unread Post Information to Database Mod -->
 
@@ -165,7 +167,7 @@ if ($mode == 'view')
 		$word_censor = censor_text($topic['topic_title']);
 		$topic_title = ((empty($topic['title_compl_infos'])) ? '' : $topic['title_compl_infos'] . ' ') . ((strlen($topic['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...');
 
-		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic['topic_id'], $topic['topic_type'], $topic['topic_reg'], $topic['topic_replies'], $topic['news_id'], $topic['poll_start'], $topic['topic_status'], $topic['topic_moved_id'], $topic['post_time'], $user_replied, $replies, $unread);
+		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic['topic_id'], $topic['topic_type'], $topic['topic_reg'], $topic['topic_replies'], $topic['news_id'], $topic['poll_start'], $topic['topic_status'], $topic['topic_moved_id'], $topic['post_time'], $user_replied, $replies);
 
 		$topic_id = $topic_link['topic_id'];
 		$topic_id_append = $topic_link['topic_id_append'];
@@ -202,10 +204,10 @@ if ($mode == 'view')
 			'TOPIC_TAGS' => $topic_tags_links,
 
 			'REPLIES' => $replies,
-			//'FIRST_TIME' => sprintf($lang['Recent_first'], $first_time),
-			'FIRST_TIME' => $first_time,
+			//'FIRST_POST_TIME' => sprintf($lang['Recent_first'], $first_time),
+			'FIRST_POST_TIME' => $first_time,
 			'FIRST_AUTHOR' => $first_author,
-			'LAST_TIME' => $last_time,
+			'LAST_POST_TIME' => $last_time,
 			'LAST_AUTHOR' => $last_author,
 			'LAST_URL' => $last_url,
 			'FORUM_NAME' => $topic['forum_name'],
@@ -221,29 +223,51 @@ if ($mode == 'view')
 		'L_VIEWS' => $lang['Views'],
 		'L_LASTPOST' => $lang['Last_Post'],
 		'L_REPLIES' => $lang['Replies'],
-		'L_TAG_RESULTS' => sprintf($lang['TAG_RESULTS'], htmlspecialchars($tag_text)),
+		'L_TAG_RESULTS' => sprintf($lang['TAG_RESULTS'], htmlspecialchars($tag_text) . ' (' . $num_items . ')'),
 
 		'U_TAG_RESULTS' => append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($tag_text))),
 		)
 	);
 }
+elseif ($mode == 'replace')
+{
+	if ($user->data['user_level'] != ADMIN)
+	{
+		message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
+	}
+
+	$template_to_parse = 'tags_replace_body.tpl';
+
+	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
+
+	$search_replace_submit = false;
+	if (isset($_POST['submit']))
+	{
+		$search_replace_submit = true;
+		$tag_old = request_var('tag_old', '', true);
+		$tag_new = request_var('tag_new', '', true);
+		$topics_data = $class_topics_tags->replace_tag($tag_old, $tag_new);
+		message_die(GENERAL_MESSAGE, sprintf($lang['TAGS_SEARCH_REPLACE_RESULT'], sizeof($topics_data)));
+	}
+}
 else
 {
 	$template_to_parse = 'tags_list_body.tpl';
 
-	$breadcrumbs_links_right .= (($breadcrumbs_links_right != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=' . (($mode == 'cloud') ? 'list' : 'cloud')) . '">' . (($mode == 'cloud') ? $lang['TOPIC_TAGS_LIST'] : $lang['TOPIC_TAGS_CLOUDS']) . '</a>';
+	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=' . (($mode == 'cloud') ? 'list' : 'cloud')) . '">' . (($mode == 'cloud') ? $lang['TOPIC_TAGS_LIST'] : $lang['TOPIC_TAGS_CLOUDS']) . '</a>';
 
 	$per_page = ($mode == 'cloud') ? $config['word_graph_max_words'] : $per_page;
 	$num_items = $class_topics_tags->get_total_tags();
 	$tags = $class_topics_tags->get_tags($sort_order, $sort_dir, $start, $per_page);
 
+	$row_class = '';
 	$i = 0;
 	foreach ($tags as $tag)
 	{
-		$class = ($i % 2) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = ip_zebra_rows($row_class);
 		$tag_font_size = intval(mt_rand(8, 14));
 		$template->assign_block_vars('row', array(
-			'CLASS' => $class,
+			'CLASS' => $row_class,
 			'ROW_NUMBER' => $i + 1,
 
 			'U_TAG_TEXT' => append_sid(CMS_PAGE_TAGS . '?mode=view&amp;tag_text=' . htmlspecialchars(urlencode($tag['tag_text']))),
@@ -263,7 +287,8 @@ $template->assign_vars(array(
 	'S_SORT_ORDER_SELECT' => $sort_order_select_box,
 	'S_SORT_DIR_SELECT' => $sort_dir_select_box,
 
-	'U_TAGS_SEARCH_PAGE' => append_sid('tags_search.' . PHP_EXT),
+	'U_TAGS_SEARCH_PAGE' => append_sid(CMS_PAGE_TAGS),
+	'U_TAGS_SEARCH_REPLACE' => append_sid(CMS_PAGE_TAGS . '?mode=replace'),
 	'U_TAGS' => append_sid(CMS_PAGE_TAGS),
 	)
 );

@@ -12,6 +12,7 @@
 define('IN_CMS', true);
 define('CTRACKER_DISABLED', true);
 define('IN_ICYPHOENIX', true);
+//define('CMS_NO_AJAX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
@@ -22,7 +23,7 @@ $config['jquery_ui'] = true;
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -30,8 +31,8 @@ $js_temp = array('js/cms.js');
 $template->js_include = array_merge($template->js_include, $js_temp);
 unset($js_temp);
 
-$mode_array = array('blocks', 'config', 'layouts', 'layouts_special', 'smilies', 'block_settings');
-$action_array = array('add', 'delete', 'edit', 'editglobal', 'list', 'save');
+$mode_array = array('blocks', 'config', 'layouts', 'layouts_special', 'smilies', 'block_settings', 'auth');
+$action_array = array('add', 'delete', 'edit', 'editglobal', 'list', 'save', 'clone', 'addrole', 'editrole');
 
 $cms_admin = new cms_admin();
 $cms_admin->root = CMS_PAGE_CMS;
@@ -61,28 +62,11 @@ include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
-setup_extra_lang(array('lang_admin', 'lang_cms', 'lang_blocks'));
+$page_title = $lang['CMS_TITLE'];
 
 $cms_type = 'cms_standard';
 
 $preview_block = isset($_POST['preview']) ? true : false;
-
-$cms_ajax = request_var('cms_ajax', '');
-$cms_ajax = (empty($cms_ajax) && (($_COOKIE['cms_ajax'] == 'true') || ($_COOKIE['cms_ajax'] == 'false')) ? $_COOKIE['cms_ajax'] : $cms_ajax);
-$cms_ajax = (($cms_ajax == 'false') ? false : (($cms_ajax == 'true') ? true : ($config['cms_style'] ? true : false)));
-if (($cms_ajax && ($_COOKIE['cms_ajax'] != 'true')) || (!$cms_ajax && ($_COOKIE['cms_ajax'] != 'false')))
-{
-	@setcookie('cms_ajax', ($cms_ajax ? 'true' : 'false'), time() + 31536000);
-}
-//$config['cms_style'] = $cms_ajax ? 1 : 0;
-$config['cms_style'] = 0;
-$cms_ajax_append = '&amp;cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$cms_ajax_redirect_append = '&cms_ajax=' . !empty($cms_ajax) ? 'true' : 'false';
-$template->assign_vars(array(
-	'U_CMS_AJAX_SWITCH' => append_sid($cms_admin->root . '?cms_ajax=' . (!empty($cms_ajax) ? 'false' : 'true')),
-	'L_CMS_AJAX_SWITCH' => !empty($cms_ajax) ? $lang['CMS_AJAX_DISABLE'] : $lang['CMS_AJAX_ENABLE'],
-	)
-);
 
 if ($cms_admin->mode == 'smilies')
 {
@@ -107,7 +91,6 @@ if(isset($_POST['cancel']))
 	redirect(append_sid($cms_admin->root, true));
 }
 
-$show_cms_menu = (($user->data['user_level'] == ADMIN) || ($user->data['user_cms_level'] == CMS_CONTENT_MANAGER)) ? true : false;
 $template->assign_vars(array(
 	'S_CMS_AUTH' => true,
 
@@ -119,19 +102,8 @@ $template->assign_vars(array(
 	'S_B_ADD' => true,
 	'S_B_EDIT' => true,
 	'S_B_DELETE' => true,
-
-	'S_SHOW_CMS_MENU' => $show_cms_menu
 	)
 );
-
-if ($config['cms_dock'])
-{
-	$template->assign_block_vars('cms_dock_on', array());
-}
-else
-{
-	$template->assign_block_vars('cms_dock_off', array());
-}
 
 $cms_admin->s_hidden_fields = '';
 $cms_admin->s_append_url = '';
@@ -245,9 +217,23 @@ if($cms_admin->mode == 'block_settings')
 			)
 		);
 
-		$cms_admin->show_blocks_settings_list();
+		$result = $cms_admin->show_blocks_settings_list_ajax();
+		if(is_array($result))
+		{
+			// json data
+			echo json_encode($result);
+			garbage_collection();
+			exit_handler();
+			exit;
+		}
+		if(defined('AJAX_CMS'))
+		{
+			// ajax data present... show new page
+			$template_to_parse = CMS_TPL . 'cms_blocks_settings_list_body_ajax.tpl';
+		}
 	}
 }
+
 if($cms_admin->mode == 'blocks')
 {
 	$class_db->main_db_table = $cms_admin->tables['blocks_table'];
@@ -314,13 +300,45 @@ if($cms_admin->mode == 'blocks')
 			)
 		);
 
-		$cms_admin->show_blocks_list();
+		// Old Version...
+		/*
+		if ($cms_admin->mode_layout_name == 'layouts_special')
+		{
+			$cms_admin->show_blocks_list();
+		}
+		else
+		{
+		*/
+			$result = $cms_admin->show_blocks_list_ajax();
+			if(is_array($result))
+			{
+				// json data
+				echo json_encode($result);
+				garbage_collection();
+				exit_handler();
+				exit;
+			}
+			if($result === false)
+			{
+				// no blocks found: show form to add a block
+				$template_to_parse = CMS_TPL . 'cms_block_content_body.tpl';
+				$cms_admin->manage_block();
+			}
+			elseif(defined('AJAX_CMS'))
+			{
+				// ajax data present. show new page
+				$template_to_parse = CMS_TPL . 'cms_blocks_list_body_ajax.tpl';
+			}
+		/*
+		}
+		*/
 	}
 	else
 	{
 		message_die(GENERAL_MESSAGE, $lang['No_layout_selected']);
 	}
 }
+
 if (($cms_admin->mode == 'layouts_special') || ($cms_admin->mode == 'layouts'))
 {
 	$class_db->main_db_table = $cms_admin->table_name;
@@ -356,11 +374,20 @@ if (($cms_admin->mode == 'layouts_special') || ($cms_admin->mode == 'layouts'))
 	{
 		$cms_admin->delete_layout();
 	}
+	elseif(($cms_admin->action == 'clone') && !$is_layout_special)
+	{
+		$cms_admin->clone_layout();
+	}
 	elseif (($cms_admin->action == 'list') || ($cms_admin->action == false))
 	{
 		if(isset($_POST['action_update']))
 		{
 			$cms_admin->update_layout();
+		}
+
+		if(isset($_GET['changes_saved']))
+		{
+			$template->assign_var('CMS_CHANGES_SAVED', true);
 		}
 
 		$template_to_parse = CMS_TPL . 'cms_layout_list_body.tpl';
@@ -413,12 +440,83 @@ if($cms_admin->mode == 'config')
 	);
 }
 
-if (($cms_admin->mode == false))
+//if (($cms_admin->mode == 'auth') && ($auth->acl_get('cms_edit')))
+if ($cms_admin->mode == 'auth')
+{
+	$css_temp = array('cms_auth.css');
+	$template->css_include = array_merge($template->css_include, $css_temp);
+	unset($css_temp);
+
+	include_once(IP_ROOT_PATH . 'includes/functions_admin_phpbb3.' . PHP_EXT);
+
+	$roles_admin = request_var('roles_admin', 0);
+
+	if (empty($roles_admin))
+	{
+		include_once(IP_ROOT_PATH . 'includes/class_cms_permissions.' . PHP_EXT);
+		$cms_permissions = new cms_permissions();
+
+		$pmode = request_var('pmode', '');
+		$pmode_array = array('intro', 'setting_cms_user_global', 'setting_cms_group_global', 'setting_cms_user_local', 'setting_cms_group_local', 'setting_plugins_user_global', 'setting_plugins_group_global', 'setting_user_global', 'setting_group_global', 'setting_user_local', 'setting_group_local', 'setting_admin_global', 'setting_mod_global', 'view_admin_global', 'view_user_global', 'view_mod_global');
+		$pmode = in_array($pmode, $pmode_array) ? $pmode : $pmode_array[0];
+		$cms_permissions->main(0, $pmode);
+
+		$template_to_parse = CMS_TPL . $cms_permissions->tpl_name;
+		$page_title = $lang[$cms_permissions->page_title];
+	}
+	else
+	{
+		include_once(IP_ROOT_PATH . 'includes/class_cms_permissions_roles.' . PHP_EXT);
+		$cms_permissions_roles = new cms_permissions_roles();
+
+		$rmode = request_var('rmode', '');
+		$rmode_array = array('admin_roles', 'cms_roles', 'mod_roles', 'plugins_roles', 'user_roles');
+		$rmode = in_array($rmode, $rmode_array) ? $rmode : $rmode_array[0];
+		$cms_permissions_roles->main(0, $rmode);
+
+		$template_to_parse = CMS_TPL . $cms_permissions_roles->tpl_name;
+		$page_title = $lang[$cms_permissions_roles->page_title];
+	}
+
+	$template->assign_vars(array(
+		'S_CMS_ACTION' => append_sid($cms_admin->root . '?mode=auth&amp;pmode=' . $pmode),
+		'U_CMS_BASE_URL' => append_sid($cms_admin->root . '?mode=auth'),
+
+/*
+		'ICON_MOVE_UP' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_up.gif" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" />',
+		'ICON_MOVE_UP_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_up_disabled.gif" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" />',
+		'ICON_MOVE_DOWN' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_down.gif" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" />',
+		'ICON_MOVE_DOWN_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_down_disabled.gif" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" />',
+		'ICON_EDIT' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_edit.gif" alt="' . $lang['EDIT'] . '" title="' . $lang['EDIT'] . '" />',
+		'ICON_EDIT_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_edit_disabled.gif" alt="' . $lang['EDIT'] . '" title="' . $lang['EDIT'] . '" />',
+		'ICON_DELETE' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_delete.gif" alt="' . $lang['DELETE'] . '" title="' . $lang['DELETE'] . '" />',
+		'ICON_DELETE_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_delete_disabled.gif" alt="' . $lang['DELETE'] . '" title="' . $lang['DELETE'] . '" />',
+		'ICON_SYNC' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_sync.gif" alt="' . $lang['RESYNC'] . '" title="' . $lang['RESYNC'] . '" />',
+		'ICON_SYNC_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/icon_sync_disabled.gif" alt="' . $lang['RESYNC'] . '" title="' . $lang['RESYNC'] . '" />',
+*/
+
+		'ICON_MOVE_UP' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_arrow_up.png" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" />',
+		'ICON_MOVE_UP_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_arrow_up_gray.png" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" />',
+		'ICON_MOVE_DOWN' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_arrow_down.png" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" />',
+		'ICON_MOVE_DOWN_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_arrow_down_gray.png" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" />',
+		'ICON_EDIT' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_edit.png" alt="' . $lang['EDIT'] . '" title="' . $lang['EDIT'] . '" />',
+		'ICON_EDIT_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_edit.png" alt="' . $lang['EDIT'] . '" title="' . $lang['EDIT'] . '" />',
+		'ICON_DELETE' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_delete.png" alt="' . $lang['DELETE'] . '" title="' . $lang['DELETE'] . '" />',
+		'ICON_DELETE_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_delete.png" alt="' . $lang['DELETE'] . '" title="' . $lang['DELETE'] . '" />',
+		'ICON_SYNC' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_refresh.png" alt="' . $lang['RESYNC'] . '" title="' . $lang['RESYNC'] . '" />',
+		'ICON_SYNC_DISABLED' => '<img src="' . IP_ROOT_PATH . 'templates/common/images/cms_icon_refresh.png" alt="' . $lang['RESYNC'] . '" title="' . $lang['RESYNC'] . '" />',
+
+		'IMG_USER_SEARCH' => $images['cms_icon_search'],
+		)
+	);
+}
+
+if (empty($cms_admin->mode))
 {
 	$template_to_parse = CMS_TPL . 'cms_index_body.tpl';
 	$template->assign_var('CMS_PAGE_TITLE', false);
 }
 
-full_page_generation($template_to_parse, $lang['CMS_TITLE'], '', '');
+full_page_generation($template_to_parse, $page_title, '', '');
 
 ?>

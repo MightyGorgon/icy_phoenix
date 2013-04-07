@@ -53,12 +53,12 @@ $lang = array_merge($lang, array(
 
 	'item_latest' => 'Latest Version',
 	'bb2_latest' => '2.0.22',
-	'ip_latest' => '1.3.0.53a',
+	'ip_latest' => '2.0.0.86',
 	'bb3_latest' => '3.0.6',
 
 	'item_release' => 'Release Date',
 	'bb2_release' => '2008/02/17',
-	'ip_release' => '2010/01/17',
+	'ip_release' => '2012/07/28',
 	'bb3_release' => '2009/11/17',
 
 /*********/
@@ -121,8 +121,8 @@ $lang = array_merge($lang, array(
 
 	'item_coppa' => 'COPPA Registrations',
 	'item_l_r_a' => 'Limit Registration Attempts',
-	'item_username_lenght' => 'Set min / max Username Length',
-	'item_pass_lenght' => 'Set min / max Password Length',
+	'item_username_length' => 'Set min / max Username Length',
+	'item_pass_length' => 'Set min / max Password Length',
 	'item_l_u_c' => 'Limit Username Chars',
 	'item_s_p_c_r' => 'Set Password Complexity Requirements',
 	'item_f_p_c' => 'Force Password Change',
@@ -438,9 +438,9 @@ $lang = array_merge($lang, array(
 
 	'item_feat_url_rewrite' => 'SEO Optimization and URL Rewrite',
 	'item_feat_rss' => 'RSS Feed',
-	'item_feat_referrers' => 'Referrers Tracking',
-	'item_feat_referrers' => 'Bots Tracking',
-	'item_feat_referrers' => 'Browsers And OS Detection',
+	'item_feat_referers_tracking' => 'Referers Tracking',
+	'item_feat_bots_tracking' => 'Bots Tracking',
+	'item_feat_browser_tracking' => 'Browsers And OS Detection',
 	'item_feat_banners' => 'Banners And Ads Management',
 
 /*********/

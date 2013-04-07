@@ -3,7 +3,7 @@
 <form action="{S_PROFILE_ACTION}" method="post">
 {CPL_MENU_OUTPUT}
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_AVATAR_GENERATOR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><th colspan="5">{L_AVAILABLE}</th></th>
+<tr><th colspan="5">{L_AVAILABLE}</th></tr>
 <tr>
 	<td width="20%" class="row1g"><br /><img src="{AVATAR_TEMPLATE_PATH}/ip.gif" width="80" height="80"><br /><br /></td>
 	<td width="20%" class="row1g"><img src="{AVATAR_TEMPLATE_PATH}/a69_02.gif" width="80" height="80"></td>
@@ -114,7 +114,7 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <div class="gensmall">
-Powered by <a href="http://www.petesplace-online.co.uk/viewtopic.php?t=155">Avatar Generator</a> v{AVATAR_VERSION} &copy 2005 rewritten by Mighty Gorgon<br />
+Powered by <a href="http://www.petesplace-online.co.uk/viewtopic.php?t=155">Avatar Generator</a> v{AVATAR_VERSION} &copy; 2005 rewritten by Mighty Gorgon<br />
 Some images &copy; <a href="http://www.phpbbstyles.com" target="_blank">phpBBStyles</a>
 </div>
 

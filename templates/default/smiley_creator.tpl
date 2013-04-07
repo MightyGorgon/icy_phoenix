@@ -1,7 +1,8 @@
 <!-- INCLUDE simple_header.tpl -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
+
 function makeshield()
 {
 	var sm_id = '1';
@@ -13,9 +14,9 @@ function makeshield()
 
 {SMILIES_JS}
 
-	if(text)
+	if (text)
 	{
-		if(sm_id == '')
+		if (sm_id == '')
 		{
 			text2form = '[smiley smilie=1 fontcolor='+color+' shadowcolor='+shadowcolor+' shieldshadow='+shieldshadow+']'+text+'[/smiley]';
 		}
@@ -26,7 +27,7 @@ function makeshield()
 
 		emoticon_sc(text2form);
 		//opener.document.forms['post'].message.value += text2form;
-		if(!confirm("{L_ANOTHER_SHIELD}"))
+		if (!confirm("{L_ANOTHER_SHIELD}"))
 		{
 			window.close();
 			//opener.document.forms['post'].message.focus();
@@ -86,7 +87,7 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 	txtarea.focus();
 }
 
-//-->
+// ]]>
 </script>
 
 <form name="shielderstellung">

@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -81,17 +81,19 @@ if ($album_user_id != ALBUM_PUBLIC_GALLERY)
 	}
 }
 
-$catrows = array ();
-$options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
+$catrows = array();
+$options = ($album_view_mode == ALBUM_VIEW_LIST) ? ALBUM_READ_ALL_CATEGORIES | ALBUM_AUTH_VIEW : ALBUM_AUTH_VIEW;
 $catrows = album_read_tree($album_user_id, $options);
 
-album_read_tree($album_user_id);
+// Mighty Gorgon: is this really needed? Maybe not... let's keep it commented until someone complains!!!
+//album_read_tree($album_user_id);
+
 $album_nav_cat_desc = album_make_nav_tree($cat_id, 'album_cat.' . PHP_EXT, 'nav' , $album_user_id);
 if ($album_nav_cat_desc != '')
 {
 	$nav_server_url = create_server_url();
 	$album_nav_cat_desc = ALBUM_NAV_ARROW . $album_nav_cat_desc;
-	$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+	$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 }
 // --------------------------------
 // Build allowed category-list (for recent pics after here)
@@ -120,8 +122,10 @@ $start = ($start < 0) ? 0 : $start;
 $sort_method = request_var('sort_method', $album_config['sort_method']);
 $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'username', 'pic_view_count', 'rating', 'comments', 'new_comment'));
 
-$sort_order = request_var('order', $album_config['sort_order']);
+$sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value($sort_order, array('DESC', 'ASC'));
+
+$sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
 // ------------------------------------
 // additional sorting options
@@ -198,11 +202,13 @@ if ($album_user_id == ALBUM_PUBLIC_GALLERY)
 	}
 
 	$template->assign_vars(array(
-		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs_address) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs_address),
+		'BREADCRUMBS_ADDRESS' => (empty($breadcrumbs['address']) ? (($meta_content['page_title_clean'] != $config['sitename']) ? ($lang['Nav_Separator'] . '<a href="#" class="nav-current">' . $meta_content['page_title_clean'] . '</a>') : '') : $breadcrumbs['address']),
 
 		'ALBUM_NAV' => $album_nav_cat_desc,
 		'S_COLS' => $cols,
 		'S_COL_WIDTH' => $cols_width,
+		'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
+
 		'TARGET_BLANK' => ($album_config['fullpic_popup']) ? 'target="_blank"' : '',
 		'L_RAND_PICS' => $lang['Random_Pictures'],
 		'L_HI_RATINGS' => $lang['Highest_Rated_Pictures'],
@@ -233,14 +239,14 @@ else
 {
 	if ($album_view_mode == ALBUM_VIEW_LIST)
 	{
-		include (ALBUM_MOD_PATH . 'album_memberlist.' . PHP_EXT);
+		include(ALBUM_MOD_PATH . 'album_memberlist.' . PHP_EXT);
 	}
 	else
 	{
 		// include our special personal gallery files
 		// this file holds all the code to handle personal galleries
 		// except moderation and management of personal gallery categories.
-		include (ALBUM_MOD_PATH . 'album_personal.' . PHP_EXT);
+		include(ALBUM_MOD_PATH . 'album_personal.' . PHP_EXT);
 	}
 }
 

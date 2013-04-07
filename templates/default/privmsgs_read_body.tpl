@@ -4,14 +4,14 @@
 global $user, $config, $is_auth, $lang, $to_username, $privmsgs_id, $post_subject, $images, $privmsg;
 $post_subject = (((strlen($post_subject) > 0) && ((substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX']) || (substr($post_subject, 0, strlen($lang['REPLY_PREFIX'])) == $lang['REPLY_PREFIX_OLD']))) ? '' : $lang['REPLY_PREFIX']) . $post_subject;
 $this->vars['qr_subject'] = $post_subject;
-$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="#" onclick="ShowHide(\'quick_reply\', \'quick_reply2\'); return false;"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
+$this->vars['CA_QUICK_REPLY_BUTTON'] = '<a href="javascript:showQuickEditor();" title="' . $lang['Post_a_reply'] . '"><img src="' . $images['quick_reply'] . '" alt="' . $lang['Post_a_reply'] . '" /></a><a href="#quick"></a>';
 $this->vars['privmsgs_id'] = $privmsgs_id;
 
 ob_start();
 ?>
-<div id="quick_reply" style="display: none; position: relative; ">
+<div id="quick_reply" style="display: none; position: relative;">
 <a name="quick"></a>
-<form method="post" action="{S_PRIVMSGS_ACTION}" name="post">
+<form method="post" action="{S_PRIVMSGS_ACTION}&amp;{POST_POST_URL}={PM_ID}" name="post">
 {S_HIDDEN_FIELDS}
 <input type="hidden" name="post_time" value="<?php echo time(); ?>" />
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -96,7 +96,7 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 {S_HIDDEN_FIELDS}
 
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="left" valign="middle"><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td></tr>
+<tr><td align="left" valign="middle"><!-- IF REPLY_PM_IMG --><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<!-- ENDIF --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td></tr>
 </table>
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{POST_SUBJECT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
@@ -107,7 +107,7 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 	<tr>
 		<td class="row-post-author">
 			<span class="post-name">{MESSAGE_FROM}&nbsp;{POSTER_GENDER}</span><br />
-			<div class="post-rank"><b>{POSTER_RANK}</b>{RANK_IMAGE}</div>
+			<div class="post-rank"><!-- IF POSTER_RANK --><b>{POSTER_RANK}</b><!-- ENDIF -->{RANK_IMAGE}</div>
 			<span class="post-images">{POSTER_AVATAR}</span>
 			<div class="post-details">
 			{ONLINE_STATUS_IMG}{IP_IMG}{AIM_IMG}{ICQ_IMG}{MSN_IMG}{SKYPE_IMG}{YIM_IMG}<br />
@@ -158,7 +158,7 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 <br />
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td align="left"><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td>
+	<td align="left"><!-- IF REPLY_PM_IMG --><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<!-- ENDIF --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td>
 	<td align="right" valign="top" nowrap="nowrap">
 		<span class="gensmall">{S_TIMEZONE}</span>
 	</td>

@@ -107,25 +107,25 @@ function onMenuCatClick(cat_id)
 	queuedSteps = new Array();
 	currentStep = 0;
 
-	for( var catName in menuCats )
+	for(var catName in menuCats)
 	{
-		if( menuCats[catName].status == 'none' ) continue;
+		if(menuCats[catName].status == 'none') continue;
 
-		for( var i=(menuCats[catName].cat_rows-1); i >= 0; i-- )
+		for(var i = (menuCats[catName].cat_rows - 1); i >= 0; i--)
 		{
-			queuedSteps[currentStep++] = new queueStep(catName+'_'+i, 'none');
+			queuedSteps[currentStep++] = new queueStep(catName + '_' + i, 'none');
 		}
 		queuedSteps[currentStep++] = new queueStep(catName, 'none');
 	}
 
-	if( currentStatus == 'none' )
+	if(currentStatus == 'none')
 	{
 		queuedSteps[currentStep++] = new queueStep(currentCat, 'block');
-		for( var i=0; i < menuCats[currentCat].cat_rows; i++ )
+		for(var i = 0; i < menuCats[currentCat].cat_rows; i++)
 		{
-			queuedSteps[currentStep++] = new queueStep(currentCat+'_'+i, 'block');
+			queuedSteps[currentStep++] = new queueStep(currentCat+'_' + i, 'block');
 		}
-		var	expdate = new Date();		// 72 Hours from now
+		var expdate = new Date();		// 72 Hours from now
 		expdate.setTime(expdate.getTime() + (72 * 60 * 60 * 1000));
 		setCookie('{COOKIE_NAME}_menu_cat_id', cat_id, expdate,
 				('{COOKIE_PATH}'   == '') ? null : '{COOKIE_PATH}',
@@ -150,17 +150,17 @@ function doOnLoadMenuACP()
 	if( getObj('menuCat_0') )
 	{
 		cat_id = getCookie('{COOKIE_NAME}_menu_cat_id');
-		if( !menuCats['menuCat_'+cat_id] )
+		if(!menuCats['menuCat_' + cat_id])
 		{
 			cat_id = 0;
 		}
 		else
 		{
-			menuCats['menuCat_'+cat_id].status = 'none';
+			menuCats['menuCat_' + cat_id].status = 'none';
 		}
 		onMenuCatClick(cat_id);
 	}
-	if( oldOnLoadMenuACP )
+	if(oldOnLoadMenuACP)
 	{
 		oldOnLoadMenuACP();
 	}

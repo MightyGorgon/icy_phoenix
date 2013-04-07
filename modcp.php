@@ -50,7 +50,7 @@ if (!empty($selected_id))
 	elseif (($type == POST_CAT_URL) || ($selected_id == 'Root'))
 	{
 		$parm = ($id != 0) ? '?' . POST_CAT_URL . '=' . $id : '';
-		redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_FORUM . $parm));
+		redirect(append_sid(CMS_PAGE_FORUM . $parm));
 		exit;
 	}
 }
@@ -172,7 +172,8 @@ if(!empty($topic_id))
 	$db->sql_return_on_error(false);
 	if(!$result)
 	{
-		message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 	}
 	$topic_row = $db->sql_fetchrow($result);
 	$forum_topics = ($topic_row['forum_topics'] == '0') ? '1' : $topic_row['forum_topics'];
@@ -187,25 +188,27 @@ elseif(!empty($forum_id))
 	$db->sql_return_on_error(false);
 	if(!$result)
 	{
-		message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_FORUM');
 	}
 	$topic_row = $db->sql_fetchrow($result);
 	$forum_topics = $topic_row['total_topics'];
 }
 else
 {
-	message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_FORUM');
 }
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
-if($sid == '' || ($sid != $user->data['session_id']))
+if(empty($sid) || ($sid != $user->data['session_id']))
 {
-	message_die(GENERAL_ERROR, 'Invalid_session');
+	message_die(GENERAL_ERROR, 'INVALID_SESSION');
 }
 
 if(isset($_POST['cancel']))
@@ -442,7 +445,7 @@ switch($mode)
 				'L_LEAVESHADOW' => $lang['Leave_shadow_topic'],
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
-				'S_FORUM_SELECT' => make_forum_select('new_forum', $forum_id),
+				'S_FORUM_SELECT' => ip_make_forum_select('new_forum', $forum_id),
 				'S_MODCP_ACTION' => append_sid('modcp.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields,
 				)
@@ -614,7 +617,7 @@ switch($mode)
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_TOPIC_SELECT' => make_topic_select('new_topic', $forum_id),
+				'S_TOPIC_SELECT' => ip_make_topic_select('new_topic', $forum_id),
 				'S_MODCP_ACTION' => append_sid('modcp.' . PHP_EXT),
 				'S_HIDDEN_FIELDS' => $hidden_fields
 				)
@@ -685,7 +688,7 @@ switch($mode)
 					'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id),
 					'S_SPLIT_ACTION' => append_sid('modcp.' . PHP_EXT),
 					'S_HIDDEN_FIELDS' => $s_hidden_fields,
-					'S_FORUM_SELECT' => make_forum_select('new_forum_id', false, $forum_id),
+					'S_FORUM_SELECT' => ip_make_forum_select('new_forum_id', false, $forum_id),
 					)
 				);
 
@@ -1071,7 +1074,6 @@ switch($mode)
 		// check if user replied to the topic
 		define('USER_REPLIED_ICON', true);
 		$user_topics = $class_topics->user_replied_array($topic_rowset);
-		$is_unread = false;
 		// MG User Replied - END
 
 		for($i = 0; $i < $total_topics; $i++)
@@ -1101,7 +1103,7 @@ switch($mode)
 			$replies = $topic_rowset[$i]['topic_replies'];
 			$topic_type = $topic_rowset[$i]['topic_type'];
 
-			$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $is_unread);
+			$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_reg'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies);
 
 			if (!$topic_rowset[$i]['topic_status'] == TOPIC_MOVED)
 			{

@@ -29,7 +29,7 @@ include(IP_ROOT_PATH . 'includes/class_stats_module.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -151,7 +151,7 @@ for ($__count = 0; $__count < sizeof($__stat_module_rows); $__count++)
 
 		$template->pparse($__tpl_name);
 
-		print '<br />';
+		// print '<br />';
 	}
 }
 

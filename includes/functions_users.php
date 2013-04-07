@@ -30,7 +30,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 
 	$date_format = ($date_format == false) ? $lang['JOINED_DATE_FORMAT'] : $date_format;
 
-	$info_array = array('avatar', 'first_name', 'last_name', 'from', 'posts', 'joined', 'gender', 'flag', 'style', 'age', 'birthday', 'avatar', 'profile_url', 'profile_img', 'profile', 'pm_url', 'pm_img', 'pm', 'search_url', 'search_img', 'search', 'ip_url', 'ip_img', 'ip', 'email_url', 'email_img', 'email', 'www_url', 'www_img', 'www', 'facebook_url', 'facebook_img', 'facebook', 'twitter_url', 'twitter_img', 'twitter', 'aim_url', 'aim_img', 'aim', 'icq_url', 'icq_status_img', 'icq_img', 'icq', 'jabber_url', 'jabber_img', 'jabber', 'msn_url', 'msn_img', 'msn', 'skype_url', 'skype_img', 'skype', 'yahoo_url', 'yahoo_img', 'yahoo', 'online_status_url', 'online_status_class', 'online_status_img', 'online_status');
+	$info_array = array('avatar', 'first_name', 'last_name', 'from', 'posts', 'joined', 'gender', 'flag', 'style', 'age', 'birthday', 'avatar', 'profile_url', 'profile_img', 'profile', 'pm_url', 'pm_img', 'pm', 'search_url', 'search_img', 'search', 'ip_url', 'ip_img', 'ip', 'email_url', 'email_img', 'email', 'www_url', 'www_img', 'www', 'facebook_url', 'facebook_img', 'facebook', 'twitter_url', 'twitter_img', 'twitter', 'googleplus_url', 'googleplus_img', 'googleplus', 'flickr_url', 'flickr_img', 'flickr', 'youtube_url', 'youtube_img', 'youtube', 'linkedin_url', 'linkedin_img', 'linkedin', 'aim_url', 'aim_img', 'aim', 'icq_url', 'icq_status_img', 'icq_img', 'icq', 'jabber_url', 'jabber_img', 'jabber', 'msn_url', 'msn_img', 'msn', 'skype_url', 'skype_img', 'skype', 'yahoo_url', 'yahoo_img', 'yahoo', 'online_status_url', 'online_status_class', 'online_status_img', 'online_status');
 
 	// Initialize everything...
 	$user_info = array();
@@ -58,7 +58,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 		}
 		$user_info['email'] = '&nbsp;';
 	}
-	elseif (!empty($row['user_viewemail']) || $is_moderator || $user->data['user_level'] == ADMIN)
+	elseif (!empty($row['user_allow_viewemail']) || $is_moderator || $user->data['user_level'] == ADMIN)
 	{
 		$user_info['email_url'] = ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $row['user_id']) : 'mailto:' . $row['user_email'];
 		$user_info['email_img'] = '<a href="' . $user_info['email_url'] . '"><img src="' . $images['icon_email'] . '" alt="' . $lang['Send_email'] . '" title="' . $lang['Send_email'] . '" /></a>';
@@ -97,12 +97,16 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 		'chat' => 'id',
 		'aim' => 'aim',
 		'facebook' => 'facebook',
+		'flickr' => 'flickr',
+		'googleplus' => 'googleplus',
 		'icq' => 'icq',
 		'jabber' => 'jabber',
+		'linkedin' => 'linkedin',
 		'msn' => 'msnm',
 		'skype' => 'skype',
 		'twitter' => 'twitter',
 		'yahoo' => 'yim',
+		'youtube' => 'youtube',
 	);
 
 	$all_ims = array();
@@ -283,24 +287,17 @@ function generate_ranks($user_row, $ranks_array)
 
 	if (!$is_guest && !empty($ranks_array['bannedrow']))
 	{
-		for($j = 0; $j < sizeof($ranks_array['bannedrow']); $j++)
-		{
-			if ($ranks_array['bannedrow'][$j]['ban_userid'] == $user_row['user_id'])
-			{
-				$is_banned = true;
-				break;
-			}
-		}
+		$is_banned = (isset($ranks_array['bannedrow'][$user_row['user_id']])) ? true : false;
 	}
 
-	for($j = 0; $j < sizeof($ranks_array['ranksrow']); $j++)
+	foreach ($ranks_array['ranksrow'] as $rank_key => $rank_data)
 	{
-		$rank_tmp = $ranks_array['ranksrow'][$j]['rank_title'];
-		$rank_img_tmp = ($ranks_array['ranksrow'][$j]['rank_image']) ? '<img src="' . $ranks_array['ranksrow'][$j]['rank_image'] . '" alt="' . $rank_tmp . '" title="' . $rank_tmp . '" />' : '';
-		$rank_tmp = (empty($ranks_array['ranksrow'][$j]['rank_show_title']) && !empty($rank_img_tmp)) ? '' : $rank_tmp;
+		$rank_tmp = $rank_data['rank_title'];
+		$rank_img_tmp = ($rank_data['rank_image']) ? '<img src="' . $rank_data['rank_image'] . '" alt="' . $rank_tmp . '" title="' . $rank_tmp . '" />' : '';
+		$rank_tmp = (empty($rank_data['rank_show_title']) && !empty($rank_img_tmp)) ? '' : $rank_tmp;
 		if (!empty($is_guest))
 		{
-			if ($ranks_array['ranksrow'][$j]['rank_special'] == '2')
+			if ($rank_data['rank_special'] == '2')
 			{
 				$user_ranks['rank_01'] = $rank_tmp;
 				$user_ranks['rank_01_img'] = $rank_img_tmp;
@@ -311,7 +308,7 @@ function generate_ranks($user_row, $ranks_array)
 		}
 		elseif (!empty($is_banned))
 		{
-			if ($ranks_array['ranksrow'][$j]['rank_special'] == '3')
+			if ($rank_data['rank_special'] == '3')
 			{
 				$user_ranks['rank_01'] = $rank_tmp;
 				$user_ranks['rank_01_img'] = $rank_img_tmp;
@@ -326,22 +323,22 @@ function generate_ranks($user_row, $ranks_array)
 
 			for($k = 0; $k < sizeof($user_fields_array); $k++)
 			{
-				switch ($ranks_array['ranksrow'][$j]['rank_special'])
+				switch ($rank_data['rank_special'])
 				{
 					case '1':
-						if ($user_row[$user_fields_array[$k]] == $ranks_array['ranksrow'][$j]['rank_id'])
+						if ($user_row[$user_fields_array[$k]] == $rank_data['rank_id'])
 						{
 							$rank_sw = true;
 						}
 						break;
 					case '0':
-						if (($user_row[$user_fields_array[$k]] == '0') && ($user_row['user_posts'] >= $ranks_array['ranksrow'][$j]['rank_min']))
+						if (($user_row[$user_fields_array[$k]] == '0') && ($user_row['user_posts'] >= $rank_data['rank_min']))
 						{
 							$rank_sw = true;
 						}
 						break;
 					case '-1':
-						if (($user_row[$user_fields_array[$k]] == '-1') && ($day_diff >= $ranks_array['ranksrow'][$j]['rank_min']))
+						if (($user_row[$user_fields_array[$k]] == '-1') && ($day_diff >= $rank_data['rank_min']))
 						{
 							$rank_sw = true;
 						}
@@ -364,6 +361,43 @@ function generate_ranks($user_row, $ranks_array)
 	}
 
 	return $user_ranks;
+}
+
+/**
+* Updates a username across all relevant tables/fields
+*
+* @param string $old_name the old/current username
+* @param string $new_name the new username
+*/
+function user_update_name($old_name, $new_name)
+{
+	global $config, $db, $cache;
+
+	$update_ary = array(
+		FORUMS_TABLE => array('forum_last_poster_name'),
+		MODERATOR_CACHE_TABLE => array('username'),
+		POSTS_TABLE => array('post_username'),
+		TOPICS_TABLE => array('topic_first_poster_name', 'topic_last_poster_name'),
+	);
+
+	foreach ($update_ary as $table => $field_ary)
+	{
+		foreach ($field_ary as $field)
+		{
+			$sql = "UPDATE $table
+				SET $field = '" . $db->sql_escape($new_name) . "'
+				WHERE $field = '" . $db->sql_escape($old_name) . "'";
+			$db->sql_query($sql);
+		}
+	}
+
+	if ($config['newest_username'] == $old_name)
+	{
+		set_config('newest_username', $new_name, true);
+	}
+
+	// Because some tables/caches use username-specific data we need to purge this here.
+	$cache->destroy('sql', MODERATOR_CACHE_TABLE);
 }
 
 /*
@@ -394,16 +428,20 @@ function user_profile_mask(&$user_data)
 	$user_data['user_rank_3'] = '-2';
 	$user_data['user_rank_4'] = '-2';
 	$user_data['user_rank_5'] = '-2';
-	$user_data['user_viewemail'] = 0;
+	$user_data['user_allow_viewemail'] = 0;
 	$user_data['user_website'] = '';
 	$user_data['user_aim'] = '';
 	$user_data['user_facebook'] = '';
+	$user_data['user_flickr'] = '';
+	$user_data['user_googleplus'] = '';
 	$user_data['user_icq'] = '';
 	$user_data['user_jabber'] = '';
+	$user_data['user_linkedin'] = '';
 	$user_data['user_msnm'] = '';
 	$user_data['user_skype'] = '';
 	$user_data['user_twitter'] = '';
 	$user_data['user_yim'] = '';
+	$user_data['user_youtube'] = '';
 	$user_data['user_gender'] = 0;
 	$user_data['user_allow_viewonline'] = 0;
 	$user_data['user_session_time'] = 0;
@@ -507,7 +545,10 @@ function birthday_email_send()
 {
 	global $db, $cache, $config, $lang;
 
-	include_once(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+	if (!class_exists('emailer'))
+	{
+		@include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+	}
 	$server_url = create_server_url();
 
 	$birthdays_list = get_birthdays_list_email();
@@ -519,8 +560,6 @@ function birthday_email_send()
 		{
 			// Birthday Email - BEGIN
 			setup_extra_lang(array('lang_cron_vars'), '', $v['user_lang']);
-			$email_subject = sprintf($lang['BIRTHDAY_GREETING_EMAIL_SUBJECT'], $config['sitename']);
-			$pm_date = gmdate('U');
 
 			$year = create_date('Y', time(), $v['user_timezone']);
 			$date_today = create_date('Ymd', time(), $v['user_timezone']);
@@ -533,7 +572,9 @@ function birthday_email_send()
 				$user_age--;
 			}
 
-			$email_text = sprintf($lang['BIRTHDAY_GREETING_EMAIL_CONTENT'], $user_age);
+			$email_subject = sprintf($lang['BIRTHDAY_GREETING_EMAIL_SUBJECT'], $config['sitename']);
+			//$email_text = sprintf($lang['BIRTHDAY_GREETING_EMAIL_CONTENT_AGE'], $user_age);
+			$email_text = sprintf($lang['BIRTHDAY_GREETING_EMAIL_CONTENT'], $config['sitename']);
 
 			// Send the email!
 			$emailer = new emailer();
@@ -570,6 +611,7 @@ function birthday_email_send()
 		}
 		// Birthday - END
 	}
+	// We reset the lang again for default lang...
 	setup_extra_lang(array('lang_cron_vars'));
 }
 

@@ -20,7 +20,7 @@ $config['ajax_features'] = false;
 
 // Start session management
 $user->session_begin(false);
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -48,23 +48,23 @@ $log = array (
 
 // Errors description
 
-/*
-$subject = array (
-	'000' => 'Unknown Error',
-	'400' => 'Error 400',
-	'401' => 'Not Authorized',
-	'403' => 'Errore 403',
-	'404' => 'File not found',
-	'500' => 'Configuration Error'
+
+$errors_english = array (
+	'ERRORS_000' => 'Unknown Error',
+	'ERRORS_400' => 'Error 400',
+	'ERRORS_401' => 'Not Authorized',
+	'ERRORS_403' => 'Errore 403',
+	'ERRORS_404' => 'File not found',
+	'ERRORS_500' => 'Configuration Error'
 );
-*/
+
 $subject = array (
-	'000' => $lang['Errors_000'],
-	'400' => $lang['Errors_400'],
-	'401' => $lang['Errors_401'],
-	'403' => $lang['Errors_403'],
-	'404' => $lang['Errors_404'],
-	'500' => $lang['Errors_500']
+	'000' => !empty($lang['ERRORS_000']) ? $lang['ERRORS_000'] : $errors_english['ERRORS_000'],
+	'400' => !empty($lang['ERRORS_400']) ? $lang['ERRORS_400'] : $errors_english['ERRORS_400'],
+	'401' => !empty($lang['ERRORS_401']) ? $lang['ERRORS_401'] : $errors_english['ERRORS_401'],
+	'403' => !empty($lang['ERRORS_403']) ? $lang['ERRORS_403'] : $errors_english['ERRORS_403'],
+	'404' => !empty($lang['ERRORS_404']) ? $lang['ERRORS_404'] : $errors_english['ERRORS_404'],
+	'500' => !empty($lang['ERRORS_500']) ? $lang['ERRORS_500'] : $errors_english['ERRORS_500']
 );
 
 
@@ -74,23 +74,23 @@ $result = request_var('code', 0);
 switch($result)
 {
 	case 400:
-		$error_msg = $lang['Errors_400_Full'];
+		$error_msg = !empty($lang['ERRORS_400_FULL']) ? $lang['ERRORS_400_FULL'] : $errors_english['ERRORS_400_FULL'];
 		break;
 	case 401:
-		$error_msg = $lang['Errors_401_Full'];
+		$error_msg = !empty($lang['ERRORS_401_FULL']) ? $lang['ERRORS_401_FULL'] : $errors_english['ERRORS_401_FULL'];
 		break;
 	case 403:
-		$error_msg = $lang['Errors_403_Full'];
+		$error_msg = !empty($lang['ERRORS_403_FULL']) ? $lang['ERRORS_403_FULL'] : $errors_english['ERRORS_403_FULL'];
 		break;
 	case 404:
-		$error_msg = $lang['Errors_404_Full'];
+		$error_msg = !empty($lang['ERRORS_404_FULL']) ? $lang['ERRORS_404_FULL'] : $errors_english['ERRORS_404_FULL'];
 		break;
 	case 500:
-		$error_msg = $lang['Errors_500_Full'];
+		$error_msg = !empty($lang['ERRORS_500_FULL']) ? $lang['ERRORS_500_FULL'] : $errors_english['ERRORS_500_FULL'];
 		break;
 	default:
 		$result = '000';
-		$error_msg = $lang['Errors_000_Full'];
+		$error_msg = !empty($lang['ERRORS_000_FULL']) ? $lang['ERRORS_000_FULL'] : $errors_english['ERRORS_000_FULL'];
 }
 
 // Error notification details
@@ -119,6 +119,7 @@ $template->assign_vars(array(
 	)
 );
 
+send_status_line($result, $error_msg);
 full_page_generation('errors_body.tpl', $lang['Error'], '', '');
 
 function errors_notification($action, $result, $sitename, $subject, $errors_log, $notification_email)
@@ -129,16 +130,14 @@ function errors_notification($action, $result, $sitename, $subject, $errors_log,
 	$remote_address = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : getenv('REMOTE_ADDR'));
 	$remote_address = (!empty($remote_address) && ($remote_address != '::1')) ? $remote_address : '127.0.0.1';
 	$user_agent_errors = (!empty($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : (!empty($_ENV['HTTP_USER_AGENT']) ? trim($_ENV['HTTP_USER_AGENT']) : trim(getenv('HTTP_USER_AGENT'))));
-	$referer = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : getenv('HTTP_REFERER');
-	//$referer = ($referer == '') ? $HTTP_REFERER : $HTTP_REFERER;
-	$referer = ($referer == '') ? $HTTP_REFERER : $referer;
+	$referer = (!empty($_SERVER['HTTP_REFERER'])) ? (string) $_SERVER['HTTP_REFERER'] : '';
 	$referer = preg_replace('/sid=[A-Za-z0-9]{32}/', '', $referer);
 	$script_name = (!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : getenv('REQUEST_URI');
 	$server_name = (!empty($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : getenv('SERVER_NAME');
 
 	$date = gmdate('Y/m/d - H:i:s');
 
-	if ( ($action == 'L') || ($action == 'LM') )
+	if (($action == 'L') || ($action == 'LM'))
 	{
 		$message = '[' . $date . ']';
 		$message .= ' [URL: ' . $script_name . ' ]';
@@ -167,9 +166,9 @@ function errors_notification($action, $result, $sitename, $subject, $errors_log,
 		------------------------------------------------------------------------------
 		==============================================================================
 		";
-		$message = $lang['Errors_Email_Body'];
-		$subject_prefix = $lang['Errors_Email_Subject'];
-		$email_from_prefix = $lang['Errors_Email_Addrress_Prefix'];
+		$message = $lang['ERRORS_EMAIL_BODY'];
+		$subject_prefix = $lang['ERRORS_EMAIL_SUBJECT'];
+		$email_from_prefix = $lang['ERRORS_EMAIL_ADDRRESS_PREFIX'];
 		mail($notification_email, '[ ' . $subject_prefix . $subject[$result] . ' ]', $message, 'From: ' . $email_from_prefix . @$server_name . "\r\n" . 'X-Mailer: PHP/' . phpversion());
 	}
 }

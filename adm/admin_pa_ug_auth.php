@@ -356,7 +356,8 @@ elseif ((($mode == 'user') && (isset($_POST['username']) || $user_id)) || (($mod
 		$this_userdata = get_userdata($_POST['username'], true);
 		if (!is_array($this_userdata))
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 		$user_id = $this_userdata['user_id'];
 	}
@@ -517,7 +518,7 @@ elseif ((($mode == 'user') && (isset($_POST['username']) || $user_id)) || (($mod
 	$s_hidden_fields .= ($mode == 'user') ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
 
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
 
@@ -569,7 +570,8 @@ elseif((($mode == 'glob_user') && (isset($_POST['username']) || $user_id)) || ((
 		$this_userdata = get_userdata($_POST['username'], true);
 		if (!is_array($this_userdata))
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_such_user']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 		$user_id = $this_userdata['user_id'];
 	}
@@ -747,7 +749,7 @@ elseif((($mode == 'glob_user') && (isset($_POST['username']) || $user_id)) || ((
 	$s_hidden_fields .= ($mode == 'glob_user') ? '<input type="hidden" name="' . POST_USERS_URL . '" value="' . $user_id . '" />' : '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" />';
 
 
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ADM_TPL . 'pa_auth_ug_body.tpl'));
 
@@ -794,14 +796,13 @@ elseif((($mode == 'glob_user') && (isset($_POST['username']) || $user_id)) || ((
 else
 {
 	// Select a user/group
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 	$template->set_filenames(array('body' => ($mode == 'user' || $mode == 'glob_user') ? ADM_TPL . 'user_select_body.tpl' : ADM_TPL . 'auth_select_body.tpl'));
 
 	if ($mode == 'user' || $mode == 'glob_user')
 	{
 		$template->assign_vars(array(
-			'L_FIND_USERNAME' => $lang['Find_username'],
 
 			'U_SEARCH_USER' => append_sid('../' . CMS_PAGE_SEARCH . '?mode=searchuser')
 			)
@@ -855,6 +856,6 @@ $template->display('body');
 
 $pafiledb->_pafiledb();
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

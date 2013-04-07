@@ -81,7 +81,7 @@ class pafiledb_license extends pafiledb_public
 			'L_AGREE' => $lang['Iagree'],
 			'L_NOT_AGREE' => $lang['Dontagree'],
 
-			'U_INDEX' => append_sid(CMS_PAGE_HOME),
+			'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 			'U_FILE_NAME' => append_sid('dload.' . PHP_EXT . '?action=file&amp;file_id=' . $file_id),
 			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT . '?action=download&amp;file_id=' . $file_id),

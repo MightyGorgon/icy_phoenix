@@ -42,12 +42,12 @@ function ChangeStatus(current, type, b_id, cms_type)
 
 	if (document.getElementById(field + b_id).value == 0)
 	{
-		current.src = "images/cms/turn_" + field + "on.png"
+		current.src = "templates/common/images/cms/turn_" + field + "on.png"
 		document.getElementById(field + b_id).value = 1;
 	}
 	else
 	{
-		current.src = "images/cms/turn_" + field + "off.png"
+		current.src = "templates/common/images/cms/turn_" + field + "off.png"
 		document.getElementById(field + b_id).value = 0;
 	}
 }

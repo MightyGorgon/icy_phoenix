@@ -429,7 +429,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 				$update_log = true;
 			}
 			break;
-		case 'groupcp.' . PHP_EXT:
+		case CMS_PAGE_GROUP_CP:
 			if((isset($_GET[POST_GROUPS_URL]) || isset($_POST[POST_GROUPS_URL])))
 			{
 				// both the POST and the GET POST_GROUPS_URL var should be set

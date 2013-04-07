@@ -106,11 +106,10 @@ class pafiledb_search extends pafiledb_public
 				}
 				elseif ($search_keywords != '')
 				{
-					$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
-					$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
+					stopwords_synonyms_init();
 
 					$split_search = array();
-					$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', stripslashes($search_keywords), $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
+					$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', stripslashes($search_keywords), $stopwords_array, $synonyms_array), 'search') : split(' ', $search_keywords);
 
 					$word_count = 0;
 					$current_match_type = 'or';
@@ -474,7 +473,7 @@ class pafiledb_search extends pafiledb_public
 					'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $pafiledb_config['settings_file_page']) + 1), ceil($total_match_count / $pafiledb_config['settings_file_page'])),
 					'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 					'L_HOME' => $lang['Home'],
-					'U_INDEX' => append_sid(CMS_PAGE_HOME),
+					'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 					'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 					'L_HOME' => $lang['Home'],
 					'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
@@ -508,7 +507,7 @@ class pafiledb_search extends pafiledb_public
 
 				'DOWNLOAD' => $pafiledb_config['settings_dbname'],
 
-				'U_INDEX' => append_sid(CMS_PAGE_HOME),
+				'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 				'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 				'L_HOME' => $lang['Home'],
 				'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),

@@ -67,7 +67,7 @@ if (($mode == 'delete') && ($mail_id > 0))
 	}
 	else
 	{
-		include('./page_header_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 		$template->set_filenames(array('body' => ADM_TPL . 'confirm_body.tpl'));
 		$hidden_fields = '<input type="hidden" name="mode" value="delete" /><input type="hidden" name="mail_id" value="' . $mail_id . '" />';
 
@@ -83,7 +83,7 @@ if (($mode == 'delete') && ($mail_id > 0))
 			)
 		);
 		$template->pparse('body');
-		include('./page_footer_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 		exit;
 	}
 }
@@ -178,7 +178,7 @@ if (!empty($mail_id) && !empty($mail_session_id))
 	$process_groups = (($group_id == -1) || ($group_id == -2)) ? false : true;
 	if ($group_id == -2)
 	{
-		$sql_non_recent_login = "AND u.user_lastlogon < '" . (time() - (86400 * DAYS_INACTIVE)) . "'";
+		$sql_non_recent_login = "AND u.user_lastvisit < '" . (time() - (86400 * DAYS_INACTIVE)) . "'";
 	}
 
 	//Now, let's see if we reached the upperlimit, if yes adjust the batch_size
@@ -279,7 +279,7 @@ if (!empty($mail_id) && !empty($mail_session_id))
 	}
 	else
 	{
-		$message = ($process_groups ? $lang['Group_not_exist'] : $lang['No_such_user']);
+		$message = ($process_groups ? $lang['Group_not_exist'] : $lang['NO_USER']);
 		$error = true;
 		$error_msg .= (!empty($error_msg)) ? '<br />' . $message : $message;
 	}
@@ -464,7 +464,7 @@ if ($row = $db->sql_fetchrow($result))
 $select_list .= '</select>';
 
 // Generate page
-include('./page_header_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 $template->set_filenames(array('body' => ADM_TPL . 'megamail.tpl'));
 
@@ -501,6 +501,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

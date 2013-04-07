@@ -46,7 +46,7 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <div style="text-align: left; padding-top: 5px;">
-<!-- IF PAGINATION --><div style="text-align: right; float: right;"><span class="gen">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></div><!-- ENDIF -->
+<!-- IF PAGINATION != '&nbsp;' --><div style="text-align: right; float: right;"><span class="gen">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></div><!-- ENDIF -->
 <span class="gensmall">[ <a href="{U_QUICK_LIST}">{L_QUICK_LIST}</a> ]</span>
 </div>
 

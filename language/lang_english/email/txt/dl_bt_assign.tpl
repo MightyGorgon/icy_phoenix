@@ -1,5 +1,4 @@
 Subject: Assigned Bug Report on {SITENAME}
-Charset: iso-8859-1
 
 Hello {USERNAME},
 

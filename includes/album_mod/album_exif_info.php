@@ -230,10 +230,14 @@ function make_exif($xkey, $xval)
 
 	while (!empty($xkey[$i]) )
 	{
+		// JHL - Crashes and burns - UTF-8 problem?
+		/*
 		if (ereg("([0-9]{1,})/([0-9]{1,})", $xval[$i], $num))
 		{
 			if ($num[1] > 1) $xval[$i] = round(($num[1] / $num[2]), 6);
 		}
+		*/
+
 		if (is_array($exif_info[$xkey[$i]]) && $xkey[$i] != 'IFD0_ResolutionUnit')
 		{
 			if (isset($exif_info[$xkey[$i]]['Units']))
@@ -311,9 +315,9 @@ for ($n = 0; $n < $x; $n++)
 {
 	$template->assign_block_vars('switch_exif_enabled.exif_switch.exif_data', array(
 		'EXIFc1' => (!empty($key[$n])) ? $key[$n].':' : '',
-		'EXIFd1' => '&nbsp;'.$val[$n],
-		'EXIFc2' => (!empty($key[$n+$x])) ? $key[$n+$x].':' : '',
-		'EXIFd2' => '&nbsp;'.$val[$n+$x]
+		'EXIFd1' => '&nbsp;' . $val[$n],
+		'EXIFc2' => (!empty($key[$n + $x])) ? $key[$n + $x].':' : '',
+		'EXIFd2' => '&nbsp;' . $val[$n + $x]
 		)
 	);
 }

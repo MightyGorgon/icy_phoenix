@@ -117,7 +117,7 @@ function generate_module_info($module_data, $install = false)
 			}
 		}
 
-		$sql = "UPDATE " . MODULES_TABLE . "
+		$sql = "UPDATE " . STATS_MODULES_TABLE . "
 			SET module_info_cache = '" . $db->sql_escape(serialize($ret_array)) . "',
 			module_info_time = " . filemtime(IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_dir . '_info.txt') . "
 			WHERE module_id = " . intval($module_data['module_id']);
@@ -195,30 +195,30 @@ function update_module_list()
 			$modules_list .= ($modules_list == '') ? "'$module_name'" : ", '$module_name'";
 
 			$sql = "SELECT MAX(display_order) as max
-				FROM " . MODULES_TABLE;
+				FROM " . STATS_MODULES_TABLE;
 			$result = $db->sql_query($sql);
 			$row = $db->sql_fetchrow($result);
 			$curr_max = $row['max'];
 
 			$sql = "SELECT module_id, name, display_order, active
-				FROM " . MODULES_TABLE . "
+				FROM " . STATS_MODULES_TABLE . "
 				WHERE (name = '" . trim($module_name) . "')";
 			$result = $db->sql_query($sql);
 
 			if ($db->sql_numrows($result) == 0)
 			{
-				$sql = "SELECT MAX(module_id) as next_id FROM " . MODULES_TABLE;
+				$sql = "SELECT MAX(module_id) as next_id FROM " . STATS_MODULES_TABLE;
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$next_id = $row['next_id'] + 1;
 
-				$sql = "INSERT INTO  " . MODULES_TABLE . "
+				$sql = "INSERT INTO  " . STATS_MODULES_TABLE . "
 					(module_id, name, display_order, module_info_cache, module_db_cache, module_result_cache)
 					VALUES (" . $next_id . ", '" . trim($module_name) . "', " . ($curr_max + 10) . ", '', '', '')";
 				$db->sql_query($sql);
 
 				$sql = "SELECT module_id, display_order, active
-					FROM " . MODULES_TABLE . "
+					FROM " . STATS_MODULES_TABLE . "
 					WHERE module_id = " . $next_id;
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
@@ -232,7 +232,7 @@ function update_module_list()
 	}
 
 	// Kill old module folders that were deleted
-	$sql = "DELETE FROM " . MODULES_TABLE . "
+	$sql = "DELETE FROM " . STATS_MODULES_TABLE . "
 		WHERE (name NOT IN ($modules_list))";
 	$db->sql_query($sql);
 }
@@ -246,7 +246,7 @@ function get_module_list_from_db()
 	$ret_list = array();
 
 	$sql = "SELECT module_id, name, display_order
-		FROM " . MODULES_TABLE . "
+		FROM " . STATS_MODULES_TABLE . "
 		WHERE (active = 1) AND (installed = 1)
 		ORDER BY display_order ASC";
 	$result = $db->sql_query($sql);
@@ -273,7 +273,7 @@ function get_module_data_from_db()
 	$ret_list = array();
 
 	$sql = "SELECT *
-		FROM " . MODULES_TABLE . "
+		FROM " . STATS_MODULES_TABLE . "
 		WHERE (active = 1) AND (installed = 1)
 		ORDER BY display_order ASC";
 	$result = $db->sql_query($sql);

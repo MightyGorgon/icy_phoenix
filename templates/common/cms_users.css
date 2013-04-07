@@ -49,11 +49,7 @@
 	overflow: hidden;
 	border: solid 1px #aaaaaa;
 
-	-moz-border-radius-topright: 5px;
-	-moz-border-radius-topleft: 5px;
-
-	-webkit-border-radius-topright: 5px;
-	-webkit-border-radius-topleft: 5px;
+	border-radius: 5px 5px 0px 0px;
 }
 
 .tabs_center:hover {
@@ -76,16 +72,14 @@
 .cms_auth {
 	background: #e9eff3;
 	padding: 12px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+	border-radius: 10px;
 }
 
 .cms_button {
 	background: #ffffff url('images/bg_nav2.gif') top repeat-x;
 	padding: 5px;
 	margin: 0px 0px 5px 3px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	border: solid 1px #aaaaaa;
 	font-weight: bold;
 	color: #888888;
@@ -103,8 +97,7 @@
 	background: #ffffff url('images/bg_nav2.gif') top repeat-x;
 	padding: 3px;
 	margin-left: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
+	border-radius: 3px;
 	border: solid 1px #aaaaaa;
 	font-weight: bold;
 	font-size: 10px;

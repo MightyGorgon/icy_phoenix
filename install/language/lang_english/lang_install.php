@@ -17,7 +17,7 @@ $lang = array_merge($lang, array(
 	'ENCODING' => 'UTF-8',
 	'DIRECTION' => 'ltr',
 	'HEADER_LANG' => 'en-gb',
-	'HEADER_XML_LANG' => 'en-gb',
+	'HEADER_LANG_XML' => 'en-gb',
 	'LEFT' => 'left',
 	'RIGHT' => 'right',
 
@@ -73,7 +73,7 @@ $lang = array_merge($lang, array(
 	'Admin_Password' => 'Administrator Password',
 	'Admin_Password_confirm' => 'Administrator Password [ Confirm ]',
 
-	'Inst_Step_2' => 'Your admin username has been created.<br />At this point to complete the setup process you need to <span class="text_red">remove <u>install</u> and <u>contrib</u> (if you have it on your server) folders</span>. Finally you should click on <b>Finish Installation</b> and then access ACP (Admin Control Panel) and CMS (Content Management System) where you can manage all Icy Phoenix settings and preferences.<br />In ACP you can adjust the main settings and preferences for the whole site, (styles, languages, time, forums, download, users, album, etc.) and while in CMS section you can configure options regarding the site pages (define permissions, add blocks, create new pages, create new menu, etc.). You may also want to configure <b>.htaccess</b> and <b>lang_main_settings.php</b> (for each installed lang) to fine tune some other preferences, like error reporting, url rewrite, keywords, welcome message, charset and so on.<br /><br />Thank you for choosing Icy Phoenix and remember to backup your db periodically.<br /><br />',
+	'Inst_Step_2' => 'Your admin username has been created.<br />At this point to complete the setup process you need to <span class="text_red">remove <u>install</u> folder</span>. Finally you should click on <b>Finish Installation</b> and then access ACP (Admin Control Panel) and CMS (Content Management System) where you can manage all Icy Phoenix settings and preferences.<br />In ACP you can adjust the main settings and preferences for the whole site, (styles, languages, time, forums, download, users, album, etc.) and while in CMS section you can configure options regarding the site pages (define permissions, add blocks, create new pages, create new menu, etc.). You may also want to configure <b>.htaccess</b> and <b>lang_main_settings.php</b> (for each installed lang) to fine tune some other preferences, like error reporting, url rewrite, keywords, welcome message, charset and so on.<br /><br />Thank you for choosing Icy Phoenix and remember to backup your db periodically.<br /><br />',
 
 	'Unwriteable_config' => 'Your config file is not writable. A copy of the config file will be downloaded to your computer when you click the button below. You should upload this file to the same directory where Icy Phoenix has been uploaded. Once this is done you should delete the install folder and log in using the administrator name and password you provided on the previous form to visit the admin control centre; (a link will appear at the bottom of each screen once logged in) to check the general configuration. Thank you for choosing Icy Phoenix.',
 	'Download_config' => 'Download Config',
@@ -193,8 +193,8 @@ $lang = array_merge($lang, array(
 	'ColorsLegendBlue' => 'Blue: this action is optional and can be performed automatically (may require manual edits on some files though)',
 	'ColorsLegendGreen' => 'Green: this action is suggested and can be performed automatically (if requirements are met)',
 
-	'FixBirthdays' => 'Fix Birthdays',
-	'FixBirthdaysExplain' => 'This feature will allow you to adjust all birthdays for compatibility with new features.',
+	'FixBirthdays' => 'Fix Birthdays (Upgrading from Icy Phoenix 1.2 or below)',
+	'FixBirthdaysExplain' => 'This feature will allow you to adjust all birthdays for compatibility with new features. You don\'t need to run this feature if you are upgrading from Icy Phoenix 1.3 or above.',
 	'FixingBirthdaysInProgress' => 'Fixing birthdays in progress',
 	'FixingBirthdaysInProgressRedirect' => 'You will be automatically redirected to next step in three seconds',
 	'FixingBirthdaysInProgressRedirectClick' => 'If you are not automatically redirected within three seconds you may click %sHere%s',
@@ -204,8 +204,8 @@ $lang = array_merge($lang, array(
 	'FixingBirthdaysComplete' => 'Fixing birthdays complete',
 	'BirthdaysPerStep' => 'Number of birthdays per step',
 
-	'FixConstantsInFiles' => 'Fix Constants',
-	'FixConstantsInFilesExplain' => 'Fix all files with new Icy Phoenix constants',
+	'FixConstantsInFiles' => 'Fix Constants (Upgrading from Icy Phoenix 1.2 or below)',
+	'FixConstantsInFilesExplain' => 'Fix all files with new Icy Phoenix constants. You don\'t need to run this feature if you are upgrading from Icy Phoenix 1.3 or above.',
 	'FixingInProgress' => 'Fixing files in progress',
 	'FixingComplete' => 'Fixing files complete',
 	'ClickToFix' => 'Please click on one of the link below to proceed',
@@ -215,13 +215,15 @@ $lang = array_merge($lang, array(
 	'NotFixed' => 'Not Fixed',
 	'FilesProcessed' => 'Files processed',
 
-	'FixForums' => 'Convert Forums',
-	'FixForumsExplain' => 'This feature will convert forums and categories into the new format.',
+	'FixForums' => 'Convert Forums (Upgrading from Icy Phoenix 1.2 or below)',
+	'FixForumsExplain' => 'This feature will convert forums and categories into the new format. You don\'t need to run this feature if you are upgrading from Icy Phoenix 1.3 or above.',
 	'FixingForumsInProgress' => 'Conversion in progress...',
 	'FixingForumsComplete' => 'Work complete!',
 
-	'FixPosts' => 'Fix Posts',
-	'FixPostsExplain' => 'This feature will allow you to fix all posts in your forums. You can use this feature to: find and replace any text in your posts, remove all BBCode UID, automatically adjust the address of posted images.',
+	'FixPosts' => 'Fix Posts (Upgrading from Icy Phoenix 1.2 or below)',
+	'FixPosts_Explain' => 'This feature will allow you to fix all posts in your forums. You can use this feature to: find and replace any text in your posts, remove all BBCode UID, automatically adjust the address of posted images. You don\'t need to run this feature if you are upgrading from Icy Phoenix 1.3 or above.',
+	'FixPosts_IP2' => 'Fix Posts (Upgrading from Icy Phoenix 1.3)',
+	'FixPosts_IP2_Explain' => 'This feature will allow you to adjust the path of uploaded images, since the path in Icy Phoenix 2.0 is different from the past versions of Icy Phoenix. You can use this feature also to find and replace any text in your posts (by leaving the search fild empty no replacement will be performed and only images paths will be adjusted).',
 	'FixingPostsInProgress' => 'Fixing posts in progress',
 	'FixingPostsInProgressRedirect' => 'You will be automatically redirected to next step in three seconds',
 	'FixingPostsInProgressRedirectClick' => 'If you are not automatically redirected within three seconds you may click %sHere%s',
@@ -237,8 +239,10 @@ $lang = array_merge($lang, array(
 	'RemoveBBCodeUID_Guess' => 'Try to guess and remove BBCode UID',
 	'FixPostedImagesPaths' => 'Fix all posted images paths (adjust paths to reflect users subfolders)',
 
-	'FixSignatures' => 'Fix Signatures',
-	'FixSignaturesExplain' => 'This feature will allow you to fix all users signatures. You can use this feature to: find and replace any text in signatures, remove all BBCode UID, automatically adjust the address of posted images.',
+	'FixSignatures' => 'Fix Signatures (Upgrading from Icy Phoenix 1.2 or below)',
+	'FixSignatures_Explain' => 'This feature will allow you to fix all users signatures. You can use this feature to: find and replace any text in signatures, remove all BBCode UID, automatically adjust the address of posted images. You don\'t need to run this feature if you are upgrading from Icy Phoenix 1.3 or above.',
+	'FixSignatures_IP2' => 'Fix Signatures (Upgrading from Icy Phoenix 1.3)',
+	'FixSignatures_IP2_Explain' => 'This feature will allow you to adjust the path of uploaded images, since the path in Icy Phoenix 2.0 is different from the past versions of Icy Phoenix. You can use this feature also to find and replace any text in signatures (by leaving the search fild empty no replacement will be performed and only images paths will be adjusted).',
 	'FixingSignaturesInProgress' => 'Fixing signatures in progress',
 	'FixingSignaturesFrom' => 'Signatures modified this step from %s to %s',
 	'FixingSignaturesTotal' => '%s signatures of %s modified so far',
@@ -247,8 +251,8 @@ $lang = array_merge($lang, array(
 	'SignaturesPerStep' => 'Number of signatures per step',
 	'StartFromSignature' => 'Start from signature',
 
-	'FixPics' => 'Fix Album Pics Paths',
-	'FixPicsExplain' => 'This feature will move all album pics from the main folder into users subfolders and will also update the database with the new paths',
+	'FixPics' => 'Fix Album Pics Paths (Upgrading from Icy Phoenix 1.2 or below)',
+	'FixPicsExplain' => 'This feature will move all album pics from the main folder into users subfolders and will also update the database with the new paths. You don\'t need to run this feature if you are upgrading from Icy Phoenix 1.3 or above.',
 	'FixingPicsInProgress' => 'Fixing pics in progress',
 	'FixingPicsInProgressRedirect' => 'You will be automatically redirected to next step in three seconds',
 	'FixingPicsInProgressRedirectClick' => 'If you are not automatically redirected within three seconds you may click %sHere%s',
@@ -259,8 +263,11 @@ $lang = array_merge($lang, array(
 	'PicStartFrom' => 'Start from pic',
 	'PicsPerStep' => 'Number of pics per step',
 
-	'RenMovePics' => 'Rename And Move Posted Pics',
-	'RenMovePicsExplain' => 'This feature will rename and move all posted pics from the main folder into users subfolders: you will then need to update posts table using the <i>Fix Posts</i> function to adjust all paths in posts',
+	'RenMovePics' => 'Rename And Move Posted Pics (Upgrading from Icy Phoenix 1.2 or below)',
+	'RenMovePicsExplain' => 'This feature will rename and move all posted pics from the main folder into users subfolders: you will then need to update posts table using the <i>Fix Posts</i> function to adjust all paths in posts. You don\'t need to run this feature if you are upgrading from Icy Phoenix 1.3 or above.',
+
+	'AddPostedPicsDB' => 'Add Uploaded Images To DB (Upgrading from Icy Phoenix 1.3 or above)',
+	'AddPostedPicsDBExplain' => 'This feature will import all uploaded images to DB.',
 
 	'COLLIDING_CLEAN_USERNAME' => '<strong>%s</strong> is the clean username for:',
 	'COLLIDING_USERNAMES_FOUND' => 'Colliding usernames were found on your old board. In order to complete the conversion please delete or rename these users so that there is only one user on your old board for each clean username.',
@@ -271,49 +278,60 @@ $lang = array_merge($lang, array(
 
 $lang['BBC_IP_CREDITS_STATIC'] = '
 <a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="./style/icy_phoenix_small.png" alt="Icy Phoenix" title="Icy Phoenix" /></a><br />
-<span style="color: #ff5500;"><b>Mighty Gorgon</b></span><br />
-<i>(Luca Libralato)</i><br />
-<b><i>Developer</i></b><br />
-Interests: Heroes Of Might And Magic III, 69, #FF5522<br />
-Location: Homer\'s Head<br />
+<span style="color: #dd2222;"><b>Mighty Gorgon</b></span>&nbsp;<i>(Luca Libralato)</i><br />
+<b><i>Project Manager And Main Developer</i></b><br />
 <br />
 <br />
-<span style="color: #dd2222;"><b>Bicet</b></span><br />
-<b><i>phpBB XS Developer</i></b><br />
+<span style="color: #dd2222;"><b>The Steffen</b></span><br />
+<b><i>Site Administrator</i></b><br />
 <br />
 <br />
-<span style="color: #dd2222;"><b>hpl</b></span><br />
-<b><i>Some Special Contributions</i></b><br />
+<span style="color: #228822;"><b>Joshua203</b></span><br />
+<b><i>Staff Leader</i></b><br />
+<br />
+<br />
+<span style="color: #ff5500;"><b>KasLimon</b></span><br />
+<b><i>Junior Developer</i></b><br />
+<br />
+<br />
+<span style="color: #ff5500;"><b>Informpro</b></span><br />
+<b><i>Junior Developer</i></b><br />
+<br />
+<br />
+<span style="color: #ff5500;"><b>jhl</b></span><br />
+<b><i>Junior Developer</i></b><br />
 <br />
 <br />
 <b><i>Valued Contributors</i></b><br />
-<span style="color: #228822;"><b>Andrea75</b></span><br />
-<span style="color: #dd2222;"><b>Artie</b></span><br />
-<span style="color: #0000bb;"><b>brandsrus</b></span><br />
-<span style="color: #228822;"><b>buldo</b></span><br />
-<span style="color: #228822;"><b>casimedicos</b></span><br />
-<span style="color: #228822;"><b>Chaotic</b></span><br />
-<span style="color: #dd2222;"><b>CyberAlien</b></span><br />
-<span style="color: #228822;"><b>difus</b></span><br />
+<span style="color: #dd2222;"><b>Andrea75</b></span><br />
+<span style="color: #228822;"><b>Artie</b></span><br />
+<span style="color: #ff5500;"><b>Bicet</b></span>&nbsp;<i>(phpBB XS Developer)</i><br />
+<span style="color: #880088;"><b>brandsrus</b></span><br />
+<span style="color: #dd2222;"><b>buldo</b></span><br />
+<span style="color: #880088;"><b>casimedicos</b></span><br />
+<span style="color: #880088;"><b>Chaotic</b></span><br />
+<span style="color: #ff5500;"><b>CyberAlien</b></span>&nbsp;<i>(Many Contributions)</i><br />
+<span style="color: #880088;"><b>difus</b></span><br />
 <span style="color: #228822;"><b>DWho</b></span><br />
-<span style="color: #228822;"><b>fracs</b></span><br />
+<span style="color: #880088;"><b>fracs</b></span><br />
 <span style="color: #880088;"><b>ganesh</b></span><br />
-<span style="color: #228822;"><b>JANU1535</b></span><br />
+<span style="color: #880088;"><b>Hans</b></span><br />
+<span style="color: #ff5500;"><b>hpl</b></span>&nbsp;<i>(Junior Developer)</i><br />
+<span style="color: #880088;"><b>JANU1535</b></span><br />
 <span style="color: #880088;"><b>jz</b></span><br />
-<span style="color: #228822;"><b>KasLimon</b></span><br />
 <span style="color: #aaff00;"><b>KugeLSichA</b></span><br />
 <span style="color: #0000bb;"><b>Limun</b></span><br />
 <span style="color: #880088;"><b>Lopalong</b></span><br />
-<span style="color: #228822;"><b>moreteavicar</b></span><br />
-<span style="color: #228822;"><b>novice programmer</b></span><br />
-<span style="color: #228822;"><b>ThE KuKa</b></span><br />
-<span style="color: #ff7700;"><b>TheSteffen</b></span><br />
-<span style="color: #0000bb;"><b>Tom</b></span><br />
-<span style="color: #228822;"><b>z3d0</b></span><br />
-<span style="color: #228822;"><b>Zuker</b></span><br />
+<span style="color: #880088;"><b>moreteavicar</b></span><br />
+<span style="color: #880088;"><b>mort</b></span><br />
+<span style="color: #880088;"><b>novice programmer</b></span><br />
+<span style="color: #dd2222;"><b>ThE KuKa</b></span><br />
+<span style="color: #880088;"><b>Tom</b></span><br />
+<span style="color: #228822;"><b>TopoMotoV3X</b></span><br />
+<span style="color: #aaff00;"><b>TuningBEB2008</b></span><br />
+<span style="color: #880088;"><b>z3d0</b></span><br />
+<span style="color: #880088;"><b>Zuker</b></span><br />
 <br />
-Interests: Icy Phoenix<br />
-Location: <a href="http://www.icyphoenix.com/">http://www.icyphoenix.com</a>
 ';
 
 $lang['BBC_IP_CREDITS'] = '<div class="center-block"><marquee behavior="scroll" direction="up" scrolldelay="120">' . $lang['BBC_IP_CREDITS_STATIC'] . '</marquee></div>';

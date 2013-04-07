@@ -34,8 +34,13 @@ if(!empty($setdefault) && !defined('DEMO_MODE'))
 }
 
 // change "override" variable
+/*
 $setoverride = request_var('setoverride', 0);
 if(!empty($setoverride) && !defined('DEMO_MODE'))
+*/
+// Suggested by JHL
+$setoverride = request_var('setoverride', $config['override_user_style']);
+if(($setoverride != $config['override_user_style']) && !defined('DEMO_MODE'))
 {
 	set_config('override_user_style', $setoverride, false);
 }

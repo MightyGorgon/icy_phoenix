@@ -103,7 +103,7 @@ function &get_section_usage_row(&$s_usage_rows, $section_id)
 	for ($i = 0; $i < sizeof($s_usage_rows); $i++) {
 		if ($s_usage_rows[$i]['section_id'] == $section_id)
 		{
-			$row = & $s_usage_rows[$i];
+			$row = &$s_usage_rows[$i];
 			break;
 		}
 	}
@@ -125,13 +125,21 @@ function &get_section_usage_rows(&$f_usage_rows, &$f_topic_starts_rows)
 	$section_watch_count = 0;
 	$last_section_id = $row_count > 0 ? $f_usage_rows[0]['parent_id'] : -999;
 
+	$forum_cats = get_root_categories_rows();
+	$forum_cats_array = array();
+	foreach ($forum_cats as $forum_cat)
+	{
+		$forum_cats_array[$forum_cat['forum_id']] = $forum_cat['forum_id'];
+	}
+
 	for ($i = 0; $i < $row_count; $i++)
 	{
-		/* If the section id has changed, add new row to $section_rows
-		 * and reset count variables. Otherwise, simply update section data */
+		/* If the section id has changed, add new row to $section_rows and reset count variables. Otherwise, simply update section data */
 		$cur_section_id = $f_usage_rows[$i]['parent_id'];
-
-		if ($cur_section_id != $last_section_id)
+		// Mighty Gorgon: with the new category system we may just check if the parent is 0!
+		$cur_cat_root_parent = (in_array($f_usage_rows[$i]['parent_id'], $forum_cats_array) ? true : false);
+		$cat_changed = ($cur_section_id == $last_section_id) ? false : true;
+		if ($cur_cat_root_parent && $cat_changed)
 		{
 			$section_rows[$j++] = array(
 				'section_id' => $last_section_id,
@@ -143,12 +151,12 @@ function &get_section_usage_rows(&$f_usage_rows, &$f_topic_starts_rows)
 			$section_post_count = 0;
 			$section_topic_starts = 0;
 			$section_watch_count = 0;
+			$last_section_id = $cur_section_id;
 		}
 
 		$section_post_count += $f_usage_rows[$i]['forum_post_count'];
 		$section_topic_starts += get_forum_topic_starts($f_topic_starts_rows, $f_usage_rows[$i]['forum_id']);
 		$section_watch_count += $f_usage_rows[$i]['watch_count'];
-		$last_section_id = $cur_section_id;
 	}
 
 	/* Make sure we include the last section */
@@ -226,6 +234,24 @@ function &get_topics_watched_rows($user_id)
 	return $rows;
 }
 
+/*
+* get_root_categories_rows() retrieves the list of root categories.
+*/
+function get_root_categories_rows()
+{
+	global $db, $cache;
+
+	$sql = "SELECT f.forum_id, f.parent_id, f.main_type, f.left_id, f.right_id, f.forum_name
+					FROM " . FORUMS_TABLE . " AS f
+					WHERE f.parent_id = 0
+						AND f.forum_type = 0
+					ORDER BY f.forum_order";
+	$result = $db->sql_query($sql);
+	$forum_cats = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	return $forum_cats;
+}
 
 /******************************************************************************
  * Retrieves the ordered list of forums with category names and id's
@@ -271,7 +297,10 @@ function &get_forum_usage_rows($user_id, $user_posts, $show_all_forums)
 	$topics_watched_rows = & get_topics_watched_rows($user_id);
 
 	/* Next, retrieve user's forum usage info */
-	$sql = "SELECT f.forum_id, f.forum_name, p.poster_id, COUNT(p.poster_id) AS forum_post_count, (COUNT(p.poster_id) / $user_posts)*100 AS forum_post_pct FROM " . POSTS_TABLE . " AS p INNER JOIN " . FORUMS_TABLE . " AS f ON f.forum_id = p.forum_id GROUP BY p.forum_id, p.poster_id HAVING (p.poster_id = $user_id) ORDER BY f.forum_id";
+	$sql = "SELECT f.forum_id, f.parent_id, f.main_type, f.left_id, f.forum_name, p.poster_id, COUNT(p.poster_id) AS forum_post_count, (COUNT(p.poster_id) / $user_posts)*100 AS forum_post_pct
+					FROM " . POSTS_TABLE . " AS p INNER JOIN " . FORUMS_TABLE . " AS f ON f.forum_id = p.forum_id
+					GROUP BY p.forum_id, p.poster_id HAVING (p.poster_id = $user_id)
+					ORDER BY f.forum_order";
 	$result = $db->sql_query($sql);
 
 	while ($row = $db->sql_fetchrow($result))

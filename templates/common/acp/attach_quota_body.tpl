@@ -37,7 +37,7 @@
 <!-- {QUOTA_LIMIT_SETTINGS} -->
 
 <!-- BEGIN switch_quota_limit_desc -->
-<div style="text-align:center;"><h1>{L_QUOTA_LIMIT_DESC}</h1></div>
+<div style="text-align: center;"><h1>{L_QUOTA_LIMIT_DESC}</h1></div>
 
 <table width="99%" cellspacing="0" cellpadding="0" border="0" align="center">
 <tr>

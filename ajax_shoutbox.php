@@ -23,7 +23,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
 
 // Start session management
 $user->session_begin(false);
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 

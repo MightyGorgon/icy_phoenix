@@ -52,7 +52,8 @@ if (!empty($topic_id))
 	$db->sql_return_on_error(false);
 	if (!$result)
 	{
-		message_die(GENERAL_MESSAGE, 'Topic_post_not_exist');
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_TOPIC');
 	}
 	$topic_row = $db->sql_fetchrow($result);
 
@@ -70,7 +71,8 @@ elseif (!empty($forum_id))
 	$db->sql_return_on_error(false);
 	if (!$result)
 	{
-		message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+		if (!defined('STATUS_404')) define('STATUS_404', true);
+		message_die(GENERAL_MESSAGE, 'NO_FORUM');
 	}
 	$topic_row = $db->sql_fetchrow($result);
 
@@ -79,19 +81,20 @@ elseif (!empty($forum_id))
 }
 else
 {
-	message_die(GENERAL_MESSAGE, 'Forum_not_exist');
+	if (!defined('STATUS_404')) define('STATUS_404', true);
+	message_die(GENERAL_MESSAGE, 'NO_FORUM');
 }
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
 // session id check
 if ($sid == '' || ($sid != $user->data['session_id']))
 {
-	message_die(GENERAL_ERROR, 'Invalid_session');
+	message_die(GENERAL_ERROR, 'INVALID_SESSION');
 }
 
 // Start auth check

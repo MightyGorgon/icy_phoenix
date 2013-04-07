@@ -34,6 +34,7 @@ if(GetCookie(tmp) == '2')
 		<!-- END news_ticker_row -->
 	<!-- END switch_news_ticker -->
 
+	<!-- IF XS_HAS_NEWS_ITEMS -->
 	<!-- BEGIN switch_news_subtitle -->
 	<p class="forum-buttons2" style="height: 17px; valign: middle;">{XS_NEWS_ITEMS_TITLE}</p>
 	<!-- END switch_news_subtitle -->
@@ -42,6 +43,7 @@ if(GetCookie(tmp) == '2')
 		<b>{newsitem.NEWS_ITEM_DATE}:</b> {newsitem.NEWS_ITEM}<br />
 		<!-- END newsitem -->
 	</p>
+	<!-- ENDIF XS_HAS_NEWS_ITEMS -->
 
 	</td>
 </tr>

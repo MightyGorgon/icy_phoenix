@@ -18,7 +18,7 @@
 	<td class="{ticket.ROW_CLASS}"><b>{ticket.TICKET_TITLE}</b></td>
 	<td class="{ticket.ROW_CLASS}"><span class="gensmall">{ticket.TICKET_DESCRIPTION}</span></td>
 	<td class="{ticket.ROW_CLASS}"><span class="gensmall">{ticket.TICKET_EMAILS}</span></td>
-	<td class="{ticket.ROW_CLASS} row-center"><a href="{ticket.U_EDIT}"><img src="../images/cms/b_edit.png" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{ticket.U_DELETE}"><img src="../images/cms/b_delete.png" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
+	<td class="{ticket.ROW_CLASS} row-center"><a href="{ticket.U_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{ticket.U_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a></td>
 </tr>
 <!-- END ticket -->
 <!-- ENDIF -->

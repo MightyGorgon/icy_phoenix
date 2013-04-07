@@ -36,7 +36,7 @@ if ($config['cash_adminnavbar'])
 
 $set = request_var('set', '');
 $submit = request_var('submit', '');
-if (1empty($submit)))
+if (!empty($submit))
 {
 	switch($submit)
 	{
@@ -358,8 +358,8 @@ $template->assign_vars(array(
 	'L_UPDATE' => $lang['Update'],
 	'L_ORDER' => $lang['Cash_order'],
 	'L_DELETE_CURRENCY' => $lang['Cash_delete'],
-	'L_MOVE_UP' => $lang['Move_up'],
-	'L_MOVE_DOWN' => $lang['Move_down'],
+	'L_MOVE_UP' => $lang['MOVE_UP'],
+	'L_MOVE_DOWN' => $lang['MOVE_DOWN'],
 	'L_CURRENCY_DBFIELD' => $lang['Cash_currency_dbfield'],
 	'L_CURRENCY_DECIMALS' => $lang['Cash_currency_decimals'],
 	'L_CURRENCY_DEFAULT' => $lang['Cash_currency_default'],

@@ -23,10 +23,7 @@ if(!empty($setmodules))
 // Load default Header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require(IP_ROOT_PATH . 'adm/pagestart.' . PHP_EXT);
-
-include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
-$class_form = new class_form();
+require('pagestart.' . PHP_EXT);
 
 // SETTINGS - BEGIN
 $is_plugin = false;

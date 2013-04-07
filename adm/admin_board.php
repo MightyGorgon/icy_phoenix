@@ -62,6 +62,13 @@ $switch_header_table_no = (!$new['switch_header_table']) ? 'checked="checked"' :
 $shoutguest_yes = ($new['shout_allow_guest'] == 1) ? 'checked="checked"' : '';
 $shoutguest_read = ($new['shout_allow_guest'] == 2) ? 'checked="checked"' : '';
 $shoutguest_no = ($new['shout_allow_guest'] == 0) ? 'checked="checked"' : '';
+
+$ac_link_full = ($new['ajax_chat_link_type'] == 1) ? 'checked="checked"' : '';
+$ac_link_simple = ($new['ajax_chat_link_type'] == 0) ? 'checked="checked"' : '';
+$ac_notification_yes = ($new['ajax_chat_notification'] == 1) ? 'checked="checked"' : '';
+$ac_notification_no = ($new['ajax_chat_notification'] == 0) ? 'checked="checked"' : '';
+$ac_check_online_yes = ($new['ajax_chat_check_online'] == 1) ? 'checked="checked"' : '';
+$ac_check_online_no = ($new['ajax_chat_check_online'] == 0) ? 'checked="checked"' : '';
 // Ajax Shoutbox - END
 
 $template->set_filenames(array('body' => ADM_TPL . 'board_config_body.tpl'));
@@ -101,21 +108,26 @@ $template->assign_vars(array(
 	'L_SHOUTBOX_FLOOD_EXPLAIN' => $lang['Shoutbox_flood_explain'],
 	'L_SHOUT_GUEST_READONLY' => $lang['Shout_read_only'],
 	'L_GUEST_ALLOWED' => $lang['Shout_guest_allowed'],
-	'L_SHOUTBOX_REFRESHTIME' => $lang['Shoutbox_refreshtime'],
-	'L_SHOUTBOX_REFRESH_EXPLAIN' => $lang['Shoutbox_refresh_explain'],
 	'DISPLAYED_SHOUTS' => $new['display_shouts'],
 	'STORED_SHOUTS' => $new['stored_shouts'],
 	'SHOUTBOX_FLOODINTERVAL' => $new['shoutbox_floodinterval'],
 	'SHOUT_GUEST_YES' => $shoutguest_yes,
 	'SHOUT_GUEST_READONLY' => $shoutguest_read,
 	'SHOUT_GUEST_NO' => $shoutguest_no,
-	'SHOUTBOX_REFRESHTIME' => $new['shoutbox_refreshtime'],
+	'AJAX_CHAT_MSGS_REFRESH' => $new['ajax_chat_msgs_refresh'],
+	'AJAX_CHAT_SESSION_REFRESH' => $new['ajax_chat_session_refresh'],
+	'AC_LINK_SIMPLE' => $ac_link_simple,
+	'AC_LINK_FULL' => $ac_link_full,
+	'AC_NOTIFICATION_YES' => $ac_notification_yes,
+	'AC_NOTIFICATION_NO' => $ac_notification_no,
+	'AC_CHECK_ONLINE_YES' => $ac_check_online_yes,
+	'AC_CHECK_ONLINE_NO' => $ac_check_online_no,
 	// Ajax Shoutbox - END
 	)
 );
 include(IP_ROOT_PATH . ADM . '/bb_usage_stats_admin.' . PHP_EXT);
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

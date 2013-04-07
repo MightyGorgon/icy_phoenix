@@ -5,7 +5,8 @@
 <!-- ENDIF -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
+
 function add_username(selected_username)
 {
 	if (document.forms['post'].add.value == '')
@@ -17,7 +18,7 @@ function add_username(selected_username)
 		document.forms['post'].add.value = document.forms['post'].add.value + "\n" + selected_username;
 	}
 }
-//-->
+// ]]>
 </script>
 
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->

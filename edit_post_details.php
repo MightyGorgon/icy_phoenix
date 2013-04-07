@@ -16,7 +16,7 @@ include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -75,6 +75,17 @@ if ($submit)
 	if (!empty($new_poster))
 	{
 		$poster_changed = change_poster_id($post_id, $new_poster);
+	}
+
+	if (!empty($post_id))
+	{
+		$sql = "SELECT forum_id, topic_id FROM " . POSTS_TABLE . " WHERE post_id = '" . $post_id . "' LIMIT 1";
+		$result = $db->sql_query($sql);
+		$post_data = $db->sql_fetchrow($result);
+		if (!empty($post_data['forum_id']) && !empty($post_data['topic_id']))
+		{
+			sync_topic_details($post_data['topic_id'], $post_data['forum_id'], false, false);
+		}
 	}
 
 	$template->assign_block_vars('submit_finished', array());
@@ -254,7 +265,6 @@ else
 		'L_TIME' => ($topic_post_time == 'topic') ? $lang['Topic_time_xs'] : $lang['Post_time'],
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 
 		'U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser'),
 

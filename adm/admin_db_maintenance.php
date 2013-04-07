@@ -68,15 +68,16 @@ include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 $timer = getmicrotime();
 
 // Get language file for this mod
-if (!file_exists(@phpbb_realpath(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT)))
-{
-	$config['default_lang'] = 'english';
-}
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_dbmtnc.' . PHP_EXT);
+setup_extra_lang(array('lang_dbmtnc'));
 
 // Set up variables and constants
 $function = request_var('function', '');
 $mode_id = request_var('mode', '');
+
+if (($mode_id == 'perform') && !isset($_POST['confirm']))
+{
+	$mode_id = '';
+}
 
 // Check for parameters
 reset ($config_data);
@@ -88,29 +89,17 @@ while (list(, $value) = each ($config_data))
 	}
 }
 
-//
-// Get form-data if specified and override old settings
-//
-if ($mode_id == 'perform')
-{
-	if (isset($_POST['confirm']))
-	{
-		$mode_id = 'perform';
-		$function = request_var('function', '');
-	}
-}
-
-//
 // Switch of GZIP-compression when necessary and send the page header
-//
 if (($mode_id == 'start') || ($mode_id == 'perform'))
 {
 	$config['gzip_compress'] = false;
 	$config['gzip_compress_runtime'] = false;
 }
-if ($function != 'perform_rebuild') // Don't send header when rebuilding the search index
+
+// Don't send header when rebuilding the search index
+if ($function != 'perform_rebuild')
 {
-	include('./page_header_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 }
 
 switch($mode_id)
@@ -504,7 +493,7 @@ switch($mode_id)
 				else // anonymous user does not exist
 				{
 					// Recreate entry
-					$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_dateformat, user_actkey, user_newpasswd, user_notify, user_active)
+					$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_allow_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_dateformat, user_actkey, user_newpasswd, user_notify, user_active)
 						VALUES (" . ANONYMOUS . ", 'Anonymous', 0, 0, '', '', '', '', '', '', '', '', 0, NULL, '', '', '', 0, 0, 1, 0, 1, 0, 1, 1, NULL, '', '', 0, '', '', '', 0, 0)";
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
@@ -2056,7 +2045,7 @@ switch($mode_id)
 					echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=synchronize_post_direct&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Must_synchronize'] . "</a></p>\n");
 					// Send Information about processing time
 					echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-					include('./page_footer_admin.' . PHP_EXT);
+					include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 					exit;
 				}
 				else
@@ -2932,7 +2921,7 @@ switch($mode_id)
 				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Can_start_rebuilding'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 
@@ -2965,7 +2954,7 @@ switch($mode_id)
 				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=" . (($db_state) ? '1' : '0')) . '">' . $lang['Can_start_rebuilding'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 
@@ -3021,7 +3010,7 @@ switch($mode_id)
 				$db->sql_return_on_error(false);
 				if (!$result)
 				{
-					include('./page_header_admin.' . PHP_EXT);
+					include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 					throw_error("Couldn't get post data!", __LINE__, __FILE__, $sql);
 				}
 				// Get first record
@@ -3029,7 +3018,7 @@ switch($mode_id)
 				if (!$row) // Yeah! we reached the end of the posts - finish actions and exit
 				{
 					$db->sql_freeresult($result);
-					include('./page_header_admin.' . PHP_EXT);
+					include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 					set_config('dbmtnc_rebuild_pos', '-1', false);
 					set_config('dbmtnc_rebuild_end', '0', false);
 
@@ -3048,7 +3037,7 @@ switch($mode_id)
 					echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT) . '">' . $lang['Back_to_DB_Maintenance'] . "</a></p>\n");
 					// Send Information about processing time
 					echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-					include('./page_footer_admin.' . PHP_EXT);
+					include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 					exit;
 				}
 				$last_post = 0;
@@ -3065,30 +3054,29 @@ switch($mode_id)
 					case 4: // use advanced method if we have PHP 4+ (we can make use of the advanced array functions)
 						$post_size = strlen($row['post_text']) + strlen($row['post_subject']); // needed for controlling array size
 						// get stopword and synonym array
-						$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_stopwords.txt");
-						$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . "/search_synonyms.txt");
-						if (!is_array($stopword_array))
+						stopwords_synonyms_init();
+						if (!is_array($stopwords_array))
 						{
-							$stopword_array = array();
+							$stopwords_array = array();
 						}
-						if (!is_array($synonym_array))
+						if (!is_array($synonyms_array))
 						{
-							$synonym_array = array();
+							$synonyms_array = array();
 						}
 						$empty_array = array(); // We'll need this array for passing it to the clean_words function
 						// Convert arrays
-						for ($i = 0; $i < sizeof($stopword_array); $i++)
+						for ($i = 0; $i < sizeof($stopwords_array); $i++)
 						{
-							$stopword_array[$i] = trim(strtolower($stopword_array[$i]));
+							$stopwords_array[$i] = trim(strtolower($stopwords_array[$i]));
 						}
 						$result_array = array(array(), array());
-						for ($i = 0; $i < sizeof($synonym_array); $i++)
+						for ($i = 0; $i < sizeof($synonyms_array); $i++)
 						{
-							list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_array[$i])));
+							list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonyms_array[$i])));
 							$result_array[0][] = trim($replace_synonym);
 							$result_array[1][] = trim($match_synonym);
 						}
-						$synonym_array = $result_array;
+						$synonyms_array = $result_array;
 						$result_array = array(array(), array(), array());
 						$i = 0;
 						while ($row && ($post_size <= $config['dbmtnc_rebuildcfg_maxmemory'] * 1024 || $i < $config['dbmtnc_rebuildcfg_minposts']))
@@ -3150,7 +3138,7 @@ switch($mode_id)
 								$db->sql_return_on_error(false);
 								if (!$result_tmp)
 								{
-									include('./page_header_admin.' . PHP_EXT);
+									include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 									throw_error("Couldn't insert into search match!", __LINE__, __FILE__, $sql);
 								}
 							}
@@ -3168,7 +3156,7 @@ switch($mode_id)
 				$redirect_url = append_sid(ADM . '/admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=perform_rebuild&amp;db_state=' . $db_state);
 				meta_refresh(3, $redirect_url);
 
-				include('./page_header_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 				$db->sql_freeresult($result);
 				// Get Statistics
 				$posts_total = 0;
@@ -3206,7 +3194,7 @@ switch($mode_id)
 				echo('<p class="gen"><a href="' . append_sid('admin_db_maintenance.' . PHP_EXT . "?mode=perform&amp;function=perform_rebuild&amp;db_state=$db_state") . '">' . $lang['Click_or_wait_to_proceed'] . '</a><br /><span class="gensmall">' . $lang['Click_once_warning'] . '</span></p>' . "\n");
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 
@@ -3254,7 +3242,7 @@ switch($mode_id)
 				// Send Information about processing time
 				echo('<p class="gensmall">' . sprintf($lang['Processing_time'], getmicrotime() - $timer) . '</p>');
 
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 				exit;
 				break;
 
@@ -4373,6 +4361,6 @@ switch($mode_id)
 		break;
 }
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

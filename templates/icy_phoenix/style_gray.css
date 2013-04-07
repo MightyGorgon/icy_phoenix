@@ -157,8 +157,6 @@ hr {
 .forum-buttons2 a, .forum-buttons2 a:visited { color: #880000; font-weight: bold; text-decoration: none; }
 .forum-buttons2 a:hover, .forum-buttons2 a:active { color: #660066; font-weight: bold; text-decoration: none; }
 
-.header-search { padding: 5px; }
-
 /* footer */
 #copyright {
 	padding-left: 4px;
@@ -829,6 +827,8 @@ li.code-row-first {
 	border-top: none;
 }
 
+code, code.inline { color: #444444; background-color: #ffffff; border: 1px solid #cccccc; }
+
 /* inputs */
 .helpline {
 	background-color: #f8f8f8;
@@ -912,7 +912,7 @@ select option {
 input.search:hover, input.search:focus, input.search:active, input.search {
 	background-image: url('images/gray/icon_textbox_search.gif');
 	background-repeat: no-repeat;
-	background-position: left 1px;
+	background-position: left center;
 	padding-left: 17px;
 }
 
@@ -939,28 +939,6 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 }
 
 /* News Block */
-.forumline .news-header, .forumlinenb .news-header {
-	background: #c8c8c8 url('images/gray/bg_th_gray.gif');
-	border: solid 1px #dddddd;
-	border-right-color: #dddddd;
-	border-bottom-color: #dddddd;
-	padding: 0;
-	text-align: left;
-	vertical-align: top;
-	height: 27px;
-}
-
-.forumline .news-header span, .forumlinenb .news-header span {
-	background: url('images/gray/little_box.gif') top left no-repeat;
-	padding-left: 17px;
-	color: #444444;
-	display: block;
-	padding-top: 2px;
-	font-weight: bold;
-	font-size: 12px;
-	line-height: 1.5em;
-}
-
 .row-news-tickers b { color: #444444; }
 
 .copyright {
@@ -976,21 +954,6 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 	padding-bottom: 4px;*/
 	font-size: 9px;
 	color: #444444;
-}
-
-.activity-links {
-	color: #888888;
-	text-align: right;
-	background: #ffffff url('images/gray/bg_nav2.gif') top left repeat-x;
-	padding: 8px 30px 0px 10px;
-	font-size: 10px;
-	line-height: 1.4em;
-}
-
-.activity-links-left {
-	position: relative;
-	float: left;
-	text-align: left;
 }
 
 /* edit notes */
@@ -1015,4 +978,8 @@ input.search:hover, input.search:focus, input.search:active, input.search {
 .post-note a, .post-note a:visited { color: #666666; text-decoration: underline; }
 .post-note a:hover, .post-note a:active { color: #880000; text-decoration: underline; }
 .post-note-delete { float: right; }
+
+.chat-tabs a { background-color: #f8f8f8 !important; border: 1px solid #666666 !important; }
+.chat-tabs a.active { background-color: #fafafa !important; border: 1px solid #ff5522 !important; }
+.chat-tabs a.new-shout { background-color: #fafafa !important; border: 2px solid #880000 !important; }
 

@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -70,7 +70,7 @@ $select_sort_order .= '</select>';
 */
 $nav_server_url = create_server_url();
 $album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album_personal_index.' . PHP_EXT) . '" class="nav-current">' . $lang['Users_Personal_Galleries'] . '</a>';
-$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 
 $template->assign_vars(array(
 	'L_SELECT_SORT_METHOD' => $lang['Select_sort_method'],
@@ -118,11 +118,13 @@ while($row = $db->sql_fetchrow($result))
 	$memberrow[] = $row;
 }
 
+$row_class = '';
 for ($i = 0; $i < sizeof($memberrow); $i++)
 {
 	$username = colorize_username($memberrow[$i]['user_id'], $memberrow[$i]['username'], $memberrow[$i]['user_color'], $memberrow[$i]['user_active'], true, false, false, false);
+	$row_class = ip_zebra_rows($row_class);
 	$template->assign_block_vars('memberrow', array(
-		'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
+		'ROW_CLASS' => $row_class,
 		'USERNAME' => $username,
 		'U_VIEWGALLERY' => append_sid(album_append_uid('album.' . PHP_EXT . '?user_id=' . $memberrow[$i]['user_id'])),
 		//'U_VIEWGALLERY' => append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . album_get_personal_root_id($memberrow[$i]['user_id']) . 'user_id=' . $memberrow[$i]['user_id'])),
@@ -138,10 +140,11 @@ $sql = "SELECT COUNT(DISTINCT u.user_id) AS total
 			AND c.cat_user_id = u.user_id
 			AND c.cat_id = p.pic_cat_id";
 $result = $db->sql_query($sql);
+$pagination = '&nbsp;';
 if ($total = $db->sql_fetchrow($result))
 {
 	$total_galleries = $total['total'];
-	$pagination = generate_pagination('album_personal_index.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_galleries, $config['topics_per_page'], $start) . '&nbsp;';
+	$pagination = generate_pagination('album_personal_index.' . PHP_EXT . '?mode=' . $mode . '&amp;order=' . $sort_order, $total_galleries, $config['topics_per_page'], $start);
 }
 
 $template->assign_vars(array(

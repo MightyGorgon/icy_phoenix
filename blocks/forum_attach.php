@@ -60,7 +60,9 @@ if(!function_exists('cms_block_forum_attach'))
 		);
 
 		// $only_auth_view must have the opposite value of $cms_config_vars['md_ignore_auth_view'][$block_id]
-		$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) ? true : false);
+		// Suggested by JHL - To Be Verified!
+		//$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) ? true : false);
+		$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) || ($cms_config_vars['md_ignore_auth_view'][$block_id] == true)) ? false : true;
 		if ($cms_config_vars['md_single_post_retrieve'][$block_id])
 		{
 			$single_post_id = request_var('post_id', 0);
@@ -73,7 +75,9 @@ if(!function_exists('cms_block_forum_attach'))
 				$single_post_id = $cms_config_vars['md_single_post_id'][$block_id];
 			}
 
-			$fetchposts = $class_topics->fetch_posts($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, false, true, $only_auth_view);
+			// Mighty Gorgon: edited by JHL, I still need to check the impacts of this amendment
+			//$fetchposts = $class_topics->fetch_posts($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, false, true, $only_auth_view);
+			$fetchposts = $class_topics->fetch_posts($single_post_id, 1, $cms_config_vars['md_single_post_length'][$block_id], false, 0, true, $only_auth_view);
 		}
 		else
 		{
@@ -97,6 +101,7 @@ if(!function_exists('cms_block_forum_attach'))
 			$topic_title = htmlspecialchars_clean($fetchposts[$i]['topic_title']);
 			$template->assign_block_vars('articles_fp', array(
 				'TOPIC_ID' => $fetchposts[$i]['topic_id'],
+				'FORUM_ID' => $fetchposts[$i]['forum_id'],
 				'TITLE' => $topic_title,
 				'POSTER' => $fetchposts[$i]['username'],
 				'POSTER_CG' => colorize_username($fetchposts[$i]['user_id'], $fetchposts[$i]['username'], $fetchposts[$i]['user_color'], $fetchposts[$i]['user_active']),
@@ -107,7 +112,7 @@ if(!function_exists('cms_block_forum_attach'))
 				'U_POST_COMMENT' => append_sid('posting.' . PHP_EXT . '?mode=reply&amp;' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id']),
 				'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $fetchposts[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $fetchposts[$i]['topic_id'] . '&amp;start=0'),
 				'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($fetchposts[$i]['topic_title'])) . '&amp;topic_id=' . $fetchposts[$i]['topic_id']),
-				'U_READ_FULL' => append_sid($index_file . '?article=' . $i),
+				'U_READ_FULL' => append_sid($index_file . '?article=' . $i), // JHL never used thankfully - I don't think it would work
 				'L_READ_FULL' => $read_full,
 				'OPEN' => $open_bracket,
 				'CLOSE' => $close_bracket,

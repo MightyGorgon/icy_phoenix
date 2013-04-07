@@ -41,18 +41,23 @@
 						<td class="row2" valign="top"><b><span class="genmed">{L_FRIENDSHIP_STATUS}</span></b></td>
 						<td class="row1 post-buttons"><span class="gensmall"><a href="{U_FRIEND_ADD_REMOVE}" class="gensmall"><!-- IF IS_FRIEND -->{L_FRIEND_REMOVE}<!-- ELSE -->{L_FRIEND_ADD}<!-- ENDIF --></a></span></td>
 					</tr>
-					<!-- ENDIF -->
+					<!-- ENDIF SHOW_FRIEND_LINK -->
+					<!-- IF ICON_CHAT -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_AJAX_SHOUTBOX_PVT}</span></b></td>
-						<td class="row1 post-buttons"><span class="gensmall"><a href="#" class="gensmall" onclick="window.open('{U_AJAX_SHOUTBOX_PVT_LINK}', '_chat', 'width=720,height=600,resizable=yes'); return false;">{L_AJAX_SHOUTBOX_PVT_LINK}</a></span></td>
+						<td class="row1 post-buttons"><span class="gensmall"><a href="{U_AJAX_SHOUTBOX_PVT_LINK}">{L_AJAX_SHOUTBOX_PVT_LINK}</a></span></td>
 					</tr>
-					<!-- ENDIF -->
+					<!-- ENDIF ICON_CHAT -->
+					<!-- ENDIF S_LOGGED_IN -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_COMMUNICATE}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed"><!-- IF S_LOGGED_IN and ICON_CHAT -->&nbsp;{ICON_CHAT}<!-- ENDIF --><!-- IF ICON_AIM -->&nbsp;{ICON_AIM}<!-- ENDIF --><!-- IF ICON_FACEBOOK -->&nbsp;{ICON_FACEBOOK}<!-- ENDIF --><!-- IF ICON_ICQ -->&nbsp;{ICON_ICQ}<!-- ENDIF --><!-- IF ICON_JABBER -->&nbsp;{ICON_JABBER}<!-- ENDIF --><!-- IF ICON_MSN -->&nbsp;{ICON_MSN}<!-- ENDIF --><!-- IF ICON_SKYPE -->&nbsp;{ICON_SKYPE}<!-- ENDIF --><!-- IF ICON_TWITTER -->&nbsp;{ICON_TWITTER}<!-- ENDIF --><!-- IF ICON_YAHOO -->&nbsp;{ICON_YAHOO}<!-- ENDIF -->&nbsp;</span></td>
+						<td class="row1 post-buttons"><span class="genmed"><!-- IF ICON_CHAT -->&nbsp;{ICON_CHAT}<!-- ENDIF --><!-- IF ICON_AIM -->&nbsp;{ICON_AIM}<!-- ENDIF --><!-- IF ICON_FACEBOOK -->&nbsp;{ICON_FACEBOOK}<!-- ENDIF --><!-- IF ICON_FLICKR -->&nbsp;{ICON_FLICKR}<!-- ENDIF --><!-- IF ICON_GOOGLEPLUS -->&nbsp;{ICON_GOOGLEPLUS}<!-- ENDIF --><!-- IF ICON_ICQ -->&nbsp;{ICON_ICQ}<!-- ENDIF --><!-- IF ICON_JABBER -->&nbsp;{ICON_JABBER}<!-- ENDIF --><!-- IF ICON_LINKEDIN -->&nbsp;{ICON_LINKEDIN}<!-- ENDIF --><!-- IF ICON_MSN -->&nbsp;{ICON_MSN}<!-- ENDIF --><!-- IF ICON_SKYPE -->&nbsp;{ICON_SKYPE}<!-- ENDIF --><!-- IF ICON_TWITTER -->&nbsp;{ICON_TWITTER}<!-- ENDIF --><!-- IF ICON_YAHOO -->&nbsp;{ICON_YAHOO}<!-- ENDIF --><!-- IF ICON_YOUTUBE -->&nbsp;{ICON_YOUTUBE}<!-- ENDIF -->&nbsp;</span></td>
 					</tr>
 					<!-- BEGIN custom_contact -->
-					<tr>{custom_contact.CONTACT}</tr>
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{custom_contact.NAME}</span></b></td>
+						<td class="row1 post-buttons"><span class="genmed">{custom_contact.VALUE}</span></td>
+					</tr>
 					<!-- END custom_contact -->
 				</table>
 			</td>
@@ -97,7 +102,10 @@
 						<td class="row1"><span class="genmed">{OCCUPATION}</span></td>
 					</tr>
 					<!-- BEGIN custom_about -->
-					<tr>{custom_about.ABOUT}</tr>
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed">{custom_about.NAME}</span></b></td>
+						<td class="row1 post-buttons"><span class="genmed">{custom_about.VALUE}</span></td>
+					</tr>
 					<!-- END custom_about -->
 					<tr>
 						<td class="row2" valign="top" width="30%"><b><span class="genmed">{L_INVISION_SIGNATURE}</span></b></td>
@@ -128,24 +136,28 @@
 					<tr><th colspan="2"><span class="genmed"><b>{L_INVISION_P_DETAILS}</b></span></th></tr>
 					<tr>
 						<td width="33%" class="row2" valign="top"><b><span class="genmed">{L_INVISION_POSTS}</span></b></td>
-						<td width="64%" class="row1"><span class="genmed"><b>{POSTS}</b>&nbsp;{INVISION_POST_PERCENT_STATS}</span></td>
+						<td width="64%" class="row1"><span class="genmed"><b>{POSTS}</b>&nbsp;-&nbsp;{INVISION_POST_PERCENT_STATS}</span></td>
 					</tr>
+					<!-- IF S_POSTS_SECTION -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_PPD_STATS}</span></b></td>
 						<td class="row1"><span class="genmed">{INVISION_POST_DAY_STATS}</span></td>
 					</tr>
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_MOST_ACTIVE}</span></b></td>
-						<td class="row1"><span class="genmed"><a href="{INVISION_MOST_ACTIVE_FORUM_URL}">{INVISION_MOST_ACTIVE_FORUM_NAME}</a><br />{L_INVISION_MOST_ACTIVE_POSTS}</span></td>
+						<td class="row1"><div class="genmed"><!-- IF INVISION_MOST_ACTIVE_FORUM_ID > 0 --><a href="{INVISION_MOST_ACTIVE_FORUM_URL}">{INVISION_MOST_ACTIVE_FORUM_NAME}</a><br />{L_INVISION_MOST_ACTIVE_POSTS}<!-- ELSE -->{L_NO_POSTS}<!-- ENDIF --></div></td>
 					</tr>
+					<!-- ENDIF -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{L_RECENT_USER_ACTIVITY}</span></b></td>
 						<td class="row1">
 							<!-- IF S_EXTRA_STATS_AUTH -->
 							<span class="genmed">[ <a href="{U_EXTRA_STATS}">{L_EXTRA_STATS}</a> ]</span><br />
 							<!-- ENDIF -->
+							<!-- IF S_POSTS_SECTION -->
 							<span class="genmed">[ <a href="{U_USER_RECENT_TOPICS}">{L_USER_TOPICS_STARTED}</a> ]</span><br />
 							<span class="genmed">[ <a href="{U_USER_RECENT_POSTS}">{L_USER_POSTS}</a> ]</span><br />
+							<!-- ENDIF -->
 							<!-- IF S_ADMIN -->
 							<span class="genmed">[ <a href="{U_USER_RECENT_TOPICS_VIEW}">{L_USER_TOPICS_VIEWS}</a> ]</span>
 							<!-- ENDIF -->

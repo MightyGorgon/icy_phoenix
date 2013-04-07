@@ -39,7 +39,7 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-//==== Start: Functions
+// Functions - BEGIN
 if(!function_exists('admin_db_calculate'))
 {
 	function admin_db_calculate($size)
@@ -87,7 +87,7 @@ if(!function_exists('admin_db_prepare_sql'))
 		return trim($output);
 	}
 }
-//==== End: Functions
+// Functions - END
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 $is_allowed = check_acp_module_access();
@@ -132,7 +132,7 @@ echo '	<tr>';
 echo '		<td align="left" valign="middle" class="row2" colspan="15">';
 echo '			<span class="genmed">';
 echo '				' . $lang['db_sql_query_db'] . '<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=sql_change&amp;sid=' . $user->data['session_id'] . '"><img src="' . $images . 'b_sql.png" alt="" /></a>&nbsp;&nbsp;<a href="' . $_SERVER['SCRIPT_NAME'] . '?mode=explain_change&amp;sid=' . $user->data['session_id'] . '"><img src="' . $images . 'b_tipp.png" alt="' . $lang['db_explain'] . '" title="' . $lang['db_explain'] . '" /></a>';
-echo '				<div style="text-align:center;"><a href="' . append_sid($_SERVER['SCRIPT_NAME']) . '"><b>' . $dbname . '</b></a></div>';
+echo '				<div style="text-align: center;"><a href="' . append_sid($_SERVER['SCRIPT_NAME']) . '"><b>' . $dbname . '</b></a></div>';
 echo '			</span>';
 echo '		</td>';
 echo '	</tr>';
@@ -362,7 +362,7 @@ $row 	= $db->sql_fetchrowset($r);
 if ($rows)
 	{
 $total 			= $rows;
-$pagination 	= generate_pagination($_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $order .'&amp;way='. $way .'&amp;sid='. $user->data['session_id'], $rows, 30, $start). '&nbsp;';
+$pagination 	= generate_pagination($_SERVER['SCRIPT_NAME'] .'?mode=browse&amp;table='. $table_id .'&amp;order='. $order .'&amp;way='. $way .'&amp;sid='. $user->data['session_id'], $rows, 30, $start) . '&nbsp;';
 	}
 else
 	$pagination = '&nbsp;';

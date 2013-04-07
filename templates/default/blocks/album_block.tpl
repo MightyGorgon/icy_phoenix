@@ -1,6 +1,7 @@
 <!-- IF S_HIGHSLIDER and not S_NO_PICS -->
 
 <script type="text/javascript">
+// <![CDATA[
 var {HS_GALLERY_ID} = {
 	thumbnailId: '{HS_PIC_ID}',
 	wrapperClassName: 'dark',
@@ -9,7 +10,8 @@ var {HS_GALLERY_ID} = {
 	useBox: true,
 	width: 600,
 	height: 450
-}
+};
+// ]]>
 </script>
 
 <div class="highslide-gallery">

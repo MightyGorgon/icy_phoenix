@@ -47,6 +47,24 @@ if ($lang_extend_admin)
 	$lang = array_merge($lang, array(
 		'Lang_extend_icy_phoenix' => 'Icy Phoenix',
 
+// TAB - SERVER
+		'SITE_META_KEYWORDS' => 'Meta Keywords',
+		'SITE_META_KEYWORDS_SWITCH' => 'Enable Meta Keywords From DB',
+		'SITE_META_KEYWORDS_SWITCH_EXPLAIN' => 'If you enable meta keywords, then keywords specified above will be used in html pages instead of the keywords defined in <i>lang_main_settings.php</i>.',
+		'SITE_META_DESCRIPTION' => 'Meta Description',
+		'SITE_META_DESCRIPTION_SWITCH' => 'Enable Meta Description From DB',
+		'SITE_META_DESCRIPTION_SWITCH_EXPLAIN' => 'If you enable meta description from db, then description specified above will be used in html pages instead of the one defined in <i>lang_main_settings.php</i>.',
+		'SITE_META_AUTHOR' => 'Meta Author',
+		'SITE_META_AUTHOR_SWITCH' => 'Enable Meta Author From DB',
+		'SITE_META_AUTHOR_SWITCH_EXPLAIN' => 'If you enable meta author, then author specified above will be used in html pages instead of the one defined in <i>lang_main_settings.php</i>.',
+		'SITE_META_COPYRIGHT' => 'Meta Copyright',
+		'SITE_META_COPYRIGHT_SWITCH' => 'Enable Meta Copyright From DB',
+		'SITE_META_COPYRIGHT_SWITCH_EXPLAIN' => 'If you enable meta copyright, then copyright specified above will be used in html pages instead of the copyright defined in <i>lang_main_settings.php</i>.',
+
+// TAB - SITE
+		'IP_mobile_style_disable' => 'Disable Mobile Devices Dectection',
+		'IP_mobile_style_disable_explain' => 'Usually when a mobile device connect to the site, the <b>Mobile</b> style is automatically enabled (it could be manually switched off by each user). If you want to disable this automatic detection, just select this option.',
+
 // TAB - Icy Phoenix
 		'IP_enable_xs_version_check' => 'Enable Icy Phoenix Version Check',
 		'IP_enable_xs_version_check_explain' => 'Enable this option to check if a newer Icy Phoenix version is available to download each time you enter the ACP. Disabling this option may speed up ACP loading a bit. <br /><b>Note:</b> This check is done just once per day and then cached.',
@@ -152,8 +170,8 @@ if ($lang_extend_admin)
 		'IP_disable_topic_view' => 'Disable "Who read this topic" (Global Switch)',
 		'IP_disable_topic_view_explain' => 'This option allows you to disable &quot;Who read this topic&quot; feature (this saves SQL space).',
 
-		'IP_disable_referrers' => 'Disable Referrers',
-		'IP_disable_referrers_explain' => 'This option allows you to disable Referrers feature (this saves SQL space).',
+		'IP_disable_referers' => 'Disable Referers',
+		'IP_disable_referers_explain' => 'This option allows you to disable Referers feature (this saves SQL space).',
 
 		'IP_disable_logins' => 'Disable Logins Recording',
 		'IP_disable_logins_explain' => 'By enabling this option User\'s Logins will no longer be recorded.',
@@ -195,6 +213,33 @@ if ($lang_extend_admin)
 		'IP_show_random_quote' => 'Random Quotes :: Forum Index',
 		'IP_show_random_quote_explain' => 'Enabling this option will enable random quotes to be shown on <b>Forum Index</b>',
 
+// Spam Section
+		'IP_spam_measures_header' => 'Spam Measures',
+
+		'IP_spam_posts_number' => 'SPAM - Minimum Number Of Posts To Avoid Spam Measures',
+		'IP_spam_posts_number_explain' => 'Until a user reaches the specified number of posts spam measures will be kept in place (those with SPAM prefix here below)',
+		'IP_spam_p_0' => 'Disabled',
+		'IP_spam_p_3' => '3',
+		'IP_spam_p_5' => '5',
+		'IP_spam_p_10' => '10',
+		'IP_spam_p_20' => '20',
+
+		'IP_spam_disable_url' => 'SPAM - Disable URLs In Posts',
+		'IP_spam_disable_url_explain' => 'This feature remove all URLs in posts and replace HTTP with H**P, this feature will remain in place for a minimum of posts specified in the field above. Administrators will see the original message anyway.',
+
+		'IP_spam_hide_signature' => 'SPAM - Disable Signature And Web In Posts',
+		'IP_spam_hide_signature_explain' => 'This feature will hide the signature and personal website information for all those users who didn\'t reach a minimum of posts specified in the field above. Administrators will see the signature anyway.',
+
+		'IP_spam_post_edit_interval' => 'SPAM - Disable Post Edit',
+		'IP_spam_post_edit_interval_explain' => 'By enabling this feature, all users who didn\'t reach the required amount of posts will not be able to edit their posts after the specified interval',
+		'IP_time_15m' => '15 Minutes',
+		'IP_time_30m' => '30 Minutes',
+		'IP_time_1h' => '1 Hour',
+		'IP_time_2h' => '2 Hours',
+		'IP_time_6h' => '6 Hours',
+		'IP_time_12h' => '12 Hours',
+		'IP_time_24h' => '24 Hours',
+
 // TAB - Posting
 		'IP_posts_precompiled' => 'Disable Precompiled Posts For Guests',
 		'IP_posts_precompiled_explain' => 'By enabling this option viewtopic will always parse posts text without using the precompiled text for guests (this is slower, but it can be useful in some cases).',
@@ -208,8 +253,8 @@ if ($lang_extend_admin)
 		'IP_allow_mods_edit_admin_posts' => 'Can Moderators edit Admin posts?',
 		'IP_allow_mods_edit_admin_posts_explain' => 'Allow moderators to edit admin posts',
 
-		'IP_forum_limit_edit_time_interval' => 'Limit Edit Time Interval (Minutes)',
-		'IP_forum_limit_edit_time_interval_explain' => 'This sets the time interval for users to be allowed to edit own messages. Set to ZERO for no limits (feature should be enabled on a per forum basis in Forums Management)',
+		'IP_forum_limit_edit_time_interval' => 'Limit Edit Time Interval',
+		'IP_forum_limit_edit_time_interval_explain' => 'This sets the time interval for users to be allowed to edit own messages. Set to ZERO for no limits (feature should be enabled on a per forum basis in Forums Management). This setting will be applied to all users regardless to their number of posts, so it is different from the similar antispam feature which applies only for users who didn\'t reach a certain amount of posts.',
 
 		'IP_force_large_caps_mods' => 'ProperCase subjects',
 		'IP_force_large_caps_mods_explain' => 'Topic subjects will be converted to proper case for all users except admins',
@@ -219,7 +264,7 @@ if ($lang_extend_admin)
 
 		'IP_no_bump' => 'Forbid bumping within 24 hours',
 		'IP_no_bump_explain' => 'Enabling this option last posters won\'t be able to post within 24 hours from their last post unless someone else has posted a reply (never applies to admins)',
-		'MODS_ALLOWED' => 'Moderators Can Posts',
+		'MODS_ALLOWED' => 'Moderators Can Post',
 
 		'IP_robots_index_topics_no_replies' => 'Enable Robots Indexing Topics No Replies',
 		'IP_robots_index_topics_no_replies_explain' => 'Enabling this option will enable indexing for topics with no replies, otherwise topics with no replies will not be indexed',
@@ -293,7 +338,7 @@ if ($lang_extend_admin)
 		'IP_thumbnail_posts' => 'Thumbnails in posts',
 		'IP_thumbnail_posts_explain' => 'With this option a thumbnail will be shown instead of a full picture when an image is posted using IMG BBCode',
 
-		'IP_show_pic_size_on_thumb' => 'Show the pic size on thumbnail',
+		'IP_show_pic_size_on_thumb' => 'Show image size on thumbnail',
 
 		'IP_thumbnail_highslide' => 'Use HighSlide to show images if thumbnails are enabled',
 		'IP_thumbnail_highslide_explain' => 'Opens the image in front of the current page instead of opening it in a new window. More about <a href="http://www.highslide.com/" target="_blank">HighSlide JS...</a><br />Make sure you empty the precompiled posts after changing this setting!',
@@ -359,6 +404,9 @@ if ($lang_extend_admin)
 
 		'IP_lofi_bots' => 'LoFi For Bots',
 		'IP_lofi_bots_explain' => 'By enabling this option LoFi will be enabled for bots.',
+
+		'IP_seo_cyrillic' => 'Cyrillic Chars Conversion',
+		'IP_seo_cyrillic_explain' => 'By enabling this option some cyrillic characters will be converted to latin characters (not in posts, but in keywords, tags and where the clean strings function is used).',
 
 		'IP_adsense_code' => 'Google AdSense Publisher Code',
 		'IP_adsense_code_explain' => 'Insert here your Google AdSense Publisher Code and it will be inserted in the Google Search page. If you don\'t want to use it, just leave this field blank.',
@@ -470,6 +518,9 @@ if ($lang_extend_admin)
 		'IP_cron_topics_interval' => 'Tidy Topics Cache Cron Interval',
 		'IP_cron_topics_interval_explain' => 'Topics cache is cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_topics_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_topics_last_run']), $config['board_timezone'])) . '</b>',
 
+		'IP_cron_sessions_interval' => 'Tidy Sessions Cron Interval',
+		'IP_cron_sessions_interval_explain' => 'Sessions tables are cleaned every chosen interval.<br /><br /><b>Last run: ' . (($config['cron_sessions_last_run'] == 0) ? 'NEVER' : create_date('d M Y  - H.i.s', ($config['cron_sessions_last_run']), $config['board_timezone'])) . '</b>',
+
 		'Cron_Disabled' => 'Disabled',
 		'Cron_Server' => 'Server Cron',
 		'15M' => '15 Minutes',
@@ -510,6 +561,7 @@ $lang = array_merge($lang, array(
 
 	'Use_sub_forum' => 'Index packing',
 	'Index_packing_explain' => 'Choose the level of packing you want for the index',
+	'List' => 'List',
 	'Medium' => 'Medium',
 	'Full' => 'Full',
 	'Split_categories' => 'Split categories on index',

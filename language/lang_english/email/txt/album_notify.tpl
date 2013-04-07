@@ -1,5 +1,4 @@
 Subject: New Picture has been posted from {FROM}
-Charset: iso-8859-1
 
 Hello {USERNAME},
 

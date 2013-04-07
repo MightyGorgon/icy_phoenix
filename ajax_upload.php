@@ -15,9 +15,12 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
+
+include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
+$class_images = new class_images();
 
 // This page is not in layout special...
 $cms_page['page_id'] = 'pic_upload';
@@ -27,7 +30,7 @@ $cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_p
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $upload_dir = POSTED_IMAGES_PATH;
-$filetypes = 'jpg,gif,png';
+$filetypes = 'jpg,jpeg,gif,png';
 $maxsize = (1000 * 1024);
 
 /* Results:
@@ -110,19 +113,6 @@ if(isset($_FILES['userfile']))
 		exit;
 	}
 
-	// Purge Cache File - BEGIN
-	$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_full.dat';
-	if(@is_file($cache_data_file))
-	{
-		@unlink($cache_data_file);
-	}
-	$cache_data_file = MAIN_CACHE_FOLDER . 'posted_img_list_' . $user->data['user_id'] . '.dat';
-	if(@is_file($cache_data_file))
-	{
-		@unlink($cache_data_file);
-	}
-	// Purge Cache File - END
-
 	if(is_uploaded_file($filename_tmp))
 	{
 		@move_uploaded_file($filename_tmp, $upload_dir . $filename . '.' . $extension);
@@ -140,6 +130,16 @@ if(isset($_FILES['userfile']))
 	}
 	// Success
 	$filesize = filesize($upload_dir . $filename . '.' . $extension);
+	$image_data = array(
+		'pic_filename' => $filename . '.' . $extension,
+		'pic_size' => $filesize,
+		'pic_title' => $filename . '.' . $extension,
+		'pic_desc' => $filename . '.' . $extension,
+		'pic_user_id' => $user->data['user_id'],
+		'pic_user_ip' => $user->ip,
+		'pic_time' => time(),
+	);
+	$image_submit = $class_images->submit_image($image_data, 'insert');
 	//echo('1');
 	echo('1|' . $filename . '.' . $extension . '|' . (int) $filesize . '|' . (int) $pic_size[0] . '|' . (int) $pic_size[1]);
 	//echo($filename . '.' . $extension);

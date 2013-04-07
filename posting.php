@@ -114,7 +114,7 @@ $post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
 
 $s_hidden_fields = '';
 $hidden_form_fields = '';
-$refresh = $preview || $poll_add || $poll_edit || $poll_delete || ($draft && !$draft_confirm);
+$refresh = !empty($preview) || $poll_add || $poll_edit || $poll_delete || ($draft && !$draft_confirm);
 
 // Set topic type
 //echo $topic_type;
@@ -188,9 +188,25 @@ elseif ($mode == 'smilies')
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
+
+// DNSBL CHECK - BEGIN
+if (!empty($config['check_dnsbl_posting']) && in_array($mode, array('newtopic', 'reply', 'editpost')) && !empty($submit))
+{
+	if (($dnsbl = $user->check_dnsbl('post')) !== false)
+	{
+		$error[] = sprintf($lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1], $dnsbl[1]);
+	}
+
+	if (!empty($error))
+	{
+		$message = implode('<br />', $error);
+		message_die(GENERAL_MESSAGE, $message);
+	}
+}
+// DNSBL CHECK - END
 
 // Was cancel pressed? If so then redirect to the appropriate page, no point in continuing with any further checks
 if (isset($_POST['cancel']))
@@ -303,13 +319,13 @@ switch ($mode)
 	case 'newtopic':
 		if (empty($forum_id))
 		{
-			message_die(GENERAL_MESSAGE, $lang['Forum_not_exist']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_FORUM');
 		}
 
-		$sql = "SELECT f.*, fr.*
-			FROM " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr
+		$sql = "SELECT f.*
+			FROM " . FORUMS_TABLE . " f
 			WHERE f.forum_id = " . $forum_id . "
-				AND fr.forum_id = f.forum_id
 			LIMIT 1";
 		break;
 	case 'thank':
@@ -323,11 +339,10 @@ switch ($mode)
 			message_die(GENERAL_MESSAGE, $lang['No_topic_id']);
 		}
 
-		$sql = "SELECT f.*, fr.*, t.*
-			FROM " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr, " . TOPICS_TABLE . " t
+		$sql = "SELECT f.*, t.*
+			FROM " . FORUMS_TABLE . " f, " . TOPICS_TABLE . " t
 			WHERE t.topic_id = " . $topic_id . "
 				AND f.forum_id = t.forum_id
-				AND fr.forum_id = t.forum_id
 			LIMIT 1";
 		break;
 
@@ -348,7 +363,7 @@ switch ($mode)
 		}
 		// MG Cash MOD For IP - END
 
-		$select_sql = (!$submit) ? ', u.username, u.user_id, u.user_sig, u.user_level' : '';
+		$select_sql = (!$submit) ? ', u.username, u.user_id, u.user_sig, u.user_level, u.user_active, u.user_color' : '';
 		$from_sql = (!$submit) ? ", " . USERS_TABLE . " u" : '';
 		$where_sql = (!$submit) ? "AND u.user_id = p.poster_id" : '';
 		// MG Cash MOD For IP - BEGIN
@@ -359,12 +374,11 @@ switch ($mode)
 		}
 		// MG Cash MOD For IP - END
 
-		$sql = "SELECT f.*, fr.*, t.*, p.*" . $select_sql . "
-			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f, " . FORUMS_RULES_TABLE . " fr" . $from_sql . "
+		$sql = "SELECT f.*, t.*, p.*" . $select_sql . "
+			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f" . $from_sql . "
 			WHERE p.post_id = " . $post_id . "
 				AND t.topic_id = p.topic_id
 				AND f.forum_id = p.forum_id
-				AND fr.forum_id = p.forum_id
 				" . $where_sql . "
 			LIMIT 1";
 		break;
@@ -415,9 +429,11 @@ if ($result && $post_info)
 	}
 
 	// LIMIT POST EDIT TIME - BEGIN
-	if (($mode == 'editpost') && $post_info['forum_limit_edit_time'] && ($user->data['user_level'] != ADMIN) && !$is_auth['auth_mod'] && (intval($config['forum_limit_edit_time_interval']) > 0) && !$submit)
+	$is_global_limit_edit_enabled = ($post_info['forum_limit_edit_time'] && (intval($config['forum_limit_edit_time_interval']) > 0)) ? true : false;
+	$is_spam_limit_edit_enabled = ((intval($config['spam_posts_number']) > 0) && ($user->data['user_posts'] < (int) $config['spam_posts_number']) && (intval($config['spam_post_edit_interval']) > 0)) ? true : false;
+	if (($mode == 'editpost') && ($user->data['user_level'] != ADMIN) && !$is_auth['auth_mod'] && !$submit && ($is_global_limit_edit_enabled || $is_spam_limit_edit_enabled))
 	{
-		if (intval($config['forum_limit_edit_time_interval']) < ((time() - $post_info['post_time']) / 60))
+		if (($is_global_limit_edit_enabled && (intval($config['forum_limit_edit_time_interval']) < ((time() - $post_info['post_time']) / 60))) || ($is_spam_limit_edit_enabled && (intval($config['spam_post_edit_interval']) < ((time() - $post_info['post_time']) / 60))))
 		{
 			$message = sprintf($lang['LIMIT_EDIT_TIME_WARN'], intval($config['forum_limit_edit_time_interval'])) . '<br /><br />' . sprintf($lang['Click_view_message'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . $post_id) . '#' . $post_id . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 			message_die(GENERAL_MESSAGE, $message);
@@ -468,7 +484,7 @@ if ($result && $post_info)
 			$poll_results_sum = 0;
 			if ($row = $db->sql_fetchrow($result))
 			{
-				$poll_title = $row['poll_option_text'];
+				$poll_title = $post_info['poll_title'];
 				$poll_start = $post_info['poll_start'];
 				$poll_length = $post_info['poll_length'] / 86400;
 				$poll_max_options = $post_info['poll_max_options'];
@@ -567,7 +583,14 @@ if ($result && $post_info)
 
 	if ($mode == 'poll_delete')
 	{
-		message_die(GENERAL_MESSAGE, $lang['No_such_post']);
+		$meta = '';
+		$message = '';
+		delete_post($mode, $post_data, $message, $meta, $forum_id, $topic_id, $post_id);
+
+		$redirect_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id);
+		meta_refresh(3, $redirect_url);
+
+		message_die(GENERAL_MESSAGE, $message);
 	}
 
 	// BEGIN cmx_slash_news_mod
@@ -1011,7 +1034,10 @@ elseif ($mode == 'vote')
 
 		if ($user->data['session_logged_in'] && ($user->data['bot_id'] === false))
 		{
-			set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
+			if (function_exists('set_cookie'))
+			{
+				set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
+			}
 		}
 
 		$sql = "UPDATE " . TOPICS_TABLE . "
@@ -1175,12 +1201,14 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			{
 				save_draft($draft_id, $user->data['user_id'], $forum_id, $topic_id, strip_tags($subject), $message);
 				//save_draft($draft_id, $user->data['user_id'], $forum_id, $topic_id, $db->sql_escape(strip_tags($subject)), $db->sql_escape($message));
-				$message = $lang['Drafts_Saved'] . '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
+				$output_message = $lang['Drafts_Saved'];
+				$output_message .= '<br /><br />' . sprintf($lang['Click_return_drafts'], '<a href="' . append_sid(CMS_PAGE_DRAFTS) . '">', '</a>');
+				$output_message .= '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
 
 				$redirect_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id);
 				meta_refresh(3, $redirect_url);
 
-				message_die(GENERAL_MESSAGE, $message);
+				message_die(GENERAL_MESSAGE, $output_message);
 			}
 			// MG Drafts - END
 
@@ -1350,10 +1378,10 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		}
 		if (($mode == 'newtopic') || ($mode == 'reply'))
 		{
-			$tracking_topics = (!empty($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 			$tracking_forums = (!empty($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
+			$tracking_topics = (!empty($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
 
-			if (sizeof($tracking_topics) + sizeof($tracking_forums) == 100 && empty($tracking_topics[$topic_id]))
+			if (((sizeof($tracking_topics) + sizeof($tracking_forums)) >= 150) && empty($tracking_topics[$topic_id]))
 			{
 				asort($tracking_topics);
 				unset($tracking_topics[key($tracking_topics)]);
@@ -1361,7 +1389,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 			$tracking_topics[$topic_id] = time();
 
-			setcookie($config['cookie_name'] . '_t', serialize($tracking_topics), 0, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+			$user->set_cookie('t', serialize($tracking_topics), $user->cookie_expire);
 		}
 
 		// MOD: Redirect to Post (normal post) - BEGIN
@@ -1413,7 +1441,9 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	$username = htmlspecialchars_decode(request_post_var('username', '', true), ENT_COMPAT);
 	$subject = !empty($draft_subject) ? $draft_subject : request_post_var('subject', '', true);
 	$topic_desc = request_post_var('topic_desc', '', true);
-	$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+	// Mighty Gorgon: still under testing... if we are refreshing the page, it means that we need to keep the original message in the TEXTBOX, so we don't need to escape htmlspecialchars again...
+	//$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
+	$message = !empty($draft_message) ? $draft_message : request_post_var('message', '', true);
 	$notes = htmlspecialchars_decode(request_post_var('notes', '', true), ENT_COMPAT);
 
 	$topic_title_clean = (empty($_POST['topic_title_clean']) ? $subject : request_post_var('topic_title_clean', '', true));
@@ -1489,11 +1519,13 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		$user_sig = (($post_info['user_sig'] != '') && $config['allow_sig']) ? $post_info['user_sig'] : '';
 	}
 
-	if($preview)
+	if(!empty($preview))
 	{
 		$preview_subject = $subject;
 		//$preview_message = prepare_message(unprepare_message($message), $html_on, $bbcode_on, $smilies_on);
-		$preview_message = htmlspecialchars($message);
+		// Mighty Gorgon: this line has been commented out because of some issues it could generate with previews... bbcode should be able to parse everything properly
+		//$preview_message = htmlspecialchars($message);
+		$preview_message = $message;
 		$preview_username = $username;
 
 		// Finalise processing as per viewtopic
@@ -1536,7 +1568,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		// End Autolinks For phpBB Mod
 		if($attach_sig && ($user_sig != ''))
 		{
-			$user_sig = '<br /><br />' . $config['sig_line'] . '<br />' . $user_sig;
+			$user_sig = '<br />' . $config['sig_line'] . '<br />' . $user_sig;
 		}
 
 		//$preview_message = str_replace("\n", '<br />', $preview_message);
@@ -1547,7 +1579,7 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		$template->set_filenames(array('preview' => 'posting_preview.tpl'));
 		if (!empty($topic_calendar_time))
 		{
-			$topic_calendar_duration_preview = $topic_calendar_duration-1;
+			$topic_calendar_duration_preview = $topic_calendar_duration - 1;
 			if ($topic_calendar_duration_preview < 0)
 			{
 				$topic_calendar_duration_preview = 0;
@@ -1556,14 +1588,20 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 		}
 		$attachment_mod['posting']->preview_attachments();
 
+		if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post']))
+		{
+			$template->assign_var('S_POSTING_TOPIC', true);
+		}
+
 		//$preview_subject = strtr($preview_subject, array_flip(get_html_translation_table(HTML_ENTITIES)));
 		$template->assign_vars(array(
 			'TOPIC_TITLE' => $preview_subject,
-			'POST_SUBJECT' => $preview_subject,
 			'POSTER_NAME' => $preview_username,
 			'POST_DATE' => create_date_ip($config['default_dateformat'], time(), $config['board_timezone']),
-			'MESSAGE' => $preview_message,
 			'USER_SIG' => ($attach_sig) ? $user_sig : '',
+
+			'PREVIEW_SUBJECT' => $preview_subject,
+			'PREVIEW_MESSAGE' => $preview_message,
 
 			'L_POST_SUBJECT' => $lang['Post_subject'],
 			'L_PREVIEW' => $lang['Preview'],
@@ -1685,7 +1723,7 @@ else
 			{
 				$search = array("/\[hide\](.*?)\[\/hide\]/");
 				$replace = array('[hide]' . $lang['xs_bbc_hide_quote_message'] . '[/hide]');
-				$message =  preg_replace($search, $replace, $message);
+				$message = preg_replace($search, $replace, $message);
 			}
 
 			$msg_date = create_date_ip($config['default_dateformat'], $postrow['post_time'], $config['board_timezone']);
@@ -2032,10 +2070,10 @@ $template->set_filenames(array(
 make_jumpbox(CMS_PAGE_VIEWFORUM);
 
 $rules_bbcode = '';
-if (!empty($post_info['rules_in_posting']))
+if (!empty($post_info['forum_rules_in_posting']))
 {
 	//BBcode Parsing for Olympus rules Start
-	$rules_bbcode = $post_info['rules'];
+	$rules_bbcode = $post_info['forum_rules'];
 	$bbcode->allow_html = true;
 	$bbcode->allow_bbcode = true;
 	$bbcode->allow_smilies = true;
@@ -2044,7 +2082,7 @@ if (!empty($post_info['rules_in_posting']))
 
 	$template->assign_vars(array(
 		'S_FORUM_RULES' => true,
-		'S_FORUM_RULES_TITLE' => ($post_info['rules_display_title']) ? true : false
+		'S_FORUM_RULES_TITLE' => ($post_info['forum_rules_display_title']) ? true : false
 		)
 	);
 }
@@ -2053,7 +2091,7 @@ $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_NAME' => $forum_name,
 	'FORUM_RULES' => $rules_bbcode,
-	'L_FORUM_RULES' => (empty($post_info['rules_custom_title'])) ? $lang['Forum_Rules'] : $post_info['rules_custom_title'],
+	'L_FORUM_RULES' => (empty($post_info['forum_rules_custom_title'])) ? $lang['Forum_Rules'] : $post_info['forum_rules_custom_title'],
 	'L_POST_A' => $page_title_alt,
 	'L_POST_SUBJECT' => $lang['Post_subject'],
 	'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id)
@@ -2116,7 +2154,7 @@ if ($config['allow_drafts'] == true)
 // MG Drafts - END
 
 // Convert and clean special chars!
-$subject = htmlspecialchars_clean($subject);
+$subject = (($mode == 'editpost') ? $subject : htmlspecialchars_clean($subject));
 $topic_desc = !empty($topic_desc) ? htmlspecialchars_clean($topic_desc) : '';
 $topic_title_clean = (empty($topic_title_clean) ? $subject : trim($topic_title_clean));
 $topic_title_clean = substr(ip_clean_string($topic_title_clean, $lang['ENCODING']), 0, 254);
@@ -2169,10 +2207,11 @@ $template->assign_vars(array(
 	'U_VIEWTOPIC' => ($mode == 'reply') ? append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append . '&amp;sd=d') : '',
 	'U_REVIEW_TOPIC' => ($mode == 'reply') ? append_sid('posting.' . PHP_EXT . '?mode=topicreview&amp;' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) : '',
 
+	'S_IS_PM' => 0,
+
 	// AJAX Features - BEGIN
 	'S_AJAX_BLUR' => $ajax_blur,
 	'S_AJAX_PM_USER_CHECK' => $ajax_pm_user_check,
-	'S_IS_PM' => 0,
 	'S_DISPLAY_PREVIEW' => ($preview) ? '' : 'style="display:none;"',
 	'S_EDIT_POST_ID' => ($mode == 'editpost') ? $post_id : 0,
 	'L_SEARCH_RESULTS' => $lang['AJAX_search_results'],

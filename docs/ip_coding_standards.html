@@ -34,7 +34,7 @@ code {
 </style>
 </head>
 <body>
-<a name="top"></a>
+<a name="top" id="top"></a>
 <div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
 <div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
@@ -347,7 +347,7 @@ $bool = ($i &lt; 7 &amp;&amp; ($j &lt; 8 || $k == 4));
 
 <b>Quoting strings:</b>
 <p>There are two different ways to quote strings in PHP - either with single quotes or with double quotes. The main difference is that the parser does variable interpolation in double-quoted strings, but not in single quoted strings. Because of this, you should <em>always</em> use single quotes <em>unless</em> you specifically need variable interpolation to be done on that string. This way, we can save the parser the trouble of parsing a bunch of strings where no interpolation needs to be done.</p>
-<p>Also, if you are using a string variable as part of a function call, you do not need to enclose that variable in quotes. Again, this will just make unnecessary work for the parser. Note, however, that nearly all of the escape sequences that exist for double-quoted strings will not work with single-quoted strings. Be careful, and feel free to break this guideline if it's making your code easier to read.
+<p>Also, if you are using a string variable as part of a function call, you do not need to enclose that variable in quotes. Again, this will just make unnecessary work for the parser. Note, however, that nearly all of the escape sequences that exist for double-quoted strings will not work with single-quoted strings. Be careful, and feel free to break this guideline if it's making your code easier to read.</p>
 <p>Examples:</p>
 <br />
 
@@ -1020,7 +1020,7 @@ markup
 				<td nowrap="nowrap" width="45%" align="left">
 					<br /><span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span><br /><br />
 				</td>
-				<td nowrap="nowrap" align="center"><div style="text-align:center;">&nbsp;</div></td>
+				<td nowrap="nowrap" align="center"><div style="text-align: center;">&nbsp;</div></td>
 				<td nowrap="nowrap" width="45%" align="right">
 					<br /><span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span><br /><br />
 				</td>
@@ -1033,6 +1033,6 @@ markup
 </table>
 </div></div></div>
 </div>
-<a name="bottom"></a>
+<a name="bottom" id="bottom"></a>
 </body>
 </html>

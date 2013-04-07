@@ -41,16 +41,16 @@ if (isset($_REQUEST['psid']))
 	$dir = $path_to_bin . 'tmp/';
 	if (is_dir($dir))
 	{
-		if ($dh = opendir($dir))
+		if ($dh = @opendir($dir))
 		{
-			while (($file = readdir($dh)) !== false)
+			while (($file = @readdir($dh)) !== false)
 			{
-				if (filectime($dir . $file) < (time() - 3600))
+				if (@filectime($dir . $file) < (time() - 3600))
 				{
 					@unlink($dir . $file);
 				}
 			}
-			closedir($dh);
+			@closedir($dh);
 		}
 	}
 

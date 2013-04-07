@@ -72,7 +72,7 @@ $lang = array_merge($lang, array(
 	'Admin' => 'Administration',
 	'Not_admin' => 'You are not authorized to administer this website',
 	'Welcome_IP' => 'Welcome to Icy Phoenix',
-	'Admin_intro' => 'Thank you for choosing Icy Phoenix as your CMS solution. This screen will give you a quick overview of all the various statistics of your site. You can get back to this page by clicking on the <u>Admin Index</u> link above. To return to the index of your board, click on the <u>Forum</u> link (also above). The menu on the left hand side of this screen will allow you to control every aspect of your forum experience. Each secondary option link will have instructions on how to use the tools.',
+	'Admin_intro' => 'Thank you for choosing Icy Phoenix as your CMS solution. This screen will give you a quick overview of all the various statistics of your site. You can get back to this page by clicking on the <u>Admin Index</u> link above. To return to the index of your forum, click on the <u>Forum</u> link (also above). The menu on the left hand side of this screen will allow you to control every aspect of your website. Each secondary option link will have instructions on how to use the tools.',
 	'PayPalInfo' => 'Icy Phoenix is an open source project, you can show your appreciation and support future development by donating to the project.',
 	'Forum_stats' => 'Site Statistics',
 	'Admin_Index' => 'Admin Index',
@@ -347,6 +347,8 @@ $lang = array_merge($lang, array(
 	'Cookie_secure' => 'Cookie secure',
 	'Cookie_secure_explain' => 'If your server is running via SSL, set this to enabled, else leave as disabled',
 	'Session_length' => 'Session length [ seconds ]',
+	'SESSION_LAST_VISIT_RESET' => 'Last Visit Refresh If Session Expired',
+	'SESSION_LAST_VISIT_RESET_EXPLAIN' => 'If you enable this option, Last Visit time for use will be updated even after if session expires. Otherwise Last Visit time will be updated only if autologin is enabled and the maximum login time has been reached.',
 
 // Visual Confirmation
 	'Visual_confirm' => 'Enable Visual Confirmation',
@@ -368,9 +370,9 @@ $lang = array_merge($lang, array(
 	'Action' => 'Action',
 	'Update_order' => 'Update Order',
 	'Config_updated' => 'Configuration Updated Successfully',
-	'Move_up' => 'Move up',
-	'Move_down' => 'Move down',
-	'Resync' => 'Resync',
+	'MOVE_UP' => 'Move up',
+	'MOVE_DOWN' => 'Move down',
+	'RESYNC' => 'Resync',
 	'No_mode' => 'No mode was set',
 	'Forum_edit_delete_explain' => 'Customize all the general board options. For User and Forum configurations use the related links on the left hand side',
 	'Forum_Expand' => 'Expand',
@@ -1090,7 +1092,7 @@ $lang = array_merge($lang, array(
 	'IcyPhoenix_Code_Changes' => 'Code Changes Mod',
 	'IcyPhoenix_Updates' => 'Icy Phoenix Updates',
 	'PhpBB_Upgrade' => 'phpBB Upgrade',
-	'Header_Welcome' => 'Welcome on Icy Phoenix Administration Control Panel',
+	'Header_Welcome' => 'Welcome to Icy Phoenix Administration Control Panel',
 
 	'Prune_users' => 'Prune users',
 	'Prune_Overview' => 'Pruning Overview',
@@ -1178,7 +1180,7 @@ $lang = array_merge($lang, array(
 	'auth_view_ranks' => 'Ranks',
 	'auth_view_statistics' => 'Statistics',
 	'auth_view_recent' => 'Recent Topics',
-	'auth_view_referrers' => 'Referrers',
+	'auth_view_referers' => 'Referers',
 	'auth_view_rules' => 'Rules',
 	'auth_view_site_hist' => 'Site History',
 	'auth_view_shoutbox' => 'Shoutbox',
@@ -1280,9 +1282,9 @@ $lang = array_merge($lang, array(
 	'add_field_view_disclaimer' => 'All of these settings will be treated as "no" if users are not allowed to view this field',
 
 	'add_field_name' => 'Field Name',
-	'add_field_name_explain' => 'Enter the name you want to associate with this field.',
+	'add_field_name_explain' => 'Enter the name you want to associate with this field. You can customize the output for several language by editing <b>language/lang_XXX/lang_profile_fields.php</b>.',
 	'add_field_description' => 'Field Description',
-	'add_field_description_explain' => 'Enter a description you wish to associate with this field. It will be displayed in small text below the field name, just like this text is.',
+	'add_field_description_explain' => 'Enter a description you wish to associate with this field. It will be displayed in small text below the field name, just like this text is. You can customize the output for several language by editing <b>language/lang_XXX/lang_profile_fields.php</b>.',
 	'add_field_type' => 'Field Type',
 	'add_field_type_explain' => 'Select the type of profile field you want to add. Examples of each field type are shown to the far right.',
 	'edit_field_type_explain' => 'Select the type of profile field you want to change this field to. Examples of each field type are shown to the far right.',
@@ -1328,8 +1330,10 @@ $lang = array_merge($lang, array(
 	'Announce_settings' => 'Announcements Settings',
 	'Split_settings' => 'Split Settings',
 	'Server_Cookies' => 'Server Settings',
-	'Disable_Registration_IP_Check' => 'Disable public blacklist IP check upon register',
-	'Disable_Registration_IP_Check_Explain' => 'If you disable IP check upon register, then IP\'s will not be checked against the public blacklist. Disabling this may be useful, because sometimes this check may result in unintentional blocking of regular users who have an IP listed by mistake in the public blacklist.',
+	'ENABLE_CHECK_DNSBL' => 'Enable public Blacklist IP check upon register',
+	'ENABLE_CHECK_DNSBL_EXPLAIN' => 'If you enable IP check upon register, user IP address will be checked against the public blacklist. Please note that sometimes this check may result in unintentional blocking of regular users who have an IP listed by mistake in the public Blacklist.',
+	'ENABLE_CHECK_DNSBL_POSTING' => 'Enable public Blacklist IP check upon posting',
+	'ENABLE_CHECK_DNSBL_POSTING_EXPLAIN' => 'If you enable IP check upon posting, user IP address will be checked against the public blacklist.',
 	'Config_explain2' => 'Customize calendar and subforums options, change appearance and settings.',
 	'Forum_postcount' => 'Count user\'s posts',
 	'Use_Captcha' => 'Use CAPTCHA',
@@ -1349,8 +1353,6 @@ $lang = array_merge($lang, array(
 	'Shout_guest_allowed' => 'Guest Allowed',
 	'Shoutbox_flood' => 'Flood Interval',
 	'Shoutbox_flood_explain' => 'Number of seconds a user must wait between shouts.',
-	'Shoutbox_refreshtime' => 'Refresh rate',
-	'Shoutbox_refresh_explain' => 'Time in milliseconds for the shoutbox to read new messages.<br /><i>This value should be over the 1000 milliseconds.</i>',
 // Ajax Shoutbox - END
 
 /* lang_postcount.php - BEGIN */
@@ -1744,8 +1746,6 @@ $lang = array_merge($lang, array(
 	'Deleted_Group' => 'Deleted Specified Group. All users that were in this group have been reset to no group membership<br />',
 	'Hide' => 'Hide',
 	'Un-hide' => 'Un-hide',
-	'Move_Up' => 'Move Up',
-	'Move_Down' => 'Move Down',
 	'Group_Hidden' => 'Group Hidden<br />',
 	'Group_Unhidden' => 'Group Visible<br />',
 	'Groups_Updated' => 'Group changes have been updated<br />',
@@ -1970,9 +1970,6 @@ $lang = array_merge($lang, array(
 	'FORUM_LIMIT_EDIT_TIME' => 'Limit User Post Edit Time',
 	'FORUM_LIMIT_EDIT_TIME_EXPLAIN' => 'By enabling this option users will be allowed to edit own messages only within the limit set in Posts configuration of Icy Phoenix (ACP &raquo; Configuration &raquo; Main Settings &raquo; Posting And Messages)',
 
-	'BACK_TO_TOP' => 'Top',
-	'BACK_TO_PREV' => 'Back to previous page',
-
 	// Custom BBCodes - BEGIN
 	'BBCODES_CUSTOM_BBCODES' => 'Custom BBCodes',
 	'BBCODES_CUSTOM_BBCODES_EXPLAIN' => 'BBCode is a special implementation of HTML offering greater control over what and how something is displayed. From this page you can add, remove and edit custom BBCodes. To be able to use these Custom BBCodes you need to enable <b>Enable Custom BBCodes</b> in <b>ACP &raquo; Configuration &raquo; Main Settings &raquo; Posting And Messages</b> section.',
@@ -2065,6 +2062,19 @@ $lang = array_merge($lang, array(
 
 	'RANK_SHOW_TITLE' => 'Display rank title',
 	'RANK_SHOW_TITLE_EXPLAIN' => 'By disabling this option only rank image will be shown',
+
+	'AJAX_CHAT_MSGS_REFRESH' => 'Refresh Time Interval',
+	'AJAX_CHAT_MSGS_REFRESH_EXPLAIN' => 'Please enter the time interval in seconds for the system to check for new chat messages. This value should not be below 2 seconds (it will be forced to 1 second if a lower value is set).',
+	'AJAX_CHAT_SESSION_REFRESH' => 'Session Length',
+	'AJAX_CHAT_SESSION_REFRESH_EXPLAIN' => 'Please enter the chat session duration. This value is used to check if users in chat left the conversation. This value should not be below 10 seconds (this value will be forced to be 5 seconds if a lower value is set).',
+	'AJAX_CHAT_LINK_TYPE' => 'Chat Window Format',
+	'AJAX_CHAT_LINK_TYPE_EXPLAIN' => 'Please specify if you want a simplified chat window or a window with full header and footer (simplified is cleaner and faster).',
+	'AJAX_CHAT_LINK_TYPE_SIMPLE' => 'Simplified',
+	'AJAX_CHAT_LINK_TYPE_FULL' => 'Full',
+	'AJAX_CHAT_NOTIFICATION' => 'Private Chat Notification',
+	'AJAX_CHAT_NOTIFICATION_EXPLAIN' => 'If you enable this option, a notification will be sent to the user in case of Private Chat Request.',
+	'AJAX_CHAT_CHECK_ONLINE' => 'Private Chat Link Only For Online Users',
+	'AJAX_CHAT_CHECK_ONLINE_EXPLAIN' => 'If you enable this option, the Private Chat link will be displayed only for users already in chat, otherwise it will be displayed for all users online in the site.',
 
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'IP_CONFIGURATION' => 'Icy Phoenix Settings',
@@ -2284,11 +2294,11 @@ $lang['120_FAQ_Board'] = 'Site FAQ'; // admin_faq_editor.php
 $lang['130_FAQ_Rules'] = 'Site Rules'; // admin_faq_editor.php
 
 // INFO
-$lang['2400_INFO'] = 'Info'; // admin_logs.php, admin_phpinfo.php, admin_gd_info.php, admin_referrers.php, admin_google_bot_detector.php
+$lang['2400_INFO'] = 'Info'; // admin_logs.php, admin_phpinfo.php, admin_gd_info.php, admin_referers.php, admin_google_bot_detector.php
 $lang['110_Actions_LOG'] = 'Actions Log'; // admin_logs.php
 $lang['120_PHP_INFO'] = 'PHP Info'; // admin_phpinfo.php
 $lang['130_GD_Info'] = 'GD Info'; // admin_gd_info.php
-$lang['140_HTTP_REF'] = 'HTTP Referrers'; // admin_referrers.php
+$lang['140_HTTP_REF'] = 'HTTP Referers'; // admin_referers.php
 $lang['150_Google_BOT'] = 'Google Bot Detector'; // admin_google_bot_detector.php
 
 // STATS
@@ -2308,6 +2318,7 @@ $lang['120_Cash_Help'] = 'Help'; // admin_cash.php
 
 // Activity
 $lang['3200_ACTIVITY'] = 'Activity / Games'; // admin_activity.php, admin_ina_ban.php, admin_ina_bulk_add.php, admin_ina_category.php, admin_ina_disable.php, admin_ina_in_un.php, admin_ina_mass.php, admin_ina_xtras.php
+$lang['105_DB_Adjustments'] = 'Install / Uninstall'; // admin_ina_in_un.php
 $lang['110_Configuration'] = 'Configuration'; // admin_activity.php
 $lang['120_Add_Game'] = 'Add Game'; // admin_activity.php
 $lang['130_Edit_Games'] = 'Edit Games'; // admin_activity.php
@@ -2316,7 +2327,6 @@ $lang['150_Bulk_Add_Games'] = 'Bulk Add Games'; // admin_ina_bulk_add.php
 $lang['160_Category'] = 'Categories Management'; // admin_ina_category.php
 $lang['170_Char_Settings'] = 'Chars Settings'; // admin_ina_char.php
 $lang['180_Hide_Show_Games'] = 'Show/Hide Games'; // admin_ina_disable.php
-$lang['190_DB_Adjustments'] = 'DB Adjustments'; // admin_ina_in_un.php
 $lang['200_Mass_Change'] = 'Mass Configuration'; // admin_ina_mass.php
 $lang['210_Scores_Editor'] = 'Edit Hi-Scores'; // admin_ina_scores.php
 $lang['220_Xtras'] = 'Extra Settings'; // admin_ina_xtras.php

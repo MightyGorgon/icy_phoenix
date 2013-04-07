@@ -163,6 +163,12 @@ class NewsModule
 				$ubid_link = request_var('ubid', 0);
 				$ubid_link = !empty($ubid_link) ? ('ubid=' . $ubid_link . '&amp;') : '';
 
+				$format = 'r';
+				$gmepoch = $article['post_time'];
+				$tz = $timezone;
+				$news_dst_sec = get_dst($gmepoch, $tz);
+				$news_date = @gmdate($format, $gmepoch + (3600 * $tz) + $news_dst_sec);
+
 				// Convert and clean special chars!
 				$topic_title = htmlspecialchars_clean($article['topic_title']);
 				$this->setBlockVariables('articles', array(
@@ -177,7 +183,7 @@ class NewsModule
 					'COUNT_VIEWS' => $article['topic_views'],
 					'CAT_IMG' => $this->root_path . $config['news_path'] . '/' . $article['news_image'],
 					'POST_DATE' => create_date_ip($dateformat, $article['post_time'], $timezone, true),
-					'RFC_POST_DATE' => create_date_ip('r', $article['post_time'], $timezone, true),
+					'RFC_POST_DATE' => $news_date,
 					'L_POSTER' => colorize_username($article['user_id'], $article['username'], $article['user_color'], $article['user_active']),
 					'L_COMMENTS' => $article['topic_replies'],
 					/*
@@ -494,7 +500,7 @@ class NewsModule
 		$server_url = create_server_url();
 
 		$this->setVariables(array(
-			'TITLE' => $this->config['sitename'],
+			'NEWS_TITLE' => $this->config['sitename'],
 			'URL' => $server_url,
 			'FORUM_PATH' => $this->config['script_path'],
 			'DESC' => $this->config['news_rss_desc'],
@@ -561,7 +567,7 @@ class NewsModule
 
 		if($news_var == 'topics')
 		{
-			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Categories']));
+			$this->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Categories']));
 			$this->renderTopics();
 		}
 		elseif($news_var == 'archives')
@@ -571,7 +577,7 @@ class NewsModule
 			$day = request_var('day', 0);
 			$key = request_var('key', '');
 
-			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));
+			$this->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Archives']));
 			$this->renderArchives($year, $month, $day, $key);
 		}
 		else
@@ -586,7 +592,7 @@ class NewsModule
 				$this->is_topic = true;
 			}
 
-			$this->setVariables(array('TITLE' => $lang['News_Cmx'] . ' ' . $lang['Articles']));
+			$this->setVariables(array('NEWS_TITLE' => $lang['News_Cmx'] . ' ' . $lang['Articles']));
 			$this->renderArticles($topic_id);
 		}
 
@@ -683,12 +689,12 @@ class NewsModule
 	// {{{ trimText()
 
 	/**
-	* Post based on a delimeter present in the source text.
+	* Post based on a delimiter present in the source text.
 	*
 	* @access public
 	*
 	* @param string $source The string to be trimmed.
-	* @param string $delim The delimeter used to mark the break in text.
+	* @param string $delim The delimiter used to mark the break in text.
 	*
 	* @return string The resulting trimmed string.
 	*/

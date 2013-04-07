@@ -11,26 +11,15 @@ function refresh_username(selected_username)
 	target_form_name = '{S_TARGET_FORM_NAME}';
 	target_element_name = '{S_TARGET_ELEMENT_NAME}';
 
-	var doc;
-
-	if (document.forms[target_form_name])
-	{
-		doc = document;
-	}
-	else
-	{
-		doc = opener.document;
-	}
-
+	var doc = (document.forms[target_form_name]) ? document : opener.document;
 	var target_element = doc.forms[target_form_name].elements[target_element_name];
-
-
 	if (selected_username == '-1')
 	{
 		return;
 	}
 	//opener.document.forms['post'].username.value = selected_username;
-	target_element.value = selected_username;
+	//target_element.value = selected_username;
+	target_element.value = (target_element.value.length && target_element.type == "textarea") ? target_element.value + "\n" + selected_username : selected_username;
 	opener.focus();
 	window.close();
 }

@@ -32,7 +32,7 @@ if(!empty($setmodules))
 }
 
 // If download action is enabled, don't load header
-if ($_GET['action'] == 'download')
+if (isset($_GET['action']) && ($_GET['action'] == 'download'))
 {
 	$no_page_header = true;
 }

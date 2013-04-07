@@ -146,7 +146,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	{
 		$last_post_time = intval($_POST['post_time']);
 
-		if(isset($topic_id) && $last_post_time)
+		if(!empty($topic_id) && $last_post_time)
 		{
 			$sql = "SELECT post_time FROM " . POSTS_TABLE . " WHERE topic_id = '" . $topic_id . "' ORDER BY post_time DESC LIMIT 0, 1";
 			$db->sql_return_on_error(true);
@@ -173,7 +173,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	$no_bump = ((($config['no_bump'] == 1) && ($user->data['user_level'] != ADMIN)) || (($config['no_bump'] == 2) && ($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD))) ? true : false;
 	if((($mode == 'reply') || ($mode == 'quote')) && ($no_bump == true) && ($new_post_while_posting == false))
 	{
-		if(isset($topic_id))
+		if(!empty($topic_id))
 		{
 			$sql = "SELECT poster_id FROM " . POSTS_TABLE . "
 							WHERE topic_id = '" . $topic_id . "'
@@ -281,7 +281,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	$current_time = time();
 
-	if (($user->data['user_level'] != ADMIN) && (($config['force_large_caps_mods'] == true) || ($user->data['user_level'] != MOD)))
+	if (($user->data['user_level'] != ADMIN) && (!empty($config['force_large_caps_mods']) || ($user->data['user_level'] != MOD)))
 	{
 		//$post_subject = strtolower($post_subject);
 		$post_subject = ucwords($post_subject);
@@ -952,10 +952,10 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
 		}
 		$class_topics = new class_topics();
-		$class_topics->class_topics($topic_id);
+		$class_topics->remove_poll($topic_id);
 	}
 
-	if ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post'])
+	if (($mode == 'delete') && $post_data['first_post'] && $post_data['last_post'])
 	{
 		$meta = '<meta http-equiv="refresh" content="3;url=' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">';
 		$message = $lang['Deleted'];
@@ -967,6 +967,15 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	}
 
 	$message .=  '<br /><br />' . sprintf($lang['Click_return_forum'], '<a href="' . append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id) . '">', '</a>');
+
+	if (!empty($forum_id))
+	{
+		if (!function_exists('sync'))
+		{
+			include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
+		}
+		sync('forum', $forum_id);
+	}
 
 	empty_cache_folders(POSTS_CACHE_FOLDER);
 	empty_cache_folders(FORUMS_CACHE_FOLDER);
@@ -997,8 +1006,8 @@ function get_userdata_notifications($target_user, $force_str = false)
 */
 function generate_smilies($mode)
 {
-	global $db, $cache, $config, $user, $template, $images, $theme, $lang;
-	global $session_length, $starttime, $gen_simple_header;
+	global $db, $cache, $config, $auth, $user, $lang, $template, $images, $theme;
+	global $starttime, $gen_simple_header;
 
 	$inline_columns = $config['smilie_columns'];
 	$inline_rows = $config['smilie_rows'];
@@ -1013,7 +1022,7 @@ function generate_smilies($mode)
 	{
 		// Start session management
 		$user->session_begin();
-		//$auth->acl($user->data);
+		$auth->acl($user->data);
 		$user->setup();
 		// End session management
 
@@ -1116,8 +1125,6 @@ function generate_smilies($mode)
 				$template->assign_block_vars('switch_smilies_extra', array());
 			}
 
-			$pagination = generate_pagination('posting.' . PHP_EXT . '?mode=smilies', $num_smilies, $per_page, $start, false);
-
 			$select_smileys_pp = '<select name="smilies_per_page" onchange="SetSmileysPerPage();" class="gensmall">';
 			$select_smileys_pp .= '<option value="' . ($window_columns * $window_rows) . '"' . (($smilies_per_page == ($window_columns * $window_rows)) ? ' selected="selected"' : '') . '>' . ($window_columns * $window_rows) . '</option>';
 			$select_smileys_pp .= '<option value="50"' . (($smilies_per_page == 50) ? ' selected="selected"' : '') . '>50</option>';
@@ -1139,12 +1146,17 @@ function generate_smilies($mode)
 
 				'DEFAULT_SMILEYS_PER_PAGE' => $window_columns * $window_rows,
 				'SELECT_SMILEYS_PP' => $select_smileys_pp,
-				'PAGINATION' => $pagination,
+				'PAGINATION' => generate_pagination('posting.' . PHP_EXT . '?mode=smilies', $num_smilies, $per_page, $start, false),
 				'S_SMILIES_COLSPAN' => $s_colspan
 				)
 			);
 		}
 	}
+
+	$template->assign_vars(array(
+		'DISPLAY_MODE' => ($mode == 'window') ? 'window' : 'inline',
+		)
+	);
 
 	if ($mode == 'window')
 	{

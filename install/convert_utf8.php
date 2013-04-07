@@ -15,7 +15,7 @@
 * http://www.mysqlperformanceblog.com/2007/12/18/fixing-column-encoding-mess-in-mysql/
 */
 
-die('Comment this line...');
+//die('Comment this line...');
 
 if (php_sapi_name() === 'cli')
 {
@@ -25,6 +25,9 @@ if (php_sapi_name() === 'cli')
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
+
+@set_time_limit(0);
+@ini_set('memory_limit', '32M');
 
 require(IP_ROOT_PATH . 'config.' . PHP_EXT);
 define('SQL_LAYER', 'mysql4');
@@ -68,49 +71,52 @@ while ($row = $db->sql_fetchrow($result))
 	$table = $current_item['value'];
 	reset($row);
 
-	$sql = "ALTER TABLE {$db->sql_escape($table)}
-		DEFAULT CHARACTER SET utf8
-		COLLATE utf8_bin";
-	$db->sql_query($sql) or die($db->sql_error());
-
-	echo("&bull;&nbsp;Table&nbsp;<b style=\"color: #dd2222;\">$table</b> converted to UTF-8<br />\n");
-
-	$sql = "SHOW FIELDS FROM {$db->sql_escape($table)}";
-	$result_fields = $db->sql_query($sql);
-
-	while ($row_fields = $db->sql_fetchrow($result_fields))
+	if (strpos($table, $table_prefix) === 0)
 	{
-		// These assignments don't work...
-		/*
-		$field_name = $row_fields[0];
-		$field_type = $row_fields[1];
-		$field_null = $row_fields[2];
-		$field_key = $row_fields[3];
-		$field_default = $row_fields[4];
-		$field_extra = $row_fields[5];
-		*/
+		$sql = "ALTER TABLE {$db->sql_escape($table)}
+			DEFAULT CHARACTER SET utf8
+			COLLATE utf8_bin";
+		$db->sql_query($sql) or die($db->sql_error());
 
-		$field_name = $row_fields['Field'];
-		$field_type = $row_fields['Type'];
-		$field_null = $row_fields['Null'];
-		$field_key = $row_fields['Key'];
-		$field_default = $row_fields['Default'];
-		$field_extra = $row_fields['Extra'];
+		echo("&bull;&nbsp;Table&nbsp;<b style=\"color: #dd2222;\">$table</b> converted to UTF-8<br />\n");
 
-		// Let's remove BLOB and BINARY for now...
-		//if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false) || (strpos(strtolower($field_type), 'blob') !== false) || (strpos(strtolower($field_type), 'binary') !== false))
-		if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false))
+		$sql = "SHOW FIELDS FROM {$db->sql_escape($table)}";
+		$result_fields = $db->sql_query($sql);
+
+		while ($row_fields = $db->sql_fetchrow($result_fields))
 		{
-			//$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin";
+			// These assignments don't work...
+			/*
+			$field_name = $row_fields[0];
+			$field_type = $row_fields[1];
+			$field_null = $row_fields[2];
+			$field_key = $row_fields[3];
+			$field_default = $row_fields[4];
+			$field_extra = $row_fields[5];
+			*/
 
-			$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin " . (($field_null != 'YES') ? "NOT " : "") . "NULL DEFAULT " . (($field_default != 'None') ? ((!empty($field_default) || !is_null($field_default)) ? (is_string($field_default) ? ("'" . $db->sql_escape($field_default) . "'") : $field_default) : (($field_null != 'YES') ? "''" : "NULL")) : "''");
-			$db->sql_query($sql_fields);
+			$field_name = $row_fields['Field'];
+			$field_type = $row_fields['Type'];
+			$field_null = $row_fields['Null'];
+			$field_key = $row_fields['Key'];
+			$field_default = $row_fields['Default'];
+			$field_extra = $row_fields['Extra'];
 
-			echo("\t&nbsp;&nbsp;&raquo;&nbsp;Field&nbsp;<b style=\"color: #4488aa;\">$field_name</b> (in table <b style=\"color: #009900;\">$table</b>) converted to UTF-8<br />\n");
+			// Let's remove BLOB and BINARY for now...
+			//if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false) || (strpos(strtolower($field_type), 'blob') !== false) || (strpos(strtolower($field_type), 'binary') !== false))
+			if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false))
+			{
+				//$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin";
+
+				$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin " . (($field_null != 'YES') ? "NOT " : "") . "NULL DEFAULT " . (($field_default != 'None') ? ((!empty($field_default) || !is_null($field_default)) ? (is_string($field_default) ? ("'" . $db->sql_escape($field_default) . "'") : $field_default) : (($field_null != 'YES') ? "''" : "NULL")) : "''");
+				$db->sql_query($sql_fields);
+
+				echo("\t&nbsp;&nbsp;&raquo;&nbsp;Field&nbsp;<b style=\"color: #4488aa;\">$field_name</b> (in table <b style=\"color: #009900;\">$table</b>) converted to UTF-8<br />\n");
+			}
 		}
+		echo("<br />\n");
+		flush();
 	}
-	echo("<br />\n");
-	flush();
 }
 
 $db->sql_close();

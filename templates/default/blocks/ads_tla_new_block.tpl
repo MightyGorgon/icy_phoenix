@@ -1,0 +1,1 @@
+<div class="post-text">{ADS_CONTENT}</div>

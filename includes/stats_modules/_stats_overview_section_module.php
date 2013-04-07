@@ -38,7 +38,7 @@ elseif ($user->data['session_logged_in'])
 }
 
 $sql = 'SELECT module_id, name
-	FROM ' . MODULES_TABLE . '
+	FROM ' . STATS_MODULES_TABLE . '
 	WHERE active = 1
 		AND installed = 1
 		AND auth_value <= ' . $auth_level . '

@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -31,11 +31,11 @@ include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 
 $nav_server_url = create_server_url();
 $album_nav_cat_desc = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album_search.' . PHP_EXT) . '" class="nav-current">' . $lang['Search'] . '</a>';
-$breadcrumbs_address = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
+$breadcrumbs['address'] = ALBUM_NAV_ARROW . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $album_nav_cat_desc;
 
 $mode = request_var('mode', '', true);
 $search = request_var('search', '', true);
-$search_escaped = $db->sql_escape($search);
+$search_escaped = $db->sql_escape(strtolower($search));
 
 if (!empty($search_escaped))
 {
@@ -48,23 +48,38 @@ if (!empty($search_escaped))
 
 	if ($mode == 'user')
 	{
-		$where = "AND p.pic_username LIKE '%" . $search_escaped . "%'";
+		$where = "AND LOWER(p.pic_username) LIKE '%" . $search_escaped . "%'";
 	}
 	elseif ($mode == 'name')
 	{
-		$where = "AND p.pic_title LIKE '%" . $search_escaped . "%'";
+		$where = "AND LOWER(p.pic_title) LIKE '%" . $search_escaped . "%'";
 	}
 	elseif ($mode == 'desc')
 	{
-		$where = "AND p.pic_desc LIKE '%" . $search_escaped . "%'";
+		$where = "AND LOWER(p.pic_desc) LIKE '%" . $search_escaped . "%'";
 	}
 	elseif ($mode == 'name_desc')
 	{
-		$where = "AND (p.pic_desc LIKE '%" . $search_escaped . "%' OR p.pic_title LIKE '%" . $search_escaped . "%')";
+		$where = "AND (LOWER(p.pic_desc) LIKE '%" . $search_escaped . "%' OR LOWER(p.pic_title) LIKE '%" . $search_escaped . "%')";
 	}
 	else
 	{
 		message_die(GENERAL_ERROR, 'Bad request');
+	}
+
+	// Add category filtering (taken from album_allpics.php)
+	$album_user_id = ALBUM_PUBLIC_GALLERY;
+	$catrows = array ();
+	$options = ALBUM_READ_ALL_CATEGORIES | ALBUM_AUTH_VIEW;
+	$catrows = album_read_tree($album_user_id, $options);
+	$allowed_cats = '';
+	for ($i = 0; $i < sizeof($catrows); $i++)
+	{
+		$allowed_cats .= ($allowed_cats == '') ? $catrows[$i]['cat_id'] : ',' . $catrows[$i]['cat_id'];
+	}
+	if ($allowed_cats != '')
+	{
+		$where .= ' AND c.cat_id IN (' . $allowed_cats . ')';
 	}
 
 	// --------------------------------
@@ -143,33 +158,20 @@ if (!empty($search_escaped))
 					$pic_preview = 'onmouseover="showtrail(\'' . append_sid(album_append_uid('album_picm.' . PHP_EXT . '?pic_id=' . $row['pic_id'])) . '\',\'' . addslashes($row[$j]['pic_title']) . '\', ' . $album_config['midthumb_width'] . ', ' . $album_config['midthumb_height'] . ')" onmouseout="hidetrail()"';
 				}
 
-				$pic_sp_link = append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id']));
-				$pic_dl_link = append_sid(album_append_uid('album_pic.' . PHP_EXT . '?pic_id=' . $row['pic_id']));
-
 				//if(!$auth_data['view'])
 				if ($auth_data['view'] >= 0)
 				{
-					$template->assign_block_vars('switch_search_results.search_results', array(
+					$template_vars = array(
 						'L_USERNAME' => $row['pic_username'],
 						'U_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&u=' . $row['pic_user_id']),
-
-						'L_CAT' => ($row['cat_user_id'] != ALBUM_PUBLIC_GALLERY) ? $lang['Users_Personal_Galleries'] : $row['cat_title'],
-						'U_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
-
-						'L_PIC' => $row['pic_title'],
-
-						'U_PIC' => ($album_config['fullpic_popup'] ? $pic_dl_link : $pic_sp_link),
-						'U_PIC_SP' => $pic_sp_link,
-						'U_PIC_DL' => $pic_dl_link,
-
-						'THUMBNAIL' => append_sid(album_append_uid('album_thumbnail.' . PHP_EXT . '?pic_id=' . $row['pic_id'])),
 						'PIC_PREVIEW_HS' => $pic_preview_hs,
 						'PIC_PREVIEW' => $pic_preview,
-						'PIC_TITLE' => $row['pic_title'],
-						'DESC' => $row['pic_desc'],
-						'L_TIME' => create_date($config['default_dateformat'], $row['pic_time'], $config['board_timezone'])
-						)
+						'CATEGORY' => ($row['cat_user_id'] != ALBUM_PUBLIC_GALLERY) ? $lang['Users_Personal_Galleries'] : $row['cat_title'],
+						'U_PIC_CAT' => ($row['cat_id'] == $cat_id) ? append_sid(album_append_uid('album_cat.' . PHP_EXT . '?cat_id=' . $row['cat_id'])) : append_sid(album_append_uid('album.' . PHP_EXT)),
+						'GROUP_NAME' => 'all',
 					);
+					album_build_detail_vars($template_vars, $row);
+					$template->assign_block_vars('switch_search_results.search_results', $template_vars);
 
 					$in[$numres] = $row['pic_id'];
 					$numres++;
@@ -185,7 +187,8 @@ if (!empty($search_escaped))
 			'L_TCATEGORY' => $lang['Pic_Cat'],
 			'L_TTITLE' => $lang['Pic_Image'],
 			'L_TSUBMITER' => $lang['Author'],
-			'L_TSUBMITED' => $lang['Time']
+			'L_TSUBMITED' => $lang['Time'],
+			'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 			)
 		);
 	}

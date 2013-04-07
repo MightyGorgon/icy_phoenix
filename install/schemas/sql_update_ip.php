@@ -72,6 +72,25 @@ switch ($req_version)
 	case '131568': $current_ip_version = '1.3.15.68'; break;
 	case '131669': $current_ip_version = '1.3.16.69'; break;
 	case '131770': $current_ip_version = '1.3.17.70'; break;
+	case '131871': $current_ip_version = '1.3.18.71'; break;
+	case '131972': $current_ip_version = '1.3.19.72'; break;
+	case '132073': $current_ip_version = '1.3.20.73'; break;
+	case '132174': $current_ip_version = '1.3.21.74'; break;
+	case '132275': $current_ip_version = '1.3.22.75'; break;
+	case '132376': $current_ip_version = '1.3.23.76'; break;
+	case '132477': $current_ip_version = '1.3.24.77'; break;
+	case '132578': $current_ip_version = '1.3.25.78'; break;
+	case '132679': $current_ip_version = '1.3.26.79'; break;
+	case '132780': $current_ip_version = '1.3.27.80'; break;
+	case '132881': $current_ip_version = '1.3.28.81'; break;
+	case '132982': $current_ip_version = '1.3.29.82'; break;
+	case '133083': $current_ip_version = '1.3.30.83'; break;
+	case '20084': $current_ip_version = '2.0.0.84'; break;
+	case '20084rc1': $current_ip_version = '2.0.0.84RC1'; break;
+	case '20085': $current_ip_version = '2.0.0.85'; break;
+	case '20085rc2': $current_ip_version = '2.0.0.85RC2'; break;
+	case '20086': $current_ip_version = '2.0.0.86'; break;
+	case '20187': $current_ip_version = '2.0.1.87'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -108,7 +127,7 @@ if (substr($mode, 0, 6) == 'update')
 			`pic_desc` TEXT NOT NULL,
 			`pic_user_id` mediumint(8) NOT NULL default '0',
 			`pic_username` varchar(32) NULL default '',
-			`pic_user_ip` varchar(8) NOT NULL default '0',
+			`pic_user_ip` varchar(40) NOT NULL default '',
 			`pic_time` int(11) unsigned NOT NULL default '0',
 			`pic_cat_id` mediumint(8) unsigned NOT NULL default '1',
 			`pic_view_count` int(11) unsigned NOT NULL default '0',
@@ -746,15 +765,15 @@ if (substr($mode, 0, 6) == 'update')
 			KEY `topic_id` (`topic_id`)
 		)";
 
-		$sql[] = "CREATE TABLE `" . $table_prefix . "referrers` (
-			`referrer_id` int(11) NOT NULL auto_increment,
-			`referrer_host` varchar(255) NOT NULL default '',
-			`referrer_url` varchar(255) NOT NULL default '',
-			`referrer_ip` varchar(40) NOT NULL default '',
-			`referrer_hits` int(11) NOT NULL default '1',
-			`referrer_firstvisit` int(11) NOT NULL default '0',
-			`referrer_lastvisit` int(11) NOT NULL default '0',
-			PRIMARY KEY (`referrer_id`)
+		$sql[] = "CREATE TABLE `" . $table_prefix . "referers` (
+			`id` int(11) NOT NULL auto_increment,
+			`host` varchar(255) NOT NULL default '',
+			`url` varchar(255) NOT NULL default '',
+			`ip` varchar(40) NOT NULL default '',
+			`hits` int(11) NOT NULL default '1',
+			`firstvisit` int(11) NOT NULL default '0',
+			`lastvisit` int(11) NOT NULL default '0',
+			PRIMARY KEY (`id`)
 		)";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` ADD `session_browser` VARCHAR(255) NOT NULL";
@@ -861,7 +880,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_display_viewonline` TINYINT(1) DEFAULT '2' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_color_group` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_gender` TINYINT(4) DEFAULT '0' NOT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_lastlogon` INT(11) DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_totaltime` INT(11) DEFAULT '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_totallogon` INT(11) DEFAULT '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_totalpages` INT(11) DEFAULT '0'";
@@ -1364,7 +1382,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_config` VALUES ('validator', 'validator_admin')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "pa_config` VALUES ('pm_notify', '0')";
 
-		$sql[] = "INSERT INTO `" . $table_prefix . "referrers` VALUES (1, 'icyphoenix.com', 'http://icyphoenix.com', '127.0.0.1', 1, 1121336515, 1121336515)";
+		$sql[] = "INSERT INTO `" . $table_prefix . "referers` VALUES (1, 'icyphoenix.com', 'http://icyphoenix.com', '127.0.0.1', 1, 1121336515, 1121336515)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('return_limit', '10')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('version', '2.1.5')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "stats_config` VALUES ('modules_dir', 'includes/stat_modules')";
@@ -1565,7 +1583,6 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from 049 */
 		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_registration_ip_check', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_html_guests', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_email_error', '1')";
 
@@ -2042,8 +2059,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('use_old_pics_gen', '0');";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('show_last_comments', '0');";
 
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_cms_level` TINYINT(4) DEFAULT '0' NOT NULL";
-
 		$sql[] = "UPDATE " . $table_prefix . "stats_config SET config_value = 'includes/stat_modules' WHERE config_name = 'modules_dir'";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "digest_subscriptions` (
@@ -2128,7 +2143,6 @@ if (substr($mode, 0, 6) == 'update')
 			`titlebar` tinyint(1) NOT NULL default '1',
 			`background` tinyint(1) NOT NULL default '1',
 			`local` tinyint(1) NOT NULL default '0',
-			`edit_auth` tinyint(1) NOT NULL default '5',
 			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`bid`)
 		)";
@@ -2148,7 +2162,6 @@ if (substr($mode, 0, 6) == 'update')
 			`template` varchar(100) NOT NULL default '',
 			`global_blocks` tinyint(1) NOT NULL default '0',
 			`view` tinyint(1) NOT NULL default '0',
-			`edit_auth` tinyint(1) NOT NULL default '5',
 			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`lid`)
 		)";
@@ -2193,7 +2206,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (20, 14, 'Maximum Words', 'Select the maximum number of words to display', 'md_wordgraph_words', '', '', 1, 'wordgraph')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (21, 14, 'Enable Word Counts', 'Display the total number of words next to each word', 'md_wordgraph_count', 'Yes,No', '1,0', 3, 'wordgraph')";
 
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (1, 'Nav Links', '', 'hl', 1, 1, 'nav_links', 0, 0, 0, 0, 0, 0, 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (1, 'Nav Links', '', 'hl', 1, 0, 'nav_links', 0, 0, 0, 0, 0, 0, 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (2, 'Nav Links', '', 'l', 1, 1, 'nav_links', 0, 1, 0, 0, 0, 0, 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (3, 'Recent', '', 'l', 3, 0, 'recent_topics', 0, 1, 0, 1, 1, 1, 1, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (4, 'Poll', '', 'r', 4, 1, 'poll', 0, 1, 0, 1, 1, 1, 1, '')";
@@ -2244,7 +2257,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('shoutbox_floodinterval', '3')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('display_shouts', '20')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('stored_shouts', '1000')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('shoutbox_refreshtime', '5000')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('shout_allow_guest', '0')";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "ajax_shoutbox` (
@@ -2361,7 +2373,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('global_disable_censor', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_topic_view', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('page_title_simple', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_referrers', '0')";
+		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_referers', '0')";
 
 		$sql_tmp = "SELECT * FROM " . $table_prefix . "config_mg";
 		$result_tmp = $db->sql_query($sql_tmp);
@@ -2517,7 +2529,6 @@ if (substr($mode, 0, 6) == 'update')
 			`template` varchar(100) NOT NULL default '',
 			`global_blocks` tinyint(1) NOT NULL default '0',
 			`view` tinyint(1) NOT NULL default '0',
-			`edit_auth` tinyint(1) NOT NULL default '5',
 			`groups` TINYTEXT NOT NULL,
 			PRIMARY KEY (`lsid`),
 			UNIQUE KEY `page_id` (`page_id`)
@@ -2543,7 +2554,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, '', 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('referrers', 'referrers', 'referrers.php', 0, '', 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('referers', 'referers', 'referers.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('shoutbox', 'shoutbox', 'shoutbox_max.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('kb', 'kb', 'kb.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('contact_us', 'contact_us', 'contact_us.php', 0, '', 0, '')";
@@ -2553,7 +2564,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "UPDATE `" . $table_prefix . "users` SET `user_session_page` = 'index.php'";
 		$sql[] = "UPDATE `" . $table_prefix . "sessions` SET `session_page` = 'index.php'";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('show_forums_online_users', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('cms_dock', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('allow_drafts', '1')";
 		$sql[] = "CREATE TABLE `" . $table_prefix . "drafts` (
 			`draft_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
@@ -2913,10 +2923,6 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.2.3.30 */
 		case '1.2.3.30':
-		/*
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_config` (bid, config_name, config_value) VALUES ('0', 'cms_style', '1')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_variable` (`bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (0, 'CMS Style', 'Select the CMS Style', 'cms_style', 'Yes,No', '1,0', 3, '@Portal Config')";
-		*/
 		// Someone may not have this... better check!
 		$sql_tmp = "SELECT * FROM " . $table_prefix . "cms_block_variable WHERE config_name = 'default_portal'";
 		$result_tmp = $db->sql_query($sql_tmp);
@@ -2925,7 +2931,6 @@ if (substr($mode, 0, 6) == 'update')
 			$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_variable` (`bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (0, 'Default Portal', 'Default Portal', 'default_portal', '', '', 1, '@Portal Config')";
 		}
 		$db->sql_freeresult($result_tmp);
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (config_name, config_value) VALUES ('cms_style', '0')";
 
 		/* Updating from IP 1.2.4.31 */
 		case '1.2.4.31':
@@ -2950,7 +2955,7 @@ if (substr($mode, 0, 6) == 'update')
 			`log_page` varchar(255) NOT NULL default '',
 			`log_user_id` int(10) NOT NULL,
 			`log_action` varchar(60) NOT NULL default '',
-			`log_desc` varchar(255) NOT NULL default '',
+			`log_desc` mediumtext NOT NULL,
 			`log_target` int(10) NOT NULL default '0',
 			PRIMARY KEY (`log_id`)
 		)";
@@ -3125,8 +3130,8 @@ if (substr($mode, 0, 6) == 'update')
 				`poster_ip` varchar(40) NOT NULL default '',
 				`post_username` varchar(25) default NULL,
 				`post_subject` varchar(255) default NULL,
-				`post_text` TEXT NOT NULL,
-				`post_text_compiled` TEXT NOT NULL,
+				`post_text` MEDIUMTEXT NOT NULL,
+				`post_text_compiled` MEDIUMTEXT NOT NULL,
 				`enable_bbcode` tinyint(1) NOT NULL default '1',
 				`enable_html` tinyint(1) NOT NULL default '0',
 				`enable_smilies` tinyint(1) NOT NULL default '1',
@@ -3146,7 +3151,7 @@ if (substr($mode, 0, 6) == 'update')
 			)";
 
 			// Needed for standard phpBB
-			$sql[] = "ALTER TABLE `" . $table_prefix . "posts_text` ADD `post_text_compiled` TEXT NOT NULL AFTER `post_text`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "posts_text` ADD `post_text_compiled` MEDIUMTEXT NOT NULL AFTER `post_text`";
 			$sql[] = "ALTER TABLE `" . $table_prefix . "posts_text` ADD `edit_notes` MEDIUMTEXT NOT NULL AFTER `post_text_compiled`";
 
 			$sql[] = "INSERT INTO `___posts___`
@@ -3510,7 +3515,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, '', 0, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('referrers', 'referrers', 'referrers.php', 0, '', 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('referers', 'referers', 'referers.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('shoutbox', 'shoutbox', 'shoutbox_max.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('kb', 'kb', 'kb.php', 0, '', 0, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('contact_us', 'contact_us', 'contact_us.php', 0, '', 0, '')";
@@ -3799,29 +3804,6 @@ if (substr($mode, 0, 6) == 'update')
 			KEY `auth_option_id` (`auth_option_id`),
 			KEY `auth_role_id` (`auth_role_id`)
 		)";
-
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (1, 'cms_', 0, 1, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (2, 'cms_view', 0, 1, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (3, 'cms_edit', 0, 1, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (4, 'cms_l_new', 0, 1, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (5, 'cms_l_edit', 0, 1, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (6, 'cms_l_delete', 0, 1, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (7, 'cms_b_new', 0, 1, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (8, 'cms_b_edit', 0, 1, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_options` (`auth_option_id`, `auth_option`, `is_global`, `is_local`, `founder_only`) VALUES (9, 'cms_b_delete', 0, 1, 0)";
-
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (1, 'CMS_CONTENT_MANAGER', 'CMS_CONTENT_MANAGER_TEXT', 'cms_', 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (2, 'CMS_REVIEWER', 'CMS_REVIEWER_TEXT', 'cms_', 2)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles` (`role_id`, `role_name`, `role_description`, `role_type`, `role_order`) VALUES (3, 'CMS_PUBLISHER', 'CMS_PUBLISHER_TEXT', 'cms_', 3)";
-
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 2, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 3, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 4, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 5, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 6, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 7, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 8, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (1, 9, 1)";
 		// New AUTH System - END
 
 		/* Updating from IP 1.3.7.60 */
@@ -3861,16 +3843,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "plugins` ADD `plugin_version` VARCHAR(255) NOT NULL DEFAULT '' AFTER `plugin_name`";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0')";
 
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 2, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 4, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 5, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 7, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (2, 8, 1)";
-
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 2, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 4, 1)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "acl_roles_data` (`role_id`, `auth_option_id`, `auth_setting`) VALUES (3, 7, 1)";
-
 		// NEW CMS - BEGIN
 		$sql[] = "CREATE TABLE `" . $table_prefix . "cms_block_settings` (
 			`bs_id` int(10) NOT NULL AUTO_INCREMENT,
@@ -3880,14 +3852,13 @@ if (substr($mode, 0, 6) == 'update')
 			`blockfile` varchar(255) NOT NULL default '',
 			`view` tinyint(1) NOT NULL default 0,
 			`type` tinyint(1) NOT NULL default 1,
-			`edit_auth` tinyint(1) NOT NULL default 5,
 			`groups` tinytext NOT NULL,
 			`locked` tinyint(1) NOT NULL DEFAULT 1,
 			PRIMARY KEY (`bs_id`)
 		)";
 
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_block_settings`
-		SELECT b.bid, 0, b.title, b.content, b.blockfile, b.view, b.type, b.edit_auth, b.groups, 1
+		SELECT b.bid, 0, b.title, b.content, b.blockfile, b.view, b.type, b.groups, 1
 		FROM `" . $table_prefix . "cms_blocks` b
 		ORDER BY b.bid";
 
@@ -3996,12 +3967,12 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`";
 
 		// Still not sure which one of this code will do the trick... anyway it's not really important... :-)
-		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\"', '\"')";
-		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\'\", \"'\")";
 		/*
-		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\\\"', '\\\"')";
-		$sql[] = "UPDATE " . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\\'\", \"\'\")";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\"', '\"')";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\'\", \"'\")";
 		*/
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, '\\\\\"', '\\\"')";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`, \"\\'\", \"\'\")";
 
 		/* Updating from IP 1.3.11.64 */
 		case '1.3.11.64':
@@ -4068,7 +4039,7 @@ if (substr($mode, 0, 6) == 'update')
 			)";
 
 			$sql[] = "INSERT INTO `___sessions___`
-			SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_browser, s.session_page, s.session_logged_in, 0, 0, '', 1, 0, s.session_admin
+			SELECT s.session_id, s.session_user_id, s.session_start, s.session_time, s.session_ip, s.session_user_agent, s.session_page, s.session_logged_in, 0, 0, " . time() . ", '', 1, 0, s.session_admin
 			FROM `" . $table_prefix . "sessions` s
 			ORDER BY s.session_id";
 
@@ -4144,7 +4115,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "privmsgs` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "privmsgs_archive` CHANGE `privmsgs_ip` `privmsgs_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "rate_results` CHANGE `user_ip` `user_ip` varchar(40) NOT NULL DEFAULT ''";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "referrers` CHANGE `referrer_ip` `referrer_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "referers` CHANGE `ip` `ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "registration` CHANGE `registration_user_ip` `registration_user_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions` CHANGE `session_ip` `session_ip` varchar(40) NOT NULL DEFAULT ''";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "sessions_keys` CHANGE `last_ip` `last_ip` varchar(40) NOT NULL DEFAULT ''";
@@ -4176,7 +4147,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "UPDATE `" . $table_prefix . "privmsgs` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "privmsgs_archive` ip SET ip.privmsgs_ip = INET_NTOA(CONV(ip.privmsgs_ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "rate_results` ip SET ip.user_ip = INET_NTOA(CONV(ip.user_ip, 16, 10))";
-		$sql[] = "UPDATE `" . $table_prefix . "referrers` ip SET ip.referrer_ip = INET_NTOA(CONV(ip.referrer_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "referers` ip SET ip.ip = INET_NTOA(CONV(ip.ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "registration` ip SET ip.registration_user_ip = INET_NTOA(CONV(ip.registration_user_ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "sessions` ip SET ip.session_ip = INET_NTOA(CONV(ip.session_ip, 16, 10))";
 		$sql[] = "UPDATE `" . $table_prefix . "sessions_keys` ip SET ip.last_ip = INET_NTOA(CONV(ip.last_ip, 16, 10))";
@@ -4199,9 +4170,379 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 1.3.16.69 */
 		case '1.3.16.69':
+		$sql[] = "CREATE TABLE `" . $table_prefix . "moderator_cache` (
+			`forum_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`user_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`username` varchar(255) DEFAULT '' NOT NULL,
+			`group_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`group_name` varchar(255) DEFAULT '' NOT NULL,
+			`display_on_index` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+			KEY `disp_idx` (`display_on_index`),
+			KEY `forum_id` (`forum_id`)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "modules` (
+			`module_id` mediumint(8) UNSIGNED NOT NULL auto_increment,
+			`module_enabled` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+			`module_display` tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
+			`module_basename` varchar(255) DEFAULT '' NOT NULL,
+			`module_class` varchar(10) DEFAULT '' NOT NULL,
+			`parent_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`left_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`right_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
+			`module_langname` varchar(255) DEFAULT '' NOT NULL,
+			`module_mode` varchar(255) DEFAULT '' NOT NULL,
+			`module_auth` varchar(255) DEFAULT '' NOT NULL,
+			PRIMARY KEY (`module_id`),
+			KEY `left_right_id` (`left_id`, `right_id`),
+			KEY `module_enabled` (`module_enabled`),
+			KEY `class_left_id` (`module_class`, `left_id`)
+		)";
+
+		$sql[] = "UPDATE " . $table_prefix . "cms_blocks SET active = 0 WHERE bposition IN ('hh', 'hl', 'hc', 'fc', 'fr', 'ff')";
 
 		/* Updating from IP 1.3.17.70 */
 		case '1.3.17.70':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "logs` CHANGE `log_desc` `log_desc` mediumtext NOT NULL";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` CHANGE `forum_rules` `forum_rules_switch` tinyint(1) unsigned NOT NULL DEFAULT '0'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_posting` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_viewtopic` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_in_viewforum` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_custom_title` varchar(80) NOT NULL DEFAULT '' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules_display_title` tinyint(1) NOT NULL DEFAULT '1' AFTER `forum_rules_switch`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_rules` text NOT NULL AFTER `forum_rules_switch`";
+
+		$sql[] = "UPDATE " . $table_prefix . "forums f, " . $table_prefix . "forums_rules fr
+		SET f.forum_rules = fr.rules, f.forum_rules_display_title = fr.rules_display_title, f.forum_rules_custom_title = fr.rules_custom_title, f.forum_rules_in_viewforum = fr.rules_in_viewforum, f.forum_rules_in_viewtopic = fr.rules_in_viewtopic, f.forum_rules_in_posting = fr.rules_in_posting
+		WHERE f.forum_id = fr.forum_id";
+
+		$sql[] = "DROP TABLE `" . $table_prefix . "forums_rules`";
+
+		/* Updating from IP 1.3.18.71 */
+		case '1.3.18.71':
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'cms_dock'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE config_name = 'cms_style'";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_flickr` varchar(255) DEFAULT '' NOT NULL AFTER `user_twitter`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_googleplus` varchar(255) DEFAULT '' NOT NULL AFTER `user_flickr`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_youtube` varchar(255) DEFAULT '' NOT NULL AFTER `user_googleplus`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_linkedin` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_style` `user_style` MEDIUMINT(8) NULL DEFAULT NULL";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_keywords', 'your keywords, comma, separated')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_keywords_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_description', 'Your Site Description')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_description_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_author', 'Author')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_author_switch', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_copyright', 'Copyright')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('site_meta_copyright_switch', '1')";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_text` `post_text` MEDIUMTEXT NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` CHANGE `post_text_compiled` `post_text_compiled` MEDIUMTEXT NOT NULL";
+
+		/* Updating from IP 1.3.19.72 */
+		case '1.3.19.72':
+
+		/* Updating from IP 1.3.20.73 */
+		case '1.3.20.73':
+
+		/* Updating from IP 1.3.21.74 */
+		case '1.3.21.74':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `user_cms_level`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_block_settings` DROP `edit_auth`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_blocks` DROP `edit_auth`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout` DROP `edit_auth`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "cms_layout_special` DROP `edit_auth`";
+
+		// AUTH SYSTEM - BEGIN
+		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_groups`";
+		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_options`";
+		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_roles`";
+		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_roles_data`";
+		$sql[] = "TRUNCATE TABLE `" . $table_prefix . "acl_users`";
+
+		// -- CMS related auth options
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_admin', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_settings', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_layouts', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_layouts_special', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_blocks', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_blocks_global', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_permissions', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_menu', 1, 0, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cms_ads', 1, 0, 0)";
+
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsl_', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsl_admin', 0, 1, 0)";
+
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmss_', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmss_admin', 0, 1, 0)";
+
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsb_', 0, 1, 0)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global, is_local, founder_only) VALUES ('cmsb_admin', 0, 1, 0)";
+
+		// -- Admin related auth options
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_modules', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_roles', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_aauth', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_mauth', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_uauth', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_fauth', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_authgroups', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_authusers', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_viewauth', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_group', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('a_user', 1)";
+
+		// -- Moderator related auth options
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local, is_global) VALUES ('m_', 1, 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local, is_global) VALUES ('m_topicdelete', 1, 1)";
+
+		// -- User related auth options
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('u_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('u_html', 1)";
+
+		// -- Forum related auth options
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local) VALUES ('f_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local) VALUES ('f_html', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_local) VALUES ('f_topicdelete', 1)";
+
+		// -- Plugins related auth options
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_admin', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_input', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_edit', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_options (auth_option, is_global) VALUES ('pl_delete', 1)";
+
+		// -- Standard auth roles
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (1, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cms_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (2, 'ROLE_CMS_REVIEWER', 'ROLE_CMS_REVIEWER_DESCRIPTION', 'cms_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (3, 'ROLE_CMS_PUBLISHER', 'ROLE_CMS_PUBLISHER_DESCRIPTION', 'cms_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (4, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsl_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (5, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmss_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (6, 'ROLE_CMS_CONTENT_MANAGER', 'ROLE_CMS_CONTENT_MANAGER_DESCRIPTION', 'cmsb_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (7, 'ROLE_ADMIN_FULL', 'ROLE_ADMIN_FULL_DESCRIPTION', 'a_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (8, 'ROLE_ADMIN_STANDARD', 'ROLE_ADMIN_STANDARD_DESCRIPTION', 'a_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (9, 'ROLE_MOD_FULL', 'ROLE_MOD_FULL_DESCRIPTION', 'm_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (10, 'ROLE_MOD_STANDARD', 'ROLE_MOD_STANDARD_DESCRIPTION', 'm_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (11, 'ROLE_MOD_SIMPLE', 'ROLE_MOD_SIMPLE_DESCRIPTION', 'm_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (12, 'ROLE_USER_FULL', 'ROLE_USER_FULL_DESCRIPTION', 'u_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (13, 'ROLE_USER_STANDARD', 'ROLE_USER_STANDARD_DESCRIPTION', 'u_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (14, 'ROLE_USER_LIMITED', 'ROLE_USER_LIMITED_DESCRIPTION', 'u_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (15, 'ROLE_FORUM_FULL', 'ROLE_FORUM_FULL_DESCRIPTION', 'f_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (16, 'ROLE_FORUM_STANDARD', 'ROLE_FORUM_STANDARD_DESCRIPTION', 'f_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (17, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (18, 'ROLE_PLUGINS_FULL', 'ROLE_PLUGINS_FULL_DESCRIPTION', 'pl_', 1)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (19, 'ROLE_PLUGINS_STANDARD', 'ROLE_PLUGINS_STANDARD_DESCRIPTION', 'pl_', 2)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (20, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS', 'pl_', 3)";
+
+		// -- Roles data
+
+		// CMS Content Manager (cms_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 1, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'cms_%' AND is_global = 1";
+
+		// CMS Reviewer (cms_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 2, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'cms_%' AND auth_option NOT IN ('cms_admin', 'cms_settings', 'cms_permissions', 'cms_menu', 'cms_ads') AND is_global = 1";
+
+		// CMS Publisher (cms_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 3, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option = 'cms_blocks' AND is_global = 1";
+
+		// CMS Content Manager Layouts (cmsl_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 4, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'cmsl_%' AND is_local = 1";
+
+		// CMS Content Manager Special Layouts (cmss_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 5, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'cmss_%' AND is_local = 1";
+
+		// CMS Content Manager Blocks (cmsb_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 6, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'cmsb_%' AND is_local = 1";
+
+		// Full Admin (a_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 7, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'a_%'";
+
+		// Standard Admin (a_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 8, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'a_%' AND auth_option NOT IN ('a_modules', 'a_aauth', 'a_roles')";
+
+		// Full Moderator (m_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 9, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'm_%'";
+
+		// Standard Moderator (m_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 10, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'm_%' AND auth_option NOT IN ('m_topicdelete')";
+
+		// Simple Moderator (m_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 11, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'm_%' AND auth_option IN ('m_', 'm_topicdelete')";
+
+		// All Features (u_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 12, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'u_%'";
+
+		// Standard Features (u_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 13, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html')";
+
+		// Limited Features (u_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 14, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'u_%' AND auth_option NOT IN ('u_html')";
+
+		// Full Access (f_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 15, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'f_%'";
+
+		// Standard Access (f_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 16, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'f_%' AND auth_option NOT IN ('f_html')";
+
+		// No Access (f_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 17, auth_option_id, 0 FROM " . $table_prefix . "acl_options WHERE auth_option = 'f_'";
+
+		// Full Access (pl_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 18, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'pl_%'";
+
+		// Standard Access (pl_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 19, auth_option_id, 1 FROM " . $table_prefix . "acl_options WHERE auth_option LIKE 'pl_%' AND auth_option NOT IN ('pl_admin', 'pl_delete')";
+
+		// No Access (pl_)
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles_data (role_id, auth_option_id, auth_setting) SELECT 20, auth_option_id, 0 FROM " . $table_prefix . "acl_options WHERE auth_option = 'pl_'";
+
+		// Permissions
+
+		// Admin users - full features
+		//$sql[] = "INSERT INTO " . $table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 1, 0 FROM " . $table_prefix . "users WHERE user_level = 1";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 7, 0 FROM " . $table_prefix . "users WHERE user_level = 1";
+		//$sql[] = "INSERT INTO " . $table_prefix . "acl_users (user_id, forum_id, auth_option_id, auth_role_id, auth_setting) SELECT user_id, 0, 0, 18, 0 FROM " . $table_prefix . "users WHERE user_level = 1";
+		// AUTH SYSTEM - END
+
+		/* Updating from IP 1.3.22.75 */
+		case '1.3.22.75':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_cms_auth` text NOT NULL AFTER `user_mask`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `user_lastlogon`";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_posts_number', '5')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_disable_url', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_hide_signature', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_post_edit_interval', '60')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('mobile_style_disable', '0')";
+
+		/* Updating from IP 1.3.23.76 */
+		case '1.3.23.76':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('session_gc', '3600')";
+
+		/* Updating from IP 1.3.24.77 */
+		case '1.3.24.77':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('session_last_visit_reset', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('check_dnsbl_posting', '0')";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'disable_registration_ip_check'";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Jike Spider', '', 'jikespider', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Magpie Crawler', '', 'www.brandwatch.net', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('P3W Bot', '', 'www.p3w.it', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Radian 6', '', 'www.radian6.com/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Soso Spider', '', 'Sosospider', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Synthesio Crawler', '', 'synthesio', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Vik Spider', '', 'vikspider', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('WangID Spider', '', 'WangIDSpider/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('YandexBot 3.0', '', 'yandex.com/bots', '')";
+
+		/* Updating from IP 1.3.25.78 */
+		case '1.3.25.78':
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Ezooms', '', 'Ezooms/', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('Archive ORG BOT', '', 'www.archive.org/', '')";
+		$sql[] = "UPDATE `" . $table_prefix . "config` SET `config_name` = 'disable_referers' WHERE `config_name` = 'disable_referrers'";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_layout_special` SET `page_id` = 'referers', `name` = 'referers', `filename` = 'referers.php' WHERE `page_id` = 'referrers'";
+		$sql[] = "DROP TABLE `" . $table_prefix . "referrers`";
+		$sql[] = "CREATE TABLE `" . $table_prefix . "referers` (
+			`id` INT(11) NOT NULL auto_increment,
+			`host` VARCHAR(255) NOT NULL DEFAULT '',
+			`url` VARCHAR(255) NOT NULL DEFAULT '',
+			`t_url` VARCHAR(255) NOT NULL DEFAULT '',
+			`ip` VARCHAR(40) NOT NULL DEFAULT '',
+			`hits` INT(11) NOT NULL DEFAULT '1',
+			`firstvisit` INT(11) NOT NULL DEFAULT '0',
+			`lastvisit` INT(11) NOT NULL DEFAULT '0',
+			PRIMARY KEY (`id`)
+		)";
+
+		/* Updating from IP 1.3.26.79 */
+		case '1.3.26.79':
+
+		/* Updating from IP 1.3.27.80 */
+		case '1.3.27.80':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "album` CHANGE `pic_user_ip` `pic_user_ip` varchar(40) NOT NULL DEFAULT ''";
+		$sql[] = "UPDATE `" . $table_prefix . "album` ip SET ip.pic_user_ip = INET_NTOA(CONV(ip.pic_user_ip, 16, 10))";
+		$sql[] = "UPDATE `" . $table_prefix . "ajax_shoutbox` SET shout_room = CONCAT(CONCAT('|', shout_room), '|') WHERE shout_room LIKE '%|%'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'shoutbox_refreshtime'";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_msgs_refresh', '5')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_session_refresh', '10')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_link_type', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_notification', '1')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('ajax_chat_check_online', '0')";
+
+		/* Updating from IP 1.3.28.81 */
+		case '1.3.28.81':
+
+		/* Updating from IP 1.3.29.82 */
+		case '1.3.29.82':
+
+		/* Updating from IP 1.3.30.83 */
+		case '1.3.30.83':
+
+		/* Updating from IP 2.0.0.84RC1 */
+		case '2.0.0.84':
+		case '2.0.0.84RC1':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_viewemail` `user_allow_viewemail` TINYINT(1) NOT NULL DEFAULT '0'";
+
+		if (!defined('POSTED_IMAGES_PATH')) define('POSTED_IMAGES_PATH', IP_ROOT_PATH . 'files/images/');
+		if (!defined('POSTED_IMAGES_THUMBS_PATH')) define('POSTED_IMAGES_THUMBS_PATH', IP_ROOT_PATH . 'files/thumbs/');
+		if (!defined('POSTED_IMAGES_THUMBS_S_PATH')) define('POSTED_IMAGES_THUMBS_S_PATH', POSTED_IMAGES_THUMBS_PATH . 's/');
+		if (!@file_exists(POSTED_IMAGES_THUMBS_S_PATH))
+		{
+			$new_folder = substr(POSTED_IMAGES_THUMBS_S_PATH, 0, -1);
+			$dir_creation = @mkdir(POSTED_IMAGES_THUMBS_S_PATH, 0777);
+		}
+		if (!@file_exists(POSTED_IMAGES_PATH))
+		{
+			// We need to remove last trailing slash "/"
+			$old_folder = IP_ROOT_PATH . 'files/posted_images';
+			$new_folder = substr(POSTED_IMAGES_PATH, 0, -1);
+			$dir_rename = rename($old_folder, $new_folder);
+			@chmod($new_folder, 0777);
+		}
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "images` (
+			`pic_id` INT(11) unsigned NOT NULL auto_increment,
+			`pic_filename` VARCHAR(255) NOT NULL DEFAULT '',
+			`pic_size` INT(15) unsigned NOT NULL DEFAULT '0',
+			`pic_title` VARCHAR(255) NOT NULL DEFAULT '',
+			`pic_desc` TEXT NOT NULL,
+			`pic_user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+			`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
+			`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',
+			`pic_approval` TINYINT(3) NOT NULL DEFAULT '1',
+			PRIMARY KEY (`pic_id`),
+			KEY `pic_user_id` (`pic_user_id`),
+			KEY `pic_time` (`pic_time`)
+		)";
+
+		$sql[] = "UPDATE `" . $table_prefix . "cms_nav_menu` SET `menu_link` = 'images_list.php' WHERE `menu_link` = 'posted_img_list.php'";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list.php','images_list.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_list_thumbnail.php','image_thumbnail_s.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text` = REPLACE(`post_text`,'posted_img_thumbnail.php','image_thumbnail.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list.php','images_list.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_list_thumbnail.php','image_thumbnail_s.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` SET `post_text_compiled` = REPLACE(`post_text_compiled`,'posted_img_thumbnail.php','image_thumbnail.php')";
+		$sql[] = "UPDATE `" . $table_prefix . "cms_block_settings` SET `content` = REPLACE(`content`,'posted_images/','images/')";
+		$sql[] = "UPDATE `" . $table_prefix . "users` SET `user_sig` = REPLACE(`user_sig`,'posted_images/','images/')";
+
+		/* Updating from IP 2.0.0.85RC2 */
+		case '2.0.0.85':
+		case '2.0.0.85RC2':
+
+		/* Updating from IP 2.0.0.86 */
+		case '2.0.0.86':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD COLUMN `post_images` MEDIUMTEXT NOT NULL AFTER `post_likes`";
+
+		/* Updating from IP 2.0.1.87 */
+		case '2.0.1.87':
 
 	}
 

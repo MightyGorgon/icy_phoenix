@@ -23,6 +23,7 @@ if (!defined('IN_ICYPHOENIX'))
 class session
 {
 	var $cookie_data = array();
+	var $cookie_expire = 0;
 	var $page = array();
 	var $data = array();
 	var $browser = '';
@@ -57,6 +58,7 @@ class session
 		// Give us some basic information
 		$this->time_now = time();
 		$this->cookie_data = array('u' => 0, 'k' => '');
+		$this->cookie_expire = $this->time_now + (($config['max_autologin_time']) ? 86400 * (int) $config['max_autologin_time'] : 31536000);
 		$this->update_session_page = (empty($update_session_page) || defined('IMG_THUMB')) ? false : true;
 		//$this->browser = (!empty($_SERVER['HTTP_USER_AGENT'])) ? htmlspecialchars((string) $_SERVER['HTTP_USER_AGENT']) : '';
 		$this->browser = (!empty($_SERVER['HTTP_USER_AGENT'])) ? (string) $_SERVER['HTTP_USER_AGENT'] : '';
@@ -66,6 +68,9 @@ class session
 		$this->host = extract_current_hostname();
 		$this->page = extract_current_page(IP_ROOT_PATH);
 
+		$session_cookie_empty = empty($_COOKIE[$config['cookie_name'] . '_sid']) ? true : false;
+		$session_get_empty = empty($_GET['sid']) ? true : false;
+		$session_empty = true;
 		if (isset($_COOKIE[$config['cookie_name'] . '_sid']) || isset($_COOKIE[$config['cookie_name'] . '_u']))
 		{
 			$this->cookie_data['u'] = request_var($config['cookie_name'] . '_u', 0, false, true);
@@ -77,17 +82,26 @@ class session
 			$SID = (defined('NEED_SID')) ? ('sid=' . $this->session_id) : '';
 			$_SID = (defined('NEED_SID')) ? $this->session_id : '';
 
-			if (empty($this->session_id))
-			{
-				$this->session_id = $_SID = request_var('sid', '');
-				$SID = 'sid=' . $this->session_id;
-				$this->cookie_data = array('u' => 0, 'k' => '');
-			}
+			$session_empty = empty($this->session_id) ? true : false;
 		}
-		else
+
+		// Mighty Gorgon: moved here this IF block... why it was so down in the code???
+		// if no session id is set, redirect to index.php
+		//if (defined('NEED_SID') && ($cookie_empty || (!isset($_GET['sid']) || ($this->session_id !== $_GET['sid']))))
+		if (defined('NEED_SID') && !defined('IN_LOGIN') && ($session_cookie_empty || $session_empty || !isset($_GET['sid']) || ((isset($_GET['sid']) && ($this->session_id !== $_GET['sid'])))))
 		{
-			$this->session_id = $_SID = request_var('sid', '');
+			// Mighty Gorgon: I don't know why it isn't working properly, returning blank page!!!
+			//send_status_line(401, 'Not authorized');
+			// Mighty Gorgon: removed append_sid as it seems the user doesn't have a valid SID!
+			redirect(IP_ROOT_PATH . 'index.' . PHP_EXT);
+		}
+
+		if ($session_empty)
+		{
+			$this->session_id = request_var('sid', '');
+			$_SID = $this->session_id;
 			$SID = 'sid=' . $this->session_id;
+			$this->cookie_data = array('u' => 0, 'k' => '');
 		}
 
 		$_EXTRA_URL = array();
@@ -107,26 +121,31 @@ class session
 		$format_ipv6 = get_preg_expression('ipv6');
 		foreach ($ips as $ip)
 		{
-			// check IPv4 first, the IPv6 is hopefully only going to be used very seldomly
-			if (!empty($ip) && !preg_match($format_ipv4, $ip) && !preg_match($format_ipv6, $ip))
+			if (preg_match($format_ipv4, $ip))
 			{
-				// Just break
+				$this->ip = $ip;
+			}
+			elseif (preg_match($format_ipv6, $ip))
+			{
+				// Quick check for IPv4-mapped address in IPv6
+				if (stripos($ip, '::ffff:') === 0)
+				{
+					$ipv4 = substr($ip, 7);
+
+					if (preg_match($format_ipv4, $ipv4))
+					{
+						$ip = $ipv4;
+					}
+				}
+
+				$this->ip = $ip;
+			}
+			else
+			{
+				// We want to use the last valid address in the chain
+				// Leave foreach loop when address is invalid
 				break;
 			}
-
-			// Quick check for IPv4-mapped address in IPv6
-			if (stripos($ip, '::ffff:') === 0)
-			{
-				$ipv4 = substr($ip, 7);
-
-				if (preg_match($format_ipv4, $ipv4))
-				{
-					$ip = $ipv4;
-				}
-			}
-
-			// Use the last in chain
-			$this->ip = $ip;
 		}
 
 		$this->load = false;
@@ -146,8 +165,8 @@ class session
 			}
 		}
 
-		// Is session_id is set or session_id is set and matches the url param if required
-		if (!empty($this->session_id) && (!defined('NEED_SID') || (isset($_GET['sid']) && ($this->session_id === $_GET['sid']))))
+		// if session id is set
+		if (!empty($this->session_id))
 		{
 			$sql = "SELECT u.*, s.*
 				FROM " . SESSIONS_TABLE . " s, " . USERS_TABLE . " u
@@ -157,22 +176,9 @@ class session
 			$this->data = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
-			// ICY PHOENIX - BEGIN
-			$this->bots_process();
-			if (isset($this->data['user_level']) && ($this->data['user_level'] == JUNIOR_ADMIN))
-			{
-				define('IS_JUNIOR_ADMIN', true);
-				$this->data['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
-			}
-			// ICY PHOENIX - END
-
 			// Did the session exist in the DB?
 			if (isset($this->data['user_id']))
 			{
-				// Validate IP length according to admin ... enforces an IP
-				// check on bots if admin requires this
-				//$quadcheck = ($config['ip_check_bot'] && $this->data['user_type'] & USER_BOT) ? 4 : $config['ip_check'];
-
 				if ((strpos($this->ip, ':') !== false) && (strpos($this->data['session_ip'], ':') !== false))
 				{
 					$s_ip = short_ipv6($this->data['session_ip'], $config['ip_check']);
@@ -200,44 +206,76 @@ class session
 
 				if (($u_ip === $s_ip) && ($s_browser === $u_browser) && $referer_valid)
 				{
+					// Some useful boolean checks... defined here for future easy of use
 					$session_expired = false;
+					$session_refresh_time = (int) SESSION_REFRESH;
+					$autologin_expired = (!empty($config['max_autologin_time']) && ($this->data['session_time'] < ($this->time_now - (86400 * (int) $config['max_autologin_time']) + $session_refresh_time))) ? true : false;
+					$session_time_expired = ($this->data['session_time'] < ($this->time_now - ((int) $config['session_length'] + $session_refresh_time))) ? true : false;
+					$session_refresh = ($this->data['session_time'] < ($this->time_now - $session_refresh_time)) ? true : false;
 
 					if (!$session_expired)
 					{
 						// Check the session length timeframe if autologin is not enabled.
 						// Else check the autologin length... and also removing those having autologin enabled but no longer allowed site-wide.
-						if (!$this->data['session_autologin'])
+						if (empty($this->data['session_autologin']))
 						{
-							if ($this->data['session_time'] < ($this->time_now - ($config['session_length'] + SESSION_REFRESH)))
+							if ($session_time_expired)
 							{
 								$session_expired = true;
 							}
 						}
-						elseif (!$config['allow_autologin'] || ($config['max_autologin_time'] && ($this->data['session_time'] < ($this->time_now - (86400 * (int) $config['max_autologin_time']) + SESSION_REFRESH))))
+						elseif (empty($config['allow_autologin']) || $autologin_expired)
 						{
 							$session_expired = true;
 						}
 					}
 
+					// ICY PHOENIX - BEGIN
+					// This portion of code needs to stay here (after isset($this->data['user_id']) )... otherwise we are potentially going to instantiate some $user->data even if $user->data is still empty
+					$this->bots_process();
+					if (isset($this->data['user_id']) && ($this->data['user_id'] != ANONYMOUS) && isset($this->data['user_level']) && ($this->data['user_level'] == JUNIOR_ADMIN))
+					{
+						define('IS_JUNIOR_ADMIN', true);
+						$this->data['user_level'] = (!defined('IN_ADMIN') && !defined('IN_CMS')) ? ADMIN : MOD;
+					}
+
+					// Refresh last visit time for those users having autologin enabled or those users with session time expired (only if config for this has been set)
+					if (($this->data['user_id'] != ANONYMOUS) && ((!empty($config['session_last_visit_reset']) && $session_time_expired) || (!empty($config['allow_autologin']) && $autologin_expired) || empty($this->data['user_lastvisit'])))
+					{
+						$sql = "UPDATE " . USERS_TABLE . "
+							SET user_lastvisit = " . (int) $this->data['session_time'] . "
+							WHERE user_id = " . (int) $this->data['user_id'];
+						$db->sql_query($sql);
+					}
+					// ICY PHOENIX - END
+
 					if (!$session_expired)
 					{
 						// Only update session DB a minute or so after last update or if page changes
-						if (((($this->time_now - $this->data['session_time']) > SESSION_REFRESH) || ($this->update_session_page && ($this->data['session_page'] != $this->page['page']))) && empty($_REQUEST['explain']))
+						// Mighty Gorgon: in Icy Phoenix we give maximum priority to $this->update_session_page, because we don't want the session to be updated for thumbnails or other special features!
+						if ($this->update_session_page && ($session_refresh || ($this->data['session_page'] != $this->page['page'])) && empty($_REQUEST['explain']))
 						{
-							$sql_ary = array('session_time' => $this->time_now);
+							$sql_ary = array();
 
-							if ($this->update_session_page)
+							// ICY PHOENIX - BEGIN
+							// Update $user->data
+							$this->data['user_session_time'] = $this->time_now;
+							$this->data['user_session_page'] = (string) substr($this->page['page'], 0, 254);
+							$this->data['user_browser'] = (string) substr($this->browser, 0, 254);
+							$this->data['user_totalpages'] = (int) $this->data['user_totalpages'] + 1;
+							$this->data['user_totaltime'] = (int) $this->data['user_totaltime'] + $this->time_now - $this->data['session_time'];
+							// ICY PHOENIX - END
+
+							// A little trick to reset session_admin on session re-usage
+							if (!defined('IN_ADMIN') && !defined('IN_CMS') && $session_time_expired)
 							{
-								// A little trick to reset session_admin on session re-usage
-								if (!defined('IN_ADMIN') && !defined('IN_CMS') && (($current_time - $this->data['session_time']) > ($config['session_length'] + SESSION_REFRESH)))
-								{
-									$sql_ary['session_admin'] = 0;
-								}
-								$sql_ary['session_page'] = (string) substr($this->page['page'], 0, 254);
-								$sql_ary['session_browser'] = (string) substr($this->browser, 0, 254);
-								$sql_ary['session_forum_id'] = $this->page['forum'];
-								$sql_ary['session_topic_id'] = $this->page['topic'];
+								$sql_ary['session_admin'] = 0;
 							}
+							$sql_ary['session_time'] = $this->time_now;
+							$sql_ary['session_page'] = $this->data['user_session_page'];
+							$sql_ary['session_browser'] = $this->data['user_browser'];
+							$sql_ary['session_forum_id'] = $this->page['forum'];
+							$sql_ary['session_topic_id'] = $this->page['topic'];
 
 							$db->sql_return_on_error(true);
 
@@ -245,43 +283,37 @@ class session
 								WHERE session_id = '" . $db->sql_escape($this->session_id) . "'";
 							$result = $db->sql_query($sql);
 
-							$db->sql_return_on_error(false);
-
 							// ICY PHOENIX - BEGIN
 							if ($this->data['user_id'] != ANONYMOUS)
 							{
-								$db->sql_return_on_error(true);
-								$sql = "UPDATE " . USERS_TABLE . "
-									SET user_session_time = " . $this->time_now . ", user_session_page = '" . substr($this->page['page'], 0, 254) . "', user_browser = '" . substr($this->browser, 0, 254) . "', user_totalpages = user_totalpages + 1, user_totaltime = user_totaltime + (" . $this->time_now . " - " . $this->data['session_time'] . ")
+								$sql_ary = array();
+								$sql_ary['user_session_time'] = $this->data['user_session_time'];
+								$sql_ary['user_session_page'] = $this->data['user_session_page'];
+								$sql_ary['user_browser'] = $this->data['user_browser'];
+								$sql_ary['user_totalpages'] = $this->data['user_totalpages'];
+								$sql_ary['user_totaltime'] = $this->data['user_totaltime'];
+
+								$sql = "UPDATE " . USERS_TABLE . " SET " . $db->sql_build_array('UPDATE', $sql_ary) . "
 									WHERE user_id = " . $this->data['user_id'];
-								$db->sql_query($sql);
-								$db->sql_return_on_error(false);
+								$result = $db->sql_query($sql);
 							}
 							// ICY PHOENIX - END
 
+							$db->sql_return_on_error(false);
 						}
 
-						// Replaced by Mighty Gorgon
-						//$this->data['is_registered'] = (($this->data['user_id'] != ANONYMOUS) && (($this->data['user_type'] == USER_NORMAL) || ($this->data['user_type'] == USER_FOUNDER))) ? true : false;
 						$this->data['is_registered'] = (empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
+						$this->data['session_logged_in'] = $this->data['is_registered'];
 						$this->data['user_lang'] = basename($this->data['user_lang']);
 
-						// ICY PHOENIX - BEGIN
-						// Shall we decide to include BOT here...
-						//$this->data['session_logged_in'] = (((empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS)) || (!empty($this->data['is_bot']) && !empty($config['bots_reg_auth']))) && ($this->data['user_type'] != USER_INACTIVE)) ? true : false;
-						// Replaced by Mighty Gorgon
-						//$this->data['session_logged_in'] = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_type'] != USER_INACTIVE)) ? true : false;
-						$this->data['session_logged_in'] = (($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
-
 						$this->upi2db();
-						// ICY PHOENIX - END
 
 						return true;
 					}
 				}
 				else
 				{
-					// Added logging temporarly to help debug bugs...
+					// Added logging temporarily to help debug bugs...
 					if (defined('DEBUG_EXTRA') && ($this->data['user_id'] != ANONYMOUS))
 					{
 						if ($referer_valid)
@@ -316,19 +348,20 @@ class session
 
 		$this->data = array();
 
-		/*
-		// Garbage collection ... remove old sessions updating user information
-		// if necessary. It means (potentially) 11 queries but only infrequently
-		if ($this->time_now > $config['session_last_gc'] + $config['session_gc'])
+		$config['session_gc'] = (int) $config['cron_sessions_interval'];
+		$config['session_last_gc'] = (int) $config['cron_sessions_last_run'];
+
+		// Garbage collection ... remove old sessions updating user information if necessary. It means (potentially) 11 queries but only infrequently
+		if ($this->time_now > ($config['session_last_gc'] + $config['session_gc']))
 		{
 			$this->session_gc();
 		}
-		*/
 
-		// Do we allow autologin on this board? No? Then override anything that may be requested here
+		// Do we allow autologin on this site? No? Then override anything that may be requested here
 		if (!$config['allow_autologin'])
 		{
-			$this->cookie_data['k'] = $persist_login = false;
+			$this->cookie_data['k'] = false;
+			$persist_login = false;
 		}
 
 		$user_logged_in = false;
@@ -337,8 +370,6 @@ class session
 		// Else if we've been passed a user_id we'll grab data based on that
 		if (isset($this->cookie_data['k']) && $this->cookie_data['k'] && $this->cookie_data['u'] && !sizeof($this->data))
 		{
-			// Replaced by Mighty Gorgon
-			//		AND u.user_type IN (" . USER_NORMAL . ", " . USER_FOUNDER . ")
 			$sql = "SELECT u.*
 				FROM " . USERS_TABLE . " u, " . SESSIONS_KEYS_TABLE . " k
 				WHERE u.user_id = " . (int) $this->cookie_data['u'] . "
@@ -355,8 +386,6 @@ class session
 			$this->cookie_data['k'] = '';
 			$this->cookie_data['u'] = $user_id;
 
-			// Replaced by Mighty Gorgon
-			//		AND user_type IN (" . USER_NORMAL . ", " . USER_FOUNDER . ")
 			$sql = "SELECT *
 				FROM " . USERS_TABLE . "
 				WHERE user_id = " . (int) $this->cookie_data['u'] . "
@@ -390,13 +419,14 @@ class session
 
 		if ($this->data['user_id'] != ANONYMOUS)
 		{
-			$this->data['session_last_visit'] = (isset($this->data['session_time']) && $this->data['session_time']) ? $this->data['session_time'] : (($this->data['user_lastvisit']) ? $this->data['user_lastvisit'] : time());
+			$this->data['session_last_visit'] = !empty($this->data['user_lastvisit']) ? $this->data['user_lastvisit'] : $this->time_now;
 		}
 		else
 		{
 			// Bot user, if they have a SID in the Request URI we need to get rid of it otherwise they'll index this page with the SID, duplicate content oh my!
 			if (isset($_GET['sid']) && !empty($this->data['is_bot']))
 			{
+				send_status_line(301, 'Moved Permanently');
 				redirect(build_url(array('sid')));
 			}
 			$this->data['session_last_visit'] = $this->time_now;
@@ -406,74 +436,74 @@ class session
 		$this->data['user_id'] = (int) $this->data['user_id'];
 
 		// At this stage we should have a filled data array, defined cookie u and k data.
-		// data array should contain recent session info if we're a real user and a recent session exists in which case session_id will also be set
+		// data array should contain recent session info if we have a real user and a recent session exists in which case session_id will also be set
 
 		// Is user banned? Are they excluded? Won't return on ban, exists within method
-		// Replaced by Mighty Gorgon
-		//if ($this->data['user_type'] != USER_FOUNDER)
 		if ($this->data['user_level'] != ADMIN)
 		{
 			$ban_email = (($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_email'])) ? $this->data['user_email'] : false;
 			$this->check_ban($this->data['user_id'], $this->ip, $ban_email);
 		}
 
-		// Replaced by Mighty Gorgon
-		//$this->data['is_registered'] = (empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS) && (($this->data['user_type'] == USER_NORMAL) || ($this->data['user_type'] == USER_FOUNDER))) ? true : false;
+		// Mighty Gorgon: add to referers only if the user doesn't have a session... this is why this code is in session_create and not in session_begin
+		if (empty($config['disable_referers']) && !empty($this->referer))
+		{
+			$this->process_referer();
+		}
+
 		$this->data['is_registered'] = (empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
-		// ICY PHOENIX - BEGIN
-		// Shall we decide to include BOT here...
-		//$this->data['session_logged_in'] = (((empty($this->data['is_bot']) && ($this->data['user_id'] != ANONYMOUS)) || (!empty($this->data['is_bot']) && !empty($config['bots_reg_auth']))) && ($this->data['user_type'] != USER_INACTIVE)) ? true : false;
-		// Replaced by Mighty Gorgon
-		//$this->data['session_logged_in'] = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_type'] != USER_INACTIVE)) ? true : false;
-		$this->data['session_logged_in'] = (($this->data['user_id'] != ANONYMOUS) && !empty($this->data['user_active'])) ? true : false;
-		// ICY PHOENIX - END
+		$this->data['session_logged_in'] = $this->data['is_registered'];
 
 		// If our friend is a bot, we re-assign a previously assigned session
-		if ($this->data['is_bot'] && $this->data['session_id'])
+		if ($this->data['is_bot'])
 		{
-			// Only assign the current session if the ip and browser match...
-			if ((strpos($this->ip, ':') !== false) && (strpos($this->data['session_ip'], ':') !== false))
+			// ICY PHOENIX - BEGIN
+			// We give bots always the same session if it is not yet expired.
+			$sql_fields = array();
+			$sql_extra = '';
+			if (!empty($this->browser))
 			{
-				$s_ip = short_ipv6($this->data['session_ip'], $config['ip_check']);
-				$u_ip = short_ipv6($this->ip, $config['ip_check']);
+				$u_browser = trim(strtolower(substr($this->browser, 0, 254)));
+				$sql_fields[] = "s.session_browser = '" . $db->sql_escape($u_browser) . "'";
 			}
-			else
+			if (!empty($this->ip))
 			{
-				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, $config['ip_check']));
-				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, $config['ip_check']));
+				$u_ip = $this->ip;
+				$sql_fields[] = "s.session_ip = '" . $db->sql_escape($u_ip) . "'";
 			}
+			if (!empty($sql_fields))
+			{
+				foreach ($sql_fields as $sql_field)
+				{
+					$sql_extra .= (empty($sql_extra) ? " WHERE " : " AND ") . $sql_field;
+				}
+				if (!empty($sql_extra))
+				{
+					$bot_data = array();
+					$sql = "SELECT s.* FROM " . SESSIONS_TABLE . " s " . $sql_extra . " AND s.session_time > " . ($this->time_now - ((int) $config['session_length'] + (int) SESSION_REFRESH));
+					$result = $db->sql_query($sql);
+					$bot_data = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
+					if (!empty($bot_data))
+					{
+						$this->data = array_merge($this->data, $bot_data);
+					}
+				}
+			}
+			// ICY PHOENIX - END
 
-			$s_browser = ($config['browser_check']) ? trim(strtolower(substr($this->data['session_browser'], 0, 254))) : '';
-			$u_browser = ($config['browser_check']) ? trim(strtolower(substr($this->browser, 0, 254))) : '';
-
-			if (($u_ip === $s_ip) && ($s_browser === $u_browser))
+			if (!empty($this->data['session_id']))
 			{
 				$this->session_id = $this->data['session_id'];
 
 				// Only update session DB a minute or so after last update or if page changes
 				if ((($this->time_now - $this->data['session_time']) > SESSION_REFRESH) || ($this->update_session_page && ($this->data['session_page'] != $this->page['page'])))
 				{
-					$this->data['session_time'] = $this->data['session_last_visit'] = $this->time_now;
-
-					$sql_ary = array('session_time' => $this->time_now, 'session_last_visit' => $this->time_now, 'session_admin' => 0);
-
-					if ($this->update_session_page)
-					{
-						$sql_ary['session_page'] = (string) substr($this->page['page'], 0, 254);
-						$sql_ary['session_browser'] = (string) substr($this->browser, 0, 254);
-						$sql_ary['session_forum_id'] = $this->page['forum'];
-						$sql_ary['session_topic_id'] = $this->page['topic'];
-					}
-
-					$sql = "UPDATE " . SESSIONS_TABLE . " SET " . $db->sql_build_array('UPDATE', $sql_ary) . "
-						WHERE session_id = '" . $db->sql_escape($this->session_id) . "'";
-					$db->sql_query($sql);
-
-					// Update the last visit time
-					$sql = "UPDATE " . USERS_TABLE . "
-						SET user_lastvisit = " . (int) $this->data['session_time'] . "
-						WHERE user_id = " . (int) $this->data['user_id'];
-					$db->sql_query($sql);
+					$this->data['session_time'] = $this->time_now;
+					$this->data['session_last_visit'] = $this->time_now;
+					$this->data['is_registered'] = false;
+					$this->data['session_logged_in'] = $this->data['is_registered'];
+					$this->bots_session_gc(false);
 				}
 
 				// Mighty Gorgon: I'm still not sure if I want to keep 'sid=' in Icy Phoenix as well... maybe better removing it!!!
@@ -484,8 +514,7 @@ class session
 			}
 			else
 			{
-				// If the ip and browser does not match make sure we only have one bot assigned to one session
-				$db->sql_query("DELETE FROM " . SESSIONS_TABLE . " WHERE session_user_id = " . $this->data['user_id']);
+				$this->bots_session_gc(true);
 			}
 		}
 
@@ -550,15 +579,16 @@ class session
 //		$db->sql_return_on_error(false);
 
 		// Something quite important: session_page always holds the *last* page visited, except for the *first* visit.
-		// We are not able to simply have an empty session_page btw, therefore we need to tell phpBB how to detect this special case.
-		// If the session id is empty, we have a completely new one and will set an "identifier" here. This identifier is able to be checked later.
+		// We are not able to simply have an empty session_page btw, therefore we need to detect this special case.
+		// If the session id is empty, we have a completely new one and will set an "identifier" that we can check later if needed.
 		if (empty($this->data['session_id']))
 		{
 			// This is a temporary variable, only set for the very first visit
 			$this->data['session_created'] = true;
 		}
 
-		$this->session_id = $this->data['session_id'] = md5(unique_id());
+		$this->session_id = md5(unique_id());
+		$this->data['session_id'] = $this->session_id;
 
 		$sql_ary['session_id'] = (string) $this->session_id;
 		$sql_ary['session_page'] = (string) substr($this->page['page'], 0, 254);
@@ -582,15 +612,11 @@ class session
 		$_SID = $this->session_id;
 		$this->data = array_merge($this->data, $sql_ary);
 
-		if (!$bot)
+		if (empty($this->data['is_bot']))
 		{
-			$cookie_expire = $this->time_now + (($config['max_autologin_time']) ? 86400 * (int) $config['max_autologin_time'] : 31536000);
-
-			$this->set_cookie('u', $this->cookie_data['u'], $cookie_expire);
-			$this->set_cookie('k', $this->cookie_data['k'], $cookie_expire);
-			$this->set_cookie('sid', $this->session_id, $cookie_expire);
-
-			unset($cookie_expire);
+			$this->set_cookie('u', $this->cookie_data['u'], $this->cookie_expire);
+			$this->set_cookie('k', $this->cookie_data['k'], $this->cookie_expire);
+			$this->set_cookie('sid', $this->session_id, $this->cookie_expire);
 
 			$sql = "SELECT COUNT(session_id) AS sessions
 					FROM " . SESSIONS_TABLE . "
@@ -600,25 +626,73 @@ class session
 			$row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
 
+			// ICY PHOENIX - BEGIN
+			$sql_ary = array();
+			if ($this->data['user_id'] != ANONYMOUS)
+			{
+				$this->data['user_totallogon'] = (int) $this->data['user_totallogon'] + 1;
+				$sql_ary['user_totallogon'] = $this->data['user_totallogon'];
+			}
 			if (((int) $row['sessions'] <= 1) || empty($this->data['user_form_salt']))
 			{
 				$this->data['user_form_salt'] = unique_id();
-				// Update the form key
-				$sql = "UPDATE " . USERS_TABLE . "
-					SET user_form_salt = '" . $db->sql_escape($this->data['user_form_salt']) . "'
-					WHERE user_id = " . (int) $this->data['user_id'];
-				$db->sql_query($sql);
+				$sql_ary['user_form_salt'] = $this->data['user_form_salt'];
 			}
+
+			if (sizeof($sql_ary))
+			{
+				$sql = "UPDATE " . USERS_TABLE . " SET " . $db->sql_build_array('UPDATE', $sql_ary) . "
+					WHERE user_id = " . $this->data['user_id'];
+				$result = $db->sql_query($sql);
+			}
+			// ICY PHOENIX - END
+
+			// Start Advanced IP Tools Pack MOD
+			if (empty($config['disable_logins']) && !empty($this->data['session_logged_in']))
+			{
+				$sql_logins_ary = array(
+					'login_userid' => $this->data['user_id'],
+					'login_ip' => $this->ip,
+					'login_user_agent' => substr($this->browser, 0, 254),
+					'login_time' => $this->time_now,
+				);
+				$db->sql_return_on_error(true);
+				$sql = "INSERT INTO " . LOGINS_TABLE . " " . $db->sql_build_insert_update($sql_logins_ary, true);
+				$db->sql_query($sql);
+				$db->sql_return_on_error(false);
+
+				$max_logins = (int) $config['last_logins_n'];
+				$limit_sql = (!empty($max_logins) && ($max_logins > 0)) ? (" LIMIT 0, " . $max_logins . " ") : "";
+				$sql = "SELECT login_id FROM " . LOGINS_TABLE . "
+								WHERE login_userid = " . $this->data['user_id'] . "
+								ORDER BY login_id DESC" .
+								$limit_sql;
+				$result = $db->sql_query($sql);
+				$user_logins = $db->sql_numrows($result);
+				$last_logins = $db->sql_fetchrowset($result);
+				$db->sql_freeresult($result);
+
+				if (!empty($user_logins) && ($user_logins > $max_logins))
+				{
+					$logins_to_keep = array();
+					foreach ($last_logins as $login_row)
+					{
+						$logins_to_keep[] = $login_row['login_id'];
+					}
+					$db->sql_return_on_error(true);
+					$sql = "DELETE FROM " . LOGINS_TABLE . "
+									WHERE login_id NOT IN (" . implode(',', $logins_to_keep) . ")
+										AND login_userid = " . $this->data['user_id'];
+					$db->sql_query($sql);
+					$db->sql_return_on_error(false);
+				}
+			}
+			// End Advanced IP Tools Pack MOD
 		}
 		else
 		{
-			$this->data['session_time'] = $this->data['session_last_visit'] = $this->time_now;
-
-			// Update the last visit time
-			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $this->data['session_time'] . "
-				WHERE user_id = " . (int) $this->data['user_id'];
-			$db->sql_query($sql);
+			$this->data['session_time'] = $this->time_now;
+			$this->data['session_last_visit'] = $this->time_now;
 
 			// Mighty Gorgon: I'm still not sure if I want to keep 'sid=' in Icy Phoenix as well... maybe better removing it!!!
 			//$SID = 'sid=';
@@ -655,7 +729,7 @@ class session
 			}
 
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $this->data['session_time'] . "
+				SET user_lastvisit = " . (int) $this->data['session_time'] . ", user_private_chat_alert = ''
 				WHERE user_id = " . (int) $this->data['user_id'];
 			$db->sql_query($sql);
 
@@ -711,7 +785,7 @@ class session
 	*/
 	function session_gc()
 	{
-		global $db, $config;
+		global $db, $cache, $config;
 
 		$batch_size = 10;
 
@@ -720,16 +794,37 @@ class session
 			$this->time_now = time();
 		}
 
-		// Firstly, delete guest sessions
+		// Set here the desired time you would like to keep sessions...
+		$session_remove_limit = 86400 * 2;
+		$session_length = (int) $config['session_length'];
+
+		// Remove old keys for users not logging in so frequently... 30 days should be fine!!!
+		$max_autologin_time = !empty($config['max_autologin_time']) ? $config['max_autologin_time'] : 30;
+
+		$sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . "
+			WHERE last_login < " . ($this->time_now - (86400 * (int) $max_autologin_time));
+		$db->sql_query($sql);
+
+		// Remove all sessions which are X days old from AJAX Chat table
+		$sql = "DELETE FROM " . AJAX_SHOUTBOX_SESSIONS_TABLE . "
+			WHERE session_time < " . (int) ($this->time_now - $session_remove_limit);
+		$db->sql_query($sql);
+
+		// Remove all sessions which are X days old from search table
+		$sql = "DELETE FROM " . SEARCH_TABLE . "
+			WHERE search_time < " . (int) ($this->time_now - $session_remove_limit);
+		$db->sql_query($sql);
+
+		// Delete Guest sessions which are at least X days old from sessions table (at least one day is needed for statistics)
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
 			WHERE session_user_id = " . ANONYMOUS . "
-				AND session_time < " . (int) ($this->time_now - $config['session_length']);
+				AND session_time < " . (int) ($this->time_now - $session_length - $session_remove_limit);
 		$db->sql_query($sql);
 
 		// Get expired sessions, only most recent for each user
 		$sql = "SELECT session_user_id, session_page, MAX(session_time) AS recent_time
 			FROM " . SESSIONS_TABLE . "
-			WHERE session_time < " . (int) ($this->time_now - $config['session_length']) . "
+			WHERE session_time < " . (int) ($this->time_now - $session_length) . "
 			GROUP BY session_user_id, session_page";
 		$result = $db->sql_query_limit($sql, $batch_size);
 
@@ -739,7 +834,7 @@ class session
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $row['recent_time'] . ", user_lastpage = '" . $db->sql_escape($row['session_page']) . "'
+				SET user_lastvisit = " . (int) $row['recent_time'] . ", user_session_page = '" . $db->sql_escape($row['session_page']) . "'
 				WHERE user_id = " . (int) $row['session_user_id'];
 			$db->sql_query($sql);
 
@@ -750,10 +845,10 @@ class session
 
 		if (sizeof($del_user_id))
 		{
-			// Delete expired sessions
+			// Delete expired sessions from more than 2 days (at least one day is needed for statistics)
 			$sql = "DELETE FROM " . SESSIONS_TABLE . "
 				WHERE " . $db->sql_in_set('session_user_id', $del_user_id) . "
-					AND session_time < " . ($this->time_now - $config['session_length']);
+					AND session_time < " . (int) ($this->time_now - $session_length - $session_remove_limit);
 			$db->sql_query($sql);
 		}
 
@@ -761,6 +856,7 @@ class session
 		{
 			// Less than 10 users, update gc timer ... else we want gc called again to delete other sessions
 			set_config('session_last_gc', $this->time_now, true);
+			set_config('cron_sessions_last_run', $this->time_now, true);
 
 			if ($config['max_autologin_time'])
 			{
@@ -779,7 +875,77 @@ class session
 			*/
 		}
 
-		return;
+		return true;
+	}
+
+	/**
+	* Bots session garbage collection
+	*
+	* This is needed to avoid bots filling up the whole sessions table due to SID removal... this is needed because in Icy Phoenix bots don't have USER_ID but are guests!
+	*/
+	function bots_session_gc($clear_all = false)
+	{
+		global $db, $cache, $config;
+
+		if (!$this->time_now)
+		{
+			$this->time_now = time();
+		}
+
+		$sql_extra = empty($clear_all) ? (" AND session_id <> '" . $db->sql_escape($this->session_id) . "' ") : '';
+
+		if (!empty($this->browser))
+		{
+			$u_browser = trim(strtolower(substr($this->browser, 0, 254)));
+			$sql = "DELETE FROM " . SESSIONS_TABLE . "
+							WHERE session_browser = '" . $db->sql_escape($u_browser) . "'"
+								. $sql_extra . "
+								AND session_user_id = " . ANONYMOUS . "
+								AND session_time < " . ($this->time_now - ONLINE_REFRESH);
+			$db->sql_query($sql);
+		}
+		if (!empty($this->ip))
+		{
+			$sql = "DELETE FROM " . SESSIONS_TABLE . "
+							WHERE session_ip = '" . $db->sql_escape($this->ip) . "'"
+								. $sql_extra . "
+								AND session_user_id = " . ANONYMOUS . "
+								AND session_time < " . ($this->time_now - ONLINE_REFRESH);
+			$db->sql_query($sql);
+		}
+	}
+
+	/**
+	* Confirm table garbage collection
+	*/
+	function confirm_gc()
+	{
+		global $db, $cache, $config;
+
+		// Clean some old sessions first!
+		$this->session_gc();
+
+		// We need to limit this SQL or we may have issue when sessions table has many records
+		$limit = 2000;
+		// We also query only those sessions in the last two hours... if a user didn't use its code, maybe he didn't need anymore... ;-)
+		$sql = "SELECT session_id FROM " . SESSIONS_TABLE . " WHERE session_time > " . (int) (time() - 7200) . " ORDER BY session_time DESC LIMIT " . (int) $limit;
+		$result = $db->sql_query($sql);
+		$sessions_ids = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+
+		if (!empty($sessions_ids))
+		{
+			$confirm_sql = '';
+			foreach ($sessions_ids as $session_id)
+			{
+				$confirm_sql .= (!empty($confirm_sql) ? ', ' : '') . "'" . $session_id . "'";
+			}
+			$sql = "DELETE FROM " . CONFIRM_TABLE . "
+				WHERE session_id NOT IN (" . $confirm_sql . ")";
+			$db->sql_query($sql);
+		}
+
+		return true;
 	}
 
 	/**
@@ -787,13 +953,16 @@ class session
 	*
 	* Sets a cookie of the given name with the specified data for the given length of time. If no time is specified, a session cookie will be set.
 	*
-	* @param string $name		Name of the cookie, will be automatically prefixed with the phpBB cookie name. track becomes [cookie_name]_track then.
-	* @param string $cookiedata	The data to hold within the cookie
-	* @param int $cookietime	The expiration time as UNIX timestamp. If 0 is provided, a session cookie is set.
+	* @param string $name Name of the cookie, will be automatically prefixed with the phpBB cookie name. track becomes [cookie_name]_track then.
+	* @param string $cookiedata The data to hold within the cookie
+	* @param int $cookietime The expiration time as UNIX timestamp. If 0 is provided, a session cookie is set.
 	*/
 	function set_cookie($name, $cookiedata, $cookietime)
 	{
 		global $config;
+
+		// Old setcookie version...
+		//setcookie($config['cookie_name'] . '_' . $name, $cookiedata, $cookietime, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
 
 		$name_data = rawurlencode($config['cookie_name'] . '_' . $name) . '=' . rawurlencode($cookiedata);
 		$expire = gmdate('D, d-M-Y H:i:s \\G\\M\\T', $cookietime);
@@ -810,11 +979,11 @@ class session
 	* this routine does not return on finding a banned user, it outputs a relevant
 	* message and stops execution.
 	*
-	* @param string|array	$user_ips	Can contain a string with one IP or an array of multiple IPs
+	* @param string|array $user_ips Can contain a string with one IP or an array of multiple IPs
 	*/
 	function check_ban($user_id = false, $user_ips = false, $user_email = false, $return = false)
 	{
-		global $config, $db;
+		global $config, $cache, $db, $lang;
 
 		if (defined('IN_CHECK_BAN'))
 		{
@@ -870,7 +1039,6 @@ class session
 		$ban_triggered_by = 'user';
 		while ($row = $db->sql_fetchrow($result))
 		{
-
 			if (($row['ban_userid'] == ANONYMOUS) && ($row['ban_ip'] == '') && ($row['ban_email'] == null))
 			{
 				$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid = '" . ANONYMOUS . "'";
@@ -983,6 +1151,8 @@ class session
 	*/
 	function check_dnsbl($mode, $ip = false)
 	{
+		global $config;
+
 		if ($ip === false)
 		{
 			$ip = $this->ip;
@@ -1106,7 +1276,7 @@ class session
 		if ($row)
 		{
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET user_lastvisit = " . (int) $row['session_time'] . ", user_lastpage = '" . $db->sql_escape($row['session_page']) . "'
+				SET user_lastvisit = " . (int) $row['session_time'] . ", user_session_page = '" . $db->sql_escape($row['session_page']) . "'
 				WHERE user_id = " . (int) $user_id;
 			$db->sql_query($sql);
 		}
@@ -1185,16 +1355,96 @@ class session
 	{
 		global $config;
 
-		$this->data['is_bot'] = false;
-		$this->data['bot_id'] = false;
-		if ($this->data['user_id'] == ANONYMOUS)
+		if (!empty($this->data))
 		{
-			$bot_name_tmp = bots_parse($this->ip, $config['bots_color'], $this->browser, true);
-			$this->data['bot_id'] = $bot_name_tmp['name'];
-			if ($this->data['bot_id'] !== false)
+			$this->data['is_bot'] = false;
+			$this->data['bot_id'] = false;
+			if ($this->data['user_id'] == ANONYMOUS)
 			{
-				$this->data['is_bot'] = true;
-				bots_table_update($bot_name_tmp['id']);
+				$bot_name_tmp = bots_parse($this->ip, $config['bots_color'], $this->browser, true);
+				$this->data['bot_id'] = $bot_name_tmp['name'];
+				if ($this->data['bot_id'] !== false)
+				{
+					$this->data['is_bot'] = true;
+					bots_table_update($bot_name_tmp['id']);
+				}
+			}
+		}
+	}
+
+	/**
+	* Process referers
+	*/
+	function process_referer()
+	{
+		global $db, $cache, $config;
+
+		if (!empty($this->referer))
+		{
+			$this_page = $this->page;
+			$this_page_url = preg_replace('/(\?)?(&amp;|&)?sid=[a-z0-9]+/', '', $this_page['page_full']);
+
+			$ref_url = $this->referer;
+			$ref_url_array = parse_url($ref_url);
+			$ref_host = $ref_url_array['host'];
+
+			$ref_process = true;
+
+			if (strpos(strtolower($ref_url), strtolower($this->host . $config['script_path'])) !== false)
+			{
+				$ref_process = false;
+			}
+
+			if (strpos(strtolower($ref_host), str_replace('/', '', strtolower($config['server_name']))) !== false)
+			{
+				$ref_process = false;
+			}
+
+			if (!empty($ref_process))
+			{
+				include(IP_ROOT_PATH . 'includes/blacklist.' . PHP_EXT);
+				if (!empty($blacklist['host']))
+				{
+					foreach ($blacklist['host'] as $blacklist_entry)
+					{
+						if (strpos(strtolower($ref_host), strtolower($blacklist_entry)) !== false)
+						{
+							$ref_process = false;
+							break;
+						}
+					}
+				}
+
+				if (!empty($ref_process))
+				{
+					$sql_where_extra = !empty($this_page_url) ? (" AND t_url = '" . $db->sql_escape($this_page_url) . "' ") : "";
+					$sql = "SELECT url FROM " . REFERERS_TABLE . " WHERE url = '" . $db->sql_escape($ref_url) . "'" . $sql_where_extra . " LIMIT 1";
+					$result = $db->sql_query($sql);
+					$row = $db->sql_fetchrow($result);
+
+					if (empty($row))
+					{
+						$ref_insert_array = array(
+							'host' => $ref_host,
+							'url' => $ref_url,
+							't_url' => $this_page_url,
+							'ip' => $this->ip,
+							'hits' => 1,
+							'firstvisit' => time(),
+							'lastvisit' => time(),
+						);
+
+						$sql = "INSERT INTO " . REFERERS_TABLE . " " . $db->sql_build_insert_update($ref_insert_array, true);
+						$result = $db->sql_query($sql);
+					}
+					else
+					{
+						$sql = "UPDATE " . REFERERS_TABLE . "
+							SET hits = hits + 1, lastvisit = " . time() . ", ip = '" . $db->sql_escape($user_ip) . "'
+							WHERE url = '" . $db->sql_escape($ref_url) . "'" . $sql_where_extra;
+						$result = $db->sql_query($sql);
+					}
+				}
 			}
 		}
 	}
@@ -1264,8 +1514,6 @@ class user extends session
 		'sig_links' => 17
 	);
 
-	var $keyvalues = array();
-
 	/**
 	* Constructor to set the lang path
 	*/
@@ -1298,7 +1546,7 @@ class user extends session
 		global $db, $cache, $config, $auth, $template;
 		// We need $lang declared as global to make sure we do not miss extra $lang vars added using this function
 		global $theme, $images, $lang, $nav_separator;
-		global $class_settings, $tree, $unread;
+		global $class_settings, $tree;
 
 		// Get all settings
 		$class_settings->setup_settings();
@@ -1309,7 +1557,7 @@ class user extends session
 		{
 			$test_language = str_replace(array('.', '/'), '', urldecode($test_language));
 			$config['default_lang'] = file_exists(@phpbb_realpath($this->lang_path . 'lang_' . basename($test_language) . '/lang_main.' . PHP_EXT)) ? $test_language : $config['default_lang'];
-			setcookie($config['cookie_name'] . '_lang', $config['default_lang'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+			$this->set_cookie('lang', $config['default_lang'], $user->cookie_expire);
 		}
 		else
 		{
@@ -1333,6 +1581,32 @@ class user extends session
 			$config['topics_per_page'] = !empty($this->data['user_topics_per_page']) ? $this->data['user_topics_per_page'] : $config['topics_per_page'];
 			$config['posts_per_page'] = !empty($this->data['user_posts_per_page']) ? $this->data['user_posts_per_page'] : $config['posts_per_page'];
 			$config['hot_threshold'] = !empty($this->data['user_hot_threshold']) ? $this->data['user_hot_threshold'] : $config['hot_threshold'];
+
+			// Store CMS AUTH - BEGIN
+			if (empty($this->data['user_cms_auth']))
+			{
+				$auth_array = array();
+				$auth_to_get_array = array('cmsl_admin', 'cmss_admin', 'cmsb_admin');
+				foreach ($auth_to_get_array as $auth_to_get)
+				{
+					$auth_getf = $auth->acl_getf($auth_to_get, true);
+					foreach ($auth_getf as $auth_id => $auth_value)
+					{
+						$auth_array[$auth_to_get][$auth_id] = $auth_value[$auth_to_get];
+					}
+				}
+
+				$this->data['user_cms_auth'] = $auth_array;
+				$sql = "UPDATE " . USERS_TABLE . "
+					SET user_cms_auth = '" . $db->sql_escape(serialize($this->data['user_cms_auth'])) . "'
+					WHERE user_id = " . $this->data['user_id'];
+				$db->sql_query($sql);
+			}
+			else
+			{
+				$this->data['user_cms_auth'] = unserialize($this->data['user_cms_auth']);
+			}
+			// Store CMS AUTH - END
 		}
 		else
 		{
@@ -1382,13 +1656,16 @@ class user extends session
 		// MG Logs - END
 
 		//<!-- BEGIN Unread Post Information to Database Mod -->
-		$unread = array();
 		if (!defined('IN_CMS') && $this->data['upi2db_access'])
 		{
-			if (empty($unread))
+			if (!defined('UPI2DB_UNREAD'))
 			{
-				$unread = unread();
+				$this->data['upi2db_unread'] = upi2db_unread();
 			}
+		}
+		else
+		{
+			$this->data['upi2db_unread'] = array();
 		}
 		//<!-- END Unread Post Information to Database Mod -->
 
@@ -1496,7 +1773,7 @@ class user extends session
 			}
 			elseif (!$this->data['user_allow_viewonline'])
 			{
-				// the user wants to hide and is allowed to  -> cloaking device on.
+				// the user wants to hide and is allowed to -> cloaking device on.
 				if ($auth->acl_get('u_hideonline'))
 				{
 					$sql = 'UPDATE ' . SESSIONS_TABLE . '
@@ -1513,44 +1790,85 @@ class user extends session
 		$current_default_style = $config['default_style'];
 		$change_style = false;
 
-		if (empty($config['override_user_style']))
+		$is_mobile = is_mobile();
+		// For debugging purpose you can force this to true
+		//$this->data['is_mobile'] = true;
+
+		// We need to store somewhere if the user has the mobile style enabled... so we can output a link to switch between mobile style and norma style
+		$this->data['mobile_style'] = false;
+		$disable_mobile_style = false;
+
+		// MOBILE STYLE DISABLING - BEGIN
+		// Let's check if the user wants to disable the mobile style
+		if(isset($_GET['mob']))
 		{
-			// Mighty Gorgon - Change Style - BEGIN
-			$test_style = request_var(STYLE_URL, 0);
-			if ($test_style > 0)
-			{
-				$config['default_style'] = urldecode($test_style);
-				$config['default_style'] = (check_style_exists($config['default_style']) == false) ? $current_default_style : $config['default_style'];
-				setcookie($config['cookie_name'] . '_style', $config['default_style'], (time() + 86400), $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-				$change_style = true;
-			}
-			else
-			{
-				if (isset($_COOKIE[$config['cookie_name'] . '_style']) && (check_style_exists($_COOKIE[$config['cookie_name'] . '_style']) != false))
-				{
-					$config['default_style'] = $_COOKIE[$config['cookie_name'] . '_style'];
-				}
-			}
-			// Mighty Gorgon - Change Style - END
+			$mob_get = (isset($_GET['mob']) && (intval($_GET['mob']) == 0)) ? 0 : 1;
+			$_GET['mob'] = $mob_get;
+			$this->set_cookie('mob', $mob_get, $user->cookie_expire);
+			$_COOKIE[$config['cookie_name'] . '_mob'] = $mob_get;
 
-			$style = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_style'] > 0)) ? $this->data['user_style'] : $config['default_style'];
-
-			if ($theme = setup_style($style, $current_default_style))
+			if (empty($mob_get))
 			{
-				if (($this->data['user_id'] != ANONYMOUS) && !empty($change_style))
-				{
-					// user logged in --> save new style ID in user profile
-					$sql = "UPDATE " . USERS_TABLE . "
-						SET user_style = " . $theme['themes_id'] . "
-						WHERE user_id = " . $this->data['user_id'];
-					$db->sql_query($sql);
-					$this->data['user_style'] = $theme['themes_id'];
-				}
-				return;
+				$disable_mobile_style = true;
 			}
 		}
 
-		$theme = setup_style($config['default_style'], $current_default_style);
+		$mob_cok = (isset($_COOKIE[$config['cookie_name'] . '_mob']) && (intval($_COOKIE[$config['cookie_name'] . '_mob']) == 0)) ? false : true;
+		if (empty($mob_cok))
+		{
+			$disable_mobile_style = true;
+		}
+		// MOBILE STYLE DISABLING - END
+
+		if (empty($disable_mobile_style) && !empty($this->data['is_mobile']) && !defined('IN_CMS') && !defined('IN_ADMIN'))
+		{
+			$this->data['mobile_style'] = true;
+			$this->set_cookie('mob', 1, $user->cookie_expire);
+			$_COOKIE[$config['cookie_name'] . '_mob'] = 1;
+			$theme = setup_mobile_style();
+		}
+		else
+		{
+			if (empty($config['override_user_style']))
+			{
+				// Mighty Gorgon - Change Style - BEGIN
+				// Check cookie as well!!!
+				$test_style = request_var(STYLE_URL, 0);
+				if ($test_style > 0)
+				{
+					$config['default_style'] = urldecode($test_style);
+					$config['default_style'] = (check_style_exists($config['default_style']) == false) ? $current_default_style : $config['default_style'];
+					$this->set_cookie('style', $config['default_style'], $user->cookie_expire);
+					$change_style = true;
+				}
+				else
+				{
+					if (isset($_COOKIE[$config['cookie_name'] . '_style']) && (check_style_exists($_COOKIE[$config['cookie_name'] . '_style']) != false))
+					{
+						$config['default_style'] = $_COOKIE[$config['cookie_name'] . '_style'];
+					}
+				}
+				// Mighty Gorgon - Change Style - END
+
+				$style = (($this->data['user_id'] != ANONYMOUS) && ($this->data['user_style'] > 0) && empty($change_style)) ? $this->data['user_style'] : $config['default_style'];
+
+				if ($theme = setup_style($style, $current_default_style))
+				{
+					if (($this->data['user_id'] != ANONYMOUS) && !empty($change_style))
+					{
+						// user logged in --> save new style ID in user profile
+						$sql = "UPDATE " . USERS_TABLE . "
+							SET user_style = " . $theme['themes_id'] . "
+							WHERE user_id = " . $this->data['user_id'];
+						$db->sql_query($sql);
+						$this->data['user_style'] = $theme['themes_id'];
+					}
+					return;
+				}
+			}
+
+			$theme = setup_style($config['default_style'], $current_default_style);
+		}
 
 		return;
 	}
@@ -1842,47 +2160,51 @@ class user extends session
 	}
 
 	/**
-	* Get option bit field from user options
+	* Get option bit field from user options.
+	*
+	* @param int $key option key, as defined in $keyoptions property.
+	* @param int $data bit field value to use, or false to use $this->data['user_options']
+	* @return bool true if the option is set in the bit field, false otherwise
 	*/
 	function optionget($key, $data = false)
 	{
-		if (!isset($this->keyvalues[$key]))
-		{
-			$var = ($data) ? $data : $this->data['user_options'];
-			$this->keyvalues[$key] = ($var & 1 << $this->keyoptions[$key]) ? true : false;
-		}
-
-		return $this->keyvalues[$key];
+		$var = ($data !== false) ? $data : $this->data['user_options'];
+		return phpbb_optionget($this->keyoptions[$key], $var);
 	}
 
 	/**
-	* Set option bit field for user options
+	* Set option bit field for user options.
+	*
+	* @param int $key Option key, as defined in $keyoptions property.
+	* @param bool $value True to set the option, false to clear the option.
+	* @param int $data Current bit field value, or false to use $this->data['user_options']
+	* @return int|bool If $data is false, the bit field is modified and
+	*                  written back to $this->data['user_options'], and
+	*                  return value is true if the bit field changed and
+	*                  false otherwise. If $data is not false, the new
+	*                  bitfield value is returned.
 	*/
 	function optionset($key, $value, $data = false)
 	{
-		$var = ($data) ? $data : $this->data['user_options'];
+		$var = ($data !== false) ? $data : $this->data['user_options'];
 
-		if ($value && !($var & 1 << $this->keyoptions[$key]))
+		$new_var = phpbb_optionset($this->keyoptions[$key], $value, $var);
+
+		if ($data === false)
 		{
-			$var += 1 << $this->keyoptions[$key];
-		}
-		elseif (!$value && ($var & 1 << $this->keyoptions[$key]))
-		{
-			$var -= 1 << $this->keyoptions[$key];
+			if ($new_var != $var)
+			{
+				$this->data['user_options'] = $new_var;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
-			return ($data) ? $var : false;
-		}
-
-		if (!$data)
-		{
-			$this->data['user_options'] = $var;
-			return true;
-		}
-		else
-		{
-			return $var;
+			return $new_var;
 		}
 	}
 }

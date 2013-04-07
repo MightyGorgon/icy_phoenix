@@ -1,5 +1,4 @@
 Subject: New Download Comment
-Charset: iso-8859-1
 
 Hello {USERNAME},
 

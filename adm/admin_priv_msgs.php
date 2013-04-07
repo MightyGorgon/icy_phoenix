@@ -42,6 +42,7 @@ if (!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include_once('pagestart.' . PHP_EXT);
+
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/class_privmsgs_admin.' . PHP_EXT);
 
@@ -49,8 +50,6 @@ define('PRIVMSGS_ALL_MAIL', -1);
 $aprvmUtil = new aprvmUtils();
 $aprvmUtil->modVersion = '1.6.0';
 $aprvmUtil->copyrightYear = '2001-2005';
-
-//$aprvmUtil->find_lang_file('lang_admin_priv_msgs');
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 $is_allowed = check_acp_module_access();
@@ -206,21 +205,24 @@ switch($pmaction)
 			{
 				$priv_msgs_id_sql_list .= ($priv_msgs_id_sql_list != '') ? ', '.$row['privmsgs_id'] : $row['privmsgs_id'];
 			}
+			$removed_counter = 0;
 			if ($priv_msgs_id_sql_list != '')
 			{
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				$db->sql_query($sql);
+				$removed_counter += $db->sql_affectedrows();
 
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
 					WHERE privmsgs_id  IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				$db->sql_query($sql);
+				$removed_counter += $db->sql_affectedrows();
 			}
 
 			$status_message .= $lang['Removed_Old'];
-			$status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
+			$status_message .= sprintf($lang['Affected_Rows'], $removed_counter);
 		}
 	}
 	case 'remove_sent':
@@ -237,21 +239,24 @@ switch($pmaction)
 			{
 				$priv_msgs_id_sql_list .= ($priv_msgs_id_sql_list != '') ? ', '.$row['privmsgs_id'] : $row['privmsgs_id'];
 			}
+			$removed_counter = 0;
 			if ($priv_msgs_id_sql_list != '')
 			{
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "
 					WHERE privmsgs_id IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				$db->sql_query($sql);
+				$removed_counter += $db->sql_affectedrows();
 
 				$sql = "DELETE FROM " . PRIVMSGS_TABLE . "$archive_text
 					WHERE privmsgs_id  IN ($priv_msgs_id_sql_list)";
 				//print $sql;
 				$db->sql_query($sql);
+				$removed_counter += $db->sql_affectedrows();
 			}
 
 			$status_message .= $lang['Removed_Sent'];
-			$status_message .= sprintf($lang['Affected_Rows'], $db->sql_affectedrows());
+			$status_message .= sprintf($lang['Affected_Rows'], $removed_counter);
 		}
 	}
 	default:
@@ -269,7 +274,7 @@ switch($pmaction)
 		while($row = $db->sql_fetchrow($result))
 		{
 			$view_url = (!$config['aprvmView']) ? append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) : '#';
-			$onclick_url = ($config['aprvmView']) ? "JavaScript:window.open('" . append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) . "','_privmsg','width=550,height=450,resizable=yes')" : '';
+			$onclick_url = ($config['aprvmView']) ? "javascript:window.open('" . append_sid($aprvmUtil->urlStart . '&amp;pmaction=view_message&amp;view_id=' . $row['privmsgs_id']) . "', '_privmsg', 'width=550,height=450,resizable=yes')" : '';
 			$template->assign_block_vars('msgrow', array(
 				'ROW_CLASS' => (!(++$i% 2)) ? $theme['td_class1'] : $theme['td_class2'],
 				'ATTACHMENT_INFO' => (defined('ATTACH_VERSION')) ? 'Not Here Yet' : '',

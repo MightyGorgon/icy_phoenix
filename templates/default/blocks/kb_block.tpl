@@ -1,4 +1,4 @@
-{IMG_THL}{IMG_THC}<span class="forumlink">{TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{KB_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0">
 <!-- BEGIN kb_list -->
 <tr>
 	<th colspan="2">{L_ARTICLES}</th>
@@ -48,7 +48,7 @@
 <!-- END kb_list -->
 
 <!-- BEGIN kb_article -->
-<!-- {IMG_THL}{IMG_THC}<span class="forumlink">{TITLE}</span>{IMG_THR}
+<!-- {IMG_THL}{IMG_THC}<span class="forumlink">{KB_TITLE}</span>{IMG_THR}
 <table cellspacing="0" width="100%" class="forumlinenb"> -->
 <tr><th>{TOPIC_DESC}</th></tr>
 <tr><td class="row-post"><div class="post-text post-text-hide-flow">{TEXT}</div><br /><br /></td></tr>

@@ -28,8 +28,8 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-require_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_admin.' . PHP_EXT);
+
+setup_extra_lang(array('lang_album_main', 'lang_album_admin'));
 
 require(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 require_once(ALBUM_MOD_PATH . 'album_acp_functions.' . PHP_EXT);
@@ -80,7 +80,7 @@ if(!isset($_POST['mode']))
 
 		$template->pparse('body');
 
-		include('./page_footer_admin.' . PHP_EXT);
+		include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 	}
 	else
 	{
@@ -188,7 +188,7 @@ if(!isset($_POST['mode']))
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 		}
 		elseif($_GET['action'] == 'delete')
 		{
@@ -238,7 +238,7 @@ if(!isset($_POST['mode']))
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 		}
 		elseif($_GET['action'] == 'move')
 		{
@@ -321,7 +321,7 @@ else
 
 			$template->pparse('body');
 
-			include('./page_footer_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 		}
 		else
 		{

@@ -1,5 +1,5 @@
 Subject: New Picture has been posted from {FROM}
-Charset: iso-8859-1
+
 <br /><font face="Verdana" size="2">
 Hello <b>{USERNAME}</b>,
 <br /><br />

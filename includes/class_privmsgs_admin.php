@@ -276,38 +276,12 @@ class aprvmUtils
 		$total = $db->sql_fetchrow($result);
 		$total_pms = ($total['total'] > 0) ? $total['total'] : 1;
 
-		$pagination = generate_pagination($this->urlPage, $total_pms, $topics_per_pg, $start) . '&nbsp;';
-
 		$template->assign_vars(array(
-			'PAGINATION' => $pagination,
+			'PAGINATION' => generate_pagination($this->urlPage, $total_pms, $topics_per_pg, $start),
 			'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / $topics_per_pg) + 1), ceil($total_pms / $topics_per_pg)),
 			'L_GOTO_PAGE' => $lang['Goto_page']
 			)
 		);
-	}
-
-	/**
-	* @return boolean
-	* @param filename string
-	* @desc Tries to locate and include the specified language file.  Do not include the .php extension!
-	*/
-	function find_lang_file($filename)
-	{
-		global $lang, $config;
-
-		if (file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $filename . '.' . PHP_EXT))
-		{
-			include_once(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $filename . '.' . PHP_EXT);
-		}
-		elseif (file_exists(IP_ROOT_PATH . 'language/lang_english/' . $filename . '.' . PHP_EXT))
-		{
-			include_once(IP_ROOT_PATH . 'language/lang_english/' . $filename . '.' . PHP_EXT);
-		}
-		else
-		{
-			message_die(GENERAL_ERROR, "Unable to find a suitable language file for $filename!", '');
-		}
-		return true;
 	}
 
 	/**
@@ -316,7 +290,7 @@ class aprvmUtils
 	*/
 	function copyright()
 	{
-		printf('<br /><div class="copyright" style="text-align:center;"> %s &copy; %s <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.', $this->modName, $this->copyrightYear);
+		printf('<br /><div class="copyright" style="text-align: center;"> %s &copy; %s <a href="http://www.nivisec.com" class="copyright">Nivisec.com</a>.', $this->modName, $this->copyrightYear);
 		printf('<br />PHP Version %s</div>', phpversion());
 	}
 

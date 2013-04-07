@@ -222,26 +222,32 @@ function display_text(id, text)
 function setWidth(elementID, tmpWidth)
 {
 	cellobject = document.getElementById(elementID);
-	if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+	if (cellobject)
 	{
-		cellobject.style.width = tmpWidth;
-	}
-	else
-	{
-		cellobject.width = tmpWidth;
+		if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+		{
+			cellobject.style.width = tmpWidth;
+		}
+		else
+		{
+			cellobject.width = tmpWidth;
+		}
 	}
 }
 
 function getWidth(elementID)
 {
 	cellobject = document.getElementById(elementID);
-	if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+	if (cellobject)
 	{
-		return cellobject.style.width;
-	}
-	else
-	{
-		return cellobject.width;
+		if ((clientPC.indexOf("msie") != -1) && (clientPC.indexOf("opera") == -1))
+		{
+			return cellobject.style.width;
+		}
+		else
+		{
+			return cellobject.width;
+		}
 	}
 }
 // Set Width - END
@@ -327,7 +333,7 @@ function popup_open(mypage, myname, w, h, scroll)
 
 function rss_news_help()
 {
-	window.open("rss_news_help.php?", '_rss_news_help', 'height=550,width=700,resizable=no,scrollbars=yes');
+	window.open("rss_news_help.php?", '_rss_news_help', 'height=600,width=700,resizable=no,scrollbars=yes');
 }
 
 function links_me()
@@ -337,6 +343,13 @@ function links_me()
 // Images, Links, Popup, FORM - END
 
 // Quick Quote - BEGIN
+function showQuickEditor()
+{
+	document.getElementById('quick_reply').style.display = "";
+	document.post.message.focus();
+	return;
+}
+
 function addquote(post_id, tag, quickr, parentf)
 {
 	if (quickr)
@@ -380,7 +393,7 @@ function open_postreview(ref)
 {
 	height = screen.height / 2.23;
 	width = screen.width / 2;
-	window.open(ref,'_phpbbpostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
+	window.open(ref,'_ippostreview','height=' + height + ',width=' + width + ',resizable=yes,scrollbars=yes');
 	return;
 }
 // Quick Quote - END
@@ -830,8 +843,9 @@ function hon_rate(rate, max)
 
 function submit_rate()
 {
-	document.ratingform.submit();
-	//document.forms['ratingform'].submit();
+	//document.ratingform.submit();
+	document.forms['ratingform'].submit();
+
 	return true;
 }
 // Dynamic Rating - END

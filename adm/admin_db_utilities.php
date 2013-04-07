@@ -69,7 +69,7 @@ if(!empty($perform))
 	{
 		//Start Optimize Database 1.2.2 by Sko22 < sko22@quellicheilpc.it >
 		case 'optimize':
-			include('./page_header_admin.' . PHP_EXT);
+			include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 			$current_time = time();
 
 			// If has been clicked the button reset
@@ -384,7 +384,7 @@ if(!empty($perform))
 
 			if(!isset($_POST['backupstart']) && !isset($_GET['backupstart']))
 			{
-				include('./page_header_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 
 				$template->set_filenames(array('body' => ADM_TPL . 'db_utils_backup_body.tpl'));
 				$s_hidden_fields = '<input type="hidden" name="perform" value="backup" /><input type="hidden" name="drop" value="1" /><input type="hidden" name="perform" value="' . $perform . '" />';
@@ -427,9 +427,9 @@ if(!empty($perform))
 					)
 				);
 
-				include('./page_header_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 				$template->pparse('body');
-				include('./page_footer_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 			}
 			header('Pragma: no-cache');
 			$do_gzip_compress = false;
@@ -500,7 +500,7 @@ if(!empty($perform))
 				//
 				// Define Template files...
 				//
-				include('./page_header_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 				$template->set_filenames(array('body' => ADM_TPL . 'db_utils_restore_body.tpl'));
 
 				$s_hidden_fields = "<input type=\"hidden\" name=\"perform\" value=\"restore\" /><input type=\"hidden\" name=\"perform\" value=\"$perform\" />";
@@ -609,7 +609,7 @@ if(!empty($perform))
 						}
 					}
 				}
-				include('./page_header_admin.' . PHP_EXT);
+				include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);
 				$template->set_filenames(array('body' => ADM_TPL . 'admin_message_body.tpl'));
 				$message = $lang['Restore_success'];
 				$template->assign_vars(array(
@@ -624,6 +624,6 @@ if(!empty($perform))
 	}
 }
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

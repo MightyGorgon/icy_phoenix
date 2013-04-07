@@ -27,17 +27,14 @@ class pafiledb_file extends pafiledb_public
 		$file_id = request_var('file_id', 0);
 		$action = request_var('action', '');
 
-		if (!empty($file_id))
-		{
-			$file_id = $file_id;
-		}
-		elseif (($file_id == 0) && ($action != ''))
+		if (($file_id == 0) && ($action != ''))
 		{
 			$file_id_array = array();
 			$file_id_array = explode('=', $action);
 			$file_id = $file_id_array[1];
 		}
-		else
+
+		if (empty($file_id))
 		{
 			message_die(GENERAL_MESSAGE, $lang['File_not_exist']);
 		}
@@ -51,7 +48,7 @@ class pafiledb_file extends pafiledb_public
 				LEFT JOIN " . PA_VOTES_TABLE . " AS r ON f.file_id = r.votes_file
 				LEFT JOIN ". USERS_TABLE ." AS u ON f.user_id = u.user_id
 				LEFT JOIN " . PA_COMMENTS_TABLE . " AS c ON f.file_id = c.file_id
-			WHERE f.file_id = $file_id
+			WHERE f.file_id = " . (int) $file_id . "
 			AND f.file_approved = 1
 			GROUP BY f.file_id ";
 		$result = $db->sql_query($sql);
@@ -87,7 +84,7 @@ class pafiledb_file extends pafiledb_public
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-			'U_INDEX' => append_sid(CMS_PAGE_HOME),
+			'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD_HOME' => append_sid('dload.' . PHP_EXT),
 
 			'FILE_NAME' => $file_data['file_name'],

@@ -148,7 +148,6 @@ if (check_http_var_exists('edit', false) || isset($_POST['new']))
 		'L_GROUP_RANK' => $lang['group_rank'],
 		'L_GROUP_COLOR' => $lang['group_color'],
 		'L_GROUP_LEGEND' => $lang['group_legend'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 		'L_GROUP_STATUS' => $lang['group_status'],
 		'L_GROUP_OPEN' => $lang['group_open'],
 		'L_GROUP_CLOSED' => $lang['group_closed'],
@@ -522,8 +521,8 @@ else
 			$counting_list = array();
 			$counting_list = count_users_in_group($row['group_id']);
 
-			$g_move = '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=0') . '"><img src="../images/cms/arrow_up.png" alt="' . $lang['Move_Up'] . '" title="' . $lang['Move_Up'] . '" /></a>';
-			$g_move .= '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=1') . '"><img src="../images/cms/arrow_down.png" alt="' . $lang['Move_Down'] . '" title="' . $lang['Move_Down'] . '" /></a>';
+			$g_move = '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=0') . '"><img src="' . $images['cms_arrow_up'] . '" alt="' . $lang['MOVE_UP'] . '" title="' . $lang['MOVE_UP'] . '" /></a>';
+			$g_move .= '&nbsp;<a href="' . append_sid('admin_groups.' . PHP_EXT . '?group_id=' . $row['group_id'] . '&amp;move=1') . '"><img src="' . $images['cms_arrow_down'] . '" alt="' . $lang['MOVE_DOWN'] . '" title="' . $lang['MOVE_DOWN'] . '" /></a>';
 
 			$class = ($row_counter % 2) ? $theme['td_class2'] : $theme['td_class1'];
 
@@ -605,6 +604,6 @@ else
 	$template->pparse('body');
 }
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

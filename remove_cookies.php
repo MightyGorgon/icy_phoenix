@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -35,11 +35,12 @@ if (isset($_POST['cancel']))
 
 if ($confirm)
 {
-	setcookie($config['cookie_name'] . '_sid', $session_id, - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-	setcookie($config['cookie_name'] . '_f_all', time(), - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-	setcookie($config['cookie_name'] . '_t', serialize($tracking_topics), - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-	setcookie($config['cookie_name'] . '_f', serialize($tracking_forums), - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
-	setcookie($config['cookie_name'] . '_data', serialize($sessiondata), - 3600, $config['cookie_path'], $config['cookie_domain'], $config['cookie_secure']);
+	$cookies_array = array('u', 'k', 'sid', 'f_all', 'f', 't');
+	foreach ($cookies_array as $cookie_name)
+	{
+		$user->set_cookie($cookie_name, '', time() - 3600);
+	}
+
 	message_die(GENERAL_MESSAGE, $lang['Cookies_deleted']);
 }
 else

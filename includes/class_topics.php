@@ -122,9 +122,9 @@ class class_topics
 	/*
 	* Builds icons for topics
 	*/
-	function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $topic_replies, $topic_news_id, $poll_start, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies, $unread)
+	function build_topic_icon_link($forum_id, $topic_id, $topic_type, $topic_reg, $topic_replies, $topic_news_id, $poll_start, $topic_status, $topic_moved_id, $topic_post_time, $user_replied, $replies)
 	{
-		//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies, $unread);
+		//build_topic_icon_link($forum_id, $topic_rowset[$i]['topic_id'], $topic_rowset[$i]['topic_type'], $topic_rowset[$i]['topic_replies'], $topic_rowset[$i]['news_id'], $topic_rowset[$i]['poll_start'], $topic_rowset[$i]['topic_status'], $topic_rowset[$i]['topic_moved_id'], $topic_rowset[$i]['post_time'], $user_replied, $replies);
 		global $config, $lang, $images, $user, $tracking_topics, $tracking_forums, $forum_id_append, $topic_id_append;
 
 		$topic_link = array();
@@ -229,7 +229,7 @@ class class_topics
 		{
 			//-----------------------------------------------------------
 			//<!-- BEGIN Unread Post Information to Database Mod -->
-			if(!$user->data['upi2db_access'] || !is_array($unread))
+			if(!$user->data['upi2db_access'] || !is_array($user->data['upi2db_unread']))
 			{
 			//<!-- END Unread Post Information to Database Mod -->
 			//------------------------------------------------------------
@@ -278,7 +278,7 @@ class class_topics
 			}
 			else
 			{
-				$upi_calc = $this->upi_calc_unread_simple($unread, $topic_link['topic_id']);
+				$upi_calc = $this->upi_calc_unread_simple($topic_link['topic_id']);
 				$unread_topics = $upi_calc['unread'];
 				//$topic_link['type'] = $upi_calc['upi_prefix'] . $topic_link['type'];
 				$upi_calc['newest_post_id'] = $post_id;
@@ -320,31 +320,31 @@ class class_topics
 	/*
 	* UPI get unread messages
 	*/
-	function upi_calc_unread_simple($unread, $topic_id)
+	function upi_calc_unread_simple($topic_id)
 	{
 		global $user, $lang;
 
 		$upi2db_status = '';
-		if (in_array($topic_id, $unread['new_topics']) || in_array($topic_id, $unread['edit_topics']))
+		if (!empty($user->data['upi2db_unread']) && (in_array($topic_id, $user->data['upi2db_unread']['new_topics']) || in_array($topic_id, $user->data['upi2db_unread']['edit_topics'])))
 		{
-			if((in_array($topic_id, $unread['new_topics']) && in_array($topic_id, $unread['edit_topics'])) && $user->data['user_upi2db_new_word'] && $user->data['user_upi2db_edit_word'])
+			if((in_array($topic_id, $user->data['upi2db_unread']['new_topics']) && in_array($topic_id, $user->data['upi2db_unread']['edit_topics'])) && $user->data['user_upi2db_new_word'] && $user->data['user_upi2db_edit_word'])
 			{
 				$upi2db_status = $lang['upi2db_post_edit'] . $lang['upi2db_post_and'] . $lang['upi2db_post_new'] . ': ';
 			}
 			else
 			{
-				if(in_array($topic_id, $unread['new_topics']) && $user->data['user_upi2db_new_word'])
+				if(in_array($topic_id, $user->data['upi2db_unread']['new_topics']) && $user->data['user_upi2db_new_word'])
 				{
 					$upi2db_status = $lang['upi2db_post_new'] . ': ';
 				}
 
-				if(in_array($topic_id, $unread['edit_topics']) && $user->data['user_upi2db_edit_word'])
+				if(in_array($topic_id, $user->data['upi2db_unread']['edit_topics']) && $user->data['user_upi2db_edit_word'])
 				{
 					$upi2db_status = $lang['upi2db_post_edit'] . ': ';
 				}
 			}
-			$min_new_post_id = (empty($unread[$topic_id]['new_posts'])) ? '99999999' : min($unread[$topic_id]['new_posts']);
-			$min_edit_post_id = (empty($unread[$topic_id]['edit_posts'])) ? '99999999' : min($unread[$topic_id]['edit_posts']);
+			$min_new_post_id = (empty($user->data['upi2db_unread'][$topic_id]['new_posts'])) ? '99999999' : min($user->data['upi2db_unread'][$topic_id]['new_posts']);
+			$min_edit_post_id = (empty($user->data['upi2db_unread'][$topic_id]['edit_posts'])) ? '99999999' : min($user->data['upi2db_unread'][$topic_id]['edit_posts']);
 			$post_id = ($min_edit_post_id >= $min_new_post_id) ? $min_new_post_id : $min_edit_post_id;
 			$upi_calc['unread'] = true;
 			$upi_calc['upi_prefix'] = $upi2db_status;
@@ -414,7 +414,7 @@ class class_topics
 	/*
 	* Fetch posts
 	*/
-	function fetch_posts($forum_sql, $number_of_posts, $text_length, $show_portal = false, $random_mode = false, $single_post = false, $only_auth_view = true)
+	function fetch_posts($forum_sql, $number_of_posts, $text_length, $show_portal = false, $sort_mode = 0, $single_post = false, $only_auth_view = true)
 	{
 		global $db, $cache, $config, $user, $bbcode, $lofi;
 
@@ -451,12 +451,19 @@ class class_topics
 			$add_to_sql .= ' AND t.topic_show_portal = 1';
 		}
 
-		if (!empty($random_mode))
+		if ($sort_mode == 1)
 		{
+			// Random
 			$order_sql = 'RAND()';
+		}
+		elseif ($sort_mode == 2)
+		{
+			// Alphabetical
+			$order_sql = 't.topic_title ASC';
 		}
 		else
 		{
+			// Recent
 			$order_sql = 't.topic_time DESC';
 		}
 
@@ -472,7 +479,7 @@ class class_topics
 		if (!empty($single_post))
 		{
 			$single_post_id = $forum_sql;
-			$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
+			$sql = "SELECT p.post_id, p.topic_id, p.forum_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled, t.forum_id, t.topic_time, t.topic_title, t.topic_first_post_id, t.topic_attachment, t.topic_views, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color
 					FROM " . POSTS_TABLE . " AS p, " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u
 					WHERE p.post_id = '" . $single_post_id . "'
 						" . $add_to_sql . "
@@ -481,7 +488,7 @@ class class_topics
 		}
 		else
 		{
-			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
+			$sql = "SELECT t.topic_id, t.topic_time, t.topic_title, t.forum_id, t.topic_poster, t.topic_first_post_id, t.topic_status, t.topic_show_portal, t.topic_attachment, t.topic_views, t.topic_replies, u.username, u.user_id, u.user_active, u.user_color, p.post_id, p.enable_html, p.enable_bbcode, p.enable_smilies, p.post_attachment, p.enable_autolinks_acronyms, p.post_text, p.post_text_compiled
 					FROM " . TOPICS_TABLE . " AS t, " . USERS_TABLE . " AS u, " . POSTS_TABLE . " AS p
 					WHERE t.topic_time <= " . time() . "
 						" . $add_to_sql . "
@@ -505,9 +512,10 @@ class class_topics
 				$posts[$i]['enable_smilies'] = $row['enable_smilies'];
 				$posts[$i]['enable_autolinks_acronyms'] = $row['enable_autolinks_acronyms'];
 				$posts[$i]['post_text'] = $row['post_text'];
-				$message = $posts[$i]['post_text'];
 				$posts[$i]['forum_id'] = $row['forum_id'];
 				$posts[$i]['topic_id'] = $row['topic_id'];
+				$posts[$i]['topic_first_post_id'] = $row['topic_first_post_id'];
+				$posts[$i]['topic_views'] = $row['topic_views'];
 				$posts[$i]['topic_replies'] = $row['topic_replies'];
 				$posts[$i]['topic_time'] = create_date_ip($config['default_dateformat'], $row['topic_time'], $config['board_timezone']);
 				$posts[$i]['topic_title'] = $row['topic_title'];
@@ -519,43 +527,41 @@ class class_topics
 				$posts[$i]['post_id'] = $row['post_id'];
 				$posts[$i]['post_attachment'] = $row['post_attachment'];
 
-				$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
-
-				$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
-				$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
-				$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
-
-				$clean_tags = false;
-				if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))
+				if ($text_length >= 0)
 				{
-					$clean_tags = true;
-					$posts[$i]['striped'] = 1;
-				}
+					$message = $posts[$i]['post_text'];
+					$message_compiled = (empty($posts[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $posts[$i]['post_text_compiled'];
 
-				if ($message_compiled === false)
-				{
-					$posts[$i]['post_text'] = $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags);
-				}
-				else
-				{
-					$posts[$i]['post_text'] = $message_compiled;
-				}
+					$bbcode->allow_bbcode = ($config['allow_bbcode'] && $user->data['user_allowbbcode'] && $posts[$i]['enable_bbcode']) ? true : false;
+					$bbcode->allow_html = ((($config['allow_html'] && $user->data['user_allowhtml']) || $config['allow_html_only_for_admins']) && $posts[$i]['enable_html']) ? true : false;
+					$bbcode->allow_smilies = ($config['allow_smilies'] && $posts[$i]['enable_smilies'] && !$lofi) ? true : false;
 
-				if ($clean_tags == true)
-				{
-					$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? (substr($posts[$i]['post_text'], 0, $text_length) . ' ...') : $posts[$i]['post_text'];
-				}
+					$clean_tags = false;
+					if ((strlen($posts[$i]['post_text']) > $text_length) && ($text_length > 0))
+					{
+						$clean_tags = true;
+						$posts[$i]['striped'] = 1;
+					}
 
+					$posts[$i]['post_text'] = ($message_compiled === false) ? $bbcode->parse($posts[$i]['post_text'], '', false, $clean_tags) : $message_compiled;
+
+					if (!empty($clean_tags))
+					{
+						$posts[$i]['post_text'] = (strlen($posts[$i]['post_text']) > $text_length) ? truncate_html_string($posts[$i]['post_text'], $text_length) : $posts[$i]['post_text'];
+					}
+
+					$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
+
+					//Acronyms, AutoLinks - BEGIN
+					if ($posts[$i]['enable_autolinks_acronyms'])
+					{
+						$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
+						$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
+					}
+					//Acronyms, AutoLinks - END
+				}
 				$posts[$i]['topic_title'] = censor_text($posts[$i]['topic_title']);
-				$posts[$i]['post_text'] = censor_text($posts[$i]['post_text']);
 
-				//Acronyms, AutoLinks - BEGIN
-				if ($posts[$i]['enable_autolinks_acronyms'])
-				{
-					$posts[$i]['post_text'] = $bbcode->acronym_pass($posts[$i]['post_text']);
-					$posts[$i]['post_text'] = $bbcode->autolink_text($posts[$i]['post_text'], '999999');
-				}
-				//Acronyms, AutoLinks - END
 				$i++;
 			}
 			while ($row = $db->sql_fetchrow($result));
@@ -619,7 +625,7 @@ class class_topics
 	*/
 	function remove_poll($topic_id)
 	{
-		global $db, $cache, $config, $user;
+		global $db, $cache, $config, $user, $lang;
 
 		$sql_ary = array(
 			'poll_title' => '',
@@ -640,6 +646,8 @@ class class_topics
 
 		$sql = "DELETE FROM " . POLL_VOTES_TABLE . " WHERE topic_id = " . (int) $topic_id;
 		$db->sql_query($sql);
+
+		empty_cache_folders(POSTS_CACHE_FOLDER);
 	}
 
 	/**

@@ -38,7 +38,7 @@
 </tr>
 <tr>
 	<td class="row3" colspan="2" align="center">
-		<div style="text-align:center;"><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span></div>
+		<div style="text-align: center;"><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span></div>
 	</td>
 </tr>
 </table>{IMG_TBR}

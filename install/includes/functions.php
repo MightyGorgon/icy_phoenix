@@ -666,7 +666,7 @@ function obtain_word_list(&$orig_word, &$replacement_word)
 function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '', $err_file = '', $sql = '')
 {
 	global $db, $config, $template, $theme, $images, $lang, $nav_links, $gen_simple_header;
-	global $user, $user_ip, $session_length;
+	global $user, $user_ip;
 	global $starttime;
 
 	if(defined('HAS_DIED'))
@@ -709,7 +709,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	{
 		// Start session management
 		$user->session_begin();
-		//$auth->acl($user->data);
+		$auth->acl($user->data);
 		$user->setup();
 		// End session management
 	}
@@ -916,7 +916,7 @@ function redirect($url, $return = false)
 		$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
 
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_XML_LANG'] . '">';
+		echo '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang['DIRECTION'] . '" lang="' . $lang['HEADER_LANG'] . '" xml:lang="' . $lang['HEADER_LANG_XML'] . '">';
 		echo '<head>';
 		echo '<meta http-equiv="content-type" content="text/html; charset=' . $encoding_charset . '" />';
 		echo '<meta http-equiv="refresh" content="0; url=' . str_replace('&', '&amp;', $url) . '" />';
@@ -1033,19 +1033,19 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 
 	$word = array();
 	$word_insert_sql = array();
-	while ( list($word_in, $search_matches) = @each($search_raw_words) )
+	while (list($word_in, $search_matches) = @each($search_raw_words))
 	{
 		$word_insert_sql[$word_in] = '';
-		if ( !empty($search_matches) )
+		if (!empty($search_matches))
 		{
 			for ($i = 0; $i < sizeof($search_matches); $i++)
 			{
 				$search_matches[$i] = trim($search_matches[$i]);
 
-				if( $search_matches[$i] != '' )
+				if($search_matches[$i] != '')
 				{
 					$word[] = $search_matches[$i];
-					if ( !strstr($word_insert_sql[$word_in], "'" . $search_matches[$i] . "'") )
+					if (!strstr($word_insert_sql[$word_in], "'" . $search_matches[$i] . "'"))
 					{
 						$word_insert_sql[$word_in] .= ( $word_insert_sql[$word_in] != "" ) ? ", '" . $search_matches[$i] . "'" : "'" . $search_matches[$i] . "'";
 					}
@@ -1380,7 +1380,7 @@ function sync($type, $id = false)
 
 	switch($type)
 	{
-		case 'all forums':
+		case 'all_forums':
 			$sql = "SELECT forum_id
 				FROM " . FORUMS_TABLE;
 			if ( !($result = $db->sql_query($sql)) )
@@ -1394,7 +1394,7 @@ function sync($type, $id = false)
 			}
 			break;
 
-		case 'all topics':
+		case 'all_topics':
 			$sql = "SELECT topic_id
 				FROM " . TOPICS_TABLE;
 			if ( !($result = $db->sql_query($sql)) )

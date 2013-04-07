@@ -306,6 +306,6 @@ while ($c_cur = &$cash->currency_next($cm_i))
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

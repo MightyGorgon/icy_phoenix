@@ -142,48 +142,58 @@ function make_hours($base_time)
 
 function get_forum_most_active($user_id)
 {
-	global $db, $user;
+	global $db, $cache, $config, $auth, $user, $lang;
 
 	$user_id = (int) $user_id;
 	if (empty($user_id))
 	{
-		message_die(GENERAL_MESSAGE, $lang['User_not_exist']);
+		return $user_most_active;
 	}
 
 	$most_active_id = array();
-	$forum_types = array(FORUM_POST);
-	$forums_array = get_forums_ids($forum_types, true, false);
-	foreach ($forums_array as $forum)
+
+	$allowed_forums = build_allowed_forums_list(true);
+	$forum_sql = (sizeof($allowed_forums) ? ' AND ' . $db->sql_in_set('forum_id', $allowed_forums) : '');
+
+	// Obtain active forum
+	// Maybe we should add a check on post count switch for forums? ==> " AND f.forum_postcount = 1"
+	$sql = "SELECT forum_id, COUNT(post_id) AS num_posts
+		FROM " . POSTS_TABLE . "
+		WHERE poster_id = " . (int) $user_id . "
+			$forum_sql
+		GROUP BY forum_id
+		ORDER BY num_posts DESC";
+	$result = $db->sql_query_limit($sql, 1);
+	$active_f_row = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+
+	if (!empty($active_f_row))
 	{
-		$most_active_id[] = $forum['forum_id'];
-		$most_active_name[$forum['forum_id']] = $forum['forum_name'];
+		$sql = "SELECT forum_name
+			FROM " . FORUMS_TABLE . "
+			WHERE forum_id = " . $active_f_row['forum_id'];
+		$result = $db->sql_query($sql, 0, 'forum_name_', FORUMS_CACHE_FOLDER);
+		$active_f_row['forum_name'] = (string) $db->sql_fetchfield('forum_name');
+		$db->sql_freeresult($result);
 	}
 
-	$count_most_active_id = sizeof($most_active_id);
-
-	$most_active_posts = 0;
-	$num_result = 0;
-
-	foreach ($most_active_id as $f_id)
+	$active_f_name = $lang['No_Posts'];
+	$active_f_id = 0;
+	$active_f_count = 0;
+	/*
+	$active_f_pct = '';
+	*/
+	if (!empty($active_f_row['num_posts']))
 	{
-		$is_auth = auth(AUTH_VIEW, $f_id, $user->data);
-		if ($is_auth['auth_view'] == 1)
-		{
-			$sql_most = "SELECT *
-				FROM " . POSTS_TABLE . "
-				WHERE forum_id = " . $f_id . " AND poster_id = " . $user_id;
-			$result = $db->sql_query($sql_most);
-
-			if ($db->sql_numrows($result) > $most_active_posts)
-			{
-				$most_active_posts = $db->sql_numrows($result);
-				$most_active_foren_id = $i;
-				$most_active_forum_name = $most_active_name[$i];
-			}
-		}
+		$active_f_name = $active_f_row['forum_name'];
+		$active_f_id = $active_f_row['forum_id'];
+		$active_f_count = $active_f_row['num_posts'];
+		/*
+		$active_f_pct = ($userdata['user_posts']) ? ($active_f_count / $userdata['user_posts']) * 100 : 0;
+		*/
 	}
 
-	return array('forum_id' => $most_active_foren_id, 'forum_name' => $most_active_forum_name, 'posts' => $most_active_posts);
+	return array('forum_id' => $active_f_id, 'forum_name' => $active_f_name, 'posts' => $active_f_count);
 }
 
 function user_get_thanks_received($user_id)

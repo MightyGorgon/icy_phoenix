@@ -17,9 +17,12 @@ define ('NUM_SHOUT', 20);
 
 // Start session management
 $user->session_begin(false);
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
+
+// Force all active content BBCodes OFF!
+$config['switch_bbcb_active_content'] = 0;
 
 $cms_page['page_id'] = 'shoutbox';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);

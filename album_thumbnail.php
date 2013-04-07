@@ -22,7 +22,7 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
 // Start session management
 $user->session_begin(false);
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
 
@@ -36,8 +36,10 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $pic_id = request_var('pic_id', 0);
 if ($pic_id <= 0)
 {
-	die('No pics specified');
-	//message_die(GENERAL_MESSAGE, 'No pics specified');
+	image_no_thumbnail('no_thumb.jpg');
+	exit;
+	//die($lang['NO_PICS_SPECIFIED']);
+	//message_die(GENERAL_MESSAGE, $lang['NO_PICS_SPECIFIED']);
 }
 
 // ------------------------------------
@@ -119,9 +121,7 @@ if (($album_config['hotlink_prevent'] == true) && (isset($_SERVER['HTTP_REFERER'
 	{
 		message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		/*
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail($pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		exit;
 		*/
 	}
@@ -148,9 +148,7 @@ switch ($pic_info['filetype'])
 		$file_header = 'Content-type: image/png';
 		break;
 	default:
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail('thumb_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		exit;
 		break;
 }
@@ -205,9 +203,7 @@ else
 		switch ($pic_info['filetype'])
 		{
 			case 'gif':
-				header('Content-type: image/jpeg');
-				header('Content-Disposition: filename=thumb_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-				readfile($images['no_thumbnail']);
+				image_no_thumbnail('thumb_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 				exit;
 				break;
 		}
@@ -266,9 +262,8 @@ else
 				@imagepng($thumbnail);
 				break;
 			default:
-				header('Content-type: image/jpeg');
-				header('Content-Disposition: filename=thumb_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-				readfile($images['no_thumbnail']);
+				image_no_thumbnail('thumb_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
+				exit;
 				break;
 		}
 		exit;
@@ -330,9 +325,7 @@ else
 	else
 	{
 		$Image->Destroy();
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=thumb_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
-		readfile($images['no_thumbnail']);
+		image_no_thumbnail('thumb_' . $pic_info['title_reg'] . '.' . $pic_info['filetype']);
 		exit;
 	}
 }

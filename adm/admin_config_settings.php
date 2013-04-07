@@ -22,9 +22,6 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
-include(IP_ROOT_PATH . 'includes/class_form.' . PHP_EXT);
-$class_form = new class_form();
-
 // Get all settings
 define('BOARD_CONFIG', true);
 $class_settings->setup_settings();

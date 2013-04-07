@@ -1,9 +1,9 @@
 Subject: You've received a warning
-Charset: iso-8859-1
+
 <br /><font face="Verdana" size="2">
 Hello, <b>{WARNED_POSTER}</b><br /><br />
 
-You account on <b>{SITENAME}</b> has received a warning.<br />
+Your account on <b>{SITENAME}</b> has received a warning.<br />
 You have now a total of <b>{WARNINGS}</b> warnings, if you accumulate more than <b>{TOTAL_WARN}</b> your account will be blocked.<br /><br />
 
 The reasons for this are numerous, this warning is given because of this post: <br /><br />

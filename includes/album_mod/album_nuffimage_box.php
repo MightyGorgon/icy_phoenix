@@ -19,8 +19,6 @@ if (!defined('IN_ICYPHOENIX'))
 require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 $nuff_http = nuff_http_vars();
 
-//include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_album_main.' . PHP_EXT);
-
 /*
 if ($album_config['enable_nuffimage'] == 1)
 {
@@ -34,6 +32,8 @@ $sort_method = check_var_value($sort_method, array('pic_time', 'pic_title', 'pic
 
 $sort_order = request_var('sort_order', $album_config['sort_order']);
 $sort_order = check_var_value(strtoupper($sort_order), array('ASC', 'DESC'));
+
+$sort_append = '&amp;sort_method=' . $sort_method . '&amp;sort_order=' . $sort_order;
 
 if ($album_config['enable_sepia_bw'] == 1)
 {
@@ -126,7 +126,7 @@ $template->assign_vars(array(
 	'NUFF_PIC_ID' => $pic_id,
 
 	//'HIDDEN_FIELDS_NUFF' => append_sid(album_append_uid(('album_pic_nuffed.' . PHP_EXT . '?pic_id=' . $pic_id . $nuff_mode)),
-	'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;nuffimage=true&amp;sort_order=' . $sort_order . '&amp;sort_method=' . $sort_method)),
+	'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . $sort_append . '&amp;nuffimage=true')),
 
 	//'U_NUFFIMAGE_ACTION' => append_sid(album_append_uid('album_showpage.' . PHP_EXT)),
 	// This would be required in tpl if you want to hide pic id and nuffimage var.

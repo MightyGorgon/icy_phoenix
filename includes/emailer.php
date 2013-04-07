@@ -266,7 +266,7 @@ class emailer
 	{
 		global $db, $config, $lang;
 
-		if (defined('EMAILER_DISABLED') && !empty(EMAILER_DISABLED))
+		if (defined('EMAILER_DISABLED') && EMAILER_DISABLED)
 		{
 			return false;
 		}
@@ -423,7 +423,7 @@ class emailer
 	/**
 	* Selects which template to use
 	*/
-	function use_template($template_file, $template_lang = '', $no_template = false)
+	function use_template($template_file, $template_lang = '', $no_template = false, $plugin_path = '')
 	{
 		global $config;
 
@@ -437,42 +437,42 @@ class emailer
 			$template_lang = $config['default_lang'];
 		}
 
-		if (!empty($config['html_email']))
-		{
-			if (empty($this->tpl_msg[$template_lang . $template_file]))
-			{
-				$tpl_file = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/' . $template_file . '.tpl';
+		$email_template_path = IP_ROOT_PATH . (!empty($plugin_path) ? $plugin_path : '');
+		$email_lang_folder = 'language/lang_' . $template_lang . '/';
+		$email_format_folder = 'email/' . (!empty($config['html_email']) ? 'html/' : 'txt/');
 
+		if (empty($this->tpl_msg[$template_lang . $template_file]))
+		{
+			$tpl_file = $email_template_path . $email_lang_folder . $email_format_folder . $template_file . '.tpl';
+			if (!@file_exists(@phpbb_realpath($tpl_file)))
+			{
+				// Try to force English!
+				$email_lang_folder = 'language/lang_english/';
+				$tpl_file = $email_template_path . $email_lang_folder . $email_format_folder . $template_file . '.tpl';
 				if (!@file_exists(@phpbb_realpath($tpl_file)))
 				{
-					$tpl_file = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/email/html/' . $template_file . '.tpl';
-
-					if (!@file_exists(@phpbb_realpath($tpl_file)))
-					{
-						message_die(GENERAL_ERROR, 'Could not find email template file :: ' . $template_file, '', __LINE__, __FILE__);
-					}
+					message_die(GENERAL_ERROR, 'Could not find email template file :: ' . $template_file, '', __LINE__, __FILE__);
 				}
-
-				if (!($fd = @fopen($tpl_file, 'r')))
-				{
-					message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_file, '', __LINE__, __FILE__);
-				}
-
-				$this->tpl_msg[$template_lang . $template_file] = @fread($fd, @filesize($tpl_file));
-				@fclose($fd);
 			}
 
+			if (!($fd = @fopen($tpl_file, 'r')))
+			{
+				message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_file, '', __LINE__, __FILE__);
+			}
+
+			$this->tpl_msg[$template_lang . $template_file] = @fread($fd, @filesize($tpl_file));
+			@fclose($fd);
+		}
+
+		if (!empty($config['html_email']))
+		{
 			$mail_header = '';
 			$mail_footer = '';
 			if (!$no_template)
 			{
-				$tpl_header = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_header.tpl';
-
-				if (!@file_exists(@phpbb_realpath($tpl_header)))
-				{
-					$tpl_header = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/email/html/html_mail_header.tpl';
-				}
-
+				// We don't check here if the file exists for the same lang, because we already checked above and switched to English if needed
+				// Also we use here IP_ROOT_PATH and not the full path, since header is only in root
+				$tpl_header = IP_ROOT_PATH . $email_lang_folder . $email_format_folder . 'html_mail_header.tpl';
 				if (!($fd = @fopen($tpl_header, 'r')))
 				{
 					message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_header, '', __LINE__, __FILE__);
@@ -481,23 +481,13 @@ class emailer
 				$mail_header = fread($fd, filesize($tpl_header));
 				fclose($fd);
 
-				// Mighty Gorgon - Add Site Url - BEGIN
-				$site_url = (($_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://') . trim($config['server_name']) . (($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '') . preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path'])) . '/';
-				if (substr($site_url, (strlen($site_url) - 1), 1) <> '/')
-				{
-					$site_url = $site_url . '/';
-				}
-				$mail_header = str_replace('{ROOT}', $site_url, $mail_header);
+				// Mighty Gorgon - Add Server URL - BEGIN
+				$server_url = create_server_url();
+				$mail_header = str_replace('{ROOT}', $server_url, $mail_header);
 				$mail_header = str_replace('{SITENAME}', $config['sitename'], $mail_header);
-				// Mighty Gorgon - Add Site Url - END
+				// Mighty Gorgon - Add Server URL - END
 
-				$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/html/html_mail_footer.tpl';
-
-				if (!@file_exists(@phpbb_realpath($tpl_footer)))
-				{
-					$tpl_footer = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/email/html/html_mail_footer.tpl';
-				}
-
+				$tpl_footer = IP_ROOT_PATH . $email_lang_folder . $email_format_folder . 'html_mail_footer.tpl';
 				if (!($fd = @fopen($tpl_footer, 'r')))
 				{
 					message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_footer, '', __LINE__, __FILE__);
@@ -508,38 +498,13 @@ class emailer
 			}
 
 			$this->msg = $mail_header . $this->tpl_msg[$template_lang . $template_file] . $mail_footer;
-
-			return true;
 		}
 		else
 		{
-			if (empty($this->tpl_msg[$template_lang . $template_file]))
-			{
-				$tpl_file = IP_ROOT_PATH . 'language/lang_' . $template_lang . '/email/txt/' . $template_file . '.tpl';
-
-				if (!@file_exists(@phpbb_realpath($tpl_file)))
-				{
-					$tpl_file = IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/email/txt/' . $template_file . '.tpl';
-
-					if (!@file_exists(@phpbb_realpath($tpl_file)))
-					{
-						message_die(GENERAL_ERROR, 'Could not find email template file :: ' . $template_file, '', __LINE__, __FILE__);
-					}
-				}
-
-				if (!($fd = @fopen($tpl_file, 'r')))
-				{
-					message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_file, '', __LINE__, __FILE__);
-				}
-
-				$this->tpl_msg[$template_lang . $template_file] = @fread($fd, @filesize($tpl_file));
-				@fclose($fd);
-			}
-
 			$this->msg = $this->tpl_msg[$template_lang . $template_file];
-
-			return true;
 		}
+
+		return true;
 	}
 
 	/*

@@ -28,6 +28,14 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 
+if (!class_exists('bbcode') || empty($bbcode))
+{
+	@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+}
+$bbcode->allow_html = ($config['allow_html'] ? true : false);
+$bbcode->allow_bbcode = ($config['allow_bbcode'] ? true : false);
+$bbcode->allow_smilies = ($config['allow_smilies'] ? true : false);
+
 $start = request_var('start', 0);
 $start = ($start < 0) ? 0 : $start;
 
@@ -172,7 +180,6 @@ $sql ="SELECT * FROM " . TOPICS_TABLE . "
 		WHERE poll_title <> ''
 		ORDER BY " . $order_by;
 $result = $db->sql_query($sql);
-$num_polls = $db->sql_numrows($result);
 
 $i = 0;
 while ($row = $db->sql_fetchrow($result))
@@ -220,10 +227,11 @@ while ($row = $db->sql_fetchrow($result))
 		$target_user = substr($target_user, '0', strrpos($target_user, ', '));
 	}
 
+
 	$template->assign_block_vars('votes', array(
 		'COLOR' => $topic_row_color,
 		'LINK' => IP_ROOT_PATH . CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id,
-		'DESCRIPTION' => $vote_text,
+		'DESCRIPTION' => $bbcode->parse($vote_text),
 		'USER' => $target_user,
 		'ENDDATE' => $vote_end,
 		'VOTE_DURATION' => $vote_duration,
@@ -241,7 +249,7 @@ while ($row = $db->sql_fetchrow($result))
 			$target_user = substr($target_user, '0', strrpos($target_user, ', '));
 
 			$template->assign_block_vars('votes.detail', array(
-				'OPTION' => $option_text,
+				'OPTION' => $bbcode->parse($option_text),
 				'RESULT' => $option_result,
 				'USER' => $target_user
 				)
@@ -254,10 +262,16 @@ while ($row = $db->sql_fetchrow($result))
 }
 $db->sql_freeresult($result);
 
+// Get all polls
+$sql ="SELECT topic_id FROM " . TOPICS_TABLE . "
+		WHERE poll_title <> ''";
+$result = $db->sql_query($sql);
+$num_polls = $db->sql_numrows($result);
+
 // Pagination routine
 if ($num_polls > 0)
 {
-	$pagination = generate_pagination('admin_voting.' . PHP_EXT . '?mode=' . $sort_field . '&amp;order=' . $sort_order, $num_polls, $config['topics_per_page'], $start). '&nbsp;';
+	$pagination = generate_pagination('admin_voting.' . PHP_EXT . '?mode=' . $sort_field . '&amp;order=' . $sort_order, $num_polls, $config['topics_per_page'], $start) . '&nbsp;';
 }
 
 $template->assign_vars(array(
@@ -270,6 +284,6 @@ $template->assign_vars(array(
 
 $template->pparse('pollbody');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

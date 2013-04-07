@@ -106,13 +106,13 @@ function split_words($entry, $mode = 'post')
 function add_search_words($mode, $post_id, $post_text, $post_title = '')
 {
 	global $db, $config, $lang;
+	global $stopwords_array, $synonyms_array;
 
-	$stopword_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_stopwords.txt');
-	$synonym_array = @file(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/search_synonyms.txt');
+	stopwords_synonyms_init();
 
 	$search_raw_words = array();
-	$search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopword_array, $synonym_array));
-	$search_raw_words['title'] = split_words(clean_words('post', $post_title, $stopword_array, $synonym_array));
+	$search_raw_words['text'] = split_words(clean_words('post', $post_text, $stopwords_array, $synonyms_array));
+	$search_raw_words['title'] = split_words(clean_words('post', $post_title, $stopwords_array, $synonyms_array));
 
 	@set_time_limit(0);
 
@@ -376,7 +376,7 @@ function username_search($search_match, $ajax_search = false)
 		'USERNAME' => (!empty($search_match)) ? phpbb_clean_username($search_match) : '',
 
 		'L_CLOSE_WINDOW' => $lang['Close_window'],
-		'L_SEARCH_USERNAME' => $lang['Find_username'],
+		'L_SEARCH_USERNAME' => $lang['FIND_USERNAME'],
 		'L_UPDATE_USERNAME' => $lang['Select_username'],
 		'L_SELECT' => $lang['Select'],
 		'L_SEARCH' => $lang['Search'],

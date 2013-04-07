@@ -50,7 +50,8 @@ if (isset($_POST['submit']))
 		$this_userdata = get_userdata($username, true);
 		if(!$this_userdata)
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		// CrackerTracker v5.x
@@ -74,13 +75,14 @@ if (isset($_POST['submit']))
 		$email_list_temp = explode(',', $ban_emails);
 
 		// CrackerTracker v5.x
-		include_once(IP_ROOT_PATH . 'ctracker/constants.' . PHP_EXT);
+		include(IP_ROOT_PATH . 'includes/ctracker/constants.' . PHP_EXT);
 
 		$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 		$temp_userdata = get_userdata($founder_id, false);
 		if(!$temp_userdata)
 		{
-			message_die(GENERAL_MESSAGE, $lang['No_user_id_specified']);
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_USER');
 		}
 
 		if (in_array($temp_userdata['user_email'], $email_list_temp))
@@ -120,13 +122,15 @@ if (isset($_POST['submit']))
 		{
 			$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . "session_user_id = " . $user_list[$i];
 
-			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_userid)
-				VALUES (" . $user_list[$i] . ")";
+			$ban_insert_array = array(
+				'ban_userid' => $user_list[$i],
+				'ban_by_userid' => $user->data['user_id'],
+				'ban_start' => time()
+			);
+			$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
 			$db->sql_query($sql);
 
-			$sql = "UPDATE " . USERS_TABLE . "
-					SET user_warnings = " . $config['max_user_bancard'] . "
-					WHERE user_id = " . $user_list[$i];
+			$sql = "UPDATE " . USERS_TABLE . " SET user_warnings = " . $config['max_user_bancard'] . " WHERE user_id = " . $user_list[$i];
 			$db->sql_query($sql);
 		}
 	}
@@ -151,6 +155,8 @@ if (isset($_POST['submit']))
 
 		if (!$in_banlist)
 		{
+			// Mighty Gorgon: we don't use this replacement any more...
+			/*
 			if (preg_match('/(255\.)|(\.255)/is', $ip_list[$i]))
 			{
 				$kill_ip_sql = "session_ip LIKE '" . str_replace('.', '', preg_replace('/(255\.)|(\.255)/is', '%', $ip_list[$i])) . "'";
@@ -159,17 +165,23 @@ if (isset($_POST['submit']))
 			{
 				$kill_ip_sql = "session_ip = '" . $db->sql_escape($ip_list[$i]) . "'";
 			}
+			*/
+			$kill_ip_sql = "session_ip = '" . $db->sql_escape($ip_list[$i]) . "'";
 
 			$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . $kill_ip_sql;
 
-			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_ip)
-				VALUES ('" . $db->sql_escape($ip_list[$i]) . "')";
-			$db->sql_query($sql);
+			$ban_insert_array = array(
+				'ban_ip' => $ip_list[$i],
+				'ban_by_userid' => $user->data['user_id'],
+				'ban_start' => time()
+			);
+			$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
+			$result = $db->sql_query($sql);
 		}
 	}
 
 	// Now we'll delete all entries from the session table with any of the banned user or IP info just entered into the ban table ... this will force a session initialisation resulting in an instant ban
-	if ($kill_session_sql != '')
+	if (!empty($kill_session_sql))
 	{
 		$sql = "DELETE FROM " . SESSIONS_TABLE . "
 			WHERE $kill_session_sql";
@@ -189,8 +201,12 @@ if (isset($_POST['submit']))
 
 		if (!$in_banlist)
 		{
-			$sql = "INSERT INTO " . BANLIST_TABLE . " (ban_email)
-				VALUES ('" . $db->sql_escape($email_list[$i]) . "')";
+			$ban_insert_array = array(
+				'ban_email' => $email_list[$i],
+				'ban_by_userid' => $user->data['user_id'],
+				'ban_start' => time()
+			);
+			$sql = "INSERT INTO " . BANLIST_TABLE . " " . $db->sql_build_insert_update($ban_insert_array, true);
 			$db->sql_query($sql);
 		}
 	}
@@ -339,7 +355,9 @@ else
 
 		if (!empty($banlist[$i]['ban_ip']))
 		{
-			$ban_ip = str_replace('255', '*', $banlist[$i]['ban_ip']);
+			// Mighty Gorgon: we don't use this replacement any more...
+			//$ban_ip = str_replace('255', '*', $banlist[$i]['ban_ip']);
+			$ban_ip = $banlist[$i]['ban_ip'];
 			$select_iplist .= '<option value="' . $ban_id . '">' . $ban_ip . '</option>';
 			$ipban_count++;
 		}
@@ -373,7 +391,6 @@ else
 		'L_UNBAN_EMAIL_EXPLAIN' => $lang['Unban_email_explain'],
 		'L_USERNAME' => $lang['Username'],
 		'L_LOOK_UP' => $lang['Look_up_User'],
-		'L_FIND_USERNAME' => $lang['Find_username'],
 
 		'U_SEARCH_USER' => append_sid(IP_ROOT_PATH . CMS_PAGE_SEARCH . '?mode=searchuser'),
 		'S_UNBAN_USERLIST_SELECT' => $select_userlist,
@@ -386,6 +403,6 @@ else
 
 $template->pparse('body');
 
-include('./page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

@@ -29,7 +29,7 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-include(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_user_search.' . PHP_EXT);
+setup_extra_lang(array('lang_user_search'));
 
 $meta_content['page_title'] = $lang['Search_users_advanced'];
 
@@ -961,7 +961,7 @@ else
 								WHERE u.user_id = ug.user_id
 									AND ug.group_id = g.group_id
 									AND g.group_id = aa.group_id
-									AND aa.forum_id = ". $moderators_forum ."
+									AND aa.forum_id = " . $moderators_forum . "
 									AND aa.auth_mod = 1
 									AND u.user_id <> " . ANONYMOUS;
 
@@ -969,7 +969,7 @@ else
 								WHERE u.user_id = ug.user_id
 									AND ug.group_id = g.group_id
 									AND g.group_id = aa.group_id
-									AND aa.forum_id = ". $moderators_forum ."
+									AND aa.forum_id = " . $moderators_forum . "
 									AND aa.auth_mod = 1
 									AND u.user_id <> ".ANONYMOUS."
 								GROUP BY u.user_id, u.username, u.user_email, u.user_posts, u.user_regdate, u.user_level, u.user_active, u.user_lastvisit";

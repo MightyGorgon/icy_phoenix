@@ -93,7 +93,7 @@ function RSSTimeFormat($utime, $uoffset = 0)
 	}
 	$result = gmdate("D, d M Y H:i:s", $utime + (3600 * $uoffset));
 	$uoffset = intval($uoffset * 100);
-	$result .= ' ' . (($uoffset>0) ? '+' : '') . (($uoffset == 0)? 'GMT' : sprintf((($uoffset < 0) ? "%05d" : "%04d"), $uoffset));
+	$result .= ' ' . (($uoffset > 0) ? '+' : '') . (($uoffset == 0)? 'GMT' : sprintf((($uoffset < 0) ? "%05d" : "%04d"), $uoffset));
 	return $result;
 }
 
@@ -135,7 +135,7 @@ function ExitWithHeader($output,$message='')
 
 function rss_session_begin($user_id, $user_ip)
 {
-	global $db, $config;
+	global $db, $cache, $config, $user;
 	$page_array = extract_current_page(IP_ROOT_PATH);
 
 	$forum_id = request_var(POST_FORUM_URL, 0);
@@ -177,7 +177,7 @@ function rss_session_begin($user_id, $user_ip)
 	}
 	$login = ($user_id != ANONYMOUS) ? 1 : 0;
 
-	$is_banned = check_ban($user_id, $user->ip, $user->data['user_email'], true);
+	$is_banned = $user->check_ban($user_id, $user->ip, $user->data['user_email'], true);
 
 	if ($is_banned)
 	{
@@ -201,7 +201,7 @@ function rss_session_begin($user_id, $user_ip)
 	$sql = "UPDATE " . USERS_TABLE . " SET user_session_time = $current_time, user_session_page = '$page_id', user_lastvisit = $last_visit ";
 	if(LV_MOD_INSTALLED)
 	{
-		$sql .= ", user_lastlogon = $current_time, user_totallogon = (user_totallogon + 1)";
+		$sql .= ", user_totallogon = (user_totallogon + 1)";
 	}
 	$sql .=" WHERE user_id = $user_id";
 	$db->sql_return_on_error(true);

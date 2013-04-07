@@ -40,14 +40,14 @@ $lang = array_merge($lang, array(
 
 // Category View
 	'Category_not_exist' => 'This category does not exist',
-	'Upload_Pic' => 'Upload Pic',
-	'Upload_Pics' => 'Upload Pics',
+	'Upload_Pic' => 'Upload Picture',
+	'Upload_Pics' => 'Upload Pictures',
 	'JUpload_Pic' => 'Upload Multiple Pictures with Jupload',
-	'Pic_Title' => 'Pic Title',
+	'Pic_Title' => 'Picture Title',
 	'View' => 'View',
 	'Pic_Poster' => 'Poster',
 	'Pic_Image' => 'Image',
-	'Waiting' => ' pic(s) waiting for approval',
+	'Waiting' => ' picture(s) waiting for approval',
 
 /*
 	'Album_upload_can' => 'You <b>can</b> upload new pics in this category',
@@ -90,16 +90,16 @@ $lang = array_merge($lang, array(
 	'BBCode_Copy' => 'Copy BBCode',
 
 // Upload
-	'Pic_Desc' => 'Pic Description',
+	'Pic_Desc' => 'Picture Description',
 	'Plain_text_only' => 'Plain text only',
 	'Max_length' => 'Max length (bytes)',
-	'Upload_pic_from_machine' => 'Upload a pic from your machine',
+	'Upload_pic_from_machine' => 'Upload a picture from your machine',
 	'Upload_to_Category' => 'Upload to Category',
 	'Upload_thumbnail_from_machine' => 'Upload its thumbnail from your machine (must be the same type with your pic)',
 	'Upload_thumbnail' => 'Upload a thumbnail image',
 	'Upload_thumbnail_explain' => 'It must be of the same file type as your picture',
 	'Thumbnail_size' => 'Thumbnail size (pixel)',
-	'Filetype_and_thumbtype_do_not_match' => 'Your pic and your thumbnail must be the same type',
+	'Filetype_and_thumbtype_do_not_match' => 'Your picture and your thumbnail must be the same type',
 
 	'Upload_no_title' => 'You must enter a title for your pic',
 	'Upload_no_file' => 'You must enter your path and your filename',
@@ -118,7 +118,7 @@ $lang = array_merge($lang, array(
 	'Upload_image_size_too_big' => 'Your image dimension size is too large',
 	'Upload_thumbnail_size_too_big' => 'Your thumbnail dimension size is too large',
 
-	'Missed_pic_title' => 'You must enter your pic title',
+	'Missed_pic_title' => 'You must enter your picture title',
 
 	'Click_return_category' => 'Click %sHere%s to return to the category',
 	'Click_return_album_index' => 'Click %sHere%s to return to the Album Index',
@@ -138,13 +138,13 @@ $lang = array_merge($lang, array(
 	'No_pictures_selected_for_upload' => 'No pictures selected for upload or unknown error',
 
 // 'Bad_upload_file_size' => 'Your uploaded file is too large or corrupted',
-// 'Album_upload_successful' => 'Your pic has been uploaded successfully',
-// 'Album_upload_need_approval' => 'Your pic has been uploaded successfully.<br /><br />But the feature Pic Approval has been enabled so your pic must be approved by a administrator or a moderator before posting',
+// 'Album_upload_successful' => 'Your picture has been uploaded successfully',
+// 'Album_upload_need_approval' => 'Your picture has been uploaded successfully.<br /><br />But the feature Picture Approval has been enabled so your picture must be approved by a administrator or a moderator before posting',
 
 	'Bad_upload' => 'Bad upload',
 	'Bad_upload_file_size' => 'Your uploaded file (%s) is too large or corrupted',
 	'Album_upload_successful' => 'Your picture(s) has been uploaded successfully',
-	'Album_upload_need_approval' => 'Your picture(s) has been uploaded successfully.<br /><br />But the feature Pic Approval has been enabled so your pic must be approved by a administrator or a moderator before posting.',
+	'Album_upload_need_approval' => 'Your picture(s) has been uploaded successfully.<br /><br />But the feature Picture Approval has been enabled so your picture must be approved by a administrator or a moderator before posting.',
 
 	'Rotation' => 'Rotate (Anti-Clockwise) - Degrees',
 
@@ -173,7 +173,7 @@ $lang = array_merge($lang, array(
 	'Pic_Size' => 'Size',
 	'Pic_Type' => 'Image Type',
 	'Pic_BBCode' => 'BBCode',
-	'Pic_not_exist' => 'This pic does not exist',
+	'Pic_not_exist' => 'This picture does not exist',
 	'Click_enlarge' => 'Click on image to view larger image',
 	'Prev_Pic' => 'View Previous Picture',
 	'Next_Pic' => 'View Next Picture',
@@ -184,11 +184,11 @@ $lang = array_merge($lang, array(
 	'Pics_Nav' => 'Pictures Navigation',
 	'Pics_Nav_Next' => 'Next Picture',
 	'Pics_Nav_Prev' => 'Previous Picture',
-	'Pics_Counter' => 'Viewing Pic %s of %s',
+	'Pics_Counter' => 'Viewing Picture %s of %s',
 
 // Edit Pic
-	'Edit_Pic_Info' => 'Edit Pic Information',
-	'Pics_updated_successfully' => 'Your pic information has been updated successfully',
+	'Edit_Pic_Info' => 'Edit Picture Information',
+	'Pics_updated_successfully' => 'Your picture information has been updated successfully',
 
 // Delete Pic
 	'Album_delete_confirm' => 'Are you sure you want to delete these pic(s)?',
@@ -211,14 +211,15 @@ $lang = array_merge($lang, array(
 	'Pics_unlocked_successfully' => 'Your pic(s) have been unlocked successfully',
 	'Pics_approved_successfully' => 'Your pic(s) have been approved successfully',
 	'Pics_unapproved_successfully' => 'Your pic(s) have been unapproved successfully',
+	'NO_PICS_SPECIFIED' => 'No pic(s) specified',
 
 // Rate
 	'Current_Rating' => 'Current Rating',
 	'Please_Rate_It' => 'Please Rate It',
 	'Login_To_Vote' => 'Please Login To Vote',
-	'Already_rated' => 'You have already rated this pic',
+	'Already_rated' => 'You have already rated this picture',
 	'Own_Pic_Rate' => 'You cannot rate your pictures',
-	'Album_rate_successfully' => 'Your pic has been rated successfully.',
+	'Album_rate_successfully' => 'Your picture has been rated successfully.',
 	'Click_rate_more' => 'Click %sHere%s to rate more pictures.',
 	'Hot_Or_Not' => 'Hot Or Not',
 
@@ -226,8 +227,8 @@ $lang = array_merge($lang, array(
 	'Comment_no_text' => 'Please enter your comment',
 	'Comment_too_long' => 'Your comment is too long',
 	'Comment_delete_confirm' => 'Are you sure you want to delete this comment?',
-	'Pic_Locked' => 'Sorry, this pic was locked. So you cannot post a comment for this pic anymore',
-	'Post_your_comment' => 'Please Enter Your Comment!',
+	'Pic_Locked' => 'Sorry, this picture was locked. So you cannot post a comment for this picture anymore',
+	'Post_your_comment' => 'Please Enter Your Comment',
 
 // Personal Gallery
 	'Personal_Gallery_Explain' => 'You can view the personal galleries of other members by clicking on the link in their profiles',
@@ -306,7 +307,7 @@ $lang = array_merge($lang, array(
 	'Nuff_Explain' => 'Apply multiple effects to the pictures.<br />Remember that this is a <i><b>very heavy operation on server CPU load</b></i>, so please do not abuse it. Some effects will automatically resize the output image to prevent too much charge on the server CPU.',
 	'Nuff_Normal' => 'Normal Image',
 	'Nuff_Normal_Explain' => 'No effects applied',
-	'Nuff_BW' => 'Black & White',
+	'Nuff_BW' => 'Black &amp; White',
 	'Nuff_BW_Explain' => 'Transform the image into Black and White',
 	'Nuff_Sepia' => 'Sepia Tone',
 	'Nuff_Sepia_Explain' => 'Apply sepia toning to the picture',
@@ -352,13 +353,13 @@ $lang = array_merge($lang, array(
 	'Title_Description' => 'Title &amp; Description',
 
 // Pic watch
-	'No_longer_watching_comment' => 'You are no longer watching this pic for comments',
-	'Watching_comment' => 'You are now watching this pic for comments',
+	'No_longer_watching_comment' => 'You are no longer watching this picture for comments',
+	'Watching_comment' => 'You are now watching this picture for comments',
 	'Pic_comment_notification' => 'Album Comment Notification',
-	'Pic_comment_watch_checkbox' => 'Check box to be notified on pic comments:',
-	'Watch_pic' => 'Watch this pic for comments',
-	'Unwatch_pic' => 'Stop watching this pic for comments',
-	'Click_return_pic' => 'Click %sHere%s to return to pic',
+	'Pic_comment_watch_checkbox' => 'Check box to be notified on picture comments:',
+	'Watch_pic' => 'Watch this picture for comments',
+	'Unwatch_pic' => 'Stop watching this picture for comments',
+	'Click_return_pic' => 'Click %sHere%s to return to the picture',
 
 	'Pic_RDF' => 'RSS Feed 1.0',
 	'Pic_RSS' => 'RSS Feed 2.0',

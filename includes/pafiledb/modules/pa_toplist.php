@@ -56,7 +56,7 @@ class pafiledb_toplist extends pafiledb_public
 			'L_HOME' => $lang['Home'],
 			'CURRENT_TIME' => sprintf($lang['Current_time'], create_date($config['default_dateformat'], time(), $config['board_timezone'])),
 
-			'U_INDEX' => append_sid(CMS_PAGE_HOME),
+			'U_INDEX_HOME' => append_sid(CMS_PAGE_HOME),
 			'U_DOWNLOAD' => append_sid('dload.' . PHP_EXT),
 			'U_NEWEST_FILE' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=newest'),
 			'U_MOST_POPULAR' => append_sid('dload.' . PHP_EXT . '?action=toplist&amp;mode=downloads'),

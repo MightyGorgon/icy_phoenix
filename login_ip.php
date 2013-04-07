@@ -23,15 +23,21 @@ if (!class_exists('ct_database'))
 
 // Start session management
 $user->session_begin();
-//$auth->acl($user->data);
+$auth->acl($user->data);
 $user->setup();
 // End session management
+
+// If a bot gets redirected here is almost due to an error or a wrong page management... let's output an Error 404 code
+if (!empty($user->data['is_bot']))
+{
+	redirect(append_sid(CMS_PAGE_ERRORS . '?code=404', true));
+}
 
 // session id check
 $sid = request_var('sid', '');
 
 $redirect = request_var('redirect', '', true);
-$redirect_url = (!empty($redirect) ? urldecode(str_replace(array('&amp;', '?', PHP_EXT . '&'), array('&', '&', PHP_EXT . '?'), $redirect)) : '');
+$redirect_url = (!empty($redirect) ? urldecode(str_replace(array('&amp;', '?', PHP_EXT . '&'), array('&', '&', PHP_EXT . '?'), $redirect)) : CMS_LOGIN_REDIRECT_PAGE);
 
 if (strstr($redirect_url, "\n") || strstr($redirect_url, "\r") || strstr($redirect_url, ';url'))
 {
@@ -88,7 +94,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 
 				if(!empty($user->session_id))
 				{
-					$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
+					$redirect_url = empty($redirect_url) ? CMS_LOGIN_REDIRECT_PAGE : $redirect_url;
 					redirect(append_sid($redirect_url, true));
 				}
 				else
@@ -128,21 +134,22 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 	elseif((isset($_GET['logout']) || isset($_POST['logout'])) && $user->data['session_logged_in'])
 	{
 		// session id check
-		if (($sid == '') || ($sid != $user->data['session_id']))
+		if (empty($sid) || ($sid != $user->data['session_id']))
 		{
-			message_die(GENERAL_ERROR, 'Invalid_session');
+			//message_die(GENERAL_ERROR, 'INVALID_SESSION');
+			trigger_error('INVALID_SESSION');
 		}
 		if($user->data['session_logged_in'])
 		{
 			$user->session_kill();
 		}
 
-		$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
+		$redirect_url = empty($redirect_url) ? CMS_LOGIN_REDIRECT_PAGE : $redirect_url;
 		redirect(append_sid($redirect_url, true));
 	}
 	else
 	{
-		$redirect_url = ($redirect_url == '') ? CMS_PAGE_FORUM : $redirect_url;
+		$redirect_url = empty($redirect_url) ? CMS_LOGIN_REDIRECT_PAGE : $redirect_url;
 		redirect(append_sid($redirect_url, true));
 	}
 }
@@ -152,15 +159,32 @@ else
 	include_once(IP_ROOT_PATH . 'includes/functions_jr_admin.' . PHP_EXT);
 	$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
 
-	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || ($user->data['user_level'] == ADMIN) || (($user->data['user_cms_level'] >= CMS_PUBLISHER)))))
+	// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
+	//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
+	$is_admin = ($user->data['user_level'] == ADMIN) ? true : false;
+	$is_cms_auth = $auth->acl_get('cms_') ? true : false;
+	if (empty($is_admin) && empty($is_cms_auth))
+	{
+		$cms_mode_array = array('block_settings', 'blocks', 'layouts', 'layouts_special');
+		$cms_mode = request_var('mode', '');
+		$cms_lid = request_var('l_id', 0);
+		$cms_sid = request_var('ls_id', 0);
+		$cms_bid = request_var('b_id', 0);
+		if (in_array($cms_mode, $cms_mode_array))
+		{
+			$is_cms_auth = (!empty($cms_lid) && !empty($user->data['user_cms_auth']['cmsl_admin'][$cms_lid])) ? true : $is_cms_auth;
+			$is_cms_auth = (!empty($cms_lid) && !empty($user->data['user_cms_auth']['cmss_admin'][$cms_sid])) ? true : $is_cms_auth;
+			$is_cms_auth = (!empty($cms_lid) && !empty($user->data['user_cms_auth']['cmsb_admin'][$cms_bid])) ? true : $is_cms_auth;
+		}
+	}
+
+	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || $is_admin || $is_cms_auth)))
 	{
 		$skip_nav_cat = true;
-
-		if($redirect_url != '')
+		if(!empty($redirect_url))
 		{
 			$forward_to = $_SERVER['QUERY_STRING'];
-
-			if(preg_match("/^redirect=([a-z0-9\.#\/\?&=\+\-_]+)/si", $forward_to, $forward_matches))
+			if(preg_match("/^redirect=([a-z0-9\.#\/\?%&=\+\-_]+)/si", $forward_to, $forward_matches))
 			{
 				$forward_to = (!empty($forward_matches[3])) ? $forward_matches[3] : $forward_matches[1];
 				$forward_match = explode('&', $forward_to);
@@ -214,7 +238,7 @@ else
 
 		if (!isset($_GET['admin']) && ($config['require_activation'] == USER_ACTIVATION_SELF))
 		{
-			$template->assign_block_vars('switch_resend_activation_email', array());
+			$template->assign_var('S_SWITCH_RESEND_ACTIVATION_EMAIL', true);
 		}
 
 		if (!isset($_GET['admin']))

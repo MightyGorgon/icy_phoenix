@@ -372,7 +372,7 @@ function get_tree_option_optg($cur = '', $all = false, $opt_prefix = true, $mark
 /*
 * Creates a basic forums selectbox
 */
-function make_forum_select($box_name, $ignore_forum = false, $select_forum = '', $all = false)
+function ip_make_forum_select($box_name, $ignore_forum = false, $select_forum = '', $all = false)
 {
 	$s_id = ($select_forum != '') ? POST_FORUM_URL . $select_forum : '';
 	$s_list = get_tree_option($select_forum, $all);
@@ -383,7 +383,7 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '',
 /*
 * Creates a basic topics selectbox
 */
-function make_topic_select($box_name, $forum_id)
+function ip_make_topic_select($box_name, $forum_id)
 {
 	global $db, $user;
 
