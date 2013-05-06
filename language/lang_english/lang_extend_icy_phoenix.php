@@ -414,6 +414,9 @@ if ($lang_extend_admin)
 		'IP_google_analytics' => 'Google Analytics Code',
 		'IP_google_analytics_explain' => 'Insert here your Google Analytics Code (the Javascript provided by Google site) and it will be automatically inserted at the bottom of every page.',
 
+		'IP_google_custom_search' => 'Google Custom Search Code',
+		'IP_google_custom_search_explain' => 'Insert here your Google Custom Search Code to enable gsearch.php feature (allow guests to use Google Search to save some SQL).',
+
 //Sitemap
 		'Sitemap_settings' => 'Sitemap Settings',
 

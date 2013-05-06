@@ -1277,18 +1277,6 @@ $lang = array_merge($lang, array(
 	'Welcome' => 'Welcome',
 	'birthdays' => 'Birthdays',
 
-//Battle of the Sexes
-	'male_zero_total' => '<b>0</b> Male Member', // # registered male users
-	'male_total' => '<b>%d</b> Male Members', // # registered male users
-	'male_one_total' => '<b>%d</b> Male Member', // # registered male users
-	'female_zero_total' => 'We have <b>0</b> Female Member', // # registered female users
-	'female_total' => 'We have <b>%d</b> Female Members', // # registered female users
-	'female_one_total' => 'We have <b>%d</b> Female Member', // # registered female users
-	'unknown_total' => '& <b>%d</b> Members Who Just Don\'t Know',
-	'unknown_one_total' => '& <b>%d</b> Member Who Just Doesn\'t Know',
-	'unknown_zero_total' => '',
-	'battle_of_sexes' => 'Battle of the Sexes: ',
-
 	'who_viewed' => 'Topic\'s views',
 	'BoardRules' => 'Rules',
 

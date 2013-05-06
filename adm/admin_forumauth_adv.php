@@ -25,9 +25,21 @@ require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . './includes/def_auth.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 
-if(isset($_POST['submit']))
-{
+$forum_options = array(
+	//'forum_status' => $lang['Status_locked'],
+	'forum_likes' => $lang['FORUM_LIKES'],
+	'forum_thanks' => $lang['use_thank'],
+	'forum_similar_topics' => $lang['FORUM_SIMILAR_TOPICS'],
+	'forum_limit_edit_time' => $lang['FORUM_LIMIT_EDIT_TIME'],
+	'forum_topic_views' => $lang['FORUM_TOPIC_VIEWS'],
+	'forum_tags' => $lang['FORUM_TAGS'],
+	'forum_sort_box' => $lang['FORUM_SORT_BOX'],
+	'forum_notify' => $lang['Forum_notify'],
+	'forum_postcount' => $lang['Forum_postcount'],
+);
 
+if (isset($_POST['options_submit']) || isset($_POST['submit']))
+{
 	$var_ary = array(
 		'forums' => array(0),
 	);
@@ -37,10 +49,29 @@ if(isset($_POST['submit']))
 		$data[$var] = request_var($var, $default, true);
 	}
 
+	$forums_list = false;
 	if (sizeof($data['forums']))
 	{
+		$forums_list = true;
 		$forums_to_auth = implode('\',\'', $data['forums']);
+	}
 
+	if (isset($_POST['options_submit']) && !empty($forums_list))
+	{
+		$sql_ary = array();
+
+		foreach ($forum_options as $k => $dummy)
+		{
+			$sql_ary[$k] = (isset($_POST[$k]) ? 1 : 0);
+		}
+
+		$sql = "UPDATE " . FORUMS_TABLE . "
+						SET " . $db->sql_build_array('UPDATE', $sql_ary) . "
+						WHERE forum_id IN ('" . $forums_to_auth . "')";
+		$db->sql_query($sql);
+	}
+	elseif(isset($_POST['submit']) && !empty($forums_list))
+	{
 		$sql = '';
 
 		for($i = 0; $i < sizeof($forum_auth_fields); $i++)
@@ -61,13 +92,17 @@ if(isset($_POST['submit']))
 		$sql = "UPDATE " . FORUMS_TABLE . "
 						SET $sql
 						WHERE forum_id IN ('" . $forums_to_auth . "')";
-		//die($sql);
 		$db->sql_query($sql);
 
 		// Delete notifications for not auth users
-		include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
-		$notifications->delete_not_auth_notifications($data['forums']);
+		if (!class_exists('class_notifications'))
+		{
+			include(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+			$class_notifications = new class_notifications();
+		}
+		$class_notifications->delete_not_auth_notifications($data['forums']);
 	}
+	// End of submit
 
 	cache_tree(true);
 
@@ -76,8 +111,7 @@ if(isset($_POST['submit']))
 
 	$message = $lang['Forum_auth_updated'] . '<br /><br />' . sprintf($lang['Click_return_forumauth'], '<a href="' . append_sid('admin_forumauth_adv.' . PHP_EXT) . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
-
-} // End of submit
+}
 
 // Get required information, either all forums if no id was specified or just the requsted if it was
 // Output the authorization details if an id was specified
@@ -107,6 +141,16 @@ for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 
 	$s_column_span++;
 }
+
+foreach ($forum_options as $k => $v)
+{
+	$template->assign_block_vars('forum_option', array(
+		'CELL_TITLE' => $v,
+		'S_AUTH_LEVELS_SELECT' => $k
+		)
+	);
+}
+
 
 $s_hidden_fields = '';
 

@@ -813,8 +813,12 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			// Delete forums/topics notifications if user has been deactivated
 			if (empty($user_status))
 			{
-				include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
-				$notifications->delete_user_notifications($poster_id);
+				if (!class_exists('class_notifications'))
+				{
+					include(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+					$class_notifications = new class_notifications();
+				}
+				$class_notifications->delete_user_notifications($poster_id);
 			}
 
 			// PROFILE EDIT BRIDGE - BEGIN

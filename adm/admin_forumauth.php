@@ -107,8 +107,12 @@ if(isset($_POST['submit']))
 		}
 
 		// Delete notifications for not auth users
-		include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
-		$notifications->delete_not_auth_notifications($forum_id);
+		if (!class_exists('class_notifications'))
+		{
+			include(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+			$class_notifications = new class_notifications();
+		}
+		$class_notifications->delete_not_auth_notifications($forum_id);
 
 		if ($sql != '')
 		{

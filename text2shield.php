@@ -28,15 +28,15 @@ $smilie = request_var('smilie', 1);
 $text = urldecode(request_var('text', '', true));
 
 $anz_smilie = -1;
-$hdl = opendir($smiley_creator_path);
-while($res = readdir($hdl))
+$hdl = @opendir($smiley_creator_path);
+while($res = @readdir($hdl))
 {
 	if(strtolower(substr($res, (strlen($res) - 3), 3)) == 'png')
 	{
 		$anz_smilie++;
 	}
 }
-closedir($hdl);
+@closedir($hdl);
 
 if(!file_exists($schriftdatei))
 {

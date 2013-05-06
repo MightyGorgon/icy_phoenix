@@ -50,7 +50,9 @@
 <!-- BEGIN postrow -->
 <tr>
 	<td class="row-post-author">
-		<span class="post-name"><a id="p{postrow.U_POST_ID}"></a>{postrow.POSTER_ONLINE_STATUS_IMG}&nbsp;{postrow.POSTER_NAME}&nbsp;{postrow.POSTER_GENDER}</span><br />
+		<span class="post-name">
+			<a id="p{postrow.U_POST_ID}"></a><a href="{postrow.U_USER_ONLINE_STATUS}"><img src="<!-- IF postrow.S_USER_ONLINE -->{postrow.IMG_USER_ONLINE}<!-- ELSEIF postrow.S_USER_HIDDEN -->{postrow.IMG_USER_HIDDEN}<!-- ELSE -->{postrow.IMG_USER_OFFLINE}<!-- ENDIF -->" alt="{postrow.L_POSTER_ONLINE_STATUS}" title="{postrow.L_POSTER_ONLINE_STATUS}" /></a>&nbsp;{postrow.POSTER_NAME}&nbsp;<!-- IF postrow.S_GENDER_MALE --><a href="#"><img src="{postrow.IMG_GENDER_MALE}" alt="{postrow.L_GENDER_MALE}" title="{postrow.L_GENDER_MALE}" /></a><!-- ELSEIF postrow.S_GENDER_FEMALE --><a href="#"><img src="{postrow.IMG_GENDER_FEMALE}" alt="{postrow.L_GENDER_FEMALE}" title="{postrow.L_GENDER_FEMALE}" /></a><!-- ENDIF -->
+		</span><br />
 		<!-- IF postrow.POSTER_FULL_NAME --><span class="post-details">{postrow.POSTER_FULL_NAME}</span><br /><!-- ENDIF -->
 		<!-- IF not S_BOT -->
 		<div class="center-block-text">
@@ -100,7 +102,13 @@
 	<td class="row-post" height="100%">
 		<div class="post-buttons-top post-buttons">
 			<!-- IF not S_BOT -->
-			{postrow.QUOTE_IMG}{postrow.EDIT_IMG}{postrow.DELETE_IMG}
+			 <a href="{postrow.U_POST_QUOTE}"><img src="{postrow.IMG_POST_QUOTE}" alt="{postrow.L_POST_QUOTE}" title="{postrow.L_POST_QUOTE}" /></a> 
+			<!-- IF postrow.S_POST_EDIT -->
+			 <a href="{postrow.U_POST_EDIT}"><img src="{postrow.IMG_POST_EDIT}" alt="{postrow.L_POST_EDIT}" title="{postrow.L_POST_EDIT}" /></a>
+			<!-- ENDIF -->
+			<!-- IF postrow.S_POST_DELETE -->
+			 <a href="{postrow.U_POST_DELETE}"><img src="{postrow.IMG_POST_DELETE}" alt="{postrow.L_POST_DELETE}" title="{postrow.L_POST_DELETE}" /></a>
+			<!-- ENDIF -->
 			{postrow.UNREAD_IMG}
 			{postrow.U_R_CARD}{postrow.U_Y_CARD}{postrow.U_G_CARD}{postrow.U_B_CARD}&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
 			<!-- ELSE -->
@@ -154,7 +162,17 @@
 	<td class="row-post-buttons post-buttons">
 		<div style="text-align: right; vertical-align: middle;">
 			<div class="extra-top-padding" style="position: relative; float: left; text-align: left; vertical-align: middle;">
-				{postrow.PROFILE_IMG}{postrow.PM_IMG}{postrow.EMAIL_IMG}{postrow.WWW_IMG}{postrow.ALBUM_IMG}&nbsp;
+				<a href="{postrow.U_VIEW_PROFILE}"><img src="{postrow.IMG_VIEW_PROFILE}" alt="{postrow.POSTER_NAME_QQ}" title="{postrow.POSTER_NAME_QQ}" /></a> 
+				<a href="{postrow.U_SEND_PRIVMSG}"><img src="{postrow.IMG_SEND_PRIVMSG}" alt="{postrow.L_SEND_PRIVMSG}" title="{postrow.L_SEND_PRIVMSG}" /></a> 
+				<!-- IF postrow.S_USER_ALLOW_VIEWEMAIL -->
+				<a href="{postrow.U_SEND_EMAIL}"><img src="{postrow.IMG_SEND_EMAIL}" alt="{postrow.L_SEND_EMAIL}" title="{postrow.L_SEND_EMAIL}" /></a> 
+				<!-- ENDIF -->
+				<!-- IF postrow.S_USER_WEBSITE -->
+				<a href="{postrow.U_USER_WEBSITE}" target="_blank"><img src="{postrow.IMG_USER_WEBSITE}" alt="{postrow.L_USER_WEBSITE}" title="{postrow.L_USER_WEBSITE}" /></a>		 
+				<!-- ENDIF -->
+				<!-- IF postrow.S_USER_ALBUM -->
+				<a href="{postrow.U_USER_ALBUM}"><img src="{postrow.IMG_USER_ALBUM}" alt="{postrow.L_USER_ALBUM}" title="{postrow.L_USER_ALBUM}" /></a> &nbsp;
+				<!-- ENDIF -->
 			</div>
 			<!-- IF not S_BOT -->
 			<!-- BEGIN switch_quick_quote -->
@@ -185,6 +203,34 @@
 <!-- END switch_viewtopic_banner -->
 <!-- ENDIF -->
 <!-- END postrow -->
+
+<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+	<td align="left" valign="top">
+		<!-- IF not S_BOT -->
+		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}"/></a></span>&nbsp;
+		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}"/></a></span>&nbsp;
+		<!-- IF S_THANKS --><span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>&nbsp;<!-- ENDIF -->
+		<!-- IF S_CAN_REPLY --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span>&nbsp;<!-- ENDIF -->
+		<!-- ELSE -->
+		&nbsp;
+		<!-- ENDIF -->
+	</td>
+	<td align="right" valign="top">
+		<span class="gen">{PAGE_NUMBER}</span><br />
+		<span class="pagination">{PAGINATION}</span>
+	</td>
+</tr>
+</table>
+
+<br clear="all" />
+
+<!-- IF not S_BOT -->
+{CA_QUICK_REPLY_FORM}
+<!-- ENDIF -->
+
+<br clear="all" />
+
 <!-- IF VIEWTOPIC_BANNER_BOTTOM -->
 <tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_BOTTOM}</div></td></tr>
 <!-- ENDIF -->
@@ -231,29 +277,6 @@ if(GetCookie(tmp) == '2')
 <!-- ENDIF -->
 
 {SIMILAR_VIEWTOPIC}
-<!-- IF not S_BOT -->
-{CA_QUICK_REPLY_FORM}
-<!-- ENDIF -->
-
-<br />
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-	<td align="left" valign="top">
-		<!-- IF not S_BOT -->
-		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}"/></a></span>&nbsp;
-		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}"/></a></span>&nbsp;
-		<!-- IF S_THANKS --><span class="img-btn"><a href="{U_THANKS}"><img src="{THANKS_IMG}" alt="{L_THANKS}" title="{L_THANKS}" /></a></span>&nbsp;<!-- ENDIF -->
-		<!-- IF S_CAN_REPLY --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span>&nbsp;<!-- ENDIF -->
-		<!-- ELSE -->
-		&nbsp;
-		<!-- ENDIF -->
-	</td>
-	<td align="right" valign="top">
-		<span class="gen">{PAGE_NUMBER}</span><br />
-		<span class="pagination">{PAGINATION}</span>
-	</td>
-</tr>
-</table>
 
 <!-- INCLUDE breadcrumbs_vt.tpl -->
 
@@ -296,8 +319,8 @@ if(GetCookie(tmp) == '2')
 		</script>
 	</td>
 	<td align="right" valign="top">
-		<!-- IF not S_BOT -->
-		{S_TOPIC_ADMIN}<br /><br /><br />
+		<!-- IF not S_BOT and S_TMOD_BUTTONS -->
+		<!-- INCLUDE viewtopic_admin.tpl -->
 		<!-- ENDIF -->
 		{JUMPBOX}
 	</td>

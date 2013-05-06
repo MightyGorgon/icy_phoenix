@@ -81,8 +81,21 @@ if (!isset($_POST['install_step']))
 
 			if (defined('IP_INSTALLED'))
 			{
+				$access_allowed = true;
 				$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-				if ($user->data['user_id'] != $founder_id)
+				if ($user->data['user_id'] == $founder_id)
+				{
+					$access_allowed = true;
+				}
+				if (!$access_allowed && defined('MAIN_ADMINS_ID'))
+				{
+					$allowed_admins = explode(',', MAIN_ADMINS_ID);
+					if (in_array($user->data['user_id'], $allowed_admins))
+					{
+						$access_allowed = true;
+					}
+				}
+				if (empty($access_allowed))
 				{
 					message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 				}

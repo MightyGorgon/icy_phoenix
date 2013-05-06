@@ -134,7 +134,7 @@ if ($safety == 1)
 
 		if (!$numhits)
 		{
-			$saved = $saved + filesize($this_dir.$temp);
+			$saved = $saved + @filesize($this_dir.$temp);
 			//unlink($this_dir.$temp);
 			$template->assign_block_vars('check.check_step3', array(
 				'DEL_FILE' => $temp

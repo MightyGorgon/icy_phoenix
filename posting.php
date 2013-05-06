@@ -739,11 +739,11 @@ if (($submit || $refresh) && $is_auth['auth_read'])
 }
 else
 {
-	if ($mode != 'newtopic' && $user->data['session_logged_in'] && $is_auth['auth_read'])
+	if (($mode != 'newtopic') && $user->data['session_logged_in'] && $is_auth['auth_read'])
 	{
 		$sql = "SELECT topic_id
 			FROM " . TOPICS_WATCH_TABLE . "
-			WHERE topic_id = $topic_id
+			WHERE topic_id = " . $topic_id . "
 				AND user_id = " . $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		$notify_user = ($db->sql_fetchrow($result)) ? true : $user->data['user_notify'];
@@ -1330,7 +1330,11 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		if (($error_msg == '') && ($mode != 'poll_delete'))
 		{
 			// Forum Notification - BEGIN
-			include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+			if (!class_exists('class_notifications'))
+			{
+				include(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+				$class_notifications = new class_notifications();
+			}
 			$post_data['subject'] = $subject;
 			$post_data['username'] = ($user->data['user_id'] == ANONYMOUS) ? $username : $user->data['username'];
 			$post_data['message'] = $message;
@@ -1344,7 +1348,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 				if ($topic_info = $db->sql_fetchrow($result))
 				{
-					$notifications->send_notifications('newtopic', $post_data, $topic_info['topic_title'], $forum_id, $topic_id, $post_id, $notify_user);
+					$class_notifications->send_notifications('newtopic', $post_data, $topic_info['topic_title'], $forum_id, $topic_id, $post_id, $notify_user);
 				}
 
 			}
@@ -1354,7 +1358,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 				{
 					set_bookmark($topic_id);
 				}
-				$notifications->send_notifications($mode, $post_data, $post_info['topic_title'], $forum_id, $topic_id, $post_id, $notify_user);
+				$class_notifications->send_notifications($mode, $post_data, $post_info['topic_title'], $forum_id, $topic_id, $post_id, $notify_user);
 			}
 			// Forum Notification - END
 		}

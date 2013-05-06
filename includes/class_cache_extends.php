@@ -571,6 +571,52 @@ class ip_cache extends acm
 	}
 
 	/**
+	* Obtain avatars size...
+	*/
+	function obtain_avatars_size()
+	{
+		global $config, $user, $lang;
+
+		$avatar_dir_size_string = '';
+		$avatar_dir_size = 0;
+
+		if (($avatar_dir_size_string = $this->get('_avatars_size')) === false)
+		{
+			$avatars_path = IP_ROOT_PATH . $config['avatar_path'];
+			$allowed_avatars_ext = array('gif', 'jpg', 'jpeg', 'png');
+
+			// Now search for avatars...
+			$dir = @opendir($avatars_path);
+
+			if ($dir)
+			{
+				while (($file = @readdir($dir)) !== false)
+				{
+					if (!@is_dir($file) && !@is_link($file) && ($file != '.') && ($file != '..'))
+					{
+						$file_ext = substr(strrchr($file, '.'), 1);
+						if (in_array($file_ext, $allowed_avatars_ext))
+						{
+							$avatar_dir_size += @filesize($avatars_path . '/' . $file);
+						}
+					}
+				}
+				@closedir($dir);
+
+				$avatar_dir_size_string = get_formatted_filesize($avatar_dir_size);
+			}
+			else
+			{
+				$avatar_dir_size_string = $lang['Not_available'];
+			}
+
+			$this->put('_avatars_size', $avatar_dir_size_string);
+		}
+
+		return $avatar_dir_size_string;
+	}
+
+	/**
 	* Obtain hooks...
 	*/
 	function obtain_hooks()

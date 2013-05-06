@@ -91,6 +91,7 @@ switch ($req_version)
 	case '20085rc2': $current_ip_version = '2.0.0.85RC2'; break;
 	case '20086': $current_ip_version = '2.0.0.86'; break;
 	case '20187': $current_ip_version = '2.0.1.87'; break;
+	case '20288': $current_ip_version = '2.0.2.88'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4543,6 +4544,31 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.1.87 */
 		case '2.0.1.87':
+		$sql[] = "DROP TABLE IF EXISTS `___topics_watch___`";
+		$sql[] = "CREATE TABLE `___topics_watch___` (
+			`topic_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
+			`forum_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
+			`user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+			`notify_status` TINYINT(1) NOT NULL DEFAULT '0',
+			KEY `topic_id` (`topic_id`),
+			KEY `user_id` (`user_id`),
+			KEY `notify_status` (`notify_status`)
+		)";
+
+		$sql[] = "INSERT INTO `___topics_watch___`
+			SELECT tw.topic_id, tw.forum_id, tw.user_id, tw.notify_status
+				FROM `" . $table_prefix . "topics_watch` tw
+				GROUP BY tw.topic_id, tw.forum_id, tw.user_id
+				ORDER BY tw.topic_id, tw.user_id";
+
+		$sql[] = "DROP TABLE IF EXISTS `_old_topics_watch`";
+		$sql[] = "RENAME TABLE `phpbb_topics_watch` TO `_old_topics_watch`";
+		$sql[] = "RENAME TABLE `___topics_watch___` TO `phpbb_topics_watch`";
+
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('google_custom_search', '')";
+
+		/* Updating from IP 2.0.2.88 */
+		case '2.0.2.88':
 
 	}
 

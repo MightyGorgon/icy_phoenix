@@ -37,6 +37,7 @@
 	<th colspan="2">{L_FILE}</th>
 	<th width="15%">{L_DATE}</th>
 	<th width="10%">{L_DOWNLOADS}</th>
+	<th width="10%">{L_FILE_SIZE}</th>
 	<th width="10%">{L_RATING}</th>
 	<th width="3%">&nbsp;</th>
 </tr>
@@ -51,6 +52,7 @@
 	<br /><span class="genmed">{file_rows.FILE_DESC}</span></td>
 	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails">{file_rows.DATE}</td>
 	<td class="row2 row-center"><span class="postdetails">{file_rows.FILE_DLS}</td>
+	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails">{file_rows.FILE_SIZE}</td>
 	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{file_rows.RATING}.png" alt="" /></span></td>
 	<td class="row2 row-center">
 	<!-- IF file_rows.HAS_SCREENSHOTS -->
@@ -66,7 +68,7 @@
 </tr>
 <!-- END file_rows -->
 <tr>
-	<td class="cat" colspan="6">
+	<td class="cat" colspan="7">
 		<input type="hidden" name="action" value="category" />
 		<input type="hidden" name="cat_id" value="{ID}" />
 		<input type="hidden" name="start" value="{START}" />

@@ -1020,7 +1020,7 @@ class pafiledb
 			{
 				if (($file_rowset[$i]['file_posticon'] == 'none') || ($file_rowset[$i]['file_posticon'] == 'none.gif'))
 				{
-					$posticon = IP_ROOT_PATH . FILES_ICONS_DIR .'default.png';
+					$posticon = IP_ROOT_PATH . FILES_ICONS_DIR . 'default.png';
 				}
 				else
 				{
@@ -1057,6 +1057,7 @@ class pafiledb
 				'FILE_SCREENSHOT_URL' => IP_ROOT_PATH . 'images/screenshot.gif',
 				'FILE_NAME' => $file_rowset[$i]['file_name'],
 				'FILE_DESC' => $file_rowset[$i]['file_desc'],
+				'FILE_SIZE' => get_formatted_filesize($file_rowset[$i]['file_size']),
 				'DATE' => $date,
 				'RATING' => $rating2,
 				'FILE_DLS' => $file_rowset[$i]['file_dls'],
@@ -1081,6 +1082,7 @@ class pafiledb
 				'L_DATE' => $lang['Date'],
 				'L_NAME' => $lang['Name'],
 				'L_FILE' => $lang['File'],
+				'L_FILE_SIZE' => $lang['File_size'],
 				'L_UPDATE_TIME' => $lang['Update_time'],
 				'L_SCREENSHOTS' => $lang['Scrsht'],
 

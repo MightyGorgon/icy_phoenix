@@ -46,6 +46,7 @@ $template->assign_vars(array(
 	'S_SEARCH_ACTION' => append_sid('gsearch.' . PHP_EXT),
 	'S_SEARCH_DOMAIN' => preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name'])),
 	//'S_SEARCH_DOMAIN' => 'icyphoenix.com',
+	'S_GOOGLE_CUSTOM_SEARCH' => $config['google_custom_search'],
 	'S_ADSENSE_CODE' => (!empty($config['adsense_code']) ? ('<input type="hidden" name="client" value="' . $config['adsense_code'] . '" />') : ''),
 	'S_LANGUAGE' => $search_lang,
 	'L_SEARCH' => $lang['Search']

@@ -66,6 +66,8 @@ if (empty($user->data['session_admin']))
 	redirect(append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . $redirect_append, true));
 }
 
+include_once(IP_ROOT_PATH . 'includes/functions_admin_phpbb3.' . PHP_EXT);
+
 if (empty($no_page_header))
 {
 	// Not including the pageheader can be neccesarry if META tags are needed in the calling script.

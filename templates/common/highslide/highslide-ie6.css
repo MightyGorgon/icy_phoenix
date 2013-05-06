@@ -1,5 +1,5 @@
 .closebutton {
-	/* NOTE! This URL is relative to the HTML page, not the CSS */
+    /* NOTE! This URL is relative to the HTML page, not the CSS */
 	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/common/highslide/graphics/close.png', sizingMethod='scale');
 
 	background: none;
@@ -9,7 +9,7 @@
 /* Viewport fixed hack */
 .highslide-viewport {
 	position: absolute;
-	left: expression( ( ( ignoreMe1 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+    left: expression( ( ( ignoreMe1 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
 	top: expression( ( ignoreMe2 = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) + 'px' );
 	width: expression( ( ( ignoreMe3 = document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) ) + 'px' );
 	height: expression( ( ( ignoreMe4 = document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) ) + 'px' );
@@ -66,4 +66,9 @@
 }
 .text-controls .highslide-close a span {
 	width: 0;
+}
+
+/* Special */
+.in-page .highslide-thumbstrip-horizontal .highslide-marker {
+    border-bottom: gray;
 }

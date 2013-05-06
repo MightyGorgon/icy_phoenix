@@ -1137,27 +1137,7 @@ UPDATE `phpbb_users` SET `user_sig` = REPLACE(`user_sig`,'posted_images/','image
 
 
 ########################################
-##              BUILD 087             ##
 ########################################
-ALTER TABLE `phpbb_posts` ADD `post_images` MEDIUMTEXT NOT NULL AFTER `post_likes`;
-##UPDATE `phpbb_ajax_shoutbox` SET `shout_room` = REPLACE(`shout_room`, '||', '|');
-
-
-
+##     CONTINUE ON THE OTHER FILE     ##
 ########################################
-##              BUILD 088             ##
 ########################################
-
-
-
-#####################
-
-##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
-
-#-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.1.87' WHERE config_name = 'ip_version';
-UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
-UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
-UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';
-UPDATE phpbb_config SET config_value = '2.4.5' WHERE config_name = 'attach_version';
-UPDATE phpbb_config SET config_value = '3.0.7' WHERE config_name = 'upi2db_version';

@@ -138,8 +138,12 @@ if (isset($_POST['submit']))
 	if (!empty($user_list))
 	{
 		// Delete notifications for banned users
-		include_once(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
-		$notifications->delete_user_notifications($user_list);
+		if (!class_exists('class_notifications'))
+		{
+			include(IP_ROOT_PATH . 'includes/class_notifications.' . PHP_EXT);
+			$class_notifications = new class_notifications();
+		}
+		$class_notifications->delete_user_notifications($user_list);
 	}
 
 	for($i = 0; $i < sizeof($ip_list); $i++)

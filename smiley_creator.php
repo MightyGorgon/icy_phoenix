@@ -26,15 +26,15 @@ $mode = request_var('mode', '');
 if($mode == 'text2shield')
 {
 	$anz_smilie = -1;
-	$hdl = opendir('images/smiles/smiley_creator/');
-	while($res = readdir($hdl))
+	$hdl = @opendir('images/smiles/smiley_creator/');
+	while($res = @readdir($hdl))
 	{
 		if(strtolower(substr($res, (strlen($res) - 3), 3)) == 'png')
 		{
 			$anz_smilie++;
 		}
 	}
-	closedir($hdl);
+	@closedir($hdl);
 
 	$i = 1;
 	$ii = 1;
