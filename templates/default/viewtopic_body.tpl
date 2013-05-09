@@ -204,6 +204,18 @@
 <!-- ENDIF -->
 <!-- END postrow -->
 
+<!-- IF VIEWTOPIC_BANNER_BOTTOM -->
+<tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_BOTTOM}</div></td></tr>
+<!-- ENDIF -->
+<tr>
+	<td class="cat" colspan="2">
+		<form method="post" action="{S_POST_DAYS_ACTION}" style="display: inline;">
+		<span class="genmed">{L_DISPLAY_POSTS}:</span>&nbsp;{S_SELECT_SORT_DAYS}&nbsp;{S_SELECT_SORT_KEY}&nbsp;{S_SELECT_SORT_DIR}&nbsp;<input type="submit" value="{L_GO}" class="liteoption jumpbox" name="submit" />
+		</form>
+	</td>
+</tr>
+</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="top">
@@ -230,18 +242,6 @@
 <!-- ENDIF -->
 
 <br clear="all" />
-
-<!-- IF VIEWTOPIC_BANNER_BOTTOM -->
-<tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_BOTTOM}</div></td></tr>
-<!-- ENDIF -->
-<tr>
-	<td class="cat" colspan="2">
-		<form method="post" action="{S_POST_DAYS_ACTION}" style="display: inline;">
-		<span class="genmed">{L_DISPLAY_POSTS}:</span>&nbsp;{S_SELECT_SORT_DAYS}&nbsp;{S_SELECT_SORT_KEY}&nbsp;{S_SELECT_SORT_DIR}&nbsp;<input type="submit" value="{L_GO}" class="liteoption jumpbox" name="submit" />
-		</form>
-	</td>
-</tr>
-</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <!-- IF not S_BOT -->
 <!-- BEGIN switch_topic_useful -->
