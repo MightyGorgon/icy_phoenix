@@ -4641,13 +4641,14 @@ function page_header($title = '', $parse_template = false)
 					include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
 				}
 				$user->data['auth_forum_id'] = isset($user->data['auth_forum_id']) ? $user->data['auth_forum_id'] : auth_forum_read($user->data);
-				$auth_forum = (!empty($user->data['auth_forum_id'])) ? ' AND forum_id IN (' . $user->data['auth_forum_id'] . ') ' : '';
+				$auth_forum = (!empty($user->data['auth_forum_id'])) ? ' AND p.forum_id IN (' . $user->data['auth_forum_id'] . ') ' : '';
 			}
 
-			$sql = "SELECT forum_id, poster_id
-				FROM " . POSTS_TABLE . "
-				WHERE post_time >= " . $user->data['user_lastvisit'] . $auth_forum . "
-				AND poster_id != " . $user->data['user_id'];
+			$sql = "SELECT p.forum_id, t.topic_poster
+				FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
+				WHERE t.topic_id = p.topic_id
+				AND p.post_time >= " . $user->data['user_lastvisit'] . $auth_forum . "
+				AND p.poster_id != " . $user->data['user_id'];
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
@@ -4658,7 +4659,7 @@ function page_header($title = '', $parse_template = false)
 				$new_posts = 0;
 				while ($row = $db->sql_fetchrow($result))
 				{
-					if ((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user->data['user_level'] == ADMIN || ($user->data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['poster_id'] == $user->data['user_id']))
+					if ((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user->data['user_level'] == ADMIN || ($user->data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['topic_poster'] == $user->data['user_id']))
 					{
 						$new_posts++;
 					}
