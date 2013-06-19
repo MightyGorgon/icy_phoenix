@@ -4644,7 +4644,7 @@ function page_header($title = '', $parse_template = false)
 				$auth_forum = (!empty($user->data['auth_forum_id'])) ? ' AND forum_id IN (' . $user->data['auth_forum_id'] . ') ' : '';
 			}
 
-			$sql = "SELECT COUNT(post_id) as total
+			$sql = "SELECT forum_id, poster_id
 				FROM " . POSTS_TABLE . "
 				WHERE post_time >= " . $user->data['user_lastvisit'] . $auth_forum . "
 				AND poster_id != " . $user->data['user_id'];
@@ -4653,13 +4653,23 @@ function page_header($title = '', $parse_template = false)
 			$db->sql_return_on_error(false);
 			if ($result)
 			{
-				$row = $db->sql_fetchrow($result);
-				$lang['Search_new'] = $lang['Search_new'] . ' (' . $row['total'] . ')';
-				$lang['New'] = $lang['New'] . ' (' . $row['total'] . ')';
-				$lang['NEW_POSTS_SHORT'] = $lang['New_Label'] . ' (' . $row['total'] . ')';
-				$lang['NEW_POSTS_LONG'] = $lang['New_Messages_Label'] . ' (' . $row['total'] . ')';
-				$lang['Search_new2'] = $lang['Search_new2'] . ' (' . $row['total'] . ')';
-				$lang['Search_new_p'] = $lang['Search_new_p'] . ' (' . $row['total'] . ')';
+				$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
+
+				$new_posts = 0;
+				while ($row = $db->sql_fetchrow($result))
+				{
+					if ((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user->data['user_level'] == ADMIN || ($user->data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['poster_id'] == $user->data['user_id']))
+					{
+						$new_posts++;
+					}
+				}
+
+				$lang['Search_new'] = $lang['Search_new'] . ' (' . $new_posts . ')';
+				$lang['New'] = $lang['New'] . ' (' . $new_posts . ')';
+				$lang['NEW_POSTS_SHORT'] = $lang['New_Label'] . ' (' . $new_posts . ')';
+				$lang['NEW_POSTS_LONG'] = $lang['New_Messages_Label'] . ' (' . $new_posts . ')';
+				$lang['Search_new2'] = $lang['Search_new2'] . ' (' . $new_posts . ')';
+				$lang['Search_new_p'] = $lang['Search_new_p'] . ' (' . $new_posts . ')';
 				$db->sql_freeresult($result);
 			}
 		}
