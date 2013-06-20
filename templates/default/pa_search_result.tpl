@@ -15,8 +15,8 @@
 <!-- BEGIN searchresults -->
 <tr>
 	<td class="row1 row-center" width="30"><a href="{searchresults.U_FILE}" class="topiclink">{searchresults.PIN_IMAGE}</a></td>
-	<td class="row1h{searchresults.XS_NEW} row-forum" onclick="window.location.href='{searchresults.U_CAT}'"><span class="forumlink"><a href="{searchresults.U_CAT}" class="forumlink{searchresults.XS_NEW}">{searchresults.CAT_NAME}</a></span>&nbsp;</td>
-	<td class="row1h{searchresults.XS_NEW} row-forum" onclick="window.location.href='{searchresults.U_FILE}'"><span class="forumlink"><a href="{searchresults.U_FILE}" class="forumlink{searchresults.XS_NEW}">{searchresults.FILE_NAME}</a></span>&nbsp;
+	<td class="row1h{searchresults.XS_NEW} row-forum" data-href="{searchresults.U_CAT}"><span class="forumlink"><a href="{searchresults.U_CAT}" class="forumlink{searchresults.XS_NEW}">{searchresults.CAT_NAME}</a></span>&nbsp;</td>
+	<td class="row1h{searchresults.XS_NEW} row-forum" data-href="{searchresults.U_FILE}"><span class="forumlink"><a href="{searchresults.U_FILE}" class="forumlink{searchresults.XS_NEW}">{searchresults.FILE_NAME}</a></span>&nbsp;
 	<br /><span class="genmed">{searchresults.FILE_DESC}</span>
 	</td>
 	<td class="row1 row-center" align="center" valign="middle"><span class="name">{searchresults.FILE_SUBMITER}</span></td>

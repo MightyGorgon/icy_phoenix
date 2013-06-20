@@ -30,7 +30,7 @@
 	<!-- BEGIN catrow -->
 	<tr>
 		<td class="row1" style="padding-right:5px;"><img src="{catmain.catrow.CAT_IMG}" alt="" /></td>
-		<td class="row1h{catmain.catrow.XS_NEW} row-forum" onclick="window.location.href='{catmain.catrow.U_VIEWCAT}'" height="50" width="100%">
+		<td class="row1h{catmain.catrow.XS_NEW} row-forum" data-href="{catmain.catrow.U_VIEWCAT}" height="50" width="100%">
 			<span class="forumlink{catmain.catrow.XS_NEW}">
 			<a href="{catmain.catrow.U_VIEWCAT}" class="forumlink{catmain.catrow.XS_NEW}">{catmain.catrow.CAT_TITLE}</a>
 				<!-- BEGIN newpics -->

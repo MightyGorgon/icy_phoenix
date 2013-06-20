@@ -11,7 +11,7 @@
 </tr>
 <!-- BEGIN pending_members_row -->
 <tr>
-	<td class="row1h row-center" onclick="window.location.href='{pending_members_row.U_VIEWPROFILE}'"><a href="{pending_members_row.U_VIEWPROFILE}">{pending_members_row.USERNAME}</a></td>
+	<td class="row1h row-center" data-href="{pending_members_row.U_VIEWPROFILE}"><a href="{pending_members_row.U_VIEWPROFILE}">{pending_members_row.USERNAME}</a></td>
 	<td class="row2 row-center">{pending_members_row.POSTS}</td>
 	<td class="row1 row-center">&nbsp;{pending_members_row.FROM}&nbsp;</td>
 	<td class="row1 row-center">&nbsp;{pending_members_row.ONLINE_STATUS_IMG}&nbsp;</td>

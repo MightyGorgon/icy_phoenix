@@ -18,10 +18,10 @@
 <!-- BEGIN row -->
 <tr>
 	<td class="row1 row-center" width="22"><img src="{row.TOPIC_FOLDER_IMG}" alt="{row.L_TOPIC_FOLDER_ALT}" title="{row.L_TOPIC_FOLDER_ALT}" style="margin-right: 4px;" /></td>
-	<td class="row1h{row.CLASS_NEW} row-forum" onclick="window.location.href='{row.U_VIEW_FORUM}'">
+	<td class="row1h{row.CLASS_NEW} row-forum" data-href="{row.U_VIEW_FORUM}">
 		<span class="topiclink{row.CLASS_NEW}"><a href="{row.U_VIEW_FORUM}">{row.FORUM_NAME}</a></span>
 	</td>
-	<td class="row1h{row.CLASS_NEW} row-forum" onclick="window.location.href='{row.U_VIEW_TOPIC}'">
+	<td class="row1h{row.CLASS_NEW} row-forum" data-href="{row.U_VIEW_TOPIC}">
 		<div class="topic-title-hide-flow"><div style="float: right; display: inline; vertical-align: top; margin-top: 0px !important; padding-top: 0px !important; padding-right: 3px;">{row.TOPIC_TYPE_ICON}</div>{row.NEWEST_POST_IMG}<span class="topiclink{row.CLASS_NEW}"><a href="{row.U_VIEW_TOPIC}" class="{row.TOPIC_CLASS}">{row.TOPIC_TITLE}</a></span><br /><span class="gensmall">{L_TAGS_TEXT}:&nbsp;{row.TOPIC_TAGS}</span></div>
 		{row.GOTO_PAGE_FULL}
 	</td>

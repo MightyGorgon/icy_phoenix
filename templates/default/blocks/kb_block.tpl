@@ -11,7 +11,7 @@
 </tr>
 <!-- BEGIN kb_articles -->
 <tr>
-	<td class="row1h{kb_articles.XS_NEW} row-forum" width="100%" onclick="window.location.href='{kb_articles.U_VIEW_ARTICLE}'" colspan="2">
+	<td class="row1h{kb_articles.XS_NEW} row-forum" width="100%" data-href="{kb_articles.U_VIEW_ARTICLE}" colspan="2">
 		<span class="topiclink{kb_articles.XS_NEW}">
 			&nbsp;<img src="{MINIPOST_IMG}" border="0" />&nbsp;<a href="{kb_articles.U_VIEW_ARTICLE}" class="{kb_articles.CLASS}">{kb_articles.TOPIC_TITLE}</a>
 		</span><br />
@@ -74,7 +74,7 @@
 <tr><th nowrap="nowrap"><b>{cat_row.CAT_ITEM}</b></th></tr>
 <!-- BEGIN menu_row -->
 <tr>
-	<td class="row1h{cat_row.menu_row.XS_NEW} row-left" onclick="window.location.href='{cat_row.menu_row.MENU_LINK}'" height="46">
+	<td class="row1h{cat_row.menu_row.XS_NEW} row-left" data-href="{cat_row.menu_row.MENU_LINK}" height="46">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tbody>
 		<tr>
