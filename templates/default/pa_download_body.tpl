@@ -4,12 +4,12 @@
 
 <table class="forumline" width="100%" cellpadding="0" cellspacing="0">
 <tr>
-	<td align="center" class="row1h row-forum" onclick="window.location.href='{U_PASEARCH}'"><b>&nbsp;<a href="{U_PASEARCH}" class="gensmall">{L_SEARCH}</a>&nbsp;</b></td>
-	<td align="center" class="row1h row-forum" onclick="window.location.href='{U_PASTATS}'"><b>&nbsp;<a href="{U_PASTATS}" class="gensmall">{L_STATS}</a>&nbsp;</b></td>
-	<td align="center" class="row1h row-forum" onclick="window.location.href='{U_TOPLIST}'"><b>&nbsp;<a href="{U_TOPLIST}" class="gensmall">{L_TOPLIST}</a>&nbsp;</b></td>
-	<td align="center" class="row1h row-forum" onclick="window.location.href='{U_UPLOAD}'"><b>&nbsp;<a href="{U_UPLOAD}" class="gensmall">{L_UPLOAD}</a>&nbsp;</b></td>
+	<td align="center" class="row1h row-forum" data-href="{U_PASEARCH}"><b>&nbsp;<a href="{U_PASEARCH}" class="gensmall">{L_SEARCH}</a>&nbsp;</b></td>
+	<td align="center" class="row1h row-forum" data-href="{U_PASTATS}"><b>&nbsp;<a href="{U_PASTATS}" class="gensmall">{L_STATS}</a>&nbsp;</b></td>
+	<td align="center" class="row1h row-forum" data-href="{U_TOPLIST}"><b>&nbsp;<a href="{U_TOPLIST}" class="gensmall">{L_TOPLIST}</a>&nbsp;</b></td>
+	<td align="center" class="row1h row-forum" data-href="{U_UPLOAD}"><b>&nbsp;<a href="{U_UPLOAD}" class="gensmall">{L_UPLOAD}</a>&nbsp;</b></td>
 	<!-- IF VIEW_ALL_FILES -->
-	<td align="center" class="row1h row-forum" onclick="window.location.href='{U_VIEW_ALL}'"><b>&nbsp;<a href="{U_VIEW_ALL}" class="gensmall">{L_VIEW_ALL}</a>&nbsp;</b></td>
+	<td align="center" class="row1h row-forum" data-href="{U_VIEW_ALL}"><b>&nbsp;<a href="{U_VIEW_ALL}" class="gensmall">{L_VIEW_ALL}</a>&nbsp;</b></td>
 	<!-- ENDIF -->
 </tr>
 </table>

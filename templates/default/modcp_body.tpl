@@ -32,7 +32,7 @@ function toggle_check_all()
 <!-- BEGIN topicrow -->
 <tr>
 	<td class="row1 row-center"><img src="{topicrow.TOPIC_FOLDER_IMG}" alt="{topicrow.L_TOPIC_FOLDER_ALT}" title="{topicrow.L_TOPIC_FOLDER_ALT}" /></td>
-	<td class="row1h{topicrow.CLASS_NEW} row-forum" onclick="window.location.href='{topicrow.U_VIEW_TOPIC}'">
+	<td class="row1h{topicrow.CLASS_NEW} row-forum" data-href="{topicrow.U_VIEW_TOPIC}">
 		<div class="topic-title-hide-flow"><div style="float: right; display: inline; vertical-align: top; margin-top: 0px !important; padding-top: 0px !important; padding-right: 3px;">{topicrow.TOPIC_ATTACHMENT_IMG}{topicrow.TOPIC_TYPE_ICON}</div>{topicrow.NEWEST_POST_IMG}<span class="topiclink{topicrow.CLASS_NEW}"><a href="{topicrow.U_VIEW_TOPIC}" class="{topicrow.TOPIC_CLASS}">{topicrow.TOPIC_TITLE}</a></span></div>
 		{topicrow.GOTO_PAGE_FULL}
 	</td>

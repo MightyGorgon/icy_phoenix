@@ -50,7 +50,7 @@ function checkForm()
 		<!-- BEGIN linkrow -->
 		<tr>
 			<td valign="top" align="right" class="row1">&nbsp;{linkrow.LINK_LOGO}&nbsp;</td>
-			<td class="row1h{catrow.forumrow.XS_NEW} row-forum" onclick="window.location.href='{linkrow.LINK_URL}'">
+			<td class="row1h{catrow.forumrow.XS_NEW} row-forum" data-href="{linkrow.LINK_URL}">
 				<span class="forumlink"><a href="{linkrow.LINK_URL}" class="forumlink">{linkrow.LINK_TITLE}</a></span>
 				<br /><span class="genmed">{linkrow.LINK_DESC}</span>
 			</td>

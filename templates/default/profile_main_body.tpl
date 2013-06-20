@@ -8,7 +8,7 @@
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_CPL_NAV}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="2">
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_REGISTRATION_INFO}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_REGISTRATION_INFO}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_REGISTRATION_INFO}"><img src="images/profile/password.png" alt="{L_CPL_REG_INFO}" style="padding: 3px;" /></a></td>
@@ -19,7 +19,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_PROFILE_INFO}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_PROFILE_INFO}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_PROFILE_INFO}"><img src="images/profile/profile.png" alt="{L_CPL_PROFILE_INFO}" style="padding: 3px;" /></a></td>
@@ -32,7 +32,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_PREFERENCES}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_PREFERENCES}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_PREFERENCES}"><img src="images/profile/web_settings.png" alt="{L_CPL_PREFERENCES}" style="padding: 3px;" /></a></td>
@@ -43,7 +43,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_BOARD_SETTINGS}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_BOARD_SETTINGS}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_BOARD_SETTINGS}"><img src="images/profile/settings.png" alt="{L_CPL_BOARD_SETTINGS}" style="padding: 3px;" /></a></td>
@@ -56,7 +56,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_SUBFORUM_SETTINGS}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_SUBFORUM_SETTINGS}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_SUBFORUM_SETTINGS}"><img src="images/profile/folder_blue.png" alt="{L_Hierarchy_setting}" style="padding: 3px;" /></a></td>
@@ -67,7 +67,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_CALENDAR_SETTINGS}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_CALENDAR_SETTINGS}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_CALENDAR_SETTINGS}"><img src="images/profile/calendar.png" alt="{L_Calendar_settings}" style="padding: 3px;" /></a></td>
@@ -80,7 +80,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_INBOX}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_INBOX}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_INBOX}"><img src="images/profile/email.png" alt="{L_CPL_PRIVATE_MESSAGES}" style="padding: 3px;" /></a></td>
@@ -91,7 +91,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_OWN_PICTURES}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_OWN_PICTURES}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_OWN_PICTURES}"><img src="images/profile/find_pictures.png" alt="{L_CPL_OWN_PICTURES}" style="padding: 3px;" /></a></td>
@@ -104,7 +104,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_AVATAR_PANEL}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_AVATAR_PANEL}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_AVATAR_PANEL}"><img src="images/profile/album.png" alt="{L_CPL_AVATAR_PANEL}" style="padding: 3px;" /></a></td>
@@ -115,7 +115,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_SIGNATURE}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_SIGNATURE}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_SIGNATURE}"><img src="images/profile/signature.png" alt="{L_CPL_SIG_EDIT}" style="padding: 3px;" /></a></td>
@@ -128,7 +128,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_PROFILE_VIEWED}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_PROFILE_VIEWED}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_PROFILE_VIEWED}"><img src="images/profile/radar.png" alt="{L_CPL_PROFILE_VIEWED}" style="padding: 3px;" /></a></td>
@@ -139,7 +139,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_LOGIN_SEC}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_LOGIN_SEC}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_LOGIN_SEC}"><img src="images/profile/login.png" alt="{L_LOGIN_SEC}" style="padding: 3px;" /></a></td>
@@ -152,7 +152,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_SUBSCFORUMS}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_SUBSCFORUMS}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_SUBSCFORUMS}"><img src="images/profile/highlight.png" alt="{L_CPL_SUBSCFORUMS}" style="padding: 3px;" /></a></td>
@@ -163,7 +163,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_WATCHED_TOPICS}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_WATCHED_TOPICS}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_WATCHED_TOPICS}"><img src="images/profile/notes.png" alt="{L_WATCHED_TOPICS}" style="padding: 3px;" /></a></td>
@@ -176,7 +176,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_BOOKMARKS}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_BOOKMARKS}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_BOOKMARKS}"><img src="images/profile/star.png" alt="{L_CPL_BOOKMARKS}" style="padding: 3px;" /></a></td>
@@ -187,7 +187,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_DRAFTS}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_DRAFTS}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_DRAFTS}"><img src="images/profile/write.png" alt="{L_DRAFTS}" style="padding: 3px;" /></a></td>
@@ -200,7 +200,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_DIGESTS}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_DIGESTS}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_DIGESTS}"><img src="images/profile/email_2.png" alt="{L_DIGESTS}" style="padding: 3px;" /></a></td>
@@ -211,7 +211,7 @@
 		</tr>
 		</table>
 	</td>
-	<td class="row1h row-forum" width="50%" onclick="window.location.href='{U_CPL_ZEBRA}'">
+	<td class="row1h row-forum" width="50%" data-href="{U_CPL_ZEBRA}">
 		<table width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<td align="center"><a href="{U_CPL_ZEBRA}"><img src="images/profile/users.png" alt="{L_CPL_ZEBRA}" style="padding: 3px;" /></a></td>

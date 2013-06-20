@@ -63,7 +63,7 @@ function check_uncheck_all_{topics_list_box.row.header_table.BOX_ID}()
 	<!-- BEGIN icon -->
 	<td class="{topics_list_box.row.ROW_CLASS} row-center" valign="middle" width="18">{topics_list_box.row.ICON}</td>
 	<!-- END icon -->
-	<td class="row1h{topicrow.LINK_CLASS} row-forum" width="100%" onclick="window.location.href='{topics_list_box.row.U_VIEW_TOPIC}'">
+	<td class="row1h{topicrow.LINK_CLASS} row-forum" width="100%" data-href="{topics_list_box.row.U_VIEW_TOPIC}">
 		<span class="topiclink{topicrow.LINK_CLASS}">{topics_list_box.row.NEWEST_POST_IMG}{topics_list_box.row.TOPIC_ATTACHMENT_IMG}{topics_list_box.row.TOPIC_TYPE}
 			<a href="{topics_list_box.row.U_VIEW_TOPIC}">{topics_list_box.row.TOPIC_TITLE}</a>
 		</span>

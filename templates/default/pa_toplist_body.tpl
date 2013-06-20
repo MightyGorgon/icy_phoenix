@@ -53,9 +53,9 @@
 	<!-- BEGIN files_row -->
 <tr>
 	<td class="row1 row-center" width="30"><a href="{files_row.U_FILE}" class="topiclink">{files_row.PIN_IMAGE}</a></td>
-	<td class="row1h{files_row.XS_NEW} row-forum" onclick="window.location.href='{files_row.U_CAT}'" width="35%"><span class="forumlink"><a href="{files_row.U_CAT}" class="forumlink{files_row.XS_NEW}">{files_row.CAT_NAME}</a></span>&nbsp;</td>
+	<td class="row1h{files_row.XS_NEW} row-forum" data-href="{files_row.U_CAT}" width="35%"><span class="forumlink"><a href="{files_row.U_CAT}" class="forumlink{files_row.XS_NEW}">{files_row.CAT_NAME}</a></span>&nbsp;</td>
 
-	<td class="row1h{files_row.XS_NEW} row-forum" onclick="window.location.href='{files_row.U_FILE}'" width="60%"><span class="forumlink"><a href="{files_row.U_FILE}" class="forumlink{files_row.XS_NEW}">{files_row.FILE_NAME}</a></span>&nbsp;
+	<td class="row1h{files_row.XS_NEW} row-forum" data-href="{files_row.U_FILE}" width="60%"><span class="forumlink"><a href="{files_row.U_FILE}" class="forumlink{files_row.XS_NEW}">{files_row.FILE_NAME}</a></span>&nbsp;
 	<!-- IF file_rows.IS_NEW_FILE -->
 	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}" /> -->
 	<!-- ENDIF -->

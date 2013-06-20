@@ -13,7 +13,7 @@
 <!-- ELSE -->
 <tr>
 	<td class="row1 row-center" width="30" style="padding-right:5px;"><a href="{no_cat_parent.U_CAT}" class="cattitle"><img src="{no_cat_parent.CAT_IMAGE}" alt="{no_cat_parent.CAT_NEW_FILE}" /></a></td>
-	<td class="row1h{no_cat_parent.XS_NEW} row-forum" onclick="window.location.href='{no_cat_parent.U_CAT}'">
+	<td class="row1h{no_cat_parent.XS_NEW} row-forum" data-href="{no_cat_parent.U_CAT}">
 	<span class="forumlink"><a class="forumlink{no_cat_parent.XS_NEW}" href="{no_cat_parent.U_CAT}">{no_cat_parent.CAT_NAME}</a></span><br />
 	<span class="genmed">{no_cat_parent.CAT_DESC}</span>
 	<!-- IF no_cat_parent.SUB_CAT --><br /><span class="gensmall"><b>{no_cat_parent.L_SUB_CAT}</b></span><span class="forumlink{no_cat_parent.XS_NEW}">{no_cat_parent.SUB_CAT}</span><!-- ENDIF -->

@@ -14,7 +14,7 @@
 	<!-- ELSE -->
 	<tr>
 		<td class="row1 row-center" width="30" style="padding-right:5px;"><a href="{no_cat_parent.U_CAT}" class="cattitle"><img src="{no_cat_parent.CAT_IMAGE}" alt="{no_cat_parent.CAT_NEW_FILE}" /></a></td>
-		<td class="row1h{no_cat_parent.XS_NEW} row-forum" onclick="window.location.href='{no_cat_parent.U_CAT}'">
+		<td class="row1h{no_cat_parent.XS_NEW} row-forum" data-href="{no_cat_parent.U_CAT}">
 		<span class="forumlink"><a class="forumlink{no_cat_parent.XS_NEW}" href="{no_cat_parent.U_CAT}">{no_cat_parent.CAT_NAME}</a></span><br />
 		<span class="genmed">{no_cat_parent.CAT_DESC}</span>
 		<!-- IF no_cat_parent.IS_HIGHER_CAT --><br /><span class="gensmall"><b>{no_cat_parent.L_SUB_CAT}</b></span><span class="forumlink{no_cat_parent.XS_NEW}">{no_cat_parent.SUB_CAT}</span><!-- ENDIF -->
@@ -45,7 +45,7 @@
 <!-- BEGIN file_rows -->
 <tr>
 	<td class="row1 row-center" width="30" style="padding-right: 5px;"><a href="{file_rows.U_FILE}" class="topiclink"><img src="{file_rows.PIN_IMAGE}" alt="" /></a></td>
-	<td class="row1h{file_rows.XS_NEW} row-forum" onclick="window.location.href='{file_rows.U_FILE}'" width="75%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span><!-- IF S_ADMIN -->&nbsp;[&nbsp;<span class="gensmall"><a href="{file_rows.U_FILE_EDIT}">{L_EDIT}</a>&nbsp;]<!-- ENDIF -->
+	<td class="row1h{file_rows.XS_NEW} row-forum" data-href="{file_rows.U_FILE}" width="75%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span><!-- IF S_ADMIN -->&nbsp;[&nbsp;<span class="gensmall"><a href="{file_rows.U_FILE_EDIT}">{L_EDIT}</a>&nbsp;]<!-- ENDIF -->
 	<!-- IF file_rows.IS_NEW_FILE -->
 	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}" /> -->
 	<!-- ENDIF -->
