@@ -804,13 +804,13 @@ if(!function_exists('sync_database'))
 			$always_read_topics = (sizeof($always_read['topics']) == 1)  ? $always_read['topics'][0] : implode(',', $always_read['topics']);
 		}
 
-		$ar_forums = ($always_read_forums) ? 'AND forum_id NOT IN (' . $always_read_forums . ')' : '';
-		$ar_topics = ($always_read_topics) ? 'AND topic_id NOT IN (' . $always_read_topics . ')' : '';
-		$auth_forum = ($auth_forum_id) ? 'AND forum_id IN ('. $auth_forum_id .')' : '';
+		$ar_forums = ($always_read_forums) ? 'AND u.forum_id NOT IN (' . $always_read_forums . ')' : '';
+		$ar_topics = ($always_read_topics) ? 'AND u.topic_id NOT IN (' . $always_read_topics . ')' : '';
+		$auth_forum = ($auth_forum_id) ? 'AND u.forum_id IN ('. $auth_forum_id .')' : '';
 		$max_new_post = ($user_data['user_level'] != ADMIN) ? (($user_data['user_level'] != MOD) ? $config['upi2db_max_new_posts'] : $config['upi2db_max_new_posts_mod']): $config['upi2db_max_new_posts_admin'];
 		// Edited By Mighty Gorgon - BEGIN
 		$max_new_posts = ($max_new_posts == 0) ? UPI2DB_MAX_UNREAD_POSTS : $max_new_posts;
-		$new_post_limit = ($max_new_post > 0) ? 'ORDER BY post_time DESC, post_edit_time DESC LIMIT ' . $max_new_post : 'ORDER BY post_time DESC, post_edit_time DESC';
+		$new_post_limit = ($max_new_post > 0) ? 'ORDER BY u.post_time DESC, u.post_edit_time DESC LIMIT ' . $max_new_post : 'ORDER BY u.post_time DESC, u.post_edit_time DESC';
 		// Edited By Mighty Gorgon - END
 		$dbsync = ($user_dbsync < $user_data['user_regdate']) ? $user_data['user_regdate'] : $user_dbsync;
 		$copy_annoncments = (empty($user_dbsync)) ? 'OR topic_type != 0' : '';
@@ -836,21 +836,42 @@ if(!function_exists('sync_database'))
 			}
 		}
 		$post_ids = implode(',', $post_ids);
-		$no_post_ids = ($post_ids) ? ('AND post_id NOT IN (' . $post_ids . ')') : '';
+		$no_post_ids = ($post_ids) ? ('AND u.post_id NOT IN (' . $post_ids . ')') : '';
 
-// Mal testen --> INSERT DELAYED INTO
+		// Ignore unauthed messages
+		$id_posts = array();
+		$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 
-		$sql = "INSERT INTO " . UPI2DB_UNREAD_POSTS_TABLE . " (user_id, post_id, topic_id, forum_id, topic_type, status, last_update)
-			SELECT " . $user_id . " AS user_id, post_id, topic_id, forum_id, topic_type, IF(post_edit_time > " . $dbsync . " && post_time < " . $dbsync . ", 1, 0) AS status, " . $time . " AS last_update
-			FROM " . UPI2DB_LAST_POSTS_TABLE . "
-			WHERE ((post_time > " . $dbsync . " OR post_edit_time > " . $dbsync . ") " . $copy_annoncments . ")
-				AND ((poster_id != '" . $user_id . "') OR (poster_id = '" . $user_id . "' && post_edit_by != poster_id))
+		$sql = "SELECT u.post_id, u.forum_id, t.topic_poster
+			FROM " . UPI2DB_LAST_POSTS_TABLE . " u, " . TOPICS_TABLE . " t
+			WHERE ((u.post_time > " . $dbsync . " OR u.post_edit_time > " . $dbsync . ") " . $copy_annoncments . ")
+				AND ((u.poster_id != '" . $user_id . "') OR (u.poster_id = '" . $user_id . "' && u.post_edit_by != u.poster_id))
 				$no_post_ids
 				$auth_forum
 				$ar_forums
 				$ar_topics
 				$new_post_limit";
 		$result = $db->sql_query($sql);
+
+		if ($result)
+		{
+			while ($row = $db->sql_fetchrow($result))
+			{
+				if ((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user->data['user_level'] == ADMIN || ($user->data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['poster_id'] == $user->data['user_id']))
+				{
+					$id_posts[] = $row["post_id"];
+				}
+			}
+
+// Mal testen --> INSERT DELAYED INTO
+
+			$sql = "INSERT INTO " . UPI2DB_UNREAD_POSTS_TABLE . " (user_id, post_id, topic_id, forum_id, topic_type, status, last_update)
+				SELECT " . $user_id . " AS user_id, post_id, topic_id, forum_id, topic_type, IF(post_edit_time > " . $dbsync . " && post_time < " . $dbsync . ", 1, 0) AS status, " . $time . " AS last_update
+				FROM " . UPI2DB_LAST_POSTS_TABLE . "
+				WHERE post_id IN (" . implode(",", $id_posts) . ")";
+			$db->sql_query($sql);
+		}
+		$db->sql_freeresult($result);
 
 		$sql = "UPDATE " . USERS_TABLE . " SET user_upi2db_datasync = " . time() . "
 			WHERE user_id = '" . $user_id . "'";
