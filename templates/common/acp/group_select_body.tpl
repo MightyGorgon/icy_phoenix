@@ -74,9 +74,7 @@ function CheckColor(ColorCode)
 <!-- BEGIN select_box -->
 <!--
 <tr><td class="spaceRow" colspan="6"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr>
-	<td class="row1 row-center" colspan="6">{S_GROUP_SELECT}&nbsp;&nbsp;<input type="submit" name="edit" value="{L_LOOK_UP}" class="mainoption" /></td>
-</tr>
+<tr><td class="row1 row-center" colspan="6">{S_GROUP_SELECT}&nbsp;&nbsp;<input type="submit" name="edit" value="{L_LOOK_UP}" class="mainoption" /></td></tr>
 -->
 <!-- END select_box -->
 <tr>

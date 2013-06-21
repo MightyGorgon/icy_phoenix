@@ -262,6 +262,78 @@ class class_mcp_topic
 		}
 	}
 
+
+	/**
+	* Move and rename all topics in a forum
+	*/
+	function topic_move_ren_all($old_forum_id, $new_forum_id, $title_prefix = '')
+	{
+		global $db, $cache, $lang;
+
+		$old_forum_id = $this->fix_forum_id($old_forum_id);
+		$new_forum_id = $this->fix_forum_id($new_forum_id);
+		if (($old_forum_id <= 0) || ($new_forum_id <= 0))
+		{
+			if (!defined('STATUS_404')) define('STATUS_404', true);
+			message_die(GENERAL_MESSAGE, 'NO_FORUM');
+		}
+
+		if($new_forum_id != $old_forum_id)
+		{
+			$db->sql_transaction('begin');
+
+			$sql = "UPDATE " . TOPICS_TABLE . "
+				SET forum_id = " . $new_forum_id . "
+				" . (!empty($title_prefix) ? ", topic_title = CONCAT(\"" . $db->sql_escape($title_prefix) . " \", topic_title)" : "") . "
+				WHERE forum_id = " . $old_forum_id;
+			$db->sql_query($sql);
+
+			$sql = "UPDATE " . POSTS_TABLE . "
+				SET forum_id = " . $new_forum_id . "
+				WHERE forum_id = " . $old_forum_id;
+			$db->sql_query($sql);
+
+//<!-- BEGIN Unread Post Information to Database Mod -->
+			$sql = "UPDATE " . UPI2DB_LAST_POSTS_TABLE . "
+				SET forum_id = " . $new_forum_id . "
+				WHERE forum_id = " . $old_forum_id;
+			$db->sql_query($sql);
+
+			$sql = "UPDATE " . UPI2DB_UNREAD_POSTS_TABLE . "
+				SET forum_id = " . $new_forum_id . "
+				WHERE forum_id = " . $old_forum_id;
+			$db->sql_query($sql);
+//<!-- END Unread Post Information to Database Mod -->
+
+			$sql = "UPDATE " . TOPICS_WATCH_TABLE . "
+				SET forum_id = " . $new_forum_id . "
+				WHERE forum_id = " . $old_forum_id;
+			$db->sql_query($sql);
+
+			// TAGS - BEGIN
+			$sql = "UPDATE " . TOPICS_TAGS_MATCH_TABLE . "
+				SET forum_id = " . $new_forum_id . "
+				WHERE forum_id = " . $old_forum_id;
+			$db->sql_query($sql);
+			// TAGS - END
+
+			$db->sql_transaction('commit');
+
+			$this->cache_resync(array($new_forum_id, $old_forum_id), 0);
+			if (!function_exists('sync_topic_details'))
+			{
+				@include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
+			}
+			sync_topic_details(0, 0, true, false);
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	/**
 	* Lock/Unlock topic(s)
 	*/

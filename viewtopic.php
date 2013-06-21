@@ -651,7 +651,7 @@ $self_sql_tables = (intval($is_auth['auth_read']) == AUTH_SELF) ? ', ' . USERS_T
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = u2.user_id AND (u2.user_id = '" . $user->data['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
 
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_skype, u.user_regdate, u.user_msnm, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_aim, u.user_facebook, u.user_flickr, u.user_googleplus, u.user_icq, u.user_jabber, u.user_linkedin, u.user_msnm, u.user_skype, u.user_twitter, u.user_yim, u.user_youtube, u.user_regdate, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 	WHERE p.topic_id = $topic_id
 		AND t.topic_id = p.topic_id
@@ -1118,6 +1118,11 @@ if ($config['display_tags_box'])
 		'TOPIC_TAGS' => $topic_tags_links,
 		)
 	);
+}
+
+if ($config['enable_featured_image'])
+{
+	$template->assign_var('S_FEATURED_IMAGE', true);
 }
 
 $topic_title_enc = urlencode(ip_utf8_decode($topic_title));
@@ -1599,6 +1604,7 @@ for($i = 0; $i < $total_posts; $i++)
 			'youtube' => 'youtube',
 		);
 
+		$social_im_icon_type = !empty($images['common_social_images_vt']) ? 'icon' : 'icon_tpl_vt';
 		$all_ims = array();
 		foreach ($im_links_array as $im_k => $im_v)
 		{
@@ -1611,7 +1617,7 @@ for($i = 0; $i < $total_posts; $i++)
 			{
 				$all_ims[$im_k] = array(
 					'plain' => build_im_link($im_k, $postrow[$i], false, false, false, false, false),
-					'img' => build_im_link($im_k, $postrow[$i], 'icon_tpl_vt', true, false, false, false),
+					'img' => build_im_link($im_k, $postrow[$i], $social_im_icon_type, true, false, false, false),
 					'url' => build_im_link($im_k, $postrow[$i], false, false, true, false, false)
 				);
 			}
@@ -1837,11 +1843,77 @@ for($i = 0; $i < $total_posts; $i++)
 		$phpbb_styles = false;
 	}
 
+	$s_card_switch_g = false;
+	$s_card_switch_y = false;
+	$s_card_switch_r = false;
+	$s_card_switch_b = false;
+	$s_card_switch_p = false;
+	$s_card_switch_y_assigned = false;
+	$s_card_switch_r_assigned = false;
+	$s_card_y_counter = 0;
+
+	if ($is_auth['auth_bluecard'])
+	{
+		$s_card_switch_b = true;
+		$blue_card_img = '<img src="'. $images['icon_b_card'] . '" alt="'. $lang['Give_b_card'] . '" title="'.$lang['Give_b_card'].'" />';
+		$blue_card_action = 'return confirm(\'' . $lang['Blue_card_warning'] . '\')';
+		$temp_url = 'card.' . PHP_EXT . '?mode=report&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
+		$b_card_img = '<a href="' . $temp_url . '" title="' . $lang['Give_b_card'] . '" onclick="' . $blue_card_action . '">' . $blue_card_img . '</a>';
+		if($phpbb_styles == true)
+		{
+			$b_card_img = '<span class="img-report">' . $b_card_img . '</span>';
+		}
+		if ($is_auth['auth_mod'] && $postrow[$i]['post_bluecard'])
+		{
+			$s_card_switch_p = true;
+			$blue_card_img = '<img src="' . $images['icon_p_card'] . '" alt="' . sprintf($lang['Clear_b_card'], $postrow[$i]['post_bluecard']) . '" />';
+			$blue_card_action = 'return confirm(\'' . $lang['Clear_blue_card_warning'] . '\')';
+			$temp_url = 'card.' . PHP_EXT . '?mode=report_reset&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
+			$b_card_img = '<a href="' . $temp_url . '" onclick="' . $blue_card_action . '" title="' . $lang['Give_b_card'] . '">' . $blue_card_img . '</a>';
+			if($phpbb_styles == true)
+			{
+				$b_card_img = '<span class="img-clear">' . $b_card_img . '</span>';
+			}
+		}
+	}
+	else
+	{
+		$b_card_img = '';
+	}
+
 	if(($poster_id != ANONYMOUS) && ($postrow[$i]['user_level'] != ADMIN))
 	{
 		$current_user = str_replace("'", "\'", $postrow[$i]['username']);
-		if ($is_auth['auth_greencard'])
+		$user_warnings = $postrow[$i]['user_warnings'];
+		$is_banned = false;
+		$card_img = '';
+
+		if ($user_warnings == 0)
 		{
+			$card_img = '';
+		}
+		else
+		{
+			$is_banned = (isset($ranks_array['bannedrow'][$poster_id])) ? true : false;
+			if (($user_warnings >= $config['max_user_bancard']) || $is_banned)
+			{
+				$s_card_switch_r_assigned = true;
+				$card_img = '<img src="' . $images['icon_r_cards'] . '" alt="' . $lang['Banned'] . '" title="' . $lang['Banned'] . '" />';
+			}
+			else
+			{
+				$s_card_switch_y_assigned = true;
+				for ($n = 0; $n < $user_warnings; $n++)
+				{
+					$s_card_y_counter++;
+					$card_img .= '<img src="' . $images['icon_y_cards'] . '" alt="' . sprintf($lang['Warnings'], $user_warnings) . '" title="' . sprintf($lang['Warnings'], $user_warnings) . '" />&nbsp;';
+				}
+			}
+		}
+
+		if ($is_auth['auth_greencard'] && ($s_card_switch_y_assigned || $s_card_switch_r_assigned))
+		{
+			$s_card_switch_g = true;
 			$grn_card_img = '<img src="'. $images['icon_g_card'] . '" alt="' . $lang['Give_G_card'] . '" />';
 			$grn_card_action = 'return confirm(\'' . sprintf($lang['Green_card_warning'], $current_user) . '\')';
 			$temp_url = 'card.' . PHP_EXT . '?mode=unban&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
@@ -1856,39 +1928,18 @@ for($i = 0; $i < $total_posts; $i++)
 			$g_card_img = '';
 		}
 
-		$user_warnings = $postrow[$i]['user_warnings'];
-
-		$card_img = '';
-		$is_banned = false;
-		if ($user_warnings == 0)
-		{
-			$card_img = '';
-		}
-		else
-		{
-			$is_banned = (isset($ranks_array['bannedrow'][$poster_id])) ? true : false;
-			if (($user_warnings >= $config['max_user_bancard']) || $is_banned)
-			{
-				$card_img = '<img src="' . $images['icon_r_cards'] . '" alt="' . $lang['Banned'] . '" title="' . $lang['Banned'] . '" />';
-			}
-			else
-			{
-				for ($n = 0; $n < $user_warnings; $n++)
-				{
-					$card_img .= '<img src="' . $images['icon_y_cards'] . '" alt="' . sprintf($lang['Warnings'], $user_warnings) . '" title="' . sprintf($lang['Warnings'], $user_warnings) . '" />&nbsp;';
-				}
-			}
-		}
-
 		if (($user_warnings < $config['max_user_bancard']) && $is_auth['auth_ban'])
 		{
+			$s_card_switch_y = true;
+			$s_card_switch_r = true;
+
 			$yel_card_img = '<img src="' . $images['icon_y_card'] . '" alt="' . sprintf($lang['Give_Y_card'], $user_warnings + 1) . '" />';
 			$yel_card_action = 'return confirm(\'' . sprintf($lang['Yellow_card_warning'], $current_user) . '\')';
 			$temp_url = 'card.' . PHP_EXT . '?mode=warn&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
 			$y_card_img = '<a href="' . $temp_url . '" title="' .sprintf($lang['Give_Y_card'], $user_warnings + 1). '" onclick="' . $yel_card_action . '">' . $yel_card_img . '</a>';
 
 			$red_card_img = '<img src="'. $images['icon_r_card'] . '" alt="'. $lang['Give_R_card'] . '" />';
-			$red_card_action = 'return confirm(\''.sprintf($lang['Red_card_warning'], $current_user).'\')';
+			$red_card_action = 'return confirm(\'' . sprintf($lang['Red_card_warning'], $current_user) . '\')';
 			$temp_url = 'card.' . PHP_EXT . '?mode=ban&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
 			$r_card_img = '<a href="' . $temp_url . '" title="' . $lang['Give_R_card'] . '" onclick="' . $red_card_action . '">' . $red_card_img . '</a>';
 
@@ -1910,36 +1961,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$g_card_img = '';
 		$y_card_img = '';
 		$r_card_img = '';
-	}
-
-	if ($is_auth['auth_bluecard'])
-	{
-		if ($is_auth['auth_mod'])
-		{
-			$blue_card_img = (($postrow[$i]['post_bluecard'])) ? '<img src="' . $images['icon_p_card'] . '" alt="' . sprintf($lang['Clear_b_card'], $postrow[$i]['post_bluecard']) . '" />' : '<img src="' . $images['icon_b_card'] . '" alt="' . $lang['Give_b_card'] . '" />';
-			$blue_card_action = ($postrow[$i]['post_bluecard']) ? 'return confirm(\'' . $lang['Clear_blue_card_warning'] . '\')' : 'return confirm(\'' . $lang['Blue_card_warning'] . '\')';
-			$temp_url = 'card.' . PHP_EXT . '?mode=' . (($postrow[$i]['post_bluecard']) ? 'report_reset' : 'report') . '&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
-			$b_card_img = '<a href="' . $temp_url . '" onclick="' . $blue_card_action . '" title="' . $lang['Give_b_card'] . '">' . $blue_card_img . '</a>';
-			if($phpbb_styles == true)
-			{
-				$b_card_img = '<span class="' . (($postrow[$i]['post_bluecard']) ? 'img-clear' : 'img-report') . '">' . $b_card_img . '</span>';
-			}
-		}
-		else
-		{
-			$blue_card_img = '<img src="'. $images['icon_b_card'] . '" alt="'. $lang['Give_b_card'] . '" title="'.$lang['Give_b_card'].'" />';
-			$blue_card_action = 'return confirm(\''.$lang['Blue_card_warning'].'\')';
-			$temp_url = 'card.' . PHP_EXT . '?mode=report&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
-			$b_card_img = '<a href="' . $temp_url . '" title="' . $lang['Give_b_card'] . '" onclick="' . $blue_card_action . '">' . $blue_card_img . '</a>';
-			if($phpbb_styles == true)
-			{
-				$b_card_img = '<span class="img-report">' . $b_card_img . '</span>';
-			}
-		}
-	}
-	else
-	{
-		$b_card_img = '';
 	}
 
 	// parse hidden fields if cards visible
@@ -2491,6 +2512,22 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_EDIT' => $edit_url,
 		'U_DELETE' => $delpost_url,
 
+		// ALL SOCIAL ICONS - BEGIN
+		'IMG_SOCIAL_CHAT' => $all_ims['chat']['img'],
+		'IMG_SOCIAL_AIM' => $all_ims['aim']['img'],
+		'IMG_SOCIAL_FACEBOOK' => $all_ims['facebook']['img'],
+		'IMG_SOCIAL_FLICKR' => $all_ims['flickr']['img'],
+		'IMG_SOCIAL_GOOGLEPLUS' => $all_ims['googleplus']['img'],
+		'IMG_SOCIAL_ICQ' => $all_ims['icq']['img'],
+		'IMG_SOCIAL_JABBER' => $all_ims['jabber']['img'],
+		'IMG_SOCIAL_LINKEDIN' => $all_ims['linkedin']['img'],
+		'IMG_SOCIAL_MSN' => $all_ims['msn']['img'],
+		'IMG_SOCIAL_SKYPE' => $all_ims['skype']['img'],
+		'IMG_SOCIAL_TWITTER' => $all_ims['twitter']['img'],
+		'IMG_SOCIAL_YAHOO' => $all_ims['yahoo']['img'],
+		'IMG_SOCIAL_YOUTUBE' => $all_ims['youtube']['img'],
+		// ALL SOCIAL ICONS - END
+
 		'L_MINI_POST_ALT' => $mini_post_alt,
 		'NOTES_COUNT' => sizeof($notes_list),
 		'NOTES_DATA' => $postrow[$i]['edit_notes'],
@@ -2505,20 +2542,65 @@ for($i = 0; $i < $total_posts; $i++)
 		'POSTER_NO' => $poster_number,
 		//'POSTER_NO' => $postrow[$i]['poster_id'],
 		'USER_WARNINGS' => !empty($user_warnings) ? $user_warnings : '',
-		'CARD_IMG' => $card_img,
-		'CARD_HIDDEN_FIELDS' => $card_hidden,
-		'CARD_EXTRA_SPACE' => ($r_card_img || $y_card_img || $g_card_img || $b_card_img) ? ' ' : '',
 
 		'U_MINI_POST' => $mini_post_url,
 //<!-- BEGIN Unread Post Information to Database Mod -->
 		'UNREAD_IMG' => $mark_topic_unread,
 		'UNREAD_COLOR' => !empty($unread_color) ? $unread_color : '',
 //<!-- END Unread Post Information to Database Mod -->
+
+		// Cards - BEGIN
+		'S_CARD' => ($phpbb_styles) ? $card_action : append_sid('card.' . PHP_EXT),
+		'S_CARD_CLASS' => ($phpbb_styles) ? true : false,
+
+		'CARD_IMG' => $card_img,
+		'CARD_HIDDEN_FIELDS' => $card_hidden,
+		'CARD_EXTRA_SPACE' => ($r_card_img || $y_card_img || $g_card_img || $b_card_img) ? ' ' : '',
+
+		// Backward compatibility - BEGIN
 		'U_G_CARD' => $g_card_img,
 		'U_Y_CARD' => $y_card_img,
 		'U_R_CARD' => $r_card_img,
 		'U_B_CARD' => $b_card_img,
-		'S_CARD' => ($phpbb_styles) ? $card_action : append_sid('card.' . PHP_EXT),
+		// Backward compatibility - BEGIN
+
+		'S_CARD_SWITCH' => ($s_card_switch_g || $s_card_switch_y || $s_card_switch_r || $s_card_switch_b || $s_card_switch_p) ? true : false,
+		'S_CARD_SWITCH_G' => $s_card_switch_g ? true : false,
+		'S_CARD_SWITCH_Y' => $s_card_switch_y ? true : false,
+		'S_CARD_SWITCH_R' => $s_card_switch_r ? true : false,
+		'S_CARD_SWITCH_B' => $s_card_switch_b ? true : false,
+		'S_CARD_SWITCH_P' => $s_card_switch_p ? true : false,
+		'S_CARD_SWITCH_Y_A' => $s_card_switch_y_assigned ? true : false,
+		'S_CARD_SWITCH_R_A' => $s_card_switch_r_assigned ? true : false,
+		'S_CARD_SWITCH_Y_R_A' => ($s_card_switch_y_assigned || $s_card_switch_r_assigned) ? true : false,
+
+		'L_CARD_G' => $lang['Give_G_card'],
+		'L_CARD_G_JS' => str_replace("'", "\'", sprintf($lang['Green_card_warning'], $current_user)),
+		'L_CARD_Y' => sprintf($lang['Give_Y_card'], $user_warnings + 1),
+		'L_CARD_Y_JS' => str_replace("'", "\'", sprintf($lang['Yellow_card_warning'], $current_user)),
+		'L_CARD_R' => $lang['Give_R_card'],
+		'L_CARD_R_JS' => str_replace("'", "\'", sprintf($lang['Red_card_warning'], $current_user)),
+		'L_CARD_B' => $lang['Give_b_card'],
+		'L_CARD_B_JS' => str_replace("'", "\'", $lang['Blue_card_warning']),
+		'L_CARD_P' => sprintf($lang['Clear_b_card'], $postrow[$i]['post_bluecard']),
+		'L_CARD_P_JS' => str_replace("'", "\'", $lang['Clear_blue_card_warning']),
+		'L_CARD_Y_A' => sprintf($lang['Warnings'], $user_warnings),
+		'L_CARD_R_A' => $lang['Banned'],
+
+		'U_CARD_G' => 'card.' . PHP_EXT . '?mode=unban&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'],
+		'U_CARD_Y' => 'card.' . PHP_EXT . '?mode=warn&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'],
+		'U_CARD_R' => 'card.' . PHP_EXT . '?mode=ban&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'],
+		'U_CARD_B' => 'card.' . PHP_EXT . '?mode=report&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'],
+		'U_CARD_P' => 'card.' . PHP_EXT . '?mode=' . (($postrow[$i]['post_bluecard']) ? 'report_reset' : 'report') . '&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'],
+
+		'IMG_CARD_G' => $images['icon_g_card'],
+		'IMG_CARD_Y' => $images['icon_y_card'],
+		'IMG_CARD_R' => $images['icon_r_card'],
+		'IMG_CARD_B' => $images['icon_b_card'],
+		'IMG_CARD_P' => $images['icon_p_card'],
+		'IMG_CARD_Y_A' => $images['icon_y_cards'],
+		'IMG_CARD_R_A' => $images['icon_r_cards'],
+		// Card - END
 
 		'S_FIRST_POST' => ($postrow[$i]['post_id'] == $topic_first_post_id) ? true : false,
 
@@ -2667,6 +2749,13 @@ for($i = 0; $i < $total_posts; $i++)
 			unset($item);
 		}
 	}
+
+	// Cards counter... this has to be here!
+	for ($n = 0; $n < $s_card_y_counter; $n++)
+	{
+		$template->assign_block_vars('postrow.cards_y', array('Y_CARD' => true));
+	}
+
 
 }
 

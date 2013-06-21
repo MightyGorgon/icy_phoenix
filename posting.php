@@ -40,6 +40,14 @@ include_once(IP_ROOT_PATH . 'includes/functions_events_reg.' . PHP_EXT);
 @include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
 $class_topics = new class_topics();
 
+$use_jquery_tags = (!empty($config['use_jquery_tags']) && empty($user->data['mobile_style'])) ? true : false;
+//$use_jquery_tags = false;
+$config['jquery_ui'] = true;
+if (!empty($use_jquery_tags))
+{
+	$config['jquery_tags'] = true;
+}
+
 // Init common vars: forum_id, topic_id, post_id, etc.
 $class_topics->var_init(true);
 
@@ -466,6 +474,7 @@ if ($result && $post_info)
 		$post_data['topic_calendar_time'] = $post_info['topic_calendar_time'];
 		$post_data['topic_calendar_duration'] = $post_info['topic_calendar_duration'];
 		$post_data['poster_id'] = $post_info['poster_id'];
+		$post_data['post_images'] = $post_info['post_images'];
 
 		if (($config['allow_mods_edit_admin_posts'] == false) && ($post_info['user_level'] == ADMIN) && ($user->data['user_level'] != ADMIN))
 		{
@@ -1156,6 +1165,24 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			$topic_desc = request_post_var('topic_desc', '', true);
 			$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
 			$notes = htmlspecialchars_decode(request_post_var('notes', '', true), ENT_COMPAT);
+			$post_images = request_post_var('post_images', '', true);
+			if (!empty($post_images) && (substr($post_images, 0, 4) == 'http'))
+			{
+				if (!function_exists('get_full_image_info'))
+				{
+					require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
+				}
+				$pic_size = get_full_image_info($post_images);
+				if(empty($pic_size))
+				{
+					$post_images = '';
+				}
+			}
+			else
+			{
+				$post_images = '';
+			}
+			$post_data['post_images'] = $post_images;
 
 			$poll_title = (isset($_POST['poll_title']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_title', '', true) : '';
 			$poll_options = (isset($_POST['poll_option_text']) && $is_auth['auth_pollcreate']) ? request_post_var('poll_option_text', array(0 => ''), true) : array();
@@ -1290,17 +1317,30 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 
 					@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
 					$class_topics_tags = new class_topics_tags();
-					$topic_tags = request_var('topic_tags', '', true);
+					if (!empty($use_jquery_tags))
+					{
+						if(array_key_exists('ttag', $_POST))
+						{
+							$all_topic_tags = request_var('ttag', array(0 => ''), true);
+							$topic_tags = implode(', ', array_filter(array_unique($all_topic_tags)));
+						}
+					}
+					else
+					{
+						$topic_tags = request_var('topic_tags', '', true);
+					}
 					if (!empty($topic_tags))
 					{
+						$topic_tags = trim($topic_tags);
 						while(substr($topic_tags, -1) == ',')
 						{
 							$topic_tags = trim(substr($topic_tags, 0, -1));
 						}
 						$topic_tags_array = $class_topics_tags->create_tags_array($topic_tags);
-						$topic_tags = implode(', ', $topic_tags_array);
+						$topic_tags = implode(', ', array_filter(array_unique($topic_tags_array)));
+						$topic_tags = substr($topic_tags, 0, 254);
+						//die($topic_tags);
 					}
-					$topic_tags = substr($topic_tags, 0, 254);
 					unset($class_topics_tags);
 				}
 
@@ -1455,17 +1495,30 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 
 	@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
 	$class_topics_tags = new class_topics_tags();
-	$topic_tags = request_post_var('topic_tags', '', true);
+	if (!empty($use_jquery_tags))
+	{
+		if(array_key_exists('ttag', $_POST))
+		{
+			$all_topic_tags = request_var('ttag', array(0 => ''), true);
+			$topic_tags = implode(', ', array_filter(array_unique($all_topic_tags)));
+		}
+	}
+	else
+	{
+		$topic_tags = request_var('topic_tags', '', true);
+	}
 	if (!empty($topic_tags))
 	{
+		$topic_tags = trim($topic_tags);
 		while(substr($topic_tags, -1) == ',')
 		{
 			$topic_tags = trim(substr($topic_tags, 0, -1));
 		}
 		$topic_tags_array = $class_topics_tags->create_tags_array($topic_tags);
-		$topic_tags = implode(', ', $topic_tags_array);
+		$topic_tags = implode(', ', array_filter(array_unique($topic_tags_array)));
+		$topic_tags = substr($topic_tags, 0, 254);
+		//die($topic_tags);
 	}
-	$topic_tags = substr($topic_tags, 0, 254);
 	unset($class_topics_tags);
 
 	$poll_title = (!empty($_POST['poll_title'])) ? request_post_var('poll_title', '', true) : '';
@@ -1696,9 +1749,9 @@ else
 				if (!empty($topic_tags))
 				{
 					$topic_tags_array = $class_topics_tags->create_tags_array($topic_tags);
-					$topic_tags = implode(', ', $topic_tags_array);
+					$topic_tags = implode(', ', array_filter(array_unique($topic_tags_array)));
+					$topic_tags = substr($topic_tags, 0, 254);
 				}
-				$topic_tags = substr($topic_tags, 0, 254);
 				unset($class_topics_tags);
 			}
 
@@ -2058,6 +2111,16 @@ $nav_add_page_title = true;
 // Generate smilies listing for page output
 //generate_smilies('inline');
 
+// We need to force these vars here since posting doesn't use standard Icy Phoenix page generation.
+$template->assign_vars(array(
+	'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
+	'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
+	'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+	'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
+	'S_JQUERY_TAGS' => (!empty($config['jquery_tags']) ? true : false),
+	)
+);
+
 // Include page header
 page_header($meta_content['page_title'], true);
 
@@ -2122,6 +2185,10 @@ if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post'])
 	{
 		$template->assign_var('S_TOPIC_TAGS', true);
 	}
+	if ($config['enable_featured_image'])
+	{
+		$template->assign_var('S_FEATURED_IMAGE', true);
+	}
 }
 
 // CrackerTracker v5.x
@@ -2157,12 +2224,31 @@ if ($config['allow_drafts'] == true)
 }
 // MG Drafts - END
 
+// MG Featured Image - BEGIN
+$post_featured_image = $post_info['post_images'];
+// MG Featured Image - END
+
 // Convert and clean special chars!
 $subject = (($mode == 'editpost') ? $subject : htmlspecialchars_clean($subject));
 $topic_desc = !empty($topic_desc) ? htmlspecialchars_clean($topic_desc) : '';
 $topic_title_clean = (empty($topic_title_clean) ? $subject : trim($topic_title_clean));
 $topic_title_clean = substr(ip_clean_string($topic_title_clean, $lang['ENCODING']), 0, 254);
 $topic_tags = (empty($topic_tags) ? '' : trim($topic_tags));
+
+if (!empty($topic_tags))
+{
+	$ttags = explode(', ', $topic_tags);
+	foreach ($ttags as $ttag)
+	{
+		if (!empty($ttag))
+		{
+			$template->assign_block_vars('ttag', array(
+				'TTAG' => $ttag
+				)
+			);
+		}
+	}
+}
 
 // Output the data to the template
 $template->assign_vars(array(
@@ -2172,6 +2258,8 @@ $template->assign_vars(array(
 	'TOPIC_DESCRIPTION' => $topic_desc,
 	'TOPIC_TITLE_CLEAN' => $topic_title_clean,
 	'TOPIC_TAGS' => $topic_tags,
+	'POST_FEATURED_IMAGE' => $post_info['post_images'],
+	'S_JQUERY_TOPIC_TAGS' => !empty($use_jquery_tags) ? true : false,
 	'MESSAGE' => $message,
 	'HTML_STATUS' => $html_status,
 	'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid('faq.' . PHP_EXT . '?mode=bbcode') . '" target="_blank">', '</a>'),

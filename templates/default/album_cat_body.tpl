@@ -39,7 +39,6 @@
 	<td align="right" valign="bottom" rowspan="2"><span class="gensmall">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
-{ALBUM_BOARD_INDEX}
 <!-- BEGIN index_pics_block -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{CAT_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <!-- BEGIN no_pics -->
@@ -123,6 +122,8 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- END index_pics_block -->
 <br />
+
+{ALBUM_BOARD_INDEX}
 
 <!-- BEGIN recent_comments_block -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{recent_comments_block.L_LAST_COMMENT_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

@@ -55,6 +55,7 @@ function toggle_check_all()
 		<input type="submit" name="poll_delete" class="liteoption" value="{L_POLL_DELETE}" />&nbsp;
 		<!-- BEGIN switch_auth_move -->
 		<input type="submit" name="move" class="liteoption" value="{L_MOVE}" />&nbsp;
+		<input type="submit" name="move_all" class="liteoption" value="{L_MOVE_ALL}" />&nbsp;
 		<!-- END switch_auth_move -->
 		<input type="submit" name="merge" class="liteoption" value="{L_MERGE}" />&nbsp;
 		<!-- BEGIN switch_auth_lock -->

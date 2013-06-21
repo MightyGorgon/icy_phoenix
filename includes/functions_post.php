@@ -481,7 +481,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 	}
 
-	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_autolinks_acronyms, enable_sig) VALUES (" . $topic_id . ", " . $forum_id . ", " . $user->data['user_id'] . ", '" . $db->sql_escape($post_username) . "', '" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($post_message) . "', " . $current_time . ", '" . $db->sql_escape($user->ip) . "', " . $bbcode_on . ", " . $html_on . ", " . $smilies_on . ", " . $acro_auto_on . ", " . $attach_sig . ")" : "UPDATE " . POSTS_TABLE . " SET post_username = '" . $db->sql_escape($post_username) . "', post_text = '" . $db->sql_escape($post_message) . "', post_text_compiled = '', post_subject = '" . $db->sql_escape($post_subject) . "', enable_bbcode = " . $bbcode_on . ", enable_html = " . $html_on . ", enable_smilies = " . $smilies_on . ", enable_autolinks_acronyms = " . $acro_auto_on . ", enable_sig = " . $attach_sig . " " . $edited_sql . " WHERE post_id = " . $post_id;
+	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_autolinks_acronyms, enable_sig, post_images) VALUES (" . $topic_id . ", " . $forum_id . ", " . $user->data['user_id'] . ", '" . $db->sql_escape($post_username) . "', '" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($post_message) . "', " . $current_time . ", '" . $db->sql_escape($user->ip) . "', " . $bbcode_on . ", " . $html_on . ", " . $smilies_on . ", " . $acro_auto_on . ", " . $attach_sig . ", " . $db->sql_escape($post_data['post_images']) . ")" : "UPDATE " . POSTS_TABLE . " SET post_username = '" . $db->sql_escape($post_username) . "', post_text = '" . $db->sql_escape($post_message) . "', post_text_compiled = '', post_subject = '" . $db->sql_escape($post_subject) . "', enable_bbcode = " . $bbcode_on . ", enable_html = " . $html_on . ", enable_smilies = " . $smilies_on . ", enable_autolinks_acronyms = " . $acro_auto_on . ", enable_sig = " . $attach_sig . ", post_images ='" . $db->sql_escape($post_data['post_images']) . "' " . $edited_sql . " WHERE post_id = " . $post_id;
 	$db->sql_transaction('begin');
 	$db->sql_query($sql);
 
@@ -1146,7 +1146,7 @@ function generate_smilies($mode)
 
 				'DEFAULT_SMILEYS_PER_PAGE' => $window_columns * $window_rows,
 				'SELECT_SMILEYS_PP' => $select_smileys_pp,
-				'PAGINATION' => generate_pagination('posting.' . PHP_EXT . '?mode=smilies', $num_smilies, $per_page, $start, false),
+				'PAGINATION' => generate_pagination('posting.' . PHP_EXT . '?mode=smilies&amp;smilies_per_page=' . $smilies_per_page, $num_smilies, $per_page, $start, false),
 				'S_SMILIES_COLSPAN' => $s_colspan
 				)
 			);

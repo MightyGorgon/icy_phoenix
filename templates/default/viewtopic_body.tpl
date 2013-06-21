@@ -66,7 +66,17 @@
 			</b>
 			</div>
 		</div>
-		{postrow.CARD_IMG}
+
+		<!-- IF postrow.S_CARD_SWITCH_Y_R_A -->
+			<!-- IF postrow.S_CARD_SWITCH_R_A -->
+				<img src="{postrow.IMG_CARD_R_A}" alt="{postrow.L_CARD_R_A}" title="{postrow.L_CARD_R_A}" />
+			<!-- ELSE -->
+				<!-- BEGIN cards_y -->
+					<img src="{postrow.IMG_CARD_Y_A}" alt="{postrow.L_CARD_Y_A}" title="{postrow.L_CARD_Y_A}" />
+				<!-- END cards_y -->
+			<!-- ENDIF -->
+		<!-- ENDIF -->
+
 		<!-- ENDIF -->
 		<!-- BEGIN switch_showavatars -->
 		<span class="post-images"><a href="javascript:quotename(%27[b]{postrow.POSTER_NAME_QR}[/b],%27);">{postrow.POSTER_AVATAR}</a></span>
@@ -102,15 +112,24 @@
 	<td class="row-post" height="100%">
 		<div class="post-buttons-top post-buttons">
 			<!-- IF not S_BOT -->
-			 <a href="{postrow.U_POST_QUOTE}"><img src="{postrow.IMG_POST_QUOTE}" alt="{postrow.L_POST_QUOTE}" title="{postrow.L_POST_QUOTE}" /></a> 
+			<a href="{postrow.U_POST_QUOTE}"><img src="{postrow.IMG_POST_QUOTE}" alt="{postrow.L_POST_QUOTE}" title="{postrow.L_POST_QUOTE}" /></a>
 			<!-- IF postrow.S_POST_EDIT -->
-			 <a href="{postrow.U_POST_EDIT}"><img src="{postrow.IMG_POST_EDIT}" alt="{postrow.L_POST_EDIT}" title="{postrow.L_POST_EDIT}" /></a>
+			&nbsp;<a href="{postrow.U_POST_EDIT}"><img src="{postrow.IMG_POST_EDIT}" alt="{postrow.L_POST_EDIT}" title="{postrow.L_POST_EDIT}" /></a>
 			<!-- ENDIF -->
 			<!-- IF postrow.S_POST_DELETE -->
-			 <a href="{postrow.U_POST_DELETE}"><img src="{postrow.IMG_POST_DELETE}" alt="{postrow.L_POST_DELETE}" title="{postrow.L_POST_DELETE}" /></a>
+			&nbsp;<a href="{postrow.U_POST_DELETE}"><img src="{postrow.IMG_POST_DELETE}" alt="{postrow.L_POST_DELETE}" title="{postrow.L_POST_DELETE}" /></a>
 			<!-- ENDIF -->
 			{postrow.UNREAD_IMG}
-			{postrow.U_R_CARD}{postrow.U_Y_CARD}{postrow.U_G_CARD}{postrow.U_B_CARD}&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
+
+			<!-- IF postrow.S_CARD_SWITCH -->
+			<!-- IF postrow.S_CARD_SWITCH_B --><!-- IF postrow.S_CARD_CLASS --><span class="img-report"><!-- ENDIF --><a href="{postrow.U_CARD_B}" onclick="return confirm('{postrow.L_CARD_B_JS}')"><img src="{postrow.IMG_CARD_B}" alt="{postrow.L_CARD_B}" title="{postrow.L_CARD_B}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+			<!-- IF postrow.S_CARD_SWITCH_P --><!-- IF postrow.S_CARD_CLASS --><span class="img-clear"><!-- ENDIF --><a href="{postrow.U_CARD_P}" onclick="return confirm('{postrow.L_CARD_P_JS}')"><img src="{postrow.IMG_CARD_P}" alt="{postrow.L_CARD_P}" title="{postrow.L_CARD_P}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+			<!-- IF postrow.S_CARD_SWITCH_G --><!-- IF postrow.S_CARD_CLASS --><span class="img-green"><!-- ENDIF --><a href="{postrow.U_CARD_G}" onclick="return confirm('{postrow.L_CARD_G_JS}')"><img src="{postrow.IMG_CARD_G}" alt="{postrow.L_CARD_G}" title="{postrow.L_CARD_G}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+			<!-- IF postrow.S_CARD_SWITCH_Y --><!-- IF postrow.S_CARD_CLASS --><span class="img-warn"><!-- ENDIF --><a href="{postrow.U_CARD_Y}" onclick="return confirm('{postrow.L_CARD_Y_JS}')"><img src="{postrow.IMG_CARD_Y}" alt="{postrow.L_CARD_Y}" title="{postrow.L_CARD_Y}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+			<!-- IF postrow.S_CARD_SWITCH_R --><!-- IF postrow.S_CARD_CLASS --><span class="img-ban"><!-- ENDIF --><a href="{postrow.U_CARD_R}" onclick="return confirm('{postrow.L_CARD_R_JS}')"><img src="{postrow.IMG_CARD_R}" alt="{postrow.L_CARD_R}" title="{postrow.L_CARD_R}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+			<!-- ENDIF -->
+
+			&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
 			<!-- ELSE -->
 			&nbsp;
 			<!-- ENDIF -->
@@ -162,16 +181,16 @@
 	<td class="row-post-buttons post-buttons">
 		<div style="text-align: right; vertical-align: middle;">
 			<div class="extra-top-padding" style="position: relative; float: left; text-align: left; vertical-align: middle;">
-				<a href="{postrow.U_VIEW_PROFILE}"><img src="{postrow.IMG_VIEW_PROFILE}" alt="{postrow.POSTER_NAME_QQ}" title="{postrow.POSTER_NAME_QQ}" /></a> 
-				<a href="{postrow.U_SEND_PRIVMSG}"><img src="{postrow.IMG_SEND_PRIVMSG}" alt="{postrow.L_SEND_PRIVMSG}" title="{postrow.L_SEND_PRIVMSG}" /></a> 
+				<a href="{postrow.U_VIEW_PROFILE}"><img src="{postrow.IMG_VIEW_PROFILE}" alt="{postrow.POSTER_NAME_QQ}" title="{postrow.POSTER_NAME_QQ}" /></a>
+				<a href="{postrow.U_SEND_PRIVMSG}"><img src="{postrow.IMG_SEND_PRIVMSG}" alt="{postrow.L_SEND_PRIVMSG}" title="{postrow.L_SEND_PRIVMSG}" /></a>
 				<!-- IF postrow.S_USER_ALLOW_VIEWEMAIL -->
-				<a href="{postrow.U_SEND_EMAIL}"><img src="{postrow.IMG_SEND_EMAIL}" alt="{postrow.L_SEND_EMAIL}" title="{postrow.L_SEND_EMAIL}" /></a> 
+				<a href="{postrow.U_SEND_EMAIL}"><img src="{postrow.IMG_SEND_EMAIL}" alt="{postrow.L_SEND_EMAIL}" title="{postrow.L_SEND_EMAIL}" /></a>
 				<!-- ENDIF -->
 				<!-- IF postrow.S_USER_WEBSITE -->
-				<a href="{postrow.U_USER_WEBSITE}" target="_blank"><img src="{postrow.IMG_USER_WEBSITE}" alt="{postrow.L_USER_WEBSITE}" title="{postrow.L_USER_WEBSITE}" /></a>		 
+				<a href="{postrow.U_USER_WEBSITE}" target="_blank"><img src="{postrow.IMG_USER_WEBSITE}" alt="{postrow.L_USER_WEBSITE}" title="{postrow.L_USER_WEBSITE}" /></a>
 				<!-- ENDIF -->
 				<!-- IF postrow.S_USER_ALBUM -->
-				<a href="{postrow.U_USER_ALBUM}"><img src="{postrow.IMG_USER_ALBUM}" alt="{postrow.L_USER_ALBUM}" title="{postrow.L_USER_ALBUM}" /></a> &nbsp;
+				<a href="{postrow.U_USER_ALBUM}"><img src="{postrow.IMG_USER_ALBUM}" alt="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" title="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" /></a>&nbsp;
 				<!-- ENDIF -->
 			</div>
 			<!-- IF not S_BOT -->

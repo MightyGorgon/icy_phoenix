@@ -92,6 +92,8 @@ switch ($req_version)
 	case '20086': $current_ip_version = '2.0.0.86'; break;
 	case '20187': $current_ip_version = '2.0.1.87'; break;
 	case '20288': $current_ip_version = '2.0.2.88'; break;
+	case '20389': $current_ip_version = '2.0.3.89'; break;
+	case '20490': $current_ip_version = '2.0.4.90'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -893,7 +895,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_warnings` SMALLINT(5) DEFAULT '0'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_time_mode` TINYINT(4) DEFAULT '5' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_dst_time_lag` TINYINT(4) DEFAULT '60' NOT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pc_timeOffsets` VARCHAR(11) DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_skype` VARCHAR(255) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_registered_ip` VARCHAR(8) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_registered_hostname` VARCHAR(255) DEFAULT NULL";
@@ -4569,6 +4570,14 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.2.88 */
 		case '2.0.2.88':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` DROP `user_pc_timeOffsets`";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('use_jquery_tags', '0')";
+
+		/* Updating from IP 2.0.3.89 */
+		case '2.0.3.89':
+
+		/* Updating from IP 2.0.4.90 */
+		case '2.0.4.90':
 
 	}
 

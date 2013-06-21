@@ -1271,12 +1271,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			AJAX_message_die($result_ar);
 		}
 
-		// Output header
-		$meta_content['page_title'] = $nav_main_lang;
-		$meta_content['description'] = '';
-		$meta_content['keywords'] = '';
-		$nav_server_url = create_server_url();
-		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . $nav_main_url . '" class="nav-current">' . $nav_main_lang . '</a>';
 		include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
 		if ($show_results == 'bookmarks')
@@ -1516,6 +1510,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if (((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $user->data['user_id']))
 				{
 					continue;
+					/*
+					$poster = $lang['Reserved_Author'];
+					$topic_title = $lang['Reserved_Topic'];
+					$message = $lang['Reserved_Post'];
+					*/
 				}
 				else
 				{
@@ -1717,6 +1716,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if (((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $user->data['user_id']))
 				{
 					continue;
+					/*
+					$topic_author = $lang['Reserved_Author'];
+					$last_post_author = $lang['Reserved_Author'];
+					$topic_title = $lang['Reserved_Topic'];
+					*/
 				}
 				else
 				{
@@ -1790,23 +1794,28 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 				// Event Registration - END
 			}
-			
-			$valid_results++;
 		}
-		
-		// Add the breadcrumbs text
+
+		// Header
 		if ($show_results == 'bookmarks')
 		{
 			$nav_main_lang = $lang['Bookmarks'];
 			$nav_main_url = append_sid('search.' . PHP_EXT . '?search_id=bookmarks');
 			$l_search_matches = ($valid_results == 1) ? sprintf($lang['Found_bookmark'], $valid_results) : sprintf($lang['Found_bookmarks'], $valid_results);
+			//$l_search_matches = ($total_match_count == 1) ? sprintf($lang['Found_bookmark'], $total_match_count) : sprintf($lang['Found_bookmarks'], $total_match_count);
 		}
 		else
 		{
 			$nav_main_lang = $lang['Search'];
 			$nav_main_url = append_sid('search.' . PHP_EXT);
 			$l_search_matches = ($valid_results == 1) ? sprintf($lang['Found_search_match'], $valid_results) : sprintf($lang['Found_search_matches'], $valid_results);
+			//$l_search_matches = ($total_match_count == 1) ? sprintf($lang['Found_search_match'], $total_match_count) : sprintf($lang['Found_search_matches'], $total_match_count);
 		}
+		$meta_content['page_title'] = $nav_main_lang;
+		$meta_content['description'] = '';
+		$meta_content['keywords'] = '';
+		$nav_server_url = create_server_url();
+		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . $nav_main_url . '" class="nav-current">' . $nav_main_lang . '</a>';
 		$breadcrumbs['bottom_right_links'] = '<span class="gensmall">' . $l_search_matches . '</span>';
 		if (!empty($is_newposts))
 		{
@@ -1814,7 +1823,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 		
 		// Valid results found?
-		if ($valid_results == 0)
+		if (empty($valid_results))
 		{
 			message_die(GENERAL_MESSAGE, $lang['No_search_match']);
 		}

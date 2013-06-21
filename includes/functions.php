@@ -5481,6 +5481,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
 		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
 		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
+		'S_JQUERY_TAGS' => (!empty($config['jquery_tags']) ? true : false),
 		)
 	);
 

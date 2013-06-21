@@ -1555,7 +1555,7 @@ $lang = array_merge($lang, array(
 	'New' => 'N',
 	'New_Label' => 'New',
 	'New_Messages_Label' => 'New Messages',
-	'Show_Personal_Gallery' => 'View user\'s personal gallery',
+	'Show_Personal_Gallery' => 'Personal Gallery',
 	'Login_Status' => 'Online Status',
 	'Login_Hidden' => 'Hidden',
 	'Login_Visible' => 'Visible',
@@ -2460,6 +2460,19 @@ $lang = array_merge($lang, array(
 	'TAGS_SEARCH_REPLACE_RESULT' => '%s Tags have been replaced',
 
 	'UNABLE_TO_UPLOAD_AVATAR' => 'Unable to upload the image, make sure the image is not too big and of allowed type.',
+
+	'MOVE_ALL' => 'Move All',
+	'MOVED_TOPICS_PREFIX' => 'Choose a topics prefix for topics moved (optional)',
+
+	'TAGS_REMOVE_ITEM' => 'Remove Tag',
+	'TAGS_EDIT_ITEM' => 'Save changes',
+	'TAGS_DELETE_ITEM' => 'Delete this Tag from database',
+	'TAGS_DELETE_CONFIRM' => 'Are you sure to delete this Tag?',
+	'TAGS_DELETED_ITEM' => 'This Tag will be deleted',
+	'TAGS_BREAK_EDIT' => 'Cancel',
+
+	'POST_FEATURED_IMAGE' => 'Featured Image',
+	'POST_FEATURED_IMAGE_EXPLAIN' => 'Add a featured image to the topic',
 
 	)
 );

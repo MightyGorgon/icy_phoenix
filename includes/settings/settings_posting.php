@@ -244,6 +244,14 @@ $settings_data = array(
 		'default' => 0,
 	),
 
+	'use_jquery_tags' => array(
+		'lang_key' => 'IP_use_jquery_tags',
+		'explain' => 'IP_use_jquery_tags_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => $this->list_yes_no,
+	),
+
 	'display_tags_box' => array(
 		'lang_key' => 'IP_display_tags_box',
 		'explain' => 'IP_display_tags_box_explain',
@@ -285,6 +293,14 @@ $settings_data = array(
 	'always_show_edit_by' => array(
 		'lang_key' => 'IP_always_show_edit_by',
 		'explain' => 'IP_always_show_edit_by_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => $this->list_yes_no,
+	),
+
+	'enable_featured_image' => array(
+		'lang_key' => 'IP_enable_featured_image',
+		'explain' => 'IP_enable_featured_image_explain',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
