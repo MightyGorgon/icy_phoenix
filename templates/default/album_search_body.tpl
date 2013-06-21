@@ -20,7 +20,7 @@
 		</div></div>
 		</center>
 	</td>
-	<td class="row1h row-forum" onclick="window.location.href='{switch_search_results.search_results.U_PIC_CAT}'"><a href="{switch_search_results.search_results.U_PIC_CAT}" class="genmed"><b>{switch_search_results.search_results.CATEGORY}</b></a></td>
+	<td class="row1h row-forum" data-href="{switch_search_results.search_results.U_PIC_CAT}"><a href="{switch_search_results.search_results.U_PIC_CAT}" class="genmed"><b>{switch_search_results.search_results.CATEGORY}</b></a></td>
 	<td class="row1"><a href="{switch_search_results.search_results.U_PIC_SP}" class="genmed">{switch_search_results.search_results.PIC_TITLE}</a></td>
 	<td class="row1 row-center"><a href="{switch_search_results.search_results.U_PROFILE}" class="genmed"><b>{switch_search_results.search_results.L_USERNAME}</b></a></td>
 	<td class="row1 row-center"><span class="gensmall">{switch_search_results.search_results.TIME}</span></td>

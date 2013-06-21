@@ -47,7 +47,7 @@ function checkForm()
 		<!-- BEGIN linkrow -->
 		<tr>
 			<td class="{linkrow.ROW_CLASS} row-center" width="30" style="padding-right:5px;" nowrap="nowrap"><img src="{FOLDER_IMG}" alt="{linkrow.LINK_TITLE}" title="{linkrow.LINK_TITLE}" /></td>
-			<td class="{linkrow.ROW_CLASS} row-forum" width="100%" onclick="window.location.href='{linkrow.LINK_URL}'"><span class="forumlink"><a href="{linkrow.LINK_URL}" class="forumlink">{linkrow.LINK_TITLE}</a></span></td>
+			<td class="{linkrow.ROW_CLASS} row-forum" width="100%" data-href="{linkrow.LINK_URL}"><span class="forumlink"><a href="{linkrow.LINK_URL}" class="forumlink">{linkrow.LINK_TITLE}</a></span></td>
 			<td class="{linkrow.ROW_CLASS} row-center-small"><span class="genmed">{linkrow.LINK_NUMBER}</span></td>
 		</tr>
 		<!-- END linkrow -->

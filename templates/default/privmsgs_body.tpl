@@ -80,7 +80,7 @@ function select_switch(status)
 <!-- BEGIN listrow -->
 <tr>
 	<td class="row1 row-center" style="padding-right:3px;"><img src="{listrow.PRIVMSG_FOLDER_IMG}" alt="{listrow.L_PRIVMSG_FOLDER_ALT}" title="{listrow.L_PRIVMSG_FOLDER_ALT}" /></td>
-	<td class="row1h row-forum" onclick="window.location.href='{listrow.U_READ}'" valign="middle">{listrow.PRIVMSG_ATTACHMENTS_IMG}<span class="topiclink"><a href="{listrow.U_READ}" class="topiclink">{listrow.SUBJECT}</a></span></td>
+	<td class="row1h row-forum" data-href="{listrow.U_READ}" valign="middle">{listrow.PRIVMSG_ATTACHMENTS_IMG}<span class="topiclink"><a href="{listrow.U_READ}" class="topiclink">{listrow.SUBJECT}</a></span></td>
 	<td class="row2 row-center">{listrow.FROM}</td>
 	<td class="row2 row-center-small">{listrow.DATE}</td>
 	<td class="row3 row-center"><input type="checkbox" name="mark[]2" value="{listrow.S_MARK_ID}" /></td>

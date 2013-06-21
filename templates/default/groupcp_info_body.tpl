@@ -59,7 +59,7 @@
 	<th>{L_WEBSITE}</th>
 </tr>
 <tr>
-	<td class="row1h row-center" onclick="window.location.href='{U_VIEWPROFILE}'">{USERNAME}</td>
+	<td class="row1h row-center" data-href="{U_VIEWPROFILE}">{USERNAME}</td>
 	<td class="row2 row-center">{POSTS}</td>
 	<td class="row1 row-center">&nbsp;{FROM}&nbsp;</td>
 	<td class="row1 row-center">&nbsp;{ONLINE_STATUS_IMG}&nbsp;</td>
@@ -82,7 +82,7 @@
 </tr>
 <!-- BEGIN memberrow -->
 <tr>
-	<td class="row1h row-center" onclick="window.location.href='{memberrow.U_VIEWPROFILE}'">{memberrow.USERNAME}</td>
+	<td class="row1h row-center" data-href="{memberrow.U_VIEWPROFILE}">{memberrow.USERNAME}</td>
 	<td class="row2 row-center">{memberrow.POSTS}</td>
 	<td class="row1 row-center">&nbsp;{memberrow.FROM}&nbsp;</td>
 	<td class="row1 row-center">&nbsp;{memberrow.ONLINE_STATUS_IMG}&nbsp;</td>
