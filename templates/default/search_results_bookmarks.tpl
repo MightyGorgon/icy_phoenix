@@ -17,10 +17,10 @@
 <!-- BEGIN searchresults -->
 <tr>
 	<td class="row1 row-center"><img src="{searchresults.TOPIC_FOLDER_IMG}" alt="{searchresults.L_TOPIC_FOLDER_ALT}" title="{searchresults.L_TOPIC_FOLDER_ALT}" /></td>
-	<td class="row1h row-forum" onclick="window.location.href='{searchresults.U_VIEW_FORUM}'">
+	<td class="row1h row-forum" data-href="{searchresults.U_VIEW_FORUM}">
 		<span class="forumlink"><a href="{searchresults.U_VIEW_FORUM}" class="forumlink">{searchresults.FORUM_NAME}</a></span><br />
 	</td>
-	<td class="row1h row-forum" onclick="window.location.href='{searchresults.U_VIEW_TOPIC}'">
+	<td class="row1h row-forum" data-href="{searchresults.U_VIEW_TOPIC}">
 		<span class="topiclink">{searchresults.NEWEST_POST_IMG}{searchresults.TOPIC_TYPE}<a href="{searchresults.U_VIEW_TOPIC}" class="topiclink">{searchresults.TOPIC_TITLE}</a></span>
 		{searchresults.GOTO_PAGE_FULL}
 	</td>

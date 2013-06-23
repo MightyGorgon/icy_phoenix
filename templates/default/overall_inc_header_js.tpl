@@ -22,6 +22,12 @@
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_nivo_slider_compressed.js" type="text/javascript"></script>
 <!-- ENDIF -->
 
+<!-- IF S_JQUERY_TAGS -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_tagedit.css" type="text/css" media="screen" />
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_auto_grow_input.js" type="text/javascript"></script>
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_tagedit.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
 <script type="text/javascript">
 // <![CDATA[
 // OS / BROWSER VARS - BEGIN

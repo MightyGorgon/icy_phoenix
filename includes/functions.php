@@ -4641,25 +4641,36 @@ function page_header($title = '', $parse_template = false)
 					include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
 				}
 				$user->data['auth_forum_id'] = isset($user->data['auth_forum_id']) ? $user->data['auth_forum_id'] : auth_forum_read($user->data);
-				$auth_forum = (!empty($user->data['auth_forum_id'])) ? ' AND forum_id IN (' . $user->data['auth_forum_id'] . ') ' : '';
+				$auth_forum = (!empty($user->data['auth_forum_id'])) ? ' AND p.forum_id IN (' . $user->data['auth_forum_id'] . ') ' : '';
 			}
 
-			$sql = "SELECT COUNT(post_id) as total
-				FROM " . POSTS_TABLE . "
-				WHERE post_time >= " . $user->data['user_lastvisit'] . $auth_forum . "
-				AND poster_id != " . $user->data['user_id'];
+			$sql = "SELECT p.forum_id, t.topic_poster
+				FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t
+				WHERE t.topic_id = p.topic_id
+				AND p.post_time >= " . $user->data['user_lastvisit'] . $auth_forum . "
+				AND p.poster_id != " . $user->data['user_id'];
 			$db->sql_return_on_error(true);
 			$result = $db->sql_query($sql);
 			$db->sql_return_on_error(false);
 			if ($result)
 			{
-				$row = $db->sql_fetchrow($result);
-				$lang['Search_new'] = $lang['Search_new'] . ' (' . $row['total'] . ')';
-				$lang['New'] = $lang['New'] . ' (' . $row['total'] . ')';
-				$lang['NEW_POSTS_SHORT'] = $lang['New_Label'] . ' (' . $row['total'] . ')';
-				$lang['NEW_POSTS_LONG'] = $lang['New_Messages_Label'] . ' (' . $row['total'] . ')';
-				$lang['Search_new2'] = $lang['Search_new2'] . ' (' . $row['total'] . ')';
-				$lang['Search_new_p'] = $lang['Search_new_p'] . ' (' . $row['total'] . ')';
+				$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
+
+				$new_posts = 0;
+				while ($row = $db->sql_fetchrow($result))
+				{
+					if ((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user->data['user_level'] == ADMIN || ($user->data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['topic_poster'] == $user->data['user_id']))
+					{
+						$new_posts++;
+					}
+				}
+
+				$lang['Search_new'] = $lang['Search_new'] . ' (' . $new_posts . ')';
+				$lang['New'] = $lang['New'] . ' (' . $new_posts . ')';
+				$lang['NEW_POSTS_SHORT'] = $lang['New_Label'] . ' (' . $new_posts . ')';
+				$lang['NEW_POSTS_LONG'] = $lang['New_Messages_Label'] . ' (' . $new_posts . ')';
+				$lang['Search_new2'] = $lang['Search_new2'] . ' (' . $new_posts . ')';
+				$lang['Search_new_p'] = $lang['Search_new_p'] . ' (' . $new_posts . ')';
 				$db->sql_freeresult($result);
 			}
 		}
@@ -5470,6 +5481,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
 		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
 		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
+		'S_JQUERY_TAGS' => (!empty($config['jquery_tags']) ? true : false),
 		)
 	);
 

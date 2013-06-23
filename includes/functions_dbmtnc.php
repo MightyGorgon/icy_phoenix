@@ -714,6 +714,8 @@ $default_config = array(
 	'ajax_chat_link_type' => '0',
 	'ajax_chat_notification' => '1',
 	'ajax_chat_check_online' => '0',
+	'google_custom_search' => '',
+	'use_jquery_tags' => '0',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

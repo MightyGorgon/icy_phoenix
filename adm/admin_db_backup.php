@@ -414,7 +414,7 @@ switch ($mode)
 
 				if ($dh)
 				{
-					while (($file = readdir($dh)) !== false)
+					while (($file = @readdir($dh)) !== false)
 					{
 						if (preg_match('#^backup_(\d{10,})_[a-z\d]{8}_[a-z\d]{16}\.(sql(?:\.(?:gz|bz2))?)$#', $file, $matches))
 						{
@@ -448,7 +448,7 @@ switch ($mode)
 							}
 						}
 					}
-					closedir($dh);
+					@closedir($dh);
 				}
 
 				$template->assign_vars(array(

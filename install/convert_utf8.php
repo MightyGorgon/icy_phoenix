@@ -76,6 +76,7 @@ while ($row = $db->sql_fetchrow($result))
 		$sql = "ALTER TABLE {$db->sql_escape($table)}
 			DEFAULT CHARACTER SET utf8
 			COLLATE utf8_bin";
+			//ENGINE=MYISAM";
 		$db->sql_query($sql) or die($db->sql_error());
 
 		echo("&bull;&nbsp;Table&nbsp;<b style=\"color: #dd2222;\">$table</b> converted to UTF-8<br />\n");

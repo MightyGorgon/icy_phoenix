@@ -55,6 +55,7 @@ while ($row = $result->fetch_row())
 		$sql = "ALTER TABLE {$db->real_escape_string($table)}
 			DEFAULT CHARACTER SET utf8
 			COLLATE utf8_bin";
+			//ENGINE=MYISAM";
 		$db->query($sql) or die(mysql_error());
 		print "$table changed to UTF-8.<br />\n";
 

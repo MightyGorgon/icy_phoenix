@@ -7,7 +7,7 @@
 </tr>
 <!-- BEGIN articles_fa -->
 <tr>
-	<td class="row1h row-forum" onclick="window.location.href='{articles_fa.U_VIEW_TOPIC}'">
+	<td class="row1h row-forum" data-href="{articles_fa.U_VIEW_TOPIC}">
 		<div class="topic-title-hide-flow"><span class="topiclink"><a href="{articles_fa.U_VIEW_TOPIC}">{articles_fa.TITLE}</a></span></div>
 	</td>
 	<td class="row3 row-center" nowrap="nowrap" style="padding-top: 0; padding-left: 2px; padding-right: 2px;">{articles_fa.TIME}<br />{articles_fa.POSTER_CG}</td>

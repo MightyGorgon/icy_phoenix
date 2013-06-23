@@ -3207,36 +3207,6 @@ switch($mode_id)
 					WHERE tw.topic_id = t.topic_id";
 				$result = $db->sql_query($sql);
 
-				// KasLimon code
-				/*
-				$sql = "SELECT t.topic_id, t.forum_id
-					FROM " . TOPICS_TABLE . " t, " . TOPICS_WATCH_TABLE . " tw
-					WHERE t.topic_id = tw.topic_id
-					GROUP BY (t.topic_id)";
-				$result = $db->sql_query($sql);
-
-				$topic_match = array();
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$topic_match[$row['topic_id']] = $row['forum_id'];
-				}
-
-				if (sizeof($topic_match) > 0)
-				{
-					foreach ($topic_match as $topic_id => $forum_id)
-					{
-						$sql = "UPDATE " . TOPICS_WATCH_TABLE . " SET forum_id = " . $forum_id . " WHERE topic_id = " . $topic_id;
-						$db->sql_return_on_error(true);
-						$result = $db->sql_query($sql);
-						$db->sql_return_on_error(false);
-					}
-				}
-				else
-				{
-					echo($lang['Nothing_to_do']);
-				}
-				*/
-
 				echo('<p class="gen">' . $lang['Done'] . '</p>' . "\n");
 
 				// Send Information about processing time

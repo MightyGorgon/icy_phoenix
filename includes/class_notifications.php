@@ -218,18 +218,50 @@ class class_notifications
 			// Delete notification for poster if present, or re-activate it if requested
 			if (!$notify_user && !empty($row['topic_id']))
 			{
-				$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
-					WHERE topic_id = " . $topic_id . "
-						AND user_id = " . $user->data['user_id'];
-				$db->sql_query($sql);
+				$this->delete_topic_watch($user->data['user_id'], $topic_id);
 			}
 			elseif ($notify_user && empty($row['topic_id']))
 			{
-				$sql = "INSERT INTO " . TOPICS_WATCH_TABLE . " (user_id, topic_id, forum_id, notify_status)
-					VALUES (" . $user->data['user_id'] . ", " . $topic_id . ", " . $forum_id . ", " . TOPIC_WATCH_UN_NOTIFIED . ")";
-				$db->sql_query($sql);
+				$this->delete_topic_watch($user->data['user_id'], $topic_id);
+				$this->insert_topic_watch($user->data['user_id'], $topic_id, $forum_id, TOPIC_WATCH_UN_NOTIFIED);
 			}
 		}
+	}
+
+	/**
+	* Add topic watch entry
+	*/
+	function insert_topic_watch($user_id, $topic_id, $forum_id, $notify_status)
+	{
+		global $db;
+
+		$sql = "INSERT INTO " . TOPICS_WATCH_TABLE . " (user_id, topic_id, forum_id, notify_status)
+			VALUES (" . (int) $user_id . ", " . (int) $topic_id . ", " . (int) $forum_id . ", " . (int) $notify_status . ")";
+		$result = $db->sql_query($sql);
+	}
+
+	/**
+	* Update topic watch entry
+	*/
+	function update_topic_watch($user_id, $topic_id, $forum_id, $notify_status)
+	{
+		global $db;
+
+		$this->delete_topic_watch($user_id, $topic_id);
+		$this->insert_topic_watch($user_id, $topic_id, $forum_id, $notify_status);
+	}
+
+	/**
+	* Remove topic watch entries
+	*/
+	function delete_topic_watch($user_id, $topic_id)
+	{
+		global $db;
+
+		$sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
+			WHERE topic_id = " . (int) $topic_id . "
+				AND user_id = " . (int) $user_id;
+		$result = $db->sql_query($sql);
 	}
 
 	/**
@@ -374,7 +406,5 @@ class class_notifications
 	}
 
 }
-
-$notifications = new class_notifications();
 
 ?>

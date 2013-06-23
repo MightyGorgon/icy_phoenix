@@ -37,10 +37,10 @@ function setCheckboxes(theForm, elementName, isChecked)
 <!-- BEGIN topic_watch_row -->
 <tr>
 	<td class="row1 row-center" width="22"><img src="{topic_watch_row.TOPIC_FOLDER_IMG}" alt="{topic_watch_row.L_TOPIC_FOLDER_ALT}" title="{topic_watch_row.L_TOPIC_FOLDER_ALT}" style="margin-right:4px;" /></td>
-	<td class="row1h{topic_watch_row.CLASS_NEW} row-forum" onclick="window.location.href='{topic_watch_row.U_VIEW_FORUM}'">
+	<td class="row1h{topic_watch_row.CLASS_NEW} row-forum" data-href="{topic_watch_row.U_VIEW_FORUM}">
 		<span class="topiclink{topic_watch_row.CLASS_NEW}"><a href="{topic_watch_row.U_VIEW_FORUM}">{topic_watch_row.FORUM_NAME}</a></span>
 	</td>
-	<td class="row1h{topic_watch_row.CLASS_NEW} row-forum" onclick="window.location.href='{topic_watch_row.U_VIEW_TOPIC}'">
+	<td class="row1h{topic_watch_row.CLASS_NEW} row-forum" data-href="{topic_watch_row.U_VIEW_TOPIC}">
 		<div class="topic-title-hide-flow"><div style="float: right; display: inline; vertical-align: top; margin-top: 0px !important; padding-top: 0px !important; padding-right: 3px;">{topic_watch_row.TOPIC_ATTACHMENT_IMG}{topic_watch_row.TOPIC_TYPE_ICON}</div>{topic_watch_row.NEWEST_POST_IMG}<span class="topiclink{topic_watch_row.CLASS_NEW}"><a href="{topic_watch_row.U_VIEW_TOPIC}" class="{topic_watch_row.TOPIC_CLASS}">{topic_watch_row.TOPIC_TITLE}</a></span></div>
 		{topic_watch_row.GOTO_PAGE_FULL}
 	</td>

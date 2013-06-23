@@ -993,3 +993,11 @@ function fade2(object, destOp)
 	return;
 }
 // FADE - END
+
+// TRIGGER CLICKS ON ROWS
+$(document).ready(function() {
+	$("td[data-href]").click(function() {
+		window.location.href = $(this).attr('data-href');
+	});
+});
+

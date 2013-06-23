@@ -168,6 +168,10 @@ if(GetCookie(tmp) == '2')
 <table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
 	<td align="left" valign="top" class="gensmall" width="40%">&nbsp;</td>
-	<td align="right" valign="top">{S_TOPIC_ADMIN}<br /><br /><br /></td>
+	<td align="right" valign="top">
+		<!-- IF not S_BOT and S_TMOD_BUTTONS -->
+		<!-- INCLUDE viewtopic_admin.tpl -->
+		<!-- ENDIF -->
+	</td>
 </tr>
 </table>

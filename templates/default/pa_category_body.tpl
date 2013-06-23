@@ -14,7 +14,7 @@
 	<!-- ELSE -->
 	<tr>
 		<td class="row1 row-center" width="30" style="padding-right:5px;"><a href="{no_cat_parent.U_CAT}" class="cattitle"><img src="{no_cat_parent.CAT_IMAGE}" alt="{no_cat_parent.CAT_NEW_FILE}" /></a></td>
-		<td class="row1h{no_cat_parent.XS_NEW} row-forum" onclick="window.location.href='{no_cat_parent.U_CAT}'">
+		<td class="row1h{no_cat_parent.XS_NEW} row-forum" data-href="{no_cat_parent.U_CAT}">
 		<span class="forumlink"><a class="forumlink{no_cat_parent.XS_NEW}" href="{no_cat_parent.U_CAT}">{no_cat_parent.CAT_NAME}</a></span><br />
 		<span class="genmed">{no_cat_parent.CAT_DESC}</span>
 		<!-- IF no_cat_parent.IS_HIGHER_CAT --><br /><span class="gensmall"><b>{no_cat_parent.L_SUB_CAT}</b></span><span class="forumlink{no_cat_parent.XS_NEW}">{no_cat_parent.SUB_CAT}</span><!-- ENDIF -->
@@ -37,6 +37,7 @@
 	<th colspan="2">{L_FILE}</th>
 	<th width="15%">{L_DATE}</th>
 	<th width="10%">{L_DOWNLOADS}</th>
+	<th width="10%">{L_FILE_SIZE}</th>
 	<th width="10%">{L_RATING}</th>
 	<th width="3%">&nbsp;</th>
 </tr>
@@ -44,13 +45,14 @@
 <!-- BEGIN file_rows -->
 <tr>
 	<td class="row1 row-center" width="30" style="padding-right: 5px;"><a href="{file_rows.U_FILE}" class="topiclink"><img src="{file_rows.PIN_IMAGE}" alt="" /></a></td>
-	<td class="row1h{file_rows.XS_NEW} row-forum" onclick="window.location.href='{file_rows.U_FILE}'" width="75%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span><!-- IF S_ADMIN -->&nbsp;[&nbsp;<span class="gensmall"><a href="{file_rows.U_FILE_EDIT}">{L_EDIT}</a>&nbsp;]<!-- ENDIF -->
+	<td class="row1h{file_rows.XS_NEW} row-forum" data-href="{file_rows.U_FILE}" width="75%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span><!-- IF S_ADMIN -->&nbsp;[&nbsp;<span class="gensmall"><a href="{file_rows.U_FILE_EDIT}">{L_EDIT}</a>&nbsp;]<!-- ENDIF -->
 	<!-- IF file_rows.IS_NEW_FILE -->
 	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}" /> -->
 	<!-- ENDIF -->
 	<br /><span class="genmed">{file_rows.FILE_DESC}</span></td>
 	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails">{file_rows.DATE}</td>
 	<td class="row2 row-center"><span class="postdetails">{file_rows.FILE_DLS}</td>
+	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails">{file_rows.FILE_SIZE}</td>
 	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{file_rows.RATING}.png" alt="" /></span></td>
 	<td class="row2 row-center">
 	<!-- IF file_rows.HAS_SCREENSHOTS -->
@@ -66,7 +68,7 @@
 </tr>
 <!-- END file_rows -->
 <tr>
-	<td class="cat" colspan="6">
+	<td class="cat" colspan="7">
 		<input type="hidden" name="action" value="category" />
 		<input type="hidden" name="cat_id" value="{ID}" />
 		<input type="hidden" name="start" value="{START}" />

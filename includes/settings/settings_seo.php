@@ -84,6 +84,13 @@ $settings_data = array(
 		'default' => '',
 	),
 
+	'google_custom_search' => array(
+		'lang_key' => 'IP_google_custom_search',
+		'explain' => 'IP_google_custom_search_explain',
+		'type' => 'VARCHAR',
+		'default' => '',
+	),
+
 	'sitemap_topic_limit' => array(
 		'lang_key' => 'IP_sitemap_topic_limit',
 		'explain' => 'IP_sitemap_topic_limit_explain',

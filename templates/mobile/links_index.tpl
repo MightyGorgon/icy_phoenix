@@ -40,7 +40,7 @@ function checkForm()
 <!-- INCLUDE links_leftblock.tpl -->
 
 <!-- BEGIN linkrow -->
-<div class="forum" onclick="window.location.href='{linkrow.LINK_URL}'; return false;">
+<div class="forum">
 	<p><a href="{linkrow.LINK_URL}" class="forumlink">{linkrow.LINK_TITLE}</a></p>
 	<p><span class="extra">{linkrow.LINK_NUMBER}</span></p>
 </div>

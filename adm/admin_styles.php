@@ -102,7 +102,7 @@ switch($mode)
 			{
 				while($sub_dir = @readdir($dir))
 				{
-					if(!is_file(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $sub_dir)) && !is_link(@phpbb_realpath(IP_ROOT_PATH . 'templates/' .$sub_dir)) && ($sub_dir != '.') && ($sub_dir != '..') && ($sub_dir != 'common') && ($sub_dir != 'default'))
+					if(!@is_file(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $sub_dir)) && !@is_link(@phpbb_realpath(IP_ROOT_PATH . 'templates/' .$sub_dir)) && ($sub_dir != '.') && ($sub_dir != '..') && ($sub_dir != 'common') && ($sub_dir != 'default'))
 					{
 						if(@file_exists(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $sub_dir . '/theme_info.cfg')))
 						{
@@ -156,7 +156,7 @@ switch($mode)
 				$template->pparse('body');
 
 			}
-			closedir($dir);
+			@closedir($dir);
 		}
 		break;
 
@@ -313,7 +313,7 @@ switch($mode)
 				$s_template_select = '<select name="template_name">';
 				while($file = @readdir($dir))
 				{
-					if(!is_file(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !is_link(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && ($file != '.') && ($file != '..') && ($file != 'common') && ($file != 'default'))
+					if(!@is_file(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && !@is_link(@phpbb_realpath(IP_ROOT_PATH . 'templates/' . $file)) && ($file != '.') && ($file != '..') && ($file != 'common') && ($file != 'default'))
 					{
 						if($file == $selected['template_name'])
 						{
@@ -331,6 +331,7 @@ switch($mode)
 			{
 				message_die(GENERAL_MESSAGE, $lang['No_template_dir']);
 			}
+			@closedir($dir);
 
 			$s_hidden_fields .= '<input type="hidden" name="mode" value="' . $mode . '" />';
 
@@ -470,6 +471,7 @@ switch($mode)
 			{
 				message_die(GENERAL_MESSAGE, $lang['No_template_dir']);
 			}
+			@closedir($dir);
 
 			$template->assign_vars(array(
 				'L_STYLE_EXPORTER' => $lang['Export_themes'],

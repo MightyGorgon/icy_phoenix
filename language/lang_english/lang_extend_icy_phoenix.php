@@ -269,6 +269,9 @@ if ($lang_extend_admin)
 		'IP_robots_index_topics_no_replies' => 'Enable Robots Indexing Topics No Replies',
 		'IP_robots_index_topics_no_replies_explain' => 'Enabling this option will enable indexing for topics with no replies, otherwise topics with no replies will not be indexed',
 
+		'IP_use_jquery_tags' => 'TAGS :: Enable jQuery Tags',
+		'IP_use_jquery_tags_explain' => 'Enabling this option will enable jQuery Topics Tags when posting or editing a topic (more efficient and nice tags input)',
+
 		'IP_display_tags_box' => 'TAGS :: Display Topics Tags',
 		'IP_display_tags_box_explain' => 'Enabling this option will enable Topics Tags (tags could be used for indexing purpose): tags could be inserted / edited only by administrators (or moderators if you enable the switch below) to avoid spam',
 
@@ -285,6 +288,9 @@ if ($lang_extend_admin)
 
 		'IP_always_show_edit_by' => 'Always Show Posts Edit',
 		'IP_always_show_edit_by_explain' => 'Enabling this option will always show "Last edit by..." on the message footer when someone modifies it. Admins edits are not shown by default',
+
+		'IP_enable_featured_image' => 'Enable Topics Featured Image',
+		'IP_enable_featured_image_explain' => 'Enabling this option will allow the user to upload a picture to be used as a &quot;Featured Image&quot; for the topic',
 
 		'IP_show_social_bookmarks' => 'Social Bookmarks',
 		'IP_show_social_bookmarks_explain' => 'Show Social Bookmarks section when viewing topics',
@@ -413,6 +419,9 @@ if ($lang_extend_admin)
 
 		'IP_google_analytics' => 'Google Analytics Code',
 		'IP_google_analytics_explain' => 'Insert here your Google Analytics Code (the Javascript provided by Google site) and it will be automatically inserted at the bottom of every page.',
+
+		'IP_google_custom_search' => 'Google Custom Search Code',
+		'IP_google_custom_search_explain' => 'Insert here your Google Custom Search Code to enable gsearch.php feature (allow guests to use Google Search to save some SQL).',
 
 //Sitemap
 		'Sitemap_settings' => 'Sitemap Settings',

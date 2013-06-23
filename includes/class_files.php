@@ -447,7 +447,7 @@ class class_files
 		);
 
 		$images_list = array();
-		if (is_dir($source_path))
+		if (@is_dir($source_path))
 		{
 			$files_list = $this->list_files($source_path, false, $allowed_image_types, false);
 			foreach ($files_list as $image)
@@ -569,6 +569,7 @@ class class_files
 				}
 			}
 		}
+		@closedir($directory);
 	}
 
 	/*

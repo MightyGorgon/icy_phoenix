@@ -95,6 +95,7 @@ $lang = array_merge($lang, array(
 	'Database_size' => 'Database size',
 	'Gzip_compression' => 'Gzip compression',
 	'Not_available' => 'Not available',
+	'NOT_AVAILABLE' => 'Not available',
 
 	'ON' => 'ON', // This is for GZip compression
 	'OFF' => 'OFF',
@@ -2075,6 +2076,10 @@ $lang = array_merge($lang, array(
 	'AJAX_CHAT_NOTIFICATION_EXPLAIN' => 'If you enable this option, a notification will be sent to the user in case of Private Chat Request.',
 	'AJAX_CHAT_CHECK_ONLINE' => 'Private Chat Link Only For Online Users',
 	'AJAX_CHAT_CHECK_ONLINE_EXPLAIN' => 'If you enable this option, the Private Chat link will be displayed only for users already in chat, otherwise it will be displayed for all users online in the site.',
+
+	'FORUMS_SUBMIT_AUTH' => 'Update Permissions',
+	'FORUMS_SUBMIT_CFG' => 'Update Settings',
+	'FORUMS_SELECTION_MULTIPLE' => 'You can select more than one forum by clicking CTRL.',
 
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'IP_CONFIGURATION' => 'Icy Phoenix Settings',

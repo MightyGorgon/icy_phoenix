@@ -2212,7 +2212,6 @@ CREATE TABLE `phpbb_users` (
 	`user_warnings` SMALLINT(5) DEFAULT '0',
 	`user_time_mode` TINYINT(4) NOT NULL DEFAULT '5',
 	`user_dst_time_lag` TINYINT(4) NOT NULL DEFAULT '60',
-	`user_pc_timeOffsets` VARCHAR(11) NOT NULL DEFAULT '0',
 	`user_registered_ip` VARCHAR(40) DEFAULT NULL,
 	`user_registered_hostname` VARCHAR(255) DEFAULT NULL,
 	`user_profile_view` SMALLINT(5) NOT NULL DEFAULT '0',

@@ -762,11 +762,14 @@ class mg_functions
 		global $config;
 		// We changed the constant, so we cannot use it any more...
 		//$posted_images_folder = str_replace(IP_ROOT_PATH, '', POSTED_IMAGES_PATH);
-		$posted_images_folder = 'files/posted_images/';
-		$server_url = mg_functions::create_short_server_url();
-		$look_up = "/" . str_replace('/', '\/', $server_url . $posted_images_folder) . "user_([0-9]{1,6})_/";
-		$replacement = $server_url . $posted_images_folder . "$1/";
-		$text = preg_replace($look_up, $replacement, $text);
+		$posted_images_folders = array('files/posted_images/', 'files/images/');
+		foreach ($posted_images_folders as $posted_images_folder)
+		{
+			$server_url = mg_functions::create_short_server_url();
+			$look_up = "/" . str_replace('/', '\/', $server_url . $posted_images_folder) . "user_([0-9]{1,6})_/";
+			$replacement = $server_url . $posted_images_folder . "$1/";
+			$text = preg_replace($look_up, $replacement, $text);
+		}
 		return $text;
 	}
 

@@ -4,7 +4,11 @@
 	<td class="row-post" style="padding: 20px; text-align: center;">
 		<span class="gen">
 		{L_MOVE_TO_FORUM} &nbsp; {S_FORUM_SELECT}<br /><br />
+		<!-- IF S_MOVE_ALL_SWITCH -->
+		<label>{L_MOVED_TOPICS_PREFIX}&nbsp;<input type="text" class="post" name="moved_topics_prefix" maxlength="25" size="25" value="" /></label><br />
+		<!-- ELSE -->
 		<label><input type="checkbox" name="move_leave_shadow" />&nbsp;{L_LEAVESHADOW}</label><br />
+		<!-- ENDIF -->
 		<br />
 		{MESSAGE_TEXT}<br />
 		<br />

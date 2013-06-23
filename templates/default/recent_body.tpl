@@ -31,10 +31,10 @@
 <!-- BEGIN recent -->
 <tr>
 	<td class="row1 row-center" width="22"><img src="{recent.TOPIC_FOLDER_IMG}" alt="{recent.L_TOPIC_FOLDER_ALT}" title="{recent.L_TOPIC_FOLDER_ALT}" style="margin-right: 4px;" /></td>
-	<td class="row1h{recent.CLASS_NEW} row-forum" onclick="window.location.href='{recent.U_VIEW_FORUM}'">
+	<td class="row1h{recent.CLASS_NEW} row-forum" data-href="{recent.U_VIEW_FORUM}">
 		<span class="topiclink{recent.CLASS_NEW}"><a href="{recent.U_VIEW_FORUM}">{recent.FORUM_NAME}</a></span>
 	</td>
-	<td class="row1h{recent.CLASS_NEW} row-forum" onclick="window.location.href='{recent.U_VIEW_TOPIC}'">
+	<td class="row1h{recent.CLASS_NEW} row-forum" data-href="{recent.U_VIEW_TOPIC}">
 		<div class="topic-title-hide-flow"><div style="float: right; display: inline; vertical-align: top; margin-top: 0px !important; padding-top: 0px !important; padding-right: 3px;">{recent.TOPIC_ATTACHMENT_IMG}{recent.TOPIC_TYPE_ICON}</div>{recent.NEWEST_POST_IMG}<span class="topiclink{recent.CLASS_NEW}"><a href="{recent.U_VIEW_TOPIC}" class="{recent.TOPIC_CLASS}">{recent.TOPIC_TITLE}</a><!-- BEGIN display_reg --> [{recent.REG_OPTIONS}]&nbsp;{recent.REG_USER_OWN_REG}<!-- END display_reg --></span></div>
 		{recent.GOTO_PAGE_FULL}
 	</td>

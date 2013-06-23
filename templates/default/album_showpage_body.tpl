@@ -60,20 +60,20 @@ function checkFormRate()
 {IMG_THL}{IMG_THC}<center><span class="forumlink">{NEXT_PIC}&nbsp;&nbsp;{PIC_TITLE}&nbsp;&nbsp;{PREV_PIC}</span></center>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td class="row1 row-center">
-		<!-- BEGIN switch_slideshow_enabled -->
+		<!-- IF S_SLIDESHOW_ENABLED -->
 		<form name="slideshowf" action="{U_SLIDESHOW}" method="post" onsubmit="return true;">
 			<span class="gensmall">{SLIDESHOW_SELECT}</span>
-			<input type="submit" class="button" value="{L_SLIDESHOW_ONOFF}" style="width: 120px" /><br />
+			<input type="submit" class="button" value="{L_SLIDESHOW_ONOFF}" style="width: 120px;" /><br />
 		</form>
-		<!-- END switch_slideshow_enabled -->
+		<!-- ENDIF -->
 		<div class="center-block">
 		<br /><span class="genmed"><b>{PIC_COUNT}</b></span><br />
 		{U_PIC_L1}<img src="{U_PIC}" border="0" vspace="10" alt="{PIC_TITLE}" title="{PIC_TITLE}" />{U_PIC_L2}
 		</div>
 		<!-- IF U_PIC_CLICK --><span class="genmed">{U_PIC_CLICK}</span><br /><!-- ENDIF -->
-		<!-- BEGIN pic_nuffed_enabled -->
-		<span class="gensmall"><a href="{pic_nuffed_enabled.U_PIC_NUFFED_CLICK}">{pic_nuffed_enabled.L_PIC_NUFFED_CLICK}</a></span><br />
-		<!-- END pic_nuffed_enabled -->
+		<!-- IF not S_BOT and S_PIC_NUFFED -->
+		<span class="gensmall"><a href="{U_PIC_NUFFED_CLICK}">{L_PIC_NUFFED_CLICK}</a></span><br />
+		<!-- ENDIF -->
 		<span class="gensmall">{U_COMMENT_WATCH_LINK}</span><br />
 	</td>
 </tr>

@@ -351,7 +351,7 @@ else
 				'PIC_PREVIEW_HS' => $pic_preview_hs,
 				'PIC_PREVIEW' => ($i == $new_pic_array_id) ? '' : $pic_preview,
 				'CLASS' => ($i == $new_pic_array_id) ? 'image-current' : 'image',
-				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #FF5522;' : '',
+				'STYLE' => ($i == $new_pic_array_id) ? 'border: solid 3px #ff5522;' : '',
 				)
 			);
 		}
@@ -363,7 +363,8 @@ else
 // ------------------------------------
 if ($album_config['enable_nuffimage'] == 1)
 {
-	$template->assign_block_vars('pic_nuffed_enabled', array(
+	$template->assign_vars(array(
+		'S_PIC_NUFFED' => true,
 		'L_PIC_NUFFED_CLICK' => $lang['Nuff_Click'],
 		'U_PIC_NUFFED_CLICK' => append_sid(album_append_uid('album_showpage.' . PHP_EXT . '?pic_id=' . $pic_id . $full_size_param . '&amp;nuffimage=true&amp;' . $sort_append)),
 		)
@@ -796,7 +797,10 @@ if(empty($comment_text) && !isset($_POST['rating']))
 	{
 		if ($album_config['show_slideshow'])
 		{
-			$template->assign_block_vars('switch_slideshow_enabled', array());
+			$template->assign_vars(array(
+				'S_SLIDESHOW_ENABLED' => true,
+				)
+			);
 		}
 		//$slideshow_delay = 5;
 		$slideshow_select = $lang['Slideshow_Delay'] . ':&nbsp;';

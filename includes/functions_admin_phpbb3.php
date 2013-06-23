@@ -1353,7 +1353,7 @@ function group_update_listings($group_id)
 */
 function get_database_size()
 {
-	global $db, $user, $table_prefix;
+	global $db, $user, $lang, $table_prefix;
 
 	$database_size = false;
 
@@ -1396,7 +1396,7 @@ function get_database_size()
 		}
 	}
 
-	$database_size = ($database_size !== false) ? get_formatted_filesize($database_size) : $user->lang['NOT_AVAILABLE'];
+	$database_size = ($database_size !== false) ? get_formatted_filesize($database_size) : $lang['NOT_AVAILABLE'];
 
 	return $database_size;
 }
