@@ -1794,6 +1794,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 				// Event Registration - END
 			}
+			$valid_results++;
 		}
 
 		// Header

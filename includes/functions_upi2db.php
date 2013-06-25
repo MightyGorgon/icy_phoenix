@@ -857,7 +857,7 @@ if(!function_exists('sync_database'))
 		{
 			while ($row = $db->sql_fetchrow($result))
 			{
-				if ((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user->data['user_level'] == ADMIN || ($user->data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['poster_id'] == $user->data['user_id']))
+				if (((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user->data['user_level'] == ADMIN || ($user->data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['poster_id'] == $user->data['user_id'])) && !in_array($row["post_id"], $id_posts))
 				{
 					$id_posts[] = $row["post_id"];
 				}
