@@ -840,7 +840,7 @@ if(!function_exists('sync_database'))
 
 		// Ignore unauthed messages
 		$id_posts = array();
-		$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
+		$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $user_data);
 
 		$sql = "SELECT u.post_id, u.forum_id, t.topic_poster
 			FROM " . UPI2DB_LAST_POSTS_TABLE . " u, " . TOPICS_TABLE . " t
@@ -857,7 +857,7 @@ if(!function_exists('sync_database'))
 		{
 			while ($row = $db->sql_fetchrow($result))
 			{
-				if ((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user->data['user_level'] == ADMIN || ($user->data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['poster_id'] == $user->data['user_id']))
+				if (((intval($is_auth_ary[$row['forum_id']]['auth_read']) != AUTH_SELF) || $user_data['user_level'] == ADMIN || ($user_data['user_level'] == MOD && $config['allow_mods_view_self'] == true) || ($row['topic_poster'] == $user_data['user_id'])) && !in_array($row["post_id"], $id_posts))
 				{
 					$id_posts[] = $row["post_id"];
 				}
@@ -865,11 +865,14 @@ if(!function_exists('sync_database'))
 
 // Mal testen --> INSERT DELAYED INTO
 
-			$sql = "INSERT INTO " . UPI2DB_UNREAD_POSTS_TABLE . " (user_id, post_id, topic_id, forum_id, topic_type, status, last_update)
-				SELECT " . $user_id . " AS user_id, post_id, topic_id, forum_id, topic_type, IF(post_edit_time > " . $dbsync . " && post_time < " . $dbsync . ", 1, 0) AS status, " . $time . " AS last_update
-				FROM " . UPI2DB_LAST_POSTS_TABLE . "
-				WHERE post_id IN (" . implode(",", $id_posts) . ")";
-			$db->sql_query($sql);
+			if (sizeof($id_posts) > 0)
+			{
+				$sql = "INSERT INTO " . UPI2DB_UNREAD_POSTS_TABLE . " (user_id, post_id, topic_id, forum_id, topic_type, status, last_update)
+					SELECT " . $user_id . " AS user_id, post_id, topic_id, forum_id, topic_type, IF(post_edit_time > " . $dbsync . " && post_time < " . $dbsync . ", 1, 0) AS status, " . $time . " AS last_update
+					FROM " . UPI2DB_LAST_POSTS_TABLE . "
+					WHERE post_id IN (" . implode(",", $id_posts) . ")";
+				$db->sql_query($sql);
+			}
 		}
 		$db->sql_freeresult($result);
 
