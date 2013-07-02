@@ -813,7 +813,7 @@ if(!function_exists('sync_database'))
 		$new_post_limit = ($max_new_post > 0) ? 'ORDER BY u.post_time DESC, u.post_edit_time DESC LIMIT ' . $max_new_post : 'ORDER BY u.post_time DESC, u.post_edit_time DESC';
 		// Edited By Mighty Gorgon - END
 		$dbsync = ($user_dbsync < $user_data['user_regdate']) ? $user_data['user_regdate'] : $user_dbsync;
-		$copy_annoncments = (empty($user_dbsync)) ? 'OR topic_type != 0' : '';
+		$copy_annoncments = (empty($user_dbsync)) ? 'OR u.topic_type != 0' : '';
 
 
 		$sql = "SELECT post_id, topic_id, forum_id, user_id, status FROM " . UPI2DB_UNREAD_POSTS_TABLE . "
@@ -846,6 +846,7 @@ if(!function_exists('sync_database'))
 			FROM " . UPI2DB_LAST_POSTS_TABLE . " u, " . TOPICS_TABLE . " t
 			WHERE ((u.post_time > " . $dbsync . " OR u.post_edit_time > " . $dbsync . ") " . $copy_annoncments . ")
 				AND ((u.poster_id != '" . $user_id . "') OR (u.poster_id = '" . $user_id . "' && u.post_edit_by != u.poster_id))
+				AND t.topic_id = u.topic_id
 				$no_post_ids
 				$auth_forum
 				$ar_forums
