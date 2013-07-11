@@ -118,6 +118,7 @@ class class_users
 			'user_password' => phpbb_hash($user_data['user_password']),
 			'user_regdate' => !empty($user_data['user_regdate']) ? $user_data['user_regdate'] : time(),
 			'user_email' => $user_data['user_email'],
+			'user_email_hash' => phpbb_email_hash($user_data['user_email']),
 			'user_phone' => !empty($user_data['user_phone']) ? $user_data['user_phone'] : '',
 			'user_timezone' => !empty($user_data['user_timezone']) ? $user_data['user_timezone'] : $config['board_timezone'],
 			'user_dateformat' => !empty($user_data['user_dateformat']) ? $user_data['user_dateformat'] : $config['default_dateformat'],

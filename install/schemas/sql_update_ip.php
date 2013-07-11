@@ -94,6 +94,7 @@ switch ($req_version)
 	case '20288': $current_ip_version = '2.0.2.88'; break;
 	case '20389': $current_ip_version = '2.0.3.89'; break;
 	case '20490': $current_ip_version = '2.0.4.90'; break;
+	case '20591': $current_ip_version = '2.0.5.91'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4421,7 +4422,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_disable_url', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_hide_signature', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('spam_post_edit_interval', '60')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('mobile_style_disable', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('mobile_style_disable', '1')";
 
 		/* Updating from IP 1.3.23.76 */
 		case '1.3.23.76':
@@ -4575,9 +4576,42 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.3.89 */
 		case '2.0.3.89':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_ip` VARCHAR(40) NOT NULL DEFAULT '' AFTER `user_level`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_email_hash` BIGINT(20) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_email`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE `user_color_group` `group_id` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE COLUMN `user_email` `user_email` VARCHAR(255) DEFAULT NULL AFTER `username_clean`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE COLUMN `user_email_hash` `user_email_hash` BIGINT(20) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_email`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE COLUMN `user_website` `user_website` VARCHAR(255) DEFAULT NULL AFTER `user_email_hash`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` CHANGE COLUMN `user_ip` `user_ip` VARCHAR(40) DEFAULT '' AFTER `user_website`";
+
+		// email hash
+		if (function_exists('phpbb_email_hash'))
+		{
+			// Now select all user_ids and email and then create email hash (this can take quite a while!)
+			$sql_tmp = "SELECT user_id, user_email, user_email_hash
+				FROM " . USERS_TABLE . "
+				WHERE user_email <> ''";
+			$result_tmp = $db->sql_query($sql_tmp);
+			while ($row_tmp = $db->sql_fetchrow($result_tmp))
+			{
+				$user_email_hash = phpbb_email_hash($row_tmp['user_email']);
+
+				if ($user_email_hash != $row_tmp['user_email_hash'])
+				{
+					$sql_update = "UPDATE " . $table_prefix . "users SET user_email_hash = '" . $db->sql_escape($user_email_hash) . "' WHERE user_id = " . (int) $row_tmp['user_id'];
+					$db->sql_return_on_error(true);
+					$db->sql_query($sql_update);
+					$db->sql_return_on_error(false);
+				}
+			}
+			$db->sql_freeresult($result_tmp);
+		}
 
 		/* Updating from IP 2.0.4.90 */
 		case '2.0.4.90':
+
+		/* Updating from IP 2.0.5.91 */
+		case '2.0.5.91':
 
 	}
 

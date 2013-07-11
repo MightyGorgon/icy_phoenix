@@ -127,8 +127,8 @@ if (isset($_POST['submit']))
 		$clean_password = $new_password;
 		$new_password = phpbb_hash($new_password);
 
-		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, username_clean, user_regdate, user_password, user_email, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
-			VALUES ($user_id, '" . $db->sql_escape($username) . "', '" . $db->sql_escape(utf8_clean_string($username)) . "', " . time() . ", '" . $db->sql_escape($new_password) . "', '" . $db->sql_escape($email) . "', $user_style, $user_timezone, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_lang) . "', 0, 1, 'user_actkey')";
+		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, username_clean, user_regdate, user_password, user_email, user_email_hash, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
+			VALUES ($user_id, '" . $db->sql_escape($username) . "', '" . $db->sql_escape(utf8_clean_string($username)) . "', " . time() . ", '" . $db->sql_escape($new_password) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape(phpbb_email_hash($email)) . "', $user_style, $user_timezone, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_lang) . "', 0, 1, 'user_actkey')";
 		$db->sql_transaction('begin');
 		$result = $db->sql_query($sql);
 

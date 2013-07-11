@@ -47,6 +47,14 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('use_jquery_t
 ########################################
 ##              BUILD 090             ##
 ########################################
+ALTER TABLE `phpbb_users` ADD `user_ip` VARCHAR(40) NOT NULL DEFAULT '' AFTER `user_level`;
+ALTER TABLE `phpbb_users` ADD `user_email_hash` BIGINT(20) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_email`;
+ALTER TABLE `phpbb_users` CHANGE `user_color_group` `group_id` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `phpbb_users` CHANGE COLUMN `user_email` `user_email` VARCHAR(255) DEFAULT NULL AFTER `username_clean`;
+ALTER TABLE `phpbb_users` CHANGE COLUMN `user_email_hash` `user_email_hash` BIGINT(20) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_email`;
+ALTER TABLE `phpbb_users` CHANGE COLUMN `user_website` `user_website` VARCHAR(255) DEFAULT NULL AFTER `user_email_hash`;
+ALTER TABLE `phpbb_users` CHANGE COLUMN `user_ip` `user_ip` VARCHAR(40) DEFAULT '' AFTER `user_website`;
+## rename user_color to user_colour?
 
 
 
@@ -55,7 +63,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('use_jquery_t
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.4.90' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.5.91' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

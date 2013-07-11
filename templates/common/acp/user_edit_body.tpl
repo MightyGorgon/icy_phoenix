@@ -468,7 +468,7 @@ function ColorExample(ColorCode)
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_GROUP_DEFAULT}</span><br /><span class="gensmall">{L_GROUP_DEFAULT_EXPLAIN}</span></td>
-	<td class="row2">{USER_COLOR_GROUP}</td>
+	<td class="row2">{USER_GROUP_ID}</td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_USER_COLOR}</span><br /><span class="gensmall">{L_USER_COLOR_EXPLAIN}</span></td>

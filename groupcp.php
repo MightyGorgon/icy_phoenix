@@ -166,7 +166,7 @@ elseif (isset($_POST['joingroup']) && $group_id)
 
 	if ($is_autogroup_enable)
 	{
-		update_user_color($user_id, $group_data['group_color'], $user->data['user_color_group'], false, false);
+		update_user_color($user_id, $group_data['group_color'], $user->data['group_id'], false, false);
 		update_user_posts_details($user_id, $group_data['group_color'], '', false, false);
 	}
 
@@ -388,7 +388,7 @@ elseif ($group_id)
 					message_die(GENERAL_MESSAGE, $message);
 				}
 
-				$sql = "SELECT ug.user_id, u.user_level, u.user_color_group, u.user_color, u.user_rank
+				$sql = "SELECT ug.user_id, u.user_level, u.group_id, u.user_color, u.user_rank
 					FROM " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u
 					WHERE u.user_id = " . $row['user_id'] . "
 						AND ug.user_id = u.user_id
@@ -488,9 +488,9 @@ elseif ($group_id)
 						if (!empty($group_color) && ($group_color != $config['active_users_color']))
 						{
 							$sql_users = "UPDATE " . USERS_TABLE . "
-								SET user_color_group = '" . $group_id . "'
+								SET group_id = '" . $group_id . "'
 								WHERE user_id IN ($sql_in)
-									AND user_color_group = '0'";
+									AND group_id = '0'";
 							$db->sql_query($sql_users);
 						}
 
@@ -517,7 +517,7 @@ elseif ($group_id)
 					elseif (isset($_POST['mass_colorize']))
 					{
 						$sql_users = "UPDATE " . USERS_TABLE . "
-							SET user_color_group = '" . $group_id . "', user_color = '" . $group_color . "', user_rank = '" . $group_rank . "'
+							SET group_id = '" . $group_id . "', user_color = '" . $group_color . "', user_rank = '" . $group_rank . "'
 							WHERE user_id IN ($sql_in)";
 						$db->sql_query($sql_users);
 
@@ -578,9 +578,9 @@ elseif ($group_id)
 					$db->sql_query($sql);
 
 					$sql_users = "UPDATE " . USERS_TABLE . "
-						SET user_color_group = '0'
+						SET group_id = '0'
 						WHERE user_id IN ($sql_in)
-							AND user_color_group = '" . $group_id . "'";
+							AND group_id = '" . $group_id . "'";
 					$result = $db->sql_query($sql_users);
 
 					$sql_users = "UPDATE " . USERS_TABLE . "
@@ -670,7 +670,7 @@ elseif ($group_id)
 	$db->sql_freeresult($result);
 
 	// Get moderator details for this group
-	$sql = "SELECT username, user_id, user_active, user_color, user_color_group, user_allow_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_icq, user_aim, user_yim, user_msnm, user_allow_viewonline, user_session_time
+	$sql = "SELECT username, user_id, user_active, user_color, group_id, user_allow_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_icq, user_aim, user_yim, user_msnm, user_allow_viewonline, user_session_time
 		FROM " . USERS_TABLE . "
 		WHERE user_id = " . $group_info['group_moderator'];
 	$result = $db->sql_query($sql);
@@ -679,7 +679,7 @@ elseif ($group_id)
 
 	// Get user information for this group
 	// Changed sorting by username_clean instead of username
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.group_id, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
 		FROM " . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug
 		WHERE ug.group_id = $group_id
 			AND u.user_id = ug.user_id
@@ -690,7 +690,7 @@ elseif ($group_id)
 	$group_members = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_color_group, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_allow_viewonline, u.user_session_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.group_id, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_allow_viewonline, u.user_session_time
 		FROM " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u
 		WHERE ug.group_id = $group_id
 			AND ug.user_pending = 1

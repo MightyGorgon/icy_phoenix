@@ -287,6 +287,7 @@ class session
 							if ($this->data['user_id'] != ANONYMOUS)
 							{
 								$sql_ary = array();
+								$sql_ary['user_ip'] = $this->ip;
 								$sql_ary['user_session_time'] = $this->data['user_session_time'];
 								$sql_ary['user_session_page'] = $this->data['user_session_page'];
 								$sql_ary['user_browser'] = $this->data['user_browser'];

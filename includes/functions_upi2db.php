@@ -868,11 +868,11 @@ if(!function_exists('sync_database'))
 
 			if (sizeof($id_posts) > 0)
 			{
-				$sql = "INSERT INTO " . UPI2DB_UNREAD_POSTS_TABLE . " (user_id, post_id, topic_id, forum_id, topic_type, status, last_update)
-					SELECT " . $user_id . " AS user_id, post_id, topic_id, forum_id, topic_type, IF(post_edit_time > " . $dbsync . " && post_time < " . $dbsync . ", 1, 0) AS status, " . $time . " AS last_update
-					FROM " . UPI2DB_LAST_POSTS_TABLE . "
-					WHERE post_id IN (" . implode(",", $id_posts) . ")";
-				$db->sql_query($sql);
+			$sql = "INSERT INTO " . UPI2DB_UNREAD_POSTS_TABLE . " (user_id, post_id, topic_id, forum_id, topic_type, status, last_update)
+				SELECT " . $user_id . " AS user_id, post_id, topic_id, forum_id, topic_type, IF(post_edit_time > " . $dbsync . " && post_time < " . $dbsync . ", 1, 0) AS status, " . $time . " AS last_update
+				FROM " . UPI2DB_LAST_POSTS_TABLE . "
+				WHERE post_id IN (" . implode(",", $id_posts) . ")";
+			$db->sql_query($sql);
 			}
 		}
 		$db->sql_freeresult($result);
