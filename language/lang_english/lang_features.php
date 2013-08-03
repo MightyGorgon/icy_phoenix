@@ -31,7 +31,8 @@ $lang = array_merge($lang, array(
 	'PHPBB2' => 'phpBB2',
 	'ICYPHOENIX' => 'Icy Phoenix',
 	'PHPBB3' => 'phpBB3',
-	'PHPBB_FEATURES_PAGE' => 'Features for phpBB have been taken from official phpBB site [ <a href="http://www.phpbb.com/about/features/">LINK</a> ]',
+	//'PHPBB_FEATURES_PAGE' => 'Features for phpBB have been taken from official phpBB site [ <a href="http://www.phpbb.com/about/features/">LINK</a> ]',
+	'PHPBB_FEATURES_PAGE' => 'Features for phpBB have been taken from official phpBB site [ <a href="http://www.phpbb.com/about/features/">LINK</a> ]<br /><br />You can boost your forum security parameters by installing a <a href="http://www.myshopping.com.au/PR--436584_Bitdefender_Total_Security_2013">proactive Bitdefender software</a> and a <a href="http://www.myshopping.com.au/PR--404155_Symantec_Norton_Internet_Security_2012__fs_29955_e__">dependable Symantec Internet security software</a>.',
 
 /*********/
 	'cat_general' => 'General',
