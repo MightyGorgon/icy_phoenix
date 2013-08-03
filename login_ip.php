@@ -33,6 +33,78 @@ if (!empty($user->data['is_bot']))
 	redirect(append_sid(CMS_PAGE_ERRORS . '?code=404', true));
 }
 
+$available_networks = array();
+if ($config['enable_social_connect'])
+{
+	include(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
+	$available_networks = SocialConnect::get_available_networks();
+
+	$social_network = request_var('social_network', '');
+	$social_network_link = request_var('social_network_link', '');
+	// Logging in via social network
+	if (!empty($social_network) && !empty($available_networks[$social_network]))
+	{
+		$social_network = $available_networks[$social_network];
+		$user_id = $social_network->do_login();
+
+		if ($user_id !== null && $user_id > 0)
+		{
+			$user->session_create($user_id, 0, 1, 1);
+			redirect(append_sid(CMS_LOGIN_REDIRECT_PAGE, true));
+		}
+		else
+		{
+			$social_network_name = $social_network->get_name();
+			$social_network_name_clean = $social_network->get_name_clean();
+
+			// Display login or register!
+			$template->assign_block_vars('social_connect_button', array(
+				'L_SOCIAL_CONNECT' => sprintf($lang['SOCIAL_CONNECT_LOGIN'], $social_network_name),
+				'U_SOCIAL_CONNECT' => append_sid(CMS_PAGE_LOGIN . '?social_network=' . $social_network_name_clean),
+				'IMG_SOCIAL_CONNECT' => '<img src="' . IP_ROOT_PATH . 'images/social_connect/button_' . $social_network_name_clean . '_connect.png" alt="" title="" />'
+				)
+			);
+
+			// Aquí se debería mostrar dos opciones: registro o vincular cuenta
+			$url_login = append_sid(CMS_PAGE_LOGIN . '?social_network_link=' . $social_network_name_clean);
+			$url_register = append_sid(CMS_PAGE_PROFILE . '?mode=register&amp;social_network=' . $social_network_name_clean);
+
+			$message = sprintf($lang['SOCIAL_CONNECT_LINK_ACCOUNT_MSG'], $social_network_name, $social_network_name, '<a href="' . append_sid($url_login) . '">', '</a>', '<a href="' . append_sid($url_register) . '">', '</a>');
+			message_die(GENERAL_MESSAGE, $message);
+		}
+	}
+	// Linking a social network account with a board account
+	elseif (!empty($social_network_link) && !empty($available_networks[$social_network_link]) && !isset($_POST['login']) && !isset($_GET['login']))
+	{
+		$social_network = $available_networks[$social_network_link];
+		$user_data_social = $social_network->get_user_data();
+
+		$template->assign_vars(array(
+			'SOCIAL_CONNECT_LINK' => true,
+			'U_PROFILE_PHOTO' => $user_data_social['u_profile_photo'],
+			'USER_REAL_NAME' => $user_data_social['user_real_name'],
+			'U_PROFILE_LINK' => $user_data_social['u_profile_link'],
+			'SOCIAL_NETWORK_NAME' => $social_network->get_name(),
+			'U_SOCIAL_NETWORK_ICON' => IP_ROOT_PATH . 'images/social_connect/' . $social_network->get_name_clean() . '_icon.png',
+
+			'S_LOGIN_ACTION' => append_sid(IP_ROOT_PATH . CMS_PAGE_LOGIN . '?social_network_link=' . $social_network_link))
+		);
+	}
+	else
+	{
+		$template->assign_var('SOCIAL_CONNECT', true);
+		foreach ($available_networks as $social_network)
+		{
+			$template->assign_block_vars('social_connect_button', array(
+				'L_SOCIAL_CONNECT' => sprintf($lang['SOCIAL_CONNECT_LOGIN'], $social_network->get_name()),
+				'U_SOCIAL_CONNECT' => append_sid(CMS_PAGE_LOGIN . '?social_network=' . $social_network->get_name_clean()),
+				'IMG_SOCIAL_CONNECT' => '<img src="' . IP_ROOT_PATH . 'images/social_connect/button_' . $social_network->get_name_clean() . '_connect.png" alt="" title="" />'
+				)
+			);
+		}
+	}
+}
+
 // session id check
 $sid = request_var('sid', '');
 
@@ -60,6 +132,23 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 
 		if ($login_result['status'] === LOGIN_SUCCESS)
 		{
+			// Is user linking a social network account?
+			if ($config['enable_social_connect'])
+			{
+				$available_networks = SocialConnect::get_available_networks();
+
+				$social_network_link = request_var('social_network_link', '');
+				if (!empty($social_network_link) && !empty($available_networks[$social_network_link]))
+				{
+					$social_network = $available_networks[$social_network_link];
+					$field_name = "user_" . $social_network->get_name_clean() . "_id";
+					$user_data_social = $social_network->get_user_data();
+
+					$sql = "UPDATE " . USERS_TABLE . " SET " . $field_name . " = '" . $user_data_social[$field_name] . "' WHERE user_id = " . $login_result['user_row']['user_id'];
+					$db->sql_query($sql);
+				}
+			}
+
 			if(($login_result['user_row']['user_level'] != ADMIN) && !empty($config['board_disable']))
 			{
 				redirect(append_sid(CMS_PAGE_FORUM, true));

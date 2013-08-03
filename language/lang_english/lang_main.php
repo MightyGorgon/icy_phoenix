@@ -271,6 +271,13 @@ $lang = array_merge($lang, array(
 	'AUTOLOGIN' => 'Log me on automatically each visit',
 	'Error_login' => 'You have specified an incorrect or inactive username, or an invalid password.',
 
+	'SOCIAL_CONNECT' => 'You can login using your social network accounts:',
+	'SOCIAL_CONNECT_LOGIN' => 'Login with my %s account',
+	'SOCIAL_CONNECT_REGISTER_INFO' => 'Your profile will be automatically filled with the information retrieved from your profile in the social network.',
+	'SOCIAL_CONNECT_LINK_ACCOUNT' => 'Please login below to link your social network account to your account',
+	'SOCIAL_CONNECT_LINK_ACCOUNT_MSG' => 'We couldn\'t find any account linked with your %s account. You can either register or link an existing account with your %s account.<br /><br />Click %shere%s if you already have an account.<br/ ><br />Click %shere%s to create a new account.',
+	'FACEBOOK' => 'Facebook',
+
 // Index page
 	'No_Posts' => 'No Posts',
 	'No_forums' => 'This board has no forums',
