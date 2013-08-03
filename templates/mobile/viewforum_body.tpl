@@ -5,6 +5,8 @@
 
 {CALENDAR_BOX}
 
+{BOARD_INDEX}
+
 <!-- IF S_FORUM_RULES -->
 <div class="block">
 	<!-- IF S_FORUM_RULES_TITLE --><h2>{L_FORUM_RULES}</h2><!-- ENDIF -->

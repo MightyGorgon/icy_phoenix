@@ -408,7 +408,7 @@ else
 		$admin_pass_md5 = ($confirm && $user->data['user_level'] == ADMIN) ? $admin_pass1 : md5($admin_pass1);
 
 		$sql = "UPDATE " . $table_prefix . "users
-			SET username = '" . $db->sql_escape($admin_name) . "', username_clean = '" . $db->sql_escape(utf8_clean_string($admin_name)) . "', user_password='" . $db->sql_escape($admin_pass_md5) . "', user_lang = '" . $db->sql_escape($language) . "', user_email='" . $db->sql_escape($board_email) . "', user_pass_convert = '1'
+			SET username = '" . $db->sql_escape($admin_name) . "', username_clean = '" . $db->sql_escape(utf8_clean_string($admin_name)) . "', user_password='" . $db->sql_escape($admin_pass_md5) . "', user_lang = '" . $db->sql_escape($language) . "', user_email='" . $db->sql_escape($board_email) . "', user_email_hash = '" . $db->sql_escape(phpbb_email_hash($board_email)) . "', user_pass_convert = '1'
 			WHERE username = 'Admin'";
 		$result = $db->sql_query($sql);
 		if (!$result)

@@ -1203,7 +1203,7 @@ function _hash_crypt_private($password, $setting, &$itoa64)
 */
 function phpbb_email_hash($email)
 {
-	return crc32(strtolower($email)) . strlen($email);
+	return sprintf('%u', crc32(strtolower($email))) . strlen($email);
 }
 
 //Form validation
@@ -3705,7 +3705,7 @@ function check_valid_color($color)
 */
 function user_color_sql($user_id)
 {
-	$sql = "SELECT u.username, u.user_active, u.user_color, u.user_color_group
+	$sql = "SELECT u.username, u.user_active, u.user_color, u.group_id
 		FROM " . USERS_TABLE . " u
 		WHERE u.user_id = '" . $user_id . "'
 			LIMIT 1";

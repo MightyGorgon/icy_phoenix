@@ -54,7 +54,7 @@ $settings_data = array(
 		'lang_key' => 'IP_mobile_style_disable',
 		'explain' => 'IP_mobile_style_disable_explain',
 		'type' => 'LIST_RADIO',
-		'default' => 0,
+		'default' => 1,
 		'values' => $this->list_yes_no,
 	),
 

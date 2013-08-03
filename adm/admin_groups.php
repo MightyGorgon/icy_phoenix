@@ -226,8 +226,8 @@ elseif (isset($_POST['group_update']))
 		$db->sql_query($sql);
 
 		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_color = '" . $config['active_users_color'] . "', user_color_group = '0'
-			WHERE user_color_group = " . $group_id;
+			SET user_color = '" . $config['active_users_color'] . "', group_id = '0'
+			WHERE group_id = " . $group_id;
 		$db->sql_query($sql_users);
 		empty_cache_folders(USERS_CACHE_FOLDER);
 
@@ -297,9 +297,9 @@ elseif (isset($_POST['group_update']))
 					$db->sql_query($sql);
 
 					$sql_users = "UPDATE " . USERS_TABLE . "
-						SET user_color = '" . $db->sql_escape($config['active_users_color']) . "', user_color_group = '0'
+						SET user_color = '" . $db->sql_escape($config['active_users_color']) . "', group_id = '0'
 						WHERE user_id = " . $group_info['group_moderator'] . "
-							AND user_color_group = " . $group_id;
+							AND group_id = " . $group_id;
 					$db->sql_query($sql_users);
 				}
 
@@ -355,7 +355,7 @@ elseif (isset($_POST['group_update']))
 
 			$sql_users = "UPDATE " . USERS_TABLE . "
 				SET user_color = '" . $group_color . "', user_rank = '" . $group_rank . "'
-				WHERE user_color_group = " . $group_id;
+				WHERE group_id = " . $group_id;
 			$db->sql_query($sql_users);
 
 			empty_cache_folders(USERS_CACHE_FOLDER);
@@ -447,7 +447,7 @@ elseif (isset($_POST['mass_update']))
 
 		$sql_users = "UPDATE " . USERS_TABLE . "
 			SET user_color = '" . $db->sql_escape($group_color) . "'
-			WHERE user_color_group = $group_id";
+			WHERE group_id = $group_id";
 		$db->sql_query($sql_users);
 	}
 
@@ -457,7 +457,7 @@ elseif (isset($_POST['mass_update']))
 
 	$sql_users = "UPDATE " . USERS_TABLE . "
 		SET user_color = '" . $group_color . "'
-		WHERE user_color_group = ''
+		WHERE group_id = ''
 			AND user_color = '" . $config['active_users_color'] . "'
 			AND user_active = 1";
 	$db->sql_query($sql_users);

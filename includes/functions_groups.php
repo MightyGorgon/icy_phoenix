@@ -97,7 +97,7 @@ function update_all_users_colors_ranks($group_id)
 			$sql_set .= ', user_rank = \'' . $group_rank . '\'';
 		}
 		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_color_group = '" . $group_id . "'" . $sql_set . "
+			SET group_id = '" . $group_id . "'" . $sql_set . "
 			WHERE user_id = '" . $row['user_id'] . "'";
 		$db->sql_query($sql_users);
 
@@ -113,48 +113,48 @@ function update_all_users_colors_ranks($group_id)
 *
 * @param => user_id
 * @param => user_color
-* @param => user_color_group
+* @param => group_id
 * @return => true on success
 */
-function update_user_color($user_id, $user_color, $user_color_group = false, $force_color = false, $force_group_color = false, $simple_mode = false)
+function update_user_color($user_id, $user_color, $group_id = false, $force_color = false, $force_group_color = false, $simple_mode = false)
 {
 	global $db, $config;
 
-	$sql = "SELECT u.user_color, u.user_color_group
+	$sql = "SELECT u.user_color, u.group_id
 					FROM " . USERS_TABLE . " as u
 					WHERE u.user_id = " . $user_id . "
 					LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$current_user_color = $row['user_color'];
-	$current_user_color_group = $row['user_color_group'];
+	$current_group_id = $row['group_id'];
 	$db->sql_freeresult($result);
 
 	$user_color_sql = '';
 	$user_color = check_valid_color($user_color);
 	$user_color = ($user_color != false) ? $user_color : $config['active_users_color'];
 
-	if ($force_color || empty($current_user_color) || empty($current_user_color_group) || ($current_user_color == $config['active_users_color']))
+	if ($force_color || empty($current_user_color) || empty($current_group_id) || ($current_user_color == $config['active_users_color']))
 	{
 		$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("user_color = '" . $user_color . "'");
-		if ($simple_mode && !empty($user_color_group) && intval($user_color_group))
+		if ($simple_mode && !empty($group_id) && intval($group_id))
 		{
-			$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("user_color_group = " . intval($user_color_group));
+			$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("group_id = " . intval($group_id));
 		}
 	}
 
 	if (!$simple_mode)
 	{
 		// 0 is different from false...
-		if ($user_color_group === 0)
+		if ($group_id === 0)
 		{
-			$user_color_sql .= (($user_color_sql == '') ? '' : ', ') . ("user_color_group = '0'");
+			$user_color_sql .= (($user_color_sql == '') ? '' : ', ') . ("group_id = '0'");
 		}
-		elseif ($force_group_color || (($current_user_color_group == '0') && ($user_color_group !== false)))
+		elseif ($force_group_color || (($current_group_id == '0') && ($group_id !== false)))
 		{
-			$new_group_color = get_group_color($user_color_group);
+			$new_group_color = get_group_color($group_id);
 			$user_color = ($new_group_color != false) ? $new_group_color : $user_color;
-			$user_color_sql .= ($new_group_color != false) ? ((($user_color_sql == '') ? '' : ', ') . ("user_color_group = '" . $user_color_group . "'")) : '';
+			$user_color_sql .= ($new_group_color != false) ? ((($user_color_sql == '') ? '' : ', ') . ("group_id = '" . $group_id . "'")) : '';
 		}
 	}
 

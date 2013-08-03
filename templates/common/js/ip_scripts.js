@@ -998,7 +998,8 @@ function fade2(object, destOp)
 $(document).ready(function() {
 	$("td[data-href]").bind('mouseup', function(e){
 		if (e.which == 1) {
-			window.location.href = $(this).attr('data-href');
+		window.location.href = $(this).attr('data-href');
 		}
 	});
 });
+
