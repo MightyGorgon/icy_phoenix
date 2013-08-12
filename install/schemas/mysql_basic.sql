@@ -869,7 +869,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_no
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_check_online', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('google_custom_search', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('use_jquery_tags', '0');
-	use_jquery_tags
 
 
 ## ATTACHMENTS - BEGIN
