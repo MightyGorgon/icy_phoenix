@@ -278,7 +278,7 @@ function attach_rules(forum_id)
 				<td align="left" width="100%">
 					<span class="genmed">
 						{S_CALENDAR_DAY}{S_CALENDAR_MONTH}{S_CALENDAR_YEAR}&nbsp;
-						<a href="#" class="genmed" onclick="document.post.topic_calendar_day.value='{TODAY_DAY}';document.post.topic_calendar_month.value='{TODAY_MONTH}';document.post.topic_calendar_year.value='{TODAY_YEAR}';">{L_TODAY}</a>
+						<a href="#" class="genmed" onclick="document.post.topic_calendar_day.value='{TODAY_DAY}';document.post.topic_calendar_month.value='{TODAY_MONTH}';document.post.topic_calendar_year.value='{TODAY_YEAR}';return false;">{L_TODAY}</a>
 					</span>
 				</td>
 			</tr>

@@ -179,6 +179,12 @@ function topic_review($forum_id, $topic_id, $is_inline_review)
 			// Again this will be handled by the templating code at some point
 			$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
+			// Strip iframe from $message... we need this to avoid the topic review "iframe" being broken from BBCodes like YouTube
+			$strip_array = array(
+				'@<iframe[^>]*?>.*?</iframe>@si' // Strip out iframe
+			);
+			$message = preg_replace($strip_array, '', $message);
+
 			$template->assign_block_vars('postrow', array(
 				'ROW_CLASS' => $row_class,
 

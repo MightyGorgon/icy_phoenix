@@ -2474,6 +2474,8 @@ $lang = array_merge($lang, array(
 	'POST_FEATURED_IMAGE' => 'Featured Image',
 	'POST_FEATURED_IMAGE_EXPLAIN' => 'Add a featured image to the topic',
 
+	'NOT_LOGGED_IN_ERROR' => 'You must be logged in to use this feature.',
+
 	)
 );
 
