@@ -255,9 +255,9 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			$db->sql_freeresult($result);
 		}
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 		$user_upi2db_disable = request_post_var('user_upi2db_disable', 0);
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 		if(isset($_POST['avatargallery']) || isset($_POST['submitavatar']) || isset($_POST['cancelavatar']))
 		{
@@ -983,9 +983,9 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_mask = $this_userdata['user_mask'];
 		$user_ycard = $this_userdata['user_warnings'];
 		$user_allowavatar = $this_userdata['user_allowavatar'];
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 		$user_upi2db_disable = $this_userdata['user_upi2db_disable'];
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 		$user_allowpm = $this_userdata['user_allow_pm'];
 		$user_posts = $this_userdata['user_posts'];
 
@@ -1085,9 +1085,9 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				'user_post_show_days' => $user_post_show_days,
 				'user_post_sortby_type' => $user_post_sortby_type,
 				'user_post_sortby_dir' => $user_post_sortby_dir,
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				'user_upi2db_disable' => $user_upi2db_disable,
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 				'user_posts' => $user_posts,
 				'user_rank' => $user_rank,
 				'user_rank2' => $user_rank2,
@@ -1631,10 +1631,10 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			'ALLOW_PM_NO' => (!$user_allowpm) ? 'checked="checked"' : '',
 			'ALLOW_AVATAR_YES' => ($user_allowavatar) ? 'checked="checked"' : '',
 			'ALLOW_AVATAR_NO' => (!$user_allowavatar) ? 'checked="checked"' : '',
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 			'DISABLE_UPI2DB_YES' => ($user_upi2db_disable) ? 'checked="checked"' : '',
 			'DISABLE_UPI2DB_NO' => (!$user_upi2db_disable) ? 'checked="checked"' : '',
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 			'USER_ACTIVE_YES' => ($user_status) ? 'checked="checked"' : '',
 			'USER_ACTIVE_NO' => (!$user_status) ? 'checked="checked"' : '',
 			'USER_MASK_YES' => ($user_mask) ? 'checked="checked"' : '',
@@ -1718,9 +1718,9 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			'L_USER_ACTIVE' => $lang['User_status'],
 			'L_ALLOW_PM' => $lang['User_allowpm'],
 			'L_ALLOW_AVATAR' => $lang['User_allowavatar'],
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 			'L_DISABLE_UPI2DB' => $lang['user_disable_upi2db'],
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 			'L_POSTCOUNT' => $lang['Modify_post_counts'],
 			'L_POSTCOUNT_EXPLAIN' => $lang['Post_count_explain'],
 

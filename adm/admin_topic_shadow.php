@@ -29,6 +29,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
 include(IP_ROOT_PATH . 'includes/functions_topics_shadows.' . PHP_EXT);
 
+if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+if (empty($class_mcp)) $class_mcp = new class_mcp();
+
 /* If for some reason preference cookie saving needs to be disabled, you
 can do so by setting this to true */
 define('DISABLE_PREFERENCE_SAVING', false);
@@ -124,7 +127,7 @@ if ($delete_all_before_date)
 	$db->sql_query($sql);
 	$status_message .= sprintf($lang['Del_Before_Date'], gmdate('M-d-Y', $set_time));
 	$status_message .= (SQL_LAYER == 'db2' || SQL_LAYER == 'mysql' || SQL_LAYER == 'mysql4') ? sprintf($lang['Affected_Rows'], $db->sql_affectedrows()) : '';
-	sync('all_forums');
+	$class_mcp->sync('all_forums');
 	$status_message .= sprintf($lang['Resync_Ran_On'], $lang['All_Forums']);
 }
 else
@@ -149,7 +152,7 @@ else
 								AND topic_id = $topic_id";
 				$db->sql_query($sql);
 				$status_message .= sprintf($lang['Deleted_Topic'], $forum_data_row['topic_title']);
-				sync('forum', $forum_data_row['forum_id']);
+				$class_mcp->sync('forum', $forum_data_row['forum_id']);
 				$status_message .= sprintf($lang['Resync_Ran_On'], $forum_data_row['forum_name']);
 			}
 		}

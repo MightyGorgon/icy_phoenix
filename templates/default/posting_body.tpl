@@ -260,6 +260,9 @@ function attach_rules(forum_id)
 			<!-- BEGIN switch_unlock_topic -->
 			<label><input type="checkbox" name="unlock" {S_UNLOCK_CHECKED} />&nbsp;{L_UNLOCK_TOPIC}</label><br />
 			<!-- END switch_unlock_topic -->
+			<!-- BEGIN switch_lock_post -->
+			<label><input type="checkbox" name="post_locked" {S_POST_LOCKED} />&nbsp;{L_LOCK_POST}</label><br />
+			<!-- END switch_lock_post -->
 		</div>
 	</td>
 </tr>

@@ -2476,6 +2476,10 @@ $lang = array_merge($lang, array(
 
 	'NOT_LOGGED_IN_ERROR' => 'You must be logged in to use this feature.',
 
+	'LOCK_POST' => 'Lock this post',
+	'POST_LOCKED' => 'This post has been locked by a moderator, you cannot edit it.',
+	'POST_AUTO_SPLIT' => '[SPLIT]',
+
 	)
 );
 

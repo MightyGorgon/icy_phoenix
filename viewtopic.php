@@ -205,7 +205,7 @@ if (!empty($view) && empty($post_id))
 					message_die(GENERAL_MESSAGE, 'No_new_posts_last_visit');
 				}
 */
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				if (!($row = $db->sql_fetchrow($result)))
 				{
 					if ($topic_id > 0)
@@ -217,7 +217,7 @@ if (!empty($view) && empty($post_id))
 						message_die(GENERAL_MESSAGE, 'No_new_posts_last_visit');
 					}
 				}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 				$post_id = $row['post_id'];
 				$post_id_append = (!empty($post_id) ? (POST_POST_URL . '=' . $post_id) : '');
@@ -687,8 +687,9 @@ if ($row = $db->sql_fetchrow($result))
 }
 else
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-	sync('topic', $topic_id);
+	if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+	if (empty($class_mcp)) $class_mcp = new class_mcp();
+	$class_mcp->sync('topic', $topic_id);
 	message_die(GENERAL_MESSAGE, $lang['No_posts_topic']);
 }
 
@@ -717,8 +718,9 @@ elseif (sizeof($postrow) < $config['posts_per_page'])
 
 if ($resync)
 {
-	include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
-	sync('topic', $topic_id);
+	if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+	if (empty($class_mcp)) $class_mcp = new class_mcp();
+	$class_mcp->sync('topic', $topic_id);
 
 	$sql = 'SELECT COUNT(post_id) AS total FROM ' . POSTS_TABLE . ' WHERE topic_id = ' . $topic_id;
 	$result = $db->sql_query($sql);
@@ -840,7 +842,7 @@ if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 	$user->set_cookie('t', serialize($tracking_topics), $user->cookie_expire);
 }
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if($user->data['upi2db_access'])
 {
 	$unread_new_posts = 0;
@@ -857,7 +859,7 @@ if($user->data['upi2db_access'])
 		}
 	}
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 $template_to_parse = ($kb_mode) ? 'viewtopic_kb_body.tpl' : 'viewtopic_body.tpl';
 // Needed for attachments... do not remove!
@@ -1053,7 +1055,7 @@ if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 	);
 }
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if($user->data['upi2db_access'])
 {
 	//$mark_always_read = mark_always_read($forum_topic_data['topic_type'], $topic_id, $forum_id, 'viewforum', 'txt', $user->data['upi2db_unread']);
@@ -1066,7 +1068,7 @@ else
 	$s_mark_ar = '';
 	$s_mark_ar_img = '';
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 if ($total_replies > (10 * $config['posts_per_page']))
 {
@@ -1319,11 +1321,11 @@ $template->assign_vars(array(
 
 	'U_VIEW_TOPIC' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . (!empty($start) ? ('&amp;start=' . $start) : '') . $vt_sort_append . (!empty($highlight) ? ('&amp;highlight=' . $highlight) : '') . (($kb_mode == true) ? '&amp;kb=on' : '')),
 	'U_VIEW_TOPIC_BASE' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append),
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'U_MARK_ALWAYS_READ' => $mark_always_read,
 	'S_MARK_AR' => $s_mark_ar,
 	'S_MARK_AR_IMG' => $s_mark_ar_img,
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	'U_TOPIC_VIEWED' => $topic_viewed_link,
 	'U_VIEW_FORUM' => $view_forum_url,
 	'U_VIEW_OLDER_TOPIC' => $view_prev_topic_url,
@@ -1337,7 +1339,7 @@ $template->assign_vars(array(
 // Does this topic contain a poll?
 if (!empty($forum_topic_data['poll_start']))
 {
-	$class_topics->display_poll($forum_topic_data, false);
+	$class_topics->poll_display($forum_topic_data, false);
 }
 
 // Event Registration - BEGIN
@@ -1490,10 +1492,10 @@ for($i = 0; $i < $total_posts; $i++)
 	$poster_avatar = user_get_avatar($poster_id, $postrow[$i]['user_level'], $postrow[$i]['user_avatar'], $postrow[$i]['user_avatar_type'], $postrow[$i]['user_allowavatar']);
 
 	// Define the little post icon
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	if(!$user->data['upi2db_access'])
 	{
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 		if ($user->data['session_logged_in'] && ($postrow[$i]['post_time'] > $user->data['user_lastvisit']) && ($postrow[$i]['post_time'] > $topic_last_read) && !$user->data['is_bot'])
 		{
 			$mini_post_img = $images['icon_minipost_new'];
@@ -1504,13 +1506,13 @@ for($i = 0; $i < $total_posts; $i++)
 			$mini_post_img = $images['icon_minipost'];
 			$mini_post_alt = $lang['Post'];
 		}
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	}
 	else
 	{
 		viewtopic_calc_unread($user->data['upi2db_unread'], $topic_id, $postrow[$i]['post_id'], $forum_id, $mini_post_img, $mini_post_alt, $unread_color, $read_posts);
 	}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 	if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 	{
@@ -1762,7 +1764,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$edit_img = '';
 	$edit = '';
 	$edit_switch = false;
-	if ((($user->data['user_id'] == $poster_id) && $is_auth['auth_edit']) || $is_auth['auth_mod'])
+	if ((($user->data['user_id'] == $poster_id) && $is_auth['auth_edit'] && !$postrow[$i]['post_locked']) || $is_auth['auth_mod'] || ($user->data['user_level'] == ADMIN))
 	{
 		if (($config['allow_mods_edit_admin_posts'] == false) && ($postrow[$i]['user_level'] == ADMIN) && ($user->data['user_level'] != ADMIN))
 		{
@@ -2206,7 +2208,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$post_subject .= get_calendar_title($topic_calendar_time, $topic_calendar_duration);
 	}
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	if($user->data['upi2db_access'])
 	{
 		$post_edit_max = ($postrow[$i]['post_time'] >= $postrow[$i]['post_edit_time']) ? $postrow[$i]['post_time'] : $postrow[$i]['post_edit_time'];
@@ -2218,7 +2220,7 @@ for($i = 0; $i < $total_posts; $i++)
 	{
 		$mark_topic_unread = '';
 	}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 	$post_id = $postrow[$i]['post_id'];
 	$poster_number = ($postrow[$i]['poster_id'] == ANONYMOUS) ? '' : $lang['User_Number'] . ': ' . $postrow[$i]['poster_id'];
@@ -2544,10 +2546,10 @@ for($i = 0; $i < $total_posts; $i++)
 		'USER_WARNINGS' => !empty($user_warnings) ? $user_warnings : '',
 
 		'U_MINI_POST' => $mini_post_url,
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 		'UNREAD_IMG' => $mark_topic_unread,
 		'UNREAD_COLOR' => !empty($unread_color) ? $unread_color : '',
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 		// Cards - BEGIN
 		'S_CARD' => ($phpbb_styles) ? $card_action : append_sid('card.' . PHP_EXT),
@@ -2808,12 +2810,12 @@ if (($postrow[0]['user_id'] != $user->data['user_id']) && !$user->data['is_bot']
 	$db->sql_query($sql);
 }
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if($user->data['upi2db_access'])
 {
 	delete_read_posts($read_posts);
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 $viewtopic_banner_top = get_ad('vtt');
 $viewtopic_banner_bottom = get_ad('vtb');

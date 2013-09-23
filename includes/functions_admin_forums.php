@@ -94,7 +94,9 @@ function delete_item($old, $new = '', $topic_dest = '')
 			$sql = "UPDATE " . POSTS_TABLE . " SET forum_id = $dst_id WHERE forum_id = $old_id";
 			$db->sql_query($sql);
 
-			sync('forum', $dst_id);
+			if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+			if (empty($class_mcp)) $class_mcp = new class_mcp();
+			$class_mcp->sync('forum', $dst_id);
 		}
 	}
 
@@ -173,11 +175,8 @@ function delete_item($old, $new = '', $topic_dest = '')
 
 		if (!empty($topic_ids))
 		{
-			if (!class_exists('class_mcp_topic'))
-			{
-				@include_once(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
-			}
-			$class_mcp = new class_mcp_topic();
+			if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+			if (empty($class_mcp)) $class_mcp = new class_mcp();
 			$class_mcp->topic_poll_delete($topic_ids);
 		}
 

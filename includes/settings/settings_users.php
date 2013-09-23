@@ -56,6 +56,14 @@ $settings_data = array(
 		'default' => '____________',
 	),
 
+	'user_allow_pm_register' => array(
+		'lang_key' => 'IP_user_allow_pm_register',
+		'explain' => 'IP_user_allow_pm_register_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 1,
+		'values' => $this->list_yes_no,
+	),
+
 	'online_time' => array(
 		'lang_key' => 'Online_time',
 		'explain' => 'Online_time_explain',

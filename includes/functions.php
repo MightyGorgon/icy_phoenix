@@ -4684,7 +4684,7 @@ function page_header($title = '', $parse_template = false)
 
 	if (!defined('IN_CMS'))
 	{
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 		$upi2db_first_use = '';
 		$u_display_new = array();
 		if($user->data['upi2db_access'])
@@ -4700,7 +4700,7 @@ function page_header($title = '', $parse_template = false)
 				$template->assign_block_vars('switch_upi2db_off', array());
 			}
 		}
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 
 		// Digests - BEGIN
 		if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0))
@@ -4920,7 +4920,7 @@ function page_header($title = '', $parse_template = false)
 			'L_NEW2' => (empty($lang['NEW_POSTS_SHORT']) ? $lang['New_Label'] : $lang['NEW_POSTS_SHORT']),
 			'L_NEW3' => (empty($lang['NEW_POSTS_LONG']) ? $lang['New_Messages_Label'] : $lang['NEW_POSTS_LONG']),
 			'L_POSTS' => $lang['Posts'],
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 			'L_DISPLAY_ALL' => (!empty($u_display_new) ? $u_display_new['all'] : ''),
 			'L_DISPLAY_U' => (!empty($u_display_new) ? $u_display_new['u'] : ''),
 			'L_DISPLAY_M' => (!empty($u_display_new) ? $u_display_new['m'] : ''),
@@ -4938,7 +4938,7 @@ function page_header($title = '', $parse_template = false)
 			'U_DISPLAY_U' => (!empty($u_display_new) ? $u_display_new['u_url'] : ''),
 			'U_DISPLAY_M' => (!empty($u_display_new) ? $u_display_new['m_url'] : ''),
 			'U_DISPLAY_P' => (!empty($u_display_new) ? $u_display_new['p_url'] : ''),
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 			'L_SEARCH_UNANSWERED' => $lang['Search_unanswered'],
 			'L_SEARCH_SELF' => $lang['Search_your_posts'],
 			'L_RECENT' => $lang['Recent_topics'],
@@ -5045,9 +5045,9 @@ function page_header($title = '', $parse_template = false)
 		'U_LOGIN_LOGOUT' => append_sid(IP_ROOT_PATH . $u_login_logout),
 		'USER_USERNAME' => $user->data['session_logged_in'] ? htmlspecialchars($user->data['username']) : $lang['Guest'],
 
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 		'UPI2DB_FIRST_USE' => $upi2db_first_use,
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 
 		'L_PAGE_TITLE' => $meta_content['page_title_clean'],
 		'PAGE_TITLE' => ($config['page_title_simple'] ? $meta_content['page_title_clean'] : $meta_content['page_title']),

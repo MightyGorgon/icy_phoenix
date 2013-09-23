@@ -269,7 +269,7 @@ function remove_common($mode, $fraction, $word_id_list = array())
 
 function remove_search_post($post_id_sql, $remove_subject = true, $remove_message = true)
 {
-	global $db;
+	global $db, $cache;
 
 	$words_removed = false;
 

@@ -80,9 +80,13 @@ if (!$statistics->result_cache_used)
 		GROUP BY post_text";
 		$result = $db->sql_query($sql);
 		$rows = $db->sql_fetchrowset($result);
+		/*
+		$result = $stat_db->sql_query($sql);
+		$rows = $stat_db->sql_fetchrowset($result);
+		*/
 		$message = '';
 
-		if (sizeof($rows))
+		if (!empty(sizeof($rows)))
 		{
 			for ($i = 0; $i < sizeof($rows); $i++)
 			{
@@ -161,6 +165,7 @@ if (!$statistics->result_cache_used)
 					);
 				}
 
+				//$result_cache->assign_template_block_vars('topsmilies');
 				$result_cache->assign_template_block_vars('topsmilies', 'stats_row');
 			}
 		}

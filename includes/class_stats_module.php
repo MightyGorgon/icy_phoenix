@@ -388,11 +388,13 @@ class Results
 	function assign_template_block_vars($blockname, $from_block = null)
 	{
 		global $template;
-		if ($from_block == null)
+
+		if empty($from_block)
 		{
 			$from_block = $blockname;
 		}
-		$this->var_data[$blockname . '.'][] = end($template->_tpldata[$from_block . '.']);
+
+		$this->var_data[$blockname . '.'][] = end($template->_tpldata[$blockname . '.']);
 	}
 
 	// Get Variable from Cache

@@ -72,13 +72,13 @@ function ip_user_kill($user_id)
 			$db->sql_query($sql);
 		}
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 		$sql = "DELETE FROM " . UPI2DB_ALWAYS_READ_TABLE . " WHERE user_id = " . $user_id;
 		$db->sql_query($sql);
 
 		$sql = "DELETE FROM " . UPI2DB_UNREAD_POSTS_TABLE . " WHERE user_id = " . $user_id;
 		$db->sql_query($sql);
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 		$sql = "DELETE FROM " . POSTS_LIKES_TABLE . " WHERE user_id = " . $user_id;
 		$db->sql_query($sql);

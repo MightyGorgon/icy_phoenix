@@ -336,10 +336,10 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			$newest_post_img = '';
 			if ($user->data['session_logged_in'] && ($topic_item_type == POST_TOPIC_URL))
 			{
-				//<!-- BEGIN Unread Post Information to Database Mod -->
+				// UPI2DB - BEGIN
 				if(!$user->data['upi2db_access'])
 				{
-				//<!-- END Unread Post Information to Database Mod -->
+				// UPI2DB - END
 					if($topic_rowset[$i]['post_time'] > $user->data['user_lastvisit'])
 					{
 						if(!empty($tracking_topics) || !empty($tracking_forums) || !empty($tracking_all))
@@ -392,13 +392,13 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 						$folder_alt = ($topic_rowset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
 						$newest_post_img = '';
 					}
-				//<!-- BEGIN Unread Post Information to Database Mod -->
+				// UPI2DB - BEGIN
 				}
 				else
 				{
 					viewforum_calc_unread($user->data['upi2db_unread'], $topic_id, $topic_rowset, $i, $folder_new, $folder, $folder_alt, $folder_image, $newest_post_img, $upi2db_status);
 				}
-				//<!-- END Unread Post Information to Database Mod -->
+				// UPI2DB - END
 			}
 			else
 			{
@@ -622,7 +622,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			$icon = get_icon_title($topic_rowset[$i]['topic_icon'], 1, $type);
 		}
 
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 		if($user->data['upi2db_access'])
 		{
 			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $user->data['upi2db_unread'], $start, $folder_image);
@@ -631,7 +631,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 		{
 			$mark_always_read = '<img src="' . $folder_image . '" alt="' . $folder_alt . '" title="' . $folder_alt . '" />';
 		}
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 
 		// send topic to template
 		$selected = (!empty($select_values) && in_array($topic_rowset[$i]['topic_id'], $select_values));
@@ -665,9 +665,9 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 			'U_VIEW_TOPIC' => $view_topic_url,
 			'BOX_ID' => $box_id,
 			'FID' => $topic_rowset[$i]['topic_id'],
-			//<!-- BEGIN Unread Post Information to Database Mod  -->
+			// UPI2DB - BEGIN
 			'U_MARK_ALWAYS_READ' => $mark_always_read,
-			//<!-- END Unread Post Information to Database Mod -->
+			// UPI2DB - END
 			'L_SELECT' => ($selected && ($select_multi || $select_unique)) ? 'checked="checked"' : '',
 			)
 		);

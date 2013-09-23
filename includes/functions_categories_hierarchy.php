@@ -392,7 +392,7 @@ function read_tree($force = false)
 
 	global $db, $config, $user, $tree;
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	if($user->data['upi2db_access'])
 	{
 		if (!defined('UPI2DB_UNREAD'))
@@ -400,7 +400,7 @@ function read_tree($force = false)
 			$user->data['upi2db_unread'] = upi2db_unread();
 		}
 	}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 	// read the user cookie
 	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
@@ -461,10 +461,10 @@ function read_tree($force = false)
 	$db->sql_freeresult($result);
 
 	// set the unread flag
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	if(!$user->data['upi2db_access'])
 	{
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 		// Get new posts since last visit... only for registered users
 		if ($user->data['session_logged_in'])
@@ -538,7 +538,7 @@ function read_tree($force = false)
 				$tree['unread_topics'][$i] = $unread_topics;
 			}
 		}
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	}
 	else
 	{
@@ -556,7 +556,7 @@ function read_tree($force = false)
 			}
 		}
 	}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	return;
 }
 
@@ -1218,7 +1218,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 
 			// forum icon
 			$icon_img = empty($data['icon']) ? '' : (isset($images[$data['icon']]) ? $images[$data['icon']] : $data['icon']);
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 			if($user->data['upi2db_access'])
 			{
 				$folder_image_ar_big = $images['forum_nor_ar'];
@@ -1252,7 +1252,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			{
 				$mark_always_read = '<img src="' . $folder_image . '" alt="' . $folder_alt . '" title="' . $folder_alt . '" />';
 			}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 			if (($config['url_rw'] == true) || (($config['url_rw_guests'] == true) && ($user->data['user_id'] == ANONYMOUS)))
 			{
 				$url_viewforum = ($type == POST_FORUM_URL) ? append_sid(str_replace ('--', '-', make_url_friendly($title) . '-vf' . $id . '.html')) : append_sid(str_replace ('--', '-', make_url_friendly($title) . '-vc' . $id . '.html'));
@@ -1300,9 +1300,9 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				'LINKS_ROWSPAN' => empty($links) ? '' : ' rowspan="2"',
 				'LINKS' => $links,
 				'L_FORUM_FOLDER_ALT' => $folder_alt,
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				'U_MARK_ALWAYS_READ' => $mark_always_read,
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 				'L_POST_NEW_TOPIC' => $lang['Post_new_topic'],
 				'U_VIEWFORUM' => $url_viewforum,
 				//'U_VIEWFORUM' => ($type == POST_FORUM_URL) ? append_sid(CMS_PAGE_VIEWFORUM . "?" . POST_FORUM_URL . "=$id") : append_sid(CMS_PAGE_FORUM . "?" . POST_CAT_URL . "=$id"),

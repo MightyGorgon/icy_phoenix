@@ -32,6 +32,9 @@ include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
 
+if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+if (empty($class_mcp)) $class_mcp = new class_mcp();
+
 // Constants
 define('POST_FLINK_URL', 'l');
 
@@ -298,7 +301,7 @@ if ($mode == 'resync')
 		$wid = $tkeys['id'][$i];
 		if (substr($wid, 0, 1) == POST_FORUM_URL)
 		{
-			sync('forum', intval(substr($wid, 1)));
+			$class_mcp->sync('forum', intval(substr($wid, 1)));
 		}
 	}
 
