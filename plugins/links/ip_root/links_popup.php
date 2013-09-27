@@ -26,8 +26,13 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
-setup_extra_lang(array('lang_main_link'));
-include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
+$plugin_name = 'links';
+if (empty($config['plugins'][$plugin_name]['enabled']) || empty($config['plugins'][$plugin_name]['dir']))
+{
+	message_die(GENERAL_MESSAGE, 'PLUGIN_DISABLED');
+}
+include(IP_ROOT_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT);
+
 $links_config = get_links_config(true);
 
 $template->assign_vars(array(
@@ -41,6 +46,6 @@ $template->assign_vars(array(
 );
 
 $gen_simple_header = true;
-full_page_generation('links_me.tpl', $lang['Link_ME'], '', '');
+full_page_generation(LINKS_TPL_PATH . 'links_me.tpl', $lang['Link_ME'], '', '');
 
 ?>

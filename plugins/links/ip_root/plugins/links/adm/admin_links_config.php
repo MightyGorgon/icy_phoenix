@@ -27,9 +27,9 @@ if(!empty($setmodules))
 }
 
 // Load default Header
-if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../../../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('pagestart.' . PHP_EXT);
+require(IP_ROOT_PATH . 'adm/pagestart.' . PHP_EXT);
 
 include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
 $links_config = get_links_config(true);

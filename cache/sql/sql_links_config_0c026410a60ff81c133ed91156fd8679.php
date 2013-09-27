@@ -1,0 +1,5 @@
+<?php exit; ?>
+1411832050
+SELECT * FROM ip_link_config
+1009
+a:12:{i:0;a:2:{s:11:"config_name";s:5:"width";s:12:"config_value";s:2:"88";}i:1;a:2:{s:11:"config_name";s:6:"height";s:12:"config_value";s:2:"31";}i:2;a:2:{s:11:"config_name";s:7:"linkspp";s:12:"config_value";s:2:"10";}i:3;a:2:{s:11:"config_name";s:16:"display_interval";s:12:"config_value";s:4:"6000";}i:4;a:2:{s:11:"config_name";s:16:"display_logo_num";s:12:"config_value";s:2:"10";}i:5;a:2:{s:11:"config_name";s:18:"display_links_logo";s:12:"config_value";s:1:"1";}i:6;a:2:{s:11:"config_name";s:12:"email_notify";s:12:"config_value";s:1:"1";}i:7;a:2:{s:11:"config_name";s:9:"pm_notify";s:12:"config_value";s:1:"0";}i:8;a:2:{s:11:"config_name";s:16:"lock_submit_site";s:12:"config_value";s:1:"0";}i:9;a:2:{s:11:"config_name";s:13:"allow_no_logo";s:12:"config_value";s:1:"0";}i:10;a:2:{s:11:"config_name";s:9:"site_logo";s:12:"config_value";s:55:"http://localhost/icy_phoenix/images/links/banner_ip.gif";}i:11;a:2:{s:11:"config_name";s:8:"site_url";s:12:"config_value";s:29:"http://localhost/icy_phoenix/";}}

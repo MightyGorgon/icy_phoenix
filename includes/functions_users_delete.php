@@ -25,7 +25,6 @@ function ip_user_kill($user_id)
 
 	if($user->data['user_id'] != $user_id)
 	{
-
 		// We need to reset notifications before deleting the user from the table, because we also want to make sure to reset his profile if something goes wrong in deletion
 		$clear_notification = user_clear_notifications($user_id);
 
@@ -89,8 +88,11 @@ function ip_user_kill($user_id)
 		$sql = "DELETE FROM " . DRAFTS_TABLE . " WHERE user_id = " . $user_id;
 		$db->sql_query($sql);
 
-		$sql = "DELETE FROM " . LINKS_TABLE . " WHERE user_id = " . $user_id;
-		$db->sql_query($sql);
+		if (!empty($config['plugins']['links']['enabled']))
+		{
+			$sql = "DELETE FROM " . LINKS_TABLE . " WHERE user_id = " . $user_id;
+			$db->sql_query($sql);
+		}
 
 		$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid = " . $user_id;
 		$db->sql_query($sql);

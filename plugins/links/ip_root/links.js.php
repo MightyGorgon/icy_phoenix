@@ -26,36 +26,24 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 $do_gzip_compress = false;
 if($config['gzip_compress'])
 {
-	$phpver = phpversion();
-
-	if($phpver >= "4.0.4pl1")
+	if(strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
 	{
 		if(extension_loaded("zlib"))
 		{
-			ob_start("ob_gzhandler");
-		}
-	}
-	elseif($phpver > "4.0")
-	{
-		if(strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
-		{
-			if(extension_loaded("zlib"))
-			{
-				$do_gzip_compress = true;
-				ob_start();
-				ob_implicit_flush(0);
+			$do_gzip_compress = true;
+			ob_start();
+			ob_implicit_flush(0);
 
-				header("Content-Encoding: gzip");
-			}
+			header("Content-Encoding: gzip");
 		}
 	}
 }
 
-header ("Cache-Control: no-store, no-cache, must-revalidate");
-header ("Cache-Control: pre-check=0, post-check=0, max-age=0", false);
-header ("Pragma: no-cache");
-header ("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
-header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: pre-check=0, post-check=0, max-age=0", false);
+header("Pragma: no-cache");
+header("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 
 // Start session management
 $user->session_begin();
@@ -63,7 +51,15 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
-include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
+$plugin_name = 'links';
+
+if (empty($config['plugins'][$plugin_name]['enabled']) || empty($config['plugins'][$plugin_name]['dir']))
+{
+	message_die(GENERAL_MESSAGE, 'PLUGIN_DISABLED');
+}
+
+include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT);
+
 $links_config = get_links_config(true);
 $link_self_img = $links_config['site_logo'];
 $site_logo_height = $links_config['height'];
@@ -71,7 +67,7 @@ $site_logo_width = $links_config['width'];
 $display_interval = $links_config['display_interval'];
 $display_logo_num = $links_config['display_logo_num'];
 
-$template->set_filenames(array('body' => 'links_js_body.tpl'));
+$template->set_filenames(array('body' => LINKS_TPL_PATH . 'links_js_body.tpl'));
 
 $sql = "SELECT link_id, link_title, link_logo_src
 	FROM " . LINKS_TABLE . "

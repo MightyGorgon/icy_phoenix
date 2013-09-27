@@ -27,13 +27,11 @@ if(!empty($setmodules))
 }
 
 // Load default Header
-if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
+if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../../../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
-require('pagestart.' . PHP_EXT);
+require(IP_ROOT_PATH . 'adm/pagestart.' . PHP_EXT);
 
-// --------------------------
 // This function will sort the order of all categories
-//
 if(!function_exists('links_reorder_cat'))
 {
 	function links_reorder_cat()
@@ -59,9 +57,6 @@ if(!function_exists('links_reorder_cat'))
 		}
 	}
 }
-// END
-// --------------------------
-
 $mode = request_var('mode', '');
 $action = request_var('action', '');
 

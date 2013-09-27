@@ -1,0 +1,5 @@
+Here are the instructions to install this plugin on Icy Phoenix.
+
+* Upload all files included in this package from "ip_root" to the root of your Icy Phoenix
+
+* Go in ACP => Plugins, install the plugin and then reload ACP to make sure ACP modules are reloaded
