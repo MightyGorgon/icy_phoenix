@@ -1658,8 +1658,14 @@ class cms_admin
 		{
 			$blist = false;
 		}
+
 		// groups list
-		$groups = get_groups_list();
+		$groups = array();
+		$groups_data = get_groups_data(false, true, array());
+		foreach ($groups_data as $group_data)
+		{
+			$groups[$group_data['group_id']] = $group_data['group_name'];
+		}
 
 		// json data
 		$json = array(

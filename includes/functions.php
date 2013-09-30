@@ -852,6 +852,68 @@ function get_founder_id($clear_cache = false)
 }
 
 /*
+* Get groups data
+*/
+function get_groups_data($full_data = false, $sort_by_name = false, $sql_groups = array())
+{
+	global $db, $cache, $config;
+
+	$groups_data = array();
+	$sql_select = !empty($full_data) ? '*' : 'g.group_id, g.group_name, g.group_color, g.group_legend, g.group_legend_order';
+	$sql_where = '';
+	if (!empty($sql_groups))
+	{
+		if (!is_array($sql_groups))
+		{
+			$sql_groups = array($sql_groups);
+		}
+		$sql_where = !empty($sql_groups) ? (' AND ' . $db->sql_in_set('g.group_id', $sql_groups)) : '';
+	}
+	$sql_sort = !empty($sort_by_name) ? ' ORDER BY g.group_name ASC' : ' ORDER BY g.group_legend DESC, g.group_legend_order ASC, g.group_name ASC';
+	$sql = "SELECT " . $sql_select . "
+		FROM " . GROUPS_TABLE . " g
+		WHERE g.group_single_user = 0" .
+		$sql_where .
+		$sql_sort;
+	$result = $db->sql_query($sql, 0, 'groups_', USERS_CACHE_FOLDER);
+	$groups_data = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	return $groups_data;
+}
+
+/*
+* Get groups data for a specific user
+*/
+function get_groups_data_user($user_id, $full_data = false, $sort_by_name = false, $sql_groups = array())
+{
+	global $db, $cache, $config;
+
+	$groups_data = array();
+	$sql_select = !empty($full_data) ? 'g.*, ug.*' : 'g.group_id, g.group_name, g.group_color, g.group_legend, g.group_legend_order, ug.user_pending';
+	$sql_where = '';
+	if (!empty($sql_groups))
+	{
+		if (!is_array($sql_groups))
+		{
+			$sql_groups = array($sql_groups);
+		}
+		$sql_where = !empty($sql_groups) ? (' AND ' . $db->sql_in_set('g.group_id', $sql_groups)) : '';
+	}
+	$sql = "SELECT " . $sql_select . "
+		FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug " . "
+		WHERE g.group_single_user = 0" .
+		$sql_where . "
+		AND g.group_id = ug.group_id
+		AND ug.user_id = " . (int) $user_id;
+	$result = $db->sql_query($sql, 0, 'groups_', USERS_CACHE_FOLDER);
+	$groups_data = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	return $groups_data;
+}
+
+/*
 * Founder protection
 */
 function founder_protect($founder_id)

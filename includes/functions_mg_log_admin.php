@@ -228,6 +228,7 @@ function get_group_name($group_id)
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
+
 	return $row['group_name'];
 }
 

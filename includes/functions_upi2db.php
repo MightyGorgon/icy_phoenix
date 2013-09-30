@@ -44,8 +44,8 @@ function check_group_auth($user_data)
 	$sql = "SELECT g.upi2db_on, g.upi2db_min_posts, g.upi2db_min_regdays
 		FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
 			WHERE ug.group_id = g.group_id
-			AND g.group_single_user <> " . TRUE . "
-			AND ug.user_pending <> ".TRUE . "
+			AND g.group_single_user = 0
+			AND ug.user_pending = 0
 			AND ug.user_id = " . $user_data['user_id'] . "
 			GROUP BY g.group_id";
 	$db->sql_return_on_error(true);

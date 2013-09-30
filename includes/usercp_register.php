@@ -1197,7 +1197,7 @@ if (isset($_POST['submit']))
 			}
 
 			$sql = "SELECT ug.user_id, g.group_id as g_id, g.group_name , u.user_posts, g.group_count FROM (" . GROUPS_TABLE . " g, " . USERS_TABLE . " u)
-					LEFT JOIN " . USER_GROUP_TABLE . " ug ON g.group_id=ug.group_id AND ug.user_id = '" . $user_id . "'
+					LEFT JOIN " . USER_GROUP_TABLE . " ug ON g.group_id = ug.group_id AND ug.user_id = '" . $user_id . "'
 					WHERE u.user_id = $user_id
 						 AND ug.user_id is NULL
 						 AND g.group_count = 0

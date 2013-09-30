@@ -38,7 +38,7 @@
 			<!-- ENDIF -->
 		</tr>
 		<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-		<tr><td class="cat" colspan="2" align="center"><a class="cms-button-small" data-href="{U_AUTH_ADD}" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
+		<tr><td class="cat" colspan="2" align="center"><a class="cms-button-small" onclick="window.location.href='{U_AUTH_ADD}'" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
 		</table>
 	</td>
 	<td width="50%" valign="top" style="width: 50%; vertical-align: top; padding-left: 5px;">
@@ -71,7 +71,7 @@
 			<!-- ENDIF -->
 		</tr>
 		<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-		<tr><td class="cat" colspan="2" align="center"><a class="cms-button-small" data-href="{U_AUTH_ADDROLE}" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
+		<tr><td class="cat" colspan="2" align="center"><a class="cms-button-small" onclick="window.location.href='{U_AUTH_ADDROLE}'" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
 		</table>
 	</td>
 </tr>
