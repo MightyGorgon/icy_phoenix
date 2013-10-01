@@ -32,3 +32,5 @@ $class_plugins = new class_plugins();
 $class_plugins->setup_lang($config['plugins'][$plugin_name]['dir']);
 
 include(LINKS_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
+
+?>

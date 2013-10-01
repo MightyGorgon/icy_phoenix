@@ -253,19 +253,10 @@ class class_plugins
 				break;
 		}
 
-		foreach ($filenames as $filename)
+		if (is_dir($plugin_lang_path))
 		{
-			if (is_dir($plugin_lang_path))
-			{
-				$files_to_include[] = $filename;
-			}
+			setup_extra_lang($filenames, $plugin_lang_path);
 		}
-
-		if (!empty($files_to_include))
-		{
-			setup_extra_lang($files_to_include, $plugin_lang_path);
-		}
-
 		return true;
 	}
 

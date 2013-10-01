@@ -1,5 +1,5 @@
 <?php exit; ?>
-1411379602
+1412170943
 SELECT w.word_text, COUNT(*) AS word_count FROM ip_search_wordlist AS w, ip_search_wordmatch AS m WHERE m.word_id = w.word_id GROUP BY m.word_id ORDER BY word_count DESC LIMIT 250
 611
-a:9:{i:0;a:2:{s:9:"word_text";s:6:"sample";s:10:"word_count";s:2:"28";}i:1;a:2:{s:9:"word_text";s:6:"portal";s:10:"word_count";s:2:"28";}i:2;a:2:{s:9:"word_text";s:10:"dqsdqsdqsd";s:10:"word_count";s:2:"18";}i:3;a:2:{s:9:"word_text";s:9:"qsdqsdqsd";s:10:"word_count";s:1:"6";}i:4;a:2:{s:9:"word_text";s:5:"mricy";s:10:"word_count";s:1:"1";}i:5;a:2:{s:9:"word_text";s:8:"ezeazeaz";s:10:"word_count";s:1:"1";}i:6;a:2:{s:9:"word_text";s:10:"aezasdzasq";s:10:"word_count";s:1:"1";}i:7;a:2:{s:9:"word_text";s:7:"mrgreen";s:10:"word_count";s:1:"1";}i:8;a:2:{s:9:"word_text";s:8:"mryellow";s:10:"word_count";s:1:"1";}}
+a:9:{i:0;a:2:{s:9:"word_text";s:6:"sample";s:10:"word_count";s:2:"28";}i:1;a:2:{s:9:"word_text";s:6:"portal";s:10:"word_count";s:2:"28";}i:2;a:2:{s:9:"word_text";s:10:"dqsdqsdqsd";s:10:"word_count";s:2:"18";}i:3;a:2:{s:9:"word_text";s:9:"qsdqsdqsd";s:10:"word_count";s:1:"6";}i:4;a:2:{s:9:"word_text";s:10:"aezasdzasq";s:10:"word_count";s:1:"1";}i:5;a:2:{s:9:"word_text";s:7:"mrgreen";s:10:"word_count";s:1:"1";}i:6;a:2:{s:9:"word_text";s:8:"mryellow";s:10:"word_count";s:1:"1";}i:7;a:2:{s:9:"word_text";s:5:"mricy";s:10:"word_count";s:1:"1";}i:8;a:2:{s:9:"word_text";s:8:"ezeazeaz";s:10:"word_count";s:1:"1";}}
