@@ -335,10 +335,6 @@ INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `co
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (15, 10, 'Number of images to display', '', 'md_pics_number', '', '', 1, 'album');
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (16, 10, 'Number of columns', '', 'md_pics_cols_number', '1,2,3,4,5', '1,2,3,4,5', 3, 'album');
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (17, 10, 'Number of rows', '', 'md_pics_rows_number', '1,2,3,4', '1,2,3,4', 3, 'album');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (18, 11, 'Links -> Style', 'choose static display or scrolling display', 'md_links_style', 'Scroll,Static', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (19, 11, 'Links -> Own (Top)', 'show your own link button above other buttons', 'md_links_own1', 'Yes,No', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (20, 11, 'Links -> Own (Bottom)', 'show your own link button below other buttons', 'md_links_own2', 'Yes,No', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (21, 11, 'Links -> Code', 'show HTML for your own link button', 'md_links_code', 'Yes,No', '1,0', 3, 'links');
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (22, 13, 'Maximum Words', 'Select the maximum number of words to display', 'md_wordgraph_words', '', '', 1, 'wordgraph');
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (23, 13, 'Enable Word Counts', 'Display the total number of words next to each word', 'md_wordgraph_count', 'Yes,No', '1,0', 3, 'wordgraph');
 
@@ -355,7 +351,6 @@ INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layou
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(8, 8, 0, 1, 0, 'Search', 'l', 1, 1, 1, 1, 1, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(9, 9, 0, 1, 0, 'Who is Online', 'r', 2, 1, 1, 1, 1, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(10, 10, 0, 1, 0, 'Album', 'l', 2, 1, 1, 1, 1, 1);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(11, 11, 0, 1, 0, 'Links', 'l', 4, 1, 1, 1, 1, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(12, 12, 0, 1, 0, 'Statistics', 'r', 3, 1, 1, 1, 1, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(13, 13, 0, 1, 0, 'Wordgraph', 'b', 2, 1, 0, 0, 0, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(14, 14, 0, 1, 0, 'Welcome', 'c', 2, 1, 1, 1, 1, 1);
@@ -380,10 +375,6 @@ INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALU
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (15, 10, 'md_pics_number', '3');
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (16, 10, 'md_pics_cols_number', '1');
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (17, 10, 'md_pics_rows_number', '3');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (18, 11, 'md_links_style', '0');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (19, 11, 'md_links_own1', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (20, 11, 'md_links_own2', '0');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (21, 11, 'md_links_code', '1');
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (22, 13, 'md_wordgraph_words', '250');
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (23, 13, 'md_wordgraph_count', '1');
 

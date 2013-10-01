@@ -46,6 +46,6 @@ $template->assign_vars(array(
 );
 
 $gen_simple_header = true;
-full_page_generation(LINKS_TPL_PATH . 'links_me.tpl', $lang['Link_ME'], '', '');
+full_page_generation($class_plugins->get_tpl_file(LINKS_TPL_PATH, 'links_me.tpl'), $lang['Link_ME'], '', '');
 
 ?>

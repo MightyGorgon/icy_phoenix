@@ -83,7 +83,7 @@ switch($t)
 		$tmp = 'links_index.tpl';
 }
 
-$template_to_parse = $tmp;
+$template_to_parse = $class_plugins->get_tpl_file(LINKS_TPL_PATH, $tmp);
 
 if($links_config['lock_submit_site'] == 0)
 {
@@ -552,6 +552,6 @@ $template->assign_vars(array(
 	)
 );
 
-full_page_generation(LINKS_TPL_PATH . $template_to_parse, $lang['Site_links'], '', '');
+full_page_generation($template_to_parse, $lang['Site_links'], '', '');
 
 ?>
