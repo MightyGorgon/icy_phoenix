@@ -4622,6 +4622,7 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.7.93 */
 		case '2.0.7.93':
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE config_key = 'index_links'";
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

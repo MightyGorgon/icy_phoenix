@@ -311,7 +311,6 @@ INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(8, 0, 'Search', '', 'search', 0, 1, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(9, 0, 'Who is Online', '', 'online_users', 0, 1, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(10, 0, 'Album', '', 'album', 0, 0, '', 1);
-INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(11, 0, 'Links', '', 'links', 0, 0, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(12, 0, 'Statistics', '', 'statistics', 0, 0, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(13, 0, 'Wordgraph', '', 'wordgraph', 0, 0, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(14, 0, 'Welcome', '<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">\r\n	<tr>\r\n		<td width="5%"><img src="images/icy_phoenix_small.png" alt="" /></td>\r\n		<td width="90%" align="center"><div class="post-text">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width="5%"><img src="images/icy_phoenix_small_l.png" alt="" /></td>\r\n	</tr>\r\n</table>', '', 0, 0, '', 1);
@@ -409,7 +408,6 @@ INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_b
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('rules', 'rules', 'rules.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('download', 'download', 'dload.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('album', 'album', 'album.php', 0, '', 0, '');
-INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('links', 'links', 'links.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, '', 0, '');
@@ -447,7 +445,6 @@ INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (19, 0, 1, 0, 1, 13, 1, 13, '', '', 'Drafts', 'Drafts', 'drafts.php', 0, 2, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (20, 0, 1, 0, 1, 14, 1, 14, '', '', 'Posted Images', 'Posted Images', 'images_list.php', 0, 2, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (21, 0, 1, 0, 1, 15, 1, 15, '', '', 'Chat', 'Chat', 'ajax_chat.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (22, 0, 1, 0, 1, 16, 1, 16, '', '', 'Links', 'Links', 'links.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (23, 0, 1, 0, 1, 17, 1, 17, '', '', 'Knowledge Base', 'Knowledge Base', 'kb.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (24, 0, 1, 0, 1, 18, 1, 18, '', '', 'Contact Us', 'Contact Us', 'contact_us.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (25, 0, 1, 0, 1, 19, 1, 19, '', '', 'Rules', 'Rules', 'rules.php', 0, 0, 0);
@@ -670,7 +667,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('online_shout
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('last_msgs_n', '5');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('last_msgs_x', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('posts_precompiled', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_links', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_birthday', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_history', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smilies_topic_title', '0');
@@ -1424,36 +1420,6 @@ INSERT INTO `phpbb_kb_types` (`id`, `type`) VALUES (1, 0x5465737420547970652031)
 
 ## `phpbb_kb_wordmatch`
 ##
-
-## `phpbb_link_categories`
-##
-INSERT INTO `phpbb_link_categories` (`cat_id`, `cat_title`, `cat_order`) VALUES (1, 'Arts', 1);
-INSERT INTO `phpbb_link_categories` (`cat_id`, `cat_title`, `cat_order`) VALUES (2, 'Business', 2);
-INSERT INTO `phpbb_link_categories` (`cat_id`, `cat_title`, `cat_order`) VALUES (3, 'Children and Teens', 3);
-INSERT INTO `phpbb_link_categories` (`cat_id`, `cat_title`, `cat_order`) VALUES (4, 'Computers', 4);
-INSERT INTO `phpbb_link_categories` (`cat_id`, `cat_title`, `cat_order`) VALUES (5, 'Games', 5);
-INSERT INTO `phpbb_link_categories` (`cat_id`, `cat_title`, `cat_order`) VALUES (6, 'Health', 6);
-INSERT INTO `phpbb_link_categories` (`cat_id`, `cat_title`, `cat_order`) VALUES (7, 'Home', 7);
-INSERT INTO `phpbb_link_categories` (`cat_id`, `cat_title`, `cat_order`) VALUES (8, 'News', 8);
-
-## `phpbb_link_config`
-##
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('width', '88');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('height', '31');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('linkspp', '10');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('display_interval', '6000');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('display_logo_num', '10');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('display_links_logo', '1');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('email_notify', '1');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('pm_notify', '0');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('lock_submit_site', '0');
-INSERT INTO `phpbb_link_config` (`config_name`, `config_value`) VALUES ('allow_no_logo', '0');
-
-## `phpbb_links`
-##
-INSERT INTO `phpbb_links` (`link_id`, `link_title`, `link_desc`, `link_category`, `link_url`, `link_logo_src`, `link_joined`, `link_active`, `link_hits`, `user_id`, `user_ip`, `last_user_ip`) VALUES (1, 'Icy Phoenix Official Website', 'Icy Phoenix', 4, 'http://www.icyphoenix.com/', 'images/links/banner_ip.gif', 1241136000, 1, 0, 2, '', '');
-INSERT INTO `phpbb_links` (`link_id`, `link_title`, `link_desc`, `link_category`, `link_url`, `link_logo_src`, `link_joined`, `link_active`, `link_hits`, `user_id`, `user_ip`, `last_user_ip`) VALUES (2, 'Mighty Gorgon Community', 'Mighty Gorgon Community', 4, 'http://www.mightygorgon.com/', 'images/links/banner_mightygorgon.gif', 1241136000, 1, 0, 2, '', '');
-INSERT INTO `phpbb_links` (`link_id`, `link_title`, `link_desc`, `link_category`, `link_url`, `link_logo_src`, `link_joined`, `link_active`, `link_hits`, `user_id`, `user_ip`, `last_user_ip`) VALUES (3, 'phpBB Official Website', 'Official phpBB Website', 4, 'http://www.phpbb.com/', 'images/links/banner_phpbb88a.gif', 1241136000, 1, 0, 2, '', '');
 
 ## `phpbb_liw_cache`
 ##

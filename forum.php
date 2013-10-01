@@ -223,15 +223,6 @@ else
 $link_self_img = '';
 $site_logo_height = '';
 $site_logo_width = '';
-if (!empty($config['index_links']))
-{
-	include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
-	$links_config = get_links_config(true);
-	$link_self_img = $links_config['site_logo'];
-	$site_logo_height = $links_config['height'];
-	$site_logo_width = $links_config['width'];
-	$template->assign_vars(array('S_LINKS' => true));
-}
 
 if ($config['site_history'] && ((time() - (int) $config['cron_site_history_last_run']) > ONLINE_REFRESH))
 {

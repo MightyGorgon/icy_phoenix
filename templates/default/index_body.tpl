@@ -150,31 +150,6 @@ if(GetCookie(tmp) == '2')
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 <!-- ENDIF -->
-
-<!-- IF S_LINKS -->
-<div id="links_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('links','links_h','links');" alt="{L_SHOW}" /><a href="{U_LINKS}" class="forumlink">{L_LINKS}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td>&nbsp;</td></tr>
-</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-</div>
-<div id="links">
-<script type="text/javascript">
-<!--
-tmp = 'links';
-if(GetCookie(tmp) == '2')
-{
-	ShowHide('links', 'links_h', 'links');
-}
-//-->
-</script>
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('links','links_h','links');" alt="{L_HIDE}" /><a href="{U_LINKS}" class="forumlink">{L_LINKS}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr>
-	<td class="row1g" nowrap="nowrap" width="100%"><iframe marginwidth="0" marginheight="0" src="{U_LINKS_JS}" frameborder="0" scrolling="no" width="100%" height="{SITE_LOGO_HEIGHT}"></iframe></td>
-	<td class="row1g" nowrap="nowrap" width="100"><a href="javascript:links_me()"><img src="{U_SITE_LOGO}" alt="{SITENAME}" width="{SITE_LOGO_WIDTH}" height="{SITE_LOGO_HEIGHT}" /></a></td>
-</tr>
-</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-</div>
-<!-- ENDIF -->
 <!-- ENDIF -->
 
 <br />
