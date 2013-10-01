@@ -22,7 +22,12 @@ define('IN_ICYPHOENIX', true);
 // Admin Panel
 if(!empty($setmodules))
 {
-	$filename = basename(__FILE__);
+	if (empty($config['plugins']['links']['enabled']))
+	{
+		return;
+	}
+
+	$filename = IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['links']['dir'] . ADM . '/' . basename(__FILE__);
 	$module['2100_Links']['120_Add_new'] = $filename . '?mode=add';
 	$module['2100_Links']['130_Link_Manage'] = $filename . '?mode=view';
 
@@ -33,6 +38,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../../../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require(IP_ROOT_PATH . 'adm/pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['links']['dir'] . 'common.' . PHP_EXT);
 
 // Check link_id
 $link_id = request_var('link_id', '');
@@ -40,7 +46,7 @@ $mode = request_var('mode', '');
 $action = request_var('action', '');
 
 // Set template
-$template->set_filenames(array('body' => ($mode == 'view' ? ADM_TPL . 'admin_links_body.tpl' : ADM_TPL . 'admin_links_edit_body.tpl')));
+$template->set_filenames(array('body' => LINKS_ADM_TPL_PATH . ($mode == 'view' ? 'admin_links_body.tpl' : 'admin_links_edit_body.tpl')));
 
 // Grab link categories
 $sql = "SELECT cat_id, cat_title FROM " . LINK_CATEGORIES_TABLE . " ORDER BY cat_order";

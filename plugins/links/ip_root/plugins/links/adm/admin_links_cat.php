@@ -21,8 +21,13 @@ define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
-	$file = basename(__FILE__);
-	$module['2100_Links']['110_Category'] = "$file";
+	if (empty($config['plugins']['links']['enabled']))
+	{
+		return;
+	}
+
+	$filename = IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['links']['dir'] . ADM . '/' . basename(__FILE__);
+	$module['2100_Links']['110_Category'] = $filename;
 	return;
 }
 
@@ -30,6 +35,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../../../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require(IP_ROOT_PATH . 'adm/pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['links']['dir'] . 'common.' . PHP_EXT);
 
 // This function will sort the order of all categories
 if(!function_exists('links_reorder_cat'))
@@ -64,7 +70,7 @@ if(empty($mode))
 {
 	if(empty($action))
 	{
-		$template->set_filenames(array('body' => ADM_TPL . 'admin_link_cat_body.tpl'));
+		$template->set_filenames(array('body' => LINKS_ADM_TPL_PATH . 'admin_link_cat_body.tpl'));
 
 		$template->assign_vars(array(
 			'L_LINK_CAT_TITLE' => $lang['Link_Categories_Title'],
@@ -124,7 +130,7 @@ if(empty($mode))
 			}
 			$catrow = $db->sql_fetchrow($result);
 
-			$template->set_filenames(array('body' => ADM_TPL . 'admin_link_cat_new_body.tpl'));
+			$template->set_filenames(array('body' => LINKS_ADM_TPL_PATH . 'admin_link_cat_new_body.tpl'));
 
 			$template->assign_vars(array(
 				'L_LINK_CAT_TITLE' => $lang['Link_Categories_Title'],
@@ -177,7 +183,7 @@ if(empty($mode))
 			}
 			$select_to .= '</select>';
 
-			$template->set_filenames(array('body' => ADM_TPL . 'admin_link_cat_delete_body.tpl'));
+			$template->set_filenames(array('body' => LINKS_ADM_TPL_PATH . 'admin_link_cat_delete_body.tpl'));
 
 			$template->assign_vars(array(
 				'S_LINK_ACTION' => append_sid('admin_links_cat.' . PHP_EXT . '?cat_id=' . $cat_id),
@@ -218,7 +224,7 @@ else
 	{
 		if(!isset($_POST['cat_title']))
 		{
-			$template->set_filenames(array('body' => ADM_TPL . 'admin_link_cat_new_body.tpl'));
+			$template->set_filenames(array('body' => LINKS_ADM_TPL_PATH . 'admin_link_cat_new_body.tpl'));
 
 			$template->assign_vars(array(
 				'L_LINK_CAT_TITLE' => $lang['Link_Categories_Title'],

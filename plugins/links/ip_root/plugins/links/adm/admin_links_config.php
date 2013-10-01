@@ -21,7 +21,12 @@ define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
-	$filename = basename(__FILE__);
+	if (empty($config['plugins']['links']['enabled']))
+	{
+		return;
+	}
+
+	$filename = IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['links']['dir'] . ADM . '/' . basename(__FILE__);
 	$module['2100_Links']['100_Configuration'] = $filename;
 	return;
 }
@@ -30,8 +35,8 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../../../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require(IP_ROOT_PATH . 'adm/pagestart.' . PHP_EXT);
+include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['links']['dir'] . 'common.' . PHP_EXT);
 
-include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
 $links_config = get_links_config(true);
 
 foreach ($links_config as $config_name => $config_value)
@@ -53,7 +58,7 @@ if(isset($_POST['submit']))
 	message_die(GENERAL_MESSAGE, $message);
 }
 
-$template->set_filenames(array('body' => ADM_TPL . 'admin_link_config_body.tpl'));
+$template->set_filenames(array('body' => LINKS_ADM_TPL_PATH . 'admin_link_config_body.tpl'));
 
 $lock_submit_site_yes = ($new['lock_submit_site']) ? 'checked="checked"' : '';
 $lock_submit_site_no = (!$new['lock_submit_site']) ? 'checked="checked"' : '';
