@@ -29,7 +29,6 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 $plugin_name = 'blogs';
-$cms_page['page_id'] = 'blog';
 
 if (empty($config['plugins'][$plugin_name]['enabled']) || empty($config['plugins'][$plugin_name]['dir']))
 {
