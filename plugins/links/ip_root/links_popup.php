@@ -31,7 +31,7 @@ if (empty($config['plugins'][$plugin_name]['enabled']) || empty($config['plugins
 {
 	message_die(GENERAL_MESSAGE, 'PLUGIN_DISABLED');
 }
-include(IP_ROOT_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT);
 
 $links_config = get_links_config(true);
 

@@ -27,7 +27,8 @@ if(!function_exists('cms_block_links'))
 		global $db, $config, $template, $lang, $block_id, $cms_config_vars;
 		global $links_config;
 
-		if (empty($config['plugins']['links']['enabled']))
+		$plugin_name = 'links';
+		if (empty($config['plugins'][$plugin_name]['enabled']))
 		{
 			return;
 		}

@@ -13,9 +13,10 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('LINKS_ROOT_PATH', IP_ROOT_PATH . $config['plugins'][$plugin_name]['dir']);
-define('LINKS_TPL_PATH', '../../' . LINKS_ROOT_PATH . 'templates/');
-define('LINKS_ADM_TPL_PATH', '../../' . LINKS_ROOT_PATH . 'adm/templates/');
+define('LINKS_PLUGIN_PATH', PLUGINS_PATH . $config['plugins'][$plugin_name]['dir']);
+define('LINKS_ROOT_PATH', IP_ROOT_PATH . LINKS_PLUGIN_PATH);
+define('LINKS_TPL_PATH', '../../' . LINKS_PLUGIN_PATH . 'templates/');
+define('LINKS_ADM_TPL_PATH', '../../' . LINKS_PLUGIN_PATH . 'adm/templates/');
 
 $cms_page['page_id'] = $plugin_name;
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);

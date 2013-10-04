@@ -47,6 +47,8 @@ $install_data = array(
 			);",
 
 			// basic
+			"INSERT INTO `" . $table_prefix . "link_config` (`config_name`, `config_value`) VALUES ('display_logo_num', 5);"
+
 			"INSERT INTO `" . $table_prefix . "cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(11, 0, 'Links', '', 'links', 0, 0, '', 1);",
 
 			"INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('links', 'links', 'links.php', 0, '', 0, '');",
@@ -84,7 +86,7 @@ $uninstall_data = array(
 			" . $table_prefix . "cms_block_settings WHERE blockfile = 'links'
 		);",
 
-		"DELETE FROM " . $table_prefix . "cms_block_variable WHERE block = 'links';"
+		"DELETE FROM " . $table_prefix . "cms_block_variable WHERE block = 'links';",
 
 		"DELETE FROM " . $table_prefix . "cms_block_settings WHERE blockfile = 'links';",
 

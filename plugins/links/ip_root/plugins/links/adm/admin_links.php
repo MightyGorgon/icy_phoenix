@@ -19,15 +19,15 @@
 
 define('IN_ICYPHOENIX', true);
 
-// Admin Panel
+$plugin_name = 'links';
 if(!empty($setmodules))
 {
-	if (empty($config['plugins']['links']['enabled']))
+	if (empty($config['plugins'][$plugin_name]['enabled']))
 	{
 		return;
 	}
 
-	$filename = IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['links']['dir'] . ADM . '/' . basename(__FILE__);
+	$filename = IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . ADM . '/' . basename(__FILE__);
 	$module['2100_Links']['120_Add_new'] = $filename . '?mode=add';
 	$module['2100_Links']['130_Link_Manage'] = $filename . '?mode=view';
 
@@ -38,7 +38,7 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../../../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require(IP_ROOT_PATH . 'adm/pagestart.' . PHP_EXT);
-include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['links']['dir'] . 'common.' . PHP_EXT);
+include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT);
 
 // Check link_id
 $link_id = request_var('link_id', '');
@@ -302,6 +302,6 @@ switch ($mode)
 $template->pparse('body');
 
 // Page Footer
-include('page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . 'page_footer_admin.' . PHP_EXT);
 
 ?>
