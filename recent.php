@@ -41,7 +41,7 @@ $set_mode = 'last24'; // set default mode ('today', 'yesterday', 'last24', 'last
 $set_days = '7'; // set default days (used for lastXdays mode)
 // ############         Edit above         ########################################
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if($user->data['upi2db_access'])
 {
 	if (!defined('UPI2DB_UNREAD'))
@@ -53,7 +53,7 @@ if($user->data['upi2db_access'])
 	$count_always_read = sizeof($user->data['upi2db_unread']['always_read']['topics']);
 	$count_mark_unread = sizeof($user->data['upi2db_unread']['mark_posts']);
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 $cms_page['page_id'] = 'recent';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);

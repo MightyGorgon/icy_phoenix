@@ -223,22 +223,16 @@ function groups_select($select_name, $default, $allow_empty = true)
 {
 	global $db, $cache, $lang;
 
-	$sql = "SELECT group_id, group_name, group_color
-		FROM " . GROUPS_TABLE . "
-		WHERE group_single_user <> 1
-		ORDER BY group_name ASC";
-	$result = $db->sql_query($sql, 0, 'groups_', USERS_CACHE_FOLDER);
-	$groups = $db->sql_fetchrowset($result);
-	$db->sql_freeresult($result);
+	$groups_data = get_groups_data(true, false, array());
 
 	$groups_select = '<select name="' . $select_name . '">';
 	$groups_select .= (!empty($allow_empty) ? '<option value="0">' . $lang['None'] . '</option>' : '');
-	for($j = 0; $j < sizeof($groups); $j++)
+	foreach ($groups_data as $group_data)
 	{
-		$group_color = check_valid_color($groups[$j]['group_color']);
+		$group_color = check_valid_color($group_data['group_color']);
 		$group_color = (!empty($group_color) ? ' style="color: ' . $group_color . '; font-weight: bold;"' : '');
-		$selected = ($groups[$j]['group_id'] == $default) ? ' selected="selected"' : '';
-		$groups_select .= '<option value="' . $groups[$j]['group_id'] . '"' . $selected . $group_color . '>' . htmlspecialchars($groups[$j]['group_name']) . '</option>';
+		$selected = ($group_data['group_id'] == $default) ? ' selected="selected"' : '';
+		$groups_select .= '<option value="' . $group_data['group_id'] . '"' . $selected . $group_color . '>' . htmlspecialchars($group_data['group_name']) . '</option>';
 	}
 	$groups_select .= '</select>';
 

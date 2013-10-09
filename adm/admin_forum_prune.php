@@ -84,10 +84,13 @@ if(isset($_POST['doprune']))
 
 	$template->set_filenames(array('body' => ADM_TPL . 'forum_prune_result_body.tpl'));
 
+	if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+	if (empty($class_mcp)) $class_mcp = new class_mcp();
+
 	for($i = 0; $i < sizeof($forum_rows); $i++)
 	{
 		$p_result = prune($forum_rows[$i]['forum_id'], $prunedate);
-		sync('forum', $forum_rows[$i]['forum_id']);
+		$class_mcp->sync('forum', $forum_rows[$i]['forum_id']);
 
 		$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 

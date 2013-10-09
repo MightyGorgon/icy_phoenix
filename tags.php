@@ -127,7 +127,7 @@ if ($mode == 'view')
 
 	$topic_length = 60;
 
-	//<!-- BEGIN Unread Post Information to Database Mod -->
+	// UPI2DB - BEGIN
 	if($user->data['upi2db_access'])
 	{
 		if (!defined('UPI2DB_UNREAD'))
@@ -139,7 +139,7 @@ if ($mode == 'view')
 		$count_always_read = sizeof($user->data['upi2db_unread']['always_read']['topics']);
 		$count_mark_unread = sizeof($user->data['upi2db_unread']['mark_posts']);
 	}
-	//<!-- END Unread Post Information to Database Mod -->
+	// UPI2DB - END
 
 	// MG User Replied - BEGIN
 	// check if user replied to the topic

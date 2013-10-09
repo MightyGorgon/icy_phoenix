@@ -275,14 +275,13 @@ if($mode == 'menu_item')
 				}
 
 				//$mi_auth_view_group = $m_info['auth_view_group'];
-				$sql = "SELECT group_id, group_name FROM " . GROUPS_TABLE . " WHERE group_single_user = 0 ORDER BY group_id";
-				$result = $db->sql_query($sql);
 				$group_array = explode(",", $m_info['auth_view_group']);
 				$mi_auth_view_group = '';
-				while ($row = $db->sql_fetchrow($result))
+				$groups_data = get_groups_data(false, false, array());
+				foreach ($groups_data as $group_data)
 				{
-					$checked = (in_array($row['group_id'], $group_array)) ? 'checked="checked"' : '';
-					$mi_auth_view_group .= '<input type="checkbox" name="group' . strval($row['group_id']) . '" ' . $checked . ' />' . $row['group_name'] . '&nbsp;<br />';
+					$checked = (in_array($group_data['group_id'], $group_array)) ? 'checked="checked"' : '';
+					$mi_auth_view_group .= '<input type="checkbox" name="group' . strval($group_data['group_id']) . '" ' . $checked . ' />' . $group_data['group_name'] . '&nbsp;<br />';
 				}
 				if(empty($mi_auth_view_group))
 				{
@@ -372,12 +371,11 @@ if($mode == 'menu_item')
 			}
 
 			//$mi_auth_view_group = $m_info['auth_view_group'];
-			$sql = "SELECT group_id, group_name FROM " . GROUPS_TABLE . " WHERE group_single_user = 0 ORDER BY group_id";
-			$result = $db->sql_query($sql);
 			$mi_auth_view_group = '';
-			while ($row = $db->sql_fetchrow($result))
+			$groups_data = get_groups_data(false, false, array());
+			foreach ($groups_data as $group_data)
 			{
-				$mi_auth_view_group .= '<input type="checkbox" name="group' . strval($row['group_id']) . '" />' . $row['group_name'] . '&nbsp;<br />';
+				$mi_auth_view_group .= '<input type="checkbox" name="group' . strval($group_data['group_id']) . '" />' . $group_data['group_name'] . '&nbsp;<br />';
 			}
 			if(empty($mi_auth_view_group))
 			{

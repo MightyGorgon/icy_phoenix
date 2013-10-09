@@ -852,6 +852,68 @@ function get_founder_id($clear_cache = false)
 }
 
 /*
+* Get groups data
+*/
+function get_groups_data($full_data = false, $sort_by_name = false, $sql_groups = array())
+{
+	global $db, $cache, $config;
+
+	$groups_data = array();
+	$sql_select = !empty($full_data) ? '*' : 'g.group_id, g.group_name, g.group_color, g.group_legend, g.group_legend_order';
+	$sql_where = '';
+	if (!empty($sql_groups))
+	{
+		if (!is_array($sql_groups))
+		{
+			$sql_groups = array($sql_groups);
+		}
+		$sql_where = !empty($sql_groups) ? (' AND ' . $db->sql_in_set('g.group_id', $sql_groups)) : '';
+	}
+	$sql_sort = !empty($sort_by_name) ? ' ORDER BY g.group_name ASC' : ' ORDER BY g.group_legend DESC, g.group_legend_order ASC, g.group_name ASC';
+	$sql = "SELECT " . $sql_select . "
+		FROM " . GROUPS_TABLE . " g
+		WHERE g.group_single_user = 0" .
+		$sql_where .
+		$sql_sort;
+	$result = $db->sql_query($sql, 0, 'groups_', USERS_CACHE_FOLDER);
+	$groups_data = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	return $groups_data;
+}
+
+/*
+* Get groups data for a specific user
+*/
+function get_groups_data_user($user_id, $full_data = false, $sort_by_name = false, $sql_groups = array())
+{
+	global $db, $cache, $config;
+
+	$groups_data = array();
+	$sql_select = !empty($full_data) ? 'g.*, ug.*' : 'g.group_id, g.group_name, g.group_color, g.group_legend, g.group_legend_order, ug.user_pending';
+	$sql_where = '';
+	if (!empty($sql_groups))
+	{
+		if (!is_array($sql_groups))
+		{
+			$sql_groups = array($sql_groups);
+		}
+		$sql_where = !empty($sql_groups) ? (' AND ' . $db->sql_in_set('g.group_id', $sql_groups)) : '';
+	}
+	$sql = "SELECT " . $sql_select . "
+		FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug " . "
+		WHERE g.group_single_user = 0" .
+		$sql_where . "
+		AND g.group_id = ug.group_id
+		AND ug.user_id = " . (int) $user_id;
+	$result = $db->sql_query($sql, 0, 'groups_', USERS_CACHE_FOLDER);
+	$groups_data = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	return $groups_data;
+}
+
+/*
 * Founder protection
 */
 function founder_protect($founder_id)
@@ -4684,7 +4746,7 @@ function page_header($title = '', $parse_template = false)
 
 	if (!defined('IN_CMS'))
 	{
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 		$upi2db_first_use = '';
 		$u_display_new = array();
 		if($user->data['upi2db_access'])
@@ -4700,7 +4762,7 @@ function page_header($title = '', $parse_template = false)
 				$template->assign_block_vars('switch_upi2db_off', array());
 			}
 		}
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 
 		// Digests - BEGIN
 		if (!empty($config['cron_digests_interval']) && ($config['cron_digests_interval'] > 0))
@@ -4934,7 +4996,7 @@ function page_header($title = '', $parse_template = false)
 			'L_NEW2' => (empty($lang['NEW_POSTS_SHORT']) ? $lang['New_Label'] : $lang['NEW_POSTS_SHORT']),
 			'L_NEW3' => (empty($lang['NEW_POSTS_LONG']) ? $lang['New_Messages_Label'] : $lang['NEW_POSTS_LONG']),
 			'L_POSTS' => $lang['Posts'],
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 			'L_DISPLAY_ALL' => (!empty($u_display_new) ? $u_display_new['all'] : ''),
 			'L_DISPLAY_U' => (!empty($u_display_new) ? $u_display_new['u'] : ''),
 			'L_DISPLAY_M' => (!empty($u_display_new) ? $u_display_new['m'] : ''),
@@ -4952,7 +5014,7 @@ function page_header($title = '', $parse_template = false)
 			'U_DISPLAY_U' => (!empty($u_display_new) ? $u_display_new['u_url'] : ''),
 			'U_DISPLAY_M' => (!empty($u_display_new) ? $u_display_new['m_url'] : ''),
 			'U_DISPLAY_P' => (!empty($u_display_new) ? $u_display_new['p_url'] : ''),
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 			'L_SEARCH_UNANSWERED' => $lang['Search_unanswered'],
 			'L_SEARCH_SELF' => $lang['Search_your_posts'],
 			'L_RECENT' => $lang['Recent_topics'],
@@ -5061,9 +5123,9 @@ function page_header($title = '', $parse_template = false)
 		'U_LOGIN_LOGOUT' => append_sid(IP_ROOT_PATH . $u_login_logout),
 		'USER_USERNAME' => $user->data['session_logged_in'] ? htmlspecialchars($user->data['username']) : $lang['Guest'],
 
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 		'UPI2DB_FIRST_USE' => $upi2db_first_use,
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 
 		'L_PAGE_TITLE' => $meta_content['page_title_clean'],
 		'PAGE_TITLE' => ($config['page_title_simple'] ? $meta_content['page_title_clean'] : $meta_content['page_title']),

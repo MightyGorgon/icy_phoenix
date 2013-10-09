@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.0.5.91');
+define('ICYPHOENIX_VERSION', '2.0.7.93');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -588,11 +588,11 @@ define('iNA_GAMES', $table_prefix . 'ina_games');
 define('iNA_SCORES', $table_prefix . 'ina_scores');
 // Activity - END
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 define('UPI2DB_ALWAYS_READ_TABLE', $table_prefix . 'upi2db_always_read');
 define('UPI2DB_LAST_POSTS_TABLE', $table_prefix . 'upi2db_last_posts');
 define('UPI2DB_UNREAD_POSTS_TABLE', $table_prefix . 'upi2db_unread_posts');
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 // DOWNLOADS - BEGIN
 define('DOWNLOADS_TABLE', $table_prefix . 'downloads');

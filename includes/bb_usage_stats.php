@@ -262,7 +262,8 @@ if (!empty($show_extra_stats) && $view_bb_usage_allowed)
 			}
 		}
 
-		$u_scale = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
+		$u_scale = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;stats=1');
+
 
 		/* Either post rate, topic rate, or both must be scalable by the viewer
 		 * for the scaling row to be visible

@@ -14,6 +14,9 @@ if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
+if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+if (empty($class_mcp)) $class_mcp = new class_mcp();
+
 // Start session management
 $user->session_begin();
 $auth->acl($user->data);
@@ -70,11 +73,11 @@ if ($submit)
 	$dst_sec = get_dst($edit_post_time, $config['board_timezone']);
 	$edit_post_time = $edit_post_time - (3600 * $config['board_timezone']) - $dst_sec;
 
-	$time_changed = change_post_time($post_id, $edit_post_time);
+	$time_changed = $class_mcp->post_change_time($post_id, $edit_post_time);
 
 	if (!empty($new_poster))
 	{
-		$poster_changed = change_poster_id($post_id, $new_poster);
+		$poster_changed = $class_mcp->post_change_poster($post_id, $new_poster);
 	}
 
 	if (!empty($post_id))
@@ -84,7 +87,7 @@ if ($submit)
 		$post_data = $db->sql_fetchrow($result);
 		if (!empty($post_data['forum_id']) && !empty($post_data['topic_id']))
 		{
-			sync_topic_details($post_data['topic_id'], $post_data['forum_id'], false, false);
+			$class_mcp->sync_topic_details($post_data['topic_id'], $post_data['forum_id'], false, false);
 		}
 	}
 

@@ -2232,7 +2232,7 @@ class bbcode
 
 					$width = in_array($width, $width_array) ? $width : 640;
 					$height = in_array($height, $height_array) ? $height : 385;
-					$video_link = '<br /><a href="http://youtube.com/watch?v=' . $video_file . $color_append . '" target="_blank">Link</a><br />';
+					$video_link = '<br /><a href="http://youtube.com/watch?v=' . $video_file . $color_append . '" target="_blank">YouTube Link</a><br />';
 					// OLD OBJECT Version
 					//$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $video_file . $color_append . '" /><embed src="http://www.youtube.com/v/' . $video_file . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object>' . $video_link;
 					// IFRAME Version
@@ -4016,6 +4016,21 @@ class bbcode
 			$text = preg_replace('#</?' . $tag . '[^>]*>' . $content . '#is', '', $text);
 		}
 
+		return $text;
+	}
+
+	/*
+	* Undo HTML special chars
+	*/
+	function html2txt($text)
+	{
+		$search = array(
+			'@<script[^>]*?>.*?</script>@si',  // Strip out javascript
+			'@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
+			'@<style[^>]*?>.*?</style>@siU',    // Strip style tags properly
+			'@<![\s\S]*?--[ \t\n\r]*>@'         // Strip multi-line comments including CDATA
+		);
+		$text = preg_replace($search, '', $text);
 		return $text;
 	}
 

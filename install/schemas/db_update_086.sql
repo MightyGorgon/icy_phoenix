@@ -58,12 +58,41 @@ ALTER TABLE `phpbb_users` CHANGE COLUMN `user_ip` `user_ip` VARCHAR(40) DEFAULT 
 
 
 
+########################################
+##              BUILD 091             ##
+########################################
+
+
+
+########################################
+##              BUILD 092             ##
+########################################
+##ALTER TABLE `phpbb_topics` ADD `topic_trashed` TINYINT(1) NOT NULL DEFAULT '0' AFTER `topic_status`;
+##ALTER TABLE `phpbb_topics` ADD `topic_approved` TINYINT(1) NOT NULL DEFAULT '0' AFTER `topic_status`;
+ALTER TABLE `phpbb_posts` ADD `post_locked` TINYINT(1) NOT NULL DEFAULT '0' AFTER `post_bluecard`;
+##ALTER TABLE `phpbb_posts` ADD `post_trashed` TINYINT(1) NOT NULL DEFAULT '0' AFTER `post_locked`;
+##ALTER TABLE `phpbb_posts` ADD `post_approved` TINYINT(1) NOT NULL DEFAULT '0' AFTER `post_bluecard`;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('user_allow_pm_register', '1');
+
+
+
+########################################
+##              BUILD 093             ##
+########################################
+## EDITS ON GROUPS SUSPENDED
+##ALTER TABLE `phpbb_groups` DROP `group_single_user`;
+##ALTER TABLE `phpbb_auth_access` ADD `group_id` MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER `group_id`;
+##ALTER TABLE `phpbb_users` ADD `user_groups_ids` MEDIUMTEXT NOT NULL AFTER `user_mask`;
+##ALTER TABLE `phpbb_users` ADD `user_groups_refresh` TINYINT(1) DEFAULT '0' AFTER `user_groups_ids`;
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.5.91' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.7.93' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

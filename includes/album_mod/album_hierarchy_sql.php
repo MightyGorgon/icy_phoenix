@@ -892,7 +892,7 @@ function album_get_moderator_info($cat)
 	// We have usergroup_ID, now we need usergroup name
 	$sql = "SELECT group_id, group_name
 		FROM " . GROUPS_TABLE . "
-		WHERE group_single_user <> 1
+		WHERE group_single_user = 0
 			AND group_type <> " . GROUP_HIDDEN . "
 			AND group_id IN (" . $cat['cat_moderator_groups'] . ")
 		ORDER BY group_name ASC";

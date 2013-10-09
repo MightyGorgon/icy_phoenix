@@ -214,6 +214,10 @@ if ($lang_extend_admin)
 		'IP_show_random_quote' => 'Random Quotes :: Forum Index',
 		'IP_show_random_quote_explain' => 'Enabling this option will enable random quotes to be shown on <b>Forum Index</b>',
 
+// TAB - Users
+		'IP_user_allow_pm_register' => 'Enable PM (Private Messages) for new users',
+		'IP_user_allow_pm_register_explain' => 'Enabling this option will enable PM for new registered users. If disabled, new users will not be able to send PM unless an admin enables the option for the specific user.',
+
 // Spam Section
 		'IP_spam_measures_header' => 'Spam Measures',
 

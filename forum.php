@@ -34,7 +34,7 @@ if (!empty($config['plugins']['activity']['enabled']))
 }
 // Activity - END
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 $mark_always_read = request_var('always_read', '');
 $mark_forum_id = request_var('forum_id', 0);
 
@@ -57,7 +57,7 @@ if($user->data['upi2db_access'])
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 $cms_page['page_id'] = 'forum';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
@@ -88,7 +88,7 @@ if($mark_read == 'forums')
 	{
 		if($user->data['session_logged_in'] && !$user->data['is_bot'])
 		{
-			//<!-- BEGIN Unread Post Information to Database Mod -->
+			// UPI2DB - BEGIN
 			if(!$user->data['upi2db_access'])
 			{
 				$user->set_cookie('f_all', time(), $user->cookie_expire);
@@ -97,7 +97,7 @@ if($mark_read == 'forums')
 			{
 				marking_posts();
 			}
-			//<!-- END Unread Post Information to Database Mod -->
+			// UPI2DB - END
 		}
 
 		$redirect_url = append_sid(CMS_PAGE_FORUM);
@@ -309,9 +309,9 @@ $template->assign_vars(array(
 	'FORUM_NEW_CAT_IMG' => $images['forum_sub_unread'],
 	'FORUM_LOCKED_IMG' => $images['forum_nor_locked_read'],
 	'FORUM_LINK_IMG' => $images['forum_link'],
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'FOLDER_AR_BIG' => $images['forum_nor_ar'],
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	// Start add - Fully integrated shoutbox MOD
 	'U_SHOUTBOX' => append_sid('shoutbox.' . PHP_EXT),
 	'L_SHOUTBOX' => $lang['Shoutbox'],
@@ -362,10 +362,10 @@ $template->assign_vars(array(
 	'L_MODERATOR' => $lang['Moderators'],
 	'L_FORUM_LOCKED' => $lang['Forum_is_locked'],
 	'L_MARK_FORUMS_READ' => $lang['Mark_all_forums'],
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'L_AR_POSTS' => $lang['always_read_icon'],
 	'L_FORUM_AR' => $lang['always_read_icon'],
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	'U_MARK_READ' => append_sid(CMS_PAGE_FORUM . '?mark=forums' . $mark)
 	)
 );

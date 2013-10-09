@@ -741,6 +741,7 @@ $lang = array_merge($lang, array(
 	'Wrong_next_birthday_greeting' => 'The supplied, next birthday popup year, was not valid, please try again',
 	'Max_user_age' => 'Maximum user age',
 	'Min_user_age' => 'Minimum user age',
+	'Min_user_age_explain' => 'This is the minimum age a user can set in his profile',
 	'Birthday_lookforward' => 'Birthday look forward',
 	'Birthday_lookforward_explain' => 'Number of days the script should look forward to for users with a birthday',
 // BIRTHDAY - END

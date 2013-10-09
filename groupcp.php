@@ -1139,66 +1139,71 @@ else
 	if ($user->data['session_logged_in'])
 	{
 		$in_group = array();
+		$in_groups_data = array();
 
 		$sql = "SELECT g.group_id, g.group_name, g.group_description, g.group_type, g.group_color, ug.user_pending
 			FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
 			WHERE ug.user_id = " . $user->data['user_id'] . "
 				AND ug.group_id = g.group_id
-				AND g.group_single_user <> " . true . "
-				AND ug.user_pending = '0'
+				AND g.group_single_user = '0'
 			ORDER BY g.group_name, ug.user_id";
 		$result = $db->sql_query($sql);
+		$in_groups_data = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+
+		$in_groups_joined = array();
+		$in_groups_pending = array();
+		foreach ($in_groups_data as $in_group_data)
+		{
+			if (!empty($in_group_data['user_pending']))
+			{
+				$in_groups_pending[] = $in_group_data;
+			}
+			else
+			{
+				$in_groups_joined[] = $in_group_data;
+			}
+		}
 
 		$s_member_groups_opt = '';
-		if ($row = $db->sql_fetchrow($result))
+		if (!empty($in_groups_joined))
 		{
 			$template->assign_block_vars('switch_groups_joined', array());
-			do
+			foreach ($in_groups_joined as $in_group_joined)
 			{
-				$in_group[] = $row['group_id'];
-				$s_member_groups_opt .= '<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
-				$group_color = check_valid_color($row['group_color']) ? check_valid_color($row['group_color']) : false;
+				$in_group[] = $in_group_joined['group_id'];
+				$s_member_groups_opt .= '<option value="' . $in_group_joined['group_id'] . '">' . $in_group_joined['group_name'] . '</option>';
+				$group_color = check_valid_color($in_group_joined['group_color']) ? check_valid_color($in_group_joined['group_color']) : false;
 				$template->assign_block_vars('switch_groups_joined.mg_row', array(
-					'GROUP_ID' => $row['group_id'],
-					'GROUP_NAME' => $row['group_name'],
-					'GROUP_DES' => $row['group_description'],
-					'GROUP_URL' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']),
-					'GROUP_COLOR_STYLE' => ($group_color ? ' style="color:' . $group_color . ';font-weight:bold;text-decoration:none;"' : ' style="font-weight:bold;text-decoration:none;"'),
+					'GROUP_ID' => $in_group_joined['group_id'],
+					'GROUP_NAME' => $in_group_joined['group_name'],
+					'GROUP_DES' => $in_group_joined['group_description'],
+					'GROUP_URL' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $in_group_joined['group_id']),
+					'GROUP_COLOR_STYLE' => ' style="' . ($group_color ? ('color: ' . $group_color . '; ') : '') . 'font-weight: bold; text-decoration: none;"',
 					)
 				);
 			}
-			while($row = $db->sql_fetchrow($result));
 			$s_member_groups = '<select name="' . POST_GROUPS_URL . '">' . $s_member_groups_opt . '</select>';
 		}
 
-		$sql = "SELECT g.group_id, g.group_name, g.group_description, g.group_type, g.group_color, ug.user_pending
-			FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
-			WHERE ug.user_id = " . $user->data['user_id'] . "
-				AND ug.group_id = g.group_id
-				AND g.group_single_user <> " . true . "
-				AND ug.user_pending = '1'
-			ORDER BY g.group_name, ug.user_id";
-		$result = $db->sql_query($sql);
-
 		$s_pending_groups_opt = '';
-		if ($row = $db->sql_fetchrow($result))
+		if (!empty($in_groups_pending))
 		{
 			$template->assign_block_vars('switch_groups_pending', array());
-			do
+			foreach ($in_groups_pending as $in_group_pending)
 			{
-				$in_group[] = $row['group_id'];
-				$s_pending_groups_opt .= '<option value="' . $row['group_id'] . '">' . $row['group_name'] . '</option>';
-				$group_color = check_valid_color($row['group_color']) ? check_valid_color($row['group_color']) : false;
+				$in_group[] = $in_group_pending['group_id'];
+				$s_member_groups_opt .= '<option value="' . $in_group_pending['group_id'] . '">' . $in_group_pending['group_name'] . '</option>';
+				$group_color = check_valid_color($in_group_pending['group_color']) ? check_valid_color($in_group_pending['group_color']) : false;
 				$template->assign_block_vars('switch_groups_pending.pg_row', array(
-					'GROUP_ID' => $row['group_id'],
-					'GROUP_NAME' => $row['group_name'],
-					'GROUP_DES' => $row['group_description'],
-					'GROUP_URL' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']),
-					'GROUP_COLOR_STYLE' => ($group_color ? ' style="color:' . $group_color . ';font-weight:bold;text-decoration:none;"' : ' style="font-weight:bold;text-decoration:none;"'),
+					'GROUP_ID' => $in_group_pending['group_id'],
+					'GROUP_NAME' => $in_group_pending['group_name'],
+					'GROUP_DES' => $in_group_pending['group_description'],
+					'GROUP_URL' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $in_group_pending['group_id']),
+					'GROUP_COLOR_STYLE' => ' style="' . ($group_color ? ('color: ' . $group_color . '; ') : '') . 'font-weight: bold; text-decoration: none;"',
 					)
 				);
 			}
-			while($row = $db->sql_fetchrow($result));
 			$s_pending_groups = '<select name="' . POST_GROUPS_URL . '">' . $s_pending_groups_opt . '</select>';
 		}
 	}
@@ -1207,7 +1212,7 @@ else
 	$ignore_group_sql = (sizeof($in_group)) ? "AND group_id NOT IN (" . implode(', ', $in_group) . ")" : '';
 	$sql = "SELECT g.group_id, g.group_name, g.group_description, g.group_type, g.group_color, g.group_count, g.group_count_max
 		FROM " . GROUPS_TABLE . " g
-		WHERE group_single_user <> " . true . "
+		WHERE group_single_user = '0'
 			$ignore_group_sql
 		ORDER BY g.group_name";
 	$result = $db->sql_query($sql);

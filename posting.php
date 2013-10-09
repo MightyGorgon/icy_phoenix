@@ -449,6 +449,19 @@ if ($result && $post_info)
 	}
 	// LIMIT POST EDIT TIME - END
 
+	if ($mode == 'editpost')
+	{
+		if ($is_auth['auth_mod'] || ($user->data['user_level'] == ADMIN))
+		{
+			$template->assign_block_vars('switch_lock_post', array());
+			$template->assign_var('S_POST_LOCKED', $post_info['post_locked'] ? ' checked="checked"' : '');
+		}
+		elseif ($post_info['post_locked'])
+		{
+			message_die(GENERAL_MESSAGE, 'POST_LOCKED');
+		}
+	}
+
 	if (($mode == 'editpost') || ($mode == 'delete') || ($mode == 'poll_delete'))
 	{
 		$topic_id = $post_info['topic_id'];
@@ -594,7 +607,9 @@ if ($result && $post_info)
 	{
 		$meta = '';
 		$message = '';
-		delete_post($mode, $post_data, $message, $meta, $forum_id, $topic_id, $post_id);
+		if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+		if (empty($class_mcp)) $class_mcp = new class_mcp();
+		$class_mcp->post_delete($mode, $post_data, $message, $meta, $forum_id, $topic_id, $post_id);
 
 		$redirect_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id);
 		meta_refresh(3, $redirect_url);
@@ -1354,7 +1369,9 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			{
 				message_die(GENERAL_MESSAGE, $error_msg);
 			}
-			delete_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id);
+			if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+			if (empty($class_mcp)) $class_mcp = new class_mcp();
+			$class_mcp->post_delete($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id);
 			break;
 	}
 
@@ -1363,7 +1380,9 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		if ($mode != 'editpost')
 		{
 			$user_id = (($mode == 'reply') || ($mode == 'newtopic')) ? $user->data['user_id'] : $post_data['poster_id'];
-			update_post_stats($mode, $post_data, $forum_id, $topic_id, $post_id, $user_id);
+			if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+			if (empty($class_mcp)) $class_mcp = new class_mcp();
+			$class_mcp->sync_post_stats($mode, $post_data, $forum_id, $topic_id, $post_id, $user_id);
 		}
 		$attachment_mod['posting']->insert_attachment($post_id);
 
@@ -1856,13 +1875,13 @@ if(!$user->data['session_logged_in'] || (($mode == 'editpost') && $post_info['po
 	$template->assign_block_vars('switch_username_select', array());
 }
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if($user->data['upi2db_access'] && ($mode == 'editpost') && (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD)))
 {
 	$template->assign_block_vars('switch_mark_edit_checkbox', array());
 	$mark_edit = ($refresh) ? $mark_edit : true;
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 // Notify checkbox - only show if user is logged in
 if ($user->data['session_logged_in'] && $is_auth['auth_read'])
@@ -2284,9 +2303,9 @@ $template->assign_vars(array(
 	'L_ATTACH_SIGNATURE' => $lang['Attach_signature'],
 	'L_SET_BOOKMARK' => $lang['Set_Bookmark'],
 	'L_NOTIFY_ON_REPLY' => $lang['Notify'],
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'L_MARK_EDIT' => $lang['mark_edit'],
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	'L_DELETE_POST' => $lang['Delete_post'],
 
 	'L_SHOW_PORTAL' => $lang['Show_In_Portal'],
@@ -2347,9 +2366,9 @@ $template->assign_vars(array(
 	'S_NOTIFY_CHECKED' => ($is_auth['auth_read']) ? (($notify_user) ? 'checked="checked"' : '') : 'DISABLED',
 	'S_LOCK_SUBJECT' => ($lock_subject) ? ' READONLY ' : '',
 	// End replacement - Yellow card admin MOD
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'S_MARK_EDIT_CHECKED' => ($mark_edit) ? 'checked="checked"' : '',
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 
 	// CrackerTracker v5.x
 	'CONFIRM_IMAGE' => $confirm_image,

@@ -20,6 +20,17 @@ if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 
+// Start session management
+$user->session_begin();
+$auth->acl($user->data);
+$user->setup();
+// End session management
+
+if ($user->data['user_id'] == ANONYMOUS)
+{
+	message_die(GENERAL_ERROR, $lang['NOT_LOGGED_IN_ERROR']);
+}
+
 // Find what we are to do
 $mode = (isset($_POST['report_x'])) ? 'report' :
 ((isset($_POST['report_reset_x'])) ? 'report_reset' :
@@ -58,9 +69,13 @@ if (empty($post_id) && ($user_id == ANONYMOUS))
 	message_die(GENERAL_ERROR, "No user/post specified", "", __LINE__, __FILE__, 'post_id="' . $post_id . '", user_id="' . $user_id . '"');
 }
 
+// Start auth check
+$is_auth = array();
+$is_auth = auth(AUTH_ALL, $forum_id, $user->data);
+
 if (!empty($post_id))
 {
-	$sql = 'SELECT DISTINCT forum_id, poster_id, post_bluecard FROM ' . POSTS_TABLE . ' WHERE post_id = "' . $post_id . '"';
+	$sql = 'SELECT DISTINCT forum_id, poster_id, post_bluecard FROM ' . POSTS_TABLE . ' WHERE post_id = "' . (int) $post_id . '"';
 	$result = $db->sql_query($sql);
 	$result = $db->sql_fetchrow($result);
 	$blue_card = $result['post_bluecard'];
@@ -80,16 +95,6 @@ elseif ($user_id)
 	//$forum_id = PAGE_CARD;
 	$poster_id = (int) $user_id;
 }
-
-// Start session management
-$user->session_begin();
-$auth->acl($user->data);
-$user->setup();
-// End session management
-
-// Start auth check
-$is_auth = array();
-$is_auth = auth(AUTH_ALL, $forum_id, $user->data);
 
 $no_error = true;
 $already_banned = false;
@@ -244,6 +249,7 @@ elseif ($mode == 'ban')
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
+
 	// Get user basic data
 	$sql = 'SELECT user_active, user_level FROM ' . USERS_TABLE . ' WHERE user_id="' . $poster_id . '"';
 	$result = $db->sql_query($sql);

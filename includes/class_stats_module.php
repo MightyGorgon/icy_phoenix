@@ -385,9 +385,15 @@ class Results
 	}
 
 	// Assign the last to the template added Block Iteration
-	function assign_template_block_vars($blockname)
+	function assign_template_block_vars($blockname, $from_block = null)
 	{
 		global $template;
+
+		if empty($from_block)
+		{
+			$from_block = $blockname;
+		}
+
 		$this->var_data[$blockname . '.'][] = end($template->_tpldata[$blockname . '.']);
 	}
 

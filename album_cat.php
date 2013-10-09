@@ -179,9 +179,9 @@ if (($album_user_id == ALBUM_PUBLIC_GALLERY) && ($thiscat['cat_moderator_groups'
 	// Get the namelist of moderator usergroups
 	$sql = "SELECT group_id, group_name, group_type, group_single_user
 			FROM " . GROUPS_TABLE . "
-			WHERE group_single_user <> 1
+			WHERE group_single_user = '0'
 				AND group_type <> ". GROUP_HIDDEN ."
-				AND group_id IN (". $thiscat['cat_moderator_groups'] .")
+				AND group_id IN (" . $thiscat['cat_moderator_groups'] . ")
 			ORDER BY group_name ASC";
 	$result = $db->sql_query($sql);
 	while($row = $db->sql_fetchrow($result))

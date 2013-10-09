@@ -2481,6 +2481,12 @@ $lang = array_merge($lang, array(
 	'POST_FEATURED_IMAGE' => 'Featured Image',
 	'POST_FEATURED_IMAGE_EXPLAIN' => 'Add a featured image to the topic',
 
+	'NOT_LOGGED_IN_ERROR' => 'You must be logged in to use this feature.',
+
+	'LOCK_POST' => 'Lock this post',
+	'POST_LOCKED' => 'This post has been locked by a moderator, you cannot edit it.',
+	'POST_AUTO_SPLIT' => '[SPLIT]',
+
 	)
 );
 
