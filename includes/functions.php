@@ -4964,7 +4964,7 @@ function page_header($title = '', $parse_template = false)
 		$social_connect_buttons = '';
 		if ($config['enable_social_connect'])
 		{
-			include(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
+			include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
 			$available_networks = SocialConnect::get_available_networks();
 
 			foreach ($available_networks as $social_network)

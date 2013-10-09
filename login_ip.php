@@ -47,7 +47,7 @@ if (strstr($redirect_url, "\n") || strstr($redirect_url, "\r") || strstr($redire
 $available_networks = array();
 if ($config['enable_social_connect'])
 {
-	include(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
 	$available_networks = SocialConnect::get_available_networks();
 
 	$login_admin = request_get_var('admin', 0);
@@ -161,7 +161,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 					$field_name = "user_" . $social_network->get_name_clean() . "_id";
 					$user_data_social = $social_network->get_user_data();
 
-					$sql = "UPDATE " . USERS_TABLE . " SET " . $field_name . " = '" . $user_data_social[$field_name] . "' WHERE user_id = " . $login_result['user_row']['user_id'];
+					$sql = 'UPDATE ' . USERS_TABLE . ' SET ' . $field_name . " = '" . $user_data_social[$field_name] . "' WHERE user_id = " . $login_result['user_row']['user_id'];
 					$db->sql_query($sql);
 				}
 			}

@@ -2243,6 +2243,7 @@ CREATE TABLE `phpbb_users` (
 	`user_upi2db_edit_word` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_upi2db_unread_color` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_personal_pics_count` INT(11) NOT NULL DEFAULT '0',
+	`user_facebook_id` VARCHAR(30) NOT NULL DEFAULT '',
 	PRIMARY KEY (`user_id`),
 	KEY `user_session_time` (`user_session_time`)
 );
