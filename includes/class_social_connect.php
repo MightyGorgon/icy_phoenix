@@ -21,6 +21,13 @@ abstract class SocialConnect
 	private $network_name;
 	private $network_name_clean;
 
+	public function __construct($network_name)
+	{
+		global $lang, $redirect;
+		$this->network_name = empty($lang[strtoupper($network_name)]) ? $network_name : $lang[strtoupper($network_name)];
+		$this->network_name_clean = $network_name;
+	}
+
 	public static function get_available_networks()
 	{
 		global $config;
@@ -41,13 +48,6 @@ abstract class SocialConnect
 		return self::$available_networks;
 	}
 
-	public function __construct($network_name)
-	{
-		global $lang;
-		$this->network_name = empty($lang[strtoupper($network_name)]) ? $network_name : $lang[strtoupper($network_name)];
-		$this->network_name_clean = $network_name;
-	}
-
 	public function get_name()
 	{
 		return $this->network_name;
@@ -58,7 +58,7 @@ abstract class SocialConnect
 		return $this->network_name_clean;
 	}
 
-	public abstract function do_login();
+	public abstract function do_login($redirect, $force_retry = false);
 	public abstract function get_user_data();
 }
 

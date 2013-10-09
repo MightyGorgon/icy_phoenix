@@ -37,24 +37,30 @@ class FacebookConnect extends SocialConnect
 		$this->client = new Facebook($facebook_config);
 	}
 
-	public function do_login($force_retry = false)
+	public function do_login($redirect, $force_retry = false)
 	{
 		global $config, $user;
-
 
 		// If user is already logged in and granted our application, we don't need to redirect him to facebook
 		$user_fb_id = $this->client->getUser();
 		if (!empty($user_fb_id))
 		{
-			return $this->retrieve_user_id($user_fb_id);
+			return $this->retrieve_user_basic_data($user_fb_id);
 		}
 
 		$confirm = request_get_var('confirm', 0);
 		if ($confirm != 1 || $force_retry)
 		{
+			// Build the social network return url
+			$current_page = extract_current_page(IP_ROOT_PATH);
+			$return_url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://';
+			$return_url .= extract_current_hostname() . $current_page['script_path'] . $current_page['page'];
+			$return_url .= (strpos($return_url, '?') ? '&' : '?') . 'redirect=' . $redirect . '&confirm=1';
+			$return_url .= (!empty($_GET['admin'])) ? '&admin=1' : '';
+
 			$params = array(
 				'scope' => $this->scope,
-				'redirect_uri' => 'http://' . $config['server_name'] . $config['script_path'] . append_sid($_SERVER['REQUEST_URI'] . '&confirm=1', true)
+				'redirect_uri' => $return_url,
 			);
 
 			$login_url = $this->client->getLoginUrl($params);
@@ -82,11 +88,11 @@ class FacebookConnect extends SocialConnect
 		}
 	}
 
-	private function retrieve_user_id($user_fb_id)
+	private function retrieve_user_basic_data($user_fb_id)
 	{
 		global $db;
 
-		$sql = "SELECT user_id
+		$sql = "SELECT user_id, user_level
 			FROM " . USERS_TABLE . "
 			WHERE user_facebook_id = '" . $db->sql_escape($user_fb_id) . "'
 			LIMIT 1";
@@ -95,7 +101,7 @@ class FacebookConnect extends SocialConnect
 		{
 			// User is registered
 			$user_data = $db->sql_fetchrow($result);
-			return intval($user_data['user_id']);
+			return $user_data;
 		}
 		else
 		{

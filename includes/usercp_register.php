@@ -122,7 +122,7 @@ function show_coppa()
 	$social_network = request_get_var('social_network', '');
 	if ($config['enable_social_connect'] && !empty($social_network))
 	{
-		include(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
 		$available_networks = SocialConnect::get_available_networks();
 
 		if (!empty($available_networks[$social_network]))
@@ -498,7 +498,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	$social_network = request_get_var('social_network', '');
 	if ($mode == 'register' && $config['enable_social_connect'] && !empty($social_network))
 	{
-		include(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
+		include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
 		$available_networks = SocialConnect::get_available_networks();
 
 		if (!empty($available_networks[$social_network]))
