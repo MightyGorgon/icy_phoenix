@@ -4363,7 +4363,7 @@ function page_header($title = '', $parse_template = false)
 		$meta_content['topic_id'] = request_var(POST_TOPIC_URL, 0);
 		$meta_content['post_id'] = request_var(POST_POST_URL, 0);
 
-		$no_meta_pages_array = array(CMS_PAGE_LOGIN, CMS_PAGE_PRIVMSG, CMS_PAGE_POSTING, 'sudoku.' . PHP_EXT, 'kb.' . PHP_EXT);
+		$no_meta_pages_array = array(CMS_PAGE_LOGIN, CMS_PAGE_PRIVMSG, CMS_PAGE_POSTING, 'kb.' . PHP_EXT);
 		if (!in_array($page_url['basename'], $no_meta_pages_array) && (!empty($meta_content['post_id']) || !empty($meta_content['topic_id']) || !empty($meta_content['forum_id']) || !empty($meta_content['cat_id'])))
 		{
 			@include_once(IP_ROOT_PATH . 'includes/functions_meta.' . PHP_EXT);
@@ -4962,7 +4962,7 @@ function page_header($title = '', $parse_template = false)
 		$nav_menu_ads_bottom = get_ad('nmb');
 
 		$social_connect_buttons = '';
-		if ($config['enable_social_connect'])
+		if (!empty($config['enable_social_connect']))
 		{
 			include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
 			$available_networks = SocialConnect::get_available_networks();
@@ -4970,7 +4970,7 @@ function page_header($title = '', $parse_template = false)
 			foreach ($available_networks as $social_network)
 			{
 				$social_connect_url = append_sid(CMS_PAGE_LOGIN . '?social_network=' . $social_network->get_name_clean());
-				$social_connect_img = '<img src="' . IP_ROOT_PATH . 'images/social_connect/button_' . $social_network->get_name_clean() . '_connect.png" alt="" title="' . $social_network->get_name() . '" />';
+				$social_connect_img = '<img src="' . IP_ROOT_PATH . 'images/social_connect/' . $social_network->get_name_clean() . '_button_connect.png" alt="" title="' . $social_network->get_name() . '" />';
 				$social_connect_buttons .= '<a href="' . $social_connect_url . '">' . $social_connect_img . '</a>';
 			}
 		}
@@ -5181,7 +5181,6 @@ function page_header($title = '', $parse_template = false)
 		'L_DOWNLOADS' => $lang['Downloads'],
 		'L_DOWNLOADS_ADV' => $lang['Downloads_ADV'],
 		'L_HACKS_LIST' => $lang['Hacks_List'],
-		'L_SUDOKU' => $lang['Sudoku'],
 		'L_AVATAR_GEN' => $lang['AvatarGenerator'],
 		'L_LINKS' => $lang['Links'],
 		'L_WORDGRAPH' => $lang['Wordgraph'],

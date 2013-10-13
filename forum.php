@@ -65,8 +65,6 @@ $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-setup_extra_lang(array('lang_main_link'));
-
 $viewcat = (!empty($_GET[POST_CAT_URL]) ? intval($_GET[POST_CAT_URL]) : -1);
 $viewcat = (($viewcat <= 0) ? -1 : $viewcat);
 $viewcatkey = ($viewcat < 0) ? 'Root' : POST_CAT_URL . $viewcat;
@@ -223,15 +221,6 @@ else
 $link_self_img = '';
 $site_logo_height = '';
 $site_logo_width = '';
-if (!empty($config['index_links']))
-{
-	include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
-	$links_config = get_links_config(true);
-	$link_self_img = $links_config['site_logo'];
-	$site_logo_height = $links_config['height'];
-	$site_logo_width = $links_config['width'];
-	$template->assign_vars(array('S_LINKS' => true));
-}
 
 if ($config['site_history'] && ((time() - (int) $config['cron_site_history_last_run']) > ONLINE_REFRESH))
 {

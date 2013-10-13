@@ -83,7 +83,7 @@ class FacebookConnect extends SocialConnect
 				// Retry on failure
 				return $this->do_login(true);
 			}
-			
+
 			return $this->retrieve_user_id($user_fb_data['id']);
 		}
 	}
@@ -123,7 +123,8 @@ class FacebookConnect extends SocialConnect
 		catch (Exception $e)
 		{
 			// If user isn't logged in in facebook, log him in and retry!
-			$this->do_login(true);die();
+			//$this->do_login(true);die();
+			$this->do_login(true);
 			return $this->get_user_data();
 		}
 

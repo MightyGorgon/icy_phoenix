@@ -104,6 +104,9 @@ else
 	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 	if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 	$config['allow_all_bbcode'] = 0;
+	$config['allow_html'] = false;
+	$config['allow_bbcode'] = true;
+	$config['allow_smilies'] = true;
 	$config['default_lang'] = 'english';
 	$config['server_name'] = 'icyphoenix.com';
 	$config['script_path'] = '/';
@@ -322,6 +325,18 @@ class bbcode
 		array('code' => ';)', 'replace' => '(smile1)'),
 		array('code' => ':)', 'replace' => '(smile2)'),
 	);
+
+	/**
+	* Instantiate class
+	*/
+	function bbcode()
+	{
+		global $config;
+
+		$this->allow_html = (!empty($config['allow_html']) ? true : false);
+		$this->allow_bbcode = (!empty($config['allow_bbcode']) ? true : false);
+		$this->allow_smilies = (!empty($config['allow_smilies']) ? true : false);
+	}
 
 	/*
 	Clean bbcode/html tag.

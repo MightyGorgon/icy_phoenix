@@ -701,11 +701,12 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		// Update entry in DB
 		if(!$error)
 		{
+			$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 			if ($user_ycard > $config['max_user_bancard'])
 			{
 				$sql = "SELECT ban_userid FROM " . BANLIST_TABLE . " WHERE ban_userid = '" . $user_id . "'";
 				$result = $db->sql_query($sql);
-				if ((!$db->sql_fetchrowset($result)) && ($user_id != ANONYMOUS))
+				if ((!$db->sql_fetchrowset($result)) && ($user_id != ANONYMOUS) && ($user_id != $founder_id))
 				{
 					// insert the user in the ban list
 					$ban_insert_array = array(

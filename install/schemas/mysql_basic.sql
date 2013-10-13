@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.6.92');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.8.94');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
@@ -311,10 +311,9 @@ INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(8, 0, 'Search', '', 'search', 0, 1, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(9, 0, 'Who is Online', '', 'online_users', 0, 1, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(10, 0, 'Album', '', 'album', 0, 0, '', 1);
-INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(11, 0, 'Links', '', 'links', 0, 0, '', 1);
+INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(11, 0, 'Welcome', '<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">\r\n	<tr>\r\n		<td width="5%"><img src="images/icy_phoenix_small.png" alt="" /></td>\r\n		<td width="90%" align="center"><div class="post-text">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width="5%"><img src="images/icy_phoenix_small_l.png" alt="" /></td>\r\n	</tr>\r\n</table>', '', 0, 0, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(12, 0, 'Statistics', '', 'statistics', 0, 0, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(13, 0, 'Wordgraph', '', 'wordgraph', 0, 0, '', 1);
-INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(14, 0, 'Welcome', '<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">\r\n	<tr>\r\n		<td width="5%"><img src="images/icy_phoenix_small.png" alt="" /></td>\r\n		<td width="90%" align="center"><div class="post-text">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width="5%"><img src="images/icy_phoenix_small_l.png" alt="" /></td>\r\n	</tr>\r\n</table>', '', 0, 0, '', 1);
 
 ## `phpbb_cms_block_variable`
 ##
@@ -336,12 +335,8 @@ INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `co
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (15, 10, 'Number of images to display', '', 'md_pics_number', '', '', 1, 'album');
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (16, 10, 'Number of columns', '', 'md_pics_cols_number', '1,2,3,4,5', '1,2,3,4,5', 3, 'album');
 INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (17, 10, 'Number of rows', '', 'md_pics_rows_number', '1,2,3,4', '1,2,3,4', 3, 'album');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (18, 11, 'Links -> Style', 'choose static display or scrolling display', 'md_links_style', 'Scroll,Static', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (19, 11, 'Links -> Own (Top)', 'show your own link button above other buttons', 'md_links_own1', 'Yes,No', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (20, 11, 'Links -> Own (Bottom)', 'show your own link button below other buttons', 'md_links_own2', 'Yes,No', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (21, 11, 'Links -> Code', 'show HTML for your own link button', 'md_links_code', 'Yes,No', '1,0', 3, 'links');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (22, 13, 'Maximum Words', 'Select the maximum number of words to display', 'md_wordgraph_words', '', '', 1, 'wordgraph');
-INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (23, 13, 'Enable Word Counts', 'Display the total number of words next to each word', 'md_wordgraph_count', 'Yes,No', '1,0', 3, 'wordgraph');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (18, 13, 'Maximum Words', 'Select the maximum number of words to display', 'md_wordgraph_words', '', '', 1, 'wordgraph');
+INSERT INTO `phpbb_cms_block_variable` (`bvid`, `bid`, `label`, `sub_label`, `config_name`, `field_options`, `field_values`, `type`, `block`) VALUES (19, 13, 'Enable Word Counts', 'Display the total number of words next to each word', 'md_wordgraph_count', 'Yes,No', '1,0', 3, 'wordgraph');
 
 ## `phpbb_cms_blocks`
 ##
@@ -356,10 +351,9 @@ INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layou
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(8, 8, 0, 1, 0, 'Search', 'l', 1, 1, 1, 1, 1, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(9, 9, 0, 1, 0, 'Who is Online', 'r', 2, 1, 1, 1, 1, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(10, 10, 0, 1, 0, 'Album', 'l', 2, 1, 1, 1, 1, 1);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(11, 11, 0, 1, 0, 'Links', 'l', 4, 1, 1, 1, 1, 1);
+INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(11, 11, 0, 1, 0, 'Welcome', 'c', 2, 1, 1, 1, 1, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(12, 12, 0, 1, 0, 'Statistics', 'r', 3, 1, 1, 1, 1, 1);
 INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(13, 13, 0, 1, 0, 'Wordgraph', 'b', 2, 1, 0, 0, 0, 1);
-INSERT INTO `phpbb_cms_blocks` (`bid`, `bs_id`, `block_cms_id`, `layout`, `layout_special`, `title`, `bposition`, `weight`, `active`, `border`, `titlebar`, `background`, `local`) VALUES(14, 14, 0, 1, 0, 'Welcome', 'c', 2, 1, 1, 1, 1, 1);
 
 ## `phpbb_cms_config`
 ##
@@ -381,12 +375,8 @@ INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALU
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (15, 10, 'md_pics_number', '3');
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (16, 10, 'md_pics_cols_number', '1');
 INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (17, 10, 'md_pics_rows_number', '3');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (18, 11, 'md_links_style', '0');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (19, 11, 'md_links_own1', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (20, 11, 'md_links_own2', '0');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (21, 11, 'md_links_code', '1');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (22, 13, 'md_wordgraph_words', '250');
-INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (23, 13, 'md_wordgraph_count', '1');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (18, 13, 'md_wordgraph_words', '250');
+INSERT INTO `phpbb_cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (19, 13, 'md_wordgraph_count', '1');
 
 ## `phpbb_cms_layout`
 ##
@@ -409,7 +399,6 @@ INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_b
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('rules', 'rules', 'rules.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('download', 'download', 'dload.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('album', 'album', 'album.php', 0, '', 0, '');
-INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('links', 'links', 'links.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('statistics', 'statistics', 'statistics.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('calendar', 'calendar', 'calendar.php', 0, '', 0, '');
 INSERT INTO `phpbb_cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('recent', 'recent', 'recent.php', 0, '', 0, '');
@@ -447,11 +436,9 @@ INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (19, 0, 1, 0, 1, 13, 1, 13, '', '', 'Drafts', 'Drafts', 'drafts.php', 0, 2, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (20, 0, 1, 0, 1, 14, 1, 14, '', '', 'Posted Images', 'Posted Images', 'images_list.php', 0, 2, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (21, 0, 1, 0, 1, 15, 1, 15, '', '', 'Chat', 'Chat', 'ajax_chat.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (22, 0, 1, 0, 1, 16, 1, 16, '', '', 'Links', 'Links', 'links.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (23, 0, 1, 0, 1, 17, 1, 17, '', '', 'Knowledge Base', 'Knowledge Base', 'kb.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (24, 0, 1, 0, 1, 18, 1, 18, '', '', 'Contact Us', 'Contact Us', 'contact_us.php', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (25, 0, 1, 0, 1, 19, 1, 19, '', '', 'Rules', 'Rules', 'rules.php', 0, 0, 0);
-INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (26, 0, 1, 0, 1, 21, 1, 21, '', '', 'Sudoku', 'Sudoku', 'sudoku.php', 0, 2, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (27, 0, 1, 0, 2, 22, 1, 1, '', '', 'News Categories', 'News Categories', 'index.php?news=categories', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (28, 0, 1, 0, 2, 23, 1, 2, '', '', 'News Archives', 'News Archives', 'index.php?news=archives', 0, 0, 0);
 INSERT INTO `phpbb_cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_default`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (29, 0, 1, 0, 2, 24, 1, 3, '', '', 'New Messages', 'New Messages', 'search.php?search_id=newposts', 0, 2, 0);
@@ -623,7 +610,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_autolo
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_autologin_time', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('autolink_first', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smilies_insert', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('sudoku_version', '1.0.6');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('yahoo_search_savepath', 'cache');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('yahoo_search_additional_urls', 'http://www.icyphoenix.com');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('yahoo_search_compress', '1');
@@ -670,7 +656,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('online_shout
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('last_msgs_n', '5');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('last_msgs_x', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('posts_precompiled', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_links', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('index_birthday', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('site_history', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smilies_topic_title', '0');
@@ -870,6 +855,10 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ajax_chat_ch
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('google_custom_search', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('use_jquery_tags', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('user_allow_pm_register', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_social_connect', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_facebook_login', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app_id', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app_secret', '');
 
 
 ## ATTACHMENTS - BEGIN
@@ -1658,61 +1647,6 @@ INSERT INTO `phpbb_stats_config` (`config_name`, `config_value`) VALUES ('module
 INSERT INTO `phpbb_stats_config` (`config_name`, `config_value`) VALUES ('page_views', '0');
 
 ## `phpbb_stats_modules`
-##
-
-## `phpbb_sudoku_sessions`
-##
-
-## `phpbb_sudoku_solutions`
-##
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 1, '7a1a5a2a3a4a9a8a6', '6a4a3a1a8a9a5a7a2', '8a2a9a6a7a5a1a3a4', '8a7a9a3a6a1a4a5a2', '4a5a1a2a9a8a7a3a6', '2a6a3a5a4a7a9a8a1', '5a9a8a1a4a7a6a2a3', '3a6a7a8a2a5a9a1a4', '4a1a2a3a9a6a7a5a8');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 2, '6a1a3a8a4a7a2a5a9', '8a4a9a5a2a3a1a6a7', '7a2a5a1a6a9a4a3a8', '4a2a6a7a8a5a3a9a1', '9a5a1a6a3a2a4a7a8', '8a7a3a9a1a4a6a5a2', '5a7a4a9a6a8a1a3a2', '3a8a6a2a1a5a7a9a4', '2a9a1a3a4a7a5a8a6');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 3, '1a5a7a4a8a2a9a6a3', '2a6a4a9a7a3a5a1a8', '8a9a3a5a6a1a4a7a2', '2a9a5a3a1a8a6a7a4', '8a4a1a6a9a7a3a5a2', '6a3a7a2a4a5a9a1a8', '5a3a9a7a4a6a8a2a1', '7a8a6a1a2a5a4a3a9', '1a2a4a3a8a9a7a5a6');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 4, '9a6a1a2a5a3a7a8a4', '4a5a7a9a8a6a1a2a3', '3a8a2a4a7a1a6a9a5', '4a2a6a3a1a8a5a7a9', '5a3a9a7a4a2a6a1a8', '7a1a8a9a5a6a2a3a4', '1a9a7a6a3a5a8a4a2', '2a6a5a8a9a4a3a7a1', '8a4a3a1a2a7a5a6a9');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 5, '4a2a7a5a1a9a6a8a3', '3a6a1a8a2a7a5a4a9', '8a5a9a4a3a6a7a1a2', '3a6a1a2a4a5a9a7a8', '9a5a8a7a1a6a4a3a2', '2a4a7a9a8a3a5a6a1', '8a3a2a7a9a4a1a5a6', '6a7a5a1a8a3a2a9a4', '1a9a4a6a2a5a3a7a8');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 6, '8a6a9a3a5a2a7a1a4', '3a7a2a4a1a6a8a5a9', '1a5a4a9a7a8a6a3a2', '5a2a1a4a3a7a6a9a8', '9a4a7a2a6a8a1a3a5', '8a6a3a5a1a9a4a2a7', '2a4a6a1a7a3a9a8a5', '7a8a1a5a9a4a6a2a3', '3a9a5a2a8a6a7a4a1');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 7, '3a2a4a7a8a5a6a1a9', '1a7a8a9a4a6a3a5a2', '5a9a6a2a1a3a7a8a4', '9a5a3a4a6a1a8a7a2', '7a1a4a2a8a3a6a9a5', '8a6a2a9a5a7a4a3a1', '2a3a8a5a9a7a1a4a6', '5a6a7a4a3a1a8a2a9', '1a4a9a6a2a8a3a7a5');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 8, '8a7a9a5a2a1a4a6a3', '4a5a1a9a3a6a2a7a8', '2a3a6a7a8a4a5a9a1', '2a8a6a3a4a7a1a9a5', '1a4a7a5a9a2a6a8a3', '9a5a3a1a6a8a4a7a2', '7a1a2a6a3a4a9a5a8', '8a6a5a7a2a9a3a1a4', '3a4a9a8a1a5a6a2a7');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 9, '4a2a3a5a7a8a1a6a9', '6a7a5a2a9a1a3a4a8', '1a8a9a3a6a4a7a5a2', '9a8a4a7a3a2a6a5a1', '1a5a2a8a6a4a7a3a9', '6a3a7a5a9a1a4a2a8', '8a1a7a2a4a5a3a9a6', '5a2a6a9a1a3a4a8a7', '9a4a3a8a7a6a2a1a5');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 10, '5a7a3a2a6a8a1a4a9', '9a6a4a3a5a1a8a2a7', '1a8a2a9a7a4a6a3a5', '6a2a4a9a8a5a3a1a7', '7a3a9a4a1a2a6a8a5', '5a1a8a7a6a3a2a4a9', '4a3a2a8a9a1a7a5a6', '1a9a6a5a7a3a2a4a8', '8a5a7a4a2a6a3a9a1');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 11, '6a8a2a4a3a9a5a1a7', '7a5a1a2a6a8a4a9a3', '4a3a9a7a1a5a6a2a8', '2a9a3a7a4a8a1a5a6', '5a1a4a3a2a6a8a7a9', '8a7a6a9a5a1a3a4a2', '8a7a1a3a6a5a9a2a4', '6a3a5a9a4a2a1a8a7', '2a9a4a1a8a7a5a6a3');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 12, '1a4a6a5a2a8a3a9a7', '8a7a9a4a6a3a5a1a2', '5a3a2a9a7a1a4a6a8', '9a1a2a7a3a4a6a8a5', '7a5a6a1a2a8a3a9a4', '8a4a3a6a5a9a2a1a7', '8a5a9a4a6a1a2a7a3', '6a3a1a2a8a7a9a4a5', '7a2a4a3a9a5a1a8a6');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 13, '4a6a8a5a9a2a1a3a7', '7a1a5a6a3a8a4a2a9', '2a3a9a7a1a4a6a8a5', '6a1a4a9a8a5a7a2a3', '9a5a3a2a7a6a8a4a1', '8a7a2a1a4a3a9a5a6', '8a5a9a3a7a6a2a4a1', '1a6a4a5a8a2a3a9a7', '3a2a7a4a9a1a5a6a8');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 14, '6a7a9a4a3a2a5a1a8', '8a5a3a9a1a7a6a4a2', '2a1a4a8a6a5a9a7a3', '7a2a5a9a6a1a8a4a3', '4a6a1a2a3a8a5a7a9', '3a9a8a4a5a7a6a2a1', '3a8a7a2a9a4a1a5a6', '1a9a6a7a8a5a3a2a4', '5a4a2a1a3a6a7a8a9');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 15, '1a4a9a5a7a6a2a8a3', '2a3a5a9a1a8a6a7a4', '7a6a8a2a4a3a5a9a1', '4a6a1a9a5a2a7a3a8', '5a2a9a3a8a7a1a4a6', '3a8a7a6a1a4a9a2a5', '6a1a4a8a9a7a3a2a5', '7a9a3a4a5a2a8a6a1', '8a5a2a1a3a6a4a7a9');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 16, '5a9a1a6a3a4a8a2a7', '3a4a6a7a8a2a5a1a9', '8a2a7a9a5a1a4a3a6', '9a5a8a7a6a3a4a1a2', '4a3a7a9a2a1a6a5a8', '1a6a2a5a4a8a7a9a3', '2a4a9a3a8a5a1a7a6', '8a7a3a1a6a4a2a9a5', '6a1a5a2a7a9a3a8a4');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 17, '5a4a6a7a9a1a3a2a8', '8a9a3a4a5a2a6a1a7', '1a7a2a8a3a6a5a4a9', '8a3a2a6a7a9a1a5a4', '7a6a9a1a4a5a3a2a8', '4a1a5a3a2a8a6a9a7', '2a6a3a4a8a7a9a1a5', '5a7a1a9a3a6a2a8a4', '9a8a4a2a5a1a7a6a3');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 18, '5a1a7a4a6a9a8a3a2', '8a6a3a5a2a7a1a4a9', '9a2a4a3a8a1a6a7a5', '3a8a1a2a5a6a7a9a4', '4a5a6a7a9a8a2a3a1', '2a9a7a4a1a3a8a5a6', '1a7a3a6a2a8a9a4a5', '9a8a4a3a1a5a6a7a2', '5a6a2a7a4a9a1a3a8');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 19, '3a8a1a7a2a4a9a5a6', '5a7a2a9a6a1a8a4a3', '9a6a4a5a8a3a7a1a2', '2a3a9a8a1a5a4a6a7', '6a8a5a4a2a7a3a1a9', '1a4a7a6a3a9a8a2a5', '6a4a3a5a7a2a1a9a8', '7a9a8a1a3a6a2a5a4', '2a5a1a4a9a8a3a7a6');
-INSERT INTO `phpbb_sudoku_solutions` (`game_pack`, `game_num`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 20, '3a2a5a8a7a1a6a9a4', '1a6a7a9a4a3a8a2a5', '9a4a8a2a6a5a3a7a1', '2a8a6a1a5a7a4a3a9', '5a3a4a2a9a8a7a1a6', '1a9a7a4a3a6a8a5a2', '9a6a8a5a4a3a7a1a2', '3a7a1a6a8a2a4a5a9', '5a2a4a7a1a9a6a8a3');
-
-## `phpbb_sudoku_starts`
-##
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 1, 1, 'xaxaxa2axa4a9a8ax', '6axa3axaxaxa5axa2', 'xaxaxa6axa5axa3a4', '8axa9axaxaxa4axa2', 'xaxaxa2axa8axaxax', '2axa3axaxaxa9axa1', '5a9axa1axa7axaxax', '3axa7axaxaxa9axa4', 'xa1a2a3axa6axaxax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 2, 1, 'xaxaxa8axa7a2a5ax', '8axa9a5axa3axaxax', 'xaxaxa1axa9axa3a8', 'xa2a6axaxaxaxa9a1', 'xa5axaxaxaxaxa7ax', '8a7axaxaxaxa6a5ax', '5a7axa9axa8axaxax', 'xaxaxa2axa5a7axa4', 'xa9a1a3axa7axaxax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 3, 1, 'xaxaxaxaxa2axa6ax', 'xaxaxa9axa3a5axa8', 'xaxaxa5axaxaxa7ax', 'xa9a5axa1axaxa7a4', '8axa1a6axa7a3axa2', '6a3axaxa4axa9a1ax', 'xa3axaxaxa6axaxax', '7axa6a1axa5axaxax', 'xa2axa3axaxaxaxax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 4, 1, 'xaxa1axa5a3a7axax', '4axa7a9axa6a1axa3', '3axaxa4a7axaxaxa5', 'xaxa6a3a1a8axaxax', 'xaxaxaxaxaxaxa1ax', '7axaxa9a5a6axaxax', 'xa9axa6axaxaxa4ax', '2axa5axaxaxaxaxax', 'xa4axaxaxa7axa6ax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 5, 1, 'xa2axa5axaxaxaxax', 'xaxaxaxaxa7axa4a9', 'xaxaxa4axaxa7a1a2', 'xaxaxaxaxa5axa7a8', 'xaxaxaxaxa6axa3ax', '2axaxaxa8axaxa6a1', 'xa3a2axaxa4axaxa6', '6axaxaxa8a3axaxa4', 'xaxa4axaxa5a3a7ax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 6, 2, 'xaxaxaxaxaxaxa1ax', 'xaxaxaxa1axa8axa9', 'xa5axa9axa8axa3ax', '5axa1axa3a7a6axa8', '9a4axaxaxa8axaxa5', '8axaxaxa1axa4axax', 'xaxa6axaxaxa9axax', '7a8a1axa9axa6axa3', 'xaxaxa2axaxaxaxax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 7, 2, '3a2axaxaxa5axa1ax', 'xa7axaxaxaxa3axa2', 'xa9a6a2axaxaxa8ax', 'xa5a3a4axaxaxa7a2', 'xaxaxa2axa3axaxax', '8a6axaxaxa7a4a3ax', 'xa3axaxaxa7a1a4ax', '5axa7axaxaxaxa2ax', 'xa4axa6axaxaxa7a5');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 8, 2, '8axa9a5axaxaxaxa3', '4a5a1a9axa6a2axa8', '2axa6axaxaxa5axax', 'xa8axa3axaxaxa9ax', 'xaxaxaxaxaxaxaxax', 'xa5axaxaxa8axa7ax', 'xaxa2a6axaxa9axa8', '8axa5a7axa9a3a1a4', '3axaxaxaxa5a6axa7');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 9, 2, 'xaxaxaxaxaxaxaxax', 'xaxaxaxaxa1a3a4ax', 'xa8axaxaxa4a7a5ax', 'xaxa4axaxa2axa5ax', 'xaxa2axa6axa7axax', '6axaxaxa9a1axaxax', 'xaxa7a2axa5axa9ax', '5axaxaxa1axaxa8ax', 'xaxa3axaxa6a2a1ax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 10, 2, 'xaxa3axaxaxa1axax', 'xaxaxa3a5axaxaxa7', 'xaxaxaxaxa4a6axa5', 'xa2axaxa8axaxaxa7', 'xaxaxaxaxaxaxaxax', 'xaxa8a7a6a3a2a4ax', 'xaxa2axaxaxaxa5a6', 'xa9a6axa7a3a2a4ax', 'xa5a7a4axa6a3a9ax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 11, 3, 'xaxa2a4axaxaxa1a7', '7axa1a2axa8axaxax', '4axaxaxaxa5a6a2ax', '2a9axaxaxaxa1a5ax', 'xaxaxa3axa6axaxax', 'xa7a6axaxaxaxa4a2', 'xa7a1a3axaxaxaxa4', 'xaxaxa9axa2a1axa7', '2a9axaxaxa7a5axax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 12, 3, 'xa4axaxa2axaxaxa7', 'xaxaxaxa6axaxaxax', '5a3axaxaxa1a4axa8', 'xa1axaxa3axa6axa5', '7a5axaxaxa8axaxa4', 'xaxaxaxa5axaxaxax', '8axaxaxaxaxaxaxa3', '6axaxaxa8a7a9axax', '7axaxaxa9a5axaxax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 13, 3, 'xaxa8a5a9axa1axax', 'xaxaxa6axa8a4axa9', '2axaxaxa1a4axaxa5', '6axa4axa8axa7axa3', 'xaxaxaxaxaxaxaxax', '8axa2axa4axa9axa6', '8axaxa3a7axaxaxa1', '1axa4a5axa2axaxax', 'xaxa7axa9a1a5axax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 14, 4, 'xa7axaxa3a2axa1a8', '8axa3axaxaxaxa4ax', 'xa1axa8a6axa9a7ax', 'xaxaxaxaxa1axaxax', '4axa1axaxaxa5axa9', 'xaxaxa4axaxaxaxax', 'xa8a7axa9a4axa5ax', 'xa9axaxaxaxa3axa4', '5a4axa1a3axaxa8ax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 15, 4, 'xaxaxaxa7axaxa8a3', '2axa5axa1axaxa7ax', 'xaxaxaxa4axa5a9ax', 'xaxa1axaxa2axaxa8', 'xaxaxa3axa7axaxax', '3axaxa6axaxa9axax', 'xa1a4axa9axaxaxax', 'xa9axaxa5axa8axa1', '8a5axaxa3axaxaxax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 16, 2, 'xa9axaxaxaxaxaxa7', 'xaxaxaxaxaxaxa1ax', 'xa2axaxaxaxa4axax', 'xaxaxaxaxa3axa1ax', 'xa3axa9axa1a6axa8', 'xaxaxa5axaxaxa9ax', 'xa4a9a3a8axaxa7ax', '8axa3a1axa4a2axa5', '6a1axaxa7a9axa8ax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 17, 2, 'xaxa6a7a9axaxaxax', 'xaxaxaxaxa2a6a1ax', 'xaxaxaxa3axaxaxa9', 'xa3axaxa7axa1a5ax', '7a6axaxa4axaxa2a8', 'xa1a5axa2axaxa9ax', '2axaxaxa8axaxaxax', 'xa7a1a9axaxaxaxax', 'xaxaxaxa5a1a7axax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 18, 2, '5axaxaxaxa9axa3ax', 'xa6axa5axa7axa4ax', 'xaxa4a3axaxaxa7ax', 'xa8a1a2axaxaxa9a4', '4axa6axaxaxa2axa1', '2a9axaxaxa3a8a5ax', 'xa7axaxaxa8a9axax', 'xa8axa3axa5axa7ax', 'xa6axa7axaxaxaxa8');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 19, 2, 'xaxa1axa2axa9axax', 'xaxaxa9a6a1a8axa3', '9axaxaxa8axaxaxa2', 'xa3a9axa1axaxa6a7', '6a8a5a4axa7a3a1a9', '1a4axaxa3axa8a2ax', '6axaxaxa7axaxaxa8', '7axa8a1a3a6axaxax', 'xaxa1axa9axa3axax');
-INSERT INTO `phpbb_sudoku_starts` (`game_pack`, `game_num`, `game_level`, `line_1`, `line_2`, `line_3`, `line_4`, `line_5`, `line_6`, `line_7`, `line_8`, `line_9`) VALUES (1, 20, 2, 'xaxaxaxa7axa6axax', 'xa6axaxaxa3a8a2a5', 'xa4axaxaxa5axaxax', 'xaxaxaxa5axa4axax', 'xaxaxaxaxaxa7axax', '1a9axa4axa6a8axax', '9a6axaxaxa3a7axa2', 'xaxaxaxa8axa4axax', 'xaxaxaxa1axa6axax');
-
-## `phpbb_sudoku_stats`
-##
-
-## `phpbb_sudoku_users`
 ##
 
 ## `phpbb_thanks`

@@ -16,7 +16,7 @@ if (!defined('IN_ICYPHOENIX'))
 $settings_details = array();
 $settings_details = array(
 	'id' => 'social_settings',
-	'name' => '26_Social_Settings',
+	'name' => '27_Social_Networks',
 	'sort' => 0,
 	'sub_name' => '',
 	'sub_sort' => 0,

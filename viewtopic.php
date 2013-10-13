@@ -2156,7 +2156,7 @@ for($i = 0; $i < $total_posts; $i++)
 	// Mighty Gorgon - ???
 
 	// Editing information
-	if ($config['edit_notes'] == 1)
+	if (!empty($config['edit_notes']))
 	{
 		$notes_list = strlen($postrow[$i]['edit_notes']) ? unserialize($postrow[$i]['edit_notes']) : array();
 		if($is_auth['auth_mod'] && (sizeof($delnote) == 2) && ($delnote[0] == $postrow[$i]['post_id']))
@@ -2712,7 +2712,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$template->assign_block_vars('postrow.switch_first_post', array());
 	}
 
-	if ($config['edit_notes'])
+	if (!empty($config['edit_notes']))
 	{
 		$template->assign_vars(array(
 			'S_EDIT_NOTES' => true,

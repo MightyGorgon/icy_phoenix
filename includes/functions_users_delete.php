@@ -89,8 +89,11 @@ function ip_user_kill($user_id)
 		$sql = "DELETE FROM " . DRAFTS_TABLE . " WHERE user_id = " . $user_id;
 		$db->sql_query($sql);
 
-		$sql = "DELETE FROM " . LINKS_TABLE . " WHERE user_id = " . $user_id;
-		$db->sql_query($sql);
+		if (!empty($config['plugins']['links']['enabled']))
+		{
+			$sql = "DELETE FROM " . LINKS_TABLE . " WHERE user_id = " . $user_id;
+			$db->sql_query($sql);
+		}
 
 		$sql = "DELETE FROM " . BANLIST_TABLE . " WHERE ban_userid = " . $user_id;
 		$db->sql_query($sql);
@@ -117,11 +120,14 @@ function ip_user_kill($user_id)
 		$sql = "DELETE FROM " . DL_NOTRAF_TABLE . " WHERE user_id = " . $user_id;
 		$db->sql_query($sql);
 
-		$sql = "DELETE FROM " . SUDOKU_STATS . " WHERE user_id = " . $user_id;
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . SUDOKU_USERS . " WHERE user_id = " . $user_id;
-		$db->sql_query($sql);
+		if (!empty($config['plugins']['sudoku']['enabled']))
+		{
+			$sql = "DELETE FROM " . SUDOKU_STATS . " WHERE user_id = " . $user_id;
+			$db->sql_query($sql);
+	
+			$sql = "DELETE FROM " . SUDOKU_USERS . " WHERE user_id = " . $user_id;
+			$db->sql_query($sql);
+		}
 
 		// Start add - Fully integrated shoutbox MOD
 		$sql = "UPDATE " . SHOUTBOX_TABLE . "

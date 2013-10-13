@@ -74,7 +74,7 @@ if (hidemenu_onclick == "yes")
 		<!-- IF SOCIAL_CONNECT_BUTTONS -->
 			<!-- IF S_LOGGED_IN -->
 			<!-- ELSE -->
-				<div style="float:right;">{SOCIAL_CONNECT_BUTTONS}</div>
+				<div style="float: right;">{SOCIAL_CONNECT_BUTTONS}</div>
 			<!-- ENDIF -->
 		<!-- ENDIF -->
 		<!-- IF GL_BLOCK -->

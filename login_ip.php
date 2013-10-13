@@ -78,11 +78,11 @@ if ($config['enable_social_connect'])
 			$template->assign_block_vars('social_connect_button', array(
 				'L_SOCIAL_CONNECT' => sprintf($lang['SOCIAL_CONNECT_LOGIN'], $social_network_name),
 				'U_SOCIAL_CONNECT' => append_sid(CMS_PAGE_LOGIN . '?social_network=' . $social_network_name_clean),
-				'IMG_SOCIAL_CONNECT' => '<img src="' . IP_ROOT_PATH . 'images/social_connect/button_' . $social_network_name_clean . '_connect.png" alt="" title="" />'
+				'IMG_SOCIAL_CONNECT' => '<img src="' . IP_ROOT_PATH . 'images/social_connect/' . $social_network_name_clean . '_button_connect.png" alt="" title="" />'
 				)
 			);
 
-			// Aquí se debería mostrar dos opciones: registro o vincular cuenta
+			// Here we should display two options: new registration or link
 			$url_login = append_sid(CMS_PAGE_LOGIN . '?social_network_link=' . $social_network_name_clean);
 			$url_register = append_sid(CMS_PAGE_PROFILE . '?mode=register&amp;social_network=' . $social_network_name_clean);
 
@@ -115,7 +115,7 @@ if ($config['enable_social_connect'])
 			$template->assign_block_vars('social_connect_button', array(
 				'L_SOCIAL_CONNECT' => sprintf($lang['SOCIAL_CONNECT_LOGIN'], $social_network->get_name()),
 				'U_SOCIAL_CONNECT' => append_sid(CMS_PAGE_LOGIN . '?social_network=' . $social_network->get_name_clean() . '&redirect=' . urlencode($redirect_url) . '&admin=' . $login_admin),
-				'IMG_SOCIAL_CONNECT' => '<img src="' . IP_ROOT_PATH . 'images/social_connect/button_' . $social_network->get_name_clean() . '_connect.png" alt="" title="" />'
+				'IMG_SOCIAL_CONNECT' => '<img src="' . IP_ROOT_PATH . 'images/social_connect/' . $social_network->get_name_clean() . '_button_connect.png" alt="" title="" />'
 				)
 			);
 		}

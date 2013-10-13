@@ -1406,7 +1406,7 @@ function get_database_size()
 */
 function add_permission_language()
 {
-	global $user;
+	global $user, $class_plugins;
 
 	// First of all, our own file. We need to include it as the first file because it presets all relevant variables.
 	// MIGHTY GORGON - LANG - BEGIN
@@ -1416,15 +1416,8 @@ function add_permission_language()
 	setup_extra_lang(array('lang_cms_permissions', 'lang_permissions'));
 
 	// Add Plugins Lang!
-	if (!class_exists('class_plugins'))
-	{
-		@include(IP_ROOT_PATH . 'includes/class_plugins.' . PHP_EXT);
-	}
-
-	if (empty($class_plugins))
-	{
-		$class_plugins = new class_plugins();
-	}
+	if (!class_exists('class_plugins')) include(IP_ROOT_PATH . 'includes/class_plugins.' . PHP_EXT);
+	if (empty($class_plugins)) $class_plugins = new class_plugins();
 
 	foreach ($cache->obtain_plugins_config() as $k => $plugin)
 	{

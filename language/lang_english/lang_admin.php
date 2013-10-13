@@ -351,16 +351,6 @@ $lang = array_merge($lang, array(
 	'SESSION_LAST_VISIT_RESET' => 'Last Visit Refresh If Session Expired',
 	'SESSION_LAST_VISIT_RESET_EXPLAIN' => 'If you enable this option, Last Visit time for use will be updated even after if session expires. Otherwise Last Visit time will be updated only if autologin is enabled and the maximum login time has been reached.',
 
-// Social networks
-	'Enable_Social_Networks_Login' => 'Enable Social Networks Login (global switch)',
-	'Enable_Social_Networks_Login_Explain' => 'Allow users login and register using their social networks accounts',
-	'Facebook_Login_Settings' => 'Facebook Login Settings',
-	'Facebook_Login_Settings_explain' => 'Please follow the instructions to get your App ID and App Secret:<br />- Visit the <a href="https://developers.facebook.com/" target="_blank">Facebook Developers website</a>.<br />- Login with your Facebook account.<br />- Create a new application.<br />- Disable "Sandbox Mode".<br />- Include your App Domain, with no http/https nor www (ie icyphoenix.com).<br />- Enable the option "Website with Facebook Login", and insert your website url, with http/https AND www (ie http://www.icyphoenix.com).<br />- Save the changes.<br />- Write your App ID and App Secret below.',
-	'Enable_Facebook_Login' => 'Enable Facebook Login',
-	'Enable_Facebook_Login_explain' => 'Allow users login and register using their facebook account. Remember adding your app tokens below',
-	'Facebook_App_ID' => 'App ID',
-	'Facebook_App_Secret' => 'App Secret',
-
 // Visual Confirmation
 	'Visual_confirm' => 'Enable Visual Confirmation',
 	'Visual_confirm_explain' => 'Requires users to enter a code defined by an image when registering.',

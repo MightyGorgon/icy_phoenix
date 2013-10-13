@@ -47,6 +47,13 @@ $mem_limit = check_mem_limit();
 $mode = (isset($_POST['mode'])) ? htmlspecialchars($_POST['mode']) : ((isset($_GET['mode'])) ? htmlspecialchars($_GET['mode']) : 'start');
 $option = (isset($_POST['option'])) ? htmlspecialchars($_POST['option']) : '';
 
+// Moved from common.php...
+if ($mode == 'start')
+{
+	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+	founder_protect($founder_id);
+}
+
 // Before doing anything else send config.php if requested
 if ($mode == 'download')
 {

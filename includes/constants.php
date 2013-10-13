@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.0.7.93');
+define('ICYPHOENIX_VERSION', '2.0.8.94');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -474,9 +474,6 @@ define('HACKS_LIST_TABLE', $table_prefix . 'hacks_list');
 define('JR_ADMIN_TABLE', $table_prefix . 'jr_admin_users');
 define('KB_ARTICLES_TABLE', $table_prefix . 'kb_articles');
 define('IMAGES_TABLE', $table_prefix . 'images');
-define('LINK_CATEGORIES_TABLE', $table_prefix . 'link_categories');
-define('LINK_CONFIG_TABLE', $table_prefix . 'link_config');
-define('LINKS_TABLE', $table_prefix . 'links');
 define('LIW_CACHE_TABLE', $table_prefix . 'liw_cache');
 define('LOGINS_TABLE', $table_prefix . 'logins');
 define('LOG_TABLE', $table_prefix . 'log');
@@ -508,11 +505,6 @@ define('SITE_HISTORY_TABLE', $table_prefix . 'site_history');
 define('SMILIES_TABLE', $table_prefix . 'smilies');
 define('STATS_CONFIG_TABLE', $table_prefix . 'stats_config');
 define('STATS_MODULES_TABLE', $table_prefix . 'stats_modules');
-define('SUDOKU_SESSIONS', $table_prefix . 'sudoku_sessions');
-define('SUDOKU_SOLUTIONS', $table_prefix . 'sudoku_solutions');
-define('SUDOKU_STARTS', $table_prefix . 'sudoku_starts');
-define('SUDOKU_STATS', $table_prefix . 'sudoku_stats');
-define('SUDOKU_USERS', $table_prefix . 'sudoku_users');
 define('THANKS_TABLE', $table_prefix . 'thanks');
 define('THEMES_TABLE', $table_prefix . 'themes');
 define('TICKETS_CAT_TABLE', $table_prefix . 'tickets_cat');
@@ -624,6 +616,20 @@ define('PA_VOTES_TABLE', $table_prefix . 'pa_votes');
 define('PA_AUTH_ACCESS_TABLE', $table_prefix . 'pa_auth');
 define('PA_MIRRORS_TABLE', $table_prefix . 'pa_mirrors');
 // PA FILES - END
+
+// LINKS - BEGIN
+define('LINKS_TABLE', $table_prefix . 'links');
+define('LINK_CATEGORIES_TABLE', $table_prefix . 'link_categories');
+define('LINK_CONFIG_TABLE', $table_prefix . 'link_config');
+// LINKS - END
+
+// SUDOKU - BEGIN
+define('SUDOKU_SESSIONS', $table_prefix . 'sudoku_sessions');
+define('SUDOKU_SOLUTIONS', $table_prefix . 'sudoku_solutions');
+define('SUDOKU_STARTS', $table_prefix . 'sudoku_starts');
+define('SUDOKU_STATS', $table_prefix . 'sudoku_stats');
+define('SUDOKU_USERS', $table_prefix . 'sudoku_users');
+// SUDOKU - END
 
 // Event Registration - BEGIN
 define('REGISTRATION_TABLE', $table_prefix . 'registration');

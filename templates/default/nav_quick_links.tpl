@@ -109,19 +109,9 @@ if(GetCookie(tmp) == '2')
 					<td class="genmed" align="left"><a href="{U_AJAX_SHOUTBOX}">{L_LINK_AJAX_SHOUTBOX}</a></td>
 				</tr>
 				<tr>
-					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed" align="left"><a href="{U_LINKS}">{L_LINK_LINKS}</a></td>
-				</tr>
-				<tr>
 					<td align="left" width="8">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed" align="left"><a href="{U_CONTACT_US}">{L_LINK_CONTACT_US}</a></td>
 				</tr>
-				<!-- IF S_LOGGED_IN -->
-				<tr>
-					<td width="8" align="left">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed" align="left"><a href="{U_SUDOKU}">{L_LINK_SUDOKU}</a></td>
-				</tr>
-				<!-- ENDIF -->
 			</table>
 		</div>
 		<div id="main_links" class="js-sh-box">

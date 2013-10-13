@@ -289,12 +289,6 @@ if (!empty($config['url_rw']) || !empty($config['url_rw_guests']))
 	@include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
 }
 
-if ($config['admin_protect'])
-{
-	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-	founder_protect($founder_id);
-}
-
 if ((isset($_GET['lofi']) && (intval($_GET['lofi']) == 1)) || (isset($_COOKIE[$config['cookie_name'] . '_lofi']) && (intval($_COOKIE[$config['cookie_name'] . '_lofi']) == 1)))
 {
 	$lofi = 1;

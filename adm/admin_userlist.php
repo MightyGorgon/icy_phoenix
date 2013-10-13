@@ -173,7 +173,8 @@ switch($mode)
 			{
 				$user_id = intval($user_ids[$i]);
 
-				if($user_id == '2')
+				$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+				if(($user_id == 2) || ($user_id == $founder_id))
 				{
 					message_die(GENERAL_ERROR, $lang['L_ADMINEDITMSG']);
 				}

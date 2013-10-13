@@ -106,6 +106,7 @@ if (isset($_POST['submit']))
 	$current_banlist = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
+	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
 	$kill_session_sql = '';
 	for($i = 0; $i < sizeof($user_list); $i++)
 	{
@@ -118,7 +119,7 @@ if (isset($_POST['submit']))
 			}
 		}
 
-		if (!$in_banlist && ($user_list[$i] != ANONYMOUS))
+		if (!$in_banlist && ($user_list[$i] != ANONYMOUS) && ($user_list[$i] != $founder_id))
 		{
 			$kill_session_sql .= (($kill_session_sql != '') ? ' OR ' : '') . "session_user_id = " . $user_list[$i];
 

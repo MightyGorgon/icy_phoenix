@@ -245,7 +245,8 @@ elseif ($mode == 'unban')
 }
 elseif ($mode == 'ban')
 {
-	if (($user->data['user_level'] != ADMIN) && !$is_auth['auth_ban'])
+	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+	if ((($user->data['user_level'] != ADMIN) && !$is_auth['auth_ban']) || ($poster_id == $founder_id))
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}
@@ -300,7 +301,8 @@ elseif ($mode == 'ban')
 }
 elseif ($mode == 'warn')
 {
-	if (($user->data['user_level'] != ADMIN) && !$is_auth['auth_ban'])
+	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
+	if ((($user->data['user_level'] != ADMIN) && !$is_auth['auth_ban']) || ($poster_id == $founder_id))
 	{
 		message_die(GENERAL_ERROR, $lang['Not_Authorized']);
 	}

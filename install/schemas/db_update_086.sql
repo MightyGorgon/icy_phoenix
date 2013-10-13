@@ -84,6 +84,24 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('user_allow_p
 ##ALTER TABLE `phpbb_auth_access` ADD `group_id` MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER `group_id`;
 ##ALTER TABLE `phpbb_users` ADD `user_groups_ids` MEDIUMTEXT NOT NULL AFTER `user_mask`;
 ##ALTER TABLE `phpbb_users` ADD `user_groups_refresh` TINYINT(1) DEFAULT '0' AFTER `user_groups_ids`;
+DELETE FROM `phpbb_config` WHERE `config_name` = 'admin_protect';
+
+
+
+########################################
+##              BUILD 094             ##
+########################################
+ALTER TABLE `phpbb_users` ADD `user_facebook_id` VARCHAR(40) NOT NULL DEFAULT '' AFTER `user_email_hash`;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_social_connect', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_facebook_login', '0');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app_id', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app_secret', '');
+DELETE FROM `phpbb_config` WHERE `config_name` = 'index_links';
+DELETE FROM `phpbb_cms_blocks` WHERE bs_id = (SELECT bs_id FROM `phpbb_cms_block_settings` WHERE blockfile = 'links');
+DELETE FROM `phpbb_cms_block_variable` WHERE block = 'links';
+DELETE FROM `phpbb_cms_block_settings` WHERE blockfile = 'links';
+DELETE FROM `phpbb_cms_layout_special` WHERE page_id = 'links';
+DELETE FROM `phpbb_cms_nav_menu` WHERE menu_links = 'links.php';
 
 
 
@@ -92,7 +110,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('user_allow_p
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.7.93' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.8.94' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

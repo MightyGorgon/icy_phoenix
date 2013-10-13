@@ -353,25 +353,19 @@ else
 		$tables_ary = array(
 			'stats_config',
 			'config',
-			'config',
-			'link_config',
-			'link_config'
+			'config'
 		);
 
 		$cnames_ary = array(
 			'install_date',
 			'board_startdate',
-			'default_lang',
-			'site_logo',
-			'site_url'
+			'default_lang'
 		);
 
 		$cvalues_ary = array(
 			time(),
 			time(),
-			$db->sql_escape($language),
-			'http://' . $server_name . $script_path . 'images/links/banner_ip.gif',
-			'http://' . $server_name . $script_path
+			$db->sql_escape($language)
 		);
 
 		for ($i = 0; $i < sizeof($tables_ary); $i++)
