@@ -4961,6 +4961,20 @@ function page_header($title = '', $parse_template = false)
 		$nav_menu_ads_top = get_ad('nmt');
 		$nav_menu_ads_bottom = get_ad('nmb');
 
+		$social_connect_buttons = '';
+		if ($config['enable_social_connect'])
+		{
+			include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
+			$available_networks = SocialConnect::get_available_networks();
+
+			foreach ($available_networks as $social_network)
+			{
+				$social_connect_url = append_sid(CMS_PAGE_LOGIN . '?social_network=' . $social_network->get_name_clean());
+				$social_connect_img = '<img src="' . IP_ROOT_PATH . 'images/social_connect/button_' . $social_network->get_name_clean() . '_connect.png" alt="" title="' . $social_network->get_name() . '" />';
+				$social_connect_buttons .= '<a href="' . $social_connect_url . '">' . $social_connect_img . '</a>';
+			}
+		}
+
 		// The following assigns all _common_ variables that may be used at any point in a template.
 		$template->assign_vars(array(
 			'TOTAL_USERS_ONLINE' => $l_online_users,
@@ -5075,6 +5089,8 @@ function page_header($title = '', $parse_template = false)
 			'U_CPL_DRAFTS' => append_sid('drafts.' . PHP_EXT),
 			'U_CPL_ZEBRA' => append_sid(CMS_PAGE_PROFILE . '?mode=zebra&amp;zmode=friends'),
 			// Mighty Gorgon - CPL - END
+
+			'SOCIAL_CONNECT_BUTTONS' => $social_connect_buttons,
 
 			// Activity - BEGIN
 			/*

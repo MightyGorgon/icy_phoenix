@@ -31,6 +31,7 @@ $lang = array_merge($lang, array(
 	'15_Various_Settings' => 'Various Settings',
 	'20_SQL_Charge' => 'SQL Optimization',
 	'25_Users' => 'Users',
+	'26_Social_Settings' => 'Social Networks Settings',
 	'30_Posting' => 'Posting And Messages',
 	'40_IMG_Posting' => 'Images In Posts',
 	'50_Hierarchy_setting' => 'Forum',
