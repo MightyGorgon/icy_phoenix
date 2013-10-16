@@ -12,8 +12,8 @@ define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
-	$file = basename(__FILE__);
-	$module['1000_Configuration']['210_MG_Quick_Settings'] = $file;
+	//$file = basename(__FILE__);
+	//$module['1000_Configuration']['210_MG_Quick_Settings'] = $file;
 	return;
 }
 

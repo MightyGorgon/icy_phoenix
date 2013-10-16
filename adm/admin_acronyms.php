@@ -13,7 +13,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
-	$module['1100_General']['100_Acronyms'] = $file;
+	$module['1100_General']['190_Acronyms'] = $file;
 	return;
 }
 

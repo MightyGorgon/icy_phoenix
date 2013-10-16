@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty ($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1100_General']['240_Replace_title'] = $filename;
+	$module['1200_Forums']['240_Replace_title'] = $filename;
 	return;
 }
 

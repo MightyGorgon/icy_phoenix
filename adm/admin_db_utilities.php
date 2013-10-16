@@ -52,8 +52,6 @@ if (empty($is_allowed))
 }
 // Mighty Gorgon - ACP Privacy - END
 
-include(IP_ROOT_PATH . 'includes/sql_parse.' . PHP_EXT);
-
 // Set VERBOSE to 1  for debugging info..
 define('VERBOSE', 0);
 
@@ -590,8 +588,8 @@ if(!empty($perform))
 				if($sql_query != "")
 				{
 					// Strip out sql comments...
-					$sql_query = remove_remarks($sql_query);
-					$pieces = split_sql_file($sql_query, ";");
+					$sql_query = $db->remove_remarks($sql_query);
+					$pieces = $db->split_sql_file($sql_query, ";");
 
 					$sql_count = sizeof($pieces);
 					for($i = 0; $i < $sql_count; $i++)

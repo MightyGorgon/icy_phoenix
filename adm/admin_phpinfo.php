@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if (!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['2400_INFO']['120_PHP_INFO'] = $filename;
+	$module['1000_Configuration']['230_PHP_INFO'] = $filename;
 	return;
 }
 

@@ -20,8 +20,8 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1600_News_Admin']['130_XS_News'] = $filename;
-	$module['1600_News_Admin']['120_XS_News_Config'] = $filename . '?mode=config';
+	$module['1250_News_Admin']['130_XS_News'] = $filename;
+	$module['1250_News_Admin']['120_XS_News_Config'] = $filename . '?mode=config';
 	return;
 }
 
