@@ -96,6 +96,7 @@ div.thumb div { border-radius: 4px 4px 4px 4px; }
 
 .row1h:hover, .row1hHover, .row2h:hover, .row2hHover { background-color: #ffffdd; }
 .row1h-new:hover, .row1h-newHover, .row2h-new:hover, .row2h-newHover { background-color: #ffdddd; }
+tr.row1h:hover, tr.row1hHover, tr.row2h:hover, tr.row2hHover, tr.row1h-new:hover, tr.row1h-newHover, tr.row2h-new:hover, tr.row2h-newHover { background-image: none; }
 
 .forumline div.row1, .forumline p.row1, .forumlinenb div.row1, .forumlinenb p.row1 { text-align: left; padding: 3px; }
 .forumline .row1h-forum, .forumline .row1h-forumHover, .forumline .row1h-forum-new, .forumline .row1h-forum-newHover { padding: 0px 2px 2px 2px; }

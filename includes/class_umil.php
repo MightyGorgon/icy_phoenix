@@ -1773,7 +1773,7 @@ class umil
 
 		if (!function_exists('get_available_dbms'))
 		{
-			include(IP_ROOT_PATH . "includes/functions_install." . PHP_EXT);
+			include(IP_ROOT_PATH . 'includes/functions_install.' . PHP_EXT);
 		}
 
 		/*
@@ -1788,7 +1788,7 @@ class umil
 			$available_dbms = get_available_dbms($dbms);
 
 			$sql_query = $this->create_table_sql($table_name, $table_data);
-			$sql_query = split_sql_file($sql_query, $available_dbms[$dbms]['DELIM']);
+			$sql_query = $this->db->split_sql_file($sql_query, $available_dbms[$dbms]['DELIM']);
 
 			foreach ($sql_query as $sql)
 			{

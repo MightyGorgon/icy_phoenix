@@ -534,7 +534,7 @@ if ($mode == 'install')
 			$sql_query = @fread(@fopen($dbms_file, 'r'), @filesize($dbms_file));
 			$sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
 
-			$sql_query = $remove_remarks($sql_query);
+			$db->remove_remarks($sql_query);
 			$sql_query = $db->split_sql_file($sql_query, $delimiter);
 
 			$sql_count = sizeof($sql_query);

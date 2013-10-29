@@ -21,7 +21,6 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 require_once(IP_ROOT_PATH . 'includes/news_data.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 /**
  * Class which displays news content.
@@ -735,6 +734,9 @@ class NewsModule
 	function parseMessage($text, $enable_bbcode, $enable_html, $enable_smilies, $enable_autolinks_acronyms)
 	{
 		global $db, $cache, $config, $user, $bbcode, $lofi;
+
+		if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		if (empty($bbcode)) $bbcode = new bbcode();
 
 		if(!empty($text))
 		{

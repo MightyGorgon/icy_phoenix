@@ -282,7 +282,8 @@ else
 	{
 		include(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
 	}
-	include('includes/db.' . PHP_EXT);
+	include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
+
 	$dbms_schema = 'schemas/' . $available_dbms[$dbms]['SCHEMA'] . '_schema.sql';
 	$dbms_basic = 'schemas/' . $available_dbms[$dbms]['SCHEMA'] . '_basic.sql';
 
@@ -301,8 +302,8 @@ else
 		$sql_query = @fread(@fopen($dbms_schema, 'r'), @filesize($dbms_schema));
 		$sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
 
-		$sql_query = $ip_sql->remove_remarks($sql_query);
-		$sql_query = $ip_sql->split_sql_file($sql_query, $delimiter);
+		$db->remove_remarks($sql_query);
+		$sql_query = $db->split_sql_file($sql_query, $delimiter);
 
 		for ($i = 0; $i < sizeof($sql_query); $i++)
 		{
@@ -324,8 +325,8 @@ else
 		$sql_query = @fread(@fopen($dbms_basic, 'r'), @filesize($dbms_basic));
 		$sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
 
-		$sql_query = $ip_sql->remove_remarks($sql_query);
-		$sql_query = $ip_sql->split_sql_file($sql_query, $delimiter_basic);
+		$db->remove_remarks($sql_query);
+		$sql_query = $db->split_sql_file($sql_query, $delimiter_basic);
 
 		for($i = 0; $i < sizeof($sql_query); $i++)
 		{

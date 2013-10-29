@@ -73,7 +73,7 @@ if (USERS_SUBFOLDERS_IMG)
 $show_last_images = true;
 if ($show_last_images && ($user->data['user_id'] != ANONYMOUS))
 {
-	$n_pics = 3;
+	$n_pics = 5;
 	$images_data = $class_images->get_user_images($user->data['user_id'], 'i.pic_id DESC', 0, $n_pics);
 	if (!empty($images_data))
 	{
