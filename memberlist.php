@@ -914,8 +914,9 @@ $template->assign_vars(array(
 	)
 );
 
-full_page_generation('memberlist_body.tpl', $lang['Memberlist'], '', '');
 
+$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_GROUP_CP) . '">' . $lang['LINK_USERGROUPS'] . '</a>';
+full_page_generation('memberlist_body.tpl', $lang['Memberlist'], '', '');
 
 function _sort_last_active($first, $second)
 {

@@ -26,9 +26,16 @@ $mem_limit = img_check_mem_limit();
 class ImgObj
 {
 	var $ImageID;
-	var $ExifData;
 	var $ChangeFlag;
 	var $Alpha;
+
+	var $ExifData = array();
+	var $ImageStatsSRC = array();
+	var $ImageMimeType;
+	var $ImageTypeNo;
+	var $ImageTypeExt;
+
+	var $JPGQuality = 75;
 
 	//****************************************************************************
 	// Function called when object created
@@ -46,67 +53,71 @@ class ImgObj
 	function ReadSourceFile($image_file_name)
 	{
 		$this->DestroyImage();
-		$image_stats = @getimagesize($image_file_name);
-		if ($image_stats[2] == 3)
+		$this->ImageStatsSRC = @getimagesize($image_file_name);
+
+		if ($this->ImageStatsSRC[2] == 3)
 		{
-			$image_stats[2] = IMG_PNG;
+			$this->ImageStatsSRC[2] = IMG_PNG;
 		}
-		$this->ImageTypeNo($image_stats[2]);
-		switch ($this->ImageTypeNo())
+
+		$this->ImageMimeType = $this->ImageStatsSRC['mime'];
+		$this->ImageTypeNo = $this->ImageStatsSRC[2];
+
+		switch ($this->ImageTypeNo)
 		{
 			case IMG_GIF:
-				$read_function = 'imagecreatefromgif';
+				if(!(imagetypes() & $this->ImageTypeNo))
+				{
+					return false;
+				}
+				$this->ImageTypeExt = '.gif';
+				$image_read_func = 'imagecreatefromgif';
 				break;
 			case IMG_JPG:
+				if(!(imagetypes() & $this->ImageTypeNo))
+				{
+					return false;
+				}
 				if (function_exists('exif_read_data'))
 				{
-					$this->ExifData = exif_read_data($image_file_name, 0,true);
+					$this->exif_get_data($image_file_name);
 				}
-				$read_function = 'imagecreatefromjpeg';
+				$this->ImageTypeExt = '.jpg';
+				$image_read_func = 'imagecreatefromjpeg';
 				break;
 			case IMG_PNG:
-				$read_function = 'imagecreatefrompng';
+				if(!(imagetypes() & $this->ImageTypeNo))
+				{
+					return false;
+				}
+				$this->ImageTypeExt = '.png';
+				$image_read_func = 'imagecreatefrompng';
 				break;
 			default:
 				return false;
 		}
-		$this->ImageID = $read_function($image_file_name);
-		if (function_exists('imageantialias'))
-		{
-			imageantialias($this->ImageID, true);
-		}
-		imagealphablending($this->ImageID, false);
-		if (function_exists('imagesavealpha'))
-		{
-			$this->Alpha = true;
-			imagesavealpha($this->ImageID, true);
-		}
-		$this->ChangeFlag = true;
-		if ($this->ImageID)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
 
-	//****************************************************************************
-	// Function to read source image into memory
-	//   Usage : ReadSourceFileJPG(image file name)
-	//****************************************************************************
-	function ReadSourceFileJPG($image_file_name)
-	{
-		//static $static_image_extension;
-		//static $static_image_type;
-		//static $static_mime_type;
-		$this->DestroyImage();
-		$static_image_type = IMG_JPG;
-		$static_image_extension = '.jpg';
-		$static_mime_type = 'image/jpeg';
-		$this->ImageID = imagecreatefromjpeg($image_file_name);
+		$this->ImageID = $image_read_func($image_file_name);
+
+		if (function_exists('imageistruecolor'))
+		{
+			if (imageistruecolor($this->ImageID))
+			{
+				if (function_exists('imageantialias'))
+				{
+					imageantialias($this->ImageID, true);
+				}
+				imagealphablending($this->ImageID, false);
+				if (function_exists('imagesavealpha'))
+				{
+					$this->Alpha = true;
+					imagesavealpha($this->ImageID, true);
+				}
+			}
+		}
+
 		$this->ChangeFlag = true;
+
 		if ($this->ImageID)
 		{
 			return true;
@@ -128,8 +139,9 @@ class ImgObj
 		{
 			return false;
 		}
-		//$image_file_name .= $this->ImageTypeExt();
-		switch ($this->ImageTypeNo())
+
+		//$image_file_name .= $this->ImageTypeExt;
+		switch ($this->ImageTypeNo)
 		{
 			case IMG_GIF:
 				imagegif($this->ImageID, $image_file_name);
@@ -143,23 +155,9 @@ class ImgObj
 			default:
 				return false;
 		}
-		@chmod($image_file_name, 0777);
-		return true;
-	}
 
-	//****************************************************************************
-	// Function to write image file to disk
-	//   Usage : SendToFileJPG(image file name, Quality)
-	//   Returns : true on success and false on fail
-	//****************************************************************************
-	function SendToFileJPG($image_file_name, $jpg_quality = 75)
-	{
-		if (!$this->ImageID)
-		{
-			return false;
-		}
-		imagejpeg($this->ImageID, $image_file_name, $this->JpegQuality($jpg_quality));
 		@chmod($image_file_name, 0777);
+
 		return true;
 	}
 
@@ -174,21 +172,30 @@ class ImgObj
 		{
 			return false;
 		}
-		header('Content-type: ' . $this->ImageMimeType());
-		header('Content-Length: ' . $this->ImageFilesize());
+
+		header('Content-type: ' . $this->ImageMimeType);
+		// Better avoid filesize if we are not sure about that...
+		/*
+		$img_filesize = $this->ImageFilesize();
+		if (!empty($img_filesize))
+		{
+			header('Content-Length: ' . $img_filesize);
+		}
+		*/
 		header('Content-Disposition: filename=' . $pic_prefix . preg_replace('/[^A-Za-z0-9]+/', '_', $pic_name) . $pic_suffix . '.' . $pic_filetype);
-		switch ($this->ImageTypeNo()){
+
+		switch ($this->ImageTypeNo){
 			case IMG_GIF:
 				imagegif($this->ImageID);
 				break;
 			case IMG_JPG:
-				if ($jpg_quality == false)
+				if (empty($jpg_quality))
 				{
 					imagejpeg($this->ImageID);
 				}
 				else
 				{
-					imagejpeg($this->ImageID, "", $this->JpegQuality($jpg_quality));
+					imagejpeg($this->ImageID, null, $this->JpegQuality($jpg_quality));
 				}
 				break;
 			case IMG_PNG:
@@ -197,30 +204,7 @@ class ImgObj
 			default:
 				return false;
 		}
-		return true;
-	}
 
-	//****************************************************************************
-	// Function to send image to browser
-	//   Usage : SendToBrowserJPG('Pic_Name', '.jpg', 'thumb_', '_nuffed')
-	//   Returns : true on success and false on failure
-	//****************************************************************************
-	function SendToBrowserJPG($pic_name = 'img_nuffed', $pic_filetype = 'jpg', $pic_prefix = '', $pic_suffix = '', $jpg_quality = 75)
-	{
-		if (!$this->ImageID)
-		{
-			return false;
-		}
-		header('Content-type: image/jpeg');
-		header('Content-Disposition: filename=' . $pic_prefix . preg_replace('/[^A-Za-z0-9]+/', '_', $pic_name) . $pic_suffix . '.' . $pic_filetype);
-		if ($jpg_quality == false)
-		{
-			imagejpeg($this->ImageID);
-		}
-		else
-		{
-			imagejpeg($this->ImageID, "", $this->JpegQuality($jpg_quality));
-		}
 		return true;
 	}
 
@@ -231,7 +215,6 @@ class ImgObj
 	//****************************************************************************
 	function LoadSendToBrowser($pic_src, $pic_name = 'image', $pic_filetype = 'jpg', $pic_prefix = '', $pic_suffix = '', $jpg_quality = 75)
 	{
-		global $images;
 		switch ($pic_filetype)
 		{
 			case 'gif':
@@ -246,9 +229,11 @@ class ImgObj
 				$pic_filetype_header = 'jpeg';
 				break;
 		}
+
 		header('Content-type: image/' . $pic_filetype_header);
 		header('Content-Disposition: filename=' . $pic_prefix . $pic_name . $pic_suffix . '.' . $pic_filetype);
 		@readfile($pic_src);
+
 		return true;
 	}
 
@@ -287,30 +272,34 @@ class ImgObj
 	//******************************************************************************
 	function Resize($resize_width = 0, $resize_height = 0, $fit = -1, $alpha = true)
 	{
-		if (!$this->ImageID || $resize_width < 1 || $resize_height < 1)
+		if (!$this->ImageID || ($resize_width < 1) || ($resize_height < 1))
 		{
 			return false;
 		}
-		if (($this->ImageWidth() / $this->ImageHeight()) > ($resize_width / $resize_height))
+
+		$this_image_w = $this->ImageWidth();
+		$this_image_h = $this->ImageHeight();
+
+		if (($this_image_w / $this_image_h) > ($resize_width / $resize_height))
 		{
 			if ($fit == -1)
 			{
-				$resize_height = $resize_width * ($this->ImageHeight()/$this->ImageWidth());
+				$resize_height = $resize_width * ($this_image_h / $this_image_w);
 			}
 			elseif ($fit == 1)
 			{
-				$resize_width = $resize_height * ($this->ImageWidth()/$this->ImageHeight());
+				$resize_width = $resize_height * ($this_image_w / $this_image_h);
 			}
 		}
 		else
 		{
 			if ($fit == 1)
 			{
-				$resize_height = $resize_width * ($this->ImageHeight()/$this->ImageWidth());
+				$resize_height = $resize_width * ($this_image_h / $this_image_w);
 			}
 			elseif ($fit == -1)
 			{
-				$resize_width = $resize_height * ($this->ImageWidth()/$this->ImageHeight());
+				$resize_width = $resize_height * ($this_image_w / $this_image_h);
 			}
 		}
 		$resize = ($this->gdVersion() == 1) ? imagecreate($resize_width, $resize_height) : imagecreatetruecolor($resize_width, $resize_height);
@@ -327,7 +316,7 @@ class ImgObj
 				imagesavealpha($resize, true);
 			}
 		}
-		$resize_function($resize, $this->ImageID, 0, 0, 0, 0, $resize_width, $resize_height, $this->ImageWidth(), $this->ImageHeight());
+		$resize_function($resize, $this->ImageID, 0, 0, 0, 0, $resize_width, $resize_height, $this_image_w, $this_image_h);
 		imagedestroy($this->ImageID);
 		$this->ImageID = $resize;
 		$this->ChangeFlag = true;
@@ -341,37 +330,36 @@ class ImgObj
 	//****************************************************************************
 	function ImageFileSize()
 	{
-		static $static_filesize = 0;
+		$filesize = 0;
 
 		if (!$this->ImageID)
 		{
-			$static_filesize = 0;
 			$this->ChangeFlag = false;
 		}
 
 		if ($this->ChangeFlag)
 		{
 			ob_start(); // start a new output buffer
-			switch ($this->ImageTypeNo())
+			switch ($this->ImageTypeNo)
 			{
 				case IMG_GIF:
 					imagegif($this->ImageID);
 					break;
 				case IMG_JPG:
-					imagejpeg($this->ImageID,"",$this->JpegQuality());
+					imagejpeg($this->ImageID, null, $this->JpegQuality());
 					break;
 				case IMG_PNG:
 					imagepng($this->ImageID);
 					break;
 				default:
-					return false;
+					return $filesize;
 			}
-			$static_filesize = ob_get_length();
+			$filesize = ob_get_length();
 			ob_end_clean(); // stop this output buffer
 			$this->ChangeFlag = false;
 		}
 
-		return $static_filesize;
+		return $filesize;
 	}
 
 	//****************************************************************************
@@ -381,168 +369,12 @@ class ImgObj
 	//****************************************************************************
 	function JpegQuality($quality = 75)
 	{
-		static $static_jpeg_quality = 75;
 		if (($quality >= 1) && ($quality <= 100))
 		{
-			$static_jpeg_quality = $quality;
+			$this->JPGQuality = $quality;
 		}
 		$this->ChangeFlag = true;
-		return $static_jpeg_quality;
-	}
-
-	//****************************************************************************
-	// Function to get and set Imagetype
-	//   Usage : ImageTypeNo(Image Type Constant)
-	//   Returns : Image Type Constant
-	//****************************************************************************
-	function ImageTypeNo($image_type="", $validate=1)
-	{
-		static $static_image_type;
-		switch ($image_type)
-		{
-			case IMG_GIF:
-				if(!(imagetypes() & IMG_GIF))
-				{
-					return false;
-				}
-				$static_image_type = IMG_GIF;
-				if ($validate)
-				{
-					$this->ImageTypeExt('.gif',0);
-					$this->ImageMimeType('image/gif',0);
-				}
-				break;
-			case IMG_JPG:
-				if(!(imagetypes() & IMG_JPG))
-				{
-					return false;
-				}
-				$static_image_type = IMG_JPG;
-				if ($validate)
-				{
-					$this->ImageTypeExt('.jpg',0);
-					$this->ImageMimeType('image/jpeg',0);
-				}
-				break;
-			case IMG_PNG:
-				if(!(imagetypes() & IMG_PNG))
-				{
-					return false;
-				}
-				$static_image_type = IMG_PNG;
-				if ($validate)
-				{
-					$this->ImageTypeExt('.png',0);
-					$this->ImageMimeType('image/png',0);
-				}
-				break;
-		}
-		$this->ChangeFlag = true;
-		return $static_image_type;
-	}
-
-	//****************************************************************************
-	// Function to get and set Image mime type
-	//   Usage : ImageTypeExt(Image type extension as string)
-	//   Returns : Image type extension as string
-	//****************************************************************************
-	function ImageTypeExt($extension = '', $validate = 1)
-	{
-		static $static_image_extension;
-		switch($extension)
-		{
-			case '.gif':
-				if(!(imagetypes() & IMG_GIF))
-				{
-					return false;
-				}
-				$static_image_extension = '.gif';
-				if ($validate)
-				{
-					$this->ImageTypeNo(IMG_GIF,0);
-					$this->ImageMimeType('image/gif',0);
-				}
-				break;
-			case '.jpg':
-			case '.jpeg':
-				if(!(imagetypes() & IMG_JPG))
-				{
-					return false;
-				}
-				$static_image_extension = '.jpg';
-				if ($validate)
-				{
-					$this->ImageTypeNo(IMG_JPG,0);
-					$this->ImageMimeType('image/jpeg',0);
-				}
-				break;
-			case '.png':
-				if(!(imagetypes() & IMG_PNG))
-				{
-					return false;
-				}
-				$static_image_extension = '.png';
-				if ($validate)
-				{
-					$this->ImageTypeNo(IMG_PNG,0);
-					$this->ImageMimeType('image/png',0);
-				}
-				break;
-		}
-		return $static_image_extension;
-	}
-
-	//****************************************************************************
-	// Function to get and set Image mime type
-	//   Usage : ImageMimeType(Image mime type as string)
-	//   Returns : Image mime type as string
-	//****************************************************************************
-	function ImageMimeType($mime_type = '', $validate = 1)
-	{
-		static $static_mime_type;
-		switch($mime_type)
-		{
-			case 'image/gif':
-				if(!(imagetypes() & IMG_GIF))
-				{
-					return false;
-				}
-				$static_mime_type = 'image/gif';
-				if ($validate)
-				{
-					$this->ImageTypeNo(IMG_GIF,0);
-					$this->ImageTypeExt('.gif',0);
-				}
-				break;
-			case 'image/jpeg':
-			case 'image/jpg':
-			case 'image/pjpeg':
-				if(!(imagetypes() & IMG_JPG))
-				{
-					return false;
-				}
-				$static_mime_type = 'image/jpeg';
-				if ($validate)
-				{
-					$this->ImageTypeNo(IMG_JPG,0);
-					$this->ImageTypeExt('.jpg',0);
-				}
-				break;
-			case 'image/png':
-			case 'image/x-png':
-				if(!(imagetypes() & IMG_PNG))
-				{
-					return false;
-				}
-				$static_mime_type = 'image/png';
-				if ($validate)
-				{
-					$this->ImageTypeNo(IMG_PNG,0);
-					$this->ImageTypeExt('.png',0);
-				}
-				break;
-		}
-		return $static_mime_type;
+		return $this->JPGQuality;
 	}
 
 	//****************************************************************************
@@ -558,10 +390,9 @@ class ImgObj
 		{
 			return false;
 		}
-		$this->ImageID = imagecreatefromstring (exif_thumbnail($image_file_name, $width, $height, $type));
-		$this->ImageTypeNo($type);
-		$this->ExifData = exif_read_data($image_file_name, 0,true);
-		if (($this->ImageTypeNo() != IMG_JPG) || !($this->ImageID))
+		$this->ImageID = imagecreatefromstring(exif_thumbnail($image_file_name, $width, $height, $type));
+		$this->ExifData = @exif_read_data($image_file_name, 0, true);
+		if (($this->ImageTypeNo != IMG_JPG) || !($this->ImageID))
 		{
 			return false;
 		}
@@ -611,6 +442,101 @@ class ImgObj
 		return true;
 	}
 
+	// New EXIF Functions
+	/*
+	* EXIF Get EXIF Data
+	*/
+	function exif_get_data($pic)
+	{
+		$exif_data = exif_read_data($pic);
+		$this->ExifData = $exif_data;
+		return $this->ExifData;
+	}
+
+	/*
+	* EXIF Get EXIF Data
+	*/
+	function exif_get_data_short($exif_data)
+	{
+		$exif_data_short = array(
+			'MAKE' => !empty($exif_data['Make']) ? $exif_data['Make'] : 'EXIF_UNKNOWN',
+			'MODEL' => !empty($exif_data['Model']) ? $exif_data['Model'] : 'EXIF_UNKNOWN',
+			'LENS' => !empty($exif_data['Lens']) ? $exif_data['Lens'] : 'EXIF_UNKNOWN',
+			'LENS_ID' => !empty($exif_data['LensId']) ? $exif_data['LensId'] : 'EXIF_UNKNOWN',
+			'FLASH' => !empty($exif_data['Flash']) ? $exif_data['Flash'] : 'EXIF_UNKNOWN',
+			'FOCAL_LENGTH' => !empty($exif_data['FocalLength']) ? ($this->exif_get_float($exif_data['FocalLength']) . 'mm') : 'EXIF_UNKNOWN',
+			'EXPOSURE' => (!empty($exif_data['ExposureTime']) || !empty($exif_data['ShutterSpeedValue'])) ? $this->exif_get_exposure($exif_data) : 'EXIF_UNKNOWN',
+			'APERTURE' => (!empty($exif_data['COMPUTED']['ApertureFNumber']) || !empty($exif_data['FNumber'])) ? $this->exif_get_aperture($exif_data) : 'EXIF_UNKNOWN',
+			'ISO' => !empty($exif_data['ISOSpeedRatings']) ? $exif_data['ISOSpeedRatings'] : 'EXIF_UNKNOWN',
+			'DATE' => !empty($exif_data['DateTime']) ? $exif_data['DateTime'] : 'EXIF_UNKNOWN',
+		);
+		return $exif_data_short;
+	}
+
+	/*
+	* EXIF Get Float Value
+	*/
+	function exif_get_float($value)
+	{
+		$pos = strpos($value, '/');
+		if ($pos === false) return (float) $value;
+		$a = (float) substr($value, 0, $pos);
+		$b = (float) substr($value, $pos + 1);
+		return ($b == 0) ? ($a) : ($a / $b);
+	}
+
+	/*
+	* EXIF Shutter Speed
+	*/
+	function exif_get_exposure($exif_data)
+	{
+		if (!isset($exif_data['ShutterSpeedValue']) && !isset($exif_data['ExposureTime'])) return 0;
+		if (isset($exif_data['ExposureTime']))
+		{
+			$et = $exif_data['ExposureTime'];
+			$pos = strpos($et, '/');
+			if ($pos === false) return (float) $et . 's';
+			$a = (float) substr($et, 0, $pos);
+			$b = (float) substr($et, $pos + 1);
+			if (($b == 0) || ($b == 1))
+			{
+				$shutter = $a . 's';
+			}
+			else
+			{
+				$shutter = '1/' . round($b / $a, 0) . 's';
+			}
+			return $shutter;
+		}
+		else
+		{
+			$ssv = exif_get_float($exif_data['ShutterSpeedValue']);
+			$shutter = pow(2, -$ssv);
+			if ($shutter == 0) return 0;
+			if ($shutter >= 1) return round($shutter, 0) . 's';
+			return '1/' . round(1 / $shutter) . 's';
+		}
+	}
+
+	/*
+	* EXIF Aperture
+	*/
+	function exif_get_aperture($exif_data)
+	{
+		if (!isset($exif_data['COMPUTED']['ApertureFNumber']) && !isset($exif_data['FNumber'])) return 0;
+		if (isset($exif_data['COMPUTED']['ApertureFNumber']))
+		{
+			return $exif_data['COMPUTED']['ApertureFNumber'];
+		}
+		if (isset($exif_data['FNumber']))
+		{
+			$apex = $this->exif_get_float($exif_data['FNumber']);
+			$fstop = pow(2, $apex / 2);
+			if ($fstop == 0) return 0;
+			return 'f/' . round($fstop, 1);
+		}
+	}
+
 	//****************************************************************************
 	// Function to flip image
 	//   usage : Flip(direction [1=Horizontal,2=Vertical,3=both])
@@ -622,7 +548,11 @@ class ImgObj
 		{
 			return false;
 		}
-		$flip = ($this->gdVersion() == 1) ? imagecreate($this->ImageWidth(), $this->ImageHeight()) : imagecreatetruecolor($this->ImageWidth(), $this->ImageHeight());
+
+		$this_image_w = $this->ImageWidth();
+		$this_image_h = $this->ImageHeight();
+
+		$flip = ($this->gdVersion() == 1) ? imagecreate($this_image_w, $this_image_h) : imagecreatetruecolor($this_image_w, $this_image_h);
 		$flip_function = (gdVersion == 1) ? 'imagecopyresized' : 'imagecopyresampled';
 		if (function_exists('imageantialias'))
 		{
@@ -637,13 +567,13 @@ class ImgObj
 		switch ($direction)
 		{
 			case IMG_GIF:
-				$flip_function($flip, $this->ImageID, 0, 0, $this->ImageWidth(), 0, $this->ImageWidth(), $this->ImageHeight(), -$this->ImageWidth(), $this->ImageHeight());
+				$flip_function($flip, $this->ImageID, 0, 0, $this_image_w, 0, $this_image_w, $this_image_h, -$this_image_w, $this_image_h);
 				break;
 			case IMG_JPG:
-				$flip_function($flip, $this->ImageID, 0, 0, 0, $this->ImageHeight(), $this->ImageWidth(), $this->ImageHeight(), $this->ImageWidth(), -$this->ImageHeight());
+				$flip_function($flip, $this->ImageID, 0, 0, 0, $this_image_h, $this_image_w, $this_image_h, $this_image_w, -$this_image_h);
 				break;
 			case IMG_PNG:
-				$flip_function($flip, $this->ImageID, 0, 0, $this->ImageWidth(), $this->ImageHeight(), $this->ImageWidth(), $this->ImageHeight(), -$this->ImageWidth(), -$this->ImageHeight());
+				$flip_function($flip, $this->ImageID, 0, 0, $this_image_w, $this_image_h, $this_image_w, $this_image_h, -$this_image_w, -$this_image_h);
 				break;
 		}
 		imagedestroy($this->ImageID);
@@ -719,6 +649,9 @@ class ImgObj
 	//****************************************************************************
 	function Crop($left, $top, $right, $bottom)
 	{
+		$this_image_w = $this->ImageWidth();
+		$this_image_h = $this->ImageHeight();
+
 		if($left < 0)
 		{
 			$left = 0;
@@ -727,13 +660,13 @@ class ImgObj
 		{
 			$top = 0;
 		}
-		if($right > $this->ImageWidth())
+		if($right > $this_image_w)
 		{
-			$right = $this->ImageWidth();
+			$right = $this_image_w;
 		}
-		if($bottom > $this->ImageHeight())
+		if($bottom > $this_image_h)
 		{
-			$bottom = $this->ImageHeight();
+			$bottom = $this_image_h;
 		}
 		$temp_img = ($this->gdVersion() == 1) ? imagecreate($right - $left, $bottom - $top) : imagecreatetruecolor($right - $left, $bottom - $top);
 		imagecopy($temp_img, $this->ImageID, 0, 0, $left, $top, $right - $left, $bottom - $top) || die('error');
@@ -750,15 +683,18 @@ class ImgObj
 	//****************************************************************************
 	function CropSquare()
 	{
-		if ($this->ImageWidth() > $this->ImageHeight())
+		$this_image_w = $this->ImageWidth();
+		$this_image_h = $this->ImageHeight();
+
+		if ($this_image_w > $this_image_h)
 		{
-			$slack = ($this->ImageWidth() - $this->ImageHeight()) / 2;
-			return $this->Crop($slack, 0, $this->ImageWidth() - $slack, $this->ImageHeight());
+			$slack = ($this_image_w - $this_image_h) / 2;
+			return $this->Crop($slack, 0, $this_image_w - $slack, $this_image_h);
 		}
 		else
 		{
-			$slack = ($this->ImageHeight() - $this->Width()) / 2;
-			return $this->Crop(0, $slack, $this->ImageWidth(), $this->ImageHeight() - $slack);
+			$slack = ($this_image_h - $this->Width()) / 2;
+			return $this->Crop(0, $slack, $this_image_w, $this_image_h - $slack);
 		}
 		// crop will change the changeflag for us
 	}
@@ -815,8 +751,8 @@ class ImgObj
 			//If we resize the watermark we will lose transparency.
 			if((($this->ImageWidth() * $maxsize / 100) < $watermarkfile_width) || (($this->ImageHeight() * $maxsize / 100) < $watermarkfile_height))
 			{
-				$tempwidth=$this->ImageWidth();
-				$tempheight=$this->ImageHeight();
+				$tempwidth = $this->ImageWidth();
+				$tempheight = $this->ImageHeight();
 				$this->Resize($watermarkfile_width * 100 / $maxsize, $watermarkfile_height * 100 / $maxsize, 1, false);
 			}
 		}
@@ -1046,8 +982,8 @@ class ImgObj
 				$grayColor = $grayR | $grayG | $grayB;
 
 				// set the pixel color
-				imagesetpixel ($this->ImageID, $x, $y, $grayColor);
-				imagecolorallocate ($this->ImageID, $gray, $gray, $gray);
+				imagesetpixel($this->ImageID, $x, $y, $grayColor);
+				imagecolorallocate($this->ImageID, $gray, $gray, $gray);
 			}
 		}
 		$this->ChangeFlag = true;
@@ -1073,8 +1009,8 @@ class ImgObj
 				$gray = round(.299*$red + .587*$green + .114*$blue);
 				$gray = ($gray > $threshold) ? 255 : 0 ;
 				// set the pixel color
-				$newcolour = imagecolorallocate ($this->ImageID, $gray, $gray, $gray);
-				imagesetpixel ($this->ImageID, $x, $y, $newcolour);
+				$newcolour = imagecolorallocate($this->ImageID, $gray, $gray, $gray);
+				imagesetpixel($this->ImageID, $x, $y, $newcolour);
 			}
 		}
 		$this->ChangeFlag = true;
@@ -1398,7 +1334,7 @@ class ImgObj
 				}
 
 				$newcol = imagecolorallocate ($this->ImageID, $red,$green,$blue);
-				imagesetpixel ($this->ImageID, $x, $y, $newcol);
+				imagesetpixel($this->ImageID, $x, $y, $newcol);
 				}
 		}
 		$this->ChangeFlag = true;
@@ -1655,8 +1591,8 @@ class ImgObj
 				{
 					$green = 0;
 				}
-				$newcol = imagecolorallocate ($this->ImageID, $gray,$green,$gray);
-				imagesetpixel ($this->ImageID, $x, $y, $newcol);
+				$newcol = imagecolorallocate($this->ImageID, $gray,$green,$gray);
+				imagesetpixel($this->ImageID, $x, $y, $newcol);
 			}
 		}
 		$this->ChangeFlag = true;
@@ -1690,8 +1626,8 @@ class ImgObj
 				{
 					$green = 255;
 				}
-				$newcol = imagecolorallocate ($this->ImageID, $red, $green, $blue);
-				imagesetpixel ($this->ImageID, $x, $y, $newcol);
+				$newcol = imagecolorallocate($this->ImageID, $red, $green, $blue);
+				imagesetpixel($this->ImageID, $x, $y, $newcol);
 			}
 		}
 		$this->Noise(30);
@@ -1760,7 +1696,7 @@ class ImgObj
 					$divisor += $matrix[$y][$x];
 				}
 			}
-			imageconvolution ($this->ImageID, $matrix, $divisor, 0);
+			imageconvolution($this->ImageID, $matrix, $divisor, 0);
 			$this->ChangeFlag = true;
 			return true;
 		}
@@ -2368,7 +2304,7 @@ function mergeResizePics($sourcefile, $insertfile, $thumbnail_width, $thumbnail_
 		switch($pic_filetype)
 		{
 			case 'jpg':
-				imagejpeg($sourcefile_id, '', $album_config['thumbnail_quality']);
+				imagejpeg($sourcefile_id, null, $album_config['thumbnail_quality']);
 				break;
 			case 'png':
 				imagepng($sourcefile_id);

@@ -44,6 +44,108 @@ if (empty($profiledata['user_active']) && ($user->data['user_level'] != ADMIN))
 	message_die(GENERAL_MESSAGE, 'NO_USER');
 }
 
+// GROUPS - BEGIN
+$add_rem_result = false;
+
+$ug_action_id = request_var(POST_GROUPS_URL, 0);
+
+if (($user->data['user_level'] == ADMIN) && isset($_POST['ug_add']) && !empty($ug_action_id))
+{
+	if (!function_exists('group_user_add'))
+	{
+		include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+	}
+	$ug_add_result = group_user_add($ug_action_id, $profiledata['user_id'], false);
+
+	if ($ug_add_result === 1)
+	{
+		$message = $lang['GROUP_ADDED_USER'];
+		$add_rem_result = true;
+	}
+}
+
+if (($user->data['user_level'] == ADMIN) && !empty($ug_action_id) && (isset($_GET['ug_rem']) || isset($_POST['ug_rem'])))
+{
+	if (isset($_POST['confirm']))
+	{
+		if (!function_exists('group_user_rem'))
+		{
+			include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+		}
+		$ug_rem_result = group_user_rem($ug_action_id, $profiledata['user_id'], false);
+
+		if ($ug_rem_result === 1)
+		{
+			$message = $lang['GROUP_REMOVED_USER'];
+			$add_rem_result = true;
+		}
+	}
+	else
+	{
+		$s_hidden_fields = build_hidden_fields(array(
+			'sid' => $user->data['session_id'],
+			'ug_rem' => 1,
+			POST_GROUPS_URL => (int) $ug_action_id,
+			)
+		);
+
+		$nav_server_url = create_server_url();
+		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_GROUP_CP) . '" class="nav-current">' . $lang['Group_Control_Panel'] . '</a>';
+
+		$template->assign_vars(array(
+			'MESSAGE_TITLE' => $lang['Confirm'],
+			'MESSAGE_TEXT' => $lang['CONFIRM_UNSUB_USER'],
+			'L_YES' => $lang['Yes'],
+			'L_NO' => $lang['No'],
+			'S_CONFIRM_ACTION' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
+			'S_HIDDEN_FIELDS' => $s_hidden_fields
+			)
+		);
+		full_page_generation('confirm_body.tpl', $lang['Group_Control_Panel'], '', '');
+	}
+}
+
+if (!empty($add_rem_result))
+{
+		empty_cache_folders(USERS_CACHE_FOLDER);
+
+		$redirect_url = append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']);
+		meta_refresh(3, $redirect_url);
+
+		message_die(GENERAL_MESSAGE, $message);
+}
+// GROUPS - END
+
+include_once(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
+
+if (!empty($user->data['session_logged_in']) && ($profiledata['user_id'] != $user->data['user_id']))
+{
+	$zmode = request_var('zmode', '');
+	if (!empty($zmode))
+	{
+		// Allow only friends...
+		//$zmode_types = array('friend', 'foe');
+		$zmode_types = array('friend');
+		$zmode = (!in_array($zmode, $zmode_types) ? '' : $zmode);
+	}
+
+	if (!empty($zmode))
+	{
+		$zaction = request_var('zaction', '');
+		$zaction_types = array('add', 'remove');
+		$zaction = (!in_array($zaction, $zaction_types) ? '' : $zaction);
+
+		if (!empty($zaction) && ($zaction == 'add'))
+		{
+			user_friend_foe_add(array($profiledata['user_id']), true);
+		}
+		elseif (!empty($zaction) && ($zaction == 'remove'))
+		{
+			user_friend_foe_remove(array($profiledata['user_id']), true);
+		}
+	}
+}
+
 // Update the profile view list
 $target_user = $profiledata['user_id'];
 $viewer = $user->data['username'];
@@ -76,36 +178,6 @@ if ($target_user != $viewer_id)
 				WHERE user_id = " . $target_user. "
 				AND viewer_id = " . $viewer_id;
 		$db->sql_query($sql);
-	}
-}
-
-include_once(IP_ROOT_PATH . 'includes/functions_zebra.' . PHP_EXT);
-
-if (!empty($user->data['session_logged_in']) && ($profiledata['user_id'] != $user->data['user_id']))
-{
-	$zmode = request_var('zmode', '');
-	if (!empty($zmode))
-	{
-		// Allow only friends...
-		//$zmode_types = array('friend', 'foe');
-		$zmode_types = array('friend');
-		$zmode = (!in_array($zmode, $zmode_types) ? '' : $zmode);
-	}
-
-	if (!empty($zmode))
-	{
-		$zaction = request_var('zaction', '');
-		$zaction_types = array('add', 'remove');
-		$zaction = (!in_array($zaction, $zaction_types) ? '' : $zaction);
-
-		if (!empty($zaction) && ($zaction == 'add'))
-		{
-			user_friend_foe_add(array($profiledata['user_id']), true);
-		}
-		elseif (!empty($zaction) && ($zaction == 'remove'))
-		{
-			user_friend_foe_remove(array($profiledata['user_id']), true);
-		}
 	}
 }
 
@@ -684,6 +756,8 @@ $template->assign_vars(array(
 	'L_OCCUPATION' => $lang['Occupation'],
 	'L_INTERESTS' => $lang['Interests'],
 
+	'U_USERGROUPS' => append_sid(CMS_PAGE_GROUP_CP),
+
 	'L_PHONE' => $lang['UserPhone'],
 	'L_EXTRA_PROFILE_INFO' => $lang['Extra_profile_info'],
 	'L_EXTRA_WINDOW'=> $lang['Extra_window'] . ' :: ' . $profiledata['username'],
@@ -853,73 +927,124 @@ foreach($profile_data as $field)
 }
 // Custom Profile Fields - END
 
-//====================================================================== |
-//==== Start Invision View Profile ===================================== |
-//==== v1.1.3 ========================================================== |
-$user_id = $user->data['user_id'];
-$view_user_id = $profiledata['user_id'];
-$groups = array();
-$sql = 'SELECT g.group_id, g.group_name, g.group_description, g.group_type, g.group_color
-	FROM ' . USER_GROUP_TABLE . ' as l, ' . GROUPS_TABLE . ' as g
-	WHERE l.user_pending = 0
-		AND g.group_single_user = 0
-		AND l.user_id ='. $view_user_id . '
-		AND g.group_id = l.group_id
-	ORDER BY g.group_name, g.group_id';
-$result = $db->sql_query($sql);
-while ($group = $db->sql_fetchrow($result))
+// GROUPS - BEGIN
+$groups_display_block = ($user->data['user_level'] == ADMIN) ? true : false;
+$viewer_groups_list = array();
+if ($user->data['session_logged_in'])
 {
-	$groups[] = $group;
+	$viewer_groups_data = get_groups_data_user($user->data['user_id'], false, false, array());
+	if (!empty($viewer_groups_data))
+	{
+		foreach ($viewer_groups_data as $group_data)
+		{
+			if (empty($group_data['user_pending']))
+			{
+				$viewer_groups_list[] = $group_data['group_id'];
+			}
+		}
+	}
 }
 
-$template->assign_vars(array(
-	'L_USERGROUPS' => $lang['Usergroups'],
-	)
-);
-if (sizeof($groups) > 0)
+$profile_groups_data = get_groups_data_user($profiledata['user_id'], true, true, array());
+if (!empty($profile_groups_data))
 {
-	$template->assign_block_vars('switch_groups_on', array());
-}
-{
-	for ($i = 0; $i < sizeof($groups); $i++)
+	foreach ($profile_groups_data as $group_data)
 	{
-		$is_ok = false;
-		// groupe invisible ?
-		if (($groups[$i]['group_type'] != GROUP_HIDDEN) || ($user->data['user_level'] == ADMIN))
+		$group_display = true;
+		if ($user->data['user_level'] != ADMIN)
 		{
-			$is_ok = true;
+			if (($group_data['group_type'] == GROUP_HIDDEN) && empty($group_data['user_pending']))
+			{
+				if (!$user->data['session_logged_in'] || empty($viewer_groups_list))
+				{
+					$group_display = false;
+				}
+				else
+				{
+					$group_display = in_array($group_data['group_id'], $viewer_groups_list) ? true : false;
+				}
+			}
 		}
-		else
+
+		if (!empty($group_display))
 		{
-			$group_id = $groups[$i]['group_id'];
-			$sql = 'SELECT *
-				FROM ' . USER_GROUP_TABLE . '
-				WHERE group_id = ' . $group_id . '
-					AND user_id = ' . $user_id . '
-					AND user_pending = 0';
-			$result = $db->sql_query($sql);
-			$is_ok = ($group = $db->sql_fetchrow($result));
-		}  // end if ($view_list[$i]['group_type'] == GROUP_HIDDEN)
-		// groupe visible : afficher
-		if ($is_ok)
-		{
-			$u_group_name = append_sid(CMS_PAGE_GROUP_CP . '?g=' . $groups[$i]['group_id']);
-			$l_group_name = $groups[$i]['group_name'];
-			$l_group_desc = $groups[$i]['group_description'];
+			$groups_display_block = true;
+			$group_name = $group_data['group_name'];
+			$group_name = ($group_data['group_type'] == GROUP_HIDDEN) ? ('<i>' . $group_name . '</i>') : $group_name;
+			$group_pending = (!empty($group_data['user_pending']) ? ' <i>[' . $lang['MEMBERSHIP_PENDING'] . ']</i>' : '');
 			$template->assign_block_vars('groups', array(
-				'GROUP_COLOR' => (!empty($groups[$i]['group_color']) ? (' style="color: ' . $groups[$i]['group_color'] . ';"') : ''),
-				'U_GROUP_NAME' => $u_group_name,
-				'L_GROUP_NAME' => $l_group_name,
-				'L_GROUP_DESC' => $l_group_desc,
+				'GROUP_COLOR' => (!empty($group_data['group_color']) ? (' style="color: ' . $group_data['group_color'] . ';"') : ''),
+				'U_GROUP_NAME' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_data['group_id']),
+				'U_GROUP_REMOVE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id'] . '&amp;' . POST_GROUPS_URL . '=' . $group_data['group_id'] . '&amp;ug_rem=1'),
+				'L_GROUP_NAME' => $group_name . $group_pending,
+				'L_GROUP_DESC' => $group_data['group_description']
 				)
 			);
-		}  // end if ($is_ok)
-	}  // end for ($i=0; $i < sizeof($groups); $i++)
-}  // end if (sizeof($groups) > 0)
-//====
-//==== Author: Disturbed One [http://anthonycoy.com] =================== |
-//==== End Invision View Profile ======================================= |
-//====================================================================== |
+		}
+	}
+}
+
+if (!empty($groups_display_block))
+{
+	$template->assign_var('S_DISPLAY_UCP_GROUPS', true);
+}
+
+if ($user->data['user_level'] == ADMIN)
+{
+	$profile_groups_list = array();
+	if (!empty($profile_groups_data))
+	{
+		foreach ($profile_groups_data as $group_data)
+		{
+			$profile_groups_list[] = $group_data['group_id'];
+		}
+	}
+
+	$all_groups = get_groups_data(false, true, array());
+	$non_member_groups = array();
+	foreach ($all_groups as $group_data)
+	{
+		$process_group = true;
+		if (!empty($profile_groups_list) && in_array($group_data['group_id'], $profile_groups_list))
+		{
+			$process_group = false;
+		}
+		if ($process_group)
+		{
+			$non_member_groups[] = $group_data;
+		}
+	}
+
+	if (!empty($non_member_groups))
+	{
+		$template->assign_var('S_DISPLAY_NON_MEMBER_GROUPS', true);
+		$non_member_groups_select = '';
+		$non_member_groups_select .= '<select name="' . POST_GROUPS_URL . '">';
+		foreach ($non_member_groups as $group_data)
+		{
+			$color_style = (!empty($group_data['group_color']) ? (' style="color: ' . $group_data['group_color'] . ';"') : '');
+			$non_member_groups_select .= '<option value="' . $group_data['group_id'] . '">' . $group_data['group_name'] . '</option>';
+		}
+		$non_member_groups_select .= '</select>';
+
+		$s_hidden_fields = build_hidden_fields(array(
+			'mode' => 'viewprofile',
+			POST_USERS_URL => (int) $profiledata['user_id'],
+			)
+		);
+
+		$template->assign_vars(array(
+			'S_DISPLAY_NON_MEMBER_GROUPS' => true,
+			'S_GROUPCP_ACTION' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']),
+			'S_NMG_SELECT' => $non_member_groups_select,
+			'L_ADD_MEMBER' => $lang['Add_member'],
+			'L_NMG_SELECT' => $lang['Non_member_groups'],
+			'S_HIDDEN_FIELDS' => $s_hidden_fields
+			)
+		);
+	}
+}
+// GROUPS - END
 
 // Start Advanced IP Tools Pack MOD
 // Let's see if the user viewing this page is an admin or mod, if not, we can save several database queries! :P

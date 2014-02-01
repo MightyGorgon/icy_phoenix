@@ -172,6 +172,7 @@ if(GetCookie(tmp) == '2')
 		<!-- IF not S_BOT and S_TMOD_BUTTONS -->
 		<!-- INCLUDE viewtopic_admin.tpl -->
 		<!-- ENDIF -->
+		{S_TMOD_TOPIC_PREFIX_SELECT}<br /><br />
 	</td>
 </tr>
 </table>

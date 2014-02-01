@@ -1210,7 +1210,8 @@ class cms_admin
 			//generate_smilies('inline');
 			$this->s_hidden_fields .= '<input type="hidden" name="blockfile" value="" />';
 			$this->s_hidden_fields .= '<input type="hidden" name="hascontent" value="1" />';
-			$this->s_hidden_fields .= '<input type="hidden" name="name" value="' . htmlspecialchars($b_name) . '" />';
+			//$this->s_hidden_fields .= '<input type="hidden" name="name" value="' . htmlspecialchars($b_name) . '" />';
+			$this->s_hidden_fields .= '<input type="hidden" name="name" value="' . $b_name . '" />';
 			$this->s_hidden_fields .= '<input type="hidden" name="view" value="' . $b_info['view'] . '" />';
 			$this->s_hidden_fields .= '<input type="hidden" name="locked" value="' . $locked_hidden . '" />';
 			$this->s_hidden_fields .= $b_group_hidden;
@@ -1221,7 +1222,8 @@ class cms_admin
 			$this->s_hidden_fields .= '<input type="hidden" name="blockfile" value="' . $block_content_file . '" />';
 			$this->s_hidden_fields .= '<input type="hidden" name="message" value="" />';
 			$this->s_hidden_fields .= '<input type="hidden" name="type" value="0" />';
-			$this->s_hidden_fields .= '<input type="hidden" name="name" value="' . htmlspecialchars($b_name) . '" />';
+			//$this->s_hidden_fields .= '<input type="hidden" name="name" value="' . htmlspecialchars($b_name) . '" />';
+			$this->s_hidden_fields .= '<input type="hidden" name="name" value="' . $b_name . '" />';
 			$this->s_hidden_fields .= '<input type="hidden" name="view" value="' . $b_info['view'] . '" />';
 			$this->s_hidden_fields .= '<input type="hidden" name="locked" value="' . $locked_hidden . '" />';
 			$this->s_hidden_fields .= $b_group_hidden;
@@ -1627,7 +1629,7 @@ class cms_admin
 				}
 				// avoid adding duplicates
 				$found = false;
-				for($i=0; $i<count($list[$bsid]); $i++)
+				for($i = 0; $i < count($list[$bsid]); $i++)
 				{
 					if($list[$bsid][$i]['url'] == $url) $found = true;
 				}

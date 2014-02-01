@@ -2781,7 +2781,7 @@ CREATE TABLE `phpbb_acl_users` (
 
 ## AUTH SYSTEM - END
 
-## IMAGES - END
+## IMAGES - BEGIN
 
 CREATE TABLE `phpbb_images` (
 	`pic_id` INT(11) unsigned NOT NULL auto_increment,
@@ -2793,6 +2793,13 @@ CREATE TABLE `phpbb_images` (
 	`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
 	`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',
 	`pic_approval` TINYINT(3) NOT NULL DEFAULT '1',
+	`exif` text NOT NULL,
+	`camera_model` varchar(255) DEFAULT '' NOT NULL,
+	`lens` varchar(255) DEFAULT '' NOT NULL,
+	`focal_length` varchar(255) DEFAULT '' NOT NULL,
+	`exposure` varchar(255) DEFAULT '' NOT NULL,
+	`aperture` varchar(255) DEFAULT '' NOT NULL,
+	`iso` varchar(255) DEFAULT '' NOT NULL,
 	PRIMARY KEY (`pic_id`),
 	KEY `pic_user_id` (`pic_user_id`),
 	KEY `pic_time` (`pic_time`)

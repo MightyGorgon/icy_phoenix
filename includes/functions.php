@@ -971,6 +971,7 @@ function unique_id($extra = 'c')
 	return substr($val, 4, 16);
 }
 
+// Modified by MG
 /**
 * Return formatted string for filesizes
 *
@@ -991,24 +992,28 @@ function get_formatted_filesize($value, $string_only = true, $allowed_units = fa
 			'index' => 3,
 			'si_unit' => 'GB',
 			'iec_unit' => 'GIB',
+			'precision' => 2
 		),
 		'mb' => array(
 			'min' => 1048576, // pow(2, 20)
 			'index' => 2,
 			'si_unit' => 'MB',
 			'iec_unit' => 'MIB',
+			'precision' => 2
 		),
 		'kb' => array(
 			'min' => 1024, // pow(2, 10)
 			'index' => 1,
 			'si_unit' => 'KB',
 			'iec_unit' => 'KIB',
+			'precision' => 0
 		),
 		'b' => array(
 			'min' => 0,
 			'index' => 0,
 			'si_unit' => 'BYTES', // Language index
 			'iec_unit' => 'BYTES', // Language index
+			'precision' => 0
 		),
 	);
 
@@ -1032,14 +1037,14 @@ function get_formatted_filesize($value, $string_only = true, $allowed_units = fa
 	{
 		$value /= 1024;
 	}
-	$value = round($value, 2);
+	$value = round($value, $unit_info['precision']);
 
 	// Lookup units in language dictionary
 	$unit_info['si_unit'] = (isset($lang[$unit_info['si_unit']])) ? $lang[$unit_info['si_unit']] : $unit_info['si_unit'];
 	$unit_info['iec_unit'] = (isset($lang[$unit_info['iec_unit']])) ? $lang[$unit_info['iec_unit']] : $unit_info['iec_unit'];
 
-	// Default to IEC
-	$unit_info['unit'] = $unit_info['iec_unit'];
+	// Default to SI
+	$unit_info['unit'] = $unit_info['si_unit'];
 
 	if (!$string_only)
 	{
@@ -1048,7 +1053,7 @@ function get_formatted_filesize($value, $string_only = true, $allowed_units = fa
 		return $unit_info;
 	}
 
-	return $value . ' ' . $unit_info['unit'];
+	return $value . $unit_info['unit'];
 }
 
 /**
@@ -2691,6 +2696,20 @@ function check_style_exists($style_id)
 }
 
 /*
+* Get forum id for a post
+*/
+function get_forum_topic_id_post($post_id)
+{
+	global $db, $cache, $config;
+	$post_data = array();
+	$sql = "SELECT forum_id, topic_id FROM " . POSTS_TABLE . " WHERE post_id = '" . (int) $post_id . "' LIMIT 1";
+	$result = $db->sql_query($sql);
+	$post_data = $db->sql_fetchrow($result);
+	$db->sql_freeresult($result);
+	return $post_data;
+}
+
+/*
 * Check if a user is allowed to view IP addresses
 */
 function ip_display_auth($user_data, $is_forum = false)
@@ -3848,11 +3867,80 @@ function colorize_username($user_id, $username = '', $user_color = '', $user_act
 	return $user_link;
 }
 
+function user_get_avatar($user_id, $user_level, $user_avatar, $user_avatar_type, $user_allow_avatar, $path_prefix = '', $max_width = 0)
+{
+	global $config;
+
+	$user_avatar_path = '';
+	$user_avatar_link = '';
+	$user_avatar_dim = '';
+
+	if ($user_avatar_type && ($user_id != ANONYMOUS) && $user_allow_avatar)
+	{
+		switch($user_avatar_type)
+		{
+			case USER_AVATAR_UPLOAD:
+				$user_avatar_path = ($config['allow_avatar_upload']) ? ($path_prefix . $config['avatar_path'] . '/' . $user_avatar) : '';
+				break;
+			case USER_AVATAR_REMOTE:
+				$user_avatar_path = $user_avatar;
+				if ($user_level != ADMIN)
+				{
+					// Set this to false if you want to force height as well
+					$force_width_only = true;
+
+					$avatar_width = $config['avatar_max_width'];
+					$avatar_height = $config['avatar_max_height'];
+
+					if (!empty($config['allow_avatar_remote']))
+					{
+						$user_avatar_dim = ' width="' . $avatar_width . '"' . (($force_width_only) ? '' : (' height="' . $avatar_height . '"'));
+						$user_avatar_path = $user_avatar;
+					}
+					else
+					{
+						$user_avatar_path = '';
+					}
+				}
+				break;
+			case USER_AVATAR_GALLERY:
+				$user_avatar_path = ($config['allow_avatar_local']) ? ($path_prefix . $config['avatar_gallery_path'] . '/' . $user_avatar) : '';
+				break;
+			case USER_GRAVATAR:
+				$user_avatar_path = ($config['enable_gravatars']) ? get_gravatar($user_avatar) : '';
+				break;
+			case USER_AVATAR_GENERATOR:
+				$user_avatar_path = ($config['allow_avatar_generator']) ? $user_avatar : '';
+				break;
+			default:
+				$user_avatar_path = '';
+		}
+	}
+
+	if (empty($user_avatar_path))
+	{
+		$user_avatar_path = get_default_avatar($user_id, $path_prefix);
+	}
+
+	if (!empty($max_width))
+	{
+		$max_width = (int) $max_width;
+		if (($max_width > 10) && ($max_width < 240))
+		{
+			$user_avatar_dim = ' style="width: ' . $max_width . 'px; max-width: ' . $max_width . 'px;"';
+		}
+	}
+	$avatar_class = (($max_width > 10) && ($max_width < 40)) ? '' : ' class="avatar"';
+	$user_avatar_link = (!empty($user_avatar_path)) ? '<img src="' . $user_avatar_path . '" alt="avatar"' . $avatar_class . $user_avatar_dim . ' />' : '&nbsp;';
+
+	return $user_avatar_link;
+}
+
 function get_default_avatar($user_id, $path_prefix = '')
 {
 	global $config;
 
-	$avatar_img = '&nbsp;';
+	$avatar_img = '';
 	if ($config['default_avatar_set'] != 3)
 	{
 		if (($config['default_avatar_set'] == 0) && ($user_id == ANONYMOUS) && ($config['default_avatar_guests_url'] != ''))
@@ -3876,86 +3964,7 @@ function get_default_avatar($user_id, $path_prefix = '')
 		}
 	}
 
-	$avatar_img = ($avatar_img == '&nbsp;') ? '&nbsp;' : '<img src="' . $path_prefix . $avatar_img . '" alt="avatar" />';
-
-	return $avatar_img;
-}
-
-function user_get_avatar($user_id, $user_level, $user_avatar, $user_avatar_type, $user_allow_avatar, $path_prefix = '')
-{
-	global $config;
-	$user_avatar_link = '';
-	if ($user_avatar_type && ($user_id != ANONYMOUS) && $user_allow_avatar)
-	{
-		switch($user_avatar_type)
-		{
-			case USER_AVATAR_UPLOAD:
-				$user_avatar_link = ($config['allow_avatar_upload']) ? '<img src="' . $path_prefix . $config['avatar_path'] . '/' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
-				break;
-			case USER_AVATAR_REMOTE:
-				$user_avatar_link = resize_avatar($user_id, $user_level, $user_avatar);
-				break;
-			case USER_AVATAR_GALLERY:
-				$user_avatar_link = ($config['allow_avatar_local']) ? '<img src="' . $path_prefix . $config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
-				break;
-			case USER_GRAVATAR:
-				$user_avatar_link = ($config['enable_gravatars']) ? '<img src="' . get_gravatar($user_avatar) . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
-				break;
-			default:
-				$user_avatar_link = '';
-		}
-	}
-
-	if ($user_avatar_link == '')
-	{
-		$user_avatar_link = get_default_avatar($user_id, $path_prefix);
-	}
-
-	return $user_avatar_link;
-}
-
-function resize_avatar($user_id, $user_level, $avatar_url)
-{
-	global $config;
-
-	if ($user_level == ADMIN)
-	{
-		return '<img src="' . $avatar_url . '" alt="avatar" style="margin-bottom: 3px;" />';
-	}
-
-	// Set this to false if you want to force height as well
-	$force_width_only = true;
-
-	$avatar_width = $config['avatar_max_width'];
-	$avatar_height = $config['avatar_max_height'];
-
-	/*
-	if (function_exists('getimagesize'))
-	{
-		$pic_size = @getimagesize($avatar_url);
-		if ($pic_size != false)
-		{
-			$pic_width = $pic_size[0];
-			$pic_height = $pic_size[1];
-			if (($pic_width < $avatar_width) && ($pic_height < $avatar_height))
-			{
-				$avatar_width = $pic_width;
-				$avatar_height = $pic_height;
-			}
-			elseif ($pic_width > $pic_height)
-			{
-				$avatar_height = $avatar_width * ($pic_height / $pic_width);
-			}
-			else
-			{
-				$avatar_width = $avatar_height * ($pic_width / $pic_height);
-			}
-		}
-	}
-	*/
-
-	$avatar_img_dim = ($force_width_only) ? (' width="' . $avatar_width . '"') : (' width="' . $avatar_width . '" height="' . $avatar_height . '"');
-	$avatar_img = ($config['allow_avatar_remote']) ? '<img src="' . $avatar_url . '"' . $avatar_img_dim . ' alt="avatar" style="margin-bottom: 3px;" />' : '';
+	$avatar_img = $path_prefix . $avatar_img;
 
 	return $avatar_img;
 }
@@ -4384,13 +4393,17 @@ function page_header($title = '', $parse_template = false)
 	$meta_content['keywords'] = strip_tags($meta_content['keywords']);
 	$meta_content['keywords'] = (substr($meta_content['keywords'], -2) == ', ') ? substr($meta_content['keywords'], 0, -2) : $meta_content['keywords'];
 
-	$phpbb_meta = '<meta name="title" content="' . $meta_content['page_title'] . '" />' . "\n";
+	$phpbb_meta = '';
 	$phpbb_meta .= '<meta name="author" content="' . $lang['Default_META_Author'] . '" />' . "\n";
-	$phpbb_meta .= '<meta name="copyright" content="' . $lang['Default_META_Copyright'] . '" />' . "\n";
 	$phpbb_meta .= '<meta name="description" content="' . str_replace('"', '', $meta_content['description']) . '" />' . "\n";
 	$phpbb_meta .= '<meta name="keywords" content="' . str_replace('"', '', $meta_content['keywords']) . '" />' . "\n";
+	// These META are not valid and needed anymore by SEO and HTML 5
+	/*
+	$phpbb_meta .= '<meta name="title" content="' . $meta_content['page_title'] . '" />' . "\n";
+	$phpbb_meta .= '<meta name="copyright" content="' . $lang['Default_META_Copyright'] . '" />' . "\n";
 	$phpbb_meta .= '<meta name="category" content="general" />' . "\n";
 	$phpbb_meta .= '<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9" />' . "\n";
+	*/
 
 	if (defined('IN_ADMIN') || defined('IN_CMS') || defined('IN_SEARCH') || defined('IN_POSTING'))
 	{
@@ -5108,6 +5121,7 @@ function page_header($title = '', $parse_template = false)
 	$current_time = create_date($config['default_dateformat'], time(), $config['board_timezone']);
 	$template->assign_vars(array(
 		'DOCTYPE_HTML' => $doctype_html,
+		'HEADER_LANG' => $header_lang,
 		'NAV_LINKS' => $nav_links_html,
 
 		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
@@ -5557,6 +5571,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 		'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
 		'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
 		'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+		'S_JQUERY_UI_BA' => (!empty($config['jquery_ui_ba']) ? true : false),
 		'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
 		'S_JQUERY_TAGS' => (!empty($config['jquery_tags']) ? true : false),
 		)

@@ -2135,6 +2135,7 @@ $template->assign_vars(array(
 	'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
 	'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
 	'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+	'S_JQUERY_UI_BA' => (!empty($config['jquery_ui_ba']) ? true : false),
 	'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
 	'S_JQUERY_TAGS' => (!empty($config['jquery_tags']) ? true : false),
 	)

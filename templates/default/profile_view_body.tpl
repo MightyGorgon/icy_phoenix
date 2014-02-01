@@ -56,7 +56,7 @@
 					<!-- BEGIN custom_contact -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{custom_contact.NAME}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{custom_contact.VALUE}</span></td>
+						<td class="row1 post-buttons"><div class="genmed">{custom_contact.VALUE}</div></td>
 					</tr>
 					<!-- END custom_contact -->
 				</table>
@@ -104,28 +104,33 @@
 					<!-- BEGIN custom_about -->
 					<tr>
 						<td class="row2" valign="top"><b><span class="genmed">{custom_about.NAME}</span></b></td>
-						<td class="row1 post-buttons"><span class="genmed">{custom_about.VALUE}</span></td>
+						<td class="row1 post-buttons"><div class="genmed">{custom_about.VALUE}</div></td>
 					</tr>
 					<!-- END custom_about -->
 					<tr>
 						<td class="row2" valign="top" width="30%"><b><span class="genmed">{L_INVISION_SIGNATURE}</span></b></td>
 						<td class="row1"><span class="genmed">{INVISION_USER_SIG}</span></td>
 					</tr>
-					<!-- BEGIN switch_groups_on -->
+					<!-- IF S_DISPLAY_UCP_GROUPS -->
 					<tr><th colspan="2"><span class="genmed"><b>{L_INVISION_MEMBER_GROUP}</b></span></th></tr>
 					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_INVISION_MEMBER_GROUP}</span></b></td>
+						<td class="row2" valign="top"><b><span class="genmed"><a href="{U_USERGROUPS}">{L_INVISION_MEMBER_GROUP}</a></span></b></td>
 						<td class="row1">
 							<span class="genmed">
-					<!-- END switch_groups_on -->
 							<!-- BEGIN groups -->
-								<a href="{groups.U_GROUP_NAME}"{groups.GROUP_COLOR}><b{groups.GROUP_COLOR}>{groups.L_GROUP_NAME}</b></a>:&nbsp;{groups.L_GROUP_DESC}<br />
+								<!-- IF S_ADMIN --><a href={groups.U_GROUP_REMOVE} title="{L_Remove_selected}">[ X ]</a>&nbsp;<!-- ENDIF --><a href="{groups.U_GROUP_NAME}"{groups.GROUP_COLOR}><b{groups.GROUP_COLOR}>{groups.L_GROUP_NAME}</b></a><!-- :&nbsp;{groups.L_GROUP_DESC} --><br />
 							<!-- END groups -->
-					<!-- BEGIN switch_groups_on -->
 							</span>
 						</td>
 					</tr>
-					<!-- END switch_groups_on -->
+					<!-- ENDIF -->
+					<!-- IF S_DISPLAY_NON_MEMBER_GROUPS -->
+					<tr><th colspan="2"><span class="genmed"><b>{L_NMG_SELECT}</b></span></th></tr>
+					<tr>
+						<td class="row2" valign="top"><b><span class="genmed"><a href="{U_USERGROUPS}">{L_NMG_SELECT}</a></span></b></td>
+						<td class="row1"><form action="{S_GROUPCP_ACTION}" name="post" method="post">&nbsp;{S_NMG_SELECT}<input type="submit" name="ug_add" value="{L_ADD_MEMBER}" class="mainoption" />{S_HIDDEN_FIELDS}</form></td>
+					</tr>
+					<!-- ENDIF -->
 				</table>
 			</td>
 		</tr>

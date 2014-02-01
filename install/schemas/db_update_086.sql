@@ -105,12 +105,25 @@ DELETE FROM `phpbb_cms_nav_menu` WHERE menu_links = 'links.php';
 
 
 
+########################################
+##              BUILD 095             ##
+########################################
+ALTER TABLE `phpbb_images` ADD `exif` text NOT NULL;
+ALTER TABLE `phpbb_images` ADD `camera_model` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_images` ADD `lens` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_images` ADD `focal_length` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_images` ADD `exposure` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_images` ADD `aperture` varchar(255) DEFAULT '' NOT NULL;
+ALTER TABLE `phpbb_images` ADD `iso` varchar(255) DEFAULT '' NOT NULL;
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.8.94' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.9.95' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

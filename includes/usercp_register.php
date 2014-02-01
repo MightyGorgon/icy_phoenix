@@ -113,25 +113,42 @@ function show_coppa()
 		}
 	}
 
+	$template->set_filenames(array('body' => 'agreement.tpl'));
+
 	if (!function_exists('language_select'))
 	{
 		@include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 	}
 
+	$available_networks = array();
 	$social_connect_append = '';
 	$social_network = request_get_var('social_network', '');
-	if ($config['enable_social_connect'] && !empty($social_network))
+	if ($config['enable_social_connect'])
 	{
 		include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
 		$available_networks = SocialConnect::get_available_networks();
 
-		if (!empty($available_networks[$social_network]))
+		$login_admin = request_get_var('admin', 0);
+		$redirect_url = CMS_LOGIN_REDIRECT_PAGE;
+		$template->assign_var('SOCIAL_CONNECT', true);
+		foreach ($available_networks as $social_network_item)
 		{
-			$social_connect_append = '&amp;social_network=' . $social_network;
+			$template->assign_block_vars('social_connect_button', array(
+				'L_SOCIAL_CONNECT' => sprintf($lang['SOCIAL_CONNECT_LOGIN'], $social_network_item->get_name()),
+				'U_SOCIAL_CONNECT' => append_sid(CMS_PAGE_LOGIN . '?social_network=' . $social_network_item->get_name_clean() . '&redirect=' . urlencode($redirect_url) . '&admin=' . $login_admin),
+				'IMG_SOCIAL_CONNECT' => '<img src="' . IP_ROOT_PATH . 'images/social_connect/' . $social_network_item->get_name_clean() . '_button_connect.png" alt="" title="" />'
+				)
+			);
+		}
+
+		if (!empty($social_network))
+		{
+			if (!empty($available_networks[$social_network]))
+			{
+				$social_connect_append = '&amp;social_network=' . $social_network;
+			}
 		}
 	}
-
-	$template->set_filenames(array('body' => 'agreement.tpl'));
 
 	$template->assign_vars(array(
 		'L_PAGE_TITLE' => $lang['Registration'],
@@ -509,7 +526,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 			$user_data_social = $social_network->get_user_data();
 
 			// We'll do some special assignments before continuing
-			if ($birthday == 999999 && !empty($user_data_social['birthday']))
+			if (($birthday == 999999) && !empty($user_data_social['birthday']))
 			{
 				$birthday = $user_data_social['birthday'];
 				$birthday_day = realdate('j', $birthday);
@@ -914,7 +931,7 @@ if (isset($_POST['submit']))
 			}
 			$error_msg .= sprintf($lang['Birthday_to_high'], $config['max_user_age']);
 		}
-		elseif($user_age<$config['min_user_age'])
+		elseif($user_age < $config['min_user_age'])
 		{
 			$error = true;
 			if(isset($error_msg))
@@ -1601,33 +1618,7 @@ else
 		$user_style = $config['default_style'];
 	}
 
-	$avatar_img = '';
-	if ($user_avatar_type)
-	{
-		switch($user_avatar_type)
-		{
-			case USER_AVATAR_UPLOAD:
-				$avatar_img = ($config['allow_avatar_upload']) ? '<img src="' . $config['avatar_path'] . '/' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
-				break;
-			case USER_AVATAR_REMOTE:
-				$avatar_img = resize_avatar($user->data['user_id'], $user->data['user_level'], $user_avatar);
-				break;
-			case USER_AVATAR_GALLERY:
-				$avatar_img = ($config['allow_avatar_local']) ? '<img src="' . $config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
-				break;
-			case USER_AVATAR_GENERATOR:
-				$avatar_img = ($config['allow_avatar_generator']) ? '<img src="' . $user_avatar . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
-				break;
-			case USER_GRAVATAR:
-				$avatar_img = ($config['enable_gravatars']) ? '<img src="' . get_gravatar($user_avatar) . '" alt="avatar" style="margin-bottom: 3px;" />' : '';
-				break;
-		}
-	}
-
-	if ($avatar_img == '')
-	{
-		$avatar_img = get_default_avatar($user->data['user_id']);
-	}
+	$avatar_img = user_get_avatar($user->data['user_id'], $user->data['user_level'], $user_avatar, $user_avatar_type, $user->data['user_allowavatar']);
 
 	$s_hidden_fields = '<input type="hidden" name="mode" value="' . $mode . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="privacy" value="1" /><input type="hidden" name="coppa" value="' . $coppa . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';

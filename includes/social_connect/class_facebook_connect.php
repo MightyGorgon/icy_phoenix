@@ -122,7 +122,7 @@ class FacebookConnect extends SocialConnect
 		}
 		catch (Exception $e)
 		{
-			// If user isn't logged in in facebook, log him in and retry!
+			// If user isn't logged in on facebook, then log him in and retry!
 			//$this->do_login(true);die();
 			$this->do_login(true);
 			return $this->get_user_data();
@@ -137,12 +137,21 @@ class FacebookConnect extends SocialConnect
 		}
 
 		$birthday = '';
+		$birthday_y = '';
+		$birthday_m = '';
+		$birthday_d = '';
 		if (!empty($user_fb_data['birthday']))
 		{
-			include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+			if (!function_exists('mkrealdate'))
+			{
+				include(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
+			}
 
 			// FB birthday is in MM/DD/YYYY format
 			$birthday_parts = explode('/', $user_fb_data['birthday']);
+			$birthday_y = $birthday_parts[2];
+			$birthday_m = $birthday_parts[0];
+			$birthday_d = $birthday_parts[1];
 			$birthday = mkrealdate($birthday_parts[1], $birthday_parts[0], $birthday_parts[2]);
 		}
 
@@ -154,6 +163,11 @@ class FacebookConnect extends SocialConnect
 			'user_website' => empty($user_fb_data['website']) ? '' : $user_fb_data['website'],
 			'gender' => $gender,
 			'birthday' => $birthday,
+			/*
+			'birthday_y' => $birthday_y,
+			'birthday_m' => $birthday_m,
+			'birthday_d' => $birthday_d,
+			*/
 			'user_timezone' => empty($user_fb_data['timezone']) ? '' : $user_fb_data['timezone'],
 			'user_facebook' => $username,
 			'user_facebook_id' => $user_fb_data['id'],

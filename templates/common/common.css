@@ -154,11 +154,13 @@ input, select, textarea { font-family: /*"Lucida Grande",*/ Verdana, Helvetica, 
 input[type='checkbox'] { margin-top: 1px !important; margin-bottom: 1px !important; }
 select option { height: 20px; padding-left: 3px; padding-right: 3px; vertical-align: middle; }
 select { cursor: pointer; }
-
+input:focus, select:focus, textarea:focus { outline: none; }
 textarea { padding: 2px; cursor: text; overflow: auto; }
 .message-box { width: 98%; }
 .message-box textarea { width: 98%; /* font-family: "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif; font-size: 1.2em; color: #333333; */ }
 /* FORMS - END */
+
+img.avatar { margin-bottom: 3px; }
 
 /* IMG Fading - BEGIN */
 .imgfade{opacity: 0.80; margin-left: 3px;}
@@ -245,7 +247,7 @@ div.thumb div img{ max-width: 180px; max-height: 150px; }
 .picframe-slideshow-column { height: 180px; width: 180px; margin: auto; }
 .picframe-slideshow { height: 232px; width: 232px; margin: auto; }
 .picframe-slideshow img, .picframe-slideshow-column img { padding: 15px; border: 1px solid #cccccc; background-color: #eeeeee; }
-.picframe-cont { float: left; margin: 10px; }
+.picframe-cont { float: left; margin: 10px; min-height: 250px; }
 .picframe-cont img, .picframe-cont a img { padding: 10px; border: 1px solid #cccccc; background-color: #eeeeee; }
 .picframe-cont img:hover, .picframe-cont a img:hover { background-color: #ffffdd; border: 1px solid #dd6666; }
 .picframe { display: block; background-color: #ffffff; border: 1px solid #555555; padding: 2px 6px 2px 6px; position: relative; bottom: 2px; right: 2px; }

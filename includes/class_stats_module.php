@@ -389,12 +389,12 @@ class Results
 	{
 		global $template;
 
-		if empty($from_block)
+		if (empty($from_block))
 		{
 			$from_block = $blockname;
 		}
 
-		$this->var_data[$blockname . '.'][] = end($template->_tpldata[$blockname . '.']);
+		$this->var_data[$blockname . '.'][] = end($template->_tpldata[$from_block . '.']);
 	}
 
 	// Get Variable from Cache

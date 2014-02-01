@@ -442,7 +442,7 @@ function multi_loop($message, $success=false)
 	if ($multi_id < $multi_max)
 	{
 		$multi_id++;
-		$return_page = (function_exists(album_append_uid))? album_append_uid('album_upload.' . PHP_EXT . '?psid=' . $psid . '&multi_id=' . $multi_id) : 'album_upload.' . PHP_EXT . '?psid=' . $psid . '&multi_id=' . $multi_id;
+		$return_page = (function_exists(album_append_uid))? album_append_uid('album_upload.' . PHP_EXT . '?psid=' . $psid . '&amp;multi_id=' . $multi_id) : 'album_upload.' . PHP_EXT . '?psid=' . $psid . '&amp;multi_id=' . $multi_id;
 
 		$redirect_url = append_sid($return_page);
 		meta_refresh(3, $redirect_url);

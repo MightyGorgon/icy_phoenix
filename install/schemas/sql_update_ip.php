@@ -99,6 +99,7 @@ switch ($req_version)
 	case '20793': $current_ip_version = '2.0.7.93'; break;
 	case '20894': $current_ip_version = '2.0.8.94'; break;
 	case '20995': $current_ip_version = '2.0.9.95'; break;
+	case '201096': $current_ip_version = '2.0.10.96'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4533,9 +4534,19 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.8.94 */
 		case '2.0.8.94':
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `exif` text NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `camera_model` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `lens` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `focal_length` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `exposure` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `aperture` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `iso` varchar(255) DEFAULT '' NOT NULL";
 
 		/* Updating from IP 2.0.9.95 */
 		case '2.0.9.95':
+
+		/* Updating from IP 2.0.10.96 */
+		case '2.0.10.96':
 
 	}
 

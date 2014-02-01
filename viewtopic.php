@@ -2101,6 +2101,12 @@ for($i = 0; $i < $total_posts; $i++)
 		$bbcode->allow_html = false;
 	}
 
+	if (strpos($message, '[imgba') !== false)
+	{
+		$config['jquery_ui'] = true;
+		$config['jquery_ui_ba'] = true;
+	}
+
 	if ($message_compiled === false)
 	{
 		$bbcode->code_post_id = $postrow[$i]['post_id'];

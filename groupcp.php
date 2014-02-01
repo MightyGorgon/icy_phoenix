@@ -117,35 +117,18 @@ elseif (isset($_POST['joingroup']) && $group_id)
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=groupcp.' . PHP_EXT . '&' . POST_GROUPS_URL . '=' . $group_id, true));
 	}
 
-	$sql = "SELECT ug.user_id, g.group_type, g.group_rank, g.group_color, g.group_count, g.group_count_max
-		FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
-		WHERE g.group_id = '" . $group_id . "'
-			AND (g.group_type <> " . GROUP_HIDDEN . " OR (g.group_count <= '" . $user->data['user_posts'] . "' AND g.group_count_max > '" . $user->data['user_posts'] . "'))
-			AND ug.group_id = g.group_id";
-	$result = $db->sql_query($sql);
-
-	if ($row = $db->sql_fetchrow($result))
+	// Get group data
+	$all_groups_data = get_groups_data(true, false, array($group_id));
+	$this_group_data = array();
+	if (!empty($all_groups_data))
 	{
-		$is_autogroup_enable = (($row['group_count'] <= $user->data['user_posts']) && ($row['group_count_max'] > $user->data['user_posts'])) ? true : false;
-		$group_rank = $row['group_rank'];
-		$group_color = $row['group_color'];
-		if (($row['group_type'] == GROUP_OPEN) || $is_autogroup_enable)
+		foreach ($all_groups_data as $group_data)
 		{
-			do
-			{
-				if ($user->data['user_id'] == $row['user_id'])
-				{
-					$redirect_url = append_sid(CMS_PAGE_FORUM);
-					meta_refresh(3, $redirect_url);
-
-					$message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
-
-					message_die(GENERAL_MESSAGE, $message);
-				}
-			}
-			while ($row = $db->sql_fetchrow($result));
+			$this_group_data = $group_data;
 		}
-		else
+		$is_autogroup_enable = (($this_group_data['group_count'] <= $user->data['user_posts']) && ($this_group_data['group_count_max'] > $user->data['user_posts'])) ? true : false;
+		// Check if the group is open or we are "autojoining"
+		if (($this_group_data['group_type'] != GROUP_OPEN) && empty($is_autogroup_enable))
 		{
 			$redirect_url = append_sid(CMS_PAGE_FORUM);
 			meta_refresh(3, $redirect_url);
@@ -157,38 +140,35 @@ elseif (isset($_POST['joingroup']) && $group_id)
 	}
 	else
 	{
+		// The group doesn't exist!
 		message_die(GENERAL_MESSAGE, $lang['No_groups_exist']);
 	}
 
-	$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
-		VALUES ($group_id, " . $user->data['user_id'] . ",'" . (($is_autogroup_enable) ? 0 : 1) . "')";
-	$result = $db->sql_query($sql);
-
-	if ($is_autogroup_enable)
+	// Check if the user is already a member
+	$user_groups_data = get_groups_data_user($user->data['user_id'], false, false, array($group_id));
+	if (!empty($user_groups_data))
 	{
-		update_user_color($user_id, $group_data['group_color'], $user->data['group_id'], false, false);
-		update_user_posts_details($user_id, $group_data['group_color'], '', false, false);
+		$redirect_url = append_sid(CMS_PAGE_FORUM);
+		meta_refresh(3, $redirect_url);
+
+		$message = $lang['Already_member_group'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+
+		message_die(GENERAL_MESSAGE, $message);
 	}
 
-	if (($user->data['user_rank'] == '0') && ($group_rank != '0') && $is_autogroup_enable)
-	{
-		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET user_rank = '" . $group_rank . "'
-			WHERE user_id = '" . $user->data['user_id'] . "'";
-		$db->sql_query($sql_users);
-	}
+	$ug_add_result = group_user_add($group_id, $user->data['user_id'], false);
 
 	$db->clear_cache();
 
-	$sql = "SELECT u.user_email, u.username, u.user_lang, g.group_name
-		FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g
-		WHERE u.user_id = g.group_moderator
-			AND g.group_id = '" . $group_id . "'";
-	$result = $db->sql_query($sql);
-	$moderator = $db->sql_fetchrow($result);
-
 	if (!$is_autogroup_enable)
 	{
+		$sql = "SELECT u.user_email, u.username, u.user_lang, g.group_name
+			FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g
+			WHERE u.user_id = g.group_moderator
+				AND g.group_id = '" . $group_id . "'";
+		$result = $db->sql_query($sql);
+		$moderator = $db->sql_fetchrow($result);
+
 		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
 		$emailer = new emailer();
 		$emailer->use_template('group_request', $moderator['user_lang']);
@@ -216,23 +196,6 @@ elseif (isset($_POST['joingroup']) && $group_id)
 }
 elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 {
-	$sql = "SELECT g.group_rank, g.group_color
-		FROM " . GROUPS_TABLE . " g
-		WHERE g.group_id = '" . $group_id . "'";
-	$result = $db->sql_query($sql);
-
-	if ($row = $db->sql_fetchrow($result))
-	{
-		$group_rank = $row['group_rank'];
-		$group_color = $row['group_color'];
-	}
-	else
-	{
-		$group_rank = '0';
-		$group_color = $config['active_users_color'];
-	}
-
-	// Second, unsubscribing from a group
 	// Check for confirmation of unsub.
 	if ($cancel)
 	{
@@ -249,31 +212,12 @@ elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id)
 
 	if ($confirm)
 	{
-		$sql = "DELETE FROM " . USER_GROUP_TABLE . "
-			WHERE user_id = " . $user->data['user_id'] . "
-				AND group_id = '" . $group_id . "'";
-		$result = $db->sql_query($sql);
+		group_user_rem($group_id, $user->data['user_id'], false);
 
+		/*
 		update_user_color($user->data['user_id'], $config['active_users_color'], 0);
 		update_user_posts_details($user->data['user_id'], '', '', false, false);
-
-		if (($user->data['user_level'] != ADMIN) && ($user->data['user_level'] == MOD))
-		{
-			$sql = "SELECT COUNT(auth_mod) AS is_auth_mod
-				FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug
-				WHERE ug.user_id = " . $user->data['user_id'] . "
-					AND aa.group_id = ug.group_id
-					AND aa.auth_mod = 1";
-			$result = $db->sql_query($sql);
-
-			if (!($row = $db->sql_fetchrow($result)) || ($row['is_auth_mod'] == 0))
-			{
-				$sql = "UPDATE " . USERS_TABLE . "
-					SET user_level = " . USER . "
-					WHERE user_id = " . $user->data['user_id'];
-				$result = $db->sql_query($sql);
-			}
-		}
+		*/
 
 		$redirect_url = append_sid(CMS_PAGE_FORUM);
 		meta_refresh(3, $redirect_url);
@@ -807,6 +751,8 @@ elseif ($group_id)
 	$meta_content['keywords'] = '';
 	$nav_server_url = create_server_url();
 	$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_GROUP_CP) . '">' . $lang['Group_Control_Panel'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $group_info['group_name'] . '</a>';
+	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '">' . $lang['LINK_MEMBERLIST'] . '</a>';
+
 	page_header($meta_content['page_title'], true);
 
 	// Load templates
@@ -1251,6 +1197,8 @@ else
 		$meta_content['keywords'] = '';
 		$nav_server_url = create_server_url();
 		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_GROUP_CP) . '" class="nav-current">' . $lang['Group_Control_Panel'] . '</a>';
+		$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '">' . $lang['LINK_MEMBERLIST'] . '</a>';
+
 		page_header($meta_content['page_title'], true);
 
 		$template->set_filenames(array('user' => 'groupcp_user_body.tpl'));

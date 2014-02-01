@@ -16,7 +16,7 @@
 		</span>
 	</td>
 </tr>
-<tr><td class="row1"><span class="gensmall"><b>{L_LEGEND}:&nbsp;</b>{GROUPS_LIST_LEGEND}</span></td></tr>
+<tr><td class="row1"><span class="gensmall"><b>{L_LEGEND}</b>&nbsp;[&nbsp;<a href="{U_GROUP_CP}">{L_LINK_USERGROUPS}</a>&nbsp;]:&nbsp;{GROUPS_LIST_LEGEND}</span></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_MEMBERLIST}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

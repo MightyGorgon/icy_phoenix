@@ -308,7 +308,7 @@ function get_selected_groups()
 		}
 	}
 
-	if (!empty($selected_groups) && (sizeof($groups) != sizeof($selected_groups)))
+	if (!empty($selected_groups) && (sizeof($groups_data) != sizeof($selected_groups)))
 	{
 		$selected_groups_result = implode(',', $selected_groups);
 	}

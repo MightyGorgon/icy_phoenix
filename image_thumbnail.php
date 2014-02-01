@@ -29,7 +29,6 @@ require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 // ------------------------------------
 // Check the request
 // ------------------------------------
-
 $pic_id = request_var('pic_id', '');
 if (empty($pic_id))
 {
@@ -221,45 +220,66 @@ else
 
 	$Image = new ImgObj();
 
-	if ($pic_filetype == 'jpg')
-	{
-		$Image->ReadSourceFileJPG($pic_fullpath);
-	}
-	else
-	{
-		$Image->ReadSourceFile($pic_fullpath);
-	}
-
+	$Image->JPGQuality = $config['thumbnail_quality'];
+	$Image->ReadSourceFile($pic_fullpath);
 	$Image->Resize($thumbnail_width, $thumbnail_height);
 
-	if( $config['show_pic_size_on_thumb'] == 1)
+	if($config['show_pic_size_on_thumb'] == 1)
 	{
-		$dimension_string = intval($pic_width) . "x" . intval($pic_height) . "(" . intval(filesize($pic_fullpath)/1024) . "KB)";
-		$Image->Text($dimension_string);
+		$image_filesize = get_formatted_filesize(filesize($pic_fullpath));
+		$image_dimension = intval($pic_width) . "x" . intval($pic_height);
+		$image_text_output = $image_dimension . (($thumbnail_width >= 360) ? (' - ' . $image_filesize) : '');
+
+		if ($thumbnail_width >= 260)
+		{
+			$image_exif_data = $Image->ExifData;
+			if (!empty($image_exif_data))
+			{
+				$image_exif_data_short = $Image->exif_get_data_short($image_exif_data);
+				$exif_data_key_array = array('MODEL', 'FOCAL_LENGTH', 'EXPOSURE', 'APERTURE', 'ISO');
+				$exif_data_array = array();
+				foreach ($exif_data_key_array as $exif_key)
+				{
+					if ($image_exif_data_short[$exif_key] != 'EXIF_UNKNOWN')
+					{
+						$process_tag = true;
+						if ($exif_key == 'ISO')
+						{
+							$image_exif_data_short[$exif_key] = 'ISO ' . $image_exif_data_short[$exif_key];
+						}
+						elseif ($exif_key == 'MODEL')
+						{
+							if ($thumbnail_width >= 320)
+							{
+								$image_exif_data_short[$exif_key] = str_replace(array('DIGITAL', '  '), array('', ' '), $image_exif_data_short[$exif_key]);
+								$image_exif_data_short[$exif_key] = ((strlen($image_exif_data_short[$exif_key]) >= 23) ? (substr($image_exif_data_short[$exif_key], 0, 18) . '...') : $image_exif_data_short[$exif_key]);
+							}
+							else
+							{
+								$process_tag = false;
+							}
+						}
+
+						if (!empty($process_tag))
+						{
+							$exif_data_array[] = $image_exif_data_short[$exif_key];
+						}
+					}
+				}
+				$image_text_output = (!empty($exif_data_array) ? (implode(' - ', $exif_data_array) . ' - ') : '') . $image_text_output;
+			}
+		}
+		$image_text_output = str_replace(' - 0BYTES', '', $image_text_output);
+		$Image->Text($image_text_output);
 	}
 
 	if ($config['thumbnail_cache'] == true)
 	{
-		if ($pic_filetype == 'jpg')
-		{
-			$Image->SendToFileJPG($pic_thumbnail_fullpath, $album_config['thumbnail_quality']);
-		}
-		else
-		{
-			$Image->SendToFile($pic_thumbnail_fullpath, $album_config['thumbnail_quality']);
-		}
-		//$Image->SendToFile($pic_thumbnail_fullpath, $config['thumbnail_quality']);
+		$Image->SendToFile($pic_thumbnail_fullpath, $config['thumbnail_quality']);
 		//@chmod($pic_thumbnail_fullpath, 0777);
 	}
 
-	if ($pic_filetype == 'jpg')
-	{
-		$Image->SendToBrowserJPG($pic_title_reg, $pic_filetype, 'thumb_', '', $config['thumbnail_quality']);
-	}
-	else
-	{
-		$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'thumb_', '', $config['thumbnail_quality']);
-	}
+	$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'thumb_', '', $config['thumbnail_quality']);
 
 	if ($Image == true)
 	{
