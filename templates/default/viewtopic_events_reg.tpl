@@ -1,6 +1,14 @@
 <tr><th colspan="2">{REG_TITLE}</th></tr>
 <tr>
 	<td class="row1" colspan="2">
+		<form name="events_reg" method="post" action="{REG_S_ACTION}">
+		<!-- IF S_ADMIN -->
+			<b>{L_EVENTS_REG_USER}:</b>&nbsp;<input type="text" class="post" name="username" id="username" maxlength="50" size="20" {REG_S_AJAX_USER_CHECK} />&nbsp;
+			<span id="username_list" style="display: none;">&nbsp;<span id="username_select">&nbsp;</span></span>
+			<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{REG_U_SEARCH_USER}', '_search', 'width=400,height=250,resizable=yes'); return false;" />
+			{REG_S_SELECT}
+			<input type="submit" name="submit" value="{L_GO}" class="mainoption" />
+		<!-- ENDIF -->
 		<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<!-- BEGIN reg_option1 -->
@@ -52,6 +60,8 @@
 		<tr><td colspan="3" class="row3 row-center"><input type="button" class="mainoption" value="{reg_unregister.REG_SELF_NAME}" onclick="self.location.href='{reg_unregister.REG_SELF_URL}'" onmouseover="'{reg_unregister.REG_SELF_NAME}'" /></td></tr>
 		<!-- END reg_unregister -->
 		</table>
+		{REG_S_HIDDEN}
+		</form>
 	</td>
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>

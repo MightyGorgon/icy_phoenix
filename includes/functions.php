@@ -4579,15 +4579,17 @@ function page_header($title = '', $parse_template = false)
 		if(isset($_GET) && !empty($smart_redirect))
 		{
 			$smart_get_keys = array_keys($_GET);
-
 			for ($i = 0; $i < sizeof($_GET); $i++)
 			{
+				//Better sanitize each key...
+				$smart_get_keys[$i] = htmlspecialchars($smart_get_keys[$i]);
 				if ($smart_get_keys[$i] != 'sid')
 				{
 					$smart_redirect .= '&amp;' . $smart_get_keys[$i] . '=' . urlencode(ip_utf8_decode($_GET[$smart_get_keys[$i]]));
 				}
 			}
 		}
+
 		$u_login_logout = CMS_PAGE_LOGIN;
 		$u_login_logout .= (!empty($smart_redirect)) ? '?redirect=' . $smart_redirect : '';
 		$l_login_logout = $lang['Login'];

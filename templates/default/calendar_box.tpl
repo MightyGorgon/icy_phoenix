@@ -64,7 +64,7 @@ function destroyTitle()
 </script>
 
 <!-- BEGIN _calendar_box -->
-<div id="calendarbox_h" style="display:none;">
+<div id="calendarbox_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

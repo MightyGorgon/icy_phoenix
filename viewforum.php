@@ -1079,6 +1079,7 @@ if($total_topics)
 						AND registration_user_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 
+				$reg_user_own_reg = '<span class="text_orange">&bull;</span>';
 				if ($regrow = $db->sql_fetchrow($result))
 				{
 					$status = $regrow['registration_status'];

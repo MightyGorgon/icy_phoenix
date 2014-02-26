@@ -971,7 +971,7 @@ class bbcode
 			$html .= '<div id="' . $container . '"';
 			foreach($params as $var => $value)
 			{
-				if ($this->process_text($value) != '')
+				if (in_array($value, array('width', 'height')) && ($this->process_text($value) != ''))
 				{
 					$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
 				}

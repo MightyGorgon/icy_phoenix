@@ -263,13 +263,16 @@ else
 
 	$template->assign_block_vars('entry_page', array());
 
+	$target_form_name = 'edit_post';
+	$target_element_name = 'username';
+
 	$template->assign_vars(array(
 		'L_POST_EDIT_TIME' => $lang['Edit_post_time'],
 		'L_TIME' => ($topic_post_time == 'topic') ? $lang['Topic_time_xs'] : $lang['Post_time'],
 		'L_SUBMIT' => $lang['Submit'],
 		'L_RESET' => $lang['Reset'],
 
-		'U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser'),
+		'U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser&amp;target_form_name=' . $target_form_name . '&amp;target_element_name=' . $target_element_name),
 
 		'POSTER_NAME' => $poster_name,
 		'POST_EDIT_STRING' => $post_edit_string,

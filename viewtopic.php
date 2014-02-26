@@ -2741,10 +2741,12 @@ for($i = 0; $i < $total_posts; $i++)
 		{
 			$item = &$template->_tpldata['postrow.'][$i];
 			$item['notes.'] = array();
+			$item['notes_mod.'] = array();
 			$list = unserialize($item['NOTES_DATA']);
 			for($j = 0; $j < sizeof($list); $j++)
 			{
-				$item['notes.'][] = array(
+				$notes_tpl_var_name = $list[$j]['reserved'] ? 'notes_mod.' : 'notes.';
+				$item[$notes_tpl_var_name][] = array(
 					'L_EDITED_BY' => $lang['Edited_by'],
 					'POSTER_NAME' => colorize_username($list[$j]['poster']),
 					'POSTER_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $list[$j]['poster']),

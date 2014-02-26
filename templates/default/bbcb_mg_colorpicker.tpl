@@ -37,7 +37,7 @@
 <br /><br />
 <div style="text-align: center;"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></div>
 
-<div style="display:none;">
+<div style="display: none;">
 <img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/rangearrows.gif" alt="" />
 <img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/mappoint.gif" alt="" />
 <img src="{FULL_SITE_PATH}{BBCB_MG_PATH_PREFIX}images/colorpicker/bar-saturation.png" alt="" />

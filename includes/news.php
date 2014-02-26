@@ -111,6 +111,12 @@ class NewsModule
 
 		if(is_array($articles))
 		{
+			if ($config['display_tags_box'])
+			{
+				@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
+				$class_topics_tags = new class_topics_tags();
+			}
+
 			foreach($articles as $article)
 			{
 				$trimmed = false;
@@ -168,6 +174,15 @@ class NewsModule
 				$news_dst_sec = get_dst($gmepoch, $tz);
 				$news_date = @gmdate($format, $gmepoch + (3600 * $tz) + $news_dst_sec);
 
+				$topic_tags_links = '';
+				$topic_tags_display = false;
+				if ($config['display_tags_box'])
+				{
+					$topic_id = $article['topic_id'];
+					$topic_tags_links = $class_topics_tags->build_tags_list(array($topic_id));
+					$topic_tags_display = !empty($topic_tags_links) ? true : false;
+				}
+
 				// Convert and clean special chars!
 				$topic_title = htmlspecialchars_clean($article['topic_title']);
 				$this->setBlockVariables('articles', array(
@@ -185,6 +200,10 @@ class NewsModule
 					'RFC_POST_DATE' => $news_date,
 					'L_POSTER' => colorize_username($article['user_id'], $article['username'], $article['user_color'], $article['user_active']),
 					'L_COMMENTS' => $article['topic_replies'],
+
+					'S_TOPIC_TAGS' => $topic_tags_display,
+					'TOPIC_TAGS' => $topic_tags_links,
+
 					/*
 					'U_COMMENTS' => $this->root_path . CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],
 					'U_COMMENT' => $this->root_path . CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'],

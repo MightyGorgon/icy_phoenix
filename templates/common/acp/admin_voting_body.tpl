@@ -44,8 +44,8 @@
 		var sVar = ''+objName;
 		var sOn = ''+objName+'_on';
 		var sOff = ''+objName+'_off';
-		var sOnStyle = bObjState ? ' style="display:none;" ':'';
-		var sOffStyle = !bObjState ? ' style="display:none;" ':'';
+		var sOnStyle = bObjState ? ' style="display: none;" ':'';
+		var sOffStyle = !bObjState ? ' style="display: none;" ':'';
 		var sSymStyle = ' style="text-align: center; width: 13; height: 13; font-family: Arial, Verdana; font-size: 7pt; border-style: solid; border-width: 1; cursor: pointer; color: #003344; background-color: #cacaca;" ';
 
 		if( (navigator.userAgent.indexOf("MSIE") >= 0) && document && document.body && document.body.style)
@@ -83,7 +83,7 @@
 	<td class="{votes.COLOR}"><span class="gensmall">{votes.USER}</span></td>
 	<td class="{votes.COLOR} row-center"><span class="gensmall">{votes.VOTE_DURATION}</span></td>
 </tr>
-<tr id="vote{votes.VOTE_ID}_switch" style="display:none;">
+<tr id="vote{votes.VOTE_ID}_switch" style="display: none;">
 	<td class="row2" colspan="4" style="padding:0px;">
 		<table width="100%" cellpadding="0" cellspacing="0" border="0">
 		<!-- BEGIN detail -->

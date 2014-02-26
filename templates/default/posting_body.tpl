@@ -118,11 +118,11 @@ function attach_rules(forum_id)
 	<td class="row2"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%;" tabindex="2" class="post" value="{SUBJECT}" {S_AJAX_BLUR} /></td>
 </tr>
 <!-- IF S_AJAX_FEATURES -->
-<tr id="subject_error_tbl" style="display:none;">
+<tr id="subject_error_tbl" style="display: none;">
 	<td class="row1">&nbsp;</td>
 	<td class="row2"><span class="gen">{L_EMPTY_SUBJECT}</span></td>
 </tr>
-<tr id="searchresults_tbl" style="display:none;">
+<tr id="searchresults_tbl" style="display: none;">
 	<td class="row1">&nbsp;</td>
 	<td class="row2"><span class="gen"><a href="#" target="_blank" class="gen" id="searchresults_lnk">{L_AJAX_NO_RESULTS}</a></span></td>
 </tr>
@@ -174,32 +174,38 @@ function attach_rules(forum_id)
 		<div class="message-box"><textarea id="message" name="message" rows="15" cols="76" tabindex="4" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{MESSAGE}</textarea></div>
 	</td>
 </tr>
-<!-- BEGIN switch_edit -->
+<!-- IF S_EDIT_NOTES -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_EDIT_NOTES}</b></span></td>
-	<td class="row2"><input type="text" name="notes" size="45" maxlength="60" style="width: 98%;" tabindex="5" class="post" value="{switch_edit.NOTES}" /></td>
+	<td class="row2"><input type="text" name="notes" size="45" maxlength="240" style="width: 98%;" tabindex="5" class="post" value="{switch_edit.NOTES}" /></td>
 </tr>
-<!-- END switch_edit -->
+<!-- IF S_ADMIN or S_MOD -->
+<tr>
+	<td class="row1"><span class="gen"><b>{L_NOTES_MOD}</b></span></td>
+	<td class="row2"><input type="text" name="notes_mod" size="45" maxlength="240" style="width: 98%;" tabindex="6" class="post" value="{switch_edit.NOTES_MOD}" /></td>
+</tr>
+<!-- ENDIF -->
+<!-- ENDIF -->
 <!-- IF S_POSTING_TOPIC -->
 <!-- IF S_ADMIN or S_MOD -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_CLEAN_NAME}</b></span><br /><span class="gensmall">{L_CLEAN_NAME_EXPLAIN}</span></td>
-	<td class="row2"><span class="gen"><input type="text" name="topic_title_clean" size="45" maxlength="240" style="width: 98%;" tabindex="6" class="post" value="{TOPIC_TITLE_CLEAN}" /></span></td>
+	<td class="row2"><span class="gen"><input type="text" name="topic_title_clean" size="45" maxlength="240" style="width: 98%;" tabindex="7" class="post" value="{TOPIC_TITLE_CLEAN}" /></span></td>
 </tr>
 <!-- ENDIF -->
 <!-- IF S_TOPIC_TAGS -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_TOPIC_TAGS}</b></span><br /><span class="gensmall">{L_TOPIC_TAGS_EXPLAIN}</span></td>
-	<!-- <td class="row2"><span class="gen"><input type="text" id="topic_tags" name="topic_tags" size="45" maxlength="240" style="width: 98%;" tabindex="7" class="post" value="{TOPIC_TAGS}" /></span></td> -->
+	<!-- <td class="row2"><span class="gen"><input type="text" id="topic_tags" name="topic_tags" size="45" maxlength="240" style="width: 98%;" tabindex="8" class="post" value="{TOPIC_TAGS}" /></span></td> -->
 	<td class="row2">
 		<span class="gen">
 			<!-- IF S_JQUERY_TOPIC_TAGS -->
 			<!-- BEGIN ttag -->
-			<input type="text" name="ttag[]" size="45" maxlength="240" style="width: 98%;" tabindex="8" class="tag" value="{ttag.TTAG}" />
+			<input type="text" name="ttag[]" size="45" maxlength="240" style="width: 98%;" class="tag" value="{ttag.TTAG}" />
 			<!-- END ttag -->
 			<input type="text" name="ttag[]" size="45" maxlength="240" style="width: 98%;" tabindex="8" class="tag" value="" />
 			<!-- ELSE -->
-			<input type="text" name="topic_tags" size="45" maxlength="240" style="width: 98%;" tabindex="7" class="post" value="{TOPIC_TAGS}" />
+			<input type="text" name="topic_tags" size="45" maxlength="240" style="width: 98%;" tabindex="8" class="post" value="{TOPIC_TAGS}" />
 			<!-- ENDIF -->
 		</span>
 	</td>
@@ -209,17 +215,17 @@ function attach_rules(forum_id)
 <!-- IF S_FEATURED_IMAGE -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_POST_FEATURED_IMAGE}</b></span><br /><span class="gensmall">{L_POST_FEATURED_IMAGE_EXPLAIN}</span></td>
-	<td class="row2"><span class="gen"><input type="text" name="post_images" size="45" maxlength="240" style="width: 98%;" tabindex="6" class="post" value="{POST_FEATURED_IMAGE}" /></span></td>
+	<td class="row2"><span class="gen"><input type="text" name="post_images" size="45" maxlength="240" style="width: 98%;" tabindex="9" class="post" value="{POST_FEATURED_IMAGE}" /></span></td>
 </tr>
 <!-- ENDIF -->
 <tr>
 	<td class="catBottom" colspan="2">
-		<input type="button" tabindex="8" class="liteoption" value="{L_POST_HIGHLIGHT}" onclick="copymetasearch();" />&nbsp;
-		<input type="submit" tabindex="9" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;
+		<input type="button" tabindex="10" class="liteoption" value="{L_POST_HIGHLIGHT}" onclick="copymetasearch();" />&nbsp;
+		<input type="submit" tabindex="11" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;
 		<!-- BEGIN allow_drafts -->
-		<input type="submit" tabindex="10" name="draft" class="altoption" value="{L_DRAFT_SAVE}" />&nbsp;
+		<input type="submit" tabindex="12" name="draft" class="altoption" value="{L_DRAFT_SAVE}" />&nbsp;
 		<!-- END allow_drafts -->
-		<input type="submit" accesskey="s" tabindex="11" name="post" class="mainoption" value="{L_SUBMIT}" />
+		<input type="submit" accesskey="s" tabindex="13" name="post" class="mainoption" value="{L_SUBMIT}" />
 	</td>
 </tr>
 <tr>

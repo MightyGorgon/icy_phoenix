@@ -72,6 +72,9 @@
 				<div class="post-text" style="padding: 2px;">{articles.BODY}</div>
 				<div class="content-padding">{articles.ATTACHMENTS}</div><br /><br />
 				<span class="gensmall">{articles.READ_MORE_LINK}&nbsp;</span><br /><br />
+				<!-- IF articles.S_TOPIC_TAGS and articles.TOPIC_TAGS -->
+				<br clear="all" /><br /><div><span class="gensmall"><b>{L_TOPIC_TAGS}</b>:&nbsp;{articles.TOPIC_TAGS}</span></div><br />
+				<!-- ENDIF -->
 			</td>
 		</tr>
 		<tr>

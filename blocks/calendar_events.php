@@ -61,9 +61,59 @@ if(!function_exists('cms_block_calendar_events'))
 			{
 				$template->assign_var('SHOW_END_TIME', $show_end_date);
 				$i = 0;
-				while ($event_row = $db->sql_fetchrow($result))
+				$event_rows = $db->sql_fetchrowset($result);
+				$db->sql_freeresult($result);
+				$topic_ids = array();
+				foreach ($event_rows as $event_row)
+				{
+					$topic_ids[] = $event_row['topic_id'];
+				}
+
+				if ($user->data['session_logged_in'] && !$user->data['is_bot'])
+				{
+					$sql = "SELECT topic_id, registration_status FROM " . REGISTRATION_TABLE . "
+							WHERE " . $db->sql_in_set('topic_id', $topic_ids) . "
+							AND registration_user_id = " . $user->data['user_id'];
+					$result = $db->sql_query($sql);
+					$reg_rows = $db->sql_fetchrowset($result);
+					$db->sql_freeresult($result);
+					$reg_array = array();
+					foreach ($reg_rows as $reg_row)
+					{
+						$reg_array[$reg_row['topic_id']] = $reg_row['registration_status'];
+					}
+				}
+
+				foreach ($event_rows as $event_row)
 				{
 					$event_row['topic_title'] = censor_text($event_row['topic_title']);
+
+					$reg_info = '';
+					if (!empty($event_row['topic_reg']) && $user->data['session_logged_in'] && !$user->data['is_bot'])
+					{
+						$reg_info = '&nbsp;<span class="text_orange">&bull;</span>';
+						if (!empty($reg_array[$event_row['topic_id']]))
+						{
+							/*
+							define('REG_OPTION1', 1);
+							define('REG_OPTION2', 2);
+							define('REG_OPTION3', 3);
+							define('REG_UNREGISTER', 4);
+							*/
+							if ($reg_array[$event_row['topic_id']] == REG_OPTION1)
+							{
+								$reg_info = '&nbsp;<span class="text_green">&bull;</span>';
+							}
+							elseif ($reg_array[$event_row['topic_id']] == REG_OPTION2)
+							{
+								$reg_info = '&nbsp;<span class="text_blue">&bull;</span>';
+							}
+							elseif ($reg_array[$event_row['topic_id']] == REG_OPTION3)
+							{
+								$reg_info = '&nbsp;<span class="text_red">&bull;</span>';
+							}
+						}
+					}
 
 					$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 					$template->assign_block_vars('event_row', array(
@@ -83,12 +133,11 @@ if(!function_exists('cms_block_calendar_events'))
 						'U_EVENT_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $event_row['forum_id']),
 						'L_EVENT_FORUM' => $event_row['forum_name'],
 						'U_EVENT_TITLE' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $event_row['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $event_row['topic_id']),
-						'L_EVENT_TITLE' => $event_row['topic_title'],
+						'L_EVENT_TITLE' => $event_row['topic_title'] . $reg_info,
 						)
 					);
 					$i++;
 				}
-				$db->sql_freeresult($result);
 			}
 		}
 	}

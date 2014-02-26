@@ -2221,7 +2221,7 @@ $lang = array_merge($lang, array(
 	'Add_reg_explain' => '&nbsp;&bull; Check <i>Activate</i> to show a registration form with this post. Uncheck to hide it.<br />&nbsp;&bull; Check <i>Reset</i> to delete all current registrations for this form.<br />&nbsp;&bull; Enter a number in <i>Slots</i> to limit registrations for an option. "0" or empty = unlimited.',
 	'reg_activate' => 'Activate',
 	'reg_reset' => 'Reset',
-	'Reg_Insert' => 'You registered for the event.',
+	'Reg_Insert' => 'Registration added for the event.',
 	'Reg_Change' => 'Registration changed.',
 	'Reg_Confirm' => 'Registration confirmed.',
 	'Reg_Unregister' => 'Registration cancelled.',
@@ -2498,6 +2498,10 @@ $lang = array_merge($lang, array(
 	'AJAX_REQ_SUCCESS' => 'Request successful',
 	'AJAX_REQ_ERROR' => 'Errors in processing the request',
 	'ALL_UPLOADED_IMAGES' => 'All uploaded images can be found here:',
+
+	'EVENTS_REG_USER' => 'Add a user to the event',
+
+	'NOTES_MOD' => 'Moderation notes',
 
 	)
 );
