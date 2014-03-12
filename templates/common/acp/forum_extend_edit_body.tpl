@@ -37,6 +37,7 @@ function update_icon(newimage)
 	<td class="row2"><span class="genmed">&nbsp;<select name="move">{S_MOVE_OPT}</select></span></td>
 </tr>
 <!-- END move -->
+<!-- IF MODE != 'delete' -->
 <tr>
 	<td class="row1" width="40%"><span class="genmed"><b>{L_TYPE}</b></span></td>
 	<td class="row2" width="60%"><span class="genmed">&nbsp;<select name="type" onchange="this.form.submit();">{S_TYPE_OPT}</select></span></td>
@@ -212,6 +213,7 @@ function update_icon(newimage)
 	</td>
 </tr>
 <!-- END forum_link -->
+<!-- ENDIF --> <!-- MODE != 'delete' -->
 <tr>
 	<td class="cat" align="center" colspan="5">{S_HIDDEN_FIELDS}
 		<span class="cattitle">
