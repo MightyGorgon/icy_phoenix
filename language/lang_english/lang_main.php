@@ -2489,7 +2489,6 @@ $lang = array_merge($lang, array(
 	'SOCIAL_CONNECT_REGISTER_INFO' => 'Your profile will be automatically filled with the information retrieved from your profile in the social network.',
 	'SOCIAL_CONNECT_LINK_ACCOUNT' => 'Please login to link your social network account to your account',
 	'SOCIAL_CONNECT_LINK_ACCOUNT_MSG' => 'We couldn\'t find any social network account linked with your %s account. You can either register or link an existing account with your %s account.<br /><br />Click %shere%s if you already have an account.<br/ ><br />Click %shere%s to create a new account.',
-	'FACEBOOK' => 'Facebook',
 
 	'IMG_BA_SHOW_ONLY_BEFORE' => 'Show Only Before',
 	'IMG_BA_SHOW_ONLY_AFTER' => 'Show Only After',
