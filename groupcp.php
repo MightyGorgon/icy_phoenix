@@ -605,7 +605,10 @@ elseif ($group_id)
 	$result_rank = $db->sql_query($sql_rank);
 	if($group_rank_row = $db->sql_fetchrow($result_rank))
 	{
-		$group_rank_image = '<img src="' . IP_ROOT_PATH . $group_rank_row['rank_image'] . '" alt="' . $group_rank_row['rank_title'] . '" />';
+		if (empty($group_rank_row['rank_image']))
+			$group_rank_image = $group_rank_row['rank_title'];
+		else
+			$group_rank_image = '<img src="' . IP_ROOT_PATH . $group_rank_row['rank_image'] . '" alt="' . $group_rank_row['rank_title'] . '" />';
 	}
 	else
 	{
