@@ -111,11 +111,7 @@ function Collapse_Expand_All(collapse)
 		<a href="{row.U_MOVEUP}"><img src="{IMG_CMS_ARROW_UP}" alt="{L_MOVEUP}" title="{L_MOVEUP}" /></a>
 		<a href="{row.U_MOVEDW}"><img src="{IMG_CMS_ARROW_DOWN}" alt="{L_MOVEDW}" title="{L_MOVEDW}" /></a>
 		<a href="{row.U_RESYNC}"><img src="{IMG_CMS_ICON_REFRESH}" alt="{L_RESYNC}" title="{L_RESYNC}" /></a>
-		<a href="{row.U_PERMS}"><img src="{IMG_CMS_ICON_PERMISSIONS}" alt="{L_PERMISSIONS}" title="{L_PERMISSIONS}"
-			<!-- IF row.IS_CAT -->
-			style="opacity: 0;"
-			<!-- ENDIF -->
-		 /></a>
+		<!-- IF not row.IS_CAT --><a href="{row.U_PERMS}"><img src="{IMG_CMS_ICON_PERMISSIONS}" alt="{L_PERMISSIONS}" title="{L_PERMISSIONS}" /></a><!-- ENDIF -->
 	</td>
 </tr>
 <!-- END row -->

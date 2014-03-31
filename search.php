@@ -1496,12 +1496,13 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				{
 					search_calc_unread_ip($user->data['upi2db_unread'], $topic_id, $searchset, $i, $mini_post_img, $mini_post_alt, $unread_color, $folder_image, $folder_alt);
 				}
+				$mark_topic_unread_array['unmark_post'] = 0;
 				if($user->data['upi2db_access'])
 				{
 					if($s2 == 'mark')
 					{
 						$post_id = $searchset[$i]['post_id'];
-						$mark_topic_unread = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=upi2db&amp;s2=mark&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;do=unmark_post' . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '"><img src="' . $images['unmark_img'] . '" alt="' . $lang['upi2db_unmark_post'] . '" title="' . $lang['upi2db_unmark_post'] . '" /></a>';
+						$mark_topic_unread_array['unmark_post'] = 1;
 					}
 				}
 // UPI2DB - END
@@ -1538,7 +1539,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'L_TOPIC_FOLDER_ALT' => $folder_alt,
 					'TOPIC_FOLDER_IMG' => $folder_image,
 					'UNREAD_COLOR' => $unread_color,
-					'UNREAD_IMG' => $mark_topic_unread,
+
+					'UPI2DB_UNMARK_POST' => !empty($mark_topic_unread_array['unmark_post']) ? true : false,
+					'L_UPI2DB_UNMARK_POST' => $lang['upi2db_unmark_post'],
+					'UPI2DB_UNMARK_POST_IMG' => $images['unmark_img'],
+					'UPI2DB_UNMARK_POST_URL' => append_sid(CMS_PAGE_SEARCH . '?search_id=upi2db&amp;s2=mark&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;do=unmark_post' . (isset($s2) ? ('&amp;s2=' . $s2) : '')),
 // UPI2DB - END
 
 					// AJAX Features - BEGIN

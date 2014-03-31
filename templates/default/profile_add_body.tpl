@@ -80,6 +80,10 @@
 	<td class="row2"><input type="text" name="phone" class="post" style="width: 100px;" size="10" maxlength="20" value="{PHONE}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_500PX}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="500px" size="20" maxlength="255" value="{500PX}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_AIM}:</span></td>
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="aim" size="20" maxlength="255" value="{AIM}" /></td>
 </tr>
@@ -92,12 +96,20 @@
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="flickr" size="20" maxlength="255" value="{FLICKR}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_GITHUB}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="github" size="20" maxlength="255" value="{GITHUB}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_GOOGLEPLUS}:</span></td>
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="googleplus" size="20" maxlength="255" value="{GOOGLEPLUS}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_ICQ_NUMBER}:</span></td>
 	<td class="row2"><input type="text" name="icq" class="post" style="width: 100px;" size="10" maxlength="15" value="{ICQ}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_INSTAGRAM}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="instagram" size="20" maxlength="255" value="{INSTAGRAM}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_JABBER}:</span></td>
@@ -112,12 +124,20 @@
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="msn" size="20" maxlength="255" value="{MSN}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_PINTEREST}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="pinterest" size="20" maxlength="255" value="{PINTEREST}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_SKYPE}:</span></td>
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="skype" size="20" maxlength="255" value="{SKYPE}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_TWITTER}:</span></td>
 	<td class="row2"><input type="text" class="post" style="width: 150px;" name="twitter" size="20" maxlength="255" value="{TWITTER}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_VIMEO}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 150px;" name="vimeo" size="20" maxlength="255" value="{VIMEO}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_YAHOO}:</span></td>

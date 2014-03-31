@@ -118,12 +118,23 @@ ALTER TABLE `phpbb_images` ADD `iso` varchar(255) DEFAULT '' NOT NULL;
 
 
 
+########################################
+##              BUILD 096             ##
+########################################
+ALTER TABLE `phpbb_users` ADD `user_vimeo` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`;
+ALTER TABLE `phpbb_users` ADD `user_pinterest` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`;
+ALTER TABLE `phpbb_users` ADD `user_instagram` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`;
+ALTER TABLE `phpbb_users` ADD `user_github` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`;
+ALTER TABLE `phpbb_users` ADD `user_500px` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`;
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.9.95' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.10.96' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

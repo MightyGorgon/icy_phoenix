@@ -24,6 +24,12 @@
 			<a href="{FULL_SITE_PATH}{U_FAQ}">{L_FAQ}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_SEARCH}">{L_SEARCH}</a>&nbsp;&#8226;&nbsp;
 			<a href="{FULL_SITE_PATH}{U_RECENT}">{L_RECENT}</a>&nbsp;&#8226;&nbsp;
+			<!-- BEGIN switch_upi2db_off -->
+			<a href="{FULL_SITE_PATH}{U_SEARCH_NEW}">{L_NEW2}</a>&nbsp;&#8226;&nbsp;
+			<!-- END switch_upi2db_off -->
+			<!-- BEGIN switch_upi2db_on -->
+			<a href="{FULL_SITE_PATH}{U_SEARCH_NEW}">{L_NEW2}</a>&nbsp;&#8226;&nbsp;{L_DISPLAY_U}&nbsp;&#8226;&nbsp;{L_DISPLAY_M}&nbsp;&#8226;&nbsp;{L_DISPLAY_P}&nbsp;&#8226;&nbsp;
+			<!-- END switch_upi2db_on -->
 			<a href="{FULL_SITE_PATH}{U_MEMBERLIST}">{L_MEMBERLIST}</a>&nbsp;&#8226;&nbsp;
 			<!-- IF not S_LOGGED_IN -->
 			<a href="{FULL_SITE_PATH}{U_REGISTER}">{L_REGISTER}</a>&nbsp;&#8226;&nbsp;

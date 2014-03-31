@@ -213,7 +213,7 @@ function update_icon(newimage)
 	</td>
 </tr>
 <!-- END forum_link -->
-<!-- ENDIF --> <!-- MODE != 'delete' -->
+<!-- ENDIF --> 
 <tr>
 	<td class="cat" align="center" colspan="5">{S_HIDDEN_FIELDS}
 		<span class="cattitle">

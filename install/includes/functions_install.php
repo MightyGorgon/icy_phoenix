@@ -401,7 +401,7 @@ class ip_functions
 	// around every single URL and form action. If you replace the session
 	// code you must include this routine, even if it's empty.
 	//
-	function append_sid($url, $non_html_amp = false, $char_conversion = false)
+	public static function append_sid($url, $non_html_amp = false, $char_conversion = false)
 	{
 		global $SID;
 

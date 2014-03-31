@@ -2502,6 +2502,12 @@ $lang = array_merge($lang, array(
 
 	'NOTES_MOD' => 'Moderation notes',
 
+	'500PX' => '500px',
+	'GITHUB' => 'GitHub',
+	'INSTAGRAM' => 'Instagram',
+	'PINTEREST' => 'Pinterest',
+	'VIMEO' => 'Vimeo',
+
 	)
 );
 

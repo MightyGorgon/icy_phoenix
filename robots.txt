@@ -52,7 +52,7 @@ Disallow: /ct_login_history.php
 Disallow: /db_admin.php
 Disallow: /db_empty.php
 Disallow: /db_upload.php
-Disallow: /donations.php
+#Disallow: /donations.php
 Disallow: /drafts.php
 Disallow: /emergency.php
 Disallow: /files_list.php

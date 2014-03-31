@@ -138,10 +138,12 @@ function checkFormRate()
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
+<!-- IF not S_BOT -->
 <!-- BEGIN social_bookmarks -->
 <br />
 <!-- INCLUDE social_bookmarks_full.tpl -->
 <!-- END social_bookmarks -->
+<!-- ENDIF -->
 
 <!-- BEGIN switch_exif_enabled -->
 <!-- BEGIN exif_switch -->
@@ -229,6 +231,7 @@ function checkFormRate()
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- END comment_switcharo_bottom -->
 
+<!-- IF not S_BOT -->
 <!-- BEGIN switch_comment_post -->
 <br />
 <form name="post" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkFormComment();">
@@ -250,6 +253,7 @@ function checkFormRate()
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <!-- END switch_comment_post -->
+<!-- ENDIF -->
 
 <!-- BEGIN switch_comment -->
 <div style="text-align:left;"><div style="float:right;text-align:right;"><span class="pagination">{PAGINATION}</span></div><span class="gensmall">{PAGE_NUMBER}</span></div>

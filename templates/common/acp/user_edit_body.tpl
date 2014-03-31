@@ -58,6 +58,10 @@ function ColorExample(ColorCode)
 	<td class="row2"><input class="post" type="text" name="phone" size="35" maxlength="150" value="{PHONE}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_500PX}</span></td>
+	<td class="row2"><input class="post" type="text" name="500px" size="20" maxlength="255" value="{500PX}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_AIM}</span></td>
 	<td class="row2"><input class="post" type="text" name="aim" size="20" maxlength="255" value="{AIM}" /></td>
 </tr>
@@ -70,12 +74,20 @@ function ColorExample(ColorCode)
 	<td class="row2"><input class="post" type="text" name="flickr" size="20" maxlength="255" value="{FLICKR}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_GITHUB}</span></td>
+	<td class="row2"><input class="post" type="text" name="github" size="20" maxlength="255" value="{GITHUB}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_GOOGLEPLUS}</span></td>
 	<td class="row2"><input class="post" type="text" name="googleplus" size="20" maxlength="255" value="{GOOGLEPLUS}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_ICQ_NUMBER}</span></td>
 	<td class="row2"><input class="post" type="text" name="icq" size="10" maxlength="15" value="{ICQ}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_INSTAGRAM}</span></td>
+	<td class="row2"><input class="post" type="text" name="instagram" size="20" maxlength="255" value="{INSTAGRAM}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_JABBER}</span></td>
@@ -90,12 +102,20 @@ function ColorExample(ColorCode)
 	<td class="row2"><input class="post" type="text" name="msn" size="20" maxlength="255" value="{MSN}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_PINTEREST}</span></td>
+	<td class="row2"><input class="post" type="text" name="pinterest" size="20" maxlength="255" value="{PINTEREST}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen">{L_SKYPE}</span></td>
 	<td class="row2"><input class="post" type="text" name="skype" size="20" maxlength="255" value="{SKYPE}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_TWITTER}</span></td>
 	<td class="row2"><input class="post" type="text" name="twitter" size="20" maxlength="255" value="{TWITTER}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_VIMEO}</span></td>
+	<td class="row2"><input class="post" type="text" name="vimeo" size="20" maxlength="255" value="{VIMEO}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_YAHOO}</span></td>

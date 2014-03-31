@@ -100,6 +100,7 @@ switch ($req_version)
 	case '20894': $current_ip_version = '2.0.8.94'; break;
 	case '20995': $current_ip_version = '2.0.9.95'; break;
 	case '201096': $current_ip_version = '2.0.10.96'; break;
+	case '201197': $current_ip_version = '2.0.11.97'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4544,9 +4545,17 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.9.95 */
 		case '2.0.9.95':
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_vimeo` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pinterest` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_instagram` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_github` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_500px` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
 
 		/* Updating from IP 2.0.10.96 */
 		case '2.0.10.96':
+
+		/* Updating from IP 2.0.11.97 */
+		case '2.0.11.97':
 
 	}
 

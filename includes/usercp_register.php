@@ -220,7 +220,7 @@ $meta_content['description'] = '';
 $meta_content['keywords'] = '';
 
 // DNSBL CHECK - BEGIN
-if (!empty($config['check_dnsbl']))
+if (($mode == 'register') && !empty($config['check_dnsbl']))
 {
 	if (($dnsbl = $user->check_dnsbl('register')) !== false)
 	{
@@ -287,18 +287,6 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 		'user_last_name' => 'user_last_name',
 		'email' => 'email',
 		'email_confirm' => 'email_confirm',
-		'aim' => 'aim',
-		'facebook' => 'facebook',
-		'flickr' => 'flickr',
-		'googleplus' => 'googleplus',
-		'icq' => 'icq',
-		'jabber' => 'jabber',
-		'linkedin' => 'linkedin',
-		'msn' => 'msn',
-		'skype' => 'skype',
-		'twitter' => 'twitter',
-		'yim' => 'yim',
-		'youtube' => 'youtube',
 		'website' => 'website',
 		'location' => 'location',
 		'occupation' => 'occupation',
@@ -306,6 +294,12 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 		'phone' => 'phone',
 		'confirm_code' => 'confirm_code'
 	);
+
+	$user_sn_im_array = get_user_sn_im_array();
+	foreach ($user_sn_im_array as $k => $v)
+	{
+		$strip_var_list[$v['form']] = $v['form'];
+	}
 
 	// Strip all tags from data ... may p**s some people off, bah, strip_tags is doing the job but can still break HTML output ... have no choice, have to use htmlspecialchars ... be prepared to be moaned at.
 	while(list($var, $param) = @each($strip_var_list))
@@ -513,7 +507,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 
 	$social_connect_append = '';
 	$social_network = request_get_var('social_network', '');
-	if ($mode == 'register' && $config['enable_social_connect'] && !empty($social_network))
+	if (($mode == 'register') && $config['enable_social_connect'] && !empty($social_network))
 	{
 		include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
 		$available_networks = SocialConnect::get_available_networks();
@@ -998,11 +992,18 @@ if (isset($_POST['submit']))
 			$target_profile_data['user_id'] = $user_id;
 			// PROFILE EDIT BRIDGE - END
 
+			$sn_im_sql = '';
+			$user_sn_im_array = get_user_sn_im_array();
+			foreach ($user_sn_im_array as $k => $v)
+			{
+				$sn_im_sql .= ", " . $v['field'] . " = '" . $db->sql_escape(str_replace(' ', '+', trim($$v['form']))) . "'";
+			}
+
 // UPI2DB - EDIT
 // IN LINE ADD
 // , user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color
 			$sql = "UPDATE " . USERS_TABLE . "
-				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_email_hash = '" . $db->sql_escape(phpbb_email_hash($email)) . "', user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color, user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "', user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = '$next_birthday_greeting', user_allow_viewemail = $viewemail, user_aim = '" . $db->sql_escape(str_replace(' ', '+', trim($aim))) . "', user_facebook = '" . $db->sql_escape($facebook) . "', user_flickr = '" . $db->sql_escape($flickr) . "', user_googleplus = '" . $db->sql_escape($googleplus) . "', user_icq = '" . $db->sql_escape($icq) . "', user_jabber = '" . $db->sql_escape($jabber) . "', user_linkedin = '" . $db->sql_escape($linkedin) . "', user_msnm = '" . $db->sql_escape($msn) . "', user_skype = '" . $db->sql_escape($skype) . "', user_twitter = '" . $db->sql_escape($twitter) . "', user_yim = '" . $db->sql_escape($yim) . "', user_youtube = '" . $db->sql_escape($youtube) . "', user_attachsig = $attachsig, user_setbm = $setbm, user_allowsmile = $allowsmilies, user_showavatars = $showavatars, user_showsignatures = $showsignatures, user_allowswearywords = $allowswearywords, user_allowhtml = $allowhtml, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_timezone = $user_timezone, user_time_mode = $time_mode, user_dst_time_lag = $dst_time_lag, user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_topic_show_days = '" . $db->sql_escape($user_topic_show_days) . "', user_topic_sortby_type = '" . $db->sql_escape($user_topic_sortby_type) . "', user_topic_sortby_dir = '" . $db->sql_escape($user_topic_sortby_dir) . "', user_post_show_days = '" . $db->sql_escape($user_post_show_days) . "', user_post_sortby_type = '" . $db->sql_escape($user_post_sortby_type) . "', user_post_sortby_dir = '" . $db->sql_escape($user_post_sortby_dir) . "', user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_active = $user_active, user_actkey = '$user_actkey'" . $avatar_sql . ", user_gender = '" . $gender . "'
+				SET " . $username_sql . $passwd_sql . "user_email = '" . $db->sql_escape($email) . "', user_email_hash = '" . $db->sql_escape(phpbb_email_hash($email)) . "', user_upi2db_which_system = $upi2db_which_system, user_upi2db_new_word = $upi2db_new_word, user_upi2db_edit_word = $upi2db_edit_word, user_upi2db_unread_color = $upi2db_unread_color, user_website = '" . $db->sql_escape($website) . "', user_occ = '" . $db->sql_escape($occupation) . "', user_from = '" . $db->sql_escape($location) . "', user_from_flag = '$user_flag', user_first_name = '" . $db->sql_escape($user_first_name) . "', user_last_name = '" . $db->sql_escape($user_last_name) . "', user_interests = '" . $db->sql_escape($interests) . "', user_phone = '" . $db->sql_escape($phone) . "', user_selfdes = '" . $db->sql_escape($selfdes) . "'" . $sn_im_sql . ", user_profile_view_popup = $profile_view_popup, user_birthday = '$birthday', user_birthday_y = '$birthday_year', user_birthday_m = '$birthday_month', user_birthday_d = '$birthday_day', user_next_birthday_greeting = '$next_birthday_greeting', user_allow_viewemail = $viewemail, user_attachsig = $attachsig, user_setbm = $setbm, user_allowsmile = $allowsmilies, user_showavatars = $showavatars, user_showsignatures = $showsignatures, user_allowswearywords = $allowswearywords, user_allowhtml = $allowhtml, user_allowbbcode = $allowbbcode, user_allow_mass_email = $allowmassemail, user_allow_pm_in = $allowpmin, user_allow_viewonline = $allowviewonline, user_notify = $notifyreply, user_notify_pm = $notifypm, user_popup_pm = $popup_pm, user_timezone = $user_timezone, user_time_mode = $time_mode, user_dst_time_lag = $dst_time_lag, user_dateformat = '" . $db->sql_escape($user_dateformat) . "', user_posts_per_page = '" . $db->sql_escape($user_posts_per_page) . "', user_topics_per_page = '" . $db->sql_escape($user_topics_per_page) . "', user_hot_threshold = '" . $db->sql_escape($user_hot_threshold) . "', user_topic_show_days = '" . $db->sql_escape($user_topic_show_days) . "', user_topic_sortby_type = '" . $db->sql_escape($user_topic_sortby_type) . "', user_topic_sortby_dir = '" . $db->sql_escape($user_topic_sortby_dir) . "', user_post_show_days = '" . $db->sql_escape($user_post_show_days) . "', user_post_sortby_type = '" . $db->sql_escape($user_post_sortby_type) . "', user_post_sortby_dir = '" . $db->sql_escape($user_post_sortby_dir) . "', user_lang = '" . $db->sql_escape($user_lang) . "', user_style = $user_style, user_active = $user_active, user_actkey = '$user_actkey'" . $avatar_sql . ", user_gender = '" . $gender . "'
 				WHERE user_id = " . $user_id;
 			$result = $db->sql_query($sql);
 
@@ -1197,12 +1198,21 @@ if (isset($_POST['submit']))
 
 			$user_allow_pm = !empty($config['user_allow_pm_register']) ? 1 : 0;
 
+			$sn_im_sql_fields = '';
+			$sn_im_sql_data = '';
+			$user_sn_im_array = get_user_sn_im_array();
+			foreach ($user_sn_im_array as $k => $v)
+			{
+				$sn_im_sql_fields .= ", " . $v['field'];
+				$sn_im_sql_data = ", '" . $db->sql_escape(str_replace(' ', '+', trim($$v['form']))) . "'";
+			}
+
 // UPI2DB - EDIT
 // IN LINE ADD
 // , user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color
 // , $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color
-			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, username_clean, user_regdate, user_password, user_email, user_email_hash, user_website, user_occ, user_from, user_from_flag, user_first_name, user_last_name, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_allow_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color, user_aim, user_facebook, user_flickr, user_googleplus, user_icq, user_jabber, user_linkedin, user_msnm, user_skype, user_twitter, user_yim, user_youtube, user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_topic_show_days, user_topic_sortby_type, user_topic_sortby_dir, user_post_show_days, user_post_sortby_type, user_post_sortby_dir, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_birthday_y, user_birthday_m, user_birthday_d, user_next_birthday_greeting, user_facebook_id, user_active, user_actkey)
-				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', '" . $db->sql_escape(utf8_clean_string($username)) . "', " . time() . ", '" . $db->sql_escape(phpbb_hash($new_password)) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape(phpbb_email_hash($email)) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($user_first_name) . "', '" . $db->sql_escape($user_last_name) . "', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color, '" . $db->sql_escape(str_replace(' ', '+', trim($aim))) . "', '" . $db->sql_escape($facebook) . "', '" . $db->sql_escape($flickr) . "', '" . $db->sql_escape($googleplus) . "', '" . $db->sql_escape($icq) . "', '" . $db->sql_escape($jabber) . "', '" . $db->sql_escape($linkedin) . "', '" . $db->sql_escape($msn) . "', '" . $db->sql_escape($skype) . "', '" . $db->sql_escape($twitter) . "', '" . $db->sql_escape($yim) . "', '" . $db->sql_escape($youtube) . "', $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_topic_show_days) . "', '" . $db->sql_escape($user_topic_sortby_type) . "', '" . $db->sql_escape($user_topic_sortby_dir) . "', '" . $db->sql_escape($user_post_show_days) . "', '" . $db->sql_escape($user_post_sortby_type) . "', '" . $db->sql_escape($user_post_sortby_dir) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, $user_allow_pm, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', '$user_facebook_id', ";
+			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, username_clean, user_regdate, user_password, user_email, user_email_hash, user_website, user_occ, user_from, user_from_flag, user_first_name, user_last_name, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_allow_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color" . $sn_im_sql_fields . ", user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_topic_show_days, user_topic_sortby_type, user_topic_sortby_dir, user_post_show_days, user_post_sortby_type, user_post_sortby_dir, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_birthday_y, user_birthday_m, user_birthday_d, user_next_birthday_greeting, user_facebook_id, user_active, user_actkey)
+				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', '" . $db->sql_escape(utf8_clean_string($username)) . "', " . time() . ", '" . $db->sql_escape(phpbb_hash($new_password)) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape(phpbb_email_hash($email)) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($user_first_name) . "', '" . $db->sql_escape($user_last_name) . "', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color" . $sn_im_sql_data . ", $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowmassemail, $allowpmin, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_topic_show_days) . "', '" . $db->sql_escape($user_topic_sortby_type) . "', '" . $db->sql_escape($user_topic_sortby_dir) . "', '" . $db->sql_escape($user_post_show_days) . "', '" . $db->sql_escape($user_post_sortby_type) . "', '" . $db->sql_escape($user_post_sortby_dir) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, $user_allow_pm, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', '$user_facebook_id', ";
 			if (($config['require_activation'] == USER_ACTIVATION_SELF) || ($config['require_activation'] == USER_ACTIVATION_ADMIN) || $coppa)
 			{
 				$user_actkey = gen_rand_string();
@@ -1431,13 +1441,12 @@ if (isset($_POST['submit']))
 			unset($target_profile_data);
 			// PROFILE EDIT BRIDGE - END
 
-			$message = $message . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+			$message = $message . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
 
 			message_die(GENERAL_MESSAGE, $message);
 		} // if mode == register
 	}
 } // End of submit
-
 
 if ($error)
 {
@@ -1458,18 +1467,11 @@ elseif (($mode == 'editprofile') && !isset($_POST['avatargallery']) && !isset($_
 	$new_password = '';
 	$password_confirm = '';
 
-	$aim = str_replace('+', ' ', trim($user->data['user_aim']));
-	$facebook = $user->data['user_facebook'];
-	$flickr = $user->data['user_flickr'];
-	$googleplus = $user->data['user_googleplus'];
-	$icq = $user->data['user_icq'];
-	$jabber = $user->data['user_jabber'];
-	$linkedin = $user->data['user_linkedin'];
-	$msn = $user->data['user_msnm'];
-	$skype = $user->data['user_skype'];
-	$twitter = $user->data['user_twitter'];
-	$yim = $user->data['user_yim'];
-	$youtube = $user->data['user_youtube'];
+	$user_sn_im_array = get_user_sn_im_array();
+	foreach ($user_sn_im_array as $k => $v)
+	{
+		$$v['form'] = $user->data[$v['field']];
+	}
 
 	$user_first_name = $user->data['user_first_name'];
 	$user_last_name = $user->data['user_last_name'];
@@ -1576,7 +1578,14 @@ if(isset($_POST['avatargallery']) && !$error)
 
 	$allowviewonline = !$allowviewonline;
 
-	display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $aim, $facebook, $flickr, $googleplus, $icq, $jabber, $linkedin, $msn, $skype, $twitter, $yim, $youtube, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
+	// Replaced: $aim, $facebook, $flickr, $googleplus, $icq, $jabber, $linkedin, $msn, $skype, $twitter, $yim, $youtube,
+	$user_sn_im_array = get_user_sn_im_array();
+	foreach ($user_sn_im_array as $k => $v)
+	{
+		$this_user_im[$v['form']] = $$v['form'];
+	}
+
+	display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $this_user_im, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
 }
 elseif(isset($_POST['avatargenerator']) && !$error)
 {
@@ -1603,7 +1612,14 @@ elseif(isset($_POST['avatargenerator']) && !$error)
 
 	$template_to_parse = 'profile_avatar_generator.tpl';
 
-	display_avatar_generator($mode, $avatar_filename, $avatar_image, $avatar_text, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $aim, $facebook, $flickr, $googleplus, $icq, $jabber, $linkedin, $msn, $skype, $twitter, $yim, $youtube, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
+	// Replaced: $aim, $facebook, $flickr, $googleplus, $icq, $jabber, $linkedin, $msn, $skype, $twitter, $yim, $youtube,
+	$user_sn_im_array = get_user_sn_im_array();
+	foreach ($user_sn_im_array as $k => $v)
+	{
+		$this_user_im[$v['form']] = $$v['form'];
+	}
+
+	display_avatar_generator($mode, $avatar_filename, $avatar_image, $avatar_text, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $this_user_im, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
 
 }
 else
@@ -1933,18 +1949,11 @@ else
 
 	if (($cpl_mode != 'profile_info') && ($cpl_mode != 'all'))
 	{
-		$s_hidden_fields .= '<input type="hidden" name="aim" value="' . $aim . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="facebook" value="' . $facebook . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="flickr" value="' . $flickr . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="googleplus" value="' . $googleplus . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="icq" value="' . $icq . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="jabber" value="' . $jabber . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="linkedin" value="' . $linkedin . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="msn" value="' . $msn . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="skype" value="' . $skype . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="twitter" value="' . $twitter . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="yim" value="' . $yim . '" />';
-		$s_hidden_fields .= '<input type="hidden" name="youtube" value="' . $youtube . '" />';
+		$user_sn_im_array = get_user_sn_im_array();
+		foreach ($user_sn_im_array as $k => $v)
+		{
+			$s_hidden_fields .= '<input type="hidden" name="' . $v['form'] . '" value="' . $$v['form'] . '" />';
+		}
 
 		$s_hidden_fields .= '<input type="hidden" name="user_first_name" value="' . $user_first_name . '" />';
 		$s_hidden_fields .= '<input type="hidden" name="user_last_name" value="' . $user_last_name . '" />';
@@ -2350,6 +2359,12 @@ else
 	$ini_val = (phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
 	$form_enctype = ((@$ini_val('file_uploads') == '0') || strtolower(@$ini_val('file_uploads') == 'off') || (phpversion() == '4.0.4pl1') || !$config['allow_avatar_upload'] || ((phpversion() < '4.0.3') && (@$ini_val('open_basedir') != ''))) ? '' : 'enctype="multipart/form-data"';
 
+	$user_sn_im_array = get_user_sn_im_array();
+	foreach ($user_sn_im_array as $k => $v)
+	{
+		$template->assign_var(strtoupper($v['form']), $$v['form']);
+	}
+
 	$template->assign_vars(array(
 		'S_REGISTER_MESSAGE' => (empty($lang['REGISTER_MESSAGE']) ? false : true),
 		'L_YES' => $lang['Yes'],
@@ -2363,18 +2378,6 @@ else
 		'SIG_DESC' => $lang['sig_description'],
 		'SIG_BUTTON_DESC' => $lang['sig_edit'],
 		'CONFIRM_IMG' => $confirm_image,
-		'AIM' => $aim,
-		'FACEBOOK' => $facebook,
-		'FLICKR' => $flickr,
-		'GOOGLEPLUS' => $googleplus,
-		'ICQ' => $icq,
-		'JABBER' => $jabber,
-		'LINKEDIN' => $linkedin,
-		'MSN' => $msn,
-		'SKYPE' => $skype,
-		'TWITTER' => $twitter,
-		'YIM' => $yim,
-		'YOUTUBE' => $youtube,
 		'USER_FIRST_NAME' => $user_first_name,
 		'USER_LAST_NAME' => $user_last_name,
 		'OCCUPATION' => $occupation,

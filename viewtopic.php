@@ -651,7 +651,14 @@ $self_sql_tables = (intval($is_auth['auth_read']) == AUTH_SELF) ? ', ' . USERS_T
 $self_sql = (intval($is_auth['auth_read']) == AUTH_SELF) ? " AND t.topic_poster = u2.user_id AND (u2.user_id = '" . $user->data['user_id'] . "' OR t.topic_type = '" . POST_GLOBAL_ANNOUNCE . "' OR t.topic_type = '" . POST_ANNOUNCE . "' OR t.topic_type = '" . POST_STICKY . "')" : '';
 // Self AUTH - END
 
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_aim, u.user_facebook, u.user_flickr, u.user_googleplus, u.user_icq, u.user_jabber, u.user_linkedin, u.user_msnm, u.user_skype, u.user_twitter, u.user_yim, u.user_youtube, u.user_regdate, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
+$user_sn_im_array = get_user_sn_im_array();
+$sn_im_sql = '';
+foreach ($user_sn_im_array as $k => $v)
+{
+	$sn_im_sql .= ', u.' . $v['field'];
+}
+
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_regdate, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $sn_im_sql . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 	WHERE p.topic_id = $topic_id
 		AND t.topic_id = p.topic_id
@@ -1586,25 +1593,17 @@ for($i = 0; $i < $total_posts; $i++)
 			$email = '';
 		}
 
-			$www_img = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
-			$www = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank" rel="nofollow">' . $lang['Website'] . '</a>' : '';
-			$www_url = ($postrow[$i]['user_website']) ? $postrow[$i]['user_website'] : '';
+		$www_img = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank" rel="nofollow"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
+		$www = ($postrow[$i]['user_website']) ? '<a href="' . $postrow[$i]['user_website'] . '" target="_blank" rel="nofollow">' . $lang['Website'] . '</a>' : '';
+		$www_url = ($postrow[$i]['user_website']) ? $postrow[$i]['user_website'] : '';
 
-		$im_links_array = array(
-			'chat' => 'id',
-			'aim' => 'aim',
-			'facebook' => 'facebook',
-			'flickr' => 'flickr',
-			'googleplus' => 'googleplus',
-			'icq' => 'icq',
-			'jabber' => 'jabber',
-			'linkedin' => 'linkedin',
-			'msn' => 'msnm',
-			'skype' => 'skype',
-			'twitter' => 'twitter',
-			'yahoo' => 'yim',
-			'youtube' => 'youtube',
-		);
+		$user_sn_im_array = get_user_sn_im_array();
+		$im_links_array = array();
+		foreach ($user_sn_im_array as $k => $v)
+		{
+			$im_links_array[$k] = $v['alt_name'];
+		}
+		$im_links_array['chat'] = 'id';
 
 		$social_im_icon_type = !empty($images['common_social_images_vt']) ? 'icon' : 'icon_tpl_vt';
 		$all_ims = array();
@@ -2220,11 +2219,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$post_edit_max = ($postrow[$i]['post_time'] >= $postrow[$i]['post_edit_time']) ? $postrow[$i]['post_time'] : $postrow[$i]['post_edit_time'];
 		$post_time_max = (empty($config['upi2db_edit_as_new'])) ? $postrow[$i]['post_time'] : $post_edit_max;
 		$post_id = $postrow[$i]['post_id'];
-		$mark_topic_unread = mark_post_viewtopic($post_time_max, $user->data['upi2db_unread'], $topic_id, $forum_id, $post_id, $except_time, $forum_topic_data['topic_type']);
-	}
-	else
-	{
-		$mark_topic_unread = '';
+		$mark_topic_unread_array = mark_post_viewtopic_array($post_time_max, $user->data['upi2db_unread'], $topic_id, $forum_id, $post_id, $except_time, $forum_topic_data['topic_type']);
 	}
 // UPI2DB - END
 
@@ -2359,7 +2354,15 @@ for($i = 0; $i < $total_posts; $i++)
 	// Again this will be handled by the templating code at some point
 	$row_class = (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'];
 
-	$template->assign_block_vars('postrow', array(
+	// ALL SOCIAL ICONS - BEGIN
+	$sn_im_tpl_array = array();
+	foreach ($all_ims as $k => $v)
+	{
+		$sn_im_tpl_array['IMG_SOCIAL_' . strtoupper($k)] = $v['img'];
+	}
+	// ALL SOCIAL ICONS - END
+
+	$vt_tpl_vars = array(
 		// Mighty Gorgon - Feedback - BEGIN
 		'FEEDBACK' => $feedback_received . $feedback_add,
 		// Mighty Gorgon - Feedback - END
@@ -2520,22 +2523,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_EDIT' => $edit_url,
 		'U_DELETE' => $delpost_url,
 
-		// ALL SOCIAL ICONS - BEGIN
-		'IMG_SOCIAL_CHAT' => $all_ims['chat']['img'],
-		'IMG_SOCIAL_AIM' => $all_ims['aim']['img'],
-		'IMG_SOCIAL_FACEBOOK' => $all_ims['facebook']['img'],
-		'IMG_SOCIAL_FLICKR' => $all_ims['flickr']['img'],
-		'IMG_SOCIAL_GOOGLEPLUS' => $all_ims['googleplus']['img'],
-		'IMG_SOCIAL_ICQ' => $all_ims['icq']['img'],
-		'IMG_SOCIAL_JABBER' => $all_ims['jabber']['img'],
-		'IMG_SOCIAL_LINKEDIN' => $all_ims['linkedin']['img'],
-		'IMG_SOCIAL_MSN' => $all_ims['msn']['img'],
-		'IMG_SOCIAL_SKYPE' => $all_ims['skype']['img'],
-		'IMG_SOCIAL_TWITTER' => $all_ims['twitter']['img'],
-		'IMG_SOCIAL_YAHOO' => $all_ims['yahoo']['img'],
-		'IMG_SOCIAL_YOUTUBE' => $all_ims['youtube']['img'],
-		// ALL SOCIAL ICONS - END
-
 		'L_MINI_POST_ALT' => $mini_post_alt,
 		'NOTES_COUNT' => sizeof($notes_list),
 		'NOTES_DATA' => $postrow[$i]['edit_notes'],
@@ -2552,9 +2539,29 @@ for($i = 0; $i < $total_posts; $i++)
 		'USER_WARNINGS' => !empty($user_warnings) ? $user_warnings : '',
 
 		'U_MINI_POST' => $mini_post_url,
+
 // UPI2DB - BEGIN
-		'UNREAD_IMG' => $mark_topic_unread,
 		'UNREAD_COLOR' => !empty($unread_color) ? $unread_color : '',
+
+		'UPI2DB_MARK_UNREAD' => !empty($mark_topic_unread_array['mark_unread']) ? true : false,
+		'UPI2DB_CANT_MARK' => !empty($mark_topic_unread_array['cant_mark']) ? true : false,
+		'UPI2DB_MARK_POST' => !empty($mark_topic_unread_array['mark_post']) ? true : false,
+		'UPI2DB_UNMARK_POST' => !empty($mark_topic_unread_array['unmark_post']) ? true : false,
+
+		'L_UPI2DB_MARK_UNREAD' => $lang['upi2db_mark_post_unread'],
+		'L_UPI2DB_CANT_MARK' => $lang['upi2db_post_cant_mark'],
+		'L_UPI2DB_MARK_POST' => $lang['upi2db_mark_post'],
+		'L_UPI2DB_UNMARK_POST' => $lang['upi2db_unmark_post'],
+
+		'UPI2DB_MARK_UNREAD_IMG' => $images['unread_img'],
+		'UPI2DB_CANT_MARK_IMG' => $images['mark_img'],
+		'UPI2DB_MARK_POST_IMG' => $images['mark_img'],
+		'UPI2DB_UNMARK_POST_IMG' => $images['unmark_img'],
+
+		'UPI2DB_MARK_UNREAD_URL' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;tt=' . $topic_type . '&amp;do=mark_unread'),
+		'UPI2DB_CANT_MARK_URL' => '',
+		'UPI2DB_MARK_POST_URL' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;tt=' . $topic_type . '&amp;do=mark_post'),
+		'UPI2DB_UNMARK_POST_URL' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;tt=' . $topic_type . '&amp;do=unmark_post'),
 // UPI2DB - END
 
 		// Cards - BEGIN
@@ -2614,8 +2621,10 @@ for($i = 0; $i < $total_posts; $i++)
 
 		'U_TOPIC_ID' => $topic_id,
 		'U_POST_ID' => $postrow[$i]['post_id']
-		)
 	);
+
+	// New Postrow TPL... to be able to assign dynamically some fields!
+	$template->assign_block_vars('postrow', array_merge($sn_im_tpl_array, $vt_tpl_vars));
 
 	// MG Cash MOD For IP - BEGIN
 	if (!empty($config['plugins']['cash']['enabled']))

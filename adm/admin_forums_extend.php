@@ -505,7 +505,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	}
 
 	// parent id
-	$item['main'] = isset($_POST['main']) ? $_POST['main'] : (isset($_GET['main']) && $create_forum ? $_GET['main'] : $item['main']);
+	$item['main'] = isset($_POST['main']) ? $_POST['main'] : ((isset($_GET['main']) && $create_forum) ? $_GET['main'] : $item['main']);
 	$item['main_type'] = substr($item['main'], 0, 1);
 	$item['main_id'] = intval(substr($item['main'], 1));
 	if (($item['main_id'] == 0) || !in_array($item['main_type'], array(POST_CAT_URL, POST_FORUM_URL)))

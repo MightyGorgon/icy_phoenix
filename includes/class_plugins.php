@@ -255,7 +255,7 @@ class class_plugins
 
 			if (is_dir($plugin_lang_path))
 			{
-			setup_extra_lang($filenames, $plugin_lang_path);
+				setup_extra_lang($filenames, $plugin_lang_path);
 			}
 		return true;
 	}

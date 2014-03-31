@@ -397,7 +397,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 	return $avatar_sql;
 }
 
-function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$aim, &$facebook, &$flickr, &$googleplus, &$icq, &$jabber, &$linkedin, &$msn, &$skype, &$twitter, &$yim, &$youtube, &$website, &$location, &$user_flag, &$user_first_name, &$user_last_name, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
+function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$this_user_im, &$website, &$location, &$user_flag, &$user_first_name, &$user_last_name, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
 {
 	global $db, $cache, $config, $template, $images, $theme, $lang;
 
@@ -514,13 +514,18 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 		}
 	}
 
-	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'aim', 'facebook', 'flickr', 'googleplus', 'icq', 'jabber', 'linkedin', 'msn', 'skype', 'twitter', 'yim', 'youtube', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
+	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
 
 	$s_hidden_vars = '<input type="hidden" name="sid" value="' . $session_id . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="avatarcatname" value="' . $category . '" />';
 	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $user->data['user_id'] . '" />';
 	for($i = 0; $i < sizeof($params); $i++)
 	{
 		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', $$params[$i]) . '" />';
+	}
+
+	foreach ($this_user_im as $k => $v)
+	{
+		$s_hidden_vars .= '<input type="hidden" name="' . $k . '" value="' . str_replace('"', '&quot;', $v) . '" />';
 	}
 
 	$template->assign_vars(array(
@@ -547,11 +552,11 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 	return;
 }
 
-function display_avatar_generator($mode, &$avatar_filename, &$avatar_image, &$avatar_text, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$aim, &$facebook, &$flickr, &$googleplus, &$icq, &$jabber, &$linkedin, &$msn, &$skype, &$twitter, &$yim, &$youtube, &$website, &$location, &$user_flag, &$user_first_name, &$user_last_name, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
+function display_avatar_generator($mode, &$avatar_filename, &$avatar_image, &$avatar_text, &$user_id, &$email, &$current_email, &$email_confirm, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$this_user_im, &$website, &$location, &$user_flag, &$user_first_name, &$user_last_name, &$occupation, &$interests, &$phone, &$selfdes, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$setbm, &$allowhtml, &$allowbbcode, &$allowsmilies, &$showavatars, &$showsignatures, &$allowswearywords, &$allowmassemail, &$allowpmin, &$hideonline, &$style, &$language, &$timezone, &$time_mode, &$dst_time_lag, &$dateformat, &$profile_view_popup, &$session_id, &$birthday, &$gender, &$upi2db_which_system, &$upi2db_new_word, &$upi2db_edit_word, &$upi2db_unread_color)
 {
 	global $db, $cache, $config, $template, $images, $theme, $lang;
 
-	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'aim', 'facebook', 'flickr', 'googleplus', 'icq', 'jabber', 'linkedin', 'msn', 'skype', 'twitter', 'yim', 'youtube', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
+	$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'email_confirm', 'cur_password', 'new_password', 'password_confirm', 'website', 'location', 'user_flag', 'user_first_name', 'user_last_name', 'occupation', 'interests', 'phone', 'selfdes', 'signature', 'viewemail', 'notifypm', 'popup_pm', 'notifyreply', 'attachsig', 'setbm', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'allowswearywords', 'allowmassemail', 'allowpmin', 'hideonline', 'style', 'language', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'profile_view_popup', 'birthday', 'gender', 'upi2db_which_system', 'upi2db_new_word', 'upi2db_edit_word', 'upi2db_unread_color');
 	$s_hidden_vars = '<input type="hidden" name="sid" value="' . $session_id . '" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="avatar_filename" value="' . $avatar_filename . '" />';
 	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $user->data['user_id'] . '" />';
 
@@ -560,6 +565,10 @@ function display_avatar_generator($mode, &$avatar_filename, &$avatar_image, &$av
 		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', $$params[$i]) . '" />';
 	}
 
+	foreach ($this_user_im as $k => $v)
+	{
+		$s_hidden_vars .= '<input type="hidden" name="' . $k . '" value="' . str_replace('"', '&quot;', $v) . '" />';
+	}
 
 	$template->assign_vars(array(
 		'L_PROFILE' => $lang['Profile'],

@@ -403,21 +403,13 @@ $www_url = ($profiledata['user_website']) ? $profiledata['user_website'] : '';
 $www_img = ($profiledata['user_website']) ? '<a href="' . $profiledata['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '&nbsp;';
 $www = ($profiledata['user_website']) ? '<a href="' . $profiledata['user_website'] . '" target="_blank">' . $profiledata['user_website'] . '</a>' : '&nbsp;';
 
-$im_links_array = array(
-	'chat' => 'id',
-	'aim' => 'aim',
-	'facebook' => 'facebook',
-	'flickr' => 'flickr',
-	'googleplus' => 'googleplus',
-	'icq' => 'icq',
-	'jabber' => 'jabber',
-	'linkedin' => 'linkedin',
-	'msn' => 'msnm',
-	'skype' => 'skype',
-	'twitter' => 'twitter',
-	'yahoo' => 'yim',
-	'youtube' => 'youtube',
-);
+$user_sn_im_array = get_user_sn_im_array();
+$im_links_array = array();
+foreach ($user_sn_im_array as $k => $v)
+{
+	$im_links_array[$k] = $v['alt_name'];
+}
+$im_links_array['chat'] = 'id';
 
 $all_ims = array();
 foreach ($im_links_array as $im_k => $im_v)
@@ -618,6 +610,12 @@ if (!empty($config['plugins']['feedback']['enabled']) && !empty($config['plugins
 }
 // Mighty Gorgon - Feedback - END
 
+$user_sn_im_array = get_user_sn_im_array();
+foreach ($user_sn_im_array as $k => $v)
+{
+	$template->assign_var('ICON_' . strtoupper($k), $all_ims[$k]['icon']);
+}
+
 $is_friend = user_check_friend_foe($profiledata['user_id'], true);
 $template->assign_vars(array(
 	// Mighty Gorgon - Feedback - BEGIN
@@ -696,19 +694,6 @@ $template->assign_vars(array(
 	'YIM_IMG' => $yahoo_img,
 	'YIM' => $yahoo,
 	'U_YIM' => $yahoo_url,
-
-	'ICON_AIM' => $all_ims['aim']['icon'],
-	'ICON_FACEBOOK' => $all_ims['facebook']['icon'],
-	'ICON_FLICKR' => $all_ims['flickr']['icon'],
-	'ICON_GOOGLEPLUS' => $all_ims['googleplus']['icon'],
-	'ICON_ICQ' => $all_ims['icq']['icon'],
-	'ICON_JABBER' => $all_ims['jabber']['icon'],
-	'ICON_LINKEDIN' => $all_ims['linkedin']['icon'],
-	'ICON_MSN' => $all_ims['msn']['icon'],
-	'ICON_SKYPE' => $all_ims['skype']['icon'],
-	'ICON_TWITTER' => $all_ims['twitter']['icon'],
-	'ICON_YAHOO' => $all_ims['yahoo']['icon'],
-	'ICON_YOUTUBE' => $all_ims['youtube']['icon'],
 
 	//'LOCATION' => ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;',
 	'LOCATION' => $location,
