@@ -25,7 +25,7 @@ class class_db
 	/*
 	* Get items from DB
 	*/
-	function get_items($n_items, $start, $sort_order, $sort_dir, $sql_select_extra = '', $sql_from_extra = '', $sql_where_extra = '', $filter_item = '', $filter_item_value = '')
+	function get_items($n_items = null, $start = null, $sort_order = null, $sort_dir = null, $sql_select_extra = '', $sql_from_extra = '', $sql_where_extra = '', $filter_item = '', $filter_item_value = '')
 	{
 		global $db, $cache;
 
