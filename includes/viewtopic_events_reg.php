@@ -195,7 +195,43 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 	$slots_left_option2 = ($slots_left_option2 > -1) ? sprintf($slots_left_option2_msg, $slots_left_option2) : '';
 	$slots_left_option3 = ($slots_left_option3 > -1) ? sprintf($slots_left_option3_msg, $slots_left_option3) : '';
 
+	$s_reg_select = '<select name="register" class="post">';
+	$s_reg_select .= '<option value="' . REG_OPTION1 . '">' . $reg_option1_option . '</option>';
+	$s_reg_select .= '<option value="' . REG_OPTION2 . '">' . $reg_option2_option . '</option>';
+	$s_reg_select .= '<option value="' . REG_OPTION3 . '">' . $reg_option3_option . '</option>';
+	$s_reg_select .= '<option value="' . REG_UNREGISTER . '">' . $lang['Reg_Self_Unregister'] . '</option>';
+	$s_reg_select .= '</select>';
+
+	$reg_ajax_user_check = '';
+	$reg_ajax_user_check_alt = '';
+	if (!empty($config['ajax_features']))
+	{
+		$reg_ajax_user_check = 'onkeyup="AJAXUsernameSearch(this.value, 0);"';
+		$reg_ajax_user_check_alt = 'onkeyup="AJAXUsernameSearch(this.value, 1);"';
+	}
+
+	$target_form_name = 'events_reg';
+	$target_element_name = 'username';
+
+	$s_reg_hidden_fields_array = array(
+		POST_TOPIC_URL => $topic_id,
+		'target_form_name' => $target_form_name,
+		'target_element_name' => $target_element_name,
+	);
+	$s_reg_hidden_fields = build_hidden_fields($s_reg_hidden_fields_array);
+
 	$template->assign_vars(array(
+		// AJAX Features - BEGIN
+		'REG_S_AJAX_FEATURES' => (!empty($config['ajax_features']) ? true : false),
+		'REG_S_AJAX_USER_CHECK' => $reg_ajax_user_check,
+		'REG_S_AJAX_USER_CHECK_ALT' => $reg_ajax_user_check_alt,
+		// AJAX Features - END
+
+		'REG_S_ACTION' => append_sid(CMS_PAGE_POSTING . '?mode=register'),
+		'REG_S_HIDDEN' => $s_reg_hidden_fields,
+		'REG_S_SELECT' => $s_reg_select,
+		'REG_U_SEARCH_USER' => append_sid(CMS_PAGE_SEARCH . '?mode=searchuser&amp;target_form_name=' . $target_form_name . '&amp;target_element_name=' . $target_element_name),
+
 		'REG_TITLE' => $lang['Reg_Title'],
 		'REG_HEAD_USERNAME' => $lang['Reg_Head_Username'],
 		'REG_HEAD_TIME' => $lang['Reg_Head_Time'],

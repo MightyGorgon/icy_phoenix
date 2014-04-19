@@ -14,6 +14,3 @@
 
 <br />
 
-{S_TMOD_TOPIC_PREFIX_SELECT}
-
-<br /><br />

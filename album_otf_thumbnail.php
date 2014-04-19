@@ -157,7 +157,7 @@ else
 		switch ($pic_filetype)
 		{
 			case 'jpg':
-				@imagejpeg($thumbnail, '', $album_config['thumbnail_quality']);
+				@imagejpeg($thumbnail, null, $album_config['thumbnail_quality']);
 				break;
 			case 'png':
 				@imagepng($thumbnail);
@@ -173,14 +173,7 @@ else
 
 	$Image = new ImgObj();
 
-	if ($pic_filetype == 'jpg')
-	{
-		$Image->ReadSourceFileJPG($pic_fullpath);
-	}
-	else
-	{
-		$Image->ReadSourceFile($pic_fullpath);
-	}
+	$Image->ReadSourceFile($pic_fullpath);
 
 	$Image->Resize($thumbnail_width, $thumbnail_height);
 
@@ -192,26 +185,11 @@ else
 
 	if ($album_config['thumbnail_cache'] == 1)
 	{
-		if ($pic_filetype == 'jpg')
-		{
-			$Image->SendToFileJPG($pic_thumbnail_fullpath, $album_config['thumbnail_quality']);
-		}
-		else
-		{
-			$Image->SendToFile($pic_thumbnail_fullpath, $album_config['thumbnail_quality']);
-		}
-		//$Image->SendToFile($pic_thumbnail_fullpath, $album_config['thumbnail_quality']);
+		$Image->SendToFile($pic_thumbnail_fullpath, $album_config['thumbnail_quality']);
 		//@chmod($pic_thumbnail_fullpath, 0777);
 	}
 
-	if ($pic_filetype == 'jpg')
-	{
-		$Image->SendToBrowserJPG($pic_title_reg, $pic_filetype, 'thumb_', '', $album_config['thumbnail_quality']);
-	}
-	else
-	{
-		$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'thumb_', '', $album_config['thumbnail_quality']);
-	}
+	$Image->SendToBrowser($pic_title_reg, $pic_filetype, 'thumb_', '', $album_config['thumbnail_quality']);
 
 	if ($Image == true)
 	{

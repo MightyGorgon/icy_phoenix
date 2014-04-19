@@ -52,8 +52,6 @@ if (empty($is_allowed))
 }
 // Mighty Gorgon - ACP Privacy - END
 
-include(IP_ROOT_PATH . 'includes/sql_parse.' . PHP_EXT);
-
 // Set VERBOSE to 1  for debugging info..
 define('VERBOSE', 0);
 
@@ -587,18 +585,18 @@ if(!empty($perform))
 					message_die(GENERAL_ERROR, $lang['Restore_Error_uploading']);
 				}
 
-				if($sql_query != "")
+				if(!empty($sql_query))
 				{
 					// Strip out sql comments...
-					$sql_query = remove_remarks($sql_query);
-					$pieces = split_sql_file($sql_query, ";");
+					$db->remove_remarks($sql_query);
+					$pieces = $db->split_sql_file($sql_query, ';');
 
 					$sql_count = sizeof($pieces);
 					for($i = 0; $i < $sql_count; $i++)
 					{
 						$sql = trim($pieces[$i]);
 
-						if(!empty($sql) and $sql[0] != "#")
+						if(!empty($sql) && ($sql[0] != "#"))
 						{
 							if(VERBOSE == 1)
 							{

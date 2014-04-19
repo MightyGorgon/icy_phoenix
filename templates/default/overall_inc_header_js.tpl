@@ -1,11 +1,16 @@
 <!-- This goes first, so that the other scripts can be 'jQuerized' -->
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_compressed.js"></script>
 
-<!-- IF S_JQUERY_UI -->
+<!-- IF S_JQUERY_UI or S_JQUERY_UI_BA or S_JQUERY_UI_TP -->
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/themes/{S_JQUERY_UI_STYLE}/jquery-ui.css" type="text/css" media="screen" />
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-ip.css" type="text/css" media="screen" />
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui.min.js" type="text/javascript"></script>
 <script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/ui/jquery-ui-i18n.min.js" type="text/javascript"></script>
+<!-- ENDIF -->
+
+<!-- IF S_JQUERY_UI_BA -->
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_beforeafter_1_4_compressed.js" type="text/javascript"></script>
+<script src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_ui_touch_punch.js" type="text/javascript"></script>
 <!-- ENDIF -->
 
 <!-- IF S_JQUERY_UI_TP -->
@@ -165,6 +170,7 @@ var ajax_page_charset = '{S_CONTENT_ENCODING}';
 </script>
 
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_core.js"></script>
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
 <!-- ENDIF -->
 
 <!-- BEGIN js_include -->

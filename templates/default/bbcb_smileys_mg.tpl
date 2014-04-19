@@ -15,7 +15,7 @@
 
 <!-- BEGIN switch_sm_pic_upload -->
 <br clear="all" />
-<div class="center-block"><input type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" style="width: 135px" onclick="window.open('{U_UPLOAD_IMAGE}','_upload_image','height=500,width=700,resizable=yes,scrollbars=no'); return false;" /></div>
+<div class="center-block"><input type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" style="width: 135px" onclick="window.open('{U_UPLOAD_IMAGE}','_upload_image','height=700,width=900,resizable=yes,scrollbars=no'); return false;" /></div>
 <!-- END switch_sm_pic_upload -->
 
 <!--

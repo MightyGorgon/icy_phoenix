@@ -1,4 +1,15 @@
 {ERROR_BOX}
+
+<!-- IF SOCIAL_CONNECT -->
+<div class="genmed" style="text-align: left;">
+{L_SOCIAL_CONNECT}&nbsp;
+<!-- BEGIN social_connect_button -->
+<a href="{social_connect_button.U_SOCIAL_CONNECT}" title="{social_connect_button.L_SOCIAL_CONNECT}">{social_connect_button.IMG_SOCIAL_CONNECT}</a>
+<!-- END social_connect_button -->
+</div>
+<br clear="all" /><br />
+<!-- ENDIF -->
+
 <form method="post" action="{S_LANG_CHANGE_ACTION}"><div style="text-align: left;">{L_SELECT_LANG}:&nbsp;{LANGUAGE_SELECT}&nbsp;&nbsp;<input type="submit" name="lang_change" value="{L_GO}" class="mainoption" /></div></form>
 
 <form method="post" action="{S_AGREE_ACTION}">

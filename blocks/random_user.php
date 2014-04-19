@@ -116,21 +116,13 @@ if(!function_exists('cms_block_random_user'))
 			$www_img = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>' : '';
 			$www = ($row['user_website']) ? '<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Website'] . '</a>' : '';
 
-			$im_links_array = array(
-				'chat' => 'id',
-				'aim' => 'aim',
-				'facebook' => 'facebook',
-				'flickr' => 'flickr',
-				'googleplus' => 'googleplus',
-				'icq' => 'icq',
-				'jabber' => 'jabber',
-				'linkedin' => 'linkedin',
-				'msn' => 'msnm',
-				'skype' => 'skype',
-				'twitter' => 'twitter',
-				'yahoo' => 'yim',
-				'youtube' => 'youtube',
-			);
+			$user_sn_im_array = get_user_sn_im_array();
+			$im_links_array = array();
+			foreach ($user_sn_im_array as $k => $v)
+			{
+				$im_links_array[$k] = $v['alt_name'];
+			}
+			$im_links_array['chat'] = 'id';
 
 			$all_ims = array();
 			foreach ($im_links_array as $im_k => $im_v)

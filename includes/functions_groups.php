@@ -22,7 +22,8 @@ function get_users_in_group($group_id)
 
 	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, u.user_email, g.group_id, g.group_name
 		FROM " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u, " . GROUPS_TABLE . " g
-		WHERE ug.group_id = " . $group_id . "
+		WHERE ug.group_id = " . (int) $group_id . "
+			AND g.group_single_user = 0
 			AND ug.user_pending = 0
 			AND u.user_id = ug.user_id
 			AND u.user_active = 1
@@ -44,7 +45,7 @@ function count_users_in_group($group_id)
 
 	$sql = "SELECT SUM(user_pending = 0) as members, SUM(user_pending = 1) as pending
 		FROM " . USER_GROUP_TABLE . "
-		WHERE group_id = '" . $group_id . "'";
+		WHERE group_id = '" . (int) $group_id . "'";
 	$result = $db->sql_query($sql);
 	$counting_list = $db->sql_fetchrow($result);
 	$db->sql_freeresult($result);
@@ -81,7 +82,7 @@ function update_all_users_colors_ranks($group_id)
 	$group_rank = get_group_rank($group_id);
 	$sql = "SELECT user_id
 		FROM " . USER_GROUP_TABLE . "
-		WHERE group_id = '" . $group_id . "'
+		WHERE group_id = '" . (int) $group_id . "'
 			AND user_pending = 0";
 	$result = $db->sql_query($sql);
 
@@ -90,14 +91,14 @@ function update_all_users_colors_ranks($group_id)
 		$sql_set = '';
 		if ($group_color)
 		{
-			$sql_set .= ', user_color = \'' . $group_color . '\'';
+			$sql_set .= ', user_color = \'' . $db->sql_escape($group_color) . '\'';
 		}
 		if ($group_rank > 0)
 		{
-			$sql_set .= ', user_rank = \'' . $group_rank . '\'';
+			$sql_set .= ', user_rank = \'' . $db->sql_escape($group_rank) . '\'';
 		}
 		$sql_users = "UPDATE " . USERS_TABLE . "
-			SET group_id = '" . $group_id . "'" . $sql_set . "
+			SET group_id = '" . (int) $group_id . "'" . $sql_set . "
 			WHERE user_id = '" . $row['user_id'] . "'";
 		$db->sql_query($sql_users);
 
@@ -122,7 +123,7 @@ function update_user_color($user_id, $user_color, $group_id = false, $force_colo
 
 	$sql = "SELECT u.user_color, u.group_id
 					FROM " . USERS_TABLE . " as u
-					WHERE u.user_id = " . $user_id . "
+					WHERE u.user_id = " . (int) $user_id . "
 					LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -136,10 +137,10 @@ function update_user_color($user_id, $user_color, $group_id = false, $force_colo
 
 	if ($force_color || empty($current_user_color) || empty($current_group_id) || ($current_user_color == $config['active_users_color']))
 	{
-		$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("user_color = '" . $user_color . "'");
+		$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("user_color = '" . $db->sql_escape($user_color) . "'");
 		if ($simple_mode && !empty($group_id) && intval($group_id))
 		{
-			$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("group_id = " . intval($group_id));
+			$user_color_sql .= (empty($user_color_sql) ? '' : ', ') . ("group_id = " . (int) $group_id);
 		}
 	}
 
@@ -154,7 +155,7 @@ function update_user_color($user_id, $user_color, $group_id = false, $force_colo
 		{
 			$new_group_color = get_group_color($group_id);
 			$user_color = ($new_group_color != false) ? $new_group_color : $user_color;
-			$user_color_sql .= ($new_group_color != false) ? ((($user_color_sql == '') ? '' : ', ') . ("group_id = '" . $group_id . "'")) : '';
+			$user_color_sql .= ($new_group_color != false) ? ((($user_color_sql == '') ? '' : ', ') . ("group_id = '" . (int) $group_id . "'")) : '';
 		}
 	}
 
@@ -162,7 +163,7 @@ function update_user_color($user_id, $user_color, $group_id = false, $force_colo
 	{
 		$sql_users = "UPDATE " . USERS_TABLE . "
 			SET " . $user_color_sql . "
-			WHERE user_id = " . $user_id;
+			WHERE user_id = " . (int) $user_id;
 		$db->sql_query($sql_users);
 
 		clear_user_color_cache($user_id);
@@ -248,7 +249,7 @@ function update_user_rank_simple($user_id, $user_rank, $force_rank = false)
 
 	$sql = "SELECT u.user_rank
 					FROM " . USERS_TABLE . " as u
-					WHERE u.user_id = " . $user_id . "
+					WHERE u.user_id = " . (int) $user_id . "
 					LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -259,14 +260,14 @@ function update_user_rank_simple($user_id, $user_rank, $force_rank = false)
 
 	if ($force_rank || !empty($user_rank) || empty($current_user_rank))
 	{
-		$user_rank_sql .= (empty($user_rank_sql) ? '' : ', ') . ("user_rank = " . $user_rank);
+		$user_rank_sql .= (empty($user_rank_sql) ? '' : ', ') . ("user_rank = " . $db->sql_escape($user_rank));
 	}
 
 	if (!empty($user_rank_sql))
 	{
 		$sql_users = "UPDATE " . USERS_TABLE . "
 			SET " . $user_rank_sql . "
-			WHERE user_id = " . $user_id;
+			WHERE user_id = " . (int) $user_id;
 		$db->sql_query($sql_users);
 		return true;
 	}
@@ -282,34 +283,25 @@ function update_user_rank_simple($user_id, $user_rank, $force_rank = false)
 */
 function build_groups_list_array()
 {
-	global $db;
-	$sql = "SELECT group_id, group_name, group_color
-		FROM " . GROUPS_TABLE . "
-		WHERE group_single_user <> " . TRUE . "
-			AND group_legend = 1
-		ORDER BY group_name ASC";
-	$result = $db->sql_query($sql);
+	global $db, $cache, $config;
 
-	$i = 0;
+	$groups_data = get_groups_data(false, true, array());
 	$groups_list = array();
-	while ($row = $db->sql_fetchrow($result))
+	foreach ($groups_data as $group_data)
 	{
-		$i++;
-		$groups_list[$i]['group_id'] = $row['group_id'];
-		$groups_list[$i]['group_name'] = $row['group_name'];
-		$groups_list[$i]['group_url'] = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']);
-		$groups_list[$i]['group_color'] = check_valid_color($row['group_color']);
-		$groups_list[$i]['group_color_style'] = ($groups_list[$i]['group_color'] ? ' style="color:' . $row['group_color'] . ';font-weight:bold;"' : ' style="font-weight:bold;"');
+		if (!empty($group_data['group_legend']))
+		{
+			$tmp_group_color = check_valid_color($group_data['group_color']);
+			$groups_list[] = array(
+				'group_id' => $group_data['group_id'],
+				'group_url' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_data['group_id']),
+				'group_color' => $tmp_group_color,
+				'group_color_style' => ($tmp_group_color ? ' style="color: ' . $group_data['group_color'] . '; font-weight: bold;"' : ' style="font-weight: bold;"')
+			);
+		}
 	}
-	$db->sql_freeresult($result);
-	if ($i > 0)
-	{
-		return $groups_list;
-	}
-	else
-	{
-		return false;
-	}
+
+	return $groups_list;
 }
 
 /**
@@ -320,33 +312,36 @@ function build_groups_list_array()
 */
 function build_groups_list_template()
 {
-	global $db, $config, $template, $lang;
-	$sql = "SELECT group_id, group_name, group_color
-		FROM " . GROUPS_TABLE . "
-		WHERE group_single_user <> " . TRUE . "
-			AND group_legend = 1
-		ORDER BY group_legend_order ASC, group_name ASC";
-	$result = $db->sql_query($sql, 0, 'groups_', USERS_CACHE_FOLDER);
+	global $db, $cache, $config, $template, $lang;
 
-	$i = 0;
+	$groups_data = get_groups_data(false, false, array());
 	$groups_list = '';
-	while ($row = $db->sql_fetchrow($result))
+	foreach ($groups_data as $group_data)
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $row['group_id']) . '" style="font-weight: bold; text-decoration: none;' . (check_valid_color($row['group_color']) ? ('color: ' . check_valid_color($row['group_color']) . ';') : '') . '">' . $row['group_name'] . '</a>,';
+		if (!empty($group_data['group_legend']))
+		{
+			$tmp_group_color = check_valid_color($group_data['group_color']);
+			$groups_list .= '&nbsp;<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_data['group_id']) . '" style="font-weight: bold; text-decoration: none;' . ($tmp_group_color ? ('color: ' . $tmp_group_color . ';') : '') . '">' . $group_data['group_name'] . '</a>,';
+		}
 	}
-	$db->sql_freeresult($result);
-	if ($config['active_users_legend'] == true)
+
+	if (!empty($config['active_users_legend']))
 	{
-		$groups_list .= '&nbsp;<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '" style="font-weight: bold; text-decoration: none;' . (check_valid_color($config['active_users_color']) ? ('color: ' . check_valid_color($config['active_users_color']) . ';') : '') . '">' . $lang['Active_Users_Group'] . '</a>,';
+		$tmp_group_color = check_valid_color($config['active_users_color']);
+		$groups_list .= '&nbsp;<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '" style="font-weight: bold; text-decoration: none;' . ($tmp_group_color ? ('color: ' . $tmp_group_color . ';') : '') . '">' . $lang['Active_Users_Group'] . '</a>,';
 	}
-	if ($config['bots_legend'] == true)
+
+	if (!empty($config['bots_legend']))
 	{
-		$groups_list .= '&nbsp;<span style="font-weight: bold; text-decoration: none;' . (check_valid_color($config['bots_color']) ? ('color: ' . check_valid_color($config['bots_color']) . ';') : '') . '">' . $lang['Bots_Group'] . '</span>,';
+		$tmp_group_color = check_valid_color($config['bots_color']);
+		$groups_list .= '&nbsp;<span style="font-weight: bold; text-decoration: none;' . ($tmp_group_color ? ('color: ' . $tmp_group_color . ';') : '') . '">' . $lang['Bots_Group'] . '</span>,';
 	}
-	if ($groups_list != '')
+
+	if (!empty($groups_list))
 	{
 		$groups_list = substr($groups_list, 0, strlen($groups_list) - 1);
 	}
+
 	$template->assign_var('GROUPS_LIST_LEGEND', $groups_list);
 }
 
@@ -358,43 +353,102 @@ function build_groups_list_template()
 */
 function build_groups_user($user_id, $show_hidden = true)
 {
-	global $db, $lang;
+	global $db, $cache, $config, $lang;
 
-	$sql = "SELECT g.group_id, g.group_name, g.group_type
-					FROM " . USER_GROUP_TABLE . " as l, " . GROUPS_TABLE . " as g
-					WHERE l.user_pending = 0
-						AND g.group_single_user = 0
-						AND l.user_id = '" . $user_id . "'
-						AND g.group_id = l.group_id
-					ORDER BY g.group_name ASC, g.group_id ASC";
-	$result = $db->sql_query($sql);
-
-	$i = 0;
+	$groups_data_user = get_groups_data_user($user_id, true, true, array());
 	$groups_list = array();
-	while ($row = $db->sql_fetchrow($result))
+	foreach ($groups_data_user as $group_data)
 	{
-		$show_this = true;
-		if (($show_hidden == false) && ($row['group_type'] == GROUP_HIDDEN))
+		if (empty($group_data['user_pending']))
 		{
-			$show_this = false;
-		}
+			$show_this = true;
+			if (empty($show_hidden) && ($group_data['group_type'] == GROUP_HIDDEN))
+			{
+				$show_this = false;
+			}
 
-		if ($show_this == true)
-		{
-			$i++;
-			$groups_list[$i]['group_id'] = $row['group_id'];
-			$groups_list[$i]['group_name'] = $row['group_name'];
+			if (!empty($show_this))
+			{
+				$tmp_group_color = check_valid_color($group_data['group_color']);
+				$groups_list[] = array(
+					'group_id' => $group_data['group_id'],
+					'group_name' => $group_data['group_name'],
+					'group_url' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_data['group_id']),
+					'group_color' => $tmp_group_color,
+					'group_color_style' => ($tmp_group_color ? ' style="color: ' . $group_data['group_color'] . '; font-weight: bold;"' : ' style="font-weight: bold;"')
+				);
+			}
 		}
 	}
+
+	return $groups_list;
+}
+
+/**
+* Get group leaders
+*
+* @param => group_id
+* @return => array
+*/
+function get_group_leaders($group_id)
+{
+	global $db, $cache, $config;
+
+	$sql = "SELECT u.*
+					FROM " . USER_GROUP_TABLE . " as ug, " . USERS_TABLE . " as u
+					WHERE ug.group_id = " . (int) $group_id . "
+						AND ug.group_leader = 1
+						AND u.user_id = ug.user_id
+					ORDER BY u.user_id ASC";
+	$result = $db->sql_query($sql);
+	$group_leaders_sql = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
-	if ($i > 0)
+
+	// Better refactor the array to make simplify parsing...
+	$group_leaders = array();
+	if (!empty($group_leaders_sql))
 	{
-		return $groups_list;
+		foreach ($group_leaders_sql as $group_leader)
+		{
+			$group_leaders[$group_leader['user_id']] = $group_leader;
+		}
 	}
-	else
+
+	return $group_leaders;
+}
+
+/**
+* Get groups for which a user is leader
+*
+* @param => user_id
+* @return => array
+*/
+function get_user_leading_groups($user_id)
+{
+	global $db, $cache, $config;
+
+	$sql = "SELECT g.*
+					FROM " . USER_GROUP_TABLE . " as ug, " . GROUPS_TABLE . " as g
+					WHERE ug.user_id = " . (int) $user_id . "
+						AND g.group_single_user = 0
+						AND ug.group_leader = 1
+						AND g.group_id = ug.group_id
+					ORDER BY g.group_id ASC";
+	$result = $db->sql_query($sql);
+	$groups_leaded_sql = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	// Better refactor the array to make simplify parsing...
+	$user_leading = array();
+	if (!empty($groups_leaded_sql))
 	{
-		return false;
+		foreach ($groups_leaded_sql as $single_group)
+		{
+			$user_leading[$single_group['group_id']] = $single_group;
+		}
 	}
+
+	return $user_leading;
 }
 
 /**
@@ -405,11 +459,11 @@ function build_groups_user($user_id, $show_hidden = true)
 */
 function get_group_details($group_id)
 {
-	global $db;
+	global $db, $cache, $config;
 
 	$sql = "SELECT g.*
 					FROM " . GROUPS_TABLE . " as g
-					WHERE g.group_id = '" . $group_id . "'
+					WHERE g.group_id = '" . (int) $group_id . "'
 					LIMIT 1";
 	$result = $db->sql_query($sql);
 	$group_details = $db->sql_fetchrow($result);
@@ -426,25 +480,18 @@ function get_group_details($group_id)
 */
 function get_group_color($group_id)
 {
-	global $db;
+	global $db, $cache, $config;
 
 	$sql = "SELECT g.group_color
 					FROM " . GROUPS_TABLE . " as g
-					WHERE g.group_id = '" . $group_id . "'
+					WHERE g.group_id = '" . (int) $group_id . "'
 					LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$group_color = $row['group_color'];
 	$db->sql_freeresult($result);
 
-	if ($group_color != '')
-	{
-		return $group_color;
-	}
-	else
-	{
-		return false;
-	}
+	return $group_color;
 }
 
 /**
@@ -459,21 +506,14 @@ function get_group_rank($group_id)
 
 	$sql = "SELECT g.group_rank
 					FROM " . GROUPS_TABLE . " as g
-					WHERE g.group_id = '" . $group_id . "'
+					WHERE g.group_id = '" . (int) $group_id . "'
 					LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$group_rank = $row['group_color'];
 	$db->sql_freeresult($result);
 
-	if ($group_rank != '0')
-	{
-		return $group_rank;
-	}
-	else
-	{
-		return false;
-	}
+	return $group_rank;
 }
 
 /**
@@ -488,21 +528,14 @@ function get_user_color($user_id)
 
 	$sql = "SELECT u.user_color
 					FROM " . USERS_TABLE . " as u
-					WHERE u.user_id = " . $user_id . "
+					WHERE u.user_id = " . (int) $user_id . "
 					LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$user_color = $row['user_color'];
 	$db->sql_freeresult($result);
 
-	if ($user_color != '')
-	{
-		return $user_color;
-	}
-	else
-	{
-		return false;
-	}
+	return $user_color;
 }
 
 /**
@@ -517,7 +550,7 @@ function get_user_level($user_id)
 
 	$sql = "SELECT u.user_level
 					FROM " . USERS_TABLE . " as u
-					WHERE u.user_id = " . $user_id . "
+					WHERE u.user_id = " . (int) $user_id . "
 					LIMIT 1";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
@@ -630,12 +663,12 @@ function change_legend_order($group_id, $move)
 	if ($to_change_g_id != 0)
 	{
 		$item_order = ($move == '1') ? ($weight_assigned + 1) : ($weight_assigned - 1);
-		$sql = "UPDATE " . GROUPS_TABLE . " SET group_legend_order = '" . $item_order . "' WHERE group_id = '" . $group_id . "'";
+		$sql = "UPDATE " . GROUPS_TABLE . " SET group_legend_order = '" . $item_order . "' WHERE group_id = '" . (int) $group_id . "'";
 		$result = $db->sql_query($sql);
 
 		//$item_order = ($move == '1') ? ($weight_assigned - 1) : ($weight_assigned + 1);
 		$item_order = $weight_assigned;
-		$sql = "UPDATE " . GROUPS_TABLE . " SET group_legend_order = '" . $item_order . "' WHERE group_id = '" . $to_change_g_id . "'";
+		$sql = "UPDATE " . GROUPS_TABLE . " SET group_legend_order = '" . $item_order . "' WHERE group_id = '" . (int) $to_change_g_id . "'";
 		$result = $db->sql_query($sql);
 	}
 }
@@ -645,18 +678,14 @@ function change_legend_order($group_id, $move)
 */
 function adjust_legend_order()
 {
-	global $db, $lang;
-	$sql = "SELECT group_id, group_name, group_legend_order
-		FROM " . GROUPS_TABLE . "
-		WHERE group_single_user <> " . TRUE . "
-		ORDER BY group_legend_order ASC, group_name ASC";
-	$result = $db->sql_query($sql);
+	global $db, $cache, $config, $lang;
 
+	$groups_data = get_groups_data(true, false, array());
 	$item_order = 0;
-	while($row = $db->sql_fetchrowset($result))
+	foreach ($groups_data as $group_data)
 	{
 		$item_order++;
-		$sql_alt = "UPDATE " . GROUPS_TABLE . " SET group_legend_order = '" . $item_order . "' WHERE group_id = '" . $row['group_id'] . "'";
+		$sql_alt = "UPDATE " . GROUPS_TABLE . " SET group_legend_order = '" . $db->sql_escape($item_order) . "' WHERE group_id = '" . $group_data['group_id'] . "'";
 		$result_alt = $db->sql_query($sql_alt);
 	}
 }
@@ -664,52 +693,101 @@ function adjust_legend_order()
 /**
 * Add user(s) to group
 *
-* @return mixed false if no errors occurred, else the user lang string for the relevant error, for example 'NO_USER'
+* @return mixed false if no errors occurred
 */
-function group_user_add($group_id, $user_id, $clear_cache = false)
+function group_user_add($group_id, $user_id, $clear_cache = false, $is_autogroup_enable = false)
 {
 	// 2 => User already member
 	// 1 => User added
 	// 0 => User not added
-	global $db, $lang;
+	global $db, $cache, $config, $lang;
 
 	$this_userdata = get_userdata($user_id);
 
-	$sql = "SELECT ug.user_id, g.group_type, g.group_rank, g.group_color, g.group_count, g.group_count_max
-		FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
-		WHERE g.group_id = '" . $group_id . "'
-			AND ug.group_id = g.group_id";
+	$sql = "SELECT * FROM " . USER_GROUP_TABLE . " ug
+			WHERE ug.user_id = '" . (int) $user_id . "'
+				AND ug.group_id = '" . (int) $group_id . "'";
 	$result = $db->sql_query($sql);
-
 	if ($row = $db->sql_fetchrow($result))
 	{
-		$group_rank = $row['group_rank'];
-		$group_color = $row['group_color'];
-		do
-		{
-			if ($user_id == $row['user_id'])
-			{
-				return 2;
-			}
-		}
-		while ($row = $db->sql_fetchrow($result));
+		$db->sql_freeresult($result);
+		return 2;
 	}
-	else
+
+	$groups_data = get_groups_data(false, false, array($group_id));
+	if (empty($groups_data))
 	{
 		return 0;
 	}
+	$this_group_data = array();
+	foreach ($groups_data as $group_data)
+	{
+		$this_group_data = $group_data;
+		$group_rank = $group_data['group_rank'];
+		$group_color = $group_data['group_color'];
+	}
 
-	$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending) VALUES (" . $group_id . ", " . $user_id . ", 0)";
+	$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending) VALUES (" . (int) $group_id . ", " . (int) $user_id . ", 0)";
 	$result = $db->sql_query($sql);
 
-	update_user_color($this_userdata['user_id'], $group_color, $group_id, false, false, true);
-	update_user_rank_simple($this_userdata['user_id'], $group_rank);
-	update_user_posts_details($this_userdata['user_id'], $group_color, '', false, false);
+	if (!empty($group_color) && ($group_color != $this_userdata['user_color']))
+	{
+		update_user_color($user_id, $group_color, $group_id, false, false);
+		update_user_posts_details($user_id, $group_color, '', false, false);
+	}
+	if (!empty($group_rank) && empty($this_userdata['user_rank']))
+	{
+		update_user_rank_simple($user_id, $group_rank, false);
+	}
 
 	if ($clear_cache)
 	{
 		$db->clear_cache();
 	}
+	return 1;
+}
+
+/**
+* Remove user(s) from group
+*
+* @return mixed false if no errors occurred
+*/
+function group_user_rem($group_id, $user_id, $clear_cache = false)
+{
+	global $db, $cache, $config, $lang;
+
+	$this_userdata = get_userdata($user_id);
+
+	$sql = "DELETE FROM " . USER_GROUP_TABLE . "
+		WHERE user_id = " . (int) $user_id . "
+			AND group_id = '" . (int) $group_id . "'
+			AND group_leader = 0";
+	$result = $db->sql_query($sql);
+
+	if (($this_userdata['user_level'] != ADMIN) && ($this_userdata['user_level'] == MOD))
+	{
+		$sql = "SELECT COUNT(auth_mod) AS is_auth_mod
+			FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug
+			WHERE ug.user_id = " . $user_id . "
+				AND aa.group_id = ug.group_id
+				AND aa.auth_mod = 1";
+		$result = $db->sql_query($sql);
+
+		if (!($row = $db->sql_fetchrow($result)) || ($row['is_auth_mod'] == 0))
+		{
+			$sql_u = "UPDATE " . USERS_TABLE . "
+				SET user_level = " . USER . "
+				WHERE user_id = " . $user_id;
+			$result_u = $db->sql_query($sql_u);
+		}
+		$db->sql_freeresult($result);
+	}
+
+	if ($clear_cache)
+	{
+		$db->clear_cache();
+	}
+
 	return 1;
 }
 

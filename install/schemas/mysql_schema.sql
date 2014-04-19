@@ -892,57 +892,6 @@ CREATE TABLE `phpbb_kb_wordmatch` (
 
 ## `phpbb_kb_wordmatch`
 
-
-## --------------------------------------------------------
-
-## `phpbb_link_categories`
-
-CREATE TABLE `phpbb_link_categories` (
-	`cat_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
-	`cat_title` VARCHAR(100) NOT NULL DEFAULT '',
-	`cat_order` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
-	PRIMARY KEY (`cat_id`),
-	KEY `cat_order` (`cat_order`)
-);
-
-## `phpbb_link_categories`
-
-
-## --------------------------------------------------------
-
-## `phpbb_link_config`
-
-CREATE TABLE `phpbb_link_config` (
-	`config_name` VARCHAR(255) NOT NULL DEFAULT '',
-	`config_value` VARCHAR(255) NOT NULL DEFAULT ''
-);
-
-## `phpbb_link_config`
-
-
-## --------------------------------------------------------
-
-## `phpbb_links`
-
-CREATE TABLE `phpbb_links` (
-	`link_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
-	`link_title` VARCHAR(100) NOT NULL DEFAULT '',
-	`link_desc` VARCHAR(255) DEFAULT NULL,
-	`link_category` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
-	`link_url` VARCHAR(100) NOT NULL DEFAULT '',
-	`link_logo_src` VARCHAR(120) DEFAULT NULL,
-	`link_joined` INT(11) NOT NULL DEFAULT '0',
-	`link_active` TINYINT(1) NOT NULL DEFAULT '0',
-	`link_hits` INT(10) unsigned NOT NULL DEFAULT '0',
-	`user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
-	`user_ip` VARCHAR(40) NOT NULL DEFAULT '',
-	`last_user_ip` VARCHAR(40) NOT NULL DEFAULT '',
-	PRIMARY KEY (`link_id`)
-);
-
-## `phpbb_links`
-
-
 ## --------------------------------------------------------
 
 ## `phpbb_liw_cache`
@@ -1386,6 +1335,7 @@ CREATE TABLE `phpbb_posts` (
 	`post_edit_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`post_attachment` TINYINT(1) NOT NULL DEFAULT '0',
 	`post_bluecard` TINYINT(1) DEFAULT NULL,
+	`post_locked` TINYINT(1) NOT NULL DEFAULT '0',
 	`post_likes` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
 	`post_images` MEDIUMTEXT NOT NULL,
 	PRIMARY KEY (`post_id`),
@@ -1768,103 +1718,6 @@ CREATE TABLE `phpbb_stats_modules` (
 
 ## --------------------------------------------------------
 
-## `phpbb_sudoku_sessions`
-
-CREATE TABLE `phpbb_sudoku_sessions` (
-	`user_id` INT(11) NOT NULL DEFAULT '0',
-	`session_time` INT(11) NOT NULL DEFAULT '0'
-);
-
-## `phpbb_sudoku_sessions`
-
-
-## --------------------------------------------------------
-
-## `phpbb_sudoku_solutions`
-
-CREATE TABLE `phpbb_sudoku_solutions` (
-	`game_pack` INT(5) NOT NULL DEFAULT '0',
-	`game_num` INT(5) NOT NULL DEFAULT '0',
-	`line_1` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_2` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_3` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_4` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_5` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_6` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_7` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_8` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_9` VARCHAR(20) NOT NULL DEFAULT '',
-	KEY `game_pack` (`game_pack`)
-);
-
-## `phpbb_sudoku_solutions`
-
-
-## --------------------------------------------------------
-
-## `phpbb_sudoku_starts`
-
-CREATE TABLE `phpbb_sudoku_starts` (
-	`game_pack` INT(5) NOT NULL DEFAULT '0',
-	`game_num` INT(5) NOT NULL DEFAULT '0',
-	`game_level` INT(1) NOT NULL DEFAULT '0',
-	`line_1` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_2` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_3` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_4` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_5` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_6` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_7` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_8` VARCHAR(20) NOT NULL DEFAULT '',
-	`line_9` VARCHAR(20) NOT NULL DEFAULT '',
-	KEY `game_pack` (`game_pack`)
-);
-
-## `phpbb_sudoku_starts`
-
-
-## --------------------------------------------------------
-
-## `phpbb_sudoku_stats`
-
-CREATE TABLE `phpbb_sudoku_stats` (
-	`user_id` INT(11) NOT NULL DEFAULT '0',
-	`played` INT(11) NOT NULL DEFAULT '0',
-	`points` INT(11) NOT NULL DEFAULT '0',
-	KEY `user_id` (`user_id`)
-);
-
-## `phpbb_sudoku_stats`
-
-
-## --------------------------------------------------------
-
-## `phpbb_sudoku_users`
-
-CREATE TABLE `phpbb_sudoku_users` (
-	`user_id` INT(11) NOT NULL DEFAULT '0',
-	`game_pack` INT(5) NOT NULL DEFAULT '0',
-	`game_num` INT(5) NOT NULL DEFAULT '0',
-	`game_level` INT(1) NOT NULL DEFAULT '0',
-	`line_1` VARCHAR(30) NOT NULL DEFAULT '',
-	`line_2` VARCHAR(30) NOT NULL DEFAULT '',
-	`line_3` VARCHAR(30) NOT NULL DEFAULT '',
-	`line_4` VARCHAR(30) NOT NULL DEFAULT '',
-	`line_5` VARCHAR(30) NOT NULL DEFAULT '',
-	`line_6` VARCHAR(30) NOT NULL DEFAULT '',
-	`line_7` VARCHAR(30) NOT NULL DEFAULT '',
-	`line_8` VARCHAR(30) NOT NULL DEFAULT '',
-	`line_9` VARCHAR(30) NOT NULL DEFAULT '',
-	`points` INT(11) NOT NULL DEFAULT '0',
-	`done` INT(1) NOT NULL DEFAULT '0',
-	KEY `user_id` (`user_id`)
-);
-
-## `phpbb_sudoku_users`
-
-
-## --------------------------------------------------------
-
 ## `phpbb_thanks`
 
 CREATE TABLE `phpbb_thanks` (
@@ -2122,6 +1975,7 @@ CREATE TABLE `phpbb_users` (
 	`username_clean` VARCHAR(255) NOT NULL DEFAULT '',
 	`user_email` VARCHAR(255) DEFAULT NULL,
 	`user_email_hash` BIGINT(20) DEFAULT '0' NOT NULL,
+	`user_facebook_id` VARCHAR(40) NOT NULL DEFAULT '',
 	`user_website` VARCHAR(255) DEFAULT NULL,
 	`user_ip` VARCHAR(40) DEFAULT '' NOT NULL,
 	`user_first_name` VARCHAR(255) NOT NULL DEFAULT '',
@@ -2173,16 +2027,21 @@ CREATE TABLE `phpbb_users` (
 	`user_avatar_type` TINYINT(4) NOT NULL DEFAULT '0',
 	`user_from` VARCHAR(100) DEFAULT NULL,
 	`user_sig` TEXT NOT NULL,
+	`user_500px` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_aim` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_facebook` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_flickr` VARCHAR(255) DEFAULT '' NOT NULL,
+	`user_github` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_googleplus` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_icq` VARCHAR(15) DEFAULT '' NOT NULL,
+	`user_instagram` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_jabber` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_linkedin` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_msnm` VARCHAR(255) DEFAULT '' NOT NULL,
+	`user_pinterest` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_twitter` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_skype` VARCHAR(255) DEFAULT '' NOT NULL,
+	`user_vimeo` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_yim` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_youtube` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_occ` VARCHAR(255) DEFAULT '' NOT NULL,
@@ -2927,7 +2786,7 @@ CREATE TABLE `phpbb_acl_users` (
 
 ## AUTH SYSTEM - END
 
-## IMAGES - END
+## IMAGES - BEGIN
 
 CREATE TABLE `phpbb_images` (
 	`pic_id` INT(11) unsigned NOT NULL auto_increment,
@@ -2939,6 +2798,13 @@ CREATE TABLE `phpbb_images` (
 	`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
 	`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',
 	`pic_approval` TINYINT(3) NOT NULL DEFAULT '1',
+	`exif` text NOT NULL,
+	`camera_model` varchar(255) DEFAULT '' NOT NULL,
+	`lens` varchar(255) DEFAULT '' NOT NULL,
+	`focal_length` varchar(255) DEFAULT '' NOT NULL,
+	`exposure` varchar(255) DEFAULT '' NOT NULL,
+	`aperture` varchar(255) DEFAULT '' NOT NULL,
+	`iso` varchar(255) DEFAULT '' NOT NULL,
 	PRIMARY KEY (`pic_id`),
 	KEY `pic_user_id` (`pic_user_id`),
 	KEY `pic_time` (`pic_time`)

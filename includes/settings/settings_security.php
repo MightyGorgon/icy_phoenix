@@ -39,14 +39,6 @@ $settings_details = array(
 $settings_data = array();
 $settings_data = array(
 
-	'admin_protect' => array(
-		'lang_key' => 'IP_admin_protect',
-		'explain' => 'IP_admin_protect_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-	),
-
 	'ip_admins_only' => array(
 		'lang_key' => 'IP_ip_admins_only',
 		'explain' => 'IP_ip_admins_only_explain',

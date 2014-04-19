@@ -1914,7 +1914,7 @@ elseif ($submit || $refresh || ($mode != ''))
 		// AJAX Features - BEGIN
 		'S_AJAX_BLUR' => $ajax_blur,
 		'S_AJAX_PM_USER_CHECK' => $ajax_pm_user_check,
-		'S_DISPLAY_PREVIEW' => ($preview) ? '' : 'style="display:none;"',
+		'S_DISPLAY_PREVIEW' => ($preview) ? '' : 'style="display: none;"',
 		'S_EDIT_POST_ID' => ($mode == 'edit') ? $privmsg_id : 0,
 		'L_EMPTY_SUBJECT' => $lang['Empty_subject'],
 		'L_MORE_MATCHES' => $lang['More_matches_username'],

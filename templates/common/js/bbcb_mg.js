@@ -24,9 +24,11 @@ var marqu = 0;
 var marql = 0;
 var marqr = 0;
 var mail = 0;
+var imgba = 0;
 var video = 0;
 var googlevideo = 0;
 var youtube = 0;
+var vimeo = 0;
 var quicktime = 0;
 var ram = 0;
 var emff = 0;
@@ -56,6 +58,7 @@ bbtags = new Array(
 '[img]','[/img]',
 '[img align=left]','[/img]',
 '[img align=right]','[/img]',
+'[imgba]','[/imgba]',
 '[albumimg]','[/albumimg]',
 '[albumimg align=left]','[/albumimg]',
 '[albumimg align=right]','[/albumimg]',
@@ -77,6 +80,7 @@ bbtags = new Array(
 '[video width=320 height=240]','[/video]',
 '[googlevideo]','[/googlevideo]',
 '[youtube]','[/youtube]',
+'[vimeo]','[/vimeo]',
 '[emff]','[/emff]'
 );
 
@@ -698,6 +702,33 @@ function BBCimgr()
 	PostWrite(ToAdd);
 }
 
+function BBCimgba()
+{
+	var FoundErrors = '';
+	var enterURLB = prompt(s_img_insert, s_url_insert_tip);
+	if (!enterURLB)
+	{
+		FoundErrors += s_img_error;
+	}
+	if (FoundErrors)
+	{
+		alert(s_gen_error + FoundErrors);
+		return;
+	}
+	var enterURLA = prompt(s_img_insert, s_url_insert_tip);
+	if (!enterURLA)
+	{
+		FoundErrors += s_img_error;
+	}
+	if (FoundErrors)
+	{
+		alert(s_gen_error + FoundErrors);
+		return;
+	}
+	var ToAdd = "[imgba before=" + enterURLB + " after=" + enterURLB + " w=600 h=400]Before And After[/imgba]";
+	PostWrite(ToAdd);
+}
+
 function BBCalbumimg()
 {
 	var FoundErrors = '';
@@ -868,6 +899,23 @@ function BBCyoutube()
 		return;
 	}
 	var ToAdd = "[youtube]" + enterURL + "[/youtube]";
+	PostWrite(ToAdd);
+}
+
+function BBCvimeo()
+{
+	var FoundErrors = '';
+	var enterURL = prompt(s_vimeo_insert, s_id_insert_tip);
+	if (!enterURL)
+	{
+		FoundErrors += s_id_insert_error;
+	}
+	if (FoundErrors)
+	{
+		alert(s_gen_error + FoundErrors);
+		return;
+	}
+	var ToAdd = "[vimeo]" + enterURL + "[/vimeo]";
 	PostWrite(ToAdd);
 }
 

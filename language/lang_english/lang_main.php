@@ -773,7 +773,7 @@ $lang = array_merge($lang, array(
 	'Group_description' => 'Group description',
 	'Group_membership' => 'Group membership',
 	'Group_Members' => 'Group Members',
-	'Group_Moderator' => 'Group Moderator',
+	'Group_Moderator' => 'Group Leader',
 	'Pending_members' => 'Pending Members',
 
 	'Group_type' => 'Group type',
@@ -781,9 +781,10 @@ $lang = array_merge($lang, array(
 	'Group_closed' => 'Closed group',
 	'Group_hidden' => 'Hidden group',
 
-	'Current_memberships' => 'Current memberships',
-	'Non_member_groups' => 'Non-member groups',
-	'Memberships_pending' => 'Memberships pending',
+	'Current_memberships' => 'Current Memberships',
+	'Non_member_groups' => 'Non-Member Groups',
+	'Memberships_pending' => 'Memberships Pending',
+	'MEMBERSHIP_PENDING' => 'Membership Pending',
 
 	'No_groups_exist' => 'No Groups Exist',
 	'Group_not_exist' => 'That user group does not exist',
@@ -792,16 +793,19 @@ $lang = array_merge($lang, array(
 	'No_group_members' => 'This group has no members',
 	'Group_hidden_members' => 'This group is hidden; you cannot view its membership',
 	'No_pending_group_members' => 'This group has no pending members',
-	'Group_joined' => 'You have successfully subscribed to this group.<br />You will be notified when your subscription is approved by the group moderator.',
+	'Group_joined' => 'You have successfully subscribed to this group.<br />You will be notified when your subscription is approved by the group leader.',
 	'Group_request' => 'A request to join your group has been made.',
 	'Group_approved' => 'Your request has been approved.',
 	'Group_added' => 'You have been added to this usergroup.',
+	'GROUP_ADDED_USER' => 'User added successfully to the group.',
+	'GROUP_REMOVED_USER' => 'User removed successfully from the group.',
 	'Already_member_group' => 'You are already a member of this group',
 	'User_is_member_group' => 'User is already a member of this group',
 	'Group_type_updated' => 'Successfully updated group type.',
 	'Could_not_add_user' => 'The user you selected does not exist.',
 	'Could_not_anon_user' => 'You cannot make Anonymous a group member.',
 	'Confirm_unsub' => 'Are you sure you want to un-subscribe from this group?',
+	'CONFIRM_UNSUB_USER' => 'Are you sure you want to remove the user from this group?',
 	'Confirm_unsub_pending' => 'Your subscription to this group has not yet been approved; are you sure you want to un-subscribe?',
 	'Unsub_success' => 'You have been un-subscribed from this group.',
 	'Approve_selected' => 'Approve Selected',
@@ -809,7 +813,7 @@ $lang = array_merge($lang, array(
 	'Not_logged_in' => 'You must be logged in to join a group.',
 	'Remove_selected' => 'Remove Selected',
 	'Add_member' => 'Add Member',
-	'Not_group_moderator' => 'You are not this group\'s moderator, therefore you cannot perform that action.',
+	'Not_group_moderator' => 'You are not this group\'s leader, therefore you cannot perform that action.',
 	'Login_to_join' => 'Log in to join or manage group memberships',
 	'This_open_group' => 'This is an open group: click to request membership',
 	'This_closed_group' => 'This is a closed group: %s',
@@ -1508,7 +1512,7 @@ $lang = array_merge($lang, array(
 	'Links' => 'Links',
 	'Print_View' => 'Printable Version',
 	'Browsing_topic' => 'Users browsing this topic:',
-	'Sudoku' => 'Sudoku',
+	'SUDOKU' => 'Sudoku',
 	'Bookmarks' => 'Bookmarks',
 	'Set_Bookmark' => 'Set a bookmark for this topic',
 	'Remove_Bookmark' => 'Remove the bookmark for this topic',
@@ -2217,7 +2221,7 @@ $lang = array_merge($lang, array(
 	'Add_reg_explain' => '&nbsp;&bull; Check <i>Activate</i> to show a registration form with this post. Uncheck to hide it.<br />&nbsp;&bull; Check <i>Reset</i> to delete all current registrations for this form.<br />&nbsp;&bull; Enter a number in <i>Slots</i> to limit registrations for an option. "0" or empty = unlimited.',
 	'reg_activate' => 'Activate',
 	'reg_reset' => 'Reset',
-	'Reg_Insert' => 'You registered for the event.',
+	'Reg_Insert' => 'Registration added for the event.',
 	'Reg_Change' => 'Registration changed.',
 	'Reg_Confirm' => 'Registration confirmed.',
 	'Reg_Unregister' => 'Registration cancelled.',
@@ -2473,6 +2477,36 @@ $lang = array_merge($lang, array(
 
 	'POST_FEATURED_IMAGE' => 'Featured Image',
 	'POST_FEATURED_IMAGE_EXPLAIN' => 'Add a featured image to the topic',
+
+	'NOT_LOGGED_IN_ERROR' => 'You must be logged in to use this feature.',
+
+	'LOCK_POST' => 'Lock this post',
+	'POST_LOCKED' => 'This post has been locked by a moderator, you cannot edit it.',
+	'POST_AUTO_SPLIT' => '[SPLIT]',
+
+	'SOCIAL_CONNECT' => 'You can login using your social network accounts:',
+	'SOCIAL_CONNECT_LOGIN' => 'Login with my %s account',
+	'SOCIAL_CONNECT_REGISTER_INFO' => 'Your profile will be automatically filled with the information retrieved from your profile in the social network.',
+	'SOCIAL_CONNECT_LINK_ACCOUNT' => 'Please login to link your social network account to your account',
+	'SOCIAL_CONNECT_LINK_ACCOUNT_MSG' => 'We couldn\'t find any social network account linked with your %s account. You can either register or link an existing account with your %s account.<br /><br />Click %shere%s if you already have an account.<br/ ><br />Click %shere%s to create a new account.',
+
+	'IMG_BA_SHOW_ONLY_BEFORE' => 'Show Only Before',
+	'IMG_BA_SHOW_ONLY_AFTER' => 'Show Only After',
+
+	'GET_MORE_IMGS' => 'Display More Images',
+	'AJAX_REQ_SUCCESS' => 'Request successful',
+	'AJAX_REQ_ERROR' => 'Errors in processing the request',
+	'ALL_UPLOADED_IMAGES' => 'All uploaded images can be found here:',
+
+	'EVENTS_REG_USER' => 'Add a user to the event',
+
+	'NOTES_MOD' => 'Moderation notes',
+
+	'500PX' => '500px',
+	'GITHUB' => 'GitHub',
+	'INSTAGRAM' => 'Instagram',
+	'PINTEREST' => 'Pinterest',
+	'VIMEO' => 'Vimeo',
 
 	)
 );

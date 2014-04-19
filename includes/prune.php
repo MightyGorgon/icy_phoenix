@@ -20,13 +20,17 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
-include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
-include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
+@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
 
 function prune($forum_id, $prune_date, $prune_all = false)
 {
-	global $db, $lang;
+	global $db, $lang, $class_mcp;
+
+	if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+	if (empty($class_mcp)) $class_mcp = new class_mcp();
+
 	// Before pruning, lets try to clean up the invalid topic entries
 	$sql = 'SELECT topic_id FROM ' . TOPICS_TABLE . '
 		WHERE topic_last_post_id = 0';
@@ -34,7 +38,7 @@ function prune($forum_id, $prune_date, $prune_all = false)
 
 	while($row = $db->sql_fetchrow($result))
 	{
-		sync('topic', $row['topic_id']);
+		$class_mcp->sync('topic', $row['topic_id']);
 	}
 
 	$db->sql_freeresult($result);
@@ -101,9 +105,9 @@ function prune($forum_id, $prune_date, $prune_all = false)
 			$db->sql_transaction('commit');
 
 			remove_search_post($sql_post);
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 			prune_upi2db($sql_post);
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 			prune_attachments($sql_post);
 
 			return array ('topics' => $pruned_topics, 'posts' => $pruned_posts);
@@ -119,7 +123,7 @@ function prune($forum_id, $prune_date, $prune_all = false)
 //
 function auto_prune($forum_id = 0)
 {
-	global $db, $lang;
+	global $db, $lang, $class_mcp;
 
 	$sql = "SELECT *
 		FROM " . PRUNE_TABLE . "
@@ -133,8 +137,11 @@ function auto_prune($forum_id = 0)
 			$prune_date = time() - ($row['prune_days'] * 86400);
 			$next_prune = time() + ($row['prune_freq'] * 86400);
 
+			if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+			if (empty($class_mcp)) $class_mcp = new class_mcp();
+
 			prune($forum_id, $prune_date);
-			sync('forum', $forum_id);
+			$class_mcp->sync('forum', $forum_id);
 
 			$sql = "UPDATE " . FORUMS_TABLE . "
 				SET prune_next = $next_prune

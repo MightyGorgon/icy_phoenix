@@ -205,14 +205,7 @@ if (($album_config['gd_version'] == 1) || ($album_config['use_old_pics_gen'] == 
 
 $Image = new ImgObj();
 
-if ($pic_info['filetype'] == 'jpg')
-{
-	$Image->ReadSourceFileJPG($pic_info['fullpath']);
-}
-else
-{
-	$Image->ReadSourceFile($pic_info['fullpath']);
-}
+$Image->ReadSourceFile($pic_info['fullpath']);
 
 if ($apply_wm == true)
 {
@@ -224,14 +217,7 @@ if ($apply_wm == true)
 	@chmod($pic_info['thumbnail_new_w_f_fullpath'], 0777);
 }
 
-if ($pic_info['filetype'] == 'jpg')
-{
-	$Image->SendToBrowserJPG($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
-}
-else
-{
-	$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
-}
+$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
 
 $Image->Destroy();
 exit;

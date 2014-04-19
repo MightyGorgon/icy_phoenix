@@ -449,6 +449,19 @@ if ($result && $post_info)
 	}
 	// LIMIT POST EDIT TIME - END
 
+	if ($mode == 'editpost')
+	{
+		if ($is_auth['auth_mod'] || ($user->data['user_level'] == ADMIN))
+		{
+			$template->assign_block_vars('switch_lock_post', array());
+			$template->assign_var('S_POST_LOCKED', $post_info['post_locked'] ? ' checked="checked"' : '');
+		}
+		elseif ($post_info['post_locked'])
+		{
+			message_die(GENERAL_MESSAGE, 'POST_LOCKED');
+		}
+	}
+
 	if (($mode == 'editpost') || ($mode == 'delete') || ($mode == 'poll_delete'))
 	{
 		$topic_id = $post_info['topic_id'];
@@ -594,7 +607,9 @@ if ($result && $post_info)
 	{
 		$meta = '';
 		$message = '';
-		delete_post($mode, $post_data, $message, $meta, $forum_id, $topic_id, $post_id);
+		if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+		if (empty($class_mcp)) $class_mcp = new class_mcp();
+		$class_mcp->post_delete($mode, $post_data, $message, $meta, $forum_id, $topic_id, $post_id);
 
 		$redirect_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id);
 		meta_refresh(3, $redirect_url);
@@ -644,6 +659,8 @@ if (!$is_auth[$is_auth_type] || (!empty($is_auth_type_cal) && !$is_auth[$is_auth
 {
 	// Event Registration - BEGIN
 	$reg_number_clicked = request_var('register', 0);
+	$reg_user_id = request_var(POST_USERS_URL, 0);
+	$reg_user_id = ($reg_user_id < 2) ? ANONYMOUS : $reg_user_id;
 	// Event Registration - END
 	if ($user->data['session_logged_in'])
 	{
@@ -670,7 +687,7 @@ if (!$is_auth[$is_auth_type] || (!empty($is_auth_type_cal) && !$is_auth[$is_auth
 			break;
 		// Event Registration - BEGIN
 		case 'register':
-			$redirect = 'mode=register&register=' . $reg_number_clicked . '&' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . $topic_id_append;
+			$redirect = 'mode=register&register=' . $reg_number_clicked . '&' . POST_USERS_URL . '=' . $reg_user_id . '&' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . $topic_id_append;
 			break;
 		// Event Registration - END
 	}
@@ -1069,10 +1086,29 @@ elseif ($mode == 'vote')
 elseif ($mode == 'register')
 {
 	// Register for an event
-	if (!empty($_GET['register']))
+	$register_value = request_var('register', 0);
+	$register_value = in_array($register_value, array(REG_OPTION1, REG_OPTION2, REG_OPTION3, REG_UNREGISTER)) ? $register_value : 0;
+	if (!empty($register_value))
 	{
-		$new_regstate = intval($_GET['register']);
 		$user_id = $user->data['user_id'];
+		if ($user->data['user_level'] == ADMIN)
+		{
+			$target_user_id = request_var(POST_USERS_URL, 0);
+			$target_user_id = ($target_user_id < 2) ? ANONYMOUS : $target_user_id;
+			$target_username = request_var('username', '', true);
+			if (!empty($target_user_id) && ($target_user_id != ANONYMOUS))
+			{
+				$target_userdata = get_userdata($target_user_id);
+			}
+			else
+			{
+				$target_userdata = get_userdata($target_username, true);
+			}
+			if (!empty($target_userdata))
+			{
+				$user_id = $target_userdata['user_id'];
+			}
+		}
 		$zeit = time();
 
 		$sql = "SELECT registration_status FROM " . REGISTRATION_TABLE . "
@@ -1081,7 +1117,7 @@ elseif ($mode == 'register')
 
 		if ($reg_info = $db->sql_fetchrow($result))
 		{
-			if ($new_regstate == 4) // cancel registration
+			if ($register_value == REG_UNREGISTER) // cancel registration
 			{
 				$sql = "DELETE FROM " . REGISTRATION_TABLE . "
 				WHERE topic_id = $topic_id
@@ -1093,14 +1129,14 @@ elseif ($mode == 'register')
 			{
 				$old_regstate = $reg_info['registration_status'];
 
-				if (check_max_registration($topic_id, $new_regstate) === false)
+				if (($user->data['user_level'] != ADMIN) && (check_max_registration($topic_id, $register_value) === false))
 				{
 					$message = $lang['Reg_Max_Registrations'];
 				}
 				else
 				{
 					$sql = "UPDATE " . REGISTRATION_TABLE . "
-						SET registration_user_ip = '$user_ip', registration_time = $zeit, registration_status = $new_regstate
+						SET registration_user_ip = '$user_ip', registration_time = $zeit, registration_status = $register_value
 						WHERE topic_id = $topic_id
 							AND registration_user_id = $user_id";
 					$db->sql_query($sql);
@@ -1110,14 +1146,14 @@ elseif ($mode == 'register')
 		}
 		else
 		{
-			if (check_max_registration($topic_id, $new_regstate) === false)
+			if (($user->data['user_level'] != ADMIN) && (check_max_registration($topic_id, $register_value) === false))
 			{
 				$message = sprintf($lang['Reg_Max_Registrations'], $num_max_reg);
 			}
 			else
 			{
 				$sql = "INSERT INTO " . REGISTRATION_TABLE . " (topic_id, registration_user_id, registration_user_ip, registration_time, registration_status)
-					VALUES ($topic_id, $user_id, '$user_ip', $zeit, $new_regstate)";
+					VALUES ($topic_id, $user_id, '$user_ip', $zeit, $register_value)";
 				$db->sql_query($sql);
 				$message = $lang['Reg_Insert'];
 			}
@@ -1165,6 +1201,11 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			$topic_desc = request_post_var('topic_desc', '', true);
 			$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
 			$notes = htmlspecialchars_decode(request_post_var('notes', '', true), ENT_COMPAT);
+			$notes_mod = '';
+			if (($user->data['user_level'] == ADMIN) || $is_auth['auth_mod'])
+			{
+				$notes_mod = htmlspecialchars_decode(request_post_var('notes_mod', '', true), ENT_COMPAT);
+			}
 			$post_images = request_post_var('post_images', '', true);
 			if (!empty($post_images) && (substr($post_images, 0, 4) == 'http'))
 			{
@@ -1250,56 +1291,75 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					$topic_type = (($topic_type != $post_data['topic_type']) && !$is_auth['auth_sticky'] && !$is_auth['auth_announce'] && !$is_auth['auth_globalannounce']) ? $post_data['topic_type'] : $topic_type;
 				}
 
-				if(($mode == 'editpost') && $config['edit_notes'] && (strlen($notes) > 2))
+				if(($mode == 'editpost') && $config['edit_notes'] && ((strlen($notes) > 2) || (strlen($notes_mod) > 2)))
 				{
 					$sql = "SELECT edit_notes FROM " . POSTS_TABLE . " WHERE post_id='" . $post_id . "'";
 					$result = $db->sql_query($sql);
 					$row = $db->sql_fetchrow($result);
 					$db->sql_freeresult($result);
 					$notes_list = strlen($row['edit_notes']) ? unserialize($row['edit_notes']) : array();
-					// check limit and delete notes
-					if(sizeof($notes_list) >= intval($config['edit_notes_n']))
+
+					// Check limit and eventually delete notes
+					if(!empty($notes) && (sizeof($notes_list) >= intval($config['edit_notes_n'])))
 					{
-						if($notes_list[$i]['poster'] == $user->data['user_id'])
+						$first_edit_note = 0;
+						$edit_notes_counter = 0;
+						for($i = 0; $i < sizeof($notes_list); $i++)
 						{
-							$del_num = $i;
-						}
-						for($i = sizeof($notes_list) - 1; $i >= 0; $i--)
-						{
-							$del_num = $i;
-						}
-						if($del_num >= 0)
-						{
-							$new_list = array();
-							for($n = 0; $n < sizeof($notes_list); $n++)
+							if (empty($notes_list[$i]['reserved']))
 							{
-								if($n !== $del_num)
+								$edit_notes_counter++;
+								if (empty($first_edit_note))
 								{
-									$new_list[] = $notes_list[$n];
+									$first_edit_note = $i;
 								}
 							}
-							$notes_list = $new_list;
+						}
+
+						if ($edit_notes_counter > intval($config['edit_notes_n']))
+						{
+							unset($notes_list[$first_edit_note]);
 						}
 					}
-					$notes_list[] = array(
-						'poster' => $user->data['user_id'],
-						'time' => time(),
-						//'text' => htmlspecialchars($notes)
-						'text' => $notes
-					);
+
+					if (!empty($notes))
+					{
+						$notes_list[] = array(
+							'poster' => $user->data['user_id'],
+							'time' => time(),
+							//'text' => htmlspecialchars($notes)
+							'text' => $notes,
+							'reserved' => false
+						);
+					}
+
+					if (!empty($notes_mod))
+					{
+						$notes_list[] = array(
+							'poster' => $user->data['user_id'],
+							'time' => time(),
+							//'text' => htmlspecialchars($notes_mod)
+							'text' => $notes_mod,
+							'reserved' => true
+						);
+					}
+
 					empty_cache_folders(POSTS_CACHE_FOLDER);
 					$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes = '" . $db->sql_escape(serialize($notes_list)) . "' WHERE post_id = '" . $post_id . "'";
 					$db->sql_query($sql);
 
-					// We need this, otherwise editing for normal users will be account twice!
-					$edit_count_sql = '';
-					if($user->data['user_level'] == ADMIN)
+					if (!empty($notes))
 					{
-						$edit_count_sql = ", post_edit_count = (post_edit_count + 1)";
+						$edit_count_sql = '';
+						// We need this, otherwise editing for normal users will be accounted twice... because the same edit will be updated in functions_post.php
+						if($user->data['user_level'] == ADMIN)
+						{
+							$edit_count_sql = ", post_edit_count = (post_edit_count + 1)";
+						}
+						$edited_sql = "post_edit_time = '" . time() . "'" . $edit_count_sql . ", post_edit_id = '" . $user->data['user_id'] . "'";
+						$sql = "UPDATE " . POSTS_TABLE . " SET " . $edited_sql . " WHERE post_id='" . $post_id . "'";
+						$db->sql_query($sql);
 					}
-					$edited_sql = "post_edit_time = '" . time() . "'" . $edit_count_sql . ", post_edit_id = '" . $user->data['user_id'] . "'";
-					$sql = "UPDATE " . POSTS_TABLE . " SET " . $edited_sql . " WHERE post_id='" . $post_id . "'";
-					$db->sql_query($sql);
 				}
 
 				if ($lock_subject)
@@ -1354,7 +1414,9 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 			{
 				message_die(GENERAL_MESSAGE, $error_msg);
 			}
-			delete_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id);
+			if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+			if (empty($class_mcp)) $class_mcp = new class_mcp();
+			$class_mcp->post_delete($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id);
 			break;
 	}
 
@@ -1363,7 +1425,9 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		if ($mode != 'editpost')
 		{
 			$user_id = (($mode == 'reply') || ($mode == 'newtopic')) ? $user->data['user_id'] : $post_data['poster_id'];
-			update_post_stats($mode, $post_data, $forum_id, $topic_id, $post_id, $user_id);
+			if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+			if (empty($class_mcp)) $class_mcp = new class_mcp();
+			$class_mcp->sync_post_stats($mode, $post_data, $forum_id, $topic_id, $post_id, $user_id);
 		}
 		$attachment_mod['posting']->insert_attachment($post_id);
 
@@ -1489,6 +1553,11 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	//$message = !empty($draft_message) ? $draft_message : htmlspecialchars_decode(request_post_var('message', '', true), ENT_COMPAT);
 	$message = !empty($draft_message) ? $draft_message : request_post_var('message', '', true);
 	$notes = htmlspecialchars_decode(request_post_var('notes', '', true), ENT_COMPAT);
+	$notes_mod = '';
+	if (($user->data['user_level'] == ADMIN) || $is_auth['auth_mod'])
+	{
+		$notes_mod = htmlspecialchars_decode(request_post_var('notes_mod', '', true), ENT_COMPAT);
+	}
 
 	$topic_title_clean = (empty($_POST['topic_title_clean']) ? $subject : request_post_var('topic_title_clean', '', true));
 	$topic_title_clean = substr(ip_clean_string($topic_title_clean, $lang['ENCODING']), 0, 254);
@@ -1805,9 +1874,11 @@ else
 
 if(($mode == 'editpost') && $config['edit_notes'])
 {
-	$template->assign_block_vars('switch_edit', array(
+	$template->assign_vars(array(
+		'S_EDIT_NOTES' => true,
 		'L_EDIT_NOTES' => $lang['Edit_notes'],
 		'NOTES' => htmlspecialchars($notes),
+		'NOTES_MOD' => htmlspecialchars($notes_mod),
 		)
 	);
 }
@@ -1856,13 +1927,13 @@ if(!$user->data['session_logged_in'] || (($mode == 'editpost') && $post_info['po
 	$template->assign_block_vars('switch_username_select', array());
 }
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if($user->data['upi2db_access'] && ($mode == 'editpost') && (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD)))
 {
 	$template->assign_block_vars('switch_mark_edit_checkbox', array());
 	$mark_edit = ($refresh) ? $mark_edit : true;
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 // Notify checkbox - only show if user is logged in
 if ($user->data['session_logged_in'] && $is_auth['auth_read'])
@@ -2116,6 +2187,7 @@ $template->assign_vars(array(
 	'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
 	'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),
 	'S_JQUERY_UI_TP' => (!empty($config['jquery_ui_tp']) ? true : false),
+	'S_JQUERY_UI_BA' => (!empty($config['jquery_ui_ba']) ? true : false),
 	'S_JQUERY_UI_STYLE' => (!empty($config['jquery_ui_style']) ? $config['jquery_ui_style'] : 'cupertino'),
 	'S_JQUERY_TAGS' => (!empty($config['jquery_tags']) ? true : false),
 	)
@@ -2284,9 +2356,9 @@ $template->assign_vars(array(
 	'L_ATTACH_SIGNATURE' => $lang['Attach_signature'],
 	'L_SET_BOOKMARK' => $lang['Set_Bookmark'],
 	'L_NOTIFY_ON_REPLY' => $lang['Notify'],
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'L_MARK_EDIT' => $lang['mark_edit'],
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	'L_DELETE_POST' => $lang['Delete_post'],
 
 	'L_SHOW_PORTAL' => $lang['Show_In_Portal'],
@@ -2304,7 +2376,7 @@ $template->assign_vars(array(
 	// AJAX Features - BEGIN
 	'S_AJAX_BLUR' => $ajax_blur,
 	'S_AJAX_PM_USER_CHECK' => $ajax_pm_user_check,
-	'S_DISPLAY_PREVIEW' => ($preview) ? '' : 'style="display:none;"',
+	'S_DISPLAY_PREVIEW' => ($preview) ? '' : 'style="display: none;"',
 	'S_EDIT_POST_ID' => ($mode == 'editpost') ? $post_id : 0,
 	'L_SEARCH_RESULTS' => $lang['AJAX_search_results'],
 	'L_SEARCH_RESULT' => $lang['AJAX_search_result'],
@@ -2347,9 +2419,9 @@ $template->assign_vars(array(
 	'S_NOTIFY_CHECKED' => ($is_auth['auth_read']) ? (($notify_user) ? 'checked="checked"' : '') : 'DISABLED',
 	'S_LOCK_SUBJECT' => ($lock_subject) ? ' READONLY ' : '',
 	// End replacement - Yellow card admin MOD
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'S_MARK_EDIT_CHECKED' => ($mark_edit) ? 'checked="checked"' : '',
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 
 	// CrackerTracker v5.x
 	'CONFIRM_IMAGE' => $confirm_image,

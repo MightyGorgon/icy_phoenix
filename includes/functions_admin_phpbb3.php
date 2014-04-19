@@ -1098,41 +1098,6 @@ function filelist($rootdir, $dir = '', $type = 'gif|jpg|jpeg|png')
 }
 
 /**
-* remove_comments will strip the sql comment lines out of an uploaded sql file
-* specifically for mssql and postgres type files in the install....
-*/
-function remove_comments(&$output)
-{
-	$lines = explode("\n", $output);
-	$output = '';
-
-	// try to keep mem. use down
-	$linecount = sizeof($lines);
-
-	$in_comment = false;
-	for ($i = 0; $i < $linecount; $i++)
-	{
-		if (trim($lines[$i]) == '/*')
-		{
-			$in_comment = true;
-		}
-
-		if (!$in_comment)
-		{
-			$output .= $lines[$i] . "\n";
-		}
-
-		if (trim($lines[$i]) == '*/')
-		{
-			$in_comment = false;
-		}
-	}
-
-	unset($lines);
-	return $output;
-}
-
-/**
 * Cache moderators, called whenever permissions are changed via admin_permissions. Changes of username
 * and group names must be carried through for the moderators table
 */
@@ -1406,7 +1371,7 @@ function get_database_size()
 */
 function add_permission_language()
 {
-	global $user;
+	global $user, $class_plugins;
 
 	// First of all, our own file. We need to include it as the first file because it presets all relevant variables.
 	// MIGHTY GORGON - LANG - BEGIN
@@ -1416,15 +1381,8 @@ function add_permission_language()
 	setup_extra_lang(array('lang_cms_permissions', 'lang_permissions'));
 
 	// Add Plugins Lang!
-	if (!class_exists('class_plugins'))
-	{
-		@include(IP_ROOT_PATH . 'includes/class_plugins.' . PHP_EXT);
-	}
-
-	if (empty($class_plugins))
-	{
-		$class_plugins = new class_plugins();
-	}
+	if (!class_exists('class_plugins')) include(IP_ROOT_PATH . 'includes/class_plugins.' . PHP_EXT);
+	if (empty($class_plugins)) $class_plugins = new class_plugins();
 
 	foreach ($cache->obtain_plugins_config() as $k => $plugin)
 	{

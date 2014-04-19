@@ -1486,6 +1486,71 @@ class sql_db
 	}
 
 	/**
+	* remove_comments will strip the sql comment lines out of an uploaded sql file
+	* specifically for mssql and postgres type files in the install...
+	*/
+	function remove_comments(&$output)
+	{
+		$lines = explode("\n", $output);
+		$output = '';
+
+		// try to keep mem. use down
+		$linecount = sizeof($lines);
+
+		$in_comment = false;
+		for ($i = 0; $i < $linecount; $i++)
+		{
+			if (trim($lines[$i]) == '/*')
+			{
+				$in_comment = true;
+			}
+
+			if (!$in_comment)
+			{
+				$output .= $lines[$i] . "\n";
+			}
+
+			if (trim($lines[$i]) == '*/')
+			{
+				$in_comment = false;
+			}
+		}
+
+		unset($lines);
+		return $output;
+	}
+
+	/**
+	* remove_remarks will strip the sql comment lines out of an uploaded sql file
+	*/
+	function remove_remarks(&$sql)
+	{
+		$sql = preg_replace('/\n{2,}/', "\n", preg_replace('/^#.*$/m', "\n", $sql));
+	}
+
+	/**
+	* split_sql_file will split an uploaded sql file into single sql statements.
+	* Note: expects trim() to have already been run on $sql.
+	*/
+	function split_sql_file($sql, $delimiter)
+	{
+		$sql = str_replace("\r" , '', $sql);
+		$data = preg_split('/' . preg_quote($delimiter, '/') . '$/m', $sql);
+
+		$data = array_map('trim', $data);
+
+		// The empty case
+		$end_data = end($data);
+
+		if (empty($end_data))
+		{
+			unset($data[key($data)]);
+		}
+
+		return $data;
+	}
+
+	/**
 	* Cache clear function
 	*/
 	function clear_cache($cache_prefix = '', $cache_folder = SQL_CACHE_FOLDER, $files_per_step = 0)

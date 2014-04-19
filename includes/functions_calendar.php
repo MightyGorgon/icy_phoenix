@@ -21,7 +21,8 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 include_once(IP_ROOT_PATH . './includes/functions_post.' . PHP_EXT);
-include_once(IP_ROOT_PATH . './includes/bbcode.' . PHP_EXT);
+if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+if (empty($bbcode)) $bbcode = new bbcode();
 
 function calendar_forum_select($selected_id = '')
 {
@@ -202,10 +203,8 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 {
 	global $tree, $template, $lang, $images, $user, $db, $cache, $config, $bbcode;
 
-	if (!class_exists('bbcode') || empty($bbcode))
-	{
-		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-	}
+	if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+	if (empty($bbcode)) $bbcode = new bbcode();
 
 	// get some parameter
 	$topic_title_length = isset($config['calendar_title_length']) ? intval($config['calendar_title_length']) : 30;
@@ -332,15 +331,6 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		$db->sql_freeresult($result);
 		$sql .= " LIMIT $start, $max_limit";
 		$result = $db->sql_query($sql);
-	}
-
-	if (!class_exists('bbcode') || empty($bbcode))
-	{
-		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-		if (empty($bbcode))
-		{
-			$bbcode = new bbcode();
-		}
 	}
 
 	$bbcode->allow_html = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0;

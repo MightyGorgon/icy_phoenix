@@ -34,7 +34,7 @@ if (!empty($config['plugins']['activity']['enabled']))
 }
 // Activity - END
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 $mark_always_read = request_var('always_read', '');
 $mark_forum_id = request_var('forum_id', 0);
 
@@ -57,15 +57,13 @@ if($user->data['upi2db_access'])
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 $cms_page['page_id'] = 'forum';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
 $cms_page['global_blocks'] = (!empty($cms_config_layouts[$cms_page['page_id']]['global_blocks']) ? true : false);
 $cms_auth_level = (isset($cms_config_layouts[$cms_page['page_id']]['view']) ? $cms_config_layouts[$cms_page['page_id']]['view'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
-
-setup_extra_lang(array('lang_main_link'));
 
 $viewcat = (!empty($_GET[POST_CAT_URL]) ? intval($_GET[POST_CAT_URL]) : -1);
 $viewcat = (($viewcat <= 0) ? -1 : $viewcat);
@@ -88,7 +86,7 @@ if($mark_read == 'forums')
 	{
 		if($user->data['session_logged_in'] && !$user->data['is_bot'])
 		{
-			//<!-- BEGIN Unread Post Information to Database Mod -->
+			// UPI2DB - BEGIN
 			if(!$user->data['upi2db_access'])
 			{
 				$user->set_cookie('f_all', time(), $user->cookie_expire);
@@ -97,7 +95,7 @@ if($mark_read == 'forums')
 			{
 				marking_posts();
 			}
-			//<!-- END Unread Post Information to Database Mod -->
+			// UPI2DB - END
 		}
 
 		$redirect_url = append_sid(CMS_PAGE_FORUM);
@@ -223,15 +221,6 @@ else
 $link_self_img = '';
 $site_logo_height = '';
 $site_logo_width = '';
-if (!empty($config['index_links']))
-{
-	include_once(IP_ROOT_PATH . 'includes/functions_links.' . PHP_EXT);
-	$links_config = get_links_config(true);
-	$link_self_img = $links_config['site_logo'];
-	$site_logo_height = $links_config['height'];
-	$site_logo_width = $links_config['width'];
-	$template->assign_vars(array('S_LINKS' => true));
-}
 
 if ($config['site_history'] && ((time() - (int) $config['cron_site_history_last_run']) > ONLINE_REFRESH))
 {
@@ -309,9 +298,9 @@ $template->assign_vars(array(
 	'FORUM_NEW_CAT_IMG' => $images['forum_sub_unread'],
 	'FORUM_LOCKED_IMG' => $images['forum_nor_locked_read'],
 	'FORUM_LINK_IMG' => $images['forum_link'],
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'FOLDER_AR_BIG' => $images['forum_nor_ar'],
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	// Start add - Fully integrated shoutbox MOD
 	'U_SHOUTBOX' => append_sid('shoutbox.' . PHP_EXT),
 	'L_SHOUTBOX' => $lang['Shoutbox'],
@@ -362,10 +351,10 @@ $template->assign_vars(array(
 	'L_MODERATOR' => $lang['Moderators'],
 	'L_FORUM_LOCKED' => $lang['Forum_is_locked'],
 	'L_MARK_FORUMS_READ' => $lang['Mark_all_forums'],
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	'L_AR_POSTS' => $lang['always_read_icon'],
 	'L_FORUM_AR' => $lang['always_read_icon'],
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	'U_MARK_READ' => append_sid(CMS_PAGE_FORUM . '?mark=forums' . $mark)
 	)
 );

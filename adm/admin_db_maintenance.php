@@ -536,7 +536,8 @@ switch($mode_id)
 					$sql = "SELECT g.group_id
 						FROM " . USER_GROUP_TABLE . " ug
 							INNER JOIN " . GROUPS_TABLE . " g ON ug.group_id = g.group_id
-						WHERE ug.user_pending = 1 AND g.group_single_user = 1";
+						WHERE ug.user_pending = 1
+							AND g.group_single_user = 1";
 				}
 				else
 				{

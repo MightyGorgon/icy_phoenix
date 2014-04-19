@@ -404,6 +404,51 @@ elseif (($mode == 'like') || ($mode == 'unlike'))
 	}
 	AJAX_message_die($result_ar);
 }
+elseif ($mode == 'get_more_images')
+{
+	include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
+	$class_images = new class_images();
+
+	$start = request_var('start', 0);
+	$limit = request_var('limit', 5);
+	$start = (($start < 0) || ($start > 999999)) ? 0 : $start;
+	$limit = (($limit < 0) || ($limit > 10)) ? 5 : $limit;
+	$images_data = $class_images->get_user_images($user->data['user_id'], 'i.pic_id DESC', $start, $limit);
+
+	$result_ar = array();
+	if (!empty($images_data))
+	{
+		$server_url = create_server_url();
+		$pics_parsed = 0;
+		foreach ($images_data as $image_data)
+		{
+			$pics_parsed++;
+			// We are checking for small thumbnails... added an underscore to distinguish those small thumbs respect to mid sized!
+			$pic_img_sub_path = (USERS_SUBFOLDERS_IMG && (!empty($image_data['pic_user_id'])) ? ($image_data['pic_user_id'] . '/') : '') . $image_data['pic_filename'];
+			$pic_img_url = POSTED_IMAGES_PATH . $pic_img_sub_path;
+			$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $pic_img_sub_path;
+			$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL . '?pic_id=' . urlencode($pic_img_sub_path)));
+			$pic_title = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
+
+			$result_ar[] = array(
+				'id' => $image_data['pic_id'],
+				'value' => $pic_title,
+				'name' => $image_data['pic_filename'],
+				'thumb' => $pic_img_thumb,
+				'url' => $pic_img_url
+			);
+		}
+	}
+	else
+	{
+		$result_ar = array(
+			'id' => 0,
+			'value' => $lang['SEARCH_NO_RESULTS']
+		);
+	}
+
+	AJAX_message_die($result_ar, $json);
+}
 else
 {
 	$result_ar = array(

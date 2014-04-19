@@ -1,4 +1,4 @@
-<div id="birthday_h" style="display:none;">
+<div id="birthday_h" style="display: none;">
 {IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('birthday','birthday_h','birthday');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_BIRTHDAYS}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}

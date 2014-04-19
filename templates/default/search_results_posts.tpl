@@ -26,7 +26,7 @@
 		<div class="post-text post-text-hide-flow"><br />{searchresults.MESSAGE}</div>
 	</td>
 	<!-- BEGIN switch_upi2db_on -->
-	<td valign="top" class="row-post">{searchresults.UNREAD_IMG}</td>
+	<!-- IF searchresults.UPI2DB_UNMARK_POST --><td valign="top" class="row-post"><a href="{searchresults.UPI2DB_UNMARK_POST_URL}"><img src="{searchresults.UPI2DB_UNMARK_POST_IMG}" alt="{searchresults.L_UPI2DB_UNMARK_POST}" title="{searchresults.L_UPI2DB_UNMARK_POST}" /></a></td><!-- ENDIF -->
 	<!-- END switch_upi2db_on -->
 </tr>
 <tr><td class="spaceRow" colspan="3"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>

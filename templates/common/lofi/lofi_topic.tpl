@@ -97,7 +97,7 @@ if($can_reply)
 	<div class="postwrapper">
 		<div class="posttopbar">
 			<div class="postname">{postrow.POSTER_NAME}<br /></div>
-			<div class="postedit">{postrow.QUOTE} {postrow.EDIT} {postrow.DELETE} {postrow.IP}</div>
+			<div class="postedit"><!-- IF IS_UPI2DB --><!-- IF postrow.UPI2DB_MARK_UNREAD --><a href="{postrow.UPI2DB_MARK_UNREAD_URL}" title="{postrow.L_UPI2DB_MARK_UNREAD}">{L_upi2db_u}</a>&nbsp;<!-- ENDIF --><!-- IF postrow.UPI2DB_MARK_POST --><a href="{postrow.UPI2DB_MARK_POST_URL}" title="{postrow.L_UPI2DB_MARK_POST}">{L_upi2db_m}</a>&nbsp;<!-- ENDIF --><!-- IF postrow.UPI2DB_UNMARK_POST --><a href="{postrow.UPI2DB_UNMARK_POST_URL}" title="{postrow.L_UPI2DB_UNMARK_POST}">{L_upi2db_p}</a>&nbsp;<!-- ENDIF --><!-- ENDIF -->{postrow.QUOTE} {postrow.EDIT} {postrow.DELETE} {postrow.IP}</div>
 			<div class="postinfo">{postrow.POSTER_POSTS} {postrow.POSTER_FROM}<br /></div>
 			<div class="postdate">{postrow.POST_DATE}</div>
 		</div>

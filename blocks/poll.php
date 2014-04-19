@@ -75,7 +75,7 @@ if(!function_exists('cms_block_poll'))
 			$config_vote_graphic_length = $config['vote_graphic_length'];
 			$config['vote_graphic_length'] = $portal_vote_graphic_length;
 
-			$class_topics->display_poll($topic_data, true);
+			$class_topics->poll_display($topic_data, true);
 
 			// Reset original config value
 			$config['vote_graphic_length'] = $config_vote_graphic_length;

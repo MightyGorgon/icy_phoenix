@@ -119,16 +119,19 @@
 			<!-- IF postrow.S_POST_DELETE -->
 			&nbsp;<a href="{postrow.U_POST_DELETE}"><img src="{postrow.IMG_POST_DELETE}" alt="{postrow.L_POST_DELETE}" title="{postrow.L_POST_DELETE}" /></a>
 			<!-- ENDIF -->
-			{postrow.UNREAD_IMG}
-
-			<!-- IF postrow.S_CARD_SWITCH -->
-			<!-- IF postrow.S_CARD_SWITCH_B --><!-- IF postrow.S_CARD_CLASS --><span class="img-report"><!-- ENDIF --><a href="{postrow.U_CARD_B}" onclick="return confirm('{postrow.L_CARD_B_JS}')"><img src="{postrow.IMG_CARD_B}" alt="{postrow.L_CARD_B}" title="{postrow.L_CARD_B}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
-			<!-- IF postrow.S_CARD_SWITCH_P --><!-- IF postrow.S_CARD_CLASS --><span class="img-clear"><!-- ENDIF --><a href="{postrow.U_CARD_P}" onclick="return confirm('{postrow.L_CARD_P_JS}')"><img src="{postrow.IMG_CARD_P}" alt="{postrow.L_CARD_P}" title="{postrow.L_CARD_P}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
-			<!-- IF postrow.S_CARD_SWITCH_G --><!-- IF postrow.S_CARD_CLASS --><span class="img-green"><!-- ENDIF --><a href="{postrow.U_CARD_G}" onclick="return confirm('{postrow.L_CARD_G_JS}')"><img src="{postrow.IMG_CARD_G}" alt="{postrow.L_CARD_G}" title="{postrow.L_CARD_G}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
-			<!-- IF postrow.S_CARD_SWITCH_Y --><!-- IF postrow.S_CARD_CLASS --><span class="img-warn"><!-- ENDIF --><a href="{postrow.U_CARD_Y}" onclick="return confirm('{postrow.L_CARD_Y_JS}')"><img src="{postrow.IMG_CARD_Y}" alt="{postrow.L_CARD_Y}" title="{postrow.L_CARD_Y}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
-			<!-- IF postrow.S_CARD_SWITCH_R --><!-- IF postrow.S_CARD_CLASS --><span class="img-ban"><!-- ENDIF --><a href="{postrow.U_CARD_R}" onclick="return confirm('{postrow.L_CARD_R_JS}')"><img src="{postrow.IMG_CARD_R}" alt="{postrow.L_CARD_R}" title="{postrow.L_CARD_R}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+			<!-- IF IS_UPI2DB -->
+				<!-- IF postrow.UPI2DB_MARK_UNREAD --><a href="{postrow.UPI2DB_MARK_UNREAD_URL}"><img src="{postrow.UPI2DB_MARK_UNREAD_IMG}" alt="{postrow.L_UPI2DB_MARK_UNREAD}" title="{postrow.L_UPI2DB_MARK_UNREAD}" /></a><!-- ENDIF -->
+				<!-- IF postrow.UPI2DB_CANT_MARK --><img src="{postrow.UPI2DB_CANT_MARK_IMG}" alt="{postrow.L_UPI2DB_CANT_MARK}" title="{postrow.L_UPI2DB_CANT_MARK}" /><!-- ENDIF -->
+				<!-- IF postrow.UPI2DB_MARK_POST --><a href="{postrow.UPI2DB_MARK_POST_URL}"><img src="{postrow.UPI2DB_MARK_POST_IMG}" alt="{postrow.L_UPI2DB_MARK_POST}" title="{postrow.L_UPI2DB_MARK_POST}" /></a><!-- ENDIF -->
+				<!-- IF postrow.UPI2DB_UNMARK_POST --><a href="{postrow.UPI2DB_UNMARK_POST_URL}"><img src="{postrow.UPI2DB_UNMARK_POST_IMG}" alt="{postrow.L_UPI2DB_UNMARK_POST}" title="{postrow.L_UPI2DB_UNMARK_POST}" /></a><!-- ENDIF -->
 			<!-- ENDIF -->
-
+			<!-- IF postrow.S_CARD_SWITCH -->
+				<!-- IF postrow.S_CARD_SWITCH_B --><!-- IF postrow.S_CARD_CLASS --><span class="img-report"><!-- ENDIF --><a href="{postrow.U_CARD_B}" onclick="return confirm('{postrow.L_CARD_B_JS}')"><img src="{postrow.IMG_CARD_B}" alt="{postrow.L_CARD_B}" title="{postrow.L_CARD_B}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_P --><!-- IF postrow.S_CARD_CLASS --><span class="img-clear"><!-- ENDIF --><a href="{postrow.U_CARD_P}" onclick="return confirm('{postrow.L_CARD_P_JS}')"><img src="{postrow.IMG_CARD_P}" alt="{postrow.L_CARD_P}" title="{postrow.L_CARD_P}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_G --><!-- IF postrow.S_CARD_CLASS --><span class="img-green"><!-- ENDIF --><a href="{postrow.U_CARD_G}" onclick="return confirm('{postrow.L_CARD_G_JS}')"><img src="{postrow.IMG_CARD_G}" alt="{postrow.L_CARD_G}" title="{postrow.L_CARD_G}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_Y --><!-- IF postrow.S_CARD_CLASS --><span class="img-warn"><!-- ENDIF --><a href="{postrow.U_CARD_Y}" onclick="return confirm('{postrow.L_CARD_Y_JS}')"><img src="{postrow.IMG_CARD_Y}" alt="{postrow.L_CARD_Y}" title="{postrow.L_CARD_Y}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_R --><!-- IF postrow.S_CARD_CLASS --><span class="img-ban"><!-- ENDIF --><a href="{postrow.U_CARD_R}" onclick="return confirm('{postrow.L_CARD_R_JS}')"><img src="{postrow.IMG_CARD_R}" alt="{postrow.L_CARD_R}" title="{postrow.L_CARD_R}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+			<!-- ENDIF -->
 			&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
 			<!-- ELSE -->
 			&nbsp;
@@ -168,6 +171,16 @@
 			{L_EDITED_BY} {postrow.notes.POSTER_NAME}, {postrow.notes.TIME}: {postrow.notes.TEXT}
 		</div>
 		<!-- END notes -->
+		</div>
+		<div class="post-notes">
+		<!-- BEGIN notes_mod -->
+		<div class="post-note">
+			<!-- IF notes_mod.U_DELETE -->
+			<div class="post-note-delete">[<a href="{notes_mod.U_DELETE}">{L_DELETE_NOTE}</a>]</div>
+			<!-- ENDIF -->
+			{L_NOTES_MOD} &bull; {postrow.notes_mod.POSTER_NAME}, {postrow.notes_mod.TIME}: {postrow.notes_mod.TEXT}
+		</div>
+		<!-- END notes_mod -->
 		</div>
 		<!-- ENDIF -->
 		<!-- ENDIF -->
@@ -341,6 +354,7 @@ if(GetCookie(tmp) == '2')
 		<!-- IF not S_BOT and S_TMOD_BUTTONS -->
 		<!-- INCLUDE viewtopic_admin.tpl -->
 		<!-- ENDIF -->
+		{S_TMOD_TOPIC_PREFIX_SELECT}<br /><br />
 		{JUMPBOX}
 	</td>
 </tr>

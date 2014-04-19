@@ -151,7 +151,7 @@ function get_online_page($page_id)
 	}
 	elseif (strpos($page_id, 'sudoku.' . PHP_EXT) !== false)
 	{
-		$location['lang'] = $lang['Sudoku'];
+		$location['lang'] = $lang['SUDOKU'];
 		$location['url'] = 'sudoku.' . PHP_EXT;
 		return $location;
 	}

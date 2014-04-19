@@ -261,11 +261,11 @@ function get_all_usergroups($info_groups = '')
 		$group_array = explode(",", $info_groups);
 	}
 
-	$groups = get_groups_list();
-	foreach ($groups as $group_id => $group_name)
+	$groups_data = get_groups_data(false, true, array());
+	foreach ($groups_data as $group_data)
 	{
-		$checked = (empty($info_groups) || in_array($group_id, $group_array)) ? ' checked="checked"' : '';
-		$group .= '<input type="checkbox" name="group' . strval($group_id) . '"' . $checked . ' />&nbsp;' . $group_name . '&nbsp;<br />';
+		$checked = (empty($info_groups) || in_array($group_data['group_id'], $group_array)) ? ' checked="checked"' : '';
+		$group .= '<input type="checkbox" name="group' . strval($group_data['group_id']) . '"' . $checked . ' />&nbsp;' . $group_data['group_name'] . '&nbsp;<br />';
 	}
 
 	return $group;
@@ -278,11 +278,13 @@ function get_max_group_id()
 {
 	global $db, $cache;
 
-	$sql = "SELECT MAX(group_id) max_group_id FROM " . GROUPS_TABLE . " WHERE group_single_user = 0";
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-	$max_group_id = $row['max_group_id'];
+	$groups_data = get_groups_data(false, false, array());
+	$groups_ids = array();
+	foreach ($groups_data as $group_data)
+	{
+		$groups_ids[] = $group_data['group_id'];
+	}
+	$max_group_id = max($groups_ids);
 
 	return $max_group_id;
 }
@@ -297,41 +299,21 @@ function get_selected_groups()
 	$selected_groups_result = '';
 	$selected_groups = array();
 
-	$groups = get_groups_list();
-
-	foreach ($groups as $group_id => $group_name)
+	$groups_data = get_groups_data(false, true, array());
+	foreach ($groups_data as $group_data)
 	{
-		if(isset($_POST['group' . strval($group_id)]))
+		if(isset($_POST['group' . strval($group_data['group_id'])]))
 		{
-			$selected_groups[] = strval($group_id);
+			$selected_groups[] = strval($group_data['group_id']);
 		}
 	}
 
-	if (!empty($selected_groups) && (sizeof($groups) != sizeof($selected_groups)))
+	if (!empty($selected_groups) && (sizeof($groups_data) != sizeof($selected_groups)))
 	{
 		$selected_groups_result = implode(',', $selected_groups);
 	}
 
 	return $selected_groups_result;
-}
-
-/*
-* Get groups list
-*/
-function get_groups_list()
-{
-	global $db, $cache;
-
-	$groups = array();
-	$sql = "SELECT group_id, group_name FROM " . GROUPS_TABLE . " WHERE group_single_user = 0 ORDER BY group_id";
-	$result = $db->sql_query($sql);
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$groups[$row['group_id']] = $row['group_name'];
-	}
-	$db->sql_freeresult($result);
-
-	return $groups;
 }
 
 /*
@@ -341,15 +323,13 @@ function get_groups_names($groups_ids)
 {
 	global $db, $cache;
 
-	$sql = "SELECT group_name FROM " . GROUPS_TABLE . " WHERE group_id IN (" . $groups_ids . ")";
-	$result = $db->sql_query($sql);
-
+	$groups_ids_array = explode(',', str_replace(array(' ', ', '), array(' ', ','), $groups_ids));
+	$groups_data = get_groups_data(false, true, $groups_ids_array);
 	$groups = '';
-	while ($row = $db->sql_fetchrow($result))
+	foreach ($groups_data as $group_data)
 	{
-		$groups .= (($groups != '') ? '<br />' : '') . '[ ' . $row['group_name'] . ' ]';
+		$groups .= (($groups != '') ? '<br />' : '') . '[ ' . $group_data['group_name'] . ' ]';
 	}
-	$db->sql_freeresult($result);
 
 	return $groups;
 }

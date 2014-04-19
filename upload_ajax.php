@@ -73,7 +73,7 @@ if (USERS_SUBFOLDERS_IMG)
 $show_last_images = true;
 if ($show_last_images && ($user->data['user_id'] != ANONYMOUS))
 {
-	$n_pics = 3;
+	$n_pics = 5;
 	$images_data = $class_images->get_user_images($user->data['user_id'], 'i.pic_id DESC', 0, $n_pics);
 	if (!empty($images_data))
 	{
@@ -85,7 +85,7 @@ if ($show_last_images && ($user->data['user_id'] != ANONYMOUS))
 			$pic_img_sub_path = (USERS_SUBFOLDERS_IMG && (!empty($image_data['pic_user_id'])) ? ($image_data['pic_user_id'] . '/') : '') . $image_data['pic_filename'];
 			$pic_img_url = POSTED_IMAGES_PATH . $pic_img_sub_path;
 			$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $pic_img_sub_path;
-			$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL . '?pic_id=' . urlencode($pic_img_sub_path)));
+			$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL_S . '?pic_id=' . urlencode($pic_img_sub_path)));
 			$image_data['pic_title'] = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
 
 			$template->assign_block_vars('pic_img', array(
@@ -113,6 +113,10 @@ $template->assign_vars(array(
 	'S_MAX_FILE_SIZE' => $max_file_size,
 	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
 
+	'U_PERSONAL_IMAGES' => append_sid(CMS_PAGE_IMAGES),
+	'U_AJAX_GET_MORE_IMAGES' => 'ajax.' . PHP_EXT . '?mode=get_more_images&json=1&sid=' . $user->data['session_id'],
+	'S_AJAX_PIC_START' => ($show_last_images && ($n_pics > 0)) ? $n_pics : 5,
+
 	'BBCB_FORM_NAME' => htmlspecialchars($bbcb_form_name),
 	'BBCB_TEXT_NAME' => htmlspecialchars($bbcb_text_name),
 
@@ -134,6 +138,7 @@ $template->assign_vars(array(
 	'L_UPLOADING' => $lang['Uploading'],
 	'L_UPLOAD_IMAGE' => $lang['Upload_Image_Local'],
 	'L_UPLOAD_IMAGE_EXPLAIN' => $lang['Upload_Image_Local_Explain'],
+	'L_UPLOADED_IMAGES' => $lang['Uploaded_Images_Local'],
 	'L_ALLOWED_EXT' => $lang['Upload_File_Type_Allowed'] . ': ' . str_replace('|', ', ', $allowed_extensions) . '.<br />' . $lang['Upload_File_Max_Size'] . ' ' . floor($max_file_size / 1024) . $lang['KB'] . '.',
 	)
 );

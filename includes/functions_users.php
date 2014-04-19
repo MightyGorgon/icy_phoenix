@@ -30,7 +30,15 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 
 	$date_format = ($date_format == false) ? $lang['JOINED_DATE_FORMAT'] : $date_format;
 
-	$info_array = array('avatar', 'first_name', 'last_name', 'from', 'posts', 'joined', 'gender', 'flag', 'style', 'age', 'birthday', 'avatar', 'profile_url', 'profile_img', 'profile', 'pm_url', 'pm_img', 'pm', 'search_url', 'search_img', 'search', 'ip_url', 'ip_img', 'ip', 'email_url', 'email_img', 'email', 'www_url', 'www_img', 'www', 'facebook_url', 'facebook_img', 'facebook', 'twitter_url', 'twitter_img', 'twitter', 'googleplus_url', 'googleplus_img', 'googleplus', 'flickr_url', 'flickr_img', 'flickr', 'youtube_url', 'youtube_img', 'youtube', 'linkedin_url', 'linkedin_img', 'linkedin', 'aim_url', 'aim_img', 'aim', 'icq_url', 'icq_status_img', 'icq_img', 'icq', 'jabber_url', 'jabber_img', 'jabber', 'msn_url', 'msn_img', 'msn', 'skype_url', 'skype_img', 'skype', 'yahoo_url', 'yahoo_img', 'yahoo', 'online_status_url', 'online_status_class', 'online_status_img', 'online_status');
+	$info_array = array('avatar', 'first_name', 'last_name', 'from', 'posts', 'joined', 'gender', 'flag', 'style', 'age', 'birthday', 'avatar', 'profile_url', 'profile_img', 'profile', 'pm_url', 'pm_img', 'pm', 'search_url', 'search_img', 'search', 'ip_url', 'ip_img', 'ip', 'email_url', 'email_img', 'email', 'www_url', 'www_img', 'www', 'online_status_url', 'online_status_class', 'online_status_img', 'online_status');
+
+	$user_sn_im_array = get_user_sn_im_array();
+	foreach ($user_sn_im_array as $k => $v)
+	{
+		$info_array[] = $k;
+		$info_array[] = $k . '_img';
+		$info_array[] = $k . '_url';
+	}
 
 	// Initialize everything...
 	$user_info = array();
@@ -93,21 +101,13 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	$user_info['www'] = !empty($row['user_website']) ? ('<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Visit_website'] . '</a>') : '';
 	$user_info['www_url'] = !empty($row['user_website']) ? $row['user_website'] : '';
 
-	$im_links_array = array(
-		'chat' => 'id',
-		'aim' => 'aim',
-		'facebook' => 'facebook',
-		'flickr' => 'flickr',
-		'googleplus' => 'googleplus',
-		'icq' => 'icq',
-		'jabber' => 'jabber',
-		'linkedin' => 'linkedin',
-		'msn' => 'msnm',
-		'skype' => 'skype',
-		'twitter' => 'twitter',
-		'yahoo' => 'yim',
-		'youtube' => 'youtube',
-	);
+	$user_sn_im_array = get_user_sn_im_array();
+	$im_links_array = array();
+	foreach ($user_sn_im_array as $k => $v)
+	{
+		$im_links_array[$k] = $v['alt_name'];
+	}
+	$im_links_array['chat'] = 'id';
 
 	$all_ims = array();
 	foreach ($im_links_array as $im_k => $im_v)
@@ -430,24 +430,18 @@ function user_profile_mask(&$user_data)
 	$user_data['user_rank_5'] = '-2';
 	$user_data['user_allow_viewemail'] = 0;
 	$user_data['user_website'] = '';
-	$user_data['user_aim'] = '';
-	$user_data['user_facebook'] = '';
-	$user_data['user_flickr'] = '';
-	$user_data['user_googleplus'] = '';
-	$user_data['user_icq'] = '';
-	$user_data['user_jabber'] = '';
-	$user_data['user_linkedin'] = '';
-	$user_data['user_msnm'] = '';
-	$user_data['user_skype'] = '';
-	$user_data['user_twitter'] = '';
-	$user_data['user_yim'] = '';
-	$user_data['user_youtube'] = '';
 	$user_data['user_gender'] = 0;
 	$user_data['user_allow_viewonline'] = 0;
 	$user_data['user_session_time'] = 0;
 	$user_data['poster_ip'] = '';
 	$user_data['user_warnings'] = 0;
 	$user_data['user_sig'] = '';
+
+	$user_sn_im_array = get_user_sn_im_array();
+	foreach ($user_sn_im_array as $k => $v)
+	{
+		$user_data[$v['field']] = '';
+	}
 
 	return true;
 }

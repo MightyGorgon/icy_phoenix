@@ -1,7 +1,3 @@
-<!-- IF S_AJAX_FEATURES -->
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
-<!-- ENDIF -->
-
 <form action="{S_GROUPCP_ACTION}" method="post">
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_INFORMATION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">

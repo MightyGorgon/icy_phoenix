@@ -38,7 +38,7 @@ $cms_admin = new cms_admin();
 $cms_admin->root = CMS_PAGE_CMS;
 $cms_admin->init_vars($mode_array, $action_array);
 
-$redirect_append = (!empty($cms_admin->mode) ? ('&mode=' . $cms_admin->mode) : '') . (!empty($cms_admin->action) ? ('&action=' . $cms_admin->action) : '') . (!empty($cms_admin->l_id) ? ('&l_id=' . $cms_admin->l_id) : '') . (!empty($cms_admin->b_id) ? ('&b_id=' . $cms_admin->b_id) : '');
+$redirect_append = (!empty($cms_admin->mode) ? ('&mode=' . $cms_admin->mode) : '') . (!empty($cms_admin->action) ? ('&action=' . $cms_admin->action) : '') . (!empty($cms_admin->l_id) ? ('&l_id=' . $cms_admin->l_id) : '') . (!empty($cms_admin->b_id) ? ('&b_id=' . $cms_admin->b_id) : '') . (!empty($cms_admin->bs_id) ? ('&bs_id=' . $cms_admin->bs_id) : '');
 
 if (!$user->data['session_admin'])
 {

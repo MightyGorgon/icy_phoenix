@@ -228,10 +228,10 @@ class class_topics
 		if($user->data['session_logged_in'])
 		{
 			//-----------------------------------------------------------
-			//<!-- BEGIN Unread Post Information to Database Mod -->
+			// UPI2DB - BEGIN
 			if(!$user->data['upi2db_access'] || !is_array($user->data['upi2db_unread']))
 			{
-			//<!-- END Unread Post Information to Database Mod -->
+			// UPI2DB - END
 			//------------------------------------------------------------
 
 				if($topic_post_time > $user->data['user_lastvisit'])
@@ -274,7 +274,7 @@ class class_topics
 					$unread_topics = false;
 				}
 			//--------------------------------------------------------
-			//<!-- BEGIN Unread Post Information to Database Mod -->
+			// UPI2DB - BEGIN
 			}
 			else
 			{
@@ -283,7 +283,7 @@ class class_topics
 				//$topic_link['type'] = $upi_calc['upi_prefix'] . $topic_link['type'];
 				$upi_calc['newest_post_id'] = $post_id;
 			}
-			//<!-- END Unread Post Information to Database Mod -->
+			// UPI2DB - END
 			//--------------------------------------------------------
 		}
 		else
@@ -621,39 +621,9 @@ class class_topics
 	}
 
 	/**
-	* Removes a poll
-	*/
-	function remove_poll($topic_id)
-	{
-		global $db, $cache, $config, $user, $lang;
-
-		$sql_ary = array(
-			'poll_title' => '',
-			'poll_start' => 0,
-			'poll_length' => 0,
-			'poll_max_options' => 1,
-			'poll_last_vote' => 0,
-			'poll_vote_change' => 0
-		);
-
-		$sql_update = $db->sql_build_insert_update($sql_ary, false);
-
-		$sql = "UPDATE " . TOPICS_TABLE . " SET " . $sql_update . " WHERE topic_id = " . (int) $topic_id;
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . POLL_OPTIONS_TABLE . " WHERE topic_id = " . (int) $topic_id;
-		$db->sql_query($sql);
-
-		$sql = "DELETE FROM " . POLL_VOTES_TABLE . " WHERE topic_id = " . (int) $topic_id;
-		$db->sql_query($sql);
-
-		empty_cache_folders(POSTS_CACHE_FOLDER);
-	}
-
-	/**
 	* Display a poll
 	*/
-	function display_poll($topic_data, $is_cms_block = false)
+	function poll_display($topic_data, $is_cms_block = false)
 	{
 		global $db, $cache, $config, $user, $lang, $template, $images, $bbcode;
 		global $start, $kb_mode_append, $is_auth, $lofi;

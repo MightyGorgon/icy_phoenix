@@ -308,6 +308,8 @@ hr {
 	border-right-color: #eeeeee;
 }
 
+tr.row1h:hover, tr.row1hHover, tr.row2h:hover, tr.row2hHover, tr.row1h-new:hover, tr.row1h-newHover, tr.row2h-new:hover, tr.row2h-newHover { background-image: none; }
+
 .forumline div.row1, .forumline p.row1, .forumlinenb div.row1, .forumlinenb p.row1 { text-align: left; padding: 3px; }
 
 .row1g, .row1g-left, .row1g-left-top {

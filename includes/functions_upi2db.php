@@ -44,8 +44,8 @@ function check_group_auth($user_data)
 	$sql = "SELECT g.upi2db_on, g.upi2db_min_posts, g.upi2db_min_regdays
 		FROM " . GROUPS_TABLE . " g, " . USER_GROUP_TABLE . " ug
 			WHERE ug.group_id = g.group_id
-			AND g.group_single_user <> " . TRUE . "
-			AND ug.user_pending <> ".TRUE . "
+			AND g.group_single_user = 0
+			AND ug.user_pending = 0
 			AND ug.user_id = " . $user_data['user_id'] . "
 			GROUP BY g.group_id";
 	$db->sql_return_on_error(true);
@@ -475,6 +475,47 @@ if(!function_exists('mark_post_viewtopic'))
 		}
 
 		return $mark_topic_unread;
+	}
+}
+
+//################################### mark_post_viewtopic_array ##########################################
+// Version 1.0.0
+
+if(!function_exists('mark_post_viewtopic_array'))
+{
+	function mark_post_viewtopic_array($post_time_max, $unread, $topic_id, $forum_id, $post_id, $except_time, $topic_type)
+	{
+		global $config, $user;
+
+		$mark_topic_array = array(
+			'mark_unread' => 0,
+			'cant_mark' => 0,
+			'mark_post' => 0,
+			'unmark_post' => 0,
+		);
+
+		if(is_array($unread['always_read']['forums']) && !in_array($forum_id, $unread['always_read']['forums']) && !in_array($topic_id, $unread['always_read']['topics']) && ($post_time_max > $except_time))
+		{
+			$mark_topic_array['mark_unread'] = 1;
+
+			if(sizeof($unread['mark_posts']) >= $config['upi2db_max_mark_posts'])
+			{
+				$mark_topic_array['cant_mark'] = 1;
+			}
+			else
+			{
+				if(!in_array($post_id, $unread['mark_posts']))
+				{
+					$mark_topic_array['mark_post'] = 1;
+				}
+				else
+				{
+					$mark_topic_array['unmark_post'] = 1;
+				}
+			}
+		}
+
+		return $mark_topic_array;
 	}
 }
 

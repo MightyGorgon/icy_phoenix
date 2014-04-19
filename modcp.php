@@ -26,8 +26,8 @@ include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_post.' . PHP_EXT);
 
-include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
-$mcp_topic = new class_mcp_topic();
+if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+if (empty($class_mcp)) $class_mcp = new class_mcp();
 
 @include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
 $class_topics = new class_topics();
@@ -281,7 +281,7 @@ switch($mode)
 		if($confirm)
 		{
 			$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
-			$mcp_topic->topic_delete($topics, $forum_id);
+			$class_mcp->topic_delete($topics, $forum_id);
 
 			if(!empty($topic_id))
 			{
@@ -344,7 +344,7 @@ switch($mode)
 		if($confirm)
 		{
 			$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
-			$mcp_topic->topic_poll_delete($topics);
+			$class_mcp->topic_poll_delete($topics);
 
 			$redirect_page = 'modcp.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'];
 			$l_redirect = sprintf($lang['Click_return_modcp'], '<a href="'. $redirect_page .'">', '</a>') . '<br /><br />'. sprintf($lang['Click_return_forum'], '<a href="'. CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id . '&amp;sid=' . $user->data['session_id'] .'">', '</a>');
@@ -400,9 +400,9 @@ switch($mode)
 			if ($mode == 'move_all')
 			{
 				$moved_topics_prefix = request_var('moved_topics_prefix', '', true);
-				if ($mcp_topic->topic_move_ren_all($forum_id, $new_forum_id, $moved_topics_prefix))
+				if ($class_mcp->topic_move_ren_all($forum_id, $new_forum_id, $moved_topics_prefix))
 				{
-					$message = sprintf($lang['Mod_CP_topics_moved'], $mcp_topic->find_names($forum_id), $mcp_topic->find_names($new_forum_id)) . '<br /><br />';
+					$message = sprintf($lang['Mod_CP_topics_moved'], $class_mcp->find_names($forum_id), $class_mcp->find_names($new_forum_id)) . '<br /><br />';
 				}
 				else
 				{
@@ -414,9 +414,9 @@ switch($mode)
 			}
 			else
 			{
-				if ($mcp_topic->topic_move($topics, $forum_id, $new_forum_id, isset($_POST['move_leave_shadow'])))
+				if ($class_mcp->topic_move($topics, $forum_id, $new_forum_id, isset($_POST['move_leave_shadow'])))
 				{
-					$message = ((sizeof($topics) == '1') ? sprintf($lang['Mod_CP_topic_moved'], $mcp_topic->find_names($forum_id), $mcp_topic->find_names($new_forum_id)) : sprintf($lang['Mod_CP_topics_moved'], $mcp_topic->find_names($forum_id), $mcp_topic->find_names($new_forum_id))) . '<br /><br />';
+					$message = ((sizeof($topics) == '1') ? sprintf($lang['Mod_CP_topic_moved'], $class_mcp->find_names($forum_id), $class_mcp->find_names($new_forum_id)) : sprintf($lang['Mod_CP_topics_moved'], $class_mcp->find_names($forum_id), $class_mcp->find_names($new_forum_id))) . '<br /><br />';
 				}
 				else
 				{
@@ -501,7 +501,7 @@ switch($mode)
 		}
 
 		$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
-		$mcp_topic->topic_lock_unlock($topics, $mode, $forum_id);
+		$class_mcp->topic_lock_unlock($topics, $mode, $forum_id);
 
 		if(!empty($topic_id))
 		{
@@ -537,7 +537,7 @@ switch($mode)
 		}
 
 		$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
-		$mcp_topic->topic_switch_status($topics, $mode);
+		$class_mcp->topic_switch_status($topics, $mode);
 
 		if(!empty($topic_id))
 		{
@@ -590,7 +590,7 @@ switch($mode)
 
 			if(sizeof($topics) > 0)
 			{
-				$mcp_topic->topic_merge($topics, $new_topic_id, $forum_id);
+				$class_mcp->topic_merge($topics, $new_topic_id, $forum_id);
 				$message = $lang['Topics_Merged'] . '<br /><br />';
 			}
 			else
@@ -680,7 +680,7 @@ switch($mode)
 				message_die(GENERAL_MESSAGE, $lang['Empty_subject']);
 			}
 
-			$new_topic_id = $mcp_topic->topic_split($posts, $forum_id, $fid, $topic_id, $split_beyond, $topic_subject);
+			$new_topic_id = $class_mcp->topic_split($posts, $forum_id, $fid, $topic_id, $split_beyond, $topic_subject);
 			$redirect_url = CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id . '&amp;sid=' . $user->data['session_id'];
 			meta_refresh(3, $redirect_url);
 
@@ -883,7 +883,7 @@ switch($mode)
 			{
 				$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 
-				if($mcp_topic->topic_recycle($topics, $forum_id))
+				if($class_mcp->topic_recycle($topics, $forum_id))
 				{
 					$message = $lang['Topics_Moved_bin'];
 				}
@@ -913,7 +913,7 @@ switch($mode)
 		}
 
 		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
-		$mcp_topic->topic_quick_title_edit($topics, $qt_row);
+		$class_mcp->topic_quick_title_edit($topics, $qt_row);
 
 		if (!empty($topic_id))
 		{
@@ -946,7 +946,7 @@ switch($mode)
 		}
 
 		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
-		$mcp_topic->topic_news_category_edit($topics, $news_category);
+		$class_mcp->topic_news_category_edit($topics, $news_category);
 
 		if (!empty($topic_id))
 		{
@@ -1012,7 +1012,7 @@ switch($mode)
 		$template->assign_vars(array(
 			'TOPIC_TYPES' => $topic_types,
 			'TOPIC_COUNT' => ($forum_topics == '1') ? sprintf($lang['Mod_CP_topic_count'], $forum_topics) : sprintf($lang['Mod_CP_topics_count'], $forum_topics),
-			'FORUM_NAME' => $mcp_topic->find_names($forum_id),
+			'FORUM_NAME' => $class_mcp->find_names($forum_id),
 			'SELECT_TITLE' => $select_title,
 			'SELECT_NEWS_CATS' => $select_news_cats,
 

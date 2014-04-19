@@ -20,8 +20,8 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1700_Topic_Rating']['Configuration'] = $filename . '?mode=config';
-	$module['1700_Topic_Rating']['Permissions'] = $filename . '?mode=auth';
+	$module['1200_Forums']['170_Topic_Rating_Config'] = $filename . '?mode=config';
+	$module['1200_Forums']['180_Topic_Rating_Auth'] = $filename . '?mode=auth';
 	return;
 }
 

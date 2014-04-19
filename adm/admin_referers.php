@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
-	$module['2400_INFO']['140_HTTP_REF'] = $file . '?mode=config';
+	$module['1000_Configuration']['197_HTTP_REF'] = $file . '?mode=config';
 	return;
 }
 

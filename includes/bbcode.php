@@ -104,6 +104,9 @@ else
 	if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 	if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 	$config['allow_all_bbcode'] = 0;
+	$config['allow_html'] = false;
+	$config['allow_bbcode'] = true;
+	$config['allow_smilies'] = true;
 	$config['default_lang'] = 'english';
 	$config['server_name'] = 'icyphoenix.com';
 	$config['script_path'] = '/';
@@ -234,10 +237,12 @@ class bbcode
 		'c'						=> array('nested' => false, 'inurl' => false),
 
 		'img'					=> array('nested' => false, 'inurl' => true),
+		'imgba'				=> array('nested' => false, 'inurl' => true),
 		'albumimg'		=> array('nested' => false, 'inurl' => true),
 		'attachment'	=> array('nested' => false, 'inurl' => false, 'allow_empty' => true),
 		'download'		=> array('nested' => false, 'inurl' => false, 'allow_empty' => true),
 
+		'user'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'search'			=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'tag'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'langvar'			=> array('nested' => true, 'inurl' => true, 'allow_empty' => true),
@@ -322,6 +327,18 @@ class bbcode
 		array('code' => ';)', 'replace' => '(smile1)'),
 		array('code' => ':)', 'replace' => '(smile2)'),
 	);
+
+	/**
+	* Instantiate class
+	*/
+	function bbcode()
+	{
+		global $config;
+
+		$this->allow_html = (!empty($config['allow_html']) ? true : false);
+		$this->allow_bbcode = (!empty($config['allow_bbcode']) ? true : false);
+		$this->allow_smilies = (!empty($config['allow_smilies']) ? true : false);
+	}
 
 	/*
 	Clean bbcode/html tag.
@@ -846,6 +863,127 @@ class bbcode
 				}
 				$html = '<a href="' . $this->process_text($img_url) . '"' . $extra_html . '>' . $html . '</a>';
 			}
+			return array(
+				'valid' => true,
+				'html' => $html,
+				'allow_nested' => false,
+			);
+		}
+
+		// IMGBA
+		if($tag === 'imgba')
+		{
+			if($this->is_sig)
+			{
+				return $error;
+			}
+
+			// main parameters
+			$params = array(
+				'before' => false,
+				'after' => false,
+				'width' => false,
+				'w' => false,
+				'height' => false,
+				'h' => false,
+				'alt' => false,
+				'title' => false,
+			);
+
+			foreach ($params as $k => $v)
+			{
+				$params[$k] = $item['params'][$k];
+			}
+
+			if (empty($params['before']) || empty($params['after']))
+			{
+				return $error;
+			}
+
+			$path_parts = pathinfo($params['before']);
+			(int) $params['width'] = !empty($params['w']) ? intval($params['w']) : intval($params['width']);
+			(int) $params['height'] = !empty($params['h']) ? intval($params['h']) : intval($params['height']);
+			$params['alt'] = (!empty($params['alt']) ? $params['alt'] : ip_clean_string($path_parts['filename'], $lang['ENCODING'], true));
+
+			if (empty($params['width']) || empty($params['height']))
+			{
+				return $error;
+			}
+
+			// Since we passed the main tests, we may force all needed JS inclusions...
+			$config['jquery_ui'] = true;
+			$config['jquery_ui_ba'] = true;
+
+			$max_width = 600;
+			$or_width = $params['width'];
+			$or_height = $params['height'];
+			if ($params['width'] > $max_width)
+			{
+				$params['width'] = $max_width;
+				$params['height'] = $max_width / ($or_width / $or_height);
+			}
+
+			// additional allowed parameters
+			$extras = $this->allow_styling ? array('style', 'class') : array();
+
+			for($i = 0; $i < sizeof($extras); $i++)
+			{
+				if(!empty($item['params'][$extras[$i]]))
+				{
+					if($extras[$i] === 'style')
+					{
+						$style = $this->valid_style($item['params']['style']);
+						if($style !== false)
+						{
+							$params['style'] = $style;
+						}
+					}
+					else
+					{
+						$params[$extras[$i]] = $item['params'][$extras[$i]];
+					}
+				}
+			}
+
+			$container = 'imgba_' . substr(md5($params['before']), 0, 6);
+
+			$imgba_error = false;
+			$allowed_ext = array('gif', 'jpeg', 'jpg', 'png');
+			$img_test_array = array('before', 'after');
+			// Few "pseudo-security" tests
+			foreach ($img_test_array as $img_test)
+			{
+				$file_ext = substr(strrchr($params[$img_test], '.'), 1);
+				//if (!in_array($file_ext, $allowed_ext) || (strpos($params[$img_test], $server_url) !== 0) || (strpos($params[$img_test], '?') !== 0))
+				if (!in_array($file_ext, $allowed_ext))
+				{
+					$imgba_error = true;
+				}
+			}
+
+			if (!empty($imgba_error))
+			{
+				return $error;
+			}
+
+			// generate html
+			$html = '';
+			$html .= '<div id="' . $container . '"';
+			foreach($params as $var => $value)
+			{
+				if (in_array($value, array('width', 'height')) && ($this->process_text($value) != ''))
+				{
+					$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
+				}
+			}
+			$html .= '>';
+
+			$img_alt = $this->process_text($params['alt']);
+			$img_title = (!empty($params['title']) ? ' title="' . $this->process_text($params['title']) . '"' : '');
+			$html .= '<div><img src="' . $params['before'] . '" width="' . $params['width'] . '" height="' . $params['height'] . '" alt="Before: ' . $img_alt . '"' . $img_title . ' /></div>';
+			$html .= '<div><img src="' . $params['after'] . '" width="' . $params['width'] . '" height="' . $params['height'] . '" alt="After: ' . $img_alt . '"' . $img_title . ' /></div>';
+			$html .= '</div>';
+			$html .= '<script type="text/javascript">$(function(){ $(\'#' . $container . '\').beforeAfter({imagePath: \'' . $server_url . 'templates/common/jquery/\', showFullLinks: true, cursor: \'e-resize\', dividerColor: \'#dd2222\', beforeLinkText: \'' . $lang['IMG_BA_SHOW_ONLY_BEFORE'] . '\', afterLinkText: \'' . $lang['IMG_BA_SHOW_ONLY_AFTER'] . '\'}); });</script>';
 			return array(
 				'valid' => true,
 				'html' => $html,
@@ -2009,6 +2147,44 @@ class bbcode
 			);
 		}
 
+		// USER
+		// Insert the username and avatar for the selected id
+		if($tag === 'user')
+		{
+			if($this->is_sig)
+			{
+				return $error;
+			}
+			if(isset($item['params']['param']))
+			{
+				$bb_userid = (int) $item['params']['param'];
+			}
+			else
+			{
+				$bb_userid = (int) $content;
+			}
+
+			if ($bb_userid < 2)
+			{
+				return $error;
+			}
+
+			$bb_user_data = get_userdata($bb_userid);
+			if (empty($bb_user_data))
+			{
+				return $error;
+			}
+
+			$bb_name_link = colorize_username($bb_user_data['user_id'], $bb_user_data['username'], $bb_user_data['user_color'], $bb_user_data['user_active']);
+			$bb_avatar_img = user_get_avatar($bb_user_data['user_id'], $bb_user_data['user_level'], $bb_user_data['user_avatar'], $bb_user_data['user_avatar_type'], $bb_user_data['user_allowavatar'], '', 30);
+
+			$html = $bb_avatar_img . ' ' . $bb_name_link;
+			return array(
+				'valid' => true,
+				'html' => $html
+			);
+		}
+
 		// LANGVAR
 		// Insert the content of a lang var into post... maybe we need to filter something?
 		if($tag === 'langvar')
@@ -2021,7 +2197,6 @@ class bbcode
 			{
 				$langvar = $content;
 			}
-				$langvar = $content;
 			$html = (isset($lang[$langvar]) ? $lang[$langvar] : '');
 			return array(
 				'valid' => true,
@@ -2038,9 +2213,7 @@ class bbcode
 			{
 				$language = $item['params']['param'];
 			}
-
 			$content = ($config['default_lang'] != $language) ? '' : $content;
-
 			// We need this trick to process BBCodes withing language BBCode
 			if(empty($content))
 			{
@@ -2232,7 +2405,7 @@ class bbcode
 
 					$width = in_array($width, $width_array) ? $width : 640;
 					$height = in_array($height, $height_array) ? $height : 385;
-					$video_link = '<br /><a href="http://youtube.com/watch?v=' . $video_file . $color_append . '" target="_blank">Link</a><br />';
+					$video_link = '<br /><a href="http://youtube.com/watch?v=' . $video_file . $color_append . '" target="_blank">YouTube Link</a><br />';
 					// OLD OBJECT Version
 					//$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $video_file . $color_append . '" /><embed src="http://www.youtube.com/v/' . $video_file . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object>' . $video_link;
 					// IFRAME Version
@@ -4016,6 +4189,21 @@ class bbcode
 			$text = preg_replace('#</?' . $tag . '[^>]*>' . $content . '#is', '', $text);
 		}
 
+		return $text;
+	}
+
+	/*
+	* Undo HTML special chars
+	*/
+	function html2txt($text)
+	{
+		$search = array(
+			'@<script[^>]*?>.*?</script>@si',  // Strip out javascript
+			'@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
+			'@<style[^>]*?>.*?</style>@siU',    // Strip style tags properly
+			'@<![\s\S]*?--[ \t\n\r]*>@'         // Strip multi-line comments including CDATA
+		);
+		$text = preg_replace($search, '', $text);
 		return $text;
 	}
 

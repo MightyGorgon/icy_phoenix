@@ -266,7 +266,7 @@ if (!empty($config['plugins']['cash']['enabled']) && defined('IN_CASHMOD'))
 
 @include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'attachment_mod.' . PHP_EXT);
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if (!empty($config['global_disable_upi2db']))
 {
 	$config['upi2db_on'] = 0;
@@ -275,7 +275,7 @@ else
 {
 	@include_once(IP_ROOT_PATH . 'includes/functions_upi2db.' . PHP_EXT);
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 // MG Logs - BEGIN
 if (!empty($config['mg_log_actions']) || !empty($config['db_log_actions']))
@@ -287,12 +287,6 @@ if (!empty($config['mg_log_actions']) || !empty($config['db_log_actions']))
 if (!empty($config['url_rw']) || !empty($config['url_rw_guests']))
 {
 	@include_once(IP_ROOT_PATH . 'includes/functions_rewrite.' . PHP_EXT);
-}
-
-if ($config['admin_protect'])
-{
-	$founder_id = (defined('FOUNDER_ID') ? FOUNDER_ID : get_founder_id());
-	founder_protect($founder_id);
 }
 
 if ((isset($_GET['lofi']) && (intval($_GET['lofi']) == 1)) || (isset($_COOKIE[$config['cookie_name'] . '_lofi']) && (intval($_COOKIE[$config['cookie_name'] . '_lofi']) == 1)))

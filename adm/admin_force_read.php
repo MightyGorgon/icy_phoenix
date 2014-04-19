@@ -19,8 +19,8 @@ define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
-	$module['1100_General']['150_FTR_Config'] = append_sid('admin_force_read.' . PHP_EXT . '?mode=config');
-	$module['1100_General']['160_FTR_Users'] = append_sid('admin_force_read.' . PHP_EXT . '?mode=users');
+	$module['1200_Forums']['250_FTR_Config'] = append_sid('admin_force_read.' . PHP_EXT . '?mode=config');
+	$module['1200_Forums']['260_FTR_Users'] = append_sid('admin_force_read.' . PHP_EXT . '?mode=users');
 	return;
 }
 

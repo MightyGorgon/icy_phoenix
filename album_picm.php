@@ -216,7 +216,7 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 		switch ($pic_info['filetype'])
 		{
 			case 'jpg':
-				@imagejpeg($thumbnail, '', $album_config['thumbnail_quality']);
+				@imagejpeg($thumbnail, null, $album_config['thumbnail_quality']);
 				break;
 			case 'png':
 				@imagepng($thumbnail);
@@ -231,15 +231,8 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 	// Old Thumbnails - END
 
 	$Image = new ImgObj();
-	//$Image->ReadSourceFile($pic_info['fullpath']);
-	if ($pic_info['filetype'] == 'jpg')
-	{
-		$Image->ReadSourceFileJPG($pic_info['fullpath']);
-	}
-	else
-	{
-		$Image->ReadSourceFile($pic_info['fullpath']);
-	}
+
+	$Image->ReadSourceFile($pic_info['fullpath']);
 
 	if ($apply_wm == true)
 	{
@@ -249,15 +242,7 @@ if(($pic_width < $album_config['midthumb_width']) && ($pic_height < $album_confi
 		$Image->WatermarkPos($wm_file, $wm_position, $wm_maxsize, $wm_transition);
 	}
 
-	//$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
-	if ($pic_info['filetype'] == 'jpg')
-	{
-		$Image->SendToBrowserJPG($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
-	}
-	else
-	{
-		$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
-	}
+	$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], '', '', $album_config['thumbnail_quality']);
 
 	$Image->Destroy();
 	exit;
@@ -314,7 +299,7 @@ else
 		switch ($pic_info['filetype'])
 		{
 			case 'jpg':
-				@imagejpeg($thumbnail, '', $album_config['thumbnail_quality']);
+				@imagejpeg($thumbnail, null, $album_config['thumbnail_quality']);
 				break;
 			case 'png':
 				@imagepng($thumbnail);
@@ -330,14 +315,7 @@ else
 
 	$Image = new ImgObj();
 
-	if ($pic_info['filetype'] == 'jpg')
-	{
-		$Image->ReadSourceFileJPG($pic_info['fullpath']);
-	}
-	else
-	{
-		$Image->ReadSourceFile($pic_info['fullpath']);
-	}
+	$Image->ReadSourceFile($pic_info['fullpath']);
 
 	/*
 	// This is most CPU consuming for JPG...
@@ -354,28 +332,11 @@ else
 	}
 	if ($album_config['midthumb_cache'] == true)
 	{
-		if ($pic_info['filetype'] == 'jpg')
-		{
-			$Image->SendToFileJPG($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
-			//$Image->SendToFile($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
-			//@chmod($pic_info['thumbnail_new_m_fullpath'], 0777);
-		}
-		else
-		{
-			$Image->SendToFile($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
-			//$Image->SendToFile($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
-			//@chmod($pic_info['thumbnail_new_m_fullpath'], 0777);
-		}
+		$Image->SendToFile($pic_info['thumbnail_new_m_fullpath'], $album_config['thumbnail_quality']);
+		//@chmod($pic_info['thumbnail_new_m_fullpath'], 0777);
 	}
 
-	if ($pic_info['filetype'] == 'jpg')
-	{
-		$Image->SendToBrowserJPG($pic_info['title_reg'], $pic_info['filetype'], 'mid_', '', $album_config['thumbnail_quality']);
-	}
-	else
-	{
-		$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], 'mid_', '', $album_config['thumbnail_quality']);
-	}
+	$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], 'mid_', '', $album_config['thumbnail_quality']);
 
 	/*
 	// This is most CPU consuming for JPG...

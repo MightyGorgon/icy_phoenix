@@ -167,7 +167,7 @@ $db->sql_freeresult($result);
 // Assign individual vote results
 $sql = "SELECT *
 		FROM " . POLL_VOTES_TABLE . "
-		ORDER BY topic_id ASC, poll_option_id ASC";
+		ORDER BY topic_id ASC, poll_option_id ASC, vote_user_id ASC";
 $result = $db->sql_query($sql);
 
 while ($row = $db->sql_fetchrow($result))
@@ -205,26 +205,34 @@ while ($row = $db->sql_fetchrow($result))
 	}
 
 	$target_user = '';
-	$target_users = '';
-	$user_option_arr = '';
+	$target_user_arr = array();
+	$user_option = '';
+	$user_option_arr = array();
+	$users_added = array();
 
-	if (sizeof($voter_arr[$topic_id]) > 0)
+	if (!empty($voter_arr[$topic_id]))
 	{
-		$users_added = array();
+		ksort($voter_arr[$topic_id]);
 		foreach($voter_arr[$topic_id] as $user_id => $option_id)
 		{
 			$current_username = colorize_username($users_arr[$user_id]['user_id'], $users_arr[$user_id]['username'], $users_arr[$user_id]['user_color'], $users_arr[$user_id]['user_active']);
-			$target_user .= $current_username . ', ';
-			$users_added[] = $user_id;
+			$target_user_arr[] = $current_username;
 			foreach ($option_id as $result_id)
 			{
+				$user_option_arr[$result_id][] = $current_username;
+				/*
 				if (!in_array($user_id, $users_added))
 				{
-					$user_option_arr[$result_id] .= $current_username . ', ';
+					$user_option_arr[$result_id][] = $current_username;
+					$users_added[] = $user_id;
 				}
+				*/
 			}
 		}
-		$target_user = substr($target_user, '0', strrpos($target_user, ', '));
+		if (!empty($target_user_arr))
+		{
+			$target_user = implode(', ', $target_user_arr);
+		}
 	}
 
 
@@ -239,26 +247,28 @@ while ($row = $db->sql_fetchrow($result))
 		)
 	);
 
-	if (sizeof($option_arr[$topic_id]) > 0)
+	if (!empty($option_arr[$topic_id]))
 	{
 		foreach($option_arr[$topic_id] as $vote_option_id => $elem)
 		{
+			$target_user_option = '';
 			$option_text = $elem['poll_option_text'];
 			$option_result = $elem['poll_option_total'];
-			$target_user = $user_option_arr[$vote_option_id];
-			$target_user = substr($target_user, '0', strrpos($target_user, ', '));
+			if (!empty($user_option_arr[$vote_option_id]))
+			{
+				$target_user_option = implode(', ', $user_option_arr[$vote_option_id]);
+			}
 
 			$template->assign_block_vars('votes.detail', array(
 				'OPTION' => $bbcode->parse($option_text),
 				'RESULT' => $option_result,
-				'USER' => $target_user
+				'USER' => $target_user_option
 				)
 			);
 		}
 	}
 
 	$i++;
-
 }
 $db->sql_freeresult($result);
 

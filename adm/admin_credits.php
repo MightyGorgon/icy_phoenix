@@ -36,7 +36,7 @@ by this change.
 define('DISABLE_VERSION_CHECK', false);
 define('MOD_VERSION', '1.20');
 
-if (!$user->data['user_level'] == ADMIN)
+if ($user->data['user_level'] != ADMIN)
 {
 	message_die(GENERAL_ERROR, 'Not Authorized');
 }

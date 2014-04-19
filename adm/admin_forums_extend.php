@@ -32,6 +32,9 @@ include(IP_ROOT_PATH . 'includes/def_auth.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
 
+if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+if (empty($class_mcp)) $class_mcp = new class_mcp();
+
 // Constants
 define('POST_FLINK_URL', 'l');
 
@@ -191,7 +194,7 @@ $fid = $type . $id;
 
 // check buttons
 $edit_forum = isset($_POST['edit']);
-$create_forum = isset($_POST['create']);
+$create_forum = isset($_POST['create']) || ($mode == 'create');
 $delete_forum = isset($_POST['delete']);
 $resync_forum = isset($_POST['resync']);
 
@@ -298,7 +301,7 @@ if ($mode == 'resync')
 		$wid = $tkeys['id'][$i];
 		if (substr($wid, 0, 1) == POST_FORUM_URL)
 		{
-			sync('forum', intval(substr($wid, 1)));
+			$class_mcp->sync('forum', intval(substr($wid, 1)));
 		}
 	}
 
@@ -502,7 +505,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	}
 
 	// parent id
-	$item['main'] = isset($_POST['main']) ? $_POST['main'] : $item['main'];
+	$item['main'] = isset($_POST['main']) ? $_POST['main'] : ((isset($_GET['main']) && $create_forum) ? $_GET['main'] : $item['main']);
 	$item['main_type'] = substr($item['main'], 0, 1);
 	$item['main_id'] = intval(substr($item['main'], 1));
 	if (($item['main_id'] == 0) || !in_array($item['main_type'], array(POST_CAT_URL, POST_FORUM_URL)))
@@ -1066,6 +1069,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			//'ICON_IMG' => $icon_img,
 			'ICON_LIST' => $icons_list,
 			'ICON_IMG' => IP_ROOT_PATH . (($icon != '') ? $icon : 'images/spacer.gif'),
+			'MODE' => $mode,
 
 			'PRUNE_DISPLAY' => $item['prune_enable'] ? '' : 'none',
 			'PRUNE_ENABLE_YES' => $item['prune_enable'] ? 'checked="checked"' : '',
@@ -1392,13 +1396,16 @@ function add_row($idx, $CH_this, $level, $id)
 		'FORUM_DESC' => get_object_lang($CH_this, 'desc', true),
 		'TOPICS' => $tree['data'][$idx]['tree.forum_topics'],
 		'POSTS' => $tree['data'][$idx]['tree.forum_posts'],
+		'IS_CAT' => $tree['type'][$idx] == POST_CAT_URL,
 
 		'U_FORUM' => append_sid('admin_forums_extend.' . PHP_EXT . '?selected_id=' . $CH_this),
+		'U_ADD' => append_sid('admin_forums_extend.' . PHP_EXT . '?mode=create&amp;main=' . $CH_this),
 		'U_EDIT' => append_sid('admin_forums_extend.' . PHP_EXT . '?mode=edit&amp;fid=' . $CH_this),
 		'U_DELETE' => append_sid('admin_forums_extend.' . PHP_EXT . '?mode=delete&amp;fid=' . $CH_this),
 		'U_RESYNC' => append_sid('admin_forums_extend.' . PHP_EXT . '?mode=resync&amp;fid=' . $CH_this),
 		'U_MOVEUP' => append_sid('admin_forums_extend.' . PHP_EXT . '?mode=moveup&amp;fid=' . $CH_this . '&amp;selected_id=' . $selected_id),
 		'U_MOVEDW' => append_sid('admin_forums_extend.' . PHP_EXT . '?mode=movedw&amp;fid=' . $CH_this . '&amp;selected_id=' . $selected_id),
+		'U_PERMS' => append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $CH_this),
 
 		'S_HIDDEN_FIELDS' => $s_hidden_fields
 		)

@@ -21,7 +21,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$filename = basename(__FILE__);
-	$module['1600_News_Admin']['140_XS_News_Tickers'] = $filename;
+	$module['1250_News_Admin']['140_XS_News_Tickers'] = $filename;
 	return;
 }
 

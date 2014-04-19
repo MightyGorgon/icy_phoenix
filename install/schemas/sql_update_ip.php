@@ -95,6 +95,12 @@ switch ($req_version)
 	case '20389': $current_ip_version = '2.0.3.89'; break;
 	case '20490': $current_ip_version = '2.0.4.90'; break;
 	case '20591': $current_ip_version = '2.0.5.91'; break;
+	case '20692': $current_ip_version = '2.0.6.92'; break;
+	case '20793': $current_ip_version = '2.0.7.93'; break;
+	case '20894': $current_ip_version = '2.0.8.94'; break;
+	case '20995': $current_ip_version = '2.0.9.95'; break;
+	case '201096': $current_ip_version = '2.0.10.96'; break;
+	case '201197': $current_ip_version = '2.0.11.97'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -1272,13 +1278,11 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('last_msgs_n', '5')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('last_msgs_x', '')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('posts_precompiled', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('index_links', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('index_birthday', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('site_history', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('smilies_topic_title', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('html_email', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('config_cache', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('admin_protect', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ftr_disable', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('disable_logins', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('last_logins_n', '20')";
@@ -1418,111 +1422,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "album_config (config_name, config_value) VALUES ('show_exif', '0')";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD user_sudoku_playing INT(1) DEFAULT '0' NOT NULL";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "sudoku_solutions` (
-			`game_pack` int(5) NOT NULL default '0',
-			`game_num` int(5) NOT NULL default '0',
-			`line_1` varchar(20) NOT NULL default '',
-			`line_2` varchar(20) NOT NULL default '',
-			`line_3` varchar(20) NOT NULL default '',
-			`line_4` varchar(20) NOT NULL default '',
-			`line_5` varchar(20) NOT NULL default '',
-			`line_6` varchar(20) NOT NULL default '',
-			`line_7` varchar(20) NOT NULL default '',
-			`line_8` varchar(20) NOT NULL default '',
-			`line_9` varchar(20) NOT NULL default '',
-			KEY `game_pack` (`game_pack`)
-		)";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "sudoku_stats` (
-			`user_id` int(11) NOT NULL default '0',
-			`played` int(11) NOT NULL default '0',
-			`points` int(11) NOT NULL default '0',
-			KEY `user_id` (`user_id`)
-		)";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "sudoku_sessions` (
-		`user_id` INT(11) NOT NULL ,
-		`session_time` INT(11) NOT NULL
-		)";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "sudoku_starts` (
-			`game_pack` int(5) NOT NULL default '0',
-			`game_num` int(5) NOT NULL default '0',
-			`game_level` int(1) NOT NULL default '0',
-			`line_1` varchar(20) NOT NULL default '',
-			`line_2` varchar(20) NOT NULL default '',
-			`line_3` varchar(20) NOT NULL default '',
-			`line_4` varchar(20) NOT NULL default '',
-			`line_5` varchar(20) NOT NULL default '',
-			`line_6` varchar(20) NOT NULL default '',
-			`line_7` varchar(20) NOT NULL default '',
-			`line_8` varchar(20) NOT NULL default '',
-			`line_9` varchar(20) NOT NULL default '',
-			KEY `game_pack` (`game_pack`)
-		)";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "sudoku_users` (
-			`user_id` int(11) NOT NULL default '0',
-			`game_pack` int(5) NOT NULL default '0',
-			`game_num` int(5) NOT NULL default '0',
-			`game_level` int(1) NOT NULL default '0',
-			`line_1` varchar(30) NOT NULL default '',
-			`line_2` varchar(30) NOT NULL default '',
-			`line_3` varchar(30) NOT NULL default '',
-			`line_4` varchar(30) NOT NULL default '',
-			`line_5` varchar(30) NOT NULL default '',
-			`line_6` varchar(30) NOT NULL default '',
-			`line_7` varchar(30) NOT NULL default '',
-			`line_8` varchar(30) NOT NULL default '',
-			`line_9` varchar(30) NOT NULL default '',
-			`points` int(11) NOT NULL default '0',
-			`done` int(1) NOT NULL default '0',
-			KEY `user_id` (`user_id`)
-		)";
-
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('sudoku_version', '1.0.6')";
-
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 1, '7a1a5a2a3a4a9a8a6', '6a4a3a1a8a9a5a7a2', '8a2a9a6a7a5a1a3a4', '8a7a9a3a6a1a4a5a2', '4a5a1a2a9a8a7a3a6', '2a6a3a5a4a7a9a8a1', '5a9a8a1a4a7a6a2a3', '3a6a7a8a2a5a9a1a4', '4a1a2a3a9a6a7a5a8')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 2, '6a1a3a8a4a7a2a5a9', '8a4a9a5a2a3a1a6a7', '7a2a5a1a6a9a4a3a8', '4a2a6a7a8a5a3a9a1', '9a5a1a6a3a2a4a7a8', '8a7a3a9a1a4a6a5a2', '5a7a4a9a6a8a1a3a2', '3a8a6a2a1a5a7a9a4', '2a9a1a3a4a7a5a8a6')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 3, '1a5a7a4a8a2a9a6a3', '2a6a4a9a7a3a5a1a8', '8a9a3a5a6a1a4a7a2', '2a9a5a3a1a8a6a7a4', '8a4a1a6a9a7a3a5a2', '6a3a7a2a4a5a9a1a8', '5a3a9a7a4a6a8a2a1', '7a8a6a1a2a5a4a3a9', '1a2a4a3a8a9a7a5a6')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 4, '9a6a1a2a5a3a7a8a4', '4a5a7a9a8a6a1a2a3', '3a8a2a4a7a1a6a9a5', '4a2a6a3a1a8a5a7a9', '5a3a9a7a4a2a6a1a8', '7a1a8a9a5a6a2a3a4', '1a9a7a6a3a5a8a4a2', '2a6a5a8a9a4a3a7a1', '8a4a3a1a2a7a5a6a9')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 5, '4a2a7a5a1a9a6a8a3', '3a6a1a8a2a7a5a4a9', '8a5a9a4a3a6a7a1a2', '3a6a1a2a4a5a9a7a8', '9a5a8a7a1a6a4a3a2', '2a4a7a9a8a3a5a6a1', '8a3a2a7a9a4a1a5a6', '6a7a5a1a8a3a2a9a4', '1a9a4a6a2a5a3a7a8')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 6, '8a6a9a3a5a2a7a1a4', '3a7a2a4a1a6a8a5a9', '1a5a4a9a7a8a6a3a2', '5a2a1a4a3a7a6a9a8', '9a4a7a2a6a8a1a3a5', '8a6a3a5a1a9a4a2a7', '2a4a6a1a7a3a9a8a5', '7a8a1a5a9a4a6a2a3', '3a9a5a2a8a6a7a4a1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 7, '3a2a4a7a8a5a6a1a9', '1a7a8a9a4a6a3a5a2', '5a9a6a2a1a3a7a8a4', '9a5a3a4a6a1a8a7a2', '7a1a4a2a8a3a6a9a5', '8a6a2a9a5a7a4a3a1', '2a3a8a5a9a7a1a4a6', '5a6a7a4a3a1a8a2a9', '1a4a9a6a2a8a3a7a5')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 8, '8a7a9a5a2a1a4a6a3', '4a5a1a9a3a6a2a7a8', '2a3a6a7a8a4a5a9a1', '2a8a6a3a4a7a1a9a5', '1a4a7a5a9a2a6a8a3', '9a5a3a1a6a8a4a7a2', '7a1a2a6a3a4a9a5a8', '8a6a5a7a2a9a3a1a4', '3a4a9a8a1a5a6a2a7')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 9, '4a2a3a5a7a8a1a6a9', '6a7a5a2a9a1a3a4a8', '1a8a9a3a6a4a7a5a2', '9a8a4a7a3a2a6a5a1', '1a5a2a8a6a4a7a3a9', '6a3a7a5a9a1a4a2a8', '8a1a7a2a4a5a3a9a6', '5a2a6a9a1a3a4a8a7', '9a4a3a8a7a6a2a1a5')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 10, '5a7a3a2a6a8a1a4a9', '9a6a4a3a5a1a8a2a7', '1a8a2a9a7a4a6a3a5', '6a2a4a9a8a5a3a1a7', '7a3a9a4a1a2a6a8a5', '5a1a8a7a6a3a2a4a9', '4a3a2a8a9a1a7a5a6', '1a9a6a5a7a3a2a4a8', '8a5a7a4a2a6a3a9a1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 11, '6a8a2a4a3a9a5a1a7', '7a5a1a2a6a8a4a9a3', '4a3a9a7a1a5a6a2a8', '2a9a3a7a4a8a1a5a6', '5a1a4a3a2a6a8a7a9', '8a7a6a9a5a1a3a4a2', '8a7a1a3a6a5a9a2a4', '6a3a5a9a4a2a1a8a7', '2a9a4a1a8a7a5a6a3')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 12, '1a4a6a5a2a8a3a9a7', '8a7a9a4a6a3a5a1a2', '5a3a2a9a7a1a4a6a8', '9a1a2a7a3a4a6a8a5', '7a5a6a1a2a8a3a9a4', '8a4a3a6a5a9a2a1a7', '8a5a9a4a6a1a2a7a3', '6a3a1a2a8a7a9a4a5', '7a2a4a3a9a5a1a8a6')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 13, '4a6a8a5a9a2a1a3a7', '7a1a5a6a3a8a4a2a9', '2a3a9a7a1a4a6a8a5', '6a1a4a9a8a5a7a2a3', '9a5a3a2a7a6a8a4a1', '8a7a2a1a4a3a9a5a6', '8a5a9a3a7a6a2a4a1', '1a6a4a5a8a2a3a9a7', '3a2a7a4a9a1a5a6a8')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 14, '6a7a9a4a3a2a5a1a8', '8a5a3a9a1a7a6a4a2', '2a1a4a8a6a5a9a7a3', '7a2a5a9a6a1a8a4a3', '4a6a1a2a3a8a5a7a9', '3a9a8a4a5a7a6a2a1', '3a8a7a2a9a4a1a5a6', '1a9a6a7a8a5a3a2a4', '5a4a2a1a3a6a7a8a9')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 15, '1a4a9a5a7a6a2a8a3', '2a3a5a9a1a8a6a7a4', '7a6a8a2a4a3a5a9a1', '4a6a1a9a5a2a7a3a8', '5a2a9a3a8a7a1a4a6', '3a8a7a6a1a4a9a2a5', '6a1a4a8a9a7a3a2a5', '7a9a3a4a5a2a8a6a1', '8a5a2a1a3a6a4a7a9')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 16, '5a9a1a6a3a4a8a2a7', '3a4a6a7a8a2a5a1a9', '8a2a7a9a5a1a4a3a6', '9a5a8a7a6a3a4a1a2', '4a3a7a9a2a1a6a5a8', '1a6a2a5a4a8a7a9a3', '2a4a9a3a8a5a1a7a6', '8a7a3a1a6a4a2a9a5', '6a1a5a2a7a9a3a8a4')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 17, '5a4a6a7a9a1a3a2a8', '8a9a3a4a5a2a6a1a7', '1a7a2a8a3a6a5a4a9', '8a3a2a6a7a9a1a5a4', '7a6a9a1a4a5a3a2a8', '4a1a5a3a2a8a6a9a7', '2a6a3a4a8a7a9a1a5', '5a7a1a9a3a6a2a8a4', '9a8a4a2a5a1a7a6a3')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 18, '5a1a7a4a6a9a8a3a2', '8a6a3a5a2a7a1a4a9', '9a2a4a3a8a1a6a7a5', '3a8a1a2a5a6a7a9a4', '4a5a6a7a9a8a2a3a1', '2a9a7a4a1a3a8a5a6', '1a7a3a6a2a8a9a4a5', '9a8a4a3a1a5a6a7a2', '5a6a2a7a4a9a1a3a8')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 19, '3a8a1a7a2a4a9a5a6', '5a7a2a9a6a1a8a4a3', '9a6a4a5a8a3a7a1a2', '2a3a9a8a1a5a4a6a7', '6a8a5a4a2a7a3a1a9', '1a4a7a6a3a9a8a2a5', '6a4a3a5a7a2a1a9a8', '7a9a8a1a3a6a2a5a4', '2a5a1a4a9a8a3a7a6')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_solutions VALUES (1, 20, '3a2a5a8a7a1a6a9a4', '1a6a7a9a4a3a8a2a5', '9a4a8a2a6a5a3a7a1', '2a8a6a1a5a7a4a3a9', '5a3a4a2a9a8a7a1a6', '1a9a7a4a3a6a8a5a2', '9a6a8a5a4a3a7a1a2', '3a7a1a6a8a2a4a5a9', '5a2a4a7a1a9a6a8a3')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 1, 1, 'xaxaxa2axa4a9a8ax', '6axa3axaxaxa5axa2', 'xaxaxa6axa5axa3a4', '8axa9axaxaxa4axa2', 'xaxaxa2axa8axaxax', '2axa3axaxaxa9axa1', '5a9axa1axa7axaxax', '3axa7axaxaxa9axa4', 'xa1a2a3axa6axaxax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 2, 1, 'xaxaxa8axa7a2a5ax', '8axa9a5axa3axaxax', 'xaxaxa1axa9axa3a8', 'xa2a6axaxaxaxa9a1', 'xa5axaxaxaxaxa7ax', '8a7axaxaxaxa6a5ax', '5a7axa9axa8axaxax', 'xaxaxa2axa5a7axa4', 'xa9a1a3axa7axaxax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 3, 1, 'xaxaxaxaxa2axa6ax', 'xaxaxa9axa3a5axa8', 'xaxaxa5axaxaxa7ax', 'xa9a5axa1axaxa7a4', '8axa1a6axa7a3axa2', '6a3axaxa4axa9a1ax', 'xa3axaxaxa6axaxax', '7axa6a1axa5axaxax', 'xa2axa3axaxaxaxax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 4, 1, 'xaxa1axa5a3a7axax', '4axa7a9axa6a1axa3', '3axaxa4a7axaxaxa5', 'xaxa6a3a1a8axaxax', 'xaxaxaxaxaxaxa1ax', '7axaxa9a5a6axaxax', 'xa9axa6axaxaxa4ax', '2axa5axaxaxaxaxax', 'xa4axaxaxa7axa6ax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 5, 1, 'xa2axa5axaxaxaxax', 'xaxaxaxaxa7axa4a9', 'xaxaxa4axaxa7a1a2', 'xaxaxaxaxa5axa7a8', 'xaxaxaxaxa6axa3ax', '2axaxaxa8axaxa6a1', 'xa3a2axaxa4axaxa6', '6axaxaxa8a3axaxa4', 'xaxa4axaxa5a3a7ax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 6, 2, 'xaxaxaxaxaxaxa1ax', 'xaxaxaxa1axa8axa9', 'xa5axa9axa8axa3ax', '5axa1axa3a7a6axa8', '9a4axaxaxa8axaxa5', '8axaxaxa1axa4axax', 'xaxa6axaxaxa9axax', '7a8a1axa9axa6axa3', 'xaxaxa2axaxaxaxax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 7, 2, '3a2axaxaxa5axa1ax', 'xa7axaxaxaxa3axa2', 'xa9a6a2axaxaxa8ax', 'xa5a3a4axaxaxa7a2', 'xaxaxa2axa3axaxax', '8a6axaxaxa7a4a3ax', 'xa3axaxaxa7a1a4ax', '5axa7axaxaxaxa2ax', 'xa4axa6axaxaxa7a5')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 8, 2, '8axa9a5axaxaxaxa3', '4a5a1a9axa6a2axa8', '2axa6axaxaxa5axax', 'xa8axa3axaxaxa9ax', 'xaxaxaxaxaxaxaxax', 'xa5axaxaxa8axa7ax', 'xaxa2a6axaxa9axa8', '8axa5a7axa9a3a1a4', '3axaxaxaxa5a6axa7')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 9, 2, 'xaxaxaxaxaxaxaxax', 'xaxaxaxaxa1a3a4ax', 'xa8axaxaxa4a7a5ax', 'xaxa4axaxa2axa5ax', 'xaxa2axa6axa7axax', '6axaxaxa9a1axaxax', 'xaxa7a2axa5axa9ax', '5axaxaxa1axaxa8ax', 'xaxa3axaxa6a2a1ax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 10, 2, 'xaxa3axaxaxa1axax', 'xaxaxa3a5axaxaxa7', 'xaxaxaxaxa4a6axa5', 'xa2axaxa8axaxaxa7', 'xaxaxaxaxaxaxaxax', 'xaxa8a7a6a3a2a4ax', 'xaxa2axaxaxaxa5a6', 'xa9a6axa7a3a2a4ax', 'xa5a7a4axa6a3a9ax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 11, 3, 'xaxa2a4axaxaxa1a7', '7axa1a2axa8axaxax', '4axaxaxaxa5a6a2ax', '2a9axaxaxaxa1a5ax', 'xaxaxa3axa6axaxax', 'xa7a6axaxaxaxa4a2', 'xa7a1a3axaxaxaxa4', 'xaxaxa9axa2a1axa7', '2a9axaxaxa7a5axax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 12, 3, 'xa4axaxa2axaxaxa7', 'xaxaxaxa6axaxaxax', '5a3axaxaxa1a4axa8', 'xa1axaxa3axa6axa5', '7a5axaxaxa8axaxa4', 'xaxaxaxa5axaxaxax', '8axaxaxaxaxaxaxa3', '6axaxaxa8a7a9axax', '7axaxaxa9a5axaxax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 13, 3, 'xaxa8a5a9axa1axax', 'xaxaxa6axa8a4axa9', '2axaxaxa1a4axaxa5', '6axa4axa8axa7axa3', 'xaxaxaxaxaxaxaxax', '8axa2axa4axa9axa6', '8axaxa3a7axaxaxa1', '1axa4a5axa2axaxax', 'xaxa7axa9a1a5axax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 14, 4, 'xa7axaxa3a2axa1a8', '8axa3axaxaxaxa4ax', 'xa1axa8a6axa9a7ax', 'xaxaxaxaxa1axaxax', '4axa1axaxaxa5axa9', 'xaxaxa4axaxaxaxax', 'xa8a7axa9a4axa5ax', 'xa9axaxaxaxa3axa4', '5a4axa1a3axaxa8ax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 15, 4, 'xaxaxaxa7axaxa8a3', '2axa5axa1axaxa7ax', 'xaxaxaxa4axa5a9ax', 'xaxa1axaxa2axaxa8', 'xaxaxa3axa7axaxax', '3axaxa6axaxa9axax', 'xa1a4axa9axaxaxax', 'xa9axaxa5axa8axa1', '8a5axaxa3axaxaxax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 16, 2, 'xa9axaxaxaxaxaxa7', 'xaxaxaxaxaxaxa1ax', 'xa2axaxaxaxa4axax', 'xaxaxaxaxa3axa1ax', 'xa3axa9axa1a6axa8', 'xaxaxa5axaxaxa9ax', 'xa4a9a3a8axaxa7ax', '8axa3a1axa4a2axa5', '6a1axaxa7a9axa8ax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 17, 2, 'xaxa6a7a9axaxaxax', 'xaxaxaxaxa2a6a1ax', 'xaxaxaxa3axaxaxa9', 'xa3axaxa7axa1a5ax', '7a6axaxa4axaxa2a8', 'xa1a5axa2axaxa9ax', '2axaxaxa8axaxaxax', 'xa7a1a9axaxaxaxax', 'xaxaxaxa5a1a7axax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 18, 2, '5axaxaxaxa9axa3ax', 'xa6axa5axa7axa4ax', 'xaxa4a3axaxaxa7ax', 'xa8a1a2axaxaxa9a4', '4axa6axaxaxa2axa1', '2a9axaxaxa3a8a5ax', 'xa7axaxaxa8a9axax', 'xa8axa3axa5axa7ax', 'xa6axa7axaxaxaxa8')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 19, 2, 'xaxa1axa2axa9axax', 'xaxaxa9a6a1a8axa3', '9axaxaxa8axaxaxa2', 'xa3a9axa1axaxa6a7', '6a8a5a4axa7a3a1a9', '1a4axaxa3axa8a2ax', '6axaxaxa7axaxaxa8', '7axa8a1a3a6axaxax', 'xaxa1axa9axa3axax')";
-		$sql[] = "INSERT INTO " . $table_prefix . "sudoku_starts VALUES (1, 20, 2, 'xaxaxaxa7axa6axax', 'xa6axaxaxa3a8a2a5', 'xa4axaxaxa5axaxax', 'xaxaxaxa5axa4axax', 'xaxaxaxaxaxa7axax', '1a9axa4axa6a8axax', '9a6axaxaxa3a7axa2', 'xaxaxaxa8axa4axax', 'xaxaxaxa1axa6axax')";
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES('yahoo_search_savepath', 'cache')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES('yahoo_search_additional_urls', 'http://www.icyphoenix.com')";
@@ -2351,10 +2250,8 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (15, 0, 1, 0, 1, 1, 10, '', 'downloads', 'Downloads', 'Downloads', 'dload.php', 0, 0, 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (16, 0, 1, 0, 1, 1, 11, '', 'profile', 'Profile', 'Profile', 'profile_main.php', 0, 2, 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (17, 0, 1, 0, 1, 1, 12, '', 'ajax_chat', 'Chat', 'Chat', 'ajax_chat.php', 0, 0, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (18, 0, 1, 0, 1, 1, 13, '', 'links', 'Links', 'Links', 'links.php', 0, 0, 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (19, 0, 1, 0, 1, 1, 14, '', 'kb', 'Knowledge Base', 'Knowledge Base', 'kb.php', 0, 0, 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (20, 0, 1, 0, 1, 1, 15, '', 'contact_us', 'Contact Us', 'Contact Us', 'contact_us.php', 0, 0, 0)";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (21, 0, 1, 0, 1, 1, 16, '', 'sudoku', 'Sudoku', 'Sudoku', 'sudoku.php', 0, 0, 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (22, 0, 1, 0, 2, 1, 1, '', 'news_cat', 'News Categories', 'News Categories', 'index.php?news=categories', 0, 0, 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (23, 0, 1, 0, 2, 1, 2, '', 'news_arc', 'News Archives', 'News Archives', 'index.php?news=archives', 0, 0, 0)";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_nav_menu` (`menu_item_id`, `menu_id`, `menu_parent_id`, `cat_id`, `cat_parent_id`, `menu_status`, `menu_order`, `menu_icon`, `menu_name_lang`, `menu_name`, `menu_desc`, `menu_link`, `menu_link_external`, `auth_view`, `auth_view_group`) VALUES (24, 0, 1, 0, 2, 1, 3, '', 'digests', 'Digests', 'Digests', 'digests.php', 0, 2, 0)";
@@ -4612,6 +4509,53 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.5.91 */
 		case '2.0.5.91':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD COLUMN `post_locked` TINYINT(1) NOT NULL DEFAULT '0' AFTER `post_bluecard`";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('user_allow_pm_register', '1')";
+
+		/* Updating from IP 2.0.6.92 */
+		case '2.0.6.92':
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'admin_protect'";
+
+		/* Updating from IP 2.0.7.93 */
+		case '2.0.7.93':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_facebook_id` VARCHAR(40) NOT NULL DEFAULT '' AFTER `user_email_hash`";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('enable_social_connect', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('enable_facebook_login', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('facebook_app_id', '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('facebook_app_secret', '')";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE config_key = 'index_links'";
+		$sql[] = "DELETE FROM " . $table_prefix . "cms_blocks WHERE bs_id = (
+			SELECT bs_id FROM
+			" . $table_prefix . "cms_block_settings WHERE blockfile = 'links'
+		)";
+		$sql[] = "DELETE FROM " . $table_prefix . "cms_block_variable WHERE block = 'links'";
+		$sql[] = "DELETE FROM " . $table_prefix . "cms_block_settings WHERE blockfile = 'links'";
+		$sql[] = "DELETE FROM " . $table_prefix . "cms_layout_special WHERE page_id = 'links'";
+		$sql[] = "DELETE FROM " . $table_prefix . "cms_nav_menu WHERE menu_links = 'links.php'";
+
+		/* Updating from IP 2.0.8.94 */
+		case '2.0.8.94':
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `exif` text NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `camera_model` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `lens` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `focal_length` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `exposure` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `aperture` varchar(255) DEFAULT '' NOT NULL";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `iso` varchar(255) DEFAULT '' NOT NULL";
+
+		/* Updating from IP 2.0.9.95 */
+		case '2.0.9.95':
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_vimeo` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pinterest` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_instagram` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_github` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_500px` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+
+		/* Updating from IP 2.0.10.96 */
+		case '2.0.10.96':
+
+		/* Updating from IP 2.0.11.97 */
+		case '2.0.11.97':
 
 	}
 

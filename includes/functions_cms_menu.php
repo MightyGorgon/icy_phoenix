@@ -42,7 +42,7 @@ function cms_menu_default_links_array()
 		18 => array('lang' => 'Contact_us', 'link' => CMS_PAGE_CONTACT_US, 'auth' => AUTH_CMS_ALL),
 		19 => array('lang' => 'BoardRules', 'link' => CMS_PAGE_RULES, 'auth' => AUTH_CMS_ALL),
 		20 => array('lang' => 'TAGS_TEXT', 'link' => CMS_PAGE_TAGS, 'auth' => AUTH_CMS_ALL),
-		21 => array('lang' => 'Sudoku', 'link' => 'sudoku.' . PHP_EXT, 'auth' => AUTH_CMS_REG),
+		21 => array('lang' => 'SUDOKU', 'link' => 'sudoku.' . PHP_EXT, 'auth' => AUTH_CMS_REG),
 		22 => array('lang' => 'LINK_NEWS_CAT', 'link' => CMS_PAGE_HOME . '?news=categories', 'auth' => AUTH_CMS_ALL),
 		23 => array('lang' => 'LINK_NEWS_ARC', 'link' => CMS_PAGE_HOME . '?news=archives', 'auth' => AUTH_CMS_ALL),
 		24 => array('lang' => 'NEW_POSTS_LINK', 'link' => CMS_PAGE_SEARCH . '?search_id=newposts', 'auth' => AUTH_CMS_REG),

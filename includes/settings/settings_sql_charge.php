@@ -243,14 +243,6 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 	),
 
-	'index_links' => array(
-		'lang_key' => 'IP_index_links',
-		'explain' => 'IP_index_links_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-	),
-
 	'index_birthday' => array(
 		'lang_key' => 'IP_index_birthday',
 		'explain' => 'IP_index_birthday_explain',

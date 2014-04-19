@@ -131,7 +131,7 @@ var AjaxContext = {
 		{
 			var name = functionList[index];
 			if (functions.hasOwnProperty(name))
-			{  
+			{
 				var list = new Array();
 				$(name, doc).each(function(index, element) {
 					var values = new Object();

@@ -1,18 +1,14 @@
 <!-- INCLUDE simple_header.tpl -->
 
-<!-- IF S_AJAX_FEATURES -->
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
-<!-- ENDIF -->
-
 <!-- BEGIN entry_page -->
-<form action="{S_ACTION}" method="post">
+<form name="edit_post" action="{S_ACTION}" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_EDIT_POST_DETAILS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
 <tr><td class="row1 row-center"><span class="genmed"><b>{L_CURRENT_POSTER}</b>:&nbsp;{POSTER_NAME}</span></td></tr>
 <tr>
 	<td class="row1 row-center">
 	<span class="genmed">
 		<b>{L_NEW_POSTER}</b>:&nbsp;<input type="text" class="post" name="username" id="username" maxlength="50" size="20" {S_AJAX_USER_CHECK} />&nbsp;
-		<span id="username_list" style="display:none;">&nbsp;<span id="username_select">&nbsp;</span></span>
+		<span id="username_list" style="display: none;">&nbsp;<span id="username_select">&nbsp;</span></span>
 		<input type="submit" name="usersubmit" value="{L_FIND_USERNAME}" class="liteoption" onclick="window.open('{U_SEARCH_USER}', '_search', 'width=400,height=250,resizable=yes'); return false;" />
 	</span>
 	</td>

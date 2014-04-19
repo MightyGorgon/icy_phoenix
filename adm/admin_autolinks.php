@@ -20,7 +20,7 @@ define('IN_ICYPHOENIX', true);
 if(!empty($setmodules))
 {
 	$file = basename(__FILE__);
-	$module['1100_General']['110_Autolinks'] = $file;
+	$module['1100_General']['195_Autolinks'] = $file;
 	return;
 }
 

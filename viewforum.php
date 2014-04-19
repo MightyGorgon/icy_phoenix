@@ -98,7 +98,7 @@ $page_number = ($page_number < 1) ? 0 : $page_number;
 
 $start = (empty($page_number) ? $start : (($page_number * $config['topics_per_page']) - $config['topics_per_page']));
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if ($user->data['upi2db_access'])
 {
 	$params = array(
@@ -143,7 +143,7 @@ if ($user->data['upi2db_access'])
 		message_die(GENERAL_MESSAGE, $message);
 	}
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 $cms_page['page_id'] = 'viewforum';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
@@ -304,10 +304,10 @@ if ($mark_read == 'topics')
 			$user->data['user_lastvisit'] = time() - (LAST_LOGIN_DAYS_NEW_POSTS_RESET * 24 * 60 * 60);
 		}
 
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 		if(!$user->data['upi2db_access'])
 		{
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 
 			$sql = "SELECT MAX(post_time) AS last_post
 				FROM " . POSTS_TABLE . "
@@ -331,13 +331,13 @@ if ($mark_read == 'topics')
 					$user->set_cookie('f', serialize($tracking_forums), $user->cookie_expire);
 				}
 			}
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 		}
 		else
 		{
 			marking_posts($forum_id);
 		}
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 
 		$redirect_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append);
 		meta_refresh(3, $redirect_url);
@@ -534,10 +534,10 @@ for($i = 0; $i < sizeof($previous_days); $i++)
 }
 $select_topic_days .= '</select>';
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if(!$user->data['upi2db_access'])
 {
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 	// All GLOBAL announcement data, this keeps GLOBAL announcements on each viewforum page...
 	$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username
@@ -560,11 +560,11 @@ if(!$user->data['upi2db_access'])
 
 	$db->sql_freeresult($result);
 // End add - Global announcement MOD
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 //}
 //if(!$user->data['upi2db_access'])
 //{
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 	// All announcement data, this keeps announcements on each viewforum page...
 	$sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_color, u2.username as user2, u2.user_id as id2, u2.user_active as user_active2, u2.user_color as user_color2, p.post_time, p.post_username
 					FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u, " . POSTS_TABLE . " p, " . USERS_TABLE . " u2
@@ -585,7 +585,7 @@ if(!$user->data['upi2db_access'])
 
 	$db->sql_freeresult($result);
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	$upi2db_post_announce = "AND t.topic_type <> " . POST_ANNOUNCE . " AND t.topic_type <> " . POST_GLOBAL_ANNOUNCE;
 	$upi2db_post_global_announce = "t.forum_id = $forum_id";
 }
@@ -596,12 +596,13 @@ else
 	$upi2db_post_announce = '';
 	$upi2db_post_global_announce = "(t.forum_id = $forum_id OR t.topic_type = " . POST_GLOBAL_ANNOUNCE . ")";
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
-//<!-- BEGIN Unread Post Information to Database Mod MODIFY -->
+// UPI2DB - EDIT - BEGIN
 //add , p2.post_edit_time
 //change *t.forum_id = $forum_id* to *$upi2db_post_global_announce*
 //change *AND t.topic_type <> " . POST_ANNOUNCE . " AND t.topic_type <> " . POST_GLOBAL_ANNOUNCE . "* to *$upi2db_post_announce*
+// UPI2DB - EDIT - END
 
 // Grab all the basic data (all topics except announcements) for this forum
 // Self AUTH - BEGIN
@@ -622,11 +623,11 @@ $sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_co
 				LIMIT " . $start . ", " . $config['topics_per_page'];
 // UPI2DB DELETE
 //#AND t.topic_type <> " . POST_GLOBAL_ANNOUNCE . "
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 $result = $db->sql_query($sql);
 $cached2 = $db->cached;
 $total_topics = 0;
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 // REPLACE
 /*
 while($row = $db->sql_fetchrow($result))
@@ -738,7 +739,7 @@ else
 		$total_topics++;
 	}
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 $db->sql_freeresult($result);
 
 if((isset($cached1) && $cached1) || (isset($cached2) && $cached2))
@@ -833,7 +834,7 @@ if($can_watch_forum)
 }
 // End add - Forum notification MOD
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if($user->data['upi2db_access'])
 {
 	if(!in_array($forum_id, $user->data['upi2db_unread']['always_read']['forums']))
@@ -855,7 +856,7 @@ else
 	$mark_always_read = '';
 	$marked_as_read = '';
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 // Dump out the page header and load viewforum template
 
@@ -949,10 +950,10 @@ $template->assign_vars(array(
 	'FOLDER_STICKY_NEW_IMG' => $images['topic_imp_unread'],
 	'FOLDER_ANNOUNCE_IMG' => $images['topic_ann_read'],
 	'FOLDER_ANNOUNCE_NEW_IMG' => $images['topic_ann_unread'],
-	//<!-- BEGIN Unread Post Information to Database Mod -->
+	// UPI2DB - BEGIN
 	'FOLDER_AR' => $images['topic_ar_read'],
 	'L_AR_POSTS' => $lang['always_read_icon'],
-	//<!-- END Unread Post Information to Database Mod -->
+	// UPI2DB - END
 	'FOLDER_GLOBAL_ANNOUNCE_IMG' => $images['topic_glo_read'],
 	'FOLDER_GLOBAL_ANNOUNCE_NEW_IMG' => $images['topic_glo_unread'],
 
@@ -1009,12 +1010,12 @@ $template->assign_vars(array(
 	'S_WATCH_FORUM' => $s_watching_forum,
 	'S_TOPIC_TAGS' => !empty($config['display_tags_box']) ? true : false,
 	'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . $kb_mode_append),
-	//<!-- BEGIN Unread Post Information to Database Mod -->
+	// UPI2DB - BEGIN
 	//'U_MARK_READ' => append_sid(CMS_PAGE_VIEWFORUM . '?' . $forum_id_append . '&amp;mark=topics'),
 	'MARKED_READ' => $marked_as_read,
 	'U_MARK_ALWAYS_READ' => $mark_always_read,
 	'U_MARK_READ' => $mark_as_read
-	//<!-- END Unread Post Information to Database Mod -->
+	// UPI2DB - END
 	)
 );
 // End header
@@ -1078,6 +1079,7 @@ if($total_topics)
 						AND registration_user_id = " . $user->data['user_id'];
 				$result = $db->sql_query($sql);
 
+				$reg_user_own_reg = '<span class="text_orange">&bull;</span>';
 				if ($regrow = $db->sql_fetchrow($result))
 				{
 					$status = $regrow['registration_status'];
@@ -1183,7 +1185,7 @@ if($total_topics)
 		$last_post_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $topic_rowset[$i]['topic_last_post_id']) . '#p' . $topic_rowset[$i]['topic_last_post_id'] . '" title="' . $topic_title_plain . '"><img src="' . (!empty($topic_link['class_new']) ? $images['icon_newest_reply'] : $images['icon_latest_reply']) . '" alt="' . $lang['View_latest_post'] . '" title="' . $topic_title_plain . ' - ' . $lang['View_latest_post'] . '" /></a>';
 
 //----------------------------------------------------
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 		if($user->data['upi2db_access'])
 		{
 			$mark_always_read = mark_always_read($topic_rowset[$i]['topic_type'], $topic_id, $forum_id, 'viewforum', 'icon', $user->data['upi2db_unread'], $start, $topic_link['image']);
@@ -1192,7 +1194,7 @@ if($total_topics)
 		{
 			$mark_always_read = '<img src="' . $topic_link['image'] . '" style="margin-right: 4px;" alt="' . $topic_link['image_alt'] . '" title="' . $topic_link['image_alt'] . '" />';
 		}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 //----------------------------------------------------
 
 		$views = $topic_rowset[$i]['topic_views'];
@@ -1245,9 +1247,9 @@ if($total_topics)
 			'REG_USER_OWN_REG' => $reg_user_own_reg,
 			// Event Registration - END
 //--------------------------------------------------------
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 			'U_MARK_ALWAYS_READ' => $mark_always_read,
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 //--------------------------------------------------------
 			'U_VIEW_TOPIC' => $view_topic_url
 			)

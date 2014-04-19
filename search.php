@@ -73,7 +73,7 @@ $is_auth_ary = array();
 $is_auth_ary = auth(AUTH_ALL, AUTH_LIST_ALL, $user->data);
 // MG Added for an indepth auth check and SELF posts - END
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 if($user->data['upi2db_access'])
 {
 	$params = array(
@@ -132,7 +132,7 @@ if($user->data['upi2db_access'])
 	$count_always_read = sizeof($user->data['upi2db_unread']['always_read']['topics']);
 	$count_mark_unread = sizeof($user->data['upi2db_unread']['mark_posts']);
 }
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 $cms_page['page_id'] = 'search';
 $cms_page['page_nav'] = (!empty($cms_config_layouts[$cms_page['page_id']]['page_nav']) ? true : false);
@@ -326,7 +326,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 // -------------------------------------------------
 				if ($user->data['session_logged_in'])
 				{
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 					if(!$user->data['upi2db_access'] || ($search_id == 'newposts'))
 					{
 						$sql = "SELECT post_id
@@ -373,13 +373,13 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 							}
 						}
 					}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 				}
 				else
 				{
 					redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=' . CMS_PAGE_SEARCH . '&search_id=newposts', true));
 				}
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				if($search_id == 'newposts')
 				{
 					$is_newposts = true;
@@ -392,7 +392,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				{
 					$show_results = 'topics';
 				}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 				$sort_by = 0;
 				$sort_dir = 'DESC';
 			}
@@ -1154,7 +1154,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		}
 		*/
 
-//<!-- Begin Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 		$searchset = array();
 		$searchset_gae = array();
 		$searchset_gan = array();
@@ -1240,7 +1240,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$searchset = array_merge($searchset_gan, $searchset_an, $searchset_sn, $searchset_n);
 			}
 		}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 		$db->sql_freeresult($result);
 
@@ -1453,10 +1453,10 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$poster = $lang['INACTIVE_USER'];
 				}
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				if(!$user->data['upi2db_access'])
 				{
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 					if ($user->data['session_logged_in'] && ($searchset[$i]['post_time'] > $user->data['user_lastvisit']))
 					{
 						if (!empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]))
@@ -1488,7 +1488,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					{
 						$post_subject .= '</a></b>' . get_calendar_title($searchset[$i]['topic_calendar_time'], $searchset[$i]['topic_calendar_duration']);
 					}
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 					$folder_image = $images['topic_nor_read'];
 					$folder_alt = ($searchset[$i]['topic_status'] == TOPIC_LOCKED) ? $lang['Topic_locked'] : $lang['No_new_posts'];
 				}
@@ -1496,15 +1496,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				{
 					search_calc_unread_ip($user->data['upi2db_unread'], $topic_id, $searchset, $i, $mini_post_img, $mini_post_alt, $unread_color, $folder_image, $folder_alt);
 				}
+				$mark_topic_unread_array['unmark_post'] = 0;
 				if($user->data['upi2db_access'])
 				{
 					if($s2 == 'mark')
 					{
 						$post_id = $searchset[$i]['post_id'];
-						$mark_topic_unread = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=upi2db&amp;s2=mark&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;do=unmark_post' . (isset($s2) ? ('&amp;s2=' . $s2) : '')) . '"><img src="' . $images['unmark_img'] . '" alt="' . $lang['upi2db_unmark_post'] . '" title="' . $lang['upi2db_unmark_post'] . '" /></a>';
+						$mark_topic_unread_array['unmark_post'] = 1;
 					}
 				}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 				// SELF AUTH - BEGIN
 				// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
 				if (((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $user->data['user_id']))
@@ -1534,12 +1535,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'MESSAGE' => $message,
 					'MINI_POST_IMG' => $mini_post_img,
 					'L_MINI_POST_ALT' => $mini_post_alt,
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 					'L_TOPIC_FOLDER_ALT' => $folder_alt,
 					'TOPIC_FOLDER_IMG' => $folder_image,
 					'UNREAD_COLOR' => $unread_color,
-					'UNREAD_IMG' => $mark_topic_unread,
-//<!-- END Unread Post Information to Database Mod -->
+
+					'UPI2DB_UNMARK_POST' => !empty($mark_topic_unread_array['unmark_post']) ? true : false,
+					'L_UPI2DB_UNMARK_POST' => $lang['upi2db_unmark_post'],
+					'UPI2DB_UNMARK_POST_IMG' => $images['unmark_img'],
+					'UPI2DB_UNMARK_POST_URL' => append_sid(CMS_PAGE_SEARCH . '?search_id=upi2db&amp;s2=mark&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;' . POST_FORUM_URL . '=' . $forum_id . '&amp;' . POST_POST_URL . '=' . $post_id . '&amp;do=unmark_post' . (isset($s2) ? ('&amp;s2=' . $s2) : '')),
+// UPI2DB - END
 
 					// AJAX Features - BEGIN
 					'TOPIC_RAW_TITLE' => $topic_raw_title,
@@ -1557,12 +1562,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'U_FORUM' => $forum_url
 					)
 				);
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				if($user->data['upi2db_access'])
 				{
 					$template->assign_block_vars('searchresults.switch_upi2db_on', array());
 				}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 			}
 			else
 			{
@@ -1696,7 +1701,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 
 				$last_post_url = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#p' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" /></a>';
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				if($user->data['upi2db_access'])
 				{
 					$mark_always_read = mark_always_read($searchset[$i]['topic_type'], $topic_id, $forum_id, 'search', 'icon', $user->data['upi2db_unread'], $start, $topic_link['image'], $search_id, $s2);
@@ -1706,7 +1711,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$mark_always_read = '<img src="' . $topic_link['image'] . '" alt="' . $topic_link['image_alt'] . '" title="' . $topic_link['image_alt'] . '" />';
 				}
 				$tt = $searchset[$i]['topic_type'];
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 				$mark_link_start = '';//($user->data['session_logged_in']) ? '<a onclick="return AJAXMarkTopic('. $topic_id .');" href="#">' : '';
 				$mark_link_end = '';//($user->data['session_logged_in']) ? '</a>' : '';
@@ -1728,7 +1733,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 				// SELF AUTH - END
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				// Edited By Mighty Gorgon - BEGIN
 				if (($user->data['user_level'] == ADMIN) || ($user->data['user_level'] == MOD))
 				{
@@ -1739,7 +1744,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$mark_read_forbid = (($tt == POST_STICKY) || ($tt == POST_ANNOUNCE) || ($tt == POST_GLOBAL_ANNOUNCE)) ? true : false;
 				}
 				// Edited By Mighty Gorgon - END
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 				// Convert and clean special chars!
 				$topic_title = htmlspecialchars_clean($topic_title);
@@ -1773,20 +1778,20 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'LAST_POST_TIME' => $last_post_time,
 					'LAST_POST_AUTHOR' => $last_post_author,
 					'LAST_POST_IMG' => $last_post_url,
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 					'NO_AGM' => ($mark_read_forbid || (isset($s2) && ($s2 == 'perm'))) ? 'disabled' : '',
 					'U_MARK_ALWAYS_READ' => $mark_always_read,
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 					'U_VIEW_FORUM' => $forum_url,
 					'U_VIEW_TOPIC' => $topic_url
 					)
 				);
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 				if($user->data['upi2db_access'])
 				{
 					$template->assign_block_vars('searchresults.switch_upi2db_on', array());
 				}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 				// Event Registration - BEGIN
 				if (($searchset[$i]['topic_reg']) && check_reg_active($topic_id))
 				{
@@ -1822,7 +1827,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 		{
 			$breadcrumbs['bottom_right_links'] .= '<span class="gensmall">&nbsp;&bull;&nbsp;<a href="' . append_sid('search.' . PHP_EXT . '?search_id=newposts&amp;sr=' . (($sr == 't') ? 'p' : 't')) . '">' . (($sr == 't') ? $lang['SN_SHOW_POSTS'] : $lang['SN_SHOW_TOPICS']) . '</a></span>';
 		}
-		
+
 		// Valid results found?
 		if (empty($valid_results))
 		{
@@ -1851,14 +1856,14 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			'L_REPLIES' => $lang['Replies'],
 			'L_VIEWS' => $lang['Views'],
 			'L_POSTS' => $lang['Posts'],
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 			'L_MAR' => $lang['upi2db_search_mark_read'],
 			'L_SUBMIT_MARK_READ' => $lang['upi2db_submit_mark_read'],
 			'S_POST_ACTION' => append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_id . (isset($s2) ? ('&amp;s2=' . $s2) : '')),
 			'L_UNMARK_ALL' => $lang['Unmark_all'],
 			'L_MARK_ALL' => $lang['Mark_all'],
 			'L_SUBMIT_MARK_READ' => $lang['upi2db_submit_mark_read'],
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 			'L_LASTPOST' => ($search_type == 'upi2db') ? $lang['Last_Post'] : ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_type . $search_url_add) . '">' . $lang['Last_Post'] . '</a>'),
 			'L_SELECT' => $lang['Select'],
 			'L_POSTED' => $lang['Posted'],

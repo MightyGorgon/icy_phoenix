@@ -1001,5 +1001,10 @@ $(document).ready(function() {
 		window.location.href = $(this).attr('data-href');
 		}
 	});
+	$("div[data-href]").bind('mouseup', function(e){
+		if (e.which == 1) {
+		window.location.href = $(this).attr('data-href');
+		}
+	});
 });
 

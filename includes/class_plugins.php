@@ -239,7 +239,7 @@ class class_plugins
 	{
 		global $user, $lang;
 
-		$files_to_include = array();
+		$filenames = array();
 		$plugin_lang_path = $this->plugins_path . $plugin_dir . 'language/';
 
 		switch ($lang_type)
@@ -253,19 +253,10 @@ class class_plugins
 				break;
 		}
 
-		foreach ($filenames as $filename)
-		{
 			if (is_dir($plugin_lang_path))
 			{
-				$files_to_include[] = $filename;
+				setup_extra_lang($filenames, $plugin_lang_path);
 			}
-		}
-
-		if (!empty($files_to_include))
-		{
-			setup_extra_lang($files_to_include, $plugin_lang_path);
-		}
-
 		return true;
 	}
 
@@ -337,7 +328,7 @@ class class_plugins
 	{
 		global $config, $table_prefix;
 
-		$install_data = array();
+		$uninstall_data = array();
 		$plugin_install_file = $this->plugins_path . $plugin_dir . '/install/install.' . PHP_EXT;
 		if (file_exists($plugin_install_file))
 		{

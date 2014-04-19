@@ -71,6 +71,12 @@ if (hidemenu_onclick == "yes")
 		<table class="" width="100%" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 		<td align="left" height="100%" valign="middle">
+		<!-- IF SOCIAL_CONNECT_BUTTONS -->
+			<!-- IF S_LOGGED_IN -->
+			<!-- ELSE -->
+				<div style="float: right;">{SOCIAL_CONNECT_BUTTONS}</div>
+			<!-- ENDIF -->
+		<!-- ENDIF -->
 		<!-- IF GL_BLOCK -->
 		<!-- BEGIN ghleft_blocks_row -->{ghleft_blocks_row.OUTPUT}<!-- END ghleft_blocks_row -->
 		<!-- ELSE -->

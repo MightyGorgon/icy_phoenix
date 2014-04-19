@@ -272,14 +272,7 @@ else
 
 	$Image = new ImgObj();
 
-	if ($pic_info['filetype'] == 'jpg')
-	{
-		$Image->ReadSourceFileJPG($pic_info['fullpath']);
-	}
-	else
-	{
-		$Image->ReadSourceFile($pic_info['fullpath']);
-	}
+	$Image->ReadSourceFile($pic_info['fullpath']);
 
 	$Image->Resize($thumbnail_width, $thumbnail_height);
 
@@ -291,15 +284,7 @@ else
 
 	if ($album_config['thumbnail_cache'] == true)
 	{
-		if ($pic_info['filetype'] == 'jpg')
-		{
-			$Image->SendToFileJPG($pic_info['thumbnail_s_fullpath'], $album_config['thumbnail_quality']);
-		}
-		else
-		{
-			$Image->SendToFile($pic_info['thumbnail_s_fullpath'], $album_config['thumbnail_quality']);
-		}
-		//$Image->SendToFile($pic_info['thumbnail_s_fullpath'], $album_config['thumbnail_quality']);
+		$Image->SendToFile($pic_info['thumbnail_s_fullpath'], $album_config['thumbnail_quality']);
 		//@chmod($pic_info['thumbnail_s_fullpath'], 0777);
 
 		$sql = "UPDATE " . ALBUM_TABLE . "
@@ -308,14 +293,7 @@ else
 		$result = $db->sql_query($sql);
 	}
 
-	if ($pic_info['filetype'] == 'jpg')
-	{
-		$Image->SendToBrowserJPG($pic_info['title_reg'], $pic_info['filetype'], 'thumb_', '', $album_config['thumbnail_quality']);
-	}
-	else
-	{
-		$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], 'thumb_', '', $album_config['thumbnail_quality']);
-	}
+	$Image->SendToBrowser($pic_info['title_reg'], $pic_info['filetype'], 'thumb_', '', $album_config['thumbnail_quality']);
 
 	if ($Image == true)
 	{

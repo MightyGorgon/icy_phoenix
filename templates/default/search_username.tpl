@@ -1,9 +1,5 @@
 <!-- INCLUDE simple_header.tpl -->
 
-<!-- IF S_AJAX_FEATURES -->
-<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/ajax/ajax_searchfunctions.js"></script>
-<!-- ENDIF -->
-
 <script type="text/javascript">
 // <![CDATA[
 function refresh_username(selected_username)

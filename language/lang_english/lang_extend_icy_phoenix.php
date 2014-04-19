@@ -31,6 +31,7 @@ $lang = array_merge($lang, array(
 	'15_Various_Settings' => 'Various Settings',
 	'20_SQL_Charge' => 'SQL Optimization',
 	'25_Users' => 'Users',
+	'27_Social_Networks' => 'Social Networks',
 	'30_Posting' => 'Posting And Messages',
 	'40_IMG_Posting' => 'Images In Posts',
 	'50_Hierarchy_setting' => 'Forum',
@@ -204,14 +205,15 @@ if ($lang_extend_admin)
 		'IP_img_shoutbox' => 'Disable [img][/img] bbcode on Shoutbox',
 		'IP_img_shoutbox_explain' => 'Enabling this option will disable [img][/img] bbcode on Shoutbox.',
 
-		'IP_index_links' => 'Links :: Forum Index',
-		'IP_index_links_explain' => 'Enabling this option will enable Links on <b>Forum Index</b>.',
-
 		'IP_index_birthday' => 'Birthday :: Forum Index',
 		'IP_index_birthday_explain' => 'Enabling this option will enable Birthdays on <b>Forum Index</b>.',
 
 		'IP_show_random_quote' => 'Random Quotes :: Forum Index',
 		'IP_show_random_quote_explain' => 'Enabling this option will enable random quotes to be shown on <b>Forum Index</b>',
+
+// TAB - Users
+		'IP_user_allow_pm_register' => 'Enable PM (Private Messages) for new users',
+		'IP_user_allow_pm_register_explain' => 'Enabling this option will enable PM for new registered users. If disabled, new users will not be able to send PM unless an admin enables the option for the specific user.',
 
 // Spam Section
 		'IP_spam_measures_header' => 'Spam Measures',
@@ -239,6 +241,16 @@ if ($lang_extend_admin)
 		'IP_time_6h' => '6 Hours',
 		'IP_time_12h' => '12 Hours',
 		'IP_time_24h' => '24 Hours',
+
+// TAB - Social networks
+		'Enable_Social_Networks_Login' => 'Enable Social Networks Login (Global Switch)',
+		'Enable_Social_Networks_Login_Explain' => 'Allow users login and register using their social networks accounts.',
+		'Facebook_Login_Settings' => 'Facebook Login Settings',
+		'Facebook_Login_Settings_explain' => 'Please follow the instructions to get your App ID and App Secret:<br />- Visit the <a href="https://developers.facebook.com/" target="_blank">Facebook Developers website</a>.<br />- Login with your Facebook account.<br />- Create a new application.<br />- Disable "Sandbox Mode".<br />- Include your App Domain, with no http/https nor www (ie icyphoenix.com).<br />- Enable the option "Website with Facebook Login", and insert your website url, with http/https AND www (ie http://www.icyphoenix.com).<br />- Save the changes.<br />- Write your App ID and App Secret below.',
+		'Enable_Facebook_Login' => 'Enable Facebook Login',
+		'Enable_Facebook_Login_explain' => 'Allow users login and register using their Facebook account. Remember adding your app tokens below.',
+		'Facebook_App_ID' => 'App ID',
+		'Facebook_App_Secret' => 'App Secret',
 
 // TAB - Posting
 		'IP_posts_precompiled' => 'Disable Precompiled Posts For Guests',
@@ -478,9 +490,6 @@ if ($lang_extend_admin)
 		'IP_similar_ignore_forums_ids_explain' => 'Enter the ID\'s of forums, in which the similar topics will be ignored (for example test forum, forum for talk, etc.). One ID per line.',
 
 // TAB - Logging And Security
-		'IP_admin_protect' => 'Protect Main Admin Account',
-		'IP_admin_protect_explain' => 'Enabling this option will add more security to Main Admin: it can\'t be demoted by others administrators or users.',
-
 		'IP_ip_admins_only' => 'Display IP Addresses To Admins Only',
 		'IP_ip_admins_only_explain' => 'Enabling this option will allow only administrators to view IP addresses in forums and profiles (disabling this option will allow also moderators to display IP addresses).',
 

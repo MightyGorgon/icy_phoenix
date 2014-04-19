@@ -15,6 +15,7 @@
 *
 */
 
+define('ROBOTS_NOINDEX', true);
 define('IN_ICYPHOENIX', true);
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
@@ -22,8 +23,8 @@ include(IP_ROOT_PATH . 'common.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_admin.' . PHP_EXT);
 
-include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
-$mcp_topic = new class_mcp_topic();
+if (!class_exists('class_mcp')) include(IP_ROOT_PATH . 'includes/class_mcp.' . PHP_EXT);
+if (empty($class_mcp)) $class_mcp = new class_mcp();
 
 @include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
 $class_topics = new class_topics();
@@ -122,7 +123,7 @@ if ($confirm)
 	{
 		$topics = (isset($_POST['topic_id_list'])) ? $_POST['topic_id_list'] : array($topic_id);
 
-		if($mcp_topic->topic_recycle($topics, $forum_id))
+		if($class_mcp->topic_recycle($topics, $forum_id))
 		{
 			$message = $lang['Topics_Moved_bin'];
 		}

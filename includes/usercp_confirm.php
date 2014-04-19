@@ -304,7 +304,7 @@ if (!empty($config['use_captcha']))
 	header("Cache-Control: no-store, no-cache, max-age=0, must-revalidate");
 	(!$jpeg) ? header("Content-Type: image/png") : header("Content-Type: image/jpeg");
 
-	(!$jpeg) ? imagepng($image) : imagejpeg($image, '', $img_quality);
+	(!$jpeg) ? imagepng($image) : imagejpeg($image, null, $img_quality);
 	imagedestroy($image);
 	exit;
 

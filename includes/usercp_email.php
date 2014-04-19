@@ -57,9 +57,10 @@ if ($row = $db->sql_fetchrow($result))
 	$user_lang = $row['user_lang'];
 	$user_level = $row['user_level'];
 
-	if ($config['emails_only_to_admins'] == true)
+	if (!empty($config['emails_only_to_admins']))
 	{
-		if (($user_level != JUNIOR_ADMIN) && ($user_level != ADMIN))
+		$email_allowed = (($user_level == JUNIOR_ADMIN) || ($user_level == ADMIN)) ? true : false;
+		if (!$email_allowed)
 		{
 			message_die(GENERAL_MESSAGE, $lang['Emails_Only_To_Admins_Error']);
 		}

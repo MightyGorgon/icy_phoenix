@@ -515,7 +515,7 @@ if ($mode == 'install')
 
 		$dbms_file = IP_ROOT_PATH . $__stats_config['modules_dir'] . '/' . $module_info['dname'] . '_' . $available_dbms[$dbms]['SCHEMA'] . '.sql';
 
-		$remove_remarks = $available_dbms[$dbms]['COMMENTS'];;
+		$remove_remarks = $available_dbms[$dbms]['COMMENTS'];
 		$delimiter = $available_dbms[$dbms]['DELIM'];
 		$delimiter_basic = $available_dbms[$dbms]['DELIM_BASIC'];
 
@@ -534,8 +534,8 @@ if ($mode == 'install')
 			$sql_query = @fread(@fopen($dbms_file, 'r'), @filesize($dbms_file));
 			$sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
 
-			$sql_query = $remove_remarks($sql_query);
-			$sql_query = split_sql_file($sql_query, $delimiter);
+			$db->remove_remarks($sql_query);
+			$sql_query = $db->split_sql_file($sql_query, $delimiter);
 
 			$sql_count = sizeof($sql_query);
 

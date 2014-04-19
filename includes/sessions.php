@@ -1450,7 +1450,7 @@ class session
 		}
 	}
 
-//<!-- BEGIN Unread Post Information to Database Mod -->
+// UPI2DB - BEGIN
 	/**
 	* UPI2DB
 	*/
@@ -1470,7 +1470,7 @@ class session
 			}
 		}
 	}
-//<!-- END Unread Post Information to Database Mod -->
+// UPI2DB - END
 
 }
 
@@ -1656,7 +1656,7 @@ class user extends session
 		}
 		// MG Logs - END
 
-		//<!-- BEGIN Unread Post Information to Database Mod -->
+		// UPI2DB - BEGIN
 		if (!defined('IN_CMS') && $this->data['upi2db_access'])
 		{
 			if (!defined('UPI2DB_UNREAD'))
@@ -1668,7 +1668,7 @@ class user extends session
 		{
 			$this->data['upi2db_unread'] = array();
 		}
-		//<!-- END Unread Post Information to Database Mod -->
+		// UPI2DB - END
 
 		// Mighty Gorgon Edit
 		// DISABLED BY MG
@@ -1805,8 +1805,8 @@ class user extends session
 		{
 			$mob_get = (isset($_GET['mob']) && (intval($_GET['mob']) == 0)) ? 0 : 1;
 			$_GET['mob'] = $mob_get;
-			$this->set_cookie('mob', $mob_get, 31536000);
 			$_COOKIE[$config['cookie_name'] . '_mob'] = $mob_get;
+			$this->set_cookie('mob', $mob_get, $user->cookie_expire);
 
 			if (empty($mob_get))
 			{
@@ -1824,8 +1824,8 @@ class user extends session
 		if (empty($disable_mobile_style) && !empty($this->data['is_mobile']) && !defined('IN_CMS') && !defined('IN_ADMIN'))
 		{
 			$this->data['mobile_style'] = true;
-			$this->set_cookie('mob', 1, 31536000);
 			$_COOKIE[$config['cookie_name'] . '_mob'] = 1;
+			$this->set_cookie('mob', 1, $user->cookie_expire);
 			$theme = setup_mobile_style();
 		}
 		else
