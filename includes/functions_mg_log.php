@@ -28,7 +28,7 @@ function ip_log($content, $db_log, $error_log = false)
 			return true;
 			break;
 		case CMS_PAGE_POSTING:
-			if ((strpos(strtolower($page_array['query_string']), strtolower('mode=quote')) !== false) || (strpos(strtolower($page_array['query_string']), strtolower('mode=smilies')) !== false) || (strpos(strtolower($page_array['query_string']), strtolower('mode=thank')) !== false) || (strpos(strtolower($page_array['query_string']), strtolower('mode=topicreview')) !== false))
+			if ((strpos(strtolower($page_array['query_string']), strtolower('mode=quote')) !== false) || (strpos(strtolower($page_array['query_string']), strtolower('mode=smilies')) !== false) || (strpos(strtolower($page_array['query_string']), strtolower('mode=topicreview')) !== false))
 			{
 				return true;
 			}

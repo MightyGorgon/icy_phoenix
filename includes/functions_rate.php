@@ -181,38 +181,6 @@ function rate_topic($user_id, $topic_id, $rating, $mode = 'rate')
 {
 	global $db, $config, $cache, $user, $template, $lang;
 
-	if (!empty($_POST['thanks_user']))
-	{
-		// Check if user is the topic starter
-		$sql = "SELECT topic_poster
-				FROM " . TOPICS_TABLE . "
-				WHERE topic_id = '" . $topic_id . "'";
-		$result = $db->sql_query($sql);
-
-		if (!($topic_starter_check = $db->sql_fetchrow($result)))
-		{
-			message_die(GENERAL_ERROR, 'Couldn\'t check for topic starter', '', __LINE__, __FILE__, $sql);
-		}
-
-		if ($topic_starter_check['topic_poster'] == $user->data['user_id'])
-		{
-			$message = $lang['t_starter'];
-			$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_TOPIC_URL . '=' . $topic_id) . '">', '</a>');
-			message_die(GENERAL_MESSAGE, $message);
-		}
-
-		$sql = "INSERT INTO " . THANKS_TABLE . " (topic_id, user_id, thanks_time)
-		VALUES ('" . $topic_id . "', '" . $user_id . "', '" . time() . "') ";
-		$result = $db->sql_query($sql);
-
-		// MG Cash MOD For IP - BEGIN
-		if (!empty($config['plugins']['cash']['enabled']))
-		{
-			$message .= '<br />' . $GLOBALS['cm_posting']->cash_update_thanks($topic_starter_check['topic_poster']);
-		}
-		// MG Cash MOD For IP - END
-	}
-
 	if ($mode == 'rate')
 	{
 		$sql = "INSERT INTO " . RATINGS_TABLE . "

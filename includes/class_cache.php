@@ -860,13 +860,19 @@ class acm
 	function remove_file($filename, $check = false, $cache_folder = '')
 	{
 		$cache_folder = $this->validate_cache_folder($cache_folder, false, false);
-		if ($check && !@is_writable($cache_folder))
+		$cache_filename = $cache_folder . $filename;
+		if (@file_exists($cache_filename))
 		{
-			// Better avoid calling trigger_error
-			die('Unable to remove files within ' . $cache_folder . '. Please check directory permissions.');
+			$file_unlink = @unlink($cache_filename);
+			if ($check && !$file_unlink && !@is_writable($cache_folder))
+			{
+				// Better avoid calling trigger_error
+				die('Unable to remove ' . $cache_filename . '. Please check directory permissions.');
+			}
+			return $file_unlink;
 		}
 
-		return @unlink($cache_folder . $filename);
+		return true;
 	}
 
 	/**

@@ -159,14 +159,12 @@ if ($lang_extend_admin)
 
 		'IP_enable_new_messages_number' => 'Show the number of new messages since last visit',
 
-		'IP_disable_thanks_topics' => 'Disable Thanks (Global Switch)',
-
-		'IP_show_thanks_profile' => 'Show Thanks received when viewing profile',
-
-		'IP_show_thanks_viewtopic' => 'Show Thanks received when viewing topics',
-
 		'IP_disable_likes_posts' => 'Disable Posts Like (Global Switch)',
 		'IP_disable_likes_posts_explain' => 'This option allows you to disable globally &quot;Like This Post&quot; feature',
+
+		'IP_show_thanks_profile' => 'Show Likes received when viewing profile',
+
+		'IP_show_thanks_viewtopic' => 'Show Likes received when viewing topics',
 
 		'IP_disable_topic_view' => 'Disable "Who read this topic" (Global Switch)',
 		'IP_disable_topic_view_explain' => 'This option allows you to disable &quot;Who read this topic&quot; feature (this saves SQL space).',

@@ -202,9 +202,10 @@ function user_get_thanks_received($user_id)
 
 	$total_thanks_received = 0;
 	$sql = "SELECT COUNT(th.topic_id) AS total_thanks
-					FROM " . THANKS_TABLE . " th, " . TOPICS_TABLE . " t
+					FROM " . POSTS_LIKES_TABLE . " th, " . TOPICS_TABLE . " t
 					WHERE t.topic_poster = '" . $user_id . "'
-						AND t.topic_id = th.topic_id";
+						AND t.topic_id = th.topic_id
+						AND th.post_id = t.topic_first_post_id";
 	$result = $db->sql_query($sql);
 	$row = $db->sql_fetchrow($result);
 	$total_thanks_received = $row['total_thanks'];

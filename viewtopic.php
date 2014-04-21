@@ -270,7 +270,7 @@ $count_sql = (!$post_id ? '' : (", COUNT(p2.post_id) AS prev_posts"));
 $order_sql = (!$post_id ? '' : ("GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard ORDER BY p.post_id ASC"));
 
 // Let's try to query all fields for topics and forums... it should not require too much resources as we are querying only one row
-//$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_thanks, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard" . $count_sql . "
+//$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard" . $count_sql . "
 $sql = "SELECT t.*, f.*, u.*" . $count_sql . "
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f," . USERS_TABLE . " u" . $join_sql_table . "
 	WHERE $join_sql
@@ -339,29 +339,6 @@ if ($forum_topic_data['forum_kb_mode'])
 		$kb_mode_append_red = '&kb=on';
 	}
 }
-
-// Thanks Mod - BEGIN
-$show_thanks = false;
-if (empty($config['disable_thanks_topics']) && !empty($forum_topic_data['forum_thanks']) && !$user->data['is_bot'])
-{
-	$show_thanks = true;
-	$show_thanks_button = false;
-	if ($user->data['session_logged_in'])
-	{
-		$sql_thanked = "SELECT topic_id
-				FROM " . THANKS_TABLE . "
-				WHERE topic_id = " . $topic_id . "
-					AND user_id = " . $user->data['user_id'] . "
-				LIMIT 1";
-		$result_thanked = $db->sql_query($sql_thanked);
-		if (!$has_thanked = $db->sql_fetchrow($result_thanked))
-		{
-			$show_thanks_button = true;
-		}
-		$db->sql_freeresult($result_thanked);
-	}
-}
-// Thanks Mod - END
 
 // Set or remove bookmark - BEGIN
 $setbm = request_var('setbm', '');
@@ -774,10 +751,6 @@ $view_forum_url = append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $
 $view_prev_topic_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;view=previous');
 $view_next_topic_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;view=next');
 
-// Begin Thanks Mod
-$thank_topic_url = append_sid('posting.' . PHP_EXT . '?mode=thank&amp;' . $forum_id_append . '&amp;' . $topic_id_append);
-// End Thanks Mod
-
 // Mozilla navigation bar
 //SEO TOOLKIT BEGIN
 $nav_links['prev'] = array(
@@ -809,15 +782,6 @@ else
 	$can_reply = true;
 	$template->assign_var('S_CAN_REPLY', true);
 }
-
-// Begin Thanks Mod
-$thank_img = $images['thanks'];
-$thank_alt = $lang['thanks_alt'];
-if ($show_thanks_button && ($postrow[0]['topic_poster'] != $user->data['user_id']))
-{
-	$template->assign_var('S_THANKS', true);
-}
-// End Thanks Mod
 
 // Set a cookie for this topic
 if ($user->data['session_logged_in'] && !$user->data['is_bot'])
@@ -1180,7 +1144,6 @@ $template->assign_vars(array(
 
 	'POST_IMG' => $post_img,
 	'REPLY_IMG' => $reply_img,
-	'THANKS_IMG' => $thank_img,
 	'IS_LOCKED' => $is_this_locked,
 
 	'TOPIC_TITLE_ENC' => $topic_title_enc,
@@ -1225,8 +1188,6 @@ $template->assign_vars(array(
 	'L_VIEW_NEXT_TOPIC' => $lang['View_next_topic'],
 	'L_VIEW_PREVIOUS_TOPIC' => $lang['View_previous_topic'],
 	'L_GO_TO_PAGE_NUMBER' => $lang['Go_To_Page_Number'],
-	'L_THANKS' => $thank_alt,
-	'L_THANKS_ADD_RATE' => $lang['thanks_add_rate'],
 	'L_POST_NEW_TOPIC' => $post_alt,
 	'L_POST_REPLY_TOPIC' => $reply_alt,
 	'L_POST_QUOTE' => $lang['Reply_with_quote'],
@@ -1337,7 +1298,6 @@ $template->assign_vars(array(
 	'U_VIEW_FORUM' => $view_forum_url,
 	'U_VIEW_OLDER_TOPIC' => $view_prev_topic_url,
 	'U_VIEW_NEWER_TOPIC' => $view_next_topic_url,
-	'U_THANKS' => $thank_topic_url,
 	'U_POST_NEW_TOPIC' => $new_topic_url,
 	'U_POST_REPLY_TOPIC' => $reply_topic_url
 	)
@@ -1354,57 +1314,6 @@ include(IP_ROOT_PATH . 'includes/viewtopic_events_reg.' . PHP_EXT);
 // Event Registration - END
 
 init_display_post_attachments($forum_topic_data['topic_attachment']);
-
-// Begin Thanks Mod
-// Get topic thanks
-if ($show_thanks)
-{
-	// Select Format for the date
-	$timeformat = "d F";
-	$sql = "SELECT u.user_id, u.username, u.user_active, u.user_color, t.thanks_time
-			FROM " . THANKS_TABLE . " t, " . USERS_TABLE . " u
-			WHERE t.topic_id = " . $topic_id . "
-			AND t.user_id = u.user_id";
-	$result = $db->sql_query($sql);
-	$total_thank = $db->sql_numrows($result);
-	$thanksrow = array();
-	if ($fil = $db->sql_fetchrow($result))
-	{
-		do
-		{
-			$thanksrow[] = $fil;
-		}
-		while ($fil = $db->sql_fetchrow($result));
-	}
-	$db->sql_freeresult($result);
-	$thanks = '';
-	for($i = 0; $i < $total_thank; $i++)
-	{
-		// Get thanks date
-		$thanks_date[$i] = create_date_ip($timeformat, $thanksrow[$i]['thanks_time'], $config['board_timezone'], true);
-		// Make thanker profile link
-		$thanks .= (($thanks != '') ? ', ' : '') . colorize_username($thanksrow[$i]['user_id'], $thanksrow[$i]['username'], $thanksrow[$i]['user_color'], $thanksrow[$i]['user_active']) . ' (' . $thanks_date[$i] . ')';
-	}
-
-	$sql = "SELECT t.topic_poster, u.user_id, u.username, u.user_active, u.user_color
-			FROM " . TOPICS_TABLE . " t, " . USERS_TABLE . " u
-			WHERE t.topic_id = " . $topic_id . "
-				AND t.topic_poster = u.user_id
-			LIMIT 1";
-	$result = $db->sql_query($sql);
-
-	$author = array();
-	if ($fil = $db->sql_fetchrow($result))
-	{
-		$author[] = $fil;
-	}
-	$db->sql_freeresult($result);
-
-	$author_name = colorize_username($author[0]['user_id'], $author[0]['username'], $author[0]['user_color'], $author[0]['user_active']);
-
-	$thanks2 = $lang['thanks_to'] . ' ' . $author_name . $lang['thanks_end'];
-}
-// End Thanks Mod
 
 if ($config['enable_quick_quote'])
 {
@@ -1539,13 +1448,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$user_ranks['rank_01_html'] = '&nbsp;';
 	}
 	// Mighty Gorgon - Multiple Ranks - END
-
-	$poster_thanks_received = '';
-	if (($poster_id != ANONYMOUS) && ($user->data['user_id'] != ANONYMOUS) && $config['show_thanks_viewtopic'] && empty($config['disable_thanks_topics']) && !$lofi)
-	{
-		$total_thanks_received = user_get_thanks_received($poster_id);
-		$poster_thanks_received = ($total_thanks_received > 0) ? ($lang['THANKS_RECEIVED'] . ': ' . '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_thanks=' . $poster_id) . '">' . $total_thanks_received . '</a>' . '<br />') : '';
-	}
 
 	// Handle anon users posting with usernames
 	if (($poster_id == ANONYMOUS) && ($postrow[$i]['post_username'] != ''))
@@ -2387,7 +2289,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'POSTER_GENDER' => $gender_image,
 		'POSTER_JOINED' => $poster_joined,
 		'POSTER_POSTS' => $poster_posts,
-		'POSTER_THANKS_RECEIVED' => $poster_thanks_received,
 		'POSTER_FROM' => $poster_from,
 		'POSTER_FROM_FULL' => $poster_from_full,
 		'POSTER_FROM_FLAG' => $poster_from_flag,
@@ -2435,6 +2336,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'ALBUM' => $album,
 		'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
 
+		'S_OWN_POST' => ($user->data['user_id'] == $poster_id) ? true : false,
 		'S_POST_EDIT' => $edit_switch,
 		'S_POST_DELETE' => $delpost_switch,
 		'S_USER_ALLOW_VIEWEMAIL' => $email_switch,
@@ -2684,17 +2586,6 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 
 	display_post_attachments($postrow[$i]['post_id'], $postrow[$i]['post_attachment']);
-
-	if(!empty($show_thanks) && ($i == 0) && ($current_page == 1) && !empty($thanks))
-	{
-		$template->assign_block_vars('postrow.thanks', array(
-			'THANKS' => $thanks,
-			'THANKFUL' => $lang['thankful'],
-			'THANKS2' => $lang ['thanks2'],
-			'THANKS3' => $thanks2
-			)
-		);
-	}
 
 	//if ((!$forum_topic_data['forum_status'] == FORUM_LOCKED) && (!$forum_topic_data['topic_status'] == TOPIC_LOCKED) && ($is_auth['auth_reply']) && ($user->data['session_logged_in']))
 	if ((!$forum_topic_data['forum_status'] == FORUM_LOCKED) && (!$forum_topic_data['topic_status'] == TOPIC_LOCKED) && ($is_auth['auth_reply']) && $config['enable_quick_quote'] && !$user->data['is_bot'])

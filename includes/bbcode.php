@@ -2091,7 +2091,7 @@ class bbcode
 					}
 
 					$sql = "SELECT *
-						FROM " . THANKS_TABLE . "
+						FROM " . POSTS_LIKES_TABLE . "
 						WHERE topic_id = " . intval($topic_id) . "
 						AND user_id = " . $user->data['user_id'];
 					$db->sql_return_on_error(true);

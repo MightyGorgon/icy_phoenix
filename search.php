@@ -175,7 +175,7 @@ $search_cat = request_var('search_cat', -1);
 $search_forum = request_var('search_forum', -1);
 
 $search_thanks = request_var('search_thanks', 0);
-$search_thanks = (($search_thanks >= '2') && empty($config['disable_thanks_topics'])) ? $search_thanks : false;
+$search_thanks = (($search_thanks >= '2') && empty($config['disable_likes_posts'])) ? $search_thanks : false;
 
 $search_where = request_post_var('search_where', 'Root');
 $search_where_topic = request_post_var('search_where_topic', 'Root');
@@ -873,18 +873,20 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				if ($auth_sql != '')
 				{
 					$sql = "SELECT DISTINCT(t.topic_id), f.forum_id
-									FROM " . THANKS_TABLE . " th, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
+									FROM " . POSTS_LIKES_TABLE . " th, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 									WHERE t.topic_poster = '" . $search_thanks . "'
 										AND t.topic_id = th.topic_id
 										AND t.forum_id = f.forum_id
+										AND th.post_id = t.topic_first_post_id
 										AND $auth_sql";
 				}
 				else
 				{
 					$sql = "SELECT DISTINCT(t.topic_id)
-									FROM " . THANKS_TABLE . " th, " . TOPICS_TABLE . " t
+									FROM " . POSTS_LIKES_TABLE . " th, " . TOPICS_TABLE . " t
 									WHERE t.topic_poster = '" . $search_thanks . "'
-										AND t.topic_id = th.topic_id";
+										AND t.topic_id = th.topic_id
+										AND th.post_id = t.topic_first_post_id";
 				}
 			}
 			else

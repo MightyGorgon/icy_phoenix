@@ -767,15 +767,17 @@ class class_topics
 		*/
 
 		// Check if the user already liked this post!
-		$sql = "SELECT COUNT(user_id) AS total_likes
-			FROM " . POSTS_LIKES_TABLE . "
-			WHERE post_id = " . $post_data['post_id'] . "
-				AND user_id = " . $post_data['user_id'];
+		$sql = "SELECT COUNT(pl.user_id) AS total_likes, p.poster_id
+			FROM " . POSTS_LIKES_TABLE . " pl, " . POSTS_TABLE . " p
+			WHERE pl.post_id = " . $post_data['post_id'] . "
+				AND p.post_id = pl.post_id
+				AND pl.user_id = " . $post_data['user_id'];
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
-		$total_likes = $total['total_likes'];
+		$total_likes = $row['total_likes'];
+		$poster_id = $row['poster_id'];
 
-		if (empty($total_likes))
+		if (empty($total_likes) && ($poster_id != $post_data['user_id']))
 		{
 			$sql_ary = array(
 				'topic_id' => $post_data['topic_id'],
@@ -785,6 +787,9 @@ class class_topics
 			);
 
 			$sql_insert = $db->sql_build_insert_update($sql_ary, true);
+
+			$sql = "UPDATE " . TOPICS_TABLE . " SET topic_likes = topic_likes + 1 WHERE topic_id = " . $post_data['topic_id'];
+			$db->sql_query($sql);
 
 			$sql = "UPDATE " . POSTS_TABLE . " SET post_likes = post_likes + 1 WHERE post_id = " . $post_data['post_id'];
 			$db->sql_query($sql);
@@ -803,10 +808,13 @@ class class_topics
 	{
 		global $db, $cache, $config, $user, $lang;
 
-		if (empty($post_data) || empty($post_data['post_id']) || empty($post_data['user_id']))
+		if (empty($post_data) || empty($post_data['topic_id']) || empty($post_data['post_id']) || empty($post_data['user_id']))
 		{
 			return false;
 		}
+
+		$sql = "UPDATE " . TOPICS_TABLE . " SET topic_likes = topic_likes - 1 WHERE topic_id = " . $post_data['topic_id'];
+		$db->sql_query($sql);
 
 		$sql = "UPDATE " . POSTS_TABLE . " SET post_likes = post_likes - 1 WHERE post_id = " . $post_data['post_id'];
 		$db->sql_query($sql);
@@ -883,6 +891,9 @@ class class_topics
 			return false;
 		}
 
+		$sql = "UPDATE " . TOPICS_TABLE . " SET topic_likes = 0 WHERE topic_id = " . $post_data['topic_id'];
+		$db->sql_query($sql);
+
 		$sql = "UPDATE " . POSTS_TABLE . " SET post_likes = 0 WHERE topic_id = " . $post_data['topic_id'];
 		$db->sql_query($sql);
 
@@ -895,13 +906,17 @@ class class_topics
 	/**
 	* Posts Likes ReSync
 	*/
-	function posts_likes_resync()
+	function topics_posts_likes_resync()
 	{
 		global $db, $cache, $config, $user, $lang;
 
-		$sql = "UPDATE " . POSTS_TABLE . " p, " . POSTS_LIKES_TABLE . " pl
-			SET p.post_likes = COUNT(pl.post_id), pl.topic_id = p.topic_id
-			WHERE pl.post_id = p.post_id";
+		$sql = "UPDATE " . POSTS_TABLE . " p SET p.post_likes = (SELECT COUNT(pl.post_id) FROM " . POSTS_LIKES_TABLE . " pl WHERE pl.post_id = p.post_id)";
+		$db->sql_query($sql);
+
+		$sql = "UPDATE " . POSTS_TABLE . " p, " . POSTS_LIKES_TABLE . " pl SET pl.topic_id = p.topic_id WHERE pl.post_id = p.post_id";
+		$db->sql_query($sql);
+
+		$sql = "UPDATE " . TOPICS_TABLE . " t SET t.topic_likes = (SELECT COUNT(pl.topic_id) FROM " . POSTS_LIKES_TABLE . " pl WHERE pl.topic_id = t.topic_id)";
 		$db->sql_query($sql);
 
 		return true;

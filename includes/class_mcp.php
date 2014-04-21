@@ -78,10 +78,6 @@ class class_mcp
 		$db->sql_transaction('begin');
 		$db->sql_query($sql);
 
-		$sql = "DELETE FROM " . THANKS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
 		$sql = "DELETE FROM " . BOOKMARK_TABLE . "
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
@@ -413,7 +409,7 @@ class class_mcp
 	*/
 	function topic_merge($topics, $new_topic_id, $forum_id)
 	{
-		global $db, $cache, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		$topics_ids = array();
 		for($i = 0; $i < sizeof($topics); $i++)
@@ -456,10 +452,6 @@ class class_mcp
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$result = $db->sql_query($sql);
 
-		$sql = "DELETE FROM " . THANKS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
-		$db->sql_query($sql);
-
 		$sql = "DELETE FROM " . BOOKMARK_TABLE . "
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids);
 		$db->sql_query($sql);
@@ -501,6 +493,12 @@ class class_mcp
 			$class_topics_tags->update_tag_entry($tags);
 		}
 		// TAGS - END
+
+		// LIKES - BEGIN
+		@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+		$class_topics = new class_topics();
+		$class_topics->topics_posts_likes_resync();
+		// LIKES - END
 
 		$db->sql_transaction('commit');
 
@@ -605,6 +603,12 @@ class class_mcp
 			WHERE post_id IN (" . $post_id_sql . ")";
 		$db->sql_query($sql);
 		// UPI2DB - END
+
+		// LIKES - BEGIN
+		@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+		$class_topics = new class_topics();
+		$class_topics->topics_posts_likes_resync();
+		// LIKES - END
 
 		$db->sql_transaction('commit');
 
@@ -779,6 +783,9 @@ class class_mcp
 					$db->sql_query($sql);
 					// UPI2DB - END
 
+					$sql = "DELETE FROM " . POSTS_LIKES_TABLE . " WHERE post_id = $post_id";
+					$db->sql_query($sql);
+
 					if (!function_exists('remove_search_post'))
 					{
 						include(IP_ROOT_PATH . 'includes/functions_search.' . PHP_EXT);
@@ -813,6 +820,12 @@ class class_mcp
 		{
 			$this->sync('forum', $forum_id);
 		}
+
+		// LIKES - BEGIN
+		@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+		$class_topics = new class_topics();
+		$class_topics->topics_posts_likes_resync();
+		// LIKES - END
 
 		$this->sync_cache(0, 0);
 		board_stats();

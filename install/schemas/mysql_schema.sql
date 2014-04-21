@@ -543,7 +543,6 @@ CREATE TABLE `phpbb_forums` (
 	`forum_last_poster_name` VARCHAR(255) DEFAULT '' NOT NULL,
 	`forum_last_poster_color` VARCHAR(16) DEFAULT '' NOT NULL,
 	`forum_postcount` TINYINT(1) NOT NULL DEFAULT '1',
-	`forum_thanks` TINYINT(1) NOT NULL DEFAULT '0',
 	`forum_likes` TINYINT(1) NOT NULL DEFAULT '0',
 	`forum_notify` TINYINT(1) unsigned NOT NULL DEFAULT '1',
 	`forum_limit_edit_time` TINYINT(1) NOT NULL DEFAULT '0',
@@ -1718,19 +1717,6 @@ CREATE TABLE `phpbb_stats_modules` (
 
 ## --------------------------------------------------------
 
-## `phpbb_thanks`
-
-CREATE TABLE `phpbb_thanks` (
-	`topic_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
-	`user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
-	`thanks_time` INT(11) NOT NULL DEFAULT '0'
-);
-
-## `phpbb_thanks`
-
-
-## --------------------------------------------------------
-
 ## `phpbb_themes`
 
 CREATE TABLE `phpbb_themes` (
@@ -1800,6 +1786,7 @@ CREATE TABLE `phpbb_topics` (
 	`topic_time` INT(11) unsigned NOT NULL DEFAULT '0',
 	`topic_views` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
 	`topic_replies` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
+	`topic_likes` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
 	`topic_status` TINYINT(3) NOT NULL DEFAULT '0',
 	`topic_type` TINYINT(3) NOT NULL DEFAULT '0',
 	`poll_title` VARCHAR(255) DEFAULT '' NOT NULL,

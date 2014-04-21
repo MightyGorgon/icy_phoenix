@@ -129,12 +129,35 @@ ALTER TABLE `phpbb_users` ADD `user_500px` varchar(255) DEFAULT '' NOT NULL AFTE
 
 
 
+########################################
+##              BUILD 097             ##
+########################################
+DELETE FROM `phpbb_config` WHERE `config_name` = 'disable_thanks_topics';
+ALTER TABLE `phpbb_forums` DROP `forum_thanks`;
+ALTER TABLE `phpbb_topics` ADD `topic_likes` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0' AFTER `topic_replies`;
+
+INSERT IGNORE INTO `phpbb_posts_likes`
+SELECT th.topic_id, t.topic_first_post_id, th.user_id, th.thanks_time
+FROM `phpbb_thanks` th, `phpbb_topics` t
+WHERE t.topic_id = th.topic_id;
+
+ALTER IGNORE TABLE `phpbb_posts_likes` ADD UNIQUE INDEX unique_idx_name (topic_id, post_id, user_id);
+ALTER IGNORE TABLE `phpbb_posts_likes` DROP INDEX unique_idx_name;
+#DELETE n1 FROM `phpbb_posts_likes` n1, `phpbb_posts_likes` n2 WHERE n1.like_time > n2.like_time AND ((n1.topic_id = n2.topic_id) AND (n1.post_id = n2.post_id) AND (n1.user_id = n2.user_id));
+DROP TABLE IF EXISTS `phpbb_thanks`;
+DELETE pl FROM `phpbb_posts_likes` pl, `phpbb_posts` p WHERE pl.post_id = p.post_id AND pl.user_id = p.poster_id;
+UPDATE `phpbb_posts` p SET p.post_likes = (SELECT COUNT(pl.post_id) FROM `phpbb_posts_likes` pl WHERE pl.post_id = p.post_id);
+UPDATE `phpbb_posts` p, `phpbb_posts_likes` pl SET pl.topic_id = p.topic_id WHERE pl.post_id = p.post_id;
+UPDATE `phpbb_topics` t SET t.topic_likes = (SELECT COUNT(pl.topic_id) FROM `phpbb_posts_likes` pl WHERE pl.topic_id = t.topic_id);
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.10.96' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.11.97' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

@@ -81,10 +81,6 @@ function update_icon(newimage)
 	<td class="row2"><input type="radio" name="forum_limit_edit_time" value="1"{FORUM_LIMIT_EDIT_TIME_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_limit_edit_time" value="0"{FORUM_LIMIT_EDIT_TIME_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="genmed"><b>{L_FORUM_THANK}</b></span></td>
-	<td class="row2"><input type="radio" name="forum_thanks" value="1"{FORUM_THANK_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_thanks" value="0"{FORUM_THANK_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
-</tr>
-<tr>
 	<td class="row1"><span class="genmed"><b>{L_FORUM_LIKES}</b></span><br /><span class="gensmall">{L_FORUM_LIKES_EXPLAIN}</span></td>
 	<td class="row2"><input type="radio" name="forum_likes" value="1"{FORUM_LIKE_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_likes" value="0"{FORUM_LIKE_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
 </tr>

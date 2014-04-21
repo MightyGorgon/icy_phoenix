@@ -625,7 +625,6 @@ $sql = "SELECT t.*, u.username, u.user_id, u.user_active, u.user_mask, u.user_co
 //#AND t.topic_type <> " . POST_GLOBAL_ANNOUNCE . "
 // UPI2DB - END
 $result = $db->sql_query($sql);
-$cached2 = $db->cached;
 $total_topics = 0;
 // UPI2DB - BEGIN
 // REPLACE
@@ -742,33 +741,7 @@ else
 // UPI2DB - END
 $db->sql_freeresult($result);
 
-if((isset($cached1) && $cached1) || (isset($cached2) && $cached2))
-{
-	$update_list = array();
-	for($i = 0; $i < sizeof($topic_rowset); $i++)
-	{
-		$update_list[] = $topic_rowset[$i]['topic_id'];
-	}
-	if(sizeof($update_list))
-	{
-		$sql = "SELECT topic_id, topic_views FROM " . TOPICS_TABLE . " WHERE topic_id IN (" . implode(', ', $update_list) . ")";
-		$list = array();
-		$result = $db->sql_query($sql);
-		while($row = $db->sql_fetchrow($result))
-		{
-			$list[$row['topic_id']] = $row['topic_views'];
-		}
-		$db->sql_freeresult($result);
-		for($i = 0; $i < sizeof($topic_rowset); $i++)
-		{
-			if(isset($list[$topic_rowset[$i]['topic_id']]))
-			{
-				$topic_rowset[$i]['topic_views'] = $list[$topic_rowset[$i]['topic_id']];
-			}
-		}
-		unset($list);
-	}
-}
+$forum_likes_switch = !empty($tree['data'][$CH_this]['forum_likes']) ? true : false;
 
 // Total topics ...
 $total_topics += $total_announcements;
@@ -939,6 +912,7 @@ $template->assign_vars(array(
 	'MODERATORS' => $forum_moderators,
 	'POST_IMG' => ($forum_row['forum_status'] == FORUM_LOCKED) ? $images['post_locked'] : $images['post_new'],
 	'IS_LOCKED' => $is_this_locked,
+	'S_FORUM_LIKES_SWITCH' => $forum_likes_switch,
 
 	'FOLDER_IMG' => $images['topic_nor_read'],
 	'FOLDER_NEW_IMG' => $images['topic_nor_unread'],
@@ -1237,6 +1211,7 @@ if($total_topics)
 			'GOTO_PAGE_FULL' => $topic_pagination['full'],
 			'REPLIES' => $replies,
 			'VIEWS' => $views,
+			'LIKES' => $topic_rowset[$i]['topic_likes'],
 			'FIRST_POST_TIME' => $first_post_time,
 			'LAST_POST_TIME' => $last_post_time,
 			'LAST_POST_AUTHOR' => $last_post_author,

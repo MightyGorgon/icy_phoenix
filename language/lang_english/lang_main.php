@@ -2123,7 +2123,7 @@ $lang = array_merge($lang, array(
 	'Reserved_Topic' => '[ RESERVED TOPIC ]',
 	'Reserved_Post' => '[ RESERVED POST ]',
 
-	'THANKS_RECEIVED' => 'Thanks received',
+	'THANKS_RECEIVED' => 'Likes received',
 
 	'RECENT_USER_ACTIVITY' => 'Recent user activity',
 	'USER_TOPICS_STARTED' => 'Topics started',

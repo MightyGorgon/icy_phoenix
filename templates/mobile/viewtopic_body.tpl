@@ -13,7 +13,6 @@
 	<!-- IF not S_BOT -->
 		<a href="{U_POST_NEW_TOPIC}" class="gradient link">{L_POST_NEW_TOPIC}</a>
 		<a href="{U_POST_REPLY_TOPIC}" class="gradient link">{L_POST_REPLY_TOPIC}</a>
-		<!-- IF S_THANKS --><a href="{U_THANKS}" class="gradient link">{L_THANKS}</a><!-- ENDIF --><br />
 	<!-- ENDIF -->
 	{PAGE_NUMBER} {PAGINATION}<br />
 </div>

@@ -397,7 +397,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auth_view_pi
 ########################################
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_postimage_org', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_new_messages_number', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_thanks_topics', '0');
 ## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('show_calendar_box_index', '0');
 
 
@@ -1412,7 +1411,6 @@ CREATE TABLE `___forums___` (
 	`forum_topics` mediumint(8) unsigned NOT NULL default '0',
 	`forum_last_post_id` mediumint(8) unsigned NOT NULL default '0',
 	`forum_postcount` tinyint(1) NOT NULL default '1',
-	`forum_thanks` tinyint(1) NOT NULL default '0',
 	`forum_notify` tinyint(1) unsigned NOT NULL default '1',
 	`forum_similar_topics` tinyint(1) NOT NULL default '0',
 	`forum_tags` tinyint(1) NOT NULL default '0',
@@ -1453,7 +1451,7 @@ CREATE TABLE `___forums___` (
 );
 
 INSERT INTO `___forums___`
-SELECT f.forum_id, f.cat_id, f.main_type, f.forum_name, f.forum_desc, f.forum_status, f.forum_order, f.forum_posts, f.forum_topics, f.forum_last_post_id, f.forum_postcount, f.thank, f.forum_notify, 0, 0, 0, 0, 0, 1, forum_link, f.forum_link_internal, f.forum_link_hit_count, f.forum_link_hit, f.icon, f.prune_next, f.prune_enable, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_globalannounce, f.auth_news, f.auth_cal, f.auth_vote, f.auth_pollcreate, f.auth_attachments, f.auth_download, f.auth_ban, f.auth_greencard, f.auth_bluecard, f.auth_rate
+SELECT f.forum_id, f.cat_id, f.main_type, f.forum_name, f.forum_desc, f.forum_status, f.forum_order, f.forum_posts, f.forum_topics, f.forum_last_post_id, f.forum_postcount, f.forum_notify, 0, 0, 0, 0, 0, 1, forum_link, f.forum_link_internal, f.forum_link_hit_count, f.forum_link_hit, f.icon, f.prune_next, f.prune_enable, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_globalannounce, f.auth_news, f.auth_cal, f.auth_vote, f.auth_pollcreate, f.auth_attachments, f.auth_download, f.auth_ban, f.auth_greencard, f.auth_bluecard, f.auth_rate
 FROM `phpbb_forums` f
 ORDER BY f.forum_id;
 

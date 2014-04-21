@@ -101,6 +101,7 @@ switch ($req_version)
 	case '20995': $current_ip_version = '2.0.9.95'; break;
 	case '201096': $current_ip_version = '2.0.10.96'; break;
 	case '201197': $current_ip_version = '2.0.11.97'; break;
+	case '201298': $current_ip_version = '2.0.12.98'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -340,7 +341,6 @@ if (substr($mode, 0, 6) == 'update')
 			`time` int(10) NOT NULL default '0'
 		)";
 
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `thank` TINYINT(1) DEFAULT '1' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_notify` TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_link` VARCHAR(255) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_link_internal` TINYINT(1) DEFAULT '0' NOT NULL";
@@ -844,12 +844,6 @@ if (substr($mode, 0, 6) == 'update')
 			`module_info_time` int(10) unsigned NOT NULL default '0',
 			`module_cache_time` int(10) unsigned NOT NULL default '0',
 			PRIMARY KEY (`module_id`)
-		)";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "thanks` (
-			`topic_id` mediumint(8) NOT NULL default '0',
-			`user_id` mediumint(8) NOT NULL default '0',
-			`thanks_time` int(11) NOT NULL default '0'
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "title_infos` (
@@ -2197,7 +2191,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('auth_view_pic_upload', '1')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('enable_postimage_org', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('enable_new_messages_number', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('disable_thanks_topics', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('show_calendar_box_index', '0')";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "ajax_shoutbox_sessions` (
@@ -3120,7 +3113,6 @@ if (substr($mode, 0, 6) == 'update')
 				`forum_topics` mediumint(8) unsigned NOT NULL default '0',
 				`forum_last_post_id` mediumint(8) unsigned NOT NULL default '0',
 				`forum_postcount` tinyint(1) NOT NULL default '1',
-				`forum_thanks` tinyint(1) NOT NULL default '0',
 				`forum_notify` tinyint(1) unsigned NOT NULL default '1',
 				`forum_similar_topics` TINYINT(1) NOT NULL DEFAULT '0',
 				`forum_tags` TINYINT(1) NOT NULL DEFAULT '0',
@@ -3172,7 +3164,7 @@ if (substr($mode, 0, 6) == 'update')
 			)";
 
 			$sql[] = "INSERT INTO `___forums___`
-			SELECT f.forum_id, f.cat_id, f.main_type, f.forum_name, f.forum_desc, f.forum_status, f.forum_order, f.forum_posts, f.forum_topics, f.forum_last_post_id, f.forum_postcount, f.thank, f.forum_notify, 0, 0, 0, 0, 0, 1, forum_link, f.forum_link_internal, f.forum_link_hit_count, f.forum_link_hit, f.icon, f.prune_next, f.prune_enable, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_globalannounce, f.auth_news, f.auth_cal, f.auth_vote, f.auth_pollcreate, f.auth_attachments, f.auth_download, f.auth_ban, f.auth_greencard, f.auth_bluecard, f.auth_rate
+			SELECT f.forum_id, f.cat_id, f.main_type, f.forum_name, f.forum_desc, f.forum_status, f.forum_order, f.forum_posts, f.forum_topics, f.forum_last_post_id, f.forum_postcount, f.forum_notify, 0, 0, 0, 0, 0, 1, forum_link, f.forum_link_internal, f.forum_link_hit_count, f.forum_link_hit, f.icon, f.prune_next, f.prune_enable, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_globalannounce, f.auth_news, f.auth_cal, f.auth_vote, f.auth_pollcreate, f.auth_attachments, f.auth_download, f.auth_ban, f.auth_greencard, f.auth_bluecard, f.auth_rate
 			FROM `" . $table_prefix . "forums` f
 			ORDER BY f.forum_id";
 
@@ -3863,7 +3855,7 @@ if (substr($mode, 0, 6) == 'update')
 		)";
 
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('disable_likes_posts', '1')";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_likes` tinyint(1) NOT NULL DEFAULT '0' AFTER `forum_thanks`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_likes` tinyint(1) NOT NULL DEFAULT '0' AFTER `forum_postcount`";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`";
 
 		// Still not sure which one of this code will do the trick... anyway it's not really important... :-)
@@ -4553,9 +4545,26 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.10.96 */
 		case '2.0.10.96':
+			$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'disable_thanks_topics'";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "forums` DROP `forum_thanks`";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_likes` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0' AFTER `topic_replies`";
+			$sql[] = "INSERT IGNORE INTO `" . $table_prefix . "posts_likes` SELECT th.topic_id, t.topic_first_post_id, th.user_id, th.thanks_time FROM `" . $table_prefix . "thanks` th, `" . $table_prefix . "topics` t WHERE t.topic_id = th.topic_id";
+
+			$sql[] = "ALTER IGNORE TABLE `" . $table_prefix . "posts_likes` ADD UNIQUE INDEX unique_idx_name (topic_id, post_id, user_id)";
+			$sql[] = "ALTER IGNORE TABLE `" . $table_prefix . "posts_likes` DROP INDEX unique_idx_name";
+			//$sql[] = "DELETE n1 FROM `" . $table_prefix . "posts_likes` n1, `" . $table_prefix . "posts_likes` n2 WHERE n1.like_time > n2.like_time AND ((n1.topic_id = n2.topic_id) AND (n1.post_id = n2.post_id) AND (n1.user_id = n2.user_id))";
+			$sql[] = "DROP TABLE IF EXISTS `" . $table_prefix . "thanks`";
+			$sql[] = "DELETE pl FROM `" . $table_prefix . "posts_likes` pl, `" . $table_prefix . "posts` p WHERE pl.post_id = p.post_id AND pl.user_id = p.poster_id";
+			$sql[] = "UPDATE `" . $table_prefix . "posts` p SET p.post_likes = (SELECT COUNT(pl.post_id) FROM `" . $table_prefix . "posts_likes` pl WHERE pl.post_id = p.post_id)";
+			$sql[] = "UPDATE `" . $table_prefix . "posts` p, `" . $table_prefix . "posts_likes` pl SET pl.topic_id = p.topic_id WHERE pl.post_id = p.post_id";
+			$sql[] = "UPDATE `" . $table_prefix . "topics` t SET t.topic_likes = (SELECT COUNT(pl.topic_id) FROM `" . $table_prefix . "posts_likes` pl WHERE pl.topic_id = t.topic_id)";
+
 
 		/* Updating from IP 2.0.11.97 */
 		case '2.0.11.97':
+
+		/* Updating from IP 2.0.12.98 */
+		case '2.0.12.98':
 
 	}
 

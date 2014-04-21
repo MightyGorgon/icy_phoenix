@@ -161,12 +161,6 @@
 							<!-- ENDIF -->
 						</td>
 					</tr>
-					<!-- BEGIN show_thanks_profile -->
-					<tr>
-						<td class="row2" valign="top"><b><span class="genmed">{L_THANKS_RECEIVED}</span></b></td>
-						<td class="row1"><span class="genmed">{THANKS_RECEIVED}</span></td>
-					</tr>
-					<!-- END show_thanks_profile -->
 					<!-- IF FEEDBACK -->
 					<tr>
 						<td class="row2" valign="top" width="30%"><b><span class="genmed">{L_FEEDBACK_RECEIVED}</span></b></td>

@@ -115,8 +115,9 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 	),
 
-	'disable_thanks_topics' => array(
-		'lang_key' => 'IP_disable_thanks_topics',
+	'disable_likes_posts' => array(
+		'lang_key' => 'IP_disable_likes_posts',
+		'explain' => 'IP_disable_likes_posts_explain',
 		'type' => 'LIST_RADIO',
 		'default' => 1,
 		'values' => $this->list_yes_no,
@@ -129,20 +130,14 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 	),
 
+/*
 	'show_thanks_viewtopic' => array(
 		'lang_key' => 'IP_show_thanks_viewtopic',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,
 	),
-
-	'disable_likes_posts' => array(
-		'lang_key' => 'IP_disable_likes_posts',
-		'explain' => 'IP_disable_likes_posts_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 1,
-		'values' => $this->list_yes_no,
-	),
+*/
 
 	'disable_topic_view' => array(
 		'lang_key' => 'IP_disable_topic_view',

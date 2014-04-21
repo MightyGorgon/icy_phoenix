@@ -515,7 +515,7 @@ CREATE TABLE `phpbb_posts_likes` (
 );
 
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_likes_posts', '1');
-ALTER TABLE `phpbb_forums` ADD `forum_likes` tinyint(1) NOT NULL DEFAULT '0' AFTER `forum_thanks`;
+ALTER TABLE `phpbb_forums` ADD `forum_likes` tinyint(1) NOT NULL DEFAULT '0' AFTER `forum_postcount`;
 ALTER TABLE `phpbb_posts` ADD `post_likes` mediumint(8) unsigned NOT NULL DEFAULT '0' AFTER `post_bluecard`;
 #### POST LIKE - END
 

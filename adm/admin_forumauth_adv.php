@@ -28,7 +28,6 @@ include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 $forum_options = array(
 	//'forum_status' => $lang['Status_locked'],
 	'forum_likes' => $lang['FORUM_LIKES'],
-	'forum_thanks' => $lang['use_thank'],
 	'forum_similar_topics' => $lang['FORUM_SIMILAR_TOPICS'],
 	'forum_limit_edit_time' => $lang['FORUM_LIMIT_EDIT_TIME'],
 	'forum_topic_views' => $lang['FORUM_TOPIC_VIEWS'],

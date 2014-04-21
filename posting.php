@@ -302,9 +302,6 @@ switch($mode)
 	case 'topicreview':
 		$is_auth_type = 'auth_read';
 		break;
-	case 'thank':
-		$is_auth_type = 'auth_read';
-		break;
 	default:
 		message_die(GENERAL_MESSAGE, $lang['No_post_mode']);
 		break;
@@ -336,7 +333,6 @@ switch ($mode)
 			WHERE f.forum_id = " . $forum_id . "
 			LIMIT 1";
 		break;
-	case 'thank':
 	case 'reply':
 	case 'vote':
 	// Event Registration - BEGIN
@@ -431,7 +427,7 @@ if ($result && $post_info)
 	{
 		message_die(GENERAL_MESSAGE, $lang['Forum_locked']);
 	}
-	elseif (($mode != 'newtopic') && ($mode != 'thank') && ($post_info['topic_status'] == TOPIC_LOCKED) && !$is_auth['auth_mod'])
+	elseif (($mode != 'newtopic') && ($post_info['topic_status'] == TOPIC_LOCKED) && !$is_auth['auth_mod'])
 	{
 		message_die(GENERAL_MESSAGE, $lang['Topic_locked']);
 	}
@@ -676,7 +672,6 @@ if (!$is_auth[$is_auth_type] || (!empty($is_auth_type_cal) && !$is_auth[$is_auth
 		case 'newtopic':
 			$redirect = 'mode=newtopic&' . $forum_id_append;
 			break;
-		case 'thank':
 		case 'reply':
 		case 'topicreview':
 			$redirect = 'mode=reply&' . (!empty($forum_id_append) ? ($forum_id_append . '&') : '') . $topic_id_append;
@@ -865,73 +860,6 @@ if (($delete || $poll_delete || ($mode == 'delete')) && !$confirm)
 		)
 	);
 	full_page_generation('confirm_body.tpl', $lang['Confirm'], '', '');
-}
-elseif ($mode == 'thank')
-{
-	if (empty($topic_id))
-	{
-		message_die(GENERAL_MESSAGE, 'No topic Selected');
-	}
-
-	if (!($user->data['session_logged_in']))
-	{
-		$message = $lang['thanks_not_logged'];
-		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) . '">', '</a>');
-		message_die(GENERAL_MESSAGE, $message);
-	}
-
-	$userid = $user->data['user_id'];
-	$thanks_date = time();
-
-	// Check if user is the topic starter
-	$sql = "SELECT topic_poster
-			FROM " . TOPICS_TABLE . "
-			WHERE topic_id = '" . $topic_id . "'";
-	$result = $db->sql_query($sql);
-
-	if (!($topic_starter_check = $db->sql_fetchrow($result)))
-	{
-		message_die(GENERAL_ERROR, 'Couldn\'t check for topic starter', '', __LINE__, __FILE__, $sql);
-	}
-
-	if ($topic_starter_check['topic_poster'] == $user->data['user_id'])
-	{
-		$message = $lang['t_starter'];
-		$message .=  '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append) . '">', '</a>');
-		message_die(GENERAL_MESSAGE, $message);
-	}
-
-	// Check if user had thanked before
-	$sql = "SELECT topic_id
-			FROM " . THANKS_TABLE . "
-			WHERE topic_id = '" . $topic_id . "'
-			AND user_id = '" . $userid . "'";
-	$result = $db->sql_query($sql);
-
-	if (!($thankfull_check = $db->sql_fetchrow($result)))
-	{
-		// Insert thanks
-		$sql = "INSERT INTO " . THANKS_TABLE . " (topic_id, user_id, thanks_time)
-		VALUES ('" . $topic_id . "', '" . $userid . "', " . $thanks_date . ")";
-		$result = $db->sql_query($sql);
-		$message = $lang['thanks_add'];
-		// MG Cash MOD For IP - BEGIN
-		if (!empty($config['plugins']['cash']['enabled']))
-		{
-			$message .= '<br />' . $GLOBALS['cm_posting']->cash_update_thanks($topic_starter_check['topic_poster']);
-		}
-		// MG Cash MOD For IP - END
-	}
-	else
-	{
-		$message = $lang['thanked_before'];
-	}
-
-	$redirect_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . (!empty($forum_id_append) ? ($forum_id_append . '&amp;') : '') . $topic_id_append);
-	meta_refresh(3, $redirect_url);
-
-	$message .= '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . $redirect_url . '">', '</a>');
-	message_die(GENERAL_MESSAGE, $message);
 }
 elseif ($mode == 'vote')
 {

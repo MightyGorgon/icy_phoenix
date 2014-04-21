@@ -209,7 +209,7 @@ else
 
 // Mighty Gorgon - Thanks Received - BEGIN
 $total_thanks_received = 0;
-if ($config['show_thanks_profile'] && empty($config['disable_thanks_topics']))
+if ($config['show_thanks_profile'] && empty($config['disable_likes_posts']))
 {
 	$total_thanks_received = user_get_thanks_received($profiledata['user_id']);
 	$template->assign_block_vars('show_thanks_profile', array());
