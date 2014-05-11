@@ -10,14 +10,13 @@
 *
 **/
 <!-- END xs_file_version -->
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}">
 <head>
 <meta http-equiv="content-type" content="text/html; charset={S_CONTENT_ENCODING}" />
-<meta http-equiv="Content-Style-Type" content="text/css">
-<link rel="stylesheet" href="{XS_PATH}style.css" type="text/css">
-<style>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<link rel="stylesheet" href="{XS_PATH}style.css" type="text/css" />
+<style type="text/css">
 <!--
 body { background-image: url('{XS_PATH}images/top_bg.gif'); }
 td.white { background-color: #1D80B2; color: #FFF; font-size: 11px; }
@@ -31,7 +30,7 @@ td.white a:hover, td.white a:active { color: #FF9933; text-decoration: none; }
 </style>
 </head>
 <body>
-<table width="100%" height="100%" cellspacing="0" cellpadding="0">
+<table width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td align="left" valign="top" width="285">
 		<div class="div_logo"><img src="{XS_PATH}images/top_logo.jpg" width="285" height="50" alt="" /></div>
