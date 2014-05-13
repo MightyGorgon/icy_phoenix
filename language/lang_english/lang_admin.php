@@ -135,9 +135,9 @@ $lang = array_merge($lang, array(
 	'Auth_Control_User' => 'User Permissions Control',
 	'Auth_Control_Group' => 'Group Permissions Control',
 	'Auth_Control_Forum' => 'Forum Permissions Control',
-// Start add Permission List
+// Permission List - BEGIN
 	'Auth_list_Control_Forum' => 'All Forums Permissions Control',
-// End add Permission List
+// Permission List - END
 	'Look_up_User' => 'Look up User',
 	'Look_up_Group' => 'Look up Group',
 	'Look_up_Forum' => 'Look up Forum',
@@ -145,9 +145,9 @@ $lang = array_merge($lang, array(
 	'Group_auth_explain' => 'Alter the permissions and moderator status assigned to each user group. Do not forget when changing group permissions that individual user permissions may still allow the user entry to forums, etc. You will be warned if this is the case.',
 	'User_auth_explain' => 'Alter the permissions and moderator status assigned to each individual user. Do not forget when changing user permissions that group permissions may still allow the user entry to forums, etc. You will be warned if this is the case.',
 	'Forum_auth_explain' => 'Alter the authorization levels of each forum. You will have both a simple and advanced method for doing this, where advanced offers greater control of each forum operation. Remember that changing the permission level of forums will affect which users can carry out the various operations within them.',
-// Start add Permission List
+// Permission List - BEGIN
 	'Forum_auth_list_explain' => 'Alter the authorization levels of each forum. Remember that changing the permission level of forums will affect which users can carry out the various operations within them.',
-// End add Permission List
+// Permission List - END
 
 	'Simple_mode' => 'Simple Mode',
 	'Advanced_mode' => 'Advanced Mode',
@@ -284,10 +284,10 @@ $lang = array_merge($lang, array(
 	'Date_format' => 'Date Format',
 	'System_timezone' => 'System Timezone',
 	'Enable_gzip' => 'Enable GZip Compression',
-// Start Gzip Compression Level MOD
+// Gzip Compression Level - BEGIN
 	'Gzip_level' => 'Gzip Compression Level',
 	'Gzip_level_explain' => 'Change the compression level (a number between 0-9). 0 is equivalent to off, 1 is very low, and 9 is the maximum. 9 is recommended.',
-// End Gzip Compression Level MOD
+// Gzip Compression Level - END
 	'Enable_prune' => 'Enable Forum Pruning',
 	'Allow_HTML' => 'Allow HTML',
 	'Allow_BBCode' => 'Allow BBCode',
@@ -464,9 +464,9 @@ $lang = array_merge($lang, array(
 	'Admin_user_fail' => 'Couldn\'t update the user\'s profile.',
 	'Admin_user_updated' => 'The user\'s profile was successfully updated.',
 	'Click_return_useradmin' => 'Click %sHere%s to return to User Administration',
-//Start Quick Administrator User Options and Information MOD
+// Quick Administrator User Options and Information - BEGIN
 	'Click_return_userprofile' => 'Click %sHere%s to return to the user\'s profile',
-//End Quick Administrator User Options and Information MOD
+// Quick Administrator User Options and Information - END
 	'User_delete' => 'Delete this user',
 	'User_delete_explain' => 'Click here to delete this user; <u><em>this cannot be undone.</em></u>',
 	'User_deleted' => 'User was successfully deleted.',
@@ -661,7 +661,7 @@ $lang = array_merge($lang, array(
 	'Td_class2' => 'Table Cell Class 2',
 	'Td_class3' => 'Table Cell Class 3',
 
-// Admin Userlist Start
+// Admin Userlist
 	'Userlist' => 'User list',
 	'Userlist_description' => 'View a complete list of your users and perform various actions on them',
 
@@ -700,8 +700,6 @@ $lang = array_merge($lang, array(
 	'User_add_group_successfully' => 'User(s) added to group successfully!',
 
 	'Click_return_userlist' => 'Click %sHere%s to return to the User List',
-//
-// Admin Userlist End
 
 // Version Check
 	'Version_up_to_date' => 'Your installation is up to date, no updates are available for your version of phpBB.',
@@ -722,7 +720,7 @@ $lang = array_merge($lang, array(
 	'sig_divider' => 'Current Signature Divider',
 	'sig_explain' => 'Control what divides the user\'s signature from their post',
 
-// BIRTHDAY - BEGIN
+// BIRTHDAY
 	'Birthday_required' => 'Force users to submit a birthday',
 	'Enable_birthday_greeting' => 'Enable birthday greetings',
 	'Birthday_greeting_explain' => 'Enable Users who have submitted a date of birth to have a birthday greeting via PM when they visit the board. To enable/disable Birthdays Email, you need to check the <b>Cron</b> section in <b>Main Settings</b>.',
@@ -734,9 +732,8 @@ $lang = array_merge($lang, array(
 	'Min_user_age_explain' => 'This is the minimum age a user can set in his profile',
 	'Birthday_lookforward' => 'Birthday look forward',
 	'Birthday_lookforward_explain' => 'Number of days the script should look forward to for users with a birthday',
-// BIRTHDAY - END
 
-// Start add - Yellow card admin MOD
+// Yellow card admin
 	'Max_user_bancard' => 'Maximum number of warnings',
 	'Max_user_bancard_explain' => 'If a user gets more yellow cards than this limit, the user will be banned',
 	'ban_card' => 'Yellow card',
@@ -750,21 +747,19 @@ $lang = array_merge($lang, array(
 	'Report_forum' => 'Report forum',
 	'Report_forum_explain' => 'Select the forum where users\' reports are to be posted. Users MUST have at least post/reply access to this forum',
 
-// Start add - Last visit MOD
+// Last visit
 	'Hidde_last_logon' => 'Hide last logon time',
 	'Hidde_last_logon_explain' => 'If this is set to yes, users last logon time is visible only to administrators',
-// End add - Last visit MOD
-//
-// Start add - Online/Offline/Hidden Mod
+
+// Online/Offline/Hidden
 	'Online_time' => 'Online status time',
 	'Online_time_explain' => 'Number of seconds a user must be displayed online (do not use a lower value than 60).',
 	'Online_setting' => 'Online Status Setting',
 	'Online_color' => 'Online text colour',
 	'Offline_color' => 'Offline text colour',
 	'Hidden_color' => 'Hidden text colour',
-// End add - Online/Offline/Hidden Mod
 
-// Disallow other admins to delete or edit the first admin MOD
+// Disallow other admins to delete or edit the first admin
 	'L_LISTOFADMINEDIT' => 'Blocked access to the account of the first admin',
 	'L_LISTOFADMINEDITEXP' => 'This is a list of blocked access for the account of the first admin of the forum. Other admins have tried to change, delete or set him to a normal user. No conversion of the profile data and/or the permissions of the first Admin took place and were successfully blocked. This list can be cleared only by the first admin of the forum.',
 	'L_LISTOFADMINEDITUSERS' => 'List of blocked access for the first admin account',
@@ -782,7 +777,7 @@ $lang = array_merge($lang, array(
 	'Default_avatar_guests_url' => 'Path to the default avatar for Guests',
 	'Default_avatar_users_url' => 'Path to the default avatar for Users',
 
-// Start Optimize Database
+// Optimize Database
 	'Optimize' => 'Optimize',
 	'Optimize_explain' => 'Optimize and remove empty spaces from the database.<br />This operation should be performed regularly for maximum reliability, speed and execution.',
 	'Optimize_DB' => 'Optimize Database',
@@ -816,12 +811,10 @@ $lang = array_merge($lang, array(
 	'Optimize_success' => 'The Database has been successfully optimized',
 	'Optimize_NoTableChecked' => '<b>No</b> Tables Checked',
 
-// End Optimize Database
-// Start add - Global announcement MOD
+// Global announcement
 	'Globalannounce' => 'Global Announce',
-// End add - Global announcement MOD
 
-// google bot detector by pukapuka
+// Google bot detector by pukapuka
 	'Detector' => 'Google Bot Detector',
 	'Detector_Explain' => '',
 	'Detector_ID' => '#',
@@ -832,7 +825,7 @@ $lang = array_merge($lang, array(
 	'Detector_Cleared' => 'Detect Information Cleared Successfully',
 	'Click_Return_Detector' => 'Click %sHere%s to return to Detector',
 
-// added to Auto group mod
+// Auto group
 	'group_count' => 'Number of required posts',
 	'group_count_max' => 'Number of max posts',
 	'group_count_updated' => '%d member(s) have been removed, %d members are added to this group',
@@ -842,12 +835,11 @@ $lang = array_merge($lang, array(
 	'User_allow_ag' => 'Activate Auto Group',
 	'group_count_explain' => 'When users have posted more posts than this value <i>(in any forum)</i> then they will be added to this usergroup<br /> This only applies if "Users automatically added when posting" are enabled',
 
-// Start add - Bin Mod
+// Bin Mod
 	'Bin_forum' => 'Bin forum',
 	'Bin_forum_explain' => 'Use the forum ID to where topics will be trashed; a value of 0 will disable this feature. You should edit this forum permissions to allow or not allow access/view/post or reply for users.',
-// End add - Bin Mod
 
-// Begin Quick Title Edition Mod 1.0.0 by Xavier Olive.
+// Quick Title Edition 1.0.0 by Xavier Olive.
 	'Title_infos' => 'Quick Title Edition Management',
 	'Must_select_title' => 'You must select a quick title add-on',
 	'Title_updated' => 'Quick Title Add-on updated',
@@ -863,9 +855,8 @@ $lang = array_merge($lang, array(
 	'Title_perm_info' => 'Permissions',
 	'Title_perm_info_explain' => 'Users with these levels will be able to use this Quick Title Add-on',
 	'Title_info' => 'Quick Title Add-on',
-// End Quick Title Edition Mod 1.0.0 by Xavier Olive.
 
-// Limit Image Width MOD
+// Limit Image Width
 	'Available' => 'Available',
 	'Unavailable' => 'Unavailable',
 	'LIW_title' => 'Limit Image Width MOD',
@@ -917,7 +908,7 @@ $lang = array_merge($lang, array(
 	'xs_news_dateformat' => 'Date Format',
 	'xs_news_dateformat_helper' => 'Using this format: %s',
 
-// Bantron Mod : Begin
+// Bantron - BEGIN
 	'Bantron' => 'Bantron',
 	'BM_Title' => 'Bantron',
 	'BM_Explain' => 'Add, edit, view and remove the bans in place on this board.',
@@ -961,12 +952,12 @@ $lang = array_merge($lang, array(
 	'BM_24_hour' => '24-Hour',
 
 	'BM_Ban_reasons' => 'Ban Reasons',
-// Bantron Mod : End
+// Bantron - END
 
 	'board_disable_message' => 'Display a message for the deactivation of the site.',
 	'board_disable_message_texte' => 'Message which will appear when the site is deactivated',
 
-// Start Edit Notes MOD
+// Edit Notes
 	'Edit_notes_settings' => 'Edit Notes Settings',
 	'Edit_notes_enable' => 'Enable edit notes',
 	'Edit_notes_enable_explain' => 'Enable/disable edit notes on the board',
@@ -978,27 +969,26 @@ $lang = array_merge($lang, array(
 	'Edit_notes_staff' => 'Staff (admins and mods)',
 	'Edit_notes_reg' => 'Registered users (admins and mods too)',
 	'Edit_notes_all' => 'All users (guests, registered users, admins and mods)',
-// End Edit Notes MOD
 
-// BEGIN Disable Registration MOD
+// Disable Registration - BEGIN
 	'registration_status' => 'Disable registrations',
 	'registration_status_explain' => 'This will disable all new registrations to your board.',
 	'registration_closed' => 'Reason for closed registrations',
 	'registration_closed_explain' => 'A message that explains why registrations are closed, and appears if a user tries to register. Leave blank to show default explanation text.',
-// END Disable Registration MOD
+// Disable Registration - END
 
 	'Gender_required' => 'Force users to submit their gender',
 
-//admin user list mail
+// User list mail
 	'Usersname' => 'Users Name',
 	'Admin_Users_List_Mail_Title' => 'List users e-mail',
 	'Admin_Users_List_Mail_Explain' => 'Here a list of your users\'s e-mail',
 
-// Start add - Forum notification MOD
+// Forum notification - BEGIN
 	'Forum_notify' => 'Allow forum notification',
 	'Forum_notify_enabled' => 'Allow',
 	'Forum_notify_disabled' => 'Do not allow',
-// End add - Forum notification MOD
+// Forum notification - END
 
 	'Smilie_table_columns' => 'Smileys table columns',
 	'Smilie_table_rows' => 'Smileys table rows',
@@ -1114,7 +1104,7 @@ $lang = array_merge($lang, array(
 	'Avatar_generator_template_path' => 'Avatar Generator Template Path',
 	'Avatar_generator_template_path_explain' => 'Path under your Icy Phoenix root dir for template images, e.g. images/avatars/generator_templates',
 
-// Start Autolinks Mod
+// Autolinks - BEGIN
 	'Autolink_first' => 'Autolink each keyword once per post',
 
 	'Autolinks_title' => 'Autolinks',
@@ -1141,7 +1131,7 @@ $lang = array_merge($lang, array(
 	'No_autolinks' => 'There are no Autolinks in the database.',
 	'Must_enter_autolink' => 'You must enter a keyword, link text and a url.',
 	'Click_return_autolinkadmin' => 'Click %sHere%s to return to Autolink Administration',
-// End Autolinks Mod
+// Autolinks - END
 
 // XS BUILD 030
 
@@ -1192,7 +1182,7 @@ $lang = array_merge($lang, array(
 	'auth_view_ajax_chat_archive' => 'Chat Archive',
 	'auth_view_custom_pages' => 'Custom Pages',
 
-// Begin Yahoo Submit Your Site MOD by www.pentapenguin.com
+// Yahoo Submit Your Site by www.pentapenguin.com
 	'Yahoo_search' => 'Yahoo Search',
 	'Yahoo_search_settings' => 'Yahoo Search Settings',
 	'Yahoo_search_settings_explain' => 'Configure settings for the Yahoo Submit Your Site MOD. For more info, please see the <a href="http://submit.search.yahoo.com/free/request" target="_blank">Yahoo Submit Your Site website</a>.',
@@ -1215,7 +1205,6 @@ $lang = array_merge($lang, array(
 	'Yahoo_search_error_update_sql' => 'Error: cannot update field: %s',
 	'Yahoo_search_error_unknown_file_error' => 'Error: the file was not saved due to an unknown error.',
 	'Yahoo_search_file_done' => 'The URL listing file has finished processing. Please copy the URL below and paste it in the appropriate field in Yahoo:<br /><b>%s</b>',
-// Finish Yahoo Submit Your Site MOD by www.pentapenguin.com
 
 // Bookmark Mod
 	'Max_bookmarks_links' => 'Maximum bookmarks send in link-tag',
@@ -1241,7 +1230,7 @@ $lang = array_merge($lang, array(
 	'Confirm_delete_word' => 'Are you sure you want to delete this word censor?',
 	'Confirm_delete_rank' => 'Are you sure you want to delete this rank?',
 
-// Custom Profile Fields MOD
+// Custom Profile Fields - BEGIN
 	'custom_field_notice_admin' => 'These items have been created by you or another administrator. For more information, check the items under the Profile Fields heading in the navbar. Items marked with a * are required fields. Items marked with a &dagger; are only being displayed to admins.',
 
 	'field_deleted' => 'The specified field has been deleted',
@@ -1322,7 +1311,7 @@ $lang = array_merge($lang, array(
 	'no_profile_fields_exist' => 'No Custom Profile Fields Exist.',
 
 	'enter_a_name' => 'You <strong>must</strong> enter a field name<br /><br />Press back and try again',
-// END Custom Profile Fields MOD
+// Custom Profile Fields - END
 
 	'Add' => 'Add',
 	'split_global_announce' => 'Split Global Announcements',
@@ -1345,7 +1334,7 @@ $lang = array_merge($lang, array(
 	'Pics_Count_Not_Synchronized' => 'User\'s pics counters not synchronized correctly',
 
 // IP - BUILD 001
-// Ajax Shoutbox - BEGIN
+// Ajax Shoutbox
 	'Shoutbox_config' => 'AJAX Shoutbox Configuration',
 	'Shout_read_only' => 'Read Only',
 	'Displayed_shouts' => 'Displayed Shouts',
@@ -1355,9 +1344,8 @@ $lang = array_merge($lang, array(
 	'Shout_guest_allowed' => 'Guest Allowed',
 	'Shoutbox_flood' => 'Flood Interval',
 	'Shoutbox_flood_explain' => 'Number of seconds a user must wait between shouts.',
-// Ajax Shoutbox - END
 
-/* lang_postcount.php - BEGIN */
+/* lang_postcount.php */
 	'Postcounts' => 'Post Counts Management',
 	'Post_count_explain' => '<b>Edit the post count of a single user.</b>',
 	'Modify_post_counts' => 'Modify Post Counts',
@@ -1366,9 +1354,8 @@ $lang = array_merge($lang, array(
 	'Modify_post_count' => 'Modify post count',
 	'Edit_post_count' => 'Edit the post count for <b>%s</b>',
 	'Post_count' => 'Number Of Messages',
-/* lang_postcount.php - END */
 
-/* lang_megamail.php - BEGIN */
+/* lang_megamail.php */
 	'Megamail_Explain' => 'This feature allows you to send private messages or email to either all of your users, or all users in a specific group. To do this, an email will be sent out to the administrative email address supplied, with a blind carbon copy sent to all recipients.<br />Emails will be sent in several batches: this should circumvent timeout and server-load issues. The status of the mass mail sending will be saved in the db. You can close the window when you want to pause mass-mail-sending (the current batch will be sent out). You can simply continue later from where you left off.<br /><b>If HTML emails are enabled, then you should write emails using HTML code, inserting &lt;br /&gt; for a line break.</b><br /><b>If you chose to send FULL HTML emails, then remember that no template or css is used, so you have to insert a full html code, including HEAD and BODY tags.</b><br /><b>Please remember that Mass PM supports only BBCode, if you write a PM in HTML then it will not be correctly shown.</b>',
 	'megamail_inactive_users' => 'Non visiting users in the last {DAYS} days',
 	'megamail_header' => 'Your Email-Sessions',
@@ -1385,9 +1372,8 @@ $lang = array_merge($lang, array(
 	'megamail_delete_confirm' => 'Do you really want to delete this email?',
 	'megamail_deleted' => 'Email deleted successfully',
 	'megamail_click_return' => 'Click %sHere%s to return to Mass Emails / PM',
-/* lang_megamail.php - END */
 
-/* lang_admin_voting.php - BEGIN */
+/* lang_admin_voting.php */
 	'Admin_Vote_Explain' => 'Poll Results (who voted and how they voted).',
 	'Admin_Vote_Title' => 'Poll Administration',
 	'Vote_id' => '#',
@@ -1403,9 +1389,8 @@ $lang = array_merge($lang, array(
 	'Select_sort_field' => 'Select sort field',
 	'Sort_ascending' => 'Ascending',
 	'Sort_descending' => 'Descending',
-/* lang_admin_voting.php - END */
 
-/* lang_admin_gd_info.php - BEGIN */
+/* lang_admin_gd_info.php */
 	'GD_Title' => 'GD Info',
 	'NO_GD' => 'No GD',
 	'GD_Description' => 'Retrieve information about the currently installed GD library',
@@ -1421,9 +1406,8 @@ $lang = array_merge($lang, array(
 	'GD_Jis_Mapped_Support' => 'Japanese Font Support:',
 	'GD_True' => 'Yes',
 	'GD_False' => 'No',
-/* lang_admin_gd_info.php - END */
 
-/* lang_admin_captcha.php - BEGIN */
+/* lang_admin_captcha.php */
 	'VC_Captcha_Config' => 'CAPTCHA',
 	'captcha_config_explain' => '<b>Determine the appearance of the picture used by visual confirmation when activated.</b>',
 	'VC_active' => 'Visual Confirmation is active!',
@@ -1460,7 +1444,6 @@ $lang = array_merge($lang, array(
 	'generate_jpeg' => 'Image type',
 	'generate_jpeg_explain' => 'The JPEG format has a higher compression ratio than png has, and the outcome (max 95%), has a direct influence on the legibility of the CAPTCHA.',
 	'generate_jpeg_quality' => 'Quality',
-/* lang_admin_captcha.php - END */
 
 /* lang_admin_topic_shadow.php - BEGIN */
 	'Del_Before_Date' => 'Deleted all Shadow Topics before %s<br />', // %s = insertion of date
@@ -1493,7 +1476,7 @@ $lang = array_merge($lang, array(
 	'Error_Topics_Table' => 'Error accessing topics table',
 /* lang_admin_topic_shadow.php - END */
 
-/* lang_admin_rebuild_search.php - BEGIN */
+/* lang_admin_rebuild_search.php */
 	'Rebuild_search' => 'Rebuild Search',
 	'Rebuild_search_desc' => 'This will index every post in your Knowledge Base and rebuild the search tables. It may take a long time to process, so please do not move from this page until it is complete.',
 	'Post_limit' => 'Post limit',
@@ -1502,9 +1485,8 @@ $lang = array_merge($lang, array(
 
 	'Next' => 'Next',
 	'Finished' => 'Finished',
-/* lang_admin_rebuild_search.php - END */
 
-/* lang_admin_faq_editor.php - BEGIN */
+/* lang_admin_faq_editor.php */
 	'faq_editor' => 'Edit Language',
 	'faq_editor_explain' => '<b>Edit and re-arrange your FAQ, BBCode FAQ or Board Rules.</b><br /><br /> You <u>should not</u> remove or alter the section entitled <b>phpBB 2 Issues</b> or <b>About Icy Phoenix</b>.',
 
@@ -1536,9 +1518,8 @@ $lang = array_merge($lang, array(
 
 	'faq_write_file' => 'Could not write to the language file!',
 	'faq_write_file_explain' => 'You must make the language file in language/lang_english/ or equivalent <i>writable</i> to use this control panel. On UNIX, this means running <code>chmod 666 filename</code>. Most FTP clients can do this through the properties sheet of a file, otherwise you can use telnet or SSH.',
-/* lang_admin_faq_editor.php - END */
 
-/* lang_admin_rules_editor.php - BEGIN */
+/* lang_admin_rules_editor.php */
 	'rules_editor' => 'Edit Language',
 	'rules_editor_explain' => 'Edit and re-arrange your Board rules. ',
 
@@ -1570,7 +1551,6 @@ $lang = array_merge($lang, array(
 
 	'rules_write_file' => 'Could not write to the language file!',
 	'rules_write_file_explain' => 'You must make the language file in language/lang_english/ or equivalent <i>writable</i> to use this control panel. On UNIX, this means running <code>chmod 666 filename</code>. Most FTP clients can do this through the properties sheet of a file, otherwise you can use telnet or SSH.',
-/* lang_admin_rules_editor.php - END */
 
 /* lang_admin_priv_msgs.php - BEGIN */
 	'PM_View_Type' => 'PM View Type',
