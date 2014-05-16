@@ -1,26 +1,14 @@
-//**************************************************************************
-//                            ajax_regfunctions.js
-//                            -------------------
-//   begin                : Sunday, Jul 17, 2005
-//   copyright            : (C) 2005 alcaeus
-//   email                : mods@alcaeus.org
-//
-//   $Id$
-//
-//**************************************************************************
+/**
+*
+* @file $Id ajax_regfunctions.js
+* @copyright 2005
+* @author alcaeus
+* @email < mods@alcaeus.org >
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*
+**/
 
-//**************************************************************************
-//
-//   This program is free software; you can redistribute it and/or modify
-//   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation; either version 2 of the License, or
-//   (at your option) any later version.
-//
-//**************************************************************************
-
-//
 // Compare passwords entered. Not really AJAX, but not less helpful ;)
-//
 function ComparePasswords(new_password, password_confirm)
 {
 	if (!ajax_core_defined)
