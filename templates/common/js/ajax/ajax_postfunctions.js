@@ -1,26 +1,13 @@
-//**************************************************************************
-//                           ajax_postfunctions.js
-//                            -------------------
-//   begin                : Saturday, Jul 16, 2005
-//   copyright            : (C) 2005 alcaeus
-//   email                : mods@alcaeus.org
-//
-//   $Id$
-//
-//**************************************************************************
+/**
+*
+* @file ajax_postfunctions.js
+* @copyright (C) 2005
+* @author alcaeus
+* @email < mods@alcaeus.org >
+*
+**/
 
-//**************************************************************************
-//
-//   This program is free software; you can redistribute it and/or modify
-//   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation; either version 2 of the License, or
-//   (at your option) any later version.
-//
-//**************************************************************************
-
-//
 // Inline search
-//
 function AJAXSearch(keywords)
 {
 	if (!ajax_core_defined)
@@ -28,7 +15,7 @@ function AJAXSearch(keywords)
 		return;
 	}
 
-	//Send search results
+	// Send search results
 	if (keywords != '')
 	{
 		ShowEmptyTitle(false);
@@ -58,13 +45,13 @@ function search_req_change()
 		return;
 	}
 
-	//Check if the request is completed, if not, just skip over
+	// Check if the request is completed, if not, just skip over
 	if (request.readyState == 4)
 	{
 		var keywords = '';
 		var search_id = 0;
 		var results = 0;
-		//If the request wasn't successful, we just hide any information we have.
+		// If the request wasn't successful, we just hide any information we have.
 		if (request.status == 200)
 		{
 			if (response_obj = request.responseXML)
@@ -155,9 +142,7 @@ function ShowEmptyTitle(show)
 	subject_tbl.style.display = (show) ? '' : 'none';
 }
 
-//
 // Username checking (post topic/post only)
-//
 function AJAXCheckPostUsername(username)
 {
 	if (!ajax_core_defined)
@@ -208,9 +193,7 @@ function AJAXFinishCheckPostUsername(result_code, error_msg)
 	setInnerText(username_text, error_msg);
 }
 
-//
 // Username checking (post topic/post only)
-//
 var timer_id = 0;
 var last_username = '';
 
@@ -330,9 +313,7 @@ function AJAXSelectPMUsername(selectfield)
 	setInnerText(username_text, '');
 }
 
-//
 // Instant post preview
-//
 function AJAXPreview(mode, post_id)
 {
 	if (!ajax_core_defined)
@@ -386,12 +367,12 @@ function AJAXPreview(mode, post_id)
 
 function post_preview_change()
 {
-	//Check if the request is completed, if not, just skip over
+	// Check if the request is completed, if not, just skip over
 	if (request.readyState == 4)
 	{
 		var result = AJAX_OP_COMPLETED;
 		var error_msg = '';
-		//If the request wasn't successful, we just hide any information we have.
+		// If the request wasn't successful, we just hide any information we have.
 		if (request.status == 200)
 		{
 			if (AJAX_DEBUG_RESULTS)
