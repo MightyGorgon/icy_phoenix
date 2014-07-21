@@ -22,7 +22,7 @@ if (!defined('IN_ICYPHOENIX'))
 
 define('ICYPHOENIX_VERSION', '2.0.11.97');
 
-// FOUNDER ID, this is the ID of the main admin of the site, only this user canc access special features of the site and this ID is also used to send Welcome and Birthday PM
+// FOUNDER ID, this is the ID of the main admin of the site, only this user can access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
 // ALLOW ONLY FOUNDER ACP, by setting this to true only the FOUNDER will be able to access ACP
 define('ONLY_FOUNDER_ACP', false);
@@ -375,7 +375,7 @@ define('SORT_ALPH_DEC', 3);
 define('TOP_LIST', -1);
 define('BOTTOM_LIST', 1);
 
-// Custom Profile Fields MOD - BEGIN
+// Custom Profile Fields
 define('TEXT_FIELD', 0);
 define('TEXTAREA', 1);
 define('RADIO', 2);
@@ -399,14 +399,12 @@ define('ABOUT', 2);
 define('AUTHOR', 1);
 define('ABOVE_SIGNATURE', 2);
 define('BELOW_SIGNATURE', 3);
-// Custom Profile Fields MOD - END
 
-// Ajax Shoutbox - BEGIN
+// Ajax Shoutbox
 define('AJAX_SHOUTBOX_NO_ERROR', 0);
 define('AJAX_SHOUTBOX_ERROR', 1);
-// Ajax Shoutbox - END
 
-// Ajaxed - BEGIN
+// Ajaxed
 define('AJAX_OP_COMPLETED', 0);
 define('AJAX_ERROR', 1);
 define('AJAX_CRITICAL_ERROR', 2);
@@ -427,22 +425,19 @@ define('AJAX_TOPIC_TYPE', 16);
 define('AJAX_TOPIC_MOVE', 17);
 define('AJAX_POST_LIKE', 18);
 define('AJAX_POST_UNLIKE', 19);
-// Ajaxed - END
 
-// Event Registration - BEGIN
+// Event Registration
 define('REG_OPTION1', 1);
 define('REG_OPTION2', 2);
 define('REG_OPTION3', 3);
 define('REG_UNREGISTER', 4);
-// Event Registration - END
 
 // Some of the most used colors names
 define('RGB_COLORS_LIST', 'aqua,black,blue,brown,cadetblue,chocolate,crimson,cyan,darkblue,darkgreen,darkgrey,darkorchid,darkred,deepskyblue,fuchsia,gold,gray,green,indigo,lightgrey,lime,maroon,navy,olive,orange,peachpuff,purple,red,seagreen,silver,teal,violet,white,yellow');
 
 define('VOTE_CONVERTED', 127);
 
-// Do not insert anything but tables below!
-// Table names
+// Table names <- Do not insert anything but tables below!
 define('ACRONYMS_TABLE', $table_prefix . 'acronyms');
 define('ADMINEDIT_TABLE', $table_prefix . 'adminedit');
 define('ADS_TABLE', $table_prefix . 'ads');
@@ -520,12 +515,11 @@ define('XS_NEWS_TABLE', $table_prefix . 'xs_news');
 define('XS_NEWS_XML_TABLE', $table_prefix . 'xs_news_xml');
 define('ZEBRA_TABLE', $table_prefix . 'zebra');
 
-// Ajax Shoutbox - BEGIN
+// Ajax Shoutbox
 define('AJAX_SHOUTBOX_TABLE', $table_prefix . 'ajax_shoutbox');
 define('AJAX_SHOUTBOX_SESSIONS_TABLE', $table_prefix . 'ajax_shoutbox_sessions');
-// Ajax Shoutbox - END
 
-// Attachments - BEGIN
+// Attachments
 define('EXTENSION_GROUPS_TABLE', $table_prefix . 'extension_groups');
 define('EXTENSIONS_TABLE', $table_prefix . 'extensions');
 define('FORBIDDEN_EXTENSIONS_TABLE', $table_prefix . 'forbidden_extensions');
@@ -534,17 +528,15 @@ define('ATTACHMENTS_STATS_TABLE', $table_prefix . 'attachments_stats');
 define('ATTACHMENTS_TABLE', $table_prefix . 'attachments');
 define('QUOTA_TABLE', $table_prefix . 'attach_quota');
 define('QUOTA_LIMITS_TABLE', $table_prefix . 'quota_limits');
-// Attachments - END
 
-// ACL AUTH - BEGIN
+// ACL AUTH
 define('ACL_GROUPS_TABLE', $table_prefix . 'acl_groups');
 define('ACL_OPTIONS_TABLE', $table_prefix . 'acl_options');
 define('ACL_ROLES_DATA_TABLE', $table_prefix . 'acl_roles_data');
 define('ACL_ROLES_TABLE', $table_prefix . 'acl_roles');
 define('ACL_USERS_TABLE', $table_prefix . 'acl_users');
-// ACL AUTH - END
 
-// CMS - BEGIN
+// CMS
 define('CMS_BLOCK_POSITION_TABLE', $table_prefix . 'cms_block_position');
 define('CMS_BLOCK_SETTINGS_TABLE', $table_prefix . 'cms_block_settings');
 define('CMS_BLOCK_VARIABLE_TABLE', $table_prefix . 'cms_block_variable');
@@ -553,39 +545,34 @@ define('CMS_CONFIG_TABLE', $table_prefix . 'cms_config');
 define('CMS_LAYOUT_TABLE', $table_prefix . 'cms_layout');
 define('CMS_LAYOUT_SPECIAL_TABLE', $table_prefix . 'cms_layout_special');
 define('CMS_NAV_MENU_TABLE', $table_prefix . 'cms_nav_menu');
-// CMS - END
 
-// CMS ADV - START
+// CMS ADV
 define('CMS_ADV_BLOCKS_TABLE', $table_prefix . 'cms_adv_blocks');
 define('CMS_ADV_BLOCK_POSITION_TABLE', $table_prefix . 'cms_adv_block_position');
 define('CMS_ADV_BLOCK_VARIABLE_TABLE', $table_prefix . 'cms_adv_block_variable');
 define('CMS_ADV_CONFIG_TABLE', $table_prefix . 'cms_adv_config');
 define('CMS_ADV_PAGES_TABLE', $table_prefix . 'cms_adv_pages');
 define('CMS_ADV_USERS_TABLE', $table_prefix . 'cms_adv_users');
-// CMS ADV - END
 
-// BEGIN CrackerTracker v5.x
+// CrackerTracker v5.x
 define('CTRACKER_VERSION', '5.0.6');
 define('CTRACKER_IPBLOCKER', $table_prefix . 'ctracker_ipblocker');
 define('CTRACKER_LOGINHISTORY', $table_prefix . 'ctracker_loginhistory');
 define('CTRACKER_FILECHK', $table_prefix . 'ctracker_filechk');
 define('CTRACKER_FILESCANNER', $table_prefix . 'ctracker_filescanner');
 define('CTRACKER_BACKUP', $table_prefix . 'ctracker_backup');
-// END CrackerTracker v5.x
 
-// Activity - BEGIN
+// Activity
 define('iNA', $table_prefix . 'ina_data');
 define('iNA_GAMES', $table_prefix . 'ina_games');
 define('iNA_SCORES', $table_prefix . 'ina_scores');
-// Activity - END
 
-// UPI2DB - BEGIN
+// UPI2DB
 define('UPI2DB_ALWAYS_READ_TABLE', $table_prefix . 'upi2db_always_read');
 define('UPI2DB_LAST_POSTS_TABLE', $table_prefix . 'upi2db_last_posts');
 define('UPI2DB_UNREAD_POSTS_TABLE', $table_prefix . 'upi2db_unread_posts');
-// UPI2DB - END
 
-// DOWNLOADS - BEGIN
+// DOWNLOADS
 define('DOWNLOADS_TABLE', $table_prefix . 'downloads');
 define('DL_AUTH_TABLE', $table_prefix . 'dl_auth');
 define('DL_CAT_TABLE', $table_prefix . 'downloads_cat');
@@ -600,9 +587,8 @@ define('DL_NOTRAF_TABLE', $table_prefix . 'dl_notraf');
 define('DL_HOTLINK_TABLE', $table_prefix . 'dl_hotlink');
 define('DL_BUGS_TABLE', $table_prefix . 'dl_bug_tracker');
 define('DL_BUG_HISTORY_TABLE', $table_prefix . 'dl_bug_history');
-// DOWNLOADS - END
 
-// PA FILES - BEGIN
+// PA FILES
 define('PA_CATEGORY_TABLE', $table_prefix . 'pa_cat');
 define('PA_COMMENTS_TABLE', $table_prefix . 'pa_comments');
 define('PA_CUSTOM_TABLE', $table_prefix . 'pa_custom');
@@ -614,25 +600,21 @@ define('PA_CONFIG_TABLE', $table_prefix . 'pa_config');
 define('PA_VOTES_TABLE', $table_prefix . 'pa_votes');
 define('PA_AUTH_ACCESS_TABLE', $table_prefix . 'pa_auth');
 define('PA_MIRRORS_TABLE', $table_prefix . 'pa_mirrors');
-// PA FILES - END
 
-// LINKS - BEGIN
+// LINKS
 define('LINKS_TABLE', $table_prefix . 'links');
 define('LINK_CATEGORIES_TABLE', $table_prefix . 'link_categories');
 define('LINK_CONFIG_TABLE', $table_prefix . 'link_config');
-// LINKS - END
 
-// SUDOKU - BEGIN
+// SUDOKU
 define('SUDOKU_SESSIONS', $table_prefix . 'sudoku_sessions');
 define('SUDOKU_SOLUTIONS', $table_prefix . 'sudoku_solutions');
 define('SUDOKU_STARTS', $table_prefix . 'sudoku_starts');
 define('SUDOKU_STATS', $table_prefix . 'sudoku_stats');
 define('SUDOKU_USERS', $table_prefix . 'sudoku_users');
-// SUDOKU - END
 
-// Event Registration - BEGIN
+// Event Registration
 define('REGISTRATION_TABLE', $table_prefix . 'registration');
 define('REGISTRATION_DESC_TABLE', $table_prefix . 'registration_desc');
-// Event Registration - END
 
 ?>
