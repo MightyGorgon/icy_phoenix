@@ -116,7 +116,7 @@ switch($mode)
 
 if($mode == 'add')
 {
-	$s_hidden_fields = '<input type="hidden" name="mode" value="addfield">';
+	$s_hidden_fields = '<input type="hidden" name="mode" value="addfield" />';
 }
 elseif($mode == 'addfield')
 {
