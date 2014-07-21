@@ -4,7 +4,7 @@
 <br />
 
 <form action="{S_CONFIG_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_COMPATIBILITY_CHECKS}</th></tr>
 <tr>
 	<td class="row1" width="40%"><b>{L_GETIMAGESIZE}</b><br /><span class="gensmall">{L_GETIMAGESIZE_EXPLAIN}</span></td>
@@ -21,7 +21,7 @@
 <tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="3">{L_MOD_CONFIG}</th></tr>
 <tr>
 	<td class="row1" width="40%"><b>{L_ENABLE}</b><br /><span class="gensmall">{L_ENABLE_EXPLAIN}</span></td>
@@ -50,11 +50,11 @@
 </table>
 </form>
 
-<br clear="all" />
+<br class="clear" />
 
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="center">
+	<td class="tdalignc">
 		<span class="copyright">Limit Image Width MOD &copy; 2004 Vic D'Elfant<br />[ <a href="http://www.phpbb.com/phpBB/profile.php?mode=viewprofile&amp;u=118634" class="copyright" target="_blank">phpBB.com Profile</a> :: <a href="http://www.pythago.nl" class="copyright" target="_blank">Website</a> ]</span>
 	</td>
 </tr>

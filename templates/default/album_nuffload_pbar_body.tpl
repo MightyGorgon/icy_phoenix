@@ -1,10 +1,10 @@
 <!-- INCLUDE overall_header.tpl -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_IN_PROGRESS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_IN_PROGRESS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td>
-		<table border="0" width='100%'>
-			<tr><td><table id="progress1" width="1%" height="100%" bgcolor='red'><tr><td width="100%" height="10px"></td></tr></table></td></tr>
+		<table>
+			<tr><td><table id="progress1" style="width: 1%; height: 100%; background-color: #ff0000;"><tr><td style="width: 100%; height: 10px;"></td></tr></table></td></tr>
 		</table>
 		<div class="gensmall" ID="progress2">
 			--/--(--%) --KB/s<br />
@@ -14,8 +14,8 @@
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
-<table border="0" width="100%" height="100%">
-<tr><td class="gensmall" align="center">Upload Powered by <a href="http://www.nuffmon.oftheweek.de">Nuffload</a> {L_NUFFLOAD_VERSION}</td></tr>
+<table>
+<tr><td class="tdalignc gensmall">Upload Powered by <a href="http://www.nuffmon.oftheweek.de">Nuffload</a> {L_NUFFLOAD_VERSION}</td></tr>
 </table>
 
 <!-- INCLUDE overall_footer.tpl -->

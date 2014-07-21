@@ -707,7 +707,7 @@ $lang = array_merge($lang, array(
 	'Version_up_to_date' => 'Your installation is up to date, no updates are available for your version of phpBB.',
 	'Version_up_to_date_ip' => 'No updates are available for your version of Icy Phoenix',
 	'Version_not_up_to_date' => 'Your installation does <b>not</b> seem to be up to date. Updates are available for your version of phpBB, please visit <a href="http://www.phpbb.com/downloads.php" target="_new">http://www.phpbb.com/downloads.php</a> to obtain the latest version.',
-	'Version_not_up_to_date_ip' => 'Updates are available for your version of Icy Phoenix, please visit <a href="http://www.icyphoenix.com/" target="_new">Icy Phoenix</a> to obtain the latest version.',
+	'Version_not_up_to_date_ip' => 'Updates are available for your version of Icy Phoenix, please visit <a href="http://www.icyphoenix.com/" target="_new">Icy Phoenix</a>.',
 	'Latest_version_info' => 'The latest available version is <b>phpBB %s</b>.',
 	'Current_version_info' => 'You are running <b>phpBB %s</b>.',
 	'Connect_socket_error' => 'Unable to open connection to phpBB Server, reported error is:<br />%s',
@@ -715,7 +715,7 @@ $lang = array_merge($lang, array(
 	'Socket_functions_disabled' => 'Unable to use socket functions.',
 	'Mailing_list_subscribe_reminder' => 'For the latest information on updates to phpBB, why not <a href="http://www.phpbb.com/support/" target="_new">subscribe to our mailing list</a>.',
 	'Version_information' => 'Version Information',
-	'Version_not_checked' => 'Version checking is currently disabled, please visit Icy Phoenix support forum for information about new Icy Phoenix versions.',
+	'Version_not_checked' => 'Version checking is currently disabled.',
 
 // Advanced Signature Divider Control
 	'sig_title' => 'Advanced Signature Divider Control',

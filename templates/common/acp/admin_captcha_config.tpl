@@ -3,7 +3,7 @@
 <p>{L_CAPTCHA_CONFIGURATION_EXPLAIN}</p>
 
 <form action="{S_CAPTCHA_CONFIG_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_VC_ACTIVE}</th></tr>
 <tr><td class="row1 row-center" colspan="2">{CAPTCHA_IMG}</td></tr>
 <tr>
@@ -79,6 +79,6 @@
 	<td class="row2">&nbsp;<input type="radio" name="captcha_jpeg" value="1" {S_JPEG_IMAGE_YES} /> JPEG&nbsp;{L_JPEG_QUALITY}:&nbsp;<input class="post" type="text" maxlength="2" size="2" name="captcha_jpeg_quality" value="{JPEG_QUALITY}" />&nbsp;%<br />
 	&nbsp;<input type="radio" name="captcha_jpeg" value="0" {S_JPEG_IMAGE_NO} /> PNG</td>
 </tr>
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>
 </form>

@@ -16,7 +16,7 @@
 <p>{L_XS_CLONE_STYLE_EXPLAIN}</p>
 
 
-<table width="100%" cellpadding="4" cellspacing="1" border="0" align="center" class="forumline">
+<table class="forumline">
 	<tr>
 		<th colspan="2">{L_XS_CLONE_STYLE}</th>
 	</tr>
@@ -43,7 +43,7 @@
 	<!-- BEGIN switch_select_style -->
 	<tr>
 		<td class="row1">{L_XS_CLONE_SELECT}<br /><span class="gensmall">{L_XS_CLONE_SELECT_EXPLAIN}</span></td>
-		<td class="row2" nowrap="nowrap">
+		<td class="row2 tdnw">
 			<!-- BEGIN style -->
 			<input type="hidden" name="clone_style_id_{switch_select_style.style.NUM}" value="{switch_select_style.style.ID}" />
 			<input type="checkbox" name="clone_style_{switch_select_style.style.NUM}" checked="checked" />
@@ -55,7 +55,7 @@
 	<!-- BEGIN switch_select_nostyle -->
 	<tr>
 		<td class="row1">{L_XS_CLONE_NEWNAME}</td>
-		<td class="row2" nowrap="nowrap">
+		<td class="row2 tdnw">
 			<input type="hidden" name="clone_style_id_0" value="{STYLE_ID}" />
 			<input type="hidden" name="clone_style_0" value="checked" />
 			<input type="text" class="post" name="clone_style_name_0" value="{STYLE_NAME}" title="{STYLE_NAME}" size="30" />

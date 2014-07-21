@@ -12,7 +12,7 @@ function goForm(form)
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_BLOCKS_TITLE} - {LAYOUT_NAME}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
@@ -20,7 +20,7 @@ function goForm(form)
 </table>
 
 <form method="post" action="{S_BLOCKS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="cat" colspan="9" style="text-align:left">
 		{S_HIDDEN_FIELDS}
@@ -47,7 +47,7 @@ function goForm(form)
 </tr>
 <tr><td class="spaceRow" colspan="9"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr>
-	<td align="center">
+	<td class="tdalignc">
 		<div style="min-width:750px">
 		{LAYOUT_BLOCKS}
 		{INVALID_BLOCKS}

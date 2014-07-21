@@ -3,7 +3,7 @@
 UPI2DB Version: {UPI2DB_VERSION_NUMBER}</p>
 
 <form action="{S_CONFIG_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_SETUP_UPI2DB}</th></tr>
 <tr>
 	<td class="row1">{L_UPI2DB_ON}<br /><span class="gensmall">{L_UPI2DB_ON_EXPLAIN}</span></td>
@@ -74,22 +74,22 @@ UPI2DB Version: {UPI2DB_VERSION_NUMBER}</p>
 <!-- END switch_upi2db_full -->
 <tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="4">{L_CONDITION_SETUP}</th></tr>
 <tr>
-	<td class="row1" width="20%"><b>{L_GROUP_USER}</b></td>
+	<td class="row1 tw20pct"><b>{L_GROUP_USER}</b></td>
 	<td class="row1"><b>{L_USER_ALLOW_UPI2DB}</b></td>
 	<td class="row1"><b>{L_MIN_POSTS}</b></td>
 	<td class="row1"><b>{L_MIN_REG_DAYS}</b></td>
 </tr>
 <tr>
-	<td class="row1" width="20%">{L_USER_WITHOUT_GROUP}</td>
+	<td class="row1 tw20pct">{L_USER_WITHOUT_GROUP}</td>
 	<td class="row1"><input name="upi2db_no_group_upi2db_on" type="radio" value="1" {NO_GROUP_UPI2DB_ON_YES}> {L_YES} <input name="upi2db_no_group_upi2db_on" type="radio" value="0" {NO_GROUP_UPI2DB_ON_NO}> {L_NO}</td>
 	<td class="row1"><input name="upi2db_no_group_min_posts" type="text" value="{NO_GROUP_MIN_POSTS}" size="4" maxlength="4"></td>
 	<td class="row1"><input name="upi2db_no_group_min_regdays" type="text" value="{NO_GROUP_MIN_REGDAYS}" size="4" maxlength="4"></td>
 </tr>
 <tr>
-	<td class="row1" width="20%"><b>{L_GROUP_NAME}</b></td>
+	<td class="row1 tw20pct"><b>{L_GROUP_NAME}</b></td>
 	<td class="row1"><b>{L_GROUP_ALLOW_UPI2DB}</b></td>
 	<td class="row1"><b>{L_MIN_POSTS}</b></td>
 	<td class="row1"><b>{L_MIN_REG_DAYS}</b></td>

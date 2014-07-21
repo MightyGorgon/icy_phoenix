@@ -2,10 +2,10 @@
 <p>{L_SETTINGSEXPLAIN}</p>
 
 <form action="{S_SETTINGS_ACTION}" method="post" name="form">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_SETTINGS}</th></tr>
 <tr>
-	<td width="50%" class="row1"><strong>{L_DBNAME}</strong><br /><span class="gensmall">{L_DBNAMEINFO}</span></td>
+	<td class="row1 tw50pct"><strong>{L_DBNAME}</strong><br /><span class="gensmall">{L_DBNAMEINFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="settings_dbname" value="{SETTINGS_DBNAME}" /></td>
 </tr>
 <tr>
@@ -191,6 +191,6 @@
 	<option value="0"{S_PM_NOTIFY_NO}>{L_NO}</option>
 	</select></td>
 </tr>
-<tr><td align="center" class="cat" colspan="2"><input class="liteoption" type="submit" value="{L_SUBMIT}" name="submit" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2"><input class="liteoption" type="submit" value="{L_SUBMIT}" name="submit" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>
 </form>

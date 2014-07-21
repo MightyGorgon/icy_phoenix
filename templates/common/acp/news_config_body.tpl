@@ -2,7 +2,7 @@
 <p>{L_CONFIGURATION_EXPLAIN}</p>
 
 <form action="{S_CONFIG_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_GENERAL_SETTINGS}</th></tr>
 <tr>
 	<td class="row1">{L_ALLOW_NEWS_POSTING}</td>
@@ -72,7 +72,7 @@
 	<td class="row2"><input class="post" type="text" size="20" maxlength="255" name="news_rss_image_desc" value="{RSS_IMG_DESC}" /></td>
 </tr>
 <tr>
-	<td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
+	<td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
 </tr>
 </table>
 </form>

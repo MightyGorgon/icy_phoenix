@@ -91,17 +91,17 @@
 
 <form method="post" action="{S_FILE_ACTION}" name="file_ids" onsubmit="return check();">
 <!-- BEGIN file_mode -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="6">{file_mode.L_FILE_MODE}</span></th></tr>
 <!-- IF file_mode.DATA -->
 <!-- BEGIN file_row -->
 <tr>
-	<td class="row1 row-center" width="5%"><span class="genmed"><strong>{file_mode.file_row.FILE_NUMBER}</strong></span></td>
-	<td class="row1" width="50%"><span class="genmed"><strong>{file_mode.file_row.FILE_NAME}</strong></span></td>
-	<td class="row1 row-center" width="10%"><span class="genmed"><a href="{file_mode.file_row.U_FILE_EDIT}">{L_EDIT}</a></span></td>
-	<td class="row1 row-center" width="10%"><span class="genmed"><a href="javascript:delete_file('{file_mode.file_row.U_FILE_DELETE}')">{L_DELETE}</a></span></td>
-	<td class="row1 row-center" width="20%"><span class="genmed"><a href="{file_mode.file_row.U_FILE_APPROVE}">{file_mode.file_row.L_APPROVE}</a></span></td>
-	<td class="row1 row-center" width="5%"><span class="genmed"><input type="checkbox" name="file_ids[]" value="{file_mode.file_row.FILE_ID}" /></span></td>
+	<td class="row1 row-center tw5pct"><span class="genmed"><strong>{file_mode.file_row.FILE_NUMBER}</strong></span></td>
+	<td class="row1 tw50pct"><span class="genmed"><strong>{file_mode.file_row.FILE_NAME}</strong></span></td>
+	<td class="row1 row-center tw10pct"><span class="genmed"><a href="{file_mode.file_row.U_FILE_EDIT}">{L_EDIT}</a></span></td>
+	<td class="row1 row-center tw10pct"><span class="genmed"><a href="javascript:delete_file('{file_mode.file_row.U_FILE_DELETE}')">{L_DELETE}</a></span></td>
+	<td class="row1 row-center tw20pct"><span class="genmed"><a href="{file_mode.file_row.U_FILE_APPROVE}">{file_mode.file_row.L_APPROVE}</a></span></td>
+	<td class="row1 row-center tw5pct"><span class="genmed"><input type="checkbox" name="file_ids[]" value="{file_mode.file_row.FILE_ID}" /></span></td>
 </tr>
 <!-- END file_row -->
 <!-- ELSE -->
@@ -110,9 +110,9 @@
 </table>
 <br />
 <!-- END file_mode -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
-	<td class="cat" align="center">
+	<td class="cat tdalignc">
 	{S_HIDDEN_FIELDS}
 	<input type="submit" class="liteoption" name="addfile" value="{L_ADD_FILE}" onclick="set_add_file(true); set_delete_file(false);" />
 	<input type="submit" class="liteoption" name="delete" value="{L_DELETE_FILE}" onclick="set_add_file(false); set_delete_file(true);" />
@@ -123,7 +123,7 @@
 </table>
 </form>
 
-<table width="100%" cellspacing="2" cellpadding="2" border="0">
-<tr><td align="right" nowrap="nowrap"><span class="pagination">{PAGINATION}</span></td></tr>
-<tr><td align="right" nowrap="nowrap"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
+<table class="s2px">
+<tr><td class="tdalignr tdnw"><span class="pagination">{PAGINATION}</span></td></tr>
+<tr><td class="tdalignr tdnw"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
 </table>

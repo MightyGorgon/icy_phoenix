@@ -1,6 +1,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_edit.png" alt="{L_CMS_PAGES}" title="{L_CMS_PAGES}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_PAGES}</h1><span class="genmed">{L_LAYOUT_TEXT}</span></td>
@@ -8,20 +8,20 @@
 </table>
 
 <form method="post" action="{S_LAYOUT_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th colspan="2">&nbsp;{L_LAYOUT_EDIT}&nbsp;</th></tr>
 <!-- IF not S_LAYOUT_SPECIAL -->
 <tr class="row1 row1h">
-	<td class="row1" colspan="2" style="text-align: center;">
-		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+	<td class="row1 row-center" colspan="2">
+		<table>
 		<tr>
 			<!-- BEGIN layouts -->
-			<td style="text-align: center;">{layouts.LAYOUT_IMG}</td>
+			<td class="tdalignc">{layouts.LAYOUT_IMG}</td>
 			<!-- END layouts -->
 		</tr>
 		<tr>
 			<!-- BEGIN layouts -->
-			<td style="text-align: center;">{layouts.LAYOUT_RADIO}</td>
+			<td class="tdalignc">{layouts.LAYOUT_RADIO}</td>
 			<!-- END layouts -->
 		</tr>
 		</table>
@@ -73,7 +73,7 @@
 </tr>
 <!-- ENDIF -->
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr><td class="cat" align="center" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="save" value="{L_SUBMIT}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="save" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>
 </form>
 

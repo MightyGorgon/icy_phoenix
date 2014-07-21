@@ -3,11 +3,11 @@
 
 <form action="{SQL_ACTION}" method="post">
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th align="center">{QUERY_TITLE}</th></tr>
+<table class="forumline">
+<tr><th>{QUERY_TITLE}</th></tr>
 <tr><td><textarea name="this_query" rows="10" cols="100" class="post"></textarea></td></tr>
 <tr>
-	<td class="cat" align="center">
+	<td class="cat tdalignc">
 		<input type="submit" name="repairall" value="{REPAIR_ALL_BUTTON}" class="liteoption" />&nbsp;
 		<input type="submit" name="submit" value="{SUBMIT_BUTTON}" class="liteoption" />&nbsp;
 		<input type="submit" name="optimizeall" value="{OPTIMIZE_ALL_BUTTON}" class="liteoption" />
@@ -31,7 +31,7 @@
 <br />
 
 <!-- BEGIN switch_submit_result -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><td class="cat" colspan="{SUBMIT_RESULT_FIELD_COUNT}"><span class="gen">{SUBMIT_RESULT_QUERY}</span></td>
 </tr>
 <tr>
@@ -51,7 +51,7 @@
 <!-- END switch_submit_result -->
 
 <!-- BEGIN switch_table_browse -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <!-- BEGIN table_browse_menu -->
 <tr>
 	<td class="cat" colspan="{switch_table_browse.table_browse_menu.BROWSE_MENU_COLSPAN}">
@@ -82,7 +82,7 @@
 <!-- END switch_table_browse -->
 
 <!-- BEGIN switch_table_structure -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><td class="cat" colspan="7"><span class="gen"><b>{L_TABLE_STRUCTURE_TABLENAME}</b></span></td></tr>
 <tr>
 	<td class="row1"><span class="genmed"><b>&nbsp;</b></span></td>
@@ -108,7 +108,7 @@
 <br />
 <!-- END switch_table_structure -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><td class="cat" colspan="12"><span class="gen"><b>{TABLE_TITLE}</b></span></td></tr>
 <tr>
 	<td class="row1"><span class="genmed"><b>{L_TABLE_NAME}</b>&nbsp;</span></td>
@@ -139,6 +139,4 @@
 
 </form>
 
-<table width="100%" cellspacing="0" border="0" cellpadding="0">
-<tr><td align="center"><span class="copyright">{COPYRIGHT}</span></td></tr>
-</table>
+<table><tr><td class="tdalignc"><span class="copyright">{COPYRIGHT}</span></td></tr></table>

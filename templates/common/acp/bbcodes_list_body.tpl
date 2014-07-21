@@ -3,7 +3,7 @@
 <br />
 
 <form method="post" action="{S_BBCODES_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_BBCODE_TAG}</th>
 	<th width="120" style="width: 120px;">{L_ACTIONS}</th>
@@ -18,7 +18,7 @@
 </tr>
 <!-- END bbcode -->
 <!-- ENDIF -->
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="add" value="{L_BBCODES_DB_ADD}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="add" value="{L_BBCODES_DB_ADD}" class="mainoption" /></td></tr>
 </table>
 </form>
 <br />

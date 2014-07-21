@@ -1,5 +1,5 @@
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th width="100%" colspan="6">&nbsp;</th></tr>
+<table class="forumline">
+<tr><th colspan="6">&nbsp;</th></tr>
 <tr>
 	<td align="left" valign="bottom" width="5%" class="row2"><span class="genmed">{LIST_ID}</span></td>
 	<td align="left" valign="bottom" width="15%" class="row2"><span class="genmed">{LIST_IP}</span></td>
@@ -18,6 +18,6 @@
 	<td align="left" valign="bottom" class="row2"><span class="genmed">{rows.BANNED}</span></td>
 </tr>
 <!-- END rows -->
-<tr><th width="100%" colspan="6">&nbsp;</th></tr>
+<tr><th colspan="6">&nbsp;</th></tr>
 </table>
 <br clear="all">

@@ -2,11 +2,11 @@
 <p>{L_CONFIG_INFO}</p>
 
 <form action="{S_CONFIG_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_GENERAL_CONFIG}</th></tr>
 <tr>
 	<td class="row1">{L_DISALLOW_POSTCOUNTER}<br /><span class="gensmall">{L_DISALLOW_POSTCOUNTER_EXPLAIN}</span></td>
-	<td class="row2" nowrap="nowrap"><input type="radio" name="disallow_postcounter" value="1" {DISALLOW_POSTCOUNTER_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="disallow_postcounter" value="0" {DISALLOW_POSTCOUNTER_NO} /> {L_NO}</td>
+	<td class="row2 tdnw"><input type="radio" name="disallow_postcounter" value="1" {DISALLOW_POSTCOUNTER_YES} /> {L_YES}&nbsp;&nbsp;<input type="radio" name="disallow_postcounter" value="0" {DISALLOW_POSTCOUNTER_NO} /> {L_NO}</td>
 </tr>
 <tr>
 	<td class="row1">{L_DISALLOW_REBUILD}<br /><span class="gensmall">{L_DISALLOW_REBUILD_EXPLAIN}</span></td>
@@ -57,7 +57,7 @@
 </tr>
 <!-- END currentrebuild_settings -->
 <tr>
-	<td class="cat" colspan="2" align="center">
+	<td class="cat tdalignc" colspan="2">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
 		<input type="reset" value="{L_RESET}" class="liteoption" />

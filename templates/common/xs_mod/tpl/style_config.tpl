@@ -14,7 +14,7 @@
 <h1>{L_XS_STYLE_CONFIGURATION}: {TPL}</h1>
 
 <form action="{U_ACTION}" method="post"><input type="hidden" name="tpl" value="{TPL}" />
-<table class="forumline" width="100%" cellspacing="1" cellpadding="4" border="0">
+<table class="forumline">
 <!-- BEGIN item -->
 <!-- BEGIN cat -->
 <tr>

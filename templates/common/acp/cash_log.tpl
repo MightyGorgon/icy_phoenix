@@ -2,7 +2,7 @@
 <h1>{L_LOG_TITLE}</h1>
 <p>{L_LOG_EXPLAIN}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th colspan="{NUMTIMEFILTERS}">{L_TIME}</th>
 	<th colspan="{NUMACTIONFILTERS}">{L_TYPE}</th>
@@ -49,7 +49,7 @@
 
 <table width="100%" border="0"><tr><td><span class="pagination">{PAGINATION}</span></td></tr></table>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_TIME}</th>
 	<th>{L_TYPE}</th>
@@ -66,10 +66,10 @@
 <!-- END logrow -->
 </table>
 
-<table width="100%" border="0"><tr><td><span class="pagination">{PAGINATION}</span></td></tr></table>
+<table><tr><td><span class="pagination">{PAGINATION}</span></td></tr></table>
 <br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<!-- BEGIN actionfilter -->
 	<td class="{actionfilter.ROW_CLASS}"><a href="{actionfilter.DELETECOMMAND}"><b>{actionfilter.DELETE}</b></a></td>

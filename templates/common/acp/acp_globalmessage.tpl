@@ -23,7 +23,7 @@ function change_field_desc (onoff)
 </script>
 
 <form action="{S_FORM_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_GLOBALMSG}</th></tr>
 <tr>
 	<td class="row2 row-center" width="20%" style="vertical-align:top;"><img src="{IMG_ICON_GLOB_MSG}" alt="{L_HEADLINE}" title="{L_HEADLINE}" border="0"></td>
@@ -40,17 +40,17 @@ function change_field_desc (onoff)
 		</table>
 	</td>
 </tr>
-<tr><td class="cat" colspan="2" align="center"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption"></td></tr>
+<tr><td class="cat tdalignc" colspan="2"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption"></td></tr>
 </table>
 
 <br /><br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_GLOBALMSG_RESET}</th></tr>
 <tr>
 	<td class="row2 row-center" width="20%" style="vertical-align: top;"><img src="{IMG_ICON_GLOB_RES}" alt="{L_GLOBALMSG_RESET}" title="{L_GLOBALMSG_RESET}" border="0"></td>
 	<td class="row1" width="80%" style="vertical-align: top;">{L_GLOB_RESET_TXT}</td>
 </tr>
-<tr><td class="cat" colspan="2" align="center"><input type="submit" name="pull_back" value="{L_RESET}" class="mainoption"></td></tr>
+<tr><td class="cat tdalignc" colspan="2"><input type="submit" name="pull_back" value="{L_RESET}" class="mainoption"></td></tr>
 </table>
 </form>

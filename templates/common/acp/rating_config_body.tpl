@@ -5,8 +5,8 @@
 <input type="hidden" name="rating_form_submitted" value="y">
 <table cellspacing="10">
 <tr>
-<td valign="top">
-	<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<td>
+	<table class="forumline">
 	<tr><th colspan=2>{L_GENERAL_CONFIGURATION}</th></tr>
 	<!-- BEGIN config -->
 	<tr><td class="{config.ROWCSS}" nowrap>{config.LABEL}</td><td class="{config.ROWCSS}">{config.INPUT}</td></tr>
@@ -15,7 +15,7 @@
 	<br />
 	{CONFIG_SUBMIT}
 </td>
-<td valign="top">
+<td>
 <p class="gen">{L_OVERVIEW_TEXT}</p>
 <p class="gen">{L_OVERALL_SETTINGS_TITLE}</p>
 <p class="genmed">{L_OVERALL_SETTINGS_TEXT}</p>
@@ -26,13 +26,13 @@
 <hr>
 {OPTION_ERRORS}
 
-<a name="options"></a>
+<a id="options"></a>
 <form name="rating_options_form" method="post" action="{FORM_ACTION}#options">
 <input type="hidden" name="rating_form_submitted" value="y" />
 <table cellspacing="10">
 <tr>
-<td valign="top">
-	<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<td>
+	<table class="forumline">
 	<tr><th colspan="7">{L_RATING_OPTIONS}</th></tr>
 	<tr>
 	<th>{L_POINTS}</th>
@@ -65,7 +65,7 @@
 	<!-- END option -->
 	</table>
 </td>
-<td valign="top">
+<td>
 <p class="gen">{L_OPTION_TITLE}</p>
 <p class="genmed">{L_OPTION_TEXT}</p>
 </td>
@@ -81,13 +81,13 @@
 <p class="genmed">{L_RANK_TEXT}</p>
 {TOTAL_ERRORS}
 
-<a name="totals"></a>
+<a id="totals"></a>
 <form name="rating_totals_form" method="post" action="{FORM_ACTION}#totals">
 <input type="hidden" name="rating_form_submitted" value="y" />
 <table cellspacing="10">
 <tr>
-<td valign="top">
-	<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<td>
+	<table class="forumline">
 	<tr><th colspan="7">{L_RATING_RANKS}</th></tr>
 	<tr>
 	<th>{L_APPLIES_TO}</th>
@@ -127,8 +127,8 @@
 <input type="hidden" name="rating_form_submitted" value="y">
 <table cellspacing="10">
 <tr>
-<td valign="top">
-	<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<td>
+	<table class="forumline">
 	<tr><th colspan="5">{L_USER_RANKS_TITLE}</th></tr>
 	<tr>
 	<th>{L_BOARD_RANK}</th>
@@ -154,7 +154,7 @@
 	</tr>
 	<!-- END user -->
 	</table>
-<a name="users"></a>
+<a id="users"></a>
 </td>
 </tr>
 </table>

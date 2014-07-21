@@ -2,7 +2,7 @@
 <p>{L_FORMAT_POSTS_TEXT_EXPLAIN}</p>
 
 <form method="get" action="{S_FORMAT_POSTS_TEXT_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_FORMAT_POSTS_TEXT}</th></tr>
 <tr>
 	<td class="row2">{L_TIME_LIMIT}</td>
@@ -17,7 +17,7 @@
 	<td class="row1"><input class="post" type="text" name="post_limit" value="1000" /></td>
 </tr>
 <tr>
-	<td class="cat" colspan="2" align="center"><input type="hidden" name="sid" value="{SESSION_ID}" /><input type="hidden" name="start" value="0" /><input class="mainoption" type="submit" name="submit" value="{L_FORMAT_POSTS_TEXT}" /></td>
+	<td class="cat tdalignc" colspan="2"><input type="hidden" name="sid" value="{SESSION_ID}" /><input type="hidden" name="start" value="0" /><input class="mainoption" type="submit" name="submit" value="{L_FORMAT_POSTS_TEXT}" /></td>
 </tr>
 </table>
 </form>

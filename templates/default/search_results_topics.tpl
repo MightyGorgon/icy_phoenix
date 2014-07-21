@@ -12,7 +12,7 @@ function select_switch(status)
 // ]]>
 </script>
 <form action="{S_POST_ACTION}" method="post" name="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th width="18">&nbsp;</th>
 	<!-- IF SORT_BY == 4 -->
@@ -75,16 +75,16 @@ function select_switch(status)
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- BEGIN switch_upi2db_on -->
-<table class="empty-table" width="100%" align="center" cellspacing="0">
-<tr><td valign="middle" align="right"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;|&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></td></tr>
+<table>
+<tr><td class="tdalignr tvalignm"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;|&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></td></tr>
 </table>
 <!-- END switch_upi2db_on -->
 </form>
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="top"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">{PAGINATION}</span><br /><span class="gensmall">{S_TIMEZONE}</span></td>
+	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td class="tdalignr tdnw"><span class="pagination">{PAGINATION}</span><br /><span class="gensmall">{S_TIMEZONE}</span></td>
 </tr>
 </table>
 

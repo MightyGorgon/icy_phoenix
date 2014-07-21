@@ -3,15 +3,15 @@
 <br />
 <!-- INCLUDE tags_search_jq.tpl -->
 <h2 style="text-align: left;"><a href="{U_TAGS}" style="text-decoration: none;">{L_TOPIC_TAGS}</a></h2>
-<br clear="all" />
+<br class="clear" />
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_TOPIC_TAGS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_TOPIC_TAGS}</span>{IMG_THR}<table class="forumlinenb">
 <!-- IF S_SHOW_CLOUD -->
 <tr><th>{L_TOPIC_TAGS}</th></tr>
 <tr><td class="row1g row-center"><!-- BEGIN row --><span style="font-size: {row.TAG_FONT_SIZE}px;"><a href="{row.U_TAG_TEXT}" style="font-size: {row.TAG_FONT_SIZE}px;">{row.TAG_TEXT}&nbsp;({row.TAG_COUNT})</a>&nbsp;&nbsp;</span><!-- END row --></td></tr>
 <!-- ELSE -->
 <tr>
-	<th width="30">#</th>
+	<th class="tw30px">#</th>
 	<th>{L_TAG_TEXT}</th>
 	<th>{L_TAG_COUNT}</th>
 </tr>
@@ -43,7 +43,7 @@
 </div>
 <!-- ENDIF -->
 
-<br clear="all" />
+<br class="clear" />
 <br /><br />
 
 <!-- INCLUDE overall_footer.tpl -->

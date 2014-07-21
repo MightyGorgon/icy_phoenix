@@ -69,12 +69,12 @@
 </div>
 </form>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
-	<th nowrap="nowrap">{L_VOTE_ID}</th>
-	<th nowrap="nowrap">{L_POLL_TOPIC}</th>
-	<th nowrap="nowrap">{L_VOTE_USERNAME}</th>
-	<th nowrap="nowrap">{L_VOTE_END_DATE}</th>
+	<th class="tdnw">{L_VOTE_ID}</th>
+	<th class="tdnw">{L_POLL_TOPIC}</th>
+	<th class="tdnw">{L_VOTE_USERNAME}</th>
+	<th class="tdnw">{L_VOTE_END_DATE}</th>
 </tr>
 <!-- BEGIN votes -->
 <tr>
@@ -84,8 +84,8 @@
 	<td class="{votes.COLOR} row-center"><span class="gensmall">{votes.VOTE_DURATION}</span></td>
 </tr>
 <tr id="vote{votes.VOTE_ID}_switch" style="display: none;">
-	<td class="row2" colspan="4" style="padding:0px;">
-		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<td class="row2" colspan="4" style="padding: 0px;">
+		<table>
 		<!-- BEGIN detail -->
 		<tr>
 			<td class="row1">{votes.detail.OPTION} ({votes.detail.RESULT})</td>
@@ -100,10 +100,10 @@
 <tr><td class="cat" colspan="4">&nbsp;</td></tr>
 </table>
 
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right"><span class="pagination">{PAGINATION}</span></td>
+	<td class="tdalignr"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 <br />

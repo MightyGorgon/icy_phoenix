@@ -47,7 +47,7 @@ if (window.XMLHttpRequest)
 	ajax_core_defined = (tempvar == null) ? 0 : 1;
 	delete(tempvar);
 }
-// Use the IE/Windows ActiveX version
+//Use the IE/Windows ActiveX version
 else if (window.ActiveXObject)
 {
 	var tempvar= new ActiveXObject("Microsoft.XMLHTTP");
@@ -67,13 +67,13 @@ function loadXMLDoc(url, params, submitmethod, changehandler)
 		submitmethod = 'GET';
 	}
 
-	// Use the native object available in all browsers (IE >= 7)
+	//Use the native object available in all browsers (IE >= 7)
 	if (window.XMLHttpRequest)
 	{
 		request = new XMLHttpRequest();
 		var is_activex = false;
 	}
-	// Use the ActiveX version for IE < 7
+	//Use the ActiveX version for IE < 7
 	else if (window.ActiveXObject)
 	{
 		request = new ActiveXObject("Microsoft.XMLHTTP");
@@ -135,12 +135,12 @@ function getFirstTagValue(tagname, haystack)
 // This function is used to parse any standard error file
 function error_req_change()
 {
-	// Check if the request is completed, if not, just skip over
+	//Check if the request is completed, if not, just skip over
 	if (request.readyState == 4)
 	{
 		var result_code = AJAX_OP_COMPLETED;
 		var error_msg = '';
-		// If the request wasn't successful, we just hide any information we have.
+		//If the request wasn't successful, we just hide any information we have.
 		if (request.status == 200)
 		{
 			var response = request.responseXML.documentElement;

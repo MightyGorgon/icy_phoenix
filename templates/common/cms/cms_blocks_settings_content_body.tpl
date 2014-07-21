@@ -1,6 +1,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_PAGE_01}" title="{L_BLOCKS_PAGE_01}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_BLOCK_PAGE}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
@@ -8,7 +8,7 @@
 </table>
 
 <form method="post" action="{S_BLOCKS_ACTION}" name="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th colspan="2">{L_EDIT_BLOCK}</th></tr>
 <tr class="row1 row1h">
 	<td class="row1" width="200">{L_B_NAME}</td>
@@ -33,7 +33,7 @@
 </tr>
 <!-- ENDIF -->
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr><td class="cat" align="center" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="hascontent" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;<input type="reset" name="reset" class="liteoption" value="{L_RESET}" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="hascontent" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;<input type="reset" name="reset" class="liteoption" value="{L_RESET}" /></td></tr>
 </table>
 </form>
 

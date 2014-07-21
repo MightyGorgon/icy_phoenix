@@ -155,7 +155,7 @@ $(function(){
 </script>
 
 <form action="{S_ACTION}" name="upload_ajax_form" method="post" enctype="multipart/form-data">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_IMAGE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_IMAGE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1 row-center">
 		{L_UPLOAD_IMAGE_EXPLAIN}&nbsp;<input id="upload" type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" /><br />
@@ -166,7 +166,7 @@ $(function(){
 		<div class="picframe-cont"><img src="{pic_img.PIC_THUMB}" alt="{pic_img.PIC_NAME}" title="{pic_img.PIC_BBC}" /><br /><input class="post" name="{pic_img.PIC_BBC_INPUT}" size="20" maxlength="200" value="{pic_img.PIC_BBC}" type="text" readonly="readonly" onclick="this.form.{pic_img.PIC_BBC_INPUT}.focus(); this.form.{pic_img.PIC_BBC_INPUT}.select();" style="width: 120px; max-width: 120px;" /><br /><input type="button" class="mainoption" value="{L_INSERT_BBC}" onclick="bbcb_ui_vars_reassign_start(); emoticon_sc(this.form.{pic_img.PIC_BBC_INPUT}.value); bbcb_ui_vars_reassign_end();" /></div>
 		<!-- END pic_img -->
 		</div>
-		<br clear="all" />
+		<br class="clear" />
 		<br />
 		<br />
 		<span class="gensmall"><i>{L_ALL_UPLOADED_IMAGES}&nbsp;<a href="{U_PERSONAL_IMAGES}" target="_parent" onclick="window.opener.location.href='{U_PERSONAL_IMAGES}'; return false;">{L_UPLOADED_IMAGES}</a></i></span><br /><br />

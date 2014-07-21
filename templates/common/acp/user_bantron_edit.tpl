@@ -2,7 +2,7 @@
 <p>{L_BC_EXPLAIN}</p>
 
 <form action="{S_BANCENTER_ACTION}" name="post" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_ADD_A_NEW_BAN}</th></tr>
 <!-- BEGIN username_row -->
 <tr>
@@ -79,7 +79,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="cat" align="center" colspan="2">
+	<td class="cat tdalignc" colspan="2">
 		<!-- BEGIN ban_id -->
 		<input type="hidden" name="ban_id" value="{ban_id.BAN_ID}" />
 		<!-- END ban_id -->

@@ -3,9 +3,9 @@
 <h2>{L_FORUM}: {FORUM_NAME}</h2>
 
 <form method="post"	action="{S_FORUMPRUNE_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th>{L_FORUM_PRUNE}</th></tr>
 <tr><td class="row1">{S_PRUNE_DATA}</td></tr>
-<tr><td class="cat" align="center">{S_HIDDEN_VARS}<input type="submit" name="doprune" value="{L_DO_PRUNE}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc">{S_HIDDEN_VARS}<input type="submit" name="doprune" value="{L_DO_PRUNE}" class="mainoption" /></td></tr>
 </table>
 </form>

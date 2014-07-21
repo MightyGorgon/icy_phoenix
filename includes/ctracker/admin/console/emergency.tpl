@@ -11,7 +11,7 @@
 <br /><br />
 
 <!-- BEGIN ok -->
-	<font face="Verdana" size="6" color="#00CF09" style="text-decoration:blink;">Operation done successfully!</font>
+	<font face="Verdana" size="6" color="#00CF09" style="text-decoration: blink;">Operation done successfully!</font>
 	<br /><br />
 <!-- END ok -->
 

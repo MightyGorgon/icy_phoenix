@@ -28,7 +28,7 @@ function bbcb_vars_reassign_end()
 </script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 
-<table width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
+<table class="p2px">
 <tr>
 	<td>
 		<div class="gennull">

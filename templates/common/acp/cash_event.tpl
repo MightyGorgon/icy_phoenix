@@ -3,7 +3,7 @@
 <p>{L_CASH_EVENTS_EXPLAIN}</p>
 
 <form action="{S_CASH_EVENTS_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{EVENT_NAME}</th></tr>
 <!-- BEGIN cashrow -->
 <tr>
@@ -12,7 +12,7 @@
 </tr>
 <!-- END cashrow -->
 <tr>
-	<td class="cat" colspan="2" align="center">
+	<td class="cat tdalignc" colspan="2">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
 		<input type="reset" value="{L_RESET}" class="liteoption" />

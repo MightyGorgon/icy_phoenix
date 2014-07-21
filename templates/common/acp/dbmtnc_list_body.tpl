@@ -1,7 +1,7 @@
 <h1>{L_DBMTNC_TITLE}</h1>
 <p>{L_DBMTNC_TEXT}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_FUNCTION}</th>
 	<th>{L_FUNCTION_DESCRIPTION}</th>

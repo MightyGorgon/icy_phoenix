@@ -2,7 +2,7 @@
 <p>{L_WORDS_TEXT}</p>
 
 <form method="post" action="{S_WORDS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_WORD}</th>
 	<th>{L_REPLACEMENT}</th>

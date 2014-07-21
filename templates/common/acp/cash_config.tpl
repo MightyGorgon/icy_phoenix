@@ -4,7 +4,7 @@
 
 <form action="{S_CASH_CONFIG_ACTION}" method="post">
 <input type="hidden" name="set" value="general">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_CASH_SETTINGS}</th></tr>
 <tr>
 	<td class="row1">{L_CASH_DISABLED}</td>

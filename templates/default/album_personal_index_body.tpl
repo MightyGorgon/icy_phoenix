@@ -1,29 +1,29 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td class="nav">&nbsp;</td>
-	<td align="right" nowrap="nowrap"><span class="gensmall">{ALBUM_SEARCH_BOX}</td>
+	<td class="tdalignr tdnw"><span class="gensmall">{ALBUM_SEARCH_BOX}</td>
 </tr>
 </table>
 
 {ALBUM_BOARD_INDEX}
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_USERS_PERSONAL_GALLERIES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_USERS_PERSONAL_GALLERIES}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th width="100%" nowrap="nowrap">&nbsp;{L_USERS}&nbsp;</th>
-	<th nowrap="nowrap">&nbsp;{L_JOINED}&nbsp;</th>
-	<th nowrap="nowrap">&nbsp;{L_PICS}&nbsp;</th>
+	<th class="tw100pct tdnw">&nbsp;{L_USERS}&nbsp;</th>
+	<th class="tdnw">&nbsp;{L_JOINED}&nbsp;</th>
+	<th class="tdnw">&nbsp;{L_PICS}&nbsp;</th>
 </tr>
 <!-- BEGIN memberrow -->
 <tr>
 	<td class="row1h">&nbsp;<a href="{memberrow.U_VIEWGALLERY}" class="genmed" style="text-decoration: none;">{memberrow.USERNAME}</a></td>
-	<td class="row1 row-center" nowrap="nowrap"><span class="gensmall">&nbsp;{memberrow.JOINED}&nbsp;</span></td>
+	<td class="row1 row-center tdnw"><span class="gensmall">&nbsp;{memberrow.JOINED}&nbsp;</span></td>
 	<td class="row1 row-center" align="center"><span class="gensmall">{memberrow.PICS}</span></td>
 </tr>
 <!-- END memberrow -->
 <tr>
-	<td class="cat" colspan="3" align="center">
+	<td class="cat tdalignc" colspan="3">
 		<form method="post" action="{S_MODE_ACTION}">
 			<span class="gensmall">
 			{L_SELECT_SORT_METHOD}:&nbsp;{S_MODE_SELECT}&nbsp;&nbsp;{L_ORDER}:&nbsp;{S_ORDER_SELECT}&nbsp;&nbsp;
@@ -34,8 +34,8 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="right" valign="bottom"><span class="gensmall">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></tr>
+<table>
+<tr><td class="tdalignr tvalignb"><span class="gensmall">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></tr>
 </table>
 <br />
 <!-- You must keep my copyright notice visible with its original content -->

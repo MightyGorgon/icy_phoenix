@@ -1,7 +1,7 @@
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_FRIENDS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_FRIENDS}</span>{IMG_THR}<table class="forumlinenb">
 <tr><th><span class="text_green">{L_FRIENDS_ONLINE}</span></th></tr>
 <tr>
-	<td class="row1" width="100%">
+	<td class="row1 tw100pct">
 		<ul style="margin:0;padding:0;list-style-type:none;line-height:175%;">
 		<!-- BEGIN friends_online -->
 			<li>{friends_online.USERNAME_FULL}</li>
@@ -14,7 +14,7 @@
 </tr>
 <tr><th><span class="text_red">{L_FRIENDS_OFFLINE}</span><!--  / {L_FRIENDS_HIDDEN} --></th></tr>
 <tr>
-	<td class="row1" width="100%">
+	<td class="row1 tw100pct">
 		<ul style="margin:0;padding:0;list-style-type:none;line-height:175%;">
 		<!-- BEGIN friends_offline -->
 			<li>{friends_offline.USERNAME_FULL}</li>

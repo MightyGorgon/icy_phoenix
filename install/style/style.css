@@ -263,10 +263,6 @@ hr.dashed {
 /* general */
 .extra-top-padding { padding-top: 1px; }
 
-.empty-table td {
-	/*padding: 3px 0;*/
-}
-
 .forumline {
 	border: solid 1px #dde8ee;
 	background-color: #f8f8f8;

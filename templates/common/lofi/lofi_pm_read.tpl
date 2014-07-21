@@ -1,11 +1,11 @@
 <!-- INCLUDE ../common/lofi/lofi_header.tpl -->
 
-<table cellspacing="2" cellpadding="2" border="0" align="center">
+<table>
 <tr>
-<td valign="middle"><span class="cattitle">{INBOX} &nbsp;</span></td>
-<td valign="middle"><span class="cattitle">{SENTBOX} &nbsp;</span></td>
-<td valign="middle"><span class="cattitle">{OUTBOX} &nbsp;</span></td>
-<td valign="middle"><span class="cattitle">{SAVEBOX}</span></td>
+<td class="tvalignm"><span class="cattitle">{INBOX} &nbsp;</span></td>
+<td class="tvalignm"><span class="cattitle">{SENTBOX} &nbsp;</span></td>
+<td class="tvalignm"><span class="cattitle">{OUTBOX} &nbsp;</span></td>
+<td class="tvalignm"><span class="cattitle">{SAVEBOX}</span></td>
 </tr>
 </table>
 <b>{BOX_NAME} :: {L_MESSAGE}</b>

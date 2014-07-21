@@ -1,5 +1,5 @@
 <form action="{S_MODCP_ACTION}" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{MESSAGE_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{MESSAGE_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row-post" style="padding: 20px; text-align: center;">
 		<span class="gen">

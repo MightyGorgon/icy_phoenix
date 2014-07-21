@@ -51,7 +51,7 @@ function compileForm(m_id)
 
 <h1>{L_MAIL_SESSION_HEADER}</h1>
 <form method="post" name="post" action="{S_USER_ACTION}" onsubmit="return disableForm(this);">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_ID}</th>
 	<th>{L_GROUP}</th>
@@ -88,30 +88,30 @@ function compileForm(m_id)
 <h1>{L_EMAIL_TITLE}</h1>
 <p>{L_EMAIL_EXPLAIN}</p>
 {ERROR_BOX}
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_COMPOSE}</th></tr>
 <tr>
-	<td class="row1" align="right"><b>{L_RECIPIENTS}</b></td>
+	<td class="row1 tdalignr"><b>{L_RECIPIENTS}</b></td>
 	<td class="row2">{S_GROUP_SELECT}</td>
 </tr>
 <tr>
-	<td class="row1" align="right"><b>{L_BATCH_SIZE}</b></td>
+	<td class="row1 tdalignr"><b>{L_BATCH_SIZE}</b></td>
 	<td class="row2"><span class="gen"><input type="text" name="batchsize" size="4" maxlength="4" tabindex="2" class="post" value="{DEFAULT_SIZE}" /></span></td>
 </tr>
 <tr>
-	<td class="row1" align="right"><b>{L_BATCH_WAIT}</b></td>
+	<td class="row1 tdalignr"><b>{L_BATCH_WAIT}</b></td>
 	<td class="row2"><span class="gen"><input type="text" name="batchwait" size="4" maxlength="4" tabindex="3" class="post" value="{DEFAULT_WAIT}" /> s.</span></td>
 </tr>
 <tr>
-	<td class="row1" align="right"><b>{L_MASS_PM}</b></td>
+	<td class="row1 tdalignr"><b>{L_MASS_PM}</b></td>
 	<td class="row2"><span class="gen"><input type="radio" name="mass_pm" class="post" value="0" checked="checked" />&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" name="mass_pm" class="post" value="1" />&nbsp;{L_YES}</span></td>
 </tr>
 <tr>
-	<td class="row1" align="right"><b>{L_TEXT_FORMAT}</b></td>
+	<td class="row1 tdalignr"><b>{L_TEXT_FORMAT}</b></td>
 	<td class="row2"><span class="gen"><input type="radio" name="email_format" class="post" value="1" />&nbsp;{L_BBCODE}&nbsp;&nbsp;<input type="radio" name="email_format" class="post" value="0" checked="checked" />&nbsp;{L_HTML}&nbsp;&nbsp;<input type="radio" name="email_format" class="post" value="2" />&nbsp;{L_FULL_HTML}</span></td>
 </tr>
 <tr>
-	<td class="row1" align="right"><b>{L_EMAIL_SUBJECT}</b></td>
+	<td class="row1 tdalignr"><b>{L_EMAIL_SUBJECT}</b></td>
 	<td class="row2"><span class="gen"><input type="text" name="subject" size="45" maxlength="160" tabindex="4" class="post" value="{SUBJECT}" /></span></td>
 </tr>
 <tr>

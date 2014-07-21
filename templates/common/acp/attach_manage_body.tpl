@@ -3,7 +3,7 @@
 {ERROR_BOX}
 
 <form action="{S_ATTACH_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_ATTACHMENT_SETTINGS}</th></tr>
 <tr>
 	<td class="row1" width="80%"><strong>{L_UPLOAD_DIR}</strong><br /><span class="gensmall">{L_UPLOAD_DIR_EXPLAIN}</span></td>
@@ -41,14 +41,14 @@
 <tr>
 	<td class="row1" width="80%"><strong>{L_DEFAULT_QUOTA_LIMIT}</strong><br /><span class="gensmall">{L_DEFAULT_QUOTA_LIMIT_EXPLAIN}</span></td>
 	<td class="row2">
-	<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+	<table>
 	<tr>
-		<td nowrap="nowrap">{S_DEFAULT_UPLOAD_LIMIT}</td>
-		<td nowrap="nowrap"><span class="gensmall">&nbsp;{L_UPLOAD_QUOTA}&nbsp;</span></td>
+		<td class="tdnw">{S_DEFAULT_UPLOAD_LIMIT}</td>
+		<td class="tdnw"><span class="gensmall">&nbsp;{L_UPLOAD_QUOTA}&nbsp;</span></td>
 	</tr>
 	<tr>
-		<td nowrap="nowrap">{S_DEFAULT_PM_LIMIT}</td>
-		<td nowrap="nowrap"><span class="gensmall">&nbsp;{L_PM_QUOTA}&nbsp;</span></td>
+		<td class="tdnw">{S_DEFAULT_PM_LIMIT}</td>
+		<td class="tdnw"><span class="gensmall">&nbsp;{L_PM_QUOTA}&nbsp;</span></td>
 	</tr>
 	</table>
 	</td>
@@ -116,7 +116,7 @@
 <tr><td class="row1" colspan="2" align="center"><span class="gen">{L_NO_FTP_EXTENSIONS}</span></td></tr>
 <!-- END switch_no_ftp -->
 <tr>
-	<td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" />&nbsp;&nbsp;<input type="submit" name="settings" value="{L_TEST_SETTINGS}" class="liteoption" /></td>
+	<td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" />&nbsp;&nbsp;<input type="submit" name="settings" value="{L_TEST_SETTINGS}" class="liteoption" /></td>
 </tr>
 </table>
 </form>
@@ -124,4 +124,4 @@
 <br />
 <div align="center"><span class="copyright">{ATTACH_VERSION}</span></div>
 
-<br clear="all" />
+<br class="clear" />

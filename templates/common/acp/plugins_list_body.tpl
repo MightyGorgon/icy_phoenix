@@ -3,7 +3,7 @@
 <br />
 
 <form method="post" action="{S_PLUGINS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_PLUGINS_DESCRIPTION}</th>
 	<th width="200" style="width: 200px;">{L_PLUGINS_VERSION}</th>
@@ -28,7 +28,7 @@
 </tr>
 <!-- END plugin -->
 <!-- ENDIF -->
-<tr><td class="cat" colspan="3" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="save" value="{L_PLUGINS_UPDATE_CONFIG}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="3">{S_HIDDEN_FIELDS}<input type="submit" name="save" value="{L_PLUGINS_UPDATE_CONFIG}" class="mainoption" /></td></tr>
 </table>
 </form>
 <br />

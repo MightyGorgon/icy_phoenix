@@ -3,7 +3,7 @@
 <p>{L_AUTH_EXPLAIN}</p>
 <h2>{L_CATEGORY}<!-- IF CATEGORY_NAME neq '' --> : {CATEGORY_NAME}<!-- ENDIF --></h2>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 <!-- BEGIN pertype -->
 	<th><a href="{pertype.U_NAME}">{pertype.L_NAME}</a></th>
@@ -13,7 +13,7 @@
 <br />
 
 <form method="post" action="{S_CATAUTH_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_CATEGORY}</th>
 	<!-- BEGIN cat_auth_titles -->

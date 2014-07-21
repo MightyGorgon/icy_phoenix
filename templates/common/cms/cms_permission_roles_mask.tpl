@@ -1,6 +1,6 @@
 <!-- BEGIN role_mask -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th>{L_USERS} {role_mask.NAME}</th></tr>
 <tr>
 	<td class="row1">

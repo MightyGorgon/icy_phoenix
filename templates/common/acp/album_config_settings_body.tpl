@@ -1,5 +1,5 @@
 <tr>
-	<td class="row1" width="45%"><span class="genmed">{L_MAX_PICS}</span></td>
+	<td class="row1 tw45pct"><span class="genmed">{L_MAX_PICS}</span></td>
 	<td class="row2"><input onchange="setChange();" class="post" type="text" maxlength="9" size="9" name="max_pics" value="{MAX_PICS}" /></td>
 </tr>
 <tr>
@@ -117,7 +117,7 @@
 	<td class="row2"><span class="genmed"><input onchange="setChange();" type="radio" {WATERMARK_USERS_ENABLED} name="wut_users" value="1" />{L_YES}&nbsp;&nbsp;<input onchange="setChange();" type="radio" {WATERMARK_USERS_DISABLED} name="wut_users" value="0" />{L_NO}</span></td>
 </tr>
 <tr>
-	<td class="row1" valign="top"><span class="genmed">{L_WATERMARK_PLACENT}</span></td>
+	<td class="row1"><span class="genmed">{L_WATERMARK_PLACENT}</span></td>
 	<td class="row2">
 		<table cellpadding="4">
 			<tr>

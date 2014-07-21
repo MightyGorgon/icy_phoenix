@@ -2,7 +2,7 @@
 <p>{L_USER_EXPLAIN}</p>
 
 <form method="post" name="post" action="{S_USER_ACTION}">
-<table class="forumline" align="center" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th>{L_USER_SELECT}</th></tr>
 <tr>
 	<td class="row1 row-center">

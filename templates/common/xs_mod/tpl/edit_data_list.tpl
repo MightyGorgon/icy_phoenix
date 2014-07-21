@@ -21,7 +21,7 @@
 </tr>
 <tr>
 	<td class="catLeft" align="center"><span class="gen">{L_XS_TEMPLATE}</span></td>
-	<td class="cat" align="center"><span class="gen">{L_XS_STYLES}</span></td>
+	<td class="cat tdalignc"><span class="gen">{L_XS_STYLES}</span></td>
 	<td class="catRight" align="center"><span class="gen">&nbsp;</span></td>
 </tr>
 <!-- BEGIN styles -->

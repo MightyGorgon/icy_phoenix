@@ -8,7 +8,7 @@
 		<!-- BEGIN poll_option -->
 		<tr>
 			<!-- IF S_CAN_VOTE -->
-			<td align="center"><input type="<!-- IF S_IS_MULTI_CHOICE -->checkbox<!-- ELSE -->radio<!-- ENDIF -->" class="radio" name="vote_id[]" value="{poll_option.POLL_OPTION_ID}"<!-- IF poll_option.POLL_OPTION_VOTED --> checked="checked"<!-- ENDIF --> /></td>
+			<td class="tdalignc"><input type="<!-- IF S_IS_MULTI_CHOICE -->checkbox<!-- ELSE -->radio<!-- ENDIF -->" class="radio" name="vote_id[]" value="{poll_option.POLL_OPTION_ID}"<!-- IF poll_option.POLL_OPTION_VOTED --> checked="checked"<!-- ENDIF --> /></td>
 			<!-- ENDIF -->
 
 			<!-- IF not S_CMS_BLOCK --><td><span class="gen">{poll_option.POLL_OPTION_CAPTION}</span></td><!-- ENDIF -->
@@ -16,11 +16,11 @@
 			<!-- IF S_DISPLAY_RESULTS -->
 
 			<td><!-- IF S_CMS_BLOCK --><span class="gensmall">{poll_option.POLL_OPTION_CAPTION}</span><br /><!-- ENDIF --><img src="{poll_option.POLL_GRAPHIC_LEFT}" width="4" height="12" alt="" /><img src="{poll_option.POLL_GRAPHIC_BODY}" width="{poll_option.POLL_OPTION_IMG_WIDTH}" height="12" alt="{poll_option.POLL_OPTION_PERCENT}" /><img src="{poll_option.POLL_GRAPHIC_RIGHT}" width="4" height="12" alt="" /></td>
-			<td align="center"><b>{poll_option.POLL_OPTION_PERCENT}</b></td>
+			<td class="tdalignc"><b>{poll_option.POLL_OPTION_PERCENT}</b></td>
 
 			<!-- IF not S_CMS_BLOCK -->
-			<td align="center">( {poll_option.POLL_OPTION_RESULT} )</td>
-			<!-- IF poll_option.POLL_OPTION_VOTED --><td align="center"><b class="gensmall" title="{L_POLL_VOTED_OPTION}">x</b></td><!-- ENDIF -->
+			<td class="tdalignc">( {poll_option.POLL_OPTION_RESULT} )</td>
+			<!-- IF poll_option.POLL_OPTION_VOTED --><td class="tdalignc"><b class="gensmall" title="{L_POLL_VOTED_OPTION}">x</b></td><!-- ENDIF -->
 			<!-- ENDIF -->
 
 			<!-- ENDIF -->

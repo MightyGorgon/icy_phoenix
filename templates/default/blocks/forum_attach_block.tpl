@@ -1,5 +1,5 @@
 <!-- BEGIN articles_fp -->
-{IMG_THL}{IMG_THC}<a href="{articles_fp.U_VIEW_COMMENTS}" class="forumlink">{articles_fp.TITLE}</a>&nbsp;{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0" border="0">
+{IMG_THL}{IMG_THC}<a href="{articles_fp.U_VIEW_COMMENTS}" class="forumlink">{articles_fp.TITLE}</a>&nbsp;{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row-post">
 		<div class="post-text">{articles_fp.TEXT}</div><br /><br />
@@ -10,10 +10,10 @@
 </tr>
 <tr>
 	<td class="cat">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr>
-				<td align="left"><span class="gensmall">&nbsp;{articles_fp.POSTER_CG}&nbsp;[ {articles_fp.TIME} ]</span></td>
-				<td align="right">
+				<td><span class="gensmall">&nbsp;{articles_fp.POSTER_CG}&nbsp;[ {articles_fp.TIME} ]</span></td>
+				<td class="tdalignr">
 					<!-- <img src="{IMG_CLOCK}" alt="" title="" border="0" align="middle" />&nbsp; -->
 					<a href="{articles_fp.U_POST_COMMENT}"><img src="{NEWS_REPLY_IMG}" alt="{L_REPLY_NEWS}" title="{L_REPLY_NEWS}" border="0" align="middle" /></a>
 					<a href="{articles_fp.U_PRINT_TOPIC}" target="_blank"><img src="{NEWS_PRINT_IMG}" alt="{L_PRINT_NEWS}" title="{L_PRINT_NEWS}" border="0" align="middle" /></a>

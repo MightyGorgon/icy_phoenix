@@ -3,11 +3,11 @@
 {ERROR_BOX}
 
 <form action="{SUBMIT_ACTION}" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_TELL_FRIEND_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_TELL_FRIEND_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1">
 	<br /><br />
-		<table width="70%" align="center">
+		<table class="tw70pct talignc">
 		<tr>
 			<td><span class="gen"><b>{L_TELL_FRIEND_SENDER_USER}</b></span></td>
 			<td><span class="gen"><b>{SENDER_NAME}</b></span></td>
@@ -25,7 +25,7 @@
 			<td><input type="text" class="post" size="25" maxlength="40" name="friendemail" /></td>
 		</tr>
 		<tr>
-			<td valign="top"><span class="gen"><b>{L_TELL_FRIEND_MSG}</b></span></td>
+			<td><span class="gen"><b>{L_TELL_FRIEND_MSG}</b></span></td>
 			<td><textarea name="message" rows="10" cols="60">{L_TELL_FRIEND_BODY}</textarea></td>
 		</tr>
 		</table>

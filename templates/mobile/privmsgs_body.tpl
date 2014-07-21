@@ -40,10 +40,10 @@
 		<input type="submit" name="deleteall" value="{L_DELETE_ALL}" class="liteoption" style="padding-left: 2px; padding-right: 2px;" />
 </div>
 
-<table width="100%" cellspacing="0" border="0" align="center" cellpadding="0">
+<table>
 <tr>
-	<td align="left" valign="top"><span class="img-btn">{POST_PM_IMG}</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="gensmall"><!-- IF PAGE_NUMBER -->{PAGE_NUMBER}<!-- ELSE -->&nbsp;<!-- ENDIF --></span><br /><div class="pagination"><!-- IF PAGINATION -->{PAGINATION}<!-- ELSE -->&nbsp;<!-- ENDIF --></div></td>
+	<td><span class="img-btn">{POST_PM_IMG}</span></td>
+	<td class="tdalignr tdnw"><span class="gensmall"><!-- IF PAGE_NUMBER -->{PAGE_NUMBER}<!-- ELSE -->&nbsp;<!-- ENDIF --></span><br /><div class="pagination"><!-- IF PAGINATION -->{PAGINATION}<!-- ELSE -->&nbsp;<!-- ENDIF --></div></td>
 </tr>
 </table>
 </form>

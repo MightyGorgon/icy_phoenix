@@ -2,7 +2,7 @@
 
 <form action="{S_PROFILE_ACTION}" method="post">
 {CPL_MENU_OUTPUT}
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_AVATAR_GALLERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_AVATAR_GALLERY}</span>{IMG_THR}<table class="forumlinenb">
 	<tr><th colspan="{S_COLSPAN}">{L_CATEGORY}:&nbsp;{S_CATEGORY_SELECT}&nbsp;<input type="submit" class="liteoption" value="{L_GO}" name="avatargallery" /></th></tr>
 	<!-- BEGIN avatar_row -->
 	<tr>

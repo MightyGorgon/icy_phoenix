@@ -1,24 +1,24 @@
 <form action="{S_GROUPCP_ACTION}" method="post">
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_INFORMATION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_INFORMATION}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1" width="20%"><span class="gen">{L_GROUP_NAME}:</span></td>
+	<td class="row1 tw20pct"><span class="gen">{L_GROUP_NAME}:</span></td>
 	<td class="row2"><span class="gen"{GROUP_COLOR_STYLE}>{GROUP_NAME}</span></td>
 </tr>
 <tr>
-	<td class="row1" width="20%"><span class="gen">{L_MEMBER_COUNT}:</span></td>
+	<td class="row1 tw20pct"><span class="gen">{L_MEMBER_COUNT}:</span></td>
 	<td class="row2"><span class="gen"><b>{L_COUNT}</b></span></td>
 </tr>
 <tr>
-	<td class="row1" width="20%"><span class="gen">{L_GROUP_DESC}:</span></td>
+	<td class="row1 tw20pct"><span class="gen">{L_GROUP_DESC}:</span></td>
 	<td class="row2"><span class="gen">{GROUP_DESC}&nbsp;</span></td>
 </tr>
 <tr>
-	<td class="row1" width="20%"><span class="gen">{L_GROUP_RANK}:</span></td>
+	<td class="row1 tw20pct"><span class="gen">{L_GROUP_RANK}:</span></td>
 	<td class="row2"><span class="gen">{GROUP_RANK}&nbsp;</span></td>
 </tr>
 <tr>
-	<td class="row1" width="20%"><span class="gen">{L_GROUP_MEMBERSHIP}:</span></td>
+	<td class="row1 tw20pct"><span class="gen">{L_GROUP_MEMBERSHIP}:</span></td>
 	<td class="row2"><span class="gen">{GROUP_DETAILS} &nbsp;&nbsp;
 	<!-- BEGIN switch_subscribe_group_input -->
 	<input class="mainoption" type="submit" name="joingroup" value="{L_JOIN_GROUP}" />
@@ -30,7 +30,7 @@
 </tr>
 <!-- BEGIN switch_mod_option -->
 <tr>
-	<td class="row1" width="20%"><span class="gen">{L_GROUP_TYPE}:</span></td>
+	<td class="row1 tw20pct"><span class="gen">{L_GROUP_TYPE}:</span></td>
 	<td class="row2"><span class="genmed">
 		<label><input type="radio" name="group_type" value="{S_GROUP_OPEN_TYPE}" {S_GROUP_OPEN_CHECKED} /> <span class="genmed">{L_GROUP_OPEN}</span></label>&nbsp;&nbsp;
 		<label><input type="radio" name="group_type" value="{S_GROUP_CLOSED_TYPE}" {S_GROUP_CLOSED_CHECKED} /> <span class="genmed">{L_GROUP_CLOSED}</span></label>&nbsp;&nbsp;
@@ -44,7 +44,7 @@
 </form>
 
 <form action="{S_GROUPCP_ACTION}" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_MODERATOR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_MODERATOR}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>{L_USERNAME}</th>
 	<th>{L_POSTS}</th>
@@ -65,7 +65,7 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_MEMBERS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_MEMBERS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>{L_USERNAME}</th>
 	<th>{L_POSTS}</th>
@@ -114,9 +114,9 @@
 </form>
 
 <form action="{S_GROUPCP_ACTION}" name="post" method="post">
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="top">
+	<td>
 		<!-- BEGIN switch_mod_option -->
 		<span class="genmed">
 		<input type="text" class="post" name="username" id="username" maxlength="50" size="20" {S_AJAX_USER_CHECK} />&nbsp;
@@ -130,7 +130,7 @@
 		<!-- END switch_mod_option -->
 		{PAGE_NUMBER}
 	</td>
-	<td align="right" valign="top"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
+	<td class="tdalignr"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 
@@ -139,4 +139,4 @@
 {S_HIDDEN_FIELDS}
 </form>
 
-<table width="100%" cellspacing="2" border="0" align="center"><tr><td valign="top" align="right">{JUMPBOX}</td></tr></table>
+<table class="s2px p2px"><tr><td class="tdalignr">{JUMPBOX}</td></tr></table>

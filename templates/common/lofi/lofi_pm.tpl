@@ -15,7 +15,7 @@
 <div class="index">
 	<table border="0" cellspacing="0" cellpadding="0" align="center" width="100%">
 	<tr>
-		<td valign="top" align="center" width="100%">
+		<td class="tw100pct tdalignc">
 			<table height="40" cellspacing="2" cellpadding="2" border="0">
 			<tr valign="middle">
 				<td><span class="cattitle">{INBOX} &nbsp;</span></td>
@@ -25,11 +25,11 @@
 			</tr>
 			</table>
 		</td>
-		<td align="right">
+		<td class="tdalignr">
 			<!-- BEGIN switch_box_size_notice -->
 			<table width="175" cellspacing="1" cellpadding="2" border="0" class="bodyline">
 			<tr>
-				<td colspan="3" width="175" class="row1" nowrap="nowrap"><span class="gensmall">{BOX_SIZE_STATUS}</span></td>
+				<td colspan="3" width="175" class="row1 tdnw"><span class="gensmall">{BOX_SIZE_STATUS}</span></td>
 			</tr>
 			<tr>
 				<td colspan="3" width="175" class="row2">
@@ -39,7 +39,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="33%" class="row1"><span class="gensmall">0%</span></td>
+				<td class="tw33pct row1"><span class="gensmall">0%</span></td>
 				<td width="34%" align="center" class="row1"><span class="gensmall">50%</span></td>
 				<td width="33%" align="right" class="row1"><span class="gensmall">100%</span></td>
 			</tr>
@@ -49,13 +49,13 @@
 	</tr>
 	</table>
 
-	<br clear="all" />
+	<br class="clear" />
 
 	<form method="post" name="privmsg_list" action="{S_PRIVMSGS_ACTION}">
-		<table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
+		<table class="s2px p2px">
 		<tr>
-			<td align="left" valign="middle">{POST_PM}</td>
-			<td align="right" nowrap="nowrap">
+			<td class="tvalignm">{POST_PM}</td>
+			<td class="tdalignr tdnw">
 				<span class="gensmall">
 					{L_DISPLAY_MESSAGES}:
 					<select name="msgdays">{S_SELECT_MSG_DAYS}</select>
@@ -65,13 +65,13 @@
 		</tr>
 		</table>
 
-		<table class="forumline" width="100%" cellspacing="1" cellpadding="3" border="0">
+		<table class="forumline">
 		<tr>
 			<th width="5%" height="25" nowrap="nowrap">&nbsp;{L_FLAG}&nbsp;</th>
 			<th width="55%" nowrap="nowrap">&nbsp;{L_SUBJECT}&nbsp;</th>
 			<th width="20%" nowrap="nowrap">&nbsp;{L_FROM_OR_TO}&nbsp;</th>
-			<th width="15%" nowrap="nowrap">&nbsp;{L_DATE}&nbsp;</th>
-			<th width="5%" nowrap="nowrap">&nbsp;{L_MARK}&nbsp;</th>
+			<th class="tw15pct tdnw">&nbsp;{L_DATE}&nbsp;</th>
+			<th class="tw5pct tdnw">&nbsp;{L_MARK}&nbsp;</th>
 		</tr>
 		<!-- BEGIN listrow -->
 		<tr>
@@ -97,17 +97,17 @@
 		</tr>
 		</table>
 
-		<table width="100%" cellspacing="2" border="0" align="center" cellpadding="2">
+		<table class="s2px p2px">
 		<tr>
-			<td align="left" valign="middle" nowrap="nowrap">{POST_PM}<br /></td>
-			<td align="left" valign="middle" width="100%"><span class="nav"></span></td>
-			<td align="right" valign="top" nowrap="nowrap"><b><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></b><br /><span class="pagination">{PAGINATION}<br /></span><span class="gensmall">{S_TIMEZONE}</span></td>
+			<td class="tvalignm tdnw">{POST_PM}<br /></td>
+			<td class="tw100pct tvalignm"><span class="nav"></span></td>
+			<td class="tdalignr tdnw"><b><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></b><br /><span class="pagination">{PAGINATION}<br /></span><span class="gensmall">{S_TIMEZONE}</span></td>
 		</tr>
 		</table>
 		{PAGE_NUMBER}
 	</form>
 
-	<table width="100%" border="0"><tr><td align="right" valign="top">{JUMPBOX}</td></tr></table>
+	<table><tr><td class="tdalignr">{JUMPBOX}</td></tr></table>
 </div>
 <br />
 

@@ -6,14 +6,14 @@
 <form method="post" action="{S_FORUMAUTH_ACTION}">
 
 <div style="float: right;">
-<table class="forumline" width="300" cellspacing="0" cellpadding="0">
+<table class="forumline tw300px">
 <tr><th>{L_FORUM}</th></tr>
 <tr><td class="row1 row-center"><select name="forums[]" multiple="multiple" size="25" style="min-height: 400px;">{S_FORUM_LIST}</select></td></tr>
-<tr><td class="cat" align="center">&nbsp;</td></tr>
+<tr><td class="cat tdalignc">&nbsp;</td></tr>
 </table>
 </div>
 
-<table class="forumline" width="400" cellspacing="0" cellpadding="0" border="0" style="float: left; min-width: 400px;">
+<table class="forumline tw400px" style="float: left; min-width: 400px;">
 <tr><th colspan="2">{L_AUTH_TITLE}</th></tr>
 <!-- BEGIN forum_auth -->
 <tr>

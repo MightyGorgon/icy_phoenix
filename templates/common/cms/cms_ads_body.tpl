@@ -1,6 +1,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_ads.png" alt="{L_ADS_TITLE}" title="{L_ADS_TITLE}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_ADS_TITLE}</h1><span class="genmed">{L_ADS_TITLE_EXPLAIN}</span></td>
@@ -8,7 +8,7 @@
 </table>
 
 <form method="post" action="{S_ADS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_AD_POSITION}</th>
 	<th>{L_AD_ENABLED}</th>
@@ -23,7 +23,7 @@
 <tr><td colspan="2" align="center" class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="update" value="{L_CMS_SAVE_CHANGES}" class="liteoption" /></td></tr>
 </table>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th><a href="{U_AD_SORT_ID}">#</a></th>
 	<th><a href="{U_AD_SORT_ACTIVE}">{L_AD_STATUS}</a></th>

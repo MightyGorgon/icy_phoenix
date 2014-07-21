@@ -1,19 +1,19 @@
 <!-- INCLUDE viewtopic_inc_js.tpl -->
 
 <!-- INCLUDE breadcrumbs_vt.tpl -->
-<br clear="all" />
+<br class="clear" />
 
 <!-- IF S_FORUM_RULES -->
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr><td class="row-header"><span><!-- IF S_FORUM_RULES_TITLE -->{L_FORUM_RULES}<!-- ENDIF -->&nbsp;</span></td></tr>
-<tr><td class="row1g-left" width="100%"><div class="post-text">{FORUM_RULES}</div></td></tr>
+<tr><td class="row1g-left tw100pct"><div class="post-text">{FORUM_RULES}</div></td></tr>
 </table>
 <br />
 <!-- ENDIF -->
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="bottom">
+	<td class="tdalignl tvalignb">
 		<div class="topic-title-hide-flow-header"><h2><a href="{U_VIEW_TOPIC_BASE}" style="text-decoration: none;">{TOPIC_TITLE}</a></h2></div><br />
 		<!-- IF S_TOPIC_TAGS and TOPIC_TAGS -->
 		<div><span class="gensmall"><b>{L_TOPIC_TAGS}</b>:&nbsp;{TOPIC_TAGS}</span></div><br />
@@ -25,7 +25,7 @@
 		&nbsp;
 		<!-- ENDIF -->
 	</td>
-	<td align="right" valign="bottom">
+	<td class="tdalignr tvalignb">
 		<span class="gen">{PAGE_NUMBER}</span><br />
 		<span class="pagination">{PAGINATION}</span><br />
 		<!-- IF S_EXTENDED_PAGINATION -->
@@ -36,15 +36,15 @@
 </tr>
 </table>
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE_SHORT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{TOPIC_TITLE_SHORT}</span>{IMG_THR}<table class="forumlinenb">
 <!-- IF VIEWTOPIC_BANNER_TOP -->
-<tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_TOP}</div></td></tr>
+<tr><td class="row-post" colspan="2" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow: auto;">{VIEWTOPIC_BANNER_TOP}</div></td></tr>
 <!-- ENDIF -->
 {POLL_DISPLAY}
 {REG_DISPLAY}
 <tr>
-	<th width="150">{L_AUTHOR}</th>
-	<th width="100%">{L_MESSAGE}</th>
+	<th class="tw150px">{L_AUTHOR}</th>
+	<th class="tw100pct">{L_MESSAGE}</th>
 </tr>
 <!-- BEGIN postrow -->
 <tr>
@@ -107,7 +107,7 @@
 		&nbsp;<br />
 	</td>
 	<!-- <td class="row-post" width="100%" height="100%" style="overflow: hidden;"> -->
-	<td class="row-post" height="100%">
+	<td class="row-post th100pct">
 		<div class="post-buttons-top post-buttons">
 			<!-- IF not S_BOT -->
 			<a href="{postrow.U_POST_QUOTE}"><img src="{postrow.IMG_POST_QUOTE}" alt="{postrow.L_POST_QUOTE}" title="{postrow.L_POST_QUOTE}" /></a>
@@ -185,7 +185,7 @@
 	</td>
 </tr>
 <!-- IF S_POSTS_LIKES -->
-<tr><td class="row-post-date" colspan="2"><span class="gensmall"><span id="like_s_p{postrow.U_POST_ID}"><!-- IF postrow.POST_LIKE_TEXT -->{postrow.POST_LIKE_TEXT}&nbsp;&bull;<!-- ENDIF -->&nbsp;</span><!-- IF S_LOGGED_IN and not postrow.S_OWN_POST --><a href="#" id="like_a_p{postrow.U_POST_ID}" style="text-decoration: none;" onclick="post_like_ajax({postrow.U_TOPIC_ID}, {postrow.U_POST_ID}); return false;"><!-- IF postrow.READER_LIKES -->{L_UNLIKE}<!-- ELSE -->{L_LIKE}<!-- ENDIF --></a>&nbsp;&bull;<!-- ENDIF -->&nbsp;{postrow.SINGLE_POST_SHARE}</span></td></tr>
+<tr><td class="row-post-date tdalignc tvalignm" colspan="2"><span class="gensmall"><span id="like_s_p{postrow.U_POST_ID}"><!-- IF postrow.POST_LIKE_TEXT -->{postrow.POST_LIKE_TEXT}&nbsp;&bull;<!-- ENDIF -->&nbsp;</span><!-- IF S_LOGGED_IN and not postrow.S_OWN_POST --><a href="#" id="like_a_p{postrow.U_POST_ID}" style="text-decoration: none;" onclick="post_like_ajax({postrow.U_TOPIC_ID}, {postrow.U_POST_ID}); return false;"><!-- IF postrow.READER_LIKES -->{L_UNLIKE}<!-- ELSE -->{L_LIKE}<!-- ENDIF --></a>&nbsp;&bull;<!-- ENDIF -->&nbsp;{postrow.SINGLE_POST_SHARE}</span></td></tr>
 <!-- ENDIF -->
 <tr>
 	<td class="row-post-date"><div style="text-align: center;"><b>{postrow.SINGLE_POST}</b>&nbsp;&nbsp;<!-- IF S_ADMIN -->{postrow.POST_EDIT_STRING_SHORT}<!-- ELSE -->{postrow.POST_DATE}<!-- ENDIF --></div></td>
@@ -217,12 +217,12 @@
 <!-- IF not S_BOT -->
 <!-- BEGIN switch_viewtopic_banner -->
 <tr>
-	<td align="center" class="row-post-author">
+	<td class="row-post-author row-center">
 		<span class="post-name"><a href="#" style="font-weight:bold;text-decoration:none;">{L_SPONSORS_LINKS}</a></span><br />
 		<img src="images/ranks/rank_sponsor.png" alt="" style="margin-bottom: 3px;" /><br />
 		<img src="images/avatars/default_avatars/sponsor.gif" alt="" />
 	</td>
-	<td class="row-post" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_CODE}</div></td>
+	<td class="row-post" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_CODE}</div></td>
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <!-- END switch_viewtopic_banner -->
@@ -230,7 +230,7 @@
 <!-- END postrow -->
 
 <!-- IF VIEWTOPIC_BANNER_BOTTOM -->
-<tr><td class="row-post" colspan="2" align="center" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_BOTTOM}</div></td></tr>
+<tr><td class="row-post" colspan="2" style="text-align: center; vertical-align: middle !important;"><div class="center-block-text" style="overflow:auto;">{VIEWTOPIC_BANNER_BOTTOM}</div></td></tr>
 <!-- ENDIF -->
 <tr>
 	<td class="cat" colspan="2">
@@ -241,9 +241,9 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="top">
+	<td>
 		<!-- IF not S_BOT -->
 		<span class="img-btn"><a href="{U_POST_NEW_TOPIC}"><img src="{POST_IMG}" alt="{L_POST_NEW_TOPIC}" title="{L_POST_NEW_TOPIC}"/></a></span>&nbsp;
 		<span class="img-btn"><a href="{U_POST_REPLY_TOPIC}"><img src="{REPLY_IMG}" alt="{L_POST_REPLY_TOPIC}" title="{L_POST_REPLY_TOPIC}"/></a></span>&nbsp;
@@ -252,32 +252,32 @@
 		&nbsp;
 		<!-- ENDIF -->
 	</td>
-	<td align="right" valign="top">
+	<td class="tdalignr">
 		<span class="gen">{PAGE_NUMBER}</span><br />
 		<span class="pagination">{PAGINATION}</span>
 	</td>
 </tr>
 </table>
 
-<br clear="all" />
+<br class="clear" />
 
 <!-- IF not S_BOT -->
 {CA_QUICK_REPLY_FORM}
 <!-- ENDIF -->
 
-<br clear="all" />
+<br class="clear" />
 
 <!-- IF not S_BOT -->
 <!-- BEGIN switch_topic_useful -->
 <a id="ratingblock"></a>
 <div id="rate_block_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_SHOW}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_SHOW}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb">
 <tr><td class="row1g row-center">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 
 <div id="rate_block">
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_HIDE}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('rate_block','rate_block_h','rate_block');" alt="{L_HIDE}" /><span class="forumlink">{L_TOPIC_RATING}</span>{IMG_THR}<table class="forumlinenb">
 {RATING_VIEWTOPIC}
 <!-- BEGIN social_bookmarks -->
 <tr><th colspan="4">{L_SHARE_TOPIC}</th></tr>
@@ -305,16 +305,16 @@ if(GetCookie(tmp) == '2')
 <!-- INCLUDE breadcrumbs_vt.tpl -->
 
 <!-- IF not S_BOT -->
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="left" valign="top" class="gensmall" width="100%"><span class="gensmall"><br />{TOTAL_USERS_ONLINE}<br />{LOGGED_IN_USER_LIST}</span><br /><br /></td></tr>
+<table>
+<tr><td class="gensmall tw100pct"><span class="gensmall"><br />{TOTAL_USERS_ONLINE}<br />{LOGGED_IN_USER_LIST}</span><br /><br /></td></tr>
 </table>
 <!-- ENDIF -->
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="top" class="gensmall" width="40%">
+	<td class="gensmall tw40pct">
 		{IMG_TBL}<div id="topic_auth_list_h" style="display: none;">
-			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+			<table class="forumline">
 			<tr>
 				<td class="row-header">
 					<div class="max-min-right" style="{SHOW_HIDE_PADDING}"><img src="{IMG_MAXIMISE}" onclick="ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
@@ -323,7 +323,7 @@ if(GetCookie(tmp) == '2')
 			</table>
 		</div>
 		<div id="topic_auth_list">
-			<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+			<table class="forumline">
 			<tr>
 				<td class="row-header">
 					<div class="max-min-right" style="{SHOW_HIDE_PADDING}"><img src="{IMG_MINIMISE}" onclick="ShowHide('topic_auth_list','topic_auth_list_h','topic_auth_list');" alt="" />&nbsp;</div><span>{L_PERMISSIONS_LIST}</span>
@@ -342,7 +342,7 @@ if(GetCookie(tmp) == '2')
 		//-->
 		</script>
 	</td>
-	<td align="right" valign="top">
+	<td class="tdalignr">
 		<!-- IF not S_BOT and S_TMOD_BUTTONS -->
 		<!-- INCLUDE viewtopic_admin.tpl -->
 		<!-- ENDIF -->

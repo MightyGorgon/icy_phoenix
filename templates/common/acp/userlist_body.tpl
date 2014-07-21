@@ -75,7 +75,7 @@ function handleClick(id)
 </div>
 </form>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<td class="cat">
 	<span class="gensmall">
@@ -89,19 +89,19 @@ function handleClick(id)
 </table>
 
 <form action="{S_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
-	<th width="15%">&nbsp;</th>
-	<th width="20%">{L_USERNAME}</th>
-	<th width="5%">{L_ACTIVE}</th>
-	<th width="15%">{L_JOINED}</th>
-	<th width="15%">{L_ACTIVTY}</th>
-	<th width="15%">{L_BIRTHDAY}</th>
-	<th width="15%">{L_LANG}</th>
+	<th class="tw15pct">&nbsp;</th>
+	<th class="tw20pct">{L_USERNAME}</th>
+	<th class="tw5pct">{L_ACTIVE}</th>
+	<th class="tw15pct">{L_JOINED}</th>
+	<th class="tw15pct">{L_ACTIVTY}</th>
+	<th class="tw15pct">{L_BIRTHDAY}</th>
+	<th class="tw15pct">{L_LANG}</th>
 </tr>
 <!-- BEGIN user_row -->
 <tr>
-	<td class="row1" nowrap="nowrap"><input type="checkbox" name="{S_USER_VARIABLE}[]" value="{user_row.USER_ID}" />&nbsp;&nbsp;&nbsp;<a href="javascript:handleClick('user{user_row.USER_ID}');">{L_OPEN_CLOSE}</a></td>
+	<td class="row1 tdnw"><input type="checkbox" name="{S_USER_VARIABLE}[]" value="{user_row.USER_ID}" />&nbsp;&nbsp;&nbsp;<a href="javascript:handleClick('user{user_row.USER_ID}');">{L_OPEN_CLOSE}</a></td>
 	<td class="row1"><span class="genmed">{user_row.USERNAME}</span></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.ACTIVE}</span></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.JOINED}</span></td>
@@ -112,7 +112,7 @@ function handleClick(id)
 <tr id="user{user_row.USER_ID}" style="display: none">
 	<td class="row1" width="13%">&nbsp;</td>
 	<td class="row1" colspan="6" width="100%">
-		<table width="100%" cellpadding="3" cellspacing="1" border="0">
+		<table>
 			<tr>
 				<td class="row1" width="33%"><span class="genmed"><b>{L_RANK}:</b> {user_row.RANK} &nbsp; {user_row.I_RANK}</span></td>
 				<td class="row1" width="34%">
@@ -159,11 +159,11 @@ function handleClick(id)
 </table>
 </form>
 
-<table width="100%" cellpadding="3" cellspacing="1" border="0">
+<table>
 <tr>
-	<td align="left" width="50%"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right" width="50%"><span class="pagination">{PAGINATION}</span></td>
+	<td class="tw50pct"><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td class="tw50pct tdalignr"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 
-<br clear="all" />
+<br class="clear" />

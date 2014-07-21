@@ -5,7 +5,7 @@
 	<td class="row2"><span class="genmed"><input type="file" name="fileupload" maxlength="{FILESIZE}" style="width: 98%;" value="" class="post" /></span></td>
 </tr>
 <tr>
-	<td class="row1" valign="top"><span class="gen"><b>{L_FILE_COMMENT}</b></span></td>
+	<td class="row1"><span class="gen"><b>{L_FILE_COMMENT}</b></span></td>
 	<td class="row2">
 		<span class="genmed"><textarea name="filecomment" rows="3" cols="50" style="width: 98%;" class="post">{FILE_COMMENT}</textarea></span><br />
 		<input type="submit" name="add_attachment" value="{L_ADD_ATTACHMENT}" class="liteoption" />

@@ -22,8 +22,8 @@
 </tr>
 <tr>
 	<td class="catLeft" align="center"><span class="gen">{L_XS_TEMPLATE}</span></td>
-	<td class="cat" align="center"><span class="gen">{L_XS_STYLE}</span></td>
-	<td class="cat" align="center"><span class="gen">{L_XS_INSTALL}</span></td>
+	<td class="cat tdalignc"><span class="gen">{L_XS_STYLE}</span></td>
+	<td class="cat tdalignc"><span class="gen">{L_XS_INSTALL}</span></td>
 	<td class="catRight" align="center"><span class="gen">{L_XS_SELECT}</span></td>
 </tr>
 <!-- BEGIN styles -->

@@ -1,15 +1,15 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <!-- BEGIN recent_pics_block -->
-<table class="forumline" width="100%" cellspacing="0">
-<tr><td class="row2" align="left" colspan="{S_COLS}" nowrap="nowrap"><span class="cattitle">&nbsp;{L_RECENT_PUBLIC_PICS}</span></td></tr>
+<table class="forumline">
+<tr><td class="row2 tdnw" colspan="{S_COLS}"><span class="cattitle">&nbsp;{L_RECENT_PUBLIC_PICS}</span></td></tr>
 <!-- BEGIN no_pics -->
-<tr><td class="row1 row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
+<tr><td class="row1 row-center th50px" colspan="{S_COLS}"><span class="gen">{L_NO_PICS}</span></td></tr>
 <!-- END no_pics -->
 <!-- BEGIN recent_pics -->
 <tr>
 <!-- BEGIN recent_col -->
-<td class="row1_no_trans" width="{S_COL_WIDTH}" align="center">{recent_pics_block.recent_pics.recent_col.SS}</td>
+<td class="row1_no_trans tdalignc" style="width: {S_COL_WIDTH};">{recent_pics_block.recent_pics.recent_col.SS}</td>
 <!-- END recent_col -->
 </tr>
 <tr>
@@ -26,15 +26,15 @@
 <!-- END recent_pics_block -->
 
 <!-- BEGIN most_pics_block -->
-<table class="forumline" width="100%" cellspacing="0">
-<tr><td class="row2" height="25" align="left" colspan="{S_COLS}" nowrap="nowrap"><span class="cattitle">&nbsp;{L_MOST_PUBLIC_PICS}</span></td></tr>
+<table class="forumline">
+<tr><td class="row2 tdnw"colspan="{S_COLS}"><span class="cattitle">&nbsp;{L_MOST_PUBLIC_PICS}</span></td></tr>
 <!-- BEGIN no_pics -->
 <tr><td class="row1 row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
 <!-- END no_pics -->
 <!-- BEGIN most_pics -->
 <tr>
 <!-- BEGIN most_col -->
-<td class="row1_no_trans" width="{S_COL_WIDTH}" align="center">{most_pics_block.most_pics.most_col.SS}</td>
+<td class="row1_no_trans tdalignc" width="{S_COL_WIDTH}">{most_pics_block.most_pics.most_col.SS}</td>
 <!-- END most_col -->
 </tr>
 <tr>
@@ -51,15 +51,15 @@
 <!-- END most_pics_block -->
 
 <!-- BEGIN highest_pics_block -->
-<table class="forumline" width="100%" cellspacing="0">
-<tr><td class="row2" height="25" colspan="{S_COLS}" align="left" nowrap="nowrap"><span class="cattitle">&nbsp;{L_TOPRATED_PUBLIC_PICS}</span></td></tr>
+<table class="forumline">
+<tr><td class="row2 tdnw" colspan="{S_COLS}"><span class="cattitle">&nbsp;{L_TOPRATED_PUBLIC_PICS}</span></td></tr>
 <!-- BEGIN no_pics -->
-<tr><td class="row1 row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
+<tr><td class="row1 row-center th50px" colspan="{S_COLS}"><span class="gen">{L_NO_PICS}</span></td></tr>
 <!-- END no_pics -->
 <!-- BEGIN highest_pics -->
 <tr>
 <!-- BEGIN highest_col -->
-<td class="row1_no_trans" width="{S_COL_WIDTH}" align="center">{highest_pics_block.highest_pics.highest_col.SS}</td>
+<td class="row1_no_trans tdalignc" width="{S_COL_WIDTH}">{highest_pics_block.highest_pics.highest_col.SS}</td>
 <!-- END highest_col -->
 </tr>
 <tr>
@@ -76,15 +76,15 @@
 <!-- END highest_pics_block -->
 
 <!-- BEGIN random_pics_block -->
-<table class="forumline" width="100%" cellspacing="0">
-<tr><td class="row2" height="25" align="left" colspan="{S_COLS}" nowrap="nowrap"><span class="cattitle">&nbsp;{L_RANDOM_PUBLIC_PICS}</span></td></tr>
+<table class="forumline">
+<tr><td class="row2 tdnw"colspan="{S_COLS}"><span class="cattitle">&nbsp;{L_RANDOM_PUBLIC_PICS}</span></td></tr>
 <!-- BEGIN no_pics -->
-<tr><td class="row1 row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
+<tr><td class="row1 row-center th50px" colspan="{S_COLS}"><span class="gen">{L_NO_PICS}</span></td></tr>
 <!-- END no_pics -->
 <!-- BEGIN rand_pics -->
 <tr>
 <!-- BEGIN rand_col -->
-<td class="row1_no_trans" width="{S_COL_WIDTH}" align="center">{random_pics_block.rand_pics.rand_col.SS}</td>
+<td class="row1_no_trans tdalignc" width="{S_COL_WIDTH}">{random_pics_block.rand_pics.rand_col.SS}</td>
 <!-- END rand_col -->
 </tr>
 <tr>

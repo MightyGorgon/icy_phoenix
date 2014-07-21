@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.11.97');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.12.98');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
@@ -311,7 +311,7 @@ INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(8, 0, 'Search', '', 'search', 0, 1, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(9, 0, 'Who is Online', '', 'online_users', 0, 1, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(10, 0, 'Album', '', 'album', 0, 0, '', 1);
-INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(11, 0, 'Welcome', '<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">\r\n	<tr>\r\n		<td width="5%"><img src="images/icy_phoenix_small.png" alt="" /></td>\r\n		<td width="90%" align="center"><div class="post-text">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width="5%"><img src="images/icy_phoenix_small_l.png" alt="" /></td>\r\n	</tr>\r\n</table>', '', 0, 0, '', 1);
+INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(11, 0, 'Welcome', '<table>\r\n	<tr>\r\n		<td width="5%"><img src="images/icy_phoenix_small.png" alt="" /></td>\r\n		<td width="90%" align="center"><div class="post-text">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width="5%"><img src="images/icy_phoenix_small_l.png" alt="" /></td>\r\n	</tr>\r\n</table>', '', 0, 0, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(12, 0, 'Statistics', '', 'statistics', 0, 0, '', 1);
 INSERT INTO `phpbb_cms_block_settings` (`bs_id`, `user_id`, `name`, `content`, `blockfile`, `view`, `type`, `groups`, `locked`) VALUES(13, 0, 'Wordgraph', '', 'wordgraph', 0, 0, '', 1);
 
@@ -642,7 +642,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upi2db_max_n
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('upi2db_version', '3.0.7');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('use_captcha', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('url_rw', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('xmas_fx', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_header_table', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('header_table_text', 'Text');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('fast_n_furious', '0');
@@ -689,7 +688,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_qu
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_size', '400');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_html_guests', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('disable_email_error', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_header_dropdown', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_poster_info_topic', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('switch_bbcb_active_content', '1');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_quick_quote', '0');

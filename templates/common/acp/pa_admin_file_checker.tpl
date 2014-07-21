@@ -3,7 +3,7 @@
 <h1>{L_FILE_CHECKER}</h1>
 <p>{L_FCHECKER_EXPLAIN}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_FILE_CHECKER}</th></tr>
 <!-- BEGIN check -->
 <tr><td class="row1"><span class="cattitle"><strong>{L_FILE_CHECKER_SP1}</strong></span></td></tr>

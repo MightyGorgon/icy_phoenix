@@ -1,7 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <form action="{S_SEARCH_ACTION}" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_QUERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_QUERY}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1" colspan="2" width="50%" style="vertical-align: top;">
 		<span class="gensmall">{L_SEARCH_KEYWORDS}:</span><br />
@@ -32,24 +32,24 @@
 <!-- IF S_ADMIN_MOD -->
 <tr>
 	<td class="row1" colspan="2" style="vertical-align: top;"><span class="gensmall">{L_SEARCH_IP}:</span><br /><span class="gensmall">{L_SEARCH_IP_EXPLAIN}</span></td>
-	<td class="row2" colspan="2" valign="middle"><span class="genmed"><input type="text" style="width: 300px;" class="post" name="search_ip" size="30" /></span></td>
+	<td class="row2 tvalignm" colspan="2"><span class="genmed"><input type="text" style="width: 300px;" class="post" name="search_ip" size="30" /></span></td>
 </tr>
 <!-- ENDIF -->
 <tr><th colspan="4">{L_SEARCH_OPTIONS}</th></tr>
 <tr>
 	<td class="row1" style="vertical-align: top;"><span class="gensmall">{L_FORUM}:</span></td>
 	<td class="row2"><select class="post" name="search_where">{S_FORUM_OPTIONS}</select></td>
-	<td class="row1" nowrap="nowrap" style="vertical-align: top;"><span class="gensmall">{L_SEARCH_PREVIOUS}:</span></td>
+	<td class="row1 tdnw" style="vertical-align: top;"><span class="gensmall">{L_SEARCH_PREVIOUS}:</span></td>
 	<td class="row2"><select class="post" name="search_time">{S_TIME_OPTIONS}</select></td>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" style="vertical-align: top;"><span class="gensmall">{L_DISPLAY_RESULTS}:</span></td>
-	<td class="row2" nowrap="nowrap">
+	<td class="row1 tdnw" style="vertical-align: top;"><span class="gensmall">{L_DISPLAY_RESULTS}:</span></td>
+	<td class="row2 tdnw">
 		<input type="radio" name="show_results" value="posts" /><span class="genmed">{L_POSTS}</span>&nbsp;&nbsp;
 		<input type="radio" name="show_results" value="topics" checked="checked" /><span class="genmed">{L_TOPICS}</span>
 	</td>
 	<td class="row1" rowspan="2" style="vertical-align: top;"><span class="gensmall">{L_SORT_BY}:</span></td>
-	<td class="row2" nowrap="nowrap"  rowspan="2">
+	<td class="row2 tdnw"  rowspan="2">
 		<select class="post" name="sort_by">{S_SORT_OPTIONS}</select><br />
 		<input type="radio" name="sort_dir" value="ASC" />&nbsp;{L_SORT_ASCENDING}
 		<input type="radio" name="sort_dir" value="DESC" checked="checked" />&nbsp;{L_SORT_DESCENDING}

@@ -335,7 +335,7 @@ function generate_liw_img_popup($image_source, $image_width = '', $image_height 
 	global $lang;
 
 	$rand = rand(1, 10000);
-	$return = '<a name="img_' . $rand . '"><a href="#img_' . $rand . '" onclick="img_popup(\'' . str_replace("'", "\'", $image_source) . '\', ' . ((!empty($image_width)) ? $image_width : '\'\'') . ', ' . ((!empty($image_height)) ? $image_height : '\'\'') . ', ' . $rand  . ');"><img src="' . $image_source . '"' . ((!empty($image_width)) ? ' width="' . $max_image_width . '"' : '') . ' alt="' . $lang['LIW_click_image'] . '" border="0"></a></a><br /><span class="gensmall">' . $lang['LIW_click_image_explain'] . '</span>';
+	$return = '<a id="img_' . $rand . '" href="#img_' . $rand . '" onclick="img_popup(\'' . str_replace("'", "\'", $image_source) . '\', ' . ((!empty($image_width)) ? $image_width : '\'\'') . ', ' . ((!empty($image_height)) ? $image_height : '\'\'') . ', ' . $rand  . ');"><img src="' . $image_source . '"' . ((!empty($image_width)) ? ' width="' . $max_image_width . '"' : '') . ' alt="' . $lang['LIW_click_image'] . '" border="0"></a><br /><span class="gensmall">' . $lang['LIW_click_image_explain'] . '</span>';
 
 	return $return;
 }

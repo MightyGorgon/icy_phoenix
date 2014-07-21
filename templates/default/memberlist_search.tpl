@@ -70,7 +70,7 @@
 
 <form method="post" action="{S_MODE_ACTION}" name="search">
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_FIND_USERNAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_FIND_USERNAME}</span>{IMG_THR}<table class="forumlinenb">
 <tr><td class="row3" colspan="4"><span class="gensmall">{L_FIND_USERNAME_EXPLAIN}</span></td></tr>
 <tr>
 	<td class="row1"><b class="genmed">{L_USERNAME}:</b></td>
@@ -83,7 +83,7 @@
 	<td class="row1"><b class="genmed">{L_EMAIL}:</b></td>
 	<td class="row2"><input class="post" type="text" name="email" value="{EMAIL}" /></td>
 <!-- ELSE -->
-	<td colspan="2" class="row1">&nbsp;</td>
+	<td class="row1" colspan="2">&nbsp;</td>
 <!-- ENDIF -->
 	<td class="row1"><b class="genmed">{L_AIM}:</b></td>
 	<td class="row2"><input class="post" type="text" name="aim" value="{AIM}" /></td>
@@ -99,7 +99,7 @@
 	<td class="row1"><b class="genmed">{L_LAST_ACTIVE}:</b></td>
 	<td class="row2"><select name="active_select">{S_ACTIVE_TIME_OPTIONS}</select> <input class="post" type="text" name="active" value="{ACTIVE}" /></td>
 <!-- ELSE -->
-	<td colspan="2" class="row1">&nbsp;</td>
+	<td class="row1" colspan="2">&nbsp;</td>
 <!-- ENDIF -->
 	<td class="row1"><b class="genmed">{L_MSNM}:</b></td>
 	<td class="row2"><input class="post" type="text" name="msn" value="{MSNM}" /></td>
@@ -112,13 +112,13 @@
 </tr>
 <tr>
 	<td class="row1"><b class="genmed">{L_SELECT_SORT_METHOD}:</b></td>
-	<td class="row2" nowrap="nowrap">&nbsp;{S_MODE_SELECT}&nbsp;{S_ORDER_SELECT}</td>
+	<td class="row2 tdnw">&nbsp;{S_MODE_SELECT}&nbsp;{S_ORDER_SELECT}</td>
 <!-- IF S_IP_SEARCH_ALLOWED -->
 	<td class="row1"><b class="genmed">{L_POST_IP}:</b></td>
 	<td class="row2"><input class="post" type="text" name="ip" value="{IP}" /></td>
 <!-- ELSE -->
 	<td class="row1"><b class="genmed">&nbsp;</b></td>
-	<td class="row2" nowrap="nowrap">&nbsp;</td>
+	<td class="row2 tdnw">&nbsp;</td>
 <!-- ENDIF -->
 </tr>
 <tr><td class="cat" colspan="4"><input class="mainoption" type="submit" name="submit" value="{L_SEARCH}" />&nbsp;&nbsp;<input class="liteoption" type="reset" value="{L_RESET}" /></td></tr>
@@ -127,4 +127,4 @@
 {S_FORM_TOKEN}
 </form>
 
-<br clear="all" />
+<br class="clear" />

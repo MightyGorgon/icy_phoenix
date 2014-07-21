@@ -89,7 +89,7 @@ function checkForm(tab,subtab)
 <p><i>{L_ALBUM_CONFIG_EXPLAIN_DETAIL}</i></p>
 </div>
 <div class="center-block-text">
-<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline">
 <form name="config" action="{S_ALBUM_CONFIG_ACTION}" method="post" onsubmit="return confirmSubmit();">
 <input type="hidden" name="tab" value="{H_SELECTED_TAB}" />
 <input type="hidden" name="subtab" value="{V_SELECTED_TAB}" />
@@ -101,7 +101,7 @@ function checkForm(tab,subtab)
 			<!-- BEGIN header_row -->
 			<tr>
 				<td>
-					<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+					<table class="forumline">
 						<tr>
 							<td width="100%" class="{header_row.HEADER_TAB_CLASS}"><a href="#" onclick="checkForm('{header_row.TAB_SELECT_NAME}');" class="{header_row.TAB_LINKS}">{header_row.L_TAB_TITLE}</a></td>
 						</tr>
@@ -111,7 +111,7 @@ function checkForm(tab,subtab)
 			<!-- END header_row -->
 		</table>
 	</td>
-	<td class="row1" valign="top">
+	<td class="row1">
 		<table border="0" width="100%" height="100%" cellpadding="0" cellspacing="1" valign="top">
 			<tr>
 				<th colspan="2">{L_CONFIG_TAB}</th>
@@ -121,7 +121,7 @@ function checkForm(tab,subtab)
 	</td>
 </tr>
 <tr>
-	<td class="cat" colspan="2" align="center"><input type="submit" name="submitted" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" onclick="unsetChange();" class="liteoption" /></td>
+	<td class="cat tdalignc" colspan="2"><input type="submit" name="submitted" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" onclick="unsetChange();" class="liteoption" /></td>
 </tr>
 </form>
 <!-- BEGIN switch_on_save_confirmation -->
@@ -137,4 +137,4 @@ function checkForm(tab,subtab)
 <!-- END switch_on_save_confirmation -->
 </table>
 </div>
-<br clear="all" />
+<br class="clear" />

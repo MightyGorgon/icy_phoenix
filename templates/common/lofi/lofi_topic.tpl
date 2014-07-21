@@ -47,7 +47,7 @@ if($can_reply)
 <div id="quick_reply" style="display: none; position: relative;">
 	<form action="<?php echo append_sid('posting.' . PHP_EXT); ?>" method="post" name="post" style="display: inline;">
 	{S_HIDDEN_FIELDS}
-	<table class="forumline" width="100%" cellspacing="0">
+	<table class="forumline">
 	<tr><th colspan="2"><span><?php echo $lang['quick_lofi']; ?></span></th></tr>
 	<tr>
 		<td class="row1" align="left" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>

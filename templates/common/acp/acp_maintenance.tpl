@@ -5,8 +5,8 @@
 
 <!-- BEGIN infobox -->
 <div align="center">
-<table class="forumline" width="80%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="center" style="background-color:#DBFFCF;"><b>{L_OK_MESSAGE}</b></td></tr>
+<table class="forumline tw80pct">
+<tr><td align="center" style="background-color: #dbffcf;"><b>{L_OK_MESSAGE}</b></td></tr>
 </table>
 </div>
 
@@ -15,9 +15,9 @@
 
 <!-- BEGIN errorbox -->
 <div align="center">
-<table class="forumline" width="80%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline tw80pct">
 <tr>
-	<td align="center" style="background-color:#FFDFDF;"><b>{L_ERR_MESSAGE}</b>
+	<td align="center" style="background-color: #ffdfdf;"><b>{L_ERR_MESSAGE}</b>
 	<br /><br />{errorbox.ERR_MSG}</td>
 </tr>
 </table>
@@ -26,14 +26,14 @@
 <br /><br />
 <!-- END errorbox -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_SYSTEMTEST}</th></tr>
 <tr>
 	<th>{L_SYSHEAD_1}</th>
 	<th>{L_SYSHEAD_2}</th>
 </tr>
 <tr>
-	<td class="row1" width="50%">{L_NAME_1}</td>
+	<td class="row1 tw50pct">{L_NAME_1}</td>
 	<td class="row1 row-center" width="50%">{L_VAL_1}</td>
 </tr>
 <tr>
@@ -41,7 +41,7 @@
 	<td class="row2 row-center" width="50%">{L_VAL_2}</td>
 </tr>
 <tr>
-	<td class="row1" width="50%">{L_NAME_3}</td>
+	<td class="row1 tw50pct">{L_NAME_3}</td>
 	<td class="row1 row-center" width="50%">{L_VAL_3}</td>
 </tr>
 <tr>
@@ -50,7 +50,7 @@
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr>
-	<td class="row1" width="50%">{L_NAME_5}</td>
+	<td class="row1 tw50pct">{L_NAME_5}</td>
 	<td class="row1 row-center" width="50%">{L_VAL_5}</td>
 </tr>
 <tr>
@@ -58,7 +58,7 @@
 	<td class="row2 row-center" width="50%">{L_VAL_6}</td>
 </tr>
 <tr>
-	<td class="row1" width="50%">{L_NAME_7}</td>
+	<td class="row1 tw50pct">{L_NAME_7}</td>
 	<td class="row1 row-center" width="50%">{L_VAL_7}</td>
 </tr>
 <tr>
@@ -66,19 +66,19 @@
 	<td class="row2 row-center" width="50%">{L_VAL_8}</td>
 </tr>
 <tr>
-	<td class="row1" width="50%">{L_NAME_9}</td>
+	<td class="row1 tw50pct">{L_NAME_9}</td>
 	<td class="row1 row-center" width="50%">{L_VAL_9}</td>
 </tr>
 <tr>
-	<td class="row1" width="50%">{L_NAME_10}</td>
+	<td class="row1 tw50pct">{L_NAME_10}</td>
 	<td class="row1 row-center" width="50%">{L_VAL_10}</td>
 </tr>
-<tr><td colspan="2" class="cat">&nbsp;</td></tr>
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>
 
 <br /><br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="4">{L_SECTEST}</th></tr>
 <tr>
 	<th>{L_SEC_HEAD_1}</th>
@@ -133,11 +133,11 @@
 
 <br /><br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_MAINTENANCE}</th></tr>
 <tr>
 	<td class="row1" width="80%">{L_DESC_1}</td>
-	<td class="row1 row-center" width="20%"><b>[ <a href="{S_BUILD_LINK_1}">{L_LINK_DESC}</a> ]</b></td>
+	<td class="row1 row-center tw20pct"><b>[ <a href="{S_BUILD_LINK_1}">{L_LINK_DESC}</a> ]</b></td>
 </tr>
 <tr>
 	<td class="row2" width="80%">{L_DESC_2}</td>
@@ -145,7 +145,7 @@
 </tr>
 <tr>
 	<td class="row1" width="80%">{L_DESC_3}</td>
-	<td class="row1 row-center" width="20%"><b>[ <a href="{S_BUILD_LINK_3}">{L_LINK_DESC}</a> ]</b></td>
+	<td class="row1 row-center tw20pct"><b>[ <a href="{S_BUILD_LINK_3}">{L_LINK_DESC}</a> ]</b></td>
 </tr>
 <tr>
 	<td class="row2" width="80%">{L_DESC_4}</td>
@@ -153,9 +153,9 @@
 </tr>
 <tr>
 	<td class="row1" width="80%">{L_DESC_5}</td>
-	<td class="row1 row-center" width="20%"><b>[ <a href="{S_BUILD_LINK_5}">{L_LINK_DESC}</a> ]</b></td>
+	<td class="row1 row-center tw20pct"><b>[ <a href="{S_BUILD_LINK_5}">{L_LINK_DESC}</a> ]</b></td>
 </tr>
-<tr><td colspan="2" class="cat">&nbsp;</td></tr>
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>
 
 <br />

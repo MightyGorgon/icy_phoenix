@@ -1,4 +1,4 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <?php
 global $style_row;
 if ( $style_row == 'articles_scroll')

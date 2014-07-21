@@ -1,12 +1,12 @@
 <!-- BEGIN cashrow -->
 <tr>
-	<td class="row2" valign="top"><b><span class="genmed">{cashrow.CASH_NAME}:</span></b></td>
+	<td class="row2"><b><span class="genmed">{cashrow.CASH_NAME}:</span></b></td>
 	<td class="row1"><span class="genmed"><b>{cashrow.CASH_AMOUNT}</b></span></td>
 </tr>
 <!-- END cashrow -->
 <!-- BEGIN switch_cashlinkson -->
 <tr>
-	<td class="row2" valign="top">&nbsp;</td>
+	<td class="row2">&nbsp;</td>
 	<td class="row1">
 		<span class="genmed">
 		<!-- IF cashrow.CASH_AMOUNT --><b>{cashrow.CASH_AMOUNT}</b><!-- ENDIF -->

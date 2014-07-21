@@ -1,9 +1,9 @@
 <!-- INCLUDE simple_header.tpl -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_VIEW_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_VIEW_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th width="50%" nowrap="nowrap">{L_VIEWER}</th>
-	<th width="25%" nowrap="nowrap">{L_STAMP}</th>
+	<th class="tw50pct tdnw">{L_VIEWER}</th>
+	<th class="tw25pct tdnw">{L_STAMP}</th>
 </tr>
 <!-- BEGIN row -->
 <tr>
@@ -14,8 +14,8 @@
 <tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="center"><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE}</a></span></td></tr>
+<table>
+<tr><td class="tdalignc"><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE}</a></span></td></tr>
 </table>
 
 <!-- INCLUDE simple_footer.tpl -->

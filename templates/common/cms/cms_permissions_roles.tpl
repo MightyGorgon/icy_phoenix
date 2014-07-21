@@ -1,6 +1,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_users_auth.png" alt="{L_CMS_PERMISSIONS_ROLES}" title="{L_CMS_PERMISSIONS_ROLES}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_PERMISSIONS_ROLES}</h1><span class="genmed">{L_EXPLAIN}</span></td>
@@ -61,7 +61,7 @@
 
 	<!-- ENDIF -->
 
-	<p><a name="acl"></a><br /><br /></p>
+	<p><a id="acl"></a><br /><br /></p>
 
 	<h2 style="text-align: left;">{L_ACL_TYPE}</h2>
 
@@ -137,7 +137,7 @@
 
 <form id="acp_roles" method="post" action="{U_ACTION}">
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<th style="width: 300px;">{L_ROLE_NAME}</th>
 	<th colspan="2">{L_OPTIONS}</th>
@@ -166,7 +166,7 @@
 </tr>
 <!-- END roles -->
 <tr><td class="spaceRow" colspan="3"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr><td class="cat" align="center" colspan="3">&nbsp;</td></tr>
+<tr><td class="cat tdalignc" colspan="3">&nbsp;</td></tr>
 </table>
 
 <br clear="all" />
@@ -181,7 +181,7 @@
 <!-- IF S_DISPLAY_ROLE_MASK -->
 
 <br clear="all" />
-<a name="assigned_to"></a>
+<a id="assigned_to"></a>
 
 <h2 style="text-align: left;">{L_ROLE_ASSIGNED_TO}</h2>
 <br clear="all" />

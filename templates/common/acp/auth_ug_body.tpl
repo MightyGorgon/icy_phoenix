@@ -17,7 +17,7 @@
 <h2>{L_PERMISSIONS}</h2>
 
 <p>{L_AUTH_EXPLAIN}</p>
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th width="30%" colspan="{INC_SPAN}">{L_FORUM}</th>
 	<!-- BEGIN acltype -->
@@ -29,7 +29,7 @@
 <!-- BEGIN cathead -->
 <tr>
 	<!-- BEGIN inc -->
-	<td class="row2" width="46"><img src="{SPACER}" width="46" height="0" /></td>
+	<td class="row2 tw46px"><img src="{SPACER}" width="46" height="0" /></td>
 	<!-- END inc -->
 	<td colspan="{row.cathead.INC_SPAN}" class="{row.cathead.CLASS_CAT}" align="left" nowrap> <span class="cattitlemed">{row.cathead.CAT_TITLE}</span></td>
 	<!-- BEGIN aclvalues -->
@@ -41,7 +41,7 @@
 <!-- BEGIN forums -->
 <tr>
 	<!-- BEGIN inc -->
-	<td class="row2" width="46"><img src="{SPACER}" width="46" height="0" /></td>
+	<td class="row2 tw46px"><img src="{SPACER}" width="46" height="0" /></td>
 	<!-- END inc -->
 	<td class="row1" align="left" colspan="{row.forums.INC_SPAN}"><span class="gen">{row.forums.FORUM_NAME}</span></td>
 	<!-- BEGIN aclvalues -->

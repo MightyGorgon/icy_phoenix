@@ -1,6 +1,6 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="center">
+	<td class="tdalignc">
 		<span class="gensmall">
 			<!-- BEGIN random_topic_ver_row -->
 			<a href="{random_topic_ver_row.U_TITLE}" title="{random_topic_ver_row.L_TITLE}"><b>{random_topic_ver_row.L_TITLE}</b></a><br />

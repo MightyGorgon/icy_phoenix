@@ -1,14 +1,14 @@
 <form method="get" name="jumpbox" action="{S_JUMPBOX_ACTION}" onsubmit="if(document.jumpbox.cat_id.value == -1){return false;}">
-<table class="empty-table" width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
+<table>
 <tr>
-	<td align="left" valign="top">
+	<td>
 	<input type="hidden" name="action" value="category" />
 	<select name="cat_id" onchange="if(this.options[this.selectedIndex].value != -1){ forms['jumpbox'].submit() }">
 	<option value="-1">{L_JUMP}</option>
 	{JUMPMENU}
 	</select>
 	</td>
-	<td align="right" valign="top"><span class="gensmall">{S_TIMEZONE}</span></td>
+	<td class="tdalignr"><span class="gensmall">{S_TIMEZONE}</span></td>
 </tr>
 </table>
 </form>

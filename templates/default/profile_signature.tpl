@@ -4,22 +4,22 @@
 
 <!-- BEGIN switch_current_sig -->
 <form method="post" action="{SIG_LINK}" name="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_CURRENT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_CURRENT}</span>{IMG_THR}<table class="forumlinenb">
 <tr><td class="row2" width="100%" valign="bottom"><span class="gen">{CURRENT_PREVIEW}</span><br /><br /></td></tr>
 <tr><td class="cat">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <br />
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_EDIT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_EDIT}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1" width="130" height="150">
+	<td class="row1 tw130px">
 		<span class="gen">{L_SIGNATURE}:</span><br />
 		<span class="gensmall">{L_SIGNATURE_EXPLAIN}</span><br /><br />
-		<table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="center" valign="middle"><br />{BBCB_SMILEYS_MG}</td></tr></table>
+		<table><tr><td class="tdalignc tvalignm"><br />{BBCB_SMILEYS_MG}</td></tr></table>
 	</td>
-	<td class="row2" width="530" align="middle">
-		<table width="450" border="0" cellspacing="0" cellpadding="2">
+	<td class="row2 tw550px">
+		<table class="p2px tw450px">
 			<tr>
 				<td colspan="9">
 					{BBCB_MG}
@@ -30,8 +30,8 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1" width="130" height="20">&nbsp;</td>
-	<td class="row2" width="530" align="middle">
+	<td class="row1 tw130px">&nbsp;</td>
+	<td class="row2 tw550px">
 		<input type="button" class="liteoption" value="{L_PROFILE}" onclick="location='{U_PROFILE}'">
 		<input type="button" class="liteoption" value="{SIG_CURRENT}" onclick="location='{SIG_LINK}'">
 		<input type="submit" class="liteoption" value="{SIG_PREVIEW}" name="preview">
@@ -45,7 +45,7 @@
 
 <!-- BEGIN switch_preview_sig -->
 <form method="post" action="{SIG_LINK}" name="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_PREVIEW}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_PREVIEW}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1" width="140" height="140"><span class="gen">{L_SIGNATURE}:</span></td>
 	<td class="row2" width="520" valign="bottom"><span class="gen">{REAL_PREVIEW}</span><br /><br /></td>
@@ -54,15 +54,15 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <br />
-{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_EDIT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_EDIT}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1" width="130" height="150">
+	<td class="row1 tw130px">
 		<span class="gen">{L_SIGNATURE}:</span><br />
 		<span class="gensmall">{L_SIGNATURE_EXPLAIN}</span><br /><br />
-		<table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="center" valign="middle"><br />{BBCB_SMILEYS_MG}</td></tr></table>
+		<table><tr><td class="tdalignc tvalignm"><br />{BBCB_SMILEYS_MG}</td></tr></table>
 	</td>
-	<td class="row2" width="530" align="middle">
-		<table width="450" border="0" cellspacing="0" cellpadding="2">
+	<td class="row2 tw550px">
+		<table class="p2px tw450px">
 			<tr>
 				<td colspan="9">
 					{BBCB_MG}
@@ -73,8 +73,8 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1" width="130" height="20">&nbsp;</td>
-	<td class="row2" width="530" align="middle">
+	<td class="row1 tw130px">&nbsp;</td>
+	<td class="row2 tw550px">
 		<input type="button" class="liteoption" value="{L_PROFILE}" onclick="location='{U_PROFILE}'" />
 		<input type="button" class="liteoption" value="{SIG_CURRENT}" onclick="location='{SIG_LINK}'" />
 		<input type="submit" class="liteoption" value="{SIG_PREVIEW}" name="preview" />
@@ -88,8 +88,8 @@
 
 <!-- BEGIN switch_save_sig -->
 <form method="post" action="{SIG_LINK}" name="preview">
-{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_SAVE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td class="row1 row-center" valign="middle" height="100"><span class="gen">{SAVE_MESSAGE}</span></td></tr>
+{IMG_THL}{IMG_THC}<span class="forumlink">{SIG_SAVE}</span>{IMG_THR}<table class="forumlinenb">
+<tr><td class="row1 row-center tvalignm" height="100"><span class="gen">{SAVE_MESSAGE}</span></td></tr>
 <tr>
 	<td class="row2 row-center">
 		<input type="button" class="liteoption" value="{L_PROFILE}" onclick="location='{U_PROFILE}'" />

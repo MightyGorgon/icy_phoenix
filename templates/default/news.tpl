@@ -1,8 +1,8 @@
 <!-- INCLUDE overall_header.tpl -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{NEWS_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{NEWS_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td width="100%">
+	<td class="tw100pct">
 		<!-- BEGIN pagination -->
 		<div style="float: right; text-align: right; padding: 10px; margin: 10px 0 10px 20px; clear: both;">{pagination.PAGINATION}</div>
 		<!-- END pagination -->

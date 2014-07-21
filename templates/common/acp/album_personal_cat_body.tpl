@@ -1,15 +1,15 @@
 <form method="post" name="acp" action="{S_ALBUM_ACTION}">
-<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline">
 <tr>
-	<td class="row1" width="100%"><b>&nbsp;&nbsp;&nbsp;<a href="{U_INDEX}" class="nav">{L_INDEX}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_ALBUM}" class="nav">{L_ALBUM}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_PERSONAL_ALBUM}" class="nav">{L_PERSONAL_ALBUM}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_PERSONAL_CAT_ADMIN}" class="nav">{L_PERSONAL_CAT_ADMIN}</a></b></td>
+	<td class="row1 tw100pct"><b>&nbsp;&nbsp;&nbsp;<a href="{U_INDEX}" class="nav">{L_INDEX}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_ALBUM}" class="nav">{L_ALBUM}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_PERSONAL_ALBUM}" class="nav">{L_PERSONAL_ALBUM}</a> {ALBUM_NAVIGATION_ARROW} <a href="{U_PERSONAL_CAT_ADMIN}" class="nav">{L_PERSONAL_CAT_ADMIN}</a></b></td>
 </tr>
 </table>
 
-<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_PERSONAL_CAT_ADMIN}</th></tr>
 <tr>
 	<td class="row1" colspan="2"><br />
-		<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+		<table class="forumline">
 
 		<tr>
 			<th colspan="{HEADER_INC_SPAN}" width="75%%">{L_ALBUM_TITLE}</th>
@@ -35,16 +35,16 @@
 			<!-- BEGIN catfoot -->
 		<tr>
 				<!-- BEGIN inc -->
-			<td class="row2" width="46">&nbsp;</td>
+			<td class="row2 tw46px">&nbsp;</td>
 				<!-- END inc -->
-			<td colspan="{catrow.catfoot.INC_SPAN_ALL}" class="row2" nowrap="nowrap">&nbsp;
+			<td colspan="{catrow.catfoot.INC_SPAN_ALL}" class="row2 tdnw">&nbsp;
 				<input class="post" type="text" name="{catrow.catfoot.S_ADD_NAME}" />&nbsp;
 				<input type="submit" {DISABLE_CREATION} class="liteoption" name="{catrow.catfoot.S_ADD_CAT_SUBMIT}" value="{L_CREATE_CATEGORY}" />
 			</td>
 		</tr>
 		<tr>
 			<!-- BEGIN inc -->
-			<td class="row2" width="46"><img src="{SPACER}" width="1" height="3" alt="" /></td>
+			<td class="row2 tw46px"><img src="{SPACER}" width="1" height="3" alt="" /></td>
 			<!-- END inc -->
 			<td colspan="{catrow.catfoot.INC_SPAN_ALL}" class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td>
 		</tr>

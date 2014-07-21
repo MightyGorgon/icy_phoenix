@@ -1,11 +1,11 @@
 <!-- BEGIN similar -->
 <div id="similar_block_h" style="display: none;">
-	{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('similar_block','similar_block_h','similar_block');" alt="{L_SHOW}" /><span class="forumlink">{similar.L_SIMILAR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('similar_block','similar_block_h','similar_block');" alt="{L_SHOW}" /><span class="forumlink">{similar.L_SIMILAR}</span>{IMG_THR}<table class="forumlinenb">
 	<tr><td class="row1g row-center">&nbsp;</td></tr>
 	</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
 <div id="similar_block">
-	{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('similar_block','similar_block_h','similar_block');" alt="{L_HIDE}" /><span class="forumlink">{similar.L_SIMILAR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+	{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('similar_block','similar_block_h','similar_block');" alt="{L_HIDE}" /><span class="forumlink">{similar.L_SIMILAR}</span>{IMG_THR}<table class="forumlinenb">
 	<tr>
 		<th colspan="2">{similar.L_TOPIC}</th>
 		<th>{similar.L_AUTHOR}</th>
@@ -22,9 +22,9 @@
 			<!-- <br /><span class="gensmall">{similar.topics.desc.TOPIC_DESC}</span> -->
 			<!-- END desc -->
 		</td>
-		<td class="row1 row-center" width="12%">{similar.topics.AUTHOR}</td>
+		<td class="row1 row-center tw12pct">{similar.topics.AUTHOR}</td>
 		<td class="row1 row-center"><b>{similar.topics.FORUM}</b></td>
-		<td class="row1 row-center" width="10%"><span class="genmed">{similar.topics.REPLIES}</span></td>
+		<td class="row1 row-center tw10pct"><span class="genmed">{similar.topics.REPLIES}</span></td>
 		<td class="row1 row-center" width="18%" nowrap="nowrap"><span class="genmed">{similar.topics.POST_TIME} {similar.topics.POST_URL}</span></td>
 	</tr>
 	<!-- END topics -->

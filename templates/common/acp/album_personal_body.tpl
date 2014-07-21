@@ -3,7 +3,7 @@
 <p>{L_ALBUM_PERSONAL_EXPLAIN}</p>
 
 <form action="{S_ALBUM_ACTION}" method="post">
-<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_GROUP_CONTROL}</th></tr>
 <!-- BEGIN creation_grouprow -->
 <tr>
@@ -16,7 +16,7 @@
 
 <p>{L_ALBUM_AUTH_EXPLAIN}</p>
 
-<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline">
 <tr>
 	<th nowrap="nowrap">{L_GROUPS}</th>
 	<th nowrap="nowrap">{L_VIEW}</th>

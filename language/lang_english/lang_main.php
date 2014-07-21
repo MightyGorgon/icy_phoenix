@@ -2260,6 +2260,7 @@ $lang = array_merge($lang, array(
 	'CLEAN_NAME' => 'Clean Name',
 	'CLEAN_NAME_EXPLAIN' => 'Only alpha-numeric chars and dashes allowed',
 	'TOPIC_TAGS' => 'Tags And Keywords',
+	'TOPIC_TAGS_REPLACE' => 'Replace Tag',
 	'TOPIC_TAGS_EXPLAIN' => 'Separate each tag using comma',
 	'TOPIC_TAGS_CLOUDS' => 'Tags And Keywords Cloud',
 	'TOPIC_TAGS_LIST' => 'Tags And Keywords List',

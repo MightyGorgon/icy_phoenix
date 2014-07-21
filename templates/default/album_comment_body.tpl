@@ -89,40 +89,40 @@ function openAllSmiles()
 </div>
 
 <form action="{S_ALBUM_ACTION}" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{PIC_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td class="row1 row-center"><img src="{U_PIC}" border="0" vspace="10" alt="{PIC_TITLE}" title="{PIC_TITLE}" /></td></tr>
+{IMG_THL}{IMG_THC}<span class="forumlink">{PIC_TITLE}</span>{IMG_THR}<table class="forumlinenb">
+<tr><td class="row1 row-center"><img class="vs10px" src="{U_PIC}" border="0" alt="{PIC_TITLE}" title="{PIC_TITLE}" /></td></tr>
 <tr>
 	<td class="row2">
-		<table width="90%" align="center" border="0" cellpadding="3" cellspacing="2">
+		<table class="tw90pct talignc s2px p2px">
 		<tr>
-			<td width="25%" align="right"><span class="genmed">{L_POSTER}:</span></td>
+			<td class="tw25pct tdalignr"><span class="genmed">{L_POSTER}:</span></td>
 			<td><span class="genmed"><b>{POSTER}</b></span></td>
 		</tr>
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_PIC_TITLE}:</span></td>
-			<td valign="top"><b><span class="genmed">{PIC_TITLE}</span></b></td>
+			<td class="tdalignr"><span class="genmed">{L_PIC_TITLE}:</span></td>
+			<td><b><span class="genmed">{PIC_TITLE}</span></b></td>
 		</tr>
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_PIC_ID}:</span></td>
-			<td valign="top"><b><span class="genmed">{PIC_ID}</span></b></td>
+			<td class="tdalignr"><span class="genmed">{L_PIC_ID}:</span></td>
+			<td><b><span class="genmed">{PIC_ID}</span></b></td>
 		</tr>
 		<tr>
-			<td align="right"><span class="genmed">{L_POSTED}:</span></td>
+			<td class="tdalignr"><span class="genmed">{L_POSTED}:</span></td>
 			<td><b><span class="genmed">{PIC_TIME}</span></b></td>
 		</tr>
 		<tr>
-			<td align="right"><span class="genmed">{L_VIEW}:</span></td>
+			<td class="tdalignr"><span class="genmed">{L_VIEW}:</span></td>
 			<td><b><span class="genmed">{PIC_VIEW}</span></b></td>
 		</tr>
 		<!-- BEGIN rate_switch -->
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_RATING}:</span></td>
+			<td class="tdalignr"><span class="genmed">{L_RATING}:</span></td>
 			<td><b><span class="genmed">{PIC_RATING}</span></b></td>
 		</tr>
 		<!-- END rate_switch -->
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_PIC_DESC}:</span></td>
-			<td valign="top"><b><span class="genmed">{PIC_DESC}</span></b></td>
+			<td class="tdalignr"><span class="genmed">{L_PIC_DESC}:</span></td>
+			<td><b><span class="genmed">{PIC_DESC}</span></b></td>
 		</tr>
 		</table>
 	</td>
@@ -132,19 +132,19 @@ function openAllSmiles()
 
 <!-- BEGIN switch_comment_post -->
 <form name="commentform" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkForm();">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_YOUR_COMMENT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_YOUR_COMMENT}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1" valign="top" width="20%" nowrap="nowrap">
+	<td class="row1 tw20pct tvalignt tdnw">
 		<span class="gen">{L_MESSAGE}</span><br /><span class="genmed">
 		{L_MAX_LENGTH}: <b>{S_MAX_LENGTH}</b></span>
 	</td>
-	<td class="row1" valign="top">
+	<td class="row1">
 		<textarea name="comment" class="post" cols="80" rows="9" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" style="vertical-align: top;">{S_MESSAGE}</textarea>
 	</td>
-	<td class="row1 row-center" valign="middle" width="25%">
+	<td class="row1 row-center tvalignm tw25pct">
 		<table align="center" width="100%" cellpadding="5" cellspacing="0" border="0">
 		<tr>
-			<td align="center">
+			<td class="tdalignc">
 			<!-- BEGIN smilies -->
 				<img src="{switch_comment_post.smilies.URL}" style="padding: 2px;" border="0" onmouseover="this.style.cursor='pointer';" onclick="bbcb_vars_reassign_start();emoticon('{switch_comment_post.smilies.CODE}');bbcb_vars_reassign_end();" alt="{switch_comment_post.smilies.DESC}" />
 			<!-- END smilies -->
@@ -155,7 +155,7 @@ function openAllSmiles()
 	</td>
 </tr>
 
-<tr><td class="cat" align="center" colspan="3"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="3"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <!-- END switch_comment_post -->

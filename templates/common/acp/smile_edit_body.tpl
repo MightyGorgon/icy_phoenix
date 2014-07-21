@@ -11,7 +11,7 @@ function update_smiley(newimage)
 </script>
 
 <form method="post" action="{S_SMILEY_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_SMILEY_CONFIG}</th></tr>
 <tr>
 	<td class="row2">{L_SMILEY_CODE}</td>
@@ -25,6 +25,6 @@ function update_smiley(newimage)
 	<td class="row2">{L_SMILEY_EMOTION}</td>
 	<td class="row2"><input class="post" type="text" name="smile_emotion" value="{SMILEY_EMOTICON}" /></td>
 </tr>
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_SUBMIT}" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_SUBMIT}" /></td></tr>
 </table>
 </form>

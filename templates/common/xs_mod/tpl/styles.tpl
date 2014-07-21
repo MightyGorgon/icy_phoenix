@@ -16,11 +16,11 @@
 <p>{L_XS_DEF_EXPLAIN}</p>
 
 <!-- BEGIN list_users -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th height="25">{L_XS_STYLES_USERS}</th></tr>
+<table class="forumline">
+<tr><th class="th25px">{L_XS_STYLES_USERS}</th></tr>
 <tr> 
 	<td class="row1"><span class="gen">
-	<table border="0" cellspacing="0" cellpadding="1">
+	<table class="p2px">
 	<!-- BEGIN user -->
 	<tr>
 		<td>{user.NUM}:</td>
@@ -37,12 +37,12 @@
 <br />
 <!-- END list_users -->
 
-<table width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline">
+<table class="forumline">
 	<tr>
-		<th align="center" nowrap="nowrap">{L_XS_ID}</th>
-		<th align="center" nowrap="nowrap">{L_XS_STYLE}</th>
-		<th align="center" nowrap="nowrap">{L_XS_TEMPLATE}</th>
-		<th align="center" nowrap="nowrap">{L_XS_USERS}</th>
+		<th class="tdnw">{L_XS_ID}</th>
+		<th class="tdnw">{L_XS_STYLE}</th>
+		<th class="tdnw">{L_XS_TEMPLATE}</th>
+		<th class="tdnw">{L_XS_USERS}</th>
 		<th colspan="2" align="center" nowrap="nowrap">{L_XS_OPTIONS}</th>
 	</tr>
 	<!-- BEGIN styles -->

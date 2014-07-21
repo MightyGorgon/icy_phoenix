@@ -2,7 +2,7 @@
 <h1>{L_CASH_GROUPS_TITLE}</h1>
 <p>{L_CASH_GROUPS_EXPLAIN}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="{NUM_COLUMNS}" align="left"></th></tr>
 <!-- BEGIN entryrow -->
 <form action="{S_CASH_GROUPS_ACTION}" method="post">{entryrow.S_HIDDEN_FIELDS1}

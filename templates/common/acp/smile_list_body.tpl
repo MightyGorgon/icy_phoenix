@@ -2,12 +2,12 @@
 <p>{L_SMILEY_TEXT}</p>
 
 <form method="post" action="{S_SMILEY_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<td class="cat">{S_HIDDEN_FIELDS}<input type="submit" name="add" value="{L_SMILEY_ADD}" class="mainoption" />&nbsp;&nbsp;<input class="liteoption" type="submit" name="import_pack" value="{L_IMPORT_PACK}">&nbsp;&nbsp;<input class="liteoption" type="submit" name="export_pack" value="{L_EXPORT_PACK}"></td>
 </tr>
 <tr>
-	<td class="row1" style="padding: 0px;" valign="top">
+	<td class="row1" style="padding: 0px;">
 		<table class="nav-div" width="100%" align="center" style="padding: 0px;" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<th style="text-align: center; width: 30px;">&nbsp;</th>
@@ -20,7 +20,7 @@
 		<ul id="smileys" style="margin: 0px; padding: 0px; list-style-type: none;">
 		<!-- BEGIN smiles -->
 		<li id="item_{smiles.SMILEY_ID}">
-		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+		<table>
 		<tr class="{smiles.ROW_CLASS}h">
 			<td class="{smiles.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 40px;"><a class="icon-edit-move-empty" href="javascript:void(0);"><img src="../templates/common/images/cms_icon_move.png" alt="{L_MOVE} " title="{L_MOVE}" /></a></td>
 			<td class="{smiles.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 170px;"><img src="{smiles.SMILEY_IMG}" alt="{smiles.CODE}" /></td>
@@ -41,10 +41,10 @@
 </form>
 
 <form method="post" action="{S_POSITION_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_SMILEY_CONFIG}</th></tr>
 <tr><td class="row1">{L_POSITION_NEW_SMILIES}</td><td class="row2">{POSITION_SELECT}</td></tr>
-<tr><td class="cat" align="center" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="change" value="{L_SMILEY_CHANGE_POSITION}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="change" value="{L_SMILEY_CHANGE_POSITION}" class="mainoption" /></td></tr>
 </table>
 </form>
 

@@ -1,9 +1,9 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <form method="post" action="{S_MODE_ACTION}">
-<table class="empty-table" width="100%" align="center" cellspacing="0">
+<table>
 <tr>
-	<td align="right" nowrap="nowrap">
+	<td class="tdalignr tdnw">
 		<span class="genmed">
 		{L_SELECT_SORT_METHOD}:&nbsp;{S_MODE_SELECT}&nbsp;&nbsp;{L_ORDER}&nbsp;{S_ORDER_SELECT}&nbsp;&nbsp;{L_FORUM}&nbsp;{S_FORUM_SELECT}&nbsp;&nbsp;
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" />
@@ -13,35 +13,35 @@
 </table>
 
 {ERROR_BOX}
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_DOWNLOADS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_DOWNLOADS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th height="25" nowrap="nowrap">#</th>
-	<th nowrap="nowrap">{L_FILENAME}</th>
-	<th nowrap="nowrap">{L_FILECOMMENT}</th>
-	<th nowrap="nowrap">{L_SIZE}</th>
-	<th nowrap="nowrap">{L_DOWNLOADS}</th>
-	<th nowrap="nowrap">{L_POST_TIME}</th>
-	<th nowrap="nowrap">{L_POSTED_IN_TOPIC}</th>
+	<th class="tdnw">#</th>
+	<th class="tdnw">{L_FILENAME}</th>
+	<th class="tdnw">{L_FILECOMMENT}</th>
+	<th class="tdnw">{L_SIZE}</th>
+	<th class="tdnw">{L_DOWNLOADS}</th>
+	<th class="tdnw">{L_POST_TIME}</th>
+	<th class="tdnw">{L_POSTED_IN_TOPIC}</th>
 </tr>
 <!-- BEGIN attachrow -->
 <tr>
-	<td class="{attachrow.ROW_CLASS} row-center" align="center"><span class="gen">&nbsp;{attachrow.ROW_NUMBER}&nbsp;</span></td>
+	<td class="{attachrow.ROW_CLASS} row-center"><span class="gen">&nbsp;{attachrow.ROW_NUMBER}&nbsp;</span></td>
 	<td class="{attachrow.ROW_CLASS}"><span class="gen">{attachrow.VIEW_ATTACHMENT}</span></td>
 	<td class="{attachrow.ROW_CLASS}"><span class="gen">{attachrow.COMMENT}</span></td>
-	<td class="{attachrow.ROW_CLASS} row-center" align="center" valign="middle"><span class="gen"><b>{attachrow.SIZE}</b></span></td>
-	<td class="{attachrow.ROW_CLASS} row-center" align="center" valign="middle"><span class="gen"><b>{attachrow.DOWNLOAD_COUNT}</b></span></td>
-	<td class="{attachrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{attachrow.POST_TIME}</span></td>
-	<td class="{attachrow.ROW_CLASS}" valign="middle"><span class="gen">{attachrow.POST_TITLE}</span></td>
+	<td class="{attachrow.ROW_CLASS} row-center tvalignm"><span class="gen"><b>{attachrow.SIZE}</b></span></td>
+	<td class="{attachrow.ROW_CLASS} row-center tvalignm"><span class="gen"><b>{attachrow.DOWNLOAD_COUNT}</b></span></td>
+	<td class="{attachrow.ROW_CLASS} row-center tvalignm"><span class="gensmall">{attachrow.POST_TIME}</span></td>
+	<td class="{attachrow.ROW_CLASS} tvalignm"><span class="gen">{attachrow.POST_TITLE}</span></td>
 </tr>
 <!-- END attachrow -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <br />
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right"><span class="pagination">{PAGINATION}</span></td>
+	<td class="tdalignr"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 

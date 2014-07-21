@@ -2,7 +2,7 @@
 <p>{L_LICENSEEXPLAIN}</p>
 
 <form action="{S_DELETE_LIC_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th >{L_LICENSETITLE}</th></tr>
 {ROW}
 <tr>

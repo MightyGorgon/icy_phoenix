@@ -1,9 +1,9 @@
 <h1>{L_PROFILE_FIELD_LIST_TITLE}</h1>
 <p>{L_PROFILE_FIELD_LIST_EXPLAIN}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
-	<th width="5%">{L_ID}</th>
+	<th class="tw5pct">{L_ID}</th>
 	<th>{L_NAME}</th>
 	<th colspan="2">{L_ACTION}</th>
 </tr>

@@ -1,7 +1,7 @@
 <h1>{L_FORUM_PRUNE}</h1>
 <p>{L_PRUNE_RESULT}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_FORUM}</th>
 	<th>{L_TOPICS_PRUNED}</th>

@@ -29,7 +29,7 @@ var {HS_GALLERY_ID} = {
 
 <!-- ELSE -->
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 
 <!-- BEGIN no_pics -->
 <tr><td align="center" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>

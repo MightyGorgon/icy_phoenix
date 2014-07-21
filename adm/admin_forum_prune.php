@@ -135,7 +135,7 @@ else
 		$template->set_filenames(array('body' => ADM_TPL . 'forum_prune_body.tpl'));
 		$forum_name = ($fid == 'Root') ? $lang['All_Forums'] : get_object_lang($fid, 'name');
 		$prune_data = $lang['Prune_topics_not_posted'] . " ";
-		$prune_data .= '<input class="post" type="text" name="prunedays" size="4"> ' . $lang['Days'];
+		$prune_data .= '<input class="post" type="text" name="prunedays" size="4" /> ' . $lang['Days'];
 		$hidden_input = '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $fid . '" />';
 
 		$template->assign_vars(array(

@@ -1,4 +1,4 @@
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 <!-- BEGIN pertype -->
 	<td class="cat" align="left" nowrap="nowrap"><a href="{pertype.U_NAME}">{pertype.L_NAME}</a></td>
@@ -21,9 +21,9 @@
 <h2>{L_PERMISSIONS}</h2>
 <p>{L_AUTH_EXPLAIN}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
-	<th width="30%">{L_CAT}</th>
+	<th class="tw30pct">{L_CAT}</th>
 	<!-- BEGIN acltype -->
 	<th>{acltype.L_UG_ACL_TYPE}</th>
 	<!-- END acltype -->

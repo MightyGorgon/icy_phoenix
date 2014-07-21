@@ -1,6 +1,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_users_auth.png" alt="{L_CMS_PERMISSIONS}" title="{L_CMS_PERMISSIONS}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_PERMISSIONS}</h1><span class="genmed">{L_CMS_AUTH_TEXT}</span></td>
@@ -8,7 +8,7 @@
 </table>
 
 <!-- IF S_INTRO -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th colspan="2">{L_CMS_PERMISSIONS}</th></tr>
 <!--
 <tr class="row1 row1h">
@@ -39,12 +39,12 @@
 	<td class="row1">{L_CMS_AUTH_USERS_GROUPS_EXPLAIN}</td>
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr><td class="cat" align="center" colspan="2">&nbsp;</td></tr>
+<tr><td class="cat tdalignc" colspan="2">&nbsp;</td></tr>
 </table>
 
 <br clear="all" />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th colspan="2">{L_CMS_PERMISSIONS_ROLES}</th></tr>
 <!--
 <tr class="row1 row1h">
@@ -71,7 +71,7 @@
 	<td class="row1">{L_ACP_USER_ROLES_EXPLAIN}</td>
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr><td class="cat" align="center" colspan="2">&nbsp;</td></tr>
+<tr><td class="cat tdalignc" colspan="2">&nbsp;</td></tr>
 </table>
 <!-- ENDIF -->
 

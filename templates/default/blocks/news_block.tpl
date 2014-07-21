@@ -1,18 +1,18 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td>
 		<!-- BEGIN news_categories -->
-		<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table class="forumlinenb">
 		<tr><td class="row-header" colspan="{S_COLS}" nowrap="nowrap"><span>{L_NEWS_CATS}</span></td></tr>
 		<!-- END news_categories -->
 		<!-- BEGIN no_news -->
-		<tr><td class="row1 row-center" height="50"><span class="gen">{L_NO_NEWS_CATS}</span></td></tr>
+		<tr><td class="row1 row-center th50px"><span class="gen">{L_NO_NEWS_CATS}</span></td></tr>
 		<!-- END no_news -->
 
 		<!-- BEGIN newsrow -->
 		<tr>
 			<!-- BEGIN newscol -->
-			<td width="25%" class="row1 row-center"><span class="genmed"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.newscol.ID}"><img src="{newsrow.newscol.THUMBNAIL}" alt="{newsrow.newscol.DESC}" title="{newsrow.newscol.DESC}" vspace="10" /></a></span></td>
+			<td width="25%" class="row1 row-center"><span class="genmed"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.newscol.ID}"><img class="vs10px" src="{newsrow.newscol.THUMBNAIL}" alt="{newsrow.newscol.DESC}" title="{newsrow.newscol.DESC}" /></a></span></td>
 			<!-- END newscol -->
 		</tr>
 		<tr>
@@ -28,7 +28,7 @@
 		<!-- END news_categories -->
 
 		<!-- BEGIN news_archives -->
-		{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+		{IMG_TBL}<table class="forumline">
 		<tr><td class="row-header"><span>{L_NEWS_ARCHIVES}</span></td></tr>
 		<tr>
 			<td class="row1">
@@ -54,8 +54,8 @@
 		<!-- END news_archives -->
 
 		<!-- BEGIN no_articles -->
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
-		<tr><td class="row1 row-center" height="50"><span class="gen">{L_NO_NEWS}</span></td></tr>
+		<table class="forumline">
+		<tr><td class="row1 row-center th50px"><span class="gen">{L_NO_NEWS}</span></td></tr>
 		</table>
 		<br />
 		<!-- END no_articles -->
@@ -73,7 +73,7 @@
 				<div class="content-padding">{articles.ATTACHMENTS}</div><br /><br />
 				<span class="gensmall">{articles.READ_MORE_LINK}&nbsp;</span><br /><br />
 				<!-- IF articles.S_TOPIC_TAGS and articles.TOPIC_TAGS -->
-				<br clear="all" /><br /><div><span class="gensmall"><b>{L_TOPIC_TAGS}</b>:&nbsp;{articles.TOPIC_TAGS}</span></div><br />
+				<br class="clear" /><br /><div><span class="gensmall"><b>{L_TOPIC_TAGS}</b>:&nbsp;{articles.TOPIC_TAGS}</span></div><br />
 				<!-- ENDIF -->
 			</td>
 		</tr>
@@ -86,9 +86,9 @@
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 		<!-- END articles -->
 		<!-- BEGIN comments -->
-		{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+		{IMG_TBL}<table class="forumline">
 		<tr><th align="left"><span class="gensmall"><span style="float: right; text-align: right;">{comments.POST_DATE} {L_BY} {comments.L_POSTER}</span>{comments.L_TITLE}</span></th></tr>
-		<tr><td class="row-post" width="100%"><div class="post-text">{comments.BODY}</div></td></tr>
+		<tr><td class="row-post tw100pct"><div class="post-text">{comments.BODY}</div></td></tr>
 		</table>{IMG_TBR}
 		<!-- END comments -->
 		<!-- BEGIN pagination -->

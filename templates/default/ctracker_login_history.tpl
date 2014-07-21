@@ -1,8 +1,8 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <br />
-{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th height="25" nowrap="nowrap" colspan="3">{L_HEADER_TEXT}</th></tr>
+{IMG_TBL}<table class="forumline">
+<tr><th class="tdnw" colspan="3">{L_HEADER_TEXT}</th></tr>
 <tr><td class="row2 row-center" colspan="3"><span class="gen">{L_DESCRIPTION}</span></td></tr>
 <tr>
 	<th>#</th>
@@ -22,10 +22,10 @@
 <!-- BEGIN log_set -->
 <br /><br />
 <form action="{log_set.S_FORM_ACTION}" method="post">
-{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th height="25" nowrap="nowrap" colspan="2">{log_set.L_HEADER_TEXT}</th></tr>
+{IMG_TBL}<table class="forumline">
+<tr><th class="tdnw" colspan="2">{log_set.L_HEADER_TEXT}</th></tr>
 <tr>
-	<td class="row1 row-center" rowspan="2" width="20%"><img src="{log_set.IMG_ICON}" alt="" title="" /></td>
+	<td class="row1 row-center tw20pct" rowspan="2"><img src="{log_set.IMG_ICON}" alt="" title="" /></td>
 	<td class="row2 row-center"><span class="gen">{log_set.L_DESC}</span></td>
 </tr>
 <tr>
@@ -36,7 +36,7 @@
 		</span>
 	</td>
 </tr>
-<tr><td class="cat" align="center" colspan="2"><input type="submit" name="submit" value="{log_set.L_SEND}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2"><input type="submit" name="submit" value="{log_set.L_SEND}" class="mainoption" /></td></tr>
 </table>{IMG_TBR}
 </form>
 <!-- END log_set -->

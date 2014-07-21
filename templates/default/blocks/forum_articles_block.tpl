@@ -1,9 +1,9 @@
 <!-- IF IS_LIST -->
-{IMG_THL}{IMG_THC}{L_TITLE}&nbsp;{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0" border="0">
+{IMG_THL}{IMG_THC}{L_TITLE}&nbsp;{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>{L_TOPICS}</th>
 	<th>{L_AUTHOR}</th>
-	<th width="50">{L_VIEWS}</th>
+	<th class="tw50px">{L_VIEWS}</th>
 </tr>
 <!-- BEGIN articles_fa -->
 <tr>
@@ -18,7 +18,7 @@
 <br />
 <!-- ELSE -->
 <!-- BEGIN articles_fa -->
-{IMG_THL}{IMG_THC}{articles_fa.TITLE}&nbsp;{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0" border="0">
+{IMG_THL}{IMG_THC}{articles_fa.TITLE}&nbsp;{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row-post">
 		<div class="post-text">{articles_fa.TEXT}</div><br /><br />
@@ -27,10 +27,10 @@
 </tr>
 <tr>
 	<td class="cat">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr>
-				<td align="left"><span class="gensmall">&nbsp;{articles_fa.POSTER_CG}&nbsp;[ {articles_fa.TIME} ]</span></td>
-				<td align="right">
+				<td><span class="gensmall">&nbsp;{articles_fa.POSTER_CG}&nbsp;[ {articles_fa.TIME} ]</span></td>
+				<td class="tdalignr">
 					<a href="{articles_fa.U_PRINT_TOPIC}" target="_blank"><img src="{NEWS_PRINT_IMG}" alt="{L_PRINT_NEWS}" title="{L_PRINT_NEWS}" border="0" align="middle" /></a>
 					<a href="{articles_fa.U_EMAIL_TOPIC}"><img src="{NEWS_EMAIL_IMG}" alt="{L_EMAIL_NEWS}" title="{L_EMAIL_NEWS}" border="0" align="middle" /></a>
 					&nbsp;

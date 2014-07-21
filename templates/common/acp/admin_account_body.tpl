@@ -18,7 +18,7 @@ function select_switch(status)
 <form method="post" name="users" action="{S_ACCOUNT_ACTION}">
 <table align="center" width="100%" cellspacing="2" cellpadding="2" border="0">
 <tr>
-	<td align="left" nowrap="nowrap"><span class="gensmall">{L_SORT_PER_LETTER}:<br />{S_LETTER_SELECT}{S_LETTER_HIDDEN}</span></td>
+	<td class="tdnw"><span class="gensmall">{L_SORT_PER_LETTER}:<br />{S_LETTER_SELECT}{S_LETTER_HIDDEN}</span></td>
 	<td valign="bottom" align="right" nowrap="nowrap">
 		<span class="gensmall">
 		{L_REGISTERED_AWAITS}:&nbsp;
@@ -29,7 +29,7 @@ function select_switch(status)
 </tr>
 </table>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>#</th>
 	<th>{L_USERNAME}</th>
@@ -45,7 +45,7 @@ function select_switch(status)
 <!-- BEGIN admin_account -->
 <tr>
 	<td class="{admin_account.ROW_CLASS} row-center"><span class="gensmall">{admin_account.ROW_NUMBER}&nbsp;</span></td>
-	<td class="{admin_account.ROW_CLASS}" valign="middle" width="30%" nowrap="nowrap">
+	<td class="{admin_account.ROW_CLASS} tvalignm" width="30%" nowrap="nowrap">
 		<table border="0" cellpadding="1" cellspacing="1" width="100%">
 		<tr>
 			<td align="left">{admin_account.USERNAME}</td>
@@ -71,10 +71,10 @@ function select_switch(status)
 </tr>
 </table>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+<table>
 <tr>
 	<td valign="middle" align="left" width="100%"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td valign="top" align="right" nowrap="nowrap">
+	<td class="tdalignr tdnw">
 		<b><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></b><br />
 		<span class="pagination">{PAGINATION}</span><br />
 	</td>

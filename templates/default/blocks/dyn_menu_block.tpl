@@ -25,11 +25,11 @@ if(GetCookie(tmp) == '2')
 <!-- BEGIN show_hide_switch -->
 <img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('quick_links', 'quick_links2', 'quick_links'); setWidth('var_width',16); setWidth('full_width', '100%'); setWidth('full_width_cpl', '100%');" alt="{L_HIDE}" />
 <!-- END show_hide_switch -->
-<span class="forumlink">{MAIN_MENU_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<span class="forumlink">{MAIN_MENU_NAME}</span>{IMG_THR}<table class="forumlinenb">
 
 <!-- IF NAV_MENU_ADS_TOP -->
 <tr>
-	<th style="cursor: pointer;" align="left">
+	<th style="cursor: pointer; text-align: left;">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
 		<a href="#" title="{L_SPONSORS_LINKS}" class="nav-menu-link"><b>{L_SPONSORS_LINKS}</b></a>
 	</th>
@@ -39,7 +39,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- BEGIN cat_row -->
 <tr>
-	<th style="cursor: pointer;" align="left" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}', 'menu_cat_{cat_row.CAT_ID}_h', 'menu_cat_{cat_row.CAT_ID}');">
+	<th style="cursor: pointer; text-align: left;" onclick="ShowHide('menu_cat_{cat_row.CAT_ID}', 'menu_cat_{cat_row.CAT_ID}_h', 'menu_cat_{cat_row.CAT_ID}');">
 		{cat_row.CAT_ICON}<a href="#" onclick="return false;" title="{cat_row.CAT_ITEM}" class="nav-menu-link"><b>{cat_row.CAT_ITEM}</b></a>
 	</th>
 </tr>
@@ -69,7 +69,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- IF NAV_MENU_ADS_BOTTOM -->
 <tr>
-	<th style="cursor: pointer;" align="left">
+	<th style="cursor: pointer; text-align: left;">
 		<img src="{IMG_NAV_MENU_SPONSOR}" alt="{L_SPONSORS_LINKS}" title="{L_SPONSORS_LINKS}" />&nbsp;
 		<a href="#" title="{L_SPONSORS_LINKS}" class="nav-menu-link"><b>{L_SPONSORS_LINKS}</b></a>
 	</th>

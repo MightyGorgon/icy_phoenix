@@ -3,13 +3,13 @@
 
 <form action="{S_FIELD_ACTION}" method="post">
 <!-- IF ERROR neq '' -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row2 row-center">{ERROR}</td></tr></table>
+<table class="forumline"><tr><td class="row2 row-center">{ERROR}</td></tr></table>
 <br />
 <!-- ENDIF -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_FIELD_TITLE}</th></tr>
 <tr>
-	<td width="50%" class="row1"><strong>{L_FIELD_NAME}</strong><br /><span class="gensmall">{L_FIELD_NAME_INFO}</span></td>
+	<td class="row1 tw50pct"><strong>{L_FIELD_NAME}</strong><br /><span class="gensmall">{L_FIELD_NAME_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="field_name" value="{FIELD_NAME}" /></td>
 </tr>
 <tr>
@@ -32,10 +32,10 @@
 
 <!-- IF ORDER -->
 <tr>
-	<td width="50%" class="row1"><strong>{L_FIELD_ORDER}</strong></td>
+	<td class="row1 tw50pct"><strong>{L_FIELD_ORDER}</strong></td>
 	<td class="row2"><input type="text" class="post" size="6" name="field_order" value="{FIELD_ORDER}" /></td>
 </tr>
 <!-- ENDIF -->
-<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="liteoption" type="submit" value="{L_FIELD_TITLE}" name="submit" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input class="liteoption" type="submit" value="{L_FIELD_TITLE}" name="submit" /></td></tr>
 </table>
 </form>

@@ -1,21 +1,21 @@
 <form method="post" action="{S_FORUM_ACTION}">
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr><th>{L_MENU_TITLE}</th></tr>
 <tr><td class="row1">{L_MENU_EXPLAIN}<br /><br />{L_MASTER_SWITCH}<br /><br />{L_MENU_EXPLAINS}</td></tr>
 </table>
 
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr><th colspan="4">{L_MENU_SETTINGS}</th></tr>
 <tr>
 	<th width="35">{L_SHOW}</th>
 	<th>{L_TITLE}</td>
-	<th width="25">{L_EDIT}</th>
-	<th width="25">{L_DELETE}</th>
+	<th class="tw25px">{L_EDIT}</th>
+	<th class="tw25px">{L_DELETE}</th>
 </tr>
 <!-- BEGIN xml_feed -->
 <tr> 
 	<td class="row1 row-center">{xml_feed.XML_FEED_DISPLAY}</td>
-	<td class="row1"><span class="gen" style="overflow:auto;">{xml_feed.XML_TITLE}</span></td>
+	<td class="row1"><span class="gen" style="overflow: auto;">{xml_feed.XML_TITLE}</span></td>
 	<td class="row1 row-center"><span class="gen"><a href="{xml_feed.U_XML_EDIT}">{L_EDIT}</a></span></td>
 	<td class="row1 row-center"><span class="gen"><a href="{xml_feed.U_XML_DELETE}">{L_DELETE}</a></span></td>
 </tr>

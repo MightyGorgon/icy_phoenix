@@ -1,6 +1,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th>{MESSAGE_TITLE}</th></tr>
 <tr>
 	<td class="row1g">
@@ -13,7 +13,7 @@
 	</td>
 </tr>
 <tr><td class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-<tr><td class="cat" align="center">&nbsp;</td></tr>
+<tr><td class="cat tdalignc">&nbsp;</td></tr>
 </table>
 
 <br clear="all" />

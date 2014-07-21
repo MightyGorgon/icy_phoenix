@@ -4492,6 +4492,8 @@ function page_header($title = '', $parse_template = false)
 
 	// Mozilla navigation bar - Default items that should be valid on all pages.
 	// Defined here to correctly assign the Language Variables and be able to change the variables within code.
+	/*
+	// TOP and FORUM are not allowed on HTML 5
 	$nav_links['top'] = array (
 		'url' => append_sid(CMS_PAGE_HOME),
 		'title' => $config['sitename']
@@ -4500,6 +4502,7 @@ function page_header($title = '', $parse_template = false)
 		'url' => append_sid(CMS_PAGE_FORUM),
 		'title' => sprintf($lang['Forum_Index'], $config['sitename'])
 	);
+	*/
 	$nav_links['search'] = array (
 		'url' => append_sid(CMS_PAGE_SEARCH),
 		'title' => $lang['Search']
@@ -5147,8 +5150,6 @@ function page_header($title = '', $parse_template = false)
 		'NAV_LINKS' => $nav_links_html,
 
 		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
-		'S_HEADER_DROPDOWN' => ($config['switch_header_dropdown'] ? true : false),
-		'S_HEADER_DD_LOGGED_IN' => (($config['switch_header_dropdown'] && $user->data['upi2db_access']) ? true : false),
 
 		// AJAX Features - BEGIN
 		'S_AJAX_FEATURES' => (!empty($config['ajax_features']) ? true : false),

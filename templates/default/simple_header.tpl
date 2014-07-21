@@ -31,7 +31,7 @@
 
 </head>
 <body<!-- IF S_SLIDESHOW_SCRIPT --> onload="runSlideShow()"<!-- ENDIF --><!-- IF NO_PADDING --> style="margin: 0 !important; padding: 0 !important;"<!-- ENDIF -->>
-<a name="top" id="top"></a>
+<a id="top"></a>
 <!-- IF not NO_PADDING --><div class="simple_header_wrapper"><!-- ENDIF -->
 <div class="rounded_line">
 <table id="forumtable" width="100%" cellspacing="0" style="width: 100% !important;">

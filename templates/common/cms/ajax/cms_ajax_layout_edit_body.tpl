@@ -2,7 +2,7 @@
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_edit.png" alt="{L_CMS_PAGES}" title="{L_CMS_PAGES}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_PAGES}</h1><span class="genmed">{L_LAYOUT_TEXT}</span></td>
@@ -10,24 +10,24 @@
 </table>
 
 <form method="post" action="{S_LAYOUT_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th colspan="2">&nbsp;{L_EDIT_LAYOUT}&nbsp;</th></tr>
 <tr>
-	<td class="row1" style="padding:0px" valign="top">
-		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+	<td class="row1" style="padding: 0px;">
+		<table>
 		<!-- IF not S_LAYOUT_SPECIAL -->
 		<!-- IF S_LAYOUT_ADV -->
 		<tr>
-			<td class="row1" colspan="2" style="text-align:center">
-				<table class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+			<td class="row1 row-center" colspan="2">
+				<table class="forumline">
 				<tr>
 					<!-- BEGIN layouts -->
-					<td class="row1" style="text-align:center">{layouts.LAYOUT_IMG}</td>
+					<td class="row1" style="text-align: center;">{layouts.LAYOUT_IMG}</td>
 					<!-- END layouts -->
 				</tr>
 				<tr>
 					<!-- BEGIN layouts -->
-					<td class="row1" style="text-align:center">{layouts.LAYOUT_RADIO}</td>
+					<td class="row1" style="text-align: center;">{layouts.LAYOUT_RADIO}</td>
 					<!-- END layouts -->
 				</tr>
 				</table>
@@ -90,7 +90,7 @@
 </tr>
 <tr><td class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr>
-	<td class="cat" align="center">
+	<td class="cat tdalignc">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="save" value="{L_SUBMIT}" class="mainoption" />
 	</td>

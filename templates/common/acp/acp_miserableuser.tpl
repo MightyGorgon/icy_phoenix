@@ -5,8 +5,8 @@
 
 <!-- BEGIN infobox -->
 <div align="center">
-<table class="forumline" width="80%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="center" style="background-color:#{infobox.COLOR};"><b>{infobox.L_MESSAGE_TEXT}</b></td></tr>
+<table class="forumline tw80pct">
+<tr><td align="center" style="background-color: #{infobox.COLOR};"><b>{infobox.L_MESSAGE_TEXT}</b></td></tr>
 </table>
 </div>
 
@@ -14,7 +14,7 @@
 <!-- END infobox -->
 
 <form method="post" name="post" action="{S_FORM_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th>{L_MARK_MU}</th></tr>
 <tr>
 	<td class="row1 row-center">
@@ -28,11 +28,11 @@
 
 <br /><br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_USER_ENTR}</th></tr>
 <tr>
 	<th width="80%">{L_TH1}</th>
-	<th width="20%">{L_TH2}</th>
+	<th class="tw20pct">{L_TH2}</th>
 </tr>
 <!-- BEGIN output -->
 <tr>

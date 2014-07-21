@@ -139,7 +139,7 @@ function xs_replace_restore()
 	</span></td>
 </tr>
 <tr>
-	<td class="catBottom" align="center"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /> <input type="reset" name="reset" value="{L_RESET}" class="liteoption" /></td>
+	<td class="catBottom tdalignc"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /> <input type="reset" name="reset" value="{L_RESET}" class="liteoption" /></td>
 </tr>
 </table>
 </form>

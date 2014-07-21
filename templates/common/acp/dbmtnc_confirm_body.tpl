@@ -1,5 +1,5 @@
 <form action="{S_CONFIRM_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th valign="middle"><span class="forumlink">{MESSAGE_TITLE}</span></th></tr>
 <tr>
 	<td class="row1 row-center">

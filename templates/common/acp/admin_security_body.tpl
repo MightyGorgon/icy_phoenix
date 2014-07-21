@@ -1,7 +1,7 @@
 <form name="configuration" method="post" action="{ACTION}">
-<table width="100%" class="forumline" align="center">
+<table class="forumline">
 <tr><th colspan="2">{PS_ADMIN_TITLE}</th></tr>
-<tr height="20">
+<tr class="th20px">
 	<td width="60%" class="row2">&nbsp;</td>
 	<td width="40%" class="row2">&nbsp;</td>
 </tr>
@@ -52,4 +52,4 @@
 </table>
 </form>
 
-<br clear="all" />
+<br class="clear" />

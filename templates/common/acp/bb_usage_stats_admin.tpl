@@ -33,10 +33,10 @@ function setValue_new(schecked, targettxt, tvalue)
 <tr><td class="row2" colspan="2"><span class="gensmall">{L_BBUS_SETTINGS_EXPLAIN}</span></td></tr>
 
 <tr>
-	<td class="row1" valign="top"><strong>{L_BBUS_SETTING_VIEWLEVEL_CAPTION}</strong><br /></td>
+	<td class="row1"><strong>{L_BBUS_SETTING_VIEWLEVEL_CAPTION}</strong><br /></td>
 	<td class="row2">
 		<span class="gensmall">{L_BBUS_SETTING_VIEWLEVEL_EXPLAIN1}</span>
-		<table class="forumline" cellpadding="0" cellspacing="0" border="0">
+		<table class="forumline">
 		<tr>
 			<td class="row3"><span class="gensmall"><strong>{L_BBUS_VIEWLEVEL_ANONYMOUS_CAPTION}</strong></span></td>
 			<td class="row3"><span class="gensmall">{L_BBUS_VIEWLEVEL_ANONYMOUS_EXPLAIN}</span></td>
@@ -93,10 +93,10 @@ function setValue_new(schecked, targettxt, tvalue)
 </tr>
 
 <tr>
-	<td class="row1" valign="top"><strong>{L_BBUS_SETTING_VIEWOPTIONS_CAPTION}</strong><br /></td>
+	<td class="row1"><strong>{L_BBUS_SETTING_VIEWOPTIONS_CAPTION}</strong><br /></td>
 	<td class="row2">
 		<span class="gensmall">{L_BBUS_SETTING_VIEWOPTIONS_EXPLAIN1}</span>
-		<table class="forumline" cellpadding="0" cellspacing="0" border="0">
+		<table class="forumline">
 		<tr>
 			<td class="row2"><span class="gensmall"><strong>{L_BBUS_VIEWOPTION_SHOW_ALL_FORUMS_CAPTION}</strong></span></td>
 			<td class="row2"><span class="gensmall">{BBUS_VIEWOPTION_SHOW_ALL_FORUMS_FLAGVALUE}</span></td>

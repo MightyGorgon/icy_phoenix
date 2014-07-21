@@ -1,6 +1,6 @@
-<table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
+<table class="s2px p2px">
 <tr>
-	<td align="left"><span class="maintitle">{L_PAGE_NAME}</span>
+	<td><span class="maintitle">{L_PAGE_NAME}</span>
 		<br /><span class="gensmall"><b>{L_VERSION} {VERSION}
 		<br />{NIVISEC_CHECKER_VERSION}</b></span><br /><br />
 	<span class="genmed">{L_PAGE_DESC}<br /><br />{VERSION_CHECK_DATA}</span></td>
@@ -8,7 +8,7 @@
 </table>
 
 <form method="post" action="{S_MODE_ACTION}" name="update_hacks">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_PAGE_NAME}</th></tr>
 <tr>
 	<td class="row1" width="40%"><span class="genmed"><strong>{L_HACK_NAME}:</strong><br /></span><span class="gensmall">*{L_REQUIRED}</span></td>
@@ -44,7 +44,7 @@
 	<input type="radio" name="hack_hide" value="No" {S_HACK_HIDE_NO} />&nbsp;{L_NO}</td>
 </tr>
 <tr>
-	<td align="center" class="cat" colspan="2">
+	<td class="cat tdalignc" colspan="2">
 	<input type="hidden" name="{S_HIDDEN}" value="{S_HACK_ID}" />
 	<input type="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" />
 	</td>

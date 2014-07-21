@@ -1,4 +1,4 @@
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <!-- BEGIN popup_switch -->
 <tr><th colspan="3">{L_PRIVATE_MESSAGES}</th></tr>
 <!-- END popup_switch -->
@@ -19,7 +19,7 @@
 	<td width="100%" class="row2"><span class="genmed">{SUBJECT}</span></td>
 	<td nowrap="nowrap" class="row2" align="right"> &nbsp; </td>
 </tr>
-<tr><td valign="top" colspan="3" class="row1"><div class="post-text post-text-hide-flow"><span>{MESSAGE}</span></div></td></tr>
+<tr><td colspan="3" class="row1"><div class="post-text post-text-hide-flow"><span>{MESSAGE}</span></div></td></tr>
 </table>
 <br />
 <!-- BEGIN popup_switch -->

@@ -20,7 +20,7 @@
 <tr><th colspan="2">{L_XS_EDIT_STYLES_DATA}</th></tr>
 <tr>
 	<td class="catLeft" align="center"><span class="gen">{L_XS_EDITDATA_VAR}</span></td>
-	<td class="cat" align="center"><span class="gen">{L_XS_EDITDATA_VALUE}</span></td>
+	<td class="cat tdalignc"><span class="gen">{L_XS_EDITDATA_VALUE}</span></td>
 </tr>
 <!-- BEGIN row -->
 <tr> 

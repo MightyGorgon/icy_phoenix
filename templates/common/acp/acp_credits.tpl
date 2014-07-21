@@ -7,7 +7,7 @@
 <table width="100%" cellspacing="1" cellpadding="3" border="0">
 <tr>
 	<td width="48%" align="left" valign="top">
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table class="forumline">
 		<tr><th>{L_DONATE}</th></tr>
 		<tr><td class="row2 row-center"><img src="{IMG_ICON_1}" border="0" alt="{L_PICTURE_ALT}" /></td></tr>
 		<tr>
@@ -31,7 +31,7 @@
 
 		<br />
 
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table class="forumline">
 		<tr><th>{L_THANKS_TO}</th></tr>
 		<tr><td class="row2 row-center"><img src="{IMG_ICON_3}" border="0" alt="{L_PICTURE_ALT}" /></td></tr>
 		<tr>
@@ -50,7 +50,7 @@
 	</td>
 	<td width="4%">&nbsp;</td>
 	<td width="48%" valign="top">
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table class="forumline">
 		<tr><th>{L_CREDITS}</th></tr>
 		<tr><td class="row2 row-center"><img src="{IMG_ICON_2}" border="0" alt="{L_PICTURE_ALT}" /></td></tr>
 		<tr>
@@ -85,7 +85,7 @@
 
 		<br />
 
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table class="forumline">
 		<tr><th>{L_INFO}</th></tr>
 		<tr><td class="row2 row-center"><img src="{IMG_ICON_4}" border="0" alt="{L_PICTURE_ALT}" /></td></tr>
 		<tr>

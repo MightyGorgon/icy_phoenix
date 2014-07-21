@@ -2,11 +2,11 @@
 
 <p>{L_ALBUM_CAT_EXPLAIN}</p>
 <form method="post" action="{S_ALBUM_ACTION}">
-<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<table>
 <tr><td><span class="nav"><a href="{S_ALBUM_ACTION}" class="nav">{L_ALBUM_INDEX}</a></span></td></tr>
 </table>
 
-<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline">
 <tr>
 	<th colspan="{HEADER_INC_SPAN}" width="75%%">{L_ALBUM_TITLE} '{HEADER_INC_SPAN}'</th>
 	<th colspan="3" width="25%">{L_ALBUM_ACTION} '3'</th>
@@ -31,16 +31,16 @@
 <!-- BEGIN catfoot -->
 <tr>
 	<!-- BEGIN inc -->
-	<td class="row2" width="46">&nbsp;</td>
+	<td class="row2 tw46px">&nbsp;</td>
 	<!-- END inc -->
-	<td colspan="{catrow.catfoot.INC_SPAN_ALL}" class="row2" nowrap="nowrap">'{catrow.catfoot.INC_SPAN_ALL}'&nbsp;
+	<td colspan="{catrow.catfoot.INC_SPAN_ALL}" class="row2 tdnw">'{catrow.catfoot.INC_SPAN_ALL}'&nbsp;
 		<input class="post" type="text" name="{catrow.catfoot.S_ADD_NAME}" />&nbsp;
 		<input type="submit" class="liteoption"  name="{catrow.catfoot.S_ADD_CAT_SUBMIT}" value="{L_CREATE_CATEGORY}" />
 	</td>
 </tr>
 <tr>
 	<!-- BEGIN inc -->
-	<td class="row2" width="46">&nbsp;</td>
+	<td class="row2 tw46px">&nbsp;</td>
 	<!-- END inc -->
 	<td colspan="{catrow.catfoot.INC_SPAN_ALL}" height="1" class="spaceRow">'{catrow.catfoot.INC_SPAN_ALL}'&nbsp;</td>
 </tr>

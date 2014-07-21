@@ -2,7 +2,7 @@
 
 <br clear="all"/>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td width="33%" height="180" class="row1h row-center c-r-tl"><a href="{U_CMS_STANDARD_PAGES}"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_index_standard_pages.png" alt="{L_CMS_STANDARD_PAGES}" title="{L_CMS_STANDARD_PAGES}" /></a><br /><b>{L_CMS_STANDARD_PAGES}</b></td>
 	<td width="34%" class="row1h row-center"><a href="{U_CMS_CUSTOM_PAGES}"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_index_custom_pages.png" alt="{L_CMS_CUSTOM_PAGES}" title="{L_CMS_CUSTOM_PAGES}" /></a><br /><b>{L_CMS_CUSTOM_PAGES}</b></td>

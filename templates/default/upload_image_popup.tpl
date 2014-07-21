@@ -1,7 +1,7 @@
 <!-- INCLUDE simple_header.tpl -->
 
 <form action="{S_ACTION}" name="upload_img" method="post" enctype="multipart/form-data">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_IMAGE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_IMAGE}</span>{IMG_THR}<table class="forumlinenb">
 	<tr>
 		<td class="row1 row-center">
 			<br /><br />
@@ -10,7 +10,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="cat" align="center">
+		<td class="cat tdalignc">
 			<input type="submit" class="mainoption" value="{L_SUBMIT}" />&nbsp;
 			<input type="button" class="liteoption" value="{L_CLOSE_WINDOW}" onclick="window.close()" />
 		</td>

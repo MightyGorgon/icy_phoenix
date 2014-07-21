@@ -3,7 +3,7 @@
 	<tr><td class="row1" colspan="2"><span class="gensmall">{L_ATTACH_POSTING_CP_EXPLAIN}</span></td></tr>
 	<tr>
 		<td class="row1"><span class="gen"><b>{L_OPTIONS}</b></span></td>
-		<td class="row2" nowrap="nowrap">
+		<td class="row2 tdnw">
 		<input type="submit" name="add_attachment_box" value="{L_ADD_ATTACHMENT_TITLE}" class="liteoption" />
 	<!-- END show_apcp -->
 		<!-- BEGIN switch_posted_attachments -->

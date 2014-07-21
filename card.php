@@ -28,7 +28,7 @@ $user->setup();
 
 if ($user->data['user_id'] == ANONYMOUS)
 {
-	message_die(GENERAL_ERROR, $lang['NOT_LOGGED_IN_ERROR']);
+	message_die(GENERAL_MESSAGE, $lang['NOT_LOGGED_IN_ERROR']);
 }
 
 // Find what we are to do

@@ -1,7 +1,7 @@
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th>{L_BAN_REASONS}</th></tr>
 <tr>
-	<td class="row1 row-center" width="100%">
+	<td class="row1 row-center tw100pct">
 		<!-- BEGIN ban_username -->
 		<p align="left"><span class="gen"><b>{ban_username.L_USERNAME}:</b> {ban_username.USERNAME}</span></p>
 		<!-- END ban_username -->

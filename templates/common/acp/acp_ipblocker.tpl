@@ -5,7 +5,7 @@
 
 <form action="{S_FORM_ACTION}" method="post">
 <div align="center">
-<table class="forumline" width="50%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline tw50pct">
 <tr><th>{L_NEW_ENTRY}</th></tr>
 <!-- BEGIN deleted -->
 <tr>
@@ -32,14 +32,14 @@
 </tr>
 <!-- END added -->
 	<tr><td class="row1 row-center"><input type="text" name="entry" class="post" value="" maxlength="200" size="60" /></td></tr>
-	<tr><td class="cat" align="center"><input type="submit" name="submit" value="{L_ADD_NOW}" class="mainoption" /></td></tr>
+	<tr><td class="cat tdalignc"><input type="submit" name="submit" value="{L_ADD_NOW}" class="mainoption" /></td></tr>
 </table>
 </div>
 </form>
 
 <br /><br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_BLOCKLIST}</th></tr>
 <!-- BEGIN ipblocker -->
 <tr>

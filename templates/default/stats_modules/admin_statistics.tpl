@@ -1,9 +1,9 @@
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_ADMIN_STATISTICS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_ADMIN_STATISTICS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th width="25%">{L_STATISTIC}</th>
-	<th width="25%">{L_VALUE}</th>
-	<th width="25%">{L_STATISTIC}</th>
-	<th width="25%">{L_VALUE}</th>
+	<th class="tw25pct">{L_STATISTIC}</th>
+	<th class="tw25pct">{L_VALUE}</th>
+	<th class="tw25pct">{L_STATISTIC}</th>
+	<th class="tw25pct">{L_VALUE}</th>
 </tr>
 <!-- BEGIN adminrow -->
 <tr>

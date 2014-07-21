@@ -122,7 +122,7 @@ if(!empty($license))
 
 				while ($license = $db->sql_fetchrow($result))
 				{
-					$row .= '<tr><td width="3%" class="row1 row-center" valign="middle"><input type="radio" name="select" value="' . $license['license_id'] . '"></td><td width="97%" class="row1">' . $license['license_name'] . '</td></tr>';
+					$row .= '<tr><td class="row1 row-center tw3pct tvalignm"><input type="radio" name="select" value="' . $license['license_id'] . '"></td><td class="row1 tw97pct">' . $license['license_name'] . '</td></tr>';
 				}
 
 				$template->assign_block_vars('license', array());
@@ -181,7 +181,7 @@ if(!empty($license))
 
 				while ($license = $db->sql_fetchrow($result))
 				{
-					$row .= '<tr><td width="3%" class="row1 row-center" valign="middle"><input type="checkbox" name="select[' . $license['license_id'] . ']" value="yes"></td><td width="97%" class="row1">' . $license['license_name'] . '</td></tr>';
+					$row .= '<tr><td class="row1 row-center tw3pct tvalignm"><input type="checkbox" name="select[' . $license['license_id'] . ']" value="yes"></td><td class="row1 tw97pct">' . $license['license_name'] . '</td></tr>';
 				}
 
 				$template->assign_vars(array(
@@ -211,7 +211,7 @@ else
 
 	while ($license = $db->sql_fetchrow($result))
 	{
-		$row .= '<tr><td width="80%" class="row1 row-center">' . $license['license_name'] . '</td></tr>';
+		$row .= '<tr><td class="row1 row-center tw80pct">' . $license['license_name'] . '</td></tr>';
 	}
 
 	$template->assign_vars(array(

@@ -56,9 +56,9 @@ function checkAddForm()
 </script>
 
 <form enctype="multipart/form-data" action="{S_ADD_FILE_ACTION}" method="post" name="form" onsubmit="return checkAddForm();">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_FILE_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_FILE_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td width="50%" class="row1"><span class="genmed">{L_FILE_NAME}</span><br /><span class="gensmall">{L_FILE_NAME_INFO}</span></td>
+	<td class="row1 tw50pct"><span class="genmed">{L_FILE_NAME}</span><br /><span class="gensmall">{L_FILE_NAME_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="name" value="{FILE_NAME}" /></td>
 </tr>
 <tr>
@@ -116,7 +116,7 @@ function checkAddForm()
 	</td>
 </tr>
 -->
-<tr><th class="cat" colspan="2" align="center"><span>{L_SCREENSHOT}</span></th></tr>
+<tr><th class="cat tdalignc" colspan="2"><span>{L_SCREENSHOT}</span></th></tr>
 <tr>
 	<td class="row1"><span class="genmed">{L_FILESS_UPLOAD}</span><br /><span class="gensmall">{L_FILESSINFO_UPLOAD}</span></td>
 	<td class="row2"><input type="file" size="50" name="screen_shot" maxlength="{FILESIZE}" class="post" /></td>
@@ -132,7 +132,7 @@ function checkAddForm()
 		<input type="radio" name="sshot_link" value="0" {SS_CHECKED_NO}><span class="genmed">{L_NO}</span>&nbsp;
 	</td>
 </tr>
-<tr><th colspan="2" align="center"><span>{L_FILES}</span></th></tr>
+<tr><th colspan="2"><span>{L_FILES}</span></th></tr>
 <tr>
 	<td class="row1"><span class="genmed">{L_FILE_UPLOAD}</span><br /><span class="gensmall">{L_FILEINFO_UPLOAD}</span></td>
 	<td class="row2"><input type="file" size="50" name="userfile" maxlength="{FILESIZE}" class="post" /></td>
@@ -142,11 +142,11 @@ function checkAddForm()
 	<td class="row2"><input type="text" class="post" size="50" name="download_url" value="{FILE_DLURL}" /></td>
 </tr>
 <!-- IF CUSTOM_EXIST -->
-<tr><th colspan="2" align="center">{L_ADDTIONAL_FIELD}</th></tr>
+<tr><th colspan="2">{L_ADDTIONAL_FIELD}</th></tr>
 <!-- ENDIF -->
 
 <!-- INCLUDE pa_custom_field.tpl -->
-<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_FILE_TITLE}" name="submit"></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_FILE_TITLE}" name="submit"></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
 </form>

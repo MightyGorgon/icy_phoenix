@@ -10,14 +10,14 @@ function open_postreview(ref)
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<span class="forumlink"><!-- BEGIN postrow -->{postrow.POST_SUBJECT}<!-- END postrow --></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink"><!-- BEGIN postrow -->{postrow.POST_SUBJECT}<!-- END postrow --></span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th nowrap="nowrap">{L_AUTHOR}</th>
-	<th nowrap="nowrap">{L_MESSAGE}</th>
+	<th class="tdnw">{L_AUTHOR}</th>
+	<th class="tdnw">{L_MESSAGE}</th>
 </tr>
 <!-- BEGIN postrow -->
 <tr>
-	<td class="row-post-author" nowrap="nowrap">
+	<td class="row-post-author tdnw">
 		<span class="post-name"><a name="p{postrow.U_POST_ID}"></a>{postrow.POSTER_NAME}</span><br />
 		<!-- IF not S_BOT -->
 		<div class="post-rank">
@@ -34,7 +34,7 @@ function open_postreview(ref)
 		</div><br />
 		<img src="{SPACER}" width="150" height="3" alt="" />
 	</td>
-	<td class="row-post" width="100%" height="100%">
+	<td class="row-post tw100pct th100pct">
 		<div class="post-buttons-top post-buttons">{postrow.QUOTE_IMG} <a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a></div>
 		<div class="post-subject"><a href="{postrow.U_MINI_POST}"><img src="{postrow.MINI_POST_IMG}" alt="{postrow.L_MINI_POST_ALT}" title="{postrow.L_MINI_POST_ALT}" /></a> {postrow.POST_SUBJECT}&nbsp;</div>
 		<div class="post-text post-text-hide-flow">

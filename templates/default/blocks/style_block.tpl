@@ -5,9 +5,9 @@ function SetTheme()
 	return true;
 }
 </script>
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td width="100%" align="center">
+	<td class="tw100pct tdalignc">
 		<form name="ChangeTheme" method="post" action="{REQUEST_URI}">{STYLE_SELECT_H}</form>
 	</td>
 </tr>

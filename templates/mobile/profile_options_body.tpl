@@ -3,11 +3,11 @@
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
 <form method="post" action="{S_ACTION}">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_MOD_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td colspan="2" class="row-header"><span>{L_MOD_NAME}</span></td></tr>
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_MOD_NAME}</span>{IMG_THR}<table class="forumlinenb">
+<tr><td class="row-header" colspan="2"><span>{L_MOD_NAME}</span></td></tr>
 <!-- BEGIN field -->
 <tr>
-	<td class="row1" width="50%"><div class="gen">{field.L_NAME}</div><!-- IF field.L_EXPLAIN --><div class="gensmall">{field.L_EXPLAIN}</div><!-- ENDIF --></td>
+	<td class="row1 tw50pct"><div class="gen">{field.L_NAME}</div><!-- IF field.L_EXPLAIN --><div class="gensmall">{field.L_EXPLAIN}</div><!-- ENDIF --></td>
 	<td class="row2" width="50%" nowrap="nowrap"><div class="gen">{field.INPUT}</div></td>
 </tr>
 <!-- END field -->

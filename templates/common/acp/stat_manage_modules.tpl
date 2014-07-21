@@ -3,7 +3,7 @@
 <br />
 
 <!-- IF MESSAGE -->
-<table class="forumline" width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline talignc">
 <tr><th>{L_MESSAGES}</th></tr>
 <tr><td class="row1 row-center"><span class="genmed"><strong>{MESSAGE}</strong></td></tr>
 <tr><td class="cat" colspan="1">&nbsp;</td></tr>
@@ -12,7 +12,7 @@
 
 <br />
 
-<table class="forumline" width="80%" align="center" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline tw80pct talignc">
 <tr><td class="row3 row-center"><span class="genmed">{L_AUTO_SET_UPDATE_TIME}<br /><br /><a href="{U_AUTO_SET}">{L_GO}</a></span></td></tr>
 <tr><td class="row3 row-center"><span class="gensmall">{L_STAT_BLOCKS_SORT}</span></td></tr>
 </table>
@@ -20,9 +20,9 @@
 <br />
 
 <form method="post" action="{S_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
-	<td class="row1" style="padding: 0px;" valign="top">
+	<td class="row1" style="padding: 0px;">
 		<table class="nav-div" width="100%" align="center" style="padding: 0px;" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<th style="text-align: center; width: 110px;">{L_ACTIONS}</th>
@@ -35,7 +35,7 @@
 		<ul id="stats_modules" style="margin: 0px; padding: 0px; list-style-type: none;">
 		<!-- BEGIN modulerow -->
 		<li id="item_{modulerow.MODULE_ID}">
-		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+		<table>
 		<tr class="{modulerow.ROW_CLASS}h">
 			<td class="{modulerow.ROW_CLASS} row-center" style="padding: 0px; background: none; width: 120px;"><a class="icon-edit-move-empty" href="javascript:void(0);"><img src="../templates/common/images/cms_icon_move.png" alt="{L_MOVE} " title="{L_MOVE}" /></a>&nbsp;{modulerow.U_MOVE_DOWN}&nbsp;{modulerow.U_MOVE_UP}&nbsp;{modulerow.U_EDIT}</td>
 			<td class="{modulerow.ROW_CLASS}" style="padding: 0px; background: none;"><b>{modulerow.NAME}</b></td>

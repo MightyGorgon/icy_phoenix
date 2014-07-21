@@ -1,23 +1,23 @@
 <form method="post" action="{S_FORUM_ACTION}">
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr><th>{L_MENU_TITLE}</th></tr>
 <tr><td class="row1">{L_MENU_EXPLAIN}</td></tr>
 </table>
 
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr><th colspan="5">{L_MENU_SETTINGS}</th></tr>
 <tr>
 	<th width="35">{L_SHOW}</th>
 	<th width="75">{L_DATE}</td>
 	<th>{L_TITLE}</td>
-	<th width="25">{L_EDIT}</th>
-	<th width="25">{L_DELETE}</th>
+	<th class="tw25px">{L_EDIT}</th>
+	<th class="tw25px">{L_DELETE}</th>
 </tr>
 <!-- BEGIN newsitem -->
 <tr> 
 	<td class="row1 row-center">{newsitem.NEWS_ITEM_DISPLAY}</td>
 	<td class="row1 row-center">{newsitem.NEWS_DATE}</td>
-	<td class="row1"><span class="gen" style="overflow:auto;">{newsitem.NEWS_ITEM}</span></td>
+	<td class="row1"><span class="gen" style="overflow: auto;">{newsitem.NEWS_ITEM}</span></td>
 	<td class="row1 row-center"><span class="gen"><a href="{newsitem.U_NEWS_EDIT}">{L_EDIT}</a></span></td>
 	<td class="row1 row-center"><span class="gen"><a href="{newsitem.U_NEWS_DELETE}">{L_DELETE}</a></span></td>
 </tr>

@@ -13,5 +13,5 @@
 	</td>
 </tr>
 <!-- IF FOOTER_BANNER_BLOCK -->
-<tr><td width="100%" colspan="3">{FOOTER_BANNER_BLOCK}</td></tr>
+<tr><td colspan="3">{FOOTER_BANNER_BLOCK}</td></tr>
 <!-- ENDIF -->

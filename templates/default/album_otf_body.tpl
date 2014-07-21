@@ -18,9 +18,9 @@
 </div>
 <!-- END mooshow -->
 <form action="{S_ACTION}" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PIC_GALLERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PIC_GALLERY}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th align="center" valign="middle" colspan="{S_COLSPAN}">
+	<th class="tdalignc tvalignm" colspan="{S_COLSPAN}">
 		<span class="genmed">
 			{L_CATEGORY}:&nbsp;{S_CATEGORY_SELECT}&nbsp;
 			<input type="submit" class="liteoption" value="{L_GO}" name="pic_gallery" />
@@ -48,13 +48,13 @@
 </tr>
 
 <!-- END pic_row -->
-<tr><td class="catBottom" colspan="{S_COLSPAN}" align="center">&nbsp;&nbsp;</td></tr>
+<tr><td class="catBottom tdalignc" colspan="{S_COLSPAN}">&nbsp;&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <!-- BEGIN upload_allowed -->
 <br />
 <br />
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_PICS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_PICS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1h row-center">
 		<span class="genmed">

@@ -260,10 +260,10 @@ else
 	}
 
 	$adv_mode = (empty($adv)) ? '1' : '0';
-	$switch_mode = append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=f' . $forum_id . '&adv=' . $adv_mode);
+	$switch_mode = append_sid('admin_forumauth.' . PHP_EXT . '?' . POST_FORUM_URL . '=f' . $forum_id . '&amp;adv=' . $adv_mode);
 	$switch_mode_text = (empty($adv)) ? $lang['Advanced_mode'] : $lang['Simple_mode'];
 	$u_switch_mode = '<a href="' . $switch_mode . '">' . $switch_mode_text . '</a>';
-	$s_hidden_fields = '<input type="hidden" name="' . POST_FORUM_URL . '" value="f' . $forum_id . '">';
+	$s_hidden_fields = '<input type="hidden" name="' . POST_FORUM_URL . '" value="f' . $forum_id . '" />';
 
 	$template->assign_vars(array(
 		'FORUM_NAME' => $forum_name,

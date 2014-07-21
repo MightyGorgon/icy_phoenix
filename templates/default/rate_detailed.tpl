@@ -1,11 +1,11 @@
 <!-- INCLUDE overall_header.tpl -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th align="center"><strong>{L_RANK2}</strong></th>
+	<th><strong>{L_RANK2}</strong></th>
 	<th width="38%">{L_USERNAME}</th>
-	<th width="30%">{L_USER_RATED}</th>
-	<th width="30%"> {L_USER_RATE_DATE}</th>
+	<th class="tw30pct">{L_USER_RATED}</th>
+	<th class="tw30pct"> {L_USER_RATE_DATE}</th>
 </tr>
 <!-- BEGIN user_rates_row -->
 <tr>

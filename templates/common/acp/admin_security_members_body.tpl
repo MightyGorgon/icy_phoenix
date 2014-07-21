@@ -1,4 +1,4 @@
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th width="50%" colspan="3">{TITLE}</th></tr>
 <tr><th width="50%" colspan="3">{HEADER}</th></tr>
 <!-- BEGIN rows -->
@@ -13,8 +13,8 @@
 <!-- BEGIN list -->
 <br clear="all" />
 <br clear="all" />
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th width="100%" colspan="5">{list.USER}</th></tr>
+<table class="forumline">
+<tr><th colspan="5">{list.USER}</th></tr>
 <tr>
 	<td align="left" valign="bottom" width="5%" class="row2"><span class="genmed">{list.LIST_ID}</span></td>
 	<td align="left" valign="bottom" width="15%" class="row2"><span class="genmed">{list.LIST_IP}</span></td>
@@ -33,7 +33,7 @@
 </tr>
 <!-- END list_rows -->
 <!-- BEGIN list -->
-<tr><th width="100%" colspan="5">&nbsp;</th></tr>
+<tr><th colspan="5">&nbsp;</th></tr>
 </table>
 <br clear="all">
 <!-- END list -->

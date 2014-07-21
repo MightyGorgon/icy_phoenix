@@ -24,11 +24,11 @@ function checkForm(formObj) {
 </script>
 
 <form action="{S_EMAIL_ACTION}" method="post" onsubmit="return checkForm(this)" name="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_EMAIL}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_EMAIL}</span>{IMG_THR}<table class="forumlinenb">
 <tr><td class="row2" colspan="2"><span class="genmed">{L_EMAILINFO}</span></td></tr>
 <tr>
-	<td class="row1" width="30%"><span class="genmed">{L_YNAME}:&nbsp;</span></td>
-	<td class="row2" width="70%"><!-- IF USER_LOGGED --><input class="post" type="text" size="50" name="sname"><!-- ELSE --><b><span class="genmed">{SNAME}</span></b><!-- ENDIF --></td>
+	<td class="row1 tw30pct"><span class="genmed">{L_YNAME}:&nbsp;</span></td>
+	<td class="row2 tw70pct"><!-- IF USER_LOGGED --><input class="post" type="text" size="50" name="sname"><!-- ELSE --><b><span class="genmed">{SNAME}</span></b><!-- ENDIF --></td>
 </tr>
 <tr>
 	<td class="row1"><span class="genmed">{L_YEMAIL}:&nbsp;</span></td>
@@ -51,7 +51,7 @@ function checkForm(formObj) {
 	<td class="row2"><textarea cols="38" rows="10" name="message">{L_DEFAULTMAIL} {FILE_URL}</textarea></td>
 </tr>
 <tr>
-	<td class="cat" align="center" colspan="2">{S_HIDDEN_FIELDS}<input type="hidden" name="action" value="email"><input type="hidden" name="file_id" value="{ID}"><input class="liteoption" type="submit" name="submit" value="{L_SEMAIL}"></td>
+	<td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="hidden" name="action" value="email"><input type="hidden" name="file_id" value="{ID}"><input class="liteoption" type="submit" name="submit" value="{L_SEMAIL}"></td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>

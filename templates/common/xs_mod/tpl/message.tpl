@@ -19,17 +19,17 @@ top.nav.location = top.nav.location; // '{left_refresh.ACTION}';
 </script>
 <!-- END left_refresh -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 	<tr>
-		<th height="25">{MESSAGE_TITLE}</th>
+		<th class="th25px">{MESSAGE_TITLE}</th>
 	</tr>
 	<tr>
-		<td class="row1"><table width="100%" cellspacing="0" cellpadding="1" border="0">
+		<td class="row1"><table class="p2px">
 			<tr>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td align="center"><span class="gen">{MESSAGE_TEXT}</span></td>
+				<td class="tdalignc"><span class="gen">{MESSAGE_TEXT}</span></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>

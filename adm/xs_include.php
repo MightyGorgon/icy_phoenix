@@ -153,9 +153,9 @@ $template_dir = 'templates/';
 
 $template->assign_vars(array(
 	'XS_PATH' => '../templates/common/xs_mod/',
-	'XS_UL' => '<table width="100%" cellspacing="0" cellpadding="2" border="0">',
+	'XS_UL' => '<table>',
 	'XS_UL2' => '</table>',
-	'XS_LI' => '<tr><td width="20" align="center" valign="middle"><img src="../templates/common/xs_mod/images/dot.gif" alt="" /></td><td align="left" valign="middle" width="100%"><span class="gen">',
+	'XS_LI' => '<tr><td class="tw20px talignc tvalignm"><img src="../templates/common/xs_mod/images/dot.gif" alt="" /></td><td class="tw100pct talignl tvalignm"><span class="gen">',
 	'XS_LI2' => '</span></td></tr>',
 	'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />',
 	)

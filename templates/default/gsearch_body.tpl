@@ -2,9 +2,9 @@
 
 <style type="text/css">@import url('http://www.google.com/cse/api/branding.css');</style>
 <form action="{S_SEARCH_ACTION}" id="cse-search-box">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_QUERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_QUERY}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1" style="padding: 5px;" width="100%">
+	<td class="row1 tw100pct" style="padding: 5px;">
 
 <div>
 <script>

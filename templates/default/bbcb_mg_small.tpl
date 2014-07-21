@@ -30,11 +30,11 @@ function bbcb_vars_reassign_end()
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 
 <center>
-<table class="forumline" width="650" cellspacing="0" cellpadding="0">
+<table class="forumline tw650px">
 <tr>
 	<td class="row1 row-center">
 
-<table width="100%" align="center" cellspacing="0" cellpadding="2" border="0">
+<table class="p2px">
 <tr>
 	<td>
 		<div class="gennull">
@@ -66,7 +66,7 @@ function bbcb_vars_reassign_end()
 
 <div id="helpbox" style="width: 550px; height: 16px; font-size: 10px; visibility: hidden;" class="helpline">{L_STYLES_TIP}</div>
 
-<table width="100%" align="center" cellspacing="0" cellpadding="2">
+<table class="p2px talignc">
 <tr>
 	<td>
 		<!-- BEGIN smilies -->

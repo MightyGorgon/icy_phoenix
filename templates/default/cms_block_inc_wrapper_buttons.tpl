@@ -1,14 +1,14 @@
 <!-- IF B_ADMIN --><div class="block-container"><a class="block-edit-link" href="{B_EDIT_LINK}"><img src="{IMG_CMS_ICON_EDIT}" alt="" title="{L_CMS_EDIT_PARENT_BLOCK}" /></a><!-- ENDIF -->
 <!-- IF BORDER -->
-<table width="100%" class="forum-buttons" style="background: none; background-image: none;" align="center" cellspacing="0" cellpadding="0">
+<table class="forum-buttons tw100pct talignc" style="background: none; background-image: none;">
 <!-- ELSE -->
-<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+<table>
 <!-- ENDIF -->
 <tr>
 <!-- IF BACKGROUND -->
-<!-- IF TITLE --><td width="100%" class="forum-buttons"><!-- ELSE --><td width="100%" class="forum-buttons" style="border: none;"><!-- ENDIF -->
+<!-- IF TITLE --><td class="forum-buttons tw100pct"><!-- ELSE --><td class="forum-buttons tw100pct" style="border: none;"><!-- ENDIF -->
 <!-- ELSE -->
-<td width="100%" style="background: none;background-image: none;">
+<td style="width: 100%; background: none; background-image: none;">
 <!-- ENDIF -->
 {OUTPUT}
 </td>

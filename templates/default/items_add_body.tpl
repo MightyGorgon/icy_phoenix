@@ -3,14 +3,14 @@
 <!-- ENDIF -->
 
 <form name="input_form" method="post" action="{S_MODE_ACTION}">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PAGE_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PAGE_NAME}</span>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN field -->
 <tr>
-	<td class="row1" width="30%" style="vertical-align: top; padding: 5px;">
+	<td class="row1 tw30pct" style="vertical-align: top; padding: 5px;">
 		<span class="gen"><b>{field.L_NAME}</b></span>
 		<!-- IF field.L_EXPLAIN --><br /><div class="gensmall">{field.L_EXPLAIN}</div><!-- ENDIF -->
 	</td>
-	<td class="row2" style="padding: 5px;" nowrap="nowrap">
+	<td class="row2 tdnw" style="padding: 5px;">
 		<!-- IF field.S_BBCB -->{BBCB_MG}<!-- ENDIF -->
 		<div class="gen">{field.INPUT}</div>
 	</td>

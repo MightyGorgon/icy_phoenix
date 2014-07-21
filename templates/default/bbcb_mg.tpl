@@ -20,9 +20,9 @@ function openAllSmiles()
 </script>
 <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}js/bbcb_mg.js"></script>
 
-<table width="99%" border="0" cellspacing="0" cellpadding="2">
+<table class="tw98pct p2px">
 <tr>
-	<td width="100%" align="left" nowrap="nowrap">
+	<td class="tw100pct tdnw">
 		&nbsp;
 		<select style="height: 18px;" name="ft" onchange="BBCft(); this.selectedIndex=0;" onmouseover="helpline('ft')">
 			<option value="" class="genmed" style="font-family: Verdana;">{L_FONT_TYPE}</option>
@@ -94,14 +94,14 @@ function openAllSmiles()
 		<a href="{U_BBCODE_COLORPICKER}" onclick="popup('{U_BBCODE_COLORPICKER}', 640, 480, '_color_picker'); return false;"><img src="{BBCB_MG_IMG_PATH}colorpicker{BBCB_MG_IMG_EXT}" onmouseover="helpline('fc')" alt="{L_BBCB_MG_COLOR_PICKER}" title="{L_BBCB_MG_COLOR_PICKER}" style="vertical-align: middle;" class="bbimages" /></a>
 		<!-- ENDIF -->
 	</td>
-	<td width="20%" align="right" nowrap="nowrap" valign="middle">
+	<td class="tw20pct tdalignr tvalignm tdnw">
 		<div class="genmed"><a href="{U_BBCODE_HELP}" class="gensmall" target="_blank"><img src="{BBCB_MG_IMG_PATH}help{BBCB_MG_IMG_EXT}" name="help" onmouseover="helpline('help')" alt="{L_BBCODE_HELP}" title="{L_BBCODE_HELP}" /></a></div>
 		<!-- <span class="moderators">&nbsp;<a href="javascript:bbstyle(-1)" onmouseover="helpline('a')">{L_BBCODE_CLOSE_TAGS}</a>&nbsp;</span> -->
 	</td>
 </tr>
 <tr>
-	<td width="100%" align="left" valign="middle" colspan="2">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<td class="tvalignm" colspan="2">
+		<table>
 		<tr>
 			<td>
 				<div class="gennull">

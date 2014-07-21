@@ -17,17 +17,17 @@ function toggle_check_all(main, sub_num)
 </script>
 
 <!-- BEGIN statusrow -->
-<table width="100%" align="center" cellspacing="2" cellpadding="2" border="1">
+<table class="s2px p2px tb1px">
 <tr>
-	<td align="center"><span class="gen">{L_STATUS}<br /></span>
+	<td class="tdalignc"><span class="gen">{L_STATUS}<br /></span>
 	<span class="genmed"><b>{I_STATUS_MESSAGE}</b></span><br /></td>
 </tr>
 </table>
 <!-- END statusrow -->
 
-<table width="100%" align="center" cellspacing="1" cellpadding="2" border="0">
+<table class="s2px p2px">
 <tr>
-	<td align="left">
+	<td>
 		<span class="maintitle">{L_PAGE_NAME}</span>
 		<br /><span class="gensmall"><b>{L_VERSION} {VERSION}
 		<br />{NIVISEC_CHECKER_VERSION}</b></span><br /><br />
@@ -58,7 +58,7 @@ function toggle_check_all(main, sub_num)
 <br />
 <br />
 <form action="{S_ACTION}" name="module_form" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<th width="50%" valign="middle">{L_USER_STATS}</th>
 	<th width="50%" valign="middle">{L_USER_INFO}</th>
@@ -82,7 +82,7 @@ function toggle_check_all(main, sub_num)
 </table>
 
 <br />
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th valign="middle" colspan="3">{L_MODULE_INFO}</th></tr>
 <tr>
 	<td class="row1 row-center" colspan="3">
@@ -92,7 +92,7 @@ function toggle_check_all(main, sub_num)
 </tr>
 <tr>
 	<td class="cat" align="right">&nbsp;</td>
-	<td class="cat" align="center" width="10%"><input type="checkbox" name="check_all_page" onclick="toggle_check_all(check_all_page, 1);" /></td>
+	<td class="cat tdalignc" width="10%"><input type="checkbox" name="check_all_page" onclick="toggle_check_all(check_all_page, 1);" /></td>
 	<td class="cat" align="left"><span class="gensmall"><b>&nbsp;&nbsp;<-- {L_CHECK_ALL}&nbsp;&nbsp;</b></span></td>
 </tr>
 <!-- BEGIN catrow -->
@@ -117,7 +117,7 @@ function toggle_check_all(main, sub_num)
 <!-- END catrow -->
 <tr>
 	<td class="cat" align="right">&nbsp;</td>
-	<td class="cat" align="center" width="10%">
+	<td class="cat tdalignc" width="10%">
 		<input type="checkbox" name="check_all_page1" onclick="toggle_check_all(check_all_page, 1);" />
 	</td>
 	<td class="cat" align="left"><span class="gensmall"><b>&nbsp;&nbsp;<-- {L_CHECK_ALL}&nbsp;&nbsp;</b></span></td>

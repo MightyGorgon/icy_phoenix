@@ -16,7 +16,7 @@ window.resizeTo({W_WIDTH_SMILIES},{W_HEIGHT_SMILIES});
 //-->
 </script>
 <br />
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th>{L_EMOTICONS}</th></tr>
 <tr>
 	<td class="row1"><table width="100" border="0" cellspacing="0" cellpadding="5">
@@ -37,6 +37,6 @@ window.resizeTo({W_WIDTH_SMILIES},{W_HEIGHT_SMILIES});
 </tr>
 </table>
 
-<br clear="all" />
+<br class="clear" />
 <br />
 

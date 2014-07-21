@@ -49,10 +49,10 @@ function submitform()
 	</td>
 </tr>
 <tr>
-	<th width="25%">{L_RATE_AVERAGE}</th>
-	<th width="25%">{L_RATE_MINIMUM}</th>
-	<th width="25%">{L_RATE_MAXIMUM}</th>
-	<th width="25%">{L_Number_of_Rates}</th>
+	<th class="tw25pct">{L_RATE_AVERAGE}</th>
+	<th class="tw25pct">{L_RATE_MINIMUM}</th>
+	<th class="tw25pct">{L_RATE_MAXIMUM}</th>
+	<th class="tw25pct">{L_Number_of_Rates}</th>
 </tr>
 <tr>
 	<td class="row1 row-center"><span class="gen">{RATE_TOPIC_STATS}</span></td>

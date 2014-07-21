@@ -1,11 +1,11 @@
 <form action="{S_PROFILE_ACTION}" method="post" name="profileform">
 {ERROR_BOX}
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2" height="25" valign="middle">{L_REGISTRATION_INFO}</th></tr>
 <tr><td class="row2" colspan="2"><span class="gensmall">{L_ITEMS_REQUIRED}</span></td></tr>
 <tr>
-	<td class="row1" width="50%"><span class="gen"><strong>{L_USERNAME}:</strong> *</span></td>
+	<td class="row1 tw50pct"><span class="gen"><strong>{L_USERNAME}:</strong> *</span></td>
 	<td class="row2"><input type="text" class="post" style="width: 200px;" name="username" size="25" maxlength="25" value="{USERNAME}" /></td>
 </tr>
 <tr>
@@ -37,7 +37,7 @@
 	<td class="row1"><span class="gen"><strong>{L_DATE_FORMAT}:</strong></span></td>
 	<td class="row2"><span class="gensmall">{DATE_FORMAT_SELECT}</span></td>
 </tr>
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" name="reset" class="liteoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" name="reset" class="liteoption" /></td></tr>
 </table>
 
 </form>

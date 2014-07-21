@@ -6,14 +6,14 @@
 {CALENDAR_BOX}
 <!-- ENDIF -->
 
-<!-- IF FORUMINDEX_BANNER_TOP --><div class="center-block-text" style="overflow:auto;">{FORUMINDEX_BANNER_TOP}</div><!-- ENDIF -->
+<!-- IF FORUMINDEX_BANNER_TOP --><div class="center-block-text" style="overflow: auto;">{FORUMINDEX_BANNER_TOP}</div><!-- ENDIF -->
 {BOARD_INDEX}
-<!-- IF FORUMINDEX_BANNER_BOTTOM --><div class="center-block-text" style="overflow:auto;">{FORUMINDEX_BANNER_BOTTOM}</div><!-- ENDIF -->
+<!-- IF FORUMINDEX_BANNER_BOTTOM --><div class="center-block-text" style="overflow: auto;">{FORUMINDEX_BANNER_BOTTOM}</div><!-- ENDIF -->
 
 <!-- IF not S_BOT -->
 <!-- IF S_VIEWONLINE -->
 <div id="viewonline_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('viewonline','viewonline_h','viewonline');" alt="{L_SHOW}" /><a href="{U_VIEWONLINE}" class="forumlink">{L_WHO_IS_ONLINE}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('viewonline','viewonline_h','viewonline');" alt="{L_SHOW}" /><a href="{U_VIEWONLINE}" class="forumlink">{L_WHO_IS_ONLINE}</a>{IMG_THR_ALT}<table class="forumlinenb">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -27,15 +27,15 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('viewonline','viewonline_h','viewonline');" alt="{L_HIDE}" /><a href="{U_VIEWONLINE}" class="forumlink">{L_WHO_IS_ONLINE}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('viewonline','viewonline_h','viewonline');" alt="{L_HIDE}" /><a href="{U_VIEWONLINE}" class="forumlink">{L_WHO_IS_ONLINE}</a>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1 row-center" rowspan="5" width="95" valign="middle">
+	<td class="row1 row-center tvalignm tw95px" rowspan="5">
 		<span class="genmed">{L_WELCOME}<br />{USER_NAME}</span><br /><br />
 		<div class="center-block">{AVATAR_IMG}</div>
 	</td>
 </tr>
 <tr>
-	<td class="row1" valign="middle">
+	<td class="row1 tvalignm">
 		<span class="gensmall">
 		{L_ONLINE_EXPLAIN}<br />
 		{TOTAL_USERS_ONLINE}<br />
@@ -45,7 +45,7 @@ if(GetCookie(tmp) == '2')
 	</td>
 </tr>
 <!-- BEGIN switch_ac_online -->
-<tr><td class="row1" valign="middle"><span class="gensmall">{AC_LIST_TEXT}&nbsp;{AC_LIST}&nbsp;[&nbsp;<a href="{U_AJAX_SHOUTBOX}" target="_blank">{L_AJAX_SHOUTBOX}</a>&nbsp;]</span></td></tr>
+<tr><td class="row1 tvalignm"><span class="gensmall">{AC_LIST_TEXT}&nbsp;{AC_LIST}&nbsp;[&nbsp;<a href="{U_AJAX_SHOUTBOX}" target="_blank">{L_AJAX_SHOUTBOX}</a>&nbsp;]</span></td></tr>
 <!-- END switch_ac_online -->
 <tr>
 	<td class="row1">
@@ -63,7 +63,7 @@ if(GetCookie(tmp) == '2')
 </div>
 
 <div id="statistics_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('statistics','statistics_h','statistics');" alt="{L_SHOW}" /><a href="{U_STATISTICS}" class="forumlink">{L_STATISTICS}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('statistics','statistics_h','statistics');" alt="{L_SHOW}" /><a href="{U_STATISTICS}" class="forumlink">{L_STATISTICS}</a>{IMG_THR_ALT}<table class="forumlinenb">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -77,12 +77,12 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('statistics','statistics_h','statistics');" alt="{L_HIDE}" /><a href="{U_STATISTICS}" class="forumlink">{L_STATISTICS}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td class="row1 row-center" rowspan="5" width="95" valign="middle"><div class="center-block"><img src="{STATS_IMG}" alt="" /></div></td></tr>
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('statistics','statistics_h','statistics');" alt="{L_HIDE}" /><a href="{U_STATISTICS}" class="forumlink">{L_STATISTICS}</a>{IMG_THR}<table class="forumlinenb">
+<tr><td class="row1 row-center tvalignm tw95px" rowspan="5"><div class="center-block"><img src="{STATS_IMG}" alt="" /></div></td></tr>
 <tr><td class="row1" colspan="2"><span class="gensmall">{TOTAL_POSTS}<br />{TOTAL_USERS}<br />{NEWEST_USER}<br />{RECORD_USERS}<br /></span></td></tr>
 <!-- BEGIN show_recent -->
 <tr>
-	<td class="row-recent" nowrap="nowrap" align="left">
+	<td class="row-recent" nowrap="nowrap">
 		<span class="gensmall">
 			<b>{L_RECENT_TOPICS}:</b>
 			<marquee id="recent_topics" behavior="scroll" direction="left" width="90%" height="12" scrolldelay="100" scrollamount="4" loop="true" onmouseover="this.stop()" onmouseout="this.start()">|
@@ -106,7 +106,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- IF S_BIRTHDAYS -->
 <div id="birthday_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('birthday','birthday_h','birthday');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_BIRTHDAYS}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('birthday','birthday_h','birthday');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_BIRTHDAYS}</a>{IMG_THR_ALT}<table class="forumlinenb">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -120,9 +120,9 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('birthday','birthday_h','birthday');" alt="{L_HIDE}" /><a href="{U_CALENDAR}" class="forumlink">{L_BIRTHDAYS}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('birthday','birthday_h','birthday');" alt="{L_HIDE}" /><a href="{U_CALENDAR}" class="forumlink">{L_BIRTHDAYS}</a>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1 row-center" rowspan="2" width="95" valign="middle"><div class="center-block"><img src="{BIRTHDAY_IMG}" alt="" /></div></td>
+	<td class="row1 row-center tvalignm tw95px" rowspan="2"><div class="center-block"><img src="{BIRTHDAY_IMG}" alt="" /></div></td>
 	<td class="row1"><span class="gensmall">{L_WHOSBIRTHDAY_TODAY}</span><br /><!-- IF L_WHOSBIRTHDAY_WEEK --><span class="gensmall">{L_WHOSBIRTHDAY_WEEK}</span><br /><!-- ENDIF --></td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
@@ -131,7 +131,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- IF S_SHOUTBOX -->
 <div id="shoutbox_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_SHOW}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_SHOW}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR_ALT}<table class="forumlinenb">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -145,7 +145,7 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_HIDE}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('shoutbox','shoutbox_h','shoutbox');" alt="{L_HIDE}" /><a href="{U_SHOUTBOX_MAX}" class="forumlink">{L_SHOUTBOX}</a>{IMG_THR}<table class="forumlinenb">
 <tr><td><iframe src="{U_SHOUTBOX}" scrolling="no" width="100%" height="190" frameborder="0" marginheight="0" marginwidth="0"></iframe></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -154,24 +154,24 @@ if(GetCookie(tmp) == '2')
 
 <br />
 <div class="center-block" style="text-align: center; margin: 30px;">
-{IMG_TBL}<table class="forumlinenb" style="padding: 2px; border-top-width: 1px;" width="100%" cellspacing="0" cellpadding="2">
+{IMG_TBL}<table class="forumlinenb" style="padding: 2px; border-top-width: 1px;">
 <tr>
-	<td class="row-center-small"><img src="{FORUM_NEW_CAT_IMG}" alt="{L_CAT_NEW_POSTS}" title="{L_CAT_NEW_POSTS}" /></td>
-	<td class="row-center-small" width="11%">{L_CAT_NEW_POSTS}</td>
-	<td class="row-center-small"><img src="{FORUM_CAT_IMG}" alt="{L_CAT_NO_NEW_POSTS}" title="{L_CAT_NO_NEW_POSTS}" /></td>
-	<td class="row-center-small" width="11%">{L_CAT_NO_NEW_POSTS}</td>
-	<td class="row-center-small"><img src="{FORUM_NEW_IMG}" alt="{L_FORUM_NEW_POSTS}" title="{L_FORUM_NEW_POSTS}" /></td>
-	<td class="row-center-small" width="11%">{L_FORUM_NEW_POSTS}</td>
-	<td class="row-center-small"><img src="{FORUM_IMG}" alt="{L_FORUM_NO_NEW_POSTS}" title="{L_FORUM_NO_NEW_POSTS}" /></td>
-	<td class="row-center-small" width="11%">{L_FORUM_NO_NEW_POSTS}</td>
+	<td class="row-center-small twa-imp"><img src="{FORUM_NEW_CAT_IMG}" alt="{L_CAT_NEW_POSTS}" title="{L_CAT_NEW_POSTS}" /></td>
+	<td class="row-center-small tw11pct">{L_CAT_NEW_POSTS}</td>
+	<td class="row-center-small twa-imp"><img src="{FORUM_CAT_IMG}" alt="{L_CAT_NO_NEW_POSTS}" title="{L_CAT_NO_NEW_POSTS}" /></td>
+	<td class="row-center-small tw11pct">{L_CAT_NO_NEW_POSTS}</td>
+	<td class="row-center-small twa-imp"><img src="{FORUM_NEW_IMG}" alt="{L_FORUM_NEW_POSTS}" title="{L_FORUM_NEW_POSTS}" /></td>
+	<td class="row-center-small tw11pct">{L_FORUM_NEW_POSTS}</td>
+	<td class="row-center-small twa-imp"><img src="{FORUM_IMG}" alt="{L_FORUM_NO_NEW_POSTS}" title="{L_FORUM_NO_NEW_POSTS}" /></td>
+	<td class="row-center-small tw11pct">{L_FORUM_NO_NEW_POSTS}</td>
 	<!--
-	<td class="row-center-small"><img src="{FOLDER_AR_BIG}" alt="{L_FORUM_AR}" title="{L_FORUM_AR}" /></td>
-	<td class="row-center-small">{L_FORUM_AR}</td>
+	<td class="row-center-small twa-imp"><img src="{FOLDER_AR_BIG}" alt="{L_FORUM_AR}" title="{L_FORUM_AR}" /></td>
+	<td class="row-center-small tw11pct">{L_FORUM_AR}</td>
 	-->
-	<td class="row-center-small"><img src="{FORUM_LINK_IMG}" alt="{L_LINKS}" title="{L_LINKS}" /></td>
-	<td class="row-center-small" width="11%">{L_LINKS}</td>
-	<td class="row-center-small"><img src="{FORUM_LOCKED_IMG}" alt="{L_FORUM_LOCKED}" title="{L_FORUM_LOCKED}" /></td>
-	<td class="row-center-small" width="11%">{L_FORUM_LOCKED}</td>
+	<td class="row-center-small twa-imp"><img src="{FORUM_LINK_IMG}" alt="{L_LINKS}" title="{L_LINKS}" /></td>
+	<td class="row-center-small tw11pct">{L_LINKS}</td>
+	<td class="row-center-small twa-imp"><img src="{FORUM_LOCKED_IMG}" alt="{L_FORUM_LOCKED}" title="{L_FORUM_LOCKED}" /></td>
+	<td class="row-center-small tw11pct">{L_FORUM_LOCKED}</td>
 </tr>
 </table>{IMG_TBR}
 </div>

@@ -150,6 +150,9 @@ UPDATE `phpbb_posts` p SET p.post_likes = (SELECT COUNT(pl.post_id) FROM `phpbb_
 UPDATE `phpbb_posts` p, `phpbb_posts_likes` pl SET pl.topic_id = p.topic_id WHERE pl.post_id = p.post_id;
 UPDATE `phpbb_topics` t SET t.topic_likes = (SELECT COUNT(pl.topic_id) FROM `phpbb_posts_likes` pl WHERE pl.topic_id = t.topic_id);
 
+DELETE FROM `phpbb_config` WHERE `config_name` = 'switch_header_dropdown';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'xmas_fx';
+
 
 
 #####################
@@ -157,7 +160,7 @@ UPDATE `phpbb_topics` t SET t.topic_likes = (SELECT COUNT(pl.topic_id) FROM `php
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.11.97' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.12.98' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

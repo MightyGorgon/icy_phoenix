@@ -27,8 +27,8 @@ tinyMCE.init(
 </script>
 <!-- END tinyMCE -->
 <form action="{S_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th colspan="2" align="center">{L_TITLE}</th></tr>
+<table class="forumline">
+<tr><th class="tdalignc" colspan="2">{L_TITLE}</th></tr>
 <tr>
 	<td class="row1">{L_BLOCK}</td>
 	<td class="row2"><select name="block" style="width:350px; ">{S_BLOCK_LIST}</select></td>
@@ -41,7 +41,7 @@ tinyMCE.init(
 	<td class="row1">{L_ANSWER}</td>
 	<td class="row2"><textarea name="answer" rows="15" cols="35"  class="post" style="width:550px;">{ANSWER}</textarea></td>
 </tr>
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>
 </form>
 

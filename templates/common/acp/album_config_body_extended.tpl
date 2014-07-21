@@ -107,7 +107,7 @@ function checkForm(tab,subtab)
 				<tr><th colspan="2">{L_CONFIG_TAB}</th></tr>
 				{CONFIGURATION_BOX}
 				<tr>
-					<td class="cat" colspan="2" align="center">
+					<td class="cat tdalignc" colspan="2">
 						<input type="submit" name="submitted" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
 						<input type="reset" value="{L_RESET}" onclick="unsetChange();" class="liteoption" />
 					</td>
@@ -119,14 +119,10 @@ function checkForm(tab,subtab)
 <!-- BEGIN switch_on_save_confirmation -->
 <tr>
 	<td align="center" colspan="{HEADER_COL_SPAN}"><br />
-		<table class="forumline" cellpadding="1" cellspacing="1" border="0">
-			<tr>
-				<td class="tab_headers">{L_SETTINGS_SAVED}</td>
-			</tr>
-		</table>
+		<table class="forumline"><tr><td class="tab_headers">{L_SETTINGS_SAVED}</td></tr></table>
 	</td>
 </tr>
 <!-- END switch_on_save_confirmation -->
 </table>
 </div>
-<br clear="all" />
+<br class="clear" />

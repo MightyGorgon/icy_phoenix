@@ -1,9 +1,9 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td width="49%" align="center" valign="top">
-		<table class="forumline" width="100%" cellspacing="0">
+		<table class="forumline">
 		<tr>
 			<th>{L_RANKS_IMAGE}</th>
 			<th>{L_RANK_TITLE}</th>
@@ -24,7 +24,7 @@
 	</td>
 	<td width="2%" align="center"></td>
 	<td width="49%" align="center" valign="top">
-		<table class="forumline" width="100%" cellspacing="0">
+		<table class="forumline">
 		<tr>
 			<th>{L_RANKS_IMAGE}</th>
 			<th>{L_RANK_TITLE}</th>

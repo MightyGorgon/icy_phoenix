@@ -11,10 +11,10 @@
 	<div id="bottom_logo_ext">
 	{IMG_TBL}
 	<div id="bottom_logo">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr>
-				<td nowrap="nowrap" class="min250" align="left"><span class="copyright">{COPYRIGHT_LINK}{TRANSLATION_INFO}</span></td>
-				<td nowrap="nowrap" align="center">
+				<td class="min250 tdalignl tvalignm tdnw"><span class="copyright">{COPYRIGHT_LINK}{TRANSLATION_INFO}</span></td>
+				<td class="tdalignc tvalignm tdnw">
 					<div style="text-align: center;">
 						<span class="generation"><b>{LOFI}</b></span><br />
 						<!-- IF S_GENERATION_TIME -->
@@ -23,7 +23,7 @@
 						<!-- ENDIF -->
 					</div>
 				</td>
-				<td nowrap="nowrap" class="min250" align="right">{TEMPLATE_COPYRIGHT_LINK}</td>
+				<td class="min250 tdalignr tvalignm tdnw">{TEMPLATE_COPYRIGHT_LINK}</td>
 			</tr>
 		</table>
 	</div>
@@ -36,7 +36,7 @@
 
 <!-- IF GF_BLOCK --><!-- BEGIN gfooter_blocks_row -->{gfooter_blocks_row.CMS_BLOCK}<!-- END gfooter_blocks_row --><!-- ENDIF -->
 {BOTTOM_HTML_BLOCK}
-<span><a name="bottom" id="bottom"></a></span>
+<span><a id="bottom"></a></span>
 <!-- IF not S_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
 
 </div>

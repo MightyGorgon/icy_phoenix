@@ -1,4 +1,4 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td>
 		<span class="gensmall">{B_TOTAL_USERS_ONLINE}<br /><br /></span>

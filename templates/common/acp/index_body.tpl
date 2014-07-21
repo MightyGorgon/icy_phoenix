@@ -27,24 +27,24 @@
 <form method="post" action="{S_WORDS_ACTION}">
 <!-- END switch_firstadmin -->
 <!-- BEGIN switch_adminedit -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2" align="center" nowrap="nowrap">&nbsp;{L_LISTOFADMINEDITUSERS}:&nbsp;</th></tr>
 <!-- END switch_adminedit -->
 <!-- BEGIN adminedit -->
 <tr>
-	<td class="row1" width="50%" valign="top"><span class="genmed"><b>{adminedit.EDITCOUNT}. {L_LISTOFADMINTEXT}:</b></span></td>
-	<td class="row1" width="50%"><span class="genmed"><a href="admin_users.php?mode=edit&amp;u={adminedit.EDITOK}" style="text-decoration:none;">{adminedit.EDITUSER}</a></span></td>
+	<td class="row1 tw50pct"><span class="genmed"><b>{adminedit.EDITCOUNT}. {L_LISTOFADMINTEXT}:</b></span></td>
+	<td class="row1 tw50pct"><span class="genmed"><a href="admin_users.php?mode=edit&amp;u={adminedit.EDITOK}" style="text-decoration:none;">{adminedit.EDITUSER}</a></span></td>
 </tr>
 <!-- END adminedit -->
 <!-- BEGIN switch_firstadmin -->
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="deleteedituser" value="{L_DELETEMSG}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="deleteedituser" value="{L_DELETEMSG}" class="mainoption" /></td></tr>
 <!-- END switch_firstadmin -->
 <!-- BEGIN switch_adminedit -->
 </table>
 <!-- END switch_adminedit -->
 
 <br />
-<div id="site_stats_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('site_stats','site_stats_h','site_stats');" alt="{L_SHOW}" /><span>{L_SITE_STATS}</span></td></tr></table></div>
+<div id="site_stats_h" style="display: none;"><table class="forumline"><tr><td class="row-header"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('site_stats','site_stats_h','site_stats');" alt="{L_SHOW}" /><span>{L_SITE_STATS}</span></td></tr></table></div>
 <div id="site_stats">
 <script type="text/javascript">
 <!--
@@ -55,98 +55,98 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><td class="row-header" colspan="6"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('site_stats','site_stats_h','site_stats');" alt="{L_HIDE}" /><span>{L_SITE_STATS}</span></td></tr>
 <tr>
 	<th width="25%" nowrap="nowrap" colspan="3">{L_STATISTIC}</th>
-	<th width="25%">{L_VALUE}</th>
+	<th class="tw25pct">{L_VALUE}</th>
 	<th width="25%" nowrap="nowrap">{L_STATISTIC}</th>
-	<th width="25%">{L_VALUE}</th>
+	<th class="tw25pct">{L_VALUE}</th>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" colspan="3">{L_IP_VERSION}:</td>
+	<td class="row1 tdnw" colspan="3">{L_IP_VERSION}:</td>
 	<td class="row2"><b>{IP_VERSION}</b></td>
-	<td class="row1" nowrap="nowrap">&nbsp;<!-- {L_PHPBB_VERSION}: --></td>
+	<td class="row1 tdnw">&nbsp;<!-- {L_PHPBB_VERSION}: --></td>
 	<td class="row2">&nbsp;<!-- <b>{PHPBB_VERSION}</b> --></td>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" colspan="3">{L_PHP_VERSION}:</td>
+	<td class="row1 tdnw" colspan="3">{L_PHP_VERSION}:</td>
 	<td class="row2"><b>{PHP_VERSION}</b></td>
-	<td class="row1" nowrap="nowrap">{L_MYSQL_VERSION}:</td>
+	<td class="row1 tdnw">{L_MYSQL_VERSION}:</td>
 	<td class="row2"><b>{MYSQL_VERSION}</b></td>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" colspan="3">{L_BOARD_STARTED}:</td>
+	<td class="row1 tdnw" colspan="3">{L_BOARD_STARTED}:</td>
 	<td class="row2"><b>{START_DATE}</b></td>
-	<td class="row1" nowrap="nowrap">{L_AVATAR_DIR_SIZE}:</td>
+	<td class="row1 tdnw">{L_AVATAR_DIR_SIZE}:</td>
 	<td class="row2"><b>{AVATAR_DIR_SIZE}</b></td>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" colspan="3">{L_DB_SIZE}:</td>
+	<td class="row1 tdnw" colspan="3">{L_DB_SIZE}:</td>
 	<td class="row2"><b>{DB_SIZE}</b></td>
-	<td class="row1" nowrap="nowrap">{L_GZIP_COMPRESSION}:</td>
+	<td class="row1 tdnw">{L_GZIP_COMPRESSION}:</td>
 	<td class="row2"><b>{GZIP_COMPRESSION}</b></td>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" colspan="3">{L_NUMBER_TOPICS}:</td>
+	<td class="row1 tdnw" colspan="3">{L_NUMBER_TOPICS}:</td>
 	<td class="row2"><b>{NUMBER_OF_TOPICS}</b></td>
-	<td class="row1" nowrap="nowrap">{L_TOPICS_PER_DAY}:</td>
+	<td class="row1 tdnw">{L_TOPICS_PER_DAY}:</td>
 	<td class="row2"><b>{TOPICS_PER_DAY}</b></td>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" colspan="3">{L_NUMBER_POSTS}:</td>
+	<td class="row1 tdnw" colspan="3">{L_NUMBER_POSTS}:</td>
 	<td class="row2"><b>{NUMBER_OF_POSTS}</b></td>
-	<td class="row1" nowrap="nowrap">{L_POSTS_PER_DAY}:</td>
+	<td class="row1 tdnw">{L_POSTS_PER_DAY}:</td>
 	<td class="row2"><b>{POSTS_PER_DAY}</b></td>
 </tr>
 <tr>
-	<td class="row1" nowrap="nowrap" colspan="3">{L_NUMBER_USERS}:</td>
+	<td class="row1 tdnw" colspan="3">{L_NUMBER_USERS}:</td>
 	<td class="row2"><b>{NUMBER_OF_USERS}</b></td>
-	<td class="row1" nowrap="nowrap">{L_USERS_PER_DAY}:</td>
+	<td class="row1 tdnw">{L_USERS_PER_DAY}:</td>
 	<td class="row2"><b>{USERS_PER_DAY}</b></td>
 </tr>
 <tr>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
-	<td class="row1" nowrap="nowrap" colspan="2">{L_NUMBER_ADMINISTRATORS}:</td>
+	<td class="row1 tdnw" colspan="2">{L_NUMBER_ADMINISTRATORS}:</td>
 	<td class="row2" colspan="3">{NUMBER_OF_ADMINISTRATORS}</td>
 </tr>
 <tr>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
-	<td class="row1" nowrap="nowrap">{L_NAME_ADMINISTRATORS}:</td>
+	<td class="row1 tdnw">{L_NAME_ADMINISTRATORS}:</td>
 	<td class="row2" colspan="3">{NAMES_OF_ADMINISTRATORS}&nbsp;</td>
 </tr>
 <tr>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
-	<td class="row1" nowrap="nowrap" colspan="2">{L_NUMBER_JUNIOR_ADMINISTRATORS}:</td>
+	<td class="row1 tdnw" colspan="2">{L_NUMBER_JUNIOR_ADMINISTRATORS}:</td>
 	<td class="row2" colspan="3">{NUMBER_OF_JUNIOR_ADMINISTRATORS}</td>
 </tr>
 <tr>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
-	<td class="row1" nowrap="nowrap">{L_NAME_JUNIOR_ADMINISTRATORS}:</td>
+	<td class="row1 tdnw">{L_NAME_JUNIOR_ADMINISTRATORS}:</td>
 	<td class="row2" colspan="3">{NAMES_OF_JUNIOR_ADMINISTRATORS}&nbsp;</td>
 </tr>
 <tr>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
-	<td class="row1" nowrap="nowrap" colspan="2">{L_NUMBER_MODERATORS}:</td>
+	<td class="row1 tdnw" colspan="2">{L_NUMBER_MODERATORS}:</td>
 	<td class="row2" colspan="3">{NUMBER_OF_MODERATORS}</td>
 </tr>
 <tr>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
-	<td class="row1" nowrap="nowrap">{L_NAME_MODERATORS}:</td>
+	<td class="row1 tdnw">{L_NAME_MODERATORS}:</td>
 	<td class="row2" colspan="3">{NAMES_OF_MODERATORS}&nbsp;</td>
 </tr>
 <tr>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
-	<td class="row1" nowrap="nowrap" colspan="2">{L_NUMBER_DEACTIVATED_USERS}:</td>
+	<td class="row1 tdnw" colspan="2">{L_NUMBER_DEACTIVATED_USERS}:</td>
 	<td class="row2" colspan="3">{NUMBER_OF_DEACTIVATED_USERS}</td>
 </tr>
 <tr>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
 	<td class="row3" nowrap="nowrap" width="10">&nbsp;</td>
-	<td class="row1" nowrap="nowrap">{L_NAME_DEACTIVATED_USERS}:</td>
+	<td class="row1 tdnw">{L_NAME_DEACTIVATED_USERS}:</td>
 	<td class="row2" colspan="3">{NAMES_OF_DEACTIVATED}&nbsp;</td>
 </tr>
 </table>
@@ -159,7 +159,7 @@ if(GetCookie(tmp) == '2')
 -->
 
 <br />
-<div id="acp_online_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('acp_online','acp_online_h','acp_online');" alt="{L_SHOW}" /><span>{L_WHO_IS_ONLINE}</span></td></tr></table></div>
+<div id="acp_online_h" style="display: none;"><table class="forumline"><tr><td class="row-header"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('acp_online','acp_online_h','acp_online');" alt="{L_SHOW}" /><span>{L_WHO_IS_ONLINE}</span></td></tr></table></div>
 <div id="acp_online">
 <script type="text/javascript">
 <!--
@@ -170,13 +170,13 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><td class="row-header" colspan="5"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('acp_online','acp_online_h','acp_online');" alt="{L_HIDE}" /><span>{L_WHO_IS_ONLINE}</span></td></tr>
 <tr>
 	<th width="20%" height="25">&nbsp;{L_USERNAME}&nbsp;</th>
 	<th width="20%" height="25">&nbsp;{L_STARTED}&nbsp;</th>
-	<th width="20%">&nbsp;{L_LAST_UPDATE}&nbsp;</th>
-	<th width="20%">&nbsp;{L_FORUM_LOCATION}&nbsp;</th>
+	<th class="tw20pct">&nbsp;{L_LAST_UPDATE}&nbsp;</th>
+	<th class="tw20pct">&nbsp;{L_FORUM_LOCATION}&nbsp;</th>
 	<th width="20%" height="25">&nbsp;{L_IP_ADDRESS}&nbsp;</th>
 </tr>
 <!-- BEGIN reg_user_row -->
@@ -203,7 +203,7 @@ if(GetCookie(tmp) == '2')
 
 <!-- IF S_IS_FOUNDER -->
 <br />
-<div id="actions_log_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row-header"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('actions_log','actions_log_h','actions_log');" alt="{L_SHOW}" /><span><a href="{U_ADMIN_LOGS}">{L_LOGS_TITLE}</a></span></td></tr></table></div>
+<div id="actions_log_h" style="display: none;"><table class="forumline"><tr><td class="row-header"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('actions_log','actions_log_h','actions_log');" alt="{L_SHOW}" /><span><a href="{U_ADMIN_LOGS}">{L_LOGS_TITLE}</a></span></td></tr></table></div>
 <div id="actions_log">
 <script type="text/javascript">
 <!--
@@ -214,7 +214,7 @@ if(GetCookie(tmp) == '2')
 }
 //-->
 </script>
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><td class="row-header" colspan="6"><img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('actions_log','actions_log_h','actions_log');" alt="{L_HIDE}" /><span><a href="{U_ADMIN_LOGS}">{L_LOGS_TITLE}</a></span></td></tr>
 <tr>
 	<th align="center" nowrap="nowrap" width="100">{L_DATE}</th>
@@ -222,7 +222,7 @@ if(GetCookie(tmp) == '2')
 	<th align="center" nowrap="nowrap" width="100">{L_USERNAME}</th>
 	<th align="center" nowrap="nowrap" width="100">{L_ACTION}</th>
 	<th align="center" nowrap="nowrap" width="100">{L_LOGS_TARGET}</th>
-	<th align="center" nowrap="nowrap">{L_DESCRIPTION}</th>
+	<th class="tdnw">{L_DESCRIPTION}</th>
 </tr>
 <!-- BEGIN log_row -->
 <tr>
@@ -235,7 +235,7 @@ if(GetCookie(tmp) == '2')
 	<!-- IF !(log_row.S_LOG_DESC_EXTRA) -->
 	<span class="gensmall">{log_row.LOG_DESC}</span>
 	<!-- ELSE -->
-	<table width="100%" cellspacing="0" cellpadding="0">
+	<table>
 		<tr>
 			<td class="gensmall" style="cursor: pointer;" onclick="ShowHide('log_desc_{log_row.LOG_ID}','log_desc_{log_row.LOG_ID}_h','log_desc_{log_row.LOG_ID}');">
 				<a href="javascript:void(0);" style="vertical-align:top;text-decoration:none;">{log_row.LOG_DESC}</a>

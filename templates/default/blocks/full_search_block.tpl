@@ -105,22 +105,22 @@
 	//-->
 </script>
 <form name="full_search_block" method="post" action="{U_SEARCH}" onsubmit="return checkSearch()">
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 	<tr>
-		<td align="center">
+		<td class="tdalignc">
 		<span class="gensmall">{L_SEARCH2}</span>
 		</td>
 	</tr>
 	<tr>
-		<td align="center"><input class="post" type="text" name="search_keywords" size="20" /></td>
+		<td class="tdalignc"><input class="post" type="text" name="search_keywords" size="20" /></td>
 	</tr>
 	<tr>
-		<td align="center">
+		<td class="tdalignc">
 			<span class="gensmall">{L_SEARCH_AT}</span>
 		</td>
 	</tr>
 	<tr>
-		<td align="center">
+		<td class="tdalignc">
 			<select class="post" name="search_engine">
 				<option value="site">{L_FORUM_OPTION}</option>
 				<option value="google">Google</option>
@@ -146,12 +146,12 @@
 		</td>
 	</tr>
 	<tr>
-		<td align="center">
+		<td class="tdalignc">
 			<a href="{U_SEARCH}" class="gensmall">{L_ADVANCED_SEARCH}</a>
 		</td>
 	</tr>
 	<tr>
-		<td align="center"><br /><input class="mainoption" type="submit" value="{L_SEARCH}" /></td>
+		<td class="tdalignc"><br /><input class="mainoption" type="submit" value="{L_SEARCH}" /></td>
 	</tr>
 
 </table>

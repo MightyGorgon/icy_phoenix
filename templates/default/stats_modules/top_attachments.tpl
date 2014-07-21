@@ -1,12 +1,12 @@
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_TOP_DOWNLOADS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_TOP_DOWNLOADS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th nowrap="nowrap">#</th>
-	<th nowrap="nowrap">{L_FILENAME}</th>
-	<th nowrap="nowrap">{L_FILECOMMENT}</th>
-	<th nowrap="nowrap">{L_SIZE}</th>
-	<th nowrap="nowrap">{L_DOWNLOADS}</th>
-	<th nowrap="nowrap">{L_POST_TIME}</th>
-	<th nowrap="nowrap">{L_POSTED_IN_TOPIC}</th>
+	<th class="tdnw">#</th>
+	<th class="tdnw">{L_FILENAME}</th>
+	<th class="tdnw">{L_FILECOMMENT}</th>
+	<th class="tdnw">{L_SIZE}</th>
+	<th class="tdnw">{L_DOWNLOADS}</th>
+	<th class="tdnw">{L_POST_TIME}</th>
+	<th class="tdnw">{L_POSTED_IN_TOPIC}</th>
 </tr>
 <!-- BEGIN stats_row -->
 <tr class="{stats_row.CLASS}h">

@@ -193,7 +193,7 @@ if(!empty($mode))
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
+				'S_CONFIRM_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&amp;language=' . $language),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -234,7 +234,7 @@ if(!empty($mode))
 				'BLOCK_TITLE' => $blocks[$block_no],
 
 				'S_HIDDEN_FIELDS' => '<input type="hidden" name="mode" value="block_do_edit" /><input type="hidden" name="block" value="' . $block_no . '" />',
-				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language)
+				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&amp;language=' . $language)
 				)
 			);
 
@@ -313,7 +313,7 @@ if(!empty($mode))
 				'ANSWER' => '',
 
 				'S_BLOCK_LIST' => $s_block_list,
-				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
+				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&amp;language=' . $language),
 				'S_HIDDEN_FIELDS' => '<input name="mode" type="hidden" value="quest_create">'
 				)
 			);
@@ -361,7 +361,7 @@ if(!empty($mode))
 				'ANSWER' => htmlspecialchars(str_replace('<br />', "\n", $quests[$block_no][$quest_no][A])),
 
 				'S_BLOCK_LIST' => $s_block_list,
-				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
+				'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&amp;language=' . $language),
 				'S_HIDDEN_FIELDS' => '<input name="quest" type="hidden" value="' . $quest_no . '"><input name="old_block" type="hidden" value="' . $block_no . '"><input name="mode" type="hidden" value="quest_do_edit">'
 				)
 			);
@@ -418,7 +418,7 @@ if(!empty($mode))
 				'L_YES' => $lang['Yes'],
 				'L_NO' => $lang['No'],
 
-				'S_CONFIRM_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
+				'S_CONFIRM_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&amp;language=' . $language),
 				'S_HIDDEN_FIELDS' => $s_hidden_fields
 				)
 			);
@@ -491,7 +491,7 @@ $template->assign_vars(array(
 	'L_TITLE' => $lang['faq_editor'],
 	'L_EXPLAIN' => $lang['faq_editor_explain'],
 
-	'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&language=' . $language),
+	'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file . '&amp;language=' . $language),
 
 	'L_ADD_BLOCK' => $lang['faq_block_add'],
 	'L_ADD_QUESTION' => $lang['faq_quest_add'],
@@ -517,10 +517,10 @@ if(sizeof($blocks) > 0)
 			'BLOCK_NUMBER' => $i,
 			'BLOCK_ANCHOR' => $anchor_code,
 
-			'U_BLOCK_EDIT' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_edit&block=' . $i . '&file=' . $file . '&language=' . $language),
-			'U_BLOCK_MOVE_UP' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_up&block=' . $i . '&file=' . $file . '&language=' . $language),
-			'U_BLOCK_MOVE_DOWN' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_dn&block=' . $i . '&file=' . $file . '&language=' . $language),
-			'U_BLOCK_DELETE' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_del&block=' . $i . '&file=' . $file . '&language=' . $language)
+			'U_BLOCK_EDIT' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_edit&amp;block=' . $i . '&amp;file=' . $file . '&amp;language=' . $language),
+			'U_BLOCK_MOVE_UP' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_up&amp;block=' . $i . '&amp;file=' . $file . '&amp;language=' . $language),
+			'U_BLOCK_MOVE_DOWN' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_dn&amp;block=' . $i . '&amp;file=' . $file . '&amp;language=' . $language),
+			'U_BLOCK_DELETE' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_del&amp;block=' . $i . '&amp;file=' . $file . '&amp;language=' . $language)
 			)
 		);
 

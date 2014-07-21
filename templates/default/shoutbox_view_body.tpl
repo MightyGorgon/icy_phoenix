@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{FULL_SITE_PATH}{T_TPL_PATH}style_{CSS_COLOR}.css" type="text/css" />
 </head>
 <body style="margin: 0px; padding: 0px;">
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <!-- IF S_SHOUTBOX_COMPACT -->
 <!-- BEGIN shoutrow -->
 <tr>

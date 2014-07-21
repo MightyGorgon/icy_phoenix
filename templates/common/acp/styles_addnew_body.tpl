@@ -1,7 +1,7 @@
 <h1>{L_STYLES_TITLE}</h1>
 <p>{L_STYLES_ADD_TEXT}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_STYLE}</th>
 	<th>{L_TEMPLATE}</th>

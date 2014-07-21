@@ -226,19 +226,19 @@ function InitForm()
 
 <form name="upload" action="{S_ALBUM_ACTION}" method="post" enctype="multipart/form-data" onsubmit="{S_ON_SUBMIT}">
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_PIC}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_UPLOAD_PIC}</span>{IMG_THR}<table class="forumlinenb">
 <!-- IF not S_LOGGED_IN -->
 <tr>
-	<td class="row1" width="30%" height="28"><span class="gen">{L_USERNAME}:</span></td>
+	<td class="row1 tw30pct"><span class="gen">{L_USERNAME}:</span></td>
 	<td class="row2"><input class="post" type="text" name="pic_username" size="32" maxlength="32" /></td>
 </tr>
 <!-- ENDIF -->
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_PIC_TITLE}:</span></td>
+	<td class="row1"><span class="gen">{L_PIC_TITLE}:</span></td>
 	<td class="row2"><input class="post" type="text" name="pic_title" size="60" /></td>
 </tr>
 <tr>
-	<td class="row1" valign="top" height="28"><span class="gen">{L_PIC_DESC}:<br />
+	<td class="row1"><span class="gen">{L_PIC_DESC}:<br />
 	</span><span class="genmed">{L_PLAIN_TEXT_ONLY}<br />{L_MAX_LENGTH}: <b>{S_PIC_DESC_MAX_LENGTH}</b></span></td>
 	<td class="row2"><textarea class="post" cols="60" rows="4" name="pic_desc" style="width: 98%;"></textarea></td>
 </tr>
@@ -254,7 +254,7 @@ function InitForm()
 <!-- END switch_nuffload_enabled -->
 <!-- BEGIN switch_nuffload_disabled -->
 	<tr>
-		<td class="row1" valign="top"><span class="gen">{L_UPLOAD_PIC_FROM_MACHINE}:</span></td>
+		<td class="row1"><span class="gen">{L_UPLOAD_PIC_FROM_MACHINE}:</span></td>
 		<td class="row2">
 			<span id="addbutton" class="gen"><input type="button" value="{L_ADD_FILE}" onclick="AddFileField()" class="liteoption" /></span>
 			<div id="file_browse" style="position:relative;"></div>
@@ -263,7 +263,7 @@ function InitForm()
 <!-- END switch_nuffload_disabled -->
 <!-- BEGIN switch_manual_thumbnail -->
 <tr>
-	<td class="row1" valign="top"><span class="gen">{L_UPLOAD_THUMBNAIL}:</span></td>
+	<td class="row1"><span class="gen">{L_UPLOAD_THUMBNAIL}:</span></td>
 	<!-- BEGIN switch_nuffload_enabled -->
 	<td class="row2" id="parat"><input class="post" type="file" name="pic_thumbnail" size="60" /></td>
 	<!-- END switch_nuffload_enabled -->
@@ -272,60 +272,60 @@ function InitForm()
 	<!-- END switch_nuffload_disabled -->
 </tr>
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_THUMBNAIL_SIZE}:</span></td>
+	<td class="row1"><span class="gen">{L_THUMBNAIL_SIZE}:</span></td>
 	<td class="row2"><span class="gen"><b>{S_THUMBNAIL_SIZE}</b></span></td>
 </tr>
 <!-- END switch_manual_thumbnail -->
 <!-- BEGIN switch_nuffload_disabled -->
 <!-- BEGIN switch_rotation -->
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_ROTATION}:</span></td>
+	<td class="row1"><span class="gen">{L_ROTATION}:</span></td>
 	<td class="row2"><input type="radio" name="rotation" value="0" checked="checked"><span class="gen">0</span>&nbsp;&nbsp;<input type="radio" name="rotation" value="90"><span class="gen">90</span>&nbsp;&nbsp;<input type="radio" name="rotation" value="180"><span class="gen">180</span>&nbsp;&nbsp;<input type="radio" name="rotation" value="270"><span class="gen">270</span></td>
 </tr>
 <!-- END switch_rotation -->
 <!-- END switch_nuffload_disabled -->
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_UPLOAD_TO_CATEGORY}:</span></td>
+	<td class="row1"><span class="gen">{L_UPLOAD_TO_CATEGORY}:</span></td>
 	<td class="row2">{SELECT_CAT}</td>
 </tr>
 <!-- BEGIN switch_nuffload_disabled -->
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_PIC_COMMENT_WATCH}</span></td>
+	<td class="row1"><span class="gen">{L_PIC_COMMENT_WATCH}</span></td>
 	<td class="row2"><span class="gen"><input type="checkbox" name="comment_watch" value="0" checked="checked" /></span></td>
 </tr>
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_MAX_FILESIZE}:</span></td>
+	<td class="row1"><span class="gen">{L_MAX_FILESIZE}:</span></td>
 	<td class="row2"><span class="gen"><b>{S_MAX_FILESIZE}</b></span></td>
 </tr>
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_MAX_WIDTH}:</span></td>
+	<td class="row1"><span class="gen">{L_MAX_WIDTH}:</span></td>
 	<td class="row2"><span class="gen"><b>{S_MAX_WIDTH}</b></span></td>
 </tr>
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_MAX_HEIGHT}:</span></td>
+	<td class="row1"><span class="gen">{L_MAX_HEIGHT}:</span></td>
 	<td class="row2"><span class="gen"><b>{S_MAX_HEIGHT}</b></span></td>
 </tr>
 <!-- END switch_nuffload_disabled -->
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_ALLOWED_JPG}:</span></td>
+	<td class="row1"><span class="gen">{L_ALLOWED_JPG}:</span></td>
 	<td class="row2"><span class="gen"><b>{S_JPG}</b></span></td>
 </tr>
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_ALLOWED_PNG}:</span></td>
+	<td class="row1"><span class="gen">{L_ALLOWED_PNG}:</span></td>
 	<td class="row2"><span class="gen"><b>{S_PNG}</b></span></td>
 </tr>
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_ALLOWED_GIF}:</span></td>
+	<td class="row1"><span class="gen">{L_ALLOWED_GIF}:</span></td>
 	<td class="row2"><span class="gen"><b>{S_GIF}</b></span></td>
 </tr>
 <!-- BEGIN switch_nuffload_enabled -->
 <tr>
-	<td class="row1" height="28"><span class="gen">{L_ALLOWED_ZIP}:</span></td>
+	<td class="row1"><span class="gen">{L_ALLOWED_ZIP}:</span></td>
 	<td class="row2"><span class="gen"><b>{S_ZIP}</b></span></td>
 </tr>
 <!-- END switch_nuffload_enabled -->
 <tr>
-	<td class="catBottom" align="center" colspan="2">
+	<td class="catBottom tdalignc" colspan="2">
 		<!-- BEGIN switch_nuffload_enabled -->
 		<input type="reset" value="{L_RESET}" class="liteoption" />&nbsp;&nbsp;&nbsp;
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />

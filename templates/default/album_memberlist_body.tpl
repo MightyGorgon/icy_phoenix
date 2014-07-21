@@ -1,17 +1,17 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td width="100%"><span class="genmed">{L_MEMBERLIST_GALLERY_EXPLAIN}</span></td>
+	<td class="tw100pct"><span class="genmed">{L_MEMBERLIST_GALLERY_EXPLAIN}</span></td>
 	<!-- BEGIN switch_show_album_search -->
-	<td align="right" valign="bottom" nowrap="nowrap">{ALBUM_SEARCH_BOX}</td>
+	<td class="tdalignr tvalignb tdnw">{ALBUM_SEARCH_BOX}</td>
 	<!-- END switch_show_album_search -->
 </tr>
 </table>
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td width="50%" align="left">
+	<td class="tw50pct">
 		<!-- BEGIN switch_show_all_pics -->
 		<span class="img-btn"><a href="{U_SHOW_ALL_PICS}"><img src="{SHOW_ALL_PICS_IMG}" alt="{L_SHOW_ALL_PICS}" title="{L_SHOW_ALL_PICS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_pics -->
@@ -22,21 +22,21 @@
 		<span class="img-btn"><a href="{U_SHOW_ALL_COMMENTS}"><img src="{SHOW_ALL_COMMENTS_IMG}" alt="{L_SHOW_ALL_COMMENTS}" title="{L_SHOW_ALL_COMMENTS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_comments -->
 	</td>
-	<td width="50%" align="right" nowrap="nowrap"><span class="pagination">{PAGINATION}</span></td>
+	<td class="tw50pct tdalignr tdnw"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PICTURES_OF_USER}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PICTURES_OF_USER}</span>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN no_pics -->
-<tr><td class="row1 row-center" height="50"><span class="gen">{L_NO_PICTURES_BY_USER}</span></td></tr>
+<tr><td class="row1 row-center th50px"><span class="gen">{L_NO_PICTURES_BY_USER}</span></td></tr>
 <!-- END no_pics -->
 <!-- BEGIN picrow -->
 <tr>
 	<!-- BEGIN piccol -->
-	<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
+	<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{picrow.piccol.U_PIC_DL}"{picrow.piccol.PIC_PREVIEW_HS}><img src="{picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{picrow.piccol.PIC_TITLE}" title="{picrow.piccol.PIC_TITLE}" vspace="10" border="0" /></a>
+			<a href="{picrow.piccol.U_PIC_DL}"{picrow.piccol.PIC_PREVIEW_HS}><img class="vs10px" src="{picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{picrow.piccol.PIC_TITLE}" title="{picrow.piccol.PIC_TITLE}" border="0" /></a>
 		</div></div></td></tr></table>
 		</center>
 	</td>
@@ -72,7 +72,7 @@
 </tr>
 <!-- END picrow -->
 <tr>
-	<td class="cat" colspan="{S_COLS}" align="center" height="28">
+	<td class="cat tdalignc" colspan="{S_COLS}">
 		<form action="{U_MEMBERLIST_GALLERY}" method="post">
 		<span class="gensmall">{L_SELECT_SORT_METHOD}:
 		<select name="sort_method">
@@ -93,9 +93,9 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td width="50%" align="left">
+	<td class="tw50pct">
 		<!-- BEGIN switch_show_all_pics -->
 		<span class="img-btn"><a href="{U_SHOW_ALL_PICS}"><img src="{SHOW_ALL_PICS_IMG}" alt="{L_SHOW_ALL_PICS}" title="{L_SHOW_ALL_PICS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_pics -->
@@ -106,9 +106,9 @@
 		<span class="img-btn"><a href="{U_SHOW_ALL_COMMENTS}"><img src="{SHOW_ALL_COMMENTS_IMG}" alt="{L_SHOW_ALL_COMMENTS}" title="{L_SHOW_ALL_COMMENTS}" /></a></span>&nbsp;
 		<!-- END switch_show_all_comments -->
 	</td>
-	<td align="right" width="50%" nowrap="nowrap"><span class="pagination">{PAGINATION}</span><br /></td>
+	<td class="tw50pct tdalignr tdnw"><span class="pagination">{PAGINATION}</span><br /></td>
 </tr>
-<tr><td colspan="2" align="right"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
+<tr><td class="tdalignr" colspan="2"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
 </table>
 </form>
 

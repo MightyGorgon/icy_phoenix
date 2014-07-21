@@ -67,7 +67,7 @@ if (!empty($forum_topic_data['topic_reg']) && (check_reg_active($topic_id) === t
 		}
 		$current_user = colorize_username($reg_info[$u]['user_id'], $reg_info[$u]['username'], $reg_info[$u]['user_color'], $reg_info[$u]['user_active']);
 		$user_registered = create_date_ip($config['default_dateformat'], $reg_info[$u]['registration_time'], $config['board_timezone']);
-		$reg_option_data = '<tr><td valign="top"><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . $user_registered . '</td></tr>';
+		$reg_option_data = '<tr><td><span class="gensmall">' . $current_user . '</span></td><td class="gensmall">' . $user_registered . '</td></tr>';
 		if ($reg_info[$u]['registration_status'] == REG_OPTION1)
 		{
 			$option1_count++;

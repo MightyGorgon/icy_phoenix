@@ -11,7 +11,7 @@ function SetDays()
 <p>{L_PRUNE_USERS_EXPLAIN}</p>
 
 <form name="DaysFrm" action="{S_PRUNE_USERS}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th><b>{L_DAYS}</b></th>
 	<th nowrap="nowrap"><b>{L_PRUNE_ACTION}</b></th>

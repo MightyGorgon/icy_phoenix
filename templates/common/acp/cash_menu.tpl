@@ -1,6 +1,6 @@
 {NAVBAR}
 <br />
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <!-- BEGIN menucat -->
 <tr><th colspan="2">{menucat.L_CATEGORY}</th></tr>
 <!-- BEGIN menuitem -->

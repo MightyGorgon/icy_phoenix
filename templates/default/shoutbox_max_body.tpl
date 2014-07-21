@@ -3,7 +3,7 @@
 {POST_PREVIEW_BOX}
 {ERROR_BOX}
 <form action="{U_SHOUTBOX}" method="post" name="post" onsubmit="return checkForm(this)">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_SHOUT_TEXT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_SHOUT_TEXT}</span>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN switch_username_select -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_USERNAME}</b></span></td>
@@ -11,11 +11,11 @@
 </tr>
 <!-- END switch_username_select -->
 <tr>
-	<td class="row1" valign="top">
-		<table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="center" valign="middle"><br />{BBCB_SMILEYS_MG}</td></tr></table>
+	<td class="row1">
+		<table><tr><td class="tdalignc tvalignm"><br />{BBCB_SMILEYS_MG}</td></tr></table>
 	</td>
-	<td class="row2" valign="top">
-		<table width="450" border="0" cellspacing="0" cellpadding="2">
+	<td class="row2">
+		<table class="p2px tw450px">
 		<tr>
 			<td colspan="9">
 				{BBCB_MG}
@@ -26,7 +26,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1" valign="top">
+	<td class="row1">
 		<span class="gen"><b>{L_OPTIONS}</b></span><br />
 		<span class="gensmall">{HTML_STATUS}<br />{BBCODE_STATUS}<br />{SMILIES_STATUS}</span>
 	</td>
@@ -51,9 +51,9 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 
-<table class="empty-table" width="100%" align="center" cellspacing="0">
+<table>
 <tr>
-	<td align="right" valign="bottom">
+	<td class="tdalignr tvalignb">
 		<span class="gensmall">&nbsp;{PAGE_NUMBER}</span><br />
 		<span class="pagination">{PAGINATION}</span>
 	</td>

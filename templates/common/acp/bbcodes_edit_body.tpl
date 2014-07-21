@@ -3,7 +3,7 @@
 <br />
 
 <form method="post" action="{S_BBCODES_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_BBCODES_CUSTOM_BBCODES}</th></tr>
 <tr>
 	<td class="row1"><span class="genmed"><strong>{L_BBCODE_USAGE}:</strong></span><br /><br /><span class="gensmall">{L_BBCODE_USAGE_EXPLAIN}</span><br /><br /><span class="gensmall">{L_BBCODE_USAGE_EXAMPLE}</span></td>
@@ -13,7 +13,7 @@
 	<td class="row1"><span class="genmed"><strong>{L_HTML_REPLACEMENT}:</strong></span><br /><br /><span class="gensmall">{L_HTML_REPLACEMENT_EXPLAIN}</span><br /><br /><span class="gensmall">{L_HTML_REPLACEMENT_EXAMPLE}</span></td>
 	<td class="row2"><textarea name="bbcode_tpl" rows="15" cols="35" style="width: 98%;" class="post">{BBCODE_TPL}</textarea></td>
 </tr>
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="save" value="{L_SUBMIT}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="save" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>
 </form>
 <br />

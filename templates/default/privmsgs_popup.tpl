@@ -10,7 +10,7 @@ function jump_to_inbox()
 //-->
 </script>
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PRIVATEMSGS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PRIVATEMSGS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1 row-center">
 		<br /><span class="gen">{L_MESSAGE}</span><br />

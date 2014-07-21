@@ -11,7 +11,7 @@ function update_smiley(newimage)
 </script>
 
 <form method="post" action="{S_NEWS_ACTION}">
-<table class="forumline" align="center" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline talignc">
 <tr><th colspan="3">{L_NEWS_CONFIG}</th></tr>
 <tr>
 	<td class="row2"><strong>{L_CATEGORY}:</strong></td>
@@ -22,6 +22,6 @@ function update_smiley(newimage)
 	<td class="row1"><select name="image_url" onchange="update_smiley(this.options[selectedIndex].value);">{S_FILENAME_OPTIONS}</select></td>
 	<td class="row1"><img name="news_image" src="{I_NEWS_IMG}" alt="" /></td>
 </tr>
-<tr><td class="cat" colspan="3" align="center">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_SUBMIT}" /></td></tr>
+<tr><td class="cat tdalignc" colspan="3">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_SUBMIT}" /></td></tr>
 </table>
 </form>

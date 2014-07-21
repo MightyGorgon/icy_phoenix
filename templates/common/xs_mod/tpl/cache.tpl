@@ -24,8 +24,8 @@
 </tr>
 <tr>
 	<td class="catLeft" align="center"><span class="gen">{L_XS_TEMPLATE}</span></td>
-	<td class="cat" align="center"><span class="gen">{L_XS_STYLES}</span></td>
-	<td class="cat" align="center"><span class="gen"><span class="gen"><a href="{U_CLEAR_ALL}">{L_XS_CLEAR_ALL_LC}</a></span></td>
+	<td class="cat tdalignc"><span class="gen">{L_XS_STYLES}</span></td>
+	<td class="cat tdalignc"><span class="gen"><span class="gen"><a href="{U_CLEAR_ALL}">{L_XS_CLEAR_ALL_LC}</a></span></td>
 	<td class="catRight" align="center"><span class="gen"><span class="gen"><a href="{U_COMPILE_ALL}" onclick="return confirm('{L_XS_CACHE_CONFIRM}'); ">{L_XS_COMPILE_ALL_LC}</a></span></td>
 </tr>
 <!-- BEGIN styles -->

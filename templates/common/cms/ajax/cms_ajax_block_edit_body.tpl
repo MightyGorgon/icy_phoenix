@@ -1,8 +1,8 @@
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 	<!-- BEGIN cms_block -->
 	<tr>
 		<td class="row1"><b>{cms_block.L_FIELD_LABEL}</b>{cms_block.L_FIELD_SUBLABEL}</td>
-		<td class="row2" nowrap="nowrap">{cms_block.FIELD}</td>
+		<td class="row2 tdnw">{cms_block.FIELD}</td>
 	</tr>
 	<!-- END cms_block -->
 	<!-- BEGIN cms_no_bv -->

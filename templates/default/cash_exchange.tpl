@@ -1,16 +1,16 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <form action="{S_EXCHANGE_ACTION}" method="post">
-{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th colspan="2" nowrap="nowrap">{L_EXCHANGE}</th></tr>
+{IMG_TBL}<table class="forumline">
+<tr><th class="tdnw" colspan="2">{L_EXCHANGE}</th></tr>
 <tr>
-	<td class="row1" width="50%"><div class="post-text">{L_CONVERT}</div></td>
-	<td class="row1" width="50%"><input class="post" type="text" maxlength="20" style="width:100;" name="convert_amount" value="0" /></td>
+	<td class="row1 tw50pct"><div class="post-text">{L_CONVERT}</div></td>
+	<td class="row1 tw50pct"><input class="post" type="text" maxlength="20" style="width:100;" name="convert_amount" value="0" /></td>
 </tr>
 <tr>
 	<td class="row1"><div class="post-text">{L_FROM}</div></td>
 	<td class="row1">
-	<select name="from_id" style="width:100;">
+	<select name="from_id" style="width: 100px;">
 	<option value="0">{L_SELECT_ONE}</option>
 	<!-- BEGIN cashrow -->
 	<option value="{cashrow.CASH_ID}">{cashrow.CASH_NAME}</option>
@@ -21,7 +21,7 @@
 <tr>
 	<td class="row1"><div class="post-text">{L_TO}</div></td>
 	<td class="row1">
-	<select name="to_id" style="width:100;">
+	<select name="to_id" style="width: 100px;">
 	<option value="0">{L_SELECT_ONE}</option>
 	<!-- BEGIN cashrow -->
 	<option value="{cashrow.CASH_ID}">{cashrow.CASH_NAME}</option>
@@ -40,16 +40,16 @@
 </form>
 
 <!-- BEGIN rowrow -->
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 <!-- BEGIN cashtable -->
-<td class="row1" valign="top">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th colspan="2" nowrap="nowrap">{rowrow.cashtable.HEADER}</th></tr>
+<td class="row1">
+<table class="forumline">
+<tr><th class="tdnw" colspan="2">{rowrow.cashtable.HEADER}</th></tr>
 <!-- BEGIN switch_exon -->
 <tr>
-	<td class="row1" width="50%" valign="top"><div class="post-text">{rowrow.cashtable.ONE_WORTH}</div></td>
-	<td class="row1" width="50%">
+	<td class="row1 tw50pct"><div class="post-text">{rowrow.cashtable.ONE_WORTH}</div></td>
+	<td class="row1 tw50pct">
 	<div class="post-text">
 <!-- BEGIN exchangeitem -->
 	{rowrow.cashtable.switch_exon.exchangeitem.EXCHANGE}<br />

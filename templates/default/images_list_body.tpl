@@ -1,11 +1,11 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <form action="{S_ACTION}" name="select_all" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PIC_GALLERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PIC_GALLERY}</span>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN pic_row -->
 <tr>
 <!-- BEGIN pic_column -->
-	<td class="row1g row-center" align="center">
+	<td class="row1g row-center">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
 			<!-- IF S_HIGHSLIDE --><a href="{pic_row.pic_column.PIC_IMAGE}" class="highslide" onclick="return hs.expand(this)"><!-- ELSE --><a href="{pic_row.pic_column.PIC_IMAGE}"><!-- ENDIF --><img src="{pic_row.pic_column.PIC_THUMB}" alt="{pic_row.pic_column.PIC_NAME}" title="{pic_row.pic_column.PIC_BBC}" /></a>
@@ -17,17 +17,17 @@
 	</td>
 <!-- END pic_column -->
 <!-- BEGIN pic_end_row -->
-	<td class="row1g row-center" align="center">&nbsp;</td>
+	<td class="row1g row-center">&nbsp;</td>
 <!-- END pic_end_row -->
 </tr>
 <!-- END pic_row -->
-<tr><td class="cat" colspan="{S_COLSPAN}" align="center" height="28">&nbsp;&nbsp;</td></tr>
+<tr><td class="cat tdalignc" colspan="{S_COLSPAN}">&nbsp;&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="bottom" width="70%">&nbsp;</td>
-	<td align="right" valign="bottom"><span class="gensmall">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></td>
+	<td class="tw70pct tvalignb">&nbsp;</td>
+	<td class="tdalignr tvalignb"><span class="gensmall">{PAGE_NUMBER}</span><br /><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 <br />

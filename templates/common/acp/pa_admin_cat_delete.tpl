@@ -73,13 +73,13 @@
 <p>{L_CAT_EXPLAIN}</p>
 
 <!-- IF ERROR neq '' -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row2 row-center">{ERROR}</td></tr></table>
+<table class="forumline"><tr><td class="row2 row-center">{ERROR}</td></tr></table>
 <br />
 <!-- ENDIF -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_CAT_TITLE}</th></tr>
-<tr><td colspan="2" class="row1 row-center" valign="middle">{L_SELECT_CAT}&nbsp;&nbsp;<select name="cat_id" class="forminput">{S_SELECT_CAT}</select></td></tr>
+<tr><td colspan="2" class="row1 row-center tvalignm">{L_SELECT_CAT}&nbsp;&nbsp;<select name="cat_id" class="forminput">{S_SELECT_CAT}</select></td></tr>
 <tr>
 	<td class="row2" colspan="2">
 		{L_DO_FILE}&nbsp;&nbsp;
@@ -87,7 +87,7 @@
 		<input type="radio" name="file_mode" value="move" onclick="disableFileMode();" />{L_MOVE}
 	</td>
 </tr>
-<tr><td colspan="2" class="row2 row-center" valign="middle">{L_MOVE_TO}:&nbsp;&nbsp;<select name="file_to_cat_id" class="forminput">{S_FILE_SELECT_CAT}</select></td></tr>
+<tr><td colspan="2" class="row2 row-center tvalignm">{L_MOVE_TO}:&nbsp;&nbsp;<select name="file_to_cat_id" class="forminput">{S_FILE_SELECT_CAT}</select></td></tr>
 <tr>
 	<td class="row2" colspan="2">
 		{L_DO_CAT}&nbsp;&nbsp;
@@ -95,7 +95,7 @@
 		<input type="radio" name="subcat_mode" value="move" onclick="disableSubcatMode();" />{L_MOVE}
 	</td>
 </tr>
-<tr><td colspan="2" class="row2 row-center" valign="middle">{L_MOVE_TO}:&nbsp;&nbsp;<select name="subcat_to_cat_id" class="forminput">{S_SELECT_CAT}</select></td></tr>
-<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="liteoption" type="submit" value="{L_CAT_TITLE}" name="submit" /></td></tr>
+<tr><td colspan="2" class="row2 row-center tvalignm">{L_MOVE_TO}:&nbsp;&nbsp;<select name="subcat_to_cat_id" class="forminput">{S_SELECT_CAT}</select></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input class="liteoption" type="submit" value="{L_CAT_TITLE}" name="submit" /></td></tr>
 </table>
 </form>

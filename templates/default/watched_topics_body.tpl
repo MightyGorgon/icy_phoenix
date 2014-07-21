@@ -24,7 +24,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 </script>
 <form name="unwatch_form" id="unwatch_form" method="post" action="{S_FORM_ACTION}">
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_WATCHED_TOPICS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_WATCHED_TOPICS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>&nbsp;</th>
 	<th>{L_FORUM}</th>
@@ -36,7 +36,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 </tr>
 <!-- BEGIN topic_watch_row -->
 <tr>
-	<td class="row1 row-center" width="22"><img src="{topic_watch_row.TOPIC_FOLDER_IMG}" alt="{topic_watch_row.L_TOPIC_FOLDER_ALT}" title="{topic_watch_row.L_TOPIC_FOLDER_ALT}" style="margin-right:4px;" /></td>
+	<td class="row1 row-center tw22px"><img src="{topic_watch_row.TOPIC_FOLDER_IMG}" alt="{topic_watch_row.L_TOPIC_FOLDER_ALT}" title="{topic_watch_row.L_TOPIC_FOLDER_ALT}" style="margin-right:4px;" /></td>
 	<td class="row1h{topic_watch_row.CLASS_NEW} row-forum" data-href="{topic_watch_row.U_VIEW_FORUM}">
 		<span class="topiclink{topic_watch_row.CLASS_NEW}"><a href="{topic_watch_row.U_VIEW_FORUM}">{topic_watch_row.FORUM_NAME}</a></span>
 	</td>
@@ -47,7 +47,7 @@ function setCheckboxes(theForm, elementName, isChecked)
 	<td class="row2 row-center"><span class="genmed">{topic_watch_row.S_WATCHED_TOPIC_REPLIES}</span></td>
 	<td class="row1 row-center"><span class="genmed">{topic_watch_row.S_WATCHED_TOPIC_START}<br />{topic_watch_row.TOPIC_POSTER}</span></td>
 	<td class="row2 row-center"><span class="genmed">{topic_watch_row.S_WATCHED_TOPIC_LAST}<br />{topic_watch_row.LAST_POSTER}</span></td>
-	<td class="row1 row-center" nowrap="nowrap"><input type="checkbox" name="unwatch_list[]" value="{topic_watch_row.S_WATCHED_TOPIC_ID}" /></td>
+	<td class="row1 row-center tdnw"><input type="checkbox" name="unwatch_list[]" value="{topic_watch_row.S_WATCHED_TOPIC_ID}" /></td>
 </tr>
 <!-- END topic_watch_row -->
 <!-- BEGIN switch_watched_topics_block -->

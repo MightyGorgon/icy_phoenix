@@ -27,9 +27,9 @@ function img_popup(image_url, image_width, image_height, popup_rand)
 }
 // ]]>
 </script>
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PREVIEW}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PREVIEW}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row-post" width="100%">
+	<td class="row-post tw100pct">
 		<!-- IF PREVIEW_SUBJECT --><div class="post-subject">{PREVIEW_SUBJECT}&nbsp;</div><!-- ENDIF -->
 		<div class="post-text post-text-hide-flow">
 			{PREVIEW_MESSAGE}

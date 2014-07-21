@@ -1,5 +1,5 @@
 <form name="special" method="post" action="{ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{TITLE}</th></tr>
 <tr>
 	<td class="row1"><span class="genmed">{USE}</span><span class="gensmall">{USE_E}</span></td>

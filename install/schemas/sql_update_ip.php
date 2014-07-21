@@ -102,6 +102,7 @@ switch ($req_version)
 	case '201096': $current_ip_version = '2.0.10.96'; break;
 	case '201197': $current_ip_version = '2.0.11.97'; break;
 	case '201298': $current_ip_version = '2.0.12.98'; break;
+	case '201399': $current_ip_version = '2.0.13.99'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -1258,7 +1259,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('xs_template_time', '1132930673')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('xs_version', '7')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('url_rw', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('xmas_fx', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_header_table', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('header_table_text', 'Text')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('fast_n_furious', '0')";
@@ -1802,8 +1802,6 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('upi2db_max_new_posts', '1000')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES ('upi2db_version', '3.0.7')";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_header_dropdown', '1')";
-
 		$sql[] = "ALTER TABLE " . $table_prefix . "forums ADD forum_postcount TINYINT(1) DEFAULT '1' NOT NULL";
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('switch_poster_info_topic', '0')";
@@ -2116,7 +2114,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (12, 'Links', '', 'l', 4, 1, 'links', 0, 1, 0, 1, 1, 1, 1, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (13, 'Statistics', '', 'r', 3, 1, 'statistics', 0, 1, 0, 1, 1, 1, 1, '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (14, 'Wordgraph', '', 'b', 2, 1, 'wordgraph', 0, 1, 0, 0, 0, 0, 1, '')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (15, 'Welcome', '<table class=\"empty-table\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\r\n	<tr>\r\n		<td width=\"5%\"><img src=\"images/icy_phoenix_small.png\" alt=\"\" /></td>\r\n		<td width=\"90%\" align=\"center\"><div class=\"post-text\">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width=\"5%\"><img src=\"images/icy_phoenix_small_l.png\" alt=\"\" /></td>\r\n	</tr>\r\n</table>', 'c', 2, 1, '', 0, 1, 0, 1, 1, 1, 1, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_blocks` (`bid`, `title`, `content`, `bposition`, `weight`, `active`, `blockfile`, `view`, `layout`, `type`, `border`, `titlebar`, `background`, `local`, `groups`) VALUES (15, 'Welcome', '<table>\r\n	<tr>\r\n		<td width=\"5%\"><img src=\"images/icy_phoenix_small.png\" alt=\"\" /></td>\r\n		<td width=\"90%\" align=\"center\"><div class=\"post-text\">Welcome To <b>Icy Phoenix</b></div><br /><br /></td>\r\n		<td width=\"5%\"><img src=\"images/icy_phoenix_small_l.png\" alt=\"\" /></td>\r\n	</tr>\r\n</table>', 'c', 2, 1, '', 0, 1, 0, 1, 1, 1, 1, '')";
 
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (1, 0, 'default_portal', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "cms_config` (`id`, `bid`, `config_name`, `config_value`) VALUES (2, 0, 'header_width', '180')";
@@ -4527,43 +4525,48 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.8.94 */
 		case '2.0.8.94':
-			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `exif` text NOT NULL";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `camera_model` varchar(255) DEFAULT '' NOT NULL";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `lens` varchar(255) DEFAULT '' NOT NULL";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `focal_length` varchar(255) DEFAULT '' NOT NULL";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `exposure` varchar(255) DEFAULT '' NOT NULL";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `aperture` varchar(255) DEFAULT '' NOT NULL";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `iso` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `exif` text NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `camera_model` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `lens` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `focal_length` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `exposure` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `aperture` varchar(255) DEFAULT '' NOT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `iso` varchar(255) DEFAULT '' NOT NULL";
 
 		/* Updating from IP 2.0.9.95 */
 		case '2.0.9.95':
-			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_vimeo` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pinterest` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_instagram` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_github` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_500px` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_vimeo` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_pinterest` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_instagram` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_github` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_500px` varchar(255) DEFAULT '' NOT NULL AFTER `user_youtube`";
 
 		/* Updating from IP 2.0.10.96 */
 		case '2.0.10.96':
-			$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'disable_thanks_topics'";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "forums` DROP `forum_thanks`";
-			$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_likes` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0' AFTER `topic_replies`";
-			$sql[] = "INSERT IGNORE INTO `" . $table_prefix . "posts_likes` SELECT th.topic_id, t.topic_first_post_id, th.user_id, th.thanks_time FROM `" . $table_prefix . "thanks` th, `" . $table_prefix . "topics` t WHERE t.topic_id = th.topic_id";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'disable_thanks_topics'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` DROP `forum_thanks`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_likes` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0' AFTER `topic_replies`";
+		$sql[] = "INSERT IGNORE INTO `" . $table_prefix . "posts_likes` SELECT th.topic_id, t.topic_first_post_id, th.user_id, th.thanks_time FROM `" . $table_prefix . "thanks` th, `" . $table_prefix . "topics` t WHERE t.topic_id = th.topic_id";
 
-			$sql[] = "ALTER IGNORE TABLE `" . $table_prefix . "posts_likes` ADD UNIQUE INDEX unique_idx_name (topic_id, post_id, user_id)";
-			$sql[] = "ALTER IGNORE TABLE `" . $table_prefix . "posts_likes` DROP INDEX unique_idx_name";
-			//$sql[] = "DELETE n1 FROM `" . $table_prefix . "posts_likes` n1, `" . $table_prefix . "posts_likes` n2 WHERE n1.like_time > n2.like_time AND ((n1.topic_id = n2.topic_id) AND (n1.post_id = n2.post_id) AND (n1.user_id = n2.user_id))";
-			$sql[] = "DROP TABLE IF EXISTS `" . $table_prefix . "thanks`";
-			$sql[] = "DELETE pl FROM `" . $table_prefix . "posts_likes` pl, `" . $table_prefix . "posts` p WHERE pl.post_id = p.post_id AND pl.user_id = p.poster_id";
-			$sql[] = "UPDATE `" . $table_prefix . "posts` p SET p.post_likes = (SELECT COUNT(pl.post_id) FROM `" . $table_prefix . "posts_likes` pl WHERE pl.post_id = p.post_id)";
-			$sql[] = "UPDATE `" . $table_prefix . "posts` p, `" . $table_prefix . "posts_likes` pl SET pl.topic_id = p.topic_id WHERE pl.post_id = p.post_id";
-			$sql[] = "UPDATE `" . $table_prefix . "topics` t SET t.topic_likes = (SELECT COUNT(pl.topic_id) FROM `" . $table_prefix . "posts_likes` pl WHERE pl.topic_id = t.topic_id)";
+		$sql[] = "ALTER IGNORE TABLE `" . $table_prefix . "posts_likes` ADD UNIQUE INDEX unique_idx_name (topic_id, post_id, user_id)";
+		$sql[] = "ALTER IGNORE TABLE `" . $table_prefix . "posts_likes` DROP INDEX unique_idx_name";
+		//$sql[] = "DELETE n1 FROM `" . $table_prefix . "posts_likes` n1, `" . $table_prefix . "posts_likes` n2 WHERE n1.like_time > n2.like_time AND ((n1.topic_id = n2.topic_id) AND (n1.post_id = n2.post_id) AND (n1.user_id = n2.user_id))";
+		$sql[] = "DROP TABLE IF EXISTS `" . $table_prefix . "thanks`";
+		$sql[] = "DELETE pl FROM `" . $table_prefix . "posts_likes` pl, `" . $table_prefix . "posts` p WHERE pl.post_id = p.post_id AND pl.user_id = p.poster_id";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` p SET p.post_likes = (SELECT COUNT(pl.post_id) FROM `" . $table_prefix . "posts_likes` pl WHERE pl.post_id = p.post_id)";
+		$sql[] = "UPDATE `" . $table_prefix . "posts` p, `" . $table_prefix . "posts_likes` pl SET pl.topic_id = p.topic_id WHERE pl.post_id = p.post_id";
+		$sql[] = "UPDATE `" . $table_prefix . "topics` t SET t.topic_likes = (SELECT COUNT(pl.topic_id) FROM `" . $table_prefix . "posts_likes` pl WHERE pl.topic_id = t.topic_id)";
 
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'switch_header_dropdown'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'xmas_fx'";
 
 		/* Updating from IP 2.0.11.97 */
 		case '2.0.11.97':
 
 		/* Updating from IP 2.0.12.98 */
+		case '2.0.12.98':
+
+		/* Updating from IP 2.0.13.99 */
 		case '2.0.12.98':
 
 	}

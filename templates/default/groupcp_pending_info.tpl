@@ -1,4 +1,4 @@
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PENDING_MEMBERS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PENDING_MEMBERS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>{L_USERNAME}</th>
 	<th>{L_POSTS}</th>
@@ -22,7 +22,7 @@
 </tr>
 <!-- END pending_members_row -->
 <tr>
-	<td class="cat" colspan="9" align="right">
+	<td class="cat tdalignr" colspan="9">
 		<input type="submit" name="approve" value="{L_APPROVE_SELECTED}" class="mainoption" />
 		<input type="submit" name="deny" value="{L_DENY_SELECTED}" class="liteoption" />
 	</td>

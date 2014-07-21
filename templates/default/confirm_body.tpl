@@ -1,6 +1,6 @@
 <!-- INCLUDE overall_header.tpl -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{MESSAGE_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{MESSAGE_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1g">
 		<form action="{S_CONFIRM_ACTION}" method="post">

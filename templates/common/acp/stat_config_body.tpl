@@ -3,7 +3,7 @@
 <br />
 
 <!-- IF MESSAGE -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th>{L_MESSAGES}</th></tr>
 <tr><td class="row1 row-center"><span class="genmed"><strong>{MESSAGE}</strong></td></tr>
 <tr><td class="cat" colspan="1">&nbsp;</td></tr>
@@ -13,7 +13,7 @@
 <br />
 
 <form action="{S_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_STATS_CONFIG}</th></tr>
 <tr>
 	<td class="row1" align="left" valign="middle" width="75%"><span class="genmed"><strong>{L_RETURN_LIMIT}</strong></span><br /><span class="gensmall">{L_RETURN_LIMIT_DESC}</span></td>
@@ -28,7 +28,7 @@
 	<td class="row2"><input type="text" class="post" name="modules_dir_set" value="{MODULES_DIR}" /></td>
 </tr>
 <tr>
-	<td class="cat" colspan="2" align="center"><input type="hidden" name="submit_update" value="1" /><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
+	<td class="cat tdalignc" colspan="2"><input type="hidden" name="submit_update" value="1" /><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
 </tr>
 </table>
 </form>

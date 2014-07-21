@@ -2,7 +2,7 @@
 <p>{L_THEMES_EXPLAIN}</p>
 
 <form action="{S_THEME_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="3">{L_THEME_SETTINGS}</th></tr>
 <tr>
 	<td class="row1">{L_THEME_NAME}:</td>
@@ -52,7 +52,7 @@
 	<td class="row1">{L_TD_CLASS3}:</td>
 	<td class="row2"><input class="post" type="text" size="25" maxlength="25" name="td_class3" value="{TD_CLASS3}"></td>
 </tr>
-<tr><td class="cat" colspan="3" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SAVE_SETTINGS}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="3">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SAVE_SETTINGS}" class="mainoption" /></td></tr>
 </table>
 </form>
 <br clear="all">

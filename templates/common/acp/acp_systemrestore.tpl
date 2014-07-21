@@ -5,15 +5,15 @@
 
 <!-- BEGIN infobox -->
 <div align="center">
-<table class="forumline" width="80%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="center" style="background-color:#{infobox.COLOR};"><b>{infobox.L_MESSAGE_TEXT}</b></td></tr>
+<table class="forumline tw80pct">
+<tr><td align="center" style="background-color: #{infobox.COLOR};"><b>{infobox.L_MESSAGE_TEXT}</b></td></tr>
 </table>
 </div>
 
 <br /><br />
 <!-- END infobox -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_HEADLINE}</th></tr>
 <tr>
 	<td class="row2 row-center" width="20%" rowspan="2"><img src="{IMG_RECOVERY}" alt="{L_HEADLINE}" title="{L_HEADLINE}" border="0"></td>

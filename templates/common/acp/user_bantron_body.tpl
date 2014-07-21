@@ -25,23 +25,23 @@
 </form>
 
 <form action="{S_BANCENTER_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<!-- BEGIN username_header -->
-	<th nowrap="nowrap">{username_header.L_USERNAME}</th>
+	<th class="tdnw">{username_header.L_USERNAME}</th>
 	<!-- END username_header -->
 	<!-- BEGIN ip_header -->
-	<th nowrap="nowrap">{ip_header.L_IP}</th>
+	<th class="tdnw">{ip_header.L_IP}</th>
 	<!-- END ip_header -->
 	<!-- BEGIN email_header -->
-	<th nowrap="nowrap">{email_header.L_EMAIL}</th>
+	<th class="tdnw">{email_header.L_EMAIL}</th>
 	<!-- END email_header -->
-	<th nowrap="nowrap">{L_BANNED}</th>
-	<th nowrap="nowrap">{L_EXPIRES}</th>
-	<th nowrap="nowrap">{L_BY}</th>
-	<th nowrap="nowrap">{L_REASONS}</th>
-	<th nowrap="nowrap">{L_EDIT}</th>
-	<th nowrap="nowrap">{L_DELETE}</th>
+	<th class="tdnw">{L_BANNED}</th>
+	<th class="tdnw">{L_EXPIRES}</th>
+	<th class="tdnw">{L_BY}</th>
+	<th class="tdnw">{L_REASONS}</th>
+	<th class="tdnw">{L_EDIT}</th>
+	<th class="tdnw">{L_DELETE}</th>
 <tr>
 <!-- BEGIN switch_nobans -->
 <tr><td class="row1" colspan="11" align="left">{NO_BANS}</td></tr>
@@ -66,16 +66,16 @@
 </tr>
 <!-- END rowlist -->
 <tr>
-	<td class="cat" align="center" colspan="11">
+	<td class="cat tdalignc" colspan="11">
 		<input type="submit" name="add" value="{L_ADD_A_NEW_BAN}" class="liteoption" />&nbsp;&nbsp;<input type="submit" name="delete_submit" value="{L_DELETE_SELECTED_BANS}" class="liteoption" />
 	</td>
 </tr>
 </table>
 
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right"><span class="pagination">{PAGINATION}</span></td>
+	<td class="tdalignr"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 </form>

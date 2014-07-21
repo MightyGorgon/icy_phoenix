@@ -1,5 +1,5 @@
 <!-- IF S_SHOW_AVATARS -->
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <!-- BEGIN topposter -->
 <tr>
 	<td class="row1 row-center">

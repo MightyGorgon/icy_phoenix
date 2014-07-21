@@ -3,7 +3,7 @@
 <p>{L_EXCHANGE_EXPLAIN}</p>
 
 <form action="{S_EXCHANGE_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 <!-- BEGIN cashrow -->
 	<th>{cashrow.CURRENCY_NAME}</th>
@@ -27,7 +27,7 @@
 <br />
 
 <form action="{S_EXCHANGE_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<td class="{CORNER_CLASS}" colspan="2" rowspan="2" valign="middle" align="center">{L_EXCHANGE}</th>
 	<td class="{SIDE_CLASS}" colspan="{NUM_COLUMNS}" valign="middle" align="center">{L_TO}</th>

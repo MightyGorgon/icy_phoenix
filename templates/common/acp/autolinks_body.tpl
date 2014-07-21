@@ -1,7 +1,7 @@
 <h1>{L_AUTOLINKS_TITLE}</h1>
 <p>{L_AUTOLINKS_TEXT}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>#</th>
 	<th>{L_KEYWORD}</th>
@@ -31,9 +31,9 @@
 <!-- END no_autolinks -->
 </table>
 
-<a name="edit"></a>
+<a id="edit"></a>
 <form method="post" action="{S_AUTOLINKS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_FORM_TITLE}</th></tr>
 <tr>
 	<td class="row1"><strong>{L_KEYWORD}</strong></td>

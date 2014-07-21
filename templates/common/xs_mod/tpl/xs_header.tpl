@@ -28,12 +28,12 @@ body { background-color: #E5E5E5; background-image: url('{XS_PATH}images/top_bg2
 	<td align="left" valign="top" style="padding: 5px;">
 <table width="100%" cellspacing="0" cellpadding="3" class="navbar">
 <tr>
-	<td align="left" nowrap="nowrap">
+	<td class="tdnw">
 		<!-- BEGIN nav_left -->
 		{nav_left.ITEM}
 		<!-- END nav_left -->
 	</td>
-	<td align="right" nowrap="nowrap">
+	<td class="tdalignr tdnw">
 		<!-- BEGIN nav_right -->
 		{nav_right.ITEM}
 		<!-- END nav_right -->

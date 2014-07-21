@@ -13,14 +13,14 @@
 <form method="post" action="{S_MODE_ACTION}" name="refersrow_values">
 <table width="100%" cellspacing="0" cellpadding="0" border="0" class="forumline">
 <tr>
-	<th nowrap="nowrap">#</th>
-	<th nowrap="nowrap">{L_URL}</th>
-	<th nowrap="nowrap">{L_HITS}</th>
-	<th nowrap="nowrap">{L_FIRST}</th>
-	<th nowrap="nowrap">{L_LAST}</th>
+	<th class="tdnw">#</th>
+	<th class="tdnw">{L_URL}</th>
+	<th class="tdnw">{L_HITS}</th>
+	<th class="tdnw">{L_FIRST}</th>
+	<th class="tdnw">{L_LAST}</th>
 	<!-- BEGIN switch_admin_or_mod -->
-	<th nowrap="nowrap">{L_IP}</th>
-	<th nowrap="nowrap">{L_SELECT}</th>
+	<th class="tdnw">{L_IP}</th>
+	<th class="tdnw">{L_SELECT}</th>
 	<!-- END switch_admin_or_mod -->
 </tr>
 <!-- BEGIN refersrow -->
@@ -39,31 +39,26 @@
 <tr>
 	<td class="catBottom" colspan="6" height="28">&nbsp;</td>
 	<!-- BEGIN switch_admin_or_mod -->
-	<td class="catBottom" align="center">
+	<td class="catBottom tdalignc">
 	<input type="submit" name="delete_sub" value="{L_DELETE}" class="liteoption"></td>
 	<!-- END switch_admin_or_mod -->
 </tr>
 </table>
 </form>
 <form method="post" action="{S_MODE_ACTION}">
-<table width="100%" cellspacing="0" class="empty-table">
-
+<table>
 <tr>
-	<td align="left"><span class="gen">{PAGE_NUMBER}</span></td>
-	<td valign="top" align="right">{JUMPBOX}</td>
+	<td><span class="gen">{PAGE_NUMBER}</span></td>
+	<td class="tdalignr">{JUMPBOX}</td>
 </tr>
 </table>
-<table width="100%" cellspacing="2" border="0" align="center" cellpadding="2">
+<table class="s2px p2px">
 	<tr>
-		<td align="right"><span class="nav">
+		<td class="tdalignr"><span class="nav">
 
 		</td>
 	</tr>
 	</table>
-	<table width="100%" cellspacing="2" border="0" align="center" cellpadding="2">
-	<tr>
-		<td align="right" valign="top"></td>
-	</tr>
-</table>
+	<table class="s2px p2px"><tr><td class="tdalignr"></td></tr></table>
 
 <!-- INCLUDE ../common/lofi/bots/lofi_bots_footer.tpl -->

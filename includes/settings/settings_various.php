@@ -118,14 +118,6 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 	),
 
-	'switch_header_dropdown' => array(
-		'lang_key' => 'IP_switch_header_dropdown',
-		'explain' => 'IP_switch_header_dropdown_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-	),
-
 	'show_alpha_bar' => array(
 		'lang_key' => 'IP_show_alpha_bar',
 		'explain' => 'IP_show_alpha_bar_explain',
@@ -145,14 +137,6 @@ $settings_data = array(
 	'allow_mods_view_self' => array(
 		'lang_key' => 'IP_allow_mods_view_self',
 		'explain' => 'IP_allow_mods_view_self_explain',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-	),
-
-	'xmas_fx' => array(
-		'lang_key' => 'IP_xmas_fx',
-		'explain' => 'IP_xmas_fx_explain',
 		'type' => 'LIST_RADIO',
 		'default' => 0,
 		'values' => $this->list_yes_no,

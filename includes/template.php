@@ -205,11 +205,11 @@ class Template {
 		$up = array();
 		// list of outdated variables
 		$outdated = array(
-			'xs_versoin',	// was a typo in one of previous versions
-			'xs_separator',	// no longer used
-			'xs_cache_dir_absolute',	// no longer used
-			'xs_cache_dir',	// no longer used
-			'xs_use_isset',	// no longer used
+			'xs_versoin', // was a typo in one of previous versions
+			'xs_separator', // no longer used
+			'xs_cache_dir_absolute', // no longer used
+			'xs_cache_dir', // no longer used
+			'xs_use_isset', // no longer used
 			);
 		// list of default values
 		$default = array(
@@ -228,7 +228,7 @@ class Template {
 			'xs_downloads_default' => '0',
 			'xs_shownav' => '1',
 			'xs_template_time' => '0',
-			);
+		);
 		// checking if all variables exist
 		foreach($default as $var => $value)
 		{

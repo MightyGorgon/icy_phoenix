@@ -17,7 +17,7 @@
 #	{ratingrow.NUMBER_OF_RATES} = # of times the topic has been rated
 -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_TOP_RATED}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_TOP_RATED}</span>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN notopics -->
 <tr><td class="{ratingrow.CLASS}" valign="top"><span class="gensmall">{notopics.MESSAGE}</span></td></tr>
 <!-- END notopics -->

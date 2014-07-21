@@ -1,4 +1,4 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <!-- BEGIN staff -->
 <tr>
 	<td class="row1">{staff.U_NAME}</td>

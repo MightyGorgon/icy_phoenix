@@ -1,7 +1,7 @@
 <h1>{L_DBMTNC_TITLE} - {L_DBMTNC_SUB_TITLE}</h1>
 <p>{L_DB_INFO}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="3">{L_BOARD_STATISTIC}</th></tr>
 <tr>
 	<td class="row1" colspan="2" width="33%">{L_NUMBER_TOPICS}:</td>
@@ -38,7 +38,7 @@
 </table>
 <br />
 <!-- BEGIN db_statistics -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="3">{L_DB_STATISTIC}</th></tr>
 <tr>
 	<td class="row1" colspan="2" width="33%">{L_NUMBER_DB_TABLES}:</td>
@@ -85,7 +85,7 @@
 </table>
 <br />
 <!-- END db_statistics -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_VERSION_INFO}</th></tr>
 <tr>
 	<td class="row1" width="33%">{L_IP_VERSION}:</td>

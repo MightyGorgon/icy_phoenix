@@ -370,7 +370,7 @@ while ($row = $db->sql_fetchrow($result))
 			if ($html)
 			{
 				$msg .= '<h3>' . $lang['digest_topic'] . '<a href="' . $topic_url . '">' . $row2['topic_title'] . '</a></h3>' . $line_break;
-				$msg .= '<table class="forumline" width="98%"cellspacing="0" cellpadding="2">' . $line_break;
+				$msg .= '<table class="forumline tw98pct">' . $line_break;
 			}
 			else
 			{

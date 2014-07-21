@@ -80,8 +80,8 @@ function unsubscribeCheck()
 </script>
 
 <form name="subscribe" action="{S_POST_ACTION}" method="post" onsubmit="return unsubscribeCheck();">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_DIGESTS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td class="row2" colspan="2" style="padding:5px;"><span class="gen">{DIGEST_EXPLANATION}</span></td></tr>
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_DIGESTS}</span>{IMG_THR}<table class="forumlinenb">
+<tr><td class="row2" colspan="2" style="padding: 5px;"><span class="gen">{DIGEST_EXPLANATION}</span></td></tr>
 <tr>
 	<td class="row1" style="padding: 5px;"><span class="gen">{L_DIGEST_TYPE}</span></td>
 	<td class="row2" style="padding: 5px;">
@@ -170,7 +170,7 @@ function unsubscribeCheck()
 	</td>
 </tr>
 <tr>
-	<td valign="top" class="row1" style="padding: 5px;"><span class="gen">{L_FORUM_SELECTION}</span></td>
+	<td class="row1" style="padding: 5px;"><span class="gen">{L_FORUM_SELECTION}</span></td>
 	<td class="row2" style="padding: 5px;">
 		<input type="checkbox" name="all_forums" {ALL_FORUMS_CHECKED} onclick="unCheckSubscribedForums(this);" /> <span class="gen">{L_ALL_SUBSCRIBED_FORUMS}</span><br />
 		<div id="dynamicforums">

@@ -3,7 +3,7 @@
 
 <span class="pagination">{PAGINATION}</span>
 <form method="post" action="{S_TITLE_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{HEAD_TITLE}</th>
 	<th>{HEAD_AUTH}</th>
@@ -20,7 +20,7 @@
 	<td class="{title.ROW_CLASS} row-center"><a href="{title.U_TITLE_DELETE}">{L_DELETE}</a></td>
 </tr>
 <!-- END title -->
-<tr><td class="cat" align="center" colspan="8"><input type="submit" class="mainoption" name="add" value="{ADD_NEW}" /></td></tr>
+<tr><td class="cat tdalignc" colspan="8"><input type="submit" class="mainoption" name="add" value="{ADD_NEW}" /></td></tr>
 </table>
 </form>
 <span class="pagination">{PAGINATION}</span>

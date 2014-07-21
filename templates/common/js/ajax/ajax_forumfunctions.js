@@ -27,7 +27,7 @@ function AJAXMarkForum(forum_id)
 
 function mark_forum_change()
 {
-	// Check if the request is completed, if not, just skip over
+	//Check if the request is completed, if not, just skip over
 	if (request.readyState == 4)
 	{
 		var result_code = AJAX_ERROR;
@@ -35,7 +35,7 @@ function mark_forum_change()
 		var forumimage = '0';
 		var imagetext = '0';
 		var error_msg = '';
-		// If the request wasn't successful, we just hide any information we have.
+		//If the request wasn't successful, we just hide any information we have.
 		if (request.status == 200)
 		{
 			var response = request.responseXML.documentElement;
@@ -43,7 +43,7 @@ function mark_forum_change()
 			{
 				alert(request.responseText);
 			}
-			// Don't react if no valid response was received
+			//Don't react if no valid response was received
 			if (response != null)
 			{
 				result_code = getFirstTagValue('result', response);

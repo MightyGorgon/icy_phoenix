@@ -2,7 +2,7 @@
 <p>{L_NEWS_TEXT}</p>
 
 <form method="post" action="{S_NEWS_ACTION}">
-<table class="forumline" align="center" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline talignc">
 <tr>
 	<th>{L_ICON}</th>
 	<th>{L_CATEGORY}</th>

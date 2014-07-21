@@ -3,7 +3,7 @@
 <br />
 
 <form method="post" action="{S_TICKETS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_TICKET_CAT_TITLE}</th>
 	<th>{L_TICKET_CAT_DES}</th>

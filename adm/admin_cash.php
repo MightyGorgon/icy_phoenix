@@ -112,7 +112,7 @@ if (!empty($setmodules) && defined('IN_ICYPHOENIX'))
 				$module['3100_CASH'][$menu[$i]->items[$j]->title] = $menu[$i]->items[$j]->linkage();
 				if (($j == $menu[$i]->num() - 1) && !($i == sizeof($menu) - 1))
 				{
-					$lang[$menu[$i]->items[$j]->title] = $lang[$menu[$i]->items[$j]->title] . '</a></span></td></tr><tr><td class="row2" height="7"><span class="genmed"><a name="cm' . $menu[$i]->num() . '">';
+					$lang[$menu[$i]->items[$j]->title] = $lang[$menu[$i]->items[$j]->title] . '</a></span></td></tr><tr><td class="row2" height="7"><span class="genmed"><a id="cm' . $menu[$i]->num() . '">';
 				}
 			}
 		}

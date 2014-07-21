@@ -3,7 +3,7 @@
 <p>{L_ALBUM_AUTH_EXPLAIN}</p>
 
 <form action="{S_ALBUM_ACTION}" method="post">
-<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline">
 <tr>
 	<th nowrap="nowrap">{L_GROUPS}</th>
 	<th nowrap="nowrap">{L_IS_MODERATOR}</th>
@@ -26,7 +26,7 @@
 	<td class="{grouprow.CLASS}h row-center" style="background: none;"><input name="delete[]" type="checkbox" {grouprow.DELETE_CHECKED} value="{grouprow.GROUP_ID}" /></td>
 </tr>
 <!-- END grouprow -->
-<tr><td class="cat" align="center" colspan="8"><input type="reset" value="{L_RESET}" class="liteoption" />&nbsp;&nbsp;<input name="submit" type="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="8"><input type="reset" value="{L_RESET}" class="liteoption" />&nbsp;&nbsp;<input name="submit" type="submit" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>
 </form>
 

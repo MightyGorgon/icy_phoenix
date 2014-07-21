@@ -14,21 +14,21 @@ ob_start();
 <form method="post" action="{S_PRIVMSGS_ACTION}&amp;{POST_POST_URL}={PM_ID}" name="post">
 {S_HIDDEN_FIELDS}
 <input type="hidden" name="post_time" value="<?php echo time(); ?>" />
-{IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1" width="200"><span class="gen"><b>{L_TO}</b></span></td>
-	<td class="row2"  align="left" width="100%"><input type="text" class="post"  name="username" size="25" maxlength="25" tabindex="1" value="{RECIPIENT_QQ}" /></td>
+	<td class="row1 tw200px"><span class="gen"><b>{L_TO}</b></span></td>
+	<td class="row2 tw100pct"><input type="text" class="post"  name="username" size="25" maxlength="25" tabindex="1" value="{RECIPIENT_QQ}" /></td>
 </tr>
 <tr>
-	<td class="row1" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
-	<td class="row2" width="100%"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%;" tabindex="2" class="post" value="{qr_subject}" /></td>
+	<td class="row1 tw200px tdnw"><span class="gen"><b><?php echo $lang['Subject']; ?>:</b></span></td>
+	<td class="row2 tw100pct"><input type="text" name="subject" size="45" maxlength="120" style="width: 98%;" tabindex="2" class="post" value="{qr_subject}" /></td>
 </tr>
 <tr>
-	<td class="row1" width="200" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{SPACER}" width="200" height="1" alt="" /></b></span></td>
-	<td class="row2" width="100%"><div class="message-box"><textarea name="message" rows="15" cols="35" tabindex="3"></textarea></div></td>
+	<td class="row1 tw200px tdnw"><span class="gen"><b><?php echo $lang['Message_body']; ?>:<br /><img src="{SPACER}" width="200" height="1" alt="" /></b></span></td>
+	<td class="row2 tw100pct"><div class="message-box"><textarea name="message" rows="15" cols="35" tabindex="3"></textarea></div></td>
 </tr>
 <tr>
-	<td class="row1" valign="top" nowrap="nowrap"><span class="gen"><b><?php echo $lang['Options']; ?>:</b></span></td>
+	<td class="row1 tdnw"><span class="gen"><b><?php echo $lang['Options']; ?>:</b></span></td>
 	<td class="row2">
 	<span class="genmed">
 	<?php
@@ -74,12 +74,12 @@ $this->vars['CA_QUICK_REPLY_FORM'] = $str;
 ?>
 {CPL_MENU_OUTPUT}
 <div class="forumline" style="margin-left: 5%; margin-right: 5%;">
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td width="25%" align="center">{INBOX_IMG}<br /><b><span class="topiclink">{INBOX}</span></b></td>
-	<td width="25%" align="center">{SENTBOX_IMG}<br /><b><span class="topiclink">{SENTBOX}</span></b></td>
-	<td width="25%" align="center">{OUTBOX_IMG}<br /><b><span class="topiclink">{OUTBOX}</span></b></td>
-	<td width="25%" align="center">{SAVEBOX_IMG}<br /><b><span class="topiclink">{SAVEBOX}</span></b></td>
+	<td class="tdalignc tw25pct">{INBOX_IMG}<br /><b><span class="topiclink">{INBOX}</span></b></td>
+	<td class="tdalignc tw25pct">{SENTBOX_IMG}<br /><b><span class="topiclink">{SENTBOX}</span></b></td>
+	<td class="tdalignc tw25pct">{OUTBOX_IMG}<br /><b><span class="topiclink">{OUTBOX}</span></b></td>
+	<td class="tdalignc tw25pct">{SAVEBOX_IMG}<br /><b><span class="topiclink">{SAVEBOX}</span></b></td>
 </tr>
 </table>
 </div>
@@ -95,13 +95,13 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 <form method="post" action="{S_PRIVMSGS_ACTION}">
 {S_HIDDEN_FIELDS}
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="left" valign="middle"><!-- IF REPLY_PM_IMG --><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<!-- ENDIF --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td></tr>
+<table>
+<tr><td class="tvalignm"><!-- IF REPLY_PM_IMG --><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<!-- ENDIF --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td></tr>
 </table>
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{POST_SUBJECT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{POST_SUBJECT}</span>{IMG_THR}<table class="forumlinenb">
 	<tr>
-		<th width="150">{L_AUTHOR}</th>
+		<th class="tw150px">{L_AUTHOR}</th>
 		<th>{L_MESSAGE}</th>
 	</tr>
 	<tr>
@@ -116,7 +116,7 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 			{POSTER_FROM}</div><br />
 			<img src="{SPACER}" width="150" height="1" alt="" />
 		</td>
-		<td class="row-post" width="100%">
+		<td class="row-post tw100pct">
 			<div class="post-buttons-top post-buttons">{QUOTE_PM_IMG}&nbsp;{EDIT_PM_IMG}</div>
 			<div class="post-subject">{POST_SUBJECT}&nbsp;</div>
 			<div class="post-text post-text-hide-flow">
@@ -156,10 +156,10 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
 <br />
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left"><!-- IF REPLY_PM_IMG --><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<!-- ENDIF --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td>
-	<td align="right" valign="top" nowrap="nowrap">
+	<td><!-- IF REPLY_PM_IMG --><span class="img-btn">{REPLY_PM_IMG}</span>&nbsp;<!-- ENDIF --><span class="img-btn">{CA_QUICK_REPLY_BUTTON}</span></td>
+	<td class="tdalignr tdnw">
 		<span class="gensmall">{S_TIMEZONE}</span>
 	</td>
 </tr>
@@ -169,8 +169,8 @@ message[{privmsgs_id}] = " user=\"{RECIPIENT_QQ}\"]{PLAIN_MESSAGE}[/";
 </td>
 </tr>
 </table>
-<table class="empty-table" width="100%" align="center" cellspacing="0">
-<tr><td valign="top" align="right">{JUMPBOX}</td></tr>
+<table>
+<tr><td class="tdalignr">{JUMPBOX}</td></tr>
 </table>
 
 <!-- INCLUDE overall_footer.tpl -->

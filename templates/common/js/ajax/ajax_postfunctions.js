@@ -15,7 +15,7 @@ function AJAXSearch(keywords)
 		return;
 	}
 
-	// Send search results
+	//Send search results
 	if (keywords != '')
 	{
 		ShowEmptyTitle(false);
@@ -45,13 +45,13 @@ function search_req_change()
 		return;
 	}
 
-	// Check if the request is completed, if not, just skip over
+	//Check if the request is completed, if not, just skip over
 	if (request.readyState == 4)
 	{
 		var keywords = '';
 		var search_id = 0;
 		var results = 0;
-		// If the request wasn't successful, we just hide any information we have.
+		//If the request wasn't successful, we just hide any information we have.
 		if (request.status == 200)
 		{
 			if (response_obj = request.responseXML)
@@ -367,12 +367,12 @@ function AJAXPreview(mode, post_id)
 
 function post_preview_change()
 {
-	// Check if the request is completed, if not, just skip over
+	//Check if the request is completed, if not, just skip over
 	if (request.readyState == 4)
 	{
 		var result = AJAX_OP_COMPLETED;
 		var error_msg = '';
-		// If the request wasn't successful, we just hide any information we have.
+		//If the request wasn't successful, we just hide any information we have.
 		if (request.status == 200)
 		{
 			if (AJAX_DEBUG_RESULTS)

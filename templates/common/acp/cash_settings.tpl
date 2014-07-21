@@ -3,7 +3,7 @@
 <p>{L_CASH_SETTINGS_EXPLAIN}</p>
 
 <form action="{S_CASH_SETTINGS_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="{NUM_COLUMNS}">{L_DISPLAY}</th></tr>
 <tr>
 	<td class="row1">{L_CASH_CURRENCY}</td>

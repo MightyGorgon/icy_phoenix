@@ -5,7 +5,7 @@
 
 <div style="text-align:right;padding:3px;"><span class="genmed"><b>{L_VIEW}</b>:&nbsp;{S_VIEW_SELECT}&nbsp;&nbsp;<input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" /></span></div>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th width="50%" nowrap="nowrap">{L_STATISTIC}</th>
 	<th width="50%" height="25">{L_VALUE}</th>

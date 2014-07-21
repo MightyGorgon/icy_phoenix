@@ -1,7 +1,7 @@
 <!-- BEGIN statusrow -->
-<table width="100%" align="center" cellspacing="2" cellpadding="2" border="1">
+<table class="s2px p2px tb1px">
 <tr>
-	<td align="center">
+	<td class="tdalignc">
 		<span class="gen">{L_STATUS}</span><br />
 		<span class="genmed"><b>{I_STATUS_MESSAGE}</b></span><br />
 	</td>
@@ -9,9 +9,9 @@
 </table>
 <!-- END statusrow -->
 
-<table width="100%" align="center" cellspacing="2" cellpadding="2" border="0">
+<table class="s2px p2px">
 <tr>
-	<td align="left">
+	<td>
 		<span class="maintitle">{L_PAGE_NAME}</span>
 		<br /><span class="gensmall"><b>{L_VERSION} {VERSION}
 		<br />{NIVISEC_CHECKER_VERSION}</b></span><br /><br />
@@ -25,7 +25,7 @@
 
 <p><table align="center" cellspacing="0" cellpadding="0" border="0"><tr><td>{LETTER_HEADING}</tr></td></table></p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th><a href="{S_USERNAME}" class="cattitle">{L_USERNAME}</a>&nbsp;{IMG_USERNAME}</th>
 	<th><a href="{S_MODULES}" class="cattitle">{L_MODULES}</a>&nbsp;{IMG_MODULES}</th>
@@ -49,9 +49,9 @@
 <tr><td class="cat" colspan="7" align="center" height="28"><input type="hidden" name="mode" value="{S_MODE}" />&nbsp;</td></tr>
 </table>
 </form>
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<td><span class="mainmenu">{PAGE_NUMBER}</span></td>
-	<td align="right"><span class="pagination">{PAGINATION}</span></td>
+	<td class="tdalignr"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>

@@ -3,7 +3,7 @@
 <br />
 
 <form method="post" action="{S_TICKETS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_TICKET_CAT}</th></tr>
 <tr>
 	<td class="row1"><span class="genmed"><strong>{L_TICKET_CAT_TITLE}:</strong></span></td>
@@ -17,7 +17,7 @@
 	<td class="row1"><span class="genmed"><strong>{L_TICKET_CAT_EMAILS}:</strong></span><br /><span class="genmed">{L_TICKET_CAT_EMAILS_EXPLAIN}</span></td>
 	<td class="row2"><textarea name="ticket_cat_emails" rows="15" cols="35" style="width: 98%;" class="post">{TICKET_EMAILS}</textarea></td>
 </tr>
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="save" value="{L_SUBMIT}" class="mainoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="save" value="{L_SUBMIT}" class="mainoption" /></td></tr>
 </table>
 </form>
 <br />

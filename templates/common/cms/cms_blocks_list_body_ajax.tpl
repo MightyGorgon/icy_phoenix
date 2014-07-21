@@ -1,7 +1,7 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 <!-- INCLUDE ../common/cms/cms_lang.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_BLOCKS_TITLE} - {LAYOUT_NAME}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
@@ -16,7 +16,7 @@ var cmsEditorData = {JSON_DATA};
 <!-- IF S_GLOBAL_LAYOUT -->
 
 <!-- BEGIN gheader_blocks_row -->{gheader_blocks_row.CMS_BLOCK}<!-- END gheader_blocks_row -->
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td width="180" style="padding-right: 7px; vertical-align: top;">
 		<!-- BEGIN ghleft_blocks_row -->{ghleft_blocks_row.CMS_BLOCK}<!-- END ghleft_blocks_row -->
@@ -36,7 +36,7 @@ var cmsEditorData = {JSON_DATA};
 <!-- ELSEIF S_PAGE_LAYOUT -->
 
 <!-- BEGIN header_blocks_row -->{header_blocks_row.CMS_BLOCK}<!-- END header_blocks_row -->
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td width="180" style="padding-right: 7px; vertical-align: top;">
 		<!-- BEGIN headerleft_blocks_row -->{headerleft_blocks_row.CMS_BLOCK}<!-- END headerleft_blocks_row -->

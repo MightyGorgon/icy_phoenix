@@ -1,9 +1,9 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <form method="post" action="{S_MODE_ACTION}">
-<table class="empty-table" width="100%" align="center" cellspacing="0">
+<table>
 <tr>
-	<td align="right" nowrap="nowrap">
+	<td class="tdalignr tdnw">
 	<span class="genmed">
 		{L_SELECT_SORT_METHOD}:&nbsp;{S_MODE_SELECT}&nbsp;&nbsp;{L_ORDER}&nbsp;{S_ORDER_SELECT}&nbsp;&nbsp;
 		{S_HIDDEN_FIELDS}
@@ -13,11 +13,11 @@
 </tr>
 </table>
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_DOWNLOADS}{NAV_SEP}{L_FILENAME}&nbsp;[&nbsp;{L_COMMENT}&nbsp;]</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_DOWNLOADS}{NAV_SEP}{L_FILENAME}&nbsp;[&nbsp;{L_COMMENT}&nbsp;]</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th width="4%" nowrap="nowrap">#</th>
-	<th width="48%" nowrap="nowrap">{L_DATE}</th>
-	<th width="48%" nowrap="nowrap">{L_USER}</th>
+	<th class="tw4pct tdnw">#</th>
+	<th class="tw48pct tdnw">{L_DATE}</th>
+	<th class="tw48pct tdnw">{L_USER}</th>
 </tr>
 <!-- BEGIN row -->
 <tr>
@@ -31,10 +31,10 @@
 
 <br />
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right"><span class="pagination">{PAGINATION}</span></td>
+	<td class="tdalignr"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 

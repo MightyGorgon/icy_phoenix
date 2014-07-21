@@ -15,15 +15,15 @@ function toggle_check_all()
 </script>
 
 <!-- BEGIN statusrow -->
-<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="center"><span class="gen">{L_STATUS}<br /></span><span class="genmed"><b>{I_STATUS_MESSAGE}</b></span><br /></td></tr>
+<table>
+<tr><td class="tdalignc"><span class="gen">{L_STATUS}<br /></span><span class="genmed"><b>{I_STATUS_MESSAGE}</b></span><br /></td></tr>
 </table>
 <!-- END statusrow -->
 
 
-<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left">
+	<td>
 		<span class="maintitle">{L_PAGE_NAME}</span>
 		<br /><span class="gensmall"><b>{L_VERSION} {VERSION}
 		<br />{NIVISEC_CHECKER_VERSION}</b></span><br /><br />
@@ -33,9 +33,9 @@ function toggle_check_all()
 </table>
 
 <form method="post" action="{S_MODE_ACTION}" name="sort_and_mode">
-<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="right" nowrap="nowrap">
+	<td class="tdalignr tdnw">
 		<span class="genmed">{L_SELECT_SORT_METHOD}:&nbsp;{S_MODE_SELECT}&nbsp;&nbsp;{L_ORDER}&nbsp;{S_ORDER_SELECT}&nbsp;&nbsp;
 		<input type="submit" name="submit" value="{L_SORT}" class="liteoption" />
 		</span>
@@ -45,7 +45,7 @@ function toggle_check_all()
 </form>
 
 <form method="post" action="{S_MODE_ACTION}" name="delete_ids">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th align="right" width="3%"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
 	<th align="left" width="45%">{L_TITLE}</th>
@@ -58,10 +58,10 @@ function toggle_check_all()
 <tr>
 	<td class="{topicrow.ROW_CLASS}" align="right"><input type="checkbox" name="delete_id_{topicrow.TOPIC_ID}" /></td>
 	<td class="{topicrow.ROW_CLASS}"  align="left"><span class="gen">{topicrow.TITLE}</span></td>
-	<td class="{topicrow.ROW_CLASS} row-center" valign="middle"><span class="gen">{topicrow.POSTER}</span></td>
-	<td class="{topicrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{topicrow.TIME}</span></td>
-	<td class="{topicrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{topicrow.MOVED_FROM}</span></td>
-	<td class="{topicrow.ROW_CLASS} row-center" valign="middle"><span class="gensmall">{topicrow.MOVED_TO}</span></td>
+	<td class="{topicrow.ROW_CLASS} row-center tvalignm"><span class="gen">{topicrow.POSTER}</span></td>
+	<td class="{topicrow.ROW_CLASS} row-center tvalignm"><span class="gensmall">{topicrow.TIME}</span></td>
+	<td class="{topicrow.ROW_CLASS} row-center tvalignm"><span class="gensmall">{topicrow.MOVED_FROM}</span></td>
+	<td class="{topicrow.ROW_CLASS} row-center tvalignm"><span class="gensmall">{topicrow.MOVED_TO}</span></td>
 </tr>
 <!-- END topicrow -->
 <!-- BEGIN emptyrow -->
@@ -72,7 +72,7 @@ function toggle_check_all()
 </form>
 
 <form method="post" action="{S_MODE_ACTION}" name="delete_all_before">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="3">{L_DELETE_FROM_EXPLAN}</th></tr>
 <tr>
 	<th>{L_MONTH}<br />1 - 12</th>

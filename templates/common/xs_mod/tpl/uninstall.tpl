@@ -24,17 +24,17 @@ top.nav.location = top.nav.location; // '{left_refresh.ACTION}';
 <!-- END left_refresh -->
 
 <!-- BEGIN removed -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 	<tr>
-		<th height="25">{L_Information}</th>
+		<th class="th25px">{L_Information}</th>
 	</tr>
 	<tr>
-		<td class="row1"><table width="100%" cellspacing="0" cellpadding="1" border="0">
+		<td class="row1"><table class="p2px">
 			<tr>
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td align="center"><span class="gen">{L_XS_STYLE_REMOVED}</span></td>
+				<td class="tdalignc"><span class="gen">{L_XS_STYLE_REMOVED}</span></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
@@ -51,8 +51,8 @@ top.nav.location = top.nav.location; // '{left_refresh.ACTION}';
 </tr>
 <tr>
 	<td class="catLeft" align="center"><span class="gen">{L_XS_TEMPLATE}</span></td>
-	<td class="cat" align="center"><span class="gen">{L_XS_STYLE}</span></td>
-	<td class="cat" align="center"><span class="gen">{L_XS_UNINSTALL}</span></td>
+	<td class="cat tdalignc"><span class="gen">{L_XS_STYLE}</span></td>
+	<td class="cat tdalignc"><span class="gen">{L_XS_UNINSTALL}</span></td>
 	<td class="catRight" align="center"><span class="gen">{L_XS_REMOVE_FILES}</span></td>
 </tr>
 <!-- BEGIN styles -->

@@ -1,19 +1,19 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <form action="{S_MODEDIT_ACTION}" method="post">
-{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th colspan="2" nowrap="nowrap">{CASH_TITLE}</th></tr>
+{IMG_TBL}<table class="forumline">
+<tr><th class="tdnw" colspan="2">{CASH_TITLE}</th></tr>
 <tr>
-	<td class="cat" width="30%" align="center"><b><span class="gen">{L_AMOUNT}</span></b></td>
-	<td class="cat" width="70%" align="center"><b><span class="gen">{L_MESSAGE}</span></b></td>
+	<td class="cat tw30pct tdalignc"><b><span class="gen">{L_AMOUNT}</span></b></td>
+	<td class="cat tw70pct tdalignc"><b><span class="gen">{L_MESSAGE}</span></b></td>
 </tr>
 <tr>
 	<td class="row1">
 	<center>
-	<table class="forumline" cellspacing="0" cellpadding="0" border="0">
+	<table class="forumline">
 		<tr>
-			<td class="row1" width="75"></td>
-			<td class="row2 row-center" width="75"><span class="gen">{TARGET}</span></td>
+			<td class="row1 tw75px"></td>
+			<td class="row2 row-center tw75px"><span class="gen">{TARGET}</span></td>
 			<td colspan="2" class="row3 row-center" width="150"><span class="gen"></span></td>
 		</tr>
 		<!-- BEGIN cashrow -->

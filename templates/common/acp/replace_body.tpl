@@ -2,7 +2,7 @@
 <p>{L_REPLACE_TEXT}</p>
 
 <!-- BEGIN switch_forum_sent -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th width="5%" align="center">#</th>
 	<th width="25%" align="center">{L_FORUM}</th>
@@ -11,8 +11,8 @@
 	<th width="20%" align="center">{L_LINK}</th>
 </tr>
 <tr>
-	<td class="row1 row-center" colspan="3" style="padding:5px;"><strong>{L_STR_OLD}:</strong> {STR_OLD}</td>
-	<td class="row1 row-center" colspan="2" style="padding:5px;"><strong>{L_STR_NEW}:<strong> {STR_NEW}</td>
+	<td class="row1 row-center" colspan="3" style="padding: 5px;"><strong>{L_STR_OLD}:</strong> {STR_OLD}</td>
+	<td class="row1 row-center" colspan="2" style="padding: 5px;"><strong>{L_STR_NEW}:<strong> {STR_NEW}</td>
 </tr>
 <!-- BEGIN switch_no_results -->
 <tr><td class="row2 row-center" colspan="5" style="padding:10px;"><strong>{L_NO_RESULTS}</strong></td></tr>
@@ -31,18 +31,18 @@
 <!-- END switch_forum_sent -->
 
 <form method="post" action="{S_FORM_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2" width="25%" align="center">{L_REPLACE_TITLE}</th></tr>
 <tr>
 	<td class="row1" width="50%" align="right"><strong>{L_STR_OLD}:</strong></td>
-	<td class="row1" width="50%"><input class="post" type="text" name="str_old" value="" style="width:99%;" /></td>
+	<td class="row1 tw50pct"><input class="post" type="text" name="str_old" value="" style="width:99%;" /></td>
 </tr>
 <tr>
-	<td class="row2" align="right"><strong>{L_STR_NEW}:</strong></td>
+	<td class="row2 tdalignr"><strong>{L_STR_NEW}:</strong></td>
 	<td class="row2"><input class="post" type="text" name="str_new" value="" style="width:99%;" /></td>
 </tr>
 <tr>
-	<td class="cat" colspan="2" align="center">
+	<td class="cat tdalignc" colspan="2">
 		<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
 		<input type="reset" value="{L_RESET}" class="liteoption" />
 	</td>

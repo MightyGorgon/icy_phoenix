@@ -34,7 +34,7 @@
 <body>
 
 <div id="global-wrapper">
-<span><a name="top" id="top"></a></span>
+<span><a id="top"></a></span>
 
 <div class="top-menu">
 	<div id="horiz-menu">
@@ -67,7 +67,7 @@
 
 <div id="wrapper"><div id="wrapper-inner">
 
-<table id="forumtable" cellspacing="0" cellpadding="0">
+<table id="forumtable">
 <tr>
 	<td colspan="3" id="content">
 

@@ -20,7 +20,7 @@ function add_username(selected_username)
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
 <form action="{S_PROFILE_ACTION}" name="post" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_FRIENDS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_FRIENDS}</span>{IMG_THR}<table class="forumlinenb">
 <!-- <tr><th colspan="2"><span class="genmed"><b>{L_FRIENDS}</b></span></th></tr> -->
 <tr>
 	<td class="row1" width="40%"><b class="genmed">{L_YOUR_FRIENDS}:</b><br /><span class="gensmall">{L_YOUR_FRIENDS_EXPLAIN}</span></td>

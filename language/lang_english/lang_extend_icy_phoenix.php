@@ -91,9 +91,6 @@ if ($lang_extend_admin)
 
 		'IP_page_gen' => 'Show Page Generation Time on Footer',
 
-		'IP_switch_header_dropdown' => 'Activate Dropdown Menu in Header',
-		'IP_switch_header_dropdown_explain' => 'This will activate a dropdown menu in the forum header for search and for posts.',
-
 		'IP_show_alpha_bar' => 'Show Alphabetical Sort Bar In View Forum (Global Switch)',
 		'IP_show_alpha_bar_explain' => 'This option will show an alphabetical sort bar on top of viewforum page. You will need also to enable single forums in Forums Management section.',
 
@@ -102,9 +99,6 @@ if ($lang_extend_admin)
 
 		'IP_allow_mods_view_self' => 'Allow ALL Moderators to View Self Auth Topics',
 		'IP_allow_mods_view_self_explain' => 'If a forum has been set to SELF AUTH access only admins and forum moderators can access those topics through viewforum and viewtopic. However there are many features that may show contents of these kind of posts even if not authed: Recent Topics, Search, Recent Messages Blocks, Random Topics Blocks, etc. To prevent this, an extra feature has been coded which doesn\'t allow non authed people to access these topics via secondary ways. Anyway you can allow ALL moderators (not only admins) to view these messages through these secondary ways. If you set this to YES then ALL moderators will be allowed to see the content of these messages through: Recent, Search, Topics related blocks... Unfortunately if you switch this OFF then neither AUTHED moderators may access SELF AUTHED topics through secondary ways. The feature has been coded in this way to save extra SQL charge. If you don\'t use SELF AUTHED forums, then you don\'t need this function as well.',
-
-		'IP_xmas_fx' => 'Christmas Snow',
-		'IP_xmas_fx_explain' => 'This option enables Snow Effect.',
 
 		'IP_xmas_gfx' => 'Christmas Graphics',
 		'IP_xmas_gfx_explain' => 'By enabling this option Christmas Graphics will be applied (please note that only some templates support this feature).',

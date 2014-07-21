@@ -29,7 +29,7 @@ function update_icon(newimage)
 </div>
 
 <form method="post" name="edit" action="{S_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th colspan="2" width="70%">{L_TITLE}</th></tr>
 <!-- BEGIN move -->
 <tr>
@@ -118,15 +118,15 @@ function update_icon(newimage)
 </tr>
 <tr><th colspan="2">{L_PRUNE_ENABLE}</th></tr>
 <tr>
-	<td class="row1" align="right"><span class="genmed"><b>{L_ENABLED}</b></span></td>
+	<td class="row1 tdalignr"><span class="genmed"><b>{L_ENABLED}</b></span></td>
 	<td class="row2"><span class="genmed"><input name="prune_enable" type="radio" value="1" {PRUNE_ENABLE_YES} />{L_YES}&nbsp;&nbsp;<input name="prune_enable" type="radio" value="0" {PRUNE_ENABLE_NO} />{L_NO}</span></td>
 </tr>
 <tr>
-	<td class="row1" align="right"><span class="genmed"><b>{L_PRUNE_DAYS}</b></span></td>
+	<td class="row1 tdalignr"><span class="genmed"><b>{L_PRUNE_DAYS}</b></span></td>
 	<td class="row2"><span class="genmed">&nbsp;<input name="prune_days" type="text" class="post" value="{PRUNE_DAYS}" size="3" />&nbsp;{L_DAYS}</span></td>
 </tr>
 <tr>
-	<td class="row1" align="right"><span class="genmed"><b>{L_PRUNE_FREQ}</b></span></td>
+	<td class="row1 tdalignr"><span class="genmed"><b>{L_PRUNE_FREQ}</b></span></td>
 	<td class="row2"><span class="genmed">&nbsp;<input name="prune_freq" type="text" class="post" value="{PRUNE_FREQ}" size="3" />&nbsp;{L_DAYS}</span></td>
 </tr>
 <tr><th colspan="2">{L_MOD_OS_FORUMRULES}</th></tr>
@@ -139,11 +139,11 @@ function update_icon(newimage)
 	<td class="row2"><input type="text" name="forum_rules_custom_title" value="{RULES_CUSTOM_TITLE}" size="50" maxlength="80" class="post" /></td>
 </tr>
 <tr>
-	<td class="row1" valign="top"><span class="genmed"><b>{L_FORUM_RULES}</b></span></td>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_RULES}</b></span></td>
 	<td class="row2"><textarea rows="8" cols="70" name="forum_rules" class="post">{RULES}</textarea></td>
 </tr>
 <tr>
-	<td class="row1" valign="top"><span class="genmed"><b>{L_RULES_APPEAR_IN}</b></span></td>
+	<td class="row1"><span class="genmed"><b>{L_RULES_APPEAR_IN}</b></span></td>
 	<td class="row2">
 		<input type="checkbox" name="forum_rules_in_viewforum" value="1" {S_RULES_VIEWFORUM_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_VIEWFORUM}</span><br />
 		<input type="checkbox" name="forum_rules_in_viewtopic" value="1" {S_RULES_VIEWTOPIC_ENABLED} />&nbsp;<span class="genmed">{L_RULES_IN_VIEWTOPIC}</span><br />
@@ -169,15 +169,15 @@ function update_icon(newimage)
 <!-- END link -->
 <!-- BEGIN forum_link -->
 <tr>
-	<td width="100%" colspan="5" style="padding: 0px;">
-		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+	<td colspan="5" style="padding: 0px;">
+		<table>
 		<tr>
 			<td class="cat" colspan="{AUTH_SPAN}" style="padding: 0px;">
 				<table cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
-					<td align="left" width="100%"><span class="forumlink"><b>{L_AUTH}</b></span></td>
+					<td class="tw100pct"><span class="forumlink"><b>{L_AUTH}</b></span></td>
 					<!-- BEGIN no_link -->
-					<td align="right" nowrap="nowrap">
+					<td class="tdalignr tdnw">
 						<span class="genmed"><input type="hidden" name="preset_choice" value="0" />
 							&nbsp;<b>{L_PRESET}:&nbsp;</b>
 							<select name="forum_preset" onchange="this.form.preset_choice.value=1; this.form.submit();">{S_PRESET_OPT}</select>
@@ -192,10 +192,10 @@ function update_icon(newimage)
 		<tr>
 			<!-- BEGIN cell -->
 			<td width="25%" class="{forum_link.auth.cell.COLOR}" align="center">
-				<table width="100%" cellpadding="2" cellspacing="0" border="0">
+				<table class="p2px">
 				<tr>
-					<td align="right" width="50%"><span class="genmed">{forum_link.auth.cell.L_AUTH}:</span></td>
-					<td align="left" nowrap="nowrap"><select name="{forum_link.auth.cell.AUTH}">{forum_link.auth.cell.S_AUTH_OPT}</select></td>
+					<td class="tw50pct tdalignr"><span class="genmed">{forum_link.auth.cell.L_AUTH}:</span></td>
+					<td class="tdnw"><select name="{forum_link.auth.cell.AUTH}">{forum_link.auth.cell.S_AUTH_OPT}</select></td>
 				</tr>
 				</table>
 			</td>
@@ -211,7 +211,7 @@ function update_icon(newimage)
 <!-- END forum_link -->
 <!-- ENDIF --> 
 <tr>
-	<td class="cat" align="center" colspan="5">{S_HIDDEN_FIELDS}
+	<td class="cat" colspan="5">{S_HIDDEN_FIELDS}
 		<span class="cattitle">
 			<input type="submit" name="update" value="{L_SUBMIT}" class="mainoption" />&nbsp;
 			<input type="submit" name="cancel" value="{L_CANCEL}" class="liteoption" />&nbsp;

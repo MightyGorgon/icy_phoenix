@@ -2,7 +2,7 @@
 
 <form action="{S_PROFILE_ACTION}" method="post">
 {CPL_MENU_OUTPUT}
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_AVATAR_GENERATOR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_AVATAR_GENERATOR}</span>{IMG_THR}<table class="forumlinenb">
 <tr><th colspan="5">{L_AVAILABLE}</th></tr>
 <tr>
 	<td width="20%" class="row1g"><br /><img src="{AVATAR_TEMPLATE_PATH}/ip.gif" width="80" height="80"><br /><br /></td>

@@ -28,6 +28,8 @@
 			.head3 { font-weight: bold; color: #228844; }
 
 			table.forumline { background-color: #ffffff; border: 1px #224488 solid; }
+			table.forumline { width: 98%; }
+			table.forumline td { padding: 2px; }
 			table.bodyline { background-color: #ffffff; border: 2px #224488 solid; }
 			table.disclaimer { background-color: #f8f8f8; border: 1px #999999 solid; }
 
@@ -60,7 +62,7 @@
 	</head>
 	<body>
 		<br />
-		<table class="forumline" align="center" width="98%" cellpadding="10" cellspacing="2">
+		<table class="forumline">
 			<tr>
 				<td>
 					<div class="post-text">

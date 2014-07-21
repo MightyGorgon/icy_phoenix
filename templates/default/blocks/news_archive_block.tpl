@@ -1,16 +1,16 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td>
 		<!-- BEGIN news_categories -->
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 		<!-- END news_categories -->
 		<!-- BEGIN no_news -->
-		<tr><td class="row1 row-center" height="50"><span class="gen">{L_NO_NEWS_CATS}</span></td></tr>
+		<tr><td class="row1 row-center th50px"><span class="gen">{L_NO_NEWS_CATS}</span></td></tr>
 		<!-- END no_news -->
 		<!-- BEGIN newsrow -->
 		<tr>
 			<td class="row1 row-center"><span class="genmed"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.ID}"><img src="{newsrow.THUMBNAIL}" alt="{newsrow.DESC}" title="{newsrow.DESC}" style="padding: 3px;{newsrow.IMG_W}" /></a></span></td>
-			<td class="row1" valign="middle">&nbsp;<span class="forumlink"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.ID}">{newsrow.NEWSCAT}</a></span></td>
+			<td class="row1 tvalignm">&nbsp;<span class="forumlink"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.ID}">{newsrow.NEWSCAT}</a></span></td>
 		</tr>
 		<!-- END newsrow -->
 		<!-- BEGIN yes_news -->
@@ -21,7 +21,7 @@
 		<!-- END news_categories -->
 
 		<!-- BEGIN news_archives -->
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 		<tr>
 			<td class="row1">
 		<!-- END news_archives -->

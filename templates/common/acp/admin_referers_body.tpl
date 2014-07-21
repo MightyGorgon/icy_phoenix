@@ -25,7 +25,7 @@ function toggle_check_all()
 
 
 <form method="post" action="{S_MODE_ACTION}" name="refersrow_values">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="9">{L_REFERERS}</th></tr>
 <tr>
 	<th nowrap="nowrap">#</th>
@@ -36,7 +36,7 @@ function toggle_check_all()
 	<th nowrap="nowrap">{L_FIRST}</th>
 	<th nowrap="nowrap">{L_LAST}</th>
 	<th nowrap="nowrap">{L_IP}</th>
-	<th width="1" nowrap="nowrap"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
+	<th class="tw1pct tdnw"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
 </tr>
 <!-- BEGIN refersrow -->
 <tr>
@@ -61,7 +61,7 @@ function toggle_check_all()
 </form>
 
 <form method="post" action="{S_MODE_ACTION}">
-<table width="100%" cellspacing="0" class="empty-table">
+<table>
 <tr>
 	<td align="left"><span class="pagination">{PAGINATION}</span></td>
 	<td align="right" valign="top" nowrap="nowrap">
@@ -72,6 +72,6 @@ function toggle_check_all()
 </tr>
 <tr>
 	<td align="left"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td valign="top" align="right">{JUMPBOX}</td>
+	<td align="right">{JUMPBOX}</td>
 </tr>
 </table>

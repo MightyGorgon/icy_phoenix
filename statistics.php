@@ -71,7 +71,7 @@ for ($__count = 0; $__count < sizeof($__stat_module_rows); $__count++)
 
 	if (module_auth_check($__stat_module_data[$__module_id], $user->data))
 	{
-		print '<a name="s' . $__module_id . '"></a>';
+		print '<a id="s' . $__module_id . '"></a>';
 
 		$__module_info = generate_module_info($__stat_module_data[$__module_id]);
 

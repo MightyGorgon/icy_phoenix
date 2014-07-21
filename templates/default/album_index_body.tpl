@@ -1,16 +1,16 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td align="right">{ALBUM_SEARCH_BOX}</td></tr></table>
+<table><tr><td class="tdalignr">{ALBUM_SEARCH_BOX}</td></tr></table>
 
 {ALBUM_BOARD_INDEX}
 <!-- BEGIN personal_picrow -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 	<tr>
 		<!-- BEGIN piccol -->
-		<td align="center" width="{S_COL_WIDTH}" class="row1g row-center">
+		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{personal_picrow.piccol.U_PIC_DL}"{personal_picrow.piccol.PIC_PREVIEW_HS}><img src="{personal_picrow.piccol.THUMBNAIL}" alt="{personal_picrow.piccol.PIC_TITLE}" title="{personal_picrow.piccol.PIC_TITLE}" vspace="10" border="0" /></a>
+				<a href="{personal_picrow.piccol.U_PIC_DL}"{personal_picrow.piccol.PIC_PREVIEW_HS}><img class="vs10px" src="{personal_picrow.piccol.THUMBNAIL}" alt="{personal_picrow.piccol.PIC_TITLE}" title="{personal_picrow.piccol.PIC_TITLE}" border="0" /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -38,21 +38,21 @@
 
 <!-- BEGIN recent_comments_block -->
 <br />
-{IMG_THL}{IMG_THC}<span class="forumlink">{recent_comments_block.L_LAST_COMMENT_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{recent_comments_block.L_LAST_COMMENT_INFO}</span>{IMG_THR}<table class="forumlinenb">
 	<tr>
-		<th width="10%" nowrap="nowrap">{L_PIC_TITLE}</th>
-		<th width="90%" nowrap="nowrap">{recent_comments_block.L_COMMENTS}</th>
+		<th class="tw10pct tdnw">{L_PIC_TITLE}</th>
+		<th class="tw90pct tdnw">{recent_comments_block.L_COMMENTS}</th>
 	</tr>
 	<!-- BEGIN comment_row -->
 	<tr>
-		<td class="row1 row-center" valign="middle">
+		<td class="row1 row-center tvalignm">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{recent_comments_block.comment_row.U_PIC_DL}"{recent_comments_block.comment_row.PIC_PREVIEW_HS}><img src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" vspace="10" border="0" /></a>
+				<a href="{recent_comments_block.comment_row.U_PIC_DL}"{recent_comments_block.comment_row.PIC_PREVIEW_HS}><img class="vs10px" src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" border="0" /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
-		<td class="row1" valign="top" nowrap="nowrap">
+		<td class="row1 tdnw">
 			<div style="text-align: right; float: right;"><span class="gensmall"><b>{L_PIC_TITLE}</b>: <a href="{recent_comments_block.comment_row.U_PIC_SP}">{recent_comments_block.comment_row.PIC_TITLE}</a></span></div>
 			<span class="gensmall"><b>{L_POSTER}</b>:&nbsp;{recent_comments_block.comment_row.POSTER}&nbsp;[{recent_comments_block.comment_row.TIME}]</span>
 			<hr />
@@ -65,17 +65,17 @@
 <!-- END recent_comments_block -->
 
 <!-- BEGIN recent_pics_block -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_RECENT_PUBLIC_PICS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_RECENT_PUBLIC_PICS}</span>{IMG_THR}<table class="forumlinenb">
 	<!-- BEGIN no_pics -->
-	<tr><td class="row1g row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
+	<tr><td class="row1g row-center th50px" colspan="{S_COLS}"><span class="gen">{L_NO_PICS}</span></td></tr>
 	<!-- END no_pics -->
 	<!-- BEGIN recent_pics -->
 	<tr>
 		<!-- BEGIN recent_col -->
-		<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
+		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{recent_pics_block.recent_pics.recent_col.U_PIC_DL}"{recent_pics_block.recent_pics.recent_col.PIC_PREVIEW_HS}><img src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" vspace="10" border="0" /></a>
+				<a href="{recent_pics_block.recent_pics.recent_col.U_PIC_DL}"{recent_pics_block.recent_pics.recent_col.PIC_PREVIEW_HS}><img class="vs10px" src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" border="0" /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -104,17 +104,17 @@
 <!-- END recent_pics_block -->
 
 <!-- BEGIN highest_pics_block -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_HI_RATINGS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_HI_RATINGS}</span>{IMG_THR}<table class="forumlinenb">
 	<!-- BEGIN no_pics -->
-	<tr><td class="row1g row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
+	<tr><td class="row1g row-center th50px" colspan="{S_COLS}"><span class="gen">{L_NO_PICS}</span></td></tr>
 	<!-- END no_pics -->
 	<!-- BEGIN highest_pics -->
 	<tr>
 		<!-- BEGIN highest_col -->
-		<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
+		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{highest_pics_block.highest_pics.highest_col.U_PIC_DL}"{highest_pics_block.highest_pics.highest_col.PIC_PREVIEW_HS}><img src="{highest_pics_block.highest_pics.highest_col.THUMBNAIL}" {THUMB_SIZE} alt="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" title="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" vspace="10" border="0" /></a>
+				<a href="{highest_pics_block.highest_pics.highest_col.U_PIC_DL}"{highest_pics_block.highest_pics.highest_col.PIC_PREVIEW_HS}><img class="vs10px" src="{highest_pics_block.highest_pics.highest_col.THUMBNAIL}" {THUMB_SIZE} alt="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" title="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" border="0" /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -143,17 +143,17 @@
 <!-- END highest_pics_block -->
 
 <!-- BEGIN mostviewed_pics_block -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_MOST_VIEWED}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_MOST_VIEWED}</span>{IMG_THR}<table class="forumlinenb">
 	<!-- BEGIN no_pics -->
-	<tr><td class="row1g row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
+	<tr><td class="row1g row-center th50px" colspan="{S_COLS}"><span class="gen">{L_NO_PICS}</span></td></tr>
 	<!-- END no_pics -->
 	<!-- BEGIN mostviewed_pics -->
 	<tr>
 	<!-- BEGIN mostviewed_col -->
-		<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
+		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC_DL}"{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW_HS}><img src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" vspace="10" border="0" /></a>
+				<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC_DL}"{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW_HS}><img class="vs10px" src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" border="0" /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -182,17 +182,17 @@
 <!-- END mostviewed_pics_block -->
 
 <!-- BEGIN random_pics_block -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_RAND_PICS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_RAND_PICS}</span>{IMG_THR}<table class="forumlinenb">
 	<!-- BEGIN no_pics -->
-	<tr><td class="row1g row-center" colspan="{S_COLS}" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
+	<tr><td class="row1g row-center th50px" colspan="{S_COLS}"><span class="gen">{L_NO_PICS}</span></td></tr>
 	<!-- END no_pics -->
 	<!-- BEGIN rand_pics -->
 	<tr>
 		<!-- BEGIN rand_col -->
-		<td class="row1g row-center" width="{S_COL_WIDTH}" align="center">
+		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
 			<center>
 			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{random_pics_block.rand_pics.rand_col.U_PIC_DL}"{random_pics_block.rand_pics.rand_col.PIC_PREVIEW_HS}><img src="{random_pics_block.rand_pics.rand_col.THUMBNAIL}" {THUMB_SIZE} alt="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" title="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" vspace="10" border="0" /></a>
+				<a href="{random_pics_block.rand_pics.rand_col.U_PIC_DL}"{random_pics_block.rand_pics.rand_col.PIC_PREVIEW_HS}><img class="vs10px" src="{random_pics_block.rand_pics.rand_col.THUMBNAIL}" {THUMB_SIZE} alt="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" title="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" border="0" /></a>
 			</div></div></td></tr></table>
 			</center>
 		</td>
@@ -220,7 +220,7 @@
 <br />
 <!-- END random_pics_block -->
 
-<br clear="all" />
+<br class="clear" />
 <!-- You must keep my copyright notice visible with its original content -->
 {ALBUM_COPYRIGHT}
 

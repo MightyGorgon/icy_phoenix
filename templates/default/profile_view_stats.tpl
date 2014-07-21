@@ -3,7 +3,7 @@
 <!-- ENDIF -->
 
 <!-- BEGIN switch_display_ips -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_OTHER_REGISTERED_IPS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_OTHER_REGISTERED_IPS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>{L_USERNAME}</th>
 	<th>{L_REGISTERED_HOSTNAME}</th>
@@ -23,16 +23,16 @@
 <!-- END switch_no_other_registered_ips -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="top"><span class="gen">{USERS_PAGE_NUMBER}&nbsp;</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">&nbsp;{USERS_PAGINATION}</span><br /></td>
+	<td><span class="gen">{USERS_PAGE_NUMBER}&nbsp;</span></td>
+	<td class="tdalignr tdnw"><span class="pagination">&nbsp;{USERS_PAGINATION}</span><br /></td>
 </tr>
 </table>
 
 <br />
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_OTHER_IPS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_OTHER_IPS}</span>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN switch_other_posted_ips -->
 <!-- BEGIN ALL_IPS_POSTED_FROM -->
 <tr>
@@ -47,17 +47,17 @@
 <!-- END switch_no_other_posted_ips -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="top"><span class="gen">{IPS_PAGE_NUMBER}&nbsp;</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">&nbsp;{IPS_PAGINATION}</span></td>
+	<td><span class="gen">{IPS_PAGE_NUMBER}&nbsp;</span></td>
+	<td class="tdalignr tdnw"><span class="pagination">&nbsp;{IPS_PAGINATION}</span></td>
 </tr>
 </table>
 
 <br />
 
 <!-- IF S_LOGINS_HISTORY -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_LOGINS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_LOGINS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>{L_IP}</th>
 	<th>{L_BROWSER}</th>
@@ -75,10 +75,10 @@
 <!-- END switch_no_logins -->
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<table class="empty-table" width="100%" align="center" cellspacing="0">
+<table>
 <tr>
-	<td align="left" valign="top"><span class="gen">{LOGINS_PAGE_NUMBER}&nbsp;</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">&nbsp;{LOGINS_PAGINATION}</span><br /><span class="gensmall">{S_TIMEZONE}</span></td>
+	<td><span class="gen">{LOGINS_PAGE_NUMBER}&nbsp;</span></td>
+	<td class="tdalignr tdnw"><span class="pagination">&nbsp;{LOGINS_PAGINATION}</span><br /><span class="gensmall">{S_TIMEZONE}</span></td>
 </tr>
 </table>
 <!-- ENDIF -->

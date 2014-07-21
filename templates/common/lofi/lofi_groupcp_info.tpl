@@ -2,10 +2,10 @@
 
 <div class="index">
 	<form action="{S_GROUPCP_ACTION}" method="post">
-		<table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
-		<tr><td align="left" class="nav"><a href="{U_INDEX}" class="nav">{L_INDEX}</a></td></tr>
+		<table class="s2px p2px">
+		<tr><td class="nav"><a href="{U_INDEX}" class="nav">{L_INDEX}</a></td></tr>
 		</table>
-		<table width="100%" cellspacing="1" cellpadding="4" border="0">
+		<table class="s2px p2px">
 			<tr><th colspan="7" height="25">{L_GROUP_INFORMATION}</th></tr>
 			<tr>
 				<td width="20%"><span class="gen">{L_GROUP_NAME}:</span></td>
@@ -16,7 +16,7 @@
 				<td><span class="gen">{GROUP_DESC}</span></td>
 			</tr>
 			<tr>
-				<td class="row1" width="20%"><span class="gen">{L_GROUP_MEMBERSHIP}:</span></td>
+				<td class="row1 tw20pct"><span class="gen">{L_GROUP_MEMBERSHIP}:</span></td>
 				<td class="row2">
 					<span class="gen">{GROUP_DETAILS} &nbsp;&nbsp;
 					<!-- BEGIN switch_subscribe_group_input -->
@@ -30,7 +30,7 @@
 			</tr>
 			<!-- BEGIN switch_mod_option -->
 			<tr>
-				<td class="row1" width="20%"><span class="gen">{L_GROUP_TYPE}:</span></td>
+				<td class="row1 tw20pct"><span class="gen">{L_GROUP_TYPE}:</span></td>
 				<td class="row2">
 					<span class="gen">
 						<input type="radio" name="group_type" value="{S_GROUP_OPEN_TYPE}" {S_GROUP_OPEN_CHECKED} /> {L_GROUP_OPEN} &nbsp;&nbsp;
@@ -46,7 +46,7 @@
 	</form>
 
 	<form action="{S_GROUPCP_ACTION}" method="post" name="post">
-		<table class="forumline" width="100%" cellspacing="1" cellpadding="4" border="0">
+		<table class="forumline">
 		<tr>
 			<th>{L_PM}</th>
 			<th>{L_USERNAME}</th>
@@ -60,9 +60,9 @@
 		<tr>
 			<td class="row1 row-center"><span class="gen"> {MOD_PM} </td>
 			<td class="row1 row-center"><span class="gen"><a href="{U_MOD_VIEWPROFILE}" class="gen">{MOD_USERNAME}</a></span></td>
-			<td class="row1 row-center" valign="middle"><span class="gen">{MOD_POSTS}</span></td>
-			<td class="row1 row-center" valign="middle"><span class="gen">{MOD_FROM}</span></td>
-			<td class="row1 row-center" valign="middle"><span class="gen">{MOD_EMAIL}</span></td>
+			<td class="row1 row-center tvalignm"><span class="gen">{MOD_POSTS}</span></td>
+			<td class="row1 row-center tvalignm"><span class="gen">{MOD_FROM}</span></td>
+			<td class="row1 row-center tvalignm"><span class="gen">{MOD_EMAIL}</span></td>
 			<td class="row1 row-center">{MOD_WWW}</td>
 			<td class="row1 row-center"> &nbsp; </td>
 		</tr>
@@ -98,9 +98,9 @@
 		<!-- END switch_mod_option -->
 		</table>
 
-		<table width="100%" cellspacing="2" border="0" align="center" cellpadding="2">
+		<table class="s2px p2px">
 		<tr>
-			<td align="left" valign="top">
+			<td>
 				<!-- BEGIN switch_mod_option -->
 				<span class="genmed">
 					<input type="text"  class="post" name="username" maxlength="50" size="20" />&nbsp;
@@ -111,7 +111,7 @@
 				<!-- END switch_mod_option -->
 				<span class="gensmall">{PAGE_NUMBER}</span>
 			</td>
-			<td align="right" valign="top"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
+			<td class="tdalignr"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
 		</tr>
 		</table>
 
@@ -119,7 +119,7 @@
 
 		{S_HIDDEN_FIELDS}
 	</form>
-	<table width="100%" align="center" cellspacing="2" border="0"><tr><td valign="top" align="right">{JUMPBOX}</td></tr></table>
+	<table class="s2px p2px"><tr><td class="tdalignr">{JUMPBOX}</td></tr></table>
 </div>
 <br />
 

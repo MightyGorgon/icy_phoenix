@@ -934,7 +934,7 @@ class ip_page
 	var $tbl_h_c = '<td class="roundedhc" width="100%" align="center">';
 	var $tbl_h_r = '</td><td width="27" align="left" valign="bottom"><img class="topcorners" src="style/tbl/tbl_h_r.gif" width="27" height="29" alt="" /></td></tr></table>';
 
-	var $tbl_f_l = '<table class="roundedbottom" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td width="4" align="right" valign="top"><img src="style/tbl/tbl_f_l.gif" width="4" height="3" alt="" /></td>';
+	var $tbl_f_l = '<table class="roundedbottom"><tr><td width="4" align="right" valign="top"><img src="style/tbl/tbl_f_l.gif" width="4" height="3" alt="" /></td>';
 	var $tbl_f_c = '<td class="roundedfc" width="100%" align="center">';
 	var $tbl_f_r = '</td><td width="4" align="left" valign="top"><img src="style/tbl/tbl_f_r.gif" width="4" height="3" alt="" /></td></tr></table>';
 
@@ -988,7 +988,7 @@ class ip_page
 		echo('	<![endif]-->' . "\n");
 		echo('</head>' . "\n");
 		echo('<body>' . "\n");
-		echo('<span><a name="top" id="top"></a></span>' . "\n");
+		echo('<span><a id="top"></a></span>' . "\n");
 		echo('<div id="global-wrapper"><div id="wrapper"><div id="wrapper1"><div id="wrapper2"><div id="wrapper3"><div id="wrapper4"><div id="wrapper5"><div id="wrapper6"><div id="wrapper7"><div id="wrapper-inner">' . "\n");
 
 		if ($write_form == true)
@@ -997,26 +997,26 @@ class ip_page
 			echo('<form action="' . $form_action . '" name="install" method="post">' . "\n");
 		}
 
-		echo('<table id="forumtable" cellspacing="0" cellpadding="0">' . "\n");
+		echo('<table id="forumtable">' . "\n");
 
 		echo('<tr>' . "\n");
 		echo('	<td width="100%" colspan="3" valign="top">' . "\n");
-		echo('		<div id="top_logo"><div style="margin-top:20px;margin-left:10px;"><a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="style/sitelogo_small.png" alt="Icy Phoenix" title="Icy Phoenix" /></a></div></div>' . "\n");
+		echo('		<div id="top_logo"><div style="margin-top: 20px; margin-left: 10px;"><a href="http://www.icyphoenix.com" title="Icy Phoenix"><img src="style/sitelogo_small.png" alt="Icy Phoenix" title="Icy Phoenix" /></a></div></div>' . "\n");
 		echo('	</td>' . "\n");
 		echo('</tr>' . "\n");
 
 		echo('<tr>' . "\n");
-		echo('	<td width="100%" class="forum-buttons" colspan="3">' . "\n");
+		echo('	<td class="forum-buttons tw100pct" colspan="3">' . "\n");
 		echo('	&nbsp;<img src="style/menu_sep.gif" alt="" />&nbsp;<a href="http://www.icyphoenix.com/">Icy Phoenix</a>&nbsp;<img src="style/menu_sep.gif" alt="" />&nbsp;' . "\n");
 		echo('	</td>' . "\n");
 		echo('</tr>' . "\n");
 
 		echo('<tr>' . "\n");
-		echo('	<td width="100%" colspan="3" style="padding-left:10px;padding-right:10px;">' . "\n");
+		echo('	<td width="100%" colspan="3" style="padding-left: 10px; padding-right: 10px;">' . "\n");
 
 		if (!empty($content))
 		{
-			echo('	<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n");
+			echo('	<table class="forumline">' . "\n");
 			echo('		<tr><td class="row-header" colspan="2"><span>' . $page_title . '</span></td></tr>' . "\n");
 			echo('		<tr><td class="row-post" colspan="2"><br /><div class="post-text">' . $content . '</div><br /></td></tr>' . "\n");
 			echo('	</table>' . "\n");
@@ -1031,11 +1031,11 @@ class ip_page
 		echo('	<td colspan="3">' . "\n");
 		echo('	<div id="bottom_logo_ext">' . "\n");
 		echo('	<div id="bottom_logo">' . "\n");
-		echo('		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">' . "\n");
+		echo('		<table>' . "\n");
 		echo('			<tr>' . "\n");
-		echo('				<td nowrap="nowrap" class="min250" align="left"><span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span></td>' . "\n");
-		echo('				<td nowrap="nowrap" align="center">&nbsp;<br />&nbsp;</td>' . "\n");
-		echo('				<td nowrap="nowrap" class="min250" align="right"><span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span></td>' . "\n");
+		echo('				<td class="min250 tdalignl tvalignm tdnw"><span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span></td>' . "\n");
+		echo('				<td class="tdalignc tvalignm tdnw">&nbsp;<br />&nbsp;</td>' . "\n");
+		echo('				<td class="min250 tdalignr tvalignm tdnw"><span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span></td>' . "\n");
 		echo('			</tr>' . "\n");
 		echo('		</table>' . "\n");
 		echo('	</div>' . "\n");
@@ -1048,7 +1048,7 @@ class ip_page
 			echo('</form>' . "\n");
 		}
 		echo('</div></div></div></div></div></div></div></div></div></div>' . "\n");
-		echo('<span><a name="bottom" id="bottom"></a></span>' . "\n");
+		echo('<span><a id="bottom"></a></span>' . "\n");
 		echo('</body>' . "\n");
 		echo('</html>');
 	}
@@ -1086,10 +1086,10 @@ class ip_page
 		{
 			$img_maximise = '<div class="max-min-right"><img src="style/switch_maximise.gif" onclick="ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
 			$img_minimise = '<div class="max-min-right"><img src="style/switch_minimise.gif" onclick="ShowHide(\'' . $spoiler_id . '\',\'' . $spoiler_id . '_h\',\'' . $spoiler_id . '\');" alt="" />&nbsp;</div>';
-			echo('<div id="' . $spoiler_id . '_h" style="display: none;"><table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row-header">' . $img_maximise . '<span>' . $header . '</span></td></tr></table></div>' . "\n");
+			echo('<div id="' . $spoiler_id . '_h" style="display: none;"><table class="forumline"><tr><td class="row-header">' . $img_maximise . '<span>' . $header . '</span></td></tr></table></div>' . "\n");
 			echo('<div id="' . $spoiler_id . '">' . "\n");
 		}
-		echo('<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n");
+		echo('<table class="forumline">' . "\n");
 		echo('<tr><td class="row-header"' . (($colspan > 0) ? (' colspan="' . $colspan . '"') : '') . '>' . $img_minimise . '<span>' . $header . '</span></td></tr>' . "\n");
 		echo('<tr>' . "\n");
 		echo('	<td' . (!empty($td_class) ? (' class="' . $td_class . '"') : '') . '>' . "\n");
@@ -1117,7 +1117,7 @@ class ip_page
 
 	function table_r_begin($header)
 	{
-		echo($this->tbl_h_l . $this->tbl_h_c . '<span class="forumlink">' . $header . '</span>' . $this->tbl_h_r . '<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">' . "\n");
+		echo($this->tbl_h_l . $this->tbl_h_c . '<span class="forumlink">' . $header . '</span>' . $this->tbl_h_r . '<table class="forumlinenb">' . "\n");
 	}
 
 	function table_r_end()
@@ -1160,7 +1160,7 @@ class ip_page
 				break;
 		}
 
-		echo('<br clear="all" />' . "\n");
+		echo('<br class="clear" />' . "\n");
 		$this->table_begin($lang['Information'], $td_class = 'row-post', 0, 'info');
 		echo('<div class="post-text">' . "\n");
 		$this->info_box($current_ip_version_full, $current_phpbb_version_full);
@@ -1196,7 +1196,7 @@ class ip_page
 	{
 		global $lang;
 
-		echo('	<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n");
+		echo('	<table class="forumline">' . "\n");
 		echo('	<tr><th colspan="2">' . $lang['ftp_choose'] . '</th></tr>' . "\n");
 		echo('	<tr>' . "\n");
 		echo('		<td class="row1" align="right" width="50%"><span class="gen">' . $lang['Attempt_ftp'] . '</span></td>' . "\n");
@@ -1218,7 +1218,7 @@ class ip_page
 	{
 		global $lang;
 
-		echo('	<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n");
+		echo('	<table class="forumline">' . "\n");
 		echo('	<tr><th colspan="2">' . $lang['ftp_info'] . '</th></tr>' . "\n");
 		echo('	<tr>' . "\n");
 		echo('		<td class="row1" align="right"><span class="gen">' . $lang['ftp_path'] . '</span></td>' . "\n");
@@ -1245,7 +1245,7 @@ class ip_page
 		$rowspan_admin = 8;
 		$rowspan_admin = empty($upgrade_option) ? $rowspan_admin : $rowspan_admin++;
 
-		echo('	<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n");
+		echo('	<table class="forumline">' . "\n");
 		echo('	<tr><td class="row-header" colspan="3"><span>' . $lang['Initial_config'] . '</span></td></tr>' . "\n");
 
 		echo('	<tr><th colspan="3">' . $lang['Admin_config'] . '</th></tr>' . "\n");
@@ -1339,12 +1339,12 @@ class ip_page
 	{
 		global $db, $ip_sql, $lang;
 
-		echo('	<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n");
+		echo('	<table class="forumline">' . "\n");
 		echo('	<tr><td class="row-header" colspan="2"><span>' . $lang['Finish_Install'] . '</span></td></tr>' . "\n");
 		echo('' . "\n");
 		echo('	<tr><th colspan="2">' . $lang['Finish_Install'] . '</th></tr>' . "\n");
 		echo('	<tr><td class="row1 row-center" rowspan="2" width="90"><img src="style/setup.png" alt="' . $lang['Finish_Install'] . '" title="' . $lang['Finish_Install'] . '" /></td></tr>' . "\n");
-		echo('	<tr><td class="row1" align="left"><span class="gen">' . $lang['Inst_Step_2'] . '</span></td></tr>' . "\n");
+		echo('	<tr><td class="row1"><span class="gen">' . $lang['Inst_Step_2'] . '</span></td></tr>' . "\n");
 		echo('	<tr><td class="cat" colspan="2" align="center" style="border-width: 0px;"><?php $hidden_fields; ?><input class="mainoption" type="submit" value="' . $lang['Finish_Install'] . '" /></td></tr>' . "\n");
 		echo('' . "\n");
 		echo('	</table>' . "\n");
@@ -1440,7 +1440,7 @@ class ip_page
 			$this->output_lang_select(THIS_FILE);
 			$table_output .= '<form action="install.' . PHP_EXT . '" name="lang" method="post">' . "\n";
 		}
-		$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+		$table_output .= '<table class="forumline">' . "\n";
 		$table_output .= '<tr><td class="row-header" colspan="3"><span>' . $lang['CHMOD_Files'] . '</span></td></tr>' . "\n";
 
 		for ($i = 0; $i < sizeof($chmod_items_array); $i++)
@@ -1613,7 +1613,7 @@ class ip_page
 					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_birthdays_modified . $lang['FixingBirthdaysModified'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
-					$table_output .= '<br clear="all" />' . "\n";
+					$table_output .= '<br class="clear" />' . "\n";
 					$table_output .= '<br /><br />' . "\n";
 					return $table_output;
 				}
@@ -1652,7 +1652,7 @@ class ip_page
 				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingBirthdaysTotal'], $total_birthdays_modified, $total_birthdays) . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
-				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br class="clear" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
 				// Increase $post_start to process the other posts
@@ -1662,7 +1662,7 @@ class ip_page
 
 			default:
 				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_birthdays&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
-				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<table class="forumline">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixBirthdays'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1"><span class="genmed">' . $lang['BirthdaysPerStep'] . '&nbsp;</span></td>' . "\n";
@@ -1793,7 +1793,7 @@ class ip_page
 					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_pics_modified . $lang['FixingPicsModified'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
-					$table_output .= '<br clear="all" />' . "\n";
+					$table_output .= '<br class="clear" />' . "\n";
 					$table_output .= '<br /><br />' . "\n";
 					return $table_output;
 				}
@@ -1876,7 +1876,7 @@ class ip_page
 				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingPicsTotal'], $total_pics_modified, $total_pics) . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
-				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br class="clear" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
 				$table_output .= '<div class="post-text" style="width: 90%;">' . "\n";
@@ -1884,7 +1884,7 @@ class ip_page
 				$table_output .= $pics_moved . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
-				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br class="clear" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
 				// Increase $pic_start to process the other pics
@@ -1894,7 +1894,7 @@ class ip_page
 
 			default:
 				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_images_album&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
-				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<table class="forumline">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixPics'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['PicsPerStep'] . '&nbsp;</span></td>' . "\n";
@@ -2010,7 +2010,7 @@ class ip_page
 					$table_output .= '<li><span style="color: ' . $this->color_blue . ';"><b>' . $total_posts_modified . $lang_fix_modified . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
-					$table_output .= '<br clear="all" />' . "\n";
+					$table_output .= '<br class="clear" />' . "\n";
 					$table_output .= '<br /><br />' . "\n";
 					return $table_output;
 				}
@@ -2085,7 +2085,7 @@ class ip_page
 				$table_output .= '<li><span style="color: ' . $this->color_purple . ';"><b>' . sprintf($lang['FixingPostsTotal'], $total_posts_modified, $total_posts) . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
-				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br class="clear" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
 				// Increase $post_start to process the other posts
@@ -2095,7 +2095,7 @@ class ip_page
 
 			default:
 				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=' . $action_mode . '&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
-				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<table class="forumline">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang_fix_title . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['SearchWhat'] . '&nbsp;</span></td>' . "\n";
@@ -2153,13 +2153,13 @@ class ip_page
 				$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingForumsComplete'] . '</b></span></li>' . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
-				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br class="clear" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 				break;
 
 			default:
 				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=fix_forums&amp;action=fix' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
-				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<table class="forumline">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['FixForums'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr><td class="row1" colspan="2"><div class="post-text">' . $lang['FixForumsExplain'] . '</div></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
@@ -2503,7 +2503,7 @@ class ip_page
 					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingPicsComplete'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
-					$table_output .= '<br clear="all" />' . "\n";
+					$table_output .= '<br class="clear" />' . "\n";
 					$table_output .= '<br /><br />' . "\n";
 					return $table_output;
 				}
@@ -2513,7 +2513,7 @@ class ip_page
 				$table_output .= $pics_moved . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
-				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br class="clear" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
 				// FIX PA_FILE PATHS - BEGIN
@@ -2545,7 +2545,7 @@ class ip_page
 
 			default:
 				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=ren_move_images&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
-				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<table class="forumline">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['RenMovePics'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['PicsPerStep'] . '&nbsp;</span></td>' . "\n";
@@ -2628,7 +2628,7 @@ class ip_page
 					$table_output .= '<li><span style="color: ' . $this->color_green . ';"><b>' . $lang['FixingPicsComplete'] . '</b></span></li>' . "\n";
 					$table_output .= '</ul>' . "\n";
 					$table_output .= '</div>' . "\n";
-					$table_output .= '<br clear="all" />' . "\n";
+					$table_output .= '<br class="clear" />' . "\n";
 					$table_output .= '<br /><br />' . "\n";
 					return $table_output;
 				}
@@ -2666,7 +2666,7 @@ class ip_page
 				$table_output .= $pics_updated . "\n";
 				$table_output .= '</ul>' . "\n";
 				$table_output .= '</div>' . "\n";
-				$table_output .= '<br clear="all" />' . "\n";
+				$table_output .= '<br class="clear" />' . "\n";
 				$table_output .= '<br /><br />' . "\n";
 
 				// Increase $post_start to process the other posts
@@ -2676,7 +2676,7 @@ class ip_page
 
 			default:
 				$table_output .= '<form action="' . ip_functions::append_sid(THIS_FILE . '?mode=add_uploaded_images_to_db&amp;action=fix&amp;wip=true' . $lang_append) . '" method="post" enctype="multipart/form-data">' . "\n";
-				$table_output .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0">' . "\n";
+				$table_output .= '<table class="forumline">' . "\n";
 				$table_output .= '<tr><td class="row-header" colspan="2"><span>' . $lang['AddPostedPicsDB'] . '</span></td></tr>' . "\n";
 				$table_output .= '<tr>' . "\n";
 				$table_output .= '	<td class="row1" width="200"><span class="genmed">' . $lang['PicsPerStep'] . '&nbsp;</span></td>' . "\n";
@@ -2759,7 +2759,7 @@ class ip_page
 			$box_message = $phpbb_string . $ip_string . sprintf($lang['ClickUpdate'], '<a href="' . ip_functions::append_sid(THIS_FILE . '?mode=update' . $phpbb_update) . '">', '</a>');
 			$this->box('yellow', 'red', $box_message);
 		}
-		echo('<br clear="all" />' . "\n");
+		echo('<br class="clear" />' . "\n");
 		echo('<br /><br />' . "\n");
 	}
 
@@ -2950,7 +2950,7 @@ class ip_page
 
 		$lang_select = $this->build_lang_select($language);
 
-		$table_lang_select = '<form action="' . $form_action . '" name="install" method="post"><table class="forumline" width="100%" cellspacing="0" cellpadding="0">';
+		$table_lang_select = '<form action="' . $form_action . '" name="install" method="post"><table class="forumline">';
 		if ($single_line == true)
 		{
 			$table_lang_select .= '<tr><td class="row-header" colspan="2"><span><b style="background-image:none;float:right;display:inline;padding-right:5px;">' . $lang_select . '</b>' . $lang['Select_lang'] . '</span></td></tr>';

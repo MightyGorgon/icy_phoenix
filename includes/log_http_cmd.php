@@ -687,7 +687,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					'target' => $topic_row['topic_poster'],
 				);
 			}
-			$update_log = true;
+			$update_log = ($this->data['user_id'] != ANONYMOUS) ? true : false;
 			break;
 		case 'viewtopic.' . PHP_EXT:
 			// Log hackattacks to warnings log
@@ -757,7 +757,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					);
 				}
 			}
-			$update_log = true;
+			$update_log = ($this->data['user_id'] != ANONYMOUS) ? true : false;
 		break;
 		case 'cms.' . PHP_EXT:
 			if($_mode == 'layouts')

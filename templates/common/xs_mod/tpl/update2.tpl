@@ -16,14 +16,14 @@
 <p>{L_XS_UPDATES_COMMENT2}</p>
 
 
-<table width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline">
+<table class="forumline">
 	<tr>
-		<th align="center" nowrap="nowrap">{L_XS_UPDATE_NAME}</th>
-		<th align="center" nowrap="nowrap">{L_XS_UPDATE_TYPE}</th>
-		<th align="center" nowrap="nowrap">{L_XS_UPDATE_CURRENT_VERSION}</th>
-		<th align="center" nowrap="nowrap">{L_XS_UPDATE_LATEST_VERSION}</th>
-		<th align="center" nowrap="nowrap">{L_XS_UPDATE_DOWNLOADINFO}</th>
-		<th align="center" nowrap="nowrap">{L_XS_UPDATE_FILEINFO}</th>
+		<th class="tdnw">{L_XS_UPDATE_NAME}</th>
+		<th class="tdnw">{L_XS_UPDATE_TYPE}</th>
+		<th class="tdnw">{L_XS_UPDATE_CURRENT_VERSION}</th>
+		<th class="tdnw">{L_XS_UPDATE_LATEST_VERSION}</th>
+		<th class="tdnw">{L_XS_UPDATE_DOWNLOADINFO}</th>
+		<th class="tdnw">{L_XS_UPDATE_FILEINFO}</th>
 	</tr>
 	<!-- BEGIN row -->
 	<tr>

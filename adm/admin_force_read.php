@@ -246,8 +246,8 @@ elseif($mode == 'config')
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
 		echo "		<td class=\"row2 row-center\" width=\"100%\" valign=\"middle\">";
-		echo "			<input type=\"hidden\" name=\"update\" value=\"change_config_2\">";
-		echo "			<input type=\"submit\" class=\"mainoption\" value=" . $lang['Ftr_select_button'] . " onchange=\"document.change_settings_2.submit()\">";
+		echo "			<input type=\"hidden\" name=\"update\" value=\"change_config_2\" />";
+		echo "			<input type=\"submit\" class=\"mainoption\" value=" . $lang['Ftr_select_button'] . " onchange=\"document.change_settings_2.submit()\" />";
 		echo "		</td>";
 		echo "	</tr>";
 		echo "</table>";
@@ -307,8 +307,8 @@ elseif($mode == 'config')
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
 		echo "		<td class=\"row2 row-center\" width=\"100%\" valign=\"middle\">";
-		echo "			<input type=\"hidden\" name=\"update\" value=\"save_config\">";
-		echo "			<input type=\"submit\" class=\"mainoption\" value=". $lang['Ftr_save_button'] ." onchange=\"document.save.submit()\">";
+		echo "			<input type=\"hidden\" name=\"update\" value=\"save_config\" />";
+		echo "			<input type=\"submit\" class=\"mainoption\" value=". $lang['Ftr_save_button'] ." onchange=\"document.save.submit()\" />";
 		echo "		</td>";
 		echo "	</tr>";
 		echo "</table>";
@@ -354,8 +354,8 @@ elseif($mode == 'config')
 		echo "			</span>";
 		echo "		</td>";
 		echo "		<td class=\"row2 row-center\" width=\"50%\" valign=\"middle\">";
-		echo "			<input type=\"hidden\" name=\"update\" value=\"delete_users\">";
-		echo "			<input type=\"submit\" class=\"mainoption\" value=" . $lang['Ftr_delete_button'] . " onchange=\"document.delete_u.submit()\">";
+		echo "			<input type=\"hidden\" name=\"update\" value=\"delete_users\" />";
+		echo "			<input type=\"submit\" class=\"mainoption\" value=" . $lang['Ftr_delete_button'] . " onchange=\"document.delete_u.submit()\" />";
 		echo "		</td>";
 		echo "	</tr>";
 		echo "</table>";
@@ -393,8 +393,8 @@ elseif($mode == 'config')
 		echo "<table class=\"forumline\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" valign=\"middle\">";
 		echo "	<tr>";
 		echo "		<td class=\"row2 row-center\" width=\"100%\" valign=\"middle\">";
-		echo "			<input type=\"hidden\" name=\"update\" value=\"change_config\">";
-		echo "			<input type=\"submit\" class=\"mainoption\" value=\"" . $lang['Ftr_change_button'] . "\" onchange=\"document.change_settings.submit()\">";
+		echo "			<input type=\"hidden\" name=\"update\" value=\"change_config\" />";
+		echo "			<input type=\"submit\" class=\"mainoption\" value=\"" . $lang['Ftr_change_button'] . "\" onchange=\"document.change_settings.submit()\" />";
 		echo "		</td>";
 		echo "	</tr>";
 		echo "</table>";
@@ -412,12 +412,12 @@ elseif($mode == 'config')
 		echo "			</span>";
 		echo "		</td>";
 		echo "		<td class=\"row2 row-center\" width=\"50%\" valign=\"middle\">";
-		echo "			<input type=\"radio\" value=\"1\" name=\"deactivate\" $off>&nbsp;". $lang['Ftr_deactivate_y'];
-		echo "			<input type=\"radio\" value=\"0\" name=\"deactivate\" $on>&nbsp;". $lang['Ftr_deactivate_n'];
+		echo "			<input type=\"radio\" value=\"1\" name=\"deactivate\" $off />&nbsp;". $lang['Ftr_deactivate_y'];
+		echo "			<input type=\"radio\" value=\"0\" name=\"deactivate\" $on />&nbsp;". $lang['Ftr_deactivate_n'];
 		echo "		</td>";
 		echo "		<td class=\"row2 row-center\" width=\"100%\" valign=\"middle\">";
-		echo "			<input type=\"hidden\" name=\"update\" value=\"activate\">";
-		echo "			<input type=\"submit\" class=\"mainoption\" value=\"" . $lang['Ftr_change_button'] . "\" onchange=\"document.change_active.submit()\">";
+		echo "			<input type=\"hidden\" name=\"update\" value=\"activate\" />";
+		echo "			<input type=\"submit\" class=\"mainoption\" value=\"" . $lang['Ftr_change_button'] . "\" onchange=\"document.change_active.submit()\" />";
 		echo "		</td>";
 		echo "	</tr>";
 		echo "</table>";
@@ -435,12 +435,12 @@ elseif($mode == 'config')
 		echo "			</span>";
 		echo "		</td>";
 		echo "		<td class=\"row2 row-center\" width=\"50%\" valign=\"middle\">";
-		echo "			<input type=\"radio\" value=\"0\" name=\"effected\" $off>&nbsp;". $lang['Ftr_whos_effected_n'];
-		echo "			<input type=\"radio\" value=\"1\" name=\"effected\" $on>&nbsp;". $lang['Ftr_whos_effected_a'];
+		echo "			<input type=\"radio\" value=\"0\" name=\"effected\" $off />&nbsp;". $lang['Ftr_whos_effected_n'];
+		echo "			<input type=\"radio\" value=\"1\" name=\"effected\" $on />&nbsp;". $lang['Ftr_whos_effected_a'];
 		echo "		</td>";
 		echo "		<td class=\"row2\" width=\"100%\" valign=\"middle\">";
-		echo "			<input type=\"hidden\" name=\"update\" value=\"new_effected\">";
-		echo "			<input type=\"submit\" class=\"mainoption\" value=\"" . $lang['Ftr_change_button'] . "\" onchange=\"document.change_effected.submit()\">";
+		echo "			<input type=\"hidden\" name=\"update\" value=\"new_effected\" />";
+		echo "			<input type=\"submit\" class=\"mainoption\" value=\"" . $lang['Ftr_change_button'] . "\" onchange=\"document.change_effected.submit()\" />";
 		echo "		</td>";
 		echo "	</tr>";
 		echo "</table>";
@@ -452,9 +452,9 @@ elseif($mode == 'config')
 If this is removed, dont bother asking for any assistance from me.
 Give credit where credit is due.
 */
-echo "<table width=\"100%\" align=\"center\" border=\"0\">";
+echo "<table>";
 echo "	<tr>";
-echo "		<td align=\"center\">";
+echo "		<td class=\"talignc\">";
 echo "			<span class=\"gen\">";
 echo "				<a href=\"http://phpbb-amod.com/\" target=\"_blank\">";
 echo "					<font class=\"gensmall\">";

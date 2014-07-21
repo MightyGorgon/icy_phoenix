@@ -5,7 +5,7 @@
 
 <!-- BEGIN infobox -->
 <div align="center">
-<table class="forumline" width="80%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline tw80pct">
 <tr><td align="center" style="background-color: #dbffcf;"><b>{infobox.L_MESSAGE_TEXT}</b></td></tr>
 </table>
 </div>
@@ -14,7 +14,7 @@
 <!-- END infobox -->
 
 <!-- BEGIN overview -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{overview.L_OVERVIEW}</th></tr>
 <tr>
 	<td class="row2 row-center" width="20%" style="vertical-align:top;"><img src="{IMG_ICON}" title="{overview.L_OVERVIEW}" alt="{overview.L_OVERVIEW}" /></td>
@@ -22,7 +22,7 @@
 		<table border="0" class="forumline" cellspacing="0" cellpadding="3" width="60%"><tr><td class="row3 row-center">{overview.L_COUNTER_VALUE}</td></tr></table>
 		<br /><br />
 		<form action="{overview.S_DELETE_FORM}" method="post">
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table class="forumline">
 			<tr><th colspan="3">{overview.L_LOG_OVERVIEW}</th></tr>
 				<th>{overview.L_LOGHEAD_1}</th>
 				<th>{overview.L_LOGHEAD_2}</th>
@@ -54,7 +54,7 @@
 				<td class="row1 row-center"><b>[ <a href="{overview.S_VIEW_6}">{overview.L_VIEW}</a> |  <a href="{overview.S_DELETE_6}">{overview.L_DELETE}</a> ]</b></td>
 			</tr>
 			<tr>
-				<td class="cat" colspan="3" align="center"><input type="submit" name="submit" value="{overview.L_DELETE_ALL}" class="mainoption"></td>
+				<td class="cat tdalignc" colspan="3"><input type="submit" name="submit" value="{overview.L_DELETE_ALL}" class="mainoption"></td>
 			</tr>
 		</table>
 		</form>
@@ -65,14 +65,14 @@
 
 <!-- BEGIN show_log_header -->
 <div align="center">
-<table class="forumline" width="80%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline tw80pct">
 <tr><td align="center" style="background-color: #ffe2bf;">{show_log_header.L_MESSAGE_TEXT}</td></tr>
 </table>
 </div>
 
 <br /><br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="7">{show_log_header.L_LOG_SHOW}</th></tr>
 <tr>
 	<th><b>#</b></th>

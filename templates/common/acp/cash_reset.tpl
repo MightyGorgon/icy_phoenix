@@ -3,7 +3,7 @@
 <p>{L_CASH_RESET_EXPLAIN}</p>
 
 <form action="{S_CASH_RESET_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="3">{L_CASH_RESET_TITLE}</th></tr>
 <!-- BEGIN cashrow -->
 <tr>

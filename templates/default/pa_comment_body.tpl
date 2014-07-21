@@ -1,10 +1,10 @@
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_COMMENTS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_COMMENTS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>{L_AUTHOR}</th>
 	<th>{L_COMMENTS}</th>
 </tr>
 <!-- IF NO_COMMENTS -->
-<tr><td class="row1g row-center" align="center" colspan="2"><div class="post-text">{L_NO_COMMENTS}</div></td></tr>
+<tr><td class="row1g row-center" colspan="2"><div class="post-text">{L_NO_COMMENTS}</div></td></tr>
 <!-- ENDIF -->
 <!-- BEGIN text -->
 <tr>
@@ -21,7 +21,7 @@
 		</div><br />
 		<img src="{SPACER}" width="150" height="1" alt="" />
 	</td>
-	<td class="row-post" width="100%" height="100%">
+	<td class="row-post tw100pct th100pct">
 
 		<div class="post-buttons-top post-buttons">
 			{postrow.ARROWS}
@@ -57,12 +57,12 @@
 </tr>
 <tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <!-- END text -->
-<tr><td colspan="2" class="cat">&nbsp;</td></tr>
+<tr><td class="cat" colspan="2">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
 <!-- IF AUTH_POST -->
-<table class="empty-table" width="100%" align="center" cellspacing="0">
+<table>
 <tr><td><span class="img-btn"><a href="{U_COMMENT_DO}"><img src="{REPLY_IMG}" alt="{L_COMMENT_ADD}" align="middle" /></a></span></td></tr>
 </table>
-<br clear="all" />
+<br class="clear" />
 <!-- ENDIF -->

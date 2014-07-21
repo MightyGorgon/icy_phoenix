@@ -90,17 +90,17 @@ function check()
 </form>
 <form method="post" action="{S_FILE_ACTION}" name="file_ids" onsubmit="return check();">
 <!-- BEGIN file_mode -->
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr><th colspan="6">{file_mode.L_FILE_MODE}</span></th></tr>
 <!-- IF file_mode.DATA -->
 <!-- BEGIN file_row -->
 <tr>
-	<td class="row1 row-center" width="5%"><span class="genmed">{file_mode.file_row.FILE_NUMBER}</span></td>
-	<td class="row1" width="50%"><span class="genmed">{file_mode.file_row.FILE_NAME}</span></td>
-	<td class="row1 row-center" width="10%"><span class="genmed"><a href="{file_mode.file_row.U_FILE_EDIT}">{L_EDIT}</a></span></td>
-	<td class="row1 row-center" width="10%"><span class="genmed"><a href="javascript:delete_file('{file_mode.file_row.U_FILE_DELETE}')">{L_DELETE}</a></span></td>
-	<td class="row1 row-center" width="20%"><span class="genmed"><a href="{file_mode.file_row.U_FILE_APPROVE}">{file_mode.file_row.L_APPROVE}</a></span></td>
-	<td class="row1 row-center" width="5%"><span class="genmed"><input type="checkbox" name="file_ids[]" value="{file_mode.file_row.FILE_ID}" /></span></td>
+	<td class="row1 row-center tw5pct"><span class="genmed">{file_mode.file_row.FILE_NUMBER}</span></td>
+	<td class="row1 tw50pct"><span class="genmed">{file_mode.file_row.FILE_NAME}</span></td>
+	<td class="row1 row-center tw10pct"><span class="genmed"><a href="{file_mode.file_row.U_FILE_EDIT}">{L_EDIT}</a></span></td>
+	<td class="row1 row-center tw10pct"><span class="genmed"><a href="javascript:delete_file('{file_mode.file_row.U_FILE_DELETE}')">{L_DELETE}</a></span></td>
+	<td class="row1 row-center tw20pct"><span class="genmed"><a href="{file_mode.file_row.U_FILE_APPROVE}">{file_mode.file_row.L_APPROVE}</a></span></td>
+	<td class="row1 row-center tw5pct"><span class="genmed"><input type="checkbox" name="file_ids[]" value="{file_mode.file_row.FILE_ID}" /></span></td>
 </tr>
 <!-- END file_row -->
 <!-- ELSE -->
@@ -109,9 +109,9 @@ function check()
 </table>
 <br />
 <!-- END file_mode -->
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr>
-	<td class="cat" align="center">
+	<td class="cat tdalignc">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" class="liteoption" name="approve" value="{L_APPROVE_FILE}" onclick="set_add_file(false); set_delete_file(false);" />
 		<input type="submit" class="liteoption" name="unapprove" value="{L_UNAPPROVE_FILE}" onclick="set_add_file(false); set_delete_file(false);" />
@@ -120,8 +120,8 @@ function check()
 </table>
 <br />
 </form>
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-	<tr><td align="right" nowrap="nowrap"><span class="pagination">{PAGINATION}</span></td></tr>
-	<tr><td align="right" nowrap="nowrap"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
+<table>
+	<tr><td class="tdalignr tdnw"><span class="pagination">{PAGINATION}</span></td></tr>
+	<tr><td class="tdalignr tdnw"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
 </table>
 <!-- INCLUDE pa_footer.tpl -->

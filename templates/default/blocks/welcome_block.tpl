@@ -1,4 +1,4 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td width="5%"><img src="images/icy_phoenix_small.png" alt="" /></td>
 	<td width="90%" align="center">{L_WELCOME_MESSAGE}<br /><br /></td>

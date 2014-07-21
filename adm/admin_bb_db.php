@@ -127,7 +127,7 @@ if (!$allowed)
 // Auth Check - END
 
 $images = IP_ROOT_PATH . 'images/bb_admin/';
-echo '<table class="forumline" width="200" cellspacing="0" cellpadding="0" border="0">';
+echo '<table class="forumline tw200px">';
 echo '	<tr>';
 echo '		<td align="left" valign="middle" class="row2" colspan="15">';
 echo '			<span class="genmed">';
@@ -157,7 +157,7 @@ if (isset($_POST['field_dynamic']))
 		}
 	}
 
-	echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
+	echo '<table class="forumline">';
 	for ($x = 0; $x < sizeof($qs); $x++)
 	{
 		echo '	<tr>';
@@ -204,7 +204,7 @@ if ($mode == 'sql_change')
 	if (!$action)
 	{
 		echo '<form name="sql" action="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'" method="post">';
-		echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
+		echo '<table class="forumline">';
 		echo '	<tr>';
 		echo '		<td class="row1" width="100%">';
 		echo '			<textarea cols="100" rows="20" name="sql_input" class="post"></textarea>';
@@ -213,8 +213,8 @@ if ($mode == 'sql_change')
 		echo '	<tr>';
 		echo '		<td class="row2 row-center" width="100%">';
 		echo '			<input type="submit" name="submit_it" value="'. $lang['db_submit_q'] .'" onclick="document.sql.submit()" class="liteoption" />';
-		echo '			<input type="hidden" name="mode" value="sql_change">';
-		echo '			<input type="hidden" name="action" value="submit">';
+		echo '			<input type="hidden" name="mode" value="sql_change" />';
+		echo '			<input type="hidden" name="action" value="submit" />';
 		echo '		</td>';
 		echo '	</tr>';
 		echo '</table>';
@@ -254,7 +254,7 @@ if ($mode == 'sql_change')
 				if (trim(strtolower($words[0])) == 'select')
 					$select_statement = TRUE;
 
-			echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
+			echo '<table class="forumline">';
 			echo '	<tr>';
 			echo '		<th width="100%">';
 			echo '			'. sprintf($lang['db_sql_total'], ($x + 1));
@@ -370,7 +370,7 @@ else
 $page_number 	= sprintf($lang['Page_of'], (floor($start / 30) + 1), ceil($rows / 30));
 $showing 		= "Showing ". number_format($start) ." - ". number_format($start + 30) ." (". number_format($rows) ." Total)";
 
-echo '<table class="forumline" width="30%" cellspacing="0" cellpadding="0" border="0">';
+echo '<table class="forumline tw30pct">';
 echo '	<tr>';
 echo '		<td class="row1" width="100%">';
 echo '			<span class="genmed">';
@@ -394,7 +394,7 @@ echo '		</td>';
 echo '	</tr>';
 echo '</table>';
 echo '<br clear="all">';
-echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
+echo '<table class="forumline">';
 echo '	<tr>';
 $fields = '';
 $fields = array();
@@ -440,7 +440,7 @@ echo '		}';
 echo '	}';
 echo '</script>';
 echo '<form name="mass" action="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'" method="post">';
-echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
+echo '<table class="forumline">';
 echo '	<tr>';
 echo '		<th>';
 echo '			<span class="genmed">';
@@ -510,7 +510,7 @@ $selected_tables = array();
 		echo '	<tr>';
 		echo '		<td class="row2">';
 		echo '			<span class="genmed">';
-		echo '				<input type="checkbox" name="selected_tables[]" value="'. $tables[$x]['Name'] .'">&nbsp;'. $tables[$x]['Name'];
+		echo '				<input type="checkbox" name="selected_tables[]" value="'. $tables[$x]['Name'] .'" />&nbsp;'. $tables[$x]['Name'];
 		echo '			</span>';
 		echo '		</td>';
 		echo '		<td class="row2">';
@@ -605,7 +605,7 @@ echo '		<th>'. $overhead .'</th>';
 echo '		<th>&nbsp;</th>';
 echo '	</tr>';
 echo '</table>';
-echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
+echo '<table class="forumline">';
 echo '	<tr>';
 echo '		<td class="row2" colspan="4">';
 echo '			<span class="genmed">';
@@ -616,27 +616,27 @@ echo '	</tr>';
 echo '	<tr>';
 echo '		<td class="row2 row-center">';
 echo '			<span class="genmed">';
-echo '				<input type="submit" name="Optimize" value="'. $lang['db_optimize'] .'" onclick="document.mass.submit()" class="liteoption">';
+echo '				<input type="submit" name="Optimize" value="'. $lang['db_optimize'] .'" onclick="document.mass.submit()" class="liteoption" />';
 echo '			</span>';
 echo '		</td>';
 echo '		<td class="row2 row-center">';
 echo '			<span class="genmed">';
-echo '				<input type="submit" name="Repair" value="'. $lang['db_repair'] .'" onclick="document.mass.submit()" class="liteoption">';
+echo '				<input type="submit" name="Repair" value="'. $lang['db_repair'] .'" onclick="document.mass.submit()" class="liteoption" />';
 echo '			</span>';
 echo '		</td>';
 echo '		<td class="row2 row-center">';
 echo '			<span class="genmed">';
-echo '				<input type="submit" name="Truncate" value="'. $lang['db_truncate'] .'" onclick="document.mass.submit()" class="liteoption">';
+echo '				<input type="submit" name="Truncate" value="'. $lang['db_truncate'] .'" onclick="document.mass.submit()" class="liteoption" />';
 echo '			</span>';
 echo '		</td>';
 echo '		<td class="row2 row-center">';
 echo '			<span class="genmed">';
-echo '				<input type="submit" name="Drop" value="'. $lang['db_drop'] .'" onclick="document.mass.submit()" class="liteoption">';
+echo '				<input type="submit" name="Drop" value="'. $lang['db_drop'] .'" onclick="document.mass.submit()" class="liteoption" />';
 echo '			</span>';
 echo '		</td>';
 echo '	</tr>';
 echo '</table>';
-echo '<input type="hidden" name="mass_change" value="selected">';
+echo '<input type="hidden" name="mass_change" value="selected" />';
 echo '</form>';
 	}
 
@@ -737,7 +737,7 @@ $tables = $db->sql_fetchrowset($r);
 		}
 
 echo '<form name="change_field" method="post" action="'. append_sid($_SERVER['SCRIPT_NAME']) .'">';
-echo '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
+echo '<table class="forumline">';
 echo '	<tr>';
 echo '		<th colspan="6">'. $table_name .'</th>';
 echo '	</tr>';
@@ -781,10 +781,10 @@ $f = 0;
 		{
 	echo '	<tr>';
 	echo '		<td class="row2">';
-	echo '			<input type="text" class="post" name="field_dynamic['. $f .']" value="'. $d['Field'] .'">';
-	echo '			<input type="hidden" name="field_static['. $f .']" value="'. $d['Field'] .'">';
-	echo '			<input type="hidden" name="table_name" value="'. $table_name .'">';
-	echo '			<input type="image" onclick="document.change_field.submit()" src="'. $images .'accept.gif" border="0">';
+	echo '			<input type="text" class="post" name="field_dynamic['. $f .']" value="'. $d['Field'] .'" />';
+	echo '			<input type="hidden" name="field_static['. $f .']" value="'. $d['Field'] .'" />';
+	echo '			<input type="hidden" name="table_name" value="'. $table_name .'" />';
+	echo '			<input type="image" onclick="document.change_field.submit()" src="'. $images .'accept.gif" border="0" />';
 	echo '		</td>';
 	echo '		<td class="row2">';
 	echo '			<span class="genmed">';

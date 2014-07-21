@@ -16,24 +16,24 @@ function toggle_check_all()
 
 <h1>{L_TITLE}</h1>
 <p>{L_TITLE_EXPLAIN}</p>
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right"><span class="pagination">{PAGINATION}</span></td>
+	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td class="tdalignr"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 
 <form method="post" action="{S_MODE_ACTION}" name="logs_values">
 <div><b>{L_LOGS_ACTIONS_FILTER}</b>:&nbsp;{LOGS_ACTIONS_FILTER}&nbsp;</div>
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
-	<th width="1" nowrap="nowrap"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
+	<th class="tw1pct tdnw"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
 	<th nowrap="nowrap" width="100"><a href="{U_LOG_TIME_SORT}" title="{L_CURRENT_SORT}">{L_DATE}{LOG_TIME_SORT}</a></th>
 	<th nowrap="nowrap" width="250"><a href="{U_LOG_PAGE_SORT}" title="{L_CURRENT_SORT}">{L_LINK}{LOG_PAGE_SORT}</a></th>
 	<th nowrap="nowrap" width="100"><a href="{U_LOG_USER_ID_SORT}" title="{L_CURRENT_SORT}">{L_USERNAME}{LOG_USER_ID_SORT}</a></th>
 	<th nowrap="nowrap" width="100"><a href="{U_LOG_ACTION_SORT}" title="{L_CURRENT_SORT}">{L_ACTION}{LOG_ACTION_SORT}</a></th>
 	<th nowrap="nowrap" width="100"><a href="{U_LOG_TARGET_SORT}" title="{L_CURRENT_SORT}">{L_LOGS_TARGET}{LOG_TARGET_SORT}</a></th>
-	<th nowrap="nowrap"><a href="{U_LOG_DESC_SORT}" title="{L_CURRENT_SORT}">{L_DESCRIPTION}{LOG_DESC_SORT}</a></th>
+	<th class="tdnw"><a href="{U_LOG_DESC_SORT}" title="{L_CURRENT_SORT}">{L_DESCRIPTION}{LOG_DESC_SORT}</a></th>
 </tr>
 <!-- BEGIN log_row -->
 <tr>
@@ -47,7 +47,7 @@ function toggle_check_all()
 	<!-- IF !(log_row.S_LOG_DESC_EXTRA) -->
 	<span class="gensmall">{log_row.LOG_DESC}</span>
 	<!-- ELSE -->
-	<table width="100%" cellspacing="0" cellpadding="0">
+	<table>
 		<tr>
 			<td class="gensmall" style="cursor: pointer;" onclick="ShowHide('log_desc_{log_row.LOG_ID}','log_desc_{log_row.LOG_ID}_h','log_desc_{log_row.LOG_ID}');">
 				<a href="#" onclick="return false;" class="nav-menu-link">{log_row.LOG_DESC}</a>
@@ -85,9 +85,9 @@ function toggle_check_all()
 </table>
 </form>
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right"><span class="pagination">{PAGINATION}</span></td>
+	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td class="tdalignr"><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>

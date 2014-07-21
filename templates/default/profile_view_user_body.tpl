@@ -2,11 +2,11 @@
 
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PROFILE_VIEWED}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PROFILE_VIEWED}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th width="50%" nowrap="nowrap">{L_VIEWER}</th>
-	<th width="25%" nowrap="nowrap">{L_STAMP}</th>
-	<th width="25%" nowrap="nowrap">{L_NUMBER}</th>
+	<th class="tw50pct tdnw">{L_VIEWER}</th>
+	<th class="tw25pct tdnw">{L_STAMP}</th>
+	<th class="tw25pct tdnw">{L_NUMBER}</th>
 </tr>
 <!-- BEGIN row -->
 <tr>
@@ -18,8 +18,8 @@
 <tr><td class="cat" colspan="3">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="right" valign="top" nowrap="nowrap"><span class="pagination">{PAGINATION}</span><br /></td></tr>
+<table>
+<tr><td class="tdalignr tdnw"><span class="pagination">{PAGINATION}</span><br /></td></tr>
 </table>
 
 <!-- INCLUDE profile_cpl_menu_inc_end.tpl -->

@@ -2,10 +2,10 @@
 
 <h2>{L_BBUS_COL_DESCRIPTIONS_CAPTION}</h2>
 
-{IMG_TBL}<table class="forumline" cellspacing="1" cellpadding="2" width="100%" align="center" border="0">
+{IMG_TBL}<table class="forumline">
 <tr>
-	<th width="20%" height="20" nowrap="nowrap"> {L_BBUS_COLHEADER_HEADER} </th>
-	<th width="80%" height="20" nowrap="nowrap"> {L_BBUS_COLHEADER_DESCRIPTION} </th>
+	<th class="tw20pct tdnw"> {L_BBUS_COLHEADER_HEADER} </th>
+	<th class="tw80pct tdnw"> {L_BBUS_COLHEADER_DESCRIPTION} </th>
 <tr>
 	<td class="row1"><span class="gensmall">{L_BBUS_COLHEADER_POSTS}</span></td>
 	<td class="row1"><span class="gensmall">{L_BBUS_COLHEADER_POSTS_EXPLAIN}</span></td>
@@ -37,7 +37,7 @@
 	<td class="row1"><span class="gensmall">{L_BBUS_COLHEADER_TOPICS_WATCHED_EXPLAIN}</span></td>
 </tr>
 <tr>
-	<td class="row3" colspan="2" align="center">
+	<td class="row3 tdalignc" colspan="2">
 		<div style="text-align: center;"><span class="genmed"><a href="javascript:window.close();" class="genmed">{L_CLOSE_WINDOW}</a></span></div>
 	</td>
 </tr>

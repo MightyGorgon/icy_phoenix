@@ -1,7 +1,7 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td class="no-padding" width="50%" valign="top">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 		<tr><th align="center" colspan="2"><span class="gensmall"><b>{TOP_DOWNLOADS}</b></span><br /></th></tr>
 		<!-- BEGIN dlrow -->
 		<tr>
@@ -15,7 +15,7 @@
 		</table>
 	</td>
 	<td class="no-padding" width="50%" valign="top">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr><th align="center" colspan="2"><span class="gensmall"><b>{NEW_DOWNLOADS}</b></span><br /></th></tr>
 			<!-- BEGIN dlrow2 -->
 			<tr>

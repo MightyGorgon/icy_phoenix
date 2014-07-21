@@ -3,7 +3,7 @@
 <p>{L_CONFIGURATION_EXPLAIN}</p>
 
 <form id="configform" action="{S_CONFIG_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_HEADER_FOOTER}</th></tr>
 <tr>
 	<td class="row1"><strong>{L_HEADER_TABLE_SWITCH}</strong><br /><span class="gensmall">{L_HEADER_TABLE_SWITCH_EXPLAIN}</span></td>
@@ -51,7 +51,7 @@
 	<td class="row2"><input type="radio" name="shout_allow_guest" value="1" {SHOUT_GUEST_YES} />{L_YES}&nbsp;&nbsp;<input type="radio" name="shout_allow_guest" value="2" {SHOUT_GUEST_READONLY} />{L_SHOUT_GUEST_READONLY}&nbsp;&nbsp;<input type="radio" name="shout_allow_guest" value="0" {SHOUT_GUEST_NO} />{L_NO}</td>
 </tr>
 {BB_USAGE_STATS_ADMIN_TEMPLATE}
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>
 </form>
 <br clear="all" />

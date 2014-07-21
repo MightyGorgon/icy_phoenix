@@ -10,11 +10,11 @@
 <tr>
 	<!-- BEGIN index_col -->
 	<td class="{index_row.index_col.ROW_CLASS} row-center-small">
-		<table class="empty-table" width="100%" cellspacing="5" cellpadding="0" border="0">
+		<table>
 			<tr>
 				<td width="50px">{index_row.index_col.CAT_ICON}</td>
-				<td class="genmed" align="left">
-					<table class="empty-table" width="100%" cellspacing="5" cellpadding="0" border="0">
+				<td class="genmed tdalignl">
+					<table>
 						<!-- BEGIN menu_row -->
 						<tr><td><span class="forumlink">{index_row.index_col.menu_row.MENU_URL}<br /></span>{index_row.index_col.menu_row.MENU_DESC}</td></tr>
 						<!-- END menu_row -->

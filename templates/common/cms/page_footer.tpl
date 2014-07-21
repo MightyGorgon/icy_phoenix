@@ -5,7 +5,7 @@
 </div></div>
 <!-- PAGE_END -->
 
-<span><a name="bottom" id="bottom"></a></span>
+<span><a id="bottom"></a></span>
 </div>
 
 <br clear="all" />

@@ -3,7 +3,7 @@
 <p>{L_FORUM_SETTINGS_EXPLAIN}</p>
 
 <form method="post" action="{S_FORUM_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th colspan="3">{L_FORUM_TITLE}</th>
 	<!-- BEGIN cashrow -->
@@ -15,11 +15,11 @@
 <!-- BEGIN forumrow -->
 <tr> 
 	<td class="row2"><span class="gen"><a href="{catrow.forumrow.U_VIEWFORUM}" target="_new">{catrow.forumrow.FORUM_NAME}</a></span><br /><span class="gensmall">{catrow.forumrow.FORUM_DESC}</span></td>
-	<td class="row1 row-center" valign="middle"><span class="gen">{catrow.forumrow.NUM_TOPICS}</span></td>
-	<td class="row2 row-center" valign="middle"><span class="gen">{catrow.forumrow.NUM_POSTS}</span></td>
+	<td class="row1 row-center tvalignm"><span class="gen">{catrow.forumrow.NUM_TOPICS}</span></td>
+	<td class="row2 row-center tvalignm"><span class="gen">{catrow.forumrow.NUM_POSTS}</span></td>
 	<!-- BEGIN cashrow -->
-	<td class="row1 row-center" valign="middle"><span class="gen"><input type="radio" name="{catrow.forumrow.cashrow.S_NAME}" value="1"{catrow.forumrow.cashrow.S_ON} />{L_ON}</span></td>
-	<td class="row2 row-center" valign="middle"><span class="gen"><input type="radio" name="{catrow.forumrow.cashrow.S_NAME}" value="0"{catrow.forumrow.cashrow.S_OFF} />{L_OFF}</span></td>
+	<td class="row1 row-center tvalignm"><span class="gen"><input type="radio" name="{catrow.forumrow.cashrow.S_NAME}" value="1"{catrow.forumrow.cashrow.S_ON} />{L_ON}</span></td>
+	<td class="row2 row-center tvalignm"><span class="gen"><input type="radio" name="{catrow.forumrow.cashrow.S_NAME}" value="0"{catrow.forumrow.cashrow.S_OFF} />{L_OFF}</span></td>
 	<!-- END cashrow -->
 </tr>
 <!-- END forumrow -->

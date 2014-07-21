@@ -20,14 +20,14 @@
 <!-- END switch_privmsg -->
 
 <!-- BEGIN switch_prv_msg_review -->
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr><td class="row-header" colspan="2"><span>{switch_prv_msg_review.PRIVATE_MSG_TITLE}</span></td></tr>
-<tr><td align="left" valign="top" colspan="2" width="65%" class="row2"><div class="post-text post-text-hide-flow">{switch_prv_msg_review.PRIVATE_MSG_REVIEW}</div></td></tr>
+<tr><td class="row2 tw65pct" colspan="2"><div class="post-text post-text-hide-flow">{switch_prv_msg_review.PRIVATE_MSG_REVIEW}</div></td></tr>
 </table>
 <!-- END switch_prv_msg_review -->
 <form action="{S_POST_ACTION}" method="post" name="post" onsubmit="return checkForm(this);" {S_FORM_ENCTYPE}>
 <!-- BEGIN save_draft_confirm -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_DRAFTS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_DRAFTS}</span>{IMG_THR}<table class="forumlinenb">
 <tr><td class="row1g">{L_DRAFT_CONFIRM}<br /><br /><input type="submit" name="draft_confirm" value="{L_YES}" class="mainoption" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
@@ -45,7 +45,7 @@
 
 <div class="block-empty">
 	<h2>{L_POST_A}</h2>
-<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumlinenb">
 <!-- BEGIN switch_username_select -->
 <tr>
 	<td class="row1"><span class="gen"><b>{L_USERNAME}</b></span></td>
@@ -85,8 +85,8 @@
 </tr>
 <!-- END switch_news_cat -->
 <tr>
-	<td class="row1" width="22%" valign="top"><span class="gen"><b>{L_MESSAGE_BODY}</b></span></td>
-	<td class="row2" width="78%" valign="top">
+	<td class="row1 tw22pct"><span class="gen"><b>{L_MESSAGE_BODY}</b></span></td>
+	<td class="row2 tw78pct">
 		<div class="message-box"><textarea id="message" name="message" style="width: 98%; height: 200px;" tabindex="4">{MESSAGE}</textarea></div>
 	</td>
 </tr>
@@ -120,7 +120,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1" valign="top"><span class="gen"><b>{L_OPTIONS}</b></span><br /><span class="gensmall">{HTML_STATUS}<br />{BBCODE_STATUS}<br />{SMILIES_STATUS}</span></td>
+	<td class="row1"><span class="gen"><b>{L_OPTIONS}</b></span><br /><span class="gensmall">{HTML_STATUS}<br />{BBCODE_STATUS}<br />{SMILIES_STATUS}</span></td>
 	<td class="row2">
 		<div class="genmed">
 			<!-- BEGIN switch_show_portal -->
@@ -167,12 +167,12 @@
 <!-- BEGIN switch_type_cal -->
 <tr><th colspan="2">{L_CALENDAR_TITLE}</th></tr>
 <tr>
-	<td class="row1" valign="top"><span class="gen"><b>{L_CALENDAR_TITLE}</b></span></td>
-	<td valign="top" class="row1">
+	<td class="row1"><span class="gen"><b>{L_CALENDAR_TITLE}</b></span></td>
+	<td class="row1">
 		<table cellpadding="2" cellspacing="0" width="100%" border="0">
 			<tr>
-				<td align="right" nowrap="nowrap"><span><b>{L_CALENDAR_TITLE}:&nbsp;</b></span></td>
-				<td align="left" width="100%">
+				<td class="tdalignr tdnw"><span><b>{L_CALENDAR_TITLE}:&nbsp;</b></span></td>
+				<td class="tw100pct">
 					<span class="genmed">
 						{S_CALENDAR_DAY}{S_CALENDAR_MONTH}{S_CALENDAR_YEAR}&nbsp;
 						<a href="#" class="genmed" onclick="document.post.topic_calendar_day.value='{TODAY_DAY}';document.post.topic_calendar_month.value='{TODAY_MONTH}';document.post.topic_calendar_year.value='{TODAY_YEAR}';">{L_TODAY}</a>
@@ -180,8 +180,8 @@
 				</td>
 			</tr>
 			<tr>
-				<td align="right" nowrap="nowrap"><span><b>{L_TIME}:&nbsp;</b></span></td>
-				<td align="left" width="100%">
+				<td class="tdalignr tdnw"><span><b>{L_TIME}:&nbsp;</b></span></td>
+				<td class="tw100pct">
 					<span class="genmed">
 						<input name="topic_calendar_hour" type="text" maxlength="2" size="3" value="{CALENDAR_HOUR}" class="post" />&nbsp;{L_HOURS}&nbsp;&nbsp;
 						<input name="topic_calendar_min" type="text" maxlength="2" size="3" value="{CALENDAR_MIN}" class="post" />&nbsp;{L_MINUTES}
@@ -189,8 +189,8 @@
 				</td>
 			</tr>
 			<tr>
-				<td align="right" nowrap="nowrap"><span><b>{L_CALENDAR_DURATION}:&nbsp;</b></span></td>
-				<td align="left" width="100%">
+				<td class="tdalignr tdnw"><span><b>{L_CALENDAR_DURATION}:&nbsp;</b></span></td>
+				<td class="tw100pct">
 					<span class="genmed">
 						<input name="topic_calendar_duration_day" type="text" maxlength="5" size="3" value="{CALENDAR_DURATION_DAY}" class="post" />&nbsp;{L_DAYS}&nbsp;&nbsp;
 						<input name="topic_calendar_duration_hour" type="text" maxlength="5" size="3" value="{CALENDAR_DURATION_HOUR}" class="post" />&nbsp;{L_HOURS}&nbsp;&nbsp;

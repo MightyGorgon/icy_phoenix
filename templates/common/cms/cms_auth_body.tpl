@@ -1,6 +1,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_users_auth.png" alt="{L_CMS_AUTH}" title="{L_CMS_AUTH}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_AUTH}</h1><span class="genmed">{L_CMS_AUTH_TEXT}</span></td>
@@ -8,19 +8,19 @@
 </table>
 
 <form method="post" name="post" action="{S_AUTH_ACTION}">
-<table width="100%" cellspacing="0" cellpadding="0">
+<table>
 <tr>
-	<td width="50%" valign="top" style="width: 50%; vertical-align: top; padding-right: 5px;">
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+	<td style="width: 50%; vertical-align: top; padding-right: 5px;">
+		<table class="forumline">
 		<tr><th colspan="2">{L_CMS_AUTH_XP}</th></tr>
 		<tr>
 			<!-- IF NO_AUTH -->
 			<td class="row1 row-center" colspan="2">{L_CMS_NO_AUTH}</td>
 			<!-- ELSE -->
 			<td class="row1 row-center">
-				<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+				<table class="forumlinenb">
 				<tr>
-					<th width="200">{L_CMS_USER}</th>
+					<th class="tw200px">{L_CMS_USER}</th>
 					<th>{L_CMS_AUTH}</th>
 				</tr>
 				<!-- BEGIN users -->
@@ -38,20 +38,20 @@
 			<!-- ENDIF -->
 		</tr>
 		<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-		<tr><td class="cat" colspan="2" align="center"><a class="cms-button-small" onclick="window.location.href='{U_AUTH_ADD}'" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
+		<tr><td class="cat tdalignc" colspan="2"><a class="cms-button-small" onclick="window.location.href='{U_AUTH_ADD}'" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
 		</table>
 	</td>
-	<td width="50%" valign="top" style="width: 50%; vertical-align: top; padding-left: 5px;">
-		<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+	<td style="width: 50%; vertical-align: top; padding-left: 5px;">
+		<table class="forumline">
 		<tr><th colspan="2">{L_CMS_ROLES}</th></tr>
 		<tr>
 			<!-- IF NO_ROLE -->
 			<td class="row1 row-center" colspan="2">{L_CMS_NO_AUTH}</td>
 			<!-- ELSE -->
 			<td class="row1 row-center">
-				<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+				<table class="forumlinenb">
 				<tr>
-					<th width="200">{L_CMS_USER}</th>
+					<th class="tw200px">{L_CMS_USER}</th>
 					<th>{L_CMS_ROLE}</th>
 				</tr>
 				<!-- BEGIN roles -->
@@ -71,7 +71,7 @@
 			<!-- ENDIF -->
 		</tr>
 		<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
-		<tr><td class="cat" colspan="2" align="center"><a class="cms-button-small" onclick="window.location.href='{U_AUTH_ADDROLE}'" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
+		<tr><td class="cat tdalignc" colspan="2"><a class="cms-button-small" onclick="window.location.href='{U_AUTH_ADDROLE}'" href="javascript:void(0);">{L_CMS_AUTH_ADD}</a></td></tr>
 		</table>
 	</td>
 </tr>

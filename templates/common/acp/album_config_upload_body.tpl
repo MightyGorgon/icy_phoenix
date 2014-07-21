@@ -75,7 +75,7 @@
 	<td class="row2"><span class="genmed"><input type="radio" {PERL_UPLOADER_ENABLED} name="perl_uploader" value="1" />{L_YES}&nbsp;&nbsp;<input type="radio" {PERL_UPLOADER_DISABLED} name="perl_uploader" value="0" />{L_NO}</span></td>
 </tr>
 <tr>
-	<td class="row1" width="45%"><span class="genmed">{L_PATH_TO_BIN}</span></td>
+	<td class="row1 tw45pct"><span class="genmed">{L_PATH_TO_BIN}</span></td>
 	<td class="row2"><input class="post" type="text" size="15" name="path_to_bin" value="{PATH_TO_BIN}" /></td>
 </tr>
 <tr>

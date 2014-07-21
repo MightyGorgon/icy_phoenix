@@ -171,14 +171,14 @@ window.onload = doOnLoadMenuACP;
 // ]]>
 </script>
 <div class="forumline-no2" style="border: solid 1px #334466;">
-<table width="100%" cellspacing="0" cellpadding="0">
+<table>
 <tr class="forumline"><td class="row-header"><span>{L_ADMIN}</span></td></tr>
 <!-- BEGIN catrow -->
 <tr class="forumline"><th style="cursor: pointer; text-align: left; vertical-align: middle;" onclick="onMenuCatClick('{catrow.MENU_CAT_ID}');">{catrow.MENU_CAT_ICON}{catrow.ADMIN_CATEGORY}</th></tr>
 <tr>
 	<td style="padding:0px;">
 		<div id="menuCat_{catrow.MENU_CAT_ID}" style="display: block;">
-			<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+			<table>
 			<!-- BEGIN modulerow -->
 			<tr>
 				<td class="row1h"><div id="menuCat_{catrow.MENU_CAT_ID}_{catrow.modulerow.ROW_COUNT}" style="display: block;" class="genmed"><a href="{catrow.modulerow.U_ADMIN_MODULE}" target="main" class="genmed">{catrow.modulerow.ADMIN_MODULE}</a></div>

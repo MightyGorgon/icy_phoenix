@@ -1,6 +1,6 @@
 <!-- INCLUDE ../common/cms/page_header.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_cms.png" alt="{L_CMS_TITLE}" title="{L_CMS_TITLE}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_LAYOUT_TITLE}</h1><span class="genmed">{L_LAYOUT_TEXT}</span></td>
@@ -18,7 +18,7 @@ setTimeout(function() { $('#box-updated').fadeOut(1000); }, 3000);
 
 <!-- BEGIN layout -->
 <form method="post" action="{S_LAYOUT_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<th style="width: 30px;">{L_CMS_ID}</th>
 	<th style="width: 120px;">{L_CMS_ACTIONS}</th>

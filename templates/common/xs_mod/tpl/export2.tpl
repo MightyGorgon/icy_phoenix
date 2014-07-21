@@ -15,7 +15,7 @@
 
 <p>{L_XS_EXPORT_STYLE_EXPLAIN}</p>
 
-<form action="{FORM_ACTION}" method="post"><input type="hidden" name="export" value="{EXPORT_TEMPLATE}" /><table width="100%" cellpadding="4" cellspacing="1" border="0" align="center" class="forumline">
+<form action="{FORM_ACTION}" method="post"><input type="hidden" name="export" value="{EXPORT_TEMPLATE}" /><table class="forumline">
 	<tr>
 		<th colspan="2">{L_TITLE}</th>
 	</tr>
@@ -26,7 +26,7 @@
 	<!-- BEGIN switch_select_style -->
 	<tr>
 		<td class="row1">{L_XS_EXPORT_STYLE_NAMES}:</td>
-		<td class="row2" nowrap="nowrap">
+		<td class="row2 tdnw">
 			<!-- BEGIN style -->
 			<input type="hidden" name="export_style_id_{switch_select_style.style.NUM}" value="{switch_select_style.style.ID}" />
 			<input type="checkbox" name="export_style_{switch_select_style.style.NUM}" checked="checked" />
@@ -38,7 +38,7 @@
 	<!-- BEGIN switch_select_nostyle -->
 	<tr>
 		<td class="row1">{L_XS_EXPORT_STYLE_NAME}:</td>
-		<td class="row2" nowrap="nowrap">
+		<td class="row2 tdnw">
 			<input type="hidden" name="export_style_id_0" value="{STYLE_ID}" />
 			<input type="hidden" name="export_style_0" value="checked" />
 			<input type="text" class="post" name="export_style_name_0" value="{STYLE_NAME}" title="{STYLE_NAME}" size="30" />
@@ -51,7 +51,7 @@
 	</tr>
 	<tr>
 		<td class="row1">{L_XS_EXPORT_WHERE}:</td>
-		<td class="row2" nowrap="nowrap"><table width="100%" cellspacing="0" cellpadding="1">
+		<td class="row2 tdnw"><table class="p2px">
 		<tr>
 			<td colspan="2"><input type="radio" name="export_to" value="save" {SEND_METHOD_SAVE} /> {L_XS_EXPORT_WHERE_DOWNLOAD}</td>
 		</tr>
@@ -68,19 +68,19 @@
 			<td colspan="2"><input type="radio" name="export_to" value="ftp" {SEND_METHOD_FTP} /> {L_XS_EXPORT_WHERE_FTP}</td>
 		</tr>
 		<tr>
-			<td nowrap="nowrap">&nbsp;&nbsp;{L_XS_FTP_HOST}:</td>
+			<td class="tdnw">&nbsp;&nbsp;{L_XS_FTP_HOST}:</td>
 			<td><input class="post" type="text" name="export_to_ftp_host" value="{SEND_DATA_HOST}" size="30" /></td>
 		</tr>
 		<tr>
-			<td nowrap="nowrap">&nbsp;&nbsp;{L_XS_FTP_LOGIN}:</td>
+			<td class="tdnw">&nbsp;&nbsp;{L_XS_FTP_LOGIN}:</td>
 			<td><input class="post" type="text" name="export_to_ftp_login" value="{SEND_DATA_LOGIN}" size="30" /></td>
 		</tr>
 		<tr>
-			<td nowrap="nowrap">&nbsp;&nbsp;{L_XS_FTP_PASS}:</td>
+			<td class="tdnw">&nbsp;&nbsp;{L_XS_FTP_PASS}:</td>
 			<td><input class="post" type="text" name="export_to_ftp_pass" value="" size="30" /></td>
 		</tr>
 		<tr>
-			<td nowrap="nowrap">&nbsp;&nbsp;{L_XS_FTP_REMOTEDIR}:</td>
+			<td class="tdnw">&nbsp;&nbsp;{L_XS_FTP_REMOTEDIR}:</td>
 			<td><input class="post" type="text" name="export_to_ftp_dir" value="{SEND_DATA_FTPDIR}" size="30" /></td>
 		</tr>
 		</table></td>

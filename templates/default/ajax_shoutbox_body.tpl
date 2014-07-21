@@ -17,15 +17,15 @@
 <div align="center">
 	<div class="chat-box" align="center">
 		<div id="ajax_chat_h" style="display: none;">
-		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_SHOW}" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_SHOW}" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb">
 		<tr><td>&nbsp;</td></tr>
 		</table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 		</div>
 		<div id="ajax_chat">
-		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_HIDE}" />&nbsp;<img src="{T_COMMON_TPL_PATH}images/act_indicator.gif" id="indicator" alt="" style="visibility: hidden;" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+		{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('ajax_chat','ajax_chat_h','ajax_chat');" alt="{L_HIDE}" />&nbsp;<img src="{T_COMMON_TPL_PATH}images/act_indicator.gif" id="indicator" alt="" style="visibility: hidden;" />&nbsp;<span class="forumlink">{L_AJAX_SHOUTBOX}</span>{IMG_THR}<table class="forumlinenb">
 		<!-- BEGIN shout_allowed -->
 		<tr>
-			<td class="row1 row-center" valign="bottom">
+			<td class="row1 row-center tvalignb">
 				<form id="chatForm" name="chatForm" onsubmit="sendComment(); return false;" action="">
 					{BBCB_MG_SMALL}
 					<!-- BEGIN guest_shouter -->

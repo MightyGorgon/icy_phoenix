@@ -2,7 +2,7 @@
 <p>{L_TITLE_EXPLAIN}</p>
 
 <form action="{S_ACTION}" name="post" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th nowrap="nowrap" colspan="2">{L_PACK}</th></tr>
 <!-- BEGIN row -->
 <tr>
@@ -18,10 +18,10 @@
 
 <br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_SEARCH}</th></tr>
 <tr>
-	<td class="row1" valign="top"><span class="genmed"><strong>{L_SEARCH_WORDS}</strong></span><br /><span class="gensmall">{L_SEARCH_WORDS_EXPLAIN}</span><br /></td>
+	<td class="row1"><span class="genmed"><strong>{L_SEARCH_WORDS}</strong></span><br /><span class="gensmall">{L_SEARCH_WORDS_EXPLAIN}</span><br /></td>
 	<td class="row2">
 		<input type="text" class="post" name="search_words" value="{SEARCH_WORDS}" size="64" /><br />
 		<input type="radio" name="search_logic" value="0" {SEARCH_ALL} /><span class="gen">&nbsp;{L_SEARCH_ALL}&nbsp;&nbsp;</span>
@@ -29,7 +29,7 @@
 	</td>
 </tr>
 <tr>
-	<td class="row1" valign="top"><span class="genmed"><strong>{L_SEARCH_IN}</strong></span><br /><span class="gensmall">{L_SEARCH_IN_EXPLAIN}</span><br /></td>
+	<td class="row1"><span class="genmed"><strong>{L_SEARCH_IN}</strong></span><br /><span class="gensmall">{L_SEARCH_IN_EXPLAIN}</span><br /></td>
 	<td class="row2">
 		&nbsp;<input type="radio" name="search_in" value="0" {SEARCH_IN_KEY} />&nbsp;<span class="gen">{L_SEARCH_IN_KEY}</span><br />
 		&nbsp;<input type="radio" name="search_in" value="1" {SEARCH_IN_VALUE} />&nbsp;<span class="gen">{L_SEARCH_IN_VALUE}</span><br />
@@ -42,6 +42,6 @@
 		-->
 	</td>
 </tr>
-<tr><td class="cat" align="center" colspan="2"><input type="submit" name="submit" class="mainoption" value="{L_SUBMIT}" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2"><input type="submit" name="submit" class="mainoption" value="{L_SUBMIT}" /></td></tr>
 </table>
 {S_HIDDEN_FIELDS}</form>

@@ -3,7 +3,7 @@
 <p>{L_PAGE_TITLE_EXPLAIN}</p>
 
 <form name="news" action="{S_FORUM_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 	<tr><th colspan="2">{L_XS_NEWS_TICKER_SETTINGS}</th></tr>
 	<tr>
 		<td class="row1">{L_XS_NEWS_TICKER_TITLE}<br /><span class="gensmall">{L_XS_NEWS_TICKER_TITLE_EXPLAIN}</span></td>
@@ -33,7 +33,7 @@
 		<td class="row1">{L_XS_NEWS_TICKER_SD}</td>
 		<td class="row2"><input type="radio" name="xml_direction" value="0" {XS_NEWS_TICKER_SD_LEFT} /> {L_XS_LEFT}&nbsp;&nbsp;<input type="radio" name="xml_direction" value="1" {XS_NEWS_TICKER_SD_RIGHT} /> {L_XS_RIGHT}</td>
 	</tr>
-	<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{S_SUBMIT_VALUE}" class="mainoption" /></td></tr>
+	<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{S_SUBMIT_VALUE}" class="mainoption" /></td></tr>
 </table>
 </form>
 <br clear="all" />

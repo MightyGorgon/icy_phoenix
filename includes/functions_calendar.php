@@ -521,8 +521,8 @@ function get_birthdays(&$events, &$number, $start_date, $end_date, $year = 0, $y
 
 		$tmp_message = sprintf($lang['birthday'], $username_colorized);
 		// It is JavaScript... we need to escape slashes
-		//$message = htmlspecialchars('<table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row1" nowrap="nowrap"><b>' . $lang['birthday_header'] . '<\/b><span class="topiclink"><\/span><hr \/><span class="genmed">' . $tmp_message . '<\/span><\/td><\/tr><\/table>');
-		$message = htmlspecialchars('<table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row1" nowrap="nowrap"><b>' . $lang['birthday_header'] . '</b><span class="topiclink"></span><hr /><span class="genmed">' . $tmp_message . '</span></td></tr></table>');
+		//$message = htmlspecialchars('<table class="forumline"><tr><td class="row1" nowrap="nowrap"><b>' . $lang['birthday_header'] . '<\/b><span class="topiclink"><\/span><hr \/><span class="genmed">' . $tmp_message . '<\/span><\/td><\/tr><\/table>');
+		$message = htmlspecialchars('<table class="forumline"><tr><td class="row1" nowrap="nowrap"><b>' . $lang['birthday_header'] . '</b><span class="topiclink"></span><hr /><span class="genmed">' . $tmp_message . '</span></td></tr></table>');
 		$message = preg_replace("/[\n\r]{1,2}/", '', $message);
 
 		$new_row = array();

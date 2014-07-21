@@ -2,10 +2,10 @@
 <p>{L_USER_EXPLAIN}</p>
 
 <form action="{S_ACP_PROFILE_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="{S_COLSPAN}" height="25" valign="middle">{L_AVATAR_GALLERY}</th></tr>
 <tr>
-	<td class="cat" align="center" valign="middle" colspan="6" height="28"><span class="genmed">{L_CATEGORY}:&nbsp;{S_CATEGORY_SELECT}&nbsp;<input type="submit" class="liteoption" value="{L_GO}" name="avatargallery" /></span></td>
+	<td class="cat tdalignc tvalignm" colspan="6" height="28"><span class="genmed">{L_CATEGORY}:&nbsp;{S_CATEGORY_SELECT}&nbsp;<input type="submit" class="liteoption" value="{L_GO}" name="avatargallery" /></span></td>
 </tr>
 <!-- BEGIN avatar_row -->
 <tr>
@@ -21,7 +21,7 @@
 
 <!-- END avatar_row -->
 <tr>
-	<td class="cat" colspan="{S_COLSPAN}" align="center" height="28">{S_HIDDEN_FIELDS}
+	<td class="cat tdalignc" colspan="{S_COLSPAN}">{S_HIDDEN_FIELDS}
 	<input type="submit" name="submitavatar" value="{L_SELECT_AVATAR}" class="mainoption" />&nbsp;&nbsp;
 	<input type="submit" name="cancelavatar" value="{L_RETURN_PROFILE}" class="liteoption" />
 	</td>

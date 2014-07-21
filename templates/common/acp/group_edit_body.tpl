@@ -26,7 +26,7 @@ last_username = '{GROUP_MODERATOR}';
 <h1>{L_GROUP_TITLE}</h1>
 
 <form action="{S_GROUP_ACTION}" method="post" name="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_GROUP_EDIT_DELETE}</th></tr>
 <tr><td class="row1" colspan="2"><span class="gensmall">{L_ITEMS_REQUIRED}</span></td></tr>
 <tr>
@@ -99,7 +99,7 @@ last_username = '{GROUP_MODERATOR}';
 </tr>
 <!-- END group_edit -->
 <tr>
-	<td class="cat" colspan="2" align="center">
+	<td class="cat tdalignc" colspan="2">
 	{S_HIDDEN_FIELDS}
 	<input type="submit" name="group_update" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;
 	<input type="reset" value="{L_RESET}" name="reset" class="liteoption" />

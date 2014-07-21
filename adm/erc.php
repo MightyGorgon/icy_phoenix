@@ -175,19 +175,21 @@ if ($lg == '')
 </head>
 <body>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="10" align="center">
-	<tr>
-		<td><table width="100%" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<td><img src="../images/logo_ip_small.png" alt="<?php echo $lang['Forum_Home']; ?>" vspace="1" /></td>
-				<td align="center" width="100%" valign="middle"><span class="maintitle"><?php echo $lang['ERC']; ?></span><br />
-					<?php echo ($option == '') ? '' : $lang[$option] ?></td>
-			</tr>
-		</table></td>
-	</tr>
+<table>
+<tr>
+	<td>
+		<table>
+		<tr>
+			<td><img src="../images/logo_ip_small.png" alt="<?php echo $lang['Forum_Home']; ?>" /></td>
+			<td align="center" width="100%" valign="middle"><span class="maintitle"><?php echo $lang['ERC']; ?></span><br />
+				<?php echo ($option == '') ? '' : $lang[$option] ?></td>
+		</tr>
+		</table>
+	</td>
+</tr>
 </table>
 
-<br clear="all" />
+<br class="clear" />
 
 <?php
 switch($mode)
@@ -195,16 +197,18 @@ switch($mode)
 	case 'select_lang':
 ?>
 <form action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" method="post">
-<table border="0" cellspacing="0" cellpadding="10">
-	<tr>
-		<td><table width="100%" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<td><b><?php echo $lang['Select_Language']; ?>:</b></td>
-				<td width="10">&nbsp;</td>
-				<td><?php echo language_select('lg', 'english'); ?>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
-			</tr>
-		</table></td>
-	</tr>
+<table>
+<tr>
+	<td>
+		<table>
+		<tr>
+			<td><b><?php echo $lang['Select_Language']; ?>:</b></td>
+			<td class="tw10px">&nbsp;</td>
+			<td><?php echo language_select('lg', 'english'); ?>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
+		</tr>
+		</table>
+	</td>
+</tr>
 </table>
 </form>
 <?php
@@ -212,47 +216,49 @@ switch($mode)
 	case 'start':
 ?>
 <form action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" method="post">
-<table border="0" cellspacing="0" cellpadding="10">
-	<tr>
-		<td><table width="100%" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<td nowrap="nowrap"><b><?php echo $lang['Select_Option']; ?>:</b></td>
-				<td width="10">&nbsp;</td>
-				<td><input type="hidden" name="lg" value="<?php echo $lg ?>" />
-					<input type="hidden" name="mode" value="datainput" />
-					<select size="1" name="option">
-					<option value="cls"><?php echo $lang['cls']; ?></option>
+<table>
+<tr>
+	<td>
+		<table>
+		<tr>
+			<td class="tdnw"><b><?php echo $lang['Select_Option']; ?>:</b></td>
+			<td class="tw10px">&nbsp;</td>
+			<td><input type="hidden" name="lg" value="<?php echo $lg ?>" />
+				<input type="hidden" name="mode" value="datainput" />
+				<select size="1" name="option">
+				<option value="cls"><?php echo $lang['cls']; ?></option>
 <?php
 	if (check_mysql_version())
 	{
 ?>
-					<option value="rdb"><?php echo $lang['rdb']; ?></option>
+				<option value="rdb"><?php echo $lang['rdb']; ?></option>
 <?php
 	}
 ?>
-					<option value="cct"><?php echo $lang['cct']; ?></option>
-					<option value="ecf"><?php echo $lang['ecf']; ?></option>
-					<option value="rpd"><?php echo $lang['rpd']; ?></option>
-					<option value="rcd"><?php echo $lang['rcd']; ?></option>
-					<option value="rld"><?php echo $lang['rld']; ?></option>
-					<option value="rtd"><?php echo $lang['rtd']; ?></option>
-					<option value="dgc"><?php echo $lang['dgc']; ?></option>
-					<option value="cbl"><?php echo $lang['cbl']; ?></option>
-					<option value="raa"><?php echo $lang['raa']; ?></option>
-					<option value="mua"><?php echo $lang['mua']; ?></option>
-					<option value="rcp"><?php echo $lang['rcp']; ?></option>
-				</select>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
-			</tr>
-			<tr>
-				<td colspan="3">&nbsp;</td>
-			</tr>
-			<tr>
-				<td nowrap="nowrap"><b><?php echo $lang['Option_Help']; ?>:</td>
-				<td>&nbsp;</td>
-				<td><?php echo $lang['Option_Help_Text']; ?></td>
-			</tr>
-		</table></td>
-	</tr>
+				<option value="cct"><?php echo $lang['cct']; ?></option>
+				<option value="ecf"><?php echo $lang['ecf']; ?></option>
+				<option value="rpd"><?php echo $lang['rpd']; ?></option>
+				<option value="rcd"><?php echo $lang['rcd']; ?></option>
+				<option value="rld"><?php echo $lang['rld']; ?></option>
+				<option value="rtd"><?php echo $lang['rtd']; ?></option>
+				<option value="dgc"><?php echo $lang['dgc']; ?></option>
+				<option value="cbl"><?php echo $lang['cbl']; ?></option>
+				<option value="raa"><?php echo $lang['raa']; ?></option>
+				<option value="mua"><?php echo $lang['mua']; ?></option>
+				<option value="rcp"><?php echo $lang['rcp']; ?></option>
+			</select>&nbsp;<input type="submit" value="<?php echo $lang['Submit_text']; ?>" class="post" /></td>
+		</tr>
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="tdnw"><b><?php echo $lang['Option_Help']; ?>:</td>
+			<td>&nbsp;</td>
+			<td><?php echo $lang['Option_Help_Text']; ?></td>
+		</tr>
+		</table>
+	</td>
+</tr>
 </table>
 </form>
 <?php
@@ -296,7 +302,7 @@ switch($mode)
 			if ($option != 'rld' && $option != 'rtd')
 			{
 ?>
-					<td width="20">&nbsp;</td>
+					<td class="tw20px">&nbsp;</td>
 					<td><b><?php echo $lang['Database_Login']; ?></b></td>
 <?php
 			}
@@ -420,7 +426,7 @@ switch($mode)
 				<tr>
 					<td>&nbsp;</td>
 					<td colspan="2"><b><?php echo $lang['cur_setting']; ?></b></td>
-					<td width="10">&nbsp;</td>
+					<td class="tw10px">&nbsp;</td>
 					<td colspan="2"><b><?php echo $lang['rec_setting']; ?></b></td>
 				</tr>
 				<tr>
@@ -1201,7 +1207,7 @@ switch($mode)
 	<p><b><?php echo $lang['New_config_php']; ?>:</b></p><br />
 	<table width="100%" class="forumline" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<td width="20">&nbsp;</td>
+			<td class="tw20px">&nbsp;</td>
 			<td>
 				&lt;?php<br />
 				<br />
@@ -1254,7 +1260,7 @@ switch($mode)
 }
 ?>
 
-<br clear="all" />
+<br class="clear" />
 
 </body>
 </html>

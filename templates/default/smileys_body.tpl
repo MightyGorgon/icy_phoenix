@@ -3,8 +3,8 @@
 <!-- INCLUDE smileys_js.tpl -->
 
 <form action="{S_ACTION}" method="post">
-<!-- {IMG_THL}{IMG_THC}<span class="forumlink">{L_SMILEYS_GALLERY}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0"> -->
-<table width="100%" cellspacing="0" class="forumline">
+<!-- {IMG_THL}{IMG_THC}<span class="forumlink">{L_SMILEYS_GALLERY}</span>{IMG_THR}<table class="forumlinenb"> -->
+<table class="forumline">
 <tr><td class="row-header" colspan="{S_COLSPAN}"><span>{L_SMILEYS_GALLERY}</span></td></tr>
 <tr><th colspan="{S_COLSPAN}"><span class="genmed">{L_SMILEYS_CATEGORY}:&nbsp;{S_CATEGORY_SELECT}&nbsp;<input type="submit" class="mainoption" value="{L_GO}" /></span></th>
 </tr>

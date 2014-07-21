@@ -24,15 +24,15 @@ function toggle_check_all()
 </script>
 
 <!-- BEGIN statusrow -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><td class="row1 row-center"><span class="gen">{L_STATUS}</span><br /><span class="genmed"><b>{I_STATUS_MESSAGE}</b></span><br /></td></tr>
 </table>
 <!-- END statusrow -->
 
 
-<table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
+<table class="s2px p2px">
 <tr>
-	<td align="left">
+	<td>
 		<span class="maintitle">{L_PAGE_NAME}</span>
 		<br /><span class="gensmall"><b>{L_VERSION} {VERSION}</b></span><br /><br />
 		<span class="genmed">{L_PAGE_DESC}</span><br /><br />{URL_SWITCH_MODE}
@@ -41,7 +41,7 @@ function toggle_check_all()
 </table>
 
 <form method="post" action="{S_MODE_ACTION}" name="sort_and_pmtype">
-<table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
+<table class="s2px p2px">
 <tr>
 	<td width="40%">
 		<span class="gen"><b>{L_UTILS}</b></span>
@@ -50,7 +50,7 @@ function toggle_check_all()
 			<li><a href="{URL_SENT}" class="genmed">{L_REMOVE_SENT}</a></li>
 		</ul>
 	</td>
-	<td align="right" nowrap="nowrap">
+	<td class="tdalignr tdnw">
 		<span class="genmed">{L_FILTER_BY}:&nbsp;{S_PMTYPE_SELECT}</span><br /><br />
 		<span class="genmed">{L_SELECT_SORT_METHOD}:&nbsp;{S_MODE_SELECT}&nbsp;&nbsp;{L_ORDER}&nbsp;{S_ORDER_SELECT}</span>
 		<br /><br />
@@ -67,18 +67,18 @@ function toggle_check_all()
 {PM_MESSAGE}
 
 <form method="post" action="{S_MODE_ACTION}" name="msgrow_values">
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td valign="top"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right" valign="top"><span class="pagination">{PAGINATION}</span><br />&nbsp;</td>
+	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td class="tdalignr"><span class="pagination">{PAGINATION}</span><br />&nbsp;</td>
 </tr>
 </table>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
-	<th width="5%">{L_DELETE}<br /><input type="checkbox" name="check_all_del_box" onclick="{JS_ARCHIVE_COMMENT_1}check_all_arch_box.checked = false;{JS_ARCHIVE_COMMENT_2} toggle_check_all();" /></th>
+	<th class="tw5pct">{L_DELETE}<br /><input type="checkbox" name="check_all_del_box" onclick="{JS_ARCHIVE_COMMENT_1}check_all_arch_box.checked = false;{JS_ARCHIVE_COMMENT_2} toggle_check_all();" /></th>
 <!-- BEGIN archive_avail_switch -->
-	<th width="5%">{L_ARCHIVE}<br /><input type="checkbox" name="check_all_arch_box" onclick="check_all_del_box.checked = false; toggle_check_all();" /></th>
+	<th class="tw5pct">{L_ARCHIVE}<br /><input type="checkbox" name="check_all_arch_box" onclick="check_all_del_box.checked = false; toggle_check_all();" /></th>
 <!-- END archive_avail_switch -->
 	<th align="left">{L_SUBJECT}</th>
 	<th>{L_FROM}</th>
@@ -87,7 +87,7 @@ function toggle_check_all()
 	<th>{L_PM_TYPE}</th>
 </tr>
 <!-- BEGIN empty_switch -->
-<tr><td colspan="7" class="row1 row-center">{L_NO_PMS}</td></tr>
+<tr><td class="row1 row-center" colspan="7">{L_NO_PMS}</td></tr>
 <!-- END empty_switch -->
 <!-- BEGIN msgrow -->
 <tr class="{msgrow.ROW_CLASS}h">
@@ -118,10 +118,10 @@ function toggle_check_all()
 </table>
 </form>
 
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
 	<td valign="bottom"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right" valign="bottom">&nbsp;<br /><span class="pagination">{PAGINATION}</span></td>
+	<td class="tdalignr tvalignb">&nbsp;<br /><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 <hr />

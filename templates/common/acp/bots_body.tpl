@@ -3,7 +3,7 @@
 <br />
 
 <form method="post" action="{S_BOTS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th><a href="{U_BOT_SORT_ID}">#</a></th>
 	<th><a href="{U_BOT_SORT_NAME}">{L_BOT_COL_NAME}</a></th>

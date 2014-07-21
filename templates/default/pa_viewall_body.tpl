@@ -3,30 +3,30 @@
 
 <!-- IF FILELIST -->
 <form action="{S_VIEWALL_ACTION}" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_VIEWALL}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_VIEWALL}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th class="thTop" width="35%" colspan="2">{L_FILE}</th>
-	<th class="thTop" nowrap="nowrap">&nbsp;{L_CATEGORY}&nbsp;</th>
-	<th class="thTop" width="15%">{L_DATE}</th>
-	<th class="thTop" width="10%">{L_DOWNLOADS}</th>
-	<th class="thTop" width="10%">{L_RATING}</th>
-	<th class="thCornerR" width="3%">&nbsp;</th>
+	<th class="tw35pct" colspan="2">{L_FILE}</th>
+	<th class="tdnw">&nbsp;{L_CATEGORY}&nbsp;</th>
+	<th class="tw15pct">{L_DATE}</th>
+	<th class="tw10pct">{L_DOWNLOADS}</th>
+	<th class="tw10pct">{L_RATING}</th>
+	<th class="tw3pct">&nbsp;</th>
 </tr>
 
 <!-- BEGIN file_rows -->
 <tr>
-	<td class="row1 row-center" width="30"><a href="{file_rows.U_FILE}" class="topiclink"><img src="{file_rows.PIN_IMAGE}" alt="" /></a></td>
-	<td class="row1h{file_rows.XS_NEW} row-forum" data-href="{file_rows.U_FILE}" width="35%"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span>&nbsp;
+	<td class="row1 row-center tw30px"><a href="{file_rows.U_FILE}" class="topiclink"><img src="{file_rows.PIN_IMAGE}" alt="" /></a></td>
+	<td class="row1h{file_rows.XS_NEW} row-forum tw35pct" data-href="{file_rows.U_FILE}"><span class="forumlink"><a href="{file_rows.U_FILE}" class="forumlink{file_rows.XS_NEW}">{file_rows.FILE_NAME}</a></span>&nbsp;
 	<!-- IF file_rows.IS_NEW_FILE -->
 	<!-- <img src="{file_rows.FILE_NEW_IMAGE}" alt="{L_NEW_FILE}" /> -->
 	<!-- ENDIF -->
 	<br /><span class="genmed">{file_rows.FILE_DESC}</span></td>
 	<td class="row1h{file_rows.XS_NEW} row-forum" data-href="{file_rows.U_CAT}"><span class="forumlink"><a href="{file_rows.U_CAT}" class="forumlink{file_rows.XS_NEW}">{file_rows.CAT_NAME}</a></span>&nbsp;</td>
 
-	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails">{file_rows.DATE}</td>
+	<td class="row2 row-center tdnw"><span class="postdetails">{file_rows.DATE}</td>
 	<td class="row2 row-center"><span class="postdetails">{file_rows.FILE_DLS}</td>
-	<td class="row2 row-center" nowrap="nowrap"><span class="postdetails"><img src="images/rates/rate_{file_rows.RATING}.png" alt="" /></td>
-	<td class="row2 row-center" align="center" valign="middle">
+	<td class="row2 row-center tdnw"><span class="postdetails"><img src="images/rates/rate_{file_rows.RATING}.png" alt="" /></td>
+	<td class="row2 row-center tvalignm">
 	<!-- IF file_rows.HAS_SCREENSHOTS -->
 		<!-- IF file_rows.SS_AS_LINK -->
 		<a href="{file_rows.FILE_SCREENSHOT}" class="topiclink" target="_blank"><img src="{file_rows.FILE_SCREENSHOT_URL}" alt="{L_SCREENSHOTS}" /></a>
@@ -41,7 +41,7 @@
 <!-- END file_rows -->
 
 <tr>
-	<td class="cat" align="center" colspan="7">
+	<td class="cat tdalignc" colspan="7">
 		<input type="hidden" name="action" value="viewall" />
 		<input type="hidden" name="start" value="{START}" />
 		<span class="genmed">
@@ -64,17 +64,17 @@
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <br />
-<table width="100%" cellspacing="2" cellpadding="2" border="0">
-	<tr><td align="right" nowrap="nowrap"><span class="pagination">{PAGINATION}</span></td></tr>
-	<tr><td align="right" nowrap="nowrap"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
+<table class="s2px">
+	<tr><td class="tdalignr tdnw"><span class="pagination">{PAGINATION}</span></td></tr>
+	<tr><td class="tdalignr tdnw"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
 </table>
 </form>
 <!-- ENDIF -->
 
 <!-- IF NO_FILE -->
-<table class="forumline" width="100%" cellspacing="0">
+<table class="forumline">
 <tr><th>{L_NO_FILES}</th></tr>
-<tr><td class="row1 row-center" height="30"><span class="genmed">{L_NO_FILES_CAT}</span></td></tr>
+<tr><td class="row1 row-center"><span class="genmed">{L_NO_FILES_CAT}</span></td></tr>
 </table>
 <!-- ENDIF -->
 <!-- INCLUDE pa_footer.tpl -->

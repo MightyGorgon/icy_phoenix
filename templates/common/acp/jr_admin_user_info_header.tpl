@@ -1,6 +1,6 @@
 <h1>{L_JR_ADMIN_TITLE}</h1>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<th>{L_STATISTIC}</th>
 	<th>{L_VALUE}</th>

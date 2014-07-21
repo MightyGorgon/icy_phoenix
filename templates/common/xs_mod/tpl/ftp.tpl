@@ -22,17 +22,17 @@
 
 
 <!-- BEGIN error -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 	<tr>
-		<th height="25">{L_ERROR}</th>
+		<th class="th25px">{L_ERROR}</th>
 	</tr>
 	<tr> 
-		<td class="row1"><table width="100%" cellspacing="0" cellpadding="1" border="0">
+		<td class="row1"><table class="p2px">
 			<tr> 
 				<td>&nbsp;</td>
 			</tr>
 			<tr> 
-				<td align="center"><span class="gen">{error.MSG}</span></td>
+				<td class="tdalignc"><span class="gen">{error.MSG}</span></td>
 			</tr>
 			<tr> 
 				<td>&nbsp;</td>
@@ -42,14 +42,14 @@
 </table>
 <!-- END error -->
 
-<form name="ftp" action="{FORM_ACTION}" method="post">{S_HIDDEN_FIELDS}{S_EXTRA_FIELDS}<table width="100%" cellpadding="4" cellspacing="1" border="0" align="center" class="forumline">
+<form name="ftp" action="{FORM_ACTION}" method="post">{S_HIDDEN_FIELDS}{S_EXTRA_FIELDS}<table class="forumline">
 	<!-- BEGIN xs_ftp_local -->
 	<tr>
 		<th colspan="2">{L_XS_FTP_CONFIG}</td>
 	</tr>
 	<tr>
 		<td class="row1">{L_XS_FTP_SELECT_METHOD}:</td>
-		<td class="row2" nowrap="nowrap">
+		<td class="row2 tdnw">
 			<input type="radio" name="xs_ftp_local" value="1" /> {L_XS_FTP_SELECT_LOCAL}<br />
 			<input type="radio" name="xs_ftp_local" value="" checked="checked" /> {L_XS_FTP_SELECT_FTP}<br />
 		</td>

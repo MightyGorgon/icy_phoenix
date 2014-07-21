@@ -6,10 +6,10 @@
 
 {ERROR_BOX}
 
-<!-- IF S_REGISTER_MESSAGE -->{IMG_TBL}<table class="forumline" width="100%" cellspacing="0" cellpadding="0"><tr><td class="row1"><div class="post-text">{L_REGISTER_MESSAGE}</div></td></tr></table>{IMG_TBR}<!-- ENDIF -->
+<!-- IF S_REGISTER_MESSAGE -->{IMG_TBL}<table class="forumline"><tr><td class="row1"><div class="post-text">{L_REGISTER_MESSAGE}</div></td></tr></table>{IMG_TBR}<!-- ENDIF -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_REGISTRATION_INFO}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<!-- <tr><th colspan="2" valign="middle">{L_REGISTRATION_INFO}</th></tr> -->
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_REGISTRATION_INFO}</span>{IMG_THR}<table class="forumlinenb">
+<!-- <tr><th class="tvalignm" colspan="2">{L_REGISTRATION_INFO}</th></tr> -->
 <tr><td class="row2" colspan="2"><span class="gensmall">{L_ITEMS_REQUIRED}</span></td></tr>
 <tr>
 	<td class="row1" width="38%"><span class="gen">{L_USERNAME}:&nbsp;*</span></td>
@@ -69,7 +69,7 @@
 <!-- END switch_custom_fields -->
 <!-- BEGIN custom_fields -->
 <tr>
-	<td class="row1" valign="top">
+	<td class="row1">
 		<span class="gen">{custom_fields.NAME}:{custom_fields.REQUIRED}</span>
 		<!-- BEGIN switch_description -->
 		<br /><span class="gensmall">{custom_fields.switch_description.DESCRIPTION}</span>
@@ -79,7 +79,7 @@
 </tr>
 <!-- END custom_fields -->
 <!-- END switch_cpl_profile_info -->
-<tr><th colspan="2" valign="middle">{L_PREFERENCES}</th></tr>
+<tr><th class="tvalignm" colspan="2">{L_PREFERENCES}</th></tr>
 <tr>
 	<td class="row1"><span class="gen">{L_BOARD_LANGUAGE}:</span></td>
 	<td class="row2"><span class="gensmall">{LANGUAGE_SELECT}</span></td>

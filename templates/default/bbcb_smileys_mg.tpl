@@ -1,21 +1,21 @@
-<table class="forumline" width="90%" border="0" cellspacing="0" cellpadding="0">
+<table class="forumline tw90pct">
 <tr><th colspan="{S_SMILIES_COLSPAN}"><b>{L_EMOTICONS}</b></th></tr>
 <!-- BEGIN smilies_row -->
 <tr>
 	<!-- BEGIN smilies_col -->
-	<td align="center"><a href="javascript:emoticon('{smilies_row.smilies_col.SMILEY_CODE}');"><img src="{smilies_row.smilies_col.SMILEY_IMG}" border="0" onmouseover="this.style.cursor='pointer';" alt="{smilies_row.smilies_col.SMILEY_DESC}" title="{smilies_row.smilies_col.SMILEY_DESC}" /></a></td>
+	<td class="tdalignc"><a href="javascript:emoticon('{smilies_row.smilies_col.SMILEY_CODE}');"><img src="{smilies_row.smilies_col.SMILEY_IMG}" border="0" onmouseover="this.style.cursor='pointer';" alt="{smilies_row.smilies_col.SMILEY_DESC}" title="{smilies_row.smilies_col.SMILEY_DESC}" /></a></td>
 	<!-- END smilies_col -->
 </tr>
 <!-- END smilies_row -->
 <!-- BEGIN switch_smilies_extra -->
-<tr><td class="cat" colspan="{S_SMILIES_COLSPAN}" align="center"><input type="button" class="liteoption" name="smiles_button" value="{L_MORE_SMILIES}" onclick="openAllSmiles();" /></td></tr>
-<tr><td class="cat" colspan="{S_SMILIES_COLSPAN}" align="center"><input type="button" class="liteoption" value="{L_SMILEY_CREATOR}" style="width: 135px" onclick="window.open('{U_SMILEY_CREATOR}','_ipcreatesmileys','height=400,width=500,resizable=yes,scrollbars=yes'); return false;" /></td></tr>
+<tr><td class="cat tdalignc" colspan="{S_SMILIES_COLSPAN}"><input type="button" class="liteoption" name="smiles_button" value="{L_MORE_SMILIES}" onclick="openAllSmiles();" /></td></tr>
+<tr><td class="cat tdalignc" colspan="{S_SMILIES_COLSPAN}"><input type="button" class="liteoption" value="{L_SMILEY_CREATOR}" style="width: 135px;" onclick="window.open('{U_SMILEY_CREATOR}','_ipcreatesmileys','height=400,width=500,resizable=yes,scrollbars=yes'); return false;" /></td></tr>
 <!-- END switch_smilies_extra -->
 </table>
 
 <!-- BEGIN switch_sm_pic_upload -->
 <br clear="all" />
-<div class="center-block"><input type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" style="width: 135px" onclick="window.open('{U_UPLOAD_IMAGE}','_upload_image','height=700,width=900,resizable=yes,scrollbars=no'); return false;" /></div>
+<div class="center-block"><input type="button" class="liteoption" value="{L_UPLOAD_IMAGE}" style="width: 135px;" onclick="window.open('{U_UPLOAD_IMAGE}','_upload_image','height=700,width=900,resizable=yes,scrollbars=no'); return false;" /></div>
 <!-- END switch_sm_pic_upload -->
 
 <!--

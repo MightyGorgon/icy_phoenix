@@ -2,7 +2,7 @@
 <p>{L_AUTH_LIST_EXPLAIN}</p>
 
 <form action="{S_FORM_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><td class="row-header" colspan="{COLSPAN}"><span>{L_AUTH_LIST_TITLE}</span></td></tr>
 <tr>
 	<!-- BEGIN forum_auth_titles -->

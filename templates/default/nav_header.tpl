@@ -1,6 +1,6 @@
-<table class="nav-div" width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
+<table class="nav-div talignc">
 <tr>
-	<td style="text-align: center;">
+	<td class="tdalignc">
 		<span style="vertical-align: middle;"><a href="{FULL_SITE_PATH}{U_PORTAL}">{L_HOME}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" style="vertical-align: middle;" />&nbsp;</span>
 		<span style="vertical-align: middle;"><a href="{FULL_SITE_PATH}{U_INDEX}">{L_INDEX}</a>&nbsp;&nbsp;<img src="{FULL_SITE_PATH}{IMG_MENU_SEP}" alt="" style="vertical-align: middle;" />&nbsp;</span>
 		<!-- BEGIN switch_upi2db_off -->

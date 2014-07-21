@@ -2,7 +2,7 @@
 
 {CPL_MENU_OUTPUT}
 <form method="post" action="{S_BM_ACTION}">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_BOOKMARKS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_BOOKMARKS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th width="18">&nbsp;</th>
 	<th>{L_FORUM}</th>
@@ -34,10 +34,10 @@
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left" valign="top"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">{PAGINATION}</span><br /><span class="gensmall">{S_TIMEZONE}</span></td>
+	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td class="tdalignr tdnw"><span class="pagination">{PAGINATION}</span><br /><span class="gensmall">{S_TIMEZONE}</span></td>
 </tr>
 </table>
 

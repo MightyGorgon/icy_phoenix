@@ -297,7 +297,7 @@ $template->assign_vars(array(
 	'PAGINATION' => ($total_users == '0') ? '' : generate_pagination('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=' . $by_letter, $total_users, $config['topics_per_page'], $start),
 	'PAGE_NUMBER' => ($total_users == '0') ? '' : sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_users / $config['topics_per_page'])),
 	'S_LETTER_SELECT' => $select_letter,
-	'S_LETTER_HIDDEN' => '<input type="hidden" name="letter" value="' . $by_letter . '">',
+	'S_LETTER_HIDDEN' => '<input type="hidden" name="letter" value="' . $by_letter . '" />',
 	'S_ACCOUNT_ACTION' => append_sid('admin_account.' . PHP_EXT . '?action=' . $action),
 	'S_HIDDEN_FIELDS' => '',
 	'S_SELECT_DAYS' => $select_days,

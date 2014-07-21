@@ -36,13 +36,13 @@ initChat();
 <!-- USING jPlayer -->
 <div id="ac_notify" style="height: 0;">&nbsp;</div>
 
-<table align="center" width="100%" cellspacing="0" cellpadding="0">
-<tr valign="top">
-	<td width="67%">
+<table>
+<tr>
+	<td class="tw67pct">
 		<!-- IF PAGINATION != '&nbsp;' -->
 		<div style="float: right; text-align: right;"><span class="pagination">{PAGINATION}</span></div>&nbsp;
 		<!-- ENDIF -->
-		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
+		<table class="forumline">
 			<tr><th colspan="2">{L_SHOUT_ROOMS}</th></tr>
 			<tr>
 				<td colspan="2" class="chat-tabs">
@@ -58,13 +58,13 @@ initChat();
 			<!-- BEGIN shouts -->
 			<tbody id="{L_SHOUT_PREFIX}{shouts.ID}">
 				<tr>
-					<td class="row2" colspan="2" nowrap="nowrap" valign="middle">
+					<td class="row2 tvalignm tdnw" colspan="2">
 						<!-- IF shouts.DELETE_IMG --><span style="float: right;">{shouts.DELETE_IMG}</span><!-- ENDIF -->
 						<span class="post-text">{L_AUTHOR}: <b>{shouts.SHOUTER}</b></span>
 					</td>
 				</tr>
 				<tr>
-					<td class="row1" width="10%" nowrap="nowrap"><span class="gensmall"><i>{shouts.DATE}</i></span></td>
+					<td class="row1 tdnw tw10pct"><span class="gensmall"><i>{shouts.DATE}</i></span></td>
 					<td class="row1"><div class="post-text post-text-hide-flow">{shouts.MESSAGE}</div></td>
 				</tr>
 				<tr><td class="spaceRow" colspan="2"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
@@ -74,7 +74,7 @@ initChat();
 	</td>
 	<td width="3%">&nbsp;</td>
 	<td width="30%">
-		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
+		<table class="forumline">
 			<tr><th colspan="2">{L_STATS}</th></tr>
 			<tr>
 				<td class="row1"><span class="topiclink"><b>{L_TOTAL_SHOUTS}</b></span></td>
@@ -94,7 +94,7 @@ initChat();
 			</tr>
 		</table>
 		<br /><br />
-		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
+		<table class="forumline">
 			<tr><th><img src="{T_COMMON_TPL_PATH}images/act_indicator.gif" id="indicator" alt="" style="visibility: hidden;" />&nbsp;{L_WIO}</th></tr>
 			<tr>
 				<td class="row1 row-center" id="online_list">
@@ -114,7 +114,7 @@ initChat();
 			</tr>
 		</table>
 		<br /> <br />
-		<table class="forumline" align="center" width="100%" cellspacing="0" cellpadding="0">
+		<table class="forumline">
 			<tr><th colspan="2">{L_TOP_SHOUTERS}</th></tr>
 			<tr>
 				<th>{L_USERNAME}</td>

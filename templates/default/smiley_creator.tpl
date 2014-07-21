@@ -91,7 +91,7 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 </script>
 
 <form name="shielderstellung">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_SMILEY_CREATOR}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_SMILEY_CREATOR}</span>{IMG_THR}<table class="forumlinenb">
 <tr id="tablec">
 	<td class="row1"><span class="gen"><b>{L_SHIELDTEXT}:</b></span></td>
 	<td class="row2"><input type="text" name="shieldtext" class="post" size="30" maxlength="396" /></td>
@@ -99,7 +99,7 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 <tr>
 	<td class="row1"><span class="gen"><b>{L_FONTCOLOR}:</b></span></td>
 	<td class="row2">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr>
 				<td>
 					<select name="color">
@@ -146,7 +146,7 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 <tr>
 	<td class="row1"><span class="gen"><b>{L_SHADOWCOLOR}:</b></span></td>
 	<td class="row2">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr>
 				<td>
 					<select name="shadowcolor">
@@ -193,7 +193,7 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 <tr>
 	<td class="row1"><span class="gen"><b>{L_SHIELDSHADOW}:</b></span></td>
 	<td class="row2">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr>
 				<td>
 					<select name="shieldshadow">
@@ -206,9 +206,9 @@ function mozInsert_sc(txtarea, openTag, closeTag)
 	</td>
 </tr>
 <tr>
-	<td valign="top" class="row1"><span class="gen"><b>{L_SMILIECHOOSER}:</b></span></td>
+	<td class="row1"><span class="gen"><b>{L_SMILIECHOOSER}:</b></span></td>
 	<td class="row2">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr>
 				{SMILIES_WAHL}
 			</tr>

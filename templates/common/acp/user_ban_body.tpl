@@ -2,7 +2,7 @@
 <p>{L_BAN_EXPLAIN}</p>
 
 <form method="post" name="post" action="{S_BANLIST_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_BAN_USER}</th></tr>
 <tr>
 	<td class="row1"><strong>{L_USERNAME}:</strong></td>
@@ -34,7 +34,7 @@
 	<td class="row2">{S_UNBAN_EMAILLIST_SELECT}</td>
 </tr>
 <tr>
-	<td class="cat" colspan="2" align="center"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
+	<td class="cat tdalignc" colspan="2"><input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td>
 </tr>
 </table>
 </form>

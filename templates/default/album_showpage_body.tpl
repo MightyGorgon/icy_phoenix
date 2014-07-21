@@ -48,16 +48,16 @@ function checkFormRate()
 // -->
 </script>
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left">&nbsp;</td>
-	<td align="right">{ALBUM_SEARCH_BOX}</td>
+	<td>&nbsp;</td>
+	<td class="tdalignr">{ALBUM_SEARCH_BOX}</td>
 </tr>
 </table>
 
 <a name="TopPic"></a>
 
-{IMG_THL}{IMG_THC}<center><span class="forumlink">{NEXT_PIC}&nbsp;&nbsp;{PIC_TITLE}&nbsp;&nbsp;{PREV_PIC}</span></center>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<center><span class="forumlink">{NEXT_PIC}&nbsp;&nbsp;{PIC_TITLE}&nbsp;&nbsp;{PREV_PIC}</span></center>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1 row-center">
 		<!-- IF S_SLIDESHOW_ENABLED -->
@@ -68,7 +68,7 @@ function checkFormRate()
 		<!-- ENDIF -->
 		<div class="center-block">
 		<br /><span class="genmed"><b>{PIC_COUNT}</b></span><br />
-		{U_PIC_L1}<img src="{U_PIC}" border="0" vspace="10" alt="{PIC_TITLE}" title="{PIC_TITLE}" />{U_PIC_L2}
+		{U_PIC_L1}<img class="vs10px" src="{U_PIC}" border="0" alt="{PIC_TITLE}" title="{PIC_TITLE}" />{U_PIC_L2}
 		</div>
 		<!-- IF U_PIC_CLICK --><span class="genmed">{U_PIC_CLICK}</span><br /><!-- ENDIF -->
 		<!-- IF not S_BOT and S_PIC_NUFFED -->
@@ -79,40 +79,40 @@ function checkFormRate()
 </tr>
 <tr>
 	<td class="row1">
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-		<tr><td colspan="2" width="100%" align="center" valign="top"><span class="genmed">{EDIT}&nbsp;{DELETE}&nbsp;{LOCK}&nbsp;{MOVE}&nbsp;{COPY}</span></td></tr>
+		<table>
+		<tr><td class="tw100pct tdalignc" colspan="2"><span class="genmed">{EDIT}&nbsp;{DELETE}&nbsp;{LOCK}&nbsp;{MOVE}&nbsp;{COPY}</span></td></tr>
 		<tr>
-			<td width="50%" align="right" valign="top"><span class="genmed">{L_POSTER}:</span></td>
-			<td width="50%" align="left" valign="top"><span class="genmed"><b>{POSTER}</b></span></td>
+			<td class="tw50pct tdalignr"><span class="genmed">{L_POSTER}:</span></td>
+			<td class="tw50pct"><span class="genmed"><b>{POSTER}</b></span></td>
 		</tr>
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_PIC_TITLE}:</span></td>
-			<td valign="top" align="left"><b><span class="genmed">{PIC_TITLE}</span></b></td>
+			<td class="tdalignr"><span class="genmed">{L_PIC_TITLE}:</span></td>
+			<td><b><span class="genmed">{PIC_TITLE}</span></b></td>
 		</tr>
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_DOWNLOAD}:</span></td>
-			<td valign="top" align="left"><a href="{U_PIC_DL}" class="genmed"><b>{PIC_TITLE}</b></a></td>
+			<td class="tdalignr"><span class="genmed">{L_DOWNLOAD}:</span></td>
+			<td><a href="{U_PIC_DL}" class="genmed"><b>{PIC_TITLE}</b></a></td>
 		</tr>
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_PIC_DETAILS}:</span></td>
-			<td valign="top" align="left"><b><span class="genmed">{L_PIC_ID}:&nbsp;{PIC_ID}&nbsp;-&nbsp;{L_PIC_TYPE}:&nbsp;{PIC_TYPE}&nbsp;-&nbsp;{L_PIC_SIZE}:&nbsp;{PIC_SIZE}</span></b></td>
+			<td class="tdalignr"><span class="genmed">{L_PIC_DETAILS}:</span></td>
+			<td><b><span class="genmed">{L_PIC_ID}:&nbsp;{PIC_ID}&nbsp;-&nbsp;{L_PIC_TYPE}:&nbsp;{PIC_TYPE}&nbsp;-&nbsp;{L_PIC_SIZE}:&nbsp;{PIC_SIZE}</span></b></td>
 		</tr>
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_PIC_BBCODE}:</span></td>
-			<td valign="top" align="left"><form name="select_all" action=""><input class="post" name="BBCode" size="50" maxlength="200" value="{PIC_BBCODE}" type="text" readonly="readonly" onclick="this.form.BBCode.focus();this.form.BBCode.select();" /></form></td>
+			<td class="tdalignr"><span class="genmed">{L_PIC_BBCODE}:</span></td>
+			<td><form name="select_all" action=""><input class="post" name="BBCode" size="50" maxlength="200" value="{PIC_BBCODE}" type="text" readonly="readonly" onclick="this.form.BBCode.focus();this.form.BBCode.select();" /></form></td>
 		</tr>
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_POSTED}:</span></td>
-			<td valign="top" align="left"><b><span class="genmed">{PIC_TIME}</span></b></td>
+			<td class="tdalignr"><span class="genmed">{L_POSTED}:</span></td>
+			<td><b><span class="genmed">{PIC_TIME}</span></b></td>
 		</tr>
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_VIEW}:</span></td>
-			<td valign="top" align="left"><b><span class="genmed">{PIC_VIEW}</span></b></td>
+			<td class="tdalignr"><span class="genmed">{L_VIEW}:</span></td>
+			<td><b><span class="genmed">{PIC_VIEW}</span></b></td>
 		</tr>
 		<!-- BEGIN rate_switch -->
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_RATING}:</span></td>
-			<td valign="top" align="left">
+			<td class="tdalignr"><span class="genmed">{L_RATING}:</span></td>
+			<td>
 				<span class="genmed"><b>{PIC_RATING}</b></span>
 				<!-- BEGIN rate_row -->
 				<form name="ratingform" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkFormRate();">
@@ -130,8 +130,8 @@ function checkFormRate()
 		</tr>
 		<!-- END rate_switch -->
 		<tr>
-			<td valign="top" align="right"><span class="genmed">{L_PIC_DESC}:</span></td>
-			<td valign="top" align="left"><div class="post-text">{PIC_DESC}</div></td>
+			<td class="tdalignr"><span class="genmed">{L_PIC_DESC}:</span></td>
+			<td><div class="post-text">{PIC_DESC}</div></td>
 		</tr>
 		</table>
 	</td>
@@ -147,14 +147,14 @@ function checkFormRate()
 
 <!-- BEGIN switch_exif_enabled -->
 <!-- BEGIN exif_switch -->
-<table width="100%" cellpadding="1" cellspacing="0" border="0" class="forumline">
-<tr><th nowrap="nowrap" colspan="5">EXIF</th></tr>
+<table class="forumline">
+<tr><th class="tdnw" colspan="5">EXIF</th></tr>
 <!-- BEGIN exif_data -->
 <tr>
-	<td class="row1" width="25%" align="right"><span class="genmed">{switch_exif_enabled.exif_switch.exif_data.EXIFc1}&nbsp;</span></td>
-	<td class="row1" width="25%" ><b><span class="genmed">{switch_exif_enabled.exif_switch.exif_data.EXIFd1}</span></b></td>
-	<td class="row1" width="25%" align="right"><span class="genmed">{switch_exif_enabled.exif_switch.exif_data.EXIFc2}&nbsp;</span></td>
-	<td class="row1" width="25%" ><b><span class="genmed">{switch_exif_enabled.exif_switch.exif_data.EXIFd2}</span></b></td>
+	<td class="row1 tw25pct tdalignr"><span class="genmed">{switch_exif_enabled.exif_switch.exif_data.EXIFc1}&nbsp;</span></td>
+	<td class="row1 tw25pct" ><b><span class="genmed">{switch_exif_enabled.exif_switch.exif_data.EXIFd1}</span></b></td>
+	<td class="row1 tw25pct tdalignr"><span class="genmed">{switch_exif_enabled.exif_switch.exif_data.EXIFc2}&nbsp;</span></td>
+	<td class="row1 tw25pct" ><b><span class="genmed">{switch_exif_enabled.exif_switch.exif_data.EXIFd2}</span></b></td>
 </tr>
 <!-- END exif_data -->
 </table>
@@ -164,13 +164,13 @@ function checkFormRate()
 
 <!-- BEGIN pics_nav -->
 <br />
-{IMG_THL}{IMG_THC}<span class="forumlink">{pics_nav.L_PICS_NAV}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{pics_nav.L_PICS_NAV}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<!-- BEGIN pics -->
-	<td class="row1g row-center" width="20%" align="center">
+	<td class="row1g row-center tw20pct">
 		<center>
 		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{pics_nav.pics.U_PIC_LINK}"><img src="{pics_nav.pics.U_PIC_THUMB}" {THUMB_SIZE} alt="{pics_nav.pics.PIC_TITLE}" title="{pics_nav.pics.PIC_TITLE}" vspace="10" style="{pics_nav.pics.STYLE}" /></a>
+			<a href="{pics_nav.pics.U_PIC_LINK}"><img class="vs10px" src="{pics_nav.pics.U_PIC_THUMB}" {THUMB_SIZE} alt="{pics_nav.pics.PIC_TITLE}" title="{pics_nav.pics.PIC_TITLE}" style="{pics_nav.pics.STYLE}" /></a>
 		</div></div></td></tr></table>
 		</center>
 	</td>
@@ -181,15 +181,15 @@ function checkFormRate()
 <!-- END pics_nav -->
 <!-- BEGIN coment_switcharo_top -->
 <br />
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_COMMENTS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_COMMENTS}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th nowrap="nowrap" width="15%">{L_POSTER}</th>
-	<th nowrap="nowrap" width="85%">{L_MESSAGE}</th>
+	<th class="tw15pct tdnw">{L_POSTER}</th>
+	<th class="tw85pct tdnw">{L_MESSAGE}</th>
 </tr>
 <!-- END coment_switcharo_top -->
 <!-- BEGIN commentrow -->
 <tr >
-	<td class="row-post-author" nowrap="nowrap">
+	<td class="row-post-author tdnw">
 		<span class="post-name"><a name="c{commentrow.ID}"></a>{commentrow.POSTER_NAME}</span><br />
 		<div class="post-rank"><b>{commentrow.POSTER_RANK}</b>{commentrow.POSTER_RANK_IMAGE}</div>
 		<span class="post-images">{commentrow.POSTER_AVATAR}</span>
@@ -200,7 +200,7 @@ function checkFormRate()
 			{commentrow.POSTER_FROM}
 		</div>
 	</td>
-	<td class="row-post" width="100%" height="100%">
+	<td class="row-post tw100pct th100pct">
 		<div class="post-buttons-top post-buttons">{commentrow.EDIT} {commentrow.DELETE}</div>
 		<div class="post-subject">&nbsp;</div>
 		<div class="post-text post-text-hide-flow">{commentrow.TEXT}<br /></div>
@@ -215,7 +215,7 @@ function checkFormRate()
 <!-- END commentrow -->
 <!-- BEGIN switch_comment -->
 <tr>
-	<td class="cat" align="center" height="28" colspan="2">
+	<td class="cat tdalignc" colspan="2">
 		<form action="{S_ALBUM_ACTION}" method="post">
 			<span class="gensmall">{L_ORDER}:</span>
 			<select name="sort_order">
@@ -235,7 +235,7 @@ function checkFormRate()
 <!-- BEGIN switch_comment_post -->
 <br />
 <form name="post" action="{S_ALBUM_ACTION}" method="post" onsubmit="return checkFormComment();">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_YOUR_COMMENT}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_POST_YOUR_COMMENT}</span>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN logout -->
 <tr>
 	<td class="row1"><span class="genmed">{L_USERNAME}</span></td>
@@ -243,25 +243,25 @@ function checkFormRate()
 </tr>
 <!-- END logout -->
 <tr>
-	<td class="row1 row-center" width="20%"><br /><br /><br /><br />{BBCB_SMILEYS_MG}</td>
-	<td class="row2" valign="top">
+	<td class="row1 row-center tw20pct"><br /><br /><br /><br />{BBCB_SMILEYS_MG}</td>
+	<td class="row2">
 		{BBCB_MG}
 		<div class="message-box"><textarea id="message" name="message" rows="15" cols="76" tabindex="3" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{S_MESSAGE}</textarea></div>
 	</td>
 </tr>
-<tr><td class="cat" align="center" colspan="2" height="28"><input class="mainoption" type="submit" name="submit" value="{L_SUBMIT}" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2"><input class="mainoption" type="submit" name="submit" value="{L_SUBMIT}" /></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <!-- END switch_comment_post -->
 <!-- ENDIF -->
 
 <!-- BEGIN switch_comment -->
-<div style="text-align:left;"><div style="float:right;text-align:right;"><span class="pagination">{PAGINATION}</span></div><span class="gensmall">{PAGE_NUMBER}</span></div>
+<div style="text-align: left;"><div style="float: right; text-align: right;"><span class="pagination">{PAGINATION}</span></div><span class="gensmall">{PAGE_NUMBER}</span></div>
 <!--
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="left"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right" nowrap="nowrap"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
+	<td><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td class="tdalignr tdnw"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
 </tr>
 </table>
 -->

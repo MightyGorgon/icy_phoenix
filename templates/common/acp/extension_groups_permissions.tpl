@@ -1,11 +1,11 @@
 <h1>{L_GROUP_PERMISSIONS_TITLE}</h1>
 <p>{L_GROUP_PERMISSIONS_EXPLAIN}</p>
 
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <tr>
-	<td align="center">
+	<td class="tdalignc">
 		<form method="post" action="{A_PERM_ACTION}">
-		<table width="90%" class="forumline" cellspacing="1" cellpadding="4" border="0" align="center">
+		<table class="forumline talignc tw90pct">
 		<tr><th>{L_ALLOWED_FORUMS}</th></tr>
 		<tr>
 			<td class="row1 row-center">
@@ -17,7 +17,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="cat" align="center"> <input class="liteoption" type="submit" name="del_forum" value="{L_REMOVE_SELECTED}" /> &nbsp; <input class="liteoption" type="submit" name="close_perm" value="{L_CLOSE_WINDOW}" /><input type="hidden" name="e_mode" value="perm" /></td>
+			<td class="cat tdalignc"> <input class="liteoption" type="submit" name="del_forum" value="{L_REMOVE_SELECTED}" /> &nbsp; <input class="liteoption" type="submit" name="close_perm" value="{L_CLOSE_WINDOW}" /><input type="hidden" name="e_mode" value="perm" /></td>
 		</tr>
 		</table>
 		</form>
@@ -26,7 +26,7 @@
 <tr>
 	<td>
 		<form method="post" action="{A_PERM_ACTION}">
-		<table width="90%" class="forumline" cellspacing="1" cellpadding="4" border="0" align="center">
+		<table class="forumline talignc tw90pct">
 		<tr><th>{L_ADD_FORUMS}</th></tr>
 		<tr>
 			<td class="row1 row-center">
@@ -38,7 +38,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="cat" align="center"> <input type="submit" name="add_forum" value="{L_ADD_SELECTED}" class="mainoption" />&nbsp; <input type="reset" value="{L_RESET}" class="liteoption" />&nbsp; <input type="hidden" name="e_mode" value="perm" /></td>
+			<td class="cat tdalignc"> <input type="submit" name="add_forum" value="{L_ADD_SELECTED}" class="mainoption" />&nbsp; <input type="reset" value="{L_RESET}" class="liteoption" />&nbsp; <input type="hidden" name="e_mode" value="perm" /></td>
 		</tr>
 		</table>
 		</form>
@@ -49,4 +49,4 @@
 <br />
 <div align="center"><span class="copyright">{ATTACH_VERSION}</span></div>
 
-<br clear="all" />
+<br class="clear" />

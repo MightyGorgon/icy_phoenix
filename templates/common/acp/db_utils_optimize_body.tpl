@@ -4,7 +4,7 @@
 
 <form method="post" action="{S_DBUTILS_ACTION}" name="tablesForm">
 <div align="center">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th valign="middle" colspan="6"><span class="cattitle">{L_OPTIMIZE_DB}</span></th></tr>
 <tr><th colspan="6">{L_CONFIGURATION}</th></tr>
 <tr>
@@ -32,7 +32,7 @@
 	<td class="row1 row-center" colspan="4"><input class="post" type="text" maxlength="255" name="show_begin_for" value="{S_SHOW_BEGIN_FOR}" /></td>
 </tr>
 <tr>
-	<td class="row1 row-center" align="center" colspan="6">
+	<td class="row1 row-center" colspan="6">
 		<input type="submit" name="configure" value="{L_CONFIGURE}" class="liteoption" />
 		<!--
 		&nbsp;&nbsp;

@@ -2,27 +2,27 @@
 <br /><br />
 
 <!-- BEGIN denyrow -->
-<table class="forumline" width="95%" align="center" border="0" cellspacing="0" cellpadding="0">
-<tr><th width="100%" align="center"><b><span class="gen">{articles.attach.denyrow.L_DENIED}</span></b></th></tr>
+<table class="forumline tw95pct talignc">
+<tr><th class="tw100pct tdalignc"><b><span class="gen">{articles.attach.denyrow.L_DENIED}</span></b></th></tr>
 </table>
 <!-- END denyrow -->
 <!-- BEGIN cat_stream -->
-<table class="forumline" width="95%" align="center" border="0" cellspacing="0" cellpadding="0">
-<tr><th width="100%" colspan="3" align="center"><b><span class="gen">{articles.attach.cat_stream.DOWNLOAD_NAME}</span></b></th></tr>
+<table class="forumline tw95pct talignc">
+<tr><th colspan="3"><b><span class="gen">{articles.attach.cat_stream.DOWNLOAD_NAME}</span></b></th></tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.cat_stream.COMMENT}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.cat_stream.COMMENT}</span></td>
 </tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{L_FILESIZE}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.cat_stream.FILESIZE} {articles.attach.cat_stream.SIZE_VAR}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{L_FILESIZE}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.cat_stream.FILESIZE} {articles.attach.cat_stream.SIZE_VAR}</span></td>
 </tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{articles.attach.cat_stream.L_DOWNLOADED_VIEWED}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.cat_stream.L_DOWNLOAD_COUNT}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{articles.attach.cat_stream.L_DOWNLOADED_VIEWED}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.cat_stream.L_DOWNLOAD_COUNT}</span></td>
 </tr>
 <tr>
-	<td colspan="2" align="center"><br />
+	<td class="tdalignc" colspan="2"><br />
 	<object id="wmp" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,0,0,0" standby="Loading Microsoft Windows Media Player components..." type="application/x-oleobject">
 	<param name="FileName" value="{articles.attach.cat_stream.U_DOWNLOAD_LINK}">
 	<param name="ShowControls" value="1">
@@ -40,22 +40,22 @@
 </table>
 <!-- END cat_stream -->
 <!-- BEGIN cat_swf -->
-<table class="forumline" width="95%" align="center" border="0" cellspacing="0" cellpadding="0">
-<tr><th width="100%" colspan="3" align="center"><b><span class="gen">{articles.attach.cat_swf.DOWNLOAD_NAME}</span></b></th></tr>
+<table class="forumline tw95pct talignc">
+<tr><th colspan="3"><b><span class="gen">{articles.attach.cat_swf.DOWNLOAD_NAME}</span></b></th></tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.cat_swf.COMMENT}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.cat_swf.COMMENT}</span></td>
 </tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{L_FILESIZE}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.cat_swf.FILESIZE} {articles.attach.cat_swf.SIZE_VAR}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{L_FILESIZE}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.cat_swf.FILESIZE} {articles.attach.cat_swf.SIZE_VAR}</span></td>
 </tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{articles.attach.cat_swf.L_DOWNLOADED_VIEWED}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.cat_swf.L_DOWNLOAD_COUNT}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{articles.attach.cat_swf.L_DOWNLOADED_VIEWED}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.cat_swf.L_DOWNLOAD_COUNT}</span></td>
 </tr>
 <tr>
-	<td colspan="2" align="center"><br />
+	<td class="tdalignc" colspan="2"><br />
 	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="{articles.attach.cat_swf.WIDTH}" height="{articles.attach.cat_swf.HEIGHT}">
 	<param name="movie" value="{articles.attach.cat_swf.U_DOWNLOAD_LINK}">
 	<param name="loop" value="1">
@@ -70,11 +70,11 @@
 </table>
 <!-- END cat_swf -->
 <!-- BEGIN cat_images -->
-<table class="forumline" width="95%" align="center" border="0" cellspacing="0" cellpadding="0">
+<table class="forumline tw95pct talignc">
 <tr><th colspan="2" align="center"><b><span class="gen">{articles.attach.cat_images.DOWNLOAD_NAME}</span></b></th></tr>
 <tr>
-	<td width="25%" class="row2"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.cat_images.COMMENT}</span></td>
+	<td class="row2 tw25pct"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.cat_images.COMMENT}</span></td>
 </tr>
 <tr>
 	<td class="row2"><span class="genmed">&nbsp;{L_FILESIZE}:</span></td>
@@ -84,15 +84,15 @@
 	<td class="row2"><span class="genmed">&nbsp;{articles.attach.cat_images.L_DOWNLOADED_VIEWED}:</span></td>
 	<td class="row3"><span class="genmed">&nbsp;{articles.attach.cat_images.L_DOWNLOAD_COUNT}</span></td>
 </tr>
-<tr><td colspan="2" align="center"><br />{articles.attach.cat_images.IMG_CODE}<br /><br /></td></tr>
+<tr><td class="tdalignc" colspan="2"><br />{articles.attach.cat_images.IMG_CODE}<br /><br /></td></tr>
 </table>
 <!-- END cat_images -->
 <!-- BEGIN cat_thumb_images -->
-<table class="forumline" width="95%" align="center" border="0" cellspacing="0" cellpadding="0">
-<tr><th colspan="2" align="center"><b><span class="gen">{articles.attach.cat_thumb_images.DOWNLOAD_NAME}</span></b></th></tr>
+<table class="forumline tw95pct talignc">
+<tr><th class="tdalignc" colspan="2"><b><span class="gen">{articles.attach.cat_thumb_images.DOWNLOAD_NAME}</span></b></th></tr>
 <tr>
-	<td width="25%" class="row2"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.cat_thumb_images.COMMENT}</span></td>
+	<td class="row2 tw25pct"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.cat_thumb_images.COMMENT}</span></td>
 </tr>
 <tr>
 	<td class="row2"><span class="genmed">&nbsp;{L_FILESIZE}:</span></td>
@@ -103,29 +103,29 @@
 	<td class="row3"><span class="genmed">&nbsp;{articles.attach.cat_thumb_images.L_DOWNLOAD_COUNT}</span></td>
 </tr>
 <tr>
-	<td colspan="2" align="center"><br /><a href="{articles.attach.cat_thumb_images.IMG_SRC}" target="_blank"><img src="{articles.attach.cat_thumb_images.IMG_THUMB_SRC}" alt="{articles.attach.cat_thumb_images.DOWNLOAD_NAME}" /></a><br /><br /></td>
+	<td class="tdalignc" colspan="2"><br /><a href="{articles.attach.cat_thumb_images.IMG_SRC}" target="_blank"><img src="{articles.attach.cat_thumb_images.IMG_THUMB_SRC}" alt="{articles.attach.cat_thumb_images.DOWNLOAD_NAME}" /></a><br /><br /></td>
 </tr>
 </table>
 <!-- END cat_thumb_images -->
 <!-- BEGIN attachrow -->
-<table class="forumline" width="95%" align="center" border="0" cellspacing="0" cellpadding="0">
-<tr><th colspan="3" align="center"><b><span class="gen">{articles.attach.attachrow.DOWNLOAD_NAME}</span></b></th></tr>
+<table class="forumline tw95pct talignc">
+<tr><th colspan="3"><b><span class="gen">{articles.attach.attachrow.DOWNLOAD_NAME}</span></b></th></tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.attachrow.COMMENT}</span></td>
-	<td width="10%" class="row2 row-center" rowspan="4" align="center">{articles.attach.attachrow.S_UPLOAD_IMAGE}<br /><a href="{articles.attach.attachrow.U_DOWNLOAD_LINK}" {articles.attach.attachrow.TARGET_BLANK} class="genmed"><b>{L_DOWNLOAD}</b></a></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{L_DESCRIPTION}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.attachrow.COMMENT}</span></td>
+	<td class="row2 row-center tw10pct" rowspan="4">{articles.attach.attachrow.S_UPLOAD_IMAGE}<br /><a href="{articles.attach.attachrow.U_DOWNLOAD_LINK}" {articles.attach.attachrow.TARGET_BLANK} class="genmed"><b>{L_DOWNLOAD}</b></a></td>
 </tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{L_FILENAME}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.attachrow.DOWNLOAD_NAME}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{L_FILENAME}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.attachrow.DOWNLOAD_NAME}</span></td>
 </tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{L_FILESIZE}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.attachrow.FILESIZE} {articles.attach.attachrow.SIZE_VAR}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{L_FILESIZE}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.attachrow.FILESIZE} {articles.attach.attachrow.SIZE_VAR}</span></td>
 </tr>
 <tr>
-	<td width="15%" class="row2"><span class="genmed">&nbsp;{articles.attach.attachrow.L_DOWNLOADED_VIEWED}:</span></td>
-	<td width="75%" class="row3"><span class="genmed">&nbsp;{articles.attach.attachrow.L_DOWNLOAD_COUNT}</span></td>
+	<td class="row2 tw15pct"><span class="genmed">&nbsp;{articles.attach.attachrow.L_DOWNLOADED_VIEWED}:</span></td>
+	<td class="row3 tw75pct"><span class="genmed">&nbsp;{articles.attach.attachrow.L_DOWNLOAD_COUNT}</span></td>
 </tr>
 </table>
 <!-- END attachrow -->

@@ -15,19 +15,19 @@ function toggle_check_all()
 </script>
 
 <form method="post" name="topic_ids" action="{S_MODCP_ACTION}">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_MOD_CP}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_MOD_CP}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row3 row-center" colspan="5" height="28">&nbsp;<span class="genmed"><b>{TOPIC_TYPES}</b></span></td>
-	<td class="row3 row-center" colspan="2" align="right"><span class="genmed">{TOPIC_COUNT}</span>&nbsp;</td>
+	<td class="row3 row-center" colspan="5">&nbsp;<span class="genmed"><b>{TOPIC_TYPES}</b></span></td>
+	<td class="row3 row-center" colspan="2"><span class="genmed">{TOPIC_COUNT}</span>&nbsp;</td>
 </tr>
 <tr>
-	<th width="1%" nowrap="nowrap">&nbsp;</th>
-	<th nowrap="nowrap">&nbsp;{L_TOPICS}&nbsp;</th>
-	<th width="19%" nowrap="nowrap">{L_FIRSTPOST}</th>
-	<th width="8%" nowrap="nowrap">{L_REPLIES}</th>
-	<th width="7%" nowrap="nowrap">{L_VIEWS}</th>
-	<th width="19%" nowrap="nowrap">{L_LASTPOST}</th>
-	<th width="1" nowrap="nowrap"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
+	<th class="tw1pct tdnw">&nbsp;</th>
+	<th class="tdnw">&nbsp;{L_TOPICS}&nbsp;</th>
+	<th class="tw20pct tdnw">{L_FIRSTPOST}</th>
+	<th class="tw8pct tdnw">{L_REPLIES}</th>
+	<th class="tw8pct tdnw">{L_VIEWS}</th>
+	<th class="tw20pct tdnw">{L_LASTPOST}</th>
+	<th class="tw1pct tdnw"><input type="checkbox" name="check_all_box" onclick="toggle_check_all()" /></th>
 </tr>
 <!-- BEGIN topicrow -->
 <tr>
@@ -40,7 +40,7 @@ function toggle_check_all()
 	<td class="row1 row-center"><span class="postdetails">{topicrow.REPLIES}</span>&nbsp;&nbsp;</td>
 	<td class="row1 row-center"><span class="postdetails">{topicrow.VIEWS}</span>&nbsp;&nbsp;</td>
 	<td class="row1 row-center"><span class="postdetails">{topicrow.LAST_POST_TIME}<br />{topicrow.LAST_POST_AUTHOR}{topicrow.LAST_POST_URL}</span></td>
-	<td class="row1 row-center" align="center" valign="middle"><input type="checkbox" name="topic_id_list[]" value="{topicrow.TOPIC_ID}" /></td>
+	<td class="row1 row-center tvalignm"><input type="checkbox" name="topic_id_list[]" value="{topicrow.TOPIC_ID}" /></td>
 </tr>
 <!-- END topicrow -->
 <!-- BEGIN switch_no_topics -->
@@ -90,10 +90,10 @@ function toggle_check_all()
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 
-<table class="empty-table" width="100%" align="center" cellspacing="0">
+<table>
 <tr>
-	<td align="left" valign="middle"><span class="gensmall">{PAGE_NUMBER}</span></td>
-	<td align="right" valign="top" nowrap="nowrap"><span class="pagination">{PAGINATION}</span></td>
+	<td class="tvalignm"><span class="gensmall">{PAGE_NUMBER}</span></td>
+	<td class="tdalignr tdnw"><span class="pagination">{PAGINATION}</span></td>
 </tr>
-<tr><td colspan="2" align="right">{JUMPBOX}</td></tr>
+<tr><td class="tdalignr" colspan="2">{JUMPBOX}</td></tr>
 </table>

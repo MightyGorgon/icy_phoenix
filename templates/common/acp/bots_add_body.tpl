@@ -3,7 +3,7 @@
 <br />
 
 <form method="post" action="{S_BOTS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_FORM_TITLE}</th></tr>
 <tr>
 	<td class="row1" style="width: 35%;"><strong>{L_BOT_COL_NAME}</strong></td>

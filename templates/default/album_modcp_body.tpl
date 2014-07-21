@@ -62,21 +62,21 @@ function checkSelected()
 &nbsp;<input type="submit" name="submit" value="{L_SORT}" class="liteoption" /></span>
 </div>
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_MODCP}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_MODCP}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th height="25" nowrap="nowrap">&nbsp;{L_PIC_TITLE}&nbsp;</th>
-	<th width="5%" nowrap="nowrap">&nbsp;{L_RATING}&nbsp;</th>
-	<th width="5%" nowrap="nowrap">&nbsp;{L_COMMENTS}&nbsp;</th>
-	<th width="5%" nowrap="nowrap">&nbsp;{L_STATUS}&nbsp;</th>
-	<th width="5%" nowrap="nowrap">&nbsp;{L_APPROVAL}&nbsp;</th>
-	<th width="5%" nowrap="nowrap">&nbsp;{L_SELECT}&nbsp;</th>
+	<th class="tdnw">&nbsp;{L_PIC_TITLE}&nbsp;</th>
+	<th class="tw5pct tdnw">&nbsp;{L_RATING}&nbsp;</th>
+	<th class="tw5pct tdnw">&nbsp;{L_COMMENTS}&nbsp;</th>
+	<th class="tw5pct tdnw">&nbsp;{L_STATUS}&nbsp;</th>
+	<th class="tw5pct tdnw">&nbsp;{L_APPROVAL}&nbsp;</th>
+	<th class="tw5pct tdnw">&nbsp;{L_SELECT}&nbsp;</th>
 </tr>
 <!-- BEGIN no_pics -->
-<tr><td class="row1 row-center" colspan="6" height="50"><span class="gen">{L_NO_PICS}</span></td></tr>
+<tr><td class="row1 row-center th50px" colspan="6"><span class="gen">{L_NO_PICS}</span></td></tr>
 <!-- END no_pics -->
 <!-- BEGIN picrow -->
 <tr>
-	<td class="row1" height="25">
+	<td class="row1">
 		<span class="genmed">
 			{L_POSTER}: {picrow.POSTER}<br />
 			{L_PIC_TITLE}: {picrow.PIC_TITLE}<br />
@@ -92,7 +92,7 @@ function checkSelected()
 </tr>
 <!-- END picrow -->
 <tr>
-	<td class="cat" colspan="6" align="right" height="28">
+	<td class="cat tdalignr" colspan="6">
 		<input type="hidden" name="mode" value="modcp" />
 		<input type="submit" class="liteoption" name="move" value="{L_MOVE}" />
 		<input type="submit" class="liteoption" name="copy" value="{L_COPY}" />
@@ -109,8 +109,8 @@ function checkSelected()
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><td align="right" nowrap="nowrap"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td></tr>
+<table>
+<tr><td class="tdalignr tdnw"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td></tr>
 <tr><td colspan="3"><span class="gensmall">{PAGE_NUMBER}</span></td></tr>
 </table>
 <br />

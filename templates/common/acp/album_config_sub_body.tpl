@@ -4,7 +4,7 @@
 		<!-- BEGIN subtab_row -->
 		<tr>
 			<td cellspacing="0" cellpadding="0">
-				<table class="forumline" cellpadding="4" cellspacing="1" border="0">
+				<table class="forumline">
 					<tr width="100%">
 						<td width="100%" class="{subtab_row.TAB_CLASS}"><a href="#" onclick="checkForm(null,'{subtab_row.TAB_SELECT_NAME}');" class="{subtab_row.TAB_LINKS}">{subtab_row.L_TAB_TITLE}</a></td>
 					</tr>
@@ -16,7 +16,7 @@
 	</td>
 	<td>
 		<table border="0" width="100%" height="100%" valign="top">
-		<tr><th colspan="2" align="center">{L_CONFIGURATION_BOX}</th></tr>
+		<tr><th class="tdalignc" colspan="2">{L_CONFIGURATION_BOX}</th></tr>
 		<tr><td>{SUB_CONFIGURATION_BOX}</td></tr>
 		</table>
 	</td>

@@ -2,7 +2,7 @@
 
 <!-- BEGIN entry_page -->
 <form name="edit_post" action="{S_ACTION}" method="post">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_EDIT_POST_DETAILS}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_EDIT_POST_DETAILS}</span>{IMG_THR}<table class="forumlinenb">
 <tr><td class="row1 row-center"><span class="genmed"><b>{L_CURRENT_POSTER}</b>:&nbsp;{POSTER_NAME}</span></td></tr>
 <tr>
 	<td class="row1 row-center">
@@ -15,7 +15,7 @@
 </tr>
 <tr><td class="row1 row-center"><span class="genmed">{POST_EDIT_STRING}</span></td></tr>
 <tr>
-<td class="catBottom" align="center">
+<td class="catBottom tdalignc">
 	{S_HIDDEN_FIELDS}
 	<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;&nbsp;
 	<input type="submit" name="reset" value="{L_RESET}" class="liteoption" />
@@ -26,8 +26,8 @@
 <!-- END entry_page -->
 
 <!-- BEGIN submit_finished -->
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_INFORMATION}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
-<tr><td class="row1 row-center" width="100%" align="center"><span class="genmed">{POST_EDIT_STRING}</span></td></tr>
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_INFORMATION}</span>{IMG_THR}<table class="forumlinenb">
+<tr><td class="row1 row-center tw100pct"><span class="genmed">{POST_EDIT_STRING}</span></td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- END submit_finished -->
 

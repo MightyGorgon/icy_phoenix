@@ -2,7 +2,7 @@
 <p>{L_CAT_EXPLAIN}</p>
 
 <form method="post" action="{S_CAT_ACTION}">
-<table class="forumline" width="100%" cellpadding="0" cellspacing="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_CAT_TITLE}</th></tr>
 <!-- BEGIN cat_row -->
 <tr>
@@ -10,5 +10,5 @@
 	<td class="row1" valign="middle" nowrap="nowrap">{cat_row.PRE}{NAV_SEP}<!-- IF cat_row.IS_HIGHER_CAT --><strong><!-- ENDIF --><a href="{cat_row.U_CAT}" class="cattitle">{cat_row.CAT_NAME}</a><!-- IF cat_row.IS_HIGHER_CAT --></strong><!-- ENDIF --></td>
 </tr>
 <!-- END cat_row -->
-<tr><td class="cat" align="center" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" class="liteoption"  name="addcategory" value="{L_CREATE_CATEGORY}" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" class="liteoption"  name="addcategory" value="{L_CREATE_CATEGORY}" /></td></tr>
 </table></form>

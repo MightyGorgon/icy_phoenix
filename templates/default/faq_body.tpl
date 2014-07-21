@@ -11,7 +11,7 @@ function initReadPrefs() {
 // ]]>
 </script>
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/sitemap.js"></script>
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_FAQ_TITLE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_FAQ_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1g-left gen">
 		<!-- BEGIN faq_block -->
@@ -20,7 +20,7 @@ function initReadPrefs() {
 		<!-- BEGIN faq_row -->
 		<li>
 			<h2 class="sitemap">{faq_block.faq_row.FAQ_QUESTION}</h2>
-			<ul class="sitemap"><li><div class="post-text">{faq_block.faq_row.FAQ_ANSWER}</div><br clear="all" /></li></ul>
+			<ul class="sitemap"><li><div class="post-text">{faq_block.faq_row.FAQ_ANSWER}</div><br class="clear" /></li></ul>
 		</li>
 		<!-- END faq_row -->
 		</ul>

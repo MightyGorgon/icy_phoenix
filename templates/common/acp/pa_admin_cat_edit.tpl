@@ -28,15 +28,15 @@
 <p>{L_CAT_EXPLAIN}</p>
 
 <!-- IF ERROR neq '' -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row2 row-center">{ERROR}</td></tr></table>
+<table class="forumline"><tr><td class="row2 row-center">{ERROR}</td></tr></table>
 <br />
 <!-- ENDIF -->
 
 <form action="{S_CAT_ACTION}" method="post" name="form" onsubmit="return checkAddForm();">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_CAT_TITLE}</th></tr>
 <tr>
-	<td width="50%" class="row1"><strong>{L_CAT_NAME}</strong><br /><span class="gensmall">{L_CAT_NAME_INFO}</span></td>
+	<td class="row1 tw50pct"><strong>{L_CAT_NAME}</strong><br /><span class="gensmall">{L_CAT_NAME_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="cat_name" value="{CAT_NAME}" /></td>
 </tr>
 <tr>
@@ -68,6 +68,6 @@
 		<input type="radio" name="cat_allow_ratings" value="0" {CHECKED_ALLOWRATINGS_NO} />{L_NO}&nbsp;
 	</td>
 </tr>
-<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="liteoption" type="submit" value="{L_CAT_TITLE}" name="submit"></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input class="liteoption" type="submit" value="{L_CAT_TITLE}" name="submit"></tr>
 </table>
 </form>

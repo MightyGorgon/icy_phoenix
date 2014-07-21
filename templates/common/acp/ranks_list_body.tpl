@@ -2,7 +2,7 @@
 <p>{L_RANKS_TEXT}</p>
 
 <form method="post" action="{S_RANKS_ACTION}">
-<table width="100%" class="forumline" align="center" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_RANK}</th>
 	<th>{L_RANK_MINIMUM}</th>
@@ -17,6 +17,6 @@
 	<td class="{ranks.ROW_CLASS} row-center">&nbsp;<a href="{ranks.U_RANK_EDIT}"><img src="{IMG_CMS_ICON_EDIT}" alt="{L_EDIT}" title="{L_EDIT}" /></a>&nbsp;<a href="{ranks.U_RANK_DELETE}"><img src="{IMG_CMS_ICON_DELETE}" alt="{L_DELETE}" title="{L_DELETE}" /></a>&nbsp;</td>
 </tr>
 <!-- END ranks -->
-<tr><td class="cat" align="center" colspan="4"><input type="submit" class="mainoption" name="add" value="{L_ADD_RANK}" /></td></tr>
+<tr><td class="cat tdalignc" colspan="4"><input type="submit" class="mainoption" name="add" value="{L_ADD_RANK}" /></td></tr>
 </table>
 </form>

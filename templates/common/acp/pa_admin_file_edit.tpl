@@ -103,13 +103,13 @@
 
 <form action="{S_FILE_ACTION}" method="post" name="form" enctype="multipart/form-data" onsubmit="return checkAddForm();">
 <!-- IF ERROR neq '' -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="row2 row-center">{ERROR}</td></tr></table>
+<table class="forumline"><tr><td class="row2 row-center">{ERROR}</td></tr></table>
 <br />
 <!-- ENDIF -->
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_FILE_TITLE}</th></tr>
 <tr>
-	<td width="50%" class="row1"><strong>{L_FILE_NAME}</strong><br /><span class="gensmall">{L_FILE_NAME_INFO}</span></td>
+	<td class="row1 tw50pct"><strong>{L_FILE_NAME}</strong><br /><span class="gensmall">{L_FILE_NAME_INFO}</span></td>
 	<td class="row2"><input type="text" class="post" size="50" name="name" value="{FILE_NAME}" /></td>
 </tr>
 <tr>
@@ -203,6 +203,6 @@
 <!-- ENDIF -->
 
 <!-- INCLUDE pa_custom_field.tpl -->
-<tr><td align="center" class="cat" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_FILE_TITLE}" name="submit" onclick="set_mirror_mode(false);" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input class="mainoption" type="submit" value="{L_FILE_TITLE}" name="submit" onclick="set_mirror_mode(false);" /></td></tr>
 </table>
 </form>

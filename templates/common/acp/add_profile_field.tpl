@@ -2,7 +2,7 @@
 <p>{L_ADD_FIELD_EXPLAIN}</p>
 
 <form action="{S_ADD_FIELD_ACTION}" method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_GENERAL_SETTINGS}</th></tr>
 <tr>
 	<td class="row1"><strong>{L_NEW_FIELD_NAME}</strong><br /><span class="gensmall">{L_NEW_FIELD_EXPLAIN}</span></td>
@@ -13,11 +13,11 @@
 	<td class="row2"><input class="post" type="text" maxlength="255" size="40" name="field_descrition" value="{FIELD_DESCRIPTION}" /></td>
 </tr>
 <tr>
-	<td class="row1" valign="top"><strong>{L_NEW_FIELD_TYPE}</strong><br /><span class="gensmall">{L_NEW_FIELD_TYPE_EXPLAIN}</span></td>
+	<td class="row1"><strong>{L_NEW_FIELD_TYPE}</strong><br /><span class="gensmall">{L_NEW_FIELD_TYPE_EXPLAIN}</span></td>
 	<td class="row2">
 	<table cellspacing="2" cellpadding="0" border="0">
 		<tr>
-			<td nowrap="nowrap"><span class="gen"><input type="radio" name="field_type" value="{S_TEXT_FIELD}"{TEXT_FIELD_CHECKED} />{L_TEXT_FIELD}
+			<td class="tdnw"><span class="gen"><input type="radio" name="field_type" value="{S_TEXT_FIELD}"{TEXT_FIELD_CHECKED} />{L_TEXT_FIELD}
 				<br /><input type="radio" name="field_type" value="{S_TEXTAREA}"{TEXTAREA_CHECKED} />{L_TEXTAREA}
 				<br /><input type="radio" name="field_type" value="{S_RADIO}"{RADIO_CHECKED} />{L_RADIO}
 				<br /><input type="radio" name="field_type" value="{S_CHECKBOX}"{CHECKBOX_CHECKED} />{L_CHECKBOX}</span></td>
@@ -40,7 +40,7 @@
 </tr>
 <tr><th colspan="2">{L_TEXT_AREA_SETTINGS}</th></tr>
 <tr>
-	<td class="row1" valign="top"><strong>{L_DEFAULT_VALUE}</strong><br /><span class="gensmall">{L_DEFAULT_VALUE_EXPLAIN}</span></td>
+	<td class="row1"><strong>{L_DEFAULT_VALUE}</strong><br /><span class="gensmall">{L_DEFAULT_VALUE_EXPLAIN}</span></td>
 	<td class="row2"><textarea style="width: 300px" rows="6" class="post" name="text_area_default">{TEXTAREA_DEFAULT}</textarea></td>
 </tr>
 <tr>

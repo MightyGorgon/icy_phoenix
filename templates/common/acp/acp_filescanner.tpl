@@ -2,7 +2,7 @@
 <p>{L_SUBHEADLINE}</p>
 <br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_FUNC_HEADER}</th></tr>
 <tr>
 	<td class="row1 row-center" width="50%"><span class="gen"><a href="{U_LINK_OPTION_1}"><img src="{IMG_ICON_1}" alt="{L_OPTION_1}" title="{L_OPTION_1}" /><br />{L_OPTION_1}</a></span></td>
@@ -13,7 +13,7 @@
 
 <br /><br />
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_TABLE_HEADER}</th></tr>
 <!-- BEGIN header_table_cell -->
 <tr>

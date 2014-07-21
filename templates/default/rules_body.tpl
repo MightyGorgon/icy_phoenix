@@ -1,7 +1,7 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/sitemap.js"></script>
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_BOARDRULES}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_BOARDRULES}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<td class="row1g-left">
 		<div class="post-text">

@@ -1,4 +1,4 @@
-<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table>
 <!-- BEGIN topposter -->
 <tr>
 	<td class="row1g"><a href="{topposter.U_VIEWPOSTER}" class="gensmall">{topposter.AVATAR_IMG}</a></td>

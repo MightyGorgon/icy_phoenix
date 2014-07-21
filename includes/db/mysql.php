@@ -1106,12 +1106,12 @@ class sql_db
 </head>
 
 <body>
-<a name="top" id="top"></a>
+<a id="top"></a>
 <div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
 <div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
 <tr>
-	<td width="100%" colspan="3" valign="top">
+	<td class="tvalignt" colspan="3">
 	<div id="top_logo">
 	<table class="" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr>
@@ -1139,10 +1139,10 @@ class sql_db
 	</td>
 </tr>
 <tr>
-	<td width="100%" colspan="3">
+	<td colspan="3">
 	<div id="bottom_logo_ext">
 	<div id="bottom_logo">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+		<table>
 			<tr>
 				<td nowrap="nowrap" width="45%" align="left">
 					<br /><span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span><br /><br />
@@ -1171,7 +1171,7 @@ class sql_db
 				$endtime = explode(' ', microtime());
 				$endtime = $endtime[0] + $endtime[1];
 				$this->sql_report .= '
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <thead>
 <tr><th>Query #' . $this->num_queries['total'] . '</th></tr>
 </thead>
@@ -1216,7 +1216,7 @@ class sql_db
 				if (!$html_table && sizeof($row))
 				{
 					$html_table = true;
-					$this->html_hold .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>';
+					$this->html_hold .= '<table class="forumline"><tr>';
 
 					foreach (array_keys($row) as $val)
 					{
@@ -1253,7 +1253,7 @@ class sql_db
 				$time_db = $splittime - $endtime;
 				$color = ($time_db > $time_cache) ? '#228844' : '#cc3333';
 
-				$this->sql_report .= '<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">';
+				$this->sql_report .= '<table class="forumline">';
 				$this->sql_report .= '<thead><tr><th>Query #' . $this->num_queries['total'] . ' [From Cache]</th></tr></thead><tbody><tr>';
 				$this->sql_report .= '<td class="row3"><textarea style="font-family: \'Courier New\', monospace; width: 99%;" rows="8" cols="160">' . preg_replace('/\t(AND|OR)(\W)/', "\$1\$2", htmlspecialchars(preg_replace('/[\s]*[\n\r\t]+[\n\r\s\t]*/', "\n", $query))) . '</textarea></td></tr></tbody></table>';
 				$this->sql_report .= '<p class="helpline" style="padding: 2px;">';

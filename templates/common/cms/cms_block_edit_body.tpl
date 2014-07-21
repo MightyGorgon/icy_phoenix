@@ -2,7 +2,7 @@
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_PAGE_02}" title="{L_BLOCKS_PAGE_02}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_BLOCKS_PAGE_02}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
@@ -10,11 +10,11 @@
 </table>
 
 <form method="post" action="{S_BLOCKS_ACTION}" name="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th colspan="2">{L_EDIT_BLOCK}</th></tr>
 <tr>
-	<td class="row1" style="padding:0px" valign="top">
-		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+	<td class="row1" style="padding: 0px;">
+		<table>
 		<!-- BEGIN cms_block -->
 		<tr>
 			<td class="row1"><b>{cms_block.L_FIELD_LABEL}</b>{cms_block.L_FIELD_SUBLABEL}</td>
@@ -29,7 +29,7 @@
 </tr>
 <tr><td class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr>
-	<td class="cat" align="center">
+	<td class="cat tdalignc">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="save" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
 		<input type="reset" name="reset" class="liteoption" value="{L_RESET}" />

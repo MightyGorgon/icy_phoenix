@@ -65,7 +65,7 @@ function destroyTitle()
 
 <!-- BEGIN _calendar_box -->
 <div id="calendarbox_h" style="display: none;">
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR_ALT}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MAXIMISE}" onclick="ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_SHOW}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR_ALT}<table class="forumlinenb">
 <tr><td>&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </div>
@@ -79,40 +79,40 @@ if(GetCookie(tmp) == '2')
 }
 // ]]>
 </script>
-{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_HIDE}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<img class="max-min-right" style="{SHOW_HIDE_PADDING}" src="{IMG_MINIMISE}" onclick="ShowHide('calendarbox','calendarbox_h','calendarbox');" alt="{L_HIDE}" /><a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN switch_full_month -->
 <tr>
 	<!-- BEGIN _cell -->
-	<th width="{_calendar_box.switch_full_month._cell.WIDTH}%" nowrap="nowrap">{_calendar_box.switch_full_month._cell.L_DAY}</th>
+	<th style="width: {_calendar_box.switch_full_month._cell.WIDTH}%;" class="tdnw">{_calendar_box.switch_full_month._cell.L_DAY}</th>
 	<!-- END _cell -->
 </tr>
 <!-- END switch_full_month -->
 <!-- BEGIN switch_full_month_no -->
 <tr><td colspan="2">
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr><th align="center" colspan="{_calendar_box.SPAN_ALL}" width="100%">{_calendar_box.L_CALENDAR}</th></tr>
+<table>
+<tr><th class="tw100pct" colspan="{_calendar_box.SPAN_ALL}">{_calendar_box.L_CALENDAR}</th></tr>
 <!-- END switch_full_month_no -->
 <!-- BEGIN _row -->
 <tr>
 	<!-- BEGIN _cell -->
 	<!-- BEGIN switch_filled_no -->
-	<td class="row1" colspan="{_calendar_box._row._cell.SPAN}" width="{_calendar_box._row._cell.WIDTH}%">&nbsp;</td>
+	<td class="row1" colspan="{_calendar_box._row._cell.SPAN}" style="width: {_calendar_box._row._cell.WIDTH}%;">&nbsp;</td>
 	<!-- END switch_filled_no -->
 	<!-- BEGIN switch_filled -->
-	<td class="row1" valign="top" colspan="{_calendar_box._row._cell.SPAN}" width="{_calendar_box._row._cell.WIDTH}%">
+	<td class="row1" colspan="{_calendar_box._row._cell.SPAN}" style="width: {_calendar_box._row._cell.WIDTH}%;">
 		<table cellspacing="0" cellpadding="2" width="100%" style="height:94px;vertical-align:top;">
 		<tr>
-			<td class="rowcal3" valign="top" align="center" height="4" nowrap="nowrap"><span class="genmed"><a href="{_calendar_box._row._cell.U_DATE}" title="{_calendar_box._row._cell.DATE}" class="genmed">{_calendar_box._row._cell.DATE}</a></span></td>
+			<td class="rowcal3 tdalignc th4px tdnw"><span class="genmed"><a href="{_calendar_box._row._cell.U_DATE}" title="{_calendar_box._row._cell.DATE}" class="genmed">{_calendar_box._row._cell.DATE}</a></span></td>
 		</tr>
 		<tr valign="top">
-			<td class="rowcal2" nowrap="nowrap">
-				<table width="100%" cellspacing="0" cellpadding="0">
+			<td class="rowcal2 tdnw">
+				<table>
 				<!-- BEGIN _event -->
 				<!-- BEGIN switch_event -->
 				<tr>
-					<td class="rowcal2" nowrap="nowrap" valign="top"><span class="genmed">{_calendar_box._row._cell.switch_filled._event.EVENT_TYPE}<a href="{_calendar_box._row._cell.switch_filled._event.U_EVENT}" onmouseover="createTitle(this, '{_calendar_box._row._cell.switch_filled._event.EVENT_MESSAGE}', event.pageX, event.pageY);" onmouseout="destroyTitle();" class="{_calendar_box._row._cell.switch_filled._event.EVENT_CLASS}">{_calendar_box._row._cell.switch_filled._event.EVENT_TITLE}</a></span></td>
+					<td class="rowcal2 tvalignt tdnw"><span class="genmed">{_calendar_box._row._cell.switch_filled._event.EVENT_TYPE}<a href="{_calendar_box._row._cell.switch_filled._event.U_EVENT}" onmouseover="createTitle(this, '{_calendar_box._row._cell.switch_filled._event.EVENT_MESSAGE}', event.pageX, event.pageY);" onmouseout="destroyTitle();" class="{_calendar_box._row._cell.switch_filled._event.EVENT_CLASS}">{_calendar_box._row._cell.switch_filled._event.EVENT_TITLE}</a></span></td>
 					<!-- BEGIN _more -->
-					<td class="rowcal2" align="right"><span class="genmed"><a href="#" onclick="hdr_toggle('calendar_display_extend_{_calendar_box._row._cell.switch_filled.EVENT_DATE}','calendar_open_close_{_calendar_box._row._cell.switch_filled.EVENT_DATE}', '{DOWN_ARROW2}', '{UP_ARROW2}'); return false;" class="gensmall" style="text-decoration: none;">...<img src="{_calendar_box._row._cell.switch_filled.TOGGLE_ICON}" id="calendar_open_close_{_calendar_box._row._cell.switch_filled.EVENT_DATE}" hspace="2" /></a></span></td>
+					<td class="rowcal2 tdalignr"><span class="genmed"><a href="#" onclick="hdr_toggle('calendar_display_extend_{_calendar_box._row._cell.switch_filled.EVENT_DATE}','calendar_open_close_{_calendar_box._row._cell.switch_filled.EVENT_DATE}', '{DOWN_ARROW2}', '{UP_ARROW2}'); return false;" class="gensmall" style="text-decoration: none;">...<img src="{_calendar_box._row._cell.switch_filled.TOGGLE_ICON}" id="calendar_open_close_{_calendar_box._row._cell.switch_filled.EVENT_DATE}" hspace="2" /></a></span></td>
 					<!-- END _more -->
 					<!-- BEGIN _more_no -->
 					<td></td>
@@ -123,7 +123,7 @@ if(GetCookie(tmp) == '2')
 				<tr>
 					<td class="rowcal2"><span class="genmed">&nbsp;</span></td>
 					<!-- BEGIN _more -->
-					<td class="row1" align="right"><span class="genmed"><a href="#" onclick="hdr_toggle('calendar_display_extend_{_calendar_box._row._cell.switch_filled.EVENT_DATE}','calendar_open_close_{_calendar_box._row._cell.switch_filled.EVENT_DATE}', '{DOWN_ARROW2}', '{UP_ARROW2}'); return false;" class="gensmall" style="text-decoration: none;">...<img src="{_calendar_box._row._cell.switch_filled.TOGGLE_ICON2}" id="calendar_open_close_{_calendar_box._row._cell.switch_filled.EVENT_DATE}" hspace="2" /></a></span></td>
+					<td class="row1 tdalignr"><span class="genmed"><a href="#" onclick="hdr_toggle('calendar_display_extend_{_calendar_box._row._cell.switch_filled.EVENT_DATE}','calendar_open_close_{_calendar_box._row._cell.switch_filled.EVENT_DATE}', '{DOWN_ARROW2}', '{UP_ARROW2}'); return false;" class="gensmall" style="text-decoration: none;">...<img src="{_calendar_box._row._cell.switch_filled.TOGGLE_ICON2}" id="calendar_open_close_{_calendar_box._row._cell.switch_filled.EVENT_DATE}" hspace="2" /></a></span></td>
 					<!-- END _more -->
 					<!-- BEGIN _more_no -->
 					<td></td>
@@ -148,12 +148,12 @@ if(GetCookie(tmp) == '2')
 <!-- END _row -->
 <!-- BEGIN switch_full_month -->
 <tr>
-	<td align="center" colspan="{_calendar_box.SPAN_ALL}" width="100%">
-		<table class="empty-table" width="100%" cellspacing="0" cellpadding="0" border="0">
+	<td class="tw100pct tdalignc" colspan="{_calendar_box.SPAN_ALL}">
+		<table>
 		<tr>
 			<td>&nbsp;</td>
 			<td><b>&nbsp;<a href="{_calendar_box.U_PREC}" class="gen">&laquo;</a>&nbsp;</b></td>
-			<td width="100%" align="center">{_calendar_box.S_MONTH}&nbsp;{_calendar_box.S_YEAR}&nbsp;{_calendar_box.S_FORUM_LIST}&nbsp;<input type="submit" value="{_calendar_box.L_GO}" class="liteoption" /></td>
+			<td class="tw100pct tdalignc">{_calendar_box.S_MONTH}&nbsp;{_calendar_box.S_YEAR}&nbsp;{_calendar_box.S_FORUM_LIST}&nbsp;<input type="submit" value="{_calendar_box.L_GO}" class="liteoption" /></td>
 			<td><b>&nbsp;<a href="{_calendar_box.U_NEXT}" class="gen">&raquo;</a>&nbsp;</b></td>
 			<td>&nbsp;</td>
 		</tr>

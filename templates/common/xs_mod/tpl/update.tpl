@@ -16,7 +16,7 @@
 <p>{L_XS_UPDATES_COMMENT}</p>
 
 <form action="{UPDATE_URL}" method="post">
-<table width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline">
+<table class="forumline">
 <tr>
 	<th colspan="4" class="thHead" align="center">{L_XS_UPDATES}</th>
 </tr>
@@ -25,8 +25,8 @@
 </tr>
 <tr>
 	<th colspan="2" align="center" nowrap="nowrap">{L_XS_UPDATE_NAME}</th>
-	<th align="center" nowrap="nowrap">{L_XS_UPDATE_TYPE}</th>
-	<th align="center" nowrap="nowrap">{L_XS_UPDATE_CURRENT_VERSION}</th>
+	<th class="tdnw">{L_XS_UPDATE_TYPE}</th>
+	<th class="tdnw">{L_XS_UPDATE_CURRENT_VERSION}</th>
 </tr>
 <!-- BEGIN row -->
 <input type="hidden" name="{row.VAR}item" value="{row.ITEM}" />
@@ -38,7 +38,7 @@
 </tr>
 <!-- END row -->
 <tr>
-	<td colspan="4" class="row1" align="left" valign="middle"><span class="gen">{L_XS_UPDATE_TIMEOUT} <input type="text" name="timeout" value="180" size="6" /></span></td>
+	<td colspan="4" class="row1 tvalignm"><span class="gen">{L_XS_UPDATE_TIMEOUT} <input type="text" name="timeout" value="180" size="6" /></span></td>
 	</tr>
 	<tr>
 		<td class="catBottom" colspan="4" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_XS_UPDATE_CONTINUE}" class="mainoption" /></td>

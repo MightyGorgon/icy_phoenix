@@ -4,7 +4,7 @@
 
 <!-- INCLUDE ../common/cms/ajax/cms_ajax_block_bbcb_mg_js.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_PAGE_01}" title="{L_BLOCKS_PAGE_01}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_CMS_BLOCK_PAGE}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
@@ -12,11 +12,11 @@
 </table>
 
 <form method="post" action="{S_BLOCKS_ACTION}" name="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr><th colspan="2">{L_EDIT_BLOCK}</th></tr>
 <tr>
-	<td class="row1" style="padding: 0px;" valign="top">
-		<table width="100%" align="center" cellspacing="0" cellpadding="0" border="0">
+	<td class="row1" style="padding: 0px;">
+		<table>
 		<tr>
 			<td class="row1" width="200">{L_B_TITLE}</td>
 			<td class="row2"><input type="text" maxlength="60" size="30" name="title" value="{CMS_TITLE}" class="post" /></td>
@@ -33,7 +33,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="row1" align="right">{L_B_BLOCK_FILE}</td>
+			<td class="row1 tdalignr">{L_B_BLOCK_FILE}</td>
 			<td class="row2">{BLOCKFILE}</td>
 		</tr>
 		<tr>
@@ -41,39 +41,39 @@
 			<td class="row2"><div id="block_config">{BLOCK_CONFIG}</div></td>
 		</tr>
 		<tr>
-			<td class="row1" align="right">{L_B_VIEW_BY}</td>
+			<td class="row1 tdalignr">{L_B_VIEW_BY}</td>
 			<td class="row2">{VIEWBY}</td>
 		</tr>
 		<tr>
-			<td class="row1" align="right">{L_B_BORDER}</td>
+			<td class="row1 tdalignr">{L_B_BORDER}</td>
 			<td class="row2">
 				<input type="radio" name="border" value="1" {BORDER} /> {L_YES}&nbsp;&nbsp;
 				<input type="radio" name="border" value="0" {NO_BORDER} /> {L_NO}
 			</td>
 		</tr>
 		<tr>
-			<td class="row1" align="right">{L_B_TITLEBAR}</td>
+			<td class="row1 tdalignr">{L_B_TITLEBAR}</td>
 			<td class="row2">
 				<input type="radio" name="titlebar" value="1" {TITLEBAR} /> {L_YES}&nbsp;&nbsp;
 				<input type="radio" name="titlebar" value="0" {NO_TITLEBAR} /> {L_NO}
 			</td>
 		</tr>
 		<tr>
-			<td class="row1" align="right">{L_B_LOCAL}</td>
+			<td class="row1 tdalignr">{L_B_LOCAL}</td>
 			<td class="row2">
 				<input type="radio" name="local" value="1" {LOCAL} /> {L_YES}&nbsp;&nbsp;
 				<input type="radio" name="local" value="0" {NOT_LOCAL} /> {L_NO}
 			</td>
 		</tr>
 		<tr>
-			<td class="row1" align="right">{L_B_BACKGROUND}</td>
+			<td class="row1 tdalignr">{L_B_BACKGROUND}</td>
 			<td class="row2">
 				<input type="radio" name="background" value="1" {BACKGROUND} /> {L_YES}&nbsp;&nbsp;
 				<input type="radio" name="background" value="0" {NO_BACKGROUND} /> {L_NO}
 			</td>
 		</tr>
 		<tr>
-			<td class="row1" align="right">{L_B_GROUP}</td>
+			<td class="row1 tdalignr">{L_B_GROUP}</td>
 			<td class="row2">{GROUP}</td>
 		</tr>
 		</table>
@@ -81,7 +81,7 @@
 </tr>
 <tr><td class="spaceRow"><img src="{SPACER}" width="1" height="3" alt="" /></td></tr>
 <tr>
-	<td class="cat" align="center">
+	<td class="cat tdalignc">
 		{S_HIDDEN_FIELDS}
 		<input type="submit" name="save" class="mainoption" value="{L_SUBMIT}" />&nbsp;&nbsp;
 		<input type="submit" name="preview" class="liteoption" value="{L_PREVIEW}" />&nbsp;&nbsp;

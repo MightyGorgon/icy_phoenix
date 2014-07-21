@@ -1,11 +1,11 @@
 <h1>{L_TITLE}</h1>
 <p>{L_EXPLAIN}</p>
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="5" align="center">{L_TITLE}</th></tr>
 <!-- BEGIN blockrow -->
 <tr>
-	<th align="left"><span class="genmed"><a name="{blockrow.BLOCK_ANCHOR}">{blockrow.BLOCK_TITLE}</a></span></th>
+	<th align="left"><span class="genmed"><a id="{blockrow.BLOCK_ANCHOR}">{blockrow.BLOCK_TITLE}</a></span></th>
 	<th><span class="genmed"><a href="{blockrow.U_BLOCK_EDIT}">{L_EDIT}</a></span></th>
 	<th><span class="genmed"><a href="{blockrow.U_BLOCK_DELETE}">{L_DELETE}</a></span></th>
 	<th><span class="genmed"><a href="{blockrow.U_BLOCK_MOVE_UP}">{L_MOVE_UP}</a></span></th>
@@ -14,10 +14,10 @@
 <!-- BEGIN questrow -->
 <tr>
 	<td class="row1" valign="top" width="100%"><span class="genmed"><a href="{blockrow.questrow.U_QUEST}" target="_new">{blockrow.questrow.QUEST_TITLE}</a></span></td>
-	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_EDIT}">{L_EDIT}</a></span></td>
-	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_DELETE}">{L_DELETE}</a></span></td>
-	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_MOVE_UP}">{L_MOVE_UP}</a></span></td>
-	<td class="row2 row-center" valign="middle" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_MOVE_DOWN}">{L_MOVE_DOWN}</span></td>
+	<td class="row2 row-center tvalignm" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_EDIT}">{L_EDIT}</a></span></td>
+	<td class="row2 row-center tvalignm" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_DELETE}">{L_DELETE}</a></span></td>
+	<td class="row2 row-center tvalignm" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_MOVE_UP}">{L_MOVE_UP}</a></span></td>
+	<td class="row2 row-center tvalignm" nowrap="nowrap"><span class="genmed"><a href="{blockrow.questrow.U_QUEST_MOVE_DOWN}">{L_MOVE_DOWN}</span></td>
 </tr>
 <!-- END questrow -->
 <!-- BEGIN no_questions -->

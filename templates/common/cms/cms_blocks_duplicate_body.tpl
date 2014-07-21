@@ -2,7 +2,7 @@
 
 <!-- INCLUDE ../common/cms/breadcrumbs.tpl -->
 
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<td class="row1 row-center c-r-l" width="100" valign="middle"><img src="{IP_ROOT_PATH}templates/common/images/cms/cms_blocks.png" alt="{L_BLOCKS_TITLE}" title="{L_BLOCKS_TITLE}" /></td>
 	<td class="row1 c-r-r" valign="top"><h1>{L_BLOCKS_TITLE}</h1><span class="genmed">{L_BLOCKS_TEXT}</span></td>
@@ -10,7 +10,7 @@
 </table>
 
 <form method="post" action="{S_BLOCKS_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0">
+<table class="forumline">
 <tr>
 	<th>{L_ACTION}</th>
 	<th>{L_B_TITLE}</th>

@@ -18,9 +18,9 @@ function checkRateForm()
 </script>
 
 <form name="rateform" action="{S_RATE_ACTION}" method="post" onsubmit="return checkRateForm();">
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_RATE}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_RATE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<td class="row1" width="90%"><div class="post-text">{RATEINFO}</div></td>
+	<td class="row1 tw90pct"><div class="post-text">{RATEINFO}</div></td>
 	<td class="row2">
 		<select size="1" name="rating" class="forminput">
 			<option value="-1" selected>{L_RATE}</option>
@@ -39,7 +39,7 @@ function checkRateForm()
 		<input type="hidden" name="file_id" value="{ID}" />
 	</td>
 </tr>
-<tr><td colspan="2" class="cat" align="center"><input class="liteoption" type="submit" value="{L_RATE}" name="submit">&nbsp;</td></tr>
+<tr><td class="cat tdalignc" colspan="2"><input class="liteoption" type="submit" value="{L_RATE}" name="submit">&nbsp;</td></tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 </form>
 <br />

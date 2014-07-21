@@ -36,7 +36,7 @@ function CheckColor(ColorCode)
 <p>{L_GROUP_EXPLAIN}</p>
 
 <form method="post" action="{S_GROUP_ACTION}">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr>
 	<th>{L_GROUP_NAME}</th>
 	<th>{L_GROUP_COLOR}</th>

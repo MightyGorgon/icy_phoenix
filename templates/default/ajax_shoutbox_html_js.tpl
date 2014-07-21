@@ -55,7 +55,7 @@ function insertChatTab(roomId, room, title)
 // Write the HTML for a new chatroom container
 function insertChatContainer(tableId)
 {
-	var output = "<table id=\"" + tableId + "\" class=\"shoutlist forumline\" width=\"100%\" align=\"center\" cellspacing=\"0\" cellpadding=\"0\" style=\"display: none;\"></table>";
+	var output = "<table id=\"" + tableId + "\" class=\"shoutlist forumline\" style=\"display: none;\"></table>";
 	return output;
 }
 
@@ -63,18 +63,18 @@ function insertChatContainer(tableId)
 function insertNewShout(id, shout)
 {
 	var output = "<tr id=\"" + id + "\" class=\"" + shout.cssClass + "\">";
-	output += "<td width=\"140\"><div style=\"text-align: center;\"><span class=\"gensmall\"><i>" +
+	output += "<td class=\"tw140px\"><div style=\"text-align: center;\"><span class=\"gensmall\"><i>" +
 		shout.date + "<\/i><\/span><\/div><\/td>";
 	output += "<td><div class=\"post-text post-text-hide-flow post-text-chat\"><b>" +
 		shout.shouter_name + "</b>: " + shout.msg + "<\/div><\/td>";
 
 	<!-- BEGIN user_is_admin -->
 	<!-- IF IS_PROSILVER -->
-	output += "<td width=\"100\"><div style=\"text-align: center;\">" +
+	output += "<td class=\"tw100px\"><div style=\"text-align: center;\">" +
 		"<ul class=\"profile-icons\" style=\"padding-left: 10px;\"><li class=\"delete-icon\"><a href=\"#\" onclick=\"javascript:removeShout(" + shout.id + ");\"><span>{L_DELETE}</span></a></li></ul>" +
 		"<\/div><\/td>";
 	<!-- ELSE -->
-	output += "<td width=\"100\"><div style=\"text-align: center;\">" +
+	output += "<td class=\"tw100px\"><div style=\"text-align: center;\">" +
 		"<a href=\"#\" onclick=\"javascript:removeShout(" + shout.id + ");\">" + '{DELETE_IMG}' + "<\/a>" +
 		"<\/div><\/td>";
 	<!-- ENDIF -->

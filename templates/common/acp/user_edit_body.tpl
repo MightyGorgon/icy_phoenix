@@ -21,7 +21,7 @@ function ColorExample(ColorCode)
 {ERROR_BOX}
 
 <form action="{S_PROFILE_ACTION}" {S_FORM_ENCTYPE} method="post">
-<table class="forumline" width="100%" cellspacing="0" cellpadding="0" border="0">
+<table class="forumline">
 <tr><th colspan="2">{L_REGISTRATION_INFO}</th></tr>
 <tr><td class="row2" colspan="2"><span class="gensmall">{L_ITEMS_REQUIRED}</span></td></tr>
 <tr>
@@ -204,7 +204,7 @@ function ColorExample(ColorCode)
 <!-- END switch_custom_fields -->
 <!-- BEGIN custom_fields -->
 <tr>
-	<td class="row1" valign="top"><span class="gen">{custom_fields.NAME}:{custom_fields.REQUIRED}{custom_fields.ADMIN_ONLY}</span>
+	<td class="row1"><span class="gen">{custom_fields.NAME}:{custom_fields.REQUIRED}{custom_fields.ADMIN_ONLY}</span>
 	<!-- BEGIN switch_description -->
 	<br /><span class="gensmall">{custom_fields.switch_description.DESCRIPTION}</span>
 	<!-- END switch_description -->
@@ -384,7 +384,7 @@ function ColorExample(ColorCode)
 		<span class="gen">{L_TIME_MODE}</span><br />
 		<span class="gensmall">{L_TIME_MODE_TEXT}</span>
 	</td>
-	<td class="row2" nowrap="nowrap">
+	<td class="row2 tdnw">
 		<span class="gen">{L_TIME_MODE_MANUAL}</span><br />
 		<span class="gen">&nbsp;&nbsp;{L_TIME_MODE_DST}:</span>
 		<input type="radio" name="time_mode" value="1" {TIME_MODE_MANUAL_DST_CHECKED} /><span class="gen">{L_YES}{L_TIME_MODE_DST_ON}</span>&nbsp;
@@ -405,10 +405,10 @@ function ColorExample(ColorCode)
 </tr>
 <tr align="center">
 	<td class="row1" colspan="2">
-		<table width="70%" cellspacing="2" cellpadding="0" border="0">
+		<table class="tw70pct s2px">
 		<tr>
 			<td width="65%"><span class="gensmall">{L_AVATAR_EXPLAIN}</span></td>
-			<td align="center">
+			<td class="tdalignc">
 				<span class="gensmall">{L_CURRENT_IMAGE}</span><br />
 				{AVATAR}<br />
 				<input type="checkbox" name="avatardel" />&nbsp;<span class="gensmall">{L_DELETE_AVATAR}</span>
@@ -539,6 +539,6 @@ function ColorExample(ColorCode)
 	<td class="row1"><span class="gen"><strong><i>{L_DELETE_USER}</i></strong></span></td>
 	<td class="row2"><input type="checkbox" name="deleteuser" />&nbsp;{L_DELETE_USER_EXPLAIN}</td>
 </tr>
-<tr><td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
+<tr><td class="cat tdalignc" colspan="2">{S_HIDDEN_FIELDS}<input type="submit" name="submit" value="{L_SUBMIT}" class="mainoption" />&nbsp;&nbsp;<input type="reset" value="{L_RESET}" class="liteoption" /></td></tr>
 </table>
 </form>

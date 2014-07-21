@@ -269,7 +269,7 @@ else
 			'ACTIVE' =>($row['user_active']) ? 'checked="checked"' : '',
 			'ROW_CLASS' => ($i++ % 2) ? 'row1' : 'row2',
 			'RANK_LIST' => jr_admin_make_rank_list($row['user_id'], $row['user_rank']),
-			'BOOKMARK' => (!$assigned_current_letter_link) ? '<a name="'.$current_letter.'">' : '',
+			'BOOKMARK' => (!$assigned_current_letter_link) ? '<a id="' . $current_letter . '">' : '',
 			'BOOKMARK_END' => (!$assigned_current_letter_link) ? '</a>' : '',
 			'MODULES' => ($module_count != 0) ? sprintf($lang['Modules_Owned'], $module_count) : '&nbsp;',
 			'MODULE_COUNT' => ($module_count != 0) ? sprintf($lang['Modules_Owned'], $module_count) : ''

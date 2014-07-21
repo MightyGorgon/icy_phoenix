@@ -19,13 +19,13 @@
 
 &nbsp;
 </div>
-<br clear="all" />
+<br class="clear" />
 <!-- ENDIF -->
 
-{IMG_THL}{IMG_THC}<span class="forumlink">{L_PAGE_NAME}</span>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<span class="forumlink">{L_PAGE_NAME}</span>{IMG_THR}<table class="forumlinenb">
 <!-- BEGIN field -->
 <tr class="{field.CLASS} {field.CLASS}h" style="background-image: none;">
-	<td class="{field.CLASS}" width="30%" style="vertical-align: top; padding: 5px; background: none;">
+	<td class="{field.CLASS} tw30pct" style="vertical-align: top; padding: 5px; background: none;">
 		<span class="gen"><b>{field.L_NAME}</b></span>
 		<!-- IF field.L_EXPLAIN --><br /><div class="gensmall">{field.L_EXPLAIN}</div><!-- ENDIF -->
 	</td>

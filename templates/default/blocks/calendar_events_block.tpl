@@ -1,4 +1,4 @@
-{IMG_THL}{IMG_THC}<a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="0">
+{IMG_THL}{IMG_THC}<a href="{U_CALENDAR}" class="forumlink">{L_CALENDAR}</a>{IMG_THR}<table class="forumlinenb">
 <!-- IF NO_EVENTS -->
 <tr><td><br /><br /><span class="genmed">{L_NO_EVENTS}</span><br /><br /></td></tr>
 <!-- ELSE -->
