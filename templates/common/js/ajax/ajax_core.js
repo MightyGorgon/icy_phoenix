@@ -1,28 +1,14 @@
-//**************************************************************************
-//                               ajax_core.js
-//                            -------------------
-//   begin                : Saturday, Jul 16, 2005
-//   copyright            : (C) 2005 alcaeus
-//   email                : mods@alcaeus.org
-//
-//   $Id$
-//
-//**************************************************************************
+/**
+* 
+* @file $Id ajax_core.js
+* @copyright (C) 2005
+* @author alcaeus
+* @email < mods@alcaeus.org >
+*
+**/
 
-//**************************************************************************
-//
-//   This program is free software; you can redistribute it and/or modify
-//   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation; either version 2 of the License, or
-//   (at your option) any later version.
-//
-//**************************************************************************
-
-
-//
 // This is the only value you should change
 // It defines the time in milliseconds that the script waits before automatically submitting the fields for usernames (New PM and username search)
-//
 var KEYUP_TIMEOUT = 500;
 
 var request = null;
@@ -54,16 +40,14 @@ var AJAX_DEBUG_RESULTS = 0;
 var AJAX_DEBUG_REQUEST_ERRORS = 0;
 var AJAX_DEBUG_HTML_ERRORS = 0;
 
-//
 // Determine whether AJAX is available
-//
 if (window.XMLHttpRequest)
 {
 	var tempvar = new XMLHttpRequest();
 	ajax_core_defined = (tempvar == null) ? 0 : 1;
 	delete(tempvar);
 }
-//Use the IE/Windows ActiveX version
+// Use the IE/Windows ActiveX version
 else if (window.ActiveXObject)
 {
 	var tempvar= new ActiveXObject("Microsoft.XMLHTTP");
@@ -75,9 +59,7 @@ else
 	ajax_core_defined = 0;
 }
 
-//
 // General function. This one is the mother of all AJAX functions ;)
-//
 function loadXMLDoc(url, params, submitmethod, changehandler)
 {
 	if ((submitmethod != 'GET') && (submitmethod != 'POST'))
@@ -85,13 +67,13 @@ function loadXMLDoc(url, params, submitmethod, changehandler)
 		submitmethod = 'GET';
 	}
 
-	//Use the native object available in all browsers (IE >= 7)
+	// Use the native object available in all browsers (IE >= 7)
 	if (window.XMLHttpRequest)
 	{
 		request = new XMLHttpRequest();
 		var is_activex = false;
 	}
-	//Use the ActiveX version for IE < 7
+	// Use the ActiveX version for IE < 7
 	else if (window.ActiveXObject)
 	{
 		request = new ActiveXObject("Microsoft.XMLHTTP");
@@ -150,18 +132,15 @@ function getFirstTagValue(tagname, haystack)
 	return '';
 }
 
-
-//
 // This function is used to parse any standard error file
-//
 function error_req_change()
 {
-	//Check if the request is completed, if not, just skip over
+	// Check if the request is completed, if not, just skip over
 	if (request.readyState == 4)
 	{
 		var result_code = AJAX_OP_COMPLETED;
 		var error_msg = '';
-		//If the request wasn't successful, we just hide any information we have.
+		// If the request wasn't successful, we just hide any information we have.
 		if (request.status == 200)
 		{
 			var response = request.responseXML.documentElement;
@@ -182,15 +161,11 @@ function error_req_change()
 	}
 }
 
-//
-// Just like sprintf() in php
-// replacements can be any type
-//
+// Just like sprintf() in php, replacements can be any type
 function sprintf(text, replacements)
 {
 	var i = 0;
-	//This prevents us from having to create an array for replacements with one value
-	//checking for type 'object' may not be really smart, but who cares ;)
+	//This prevents us from having to create an array for replacements with one value checking for type 'object' may not be really smart, but who cares ;)
 	if ((typeof replacements) != 'object')
 	{
 		var repl = Array(1);
