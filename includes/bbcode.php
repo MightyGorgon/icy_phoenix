@@ -2493,7 +2493,7 @@ class bbcode
 				$opacity = '100';
 			}
 			$opacity_dec = $opacity / 100;
-			$html = '<div style="display: inline; width: 100%; opacity: ' . $opacity_dec . '; filter: Alpha(Opacity=' . $opacity . ');" onmouseout="fade2(this,' . $opacity . ');" onmouseover="fade2(this,100);">';
+			$html = '<div class="opacity" style="opacity: ' . $opacity_dec . '; filter: Alpha(Opacity=' . $opacity . ');">';
 			return array(
 				'valid' => true,
 				'start' => $html,

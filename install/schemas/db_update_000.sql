@@ -1402,7 +1402,7 @@ ALTER TABLE `phpbb_privmsgs_archive` ADD COLUMN `privmsgs_text` text AFTER `priv
 CREATE TABLE `___forums___` (
 	`forum_id` smallint(5) unsigned NOT NULL default '0',
 	`cat_id` mediumint(8) unsigned NOT NULL default '0',
-	`main_type` char(1) default NULL,
+	`main_type` char(1) default 'c',
 	`forum_name` varchar(150) default NULL,
 	`forum_desc` TEXT NOT NULL,
 	`forum_status` tinyint(4) NOT NULL default '0',
@@ -1471,7 +1471,7 @@ DELETE FROM `phpbb_cms_nav_menu` WHERE `menu_link` = 'site_hist.php';
 CREATE TABLE `___categories___` (
 	`cat_id` mediumint(8) unsigned NOT NULL auto_increment,
 	`cat_main` mediumint(8) unsigned NOT NULL default '0',
-	`cat_main_type` char(1) default NULL,
+	`cat_main_type` char(1) default 'c',
 	`cat_title` varchar(100) default NULL,
 	`cat_desc` TEXT NOT NULL,
 	`icon` varchar(255) default NULL,

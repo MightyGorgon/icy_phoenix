@@ -1,3 +1,32 @@
+// OS / BROWSER VARS - BEGIN
+// Check for Browser & Platform for PC & IE specific bits
+// More details from: http://www.mozilla.org/docs/web-developer/sniffer/browser_type.html
+var clientPC = navigator.userAgent.toLowerCase(); // Get client info
+var clientVer = parseInt(navigator.appVersion); // Get browser version
+
+var is_ie = ((clientPC.indexOf('msie') != -1) && (clientPC.indexOf('opera') == -1));
+var is_win = ((clientPC.indexOf('win') != -1) || (clientPC.indexOf('16bit') != -1));
+var is_iphone = ((clientPC.indexOf('iphone')) != -1);
+
+// Other check in vars...
+var uAgent = navigator.userAgent;
+// NS 4
+var ns4 = (document.layers) ? true : false;
+// IE 4
+var ie4 = (document.all) ? true : false;
+// DOM
+var dom = (document.getElementById) ? true : false;
+// + OP5
+var ope = ((uAgent.indexOf("Opera") > -1) && dom) ? true : false;
+// IE5
+var ie5 = (dom && ie4 && !ope) ? true : false;
+// + NS 6
+var ns6 = (dom && (uAgent.indexOf("Netscape") > -1)) ? true : false;
+// + Konqueror
+var khtml = (uAgent.indexOf("khtml") > -1) ? true : false;
+//alert("UserAgent: "+uAgent+"\nns4 :"+ns4+"\nie4 :"+ie4+"\ndom :"+dom+"\nie5 :"+ie5+"\nns6 :"+ns6+"\nope :"+ope+"\nkhtml :"+khtml);
+// OS / BROWSER VARS - END
+
 function getposOffset(what, offsettype)
 {
 	var totaloffset=(offsettype=="left")? what.offsetLeft : what.offsetTop;
@@ -68,7 +97,7 @@ function clearbrowseredge(obj, whichedge)
 
 function populatemenu(what)
 {
-	if (ie4||ns6)
+	if (ie4 || ns6)
 	{
 		dropmenuobj.innerHTML=what.join("");
 	}
@@ -89,7 +118,7 @@ function dropdownmenu(obj, e, menucontents, menuwidth)
 	dropmenuobj = document.getElementById ? document.getElementById("dropmenudiv") : dropmenudiv;
 	populatemenu(menucontents);
 
-	if (ie4||ns6)
+	if (ie4 || ns6)
 	{
 		showhide_alt(dropmenuobj.style, e, "visible", "hidden", menuwidth);
 		dropmenuobj.x=getposOffset(obj, "left");
@@ -141,7 +170,7 @@ function hidemenu(e)
 {
 	if (typeof dropmenuobj!="undefined")
 	{
-		if (ie4||ns6)
+		if (ie4 || ns6)
 		{
 			dropmenuobj.style.visibility="hidden";
 		}
@@ -150,7 +179,7 @@ function hidemenu(e)
 
 function delayhidemenu()
 {
-	if (ie4||ns6)
+	if (ie4 || ns6)
 	{
 		delayhide=setTimeout("hidemenu()",disappeardelay);
 	}

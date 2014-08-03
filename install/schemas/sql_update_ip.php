@@ -115,6 +115,32 @@ if (substr($mode, 0, 6) == 'update')
 	switch ($current_ip_version)
 	{
 		case '':
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "search_results` (
+			`search_id` INT(11) unsigned NOT NULL DEFAULT '0',
+			`session_id` VARCHAR(32) NOT NULL DEFAULT '',
+			`search_array` MEDIUMTEXT NOT NULL,
+			`search_time` INT(11) NOT NULL DEFAULT '0',
+			PRIMARY KEY (`search_id`),
+			KEY `session_id` (`session_id`)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "search_wordlist` (
+			`word_text` VARCHAR(50) binary NOT NULL DEFAULT '',
+			`word_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
+			`word_common` TINYINT(1) unsigned NOT NULL DEFAULT '0',
+			PRIMARY KEY (`word_text`),
+			KEY `word_id` (`word_id`)
+		)";
+
+		$sql[] = "CREATE TABLE `" . $table_prefix . "search_wordmatch` (
+			`post_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
+			`word_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
+			`title_match` TINYINT(1) NOT NULL DEFAULT '0',
+			KEY `post_id` (`post_id`),
+			KEY `word_id` (`word_id`)
+		)";
+
 		$sql[] = "ALTER TABLE " . $table_prefix . "config CHANGE `config_value` `config_value` TEXT";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "acronyms` (
@@ -323,7 +349,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_pub_reason_mode` TINYINT(1) DEFAULT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "banlist` ADD `ban_pub_reason` TEXT DEFAULT NULL";
 
-		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_main_type` CHAR(1) DEFAULT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_main_type` CHAR(1) DEFAULT 'c'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_main` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `cat_desc` TEXT";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "categories` ADD `icon` VARCHAR(255) DEFAULT NULL";
@@ -348,7 +374,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_link_hit_count` TINYINT(1) DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_link_hit` BIGINT(20) UNSIGNED DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `icon` VARCHAR(255) DEFAULT NULL";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `main_type` CHAR(1) DEFAULT NULL";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `main_type` CHAR(1) DEFAULT 'c'";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `auth_news` TINYINT(2) DEFAULT '2' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `auth_cal` TINYINT(2) DEFAULT '0' NOT NULL";
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `auth_ban` TINYINT(2) DEFAULT '3' NOT NULL";
@@ -3102,7 +3128,7 @@ if (substr($mode, 0, 6) == 'update')
 			$sql[] = "CREATE TABLE `___forums___` (
 				`forum_id` smallint(5) unsigned NOT NULL default '0',
 				`cat_id` mediumint(8) unsigned NOT NULL default '0',
-				`main_type` char(1) default NULL,
+				`main_type` char(1) default 'c',
 				`forum_name` varchar(150) default NULL,
 				`forum_desc` TEXT NOT NULL,
 				`forum_status` tinyint(4) NOT NULL default '0',
@@ -3185,7 +3211,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `___categories___` (
 			`cat_id` mediumint(8) unsigned NOT NULL auto_increment,
 			`cat_main` mediumint(8) unsigned NOT NULL default '0',
-			`cat_main_type` char(1) default NULL,
+			`cat_main_type` char(1) default 'c',
 			`cat_title` varchar(100) default NULL,
 			`cat_desc` TEXT NOT NULL,
 			`icon` varchar(255) default NULL,

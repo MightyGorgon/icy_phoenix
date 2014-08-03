@@ -36,7 +36,7 @@
 
 <form id="configform" action="{S_ACTION}" method="post">
 <!-- removed width=100% for incompatibility with the above div set to float -->
-<table class="forumline"<!-- IF not S_DISPLAY_CONFIG_MENU --> style="width: 100%;"<!-- ENDIF -->>
+<table class="forumline<!-- IF S_DISPLAY_CONFIG_MENU --> twa-imp<!-- ENDIF -->">
 <tr><th colspan="2">{L_MOD_NAME}</th></tr>
 <!-- BEGIN field -->
 <!-- IF field.L_SEPARATOR --><tr><th colspan="2">{field.L_SEPARATOR}</th></tr><!-- ENDIF -->

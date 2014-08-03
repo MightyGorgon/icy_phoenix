@@ -18,7 +18,7 @@ var cmsEditorData = {JSON_DATA};
 <!-- BEGIN gheader_blocks_row -->{gheader_blocks_row.CMS_BLOCK}<!-- END gheader_blocks_row -->
 <table>
 <tr>
-	<td width="180" style="padding-right: 7px; vertical-align: top;">
+	<td class="tw180px" style="padding-right: 7px; vertical-align: top;">
 		<!-- BEGIN ghleft_blocks_row -->{ghleft_blocks_row.CMS_BLOCK}<!-- END ghleft_blocks_row -->
 	</td>
 	<td style="vertical-align: top;">
@@ -26,7 +26,7 @@ var cmsEditorData = {JSON_DATA};
 		<!-- BEGIN ghbottom_blocks_row -->{ghbottom_blocks_row.CMS_BLOCK}<!-- END ghbottom_blocks_row -->
 		<div class="cms-editor-container">{L_B_DISPLAY}</div>
 	</td>
-	<td width="180" style="padding-left: 7px; vertical-align: top;">
+	<td class="tw180px" style="padding-left: 7px; vertical-align: top;">
 		<!-- BEGIN ghright_blocks_row -->{ghright_blocks_row.CMS_BLOCK}<!-- END ghright_blocks_row -->
 	</td>
 </tr>
@@ -38,7 +38,7 @@ var cmsEditorData = {JSON_DATA};
 <!-- BEGIN header_blocks_row -->{header_blocks_row.CMS_BLOCK}<!-- END header_blocks_row -->
 <table>
 <tr>
-	<td width="180" style="padding-right: 7px; vertical-align: top;">
+	<td class="tw180px" style="padding-right: 7px; vertical-align: top;">
 		<!-- BEGIN headerleft_blocks_row -->{headerleft_blocks_row.CMS_BLOCK}<!-- END headerleft_blocks_row -->
 	</td>
 	<td style="vertical-align: top;">
@@ -46,7 +46,7 @@ var cmsEditorData = {JSON_DATA};
 		<div class="cms-editor-container">{L_B_DISPLAY}</div>
 		<!-- BEGIN footercenter_blocks_row -->{footercenter_blocks_row.CMS_BLOCK}<!-- END footercenter_blocks_row -->
 	</td>
-	<td width="180" style="padding-left: 7px; vertical-align: top;">
+	<td class="tw180px" style="padding-left: 7px; vertical-align: top;">
 		<!-- BEGIN footerright_blocks_row -->{footerright_blocks_row.CMS_BLOCK}<!-- END footerright_blocks_row -->
 	</td>
 </tr>

@@ -306,11 +306,15 @@ img.vhs10px { margin: 10px 10px; }
 img.vs1px { margin: 1px 0px; }
 img.vs10px { margin: 10px 0px; }
 
+/* BBCODE - BEGIN */
+div.opacity { display: inline; width: auto; -webkit-transition: opacity 0.5s ease-in-out; transition: opacity 0.5s ease-in-out; }
+div.opacity:hover { opacity: 1.0; filter: alpha(opacity=100); /* For IE8 and earlier */ }
+/* BBCODE - BEGIN */
+
 /* IMG Fading - BEGIN */
-.imgfade{opacity: 0.80; margin-left: 3px;}
-.imgfull{opacity: 1; margin-left: 3px;}
-.imgfade_nm{opacity: 0.80;}
-.imgfull_nm{opacity: 1;}
+.imgfade { margin-left: 3px; }
+.imgfade, .imgfade_nm { opacity: 0.75; filter: alpha(opacity=75); -webkit-transition: opacity 0.5s ease-in-out; transition: opacity 0.5s ease-in-out; }
+.imgfade:hover, .imgfade_nm:hover { opacity: 1.0; filter: alpha(opacity=100); /* For IE8 and earlier */ }
 /* IMG Fading - END */
 
 /* HOVER IMAGES - BEGIN */

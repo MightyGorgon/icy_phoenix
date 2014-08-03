@@ -524,7 +524,7 @@ CREATE TABLE `phpbb_forums` (
 	`forum_id` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
 	`forum_type` TINYINT(4) DEFAULT '0' NOT NULL,
 	`parent_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
-	`main_type` CHAR(1) DEFAULT NULL,
+	`main_type` CHAR(1) DEFAULT 'c',
 	`left_id` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`right_id` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`forum_parents` MEDIUMTEXT NOT NULL,

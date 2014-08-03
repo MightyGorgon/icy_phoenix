@@ -157,7 +157,7 @@ class ip_functions
 	/**
 	* Testing File Creation
 	*/
-	function file_creation($path)
+	public static function file_creation($path)
 	{
 		$test_file = $path . 'icy_phoenix_testing_write_access_permissions.test';
 
@@ -506,7 +506,7 @@ class ip_functions
 */
 class mg_functions
 {
-	function html_text_cleaning($text)
+	public static function html_text_cleaning($text)
 	{
 		$look_up_array = array(
 			"&agrave;",
@@ -533,7 +533,7 @@ class mg_functions
 		return $text;
 	}
 
-	function html_text_format($text)
+	public static function html_text_format($text)
 	{
 		$look_up_array = array(
 			"à",
@@ -560,7 +560,7 @@ class mg_functions
 		return $text;
 	}
 
-	function text_replace($text)
+	public static function text_replace($text)
 	{
 		$look_up_array = array(
 			'phpbbxs.eu',
@@ -575,7 +575,7 @@ class mg_functions
 		return $text;
 	}
 
-	function custom_text_replace($text)
+	public static function custom_text_replace($text)
 	{
 		//Comment this line if you want to use this function...
 		return $text;
@@ -593,7 +593,7 @@ class mg_functions
 		return $text;
 	}
 
-	function smileys_list()
+	public static function smileys_list()
 	{
 		global $db, $config;
 		$server_url = ip_functions::create_server_url();
@@ -617,7 +617,7 @@ class mg_functions
 		return $smileys_list;
 	}
 
-	function smileys_replace_sets($smileys_list)
+	public static function smileys_replace_sets($smileys_list)
 	{
 		$smileys_replace_sets = array();
 		$smileys_replace_sets['search_prev'] = array();
@@ -634,14 +634,14 @@ class mg_functions
 		return $smileys_replace_sets;
 	}
 
-	function smileys_replace($text, $smileys_replace_sets)
+	public static function smileys_replace($text, $smileys_replace_sets)
 	{
 		$text = str_replace($smileys_replace_sets['search_prev'], $smileys_replace_sets['replace_prev'], $text);
 		$text = str_replace($smileys_replace_sets['search_next'], $smileys_replace_sets['replace_next'], $text);
 		return $text;
 	}
 
-	function old_bbcode_replace($text)
+	public static function old_bbcode_replace($text)
 	{
 		$look_up_array = array(
 			'[xs]',
@@ -676,7 +676,7 @@ class mg_functions
 		return $text;
 	}
 
-	function old_bbcode_replace_ip2($text)
+	public static function old_bbcode_replace_ip2($text)
 	{
 		$look_up_array = array(
 			'[langvar]BBC_IP_CREDITS[/langvar]',
@@ -707,7 +707,7 @@ class mg_functions
 		return $text;
 	}
 
-	function bbcuid_clean($text, $id = false)
+	public static function bbcuid_clean($text, $id = false)
 	{
 		if ($id != false)
 		{
@@ -728,7 +728,7 @@ class mg_functions
 	/*
 	* Creates a short url to be used in replace, without server_protocol
 	*/
-	function create_short_server_url()
+	public static function create_short_server_url()
 	{
 		// usage: $server_url = create_short_server_url();
 		global $config;
@@ -757,7 +757,7 @@ class mg_functions
 		return $server_url;
 	}
 
-	function img_replace($text)
+	public static function img_replace($text)
 	{
 		global $config;
 		// We changed the constant, so we cannot use it any more...
@@ -773,7 +773,7 @@ class mg_functions
 		return $text;
 	}
 
-	function img_replace_ip2($text)
+	public static function img_replace_ip2($text)
 	{
 		global $config;
 		$old_folder = 'files/posted_images/';

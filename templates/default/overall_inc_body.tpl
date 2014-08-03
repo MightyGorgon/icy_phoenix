@@ -44,22 +44,12 @@
 	<table>
 	<tr>
 	<!-- IF HL_BLOCK -->
-	<td id="var_width" class="tvalignt" style="width: {HEADER_WIDTH}px !important;">
+	<td id="var_width" class="tvalignt" style="width: {HEADER_WIDTH}px;">
 	<div id="quick_links2" style="padding-top: 5px; display: none; margin-left: 0px; text-align: left; position: relative; float: left;"><a href="javascript:ShowHide('quick_links','quick_links2','quick_links');setWidth('var_width',{HEADER_WIDTH});setWidth('full_width','auto');setWidth('full_width_cpl','auto');" title="{L_SHOW} {L_QUICK_LINKS}"><img src="{IMG_NAV_MENU_APPLICATION}" alt="{L_SHOW} {L_QUICK_LINKS}" /></a></div>
 	<div id="quick_links"><!-- BEGIN headerleft_blocks_row -->{headerleft_blocks_row.CMS_BLOCK}<!-- END headerleft_blocks_row --></div>
 	</td>
 	<td class="tw5px"><img src="{SPACER}" alt="" width="5" height="10" /></td>
 	<!-- ENDIF -->
 	<td id="full_width" class="tvalignt">
-	<script type="text/javascript">
-	// <![CDATA[
-	cellobject = document.getElementById('var_width');
-	if((cellobject != null) && !is_ie && ((getWidth('var_width') == 16) | (getWidth('var_width') == '16px')))
-	{
-		setWidth('full_width', '100%');
-		setWidth('full_width_cpl', '100%');
-	}
-	// ]]>
-	</script>
 	<!-- IF HC_BLOCK --><div style="vertical-align: top;"><!-- BEGIN headercenter_blocks_row -->{headercenter_blocks_row.CMS_BLOCK}<!-- END headercenter_blocks_row --></div><!-- ENDIF -->
 	<!-- ENDIF -->

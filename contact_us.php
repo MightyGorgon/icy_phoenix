@@ -84,7 +84,8 @@ check_flood_email(false);
 
 $sender = request_var('sender', '', true);
 $subject = request_var('subject', '', true);
-$subject = htmlspecialchars_decode($subject, ENT_COMPAT);
+// This should not be decoded...
+//$subject = htmlspecialchars_decode($subject, ENT_COMPAT);
 $message = request_var('message', '', true);
 
 if ($account_delete)
@@ -250,7 +251,7 @@ if (isset($_POST['submit']))
 		$redirect_url = append_sid(CMS_PAGE_HOME);
 		meta_refresh(3, $redirect_url);
 
-		$message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_HOME) . '">', '</a>');
+		$message_die = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_HOME) . '">', '</a>');
 
 		if ($account_delete)
 		{
@@ -264,8 +265,7 @@ if (isset($_POST['submit']))
 			meta_refresh(3, $redirect_url);
 		}
 
-		message_die(GENERAL_MESSAGE, $message);
-
+		message_die(GENERAL_MESSAGE, $message_die);
 	}
 }
 

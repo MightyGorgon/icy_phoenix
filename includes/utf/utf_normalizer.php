@@ -239,7 +239,7 @@ class utf_normalizer
 	*
 	* @access	private
 	*/
-	function recompose($str, $pos, $len, &$qc, &$decomp_map)
+	public static function recompose($str, $pos, $len, &$qc, &$decomp_map)
 	{
 		global $utf_combining_class, $utf_canonical_comp, $utf_jamo_type, $utf_jamo_index;
 
