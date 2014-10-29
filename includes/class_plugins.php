@@ -54,14 +54,18 @@ class class_plugins
 			@include($plugin_functions_install_file);
 		}
 
-		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
+
+		$sql_results = array();
 		if (!empty($plugin_install_data))
 		{
 			foreach ($plugin_install_data as $version => $instructions)
 			{
-				$this->process_install_instructions($plugin_data, $plugin_install_data[$version]);
+				$sql_results = array_merge(
+					$sql_results,
+					$this->process_install_instructions($plugin_data, $plugin_install_data[$version])
+				);
 			}
 		}
 
@@ -92,16 +96,19 @@ class class_plugins
 			@include($plugin_functions_install_file);
 		}
 
-		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
+		$sql_results = array();
 		if (!empty($plugin_install_data))
 		{
 			foreach ($plugin_install_data as $version => $instructions)
 			{
 				if (version_compare($plugin_data['version'], $version, '<'))
 				{
-					$this->process_install_instructions($plugin_data, $plugin_install_data[$version]);
+					$sql_results = array_merge(
+						$sql_results,
+						$this->process_install_instructions($plugin_data, $plugin_install_data[$version])
+					);
 				}
 			}
 		}
@@ -131,10 +138,9 @@ class class_plugins
 			@include($plugin_functions_install_file);
 		}
 
-		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_uninstall_data = $this->get_plugin_uninstall_data($plugin_data['dir']);
-		$this->process_install_instructions($plugin_data, $plugin_uninstall_data);
+		$sql_results = $this->process_install_instructions($plugin_data, $plugin_uninstall_data);
 		$this->remove_config(array('name' => $plugin_info['config']), true, false);
 
 		if ($clear_cache)
@@ -152,6 +158,7 @@ class class_plugins
 	{
 		global $db, $table_prefix;
 
+		$sql_results = array();
 		// We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
 		$sql_engine = "SET storage_engine=MYISAM";
 		$db->sql_return_on_error(true);
@@ -231,6 +238,8 @@ class class_plugins
 				eval($install_function);
 			}
 		}
+
+		return $sql_results;
 	}
 
 
