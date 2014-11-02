@@ -97,7 +97,8 @@ while ($shout_row = $db->sql_fetchrow($result))
 		'ROW_CLASS' => $row_class,
 		'SHOUT' => $shout,
 		'TIME' => create_date_ip($lang['Shoutbox_date'], $shout_row['shout_session_time'], $config['board_timezone']),
-		'USERNAME' => $username
+		'USERNAME' => $username,
+		'PROFILE' => $user_id == ANONYMOUS ? '' : append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $shout_row['user_id']),
 		)
 	);
 }
