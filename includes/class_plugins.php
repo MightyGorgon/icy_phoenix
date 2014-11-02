@@ -229,7 +229,6 @@ class class_plugins
 				}
 				// This has to be here, otherwise we are not able to catch all errors by using $db->sql_error()
 				$db->sql_return_on_error(false);
-				var_dump($sql_statement, $message);
 				$sql_results[] = array(
 					'sql' => $sql_statement,
 					'message' => htmlspecialchars($message),
