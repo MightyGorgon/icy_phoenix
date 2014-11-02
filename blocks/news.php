@@ -115,9 +115,10 @@ if(!function_exists('cms_block_news'))
 					{
 						break;
 					}
+					var_dump($news_cats[$j]['news_image']);exit;
 					$template->assign_block_vars('newsrow.newscol', array(
 						//'THUMBNAIL' => $N_this->root_path . 'images/news/' . $news_cats[$j]['news_image'],
-						'THUMBNAIL' => $N_this->root_path . $config['news_path'] . '/' . $news_cats[$j]['news_image'],
+						'THUMBNAIL' => $news_cats[$j]['news_image'] ? $N_this->root_path . $config['news_path'] . '/' . $news_cats[$j]['news_image'] : '',
 						'ID' => $news_cats[$j]['news_id'],
 						'DESC' => $news_cats[$j]['news_category'],
 						)
