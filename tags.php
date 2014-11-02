@@ -166,7 +166,7 @@ if ($mode == 'view')
 		$news_label = '';
 
 		$word_censor = censor_text($topic['topic_title']);
-		$topic_title = ((empty($topic['title_compl_infos'])) ? '' : $topic['title_compl_infos'] . ' ') . ((strlen($topic['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...');
+		$topic_title = ((strlen($topic['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...');
 
 		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic['topic_id'], $topic['topic_type'], $topic['topic_reg'], $topic['topic_replies'], $topic['news_id'], $topic['poll_start'], $topic['topic_status'], $topic['topic_moved_id'], $topic['post_time'], $user_replied, $replies);
 
@@ -184,7 +184,7 @@ if ($mode == 'view')
 		$topic_tags_links = $class_topics_tags->build_tags_list_single_topic($topic['topic_tags']);
 
 		// Convert and clean special chars!
-		$topic_title = htmlspecialchars_clean($topic_title);
+		$topic_title = ((empty($topic['title_compl_infos'])) ? '' : $topic['title_compl_infos'] . ' ') . htmlspecialchars_clean($topic_title);
 		$template->assign_block_vars('row', array(
 			'CLASS' => $class,
 			'ROW_NUMBER' => $i + 1,

@@ -261,9 +261,9 @@ if($total_topics)
 			update_clean_topic_title($topic_id, $topic_title_clean);
 		}
 		$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
-		$topic_title = $topic_title_prefix . $topic_title;
 		// Convert and clean special chars!
 		$topic_title = htmlspecialchars_clean($topic_title);
+		$topic_title = $topic_title_prefix . $topic_title;
 		$topic_title_plain = htmlspecialchars($topic_title);
 
 		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
