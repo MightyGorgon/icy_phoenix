@@ -165,39 +165,20 @@ class class_plugins
 		$db->sql_query($sql_engine);
 		$db->sql_return_on_error(false);
 
-
-		if (!empty($instructions['sql']))
+		if (!function_exists('get_available_dbms'))
 		{
-			foreach ($instructions['sql'] as $sql_statement)
-			{
-				$error = array();
-				$message = '';
-				$db->sql_return_on_error(true);
-				$result = $db->sql_query($sql_statement);
-				if (!$result)
-				{
-					$error = $db->sql_error();
-					$message = $error['message'];
-				}
-				// This has to be here, otherwise we are not able to catch all errors by using $db->sql_error()
-				$db->sql_return_on_error(false);
-				$sql_results[] = array(
-					'sql' => $sql_statement,
-					'message' => htmlspecialchars($message),
-					'success' => empty($message) ? true : false
-				);
-			}
+			include(IP_ROOT_PATH . 'includes/functions_install.' . PHP_EXT);
 		}
 
 		if (!empty($instructions['sql_files']))
 		{
 			$base_dir = $this->plugins_path . $plugin_data['dir'] . '/install/';
 
-			$dbms = SQL_LAYER; // TODO: not sure if that's safe... Maybe we should change it?
+			$dbms = 'mysql'; // TODO this needs to change...
 			$available_dbms = get_available_dbms($dbms);
 			$dbms = $available_dbms[$dbms];
-			$delimiter = $available_dbms[$dbms]['DELIM'];
-			$delimiter_basic = $available_dbms[$dbms]['DELIM_BASIC'];
+			$delimiter = $dbms['DELIM'];
+			$delimiter_basic = $dbms['DELIM_BASIC'];
 
 			foreach ($instructions['sql_files'] as $install_file)
 			{
@@ -214,7 +195,9 @@ class class_plugins
 						continue;
 					}
 					$db->sql_return_on_error(true);
-					$result = $db->sql_query($sql_query[$i]);
+					// TODO the str_replace is from install/install.php, but we might want it smarter
+					// (for example, "`phpbb", or "\bphpbb_")
+					$result = $db->sql_query(str_replace('phpbb_', $table_prefix, $sql_query[$i]));
 					if (!$result)
 					{
 						$error = $db->sql_error();
@@ -228,6 +211,30 @@ class class_plugins
 						'success' => empty($message) ? true : false
 					);
 				}
+			}
+		}
+
+		if (!empty($instructions['sql']))
+		{
+			foreach ($instructions['sql'] as $sql_statement)
+			{
+				$error = array();
+				$message = '';
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql_statement);
+				if (!$result)
+				{
+					$error = $db->sql_error();
+					$message = $error['message'];
+				}
+				// This has to be here, otherwise we are not able to catch all errors by using $db->sql_error()
+				$db->sql_return_on_error(false);
+				var_dump($sql_statement, $message);
+				$sql_results[] = array(
+					'sql' => $sql_statement,
+					'message' => htmlspecialchars($message),
+					'success' => empty($message) ? true : false
+				);
 			}
 		}
 
