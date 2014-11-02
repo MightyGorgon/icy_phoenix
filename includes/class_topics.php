@@ -405,7 +405,7 @@ class class_topics
 		$topic_prefixes = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$topic_prefixes[$row['id']] = $row['title_info'];
+			$topic_prefixes[$row['id']] = $row['title_html'];
 		}
 		$db->sql_freeresult($result);
 		return $topic_prefixes;

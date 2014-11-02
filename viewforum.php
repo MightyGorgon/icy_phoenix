@@ -1018,10 +1018,9 @@ if($total_topics)
 			update_clean_topic_title($topic_id, $topic_title_clean);
 		}
 		$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
-		$topic_title = $topic_title_prefix . $topic_title;
 		// Convert and clean special chars!
 		$topic_title = htmlspecialchars_clean($topic_title);
-		$topic_title_plain = htmlspecialchars($topic_title);
+		$topic_title_plain = htmlspecialchars($topic_title_prefix . $topic_title);
 		// SMILEYS IN TITLE - BEGIN
 		if (($config['smilies_topic_title'] == true) && !$lofi)
 		{
@@ -1029,6 +1028,7 @@ if($total_topics)
 			$topic_title = $bbcode->parse_only_smilies($topic_title);
 		}
 		// SMILEYS IN TITLE - END
+		$topic_title = $topic_title_prefix . $topic_title;
 
 		//$news_label = ($topic_rowset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 		$news_label = '';

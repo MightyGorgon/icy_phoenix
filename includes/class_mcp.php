@@ -657,7 +657,7 @@ class class_mcp
 	{
 		global $db, $cache, $config, $user, $lang;
 
-		$addon = str_replace('%mod%', addslashes($user->data['username']), $qt_row['title_info'] . ' ');
+		$addon = str_replace('%mod%', addslashes($user->data['username']), $qt_row['title_html'] . ' ');
 		$dateqt = ($qt_row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_row['date_format'], time(), $config['board_timezone']);
 		$addon = str_replace('%date%', $dateqt, $addon);
 

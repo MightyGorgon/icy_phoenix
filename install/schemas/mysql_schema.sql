@@ -1731,6 +1731,7 @@ CREATE TABLE `phpbb_themes` (
 CREATE TABLE `phpbb_title_infos` (
 	`id` INT(11) NOT NULL auto_increment,
 	`title_info` VARCHAR(255) NOT NULL DEFAULT '',
+	`title_html` VARCHAR(255) NOT NULL DEFAULT '',
 	`date_format` VARCHAR(25) DEFAULT NULL,
 	`admin_auth` TINYINT(1) DEFAULT '0',
 	`mod_auth` TINYINT(1) DEFAULT '0',

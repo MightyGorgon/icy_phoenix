@@ -992,7 +992,9 @@ switch($mode)
 		$select_title = '<select name="qtnum"><option value="-1">---</option>';
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$addon = str_replace('%mod%', addslashes($user->data['username']), $row['title_info']);
+			// If there's text left when stripping tags, keep it, else display the bbcode version
+			$nameqt = strip_tags($row['title_html']) ? strip_tags($row['title_html']) : $row['title_info'];
+			$addon = str_replace('%mod%', addslashes($user->data['username']), $nameqt);
 			$dateqt = ($row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($row['date_format'], time(), $config['board_timezone']);
 			$addon = str_replace('%date%', $dateqt, $addon);
 			$select_title .= '<option value="' . $row['id'] . '">' . htmlspecialchars($addon) . '</option>';
@@ -1122,7 +1124,6 @@ switch($mode)
 
 			$topic_title = censor_text($topic_rowset[$i]['topic_title']);
 			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
-			$topic_title = $topic_title_prefix . $topic_title;
 			// Convert and clean special chars!
 			$topic_title = htmlspecialchars_clean($topic_title);
 			// SMILEYS IN TITLE - BEGIN
@@ -1132,6 +1133,7 @@ switch($mode)
 				$topic_title = $bbcode->parse_only_smilies($topic_title);
 			}
 			// SMILEYS IN TITLE - END
+			$topic_title = $topic_title_prefix . $topic_title;
 
 			//$news_label = ($topic_rowset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 			$news_label = '';
