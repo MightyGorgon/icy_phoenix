@@ -195,7 +195,7 @@ class NewsModule
 					'CATEGORY' => $article['news_category'],
 					'CAT_ID' => $article['news_id'],
 					'COUNT_VIEWS' => $article['topic_views'],
-					'CAT_IMG' => $this->root_path . $config['news_path'] . '/' . $article['news_image'],
+					'CAT_IMG' => $article['news_image'] ? $this->root_path . $config['news_path'] . '/' . $article['news_image'] : '',
 					'POST_DATE' => create_date_ip($dateformat, $article['post_time'], $timezone, true),
 					'RFC_POST_DATE' => $news_date,
 					'L_POSTER' => colorize_username($article['user_id'], $article['username'], $article['user_color'], $article['user_active']),
@@ -338,7 +338,7 @@ class NewsModule
 				$this->setBlockVariables('categories', array(
 					'ID' => $category['news_id'],
 					'TITLE' => $category['news_category'],
-					'IMAGE' => $this->root_path . $config['news_path'] . '/' . $category['news_image'],
+					'IMAGE' => $category['news_image'] ? $this->root_path . $config['news_path'] . '/' . $category['news_image'] : '',
 					)
 				);
 			}

@@ -5,6 +5,7 @@
 <!--
 function update_smiley(newimage)
 {
+	document.news_image.style.display = newimage ? 'block' : 'none';
 	document.news_image.src = "{S_SMILEY_BASEDIR}/" + newimage;
 }
 //-->
