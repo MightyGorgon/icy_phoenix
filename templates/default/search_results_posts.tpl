@@ -2,8 +2,8 @@
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
-	<th class="tw150px">{L_AUTHOR}</th>
-	<th class="tw100pct">{L_MESSAGE}</th>
+	<th class="tw180px">{L_AUTHOR}</th>
+	<th>{L_MESSAGE}</th>
 	<!-- BEGIN switch_upi2db_on -->
 	<th>{L_MAR}</th>
 	<!-- END switch_upi2db_on -->

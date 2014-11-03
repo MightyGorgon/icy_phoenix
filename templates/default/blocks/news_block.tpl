@@ -12,11 +12,7 @@
 		<!-- BEGIN newsrow -->
 		<tr>
 			<!-- BEGIN newscol -->
-			<td width="25%" class="row1 row-center"><span class="genmed"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.newscol.ID}">
-				<!-- IF newsrow.newscol.THUMBNAIL -->
-				<img class="vs10px" src="{newsrow.newscol.THUMBNAIL}" alt="{newsrow.newscol.DESC}" title="{newsrow.newscol.DESC}" />
-				<!-- ENDIF -->
-			</a></span></td>
+			<td width="25%" class="row1 row-center"><span class="genmed"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={newsrow.newscol.ID}"><!-- IF newsrow.newscol.THUMBNAIL --><img class="vs10px" src="{newsrow.newscol.THUMBNAIL}" alt="{newsrow.newscol.DESC}" title="{newsrow.newscol.DESC}" /><!-- ELSE -->&nbsp;<!-- ENDIF --></a></span></td>
 			<!-- END newscol -->
 		</tr>
 		<tr>
@@ -70,13 +66,7 @@
 		</tr>
 		<tr>
 			<td class="row-post" style="border-right-width: 0px;">
-				<div style="padding-left: 5px; padding-right: 5px; vertical-align: top; text-align: center;"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={articles.CAT_ID}" title ="{articles.CATEGORY}">
-				<!-- IF articles.CAT_IMG -->
-					<img src="{articles.CAT_IMG}" alt="{articles.CATEGORY}" />
-				<!-- ELSE -->
-					{articles.CATEGORY}
-				<!-- ENDIF -->
-				</a></div>
+				<div style="padding-left: 5px; padding-right: 5px; vertical-align: top; text-align: center;"><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}cat_id={articles.CAT_ID}" title ="{articles.CATEGORY}"><!-- IF articles.CAT_IMG --><img src="{articles.CAT_IMG}" alt="{articles.CATEGORY}" /><!-- ELSE -->{articles.CATEGORY}<!-- ENDIF --></a></div>
 			</td>
 			<td class="row-post" style="border-left-width: 0px; width: 100%;">
 				<div class="post-text" style="padding: 2px;">{articles.BODY}</div>

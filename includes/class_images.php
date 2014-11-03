@@ -26,9 +26,151 @@ class class_images
 		return true;
 	}
 
+	/**
+	* Get image name and upload folder
+	*/
+	function get_image_upload_data($filename, $extension, $upload_dir)
+	{
+		global $user;
+
+		$image_upload_data = array('filename' => $filename, 'upload_dir' => $upload_dir);
+
+		if ($user->data['user_id'] < 0)
+		{
+			$image_upload_data['filename'] = 'guest_' . preg_replace('/[^a-z0-9]+/', '_', $image_upload_data['filename']);
+		}
+		else
+		{
+			$image_upload_data['filename'] = preg_replace('/[^a-z0-9]+/', '_', $image_upload_data['filename']);
+			if (USERS_SUBFOLDERS_IMG == true)
+			{
+				if (@is_dir($image_upload_data['upload_dir'] . $user->data['user_id']))
+				{
+					$image_upload_data['upload_dir'] = $image_upload_data['upload_dir'] . $user->data['user_id'] . '/';
+				}
+				else
+				{
+					$dir_creation = @mkdir($image_upload_data['upload_dir'] . $user->data['user_id'], 0777);
+					if ($dir_creation == true)
+					{
+						$image_upload_data['upload_dir'] = $image_upload_data['upload_dir'] . $user->data['user_id'] . '/';
+					}
+					else
+					{
+						$image_upload_data['filename'] = 'user_' . $user->data['user_id'] . '_' . $image_upload_data['filename'];
+					}
+				}
+			}
+			else
+			{
+				$image_upload_data['filename'] = 'user_' . $user->data['user_id'] . '_' . $image_upload_data['filename'];
+			}
+		}
+		while(@file_exists($image_upload_data['upload_dir'] . $image_upload_data['filename'] . '.' . $extension))
+		{
+			$image_upload_data['filename'] = $image_upload_data['filename'] . '_' . time() . '_' . mt_rand(100000, 999999);
+		}
+
+		return $image_upload_data;
+	}
 
 	/**
-	* Short description.
+	* Upload an image, returns false on error
+	*/
+	function upload_image($filename, $extension, $upload_dir, $filename_tmp)
+	{
+		if(is_uploaded_file($filename_tmp))
+		{
+			@move_uploaded_file($filename_tmp, $upload_dir . $filename . '.' . $extension);
+			@chmod($upload_dir . $filename . '.' . $extension, 0777);
+		}
+
+		$pic_size = @getimagesize($upload_dir . $filename . '.' . $extension);
+		if($pic_size == false)
+		{
+			@unlink($upload_dir . $filename . '.' . $extension);
+			//return false;
+		}
+		return $pic_size;
+	}
+
+	/**
+	* Generate image paths
+	*/
+	function generate_image_paths($image_data)
+	{
+		global $user, $lang;
+
+		$image_paths = array();
+		$image_paths['sub_path'] = (USERS_SUBFOLDERS_IMG && (!empty($image_data['pic_user_id'])) ? ($image_data['pic_user_id'] . '/') : '') . $image_data['pic_filename'];
+		$image_paths['url'] = POSTED_IMAGES_PATH . $image_paths['sub_path'];
+		$image_paths['thumbnail_fullpath'] = POSTED_IMAGES_THUMBS_S_PATH . $image_paths['sub_path'];
+		$image_paths['thumb'] = (@file_exists($image_paths['thumbnail_fullpath']) ? $image_paths['thumbnail_fullpath'] : append_sid(CMS_PAGE_IMAGE_THUMBNAIL_S . '?pic_id=' . urlencode($image_paths['sub_path'])));
+		$image_paths['delete_url'] = (($user->data['user_level'] == ADMIN) ? ('<br /><span class="gensmall"><a href="' . append_sid(CMS_PAGE_IMAGES . '?mode=delete&amp;pic_id=' . $image_data['pic_id']) . '">' . $lang['Delete'] . '</a></span>') : '');
+
+		return $image_paths;
+	}
+
+	/**
+	* Get thumbnail data
+	*/
+	function get_thumbnail_data($pic_thumbnail_path, $pic_thumbnail, $pic_thumbnail_fullpath, $pic_filename, $pic_thumbnail_prefix = '')
+	{
+		$thumbnail_data = array(
+			'thumbnail' => $pic_thumbnail,
+			'full_path' => $pic_thumbnail_fullpath
+		);
+
+		if (is_dir($pic_thumbnail_path))
+		{
+			$thumbnail_data['thumbnail'] = $pic_thumbnail_prefix . $pic_filename;
+			$thumbnail_data['full_path'] = $pic_thumbnail_path . '/' . $thumbnail_data['thumbnail'];
+		}
+		else
+		{
+			$dir_creation = @mkdir($pic_thumbnail_path, 0777);
+			if ($dir_creation == true)
+			{
+				$thumbnail_data['thumbnail'] = $pic_thumbnail_prefix . $pic_filename;
+				$thumbnail_data['full_path'] = $pic_thumbnail_path . '/' . $thumbnail_data['thumbnail'];
+			}
+		}
+
+		return $thumbnail_data;
+	}
+
+	/**
+	* Get user dir
+	*/
+	function get_user_dir($upload_dir, $user_upload_dir)
+	{
+		global $user;
+
+		$user_dir = array(
+			'upload_dir' => $upload_dir,
+			'user_upload_dir' => $user_upload_dir
+		);
+
+		if (is_dir($user_dir['upload_dir'] . $user->data['user_id']))
+		{
+			$user_dir['user_upload_dir'] = $user->data['user_id'] . '/';
+			$user_dir['upload_dir'] = $user_dir['upload_dir'] . $user_dir['user_upload_dir'];
+		}
+		else
+		{
+			$dir_creation = @mkdir($user_dir['upload_dir'] . $user->data['user_id'], 0777);
+			if ($dir_creation)
+			{
+				$user_dir['user_upload_dir'] = $user->data['user_id'] . '/';
+				$user_dir['upload_dir'] = $user_dir['upload_dir'] . $user_dir['user_upload_dir'];
+			}
+		}
+
+		return $user_dir;
+	}
+
+	/**
+	* Get image details
 	*/
 	function get_image_details($image_path)
 	{

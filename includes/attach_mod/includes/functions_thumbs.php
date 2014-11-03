@@ -174,6 +174,13 @@ function create_thumbnail($source, $new_file, $mimetype)
 
 	list($new_width, $new_height) = get_img_size_format($width, $height);
 
+	// If new w and h are larger than current image, just copy the image...
+	if (($width <= $new_width) && ($height <= $new_height))
+	{
+		$result = copy_thumbnail($source, $new_file, $mimetype);
+		return $result;
+	}
+
 	$tmp_path = $old_file = '';
 
 	if (intval($config['allow_ftp_upload']))
@@ -288,6 +295,93 @@ function create_thumbnail($source, $new_file, $mimetype)
 	}
 
 	return true;
+}
+
+/**
+* Check if Thumbnail exist
+*/
+function thumbnail_exists($filename)
+{
+	global $upload_dir, $config;
+
+	$filename = basename($filename);
+
+	if (!intval($config['allow_ftp_upload']))
+	{
+		if (!@file_exists(@amod_realpath($upload_dir . '/' . THUMB_DIR . '/t_' . $filename)))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		$found = false;
+
+		$conn_id = attach_init_ftp(MODE_THUMBNAIL);
+
+		$file_listing = array();
+
+		$filename = 't_' . $filename;
+		$file_listing = @ftp_rawlist($conn_id, $filename);
+
+		for ($i = 0, $size = sizeof($file_listing); $i < $size; $i++)
+		{
+			if (ereg("([-d])[rwxst-]{9}.* ([0-9]*) ([a-zA-Z]+[0-9: ]*[0-9]) ([0-9]{2}:[0-9]{2}) (.+)", $file_listing[$i], $regs))
+			{
+				if ($regs[1] == 'd')
+				{
+					$dirinfo[0] = 1;	// Directory == 1
+				}
+				$dirinfo[1] = $regs[2]; // Size
+				$dirinfo[2] = $regs[3]; // Date
+				$dirinfo[3] = $regs[4]; // Filename
+				$dirinfo[4] = $regs[5]; // Time
+			}
+
+			if ($dirinfo[0] != 1 && $dirinfo[4] == $filename)
+			{
+				$found = true;
+			}
+		}
+
+		@ftp_quit($conn_id);
+
+		return $found;
+	}
+}
+
+
+/**
+* Sync Thumbnail (if a thumbnail is no longer there, delete it)
+*/
+function check_thumbnail($attachment_data, $upload_dir)
+{
+	global $config, $user, $lang;
+
+	if (!thumbnail_exists(basename($attachment_data['physical_filename'])))
+	{
+		if (!intval($config['allow_ftp_upload']))
+		{
+			$source_file = $upload_dir . '/' . basename($attachment_data['physical_filename']);
+			$dest_file = @amod_realpath($upload_dir);
+			$dest_file .= '/' . THUMB_DIR . '/t_' . basename($attachment_data['physical_filename']);
+		}
+		else
+		{
+			$source_file = $attachment_data['physical_filename'];
+			$dest_file = THUMB_DIR . '/t_' . basename($attachment_data['physical_filename']);
+		}
+
+		if (create_thumbnail($source_file, $dest_file, $attachment_data['mimetype']))
+		{
+			return 1;
+		}
+	}
+	return 0;
 }
 
 ?>

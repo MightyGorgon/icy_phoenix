@@ -270,4 +270,58 @@ function update_attachments_stats($attach_id)
 	return true;
 }
 
+/**
+* Gets the upload dir
+*/
+function get_upload_dir($is_image = false)
+{
+	global $config;
+
+	if (!intval($config['allow_ftp_upload']))
+	{
+		//$upload_dir = !empty($is_image) ? rtrim(POSTED_IMAGES_PATH, '/') : $config['upload_dir'];
+		$upload_dir = $config['upload_dir'];
+		if (defined('IN_ADMIN'))
+		{
+			if ($config['upload_dir'][0] == '/' || ($config['upload_dir'][0] != '/' && $config['upload_dir'][1] == ':'))
+			{
+				$upload_dir = $config['upload_dir'];
+			}
+			else
+			{
+				$upload_dir = IP_ROOT_PATH . $config['upload_dir'];
+			}
+		}
+	}
+	else
+	{
+		$upload_dir = $config['download_path'];
+	}
+
+	return $upload_dir;
+}
+
+/**
+* Gets physical filename
+*/
+function get_physical_filename($physical_filename, $is_thumbnail = false)
+{
+	if (ATTACHMENT_MOD_BASENAME)
+	{
+		$physical_filename = ($is_thumbnail ? (THUMB_DIR . '/t_') : '') . basename($physical_filename);
+	}
+
+	return $physical_filename;
+}
+
+/**
+* Move personal image to user subfolder
+*/
+function move_uploaded_image($filename)
+{
+	global $config, $user;
+
+	return 1;
+}
+
 ?>

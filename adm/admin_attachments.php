@@ -33,23 +33,8 @@ if(!empty($setmodules))
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
 require('pagestart.' . PHP_EXT);
-include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
 
-if (!intval($config['allow_ftp_upload']))
-{
-	if (($config['upload_dir'][0] == '/') || (($config['upload_dir'][0] != '/') && ($config['upload_dir'][1] == ':')))
-	{
-		$upload_dir = $config['upload_dir'];
-	}
-	else
-	{
-		$upload_dir = '../' . $config['upload_dir'];
-	}
-}
-else
-{
-	$upload_dir = $config['download_path'];
-}
+$upload_dir = get_upload_dir(false);
 
 // Init Vars
 $mode = request_var('mode', '');
@@ -212,15 +197,7 @@ if ($search_imagick)
 // Check Settings
 if ($check_upload)
 {
-	if ($config['upload_dir'][0] == '/' || ($config['upload_dir'][0] != '/' && $config['upload_dir'][1] == ':'))
-	{
-		$upload_dir = $config['upload_dir'];
-	}
-	else
-	{
-		$upload_dir = IP_ROOT_PATH . $config['upload_dir'];
-	}
-
+	$upload_dir = get_upload_dir(false);
 	$error = false;
 
 	// Does the target directory exist, is it a directory and writeable. (only test if ftp upload is disabled)
@@ -516,8 +493,6 @@ if ($mode == 'shadow')
 		'L_COMMENT' => $lang['File_comment'],
 		'L_DELETE' => $lang['Delete'],
 		'L_DELETE_MARKED' => $lang['Delete_marked'],
-		'L_MARK_ALL' => $lang['Mark_all'],
-		'L_UNMARK_ALL' => $lang['Unmark_all'],
 
 		'S_HIDDEN' => $hidden,
 		'S_ATTACH_ACTION' => append_sid('admin_attachments.' . PHP_EXT . '?mode=shadow')
@@ -538,7 +513,7 @@ if ($mode == 'shadow')
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$table_attachments['attach_id'][$i] = (int) $row['attach_id'];
-		$table_attachments['physical_filename'][$i] = basename($row['physical_filename']);
+		$table_attachments['physical_filename'][$i] = get_physical_filename($row['physical_filename'], false);
 		$table_attachments['comment'][$i] = $row['comment'];
 		$i++;
 	}
@@ -638,7 +613,7 @@ if ($mode == 'shadow')
 			'ATTACH_ID' => $shadow_attachments[$i],
 			'ATTACH_FILENAME' => $shadow_attachments[$i],
 			'ATTACH_COMMENT' => $lang['No_file_comment_available'],
-			'U_ATTACHMENT' => $upload_dir . '/' . basename($shadow_attachments[$i])
+			'U_ATTACHMENT' => $upload_dir . '/' . get_physical_filename($shadow_attachments[$i], false)
 			)
 		);
 	}
@@ -647,7 +622,7 @@ if ($mode == 'shadow')
 	{
 		$template->assign_block_vars('table_shadow_row', array(
 			'ATTACH_ID' => $shadow_row['attach_id'][$i],
-			'ATTACH_FILENAME' => basename($shadow_row['physical_filename'][$i]),
+			'ATTACH_FILENAME' => get_physical_filename($shadow_row['physical_filename'][$i], false),
 			'ATTACH_COMMENT' => (trim($shadow_row['comment'][$i]) == '') ? $lang['No_file_comment_available'] : trim($shadow_row['comment'][$i])
 			)
 		);
@@ -775,15 +750,7 @@ if ($mode == 'cats')
 // Check Cat Settings
 if ($check_image_cat)
 {
-	if (($config['upload_dir'][0] == '/') || (($config['upload_dir'][0] != '/') && ($config['upload_dir'][1] == ':')))
-	{
-		$upload_dir = $config['upload_dir'];
-	}
-	else
-	{
-		$upload_dir = IP_ROOT_PATH . $config['upload_dir'];
-	}
-
+	$upload_dir = get_upload_dir(false);
 	$upload_dir = $upload_dir . '/' . THUMB_DIR;
 
 	$error = false;
@@ -974,9 +941,7 @@ if ($mode == 'sync')
 	echo (isset($lang['Sync_thumbnails'])) ? $lang['Sync_thumbnails'] : 'Sync Thumbnails';
 
 	// Sync Thumbnails (if a thumbnail is no longer there, delete it)
-	// Get all Posts/PM's with the Thumbnail Flag set
-	// Go through all of them and make sure the Thumbnail exist. If it does not exist, unset the Thumbnail Flag
-	//$sql = "SELECT attach_id, physical_filename, thumbnail, mimetype FROM " . ATTACHMENTS_DESC_TABLE . " WHERE thumbnail = 1";
+	// Get all Posts/PM's with an image, go through all of them and make sure the Thumbnail exist. If it does not exist, unset the Thumbnail Flag
 	$sql = "SELECT attach_id, physical_filename, thumbnail, extension, mimetype FROM " . ATTACHMENTS_DESC_TABLE . " WHERE extension IN('png', 'jpg', 'jpeg')";
 	$result = $db->sql_query($sql);
 
@@ -992,33 +957,20 @@ if ($mode == 'sync')
 			echo '<br />';
 		}
 
-		if (!thumbnail_exists(basename($row['physical_filename'])))
+		$thumb_exists = check_thumbnail($row, $upload_dir);
+		if (!empty($thumb_exists))
 		{
-			if (!intval($config['allow_ftp_upload']))
-			{
-				$source = $upload_dir . '/' . basename($row['physical_filename']);
-				$dest_file = @amod_realpath($upload_dir);
-				$dest_file .= '/' . THUMB_DIR . '/t_' . basename($row['physical_filename']);
-			}
-			else
-			{
-				$source = $row['physical_filename'];
-				$dest_file = THUMB_DIR . '/t_' . basename($row['physical_filename']);
-			}
-
-			if (!create_thumbnail($source, $dest_file, $row['mimetype']))
-			{
-				$info .= sprintf($lang['Sync_thumbnail_resetted'], $row['physical_filename']) . '<br />';
-				$sql = "UPDATE " . ATTACHMENTS_DESC_TABLE . " SET thumbnail = 0 WHERE attach_id = " . (int) $row['attach_id'];
-				$db->sql_query($sql);
-			}
-			else
-			{
-				$info .= sprintf($lang['Sync_thumbnail_recreated'], $row['physical_filename']) . '<br />';
-				$sql = "UPDATE " . ATTACHMENTS_DESC_TABLE . " SET thumbnail = 1 WHERE attach_id = " . (int) $row['attach_id'];
-				$db->sql_query($sql);
-			}
+			$info .= sprintf($lang['Sync_thumbnail_recreated'], $row['physical_filename']) . '<br />';
+			$sql_thumbnail = 1;
 		}
+		else
+		{
+			$info .= sprintf($lang['Sync_thumbnail_resetted'], $row['physical_filename']) . '<br />';
+			$sql_thumbnail = 0;
+		}
+		$sql_update = "UPDATE " . ATTACHMENTS_DESC_TABLE . " SET thumbnail = " . $sql_thumbnail . " WHERE attach_id = " . (int) $row['attach_id'];
+		$db->sql_query($sql_update);
+
 		$i++;
 	}
 	$db->sql_freeresult($result);
@@ -1041,10 +993,10 @@ if ($mode == 'sync')
 			echo '<br />';
 		}
 
-		if (thumbnail_exists(basename($row['physical_filename'])))
+		if (thumbnail_exists($row['physical_filename']))
 		{
 			$info .= sprintf($lang['Sync_thumbnail_resetted'], $row['physical_filename']) . '<br />';
-			unlink_attach(basename($row['physical_filename']), MODE_THUMBNAIL);
+			unlink_attach($row['physical_filename'], MODE_THUMBNAIL);
 		}
 		$i++;
 	}

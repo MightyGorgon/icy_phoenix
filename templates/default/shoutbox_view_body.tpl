@@ -12,12 +12,7 @@
 <!-- BEGIN shoutrow -->
 <tr>
 	<td class="{shoutrow.ROW_CLASS}" width="100%" align="left" valign="top">
-		<div style="text-align: left; vertical-align: top;"><div style="position: relative; float: left; text-align: left; vertical-align: top;"><b>
-			<!-- IF shoutrow.PROFILE -->
-				<a href="{shoutrow.PROFILE}" target="_top" style="text-decoration: none;">{shoutrow.USERNAME}</a>
-				<!-- ELSE -->
-				{shoutrow.USERNAME}
-				<!-- ENDIF -->:</b>&nbsp;&diams;&nbsp;<span class="gensmall">{shoutrow.TIME}&nbsp;&raquo;&nbsp;{shoutrow.SHOUT}</span></div></div>
+		<div style="text-align: left; vertical-align: top;"><div style="position: relative; float: left; text-align: left; vertical-align: top;"><b><!-- IF shoutrow.PROFILE --><a href="{shoutrow.PROFILE}" target="_top" style="text-decoration: none;">{shoutrow.USERNAME}</a><!-- ELSE -->{shoutrow.USERNAME}<!-- ENDIF -->:</b>&nbsp;&diams;&nbsp;<span class="gensmall">{shoutrow.TIME}&nbsp;&raquo;&nbsp;{shoutrow.SHOUT}</span></div></div>
 	</td>
 </tr>
 <!-- END shoutrow -->
@@ -26,12 +21,7 @@
 <tr>
 	<td class="{shoutrow.ROW_CLASS}" width="100%" align="left" valign="top">
 		<div style="text-align: right; vertical-align: top;">
-			<div style="position: relative; float: left; text-align: left; vertical-align: top;"><b>
-				<!-- IF shoutrow.PROFILE -->
-				<a href="{shoutrow.PROFILE}" target="_top" style="text-decoration: none;">{shoutrow.USERNAME}</a>
-				<!-- ELSE -->
-				{shoutrow.USERNAME}
-				<!-- ENDIF -->:</b></div>
+			<div style="position: relative; float: left; text-align: left; vertical-align: top;"><b><!-- IF shoutrow.PROFILE --><a href="{shoutrow.PROFILE}" target="_top" style="text-decoration: none;">{shoutrow.USERNAME}</a><!-- ELSE -->{shoutrow.USERNAME}<!-- ENDIF -->:</b></div>
 			<span class="gensmall">{shoutrow.TIME}</span>
 		</div>
 		<br />
@@ -42,12 +32,7 @@
 <!-- ELSE -->
 <!-- BEGIN shoutrow -->
 <tr class="{shoutrow.ROW_CLASS}h">
-	<td class="{shoutrow.ROW_CLASS}h" style="background: none; min-width: 150px;" nowrap="nowrap"><span class="gensmall">
-		<!-- IF shoutrow.PROFILE -->
-		<a href="{shoutrow.PROFILE}" target="_top" style="text-decoration: none;">{shoutrow.USERNAME}</a>
-		<!-- ELSE -->
-		{shoutrow.USERNAME}
-		<!-- ENDIF -->&nbsp;&bull;&nbsp;[&nbsp;{shoutrow.TIME}&nbsp;]</span></td>
+	<td class="{shoutrow.ROW_CLASS}h" style="background: none; min-width: 150px;" nowrap="nowrap"><span class="gensmall"><!-- IF shoutrow.PROFILE --><a href="{shoutrow.PROFILE}" target="_top" style="text-decoration: none;">{shoutrow.USERNAME}</a><!-- ELSE -->{shoutrow.USERNAME}<!-- ENDIF -->&nbsp;&bull;&nbsp;[&nbsp;{shoutrow.TIME}&nbsp;]</span></td>
 	<td class="{shoutrow.ROW_CLASS}h" width="100%" style="background: none;"><div class="post-text post-text-hide-flow">{shoutrow.SHOUT}</div></td>
 </tr>
 <!-- END shoutrow -->

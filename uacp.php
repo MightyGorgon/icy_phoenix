@@ -224,8 +224,6 @@ $template->assign_vars(array(
 	'L_POSTED_IN_TOPIC' => $lang['Posted_in_topic'],
 	'L_DELETE' => $lang['Delete'],
 	'L_DELETE_MARKED' => $lang['Delete_marked'],
-	'L_MARK_ALL' => $lang['Mark_all'],
-	'L_UNMARK_ALL' => $lang['Unmark_all'],
 
 	'USERNAME' => $profiledata['username'],
 

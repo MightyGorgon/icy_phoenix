@@ -183,7 +183,7 @@ a.forumlink-new:hover, a.forumlink-new:active { color: #dd2222; text-decoration:
 /* VIEW TOPIC - BEGIN */
 .row-signature { background-color: #f8f8f8; border-top: none; text-align: left; }
 .row-post-author, .row-post { background-color: #ffffff; vertical-align: top; padding: 3px; }
-.row-post-author { text-align: center; width: 150px; }
+.row-post-author { text-align: center; width: 180px; }
 .row-post { text-align: left; }
 .post-name { font-weight: bold; color: #225599; font-size: 12px; /*line-height: 1.6em;*/ }
 .post-rank { color: #888888; font-size: 10px; }

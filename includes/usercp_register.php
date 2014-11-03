@@ -377,7 +377,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	$viewemail = request_post_var('viewemail', 0);
 	$allowmassemail = request_post_var('allowmassemail', 1);
 	$allowpmin = request_post_var('allowpmin', 1);
-	$notifyreply = request_post_var('notifyreply', 0);
+	$notifyreply = request_post_var('notifyreply', 1);
 	$notifypm = request_post_var('notifypm', 1);
 	$popup_pm = request_post_var('popup_pm', 1);
 	$setbm = request_post_var('setbm', 0);

@@ -5,19 +5,6 @@
 <b>{L_STATISTICS_FOR_USER}</b>
 <!-- END switch_user_based -->
 
-<script type="text/javascript">
-	//
-	// Should really check the browser to stop this whining ...
-	//
-	function select_switch(status)
-	{
-		for (i = 0; i < document.attach_list.length; i++)
-		{
-			document.attach_list.elements[i].checked = status;
-		}
-	}
-</script>
-
 <form method="post" name="attach_list" action="{S_MODE_ACTION}">
 <table class="s2px p2px">
 	<tr>
@@ -68,7 +55,9 @@
 
 <table class="s2px p2px">
 <tr>
-	<td class="tdalignr tdnw"><b><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></b></td>
+	<td class="tdalignr tdnw">
+		<span class="gensmall"><a href="#" onclick="setCheckboxes('attach_list', 'delete_id_list[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes('attach_list', 'delete_id_list[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a></span><br class="mb5" />
+	</td>
 </tr>
 </table>
 

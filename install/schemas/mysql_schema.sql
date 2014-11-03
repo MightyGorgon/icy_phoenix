@@ -612,20 +612,6 @@ CREATE TABLE `phpbb_forums_watch` (
 
 ## --------------------------------------------------------
 
-## `phpbb_google_bot_detector`
-
-CREATE TABLE `phpbb_google_bot_detector` (
-	`detect_id` INT(8) NOT NULL auto_increment,
-	`detect_time` INT(11) NOT NULL DEFAULT '0',
-	`detect_url` VARCHAR(255) NOT NULL DEFAULT '',
-	PRIMARY KEY (`detect_id`)
-);
-
-## `phpbb_google_bot_detector`
-
-
-## --------------------------------------------------------
-
 ## `phpbb_groups`
 
 CREATE TABLE `phpbb_groups` (
@@ -2777,6 +2763,8 @@ CREATE TABLE `phpbb_acl_users` (
 
 CREATE TABLE `phpbb_images` (
 	`pic_id` INT(11) unsigned NOT NULL auto_increment,
+	`post_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
+	`attach_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`pic_filename` VARCHAR(255) NOT NULL DEFAULT '',
 	`pic_size` INT(15) unsigned NOT NULL DEFAULT '0',
 	`pic_title` VARCHAR(255) NOT NULL DEFAULT '',

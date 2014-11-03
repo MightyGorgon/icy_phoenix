@@ -52,22 +52,11 @@ $user_upload_dir = '';
 $allowed_extensions = 'gif|jpg|jpeg|png';
 $max_file_size = (1024 * 1024);
 
-if (USERS_SUBFOLDERS_IMG)
+if (USERS_SUBFOLDERS_IMG == true)
 {
-	if (is_dir($upload_dir . $user->data['user_id']))
-	{
-		$user_upload_dir = $user->data['user_id'] . '/';
-		$upload_dir = $upload_dir . $user_upload_dir;
-	}
-	else
-	{
-		$dir_creation = @mkdir($upload_dir . $user->data['user_id'], 0777);
-		if ($dir_creation)
-		{
-			$user_upload_dir = $user->data['user_id'] . '/';
-			$upload_dir = $upload_dir . $user_upload_dir;
-		}
-	}
+	$user_dir = $class_images->get_user_dir($upload_dir, $user_upload_dir);
+	$upload_dir = $user_dir['upload_dir'];
+	$user_upload_dir = $user_dir['user_upload_dir'];
 }
 
 $show_last_images = true;
@@ -82,17 +71,14 @@ if ($show_last_images && ($user->data['user_id'] != ANONYMOUS))
 		{
 			$pics_parsed++;
 			// We are checking for small thumbnails... added an underscore to distinguish those small thumbs respect to mid sized!
-			$pic_img_sub_path = (USERS_SUBFOLDERS_IMG && (!empty($image_data['pic_user_id'])) ? ($image_data['pic_user_id'] . '/') : '') . $image_data['pic_filename'];
-			$pic_img_url = POSTED_IMAGES_PATH . $pic_img_sub_path;
-			$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $pic_img_sub_path;
-			$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL_S . '?pic_id=' . urlencode($pic_img_sub_path)));
+			$image_paths = $class_images->generate_image_paths($image_data);
 			$image_data['pic_title'] = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
 
 			$template->assign_block_vars('pic_img', array(
-				'PIC_IMAGE' => $pic_img_url,
-				'PIC_THUMB' => $pic_img_thumb,
+				'PIC_IMAGE' => $image_paths['url'],
+				'PIC_THUMB' => $image_paths['thumb'],
 				'PIC_BBC_INPUT' => 'bbcode_box_r_' . $pics_parsed,
-				'PIC_BBC' => '[img]' . $server_path . substr($pic_img_url, strlen(IP_ROOT_PATH)) . '[/img]',
+				'PIC_BBC' => '[img]' . $server_path . substr($image_paths['url'], strlen(IP_ROOT_PATH)) . '[/img]',
 				'PIC_NAME' => $image_data['pic_title']
 				)
 			);

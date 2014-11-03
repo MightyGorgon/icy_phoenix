@@ -60,7 +60,7 @@ if(check_http_var_exists('add', false))
 	// Admin has selected to add a smiley.
 	$template->set_filenames(array('body' => ADM_TPL . 'news_cat_edit_body.tpl'));
 
-	$filename_list = '<option value="">--</option>';
+	$filename_list = '<option value="">---</option>';
 	for($i = 0; $i < sizeof($category_images); $i++)
 	{
 		$filename_list .= '<option value="' . $category_images[$i] . '">' . $category_images[$i] . '</option>';
@@ -170,7 +170,7 @@ elseif ($mode != '')
 			$news_category = request_var('category', '', true);
 			$news_image = request_var('image_url', '', true);
 
-			// If no code was entered complain ...
+			// If no code was entered complain...
 			if (empty($news_category) || empty($news_id))
 			{
 				message_die(MESSAGE, $lang['Fields_empty']);
@@ -203,7 +203,7 @@ elseif ($mode != '')
 
 			// Save	the	data to	the	smiley table.
 			$sql = "INSERT INTO " . NEWS_TABLE . " (news_image, news_category)
-				VALUES ('$news_image', '" . $db->sql_escape($news_category) . "')";
+				VALUES ('" . $db->sql_escape($news_image) . "', '" . $db->sql_escape($news_category) . "')";
 			$result = $db->sql_query($sql);
 			$db->clear_cache('news_');
 
@@ -249,7 +249,7 @@ else
 
 			'TOPIC_COUNT' => $news_cats[$i]['topic_count'],
 
-			'CATEGORY_IMG' => $news_cats[$i]['news_image'] ? IP_ROOT_PATH . $config['news_path']	.	'/'	.	$news_cats[$i]['news_image'] : '',
+			'CATEGORY_IMG' => $news_cats[$i]['news_image'] ? IP_ROOT_PATH . $config['news_path'] . '/' . $news_cats[$i]['news_image'] : '',
 			'L_CATEGORY' => $news_cats[$i]['news_category'],
 
 			'U_NEWS_EDIT' => append_sid('admin_news_cats.' . PHP_EXT . '?mode=edit&amp;id=' . $news_cats[$i]['news_id']),

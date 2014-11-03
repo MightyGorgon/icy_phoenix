@@ -1862,8 +1862,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			'L_MAR' => $lang['upi2db_search_mark_read'],
 			'L_SUBMIT_MARK_READ' => $lang['upi2db_submit_mark_read'],
 			'S_POST_ACTION' => append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_id . (isset($s2) ? ('&amp;s2=' . $s2) : '')),
-			'L_UNMARK_ALL' => $lang['Unmark_all'],
-			'L_MARK_ALL' => $lang['Mark_all'],
 			'L_SUBMIT_MARK_READ' => $lang['upi2db_submit_mark_read'],
 // UPI2DB - END
 			'L_LASTPOST' => ($search_type == 'upi2db') ? $lang['Last_Post'] : ('<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_id=' . $search_type . $search_url_add) . '">' . $lang['Last_Post'] . '</a>'),

@@ -280,8 +280,6 @@ $template->assign_vars(array(
 	'L_ACCOUNT_ACTIONS' => $lang['Account_actions'],
 	'L_ACCOUNT_ACTIONS_EXPLAIN' => ($action == 'inactive') ? $lang['Account_inactive_explain'] : $lang['Account_active_explain'],
 	'L_MARK' => $lang['Mark'],
-	'L_MARK_ALL' => $lang['Mark_all'],
-	'L_UNMARK_ALL' => $lang['Unmark_all'],
 	'L_DELETE_MARKED' => $lang['Delete_marked'],
 	'L_DE_ACTIVATE_MARKED' => ($action == 'inactive') ? $lang['Account_activate'] : $lang['Account_deactivate'],
 	'L_EDIT_USER' => $lang['Edit'],

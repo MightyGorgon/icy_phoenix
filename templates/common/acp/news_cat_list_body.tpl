@@ -12,11 +12,7 @@
 <tr><td class="row1 row-center" colspan="6">{S_HIDDEN_FIELDS}<input type="submit" name="add" value="{L_NEWS_ADD}" class="mainoption" /></td></tr>
 <!-- BEGIN news_cats -->
 <tr>
-	<td class="row1 row-center">
-		<!-- IF news_cats.CATEGORY_IMG -->
-		<img src="{news_cats.CATEGORY_IMG}" alt="{news_cats.L_CATEGORY}" />
-		<!-- ENDIF -->
-	</td>
+	<td class="row1 row-center"><!-- IF news_cats.CATEGORY_IMG --><img src="{news_cats.CATEGORY_IMG}" alt="{news_cats.L_CATEGORY}" /><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
 	<td class="row1 row-center">{news_cats.L_CATEGORY}</td>
 	<td class="row1 row-center">{news_cats.TOPIC_COUNT}</td>
 	<td class="row1 row-center"><a href="{news_cats.U_NEWS_EDIT}">{L_EDIT}</a></td>

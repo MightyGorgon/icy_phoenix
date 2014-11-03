@@ -564,8 +564,6 @@ if ($view == 'attachments')
 		'L_DELETE' => $lang['Delete'],
 		'L_DELETE_MARKED' => $lang['Delete_marked'],
 		'L_SUBMIT_CHANGES' => $lang['Submit_changes'],
-		'L_MARK_ALL' => $lang['Mark_all'],
-		'L_UNMARK_ALL' => $lang['Unmark_all'],
 
 		'S_MODE_SELECT' => $select_sort_mode,
 		'S_ORDER_SELECT' => $select_sort_order

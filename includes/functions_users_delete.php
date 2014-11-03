@@ -29,6 +29,10 @@ function ip_user_kill($user_id)
 		// We need to reset notifications before deleting the user from the table, because we also want to make sure to reset his profile if something goes wrong in deletion
 		$clear_notification = user_clear_notifications($user_id);
 
+		$sql = "DELETE FROM " . ACL_USERS_TABLE . "
+			WHERE user_id = '" . $user_id . "'";
+		$db->sql_query($sql);
+
 		$sql = "SELECT g.group_id
 			FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
 			WHERE ug.user_id = " . $user_id . "
@@ -124,7 +128,7 @@ function ip_user_kill($user_id)
 		{
 			$sql = "DELETE FROM " . SUDOKU_STATS . " WHERE user_id = " . $user_id;
 			$db->sql_query($sql);
-	
+
 			$sql = "DELETE FROM " . SUDOKU_USERS . " WHERE user_id = " . $user_id;
 			$db->sql_query($sql);
 		}

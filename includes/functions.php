@@ -2369,7 +2369,7 @@ function send_status_line($code, $message)
 	if (substr(strtolower(@php_sapi_name()), 0, 3) === 'cgi')
 	{
 		// in theory, we shouldn't need that due to php doing it. Reality offers a differing opinion, though
-		header("Status: $code $message", true, $code);
+		@header("Status: $code $message", true, $code);
 	}
 	else
 	{
@@ -2381,7 +2381,7 @@ function send_status_line($code, $message)
 		{
 			$version = 'HTTP/1.0';
 		}
-		header("$version $code $message", true, $code);
+		@header("$version $code $message", true, $code);
 	}
 }
 
@@ -3666,18 +3666,6 @@ function bots_table_update($bot_id)
 					WHERE bot_id = '" . $bot_id . "'";
 	$result = $db->sql_query($sql);
 
-	if ($config['google_bot_detector'])
-	{
-		if (eregi('googlebot', $_SERVER['HTTP_USER_AGENT']))
-		{
-			$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'] . (($_SERVER['QUERY_STRING'] != '') ? '?' . $_SERVER['QUERY_STRING'] : '');
-			$now = time();
-
-			$sql = "INSERT INTO " . GOOGLE_BOT_DETECTOR_TABLE . "(detect_time, detect_url) VALUES('$now', '" . $db->sql_escape($url) . "')";
-			$result = $db->sql_query($sql);
-		}
-	}
-
 	return true;
 }
 
@@ -3786,7 +3774,7 @@ function check_valid_color($color)
 */
 function user_color_sql($user_id)
 {
-	$sql = "SELECT u.username, u.user_active, u.user_color, u.group_id
+	$sql = "SELECT u.username, u.user_active, u.user_mask, u.user_color, u.group_id
 		FROM " . USERS_TABLE . " u
 		WHERE u.user_id = '" . $user_id . "'
 			LIMIT 1";
@@ -3829,8 +3817,15 @@ function colorize_username($user_id, $username = '', $user_color = '', $user_act
 			$row = $sql_row;
 		}
 		$db->sql_freeresult($result);
-		$username = $row['username'];
-		$user_color = $row['user_color'];
+		$user_mask = (empty($row['user_active']) && !empty($row['user_mask'])) ? true : false;
+		if (!empty($user_mask))
+		{
+			global $user;
+			$user_mask = ($user->data['user_level'] == ADMIN) ? false : true;
+		}
+		$user_id = $user_mask ? ANONYMOUS : $user_id;
+		$username = $user_mask ? $lang['INACTIVE_USER'] : $row['username'];
+		$user_color = $user_mask ? '' : $row['user_color'];
 		$user_active = $row['user_active'];
 	}
 

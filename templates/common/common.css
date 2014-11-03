@@ -161,6 +161,7 @@ table.tb1px { border-width: 1px; }
 .tnomarginb { margin-bottom: 0px; }
 /* HTML 5.0 TABLES - END */
 
+br.mb5 { margin-bottom: 5px; clear: both; }
 hr { height: 1px; margin: 5px 0; display: block; clear: both; }
 hr.dashed { border-top: 1px dashed #cccccc; margin: 10px 0; }
 /* MAIN SELECTORS - END */
@@ -229,6 +230,7 @@ abbr, acronym { border-bottom: 1px dotted #333333; cursor: help; }
 .topic-title-hide-flow { min-width: 280px; max-width: 400px; overflow: hidden !important; }
 .post-subject { overflow: hidden; white-space: nowrap; max-width: 500px; }
 .post-text-hide-flow { overflow: auto; max-width: 960px; }
+.post-text-oh { overflow: hidden; }
 blockquote, .post-text blockquote, .code-content { overflow: auto; }
 
 .highlight-w { color: #dd2222; background-color: #ffffaa; font-weight: bold; }
@@ -396,11 +398,8 @@ div.thumb div img{ max-width: 180px; max-height: 150px; }
 .picframe-slideshow { height: 232px; width: 232px; margin: auto; }
 .picframe-slideshow img, .picframe-slideshow-column img { padding: 15px; border: 1px solid #cccccc; background-color: #eeeeee; }
 .picframe-cont { float: left; margin: 10px; min-height: 250px; }
-.picframe-cont img, .picframe-cont a img { padding: 10px; border: 1px solid #cccccc; background-color: #eeeeee; }
-.picframe-cont img:hover, .picframe-cont a img:hover { background-color: #ffffdd; border: 1px solid #dd6666; }
-.picframe { display: block; background-color: #ffffff; border: 1px solid #555555; padding: 2px 6px 2px 6px; position: relative; bottom: 2px; right: 2px; }
-.picframe:hover { background-color: #ffffaa; border: 1px solid #dd2222; }
-.picshadow { background-color: #888888; color: inherit; margin-left: 4px; margin-top: 4px; }
+.picframe, .picframe-cont img, .picframe-cont a img { margin: 5px; padding: 8px; background-color: #eeeeee; border: 1px solid #cccccc !important; box-shadow: 4px 4px 5px #888888; }
+.picframe:hover, .picframe-cont img:hover, .picframe-cont a img:hover { background-color: #ffffdd; border: 1px solid #dd6666; }
 /* THUMBS FRAMES & SHADOW - END */
 
 /* UL OL - BEGIN */

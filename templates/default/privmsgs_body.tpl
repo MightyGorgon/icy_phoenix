@@ -3,21 +3,6 @@
 {CPL_MENU_OUTPUT}
 <form method="post" name="privmsg_list" action="{S_PRIVMSGS_ACTION}">
 
-<script type="text/javascript">
-// <![CDATA[
-//
-// Should really check the browser to stop this whining ...
-//
-function select_switch(status)
-{
-	for (i = 0; i < document.privmsg_list.length; i++)
-	{
-		document.privmsg_list.elements[i].checked = status;
-	}
-}
-// ]]>
-</script>
-
 <div class="forumline" style="padding-left: 3px; padding-right: 3px; margin-top: 5px; margin-bottom: 5px;">
 <table>
 <tr>
@@ -83,7 +68,7 @@ function select_switch(status)
 	<td class="row1h row-forum" data-href="{listrow.U_READ}" valign="middle">{listrow.PRIVMSG_ATTACHMENTS_IMG}<span class="topiclink"><a href="{listrow.U_READ}" class="topiclink">{listrow.SUBJECT}</a></span></td>
 	<td class="row2 row-center">{listrow.FROM}</td>
 	<td class="row2 row-center-small">{listrow.DATE}</td>
-	<td class="row3 row-center"><input type="checkbox" name="mark[]2" value="{listrow.S_MARK_ID}" /></td>
+	<td class="row3 row-center"><input type="checkbox" name="mark[]" value="{listrow.S_MARK_ID}" /></td>
 </tr>
 <!-- END listrow -->
 <!-- BEGIN switch_no_messages -->

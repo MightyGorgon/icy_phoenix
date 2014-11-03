@@ -1992,7 +1992,8 @@ $user->data['user_unread_privmsg'] = ($user->data['user_new_privmsg'] + $user->d
 // Generate page
 $nav_server_url = create_server_url();
 $breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '" class="nav-current">' . $lang['Private_Messaging'] . '</a>';
-$breadcrumbs['bottom_right_links'] = '<a href="javascript:select_switch(true);" class="gensmall">' . $lang['Mark_all'] . '</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">' . $lang['Unmark_all'] . '</a>';
+$breadcrumbs['bottom_right_links'] = '<a href="#" onclick="setCheckboxes(\'privmsg_list\', \'mark[]\', true); return false;" class="gensmall">' . $lang['MARK_ALL'] . '</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes(\'privmsg_list\', \'mark[]\', false); return false;" class="gensmall">' . $lang['UNMARK_ALL'] . '</a>';
+
 include_once(IP_ROOT_PATH . 'includes/users_zebra_block.' . PHP_EXT);
 
 make_jumpbox(CMS_PAGE_VIEWFORUM);
@@ -2233,8 +2234,6 @@ $template->assign_vars(array(
 	'L_DATE' => $lang['Date'],
 	'L_DISPLAY_MESSAGES' => $lang['Display_messages'],
 	'L_FROM_OR_TO' => ($folder == 'inbox' || $folder == 'savebox') ? $lang['From'] : $lang['To'],
-	'L_MARK_ALL' => $lang['Mark_all'],
-	'L_UNMARK_ALL' => $lang['Unmark_all'],
 	'L_DELETE_MARKED' => $lang['Delete_marked'],
 	'L_DELETE_ALL' => $lang['Delete_all'],
 	'L_SAVE_MARKED' => $lang['Save_marked'],

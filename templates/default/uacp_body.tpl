@@ -1,16 +1,5 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-// <![CDATA[
-function select_switch(status)
-{
-	$("[type='checkbox']").each(function(index, element) {
-		element.checked = status;
-	});
-}
-// ]]>
-</script>
-
 <form method="post" name="attach_list" action="{S_MODE_ACTION}">
 <table>
 <tr>
@@ -57,7 +46,7 @@ function select_switch(status)
 <table>
 <tr>
 	<td class="tdalignr tdnw">
-		<span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span>
+		<span class="gensmall"><a href="#" onclick="setCheckboxes('attach_list', 'delete_id_list[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes('attach_list', 'delete_id_list[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a></span><br class="mb5" />
 	</td>
 </tr>
 </table>

@@ -152,7 +152,7 @@ class class_plugins
 	}
 
 	/**
-	 * API function to call 
+	 * API function to call
 	 */
 	function process_install_instructions($plugin_data, $instructions)
 	{
@@ -247,7 +247,6 @@ class class_plugins
 
 		return $sql_results;
 	}
-
 
 	/*
 	* Setup plugin lang

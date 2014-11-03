@@ -60,41 +60,10 @@ if(isset($_FILES['userfile']))
 
 	$server_path = create_server_url();
 
-	if ($user->data['user_id'] < 0)
-	{
-		$filename = 'guest_' . preg_replace('/[^a-z0-9]+/', '_', $filename);
-	}
-	else
-	{
-		$filename = preg_replace('/[^a-z0-9]+/', '_', $filename);
-		if (USERS_SUBFOLDERS_IMG == true)
-		{
-			if (is_dir($upload_dir . $user->data['user_id']))
-			{
-				$upload_dir = $upload_dir . $user->data['user_id'] . '/';
-			}
-			else
-			{
-				$dir_creation = @mkdir($upload_dir . $user->data['user_id'], 0777);
-				if ($dir_creation == true)
-				{
-					$upload_dir = $upload_dir . $user->data['user_id'] . '/';
-				}
-				else
-				{
-					$filename = 'user_' . $user->data['user_id'] . '_' . $filename;
-				}
-			}
-		}
-		else
-		{
-			$filename = 'user_' . $user->data['user_id'] . '_' . $filename;
-		}
-	}
-	while(file_exists($upload_dir . $filename . '.' . $extension))
-	{
-		$filename = $filename . '_' . time() . '_' . mt_rand(100000, 999999);
-	}
+	$image_upload_data = $class_images->get_image_upload_data($filename, $extension, $upload_dir);
+	$upload_dir = $image_upload_data['upload_dir'];
+	$filename = $image_upload_data['filename'];
+
 	$filename_tmp = $_FILES['userfile']['tmp_name'];
 	$file_size = $_FILES['userfile']['size'];
 
@@ -108,22 +77,16 @@ if(isset($_FILES['userfile']))
 		message_die(GENERAL_MESSAGE, $lang['Upload_File_Too_Big'] . ' ' . ($maxsize / 1000) . 'KB');
 	}
 
-	if(is_uploaded_file($filename_tmp))
+	$upload_result = $class_images->upload_image($filename, $extension, $upload_dir, $filename_tmp);
+	if (empty($upload_result))
 	{
-		@move_uploaded_file($filename_tmp, $upload_dir . $filename . '.' . $extension);
-		@chmod($upload_dir . $filename . '.' . $extension, 0777);
-	}
-
-	$pic_size = @getimagesize($upload_dir . $filename . '.' . $extension);
-	if($pic_size == false)
-	{
-		@unlink($upload_dir . $filename . '.' . $extension);
 		message_die(GENERAL_MESSAGE, $lang['Upload_File_Type_Allowed'] . ': ' . str_replace(',', ', ', $filetypes) . '.');
 	}
 
+	$filesize = filesize($upload_dir . $filename . '.' . $extension);
 	$image_data = array(
 		'pic_filename' => $filename . '.' . $extension,
-		'pic_size' => filesize($upload_dir . $filename . '.' . $extension),
+		'pic_size' => $filesize,
 		'pic_title' => $filename . '.' . $extension,
 		'pic_desc' => $filename . '.' . $extension,
 		'pic_user_id' => $user->data['user_id'],

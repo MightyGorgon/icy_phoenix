@@ -99,21 +99,16 @@ foreach ($images_data as $image_data)
 	$pic_col_count++;
 
 	// We are checking for small thumbnails... added an underscore to distinguish those small thumbs respect to mid sized!
-	$pic_img_sub_path = (USERS_SUBFOLDERS_IMG && (!empty($image_data['pic_user_id'])) ? ($image_data['pic_user_id'] . '/') : '') . $image_data['pic_filename'];
-	$pic_img_url = POSTED_IMAGES_PATH . $pic_img_sub_path;
-	$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $pic_img_sub_path;
-	$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL_S . '?pic_id=' . urlencode($pic_img_sub_path)));
-	//$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL_S . '?pic_id=' . urlencode($server_path . substr($pic_img_url, strlen(IP_ROOT_PATH)))));
-	$pic_delete_url = (($user->data['user_level'] == ADMIN) ? ('<br /><span class="gensmall"><a href="' . append_sid(CMS_PAGE_IMAGES . '?mode=delete&amp;pic_id=' . $image_data['pic_id']) . '">' . $lang['Delete'] . '</a></span>') : '');
-	$image_data['pic_title'] = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
+	$image_paths = $class_images->generate_image_paths($image_data);
+	$pic_title = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
 
 	$template->assign_block_vars('pic_row.pic_column', array(
-		'PIC_DELETE' => $pic_delete_url,
-		'PIC_IMAGE' => $pic_img_url,
-		'PIC_THUMB' => $pic_img_thumb,
+		'PIC_DELETE' => $image_paths['delete_url'],
+		'PIC_IMAGE' => $image_paths['url'],
+		'PIC_THUMB' => $image_paths['thumb'],
 		'PIC_BBC_INPUT' => 'bbcode_box_' . $pics_parsed,
-		'PIC_BBC' => '[img]' . $server_path . substr($pic_img_url, strlen(IP_ROOT_PATH)) . '[/img]',
-		'PIC_NAME' => $image_data['pic_title']
+		'PIC_BBC' => '[img]' . $server_path . substr($image_paths['url'], strlen(IP_ROOT_PATH)) . '[/img]',
+		'PIC_NAME' => $pic_title
 		)
 	);
 }

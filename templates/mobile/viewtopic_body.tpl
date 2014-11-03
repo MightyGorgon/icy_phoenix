@@ -26,14 +26,16 @@
 		{postrow.POSTER_NAME}
 		<div class="block">
 			<p class="post-details">
+				<!-- IF not postrow.S_THIS_POSTER_MASK -->
 				{postrow.POSTER_JOINED}<br />
 				{postrow.POSTER_POSTS}<br />
 				<!-- BEGIN author_profile -->
 				{postrow.author_profile.AUTHOR_VAL}<br />
 				<!-- END author_profile -->
+				<!-- ENDIF -->
 			</p>
 			<div class="extra-top-padding">
-				{postrow.PROFILE_IMG} {postrow.PM_IMG} {postrow.EMAIL_IMG} {postrow.WWW_IMG}&nbsp;
+				<!-- IF not postrow.S_THIS_POSTER_MASK -->{postrow.PROFILE_IMG} {postrow.PM_IMG} {postrow.EMAIL_IMG} {postrow.WWW_IMG}<!-- ENDIF -->&nbsp;
 			</div>
 		</div>
 	</div>

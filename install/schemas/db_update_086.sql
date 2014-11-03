@@ -155,12 +155,32 @@ DELETE FROM `phpbb_config` WHERE `config_name` = 'xmas_fx';
 
 
 
+########################################
+##              BUILD 098             ##
+########################################
+
+
+
+########################################
+##              BUILD 099             ##
+########################################
+ALTER TABLE `phpbb_images` ADD `post_id` MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER `pic_id`;
+ALTER TABLE `phpbb_images` ADD `attach_id` MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER `post_id`;
+DROP TABLE IF EXISTS `phpbb_google_bot_detector`;
+DELETE FROM `phpbb_config` WHERE `config_name` = 'google_bot_detector';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'yahoo_search_savepath';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'yahoo_search_additional_urls';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'yahoo_search_compress';
+DELETE FROM `phpbb_config` WHERE `config_name` = 'yahoo_search_compression_level';
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.12.98' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.13.99' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

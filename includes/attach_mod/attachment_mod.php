@@ -21,8 +21,9 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-// We assign the original default board language here, because it gets overwritten later with the users default language
-$config['board_lang'] = trim($config['default_lang']);
+// Set this to false if you want to use subfolders for images and remove the basename feature which doesn't allow subfolders
+define('ATTACHMENT_MOD_BASENAME', true);
+
 
 // Needed to correctly process attachments!
 define('PAGE_PRIVMSGS', -10);
@@ -71,13 +72,6 @@ if(defined('ATTACH_PM'))
 /*
 */
 
-if (!intval($config['allow_ftp_upload']))
-{
-	$upload_dir = $config['upload_dir'];
-}
-else
-{
-	$upload_dir = $config['download_path'];
-}
+$upload_dir = get_upload_dir(false);
 
 ?>

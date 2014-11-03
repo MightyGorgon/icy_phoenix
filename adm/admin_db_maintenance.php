@@ -1147,7 +1147,7 @@ switch($mode_id)
 				$db->sql_freeresult($result);
 				if (sizeof($result_array))
 				{
-					// Getting default board_language as long as the original one was changed in functions.php
+					// Getting default language as long as the original one was changed in functions.php
 					$sql = "SELECT config_value
 						FROM " . CONFIG_TABLE . "
 						WHERE config_name = 'default_lang'";

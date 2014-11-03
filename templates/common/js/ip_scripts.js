@@ -593,6 +593,26 @@ function submit_rate()
 }
 // Dynamic Rating - END
 
+// Select/Unselect all checkboxes
+function setCheckboxes(theForm, elementName, isChecked)
+{
+	var chkboxes = document.forms[theForm].elements[elementName];
+	var count = chkboxes.length;
+
+	if (count)
+	{
+		for (var i = 0; i < count; i++)
+		{
+			chkboxes[i].checked = isChecked;
+		}
+	}
+	else
+	{
+		chkboxes.checked = isChecked;
+	}
+	return true;
+}
+
 // TRIGGER CLICKS ON ROWS
 $(document).ready(function() {
 	$("td[data-href]").bind('mouseup', function(e){

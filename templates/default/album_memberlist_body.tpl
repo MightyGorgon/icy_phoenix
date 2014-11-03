@@ -34,11 +34,7 @@
 <tr>
 	<!-- BEGIN piccol -->
 	<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
-		<center>
-		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{picrow.piccol.U_PIC_DL}"{picrow.piccol.PIC_PREVIEW_HS}><img class="vs10px" src="{picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{picrow.piccol.PIC_TITLE}" title="{picrow.piccol.PIC_TITLE}" border="0" /></a>
-		</div></div></td></tr></table>
-		</center>
+		<a href="{picrow.piccol.U_PIC_DL}"{picrow.piccol.PIC_PREVIEW_HS}><img class="picframe" src="{picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{picrow.piccol.PIC_TITLE}" title="{picrow.piccol.PIC_TITLE}" /></a>
 	</td>
 	<!-- END piccol -->
 </tr>

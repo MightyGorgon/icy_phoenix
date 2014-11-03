@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.12.98');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.13.99');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 INSERT INTO `phpbb_album_config` (`config_name`, `config_value`) VALUES ('fap_version', '1.5.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
@@ -610,10 +610,6 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('allow_autolo
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_autologin_time', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('autolink_first', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('smilies_insert', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('yahoo_search_savepath', 'cache');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('yahoo_search_additional_urls', 'http://www.icyphoenix.com');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('yahoo_search_compress', '1');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('yahoo_search_compression_level', '9');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('max_link_bookmarks', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('visit_counter', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('word_graph_max_words', '250');

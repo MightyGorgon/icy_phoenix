@@ -384,8 +384,8 @@ else
 		$select_emaillist = '<option value="-1">' . $lang['No_banned_email'] . '</option>';
 	}
 
-	$select_iplist = '<select name="unban_ip[]" multiple="multiple" size="5">' . $select_iplist . '</select>';
-	$select_emaillist = '<select name="unban_email[]" multiple="multiple" size="5">' . $select_emaillist . '</select>';
+	$select_iplist = '<select name="unban_ip[]" multiple="multiple" size="8" style="min-height: 200px;">' . $select_iplist . '</select>';
+	$select_emaillist = '<select name="unban_email[]" multiple="multiple" size="8" style="min-height: 200px;">' . $select_emaillist . '</select>';
 
 	$template->assign_vars(array(
 		'L_UNBAN_USER' => $lang['Unban_username'],

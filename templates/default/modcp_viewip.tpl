@@ -5,7 +5,7 @@
 		<table>
 		<tr>
 			<td>&nbsp;<span class="gen">{IP} [ {POSTS} ]</span></td>
-			<td class="tdalignr"><span class="gen">[ <a href="{U_LOOKUP_IP}">{L_LOOKUP_IP}</a>]&nbsp;</span></td>
+			<td class="tdalignr"><span class="gen">[ <a href="{U_WHOIS_IP}" target="_blank">{L_WHOIS_IP}</a>]&nbsp;&bull;&nbsp;[ <a href="{U_LOOKUP_IP}">{L_LOOKUP_IP}</a>]&nbsp;</span></td>
 		</tr>
 		</table>
 	</td>
@@ -30,7 +30,7 @@
 		<table>
 		<tr>
 			<td>&nbsp;<span class="gen">{iprow.IP} [ {iprow.POSTS} ]</span></td>
-			<td class="tdalignr"><span class="gen">[ <a href="{iprow.U_LOOKUP_IP}">{L_LOOKUP_IP}</a>]&nbsp;</span></td>
+			<td class="tdalignr"><span class="gen">[ <a href="{iprow.U_WHOIS_IP}" target="_blank">{L_WHOIS_IP}</a>]&nbsp;&bull;&nbsp;[ <a href="{iprow.U_LOOKUP_IP}">{L_LOOKUP_IP}</a>]&nbsp;</span></td>
 		</tr>
 		</table>
 	</td>

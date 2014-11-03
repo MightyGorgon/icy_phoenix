@@ -800,6 +800,7 @@ switch($mode)
 			'SEARCH_IMG' => $images['icon_search'],
 			'IP' => htmlspecialchars($ip_this_post),
 			'U_LOOKUP_IP' => 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;rdns=' . htmlspecialchars(urlencode($ip_this_post)) . '&amp;sid=' . $user->data['session_id'],
+			'U_WHOIS_IP' => htmlspecialchars('http://whois.domaintools.com/' . $ip_this_post),
 			)
 		);
 
@@ -826,6 +827,7 @@ switch($mode)
 					'IP' => htmlspecialchars($ip),
 					'POSTS' => $row['postings'] .' '. (($row['postings'] == '1') ? $lang['Post'] : $lang['Posts']),
 					'U_LOOKUP_IP' => 'modcp.' . PHP_EXT . '?mode=ip&amp;' . POST_POST_URL . '=' . $post_id . '&amp;' . POST_TOPIC_URL . '=' . $topic_id . '&amp;rdns=' . htmlspecialchars(urlencode($row['poster_ip'])) . '&amp;sid=' . $user->data['session_id'],
+					'U_WHOIS_IP' => htmlspecialchars('http://whois.domaintools.com/' . $ip),
 					)
 				);
 				$i++;
@@ -1036,8 +1038,6 @@ switch($mode)
 			'L_FIRSTPOST' => $lang['Mod_CP_first_post'],
 			'L_LASTPOST' => $lang['Last_Post'],
 			'L_RECYCLE' => $lang['Bin_recycle'],
-			'L_MARK_ALL' => $lang['Mark_all'],
-			'L_UNMARK_ALL' => $lang['Unmark_all'],
 			'U_VIEW_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $forum_id),
 			'S_HIDDEN_FIELDS' => '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" /><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />',
 			'S_MODCP_ACTION' => append_sid('modcp.' . PHP_EXT),

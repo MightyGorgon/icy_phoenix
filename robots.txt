@@ -1,7 +1,7 @@
 Sitemap: http://www.icyphoenix.com/sitemap.php
 
-User-agent: Yahoo! Slurp
-Crawl-delay: 240
+User-agent: *
+Crawl-delay: 10
 
 # All Bots!
 User-agent: *

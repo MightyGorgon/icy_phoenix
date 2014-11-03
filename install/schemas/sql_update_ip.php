@@ -103,6 +103,7 @@ switch ($req_version)
 	case '201197': $current_ip_version = '2.0.11.97'; break;
 	case '201298': $current_ip_version = '2.0.12.98'; break;
 	case '201399': $current_ip_version = '2.0.13.99'; break;
+	case '2014100': $current_ip_version = '2.0.14.100'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -395,13 +396,6 @@ if (substr($mode, 0, 6) == 'update')
 			KEY `forum_id` (`forum_id`),
 			KEY `user_id` (`user_id`),
 			KEY `notify_status` (`notify_status`)
-		)";
-
-		$sql[] = "CREATE TABLE `" . $table_prefix . "google_bot_detector` (
-			`detect_id` int(8) NOT NULL auto_increment,
-			`detect_time` int(11) NOT NULL default '0',
-			`detect_url` varchar(255) NOT NULL default '',
-			PRIMARY KEY (`detect_id`)
 		)";
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "groups` ADD `group_count` INT(4) UNSIGNED DEFAULT '99999999'";
@@ -1443,11 +1437,6 @@ if (substr($mode, 0, 6) == 'update')
 
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD user_sudoku_playing INT(1) DEFAULT '0' NOT NULL";
 
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES('yahoo_search_savepath', 'cache')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES('yahoo_search_additional_urls', 'http://www.icyphoenix.com')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES('yahoo_search_compress', '1')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config (config_name, config_value) VALUES('yahoo_search_compression_level', '9')";
-
 		$sql[] = "CREATE TABLE `" . $table_prefix . "bookmarks` (
 			topic_id mediumint(8) unsigned NOT NULL default '0',
 			user_id mediumint(8) NOT NULL default '0',
@@ -2190,7 +2179,6 @@ if (substr($mode, 0, 6) == 'update')
 		)";
 
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('xmas_gfx', '0')";
-		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('google_bot_detector', '0')";
 		$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('logs_path', 'logs')";
 		$sql[] = "ALTER TABLE " . $table_prefix . "search_results MODIFY COLUMN search_array MEDIUMTEXT NOT NULL";
 
@@ -4591,9 +4579,20 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.12.98 */
 		case '2.0.12.98':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `post_id` MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER `pic_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "images` ADD `attach_id` MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER `post_id`";
+		$sql[] = "DROP TABLE IF EXISTS `" . $table_prefix . "google_bot_detector`";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'google_bot_detector'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_savepath'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_additional_urls'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_compress'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_compression_level'";
 
 		/* Updating from IP 2.0.13.99 */
-		case '2.0.12.98':
+		case '2.0.13.99':
+
+		/* Updating from IP 2.0.14.100 */
+		case '2.0.14.100':
 
 	}
 

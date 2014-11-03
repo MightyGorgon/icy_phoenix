@@ -265,9 +265,7 @@ if (!($attachment = $db->sql_fetchrow($result)))
 {
 	message_die(GENERAL_MESSAGE, $lang['Error_no_attachment']);
 }
-
-$attachment['physical_filename'] = basename($attachment['physical_filename']);
-
+$attachment['physical_filename'] = get_physical_filename($attachment['physical_filename'], false);
 $db->sql_freeresult($result);
 
 // get forum_id for attachment authorization or private message authorization
@@ -340,31 +338,14 @@ $download_mode = intval($download_mode[$attachment['extension']]);
 
 if ($thumbnail)
 {
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_admin.' . PHP_EXT);
-	include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_thumbs.' . PHP_EXT);
-	$thumbnail_path = THUMB_DIR . '/t_' . $attachment['physical_filename'];
-	if (!thumbnail_exists(basename($thumbnail_path)))
+	$thumb_exists = check_thumbnail($attachment, $upload_dir);
+	if (!empty($thumb_exists))
 	{
-		if (!intval($config['allow_ftp_upload']))
-		{
-			$source = $upload_dir . '/' . basename($attachment['physical_filename']);
-			$dest_file = @amod_realpath($upload_dir);
-			$dest_file .= '/' . $thumbnail_path;
-		}
-		else
-		{
-			$source = $attachment['physical_filename'];
-			$dest_file = $thumbnail_path;
-		}
-
-		if (!create_thumbnail($source, $dest_file, $attachment['mimetype']))
-		{
-			$thumbnail = 0;
-		}
-		else
-		{
-			$attachment['physical_filename'] = $thumbnail_path;
-		}
+		$attachment['physical_filename'] = get_physical_filename($attachment['physical_filename'], true);
+	}
+	else
+	{
+		$thumbnail = 0;
 	}
 }
 

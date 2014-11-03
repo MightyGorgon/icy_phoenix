@@ -1,7 +1,7 @@
 <!-- INCLUDE ../common/lofi/lofi_header.tpl -->
 
 <div class="index">
-	<form action="{S_GROUPCP_ACTION}" method="post">
+	<form action="{S_GROUPCP_ACTION}" name="group_info" method="post">
 		<table class="s2px p2px">
 		<tr><td class="nav"><a href="{U_INDEX}" class="nav">{L_INDEX}</a></td></tr>
 		</table>

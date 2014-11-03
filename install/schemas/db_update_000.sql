@@ -358,7 +358,6 @@ CREATE TABLE phpbb_ajax_shoutbox (
 ##              BUILD 004             ##
 ########################################
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('xmas_gfx', '0');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('google_bot_detector', '0');
 
 
 ########################################

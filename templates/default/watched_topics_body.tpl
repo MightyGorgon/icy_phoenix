@@ -1,27 +1,5 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-// <![CDATA[
-function setCheckboxes(theForm, elementName, isChecked)
-{
-	var chkboxes = document.forms[theForm].elements[elementName];
-	var count = chkboxes.length;
-
-	if (count)
-	{
-		for (var i = 0; i < count; i++)
-		{
-			chkboxes[i].checked = isChecked;
-		}
-	}
-	else
-	{
-		chkboxes.checked = isChecked;
-	}
-	return true;
-}
-// ]]>
-</script>
 <form name="unwatch_form" id="unwatch_form" method="post" action="{S_FORM_ACTION}">
 <!-- INCLUDE profile_cpl_menu_inc_start.tpl -->
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_WATCHED_TOPICS}</span>{IMG_THR}<table class="forumlinenb">

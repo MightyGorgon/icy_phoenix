@@ -152,7 +152,7 @@ if(!empty($perform))
 					<script type=\"text/javascript\">
 					// I have copied and modified a script of phpMyAdmin.net
 					<!--
-					function setCheckboxes(the_form, do_check)
+					function setCheckboxesDB(the_form, do_check)
 					{
 						var elts = (typeof(document.forms[the_form].elements['selected_tbl[]']) != 'undefined')
 						? document.forms[the_form].elements['selected_tbl[]']
@@ -190,7 +190,7 @@ if(!empty($perform))
 					$select_script = "
 					<script type=\"text/javascript\">
 					<!--
-					function setCheckboxes(the_form, do_check)
+					function setCheckboxesDB(the_form, do_check)
 					{
 
 					}

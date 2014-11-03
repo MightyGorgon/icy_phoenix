@@ -59,41 +59,10 @@ if(isset($_FILES['userfile']))
 
 	$server_path = create_server_url();
 
-	if ($user->data['user_id'] < 0)
-	{
-		$filename = 'guest_' . preg_replace('/[^a-z0-9]+/', '_', $filename);
-	}
-	else
-	{
-		$filename = preg_replace('/[^a-z0-9]+/', '_', $filename);
-		if (USERS_SUBFOLDERS_IMG == true)
-		{
-			if (is_dir($upload_dir . $user->data['user_id']))
-			{
-				$upload_dir = $upload_dir . $user->data['user_id'] . '/';
-			}
-			else
-			{
-				$dir_creation = @mkdir($upload_dir . $user->data['user_id'], 0777);
-				if ($dir_creation == true)
-				{
-					$upload_dir = $upload_dir . $user->data['user_id'] . '/';
-				}
-				else
-				{
-					$filename = 'user_' . $user->data['user_id'] . '_' . $filename;
-				}
-			}
-		}
-		else
-		{
-			$filename = 'user_' . $user->data['user_id'] . '_' . $filename;
-		}
-	}
-	while(file_exists($upload_dir . $filename . '.' . $extension))
-	{
-		$filename = $filename . '_' . time() . '_' . mt_rand(100000, 999999);
-	}
+	$image_upload_data = $class_images->get_image_upload_data($filename, $extension, $upload_dir);
+	$upload_dir = $image_upload_data['upload_dir'];
+	$filename = $image_upload_data['filename'];
+
 	$filename_tmp = $_FILES['userfile']['tmp_name'];
 	$file_size = $_FILES['userfile']['size'];
 
@@ -113,16 +82,9 @@ if(isset($_FILES['userfile']))
 		exit;
 	}
 
-	if(is_uploaded_file($filename_tmp))
+	$upload_result = $class_images->upload_image($filename, $extension, $upload_dir, $filename_tmp);
+	if (empty($upload_result))
 	{
-		@move_uploaded_file($filename_tmp, $upload_dir . $filename . '.' . $extension);
-		@chmod($upload_dir . $filename . '.' . $extension, 0777);
-	}
-
-	$pic_size = @getimagesize($upload_dir . $filename . '.' . $extension);
-	if($pic_size == false)
-	{
-		@unlink($upload_dir . $filename . '.' . $extension);
 		// Extension not allowed
 		//echo('3');
 		echo('3|' . $filename . '.' . $extension . '|0|0|0');
@@ -141,7 +103,7 @@ if(isset($_FILES['userfile']))
 	);
 	$image_submit = $class_images->submit_image($image_data, 'insert');
 	//echo('1');
-	echo('1|' . $filename . '.' . $extension . '|' . (int) $filesize . '|' . (int) $pic_size[0] . '|' . (int) $pic_size[1]);
+	echo('1|' . $filename . '.' . $extension . '|' . (int) $filesize . '|' . (int) $upload_result[0] . '|' . (int) $upload_result[1]);
 	//echo($filename . '.' . $extension);
 	exit;
 }

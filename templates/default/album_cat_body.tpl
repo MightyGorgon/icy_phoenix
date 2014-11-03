@@ -60,11 +60,7 @@
 <tr>
 	<!-- BEGIN piccol -->
 	<td class="row1g row-center" width="{S_COL_WIDTH}">
-		<center>
-		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{index_pics_block.picrow.piccol.U_PIC_DL}"{index_pics_block.picrow.piccol.PIC_PREVIEW_HS}><img class="vs10px" src="{index_pics_block.picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{index_pics_block.picrow.piccol.PIC_TITLE}" title="{index_pics_block.picrow.piccol.PIC_TITLE}" border="0" /></a>
-		</div></div></td></tr></table>
-		</center>
+		<a href="{index_pics_block.picrow.piccol.U_PIC_DL}"{index_pics_block.picrow.piccol.PIC_PREVIEW_HS}><img class="picframe" src="{index_pics_block.picrow.piccol.THUMBNAIL}" {THUMB_SIZE} alt="{index_pics_block.picrow.piccol.PIC_TITLE}" title="{index_pics_block.picrow.piccol.PIC_TITLE}" /></a>
 		<!-- IF index_pics_block.picrow.piccol.APPROVAL --><br /><span class="genmed">{index_pics_block.picrow.piccol.APPROVAL}</span><!-- ENDIF -->
 	</td>
 	<!-- END piccol -->
@@ -134,9 +130,7 @@
 <!-- BEGIN comment_row -->
 <tr>
 	<td class="row1 row-center tvalignm">
-		<center><table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{recent_comments_block.comment_row.U_PIC_DL}"{recent_comments_block.comment_row.PIC_PREVIEW_HS}><img class="vs10px" src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" border="0" /></a>
-		</div></div></td></tr></table></center>
+		<a href="{recent_comments_block.comment_row.U_PIC_DL}"{recent_comments_block.comment_row.PIC_PREVIEW_HS}><img class="picframe" src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" /></a>
 	</td>
 	<td class="row1 tdnw">
 		<div style="text-align: right; float: right;"><span class="gensmall"><b>{L_PIC_TITLE}</b>: <a href="{recent_comments_block.comment_row.U_PIC_SP}">{recent_comments_block.comment_row.PIC_TITLE}</a></span></div>
@@ -160,11 +154,7 @@
 <tr>
 <!-- BEGIN recent_col -->
 <td class="row1g row-center" width="{S_COL_WIDTH}">
-	<center>
-	<table><tr><td><div class="picshadow"><div class="picframe">
-		<a href="{recent_pics_block.recent_pics.recent_col.U_PIC_DL}"{recent_pics_block.recent_pics.recent_col.PIC_PREVIEW_HS}><img class="vs10px" src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" border="0" /></a>
-	</div></div></td></tr></table>
-	</center>
+	<a href="{recent_pics_block.recent_pics.recent_col.U_PIC_DL}"{recent_pics_block.recent_pics.recent_col.PIC_PREVIEW_HS}><img class="picframe" src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" /></a>
 </td>
 <!-- END recent_col -->
 </tr>
@@ -205,11 +195,7 @@
 <tr>
 <!-- BEGIN mostviewed_col -->
 <td class="row1g row-center" width="{S_COL_WIDTH}">
-	<center>
-	<table><tr><td><div class="picshadow"><div class="picframe">
-		<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC_DL}"{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW_HS}><img class="vs10px" src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" border="0" /></a>
-	</div></div></td></tr></table>
-	</center>
+	<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC_DL}"{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW_HS}><img class="picframe" src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" /></a>
 </td>
 <!-- END mostviewed_col -->
 </tr>

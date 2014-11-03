@@ -1,13 +1,3 @@
-<script type="text/javascript">
-function select_switch(status)
-{
-	for( i = 0; i < document.users.length; i++ )
-	{
-		document.users.elements[i].checked = status;
-	}
-}
-</script>
-
 <h1>{L_ACCOUNT_ACTIONS}</h1>
 <p>{L_ACCOUNT_ACTIONS_EXPLAIN}</p>
 
@@ -56,7 +46,7 @@ function select_switch(status)
 	<td class="{admin_account.ROW_CLASS}"><span class="genmed">{admin_account.EMAIL}</span></td>
 	<td class="{admin_account.ROW_CLASS} row-center"><span class="genmed">{admin_account.POSTS} / {admin_account.PICS}</span></td>
 	<td class="{admin_account.ROW_CLASS}" nowrap="nowrap"><span class="gensmall"><b>{admin_account.PERIOD}</b></span>&nbsp;&nbsp;&nbsp;<span class="genmed">{admin_account.JOINED}</span>&nbsp;</td>
-	<td class="{admin_account.ROW_CLASS} row-center"><input type="checkbox" name="mark[]2" value="{admin_account.S_MARK_ID}" /></td>
+	<td class="{admin_account.ROW_CLASS} row-center"><input type="checkbox" name="mark[]" value="{admin_account.S_MARK_ID}" /></td>
 </tr>
 <!-- END admin_account -->
 <!-- BEGIN switch_no_users -->
@@ -75,7 +65,7 @@ function select_switch(status)
 <tr>
 	<td valign="middle" align="left" width="100%"><span class="gensmall">{PAGE_NUMBER}</span></td>
 	<td class="tdalignr tdnw">
-		<b><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></b><br />
+		<span class="gensmall"><a href="#" onclick="setCheckboxes('users', 'mark[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes('users', 'mark[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a></span><br class="mb5" />
 		<span class="pagination">{PAGINATION}</span><br />
 	</td>
 </tr>

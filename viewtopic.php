@@ -2258,9 +2258,12 @@ for($i = 0; $i < $total_posts; $i++)
 
 	// ALL SOCIAL ICONS - BEGIN
 	$sn_im_tpl_array = array();
-	foreach ($all_ims as $k => $v)
+	if (!empty($all_ims))
 	{
-		$sn_im_tpl_array['IMG_SOCIAL_' . strtoupper($k)] = $v['img'];
+		foreach ($all_ims as $k => $v)
+		{
+			$sn_im_tpl_array['IMG_SOCIAL_' . strtoupper($k)] = $v['img'];
+		}
 	}
 	// ALL SOCIAL ICONS - END
 
@@ -2269,6 +2272,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'FEEDBACK' => $feedback_received . $feedback_add,
 		// Mighty Gorgon - Feedback - END
 		'ROW_CLASS' => $row_class,
+		'POSTER_ID' => ($poster_id != ANONYMOUS) ? $poster_id : false,
 		'POSTER_NAME' => $poster,
 		'POSTER_FULL_NAME' => $poster_full_name,
 		'POSTER_NAME_QQ' => $poster_qq,
@@ -2336,6 +2340,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'ALBUM' => $album,
 		'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
 
+		'S_THIS_POSTER_MASK' => !empty($this_poster_mask) ? true : false,
 		'S_OWN_POST' => ($user->data['user_id'] == $poster_id) ? true : false,
 		'S_POST_EDIT' => $edit_switch,
 		'S_POST_DELETE' => $delpost_switch,

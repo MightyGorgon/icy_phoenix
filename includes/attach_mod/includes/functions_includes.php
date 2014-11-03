@@ -100,7 +100,7 @@ function physical_filename_already_stored($filename)
 		return false;
 	}
 
-	$filename = basename($filename);
+	$filename = get_physical_filename($filename, false);
 
 	$sql = 'SELECT attach_id
 		FROM ' . ATTACHMENTS_DESC_TABLE . "

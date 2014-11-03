@@ -8,11 +8,7 @@
 	<tr>
 		<!-- BEGIN piccol -->
 		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
-			<center>
-			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{personal_picrow.piccol.U_PIC_DL}"{personal_picrow.piccol.PIC_PREVIEW_HS}><img class="vs10px" src="{personal_picrow.piccol.THUMBNAIL}" alt="{personal_picrow.piccol.PIC_TITLE}" title="{personal_picrow.piccol.PIC_TITLE}" border="0" /></a>
-			</div></div></td></tr></table>
-			</center>
+			<a href="{personal_picrow.piccol.U_PIC_DL}"{personal_picrow.piccol.PIC_PREVIEW_HS}><img class="picframe" src="{personal_picrow.piccol.THUMBNAIL}" alt="{personal_picrow.piccol.PIC_TITLE}" title="{personal_picrow.piccol.PIC_TITLE}" /></a>
 		</td>
 		<!-- END piccol -->
 	</tr>
@@ -46,11 +42,7 @@
 	<!-- BEGIN comment_row -->
 	<tr>
 		<td class="row1 row-center tvalignm">
-			<center>
-			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{recent_comments_block.comment_row.U_PIC_DL}"{recent_comments_block.comment_row.PIC_PREVIEW_HS}><img class="vs10px" src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" border="0" /></a>
-			</div></div></td></tr></table>
-			</center>
+			<a href="{recent_comments_block.comment_row.U_PIC_DL}"{recent_comments_block.comment_row.PIC_PREVIEW_HS}><img class="picframe" src="{recent_comments_block.comment_row.THUMBNAIL}" {THUMB_SIZE} alt="{recent_comments_block.comment_row.PIC_TITLE}" title="{recent_comments_block.comment_row.PIC_TITLE}" /></a>
 		</td>
 		<td class="row1 tdnw">
 			<div style="text-align: right; float: right;"><span class="gensmall"><b>{L_PIC_TITLE}</b>: <a href="{recent_comments_block.comment_row.U_PIC_SP}">{recent_comments_block.comment_row.PIC_TITLE}</a></span></div>
@@ -73,11 +65,7 @@
 	<tr>
 		<!-- BEGIN recent_col -->
 		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
-			<center>
-			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{recent_pics_block.recent_pics.recent_col.U_PIC_DL}"{recent_pics_block.recent_pics.recent_col.PIC_PREVIEW_HS}><img class="vs10px" src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" border="0" /></a>
-			</div></div></td></tr></table>
-			</center>
+			<a href="{recent_pics_block.recent_pics.recent_col.U_PIC_DL}"{recent_pics_block.recent_pics.recent_col.PIC_PREVIEW_HS}><img class="picframe" src="{recent_pics_block.recent_pics.recent_col.THUMBNAIL}" {THUMB_SIZE} alt="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" title="{recent_pics_block.recent_pics.recent_col.PIC_TITLE}" /></a>
 		</td>
 		<!-- END recent_col -->
 	</tr>
@@ -112,11 +100,7 @@
 	<tr>
 		<!-- BEGIN highest_col -->
 		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
-			<center>
-			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{highest_pics_block.highest_pics.highest_col.U_PIC_DL}"{highest_pics_block.highest_pics.highest_col.PIC_PREVIEW_HS}><img class="vs10px" src="{highest_pics_block.highest_pics.highest_col.THUMBNAIL}" {THUMB_SIZE} alt="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" title="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" border="0" /></a>
-			</div></div></td></tr></table>
-			</center>
+			<a href="{highest_pics_block.highest_pics.highest_col.U_PIC_DL}"{highest_pics_block.highest_pics.highest_col.PIC_PREVIEW_HS}><img class="picframe" src="{highest_pics_block.highest_pics.highest_col.THUMBNAIL}" {THUMB_SIZE} alt="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" title="{highest_pics_block.highest_pics.highest_col.PIC_TITLE}" /></a>
 		</td>
 		<!-- END highest_col -->
 	</tr>
@@ -151,11 +135,7 @@
 	<tr>
 	<!-- BEGIN mostviewed_col -->
 		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
-			<center>
-			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC_DL}"{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW_HS}><img class="vs10px" src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" border="0" /></a>
-			</div></div></td></tr></table>
-			</center>
+			<a href="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.U_PIC_DL}"{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_PREVIEW_HS}><img class="picframe" src="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.THUMBNAIL}" {THUMB_SIZE} alt="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" title="{mostviewed_pics_block.mostviewed_pics.mostviewed_col.PIC_TITLE}" /></a>
 		</td>
 	<!-- END mostviewed_col -->
 	</tr>
@@ -190,11 +170,7 @@
 	<tr>
 		<!-- BEGIN rand_col -->
 		<td class="row1g row-center" style="min-width: {S_COL_WIDTH}px;">
-			<center>
-			<table><tr><td><div class="picshadow"><div class="picframe">
-				<a href="{random_pics_block.rand_pics.rand_col.U_PIC_DL}"{random_pics_block.rand_pics.rand_col.PIC_PREVIEW_HS}><img class="vs10px" src="{random_pics_block.rand_pics.rand_col.THUMBNAIL}" {THUMB_SIZE} alt="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" title="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" border="0" /></a>
-			</div></div></td></tr></table>
-			</center>
+			<a href="{random_pics_block.rand_pics.rand_col.U_PIC_DL}"{random_pics_block.rand_pics.rand_col.PIC_PREVIEW_HS}><img class="picframe" src="{random_pics_block.rand_pics.rand_col.THUMBNAIL}" {THUMB_SIZE} alt="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" title="{random_pics_block.rand_pics.rand_col.PIC_TITLE}" /></a>
 		</td>
 		<!-- END rand_col -->
 	</tr>

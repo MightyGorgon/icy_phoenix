@@ -409,6 +409,8 @@ function user_profile_mask(&$user_data)
 
 	$user_data['user_id'] = ANONYMOUS;
 	$user_data['username'] = $lang['INACTIVE_USER'];
+	$user_data['user_first_name'] = '';
+	$user_data['user_last_name'] = '';
 	$user_data['post_username'] = $user_data['username'];
 	$user_data['user_color'] = '';
 	$user_data['user_level'] = USER;

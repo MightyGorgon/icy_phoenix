@@ -424,18 +424,16 @@ elseif ($mode == 'get_more_images')
 		{
 			$pics_parsed++;
 			// We are checking for small thumbnails... added an underscore to distinguish those small thumbs respect to mid sized!
-			$pic_img_sub_path = (USERS_SUBFOLDERS_IMG && (!empty($image_data['pic_user_id'])) ? ($image_data['pic_user_id'] . '/') : '') . $image_data['pic_filename'];
-			$pic_img_url = POSTED_IMAGES_PATH . $pic_img_sub_path;
-			$pic_thumbnail_fullpath = POSTED_IMAGES_THUMBS_S_PATH . $pic_img_sub_path;
-			$pic_img_thumb = (@file_exists($pic_thumbnail_fullpath) ? $pic_thumbnail_fullpath : append_sid(CMS_PAGE_IMAGE_THUMBNAIL . '?pic_id=' . urlencode($pic_img_sub_path)));
+			$image_paths = $class_images->generate_image_paths($image_data);
+			$image_data['pic_title'] = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
 			$pic_title = ((strlen($image_data['pic_title']) > 25) ? (substr($image_data['pic_title'], 0, 22) . '...') : $image_data['pic_title']);
 
 			$result_ar[] = array(
 				'id' => $image_data['pic_id'],
 				'value' => $pic_title,
 				'name' => $image_data['pic_filename'],
-				'thumb' => $pic_img_thumb,
-				'url' => $pic_img_url
+				'thumb' => $image_paths['thumb'],
+				'url' => $image_paths['url']
 			);
 		}
 	}

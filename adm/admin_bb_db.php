@@ -430,15 +430,6 @@ echo '</table>';
 
 if ((!$mode) && (!$mass_change))
 	{
-echo '<script type="text/javascript">';
-echo 'function select_switch(status)';
-echo '	{';
-echo '	for (i = 0; i < document.mass.length; i++)';
-echo '		{';
-echo '	document.mass.elements[i].checked = status;';
-echo '		}';
-echo '	}';
-echo '</script>';
 echo '<form name="mass" action="'. $_SERVER['SCRIPT_NAME'] .'?sid='. $user->data['session_id'] .'" method="post">';
 echo '<table class="forumline">';
 echo '	<tr>';
@@ -609,7 +600,7 @@ echo '<table class="forumline">';
 echo '	<tr>';
 echo '		<td class="row2" colspan="4">';
 echo '			<span class="genmed">';
-echo '				'. $lang['db_with_sel'] .'&nbsp;&nbsp;<a href="javascript:select_switch(true);" class="gensmall">Check All</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">Un-Check All</a>';
+echo '				'. $lang['db_with_sel'] .'&nbsp;&nbsp;<a href="#" onclick="setCheckboxes(\'mass\', \'selected_tables[]\', true); return false;" class="gensmall">' . $lang['MARK_ALL'] . '</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes(\'mass\', \'selected_tables[]\', false); return false;" class="gensmall">' . $lang['UNMARK_ALL'] . '</a>';
 echo '			</span>';
 echo '		</td>';
 echo '	</tr>';

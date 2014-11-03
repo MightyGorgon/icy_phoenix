@@ -305,7 +305,6 @@ $lang = array_merge($lang, array(
 	'Topic_global_announcement' => '<b>Global Announcement:</b>',
 	'Post_global_announcement' => 'Global Announcement',
 
-
 	'Mark_all_topics' => 'Mark all topics read',
 	'Topics_marked_read' => 'The topics for this forum have now been marked read',
 
@@ -551,8 +550,8 @@ $lang = array_merge($lang, array(
 	'No_such_folder' => 'No such folder exists',
 	'No_folder' => 'No folder specified',
 
-	'Mark_all' => 'Mark all',
-	'Unmark_all' => 'Unmark all',
+	'MARK_ALL' => 'Mark all',
+	'UNMARK_ALL' => 'Unmark all',
 
 	'Confirm_delete_pm' => 'Are you sure you want to delete this message?',
 	'Confirm_delete_pms' => 'Are you sure you want to delete these messages?',
@@ -964,6 +963,7 @@ $lang = array_merge($lang, array(
 	'Users_this_IP' => 'Users posting from this IP address',
 	'IP_info' => 'IP Information',
 	'Lookup_IP' => 'Look up IP address',
+	'WHOIS_IP' => 'WHOIS',
 
 // Errors (not related to a specific failure on a page)
 	'Information' => 'Information',

@@ -160,8 +160,6 @@ $template->assign_vars(array(
 	'L_LAST' => $lang['REFERER_LAST'],
 	'L_DELETE' => $lang['REFERER_DELETE'],
 	'L_SELECT' => $lang['Select'],
-	'L_MARK_ALL' => $lang['Mark_all'],
-	'L_UNMARK_ALL'=> $lang['Unmark_all'],
 	'S_SMART_DELETE_SELECT' => $smart_delete_select_box,
 	'S_GROUP_BY_SELECT' => $group_by_select_box,
 	'S_MODE_SELECT' => $sort_order_select_box,

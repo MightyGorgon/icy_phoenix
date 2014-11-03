@@ -23,14 +23,12 @@
 	<p><a href="{listrow.U_READ}">{listrow.SUBJECT}</a></p>
 	<p>
 		{listrow.FROM} | {listrow.DATE}
-		<label><input type="checkbox" name="mark[]2" value="{listrow.S_MARK_ID}" /></label>
+		<label><input type="checkbox" name="mark[]" value="{listrow.S_MARK_ID}" /></label>
 	</p>
 </div>
 <!-- END listrow -->
 <!-- BEGIN switch_no_messages -->
-<div class="block">
-	{L_NO_MESSAGES}
-</div>
+<div class="block">{L_NO_MESSAGES}</div>
 <!-- END switch_no_messages -->
 <div class="block">
 		{S_HIDDEN_FIELDS}

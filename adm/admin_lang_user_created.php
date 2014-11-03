@@ -158,7 +158,7 @@ if ($mode == 'key')
 		// check values
 		$error = false;
 		$error_msg = false;
-		$dft_country = 'lang_' . $config['default_language'];
+		$dft_country = 'lang_' . $config['default_lang'];
 		@reset($countries);
 		while (list($country_dir, $country_name) = @each($countries))
 		{
@@ -635,7 +635,7 @@ if ($mode == '')
 	$search_words = isset($_POST['search_words']) ? str_replace("\'", "'", urldecode($_POST['search_words'])) : '';
 	$search_logic = isset($_POST['search_logic']) ? intval($_POST['search_logic']) : 0;
 	$search_in = isset($_POST['search_in']) ? intval($_POST['search_in']) : 2;
-	$search_country = isset($_POST['search_language']) ? str_replace("\'", "'", urldecode($_POST['search_language'])) : 'lang_' . $config['default_language'];
+	$search_country = isset($_POST['search_language']) ? str_replace("\'", "'", urldecode($_POST['search_language'])) : 'lang_' . $config['default_lang'];
 	$search_admin = isset($_POST['search_admin']) ? intval($_POST['search_admin']) : 2;
 
 	// template

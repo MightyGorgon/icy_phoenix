@@ -72,7 +72,7 @@
 
 <tr>
 	<td class="row3 row-center" colspan="6">
-		<a href="#" onclick="setCheckboxes('tablesForm', true); return false;">{L_CHECKALL}</a>&nbsp;/&nbsp;<a href="#" onclick="setCheckboxes('tablesForm', false); return false;">{L_UNCHECKALL}</a>&nbsp;/&nbsp;<a href="#" onclick="setCheckboxes('tablesForm', 'invert'); return false;">{L_INVERTCHECKED}</a>
+		<a href="#" onclick="setCheckboxesDB('tablesForm', true); return false;">{L_CHECKALL}</a>&nbsp;/&nbsp;<a href="#" onclick="setCheckboxesDB('tablesForm', false); return false;">{L_UNCHECKALL}</a>&nbsp;/&nbsp;<a href="#" onclick="setCheckboxesDB('tablesForm', 'invert'); return false;">{L_INVERTCHECKED}</a>
 	</td>
 </tr>
 

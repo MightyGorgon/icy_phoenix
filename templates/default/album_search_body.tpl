@@ -14,11 +14,7 @@
 <!-- BEGIN search_results -->
 <tr>
 	<td class="row1h row-center tvalignm">
-		<center>
-		<div class="picshadow"><div class="picframe">
-		<a href="{switch_search_results.search_results.U_PIC_DL}"{switch_search_results.search_results.PIC_PREVIEW_HS}><img src="{switch_search_results.search_results.THUMBNAIL}" {THUMB_SIZE} alt="{switch_search_results.search_results.PIC_TITLE}" border="0" /></a>
-		</div></div>
-		</center>
+		<a href="{switch_search_results.search_results.U_PIC_DL}"{switch_search_results.search_results.PIC_PREVIEW_HS}><img class="picframe" src="{switch_search_results.search_results.THUMBNAIL}" {THUMB_SIZE} alt="{switch_search_results.search_results.PIC_TITLE}" /></a>
 	</td>
 	<td class="row1h row-forum" data-href="{switch_search_results.search_results.U_PIC_CAT}"><a href="{switch_search_results.search_results.U_PIC_CAT}" class="genmed"><b>{switch_search_results.search_results.CATEGORY}</b></a></td>
 	<td class="row1"><a href="{switch_search_results.search_results.U_PIC_SP}" class="genmed">{switch_search_results.search_results.PIC_TITLE}</a></td>

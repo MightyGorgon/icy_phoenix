@@ -26,6 +26,9 @@ $user->setup();
 include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
 require(IP_ROOT_PATH . 'includes/class_image.' . PHP_EXT);
 
+include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
+$class_images = new class_images();
+
 // ------------------------------------
 // Check the request
 // ------------------------------------
@@ -58,21 +61,11 @@ $pic_title_reg = preg_replace('/[^A-Za-z0-9]+/', '_', $pic_title);
 
 if (USERS_SUBFOLDERS_IMG == true)
 {
+	$pic_thumbnail_prefix = '';
 	$pic_thumbnail_path = POSTED_IMAGES_THUMBS_S_PATH . $pic_user_id . '/';
-	if (is_dir($pic_thumbnail_path))
-	{
-		$pic_thumbnail = $pic_filename;
-		$pic_thumbnail_fullpath = $pic_thumbnail_path . '/' . $pic_thumbnail;
-	}
-	else
-	{
-		$dir_creation = @mkdir($pic_thumbnail_path, 0777);
-		if ($dir_creation == true)
-		{
-			$pic_thumbnail = $pic_filename;
-			$pic_thumbnail_fullpath = $pic_thumbnail_path . '/' . $pic_thumbnail;
-		}
-	}
+	$thumbnail_data = $class_images->get_thumbnail_data($pic_thumbnail_path, $pic_thumbnail, $pic_thumbnail_fullpath, $pic_filename, $pic_thumbnail_prefix);
+	$pic_thumbnail = $thumbnail_data['thumbnail'];
+	$pic_thumbnail_fullpath = $thumbnail_data['full_path'];
 }
 
 if (!in_array($pic_filetype, array('gif', 'jpg', 'jpeg', 'png')))

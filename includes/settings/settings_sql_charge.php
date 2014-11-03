@@ -87,13 +87,6 @@ $settings_data = array(
 		'values' => $this->list_yes_no,
 	),
 
-	'google_bot_detector' => array(
-		'lang_key' => 'IP_google_bot_detector',
-		'type' => 'LIST_RADIO',
-		'default' => 0,
-		'values' => $this->list_yes_no,
-	),
-
 	'gsearch_guests' => array(
 		'lang_key' => 'IP_gsearch_guests',
 		'type' => 'LIST_RADIO',

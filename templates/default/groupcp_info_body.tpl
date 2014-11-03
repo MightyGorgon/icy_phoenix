@@ -43,7 +43,7 @@
 {S_HIDDEN_FIELDS}
 </form>
 
-<form action="{S_GROUPCP_ACTION}" method="post">
+<form action="{S_GROUPCP_ACTION}" name="group_info" method="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_GROUP_MODERATOR}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
 	<th>{L_USERNAME}</th>
@@ -130,7 +130,10 @@
 		<!-- END switch_mod_option -->
 		{PAGE_NUMBER}
 	</td>
-	<td class="tdalignr"><span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span></td>
+	<td class="tdalignr">
+		<a href="#" onclick="setCheckboxes('group_info', 'members[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes('group_info', 'members[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a><br class="mb5" />
+		<span class="gensmall">{S_TIMEZONE}</span><br /><span class="pagination">{PAGINATION}</span>
+	</td>
 </tr>
 </table>
 

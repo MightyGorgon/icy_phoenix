@@ -795,8 +795,10 @@ function display_attachments($post_id, $type = 'postrow')
 	for ($i = 0; $i < $num_attachments; $i++)
 	{
 		// Some basic things...
-		$filename = $upload_dir . '/' . basename($attachments['_' . $post_id][$i]['physical_filename']);
-		$thumbnail_filename = $upload_dir . '/' . THUMB_DIR . '/t_' . basename($attachments['_' . $post_id][$i]['physical_filename']);
+		$physical_filename = get_physical_filename($attachments['_' . $post_id][$i]['physical_filename'], false);
+		$physical_filename_thumb = get_physical_filename($attachments['_' . $post_id][$i]['physical_filename'], true);
+		$filename = $upload_dir . '/' . $physical_filename;
+		$thumbnail_filename = $upload_dir . '/' . $physical_filename_thumb;
 
 		$upload_image = '';
 

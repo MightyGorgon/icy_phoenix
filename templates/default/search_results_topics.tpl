@@ -1,16 +1,5 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-// <![CDATA[
-function select_switch(status)
-{
-	for (i = 0; i < document.post.length; i++)
-	{
-		document.post.elements[i].checked = status;
-	}
-}
-// ]]>
-</script>
 <form action="{S_POST_ACTION}" method="post" name="post">
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_SEARCH_MATCHES}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
@@ -76,7 +65,11 @@ function select_switch(status)
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
 <!-- BEGIN switch_upi2db_on -->
 <table>
-<tr><td class="tdalignr tvalignm"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;|&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></td></tr>
+<tr>
+	<td class="tdalignr tvalignm">
+		<a href="#" onclick="setCheckboxes('post', 'mar_topic_id[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes('post', 'mar_topic_id[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a><br class="mb5" />
+	</td>
+</tr>
 </table>
 <!-- END switch_upi2db_on -->
 </form>

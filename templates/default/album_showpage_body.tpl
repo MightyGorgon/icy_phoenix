@@ -168,11 +168,7 @@ function checkFormRate()
 <tr>
 	<!-- BEGIN pics -->
 	<td class="row1g row-center tw20pct">
-		<center>
-		<table><tr><td><div class="picshadow"><div class="picframe">
-			<a href="{pics_nav.pics.U_PIC_LINK}"><img class="vs10px" src="{pics_nav.pics.U_PIC_THUMB}" {THUMB_SIZE} alt="{pics_nav.pics.PIC_TITLE}" title="{pics_nav.pics.PIC_TITLE}" style="{pics_nav.pics.STYLE}" /></a>
-		</div></div></td></tr></table>
-		</center>
+		<a href="{pics_nav.pics.U_PIC_LINK}"><img class="picframe" src="{pics_nav.pics.U_PIC_THUMB}" {THUMB_SIZE} alt="{pics_nav.pics.PIC_TITLE}" title="{pics_nav.pics.PIC_TITLE}" style="{pics_nav.pics.STYLE}" /></a>
 	</td>
 	<!-- END pics -->
 </tr>

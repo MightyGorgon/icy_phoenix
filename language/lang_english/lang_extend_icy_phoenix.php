@@ -145,8 +145,6 @@ if ($lang_extend_admin)
 		'IP_show_forums_online_users' => 'Show Users Online In Forums',
 		'IP_show_forums_online_users_explain' => 'This will enable online users counter for each forum on the index.',
 
-		'IP_google_bot_detector' => 'Enable GoogleBot Detector',
-
 		'IP_gsearch_guests' => 'Force Google Search for guests',
 
 		'IP_visit_counter_switch' => 'Enable Visit Counter',

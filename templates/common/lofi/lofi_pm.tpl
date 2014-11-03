@@ -1,17 +1,5 @@
 <!-- INCLUDE ../common/lofi/lofi_header.tpl -->
 
-<script type="text/javascript">
-	//
-	// Should really check the browser to stop this whining ...
-	//
-	function select_switch(status)
-	{
-		for (i = 0; i < document.privmsg_list.length; i++)
-		{
-			document.privmsg_list.elements[i].checked = status;
-		}
-	}
-</script>
 <div class="index">
 	<table border="0" cellspacing="0" cellpadding="0" align="center" width="100%">
 	<tr>
@@ -80,7 +68,7 @@
 			<td width="20%" valign="middle" align="center" class="{listrow.ROW_CLASS}"><span class="name">&nbsp;<a href="{listrow.U_FROM_USER_PROFILE}" class="name">{listrow.FROM}</a></span></td>
 			<td width="15%" align="center" valign="middle" class="{listrow.ROW_CLASS}"><span class="postdetails">{listrow.DATE}</span></td>
 			<td width="5%" align="center" valign="middle" class="{listrow.ROW_CLASS}"><span class="postdetails">
-			<input type="checkbox" name="mark[]2" value="{listrow.S_MARK_ID}" />
+			<input type="checkbox" name="mark[]" value="{listrow.S_MARK_ID}" />
 			</span></td>
 		</tr>
 		<!-- END listrow -->
@@ -101,7 +89,7 @@
 		<tr>
 			<td class="tvalignm tdnw">{POST_PM}<br /></td>
 			<td class="tw100pct tvalignm"><span class="nav"></span></td>
-			<td class="tdalignr tdnw"><b><span class="gensmall"><a href="javascript:select_switch(true);" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="javascript:select_switch(false);" class="gensmall">{L_UNMARK_ALL}</a></span></b><br /><span class="pagination">{PAGINATION}<br /></span><span class="gensmall">{S_TIMEZONE}</span></td>
+			<td class="tdalignr tdnw"><a href="#" onclick="setCheckboxes('privmsg_list', 'mark[]', true); return false;" class="gensmall">{L_MARK_ALL}</a>&nbsp;&bull;&nbsp;<a href="#" onclick="setCheckboxes('privmsg_list', 'mark[]', false); return false;" class="gensmall">{L_UNMARK_ALL}</a><br class="mb5" /><span class="pagination">{PAGINATION}<br /></span><span class="gensmall">{S_TIMEZONE}</span></td>
 		</tr>
 		</table>
 		{PAGE_NUMBER}

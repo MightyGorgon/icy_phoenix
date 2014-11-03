@@ -43,17 +43,17 @@
 {POLL_DISPLAY}
 {REG_DISPLAY}
 <tr>
-	<th class="tw150px">{L_AUTHOR}</th>
-	<th class="tw100pct">{L_MESSAGE}</th>
+	<th class="tw180px">{L_AUTHOR}</th>
+	<th>{L_MESSAGE}</th>
 </tr>
 <!-- BEGIN postrow -->
 <tr>
 	<td class="row-post-author">
 		<span class="post-name">
-			<a id="p{postrow.U_POST_ID}"></a><a href="{postrow.U_USER_ONLINE_STATUS}"><img src="<!-- IF postrow.S_USER_ONLINE -->{postrow.IMG_USER_ONLINE}<!-- ELSEIF postrow.S_USER_HIDDEN -->{postrow.IMG_USER_HIDDEN}<!-- ELSE -->{postrow.IMG_USER_OFFLINE}<!-- ENDIF -->" alt="{postrow.L_POSTER_ONLINE_STATUS}" title="{postrow.L_POSTER_ONLINE_STATUS}" /></a>&nbsp;{postrow.POSTER_NAME}&nbsp;<!-- IF postrow.S_GENDER_MALE --><a href="#"><img src="{postrow.IMG_GENDER_MALE}" alt="{postrow.L_GENDER_MALE}" title="{postrow.L_GENDER_MALE}" /></a><!-- ELSEIF postrow.S_GENDER_FEMALE --><a href="#"><img src="{postrow.IMG_GENDER_FEMALE}" alt="{postrow.L_GENDER_FEMALE}" title="{postrow.L_GENDER_FEMALE}" /></a><!-- ENDIF -->
+			<a id="p{postrow.U_POST_ID}"></a><!-- IF not postrow.S_THIS_POSTER_MASK --><a href="{postrow.U_USER_ONLINE_STATUS}"><img src="<!-- IF postrow.S_USER_ONLINE -->{postrow.IMG_USER_ONLINE}<!-- ELSEIF postrow.S_USER_HIDDEN -->{postrow.IMG_USER_HIDDEN}<!-- ELSE -->{postrow.IMG_USER_OFFLINE}<!-- ENDIF -->" alt="{postrow.L_POSTER_ONLINE_STATUS}" title="{postrow.L_POSTER_ONLINE_STATUS}" /></a><!-- ENDIF -->&nbsp;{postrow.POSTER_NAME}&nbsp;<!-- IF postrow.S_GENDER_MALE and not postrow.S_THIS_POSTER_MASK --><a href="#"><img src="{postrow.IMG_GENDER_MALE}" alt="{postrow.L_GENDER_MALE}" title="{postrow.L_GENDER_MALE}" /></a><!-- ELSEIF postrow.S_GENDER_FEMALE and not postrow.S_THIS_POSTER_MASK --><a href="#"><img src="{postrow.IMG_GENDER_FEMALE}" alt="{postrow.L_GENDER_FEMALE}" title="{postrow.L_GENDER_FEMALE}" /></a><!-- ENDIF -->
 		</span><br />
-		<!-- IF postrow.POSTER_FULL_NAME --><span class="post-details">{postrow.POSTER_FULL_NAME}</span><br /><!-- ENDIF -->
-		<!-- IF not S_BOT -->
+		<!-- IF postrow.POSTER_FULL_NAME and not postrow.S_THIS_POSTER_MASK --><span class="post-details">{postrow.POSTER_FULL_NAME}</span><br /><!-- ENDIF -->
+		<!-- IF not S_BOT and not postrow.S_THIS_POSTER_MASK -->
 		<div class="center-block-text">
 			<div class="post-rank">
 			<b>
@@ -78,14 +78,15 @@
 
 		<!-- ENDIF -->
 		<!-- BEGIN switch_showavatars -->
-		<span class="post-images"><a href="javascript:quotename(%27[b]{postrow.POSTER_NAME_QR}[/b],%27);">{postrow.POSTER_AVATAR}</a></span>
+		<!-- POSTER_NAME_QR has been removed to use the new bbcode USER -->
+		<span class="post-images"><a href="<!-- IF postrow.POSTER_ID and not S_BOT and not postrow.S_THIS_POSTER_MASK -->javascript:quotename(%27[user]{postrow.POSTER_ID}[/user],%27);<!-- ELSE -->#<!-- ENDIF -->">{postrow.POSTER_AVATAR}</a></span>
+		
 		<!-- END switch_showavatars -->
 		<div class="post-details">
+			<!-- IF not postrow.S_THIS_POSTER_MASK -->
 			<!-- IF not S_BOT -->
-			<!-- ENDIF -->
 			<!-- {postrow.POSTER_NO}<br /> -->
 			{postrow.POSTER_JOINED}<br />
-			<!-- IF not S_BOT -->
 			{postrow.POSTER_POSTS}<br />
 			<!-- ENDIF -->
 			{postrow.POSTER_AGE}
@@ -103,6 +104,7 @@
 			{postrow.author_profile.AUTHOR_VAL}<br />
 			<!-- END author_profile -->
 			<div class="center-block-text">&nbsp;{postrow.HAPPY_BIRTHDAY}</div>
+			<!-- ENDIF -->
 		</div>
 		&nbsp;<br />
 	</td>
@@ -142,6 +144,7 @@
 			{postrow.ATTACHMENTS}
 		</div>
 		<div class="align-spacer">&nbsp;</div>
+		<!-- IF not postrow.S_THIS_POSTER_MASK -->
 		<div class="post-text post-text-hide-flow">
 			<br /><br /><br />
 			<!-- BEGIN above_sig -->
@@ -154,6 +157,7 @@
 			<span class="post-details"><br />{postrow.below_sig.BELOW_VAL}</span>
 			<!-- END below_sig -->
 		</div>
+		<!-- ENDIF -->
 		<div class="align-spacer">&nbsp;</div>
 		<!-- IF S_EDIT_NOTES -->
 		<!-- IF postrow.EDITED_MESSAGE -->
@@ -184,13 +188,14 @@
 		<!-- ENDIF -->
 	</td>
 </tr>
-<!-- IF S_POSTS_LIKES -->
+<!-- IF S_POSTS_LIKES and not postrow.S_THIS_POSTER_MASK -->
 <tr><td class="row-post-date tdalignc tvalignm" colspan="2"><span class="gensmall"><span id="like_s_p{postrow.U_POST_ID}"><!-- IF postrow.POST_LIKE_TEXT -->{postrow.POST_LIKE_TEXT}&nbsp;&bull;<!-- ENDIF -->&nbsp;</span><!-- IF S_LOGGED_IN and not postrow.S_OWN_POST --><a href="#" id="like_a_p{postrow.U_POST_ID}" style="text-decoration: none;" onclick="post_like_ajax({postrow.U_TOPIC_ID}, {postrow.U_POST_ID}); return false;"><!-- IF postrow.READER_LIKES -->{L_UNLIKE}<!-- ELSE -->{L_LIKE}<!-- ENDIF --></a>&nbsp;&bull;<!-- ENDIF -->&nbsp;{postrow.SINGLE_POST_SHARE}</span></td></tr>
 <!-- ENDIF -->
 <tr>
 	<td class="row-post-date"><div style="text-align: center;"><b>{postrow.SINGLE_POST}</b>&nbsp;&nbsp;<!-- IF S_ADMIN -->{postrow.POST_EDIT_STRING_SHORT}<!-- ELSE -->{postrow.POST_DATE}<!-- ENDIF --></div></td>
 	<td class="row-post-buttons post-buttons">
 		<div style="text-align: right; vertical-align: middle;">
+			<!-- IF not postrow.S_THIS_POSTER_MASK -->
 			<div class="extra-top-padding" style="position: relative; float: left; text-align: left; vertical-align: middle;">
 				<a href="{postrow.U_VIEW_PROFILE}"><img src="{postrow.IMG_VIEW_PROFILE}" alt="{postrow.POSTER_NAME_QQ}" title="{postrow.POSTER_NAME_QQ}" /></a>
 				<a href="{postrow.U_SEND_PRIVMSG}"><img src="{postrow.IMG_SEND_PRIVMSG}" alt="{postrow.L_SEND_PRIVMSG}" title="{postrow.L_SEND_PRIVMSG}" /></a>
@@ -204,12 +209,13 @@
 				<a href="{postrow.U_USER_ALBUM}"><img src="{postrow.IMG_USER_ALBUM}" alt="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" title="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" /></a>&nbsp;
 				<!-- ENDIF -->
 			</div>
-			<!-- IF not S_BOT -->
+			<!-- IF not S_BOT and not postrow.S_THIS_POSTER_MASK -->
 			<!-- BEGIN switch_quick_quote -->
 			<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27,true,false);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a><a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27,true,false);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
 			<!-- END switch_quick_quote -->
 			<!-- ENDIF -->
 			<a href="{U_BACK_TOP}"><img src="{IMG_ARU}" alt="{L_BACK_TOP}" title="{L_BACK_TOP}" /></a><a href="{U_BACK_BOTTOM}"><img src="{IMG_ARD}" alt="{L_BACK_BOTTOM}" title="{L_BACK_BOTTOM}" /></a>
+			<!-- ENDIF -->
 		</div>
 	</td>
 </tr>

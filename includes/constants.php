@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.0.12.98');
+define('ICYPHOENIX_VERSION', '2.0.13.99');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user can access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -468,7 +468,6 @@ define('FLAG_TABLE', $table_prefix . 'flags');
 define('FORCE_READ_USERS_TABLE', $table_prefix . 'force_read_users');
 define('FORUMS_TABLE', $table_prefix . 'forums');
 define('FORUMS_WATCH_TABLE', $table_prefix . 'forums_watch');
-define('GOOGLE_BOT_DETECTOR_TABLE', $table_prefix . 'google_bot_detector');
 define('GROUPS_TABLE', $table_prefix . 'groups');
 define('HACKS_LIST_TABLE', $table_prefix . 'hacks_list');
 define('JR_ADMIN_TABLE', $table_prefix . 'jr_admin_users');
