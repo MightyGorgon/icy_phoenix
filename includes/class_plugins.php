@@ -54,49 +54,18 @@ class class_plugins
 			@include($plugin_functions_install_file);
 		}
 
-		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
+
+		$sql_results = array();
 		if (!empty($plugin_install_data))
 		{
 			foreach ($plugin_install_data as $version => $instructions)
 			{
-				if (!empty($plugin_install_data[$version]['sql']))
-				{
-					// We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
-					$sql_engine = "SET storage_engine=MYISAM";
-					$db->sql_return_on_error(true);
-					$db->sql_query($sql_engine);
-					$db->sql_return_on_error(false);
-
-					foreach ($plugin_install_data[$version]['sql'] as $sql_statement)
-					{
-						$error = array();
-						$message = '';
-						$db->sql_return_on_error(true);
-						$result = $db->sql_query($sql_statement);
-						if (!$result)
-						{
-							$error = $db->sql_error();
-							$message = $error['message'];
-						}
-						// This has to be here, otherwise we are not able to catch all errors by using $db->sql_error()
-						$db->sql_return_on_error(false);
-						$sql_results[] = array(
-							'sql' => $sql_statement,
-							'message' => htmlspecialchars($message),
-							'success' => empty($message) ? true : false
-						);
-					}
-				}
-
-				if (!empty($plugin_install_data[$version]['functions']))
-				{
-					foreach ($plugin_install_data[$version]['functions'] as $install_function)
-					{
-						eval($install_function);
-					}
-				}
+				$sql_results = array_merge(
+					$sql_results,
+					$this->process_install_instructions($plugin_data, $plugin_install_data[$version])
+				);
 			}
 		}
 
@@ -127,44 +96,19 @@ class class_plugins
 			@include($plugin_functions_install_file);
 		}
 
-		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_install_data = $this->get_plugin_install_data($plugin_data['dir']);
+		$sql_results = array();
 		if (!empty($plugin_install_data))
 		{
 			foreach ($plugin_install_data as $version => $instructions)
 			{
 				if (version_compare($plugin_data['version'], $version, '<'))
 				{
-					if (!empty($plugin_install_data[$version]['sql']))
-					{
-						foreach ($plugin_install_data[$version]['sql'] as $sql_statement)
-						{
-							$error = array();
-							$message = '';
-							$db->sql_return_on_error(true);
-							$result = $db->sql_query($sql_statement);
-							$db->sql_return_on_error(false);
-							if (!$result)
-							{
-								$error = $db->sql_error();
-								$message = $error['message'];
-							}
-							$sql_results[] = array(
-								'sql' => $sql_statement,
-								'message' => htmlspecialchars($message),
-								'success' => empty($message) ? true : false
-							);
-						}
-					}
-
-					if (!empty($plugin_install_data[$version]['functions']))
-					{
-						foreach ($plugin_install_data[$version]['functions'] as $install_function)
-						{
-							eval($install_function);
-						}
-					}
+					$sql_results = array_merge(
+						$sql_results,
+						$this->process_install_instructions($plugin_data, $plugin_install_data[$version])
+					);
 				}
 			}
 		}
@@ -194,34 +138,9 @@ class class_plugins
 			@include($plugin_functions_install_file);
 		}
 
-		$sql_results = array();
 		$plugin_info = $this->get_plugin_info($plugin_data['dir']);
 		$plugin_uninstall_data = $this->get_plugin_uninstall_data($plugin_data['dir']);
-		if (!empty($plugin_uninstall_data))
-		{
-			foreach ($plugin_uninstall_data['sql'] as $sql_statement)
-			{
-				$error = array();
-				$message = '';
-				$db->sql_return_on_error(true);
-				$result = $db->sql_query($sql_statement);
-				$db->sql_return_on_error(false);
-				if (!$result)
-				{
-					$error = $db->sql_error();
-					$message = $error['message'];
-				}
-				$sql_results[] = array(
-					'sql' => $sql_statement,
-					'message' => htmlspecialchars($message),
-					'success' => empty($message) ? true : false
-				);
-			}
-			foreach ($plugin_uninstall_data['functions'] as $uninstall_function)
-			{
-				eval($uninstall_function);
-			}
-		}
+		$sql_results = $this->process_install_instructions($plugin_data, $plugin_uninstall_data);
 		$this->remove_config(array('name' => $plugin_info['config']), true, false);
 
 		if ($clear_cache)
@@ -231,6 +150,104 @@ class class_plugins
 
 		return $sql_results;
 	}
+
+	/**
+	 * API function to call 
+	 */
+	function process_install_instructions($plugin_data, $instructions)
+	{
+		global $db, $table_prefix;
+
+		$sql_results = array();
+		// We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
+		$sql_engine = "SET storage_engine=MYISAM";
+		$db->sql_return_on_error(true);
+		$db->sql_query($sql_engine);
+		$db->sql_return_on_error(false);
+
+		if (!function_exists('get_available_dbms'))
+		{
+			include(IP_ROOT_PATH . 'includes/functions_install.' . PHP_EXT);
+		}
+
+		if (!empty($instructions['sql_files']))
+		{
+			$base_dir = $this->plugins_path . $plugin_data['dir'] . '/install/';
+
+			$dbms = 'mysql'; // TODO this needs to change...
+			$available_dbms = get_available_dbms($dbms);
+			$dbms = $available_dbms[$dbms];
+			$delimiter = $dbms['DELIM'];
+			$delimiter_basic = $dbms['DELIM_BASIC'];
+
+			foreach ($instructions['sql_files'] as $install_file)
+			{
+				$sql_file = $base_dir . $install_file;
+				$sql_query = file_get_contents($sql_file);
+
+				$db->remove_remarks($sql_query);
+				$sql_query = $db->split_sql_file($sql_query, $delimiter);
+
+				for ($i = 0; $i < sizeof($sql_query); $i++)
+				{
+					if (trim($sql_query[$i]) == '')
+					{
+						continue;
+					}
+					$db->sql_return_on_error(true);
+					// TODO the str_replace is from install/install.php, but we might want it smarter
+					// (for example, "`phpbb", or "\bphpbb_")
+					$result = $db->sql_query(str_replace('phpbb_', $table_prefix, $sql_query[$i]));
+					if (!$result)
+					{
+						$error = $db->sql_error();
+						$message = $error['message'];
+					}
+					// This has to be here, otherwise we are not able to catch all errors by using $db->sql_error()
+					$db->sql_return_on_error(false);
+					$sql_results[] = array(
+						'sql' => $sql_query[$i],
+						'message' => htmlspecialchars($message),
+						'success' => empty($message) ? true : false
+					);
+				}
+			}
+		}
+
+		if (!empty($instructions['sql']))
+		{
+			foreach ($instructions['sql'] as $sql_statement)
+			{
+				$error = array();
+				$message = '';
+				$db->sql_return_on_error(true);
+				$result = $db->sql_query($sql_statement);
+				if (!$result)
+				{
+					$error = $db->sql_error();
+					$message = $error['message'];
+				}
+				// This has to be here, otherwise we are not able to catch all errors by using $db->sql_error()
+				$db->sql_return_on_error(false);
+				$sql_results[] = array(
+					'sql' => $sql_statement,
+					'message' => htmlspecialchars($message),
+					'success' => empty($message) ? true : false
+				);
+			}
+		}
+
+		if (!empty($instructions['functions']))
+		{
+			foreach ($instructions['functions'] as $install_function)
+			{
+				eval($install_function);
+			}
+		}
+
+		return $sql_results;
+	}
+
 
 	/*
 	* Setup plugin lang
