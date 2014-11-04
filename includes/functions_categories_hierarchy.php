@@ -1091,8 +1091,9 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			$last_post = $lang['No_Posts'];
 			if ((isset($data['tree.forum_last_post_id']) && $data['tree.forum_last_post_id']) && (isset($data['tree.topic_last_post_auth']) && $data['tree.topic_last_post_auth']))
 			{
-				// resize
 				$topic_title = htmlspecialchars_clean($data['tree.topic_title']);
+				$topic_title_plain = htmlspecialchars_clean($data['tree.topic_title']);
+
 				// SMILEYS IN TITLE - BEGIN
 				if ($config['smilies_topic_title'] && !$lofi)
 				{
@@ -1102,16 +1103,11 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				// SMILEYS IN TITLE - END
 
 				$topic_title = (empty($data['title_compl_infos'])) ? $topic_title : $data['title_compl_infos'] . ' ' . $topic_title;
-				$topic_title_plain = $topic_title;
-				$topic_title_short = $topic_title;
 				if (strlen($topic_title) > (intval($config['last_topic_title_length']) - 3))
 				{
 					// remove tags from the short version, in case a smiley or a quick title prefix is in there
-					$topic_title_short = substr(strip_tags($topic_title), 0, intval($config['last_topic_title_length'])) . '...';
+					$topic_title = substr(strip_tags($topic_title), 0, intval($config['last_topic_title_length'])) . '...';
 				}
-
-				// Convert and clean special chars!
-				$topic_title = $topic_title_short;
 
 				$topic_title = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.forum_last_post_id']) . '#p' . $data['tree.forum_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title . '</a><br />';
 

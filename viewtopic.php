@@ -1119,7 +1119,8 @@ $topic_url_enc_utf8 = urlencode($topic_url);
 // URL Rewrite - END
 
 // Convert and clean special chars!
-$topic_title = $topic_title_prefix . htmlspecialchars_clean($topic_title);
+$topic_title_plain = htmlspecialchars_clean($topic_title);
+$topic_title = $topic_title_prefix . $topic_title_plain;
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
@@ -1127,6 +1128,7 @@ $template->assign_vars(array(
 	'FORUM_RULES' => $rules_bbcode,
 	'TOPIC_ID' => $topic_id,
 	'TOPIC_ID_FULL' => POST_TOPIC_URL . $topic_id,
+	'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 	'TOPIC_TITLE' => $topic_title,
 	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 75) . '...' : $topic_title),
 
@@ -2106,7 +2108,7 @@ for($i = 0; $i < $total_posts; $i++)
 	// SMILEYS IN TITLE - BEGIN
 	if (($config['smilies_topic_title'] == true) && !$lofi)
 	{
-		$bbcode->allow_smilies = ($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
+		$bbcode->allow_smilies = true; //($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
 		$post_subject = $bbcode->parse_only_smilies($post_subject);
 	}
 	// SMILEYS IN TITLE - END
