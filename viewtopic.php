@@ -2108,7 +2108,7 @@ for($i = 0; $i < $total_posts; $i++)
 	// SMILEYS IN TITLE - BEGIN
 	if (($config['smilies_topic_title'] == true) && !$lofi)
 	{
-		$bbcode->allow_smilies = true; //($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
+		$bbcode->allow_smilies = ($config['allow_smilies'] && $postrow[$i]['enable_smilies'] ? true : false);
 		$post_subject = $bbcode->parse_only_smilies($post_subject);
 	}
 	// SMILEYS IN TITLE - END
