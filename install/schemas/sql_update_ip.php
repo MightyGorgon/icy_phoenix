@@ -4593,7 +4593,7 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.14.100 */
 		case '2.0.14.100':
-
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_recurring_first_post` TINYINT(1) NOT NULL DEFAULT '0' AFTER `forum_rules_in_posting`";
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

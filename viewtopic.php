@@ -464,6 +464,22 @@ if (!empty($post_id))
 	$start = floor(($forum_topic_data['prev_posts'] - 1) / intval($config['posts_per_page'])) * intval($config['posts_per_page']);
 }
 
+// Icy Keep first post on every page - BEGIN
+if (!empty($forum_topic_data['forum_recurring_first_post']) && $start > 0)
+{
+	// Select the first post of the topic if we're on page >1
+	// along with the user infos
+	$sql = "SELECT fp.*, fpu.*
+	FROM " . POSTS_TABLE . " fp
+	LEFT JOIN " . USERS_TABLE . " fpu
+		ON fpu.user_id = fp.poster_id 
+	WHERE fp.post_id = " . $forum_topic_data['topic_first_post_id'];
+	$result = $db->sql_query($sql);
+	$first_post_data = $db->sql_fetchrow($result); // it's fine if this fails, we'll just show no first post
+	$db->sql_freeresult($result);
+}
+// Icy Keep first post on every page - END
+
 // Is user watching this thread?
 if (!class_exists('class_notifications'))
 {
@@ -1353,6 +1369,17 @@ if (!empty($config['plugins']['feedback']['enabled']) && !empty($config['plugins
 }
 // Mighty Gorgon - Feedback - END
 
+// Icy Keep first post on every page - BEGIN
+if (!empty($forum_topic_data['forum_recurring_first_post']) && $start > 0)
+{
+	// Add the first post of the topic as the first post of this page
+	// ... but first mark it special
+	$first_post_data['topic_first_post'] = true;
+	array_unshift($postrow, $first_post_data);
+	$total_posts++;
+}
+// Icy Keep first post on every page - END
+
 // Okay, let's do the loop, yeah come on baby let's do the loop and it goes like this ...
 $ip_display_auth = ip_display_auth($user->data, true);
 for($i = 0; $i < $total_posts; $i++)
@@ -2130,7 +2157,18 @@ for($i = 0; $i < $total_posts; $i++)
 	$post_edit_link = append_sid('edit_post_details.' . PHP_EXT . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']);
 	$post_edit_string_short = ($user->data['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $post_date . '</a>') : '';
 	$post_edit_string = ($user->data['user_level'] == ADMIN) ? ('<a href="#" onclick="post_time_edit(\'' . $post_edit_link . '\'); return false;" style="text-decoration: none;" title="' . $lang['Edit_post_time_xs'] . '">' . $lang['Edit_post_time_xs'] . '</a>') : '';
-	$single_post_number = $i + 1 + $start;
+	
+	$single_post_number = empty($postrow[$i]['topic_first_post']) ? $i + 1 + $start : 1;
+	if (!empty($postrow[0]['topic_first_post']))
+	{
+		// if there was a first post, we skip it (by not adding + 1)
+		$single_post_number = ($i == 0) ? 1 : $i + $start;
+	}
+	else
+	{
+		// the "topic first post" isn't on
+		$single_post_number = $i + 1 + $start;
+	}
 	$single_post = ($user->data['is_bot'] ? ('#' . $single_post_number) : ('<a href="#_Single_Post_View" onclick="open_postreview(\'show_post.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\'); return false;" style="text-decoration: none;">#' . $single_post_number . '</a>'));
 	$single_post_share = '<a href="#" onclick="popup(\'share.' . PHP_EXT . '?' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_share\'); return false;" style="text-decoration: none;">' . $lang['SHARE'] . '</a>';
 	$single_post_like_list = ($user->data['session_logged_in'] ? ('<a href="#" onclick="popup(\'topic_view_users.' . PHP_EXT . '?like=1&amp;' . POST_POST_URL . '=' . intval($post_id) . '\', 840, 420, \'_post_like\'); return false;" style="text-decoration: none;" title="' . $lang['LIKE_RECAP'] . '">' . '{USERS_LIKE}' . '</a>') : '{USERS_LIKE}');
