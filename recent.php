@@ -269,8 +269,7 @@ for($i = 0; $i < sizeof($line); $i++)
 	$word_censor = censor_text($line[$i]['topic_title']);
 	$topic_title = (strlen($line[$i]['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...';
 	$topic_title_prefix = (empty($line[$i]['title_compl_infos'])) ? '' : $line[$i]['title_compl_infos'] . ' ';
-	$topic_title = $topic_title_prefix . $topic_title;
-
+	
 	//$news_label = ($line[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 	$news_label = '';
 
@@ -321,6 +320,7 @@ for($i = 0; $i < sizeof($line); $i++)
 
 	// Convert and clean special chars!
 	$topic_title = htmlspecialchars_clean($topic_title);
+	$topic_title = $topic_title_prefix . $topic_title;
 	$template->assign_block_vars('recent', array(
 		'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 

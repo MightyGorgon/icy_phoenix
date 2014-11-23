@@ -844,9 +844,8 @@ if ($config['display_viewonline'])
 	define('SHOW_ONLINE', true);
 }
 
-$topic_title = $topic_title_prefix . $topic_title;
-$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $topic_title;
-$meta_content['page_title_clean'] = $topic_title;
+$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $topic_title_prefix . $topic_title;
+$meta_content['page_title_clean'] = $topic_title_prefix . $topic_title;
 $template->assign_var('S_VIEW_TOPIC', true);
 if ($config['show_icons'] == true)
 {
@@ -973,7 +972,9 @@ if ($is_auth['auth_edit'] || ($user->data['user_id'] == $row['topic_poster']))
 	$select_title = '<form action="modcp.' . PHP_EXT . '?sid=' . $user->data['session_id'] . '" method="post"><br /><br /><select name="qtnum"><option value="-1">---</option>';
 	while ($row = $db->sql_fetchrow($result))
 	{
-		$addon = str_replace('%mod%', addslashes($user->data['username']), $row['title_info']);
+		// If there's text left when stripping tags, keep it, else display the bbcode version
+		$nameqt = strip_tags($row['title_html']) ? strip_tags($row['title_html']) : $row['title_info'];
+		$addon = str_replace('%mod%', addslashes($user->data['username']), $nameqt);
 		$dateqt = ($row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($row['date_format'], time(), $config['board_timezone']);
 		$addon = str_replace('%date%', $dateqt, $addon);
 		$select_title .= '<option value="' . $row['id'] . '">' . htmlspecialchars($addon) . '</option>';
@@ -1118,7 +1119,8 @@ $topic_url_enc_utf8 = urlencode($topic_url);
 // URL Rewrite - END
 
 // Convert and clean special chars!
-$topic_title = htmlspecialchars_clean($topic_title);
+$topic_title_plain = htmlspecialchars_clean($topic_title);
+$topic_title = $topic_title_prefix . $topic_title_plain;
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
@@ -1126,6 +1128,7 @@ $template->assign_vars(array(
 	'FORUM_RULES' => $rules_bbcode,
 	'TOPIC_ID' => $topic_id,
 	'TOPIC_ID_FULL' => POST_TOPIC_URL . $topic_id,
+	'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 	'TOPIC_TITLE' => $topic_title,
 	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 75) . '...' : $topic_title),
 

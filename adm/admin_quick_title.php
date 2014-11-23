@@ -110,6 +110,13 @@ if(!empty($mode))
 		$name = request_post_var('title_info', '', true);
 		$date = request_post_var('date_format', '');
 
+
+		include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		$bbcode->allow_html = true;
+		$bbcode->allow_bbcode = true;
+		$bbcode->allow_smilies = true;
+		$html = $bbcode->parse($name);
+
 		if(empty($name))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Must_select_title']);
@@ -117,17 +124,16 @@ if(!empty($mode))
 
 		if (!empty($title_id))
 		{
-
 			$sql = "UPDATE " . TITLE_INFOS_TABLE . "
-							SET title_info = '" . $db->sql_escape($name) . "', date_format = '" . $db->sql_escape($date) . "', admin_auth = $admin, mod_auth = $mod, poster_auth = $poster
+							SET title_info = '" . $db->sql_escape($name) . "', title_html = '" . $db->sql_escape($html) . "', date_format = '" . $db->sql_escape($date) . "', admin_auth = $admin, mod_auth = $mod, poster_auth = $poster
 							WHERE id = '" . $title_id . "'";
 
 			$message = $lang['Title_updated'];
 		}
 		else
 		{
-			$sql = "INSERT INTO " . TITLE_INFOS_TABLE . " (title_info, admin_auth, mod_auth, poster_auth, date_format)
-							VALUES ('" . $db->sql_escape($name) . "', $admin, $mod, $poster, '" . $db->sql_escape($date) . "')";
+			$sql = "INSERT INTO " . TITLE_INFOS_TABLE . " (title_info, title_html, admin_auth, mod_auth, poster_auth, date_format)
+							VALUES ('" . $db->sql_escape($name) . "', '" . $db->sql_escape($html) . "', $admin, $mod, $poster, '" . $db->sql_escape($date) . "')";
 
 			$message = $lang['Title_added'];
 		}
@@ -192,6 +198,7 @@ if(!empty($mode))
 			$template->assign_block_vars('title', array(
 				'ROW_CLASS' => $row_class,
 				'TITLE' => $title_rows[$i]['title_info'],
+				'HTML' => $title_rows[$i]['title_html'],
 				'PERMISSIONS' => $perm,
 				'DATE_FORMAT' => $title_rows[$i]['date_format'],
 				'U_TITLE_EDIT' => append_sid('admin_quick_title.' . PHP_EXT . '?mode=edit&amp;id=' . $title_id),
@@ -247,6 +254,7 @@ else
 		$template->assign_block_vars('title', array(
 			'ROW_CLASS' => $row_class,
 			'TITLE' => $title_rows[$i]['title_info'],
+			'HTML' => $title_rows[$i]['title_html'],
 			'PERMISSIONS' => $perm,
 			'DATE_FORMAT' => $title_rows[$i]['date_format'],
 

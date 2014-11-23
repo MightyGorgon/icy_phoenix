@@ -1444,7 +1444,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				$topic_title = censor_text($topic_title);
 				$topic_raw_title = censor_text($topic_raw_title);
-				$post_subject = !empty($searchset[$i]['post_subject']) ? censor_text($searchset[$i]['post_subject']) : $topic_title_prefix . $topic_title;
+				$post_subject = !empty($searchset[$i]['post_subject']) ? censor_text($searchset[$i]['post_subject']) : $topic_title_prefix . htmlspecialchars_clean($topic_title);
 				$message = censor_text($message);
 
 				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']) : (($searchset[$i]['post_username'] != '') ? $searchset[$i]['post_username'] : $lang['Guest']);
@@ -1519,13 +1519,10 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$message = $lang['Reserved_Post'];
 					*/
 				}
-				else
-				{
-					$topic_title = $topic_title_prefix . $topic_title;
-				}
 				// SELF AUTH - END
 				// Convert and clean special chars!
 				$topic_title = htmlspecialchars_clean($topic_title);
+				$topic_title = $topic_title_prefix . $topic_title;
 				$template->assign_block_vars('searchresults', array(
 					'TOPIC_TITLE' => $topic_title,
 					'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $searchset[$i]['forum_id'], 'name'),
@@ -1729,10 +1726,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$topic_title = $lang['Reserved_Topic'];
 					*/
 				}
-				else
-				{
-					$topic_title = $topic_title_prefix . $topic_title;
-				}
 				// SELF AUTH - END
 
 // UPI2DB - BEGIN
@@ -1750,6 +1743,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				// Convert and clean special chars!
 				$topic_title = htmlspecialchars_clean($topic_title);
+				$topic_title = $topic_title_prefix . $topic_title;
 				$template->assign_block_vars('searchresults', array(
 					'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 					'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $searchset[$i]['forum_id'], 'name'),

@@ -4587,13 +4587,13 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_additional_urls'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_compress'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_compression_level'";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "title_infos` ADD COLUMN `title_html` VARCHAR(255) NOT NULL DEFAULT ''",
 
 		/* Updating from IP 2.0.13.99 */
 		case '2.0.13.99':
 
 		/* Updating from IP 2.0.14.100 */
 		case '2.0.14.100':
-
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";
