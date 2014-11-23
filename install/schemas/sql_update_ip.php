@@ -104,6 +104,7 @@ switch ($req_version)
 	case '201298': $current_ip_version = '2.0.12.98'; break;
 	case '201399': $current_ip_version = '2.0.13.99'; break;
 	case '2014100': $current_ip_version = '2.0.14.100'; break;
+	case '2015101': $current_ip_version = '2.0.15.101'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4587,13 +4588,19 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_additional_urls'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_compress'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "config` WHERE `config_name` = 'yahoo_search_compression_level'";
-		$sql[] = "ALTER TABLE `" . $table_prefix . "title_infos` ADD COLUMN `title_html` VARCHAR(255) NOT NULL DEFAULT ''",
 
 		/* Updating from IP 2.0.13.99 */
 		case '2.0.13.99':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "title_infos` ADD `title_html` VARCHAR(255) NOT NULL DEFAULT '' AFTER `title_info`";
+		$sql[] = "UPDATE `" . $table_prefix . "title_infos` SET `title_html` = `title_info`";
+
 
 		/* Updating from IP 2.0.14.100 */
 		case '2.0.14.100':
+
+		/* Updating from IP 2.0.15.101 */
+		case '2.0.15.101':
+
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

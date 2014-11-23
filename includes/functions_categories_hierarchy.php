@@ -1092,7 +1092,8 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 			if ((isset($data['tree.forum_last_post_id']) && $data['tree.forum_last_post_id']) && (isset($data['tree.topic_last_post_auth']) && $data['tree.topic_last_post_auth']))
 			{
 				$topic_title = htmlspecialchars_clean($data['tree.topic_title']);
-				$topic_title_plain = htmlspecialchars_clean($data['tree.topic_title']);
+				$topic_title_plain = $topic_title;
+				$topic_title_short = $topic_title;
 
 				// SMILEYS IN TITLE - BEGIN
 				if ($config['smilies_topic_title'] && !$lofi)
@@ -1106,13 +1107,13 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				if (strlen($topic_title) > (intval($config['last_topic_title_length']) - 3))
 				{
 					// remove tags from the short version, in case a smiley or a quick title prefix is in there
-					$topic_title = substr(strip_tags($topic_title), 0, intval($config['last_topic_title_length'])) . '...';
+					$topic_title_short = substr(strip_tags($topic_title), 0, intval($config['last_topic_title_length'])) . '...';
 				}
 
 				$topic_title = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.forum_last_post_id']) . '#p' . $data['tree.forum_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title . '</a><br />';
 
 				$last_post_time = create_date_ip($config['default_dateformat'], $data['tree.post_time'], $config['board_timezone']);
-				$last_post  = (($config['last_topic_title']) ? $topic_title : '');
+				$last_post = (($config['last_topic_title']) ? $topic_title : '');
 				$last_post .= $last_post_time . '<br />';
 				$last_post .= ($data['tree.post_user_id'] == ANONYMOUS) ? $data['tree.post_username'] . ' ' : colorize_username($data['tree.post_user_id'], $data['tree.post_username'], $data['tree.user_color'], $data['tree.user_active']);
 

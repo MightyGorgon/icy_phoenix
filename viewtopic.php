@@ -292,12 +292,17 @@ $topic_id = intval($forum_topic_data['topic_id']);
 $topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 
 $forum_name = get_object_lang(POST_FORUM_URL . $forum_id, 'name');
-$topic_title = $forum_topic_data['topic_title'];
-$topic_title_prefix = (empty($forum_topic_data['title_compl_infos'])) ? '' : trim($forum_topic_data['title_compl_infos']) . ' ';
 $topic_time = $forum_topic_data['topic_time'];
 $topic_first_post_id = intval($forum_topic_data['topic_first_post_id']);
 $topic_calendar_time = intval($forum_topic_data['topic_calendar_time']);
 $topic_calendar_duration = intval($forum_topic_data['topic_calendar_duration']);
+
+$topic_title_data = $class_topics->generate_topic_title($topic_id, $forum_topic_data, 80);
+$topic_title = $topic_title_data['title'];
+$topic_title_clean = $topic_title_data['title_clean'];
+$topic_title_plain = $topic_title_data['title_plain'];
+$topic_title_prefix = $topic_title_data['title_prefix'];
+$topic_title_short = $topic_title_data['title_short'];
 
 // Topic poster information
 $topic_started = create_date_ip($lang['DATE_FORMAT_VF'], $forum_topic_data['topic_time'], $config['board_timezone'], true);
@@ -581,7 +586,7 @@ $profile_data_sql = get_udata_txt($profile_data, 'u.');
 // Similar Topics - BEGIN
 if ($similar_topics_enabled)
 {
-	$similar_topics = get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $forum_topic_data['topic_similar_topics'], $forum_topic_data['topic_desc']);
+	$similar_topics = get_similar_topics($similar_forums_auth, $topic_id, $topic_title_plain, $forum_topic_data['topic_similar_topics'], $forum_topic_data['topic_desc']);
 	$count_similar = sizeof($similar_topics);
 
 	// Switch again to false because we will show the box only if we have similar topics!
@@ -716,8 +721,6 @@ if ($resync)
 $ranks_array = $cache->obtain_ranks(false);
 // Mighty Gorgon - Multiple Ranks - END
 
-$topic_title = censor_text($topic_title);
-
 // Was a highlight request part of the URI?
 $highlight_match = '';
 $highlight = '';
@@ -844,8 +847,8 @@ if ($config['display_viewonline'])
 	define('SHOW_ONLINE', true);
 }
 
-$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $topic_title_prefix . $topic_title;
-$meta_content['page_title_clean'] = $topic_title_prefix . $topic_title;
+$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $topic_title_plain;
+$meta_content['page_title_clean'] = $topic_title_plain;
 $template->assign_var('S_VIEW_TOPIC', true);
 if ($config['show_icons'] == true)
 {
@@ -966,23 +969,44 @@ if ($is_auth['auth_mod'])
 //if (!(($user->data['user_level'] == 0) && ($user->data['user_id'] != $row['topic_poster'])))
 if ($is_auth['auth_edit'] || ($user->data['user_id'] == $row['topic_poster']))
 {
-	$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . " ORDER BY title_info ASC";
-	$result = $db->sql_query($sql, 0, 'topics_prefixes_', TOPICS_CACHE_FOLDER);
+	// Temporary allow all BBCode for Quick Title, and store current vars to temp arrays
+	$bbcode_allow_html_tmp = $bbcode->allow_html;
+	$bbcode_allow_bbcode_tmp = $bbcode->allow_bbcode;
+	$bbcode_allow_smilies_tmp = $bbcode->allow_smilies;
+	$bbcode->allow_html = true;
+	$bbcode->allow_bbcode = true;
+	$bbcode->allow_smilies = true;
 
-	$select_title = '<form action="modcp.' . PHP_EXT . '?sid=' . $user->data['session_id'] . '" method="post"><br /><br /><select name="qtnum"><option value="-1">---</option>';
-	while ($row = $db->sql_fetchrow($result))
+	$topic_prefixes = $class_topics->get_topic_prefixes();
+	$qt_select_data = '';
+	foreach ($topic_prefixes as $qt_id => $qt_data)
 	{
-		// If there's text left when stripping tags, keep it, else display the bbcode version
-		$nameqt = strip_tags($row['title_html']) ? strip_tags($row['title_html']) : $row['title_info'];
-		$addon = str_replace('%mod%', addslashes($user->data['username']), $nameqt);
-		$dateqt = ($row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($row['date_format'], time(), $config['board_timezone']);
-		$addon = str_replace('%date%', $dateqt, $addon);
-		$select_title .= '<option value="' . $row['id'] . '">' . htmlspecialchars($addon) . '</option>';
+		$qt_html = !empty($qt_data['title_html']) ? true : false;
+		$qt_title_prefix = !empty($qt_data['title_html']) ? $bbcode->parse($qt_data['title_html']) : $qt_data['title_info'];
+		$qt_title_prefix = str_replace('%mod%', $user->data['username'], $qt_title_prefix);
+		$qt_date = ($qt_data['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_data['date_format'], time(), $config['board_timezone']);
+		$qt_title_prefix = str_replace('%date%', $qt_date, $qt_title_prefix);
+		$qt_title_prefix = !empty($qt_html) ? $qt_title_prefix : htmlspecialchars($qt_title_prefix);
+		$qt_select_data .= '<option value="' . $qt_data['id'] . '">' . $qt_title_prefix . '</option>';
 	}
-	$db->sql_freeresult($result);
-	$select_title .= '</select>&nbsp;<input type="submit" name="quick_title_edit" class="liteoption" value="' . $lang['Edit_title'] . '"/><input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '"/><input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '"/></form>';
-	$topic_mod .= $select_title;
-	$topic_prefix_select = $select_title;
+
+	// Restore BBCode status...
+	$bbcode->allow_html = $bbcode_allow_html_tmp;
+	$bbcode->allow_bbcode = $bbcode_allow_bbcode_tmp;
+	$bbcode->allow_smilies = $bbcode_allow_smilies_tmp;
+
+	$qt_select_box = '<form action="modcp.' . PHP_EXT . '?sid=' . $user->data['session_id'] . '" method="post"><br /><br />';
+	$qt_select_box .= '<select name="qt_id">';
+	$qt_select_box .= '<option value="0">---</option>';
+	$qt_select_box .= $qt_select_data;
+	$qt_select_box .= '</select>&nbsp;';
+	$qt_select_box .= '<input type="submit" name="quick_title_edit" class="liteoption" value="' . $lang['Edit_title'] . '"/>';
+	$qt_select_box .= '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '"/>';
+	$qt_select_box .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '"/>';
+	$qt_select_box .= '</form>';
+
+	$topic_mod .= $qt_select_box;
+	$topic_prefix_select = $qt_select_box;
 }
 
 $s_kb_mode_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;kb=' . (!empty($kb_mode) ? 'off' : 'on') . '&amp;start=' . $start);
@@ -1099,15 +1123,15 @@ if ($config['enable_featured_image'])
 	$template->assign_var('S_FEATURED_IMAGE', true);
 }
 
-$topic_title_enc = urlencode(ip_utf8_decode($topic_title));
-$topic_title_enc_utf8 = urlencode($topic_title);
+$topic_title_enc = urlencode(ip_utf8_decode($topic_title_plain));
+$topic_title_enc_utf8 = urlencode($topic_title_plain);
 
 // URL Rewrite - BEGIN
 // Rewrite Social Bookmars URLs if any of URL Rewrite rules has been enabled
 // Forum ID and KB Mode removed from topic_url_enc to avoid compatibility problems with redirects in tell a friend
 if (($config['url_rw'] == true) || ($config['url_rw_guests'] == true))
 {
-	$topic_url = create_server_url() . make_url_friendly($topic_title) . '-vt' . $topic_id . '.html' . ($kb_mode ? ('?' . $kb_mode_append) : '');
+	$topic_url = create_server_url() . make_url_friendly($topic_title_plain) . '-vt' . $topic_id . '.html' . ($kb_mode ? ('?' . $kb_mode_append) : '');
 }
 else
 {
@@ -1118,9 +1142,6 @@ $topic_url_enc = urlencode(ip_utf8_decode($topic_url));
 $topic_url_enc_utf8 = urlencode($topic_url);
 // URL Rewrite - END
 
-// Convert and clean special chars!
-$topic_title_plain = htmlspecialchars_clean($topic_title);
-$topic_title = $topic_title_prefix . $topic_title_plain;
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
@@ -1128,9 +1149,9 @@ $template->assign_vars(array(
 	'FORUM_RULES' => $rules_bbcode,
 	'TOPIC_ID' => $topic_id,
 	'TOPIC_ID_FULL' => POST_TOPIC_URL . $topic_id,
-	'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 	'TOPIC_TITLE' => $topic_title,
-	'TOPIC_TITLE_SHORT' => ((strlen($topic_title) > 80) ? substr($topic_title, 0, 75) . '...' : $topic_title),
+	'TOPIC_TITLE_PLAIN' => $topic_title_plain,
+	'TOPIC_TITLE_SHORT' => $topic_title_short,
 
 	'TOPIC_POSTED_TIME' => $topic_started,
 	'TOPIC_AUTHOR_NAME' => $topic_username,
@@ -1735,20 +1756,6 @@ for($i = 0; $i < $total_posts; $i++)
 		}
 	}
 
-	// Start Yellow Card Changes for phpBB Styles
-	$allowed_styles = array(
-		'ca_aphrodite',
-		'squared',
-	);
-	if(in_array($theme['template_name'], $allowed_styles))
-	{
-		$phpbb_styles = true;
-	}
-	else
-	{
-		$phpbb_styles = false;
-	}
-
 	$s_card_switch_g = false;
 	$s_card_switch_y = false;
 	$s_card_switch_r = false;
@@ -1758,6 +1765,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$s_card_switch_r_assigned = false;
 	$s_card_y_counter = 0;
 
+	$b_card_img = '';
 	if ($is_auth['auth_bluecard'])
 	{
 		$s_card_switch_b = true;
@@ -1765,10 +1773,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$blue_card_action = 'return confirm(\'' . $lang['Blue_card_warning'] . '\')';
 		$temp_url = 'card.' . PHP_EXT . '?mode=report&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
 		$b_card_img = '<a href="' . $temp_url . '" title="' . $lang['Give_b_card'] . '" onclick="' . $blue_card_action . '">' . $blue_card_img . '</a>';
-		if($phpbb_styles == true)
-		{
-			$b_card_img = '<span class="img-report">' . $b_card_img . '</span>';
-		}
 		if ($is_auth['auth_mod'] && $postrow[$i]['post_bluecard'])
 		{
 			$s_card_switch_p = true;
@@ -1776,17 +1780,13 @@ for($i = 0; $i < $total_posts; $i++)
 			$blue_card_action = 'return confirm(\'' . $lang['Clear_blue_card_warning'] . '\')';
 			$temp_url = 'card.' . PHP_EXT . '?mode=report_reset&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
 			$b_card_img = '<a href="' . $temp_url . '" onclick="' . $blue_card_action . '" title="' . $lang['Give_b_card'] . '">' . $blue_card_img . '</a>';
-			if($phpbb_styles == true)
-			{
-				$b_card_img = '<span class="img-clear">' . $b_card_img . '</span>';
-			}
 		}
 	}
-	else
-	{
-		$b_card_img = '';
-	}
 
+	$card_img = '';
+	$g_card_img = '';
+	$y_card_img = '';
+	$r_card_img = '';
 	if(($poster_id != ANONYMOUS) && ($postrow[$i]['user_level'] != ADMIN))
 	{
 		$current_user = str_replace("'", "\'", $postrow[$i]['username']);
@@ -1817,6 +1817,7 @@ for($i = 0; $i < $total_posts; $i++)
 			}
 		}
 
+		$g_card_img = '';
 		if ($is_auth['auth_greencard'] && ($s_card_switch_y_assigned || $s_card_switch_r_assigned))
 		{
 			$s_card_switch_g = true;
@@ -1824,16 +1825,10 @@ for($i = 0; $i < $total_posts; $i++)
 			$grn_card_action = 'return confirm(\'' . sprintf($lang['Green_card_warning'], $current_user) . '\')';
 			$temp_url = 'card.' . PHP_EXT . '?mode=unban&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
 			$g_card_img = '<a href="' . $temp_url . '" title="' . $lang['Give_G_card'] . '" onclick="' . $grn_card_action . '">' . $grn_card_img . '</a>';
-			if($phpbb_styles == true)
-			{
-				$g_card_img = '<span class="img-green">' . $g_card_img . '</span>';
-			}
-		}
-		else
-		{
-			$g_card_img = '';
 		}
 
+		$y_card_img = '';
+		$r_card_img = '';
 		if (($user_warnings < $config['max_user_bancard']) && $is_auth['auth_ban'])
 		{
 			$s_card_switch_y = true;
@@ -1848,25 +1843,10 @@ for($i = 0; $i < $total_posts; $i++)
 			$red_card_action = 'return confirm(\'' . sprintf($lang['Red_card_warning'], $current_user) . '\')';
 			$temp_url = 'card.' . PHP_EXT . '?mode=ban&amp;post_id=' . $postrow[$i]['post_id'] . '&amp;user_id=' . $user->data['user_id'] . '&amp;sid=' . $user->data['session_id'];
 			$r_card_img = '<a href="' . $temp_url . '" title="' . $lang['Give_R_card'] . '" onclick="' . $red_card_action . '">' . $red_card_img . '</a>';
-
-			if($phpbb_styles == true)
-			{
-				$y_card_img = '<span class="img-warn">' . $y_card_img . '</span>';
-				$r_card_img = '<span class="img-ban">' . $r_card_img . '</span>';
-			}
 		}
 		else
 		{
-			$y_card_img = '';
-			$r_card_img = '';
 		}
-	}
-	else
-	{
-		$card_img = '';
-		$g_card_img = '';
-		$y_card_img = '';
-		$r_card_img = '';
 	}
 
 	// parse hidden fields if cards visible
@@ -2475,8 +2455,7 @@ for($i = 0; $i < $total_posts; $i++)
 // UPI2DB - END
 
 		// Cards - BEGIN
-		'S_CARD' => ($phpbb_styles) ? $card_action : append_sid('card.' . PHP_EXT),
-		'S_CARD_CLASS' => ($phpbb_styles) ? true : false,
+		'S_CARD' => append_sid('card.' . PHP_EXT),
 
 		'CARD_IMG' => $card_img,
 		'CARD_HIDDEN_FIELDS' => $card_hidden,

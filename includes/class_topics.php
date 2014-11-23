@@ -405,10 +405,55 @@ class class_topics
 		$topic_prefixes = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$topic_prefixes[$row['id']] = $row['title_html'];
+			$topic_prefixes[$row['id']] = $row;
 		}
 		$db->sql_freeresult($result);
 		return $topic_prefixes;
+	}
+
+	/*
+	* Generate topic title
+	*/
+	function generate_topic_title($topic_id, $topic_data, $max_title_length)
+	{
+		global $config, $bbcode, $lang, $lofi;
+
+		$max_title_length = (((int) $max_title_length > 255) || ($max_title_length < 15)) ? 255 : $max_title_length;
+		$topic_title = censor_text($topic_data['topic_title']);
+		$topic_title_clean = (empty($topic_data['topic_title_clean'])) ? substr(ip_clean_string($topic_title, $lang['ENCODING']), 0, 254) : $topic_data['topic_title_clean'];
+		if (empty($topic_data['topic_title_clean']))
+		{
+			update_clean_topic_title($topic_id, $topic_title_clean);
+		}
+
+		$topic_title_prefix = (empty($topic_data['title_compl_infos'])) ? '' : trim($topic_data['title_compl_infos']) . ' ';
+		// Convert and clean special chars!
+		$topic_title = htmlspecialchars_clean($topic_title);
+		// SMILEYS IN TITLE - BEGIN
+		if (($config['smilies_topic_title'] == true) && !$lofi)
+		{
+			$bbcode->allow_smilies = (($config['allow_smilies'] && $topic_data['enable_smilies']) ? true : false);
+			$topic_title = $bbcode->parse_only_smilies($topic_title);
+		}
+		// SMILEYS IN TITLE - END
+		$topic_title = $topic_title_prefix . $topic_title;
+		$topic_title_plain = htmlspecialchars(strip_tags($topic_title));
+		$topic_title_short = $topic_title;
+		if (strlen($topic_title) > ($max_title_length - 3))
+		{
+			// remove tags from the short version, in case a smiley or a quick title prefix is in there
+			$topic_title_short = substr(strip_tags($topic_title), 0, intval($max_title_length)) . '...';
+		}
+
+		$topic_title_data = array(
+			'title' => $topic_title,
+			'title_clean' => $topic_title_clean,
+			'title_plain' => $topic_title_plain,
+			'title_prefix' => $topic_title_prefix,
+			'title_short' => $topic_title_short,
+		);
+
+		return $topic_title_data;
 	}
 
 	/*

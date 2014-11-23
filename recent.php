@@ -266,10 +266,13 @@ for($i = 0; $i < sizeof($line); $i++)
 	$topic_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append);
 	$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
-	$word_censor = censor_text($line[$i]['topic_title']);
-	$topic_title = (strlen($line[$i]['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...';
-	$topic_title_prefix = (empty($line[$i]['title_compl_infos'])) ? '' : $line[$i]['title_compl_infos'] . ' ';
-	
+	$topic_title_data = $class_topics->generate_topic_title($topic_id, $line[$i], $topic_length);
+	$topic_title = $topic_title_data['title'];
+	$topic_title_clean = $topic_title_data['title_clean'];
+	$topic_title_plain = $topic_title_data['title_plain'];
+	$topic_title_prefix = $topic_title_data['title_prefix'];
+	$topic_title_short = $topic_title_data['title_short'];
+
 	//$news_label = ($line[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 	$news_label = '';
 
@@ -318,9 +321,6 @@ for($i = 0; $i < sizeof($line); $i++)
 		$last_url = '';
 	}
 
-	// Convert and clean special chars!
-	$topic_title = htmlspecialchars_clean($topic_title);
-	$topic_title = $topic_title_prefix . $topic_title;
 	$template->assign_block_vars('recent', array(
 		'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 
@@ -328,6 +328,7 @@ for($i = 0; $i < sizeof($line); $i++)
 		'TOPIC_FOLDER_IMG' => $topic_link['image'],
 		'L_TOPIC_FOLDER_ALT' => $topic_link['image_alt'],
 		'TOPIC_TITLE' => $topic_title,
+		'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 		'TOPIC_TYPE' => $topic_link['type'],
 		'TOPIC_TYPE_ICON' => $topic_link['icon'],
 		'TOPIC_CLASS' => (!empty($topic_link['class_new']) ? ('topiclink' . $topic_link['class_new']) : $topic_link['class']),

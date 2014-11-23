@@ -126,11 +126,11 @@
 				<!-- IF postrow.UPI2DB_UNMARK_POST --><a href="{postrow.UPI2DB_UNMARK_POST_URL}"><img src="{postrow.UPI2DB_UNMARK_POST_IMG}" alt="{postrow.L_UPI2DB_UNMARK_POST}" title="{postrow.L_UPI2DB_UNMARK_POST}" /></a><!-- ENDIF -->
 			<!-- ENDIF -->
 			<!-- IF postrow.S_CARD_SWITCH -->
-				<!-- IF postrow.S_CARD_SWITCH_B --><!-- IF postrow.S_CARD_CLASS --><span class="img-report"><!-- ENDIF --><a href="{postrow.U_CARD_B}" onclick="return confirm('{postrow.L_CARD_B_JS}')"><img src="{postrow.IMG_CARD_B}" alt="{postrow.L_CARD_B}" title="{postrow.L_CARD_B}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
-				<!-- IF postrow.S_CARD_SWITCH_P --><!-- IF postrow.S_CARD_CLASS --><span class="img-clear"><!-- ENDIF --><a href="{postrow.U_CARD_P}" onclick="return confirm('{postrow.L_CARD_P_JS}')"><img src="{postrow.IMG_CARD_P}" alt="{postrow.L_CARD_P}" title="{postrow.L_CARD_P}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
-				<!-- IF postrow.S_CARD_SWITCH_G --><!-- IF postrow.S_CARD_CLASS --><span class="img-green"><!-- ENDIF --><a href="{postrow.U_CARD_G}" onclick="return confirm('{postrow.L_CARD_G_JS}')"><img src="{postrow.IMG_CARD_G}" alt="{postrow.L_CARD_G}" title="{postrow.L_CARD_G}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
-				<!-- IF postrow.S_CARD_SWITCH_Y --><!-- IF postrow.S_CARD_CLASS --><span class="img-warn"><!-- ENDIF --><a href="{postrow.U_CARD_Y}" onclick="return confirm('{postrow.L_CARD_Y_JS}')"><img src="{postrow.IMG_CARD_Y}" alt="{postrow.L_CARD_Y}" title="{postrow.L_CARD_Y}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
-				<!-- IF postrow.S_CARD_SWITCH_R --><!-- IF postrow.S_CARD_CLASS --><span class="img-ban"><!-- ENDIF --><a href="{postrow.U_CARD_R}" onclick="return confirm('{postrow.L_CARD_R_JS}')"><img src="{postrow.IMG_CARD_R}" alt="{postrow.L_CARD_R}" title="{postrow.L_CARD_R}" /></a><!-- IF postrow.S_CARD_CLASS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_B --><!-- IF S_USE_CSS_CARDS --><span class="img-report"><!-- ENDIF --><a href="{postrow.U_CARD_B}" onclick="return confirm('{postrow.L_CARD_B_JS}')"><img src="{postrow.IMG_CARD_B}" alt="{postrow.L_CARD_B}" title="{postrow.L_CARD_B}" /></a><!-- IF S_USE_CSS_CARDS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_P --><!-- IF S_USE_CSS_CARDS --><span class="img-clear"><!-- ENDIF --><a href="{postrow.U_CARD_P}" onclick="return confirm('{postrow.L_CARD_P_JS}')"><img src="{postrow.IMG_CARD_P}" alt="{postrow.L_CARD_P}" title="{postrow.L_CARD_P}" /></a><!-- IF S_USE_CSS_CARDS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_G --><!-- IF S_USE_CSS_CARDS --><span class="img-green"><!-- ENDIF --><a href="{postrow.U_CARD_G}" onclick="return confirm('{postrow.L_CARD_G_JS}')"><img src="{postrow.IMG_CARD_G}" alt="{postrow.L_CARD_G}" title="{postrow.L_CARD_G}" /></a><!-- IF S_USE_CSS_CARDS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_Y --><!-- IF S_USE_CSS_CARDS --><span class="img-warn"><!-- ENDIF --><a href="{postrow.U_CARD_Y}" onclick="return confirm('{postrow.L_CARD_Y_JS}')"><img src="{postrow.IMG_CARD_Y}" alt="{postrow.L_CARD_Y}" title="{postrow.L_CARD_Y}" /></a><!-- IF S_USE_CSS_CARDS --></span><!-- ENDIF --><!-- ENDIF -->
+				<!-- IF postrow.S_CARD_SWITCH_R --><!-- IF S_USE_CSS_CARDS --><span class="img-ban"><!-- ENDIF --><a href="{postrow.U_CARD_R}" onclick="return confirm('{postrow.L_CARD_R_JS}')"><img src="{postrow.IMG_CARD_R}" alt="{postrow.L_CARD_R}" title="{postrow.L_CARD_R}" /></a><!-- IF S_USE_CSS_CARDS --></span><!-- ENDIF --><!-- ENDIF -->
 			<!-- ENDIF -->
 			&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
 			<!-- ELSE -->
@@ -246,6 +246,8 @@
 	</td>
 </tr>
 </table>{IMG_TFL}{IMG_TFC}{IMG_TFR}
+
+<br class="clear" />
 
 <table>
 <tr>
