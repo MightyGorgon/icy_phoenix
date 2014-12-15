@@ -1012,6 +1012,11 @@ switch($mode)
 			$qt_select_data .= '<option value="' . $qt_data['id'] . '">' . $qt_title_prefix . '</option>';
 		}
 
+		// Restore BBCode status...
+		$bbcode->allow_html = $bbcode_allow_html_tmp;
+		$bbcode->allow_bbcode = $bbcode_allow_bbcode_tmp;
+		$bbcode->allow_smilies = $bbcode_allow_smilies_tmp;
+
 		$select_title = '<select name="qt_id">';
 		$select_title .= '<option value="0">---</option>';
 		$select_title .= $qt_select_data;

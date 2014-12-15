@@ -47,31 +47,9 @@ function open_postreview(ref)
 		<br /><br /><br />
 		<div style="margin-bottom: 2px; clear: both; display: block;">&nbsp;</div>
 		<!-- IF S_EDIT_NOTES -->
-		<!-- IF postrow.EDITED_MESSAGE -->
-		<div class="post-notes"><div class="post-note"><span class="gensmall">{postrow.EDITED_MESSAGE}&nbsp;</span></div></div>
-		<!-- ENDIF -->
-		<!-- IF postrow.NOTES_COUNT -->
-		<div class="post-notes">
-		<!-- BEGIN notes -->
-		<div class="post-note">
-			<!-- IF notes.U_DELETE -->
-			<div class="post-note-delete">[<a href="{notes.U_DELETE}">{L_DELETE_NOTE}</a>]</div>
-			<!-- ENDIF -->
-			{L_EDITED_BY} {postrow.notes.POSTER_NAME}, {postrow.notes.TIME}: {postrow.notes.TEXT}
-		</div>
-		<!-- END notes -->
-		</div>
-		<div class="post-notes">
-		<!-- BEGIN notes_mod -->
-		<div class="post-note">
-			<!-- IF notes_mod.U_DELETE -->
-			<div class="post-note-delete">[<a href="{notes_mod.U_DELETE}">{L_DELETE_NOTE}</a>]</div>
-			<!-- ENDIF -->
-			{L_NOTES_MOD} &bull; {postrow.notes_mod.POSTER_NAME}, {postrow.notes_mod.TIME}: {postrow.notes_mod.TEXT}
-		</div>
-		<!-- END notes_mod -->
-		</div>
-		<!-- ENDIF -->
+		<!-- IF postrow.EDITED_MESSAGE --><div class="post-notes"><div class="post-note"><span class="gensmall">{postrow.EDITED_MESSAGE}&nbsp;</span></div></div><!-- ENDIF -->
+		<!-- IF postrow.NOTES_S_COUNT > 0 --><div class="post-notes"><!-- BEGIN notes --><div class="post-note"><!-- IF notes.U_DELETE --><div class="post-note-delete">[<a href="{notes.U_DELETE}">{L_DELETE_NOTE}</a>]</div><!-- ENDIF -->{L_EDITED_BY} {postrow.notes.POSTER_NAME}, {postrow.notes.TIME}: {postrow.notes.TEXT}</div><!-- END notes --></div><!-- ENDIF -->
+		<!-- IF postrow.NOTES_M_COUNT --><div class="post-notes"><!-- BEGIN notes_mod --><div class="post-note"><!-- IF notes_mod.U_DELETE --><div class="post-note-delete">[<a href="{notes_mod.U_DELETE}">{L_DELETE_NOTE}</a>]</div><!-- ENDIF -->{L_NOTES_MOD} &bull; {postrow.notes_mod.POSTER_NAME}, {postrow.notes_mod.TIME}: {postrow.notes_mod.TEXT}</div><!-- END notes_mod --></div><!-- ENDIF -->
 		<!-- ENDIF -->
 	</td>
 </tr>

@@ -2046,10 +2046,30 @@ for($i = 0; $i < $total_posts; $i++)
 	// Mighty Gorgon - ???
 
 	// Editing information
+	$notes_list = array();
+	$notes_mod_display = false;
+	$notes_s_count = 0;
+	$notes_m_count = 0;
 	if (!empty($config['edit_notes']))
 	{
-		$notes_list = strlen($postrow[$i]['edit_notes']) ? unserialize($postrow[$i]['edit_notes']) : array();
-		if($is_auth['auth_mod'] && (sizeof($delnote) == 2) && ($delnote[0] == $postrow[$i]['post_id']))
+		$notes_mod_display = (($user->data['user_level'] == ADMIN) || $is_auth['auth_mod']) ? true : false;
+		$notes_list_tmp = strlen($postrow[$i]['edit_notes']) ? unserialize($postrow[$i]['edit_notes']) : array();
+		foreach ($notes_list_tmp as $k => $v)
+		{
+			if ($notes_mod_display || empty($v['reserved']))
+			{
+				$notes_list[] = $v;
+				if (empty($v['reserved']))
+				{
+					$notes_s_count++;
+				}
+				else
+				{
+					$notes_m_count++;
+				}
+			}
+		}
+		if($notes_mod_display && (sizeof($delnote) == 2) && ($delnote[0] == $postrow[$i]['post_id']))
 		{
 			$new_list = array();
 			$num = intval($delnote[1]);
@@ -2065,10 +2085,6 @@ for($i = 0; $i < $total_posts; $i++)
 			$sql = "UPDATE " . POSTS_TABLE . " SET edit_notes = '" . $db->sql_escape($postrow[$i]['edit_notes']) . "' WHERE post_id = '" . $postrow[$i]['post_id'] . "'";
 			$db->sql_query($sql);
 		}
-	}
-	else
-	{
-		$notes_list = '';
 	}
 
 	$show_edit_by = (($config['always_show_edit_by'] || !$notes_list) ? true : false);
@@ -2206,7 +2222,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$is_spam_measure_enabled = (($user->data['user_level'] != ADMIN) && (intval($config['spam_posts_number']) > 0) && ($postrow[$i]['user_posts'] < (int) $config['spam_posts_number'])) ? true : false;
 	if ($is_spam_measure_enabled)
 	{
-		$message = !empty($config['spam_disable_url']) ? str_replace(array('http://', 'www.'), array('h**p://', '***.'), $bbcode->strip_only($message, array('a', 'img'))) : $message;
+		$message = !empty($config['spam_disable_url']) ? str_replace(array('http://', 'https://', 'ftp://', 'www.'), array('h**p://', 'h**ps://', 'f*p://', '***.'), $bbcode->strip_only($message, array('a', 'img'))) : $message;
 		$user_sig = !empty($config['spam_hide_signature']) ? '' : $user_sig;
 		$email_url = '';
 		$email_img = '';
@@ -2414,7 +2430,9 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_DELETE' => $delpost_url,
 
 		'L_MINI_POST_ALT' => $mini_post_alt,
-		'NOTES_COUNT' => sizeof($notes_list),
+		'NOTES_MOD_DISPLAY' => $notes_mod_display,
+		'NOTES_S_COUNT' => (int) $notes_s_count,
+		'NOTES_M_COUNT' => (int) $notes_m_count,
 		'NOTES_DATA' => $postrow[$i]['edit_notes'],
 		'DOWNLOAD_POST' => append_sid(CMS_PAGE_VIEWTOPIC . '?download=' . $postrow[$i]['post_id'] . '&amp;' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append),
 		'SINGLE_POST_NUMBER' => $single_post_number,
@@ -2628,20 +2646,22 @@ for($i = 0; $i < $total_posts; $i++)
 		{
 			$item = &$template->_tpldata['postrow.'][$i];
 			$item['notes.'] = array();
-			$item['notes_mod.'] = array();
 			$list = unserialize($item['NOTES_DATA']);
 			for($j = 0; $j < sizeof($list); $j++)
 			{
 				$notes_tpl_var_name = $list[$j]['reserved'] ? 'notes_mod.' : 'notes.';
-				$item[$notes_tpl_var_name][] = array(
-					'L_EDITED_BY' => $lang['Edited_by'],
-					'POSTER_NAME' => colorize_username($list[$j]['poster']),
-					'POSTER_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $list[$j]['poster']),
-					'TEXT' => htmlspecialchars($list[$j]['text']),
-					'TIME' => create_date_ip($config['default_dateformat'], $list[$j]['time'], $config['board_timezone']),
-					'L_DELETE_NOTE' => $lang['Delete_note'],
-					'U_DELETE' => $is_auth['auth_mod'] ? ($template->vars['U_VIEW_TOPIC'] . '&amp;delnote=' . $item['U_POST_ID'] . '.' . $j) : '',
-				);
+				if (($notes_tpl_var_name == 'notes.') || (($notes_tpl_var_name == 'notes_mod.') && $notes_mod_display))
+				{
+					$item[$notes_tpl_var_name][] = array(
+						'L_EDITED_BY' => $lang['Edited_by'],
+						'POSTER_NAME' => colorize_username($list[$j]['poster']),
+						'POSTER_PROFILE' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $list[$j]['poster']),
+						'TEXT' => htmlspecialchars($list[$j]['text']),
+						'TIME' => create_date_ip($config['default_dateformat'], $list[$j]['time'], $config['board_timezone']),
+						'L_DELETE_NOTE' => $lang['Delete_note'],
+						'U_DELETE' => $is_auth['auth_mod'] ? ($template->vars['U_VIEW_TOPIC'] . '&amp;delnote=' . $item['U_POST_ID'] . '.' . $j) : '',
+					);
+				}
 			}
 			unset($item);
 		}
@@ -2652,8 +2672,6 @@ for($i = 0; $i < $total_posts; $i++)
 	{
 		$template->assign_block_vars('postrow.cards_y', array('Y_CARD' => true));
 	}
-
-
 }
 
 $topic_useful_box = false;
