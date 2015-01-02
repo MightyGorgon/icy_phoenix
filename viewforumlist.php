@@ -254,17 +254,12 @@ if($total_topics)
 		$topic_id = $topic_rowset[$i]['topic_id'];
 		$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 
-		$topic_title = censor_text($topic_rowset[$i]['topic_title']);
-		$topic_title_clean = (empty($topic_rowset[$i]['topic_title_clean'])) ? substr(ip_clean_string($topic_title, $lang['ENCODING']), 0, 254) : $topic_rowset[$i]['topic_title_clean'];
-		if (empty($topic_rowset[$i]['topic_title_clean']))
-		{
-			update_clean_topic_title($topic_id, $topic_title_clean);
-		}
-		$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
-		$topic_title = $topic_title_prefix . $topic_title;
-		// Convert and clean special chars!
-		$topic_title = htmlspecialchars_clean($topic_title);
-		$topic_title_plain = htmlspecialchars($topic_title);
+		$topic_title_data = $class_topics->generate_topic_title($topic_id, $topic_rowset[$i], $config['last_topic_title_length']);
+		$topic_title = $topic_title_data['title'];
+		$topic_title_clean = $topic_title_data['title_clean'];
+		$topic_title_plain = $topic_title_data['title_plain'];
+		$topic_title_prefix = $topic_title_data['title_prefix'];
+		$topic_title_short = $topic_title_data['title_short'];
 
 		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
 		{

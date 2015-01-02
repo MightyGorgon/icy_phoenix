@@ -6,6 +6,7 @@
 <table class="forumline">
 <tr>
 	<th>{HEAD_TITLE}</th>
+	<th>{HEAD_HTML}</th>
 	<th>{HEAD_AUTH}</th>
 	<th>{HEAD_DATE}</th>
 	<th>{L_EDIT}</th>
@@ -14,6 +15,7 @@
 <!-- BEGIN title -->
 <tr>
 	<td class="{title.ROW_CLASS} row-center">{title.TITLE}</td>
+	<td class="{title.ROW_CLASS} row-center">{title.HTML}</td>
 	<td class="{title.ROW_CLASS} row-center">{title.PERMISSIONS}</td>
 	<td class="{title.ROW_CLASS} row-center">{title.DATE_FORMAT}</td>
 	<td class="{title.ROW_CLASS} row-center"><a href="{title.U_TITLE_EDIT}">{L_EDIT}</a></td>

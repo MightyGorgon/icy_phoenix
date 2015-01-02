@@ -175,12 +175,20 @@ DELETE FROM `phpbb_config` WHERE `config_name` = 'yahoo_search_compression_level
 
 
 
+########################################
+##              BUILD 100             ##
+########################################
+ALTER TABLE `phpbb_title_infos` ADD `title_html` VARCHAR(255) NOT NULL DEFAULT '' AFTER `title_info`;
+UPDATE `phpbb_title_infos` SET `title_html` = `title_info`;
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.13.99' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.14.100' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

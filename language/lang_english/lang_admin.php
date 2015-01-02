@@ -857,14 +857,16 @@ $lang = array_merge($lang, array(
 	'Click_return_titleadmin' => 'Click %sHere%s to return to Quick Title Management',
 	'Title_removed' => 'Quick Title Add-on removed',
 	'Quick_title_explain' => 'You can create short bits of text which you will be able to add to the title of a topic, by pushing a single button.<br />If you want the name of the person who performed the action of modifying the title to be shown, just put %mod% where you want it to be placed. For instance, [Link OK | checked by %mod%] will be displayed as [Link OK |checked by ModeratorName]. You can insert the date in the same way by placing %date% wherever you want it to appear.',
-	'Title_head' => 'Quick Title Add-on',
+	'Title_head' => 'Quick Title Addon',
+	'Title_info' => 'Quick Title',
+	'Title_html' => 'BBCode or HTML Code',
+	'Title_html_explain' => 'If you leave this field empty, then only the Quick Title text will be added',
 	'Title_auth' => 'Permissions',
 	'Administrator' => 'Administrator',
 	'Topic_poster' => 'Topic poster',
 	'Add_new_title_info' => 'Add a Quick Title Add-on',
 	'Title_perm_info' => 'Permissions',
 	'Title_perm_info_explain' => 'Users with these levels will be able to use this Quick Title Add-on',
-	'Title_info' => 'Quick Title Add-on',
 // End Quick Title Edition Mod 1.0.0 by Xavier Olive.
 
 // Limit Image Width MOD

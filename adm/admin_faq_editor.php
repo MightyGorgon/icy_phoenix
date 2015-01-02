@@ -184,7 +184,7 @@ if(!empty($mode))
 			$template->set_filenames(array('confirm' => ADM_TPL . 'confirm_body.tpl'));
 
 			$s_hidden_fields = '<input type="hidden" name="mode" value="block_del_confirm" />';
-			$s_hidden_fields .= '<input type="hidden" name="block" value="'.$block_no.'" />';
+			$s_hidden_fields .= '<input type="hidden" name="block" value="' . $block_no . '" />';
 
 			$template->assign_vars(array(
 				'MESSAGE_TITLE' => $lang['Confirm'],
@@ -526,11 +526,12 @@ if(sizeof($blocks) > 0)
 
 		if(sizeof($quests[$i]) > 0)
 		{
+			$req_file = (in_array($file, array('faq', 'bbcode')) ? 'faq' : $file) . '.' . PHP_EXT;
 			for($j = 0; $j < sizeof($quests[$i]); $j++)
 			{
 				$template->assign_block_vars('blockrow.questrow', array(
 					'QUEST_TITLE' => $quests[$i][$j][Q],
-					'U_QUEST' => append_sid(IP_ROOT_PATH . 'faq.' . PHP_EXT . '?mode=' . $file) . '#f' . $k,
+					'U_QUEST' => append_sid(IP_ROOT_PATH . $req_file . '?mode=' . $file) . '#f' . $k,
 
 					'U_QUEST_EDIT' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=quest_edit&amp;block=' . $i . '&amp;quest=' . $j . '&amp;file=' . $file . '&amp;language=' . $language),
 					'U_QUEST_MOVE_UP' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=quest_up&amp;block=' . $i . '&amp;quest=' . $j . '&amp;file=' . $file . '&amp;language=' . $language),

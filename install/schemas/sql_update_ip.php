@@ -104,6 +104,7 @@ switch ($req_version)
 	case '201298': $current_ip_version = '2.0.12.98'; break;
 	case '201399': $current_ip_version = '2.0.13.99'; break;
 	case '2014100': $current_ip_version = '2.0.14.100'; break;
+	case '2015101': $current_ip_version = '2.0.15.101'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4590,10 +4591,17 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.13.99 */
 		case '2.0.13.99':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "title_infos` ADD `title_html` VARCHAR(255) NOT NULL DEFAULT '' AFTER `title_info`";
+		$sql[] = "UPDATE `" . $table_prefix . "title_infos` SET `title_html` = `title_info`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_recurring_first_post` TINYINT(1) NOT NULL DEFAULT '0' AFTER `forum_rules_in_posting`";
+
 
 		/* Updating from IP 2.0.14.100 */
 		case '2.0.14.100':
-		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_recurring_first_post` TINYINT(1) NOT NULL DEFAULT '0' AFTER `forum_rules_in_posting`";
+
+		/* Updating from IP 2.0.15.101 */
+		case '2.0.15.101':
+
 	}
 
 	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";

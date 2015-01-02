@@ -9,6 +9,10 @@
 	<td class="row2"><input class="post" type="text" name="title_info" size="35" maxlength="255" value="{TITLE_INFO}" /></td>
 </tr>
 <tr>
+	<td class="row1" width="38%"><span class="genmed"><strong>{L_TITLE_HTML}</strong></span><br /><span class="gensmall">{L_TITLE_HTML_EXPLAIN}</span></td>
+	<td class="row2"><input class="post" type="text" name="title_html" size="35" maxlength="255" value="{TITLE_HTML}" /></td>
+</tr>
+<tr>
 	<td class="row1" width="38%"><span class="genmed"><strong>{L_PERM_INFO}</strong></span><br /><span class="gensmall">{L_PERM_EXPLAIN}</span></td>
 	<td class="row2"><span class="post"><input type="checkbox" name="admin_auth" {ADMIN_CHECKED}/>&nbsp;{ADMIN}<br /><input type="checkbox" name="mod_auth" {MOD_CHECKED}/>&nbsp;{MODERATOR}<br /><input type="checkbox" name="poster_auth" {POSTER_CHECKED}/>&nbsp;{POSTER}</span></td>
 </tr>

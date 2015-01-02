@@ -67,7 +67,7 @@ $move_all = (isset($_POST['move_all'])) ? true : false;
 $lock = (isset($_POST['lock'])) ? true : false;
 $unlock = (isset($_POST['unlock'])) ? true : false;
 $quick_title_edit = (isset($_POST['quick_title_edit'])) ? true : false;
-$qtnum = request_var('qtnum', 0);
+$qt_id = request_var('qt_id', 0);
 $merge = (isset($_POST['merge'])) ? true : false;
 $recycle = (isset($_POST['recycle'])) ? true : false;
 $sticky = (isset($_POST['sticky'])) ? true : false;
@@ -233,7 +233,7 @@ if(isset($_POST['cancel']))
 	redirect(append_sid($redirect, true));
 }
 
-if (!($mode == 'quick_title_edit'))
+if ($mode != 'quick_title_edit')
 {
 	$is_auth = auth(AUTH_ALL, $forum_id, $user->data);
 
@@ -244,9 +244,9 @@ if (!($mode == 'quick_title_edit'))
 }
 else
 {
-	if ($qtnum > -1)
+	if ($qt_id > 0)
 	{
-		$sql_qt = "SELECT * FROM " . TITLE_INFOS_TABLE . " WHERE id = $qtnum";
+		$sql_qt = "SELECT * FROM " . TITLE_INFOS_TABLE . " WHERE id = " . $db->sql_escape($qt_id);
 		$result_qt = $db->sql_query($sql_qt);
 		$qt_row = $db->sql_fetchrow($result_qt);
 		if ((($user->data['user_level'] == ADMIN) && ($qt_row['admin_auth'] == 0)) || (($user->data['user_level'] == MOD) && ($qt_row['mod_auth'] == 0)) || (($user->data['user_level'] == USER) && ($qt_row['poster_auth'] == 0)) || (($user->data['user_level'] == USER) && ($qt_row['poster_auth'] == 1) && ($user->data['user_id'] != $topic_row['topic_poster'])))
@@ -260,7 +260,10 @@ else
 		{
 			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		}
-		$qt_row = array('title_info' => '');
+		$qt_row = array(
+			'title_info' => '',
+			'title_html' => ''
+		);
 	}
 }
 // End Auth Check
@@ -908,6 +911,7 @@ switch($mode)
 		$message = $lang['No_Topics_Moved'];
 		message_die(GENERAL_MESSAGE, $message);
 		break;
+
 	case 'quick_title_edit':
 		if (empty($_POST['topic_id_list']) && empty($topic_id))
 		{
@@ -987,18 +991,36 @@ switch($mode)
 		}
 
 		// Quick Title
-		$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . " ORDER BY title_info ASC";
-		$result = $db->sql_query($sql, 0, 'topics_prefixes_', TOPICS_CACHE_FOLDER);
-		$select_title = '<select name="qtnum"><option value="-1">---</option>';
-		while ($row = $db->sql_fetchrow($result))
+		// Temporary allow all BBCode for Quick Title, and store current vars to temp arrays
+		$bbcode_allow_html_tmp = $bbcode->allow_html;
+		$bbcode_allow_bbcode_tmp = $bbcode->allow_bbcode;
+		$bbcode_allow_smilies_tmp = $bbcode->allow_smilies;
+		$bbcode->allow_html = true;
+		$bbcode->allow_bbcode = true;
+		$bbcode->allow_smilies = true;
+
+		$topic_prefixes = $class_topics->get_topic_prefixes();
+		$qt_select_data = '';
+		foreach ($topic_prefixes as $qt_id => $qt_data)
 		{
-			$addon = str_replace('%mod%', addslashes($user->data['username']), $row['title_info']);
-			$dateqt = ($row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($row['date_format'], time(), $config['board_timezone']);
-			$addon = str_replace('%date%', $dateqt, $addon);
-			$select_title .= '<option value="' . $row['id'] . '">' . htmlspecialchars($addon) . '</option>';
+			$qt_html = !empty($qt_data['title_html']) ? true : false;
+			$qt_title_prefix = !empty($qt_data['title_html']) ? $bbcode->parse($qt_data['title_html']) : $qt_data['title_info'];
+			$qt_title_prefix = str_replace('%mod%', $user->data['username'], $qt_title_prefix);
+			$qt_date = ($qt_data['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_data['date_format'], time(), $config['board_timezone']);
+			$qt_title_prefix = str_replace('%date%', $qt_date, $qt_title_prefix);
+			$qt_title_prefix = !empty($qt_html) ? $qt_title_prefix : htmlspecialchars($qt_title_prefix);
+			$qt_select_data .= '<option value="' . $qt_data['id'] . '">' . $qt_title_prefix . '</option>';
 		}
+
+		// Restore BBCode status...
+		$bbcode->allow_html = $bbcode_allow_html_tmp;
+		$bbcode->allow_bbcode = $bbcode_allow_bbcode_tmp;
+		$bbcode->allow_smilies = $bbcode_allow_smilies_tmp;
+
+		$select_title = '<select name="qt_id">';
+		$select_title .= '<option value="0">---</option>';
+		$select_title .= $qt_select_data;
 		$select_title .= '</select>';
-		$db->sql_freeresult($result);
 
 		// News
 		$sql = 'SELECT * FROM ' . NEWS_TABLE . ' ORDER BY news_category';
@@ -1121,8 +1143,6 @@ switch($mode)
 			$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
 			$topic_title = censor_text($topic_rowset[$i]['topic_title']);
-			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
-			$topic_title = $topic_title_prefix . $topic_title;
 			// Convert and clean special chars!
 			$topic_title = htmlspecialchars_clean($topic_title);
 			// SMILEYS IN TITLE - BEGIN
@@ -1132,6 +1152,8 @@ switch($mode)
 				$topic_title = $bbcode->parse_only_smilies($topic_title);
 			}
 			// SMILEYS IN TITLE - END
+			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
+			$topic_title = $topic_title_prefix . $topic_title;
 
 			//$news_label = ($topic_rowset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 			$news_label = '';

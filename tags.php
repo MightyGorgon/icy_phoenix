@@ -165,8 +165,12 @@ if ($mode == 'view')
 		//$news_label = ($line[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 		$news_label = '';
 
-		$word_censor = censor_text($topic['topic_title']);
-		$topic_title = ((empty($topic['title_compl_infos'])) ? '' : $topic['title_compl_infos'] . ' ') . ((strlen($topic['topic_title']) < $topic_length) ? $word_censor : substr(stripslashes($word_censor), 0, $topic_length) . '...');
+		$topic_title_data = $class_topics->generate_topic_title($topic_id, $line[$i], $topic_length);
+		$topic_title = $topic_title_data['title'];
+		$topic_title_clean = $topic_title_data['title_clean'];
+		$topic_title_plain = $topic_title_data['title_plain'];
+		$topic_title_prefix = $topic_title_data['title_prefix'];
+		$topic_title_short = $topic_title_data['title_short'];
 
 		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic['topic_id'], $topic['topic_type'], $topic['topic_reg'], $topic['topic_replies'], $topic['news_id'], $topic['poll_start'], $topic['topic_status'], $topic['topic_moved_id'], $topic['post_time'], $user_replied, $replies);
 
@@ -183,8 +187,6 @@ if ($mode == 'view')
 
 		$topic_tags_links = $class_topics_tags->build_tags_list_single_topic($topic['topic_tags']);
 
-		// Convert and clean special chars!
-		$topic_title = htmlspecialchars_clean($topic_title);
 		$template->assign_block_vars('row', array(
 			'CLASS' => $class,
 			'ROW_NUMBER' => $i + 1,
@@ -193,6 +195,7 @@ if ($mode == 'view')
 			'TOPIC_FOLDER_IMG' => $topic_link['image'],
 			'L_TOPIC_FOLDER_ALT' => $topic_link['image_alt'],
 			'TOPIC_TITLE' => $topic_title,
+			'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 			'TOPIC_TYPE' => $topic_link['type'],
 			'TOPIC_TYPE_ICON' => $topic_link['icon'],
 			'TOPIC_CLASS' => (!empty($topic_link['class_new']) ? ('topiclink' . $topic_link['class_new']) : $topic_link['class']),

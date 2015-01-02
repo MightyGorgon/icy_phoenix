@@ -1011,17 +1011,26 @@ if($total_topics)
 		$topic_id_append = (!empty($topic_id) ? (POST_TOPIC_URL . '=' . $topic_id) : '');
 		$user_replied = (!empty($user_topics) && isset($user_topics[$topic_id]));
 
+		$topic_title_data = $class_topics->generate_topic_title($topic_id, $topic_rowset[$i], $config['last_topic_title_length']);
+		$topic_title = $topic_title_data['title'];
+		$topic_title_clean = $topic_title_data['title_clean'];
+		$topic_title_plain = $topic_title_data['title_plain'];
+		$topic_title_prefix = $topic_title_data['title_prefix'];
+		$topic_title_short = $topic_title_data['title_short'];
+
+		// Mighty Gorgon: old $topic_title code, left here just temporary for debugging purpose
+		/*
 		$topic_title = censor_text($topic_rowset[$i]['topic_title']);
 		$topic_title_clean = (empty($topic_rowset[$i]['topic_title_clean'])) ? substr(ip_clean_string($topic_title, $lang['ENCODING']), 0, 254) : $topic_rowset[$i]['topic_title_clean'];
 		if (empty($topic_rowset[$i]['topic_title_clean']))
 		{
 			update_clean_topic_title($topic_id, $topic_title_clean);
 		}
+
 		$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
-		$topic_title = $topic_title_prefix . $topic_title;
 		// Convert and clean special chars!
 		$topic_title = htmlspecialchars_clean($topic_title);
-		$topic_title_plain = htmlspecialchars($topic_title);
+		$topic_title_plain = htmlspecialchars($topic_title_prefix . $topic_title);
 		// SMILEYS IN TITLE - BEGIN
 		if (($config['smilies_topic_title'] == true) && !$lofi)
 		{
@@ -1029,6 +1038,8 @@ if($total_topics)
 			$topic_title = $bbcode->parse_only_smilies($topic_title);
 		}
 		// SMILEYS IN TITLE - END
+		$topic_title = $topic_title_prefix . $topic_title;
+		*/
 
 		//$news_label = ($topic_rowset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 		$news_label = '';
@@ -1199,6 +1210,7 @@ if($total_topics)
 			'L_TOPIC_FOLDER_ALT' => $topic_link['image_alt'],
 			'TOPIC_AUTHOR' => $topic_author,
 			'TOPIC_TITLE' => $topic_title,
+			'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 			'TOPIC_TYPE' => $topic_link['type'],
 			'TOPIC_TYPE_ICON' => $topic_link['icon'],
 			'TOPIC_CLASS' => (!empty($topic_link['class_new']) ? ('topiclink' . $topic_link['class_new']) : $topic_link['class']),

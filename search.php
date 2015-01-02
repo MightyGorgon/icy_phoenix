@@ -1400,8 +1400,13 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 			$message = !empty($searchset[$i]['post_text']) ? $searchset[$i]['post_text'] : '';
 			$message_compiled = (empty($searchset[$i]['post_text_compiled']) || !empty($user->data['session_logged_in']) || !empty($config['posts_precompiled'])) ? false : $searchset[$i]['post_text_compiled'];
-			$topic_title = !empty($searchset[$i]['topic_title']) ? $searchset[$i]['topic_title'] : '';
-			$topic_title_prefix = (empty($searchset[$i]['title_compl_infos'])) ? '' : $searchset[$i]['title_compl_infos'] . ' ';
+
+			$topic_title_data = $class_topics->generate_topic_title($topic_id, $searchset[$i], 255);
+			$topic_title = $topic_title_data['title'];
+			$topic_title_clean = $topic_title_data['title_clean'];
+			$topic_title_plain = $topic_title_data['title_plain'];
+			$topic_title_prefix = $topic_title_data['title_prefix'];
+			$topic_title_short = $topic_title_data['title_short'];
 
 			if ($show_results == 'posts')
 			{
@@ -1442,9 +1447,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$message = preg_replace('#(?!<.*)(?<!\w)(' . $highlight_match_string . ')(?!\w|[^<>]*>)#i', '<span class="highlight-w"><b>\1</b></span>', $message);
 				}
 
-				$topic_title = censor_text($topic_title);
-				$topic_raw_title = censor_text($topic_raw_title);
-				$post_subject = !empty($searchset[$i]['post_subject']) ? censor_text($searchset[$i]['post_subject']) : $topic_title_prefix . $topic_title;
+				$post_subject = !empty($searchset[$i]['post_subject']) ? censor_text($searchset[$i]['post_subject']) : $topic_title;
 				$message = censor_text($message);
 
 				$poster = ($searchset[$i]['user_id'] != ANONYMOUS) ? colorize_username($searchset[$i]['user_id'], $searchset[$i]['username'], $searchset[$i]['user_color'], $searchset[$i]['user_active']) : (($searchset[$i]['post_username'] != '') ? $searchset[$i]['post_username'] : $lang['Guest']);
@@ -1510,8 +1513,10 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 // UPI2DB - END
 				// SELF AUTH - BEGIN
 				// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
+				$is_topic_reserved = false;
 				if (((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $user->data['user_id']))
 				{
+					$is_topic_reserved = true;
 					continue;
 					/*
 					$poster = $lang['Reserved_Author'];
@@ -1519,15 +1524,10 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					$message = $lang['Reserved_Post'];
 					*/
 				}
-				else
-				{
-					$topic_title = $topic_title_prefix . $topic_title;
-				}
 				// SELF AUTH - END
-				// Convert and clean special chars!
-				$topic_title = htmlspecialchars_clean($topic_title);
 				$template->assign_block_vars('searchresults', array(
 					'TOPIC_TITLE' => $topic_title,
+					'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 					'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $searchset[$i]['forum_id'], 'name'),
 					//'POST_SUBJECT' => $post_subject,
 					'POST_DATE' => $post_date,
@@ -1549,7 +1549,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 // UPI2DB - END
 
 					// AJAX Features - BEGIN
-					'TOPIC_RAW_TITLE' => $topic_raw_title,
+					'TOPIC_RAW_TITLE' => $topic_title_plain,
 					'POST_SUBJECT' => (empty($post_subject)) ? $lang['No_subject'] : $post_subject,
 					'POST_RAW_SUBJECT' => $post_subject,
 					'RAW_MESSAGE' => $raw_message,
@@ -1574,7 +1574,13 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			else
 			{
 				$message = '';
-				$topic_title = censor_text($searchset[$i]['topic_title']);
+
+				$topic_title_data = $class_topics->generate_topic_title($topic_id, $searchset[$i], 255);
+				$topic_title = $topic_title_data['title'];
+				$topic_title_clean = $topic_title_data['title_clean'];
+				$topic_title_plain = $topic_title_data['title_plain'];
+				$topic_title_prefix = $topic_title_data['title_prefix'];
+				$topic_title_short = $topic_title_data['title_short'];
 
 				//$news_label = ($searchset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 				$news_label = '';
@@ -1720,18 +1726,16 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 				// SELF AUTH - BEGIN
 				// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
+				$is_topic_reserved = false;
 				if (((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && ($config['allow_mods_view_self'] == false))) && (intval($is_auth_ary[$searchset[$i]['forum_id']]['auth_read']) == AUTH_SELF) && ($searchset[$i]['user_id'] != $user->data['user_id']))
 				{
+					$is_topic_reserved = true;
 					continue;
 					/*
 					$topic_author = $lang['Reserved_Author'];
 					$last_post_author = $lang['Reserved_Author'];
 					$topic_title = $lang['Reserved_Topic'];
 					*/
-				}
-				else
-				{
-					$topic_title = $topic_title_prefix . $topic_title;
 				}
 				// SELF AUTH - END
 
@@ -1748,8 +1752,6 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				// Edited By Mighty Gorgon - END
 // UPI2DB - END
 
-				// Convert and clean special chars!
-				$topic_title = htmlspecialchars_clean($topic_title);
 				$template->assign_block_vars('searchresults', array(
 					'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 					'FORUM_NAME' => get_object_lang(POST_FORUM_URL . $searchset[$i]['forum_id'], 'name'),
@@ -1760,6 +1762,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 					'L_TOPIC_FOLDER_ALT' => $topic_link['image_alt'],
 					'TOPIC_AUTHOR' => $topic_author,
 					'TOPIC_TITLE' => $topic_title,
+					'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 					'TOPIC_TYPE' => $topic_link['type'],
 					'TOPIC_TYPE_ICON' => $topic_link['icon'],
 					'TOPIC_CLASS' => (!empty($topic_link['class_new']) ? ('topiclink' . $topic_link['class_new']) : $topic_link['class']),

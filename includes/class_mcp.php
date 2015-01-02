@@ -655,14 +655,21 @@ class class_mcp
 	*/
 	function topic_quick_title_edit($topics_ids, $qt_row)
 	{
-		global $db, $cache, $config, $user, $lang;
+		global $db, $cache, $config, $bbcode, $user, $lang;
 
-		$addon = str_replace('%mod%', addslashes($user->data['username']), $qt_row['title_info'] . ' ');
-		$dateqt = ($qt_row['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_row['date_format'], time(), $config['board_timezone']);
-		$addon = str_replace('%date%', $dateqt, $addon);
+		if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		if (empty($bbcode)) $bbcode = new bbcode();
+		$bbcode->allow_html = true;
+		$bbcode->allow_bbcode = true;
+		$bbcode->allow_smilies = true;
+
+		$title_prefix = !empty($qt_row['title_html']) ? $bbcode->parse($qt_row['title_html']) : $qt_row['title_info'];
+		$title_prefix = str_replace('%mod%', $user->data['username'], $title_prefix);
+		$qt_date = empty($qt_row['date_format']) ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_row['date_format'], time(), $config['board_timezone']);
+		$title_prefix = str_replace('%date%', $qt_date, $title_prefix);
 
 		$sql = "UPDATE " . TOPICS_TABLE . "
-			SET title_compl_infos = '" . addslashes($addon) . "'
+			SET title_compl_infos = '" . $db->sql_escape(trim($title_prefix)) . "'
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
 				AND topic_moved_id = 0";
 		$result = $db->sql_query($sql);

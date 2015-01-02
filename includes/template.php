@@ -2144,7 +2144,7 @@ class Template {
 	*/
 	function _add_config($tpl, $add_vars = true)
 	{
-				if(@file_exists(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg'))
+		if(@file_exists(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg'))
 		{
 			$style_config = array();
 			include(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg');
@@ -2189,7 +2189,7 @@ class Template {
 	*/
 	function _refresh_config($tpl, $add_vars = false)
 	{
-				if(@file_exists(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg'))
+		if(@file_exists(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg'))
 		{
 			$style_config = array();
 			include(IP_ROOT_PATH . 'templates/' . $tpl . '/xs_config.cfg');
