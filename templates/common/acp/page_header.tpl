@@ -24,4 +24,4 @@
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">
 <tr>
 	<td width="100%" valign="top">
-	<a id="top"></a>
+	<a id="top">&nbsp;</a>

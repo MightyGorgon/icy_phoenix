@@ -291,6 +291,7 @@ $template->assign_vars(array(
 	'L_JOINED' => $lang['Joined'],
 	'L_REGISTERED_AWAITS' => ($action == 'inactive') ? $lang['Account_awaits'] : $lang['Account_registered'],
 	'L_ACTIVATION' => $l_activation,
+	'L_POSTS_ANDOR_PICS' => empty($config['plugins']['album']['enabled']) ? $lang['Posts'] : $lang['POSTS_PICS'],
 	'TOTAL_USERS' => ($total_users == '1') ? sprintf($lang['Account_total_user'], $total_users) : sprintf($lang['Account_total_users'], $total_users),
 	'PAGINATION' => ($total_users == '0') ? '' : generate_pagination('admin_account.' . PHP_EXT . '?action=' . $action . '&amp;letter=' . $by_letter, $total_users, $config['topics_per_page'], $start),
 	'PAGE_NUMBER' => ($total_users == '0') ? '' : sprintf($lang['Page_of'], (floor($start / $config['topics_per_page']) + 1), ceil($total_users / $config['topics_per_page'])),
@@ -319,16 +320,19 @@ if($row = $db->sql_fetchrow($result))
 		$total_posts = $row_posts['total_posts'];
 		$db->sql_freeresult($result_posts);
 
-		$sql_pics_count = "SELECT COUNT(pic_id) AS total_pics
-			FROM " . ALBUM_TABLE . "
-			WHERE pic_user_id = " . $user_id;
-		$result_pics = $db->sql_query($sql_pics_count);
-		$row_pics = $db->sql_fetchrow($result_pics);
-		$total_pics = $row_pics['total_pics'];
-		$db->sql_freeresult($result_pics);
-
 		$email_url = ($config['board_email_form']) ? append_sid('../' . CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL . '=' . $user_id) : 'mailto:' . $row['user_email'];
 		$email = '<a href="' . $email_url . '" class="gensmall">' . $row['user_email'] . '</a>';
+
+		if (!empty($config['plugins']['album']['enabled']))
+		{
+			$sql_pics_count = "SELECT COUNT(pic_id) AS total_pics
+				FROM " . ALBUM_TABLE . "
+				WHERE pic_user_id = " . $user_id;
+			$result_pics = $db->sql_query($sql_pics_count);
+			$row_pics = $db->sql_fetchrow($result_pics);
+			$total_pics = $row_pics['total_pics'];
+			$db->sql_freeresult($result_pics);
+		}
 
 		$i++;
 		$template->assign_block_vars('admin_account', array(
@@ -337,23 +341,23 @@ if($row = $db->sql_fetchrow($result))
 			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
 			'EMAIL' => $email,
 			'POSTS' => $total_posts,
-			'PICS' => $total_pics,
 			'JOINED' => create_date($config['default_dateformat'], $row['user_regdate'], $config['board_timezone']),
 			'PERIOD' => period(time() - $row['user_regdate']),
 			'U_EDIT_USER' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $user_id),
 			'U_USER_AUTH' => append_sid('admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $user_id),
 			'S_MARK_ID' => $user_id,
+			'PICS' => !empty($total_pics) ? $total_pics : null,
 			)
 		);
 	}
 	while($row = $db->sql_fetchrow($result));
-	$db->sql_freeresult($result);
 }
 else
 {
 	$template->assign_vars(array('L_NO_USERS' => $lang['Account_none']));
 	$template->assign_block_vars('switch_no_users', array());
 }
+$db->sql_freeresult($result);
 
 $template->pparse('body');
 include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);

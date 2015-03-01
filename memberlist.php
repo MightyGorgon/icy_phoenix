@@ -623,9 +623,6 @@ if (sizeof($user_list))
 			$yahoo_url = '';
 			$yahoo_img = '';
 			$yahoo = '';
-			$album_url = '';
-			$album_img = '';
-			$album = '';
 			$online_status_url = '';
 			$online_status_img = '';
 			$online_img = '';

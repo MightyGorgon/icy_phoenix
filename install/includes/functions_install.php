@@ -988,7 +988,7 @@ class ip_page
 		echo('	<![endif]-->' . "\n");
 		echo('</head>' . "\n");
 		echo('<body>' . "\n");
-		echo('<span><a id="top"></a></span>' . "\n");
+		echo('<span><a id="top">&nbsp;</a></span>' . "\n");
 		echo('<div id="global-wrapper"><div id="wrapper"><div id="wrapper1"><div id="wrapper2"><div id="wrapper3"><div id="wrapper4"><div id="wrapper5"><div id="wrapper6"><div id="wrapper7"><div id="wrapper-inner">' . "\n");
 
 		if ($write_form == true)
@@ -1048,7 +1048,7 @@ class ip_page
 			echo('</form>' . "\n");
 		}
 		echo('</div></div></div></div></div></div></div></div></div></div>' . "\n");
-		echo('<span><a id="bottom"></a></span>' . "\n");
+		echo('<span><a id="bottom">&nbsp;</a></span>' . "\n");
 		echo('</body>' . "\n");
 		echo('</html>');
 	}

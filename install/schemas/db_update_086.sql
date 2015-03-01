@@ -97,11 +97,11 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_faceb
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app_id', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app_secret', '');
 DELETE FROM `phpbb_config` WHERE `config_name` = 'index_links';
-DELETE FROM `phpbb_cms_blocks` WHERE bs_id = (SELECT bs_id FROM `phpbb_cms_block_settings` WHERE blockfile = 'links');
+DELETE FROM `phpbb_cms_blocks` WHERE bs_id IN (SELECT bs_id FROM `phpbb_cms_block_settings` WHERE blockfile = 'links');
 DELETE FROM `phpbb_cms_block_variable` WHERE block = 'links';
 DELETE FROM `phpbb_cms_block_settings` WHERE blockfile = 'links';
 DELETE FROM `phpbb_cms_layout_special` WHERE page_id = 'links';
-DELETE FROM `phpbb_cms_nav_menu` WHERE menu_links = 'links.php';
+DELETE FROM `phpbb_cms_nav_menu` WHERE menu_link = 'links.php';
 
 
 
@@ -183,12 +183,32 @@ UPDATE `phpbb_title_infos` SET `title_html` = `title_info`;
 
 
 
+########################################
+##              BUILD 101             ##
+########################################
+ALTER TABLE `phpbb_plugins` ADD `plugin_constants` TINYINT(2) NOT NULL DEFAULT 0 AFTER `plugin_enabled`;
+ALTER TABLE `phpbb_plugins` ADD `plugin_common` TINYINT(2) NOT NULL DEFAULT 0 AFTER `plugin_constants`;
+ALTER TABLE `phpbb_plugins` ADD `plugin_functions` TINYINT(2) NOT NULL DEFAULT 0 AFTER `plugin_common`;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_s_size', '120');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_cols', '4');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_rows', '5');
+
+UPDATE `phpbb_plugins` SET `plugin_functions` = '1' WHERE `phpbb_plugins`.`plugin_name` = 'cash';
+
+DELETE FROM `phpbb_cms_blocks` WHERE bs_id IN (SELECT bs_id FROM `phpbb_cms_block_settings` WHERE blockfile = 'album');
+DELETE FROM `phpbb_cms_block_variable` WHERE block = 'album';
+DELETE FROM `phpbb_cms_block_settings` WHERE blockfile = 'album';
+DELETE FROM `phpbb_cms_layout_special` WHERE page_id = 'album';
+DELETE FROM `phpbb_cms_nav_menu` WHERE menu_link = 'album.php';
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.14.100' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.15.101' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

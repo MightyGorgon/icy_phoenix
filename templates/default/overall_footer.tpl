@@ -36,7 +36,7 @@
 
 <!-- IF GF_BLOCK --><!-- BEGIN gfooter_blocks_row -->{gfooter_blocks_row.CMS_BLOCK}<!-- END gfooter_blocks_row --><!-- ENDIF -->
 {BOTTOM_HTML_BLOCK}
-<span><a id="bottom"></a></span>
+<span><a id="bottom">&nbsp;</a></span>
 <!-- IF not S_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
 
 </div>

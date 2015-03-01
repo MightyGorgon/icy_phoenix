@@ -26,6 +26,8 @@ class class_plugins
 	var $plugins_path = '';
 	var $plugins_settings_path = '';
 
+	var $plugin_includes_array = array('constants', 'common', 'functions');
+
 	var $config = array();
 	var $settings = array();
 	var $modules = array();
@@ -72,6 +74,10 @@ class class_plugins
 		$plugin_data['name'] = $plugin_info['config'];
 		$plugin_data['version'] = $plugin_info['version'];
 		$plugin_data['enabled'] = 1;
+		foreach ($this->plugin_includes_array as $plugin_include)
+		{
+			$plugin_data[$plugin_include] = $plugin_info[$plugin_include];
+		}
 		$this->set_config($plugin_data, false, true);
 
 		if ($clear_cache)
@@ -114,6 +120,10 @@ class class_plugins
 		}
 
 		$plugin_data['version'] = !empty($plugin_info['version']) ? $plugin_info['version'] : $plugin_data['version'];
+		foreach ($this->plugin_includes_array as $plugin_include)
+		{
+			$plugin_data[$plugin_include] = $plugin_info[$plugin_include];
+		}
 		$this->set_config($plugin_data, true, true);
 
 		if ($clear_cache)
@@ -298,6 +308,10 @@ class class_plugins
 				'version' => (!empty($plugin_details['version']) ? $plugin_details['version'] : '1.0.0'),
 				'description' => (!empty($plugin_details['description']) ? $plugin_details['description'] : ''),
 			);
+			foreach ($this->plugin_includes_array as $plugin_include)
+			{
+				$plugin_info[$plugin_include] = !empty($plugin_details[$plugin_include]) ? 1 : 0;
+			}
 		}
 
 		return $plugin_info;
@@ -413,6 +427,10 @@ class class_plugins
 				'dir' => !empty($plugin_data_input['plugin_dir']) ? $plugin_data_input['plugin_dir'] : (!empty($plugin_data['dir']) ? $plugin_data['dir'] : ''),
 				'enabled' => !empty($plugin_data_input['plugin_enabled']) ? $plugin_data_input['plugin_enabled'] : (!empty($plugin_data['enabled']) ? $plugin_data['enabled'] : 0),
 			);
+			foreach ($this->plugin_includes_array as $plugin_include)
+			{
+				$plugin_data_map[$plugin_include] = !empty($plugin_data_input['plugin_' . $plugin_include]) ? $plugin_data_input['plugin_' . $plugin_include] : (!empty($plugin_data[$plugin_include]) ? $plugin_data[$plugin_include] : 0);
+			}
 		}
 
 		return $plugin_data_map;
@@ -430,6 +448,10 @@ class class_plugins
 			'plugin_dir' => !empty($plugin_data['dir']) ? $plugin_data['dir'] : $plugin_data['name'],
 			'plugin_enabled' => !empty($plugin_data['enabled']) ? $plugin_data['enabled'] : '0'
 		);
+		foreach ($this->plugin_includes_array as $plugin_include)
+		{
+			$plugin_data_sql['plugin_' . $plugin_include] = !empty($plugin_data[$plugin_include]) ? 1 : 0;
+		}
 		$db->sql_build_insert_update($plugin_data_sql, true);
 
 		$sql = "UPDATE " . PLUGINS_TABLE . " SET " . $db->sql_build_insert_update($plugin_data_sql, false) . "

@@ -179,10 +179,12 @@ function openAllSmiles()
 					<a href="javascript:BBCimgba()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_link_ba{BBCB_MG_IMG_EXT}" name="imgba" onmouseover="helpline('imgba')" alt="{L_BBCB_MG_IMGBA}" title="{L_BBCB_MG_IMGBA}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
 
+					<!-- IF PLUGIN_ALBUM -->
 					<a href="javascript:BBCalbumimgl()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_gall{BBCB_MG_IMG_EXT}" name="albumimgl" onmouseover="helpline('albumimgl')" alt="{L_BBCB_MG_ALBUMIMGL}" title="{L_BBCB_MG_ALBUMIMGL}" class="bbimages" /></a>
 					<a href="javascript:BBCalbumimg()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_gal{BBCB_MG_IMG_EXT}" name="albumimg" onmouseover="helpline('albumimg')" alt="{L_BBCB_MG_ALBUMIMG}" title="{L_BBCB_MG_ALBUMIMG}" class="bbimages" /></a>
 					<a href="javascript:BBCalbumimgr()"><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}image_galr{BBCB_MG_IMG_EXT}" name="albumimgr" onmouseover="helpline('albumimgr')" alt="{L_BBCB_MG_ALBUMIMGR}" title="{L_BBCB_MG_ALBUMIMGR}" class="bbimages" /></a>
 					<span class="genmed">&nbsp;&nbsp;</span>
+					<!-- ENDIF -->
 
 					<a href="javascript:BBCspoiler()" ><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}spoiler{BBCB_MG_IMG_EXT}" name="spoiler" onmouseover="helpline('spoiler')" alt="{L_BBCB_MG_SPOILER}" title="{L_BBCB_MG_SPOILER}" class="bbimages" /></a>
 					<a href="javascript:BBCcell()" ><img src="{FULL_SITE_PATH}{BBCB_MG_IMG_PATH}cell{BBCB_MG_IMG_EXT}" name="cell" onmouseover="helpline('cell')" alt="{L_BBCB_MG_CELL}" title="{L_BBCB_MG_CELL}" class="bbimages" /></a>

@@ -343,19 +343,29 @@ if ($lang_extend_admin)
 
 		'IP_show_img_no_gd' => 'Show GIF thumbnails without using GD libraries (full images are loaded and then just shown resized).',
 
-		'IP_thumbnail_posts' => 'Thumbnails in posts',
+		'IP_thumbnail_posts' => 'Thumbnails In Posts',
 		'IP_thumbnail_posts_explain' => 'With this option a thumbnail will be shown instead of a full picture when an image is posted using IMG BBCode',
 
-		'IP_show_pic_size_on_thumb' => 'Show image size on thumbnail',
+		'IP_show_pic_size_on_thumb' => 'Show Image Size On Thumbnails',
 
 		'IP_thumbnail_highslide' => 'Use HighSlide to show images if thumbnails are enabled',
 		'IP_thumbnail_highslide_explain' => 'Opens the image in front of the current page instead of opening it in a new window. More about <a href="http://www.highslide.com/" target="_blank">HighSlide JS...</a><br />Make sure you empty the precompiled posts after changing this setting!',
 
-		'IP_thumbnail_cache' => 'Thumbnails cache',
+		'IP_thumbnail_cache' => 'Thumbnails Cache',
 
-		'IP_thumbnail_quality' => 'Thumbnails quality (1-100)',
+		'IP_thumbnail_quality' => 'Thumbnails Quality (1-100)',
 
-		'IP_thumbnail_size' => 'Thumbnails size (in pixels)',
+		'IP_thumbnail_size' => 'Post Thumbnails Size (in pixels, default = 450)',
+		'IP_thumbnail_size_explain' => 'All pictures in posts will be resized to this size if the option to display &quot;Thumbnails In Posts&quot; is enabled',
+
+		'IP_thumbnail_s_size' => 'Images List Thumbnails Size (in pixels, default = 120)',
+		'IP_thumbnail_s_size_explain' => 'Size for pictures in images lists pages',
+
+		'IP_img_list_cols' => 'Images List Columns (default = 4)',
+		'IP_img_list_cols_explain' => 'Number of columns in Images List page',
+
+		'IP_img_list_rows' => 'Images List Rows (default = 5)',
+		'IP_img_list_cols_explain' => 'Number of rows in Images List page',
 
 // TAB - Forum
 		'Lang_extend_categories_hierarchy' => 'Categories Hierarchy',

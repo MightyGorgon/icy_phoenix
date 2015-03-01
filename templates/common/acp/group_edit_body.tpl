@@ -57,8 +57,10 @@ last_username = '{GROUP_MODERATOR}';
 <tr>
 	<td class="row1"><span class="gen">{L_GROUP_COLOR}:</span></td>
 	<td class="row2">
-		#<input class="post" type="text" name="group_color" size="9" maxlength="7" value="{GROUP_COLOR}" onblur="ColorExample(this.value);" />&nbsp;
-		[ <span id="color_group_example"{GROUP_COLOR_STYLE}>{L_EXAMPLE}</span> ]
+		<div style="vertical-align: middle; padding: 4px; ">
+			#<input class="post" type="text" name="group_color" size="9" maxlength="7" value="{GROUP_COLOR}" onblur="ColorExample(this.value);" />&nbsp;
+			[ <span id="color_group_example"{GROUP_COLOR_STYLE}>{L_EXAMPLE}</span> ]
+		</div>
 	</td>
 </tr>
 <tr>
@@ -66,12 +68,19 @@ last_username = '{GROUP_MODERATOR}';
 	<td class="row2"><input type="checkbox" name="group_legend" {GROUP_LEGEND_CHECKED} value="1">{L_YES}</td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_GROUP_COUNT}:<br />{L_GROUP_COUNT_MAX}:</span><br />
-	<span class="gensmall">{L_GROUP_COUNT_EXPLAIN}</span></td>
-	<td class="row2"><input type="text" class="post" name="group_count" maxlength="12" size="12" value="{GROUP_COUNT}" /><br /><input type="text" class="post" name="group_count_max" maxlength="12" size="12" value="{GROUP_COUNT_MAX}" />
-	<br />&nbsp;&nbsp; <span class="gen"></span><input type="checkbox" name="group_count_enable" {GROUP_COUNT_ENABLE_CHECKED} >&nbsp;{L_GROUP_COUNT_ENABLE}
-	<br />&nbsp;&nbsp; <input type="checkbox" name="group_count_update" value="0"/>&nbsp;{L_GROUP_COUNT_UPDATE}
-	<br />&nbsp;&nbsp; <input type="checkbox" name="group_count_delete" value="0"/>&nbsp;{L_GROUP_COUNT_DELETE}</span>
+	<td class="row1"><span class="gen">{L_GROUP_COUNT}:</span><br /><span class="gensmall">{L_GROUP_COUNT_EXPLAIN}</span></td>
+	<td class="row2"><input type="text" class="post" name="group_count" maxlength="12" size="12" value="{GROUP_COUNT}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_GROUP_COUNT_MAX}:</span><br /><span class="gensmall">{L_GROUP_COUNT_MAX_EXPLAIN}</span></td>
+	<td class="row2"><input type="text" class="post" name="group_count_max" maxlength="12" size="12" value="{GROUP_COUNT_MAX}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_AUTOGROUP_OPTIONS}</span></td>
+	<td class="row2">
+		<span class="gen"><input type="checkbox" name="group_count_enable" {GROUP_COUNT_ENABLE_CHECKED} >&nbsp;{L_GROUP_COUNT_ENABLE}</span><br />
+		<span class="gen"><input type="checkbox" name="group_count_update" value="0"/>&nbsp;{L_GROUP_COUNT_UPDATE}</span><br />
+		<span class="gen"><input type="checkbox" name="group_count_delete" value="0"/>&nbsp;{L_GROUP_COUNT_DELETE}</span>
 	</td>
 </tr>
 <!-- BEGIN group_edit -->

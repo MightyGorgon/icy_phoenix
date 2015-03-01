@@ -993,13 +993,18 @@ class class_mcp
 
 		if ($is_post_count)
 		{
-			$sql = "UPDATE " . USERS_TABLE . " SET user_posts = (user_posts + 1) WHERE user_id = '" . $poster_id . "'";
-			$result = $db->sql_query($sql);
+			if ($poster_id != ANONYMOUS)
+			{
+				$sql = "UPDATE " . USERS_TABLE . " SET user_posts = (user_posts + 1) WHERE user_id = '" . $poster_id . "'";
+				$result = $db->sql_query($sql);
+				$this->autogroup($poster_id);
+			}
 
 			if ($old_poster_id != ANONYMOUS)
 			{
 				$sql = "UPDATE " . USERS_TABLE . " SET user_posts = (user_posts - 1) WHERE user_id = '" . $old_poster_id . "'";
 				$result = $db->sql_query($sql);
+				$this->autogroup($old_poster_id);
 			}
 		}
 
@@ -1202,12 +1207,12 @@ class class_mcp
 					{
 						// There are no replies to this topic
 						// Check if it is a move stub
-						$sql = 'SELECT topic_moved_id
+						$sql_move = 'SELECT topic_moved_id
 							FROM ' . TOPICS_TABLE . "
 							WHERE topic_id = " . (int) $id;
-						$result = $db->sql_query($sql);
+						$result_move = $db->sql_query($sql_move);
 
-						if ($row = $db->sql_fetchrow($result))
+						if ($row = $db->sql_fetchrow($result_move))
 						{
 							if (!$row['topic_moved_id'])
 							{
@@ -1216,9 +1221,10 @@ class class_mcp
 							}
 						}
 
-						$db->sql_freeresult($result);
+						$db->sql_freeresult($result_move);
 					}
 				}
+				$db->sql_freeresult($result);
 				if (!function_exists('attachment_sync_topic'))
 				{
 					include(IP_ROOT_PATH . ATTACH_MOD_PATH . 'includes/functions_delete.' . PHP_EXT);
@@ -1237,7 +1243,7 @@ class class_mcp
 	*/
 	function sync_cache($forums_ids, $topics_ids)
 	{
-		global $db, $cache, $lang;
+		global $db, $cache, $config, $lang;
 
 		empty_cache_folders(POSTS_CACHE_FOLDER);
 		empty_cache_folders(FORUMS_CACHE_FOLDER);
@@ -1276,7 +1282,7 @@ class class_mcp
 	*/
 	function sync_topic_details($topic_id, $forum_id, $all_data_only = true, $skip_all_data = false)
 	{
-		global $db, $cache;
+		global $db, $cache, $config, $lang;
 
 		if (empty($all_data_only))
 		{
@@ -1330,7 +1336,7 @@ class class_mcp
 	*/
 	function sync_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_id, &$user_id)
 	{
-		global $db, $config;
+		global $db, $cache, $config, $lang;
 
 		if (!function_exists('update_user_color') || !function_exists('update_user_posts_details'))
 		{
@@ -1424,6 +1430,7 @@ class class_mcp
 			{
 				$postcount = false;
 			}
+			$db->sql_freeresult($result);
 			// Disable Post count - END
 
 			$this->sync_topic_details($topic_id, $forum_id, false, false);
@@ -1453,46 +1460,76 @@ class class_mcp
 					}
 				}
 
-				$sql = "SELECT ug.user_id, g.group_id as g_id, u.user_posts, u.group_id, u.user_color, g.group_count, g.group_color, g.group_count_max FROM (" . GROUPS_TABLE . " g, " . USERS_TABLE . " u)
-						LEFT JOIN ". USER_GROUP_TABLE." ug ON g.group_id = ug.group_id AND ug.user_id = '" . $user_id . "'
-						WHERE u.user_id = '" . $user_id . "'
-						AND g.group_single_user = '0'
-						AND g.group_count_enable = '1'
-						AND g.group_moderator <> '" . $user_id . "'";
-				$result = $db->sql_query($sql);
-
-				while ($group_data = $db->sql_fetchrow($result))
+				if ($user_id != ANONYMOUS)
 				{
-					$user_already_added = (empty($group_data['user_id'])) ? false : true;
-					$user_add = (($group_data['group_count'] == $group_data['user_posts']) && ($user_id != ANONYMOUS)) ? true : false;
-					$user_remove = ($group_data['group_count'] > $group_data['user_posts'] || $group_data['group_count_max'] < $group_data['user_posts']) ? true : false;
-					if ($user_add && !$user_already_added)
-					{
-						update_user_color($user_id, $group_data['group_color'], $group_data['g_id'], false, false);
-						update_user_posts_details($user_id, $group_data['group_color'], '', false, false);
-						empty_cache_folders(USERS_CACHE_FOLDER);
-						//user join a autogroup
-						$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
-							VALUES (" . $group_data['g_id'] . ", $user_id, '0')";
-						$db->sql_query($sql);
-					}
-					elseif ($user_already_added && $user_remove)
-					{
-						update_user_color($user_id, $config['active_users_color'], 0);
-						update_user_posts_details($user_id, '', '', false, false);
-						empty_cache_folders(USERS_CACHE_FOLDER);
-						//remove user from auto group
-						$sql = "DELETE FROM " . USER_GROUP_TABLE . "
-							WHERE group_id = '" . $group_data['g_id'] . "'
-							AND user_id = '" . $user_id . "'";
-						$db->sql_query($sql);
-					}
+					$this->autogroup($user_id);
 				}
 			}
 
 			$this->sync_cache(0, 0);
 			board_stats();
 			cache_tree(true);
+		}
+
+		return;
+	}
+
+	/*
+	* Autogroup check
+	*/
+	function autogroup($user_id)
+	{
+		global $db, $cache, $config, $lang;
+
+		if ($user_id != ANONYMOUS)
+		{
+			if (!function_exists('update_user_color') || !function_exists('update_user_posts_details'))
+			{
+				include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
+			}
+
+			$sql = "SELECT ug.user_id, g.group_id as g_id, u.user_posts, u.group_id, u.user_color, g.group_count, g.group_color, g.group_count_max FROM (" . GROUPS_TABLE . " g, " . USERS_TABLE . " u)
+					LEFT JOIN ". USER_GROUP_TABLE." ug ON g.group_id = ug.group_id AND ug.user_id = '" . $user_id . "'
+					WHERE u.user_id = '" . $user_id . "'
+					AND g.group_single_user = '0'
+					AND g.group_count_enable = '1'
+					AND g.group_moderator <> '" . $user_id . "'";
+			$result = $db->sql_query($sql);
+
+			$user_cache_refresh = false;
+			while ($group_data = $db->sql_fetchrow($result))
+			{
+				$user_already_added = empty($group_data['user_id']) ? false : true;
+				$user_add = (($group_data['user_posts'] >= $group_data['group_count']) && ($group_data['user_posts'] < $group_data['group_count_max'])) ? true : false;
+				$user_remove = (($group_data['user_posts'] < $group_data['group_count']) || ($group_data['user_posts'] >= $group_data['group_count_max'])) ? true : false;
+				if ($user_add && !$user_already_added)
+				{
+					update_user_color($user_id, $group_data['group_color'], $group_data['g_id'], false, false);
+					update_user_posts_details($user_id, $group_data['group_color'], '', false, false);
+					$user_cache_refresh = true;
+					//user join a autogroup
+					$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
+						VALUES (" . $group_data['g_id'] . ", $user_id, '0')";
+					$db->sql_query($sql);
+				}
+				elseif ($user_already_added && $user_remove)
+				{
+					update_user_color($user_id, $config['active_users_color'], 0);
+					update_user_posts_details($user_id, '', '', false, false);
+					$user_cache_refresh = true;
+					//remove user from auto group
+					$sql = "DELETE FROM " . USER_GROUP_TABLE . "
+						WHERE group_id = '" . $group_data['g_id'] . "'
+						AND user_id = '" . $user_id . "'";
+					$db->sql_query($sql);
+				}
+			}
+			$db->sql_freeresult($result);
+
+			if (!empty($user_cache_refresh))
+			{
+				empty_cache_folders(USERS_CACHE_FOLDER);
+			}
 		}
 
 		return;

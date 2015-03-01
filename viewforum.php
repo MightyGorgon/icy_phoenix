@@ -213,6 +213,7 @@ else // we have a single letter, so let's sort alphabetically...
 {
 	$sort_dir = 'ASC';
 	$sort_order_sql = "t.topic_title " . $sort_dir;
+	//$start_letter_sql = "AND t.topic_title LIKE '" . $db->sql_escape($start_letter) . "%'";
 	$start_letter_sql = "AND UPPER(SUBSTR(t.topic_title, 1, 1)) = '" . $db->sql_escape($start_letter) . "'";
 }
 // Topics Sorting - END

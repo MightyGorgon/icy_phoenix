@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<a id="top"></a>
+<a id="top">&nbsp;</a>
 	<div id="wrapper">
 		<div id="navigation">
 			<b><a href="{FULL_SITE_PATH}{U_INDEX}">{SITENAME}</a></b><br />

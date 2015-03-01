@@ -1571,23 +1571,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$yahoo = $all_ims['yahoo']['plain'];
 		$yahoo_url = $all_ims['yahoo']['url'];
 
-		// --- Smart Album Button BEGIN ----------------
-		$album_url = '';
-		$album_switch = false;
-		if ($postrow[$i]['user_personal_pics_count'] > 0)
-		{
-			$album_switch = true;
-			$album_url = ($postrow[$i]['user_personal_pics_count']) ? append_sid('album.' . PHP_EXT . '?user_id=' . $postrow[$i]['user_id']) : '';
-			$album_img = ($postrow[$i]['user_personal_pics_count']) ? '<a href="' . $album_url . '"><img src="' . $images['icon_album'] . '" alt="' . $lang['Show_Personal_Gallery'] . '" title="' . $lang['Show_Personal_Gallery'] . '" /></a>' : '';
-			$album = ($postrow[$i]['user_personal_pics_count']) ? '<a href="' . $album_url . '">' . $lang['Show_Personal_Gallery'] . '</a>' : '';
-		}
-		else
-		{
-			$album_img = '';
-			$album = '';
-		}
-		// --- Smart Album Button END ----------------
-
 		// Gender - BEGIN
 		$gender_male_switch = false;
 		$gender_female_switch = false;
@@ -1670,9 +1653,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$yahoo_url = '';
 		$yahoo_img = '';
 		$yahoo = '';
-		$album_url = '';
-		$album_img = '';
-		$album = '';
 		$online_status_url = '';
 		$online_status_img = '';
 	}
@@ -2246,9 +2226,6 @@ for($i = 0; $i < $total_posts; $i++)
 		$yahoo_url = '';
 		$yahoo_img = '';
 		$yahoo = '';
-		$album_url = '';
-		$album_img = '';
-		$album = '';
 	}
 	// Antispam Measures - END
 
@@ -2335,8 +2312,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'SKYPE' => $skype,
 		'YIM_IMG' => $yahoo_img,
 		'YIM' => $yahoo,
-		'ALBUM_IMG' => $album_img,
-		'ALBUM' => $album,
+
 		'POSTER_ONLINE_STATUS_IMG' => $online_status_img,
 
 		'S_THIS_POSTER_MASK' => !empty($this_poster_mask) ? true : false,
@@ -2345,7 +2321,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'S_POST_DELETE' => $delpost_switch,
 		'S_USER_ALLOW_VIEWEMAIL' => $email_switch,
 		'S_USER_WEBSITE' => $postrow[$i]['user_website'],
-		'S_USER_ALBUM' => $album_switch,
 
 		'L_S_POST_EDIT' => $lang['Edit_delete_post'],
 		'L_S_POST_DELETE' => $lang['Delete_post'],
@@ -2354,7 +2329,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'L_SEND_PRIVMSG' => $lang['Send_private_message'],
 		'L_SEND_EMAIL' => $lang['Send_email'],
 		'L_USER_WEBSITE' => $lang['Visit_website'],
-		'L_S_USER_ALBUM' => $lang['Show_Personal_Gallery'],
 
 		'U_POST_EDIT' => append_sid('posting.' . PHP_EXT . '?mode=editpost&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']),
 		'U_POST_DELETE' => append_sid('posting.' . PHP_EXT . '?mode=delete&amp;' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;' . POST_POST_URL . '=' . $postrow[$i]['post_id']),
@@ -2363,7 +2337,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_SEND_PRIVMSG' => append_sid(CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '=' . $poster_id),
 		'U_SEND_EMAIL' => ($config['board_email_form']) ? append_sid(CMS_PAGE_PROFILE . '?mode=email&amp;' . POST_USERS_URL .'=' . $poster_id) : 'mailto:' . $postrow[$i]['user_email'],
 		'U_USER_WEBSITE' => ($postrow[$i]['user_website']) ? $postrow[$i]['user_website'] : '',
-		'U_USER_ALBUM' => ($postrow[$i]['user_personal_pics_count']) ? append_sid('album.' . PHP_EXT . '?user_id=' . $postrow[$i]['user_id']) : '',
 
 		'IMG_POST_EDIT' => $images['icon_edit'],
 		'IMG_POST_DELETE' => $images['icon_delpost'],
@@ -2372,7 +2345,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'IMG_SEND_PRIVMSG' => $images['icon_pm'],
 		'IMG_SEND_EMAIL' => $images['icon_email'],
 		'IMG_USER_WEBSITE' => $images['icon_www'],
-		'IMG_USER_ALBUM' => $images['icon_album'],
 
 		'S_USER_OFFLINE' => $offline_status_switch,
 		'S_USER_ONLINE' => $online_status_switch,
@@ -2420,7 +2392,6 @@ for($i = 0; $i < $total_posts; $i++)
 		'U_MSN' => $msn_url,
 		'U_SKYPE' => $skype_url,
 		'U_YIM' => $yahoo_url,
-		'U_ALBUM' => $album_url,
 		'L_POSTER_ONLINE_STATUS' => $online_status_lang,
 		'POSTER_ONLINE_STATUS_CLASS' => $online_status_class,
 		'U_POSTER_ONLINE_STATUS' => $online_status_url,
@@ -2540,6 +2511,41 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 	// MG Cash MOD For IP - END
 
+	if (!empty($config['plugins']['album']['enabled']))
+	{
+
+		// --- Smart Album Button BEGIN ----------------
+		$album_url = '';
+		$album_switch = false;
+		if ($postrow[$i]['user_personal_pics_count'] > 0)
+		{
+			$album_switch = true;
+			$album_url = ($postrow[$i]['user_personal_pics_count']) ? append_sid('album.' . PHP_EXT . '?user_id=' . $postrow[$i]['user_id']) : '';
+			$album_img = ($postrow[$i]['user_personal_pics_count']) ? '<a href="' . $album_url . '"><img src="' . $images['icon_album'] . '" alt="' . $lang['Show_Personal_Gallery'] . '" title="' . $lang['Show_Personal_Gallery'] . '" /></a>' : '';
+			$album = ($postrow[$i]['user_personal_pics_count']) ? '<a href="' . $album_url . '">' . $lang['Show_Personal_Gallery'] . '</a>' : '';
+		}
+		else
+		{
+			$album_img = '';
+			$album = '';
+		}
+		// --- Smart Album Button END ----------------
+
+		if (!$is_spam_measure_enabled && ($poster_id != ANONYMOUS))
+		{
+			$template->assign_vars(array(
+				'ALBUM_IMG' => $album_img,
+				'ALBUM' => $album,
+				'S_USER_ALBUM' => $album_switch,
+				'L_S_USER_ALBUM' => $lang['Show_Personal_Gallery'],
+				'U_USER_ALBUM' => ($postrow[$i]['user_personal_pics_count']) ? append_sid('album.' . PHP_EXT . '?user_id=' . $postrow[$i]['user_id']) : '',
+				'IMG_USER_ALBUM' => $images['icon_album'],
+				'U_ALBUM' => $album_url,
+				)
+			);
+		}
+	}
+
 	// Custom Profile Fields MOD - BEGIN
 	if (($poster_id != ANONYMOUS) && ($profile_data_sql != ''))
 	{
@@ -2554,10 +2560,12 @@ for($i = 0; $i < $total_posts; $i++)
 		$cp_data = get_topic_udata($postrow[$i], $profile_data);
 
 		if ($cp_data['aboves'])
+		{
 			foreach($cp_data['aboves'] as $above_val)
 			{
 				$template->assign_block_vars('postrow.above_sig', array('ABOVE_VAL' => $above_val));
 			}
+		}
 
 		if ($cp_data['belows'])
 		{

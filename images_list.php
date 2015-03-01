@@ -36,9 +36,6 @@ if (!$user->data['session_logged_in'])
 	message_die(GENERAL_MESSAGE, $lang['Not_Auth_View']);
 }
 
-// Get general album information
-include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
-
 $pic_id = request_var('pic_id', 0);
 
 $mode_array = array('show', 'delete', 'full');
@@ -59,12 +56,12 @@ if (($user->data['user_level'] == ADMIN) && ($mode == 'delete') && !empty($pic_i
 $server_path = create_server_url();
 
 $total_pics = 0;
-$album_config['cols_per_page'] = ($album_config['cols_per_page'] == 0) ? 4 : $album_config['cols_per_page'];
-$album_config['rows_per_page'] = ($album_config['rows_per_page'] == 0) ? 5 : $album_config['rows_per_page'];
-$pics_per_page = $album_config['rows_per_page'] * $album_config['cols_per_page'];
+$pics_cols_per_page = 4;
+$pics_rows_per_page = 5;
+$pics_per_page = $pics_rows_per_page * $pics_cols_per_page;
 $pic_row_count = 0;
 $pic_col_count = 0;
-$s_colspan = $album_config['cols_per_page'];
+$s_colspan = $pics_cols_per_page;
 $s_colwidth = ((100 / $s_colspan) . '%');
 
 $images_data = array();
@@ -91,7 +88,7 @@ $pics_parsed = 0;
 foreach ($images_data as $image_data)
 {
 	$pics_parsed++;
-	if(empty($pic_col_count) || ($pic_col_count == $album_config['cols_per_page']))
+	if(empty($pic_col_count) || ($pic_col_count == $pics_cols_per_page))
 	{
 		$template->assign_block_vars('pic_row', array());
 		$pic_col_count = 0;
@@ -113,9 +110,9 @@ foreach ($images_data as $image_data)
 	);
 }
 
-if($pic_col_count < $album_config['cols_per_page'])
+if($pic_col_count < $pics_cols_per_page)
 {
-	for($i = $pic_col_count; $i < $album_config['cols_per_page']; $i++)
+	for($i = $pic_col_count; $i < $pics_cols_per_page; $i++)
 	{
 		$template->assign_block_vars('pic_row.pic_end_row', array());
 	}
@@ -128,7 +125,7 @@ $template->assign_vars(array(
 	'S_ACTION' => append_sid(CMS_PAGE_IMAGES),
 	'S_COLSPAN' => $s_colspan,
 	'S_COLWIDTH' => $s_colwidth,
-	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
+	'S_THUMBNAIL_SIZE' => $config['thumbnail_s_size'],
 	)
 );
 

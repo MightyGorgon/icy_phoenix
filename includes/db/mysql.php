@@ -1106,7 +1106,7 @@ class sql_db
 </head>
 
 <body>
-<a id="top"></a>
+<a id="top">&nbsp;</a>
 <div id="global-wrapper" style="width: 960px; clear: both; margin: 0 auto;">
 <div class="leftshadow"><div class="rightshadow"><div id="wrapper-inner">
 <table id="forumtable" width="100%" cellspacing="0" cellpadding="0">

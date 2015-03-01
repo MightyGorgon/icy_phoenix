@@ -36,9 +36,6 @@ $cms_page['global_blocks'] = false;
 $cms_auth_level = (isset($config['auth_view_pic_upload']) ? $config['auth_view_pic_upload'] : AUTH_ALL);
 check_page_auth($cms_page['page_id'], $cms_auth_level);
 
-// Get general album information
-include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
-
 // We need to keep it here... so also error messages will initialize it correctly!
 $gen_simple_header = true;
 
@@ -97,7 +94,7 @@ $template->assign_vars(array(
 	'S_AJAX_UPLOAD' => 'ajax_upload.' . PHP_EXT,
 	'S_ALLOWED_EXTENSIONS' => $allowed_extensions,
 	'S_MAX_FILE_SIZE' => $max_file_size,
-	'S_THUMBNAIL_SIZE' => $album_config['thumbnail_size'],
+	'S_THUMBNAIL_SIZE' => $config['thumbnail_s_size'],
 
 	'U_PERSONAL_IMAGES' => append_sid(CMS_PAGE_IMAGES),
 	'U_AJAX_GET_MORE_IMAGES' => 'ajax.' . PHP_EXT . '?mode=get_more_images&json=1&sid=' . $user->data['session_id'],

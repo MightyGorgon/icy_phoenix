@@ -105,6 +105,7 @@ switch ($req_version)
 	case '201399': $current_ip_version = '2.0.13.99'; break;
 	case '2014100': $current_ip_version = '2.0.14.100'; break;
 	case '2015101': $current_ip_version = '2.0.15.101'; break;
+	case '2016102': $current_ip_version = '2.0.16.102'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4529,14 +4530,11 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('facebook_app_id', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('facebook_app_secret', '')";
 		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE config_key = 'index_links'";
-		$sql[] = "DELETE FROM " . $table_prefix . "cms_blocks WHERE bs_id = (
-			SELECT bs_id FROM
-			" . $table_prefix . "cms_block_settings WHERE blockfile = 'links'
-		)";
+		$sql[] = "DELETE FROM " . $table_prefix . "cms_blocks WHERE bs_id IN (SELECT bs_id FROM " . $table_prefix . "cms_block_settings WHERE blockfile = 'links')";
 		$sql[] = "DELETE FROM " . $table_prefix . "cms_block_variable WHERE block = 'links'";
 		$sql[] = "DELETE FROM " . $table_prefix . "cms_block_settings WHERE blockfile = 'links'";
 		$sql[] = "DELETE FROM " . $table_prefix . "cms_layout_special WHERE page_id = 'links'";
-		$sql[] = "DELETE FROM " . $table_prefix . "cms_nav_menu WHERE menu_links = 'links.php'";
+		$sql[] = "DELETE FROM " . $table_prefix . "cms_nav_menu WHERE menu_link = 'links.php'";
 
 		/* Updating from IP 2.0.8.94 */
 		case '2.0.8.94':
@@ -4594,12 +4592,25 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "title_infos` ADD `title_html` VARCHAR(255) NOT NULL DEFAULT '' AFTER `title_info`";
 		$sql[] = "UPDATE `" . $table_prefix . "title_infos` SET `title_html` = `title_info`";
 
-
 		/* Updating from IP 2.0.14.100 */
 		case '2.0.14.100':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "plugins` ADD `plugin_constants` TINYINT(2) NOT NULL DEFAULT 0 AFTER `plugin_enabled`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "plugins` ADD `plugin_common` TINYINT(2) NOT NULL DEFAULT 0 AFTER `plugin_constants`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "plugins` ADD `plugin_functions` TINYINT(2) NOT NULL DEFAULT 0 AFTER `plugin_common`";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('thumbnail_s_size', '120')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('img_list_cols', '4')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('img_list_rows', '5')";
+		$sql[] = "DELETE FROM `" . $table_prefix . "cms_blocks` WHERE bs_id IN (SELECT bs_id FROM `" . $table_prefix . "cms_block_settings` WHERE blockfile = 'album')";
+		$sql[] = "DELETE FROM `" . $table_prefix . "cms_block_variable` WHERE block = 'album'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "cms_block_settings` WHERE blockfile = 'album'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "cms_layout_special` WHERE page_id = 'album'";
+		$sql[] = "DELETE FROM `" . $table_prefix . "cms_nav_menu` WHERE menu_link = 'album.php'";
 
 		/* Updating from IP 2.0.15.101 */
 		case '2.0.15.101':
+
+		/* Updating from IP 2.0.16.102 */
+		case '2.0.16.102':
 
 	}
 

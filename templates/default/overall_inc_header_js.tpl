@@ -85,6 +85,14 @@ window.onunload = function()
 	}
 };
 
+var plugins = {
+	
+};
+
+<!-- BEGIN plugins -->
+plugins['{plugins.NAME}'] = true;
+<!-- END plugins -->
+
 // ]]>
 </script>
 

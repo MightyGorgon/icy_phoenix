@@ -163,7 +163,7 @@ if(!function_exists('cms_block_random_user'))
 			$yahoo = $all_ims['yahoo']['plain'];
 			$yahoo_url = $all_ims['yahoo']['url'];
 
-			if ($row['user_personal_pics_count'] > 0)
+			if (!empty($config['plugins']['album']['enabled']) && ($row['user_personal_pics_count'] > 0))
 			{
 				$album_img = ($row['user_personal_pics_count']) ? '<a href="album.' . PHP_EXT . '?user_id=' . $row['user_id'] . '"><img src="' . $images['icon_album'] . '" alt="' . $lang['Show_Personal_Gallery'] . '" title="' . $lang['Show_Personal_Gallery'] . '" /></a>' : '';
 				$album = ($row['user_personal_pics_count']) ? '<a href="album.' . PHP_EXT . '?user_id=' . $row['user_id'] . '">' . $lang['Show_Personal_Gallery'] . '</a>' : '';

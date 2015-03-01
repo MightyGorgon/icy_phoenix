@@ -30,17 +30,20 @@ if (substr($mode, 0, 3) == 'set')
 
 	if ($mode == 'set_all')
 	{
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '125' WHERE `config_name` = 'thumbnail_size'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_cache'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_use'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '450' WHERE `config_name` = 'midthumb_height'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '600' WHERE `config_name` = 'midthumb_width'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_cache'";
-		//$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'show_img_no_gd'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'show_exif'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'lb_preview'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'quick_thumbs'";
+		if (!empty($config['plugins']['album']['enabled']))
+		{
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '125' WHERE `config_name` = 'thumbnail_size'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_cache'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_use'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '450' WHERE `config_name` = 'midthumb_height'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '600' WHERE `config_name` = 'midthumb_width'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_cache'";
+			//$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'show_img_no_gd'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'show_exif'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'lb_preview'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'quick_thumbs'";
+		}
 
 		$sql[] = "UPDATE `" . $table_prefix . "cms_config` SET `config_value` = '1' WHERE `config_name` = 'cache_enabled'";
 
@@ -129,17 +132,20 @@ if (substr($mode, 0, 3) == 'set')
 
 	if ($mode == 'set_fnf')
 	{
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '125' WHERE `config_name` = 'thumbnail_size'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_cache'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_use'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '403' WHERE `config_name` = 'midthumb_height'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '536' WHERE `config_name` = 'midthumb_width'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_cache'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'show_img_no_gd'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'show_exif'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'lb_preview'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'quick_thumbs'";
+		if (!empty($config['plugins']['album']['enabled']))
+		{
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '125' WHERE `config_name` = 'thumbnail_size'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_cache'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_use'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '403' WHERE `config_name` = 'midthumb_height'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '536' WHERE `config_name` = 'midthumb_width'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_cache'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'show_img_no_gd'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'show_exif'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'lb_preview'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'quick_thumbs'";
+		}
 
 		$sql[] = "UPDATE `" . $table_prefix . "cms_config` SET `config_value` = '1' WHERE `config_name` = 'cache_enabled'";
 
@@ -231,17 +237,20 @@ if (substr($mode, 0, 3) == 'set')
 
 	if ($mode == 'set_mg_fav')
 	{
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '125' WHERE `config_name` = 'thumbnail_size'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_cache'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_use'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '450' WHERE `config_name` = 'midthumb_height'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '600' WHERE `config_name` = 'midthumb_width'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_cache'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'show_img_no_gd'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'show_exif'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'lb_preview'";
-		$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'quick_thumbs'";
+		if (!empty($config['plugins']['album']['enabled']))
+		{
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '75' WHERE `config_name` = 'thumbnail_quality'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '125' WHERE `config_name` = 'thumbnail_size'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'thumbnail_cache'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_use'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '450' WHERE `config_name` = 'midthumb_height'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '600' WHERE `config_name` = 'midthumb_width'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'midthumb_cache'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'show_img_no_gd'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '0' WHERE `config_name` = 'show_exif'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'lb_preview'";
+			$sql[] = "UPDATE `" . $table_prefix . "album_config` SET `config_value` = '1' WHERE `config_name` = 'quick_thumbs'";
+		}
 
 		$sql[] = "UPDATE `" . $table_prefix . "cms_config` SET `config_value` = '1' WHERE `config_name` = 'cache_enabled'";
 

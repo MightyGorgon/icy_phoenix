@@ -840,7 +840,9 @@ $lang = array_merge($lang, array(
 	'Group_count_update' => 'Add/Update new users',
 	'Group_count_delete' => 'Delete/Update old users',
 	'User_allow_ag' => 'Activate Auto Group',
-	'group_count_explain' => 'When users have posted more posts than this value <i>(in any forum)</i> then they will be added to this usergroup<br /> This only applies if "Users automatically added when posting" are enabled',
+	'group_count_explain' => 'When users have posted more posts than this value <i>(in any forum)</i> then they will be <u>added</u> to this usergroup<br /> This only applies if "Users automatically added when posting" are enabled',
+	'group_count_max_explain' => 'When users have posted more posts than this value <i>(in any forum)</i> then they will be <u>removed</u> from this usergroup<br /> This only applies if "Users automatically added when posting" are enabled',
+	'autogroup_options' => 'Autogroup Options',
 
 // Start add - Bin Mod
 	'Bin_forum' => 'Bin forum',
@@ -2265,7 +2267,7 @@ $lang['120_Add_new'] = 'Add Link'; // admin_links.php
 $lang['130_Link_Manage'] = 'Manage Links'; // admin_links.php
 
 // Album
-$lang['2200_Photo_Album'] = 'Photo Album'; // admin_album_auth.php, admin_album_cat.php, admin_album_config_extended.php
+$lang['3300_Photo_Album'] = 'Photo Album'; // admin_album_auth.php, admin_album_cat.php, admin_album_config_extended.php
 $lang['110_Album_Config'] = 'Configuration'; // admin_album_config_extended.php
 $lang['120_Album_Categories'] = 'Manage Categories'; // admin_album_cat.php
 $lang['130_Album_Permissions'] = 'Permissions'; // admin_album_auth.php

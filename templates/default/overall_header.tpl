@@ -13,7 +13,7 @@
 <body>
 
 <div id="global-wrapper">
-<span><a id="top"></a></span>
+<span><a id="top">&nbsp;</a></span>
 {TOP_HTML_BLOCK}
 <!-- IF GH_BLOCK --><!-- BEGIN gheader_blocks_row -->{gheader_blocks_row.CMS_BLOCK}<!-- END gheader_blocks_row --><!-- ENDIF -->
 <!-- IF PROFILE_VIEW --><script type="text/javascript">window.open('{U_PROFILE_VIEW}','_blank','height=800,width=250,resizable=yes');</script><!-- ENDIF -->

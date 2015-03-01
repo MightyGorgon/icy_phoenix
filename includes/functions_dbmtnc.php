@@ -708,6 +708,9 @@ $default_config = array(
 	'enable_facebook_login' => '0',
 	'facebook_app_id' => '',
 	'facebook_app_secret' => '',
+	'thumbnail_s_size' => '120',
+	'img_list_cols' => '4',
+	'img_list_rows' => '5',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

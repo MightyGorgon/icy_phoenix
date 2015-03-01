@@ -29,7 +29,6 @@ $acp_icon['1900_Attachments'] = '../images/menu/disk_multiple.png';
 $acp_icon['2000_Downloads'] = '../images/menu/disk_multiple.png';
 $acp_icon['2050_Downloads'] = '../images/menu/disk_multiple.png';
 $acp_icon['2100_Links'] = '../images/menu/world.png';
-$acp_icon['2200_Photo_Album'] = '../images/menu/photos.png';
 $acp_icon['2300_FAQ'] = '../images/menu/warning.png';
 //$acp_icon['2400_INFO'] = '../images/menu/information.png';
 $acp_icon['2500_STATS'] = '../images/menu/server_install.png';
@@ -38,5 +37,6 @@ $acp_icon['2500_STATS'] = '../images/menu/server_install.png';
 $acp_icon['3000_Plugins'] = '../images/menu/main.png';
 $acp_icon['3100_CASH'] = '../images/menu/coins.png';
 $acp_icon['3200_ACTIVITY'] = '../images/menu/games.png';
+$acp_icon['3300_Photo_Album'] = '../images/menu/photos.png';
 
 ?>

@@ -15,7 +15,6 @@
 			<li><a href="{U_FAQ}">{L_LINK_FAQ}</a></li>
 			<li><a href="{U_SEARCH}">{L_LINK_SEARCH}</a></li>
 			<li><a href="{U_SITEMAP}">{L_LINK_SITEMAP}</a></li>
-			<li><a href="{U_ALBUM}">{L_LINK_ALBUM}</a></li>
 			<li><a href="{U_CALENDAR}">{L_LINK_CALENDAR}</a></li>
 			<li><a href="{U_DOWNLOADS_NAV}">{L_LINK_DOWNLOADS}</a></li>
 			<!-- IF S_LOGGED_IN -->
@@ -24,7 +23,6 @@
 			<li><a href="{U_UPLOADED_IMAGES}">{L_LINK_UPLOADED_IMAGES}</a></li>
 			<!-- ENDIF -->
 			<li><a href="{U_AJAX_SHOUTBOX}">{L_LINK_AJAX_SHOUTBOX}</a></li>
-			<li><a href="{U_LINKS}">{L_LINK_LINKS}</a></li>
 			<li><a href="{U_CONTACT_US}">{L_LINK_CONTACT_US}</a></li>
 		</ul>
 	</li>

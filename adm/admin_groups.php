@@ -137,6 +137,8 @@ if (check_http_var_exists('edit', false) || isset($_POST['new']))
 		'L_GROUP_COUNT' => $lang['group_count'],
 		'L_GROUP_COUNT_MAX' => $lang['group_count_max'],
 		'L_GROUP_COUNT_EXPLAIN' => $lang['group_count_explain'],
+		'L_GROUP_COUNT_MAX_EXPLAIN' => $lang['group_count_max_explain'],
+		'L_AUTOGROUP_OPTIONS' => $lang['autogroup_options'],
 		'L_GROUP_COUNT_ENABLE' => $lang['Group_count_enable'],
 		'L_GROUP_COUNT_UPDATE' => $lang['Group_count_update'],
 		'L_GROUP_COUNT_DELETE' => $lang['Group_count_delete'],

@@ -80,10 +80,6 @@ if(GetCookie(tmp) == '2')
 				</tr>
 				<tr>
 					<td class="tdalignl tw8px">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed tdalignl"><a href="{U_ALBUM}">{L_LINK_ALBUM}</a></td>
-				</tr>
-				<tr>
-					<td class="tdalignl tw8px">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed tdalignl"><a href="{U_CALENDAR}">{L_LINK_CALENDAR}</a></td>
 				</tr>
 				<tr>

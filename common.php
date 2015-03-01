@@ -251,18 +251,24 @@ if (!defined('SKIP_CMS_CONFIG') && !defined('IN_ADMIN') && !defined('IN_CMS'))
 }
 // CMS Pages Config - END
 
+// Plugins - BEGIN
 foreach ($cache->obtain_plugins_config() as $k => $plugin)
 {
 	$config['plugins'][$k]['enabled'] = !empty($plugin['plugin_enabled']) ? true : false;
 	$config['plugins'][$k]['dir'] = !empty($plugin['plugin_dir']) ? ($plugin['plugin_dir'] . '/') : '';
+	// Plugins autoload - BEGIN
+	$plugin_includes_array = array('constants', 'common', 'functions');
+	foreach ($plugin_includes_array as $plugin_include)
+	{
+		$config['plugins'][$k][$plugin_include] = !empty($plugin['plugin_' . $plugin_include]) ? true : false;
+		if (!empty($config['plugins'][$k][$plugin_include]))
+		{
+			@include_once(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$k]['dir'] . $plugin_include . '.' . PHP_EXT);
+		}
+	}
+	// Plugins autoload - END
 }
-
-// MG Cash MOD For IP - BEGIN
-if (!empty($config['plugins']['cash']['enabled']) && defined('IN_CASHMOD'))
-{
-	@include_once(IP_ROOT_PATH . 'includes/functions_cash.' . PHP_EXT);
-}
-// MG Cash MOD For IP - END
+// Plugins - END
 
 @include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'attachment_mod.' . PHP_EXT);
 

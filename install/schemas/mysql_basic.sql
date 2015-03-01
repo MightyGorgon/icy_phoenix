@@ -852,6 +852,9 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_socia
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('enable_facebook_login', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app_id', '');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app_secret', '');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_s_size', '120');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_cols', '4');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_rows', '5');
 
 
 ## ATTACHMENTS - BEGIN

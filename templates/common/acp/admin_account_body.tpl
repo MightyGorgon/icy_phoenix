@@ -24,7 +24,7 @@
 	<th>#</th>
 	<th>{L_USERNAME}</th>
 	<th>{L_EMAIL}</th>
-	<th>{L_POSTS_PICS}</th>
+	<th>{L_POSTS_ANDOR_PICS}</th>
 	<th>{L_JOINED}</th>
 	<th>{L_MARK}</th>
 </tr>
@@ -44,7 +44,7 @@
 		</table>
 	</td>
 	<td class="{admin_account.ROW_CLASS}"><span class="genmed">{admin_account.EMAIL}</span></td>
-	<td class="{admin_account.ROW_CLASS} row-center"><span class="genmed">{admin_account.POSTS} / {admin_account.PICS}</span></td>
+	<td class="{admin_account.ROW_CLASS} row-center"><span class="genmed">{admin_account.POSTS}<!-- IF admin_account.PICS --> / {admin_account.PICS}<!-- ENDIF --></span></td>
 	<td class="{admin_account.ROW_CLASS}" nowrap="nowrap"><span class="gensmall"><b>{admin_account.PERIOD}</b></span>&nbsp;&nbsp;&nbsp;<span class="genmed">{admin_account.JOINED}</span>&nbsp;</td>
 	<td class="{admin_account.ROW_CLASS} row-center"><input type="checkbox" name="mark[]" value="{admin_account.S_MARK_ID}" /></td>
 </tr>

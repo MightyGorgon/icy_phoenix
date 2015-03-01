@@ -103,8 +103,30 @@ $settings_data = array(
 
 	'thumbnail_size' => array(
 		'lang_key' => 'IP_thumbnail_size',
+		'explain' => 'IP_thumbnail_size_explain',
 		'type' => 'VARCHAR',
 		'default' => '400',
+	),
+
+	'thumbnail_s_size' => array(
+		'lang_key' => 'IP_thumbnail_s_size',
+		'explain' => 'IP_thumbnail_s_size_explain',
+		'type' => 'VARCHAR',
+		'default' => '120',
+	),
+
+	'img_list_cols' => array(
+		'lang_key' => 'IP_img_list_cols',
+		'explain' => 'IP_img_list_cols_explain',
+		'type' => 'VARCHAR',
+		'default' => '4',
+	),
+
+	'img_list_rows' => array(
+		'lang_key' => 'IP_img_list_rows',
+		'explain' => 'IP_img_list_cols_explain',
+		'type' => 'VARCHAR',
+		'default' => '4',
 	),
 
 );

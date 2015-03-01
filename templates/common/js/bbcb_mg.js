@@ -84,6 +84,16 @@ bbtags = new Array(
 '[emff]','[/emff]'
 );
 
+/*
+if (plugins.album) {
+	bbtags.splice(0, 0,
+		'[albumimg]','[/albumimg]',
+		'[albumimg align=left]','[/albumimg]',
+		'[albumimg align=right]','[/albumimg]'
+	);
+}
+*/
+
 // Startup variables
 var imageTag = false;
 var theSelection = false;

@@ -1242,6 +1242,9 @@ CREATE TABLE `phpbb_plugins` (
 	`plugin_version` VARCHAR(255) NOT NULL DEFAULT '',
 	`plugin_dir` VARCHAR(255) NOT NULL DEFAULT '',
 	`plugin_enabled` TINYINT(2) NOT NULL DEFAULT 0,
+	`plugin_constants` TINYINT(2) NOT NULL DEFAULT 0,
+	`plugin_common` TINYINT(2) NOT NULL DEFAULT 0,
+	`plugin_functions` TINYINT(2) NOT NULL DEFAULT 0,
 	PRIMARY KEY (`plugin_name`)
 );
 

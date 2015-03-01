@@ -4247,6 +4247,8 @@ function empty_cache_folders($cache_folder = '', $files_per_step = 0)
 
 function empty_images_cache_folders($files_per_step = 0)
 {
+	global $config;
+
 	$skip_files = array(
 		'.',
 		'..',
@@ -4256,7 +4258,16 @@ function empty_images_cache_folders($files_per_step = 0)
 		'index.' . PHP_EXT,
 	);
 
-	$cache_dirs_array = array(POSTED_IMAGES_THUMBS_PATH, IP_ROOT_PATH . ALBUM_CACHE_PATH, IP_ROOT_PATH . ALBUM_MED_CACHE_PATH, IP_ROOT_PATH . ALBUM_WM_CACHE_PATH);
+	$cache_dirs_array = array(POSTED_IMAGES_THUMBS_PATH);
+	if (!empty($config['plugins']['album']['enabled']))
+	{
+		$cache_dirs_array = array_merge($cache_dirs_array, array(
+			IP_ROOT_PATH . ALBUM_CACHE_PATH,
+			IP_ROOT_PATH . ALBUM_MED_CACHE_PATH,
+			IP_ROOT_PATH . ALBUM_WM_CACHE_PATH
+		));
+	}
+
 	$files_counter = 0;
 	for ($i = 0; $i < sizeof($cache_dirs_array); $i++)
 	{
@@ -5135,6 +5146,18 @@ function page_header($title = '', $parse_template = false)
 			// Activity - END
 			)
 		);
+	}
+
+	foreach ($config['plugins'] as $plugin_name => $plugin_config)
+	{
+		if ($plugin_config['enabled'])
+		{
+			$template->assign_var('PLUGIN_' . strtoupper($plugin_name), true);
+			$template->assign_block_vars('plugins', array(
+				'NAME' => $plugin_name,
+				)
+			);
+		}
 	}
 
 	// The following assigns all _common_ variables that may be used at any point in a template.

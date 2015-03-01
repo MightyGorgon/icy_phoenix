@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.0.14.100');
+define('ICYPHOENIX_VERSION', '2.0.15.101');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user can access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -91,7 +91,6 @@ define('CMS_PAGE_DLOAD', 'dload.' . PHP_EXT);
 define('CMS_PAGE_DOWNLOADS', 'downloads.' . PHP_EXT);
 define('CMS_PAGE_DL_DEFAULT', CMS_PAGE_DLOAD);
 //define('CMS_PAGE_DL_DEFAULT', CMS_PAGE_DOWNLOADS);
-define('CMS_PAGE_ALBUM', 'album.' . PHP_EXT);
 define('CMS_PAGE_IMAGES', 'images_list.' . PHP_EXT);
 define('CMS_PAGE_IMAGE_THUMBNAIL', 'image_thumbnail.' . PHP_EXT);
 define('CMS_PAGE_IMAGE_THUMBNAIL_S', 'image_thumbnail_s.' . PHP_EXT);
@@ -142,17 +141,8 @@ define('PLUGINS_PATH', 'plugins/');
 define('BACKUP_PATH', 'backup/');
 define('TPL_EXTENSION', 'tpl');
 define('UPI2DB_PATH', IP_ROOT_PATH . 'includes/upi2db/');
-// Mighty Gorgon - Constants Pages And Paths - END
-
-// Mighty Gorgon - FAP - BEGIN
 define('USERS_SUBFOLDERS_IMG', true); // Creates users subfolders for uploaded images
-define('USERS_SUBFOLDERS_ALBUM', true); // Creates users subfolders for images in album
-define('ALBUM_MOD_PATH', IP_ROOT_PATH . 'includes/album_mod/');
-define('ALBUM_MOD_IMG_PATH', IP_ROOT_PATH . 'images/album/');
-define('ALBUM_FILES_PATH', 'files/album/');
-//define('ALBUM_FILES_PATH', 'album_mod/upload/');
-include_once(ALBUM_MOD_PATH . 'album_constants.' . PHP_EXT);
-// Mighty Gorgon - FAP - END
+// Mighty Gorgon - Constants Pages And Paths - END
 
 // CHMOD permissions
 if (!defined('CHMOD_ALL')) @define('CHMOD_ALL', 7);
@@ -446,12 +436,6 @@ define('VOTE_CONVERTED', 127);
 define('ACRONYMS_TABLE', $table_prefix . 'acronyms');
 define('ADMINEDIT_TABLE', $table_prefix . 'adminedit');
 define('ADS_TABLE', $table_prefix . 'ads');
-define('ALBUM_TABLE', $table_prefix . 'album');
-define('ALBUM_CAT_TABLE', $table_prefix . 'album_cat');
-define('ALBUM_COMMENT_TABLE', $table_prefix . 'album_comment');
-define('ALBUM_COMMENT_WATCH_TABLE', $table_prefix . 'album_comment_watch');
-define('ALBUM_CONFIG_TABLE', $table_prefix . 'album_config');
-define('ALBUM_RATE_TABLE', $table_prefix . 'album_rate');
 define('AUTH_ACCESS_TABLE', $table_prefix . 'auth_access');
 define('AUTOLINKS', $table_prefix . 'autolinks');
 define('BANLIST_TABLE', $table_prefix . 'banlist');

@@ -34,7 +34,7 @@
 <body>
 
 <div id="global-wrapper">
-<span><a id="top"></a></span>
+<span><a id="top">&nbsp;</a></span>
 
 <div class="top-menu">
 	<div id="horiz-menu">

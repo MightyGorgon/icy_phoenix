@@ -6,6 +6,8 @@ body { font-family: /*"Lucida Grande",*/ Verdana, Helvetica, Arial, sans-serif; 
 .sitedes { font-size: 62.5%; float: right; position: relative; display: inline; text-align: right; vertical-align: bottom; padding: 3px; }
 .maintitle { font-size: 2.4em; font-weight: bold; }
 
+#top, #bottom { font-size: 0; }
+
 h1 { font-size: 2.0em; font-weight: bold; }
 h2 { font-size: 1.6em; font-weight: bold; }
 h3 { font-size: 1.4em; font-weight: bold; }
