@@ -112,12 +112,12 @@
 	<td class="row-post th100pct">
 		<div class="post-buttons-top post-buttons">
 			<!-- IF not S_BOT -->
-			<a href="{postrow.U_POST_QUOTE}"><img src="{postrow.IMG_POST_QUOTE}" alt="{postrow.L_POST_QUOTE}" title="{postrow.L_POST_QUOTE}" /></a>
+			<a href="{postrow.U_POST_QUOTE}"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_POST_QUOTE}" alt="{postrow.L_POST_QUOTE}" title="{postrow.L_POST_QUOTE}" /></a>
 			<!-- IF postrow.S_POST_EDIT -->
-			&nbsp;<a href="{postrow.U_POST_EDIT}"><img src="{postrow.IMG_POST_EDIT}" alt="{postrow.L_POST_EDIT}" title="{postrow.L_POST_EDIT}" /></a>
+			&nbsp;<a href="{postrow.U_POST_EDIT}"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_POST_EDIT}" alt="{postrow.L_POST_EDIT}" title="{postrow.L_POST_EDIT}" /></a>
 			<!-- ENDIF -->
 			<!-- IF postrow.S_POST_DELETE -->
-			&nbsp;<a href="{postrow.U_POST_DELETE}"><img src="{postrow.IMG_POST_DELETE}" alt="{postrow.L_POST_DELETE}" title="{postrow.L_POST_DELETE}" /></a>
+			&nbsp;<a href="{postrow.U_POST_DELETE}"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_POST_DELETE}" alt="{postrow.L_POST_DELETE}" title="{postrow.L_POST_DELETE}" /></a>
 			<!-- ENDIF -->
 			<!-- IF IS_UPI2DB -->
 				<!-- IF postrow.UPI2DB_MARK_UNREAD --><a href="{postrow.UPI2DB_MARK_UNREAD_URL}"><img src="{postrow.UPI2DB_MARK_UNREAD_IMG}" alt="{postrow.L_UPI2DB_MARK_UNREAD}" title="{postrow.L_UPI2DB_MARK_UNREAD}" /></a><!-- ENDIF -->
@@ -132,7 +132,7 @@
 				<!-- IF postrow.S_CARD_SWITCH_Y --><!-- IF S_USE_CSS_CARDS --><span class="img-warn"><!-- ENDIF --><a href="{postrow.U_CARD_Y}" onclick="return confirm('{postrow.L_CARD_Y_JS}')"><img src="{postrow.IMG_CARD_Y}" alt="{postrow.L_CARD_Y}" title="{postrow.L_CARD_Y}" /></a><!-- IF S_USE_CSS_CARDS --></span><!-- ENDIF --><!-- ENDIF -->
 				<!-- IF postrow.S_CARD_SWITCH_R --><!-- IF S_USE_CSS_CARDS --><span class="img-ban"><!-- ENDIF --><a href="{postrow.U_CARD_R}" onclick="return confirm('{postrow.L_CARD_R_JS}')"><img src="{postrow.IMG_CARD_R}" alt="{postrow.L_CARD_R}" title="{postrow.L_CARD_R}" /></a><!-- IF S_USE_CSS_CARDS --></span><!-- ENDIF --><!-- ENDIF -->
 			<!-- ENDIF -->
-			&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
+			&nbsp;<!-- IF IS_APHRODITE -->{postrow.IP_IMG}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.DOWNLOAD_IMG}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ELSE -->{postrow.IP_IMG_ICON}&nbsp;<a href="{postrow.DOWNLOAD_POST}" class="genmed" rel="nofollow"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.DOWNLOAD_IMG_ICON}" alt="{L_DOWNLOAD_POST}" title="{L_DOWNLOAD_POST}" /></a><!-- ENDIF -->&nbsp;{postrow.ARROWS}
 			<!-- ELSE -->
 			&nbsp;
 			<!-- ENDIF -->
@@ -175,21 +175,21 @@
 		<div style="text-align: right; vertical-align: middle;">
 			<!-- IF not postrow.S_THIS_POSTER_MASK -->
 			<div class="extra-top-padding" style="position: relative; float: left; text-align: left; vertical-align: middle;">
-				<a href="{postrow.U_VIEW_PROFILE}"><img src="{postrow.IMG_VIEW_PROFILE}" alt="{postrow.POSTER_NAME_QQ}" title="{postrow.POSTER_NAME_QQ}" /></a>
-				<a href="{postrow.U_SEND_PRIVMSG}"><img src="{postrow.IMG_SEND_PRIVMSG}" alt="{postrow.L_SEND_PRIVMSG}" title="{postrow.L_SEND_PRIVMSG}" /></a>
+				<a href="{postrow.U_VIEW_PROFILE}"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_VIEW_PROFILE}" alt="{postrow.POSTER_NAME_QQ}" title="{postrow.POSTER_NAME_QQ}" /></a>
+				<a href="{postrow.U_SEND_PRIVMSG}"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_SEND_PRIVMSG}" alt="{postrow.L_SEND_PRIVMSG}" title="{postrow.L_SEND_PRIVMSG}" /></a>
 				<!-- IF postrow.S_USER_ALLOW_VIEWEMAIL -->
-				<a href="{postrow.U_SEND_EMAIL}"><img src="{postrow.IMG_SEND_EMAIL}" alt="{postrow.L_SEND_EMAIL}" title="{postrow.L_SEND_EMAIL}" /></a>
+				<a href="{postrow.U_SEND_EMAIL}"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_SEND_EMAIL}" alt="{postrow.L_SEND_EMAIL}" title="{postrow.L_SEND_EMAIL}" /></a>
 				<!-- ENDIF -->
 				<!-- IF postrow.S_USER_WEBSITE -->
-				<a href="{postrow.U_USER_WEBSITE}" target="_blank"><img src="{postrow.IMG_USER_WEBSITE}" alt="{postrow.L_USER_WEBSITE}" title="{postrow.L_USER_WEBSITE}" /></a>
+				<a href="{postrow.U_USER_WEBSITE}" target="_blank"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_USER_WEBSITE}" alt="{postrow.L_USER_WEBSITE}" title="{postrow.L_USER_WEBSITE}" /></a>
 				<!-- ENDIF -->
 				<!-- IF postrow.S_USER_ALBUM -->
-				<a href="{postrow.U_USER_ALBUM}"><img src="{postrow.IMG_USER_ALBUM}" alt="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" title="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" /></a>&nbsp;
+				<a href="{postrow.U_USER_ALBUM}"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_USER_ALBUM}" alt="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" title="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" /></a>&nbsp;
 				<!-- ENDIF -->
 			</div>
 			<!-- IF not S_BOT and not postrow.S_THIS_POSTER_MASK -->
 			<!-- BEGIN switch_quick_quote -->
-			<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27,true,false);"><img src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a><a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27,true,false);"><img src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
+			<a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27quote%27,true,false);"><img class="{IMG_BUTTON_CLASS_MB}" src="{IMG_QUICK_QUOTE}" alt="{L_QUICK_QUOTE}" title="{L_QUICK_QUOTE}" /></a><a href="javascript:addquote(%27{postrow.U_POST_ID}%27,%27ot%27,true,false);"><img class="{IMG_BUTTON_CLASS_MB}" src="{IMG_OFFTOPIC}" alt="{L_OFFTOPIC}" title="{L_OFFTOPIC}" /></a>
 			<!-- END switch_quick_quote -->
 			<!-- ENDIF -->
 			<a href="{U_BACK_TOP}"><img src="{IMG_ARU}" alt="{L_BACK_TOP}" title="{L_BACK_TOP}" /></a><a href="{U_BACK_BOTTOM}"><img src="{IMG_ARD}" alt="{L_BACK_BOTTOM}" title="{L_BACK_BOTTOM}" /></a>

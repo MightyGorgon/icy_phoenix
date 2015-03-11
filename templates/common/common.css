@@ -327,6 +327,8 @@ div.opacity:hover { opacity: 1.0; filter: alpha(opacity=100); /* For IE8 and ear
 .img-btn a:active img {}
 /* HOVER IMAGES - END */
 
+img.img-btn-mb, .img-btn-mb a img { margin-bottom: 2px; }
+
 /* CARDS - BEGIN */
 .img-ban a img {}
 .img-ban a:hover img {}

@@ -225,6 +225,7 @@ $user_browser = get_user_browser($profiledata['user_browser']);
 // Mighty Gorgon - Full Album Pack - BEGIN
 if (!empty($config['plugins']['album']['enabled']))
 {
+	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['album']['dir'] . 'common.' . PHP_EXT);
 	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['album']['dir'] . 'includes/album_functions_profile.' . PHP_EXT);
 	album_profile_last_pictures($profiledata);
 }

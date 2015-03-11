@@ -18,6 +18,53 @@ if (!defined('IN_ICYPHOENIX'))
 */
 class class_mcp
 {
+
+
+	/**
+	* Check if the selected forum has postcount enabled
+	*/
+	function forum_check_postcount($forum_id)
+	{
+		global $db, $cache, $lang;
+
+		$forum_postcount = true;
+		$sql = "SELECT forum_postcount FROM " . FORUMS_TABLE . " WHERE forum_id = " . $forum_id . " AND forum_postcount = 0";
+		$result = $db->sql_query($sql);
+		if ($row = $db->sql_fetchrow($result))
+		{
+			$forum_postcount = false;
+		}
+		$db->sql_freeresult($result);
+
+		return $forum_postcount;
+	}
+
+	/**
+	* Decrease user post count (and avoid values less than zero)
+	*/
+	function user_decrease_postscounter($user_id, $posts_number)
+	{
+		global $db, $cache, $lang;
+
+		$sql = "SELECT user_posts FROM " . USERS_TABLE . " WHERE user_id = " . (int) $user_id;
+		$result = $db->sql_query($sql);
+		if ($row = $db->sql_fetchrow($result))
+		{
+			if ($row['user_posts'] >= (int) $posts_number)
+			{
+				$posts_sql = "UPDATE " . USERS_TABLE . " SET user_posts = user_posts - " . $posts_number . " WHERE user_id = " . $user_id;
+			}
+			else
+			{
+				$posts_sql = "UPDATE " . USERS_TABLE . " SET user_posts = 0 WHERE user_id = " . $user_id;
+			}
+			$result = $db->sql_query($posts_sql);
+		}
+		$db->sql_freeresult($result);
+
+		return true;
+	}
+
 	/**
 	* Delete topic(s)
 	*/
@@ -41,24 +88,20 @@ class class_mcp
 		}
 		$db->sql_freeresult($result);
 
-		$sql = "SELECT poster_id, COUNT(post_id) AS posts FROM " . POSTS_TABLE . "
-			WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
-			GROUP BY poster_id";
-		$result = $db->sql_query($sql);
-
-		$count_sql = array();
-		while($row = $db->sql_fetchrow($result))
+		$forum_postcount = $this->forum_check_postcount($forum_id);
+		if (!empty($forum_postcount))
 		{
-			$count_sql[] = "UPDATE " . USERS_TABLE . " SET user_posts = user_posts - " . $row['posts'] . " WHERE user_id = " . $row['poster_id'];
-		}
-		$db->sql_freeresult($result);
+			$sql = "SELECT poster_id, COUNT(post_id) AS posts FROM " . POSTS_TABLE . "
+				WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
+				GROUP BY poster_id";
+			$result = $db->sql_query($sql);
 
-		if(sizeof($count_sql))
-		{
-			for($i = 0; $i < sizeof($count_sql); $i++)
+			$count_sql = array();
+			while($row = $db->sql_fetchrow($result))
 			{
-				$db->sql_query($count_sql[$i]);
+				$this->user_decrease_postscounter($row['poster_id'], $row['posts']);
 			}
+			$db->sql_freeresult($result);
 		}
 
 		$sql = "SELECT post_id FROM " . POSTS_TABLE . "
@@ -1002,8 +1045,7 @@ class class_mcp
 
 			if ($old_poster_id != ANONYMOUS)
 			{
-				$sql = "UPDATE " . USERS_TABLE . " SET user_posts = (user_posts - 1) WHERE user_id = '" . $old_poster_id . "'";
-				$result = $db->sql_query($sql);
+				$this->user_decrease_postscounter($old_poster_id, 1);
 				$this->autogroup($old_poster_id);
 			}
 		}
@@ -1343,6 +1385,7 @@ class class_mcp
 			include(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 		}
 
+		$decrease_counter = ($mode == 'delete') ? true : false;
 		$sign = ($mode == 'delete') ? '- 1' : '+ 1';
 		$forum_update_sql = "forum_posts = forum_posts $sign";
 		$topic_update_sql = '';
@@ -1419,28 +1462,22 @@ class class_mcp
 
 		if ($mode != 'poll_delete')
 		{
-			// Disable Post count - BEGIN
-			$postcount = true;
-			$sql = "SELECT forum_postcount
-				FROM " . FORUMS_TABLE . "
-				WHERE forum_id = " . $forum_id . "
-					AND forum_postcount = 0";
-			$result = $db->sql_query($sql);
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$postcount = false;
-			}
-			$db->sql_freeresult($result);
-			// Disable Post count - END
+			$forum_postcount = $this->forum_check_postcount($forum_id);
 
 			$this->sync_topic_details($topic_id, $forum_id, false, false);
 
-			if ($postcount)
+			if (!empty($forum_postcount))
 			{
-				$sql = "UPDATE " . USERS_TABLE . "
-					SET user_posts = user_posts $sign
-					WHERE user_id = $user_id";
-				$db->sql_query($sql);
+				if (!empty($decrease_counter))
+				{
+					$this->user_decrease_postscounter($user_id, 1);
+				}
+				else
+				{
+					$sql = "UPDATE " . USERS_TABLE . " SET user_posts = user_posts " . $sign  . " WHERE user_id = " . $user_id;
+					$db->sql_query($sql);
+				}
+
 				$db->sql_transaction('commit');
 
 				if ($config['site_history'])
