@@ -425,6 +425,7 @@ CREATE TABLE `phpbb_forums` (
 	`forum_rules_in_viewforum` TINYINT(1) unsigned NOT NULL DEFAULT '0',
 	`forum_rules_in_viewtopic` TINYINT(1) unsigned NOT NULL DEFAULT '0',
 	`forum_rules_in_posting` TINYINT(1) unsigned NOT NULL DEFAULT '0',
+	`forum_recurring_first_post` TINYINT(1) unsigned NOT NULL DEFAULT '0',
 	`forum_link` VARCHAR(255) DEFAULT NULL,
 	`forum_link_internal` TINYINT(1) NOT NULL DEFAULT '0',
 	`forum_link_hit_count` TINYINT(1) NOT NULL DEFAULT '0',

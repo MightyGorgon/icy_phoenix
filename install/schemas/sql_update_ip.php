@@ -4591,6 +4591,7 @@ if (substr($mode, 0, 6) == 'update')
 		case '2.0.13.99':
 		$sql[] = "ALTER TABLE `" . $table_prefix . "title_infos` ADD `title_html` VARCHAR(255) NOT NULL DEFAULT '' AFTER `title_info`";
 		$sql[] = "UPDATE `" . $table_prefix . "title_infos` SET `title_html` = `title_info`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_recurring_first_post` TINYINT(1) NOT NULL DEFAULT '0' AFTER `forum_rules_in_posting`";
 
 		/* Updating from IP 2.0.14.100 */
 		case '2.0.14.100':

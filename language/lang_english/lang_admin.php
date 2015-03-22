@@ -407,6 +407,8 @@ $lang = array_merge($lang, array(
 	'FORUM_SORT_BOX_EXPLAIN' => 'If you enable this option you will see a box wich allows you to alphabetically sort topics in this forum (please note that you need also to enable the global switch for this feature in Icy Phoenix Settings)',
 	'FORUM_KB_MODE' => 'KB Mode',
 	'FORUM_KB_MODE_EXPLAIN' => 'If you enable this option this forum will be shown in KB Mode (topics listed like Knowledge Base)',
+	'FORUM_RECURRING_FIRST_POST' => 'Recurring first post',
+	'FORUM_RECURRING_FIRST_POST_EXPLAIN' => 'Shows the first post of a topic on every page',
 	'FORUM_INDEX_ICONS' => 'Index Icons',
 	'FORUM_INDEX_ICONS_EXPLAIN' => 'If you enable this option you will see icons for RSS and New Topic in Forum Index (please note that you need also to enable the global switch for this feature in Icy Phoenix Settings)',
 

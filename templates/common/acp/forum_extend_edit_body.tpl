@@ -105,6 +105,10 @@ function update_icon(newimage)
 	<td class="row2"><input type="radio" name="forum_kb_mode" value="1"{FORUM_KB_MODE_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_kb_mode" value="0"{FORUM_KB_MODE_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
 </tr>
 <tr>
+	<td class="row1"><span class="genmed"><b>{L_FORUM_RECURRING_FIRST_POST}</b></span><br /><span class="gensmall">{L_FORUM_RECURRING_FIRST_POST_EXPLAIN}</span></td>
+	<td class="row2"><input type="radio" name="forum_recurring_first_post" value="1"{FORUM_RECURRING_FIRST_POST_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_recurring_first_post" value="0"{FORUM_RECURRING_FIRST_POST_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
+</tr>
+<tr>
 	<td class="row1"><span class="genmed"><b>{L_FORUM_INDEX_ICONS}</b></span><br /><span class="gensmall">{L_FORUM_INDEX_ICONS_EXPLAIN}</span></td>
 	<td class="row2"><input type="radio" name="forum_index_icons" value="1"{FORUM_INDEX_ICONS_YES} />&nbsp;<span class="genmed">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="forum_index_icons" value="0"{FORUM_INDEX_ICONS_NO} />&nbsp;<span class="genmed">{L_NO}</span></td>
 </tr>
