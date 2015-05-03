@@ -252,6 +252,7 @@ if (!defined('SKIP_CMS_CONFIG') && !defined('IN_ADMIN') && !defined('IN_CMS'))
 // CMS Pages Config - END
 
 // Plugins - BEGIN
+$config['plugins'] = array();
 foreach ($cache->obtain_plugins_config() as $k => $plugin)
 {
 	$config['plugins'][$k]['enabled'] = !empty($plugin['plugin_enabled']) ? true : false;
