@@ -175,10 +175,10 @@ class NewsDataAccess
 		switch($sort)
 		{
 			case SORT_ALPH_DEC:
-			$sql .= 'ORDER BY n.news_category DESC';
+			$sql .= "ORDER BY n.news_category DESC ";
 			break;
 			default:
-			$sql .= 'ORDER BY n.news_category ASC';
+			$sql .= "ORDER BY n.news_category ASC ";
 			break;
 		}
 
@@ -307,6 +307,7 @@ class NewsDataAccess
 				AND t.topic_poster = u.user_id
 				AND t.news_id = n.news_id
 				AND t.topic_id = ' . $article_id . '
+				AND ' . $this->excludeBinSql() . '
 				' . $auth_sql . '
 			LIMIT 1';
 		$result = $this->db->sql_query($sql);
@@ -344,6 +345,7 @@ class NewsDataAccess
 			return array();
 		}
 
+		$bin_forum = $this->config['bin_forum'];
 		$num_items = $this->config['posts_per_page'];
 		$auth_sql = get_user_news_auth_access('topic');
 
@@ -354,6 +356,7 @@ class NewsDataAccess
 				AND p.topic_id = t.topic_id
 				AND p.post_id <> t.topic_first_post_id
 				AND p.poster_id = u.user_id
+				AND ' . $this->excludeBinSql() . '
 				' . $auth_sql . '
 			ORDER BY p.post_time ASC LIMIT ' . $start . ', ' . $num_items;
 		$result = $this->db->sql_query($sql);
@@ -731,6 +734,7 @@ class NewsDataAccess
 				AND u.user_id = t.topic_poster
 				AND n.news_id = t.news_id
 				AND t.news_id > 0
+				AND ' . $this->excludeBinSql() . '
 				' . $auth_sql;
 		if($cat_id > 0)
 		{
@@ -913,6 +917,15 @@ class NewsDataAccess
 		$this->db->sql_freeresult($result);
 
 		return $titles;
+	}
+
+	/**
+	 * Generates the part of the SQL fetching query responsible
+	 * for excluse of the "recycle bin" forum
+	**/
+	function excludeBinSql()
+	{
+		return 'f.forum_id != ' . $this->settings['bin_forum'];
 	}
 
 	// }}}

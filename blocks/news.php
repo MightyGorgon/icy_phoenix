@@ -62,7 +62,7 @@ if(!function_exists('cms_block_news'))
 
 		$template->set_filenames(array('news' => 'blocks/news_block.tpl'));
 
-		$content =& new NewsModule(IP_ROOT_PATH);
+		$content = new NewsModule(IP_ROOT_PATH);
 
 		$content->setVariables(array(
 			'INDEX_FILE' => htmlspecialchars(urldecode($index_file)),
