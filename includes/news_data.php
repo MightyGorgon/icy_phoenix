@@ -345,7 +345,6 @@ class NewsDataAccess
 			return array();
 		}
 
-		$bin_forum = $this->config['bin_forum'];
 		$num_items = $this->config['posts_per_page'];
 		$auth_sql = get_user_news_auth_access('topic');
 
