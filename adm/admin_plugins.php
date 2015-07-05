@@ -91,12 +91,19 @@ if($mode == 'save')
 		foreach ($plugins_list as $plugin)
 		{
 			$existing_plugins[] = $plugin['config'];
-			$plugin_data = array();
+			$plugin_installed = !empty($plugins_config[$plugin['config']]['plugin_version']) ? true : false;
+			if (!$plugin_installed)
+			{
+				// do not update configuration if the plugin isn't installed
+				continue;
+			}
+
+			$plugin_enable = (isset($_POST[$plugin['config']]) ? $_POST[$plugin['config']] : 0);
 			$plugin_data = array(
 				'name' => $plugin['config'],
 				'version' => $plugin['version'],
 				'dir' => $plugin['dir'],
-				'enabled' => (isset($_POST[$plugin['config']]) ? $_POST[$plugin['config']] : 0),
+				'enabled' => $plugin_enable,
 			);
 			$class_plugins->set_config($plugin_data, false, true);
 		}
