@@ -61,6 +61,8 @@ if ($lang_extend_admin)
 		'SITE_META_COPYRIGHT' => 'Meta Copyright',
 		'SITE_META_COPYRIGHT_SWITCH' => 'Enable Meta Copyright From DB',
 		'SITE_META_COPYRIGHT_SWITCH_EXPLAIN' => 'If you enable meta copyright, then copyright specified above will be used in html pages instead of the copyright defined in <i>lang_main_settings.php</i>.',
+		'IP_cookie_law' => 'Cookie Law',
+		'IP_cookie_law_explain' => 'By enabling this feature a banner will be shown to guests on site landing to comply with EU cookie law',
 
 // TAB - SITE
 		'IP_mobile_style_disable' => 'Disable Mobile Devices Dectection',

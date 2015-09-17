@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.14.100');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.17.103');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
@@ -707,6 +707,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('facebook_app
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_s_size', '120');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_cols', '4');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_rows', '5');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cookie_law', '0');
 
 
 ## ATTACHMENTS - BEGIN
@@ -1666,7 +1667,7 @@ INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, ro
 INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (17, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3);
 INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (18, 'ROLE_PLUGINS_FULL', 'ROLE_PLUGINS_FULL_DESCRIPTION', 'pl_', 1);
 INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (19, 'ROLE_PLUGINS_STANDARD', 'ROLE_PLUGINS_STANDARD_DESCRIPTION', 'pl_', 2);
-INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (20, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS', 'pl_', 3);
+INSERT INTO phpbb_acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (20, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCESS_DESCRIPTION', 'pl_', 3);
 
 # -- Roles data
 

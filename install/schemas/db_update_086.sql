@@ -193,7 +193,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('thumbnail_s_
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_cols', '4');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_rows', '5');
 
-UPDATE `phpbb_plugins` SET `plugin_functions` = '1' WHERE `phpbb_plugins`.`plugin_name` = 'cash';
+UPDATE `phpbb_plugins` SET `plugin_functions` = '1' WHERE `plugin_name` = 'cash';
 
 DELETE FROM `phpbb_cms_blocks` WHERE bs_id IN (SELECT bs_id FROM `phpbb_cms_block_settings` WHERE blockfile = 'album');
 DELETE FROM `phpbb_cms_block_variable` WHERE block = 'album';
@@ -203,12 +203,42 @@ DELETE FROM `phpbb_cms_nav_menu` WHERE menu_link = 'album.php';
 
 
 
+########################################
+##              BUILD 102             ##
+########################################
+UPDATE `phpbb_acl_roles` SET `role_description` = 'ROLE_PLUGINS_NOACCESS_DESCRIPTION' WHERE `role_description` = 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS';
+
+CREATE TABLE `phpbb_notifications` (
+	`notification_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`notification_type_id` smallint(4) unsigned NOT NULL DEFAULT '0',
+	`item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`item_parent_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`notification_read` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	`notification_time` int(11) unsigned NOT NULL DEFAULT '1',
+	`notification_data` text COLLATE utf8_bin NOT NULL,
+	PRIMARY KEY (`notification_id`),
+	KEY `item_ident` (`notification_type_id`,`item_id`),
+	KEY `user` (`user_id`,`notification_read`)
+);
+
+
+
+########################################
+##              BUILD 103             ##
+########################################
+ALTER TABLE `phpbb_forums` ADD `forum_recurring_first_post` TINYINT(1) NOT NULL DEFAULT '0' AFTER `forum_rules_in_posting`;
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cookie_law', '0');
+
+
+
+
 #####################
 
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.0.15.101' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.0.17.103' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

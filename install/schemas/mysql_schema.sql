@@ -425,6 +425,7 @@ CREATE TABLE `phpbb_forums` (
 	`forum_rules_in_viewforum` TINYINT(1) unsigned NOT NULL DEFAULT '0',
 	`forum_rules_in_viewtopic` TINYINT(1) unsigned NOT NULL DEFAULT '0',
 	`forum_rules_in_posting` TINYINT(1) unsigned NOT NULL DEFAULT '0',
+	`forum_recurring_first_post` TINYINT(1) unsigned NOT NULL DEFAULT '0',
 	`forum_link` VARCHAR(255) DEFAULT NULL,
 	`forum_link_internal` TINYINT(1) NOT NULL DEFAULT '0',
 	`forum_link_hit_count` TINYINT(1) NOT NULL DEFAULT '0',
@@ -2656,3 +2657,21 @@ CREATE TABLE `phpbb_images` (
 );
 
 ## IMAGES - END
+
+## NOTIFICATIONS - BEGIN
+
+CREATE TABLE `phpbb_notifications` (
+	`notification_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`notification_type_id` smallint(4) unsigned NOT NULL DEFAULT '0',
+	`item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`item_parent_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+	`notification_read` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	`notification_time` int(11) unsigned NOT NULL DEFAULT '1',
+	`notification_data` text COLLATE utf8_bin NOT NULL,
+	PRIMARY KEY (`notification_id`),
+	KEY `item_ident` (`notification_type_id`,`item_id`),
+	KEY `user` (`user_id`,`notification_read`)
+);
+
+## NOTIFICATIONS - END

@@ -5048,13 +5048,15 @@ function page_header($title = '', $parse_template = false)
 			'L_DISPLAY_UNREAD' => (!empty($u_display_new) ? $u_display_new['unread'] : ''),
 			'L_DISPLAY_MARKED' => (!empty($u_display_new) ? $u_display_new['marked'] : ''),
 			'L_DISPLAY_PERMANENT' => (!empty($u_display_new) ? $u_display_new['permanent'] : ''),
-
 			'L_DISPLAY_U_S' => (!empty($u_display_new) ? $u_display_new['u_string_full'] : ''),
 			'L_DISPLAY_M_S' => (!empty($u_display_new) ? $u_display_new['m_string_full'] : ''),
 			'L_DISPLAY_P_S' => (!empty($u_display_new) ? $u_display_new['p_string_full'] : ''),
 			'L_DISPLAY_UNREAD_S' => (!empty($u_display_new) ? $u_display_new['unread_string'] : ''),
 			'L_DISPLAY_MARKED_S' => (!empty($u_display_new) ? $u_display_new['marked_string'] : ''),
 			'L_DISPLAY_PERMANENT_S' => (!empty($u_display_new) ? $u_display_new['permanent_string'] : ''),
+			'UPI2DB_U_COUNTER' => (!empty($u_display_new) ? $u_display_new['counter_unread'] : 0),
+			'UPI2DB_M_COUNTER' => (!empty($u_display_new) ? $u_display_new['counter_marked'] : 0),
+			'UPI2DB_P_COUNTER' => (!empty($u_display_new) ? $u_display_new['counter_permanent'] : 0),
 			'U_DISPLAY_U' => (!empty($u_display_new) ? $u_display_new['u_url'] : ''),
 			'U_DISPLAY_M' => (!empty($u_display_new) ? $u_display_new['m_url'] : ''),
 			'U_DISPLAY_P' => (!empty($u_display_new) ? $u_display_new['p_url'] : ''),
@@ -5168,6 +5170,7 @@ function page_header($title = '', $parse_template = false)
 		'NAV_LINKS' => $nav_links_html,
 
 		'S_HIGHSLIDE' => (!empty($config['thumbnail_highslide']) ? true : false),
+		'S_COOKIE_LAW' => (!empty($config['cookie_law']) ? true : false),
 
 		// AJAX Features - BEGIN
 		'S_AJAX_FEATURES' => (!empty($config['ajax_features']) ? true : false),

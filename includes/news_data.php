@@ -175,10 +175,10 @@ class NewsDataAccess
 		switch($sort)
 		{
 			case SORT_ALPH_DEC:
-			$sql .= "ORDER BY n.news_category DESC ";
+			$sql .= 'ORDER BY n.news_category DESC';
 			break;
 			default:
-			$sql .= "ORDER BY n.news_category ASC ";
+			$sql .= 'ORDER BY n.news_category ASC';
 			break;
 		}
 
@@ -919,12 +919,11 @@ class NewsDataAccess
 	}
 
 	/**
-	 * Generates the part of the SQL fetching query responsible
-	 * for excluse of the "recycle bin" forum
+	* Generates the part of the SQL to fetch News not from Recycle Bin
 	**/
 	function excludeBinSql()
 	{
-		return 'f.forum_id != ' . $this->settings['bin_forum'];
+		return 'f.forum_id != ' . (int) $this->settings['bin_forum'];
 	}
 
 	// }}}

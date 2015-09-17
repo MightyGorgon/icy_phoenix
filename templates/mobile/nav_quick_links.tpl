@@ -12,6 +12,8 @@
 			<!-- ENDIF -->
 			<li><a href="{U_INDEX}">{L_LINK_FORUM}</a></li>
 			<li><a href="{U_BOARDRULES}">{L_LINK_BOARDRULES}</a></li>
+			<li><a href="{U_PRIVACY_POLICY}">{L_LINK_PRIVACY_POLICY}</a></li>
+			<li><a href="{U_COOKIE_POLICY}">{L_LINK_COOKIE_POLICY}</a></li>
 			<li><a href="{U_FAQ}">{L_LINK_FAQ}</a></li>
 			<li><a href="{U_SEARCH}">{L_LINK_SEARCH}</a></li>
 			<li><a href="{U_SITEMAP}">{L_LINK_SITEMAP}</a></li>

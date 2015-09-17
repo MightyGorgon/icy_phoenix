@@ -66,6 +66,8 @@ function cms_menu_default_links_array()
 		42 => array('lang' => 'Rss_news_feeds', 'link' => 'javascript:rss_news_help();', 'auth' => AUTH_CMS_ALL),
 		43 => array('lang' => 'Register', 'link' => CMS_PAGE_PROFILE . '?mode=register', 'auth' => AUTH_CMS_GUESTS_ONLY),
 		44 => array('lang' => 'LOGIN_LOGOUT_LINK', 'link' => '', 'auth' => AUTH_CMS_ALL, 'function' => 'login_logout_link()'),
+		45 => array('lang' => 'LINK_PRIVACY_POLICY', 'link' => CMS_PAGE_PRIVACY_POLICY, 'auth' => AUTH_CMS_ALL),
+		46 => array('lang' => 'LINK_COOKIE_POLICY', 'link' => CMS_PAGE_COOKIE_POLICY, 'auth' => AUTH_CMS_ALL),
 	);
 
 	return $default_links_array;

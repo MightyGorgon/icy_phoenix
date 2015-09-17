@@ -61,6 +61,9 @@ var CMS_PAGE_VIEWTOPIC = '{CMS_PAGE_VIEWTOPIC}';
 var CMS_PAGE_PROFILE = '{CMS_PAGE_PROFILE}';
 var CMS_PAGE_POSTING = '{CMS_PAGE_POSTING}';
 var CMS_PAGE_SEARCH = '{CMS_PAGE_SEARCH}';
+var CMS_PAGE_PRIVACY_POLICY = '{CMS_PAGE_PRIVACY_POLICY}';
+var CMS_PAGE_COOKIE_POLICY = '{CMS_PAGE_COOKIE_POLICY}';
+var CMS_PAGE_FAQ = '{CMS_PAGE_FAQ}';
 var form_name = 'post';
 var text_name = 'message';
 var onload_functions = new Array();
@@ -169,4 +172,39 @@ var ajax_page_charset = '{S_CONTENT_ENCODING}';
 
 <!-- IF S_SLIDESHOW -->
 <!-- INCLUDE album_slideshow_inc_js.tpl -->
+<!-- ENDIF -->
+
+<!-- IF S_COOKIE_LAW and not S_LOGGED_IN -->
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_cookiebar.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_cookiebar_compressed.js"></script>
+<script type="text/javascript"> 
+jQuery(document).ready(function(){
+	$.cookieBar({
+		message: '{L_COOKIE_POLICY_SHORT}',
+		acceptButton: true,
+		acceptText: '{L_COOKIE_POLICY_AGREE}',
+		acceptFunction: null,
+		declineButton: false,
+		declineText: '{L_COOKIE_POLICY_DISABLE}',
+		declineFunction: null,
+		policyButton: true,
+		policyText: '{L_COOKIE_POLICY_TITLE}',
+		policyURL: '{CMS_PAGE_COOKIE_POLICY}',
+		autoEnable: true,
+		acceptOnContinue: false,
+		acceptOnScroll: false,
+		expireDays: 365,
+		renewOnVisit: false,
+		forceShow: false,
+		effect: 'slide',
+		element: 'body',
+		append: false,
+		fixed: false,
+		bottom: false,
+		zindex: '',
+		domain: '{FULL_SITE_PATH}',
+		referrer: '{FULL_SITE_PATH}'
+	});
+});
+</script>
 <!-- ENDIF -->

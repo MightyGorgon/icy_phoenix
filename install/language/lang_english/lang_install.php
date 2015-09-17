@@ -72,6 +72,7 @@ $lang = array_merge($lang, array(
 	'Admin_Username' => 'Administrator Username',
 	'Admin_Password' => 'Administrator Password',
 	'Admin_Password_confirm' => 'Administrator Password [ Confirm ]',
+	'Password_mismatch' => 'The passwords you entered did not match.',
 
 	'Inst_Step_2' => 'Your admin username has been created.<br />At this point to complete the setup process you need to <span class="text_red">remove <u>install</u> folder</span>. Finally you should click on <b>Finish Installation</b> and then access ACP (Admin Control Panel) and CMS (Content Management System) where you can manage all Icy Phoenix settings and preferences.<br />In ACP you can adjust the main settings and preferences for the whole site, (styles, languages, time, forums, download, users, album, etc.) and while in CMS section you can configure options regarding the site pages (define permissions, add blocks, create new pages, create new menu, etc.). You may also want to configure <b>.htaccess</b> and <b>lang_main_settings.php</b> (for each installed lang) to fine tune some other preferences, like error reporting, url rewrite, keywords, welcome message, charset and so on.<br /><br />Thank you for choosing Icy Phoenix and remember to backup your db periodically.<br /><br />',
 

@@ -240,6 +240,17 @@ $settings_data = array(
 		'default' => '',
 	),
 
+	'cookie_law' => array(
+		'lang_key' => 'IP_cookie_law',
+		'explain' => 'IP_cookie_law_explain',
+		'type' => 'LIST_RADIO',
+		'default' => 0,
+		'values' => array(
+			'Disabled' => 0,
+			'Enabled' => 1,
+		),
+	),
+
 	'cookie_name' => array(
 		'lang_key' => 'Cookie_name',
 		'type' => 'TINYTEXT',

@@ -264,6 +264,8 @@ class class_form
 			$default_extra = (!empty($properties['input_extra']['default_func']) ? $properties['input_extra']['default_func']() : $properties['input_extra']['default']);
 			$readonly_extra = !empty($properties['input_extra']['readonly']) ? ' readonly="readonly"' : '';
 
+			$properties['input_extra']['type'] = ($properties['type'] == 'HIDDEN') ? 'HIDDEN' : $properties['input_extra']['type'];
+
 			switch ($properties['input_extra']['type'])
 			{
 

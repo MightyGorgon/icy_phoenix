@@ -97,7 +97,6 @@ if($mode == 'save')
 				// do not update configuration if the plugin isn't installed
 				continue;
 			}
-
 			$plugin_enable = (isset($_POST[$plugin['config']]) ? $_POST[$plugin['config']] : 0);
 			$plugin_data = array(
 				'name' => $plugin['config'],

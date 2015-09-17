@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.0.15.101');
+define('ICYPHOENIX_VERSION', '2.0.17.103');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user can access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -85,6 +85,8 @@ define('CMS_PAGE_DRAFTS', 'drafts.' . PHP_EXT);
 define('CMS_PAGE_MEMBERLIST', 'memberlist.' . PHP_EXT);
 define('CMS_PAGE_GROUP_CP', 'groupcp.' . PHP_EXT);
 define('CMS_PAGE_PRIVMSG', 'privmsg.' . PHP_EXT);
+define('CMS_PAGE_PRIVACY_POLICY', 'privacy_policy.' . PHP_EXT);
+define('CMS_PAGE_COOKIE_POLICY', 'cookie_policy.' . PHP_EXT);
 define('CMS_PAGE_FAQ', 'faq.' . PHP_EXT);
 define('CMS_PAGE_RULES', 'rules.' . PHP_EXT);
 define('CMS_PAGE_DLOAD', 'dload.' . PHP_EXT);

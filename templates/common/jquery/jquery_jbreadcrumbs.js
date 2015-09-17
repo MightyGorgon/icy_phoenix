@@ -195,7 +195,9 @@
 
 	function isIE6OrLess()
 	{
-		var isIE6 = $.browser.msie && /MSIE\s(5\.5|6\.)/.test(navigator.userAgent);
+		// Mighty Gorgon: removed for incompatibility with jQuery 1.9+
+		//var isIE6 = $.browser.msie && /MSIE\s(5\.5|6\.)/.test(navigator.userAgent);
+		var isIE6 = /MSIE\s(5\.5|6\.)/.test(navigator.userAgent);
 		return isIE6;
 	};
 	// Fix The Overlay for IE6

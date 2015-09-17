@@ -13,10 +13,10 @@
 	<div id="bottom_logo">
 		<table>
 			<tr>
-				<td class="min250 tdalignl tvalignm tdnw"><span class="copyright">{COPYRIGHT_LINK}{TRANSLATION_INFO}</span></td>
+				<td class="min250 tdalignl tvalignm tdnw"><span class="copyright">{COPYRIGHT_PADDING}{COPYRIGHT_LINK}{TRANSLATION_INFO}</span></td>
 				<td class="tdalignc tvalignm tdnw">
 					<div style="text-align: center;">
-						<span class="generation"><b>{LOFI}</b></span><br />
+						<span class="generation"><b>{LOFI}</b> - <a href="{U_PRIVACY_POLICY}">{L_LINK_PRIVACY_POLICY}</a> - <a href="{U_COOKIE_POLICY}">{L_LINK_COOKIE_POLICY}</a></span><br />
 						<!-- IF S_GENERATION_TIME -->
 						<span class="generation">{PAGE_GEN_TIME} <b>{GENERATION_TIME}s</b> (PHP: {PHP_PART}% SQL: {SQL_PART}%){MEMORY_USAGE}</span><br />
 						<span class="generation">{SQL_QUERIES}: {NUMBER_QUERIES} - {DEBUG_TEXT} - {GZIP_TEXT}</span>

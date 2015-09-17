@@ -68,6 +68,14 @@ if(GetCookie(tmp) == '2')
 				</tr>
 				<tr>
 					<td class="tdalignl tw8px">{IMG_NAV_MENU_SEP}</td>
+					<td class="genmed tdalignl"><a href="{U_PRIVACY_POLICY}">{L_LINK_PRIVACY_POLICY}</a></td>
+				</tr>
+				<tr>
+					<td class="tdalignl tw8px">{IMG_NAV_MENU_SEP}</td>
+					<td class="genmed tdalignl"><a href="{U_COOKIE_POLICY}">{L_LINK_COOKIE_POLICY}</a></td>
+				</tr>
+				<tr>
+					<td class="tdalignl tw8px">{IMG_NAV_MENU_SEP}</td>
 					<td class="genmed tdalignl"><a href="{U_FAQ}">{L_LINK_FAQ}</a></td>
 				</tr>
 				<tr>

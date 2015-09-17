@@ -106,6 +106,9 @@ switch ($req_version)
 	case '2014100': $current_ip_version = '2.0.14.100'; break;
 	case '2015101': $current_ip_version = '2.0.15.101'; break;
 	case '2016102': $current_ip_version = '2.0.16.102'; break;
+	case '2017103': $current_ip_version = '2.0.17.103'; break;
+	case '2018104': $current_ip_version = '2.0.18.104'; break;
+
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4245,7 +4248,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (17, 'ROLE_FORUM_NOACCESS', 'ROLE_FORUM_NOACCES_DESCRIPTIONS', 'f_', 3)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (18, 'ROLE_PLUGINS_FULL', 'ROLE_PLUGINS_FULL_DESCRIPTION', 'pl_', 1)";
 		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (19, 'ROLE_PLUGINS_STANDARD', 'ROLE_PLUGINS_STANDARD_DESCRIPTION', 'pl_', 2)";
-		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (20, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS', 'pl_', 3)";
+		$sql[] = "INSERT INTO " . $table_prefix . "acl_roles (role_id, role_name, role_description, role_type, role_order) VALUES (20, 'ROLE_PLUGINS_NOACCESS', 'ROLE_PLUGINS_NOACCESS_DESCRIPTION', 'pl_', 3)";
 
 		// -- Roles data
 
@@ -4600,6 +4603,9 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('thumbnail_s_size', '120')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('img_list_cols', '4')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('img_list_rows', '5')";
+
+		$sql[] = "UPDATE `" . $table_prefix . "plugins` SET `plugin_functions` = '1' WHERE `plugin_name` = 'cash'";
+
 		$sql[] = "DELETE FROM `" . $table_prefix . "cms_blocks` WHERE bs_id IN (SELECT bs_id FROM `" . $table_prefix . "cms_block_settings` WHERE blockfile = 'album')";
 		$sql[] = "DELETE FROM `" . $table_prefix . "cms_block_variable` WHERE block = 'album'";
 		$sql[] = "DELETE FROM `" . $table_prefix . "cms_block_settings` WHERE blockfile = 'album'";
@@ -4608,9 +4614,31 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.0.15.101 */
 		case '2.0.15.101':
+		$sql[] = "UPDATE `" . $table_prefix . "acl_roles` SET `role_description` = 'ROLE_PLUGINS_NOACCESS_DESCRIPTION' WHERE `role_description` = 'ROLE_PLUGINS_NOACCES_DESCRIPTIONS'";
+		$sql[] = "CREATE TABLE `" . $table_prefix . "notifications` (
+			`notification_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+			`notification_type_id` smallint(4) unsigned NOT NULL DEFAULT '0',
+			`item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`item_parent_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+			`notification_read` tinyint(1) unsigned NOT NULL DEFAULT '0',
+			`notification_time` int(11) unsigned NOT NULL DEFAULT '1',
+			`notification_data` text COLLATE utf8_bin NOT NULL,
+			PRIMARY KEY (`notification_id`),
+			KEY `item_ident` (`notification_type_id`,`item_id`),
+			KEY `user` (`user_id`,`notification_read`)
+		)";
 
 		/* Updating from IP 2.0.16.102 */
 		case '2.0.16.102':
+		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_recurring_first_post` TINYINT(1) NOT NULL DEFAULT '0' AFTER `forum_rules_in_posting`";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cookie_law', '0')";
+
+		/* Updating from IP 2.0.17.103 */
+		case '2.0.17.103':
+
+		/* Updating from IP 2.0.18.104 */
+		case '2.0.18.104':
 
 	}
 
