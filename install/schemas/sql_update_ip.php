@@ -108,6 +108,7 @@ switch ($req_version)
 	case '2016102': $current_ip_version = '2.0.16.102'; break;
 	case '2017103': $current_ip_version = '2.0.17.103'; break;
 	case '2018104': $current_ip_version = '2.0.18.104'; break;
+	case '2019105': $current_ip_version = '2.0.19.105'; break;
 
 }
 
@@ -4532,7 +4533,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('enable_facebook_login', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('facebook_app_id', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('facebook_app_secret', '')";
-		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE config_key = 'index_links'";
+		$sql[] = "DELETE FROM " . $table_prefix . "config WHERE `config_name` = 'index_links'";
 		$sql[] = "DELETE FROM " . $table_prefix . "cms_blocks WHERE bs_id IN (SELECT bs_id FROM " . $table_prefix . "cms_block_settings WHERE blockfile = 'links')";
 		$sql[] = "DELETE FROM " . $table_prefix . "cms_block_variable WHERE block = 'links'";
 		$sql[] = "DELETE FROM " . $table_prefix . "cms_block_settings WHERE blockfile = 'links'";
@@ -4633,12 +4634,17 @@ if (substr($mode, 0, 6) == 'update')
 		case '2.0.16.102':
 		$sql[] = "ALTER TABLE `" . $table_prefix . "forums` ADD `forum_recurring_first_post` TINYINT(1) NOT NULL DEFAULT '0' AFTER `forum_rules_in_posting`";
 		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('cookie_law', '0')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('privacy_policy', 'privacy_policy', 'privacy_policy.php', 0, '', 0, '')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "cms_layout_special` (`page_id`, `name`, `filename`, `global_blocks`, `config_vars`, `view`, `groups`) VALUES ('cookie_policy', 'cookie_policy', 'cookie_policy.php', 0, '', 0, '')";
 
 		/* Updating from IP 2.0.17.103 */
 		case '2.0.17.103':
 
 		/* Updating from IP 2.0.18.104 */
 		case '2.0.18.104':
+
+		/* Updating from IP 2.0.19.105 */
+		case '2.0.19.105':
 
 	}
 

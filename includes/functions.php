@@ -4374,7 +4374,7 @@ function page_header($title = '', $parse_template = false)
 		$cms_config_global_blocks = $cache->obtain_cms_global_blocks_config(false);
 	}
 
-	//$server_url = create_server_url();
+	$server_url = create_server_url();
 	$page_url = pathinfo($_SERVER['SCRIPT_NAME']);
 	$page_query = $_SERVER['QUERY_STRING'];
 
@@ -4449,6 +4449,22 @@ function page_header($title = '', $parse_template = false)
 
 	$phpbb_meta .= !empty($lang['Extra_Meta']) ? ($lang['Extra_Meta'] . "\n\n") : "\n";
 
+	// Mighty Gorgon - Smart Header - Begin
+	$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
+	$lang_dir = !empty($lang['DIRECTION']) ? $lang['DIRECTION'] : 'ltr';
+	$header_lang = !empty($lang['HEADER_LANG']) ? $lang['HEADER_LANG'] : 'en-gb';
+	$xml_header_lang = !empty($lang['HEADER_LANG_XML']) ? $lang['HEADER_LANG_XML'] : 'en-gb';
+	$og_header_lang = !empty($lang['HEADER_OG_LANG']) ? $lang['HEADER_OG_LANG'] : 'en_GB';
+	$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n";
+	//$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' . "\n";
+	$doctype_html .= '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang_dir . '" lang="' . $header_lang . '" xml:lang="' . $xml_header_lang . '">' . "\n";
+
+	if ($page_url['basename'] == CMS_PAGE_VIEWONLINE)
+	{
+		$phpbb_meta .= '<meta http-equiv="refresh" content="180;url=viewonline.' . PHP_EXT . '" />' . "\n";
+	}
+	// Mighty Gorgon - Smart Header - End
+
 	$canonical_pages_array = array(CMS_PAGE_FORUM, CMS_PAGE_VIEWFORUM, CMS_PAGE_VIEWTOPIC);
 	if (in_array($page_url['basename'], $canonical_pages_array))
 	{
@@ -4462,26 +4478,28 @@ function page_header($title = '', $parse_template = false)
 		$canonical_append .= (!empty($meta_content['post_id']) ? ((empty($canonical_append) ? '' : '&amp;') . POST_POST_URL . '=' . $meta_content['post_id']) : '');
 		$canonical_append .= (!empty($start) ? ((empty($canonical_append) ? '' : '&amp;') . 'start=' . $start) : '');
 
-		$canonical_url = $page_url['basename'] . (empty($canonical_append) ? '' : '?') . $canonical_append;
+		$canonical_url = $server_url . $page_url['basename'] . (empty($canonical_append) ? '' : '?') . $canonical_append;
+
+		// Mighty Gorgon - OpenGraph - BEGIN
+		$phpbb_meta .= '<meta property="og:locale" content="' . $og_header_lang . '" />' . "\n";
+		$phpbb_meta .= '<meta property="og:title" content="' . $meta_content['page_title'] . '" />' . "\n";
+		$phpbb_meta .= '<meta property="og:type" content="article" />' . "\n";
+		$phpbb_meta .= (!empty($canonical_url) ? ('<meta property="og:url" content="' . $canonical_url . '" />' . "\n") : '');
+		$phpbb_meta .= '<meta property="og:site_name" content="' . $config['sitename'] . '" />' . "\n";
+		$phpbb_meta .= '<meta property="og:description" content="' . $meta_content['description'] . '" />' . "\n";
+		if (!empty($meta_content['og_img']))
+		{
+			foreach ($meta_content['og_img'] as $og_img_src)
+			{
+				$phpbb_meta .= '<meta property="og:image" content="' . $og_img_src . '" />' . "\n";
+			}
+		}
+		$phpbb_meta .= "\n";
+		// Mighty Gorgon - OpenGraph - END
 
 		$phpbb_meta .= (!empty($canonical_url) ? ('<link rel="canonical" href="' . $canonical_url . '" />' . "\n") : '');
 	}
 	// DYNAMIC META TAGS - END
-
-	// Mighty Gorgon - Smart Header - Begin
-	$encoding_charset = !empty($lang['ENCODING']) ? $lang['ENCODING'] : 'UTF-8';
-	$lang_dir = !empty($lang['DIRECTION']) ? $lang['DIRECTION'] : 'ltr';
-	$header_lang = !empty($lang['HEADER_LANG']) ? $lang['HEADER_LANG'] : 'en-gb';
-	$xml_header_lang = !empty($lang['HEADER_LANG_XML']) ? $lang['HEADER_LANG_XML'] : 'en-gb';
-	$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' . "\n";
-	//$doctype_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' . "\n";
-	$doctype_html .= '<html xmlns="http://www.w3.org/1999/xhtml" dir="' . $lang_dir . '" lang="' . $header_lang . '" xml:lang="' . $xml_header_lang . '">' . "\n";
-
-	if ($page_url['basename'] == CMS_PAGE_VIEWONLINE)
-	{
-		$phpbb_meta .= '<meta http-equiv="refresh" content="180;url=viewonline.' . PHP_EXT . '" />' . "\n";
-	}
-	// Mighty Gorgon - Smart Header - End
 
 	// Mighty Gorgon - AJAX Features - Begin
 	$ajax_user_check = '';
@@ -4494,7 +4512,7 @@ function page_header($title = '', $parse_template = false)
 	// Mighty Gorgon - AJAX Features - End
 
 	// Generate HTML required for Mozilla Navigation bar
-	$nav_base_url = create_server_url();
+	$nav_base_url = $server_url;
 
 	// Mozilla navigation bar - Default items that should be valid on all pages.
 	// Defined here to correctly assign the Language Variables and be able to change the variables within code.

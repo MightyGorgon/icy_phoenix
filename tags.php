@@ -118,13 +118,22 @@ if ($mode == 'view')
 	}
 
 	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
-	$breadcrumbs['bottom_right_links'] .= (($user->data['user_level'] == ADMIN) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=replace') . '">' . $lang['TOPIC_TAGS_REPLACE'] . '</a>';
+	$breadcrumbs['bottom_right_links'] .= (($user->data['user_level'] != ADMIN) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=replace') . '">' . $lang['TOPIC_TAGS_REPLACE'] . '</a>';
 
 	$template_to_parse = 'tags_view_body.tpl';
 
 	$tags = array($tag_text);
 	$topics = $class_topics_tags->get_topics_with_tags($tags, $start, $per_page);
-	$num_items = sizeof($topics);
+	$num_items = 0;
+	$tags_counters = $class_topics_tags->get_tags_counters($tags);
+	foreach ($tags_counters as $tag_counter)
+	{
+		if ($tag_counter['tag_text'] == $tag_text)
+		{
+			$num_items = $tag_counter['tag_count'];
+			break;
+		}
+	}
 
 	$topic_length = 60;
 
@@ -165,7 +174,7 @@ if ($mode == 'view')
 		//$news_label = ($line[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 		$news_label = '';
 
-		$topic_title_data = $class_topics->generate_topic_title($topic_id, $line[$i], $topic_length);
+		$topic_title_data = $class_topics->generate_topic_title($topic_id, $topic, $topic_length);
 		$topic_title = $topic_title_data['title'];
 		$topic_title_clean = $topic_title_data['title_clean'];
 		$topic_title_plain = $topic_title_data['title_plain'];

@@ -324,6 +324,24 @@ class class_topics_tags
 	}
 
 	/*
+	* Get tags counters
+	*/
+	function get_tags_counters($tags)
+	{
+		global $db, $lang;
+
+		$tags_counters = array();
+		$sql = "SELECT l.*
+						FROM " . TOPICS_TAGS_LIST_TABLE . " l
+						WHERE " . $db->sql_in_set('l.tag_text', $tags);
+		$result = $db->sql_query($sql);
+		$tags_counters = $db->sql_fetchrowset($result);
+		$db->sql_freeresult($result);
+
+		return $tags_counters;
+	}
+
+	/*
 	* Build tags list
 	*/
 	function build_tags_list($topics_ids_array)

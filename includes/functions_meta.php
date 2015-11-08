@@ -127,21 +127,30 @@ function create_meta_content()
 	if (!empty($meta_content['cat_id']) && !empty($meta_content['cat_title']) && empty($meta_content['cat_title_clean']))
 	{
 		$meta_content['cat_title_clean'] = ip_clean_string($meta_row['cat_title'], $lang['ENCODING']);
-		@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+		if (!function_exists('update_clean_cat_title'))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+		}
 		update_clean_cat_title($meta_content['cat_id'], $meta_content['cat_title_clean']);
 	}
 
 	if (!empty($meta_content['forum_id']) && !empty($meta_content['forum_name']) && empty($meta_content['forum_name_clean']))
 	{
 		$meta_content['forum_name_clean'] = ip_clean_string($meta_row['forum_name'], $lang['ENCODING']);
-		@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+		if (!function_exists('update_clean_forum_name'))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/functions_admin_forums.' . PHP_EXT);
+		}
 		update_clean_forum_name($meta_content['forum_id'], $meta_content['forum_name_clean']);
 	}
 
 	if (!empty($meta_content['topic_id']) && !empty($meta_content['topic_title']) && empty($meta_content['topic_title_clean']))
 	{
 		$meta_content['topic_title_clean'] = ip_clean_string($meta_row['topic_title'], $lang['ENCODING']);
-		@include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+		if (!function_exists('update_clean_topic_title'))
+		{
+			@include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+		}
 		update_clean_topic_title($meta_content['topic_id'], $meta_content['topic_title_clean']);
 	}
 

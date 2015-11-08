@@ -397,7 +397,7 @@ class bbcode
 	*/
 	function process_tag(&$item)
 	{
-		global $db, $cache, $config, $user, $lang, $topic_id, $local_urls;
+		global $db, $cache, $config, $user, $lang, $topic_id, $local_urls, $meta_content;
 
 		if (function_exists('create_server_url'))
 		{
@@ -832,6 +832,10 @@ class bbcode
 				{
 					$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
 				}
+				if (($var == 'src') && (!$this->is_sig))
+				{
+					$meta_content['og_img'][] = $value;
+				}
 			}
 			if(!isset($params['title']))
 			{
@@ -1084,6 +1088,10 @@ class bbcode
 			foreach($params as $var => $value)
 			{
 				$html .= ' ' . $var . '="' . $this->process_text($value) . '"';
+				if (($var == 'src') && (!$this->is_sig))
+				{
+					$meta_content['og_img'][] = $value;
+				}
 			}
 			if(!isset($params['title']))
 			{

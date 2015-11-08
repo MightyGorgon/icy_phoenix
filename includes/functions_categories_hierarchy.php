@@ -1110,7 +1110,7 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 					$topic_title_short = substr(strip_tags($topic_title), 0, intval($config['last_topic_title_length'])) . '...';
 				}
 
-				$topic_title = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.forum_last_post_id']) . '#p' . $data['tree.forum_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title . '</a><br />';
+				$topic_title = '<a href="' . append_sid(CMS_PAGE_VIEWTOPIC . '?' . ((!empty($data['forum_id'])) ? (POST_FORUM_URL . '=' . $data['forum_id'] . '&amp;') : '') . POST_POST_URL . '=' . $data['tree.forum_last_post_id']) . '#p' . $data['tree.forum_last_post_id'] . '" title="' . $topic_title_plain . '">' . $topic_title_short . '</a><br />';
 
 				$last_post_time = create_date_ip($config['default_dateformat'], $data['tree.post_time'], $config['board_timezone']);
 				$last_post = (($config['last_topic_title']) ? $topic_title : '');

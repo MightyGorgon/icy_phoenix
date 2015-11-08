@@ -423,6 +423,10 @@ class class_topics
 		$topic_title_clean = (empty($topic_data['topic_title_clean'])) ? substr(ip_clean_string($topic_title, $lang['ENCODING']), 0, 254) : $topic_data['topic_title_clean'];
 		if (empty($topic_data['topic_title_clean']))
 		{
+			if (!function_exists('update_clean_topic_title'))
+			{
+				@include_once(IP_ROOT_PATH . 'includes/functions_topics.' . PHP_EXT);
+			}
 			update_clean_topic_title($topic_id, $topic_title_clean);
 		}
 
@@ -432,6 +436,8 @@ class class_topics
 		// SMILEYS IN TITLE - BEGIN
 		if (($config['smilies_topic_title'] == true) && !$lofi)
 		{
+			if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+			if (empty($bbcode)) $bbcode = new bbcode();
 			$bbcode->allow_smilies = (($config['allow_smilies'] && $topic_data['enable_smilies']) ? true : false);
 			$topic_title = $bbcode->parse_only_smilies($topic_title);
 		}
