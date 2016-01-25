@@ -52,6 +52,7 @@ class GoogleConnect extends SocialConnect
 			{
 				$this->client->authenticate($code);
 				$data = $this->client->verifyIdToken()->getAttributes();
+				$_SESSION['google_access_token'] = $this->client->getAccessToken();
 				unset($_SESSION['login_social_network']);
 
 				return $this->retrieve_basic_user_data($data['payload']['sub']);
@@ -76,7 +77,7 @@ class GoogleConnect extends SocialConnect
 		global $db;
 
 		$sql = "SELECT user_id, user_level
-			FROM " . USERS_TABL . "
+			FROM " . USERS_TABLE . "
 			WHERE user_google_id = '" . $db->sql_escape($user_google_id) . "'
 			LIMIT 1";
 		$result = $db->sql_query($sql);
@@ -99,13 +100,18 @@ class GoogleConnect extends SocialConnect
 		$code = request_get_var('code', '');
 		try
 		{
-			$token = $this->client->getAccessToken();
+			if (isset($_SESSION['google_access_token']))
+				$this->client->setAccessToken($_SESSION['google_access_token']);
+			else
+				$this->do_login('');
+			$google_user_id = $this->client->verifyIdToken()->getAttributes()['payload']['sub'];
 
 			$google_oauth = new Google_Service_Oauth2($this->client);
 			$google_data = $google_oauth->userinfo->get();
 		}
 		catch (Exception $e)
 		{
+			unset($_SESSION['google_access_token']);
 			$this->do_login('');
 			return $this->get_user_data();
 		}
@@ -123,6 +129,7 @@ class GoogleConnect extends SocialConnect
 			'username' => $username,
 			'email' => $google_data['email'],
 			'gender' => $google_data['gender'],
+			'user_google_id' => $google_user_id,
 			'u_profile_photo' => empty($google_data['picture']) ? '' : $google_data['picture'],
 			'user_real_name' => empty($google_data['name']) ? 'Profile #' . $google_data['sub'] : $google_data['name'],
 		);
