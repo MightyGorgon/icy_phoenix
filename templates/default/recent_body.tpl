@@ -1,9 +1,8 @@
 <!-- INCLUDE overall_header.tpl -->
 
+<!-- IF not IS_USER_RECENT -->
 {IMG_TBL}<div class="forumline nav-div">
-	<p class="nav-header">
-		<a href="#" class="nav-current">{STATUS}</a>
-	</p>
+	<p class="nav-header"><a href="#" class="nav-current">{STATUS}</a></p>
 	<div class="nav-links">
 		<form name="form" method="get" action="{FORM_ACTION}">
 			{L_SELECT_MODE}
@@ -17,6 +16,7 @@
 		</form>
 	</div>
 </div>{IMG_TBR}
+<!-- ENDIF -->
 
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_RECENT_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>

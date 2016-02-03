@@ -1,6 +1,17 @@
 {DOCTYPE_HTML}
 <head>
 <!-- INCLUDE overall_inc_header.tpl -->
+<!-- This goes first, so that the other scripts can be 'jQuerized' -->
+<!-- <script type="text/javascript" src="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}jquery/jquery_compressed.js"></script> -->
+<script type="text/javascript">
+// <![CDATA[
+/*
+$("a.menu-main").click(function() {
+	$("ul.menu").toggle();
+});
+*/
+// ]]>
+</script>
 </head>
 <body>
 <div id="page-header">

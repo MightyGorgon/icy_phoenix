@@ -381,6 +381,7 @@ if($total_topics == '0')
 	$template->assign_block_vars('switch_no_topics', array());
 }
 
+$is_user_recent = in_array($mode, array('utopics', 'uposts', 'utview')) ? true : false;
 $template->assign_vars(array(
 	'L_RECENT_TITLE' => ($total_topics == '1') ? sprintf($lang['Recent_title_one'], $total_topics, $l_mode) : sprintf($lang['Recent_title_more'], $total_topics, $l_mode),
 	'L_TODAY' => $lang['Recent_today'],
@@ -395,6 +396,7 @@ $template->assign_vars(array(
 	'L_NO_TOPICS' => $lang['Recent_no_topics'],
 	'U_SORT_CAT' => append_sid('recent.' . PHP_EXT . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=cat&amp;start=' . $start . (!empty($user_id) ? ('&amp;' . POST_USERS_URL . '=' . $user_id) : '')),
 	'U_SORT_TIME' => append_sid('recent.' . PHP_EXT . '?amount_days=' . $amount_days . '&amp;mode=' . $mode . '&amp;psort=time&amp;start=' . $start . (!empty($user_id) ? ('&amp;' . POST_USERS_URL . '=' . $user_id) : '')),
+	'IS_USER_RECENT' => $is_user_recent,
 	'AMOUNT_DAYS' => $amount_days,
 	'FORM_ACTION' => append_sid('recent.' . PHP_EXT),
 	'PAGINATION' => ($total_topics != '0') ? $pagination : '&nbsp;',

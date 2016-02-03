@@ -2235,6 +2235,11 @@ $topic_title_clean = (empty($topic_title_clean) ? $subject : trim($topic_title_c
 $topic_title_clean = substr(ip_clean_string($topic_title_clean, $lang['ENCODING']), 0, 254);
 $topic_tags = (empty($topic_tags) ? '' : trim($topic_tags));
 
+// Clean Name - BEGIN
+// Just hidden for now... we can restore it in the future...
+$hidden_form_fields .= '<input type="hidden" name="topic_title_clean" value="' . $topic_title_clean . '" />';
+// Clean Name - END
+
 if (!empty($topic_tags))
 {
 	$ttags = explode(', ', $topic_tags);

@@ -1563,6 +1563,7 @@ class class_mcp
 			}
 			$db->sql_freeresult($result);
 
+			empty_cache_folders(SQL_CACHE_FOLDER);
 			if (!empty($user_cache_refresh))
 			{
 				empty_cache_folders(USERS_CACHE_FOLDER);

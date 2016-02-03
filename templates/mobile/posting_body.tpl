@@ -98,10 +98,12 @@
 <!-- END switch_edit -->
 <!-- IF S_POSTING_TOPIC -->
 <!-- IF S_ADMIN or S_MOD -->
+<!--
 <tr>
 	<td class="row1"><span class="gen"><b>{L_CLEAN_NAME}</b></span><br /><span class="gensmall">{L_CLEAN_NAME_EXPLAIN}</span></td>
 	<td class="row2"><span class="gen"><input type="text" name="topic_title_clean" maxlength="240" style="width: 98%;" tabindex="6" class="post" value="{TOPIC_TITLE_CLEAN}" /></span></td>
 </tr>
+-->
 <!-- ENDIF -->
 <!-- IF S_TOPIC_TAGS -->
 <tr>

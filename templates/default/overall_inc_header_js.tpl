@@ -171,7 +171,7 @@ var ajax_page_charset = '{S_CONTENT_ENCODING}';
 <!-- END js_include -->
 
 <!-- IF S_SLIDESHOW -->
-<!-- INCLUDE album_slideshow_inc_js.tpl -->
+<!-- INCLUDE ../../plugins/album/templates/default/album_slideshow_inc_js.tpl -->
 <!-- ENDIF -->
 
 <!-- IF S_COOKIE_LAW and not S_LOGGED_IN -->
