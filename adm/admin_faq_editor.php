@@ -526,7 +526,7 @@ if(sizeof($blocks) > 0)
 
 		if(sizeof($quests[$i]) > 0)
 		{
-			$req_file = (in_array($file, array('faq', 'bbcode')) ? 'faq' : $file) . '.' . PHP_EXT;
+			$req_file = (in_array($file, array('faq', 'bbcode')) ? $file : 'faq') . '.' . PHP_EXT;
 			for($j = 0; $j < sizeof($quests[$i]); $j++)
 			{
 				$template->assign_block_vars('blockrow.questrow', array(
