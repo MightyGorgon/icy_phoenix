@@ -47,6 +47,7 @@ function get_user_os($http_user_agent_str)
 		'windows' => array(
 			'main' => array('str_pos' => array('Win'), 'name' => 'Windows', 'icon' => 'windows.png'),
 			'sub' => array(
+				'windows_10' => array('str_pos' => array('Windows NT 10.0'), 'name' => 'Windows 10', 'icon' => 'windows_10.png'),
 				'windows_8' => array('str_pos' => array('Windows NT 6.2'), 'name' => 'Windows 8', 'icon' => 'windows_8.png'),
 				'windows_seven' => array('str_pos' => array('Windows NT 6.1'), 'name' => 'Windows 7', 'icon' => 'windows_seven.png'),
 				'windows_vista' => array('str_pos' => array('Windows NT 6.0'), 'name' => 'Windows Vista', 'icon' => 'windows_vista.png'),
@@ -143,6 +144,8 @@ function get_user_browser($http_user_agent_str)
 
 	// Order is important... do not move browsers unless you know what you are doing!!!
 	$browsers = array(
+		'vivaldi' => array('regex' => array('/Vivaldi\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Vivaldi', 'icon' => 'vivaldi.png'),
+		'edge' => array('regex' => array('/Edge\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'MS Edge', 'icon' => 'edge.png'),
 		'msie' => array('regex' => array('/MSIE ([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'MS Internet Explorer', 'icon' => 'msie.png'),
 		'opera' => array('regex' => array('/Opera\/([0-9]{1,2}.[0-9]{1,4})/', '/Opera ([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => true, 'name' => 'Opera', 'icon' => 'opera.png'),
 		'firefox' => array('regex' => array('/Firefox\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Firefox', 'icon' => 'firefox.png'),
