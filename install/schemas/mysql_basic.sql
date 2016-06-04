@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.0.18.104');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.2.0.105');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
@@ -1459,6 +1459,12 @@ INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smi
 INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (45, ':mrorange:', 'icon_mrorange.gif', 'Mr. Orange', 45);
 INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (46, ':mrviolet:', 'icon_mrviolet.gif', 'Mr. Violet', 46);
 INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (47, ':mryellow:', 'icon_mryellow.gif', 'Mr. Yellow', 47);
+INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (48, ':mri:', 'icon_mricy.gif', 'Mr. Icy', 48);
+INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (49, ':mrb:', 'icon_mrblue.gif', 'Mr. Blue', 49);
+INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (50, ':mrg:', 'icon_mrgreen.gif', 'Mr. Green', 50);
+INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (51, ':mro:', 'icon_mrorange.gif', 'Mr. Orange', 51);
+INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (52, ':mrv:', 'icon_mrviolet.gif', 'Mr. Violet', 52);
+INSERT INTO `phpbb_smilies` (`smilies_id`, `code`, `smile_url`, `emoticon`, `smilies_order`) VALUES (53, ':mry:', 'icon_mryellow.gif', 'Mr. Yellow', 53);
 
 ## `phpbb_stats_config`
 ##

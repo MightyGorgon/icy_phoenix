@@ -895,7 +895,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 				$sql = "SELECT * FROM " . PRUNE_TABLE . " WHERE forum_id = " . intval($item['id']);
 				$result = $db->sql_query($sql);
 
-			if($db->sql_numrows($result) > 0)
+				if($db->sql_numrows($result) > 0)
 				{
 					$sql = "UPDATE " . PRUNE_TABLE . "
 								SET prune_days = " . intval($item['prune_days']) . ",
@@ -916,7 +916,7 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 									" . intval($item['prune_freq']) . "
 								)";
 				}
-				$db->sql_query($sql);
+			$db->sql_query($sql);
 			}
 		}
 

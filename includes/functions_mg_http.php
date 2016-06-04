@@ -144,7 +144,6 @@ function get_user_browser($http_user_agent_str)
 
 	// Order is important... do not move browsers unless you know what you are doing!!!
 	$browsers = array(
-		'vivaldi' => array('regex' => array('/Vivaldi\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Vivaldi', 'icon' => 'vivaldi.png'),
 		'edge' => array('regex' => array('/Edge\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'MS Edge', 'icon' => 'edge.png'),
 		'msie' => array('regex' => array('/MSIE ([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'MS Internet Explorer', 'icon' => 'msie.png'),
 		'opera' => array('regex' => array('/Opera\/([0-9]{1,2}.[0-9]{1,4})/', '/Opera ([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => true, 'name' => 'Opera', 'icon' => 'opera.png'),
@@ -164,6 +163,7 @@ function get_user_browser($http_user_agent_str)
 		'safari' => array('regex' => array('/Safari\/([0-9]{1,5}.[0-9]{1,5})/'), 'check_version' => true, 'name' => 'Safari', 'icon' => 'safari.png'),
 		'konqueror' => array('regex' => array('/Konqueror\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Konqueror', 'icon' => 'konqueror.png'),
 		'facebook' => array('regex' => array('/facebookexternalhit\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => true, 'name' => 'Facebook', 'icon' => 'facebook.png'),
+		'vivaldi' => array('regex' => array('/Vivaldi\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Vivaldi', 'icon' => 'vivaldi.png'),
 		// Mozilla must be the last one!!!
 		'mozilla' => array('regex' => array('/Mozilla\/([0-9]{1,2}.[0-9]{1,4})/'), 'check_version' => false, 'name' => 'Mozilla', 'icon' => 'mozilla.png'),
 	);

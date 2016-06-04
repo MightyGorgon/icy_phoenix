@@ -118,7 +118,7 @@ if ($mode == 'view')
 	}
 
 	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
-	$breadcrumbs['bottom_right_links'] .= (($user->data['user_level'] != ADMIN) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=replace') . '">' . $lang['TOPIC_TAGS_REPLACE'] . '</a>';
+	$breadcrumbs['bottom_right_links'] .= (($user->data['user_level'] == ADMIN) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=replace') . '">' . $lang['TOPIC_TAGS_REPLACE'] . '</a>' : '');
 
 	$template_to_parse = 'tags_view_body.tpl';
 

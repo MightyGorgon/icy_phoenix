@@ -76,7 +76,10 @@ $mode_id = request_var('mode', '');
 
 if (($mode_id == 'perform') && !isset($_POST['confirm']))
 {
-	$mode_id = '';
+	if ($function != 'perform_rebuild')
+	{
+		$mode_id = '';
+	}
 }
 
 // Check for parameters
@@ -3154,7 +3157,7 @@ switch($mode_id)
 				set_config('dbmtnc_rebuild_pos', $last_post, false);
 				// OK, all actions are done - send headers
 
-				$redirect_url = append_sid(ADM . '/admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=perform_rebuild&amp;db_state=' . $db_state);
+				$redirect_url = append_sid('admin_db_maintenance.' . PHP_EXT . '?mode=perform&amp;function=perform_rebuild&amp;db_state=' . $db_state);
 				meta_refresh(3, $redirect_url);
 
 				include(IP_ROOT_PATH . ADM . '/page_header_admin.' . PHP_EXT);

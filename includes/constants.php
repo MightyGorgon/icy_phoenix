@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.0.18.104');
+define('ICYPHOENIX_VERSION', '2.2.0.105');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user can access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
