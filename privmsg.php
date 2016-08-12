@@ -75,6 +75,7 @@ if (($config['allow_drafts'] == true) && ($draft_mode == 'draft_load') && ($draf
 	$sql = "SELECT d.*
 		FROM " . DRAFTS_TABLE . " d
 		WHERE d.draft_id = '" . $draft_id . "'
+			AND d.user_id = '" . $user->data['user_id'] . "'
 		LIMIT 1";
 	$result = $db->sql_query($sql);
 
