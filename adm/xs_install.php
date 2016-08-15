@@ -48,6 +48,7 @@ if(!empty($style) && !defined('DEMO_MODE'))
 	if($res)
 	{
 		$db->clear_cache('styles_');
+		$cache->destroy_datafiles(array('_styles'), MAIN_CACHE_FOLDER, 'data', false);
 		xs_message($lang['Information'], $lang['xs_install_installed'] . '<br /><br />' . $lang['xs_install_back'] . '<br /><br />' . $lang['xs_goto_default']);
 	}
 	xs_error($lang['xs_install_error'] . '<br /><br />' . $lang['xs_install_back']);
@@ -81,6 +82,7 @@ if(!empty($total) && !defined('DEMO_MODE'))
 			);
 		}
 		$db->clear_cache('styles_');
+		$cache->destroy_datafiles(array('_styles'), MAIN_CACHE_FOLDER, 'data', false);
 		xs_message($lang['Information'], $lang['xs_install_installed'] . '<br /><br />' . $lang['xs_install_back'] . '<br /><br />' . $lang['xs_goto_default']);
 	}
 }
