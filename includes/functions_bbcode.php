@@ -80,6 +80,7 @@ function generate_smilies_row()
 	$sql = "SELECT emoticon, code, smile_url FROM " . SMILIES_TABLE . " GROUP BY smile_url ORDER BY smilies_order LIMIT " . $max_smilies;
 	$result = $db->sql_query($sql, 0, 'smileys_');
 
+	$server_protocol = !empty($config['cookie_secure']) ? 'https://' : 'http://';
 	$host = extract_current_hostname();
 
 	$orig = array();
@@ -88,7 +89,7 @@ function generate_smilies_row()
 	{
 		$template->assign_block_vars('smilies', array(
 			'CODE' => $row['code'],
-			'URL' => 'http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'],
+			'URL' => $server_protocol . $host . $config['script_path'] . $config['smilies_path'] . '/' . $row['smile_url'],
 			'DESC' => htmlspecialchars($row['emoticon'])
 			)
 		);

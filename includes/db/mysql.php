@@ -721,9 +721,10 @@ class sql_db
 		$update_sql = '';
 		foreach ($sql_input_array as $k => $v)
 		{
+			$validated_v = $this->sql_validate_value($v);
 			$insert_fields_sql .= (($insert_fields_sql == '') ? '' : ', ') . $k;
-			$insert_values_sql .= (($insert_values_sql == '') ? '' : ', ') . $this->sql_validate_value($v);
-			$update_sql .= (($update_sql == '') ? '' : ', ') . $k . ' = ' . $this->sql_validate_value($v);
+			$insert_values_sql .= (($insert_values_sql == '') ? '' : ', ') . $validated_v;
+			$update_sql .= (($update_sql == '') ? '' : ', ') . $k . ' = ' . $validated_v;
 		}
 
 		$sql_string = $sql_insert ? (' (' . $insert_fields_sql . ') VALUES (' . $insert_values_sql . ')') : $update_sql;

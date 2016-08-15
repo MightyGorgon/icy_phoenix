@@ -49,7 +49,17 @@ if (isset($_POST['submit']))
 	$password_confirm = request_post_var('password_confirm', '', true);
 	$password_confirm = htmlspecialchars_decode($password_confirm, ENT_COMPAT);
 
-	$email = request_post_var('email', '', true);
+	$strip_var_list = array(
+		'user_first_name' => 'user_first_name',
+		'user_last_name' => 'user_last_name',
+		'email' => 'email',
+	);
+
+	while(list($var, $param) = @each($strip_var_list))
+	{
+		$$var = request_post_var($param, '', true);
+	}
+
 	$user_style = request_post_var('style', $config['default_style']);
 	$user_lang = request_post_var('language', $config['default_lang']);
 	$user_timezone = request_post_var('timezone', $config['board_timezone']);
@@ -127,8 +137,25 @@ if (isset($_POST['submit']))
 		$clean_password = $new_password;
 		$new_password = phpbb_hash($new_password);
 
-		$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, username_clean, user_regdate, user_password, user_email, user_email_hash, user_style, user_timezone, user_dateformat, user_lang, user_level, user_active, user_actkey)
-			VALUES ($user_id, '" . $db->sql_escape($username) . "', '" . $db->sql_escape(utf8_clean_string($username)) . "', " . time() . ", '" . $db->sql_escape($new_password) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape(phpbb_email_hash($email)) . "', $user_style, $user_timezone, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_lang) . "', 0, 1, 'user_actkey')";
+		$user_insert_array = array(
+			'user_id' => $user_id,
+			'username' => $username,
+			'username_clean' => utf8_clean_string($username),
+			'user_first_name' => $user_first_name,
+			'user_last_name' => $user_last_name,
+			'user_regdate' => time(),
+			'user_password' => $new_password,
+			'user_email' => $email,
+			'user_email_hash' => phpbb_email_hash($email),
+			'user_style' => $user_style,
+			'user_timezone' => $user_timezone,
+			'user_dateformat' => $user_dateformat,
+			'user_lang' => $user_lang,
+			'user_level' => 0,
+			'user_active' => 1,
+			'user_actkey' => 'user_actkey'
+		);
+		$sql = "INSERT INTO " . USERS_TABLE . " " . $db->sql_build_insert_update($user_insert_array, true);
 		$db->sql_transaction('begin');
 		$result = $db->sql_query($sql);
 
@@ -147,6 +174,8 @@ if (isset($_POST['submit']))
 		$target_profile_data = array(
 			'user_id' => $user_id,
 			'username' => $username,
+			'first_name' => $user_first_name,
+			'last_name' => $user_last_name,
 			'password' => $clean_password,
 			'email' => $email
 		);
@@ -196,6 +225,8 @@ $template->set_filenames(array('body' => ADM_TPL . 'admin_add_user_body.tpl'));
 // Let's do an overall check for settings/versions which would prevent us from doing file uploads....
 $template->assign_vars(array(
 	'USERNAME' => $username,
+	'USER_FIRST_NAME' => $user_first_name,
+	'USER_LAST_NAME' => $user_last_name,
 	'CUR_PASSWORD' => $cur_password,
 	'NEW_PASSWORD' => $new_password,
 	'PASSWORD_CONFIRM' => $password_confirm,

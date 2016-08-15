@@ -25,7 +25,7 @@ function create_meta_content()
 	{
 		if (!empty($meta_content['post_id']) && ($meta_content['post_id'] > 0))
 		{
-			$sql = "SELECT f.forum_name, f.forum_name_clean, t.topic_title, t.topic_title_clean, t.topic_tags, t.title_compl_infos, p.topic_id, p.forum_id
+			$sql = "SELECT f.forum_name, f.forum_name_clean, t.topic_title, t.topic_title_clean, t.topic_tags, t.topic_label_compiled, p.topic_id, p.forum_id
 							FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 							WHERE p.post_id = '" . $meta_content['post_id'] . "'
 								AND t.topic_id = p.topic_id
@@ -39,7 +39,7 @@ function create_meta_content()
 		}
 		else
 		{
-			$sql = "SELECT f.forum_name, f.forum_name_clean, t.forum_id, t.topic_id, t.topic_title, t.topic_title_clean, t.topic_tags, t.title_compl_infos
+			$sql = "SELECT f.forum_name, f.forum_name_clean, t.forum_id, t.topic_id, t.topic_title, t.topic_title_clean, t.topic_tags, t.topic_label_compiled
 							FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f
 							WHERE t.topic_id = '" . $meta_content['topic_id'] . "'
 								AND f.forum_id = t.forum_id
@@ -60,7 +60,7 @@ function create_meta_content()
 				$meta_content['topic_title'] = strip_tags(stripslashes($meta_row['topic_title']));
 				$meta_content['topic_title_clean'] = $meta_row['topic_title_clean'];
 				$meta_content['topic_tags'] = $meta_row['topic_tags'];
-				$meta_content['title_compl_infos'] = $meta_row['title_compl_infos'];
+				$meta_content['topic_label_compiled'] = $meta_row['topic_label_compiled'];
 
 				$meta_content['keywords'] = $meta_content['topic_tags'];
 				$meta_content['keywords'] = empty($meta_content['keywords']) ? str_replace(array(' ', ',, '), array(', ', ', '), ip_clean_string($meta_content['topic_title'], $lang['ENCODING'], true)) : $meta_content['keywords'];

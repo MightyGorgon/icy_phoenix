@@ -10,87 +10,59 @@ function bbcb_cb_vars_reassign_end()
 	text_name = ((typeof(text_name_original) != "undefined") && (text_name_original != null) && (text_name_original != '')) ? text_name_original : text_name;
 }
 
-function InsertTag(MyString)
+function InsertTag(MyString, MyTag = 'color', IsExt = false, IsPlain = false)
 {
-	var bbopen = '[color=' + MyString + ']';
-	var bbclose = '[/color]';
+	var txtarea = (IsExt == true) ? opener.document.forms[form_name].elements[text_name] : document.forms[form_name].elements[text_name];
 
-	var txtarea = document.forms[form_name].elements[text_name];
-	if ((clientVer >= 4) && is_ie && is_win)
+	if (IsPlain)
 	{
-		theSelection = document.selection.createRange().text; // Get text selection
-		if (theSelection)
-		{
-			// Add tags around selection
-			document.selection.createRange().text = bbopen + theSelection + bbclose;
-			txtarea.focus();
-			theSelection = '';
-			return;
-		}
-		else
-		{
-			// Add tags at the end
-			txtarea.value += bbopen + bbclose;
-			txtarea.focus();
-			return;
-		}
-	}
-	else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0))
-	{
-		mozInsertCB(txtarea, bbopen, bbclose);
-		return;
-	}
-	else if ((txtarea.selectionEnd | txtarea.selectionEnd == 0) && (txtarea.selectionStart | txtarea.selectionStart == 0))
-	{
-		mozInsertCB(txtarea, bbopen + bbclose, "");
+		txtarea.value = MyString;
 		return;
 	}
 	else
 	{
-		txtarea.value += text;
-		txtarea.focus();
-	}
-}
-
-function InsertTagExt(MyString)
-{
-	var bbopen = '[color=' + MyString + ']';
-	var bbclose = '[/color]';
-
-	var txtarea = opener.document.forms[form_name].elements[text_name];
-	if ((clientVer >= 4) && is_ie && is_win)
-	{
-		theSelection = document.selection.createRange().text; // Get text selection
-		if (theSelection)
+		var bbopen = '';
+		var bbclose = '';
+		if (MyTag)
 		{
-			// Add tags around selection
-			document.selection.createRange().text = bbopen + theSelection + bbclose;
-			txtarea.focus();
-			theSelection = '';
+			bbopen = '[' + MyTag + '=' + MyString + ']';
+			bbclose = '[/' + MyTag + ']';
+		}
+
+		if ((clientVer >= 4) && is_ie && is_win)
+		{
+			theSelection = document.selection.createRange().text; // Get text selection
+			if (theSelection)
+			{
+				// Add tags around selection
+				document.selection.createRange().text = bbopen + theSelection + bbclose;
+				txtarea.focus();
+				theSelection = '';
+				return;
+			}
+			else
+			{
+				// Add tags at the end
+				txtarea.value += bbopen + bbclose;
+				txtarea.focus();
+				return;
+			}
+		}
+		else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0))
+		{
+			mozInsertCB(txtarea, bbopen, bbclose);
+			return;
+		}
+		else if ((txtarea.selectionEnd | txtarea.selectionEnd == 0) && (txtarea.selectionStart | txtarea.selectionStart == 0))
+		{
+			mozInsertCB(txtarea, bbopen + bbclose, "");
 			return;
 		}
 		else
 		{
-			// Add tags at the end
-			txtarea.value += bbopen + bbclose;
+			txtarea.value += text;
 			txtarea.focus();
-			return;
 		}
-	}
-	else if (txtarea.selectionEnd && (txtarea.selectionEnd - txtarea.selectionStart > 0))
-	{
-		mozInsertCB(txtarea, bbopen, bbclose);
-		return;
-	}
-	else if ((txtarea.selectionEnd | txtarea.selectionEnd == 0) && (txtarea.selectionStart | txtarea.selectionStart == 0))
-	{
-		mozInsertCB(txtarea, bbopen + bbclose, "");
-		return;
-	}
-	else
-	{
-		txtarea.value += text;
-		txtarea.focus();
 	}
 }
 
@@ -145,7 +117,7 @@ col[6] = new Array(255, -1, 0, 0, 0, 0);
 
 function rgb(pas, w, h, text1, text2, spacer_path)
 {
-	document.write('<table id=\"ColorPanel\" width=\"100%\" align=\"left\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n<tr>\n<td id=\"ColorUsed\" align=\"center\" width=\"10\" onmouseover=\"helpline(\'s\'); this.style.cursor=\'pointer\';\" onclick=\"bbcb_cb_vars_reassign_start(); if(this.bgColor.length > 0) InsertTag(this.bgColor); bbcb_cb_vars_reassign_end();\"><img src=\"' + spacer_path + 'images\/spacer.gif\" width=\"10\" height=\"' + h + '\" alt=\"\" border=\"1\" \/><\/td>\n<td width=\"5\"><img src=\"' + spacer_path + 'images\/spacer.gif\" width=\"' + w + '\" height=\"' + h + '\" alt=\"\" border=\"0\" \/><\/td>\n<td id=\"ColorUsed1\" align=\"center\" width=\"10\" onmouseover=\"helpline(\'s\'); this.style.cursor=\'pointer\';\" onclick=\"bbcb_cb_vars_reassign_start(); if(this.bgColor.length > 0) InsertTag(this.bgColor); bbcb_cb_vars_reassign_end();\"><img src=\"' + spacer_path + 'images\/spacer.gif\" width=\"10\" height=\"' + h + '\" alt=\"\" border=\"1\" \/><\/td>\n<td width=\"5\"><img src=\"' + spacer_path + 'images\/spacer.gif\" width=' + w + ' height=' + h + ' alt=\"\" border=\"0\" \/><\/td>\n');
+	document.write('<table id=\"ColorPanel\" width=\"100%\" align=\"left\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n<tr>\n<td id=\"ColorUsed\" align=\"center\" width=\"10\" onmouseover=\"helpline(\'s\'); this.style.cursor=\'pointer\';\" onclick=\"bbcb_cb_vars_reassign_start(); if(this.bgColor.length > 0) InsertTag(this.bgColor,\'color\',false,false); bbcb_cb_vars_reassign_end();\"><img src=\"' + spacer_path + 'images\/spacer.gif\" width=\"10\" height=\"' + h + '\" alt=\"\" border=\"1\" \/><\/td>\n<td width=\"5\"><img src=\"' + spacer_path + 'images\/spacer.gif\" width=\"' + w + '\" height=\"' + h + '\" alt=\"\" border=\"0\" \/><\/td>\n<td id=\"ColorUsed1\" align=\"center\" width=\"10\" onmouseover=\"helpline(\'s\'); this.style.cursor=\'pointer\';\" onclick=\"bbcb_cb_vars_reassign_start(); if(this.bgColor.length > 0) InsertTag(this.bgColor,\'color\',false,false); bbcb_cb_vars_reassign_end();\"><img src=\"' + spacer_path + 'images\/spacer.gif\" width=\"10\" height=\"' + h + '\" alt=\"\" border=\"1\" \/><\/td>\n<td width=\"5\"><img src=\"' + spacer_path + 'images\/spacer.gif\" width=' + w + ' height=' + h + ' alt=\"\" border=\"0\" \/><\/td>\n');
 
 	for (j = 0; j < (6 + 1); j++)
 	{
@@ -155,7 +127,7 @@ function rgb(pas, w, h, text1, text2, spacer_path)
 			g = Math.floor(col[j][2] + col[j][3] * i * (255) / pas);
 			b = Math.floor(col[j][4] + col[j][5] * i * (255) / pas);
 			codehex = r + '' + g + '' + b;
-			document.write('<td bgColor=\"' + RGB2Hexa(r, g, b) + '\" onclick=\"bbcb_cb_vars_reassign_start(); InsertTag(this.bgColor); bbcb_cb_vars_reassign_end(); lightCase(this);\" onmouseover=\"lightCase1(this); this.style.cursor=\'pointer\';\" title=\"' + RGB2Hexa(r, g, b) + '\" width=\"' + w + '\" height=\"' + h + '\"><img src=\"' + spacer_path + 'images/spacer.gif\" width=\"' + w + '\" height=\"' + h + '\" alt=\"\" border=\"0\" \/><\/td>\n');
+			document.write('<td bgColor=\"' + RGB2Hexa(r, g, b) + '\" onclick=\"bbcb_cb_vars_reassign_start(); InsertTag(this.bgColor,\'color\',false,false); bbcb_cb_vars_reassign_end(); lightCase(this);\" onmouseover=\"lightCase1(this); this.style.cursor=\'pointer\';\" title=\"' + RGB2Hexa(r, g, b) + '\" width=\"' + w + '\" height=\"' + h + '\"><img src=\"' + spacer_path + 'images/spacer.gif\" width=\"' + w + '\" height=\"' + h + '\" alt=\"\" border=\"0\" \/><\/td>\n');
 		}
 	}
 

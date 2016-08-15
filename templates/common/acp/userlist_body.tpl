@@ -102,7 +102,7 @@ function handleClick(id)
 <!-- BEGIN user_row -->
 <tr>
 	<td class="row1 tdnw"><input type="checkbox" name="{S_USER_VARIABLE}[]" value="{user_row.USER_ID}" />&nbsp;&nbsp;&nbsp;<a href="javascript:handleClick('user{user_row.USER_ID}');">{L_OPEN_CLOSE}</a></td>
-	<td class="row1"><span class="genmed">{user_row.USERNAME}</span></td>
+	<td class="row1"><span class="genmed">{user_row.USERNAME}</span><!-- IF user_row.USER_FULL_NAME -->&nbsp;<span class="gensmall">({user_row.USER_FULL_NAME})</span><!-- ENDIF --></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.ACTIVE}</span></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.JOINED}</span></td>
 	<td class="row1 row-center"><span class="genmed">{user_row.LAST_ACTIVITY}</span></td>

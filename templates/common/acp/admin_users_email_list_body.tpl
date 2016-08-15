@@ -8,7 +8,7 @@
 </tr>
 <!-- BEGIN userrow -->
 <tr>
-	<td class="{userrow.COLOR}" align="center" valign="middle" height="28" nowrap="nowrap"><span class="genmed">{userrow.USERNAME}</span></td>
+	<td class="{userrow.COLOR}" align="center" valign="middle" height="28" nowrap="nowrap"><span class="genmed">{userrow.USERNAME}</span><!-- IF userrow.USER_FULL_NAME -->&nbsp;<span class="gensmall">({userrow.USER_FULL_NAME})</span><!-- ENDIF --></td>
 	<td class="{userrow.COLOR}" align="center" valign="middle" height="28" nowrap="nowrap"><span class="genmed"><a href="mailto:{userrow.EMAIL}">{userrow.EMAIL}</a></span></td>
 </tr>
 <!-- END userrow -->

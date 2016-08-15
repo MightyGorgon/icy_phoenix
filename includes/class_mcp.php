@@ -310,7 +310,7 @@ class class_mcp
 	/**
 	* Move and rename all topics in a forum
 	*/
-	function topic_move_ren_all($old_forum_id, $new_forum_id, $title_prefix = '')
+	function topic_move_ren_all($old_forum_id, $new_forum_id, $title_label = '')
 	{
 		global $db, $cache, $lang;
 
@@ -328,7 +328,7 @@ class class_mcp
 
 			$sql = "UPDATE " . TOPICS_TABLE . "
 				SET forum_id = " . $new_forum_id . "
-				" . (!empty($title_prefix) ? ", topic_title = CONCAT(\"" . $db->sql_escape($title_prefix) . " \", topic_title)" : "") . "
+				" . (!empty($title_label) ? ", topic_title = CONCAT(\"" . $db->sql_escape($title_label) . " \", topic_title)" : "") . "
 				WHERE forum_id = " . $old_forum_id;
 			$db->sql_query($sql);
 
@@ -694,25 +694,32 @@ class class_mcp
 	}
 
 	/**
-	* Edit topic(s) titles
+	* Edit topic(s) labels
 	*/
-	function topic_quick_title_edit($topics_ids, $qt_row)
+	function topic_label_edit($topics_ids, $label_data)
 	{
 		global $db, $cache, $config, $bbcode, $user, $lang;
 
-		if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-		if (empty($bbcode)) $bbcode = new bbcode();
-		$bbcode->allow_html = true;
-		$bbcode->allow_bbcode = true;
-		$bbcode->allow_smilies = true;
+		$topic_label_id = empty($label_data['id']) ? 0 : $label_data['id'];
 
-		$title_prefix = !empty($qt_row['title_html']) ? $bbcode->parse($qt_row['title_html']) : $qt_row['title_info'];
-		$title_prefix = str_replace('%mod%', $user->data['username'], $title_prefix);
-		$qt_date = empty($qt_row['date_format']) ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_row['date_format'], time(), $config['board_timezone']);
-		$title_prefix = str_replace('%date%', $qt_date, $title_prefix);
+		if (empty($topic_label_id))
+		{
+			$topic_label_compiled = '';
+		}
+		else
+		{
+			if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+			if (empty($bbcode)) $bbcode = new bbcode();
+
+			if (!class_exists('class_topics')) include(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+			if (empty($class_topics)) $class_topics = new class_topics();
+
+			$label_compiled = $class_topics->gen_label_compiled($label_data);
+			$topic_label_compiled = $label_compiled;
+		}
 
 		$sql = "UPDATE " . TOPICS_TABLE . "
-			SET title_compl_infos = '" . $db->sql_escape(trim($title_prefix)) . "'
+			SET topic_label_id = " . $db->sql_escape($topic_label_id) . ", topic_label_compiled = '" . $db->sql_escape(trim($topic_label_compiled)) . "'
 			WHERE " . $db->sql_in_set('topic_id', $topics_ids) . "
 				AND topic_moved_id = 0";
 		$result = $db->sql_query($sql);

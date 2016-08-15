@@ -64,7 +64,7 @@ function toggle_check_all()
 		<!-- BEGIN switch_auth_unlock -->
 		<input type="submit" name="unlock" class="liteoption" value="{L_UNLOCK}" />&nbsp;
 		<!-- END switch_auth_unlock -->
-		<input type="submit" name="quick_title_edit" class="liteoption" value="{L_EDIT_TITLE}" />&nbsp;{SELECT_TITLE}&nbsp;
+		<input type="submit" name="label_edit" class="liteoption" value="{L_TOPIC_LABEL}" />&nbsp;{TOPICS_LABELS_SELECT}&nbsp;
 	</td>
 </tr>
 <tr>

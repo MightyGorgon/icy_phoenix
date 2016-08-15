@@ -108,6 +108,7 @@ else
 	$config['allow_bbcode'] = true;
 	$config['allow_smilies'] = true;
 	$config['default_lang'] = 'english';
+	$config['cookie_secure'] = 0;
 	$config['server_name'] = 'icyphoenix.com';
 	$config['script_path'] = '/';
 	$config['liw_enabled'] = 0;
@@ -142,9 +143,10 @@ else
 	$lang['FILE_NOT_AUTH'] = 'You are not authorized to download this file';
 }
 
+$server_protocol = !empty($config['cookie_secure']) ? 'https://' : 'http://';
 $local_urls = array(
-	'http://www.' . $config['server_name'] . $config['script_path'],
-	'http://' . $config['server_name'] . $config['script_path']
+	$server_protocol . 'www.' . $config['server_name'] . $config['script_path'],
+	$server_protocol . $config['server_name'] . $config['script_path']
 );
 
 if (function_exists('create_server_url'))
@@ -155,7 +157,7 @@ else
 {
 	$host = getenv('HTTP_HOST');
 	$host = (!empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (!empty($host) ? $host : $config['server_name']));
-	$server_url = 'http://' . $host . $config['script_path'];
+	$server_url = $server_protocol . $host . $config['script_path'];
 }
 $smileys_path = $server_url . $config['smilies_path'] . '/';
 
@@ -399,6 +401,7 @@ class bbcode
 	{
 		global $db, $cache, $config, $user, $lang, $topic_id, $local_urls, $meta_content;
 
+		$server_protocol = !empty($config['cookie_secure']) ? 'https://' : 'http://';
 		if (function_exists('create_server_url'))
 		{
 			$server_url = create_server_url();
@@ -408,7 +411,7 @@ class bbcode
 		{
 			$host = getenv('HTTP_HOST');
 			$host = (!empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (!empty($host) ? $host : $config['server_name']));
-			$server_url = 'http://' . $host . $config['script_path'];
+			$server_url = $server_protocol . $host . $config['script_path'];
 		}
 
 		//LIW - BEGIN

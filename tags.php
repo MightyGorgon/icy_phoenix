@@ -178,7 +178,7 @@ if ($mode == 'view')
 		$topic_title = $topic_title_data['title'];
 		$topic_title_clean = $topic_title_data['title_clean'];
 		$topic_title_plain = $topic_title_data['title_plain'];
-		$topic_title_prefix = $topic_title_data['title_prefix'];
+		$topic_title_label = $topic_title_data['title_label'];
 		$topic_title_short = $topic_title_data['title_short'];
 
 		$topic_link = $class_topics->build_topic_icon_link($forum_id, $topic['topic_id'], $topic['topic_type'], $topic['topic_reg'], $topic['topic_replies'], $topic['news_id'], $topic['poll_start'], $topic['topic_status'], $topic['topic_moved_id'], $topic['post_time'], $user_replied, $replies);

@@ -45,20 +45,23 @@ if(!function_exists('cms_block_referers'))
 		$i = 0;
 		while($row = $db->sql_fetchrow($result))
 		{
+			$server_protocol = !empty($config['cookie_secure']) ? 'https://' : 'http://';
+			$link_ref = htmlspecialchars('http://' . $row['host']);
+			$link_text = htmlspecialchars('http://' . $row['host']);
 			//2nd column
 			if($i >= $total_referers / 2)
 			{
 				$template->assign_block_vars('linkrow2', array(
-					'U_REF_LINK' => htmlspecialchars('http://' . $row['host']),
-					'LINK_TEXT' => htmlspecialchars('http://' . $row['host'])
+					'U_REF_LINK' => $link_ref,
+					'LINK_TEXT' => $link_text
 					)
 				);
 			}
 			else //1st column
 			{
 				$template->assign_block_vars('linkrow1', array(
-					'U_REF_LINK' => htmlspecialchars('http://' . $row['host']),
-					'LINK_TEXT' => htmlspecialchars('http://' . $row['host'])
+					'U_REF_LINK' => $link_ref,
+					'LINK_TEXT' => $link_text
 					)
 				);
 			}

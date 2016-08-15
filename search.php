@@ -1405,7 +1405,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			$topic_title = $topic_title_data['title'];
 			$topic_title_clean = $topic_title_data['title_clean'];
 			$topic_title_plain = $topic_title_data['title_plain'];
-			$topic_title_prefix = $topic_title_data['title_prefix'];
+			$topic_title_label = $topic_title_data['title_label'];
 			$topic_title_short = $topic_title_data['title_short'];
 
 			if ($show_results == 'posts')
@@ -1579,7 +1579,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$topic_title = $topic_title_data['title'];
 				$topic_title_clean = $topic_title_data['title_clean'];
 				$topic_title_plain = $topic_title_data['title_plain'];
-				$topic_title_prefix = $topic_title_data['title_prefix'];
+				$topic_title_label = $topic_title_data['title_label'];
 				$topic_title_short = $topic_title_data['title_short'];
 
 				//$news_label = ($searchset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';

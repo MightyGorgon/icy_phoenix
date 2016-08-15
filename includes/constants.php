@@ -20,7 +20,7 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('ICYPHOENIX_VERSION', '2.2.0.105');
+define('ICYPHOENIX_VERSION', '2.2.1.106');
 
 // FOUNDER ID, this is the ID of the main admin of the site, only this user can access special features of the site and this ID is also used to send Welcome and Birthday PM
 define('FOUNDER_ID', '2');
@@ -492,9 +492,9 @@ define('STATS_CONFIG_TABLE', $table_prefix . 'stats_config');
 define('STATS_MODULES_TABLE', $table_prefix . 'stats_modules');
 define('THEMES_TABLE', $table_prefix . 'themes');
 define('TICKETS_CAT_TABLE', $table_prefix . 'tickets_cat');
-define('TITLE_INFOS_TABLE', $table_prefix . 'title_infos');
 define('TOPIC_VIEW_TABLE', $table_prefix . 'topic_view');
 define('TOPICS_TABLE', $table_prefix . 'topics');
+define('TOPICS_LABELS_TABLE', $table_prefix . 'topics_labels');
 define('TOPICS_TAGS_LIST_TABLE', $table_prefix . 'topics_tags_list');
 define('TOPICS_TAGS_MATCH_TABLE', $table_prefix . 'topics_tags_match');
 define('TOPICS_WATCH_TABLE', $table_prefix . 'topics_watch');

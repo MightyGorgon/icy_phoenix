@@ -1,10 +1,10 @@
 <!-- INCLUDE overall_header.tpl -->
 
 <div class="block">
-[ <a href="{FORM_ACTION}?mode=today" class="mainmenu">{L_TODAY}</a> ]
-[ <a href="{FORM_ACTION}?mode=yesterday" class="mainmenu">{L_YESTERDAY}</a> ]
-[ <a href="{FORM_ACTION}?mode=last24" class="mainmenu">{L_LAST24}</a> ]
-[ <a href="{FORM_ACTION}?mode=lastweek" class="mainmenu">{L_LASTWEEK}</a> ]
+[ <a href="{U_RECENT_TODAY}" class="mainmenu">{L_TODAY}</a> ]
+[ <a href="{U_RECENT_YESTERDAY}" class="mainmenu">{L_YESTERDAY}</a> ]
+[ <a href="{U_RECENT_LAST24}" class="mainmenu">{L_LAST24}</a> ]
+[ <a href="{U_RECENT_LASTWEEK}" class="mainmenu">{L_LASTWEEK}</a> ]
 </div>
 <br />
 

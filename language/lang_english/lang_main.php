@@ -1210,7 +1210,7 @@ $lang = array_merge($lang, array(
 	'Recent_topics' => 'Recent Topics', // Recent Topics
 
 	'Topics_Title_Edited' => 'The titles of the selected topics have been edited.',
-	'Edit_title' => 'Title Edit',
+	'TOPIC_LABEL' => 'Topic Label',
 	'PM' => 'PM',
 
 // Start Advanced IP Tools Pack MOD
@@ -2515,6 +2515,10 @@ $lang = array_merge($lang, array(
 	'COOKIE_POLICY_AGREE' => 'I understand',
 	'COOKIE_POLICY_DISABLE' => 'Disable Cookies',
 	'LEARN_MORE' => 'Learn More...',
+
+	'CP_CLICK_COLOR' => 'Click on the top right color box to apply the color',
+	'CP_CLICK_APPLY' => 'Click to apply this color',
+	'CP_CLICK_APPLY_SHORT' => 'APPLY',
 
 	)
 );

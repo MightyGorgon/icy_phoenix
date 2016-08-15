@@ -96,7 +96,7 @@ $template->assign_vars(array(
 
 	'STR_OLD' => $str_old,
 	'STR_NEW' => $str_new,
-	'POST_IMG' => '../' . $images['icon_latest_reply']
+	'POST_IMG' => $images['acp_icon_latest_reply']
 	)
 );
 

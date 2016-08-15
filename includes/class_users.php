@@ -135,6 +135,8 @@ class class_users
 		$target_profile_data = array(
 			'user_id' => $user_data['user_id'],
 			'username' => $user_data['username'],
+			'first_name' => !empty($user_data['user_first_name']) ? $user_data['user_first_name'] : '',
+			'last_name' => !empty($user_data['user_last_name']) ? $user_data['user_last_name'] : '',
 			'password' => $user_data['user_password'],
 			'email' => $user_data['user_email']
 		);
@@ -197,17 +199,34 @@ class class_users
 	*/
 	function profile_update($target_profile_data)
 	{
-		global $db, $config, $user, $lang;
+		global $db, $cache, $config, $user, $lang;
 
 		/*
 		$target_profile_data = array(
 			'user_id' => '',
 			'username' => '',
+			'first_name' => '',
+			'last_name' => '',
 			'password' => '',
 			'email' => ''
 		);
 		*/
 		//print_r($target_profile_data);
+
+		// Plugins - BEGIN
+		foreach ($cache->obtain_plugins_config() as $k => $plugin)
+		{
+			$plugin_class_name = 'class_' . $plugin['plugin_dir'] . '_profile_update';
+			$plugin_class_file = IP_ROOT_PATH . PLUGINS_PATH . $plugin['plugin_dir'] . '/includes/' . $plugin_class_name . '.' . PHP_EXT;
+			if (!empty($plugin['plugin_enabled']) && !empty($plugin['plugin_dir']) && file_exists($plugin_class_file))
+			{
+				include($plugin_class_file);
+				$class_plugin_profile_update = new $plugin_class_name();
+				$class_plugin_profile_update->profile_update($target_profile_data);
+				unset($class_plugin_profile_update);
+			}
+		}
+		// Plugins - END
 
 		return true;
 	}

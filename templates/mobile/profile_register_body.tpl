@@ -13,29 +13,37 @@
 <tr><td class="row2" colspan="2"><span class="gensmall">{L_ITEMS_REQUIRED}</span></td></tr>
 <tr>
 	<td class="row1" width="38%"><span class="gen">{L_USERNAME}:&nbsp;*</span></td>
-	<td class="row2"><input type="text" class="post" style="width:200px" name="username" size="25" maxlength="40" value="{USERNAME}" {VERIFY_UN_JS} /><div id="pseudobox"></div></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="username" size="25" maxlength="40" value="{USERNAME}" {VERIFY_UN_JS} /><div id="pseudobox"></div></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_USER_FIRST_NAME}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="user_first_name" size="25" maxlength="40" value="{USER_FIRST_NAME}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen">{L_USER_LAST_NAME}:</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="user_last_name" size="25" maxlength="40" value="{USER_LAST_NAME}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_EMAIL_ADDRESS}:&nbsp;*</span></td>
-	<td class="row2"><input type="text" class="post" style="width:200px" name="email" size="25" maxlength="255" value="{EMAIL}" {VERIFY_EMAIL_JS} /><div id="emailbox"></div></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="email" size="25" maxlength="255" value="{EMAIL}" {VERIFY_EMAIL_JS} /><div id="emailbox"></div></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_CONFIRM_EMAIL}:&nbsp;*</span></td>
-	<td class="row2"><input type="text" class="post" style="width:200px" name="email_confirm" size="25" maxlength="255" value="{EMAIL_CONFIRM}" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="email_confirm" size="25" maxlength="255" value="{EMAIL_CONFIRM}" /></td>
 </tr>
 <tr>
 	<td class="row1">
 		<span class="gen">{L_NEW_PASSWORD}:&nbsp;*</span><br />
 		<span class="gensmall">{L_PASSWORD_IF_CHANGED}&nbsp;</span>
 	</td>
-	<td class="row2"><input type="password" class="post" style="width: 200px" name="new_password" size="25" maxlength="100" value="{PASSWORD}" /></td>
+	<td class="row2"><input type="password" class="post" style="width: 200px;" name="new_password" size="25" maxlength="100" value="{PASSWORD}" /></td>
 </tr>
 <tr>
 	<td class="row1">
 		<span class="gen">{L_CONFIRM_PASSWORD}:&nbsp;*</span><br />
 		<span class="gensmall">{L_PASSWORD_CONFIRM_IF_CHANGED}&nbsp;</span>
 	</td>
-	<td class="row2"><input type="password" class="post" style="width: 200px" name="password_confirm" size="25" maxlength="100" value="{PASSWORD_CONFIRM}" /></td>
+	<td class="row2"><input type="password" class="post" style="width: 200px;" name="password_confirm" size="25" maxlength="100" value="{PASSWORD_CONFIRM}" /></td>
 </tr>
 <!-- BEGIN switch_confirm -->
 <tr><td class="row1 row-center" colspan="2"><span class="gensmall">{L_CONFIRM_CODE_IMPAIRED}</span><br /><br />{CONFIRM_IMG}<br /><br /></td></tr>
@@ -44,15 +52,15 @@
 		<span class="gen">{L_CONFIRM_CODE}:&nbsp;*</span><br />
 		<span class="gensmall">{L_CONFIRM_CODE_EXPLAIN}</span>
 	</td>
-	<td class="row2"><input type="text" class="post" style="width: 200px" name="confirm_code" size="6" maxlength="6" value="" /></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="confirm_code" size="6" maxlength="6" value="" /></td>
 </tr>
 <!-- END switch_confirm -->
 <tr>
-	<td class="row1"><span class="gen">{L_BIRTHDAY}:{BIRTHDAY_REQUIRED}</span></td>
+	<td class="row1"><span class="gen">{L_BIRTHDAY}:<!-- IF BIRTHDAY_REQUIRED -->&nbsp;*<!-- ENDIF --></span></td>
 	<td class="row2"><span class="gen">{S_BIRTHDAY}</span></td>
 </tr>
 <tr>
-	<td class="row1"><span class="gen">{L_GENDER}:{GENDER_REQUIRED}</span></td>
+	<td class="row1"><span class="gen">{L_GENDER}:<!-- IF GENDER_REQUIRED -->&nbsp;*<!-- ENDIF --></span></td>
 	<td class="row2">
 		<input type="radio" {LOCK_GENDER} name="gender" value="0" {GENDER_NO_SPECIFY_CHECKED} />
 		<span class="gen">{L_GENDER_NOT_SPECIFY}</span>

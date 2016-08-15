@@ -157,6 +157,11 @@ function date_select($select_name = 'dateformat', $default_format = '')
 	$date_format_list[] = array('m/d/Y G:i');
 	$date_format_list[] = array('m/d/Y h:i A');
 	//---------------------------------------------------
+	$date_format_list[] = array('Y/m/d');
+	$date_format_list[] = array('Y/m/d H:i');
+	$date_format_list[] = array('Y/m/d G:i');
+	$date_format_list[] = array('Y/m/d h:i A');
+	//---------------------------------------------------
 	$date_format_list[] = array('m.d.Y');
 	$date_format_list[] = array('m.d.Y H:i');
 	$date_format_list[] = array('m.d.Y G:i');
@@ -167,6 +172,11 @@ function date_select($select_name = 'dateformat', $default_format = '')
 	$date_format_list[] = array('d.m.Y G:i');
 	$date_format_list[] = array('d.m.Y h:i A');
 	//---------------------------------------------------
+	$date_format_list[] = array('Y.m.d');
+	$date_format_list[] = array('Y.m.d H:i');
+	$date_format_list[] = array('Y.m.d G:i');
+	$date_format_list[] = array('Y.m.d h:i A');
+	//---------------------------------------------------
 
 
 	//---------------------------------------------------
@@ -174,7 +184,7 @@ function date_select($select_name = 'dateformat', $default_format = '')
 	//---------------------------------------------------
 	if (empty($default_format))
 	{
-		$default_format = $date_format_list[11][0];
+		$default_format = $date_format_list[0][0];
 	}
 
 

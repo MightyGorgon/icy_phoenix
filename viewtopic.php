@@ -270,7 +270,7 @@ $count_sql = (!$post_id ? '' : (", COUNT(p2.post_id) AS prev_posts"));
 $order_sql = (!$post_id ? '' : ("GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, f.forum_name, f.forum_status, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard ORDER BY p.post_id ASC"));
 
 // Let's try to query all fields for topics and forums... it should not require too much resources as we are querying only one row
-//$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, t.title_compl_infos, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard" . $count_sql . "
+//$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.poll_start, t.topic_last_post_id, t.topic_label_compiled, t.topic_first_post_id, t.topic_calendar_time, t.topic_calendar_duration, t.topic_reg, t.topic_similar_topics, f.forum_name, f.forum_status, f.forum_id, f.forum_similar_topics, f.forum_topic_views, f.forum_kb_mode, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_edit, f.auth_delete, f.auth_sticky, f.auth_announce, f.auth_pollcreate, f.auth_vote, f.auth_attachments, f.auth_ban, f.auth_greencard, f.auth_bluecard" . $count_sql . "
 $sql = "SELECT t.*, f.*, u.*" . $count_sql . "
 	FROM " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f," . USERS_TABLE . " u" . $join_sql_table . "
 	WHERE $join_sql
@@ -301,7 +301,7 @@ $topic_title_data = $class_topics->generate_topic_title($topic_id, $forum_topic_
 $topic_title = $topic_title_data['title'];
 $topic_title_clean = $topic_title_data['title_clean'];
 $topic_title_plain = $topic_title_data['title_plain'];
-$topic_title_prefix = $topic_title_data['title_prefix'];
+$topic_title_label = $topic_title_data['title_label'];
 $topic_title_short = $topic_title_data['title_short'];
 
 // Topic poster information
@@ -640,7 +640,7 @@ foreach ($user_sn_im_array as $k => $v)
 	$sn_im_sql .= ', u.' . $v['field'];
 }
 
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_regdate, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $sn_im_sql . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.title_compl_infos
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_regdate, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $sn_im_sql . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.topic_label_compiled
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 	WHERE p.topic_id = $topic_id
 		AND t.topic_id = p.topic_id
@@ -965,49 +965,22 @@ if ($is_auth['auth_mod'])
 	}
 }
 
-// Topic prefixes
+// Topics Labels - BEGIN
 //if (!(($user->data['user_level'] == 0) && ($user->data['user_id'] != $row['topic_poster'])))
 if ($is_auth['auth_edit'] || ($user->data['user_id'] == $row['topic_poster']))
 {
-	// Temporary allow all BBCode for Quick Title, and store current vars to temp arrays
-	$bbcode_allow_html_tmp = $bbcode->allow_html;
-	$bbcode_allow_bbcode_tmp = $bbcode->allow_bbcode;
-	$bbcode_allow_smilies_tmp = $bbcode->allow_smilies;
-	$bbcode->allow_html = true;
-	$bbcode->allow_bbcode = true;
-	$bbcode->allow_smilies = true;
+	$topics_labels_select = $class_topics->gen_topics_labels_select();
 
-	$topic_prefixes = $class_topics->get_topic_prefixes();
-	$qt_select_data = '';
-	foreach ($topic_prefixes as $qt_id => $qt_data)
-	{
-		$qt_html = !empty($qt_data['title_html']) ? true : false;
-		$qt_title_prefix = !empty($qt_data['title_html']) ? $bbcode->parse($qt_data['title_html']) : $qt_data['title_info'];
-		$qt_title_prefix = str_replace('%mod%', $user->data['username'], $qt_title_prefix);
-		$qt_date = ($qt_data['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_data['date_format'], time(), $config['board_timezone']);
-		$qt_title_prefix = str_replace('%date%', $qt_date, $qt_title_prefix);
-		$qt_title_prefix = !empty($qt_html) ? $qt_title_prefix : htmlspecialchars($qt_title_prefix);
-		$qt_select_data .= '<option value="' . $qt_data['id'] . '">' . $qt_title_prefix . '</option>';
-	}
+	$topic_labels_block = '<form action="modcp.' . PHP_EXT . '?sid=' . $user->data['session_id'] . '" method="post"><br /><br />';
+	$topic_labels_block .= $topics_labels_select;
+	$topic_labels_block .= '<input type="submit" name="label_edit" class="liteoption" value="' . $lang['TOPIC_LABEL'] . '"/>';
+	$topic_labels_block .= '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '"/>';
+	$topic_labels_block .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '"/>';
+	$topic_labels_block .= '</form>';
 
-	// Restore BBCode status...
-	$bbcode->allow_html = $bbcode_allow_html_tmp;
-	$bbcode->allow_bbcode = $bbcode_allow_bbcode_tmp;
-	$bbcode->allow_smilies = $bbcode_allow_smilies_tmp;
-
-	$qt_select_box = '<form action="modcp.' . PHP_EXT . '?sid=' . $user->data['session_id'] . '" method="post"><br /><br />';
-	$qt_select_box .= '<select name="qt_id">';
-	$qt_select_box .= '<option value="0">---</option>';
-	$qt_select_box .= $qt_select_data;
-	$qt_select_box .= '</select>&nbsp;';
-	$qt_select_box .= '<input type="submit" name="quick_title_edit" class="liteoption" value="' . $lang['Edit_title'] . '"/>';
-	$qt_select_box .= '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '"/>';
-	$qt_select_box .= '<input type="hidden" name="' . POST_TOPIC_URL . '" value="' . $topic_id . '"/>';
-	$qt_select_box .= '</form>';
-
-	$topic_mod .= $qt_select_box;
-	$topic_prefix_select = $qt_select_box;
+	$topic_mod .= $topic_labels_block;
 }
+// Topics Labels - END
 
 $s_kb_mode_url = append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . '&amp;kb=' . (!empty($kb_mode) ? 'off' : 'on') . '&amp;start=' . $start);
 $s_kb_mode_l = (!empty($kb_mode) ? $lang['KB_MODE_OFF'] : $lang['KB_MODE_ON']);
@@ -1249,7 +1222,7 @@ $template->assign_vars(array(
 
 	'S_TMOD_BUTTONS' => !empty($topic_mod_switch) ? true : false,
 	'S_TMOD_BIN' => !empty($config['bin_forum']) ? true : false,
-	'S_TMOD_TOPIC_PREFIX_SELECT' => $topic_prefix_select,
+	'S_TMOD_TOPIC_LABELS_BLOCK' => $topic_labels_block,
 	'S_TMOD_TOPIC_UNLOCKED' => ($forum_topic_data['topic_status'] == TOPIC_UNLOCKED) ? true : false,
 	'S_TMOD_TOPIC_GLOBAL' => !empty($s_tmod_topic_global) ? true : false,
 	'S_TMOD_TOPIC_GLOBAL_AUTH' => $is_auth['auth_globalannounce'] ? true : false,
@@ -1367,6 +1340,7 @@ if (empty($config['disable_likes_posts']) && $forum_topic_data['forum_likes'] &&
 $feedback_disabled = true;
 if (!empty($config['plugins']['feedback']['enabled']) && !empty($config['plugins']['feedback']['dir']))
 {
+	$plugin_name = 'feedback';
 	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['feedback']['dir'] . 'common.' . PHP_EXT);
 	$feedback_allowed_forums = explode(',', PLUGINS_FEEDBACK_FORUMS);
 	$feedback_disabled = false;

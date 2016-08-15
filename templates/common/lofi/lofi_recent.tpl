@@ -6,10 +6,10 @@
 <div style="width: 100%; margin: 0 auto; text-align: center;">
 	<form name="form" method="get" action="{FORM_ACTION}">
 		{L_SELECT_MODE}
-		[ <a href="{FORM_ACTION}?mode=today">{L_TODAY}</a> ]
-		[ <a href="{FORM_ACTION}?mode=yesterday">{L_YESTERDAY}</a> ]
-		[ <a href="{FORM_ACTION}?mode=last24">{L_LAST24}</a> ]
-		[ <a href="{FORM_ACTION}?mode=lastweek">{L_LASTWEEK}</a> ]
+		[ <a href="{U_RECENT_TODAY}">{L_TODAY}</a> ]
+		[ <a href="{U_RECENT_YESTERDAY}">{L_YESTERDAY}</a> ]
+		[ <a href="{U_RECENT_LAST24}">{L_LAST24}</a> ]
+		[ <a href="{U_RECENT_LASTWEEK}">{L_LASTWEEK}</a> ]
 		[ <a href="#">{L_LAST}</a> <input type="hidden" name="mode" value="lastXdays" />
 		<input type="text" name="amount_days" size="2" value="{AMOUNT_DAYS}" maxlength="3" class="post" />
 		<a href="javascript:document.form.submit();">{L_DAYS}</a> ]

@@ -2134,6 +2134,13 @@ function any_url_exists($url)
 	}
 }
 
+/*
+* Function any_url_exists_alt to check whether a file exists on any domain (version taken from php.net
+*/
+function any_url_exists_alt($url){
+	return (@fopen($url,"r") == true);
+}
+
 /**
 * Check MEM Limit... used to set higher memory usage when processing images
 */

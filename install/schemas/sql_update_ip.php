@@ -110,6 +110,7 @@ switch ($req_version)
 	case '2018104': $current_ip_version = '2.0.18.104'; break;
 	case '220105': $current_ip_version = '2.2.0.105'; break;
 	case '221106': $current_ip_version = '2.2.1.106'; break;
+	case '222107': $current_ip_version = '2.2.2.107'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4645,9 +4646,64 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.2.0.105 */
 		case '2.2.0.105':
+		$sql[] = "INSERT INTO `" . $table_prefix . "bots` (`bot_name`, `bot_color`, `bot_agent`, `bot_ip`) VALUES ('AhrefsBot', '', 'AhrefsBot/', '')";
+		$sql[] = "UPDATE `" . $table_prefix . "bots` SET bot_agent = 'DotBot/' WHERE bot_name = 'DotBot'";
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('img_size_max_mp', '1')";
+
+		$sql[] = "DROP TABLE IF EXISTS `___topics_labels___`";
+		$sql[] = "CREATE TABLE `___topics_labels___` (
+					`id` INT(11) NOT NULL auto_increment,
+					`label_name` VARCHAR(255) NOT NULL DEFAULT '',
+					`label_code` VARCHAR(255) NOT NULL DEFAULT '',
+					`label_code_switch` TINYINT(1) DEFAULT '0',
+					`label_bg_color` VARCHAR(255) NOT NULL DEFAULT '',
+					`label_text_color` VARCHAR(255) NOT NULL DEFAULT '',
+					`label_icon` VARCHAR(255) NOT NULL DEFAULT '',
+					`date_format` VARCHAR(25) DEFAULT NULL,
+					`admin_auth` TINYINT(1) DEFAULT '0',
+					`mod_auth` TINYINT(1) DEFAULT '0',
+					`poster_auth` TINYINT(1) DEFAULT '0',
+					PRIMARY KEY `id` (`id`)
+				)";
+
+		$sql[] = "INSERT INTO `___topics_labels___`
+				SELECT tt.id, tt.title_info, tt.title_html, '0', '', '', '', tt.date_format, tt.admin_auth, tt.mod_auth, tt.poster_auth
+				FROM `" . $table_prefix . "title_infos` tt
+				ORDER BY tt.id";
+
+		$sql[] = "DROP TABLE IF EXISTS `_old_topics_labels_`";
+		$sql[] = "RENAME TABLE `" . $table_prefix . "title_infos` TO `_old_topics_labels`";
+		$sql[] = "RENAME TABLE `___topics_labels___` TO `" . $table_prefix . "topics_labels`";
+
+		$sql[] = "UPDATE `" . $table_prefix . "topics_labels` SET `label_code` = `label_name` WHERE `label_code` = ''";
+
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_label_id` MEDIUMINT(8) NOT NULL DEFAULT '0' AFTER `topic_attachment`";
+		/*
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_label_d` INT(11) unsigned NOT NULL DEFAULT '0' AFTER `topic_label_id`";
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` ADD `topic_label_u` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0' AFTER `topic_label_d`";
+		*/
+		$sql[] = "ALTER TABLE `" . $table_prefix . "topics` CHANGE `title_compl_infos` `topic_label_compiled` VARCHAR(255) NULL DEFAULT NULL AFTER `topic_label_id`";
+
+		// Now try to update all old labels id... only plain text labels... to avoid problems with BBCodes
+		$sql_tmp = "SELECT * FROM `" . $table_prefix . "topics_labels`";
+		$result_tmp = $db->sql_query($sql_tmp);
+		while ($row_tmp = $db->sql_fetchrow($result_tmp))
+		{
+			$current_label_text = $row_tmp['label_name'];
+			$sql_update = "UPDATE `" . $table_prefix . "topics`
+					SET `topic_label_id` = '" . $db->sql_escape($row_tmp['id']) . "'
+					WHERE `topic_label_compiled` = '" . $db->sql_escape($row_tmp['label_name']) . "'";
+			$db->sql_return_on_error(true);
+			$db->sql_query($sql_update);
+			$db->sql_return_on_error(false);
+		}
+		$db->sql_freeresult($result_tmp);
 
 		/* Updating from IP 2.2.1.106 */
 		case '2.2.1.106':
+
+		/* Updating from IP 2.2.2.107 */
+		case '2.2.2.107':
 
 	}
 

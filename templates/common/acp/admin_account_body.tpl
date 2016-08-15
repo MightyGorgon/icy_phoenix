@@ -29,17 +29,17 @@
 	<th>{L_MARK}</th>
 </tr>
 <tr>
-	<td colspan="2" align="left" nowrap="nowrap" class="row3"><span class="gensmall">{L_ACTIVATION}</span></td>
-	<td colspan="4" align="right" class="row3"><span class="gensmall">{TOTAL_USERS}</span></td>
+	<td colspan="2" nowrap="nowrap" class="row3"><span class="gensmall">{L_ACTIVATION}</span></td>
+	<td colspan="4" class="row3"><span class="gensmall align-right">{TOTAL_USERS}</span></td>
 </tr>
 <!-- BEGIN admin_account -->
 <tr>
 	<td class="{admin_account.ROW_CLASS} row-center"><span class="gensmall">{admin_account.ROW_NUMBER}&nbsp;</span></td>
 	<td class="{admin_account.ROW_CLASS} tvalignm" width="30%" nowrap="nowrap">
-		<table border="0" cellpadding="1" cellspacing="1" width="100%">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
 		<tr>
-			<td align="left">{admin_account.USERNAME}</td>
-			<td align="right"><span class="gensmall"><a href="{admin_account.U_EDIT_USER}" class="gensmall">{L_EDIT_USER}</a>&nbsp;|&nbsp;<a href="{admin_account.U_USER_AUTH}" class="gensmall">{L_USER_AUTH}</a></span>&nbsp;&nbsp;</td>
+			<td>{admin_account.USERNAME}<!-- IF admin_account.USER_FULL_NAME -->&nbsp;<span class="gensmall">({admin_account.USER_FULL_NAME})</span><!-- ENDIF --></td>
+			<td><span class="gensmall align-right"><a href="{admin_account.U_EDIT_USER}" class="gensmall">{L_EDIT_USER}</a>&nbsp;|&nbsp;<a href="{admin_account.U_USER_AUTH}" class="gensmall">{L_USER_AUTH}</a></span>&nbsp;&nbsp;</td>
 		</tr>
 		</table>
 	</td>

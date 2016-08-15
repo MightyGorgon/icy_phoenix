@@ -47,7 +47,8 @@ $server_path = create_server_url();
 $upload_dir = POSTED_IMAGES_PATH;
 $user_upload_dir = '';
 $allowed_extensions = 'gif|jpg|jpeg|png';
-$max_file_size = (1024 * 1024);
+$max_file_size_mb = ((!empty($config['img_size_max_mp']) && ($config['img_size_max_mp'] > 0) && ($config['img_size_max_mp'] < 20)) ? intval($config['img_size_max_mp']) : 1);
+$max_file_size = (1024 * 1024) * $config['img_size_max_mp'];
 
 if (USERS_SUBFOLDERS_IMG == true)
 {

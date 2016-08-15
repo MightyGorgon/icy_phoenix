@@ -716,6 +716,7 @@ function generate_smilies($mode)
 			$row = 0;
 			$col = 0;
 
+			$server_protocol = !empty($config['cookie_secure']) ? 'https://' : 'http://';
 			$host = extract_current_hostname();
 
 			for($i = $smiley_start; $i < $smiley_stop; $i++)
@@ -726,7 +727,7 @@ function generate_smilies($mode)
 				}
 				$template->assign_block_vars('smilies_row.smilies_col', array(
 					'SMILEY_CODE' => $rowset[$i]['code'],
-					'SMILEY_IMG' => 'http://' . $host . $config['script_path'] . $config['smilies_path'] . '/' . $rowset[$i]['smile_url'],
+					'SMILEY_IMG' => $server_protocol . $host . $config['script_path'] . $config['smilies_path'] . '/' . $rowset[$i]['smile_url'],
 					'SMILEY_DESC' => $rowset[$i]['emoticon']
 					)
 				);

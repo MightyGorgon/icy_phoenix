@@ -63,7 +63,7 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 	// Username or email!
 	//$sql_match = !empty($user_id) ? ("user_id = '" . $db->sql_escape($user_id) . "'") : (("username_clean = '" . $db->sql_escape(utf8_clean_string($username)) . "' OR user_email = '" . $db->sql_escape(utf8_clean_string($username)) . "'"));
 
-	$sql = 'SELECT user_id, username, username_clean, user_password, user_passchg, user_pass_convert, user_email, user_active, user_level, user_login_attempts, user_last_login_attempt
+	$sql = 'SELECT user_id, username, username_clean, user_password, user_passchg, user_pass_convert, user_email, user_active, user_level, user_login_attempts, user_last_login_attempt, user_first_name, user_last_name
 		FROM ' . USERS_TABLE . '
 		WHERE ' . $sql_match;
 	$result = $db->sql_query($sql);
@@ -131,7 +131,6 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 		$row['user_login_attempts'] = 0;
 	}
 
-
 	// If the password convert flag is set we need to convert it
 	if ($row['user_pass_convert'])
 	{
@@ -158,7 +157,10 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 				$target_profile_data = array(
 					'user_id' => $row['user_id'],
 					'username' => $username,
-					'password' => $password_new_format
+					'first_name' => $row['user_first_name'],
+					'last_name' => $row['user_last_name'],
+					'password' => $password_new_format,
+					'email' => $row['user_email']
 				);
 				include_once(IP_ROOT_PATH . 'includes/class_users.' . PHP_EXT);
 				$class_users = new class_users();

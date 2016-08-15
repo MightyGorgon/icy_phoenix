@@ -543,6 +543,7 @@ switch($mode)
 			}
 
 			// setup user row template variables
+			$user_full_name = (!empty($row['user_first_name']) ? $row['user_first_name'] : '') . (!empty($row['user_last_name']) ? ((!empty($row['user_first_name']) ? ' ' : '')) . $row['user_last_name'] : '');
 			$template->assign_block_vars('user_row', array(
 				'ROW_NUMBER' => $i + (intval($_GET['start']) + 1),
 				'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
@@ -550,6 +551,9 @@ switch($mode)
 				'USER_ID' => $row['user_id'],
 				'ACTIVE' => ($row['user_active'] == true) ? $lang['Yes'] : $lang['No'],
 				'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
+				'USER_FIRST_NAME' => htmlspecialchars($row['user_first_name']),
+				'USER_LAST_NAME' => htmlspecialchars($row['user_last_name']),
+				'USER_FULL_NAME' => $user_full_name,
 				'U_PROFILE' => append_sid(IP_ROOT_PATH . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 				'RANK' => $poster_rank,
 				'I_RANK' => $rank_image,
@@ -562,7 +566,7 @@ switch($mode)
 				'U_WEBSITE' => ($row['user_website']) ? $row['user_website'] : '',
 				'USER_LANG' => $row['user_lang'],
 				'USER_STYLE' => $row['user_style'],
-				'EMAIL' => $row['user_email'],
+				'EMAIL' => htmlspecialchars($row['user_email']),
 				'U_PM' => append_sid(IP_ROOT_PATH . CMS_PAGE_PRIVMSG . '?mode=post&amp;' . POST_USERS_URL . '='. $row['user_id']),
 				'U_MANAGE' => append_sid(IP_ROOT_PATH . ADM . '/admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 				'U_PERMISSIONS' => append_sid(IP_ROOT_PATH . ADM . '/admin_ug_auth.' . PHP_EXT . '?mode=user&amp;' . POST_USERS_URL . '=' . $row['user_id'])

@@ -270,6 +270,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 	$target_profile_data = array(
 		'user_id' => '',
 		'username' => '',
+		'first_name' => '',
+		'last_name' => '',
 		'password' => '',
 		'email' => ''
 	);
@@ -729,8 +731,10 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			clear_user_color_cache($user_id);
 
 			// PROFILE EDIT BRIDGE - BEGIN
-			$target_profile_data['email'] = $email;
 			$target_profile_data['user_id'] = $user_id;
+			$target_profile_data['email'] = $email;
+			$target_profile_data['first_name'] = $user_first_name;
+			$target_profile_data['last_name'] = $user_last_name;
 			// PROFILE EDIT BRIDGE - END
 
 			$sn_im_sql = '';

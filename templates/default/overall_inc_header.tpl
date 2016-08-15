@@ -6,13 +6,14 @@
 <title>{PAGE_TITLE}</title>
 
 <link rel="shortcut icon" href="{FULL_SITE_PATH}images/favicon.ico" />
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_TPL_PATH}style_{CSS_COLOR}.css" type="text/css" />
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}ip_sprites_famfamfam.css" type="text/css" />
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_TPL_PATH}style_{CSS_COLOR}.css?assets_version={T_ASSETS_VERSION}" type="text/css" />
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}ip_sprites_famfamfam.css?assets_version={T_ASSETS_VERSION}" type="text/css" />
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}font_awesome_compressed.css?assets_version={T_ASSETS_VERSION}" type="text/css" />
 <!-- BEGIN css_style_include -->
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_TPL_PATH}{css_style_include.CSS_FILE}" type="text/css" />
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_TPL_PATH}{css_style_include.CSS_FILE}?assets_version={T_ASSETS_VERSION}" type="text/css" />
 <!-- END css_style_include -->
 <!-- BEGIN css_include -->
-<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{css_include.CSS_FILE}" type="text/css" />
+<link rel="stylesheet" href="{FULL_SITE_PATH}{T_COMMON_TPL_PATH}{css_include.CSS_FILE}?assets_version={T_ASSETS_VERSION}" type="text/css" />
 <!-- END css_include -->
 
 <!-- INCLUDE overall_inc_header_js.tpl -->

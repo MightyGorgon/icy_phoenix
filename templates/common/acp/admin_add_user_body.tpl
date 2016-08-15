@@ -9,6 +9,14 @@
 	<td class="row2"><input type="text" class="post" style="width: 200px;" name="username" size="25" maxlength="25" value="{USERNAME}" /></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen"><strong>{L_USER_FIRST_NAME}:</strong></span></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="user_first_name" size="25" maxlength="180" value="{USER_FIRST_NAME}" /></td>
+</tr>
+<tr>
+	<td class="row1"><span class="gen"><strong>{L_USER_LAST_NAME}:</strong></span></td>
+	<td class="row2"><input type="text" class="post" style="width: 200px;" name="user_last_name" size="25" maxlength="180" value="{USER_LAST_NAME}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen"><strong>{L_EMAIL_ADDRESS}:</strong> *</span></td>
 	<td class="row2"><input type="text" class="post" style="width: 200px;" name="email" size="25" maxlength="255" value="{EMAIL}" /></td>
 </tr>

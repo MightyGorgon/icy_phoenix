@@ -1596,24 +1596,6 @@ CREATE TABLE `phpbb_themes` (
 
 ## --------------------------------------------------------
 
-## `phpbb_title_infos`
-
-CREATE TABLE `phpbb_title_infos` (
-	`id` INT(11) NOT NULL auto_increment,
-	`title_info` VARCHAR(255) NOT NULL DEFAULT '',
-	`title_html` VARCHAR(255) NOT NULL DEFAULT '',
-	`date_format` VARCHAR(25) DEFAULT NULL,
-	`admin_auth` TINYINT(1) DEFAULT '0',
-	`mod_auth` TINYINT(1) DEFAULT '0',
-	`poster_auth` TINYINT(1) DEFAULT '0',
-	UNIQUE KEY `id` (`id`)
-);
-
-## `phpbb_title_infos`
-
-
-## --------------------------------------------------------
-
 ## `phpbb_topic_view`
 
 CREATE TABLE `phpbb_topic_view` (
@@ -1664,7 +1646,8 @@ CREATE TABLE `phpbb_topics` (
 	`topic_last_poster_color` VARCHAR(16) NOT NULL DEFAULT '',
 	`topic_moved_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
 	`topic_attachment` TINYINT(1) NOT NULL DEFAULT '0',
-	`title_compl_infos` VARCHAR(255) DEFAULT NULL,
+	`topic_label_id` MEDIUMINT(8) NOT NULL DEFAULT '0';
+	`topic_label_compiled` VARCHAR(255) DEFAULT NULL,
 	`news_id` INT(10) unsigned NOT NULL DEFAULT '0',
 	`topic_calendar_time` INT(11) DEFAULT NULL,
 	`topic_calendar_duration` INT(11) DEFAULT NULL,
@@ -1684,6 +1667,28 @@ ALTER TABLE `phpbb_topics` ADD FULLTEXT (topic_title);
 
 
 ## `phpbb_topics`
+
+
+## --------------------------------------------------------
+
+## `phpbb_topics_labels`
+
+CREATE TABLE `phpbb_topics_labels` (
+	`id` INT(11) NOT NULL auto_increment,
+	`label_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`label_code` VARCHAR(255) NOT NULL DEFAULT '',
+	`label_code_switch` TINYINT(1) DEFAULT '0',
+	`label_bg_color` VARCHAR(255) NOT NULL DEFAULT '',
+	`label_text_color` VARCHAR(255) NOT NULL DEFAULT '',
+	`label_icon` VARCHAR(255) NOT NULL DEFAULT '',
+	`date_format` VARCHAR(25) DEFAULT NULL,
+	`admin_auth` TINYINT(1) DEFAULT '0',
+	`mod_auth` TINYINT(1) DEFAULT '0',
+	`poster_auth` TINYINT(1) DEFAULT '0',
+	PRIMARY KEY `id` (`id`)
+);
+
+## `phpbb_topics_labels`
 
 
 ## --------------------------------------------------------

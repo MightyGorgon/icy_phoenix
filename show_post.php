@@ -205,7 +205,7 @@ $ranks_array = $cache->obtain_ranks(false);
 // Mighty Gorgon - Multiple Ranks - END
 
 // Go ahead and pull all data for this topic
-$sql = "SELECT u.*, p.*, t.topic_poster, t.title_compl_infos
+$sql = "SELECT u.*, p.*, t.topic_poster, t.topic_label_compiled
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t
 	WHERE p.post_id = " . $post_id . "
 	AND p.poster_id = u.user_id

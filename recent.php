@@ -270,8 +270,12 @@ for($i = 0; $i < sizeof($line); $i++)
 	$topic_title = $topic_title_data['title'];
 	$topic_title_clean = $topic_title_data['title_clean'];
 	$topic_title_plain = $topic_title_data['title_plain'];
-	$topic_title_prefix = $topic_title_data['title_prefix'];
+	$topic_title_label = $topic_title_data['title_label'];
 	$topic_title_short = $topic_title_data['title_short'];
+/*
+print_r($topic_title_data);
+die();
+*/
 
 	//$news_label = ($line[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 	$news_label = '';
@@ -399,6 +403,10 @@ $template->assign_vars(array(
 	'IS_USER_RECENT' => $is_user_recent,
 	'AMOUNT_DAYS' => $amount_days,
 	'FORM_ACTION' => append_sid('recent.' . PHP_EXT),
+	'U_RECENT_TODAY' => append_sid('recent.' . PHP_EXT . '?mode=today'),
+	'U_RECENT_YESTERDAY' => append_sid('recent.' . PHP_EXT . '?mode=yesterday'),
+	'U_RECENT_LAST24' => append_sid('recent.' . PHP_EXT . '?mode=last24'),
+	'U_RECENT_LASTWEEK' => append_sid('recent.' . PHP_EXT . '?mode=lastweek'),
 	'PAGINATION' => ($total_topics != '0') ? $pagination : '&nbsp;',
 	'PAGE_NUMBER' => ($total_topics != '0') ? sprintf($lang['Page_of'], (floor($start / $topic_limit) + 1), ceil($total_topics / $topic_limit)) : '&nbsp;',
 	)

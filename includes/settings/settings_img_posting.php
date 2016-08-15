@@ -115,6 +115,20 @@ $settings_data = array(
 		'default' => '120',
 	),
 
+	'img_size_max_mp' => array(
+		'lang_key' => 'IP_img_size_max_mp',
+		'explain' => 'IP_img_size_max_mp_explain',
+		'type' => 'LIST_DROP',
+		'default' => 'MB_1',
+		'values' => array(
+			'MB_1' => 1,
+			'MB_2' => 2,
+			'MB_3' => 3,
+			'MB_5' => 5,
+			'MB_7' => 7,
+		),
+	),
+
 	'img_list_cols' => array(
 		'lang_key' => 'IP_img_list_cols',
 		'explain' => 'IP_img_list_cols_explain',

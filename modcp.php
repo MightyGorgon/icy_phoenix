@@ -66,8 +66,8 @@ $move = (isset($_POST['move'])) ? true : false;
 $move_all = (isset($_POST['move_all'])) ? true : false;
 $lock = (isset($_POST['lock'])) ? true : false;
 $unlock = (isset($_POST['unlock'])) ? true : false;
-$quick_title_edit = (isset($_POST['quick_title_edit'])) ? true : false;
-$qt_id = request_var('qt_id', 0);
+$label_edit = (isset($_POST['label_edit'])) ? true : false;
+$label_id = request_var('label_id', 0);
 $merge = (isset($_POST['merge'])) ? true : false;
 $recycle = (isset($_POST['recycle'])) ? true : false;
 $sticky = (isset($_POST['sticky'])) ? true : false;
@@ -105,9 +105,9 @@ if(empty($mode))
 	{
 		$mode = 'unlock';
 	}
-	elseif ($quick_title_edit)
+	elseif ($label_edit)
 	{
-		$mode = 'quick_title_edit';
+		$mode = 'label_edit';
 	}
 	elseif ($recycle)
 	{
@@ -233,7 +233,7 @@ if(isset($_POST['cancel']))
 	redirect(append_sid($redirect, true));
 }
 
-if ($mode != 'quick_title_edit')
+if ($mode != 'label_edit')
 {
 	$is_auth = auth(AUTH_ALL, $forum_id, $user->data);
 
@@ -244,12 +244,12 @@ if ($mode != 'quick_title_edit')
 }
 else
 {
-	if ($qt_id > 0)
+	if ($label_id > 0)
 	{
-		$sql_qt = "SELECT * FROM " . TITLE_INFOS_TABLE . " WHERE id = " . $db->sql_escape($qt_id);
-		$result_qt = $db->sql_query($sql_qt);
-		$qt_row = $db->sql_fetchrow($result_qt);
-		if ((($user->data['user_level'] == ADMIN) && ($qt_row['admin_auth'] == 0)) || (($user->data['user_level'] == MOD) && ($qt_row['mod_auth'] == 0)) || (($user->data['user_level'] == USER) && ($qt_row['poster_auth'] == 0)) || (($user->data['user_level'] == USER) && ($qt_row['poster_auth'] == 1) && ($user->data['user_id'] != $topic_row['topic_poster'])))
+		$sql_label = "SELECT * FROM " . TOPICS_LABELS_TABLE . " WHERE id = " . $db->sql_escape($label_id);
+		$result_label = $db->sql_query($sql_label);
+		$label_data = $db->sql_fetchrow($result_label);
+		if ((($user->data['user_level'] == ADMIN) && ($label_data['admin_auth'] == 0)) || (($user->data['user_level'] == MOD) && ($label_data['mod_auth'] == 0)) || (($user->data['user_level'] == USER) && ($label_data['poster_auth'] == 0)) || (($user->data['user_level'] == USER) && ($label_data['poster_auth'] == 1) && ($user->data['user_id'] != $topic_row['topic_poster'])))
 		{
 			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		}
@@ -260,10 +260,7 @@ else
 		{
 			message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 		}
-		$qt_row = array(
-			'title_info' => '',
-			'title_html' => ''
-		);
+		$label_data = array('id' => 0);
 	}
 }
 // End Auth Check
@@ -912,14 +909,14 @@ switch($mode)
 		message_die(GENERAL_MESSAGE, $message);
 		break;
 
-	case 'quick_title_edit':
+	case 'label_edit':
 		if (empty($_POST['topic_id_list']) && empty($topic_id))
 		{
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
 
 		$topics = (isset($_POST['topic_id_list'])) ?  $_POST['topic_id_list'] : array($topic_id);
-		$class_mcp->topic_quick_title_edit($topics, $qt_row);
+		$class_mcp->topic_label_edit($topics, $label_data);
 
 		if (!empty($topic_id))
 		{
@@ -990,37 +987,9 @@ switch($mode)
 			$template->assign_block_vars("switch_no_topics", array());
 		}
 
-		// Quick Title
-		// Temporary allow all BBCode for Quick Title, and store current vars to temp arrays
-		$bbcode_allow_html_tmp = $bbcode->allow_html;
-		$bbcode_allow_bbcode_tmp = $bbcode->allow_bbcode;
-		$bbcode_allow_smilies_tmp = $bbcode->allow_smilies;
-		$bbcode->allow_html = true;
-		$bbcode->allow_bbcode = true;
-		$bbcode->allow_smilies = true;
-
-		$topic_prefixes = $class_topics->get_topic_prefixes();
-		$qt_select_data = '';
-		foreach ($topic_prefixes as $qt_id => $qt_data)
-		{
-			$qt_html = !empty($qt_data['title_html']) ? true : false;
-			$qt_title_prefix = !empty($qt_data['title_html']) ? $bbcode->parse($qt_data['title_html']) : $qt_data['title_info'];
-			$qt_title_prefix = str_replace('%mod%', $user->data['username'], $qt_title_prefix);
-			$qt_date = ($qt_data['date_format'] == '') ? create_date($config['default_dateformat'], time(), $config['board_timezone']) : create_date($qt_data['date_format'], time(), $config['board_timezone']);
-			$qt_title_prefix = str_replace('%date%', $qt_date, $qt_title_prefix);
-			$qt_title_prefix = !empty($qt_html) ? $qt_title_prefix : htmlspecialchars($qt_title_prefix);
-			$qt_select_data .= '<option value="' . $qt_data['id'] . '">' . $qt_title_prefix . '</option>';
-		}
-
-		// Restore BBCode status...
-		$bbcode->allow_html = $bbcode_allow_html_tmp;
-		$bbcode->allow_bbcode = $bbcode_allow_bbcode_tmp;
-		$bbcode->allow_smilies = $bbcode_allow_smilies_tmp;
-
-		$select_title = '<select name="qt_id">';
-		$select_title .= '<option value="0">---</option>';
-		$select_title .= $qt_select_data;
-		$select_title .= '</select>';
+		// Topics Labels - BEGIN
+		$topics_labels_select = $class_topics->gen_topics_labels_select();
+		// Topics Labels - END
 
 		// News
 		$sql = 'SELECT * FROM ' . NEWS_TABLE . ' ORDER BY news_category';
@@ -1037,10 +1006,9 @@ switch($mode)
 			'TOPIC_TYPES' => $topic_types,
 			'TOPIC_COUNT' => ($forum_topics == '1') ? sprintf($lang['Mod_CP_topic_count'], $forum_topics) : sprintf($lang['Mod_CP_topics_count'], $forum_topics),
 			'FORUM_NAME' => $class_mcp->find_names($forum_id),
-			'SELECT_TITLE' => $select_title,
+			'TOPICS_LABELS_SELECT' => $topics_labels_select,
 			'SELECT_NEWS_CATS' => $select_news_cats,
 
-			'L_EDIT_TITLE' => $lang['Edit_title'],
 			'L_NEWS_CATEGORY' => $lang['Select_News_Category'],
 			'L_NO_TOPICS' => $lang['Mod_CP_no_topics'],
 			'L_MOD_CP' => $lang['Mod_CP'],
@@ -1152,8 +1120,8 @@ switch($mode)
 				$topic_title = $bbcode->parse_only_smilies($topic_title);
 			}
 			// SMILEYS IN TITLE - END
-			$topic_title_prefix = (empty($topic_rowset[$i]['title_compl_infos'])) ? '' : $topic_rowset[$i]['title_compl_infos'] . ' ';
-			$topic_title = $topic_title_prefix . $topic_title;
+			$topic_title_label = (empty($topic_rowset[$i]['topic_label_compiled'])) ? '' : $topic_rowset[$i]['topic_label_compiled'] . ' ';
+			$topic_title = $topic_title_label . $topic_title;
 
 			//$news_label = ($topic_rowset[$i]['news_id'] > 0) ? $lang['News_Cmx'] . '' : '';
 			$news_label = '';

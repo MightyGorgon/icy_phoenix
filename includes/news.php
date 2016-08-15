@@ -62,7 +62,8 @@ class NewsModule
 	{
 		global $db, $config, $template;
 
-		$this->root_path = 'http://' . $config['server_name'] . $config['script_path'];
+		$server_protocol = !empty($config['cookie_secure']) ? 'https://' : 'http://';
+		$this->root_path = $server_protocol . $config['server_name'] . $config['script_path'];
 		$this->root_path_link = IP_ROOT_PATH;
 		$this->template = &$template;
 		$this->config = &$config;
@@ -216,7 +217,7 @@ class NewsModule
 					'U_PRINT_TOPIC' => append_sid('printview.' . PHP_EXT . '?' . POST_FORUM_URL . '=' . $article['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $article['topic_id'] . '&amp;start=0'),
 					'U_EMAIL_TOPIC' => append_sid('tellafriend.' . PHP_EXT . '?topic_title=' . urlencode(ip_utf8_decode($article['topic_title'])) . '&amp;topic_id=' . $article['topic_id']),
 					'L_TITLE_HTML' => urlencode(ip_utf8_decode($article['topic_title'])),
-					//'TELL_LINK' => urlencode(ip_utf8_decode('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] . '?topic_id=' . $article['topic_id'])),
+					//'TELL_LINK' => urlencode(ip_utf8_decode($server_protocol . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] . '?topic_id=' . $article['topic_id'])),
 					'COUNT_COMMENTS' => $article['topic_replies'],
 					'BODY' => ($show_abstract && $trimmed) ? $article['post_abstract'] : $article['post_text'],
 					'READ_MORE_LINK' => ($show_abstract && $trimmed) ? '<a href="' . $index_file . '?' . $portal_page_id . $ubid_link . 'topic_id=' . $article['topic_id'] . '">' . $lang['Read_More'] . '</a>' : '',

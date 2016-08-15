@@ -493,6 +493,7 @@ display_upload_attach_box_limits($profiledata['user_id']);
 $feedback_received = '';
 if (!empty($config['plugins']['feedback']['enabled']) && !empty($config['plugins']['feedback']['dir']))
 {
+	$plugin_name = 'feedback';
 	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['feedback']['dir'] . 'common.' . PHP_EXT);
 	$feedback_details = get_user_feedback_received($profiledata['user_id']);
 	if ($feedback_details['feedback_count'] > 0)

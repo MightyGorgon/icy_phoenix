@@ -573,6 +573,8 @@ if (isset($_POST['submit']))
 	$target_profile_data = array(
 		'user_id' => '',
 		'username' => '',
+		'first_name' => '',
+		'last_name' => '',
 		'password' => '',
 		'email' => ''
 	);
@@ -988,6 +990,8 @@ if (isset($_POST['submit']))
 			}
 
 			// PROFILE EDIT BRIDGE - BEGIN
+			$target_profile_data['first_name'] = $user_first_name;
+			$target_profile_data['last_name'] = $user_last_name;
 			$target_profile_data['email'] = $email;
 			$target_profile_data['user_id'] = $user_id;
 			// PROFILE EDIT BRIDGE - END
@@ -1191,6 +1195,8 @@ if (isset($_POST['submit']))
 			$target_profile_data = array(
 				'user_id' => $user_id,
 				'username' => $username,
+				'first_name' => $user_first_name,
+				'last_name' => $user_last_name,
 				'password' => $new_password,
 				'email' => $email
 			);
@@ -2395,13 +2401,13 @@ else
 		'PROFILE_VIEW_POPUP_NO' => (!$profile_view_popup) ? 'checked="checked"' : '',
 		'L_PROFILE_VIEW_POPUP' => $lang['Profile_view_option'],
 		'S_BIRTHDAY' => $s_birthday,
-		'BIRTHDAY_REQUIRED' => ($config['birthday_required']) ? '*' : '',
+		'BIRTHDAY_REQUIRED' => !empty($config['birthday_required']) ? true : false,
 		'LOCATION' => $location,
 		'WEBSITE' => $website,
 		'SIGNATURE' => str_replace('<br />', "\n", $signature),
 		'LOCK_GENDER' =>($mode != 'register') ? 'DISABLED' : '',
 		'GENDER' => $gender,
-		'GENDER_REQUIRED' => ($config['gender_required']) ? ' *' : '',
+		'GENDER_REQUIRED' => !empty($config['gender_required']) ? true : false,
 		'GENDER_NO_SPECIFY_CHECKED' => $gender_no_specify_checked,
 		'GENDER_MALE_CHECKED' => $gender_male_checked,
 		'GENDER_FEMALE_CHECKED' => $gender_female_checked,

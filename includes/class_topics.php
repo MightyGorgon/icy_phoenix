@@ -98,7 +98,7 @@ class class_topics
 			$meta_content['topic_title'] = strip_tags(stripslashes($row_data['topic_title']));
 			$meta_content['topic_title_clean'] = $row_data['topic_title_clean'];
 			$meta_content['topic_tags'] = $row_data['topic_tags'];
-			$meta_content['title_compl_infos'] = $row_data['title_compl_infos'];
+			$meta_content['topic_label_compiled'] = $row_data['topic_label_compiled'];
 
 			$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $meta_content['topic_title'];
 			$meta_content['description'] = $meta_content['forum_name'] . ' - ' . $meta_content['topic_title'];
@@ -395,20 +395,99 @@ class class_topics
 	}
 
 	/*
-	* Get topic prefixes
+	* Get topic labels
 	*/
-	function get_topic_prefixes()
+	function get_topics_labels()
 	{
-		global $db;
-		$sql = "SELECT * FROM " . TITLE_INFOS_TABLE . " ORDER BY title_info ASC";
-		$result = $db->sql_query($sql, 0, 'topics_prefixes_', TOPICS_CACHE_FOLDER);
-		$topic_prefixes = array();
+		global $db, $cache, $config;
+		$sql = "SELECT * FROM " . TOPICS_LABELS_TABLE . " ORDER BY label_name ASC";
+		$result = $db->sql_query($sql, 0, 'topics_labels_', TOPICS_CACHE_FOLDER);
+		$topic_labels = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$topic_prefixes[$row['id']] = $row;
+			$topic_labels[$row['id']] = $row;
 		}
 		$db->sql_freeresult($result);
-		return $topic_prefixes;
+		return $topic_labels;
+	}
+
+	/*
+	* Generate topic labels select box
+	*/
+	function gen_topics_labels_select()
+	{
+		global $db, $cache, $config, $user, $bbcode, $lang;
+
+		/*
+		// SELECT BOX doesn't allow styling... so just use NAME in the select box...
+		// Temporary allow all BBCode for Quick Title, and store current vars to temp arrays
+		if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
+		if (empty($bbcode)) $bbcode = new bbcode();
+		$bbcode_allow_html_tmp = $bbcode->allow_html;
+		$bbcode_allow_bbcode_tmp = $bbcode->allow_bbcode;
+		$bbcode_allow_smilies_tmp = $bbcode->allow_smilies;
+		*/
+
+		$topics_labels = $this->get_topics_labels();
+		$topics_labels_options = '';
+		foreach ($topics_labels as $label_id => $label_data)
+		{
+			// SELECT BOX doesn't allow styling... so just use NAME in the select box...
+			//$label_compiled = $this->gen_label_compiled($label_data);
+			$label_name = $label_data['label_name'];
+			$label_style = '';
+			if (!empty($label_data['label_bg_color']) || !empty($label_data['label_text_color']))
+			{
+				$label_style = ' style="' . (!empty($label_data['label_bg_color']) ? 'background-color: ' . $label_data['label_bg_color'] . ';' : '') . (!empty($label_data['label_text_color']) ? 'color: ' . $label_data['label_text_color'] . ';' : '') . '"';
+			}
+			$topics_labels_options .= '<option value="' . $label_data['id'] . '"' . $label_style . '>' . $label_name . '</option>';
+		}
+
+		/*
+		// SELECT BOX doesn't allow styling... so just use NAME in the select box...
+		// Restore BBCode status...
+		$bbcode->allow_html = $bbcode_allow_html_tmp;
+		$bbcode->allow_bbcode = $bbcode_allow_bbcode_tmp;
+		$bbcode->allow_smilies = $bbcode_allow_smilies_tmp;
+		*/
+
+		$topic_labels_select .= '<select name="label_id">';
+		$topic_labels_select .= '<option value="0">---</option>';
+		$topic_labels_select .= $topics_labels_options;
+		$topic_labels_select .= '</select>&nbsp;';
+
+		return $topic_labels_select;
+	}
+
+	/**
+	* Generate the label
+	*/
+	function gen_label_compiled($label_data)
+	{
+		global $db, $cache, $config, $user, $bbcode, $lang;
+
+		$bbcode->allow_html = in_array($label_data['label_code_switch'], array(2, 3)) ? true : false;
+		$bbcode->allow_bbcode = in_array($label_data['label_code_switch'], array(1, 3)) ? true : false;
+		$bbcode->allow_smilies = in_array($label_data['label_code_switch'], array(1, 2, 3)) ? true : false;
+		$label_code = $label_data['label_code'];
+		$label_code = in_array($label_data['label_code_switch'], array(1, 2, 3)) ? $bbcode->parse($label_code) : htmlspecialchars($label_code);
+		$label_date_format = !empty($label_data['date_format']) ? $label_data['date_format'] : $config['default_dateformat'];
+		$label_date = create_date($label_date_format, time(), $config['board_timezone']);
+		$label_code = str_replace('%mod%', $user->data['username'], $label_code);
+		$label_code = str_replace('%date%', $label_date, $label_code);
+
+		$label_compiled = $label_code;
+
+		if (!empty($label_data['label_icon']))
+		{
+			$label_compiled = '<i class="fa ' . $label_data['label_icon'] . '"></i>' . ' ' . $label_compiled;
+		}
+		if (!empty($label_data['label_bg_color']) || !empty($label_data['label_text_color']))
+		{
+			$label_compiled = '<span class="label" style="' . (!empty($label_data['label_bg_color']) ? 'background-color: ' . $label_data['label_bg_color'] . ';' : '') . (!empty($label_data['label_text_color']) ? 'color: ' . $label_data['label_text_color'] . ';' : '') . '">' . $label_compiled . '</span>';
+		}
+
+		return $label_compiled;
 	}
 
 	/*
@@ -430,7 +509,7 @@ class class_topics
 			update_clean_topic_title($topic_id, $topic_title_clean);
 		}
 
-		$topic_title_prefix = (empty($topic_data['title_compl_infos'])) ? '' : trim($topic_data['title_compl_infos']) . ' ';
+		$topic_title_label = (empty($topic_data['topic_label_compiled'])) ? '' : trim($topic_data['topic_label_compiled']) . ' ';
 		// Convert and clean special chars!
 		$topic_title = htmlspecialchars_clean($topic_title);
 		// SMILEYS IN TITLE - BEGIN
@@ -442,12 +521,12 @@ class class_topics
 			$topic_title = $bbcode->parse_only_smilies($topic_title);
 		}
 		// SMILEYS IN TITLE - END
-		$topic_title = $topic_title_prefix . $topic_title;
+		$topic_title = $topic_title_label . $topic_title;
 		$topic_title_plain = htmlspecialchars(strip_tags($topic_title));
 		$topic_title_short = $topic_title;
 		if (strlen($topic_title) > ($max_title_length - 3))
 		{
-			// remove tags from the short version, in case a smiley or a quick title prefix is in there
+			// remove tags from the short version, in case a smiley or a topic lavel is in there
 			$topic_title_short = substr(strip_tags($topic_title), 0, intval($max_title_length)) . '...';
 		}
 
@@ -455,7 +534,7 @@ class class_topics
 			'title' => $topic_title,
 			'title_clean' => $topic_title_clean,
 			'title_plain' => $topic_title_plain,
-			'title_prefix' => $topic_title_prefix,
+			'title_label' => $topic_title_label,
 			'title_short' => $topic_title_short,
 		);
 

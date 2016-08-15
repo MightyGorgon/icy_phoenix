@@ -38,7 +38,8 @@ check_page_auth($cms_page['page_id'], $cms_auth_level);
 
 $upload_dir = POSTED_IMAGES_PATH;
 $filetypes = 'jpg,jpeg,gif,png';
-$maxsize = (1024 * 1024);
+$max_file_size_mb = ((!empty($config['img_size_max_mp']) && ($config['img_size_max_mp'] > 0) && ($config['img_size_max_mp'] < 20)) ? intval($config['img_size_max_mp']) : 1);
+$max_file_size = (1024 * 1024) * $config['img_size_max_mp'];
 
 // We need to keep it here... so also error messages will initialize it correctly!
 $gen_simple_header = true;

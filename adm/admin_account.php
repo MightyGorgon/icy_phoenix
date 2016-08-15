@@ -217,7 +217,7 @@ $sql_count = "SELECT COUNT(user_id) AS total_users
 	FROM " . USERS_TABLE . "
 	WHERE user_id <> " . ANONYMOUS . " ";
 
-$sql = "SELECT username, user_id, user_active, user_color, user_actkey, user_regdate, user_email
+$sql = "SELECT username, user_id, user_active, user_color, user_actkey, user_regdate, user_email, user_first_name, user_last_name
 	FROM " . USERS_TABLE . "
 	WHERE user_id <> " . ANONYMOUS . " ";
 
@@ -335,10 +335,14 @@ if($row = $db->sql_fetchrow($result))
 		}
 
 		$i++;
+		$user_full_name = (!empty($row['user_first_name']) ? $row['user_first_name'] : '') . (!empty($row['user_last_name']) ? ((!empty($row['user_first_name']) ? ' ' : '')) . $row['user_last_name'] : '');
 		$template->assign_block_vars('admin_account', array(
 			'ROW_NUMBER' => ($i == '1') ? '1' : ($i + intval($_GET['start'])),
 			'ROW_CLASS' => (!($i % 2)) ? $theme['td_class1'] : $theme['td_class2'],
 			'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
+			'USER_FIRST_NAME' => htmlspecialchars($row['user_first_name']),
+			'USER_LAST_NAME' => htmlspecialchars($row['user_last_name']),
+			'USER_FULL_NAME' => $user_full_name,
 			'EMAIL' => $email,
 			'POSTS' => $total_posts,
 			'JOINED' => create_date($config['default_dateformat'], $row['user_regdate'], $config['board_timezone']),

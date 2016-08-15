@@ -1103,10 +1103,10 @@ function build_index($cur = 'Root', $cat_break = false, &$forum_moderators, $rea
 				}
 				// SMILEYS IN TITLE - END
 
-				$topic_title = (empty($data['title_compl_infos'])) ? $topic_title : $data['title_compl_infos'] . ' ' . $topic_title;
+				$topic_title = (empty($data['topic_label_compiled'])) ? $topic_title : $data['topic_label_compiled'] . ' ' . $topic_title;
 				if (strlen($topic_title) > (intval($config['last_topic_title_length']) - 3))
 				{
-					// remove tags from the short version, in case a smiley or a quick title prefix is in there
+					// remove tags from the short version, in case a smiley or a topic label is in there
 					$topic_title_short = substr(strip_tags($topic_title), 0, intval($config['last_topic_title_length'])) . '...';
 				}
 
@@ -1501,7 +1501,7 @@ function make_cat_nav_tree($cur, $pgm = '', $meta_content = '', $nav_class = 'na
 
 		if (empty($meta_content['forum_id']) || empty($meta_content['topic_title']))
 		{
-			$sql = "SELECT t.forum_id, t.topic_title, t.title_compl_infos
+			$sql = "SELECT t.forum_id, t.topic_title, t.topic_label_compiled
 							FROM " . TOPICS_TABLE . " t" . $sql_from . $sql_where;
 			$result = $db->sql_query($sql);
 
@@ -1509,13 +1509,13 @@ function make_cat_nav_tree($cur, $pgm = '', $meta_content = '', $nav_class = 'na
 			{
 				$meta_content['forum_id'] = $row['forum_id'];
 				$meta_content['topic_title'] = $row['topic_title'];
-				$meta_content['title_compl_infos'] = $row['title_compl_infos'];
+				$meta_content['topic_label_compiled'] = $row['topic_label_compiled'];
 			}
 			$db->sql_freeresult($result);
 		}
 
 		$fcur = POST_FORUM_URL . $meta_content['forum_id'];
-		$topic_title = (empty($meta_content['title_compl_infos']) ? '' : ($meta_content['title_compl_infos'] . ' ')) . $meta_content['topic_title'];
+		$topic_title = (empty($meta_content['topic_label_compiled']) ? '' : ($meta_content['topic_label_compiled'] . ' ')) . $meta_content['topic_title'];
 		$topic_title = censor_text($topic_title);
 	}
 

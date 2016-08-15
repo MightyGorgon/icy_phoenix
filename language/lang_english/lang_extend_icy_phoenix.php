@@ -65,8 +65,8 @@ if ($lang_extend_admin)
 		'IP_cookie_law_explain' => 'By enabling this feature a banner will be shown to guests on site landing to comply with EU cookie law',
 
 // TAB - SITE
-		'IP_mobile_style_disable' => 'Disable Mobile Devices Dectection',
-		'IP_mobile_style_disable_explain' => 'Usually when a mobile device connect to the site, the <b>Mobile</b> style is automatically enabled (it could be manually switched off by each user). If you want to disable this automatic detection, just select this option.',
+		'IP_mobile_style_disable' => 'Disable Mobile Devices Detection',
+		'IP_mobile_style_disable_explain' => 'Usually when a mobile device connects to the site, the <b>Mobile</b> style is automatically enabled (it could be manually switched off by each user). If you want to disable this automatic detection, just select this option.',
 
 // TAB - Icy Phoenix
 		'IP_enable_xs_version_check' => 'Enable Icy Phoenix Version Check',
@@ -363,11 +363,20 @@ if ($lang_extend_admin)
 		'IP_thumbnail_s_size' => 'Images List Thumbnails Size (in pixels, default = 120)',
 		'IP_thumbnail_s_size_explain' => 'Size for pictures in images lists pages',
 
+		'IP_img_size_max_mp' => 'Max Image Upload Size',
+		'IP_img_size_max_mp_explain' => 'Select the maximum allowed upload size for images (in megabytes, default = 1): make sure your server settings will allow such a size to be uploaded',
+		'MB_1' => '1MB',
+		'MB_2' => '2MB',
+		'MB_3' => '3MB',
+		'MB_5' => '5MB',
+		'MB_7' => '7MB',
+
 		'IP_img_list_cols' => 'Images List Columns (default = 4)',
 		'IP_img_list_cols_explain' => 'Number of columns in Images List page',
 
 		'IP_img_list_rows' => 'Images List Rows (default = 5)',
-		'IP_img_list_cols_explain' => 'Number of rows in Images List page',
+		'IP_img_list_rows_explain' => 'Number of rows in Images List page',
+
 
 // TAB - Forum
 		'Lang_extend_categories_hierarchy' => 'Categories Hierarchy',

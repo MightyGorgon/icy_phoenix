@@ -77,6 +77,7 @@ $files_array = array(
 	'adm/admin_forums.php',
 	'adm/admin_lang_extend.php',
 	'adm/admin_mass_email.php',
+	'adm/admin_quick_title.php',
 	'adm/admin_similar_topics.php',
 	'adm/pa_block_config.php',
 
@@ -205,6 +206,8 @@ $files_array = array(
 	'templates/common/acp/lang_extend_key_body.tpl',
 	'templates/common/acp/lang_extend_pack_body.tpl',
 	'templates/common/acp/lang_extend_search_body.tpl',
+	'templates/common/acp/title_edit_body.tpl',
+	'templates/common/acp/title_list_body.tpl',
 	'templates/common/acp/user_email_body.tpl',
 	'templates/common/acp/xs2_header.tpl',
 

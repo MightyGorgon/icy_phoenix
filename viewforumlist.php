@@ -227,7 +227,7 @@ $template->assign_vars(array(
 // End header
 
 $topic_rowset = array();
-$sql = "SELECT t.topic_id, t.forum_id, t.topic_title, t.topic_title_clean, t.title_compl_infos
+$sql = "SELECT t.topic_id, t.forum_id, t.topic_title, t.topic_title_clean, t.topic_label_compiled
 				FROM " . TOPICS_TABLE . " t
 				WHERE t.forum_id = " . $forum_id . "
 					AND t.topic_status <> " . TOPIC_MOVED . "
@@ -258,7 +258,7 @@ if($total_topics)
 		$topic_title = $topic_title_data['title'];
 		$topic_title_clean = $topic_title_data['title_clean'];
 		$topic_title_plain = $topic_title_data['title_plain'];
-		$topic_title_prefix = $topic_title_data['title_prefix'];
+		$topic_title_label = $topic_title_data['title_label'];
 		$topic_title_short = $topic_title_data['title_short'];
 
 		if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))

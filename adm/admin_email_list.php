@@ -44,7 +44,7 @@ $template->assign_vars(array(
 	)
 );
 
-$sql = "SELECT user_id, username, user_active, user_color, user_email FROM " . USERS_TABLE . "
+$sql = "SELECT user_id, username, user_active, user_color, user_email, user_first_name, user_last_name FROM " . USERS_TABLE . "
 				WHERE user_id <> " . ANONYMOUS . "
 				ORDER BY username ASC
 				LIMIT $start, $show";
@@ -56,10 +56,14 @@ while($row = $db->sql_fetchrow($result))
 	$i++;
 	$row_color = (($i % 2) == 0) ? 'row1' : 'row2';
 
+	$user_full_name = (!empty($row['user_first_name']) ? $row['user_first_name'] : '') . (!empty($row['user_last_name']) ? ((!empty($row['user_first_name']) ? ' ' : '')) . $row['user_last_name'] : '');
 	$template->assign_block_vars('userrow', array(
 		'COLOR' => $row_color,
 		'NUMBER' => ($start + $i + 1),
 		'USERNAME' => colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']),
+		'USER_FIRST_NAME' => htmlspecialchars($row['user_first_name']),
+		'USER_LAST_NAME' => htmlspecialchars($row['user_last_name']),
+		'USER_FULL_NAME' => $user_full_name,
 		'U_ADMIN_USER' => append_sid('admin_users.' . PHP_EXT . '?mode=edit&amp;' . POST_USERS_URL . '=' . $row['user_id']),
 		'EMAIL' => $row['user_email']
 		)
