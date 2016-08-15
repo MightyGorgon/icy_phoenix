@@ -84,6 +84,11 @@ if(!empty($remove_id) && !defined('DEMO_MODE'))
 	$sql = "DELETE FROM " . THEMES_TABLE . " WHERE themes_id = '{$remove_id}'";
 	$db->sql_query($sql);
 	$template->assign_block_vars('removed', array());
+
+	// clear cache
+	$db->clear_cache('styles_');
+	$cache->destroy_datafiles(array('_styles'), MAIN_CACHE_FOLDER, 'data', false);
+
 	// remove files
 	if(!empty($remove_dir))
 	{
