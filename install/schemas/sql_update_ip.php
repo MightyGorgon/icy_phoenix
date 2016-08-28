@@ -1368,7 +1368,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "link_config` VALUES ('pm_notify', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "link_config` VALUES ('lock_submit_site', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "link_config` VALUES ('allow_no_logo', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "link_config` VALUES ('site_logo', 'http://www.icyphoenix.com/images/links/web_logo88a.gif')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "link_config` VALUES ('site_logo', 'http://www.icyphoenix.com/images/icy_phoenix_logo.png')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "link_config` VALUES ('site_url', 'http://www.icyphoenix.com/')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "links` VALUES (1, 'phpBB Official Website', 'Official phpBB Website', 4, 'http://www.phpbb.com/', 'images/links/banner_phpbb88a.gif', 1125353670, 1, 0, 2, '', '')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "links` VALUES (2, 'Icy Phoenix Official Website', 'Icy Phoenix', 4, 'http://www.icyphoenix.com/', 'images/links/banner_ip.gif', 1125353670, 1, 0, 2, '', '')";

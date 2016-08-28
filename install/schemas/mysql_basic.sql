@@ -1,10 +1,10 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.2.1.106');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.2.2.107');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
-## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.mightygorgon.com/images/banners/banner_mightygorgon.gif');
-## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.mightygorgon.com/');
+## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.icyphoenix.com/images/icy_phoenix_logo.png');
+## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.icyphoenix.com/');
 
 
 ## `phpbb_acronyms`

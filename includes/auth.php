@@ -451,6 +451,12 @@ function check_auth_level($level_required)
 	$not_auth = false;
 	// Check if the user is REG or a BOT
 	$is_reg = ((!empty($config['bots_reg_auth']) && $user->data['is_bot']) || $user->data['session_logged_in']) ? true : false;
+
+	if ($level_required == AUTH_OWNER)
+	{
+		return (($is_reg && !empty($user->data['user_id_plugin_owner']) && ($user->data['user_id'] == $user->data['user_id_plugin_owner'])) || ($user->data['user_level'] == ADMIN)) ? true : false;
+	}
+
 	$not_auth = (!$not_auth && ($level_required == AUTH_REG) && !$is_reg) ? true : $not_auth;
 	$not_auth = (!$not_auth && ($level_required == AUTH_MOD) && ($user->data['user_level'] != MOD) && ($user->data['user_level'] != ADMIN)) ? true : $not_auth;
 	$not_auth = (!$not_auth && ($level_required == AUTH_ADMIN)) ? true : $not_auth;

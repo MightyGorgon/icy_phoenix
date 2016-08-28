@@ -264,87 +264,92 @@ else
 	// MG SITEMAP - DOWNLOADS - END
 
 	// MG SITEMAP - ALBUM - BEGIN
-	if (isset($cms_config_layouts['album']['view']) && ($cms_config_layouts['album']['view'] == AUTH_ALL))
+	$plugin_name = 'album';
+	if (!empty($config['plugins'][$plugin_name]['enabled']))
 	{
-		// Get general album information
-		include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
-		$album_user_id = ALBUM_PUBLIC_GALLERY;
-		//$album_user_id = ALBUM_ROOT_CATEGORY;
-		$catrows = array ();
-		$options = ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW;
-		$catrows = album_read_tree($album_user_id, $options);
-		album_read_tree($album_user_id);
-		$allowed_cat = ''; // For Recent Public Pics below
-		for ($i = 0; $i < sizeof($catrows); $i++)
+		include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT);
+		if (isset($cms_config_layouts['album']['view']) && ($cms_config_layouts['album']['view'] == AUTH_ALL))
 		{
-			$allowed_cat .= ($allowed_cat == '') ? $catrows[$i]['cat_id'] : ',' . $catrows[$i]['cat_id'];
-		}
-
-		if($config['sitemap_sort'] == 'ASC')
-		{
-			$order = 'DESC';
-		}
-		else
-		{
-			$order = 'ASC';
-		}
-		$sql = "SELECT pic_id FROM " . ALBUM_TABLE . "
-						WHERE pic_cat_id IN (" . $allowed_cat . ")
-						ORDER BY pic_id $order LIMIT 1";
-		$result = $db->sql_query($sql);
-		$result = $db->sql_fetchrow($result);
-		$lastid = $result['pic_id'];
-
-		//only get a limited number of pics per query (default 250) to keep server load down in case of large boards
-		while($lastpic != $lastid)
-		{
-			$result = '';
-			//Newest pics first
-			if(is_numeric($lastpic) && $config['sitemap_sort'] == 'ASC')
+			// Get general album information
+			include(ALBUM_MOD_PATH . 'album_common.' . PHP_EXT);
+			$album_user_id = ALBUM_PUBLIC_GALLERY;
+			//$album_user_id = ALBUM_ROOT_CATEGORY;
+			$catrows = array ();
+			$options = ALBUM_READ_ALL_CATEGORIES|ALBUM_AUTH_VIEW;
+			$catrows = album_read_tree($album_user_id, $options);
+			album_read_tree($album_user_id);
+			$allowed_cat = ''; // For Recent Public Pics below
+			for ($i = 0; $i < sizeof($catrows); $i++)
 			{
-				$lastpic++;
-				$wheresql = "AND p.pic_id >= $lastpic";
+				$allowed_cat .= ($allowed_cat == '') ? $catrows[$i]['cat_id'] : ',' . $catrows[$i]['cat_id'];
 			}
-			//Oldest pics first
-			elseif(is_numeric($lastpic))
+
+			if($config['sitemap_sort'] == 'ASC')
 			{
-				$lastpic--;
-				$wheresql = "AND p.pic_id <= $lastpic";
+				$order = 'DESC';
 			}
 			else
 			{
-				$wheresql = "";
+				$order = 'ASC';
 			}
-
-			$sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_time, p.pic_lock
-							FROM " . ALBUM_TABLE . " AS p
-							WHERE p.pic_cat_id IN (" . $allowed_cat . ") $wheresql
-							ORDER BY p.pic_id " . $config['sitemap_sort'] . "
-							LIMIT " . $config['sitemap_topic_limit'];
+			$sql = "SELECT pic_id FROM " . ALBUM_TABLE . "
+							WHERE pic_cat_id IN (" . $allowed_cat . ")
+							ORDER BY pic_id $order LIMIT 1";
 			$result = $db->sql_query($sql);
+			$result = $db->sql_fetchrow($result);
+			$lastid = $result['pic_id'];
 
-			while ($row = $db->sql_fetchrow($result))
+			//only get a limited number of pics per query (default 250) to keep server load down in case of large boards
+			while($lastpic != $lastid)
 			{
-				$pic_priority = $config['sitemap_default_priority'];
-				$pic_change = 'never';
-				if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
+				$result = '';
+				//Newest pics first
+				if(is_numeric($lastpic) && $config['sitemap_sort'] == 'ASC')
 				{
-					$url = $server_url . str_replace ('--', '-', make_url_friendly($row['pic_title']) . '-asp' . $row['pic_id'] . '.html');
+					$lastpic++;
+					$wheresql = "AND p.pic_id >= $lastpic";
+				}
+				//Oldest pics first
+				elseif(is_numeric($lastpic))
+				{
+					$lastpic--;
+					$wheresql = "AND p.pic_id <= $lastpic";
 				}
 				else
 				{
-					$url = $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'];
+					$wheresql = "";
 				}
-				$xml_sitemap_body .= '
-	<url>
-		<loc>' . $url . '</loc>
-		<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
-		<changefreq>' . $pic_change . '</changefreq>
-		<priority>' . $pic_priority . '</priority>
-	</url>';
-				$lastpic = $row['pic_id'];
+
+				$sql = "SELECT p.pic_id, p.pic_title, p.pic_desc, p.pic_user_id, p.pic_time, p.pic_lock
+								FROM " . ALBUM_TABLE . " AS p
+								WHERE p.pic_cat_id IN (" . $allowed_cat . ") $wheresql
+								ORDER BY p.pic_id " . $config['sitemap_sort'] . "
+								LIMIT " . $config['sitemap_topic_limit'];
+				$result = $db->sql_query($sql);
+
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$pic_priority = $config['sitemap_default_priority'];
+					$pic_change = 'never';
+					if (($config['url_rw'] == '1') || (($config['url_rw_guests'] == '1') && ($user->data['user_id'] == ANONYMOUS)))
+					{
+						$url = $server_url . str_replace ('--', '-', make_url_friendly($row['pic_title']) . '-asp' . $row['pic_id'] . '.html');
+					}
+					else
+					{
+						$url = $server_url . 'album_showpage.' . PHP_EXT . '?pic_id=' . $row['pic_id'];
+					}
+					$xml_sitemap_body .= '
+		<url>
+			<loc>' . $url . '</loc>
+			<lastmod>' . gmdate('Y-m-d\TH:i:s' . '+00:00', $row['pic_time']) . '</lastmod>
+			<changefreq>' . $pic_change . '</changefreq>
+			<priority>' . $pic_priority . '</priority>
+		</url>';
+					$lastpic = $row['pic_id'];
+				}
+				$db->sql_freeresult();
 			}
-			$db->sql_freeresult();
 		}
 	}
 	// MG SITEMAP - ALBUM - END
