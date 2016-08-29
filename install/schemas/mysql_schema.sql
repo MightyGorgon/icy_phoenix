@@ -1646,7 +1646,7 @@ CREATE TABLE `phpbb_topics` (
 	`topic_last_poster_color` VARCHAR(16) NOT NULL DEFAULT '',
 	`topic_moved_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
 	`topic_attachment` TINYINT(1) NOT NULL DEFAULT '0',
-	`topic_label_id` MEDIUMINT(8) NOT NULL DEFAULT '0';
+	`topic_label_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`topic_label_compiled` VARCHAR(255) DEFAULT NULL,
 	`news_id` INT(10) unsigned NOT NULL DEFAULT '0',
 	`topic_calendar_time` INT(11) DEFAULT NULL,
