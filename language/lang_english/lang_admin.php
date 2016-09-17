@@ -2174,6 +2174,9 @@ $lang['210_Help_Desk'] = 'Help Desk'; // admin_helpdesk.php
 $lang['220_Tickets_Emails'] = 'Emails Categories'; // admin_tickets.php
 $lang['230_Language'] = 'Custom Lang Vars'; // admin_lang_user_created.php
 
+// CMS
+$lang['1150_CMS'] = 'CMS'; // cms.php
+
 // Forum
 $lang['1200_Forums'] = 'Forum'; // admin_forum_prune.php, admin_forumauth_list.php, admin_forums.php, admin_forums_extend.php, admin_prune_overview.php, admin_topic_shadow.php
 $lang['100_Manage'] = 'Management'; // admin_forums.php
