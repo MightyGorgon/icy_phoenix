@@ -8,16 +8,16 @@
 	More info at http://naklon.info/rss/about.htm
 -->
 <channel>
-<title>{BOARD_TITLE}</title>
+<title><![CDATA[{BOARD_TITLE}]]></title>
 <link>{BOARD_URL}</link>
-<description>{BOARD_DESCRIPTION}</description>
+<description><![CDATA[{BOARD_DESCRIPTION}]]></description>
 <managingEditor>{BOARD_MANAGING_EDITOR}</managingEditor>
 <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 <generator>{PROGRAM}</generator>{LANGUAGE}
 <lastBuildDate>{BUILD_DATE}</lastBuildDate>
 <image>
 	<url>{BOARD_URL}images/links/banner_ip.gif</url>
-	<title>{BOARD_TITLE}</title>
+	<title><![CDATA[{BOARD_TITLE}]]></title>
 	<link>{BOARD_URL}</link>
 	<width>88</width>
 	<height>31</height>
@@ -37,8 +37,8 @@
 <br /><div class="post-text post-text-hide-flow">{post_item.POST_TEXT}{post_item.USER_SIG}</div><br />
 ]]>
 </description>
-<dc:creator>{post_item.AUTHOR0}</dc:creator>
-<dc:subject>{post_item.FORUM_NAME}</dc:subject>
+<dc:creator><![CDATA[{post_item.AUTHOR0}]]></dc:creator>
+<dc:subject><![CDATA[{post_item.FORUM_NAME}]]></dc:subject>
 <annotate:reference rdf:resource="{post_item.FIRST_POST_URL}" />
 <comments>{post_item.REPLY_URL}</comments>
 </item>
