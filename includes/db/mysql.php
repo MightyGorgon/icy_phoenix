@@ -619,6 +619,11 @@ class sql_db
 			case 'SELECT':
 			case 'SELECT_DISTINCT';
 
+        // flatten the SELECT clause
+        if (is_array($array['SELECT']))
+        {
+          $array['SELECT'] = implode(', ', $array['SELECT']);
+        }
 				$sql = str_replace('_', ' ', $query) . ' ' . $array['SELECT'] . ' FROM ';
 
 				// Build table array. We also build an alias array for later checks.
@@ -692,6 +697,10 @@ class sql_db
 
 				if (!empty($array['WHERE']))
 				{
+          if (is_array($array['WHERE']))
+          {
+            $array['WHERE'] = implode(' AND ', $array['WHERE']);
+          }
 					$sql .= ' WHERE ' . $this->_sql_custom_build('WHERE', $array['WHERE']);
 				}
 

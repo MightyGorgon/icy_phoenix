@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * @package Icy Phoenix
@@ -143,6 +144,22 @@ $min = request_post_var('topic_calendar_min', 0);
 $d_day = request_post_var('topic_calendar_duration_day', 0);
 $d_hour = request_post_var('topic_calendar_duration_hour', 0);
 $d_min = request_post_var('topic_calendar_duration_min', 0);
+
+// this array will hold the plugin-specific variables 
+$extra_vars = array();
+/**
+ * @event posting_post_vars.
+ * @description Allows to read POST data to be used later.
+ * @since 3.0
+ * @var int topic_type The topic type.
+ * @var array extra_vars The extra variables that'll be carried throughout this file.
+ */
+$vars = array(
+  'topic_type',
+  'extra_vars',
+);
+extract($class_plugins->trigger('posting_post_vars', compact($vars)));
+
 if (empty($year) || empty($month) || empty($day))
 {
 	$year = '';
@@ -255,6 +272,7 @@ $read_only_write_auth_required = false;
 switch($mode)
 {
 	case 'newtopic':
+    // TODO: these also need to be checked if ($mode == 'editpost' && $post_data['first_post'])
 		$read_only_write_auth_required = true;
 		if ($topic_type == POST_GLOBAL_ANNOUNCE)
 		{
@@ -367,9 +385,36 @@ switch ($mode)
 		}
 		// MG Cash MOD For IP - END
 
-		$select_sql = (!$submit) ? ', u.username, u.user_id, u.user_sig, u.user_level, u.user_active, u.user_color' : '';
-		$from_sql = (!$submit) ? ", " . USERS_TABLE . " u" : '';
-		$where_sql = (!$submit) ? "AND u.user_id = p.poster_id" : '';
+    $query = array(
+      'SELECT' => array('f.*', 't.*', 'p.*'),
+      'FROM' => array(
+        POSTS_TABLE => 'p',
+        TOPICS_TABLE => 't',
+        FORUMS_TABLE => 'f',
+      ),
+      'WHERE' => array(
+        'p.post_id = ' . $post_id,
+        't.topic_id = p.topic_id',
+        'f.forum_id = p.forum_id',
+      ),
+      'LIMIT' => 1,
+    );
+    if (!$submit)
+    {
+      $query['SELECT'] = array_merge($query['SELECT'], array('u.username', 'u.user_id', 'u.user_sig', 'u.user_level', 'u.user_active', 'u.user_color'));
+      $query['FROM'][USERS_TABLE] = 'u';
+      $query['WHERE'][] = 'u.user_id = p.poster_id';
+    }
+
+    /**
+    * @event before_posting_select.
+    * @description Allows to edit the query to look up the forum / topic / post data.
+    * @since 3.0
+    * @var array query The SQL query parts.
+    */
+    extract($class_plugins->trigger('before_posting_select', compact('query')));
+
+    $sql = $db->sql_build_query('SELECT', $query);
 		// MG Cash MOD For IP - BEGIN
 		if (!empty($config['plugins']['cash']['enabled']))
 		{
@@ -377,14 +422,6 @@ switch ($mode)
 			unset($temp);
 		}
 		// MG Cash MOD For IP - END
-
-		$sql = "SELECT f.*, t.*, p.*" . $select_sql . "
-			FROM " . POSTS_TABLE . " p, " . TOPICS_TABLE . " t, " . FORUMS_TABLE . " f" . $from_sql . "
-			WHERE p.post_id = " . $post_id . "
-				AND t.topic_id = p.topic_id
-				AND f.forum_id = p.forum_id
-				" . $where_sql . "
-			LIMIT 1";
 		break;
 
 	default:
@@ -484,6 +521,18 @@ if ($result && $post_info)
 		$post_data['topic_calendar_duration'] = $post_info['topic_calendar_duration'];
 		$post_data['poster_id'] = $post_info['poster_id'];
 		$post_data['post_images'] = $post_info['post_images'];
+
+    /**
+     * @event posting_post_data.
+     * @description Sets up the post_data from the post_info.
+     * @since 3.0
+     * @var array query The SQL query parts
+     */
+    $vars = array(
+      'post_data',
+      'post_info',
+    );
+    extract($class_plugins->trigger('posting_post_data', compact($vars)));
 
 		if (($config['allow_mods_edit_admin_posts'] == false) && ($post_info['user_level'] == ADMIN) && ($user->data['user_level'] != ADMIN))
 		{
@@ -1332,7 +1381,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					unset($class_topics_tags);
 				}
 
-				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, $username, $subject, $topic_title_clean, $topic_tags, $message, $poll_title, $poll_options, $poll_data, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, $topic_desc, $topic_calendar_time, $topic_calendar_duration);
+				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, $username, $subject, $topic_title_clean, $topic_tags, $message, $poll_title, $poll_options, $poll_data, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, $topic_desc, $topic_calendar_time, $topic_calendar_duration, $extra_vars);
 			}
 			break;
 
@@ -1915,7 +1964,7 @@ if ((($mode == 'editpost') || ($mode == 'reply') || ($mode == 'quote') || ($mode
 $topic_type_toggle = '';
 if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 {
-	if($is_auth['auth_sticky'])
+	if ($is_auth['auth_sticky'])
 	{
 		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . POST_STICKY . '"';
 		if ($post_data['topic_type'] == POST_STICKY || $topic_type == POST_STICKY)
@@ -1925,7 +1974,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 		$topic_type_toggle .= ' /> ' . $lang['Post_Sticky'] . '&nbsp;&nbsp;';
 	}
 
-	if($is_auth['auth_announce'])
+	if ($is_auth['auth_announce'])
 	{
 		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . POST_ANNOUNCE . '"';
 		if ($post_data['topic_type'] == POST_ANNOUNCE || $topic_type == POST_ANNOUNCE)
@@ -1935,7 +1984,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 		$topic_type_toggle .= ' /> ' . $lang['Post_Announcement'] . '&nbsp;&nbsp;';
 	}
 
-	if($is_auth['auth_globalannounce'])
+	if ($is_auth['auth_globalannounce'])
 	{
 		$topic_type_toggle .= '<input type="radio" name="topictype" value="' . POST_GLOBAL_ANNOUNCE . '"';
 		if ($post_data['topic_type'] == POST_GLOBAL_ANNOUNCE || $topic_type == POST_GLOBAL_ANNOUNCE)
@@ -1946,11 +1995,26 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 	}
 
 	if ($topic_type_toggle != '')
-	{
-		$topic_type_toggle = '<input type="radio" name="topictype" value="' . POST_NORMAL .'"' . (($post_data['topic_type'] == POST_NORMAL || $topic_type == POST_NORMAL) ? ' checked="checked"' : '') . ' /> ' . $lang['Post_Normal'] . '&nbsp;&nbsp;' . $topic_type_toggle;
+  {
+    $topic_type_toggle = '<input type="radio" name="topictype" value="' . POST_NORMAL .'"' . (($post_data['topic_type'] == POST_NORMAL || $topic_type == POST_NORMAL) ? ' checked="checked"' : '') . ' /> ' . $lang['Post_Normal'] . '&nbsp;&nbsp;' . $topic_type_toggle;
+
+    /**
+     * @event after_topic_type_toggle.
+     * @description Allows to change the topic type toggle HTML.
+     * @since 3.0
+     * @var string topic_type_toggle The fully-built topic type toggle.
+     * @var string mode The current mode.
+     * @var array post_data The post data.
+     */
+    $vars = array(
+      'topic_type_toggle',
+      'mode',
+      'post_data'
+    );
+    extract($class_plugins->trigger('after_topic_type_toggle', compact($vars)));
+
 		$template->assign_block_vars('switch_type_toggle', array());
 	}
-
 }
 
 // Calendar type selection

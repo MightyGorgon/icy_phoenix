@@ -120,6 +120,10 @@ function get_block_info($blocks_table, $b_id)
 	return $b_info;
 }
 
+define('CMS_FIELD_TEXTBOX', '1');
+define('CMS_FIELD_DROPDOWN', '2');
+define('CMS_FIELD_RADIO', '3');
+define('CMS_FIELD_CHECKBOX', '4');
 /*
 * Create CMS field
 */
@@ -140,8 +144,28 @@ function create_cms_field($config_array)
 	$cms_field[$config_array['config_name']]['type'] = $config_array['type'];
 	$cms_field[$config_array['config_name']]['block'] = str_replace('_', ' ', $config_array['block']);
 
-	$cms_field[$config_array['config_name']]['label'] = $lang['cms_var_' . $config_array['config_name']];
-	$cms_field[$config_array['config_name']]['sub_label'] = $lang['cms_var_' . $config_array['config_name'] . '_explain'];
+  // if no label was given, guess from the config_name
+  if (empty($config_array['label']))
+  {
+    $cms_field[$config_array['config_name']]['label'] = $lang['cms_var_' . $config_array['config_name']];
+  }
+  // if a label was given, and it's a lang key, use it
+  else if (isset($lang[$config_array['label']]))
+  {
+    $cms_field[$config_array['config_name']]['label'] = $lang[$config_array['label']];
+  }
+
+  // if no sub_label was given, guess from the config_name
+  if (empty($config_array['sub_label']))
+  {
+    $cms_field[$config_array['config_name']]['sub_label'] = $lang['cms_var_' . $config_array['config_name'] . '_explain'];
+  }
+  // if a sub_label was given, and it's a lang key, use it
+  else if (isset($lang[$config_array['sub_label']]))
+  {
+    $cms_field[$config_array['config_name']]['sub_label'] = $lang[$config_array['sub_label']];
+  }
+
 	if($cms_field[$config_array['config_name']]['name'] == 'default_portal')
 	{
 		$default_layout = array();
@@ -156,10 +180,10 @@ function create_cms_field($config_array)
 
 	switch($cms_field[$config_array['config_name']]['type'])
 	{
-		case '1':
+		case CMS_FIELD_TEXTBOX:
 			$cms_field[$config_array['config_name']]['output'] = '<input type="text" maxlength="255" size="40" name="' . $cms_field[$config_array['config_name']]['name'] . '" value="' . $cms_field[$config_array['config_name']]['value'] . '" class="post" />';
 			break;
-		case '2':
+		case CMS_FIELD_DROPDOWN:
 			$options = explode(",", $cms_field[$config_array['config_name']]['field_options']);
 			$values = explode(",", $cms_field[$config_array['config_name']]['field_values']);
 			$cms_field[$config_array['config_name']]['output'] = '<select name = "' . $cms_field[$config_array['config_name']]['name'] . '">';
@@ -175,7 +199,7 @@ function create_cms_field($config_array)
 			}
 			$cms_field[$config_array['config_name']]['output'] .= '</select>';
 			break;
-		case '3':
+		case CMS_FIELD_RADIO:
 			$options = explode("," , $cms_field[$config_array['config_name']]['field_options']);
 			$values = explode("," , $cms_field[$config_array['config_name']]['field_values']);
 			$cms_field[$config_array['config_name']]['output'] = '';
@@ -190,7 +214,7 @@ function create_cms_field($config_array)
 				$i++;
 			}
 			break;
-		case '4':
+		case CMS_FIELD_CHECKBOX:
 			$checked = ($cms_field[$config_array['config_name']]['value']) ? 'checked="checked"' : '';
 			$cms_field[$config_array['config_name']]['output'] = '<input type="checkbox" name="' . $cms_field[$config_array['config_name']]['name'] . '" ' . $checked . ' />';
 			break;
@@ -215,7 +239,7 @@ function create_cms_field_tpl($config_array, $check_save = false)
 
 	$default_portal[$cms_field[$config_name_tmp]['name']] = $cms_field[$config_name_tmp]['value'];
 
-	if($cms_field[$config_name_tmp]['type'] == '4')
+	if($cms_field[$config_name_tmp]['type'] == CMS_FIELD_CHECKBOX)
 	{
 		$new[$cms_field[$config_name_tmp]['name']] = (isset($_POST[$cms_field[$config_name_tmp]['name']])) ? '1' : '0';
 	}

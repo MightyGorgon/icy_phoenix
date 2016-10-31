@@ -1,15 +1,5 @@
 <!-- INCLUDE overall_header.tpl -->
 
-<script type="text/javascript">
-// <![CDATA[
-function initSitemap() {
-	sitemap('h2', 'ul');
-}
-function initReadPrefs() {
-	readPrefs('h2');
-}
-// ]]>
-</script>
 <script type="text/javascript" src="{T_COMMON_TPL_PATH}js/sitemap.js"></script>
 {IMG_THL}{IMG_THC}<span class="forumlink">{L_FAQ_TITLE}</span>{IMG_THR}<table class="forumlinenb">
 <tr>
