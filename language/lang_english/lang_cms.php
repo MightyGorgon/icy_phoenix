@@ -778,4 +778,13 @@ $lang = array_merge($lang, array(
 	)
 );
 
+$lang['100_CMS_CUSTOM_PAGES'] = $lang['CMS_CUSTOM_PAGES'];
+$lang['110_CMS_STANDARD_PAGES'] = $lang['CMS_STANDARD_PAGES'];
+$lang['120_CMS_BLOCK_SETTINGS'] = $lang['CMS_BLOCK_SETTINGS'];
+$lang['130_CMS_GLOBAL_BLOCKS'] = $lang['CMS_GLOBAL_BLOCKS'];
+$lang['140_CMS_AUTH'] = $lang['CMS_AUTH'];
+$lang['150_CMS_CONFIG'] = $lang['CMS_CONFIG'];
+$lang['160_CMS_MENU_PAGE'] = $lang['CMS_MENU_PAGE'];
+$lang['170_CMS_ADS'] = $lang['CMS_ADS'];
+
 ?>
