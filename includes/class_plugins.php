@@ -26,12 +26,13 @@ class class_plugins
 	var $plugins_path = '';
 	var $plugins_settings_path = '';
 
-	var $plugin_includes_array = array('constants', 'common', 'functions');
+	var $plugin_includes_array = array('constants', 'common', 'functions', 'class');
 
 	var $config = array();
 	var $settings = array();
 	var $modules = array();
 	var $list_yes_no = array('Yes' => 1, 'No' => 0);
+  var $registered_plugins = array();
 
 	/**
 	* Instantiate class
@@ -279,10 +280,10 @@ class class_plugins
 				break;
 		}
 
-			if (is_dir($plugin_lang_path))
-			{
-				setup_extra_lang($filenames, $plugin_lang_path);
-			}
+    if (is_dir($plugin_lang_path))
+    {
+      setup_extra_lang($filenames, $plugin_lang_path);
+    }
 		return true;
 	}
 
@@ -403,7 +404,7 @@ class class_plugins
 		$result = $db->sql_query($sql);
 
 		$plugin_info = array();
-		while ($row = $db->sql_fetchrow($result))
+		if ($row = $db->sql_fetchrow($result))
 		{
 			$plugin_info = $row;
 		}
@@ -765,6 +766,35 @@ class class_plugins
 
 		return true;
 	}
+
+  /**
+  * Registers a plugin.
+  */
+  function register($plugin_name, $plugin_class)
+  {
+    $this->registered_plugins[$plugin_name] = $plugin_class;
+    $plugin_class->setup($this);
+  }
+
+  /**
+  * Triggers a plugin event.
+  */
+  function trigger($event_name, array $vars)
+  {
+    foreach ($this->registered_plugins as $k => $plugin_class)
+    {
+      if (in_array($event_name, $plugin_class->events))
+      {
+        $return = $plugin_class->{'event_' . $event_name}($vars);
+        // if the function didn't return null, use the new vars provided.
+        if ($return)
+        {
+          $vars = $return;
+        }
+      }
+    }
+    return $vars;
+  }
 
 }
 

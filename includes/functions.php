@@ -2390,10 +2390,11 @@ function send_status_line($code, $message)
 */
 function setup_basic_lang()
 {
-	global $cache, $config, $lang;
+	global $cache, $config, $lang, $class_plugins;
 
 	if (empty($lang))
 	{
+    $setup = true;
 		if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main.' . PHP_EXT))
 		{
 			$config['default_lang'] = 'english';
@@ -2452,6 +2453,14 @@ function setup_basic_lang()
 				die('Language file ' . IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/' . $lang_file . '.' . PHP_EXT . ' couldn\'t be opened.');
 			}
 		}
+
+    foreach ($config['plugins'] as $k => $plugin)
+    {
+      if ($plugin['enabled'])
+      {
+        $class_plugins->setup_lang($plugin['dir']);
+      }
+    }
 	}
 	return true;
 }
