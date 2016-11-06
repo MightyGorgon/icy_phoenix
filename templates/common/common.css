@@ -170,7 +170,7 @@ hr.dashed { border-top: 1px dashed #cccccc; margin: 10px 0; }
 /* MAIN SELECTORS - END */
 
 /* VARIOUS SELECTORS - BEGIN */
-#acp, #forumtable, p, td, th { /*font-size: 1.1em;*/ font-size: 11px; }
+#acp, #forumtable, p, td, th { /*font-size: 1.1em;*/ width: auto; text-align: left; font-size: 11px; }
 #forumtable { width: 100%; margin: 0; padding: 0; }
 #forumtable p { margin: 0; text-align: left; }
 #content { padding: 2px 7px 5px 7px; text-align: center; }
