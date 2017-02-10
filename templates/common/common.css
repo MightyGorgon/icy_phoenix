@@ -27,7 +27,7 @@ img, .forumline img, .forumlinenb img { border: none; }
 /* HTML 5.0 TABLES - BEGIN */
 /* TABLES RESET */
 table { width: 100%; border: none; /*border-collapse: collapse;*/ border-spacing: 0; }
-td { width: auto; text-align: left; vertical-align: top; }
+td { vertical-align: top; }
 th { width: auto; text-align: center; vertical-align: middle; }
 
 /* Table Spacing */
