@@ -51,16 +51,9 @@ class FacebookConnect extends SocialConnect
 		$confirm = request_get_var('confirm', 0);
 		if ($confirm != 1 || $force_retry)
 		{
-			// Build the social network return url
-			$current_page = extract_current_page(IP_ROOT_PATH);
-			$return_url = ((!empty($_SERVER['HTTPS'])) ? 'https' : 'http') . '://';
-			$return_url .= extract_current_hostname() . $current_page['script_path'] . $current_page['page'];
-			$return_url .= (strpos($return_url, '?') ? '&' : '?') . 'redirect=' . $redirect . '&confirm=1';
-			$return_url .= (!empty($_GET['admin'])) ? '&admin=1' : '';
-
 			$params = array(
 				'scope' => $this->scope,
-				'redirect_uri' => $return_url,
+				'redirect_uri' => $this->get_redirect_url($redirect),
 			);
 
 			$login_url = $this->client->getLoginUrl($params);
@@ -81,10 +74,10 @@ class FacebookConnect extends SocialConnect
 			catch (OAuthException $e)
 			{
 				// Retry on failure
-				return $this->do_login(true);
+				return $this->do_login($redirect, true);
 			}
 
-			return $this->retrieve_user_id($user_fb_data['id']);
+			return $this->retrieve_user_basic_data($user_fb_data['id']);
 		}
 	}
 
@@ -100,8 +93,7 @@ class FacebookConnect extends SocialConnect
 		if ($db->sql_numrows($result) > 0)
 		{
 			// User is registered
-			$user_data = $db->sql_fetchrow($result);
-			return $user_data;
+			return $db->sql_fetchrow($result);
 		}
 		else
 		{
@@ -123,7 +115,6 @@ class FacebookConnect extends SocialConnect
 		catch (Exception $e)
 		{
 			// If user isn't logged in on facebook, then log him in and retry!
-			//$this->do_login(true);die();
 			$this->do_login(true);
 			return $this->get_user_data();
 		}

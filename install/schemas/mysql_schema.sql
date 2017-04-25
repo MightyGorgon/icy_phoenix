@@ -1825,6 +1825,7 @@ CREATE TABLE `phpbb_users` (
 	`user_email` VARCHAR(255) DEFAULT NULL,
 	`user_email_hash` BIGINT(20) DEFAULT '0' NOT NULL,
 	`user_facebook_id` VARCHAR(40) NOT NULL DEFAULT '',
+	`user_google_id` VARCHAR(40) NOT NULL DEFAULT '',
 	`user_website` VARCHAR(255) DEFAULT NULL,
 	`user_ip` VARCHAR(40) DEFAULT '' NOT NULL,
 	`user_first_name` VARCHAR(255) NOT NULL DEFAULT '',

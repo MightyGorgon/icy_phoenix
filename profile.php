@@ -52,6 +52,20 @@ $meta_content['keywords'] = '';
 $server_url = create_server_url();
 $profile_server_url = $server_url . CMS_PAGE_PROFILE;
 
+if ($config['enable_social_connect'])
+{
+	include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
+	$available_networks = SocialConnect::get_available_networks();
+
+	// Intercept oauth2 authentication requests.
+	// They can't forward query parameters, so we fake them here
+	$social_network = isset($_SESSION['login_social_network']) ? $_SESSION['login_social_network'] : '';
+	if (!empty($social_network) && !empty($available_networks[$social_network]))
+	{
+		$available_networks[$social_network]->shim_register_request();
+	}
+}
+
 $sid = request_var('sid', '');
 $mode = request_var('mode', '');
 
