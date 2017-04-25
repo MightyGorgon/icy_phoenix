@@ -423,6 +423,7 @@ function jr_admin_get_user_info($user_id)
 {
 	global $lang;
 	//Do the query and get the results, return the user row as well.
+	$user_id = (int) intval($user_id);
 	return (
 	sql_query_nivisec(
 	"SELECT * FROM " . JR_ADMIN_TABLE . "

@@ -527,7 +527,7 @@ else
 				</td>
 				<td class="tdalignc tdnw"><br />&nbsp;</td>
 				<td nowrap="nowrap" width="45%" align="right">
-					<span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span>
+					<span class="copyright">Design by <a href="http://www.lucalibralato.com/" target="_blank">Luca Libralato</a>&nbsp;</span>
 				</td>
 			</tr>
 		</table>

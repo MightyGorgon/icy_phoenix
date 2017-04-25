@@ -433,9 +433,10 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 			if((isset($_GET[POST_GROUPS_URL]) || isset($_POST[POST_GROUPS_URL])))
 			{
 				// both the POST and the GET POST_GROUPS_URL var should be set
-				$_tmp1 = (isset($_GET[POST_GROUPS_URL])) ? intval($_GET[POST_GROUPS_URL]) : intval($_POST[POST_GROUPS_URL]);
+				$_tmp1 = isset($_GET[POST_GROUPS_URL]) ? intval($_GET[POST_GROUPS_URL]) : intval($_POST[POST_GROUPS_URL]);
 			}
-			if($_tmp1 > 0){
+			if($_tmp1 > 0)
+			{
 				// Only log if we actually have a group_id
 				if(isset($_POST['joingroup']))
 				{
@@ -510,9 +511,9 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 				}
 			}
 			break;
-		/*
 		case CMS_PAGE_PROFILE:
-			if($_mode == 'register' && isset($_POST['agreed']) && $_prot == 'POST')
+			/*
+			if(($_mode == 'register') && isset($_POST['agreed']) && ($_prot == 'POST'))
 			{
 				if(!empty($_POST['username']) && !empty($_POST['website']))
 				{
@@ -525,8 +526,49 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					$update_log = true;
 				}
 			}
+			*/
+			// Adding users into groups from profile page
+			if((isset($_GET[POST_GROUPS_URL]) || isset($_POST[POST_GROUPS_URL])))
+			{
+				// both the POST and the GET POST_GROUPS_URL var should be set
+				$_tmp1 = isset($_GET[POST_GROUPS_URL]) ? intval($_GET[POST_GROUPS_URL]) : intval($_POST[POST_GROUPS_URL]);
+			}
+			if((isset($_GET[POST_USERS_URL]) || isset($_POST[POST_USERS_URL])))
+			{
+				// both the POST and the GET POST_USERS_URL var should be set
+				$_tmp2 = isset($_GET[POST_USERS_URL]) ? intval($_GET[POST_USERS_URL]) : intval($_POST[POST_USERS_URL]);
+			}
+			// Only log if we actually have both user_id and group_id
+			if(($_tmp1 > 0) && ($_tmp2 > 0))
+			{
+				if(isset($_POST['ug_add']))
+				{
+					$content .= '[Group Add: ' . $_tmp1 . ' ==> ' . $_tmp2 . ']';
+					if ($db_log_actions == true)
+					{
+						$db_log = array(
+							'action' => 'GROUP_ADD',
+							'desc' => $_tmp1,
+							'target' => $_tmp2,
+						);
+					}
+					$update_log = true;
+				}
+				elseif (isset($_POST['ug_rem']))
+				{
+					$content .= '[Group Edit: ' . $_tmp1 . ' ==> ' . $_tmp2 . ']';
+					if ($db_log_actions == true)
+					{
+						$db_log = array(
+							'action' => 'GROUP_EDIT',
+							'desc' => $_tmp1,
+							'target' => $_tmp2,
+						);
+					}
+					$update_log = true;
+				}
+			}
 			break;
-		*/
 		case 'modcp.' . PHP_EXT:
 			if(($_mode == 'move') || ($_mode == 'delete') || ($_mode == 'lock') || ($_mode == 'unlock') || ($_mode == 'merge') || ($_mode == 'recycle'))
 			{

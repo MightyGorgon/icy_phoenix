@@ -316,49 +316,47 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 		// Event Registration - END
 
-    $query = array(
-      'topic_title' => $post_subject,
-      'topic_desc' => $topic_desc,
-      'news_id' => $news_id,
-      'topic_tags' => $topic_tags,
-      'topic_type' => $topic_type,
-      'topic_calendar_time' => $topic_calendar_time,
-      'topic_calendar_duration' => $topic_calendar_duration,
-      'topic_reg' => $topic_reg,
-      'topic_show_portal' => $topic_show_portal,
-    );
-    if ($mode != 'editpost')
-    {
-      $query = array_merge($query, array(
-        'topic_poster' => $user->data['user_id'],
-        'topic_time' => $current_time,
-        'forum_id' => $forum_id,
-        'topic_status' => TOPIC_UNLOCKED,
-      ));
-    }
-
-    /**
-     * @event submit_post_query_insert_or_update_first.
-     * @description Add/remove parts from the SQL query to create a new topic, or update the first post of an already existing topic.
-     * @since 3.0
-     * @var array query The SQL insert/update query parts.
-     * @var mixed {...signature} All the variables from submit_post's signature are passed through.
-     */
-    $vars = array(
-      'query',
-      'mode', 'post_data', 'message', 'meta', 'forum_id', 'topic_id', 'post_id', 'topic_type', 'bbcode_on', 'html_on', 'acro_auto_on', 'smilies_on', 'attach_sig', 'post_username', 'post_subject', 'topic_title_clean', 'topic_tags', 'post_message', 'poll_title', 'poll_options', 'poll_data', 'reg_active', 'reg_reset', 'reg_max_option1', 'reg_max_option2', 'reg_max_option3', 'reg_length', 'news_category', 'topic_show_portal', 'mark_edit', 'topic_desc', 'topic_calendar_time', 'topic_calendar_duration', 'extra_vars',
-    );
-    extract($class_plugins->trigger('submit_post_query_insert_or_update_first', compact($vars)));
-
-    $sql = $db->sql_build_insert_update($query, $mode != 'editpost');
-    if ($mode == 'newtopic')
-    {
-      $sql = "INSERT INTO " . TOPICS_TABLE . " " . $sql;
-    }
-    else
-    {
-      $sql = "UPDATE " . TOPICS_TABLE . " SET $sql WHERE topic_id = $topic_id";
-    }
+		$query = array(
+			'topic_title' => $post_subject,
+			'topic_desc' => $topic_desc,
+			'news_id' => $news_id,
+			'topic_tags' => $topic_tags,
+			'topic_type' => $topic_type,
+			'topic_calendar_time' => $topic_calendar_time,
+			'topic_calendar_duration' => $topic_calendar_duration,
+			'topic_reg' => $topic_reg,
+			'topic_show_portal' => $topic_show_portal,
+		);
+		if ($mode != 'editpost')
+		{
+			$query = array_merge($query, array(
+				'topic_poster' => $user->data['user_id'],
+				'topic_time' => $current_time,
+				'forum_id' => $forum_id,
+				'topic_status' => TOPIC_UNLOCKED,
+				)
+			);
+		}
+		
+		/**
+		 * @event submit_post_query_insert_or_update_first.
+		 * @description Add/remove parts from the SQL query to create a new topic, or update the first post of an already existing topic.
+		 * @since 3.0
+		 * @var array query The SQL insert/update query parts.
+		 * @var mixed {...signature} All the variables from submit_post's signature are passed through.
+		 */
+		$vars = array('query', 'mode', 'post_data', 'message', 'meta', 'forum_id', 'topic_id', 'post_id', 'topic_type', 'bbcode_on', 'html_on', 'acro_auto_on', 'smilies_on', 'attach_sig', 'post_username', 'post_subject', 'topic_title_clean', 'topic_tags', 'post_message', 'poll_title', 'poll_options', 'poll_data', 'reg_active', 'reg_reset', 'reg_max_option1', 'reg_max_option2', 'reg_max_option3', 'reg_length', 'news_category', 'topic_show_portal', 'mark_edit', 'topic_desc', 'topic_calendar_time', 'topic_calendar_duration', 'extra_vars');
+		extract($class_plugins->trigger('submit_post_query_insert_or_update_first', compact($vars)));
+		
+		$sql = $db->sql_build_insert_update($query, $mode != 'editpost');
+		if ($mode == 'newtopic')
+		{
+			$sql = "INSERT INTO " . TOPICS_TABLE . " " . $sql;
+		}
+		else
+		{
+			$sql = "UPDATE " . TOPICS_TABLE . " SET $sql WHERE topic_id = $topic_id";
+		}
 
 		$db->sql_query($sql);
 
@@ -759,12 +757,12 @@ function generate_smilies($mode)
 
 			$server_protocol = !empty($config['cookie_secure']) ? 'https://' : 'http://';
 			$host = extract_current_hostname();
-      $url = $server_protocol . $host;
-      if (!empty($config['server_port']) && $config['server_port'] != 80)
-      {
-        $url .= ':' . $config['server_port'];
-      }
-      $url .= $config['script_path'];
+			$url = $server_protocol . $host;
+			if (!empty($config['server_port']) && $config['server_port'] != 80)
+			{
+				$url .= ':' . $config['server_port'];
+			}
+			$url .= $config['script_path'];
 
 			for($i = $smiley_start; $i < $smiley_stop; $i++)
 			{

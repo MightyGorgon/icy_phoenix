@@ -186,6 +186,9 @@
 				<!-- IF postrow.S_USER_ALBUM -->
 				<a href="{postrow.U_USER_ALBUM}"><img class="{IMG_BUTTON_CLASS_MB}" src="{postrow.IMG_USER_ALBUM}" alt="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" title="{postrow.L_S_USER_ALBUM}: {postrow.POSTER_NAME_QQ}" /></a>&nbsp;
 				<!-- ENDIF -->
+				<!-- IF not postrow.S_THIS_POSTER_MASK -->
+				<!-- IF postrow.IMG_SOCIAL_500PX -->{postrow.IMG_SOCIAL_500PX} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_AIM -->{postrow.IMG_SOCIAL_AIM} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_FACEBOOK -->{postrow.IMG_SOCIAL_FACEBOOK} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_FLICKR -->{postrow.IMG_SOCIAL_FLICKR} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_GITHUB -->{postrow.IMG_SOCIAL_GITHUB} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_GOOGLEPLUS -->{postrow.IMG_SOCIAL_GOOGLEPLUS} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_ICQ -->{postrow.IMG_SOCIAL_ICQ} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_INSTAGRAM -->{postrow.IMG_SOCIAL_INSTAGRAM} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_JABBER -->{postrow.IMG_SOCIAL_JABBER} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_LINKEDIN -->{postrow.IMG_SOCIAL_LINKEDIN} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_MSN -->{postrow.IMG_SOCIAL_MSN} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_PINTEREST -->{postrow.IMG_SOCIAL_PINTEREST} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_SKYPE -->{postrow.IMG_SOCIAL_SKYPE} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_TWITTER -->{postrow.IMG_SOCIAL_TWITTER} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_VIMEO -->{postrow.IMG_SOCIAL_VIMEO} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_YAHOO -->{postrow.IMG_SOCIAL_YAHOO} <!-- ENDIF --><!-- IF postrow.IMG_SOCIAL_YOUTUBE -->{postrow.IMG_SOCIAL_YOUTUBE} <!-- ENDIF -->
+				<!-- ENDIF -->
 			</div>
 			<!-- IF not S_BOT and not postrow.S_THIS_POSTER_MASK -->
 			<!-- BEGIN switch_quick_quote -->

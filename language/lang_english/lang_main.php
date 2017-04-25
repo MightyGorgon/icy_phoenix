@@ -134,6 +134,7 @@ $lang = array_merge($lang, array(
 	'GO' => 'Go',
 	'JUMP_TO' => 'Jump to',
 	'SUBMIT' => 'Submit',
+	'UPDATE' => 'Update',
 	'RESET' => 'Reset',
 	'CANCEL' => 'Cancel',
 	'PREVIEW' => 'Preview',
@@ -2289,8 +2290,6 @@ $lang = array_merge($lang, array(
 	'WEBSITE' => 'Website',
 	'EDIT' => 'Edit',
 	'DELETE' => 'Delete',
-	'YES' => 'Yes',
-	'NO' => 'No',
 
 	'DB_ITEM_VIEW' => 'View Item',
 	'DB_ITEM_UPDATED' => 'Item updated successfully',
@@ -2521,8 +2520,6 @@ $lang = array_merge($lang, array(
 );
 
 /*Special Cases, Do not bother to change for another language */
-$lang['YES'] = $lang['Yes'];
-$lang['NO'] = $lang['No'];
 $lang['HL_File_Error'] = $lang['Error_File_Opening'];
 
 $lang['Prune_commands'] = array();

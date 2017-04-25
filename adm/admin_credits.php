@@ -272,6 +272,6 @@ if (file_exists(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT) && !DISABLE_V
 
 $template->pparse('body');
 copyright_nivisec($lang['Hacks_List'], '2003');
-include('page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

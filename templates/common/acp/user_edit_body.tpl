@@ -536,6 +536,10 @@ function ColorExample(ColorCode)
 	<td class="row2"><input type="radio" name="user_mask" value="1" {USER_MASK_YES} /><span class="gen">{L_YES}</span>&nbsp;&nbsp;<input type="radio" name="user_mask" value="0" {USER_MASK_NO} /><span class="gen">{L_NO}</span></td>
 </tr>
 <tr>
+	<td class="row1"><span class="gen">{L_FAILED_LOGINS_COUNTER}</span></td>
+	<td class="row2"><input type="text" class="post" style="width: 40px;" name="user_login_attempts" size="4" maxlength="4" value="{FAILED_LOGINS_COUNTER_VALUE}" /></td>
+</tr>
+<tr>
 	<td class="row1"><span class="gen"><strong><i>{L_DELETE_USER}</i></strong></span></td>
 	<td class="row2"><input type="checkbox" name="deleteuser" />&nbsp;{L_DELETE_USER_EXPLAIN}</td>
 </tr>

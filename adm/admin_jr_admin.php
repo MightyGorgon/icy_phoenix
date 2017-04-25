@@ -91,6 +91,7 @@ if (sizeof($_POST))
 		if (preg_match("/^edit_user_/", $key))
 		{
 			$user_id = str_replace('edit_user_', '', $key);
+			$user_id = (int) intval($user_id);
 		}
 	}
 }

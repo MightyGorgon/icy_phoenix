@@ -46,7 +46,7 @@
 		<tr><th>{L_ASSIGNED_USERS} - {L_UPLOAD_QUOTA}</th></tr>
 		<tr>
 			<td class="row1 row-center">
-				<select style="width:99%" name="entries[]" multiple="multiple" size="5">
+				<select style="width:99%" name="entries[]" multiple="multiple" size="5" style="min-height: 200px;">
 <!-- END switch_quota_limit_desc -->
 				<!-- BEGIN users_upload_row -->
 				<option value="{users_upload_row.USER_ID}">{users_upload_row.USERNAME}</option>
@@ -63,7 +63,7 @@
 		<tr><th>{L_ASSIGNED_GROUPS} - {L_UPLOAD_QUOTA}</th></tr>
 		<tr>
 			<td class="row1 row-center">
-			<select style="width:99%" name="entries[]" multiple="multiple" size="5">
+			<select style="width:99%" name="entries[]" multiple="multiple" size="5" style="min-height: 200px;">
 <!-- END switch_quota_limit_desc -->
 			<!-- BEGIN groups_upload_row -->
 			<option value="{groups_upload_row.GROUP_ID}">{groups_upload_row.GROUPNAME}</option>
@@ -86,7 +86,7 @@
 		<tr><th>{L_ASSIGNED_USERS} - {L_PM_QUOTA}</th></tr>
 		<tr>
 			<td class="row1 row-center">
-				<select style="width:99%" name="entries[]" multiple="multiple" size="5">
+				<select style="width:99%" name="entries[]" multiple="multiple" size="5" style="min-height: 200px;">
 <!-- END switch_quota_limit_desc -->
 				<!-- BEGIN users_pm_row -->
 				<option value="{users_pm_row.USER_ID}">{users_pm_row.USERNAME}</option>
@@ -105,7 +105,7 @@
 		<tr><th>{L_ASSIGNED_GROUPS} - {L_PM_QUOTA}</th></tr>
 		<tr>
 			<td class="row1 row-center">
-			<select style="width:99%" name="entries[]" multiple="multiple" size="5">
+			<select style="width:99%" name="entries[]" multiple="multiple" size="5" style="min-height: 200px;">
 <!-- END switch_quota_limit_desc -->
 			<!-- BEGIN groups_pm_row -->
 			<option value="{groups_pm_row.GROUP_ID}">{groups_pm_row.GROUPNAME}</option>

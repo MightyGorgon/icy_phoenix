@@ -48,10 +48,12 @@ define('MOD_VERSION', '2.13');
 define('MOD_CODE', 2);
 define('MOD_COOKIE_PREF_NAME', 'nivisec_phpbb2_mod_preferences');
 
-/*******************************************************************************************
-/** Get parameters.  'var_name' => 'default_value'
-/** Also get any saved cookie preferences.
-/******************************************************************************************/
+/*
+******************************************************************************************
+* Get parameters.  'var_name' => 'default_value'
+* Also get any saved cookie preferences.
+******************************************************************************************
+*/
 $preference_cookie = (isset($_COOKIE[$config['cookie_name'] . '_' . MOD_COOKIE_PREF_NAME])) ? unserialize(stripslashes($_COOKIE[$config['cookie_name'] . '_' . MOD_COOKIE_PREF_NAME])) : array();
 $preference_cookie['test'] = true;
 $params = array(
@@ -74,9 +76,11 @@ foreach($params as $var => $default)
 		$$var = $preference_cookie[MOD_CODE . "_$var"];
 	}
 }
-/****************************************************************************
-/** Includes and cookie settings (with output buffering)
-/***************************************************************************/
+/*
+***************************************************************************
+* Includes and cookie settings (with output buffering)
+***************************************************************************
+*/
 /* Make a new output buffer for this page in order to not screw up cookie
 setting.  If this is disabled, settings will NEVER be saved */
 if(!DISABLE_PREFERENCE_SAVING && !$config['gzip_compress']) ob_start();
@@ -87,17 +91,23 @@ $user->set_cookie(MOD_COOKIE_PREF_NAME, serialize($preference_cookie), $user->co
 removed, this one must be removed as well or strange things will happen */
 if(!DISABLE_PREFERENCE_SAVING && !$config['gzip_compress']) ob_end_flush();
 
-/****************************************************************************
-/** Constants and Main Vars.
-/***************************************************************************/
+/*
+***************************************************************************
+* Constants and Main Vars.
+***************************************************************************
+*/
 $mode_types = array('topic_time', 'topic_title');
+$mode = in_array($mode, $mode_types) ? $mode : $mode_types[0];
 $order_types = array('DESC', 'ASC');
+$order = in_array($order, $order_types) ? $order : $order_types[0];
 $meta_content['page_title'] = $lang['Topic_Shadow'];
 $status_message = '';
 
-/*******************************************************************************************
-/** Check for deletion items
-/******************************************************************************************/
+/*
+******************************************************************************************
+* Check for deletion items
+/*****************************************************************************************
+*/
 if ($delete_all_before_date)
 {
 	/* Error Checking */
@@ -158,9 +168,12 @@ else
 		}
 	}
 }
-/*******************************************************************************************
-/** Main Page
-/******************************************************************************************/
+
+/*
+******************************************************************************************
+* Main Page
+******************************************************************************************
+*/
 
 $template->set_filenames(array('body' => ADM_TPL . 'admin_topic_shadow.tpl'));
 
@@ -218,7 +231,7 @@ else
 
 	$sql = "SELECT * FROM " . TOPICS_TABLE . "
 					WHERE topic_status = " . TOPIC_MOVED . "
-					ORDER BY $mode $order";
+					ORDER BY " . $db->sql_escape($mode) . " " . $db->sql_escape($order);
 	$result = $db->sql_query($sql);
 
 	$i = 0;
@@ -238,16 +251,21 @@ else
 	}
 }
 
-/************************************************************************
-** Begin The Version Check Feature
-************************************************************************/
+/*
+***********************************************************************
+* Begin The Version Check Feature
+***********************************************************************
+*/
 if (file_exists(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT) && !DISABLE_VERSION_CHECK)
 {
 	include(IP_ROOT_PATH . 'nivisec_version_check.' . PHP_EXT);
 }
-/************************************************************************
-** End The Version Check Feature
-************************************************************************/
+
+/*
+***********************************************************************
+* End The Version Check Feature
+***********************************************************************
+*/
 
 $template->pparse('body');
 copyright_nivisec($meta_content['page_title'], '2001-2003');

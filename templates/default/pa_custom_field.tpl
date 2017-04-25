@@ -40,7 +40,7 @@
 <tr>
 	<td class="row1"><span class="genmed">{select_multiple.FIELD_NAME}</span><br /><span class="gensmall">{select_multiple.FIELD_DESCRIPTION}</span></td>
 	<td class="row2">
-		<select name="field[{select_multiple.FIELD_ID}][]" multiple="multiple" size="4" class="post">
+		<select name="field[{select_multiple.FIELD_ID}][]" multiple="multiple" size="4" style="min-height: 200px;" class="post">
 		<!-- BEGIN row -->
 		<option value="{select_multiple.row.FIELD_VALUE}"{select_multiple.row.FIELD_SELECTED}>{select_multiple.row.FIELD_VALUE}</option>
 		<!-- END row -->

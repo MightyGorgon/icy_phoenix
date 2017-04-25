@@ -116,7 +116,7 @@ class sql_db
 		if ($this->db_connect_id)
 		{
 			@mysql_query("SET NAMES 'utf8'");
-			@mysql_query("SET storage_engine = MyISAM");
+			@mysql_query("SET default_storage_engine = MyISAM");
 			/*
 			// Mighty Gorgon: other useful MyISAM references
 			//ALTER TABLE table_name ENGINE = MyISAM;
@@ -619,11 +619,11 @@ class sql_db
 			case 'SELECT':
 			case 'SELECT_DISTINCT';
 
-        // flatten the SELECT clause
-        if (is_array($array['SELECT']))
-        {
-          $array['SELECT'] = implode(', ', $array['SELECT']);
-        }
+				// flatten the SELECT clause
+				if (is_array($array['SELECT']))
+				{
+					$array['SELECT'] = implode(', ', $array['SELECT']);
+				}
 				$sql = str_replace('_', ' ', $query) . ' ' . $array['SELECT'] . ' FROM ';
 
 				// Build table array. We also build an alias array for later checks.
@@ -697,10 +697,10 @@ class sql_db
 
 				if (!empty($array['WHERE']))
 				{
-          if (is_array($array['WHERE']))
-          {
-            $array['WHERE'] = implode(' AND ', $array['WHERE']);
-          }
+					if (is_array($array['WHERE']))
+					{
+						$array['WHERE'] = implode(' AND ', $array['WHERE']);
+					}
 					$sql .= ' WHERE ' . $this->_sql_custom_build('WHERE', $array['WHERE']);
 				}
 
@@ -1159,7 +1159,7 @@ class sql_db
 				</td>
 				<td nowrap="nowrap" align="center"><div style="text-align: center;">&nbsp;</div></td>
 				<td nowrap="nowrap" width="45%" align="right">
-					<br /><span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span><br /><br />
+					<br /><span class="copyright">Design by <a href="http://www.lucalibralato.com/" target="_blank">Luca Libralato</a>&nbsp;</span><br /><br />
 				</td>
 			</tr>
 		</table>

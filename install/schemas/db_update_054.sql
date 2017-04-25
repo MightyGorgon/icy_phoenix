@@ -1,4 +1,4 @@
-SET storage_engine=MYISAM;
+SET default_storage_engine = MYISAM;
 
 ########################################
 ##              BUILD 054             ##

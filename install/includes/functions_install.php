@@ -1035,7 +1035,7 @@ class ip_page
 		echo('			<tr>' . "\n");
 		echo('				<td class="min250 tdalignl tvalignm tdnw"><span class="copyright">&nbsp;Powered by <a href="http://www.icyphoenix.com/" target="_blank">Icy Phoenix</a> based on <a href="http://www.phpbb.com/" target="_blank">phpBB</a></span></td>' . "\n");
 		echo('				<td class="tdalignc tvalignm tdnw">&nbsp;<br />&nbsp;</td>' . "\n");
-		echo('				<td class="min250 tdalignr tvalignm tdnw"><span class="copyright">Design by <a href="http://www.mightygorgon.com" target="_blank">Mighty Gorgon</a>&nbsp;</span></td>' . "\n");
+		echo('				<td class="min250 tdalignr tvalignm tdnw"><span class="copyright">Design by <a href="http://www.lucalibralato.com/" target="_blank">Luca Libralato</a>&nbsp;</span></td>' . "\n");
 		echo('			</tr>' . "\n");
 		echo('		</table>' . "\n");
 		echo('	</div>' . "\n");

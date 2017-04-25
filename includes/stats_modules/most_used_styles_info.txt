@@ -12,7 +12,7 @@
 [email] mightygorgon@mightygorgon.com
 
 # your webpage url
-[url] http://www.mightygorgon.com
+[url] http://www.icyphoenix.com
 
 # module version
 [version] 1.0.0

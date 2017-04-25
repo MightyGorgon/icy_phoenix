@@ -236,7 +236,7 @@ else if ($delete && sizeof($delete_id_list) > 0)
 
 	$template->pparse('confirm');
 
-	include('page_footer_admin.' . PHP_EXT);
+	include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 	exit;
 }
@@ -759,6 +759,6 @@ $template->assign_vars(array(
 
 $template->pparse('body');
 
-include('page_footer_admin.' . PHP_EXT);
+include(IP_ROOT_PATH . ADM . '/page_footer_admin.' . PHP_EXT);
 
 ?>

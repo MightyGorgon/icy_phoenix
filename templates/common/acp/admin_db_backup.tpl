@@ -8,7 +8,7 @@
 <tr>
 	<td class="row1" nowrap="nowrap"><label for="file"><b>{L_SELECT_FILE}</b>:</label></td>
 	<td class="row1 row-center tw100pct">
-		<select id="file" name="file" size="10">
+		<select id="file" name="file" size="10" style="min-height: 200px;">
 		<!-- BEGIN files -->
 		<option value="{restore.files.FILE}">{restore.files.NAME}</option>
 		<!-- END files -->
@@ -95,7 +95,7 @@ function selector(bool)
 <tr>
 	<td class="row1" nowrap="nowrap"><strong><label for="table">{L_TABLE_SELECT}:</label></strong></td>
 	<td class="row1 row-center tw100pct">
-		<select id="table" name="table[]" size="20" multiple="multiple">
+		<select id="table" name="table[]" size="20" multiple="multiple" style="min-height: 300px;">
 		<!-- BEGIN tables -->
 		<option value="{tables.TABLE}">{tables.TABLE}</option>
 		<!-- END tables -->

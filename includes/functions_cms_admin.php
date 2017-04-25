@@ -144,27 +144,27 @@ function create_cms_field($config_array)
 	$cms_field[$config_array['config_name']]['type'] = $config_array['type'];
 	$cms_field[$config_array['config_name']]['block'] = str_replace('_', ' ', $config_array['block']);
 
-  // if no label was given, guess from the config_name
-  if (empty($config_array['label']))
-  {
-    $cms_field[$config_array['config_name']]['label'] = $lang['cms_var_' . $config_array['config_name']];
-  }
-  // if a label was given, and it's a lang key, use it
-  else if (isset($lang[$config_array['label']]))
-  {
-    $cms_field[$config_array['config_name']]['label'] = $lang[$config_array['label']];
-  }
-
-  // if no sub_label was given, guess from the config_name
-  if (empty($config_array['sub_label']))
-  {
-    $cms_field[$config_array['config_name']]['sub_label'] = $lang['cms_var_' . $config_array['config_name'] . '_explain'];
-  }
-  // if a sub_label was given, and it's a lang key, use it
-  else if (isset($lang[$config_array['sub_label']]))
-  {
-    $cms_field[$config_array['config_name']]['sub_label'] = $lang[$config_array['sub_label']];
-  }
+	// if no label was given, guess from the config_name
+	if (empty($config_array['label']))
+	{
+		$cms_field[$config_array['config_name']]['label'] = $lang['cms_var_' . $config_array['config_name']];
+	}
+	// if a label was given, and it's a lang key, use it
+	elseif (isset($lang[$config_array['label']]))
+	{
+		$cms_field[$config_array['config_name']]['label'] = $lang[$config_array['label']];
+	}
+	
+	// if no sub_label was given, guess from the config_name
+	if (empty($config_array['sub_label']))
+	{
+		$cms_field[$config_array['config_name']]['sub_label'] = $lang['cms_var_' . $config_array['config_name'] . '_explain'];
+	}
+	// if a sub_label was given, and it's a lang key, use it
+	elseif (isset($lang[$config_array['sub_label']]))
+	{
+		$cms_field[$config_array['config_name']]['sub_label'] = $lang[$config_array['sub_label']];
+	}
 
 	if($cms_field[$config_array['config_name']]['name'] == 'default_portal')
 	{

@@ -197,7 +197,7 @@
 		<fieldset class="permissions phpbb">
 			<legend class="phpbb">{L_MANAGE_USERS}</legend>
 			<dl>
-				<dd class="full"><select style="width: 100%;" name="user_id[]" multiple="multiple" size="5">{S_DEFINED_USER_OPTIONS}</select></dd>
+				<dd class="full"><select style="width: 100%;" name="user_id[]" multiple="multiple" size="5" style="min-height: 200px;">{S_DEFINED_USER_OPTIONS}</select></dd>
 				<!-- IF S_ALLOW_ALL_SELECT --><dd class="full" style="text-align: right;"><label><input type="checkbox" class="radio" name="all_users" value="1" /> {L_ALL_USERS}</label></dd><!-- ENDIF -->
 			</dl>
 		</fieldset>
@@ -241,7 +241,7 @@
 		<fieldset class="permissions phpbb">
 			<legend class="phpbb">{L_MANAGE_GROUPS}</legend>
 			<dl>
-				<dd class="full"><select style="width: 100%;" name="group_id[]" multiple="multiple" size="5">{S_DEFINED_GROUP_OPTIONS}</select></dd>
+				<dd class="full"><select style="width: 100%;" name="group_id[]" multiple="multiple" size="5" style="min-height: 200px;">{S_DEFINED_GROUP_OPTIONS}</select></dd>
 				<!-- IF S_ALLOW_ALL_SELECT --><dd class="full" style="text-align: right;"><label><input type="checkbox" class="radio" name="all_groups" value="1" /> {L_ALL_GROUPS}</label></dd><!-- ENDIF -->
 			</dl>
 		</fieldset>
@@ -258,7 +258,7 @@
 		<fieldset class="permissions phpbb">
 			<legend class="phpbb">{L_ADD_GROUPS}</legend>
 			<dl>
-				<dd class="full"><select name="group_id[]" style="width: 100%; height: 107px;" multiple="multiple">{S_ADD_GROUP_OPTIONS}</select></dd>
+				<dd class="full"><select name="group_id[]" style="width: 100%; height: 107px;" multiple="multiple" style="min-height: 200px;">{S_ADD_GROUP_OPTIONS}</select></dd>
 			</dl>
 		</fieldset>
 
@@ -286,7 +286,7 @@
 		<fieldset class="permissions phpbb">
 			<legend class="phpbb">{L_MANAGE_USERS}</legend>
 			<dl>
-				<dd class="full"><select style="width: 100%;" name="user_id[]" multiple="multiple" size="5">{S_DEFINED_USER_OPTIONS}</select></dd>
+				<dd class="full"><select style="width: 100%;" name="user_id[]" multiple="multiple" size="5" style="min-height: 200px;">{S_DEFINED_USER_OPTIONS}</select></dd>
 			</dl>
 		</fieldset>
 
@@ -327,7 +327,7 @@
 		<fieldset class="permissions phpbb">
 			<legend class="phpbb">{L_MANAGE_GROUPS}</legend>
 			<dl>
-				<dd class="full"><select style="width: 100%;" name="group_id[]" multiple="multiple" size="5">{S_DEFINED_GROUP_OPTIONS}</select></dd>
+				<dd class="full"><select style="width: 100%;" name="group_id[]" multiple="multiple" size="5" style="min-height: 200px;">{S_DEFINED_GROUP_OPTIONS}</select></dd>
 			</dl>
 		</fieldset>
 

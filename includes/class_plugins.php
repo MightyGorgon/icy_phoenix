@@ -32,7 +32,7 @@ class class_plugins
 	var $settings = array();
 	var $modules = array();
 	var $list_yes_no = array('Yes' => 1, 'No' => 0);
-  var $registered_plugins = array();
+	var $registered_plugins = array();
 
 	/**
 	* Instantiate class
@@ -171,7 +171,7 @@ class class_plugins
 
 		$sql_results = array();
 		// We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
-		$sql_engine = "SET storage_engine=MYISAM";
+		$sql_engine = "SET default_storage_engine = MYISAM";
 		$db->sql_return_on_error(true);
 		$db->sql_query($sql_engine);
 		$db->sql_return_on_error(false);
@@ -280,10 +280,10 @@ class class_plugins
 				break;
 		}
 
-    if (is_dir($plugin_lang_path))
-    {
-      setup_extra_lang($filenames, $plugin_lang_path);
-    }
+			if (is_dir($plugin_lang_path))
+			{
+				setup_extra_lang($filenames, $plugin_lang_path);
+			}
 		return true;
 	}
 
@@ -767,34 +767,34 @@ class class_plugins
 		return true;
 	}
 
-  /**
-  * Registers a plugin.
-  */
-  function register($plugin_name, $plugin_class)
-  {
-    $this->registered_plugins[$plugin_name] = $plugin_class;
-    $plugin_class->setup($this);
-  }
+	/**
+	* Registers a plugin.
+	*/
+	function register($plugin_name, $plugin_class)
+	{
+		$this->registered_plugins[$plugin_name] = $plugin_class;
+		$plugin_class->setup($this);
+	}
 
-  /**
-  * Triggers a plugin event.
-  */
-  function trigger($event_name, array $vars)
-  {
-    foreach ($this->registered_plugins as $k => $plugin_class)
-    {
-      if (in_array($event_name, $plugin_class->events))
-      {
-        $return = $plugin_class->{'event_' . $event_name}($vars);
-        // if the function didn't return null, use the new vars provided.
-        if ($return)
-        {
-          $vars = $return;
-        }
-      }
-    }
-    return $vars;
-  }
+	/**
+	* Triggers a plugin event.
+	*/
+	function trigger($event_name, array $vars)
+	{
+		foreach ($this->registered_plugins as $k => $plugin_class)
+		{
+			if (in_array($event_name, $plugin_class->events))
+			{
+				$return = $plugin_class->{'event_' . $event_name}($vars);
+				// if the function didn't return null, use the new vars provided.
+				if ($return)
+				{
+					$vars = $return;
+				}
+			}
+		}
+		return $vars;
+	}
 
 }
 

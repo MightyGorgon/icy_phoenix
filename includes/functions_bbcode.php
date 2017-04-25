@@ -73,7 +73,7 @@ function generate_text_for_display($text, $only_smileys = false, $censor = true,
 */
 function generate_smilies_row()
 {
-	global $db, $config, $template;
+	global $db, $cache, $config, $template;
 
 	$max_smilies = (!empty($config['smilie_single_row']) ? intval($config['smilie_single_row']) : 20);
 
@@ -82,12 +82,12 @@ function generate_smilies_row()
 
 	$server_protocol = !empty($config['cookie_secure']) ? 'https://' : 'http://';
 	$host = extract_current_hostname();
-  $url = $server_protocol . $host;
-  if (!empty($config['server_port']) && $config['server_port'] != 80)
-  {
-    $url .= ':' . $config['server_port'];
-  }
-  $url .= $config['script_path'];
+	$url = $server_protocol . $host;
+	if (!empty($config['server_port']) && ($config['server_port'] != 80))
+	{
+		$url .= ':' . $config['server_port'];
+	}
+	$url .= $config['script_path'];
 
 	$orig = array();
 	$repl = array();

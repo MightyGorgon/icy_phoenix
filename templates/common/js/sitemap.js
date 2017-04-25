@@ -1,8 +1,9 @@
 $(function () {
-  $('ul.sitemap').hide();
+	$('ul.sitemap').hide();
 
-  $('h2.sitemap').click(function () {
-    $(this).next().toggle();
-    $(this).toggleClass('minimise sitemap');
-  });
+	$('h2.sitemap').click(function () {
+		$(this).next().toggle();
+		$(this).toggleClass('minimise sitemap');
+	});
 });
+

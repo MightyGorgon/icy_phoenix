@@ -114,7 +114,7 @@ switch ($req_version)
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
-$sql[] = "SET storage_engine=MYISAM";
+$sql[] = "SET default_storage_engine = MYISAM";
 
 // Icy Phoenix Part...
 if (substr($mode, 0, 6) == 'update')
@@ -990,7 +990,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('gif_allowed', '1')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('desc_length', '512')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('hotlink_prevent', '0')";
-		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('hotlink_allowed', 'mightygorgon.com,icyphoenix.com')";
+		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('hotlink_allowed', 'icyphoenix.com,lucalibralato.com,mightygorgon.com')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('personal_gallery', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('personal_gallery_private', '0')";
 		$sql[] = "INSERT INTO `" . $table_prefix . "album_config` VALUES ('personal_gallery_limit', '-1')";

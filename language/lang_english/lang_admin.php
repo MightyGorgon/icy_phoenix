@@ -2082,6 +2082,14 @@ $lang = array_merge($lang, array(
 	'FORUMS_SUBMIT_CFG' => 'Update Settings',
 	'FORUMS_SELECTION_MULTIPLE' => 'You can select more than one forum by clicking CTRL.',
 
+	'FAILED_LOGINS_COUNTER' => 'Failed Logins Counter',
+
+	'ACP_USER_POSTS_EXPORT_TITLE' => 'Posts Export',
+	'ACP_USER_POSTS_EXPORT_EXPLAIN' => 'This tool can be used to export all posts for one or more users',
+	'UPE_TITLE' => 'Posts Export',
+	'UPE_USER_IDS' => 'User IDS',
+	'UPE_USER_IDS_EXPLAIN' => 'Please use comma to separate users in the list (i.e.: 1,2,3,5,7)',
+
 // ####################### [ Icy Phoenix Options BEGIN ] #####################
 	'IP_CONFIGURATION' => 'Icy Phoenix Settings',
 	'IP_CONFIGURATION_EXPLAIN' => '<em><b>Advanced Icy Phoenix Settings</b></em>',
@@ -2240,6 +2248,7 @@ $lang['270_CPF_Edit'] = 'Edit Custom Profile Fields'; // admin_profile_fields.ph
 $lang['280_User_Search'] = 'Extended User Search'; // admin_user_search.php
 $lang['290_Poll_Results'] = 'Poll Results'; // admin_voting.php
 $lang['300_Picscount_Config'] = 'Sync Pics Count'; // admin_postcount.php
+$lang['310_POSTS_EXPORT'] = 'Posts Export'; // admin_user_posts_export.php
 
 // Groups
 $lang['1620_Groups'] = 'Groups'; // admin_color_groups.php, admin_groups.php, admin_ug_auth.php

@@ -970,7 +970,7 @@ class cms_admin
 				$else_counter = 0;
 				$pos_change = false;
 
-        // keep track of which block is whose's parent
+				// keep track of which block is whose's parent
 				// bfp = block for parent
 				$bs_rows = $this->get_parent_blocks();
 				$bfp_rows = array();
@@ -1029,7 +1029,7 @@ class cms_admin
 							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
 							'VIEW' => $b_view,
 
-              // Query the block's parent, and add informations about it
+							// Query the block's parent, and add informations about it
 							'BLOCK_PARENT' => $bfp_rows[$b_rows[$i]['bs_id']],
 							'WEIGHT' => $b_rows[$i]['weight'],
 							'BLOCK_TIP' => $lang['CMS_BLOCK_PARENT'] . ': ' . htmlspecialchars($bfp_rows[$b_rows[$i]['bs_id']]) . htmlspecialchars('<br />') . "\r\n" . $lang['B_BORDER'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_TITLEBAR'] . ': ' . (($b_rows[$i]['titlebar']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_LOCAL'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']) . htmlspecialchars('<br />') . "\r\n" . $lang['B_BACKGROUND'] . ': ' . (($b_rows[$i]['border']) ? $lang['YES'] : $lang['NO']),
@@ -1047,8 +1047,8 @@ class cms_admin
 							$template->assign_block_vars('jq_sort', array(
 								'ID' => $this->sort_sid_prefix . $b_rows[$i]['bposition'],
 								//'PROP' => 'containment: "#' . $this->sort_cid_prefix . $b_rows[$i]['bposition'] . '", handle: "img.sort-handler", axis: "y"',
-                // generate drag-and-drop code for jQuery,
-                // which will set the correct block weight when dragging around.
+								// generate drag-and-drop code for jQuery,
+								// which will set the correct block weight when dragging around.
 								'PROP' => 'containment: "#' . $this->sort_cid_prefix . $b_rows[$i]['bposition'] . '", handle: "img.sort-handler", axis: "y",
 									stop: function (event, ui)
 									{
@@ -1128,7 +1128,7 @@ class cms_admin
 			foreach ($blocks_array as $block_file)
 			{
 				$options_array[] = BLOCKS_PREFIX . $block_file;
-        $lang_key = (!empty($lang['cms_block_' . $block_file]) ? ('&nbsp;' . $lang['cms_block_' . $block_file] . '') : '');
+				$lang_key = (!empty($lang['cms_block_' . $block_file]) ? ('&nbsp;' . $lang['cms_block_' . $block_file] . '') : '');
 				$options_langs_array[] = $lang_key ? "$lang_key [$block_file]" : $block_file;
 			}
 
@@ -2519,7 +2519,7 @@ class cms_admin
 	*/
 	function get_blocks_files_list()
 	{
-    global $cache, $config;
+		global $cache, $config;
 
 		$blocks_array = array();
 		$blocks = @opendir(BLOCKS_DIR);
@@ -2533,27 +2533,27 @@ class cms_admin
 		}
 		@closedir($blocks);
 
-    foreach ($config['plugins'] as $k => $plugin)
-    {
-      if (!$plugin['enabled'])
-      {
-        continue;
-      }
-      $plugin_blocks_dir = IP_ROOT_PATH . PLUGINS_PATH . $plugin['dir'] . BLOCKS_DIR_NAME;
-      if (is_dir($plugin_blocks_dir))
-      {
-        $blocks = @opendir($plugin_blocks_dir);
-        while ($file = @readdir($blocks))
-        {
-          $ext = substr(strrchr($file, '.'), 1);
-          if ((substr($file, 0, strlen(BLOCKS_PREFIX)) == BLOCKS_PREFIX) && ($ext == PHP_EXT))
-          {
-            $blocks_array[] = $k . '/' . substr(substr($file, strlen(BLOCKS_PREFIX)), 0, (strlen($ext) * -1) - 1);
-          }
-        }
-        @closedir($blocks);
-      }
-    }
+		foreach ($config['plugins'] as $k => $plugin)
+		{
+			if (!$plugin['enabled'])
+			{
+				continue;
+			}
+			$plugin_blocks_dir = IP_ROOT_PATH . PLUGINS_PATH . $plugin['dir'] . BLOCKS_DIR_NAME;
+			if (is_dir($plugin_blocks_dir))
+			{
+				$blocks = @opendir($plugin_blocks_dir);
+				while ($file = @readdir($blocks))
+				{
+					$ext = substr(strrchr($file, '.'), 1);
+					if ((substr($file, 0, strlen(BLOCKS_PREFIX)) == BLOCKS_PREFIX) && ($ext == PHP_EXT))
+					{
+						$blocks_array[] = $k . '/' . substr(substr($file, strlen(BLOCKS_PREFIX)), 0, (strlen($ext) * -1) - 1);
+					}
+				}
+				@closedir($blocks);
+			}
+		}
 		sort($blocks_array);
 
 		return $blocks_array;
@@ -2688,19 +2688,19 @@ class cms_admin
 	*/
 	function get_block_vars_default($block_file)
 	{
-    global $config;
+		global $config;
 
 		$block_vars_default = array();
-    if (false !== strpos($block_file, '/'))
-    {
-      list($plugin_name, $block_file) = explode('/', $block_file);
-      $plugin_config = $config['plugins'][$plugin_name];
-      $block_cfg_file = IP_ROOT_PATH . PLUGINS_PATH . $plugin_config['dir'] . BLOCKS_DIR_NAME . $block_file . '.cfg';
-    }
-    else
-    {
-      $block_cfg_file = BLOCKS_DIR . $block_file . '.cfg';
-    }
+		if (false !== strpos($block_file, '/'))
+		{
+			list($plugin_name, $block_file) = explode('/', $block_file);
+			$plugin_config = $config['plugins'][$plugin_name];
+			$block_cfg_file = IP_ROOT_PATH . PLUGINS_PATH . $plugin_config['dir'] . BLOCKS_DIR_NAME . $block_file . '.cfg';
+		}
+		else
+		{
+			$block_cfg_file = BLOCKS_DIR . $block_file . '.cfg';
+		}
 
 		if(!empty($block_file) && file_exists($block_cfg_file))
 		{

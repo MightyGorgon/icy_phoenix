@@ -9,7 +9,7 @@
 		<tr><th>{L_ALLOWED_FORUMS}</th></tr>
 		<tr>
 			<td class="row1 row-center">
-				<select style="width: 560px;" name="entries[]" multiple="multiple" size="5">
+				<select style="width: 560px;" name="entries[]" multiple="multiple" size="5" style="min-height: 200px;">
 				<!-- BEGIN allow_option_values -->
 				<option value="{allow_option_values.VALUE}">{allow_option_values.OPTION}</option>
 				<!-- END allow_option_values -->
@@ -30,7 +30,7 @@
 		<tr><th>{L_ADD_FORUMS}</th></tr>
 		<tr>
 			<td class="row1 row-center">
-			<select style="width: 560px;" name="entries[]" multiple="multiple" size="5">
+			<select style="width: 560px;" name="entries[]" multiple="multiple" size="5" style="min-height: 200px;">
 			<!-- BEGIN forum_option_values -->
 			<option value="{forum_option_values.VALUE}">{forum_option_values.OPTION}</option>
 			<!-- END forum_option_values -->

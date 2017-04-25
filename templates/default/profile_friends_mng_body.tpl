@@ -26,7 +26,7 @@ function add_username(selected_username)
 	<td class="row1" width="40%"><b class="genmed">{L_YOUR_FRIENDS}:</b><br /><span class="gensmall">{L_YOUR_FRIENDS_EXPLAIN}</span></td>
 	<td class="row2 row-center">
 		<!-- IF S_USERNAME_OPTIONS -->
-		<select name="usernames[]" multiple="multiple" size="5">{S_USERNAME_OPTIONS}</select>
+		<select name="usernames[]" multiple="multiple" size="5" style="min-height: 200px;">{S_USERNAME_OPTIONS}</select>
 		<!-- ELSE -->
 		<b class="genmed">{L_NO_FRIENDS}</b>
 		<!-- ENDIF -->

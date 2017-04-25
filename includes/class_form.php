@@ -166,17 +166,17 @@ class class_form
 				break;
 
 			case 'USERNAME_INPUT_JQUI':
-				$worker_id = $default;
-				$worker_data = get_userdata($worker_id, false);
-				$worker_name = htmlspecialchars($worker_data['username']);
-				$worker_field_id = $name . '_jqui';
-				$worker_field_name = $name . '_jqui';
-				$worker_field_id_hidden = $name;
-				$worker_field_name_hidden = $name;
-				$worker_jquery_ui = '<script type="text/javascript">
+				$ajax_user_id = $default;
+				$ajax_user_data = get_userdata($ajax_user_id, false);
+				$ajax_user_name = htmlspecialchars($ajax_user_data['username']);
+				$ajax_user_field_id = $name . '_jqui';
+				$ajax_user_field_name = $name . '_jqui';
+				$ajax_user_field_id_hidden = $name;
+				$ajax_user_field_name_hidden = $name;
+				$ajax_user_jquery_ui = '<script type="text/javascript">
 				$(function()
 				{
-					$("#' . $worker_field_id . '").autocomplete(
+					$("#' . $ajax_user_field_id . '").autocomplete(
 					{
 						source: "ajax.php?mode=user_search_json&json=1&sid=' . $user->data['session_id'] . '",
 						minLength: 2,
@@ -184,14 +184,14 @@ class class_form
 						{
 							if (ui.item)
 							{
-								$("#' . $worker_field_id_hidden . '").val(ui.item.id);
+								$("#' . $ajax_user_field_id_hidden . '").val(ui.item.id);
 							}
 						}
 					});
 				});
 				</script>';
-				$worker_input_hidden = '<input type="hidden" name="' . $worker_field_name_hidden . '" id="' . $worker_field_id_hidden . '" value="' . $worker_id . '" />';
-				$input = $worker_jquery_ui . $worker_input_hidden . '<input type="text" name="' . $worker_field_name . '" id="' . $worker_field_id . '" maxlength="255" size="30" class="post" value="' . $worker_name . '" />';
+				$ajax_user_input_hidden = '<input type="hidden" name="' . $ajax_user_field_name_hidden . '" id="' . $ajax_user_field_id_hidden . '" value="' . $ajax_user_id . '" />';
+				$input = $ajax_user_jquery_ui . $ajax_user_input_hidden . '<input type="text" name="' . $ajax_user_field_name . '" id="' . $ajax_user_field_id . '" maxlength="255" size="30" class="post" value="' . $ajax_user_name . '" />';
 				break;
 
 			case 'AJAX_INPUT_JQUI':

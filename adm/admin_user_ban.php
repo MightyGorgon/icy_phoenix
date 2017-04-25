@@ -344,7 +344,7 @@ else
 		$select_userlist = '<option value="-1">' . $lang['No_banned_users'] . '</option>';
 	}
 
-	$select_userlist = '<select name="unban_user[]" multiple="multiple" size="5">' . $select_userlist . '</select>';
+	$select_userlist = '<select name="unban_user[]" multiple="multiple" size="5" style="min-height: 200px;">' . $select_userlist . '</select>';
 
 	$sql = "SELECT ban_id, ban_ip, ban_email FROM " . BANLIST_TABLE;
 	$result = $db->sql_query($sql);

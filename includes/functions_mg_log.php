@@ -81,7 +81,7 @@ function ip_log($content, $db_log, $error_log = false)
 
 	if ($db_log_actions == true)
 	{
-		if ($db_log['target'] !='' )
+		if ($db_log['target'] != '')
 		{
 			$db_target = explode(',', $db_log['target']);
 			foreach ($db_target as $db_target_data)

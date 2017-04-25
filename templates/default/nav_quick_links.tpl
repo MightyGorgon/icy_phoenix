@@ -367,7 +367,7 @@ if(GetCookie(tmp) == '2')
 			<table class="forumline-no2 p2px">
 				<tr>
 					<td class="tdalignl tw8px">{IMG_NAV_MENU_SEP}</td>
-					<td class="genmed tdalignl"><a href="http://www.mightygorgon.com/">Mighty Gorgon</a></td>
+					<td class="genmed tdalignl"><a href="http://www.lucalibralato.com/">Luca Libralato</a></td>
 				</tr>
 			</table>
 		</div>

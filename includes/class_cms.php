@@ -134,7 +134,8 @@ class ip_cms
 	function cms_parse_blocks($layout, $is_special = false, $global_blocks = false, $type = '')
 	{
 		global $db, $cache, $config, $auth, $user, $lang, $bbcode, $template;
-		global $cms_config_vars, $cms_config_layouts, $cms_config_global_blocks, $block_id, $class_plugins;
+		global $class_plugins;
+		global $cms_config_vars, $cms_config_layouts, $cms_config_global_blocks, $block_id;
 
 		// Let's remove $auth->acl_get('a_') until I finish coding permissions properly... and also add/remove 'a_' when users are added/removed from administrators in ACP
 		//$is_admin = (($user->data['user_level'] == ADMIN) || $auth->acl_get('a_')) ? true : false;
@@ -380,33 +381,33 @@ class ip_cms
 				if(!empty($block_info[$b_counter]['blockfile']))
 				{
 					$block_handle = $block_name . '_block_' . $block_info[$b_counter]['bid'];
-          if (false !== strpos($block_name, '/'))
-          {
-            list($plugin_name, $block_name) = explode('/', $block_name);
-            $plugin_config = $config['plugins'][$plugin_name];
-            // do not render blocks from disabled plugins
-            if (!$plugin_config['enabled'])
-            {
-              continue;
-            }
-            // Try to get the TPL path by "guessing" the constant.
-            $tpl_constant_name = strtoupper($plugin_name) . '_TPL_PATH';
-            if (defined($tpl_constant_name))
-            {
-              $tpl_dir = constant($tpl_constant_name);
-            }
-            else
-            {
-              $tpl_dir = IP_ROOT_PATH . PLUGINS_PATH . $plugin_config['dir'] . 'templates/';
-            }
-            $block_file = $class_plugins->get_tpl_file($tpl_dir, BLOCKS_DIR_NAME . $block_name . '_block.tpl');
-            $block_php_file = IP_ROOT_PATH . PLUGINS_PATH . $plugin_config['dir'] . BLOCKS_DIR_NAME . $block_name;
-          }
-          else
-          {
-            $block_file = BLOCKS_DIR_NAME . $block_name . '_block.tpl';
-            $block_php_file = IP_ROOT_PATH . 'blocks/' . $block_name;
-          }
+					if (false !== strpos($block_name, '/'))
+					{
+						list($plugin_name, $block_name) = explode('/', $block_name);
+						$plugin_config = $config['plugins'][$plugin_name];
+						// do not render blocks from disabled plugins
+						if (!$plugin_config['enabled'])
+						{
+							continue;
+						}
+						// Try to get the TPL path by "guessing" the constant.
+						$tpl_constant_name = strtoupper($plugin_name) . '_TPL_PATH';
+						if (defined($tpl_constant_name))
+						{
+							$tpl_dir = constant($tpl_constant_name);
+						}
+						else
+						{
+							$tpl_dir = IP_ROOT_PATH . PLUGINS_PATH . $plugin_config['dir'] . 'templates/';
+						}
+						$block_file = $class_plugins->get_tpl_file($tpl_dir, BLOCKS_DIR_NAME . $block_name . '_block.tpl');
+						$block_php_file = IP_ROOT_PATH . PLUGINS_PATH . $plugin_config['dir'] . BLOCKS_DIR_NAME . $block_name;
+					}
+					else
+					{
+						$block_file = BLOCKS_DIR_NAME . $block_name . '_block.tpl';
+						$block_php_file = IP_ROOT_PATH . 'blocks/' . $block_name;
+					}
 					$template->set_filenames(array($block_handle => $block_file));
 					$output_block = '';
 					include($block_php_file . '.' . PHP_EXT);

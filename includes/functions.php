@@ -2394,7 +2394,7 @@ function setup_basic_lang()
 
 	if (empty($lang))
 	{
-    $setup = true;
+		$setup = true;
 		if(!file_exists(IP_ROOT_PATH . 'language/lang_' . $config['default_lang'] . '/lang_main.' . PHP_EXT))
 		{
 			$config['default_lang'] = 'english';
@@ -2454,13 +2454,13 @@ function setup_basic_lang()
 			}
 		}
 
-    foreach ($config['plugins'] as $k => $plugin)
-    {
-      if ($plugin['enabled'])
-      {
-        $class_plugins->setup_lang($plugin['dir']);
-      }
-    }
+		foreach ($config['plugins'] as $k => $plugin)
+		{
+			if ($plugin['enabled'])
+			{
+				$class_plugins->setup_lang($plugin['dir']);
+			}
+		}
 	}
 	return true;
 }

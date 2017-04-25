@@ -1,5 +1,4 @@
 <?php
-
 /**
 *
 * @package Icy Phoenix
@@ -148,15 +147,15 @@ $d_min = request_post_var('topic_calendar_duration_min', 0);
 // this array will hold the plugin-specific variables 
 $extra_vars = array();
 /**
- * @event posting_post_vars.
- * @description Allows to read POST data to be used later.
- * @since 3.0
- * @var int topic_type The topic type.
- * @var array extra_vars The extra variables that'll be carried throughout this file.
- */
+* @event posting_post_vars.
+* @description Allows to read POST data to be used later.
+* @since 3.0
+* @var int topic_type The topic type.
+* @var array extra_vars The extra variables that'll be carried throughout this file.
+*/
 $vars = array(
-  'topic_type',
-  'extra_vars',
+	'topic_type',
+	'extra_vars',
 );
 extract($class_plugins->trigger('posting_post_vars', compact($vars)));
 
@@ -272,7 +271,7 @@ $read_only_write_auth_required = false;
 switch($mode)
 {
 	case 'newtopic':
-    // TODO: these also need to be checked if ($mode == 'editpost' && $post_data['first_post'])
+		// TODO: these also need to be checked if ($mode == 'editpost' && $post_data['first_post'])
 		$read_only_write_auth_required = true;
 		if ($topic_type == POST_GLOBAL_ANNOUNCE)
 		{
@@ -385,36 +384,37 @@ switch ($mode)
 		}
 		// MG Cash MOD For IP - END
 
-    $query = array(
-      'SELECT' => array('f.*', 't.*', 'p.*'),
-      'FROM' => array(
-        POSTS_TABLE => 'p',
-        TOPICS_TABLE => 't',
-        FORUMS_TABLE => 'f',
-      ),
-      'WHERE' => array(
-        'p.post_id = ' . $post_id,
-        't.topic_id = p.topic_id',
-        'f.forum_id = p.forum_id',
-      ),
-      'LIMIT' => 1,
-    );
-    if (!$submit)
-    {
-      $query['SELECT'] = array_merge($query['SELECT'], array('u.username', 'u.user_id', 'u.user_sig', 'u.user_level', 'u.user_active', 'u.user_color'));
-      $query['FROM'][USERS_TABLE] = 'u';
-      $query['WHERE'][] = 'u.user_id = p.poster_id';
-    }
+		$query = array(
+			'SELECT' => array('f.*', 't.*', 'p.*'),
+			'FROM' => array(
+				POSTS_TABLE => 'p',
+				TOPICS_TABLE => 't',
+				FORUMS_TABLE => 'f',
+			),
+			'WHERE' => array(
+				'p.post_id = ' . $post_id,
+				't.topic_id = p.topic_id',
+				'f.forum_id = p.forum_id',
+			),
+			'LIMIT' => 1,
+		);
+		if (!$submit)
+		{
+			$query['SELECT'] = array_merge($query['SELECT'], array('u.username', 'u.user_id', 'u.user_sig', 'u.user_level', 'u.user_active', 'u.user_color'));
+			$query['FROM'][USERS_TABLE] = 'u';
+			$query['WHERE'][] = 'u.user_id = p.poster_id';
+		}
+		
+		/**
+		* @event before_posting_select.
+		* @description Allows to edit the query to look up the forum / topic / post data.
+		* @since 3.0
+		* @var array query The SQL query parts.
+		*/
+		extract($class_plugins->trigger('before_posting_select', compact('query')));
+		
+		$sql = $db->sql_build_query('SELECT', $query);
 
-    /**
-    * @event before_posting_select.
-    * @description Allows to edit the query to look up the forum / topic / post data.
-    * @since 3.0
-    * @var array query The SQL query parts.
-    */
-    extract($class_plugins->trigger('before_posting_select', compact('query')));
-
-    $sql = $db->sql_build_query('SELECT', $query);
 		// MG Cash MOD For IP - BEGIN
 		if (!empty($config['plugins']['cash']['enabled']))
 		{
@@ -522,17 +522,17 @@ if ($result && $post_info)
 		$post_data['poster_id'] = $post_info['poster_id'];
 		$post_data['post_images'] = $post_info['post_images'];
 
-    /**
-     * @event posting_post_data.
-     * @description Sets up the post_data from the post_info.
-     * @since 3.0
-     * @var array query The SQL query parts
-     */
-    $vars = array(
-      'post_data',
-      'post_info',
-    );
-    extract($class_plugins->trigger('posting_post_data', compact($vars)));
+		/**
+		* @event posting_post_data.
+		* @description Sets up the post_data from the post_info.
+		* @since 3.0
+		* @var array query The SQL query parts
+		*/
+		$vars = array(
+			'post_data',
+			'post_info',
+		);
+		extract($class_plugins->trigger('posting_post_data', compact($vars)));
 
 		if (($config['allow_mods_edit_admin_posts'] == false) && ($post_info['user_level'] == ADMIN) && ($user->data['user_level'] != ADMIN))
 		{
@@ -1995,26 +1995,27 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 	}
 
 	if ($topic_type_toggle != '')
-  {
-    $topic_type_toggle = '<input type="radio" name="topictype" value="' . POST_NORMAL .'"' . (($post_data['topic_type'] == POST_NORMAL || $topic_type == POST_NORMAL) ? ' checked="checked"' : '') . ' /> ' . $lang['Post_Normal'] . '&nbsp;&nbsp;' . $topic_type_toggle;
-
-    /**
-     * @event after_topic_type_toggle.
-     * @description Allows to change the topic type toggle HTML.
-     * @since 3.0
-     * @var string topic_type_toggle The fully-built topic type toggle.
-     * @var string mode The current mode.
-     * @var array post_data The post data.
-     */
-    $vars = array(
-      'topic_type_toggle',
-      'mode',
-      'post_data'
-    );
-    extract($class_plugins->trigger('after_topic_type_toggle', compact($vars)));
+	{
+		$topic_type_toggle = '<input type="radio" name="topictype" value="' . POST_NORMAL .'"' . (($post_data['topic_type'] == POST_NORMAL || $topic_type == POST_NORMAL) ? ' checked="checked"' : '') . ' /> ' . $lang['Post_Normal'] . '&nbsp;&nbsp;' . $topic_type_toggle;
+		
+		/**
+		* @event after_topic_type_toggle.
+		* @description Allows to change the topic type toggle HTML.
+		* @since 3.0
+		* @var string topic_type_toggle The fully-built topic type toggle.
+		* @var string mode The current mode.
+		* @var array post_data The post data.
+		*/
+		$vars = array(
+			'topic_type_toggle',
+			'mode',
+			'post_data'
+		);
+		extract($class_plugins->trigger('after_topic_type_toggle', compact($vars)));
 
 		$template->assign_block_vars('switch_type_toggle', array());
 	}
+
 }
 
 // Calendar type selection

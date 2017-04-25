@@ -71,51 +71,54 @@ $prev_user_id = 0;
 $prev_user_ip = '';
 $session_ip_array = array();
 $tmp_bots_array = array();
-foreach ($online_users as $row)
+if (!empty($online_users))
 {
-	// User is logged in and therefore not a guest
-	if ($row['session_logged_in'])
+	foreach ($online_users as $row)
 	{
-		// Skip multiple sessions for one user
-		if ($row['user_id'] != $prev_user_id)
+		// User is logged in and therefore not a guest
+		if ($row['session_logged_in'])
 		{
-			$user_online_link = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
-			if ($row['user_allow_viewonline'])
+			// Skip multiple sessions for one user
+			if ($row['user_id'] != $prev_user_id)
 			{
-				$logged_visible_online++;
-			}
-			else
-			{
-				$logged_hidden_online++;
-				$user_online_link = '<em>' . $user_online_link . '</em>';
-			}
-
-			if ($row['user_allow_viewonline'] || ($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $row['user_id']))
-			{
-				$online_userlist .= (($online_userlist != '') ? ', ' : '') . $user_online_link;
-			}
-		}
-		$prev_user_id = $row['user_id'];
-	}
-	else
-	{
-		// Skip multiple sessions for one user
-		if (!empty($row['session_ip']) && !in_array($row['session_ip'], $session_ip_array))
-		{
-			$session_ip_array[] = $row['session_ip'];
-			$guests_online++;
-
-			// MG BOTS Parsing - BEGIN
-			$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_browser']);
-			if ($bot_name_tmp['name'] != false)
-			{
-				if (!in_array($bot_name_tmp['name'], $tmp_bots_array))
+				$user_online_link = colorize_username($row['user_id'], $row['username'], $row['user_color'], $row['user_active']);
+				if ($row['user_allow_viewonline'])
 				{
-					$tmp_bots_array[] = $bot_name_tmp['name'];
-					$online_botlist .= ($online_botlist != '') ? ', ' . $bot_name_tmp['name'] : $bot_name_tmp['name'];
+					$logged_visible_online++;
+				}
+				else
+				{
+					$logged_hidden_online++;
+					$user_online_link = '<em>' . $user_online_link . '</em>';
+				}
+
+				if ($row['user_allow_viewonline'] || ($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $row['user_id']))
+				{
+					$online_userlist .= (($online_userlist != '') ? ', ' : '') . $user_online_link;
 				}
 			}
-			// MG BOTS Parsing - END
+			$prev_user_id = $row['user_id'];
+		}
+		else
+		{
+			// Skip multiple sessions for one user
+			if (!empty($row['session_ip']) && !in_array($row['session_ip'], $session_ip_array))
+			{
+				$session_ip_array[] = $row['session_ip'];
+				$guests_online++;
+
+				// MG BOTS Parsing - BEGIN
+				$bot_name_tmp = bots_parse($row['session_ip'], $config['bots_color'], $row['session_browser']);
+				if ($bot_name_tmp['name'] != false)
+				{
+					if (!in_array($bot_name_tmp['name'], $tmp_bots_array))
+					{
+						$tmp_bots_array[] = $bot_name_tmp['name'];
+						$online_botlist .= ($online_botlist != '') ? ', ' . $bot_name_tmp['name'] : $bot_name_tmp['name'];
+					}
+				}
+				// MG BOTS Parsing - END
+			}
 		}
 	}
 }
