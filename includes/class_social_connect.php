@@ -59,12 +59,12 @@ abstract class SocialConnect
 	}
 
 	/**
-	 * Override this function if your authentication provider
-	 *  can't handle passing a $redirect with query parameters (Google can't)
-	 *
-	 * In this function, you'll be able to input fake values into $_GET and $_POST
-	 *  to mimic what an user would fill to register (includes "I agree to terms" and other variables).
-	 */
+	* Override this function if your authentication provider
+	*  can't handle passing a $redirect with query parameters (Google can't)
+	*
+	* In this function, you'll be able to input fake values into $_GET and $_POST
+	*  to mimic what an user would fill to register (includes "I agree to terms" and other variables).
+	*/
 	public function shim_register_request()
 	{
 	}

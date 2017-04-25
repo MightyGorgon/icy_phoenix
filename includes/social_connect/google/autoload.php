@@ -15,12 +15,18 @@
  * limitations under the License.
  */
 
-// PHP 5.2 compatibility: E_USER_DEPRECATED was added in 5.3
-if (!defined('E_USER_DEPRECATED')) {
-  define('E_USER_DEPRECATED', E_USER_WARNING);
-}
+spl_autoload_register(
+    function ($className) {
+      $classPath = explode('_', $className);
+      if ($classPath[0] != 'Google') {
+        return;
+      }
+      // Drop 'Google', and maximum class file path depth in this project is 3.
+      $classPath = array_slice($classPath, 1, 2);
 
-$error = "google-api-php-client's autoloader was moved to src/Google/autoload.php in 1.1.3. This ";
-$error .= "redirect will be removed in 1.2. Please adjust your code to use the new location.";
-trigger_error($error, E_USER_DEPRECATED);
-require_once dirname(__FILE__) . '/src/Google/autoload.php';
+      $filePath = dirname(__FILE__) . '/' . implode('/', $classPath) . '.php';
+      if (file_exists($filePath)) {
+        require_once($filePath);
+      }
+    }
+);

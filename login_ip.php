@@ -53,9 +53,14 @@ if ($config['enable_social_connect'])
 	$login_admin = request_get_var('admin', 0);
 
 	if (!empty($_SESSION['login_social_network']))
+	{
 		$social_network = $_SESSION['login_social_network'];
+	}
 	else
+	{
 		$social_network = request_var('social_network', '');
+	}
+
 	$social_network_link = request_var('social_network_link', '');
 	// Logging in via social network
 	if (!empty($social_network) && !empty($available_networks[$social_network]))

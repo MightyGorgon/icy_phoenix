@@ -13,7 +13,8 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-define('OAUTH2_PATH', IP_ROOT_PATH . "includes/social_connect/oauth2/src/OAuth2/");
+// NOT USED!
+//define('OAUTH2_PATH', IP_ROOT_PATH . "includes/social_connect/oauth2/src/OAuth2/");
 
 class GoogleConnect extends SocialConnect
 {
@@ -28,7 +29,7 @@ class GoogleConnect extends SocialConnect
 
 		parent::__construct($network_name);
 
-		include_once(IP_ROOT_PATH . "includes/social_connect/google/src/Google/autoload.php");
+		include_once(IP_ROOT_PATH . "includes/social_connect/google/autoload.php");
 
 		$app_id = $config['google_app_id'];
 		$app_secret = $config['google_app_secret'];
@@ -101,9 +102,13 @@ class GoogleConnect extends SocialConnect
 		try
 		{
 			if (isset($_SESSION['google_access_token']))
+			{
 				$this->client->setAccessToken($_SESSION['google_access_token']);
+			}
 			else
+			{
 				$this->do_login('');
+			}
 			$google_user_id = $this->client->verifyIdToken()->getAttributes()['payload']['sub'];
 
 			$google_oauth = new Google_Service_Oauth2($this->client);
@@ -116,10 +121,17 @@ class GoogleConnect extends SocialConnect
 			return $this->get_user_data();
 		}
 
-		$gender = 0;
-		if (!empty($user_fb_data['gender']))
+		$google_user_gender = 0;
+		if (!empty($google_data['gender']))
 		{
-			$gender = ($user_fb_data['gender'] == 'male') ? 1 : 2;
+			if (($google_data['gender'] = 'male') || ($google_data['gender'] = 1))
+			{
+				$google_user_gender = 1;
+			}
+			elseif (($google_data['gender'] = 'female') || ($google_data['gender'] = 2))
+			{
+				$google_user_gender = 2;
+			}
 		}
 
 		$email = explode('@', $google_data['email']);
@@ -128,7 +140,7 @@ class GoogleConnect extends SocialConnect
 		$user_data = array(
 			'username' => $username,
 			'email' => $google_data['email'],
-			'gender' => $google_data['gender'],
+			'gender' => $google_user_gender,
 			'user_google_id' => $google_user_id,
 			'u_profile_photo' => empty($google_data['picture']) ? '' : $google_data['picture'],
 			'user_real_name' => empty($google_data['name']) ? 'Profile #' . $google_data['sub'] : $google_data['name'],
@@ -148,3 +160,5 @@ class GoogleConnect extends SocialConnect
 		$_POST['agreed'] = $_POST['privacy'] = 'true';
 	}
 }
+
+?>

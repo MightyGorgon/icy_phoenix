@@ -537,7 +537,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 				}
 			}
 
-			$template->assign_vars($a=array(
+			$template->assign_vars(array(
 				'SOCIAL_CONNECT' => true,
 				'U_PROFILE_PHOTO' => $user_data_social['u_profile_photo'],
 				'USER_REAL_NAME' => $user_data_social['user_real_name'],
@@ -547,6 +547,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 			);
 
 			unset($_SESSION['login_social_network']);
+
 			// We just auto-activate the user, the social network must have verified the email already
 			$config['require_activation'] = USER_ACTIVATION_NONE;
 		}
