@@ -26,7 +26,7 @@ class class_plugins
 	var $plugins_path = '';
 	var $plugins_settings_path = '';
 
-	var $plugin_includes_array = array('constants', 'common', 'functions', 'class');
+	var $plugin_includes_array = array('constants', 'common', 'functions');
 
 	var $config = array();
 	var $settings = array();
@@ -472,7 +472,7 @@ class class_plugins
 
 		if ($clear_cache)
 		{
-			$this->cache_clear();
+			$this->cache_clear(false);
 		}
 	}
 
@@ -489,7 +489,7 @@ class class_plugins
 		$db->sql_return_on_error(false);
 		if ($clear_cache)
 		{
-			$this->cache_clear();
+			$this->cache_clear(false);
 		}
 	}
 
@@ -520,7 +520,7 @@ class class_plugins
 
 		if ($clear_cache)
 		{
-			$this->cache_clear();
+			$this->cache_clear(false);
 		}
 	}
 
@@ -650,7 +650,7 @@ class class_plugins
 
 		if ($settings_details['clear_cache'])
 		{
-			$this->cache_clear();
+			$this->cache_clear(false);
 		}
 	}
 
@@ -753,16 +753,26 @@ class class_plugins
 
 	/**
 	* Cache clear
+	*
+	* During plugin install/update/uninstall, we fully clear the cache.
+	* This is important especially for hooks, as we want to clear template cache to refresh.
 	*/
-	function cache_clear()
+	function cache_clear($full = true)
 	{
 		global $db, $cache, $config, $lang;
 
-		$cache->destroy('config_plugins');
-		$db->clear_cache('config_plugins_');
+		if ($full)
+		{
+			empty_cache_folders();
+		}
+		else
+		{
+			$cache->destroy('config_plugins');
+			$db->clear_cache('config_plugins_');
 
-		$cache->destroy('config_plugins_config');
-		$db->clear_cache('config_plugins_config_');
+			$cache->destroy('config_plugins_config');
+			$db->clear_cache('config_plugins_config_');
+		}
 
 		return true;
 	}
@@ -781,11 +791,12 @@ class class_plugins
 	*/
 	function trigger($event_name, array $vars)
 	{
+		$event_method = str_replace('.', '__', $event_name);
 		foreach ($this->registered_plugins as $k => $plugin_class)
 		{
 			if (in_array($event_name, $plugin_class->events))
 			{
-				$return = $plugin_class->{'event_' . $event_name}($vars);
+				$return = $plugin_class->{'event_' . $event_method}($vars);
 				// if the function didn't return null, use the new vars provided.
 				if ($return)
 				{
@@ -794,6 +805,31 @@ class class_plugins
 			}
 		}
 		return $vars;
+	}
+
+	/**
+	* Returns the hook files for the plugins.
+	*/
+	function get_hook_files($hook)
+	{
+		global $config;
+
+		$files = array();
+		$base_dir = '../../' . PLUGINS_PATH;
+		$tpl_file = $hook . '.tpl';
+		foreach ($this->registered_plugins as $k => $plugin_class)
+		{
+			if (!$config['plugins'][$k]['enabled'])
+			{
+				continue;
+			}
+			if (isset($plugin_class->hooks) && in_array($hook, $plugin_class->hooks))
+			{
+				$plugin_dir = $base_dir . $config['plugins'][$k]['dir'] . 'templates/';
+				$files[] = $this->get_tpl_file($plugin_dir, $tpl_file);
+			}
+		}
+		return $files;
 	}
 
 }

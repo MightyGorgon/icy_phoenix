@@ -265,19 +265,22 @@ foreach ($cache->obtain_plugins_config() as $k => $plugin)
 	$config['plugins'][$k]['enabled'] = !empty($plugin['plugin_enabled']) ? true : false;
 	$config['plugins'][$k]['dir'] = !empty($plugin['plugin_dir']) ? ($plugin['plugin_dir'] . '/') : '';
 	// Plugins autoload - BEGIN
+	$plugin_dir = IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$k]['dir'];
 	foreach ($class_plugins->plugin_includes_array as $plugin_include)
 	{
 		$config['plugins'][$k][$plugin_include] = !empty($plugin['plugin_' . $plugin_include]) ? true : false;
 		if (!empty($config['plugins'][$k][$plugin_include]))
 		{
-			@include_once(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$k]['dir'] . $plugin_include . '.' . PHP_EXT);
+			@include_once($plugin_dir . $plugin_include . '.' . PHP_EXT);
 		}
 	}
 
 	// if the plugin has a class (events, etc), register it.
-	$plugin_class_name = 'plugin_' . $k;
-	if (class_exists($plugin_class_name))
+	$plugin_class_name = 'class_plugin_' . $k;
+	$plugin_class_file = $plugin_dir . 'includes/' . $plugin_class_name . '.' . PHP_EXT;
+	if (file_exists($plugin_class_file))
 	{
+		@include_once($plugin_class_file);
 		$class_plugins->register($k, new $plugin_class_name());
 	}
 	// Plugins autoload - END
