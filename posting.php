@@ -147,7 +147,7 @@ $d_min = request_post_var('topic_calendar_duration_min', 0);
 // this array will hold the plugin-specific variables 
 $extra_vars = array();
 /**
-* @event posting_post_vars.
+* @event posting.post_vars.
 * @description Allows to read POST data to be used later.
 * @since 3.0
 * @var int topic_type The topic type.
@@ -157,7 +157,7 @@ $vars = array(
 	'topic_type',
 	'extra_vars',
 );
-extract($class_plugins->trigger('posting_post_vars', compact($vars)));
+extract($class_plugins->trigger('posting.post_vars', compact($vars)));
 
 if (empty($year) || empty($month) || empty($day))
 {
@@ -406,12 +406,12 @@ switch ($mode)
 		}
 		
 		/**
-		* @event before_posting_select.
+		* @event posting.before_select.
 		* @description Allows to edit the query to look up the forum / topic / post data.
 		* @since 3.0
 		* @var array query The SQL query parts.
 		*/
-		extract($class_plugins->trigger('before_posting_select', compact('query')));
+		extract($class_plugins->trigger('posting.before_select', compact('query')));
 		
 		$sql = $db->sql_build_query('SELECT', $query);
 
@@ -523,7 +523,7 @@ if ($result && $post_info)
 		$post_data['post_images'] = $post_info['post_images'];
 
 		/**
-		* @event posting_post_data.
+		* @event posting.post_data.
 		* @description Sets up the post_data from the post_info.
 		* @since 3.0
 		* @var array query The SQL query parts
@@ -532,7 +532,7 @@ if ($result && $post_info)
 			'post_data',
 			'post_info',
 		);
-		extract($class_plugins->trigger('posting_post_data', compact($vars)));
+		extract($class_plugins->trigger('posting.post_data', compact($vars)));
 
 		if (($config['allow_mods_edit_admin_posts'] == false) && ($post_info['user_level'] == ADMIN) && ($user->data['user_level'] != ADMIN))
 		{
@@ -1999,7 +1999,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 		$topic_type_toggle = '<input type="radio" name="topictype" value="' . POST_NORMAL .'"' . (($post_data['topic_type'] == POST_NORMAL || $topic_type == POST_NORMAL) ? ' checked="checked"' : '') . ' /> ' . $lang['Post_Normal'] . '&nbsp;&nbsp;' . $topic_type_toggle;
 		
 		/**
-		* @event after_topic_type_toggle.
+		* @event posting.after_topic_type_toggle.
 		* @description Allows to change the topic type toggle HTML.
 		* @since 3.0
 		* @var string topic_type_toggle The fully-built topic type toggle.
@@ -2011,7 +2011,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 			'mode',
 			'post_data'
 		);
-		extract($class_plugins->trigger('after_topic_type_toggle', compact($vars)));
+		extract($class_plugins->trigger('posting.after_topic_type_toggle', compact($vars)));
 
 		$template->assign_block_vars('switch_type_toggle', array());
 	}

@@ -71,11 +71,11 @@ class class_form
 				break;
 
 			case 'LIST_CHECKBOX':
-			case 'LIST_FLAGS':
 				if (!is_array($default))
 				{
 					$default = explode(',', $default);
 				}
+			case 'LIST_FLAGS':
 				@reset($properties['values']);
 				while (list($key, $val) = @each($properties['values']))
 				{
@@ -559,7 +559,14 @@ class class_form
 		{
 			$multibyte = (isset($v['type']) && in_array($v['type'], array('HIDDEN', 'VARCHAR', 'HTMLVARCHAR', 'TEXT', 'HTMLTEXT'))) ? true : false;
 			$html_decode = (isset($v['type']) && in_array($v['type'], array('HTMLVARCHAR', 'HTMLTEXT'))) ? true : false;
-			$vars_data[$k] = request_var($k, $v['default'], $multibyte);
+			if ($v['type'] == 'LIST_FLAGS')
+			{
+				$vars_data[$k] = array_sum(request_var($k, array(0)));
+			}
+			else
+			{
+				$vars_data[$k] = request_var($k, $v['default'], $multibyte);
+			}
 			$vars_data[$k] = $html_decode ? htmlspecialchars_decode($vars_data[$k], ENT_COMPAT) : $vars_data[$k];
 			$data_array[$k]['default'] = $vars_data[$k];
 		}

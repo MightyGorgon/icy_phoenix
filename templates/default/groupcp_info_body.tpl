@@ -75,6 +75,7 @@
 	<th>{L_EMAIL}</th>
 	<th>{L_WEBSITE}</th>
 	<th>{L_SELECT}</th>
+	<!-- HOOK groupcp_table_th -->
 </tr>
 <!-- BEGIN memberrow -->
 <tr>

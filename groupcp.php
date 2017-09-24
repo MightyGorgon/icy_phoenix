@@ -58,13 +58,33 @@ if (isset($_POST['groupstatus']) && $group_id)
 		redirect(append_sid(CMS_PAGE_LOGIN . '?redirect=groupcp.' . PHP_EXT . '&' . POST_GROUPS_URL . '=' . $group_id, true));
 	}
 
-	$sql = "SELECT group_moderator
-		FROM " . GROUPS_TABLE . "
-		WHERE group_id = '" . $group_id . "'";
-	$result = $db->sql_query($sql);
-	$row = $db->sql_fetchrow($result);
+	$query = array(
+		'SELECT' => array('g.group_moderator'),
+		'FROM' => array(
+			GROUPS_TABLE => 'g',
+		),
+		'WHERE' => array(
+			'g.group_id = ' . $group_id,
+		),
+	);
 
-	if (($row['group_moderator'] != $user->data['user_id']) && ($user->data['user_level'] != ADMIN))
+	/**
+	* @event groupcp.select_moderators
+	* @description Allows to edit the query to look up the group moderators.
+	* @since 3.0
+	* @var array query The SQL query parts.
+	*/
+	extract($class_plugins->trigger('groupcp.select_moderators', compact('query')));
+
+	$sql = $db->sql_build_query('SELECT', $query);
+	$result = $db->sql_query($sql);
+	$group_moderators = array();
+	while ($row = $db->sql_fetchrow($result))
+	{
+		$group_moderators[] = $row['group_moderator'];
+	}
+
+	if (!in_array($user->data['user_id'], $group_moderators) && ($user->data['user_level'] != ADMIN))
 	{
 		$redirect_url = append_sid(CMS_PAGE_FORUM);
 		meta_refresh(3, $redirect_url);
@@ -162,29 +182,47 @@ elseif (isset($_POST['joingroup']) && $group_id)
 
 	if (!$is_autogroup_enable)
 	{
-		$sql = "SELECT u.user_email, u.username, u.user_lang, g.group_name
-			FROM " . USERS_TABLE . " u, " . GROUPS_TABLE . " g
-			WHERE u.user_id = g.group_moderator
-				AND g.group_id = '" . $group_id . "'";
+		$query = array(
+			'SELECT' => array('u.user_email', 'u.username', 'u.user_lang', 'g.group_name'),
+			'FROM' => array(
+				USERS_TABLE => 'u',
+				GROUPS_TABLE => 'g',
+			),
+			'WHERE' => array(
+				'g.group_id = ' . $group_id,
+				'u.user_id = g.group_moderator',
+			),
+		);
+
+		/**
+		* @event groupcp.get_moderator_users
+		* @description Allows to edit the query to look up the group moderators.
+		* @since 3.0
+		* @var array query The SQL query parts.
+		*/
+		extract($class_plugins->trigger('groupcp.get_moderator_users', compact('query')));
+
+		$sql = $db->sql_build_query('SELECT', $query);
 		$result = $db->sql_query($sql);
-		$moderator = $db->sql_fetchrow($result);
+		while ($moderator = $db->sql_fetchrow($result))
+		{
+			include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+			$emailer = new emailer();
+			$emailer->use_template('group_request', $moderator['user_lang']);
+			$emailer->to($moderator['user_email']);
+			$emailer->set_subject($lang['Group_request']);
 
-		include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-		$emailer = new emailer();
-		$emailer->use_template('group_request', $moderator['user_lang']);
-		$emailer->to($moderator['user_email']);
-		$emailer->set_subject($lang['Group_request']);
-
-		$email_sig = create_signature($config['board_email_sig']);
-		$emailer->assign_vars(array(
-			'SITENAME' => $config['sitename'],
-			'GROUP_MODERATOR' => $moderator['username'],
-			'EMAIL_SIG' => $email_sig,
-			'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id . '&validate=true'
+			$email_sig = create_signature($config['board_email_sig']);
+			$emailer->assign_vars(array(
+				'SITENAME' => $config['sitename'],
+				'GROUP_MODERATOR' => $moderator['username'],
+				'EMAIL_SIG' => $email_sig,
+				'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id . '&validate=true'
 			)
 		);
-		$emailer->send();
-		$emailer->reset();
+			$emailer->send();
+			$emailer->reset();
+		}
 
 		$redirect_url = append_sid(CMS_PAGE_FORUM);
 		meta_refresh(3, $redirect_url);
@@ -280,6 +318,24 @@ elseif ($group_id)
 		{
 			$is_moderator = true;
 		}
+		else
+		{
+			$is_moderator = false;
+		}
+
+		/**
+		* @event groupcp.is_modeator
+		* @description Allows to check if a user is a group moderator.
+		* @since 3.0
+		* @var int user_id The user ID to check.
+		* @var int group_id The group ID to check.
+		* @var bool is_moderator Is the user already considered a moderator.
+		*/
+		extract($class_plugins->trigger('groupcp.is_moderator', array(
+			'user_id' => $user->data['user_id'],
+			'group_id' => $group_id,
+			'is_moderator' => $is_moderator,
+		)));
 
 		// Handle Additions, removals, approvals and denials
 		if (!empty($_POST['add']) || !empty($_POST['remove']) || isset($_POST['approve']) || isset($_POST['deny']) || isset($_POST['mass_colorize']))
@@ -404,184 +460,196 @@ elseif ($group_id)
 					message_die(GENERAL_MESSAGE, $message);
 				}
 			}
-			else
+			else if (((isset($_POST['approve']) || isset($_POST['deny'])) && isset($_POST['pending_members'])) || (isset($_POST['remove']) && isset($_POST['members'])) || (isset($_POST['mass_colorize']) && isset($_POST['members'])))
 			{
-				if (((isset($_POST['approve']) || isset($_POST['deny'])) && isset($_POST['pending_members'])) || (isset($_POST['remove']) && isset($_POST['members'])) || (isset($_POST['mass_colorize']) && isset($_POST['members'])))
+
+				$members = (isset($_POST['approve']) || isset($_POST['deny'])) ? $_POST['pending_members'] : $_POST['members'];
+
+				$sql_in = '';
+				for($i = 0; $i < sizeof($members); $i++)
 				{
+					$sql_in .= (($sql_in != '') ? ', ' : '') . intval($members[$i]);
+					clear_user_color_cache($members[$i]);
+				}
 
-					$members = (isset($_POST['approve']) || isset($_POST['deny'])) ? $_POST['pending_members'] : $_POST['members'];
-
-					$sql_in = '';
-					for($i = 0; $i < sizeof($members); $i++)
+				if (isset($_POST['approve']))
+				{
+					if ($group_info['auth_mod'])
 					{
-						$sql_in .= (($sql_in != '') ? ', ' : '') . intval($members[$i]);
-						clear_user_color_cache($members[$i]);
+						$sql = "UPDATE " . USERS_TABLE . "
+							SET user_level = " . MOD . "
+							WHERE user_id IN ($sql_in)
+								AND user_level NOT IN (" . MOD . ", " . JUNIOR_ADMIN . ", " . ADMIN . ")";
+						$db->sql_query($sql);
 					}
 
-					if (isset($_POST['approve']))
-					{
-						if ($group_info['auth_mod'])
-						{
-							$sql = "UPDATE " . USERS_TABLE . "
-								SET user_level = " . MOD . "
-								WHERE user_id IN ($sql_in)
-									AND user_level NOT IN (" . MOD . ", " . JUNIOR_ADMIN . ", " . ADMIN . ")";
-							$db->sql_query($sql);
-						}
-
-						if (!empty($group_color) && ($group_color != $config['active_users_color']))
-						{
-							$sql_users = "UPDATE " . USERS_TABLE . "
-								SET group_id = '" . $group_id . "'
-								WHERE user_id IN ($sql_in)
-									AND group_id = '0'";
-							$db->sql_query($sql_users);
-						}
-
-						$sql_users = "UPDATE " . USERS_TABLE . "
-							SET user_color = '" . $group_color . "'
-							WHERE user_id IN ($sql_in)
-								AND (user_color = '' OR user_color = '" . $config['active_users_color'] . "')";
-						$db->sql_query($sql_users);
-
-						$sql_users = "UPDATE " . USERS_TABLE . "
-							SET user_rank = '" . $group_rank . "'
-							WHERE user_id IN ($sql_in)
-								AND user_rank = '0'";
-						$db->sql_query($sql_users);
-
-						$sql = "UPDATE " . USER_GROUP_TABLE . "
-							SET user_pending = 0
-							WHERE user_id IN ($sql_in)
-								AND group_id = $group_id";
-						$sql_select = "SELECT user_email
-							FROM ". USERS_TABLE . "
-							WHERE user_id IN ($sql_in)";
-					}
-					elseif (isset($_POST['mass_colorize']))
+					if (!empty($group_color) && ($group_color != $config['active_users_color']))
 					{
 						$sql_users = "UPDATE " . USERS_TABLE . "
-							SET group_id = '" . $group_id . "', user_color = '" . $group_color . "', user_rank = '" . $group_rank . "'
-							WHERE user_id IN ($sql_in)";
-						$db->sql_query($sql_users);
-
-						$redirect_url = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id);
-						meta_refresh(3, $redirect_url);
-
-						$message = $lang['Group_members_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
-
-						message_die(GENERAL_MESSAGE, $message);
-					}
-					elseif (isset($_POST['deny']) || isset($_POST['remove']))
-					{
-						if ($group_info['auth_mod'])
-						{
-							$sql = "SELECT ug.user_id, ug.group_id
-								FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug
-								WHERE ug.user_id IN ($sql_in)
-									AND aa.group_id = ug.group_id
-									AND aa.auth_mod = 1
-								GROUP BY ug.user_id, ug.group_id
-								ORDER BY ug.user_id, ug.group_id";
-							$result = $db->sql_query($sql);
-
-							if ($row = $db->sql_fetchrow($result))
-							{
-								$group_check = array();
-								$remove_mod_sql = '';
-
-								do
-								{
-									$group_check[$row['user_id']][] = $row['group_id'];
-								}
-								while ($row = $db->sql_fetchrow($result));
-
-								while(list($user_id, $group_list) = @each($group_check))
-								{
-									if (sizeof($group_list) == 1)
-									{
-										$remove_mod_sql .= (($remove_mod_sql != '') ? ', ' : '') . $user_id;
-									}
-								}
-
-								if ($remove_mod_sql != '')
-								{
-									$sql = "UPDATE " . USERS_TABLE . "
-										SET user_level = " . USER . "
-										WHERE user_id IN ($remove_mod_sql)
-											AND user_level NOT IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")";
-									$db->sql_query($sql);
-								}
-							}
-						}
-
-						$sql = "DELETE FROM " . USER_GROUP_TABLE . "
+							SET group_id = '" . $group_id . "'
 							WHERE user_id IN ($sql_in)
-								AND group_id = $group_id";
+								AND group_id = '0'";
+						$db->sql_query($sql_users);
 					}
-					$db->sql_query($sql);
 
 					$sql_users = "UPDATE " . USERS_TABLE . "
-						SET group_id = '0'
+						SET user_color = '" . $group_color . "'
 						WHERE user_id IN ($sql_in)
-							AND group_id = '" . $group_id . "'";
-					$result = $db->sql_query($sql_users);
-
-					$sql_users = "UPDATE " . USERS_TABLE . "
-						SET user_color = ''
-						WHERE user_id IN ($sql_in)
-							AND user_color = '" . $group_color . "'";
+							AND (user_color = '' OR user_color = '" . $config['active_users_color'] . "')";
 					$db->sql_query($sql_users);
-					$cache->remove_file(CACHE_TREE_FILE, false, MAIN_CACHE_FOLDER);
-					$db->clear_cache(SQL_CACHE_FOLDER);
-					$db->clear_cache(USERS_CACHE_FOLDER);
 
-					// Email users when they are approved
-					if (isset($_POST['approve']))
+					$sql_users = "UPDATE " . USERS_TABLE . "
+						SET user_rank = '" . $group_rank . "'
+						WHERE user_id IN ($sql_in)
+							AND user_rank = '0'";
+					$db->sql_query($sql_users);
+
+					$sql = "UPDATE " . USER_GROUP_TABLE . "
+						SET user_pending = 0
+						WHERE user_id IN ($sql_in)
+							AND group_id = $group_id";
+					$sql_select = "SELECT user_email
+						FROM ". USERS_TABLE . "
+						WHERE user_id IN ($sql_in)";
+				}
+				elseif (isset($_POST['mass_colorize']))
+				{
+					$sql_users = "UPDATE " . USERS_TABLE . "
+						SET group_id = '" . $group_id . "', user_color = '" . $group_color . "', user_rank = '" . $group_rank . "'
+						WHERE user_id IN ($sql_in)";
+					$db->sql_query($sql_users);
+
+					$redirect_url = append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id);
+					meta_refresh(3, $redirect_url);
+
+					$message = $lang['Group_members_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id) . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid(CMS_PAGE_FORUM) . '">', '</a>');
+
+					message_die(GENERAL_MESSAGE, $message);
+				}
+				elseif (isset($_POST['deny']) || isset($_POST['remove']))
+				{
+					if ($group_info['auth_mod'])
 					{
-						$result = $db->sql_query($sql_select);
-						$bcc_list = array();
-						while ($row = $db->sql_fetchrow($result))
-						{
-							$bcc_list[] = $row['user_email'];
-						}
+						$sql = "SELECT ug.user_id, ug.group_id
+							FROM " . AUTH_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug
+							WHERE ug.user_id IN ($sql_in)
+								AND aa.group_id = ug.group_id
+								AND aa.auth_mod = 1
+							GROUP BY ug.user_id, ug.group_id
+							ORDER BY ug.user_id, ug.group_id";
+						$result = $db->sql_query($sql);
 
-						// Get the group name
-						$group_sql = "SELECT group_name
-							FROM " . GROUPS_TABLE . "
-							WHERE group_id = '" . $group_id . "'";
-						$result = $db->sql_query($group_sql);
-						$group_name_row = $db->sql_fetchrow($result);
-						$group_name = $group_name_row['group_name'];
-
-						include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
-						$emailer = new emailer();
-						foreach ($bcc_list as $bcc_address)
+						if ($row = $db->sql_fetchrow($result))
 						{
-							if (!empty($bcc_address))
+							$group_check = array();
+							$remove_mod_sql = '';
+
+							do
 							{
-								$emailer->bcc($bcc_address);
+								$group_check[$row['user_id']][] = $row['group_id'];
+							}
+							while ($row = $db->sql_fetchrow($result));
+
+							while(list($user_id, $group_list) = @each($group_check))
+							{
+								if (sizeof($group_list) == 1)
+								{
+									$remove_mod_sql .= (($remove_mod_sql != '') ? ', ' : '') . $user_id;
+								}
+							}
+
+							if ($remove_mod_sql != '')
+							{
+								$sql = "UPDATE " . USERS_TABLE . "
+									SET user_level = " . USER . "
+									WHERE user_id IN ($remove_mod_sql)
+										AND user_level NOT IN (" . JUNIOR_ADMIN . ", " . ADMIN . ")";
+								$db->sql_query($sql);
 							}
 						}
-						$emailer->use_template('group_approved');
-						$emailer->set_subject($lang['Group_approved']);
-
-						$email_sig = create_signature($config['board_email_sig']);
-						$emailer->assign_vars(array(
-							'SITENAME' => $config['sitename'],
-							'GROUP_NAME' => $group_name,
-							'EMAIL_SIG' => $email_sig,
-
-							'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
-							)
-						);
-						$emailer->send();
-						$emailer->reset();
 					}
+
+					$sql = "DELETE FROM " . USER_GROUP_TABLE . "
+						WHERE user_id IN ($sql_in)
+							AND group_id = $group_id";
+				}
+				$db->sql_query($sql);
+
+				$sql_users = "UPDATE " . USERS_TABLE . "
+					SET group_id = '0'
+					WHERE user_id IN ($sql_in)
+						AND group_id = '" . $group_id . "'";
+				$result = $db->sql_query($sql_users);
+
+				$sql_users = "UPDATE " . USERS_TABLE . "
+					SET user_color = ''
+					WHERE user_id IN ($sql_in)
+						AND user_color = '" . $group_color . "'";
+				$db->sql_query($sql_users);
+				$cache->remove_file(CACHE_TREE_FILE, false, MAIN_CACHE_FOLDER);
+				$db->clear_cache(SQL_CACHE_FOLDER);
+				$db->clear_cache(USERS_CACHE_FOLDER);
+
+				// Email users when they are approved
+				if (isset($_POST['approve']))
+				{
+					$result = $db->sql_query($sql_select);
+					$bcc_list = array();
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$bcc_list[] = $row['user_email'];
+					}
+
+					// Get the group name
+					$group_sql = "SELECT group_name
+						FROM " . GROUPS_TABLE . "
+						WHERE group_id = '" . $group_id . "'";
+					$result = $db->sql_query($group_sql);
+					$group_name_row = $db->sql_fetchrow($result);
+					$group_name = $group_name_row['group_name'];
+
+					include(IP_ROOT_PATH . 'includes/emailer.' . PHP_EXT);
+					$emailer = new emailer();
+					foreach ($bcc_list as $bcc_address)
+					{
+						if (!empty($bcc_address))
+						{
+							$emailer->bcc($bcc_address);
+						}
+					}
+					$emailer->use_template('group_approved');
+					$emailer->set_subject($lang['Group_approved']);
+
+					$email_sig = create_signature($config['board_email_sig']);
+					$emailer->assign_vars(array(
+						'SITENAME' => $config['sitename'],
+						'GROUP_NAME' => $group_name,
+						'EMAIL_SIG' => $email_sig,
+
+						'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id
+						)
+					);
+					$emailer->send();
+					$emailer->reset();
 				}
 			}
 		}
-		// END approve or deny
+		else
+		{
+			/**
+			* @event groupcp.additional_actions
+			* @description Allows the plugins to run additional actions.
+			* @since 3.0
+			* @var int user_id The user ID.
+			* @var int group_id The group ID.
+			* @var bool is_moderator Is the user a moderator.
+			*/
+			$class_plugins->trigger('groupcp.additional_actions', array(
+				'user_id' => $user->data['user_id'],
+				'group_id' => $group_id,
+				'is_moderator' => $is_moderator,
+			));
+		}
 	}
 	else
 	{

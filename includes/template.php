@@ -73,6 +73,7 @@ define('XS_TAG_DEFINE', 9);
 define('XS_TAG_UNDEFINE', 10);
 define('XS_TAG_BEGINELSE', 11);
 define('XS_TAG_ALIAS', 12);
+define('XS_TAG_HOOK', 13);
 
 class Template {
 	var $classname = 'Template';
@@ -1069,6 +1070,7 @@ class Template {
 	*/
 	function compile_code($filename, $code, $use_isset = false)
 	{
+		global $class_plugins;
 		//	$filename - file to load code from. used if $code is empty
 		//	$code - tpl code
 		//	$use_isset - if false then compiled code looks more beautiful and easier
@@ -1204,6 +1206,10 @@ class Template {
 					elseif($keyword === 'ALIAS')
 					{
 						$keyword_type = XS_TAG_ALIAS;
+					}
+					elseif($keyword === 'HOOK')
+					{
+						$keyword_type = XS_TAG_HOOK;
 					}
 				}
 			}
@@ -1560,6 +1566,30 @@ class Template {
 				$line = '<' . '?php // alias ' . $var_alias . ' = ' . $params[1] . "\n\n";
 				$line .= '$this->_tpldata[\'' . $var_alias . '.\'] = &' . $var_org . ';' . "\n";
 				$line .= "\n" . '?' . '>';
+				$compiled[] = $line;
+				continue;
+			}
+			/*
+			* <!-- HOOK -->
+		  */
+			if ($keyword_type == XS_TAG_HOOK)
+			{
+				$params = explode(' ', $params_str);
+				$num_params = sizeof($params);
+				if($num_params != 1)
+				{
+					$compiled[] = $keyword_str;
+					continue;
+				}
+				$line = '<' . '?php ';
+				foreach ($class_plugins->get_hook_files($params_str) as $hook_file)
+				{
+					$filehash = md5($params_str . $this->include_count . time());
+					$line .= ' $this->set_filename(\'xs_include_' . $filehash . '\', \'' . $hook_file . '\', true); ';
+					$line .= ' $this->pparse(\'xs_include_' . $filehash . '\'); ';
+					$this->include_count++;
+				}
+				$line .= ' ?' . '>';
 				$compiled[] = $line;
 				continue;
 			}
