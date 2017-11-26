@@ -357,44 +357,47 @@ elseif ($mode == 'checkemail')
 }
 elseif (($mode == 'like') || ($mode == 'unlike'))
 {
-	if ($user->data['user_id'] == ANONYMOUS)
+	$is_auth = (($user->data['user_id'] == ANONYMOUS) ? false : true);
+	if (empty($is_auth))
 	{
-		$result_code = AJAX_ERROR;
+		$result_ar = array(
+			'result' => AJAX_ERROR,
+			'error_msg' => 'Not authorized'
+		);
+		AJAX_message_die($result_ar);
+	}
+
+	@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
+	$class_topics = new class_topics();
+
+	// Init common vars: forum_id, topic_id, post_id, etc.
+	$class_topics->var_init(true);
+
+	$post_data = array(
+		'topic_id' => $topic_id,
+		'post_id' => $post_id,
+		'user_id' => $user->data['user_id'],
+		'like_time' => time()
+	);
+
+	if ($mode == 'like')
+	{
+		$like_result = $class_topics->post_like_add($post_data);
 	}
 	else
 	{
-		@include_once(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
-		$class_topics = new class_topics();
+		$like_result = $class_topics->post_like_remove($post_data);
+	}
 
-		// Init common vars: forum_id, topic_id, post_id, etc.
-		$class_topics->var_init(true);
-
-		$post_data = array(
-			'topic_id' => $topic_id,
-			'post_id' => $post_id,
-			'user_id' => $user->data['user_id'],
-			'like_time' => time()
-		);
-
-		if ($mode == 'like')
-		{
-			$like_result = $class_topics->post_like_add($post_data);
-		}
-		else
-		{
-			$like_result = $class_topics->post_like_remove($post_data);
-		}
-
-		if ($like_result)
-		{
-			$result_code = ($mode == 'like') ? AJAX_POST_LIKE : AJAX_POST_UNLIKE;
-			$error_msg = '';
-		}
-		else
-		{
-			$result_code = AJAX_ERROR;
-			$error_msg = '';
-		}
+	if ($like_result)
+	{
+		$result_code = ($mode == 'like') ? AJAX_POST_LIKE : AJAX_POST_UNLIKE;
+		$error_msg = '';
+	}
+	else
+	{
+		$result_code = AJAX_ERROR;
+		$error_msg = '';
 	}
 
 	$result_ar = array(
@@ -408,6 +411,16 @@ elseif (($mode == 'like') || ($mode == 'unlike'))
 }
 elseif ($mode == 'get_more_images')
 {
+	$is_auth = check_auth_level(AUTH_REG);
+	if (empty($is_auth))
+	{
+		$result_ar = array(
+			'result' => AJAX_ERROR,
+			'error_msg' => 'Not authorized'
+		);
+		AJAX_message_die($result_ar);
+	}
+
 	include(IP_ROOT_PATH . 'includes/class_images.' . PHP_EXT);
 	$class_images = new class_images();
 

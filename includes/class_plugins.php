@@ -26,7 +26,7 @@ class class_plugins
 	var $plugins_path = '';
 	var $plugins_settings_path = '';
 
-	var $plugin_includes_array = array('constants', 'common', 'functions');
+	var $plugin_includes_array = array('constants', 'common', 'functions', 'class');
 
 	var $config = array();
 	var $settings = array();
@@ -753,15 +753,12 @@ class class_plugins
 
 	/**
 	* Cache clear
-	*
-	* During plugin install/update/uninstall, we fully clear the cache.
-	* This is important especially for hooks, as we want to clear template cache to refresh.
 	*/
 	function cache_clear($full = true)
 	{
 		global $db, $cache, $config, $lang;
 
-		if ($full)
+		if (!empty($full))
 		{
 			empty_cache_folders();
 		}
@@ -815,7 +812,6 @@ class class_plugins
 		global $config;
 
 		$files = array();
-		$base_dir = '../../' . PLUGINS_PATH;
 		$tpl_file = $hook . '.tpl';
 		foreach ($this->registered_plugins as $k => $plugin_class)
 		{
@@ -825,7 +821,7 @@ class class_plugins
 			}
 			if (isset($plugin_class->hooks) && in_array($hook, $plugin_class->hooks))
 			{
-				$plugin_dir = $base_dir . $config['plugins'][$k]['dir'] . 'templates/';
+				$plugin_dir = $this->plugins_path . $config['plugins'][$k]['dir'] . 'templates/';
 				$files[] = $this->get_tpl_file($plugin_dir, $tpl_file);
 			}
 		}

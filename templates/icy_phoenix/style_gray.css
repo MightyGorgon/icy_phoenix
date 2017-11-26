@@ -98,7 +98,7 @@ a {
 
 a:visited { color: #444444; text-decoration: underline; }
 
-a:hover, a:active { color: #880000; text-decoration: underline;}
+a:hover, a:active { color: #880000; text-decoration: underline; }
 
 .error-message {
 	color: #660066;

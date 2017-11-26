@@ -30,7 +30,7 @@ hr { border: 0px none #ffffff; border-top: 1px solid #444444; }
 
 a { color: #225566; text-decoration: underline; }
 a:visited { color: #225566; text-decoration: underline; }
-a:hover, a:active { color: #cc3333; text-decoration: underline;}
+a:hover, a:active { color: #cc3333; text-decoration: underline; }
 
 abbr, acronym { border-bottom: 1px dotted #333333; cursor: help; }
 

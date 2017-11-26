@@ -411,8 +411,8 @@ ul.no-bullet { list-style: none; list-style-type: none; }
 /* UL OL - END */
 
 /* SORTABLE - BEGIN */
-.sortable { border: 1px solid #eeeee; width: 240px; min-height: 20px; list-style-type: none; margin: 0px; margin-right: 10px; padding: 0px; padding-top: 5px; float: left; }
-.sortable li { margin: 5px; margin-top: 0px; padding: 5px; font-size: 1em; width: 220px; }
+.sortable { border: 1px solid #cccccc; width: 240px; min-height: 20px; list-style-type: none; margin: 0px; margin-right: 10px; padding: 0px; padding-top: 5px; float: left; }
+.sortable li { margin: 5px; margin-top: 0px; padding: 5px; font-size: 1em; width: 220px; cursor: pointer; }
 .sortable li.state-src, .sortable li.state-dst { border: 1px solid #bbbbbb; background-color: #f8f8f8; color: #333333; }
 .sortable li.state-dst { background-color: #ffffaa; }
 /* SORTABLE - END */

@@ -144,7 +144,7 @@ $d_day = request_post_var('topic_calendar_duration_day', 0);
 $d_hour = request_post_var('topic_calendar_duration_hour', 0);
 $d_min = request_post_var('topic_calendar_duration_min', 0);
 
-// this array will hold the plugin-specific variables 
+// this array will hold the plugin-specific variables
 $extra_vars = array();
 /**
 * @event posting.post_vars.
@@ -404,7 +404,7 @@ switch ($mode)
 			$query['FROM'][USERS_TABLE] = 'u';
 			$query['WHERE'][] = 'u.user_id = p.poster_id';
 		}
-		
+
 		/**
 		* @event posting.before_select.
 		* @description Allows to edit the query to look up the forum / topic / post data.
@@ -412,7 +412,7 @@ switch ($mode)
 		* @var array query The SQL query parts.
 		*/
 		extract($class_plugins->trigger('posting.before_select', compact('query')));
-		
+
 		$sql = $db->sql_build_query('SELECT', $query);
 
 		// MG Cash MOD For IP - BEGIN
@@ -1997,7 +1997,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 	if ($topic_type_toggle != '')
 	{
 		$topic_type_toggle = '<input type="radio" name="topictype" value="' . POST_NORMAL .'"' . (($post_data['topic_type'] == POST_NORMAL || $topic_type == POST_NORMAL) ? ' checked="checked"' : '') . ' /> ' . $lang['Post_Normal'] . '&nbsp;&nbsp;' . $topic_type_toggle;
-		
+
 		/**
 		* @event posting.after_topic_type_toggle.
 		* @description Allows to change the topic type toggle HTML.

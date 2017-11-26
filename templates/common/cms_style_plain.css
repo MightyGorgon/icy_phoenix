@@ -87,9 +87,9 @@ tr.row1h:hover, tr.row1hHover, tr.row2h:hover, tr.row2hHover, tr.row1h-new:hover
 .forumlink2, .forumlink2-new { font-size: 10px; font-weight: bold; line-height: 1.3em; color: #113355; }
 
 a.forumlink, a.forumlink:visited {color: #113355; text-decoration: none;}
-a.forumlink:hover, a.forumlink:active {color: #cc3333; text-decoration: underline;}
+a.forumlink:hover, a.forumlink:active {color: #cc3333; text-decoration: underline; }
 a.forumlink-new, a.forumlink-new:visited { color: #ff5500; text-decoration: none;}
-a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: underline;}
+a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: underline; }
 
 .moderators { font-size: 10px; color: #888888; }
 .moderators a, .moderators a:visited { color: #777777; text-decoration: underline; }

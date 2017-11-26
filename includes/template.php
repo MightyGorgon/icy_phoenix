@@ -649,7 +649,7 @@ class Template {
 		global $config;
 
 		// Mighty Gorgon - Extra Debug - BEGIN
-		if (defined('DEBUG_EXTRA') && !empty($_REQUEST['explain']))
+		if (defined('DEBUG_EXTRA') && DEBUG_EXTRA && !empty($_REQUEST['explain']))
 		{
 			global $user, $db;
 			if (($user->data['user_level'] == ADMIN) && method_exists($db, 'sql_report'))
@@ -1070,7 +1070,6 @@ class Template {
 	*/
 	function compile_code($filename, $code, $use_isset = false)
 	{
-		global $class_plugins;
 		//	$filename - file to load code from. used if $code is empty
 		//	$code - tpl code
 		//	$use_isset - if false then compiled code looks more beautiful and easier
@@ -1571,9 +1570,15 @@ class Template {
 			}
 			/*
 			* <!-- HOOK -->
-		  */
+			*/
 			if ($keyword_type == XS_TAG_HOOK)
 			{
+				if (empty($class_plugins))
+				{
+					global $class_plugins;
+					if (!class_exists('class_plugins')) include(IP_ROOT_PATH . 'includes/class_plugins.' . PHP_EXT);
+					if (empty($class_plugins)) $class_plugins = new class_plugins();
+				}
 				$params = explode(' ', $params_str);
 				$num_params = sizeof($params);
 				if($num_params != 1)
@@ -1593,6 +1598,11 @@ class Template {
 				$compiled[] = $line;
 				continue;
 			}
+
+
+
+
+
 		}
 
 		// bring it back into a single string.

@@ -71,11 +71,11 @@ class class_form
 				break;
 
 			case 'LIST_CHECKBOX':
+			case 'LIST_FLAGS':
 				if (!is_array($default))
 				{
 					$default = explode(',', $default);
 				}
-			case 'LIST_FLAGS':
 				@reset($properties['values']);
 				while (list($key, $val) = @each($properties['values']))
 				{

@@ -6,10 +6,11 @@
 <!-- BEGIN shoutrow -->
 <tr>
 	<td class="row-post-author tdnw">
+		{shoutrow.AVATAR_IMG}
+		<br />
 		<span class="post-name">{shoutrow.SHOUT_USERNAME}&nbsp;{shoutrow.GENDER}</span>
 		<br />
 		<div class="center-block-text"><div class="post-rank"><b>{shoutrow.RANK_IMAGE}</b></div></div>
-		<span class="post-images">{shoutrow.AVATAR}</span>
 		<!--
 		<div class="post-details">
 			{shoutrow.JOINED}<br />

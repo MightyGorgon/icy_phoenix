@@ -352,4 +352,19 @@ function prepare_lang_entry($text, $store = true)
 	return $text;
 }
 
+/**
+* Check if dir exists and eventually creates it
+*/
+function ip_mkdir($path)
+{
+	$result = false;
+	$result = @is_dir($path);
+	if (empty($result))
+	{
+		$result = @mkdir($path, 0755, true);
+		//@chmod($path, 0777);
+	}
+	return $result;
+}
+
 ?>

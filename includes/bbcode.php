@@ -184,6 +184,7 @@ class bbcode
 	var $allow_bbcode = true;
 	var $allow_smilies = true;
 	var $allow_hs = true;
+	var $plain_html = false;
 	var $is_sig = false;
 
 	var $params = array();
@@ -312,6 +313,7 @@ class bbcode
 		'ul'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'ol'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'li'					=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
+		'code'				=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 		'blockquote'	=> array('nested' => true, 'inurl' => false, 'allow_empty' => false),
 
 		'table'			=> array('nested' => true, 'inurl' => false),
@@ -502,12 +504,6 @@ class bbcode
 		// RAINBOW
 		if($tag === 'rainbow')
 		{
-			/*
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
-			*/
 			$html = $this->rainbow($content);
 			return array(
 				'valid' => true,
@@ -519,12 +515,6 @@ class bbcode
 		// GRADIENT
 		if($tag === 'gradient')
 		{
-			/*
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
-			*/
 			$default_color1 = '#000080';
 			$color1 = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['cols']) ? $item['params']['cols'] : $default_color1)), true);
 			$color1 = (($color1 === false) ? $default_color1 : $color1);
@@ -600,10 +590,8 @@ class bbcode
 		// Single tags: HR
 		if($tag === 'hr')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 			$color = $this->valid_color((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['color']) ? $item['params']['color'] : false)));
 
@@ -638,10 +626,8 @@ class bbcode
 		// IMG
 		if($tag === 'img')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+
 			// main parameters
 			$params = array(
 				'src' => false,
@@ -702,7 +688,7 @@ class bbcode
 				$path_parts = pathinfo($img_url);
 				$params['alt'] = (isset($item['params']['alt']) ? $item['params']['alt'] : (isset($params['title']) ? $params['title'] : ip_clean_string($path_parts['filename'], $lang['ENCODING'], true)));
 				// LIW - BEGIN
-				if (($config['liw_enabled'] == 1) && ($max_image_width > 0) && ($config['thumbnail_posts'] == 0))
+				if (($config['liw_enabled'] == 1) && ($max_image_width > 0) && ($config['thumbnail_posts'] == 0) && empty($this->plain_html))
 				{
 					$liw_bypass = true;
 					if (isset($item['params']['width']))
@@ -742,7 +728,7 @@ class bbcode
 				$is_smiley = true;
 			}
 
-			if (!$is_smiley && $config['thumbnail_posts'] && ($liw_bypass == false))
+			if (!$is_smiley && $config['thumbnail_posts'] && ($liw_bypass == false) && empty($this->plain_html))
 			{
 				$process_thumb = !empty($config['thumbnail_cache']) ? true : false;
 				$thumb_exists = false;
@@ -853,12 +839,12 @@ class bbcode
 			}
 			*/
 			// Light View - BEGIN
-			if (!empty($thumb_processed) && !empty($is_light_view))
+			if (!empty($thumb_processed) && !empty($is_light_view) && empty($this->plain_html))
 			{
 				$item['inurl'] = true;
 			}
 			// Light View - END
-			if(empty($item['inurl']) && !$is_smiley)
+			if(empty($item['inurl']) && !$is_smiley && empty($this->plain_html))
 			{
 				if ($this->allow_hs && $config['thumbnail_posts'] && $config['thumbnail_highslide'])
 				{
@@ -880,10 +866,8 @@ class bbcode
 		// IMGBA
 		if($tag === 'imgba')
 		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
+			if($this->is_sig) return $error;
+			if (!empty($this->plain_html)) return $error;
 
 			// main parameters
 			$params = array(
@@ -1001,10 +985,9 @@ class bbcode
 		// ALBUMIMG
 		if($tag === 'albumimg')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			// main parameters
 			$params = array(
 				'src' => false,
@@ -1116,10 +1099,9 @@ class bbcode
 		// ATTACHMENT
 		if(($tag === 'attachment') || ($tag === 'download'))
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			$html = '';
 			$params['id'] = isset($item['params']['param']) ? intval($item['params']['param']) : (isset($item['params']['id']) ? intval($item['params']['id']) : false);
 			$params['title'] = isset($item['params']['title']) ? $this->process_text($item['params']['title']) : false;
@@ -1209,10 +1191,7 @@ class bbcode
 		// LIST
 		if(($tag === 'list') || ($tag === 'ul') || ($tag === 'ol'))
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 			// check if nested tags are all [*]
 			$nested_count = 0;
@@ -1284,10 +1263,7 @@ class bbcode
 		// [*], LI
 		if(($tag === '*') || ($tag === 'li'))
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 			// if not marked as valid return error
 			if(empty($item['list_valid']))
@@ -1476,7 +1452,8 @@ class bbcode
 			}
 			// generate html
 			$url_target = ((isset($item['params']['target']) && (($item['params']['target'] != 0) || ($item['params']['target'] != 'false'))) ? true : false);
-			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : ' class="post-url"') . ' href="' . htmlspecialchars($url) . '"' . (($is_local_url && empty($url_target)) ? '' : (' target="_blank"' . ((!empty($item['params']['nofollow']) || $this->is_sig) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
+			$url_class = empty($this->plain_html) ? ' class="post-url"' : '';
+			$html = '<a' . ($this->allow_styling && isset($item['params']['class']) ? '' : $url_class) . ' href="' . htmlspecialchars($url) . '"' . (($is_local_url && empty($url_target)) ? '' : (' target="_blank"' . ((!empty($item['params']['nofollow']) || $this->is_sig) ? ' rel="nofollow"' : ''))) . $this->add_extras($item['params'], $extras) . '>';
 
 			if ($config['disable_html_guests'] && !$user->data['session_logged_in'])
 			{
@@ -1566,23 +1543,30 @@ class bbcode
 			{
 				$str = $url;
 			}
-			if (defined('IN_AJAX_CHAT'))
+			if (!empty($this->plain_html))
 			{
-				$html = htmlspecialchars(str_replace(array('@', '.'), array(' [at] ', ' [dot] '), $str));
+				$html = '<a href="mailto:' . htmlspecialchars($url) . '"' . $this->add_extras($item['params'], $extras) . '>' . $content . '</a>';
 			}
 			else
 			{
-				$noscript = '<noscript>' . htmlspecialchars(str_replace(array('@', '.'), array(' [at] ', ' [dot] '), $str)) . '</noscript>';
-				// make javascript from it
-				$html = BBCODE_NOSMILIES_START . '<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n";
-				$bit_lenght = 5;
-				for($i = 0; $i < strlen($email); $i += $bit_lenght)
+				if (defined('IN_AJAX_CHAT'))
 				{
-					$str = substr($email, $i, $bit_lenght);
-					//$str = preg_replace('/[^A-Za-z0-9_\-@.]+/', '_', $str);
-					$html .= 'document.write(\'' . str_replace('/', '\/', addslashes($str)) . '\');' . "\n";
+					$html = htmlspecialchars(str_replace(array('@', '.'), array(' [at] ', ' [dot] '), $str));
 				}
-				$html .= "\n" . '// ]]>' . "\n" . '</script>' . "\n" . $noscript . BBCODE_NOSMILIES_END;
+				else
+				{
+					$noscript = '<noscript>' . htmlspecialchars(str_replace(array('@', '.'), array(' [at] ', ' [dot] '), $str)) . '</noscript>';
+					// make javascript from it
+					$html = BBCODE_NOSMILIES_START . '<script type="text/javascript">' . "\n" . '// <![CDATA[' . "\n";
+					$bit_lenght = 5;
+					for($i = 0; $i < strlen($email); $i += $bit_lenght)
+					{
+						$str = substr($email, $i, $bit_lenght);
+						//$str = preg_replace('/[^A-Za-z0-9_\-@.]+/', '_', $str);
+						$html .= 'document.write(\'' . str_replace('/', '\/', addslashes($str)) . '\');' . "\n";
+					}
+					$html .= "\n" . '// ]]>' . "\n" . '</script>' . "\n" . $noscript . BBCODE_NOSMILIES_END;
+				}
 			}
 			return array(
 				'valid' => true,
@@ -1595,10 +1579,7 @@ class bbcode
 		// QUOTE
 		if(($tag === 'quote') || ($tag === 'blockquote') || ($tag === 'ot'))
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
 			if($item['iteration'] > ($config['quote_iterations']))
 			{
 				return $error;
@@ -1618,42 +1599,59 @@ class bbcode
 					$target_user = '<a href="' . CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . intval($item['params']['userid']) . '">' . $target_user . '</a>';
 				}
 			}
-			// generate html
-			$html = '<blockquote class="quote"';
-			if(isset($item['params']['post']) && intval($item['params']['post']))
+			if (!empty($this->plain_html))
 			{
-				$post_rev = ($user->data['is_bot'] ? '&nbsp;' : ('[<a href="#" onclick="open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\'); return false;" class="genmed">' . $lang['ReviewPost'] . '</a>]'));
-				$html .= ' cite="'. CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . intval($item['params']['post']) . '#p' . intval($item['params']['post']) . '"';
-			}
-			$html .= '>';
-			if($target_user)
-			{
-				if ($tag === 'ot')
-				{
-					$html .= '<div class="quote-user"><div class="error-message" style="display:inline;">' . $lang['OffTopic'] . '</div>&nbsp;' . $target_user . ':&nbsp;' . $post_rev . '</div>';
-				}
-				else
+				// generate html
+				$html = '<blockquote>';
+				if($target_user)
 				{
 					$html .= '<div class="quote-user">' . $target_user . '&nbsp;' . $lang['wrote'] . ':&nbsp;' . $post_rev . '</div>';
 				}
+				return array(
+					'valid' => true,
+					'start' => $html,
+					'end' => '</blockquote>'
+				);
 			}
 			else
 			{
-				if ($tag === 'ot')
+				// generate html
+				$html = '<blockquote class="quote"';
+				if(isset($item['params']['post']) && intval($item['params']['post']))
 				{
-					$html .= '<div class="quote-nouser">&nbsp;<div class="error-message" style="display: inline;">' . $lang['OffTopic'] . '</div>:</div>';
+					$post_rev = ($user->data['is_bot'] ? '&nbsp;' : ('[<a href="#" onclick="open_postreview(\'show_post.php?p=' . intval($item['params']['post']) . '\'); return false;" class="genmed">' . $lang['ReviewPost'] . '</a>]'));
+					$html .= ' cite="'. CMS_PAGE_VIEWTOPIC . '?' . POST_POST_URL . '=' . intval($item['params']['post']) . '#p' . intval($item['params']['post']) . '"';
+				}
+				$html .= '>';
+				if($target_user)
+				{
+					if ($tag === 'ot')
+					{
+						$html .= '<div class="quote-user"><div class="error-message" style="display:inline;">' . $lang['OffTopic'] . '</div>&nbsp;' . $target_user . ':&nbsp;' . $post_rev . '</div>';
+					}
+					else
+					{
+						$html .= '<div class="quote-user">' . $target_user . '&nbsp;' . $lang['wrote'] . ':&nbsp;' . $post_rev . '</div>';
+					}
 				}
 				else
 				{
-					$html .= '<div class="quote-nouser">' . $lang['Quote'] . ':</div>';
+					if ($tag === 'ot')
+					{
+						$html .= '<div class="quote-nouser">&nbsp;<div class="error-message" style="display: inline;">' . $lang['OffTopic'] . '</div>:</div>';
+					}
+					else
+					{
+						$html .= '<div class="quote-nouser">' . $lang['Quote'] . ':</div>';
+					}
 				}
+				$html .= '<div class="post-text post-text-hide-flow">';
+				return array(
+					'valid' => true,
+					'start' => $html,
+					'end' => '</div></blockquote>'
+				);
 			}
-			$html .= '<div class="post-text post-text-hide-flow">';
-			return array(
-				'valid' => true,
-				'start' => $html,
-				'end' => '</div></blockquote>'
-			);
 		}
 
 		// INLINE CODE
@@ -1668,413 +1666,435 @@ class bbcode
 			);
 		}
 
-		// CODE
-		if($tag === 'code')
+		// CODE, CODEBLOCK
+		if(($tag === 'code') || ($tag === 'codeblock'))
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
+			if (!empty($this->plain_html))
 			{
-				return $error;
-			}
-			// replace spaces and tabs with &nbsp;
-			if(!defined('EXTRACT_CODE'))
-			{
-				/*
-				$search = array(
-					'  ',
-					"\t"
-				);
-				$replace = array(
-					'&nbsp; ',
-					'&nbsp; &nbsp; '
-				);
-				$text = str_replace($search, $replace, $this->process_text($content, false, true));
-				*/
+				if($this->is_sig && !$config['allow_all_bbcode'])
+				{
+					return $error;
+				}
 				$text = $this->process_text($content, false, true);
+				$html = BBCODE_NOSMILIES_START . '<code>' . $text . '</code>' . BBCODE_NOSMILIES_END;
+				return array(
+					'valid' => true,
+					'html' => $html,
+					'allow_nested' => false
+				);
 			}
 			else
 			{
-				$text = $this->process_text($content, false, true);
-				$search = array('[highlight]', '[/highlight]');
-				$replace = array('', '');
-				$text = str_replace($search, $replace, $text);
-			}
 
-			// check filename
-			if(isset($item['params']['filename']))
-			{
-				$item['params']['file'] = $item['params']['filename'];
-			}
-			if(defined('EXTRACT_CODE') && ($this->code_counter == EXTRACT_CODE))
-			{
-				$GLOBALS['code_text'] = $text;
-				if(!empty($item['params']['file']))
+				// CODE
+				if($tag === 'code')
 				{
-					$GLOBALS['code_filename'] = $item['params']['file'];
-				}
-			}
-			if(substr($text, 0, 1) === "\n")
-			{
-				$text = substr($text, 1);
-			}
-			elseif(substr($text, 0, 2) === "\r\n")
-			{
-				$text = substr($text, 2);
-			}
-			$linenumbers = true;
-			if(isset($item['params']['linenumbers']))
-			{
-				$linenumbers = ($item['params']['linenumbers'] == 'true') ? true : false;
-			}
-
-			if ($linenumbers == true)
-			{
-				// convert to list
-				if(isset($item['params']['syntax']))
-				{
-					if ($item['params']['syntax'] == 'php')
+					if($this->is_sig && !$config['allow_all_bbcode'])
+					{
+						return $error;
+					}
+					// replace spaces and tabs with &nbsp;
+					if(!defined('EXTRACT_CODE'))
 					{
 						/*
-						$html = strtr($text, array_flip(get_html_translation_table(HTML_ENTITIES)));
-						$html = highlight_string($html, true);
-						$html_search = array('<font color="', '</font', '&nbsp;');
-						$xhtml_replace = array('<code style="color:', '</code', ' ');
-						//$xhtml_replace = array('<div style="display:inline;color:', '</div', ' ');
-						//$xhtml_replace = array('<span style="display:inline;color:', '</span', ' ');
-						$html = str_replace ($html_search, $xhtml_replace, $html);
-						$html = '<li class="code-row"><div class="code-row-text">' . $html . '</div></li>';
+						$search = array(
+							'  ',
+							"\t"
+						);
+						$replace = array(
+							'&nbsp; ',
+							'&nbsp; &nbsp; '
+						);
+						$text = str_replace($search, $replace, $this->process_text($content, false, true));
 						*/
-						/*
-						$html_search = array('<br />');
-						$xhtml_replace = array('</div></li><li class="code-row"><div class="code-row-text">');
-						$html = str_replace ($html_search, $xhtml_replace, $html);
-						*/
-
-						//PHP Highlight - Start
-						$code_ary = explode("\n", $text);
-
-						$open_php_tag = 0;
-						$close_php_tag = 0;
-						for ($i = 0; $i < sizeof($code_ary); $i++)
-						{
-							if (($code_ary[$i] == '') || ($code_ary[$i] == ' ') || ($code_ary[$i] == '&nbsp;') || ($code_ary[$i] == "\n") || ($code_ary[$i] == "\r") || ($code_ary[$i] == "\n\r"))
-							{
-								$html .= '<li class="code-row"><span class="code-row-text">&nbsp;&nbsp;</span></li>';
-							}
-							else
-							{
-								$prefix = (strpos(' ' . $code_ary[$i], '&lt;?')) ? '' : '<?php ';
-								$suffix = (strpos(' ' . $code_ary[$i], '?&gt;')) ? '' : '?>';
-
-								$code_ary[$i] = str_replace(array('&lt;', '&gt;'), array('<', '>'), $code_ary[$i]);
-								$code_ary[$i] = highlight_string(strtr($prefix . $code_ary[$i] . $suffix, array_flip(get_html_translation_table(HTML_ENTITIES))), true);
-
-								$html_search = array('<code>', '</code>');
-								$xhtml_replace = array('', '');
-								$code_ary[$i] = str_replace($html_search, $xhtml_replace, $code_ary[$i]);
-
-								if ($open_php_tag || ($prefix != ''))
-								{
-									$html_search = array('&lt;?php');
-									$xhtml_replace = array('');
-									$code_ary[$i] = str_replace($html_search, $xhtml_replace, $code_ary[$i]);
-								}
-
-								if ($close_php_tag || ($suffix != ''))
-								{
-									$html_search = array('?&gt;&nbsp;', '?&gt;');
-									$xhtml_replace = array('', '');
-									$code_ary[$i] = str_replace($html_search, $xhtml_replace, $code_ary[$i]);
-								}
-
-								($prefix == '') ? $open_php_tag++ : (($open_php_tag) ? $open_php_tag-- : '');
-								($suffix == '') ? $close_php_tag++ : (($close_php_tag) ? $close_php_tag-- : '');
-
-								$html .= '<li class="code-row"><span class="code-row-text">' . $code_ary[$i] . '&nbsp;</span></li>';
-							}
-						}
-
-						$html_search = array('<font color="', '</font', '&nbsp;', '<code style="color:#0000BB"></code>', '<code style="color:#0000BB"> </code>', '>  <');
-						$xhtml_replace = array('<code style="color:', '</code', ' ', '', '', '>&nbsp;<');
-						$html = str_replace($html_search, $xhtml_replace, $html);
-						//PHP Highlight - End
+						$text = $this->process_text($content, false, true);
 					}
 					else
 					{
-						$search = array("\n", '[highlight]', '[/highlight]');
-						$replace = array('&nbsp;</span></li><li class="code-row"><span class="code-row-text">', '<span class="code-row-highlight">', '</span>');
-						$html = '<li class="code-row code-row-first"><span class="code-row-text">' . str_replace($search, $replace, $text) . '&nbsp;</span></li>';
+						$text = $this->process_text($content, false, true);
+						$search = array('[highlight]', '[/highlight]');
+						$replace = array('', '');
+						$text = str_replace($search, $replace, $text);
 					}
-				}
-				else
-				{
-					$search = array("\n", '[highlight]', '[/highlight]');
-					$replace = array('&nbsp;</span></li><li class="code-row"><span class="code-row-text">', '<span class="code-row-highlight">', '</span>');
-					$html = '<li class="code-row code-row-first"><span class="code-row-text">' . str_replace($search, $replace, $text) . '&nbsp;</span></li>';
-				}
 
-				$str = '<li class="code-row"><div class="code-row-text">&nbsp;</div></li>';
-				if(substr($html, strlen($html) - strlen($str)) === $str)
-				{
-					$html = substr($html, 0, strlen($html) - strlen($str));
-				}
-				$start = isset($item['params']['start']) ? intval($item['params']['start']) : 1;
-				$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
-				if($can_download)
-				{
-					//$download_text = ' [<a href="download.php?post=' . $can_download;
-					$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
-					if($this->code_counter)
+					// check filename
+					if(isset($item['params']['filename']))
 					{
-						$download_text .= '&amp;item=' . $this->code_counter;
+						$item['params']['file'] = $item['params']['filename'];
 					}
-					$download_text .= '">' . $lang['Download'] . '</a>]';
-				}
-				else
-				{
-					$download_text = '';
-				}
-				$code_id = substr(md5($content . mt_rand()), 0, 8);
-				$str = BBCODE_NOSMILIES_START . '<div class="code">';
-				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\', \'codehdr2_' . $code_id . '\', \'\'); return false;">' . $lang['Hide'] . '</a>]</div>';
-				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
-				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><ol class="code-list" start="' . $start . '">' . $html . '</ol></div></div>' . BBCODE_NOSMILIES_END;
-				// check highlight
-				// format: highlight="1,2,3-10"
-				if(isset($item['params']['highlight']))
-				{
-					$search = '<li class="code-row';
-					$replace = '<li class="code-row code-row-highlight';
-					$search_len = strlen($search);
-					$replace_len = strlen($replace);
-					// get highlight string
-					$items = array();
-					$str = $item['params']['highlight'];
-					$list = explode(',', $str);
-					for($i = 0; $i < sizeof($list); $i++)
+					if(defined('EXTRACT_CODE') && ($this->code_counter == EXTRACT_CODE))
 					{
-						$str = trim($list[$i]);
-						if(strpos($str, '-'))
+						$GLOBALS['code_text'] = $text;
+						if(!empty($item['params']['file']))
 						{
-							$row = explode('-', $str);
-							if(sizeof($row) == 2)
+							$GLOBALS['code_filename'] = $item['params']['file'];
+						}
+					}
+					if(substr($text, 0, 1) === "\n")
+					{
+						$text = substr($text, 1);
+					}
+					elseif(substr($text, 0, 2) === "\r\n")
+					{
+						$text = substr($text, 2);
+					}
+					$linenumbers = true;
+					if(isset($item['params']['linenumbers']))
+					{
+						$linenumbers = ($item['params']['linenumbers'] == 'true') ? true : false;
+					}
+
+					if ($linenumbers == true)
+					{
+						// convert to list
+						if(isset($item['params']['syntax']))
+						{
+							if ($item['params']['syntax'] == 'php')
 							{
-								$num1 = intval($row[0]);
-								if($num1 == 0)
+								/*
+								$html = strtr($text, array_flip(get_html_translation_table(HTML_ENTITIES)));
+								$html = highlight_string($html, true);
+								$html_search = array('<font color="', '</font', '&nbsp;');
+								$xhtml_replace = array('<code style="color:', '</code', ' ');
+								//$xhtml_replace = array('<div style="display:inline;color:', '</div', ' ');
+								//$xhtml_replace = array('<span style="display:inline;color:', '</span', ' ');
+								$html = str_replace ($html_search, $xhtml_replace, $html);
+								$html = '<li class="code-row"><div class="code-row-text">' . $html . '</div></li>';
+								*/
+								/*
+								$html_search = array('<br />');
+								$xhtml_replace = array('</div></li><li class="code-row"><div class="code-row-text">');
+								$html = str_replace ($html_search, $xhtml_replace, $html);
+								*/
+
+								//PHP Highlight - Start
+								$code_ary = explode("\n", $text);
+
+								$open_php_tag = 0;
+								$close_php_tag = 0;
+								for ($i = 0; $i < sizeof($code_ary); $i++)
 								{
-									$num1 = 1;
-								}
-								$num2 = intval($row[1]);
-								if($num1 > 0 && $num2 > $num1 && ($num2 - $num1) < 256)
-								{
-									for($j=$num1; $j<=$num2; $j++)
+									if (($code_ary[$i] == '') || ($code_ary[$i] == ' ') || ($code_ary[$i] == '&nbsp;') || ($code_ary[$i] == "\n") || ($code_ary[$i] == "\r") || ($code_ary[$i] == "\n\r"))
 									{
-										$items['row' . $j] = true;
+										$html .= '<li class="code-row"><span class="code-row-text">&nbsp;&nbsp;</span></li>';
+									}
+									else
+									{
+										$prefix = (strpos(' ' . $code_ary[$i], '&lt;?')) ? '' : '<?php ';
+										$suffix = (strpos(' ' . $code_ary[$i], '?&gt;')) ? '' : '?>';
+
+										$code_ary[$i] = str_replace(array('&lt;', '&gt;'), array('<', '>'), $code_ary[$i]);
+										$code_ary[$i] = highlight_string(strtr($prefix . $code_ary[$i] . $suffix, array_flip(get_html_translation_table(HTML_ENTITIES))), true);
+
+										$html_search = array('<code>', '</code>');
+										$xhtml_replace = array('', '');
+										$code_ary[$i] = str_replace($html_search, $xhtml_replace, $code_ary[$i]);
+
+										if ($open_php_tag || ($prefix != ''))
+										{
+											$html_search = array('&lt;?php');
+											$xhtml_replace = array('');
+											$code_ary[$i] = str_replace($html_search, $xhtml_replace, $code_ary[$i]);
+										}
+
+										if ($close_php_tag || ($suffix != ''))
+										{
+											$html_search = array('?&gt;&nbsp;', '?&gt;');
+											$xhtml_replace = array('', '');
+											$code_ary[$i] = str_replace($html_search, $xhtml_replace, $code_ary[$i]);
+										}
+
+										($prefix == '') ? $open_php_tag++ : (($open_php_tag) ? $open_php_tag-- : '');
+										($suffix == '') ? $close_php_tag++ : (($close_php_tag) ? $close_php_tag-- : '');
+
+										$html .= '<li class="code-row"><span class="code-row-text">' . $code_ary[$i] . '&nbsp;</span></li>';
 									}
 								}
+
+								$html_search = array('<font color="', '</font', '&nbsp;', '<code style="color:#0000BB"></code>', '<code style="color:#0000BB"> </code>', '>  <');
+								$xhtml_replace = array('<code style="color:', '</code', ' ', '', '', '>&nbsp;<');
+								$html = str_replace($html_search, $xhtml_replace, $html);
+								//PHP Highlight - End
+							}
+							else
+							{
+								$search = array("\n", '[highlight]', '[/highlight]');
+								$replace = array('&nbsp;</span></li><li class="code-row"><span class="code-row-text">', '<span class="code-row-highlight">', '</span>');
+								$html = '<li class="code-row code-row-first"><span class="code-row-text">' . str_replace($search, $replace, $text) . '&nbsp;</span></li>';
 							}
 						}
 						else
 						{
-							$num = intval($str);
-							if($num)
-							{
-								$items['row' . $num] = true;
-							}
+							$search = array("\n", '[highlight]', '[/highlight]');
+							$replace = array('&nbsp;</span></li><li class="code-row"><span class="code-row-text">', '<span class="code-row-highlight">', '</span>');
+							$html = '<li class="code-row code-row-first"><span class="code-row-text">' . str_replace($search, $replace, $text) . '&nbsp;</span></li>';
 						}
-					}
-					if(sizeof($items))
-					{
-						// process all lines
-						$num = $start - 1;
-						$pos = strpos($html, $search);
-						$total = sizeof($items);
-						$found = 0;
-						while($pos !== false)
+
+						$str = '<li class="code-row"><div class="code-row-text">&nbsp;</div></li>';
+						if(substr($html, strlen($html) - strlen($str)) === $str)
 						{
-							$num++;
-							if(isset($items['row' . $num]))
+							$html = substr($html, 0, strlen($html) - strlen($str));
+						}
+						$start = isset($item['params']['start']) ? intval($item['params']['start']) : 1;
+						$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
+						if($can_download)
+						{
+							//$download_text = ' [<a href="download.php?post=' . $can_download;
+							$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
+							if($this->code_counter)
 							{
-								$found++;
-								$html = substr($html, 0, $pos) . $replace . substr($html, $pos + $search_len);
-								$pos += $replace_len;
+								$download_text .= '&amp;item=' . $this->code_counter;
 							}
-							else
+							$download_text .= '">' . $lang['Download'] . '</a>]';
+						}
+						else
+						{
+							$download_text = '';
+						}
+						$code_id = substr(md5($content . mt_rand()), 0, 8);
+						$str = BBCODE_NOSMILIES_START . '<div class="code">';
+						$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\', \'codehdr2_' . $code_id . '\', \'\'); return false;">' . $lang['Hide'] . '</a>]</div>';
+						$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
+						$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><ol class="code-list" start="' . $start . '">' . $html . '</ol></div></div>' . BBCODE_NOSMILIES_END;
+						// check highlight
+						// format: highlight="1,2,3-10"
+						if(isset($item['params']['highlight']))
+						{
+							$search = '<li class="code-row';
+							$replace = '<li class="code-row code-row-highlight';
+							$search_len = strlen($search);
+							$replace_len = strlen($replace);
+							// get highlight string
+							$items = array();
+							$str = $item['params']['highlight'];
+							$list = explode(',', $str);
+							for($i = 0; $i < sizeof($list); $i++)
 							{
-								$pos += $search_len;
+								$str = trim($list[$i]);
+								if(strpos($str, '-'))
+								{
+									$row = explode('-', $str);
+									if(sizeof($row) == 2)
+									{
+										$num1 = intval($row[0]);
+										if($num1 == 0)
+										{
+											$num1 = 1;
+										}
+										$num2 = intval($row[1]);
+										if($num1 > 0 && $num2 > $num1 && ($num2 - $num1) < 256)
+										{
+											for($j=$num1; $j<=$num2; $j++)
+											{
+												$items['row' . $j] = true;
+											}
+										}
+									}
+								}
+								else
+								{
+									$num = intval($str);
+									if($num)
+									{
+										$items['row' . $num] = true;
+									}
+								}
 							}
-							$pos = $found < $total ? strpos($html, $search, $pos) : false;
+							if(sizeof($items))
+							{
+								// process all lines
+								$num = $start - 1;
+								$pos = strpos($html, $search);
+								$total = sizeof($items);
+								$found = 0;
+								while($pos !== false)
+								{
+									$num++;
+									if(isset($items['row' . $num]))
+									{
+										$found++;
+										$html = substr($html, 0, $pos) . $replace . substr($html, $pos + $search_len);
+										$pos += $replace_len;
+									}
+									else
+									{
+										$pos += $search_len;
+									}
+									$pos = $found < $total ? strpos($html, $search, $pos) : false;
+								}
+							}
+						}
+						// $html = BBCODE_NOSMILIES_START . '<div class="code"><div class="code-header">Code:</div><div class="code-content">' . $text . '</div></div>' . BBCODE_NOSMILIES_END;
+						$this->code_counter++;
+						return array(
+							'valid' => true,
+							'html' => $html,
+							'allow_nested' => false
+						);
+					}
+					else
+					{
+						$syntax_highlight = false;
+						if(isset($item['params']['syntax']))
+						{
+							if ($item['params']['syntax'] == 'php')
+							{
+								$html = strtr($text, array_flip(get_html_translation_table(HTML_ENTITIES)));
+								$html = highlight_string($html, true);
+								$html_search = array('<code>', '</code>', '<font color="', '</font', '&nbsp;', '<code style="color:#0000BB"></code>', '<code style="color:#0000BB"> </code>');
+								$xhtml_replace = array('', '', '<code style="color:', '</code', ' ', '', '');
+								$html = str_replace ($html_search, $xhtml_replace, $html);
+								$syntax_highlight = true;
+							}
+						}
+						if ($syntax_highlight == false)
+						{
+							$html = $text;
+							$search = array('[highlight]', '[/highlight]');
+							$replace = array('</span><span class="code-row code-row-highlight">', '</span><span class="code-row-text">');
+							$html = str_replace($search, $replace, $html);
+							$html = str_replace(array("\n", "\r\n"), array("<br />\n", "<br />\r\n"), $html);
+						}
+
+						$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
+						if($can_download)
+						{
+							$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
+							if($this->code_counter)
+							{
+								$download_text .= '&amp;item=' . $this->code_counter;
+							}
+							$download_text .= '">' . $lang['Download'] . '</a>]';
+						}
+						else
+						{
+							$download_text = '';
+						}
+						$code_id = substr(md5($content . mt_rand()), 0, 8);
+						$str = BBCODE_NOSMILIES_START . '<div class="code">';
+						$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
+						$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
+						$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
+
+						$this->code_counter++;
+						return array(
+							'valid' => true,
+							'html' => $html,
+							'allow_nested' => false
+						);
+					}
+				}
+
+				// CODEBLOCK
+				if($tag === 'codeblock')
+				{
+					if($this->is_sig && !$config['allow_all_bbcode'])
+					{
+						return $error;
+					}
+					if(!defined('EXTRACT_CODE'))
+					{
+						/*
+						$search = array(
+							'  ',
+							"\t"
+						);
+						$replace = array(
+							'&nbsp; ',
+							'&nbsp; &nbsp; '
+						);
+						$text = str_replace($search, $replace, $this->process_text($content, false, true));
+						*/
+						$text = $this->process_text($content, false, true);
+					}
+					else
+					{
+						$text = $this->process_text($content, false, true);
+						$search = array('[highlight]', '[/highlight]');
+						$replace = array('', '');
+						$text = str_replace($search, $replace, $text);
+					}
+					// check filename
+					if(isset($item['params']['filename']))
+					{
+						$item['params']['file'] = $item['params']['filename'];
+					}
+					if(defined('EXTRACT_CODE') && $this->code_counter == EXTRACT_CODE)
+					{
+						$GLOBALS['code_text'] = $text;
+						if(!empty($item['params']['file']))
+						{
+							$GLOBALS['code_filename'] = $item['params']['file'];
 						}
 					}
-				}
-				// $html = BBCODE_NOSMILIES_START . '<div class="code"><div class="code-header">Code:</div><div class="code-content">' . $text . '</div></div>' . BBCODE_NOSMILIES_END;
-				$this->code_counter++;
-				return array(
-					'valid' => true,
-					'html' => $html,
-					'allow_nested' => false
-				);
-			}
-			else
-			{
-				$syntax_highlight = false;
-				if(isset($item['params']['syntax']))
-				{
-					if ($item['params']['syntax'] == 'php')
+					if(substr($text, 0, 1) === "\n")
 					{
-						$html = strtr($text, array_flip(get_html_translation_table(HTML_ENTITIES)));
-						$html = highlight_string($html, true);
-						$html_search = array('<code>', '</code>', '<font color="', '</font', '&nbsp;', '<code style="color:#0000BB"></code>', '<code style="color:#0000BB"> </code>');
-						$xhtml_replace = array('', '', '<code style="color:', '</code', ' ', '', '');
-						$html = str_replace ($html_search, $xhtml_replace, $html);
-						$syntax_highlight = true;
+						$text = substr($text, 1);
 					}
-				}
-				if ($syntax_highlight == false)
-				{
-					$html = $text;
-					$search = array('[highlight]', '[/highlight]');
-					$replace = array('</span><span class="code-row code-row-highlight">', '</span><span class="code-row-text">');
-					$html = str_replace($search, $replace, $html);
-					$html = str_replace(array("\n", "\r\n"), array("<br />\n", "<br />\r\n"), $html);
-				}
-
-				$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
-				if($can_download)
-				{
-					$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
-					if($this->code_counter)
+					elseif(substr($text, 0, 2) === "\r\n")
 					{
-						$download_text .= '&amp;item=' . $this->code_counter;
+						$text = substr($text, 2);
 					}
-					$download_text .= '">' . $lang['Download'] . '</a>]';
-				}
-				else
-				{
-					$download_text = '';
-				}
-				$code_id = substr(md5($content . mt_rand()), 0, 8);
-				$str = BBCODE_NOSMILIES_START . '<div class="code">';
-				$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
-				$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
-				$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
 
-				$this->code_counter++;
-				return array(
-					'valid' => true,
-					'html' => $html,
-					'allow_nested' => false
-				);
-			}
-		}
+					$syntax_highlight = false;
+					if(isset($item['params']['syntax']))
+					{
+						if ($item['params']['syntax'] == 'php')
+						{
+							$html = strtr($text, array_flip(get_html_translation_table(HTML_ENTITIES)));
+							$html = highlight_string($html, true);
+							$html_search = array('<code>', '</code>', '<font color="', '</font', '&nbsp;', '<code style="color:#0000BB"></code>', '<code style="color:#0000BB"> </code>');
+							$xhtml_replace = array('', '', '<code style="color:', '</code', ' ', '', '');
+							$html = str_replace ($html_search, $xhtml_replace, $html);
+							$syntax_highlight = true;
+						}
+					}
+					if ($syntax_highlight == false)
+					{
+						$html = $text;
+						$search = array('[highlight]', '[/highlight]');
+						$replace = array('</span><span class="code-row code-row-highlight">', '</span><span class="code-row-text">');
+						$html = str_replace($search, $replace, $html);
+						$html = str_replace(array("\n", "\r\n"), array("<br />\n", "<br />\r\n"), $html);
+					}
 
-		// CODEBLOCK
-		if($tag === 'codeblock')
-		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
-			if(!defined('EXTRACT_CODE'))
-			{
-				/*
-				$search = array(
-					'  ',
-					"\t"
-				);
-				$replace = array(
-					'&nbsp; ',
-					'&nbsp; &nbsp; '
-				);
-				$text = str_replace($search, $replace, $this->process_text($content, false, true));
-				*/
-				$text = $this->process_text($content, false, true);
-			}
-			else
-			{
-				$text = $this->process_text($content, false, true);
-				$search = array('[highlight]', '[/highlight]');
-				$replace = array('', '');
-				$text = str_replace($search, $replace, $text);
-			}
-			// check filename
-			if(isset($item['params']['filename']))
-			{
-				$item['params']['file'] = $item['params']['filename'];
-			}
-			if(defined('EXTRACT_CODE') && $this->code_counter == EXTRACT_CODE)
-			{
-				$GLOBALS['code_text'] = $text;
-				if(!empty($item['params']['file']))
-				{
-					$GLOBALS['code_filename'] = $item['params']['file'];
+					$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
+					if($can_download)
+					{
+						$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
+						if($this->code_counter)
+						{
+							$download_text .= '&amp;item=' . $this->code_counter;
+						}
+						$download_text .= '">' . $lang['Download'] . '</a>]';
+					}
+					else
+					{
+						$download_text = '';
+					}
+					$code_id = substr(md5($content . mt_rand()), 0, 8);
+					$str = BBCODE_NOSMILIES_START . '<div class="code">';
+					$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
+					$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
+					$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
+
+					$this->code_counter++;
+					return array(
+						'valid' => true,
+						'html' => $html,
+						'allow_nested' => false
+					);
 				}
-			}
-			if(substr($text, 0, 1) === "\n")
-			{
-				$text = substr($text, 1);
-			}
-			elseif(substr($text, 0, 2) === "\r\n")
-			{
-				$text = substr($text, 2);
-			}
 
-			$syntax_highlight = false;
-			if(isset($item['params']['syntax']))
-			{
-				if ($item['params']['syntax'] == 'php')
-				{
-					$html = strtr($text, array_flip(get_html_translation_table(HTML_ENTITIES)));
-					$html = highlight_string($html, true);
-					$html_search = array('<code>', '</code>', '<font color="', '</font', '&nbsp;', '<code style="color:#0000BB"></code>', '<code style="color:#0000BB"> </code>');
-					$xhtml_replace = array('', '', '<code style="color:', '</code', ' ', '', '');
-					$html = str_replace ($html_search, $xhtml_replace, $html);
-					$syntax_highlight = true;
-				}
 			}
-			if ($syntax_highlight == false)
-			{
-				$html = $text;
-				$search = array('[highlight]', '[/highlight]');
-				$replace = array('</span><span class="code-row code-row-highlight">', '</span><span class="code-row-text">');
-				$html = str_replace($search, $replace, $html);
-				$html = str_replace(array("\n", "\r\n"), array("<br />\n", "<br />\r\n"), $html);
-			}
-
-			$can_download = !empty($this->code_post_id) ? $this->code_post_id : 0;
-			if($can_download)
-			{
-				$download_text = ' [<a href="download_post.' . PHP_EXT . '?post=' . $can_download;
-				if($this->code_counter)
-				{
-					$download_text .= '&amp;item=' . $this->code_counter;
-				}
-				$download_text .= '">' . $lang['Download'] . '</a>]';
-			}
-			else
-			{
-				$download_text = '';
-			}
-			$code_id = substr(md5($content . mt_rand()), 0, 8);
-			$str = BBCODE_NOSMILIES_START . '<div class="code">';
-			$str .= '<div class="code-header" id="codehdr2_' . $code_id . '" style="position: relative;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Hide'] . '</a>] [<a href="#" onclick="select_text(\'code_' . $code_id . '\'); return false;">' . $lang['Select'] . '</a>]</div>';
-			$str .= '<div class="code-header" id="codehdr_' . $code_id . '" style="position: relative; display: none;">' . $lang['Code'] . ':' . (empty($item['params']['file']) ? '' : ' (' . htmlspecialchars($item['params']['file']) . ')') . $download_text . ' [<a href="#" onclick="ShowHide(\'code_' . $code_id . '\',\'code2_' . $code_id . '\',\'\'); ShowHide(\'codehdr_' . $code_id . '\',\'codehdr2_' . $code_id . '\',\'\'); return false;">' . $lang['Show'] . '</a>]</div>';
-			$html = $str . '<div class="code-content" id="code_' . $code_id . '" style="position: relative;"><span class="code-row-text">' . $html . '</span></div></div>' . BBCODE_NOSMILIES_END;
-
-			$this->code_counter++;
-			return array(
-				'valid' => true,
-				'html' => $html,
-				'allow_nested' => false
-			);
 		}
 
 		// HIDE
 		if($tag === 'hide')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			if($item['iteration'] > 1)
 			{
 				return $error;
@@ -2138,10 +2158,9 @@ class bbcode
 		// SPOILER
 		if($tag === 'spoiler')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			if($item['iteration'] > 1)
 			{
 				return $error;
@@ -2162,10 +2181,9 @@ class bbcode
 		// Insert the username and avatar for the selected id
 		if($tag === 'user')
 		{
-			if($this->is_sig)
-			{
-				return $error;
-			}
+			if($this->is_sig) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			if(isset($item['params']['param']))
 			{
 				$bb_userid = (int) $item['params']['param'];
@@ -2246,10 +2264,9 @@ class bbcode
 		// SEARCH
 		if($tag === 'search')
 		{
-			if(empty($content))
-			{
-				return $error;
-			}
+			if(empty($content)) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			$str = '<a href="' . CMS_PAGE_SEARCH . '?search_keywords=' . urlencode($this->process_text($content)) . '">';
 			return array(
 				'valid' => true,
@@ -2261,10 +2278,9 @@ class bbcode
 		// TAG
 		if($tag === 'tag')
 		{
-			if(empty($content))
-			{
-				return $error;
-			}
+			if(empty($content)) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			$str = '<a href="tags.' . PHP_EXT . '?tag_text=' . urlencode($this->process_text($content)) . '">';
 			return array(
 				'valid' => true,
@@ -2293,10 +2309,9 @@ class bbcode
 		// MARQUEE
 		if($tag === 'marquee')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 
 			$directions_array = array('up', 'right', 'down', 'left');
@@ -2336,18 +2351,62 @@ class bbcode
 				$color_1 = $this->valid_color((isset($item['params']['colors']) ? $item['params']['colors'] : false));
 				$color_2 = $this->valid_color((isset($item['params']['colore']) ? $item['params']['colore'] : false));
 
-				$width_array = array(320, 425, 400, 480, 540, 640);
-				$height_array = array(240, 350, 300, 360, 420, 480, 385);
-
 				// 4/3 YouTube width and height: 425x350
 				// 16/9 YouTube width and height: 640x385
-				$default_width = ((($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo')) ? 640 : 320);
-				$width = (isset($item['params']['width']) ? intval($item['params']['width']) : $default_width);
-				$width = ((($width > 10) && ($width < 641)) ? $width : $default_width);
+				$default_width = 320;
+				$default_height = 240;
+				$default_ratio = $default_width / $default_height;
+				if (($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo'))
+				{
+					$default_width = 640;
+					$default_height = 385;
+					$default_ratio = 16 / 9;
+				}
 
-				$default_height = ((($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo')) ? 385 : 240);
+				$width_array = array(240, 270, 300, 320, 400, 425, 426, 480, 540, 600, 640, 720, 854);
+				$height_array = array(135, 152, 169, 180, 202, 203, 225, 240, 270, 300, 304, 319, 320, 337, 338, 360, 405, 420, 450, 480, 540, 640);
+
+				// Allows both WIDTH and W
+				if (isset($item['params']['width']) || isset($item['params']['w']))
+				{
+					$item['params']['width'] = isset($item['params']['width']) ? $item['params']['width'] : $item['params']['w'];
+				}
+				$width = (isset($item['params']['width']) ? intval($item['params']['width']) : $default_width);
+				$width = ((($width > 10) && ($width < 855)) ? $width : $default_width);
+
+				// Allows both HEIGHT and H
+				if (isset($item['params']['height']) || isset($item['params']['h']))
+				{
+					$item['params']['height'] = isset($item['params']['height']) ? $item['params']['width'] : $item['params']['h'];
+				}
 				$height = (isset($item['params']['height']) ? intval($item['params']['height']) : $default_height);
-				$height = ((($height > 10) && ($height < 481)) ? $height : $default_height);
+				$height = ((($height > 10) && ($height < 641)) ? $height : $default_height);
+
+				// Width and Height check-in...
+				// 4/3 YouTube width and height: 425x350
+				// 16/9 YouTube width and height: 640x385
+				if (($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo'))
+				{
+					// Consider that YouTube HTML code may need 25px extra in height to display the control bar... hence the edited code below!
+					$width = in_array($width, $width_array) ? $width : 640;
+					$height = (in_array($height, $height_array) || in_array($height + 25, $height_array)) ? $height : 385;
+				}
+
+				// Set Ratio
+				if (isset($item['params']['ratio']) || isset($item['params']['r']))
+				{
+					$item['params']['ratio'] = isset($item['params']['ratio']) ? $item['params']['ratio'] : $item['params']['r'];
+					$ratio = (isset($item['params']['ratio']) ? floatval($item['params']['ratio']) : $default_ratio);
+					if (($ratio > 1) && ($ratio < 2))
+					{
+						$height = round($width / $ratio, 0);
+						if (($tag === 'vimeo') || ($tag === 'youtube') || ($tag === 'googlevideo'))
+						{
+							// Adds extra height for the control bar... to be checked for futures updates...
+							$height = $height + 25;
+						}
+					}
+				}
 
 				if (($tag === 'flash') || ($tag === 'swf'))
 				{
@@ -2379,8 +2438,6 @@ class bbcode
 				}
 				elseif ($tag === 'vimeo')
 				{
-					$width = in_array($width, $width_array) ? $width : 640;
-					$height = in_array($height, $height_array) ? $height : 385;
 					$html = '<object type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" data="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '"><param name="quality" value="best" /><param name="allowfullscreen" value="true" /><param name="scale" value="showAll" /><param name="movie" value="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" /></object><br /><a href="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" target="_blank">Link</a><br />';
 				}
 				elseif ($tag === 'youtube')
@@ -2413,9 +2470,6 @@ class bbcode
 						$color_append .= ($color_1 ? ('&amp;color1=0x' . str_replace('#', '', $color_1)) : '');
 						$color_append .= ($color_2 ? ('&amp;color2=0x' . str_replace('#', '', $color_2)) : '');
 					}
-
-					$width = in_array($width, $width_array) ? $width : 640;
-					$height = in_array($height, $height_array) ? $height : 385;
 					$video_link = '<br /><a href="http://youtube.com/watch?v=' . $video_file . $color_append . '" target="_blank">YouTube Link</a><br />';
 					// OLD OBJECT Version
 					//$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $video_file . $color_append . '" /><embed src="http://www.youtube.com/v/' . $video_file . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object>' . $video_link;
@@ -2424,8 +2478,6 @@ class bbcode
 				}
 				elseif ($tag === 'googlevideo')
 				{
-					$width = in_array($width, $width_array) ? $width : 640;
-					$height = in_array($height, $height_array) ? $height : 385;
 					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:' . $width . 'px; height:' . $height . 'px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#f8f8f8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="http://video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
 				}
 				return array(
@@ -2439,10 +2491,9 @@ class bbcode
 		// SMILEY
 		if($tag === 'smiley')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			$extras = $this->allow_styling ? array('style', 'class') : array();
 
 			$text = htmlspecialchars((isset($item['params']['param']) ? $item['params']['param'] : (isset($item['params']['text']) ? $item['params']['text'] : $content)));
@@ -2487,10 +2538,9 @@ class bbcode
 		// OPACITY
 		if($tag === 'opacity')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			if(isset($item['params']['param']))
 			{
 				$opacity = intval($item['params']['param']);
@@ -2515,10 +2565,9 @@ class bbcode
 		// FADE
 		if($tag === 'fade')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			if(isset($item['params']['param']))
 			{
 				$opacity = intval($item['params']['param']);
@@ -2666,10 +2715,9 @@ class bbcode
 		// TEX
 		if($tag === 'tex')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			$html = '<img src="cgi-bin/mimetex.cgi?' . $content . '" alt="" border="0" style="vertical-align: middle;" />';
 			return array(
 				'valid' => true,
@@ -2681,10 +2729,9 @@ class bbcode
 		// TABLE
 		if($tag === 'table')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
+			if (!empty($this->plain_html)) return $error;
+
 			// additional allowed parameters
 			$extras = $this->allow_styling ? array('style', 'class', 'align', 'width', 'height', 'border', 'cellspacing', 'cellpadding') : array('style', 'class', 'align', 'width');
 			if(isset($item['params']['param']))
@@ -2736,10 +2783,7 @@ class bbcode
 		// TR
 		if($tag === 'tr')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
 			// generate html
 			$html = '<tr>' . $content . '</tr>';
 			return array(
@@ -2752,10 +2796,7 @@ class bbcode
 		// TD
 		if($tag === 'td')
 		{
-			if($this->is_sig && !$config['allow_all_bbcode'])
-			{
-				return $error;
-			}
+			if($this->is_sig && !$config['allow_all_bbcode']) return $error;
 			// additional allowed parameters
 			$extras = $this->allow_styling ? array('class', 'align', 'width', 'height') : array('class', 'align', 'width', 'height');
 

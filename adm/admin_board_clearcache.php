@@ -82,7 +82,7 @@ if(check_http_var_exists('confirm_clear_cache_thumbs', false))
 	$confirmation = true;
 }
 
-if ($confirmation)
+if (!empty($confirmation))
 {
 	$redirect_url = append_sid('admin_board_clearcache.' . PHP_EXT);
 	//meta_refresh(3, $redirect_url);

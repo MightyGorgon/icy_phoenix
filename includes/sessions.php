@@ -315,7 +315,7 @@ class session
 				else
 				{
 					// Added logging temporarily to help debug bugs...
-					if (defined('DEBUG_EXTRA') && ($this->data['user_id'] != ANONYMOUS))
+					if (defined('DEBUG_EXTRA') && DEBUG_EXTRA && ($this->data['user_id'] != ANONYMOUS))
 					{
 						if ($referer_valid)
 						{
@@ -1703,7 +1703,7 @@ class user extends session
 		// For the brave development army we do not care about this, else we need to comment out this everytime we develop locally
 		// DISABLED BY MG
 		/*
-		if (!defined('DEBUG_EXTRA') && !defined('IN_ADMIN') && !defined('IN_CMS') && !defined('IN_INSTALL') && !defined('IN_LOGIN') && file_exists(IP_ROOT_PATH . 'install') && !is_file(IP_ROOT_PATH . 'install'))
+		if (!defined('DEBUG_EXTRA') && DEBUG_EXTRA && !defined('IN_ADMIN') && !defined('IN_CMS') && !defined('IN_INSTALL') && !defined('IN_LOGIN') && file_exists(IP_ROOT_PATH . 'install') && !is_file(IP_ROOT_PATH . 'install'))
 		{
 			// Adjust the message slightly according to the permissions
 			if ($auth->acl_gets('a_', 'm_') || $auth->acl_getf_global('m_'))
@@ -2064,7 +2064,7 @@ class user extends session
 			}
 
 			// Do not suppress error if in DEBUG_EXTRA mode
-			$include_result = (defined('DEBUG_EXTRA')) ? (include($language_filename)) : (@include($language_filename));
+			$include_result = (defined('DEBUG_EXTRA') && DEBUG_EXTRA) ? (include($language_filename)) : (@include($language_filename));
 
 			if ($include_result === false)
 			{

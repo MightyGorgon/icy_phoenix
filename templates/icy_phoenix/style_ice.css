@@ -89,7 +89,7 @@ label:hover { color: #666666; }
 
 a { color: #225566; text-decoration: underline; }
 a:visited { color: #225566; text-decoration: underline; }
-a:hover, a:active { color: #cc3333; text-decoration: underline;}
+a:hover, a:active { color: #cc3333; text-decoration: underline; }
 
 .error-message { color: #cc3333; }
 

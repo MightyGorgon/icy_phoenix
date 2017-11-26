@@ -11,7 +11,7 @@
 	</p>
 	<p class="post-time">
 		{L_NEWS_SUMMARY} <!-- IF S_NEWS_VIEWS --><a href="{articles.U_VIEWS}"><!-- ENDIF -->{articles.COUNT_VIEWS} {L_NEWS_VIEWS}<!-- IF S_NEWS_VIEWS --></a><!-- ENDIF -->
-		{L_NEWS_AND} <!-- IF not S_BOT --><a href="{INDEX_FILE}?{PORTAL_PAGE_ID}topic_id={articles.ID}" rel="nofollow" title="{articles.L_TITLE}"><!-- ENDIF -->{articles.COUNT_COMMENTS} {L_NEWS_COMMENTS}<!-- IF not S_BOT --></a><!-- ENDIF -->
+		{L_NEWS_AND} <!-- IF not S_BOT --><a href="{articles.U_COMMENT}" title="{articles.L_TITLE}"><!-- ENDIF -->{articles.COUNT_COMMENTS} {L_NEWS_COMMENTS}<!-- IF not S_BOT --></a><!-- ENDIF -->
 	</p>
 </div>
 <!-- END articles --><!-- BEGIN comments -->

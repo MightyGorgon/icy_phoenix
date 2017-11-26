@@ -100,8 +100,12 @@ class class_topics
 			$meta_content['topic_tags'] = $row_data['topic_tags'];
 			$meta_content['topic_label_compiled'] = $row_data['topic_label_compiled'];
 
+			/*
 			$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $meta_content['topic_title'];
 			$meta_content['description'] = $meta_content['forum_name'] . ' - ' . $meta_content['topic_title'];
+			*/
+			$meta_content['page_title'] = $meta_content['topic_title'];
+			$meta_content['description'] = $meta_content['topic_title'];
 			$meta_content['keywords'] = $meta_content['topic_tags'];
 			$meta_content['keywords'] = empty($meta_content['keywords']) ? str_replace(array(' ', ',, '), array(', ', ', '), ip_clean_string($meta_content['topic_title'], $lang['ENCODING'], true)) : $meta_content['keywords'];
 		}

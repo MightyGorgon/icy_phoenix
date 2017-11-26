@@ -933,7 +933,7 @@ $template->assign_vars(array(
 	'FOLDER_GLOBAL_ANNOUNCE_NEW_IMG' => $images['topic_glo_unread'],
 
 	'L_TOPICS' => $lang['Topics'],
-	'L_FORUM_RULES' => (empty($forum_row['rules_custom_title'])) ? $lang['Forum_Rules'] : $forum_row['rules_custom_title'],
+	'L_FORUM_RULES' => (empty($forum_row['forum_rules_custom_title'])) ? $lang['Forum_Rules'] : $forum_row['forum_rules_custom_title'],
 	'L_REPLIES' => $lang['Replies'],
 	'L_VIEWS' => $lang['Views'],
 	'L_POSTS' => $lang['Posts'],

@@ -218,8 +218,8 @@ elseif (isset($_POST['joingroup']) && $group_id)
 				'GROUP_MODERATOR' => $moderator['username'],
 				'EMAIL_SIG' => $email_sig,
 				'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . '=' . $group_id . '&validate=true'
-			)
-		);
+				)
+			);
 			$emailer->send();
 			$emailer->reset();
 		}
@@ -314,13 +314,10 @@ elseif ($group_id)
 		$group_rank = $group_info['group_rank'];
 		$group_color = $group_info['group_color'];
 
+		$is_moderator = false;
 		if (($group_moderator == $user->data['user_id']) || ($user->data['user_level'] == ADMIN) || $is_autogroup_enable)
 		{
 			$is_moderator = true;
-		}
-		else
-		{
-			$is_moderator = false;
 		}
 
 		/**
@@ -460,7 +457,7 @@ elseif ($group_id)
 					message_die(GENERAL_MESSAGE, $message);
 				}
 			}
-			else if (((isset($_POST['approve']) || isset($_POST['deny'])) && isset($_POST['pending_members'])) || (isset($_POST['remove']) && isset($_POST['members'])) || (isset($_POST['mass_colorize']) && isset($_POST['members'])))
+			elseif (((isset($_POST['approve']) || isset($_POST['deny'])) && isset($_POST['pending_members'])) || (isset($_POST['remove']) && isset($_POST['members'])) || (isset($_POST['mass_colorize']) && isset($_POST['members'])))
 			{
 
 				$members = (isset($_POST['approve']) || isset($_POST['deny'])) ? $_POST['pending_members'] : $_POST['members'];
@@ -650,6 +647,7 @@ elseif ($group_id)
 				'is_moderator' => $is_moderator,
 			));
 		}
+		// END approve or deny
 	}
 	else
 	{

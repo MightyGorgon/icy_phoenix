@@ -187,10 +187,10 @@ if (isset($_POST['submit']))
 	$bcc_emails = array();
 	if (!$account_delete)
 	{
-		$ticket_cat_id = request_var('ticket_cat_id', '');
+		$ticket_cat_id = request_var('ticket_cat_id', 0);
 		if (!empty($ticket_cat_id))
 		{
-			$sql = "SELECT * FROM " . TICKETS_CAT_TABLE . " WHERE ticket_cat_id = " . $ticket_cat_id;
+			$sql = "SELECT * FROM " . TICKETS_CAT_TABLE . " WHERE ticket_cat_id = " . $db->sql_escape($ticket_cat_id);
 			$result = $db->sql_query($sql);
 			$ticket_row = $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);

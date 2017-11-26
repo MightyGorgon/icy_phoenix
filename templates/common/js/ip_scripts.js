@@ -613,6 +613,34 @@ function setCheckboxes(theForm, elementName, isChecked)
 	return true;
 }
 
+function ip_addslashes (str)
+{
+	// Adds slashes!
+	// Both single and double quotes
+	//return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+	// Only single quotes
+	return (str + '').replace(/[\\']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+
+function ip_encodeHTML (str)
+{
+	// Encodes HTML special chars
+	return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+}
+
+function ip_encode_single_quote (str)
+{
+	// Replaces all single quote
+	return str.replace(/'/g, '');
+}
+
+function ip_numbers_points_only (str)
+{
+	// Replaces all non numbers and will keep , . -
+	return str.replace(/[^0-9,.-]/g, '');
+}
+
+
 // TRIGGER CLICKS ON ROWS
 $(document).ready(function() {
 	$("td[data-href]").bind('mouseup', function(e){

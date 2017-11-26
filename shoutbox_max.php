@@ -460,6 +460,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$user_joined = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Joined'] . ': ' . create_date($lang['JOINED_DATE_FORMAT'], $shout_row['user_regdate'], $config['board_timezone']) : '';
 
 	$user_avatar = $user_info['avatar'];
+	$user_avatar_img = user_get_avatar($shout_row['user_id'], $shout_row['user_level'], $shout_row['user_avatar'], $shout_row['user_avatar_type'], $shout_row['user_allowavatar'], '', 30);
 
 	$shout = $shout_row['shout_text'];
 	$user_sig = ($shout_row['enable_sig'] && ($shout_row['user_sig'] != '') && $config['allow_sig']) ? $shout_row['user_sig'] : '';
@@ -552,6 +553,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 		'SHOUT_USERNAME' => $shout_username,
 		'GENDER' => $gender,
 		'AVATAR' => $user_avatar,
+		'AVATAR_IMG' => $user_avatar_img,
 		'USER_RANK' => $user_rank,
 		'RANK_IMAGE' => $rank_image,
 		'JOINED' => $user_joined,

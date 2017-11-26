@@ -124,11 +124,11 @@ class GoogleConnect extends SocialConnect
 		$google_user_gender = 0;
 		if (!empty($google_data['gender']))
 		{
-			if (($google_data['gender'] = 'male') || ($google_data['gender'] = 1))
+			if (($google_data['gender'] == 'male') || ($google_data['gender'] == 1))
 			{
 				$google_user_gender = 1;
 			}
-			elseif (($google_data['gender'] = 'female') || ($google_data['gender'] = 2))
+			elseif (($google_data['gender'] == 'female') || ($google_data['gender'] == 2))
 			{
 				$google_user_gender = 2;
 			}

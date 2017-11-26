@@ -260,7 +260,7 @@ class sql_db
 
 		$cache_folder = (empty($cache_folder) ? SQL_CACHE_FOLDER : $cache_folder);
 
-		if (defined('DEBUG_EXTRA'))
+		if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 		{
 			$this->sql_report('start', $query);
 		}
@@ -295,7 +295,7 @@ class sql_db
 				$this->sql_error($query);
 			}
 
-			if (defined('DEBUG_EXTRA'))
+			if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 			{
 				$this->sql_end_time = $this->sql_get_time();
 				$this->sql_time += $this->sql_end_time - $this->sql_start_time;
@@ -313,7 +313,7 @@ class sql_db
 				$this->open_queries[(int) $this->query_result] = $this->query_result;
 			}
 		}
-		elseif (defined('DEBUG_EXTRA'))
+		elseif (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 		{
 			$this->sql_report('fromcache', $query);
 		}
@@ -944,7 +944,7 @@ class sql_db
 			// Show complete SQL error and path to administrators only
 			// Additionally show complete error on installation or if extended debug mode is enabled
 			// The DEBUG_EXTRA constant is for development only!
-			if (defined('IN_INSTALL') || (defined('DEBUG_EXTRA') && (DEBUG_EXTRA == true)))
+			if (defined('IN_INSTALL') || (defined('DEBUG_EXTRA') && DEBUG_EXTRA))
 			{
 				$backtrace = get_backtrace();
 

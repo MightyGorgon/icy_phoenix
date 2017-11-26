@@ -275,7 +275,7 @@ a:hover, a:active { color: #cc3333; text-decoration: none; }
 a.forumlink, a.forumlink:visited {color: #113355; text-decoration: none; }
 a.forumlink:hover, a.forumlink:active {color: #cc3333; text-decoration: underline; }
 a.forumlink-new, a.forumlink-new:visited { color: #ff5500; text-decoration: none;}
-a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: underline;}
+a.forumlink-new:hover, a.forumlink-new:active {color: #cc3333; text-decoration: underline; }
 
 /* inputs */
 .helpline {
