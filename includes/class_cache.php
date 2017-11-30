@@ -20,6 +20,43 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
+/**
+ * We store mysqli results as keys in SplObjectStorage / DbObjectStorage,
+ * but those need keys to be objects.
+ * When pulled out from cache, however, we do not have an object, so we create a fake ID using this class.
+ */
+class sql_db_fake_id
+{
+	public $id;
+
+	public function __construct($id)
+	{
+		$this->id = $id;
+	}
+}
+
+/**
+ * This class implements a key-value store based on SplObjectStorage,
+ * but special-cases sql_db_fake_id to compare equal if same ID (in getHash).
+ *
+ * sql_db_fake_id is necessary because mysqli queries return objects,
+ * not resources like mysql does.
+ */
+class DbObjectStorage extends SplObjectStorage
+{
+	public function getHash($o)
+	{
+		if ($o instanceof sql_db_fake_id)
+		{
+			return 'sql_db_fake_id:'.$o->id;
+		}
+		else
+		{
+			return parent::getHash($o);
+		}
+	}
+}
+
 
 /**
 * Cache management class
@@ -30,13 +67,14 @@ class acm
 	var $var_expires = array();
 	var $is_modified = false;
 
-	var $sql_rowset = array();
-	var $sql_row_pointer = array();
+	var $sql_rowset;
+	var $sql_row_pointer;
 	var $sql_query_id = '';
 	var $cache_dir = '';
 	var $cache_dir_sql = '';
 	var $cache_dir_backup = '';
 	var $cache_dirs = array();
+	var $last_query_id = 1;
 
 	var $use_old_ip_cache = false;
 
@@ -48,6 +86,9 @@ class acm
 		$this->cache_dir = defined('MAIN_CACHE_FOLDER') ? MAIN_CACHE_FOLDER : 'cache/';
 		$this->cache_dir_sql = defined('SQL_CACHE_FOLDER') ? SQL_CACHE_FOLDER : 'cache/sql/';
 		$this->cache_dir_backup = $this->cache_dir;
+
+		$this->sql_rowset = new DbObjectStorage();
+		$this->sql_row_pointer = new DbObjectStorage();
 
 		$this->cache_dirs = defined('MAIN_CACHE_FOLDER') ? array(MAIN_CACHE_FOLDER, CMS_CACHE_FOLDER, FORUMS_CACHE_FOLDER, POSTS_CACHE_FOLDER, SQL_CACHE_FOLDER, TOPICS_CACHE_FOLDER, USERS_CACHE_FOLDER) : array($this->cache_dir, $this->cache_dir_sql);
 	}
@@ -73,8 +114,8 @@ class acm
 
 		$this->vars = array();
 		$this->var_expires = array();
-		$this->sql_rowset = array();
-		$this->sql_row_pointer = array();
+		$this->sql_rowset = new DbObjectStorage;
+		$this->sql_row_pointer = new DbObjectStorage;
 	}
 
 	/**
@@ -228,8 +269,8 @@ class acm
 
 		$this->vars = array();
 		$this->var_expires = array();
-		$this->sql_rowset = array();
-		$this->sql_row_pointer = array();
+		$this->sql_rowset = new DbObjectStorage;
+		$this->sql_row_pointer = new DbObjectStorage;
 
 		$this->is_modified = false;
 	}
@@ -399,7 +440,7 @@ class acm
 			return false;
 		}
 
-		$this->sql_query_id = sizeof($this->sql_rowset);
+		$this->sql_query_id = new sql_db_fake_id($this->last_query_id++);
 		$this->sql_rowset[$this->sql_query_id] = $rowset;
 		$this->sql_row_pointer[$this->sql_query_id] = 0;
 
@@ -418,14 +459,9 @@ class acm
 
 		// Remove extra spaces and tabs
 		$query = preg_replace('/[\n\r\s\t]+/', ' ', $query);
-		$this->sql_query_id = sizeof($this->sql_rowset);
-		$this->sql_rowset[$this->sql_query_id] = array();
+		$this->sql_query_id = new sql_db_fake_id($this->last_query_id++);
 		$this->sql_row_pointer[$this->sql_query_id] = 0;
-
-		while ($row = $db->sql_fetchrow($query_result))
-		{
-			$this->sql_rowset[$this->sql_query_id][] = $row;
-		}
+		$this->sql_rowset[$this->sql_query_id] = $db->sql_fetchrowset($query_result);
 		$db->sql_freeresult($query_result);
 
 		if ($this->_write($cache_prefix . $this->sql_query_hash($query), $this->sql_rowset[$this->sql_query_id], time() + $ttl, $query, $cache_folder))
@@ -449,7 +485,10 @@ class acm
 	{
 		if ($this->sql_row_pointer[$query_id] < sizeof($this->sql_rowset[$query_id]))
 		{
-			return $this->sql_rowset[$query_id][$this->sql_row_pointer[$query_id]++];
+			// SplObjectStorage doesn't support ++
+			$newp = $this->sql_row_pointer[$query_id];
+			$this->sql_row_pointer[$query_id] += 1;
+			return $this->sql_rowset[$query_id][$newp];
 		}
 
 		return false;
@@ -462,7 +501,10 @@ class acm
 	{
 		if ($this->sql_row_pointer[$query_id] < sizeof($this->sql_rowset[$query_id]))
 		{
-			return (isset($this->sql_rowset[$query_id][$this->sql_row_pointer[$query_id]][$field])) ? $this->sql_rowset[$query_id][$this->sql_row_pointer[$query_id]++][$field] : false;
+			// SplObjectStorage doesn't support ++
+			$newp = $this->sql_row_pointer[$query_id];
+			$this->sql_row_pointer[$query_id] += 1;
+			return (isset($this->sql_rowset[$query_id][$this->sql_row_pointer[$query_id]][$field])) ? $this->sql_rowset[$query_id][$newp][$field] : false;
 		}
 
 		return false;
