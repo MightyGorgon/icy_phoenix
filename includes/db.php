@@ -23,17 +23,14 @@ if (!defined('IN_ICYPHOENIX'))
 switch($dbms)
 {
 	case 'mysql':
-		define('SQL_LAYER', 'mysql');
-		include(IP_ROOT_PATH . 'includes/db/mysql.' . PHP_EXT);
-		break;
 	case 'mysql4':
-		define('SQL_LAYER', 'mysql4');
+		define('SQL_LAYER', 'mysql');
 		include(IP_ROOT_PATH . 'includes/db/mysql.' . PHP_EXT);
 		break;
 }
 
 // Make the database connection.
-$db = new sql_db($dbhost, $dbuser, $dbpasswd, $dbname, false);
+$db = new sql_db(SQL_LAYER, $dbhost, $dbuser, $dbpasswd, $dbname);
 if(!$db->db_connect_id)
 {
 	if (defined('IN_INSTALL'))

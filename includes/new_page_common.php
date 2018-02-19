@@ -83,10 +83,7 @@ $cms_default_page = (($layout == $cms_config_vars['default_portal']) ? true : fa
 
 $sql = "SELECT * FROM " . $ip_cms->tables['layout_table'] . " WHERE lid = '" . $layout . "'";
 $layout_result = $db->sql_query($sql, 0, 'cms_', CMS_CACHE_FOLDER);
-while ($row = $db->sql_fetchrow($layout_result))
-{
-	$layout_row = $row;
-}
+$layout_row = $db->sql_fetchrow($layout_result);
 $db->sql_freeresult($layout_result);
 $layout_name = $cms_default_page ? false : (!empty($layout_row['name']) ? $layout_row['name'] : (!empty($meta_content['page_title']) ? $meta_content['page_title'] : false));
 $layout_template = $layout_row['template'];
