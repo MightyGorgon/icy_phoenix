@@ -21,10 +21,9 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 /**
- * We store mysqli results as keys in SplObjectStorage / DbObjectStorage,
- * but those need keys to be objects.
- * When pulled out from cache, however, we do not have an object, so we create a fake ID using this class.
- */
+* We store mysqli results as keys in SplObjectStorage / DbObjectStorage, but those need keys to be objects.
+* When pulled out from cache, however, we do not have an object, so we create a fake ID using this class.
+*/
 class sql_db_fake_id
 {
 	public $id;
@@ -36,19 +35,18 @@ class sql_db_fake_id
 }
 
 /**
- * This class implements a key-value store based on SplObjectStorage,
- * but special-cases sql_db_fake_id to compare equal if same ID (in getHash).
- *
- * sql_db_fake_id is necessary because mysqli queries return objects,
- * not resources like mysql does.
- */
+* This class implements a key-value store based on SplObjectStorage,
+* but special-cases sql_db_fake_id to compare equal if same ID (in getHash).
+*
+* sql_db_fake_id is necessary because mysqli queries return objects, not resources like mysql does.
+*/
 class DbObjectStorage extends SplObjectStorage
 {
 	public function getHash($o)
 	{
 		if ($o instanceof sql_db_fake_id)
 		{
-			return 'sql_db_fake_id:'.$o->id;
+			return 'sql_db_fake_id:' . $o->id;
 		}
 		else
 		{
