@@ -45,7 +45,7 @@ if (strstr($redirect_url, "\n") || strstr($redirect_url, "\r") || strstr($redire
 }
 
 $available_networks = array();
-if ($config['enable_social_connect'])
+if ($config['enable_social_connect'] && !$user->data['session_logged_in'])
 {
 	include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
 	$available_networks = SocialConnect::get_available_networks();
