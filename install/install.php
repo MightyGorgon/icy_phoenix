@@ -270,7 +270,7 @@ elseif (($install_step == 1) || ($admin_pass1 != $admin_pass2) || empty($admin_p
 else
 {
 	// DB creation and population
-	if (!isset($dbms) || !extension_loaded('mysql'))
+	if (!isset($dbms) || !extension_loaded('mysqli'))
 	{
 		$page_framework->page_header($lang['Welcome_install'], $lang['Install'], '');
 		$page_framework->error($lang['Installer_Error'], $lang['Install_No_Ext']);

@@ -308,7 +308,7 @@ else
 					$forward_page = '';
 					for($i = 1; $i < sizeof($forward_match); $i++)
 					{
-						if(!ereg("sid=", $forward_match[$i]))
+						if(false === strpos($forward_match[$i], "sid="))
 						{
 							if($forward_page != '')
 							{

@@ -127,42 +127,6 @@ function send_file_to_browser($attachment, $upload_dir)
 		$HTTP_USER_AGENT = '';
 	}
 
-	if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))
-	{
-		$browser_version = $log_version[2];
-		$browser_agent = 'opera';
-	}
-	elseif (ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))
-	{
-		$browser_version = $log_version[1];
-		$browser_agent = 'ie';
-	}
-	elseif (ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))
-	{
-		$browser_version = $log_version[1];
-		$browser_agent = 'omniweb';
-	}
-	elseif (ereg('Netscape([0-9]{1})', $HTTP_USER_AGENT, $log_version))
-	{
-		$browser_version = $log_version[1];
-		$browser_agent = 'netscape';
-	}
-	elseif (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))
-	{
-		$browser_version = $log_version[1];
-		$browser_agent = 'mozilla';
-	}
-	elseif (ereg('Konqueror/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))
-	{
-		$browser_version = $log_version[1];
-		$browser_agent = 'konqueror';
-	}
-	else
-	{
-		$browser_version = 0;
-		$browser_agent = 'other';
-	}
-
 	// Correct the mime type - we force application/octetstream for all files, except images
 	// Please do not change this, it is a security precaution
 	if (!strstr($attachment['mimetype'], 'image'))
