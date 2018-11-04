@@ -15,6 +15,11 @@
 *
 */
 
+if (!class_exists('DbObjectStorage'))
+{
+  include(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
+}
+
 if (!defined('IN_ICYPHOENIX'))
 {
 	exit;

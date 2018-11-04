@@ -2410,7 +2410,7 @@ class bbcode
 
 				if (($tag === 'flash') || ($tag === 'swf'))
 				{
-					$html = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="' . $width . '" height="' . $height . '"><param name="movie" value="' . $content . '"><param name="quality" value="high"><param name="scale" value="noborder"><param name="wmode" value="transparent"><param name="bgcolor" value="#000000"><embed src="' . $content . '" quality="high" scale="noborder" wmode="transparent" bgcolor="#000000" width="' . $width . '" height="' . $height . '" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></embed></object>';
+					$html = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="//download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="' . $width . '" height="' . $height . '"><param name="movie" value="' . $content . '"><param name="quality" value="high"><param name="scale" value="noborder"><param name="wmode" value="transparent"><param name="bgcolor" value="#000000"><embed src="' . $content . '" quality="high" scale="noborder" wmode="transparent" bgcolor="#000000" width="' . $width . '" height="' . $height . '" type="application/x-shockwave-flash" pluginspage="//www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"></embed></object>';
 				}
 				elseif ($tag === 'flv')
 				{
@@ -2426,11 +2426,11 @@ class bbcode
 				}
 				elseif ($tag === 'quick')
 				{
-					$html = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0" width="' . $width . '" height="' . $height . '" align="middle"><param name="controller" value="true"><param name="type" value="video/quicktime"><param name="autoplay" value="true"><param name="target" value="myself"><param name="src" value="' . $content . '"><param name="pluginspage" value="http://www.apple.com/quicktime/download/indext.html"><param name="kioskmode" value="true"><embed src="' . $content . '" width="' . $width . '" height="' . $height . '" align="middle" kioskmode="true" controller="true" target="myself" type="video/quicktime" border="0" pluginspage="http://www.apple.com/quicktime/download/indext.html"></embed></object>';
+					$html = '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="//www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0" width="' . $width . '" height="' . $height . '" align="middle"><param name="controller" value="true"><param name="type" value="video/quicktime"><param name="autoplay" value="true"><param name="target" value="myself"><param name="src" value="' . $content . '"><param name="pluginspage" value="//www.apple.com/quicktime/download/indext.html"><param name="kioskmode" value="true"><embed src="' . $content . '" width="' . $width . '" height="' . $height . '" align="middle" kioskmode="true" controller="true" target="myself" type="video/quicktime" border="0" pluginspage="//www.apple.com/quicktime/download/indext.html"></embed></object>';
 				}
 				elseif ($tag === 'stream')
 				{
-					$html = '<object id="wmp" width="' . $width . '" height="' . $height . '" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,0,0,0" standby="Loading Microsoft Windows Media Player components..." type="application/x-oleobject"><param name="FileName" value="' . $content . '"><param name="ShowControls" value="1"><param name="ShowDisplay" value="0"><param name="ShowStatusBar" value="1"><param name="AutoSize" value="1"><embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/windows95/downloads/contents/wurecommended/s_wufeatured/mediaplayer/default.asp" src="' . $content . '" name="MediaPlayer2" showcontrols="1" showdisplay="0" showstatusbar="1" autosize="1" visible="1" animationatstart="0" transparentatstart="1" loop="0" height="70" width="300"></embed></object>';
+					$html = '<object id="wmp" width="' . $width . '" height="' . $height . '" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="//activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,0,0,0" standby="Loading Microsoft Windows Media Player components..." type="application/x-oleobject"><param name="FileName" value="' . $content . '"><param name="ShowControls" value="1"><param name="ShowDisplay" value="0"><param name="ShowStatusBar" value="1"><param name="AutoSize" value="1"><embed type="application/x-mplayer2" pluginspage="//www.microsoft.com/windows95/downloads/contents/wurecommended/s_wufeatured/mediaplayer/default.asp" src="' . $content . '" name="MediaPlayer2" showcontrols="1" showdisplay="0" showstatusbar="1" autosize="1" visible="1" animationatstart="0" transparentatstart="1" loop="0" height="70" width="300"></embed></object>';
 				}
 				elseif (($tag === 'emff') || ($tag === 'mp3'))
 				{
@@ -2438,7 +2438,7 @@ class bbcode
 				}
 				elseif ($tag === 'vimeo')
 				{
-					$html = '<object type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" data="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '"><param name="quality" value="best" /><param name="allowfullscreen" value="true" /><param name="scale" value="showAll" /><param name="movie" value="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" /></object><br /><a href="http://www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" target="_blank">Link</a><br />';
+					$html = '<object type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '" data="//www.vimeo.com/moogaloop.swf?clip_id=' . $content . '"><param name="quality" value="best" /><param name="allowfullscreen" value="true" /><param name="scale" value="showAll" /><param name="movie" value="//www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" /></object><br /><a href="//www.vimeo.com/moogaloop.swf?clip_id=' . $content . '" target="_blank">Link</a><br />';
 				}
 				elseif ($tag === 'youtube')
 				{
@@ -2470,15 +2470,15 @@ class bbcode
 						$color_append .= ($color_1 ? ('&amp;color1=0x' . str_replace('#', '', $color_1)) : '');
 						$color_append .= ($color_2 ? ('&amp;color2=0x' . str_replace('#', '', $color_2)) : '');
 					}
-					$video_link = '<br /><a href="http://youtube.com/watch?v=' . $video_file . $color_append . '" target="_blank">YouTube Link</a><br />';
+					$video_link = '<br /><a href="//youtube.com/watch?v=' . $video_file . $color_append . '" target="_blank">YouTube Link</a><br />';
 					// OLD OBJECT Version
-					//$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://www.youtube.com/v/' . $video_file . $color_append . '" /><embed src="http://www.youtube.com/v/' . $video_file . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object>' . $video_link;
+					//$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="//www.youtube.com/v/' . $video_file . $color_append . '" /><embed src="//www.youtube.com/v/' . $video_file . $color_append . '" type="application/x-shockwave-flash" width="' . $width . '" height="' . $height . '"></embed></object>' . $video_link;
 					// IFRAME Version
-					$html = '<iframe width="' . $width . '" height="' . $height . '" src="http://www.youtube.com/embed/' . $video_file . '?autoplay=0' . $color_append . '" frameborder="0"></iframe>' . $video_link;
+					$html = '<iframe width="' . $width . '" height="' . $height . '" src="//www.youtube.com/embed/' . $video_file . '?autoplay=0' . $color_append . '" frameborder="0"></iframe>' . $video_link;
 				}
 				elseif ($tag === 'googlevideo')
 				{
-					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="http://video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:' . $width . 'px; height:' . $height . 'px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="http://video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#f8f8f8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="http://video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
+					$html = '<object width="' . $width . '" height="' . $height . '"><param name="movie" value="//video.google.com/googleplayer.swf?docId=' . $content . '"></param><embed style="width:' . $width . 'px; height:' . $height . 'px;" id="VideoPlayback" align="middle" type="application/x-shockwave-flash" src="//video.google.com/googleplayer.swf?docId=' . $content . '" allowScriptAccess="sameDomain" quality="best" bgcolor="#f8f8f8" scale="noScale" salign="TL" FlashVars="playerMode=embedded"></embed></object><br /><a href="//video.google.com/videoplay?docid=' . $content . '" target="_blank">Link</a><br />';
 				}
 				return array(
 					'valid' => true,

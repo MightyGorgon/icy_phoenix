@@ -397,7 +397,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 				$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['Signature_too_long'];
 			}
 		}
-		if (eregi("[^0-9]", $_POST['dst_time_lag']) || ($dst_time_lag < 0) || ($dst_time_lag > 120))
+		if (preg_match("/[^0-9]/", $_POST['dst_time_lag']) || ($dst_time_lag < 0) || ($dst_time_lag > 120))
 		{
 			$error = true;
 			$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['dst_time_lag_error'];
@@ -431,7 +431,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 
 			if($user_avatar_loc != '')
 			{
-				if(file_exists(@phpbb_realpath($user_avatar_loc)) && ereg(".jpg$|.gif$|.png$", $user_avatar_name))
+				if(file_exists(@phpbb_realpath($user_avatar_loc)) && preg_match("/.jpg$|.gif$|.png$/", $user_avatar_name))
 				{
 					if($user_avatar_size <= $config['avatar_filesize'] && $user_avatar_size > 0)
 					{

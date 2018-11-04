@@ -55,7 +55,7 @@ if(GetCookie(tmp) == '2')
 </tr>
 <!-- END tablehead -->
 <?php
-if (ereg("c=", $_SERVER['REQUEST_URI']) || ereg("-vc", $_SERVER['REQUEST_URI']))
+if (false !== strpos($_SERVER['REQUEST_URI'], "c=") || false !== strpos($_SERVER['REQUEST_URI'], "-vc"))
 {
 ?>
 <!-- BEGIN cathead -->

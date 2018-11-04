@@ -364,7 +364,7 @@ if(!empty($perform))
 
 			if(!empty($additional_tables))
 			{
-				if(ereg(",", $additional_tables))
+				if(false !== strpos($additional_tables, ","))
 				{
 					$additional_tables = split(",", $additional_tables);
 
