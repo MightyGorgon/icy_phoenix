@@ -67,6 +67,21 @@ ALTER TABLE `phpbb_plugins` ADD `plugin_class` TINYINT(2) NOT NULL DEFAULT 0 AFT
 
 
 
+########################################
+##              BUILD 110             ##
+########################################
+ALTER TABLE `phpbb_users` ADD `user_privacy_policy_notify` TINYINT(2) NOT NULL DEFAULT 0 AFTER `user_popup_pm`;
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_name', 'My Name');
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_site', 'My Site');
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_company', 'My Company');
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_details', 'My Details');
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_address', 'My Address');
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_server', 'My Server');
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_data', 'My Data Owner');
+## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_data_address', 'My Data Owner Address');
+
+
+
 
 
 #####################

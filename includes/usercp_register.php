@@ -559,7 +559,9 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 // and ensure that they were trying to register a second time
 // (Prevents double registrations)
 //
-if (($mode == 'register') && ($user->data['session_logged_in'] || ($username == $user->data['username'])))
+//if (($mode == 'register') && ($user->data['session_logged_in'] || ($username == $user->data['username'])))
+//20180612: Mighty Gorgon edit to make sure $username is not empty before checking it!
+if (($mode == 'register') && ($user->data['session_logged_in'] || (!empty($username) && ($username == $user->data['username']))))
 {
 	message_die(GENERAL_MESSAGE, $lang['Username_taken'], '', __LINE__, __FILE__);
 }

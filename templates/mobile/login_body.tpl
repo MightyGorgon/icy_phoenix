@@ -10,7 +10,7 @@
 <input type="radio" name="online_status" value="default" checked="checked" />&nbsp;{L_DEFAULT}&nbsp;&nbsp;<input type="radio" name="online_status" value="hidden" />&nbsp;{L_HIDDEN}&nbsp;&nbsp;<input type="radio" name="online_status" value="visible" />&nbsp;{L_VISIBLE}</span><br /><br />
 <!-- END switch_login_type -->
 <!-- BEGIN switch_allow_autologin -->
-<span class="genmed"><input type="checkbox" name="autologin" checked="checked" />&nbsp;{L_AUTOLOGIN}</span><br /><br />
+<span class="genmed"><input type="checkbox" name="autologin" checked="checked" />&nbsp;{L_AUTOLOGIN}</span><br /><br /><span class="gensmall">{L_PRIVACY_POLICY_LOGIN}</span><br /><br />
 <!-- END switch_allow_autologin -->
 {S_HIDDEN_FIELDS}
 <input type="submit" name="login" class="mainoption" value="{L_LOGIN}" /><br />

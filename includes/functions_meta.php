@@ -65,7 +65,8 @@ function create_meta_content()
 				$meta_content['keywords'] = $meta_content['topic_tags'];
 				$meta_content['keywords'] = empty($meta_content['keywords']) ? str_replace(array(' ', ',, '), array(', ', ', '), ip_clean_string($meta_content['topic_title'], $lang['ENCODING'], true)) : $meta_content['keywords'];
 				$meta_content['description'] = $meta_content['forum_name'] . ' - ' . $meta_content['topic_title'];
-				$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $meta_content['page_title'];
+				//$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $meta_content['page_title'];
+				$meta_content['page_title'] = $meta_content['page_title'];
 			}
 			$db->sql_freeresult($result);
 		}

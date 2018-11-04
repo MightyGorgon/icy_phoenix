@@ -93,7 +93,7 @@ if (isset($_POST['submit']))
 
 		for($i = 0; $i < sizeof($email_list_temp); $i++)
 		{
-			// This preg_match match is based on one by php@unreelpro.com contained in the annotated php manual at php.com (preg_match section)
+			// This preg_match match is based on one by php@unreelpro.com contained in the annotated php manual at php.com (preg_match section) - Originally it was contained @ php.com -> ereg section
 			if (preg_match('/^(([a-z0-9&\'\.\-_\+])|(\*))+@(([a-z0-9\-])|(\*))+\.([a-z0-9\-]+\.)*?[a-z]+$/is', trim($email_list_temp[$i])))
 			{
 				$email_list[] = trim($email_list_temp[$i]);

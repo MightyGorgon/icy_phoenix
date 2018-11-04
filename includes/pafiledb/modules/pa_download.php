@@ -285,24 +285,13 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 		}
 	}
 
-	$mimetype = 'application/octet-stream';
-
+	// Send out the Headers
 	@ob_end_clean();
 	@ini_set('zlib.output_compression', 'Off');
 	header('Pragma: public');
 	header('Content-Transfer-Encoding: none');
-
-	// Send out the Headers
-	if ($browser_agent == 'ie')
-	{
-		header('Content-Type: ' . $mimetype . '; name="' . $real_filename . '"');
-		header('Content-Disposition: inline; filename="' . $real_filename . '"');
-	}
-	else
-	{
-		header('Content-Type: ' . $mimetype . '; name="' . $real_filename . '"');
-		header('Content-Disposition: attachment; filename=' . $real_filename);
-	}
+	header('Content-Type: ' . $mimetype . '; name="' . $real_filename . '"');
+	header('Content-Disposition: inline; filename="' . $real_filename . '"');
 
 	// Now send the File Contents to the Browser
 	if ($gotit)
@@ -323,7 +312,6 @@ function send_file_to_browser($real_filename, $mimetype, $physical_filename, $up
 	{
 		return false;
 	}
-
 
 	@flush();
 	exit();

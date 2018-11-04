@@ -847,7 +847,9 @@ if ($config['display_viewonline'])
 	define('SHOW_ONLINE', true);
 }
 
-$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $topic_title_plain;
+//$meta_content['page_title'] = $meta_content['forum_name'] . ' :: ' . $topic_title_plain;
+//$meta_content['page_title'] = str_replace(array('"'), array('\"'), htmlspecialchars_decode($topic_title_plain));
+$meta_content['page_title'] = $topic_title_plain;
 $meta_content['page_title_clean'] = $topic_title_plain;
 $template->assign_var('S_VIEW_TOPIC', true);
 if ($config['show_icons'] == true)
@@ -1125,6 +1127,7 @@ $template->assign_vars(array(
 	'TOPIC_TITLE' => $topic_title,
 	'TOPIC_TITLE_PLAIN' => $topic_title_plain,
 	'TOPIC_TITLE_SHORT' => $topic_title_short,
+	'TOPIC_TITLE_QR' => str_replace(array('"'), array('\"'), htmlspecialchars_decode($topic_title_plain)),
 
 	'TOPIC_POSTED_TIME' => $topic_started,
 	'TOPIC_AUTHOR_NAME' => $topic_username,

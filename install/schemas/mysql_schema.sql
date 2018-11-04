@@ -1869,6 +1869,7 @@ CREATE TABLE `phpbb_users` (
 	`user_notify` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_notify_pm` TINYINT(1) NOT NULL DEFAULT '0',
 	`user_popup_pm` TINYINT(1) NOT NULL DEFAULT '0',
+	`user_privacy_policy_notify` TINYINT(1) NOT NULL DEFAULT '0',
 	`user_rank` INT(11) DEFAULT '0',
 	`user_rank2` INT(11) DEFAULT '-1',
 	`user_rank3` INT(11) DEFAULT '-2',

@@ -45,7 +45,7 @@
 		<!-- BEGIN switch_allow_autologin -->
 		<tr>
 			<td>&nbsp;</td>
-			<td class="tdnw" style="padding-bottom: 10px;"><span class="genmed">&nbsp;<input type="checkbox" name="autologin" checked="checked" />&nbsp;{L_AUTOLOGIN}</span></td>
+			<td class="tdnw" style="padding-bottom: 10px;"><span class="genmed">&nbsp;<input type="checkbox" name="autologin" checked="checked" />&nbsp;{L_AUTOLOGIN}</span><br /><br /><span class="gensmall">{L_PRIVACY_POLICY_LOGIN}</span></td>
 		</tr>
 		<!-- END switch_allow_autologin -->
 		<tr>
