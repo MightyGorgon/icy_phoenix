@@ -28,25 +28,25 @@ function attach_rules(forum_id)
 <!-- IF S_JQUERY_TOPIC_TAGS -->
 <script type="text/javascript">
 // <![CDATA[
-	$(function() {
-		$('input.tag').tagedit({
-			texts: { // some texts
-				removeLinkTitle: '{L_TAGS_REMOVE_ITEM}',
-				saveEditLinkTitle: '{L_TAGS_EDIT_ITEM}',
-				deleteLinkTitle: '{L_TAGS_DELETE_ITEM}',
-				deleteConfirmation: '{L_TAGS_DELETE_CONFIRM}',
-				deletedElementTitle: '{L_TAGS_DELETED_ITEM}',
-				breakEditLinkTitle: '{L_TAGS_BREAK_EDIT}'
-			},
-			autocompleteURL: 'ajax.php?mode=tags_search_json&json=1&sid={S_SID}',
-			//autocompleteOptions: {minLength: 0},
-			// put a classname here if the wrapper ul shoud receive a special class
-			//additionalListClass: 'post',
-			// return, comma, space, period, semicolon
-			//breakKeyCodes: [ 13, 44, 32, 46, 59 ]
-		});
-		
+$(function() {
+	$('input.tag').tagedit({
+		texts: { // some texts
+			removeLinkTitle: '{L_TAGS_REMOVE_ITEM}',
+			saveEditLinkTitle: '{L_TAGS_EDIT_ITEM}',
+			deleteLinkTitle: '{L_TAGS_DELETE_ITEM}',
+			deleteConfirmation: '{L_TAGS_DELETE_CONFIRM}',
+			deletedElementTitle: '{L_TAGS_DELETED_ITEM}',
+			breakEditLinkTitle: '{L_TAGS_BREAK_EDIT}'
+		},
+		autocompleteURL: 'ajax.php?mode=tags_search_json&json=1&sid={S_SID}',
+		//autocompleteOptions: {minLength: 0},
+		// put a classname here if the wrapper ul shoud receive a special class
+		//additionalListClass: 'post',
+		// return, comma, space, period, semicolon
+		//breakKeyCodes: [ 13, 44, 32, 46, 59 ]
 	});
+	
+});
 // ]]>
 </script>
 <!-- ENDIF -->
