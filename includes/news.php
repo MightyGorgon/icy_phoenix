@@ -117,6 +117,17 @@ class NewsModule
 				@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
 				$class_topics_tags = new class_topics_tags();
 			}
+			$this->setVariables(array(
+				'L_REPLIES' => $lang['Replies'],
+				'L_REPLY_NEWS' => $lang['News_Reply'],
+				'L_PRINT_NEWS' => $lang['News_Print'],
+				'L_EMAIL_NEWS' => $lang['News_Email'],
+				'MINIPOST_IMG' => $images['icon_minipost'],
+				'NEWS_REPLY_IMG' => $images['news_reply'],
+				'NEWS_PRINT_IMG' => $images['news_print'],
+				'NEWS_EMAIL_IMG' => $images['news_email']
+				)
+			);
 
 			foreach($articles as $article)
 			{
@@ -140,18 +151,6 @@ class NewsModule
 
 				$dateformat = ($user->data['user_id'] == ANONYMOUS) ? $config['default_dateformat'] : $user->data['user_dateformat'];
 				$timezone = ($user->data['user_id'] == ANONYMOUS) ? $config['board_timezone'] : $user->data['user_timezone'];
-
-				$this->setVariables(array(
-					'L_REPLIES' => $lang['Replies'],
-					'L_REPLY_NEWS' => $lang['News_Reply'],
-					'L_PRINT_NEWS' => $lang['News_Print'],
-					'L_EMAIL_NEWS' => $lang['News_Email'],
-					'MINIPOST_IMG' => $images['icon_minipost'],
-					'NEWS_REPLY_IMG' => $images['news_reply'],
-					'NEWS_PRINT_IMG' => $images['news_print'],
-					'NEWS_EMAIL_IMG' => $images['news_email']
-					)
-				);
 
 				//$index_file = CMS_PAGE_HOME;
 				$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
@@ -184,9 +183,11 @@ class NewsModule
 					$topic_tags_display = !empty($topic_tags_links) ? true : false;
 				}
 
-				// Convert and clean special chars!
+				$topic_label = !empty($article['topic_label_compiled']) ? $article['topic_label_compiled'] : '';
 				$topic_title = htmlspecialchars_clean($article['topic_title']);
+				$full_topic_title = $topic_label . $topic_title;
 				$this->setBlockVariables('articles', array(
+					'L_FULL_TITLE' => $full_topic_title,
 					'L_TITLE' => $topic_title,
 					'ID' => $article['topic_id'],
 					'KEY' => (!empty($article['article_key']) ? $article['article_key'] : ''),
