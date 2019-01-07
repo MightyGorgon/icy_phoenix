@@ -82,6 +82,8 @@ foreach($params as $var => $default)
 {
 	$$var = request_var($var, $default);
 }
+// constrain $order value to prevent SQL injection
+$order = ($order == 'ASC') ? 'ASC' : 'DESC';
 
 // Check for edit user
 if (sizeof($_POST))
