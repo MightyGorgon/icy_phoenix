@@ -939,7 +939,7 @@ class session
 			$confirm_sql = '';
 			foreach ($sessions_ids as $session_id)
 			{
-				$confirm_sql .= (!empty($confirm_sql) ? ', ' : '') . "'" . $session_id . "'";
+				$confirm_sql .= (!empty($confirm_sql) ? ', ' : '') . "'" . $session_id['session_id'] . "'";
 			}
 			$sql = "DELETE FROM " . CONFIRM_TABLE . "
 				WHERE session_id NOT IN (" . $confirm_sql . ")";
