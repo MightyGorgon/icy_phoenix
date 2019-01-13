@@ -26,7 +26,7 @@ if ($admin_allowed)
 $mode = request_var('mode', $mode_types[0]);
 $mode = !empty($mode_overlay) ? $mode_overlay : $mode;
 //$mode = (!in_array($mode, $mode_types) ? $mode_types[0] : $mode);
-if (!in_array($mode, $mode_types))
+if (!in_array($mode, $mode_types) && empty($common_no_auth_check))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
@@ -50,7 +50,7 @@ $action = request_var('action', $action_types[0]);
 $action = !empty($action_overlay) ? $action_overlay : $action;
 $action = ((($mode == 'input') && ($action != 'edit')) ? 'add' : $action);
 //$action = (!in_array($action, $action_types) ? $action_types[0] : $action);
-if (!in_array($action, $action_types))
+if (!in_array($action, $action_types) && empty($common_no_auth_check))
 {
 	message_die(GENERAL_MESSAGE, $lang['Not_Authorized']);
 }
