@@ -652,6 +652,10 @@ $lang = array_merge($lang, array(
 // lang_extend_topic_calendar.php - END
 
 	'DB_LOG_ALL' => 'Yes with error reports',
+
+// AJAX Refresh
+	'IP_auto_refresh_viewtopic_interval' => 'AJAX :: Viewtopic refresh interval',
+	'IP_auto_refresh_viewtopic_interval_explain' => 'Define how often, in milliseconds, should the topic view page refresh itself for new posts. Use 0 to disable the feature. Recommended: 5000 ms, so 5 seconds. Cannot be lower than 300 ms (overloads server).',
 	)
 );
 

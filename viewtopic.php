@@ -85,6 +85,12 @@ $sort_dir = strtolower(request_var('sd', $default_sort_dir));
 $sort_dir = check_var_value($sort_dir, $sort_dir_array);
 $sort_dir_sql = $sort_dir_sql_array[$sort_dir];
 
+// only fetch post higher than a certain post_id. Maybe this should use post_time, as $sort_key_sql_array uses post_time
+$after_post_id = request_var('after_post_id', 0);
+// make sure we can't fetch negative indices. 0 = disabled
+if ($after_post_id < 0)
+	$after_post_id = 1;
+
 // Backward compatibility
 if (check_http_var_exists('postorder', true))
 {
@@ -564,9 +570,19 @@ if(!empty($sort_days))
 	$result = $db->sql_query($sql);
 	$total_replies = ($row = $db->sql_fetchrow($result)) ? intval($row['num_posts']) : 0;
 	$limit_posts_time = "AND p.post_time >= " . $min_post_time . " ";
+	$limit_sql = " LIMIT " . $config['posts_per_page'];
+}
+else if ($after_post_id > 0)
+{
+	// TODO make it after_post_time?
+	$limit_posts_time = "AND p.post_id > " . intval($after_post_id) . " ";
+	$sort_days = 0;
+	$total_replies = intval($forum_topic_data['topic_replies']) + 1;
+	$limit_sql = " LIMIT " . $config['posts_per_page'];
 }
 else
 {
+	$limit_sql = " LIMIT " . $start . ", " . $config['posts_per_page'];
 	$sort_days = 0;
 	$total_replies = intval($forum_topic_data['topic_replies']) + 1;
 	$limit_posts_time = '';
@@ -647,9 +663,8 @@ $sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, 
 		AND u.user_id = p.poster_id
 		" . $limit_posts_time . "
 		" . $self_sql . "
-	ORDER BY " . $sort_key_sql . " " . $sort_dir_sql . "
-	LIMIT " . $start . ", " . $config['posts_per_page'];
-
+	ORDER BY " . $sort_key_sql . " " . $sort_dir_sql
+	. $limit_sql;
 // MG Cash MOD For IP - BEGIN
 if (!empty($config['plugins']['cash']['enabled']))
 {
@@ -662,6 +677,8 @@ $result = $db->sql_query($sql);
 $postrow = array();
 if ($row = $db->sql_fetchrow($result))
 {
+	// refresh start in case posts were deleted/after_post_id is used
+	$start = $row['post_id'];
 	do
 	{
 		if($row['user_id'] > 0)
@@ -1117,6 +1134,13 @@ $topic_url_enc = urlencode(ip_utf8_decode($topic_url));
 $topic_url_enc_utf8 = urlencode($topic_url);
 // URL Rewrite - END
 
+$current_page = (floor($start / intval($config['posts_per_page'])) + 1);
+$max_page = ceil($total_replies / intval($config['posts_per_page']));
+$ajax_post_data = array(
+	'S_TOPIC_URL_AFTER' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&' . $topic_id_append . '&after_post_id='),
+	'L_WARN_NEW_POST' => $lang['Warn_new_post'],
+	'REFRESH_INTERVAL' => $config['auto_refresh_topic_interval'],
+);
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
@@ -1140,7 +1164,12 @@ $template->assign_vars(array(
 	'TOPIC_REPLIES' => $forum_topic_data['topic_replies'],
 
 	'PAGINATION' => $pagination,
-	'PAGE_NUMBER' => sprintf($lang['Page_of'], (floor($start / intval($config['posts_per_page'])) + 1), ceil($total_replies / intval($config['posts_per_page']))),
+	'CURRENT_PAGE_NUMBER' => $current_page,
+	'MAX_PAGE_NUMBER' => $max_page,
+	'IS_LAST_PAGE' => $current_page == $max_page,
+	'PAGE_NUMBER' => sprintf($lang['Page_of'], $current_page, $max_page),
+
+	'AJAX_POST_DATA' => json_encode($ajax_post_data),
 
 	'POST_IMG' => $post_img,
 	'REPLY_IMG' => $reply_img,

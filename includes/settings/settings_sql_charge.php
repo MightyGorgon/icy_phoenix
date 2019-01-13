@@ -199,6 +199,14 @@ $settings_data = array(
 		'default' => '',
 	),
 
+	'auto_refresh_topic_interval' => array(
+		'lang_key' => 'IP_auto_refresh_viewtopic_interval',
+		'explain' => 'IP_auto_refresh_viewtopic_interval_explain',
+		'type' => 'INT',
+		'default' => 5000,
+		'values' => $this->list_yes_no,
+	),
+
 	'show_chat_online' => array(
 		'lang_key' => 'IP_show_chat_online',
 		'explain' => 'IP_show_chat_online_explain',
