@@ -60,7 +60,7 @@
 		<br />
 		<!-- END no_articles -->
 		<!-- BEGIN articles -->
-		{IMG_THL}{IMG_THC}<a href="{articles.U_COMMENT}" class="forumlink">{articles.L_TITLE}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="2" border="0">
+		{IMG_THL}{IMG_THC}<a href="{articles.U_COMMENT}" class="forumlink">{articles.L_FULL_TITLE}</a>{IMG_THR}<table class="forumlinenb" width="100%" cellspacing="0" cellpadding="2" border="0">
 		<tr>
 			<th align="left" colspan="2"><span class="gensmall"><a href="{articles.U_COMMENT}"><img src="{MINIPOST_IMG}" alt="{articles.L_TITLE}" /></a>&nbsp;{L_POSTED}&nbsp;{L_WORD_ON}&nbsp;{articles.POST_DATE}&nbsp;{L_BY}&nbsp;{articles.L_POSTER}</span></th>
 		</tr>

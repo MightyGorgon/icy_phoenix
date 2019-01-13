@@ -300,7 +300,7 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('forum');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, t.topic_label_compiled, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM ' . TOPICS_TABLE . ' AS t, ' . FORUMS_TABLE . ' AS f, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n, ' . POSTS_TABLE . ' AS p
 			WHERE t.topic_first_post_id = p.post_id
 				AND t.forum_id = f.forum_id
@@ -349,7 +349,7 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('topic');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_attachment, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_attachment, t.topic_label_compiled, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . POSTS_TABLE . ' AS p
 			WHERE t.topic_id = ' . $topic_id . '
 				AND p.topic_id = t.topic_id
@@ -469,7 +469,7 @@ class NewsDataAccess
 
 		$auth_sql = get_user_news_auth_access('topic');
 
-		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, t.topic_label_compiled, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM ' . TOPICS_TABLE . ' AS t, ' . FORUMS_TABLE . ' AS f, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n, ' . POSTS_TABLE . ' AS p
 			WHERE p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
@@ -725,7 +725,7 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('forum');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_attachment, t.topic_label_compiled, n.*, p.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM ' . TOPICS_TABLE . ' AS t, ' . FORUMS_TABLE . ' AS f, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n, ' . POSTS_TABLE . ' AS p
 			WHERE p.post_id = t.topic_first_post_id
 				AND f.forum_id = t.forum_id
@@ -876,7 +876,7 @@ class NewsDataAccess
 		$auth_sql = get_user_news_auth_access('topic');
 
 		// Begin SQL Construction.
-		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, n.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
+		$sql = 'SELECT t.forum_id, t.topic_id, t.topic_title, t.topic_time, t.topic_views, t.topic_replies, t.topic_label_compiled, n.*, u.user_id, u.username, u.user_active, u.user_color, u.user_email, u.user_website, u.user_level, u.user_posts, u.user_rank
 			FROM ' . TOPICS_TABLE . ' AS t, ' . USERS_TABLE . ' AS u, ' . NEWS_TABLE . ' AS n
 			WHERE u.user_id = t.topic_poster
 				' . $ubid_sql . '
