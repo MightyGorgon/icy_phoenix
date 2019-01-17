@@ -586,7 +586,7 @@ class Template {
 		if(!empty($this->files_cache[$handle]) && !empty($config['xs_auto_recompile']))
 		{
 			$cache_time = @filemtime($this->files_cache[$handle]);
-			if(@filemtime(($this->files[$handle]) > $cache_time) || ($config['xs_template_time'] > $cache_time))
+			if((@filemtime($this->files[$handle]) > $cache_time) || ($config['xs_template_time'] > $cache_time))
 			{
 				// file was changed. don't use cache file (will be recompled if configuration allowes it)
 				$this->files_cache[$handle] = '';
