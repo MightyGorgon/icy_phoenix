@@ -10,7 +10,7 @@ foreach (glob($dir.'/*') as $plugin_dir) {
   if (!is_dir($plugin_dir)) continue;
   $plugin = array_last(explode('/', $plugin_dir));
   $plugin_root = "$plugin_dir/ip_root/";
-  echo "echo $plugin -| $plugin_root"."\n"; 
+  echo "echo $plugin -\\> $plugin_root"."\n";
   mirror_to($plugin_root, ".", strlen($plugin_root));
 }
 
@@ -32,7 +32,10 @@ function mirror_to($dir, $to, $strip, $i = 0) {
     if (is_dir($file) && file_exists($stripped_name)) {
       mirror_to($file."/", $stripped_name, $strip, $i + 1);
     } else {
-     echo "ln -s $file $stripped_name 2>&1"."\n";
+     $dir = dirname($stripped_name);
+     $base = basename($stripped_name);
+     $pre = str_repeat('../', substr_count($stripped_name, "/"));
+     echo "cd $dir && unlink $base; ln -s $pre$file $base 2>&1; cd -\n";
     }
   }
 }
