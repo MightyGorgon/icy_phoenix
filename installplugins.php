@@ -2,8 +2,11 @@
 error_reporting(-1);
 
 function array_last($xs) { return $xs[count($xs) - 1]; }
+define('PROPAGATE', isset($_GET['propagate']));
+define('INSTALL', !PROPAGATE); // if we want to install (cp to ip) or apply changes (cp back to plugins)
 
 echo '<pre>';
+echo "echo MODE : " . (INSTALL ? "INSTALL" : "PROPAGATE") . "\n";
 
 $dir = '../icy_phoenix_plugins';
 foreach (glob($dir.'/*') as $plugin_dir) {
@@ -32,10 +35,14 @@ function mirror_to($dir, $to, $strip, $i = 0) {
     if (is_dir($file) && file_exists($stripped_name)) {
       mirror_to($file."/", $stripped_name, $strip, $i + 1);
     } else {
-     $dir = dirname($stripped_name);
-     $base = basename($stripped_name);
-     $pre = str_repeat('../', substr_count($stripped_name, "/"));
-     echo "cd $dir && unlink $base; ln -s $pre$file $base 2>&1; cd -\n";
+     $mode = PROPAGATE ? "$stripped_name $file" : "$file $stripped_name";
+     $r = is_dir($file) ? "-r " : "";
+     echo "cp $r$mode\n";
+
+     #$dir = dirname($stripped_name);
+     #$base = basename($stripped_name);
+     #$pre = str_repeat('../', substr_count($stripped_name, "/"));
+     #echo "cd $dir && unlink $base; ln -s $pre$file $base 2>&1; cd -\n";
     }
   }
 }
