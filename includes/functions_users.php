@@ -438,12 +438,7 @@ function user_profile_mask(&$user_data)
 	$user_data['poster_ip'] = '';
 	$user_data['user_warnings'] = 0;
 	$user_data['user_sig'] = '';
-
-	$user_sn_im_array = get_user_sn_im_array();
-	foreach ($user_sn_im_array as $k => $v)
-	{
-		$user_data[$v['field']] = '';
-	}
+	$user_data['user_im_fields'] = [];
 
 	return true;
 }
