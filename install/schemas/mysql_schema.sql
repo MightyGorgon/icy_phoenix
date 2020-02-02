@@ -236,7 +236,7 @@ CREATE TABLE `phpbb_bookmarks` (
 CREATE TABLE phpbb_bots (
 	bot_id MEDIUMINT(8) UNSIGNED NOT NULL auto_increment,
 	bot_active TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL,
-	bot_name VARCHAR(255) DEFAULT '' NOT NULL,
+	bot_name VARCHAR(190) DEFAULT '' NOT NULL,
 	bot_color VARCHAR(255) DEFAULT '' NOT NULL,
 	bot_agent VARCHAR(255) DEFAULT '' NOT NULL,
 	bot_ip VARCHAR(255) DEFAULT '' NOT NULL,
@@ -255,7 +255,7 @@ CREATE TABLE phpbb_bots (
 ## `phpbb_config`
 
 CREATE TABLE `phpbb_config` (
-	`config_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`config_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`config_value` TEXT NOT NULL,
 	PRIMARY KEY (`config_name`)
 );
@@ -506,7 +506,7 @@ CREATE TABLE `phpbb_groups` (
 	`upi2db_min_posts` MEDIUMINT(4) NOT NULL DEFAULT '0',
 	`upi2db_min_regdays` MEDIUMINT(4) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`group_id`),
-	KEY `group_legend_name` (`group_legend`, `group_name`),
+	#KEY `group_legend_name` (`group_legend`, `group_name`),
 	KEY `group_single_user` (`group_single_user`)
 );
 
@@ -519,7 +519,7 @@ CREATE TABLE `phpbb_groups` (
 
 CREATE TABLE `phpbb_hacks_list` (
 	`hack_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
-	`hack_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`hack_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`hack_desc` VARCHAR(255) NOT NULL DEFAULT '',
 	`hack_author` VARCHAR(255) NOT NULL DEFAULT '',
 	`hack_author_email` VARCHAR(255) NOT NULL DEFAULT '',
@@ -527,7 +527,7 @@ CREATE TABLE `phpbb_hacks_list` (
 	`hack_version` VARCHAR(32) NOT NULL DEFAULT '',
 	`hack_hide` enum('Yes','No') NOT NULL DEFAULT 'No',
 	`hack_download_url` TINYTEXT,
-	`hack_file` VARCHAR(255) NOT NULL DEFAULT '',
+	`hack_file` VARCHAR(190) NOT NULL DEFAULT '',
 	`hack_file_mtime` INT(10) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`hack_id`),
 	UNIQUE KEY `hack_name` (`hack_name`),
@@ -620,7 +620,7 @@ CREATE TABLE `phpbb_kb_categories` (
 ## `phpbb_kb_config`
 
 CREATE TABLE `phpbb_kb_config` (
-	`config_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`config_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`config_value` VARCHAR(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (`config_name`)
 );
@@ -957,7 +957,7 @@ CREATE TABLE `phpbb_pa_comments` (
 ## `phpbb_pa_config`
 
 CREATE TABLE `phpbb_pa_config` (
-	`config_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`config_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`config_value` VARCHAR(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (`config_name`)
 );
@@ -1105,7 +1105,7 @@ CREATE TABLE `phpbb_pa_votes` (
 ## `phpbb_plugins`
 
 CREATE TABLE `phpbb_plugins` (
-	`plugin_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`plugin_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`plugin_version` VARCHAR(255) NOT NULL DEFAULT '',
 	`plugin_dir` VARCHAR(255) NOT NULL DEFAULT '',
 	`plugin_enabled` TINYINT(2) NOT NULL DEFAULT 0,
@@ -1124,7 +1124,7 @@ CREATE TABLE `phpbb_plugins` (
 ## `phpbb_plugins_config`
 
 CREATE TABLE `phpbb_plugins_config` (
-	`config_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`config_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`config_value` TEXT NOT NULL,
 	PRIMARY KEY (`config_name`)
 );
@@ -1281,7 +1281,7 @@ CREATE TABLE `phpbb_privmsgs_archive` (
 
 CREATE TABLE `phpbb_profile_fields` (
 	`field_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
-	`field_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`field_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`field_description` VARCHAR(255) DEFAULT NULL,
 	`field_type` TINYINT(4) unsigned NOT NULL DEFAULT '0',
 	`text_field_default` VARCHAR(255) DEFAULT NULL,
@@ -1508,7 +1508,8 @@ CREATE TABLE `phpbb_shout` (
 ## `phpbb_site_history`
 
 CREATE TABLE `phpbb_site_history` (
-	`date` INT(11) NOT NULL DEFAULT '0',
+	#`date` INT(11) NOT NULL DEFAULT '0',
+	`date` INT(11) NOT NULL,
 	`reg` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`hidden` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`guests` MEDIUMINT(8) NOT NULL DEFAULT '0',
@@ -2197,7 +2198,7 @@ CREATE TABLE `phpbb_cms_blocks` (
 CREATE TABLE `phpbb_cms_config` (
 	`id` INT(10) unsigned NOT NULL auto_increment,
 	`bid` INT(10) NOT NULL DEFAULT '0',
-	`config_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`config_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`config_value` VARCHAR(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (`id`)
 );
@@ -2480,7 +2481,7 @@ PRIMARY KEY (dl_id)
 );
 
 CREATE TABLE phpbb_dl_config (
-	config_name VARCHAR(255) NOT NULL DEFAULT '',
+	config_name VARCHAR(190) NOT NULL DEFAULT '',
 	config_value VARCHAR(255) NOT NULL DEFAULT '',
 PRIMARY KEY (config_name)
 );

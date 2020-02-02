@@ -35,7 +35,7 @@ class base_extractor
 	var $format;
 	var $run_comp = false;
 
-	function base_extractor($download = false, $store = false, $format = 'text', $time = '', $filepath = './', $filename = '')
+	function __construct($download = false, $store = false, $format = 'text', $time = '', $filepath = './', $filename = '')
 	{
 		$this->download = $download;
 		$this->store = $store;

@@ -19,6 +19,14 @@ if (!defined('IN_ICYPHOENIX'))
 class class_users
 {
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	/*
 	* Create user
 	*/

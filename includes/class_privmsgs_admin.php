@@ -23,7 +23,10 @@ class aprvmUtils
 	var $urlPage;
 	var $urlStart;
 
-	function aprvmUtils()
+	/**
+	* Construct
+	*/
+	function __construct()
 	{
 		$this->archiveText = '_archive';
 	}
@@ -340,7 +343,7 @@ class aprvmManager
 	var $archiveQueue;
 	var $syncNums;
 
-	function arpvmManager()
+	function __construct()
 	{
 	}
 

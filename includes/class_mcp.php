@@ -19,6 +19,13 @@ if (!defined('IN_ICYPHOENIX'))
 class class_mcp
 {
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
 
 	/**
 	* Check if the selected forum has postcount enabled

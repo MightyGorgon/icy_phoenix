@@ -202,9 +202,16 @@ $settings_data = array(
 	'auto_refresh_topic_interval' => array(
 		'lang_key' => 'IP_auto_refresh_viewtopic_interval',
 		'explain' => 'IP_auto_refresh_viewtopic_interval_explain',
-		'type' => 'INT',
+		'type' => 'LIST_DROP',
 		'default' => 5000,
-		'values' => $this->list_yes_no,
+		'values' => array(
+			'IP_autorefresh_0' => '0',
+			'IP_autorefresh_5' => '5000',
+			'IP_autorefresh_10' => '10000',
+			'IP_autorefresh_30' => '30000',
+			'IP_autorefresh_60' => '60000',
+			'IP_autorefresh_300' => '300000',
+		),
 	),
 
 	'show_chat_online' => array(

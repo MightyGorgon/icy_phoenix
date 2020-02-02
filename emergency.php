@@ -172,7 +172,7 @@ if ($mode == 'restore')
 
 	// Create Config table
 	$sql = 'CREATE TABLE ' . PREFIX . 'config (
-				`config_name` varchar(255) NOT NULL ,
+				`config_name` varchar(190) NOT NULL ,
 				`config_value` text NOT NULL ,
 				PRIMARY KEY (`config_name`)
 				)';

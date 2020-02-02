@@ -34,7 +34,7 @@ if (!class_exists('phpbb_default_captcha'))
 class phpbb_captcha_gd_wave extends phpbb_default_captcha
 {
 
-	function phpbb_captcha_gd_wave()
+	function __construct()
 	{
 		if (!class_exists('captcha'))
 		{

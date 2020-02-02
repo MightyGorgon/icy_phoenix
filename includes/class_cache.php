@@ -79,7 +79,7 @@ class acm
 	/**
 	* Set cache path
 	*/
-	function acm()
+	function __construct()
 	{
 		$this->cache_dir = defined('MAIN_CACHE_FOLDER') ? MAIN_CACHE_FOLDER : 'cache/';
 		$this->cache_dir_sql = defined('SQL_CACHE_FOLDER') ? SQL_CACHE_FOLDER : 'cache/sql/';

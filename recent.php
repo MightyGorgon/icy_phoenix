@@ -239,12 +239,7 @@ switch($mode)
 }
 
 $result = $db->sql_query($sql);
-
-$line = array();
-while($row = $db->sql_fetchrow($result))
-{
-	$line[] = $row;
-}
+$line = $db->sql_fetchrowset($result);
 $db->sql_freeresult($result);
 
 $tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();

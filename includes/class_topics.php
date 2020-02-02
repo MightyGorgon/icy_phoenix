@@ -26,6 +26,14 @@ class class_topics
 	var $draft_id = 0;
 
 	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
+	/**
 	* Initialize vars
 	*/
 	function var_init($get = false)

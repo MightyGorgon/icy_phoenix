@@ -100,6 +100,14 @@ class class_feed_posting
 	private $posting_limit = 3; // 3;
 
 	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
+	/**
 	* Caches feed items
 	*
 	* @global cache $cache

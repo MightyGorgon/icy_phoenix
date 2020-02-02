@@ -185,6 +185,15 @@ if ($lang_extend_admin)
 		'IP_last_msgs_x' => 'Forum To Exclude',
 		'IP_last_msgs_x_explain' => 'Please, insert the IDs of the forums to be excluded in Last Messages Box (you can separate each forum ID with a comma).',
 
+		'IP_auto_refresh_viewtopic_interval' => 'AJAX :: Viewtopic refresh interval',
+		'IP_auto_refresh_viewtopic_interval_explain' => 'Define how often should the viewtopic page be refreshed for new posts.',
+		'IP_autorefresh_0' => 'Disabled',
+		'IP_autorefresh_5' => '5 Seconds',
+		'IP_autorefresh_10' => '10 Seconds',
+		'IP_autorefresh_30' => '30 Seconds',
+		'IP_autorefresh_60' => '1 Minute',
+		'IP_autorefresh_300' => '5 Minutes',
+
 		'IP_show_chat_online' => 'AJAX Chat Online :: Forum Index',
 		'IP_show_chat_online_explain' => 'Enabling this option will show on <b>Forum Index</b> users online in AJAX Chat.',
 
@@ -652,10 +661,6 @@ $lang = array_merge($lang, array(
 // lang_extend_topic_calendar.php - END
 
 	'DB_LOG_ALL' => 'Yes with error reports',
-
-// AJAX Refresh
-	'IP_auto_refresh_viewtopic_interval' => 'AJAX :: Viewtopic refresh interval',
-	'IP_auto_refresh_viewtopic_interval_explain' => 'Define how often, in milliseconds, should the topic view page refresh itself for new posts. Use 0 to disable the feature. Recommended: 5000 ms, so 5 seconds. Cannot be lower than 300 ms (overloads server).',
 	)
 );
 

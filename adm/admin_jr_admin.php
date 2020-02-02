@@ -72,7 +72,7 @@ $user_search = request_var('user_search', '', true);
 $alphanum = request_var('alphanum', '', true);
 $params = array(
 	'mode' => '',
-	'user_id' => '',
+	'user_id' => 0,
 	'color_group_id' => '',
 	'order' => 'ASC',
 	'sort_item' => 'username',
@@ -82,8 +82,9 @@ foreach($params as $var => $default)
 {
 	$$var = request_var($var, $default);
 }
-// constrain $order value to prevent SQL injection
-$order = ($order == 'ASC') ? 'ASC' : 'DESC';
+
+$order = check_var_value($order, array('ASC', 'DESC'));
+$sort_item = check_var_value($sort_item, array('username', 'user_modules', 'user_rank', 'user_active', 'user_allowavatar', 'user_allow_pm'));
 
 // Check for edit user
 if (sizeof($_POST))
@@ -212,10 +213,10 @@ else
 		//Do the information update
 		$sql = 'UPDATE ' . JR_ADMIN_TABLE . "
 			SET user_jr_admin = '$user_update_list',
-			update_date = " . time() . ",
-			admin_notes = '" . $db->sql_escape($admin_notes) . "',
-			notes_view = $notes_view
-			WHERE user_id = $user_id";
+				update_date = " . time() . ",
+				admin_notes = '" . $db->sql_escape($admin_notes) . "',
+				notes_view = '" . $notes_view . "'
+			WHERE user_id = '" . $user_id . "'";
 		$db->sql_query($sql);
 		$status_message .= $lang['Updated_Permissions'];
 		clear_user_color_cache($user_id);
@@ -239,8 +240,8 @@ else
 		$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_rank, u.user_allow_pm, u.user_allowavatar
 			FROM " . USERS_TABLE . " u, " . JR_ADMIN_TABLE . " j
 			WHERE u.user_id <> " . ANONYMOUS . "
-			$alpha_where
-			$user_where
+				$alpha_where
+				$user_where
 				AND j.user_id = u.user_id
 			ORDER BY u.username ASC
 			LIMIT $start, $per_page";
@@ -250,8 +251,8 @@ else
 		$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_rank, u.user_allow_pm, u.user_allowavatar
 			FROM " . USERS_TABLE . " u
 			WHERE u.user_id <> " . ANONYMOUS . "
-			$alpha_where
-			$user_where
+				$alpha_where
+				$user_where
 			ORDER BY u." . $sort_item . " " . $order . "
 			LIMIT $start, $per_page";
 	}
@@ -287,8 +288,8 @@ else
 		$sql = "SELECT u.user_id
 			FROM " . USERS_TABLE . " u, " . JR_ADMIN_TABLE . " j
 			WHERE u.user_id <> " . ANONYMOUS . "
-			$alpha_where
-			$user_where
+				$alpha_where
+				$user_where
 				AND j.user_id = u.user_id";
 	}
 	else
@@ -296,8 +297,8 @@ else
 		$sql = "SELECT u.user_id
 			FROM " . USERS_TABLE . " u
 			WHERE u.user_id <> " . ANONYMOUS . "
-			$alpha_where
-			$user_where";
+				$alpha_where
+				$user_where";
 	}
 	$result = $db->sql_query($sql);
 	$row = $db->sql_numrows($result);

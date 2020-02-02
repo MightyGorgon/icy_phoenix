@@ -340,9 +340,7 @@ if(GetCookie(tmp) == '2')
 	</td>
 </tr>
 </table>
+
 <!-- IF IS_LAST_PAGE -->
-<script type="text/javascript">
-var ajaxPostData = {AJAX_POST_DATA};
-</script>
-<script type="text/javascript" src="templates/common/js/ajax_post.js"></script>
+<!-- INCLUDE viewtopic_inc_ajax.tpl -->
 <!-- ENDIF -->

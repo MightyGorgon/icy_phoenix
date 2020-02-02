@@ -115,6 +115,8 @@ switch ($req_version)
 	case '224109': $current_ip_version = '2.2.4.109'; break;
 	case '225110': $current_ip_version = '2.2.5.110'; break;
 	case '226111': $current_ip_version = '2.2.6.111'; break;
+	case '227112': $current_ip_version = '2.2.7.112'; break;
+	case '228113': $current_ip_version = '2.2.8.113'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -240,7 +242,7 @@ if (substr($mode, 0, 6) == 'update')
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "album_config` (
-			`config_name` varchar(255) NOT NULL default '',
+			`config_name` varchar(190) NOT NULL default '',
 			`config_value` varchar(255) NOT NULL default '',
 			PRIMARY KEY (`config_name`)
 		)";
@@ -488,7 +490,7 @@ if (substr($mode, 0, 6) == 'update')
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "kb_config` (
-			`config_name` varchar(255) NOT NULL default '',
+			`config_name` varchar(190) NOT NULL default '',
 			`config_value` varchar(255) NOT NULL default '',
 			PRIMARY KEY (`config_name`)
 		)";
@@ -563,7 +565,7 @@ if (substr($mode, 0, 6) == 'update')
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "link_config` (
-			`config_name` varchar(255) NOT NULL default '',
+			`config_name` varchar(190) NOT NULL default '',
 			`config_value` varchar(255) NOT NULL default ''
 		)";
 
@@ -677,7 +679,7 @@ if (substr($mode, 0, 6) == 'update')
 		)";
 
 		$sql[] = "CREATE TABLE `" . $table_prefix . "pa_config` (
-			`config_name` varchar(255) NOT NULL default '',
+			`config_name` varchar(190) NOT NULL default '',
 			`config_value` varchar(255) NOT NULL default '',
 			PRIMARY KEY (`config_name`)
 		)";
@@ -2070,7 +2072,7 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "CREATE TABLE `" . $table_prefix . "cms_config` (
 			`id` int(10) unsigned NOT NULL auto_increment,
 			`bid` int(10) NOT NULL default '0',
-			`config_name` varchar(255) NOT NULL default '',
+			`config_name` varchar(190) NOT NULL default '',
 			`config_value` varchar(255) NOT NULL default '',
 			PRIMARY KEY (`id`)
 		)";
@@ -3622,7 +3624,7 @@ if (substr($mode, 0, 6) == 'update')
 		/* Updating from IP 1.3.5.58 */
 		case '1.3.5.58':
 		$sql[] = "CREATE TABLE `" . $table_prefix . "plugins_config` (
-			`config_name` varchar(255) NOT NULL DEFAULT '',
+			`config_name` varchar(190) NOT NULL DEFAULT '',
 			`config_value` TEXT NOT NULL,
 			PRIMARY KEY (`config_name`)
 		)";
@@ -4722,7 +4724,14 @@ if (substr($mode, 0, 6) == 'update')
 		$sql[] = "ALTER TABLE `" . $table_prefix . "users` ADD `user_privacy_policy_notify` TINYINT(2) NOT NULL DEFAULT 0 AFTER `user_popup_pm`";
 
 		/* Updating from IP 2.2.6.111 */
-		case '2.2.5.110':
+		case '2.2.6.111':
+		$sql[] = "INSERT INTO `" . $table_prefix . "config` (`config_name`, `config_value`) VALUES ('auto_refresh_topic_interval', '5000')";
+
+		/* Updating from IP 2.2.7.112 */
+		case '2.2.7.112':
+
+		/* Updating from IP 2.2.8.113 */
+		case '2.2.8.113':
 
 	}
 

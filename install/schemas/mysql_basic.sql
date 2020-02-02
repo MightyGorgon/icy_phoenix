@@ -1,7 +1,7 @@
 ## Better leaving these input at the beginning... so they will be inserted as first values into tables
 ## Roll on version
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.2.7.112');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('version', '.0.23');
-INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('ip_version', '2.2.2.109');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cms_version', '2.0.0');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_logo', 'http://www.icyphoenix.com/images/icy_phoenix_logo.png');
 ## INSERT INTO phpbb_link_config (config_name, config_value) VALUES ('site_url', 'http://www.icyphoenix.com/');
@@ -712,6 +712,7 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_col
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_list_rows', '5');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('cookie_law', '0');
 INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('img_size_max_mp', '1');
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auto_refresh_topic_interval', '5000');
 
 
 ## ATTACHMENTS - BEGIN

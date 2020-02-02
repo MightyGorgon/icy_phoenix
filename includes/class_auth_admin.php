@@ -29,7 +29,7 @@ class auth_admin extends auth
 	/**
 	* Init auth settings
 	*/
-	function auth_admin()
+	function __construct()
 	{
 		global $db, $cache;
 

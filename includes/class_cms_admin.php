@@ -36,7 +36,7 @@ class cms_admin
 	/**
 	* Some defaults
 	*/
-	function cms_admin()
+	function __construct()
 	{
 		global $db, $cache, $config, $auth, $user, $lang, $template;
 

@@ -714,6 +714,9 @@ $default_config = array(
 	'thumbnail_s_size' => '120',
 	'img_list_cols' => '4',
 	'img_list_rows' => '5',
+	'cookie_law' => '0',
+	'img_size_max_mp' => '1',
+	'auto_refresh_topic_interval' => '5000',
 
 	// IP Version
 	'ip_version' => ICYPHOENIX_VERSION,

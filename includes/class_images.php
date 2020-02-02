@@ -18,6 +18,15 @@ if (!defined('IN_ICYPHOENIX'))
 */
 class class_images
 {
+
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	/**
 	* Initialize vars
 	*/

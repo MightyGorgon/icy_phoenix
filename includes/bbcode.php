@@ -335,7 +335,7 @@ class bbcode
 	/**
 	* Instantiate class
 	*/
-	function bbcode()
+	function __construct()
 	{
 		global $config;
 
@@ -3843,9 +3843,14 @@ class bbcode
 				if (preg_match_all('/(?<!\\\\)\$([0-9]+)/', $replace, $repad))
 				{
 					$repad = $pad + sizeof(array_unique($repad[0]));
+					// Updated by Informpro
+					/*
+					$replace = preg_replace('/(?<!\\\\)\$([0-9]+)/e', "'\${' . (\$1 + \$pad) . '}'", $replace);
+					*/
 					$replace = preg_replace_callback('/(?<!\\\\)\$([0-9]+)/', function ($m) use ($pad) {
 						return '${' . $m[1] + $pad . '}';
 					}, $replace);
+
 					$pad = $repad;
 				}
 
@@ -3905,6 +3910,13 @@ class bbcode
 			return false;
 		}
 
+		// Updated by Informpro
+		/*
+		$fp_match = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $fp_match);
+		$fp_replace = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $fp_replace);
+		$sp_match = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $sp_match);
+		$sp_replace = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $sp_replace);
+		*/
 		$fp_match = preg_replace_callback('#\[/?' . $bbcode_search . '#i', function ($m) {
 			return strtolower($m[0]);
 		}, $fp_match);
@@ -3917,6 +3929,7 @@ class bbcode
 		$sp_replace = preg_replace_callback('#\[/?' . $bbcode_search . '#i', function ($m) {
 			return strtolower($m[0]);
 		}, $sp_replace);
+
 
 		return array(
 			'bbcode_tag'						=> $bbcode_tag,

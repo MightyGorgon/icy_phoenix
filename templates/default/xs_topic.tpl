@@ -126,7 +126,7 @@ if($can_reply)
 <div id="quick_reply_error"></div>
 <div id="quick_reply" style="display: none; position: relative;">
 <a id="quick"></a>
-<form action="<?php echo append_sid(CMS_PAGE_POSTING); ?>" method="post" name="post" style="display: inline;" id="quick_reply_form">
+<form id="quick_reply_form" action="<?php echo append_sid(CMS_PAGE_POSTING); ?>" method="post" name="post" style="display: inline;">
 {S_HIDDEN_FIELDS}
 <input type="hidden" name="post_time" value="<?php echo time(); ?>" />
 {IMG_THL}{IMG_THC}<span class="forumlink"><?php echo $lang['Post_a_reply']; ?></span>{IMG_THR}<table class="forumlinenb">

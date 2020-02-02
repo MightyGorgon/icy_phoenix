@@ -40,6 +40,14 @@ class class_settings
 	);
 
 	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
+	/**
 	* Setup settings
 	*/
 	function setup_settings()

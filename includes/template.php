@@ -183,7 +183,7 @@ class Template {
 	/**
 	* Constructor. Installs XS mod on first run or updates it and sets the root dir.
 	*/
-	function Template($root = '.')
+	function __construct($root = '.')
 	{
 		// setting pointer "vars"
 		$this->vars = &$this->_tpldata['.'][0];
@@ -586,7 +586,7 @@ class Template {
 		if(!empty($this->files_cache[$handle]) && !empty($config['xs_auto_recompile']))
 		{
 			$cache_time = @filemtime($this->files_cache[$handle]);
-			if(@filemtime(($this->files[$handle]) > $cache_time) || ($config['xs_template_time'] > $cache_time))
+			if((@filemtime($this->files[$handle]) > $cache_time) || ($config['xs_template_time'] > $cache_time))
 			{
 				// file was changed. don't use cache file (will be recompled if configuration allowes it)
 				$this->files_cache[$handle] = '';

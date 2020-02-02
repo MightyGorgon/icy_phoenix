@@ -44,7 +44,7 @@ class phpbb_captcha_gd extends phpbb_default_captcha
 		'captcha_gd_fonts' => 'CAPTCHA_GD_FONTS',
 	);
 
-	function phpbb_captcha_gd()
+	function __construct()
 	{
 		if (!class_exists('captcha'))
 		{

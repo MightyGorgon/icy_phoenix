@@ -25,6 +25,14 @@ echo $class_compress_js_css->compress_js('whatever.js'); // reads whatever.js an
 class class_compress_js_css
 {
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	function compress_css($file, $urls = false)
 	{
 		$code = @file_get_contents($file);

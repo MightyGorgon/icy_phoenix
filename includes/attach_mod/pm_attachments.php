@@ -32,7 +32,7 @@ class attach_pm extends attach_parent
 	/**
 	* Constructor
 	*/
-	function attach_pm()
+	function __construct()
 	{
 		$this->attach_parent();
 		$this->pm_delete_attachments = (isset($_POST['pm_delete_attach'])) ? true : false;

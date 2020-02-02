@@ -1,11 +1,17 @@
 $(function () {
 	"use strict";
-	var $posts, lastPostId;
+	var $posts, lastPostId, highestSinglePost;
 
 	// refresh our $posts data as well as lastPostId
 	function refreshViewtopicData() {
 		$posts = $('[data-post-id]');
 		lastPostId = +$posts.last().data('post-id');
+
+		// can't do $posts.last, otherwise we get the separator <tr>
+		var $singlePostNumber = $posts.find('.single-post-number').last();
+
+		// substr 1 to remove #
+		highestSinglePost = +$singlePostNumber.text().substr(1);
 	}
 	refreshViewtopicData(); // immediately invoked
 
@@ -16,11 +22,18 @@ $(function () {
 		var $newPosts = $newPagePosts.filter(function(_, el) {
 			return $(el).data('post-id') > lastPostId;
 		});
-		$newPosts.css('opacity', 0);
-		$posts.last().after($newPosts);
 
-		// progressively show the new posts over 1.5s
-		$newPosts.animate({opacity: 1}, 1500);
+		// re-number posts (before inserting wrong values)
+		$newPosts.find('.single-post-number').each(function () {
+			$(this).text('#' + (++highestSinglePost));
+		});
+
+		$newPosts
+			.css('opacity', 0)
+			.insertAfter($posts.last())
+			// progressively show the new posts over 1.5s
+			.animate({opacity: 1}, 1500)
+		;
 
 		refreshViewtopicData();
 

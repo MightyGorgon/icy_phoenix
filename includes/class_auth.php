@@ -25,6 +25,14 @@ class auth
 	var $acl_forum_ids = false;
 
 	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
+	/**
 	* Init permissions
 	*/
 	function acl(&$user_data)

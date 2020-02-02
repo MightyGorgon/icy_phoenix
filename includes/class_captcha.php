@@ -22,6 +22,14 @@ class class_captcha
 	var $attempts_limit = 3;
 	var $code_length = 6;
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	/*
 	* Creates CAPTCHA image
 	*/

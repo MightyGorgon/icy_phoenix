@@ -40,7 +40,7 @@ class ImgObj
 	//****************************************************************************
 	// Function called when object created
 	//****************************************************************************
-	function ImgObj()
+	function __construct()
 	{
 		$this->ChangeFlag = false;
 		$this->Alpha = false;

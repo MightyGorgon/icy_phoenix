@@ -58,7 +58,7 @@ class NewsModule
 	*
 	* @access public
 	*/
-	function NewsModule($root_path)
+	function __construct($root_path)
 	{
 		global $db, $config, $template;
 
@@ -117,6 +117,7 @@ class NewsModule
 				@include_once(IP_ROOT_PATH . 'includes/class_topics_tags.' . PHP_EXT);
 				$class_topics_tags = new class_topics_tags();
 			}
+
 			$this->setVariables(array(
 				'L_REPLIES' => $lang['Replies'],
 				'L_REPLY_NEWS' => $lang['News_Reply'],
@@ -183,6 +184,7 @@ class NewsModule
 					$topic_tags_display = !empty($topic_tags_links) ? true : false;
 				}
 
+				// Convert and clean special chars!
 				$topic_label = !empty($article['topic_label_compiled']) ? $article['topic_label_compiled'] : '';
 				$topic_title = htmlspecialchars_clean($article['topic_title']);
 				$full_topic_title = $topic_label . $topic_title;
