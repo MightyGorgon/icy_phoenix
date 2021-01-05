@@ -54,7 +54,7 @@ if(!function_exists('cms_block_recent_articles'))
 					{
 						$style_row = 'articles_static';
 					}
-					$template->assign_block_vars($style_row, '');
+					$template->assign_block_vars($style_row, array());
 					// Convert and clean special chars!
 					$title = htmlspecialchars_clean($title);
 					$template->assign_block_vars ($style_row . '.recent_articles', array(

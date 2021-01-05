@@ -23,7 +23,7 @@ function xsm_prepare_message($message)
 	$html_entities_match = array('#&(?!(\#[0-9]+;))#', '#<#', '#>#');
 	$html_entities_replace = array('&amp;', '&lt;', '&gt;');
 
-	$allowed_html_tags = split(',', $config['allow_html_tags']);
+	$allowed_html_tags = explode(',', $config['allow_html_tags']);
 
 	// Clean up the message
 	$message = trim($message);

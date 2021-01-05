@@ -113,7 +113,7 @@ if(!function_exists('cms_block_random_topics'))
 				$style_row = 'static';
 			}
 
-			$template->assign_block_vars($style_row, '');
+			$template->assign_block_vars($style_row, array());
 
 			for ($i = 0; $i < $number_random_topics; $i++)
 			{

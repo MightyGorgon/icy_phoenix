@@ -30,6 +30,11 @@ class archive
 {
 	function __construct($name)
 	{
+		$this->archive_init($name);
+	}
+
+	function archive_init($name)
+	{
 		$this->options = array(
 			'basedir' => ".",
 			'name' => $name,
@@ -664,7 +669,8 @@ class zip_file extends archive
 {
 	function __construct($name)
 	{
-		$this->archive($name);
+		//$this->archive($name);
+		$this->archive_init($name);
 		$this->options['type'] = "zip";
 	}
 

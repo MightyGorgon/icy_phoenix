@@ -66,11 +66,21 @@ if (defined('BASIC_COMMON'))
 	include('includes/db.' . PHP_EXT);
 	include('includes/utf/utf_tools.' . PHP_EXT);
 	*/
-	include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
-	include(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
 
-	include(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
-	include(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
+	if(!defined('MAIN_CACHE_FOLDER')) define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
+	if(!defined('CMS_CACHE_FOLDER')) define('CMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'cms/');
+	if(!defined('FORUMS_CACHE_FOLDER')) define('FORUMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'forums/');
+	if(!defined('POSTS_CACHE_FOLDER')) define('POSTS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'posts/');
+	if(!defined('SQL_CACHE_FOLDER')) define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
+	if(!defined('TOPICS_CACHE_FOLDER')) define('TOPICS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'topics/');
+	if(!defined('UPLOADS_CACHE_FOLDER')) define('UPLOADS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'uploads/');
+	if(!defined('USERS_CACHE_FOLDER')) define('USERS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'users/');
+
+	include_once(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
+
+	include_once(IP_ROOT_PATH . 'includes/class_cache.' . PHP_EXT);
+	include_once(IP_ROOT_PATH . 'includes/class_cache_extends.' . PHP_EXT);
 	$cache = new ip_cache();
 }
 

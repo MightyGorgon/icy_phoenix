@@ -211,7 +211,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 		// check against stopwords end
 
 		$title_search = '';
-		$title_search_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_title, $stopwords_array, $synonyms_array), 'search') : split(' ', $topic_title);
+		$title_search_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_title, $stopwords_array, $synonyms_array), 'search') : explode(' ', $topic_title);
 
 		for ($i = 0; $i < sizeof($title_search_array); $i++)
 		{
@@ -229,7 +229,7 @@ function get_similar_topics($similar_forums_auth, $topic_id, $topic_title, $simi
 		if ($config['similar_stopwords'])
 		{
 			$topicdesc = '';
-			$topic_desc_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_desc, $stopwords_array, $synonyms_array), 'search') : split(' ', $topic_desc);
+			$topic_desc_array = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('post', $topic_desc, $stopwords_array, $synonyms_array), 'search') : explode(' ', $topic_desc);
 			for ($i = 0; $i < sizeof($topic_desc_array); $i++)
 			{
 				$topicdesc .= (($topicdesc == '') ? '': ' ') . $topic_desc_array[$i];

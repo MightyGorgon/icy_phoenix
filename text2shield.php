@@ -69,7 +69,7 @@ if(!$text)
 
 if(strlen($text) > 33)
 {
-	$worte = split(' ', $text);
+	$worte = explode(' ', $text);
 
 	if(is_array($worte))
 	{

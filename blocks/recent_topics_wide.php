@@ -63,7 +63,7 @@ if(!function_exists('cms_block_recent_topics_wide'))
 			$style_row = 'static';
 		}
 
-		$template->assign_block_vars($style_row, '');
+		$template->assign_block_vars($style_row, array());
 
 		for ($i = 0; $i < $number_recent_topics; $i++)
 		{
@@ -71,7 +71,8 @@ if(!function_exists('cms_block_recent_topics_wide'))
 
 			// Convert and clean special chars!
 			$topic_title = htmlspecialchars_clean($recent_topic_row[$i]['topic_title']);
-			$template->assign_block_vars($style_row . '.recent_topic_row', array(
+			$block_var_name = $style_row . '.recent_topic_row';
+			$template->assign_block_vars($block_var_name, array(
 				'U_FORUM' => append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id']),
 				'L_FORUM' => $recent_topic_row[$i]['forum_name'],
 				'U_TITLE' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . POST_FORUM_URL . '=' . $recent_topic_row[$i]['forum_id'] . '&amp;' . POST_TOPIC_URL . '=' . $recent_topic_row[$i]['topic_id'] . '&amp;' . POST_POST_URL . '=' . $recent_topic_row[$i]['post_id']) . '#p' . $recent_topic_row[$i]['post_id'],

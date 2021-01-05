@@ -639,11 +639,11 @@ class class_feed_posting
 			// split values are from db ...
 			if (!is_array($this->available_feed_atributes))
 			{
-				$this->available_feed_atributes = split(',', $this->available_feed_atributes);
+				$this->available_feed_atributes = explode(',', $this->available_feed_atributes);
 			}
 			if (!is_array($this->available_item_atributes))
 			{
-				$this->available_item_atributes = split(',', $this->available_item_atributes);
+				$this->available_item_atributes = explode(',', $this->available_item_atributes);
 			}
 
 			// get data from the feed and prepare it for later use if wanted

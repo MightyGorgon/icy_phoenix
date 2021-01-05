@@ -485,7 +485,8 @@ class ip_functions
 			for ($i = 0; $i < sizeof($accept_lang_ary); $i++)
 			{
 				@reset($match_lang);
-				while (list($lang, $match) = each($match_lang))
+				//while (list($lang, $match) = each($match_lang))
+				foreach ($match_lang as $lang => $match)
 				{
 					if (preg_match('#' . $match . '#i', trim($accept_lang_ary[$i])))
 					{
