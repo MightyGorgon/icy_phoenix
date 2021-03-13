@@ -325,7 +325,7 @@ class pafiledb_search extends pafiledb_public
 
 				for($i = 0; $i < sizeof($store_vars); $i++)
 				{
-					$store_search_data[$store_vars[$i]] = $$store_vars[$i];
+					$store_search_data[$store_vars[$i]] = ${$store_vars[$i]};
 				}
 
 				$result_array = serialize($store_search_data);
@@ -363,7 +363,7 @@ class pafiledb_search extends pafiledb_public
 						$search_data = unserialize($row['search_array']);
 						for($i = 0; $i < sizeof($store_vars); $i++)
 						{
-							$$store_vars[$i] = $search_data[$store_vars[$i]];
+							${$store_vars[$i]} = $search_data[$store_vars[$i]];
 						}
 					}
 				}

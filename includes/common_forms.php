@@ -119,9 +119,9 @@ $hidden_array = array('start', 'n_items', 'filter_item', 'filter_item_value');
 $s_hidden_fields = '';
 for ($i; $i < sizeof($hidden_array); $i++)
 {
-	if (isset($$hidden_array[$i]))
+	if (isset(${$hidden_array[$i]}))
 	{
-		$s_hidden_fields .= '<input type="hidden" name="' . $hidden_array[$i] . '" value="' . $$hidden_array[$i] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="' . $hidden_array[$i] . '" value="' . ${$hidden_array[$i]} . '" />';
 	}
 }
 // URL APPEND AND HIDDEN FIELDS - END

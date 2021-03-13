@@ -21,7 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 * $user_info = generate_user_info($row);
 * foreach ($user_info as $k => $v)
 * {
-* 	$$k = $v;
+* 	${$k} = $v;
 * }
 */
 function generate_user_info(&$row, $date_format = false, $is_moderator = false)

@@ -520,7 +520,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 	$s_hidden_vars .= '<input type="hidden" name="user_id" value="' . $user->data['user_id'] . '" />';
 	for($i = 0; $i < sizeof($params); $i++)
 	{
-		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', $$params[$i]) . '" />';
+		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', ${$params[$i]}) . '" />';
 	}
 
 	foreach ($this_user_im as $k => $v)
@@ -562,7 +562,7 @@ function display_avatar_generator($mode, &$avatar_filename, &$avatar_image, &$av
 
 	for($i = 0; $i < sizeof($params); $i++)
 	{
-		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', $$params[$i]) . '" />';
+		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', ${$params[$i]}) . '" />';
 	}
 
 	foreach ($this_user_im as $k => $v)

@@ -113,7 +113,7 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 		{
 			die('Hacking attempt!');
 		}
-		unset($$var);
+		unset(${$var});
 	}
 
 	unset($input);

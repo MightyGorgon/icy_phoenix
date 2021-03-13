@@ -145,7 +145,7 @@ if(!function_exists('cms_block_news_posters'))
 				$user_info = generate_user_info($row);
 				foreach ($user_info as $k => $v)
 				{
-					$$k = $v;
+					${$k} = $v;
 				}
 
 				$template->assign_block_vars($tpl_block_var_name, array(

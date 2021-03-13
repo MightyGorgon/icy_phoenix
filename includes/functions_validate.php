@@ -419,9 +419,9 @@ function validate_optional_fields(&$icq, &$aim, &$msnm, &$yim, &$skype, &$websit
 
 	for($i = 0; $i < sizeof($check_var_length); $i++)
 	{
-		if (strlen($$check_var_length[$i]) < 2)
+		if (strlen(${$check_var_length}[$i]) < 2)
 		{
-			$$check_var_length[$i] = '';
+			${$check_var_length}[$i] = '';
 		}
 	}
 

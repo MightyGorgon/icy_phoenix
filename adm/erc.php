@@ -69,7 +69,7 @@ if ($mode == 'download')
 	reset($var_array);
 	while (list(, $var) = each ($var_array))
 	{
-		$$var = str_replace("'", "\\'", str_replace("\\", "\\\\", $$var));
+		${$var} = str_replace("'", "\\'", str_replace("\\", "\\\\", ${$var}));
 	}
 
 	// Create the config.php
@@ -1200,7 +1200,7 @@ switch($mode)
 				reset($var_array);
 				while (list(, $var) = each ($var_array))
 				{
-					$$var = (isset($_POST[$var])) ? stripslashes($_POST[$var]) : '';
+					${$var} = (isset($_POST[$var])) ? stripslashes($_POST[$var]) : '';
 				}
 
 ?>

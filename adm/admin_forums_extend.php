@@ -341,8 +341,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	}
 
 	// get value from the tree for all fields in the list
-	@reset($$fields_list);
-	while (list($table_field, $process_field) = @each($$fields_list))
+	@reset(${$fields_list});
+	while (list($table_field, $process_field) = @each(${$fields_list}))
 	{
 		$item[$process_field] = empty($CH_this) ? '' : trim($tree['data'][$idx][$table_field]);
 		//echo($process_field . ' = ' . $item[$process_field] . '<br />');
@@ -471,8 +471,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	}
 
 	// Get values from form
-	@reset($$fields_list);
-	while (list($table_field, $process_field) = @each($$fields_list))
+	@reset(${$fields_list});
+	while (list($table_field, $process_field) = @each(${$fields_list}))
 	{
 		// Set correct value for checkboxes
 		if (($submit) && ($fields_type[$process_field] == 'INTEGER_CB'))
@@ -836,8 +836,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			}
 
 			// regular fields
-			@reset($$fields_list);
-			while (list($table_field, $process_field) = @each($$fields_list))
+			@reset(${$fields_list});
+			while (list($table_field, $process_field) = @each(${$fields_list}))
 			{
 				$table_value = (($fields_type[$process_field] == 'INTEGER') || ($fields_type[$process_field] == 'INTEGER_CB')) ? intval($item[$process_field]) : sprintf("'%s'", $db->sql_escape(str_replace('\"', '"', $item[$process_field])));
 				$sql_fields .= (empty($sql_fields) ? '' : ', ') . $table_field;

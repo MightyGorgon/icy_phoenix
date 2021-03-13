@@ -48,7 +48,7 @@ switch($mode)
 
 			include(IP_ROOT_PATH . 'templates/' . basename($install_to) . '/theme_info.cfg');
 
-			$template_name = $$install_to;
+			$template_name = ${$install_to};
 			$found = false;
 
 			for($i = 0; $i < sizeof($template_name) && !$found; $i++)
@@ -108,9 +108,9 @@ switch($mode)
 						{
 							include(IP_ROOT_PATH . 'templates/' . $sub_dir . '/theme_info.cfg');
 
-							for($i = 0; $i < sizeof($$sub_dir); $i++)
+							for($i = 0; $i < sizeof(${$sub_dir}); $i++)
 							{
-								$working_data = $$sub_dir;
+								$working_data = ${$sub_dir};
 
 								$style_name = $working_data[$i]['style_name'];
 

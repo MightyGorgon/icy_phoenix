@@ -313,7 +313,7 @@ $topic_title_short = $topic_title_data['title_short'];
 $topic_started = create_date_ip($lang['DATE_FORMAT_VF'], $forum_topic_data['topic_time'], $config['board_timezone'], true);
 $topic_username = colorize_username($forum_topic_data['user_id'], $forum_topic_data['username'], $forum_topic_data['user_color'], $forum_topic_data['user_active']);
 $topic_avatar_img = user_get_avatar($forum_topic_data['user_id'], $forum_topic_data['user_level'], $forum_topic_data['user_avatar'], $forum_topic_data['user_avatar_type'], $forum_topic_data['user_allowavatar']);
-$topic_user_from_flag = $$forum_topic_data['user_from_flag'] ? '<img src="images/flags/' . $forum_topic_data['user_from_flag'] . '" alt="' . $forum_topic_data['user_from_flag'] . '" title="' . $forum_topic_data['user_from'] . '" />' : '';
+$topic_user_from_flag = $forum_topic_data['user_from_flag'] ? '<img src="images/flags/' . $forum_topic_data['user_from_flag'] . '" alt="' . $forum_topic_data['user_from_flag'] . '" title="' . $forum_topic_data['user_from'] . '" />' : '';
 switch ($forum_topic_data['user_gender'])
 {
 	case 1:

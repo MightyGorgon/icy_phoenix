@@ -67,7 +67,7 @@ function display_comments(&$file_data)
 		$user_info = generate_user_info($comments_row);
 		foreach ($user_info as $k => $v)
 		{
-			$$k = $v;
+			${$k} = $v;
 		}
 
 		$poster_posts = ($comments_row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $comments_row['user_posts'] : '';

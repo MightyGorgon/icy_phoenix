@@ -748,7 +748,7 @@ function xs_get_themeinfo($tpl)
 	// Run inside function to avoid theme_info.cfg accessing global variables
 	$tpl = str_replace(array('/', '\\'), array('', ''), $tpl);
 	include('../templates/' . $tpl . '/theme_info.cfg');
-	return isset($$tpl) ? $$tpl : array();
+	return isset(${$tpl}) ? ${$tpl} : array();
 }
 
 // install style

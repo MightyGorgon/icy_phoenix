@@ -80,7 +80,7 @@ $params = array(
 );
 foreach($params as $var => $default)
 {
-	$$var = request_var($var, $default);
+	${$var} = request_var($var, $default);
 }
 
 $order = check_var_value($order, array('ASC', 'DESC'));

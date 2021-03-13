@@ -1,5 +1,5 @@
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function ColorExample(ColorCode)
 {
 	var color_example_box = window.document.getElementById('color_group_example');
@@ -12,7 +12,7 @@ function ColorExample(ColorCode)
 		color_example_box.style.color = ColorCode;
 	}
 }
-//-->
+// ]]>
 </script>
 
 <h1>{L_USER_TITLE}</h1>
@@ -59,7 +59,7 @@ function ColorExample(ColorCode)
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_500PX}</span></td>
-	<td class="row2"><input class="post" type="text" name="500px" size="20" maxlength="255" value="{500PX}" /></td>
+	<td class="row2"><input class="post" type="text" name="f500px" size="20" maxlength="255" value="{F500PX}" /></td>
 </tr>
 <tr>
 	<td class="row1"><span class="gen">{L_AIM}</span></td>

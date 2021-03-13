@@ -57,7 +57,7 @@ if (isset($_POST['submit']))
 
 	while(list($var, $param) = @each($strip_var_list))
 	{
-		$$var = request_post_var($param, '', true);
+		${$var} = request_post_var($param, '', true);
 	}
 
 	$user_style = request_post_var('style', $config['default_style']);

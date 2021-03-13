@@ -311,7 +311,7 @@ class emailer
 		reset($this->vars);
 		while(list($key, $val) = each($this->vars))
 		{
-			$$key = $val;
+			${$key} = $val;
 		}
 
 		eval("\$this->msg = '$this->msg';");
@@ -320,7 +320,7 @@ class emailer
 		reset($this->vars);
 		while(list($key, $val) = each($this->vars))
 		{
-			unset($$key);
+			unset(${$key});
 		}
 
 		// We now try and pull a subject from the email body ... if it exists do this here because the subject may contain a variable
@@ -362,7 +362,7 @@ class emailer
 
 			foreach ($address_ary as $which_ary)
 			{
-				$$type .= (($$type != '') ? ', ' : '') . (!empty($which_ary['name']) ? (mail_encode($which_ary['name'], $encode_eol) . ' <' . $which_ary['email'] . '>') : $which_ary['email']);
+				${$type} .= ((${$type} != '') ? ', ' : '') . (!empty($which_ary['name']) ? (mail_encode($which_ary['name'], $encode_eol) . ' <' . $which_ary['email'] . '>') : $which_ary['email']);
 			}
 		}
 
