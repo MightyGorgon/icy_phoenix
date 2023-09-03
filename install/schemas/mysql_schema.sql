@@ -506,7 +506,6 @@ CREATE TABLE `phpbb_groups` (
 	`upi2db_min_posts` MEDIUMINT(4) NOT NULL DEFAULT '0',
 	`upi2db_min_regdays` MEDIUMINT(4) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`group_id`),
-	#KEY `group_legend_name` (`group_legend`, `group_name`),
 	KEY `group_single_user` (`group_single_user`)
 );
 
@@ -1508,7 +1507,6 @@ CREATE TABLE `phpbb_shout` (
 ## `phpbb_site_history`
 
 CREATE TABLE `phpbb_site_history` (
-	#`date` INT(11) NOT NULL DEFAULT '0',
 	`date` INT(11) NOT NULL,
 	`reg` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`hidden` MEDIUMINT(8) NOT NULL DEFAULT '0',
