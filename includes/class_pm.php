@@ -18,6 +18,15 @@ if (!defined('IN_ICYPHOENIX'))
 */
 class class_pm
 {
+
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	/*
 	* PM Send
 	*/

@@ -37,7 +37,7 @@ class class_plugins
 	/**
 	* Instantiate class
 	*/
-	function class_plugins()
+	function __construct()
 	{
 		$this->plugins_path = IP_ROOT_PATH . PLUGINS_PATH;
 		$this->plugins_settings_path = 'settings';

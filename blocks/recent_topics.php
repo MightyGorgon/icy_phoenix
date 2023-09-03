@@ -61,7 +61,7 @@ if(!function_exists('cms_block_recent_topics'))
 			$style_row = 'static';
 		}
 
-		$template->assign_block_vars($style_row, '');
+		$template->assign_block_vars($style_row, array());
 
 		for ($i = 0; $i < $number_recent_topics; $i++)
 		{

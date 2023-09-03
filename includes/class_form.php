@@ -39,7 +39,7 @@ class class_form
 	/**
 	* Instantiate the class
 	*/
-	function class_form()
+	function __construct()
 	{
 		global $lang;
 

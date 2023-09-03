@@ -1518,7 +1518,7 @@ class user extends session
 	/**
 	* Constructor to set the lang path
 	*/
-	function user()
+	function __construct()
 	{
 		$this->lang_path = IP_ROOT_PATH . 'language/';
 	}

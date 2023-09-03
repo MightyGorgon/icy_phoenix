@@ -16,6 +16,14 @@ if (!defined('IN_ICYPHOENIX'))
 class lang_management
 {
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	function get_lang($key)
 	{
 		global $lang;

@@ -153,7 +153,7 @@ class umil
 	/**
 	* Constructor
 	*/
-	function umil($stand_alone = false, $db = false)
+	function __construct($stand_alone = false, $db = false)
 	{
 		// Setup $this->db
 		if ($db !== false)

@@ -85,7 +85,7 @@ if ($mode == 'config')
 	foreach ($config_data as $config_name => $c_data)
 	{
 		$template->assign_block_vars('config_row', array(
-			'S_CONFIG' => $$config_name,
+			'S_CONFIG' => ${$config_name},
 			'L_CONFIG' => $c_data['lang']
 			)
 		);

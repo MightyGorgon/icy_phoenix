@@ -18,6 +18,14 @@ class cms_auth
 	var $acl = array();
 	var $acl_options = array();
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	function acl()
 	{
 		global $db, $user;

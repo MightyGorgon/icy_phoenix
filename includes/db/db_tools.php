@@ -133,7 +133,7 @@ class phpbb_db_tools
 	* @param phpbb_dbal	$db					DBAL object
 	* @param bool		$return_statements	True if only statements should be returned and no SQL being executed
 	*/
-	function phpbb_db_tools(&$db, $return_statements = false)
+	function __construct(&$db, $return_statements = false)
 	{
 		$this->db = $db;
 		$this->return_statements = $return_statements;

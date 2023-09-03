@@ -19,6 +19,14 @@ class cms_permissions
 	var $permission_dropdown;
 	var $id_type;
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	function main($id, $mode)
 	{
 		global $db, $cache, $config, $user, $lang, $auth, $template, $cms_admin;

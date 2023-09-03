@@ -79,7 +79,7 @@ class log_manager
 	 * Write User Information to Vars we need these informations later into the
 	 * Log File
 	 */
-	function log_manager()
+	function __construct()
 	{
 		$this->ct_type_msg = 0;
 		$this->ct_timestamp = time();

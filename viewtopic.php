@@ -88,8 +88,7 @@ $sort_dir_sql = $sort_dir_sql_array[$sort_dir];
 // only fetch post higher than a certain post_id. Maybe this should use post_time, as $sort_key_sql_array uses post_time
 $after_post_id = request_var('after_post_id', 0);
 // make sure we can't fetch negative indices. 0 = disabled
-if ($after_post_id < 0)
-	$after_post_id = 1;
+$after_post_id = ($after_post_id < 0) ? 1 : $after_post_id;
 
 // Backward compatibility
 if (check_http_var_exists('postorder', true))
@@ -314,7 +313,7 @@ $topic_title_short = $topic_title_data['title_short'];
 $topic_started = create_date_ip($lang['DATE_FORMAT_VF'], $forum_topic_data['topic_time'], $config['board_timezone'], true);
 $topic_username = colorize_username($forum_topic_data['user_id'], $forum_topic_data['username'], $forum_topic_data['user_color'], $forum_topic_data['user_active']);
 $topic_avatar_img = user_get_avatar($forum_topic_data['user_id'], $forum_topic_data['user_level'], $forum_topic_data['user_avatar'], $forum_topic_data['user_avatar_type'], $forum_topic_data['user_allowavatar']);
-$topic_user_from_flag = $$forum_topic_data['user_from_flag'] ? '<img src="images/flags/' . $forum_topic_data['user_from_flag'] . '" alt="' . $forum_topic_data['user_from_flag'] . '" title="' . $forum_topic_data['user_from'] . '" />' : '';
+$topic_user_from_flag = $forum_topic_data['user_from_flag'] ? '<img src="images/flags/' . $forum_topic_data['user_from_flag'] . '" alt="' . $forum_topic_data['user_from_flag'] . '" title="' . $forum_topic_data['user_from'] . '" />' : '';
 switch ($forum_topic_data['user_gender'])
 {
 	case 1:
@@ -557,6 +556,7 @@ else
 }
 
 // Generate a 'Show posts in previous x days' select box. If the postdays var is POSTed then get it's value, find the number of topics with dates newer than it (to properly handle pagination) and alter the main query
+$limit_sql_insert = '';
 if(!empty($sort_days))
 {
 	$start = 0;
@@ -570,22 +570,20 @@ if(!empty($sort_days))
 	$result = $db->sql_query($sql);
 	$total_replies = ($row = $db->sql_fetchrow($result)) ? intval($row['num_posts']) : 0;
 	$limit_posts_time = "AND p.post_time >= " . $min_post_time . " ";
-	$limit_sql = " LIMIT " . $config['posts_per_page'];
 }
-else if ($after_post_id > 0)
+elseif ($after_post_id > 0)
 {
 	// TODO make it after_post_time?
 	$limit_posts_time = "AND p.post_id > " . intval($after_post_id) . " ";
 	$sort_days = 0;
 	$total_replies = intval($forum_topic_data['topic_replies']) + 1;
-	$limit_sql = " LIMIT " . $config['posts_per_page'];
 }
 else
 {
-	$limit_sql = " LIMIT " . $start . ", " . $config['posts_per_page'];
 	$sort_days = 0;
 	$total_replies = intval($forum_topic_data['topic_replies']) + 1;
 	$limit_posts_time = '';
+	$limit_sql_insert = $start . ', ';
 }
 
 $user_ids = array();
@@ -663,8 +661,9 @@ $sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, 
 		AND u.user_id = p.poster_id
 		" . $limit_posts_time . "
 		" . $self_sql . "
-	ORDER BY " . $sort_key_sql . " " . $sort_dir_sql
-	. $limit_sql;
+	ORDER BY " . $sort_key_sql . " " . $sort_dir_sql . "
+	LIMIT " . $limit_sql_insert . $config['posts_per_page'];
+
 // MG Cash MOD For IP - BEGIN
 if (!empty($config['plugins']['cash']['enabled']))
 {
@@ -1139,6 +1138,7 @@ $ajax_post_data = array(
 	'L_WARN_NEW_POST' => $lang['Warn_new_post'],
 	'REFRESH_INTERVAL' => $config['auto_refresh_topic_interval'],
 );
+
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_ID_FULL' => POST_FORUM_URL . $forum_id,
@@ -1164,9 +1164,8 @@ $template->assign_vars(array(
 	'PAGINATION' => $pagination,
 	'CURRENT_PAGE_NUMBER' => $current_page,
 	'MAX_PAGE_NUMBER' => $max_page,
-	'IS_LAST_PAGE' => $current_page == $max_page,
+	'IS_LAST_PAGE' => ($current_page == $max_page) ? 1 : 0,
 	'PAGE_NUMBER' => sprintf($lang['Page_of'], $current_page, $max_page),
-
 	'AJAX_POST_DATA' => json_encode($ajax_post_data),
 
 	'POST_IMG' => $post_img,

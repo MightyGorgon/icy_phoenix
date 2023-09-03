@@ -42,7 +42,7 @@ class p_master
 	* Constuctor
 	* Set module include path
 	*/
-	function p_master($include_path = false)
+	function __construct($include_path = false)
 	{
 		$this->include_path = ($include_path !== false) ? $include_path : IP_ROOT_PATH . 'includes/';
 

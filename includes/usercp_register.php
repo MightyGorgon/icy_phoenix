@@ -304,7 +304,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	// Strip all tags from data ... may p**s some people off, bah, strip_tags is doing the job but can still break HTML output ... have no choice, have to use htmlspecialchars ... be prepared to be moaned at.
 	while(list($var, $param) = @each($strip_var_list))
 	{
-		$$var = request_post_var($param, '', true);
+		${$var} = request_post_var($param, '', true);
 	}
 
 	if ($mode == 'editprofile')
@@ -325,8 +325,8 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 
 	while(list($var, $param) = @each($trim_var_list))
 	{
-		$$var = request_post_var($param, '', true);
-		$$var = htmlspecialchars_decode($$var, ENT_COMPAT);
+		${$var} = request_post_var($param, '', true);
+		${$var} = htmlspecialchars_decode(${$var}, ENT_COMPAT);
 	}
 	$signature = str_replace('<br />', "\n", $signature);
 	$selfdes = str_replace('<br />', "\n", $selfdes);
@@ -449,7 +449,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 
 	$dst_time_lag = request_post_var('dst_time_lag', $config['default_dst_time_lag']);
 
-	if (eregi("[^0-9]", $dst_time_lag) || ($dst_time_lag < 0) || ($dst_time_lag > 120))
+	if (preg_match('/[^0-9]/i', $dst_time_lag) || ($dst_time_lag < 0) || ($dst_time_lag > 120))
 	{
 		$error = true;
 		$error_msg .= ((isset($error_msg)) ? '<br />' : '') . $lang['dst_time_lag_error'];
@@ -531,9 +531,9 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 			// Assign al other vars
 			foreach ($user_data_social as $field => $value)
 			{
-				if (empty($$field) && !empty($value))
+				if (empty(${$field}) && !empty($value))
 				{
-					$$field = $value;
+					${$field} = $value;
 				}
 			}
 
@@ -1004,7 +1004,7 @@ if (isset($_POST['submit']))
 			$user_sn_im_array = get_user_sn_im_array();
 			foreach ($user_sn_im_array as $k => $v)
 			{
-				$sn_im_sql .= ", " . $v['field'] . " = '" . $db->sql_escape(str_replace(' ', '+', trim($$v['form']))) . "'";
+				$sn_im_sql .= ", " . $v['field'] . " = '" . $db->sql_escape(str_replace(' ', '+', trim(${$v['form']}))) . "'";
 			}
 
 // UPI2DB - EDIT
@@ -1214,7 +1214,7 @@ if (isset($_POST['submit']))
 			foreach ($user_sn_im_array as $k => $v)
 			{
 				$sn_im_sql_fields .= ", " . $v['field'];
-				$sn_im_sql_data .= ", '" . $db->sql_escape(str_replace(' ', '+', trim($$v['form']))) . "'";
+				$sn_im_sql_data .= ", '" . $db->sql_escape(str_replace(' ', '+', trim(${$v['form']}))) . "'";
 			}
 
 // UPI2DB - EDIT
@@ -1480,7 +1480,7 @@ elseif (($mode == 'editprofile') && !isset($_POST['avatargallery']) && !isset($_
 	$user_sn_im_array = get_user_sn_im_array();
 	foreach ($user_sn_im_array as $k => $v)
 	{
-		$$v['form'] = $user->data[$v['field']];
+		${$v['form']} = $user->data[$v['field']];
 	}
 
 	$user_first_name = $user->data['user_first_name'];
@@ -1592,7 +1592,7 @@ if(isset($_POST['avatargallery']) && !$error)
 	$user_sn_im_array = get_user_sn_im_array();
 	foreach ($user_sn_im_array as $k => $v)
 	{
-		$this_user_im[$v['form']] = $$v['form'];
+		$this_user_im[$v['form']] = ${$v['form']};
 	}
 
 	display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $this_user_im, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
@@ -1626,7 +1626,7 @@ elseif(isset($_POST['avatargenerator']) && !$error)
 	$user_sn_im_array = get_user_sn_im_array();
 	foreach ($user_sn_im_array as $k => $v)
 	{
-		$this_user_im[$v['form']] = $$v['form'];
+		$this_user_im[$v['form']] = ${$v['form']};
 	}
 
 	display_avatar_generator($mode, $avatar_filename, $avatar_image, $avatar_text, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $this_user_im, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
@@ -1962,7 +1962,7 @@ else
 		$user_sn_im_array = get_user_sn_im_array();
 		foreach ($user_sn_im_array as $k => $v)
 		{
-			$s_hidden_fields .= '<input type="hidden" name="' . $v['form'] . '" value="' . $$v['form'] . '" />';
+			$s_hidden_fields .= '<input type="hidden" name="' . $v['form'] . '" value="' . ${$v['form']} . '" />';
 		}
 
 		$s_hidden_fields .= '<input type="hidden" name="user_first_name" value="' . $user_first_name . '" />';
@@ -2372,7 +2372,7 @@ else
 	$user_sn_im_array = get_user_sn_im_array();
 	foreach ($user_sn_im_array as $k => $v)
 	{
-		$template->assign_var(strtoupper($v['form']), $$v['form']);
+		$template->assign_var(strtoupper($v['form']), ${$v['form']});
 	}
 
 	$template->assign_vars(array(

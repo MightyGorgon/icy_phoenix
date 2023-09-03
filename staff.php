@@ -137,7 +137,7 @@ for($i = 0; $i < sizeof($level_cat); $i++)
 		$user_info = generate_user_info($staff);
 		foreach ($user_info as $k => $v)
 		{
-			$$k = $v;
+			${$k} = $v;
 		}
 
 		$template->assign_block_vars('user_level.staff', array(

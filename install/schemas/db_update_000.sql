@@ -228,7 +228,7 @@ CREATE TABLE `phpbb_cms_blocks` (
 CREATE TABLE `phpbb_cms_config` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `bid` int(10) NOT NULL default '0',
-  `config_name` varchar(255) NOT NULL default '',
+  `config_name` varchar(190) NOT NULL default '',
   `config_value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
 );
@@ -1188,7 +1188,7 @@ DELETE FROM `phpbb_config` WHERE `config_name` = 'allow_only_main_admin_id';
 CREATE TABLE phpbb_bots (
 	bot_id mediumint(8) UNSIGNED NOT NULL auto_increment,
 	bot_active tinyint(1) UNSIGNED DEFAULT '1' NOT NULL,
-	bot_name varchar(255) DEFAULT '' NOT NULL,
+	bot_name varchar(190) DEFAULT '' NOT NULL,
 	bot_color varchar(255) DEFAULT '' NOT NULL,
 	bot_agent varchar(255) DEFAULT '' NOT NULL,
 	bot_ip varchar(255) DEFAULT '' NOT NULL,

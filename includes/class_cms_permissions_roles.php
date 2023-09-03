@@ -27,6 +27,14 @@ class cms_permissions_roles
 {
 	var $u_action;
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	function main($id, $mode)
 	{
 		global $db, $cache, $config, $user, $lang, $auth, $template, $cms_admin;

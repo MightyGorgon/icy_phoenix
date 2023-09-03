@@ -21,6 +21,14 @@ class ip_cms
 
 	var $tables = array();
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	/*
 	* Initialize variables
 	*/

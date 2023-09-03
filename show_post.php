@@ -231,7 +231,7 @@ if ($row = $db->sql_fetchrow($result))
 		$user_info = generate_user_info($row);
 		foreach ($user_info as $k => $v)
 		{
-			$$k = $v;
+			${$k} = $v;
 		}
 
 		$post_date = create_date_ip($config['default_dateformat'], $row['post_time'], $config['board_timezone']);

@@ -335,7 +335,7 @@ class bbcode
 	/**
 	* Instantiate class
 	*/
-	function bbcode()
+	function __construct()
 	{
 		global $config;
 
@@ -3843,9 +3843,14 @@ class bbcode
 				if (preg_match_all('/(?<!\\\\)\$([0-9]+)/', $replace, $repad))
 				{
 					$repad = $pad + sizeof(array_unique($repad[0]));
+					// Updated by Informpro
+					/*
+					$replace = preg_replace('/(?<!\\\\)\$([0-9]+)/e', "'\${' . (\$1 + \$pad) . '}'", $replace);
+					*/
 					$replace = preg_replace_callback('/(?<!\\\\)\$([0-9]+)/', function ($m) use ($pad) {
-						return '${' . $m[1] + $pad . '}';
+						return '${' . ($m[1] + $pad) . '}';
 					}, $replace);
+
 					$pad = $repad;
 				}
 
@@ -3905,6 +3910,13 @@ class bbcode
 			return false;
 		}
 
+		// Updated by Informpro
+		/*
+		$fp_match = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $fp_match);
+		$fp_replace = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $fp_replace);
+		$sp_match = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $sp_match);
+		$sp_replace = preg_replace('#\[/?' . $bbcode_search . '#ie', "strtolower('\$0')", $sp_replace);
+		*/
 		$fp_match = preg_replace_callback('#\[/?' . $bbcode_search . '#i', function ($m) {
 			return strtolower($m[0]);
 		}, $fp_match);
@@ -3917,6 +3929,7 @@ class bbcode
 		$sp_replace = preg_replace_callback('#\[/?' . $bbcode_search . '#i', function ($m) {
 			return strtolower($m[0]);
 		}, $sp_replace);
+
 
 		return array(
 			'bbcode_tag'						=> $bbcode_tag,
@@ -4467,6 +4480,8 @@ class bbcode
 		}
 
 		static $orig, $repl;
+		// Mighty Gorgon: acronyms are not working any more with PHP 7, so we need to fix them
+		//return $text;
 
 		if(!isset($orig))
 		{
@@ -4512,13 +4527,32 @@ class bbcode
 			$segments = preg_split('#(<abbr.+?>.+?</abbr>|<.+?>)#s' , $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 			//<?php
 			//Insert for formating purpose
+
+
+			/*
+			print_r($segments);
+			print_r(htmlspecialchars($text));
+			die('DEBUG');
+			*/
+
+
 			$text = '';
 
 			foreach($segments as $seg)
 			{
 				if(($seg[0] != '<') && ($seg[0] != '['))
 				{
+					// Mighty Gorgon: we need to check if this fix is correct!
+					/*
+					// OLD VERSION working with PHP 5.6
 					$text .= str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "preg_replace(\$orig, \$repl, '\\0')", '>' . $seg . '<'), 1, -1));
+					*/
+
+					// New version working with PHP 7.3
+					$text .= str_replace('\"', '"', substr(preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#s', preg_replace($orig, $repl, '>' . $seg . '<'), '>' . $seg . '<'), 1, -1));
+
+					// Test without internal REGEX
+					//$text .= str_replace('\"', '"', substr(preg_replace($orig, $repl, '>' . $seg . '<'), 1, -1));
 				}
 				else
 				{
@@ -4545,8 +4579,7 @@ class bbcode
 		$autolinks = array();
 		while($row = $db->sql_fetchrow($result))
 		{
-			// Munge word boundaries to stop autolinks from linking to
-			// themselves or other autolinks in step 2 in the function below.
+			// Munge word boundaries to stop autolinks from linking to themselves or other autolinks in step 2 in the function below.
 			$row['link_url'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_url']);
 			$row['link_comment'] = preg_replace('/(\b)/', '\\1ALSPACEHOLDER', $row['link_comment']);
 
@@ -4559,7 +4592,7 @@ class bbcode
 			{
 				$style = ' ';
 			}
-			$autolinks['match'][] = '/(?<![\/\w@\.:-])(?!\.\w)(' . phpbb_preg_quote($row['link_keyword'], '/'). ')(?![\/\w@:-])(?!\.\w)/i';
+			$autolinks['match'][] = '/(?<![\/\w@\.:-])(?!\.\w)(' . phpbb_preg_quote($row['link_keyword'], '/') . ')(?![\/\w@:-])(?!\.\w)/i';
 			if($row['link_int'])
 			{
 				$autolinks['replace'][] = '<a href="' . append_sid(htmlspecialchars($row['link_url'])) . '" target="_self"' . $style . 'title="' . htmlspecialchars($row['link_comment']) . '">' . htmlspecialchars($row['link_title']) . '</a>';
@@ -4595,12 +4628,13 @@ class bbcode
 		if (sizeof($autolinks))
 		{
 			global $config;
+
 			// Step 1 - move all tags out of the text and replace them with placeholders
 			preg_match_all('/(<a\s+.*?\/a>|<[^>]+>)/i', $text, $matches);
 			$matchnum = sizeof($matches[1]);
 			for($i = 0; $i < $matchnum; $i++)
 			{
-				$text = preg_replace('/' . preg_quote($matches[1][$i], '/') . '/', "ALPLACEHOLDER{$i}PH", $text, 1);
+				$text = preg_replace('/' . preg_quote($matches[1][$i], '/') . '/', " ALPLACEHOLDER{$i}PH", $text, 1);
 			}
 
 			// Step 2 - s/r of the remaining text
@@ -4619,7 +4653,7 @@ class bbcode
 			// Step 4 - replace the HTML tags that we removed in step 1
 			for($i = 0; $i < $matchnum; $i++)
 			{
-				$text = preg_replace("/ALPLACEHOLDER{$i}PH/", $matches[1][$i], $text, 1);
+				$text = preg_replace("/ ALPLACEHOLDER{$i}PH/", $matches[1][$i], $text, 1);
 			}
 		}
 

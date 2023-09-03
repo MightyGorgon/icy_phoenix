@@ -3076,7 +3076,7 @@ switch($mode_id)
 						$result_array = array(array(), array());
 						for ($i = 0; $i < sizeof($synonyms_array); $i++)
 						{
-							list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonyms_array[$i])));
+							list($replace_synonym, $match_synonym) = explode(' ', trim(strtolower($synonyms_array[$i])));
 							$result_array[0][] = trim($replace_synonym);
 							$result_array[1][] = trim($match_synonym);
 						}

@@ -76,16 +76,16 @@ if(!function_exists('cms_block_ads'))
 
 		$ads_blocks = array();
 		$ads_content = '';
-		if (is_array($$banner_var_all) && (sizeof($$banner_var_all) > 0))
+		if (is_array(${$banner_var_all}) && (sizeof(${$banner_var_all}) > 0))
 		{
-			foreach ($$banner_var_all as $tmp_ads)
+			foreach (${$banner_var_all} as $tmp_ads)
 			{
 				$ads_blocks[] = $tmp_ads;
 			}
 		}
-		if (!$user->data['session_logged_in'] && is_array($$banner_var_guests) && (sizeof($$banner_var_guests) > 0))
+		if (!$user->data['session_logged_in'] && is_array(${$banner_var_guests}) && (sizeof(${$banner_var_guests}) > 0))
 		{
-			foreach ($$banner_var_guests as $tmp_ads)
+			foreach (${$banner_var_guests} as $tmp_ads)
 			{
 				$ads_blocks[] = $tmp_ads;
 			}

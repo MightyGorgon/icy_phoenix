@@ -24,7 +24,7 @@ class class_notifications
 	/**
 	* Initialize the class
 	*/
-	function class_notifications()
+	function __construct()
 	{
 		global $config, $db, $user;
 

@@ -40,7 +40,7 @@ class emailer
 	/**
 	* Initialize the class
 	*/
-	function emailer($use_queue = true)
+	function __construct($use_queue = true)
 	{
 		$this->use_queue = (empty($config['email_package_size'])) ? false : $use_queue;
 		$this->reset();
@@ -311,7 +311,7 @@ class emailer
 		reset($this->vars);
 		while(list($key, $val) = each($this->vars))
 		{
-			$$key = $val;
+			${$key} = $val;
 		}
 
 		eval("\$this->msg = '$this->msg';");
@@ -320,7 +320,7 @@ class emailer
 		reset($this->vars);
 		while(list($key, $val) = each($this->vars))
 		{
-			unset($$key);
+			unset(${$key});
 		}
 
 		// We now try and pull a subject from the email body ... if it exists do this here because the subject may contain a variable
@@ -362,7 +362,7 @@ class emailer
 
 			foreach ($address_ary as $which_ary)
 			{
-				$$type .= (($$type != '') ? ', ' : '') . (!empty($which_ary['name']) ? (mail_encode($which_ary['name'], $encode_eol) . ' <' . $which_ary['email'] . '>') : $which_ary['email']);
+				${$type} .= ((${$type} != '') ? ', ' : '') . (!empty($which_ary['name']) ? (mail_encode($which_ary['name'], $encode_eol) . ' <' . $which_ary['email'] . '>') : $which_ary['email']);
 			}
 		}
 
@@ -703,7 +703,7 @@ class queue
 	/**
 	* constructor
 	*/
-	function queue()
+	function __construct()
 	{
 		$this->data = array();
 		$this->cache_file = IP_ROOT_PATH . 'cache/queue.' . PHP_EXT;
@@ -1162,7 +1162,7 @@ class smtp_class
 	var $backtrace = false;
 	var $backtrace_log = array();
 
-	function smtp_class()
+	function __construct()
 	{
 		// Always create a backtrace for admins to identify SMTP problems
 		$this->backtrace = true;

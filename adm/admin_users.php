@@ -103,8 +103,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		);
 		while(list($var, $param) = @each($trim_var_list))
 		{
-			$$var = request_post_var($param, '', true);
-			$$var = htmlspecialchars_decode($$var, ENT_COMPAT);
+			${$var} = request_post_var($param, '', true);
+			${$var} = htmlspecialchars_decode(${$var}, ENT_COMPAT);
 		}
 		$username = phpbb_clean_username($username);
 		$signature = str_replace('<br />', "\n", $signature);
@@ -130,7 +130,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		// Strip all tags from data ... may p**s some people off, bah, strip_tags is doing the job but can still break HTML output ... have no choice, have to use htmlspecialchars ... be prepared to be moaned at.
 		while(list($var, $param) = @each($strip_var_list))
 		{
-			$$var = request_post_var($param, '', true);
+			${$var} = request_post_var($param, '', true);
 		}
 
 		validate_optional_fields($icq, $aim, $msn, $yim, $skype, $website, $location, $occupation, $interests, $phone, $selfdes, $signature);
@@ -742,7 +742,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			$user_sn_im_array = get_user_sn_im_array();
 			foreach ($user_sn_im_array as $k => $v)
 			{
-				$sn_im_sql .= ", " . $v['field'] . " = '" . $db->sql_escape(str_replace(' ', '+', trim($$v['form']))) . "'";
+				$sn_im_sql .= ", " . $v['field'] . " = '" . $db->sql_escape(str_replace(' ', '+', trim(${$v['form']}))) . "'";
 			}
 
 			$sql = "UPDATE " . USERS_TABLE . "
@@ -905,7 +905,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_sn_im_array = get_user_sn_im_array();
 		foreach ($user_sn_im_array as $k => $v)
 		{
-			$$v['form'] = $this_userdata[$v['field']];
+			${$v['form']} = $this_userdata[$v['field']];
 		}
 
 		$website = $this_userdata['user_website'];
@@ -1018,7 +1018,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			$user_sn_im_array = get_user_sn_im_array();
 			foreach ($user_sn_im_array as $k => $v)
 			{
-				$this_user_im[$v['form']] = $$v['form'];
+				$this_user_im[$v['form']] = ${$v['form']};
 			}
 
 			display_avatar_gallery($mode, $avatar_category, $user_id, $email, $current_email, $email_confirm, $coppa, $username, $new_password, $cur_password, $password_confirm, $this_user_im, $website, $location, $user_flag, $user_first_name, $user_last_name, $occupation, $interests, $phone, $selfdes, $signature, $viewemail, $notifypm, $popup_pm, $notifyreply, $attachsig, $setbm, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowmassemail, $allowpmin, $allowviewonline, $user_style, $user_lang, $user_timezone, $time_mode, $dst_time_lag, $user_dateformat, $profile_view_popup, $user->data['session_id'], $birthday, $gender, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color);
@@ -1101,7 +1101,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			$user_sn_im_array = get_user_sn_im_array();
 			foreach ($user_sn_im_array as $k => $v)
 			{
-				$hidden_fields_array[$v['form']] = $$v['form'];
+				$hidden_fields_array[$v['form']] = ${$v['form']};
 			}
 
 			$s_hidden_fields = build_hidden_fields($hidden_fields_array, false, false);
@@ -1541,7 +1541,7 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		$user_sn_im_array = get_user_sn_im_array();
 		foreach ($user_sn_im_array as $k => $v)
 		{
-			$template->assign_var(strtoupper($v['form']), $$v['form']);
+			$template->assign_var(strtoupper($v['form']), ${$v['form']});
 		}
 
 		$template->assign_vars(array(

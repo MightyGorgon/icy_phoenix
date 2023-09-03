@@ -31,6 +31,9 @@ $(function () {
 		$newPosts
 			.css('opacity', 0)
 			.insertAfter($posts.last())
+			// progressively show the new posts over 1.5s
+			.animate({opacity: 1}, 1500)
+		;
 
 			// progressively show the new posts over 1.5s
 			.animate({opacity: 1}, 1500)

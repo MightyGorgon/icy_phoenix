@@ -452,7 +452,7 @@ while ($shout_row = $db->sql_fetchrow($result))
 	$user_info = generate_user_info($shout_row);
 	foreach ($user_info as $k => $v)
 	{
-		$$k = $v;
+		${$k} = $v;
 	}
 
 	$user_posts = ($shout_row['user_id'] != ANONYMOUS) ? $lang['Posts'] . ': ' . $shout_row['user_posts'] : '';

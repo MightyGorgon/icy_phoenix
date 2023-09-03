@@ -111,7 +111,7 @@ if ($user->data['upi2db_access'])
 	);
 	while(list($var, $param) = @each($params))
 	{
-		$$var = request_var($param, '');
+		${$var} = request_var($param, '');
 	}
 	$forum_id_append = ((!empty($f) && empty($forum_id_append)) ? (POST_FORUM_URL . '=' . $f) : $forum_id_append);
 	$topic_id_append = (!empty($t) ? (POST_TOPIC_URL . '=' . $t) : '');

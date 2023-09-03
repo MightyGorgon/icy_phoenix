@@ -158,7 +158,7 @@ if(isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) ||
 		if ($login_result['status'] === LOGIN_SUCCESS)
 		{
 			// Is user linking a social network account?
-			if ($config['enable_social_connect'])
+			if (($config['enable_social_connect']) && class_exists('SocialConnect'))
 			{
 				$available_networks = SocialConnect::get_available_networks();
 

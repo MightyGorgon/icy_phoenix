@@ -28,8 +28,12 @@ class class_export
 	var $field_names = array();
 	var $field_values = array();
 
-	function class_export()
+	/**
+	* Construct
+	*/
+	function __construct()
 	{
+
 	}
 
 	/*

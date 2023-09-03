@@ -183,7 +183,7 @@ class Template {
 	/**
 	* Constructor. Installs XS mod on first run or updates it and sets the root dir.
 	*/
-	function Template($root = '.')
+	function __construct($root = '.')
 	{
 		// setting pointer "vars"
 		$this->vars = &$this->_tpldata['.'][0];
@@ -602,8 +602,8 @@ class Template {
 	{
 		global $lang, $theme, $config;
 		$template = $theme['template_name'];
-		global $$template;
-		$theme_info = &$$template;
+		global ${$template};
+		$theme_info = &${$template};
 		$exclude_tpl_array = array('def_tree_def.tpl', 'rss_body.tpl');
 		//die(basename($this->files[$handle]));
 		if($config['xs_add_comments'] && $handle && !in_array(basename($this->files[$handle]), $exclude_tpl_array))

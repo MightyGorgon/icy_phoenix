@@ -595,7 +595,7 @@ class user_info
 	 @param $user_agent_pa allows override of user agent string for testing.
 	*/
 
-	function user_info($user_agent_pa = '')
+	function __construct($user_agent_pa = '')
 	{
 		global $HTTP_USER_AGENT;
 

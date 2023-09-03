@@ -68,7 +68,7 @@ class sql_db
 	var $one_char;
 
 	// Constructor
-	function sql_db($dbms, $sqlserver, $sqluser, $sqlpassword, $database)
+	function __construct($dbms, $sqlserver, $sqluser, $sqlpassword, $database)
 	{
 		$this->sql_start_time = $this->sql_get_time();
 		$this->sql_init_time = $this->sql_start_time;
@@ -256,7 +256,7 @@ class sql_db
 	/**
 	* Base query method
 	*/
-	function sql_query($query = '', $cache_ttl = 0, $cache_prefix = false, $cache_folder = SQL_CACHE_FOLDER)
+	function sql_query($query = '', $cache_ttl = 0, $cache_prefix = false, $cache_folder = '')
 	{
 		if (empty($query))
 		{
@@ -274,7 +274,7 @@ class sql_db
 			$this->sql_report('start', $query);
 		}
 
-		if (CACHE_SQL == false)
+		if (defined('CACHE_SQL') && (CACHE_SQL == false))
 		{
 			$cache_prefix = false;
 		}

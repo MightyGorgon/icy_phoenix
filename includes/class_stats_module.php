@@ -40,8 +40,12 @@ class Statistics
 	var $result_cache_used = false;
 	var $db_cache_used = false;
 
-	function Statistics()
+	/**
+	* Construct
+	*/
+	function __construct()
 	{
+
 	}
 
 	// Setup Bars for Modules (for example Top Posters, Top Smilies etc...)
@@ -114,7 +118,7 @@ class cached_db
 	var $fs = array();
 	var $f = array();
 
-	function cached_db($numrows, $fetchrowset, $fetchrow)
+	function __construct($numrows, $fetchrowset, $fetchrow)
 	{
 		$this->n = $numrows;
 		$this->fs = $fetchrowset;
@@ -135,7 +139,7 @@ class StatisticsDB
 	var $curr_fs_row = 0;
 	var $curr_f_row = 0;
 
-	function StatisticsDB()
+	function __construct()
 	{
 	}
 
@@ -310,7 +314,7 @@ class cached_result
 {
 	var $var_data = array();
 
-	function cached_result($var_data)
+	function __construct($var_data)
 	{
 		$this->var_data = $var_data;
 	}
@@ -324,7 +328,7 @@ class Results
 	var $index = -2;
 	var $use_cache = false;
 
-	function Results()
+	function __construct()
 	{
 	}
 

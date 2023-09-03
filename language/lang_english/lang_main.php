@@ -156,7 +156,7 @@ $lang = array_merge($lang, array(
 	'View_newest_post' => 'View newest post',
 	'Page_of' => 'Page <b>%d</b> of <b>%d</b>', // Replaces with: Page 1 of 2 for example
 
-	'AIM' => 'AIM Address',
+	'AIM' => 'AIM',
 	'ICQ' => 'ICQ Number',
 	'JABBER' => 'Jabber',
 	'MSNM' => 'MSN Live',

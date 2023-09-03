@@ -172,7 +172,7 @@ ALTER TABLE `phpbb_users` ADD `user_private_chat_alert` VARCHAR(255) NOT NULL AF
 ##              BUILD 059             ##
 ########################################
 CREATE TABLE `phpbb_plugins_config` (
-	`config_name` varchar(255) NOT NULL DEFAULT '',
+	`config_name` varchar(190) NOT NULL DEFAULT '',
 	`config_value` TEXT NOT NULL,
 	PRIMARY KEY (`config_name`)
 );

@@ -22,6 +22,14 @@ class class_db
 	var $main_db_table = '';
 	var $main_db_item = '';
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	/*
 	* Get items from DB
 	*/

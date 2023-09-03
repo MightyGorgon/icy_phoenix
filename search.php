@@ -84,7 +84,7 @@ if($user->data['upi2db_access'])
 	);
 	while(list($var, $param) = @each($params))
 	{
-		$$var = request_var($param, 0);
+		${$var} = request_var($param, 0);
 	}
 
 	$params = array(
@@ -95,7 +95,7 @@ if($user->data['upi2db_access'])
 	);
 	while(list($var, $param) = @each($params))
 	{
-		$$var = request_var($param, '');
+		${$var} = request_var($param, '');
 	}
 
 	$mar_topic_id = request_var('mar_topic_id', array(0));
@@ -544,7 +544,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 			$split_search = array();
 			$stripped_keywords = stripslashes($search_keywords);
-			$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', $stripped_keywords, $stopwords_array, $synonyms_array), 'search') : split(' ', $search_keywords);
+			$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', $stripped_keywords, $stopwords_array, $synonyms_array), 'search') : explode(' ', $search_keywords);
 			unset($stripped_keywords);
 
 			$word_count = 0;
@@ -1033,7 +1033,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		for($i = 0; $i < sizeof($store_vars); $i++)
 		{
-			$store_search_data[$store_vars[$i]] = !empty($$store_vars[$i]) ? $$store_vars[$i] : '';
+			$store_search_data[$store_vars[$i]] = !empty(${$store_vars[$i]}) ? ${$store_vars[$i]} : '';
 		}
 
 		$result_array = serialize($store_search_data);
@@ -1073,7 +1073,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				$psort_main = $psort;
 				for($i = 0; $i < sizeof($store_vars); $i++)
 				{
-					$$store_vars[$i] = $search_data[$store_vars[$i]];
+					${$store_vars[$i]} = $search_data[$store_vars[$i]];
 				}
 				$psort = $psort_main;
 			}
@@ -1328,7 +1328,7 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 					for ($k = 0; $k < sizeof($synonyms_array); $k++)
 					{
-						list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonyms_array[$k])));
+						list($replace_synonym, $match_synonym) = explode(' ', trim(strtolower($synonyms_array[$k])));
 
 						if ($replace_synonym == $split_word)
 						{

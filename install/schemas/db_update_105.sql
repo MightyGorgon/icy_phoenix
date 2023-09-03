@@ -68,7 +68,7 @@ ALTER TABLE `phpbb_plugins` ADD `plugin_class` TINYINT(2) NOT NULL DEFAULT 0 AFT
 
 
 ########################################
-##              BUILD 110             ##
+##              BUILD 111             ##
 ########################################
 ALTER TABLE `phpbb_users` ADD `user_privacy_policy_notify` TINYINT(2) NOT NULL DEFAULT 0 AFTER `user_popup_pm`;
 ## INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('owner_name', 'My Name');
@@ -82,6 +82,20 @@ ALTER TABLE `phpbb_users` ADD `user_privacy_policy_notify` TINYINT(2) NOT NULL D
 
 
 
+########################################
+##              BUILD 112             ##
+########################################
+INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auto_refresh_topic_interval', '5000');
+
+
+
+########################################
+##              BUILD 113             ##
+########################################
+##ALTER TABLE `phpbb_config` CHANGE `config_name` `config_name` VARCHAR(190) NOT NULL;
+
+
+
 
 
 #####################
@@ -89,7 +103,7 @@ ALTER TABLE `phpbb_users` ADD `user_privacy_policy_notify` TINYINT(2) NOT NULL D
 ##UPDATE phpbb_config SET config_value = '2' WHERE config_name = 'main_admin_id';
 
 #-- DB CHANGES FOR VERSIONING
-UPDATE phpbb_config SET config_value = '2.2.2.110' WHERE config_name = 'ip_version';
+UPDATE phpbb_config SET config_value = '2.2.8.113' WHERE config_name = 'ip_version';
 UPDATE phpbb_config SET config_value = '.0.23' WHERE config_name = 'version';
 UPDATE phpbb_config SET config_value = '2.0.0' WHERE config_name = 'cms_version';
 UPDATE phpbb_album_config SET config_value = '1.5.0' WHERE config_name = 'fap_version';

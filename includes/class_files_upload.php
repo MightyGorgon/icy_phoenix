@@ -34,7 +34,7 @@ class class_files_upload extends class_files
 	/**
 	* Class initialization
 	*/
-	function class_files_upload()
+	function __construct()
 	{
 		$this->target_folder = POSTED_IMAGES_PATH;
 		$this->thumbs_folder = POSTED_IMAGES_THUMBS_PATH;

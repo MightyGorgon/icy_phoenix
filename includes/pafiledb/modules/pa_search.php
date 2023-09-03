@@ -109,7 +109,7 @@ class pafiledb_search extends pafiledb_public
 					stopwords_synonyms_init();
 
 					$split_search = array();
-					$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', stripslashes($search_keywords), $stopwords_array, $synonyms_array), 'search') : split(' ', $search_keywords);
+					$split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', stripslashes($search_keywords), $stopwords_array, $synonyms_array), 'search') : explode(' ', $search_keywords);
 
 					$word_count = 0;
 					$current_match_type = 'or';
@@ -325,7 +325,7 @@ class pafiledb_search extends pafiledb_public
 
 				for($i = 0; $i < sizeof($store_vars); $i++)
 				{
-					$store_search_data[$store_vars[$i]] = $$store_vars[$i];
+					$store_search_data[$store_vars[$i]] = ${$store_vars[$i]};
 				}
 
 				$result_array = serialize($store_search_data);
@@ -363,7 +363,7 @@ class pafiledb_search extends pafiledb_public
 						$search_data = unserialize($row['search_array']);
 						for($i = 0; $i < sizeof($store_vars); $i++)
 						{
-							$$store_vars[$i] = $search_data[$store_vars[$i]];
+							${$store_vars[$i]} = $search_data[$store_vars[$i]];
 						}
 					}
 				}

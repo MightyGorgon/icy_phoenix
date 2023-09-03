@@ -236,7 +236,7 @@ CREATE TABLE `phpbb_bookmarks` (
 CREATE TABLE phpbb_bots (
 	bot_id MEDIUMINT(8) UNSIGNED NOT NULL auto_increment,
 	bot_active TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL,
-	bot_name VARCHAR(255) DEFAULT '' NOT NULL,
+	bot_name VARCHAR(190) DEFAULT '' NOT NULL,
 	bot_color VARCHAR(255) DEFAULT '' NOT NULL,
 	bot_agent VARCHAR(255) DEFAULT '' NOT NULL,
 	bot_ip VARCHAR(255) DEFAULT '' NOT NULL,
@@ -506,7 +506,6 @@ CREATE TABLE `phpbb_groups` (
 	`upi2db_min_posts` MEDIUMINT(4) NOT NULL DEFAULT '0',
 	`upi2db_min_regdays` MEDIUMINT(4) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`group_id`),
-	#KEY `group_legend_name` (`group_legend`, `group_name`), # commented out, it's not significant for performance, and is too long
 	KEY `group_single_user` (`group_single_user`)
 );
 
@@ -2197,7 +2196,7 @@ CREATE TABLE `phpbb_cms_blocks` (
 CREATE TABLE `phpbb_cms_config` (
 	`id` INT(10) unsigned NOT NULL auto_increment,
 	`bid` INT(10) NOT NULL DEFAULT '0',
-	`config_name` VARCHAR(255) NOT NULL DEFAULT '',
+	`config_name` VARCHAR(190) NOT NULL DEFAULT '',
 	`config_value` VARCHAR(255) NOT NULL DEFAULT '',
 	PRIMARY KEY (`id`)
 );

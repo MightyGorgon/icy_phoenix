@@ -239,7 +239,6 @@ switch($mode)
 }
 
 $result = $db->sql_query($sql);
-
 $line = $db->sql_fetchrowset($result);
 $db->sql_freeresult($result);
 

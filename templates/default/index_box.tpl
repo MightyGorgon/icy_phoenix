@@ -55,7 +55,7 @@ if(GetCookie(tmp) == '2')
 </tr>
 <!-- END tablehead -->
 <?php
-if (false !== strpos($_SERVER['REQUEST_URI'], "c=") || false !== strpos($_SERVER['REQUEST_URI'], "-vc"))
+if ((strpos($_SERVER['REQUEST_URI'], "c=") !== false) || (strpos($_SERVER['REQUEST_URI'], "-vc") !== false))
 {
 ?>
 <!-- BEGIN cathead -->

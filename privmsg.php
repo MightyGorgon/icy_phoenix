@@ -555,7 +555,7 @@ elseif ($mode == 'read')
 	$user_info = generate_user_info($privmsg);
 	foreach ($user_info as $k => $v)
 	{
-		$$k = $v;
+		${$k} = $v;
 	}
 
 	$poster_avatar = $user_info['avatar'];

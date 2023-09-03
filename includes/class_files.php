@@ -57,7 +57,7 @@ class class_files
 	/**
 	* Class initialization
 	*/
-	function class_files()
+	function __construct()
 	{
 		$this->cache_folder = MAIN_CACHE_FOLDER;
 		$this->uploads_folder = UPLOADS_CACHE_FOLDER;

@@ -113,15 +113,15 @@ $n_items = ($n_items < 0) ? $n_items_default : $n_items;
 // OTHER VARS - END
 
 // URL APPEND AND HIDDEN FIELDS - BEGIN
-$url_full_append = 'sort_order=' . $sort_order . '&amp;sort_dir=' . $sort_dir . (!empty($start) ? ('&amp;start=' . $start) : '') . (!empty($n_items) ? ('&amp;n_items=' . $n_items) : '') . (!empty($filter_item) ? ('&amp;filter_item=' . $filter_item . '&amp;filter_item_value=' . $filter_item_value) : '');
+$url_full_append = 'sort_order=' . htmlspecialchars($sort_order) . '&amp;sort_dir=' . $sort_dir . (!empty($start) ? ('&amp;start=' . $start) : '') . (!empty($n_items) ? ('&amp;n_items=' . $n_items) : '') . (!empty($filter_item) ? ('&amp;filter_item=' . $filter_item . '&amp;filter_item_value=' . $filter_item_value) : '');
 
 $hidden_array = array('start', 'n_items', 'filter_item', 'filter_item_value');
 $s_hidden_fields = '';
 for ($i; $i < sizeof($hidden_array); $i++)
 {
-	if (isset($$hidden_array[$i]))
+	if (isset(${$hidden_array[$i]}))
 	{
-		$s_hidden_fields .= '<input type="hidden" name="' . $hidden_array[$i] . '" value="' . $$hidden_array[$i] . '" />';
+		$s_hidden_fields .= '<input type="hidden" name="' . $hidden_array[$i] . '" value="' . ${$hidden_array[$i]} . '" />';
 	}
 }
 // URL APPEND AND HIDDEN FIELDS - END

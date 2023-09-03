@@ -46,7 +46,15 @@ class attach_parent
 	/**
 	* Constructor
 	*/
-	function attach_parent()
+	function __construct()
+	{
+		$this->attach_parent_init();
+	}
+
+	/**
+	* Attach Parent INIT
+	*/
+	function attach_parent_init()
 	{
 		$this->add_attachment_body = request_var('add_attachment_body', 0);
 		$this->posted_attachments_body = request_var('posted_attachments_body', 0);
@@ -1453,9 +1461,10 @@ class attach_posting extends attach_parent
 	/**
 	* Constructor
 	*/
-	function attach_posting()
+	function __construct()
 	{
-		$this->attach_parent();
+		// Mighty Gorgon: to be verified if attachments are working properly
+		$this->attach_parent_init();
 		$this->page = 0;
 	}
 

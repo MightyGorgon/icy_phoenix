@@ -642,7 +642,7 @@ if (sizeof($user_list))
 			$user_info = generate_user_info($row);
 			foreach ($user_info as $k => $v)
 			{
-				$$k = $v;
+				${$k} = $v;
 			}
 
 			$poster_avatar = '';

@@ -19,6 +19,14 @@ if (!defined('IN_ICYPHOENIX'))
 class class_topics_tags
 {
 
+	/**
+	* Construct
+	*/
+	function __construct()
+	{
+
+	}
+
 	/*
 	* Create tags array
 	*/

@@ -210,7 +210,7 @@ foreach ($online_users as $row)
 
 		$location['url'] = append_sid(IP_ROOT_PATH . $location['url']);
 
-		$row_class = ($$which_counter % 2) ? $theme['td_class1'] : $theme['td_class2'];
+		$row_class = (${$which_counter} % 2) ? $theme['td_class1'] : $theme['td_class2'];
 
 		// Start Advanced IP Tools Pack MOD
 		$mode = htmlspecialchars($_GET['mode']);
@@ -254,7 +254,7 @@ foreach ($online_users as $row)
 		}
 		// End Advanced IP Tools Pack MOD
 
-		$$which_counter++;
+		${$which_counter}++;
 	}
 }
 

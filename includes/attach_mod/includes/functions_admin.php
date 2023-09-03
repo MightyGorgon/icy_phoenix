@@ -622,7 +622,7 @@ function search_attachments($order_by, &$total_rows)
 
 	for ($i = 0; $i < sizeof($search_vars); $i++)
 	{
-		$$search_vars[$i] = request_var($search_vars[$i], '');
+		${$search_vars[$i]} = request_var($search_vars[$i], '');
 	}
 
 	// Author name search

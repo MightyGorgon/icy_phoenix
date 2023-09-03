@@ -41,7 +41,7 @@ class ct_adminfunctions
 	 * <b>ct_adminfunctions</b>
 	 * Constructor
 	 */
-	function ct_adminfunctions()
+	function __construct()
 	{
 		// Currently nothing to do
 	}
@@ -594,7 +594,7 @@ class ct_adminfunctions
 
 		// Create Backup table
 		$sql = 'CREATE TABLE ' . CTRACKER_BACKUP . ' (
-					`config_name` varchar( 255 ) NOT NULL ,
+					`config_name` varchar(190) NOT NULL ,
 					`config_value` text NOT NULL ,
 					PRIMARY KEY ( `config_name` )
 					)';
@@ -632,7 +632,7 @@ class ct_adminfunctions
 
 		// Create Config table
 		$sql = 'CREATE TABLE ' . CONFIG_TABLE . ' (
-					`config_name` varchar( 255 ) NOT NULL ,
+					`config_name` varchar(190) NOT NULL ,
 					`config_value` text NOT NULL ,
 					PRIMARY KEY ( `config_name` )
 					)';
