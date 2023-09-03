@@ -67,7 +67,8 @@ while ($row = $db->sql_fetchrow($result))
 	// This assignment doesn't work...
 	//$table = $row[0];
 
-	$current_item = each($row);
+	//$current_item = each($row);
+	$current_item = $row;
 	$table = $current_item['value'];
 	reset($row);
 

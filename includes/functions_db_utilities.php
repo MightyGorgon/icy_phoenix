@@ -92,7 +92,8 @@ function get_table_def_mysql($table, $crlf)
 		$index[$kname][] = $row['Column_name'];
 	}
 
-	while(list($x, $columns) = @each($index))
+	//while(list($x, $columns) = @each($index))
+	foreach ($index as $x => $columns)
 	{
 		$schema_create .= ", $crlf";
 		if($x == 'PRIMARY')

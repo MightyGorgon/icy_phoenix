@@ -1574,7 +1574,7 @@ class user extends session
 			$this->lang_name = ((file_exists($this->lang_path . 'lang_' . basename($this->data['user_lang']) . '/lang_main.' . PHP_EXT)) ? basename($this->data['user_lang']) : basename($config['default_lang']));
 			$this->date_format = $this->data['user_dateformat'];
 			$this->timezone = $this->data['user_timezone'] * 3600;
-			$this->dst = $this->data['user_dst'] * 3600;
+			$this->dst = $this->data['user_dst_time_lag'] * 3600;
 
 			$config['board_timezone'] = !empty($this->data['user_timezone']) ? $this->data['user_timezone'] : $config['board_timezone'];
 			$config['default_dateformat'] = !empty($this->data['user_dateformat']) ? $this->data['user_dateformat'] : $config['default_dateformat'];
@@ -1611,6 +1611,7 @@ class user extends session
 		}
 		else
 		{
+			$config['board_dst'] = !empty($config['board_dst']) ? $config['board_dst'] : 0;
 			$this->lang_name = basename($config['default_lang']);
 			$this->date_format = $config['default_dateformat'];
 			$this->timezone = $config['board_timezone'] * 3600;

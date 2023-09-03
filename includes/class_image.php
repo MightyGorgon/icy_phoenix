@@ -922,9 +922,9 @@ class ImgObj
 		// Merge all images
 		imagealphablending($s, true);
 		$z = $i;
-		while($d = each($z))
+		foreach ($z as $d)
 		{
-			imagecopy($s, $d[1], 0, 0, 0, 0, imagesx($d[1]), imagesy($d[1]));
+			imagecopy($s, $d, 0, 0, 0, 0, imagesx($d), imagesy($d));
 		}
 		//restore the transparency
 		imagealphablending($s, false);
@@ -938,10 +938,10 @@ class ImgObj
 				$c = imagecolorsforindex($s, $c);
 				$z = $i;
 				$t = 0;
-				while($d = each($z))
+				foreach ($z as $d)
 				{
-					$ta = imagecolorat($d[1], $x, $y);
-					$ta = imagecolorsforindex($d[1], $ta);
+					$ta = imagecolorat($d, $x, $y);
+					$ta = imagecolorsforindex($d, $ta);
 					$t += 127 - $ta['alpha'];
 				}
 				$t = ($t > 127) ? 127 : $t;

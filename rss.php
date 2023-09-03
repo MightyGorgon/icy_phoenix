@@ -206,7 +206,8 @@ else
 		$is_auth = auth(AUTH_READ, AUTH_LIST_ALL, $user->data);
 		if($forum_id == '')
 		{
-			while (list($forumId, $auth_mode) = each($is_auth))
+			//while (list($forumId, $auth_mode) = each($is_auth))
+			foreach ($is_auth as $forumId => $auth_mode)
 			{
 				if(!$auth_mode['auth_read'])
 				{

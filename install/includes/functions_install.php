@@ -254,7 +254,7 @@ class ip_functions
 		return $mem_limit;
 	}
 
-	function create_server_url()
+	public static function create_server_url()
 	{
 		// usage: $server_url = create_server_url();
 		global $config;
@@ -276,7 +276,7 @@ class ip_functions
 		return $server_url;
 	}
 
-	function ip_realpath($path)
+	public static function ip_realpath($path)
 	{
 		return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
 	}
@@ -343,17 +343,15 @@ class ip_functions
 		}
 		else
 		{
-			list($key_type, $type) = each($default);
-			$type = gettype($type);
-			$key_type = gettype($key_type);
+			$type = gettype(current($default));
+			$key_type = gettype(key($default));
 			if ($type == 'array')
 			{
 				reset($default);
 				$default = current($default);
-				list($sub_key_type, $sub_type) = each($default);
-				$sub_type = gettype($sub_type);
+				$sub_type = gettype(current($default));
 				$sub_type = ($sub_type == 'array') ? 'NULL' : $sub_type;
-				$sub_key_type = gettype($sub_key_type);
+				$sub_key_type = gettype(key($default));
 			}
 		}
 
@@ -803,7 +801,8 @@ class ip_sql
 		if (!($result = $db->sql_query($sql)))
 		{
 			$errored = true;
-			$error_ary['sql'][] = (is_array($sql)) ? $sql[$i] : $sql;
+			//$error_ary['sql'][] = (is_array($sql)) ? $sql[$i] : $sql;
+			$error_ary['sql'][] = (is_array($sql)) ? $sql[0] : $sql;
 			$error_ary['error_code'][] = $db->sql_error();
 		}
 		if ($echo_dot)
@@ -845,68 +844,142 @@ class ip_sql
 
 		$db->sql_return_on_error(true);
 
+		/*
+		*DATABASE*
+
+		*MYSQL*
+		https://dev.mysql.com/doc/refman/8.1/en/charset-database.html
+
+		CREATE DATABASE db_name
+		[[DEFAULT] CHARACTER SET charset_name]
+		[[DEFAULT] COLLATE collation_name]
+		
+		ALTER DATABASE db_name
+		[[DEFAULT] CHARACTER SET charset_name]
+		[[DEFAULT] COLLATE collation_name]
+
+		*MARIADB*
+		https://mariadb.com/kb/en/setting-character-sets-and-collations/
+		
+		CREATE DATABASE czech_slovak_names 
+		CHARACTER SET = 'keybcs2'
+		COLLATE = 'keybcs2_bin';
+
+		ALTER DATABASE czech_slovak_names COLLATE = 'keybcs2_general_ci';
+
+		https://mariadb.com/kb/en/alter-database/
+		ALTER {DATABASE | SCHEMA} [db_name]
+			[DEFAULT] CHARACTER SET [=] charset_name
+		| [DEFAULT] COLLATE [=] collation_name
+		| COMMENT [=] 'comment
+
+
+		*TABLE*
+
+		*MYSQL*
+		https://dev.mysql.com/doc/refman/8.1/en/charset-table.html
+
+		CREATE TABLE tbl_name (column_list)
+		[[DEFAULT] CHARACTER SET charset_name]
+		[COLLATE collation_name]]
+
+		ALTER TABLE tbl_name
+		[[DEFAULT] CHARACTER SET charset_name]
+		[COLLATE collation_name]
+
+		*MARIADB*
+		https://mariadb.com/kb/en/setting-character-sets-and-collations/
+
+		CREATE TABLE english_names (id INT, name VARCHAR(40)) 
+		CHARACTER SET 'utf8' 
+		COLLATE 'utf8_icelandic_ci';
+
+		If neither character set nor collation is provided, the database default will be used. If only the character set is provided, the default collation for that character set will be used . If only the collation is provided, the associated character set will be used. See Supported Character Sets and Collations.
+
+		ALTER TABLE table_name
+		CONVERT TO CHARACTER SET charset_name [COLLATE collation_name];
+		*/
+
+		/*
 		$sql = "ALTER DATABASE {$db->sql_escape($dbname)}
 			CHARACTER SET utf8
 			DEFAULT CHARACTER SET utf8
 			COLLATE utf8_bin
 			DEFAULT COLLATE utf8_bin";
+		*/
+		//$sql = "ALTER DATABASE {$db->sql_escape($dbname)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
+
+		$sql = "ALTER DATABASE {$db->sql_escape($dbname)} DEFAULT CHARACTER SET = 'utf8' DEFAULT COLLATE = 'utf8_bin';";
+		$db->sql_query($sql);
+
+		$sql = "ALTER DATABASE {$db->sql_escape($dbname)} CHARACTER SET 'utf8' COLLATE 'utf8_bin';";
 		$db->sql_query($sql);
 
 		$sql = "SHOW TABLES";
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
-			// This assignment doesn't work...
-			//$table = $row[0];
+			$table = reset($row);
+			//echo($table . "\n<br />\n<br />");
 
-			$current_item = each($row);
-			$table = $current_item['value'];
-			reset($row);
+			if (!empty($db->sql_escape($table)))
+			{
+				/*
+				$sql = "ALTER TABLE {$db->sql_escape($table)}
+					DEFAULT CHARACTER SET utf8
+					COLLATE utf8_bin";
+				*/
+				//$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
+				//$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
+				$sql = "ALTER TABLE {$db->sql_escape($table)} DEFAULT CHARACTER SET = 'utf8' DEFAULT COLLATE = 'utf8_bin'";
+				$db->sql_query($sql);
 
-			$sql = "ALTER TABLE {$db->sql_escape($table)}
-				DEFAULT CHARACTER SET utf8
-				COLLATE utf8_bin";
-			$db->sql_query($sql);
+				$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
+				$db->sql_query($sql);
+			}
 
 			if (!empty($echo_results))
 			{
 				echo("&bull;&nbsp;Table&nbsp;<b style=\"color: #dd2222;\">$table</b> converted to UTF-8<br />\n");
 			}
 
-			$sql = "SHOW FIELDS FROM {$db->sql_escape($table)}";
-			$result_fields = $db->sql_query($sql);
-
-			while ($row_fields = $db->sql_fetchrow($result_fields))
+			if (!empty($db->sql_escape($table)))
 			{
-				// These assignments don't work...
-				/*
-				$field_name = $row_fields[0];
-				$field_type = $row_fields[1];
-				$field_null = $row_fields[2];
-				$field_key = $row_fields[3];
-				$field_default = $row_fields[4];
-				$field_extra = $row_fields[5];
-				*/
+				$sql = "SHOW FIELDS FROM {$db->sql_escape($table)}";
+				$result_fields = $db->sql_query($sql);
 
-				$field_name = $row_fields['Field'];
-				$field_type = $row_fields['Type'];
-				$field_null = $row_fields['Null'];
-				$field_key = $row_fields['Key'];
-				$field_default = $row_fields['Default'];
-				$field_extra = $row_fields['Extra'];
-
-				// Let's remove BLOB and BINARY for now...
-				//if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false) || (strpos(strtolower($field_type), 'blob') !== false) || (strpos(strtolower($field_type), 'binary') !== false))
-				if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false))
+				while ($row_fields = $db->sql_fetchrow($result_fields))
 				{
-					//$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin";
+					// These assignments don't work...
+					/*
+					$field_name = $row_fields[0];
+					$field_type = $row_fields[1];
+					$field_null = $row_fields[2];
+					$field_key = $row_fields[3];
+					$field_default = $row_fields[4];
+					$field_extra = $row_fields[5];
+					*/
 
-					$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin " . (($field_null != 'YES') ? "NOT " : "") . "NULL DEFAULT " . (($field_default != 'None') ? ((!empty($field_default) || !is_null($field_default)) ? (is_string($field_default) ? ("'" . $db->sql_escape($field_default) . "'") : $field_default) : (($field_null != 'YES') ? "''" : "NULL")) : "''");
-					$db->sql_query($sql_fields);
+					$field_name = $row_fields['Field'];
+					$field_type = $row_fields['Type'];
+					$field_null = $row_fields['Null'];
+					$field_key = $row_fields['Key'];
+					$field_default = $row_fields['Default'];
+					$field_extra = $row_fields['Extra'];
 
-					if (!empty($echo_results))
+					// Let's remove BLOB and BINARY for now...
+					//if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false) || (strpos(strtolower($field_type), 'blob') !== false) || (strpos(strtolower($field_type), 'binary') !== false))
+					if ((strpos(strtolower($field_type), 'char') !== false) || (strpos(strtolower($field_type), 'text') !== false))
 					{
-						echo("\t&nbsp;&nbsp;&raquo;&nbsp;Field&nbsp;<b style=\"color: #4488aa;\">$field_name</b> (in table <b style=\"color: #009900;\">$table</b>) converted to UTF-8<br />\n");
+						//$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET utf8 COLLATE utf8_bin";
+
+						$sql_fields = "ALTER TABLE {$db->sql_escape($table)} CHANGE " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_name) . " " . $db->sql_escape($field_type) . " CHARACTER SET 'utf8' COLLATE 'utf8_bin' " . (($field_null != 'YES') ? "NOT " : "") . "NULL DEFAULT " . (($field_default != 'None') ? ((!empty($field_default) || !is_null($field_default)) ? (is_string($field_default) ? ("'" . $db->sql_escape($field_default) . "'") : $field_default) : (($field_null != 'YES') ? "''" : "NULL")) : "''");
+						$db->sql_query($sql_fields);
+
+						if (!empty($echo_results))
+						{
+							echo("\t&nbsp;&nbsp;&raquo;&nbsp;Field&nbsp;<b style=\"color: #4488aa;\">$field_name</b> (in table <b style=\"color: #009900;\">$table</b>) converted to UTF-8<br />\n");
+						}
 					}
 				}
 			}
@@ -1695,9 +1768,9 @@ class ip_page
 		{
 			case 'fix_all':
 				$filename_tmp = IP_ROOT_PATH . 'config.' . PHP_EXT;
-				$content = ip_functions::file_read($filename_tmp);
+				$content = self::file_read($filename_tmp);
 				$content = str_replace('PHPBB_INSTALLED', 'IP_INSTALLED', $content);
-				$result = ip_functions::file_write($filename_tmp, $content);
+				$result = self::file_write($filename_tmp, $content);
 				$color = ($result !== false) ? $this->color_ok : $this->color_error;
 				$img = ($result !== false) ? $img_ok : $img_error;
 				$content_output .= '<li><span class="genmed"><b style="color:' . $color . '">' . $filename_tmp . '</b>&nbsp;' . $img . '</span></li>';
@@ -2230,6 +2303,7 @@ class ip_page
 			$sql_ary = array(
 				'forum_id' => $max_forum_id,
 				'parent_id' => empty($row['cat_main']) ? 0 : $row['cat_main'],
+				'forum_parents' => '',
 				'main_type' => empty($row['cat_main_type']) ? 'c' : $row['cat_main_type'],
 				'forum_order' => $row['cat_order'], //$max_forum_order
 				'forum_name' => $row['cat_title'],
@@ -2989,7 +3063,8 @@ class ip_page
 		@reset($lang_options);
 
 		$lang_select = '<select name="lang" onchange="this.form.submit()">';
-		while (list($displayname, $filename) = @each($lang_options))
+		//while (list($displayname, $filename) = @each($lang_options))
+		foreach ($lang_options as $displayname => $filename)
 		{
 			$selected = ($language == $filename) ? ' selected="selected"' : '';
 			$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';

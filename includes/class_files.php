@@ -319,7 +319,8 @@ class class_files
 	{
 		$output_array = array();
 		$temp_array = array();
-		while (list($k, $v) = each($input_array))
+		//while (list($k, $v) = each($input_array))
+		foreach ($input_array as $k => $v)
 		{
 			if (!is_array($v))
 			{
@@ -535,41 +536,44 @@ class class_files
 		$new_source_folder = $source_folder;
 		$new_target_folder = $target_folder;
 		$directory = @opendir($source_folder);
-		while (@$file = @readdir($directory))
+		if (!empty($directory))
 		{
-			$full_path_file = $source_folder . '/' . $file;
-			if (!in_array($file, array('.', '..')))
+			while (@$file = @readdir($directory))
 			{
-				if (@is_dir($full_path_file))
+				$full_path_file = $source_folder . '/' . $file;
+				if (!in_array($file, array('.', '..')))
 				{
-					if ($duplicate_subfolder == true)
+					if (@is_dir($full_path_file))
 					{
-						$new_source_folder = $source_folder . '/' . $file;
-						$new_target_folder = $target_folder . '/' . $file;
-						@mkdir($new_target_folder, 0777);
-						//echo('<br />' . $new_source_folder . ' - ' . $new_target_folder);
-						$this->duplicate_folder($new_source_folder, $new_target_folder, $extensions, $duplicate_subfolder);
-					}
-				}
-				else
-				{
-					if (!@is_dir($target_folder))
-					{
-						@mkdir($target_folder, 0777);
-					}
-					$current_file_extension = $this->get_file_extension($file);
-					if (empty($extensions) || (!is_array($extensions) && ($current_file_extension == $extensions)) || (is_array($extensions) && in_array($current_file_extension, $extensions)))
-					{
-						if (@file_exists($target_folder . '/' . $file))
+						if ($duplicate_subfolder == true)
 						{
-							@unlink($target_folder . '/' . $file);
+							$new_source_folder = $source_folder . '/' . $file;
+							$new_target_folder = $target_folder . '/' . $file;
+							@mkdir($new_target_folder, 0777);
+							//echo('<br />' . $new_source_folder . ' - ' . $new_target_folder);
+							$this->duplicate_folder($new_source_folder, $new_target_folder, $extensions, $duplicate_subfolder);
 						}
-						@copy($source_folder . '/' . $file, $target_folder . '/' . $file);
+					}
+					else
+					{
+						if (!@is_dir($target_folder))
+						{
+							@mkdir($target_folder, 0777);
+						}
+						$current_file_extension = $this->get_file_extension($file);
+						if (empty($extensions) || (!is_array($extensions) && ($current_file_extension == $extensions)) || (is_array($extensions) && in_array($current_file_extension, $extensions)))
+						{
+							if (@file_exists($target_folder . '/' . $file))
+							{
+								@unlink($target_folder . '/' . $file);
+							}
+							@copy($source_folder . '/' . $file, $target_folder . '/' . $file);
+						}
 					}
 				}
 			}
+			@closedir($directory);
 		}
-		@closedir($directory);
 	}
 
 	/*

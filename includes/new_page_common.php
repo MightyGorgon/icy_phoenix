@@ -21,9 +21,9 @@ if (!defined('IN_ICYPHOENIX'))
 	exit;
 }
 
-$meta_content['page_title'] = ($meta_content['page_title'] == '') ? $config['sitename'] : $meta_content['page_title'];
-$meta_content['description'] = ($meta_content['description'] == '') ? '' : $meta_content['description'];
-$meta_content['keywords'] = ($meta_content['keywords'] == '') ? '' : $meta_content['keywords'];
+$meta_content['page_title'] = empty($meta_content['page_title']) ? $config['sitename'] : $meta_content['page_title'];
+$meta_content['description'] = empty($meta_content['description']) ? '' : $meta_content['description'];
+$meta_content['keywords'] = empty($meta_content['keywords']) ? '' : $meta_content['keywords'];
 
 if (!defined('CMS_INIT'))
 {
@@ -74,9 +74,9 @@ else
 	$layout = ($layout <= 0) ? $cms_config_vars['default_portal'] : $layout;
 }
 
-if (!($cms_config_vars['status']))
+if (empty($cms_config_vars['status']))
 {
-	$layout = $cms_config_vars['locked_page'] > 0 ? $cms_config_vars['locked_page'] : $layout;
+	$layout = (!empty($cms_config_vars['locked_page']) && ($cms_config_vars['locked_page'] > 0)) ? $cms_config_vars['locked_page'] : $layout;
 }
 
 $cms_default_page = (($layout == $cms_config_vars['default_portal']) ? true : false);

@@ -100,7 +100,8 @@ include(IP_ROOT_PATH . './includes/def_auth.' . PHP_EXT);
 // build an indexed array on field names
 @reset($field_names);
 $forum_auth_fields = array();
-while (list($auth_key, $auth_name) = @each($field_names))
+//while (list($auth_key, $auth_name) = @each($field_names))
+foreach ($field_names as $auth_key => $auth_name)
 {
 	$forum_auth_fields[] = $auth_key;
 }
@@ -211,9 +212,11 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 					}
 				}
 
-				while(list($forum_id, $value) = @each($_POST['private']))
+				//while(list($forum_id, $value) = @each($_POST['private']))
+				foreach ($_POST['private'] as $forum_id => $value)
 				{
-					while(list($auth_field, $exists) = @each($forum_auth_level_fields[$forum_id]))
+					//while(list($auth_field, $exists) = @each($forum_auth_level_fields[$forum_id]))
+					foreach ($forum_auth_level_fields[$forum_id] as $auth_field => $exists)
 					{
 						if($exists)
 						{
@@ -229,7 +232,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 				for($j = 0; $j < sizeof($forum_auth_fields); $j++)
 				{
 					$auth_field = $forum_auth_fields[$j];
-					while(list($forum_id, $value) = @each($_POST['private_' . $auth_field]))
+					//while(list($forum_id, $value) = @each($_POST['private_' . $auth_field]))
+					foreach ($_POST['private_' . $auth_field] as $forum_id => $value)
 					{
 						// Mighty Gorgon: I have moved this part of code in this cycle to be able to use $forum_id var, otherwhise it was not assigned...
 						// FORUMS AUTH MOVED CODE - BEGIN
@@ -345,7 +349,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 
 			// Checks complete, make updates to DB
 			$delete_sql = '';
-			while(list($forum_id, $action) = @each($forum_auth_action))
+			//while(list($forum_id, $action) = @each($forum_auth_action))
+			foreach ($forum_auth_action as $forum_id => $action)
 			{
 				if ($action == 'delete')
 				{
@@ -357,7 +362,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 					{
 						$sql_field = '';
 						$sql_value = '';
-						while (list($auth_type, $value) = @each($update_acl_status[$forum_id]))
+						//while (list($auth_type, $value) = @each($update_acl_status[$forum_id]))
+						foreach ($update_acl_status[$forum_id] as $auth_type => $value)
 						{
 							$sql_field .= (($sql_field != '') ? ', ' : '') . $auth_type;
 							$sql_value .= (($sql_value != '') ? ', ' : '') . $value;
@@ -371,7 +377,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 					else
 					{
 						$sql_values = '';
-						while (list($auth_type, $value) = @each($update_acl_status[$forum_id]))
+						//while (list($auth_type, $value) = @each($update_acl_status[$forum_id]))
+						foreach ($update_acl_status[$forum_id] as $auth_type => $value)
 						{
 							$sql_values .= (($sql_values != '') ? ', ' : '') . $auth_type . ' = ' . $value;
 						}

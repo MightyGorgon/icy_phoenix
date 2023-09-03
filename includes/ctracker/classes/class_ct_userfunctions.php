@@ -503,7 +503,7 @@ class ct_userfunctions
 		global $db, $config, $user, $lang, $mode;
 
 		// Password length check
-		$pw_length = strlen($_POST['new_password']);
+		$pw_length = !empty($_POST['new_password']) ? strlen($_POST['new_password']) : 0;
 		if (($pw_length < $config['ctracker_pw_complex_min']) && !empty($_POST['new_password']))
 		{
 			message_die(GENERAL_MESSAGE, sprintf($lang['ctracker_info_password_minlng'], $config['ctracker_pw_complex_min'], $pw_length));

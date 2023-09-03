@@ -137,6 +137,10 @@ class class_users
 			'user_rank' => !empty($user_data['user_rank']) ? $user_data['user_rank'] : 0,
 			'user_active' => !empty($user_data['user_active']) ? $user_data['user_active'] : 1,
 			'user_actkey' => !empty($user_data['user_actkey']) ? $user_data['user_actkey'] : 'user_actkey',
+			'user_cms_auth' => '',
+			'user_permissions' => '',
+			'user_sig' => '',
+			'user_selfdes' => ''
 		);
 
 		// PROFILE EDIT BRIDGE - BEGIN

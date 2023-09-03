@@ -837,11 +837,11 @@ if($user->data['upi2db_access'])
 	$unread_edit_posts = 0;
 	for($i = 0; $i < $total_posts; $i++)
 	{
-		if (sizeof($user->data['upi2db_unread'][$topic_id]['new_posts']) && in_array($postrow[$i]['post_id'], $user->data['upi2db_unread'][$topic_id]['new_posts']))
+		if (!empty($user->data['upi2db_unread'][$topic_id]['new_posts']) && sizeof($user->data['upi2db_unread'][$topic_id]['new_posts']) && in_array($postrow[$i]['post_id'], $user->data['upi2db_unread'][$topic_id]['new_posts']))
 		{
 			++$unread_new_posts;
 		}
-		if (sizeof($user->data['upi2db_unread'][$topic_id]['edit_posts']) && in_array($postrow[$i]['post_id'], $user->data['upi2db_unread'][$topic_id]['edit_posts']))
+		if (!empty($user->data['upi2db_unread'][$topic_id]['edit_posts']) && sizeof($user->data['upi2db_unread'][$topic_id]['edit_posts']) && in_array($postrow[$i]['post_id'], $user->data['upi2db_unread'][$topic_id]['edit_posts']))
 		{
 			++$unread_edit_posts;
 		}
@@ -901,6 +901,7 @@ $s_auth_can .= ($is_auth['auth_bluecard'] ? $lang['Rules_bluecard_can'] . '<br /
 
 //attach_build_auth_levels($is_auth, $s_auth_can);
 
+$full_ftp_append = '';
 $topic_mod = '';
 $topic_mod_switch = false;
 
@@ -983,7 +984,7 @@ if ($is_auth['auth_mod'])
 
 // Topics Labels - BEGIN
 //if (!(($user->data['user_level'] == 0) && ($user->data['user_id'] != $row['topic_poster'])))
-if ($is_auth['auth_edit'] || ($user->data['user_id'] == $row['topic_poster']))
+if (!$is_auth['auth_edit'] || ($user->data['user_id'] == $forum_topic_data['topic_poster']))
 {
 	$topics_labels_select = $class_topics->gen_topics_labels_select();
 
@@ -1032,10 +1033,11 @@ if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 		$bm_action = '&amp;setbm=true';
 		$set_rem_bookmark = $lang['Set_Bookmark'];
 	}
+	$highlight_append = (!empty($_GET['highlight']) ? ('&amp;highlight=' . urlencode($_GET['highlight'])) : '');
 	$template->assign_vars(array(
 		'L_BOOKMARK_ACTION' => $set_rem_bookmark,
 		'IMG_BOOKMARK' => $bookmark_img,
-		'U_BOOKMARK_ACTION' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start . $vt_sort_append . '&amp;highlight=' . urlencode($_GET['highlight']) . $bm_action)
+		'U_BOOKMARK_ACTION' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . '&amp;start=' . $start . $vt_sort_append . $highlight_append . $bm_action)
 		)
 	);
 }
@@ -1790,9 +1792,10 @@ for($i = 0; $i < $total_posts; $i++)
 	$g_card_img = '';
 	$y_card_img = '';
 	$r_card_img = '';
+	$current_user = str_replace("'", "\'", $postrow[$i]['username']);
+	$user_warnings = 0;
 	if(($poster_id != ANONYMOUS) && ($postrow[$i]['user_level'] != ADMIN))
 	{
-		$current_user = str_replace("'", "\'", $postrow[$i]['username']);
 		$user_warnings = $postrow[$i]['user_warnings'];
 		$is_banned = false;
 		$card_img = '';
@@ -1883,6 +1886,7 @@ for($i = 0; $i < $total_posts; $i++)
 	$post_subject = ($postrow[$i]['post_subject'] != '') ? $postrow[$i]['post_subject'] : '';
 
 	// Mighty Gorgon - Quick Quote - BEGIN
+	$plain_message = '';
 	if ($config['enable_quick_quote'])
 	{
 		$look_up_array = array(
@@ -2118,12 +2122,13 @@ for($i = 0; $i < $total_posts; $i++)
 	}
 
 // UPI2DB - BEGIN
+	$topic_type = $forum_topic_data['topic_type'];
 	if($user->data['upi2db_access'])
 	{
 		$post_edit_max = ($postrow[$i]['post_time'] >= $postrow[$i]['post_edit_time']) ? $postrow[$i]['post_time'] : $postrow[$i]['post_edit_time'];
 		$post_time_max = (empty($config['upi2db_edit_as_new'])) ? $postrow[$i]['post_time'] : $post_edit_max;
 		$post_id = $postrow[$i]['post_id'];
-		$mark_topic_unread_array = mark_post_viewtopic_array($post_time_max, $user->data['upi2db_unread'], $topic_id, $forum_id, $post_id, $except_time, $forum_topic_data['topic_type']);
+		$mark_topic_unread_array = mark_post_viewtopic_array($post_time_max, $user->data['upi2db_unread'], $topic_id, $forum_id, $post_id, $except_time, $topic_type);
 	}
 // UPI2DB - END
 
@@ -2153,9 +2158,10 @@ for($i = 0; $i < $total_posts; $i++)
 	// Mighty Gorgon - POSTS LIKES - BEGIN
 	$post_like_text = '';
 	$post_like_text_js = '';
+	$reader_likes = false;
 	if ($posts_like_enabled)
 	{
-		$users_like = sizeof($topic_posts_likes['posts'][$post_id]);
+		$users_like = !empty($topic_posts_likes['posts'][$post_id]) ? sizeof($topic_posts_likes['posts'][$post_id]) : 0;
 		$reader_likes = false;
 		$post_like_text_single = false;
 
@@ -2291,7 +2297,7 @@ for($i = 0; $i < $total_posts; $i++)
 		'POSTER_NAME_QR' => str_replace(array(' ', '?', '&'), array('%20', '%3F', '%26'), $poster_qq),
 		//'POSTER_NAME_QR' => htmlspecialchars($poster_qq),
 		'POSTER_AGE' => $poster_age,
-		'HAPPY_BIRTHDAY' => $birtdhay_cake,
+		'HAPPY_BIRTHDAY' => (!empty($birtdhay_cake) ? $birtdhay_cake : ''),
 		'USER_RANK_01' => $user_ranks['rank_01_html'],
 		'USER_RANK_01_IMG' => $user_ranks['rank_01_img_html'],
 		'USER_RANK_02' => $user_ranks['rank_02_html'],
@@ -2315,7 +2321,7 @@ for($i = 0; $i < $total_posts; $i++)
 		//'POST_EDIT_LINK' => $post_edit_link,
 		'POST_SUBJECT' => $post_subject,
 		'MESSAGE' => $message,
-		'PLAIN_MESSAGE' => $plain_message,
+		'PLAIN_MESSAGE' => (!empty($plain_message) ? $plain_message : ''),
 		'SIGNATURE' => $user_sig,
 		'EDITED_MESSAGE' => $l_edited_by,
 

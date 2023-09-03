@@ -3643,7 +3643,9 @@ class bbcode
 	function process_urls()
 	{
 		// characters allowed in email
-		$chars = array();
+		// Mighty Gorgon: why this var has been initialized as array???
+		//$chars = array();
+		$chars = '';
 		for($i = 224; $i < 256; $i++)
 		{
 			if($i != 247)
@@ -3837,7 +3839,9 @@ class bbcode
 				$token_type = $m[1][$n];
 
 				reset($tokens[strtoupper($token_type)]);
-				list($match, $replace) = each($tokens[strtoupper($token_type)]);
+				//list($match, $replace) = each($tokens[strtoupper($token_type)]);
+				$match = key($tokens[strtoupper($token_type)]);
+				$replace = current($tokens[strtoupper($token_type)]);
 
 				// Pad backreference numbers from tokens
 				if (preg_match_all('/(?<!\\\\)\$([0-9]+)/', $replace, $repad))
@@ -4497,13 +4501,14 @@ class bbcode
 				return $text;
 			}
 
+			$acronyms = array();
 			while ($row = $db->sql_fetchrow($result))
 			{
 				$acronyms[] = $row;
 			}
 			$db->sql_freeresult($result);
 
-			if(sizeof($acronyms))
+			if(!empty($acronyms))
 			{
 				//usort($acronyms, 'acronym_sort');
 				// This use acronym_sort calling it from within BBCode object

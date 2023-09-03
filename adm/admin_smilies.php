@@ -56,7 +56,7 @@ while($file = @readdir($dir))
 		{
 			$smiley_images[] = $file;
 		}
-		elseif(eregi('.pak$', $file))
+		elseif(preg_match('/.pak$/', $file))
 		{
 			$smiley_paks[] = $file;
 		}
@@ -181,7 +181,8 @@ if(check_http_var_exists('import_pack', false))
 	{
 		// Display the script to get the smile_pak cfg file...
 		$smile_paks_select = '<select name="smile_pak"><option value="">' . $lang['Select_pak'] . '</option>';
-		while(list($key, $value) = @each($smiley_paks))
+		//while(list($key, $value) = @each($smiley_paks))
+		foreach ($smiley_paks as $key => $value)
 		{
 			if (!empty($value))
 			{

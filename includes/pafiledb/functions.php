@@ -390,7 +390,7 @@ class pafiledb_functions
 
 		if (@file_exists($this->pafiledb_realpath($filename)))
 		{
-			$filesys = eregi_replace('/','\\', $filename);
+			$filesys = str_replace('/', '\\', $filename);
 			$deleted = @system("del $filesys");
 
 			if (@file_exists($this->pafiledb_realpath($filename)))

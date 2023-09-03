@@ -81,7 +81,7 @@ class ip_cms
 
 		if (empty($user->data['session_logged_in']))
 		{
-			if ($user->data['is_bot'])
+			if (!empty($user->data['is_bot']))
 			{
 				$result = (!empty($config['bots_reg_auth']) ? array(0, 1, 2) :  array(0, 1));
 			}

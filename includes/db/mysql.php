@@ -68,7 +68,7 @@ class sql_db
 	var $one_char;
 
 	// Constructor
-	function __construct($dbms, $sqlserver, $sqluser, $sqlpassword, $database)
+	function __construct($dbms, $sqlserver, $sqluser, $sqlpassword, $database, $persistency = false)
 	{
 		$this->sql_start_time = $this->sql_get_time();
 		$this->sql_init_time = $this->sql_start_time;
@@ -87,15 +87,17 @@ class sql_db
 		$this->any_char = chr(0) . '%';
 		$this->one_char = chr(0) . '_';
 
-		$this->persistency = $persistency;
+		$this->persistency = (version_compare(PHP_VERSION, '5.3.0', '>=')) ? $persistency : false;
 		$this->user = $sqluser;
 		$this->password = $sqlpassword;
-		$this->server = $sqlserver;
+		$this->server = ($this->persistency) ? 'p:' . (($sqlserver) ? $sqlserver : 'localhost') : $sqlserver;
 		$this->dbname = $database;
 
 		$this->row = new DbObjectStorage();
 		$this->rowset = new DbObjectStorage();
 		$this->open_queries = new DbObjectStorage();
+		// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
+		//$this->open_queries = array();
 
 		$this->db_connect_id = @mysqli_connect($this->server, $this->user, $this->password);
 
@@ -150,7 +152,7 @@ class sql_db
 	{
 		global $cache;
 
-		if (empty($cache) || ($this->sql_server_version = $cache->get('mysql_version')) === false)
+		if (empty($cache) || ($this->sql_server_version = $cache->get('mysqli_version')) === false)
 		{
 			$result = @mysqli_query($this->db_connect_id, 'SELECT VERSION() AS version');
 			$row = @mysqli_fetch_assoc($result);
@@ -160,11 +162,11 @@ class sql_db
 
 			if (!empty($cache))
 			{
-				$cache->put('mysql_version', $this->sql_server_version);
+				$cache->put('mysqli_version', $this->sql_server_version);
 			}
 		}
 
-		return ($raw) ? $this->sql_server_version : 'MySQL ' . $this->sql_server_version;
+		return ($raw) ? $this->sql_server_version : 'MySQL(i) ' . $this->sql_server_version;
 	}
 
 	/**
@@ -314,12 +316,16 @@ class sql_db
 
 			if ($cache_ttl && method_exists($cache, 'sql_save') && $this->query_result)
 			{
-				$this->open_queries[(int) $this->query_result] = $this->query_result;
+				// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
+				//$this->open_queries[(int) $this->query_result] = $this->query_result;
+				$this->open_queries[$this->query_result] = $this->query_result;
 				$cache->sql_save($query, $this->query_result, $cache_ttl, $cache_prefix, $cache_folder);
 			}
-			elseif (strpos($query, 'SELECT') === 0 && $this->query_result)
+			elseif ((strpos($query, 'SELECT') === 0) && ($this->query_result))
 			{
-				$this->open_queries[(int) $this->query_result] = $this->query_result;
+				// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
+				//$this->open_queries[(int) $this->query_result] = $this->query_result;
+				$this->open_queries[$this->query_result] = $this->query_result;
 			}
 		}
 		elseif (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
@@ -919,11 +925,20 @@ class sql_db
 			$query_id = $this->query_result;
 		}
 
+		// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
+		if(empty($query_id))
+		{
+			return false;
+		}
+
 		if (isset($cache->sql_rowset[$query_id]))
 		{
 			return $cache->sql_freeresult($query_id);
 		}
 
+		// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
+		//echo(gettype($this->open_queries[$query_id]));
+		//echo(gettype($query_id));
 		if (isset($this->open_queries[$query_id]))
 		{
 			unset($this->open_queries[$query_id]);
@@ -1029,7 +1044,7 @@ class sql_db
 		switch ($status)
 		{
 			case 'begin':
-				// If we are within a transaction we will not open another one, but enclose the current one to not loose data (prevening auto commit)
+				// If we are within a transaction we will not open another one, but enclose the current one to not loose data (preventing auto commit)
 				if ($this->transaction)
 				{
 					$this->transactions++;
@@ -1344,6 +1359,25 @@ class sql_db
 		switch ($status)
 		{
 			case 'begin':
+				return @mysqli_autocommit($this->db_connect_id, false);
+			break;
+
+			case 'commit':
+				$result = @mysqli_commit($this->db_connect_id);
+				@mysqli_autocommit($this->db_connect_id, true);
+				return $result;
+			break;
+
+			case 'rollback':
+				$result = @mysqli_rollback($this->db_connect_id);
+				@mysqli_autocommit($this->db_connect_id, true);
+				return $result;
+			break;
+		}
+		/*
+		switch ($status)
+		{
+			case 'begin':
 				return @mysqli_query('BEGIN', $this->db_connect_id);
 			break;
 
@@ -1355,6 +1389,7 @@ class sql_db
 				return @mysqli_query('ROLLBACK', $this->db_connect_id);
 			break;
 		}
+		*/
 
 		return true;
 	}

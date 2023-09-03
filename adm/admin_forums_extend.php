@@ -44,6 +44,7 @@ $forums_fields_list = array(
 	'forum_id'										=> 'id',
 	'forum_type'									=> 'forum_type',
 	'parent_id'										=> 'main_id',
+	'forum_parents'								=> 'forum_parents',
 	'main_type'										=> 'main_type',
 	'forum_order'									=> 'order',
 	'forum_name'									=> 'name',
@@ -342,7 +343,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 
 	// get value from the tree for all fields in the list
 	@reset(${$fields_list});
-	while (list($table_field, $process_field) = @each(${$fields_list}))
+	//while (list($table_field, $process_field) = @each(${$fields_list}))
+	foreach (${$fields_list} as $table_field => $process_field)
 	{
 		$item[$process_field] = empty($CH_this) ? '' : trim($tree['data'][$idx][$table_field]);
 		//echo($process_field . ' = ' . $item[$process_field] . '<br />');
@@ -423,7 +425,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	// initiate with the first preset (default)
 	@reset($field_names);
 	$i = 0;
-	while(list($auth_key, $auth_name) = @each($field_names))
+	//while(list($auth_key, $auth_name) = @each($field_names))
+	foreach ($field_names as $auth_key => $auth_name)
 	{
 		$auth_value = isset($simple_auth_ary[0][$i]) ? $simple_auth_ary[0][$i] : AUTH_ADMIN;
 		$forum_auth[$auth_key] = $auth_value;
@@ -432,7 +435,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 
 	// get the value from memory
 	@reset($tree['data'][$idx]);
-	while (list($key, $value) = @each($tree['data'][$idx]))
+	//while (list($key, $value) = @each($tree['data'][$idx]))
+	foreach ($tree['data'][$idx] as $key => $value)
 	{
 		if (substr($key, 0, strlen('auth_')) == 'auth_')
 		{
@@ -472,7 +476,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 
 	// Get values from form
 	@reset(${$fields_list});
-	while (list($table_field, $process_field) = @each(${$fields_list}))
+	//while (list($table_field, $process_field) = @each(${$fields_list}))
+	foreach (${$fields_list} as $table_field => $process_field)
 	{
 		// Set correct value for checkboxes
 		if (($submit) && ($fields_type[$process_field] == 'INTEGER_CB'))
@@ -553,13 +558,17 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	if (!isset($forum_status_list[ $item['status'] ]))
 	{
 		@reset($forum_status_list);
+		/*
 		list($status, $value) = @each($forum_status_list);
 		$item['status'] = $status;
+		*/
+		$item['status'] = key($forum_status_list);
 	}
 
 	// auth
 	@reset($forum_auth);
-	while (list($key, $value) = @each($forum_auth))
+	//while (list($key, $value) = @each($forum_auth))
+	foreach ($forum_auth as $key => $value)
 	{
 		if (isset($_POST[$key]))
 		{
@@ -577,7 +586,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			$preset_data = $simple_auth_ary[$forum_preset];
 			@reset($field_names);
 			$i = 0;
-			while (list($field_key, $field_lang) = @each($field_names))
+			//while (list($field_key, $field_lang) = @each($field_names))
+			foreach ($field_names as $field_key => $field_lang)
 			{
 				$forum_auth[$field_key] = $preset_data[$i];
 				$i++;
@@ -588,12 +598,14 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	{
 		// try to identify a preset
 		@reset($simple_auth_ary);
-		while(list($preset_key, $preset_data) = @each($simple_auth_ary))
+		//while(list($preset_key, $preset_data) = @each($simple_auth_ary))
+		foreach ($simple_auth_ary as $preset_key => $preset_data)
 		{
 			$matched = true;
 			@reset($field_names);
 			$i = 0;
-			while (list($field_key, $field_lang) = @each($field_names))
+			//while (list($field_key, $field_lang) = @each($field_names))
+			foreach ($field_names as $field_key => $field_lang)
 			{
 				$matched = ($forum_auth[$field_key] == $preset_data[$i]);
 				if (!$matched)
@@ -837,7 +849,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 
 			// regular fields
 			@reset(${$fields_list});
-			while (list($table_field, $process_field) = @each(${$fields_list}))
+			//while (list($table_field, $process_field) = @each(${$fields_list}))
+			foreach (${$fields_list} as $table_field => $process_field)
 			{
 				$table_value = (($fields_type[$process_field] == 'INTEGER') || ($fields_type[$process_field] == 'INTEGER_CB')) ? intval($item[$process_field]) : sprintf("'%s'", $db->sql_escape(str_replace('\"', '"', $item[$process_field])));
 				$sql_fields .= (empty($sql_fields) ? '' : ', ') . $table_field;
@@ -849,7 +862,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			if ($item['type'] == POST_FORUM_URL)
 			{
 				@reset($forum_auth);
-				while (list($table_field, $auth_value) = @each($forum_auth))
+				//while (list($table_field, $auth_value) = @each($forum_auth))
+				foreach ($forum_auth as $table_field => $auth_value)
 				{
 					$table_value = intval($auth_value);
 					$sql_fields .= (empty($sql_fields) ? '' : ', ') . $table_field;
@@ -994,7 +1008,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		// type select list
 		$s_type_opt = '';
 		@reset($forum_type_list);
-		while (list($key, $value) = @each($forum_type_list))
+		//while (list($key, $value) = @each($forum_type_list))
+		foreach ($forum_type_list as $key => $value)
 		{
 			$selected = ($item['type'] == $key) ? ' selected="selected"' : '';
 			$s_type_opt .= '<option value="' . $key . '"' . $selected . '>' . $lang[$value] . '</option>';
@@ -1003,7 +1018,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		// status select list
 		$s_status_opt = '';
 		@reset($forum_status_list);
-		while (list($key, $value) = @each($forum_status_list))
+		//while (list($key, $value) = @each($forum_status_list))
+		foreach ($forum_status_list as $key => $value)
 		{
 			$selected = ($item['status'] == $key) ? ' selected="selected"' : '';
 			$s_status_opt .= '<option value="' . $key . '"' . $selected . '>' . $lang[$value] . '</option>';
@@ -1015,7 +1031,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 		$s_presets .= '<option value="-1"' . $selected . '>' . $lang['None'] . '</option>';
 		@reset($simple_auth_ary);
 		$i = 0;
-		while (list($preset_key, $preset_data) = @each($simple_auth_ary))
+		//while (list($preset_key, $preset_data) = @each($simple_auth_ary))
+		foreach ($simple_auth_ary as $preset_key => $preset_data)
 		{
 			$selected = ($preset_key == $forum_preset) ? ' selected="selected"' : '';
 			$s_presets .= '<option value="' . $preset_key . '"' . $selected . '>' . $simple_auth_types[$i] . '</option>';
@@ -1179,7 +1196,8 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 			$offset = 3;
 			$color_line = false;
 			@reset($forum_auth);
-			while (list($key, $value) = @each($forum_auth))
+			//while (list($key, $value) = @each($forum_auth))
+			foreach ($forum_auth as $key => $value)
 			{
 				// forum link only use the auth view
 				if (($item['type'] == POST_FORUM_URL) || ($key == 'auth_view'))

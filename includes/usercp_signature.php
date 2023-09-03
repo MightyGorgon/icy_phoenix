@@ -44,6 +44,11 @@ $html_on = ($user->data['user_allowhtml'] && $config['allow_html']) ? 1 : 0 ;
 $bbcode_on = ($user->data['user_allowbbcode'] && $config['allow_bbcode']) ? 1 : 0 ;
 $smilies_on = ($user->data['user_allowsmile'] && $config['allow_smilies']) ? 1 : 0 ;
 
+// Toggle selection
+$html_status = !empty($html_on) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+$bbcode_status = !empty($bbcode_on) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+$smilies_status = !empty($smilies_on) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
+
 $bbcode->allow_html = $html_on;
 $bbcode->allow_bbcode = $bbcode_on;
 $bbcode->allow_smilies = $smilies_on;
@@ -53,6 +58,9 @@ $link_name = $lang['Signature'];
 $nav_server_url = create_server_url();
 $breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE_MAIN) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
 
+$preview_sig = $lang['sig_none'];
+$save_message = $lang['sig_save_message'];
+$user_sig = $lang['sig_none'];
 // save new signature
 if ($submit)
 {
@@ -64,7 +72,6 @@ if ($submit)
 		{
 			$save_message = $lang['Signature_too_long'];
 		}
-
 		else
 		{
 			$signature = prepare_message($signature, $html_on, $bbcode_on, $smilies_on);
@@ -82,7 +89,6 @@ if ($submit)
 		message_die(GENERAL_MESSAGE, 'An Error occured while submitting Signature');
 	}
 }
-
 // catch the submitted message and prepare it for a preview
 elseif ($preview)
 {

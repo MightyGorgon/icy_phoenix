@@ -276,6 +276,8 @@ function validate_username($username)
 */
 function validate_password($password)
 {
+	global $config;
+	
 	if (!$password)
 	{
 		return false;
@@ -417,11 +419,11 @@ function validate_optional_fields(&$icq, &$aim, &$msnm, &$yim, &$skype, &$websit
 {
 	$check_var_length = array('aim', 'msnm', 'yim', 'skype', 'location', 'occupation', 'interests', 'sig');
 
-	for($i = 0; $i < sizeof($check_var_length); $i++)
+	foreach($check_var_length as $v)
 	{
-		if (strlen(${$check_var_length}[$i]) < 2)
+		if (strlen(${$v}) < 2)
 		{
-			${$check_var_length}[$i] = '';
+			${$v} = '';
 		}
 	}
 

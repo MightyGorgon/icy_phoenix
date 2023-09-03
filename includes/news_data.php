@@ -34,7 +34,8 @@ function get_user_news_auth_access($forum_topic)
 	$ignore_forum_sql = '';
 	$auth_sql = '';
 
-	while(list($key, $value) = each($is_auth_ary))
+	//while(list($key, $value) = each($is_auth_ary))
+	foreach ($is_auth_ary as $key => $value)
 	{
 		if (!$value['auth_read'])
 		{
@@ -923,7 +924,12 @@ class NewsDataAccess
 	**/
 	function excludeBinSql()
 	{
-		return 'f.forum_id != ' . (int) $this->settings['bin_forum'];
+		$sql = '';
+		if (!empty($this->config['bin_forum']))
+		{
+			$sql = ' f.forum_id != ' . (int) $this->config['bin_forum'];
+		}
+		return $sql;
 	}
 
 	// }}}

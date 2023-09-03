@@ -43,4 +43,10 @@ if(!$db->db_connect_id)
 	}
 }
 
+/*
+//@mysqli_query($db, "set session sql_mode='';");
+$sql = "set session sql_mode='';";
+$result = $db->sql_query($sql);
+*/
+
 ?>

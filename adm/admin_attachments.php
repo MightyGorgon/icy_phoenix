@@ -149,13 +149,13 @@ if ($search_imagick)
 {
 	$imagick = '';
 
-	if (eregi('convert', $imagick))
+	if (preg_match('/convert/', $imagick))
 	{
 		return true;
 	}
 	elseif ($imagick != 'none')
 	{
-		if (!eregi('WIN', PHP_OS))
+		if (!preg_match('/WIN/', PHP_OS))
 		{
 			$retval = @exec('whereis convert');
 			$paths = explode(' ', $retval);
@@ -173,7 +173,7 @@ if ($search_imagick)
 				}
 			}
 		}
-		elseif (eregi('WIN', PHP_OS))
+		elseif (preg_match('/WIN/', PHP_OS))
 		{
 			$path = 'c:/imagemagick/convert.exe';
 

@@ -170,7 +170,8 @@ class pafiledb_search extends pafiledb_public
 							if ($current_match_type == 'and' && $word_count)
 							{
 								@reset($result_list);
-								while(list($file_id, $match_count) = @each($result_list))
+								//while(list($file_id, $match_count) = @each($result_list))
+								foreach ($result_list as $file_id => $match_count)
 								{
 									if (!$row[$file_id])
 									{
@@ -209,7 +210,8 @@ class pafiledb_search extends pafiledb_public
 								if ($current_match_type == 'and' && $word_count)
 								{
 									@reset($result_list);
-									while(list($file_id, $match_count) = @each($result_list))
+									//while(list($file_id, $match_count) = @each($result_list))
+									foreach ($result_list as $file_id => $match_count)
 									{
 										if (!$row[$file_id])
 										{
@@ -227,7 +229,8 @@ class pafiledb_search extends pafiledb_public
 					@reset($result_list);
 
 					$search_ids = array();
-					while(list($file_id, $matches) = each($result_list))
+					//while(list($file_id, $matches) = each($result_list))
+					foreach ($result_list as $file_id => $matches)
 					{
 						if ($matches)
 						{

@@ -63,7 +63,8 @@ function generate_module_info($module_data, $install = false)
 		$ret_array['default_update_time'] = 0;
 		$data_file = @file(IP_ROOT_PATH . trim($__stats_config['modules_dir']) . '/' . $module_dir . '_info.txt');
 
-		while (list($key, $data) = @each($data_file))
+		//while (list($key, $data) = @each($data_file))
+		foreach ($data_file as $key => $data)
 		{
 			if ((!$extra_info_mode) && (!$condition_mode))
 			{
@@ -133,7 +134,8 @@ function generate_module_info($module_data, $install = false)
 	{
 		$data_file = @file(IP_ROOT_PATH . trim($__stats_config['modules_dir']) . '/' . $module_dir . '_info.txt');
 
-		while (list($key, $data) = @each($data_file))
+		//while (list($key, $data) = @each($data_file))
+		foreach ($data_file as $key => $data)
 		{
 			if (!$condition_mode)
 			{

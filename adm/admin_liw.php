@@ -73,7 +73,8 @@ if (isset($_POST['submit']))
 	$config_fields = array('liw_enabled', 'liw_sig_enabled', 'liw_attach_enabled', 'liw_max_width', 'liw_max_width');
 	reset($config_fields);
 
-	while (list($temp, $config_name) = each($config_fields))
+	//while (list($temp, $config_name) = each($config_fields))
+	foreach ($config_fields as $temp => $config_name)
 	{
 		$sql = "UPDATE " . CONFIG_TABLE . " SET config_value = " . intval($_POST[$config_name]) . " WHERE config_name = '" . $config_name . "'";
 		$db->sql_query($sql);

@@ -97,7 +97,8 @@ include(IP_ROOT_PATH . 'includes/class_stats_module.' . PHP_EXT);
 /*
 // Try to re-assign Images for Admin Display
 @reset($images);
-while (list($key, $value) = each($images))
+//while (list($key, $value) = each($images))
+foreach ($images as $key => $value)
 {
 	if ((!is_array($images[$key])) && ($images[$key] != ''))
 	{
@@ -292,7 +293,8 @@ if ($mode == 'auto_set')
 
 	@reset($stat_module_rows);
 
-	while (list($module_id, $module_name) = each($stat_module_rows))
+	//while (list($module_id, $module_name) = each($stat_module_rows))
+	foreach ($stat_module_rows as $module_id => $module_name)
 	{
 		$module_name = trim($module_name);
 

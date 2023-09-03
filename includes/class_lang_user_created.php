@@ -62,7 +62,8 @@ class lang_management
 		// get all the extensions installed
 		$packs = array();
 		@reset($countries);
-		while (list($country_dir, $country_name) = @each($countries))
+		//while (list($country_dir, $country_name) = @each($countries))
+		foreach ($countries as $country_dir => $country_name)
 		{
 			$dir = @opendir(IP_ROOT_PATH . 'language/' . $country_dir);
 			while ($file = @readdir($dir))
@@ -139,11 +140,14 @@ class lang_management
 			$lang = array();
 			@include($file);
 			@reset($lang);
-			while (list($key_main, $data) = @each($lang))
+			//while (list($key_main, $data) = @each($lang))
+			foreach ($lang as $key_main => $data)
 			{
 				$custom = ($pack_file == 'custom');
 				$first = !is_array($data);
-				while ((is_array($data) && (list($key_sub, $value) = @each($data))) || $first)
+				// We need to rewrite totally...
+				//while ((is_array($data) && (list($key_sub, $value) = @each($data))) || $first)
+				foreach ($data as $key_sub => $value)
 				{
 					$first = false;
 					if (!is_array($data))
@@ -179,37 +183,13 @@ class lang_management
 
 		// process by countries first
 		/* MG Lang DB - BEGIN */
-		/*
 		@reset($countries);
-		while (list($country_dir, $country_name) = @each($countries))
-		{
-			// phpBB lang keys
-			$pack_file = 'lang';
-			$this->read_one_pack($country_dir, $pack_file, $entries);
-		}
-
-		// process other packs except custom one
-		@reset($countries);
-		while (list($country_dir, $country_name) = @each($countries))
+		//while (list($country_dir, $country_name) = @each($countries))
+		foreach ($countries as $country_dir => $country_name)
 		{
 			@reset($packs);
-			while (list($pack_file, $pack_name) = @each($packs))
-			{
-				if (($pack_file != 'lang') && ($pack_file != 'custom'))
-				{
-					$this->read_one_pack($country_dir, $pack_file, $entries);
-				}
-			}
-		}
-		*/
-		/* MG Lang DB - END */
-
-		/* MG Lang DB - BEGIN */
-		@reset($countries);
-		while (list($country_dir, $country_name) = @each($countries))
-		{
-			@reset($packs);
-			while (list($pack_file, $pack_name) = @each($packs))
+			//while (list($pack_file, $pack_name) = @each($packs))
+			foreach ($packs as $pack_file => $pack_name)
 			{
 				$this->read_one_pack($country_dir, $pack_file, $entries);
 			}
@@ -219,25 +199,16 @@ class lang_management
 		// process the added/modified keys
 		if ($modified)
 		{
-			/* MG Lang DB - BEGIN */
-			/*
-			@reset($countries);
-			while (list($country_dir, $country_name) = @each($countries))
-			{
-				$pack_file = 'custom';
-				$this->read_one_pack($country_dir, $pack_file, $entries);
-			}
-			*/
-			/* MG Lang DB - END */
-
 			// add the missing keys in a language
 			$default_lang = 'lang_' . $config['default_lang'];
 			$english_lang = 'lang_english';
 			@reset($entries['pack']);
-			while (list($key_main, $data) = @each($entries['pack']))
+			//while (list($key_main, $data) = @each($entries['pack']))
+			foreach ($entries['pack'] as $key_main => $data)
 			{
 				@reset($data);
-				while (list($key_sub, $pack_file) = @each($data))
+				//while (list($key_sub, $pack_file) = @each($data))
+				foreach ($data as $key_sub => $pack_file)
 				{
 					// add the key to the default lang if missing by using the english one
 					if (!isset($entries['value'][$key_main][$key_sub][$default_lang]))
@@ -249,7 +220,8 @@ class lang_management
 							$found = false;
 							$new_value = '';
 							@reset($entries['value'][$key_main][$key_sub]);
-							while (list($country_dir, $value) = @each($entries['value'][$key_main][$key_sub]))
+							//while (list($country_dir, $value) = @each($entries['value'][$key_main][$key_sub]))
+							foreach ($entries['value'][$key_main][$key_sub] as $country_dir => $value)
 							{
 								$found = !empty($value);
 								if ($found)
@@ -272,7 +244,8 @@ class lang_management
 
 					// process all langs for this key
 					@reset($countries);
-					while (list($country_dir, $country_name) = @each($countries))
+					//while (list($country_dir, $country_name) = @each($countries))
+					foreach ($countries as $country_dir => $country_name)
 					{
 						if (!isset($entries['value'][$key_main][$key_sub][$country_dir]))
 						{
@@ -298,20 +271,24 @@ class lang_management
 
 		// regenerate each file (per country then per pack)
 		@reset($countries);
-		while (list($country_dir, $country_name) = each($countries))
+		//while (list($country_dir, $country_name) = each($countries))
+		foreach ($countries as $country_dir => $country_name)
 		{
 			// init
 			$local = array();
 			// read packs
 			@reset($packs);
-			while (list($pack_file, $pack_name) = @each($packs))
+			//while (list($pack_file, $pack_name) = @each($packs))
+			foreach ($packs as $pack_file => $pack_name)
 			{
 				// read keys
 				@reset($entries['admin']);
-				while (list($key_main, $data) = @each($entries['admin']))
+				//while (list($key_main, $data) = @each($entries['admin']))
+				foreach ($entries['admin'] as $key_main => $data)
 				{
 					@reset($data);
-					while (list($key_sub, $admin) = @each($data))
+					//while (list($key_sub, $admin) = @each($data))
+					foreach ($data as $key_sub => $admin)
 					{
 						$std = !$entries['admin'][$key_main][$key_sub];
 						$local[$std][$pack_name][$key_main][$key_sub] = $entries['value'][$key_main][$key_sub][$country_dir];
@@ -324,7 +301,8 @@ class lang_management
 
 			// read admin/standard type of key
 			@reset($local);
-			while (list($std, $pack_data) = @each($local))
+			//while (list($std, $pack_data) = @each($local))
+			foreach ($local as $std => $pack_data)
 			{
 				$prefix = ($std ? 'normal' : 'admin');
 				if ($prefix == 'admin')
@@ -334,7 +312,8 @@ class lang_management
 				}
 				// read pack
 				@reset($pack_data);
-				while (list($pack_file, $key_data) = @each($pack_data))
+				//while (list($pack_file, $key_data) = @each($pack_data))
+				foreach ($pack_data as $pack_file => $key_data)
 				{
 					$pack_filename = $pack_file;
 					/*
@@ -343,11 +322,13 @@ class lang_management
 					*/
 					// read key main
 					@reset($key_data);
-					while (list($key_main, $sub_data) = @each($key_data))
+					//while (list($key_main, $sub_data) = @each($key_data))
+					foreach ($key_data as $key_main => $sub_data)
 					{
 						// read key sub
 						@reset($sub_data);
-						while (list($key_sub, $value) = @each($sub_data))
+						//while (list($key_sub, $value) = @each($sub_data))
+						foreach ($sub_data as $key_sub => $value)
 						{
 							$key_main = $this->clean_string($key_main);
 							$key_sub = $this->clean_string($key_sub);

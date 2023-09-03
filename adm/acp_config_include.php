@@ -82,7 +82,8 @@ if ($submit)
 
 	// format and verify data
 	@reset($acp_modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while (list($config_name, $config_data) = @each($acp_modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+	//while (list($config_name, $config_data) = @each($acp_modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+	foreach ($acp_modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'] as $config_name => $config_data)
 	{
 		if (isset($_POST[$config_name]))
 		{
@@ -212,7 +213,8 @@ for ($i = 0; $i < sizeof($settings_modules_array['menu_keys']); $i++)
 
 // send items
 @reset($acp_modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-while (list($config_name, $config_data) = @each($acp_modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+//while (list($config_name, $config_data) = @each($acp_modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+foreach ($acp_modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'] as $config_name => $config_data)
 {
 	// Create the field input
 	$config_data['default'] = $default_config[$config_name];
@@ -224,7 +226,8 @@ while (list($config_name, $config_data) = @each($acp_modules[$menu_name]['data']
 	{
 		$override = '';
 		@reset($class_settings->list_yes_no);
-		while (list($key, $val) = @each($class_settings->list_yes_no))
+		//while (list($key, $val) = @each($class_settings->list_yes_no))
+		foreach ($class_settings->list_yes_no as $key => $val)
 		{
 			$selected = ($default_config[$config_name . '_over'] == $val) ? ' checked="checked"' : '';
 			$l_key = $class_settings->get_lang($key);

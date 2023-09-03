@@ -603,7 +603,8 @@ class class_plugins
 		global $db, $cache, $config, $lang;
 
 		@reset($settings_data);
-		while (list($config_key, $config_data) = each($settings_data))
+		//while (list($config_key, $config_data) = each($settings_data))
+		foreach ($settings_data as $config_key => $config_data)
 		{
 			if (!isset($config_data['user_only']) || !$config_data['user_only'])
 			{

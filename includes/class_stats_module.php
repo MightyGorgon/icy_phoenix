@@ -279,7 +279,7 @@ class StatisticsDB
 	*/
 	function sql_escape($msg)
 	{
-		return @mysql_real_escape_string($msg);
+		return @mysqli_real_escape_string($msg);
 	}
 
 	function end_cached_query($module_id)
@@ -371,7 +371,8 @@ class Results
 		}
 
 		reset ($vararray);
-		while (list($key, $val) = each($vararray))
+		//while (list($key, $val) = each($vararray))
+		foreach ($vararray as $key => $val)
 		{
 			$this->var_data['.'][0][$key] = $val;
 		}
@@ -450,7 +451,7 @@ class Results
 	*/
 	function sql_escape($msg)
 	{
-		return @mysql_real_escape_string($msg);
+		return @mysqli_real_escape_string($msg);
 	}
 
 	function end_cached_query($module_id)

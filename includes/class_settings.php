@@ -149,7 +149,8 @@ class class_settings
 
 		$this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['id'] = array($settings_details['id'] => $settings_details['name']);
 		@reset($settings_data);
-		while (list($config_key, $config_data) = each($settings_data))
+		//while (list($config_key, $config_data) = each($settings_data))
+		foreach ($settings_data as $config_key => $config_data)
 		{
 			if (!isset($config_data['user_only']) || !$config_data['user_only'])
 			{
@@ -220,36 +221,43 @@ class class_settings
 		$sub_keys = array();
 		$sub_sort = array();
 
+		$found = false;
+
 		// Process
-		@reset($settings_modules);
-		while (list($menu_name, $menu) = each($settings_modules))
+		//@reset($settings_modules);
+		//while (list($menu_name, $menu) = each($settings_modules))
+		foreach ($settings_modules as $menu_name => $menu)
 		{
 			// Check if there are some config fields in the mods under this menu
 			$found = false;
 
 			// Menu
-			@reset($menu['data']);
-			while ((list($mod_name, $mod) = @each($menu['data'])) && !$found)
+			//@reset($menu['data']);
+			//while ((list($mod_name, $mod) = @each($menu['data'])) && !$found)
+			foreach ($menu['data'] as $mod_name => $mod)
 			{
 				// Sub menu
-				@reset($mod['data']);
-				while ((list($sub_name, $sub) = @each($mod['data'])) && !$found)
+				//@reset($mod['data']);
+				//while ((list($sub_name, $sub) = @each($mod['data'])) && !$found)
+				foreach ($mod['data'] as $sub_name => $sub)
 				{
 					// Fields
-					@reset($sub['data']);
-					while ((list($field_name, $field) = @each($sub['data'])) && !$found)
+					//@reset($sub['data']);
+					//while ((list($field_name, $field) = @each($sub['data'])) && !$found)
+					foreach ($sub['data'] as $field_name => $field)
 					{
 						if ($this->is_auth_display($field_name, $field, $in_acp, $target_userdata))
 						{
 							$found = true;
-							break;
+							// Breaks up to $mod_name loop => Exit from 3 foreach loops
+							break 3;
 						}
 					}
 				}
 			}
 
 			// Menu ok
-			if ($found)
+			if (!empty($found))
 			{
 				$i = sizeof($menu_keys);
 				$menu_id[$i] = !empty($menu['id']) ? $menu['id'] : '';
@@ -261,16 +269,19 @@ class class_settings
 				$mod_keys[$i] = array();
 				$mod_sort[$i] = array();
 
-				@reset($menu['data']);
-				while (list($mod_name, $mod) = @each($menu['data']))
+				//@reset($menu['data']);
+				//while (list($mod_name, $mod) = @each($menu['data']))
+				foreach ($menu['data'] as $mod_name => $mod)
 				{
 					// Check if there are some config fields
 					$found = false;
-					@reset($mod['data']);
-					while (list($sub_name, $sub) = @each($mod['data']))
+					//@reset($mod['data']);
+					//while (list($sub_name, $sub) = @each($mod['data']))
+					foreach ($mod['data'] as $sub_name => $sub)
 					{
-						@reset($sub['data']);
-						while (list($field_name, $field) = @each($sub['data']))
+						//@reset($sub['data']);
+						//while (list($field_name, $field) = @each($sub['data']))
+						foreach ($sub['data'] as $field_name => $field)
 						{
 							if ($this->is_auth_display($field_name, $field, $in_acp, $target_userdata))
 							{
@@ -292,15 +303,18 @@ class class_settings
 						$sub_sort[$i][$j] = array();
 
 						// Sub names
-						@reset($mod['data']);
-						while (list($sub_name, $sub) = @each($mod['data']))
+						//@reset($mod['data']);
+						//while (list($sub_name, $sub) = @each($mod['data']))
+						foreach ($mod['data'] as $sub_name => $sub)
 						{
+							//$sub_name = !empty($sub_name) ? $sub_name : $mod_name;
 							if (!empty($sub_name))
 							{
 								// Check if there is some config fields in this level
 								$found = false;
-								@reset($sub['data']);
-								while (list($field_name, $field) = @each($sub['data']))
+								//@reset($sub['data']);
+								//while (list($field_name, $field) = @each($sub['data']))
+								foreach ($sub['data'] as $field_name => $field)
 								{
 									if ($this->is_auth_display($field_name, $field, $in_acp, $target_userdata))
 									{
@@ -310,9 +324,15 @@ class class_settings
 								}
 								if ($found)
 								{
-									$sub_id[$i][$j][] = $sub['id'];
+									//$sub_id[$i][$j][] = $sub['id'];
+									$sub_id[$i][$j][] = !empty($sub['id']) ? $sub['id'] : '';
 									$sub_keys[$i][$j][] = $sub_name;
 									$sub_sort[$i][$j][] = $sub['sort'];
+									/*
+									echo($sub_name . "\n<br />");
+									print_r($sub['data']);
+									die('TEST');
+									*/
 								}
 							}
 						}
@@ -380,7 +400,10 @@ class class_settings
 		}
 		else
 		{
-			if (((!empty($config_data['user']) && isset($target_userdata[$config_data['user']]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || $config_data['system']) && $this->is_auth($config_data['auth']))
+			$config_data['auth'] = !empty($config_data['auth']) ? $config_data['auth'] : false;
+			// Old version
+			//if (((!empty($config_data['user']) && isset($target_userdata[$config_data['user']]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || $config_data['system']) && $this->is_auth($config_data['auth']))
+			if (((!empty($config_data['user']) && isset($target_userdata[$config_data['user']]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || !empty($config_data['system'])) && $this->is_auth($config_data['auth']))
 			{
 				$return = true;
 			}

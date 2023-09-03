@@ -52,7 +52,8 @@ function language_select($select_name = 'language', $default = 'english', $dirna
 	else
 	{
 		$lang_select = '<select name="' . $select_name . '">';
-		while (list($displayname, $filename) = @each($lang))
+		//while (list($displayname, $filename) = @each($lang))
+		foreach ($lang as $displayname => $filename)
 		{
 			$selected = (strtolower($default) == strtolower($filename)) ? ' selected="selected"' : '';
 			$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
@@ -99,7 +100,8 @@ function tz_select($select_name = 'timezone', $default = '')
 
 	$tz_select = '<select name="' . $select_name . '">';
 
-	while(list($offset, $zone) = @each($lang['tz_zones']))
+	//while(list($offset, $zone) = @each($lang['tz_zones']))
+	foreach ($lang['tz_zones'] as $offset => $zone)
 	{
 		$selected = ($offset == $default) ? ' selected="selected"' : '';
 		$tz_select .= '<option value="' . $offset . '"' . $selected . '>' . str_replace('GMT', 'UTC', $zone) . '</option>';

@@ -601,7 +601,8 @@ var cmsSettings = {
 	ajaxError: function(textStatus, errorThrown)
 	{
 		var text = '';
-		switch(status)
+		//switch(status)
+		switch(textStatus)
 		{
 			case 'timeout':
 				text = cmsEditorLang.errorConnection;
@@ -1019,11 +1020,11 @@ var cmsEditor = {
 			parent = $('#add-form-' + key + '-parent').get(0),
 			options = ['active', 'border', 'titlebar', 'local', 'background'],
 			params = {
-				'total'         : 1,
-				'p0_bposition'  : key,
-				'p0_bs_id'      : parent.options[parent.selectedIndex].value,
-				'p0_title'      : $('#add-form-' + key + '-title').val(),
-				'p0_weight'     : $('#cms-block-' + key + ' li.cms-editor-block').length + 1
+				'total'          : 1,
+				'p0_bposition'   : key,
+				'p0_bs_id'       : parent.options[parent.selectedIndex].value,
+				'p0_title'       : $('#add-form-' + key + '-title').val(),
+				'p0_weight'      : $('#cms-block-' + key + ' li.cms-editor-block').length + 1
 			};
 		for(var i = 0; i < options.length; i++)
 		{
@@ -1039,6 +1040,7 @@ var cmsEditor = {
 		// show status window
 		row.find('p.status').css('display', 'block').html(cmsEditorLang.statusAdding);
 		row.find('p.buttons, div.add-form, div.move-all-form').hide();
+		//alert(JSON.stringify(params));
 		// submit request
 		cmsEditor.ajaxRequest('add', params);
 	},
@@ -1110,6 +1112,7 @@ var cmsEditor = {
 		{
 			if(key != 'url') params[key] = cmsEditor.data.post[key];
 		}
+		//alert(cmsEditor.data.post.url + "\n\n" + JSON.stringify(params));
 		// save changes
 		cmsEditor.infoBox(cmsEditorLang.savingChanges, true);
 		$.ajax({

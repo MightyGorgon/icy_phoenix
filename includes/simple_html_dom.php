@@ -391,11 +391,11 @@ class simple_html_dom_node
 			}
 			// compare value
 			if ($pass && $key && $val  && $val!=='*') {
-				$check = $this->match($exp, $val, $node->attr[$key]);
+				$check = $this->shd_match($exp, $val, $node->attr[$key]);
 				// handle multiple class
 				if (!$check && strcasecmp($key, 'class')===0) {
 					foreach(explode(' ',$node->attr[$key]) as $k) {
-						$check = $this->match($exp, $val, $k);
+						$check = $this->shd_match($exp, $val, $k);
 						if ($check) break;
 					}
 				}
@@ -406,7 +406,7 @@ class simple_html_dom_node
 		}
 	}
 
-	protected function match($exp, $pattern, $value)
+	protected function shd_match($exp, $pattern, $value)
 	{
 		switch ($exp) {
 			case '=':

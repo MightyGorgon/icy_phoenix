@@ -82,7 +82,8 @@ if($user->data['upi2db_access'])
 		POST_POST_URL => POST_POST_URL,
 		'mar' => 'mar',
 	);
-	while(list($var, $param) = @each($params))
+	//while(list($var, $param) = @each($params))
+	foreach ($params as $var => $param)
 	{
 		${$var} = request_var($param, 0);
 	}
@@ -93,7 +94,8 @@ if($user->data['upi2db_access'])
 		'do' => 'do',
 		'tt' => 'tt'
 	);
-	while(list($var, $param) = @each($params))
+	//while(list($var, $param) = @each($params))
+	foreach ($params as $var => $param)
 	{
 		${$var} = request_var($param, '');
 	}
@@ -640,8 +642,11 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 						if ($current_match_type == 'and' && $word_count)
 						{
+							/*
 							@reset($result_list);
 							while(list($post_id, $match_count) = @each($result_list))
+							*/
+							foreach ($result_list as $post_id => $match_count)
 							{
 								if (!$row[$post_id])
 								{
@@ -656,10 +661,12 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 				}
 			}
 
-			@reset($result_list);
-
 			$search_ids = array();
+			/*
+			@reset($result_list);
 			while(list($post_id, $matches) = each($result_list))
+			*/
+			foreach ($result_list as $post_id => $matches)
 			{
 				if ($matches)
 				{
@@ -1974,9 +1981,9 @@ $template->assign_vars(array(
 	'S_SEARCH_ACTION' => append_sid(CMS_PAGE_SEARCH . '?mode=results'),
 	'S_CHARACTER_OPTIONS' => $s_characters,
 	'S_FORUM_OPTIONS' => $s_forums,
-	'S_SEARCH_MESSAGE_OPTIONS' => (!$plus_config['enable_fulltextsearch']) ? 'checked="checked"' : 'DISABLED',
-	'S_SEARCH_MESSAGE_OPTIONS2' => (!$plus_config['enable_fulltextsearch']) ? '' : 'checked="checked"',
-	'S_CATEGORY_OPTIONS' => $s_categories,
+	'S_SEARCH_MESSAGE_OPTIONS' => (!empty($config['enable_fulltextsearch'])) ? 'checked="checked"' : 'DISABLED',
+	'S_SEARCH_MESSAGE_OPTIONS2' => (!empty($config['enable_fulltextsearch'])) ? '' : 'checked="checked"',
+	'S_CATEGORY_OPTIONS' => !empty($s_categories) ? $s_categories : '',
 	'S_TIME_OPTIONS' => $s_time,
 	'S_SORT_OPTIONS' => $s_sort_by,
 	'S_HIDDEN_FIELDS' => ''

@@ -109,7 +109,8 @@ if ($user->data['upi2db_access'])
 		'do' => 'do',
 		'tt' => 'tt'
 	);
-	while(list($var, $param) = @each($params))
+	//while(list($var, $param) = @each($params))
+	foreach ($params as $var => $param)
 	{
 		${$var} = request_var($param, '');
 	}
@@ -371,14 +372,20 @@ if ($is_auth['auth_mod'] && $config['prune_enable'])
 // moderators list
 $moderators = array();
 $idx = $tree['keys'][POST_FORUM_URL . $forum_id];
-for ($i = 0; $i < sizeof($tree['mods'][$idx]['user_id']); $i++)
+if (!empty($tree['mods'][$idx]['user_id']))
 {
-	$moderators[] = colorize_username($tree['mods'][$idx]['user_id'][$i], $tree['mods'][$idx]['username'][$i], $tree['mods'][$idx]['user_color'][$i], $tree['mods'][$idx]['user_active'][$i]);
+	for ($i = 0; $i < sizeof($tree['mods'][$idx]['user_id']); $i++)
+	{
+		$moderators[] = colorize_username($tree['mods'][$idx]['user_id'][$i], $tree['mods'][$idx]['username'][$i], $tree['mods'][$idx]['user_color'][$i], $tree['mods'][$idx]['user_active'][$i]);
+	}
 }
-for ($i = 0; $i < sizeof($tree['mods'][$idx]['group_id']); $i++)
+if (!empty($tree['mods'][$idx]['group_id']))
 {
-	$group_color_style = ' style="font-weight: bold; text-decoration: none;' . (($tree['mods'][$idx]['group_color'][$i] != '') ? 'color: ' . $tree['mods'][$idx]['group_color'][$i] . ';"' : '"');
-	$moderators[] = '<a href="' . append_sid( CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color_style . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
+	for ($i = 0; $i < sizeof($tree['mods'][$idx]['group_id']); $i++)
+	{
+		$group_color_style = ' style="font-weight: bold; text-decoration: none;' . (($tree['mods'][$idx]['group_color'][$i] != '') ? 'color: ' . $tree['mods'][$idx]['group_color'][$i] . ';"' : '"');
+		$moderators[] = '<a href="' . append_sid( CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $tree['mods'][$idx]['group_id'][$i]) . '"' . $group_color_style . '>' . $tree['mods'][$idx]['group_name'][$i] . '</a>';
+	}
 }
 
 $l_moderators = (sizeof($moderators) == 1) ? $lang['Moderator'] : $lang['Moderators'];
@@ -1208,8 +1215,8 @@ if($total_topics)
 			'LAST_POST_IMG' => $last_post_url,
 			'L_NEWS' => $news_label,
 			// Event Registration - BEGIN
-			'REG_OPTIONS' => $regoptions,
-			'REG_USER_OWN_REG' => $reg_user_own_reg,
+			'REG_OPTIONS' => (!empty($regoptions) ? $regoptions : ''),
+			'REG_USER_OWN_REG' => (!empty($reg_user_own_reg) ? $reg_user_own_reg : ''),
 			// Event Registration - END
 //--------------------------------------------------------
 // UPI2DB - BEGIN

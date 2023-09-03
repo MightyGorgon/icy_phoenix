@@ -84,7 +84,8 @@ if (($mode_id == 'perform') && !isset($_POST['confirm']))
 
 // Check for parameters
 reset ($config_data);
-while (list(, $value) = each ($config_data))
+//while (list(, $value) = each ($config_data))
+foreach ($config_data as $key => $value)
 {
 	if (!isset($config[$value]))
 	{
@@ -2624,7 +2625,8 @@ switch($mode_id)
 
 				// Start the job
 				reset($default_config);
-				while (list($key, $value) = each($default_config))
+				//while (list($key, $value) = each($default_config))
+				foreach ($default_config as $key => $value)
 				{
 					$sql = 'SELECT config_value FROM ' . CONFIG_TABLE . "
 						WHERE config_name = '$key'";

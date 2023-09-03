@@ -43,12 +43,12 @@ class class_form
 	{
 		global $lang;
 
-		$this->date_format_jq = $lang['DATE_FORMAT_DATE_JQUI_JQ'];
-		$this->time_format_jq = $lang['DATE_FORMAT_TIME_JQUI_JQ'];
-		$this->date_format_php = $lang['DATE_FORMAT_DATE_JQUI_PHP'];
-		$this->time_format_php = $lang['DATE_FORMAT_TIME_JQUI_PHP'];
-		$this->date_sep = $lang['NUMBER_FORMAT_DATE_SEP'];
-		$this->time_sep = $lang['NUMBER_FORMAT_TIME_SEP'];
+		$this->date_format_jq = !empty($lang['DATE_FORMAT_DATE_JQUI_JQ']) ? $lang['DATE_FORMAT_DATE_JQUI_JQ'] : $this->date_format_jq;
+		$this->time_format_jq = !empty($lang['DATE_FORMAT_TIME_JQUI_JQ']) ? $lang['DATE_FORMAT_TIME_JQUI_JQ'] : $this->time_format_jq;
+		$this->date_format_php = !empty($lang['DATE_FORMAT_DATE_JQUI_PHP']) ? $lang['DATE_FORMAT_DATE_JQUI_PHP'] : $this->date_format_php;
+		$this->time_format_php = !empty($lang['DATE_FORMAT_TIME_JQUI_PHP']) ? $lang['DATE_FORMAT_TIME_JQUI_PHP'] : $this->time_format_php;
+		$this->date_sep = !empty($lang['NUMBER_FORMAT_DATE_SEP']) ? $lang['NUMBER_FORMAT_DATE_SEP'] : $this->date_sep;
+		$this->time_sep = !empty($lang['NUMBER_FORMAT_TIME_SEP']) ? $lang['NUMBER_FORMAT_TIME_SEP'] : $this->time_sep;
 	}
 
 
@@ -76,8 +76,7 @@ class class_form
 				{
 					$default = explode(',', $default);
 				}
-				@reset($properties['values']);
-				while (list($key, $val) = @each($properties['values']))
+				foreach ($properties['values'] as $key => $val)
 				{
 					if ($properties['type'] == 'LIST_FLAGS')
 					{
@@ -101,8 +100,7 @@ class class_form
 			*/
 
 			case 'LIST_DROP':
-				@reset($properties['values']);
-				while (list($key, $val) = @each($properties['values']))
+				foreach ($properties['values'] as $key => $val)
 				{
 					$selected = ($default == $val) ? ' selected="selected"' : '';
 					$l_key = $this->get_lang($key);
@@ -113,8 +111,7 @@ class class_form
 
 			case 'LIST_RADIO':
 			case 'LIST_RADIO_BR':
-				@reset($properties['values']);
-				while (list($key, $val) = @each($properties['values']))
+				foreach ($properties['values'] as $key => $val)
 				{
 					$selected = ($default == $val) ? ' checked="checked"' : '';
 					$l_key = $this->get_lang($key);
@@ -488,7 +485,7 @@ class class_form
 				break;
 		}
 
-		return $legth;
+		return $length;
 	}
 
 	/*

@@ -1109,8 +1109,8 @@ function create_cat()
 		$next_cat_id = $row['forum_id'] + 1;
 		$next_cat_order = $row['forum_order'] + 10;
 
-		$sql = "INSERT INTO " . FORUMS_TABLE . " (forum_id, parent_id, forum_type, main_type, forum_name, forum_desc, forum_order)
-			VALUES (" . $next_cat_id . ", 0, " . FORUM_CAT . ", '" . POST_CAT_URL . "', '" . $db->sql_escape($lang['New_cat_name']) . "', '" . $db->sql_escape($lang['New_cat_name']) . "', " . $next_cat_order . ")";
+		$sql = "INSERT INTO " . FORUMS_TABLE . " (forum_id, parent_id, forum_parents, forum_type, main_type, forum_name, forum_desc, forum_order)
+			VALUES (" . $next_cat_id . ", 0, '', " . FORUM_CAT . ", '" . POST_CAT_URL . "', '" . $db->sql_escape($lang['New_cat_name']) . "', '" . $db->sql_escape($lang['New_cat_name']) . "', " . $next_cat_order . ")";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);
@@ -1171,8 +1171,8 @@ function create_forum()
 		$next_forum_order = $row['forum_order'] + 10;
 
 		$forum_permission = AUTH_ADMIN;
-		$sql = 'INSERT INTO ' . FORUMS_TABLE . " (forum_id, forum_type, parent_id, forum_name, forum_desc, forum_status, forum_order, forum_posts, forum_topics, forum_last_post_id, prune_next, prune_enable, auth_view, auth_read, auth_post, auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, auth_pollcreate, auth_attachments)
-			VALUES ($next_forum_id, " . FORUM_POST . ", $cat_id, '" . $db->sql_escape($lang['New_forum_name']) . "', '', " . FORUM_LOCKED . ", $next_forum_order, 0, 0, 0, NULL, 0, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, 0)";
+		$sql = 'INSERT INTO ' . FORUMS_TABLE . " (forum_id, forum_type, parent_id, forum_parents, forum_name, forum_desc, forum_status, forum_order, forum_posts, forum_topics, forum_last_post_id, prune_next, prune_enable, auth_view, auth_read, auth_post, auth_reply, auth_edit, auth_delete, auth_sticky, auth_announce, auth_vote, auth_pollcreate, auth_attachments)
+			VALUES ($next_forum_id, " . FORUM_POST . ", $cat_id, '', '" . $db->sql_escape($lang['New_forum_name']) . "', '', " . FORUM_LOCKED . ", $next_forum_order, 0, 0, 0, NULL, 0, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, $forum_permission, 0)";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);
 		$db->sql_return_on_error(false);

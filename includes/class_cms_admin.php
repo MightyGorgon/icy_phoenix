@@ -426,12 +426,12 @@ class cms_admin
 		$inputs_array = array(
 			'title' => '',
 			'bposition' => '',
-			'active' => '',
-			'bs_id' => '',
-			'border' => '',
-			'titlebar' => '',
-			'local' => '',
-			'background' => '',
+			'active' => 1,
+			'bs_id' => 0,
+			'border' => 1,
+			'titlebar' => 1,
+			'local' => 0,
+			'background' => 1,
 		);
 
 		foreach ($inputs_array as $k => $v)
@@ -472,7 +472,6 @@ class cms_admin
 		{
 			$data['block_cms_id'] = ($this->cms_id) ? $this->cms_id : 0;
 			$data['weight'] = ($this->get_max_blocks_position($this->id_var_value, $data['bposition'])) + 1;
-
 			$class_db->insert_item($data);
 		}
 
@@ -652,7 +651,7 @@ class cms_admin
 		// append_sid($this->root . '?mode=layouts&amp;action=edit' . '&amp;' . $this->id_var_name . '=' . $this->id_var_value)
 		return array(
 			'blocks' => append_sid($this->root . '?mode=block_settings', true)
-			);
+		);
 	}
 
 	/*
@@ -717,9 +716,11 @@ class cms_admin
 					$prefix = 'p' . $i . '_';
 					$vars = array();
 					foreach($keys as $key => $func)
-					if(isset($_POST[$prefix . $key]))
 					{
-						$vars[$key] = $db->sql_escape($func($_POST[$prefix . $key]));
+						if(isset($_POST[$prefix . $key]))
+						{
+							$vars[$key] = $db->sql_escape($func($_POST[$prefix . $key]));
+						}
 					}
 					$vars[$this->block_layout_field] = $this->id_var_value;
 					$sql = "INSERT INTO " . $this->tables['blocks_table'] . " " . $db->sql_build_insert_update($vars, true);
@@ -1627,7 +1628,7 @@ class cms_admin
 				}
 				// avoid adding duplicates
 				$found = false;
-				for($i = 0; $i < count($list[$bsid]); $i++)
+				for($i = 0; $i < count((array) $list[$bsid]); $i++)
 				{
 					if($list[$bsid][$i]['url'] == $url) $found = true;
 				}
@@ -1847,9 +1848,10 @@ class cms_admin
 		$inputs_array = array(
 			'name' => '',
 			'filename' => '',
-			'global_blocks' => '',
+			'global_blocks' => 0,
 			'page_nav' => '',
 			'view' => '',
+			'config_vars' => ''
 		);
 
 		if (!$is_layout_special)

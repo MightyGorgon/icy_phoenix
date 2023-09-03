@@ -690,8 +690,12 @@ class cms_permissions
 		$ug_id = $forum_id = 0;
 
 		// We loop through the auth settings defined in our submit
+		/*
 		list($ug_id, ) = each($psubmit);
 		list($forum_id, ) = each($psubmit[$ug_id]);
+		*/
+		$ug_id = key($psubmit);
+		$forum_id = key($psubmit[$ug_id]);
 
 		if (empty($_POST['setting']) || empty($_POST['setting'][$ug_id]) || empty($_POST['setting'][$ug_id][$forum_id]) || !is_array($_POST['setting'][$ug_id][$forum_id]))
 		{

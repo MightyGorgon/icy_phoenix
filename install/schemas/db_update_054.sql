@@ -408,7 +408,7 @@ ALTER TABLE `phpbb_cms_blocks` DROP `type`;
 ALTER TABLE `phpbb_cms_blocks` DROP `groups`;
 
 ALTER TABLE `phpbb_cms_blocks` ADD `bs_id` int(10) UNSIGNED NOT NULL AFTER `bid`;
-ALTER TABLE `phpbb_cms_blocks` ADD `block_cms_id` int(10) UNSIGNED NOT NULL AFTER `bs_id`;
+ALTER TABLE `phpbb_cms_blocks` ADD `block_cms_id` int(10) NOT NULL DEFAULT '0' AFTER `bs_id`;
 
 UPDATE `phpbb_cms_blocks` SET `bs_id` = `bid`;
 

@@ -292,6 +292,7 @@ else
 		}
 	}
 
+	$forward_page = '';
 	if(!$user->data['session_logged_in'] || (isset($_GET['admin']) && $user->data['session_logged_in'] && (!empty($jr_admin_userdata['user_jr_admin']) || $is_admin || $is_cms_auth)))
 	{
 		$skip_nav_cat = true;

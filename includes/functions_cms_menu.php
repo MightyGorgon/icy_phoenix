@@ -249,7 +249,8 @@ function select_style_lang_link($select_type)
 			@include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
 		}
 		$lang_installed = language_select(LANG_URL, $config['default_lang'], 'language', true);
-		while (list($displayname) = @each($lang_installed))
+		//while (list($displayname) = @each($lang_installed))
+		foreach ($lang_installed as $displayname => $val)
 		{
 			$lang_value = $displayname;
 			$lang_name = ucwords($displayname);

@@ -22,7 +22,7 @@ function get_dividers($topics)
 	global $lang, $config;
 	$dividers = array();
 	$total_topics = sizeof($topics);
-	$total_by_type = array (POST_GLOBAL_ANNOUNCE => 0, POST_ANNOUNCE => 0, POST_STICKY => 0, POST_NORMAL => 0);
+	$total_by_type = array(POST_GLOBAL_ANNOUNCE => 0, POST_ANNOUNCE => 0, POST_STICKY => 0, POST_NEWS => 0, POST_NORMAL => 0);
 
 	for ($i = 0; $i < $total_topics; $i++)
 	{

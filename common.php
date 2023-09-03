@@ -26,8 +26,8 @@ $starttime = $starttime[1] + $starttime[0];
 //@ini_set('memory_limit', '24M');
 
 // MIGHTY GORGON - DEBUG - BEGIN
-@define('DEBUG', false); // Debugging ON/OFF => TRUE/FALSE
-@define('DEBUG_EXTRA', false); // Extra Debugging ON/OFF => TRUE/FALSE
+@define('DEBUG', true); // Debugging ON/OFF => TRUE/FALSE
+@define('DEBUG_EXTRA', true); // Extra Debugging ON/OFF => TRUE/FALSE
 $error_reporting = E_ALL ^ E_NOTICE; // Report all errors, except notices
 if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 {

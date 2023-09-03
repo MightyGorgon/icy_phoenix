@@ -250,7 +250,8 @@ elseif (($install_step == 1) || ($admin_pass1 != $admin_pass2) || empty($admin_p
 	$lang_select = $page_framework->build_lang_select($language);
 
 	$dbms_select = '<select name="dbms" onchange="if(this.form.upgrade.options[this.form.upgrade.selectedIndex].value == 1){ this.selectedIndex = 0;}">';
-	while (list($dbms_name, $details) = @each($available_dbms))
+	//while (list($dbms_name, $details) = @each($available_dbms))
+	foreach ($available_dbms as $dbms_name => $details)
 	{
 		$selected = ($dbms_name == $dbms) ? 'selected="selected"' : '';
 		$dbms_select .= '<option value="' . $dbms_name . '">' . $details['LABEL'] . '</option>';
@@ -282,6 +283,17 @@ else
 	{
 		include(IP_ROOT_PATH . 'includes/utf/utf_tools.' . PHP_EXT);
 	}
+
+	// We need to make sure all main constants in mysql.php are initialized
+	if(!defined('MAIN_CACHE_FOLDER')) define('MAIN_CACHE_FOLDER', IP_ROOT_PATH . 'cache/');
+	if(!defined('CMS_CACHE_FOLDER')) define('CMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'cms/');
+	if(!defined('FORUMS_CACHE_FOLDER')) define('FORUMS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'forums/');
+	if(!defined('POSTS_CACHE_FOLDER')) define('POSTS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'posts/');
+	if(!defined('SQL_CACHE_FOLDER')) define('SQL_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'sql/');
+	if(!defined('TOPICS_CACHE_FOLDER')) define('TOPICS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'topics/');
+	if(!defined('UPLOADS_CACHE_FOLDER')) define('UPLOADS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'uploads/');
+	if(!defined('USERS_CACHE_FOLDER')) define('USERS_CACHE_FOLDER', MAIN_CACHE_FOLDER . 'users/');
+
 	include(IP_ROOT_PATH . 'includes/db.' . PHP_EXT);
 
 	$dbms_schema = 'schemas/' . $available_dbms[$dbms]['SCHEMA'] . '_schema.sql';
@@ -380,15 +392,18 @@ else
 			}
 		}
 
+		//$server_protocol = (stripos($_SERVER['SERVER_PROTOCOL'], 'https') === 0) ? 'https://' : 'http://';
 		$update_config = array(
 			'board_email' => $board_email,
 			'script_path' => $script_path,
 			'server_port' => $server_port,
 			'server_name' => $server_name,
+			'cookie_secure' => (stripos($_SERVER['SERVER_PROTOCOL'], 'https') === 0) ? 1 : 0,
 			'upi2db_install_time' => time(),
 		);
 
-		while (list($config_name, $config_value) = each($update_config))
+		//while (list($config_name, $config_value) = each($update_config))
+		foreach ($update_config as $config_name => $config_value)
 		{
 			$sql = "UPDATE " . $table_prefix . "config
 				SET config_value = '" . $config_value . "'

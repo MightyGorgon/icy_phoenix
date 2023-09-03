@@ -84,8 +84,11 @@ $html = new html();
 // Did the user submitted the form?
 if (isset($_POST['submit']))
 {
+	/*
 	reset($_POST);
 	while (list($key, $value) = each($_POST))
+	*/
+	foreach ($_POST as $key => $value)
 	{
 		$key = htmlspecialchars(addslashes($key));
 		$key = $db->sql_escape($key);
@@ -314,7 +317,8 @@ $valid_fields = array(
 reset($valid_fields);
 $unknown_fields = array();
 
-while (list($table_name, $fields) = each($valid_fields))
+//while (list($table_name, $fields) = each($valid_fields))
+foreach ($valid_fields as $table_name => $fields)
 {
 	$result = $db->sql_query("SHOW FIELDS FROM $table_name");
 
@@ -351,12 +355,14 @@ while ($row = $db->sql_fetchrow($result))
 reset($tables);
 reset($valid_fields);
 
-while (list(, $table_name) = each($tables))
+//while (list(, $table_name) = each($tables))
+foreach ($tables as $key => $table_name)
 {
 	$match_found = false;
 
 	reset($valid_fields);
-	while (list($valid_table_name) = each($valid_fields))
+	//while (list($valid_table_name) = each($valid_fields))
+	foreach ($valid_fields as $valid_table_name => $valid_table_name_value)
 	{
 		if ($valid_table_name == $table_name)
 		{
@@ -445,12 +451,14 @@ else
 	{
 		reset($unknown_fields);
 
-		while (list($table_name, $data) = each($unknown_fields))
+		//while (list($table_name, $data) = each($unknown_fields))
+		foreach ($unknown_fields as $table_name => $data)
 		{
 			$html->header();
 			$html->table_name($table_name);
 
-			while (list(, $fieldname) = each($data))
+			//while (list(, $fieldname) = each($data))
+			foreach ($data as $key => $fieldname)
 			{
 				$html->right_row('field', $fieldname);
 			}
@@ -473,7 +481,8 @@ else
 		$html->header();
 		$html->table_name($lang['unknown_tables']);
 
-		while (list(, $table_name) = each($unknown_tables))
+		//while (list(, $table_name) = each($unknown_tables))
+		foreach ($unknown_tables as $key => $table_name)
 		{
 			$html->right_row('table', $table_name);
 		}
@@ -495,7 +504,8 @@ else
 		$html->header();
 		$html->table_name($lang['unknown_config']);
 
-		while (list(, $table_name) = each($unknown_config))
+		//while (list(, $table_name) = each($unknown_config))
+		foreach ($unknown_config as $key => $table_name)
 		{
 			$html->right_row('config', $table_name);
 		}

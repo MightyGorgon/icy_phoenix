@@ -101,7 +101,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 			'signature' => 'signature',
 			'selfdes' => 'selfdes'
 		);
-		while(list($var, $param) = @each($trim_var_list))
+		//while(list($var, $param) = @each($trim_var_list))
+		foreach ($trim_var_list as $var => $param)
 		{
 			${$var} = request_post_var($param, '', true);
 			${$var} = htmlspecialchars_decode(${$var}, ENT_COMPAT);
@@ -128,7 +129,8 @@ if (($mode == 'edit') || (($mode == 'save') && (isset($_POST['acp_username']) ||
 		}
 
 		// Strip all tags from data ... may p**s some people off, bah, strip_tags is doing the job but can still break HTML output ... have no choice, have to use htmlspecialchars ... be prepared to be moaned at.
-		while(list($var, $param) = @each($strip_var_list))
+		//while(list($var, $param) = @each($strip_var_list))
+		foreach ($strip_var_list as $var => $param)
 		{
 			${$var} = request_post_var($param, '', true);
 		}

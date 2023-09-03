@@ -39,7 +39,8 @@ function date_dsp($format, $date)
 	if (empty($translate) && $config['default_lang'] != 'english')
 	{
 		@reset($lang['datetime']);
-		while (list($match, $replace) = @each($lang['datetime']))
+		//while (list($match, $replace) = @each($lang['datetime']))
+		foreach ($lang['datetime'] as $match => $replace)
 		{
 			$translate[$match] = $replace;
 		}
@@ -255,7 +256,8 @@ function get_event_topics(&$events, &$number, $start_date, $end_date, $limit = f
 		}
 
 		// get the list of authorized forums
-		while (list($forum_id, $forum_auth) = each($is_auth))
+		//while (list($forum_id, $forum_auth) = each($is_auth))
+		foreach ($is_auth as $forum_id => $forum_auth)
 		{
 			if ($forum_auth['auth_read'] && (empty($fid) || isset($is_ask[$forum_id])))
 			{

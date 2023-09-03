@@ -109,10 +109,12 @@ if ($mode == 'key')
 	{
 		$new_entries = array();
 		@reset($entries['admin']);
-		while (list($new_main, $subs) = @each($entries['admin']))
+		//while (list($new_main, $subs) = @each($entries['admin']))
+		foreach ($entries['admin'] as $new_main => $subs)
 		{
 			@reset($subs);
-			while (list($new_sub, $admin) = @each($subs))
+			//while (list($new_sub, $admin) = @each($subs))
+			foreach ($subs as $new_sub => $admin)
 			{
 				if (($new_main != $key_main) || ($new_sub != $key_sub))
 				{
@@ -160,7 +162,8 @@ if ($mode == 'key')
 		$error_msg = false;
 		$dft_country = 'lang_' . $config['default_lang'];
 		@reset($countries);
-		while (list($country_dir, $country_name) = @each($countries))
+		//while (list($country_dir, $country_name) = @each($countries))
+		foreach ($countries as $country_dir => $country_name)
 		{
 			if (empty($new_values[$country_dir]))
 			{
@@ -206,7 +209,8 @@ if ($mode == 'key')
 		$entries['pack'][$new_main][$new_sub] = $new_pack;
 		$entries['admin'][$new_main][$new_sub] = ($new_level == 'admin');
 		@reset($new_values);
-		while (list($new_country, $new_value) = @each($new_values))
+		//while (list($new_country, $new_value) = @each($new_values))
+		foreach ($new_values as $new_country => $new_value)
 		{
 			if (!empty($new_value))
 			{
@@ -243,7 +247,8 @@ if ($mode == 'key')
 		// pack list
 		$s_packs = '';
 		@reset($packs);
-		while (list($file, $name) = @each($packs))
+		//while (list($file, $name) = @each($packs))
+		foreach ($packs as $file => $name)
 		{
 			$selected = ($file == $pack_file) ? ' selected="selected"' : '';
 			/* MG Lang DB - BEGIN */
@@ -285,7 +290,8 @@ if ($mode == 'key')
 
 		// get all language values
 		@reset($countries);
-		while (list($country_dir, $country_name) = each($countries))
+		//while (list($country_dir, $country_name) = each($countries))
+		foreach ($countries as $country_dir => $country_name)
 		{
 			$value = $entries['value'][$key_main][$key_sub][$country_dir];
 			$status = $entries['status'][$key_main][$key_sub][$country_dir];
@@ -368,10 +374,12 @@ if ($mode == 'pack')
 		$color = false;
 		$i = 0;
 		@reset($entries['pack']);
-		while (list($key_main, $data) = @each($entries['pack']))
+		//while (list($key_main, $data) = @each($entries['pack']))
+		foreach ($entries['pack'] as $key_main => $data)
 		{
 			@reset($data);
-			while (list($key_sub, $pack) = @each($data))
+			//while (list($key_sub, $pack) = @each($data))
+			foreach ($data as $key_sub => $pack)
 			{
 				if (($pack == $pack_file) && (($entries['admin'][$key_main][$key_sub] && ($level == 'admin')) || (!$entries['admin'][$key_main][$key_sub] && ($level == 'normal'))))
 				{
@@ -388,7 +396,8 @@ if ($mode == 'pack')
 					{
 						$found = false;
 						@reset($entries['status'][$key_main][$key_sub]);
-						while (list($country_dir, $status) = @each($entries['status'][$key_main][$key_sub]))
+						//while (list($country_dir, $status) = @each($entries['status'][$key_main][$key_sub]))
+						foreach ($entries['status'][$key_main][$key_sub] as $country_dir => $status)
 						{
 							$found = ($status > 0);
 							if ($found)
@@ -469,10 +478,12 @@ if ($mode == 'search')
 
 		// check each entry
 		@reset($entries['pack']);
-		while (list($key_main, $subs) = @each($entries['pack']))
+		//while (list($key_main, $subs) = @each($entries['pack']))
+		foreach ($entries['pack'] as $key_main => $subs)
 		{
 			@reset($subs);
-			while (list($key_sub, $pack_dir) = @each($subs))
+			//while (list($key_sub, $pack_dir) = @each($subs))
+			foreach ($subs as $key_sub => $pack_dir)
 			{
 				$admin = $entries['admin'][$key_main][$key_sub];
 				if (($admin && ($search_admin != 1)) || (!$admin && ($search_admin != 0)))
@@ -492,7 +503,8 @@ if ($mode == 'search')
 
 					$words_val = array();
 					@reset($countries);
-					while (list($country, $country_name) = @each($countries))
+					//while (list($country, $country_name) = @each($countries))
+					foreach ($countries as $country => $country_name)
 					{
 						if (empty($search_country) || ($country == $search_country))
 						{
@@ -575,7 +587,8 @@ if ($mode == 'search')
 			{
 				$found = false;
 				@reset($entries['status'][$key_main][$key_sub]);
-				while (list($country_dir, $status) = @each($entries['status'][$key_main][$key_sub]))
+				//while (list($country_dir, $status) = @each($entries['status'][$key_main][$key_sub]))
+				foreach ($entries['status'][$key_main][$key_sub] as $country_dir => $status)
 				{
 					$found = ($status > 0);
 					if ($found)
@@ -659,7 +672,8 @@ if ($mode == '')
 	$i = 0;
 	$color = false;
 	@reset($packs);
-	while (list($pack_file, $pack_name) = @each($packs))
+	//while (list($pack_file, $pack_name) = @each($packs))
+	foreach ($packs as $pack_file => $pack_name)
 	{
 		$i++;
 		$color = !$color;
@@ -727,7 +741,8 @@ if ($mode == '')
 	$selected = empty($search_country) ? ' selected="selected"' : '';
 	$s_languages = '<option value=""' . $selected . '>' . $lang['Lang_extend_search_all_lang'] . '</option>';
 	@reset($countries);
-	while (list($country_dir, $country_name) = @each($countries))
+	//while (list($country_dir, $country_name) = @each($countries))
+	foreach ($countries as $country_dir => $country_name)
 	{
 		$selected = ($country_dir == $search_country) ? ' selected="selected"' : '';
 		$s_languages .= '<option value="' . $country_dir . '"' . $selected . '>' . $country_name . '</option>';

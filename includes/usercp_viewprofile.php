@@ -171,10 +171,9 @@ if ($target_user != $viewer_id)
 			(user_id, viewername, viewer_id, view_stamp, counter)
 			VALUES ('" . $db->sql_escape($target_user) . "', '" . $db->sql_escape($viewer) . "', '" . $db->sql_escape($viewer_id) . "', '" . $db->sql_escape($current_time) . "', '1')";
 		$db->sql_query($sql);
-		$count = $row['counter'] + 1;
 
 		$sql = "UPDATE " . PROFILE_VIEW_TABLE . "
-				SET view_stamp = '$current_time', counter = '$count'
+				SET view_stamp = '$current_time', counter = counter + 1
 				WHERE user_id = " . $target_user. "
 				AND viewer_id = " . $viewer_id;
 		$db->sql_query($sql);
@@ -244,23 +243,23 @@ if ($profiledata['user_session_time'] >= (time() - $config['online_time']))
 	if ($profiledata['user_allow_viewonline'])
 	{
 		$user_online_status = 'online';
-		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_online'] . '" alt="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_online'], $profiledata['username'])) . '" /></a>';
+		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_online'] . '" alt="' . htmlspecialchars($lang['Online']) . '" title="' . htmlspecialchars($lang['Online']) . '" /></a>';
 	}
 	elseif (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $profiledata['user_id']))
 	{
 		$user_online_status = 'hidden';
-		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_hidden'] . '" alt="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_hidden'], $profiledata['username'])) . '" /></a>';
+		$online_status_img = '<a href="' . append_sid(CMS_PAGE_VIEWONLINE) . '"><img src="' . $images['icon_hidden'] . '" alt="' . htmlspecialchars($lang['Hidden']) . '" title="' . htmlspecialchars($lang['Hidden']) . '" /></a>';
 	}
 	else
 	{
 		$user_online_status = 'offline';
-		$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" />';
+		$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars($lang['Offline']) . '" title="' . htmlspecialchars($lang['Offline']) . '" />';
 	}
 }
 else
 {
 	$user_online_status = 'offline';
-	$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" title="' . htmlspecialchars(sprintf($lang['is_offline'], $profiledata['username'])) . '" />';
+	$online_status_img = '<img src="' . $images['icon_offline'] . '" alt="' . htmlspecialchars($lang['Offline']) . '" title="' . htmlspecialchars($lang['Offline']) . '" />';
 }
 // ONLINE OFFLINE - END
 
@@ -360,7 +359,7 @@ $hostname = ($profiledata['user_registered_hostname'] == '') ? $lang['Not_record
 @include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 $bbcode->allow_html = $config['allow_html'];
 $bbcode->allow_bbcode = $config['allow_bbcode'];
-if ($config['allow_smilies'] && $profiledata['user_allowsmile'] && !$lofi)
+if ($config['allow_smilies'] && $profiledata['user_allowsmile'])
 {
 	$bbcode->allow_smilies = $config['allow_smilies'];
 }
@@ -485,7 +484,17 @@ $u_search_author = urlencode(strtr($profiledata['username'], array_flip(get_html
 $link_name = htmlspecialchars($profiledata['username']);
 $nav_server_url = create_server_url();
 $breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $profiledata['user_id']) . '"' . (!empty($link_name) ? '' : ' class="nav-current"') . '>' . $lang['Profile'] . '</a>' . (!empty($link_name) ? ($lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $link_name . '</a>') : '');
-$breadcrumbs['bottom_right_links'] = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author) . '">' . htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])) . '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow)) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . ALBUM_VIEW_LIST) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
+
+$album_bc_append = '';
+if (!empty($config['plugins']['album']['enabled']))
+{
+	$totalpicrow = (!empty($totalpicrow) ? $totalpicrow : 0);
+	$album_view_list = defined('ALBUM_VIEW_LIST') ? ALBUM_VIEW_LIST : 'list';
+
+	$album_bc_append = '</a><br /><a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id']) . '">' . htmlspecialchars(sprintf($lang['Personal_Gallery_Of_User_Profile'], $profiledata['username'], $totalpicrow)) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid('album.' . PHP_EXT . '?user_id=' . $profiledata['user_id'] . '&amp;mode=' . $album_view_list) . '">' . sprintf($lang['Picture_List_Of_User'], $profiledata['username']) . '</a>';
+}
+
+$breadcrumbs['bottom_right_links'] = '<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author . '&amp;search_topic_starter=1&amp;show_results=topics') . '">' . htmlspecialchars(sprintf($lang['Search_user_topics_started'], $profiledata['username'])) . '</a>&nbsp;&bull;&nbsp;<a href="' . append_sid(CMS_PAGE_SEARCH . '?search_author=' . $u_search_author) . '">' . htmlspecialchars(sprintf($lang['Search_user_posts'], $profiledata['username'])) . $album_bc_append;
 
 display_upload_attach_box_limits($profiledata['user_id']);
 
@@ -667,7 +676,6 @@ $template->assign_vars(array(
 	'L_INVISION_PPD_STATS' => $lang['Invision_PPD_Stats'],
 	'L_INVISION_SIGNATURE' => $lang['Invision_Signature'],
 	'L_INVISION_WEBSITE' => $lang['Invision_Website'],
-	'L_INVISION_VIEWING_PROFILE' => htmlspecialchars(sprintf($lang['Invision_View_Profile'], $profiledata['username'])),
 //====
 //==== Author: Disturbed One [http://anthonycoy.com] =================== |
 //==== End Invision View Profile ======================================= |
@@ -1099,6 +1107,8 @@ if ($user->data['user_level'] == ADMIN)
 $sql = "SELECT * FROM " . BANLIST_TABLE . " WHERE ban_userid = " . $profiledata['user_id'] . " OR ban_email = '" . $db->sql_escape($profiledata['user_email']) . "'";
 $result = $db->sql_query($sql);
 
+$banned_username = '';
+$banned_email = '';
 while ($row = $db->sql_fetchrow($result))
 {
 	$banned_username = $row['ban_userid'];

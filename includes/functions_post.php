@@ -216,7 +216,8 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 		if(!empty($poll_options))
 		{
 			$temp_option_text = array();
-			while(list($option_id, $option_text) = @each($poll_options))
+			//while(list($option_id, $option_text) = @each($poll_options))
+			foreach ($poll_options as $option_id => $option_text)
 			{
 				$option_text = trim($option_text);
 				if (!empty($option_text))
@@ -355,9 +356,11 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 		else
 		{
-			$sql = "UPDATE " . TOPICS_TABLE . " SET $sql WHERE topic_id = $topic_id";
+			$sql = "UPDATE " . TOPICS_TABLE . " SET {$sql} WHERE topic_id = {$topic_id}";
 		}
 
+		// TRANSACTION SHOULD START HERE!
+		$db->sql_transaction('begin');
 		$db->sql_query($sql);
 
 		if ($mode == 'newtopic')
@@ -442,7 +445,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 		$poll_option_id = 1;
 		@reset($poll_options);
-		while (list($option_id, $option_text) = each($poll_options))
+		//while (list($option_id, $option_text) = each($poll_options))
+		foreach ($poll_options as $option_id => $option_text)
 		{
 			if (!empty($option_text))
 			{
@@ -465,7 +469,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 				}
 				else
 				{
-					$sql = "UPDATE " . POLL_OPTIONS_TABLE . " SET " . $sql_tmp_option . " WHERE poll_option_id = $option_id AND topic_id = $topic_id";
+					$sql = "UPDATE " . POLL_OPTIONS_TABLE . " SET " . $sql_tmp_option . " WHERE poll_option_id = {$option_id} AND topic_id = {$topic_id}";
 				}
 				$db->sql_query($sql);
 
@@ -522,9 +526,43 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	$lock_post = request_boolean_var('post_locked', false);
 
-	$sql = ($mode != 'editpost') ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_subject, post_text, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_autolinks_acronyms, enable_sig, post_locked, post_images) VALUES (" . $topic_id . ", " . $forum_id . ", " . $user->data['user_id'] . ", '" . $db->sql_escape($post_username) . "', '" . $db->sql_escape($post_subject) . "', '" . $db->sql_escape($post_message) . "', " . $current_time . ", '" . $db->sql_escape($user->ip) . "', " . $bbcode_on . ", " . $html_on . ", " . $smilies_on . ", " . $acro_auto_on . ", " . $attach_sig . ", " . (!empty($lock_post) ? '1' : '0') . ", '" . $db->sql_escape($post_data['post_images']) . "')" : "UPDATE " . POSTS_TABLE . " SET post_username = '" . $db->sql_escape($post_username) . "', post_text = '" . $db->sql_escape($post_message) . "', post_text_compiled = '', post_subject = '" . $db->sql_escape($post_subject) . "', enable_bbcode = " . $bbcode_on . ", enable_html = " . $html_on . ", enable_smilies = " . $smilies_on . ", enable_autolinks_acronyms = " . $acro_auto_on . ", enable_sig = " . $attach_sig . ", post_locked = " . (!empty($lock_post) ? '1' : '0') . ", post_images = '" . $db->sql_escape($post_data['post_images']) . "' " . $edited_sql . " WHERE post_id = " . $post_id;
+	$query = array(
+		'post_username' => $post_username,
+		'post_subject' => $post_subject,
+		'post_text' => $post_message,
+		'post_text_compiled' => '',
+		'enable_bbcode' => $bbcode_on,
+		'enable_html' => $html_on,
+		'enable_smilies' => $smilies_on,
+		'enable_autolinks_acronyms' => $acro_auto_on,
+		'enable_sig' => $attach_sig,
+		'post_locked' => !empty($lock_post) ? '1' : '0',
+		'post_images' => $post_data['post_images']
+	);
+	if ($mode != 'editpost')
+	{
+		$query = array_merge($query, array(
+			'topic_id' => $topic_id,
+			'forum_id' => $forum_id,
+			'poster_id' => $user->data['user_id'],
+			'post_time' => $current_time,
+			'poster_ip' => $user->ip,
+			'edit_notes' => ''
+			)
+		);
+	}
+
+	$sql = $db->sql_build_insert_update($query, $mode != 'editpost');
+	if ($mode != 'editpost')
+	{
+		$sql = "INSERT INTO " . POSTS_TABLE . " " . $sql;
+	}
+	else
+	{
+		$sql = "UPDATE " . POSTS_TABLE . " SET {$sql} {$edited_sql} WHERE post_id = {$post_id}";
+	}
+
 	//die($sql);
-	$db->sql_transaction('begin');
 	$db->sql_query($sql);
 
 	if ($mode != 'editpost')

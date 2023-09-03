@@ -54,7 +54,8 @@ $return_limit = $__stats_config['return_limit'];
 $__stat_module_rows = array();
 $__count = 0;
 
-while (list($__module_id, $__module_name) = each($__module_rows))
+//while (list($__module_id, $__module_name) = each($__module_rows))
+foreach ($__module_rows as $__module_id => $__module_name)
 {
 	$__stat_module_rows[$__count]['module_id'] = $__module_id;
 	$__stat_module_rows[$__count]['module_name'] = $__module_name;

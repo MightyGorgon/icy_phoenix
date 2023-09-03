@@ -69,7 +69,7 @@ while ($row = $db->sql_fetchrow($result))
 $template->assign_vars(array(
 	'PAGINATION' => generate_pagination('profile_view_user.' . PHP_EXT . '?' . POST_USERS_URL . '=' . $user_id, $total, $config['posts_per_page'], $start),
 	'PROFILE' => '<a href="' . append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $user_id) . '" class="nav-current">' . $profile['username'] . '</a>',
-	'L_VIEW_TITLE' => $meta_content['page_title'],
+	'L_VIEW_TITLE' => (!empty($meta_content['page_title']) ? $meta_content['page_title'] : ''),
 	'L_VIEWER' => $lang['Username'],
 	'L_NUMBER' => $lang['Views'],
 	'L_STAMP' => $lang['Last_updated']

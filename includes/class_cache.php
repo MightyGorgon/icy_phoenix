@@ -42,6 +42,7 @@ class sql_db_fake_id
 */
 class DbObjectStorage extends SplObjectStorage
 {
+	#[\ReturnTypeWillChange]
 	public function getHash($o)
 	{
 		if ($o instanceof sql_db_fake_id)

@@ -26,6 +26,12 @@ if (empty($lang) || !is_array($lang))
 	$lang = array();
 }
 
+if (!defined('DIGEST_SITE_URL'))
+{
+	$digest_server_url = create_server_url();
+	define('DIGEST_SITE_URL', $digest_server_url);
+}
+
 $lang = array_merge($lang, array(
 // This block goes as default text in the emailed digest (mail_digests.php)
 	'digest_introduction' => 'As you requested, here is the latest digest of messages posted on ' . $config['sitename'] . ' forums. Please come and join the discussion!',

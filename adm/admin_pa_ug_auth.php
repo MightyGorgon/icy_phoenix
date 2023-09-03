@@ -106,7 +106,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 	{
 		$auth_field = $cat_auth_fields[$j];
 
-		while(list($cat_id, $value) = @each($_POST['private_' . $auth_field]))
+		//while(list($cat_id, $value) = @each($_POST['private_' . $auth_field]))
+		foreach ($_POST['private_' . $auth_field] as $cat_id => $value)
 		{
 			$change_acl_list[$cat_id][$auth_field] = $value;
 		}
@@ -180,7 +181,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 
 	// Checks complete, make updates to DB
 	$delete_sql = '';
-	while(list($cat_id, $action) = @each($cat_auth_action))
+	//while(list($cat_id, $action) = @each($cat_auth_action))
+	foreach ($cat_auth_action as $cat_id => $action)
 	{
 		if ($action == 'delete')
 		{
@@ -192,7 +194,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			{
 				$sql_field = '';
 				$sql_value = '';
-				while (list($auth_type, $value) = @each($update_acl_status[$cat_id]))
+				//while (list($auth_type, $value) = @each($update_acl_status[$cat_id]))
+				foreach ($update_acl_status[$cat_id] as $auth_type => $value)
 				{
 					$sql_field .= (($sql_field != '') ? ', ' : '') . $auth_type;
 					$sql_value .= (($sql_value != '') ? ', ' : '') . $value;
@@ -206,7 +209,8 @@ if (isset($_POST['submit']) && ((($mode == 'user') && $user_id) || (($mode == 'g
 			else
 			{
 				$sql_values = '';
-				while (list($auth_type, $value) = @each($update_acl_status[$cat_id]))
+				//while (list($auth_type, $value) = @each($update_acl_status[$cat_id]))
+				foreach ($update_acl_status[$cat_id] as $auth_type => $value)
 				{
 					$sql_values .= (($sql_values != '') ? ', ' : '') . $auth_type . ' = ' . $value;
 				}
@@ -313,7 +317,8 @@ elseif (isset($_POST['submit']) && ((($mode == 'glob_user') && $user_id) || (($m
 		{
 			$sql_field = '';
 			$sql_value = '';
-			while (list($auth_type, $value) = @each($update_acl_status))
+			//while (list($auth_type, $value) = @each($update_acl_status))
+			foreach ($update_acl_status as $auth_type => $value)
 			{
 				$sql_field .= (($sql_field != '') ? ', ' : '') . $auth_type;
 				$sql_value .= (($sql_value != '') ? ', ' : '') . $value;
@@ -324,7 +329,8 @@ elseif (isset($_POST['submit']) && ((($mode == 'glob_user') && $user_id) || (($m
 		else
 		{
 			$sql_values = '';
-			while (list($auth_type, $value) = @each($update_acl_status))
+			//while (list($auth_type, $value) = @each($update_acl_status))
+			foreach ($update_acl_status as $auth_type => $value)
 			{
 				$sql_values .= (($sql_values != '') ? ', ' : '') . $auth_type . ' = ' . $value;
 			}

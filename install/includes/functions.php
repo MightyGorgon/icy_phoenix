@@ -174,6 +174,7 @@ function make_jumpbox($action, $match_forum_id = 0)
 		$category_rows[] = $row;
 	}
 
+	$boxstring = '';
 	if ( $total_categories = sizeof($category_rows) )
 	{
 		$sql = "SELECT *
@@ -447,21 +448,22 @@ function setup_style($style)
 
 	$template = new Template(IP_ROOT_PATH . $template_path . $template_name);
 
-	if ( $template )
+	if ($template)
 	{
 		$current_template_path = $template_path . $template_name;
 		@include(IP_ROOT_PATH . $template_path . $template_name . '/' . $template_name . '.cfg');
 
-		if ( !defined('TEMPLATE_CONFIG') )
+		if (!defined('TEMPLATE_CONFIG'))
 		{
 			message_die(CRITICAL_ERROR, "Could not open $template_name template config file", '', __LINE__, __FILE__);
 		}
 
-		$img_lang = ( file_exists(@phpbb_realpath(IP_ROOT_PATH . $current_template_path . '/images/lang_' . $config['default_lang'])) ) ? $config['default_lang'] : 'english';
+		$img_lang = (file_exists(@phpbb_realpath(IP_ROOT_PATH . $current_template_path . '/images/lang_' . $config['default_lang']))) ? $config['default_lang'] : 'english';
 
-		while( list($key, $value) = @each($images) )
+		//while(list($key, $value) = @each($images))
+		foreach ($images as $key => $value)
 		{
-			if ( !is_array($value) )
+			if (!is_array($value))
 			{
 				$images[$key] = str_replace('{LANG}', 'lang_' . $img_lang, $value);
 			}
@@ -491,10 +493,11 @@ function create_date($format, $gmepoch, $tz)
 	global $config, $lang;
 	static $translate;
 
-	if ( empty($translate) && $config['default_lang'] != 'english' )
+	if (empty($translate) && $config['default_lang'] != 'english')
 	{
 		@reset($lang['datetime']);
-		while ( list($match, $replace) = @each($lang['datetime']) )
+		//while (list($match, $replace) = @each($lang['datetime']))
+		foreach ($lang['datetime'] as $match => $replace)
 		{
 			$translate[$match] = $replace;
 		}
@@ -683,7 +686,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 	// Get SQL error if we are debugging. Do this as soon as possible to prevent
 	// subsequent queries from overwriting the status of sql_error()
 	//
-	if ( DEBUG && ( $msg_code == GENERAL_ERROR || $msg_code == CRITICAL_ERROR ) )
+	if (DEBUG && ($msg_code == GENERAL_ERROR || $msg_code == CRITICAL_ERROR))
 	{
 		$sql_error = $db->sql_error();
 
@@ -705,7 +708,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 		}
 	}
 
-	if( empty($user->data) && ( $msg_code == GENERAL_MESSAGE || $msg_code == GENERAL_ERROR ) )
+	if( empty($user->data) && ($msg_code == GENERAL_MESSAGE || $msg_code == GENERAL_ERROR))
 	{
 		// Start session management
 		$user->session_begin();
@@ -994,7 +997,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 	{
 		for ($j = 0; $j < sizeof($synonym_list); $j++)
 		{
-			list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_list[$j])));
+			list($replace_synonym, $match_synonym) = preg_split('/ /', trim(strtolower($synonym_list[$j])));
 			if ( $mode == 'post' || ( $match_synonym != 'not' && $match_synonym != 'and' && $match_synonym != 'or' ) )
 			{
 				$entry =  str_replace(' ' . trim($match_synonym) . ' ', ' ' . trim($replace_synonym) . ' ', $entry);
@@ -1033,7 +1036,8 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 
 	$word = array();
 	$word_insert_sql = array();
-	while (list($word_in, $search_matches) = @each($search_raw_words))
+	//while (list($word_in, $search_matches) = @each($search_raw_words))
+	foreach ($search_raw_words as $word_in => $search_matches)
 	{
 		$word_insert_sql[$word_in] = '';
 		if (!empty($search_matches))
@@ -1152,17 +1156,18 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 		}
 	}
 
-	while( list($word_in, $match_sql) = @each($word_insert_sql) )
+	//while(list($word_in, $match_sql) = @each($word_insert_sql))
+	foreach ($word_insert_sql as $word_in => $match_sql)
 	{
-		$title_match = ( $word_in == 'title' ) ? 1 : 0;
+		$title_match = ($word_in == 'title') ? 1 : 0;
 
-		if ( $match_sql != '' )
+		if ($match_sql != '')
 		{
 			$sql = "INSERT INTO " . SEARCH_MATCH_TABLE . " (post_id, word_id, title_match)
 				SELECT $post_id, word_id, $title_match
 					FROM " . SEARCH_WORD_TABLE . "
 					WHERE word_text IN ($match_sql)";
-			if ( !$db->sql_query($sql) )
+			if (!$db->sql_query($sql))
 			{
 				message_die(GENERAL_ERROR, 'Could not insert new word matches', '', __LINE__, __FILE__, $sql);
 			}

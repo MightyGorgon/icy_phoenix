@@ -55,7 +55,8 @@ if (isset($_POST['submit']))
 		'email' => 'email',
 	);
 
-	while(list($var, $param) = @each($strip_var_list))
+	//while(list($var, $param) = @each($strip_var_list))
+	foreach($strip_var_list as $var => $param)
 	{
 		${$var} = request_post_var($param, '', true);
 	}
@@ -153,7 +154,11 @@ if (isset($_POST['submit']))
 			'user_lang' => $user_lang,
 			'user_level' => 0,
 			'user_active' => 1,
-			'user_actkey' => 'user_actkey'
+			'user_actkey' => 'user_actkey',
+			'user_cms_auth' => '',
+			'user_permissions' => '',
+			'user_sig' => '',
+			'user_selfdes' => ''
 		);
 		$sql = "INSERT INTO " . USERS_TABLE . " " . $db->sql_build_insert_update($user_insert_array, true);
 		$db->sql_transaction('begin');

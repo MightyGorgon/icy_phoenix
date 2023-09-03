@@ -46,7 +46,7 @@ class emailer
 		$this->reset();
 
 		// Determine EOL character (\n for UNIX, \r\n for Windows and \r for Mac)
-		$this->eol = (!defined('PHP_EOL')) ? (($eol = strtolower(substr(PHP_OS, 0, 3))) == 'win') ? "\r\n" : (($eol == 'mac') ? "\r" : "\n") : PHP_EOL;
+		$this->eol = (!defined('PHP_EOL')) ? ((($eol = strtolower(substr(PHP_OS, 0, 3))) == 'win') ? "\r\n" : (($eol == 'mac') ? "\r" : "\n")) : PHP_EOL;
 		$this->eol = (!$this->eol) ? "\n" : $this->eol;
 	}
 
@@ -309,7 +309,8 @@ class emailer
 
 		// Set vars
 		reset($this->vars);
-		while(list($key, $val) = each($this->vars))
+		//while(list($key, $val) = each($this->vars))
+		foreach ($this->vars as $key => $val)
 		{
 			${$key} = $val;
 		}
@@ -318,7 +319,8 @@ class emailer
 
 		// Clear vars
 		reset($this->vars);
-		while(list($key, $val) = each($this->vars))
+		//while(list($key, $val) = each($this->vars))
+		foreach ($this->vars as $key => $val)
 		{
 			unset(${$key});
 		}
@@ -709,7 +711,7 @@ class queue
 		$this->cache_file = IP_ROOT_PATH . 'cache/queue.' . PHP_EXT;
 
 		// Determine EOL character (\n for UNIX, \r\n for Windows and \r for Mac)
-		$this->eol = (!defined('PHP_EOL')) ? (($eol = strtolower(substr(PHP_OS, 0, 3))) == 'win') ? "\r\n" : (($eol == 'mac') ? "\r" : "\n") : PHP_EOL;
+		$this->eol = (!defined('PHP_EOL')) ? ((($eol = strtolower(substr(PHP_OS, 0, 3))) == 'win') ? "\r\n" : (($eol == 'mac') ? "\r" : "\n")) : PHP_EOL;
 		$this->eol = (!$this->eol) ? "\n" : $this->eol;
 	}
 

@@ -99,7 +99,7 @@ function create_meta_content()
 		$sql = "SELECT c.forum_name AS cat_name, c.forum_name_clean AS cat_name_clean, c.forum_desc
 						FROM " . FORUMS_TABLE . " c
 						WHERE c.forum_id = " . $meta_content['cat_id'] . "
-							AND f.forum_type = " . FORUM_CAT . "
+							AND c.forum_type = " . FORUM_CAT . "
 						LIMIT 1";
 		$db->sql_return_on_error(true);
 		$result = $db->sql_query($sql);

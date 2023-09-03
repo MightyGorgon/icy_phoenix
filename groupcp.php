@@ -547,7 +547,8 @@ elseif ($group_id)
 							}
 							while ($row = $db->sql_fetchrow($result));
 
-							while(list($user_id, $group_list) = @each($group_check))
+							//while(list($user_id, $group_list) = @each($group_check))
+							foreach ($group_check as $user_id => $group_list)
 							{
 								if (sizeof($group_list) == 1)
 								{

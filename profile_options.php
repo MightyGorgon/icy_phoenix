@@ -94,8 +94,9 @@ if (($view_user_id != $user->data['user_id']) && ($user->data['user_level'] != A
 }
 
 // create entry if NULL: fix isset issue
-@reset($target_userdata);
-while (list($key, $data) = each($target_userdata))
+//@reset($target_userdata);
+//while (list($key, $data) = each($target_userdata))
+foreach ($target_userdata as $key => $data)
 {
 	if ($target_userdata[$key] == NULL)
 	{
@@ -168,7 +169,7 @@ if ($sub_id > sizeof($sub_keys[$mod_id]))
 $mod_name = $mod_keys[$mod_id];
 
 // sub name
-$sub_name = $sub_keys[$mod_id][$sub_id];
+$sub_name = !empty($sub_keys[$mod_id][$sub_id]) ? $sub_keys[$mod_id][$sub_id] : '';
 
 // buttons
 $submit = isset($_POST['submit']) ? true : false;
@@ -190,16 +191,20 @@ if ($submit)
 	$error_msg = '';
 
 	// format and verify data
-	@reset($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while (list($config_name, $config_data) = @each($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+	//@reset($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
+	//while (list($config_name, $config_data) = @each($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+	foreach ($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'] as $config_name => $config_data)
 	{
-		if (isset($_POST[$config_data['user']]) && $class_settings->is_auth($config_data['auth']))
+		$user_check = (!empty($config_data['user']) && isset($_POST[$config_data['user']])) ? true : false;
+		$config_data['auth'] = !empty($config_data['auth']) ? $config_data['auth'] : false;
+
+		if (!empty($user_check) && $class_settings->is_auth($config_data['auth']))
 		{
 			$config_data['name'] = $config_data['user'];
 			$config_data['default'] = $_POST[$config_data['user']];
 			$config_value = $class_form->validate_value($config_data);
 
-			if ((isset($target_userdata[$config_data['name']]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || $config_data['system'])
+			if ((isset($target_userdata[$config_data['name']]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || !empty($config_data['system']))
 			{
 				// update
 				$sql = "UPDATE " . USERS_TABLE . "
@@ -227,7 +232,7 @@ else
 
 	// header
 	$template->assign_vars(array(
-		'L_OPTION' => $meta_content['page_title'],
+		'L_OPTION' => !empty($meta_content['page_title']) ? $meta_content['page_title'] : '',
 		'U_OPTION' => $return_link,
 		'L_MOD_NAME' => $pcp_section,
 		'U_USER' => append_sid(CMS_PAGE_PROFILE . '?mode=viewprofile&amp;' . POST_USERS_URL . '=' . $view_user_id),
@@ -266,12 +271,23 @@ else
 	}
 
 	// send items
-	@reset($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while (list($config_name, $config_data) = @each($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+	//@reset($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
+	//while (list($config_name, $config_data) = @each($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+	//print_r($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
+	$modules_settings = array();
+	if (!empty($class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']))
+	{
+		$modules_settings = $class_settings->modules[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'];
+	}
+	else
+	{
+		$modules_settings = $class_settings->modules[$menu_name]['data'][$mod_name]['data'];
+	}
+	foreach ($modules_settings as $config_name => $config_data)
 	{
 		// process only fields from users table
-		$user_field = $config_data['user'];
-		if (((!empty($user_field) && isset($target_userdata[$user_field]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || $config_data['system']) && $class_settings->is_auth($config_data['auth'], $user_level))
+		$user_field = !empty($config_data['user']) ? $config_data['user'] : false;
+		if (((!empty($user_field) && isset($target_userdata[$user_field]) && (!$config[$config_name . '_over'] || ($user->data['user_level'] == ADMIN))) || !empty($config_data['system'])) && (empty($config_data['auth']) ||$class_settings->is_auth($config_data['auth'], $user_level)))
 		{
 			$config_data['name'] = $config_data['user'];
 			$config_data['default'] = $target_userdata[$user_field];
@@ -288,6 +304,7 @@ else
 	}
 
 	// system
+	$s_hidden_fields = '';
 	$s_hidden_fields .= '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="view_user_id" value="' . $view_user_id . '" />';
 	$s_hidden_fields .= '<input type="hidden" name="sub" value="' . $menu_name . '" />';

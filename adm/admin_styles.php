@@ -55,7 +55,8 @@ switch($mode)
 			{
 				if($template_name[$i]['style_name'] == $style_name)
 				{
-					while(list($key, $val) = each($template_name[$i]))
+					//while(list($key, $val) = each($template_name[$i]))
+					foreach ($template_name[$i] as $key => $val)
 					{
 						$db_fields[] = $key;
 						$db_values[] = str_replace("\'", "''" , $val);
@@ -196,7 +197,8 @@ switch($mode)
 				$sql = "UPDATE " . THEMES_TABLE . " SET ";
 				$count = 0;
 
-				while(list($key, $val) = each($updated))
+				//while(list($key, $val) = each($updated))
+				foreach ($updated as $key => $val)
 				{
 					if($count != 0)
 					{
@@ -227,7 +229,8 @@ switch($mode)
 					message_die(GENERAL_ERROR, $lang['Style_exists'], $lang['Error']);
 				}
 
-				while(list($key, $val) = each($updated))
+				//while(list($key, $val) = each($updated))
+				foreach ($updated as $key => $val)
 				{
 					$field_names[] = $key;
 
@@ -292,7 +295,8 @@ switch($mode)
 
 				if ($selected_values = $db->sql_fetchrow($result))
 				{
-					while(list($key, $val) = @each($selected_values))
+					//while(list($key, $val) = @each($selected_values))
+					foreach ($selected_values as $key => $val)
 					{
 						$selected[$key] = $val;
 					}
@@ -396,7 +400,8 @@ switch($mode)
 
 			for($i = 0; $i < sizeof($theme_rowset); $i++)
 			{
-				while(list($key, $val) = each($theme_rowset[$i]))
+				//while(list($key, $val) = each($theme_rowset[$i]))
+				foreach ($theme_rowset[$i] as $key => $val)
 				{
 					if(!intval($key) && ($key != "0") && ($key != 'themes_id'))
 					{

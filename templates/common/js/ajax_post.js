@@ -35,9 +35,6 @@ $(function () {
 			.animate({opacity: 1}, 1500)
 		;
 
-			// progressively show the new posts over 1.5s
-			.animate({opacity: 1}, 1500)
-		;
 		refreshViewtopicData();
 
 		return $newPosts.length;

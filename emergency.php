@@ -107,7 +107,8 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 	unset($input['input']);
 	unset($input['not_unset']);
 
-	while (list($var,) = @each($input))
+	//while (list($var,) = @each($input))
+	foreach ($input as $var => $val)
 	{
 		if (in_array($var, $not_unset))
 		{

@@ -38,6 +38,7 @@ if(!function_exists('cms_block_poll'))
 			$order_sql = 'ORDER BY RAND()';
 		}
 
+		$in_sql = '';
 		if (($cms_config_vars['md_poll_type'][$block_id] != 2) && !empty($cms_config_vars['md_poll_forum_id'][$block_id]))
 		{
 			$in_sql = 't.forum_id IN (' . $cms_config_vars['md_poll_forum_id'][$block_id] . ') AND';

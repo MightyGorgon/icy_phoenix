@@ -73,10 +73,14 @@ function auth($type, $forum_id, &$user_data, $f_access = '')
 		{
 			for ($i = 0; $i < sizeof($tree['data']); $i++)
 			{
+				// Mighty Gorgon EDIT - BEGIN
+				// Maybe it's better to include also categories?
+				//$f_access[] = $tree['data'][$i];
 				if ($tree['type'][$i] == POST_FORUM_URL)
 				{
 					$f_access[] = $tree['data'][$i];
 				}
+				// Mighty Gorgon EDIT - END
 			}
 		}
 	}
@@ -171,6 +175,7 @@ function auth($type, $forum_id, &$user_data, $f_access = '')
 	// If f_access has been passed, or auth is needed to return an array of forums
 	// then we need to pull the auth information on the given forum (or all forums)
 	//
+
 	if (empty($f_access))
 	{
 		$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? (" WHERE a.forum_id = " . $forum_id) : '';
@@ -508,7 +513,7 @@ function build_exclusion_forums_list($only_auth_view = true)
 {
 	global $db, $config, $user, $lang, $tree;
 
-	$sql_auth = "SELECT forum_id, parent_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
+	$sql_auth = "SELECT forum_id, forum_type, parent_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
 	$result_auth = $db->sql_query($sql_auth, 0, 'forums_excluded_list_', FORUMS_CACHE_FOLDER);
 	$forum_data = array();
 	while($row_auth = $db->sql_fetchrow($result_auth))
@@ -561,7 +566,7 @@ function build_allowed_forums_list($return_array = false)
 {
 	global $db, $config, $user, $lang, $tree;
 
-	$sql_auth = "SELECT forum_id, parent_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
+	$sql_auth = "SELECT forum_id, forum_type, parent_id, forum_name, auth_view, auth_read, auth_post FROM " . FORUMS_TABLE;
 	$result_auth = $db->sql_query($sql_auth, 0, 'forums_allowed_list_', FORUMS_CACHE_FOLDER);
 	$forum_data = array();
 	while($row_auth = $db->sql_fetchrow($result_auth))
@@ -578,18 +583,23 @@ function build_allowed_forums_list($return_array = false)
 	{
 		$include_this = false;
 
-		if($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read'])
+		// Mighty Gorgon: added condition ($forum_data[$f]['forum_type'] == FORUM_POST)
+		if ($forum_data[$f]['forum_type'] == FORUM_POST)
 		{
-			$include_this = true;
+			if($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read'])
+			{
+				$include_this = true;
+			}
+	
+			// SELF AUTH - BEGIN
+			// Mighty Gorgon: added condition ($forum_data[$f]['forum_type'] == FORUM_POST)
+			// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
+			if(((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
+			{
+				$include_this = false;
+			}
+			// SELF AUTH - END
 		}
-
-		// SELF AUTH - BEGIN
-		// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
-		if(((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
-		{
-			$include_this = false;
-		}
-		// SELF AUTH - END
 
 		if ($include_this)
 		{

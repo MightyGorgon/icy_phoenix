@@ -33,7 +33,7 @@ if(!function_exists('cms_block_top_posters'))
 		$show_mods = true;
 		$top_posters_array = top_posters($top_posters_n, $show_admins, $show_mods, true);
 
-		$show_avatars = ($cms_config_vars['md_show_avatars'][$block_id] == true) ? true : false;
+		$show_avatars = !empty($cms_config_vars['md_show_avatars'][$block_id]) ? true : false;
 		$template->assign_var('S_SHOW_AVATARS', $show_avatars);
 
 		for ($i = 0; $i < sizeof($top_posters_array); $i++)

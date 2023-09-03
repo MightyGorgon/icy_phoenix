@@ -67,7 +67,8 @@ if ($mode == 'download')
 
 	$var_array = array('new_dbms', 'new_dbhost', 'new_dbname', 'new_dbuser', 'new_dbpasswd', 'new_table_prefix');
 	reset($var_array);
-	while (list(, $var) = each ($var_array))
+	//while (list(, $var) = each ($var_array))
+	foreach ($var_array as $key => $var)
 	{
 		${$var} = str_replace("'", "\\'", str_replace("\\", "\\\\", ${$var}));
 	}
@@ -600,7 +601,8 @@ switch($mode)
 					'mysql4' => array('LABEL' => 'MySQL 4.x or greater')
 				);
 				$dbms_select = '<select name="new_dbms">';
-				while (list($dbms_name, $details) = @each($available_dbms))
+				//while (list($dbms_name, $details) = @each($available_dbms))
+				foreach ($available_dbms as $dbms_name => $details)
 				{
 					$dbms_select .= '<option value="' . $dbms_name . '">' . $details['LABEL'] . '</option>';
 				}
@@ -814,7 +816,8 @@ switch($mode)
 	<ul>
 <?php
 				reset($default_config);
-				while (list($key, $value) = each($default_config))
+				//while (list($key, $value) = each($default_config))
+				foreach ($default_config as $key => $value)
 				{
 					$sql = 'SELECT config_value FROM ' . CONFIG_TABLE . "
 						WHERE config_name = '$key'";
@@ -1084,8 +1087,8 @@ switch($mode)
 				else // anonymous user does not exist
 				{
 					// Recreate entry
-					$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_allow_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_dateformat, user_actkey, user_newpasswd, user_notify, user_active)
-						VALUES (" . ANONYMOUS . ", 'Anonymous', 0, 0, '', '', '', '', '', '', '', '', 0, NULL, '', '', '', 0, 0, 1, 0, 1, 0, 1, 1, NULL, '', '', 0, '', '', '', 0, 0)";
+					$sql = "INSERT INTO " . USERS_TABLE . " (user_id, username, user_level, user_regdate, user_password, user_email, user_icq, user_website, user_occ, user_from, user_interests, user_sig, user_allow_viewemail, user_style, user_aim, user_yim, user_msnm, user_posts, user_attachsig, user_allowsmile, user_allowhtml, user_allowbbcode, user_allow_pm, user_notify_pm, user_allow_viewonline, user_rank, user_avatar, user_lang, user_timezone, user_dateformat, user_actkey, user_newpasswd, user_notify, user_active, user_cms_auth, user_permissions, user_selfdes)
+						VALUES (" . ANONYMOUS . ", 'Anonymous', 0, 0, '', '', '', '', '', '', '', '', 0, NULL, '', '', '', 0, 0, 1, 0, 1, 0, 1, 1, NULL, '', '', 0, '', '', '', 0, 0, '', '', '')";
 					$db->sql_return_on_error(true);
 					$result = $db->sql_query($sql);
 					$db->sql_return_on_error(false);
@@ -1198,7 +1201,8 @@ switch($mode)
 				// Get Variables
 				$var_array = array('new_dbms', 'new_dbhost', 'new_dbname', 'new_dbuser', 'new_dbpasswd', 'new_table_prefix');
 				reset($var_array);
-				while (list(, $var) = each ($var_array))
+				//while (list(, $var) = each ($var_array))
+				foreach ($var_array as $key => $var)
 				{
 					${$var} = (isset($_POST[$var])) ? stripslashes($_POST[$var]) : '';
 				}

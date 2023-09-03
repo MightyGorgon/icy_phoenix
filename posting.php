@@ -1586,7 +1586,8 @@ if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 	if (!empty($poll_options))
 	{
 		@reset($poll_options);
-		while(list($option_id, $option_text) = @each($poll_options))
+		//while(list($option_id, $option_text) = @each($poll_options))
+		foreach ($poll_options as $option_id => $option_text)
 		{
 			if(isset($_POST['del_poll_option'][$option_id]))
 			{
@@ -2467,8 +2468,11 @@ if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll']))
 
 	if(!empty($poll_options))
 	{
+		/*
 		@reset($poll_options);
 		while(list($option_id, $option_text) = each($poll_options))
+		*/
+		foreach($poll_option as $option_id => $option_text)
 		{
 			if (!empty($option_text))
 			{

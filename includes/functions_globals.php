@@ -22,11 +22,13 @@ function globals_addslashes()
 	{
 		if(is_array($_GET))
 		{
-			while(list($k, $v) = each($_GET))
+			//while(list($k, $v) = each($_GET))
+			foreach ($_GET as $k => $v)
 			{
 				if(is_array($_GET[$k]))
 				{
-					while(list($k2, $v2) = each($_GET[$k]))
+					//while(list($k2, $v2) = each($_GET[$k]))
+					foreach ($_GET[$k] as $k2 => $v2)
 					{
 						$_GET[$k][$k2] = addslashes($v2);
 					}
@@ -42,11 +44,13 @@ function globals_addslashes()
 
 		if(is_array($_POST))
 		{
-			while(list($k, $v) = each($_POST))
+			//while(list($k, $v) = each($_POST))
+			foreach ($_POST as $k => $v)
 			{
 				if(is_array($_POST[$k]))
 				{
-					while(list($k2, $v2) = each($_POST[$k]))
+					//while(list($k2, $v2) = each($_POST[$k]))
+					foreach ($_POST[$k] as $k2 => $v2)
 					{
 						$_POST[$k][$k2] = addslashes($v2);
 					}
@@ -62,11 +66,13 @@ function globals_addslashes()
 
 		if(is_array($_COOKIE))
 		{
-			while(list($k, $v) = each($_COOKIE))
+			//while(list($k, $v) = each($_COOKIE))
+			foreach ($_COOKIE as $k => $v)
 			{
 				if(is_array($_COOKIE[$k]))
 				{
-					while(list($k2, $v2) = each($_COOKIE[$k]))
+					//while(list($k2, $v2) = each($_COOKIE[$k]))
+					foreach ($_COOKIE[$k] as $k2 => $v2)
 					{
 						$_COOKIE[$k][$k2] = addslashes($v2);
 					}

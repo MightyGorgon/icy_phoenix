@@ -89,7 +89,7 @@ class class_topics
 	*/
 	function meta_content_init($row_data, $mode = 'topic')
 	{
-		global $meta_content;
+		global $lang, $meta_content;
 
 		$meta_content['cat_id'] = 0;
 		$meta_content['forum_id'] = 0;
@@ -293,7 +293,7 @@ class class_topics
 				$upi_calc = $this->upi_calc_unread_simple($topic_link['topic_id']);
 				$unread_topics = $upi_calc['unread'];
 				//$topic_link['type'] = $upi_calc['upi_prefix'] . $topic_link['type'];
-				$upi_calc['newest_post_id'] = $post_id;
+				//$upi_calc['newest_post_id'] = $post_id;
 			}
 			// UPI2DB - END
 			//--------------------------------------------------------
@@ -463,7 +463,7 @@ class class_topics
 		$bbcode->allow_smilies = $bbcode_allow_smilies_tmp;
 		*/
 
-		$topic_labels_select .= '<select name="label_id">';
+		$topic_labels_select = '<select name="label_id">';
 		$topic_labels_select .= '<option value="0">---</option>';
 		$topic_labels_select .= $topics_labels_options;
 		$topic_labels_select .= '</select>&nbsp;';

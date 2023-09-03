@@ -255,7 +255,8 @@ elseif (isset($_POST['group_update']))
 		$group_legend = isset($_POST['group_legend']) ? $_POST['group_legend'] : '0';
 		$group_count = request_var('group_count', 0);
 		$group_count_max = request_var('group_count_max', 0);
-		$group_count_enable = isset($_POST['group_count_enable']) ? true : false;
+		// Mighty Gorgon: group_count_enable MUST BE 1 or 0
+		$group_count_enable = isset($_POST['group_count_enable']) ? 1 : 0;
 		$group_count_update = isset($_POST['group_count_update']) ? true : false;
 		$group_count_delete = isset($_POST['group_count_delete']) ? true : false;
 
@@ -380,9 +381,12 @@ elseif (isset($_POST['group_update']))
 
 			adjust_legend_order();
 
-			$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
+			if(!empty($new_group_id))
+			{
+				$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)
 				VALUES ($new_group_id, $group_moderator, 0)";
-			$db->sql_query($sql);
+				$db->sql_query($sql);
+			}
 
 			if ($group_count_delete)
 			{
@@ -404,7 +408,7 @@ elseif (isset($_POST['group_update']))
 				$result = $db->sql_query($sql);
 
 				//inserting new users
-				$group_count_added=0;
+				$group_count_added = 0;
 				while (($new_members = $db->sql_fetchrow($result)))
 				{
 					$sql = "INSERT INTO " . USER_GROUP_TABLE . " (group_id, user_id, user_pending)

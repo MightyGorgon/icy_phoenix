@@ -92,24 +92,27 @@ function show_coppa()
 	$rules_block = array();
 	$rules_block_titles = array();
 
-	for($i = 0; $i < sizeof($rules); $i++)
+	if (!empty($rules))
 	{
-		if($rules[$i][0] != '--')
+		for($i = 0; $i < sizeof($rules); $i++)
 		{
-			$rules_block[$j][$counter]['id'] = $counter_2;
-			$rules_block[$j][$counter]['question'] = $rules[$i][0];
-			$rules_block[$j][$counter]['answer'] = $rules[$i][1];
-
-			$counter++;
-			$counter_2++;
-		}
-		else
-		{
-			$j = ($counter != 0) ? $j + 1 : 0;
-
-			$rules_block_titles[$j] = $rules[$i][1];
-
-			$counter = 0;
+			if($rules[$i][0] != '--')
+			{
+				$rules_block[$j][$counter]['id'] = $counter_2;
+				$rules_block[$j][$counter]['question'] = $rules[$i][0];
+				$rules_block[$j][$counter]['answer'] = $rules[$i][1];
+	
+				$counter++;
+				$counter_2++;
+			}
+			else
+			{
+				$j = ($counter != 0) ? $j + 1 : 0;
+	
+				$rules_block_titles[$j] = $rules[$i][1];
+	
+				$counter = 0;
+			}
 		}
 	}
 
@@ -302,7 +305,8 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	}
 
 	// Strip all tags from data ... may p**s some people off, bah, strip_tags is doing the job but can still break HTML output ... have no choice, have to use htmlspecialchars ... be prepared to be moaned at.
-	while(list($var, $param) = @each($strip_var_list))
+	//while(list($var, $param) = @each($strip_var_list))
+	foreach ($strip_var_list as $var => $param)
 	{
 		${$var} = request_post_var($param, '', true);
 	}
@@ -323,7 +327,8 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 		'username' => 'username'
 	);
 
-	while(list($var, $param) = @each($trim_var_list))
+	//while(list($var, $param) = @each($trim_var_list))
+	foreach ($trim_var_list as $var => $param)
 	{
 		${$var} = request_post_var($param, '', true);
 		${$var} = htmlspecialchars_decode(${$var}, ENT_COMPAT);
@@ -473,7 +478,7 @@ if (isset($_POST['submit']) || isset($_POST['avatargallery']) || isset($_POST['s
 	$user_avatar_generator = (!empty($user_avatarimage) && !empty($user_avatartext) && !empty($_POST['submitgenava']) && $config['allow_avatar_generator']) ? $user_avatar_filename : (!empty($user_avatargenerator) ? $user_avatargenerator : '');
 
 	$user_avatar_remoteurl = (!empty($user_avatar_remoteurl) ? $user_avatar_remoteurl : '');
-	$user_avatar_upload = (!empty($user_avatarurl) ? $user_avatarurl : (($_FILES['avatar']['tmp_name'] != 'none') ? $_FILES['avatar']['tmp_name'] : ''));
+	$user_avatar_upload = (!empty($user_avatarurl) ? $user_avatarurl : ((!empty($_FILES['avatar']['tmp_name']) && ($_FILES['avatar']['tmp_name'] != 'none')) ? $_FILES['avatar']['tmp_name'] : ''));
 	$user_avatar_name = (!empty($_FILES['avatar']['name']) ? $_FILES['avatar']['name'] : '');
 	$user_avatar_size = (!empty($_FILES['avatar']['size']) ? $_FILES['avatar']['size'] : 0);
 	$user_avatar_filetype = (!empty($_FILES['avatar']['type']) ? $_FILES['avatar']['type'] : '');
@@ -962,7 +967,6 @@ if (isset($_POST['submit']))
 	}
 	// Birthday - END
 
-
 	if (!$error)
 	{
 		if ($avatar_sql == '')
@@ -1221,8 +1225,8 @@ if (isset($_POST['submit']))
 // IN LINE ADD
 // , user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color
 // , $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color
-			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, username_clean, user_regdate, user_password, user_email, user_email_hash, user_website, user_occ, user_from, user_from_flag, user_first_name, user_last_name, user_interests, user_phone, user_selfdes, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_allow_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color" . $sn_im_sql_fields . ", user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_topic_show_days, user_topic_sortby_type, user_topic_sortby_dir, user_post_show_days, user_post_sortby_type, user_post_sortby_dir, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_birthday_y, user_birthday_m, user_birthday_d, user_next_birthday_greeting, user_facebook_id, user_google_id, user_active, user_actkey)
-				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', '" . $db->sql_escape(utf8_clean_string($username)) . "', " . time() . ", '" . $db->sql_escape(phpbb_hash($new_password)) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape(phpbb_email_hash($email)) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($user_first_name) . "', '" . $db->sql_escape($user_last_name) . "', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color" . $sn_im_sql_data . ", $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowpmin, $allowmassemail, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_topic_show_days) . "', '" . $db->sql_escape($user_topic_sortby_type) . "', '" . $db->sql_escape($user_topic_sortby_dir) . "', '" . $db->sql_escape($user_post_show_days) . "', '" . $db->sql_escape($user_post_sortby_type) . "', '" . $db->sql_escape($user_post_sortby_dir) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, $user_allow_pm, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', '$user_facebook_id', '$user_google_id', ";
+			$sql = "INSERT INTO " . USERS_TABLE . " (user_registered_ip, user_registered_hostname, user_id, username, username_clean, user_regdate, user_password, user_email, user_email_hash, user_website, user_occ, user_from, user_from_flag, user_first_name, user_last_name, user_interests, user_phone, user_selfdes, user_cms_auth, user_permissions, user_profile_view_popup, user_sig, user_avatar, user_avatar_type, user_allow_viewemail, user_upi2db_which_system, user_upi2db_new_word, user_upi2db_edit_word, user_upi2db_unread_color" . $sn_im_sql_fields . ", user_attachsig, user_allowsmile, user_showavatars, user_showsignatures, user_allowswearywords, user_allowhtml, user_allowbbcode, user_allow_pm_in, user_allow_mass_email, user_allow_viewonline, user_notify, user_notify_pm, user_popup_pm, user_timezone, user_time_mode, user_dst_time_lag, user_dateformat, user_posts_per_page, user_topics_per_page, user_hot_threshold, user_topic_show_days, user_topic_sortby_type, user_topic_sortby_dir, user_post_show_days, user_post_sortby_type, user_post_sortby_dir, user_lang, user_style, user_gender, user_level, user_allow_pm, user_birthday, user_birthday_y, user_birthday_m, user_birthday_d, user_next_birthday_greeting, user_facebook_id, user_google_id, user_active, user_actkey)
+				VALUES ('" . $db->sql_escape($user_registered_ip) . "', '" . $db->sql_escape($user_registered_hostname) . "', $user_id, '" . $db->sql_escape($username) . "', '" . $db->sql_escape(utf8_clean_string($username)) . "', " . time() . ", '" . $db->sql_escape(phpbb_hash($new_password)) . "', '" . $db->sql_escape($email) . "', '" . $db->sql_escape(phpbb_email_hash($email)) . "', '" . $db->sql_escape($website) . "', '" . $db->sql_escape($occupation) . "', '" . $db->sql_escape($location) . "', '$user_flag', '" . $db->sql_escape($user_first_name) . "', '" . $db->sql_escape($user_last_name) . "', '" . $db->sql_escape($interests) . "', '" . $db->sql_escape($phone) . "', '" . $db->sql_escape($selfdes) . "', '', '', $profile_view_popup, '" . $db->sql_escape($signature) . "', $avatar_sql, $viewemail, $upi2db_which_system, $upi2db_new_word, $upi2db_edit_word, $upi2db_unread_color" . $sn_im_sql_data . ", $attachsig, $allowsmilies, $showavatars, $showsignatures, $allowswearywords, $allowhtml, $allowbbcode, $allowpmin, $allowmassemail, $allowviewonline, $notifyreply, $notifypm, $popup_pm, $user_timezone, $time_mode, $dst_time_lag, '" . $db->sql_escape($user_dateformat) . "', '" . $db->sql_escape($user_posts_per_page) . "', '" . $db->sql_escape($user_topics_per_page) . "', '" . $db->sql_escape($user_hot_threshold) . "', '" . $db->sql_escape($user_topic_show_days) . "', '" . $db->sql_escape($user_topic_sortby_type) . "', '" . $db->sql_escape($user_topic_sortby_dir) . "', '" . $db->sql_escape($user_post_show_days) . "', '" . $db->sql_escape($user_post_sortby_type) . "', '" . $db->sql_escape($user_post_sortby_dir) . "', '" . $db->sql_escape($user_lang) . "', $user_style, '$gender', 0, $user_allow_pm, '$birthday', '$birthday_year', '$birthday_month', '$birthday_day', '$next_birthday_greeting', '$user_facebook_id', '$user_google_id', ";
 			if (($config['require_activation'] == USER_ACTIVATION_SELF) || ($config['require_activation'] == USER_ACTIVATION_ADMIN) || $coppa)
 			{
 				$user_actkey = gen_rand_string();
@@ -1701,29 +1705,35 @@ else
 			break;
 	}
 
+	$time_mode_manual_dst_checked = '';
+	$time_mode_server_switch_checked = '';
+	$time_mode_manual_checked = '';
 	switch ($time_mode)
 	{
 		case MANUAL_DST:
-			$time_mode_manual_dst_checked = 'checked="checked"';
+			$time_mode_manual_dst_checked = ' checked="checked"';
 			break;
 		case SERVER_SWITCH:
-			$time_mode_server_switch_checked = 'checked="checked"';
+			$time_mode_server_switch_checked = ' checked="checked"';
 			break;
 		default:
-			$time_mode_manual_checked = 'checked="checked"';
+			$time_mode_manual_checked = ' checked="checked"';
 			break;
 	}
 
+	$gender_male_checked = '';
+	$gender_female_checked = '';
+	$gender_no_specify_checked = '';
 	switch ($gender)
 	{
 		case 1:
-			$gender_male_checked = 'checked="checked"';
+			$gender_male_checked = ' checked="checked"';
 			break;
 		case 2:
-			$gender_female_checked = 'checked="checked"';
+			$gender_female_checked = ' checked="checked"';
 			break;
 		default:
-			$gender_no_specify_checked = 'checked="checked"';
+			$gender_no_specify_checked = ' checked="checked"';
 	}
 
 	if ($birthday != 999999)
@@ -2291,17 +2301,17 @@ else
 	$s_b_year = '<span class="genmed">' . $lang['Year'] . '&nbsp;</span>' . $s_birthday_year . '&nbsp;&nbsp;';
 	$i = 0;
 	$s_birthday = '';
-	for ($i = 0; $i <= strlen($lang['Submit_date_format']); $i++)
+	for ($i = 0; $i < strlen($lang['Submit_date_format']); $i++)
 	{
 		switch ($lang['Submit_date_format'][$i])
 		{
-			case d:
+			case 'd':
 				$s_birthday .= $s_b_day;
 				break;
-			case m:
+			case 'm':
 				$s_birthday .= $s_b_md;
 				break;
-			case Y:
+			case 'Y':
 				$s_birthday .= $s_b_year;
 				break;
 		}
@@ -2363,6 +2373,22 @@ else
 		$verify_un_js = 'onKeyUp="verifyUsername(this.value)"';
 		$verify_email_js = 'onKeyUp="verifyEmail(this.value)"';
 		*/
+	}
+
+	$available_networks = array();
+	$social_connect_append = '';
+	$social_network = request_get_var('social_network', '');
+	if ($config['enable_social_connect'])
+	{
+		include_once(IP_ROOT_PATH . 'includes/class_social_connect.' . PHP_EXT);
+		$available_networks = SocialConnect::get_available_networks();
+		if (!empty($social_network))
+		{
+			if (!empty($available_networks[$social_network]))
+			{
+				$social_connect_append = '&amp;social_network=' . $social_network;
+			}
+		}
 	}
 
 	// Let's do an overall check for settings/versions which would prevent us from doing file uploads....
@@ -2535,7 +2561,7 @@ else
 		'L_RETRO_SIG' => $lang['Retro_sig'],
 		'L_RETRO_SIG_EXPLAIN' => $lang['Retro_sig_explain'],
 		'L_RETRO_SIG_CHECKBOX' => $lang['Retro_sig_checkbox'],
-		'L_AVATAR_SIGNATURE' => $lang['Signature_Panel'],
+		'L_AVATAR_SIGNATURE' => $lang['Signature'],
 		'L_AVATAR_PANEL' => $lang['Avatar_panel'],
 		'L_AVATAR_EXPLAIN' => sprintf($lang['Avatar_explain'], $config['avatar_max_width'], $config['avatar_max_height'], (round($config['avatar_filesize'] / 1024))),
 		'L_UPLOAD_AVATAR_FILE' => $lang['Upload_Avatar_file'],

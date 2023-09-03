@@ -415,17 +415,27 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 	}
 	else
 	{
+		/*
 		list($key_type, $type) = each($default);
 		$type = gettype($type);
 		$key_type = gettype($key_type);
+		*/
+		reset($default);
+		$type = gettype(current($default));
+		$key_type = gettype(key($default));
 		if ($type == 'array')
 		{
 			reset($default);
 			$default = current($default);
+			/*
 			list($sub_key_type, $sub_type) = each($default);
 			$sub_type = gettype($sub_type);
 			$sub_type = ($sub_type == 'array') ? 'NULL' : $sub_type;
 			$sub_key_type = gettype($sub_key_type);
+			*/
+			$sub_type = gettype(current($default));
+			$sub_type = ($sub_type == 'array') ? 'NULL' : $sub_type;
+			$sub_key_type = gettype(key($default));
 		}
 	}
 
@@ -1915,8 +1925,9 @@ function phpbb_realpath($path)
 function create_server_url($without_script_path = false)
 {
 	// usage: $server_url = create_server_url();
-	global $config;
+	global $config, $_SERVER;
 
+	//$server_protocol = (stripos($_SERVER['SERVER_PROTOCOL'], 'https') === 0) ? 'https://' : 'http://';
 	$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
 	$server_name = preg_replace('#^\/?(.*?)\/?$#', '\1', trim($config['server_name']));
 	$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
@@ -2872,7 +2883,8 @@ function create_date($format, $gmepoch, $tz = 0)
 			$use_short_names = true;
 		}
 		@reset($lang['datetime']);
-		while (list($match, $replace) = @each($lang['datetime']))
+		//while (list($match, $replace) = @each($lang['datetime']))
+		foreach ($lang['datetime'] as $match => $replace)
 		{
 			$var_name = $match;
 			if ((strpos($match, '_short') !== false) && $use_short_names)
@@ -4393,7 +4405,7 @@ function page_header($title = '', $parse_template = false)
 	$page_url = pathinfo($_SERVER['SCRIPT_NAME']);
 	$page_query = $_SERVER['QUERY_STRING'];
 
-	$meta_content['page_title'] = !empty($title) ? $title : $meta_content['page_title'];
+	$meta_content['page_title'] = (!empty($title) ? $title : (!empty($meta_content['page_title']) ? $meta_content['page_title'] : ''));
 	$meta_content['page_title'] = empty($meta_content['page_title']) ? $config['sitename'] : strip_tags($meta_content['page_title']);
 	$meta_content['page_title_clean'] = empty($meta_content['page_title_clean']) ? strip_tags($meta_content['page_title']) : $meta_content['page_title_clean'];
 
@@ -4421,8 +4433,8 @@ function page_header($title = '', $parse_template = false)
 		else
 		{
 			$meta_content['page_title'] = (defined('IN_LOGIN') ? $lang['Login'] : $meta_content['page_title']);
-			$meta_content['description'] = (defined('IN_LOGIN') ? $lang['Default_META_Description'] : $meta_content['description']);
-			$meta_content['keywords'] = (defined('IN_LOGIN') ? $lang['Default_META_Keywords'] : $meta_content['keywords']);
+			$meta_content['description'] = (defined('IN_LOGIN') ? $lang['Default_META_Description'] : (!empty($meta_content['description']) ? $meta_content['description'] : ''));
+			$meta_content['keywords'] = (defined('IN_LOGIN') ? $lang['Default_META_Keywords'] : (!empty($meta_content['keywords']) ? $meta_content['keywords'] : ''));
 		}
 	}
 
@@ -4556,7 +4568,8 @@ function page_header($title = '', $parse_template = false)
 	);
 
 	$nav_links_html = '';
-	while(list($nav_item, $nav_array) = @each($nav_links))
+	//while(list($nav_item, $nav_array) = @each($nav_links))
+	foreach ($nav_links as $nav_item => $nav_array)
 	{
 		if (!empty($nav_array['url']))
 		{
@@ -4565,7 +4578,8 @@ function page_header($title = '', $parse_template = false)
 		else
 		{
 			// We have a nested array, used for items like <link rel='chapter'> that can occur more than once.
-			while(list(,$nested_array) = each($nav_array))
+			//while(list(,$nested_array) = each($nav_array))
+			foreach ($nav_array as $key => $nested_array)
 			{
 				$nav_links_html .= '<link rel="' . $nav_item . '" type="text/html" title="' . strip_tags($nested_array['title']) . '" href="' . $nav_base_url . $nested_array['url'] . '" />' . "\n";
 			}
@@ -4620,6 +4634,7 @@ function page_header($title = '', $parse_template = false)
 	$new_pm_switch = false;
 	$new_private_chat_switch = false;
 
+	$u_private_chat = '#';
 	// LOGGED IN CHECK - BEGIN
 	if (!$user->data['session_logged_in'])
 	{
@@ -4968,7 +4983,7 @@ function page_header($title = '', $parse_template = false)
 			);
 		}
 
-		if (((($config['login_history'] == 1) || ($config['login_ip_check'] == 1)) && ($user->data['session_logged_in'])))
+		if ((((!empty($config['login_history'])) || (!empty($config['login_ip_check']))) && (!empty($user->data['session_logged_in']))))
 		{
 			$template->assign_block_vars('login_sec_link', array());
 		}
@@ -5175,7 +5190,7 @@ function page_header($title = '', $parse_template = false)
 			/*
 			'L_WHOSONLINE_GAMES' => '<a href="'. append_sid('activity.' . PHP_EXT) .'"><span style="color:#'. str_replace('#', '', $config['ina_online_list_color']) . ';">' . $config['ina_online_list_text'] . '</span></a>',
 			*/
-			'P_ACTIVITY_MOD_PATH' => PLUGINS_PATH . $config['plugins']['activity']['dir'],
+			'P_ACTIVITY_MOD_PATH' => PLUGINS_PATH . (!empty($config['plugins']['activity']['dir']) ? $config['plugins']['activity']['dir'] : ''),
 			'U_ACTIVITY' => append_sid('activity.' . PHP_EXT),
 			'L_ACTIVITY' => $lang['Activity'],
 			// Activity - END
@@ -5517,7 +5532,7 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	$template->assign_vars(array(
 		'L_LOFI' => $lang['Lofi'],
 		'L_FULL_VERSION' => $lang['Full_Version'],
-		'LOFI' => $lofi . ($user->data['is_mobile'] ? ('&nbsp;&bull;&nbsp;' . $mobile_style) : ''),
+		'LOFI' => $lofi . (!empty($user->data['is_mobile']) ? ('&nbsp;&bull;&nbsp;' . $mobile_style) : ''),
 		'MOBILE_STYLE' => $mobile_style
 		)
 	);

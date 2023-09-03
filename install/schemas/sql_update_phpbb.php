@@ -260,7 +260,8 @@ switch ($current_phpbb_version)
 		}
 		$db->sql_freeresult($result);
 
-		while (list($topic_id, $topic_moved_id) = each($topic_ary))
+		//while (list($topic_id, $topic_moved_id) = each($topic_ary))
+		foreach ($topic_ary as $topic_id => $topic_moved_id)
 		{
 			$sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
 				FROM " . POSTS_TABLE . "
@@ -366,7 +367,8 @@ switch ($current_phpbb_version)
 			}
 			while ($row = $db->sql_fetchrow($result));
 
-			while (list($num, $user_ary) = each($update_users))
+			//while (list($num, $user_ary) = each($update_users))
+			foreach ($update_users as $num => $user_ary)
 			{
 				$user_ids = implode(', ', $user_ary);
 
@@ -394,7 +396,8 @@ switch ($current_phpbb_version)
 			}
 			while ($row = $db->sql_fetchrow($result));
 
-			while (list($num, $user_ary) = each($update_users))
+			//while (list($num, $user_ary) = each($update_users))
+			foreach ($update_users as $num => $user_ary)
 			{
 				$user_ids = implode(', ', $user_ary);
 

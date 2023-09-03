@@ -542,7 +542,8 @@ class auth_admin extends auth
 				);
 
 				@reset($content_array);
-				while (list($ug_id, $ug_array) = each($content_array))
+				//while (list($ug_id, $ug_array) = each($content_array))
+				foreach ($content_array as $ug_id => $ug_array)
 				{
 					// Build role dropdown options
 					$current_role_id = (isset($cur_roles[$ug_id][$forum_id])) ? $cur_roles[$ug_id][$forum_id] : 0;
@@ -550,7 +551,8 @@ class auth_admin extends auth
 					$s_role_options = '';
 
 					@reset($roles);
-					while (list($role_id, $role_row) = each($roles))
+					//while (list($role_id, $role_row) = each($roles))
+					foreach ($roles as $role_id => $role_row)
 					{
 						$role_description = (!empty($user->lang[$role_row['role_description']])) ? $user->lang[$role_row['role_description']] : nl2br($role_row['role_description']);
 						$role_name = (!empty($user->lang[$role_row['role_name']])) ? $user->lang[$role_row['role_name']] : $role_row['role_name'];
@@ -629,7 +631,8 @@ class auth_admin extends auth
 				);
 
 				@reset($content_array);
-				while (list($forum_id, $forum_array) = each($content_array))
+				//while (list($forum_id, $forum_array) = each($content_array))
+				foreach ($content_array as $forum_id => $forum_array)
 				{
 					// Build role dropdown options
 					$current_role_id = (isset($cur_roles[$ug_id][$forum_id])) ? $cur_roles[$ug_id][$forum_id] : 0;
@@ -637,7 +640,8 @@ class auth_admin extends auth
 					$s_role_options = '';
 
 					@reset($roles);
-					while (list($role_id, $role_row) = each($roles))
+					//while (list($role_id, $role_row) = each($roles))
+					foreach ($roles as $role_id => $role_row)
 					{
 						$role_description = (!empty($user->lang[$role_row['role_description']])) ? $user->lang[$role_row['role_description']] : nl2br($role_row['role_description']);
 						$role_name = (!empty($user->lang[$role_row['role_name']])) ? $user->lang[$role_row['role_name']] : $role_row['role_name'];
@@ -1196,7 +1200,8 @@ class auth_admin extends auth
 		global $template, $user, $phpbb_admin_path;
 
 		@reset($category_array);
-		while (list($cat, $cat_array) = each($category_array))
+		//while (list($cat, $cat_array) = each($category_array))
+		foreach ($category_array as $cat => $cat_array)
 		{
 			$template->assign_block_vars($tpl_cat, array(
 				'S_YES' => ($cat_array['S_YES'] && !$cat_array['S_NEVER'] && !$cat_array['S_NO']) ? true : false,
@@ -1223,7 +1228,8 @@ class auth_admin extends auth
 			unset($key_array, $values_array);
 */
 			@reset($cat_array['permissions']);
-			while (list($permission, $allowed) = each($cat_array['permissions']))
+			//while (list($permission, $allowed) = each($cat_array['permissions']))
+			foreach ($cat_array['permissions'] as $permission => $allowed)
 			{
 				if ($s_view)
 				{
@@ -1285,7 +1291,8 @@ class auth_admin extends auth
 			ksort($permissions);
 
 			@reset($permissions);
-			while (list($permission, $auth_setting) = each($permissions))
+			//while (list($permission, $auth_setting) = each($permissions))
+			foreach ($permissions as $permission => $auth_setting)
 			{
 				if (!isset($user->lang['acl_' . $permission]))
 				{

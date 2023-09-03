@@ -346,7 +346,7 @@ function jr_admin_make_left_pane()
 		$template->assign_block_vars('catrow', array(
 			//+MOD: DHTML Menu for ACP
 			'MENU_CAT_ID' => $menu_cat_id,
-			'MENU_CAT_ROWS' => sizeof($action_array),
+			'MENU_CAT_ROWS' => sizeof((array) $action_array),
 			'MENU_CAT_ICON' => $cat_icon,
 			//-MOD: DHTML Menu for ACP
 			'ADMIN_CATEGORY' => $cat_name

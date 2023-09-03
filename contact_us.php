@@ -269,7 +269,7 @@ if (isset($_POST['submit']))
 	}
 }
 
-if ($error)
+if (!empty($error))
 {
 	$template->set_filenames(array('reg_header' => 'error_body.tpl'));
 	$template->assign_vars(array(
@@ -279,11 +279,11 @@ if ($error)
 	$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
 }
 
+// Visual Confirmation
+$confirm_image = '';
+$s_hidden_fields = '';
 if (ENABLE_VISUAL_CONFIRM && !$user->data['session_logged_in'])
 {
-	// Visual Confirmation
-	$confirm_image = '';
-
 	// Clean old sessions and old confirm codes
 	$user->confirm_gc();
 

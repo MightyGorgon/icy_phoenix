@@ -33,7 +33,7 @@ CREATE TABLE `phpbb_adminedit` (
 CREATE TABLE `phpbb_ads` (
 	`ad_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
 	`ad_title` VARCHAR(255) NOT NULL,
-	`ad_text` TEXT NOT NULL,
+	`ad_text` TEXT NULL,
 	`ad_position` VARCHAR(255) NOT NULL,
 	`ad_auth` TINYINT(1) NOT NULL default '0',
 	`ad_format` TINYINT(1) NOT NULL default '0',
@@ -183,9 +183,9 @@ CREATE TABLE `phpbb_banlist` (
 	`ban_start` INT(11) DEFAULT NULL,
 	`ban_end` INT(11) DEFAULT NULL,
 	`ban_by_userid` MEDIUMINT(8) DEFAULT NULL,
-	`ban_priv_reason` TEXT NOT NULL,
+	`ban_priv_reason` TEXT NULL,
 	`ban_pub_reason_mode` TINYINT(1) DEFAULT NULL,
-	`ban_pub_reason` TEXT NOT NULL,
+	`ban_pub_reason` TEXT NULL,
 	PRIMARY KEY (`ban_id`),
 	KEY `ban_ip_user_id` (`ban_ip`,`ban_userid`)
 );
@@ -198,18 +198,18 @@ CREATE TABLE `phpbb_banlist` (
 ## `phpbb_bbcodes`
 
 CREATE TABLE `phpbb_bbcodes` (
-	bbcode_id MEDIUMINT(8) UNSIGNED NOT NULL auto_increment,
-	bbcode_tag VARCHAR(16) DEFAULT '' NOT NULL,
-	bbcode_helpline VARCHAR(255) DEFAULT '' NOT NULL,
-	display_on_posting TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
-	bbcode_match TEXT NOT NULL,
-	bbcode_tpl MEDIUMTEXT NOT NULL,
-	first_pass_match MEDIUMTEXT NOT NULL,
-	first_pass_replace MEDIUMTEXT NOT NULL,
-	second_pass_match MEDIUMTEXT NOT NULL,
-	second_pass_replace MEDIUMTEXT NOT NULL,
-	PRIMARY KEY (bbcode_id),
-	KEY display_on_post (display_on_posting)
+	`bbcode_id` MEDIUMINT(8) UNSIGNED NOT NULL auto_increment,
+	`bbcode_tag` VARCHAR(16) DEFAULT '' NOT NULL,
+	`bbcode_helpline` VARCHAR(255) DEFAULT '' NOT NULL,
+	`display_on_posting` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
+	`bbcode_match` TEXT NULL,
+	`bbcode_tpl` MEDIUMTEXT NULL,
+	`first_pass_match` MEDIUMTEXT NULL,
+	`first_pass_replace` MEDIUMTEXT NULL,
+	`second_pass_match` MEDIUMTEXT NULL,
+	`second_pass_replace` MEDIUMTEXT NULL,
+	PRIMARY KEY (`bbcode_id`),
+	KEY display_on_post (`display_on_posting`)
 );
 
 ## `phpbb_bbcodes`
@@ -256,7 +256,7 @@ CREATE TABLE phpbb_bots (
 
 CREATE TABLE `phpbb_config` (
 	`config_name` VARCHAR(190) NOT NULL DEFAULT '',
-	`config_value` TEXT NOT NULL,
+	`config_value` TEXT NULL,
 	PRIMARY KEY (`config_name`)
 );
 
@@ -393,10 +393,10 @@ CREATE TABLE `phpbb_forums` (
 	`main_type` CHAR(1) DEFAULT 'c',
 	`left_id` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`right_id` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
-	`forum_parents` MEDIUMTEXT NOT NULL,
+	`forum_parents` MEDIUMTEXT NULL,
 	`forum_name` VARCHAR(255) DEFAULT NULL,
 	`forum_name_clean` VARCHAR(255) DEFAULT NULL,
-	`forum_desc` TEXT NOT NULL,
+	`forum_desc` TEXT NULL,
 	`forum_status` TINYINT(4) NOT NULL DEFAULT '0',
 	`forum_order` MEDIUMINT(8) unsigned NOT NULL DEFAULT '1',
 	`forum_posts` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
@@ -419,7 +419,7 @@ CREATE TABLE `phpbb_forums` (
 	`forum_kb_mode` TINYINT(1) NOT NULL DEFAULT '0',
 	`forum_index_icons` TINYINT(1) NOT NULL DEFAULT '0',
 	`forum_rules_switch` TINYINT(1) unsigned NOT NULL DEFAULT '0',
-	`forum_rules` TEXT NOT NULL,
+	`forum_rules` TEXT NULL,
 	`forum_rules_display_title` TINYINT(1) NOT NULL DEFAULT '1',
 	`forum_rules_custom_title` VARCHAR(80) NOT NULL DEFAULT '',
 	`forum_rules_in_viewforum` TINYINT(1) unsigned NOT NULL DEFAULT '0',
@@ -486,7 +486,7 @@ CREATE TABLE `phpbb_groups` (
 	`group_type` TINYINT(4) NOT NULL DEFAULT '1',
 	`group_founder_manage` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
 	`group_name` VARCHAR(255) DEFAULT '' NOT NULL,
-	`group_description` TEXT NOT NULL,
+	`group_description` TEXT NULL,
 	`group_display` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
 	`group_moderator` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`group_single_user` TINYINT(1) NOT NULL DEFAULT '1',
@@ -506,6 +506,7 @@ CREATE TABLE `phpbb_groups` (
 	`upi2db_min_posts` MEDIUMINT(4) NOT NULL DEFAULT '0',
 	`upi2db_min_regdays` MEDIUMINT(4) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`group_id`),
+	#KEY `group_legend_name` (`group_legend`, `group_name`),
 	KEY `group_single_user` (`group_single_user`)
 );
 
@@ -522,10 +523,10 @@ CREATE TABLE `phpbb_hacks_list` (
 	`hack_desc` VARCHAR(255) NOT NULL DEFAULT '',
 	`hack_author` VARCHAR(255) NOT NULL DEFAULT '',
 	`hack_author_email` VARCHAR(255) NOT NULL DEFAULT '',
-	`hack_author_website` TINYTEXT,
+	`hack_author_website` TINYTEXT NULL,
 	`hack_version` VARCHAR(32) NOT NULL DEFAULT '',
 	`hack_hide` enum('Yes','No') NOT NULL DEFAULT 'No',
-	`hack_download_url` TINYTEXT,
+	`hack_download_url` TINYTEXT NULL,
 	`hack_file` VARCHAR(190) NOT NULL DEFAULT '',
 	`hack_file_mtime` INT(10) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (`hack_id`),
@@ -543,10 +544,10 @@ CREATE TABLE `phpbb_hacks_list` (
 
 CREATE TABLE `phpbb_jr_admin_users` (
 	`user_id` MEDIUMINT(9) NOT NULL DEFAULT '0',
-	`user_jr_admin` LONGTEXT NOT NULL,
+	`user_jr_admin` LONGTEXT NULL,
 	`start_date` INT(10) unsigned NOT NULL DEFAULT '0',
 	`update_date` INT(10) unsigned NOT NULL DEFAULT '0',
-	`admin_notes` TEXT NOT NULL,
+	`admin_notes` TEXT NULL,
 	`notes_view` TINYINT(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`user_id`)
 );
@@ -566,7 +567,7 @@ CREATE TABLE `phpbb_kb_articles` (
 	`article_date` VARCHAR(255) binary NOT NULL DEFAULT '',
 	`article_author_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`username` VARCHAR(255) DEFAULT NULL,
-	`article_body` TEXT NOT NULL,
+	`article_body` TEXT NULL,
 	`article_type` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
 	`approved` TINYINT(1) unsigned NOT NULL DEFAULT '0',
 	`topic_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
@@ -633,9 +634,9 @@ CREATE TABLE `phpbb_kb_config` (
 
 CREATE TABLE `phpbb_kb_custom` (
 	`custom_id` INT(50) NOT NULL auto_increment,
-	`custom_name` TEXT NOT NULL,
-	`custom_description` TEXT NOT NULL,
-	`data` TEXT NOT NULL,
+	`custom_name` TEXT NULL,
+	`custom_description` TEXT NULL,
+	`data` TEXT NULL,
 	`field_order` INT(20) NOT NULL DEFAULT '0',
 	`field_type` TINYINT(2) NOT NULL DEFAULT '0',
 	`regex` VARCHAR(255) NOT NULL DEFAULT '',
@@ -652,7 +653,7 @@ CREATE TABLE `phpbb_kb_custom` (
 CREATE TABLE `phpbb_kb_customdata` (
 	`customdata_file` INT(50) NOT NULL DEFAULT '0',
 	`customdata_custom` INT(50) NOT NULL DEFAULT '0',
-	`data` TEXT
+	`data` TEXT NULL
 );
 
 ## `phpbb_kb_customdata`
@@ -665,7 +666,7 @@ CREATE TABLE `phpbb_kb_customdata` (
 CREATE TABLE `phpbb_kb_results` (
 	`search_id` INT(11) unsigned NOT NULL DEFAULT '0',
 	`session_id` VARCHAR(32) NOT NULL DEFAULT '',
-	`search_array` TEXT NOT NULL,
+	`search_array` TEXT NULL,
 	PRIMARY KEY (`search_id`),
 	KEY `session_id` (`session_id`)
 );
@@ -680,7 +681,7 @@ CREATE TABLE `phpbb_kb_results` (
 CREATE TABLE `phpbb_kb_search` (
 	`search_id` INT(11) unsigned NOT NULL DEFAULT '0',
 	`session_id` VARCHAR(32) NOT NULL DEFAULT '',
-	`search_array` TEXT NOT NULL,
+	`search_array` TEXT NULL,
 	PRIMARY KEY (`search_id`),
 	KEY `session_id` (`session_id`)
 );
@@ -784,7 +785,7 @@ CREATE TABLE `phpbb_megamail` (
 	`user_id` MEDIUMINT(8) NOT NULL,
 	`group_id` MEDIUMINT(8) NOT NULL,
 	`email_subject` VARCHAR(255) NOT NULL,
-	`email_body` TEXT NOT NULL,
+	`email_body` TEXT NULL,
 	`email_format` TINYINT(1) NOT NULL default '0',
 	`batch_start` MEDIUMINT(8) NOT NULL,
 	`batch_size` smallint UNSIGNED NOT NULL,
@@ -903,10 +904,10 @@ CREATE TABLE `phpbb_pa_auth` (
 
 CREATE TABLE `phpbb_pa_cat` (
 	`cat_id` INT(10) NOT NULL auto_increment,
-	`cat_name` TEXT NOT NULL,
-	`cat_desc` TEXT NOT NULL,
+	`cat_name` TEXT NULL,
+	`cat_desc` TEXT NULL,
 	`cat_parent` INT(50) DEFAULT NULL,
-	`parents_data` TEXT NOT NULL,
+	`parents_data` TEXT NULL,
 	`cat_order` INT(50) DEFAULT NULL,
 	`cat_allow_file` TINYINT(2) NOT NULL DEFAULT '0',
 	`cat_allow_ratings` TINYINT(2) NOT NULL DEFAULT '1',
@@ -941,8 +942,8 @@ CREATE TABLE `phpbb_pa_cat` (
 CREATE TABLE `phpbb_pa_comments` (
 	`comments_id` INT(10) NOT NULL auto_increment,
 	`file_id` INT(10) NOT NULL DEFAULT '0',
-	`comments_text` TEXT NOT NULL,
-	`comments_title` TEXT NOT NULL,
+	`comments_text` TEXT NULL,
+	`comments_title` TEXT NULL,
 	`comments_time` INT(50) NOT NULL DEFAULT '0',
 	`poster_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`comments_id`)
@@ -970,9 +971,9 @@ CREATE TABLE `phpbb_pa_config` (
 
 CREATE TABLE `phpbb_pa_custom` (
 	`custom_id` INT(50) NOT NULL auto_increment,
-	`custom_name` TEXT NOT NULL,
-	`custom_description` TEXT NOT NULL,
-	`data` TEXT NOT NULL,
+	`custom_name` TEXT NULL,
+	`custom_description` TEXT NULL,
+	`data` TEXT NULL,
 	`field_order` INT(20) NOT NULL DEFAULT '0',
 	`field_type` TINYINT(2) NOT NULL DEFAULT '0',
 	`regex` VARCHAR(255) NOT NULL DEFAULT '',
@@ -1020,27 +1021,27 @@ CREATE TABLE `phpbb_pa_files` (
 	`file_id` INT(10) NOT NULL auto_increment,
 	`user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`poster_ip` VARCHAR(40) NOT NULL DEFAULT '',
-	`file_name` TEXT NOT NULL,
+	`file_name` TEXT NULL,
 	`file_size` INT(20) NOT NULL DEFAULT '0',
 	`unique_name` VARCHAR(255) NOT NULL DEFAULT '',
 	`real_name` VARCHAR(255) NOT NULL DEFAULT '',
 	`file_dir` VARCHAR(255) NOT NULL DEFAULT '',
-	`file_desc` TEXT NOT NULL,
-	`file_creator` TEXT NOT NULL,
-	`file_version` TEXT NOT NULL,
-	`file_longdesc` TEXT NOT NULL,
-	`file_ssurl` TEXT NOT NULL,
+	`file_desc` TEXT NULL,
+	`file_creator` TEXT NULL,
+	`file_version` TEXT NULL,
+	`file_longdesc` TEXT NULL,
+	`file_ssurl` TEXT NULL,
 	`file_sshot_link` TINYINT(2) NOT NULL DEFAULT '0',
-	`file_dlurl` TEXT NOT NULL,
+	`file_dlurl` TEXT NULL,
 	`file_time` INT(50) DEFAULT NULL,
 	`file_update_time` INT(50) NOT NULL DEFAULT '0',
 	`file_catid` INT(10) DEFAULT NULL,
-	`file_posticon` TEXT NOT NULL,
+	`file_posticon` TEXT NULL,
 	`file_license` INT(10) DEFAULT NULL,
 	`file_dls` INT(10) DEFAULT NULL,
 	`file_last` INT(50) DEFAULT NULL,
 	`file_pin` INT(2) DEFAULT NULL,
-	`file_docsurl` TEXT NOT NULL,
+	`file_docsurl` TEXT NULL,
 	`file_approved` TINYINT(1) NOT NULL DEFAULT '1',
 	`file_broken` TINYINT(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`file_id`)
@@ -1055,8 +1056,8 @@ CREATE TABLE `phpbb_pa_files` (
 
 CREATE TABLE `phpbb_pa_license` (
 	`license_id` INT(10) NOT NULL auto_increment,
-	`license_name` TEXT NOT NULL,
-	`license_text` TEXT NOT NULL,
+	`license_name` TEXT NULL,
+	`license_text` TEXT NULL,
 	PRIMARY KEY (`license_id`)
 );
 
@@ -1124,7 +1125,7 @@ CREATE TABLE `phpbb_plugins` (
 
 CREATE TABLE `phpbb_plugins_config` (
 	`config_name` VARCHAR(190) NOT NULL DEFAULT '',
-	`config_value` TEXT NOT NULL,
+	`config_value` TEXT NULL,
 	PRIMARY KEY (`config_name`)
 );
 
@@ -1138,7 +1139,7 @@ CREATE TABLE `phpbb_plugins_config` (
 CREATE TABLE `phpbb_poll_options` (
 	`poll_option_id` TINYINT(4) DEFAULT '0' NOT NULL,
 	`topic_id` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
-	`poll_option_text` TEXT NOT NULL,
+	`poll_option_text` TEXT NULL,
 	`poll_option_total` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
 	KEY `poll_opt_id` (`poll_option_id`),
 	KEY `topic_id` (`topic_id`)
@@ -1177,14 +1178,14 @@ CREATE TABLE `phpbb_posts` (
 	`poster_ip` VARCHAR(40) NOT NULL DEFAULT '',
 	`post_username` VARCHAR(25) DEFAULT NULL,
 	`post_subject` VARCHAR(255) DEFAULT NULL,
-	`post_text` MEDIUMTEXT NOT NULL,
-	`post_text_compiled` MEDIUMTEXT NOT NULL,
+	`post_text` MEDIUMTEXT NULL,
+	`post_text_compiled` MEDIUMTEXT NULL,
 	`enable_bbcode` TINYINT(1) NOT NULL DEFAULT '1',
 	`enable_html` TINYINT(1) NOT NULL DEFAULT '0',
 	`enable_smilies` TINYINT(1) NOT NULL DEFAULT '1',
 	`enable_autolinks_acronyms` TINYINT(1) NOT NULL DEFAULT '1',
 	`enable_sig` TINYINT(1) NOT NULL DEFAULT '1',
-	`edit_notes` MEDIUMTEXT NOT NULL,
+	`edit_notes` MEDIUMTEXT NULL,
 	`post_edit_time` INT(11) DEFAULT NULL,
 	`post_edit_count` SMALLINT(5) unsigned NOT NULL DEFAULT '0',
 	`post_edit_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
@@ -1192,7 +1193,7 @@ CREATE TABLE `phpbb_posts` (
 	`post_bluecard` TINYINT(1) DEFAULT NULL,
 	`post_locked` TINYINT(1) NOT NULL DEFAULT '0',
 	`post_likes` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
-	`post_images` MEDIUMTEXT NOT NULL,
+	`post_images` MEDIUMTEXT NULL,
 	PRIMARY KEY (`post_id`),
 	KEY `forum_id` (`forum_id`),
 	KEY `topic_id` (`topic_id`),
@@ -1228,7 +1229,7 @@ CREATE TABLE `phpbb_privmsgs` (
 	`privmsgs_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
 	`privmsgs_type` TINYINT(4) NOT NULL DEFAULT '0',
 	`privmsgs_subject` VARCHAR(255) NOT NULL DEFAULT '',
-	`privmsgs_text` TEXT NOT NULL,
+	`privmsgs_text` TEXT NULL,
 	`privmsgs_from_userid` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`privmsgs_to_userid` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`privmsgs_date` INT(11) NOT NULL DEFAULT '0',
@@ -1255,7 +1256,7 @@ CREATE TABLE `phpbb_privmsgs_archive` (
 	`privmsgs_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
 	`privmsgs_type` TINYINT(4) NOT NULL DEFAULT '0',
 	`privmsgs_subject` VARCHAR(255) NOT NULL DEFAULT '',
-	`privmsgs_text` TEXT NOT NULL,
+	`privmsgs_text` TEXT NULL,
 	`privmsgs_from_userid` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`privmsgs_to_userid` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`privmsgs_date` INT(11) NOT NULL DEFAULT '0',
@@ -1285,12 +1286,12 @@ CREATE TABLE `phpbb_profile_fields` (
 	`field_type` TINYINT(4) unsigned NOT NULL DEFAULT '0',
 	`text_field_default` VARCHAR(255) DEFAULT NULL,
 	`text_field_maxlen` INT(255) unsigned NOT NULL DEFAULT '255',
-	`text_area_default` TEXT NOT NULL,
+	`text_area_default` TEXT NULL,
 	`text_area_maxlen` INT(255) unsigned NOT NULL DEFAULT '1024',
 	`radio_button_default` VARCHAR(255) DEFAULT NULL,
-	`radio_button_values` TEXT NOT NULL,
-	`checkbox_default` TEXT NOT NULL,
-	`checkbox_values` TEXT NOT NULL,
+	`radio_button_values` TEXT NULL,
+	`checkbox_default` TEXT NULL,
+	`checkbox_values` TEXT NULL,
 	`is_required` TINYINT(2) unsigned NOT NULL DEFAULT '0',
 	`users_can_view` TINYINT(2) unsigned NOT NULL DEFAULT '1',
 	`view_in_profile` TINYINT(2) unsigned NOT NULL DEFAULT '1',
@@ -1396,7 +1397,7 @@ CREATE TABLE `phpbb_referers` (
 CREATE TABLE `phpbb_search_results` (
 	`search_id` INT(11) unsigned NOT NULL DEFAULT '0',
 	`session_id` VARCHAR(32) NOT NULL DEFAULT '',
-	`search_array` MEDIUMTEXT NOT NULL,
+	`search_array` MEDIUMTEXT NULL,
 	`search_time` INT(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`search_id`),
 	KEY `session_id` (`session_id`)
@@ -1490,7 +1491,7 @@ CREATE TABLE `phpbb_shout` (
 	`shout_group_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`shout_session_time` INT(11) NOT NULL DEFAULT '0',
 	`shout_ip` VARCHAR(40) NOT NULL DEFAULT '',
-	`shout_text` TEXT NOT NULL,
+	`shout_text` TEXT NULL,
 	`shout_active` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`enable_bbcode` TINYINT(1) NOT NULL DEFAULT '0',
 	`enable_html` TINYINT(1) NOT NULL DEFAULT '0',
@@ -1507,6 +1508,7 @@ CREATE TABLE `phpbb_shout` (
 ## `phpbb_site_history`
 
 CREATE TABLE `phpbb_site_history` (
+	#`date` INT(11) NOT NULL DEFAULT '0',
 	`date` INT(11) NOT NULL,
 	`reg` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`hidden` MEDIUMINT(8) NOT NULL DEFAULT '0',
@@ -1798,7 +1800,7 @@ CREATE TABLE `phpbb_upi2db_unread_posts` (
 
 CREATE TABLE `phpbb_user_group` (
 	`group_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
-	`user_id` MEDIUMINT(8) unsigned NOT NULL DEFAULT '0',
+	`user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`group_leader` TINYINT(1) unsigned DEFAULT '0' NOT NULL,
 	`user_pending` TINYINT(1) DEFAULT '1' NOT NULL,
 	KEY `group_id` (`group_id`),
@@ -1817,8 +1819,8 @@ CREATE TABLE `phpbb_users` (
 	`user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`user_active` TINYINT(1) DEFAULT '1',
 	`user_mask` TINYINT(1) DEFAULT '0',
-	`user_cms_auth` TEXT NOT NULL,
-	`user_permissions` MEDIUMTEXT NOT NULL,
+	`user_cms_auth` TEXT NULL,
+	`user_permissions` MEDIUMTEXT NULL,
 	`user_perm_from` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`username` VARCHAR(36) NOT NULL DEFAULT '',
 	`username_clean` VARCHAR(255) NOT NULL DEFAULT '',
@@ -1877,7 +1879,7 @@ CREATE TABLE `phpbb_users` (
 	`user_avatar` VARCHAR(100) DEFAULT NULL,
 	`user_avatar_type` TINYINT(4) NOT NULL DEFAULT '0',
 	`user_from` VARCHAR(100) DEFAULT NULL,
-	`user_sig` TEXT NOT NULL,
+	`user_sig` TEXT NULL,
 	`user_500px` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_aim` VARCHAR(255) DEFAULT '' NOT NULL,
 	`user_facebook` VARCHAR(255) DEFAULT '' NOT NULL,
@@ -1944,7 +1946,7 @@ CREATE TABLE `phpbb_users` (
 	`user_sudoku_playing` INT(1) NOT NULL DEFAULT '0',
 	`user_from_flag` VARCHAR(30) DEFAULT NULL,
 	`user_phone` VARCHAR(255) DEFAULT NULL,
-	`user_selfdes` TEXT NOT NULL,
+	`user_selfdes` TEXT NULL,
 	`user_upi2db_which_system` TINYINT(1) NOT NULL DEFAULT '1',
 	`user_upi2db_disable` TINYINT(1) NOT NULL DEFAULT '0',
 	`user_upi2db_datasync` INT(11) NOT NULL DEFAULT '0',
@@ -1980,7 +1982,7 @@ CREATE TABLE `phpbb_words` (
 CREATE TABLE `phpbb_xs_news` (
 	`news_id` MEDIUMINT(8) unsigned NOT NULL auto_increment,
 	`news_date` INT(11) NOT NULL DEFAULT '0',
-	`news_text` TEXT NOT NULL,
+	`news_text` TEXT NULL,
 	`news_display` TINYINT(1) NOT NULL DEFAULT '1',
 	`news_smilies` TINYINT(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`news_id`)
@@ -1997,7 +1999,7 @@ CREATE TABLE `phpbb_xs_news_xml` (
 	`xml_id` MEDIUMINT(8) NOT NULL auto_increment,
 	`xml_title` VARCHAR(255) NOT NULL DEFAULT '',
 	`xml_show` TINYINT(1) NOT NULL DEFAULT '0',
-	`xml_feed` TEXT NOT NULL,
+	`xml_feed` TEXT NULL,
 	`xml_is_feed` TINYINT(1) NOT NULL DEFAULT '1',
 	`xml_width` VARCHAR(4) NOT NULL DEFAULT '98%',
 	`xml_height` CHAR(3) NOT NULL DEFAULT '20',
@@ -2026,13 +2028,13 @@ ALTER TABLE `phpbb_users` ADD `ct_global_msg_read` TINYINT( 1 ) NULL DEFAULT 0 A
 ALTER TABLE `phpbb_users` ADD `ct_miserable_user` TINYINT( 1 ) NULL DEFAULT 0 AFTER `ct_global_msg_read`;
 
 CREATE TABLE `phpbb_ctracker_filechk` (
-	`filepath` TEXT NOT NULL,
+	`filepath` TEXT NULL,
 	`hash` VARCHAR(32) DEFAULT NULL
 	);
 
 CREATE TABLE `phpbb_ctracker_filescanner` (
 	`id` SMALLINT(5) NOT NULL,
-	`filepath` TEXT NOT NULL,
+	`filepath` TEXT NULL,
 	`safety` SMALLINT(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`)
 	);
@@ -2060,7 +2062,7 @@ CREATE TABLE `phpbb_drafts` (
 	`forum_id` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`save_time` INT(11) UNSIGNED DEFAULT '0' NOT NULL,
 	`draft_subject` VARCHAR(100) DEFAULT '' NOT NULL,
-	`draft_message` TEXT NOT NULL,
+	`draft_message` TEXT NULL,
 	PRIMARY KEY (`draft_id`),
 	KEY `save_time` (`save_time`)
 );
@@ -2092,8 +2094,8 @@ CREATE TABLE `phpbb_log` (
 	`reportee_id` MEDIUMINT(8) UNSIGNED DEFAULT '0' NOT NULL,
 	`log_ip` VARCHAR(40) DEFAULT '' NOT NULL,
 	`log_time` INT(11) UNSIGNED DEFAULT '0' NOT NULL,
-	`log_operation` TEXT NOT NULL,
-	`log_data` MEDIUMTEXT NOT NULL,
+	`log_operation` TEXT NULL,
+	`log_data` MEDIUMTEXT NULL,
 	PRIMARY KEY (`log_id`),
 	KEY log_type (`log_type`),
 	KEY forum_id (`forum_id`),
@@ -2108,7 +2110,7 @@ CREATE TABLE `phpbb_logs` (
 	`log_page` VARCHAR(255) NOT NULL DEFAULT '',
 	`log_user_id` INT(10) NOT NULL,
 	`log_action` VARCHAR(60) NOT NULL DEFAULT '',
-	`log_desc` MEDIUMTEXT NOT NULL,
+	`log_desc` MEDIUMTEXT NULL,
 	`log_target` INT(10) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`log_id`)
 );
@@ -2154,7 +2156,7 @@ CREATE TABLE `phpbb_cms_block_settings` (
 	`bs_id` INT(10) NOT NULL AUTO_INCREMENT,
 	`user_id` INT(10) NOT NULL,
 	`name` VARCHAR(255) NOT NULL default '',
-	`content` TEXT NOT NULL ,
+	`content` TEXT NULL,
 	`blockfile` VARCHAR(255) NOT NULL default '',
 	`view` TINYINT(1) NOT NULL default 0,
 	`type` TINYINT(1) NOT NULL default 1,
@@ -2179,7 +2181,7 @@ CREATE TABLE `phpbb_cms_block_variable` (
 CREATE TABLE `phpbb_cms_blocks` (
 	`bid` INT(10) NOT NULL auto_increment,
 	`bs_id` INT(10) UNSIGNED NOT NULL,
-	`block_cms_id` INT(10) UNSIGNED NOT NULL,
+	`block_cms_id` INT(10) NOT NULL DEFAULT '0',
 	`layout` INT(10) NOT NULL DEFAULT '0',
 	`layout_special` INT(10) NOT NULL DEFAULT '0',
 	`title` VARCHAR(60) NOT NULL DEFAULT '',
@@ -2209,9 +2211,9 @@ CREATE TABLE `phpbb_cms_layout` (
 	`layout_cms_id` INT(10) UNSIGNED NOT NULL,
 	`global_blocks` TINYINT(1) NOT NULL DEFAULT '0',
 	`page_nav` TINYINT(1) NOT NULL DEFAULT '1',
-	`config_vars` TEXT NOT NULL,
+	`config_vars` TEXT NULL,
 	`view` TINYINT(1) NOT NULL DEFAULT '0',
-	`groups` TINYTEXT NOT NULL,
+	`groups` TINYTEXT NULL,
 	PRIMARY KEY (`lid`)
 );
 
@@ -2224,9 +2226,9 @@ CREATE TABLE `phpbb_cms_layout_special` (
 	`template` VARCHAR(100) NOT NULL DEFAULT '',
 	`global_blocks` TINYINT(1) NOT NULL DEFAULT '0',
 	`page_nav` TINYINT(1) NOT NULL DEFAULT '1',
-	`config_vars` TEXT NOT NULL,
+	`config_vars` TEXT NULL,
 	`view` TINYINT(1) NOT NULL DEFAULT '0',
-	`groups` TINYTEXT NOT NULL,
+	`groups` TINYTEXT NULL,
 	PRIMARY KEY (`lsid`),
 	UNIQUE KEY `page_id` (`page_id`)
 );
@@ -2243,7 +2245,7 @@ CREATE TABLE `phpbb_cms_nav_menu` (
 	`menu_icon` VARCHAR(255) DEFAULT NULL,
 	`menu_name_lang` VARCHAR(150) DEFAULT NULL,
 	`menu_name` VARCHAR(150) DEFAULT NULL,
-	`menu_desc` TEXT NOT NULL,
+	`menu_desc` TEXT NULL,
 	`menu_link` VARCHAR(255) DEFAULT NULL,
 	`menu_link_external` TINYINT(1) NOT NULL DEFAULT '0',
 	`auth_view` TINYINT(2) NOT NULL DEFAULT '0',
@@ -2261,7 +2263,7 @@ CREATE TABLE phpbb_ajax_shoutbox (
 	shout_id MEDIUMINT(9) UNSIGNED NOT NULL AUTO_INCREMENT,
 	user_id MEDIUMINT(8) NOT NULL,
 	shouter_name VARCHAR(30) NOT NULL DEFAULT 'guest',
-	shout_text TEXT NOT NULL,
+	shout_text TEXT NULL,
 	shouter_ip VARCHAR(40) NOT NULL DEFAULT '',
 	shout_time INT(11) NOT NULL,
 	shout_room VARCHAR(255) NOT NULL DEFAULT '',
@@ -2360,20 +2362,20 @@ CREATE TABLE phpbb_downloads (
 	klicks INT(11) DEFAULT '0',
 	free TINYINT(1) DEFAULT '0',
 	extern TINYINT(1) DEFAULT '0',
-	long_desc TEXT NOT NULL,
+	long_desc TEXT NULL,
 	sort INT(11) DEFAULT '0',
 	cat INT(11) DEFAULT '0',
 	hacklist TINYINT(1) DEFAULT '0',
 	hack_author VARCHAR(255) DEFAULT '',
 	hack_author_email VARCHAR(255) DEFAULT '',
-	hack_author_website TINYTEXT,
+	hack_author_website TINYTEXT NULL,
 	hack_version VARCHAR(32) DEFAULT '',
-	hack_dl_url TINYTEXT,
+	hack_dl_url TINYTEXT NULL,
 	test VARCHAR(50) DEFAULT '',
-	req TEXT NOT NULL,
-	todo TEXT NOT NULL,
-	warning TEXT NOT NULL,
-	mod_desc TEXT NOT NULL,
+	req TEXT NULL,
+	todo TEXT NULL,
+	warning TEXT NULL,
+	mod_desc TEXT NULL,
 	mod_list TINYINT(1) DEFAULT '0',
 	file_size BIGINT(20) NOT NULL DEFAULT '0',
 	change_time INT(11) DEFAULT '0',
@@ -2397,8 +2399,8 @@ CREATE TABLE phpbb_downloads_cat (
 	path VARCHAR(255) DEFAULT '',
 	cat_name VARCHAR(255) DEFAULT '',
 	sort INT(11) DEFAULT '0',
-	description TEXT NOT NULL,
-	rules TEXT NOT NULL,
+	description TEXT NULL,
+	rules TEXT NULL,
 	auth_view TINYINT(1) NOT NULL DEFAULT '1',
 	auth_dl TINYINT(1) NOT NULL DEFAULT '1',
 	auth_up TINYINT(1) NOT NULL DEFAULT '0',
@@ -2441,7 +2443,7 @@ CREATE TABLE phpbb_dl_bug_tracker (
 	report_id INT(11) AUTO_INCREMENT NOT NULL,
 	df_id INT(11) NOT NULL DEFAULT '0',
 	report_title VARCHAR(255) DEFAULT '',
-	report_text TEXT NOT NULL,
+	report_text TEXT NULL,
 	report_file_ver VARCHAR(50) DEFAULT '',
 	report_date INT(11) DEFAULT '0',
 	report_author_id MEDIUMINT(8) DEFAULT 0 NOT NULL,
@@ -2473,7 +2475,7 @@ CREATE TABLE phpbb_dl_comments (
 	username VARCHAR(32) NOT NULL DEFAULT '',
 	comment_time INT(11) NOT NULL DEFAULT '0',
 	comment_edit_time INT(11) NOT NULL DEFAULT '0',
-	comment_text TEXT NOT NULL,
+	comment_text TEXT NULL,
 	approve TINYINT(1) NOT NULL DEFAULT '0',
 PRIMARY KEY (dl_id)
 );
@@ -2577,8 +2579,8 @@ ALTER TABLE phpbb_topics ADD topic_reg TINYINT(1) DEFAULT '0' NOT NULL AFTER top
 CREATE TABLE phpbb_tickets_cat (
 	ticket_cat_id MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
 	ticket_cat_title VARCHAR(255) NOT NULL DEFAULT '',
-	ticket_cat_des TEXT NOT NULL,
-	ticket_cat_emails TEXT NOT NULL,
+	ticket_cat_des TEXT NULL,
+	ticket_cat_emails TEXT NULL,
 	PRIMARY KEY (ticket_cat_id)
 );
 ## TICKETS - END
@@ -2646,7 +2648,7 @@ CREATE TABLE `phpbb_images` (
 	`pic_filename` VARCHAR(255) NOT NULL DEFAULT '',
 	`pic_size` INT(15) unsigned NOT NULL DEFAULT '0',
 	`pic_title` VARCHAR(255) NOT NULL DEFAULT '',
-	`pic_desc` TEXT NOT NULL,
+	`pic_desc` TEXT NULL,
 	`pic_user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`pic_user_ip` VARCHAR(40) NOT NULL DEFAULT '0',
 	`pic_time` INT(11) unsigned NOT NULL DEFAULT '0',

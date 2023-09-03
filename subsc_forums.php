@@ -101,7 +101,8 @@ while ($subs_forum_line = $db->sql_fetchrow($subs_forums_list))
 
 					if (!empty($new_topic_data[$forum_id]))
 					{
-						while(list($check_topic_id, $check_post_time) = @each($new_topic_data[$forum_id]))
+						//while(list($check_topic_id, $check_post_time) = @each($new_topic_data[$forum_id]))
+						foreach ($new_topic_data[$forum_id] as $check_topic_id => $check_post_time)
 						{
 							if (empty($tracking_topics[$check_topic_id]))
 							{
