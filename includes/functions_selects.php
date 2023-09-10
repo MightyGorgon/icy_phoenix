@@ -276,11 +276,12 @@ function get_tree_option_optg($cur = '', $all = false, $opt_prefix = true, $mark
 	$keys = get_auth_keys('Root', $all);
 	$last_level = -1;
 	$cat_open = false;
+	$res = '';
 
 	for ($i = 0; $i < sizeof($keys['id']); $i++)
 	{
 		// only get object that are not forum links type
-		if (($tree['type'][$keys['idx'][$i]] != POST_FORUM_URL) || empty($tree['data'][$keys['idx'][$i]]['forum_link']))
+		if (isset($tree['type'][$keys['idx'][$i]]) && (($tree['type'][$keys['idx'][$i]] != POST_FORUM_URL) || empty($tree['data'][$keys['idx'][$i]]['forum_link'])))
 		{
 			$level = $keys['real_level'][$i];
 
@@ -292,12 +293,12 @@ function get_tree_option_optg($cur = '', $all = false, $opt_prefix = true, $mark
 
 			if ($level < $last_level)
 			{
-			//insert spacer if level goes down
+				//insert spacer if level goes down
 				//$res .='<option value="-1">' . $inc . '|&nbsp;&nbsp;&nbsp;</option>';
-			// make valid lines solid
+				// make valid lines solid
 				$res = str_replace("[*$level*]", "|", $res);
 
-			// erase all unnessecary lines
+				// erase all unnessecary lines
 				for ($k = $level + 1; $k < $last_level; $k++)
 				{
 					$res = str_replace("[*$k*]", "&nbsp;", $res);

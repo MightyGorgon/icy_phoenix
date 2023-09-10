@@ -27,6 +27,7 @@ function mkrealdate($day, $month, $birth_year)
 	{
 		return 'error';
 	}
+	$epoch = 0;
 	// range check days
 	switch ($month)
 	{
@@ -147,7 +148,9 @@ function get_forum_most_active($user_id)
 	$user_id = (int) $user_id;
 	if (empty($user_id))
 	{
-		return $user_most_active;
+		// To check why this var was used... it is undefined!
+		//return $user_most_active;
+		return false;
 	}
 
 	$most_active_id = array();
@@ -246,7 +249,7 @@ function get_fields($where_clause = '', $expect_multiple = true, $selection = '*
 
 function text_to_column($text)
 {
-	$text = utf8_decode($text);
+	$text = ip_utf8_decode($text);
 	$pattern = array("#&quot;#", "#&amp;#", "#&lt;#", "#&gt;#");
 	$replace = array('"', '&', '<', '>');
 	$text = preg_replace($pattern, $replace,$text);

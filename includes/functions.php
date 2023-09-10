@@ -20,19 +20,6 @@ if (!defined('IN_ICYPHOENIX'))
 	die('Hacking attempt');
 }
 
-if (!defined('STRIP'))
-{
-	// If we are on PHP >= 6.0.0 we do not need some code
-	if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
-	{
-		define('STRIP', false);
-	}
-	else
-	{
-		define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
-	}
-}
-
 /*
 * Append $SID to a url. Borrowed from phplib and modified. This is an extra routine utilised by the session code and acts as a wrapper around every single URL and form action.
 * If you replace the session code you must include this routine, even if it's empty.
@@ -382,8 +369,6 @@ function set_var(&$result, $var, $type, $multibyte = false)
 				$result = preg_replace('/[\x80-\xFF]/', '?', $result);
 			}
 		}
-
-		$result = (STRIP) ? stripslashes($result) : $result;
 	}
 }
 
@@ -720,7 +705,7 @@ function htmlspecialchars_clean($string, $quote_style = ENT_NOQUOTES)
 */
 function ip_addslashes($string)
 {
-	return (STRIP ? addslashes($string) : $string);
+	return ($string);
 }
 
 /**
@@ -728,7 +713,7 @@ function ip_addslashes($string)
 */
 function ip_stripslashes($string)
 {
-	return (STRIP ? stripslashes($string) : $string);
+	return ($string);
 }
 
 /**
@@ -736,16 +721,30 @@ function ip_stripslashes($string)
 */
 function ip_mysql_escape($string)
 {
+	global $db;
 	return $db->sql_escape($string);
 }
 
 /**
-* Icy Phoenix UTF8 Conditional Decode
+* Icy Phoenix UTF8 to ISO-8859-1 encoding, used to remove some characters that may be difficult to display and are not compatible with standard plain 26 letters alphabet (to avoid complications in url or html rendering)
+* A valid alternative to this approach should be found for the future...
 */
 function ip_utf8_decode($string)
 {
 	global $lang;
-	$string = ($lang['ENCODING'] == 'utf8') ? $string : utf8_decode($string);
+	//$string = ($lang['ENCODING'] == 'utf8') ? $string : utf8_decode($string);
+	$string = mb_convert_encoding($string, 'ISO-8859-1');
+	
+	return $string;
+}
+
+/**
+* Icy Phoenix UTF8 Encode to replace deprecated utf8_encode function
+*/
+function ip_utf8_encode($string)
+{
+	global $lang;
+	$string = ($lang['ENCODING'] == 'UTF-8') ? $string : mb_convert_encoding($string, 'UTF-8', mb_list_encodings());
 	return $string;
 }
 
@@ -2224,6 +2223,8 @@ function redirect($url, $return = false, $disable_cd_check = false)
 */
 function phpbb_chmod($filename, $perms = CHMOD_READ)
 {
+	$result = false;
+
 	// Return if the file no longer exists.
 	if (!file_exists($filename))
 	{
@@ -2471,11 +2472,14 @@ function setup_basic_lang()
 			}
 		}
 
-		foreach ($config['plugins'] as $k => $plugin)
+		if (!empty($config['plugins']) && is_array($config['plugins']))
 		{
-			if ($plugin['enabled'])
+			foreach ($config['plugins'] as $k => $plugin)
 			{
-				$class_plugins->setup_lang($plugin['dir']);
+				if ($plugin['enabled'])
+				{
+					$class_plugins->setup_lang($plugin['dir']);
+				}
 			}
 		}
 	}
@@ -2596,7 +2600,7 @@ function setup_style($style_id, $current_default_style)
 		$template_row = get_style($style_id, true);
 		$style_exists = !empty($template_row) ? true : false;
 
-		if (!$style_exists)
+		if (empty($style_exists))
 		{
 			// We are trying to setup a style which does not exist in the database
 			// Try to fallback to the board default (if the user had a custom style)
@@ -2608,7 +2612,7 @@ function setup_style($style_id, $current_default_style)
 				$template_row = get_style($style_id, true);
 				$style_exists = !empty($template_row) ? true : false;
 
-				if ($style_exists)
+				if (!empty($style_exists))
 				{
 					$sql = "UPDATE " . USERS_TABLE . "
 						SET user_style = " . (int) $config['default_style'] . "
@@ -2617,7 +2621,7 @@ function setup_style($style_id, $current_default_style)
 				}
 			}
 
-			if (!$style_exists)
+			if (empty($style_exists))
 			{
 				message_die(CRITICAL_ERROR, "Could not get theme data for themes_id [$style_id]", '', __LINE__, __FILE__);
 			}
@@ -3731,7 +3735,7 @@ function AJAX_message_die($data_ar, $json = false)
 		{
 			if ($value !== '')
 			{
-				$value = utf8_encode(htmlspecialchars($value));
+				$value = ip_utf8_encode(htmlspecialchars($value));
 				// Get special characters in posts back ;)
 				$value = preg_replace('#&amp;\#(\d{1,4});#i', '&#\1;', $value);
 
@@ -4343,10 +4347,6 @@ function empty_images_cache_folders($files_per_step = 0)
 			}
 		}
 		closedir($res);
-		if ($cg == true)
-		{
-			return true;
-		}
 	}
 	return true;
 }
@@ -4635,6 +4635,7 @@ function page_header($title = '', $parse_template = false)
 	$new_private_chat_switch = false;
 
 	$u_private_chat = '#';
+	$icon_private_chat = $images['private_chat'];
 	// LOGGED IN CHECK - BEGIN
 	if (!$user->data['session_logged_in'])
 	{
@@ -4840,7 +4841,7 @@ function page_header($title = '', $parse_template = false)
 		// UPI2DB - BEGIN
 		$upi2db_first_use = '';
 		$u_display_new = array();
-		if($user->data['upi2db_access'])
+		if(!empty($user->data['upi2db_access']))
 		{
 			$u_display_new = index_display_new($user->data['upi2db_unread']);
 			$template->assign_block_vars('switch_upi2db_on', array());
@@ -6408,7 +6409,7 @@ function message_die($msg_code, $msg_text = '', $msg_title = '', $err_line = '',
 
 		if (empty($template) || empty($theme))
 		{
-			$theme = setup_style($config['default_style'], $current_default_style);
+			$theme = setup_style($config['default_style'], $config['default_style']);
 		}
 
 		$template->assign_var('HAS_DIED', true);
@@ -6684,7 +6685,7 @@ function truncate_html_string($text, $length, $ellipsis = '...')
 						break;
 					}
 				}
-				elseif ($code1 < 0xF0)
+				elseif ($code < 0xF0)
 				{
 					// Three byte
 					if (($max_length - $utf8_length) >= 3)

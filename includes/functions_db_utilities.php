@@ -111,15 +111,7 @@ function get_table_def_mysql($table, $crlf)
 	}
 
 	$schema_create .= "$crlf);";
-	if(get_magic_quotes_runtime())
-	{
-		return(stripslashes($schema_create));
-	}
-	else
-	{
-		return($schema_create);
-	}
-
+	return($schema_create);
 } // End get_table_def_mysql
 
 

@@ -21,7 +21,7 @@ if (!defined('IN_ICYPHOENIX'))
 }
 
 // Versioning
-$ip_version = '2.2.8.113';
+$ip_version = '2.2.9.114';
 $phpbb_version = '.0.23';
 $fap_version = '1.5.0';
 

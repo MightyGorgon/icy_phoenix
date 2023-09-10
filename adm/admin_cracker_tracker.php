@@ -16,8 +16,8 @@
 */
 
 // Set constants
-define('CTRACKER_ACP', true);
-define('IN_ICYPHOENIX', true);
+if (!defined('CTRACKER_ACP')) define('CTRACKER_ACP', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 /**
 * <b>Module Number Documentation:</b>

@@ -15,10 +15,7 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX'))
-{
-	define('IN_ICYPHOENIX', true);
-}
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 if (function_exists('check_acp_module_access'))

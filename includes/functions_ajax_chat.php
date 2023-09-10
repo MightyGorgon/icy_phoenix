@@ -78,7 +78,7 @@ function pseudo_die($error, $error_msg)
 
 	$template->assign_vars(array(
 		'ERROR_STATUS' => $error,
-		'ERROR_MSG' => utf8_encode($error_msg)
+		'ERROR_MSG' => ip_utf8_encode($error_msg)
 		)
 	);
 

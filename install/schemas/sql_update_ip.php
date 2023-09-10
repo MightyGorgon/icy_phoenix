@@ -117,6 +117,7 @@ switch ($req_version)
 	case '226111': $current_ip_version = '2.2.6.111'; break;
 	case '227112': $current_ip_version = '2.2.7.112'; break;
 	case '228113': $current_ip_version = '2.2.8.113'; break;
+	case '229114': $current_ip_version = '2.2.9.114'; break;
 }
 
 // We need to force this because in MySQL 5.5.5 the new default DB Engine is InnoDB, not MyISAM any more
@@ -4732,6 +4733,9 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.2.8.113 */
 		case '2.2.8.113':
+
+		/* Updating from IP 2.2.9.114 */
+		case '2.2.9.114':
 
 	}
 

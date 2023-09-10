@@ -426,9 +426,9 @@ else
 			$author = $bbcode->make_clickable($author);
 			// Mighty Gorgon: shall we still need these utf8_encode?
 			/*
-			$topic_title = utf8_encode($topic_title);
-			$post_subject = utf8_encode($post_subject);
-			$message = utf8_encode($message);
+			$topic_title = ip_utf8_encode($topic_title);
+			$post_subject = ip_utf8_encode($post_subject);
+			$message = ip_utf8_encode($message);
 			*/
 			// Assign "item" variables to template
 			$template->assign_block_vars('post_item', array(
@@ -566,7 +566,7 @@ else
 // And remove temporary session from database
 if(defined(TEMP_SESSION))
 {
-	rss_session_end;
+	rss_session_end();
 }
 
 $gzip_text = ($config['gzip_compress']) ? 'GZIP enabled' : 'GZIP disabled';

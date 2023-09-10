@@ -215,13 +215,27 @@ $lang['Cash_allow_donate'] = 'Allow users to donate their cash to other users';
 $lang['Cash_allow_mod_edit'] = 'Allow moderators to edit user\'s cash';
 $lang['Cash_allow_negative'] = 'Allow users to have negative cash amounts';
 
+if (!defined('CASH_ALLOW_DAY')) define('CASH_ALLOW_DAY', 1);
+if (!defined('CASH_ALLOW_WEEK')) define('CASH_ALLOW_WEEK', 2);
+if (!defined('CASH_ALLOW_MONTH')) define('CASH_ALLOW_MONTH', 3);
+if (!defined('CASH_ALLOW_YEAR')) define('CASH_ALLOW_YEAR', 4);
+if (!defined('CASH_GROUPS_DEFAULT')) define('CASH_GROUPS_DEFAULT', 1);
+if (!defined('CASH_GROUPS_CUSTOM')) define('CASH_GROUPS_CUSTOM', 2);
+if (!defined('CASH_GROUPS_OFF')) define('CASH_GROUPS_OFF', 3);
+if (!defined('CASH_LOG_DONATE')) define('CASH_LOG_DONATE', 1);
+if (!defined('CASH_LOG_ADMIN_MODEDIT')) define('CASH_LOG_ADMIN_MODEDIT', 2);
+if (!defined('CASH_LOG_ADMIN_CREATE_CURRENCY')) define('CASH_LOG_ADMIN_CREATE_CURRENCY', 3);
+if (!defined('CASH_LOG_ADMIN_DELETE_CURRENCY')) define('CASH_LOG_ADMIN_DELETE_CURRENCY', 4);
+if (!defined('CASH_LOG_ADMIN_RENAME_CURRENCY')) define('CASH_LOG_ADMIN_RENAME_CURRENCY', 5);
+if (!defined('CASH_LOG_ADMIN_COPY_CURRENCY')) define('CASH_LOG_ADMIN_COPY_CURRENCY', 6);
+
 $lang['Cash_allowance_enabled'] = 'Enable allowances';
 $lang['Cash_allowance_amount'] = 'Amount of cash earned as allowances';
-$lang['Cash_allownace_frequency'] = 'How often allowances are given';
-$lang['Cash_allownace_frequencies'][CASH_ALLOW_DAY] = 'Day';
-$lang['Cash_allownace_frequencies'][CASH_ALLOW_WEEK] = 'Week';
-$lang['Cash_allownace_frequencies'][CASH_ALLOW_MONTH] = 'Month';
-$lang['Cash_allownace_frequencies'][CASH_ALLOW_YEAR] = 'Year';
+$lang['Cash_allowance_frequency'] = 'How often allowances are given';
+$lang['Cash_allowance_frequencies'][CASH_ALLOW_DAY] = 'Day';
+$lang['Cash_allowance_frequencies'][CASH_ALLOW_WEEK] = 'Week';
+$lang['Cash_allowance_frequencies'][CASH_ALLOW_MONTH] = 'Month';
+$lang['Cash_allowance_frequencies'][CASH_ALLOW_YEAR] = 'Year';
 $lang['Cash_allowance_next'] = 'Time until next allowance';
 
 // Groups

@@ -34,6 +34,7 @@ class session
 	var $load = 0;
 	var $time_now = 0;
 	var $update_session_page = true;
+	var $referer = '';
 
 	/**
 	* Start session management
@@ -401,7 +402,7 @@ class session
 		// Key didn't match one in the DB
 		// User does not exist
 		// User is inactive
-		if (!sizeof($this->data) || !is_array($this->data))
+		if (empty($this->data) || !is_array($this->data) || !sizeof($this->data))
 		{
 			$this->cookie_data['k'] = '';
 			$this->cookie_data['u'] = ANONYMOUS;
@@ -992,6 +993,7 @@ class session
 		}
 
 		$banned = false;
+		$ban_info = array();
 		$cache_ttl = 0;
 		$where_sql = array();
 
@@ -1079,7 +1081,7 @@ class session
 			if ((!empty($row['ban_userid']) && (intval($row['ban_userid']) == $user_id)) || $ip_banned || (!empty($row['ban_email']) && preg_match('#^' . str_replace('\*', '.*?', preg_quote($row['ban_email'], '#')) . '$#i', $user_email)))
 			{
 				$banned = true;
-				$ban_row = $row;
+				$ban_info = $row;
 
 				if (!empty($row['ban_userid']) && (intval($row['ban_userid']) == $user_id))
 				{
@@ -1094,12 +1096,11 @@ class session
 					$ban_triggered_by = 'email';
 				}
 				break;
-
 			}
 		}
 		$db->sql_freeresult($result);
 
-		if ($banned && !$return)
+		if (!empty($banned) && !empty($ban_info) && empty($return))
 		{
 			global $template;
 
@@ -1558,7 +1559,7 @@ class user extends session
 		{
 			$test_language = str_replace(array('.', '/'), '', urldecode($test_language));
 			$config['default_lang'] = file_exists(@phpbb_realpath($this->lang_path . 'lang_' . basename($test_language) . '/lang_main.' . PHP_EXT)) ? $test_language : $config['default_lang'];
-			$this->set_cookie('lang', $config['default_lang'], $user->cookie_expire);
+			$this->set_cookie('lang', $config['default_lang'], $this->cookie_expire);
 		}
 		else
 		{

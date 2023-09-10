@@ -129,6 +129,8 @@ function jr_admin_get_module_list($user_module_list = false)
 	// We need this for regular expressions... to avoid errors!!!
 	$phpEx = PHP_EXT;
 
+	$module_list = array();
+	
 	//Read all the modules
 	$setmodules = 1;
 	$main_acp_dir = @opendir(IP_ROOT_PATH . ADM . '/');
@@ -341,12 +343,12 @@ function jr_admin_make_left_pane()
 	//-MOD: DHTML Menu for ACP
 	foreach ($module as $cat => $module_array)
 	{
-		$cat_icon = '<img src="' . (isset($acp_icon[$cat]) ? $acp_icon[$cat] : $acp_icon['default']) . '" alt="' . $cat_name . '" style="vertical-align: middle;" />&nbsp;';
 		$cat_name = ((isset($lang[$cat])) ? $lang[$cat] : preg_replace("/_/", ' ', $cat));
+		$cat_icon = '<img src="' . (isset($acp_icon[$cat]) ? $acp_icon[$cat] : $acp_icon['default']) . '" alt="' . $cat_name . '" style="vertical-align: middle;" />&nbsp;';
 		$template->assign_block_vars('catrow', array(
 			//+MOD: DHTML Menu for ACP
 			'MENU_CAT_ID' => $menu_cat_id,
-			'MENU_CAT_ROWS' => sizeof((array) $action_array),
+			'MENU_CAT_ROWS' => sizeof((array) $module_array),
 			'MENU_CAT_ICON' => $cat_icon,
 			//-MOD: DHTML Menu for ACP
 			'ADMIN_CATEGORY' => $cat_name

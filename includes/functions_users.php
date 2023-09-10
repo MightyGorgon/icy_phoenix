@@ -49,8 +49,8 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 
 	$user_info['from'] = (!empty($row['user_from'])) ? $row['user_from'] : '&nbsp;';
 	$user_info['joined'] = create_date($date_format, $row['user_regdate'], $config['board_timezone']);
-	$user_info['posts'] = ($row['user_posts']) ? $row['user_posts'] : 0;
-	$user_info['style'] = ($row['style_name']) ? $row['style_name'] : '';
+	$user_info['posts'] = !empty($row['user_posts']) ? $row['user_posts'] : 0;
+	$user_info['style'] = !empty($row['user_style']) ? $row['user_style'] : '';
 
 	$user_info['avatar'] = user_get_avatar($row['user_id'], $row['user_level'], $row['user_avatar'], $row['user_avatar_type'], $row['user_allowavatar']);
 
@@ -93,9 +93,11 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 	$user_info['pm_img'] = '<a href="' . $user_info['pm_url'] . '"><img src="' . $images['icon_pm'] . '" alt="' . $lang['Send_private_message'] . '" title="' . $lang['Send_private_message'] . '" /></a>';
 	$user_info['pm'] = '<a href="' . $user_info['pm_url'] . '">' . $lang['Send_private_message'] . '</a>';
 
-	$user_info['search_url'] = append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode($username) . '&amp;showresults=posts');
-	$user_info['search_img'] = '<a href="' . $search_url . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $username) . '" title="' . sprintf($lang['Search_user_posts'], $username) . '" /></a>';
-	$user_info['search'] = '<a href="' . $search_url . '">' . sprintf($lang['Search_user_posts'], $username) . '</a>';
+	$search_author = phpbb_clean_username($row['username']);
+	$username_html = htmlspecialchars($row['username']);
+	$user_info['search_url'] = append_sid(CMS_PAGE_SEARCH . '?search_author=' . urlencode($search_author) . '&amp;showresults=posts');
+	$user_info['search_img'] = '<a href="' . $user_info['search_url'] . '"><img src="' . $images['icon_search'] . '" alt="' . sprintf($lang['Search_user_posts'], $username_html) . '" title="' . sprintf($lang['Search_user_posts'], $username_html) . '" /></a>';
+	$user_info['search'] = '<a href="' . $user_info['search_url'] . '">' . sprintf($lang['Search_user_posts'], $username_html) . '</a>';
 
 	$user_info['www_img'] = !empty($row['user_website']) ? ('<a href="' . $row['user_website'] . '" target="_blank"><img src="' . $images['icon_www'] . '" alt="' . $lang['Visit_website'] . '" title="' . $lang['Visit_website'] . '" /></a>') : '';
 	$user_info['www'] = !empty($row['user_website']) ? ('<a href="' . $row['user_website'] . '" target="_blank">' . $lang['Visit_website'] . '</a>') : '';
@@ -146,7 +148,7 @@ function generate_user_info(&$row, $date_format = false, $is_moderator = false)
 			$user_info['online_status_lang'] = $lang['Online'];
 			$user_info['online_status_class'] = 'online';
 		}
-		elseif (isset($row['user_allow_viewonline']) && empty($row['user_allow_viewonline']) && (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $user_id)))
+		elseif (isset($row['user_allow_viewonline']) && empty($row['user_allow_viewonline']) && (($user->data['user_level'] == ADMIN) || ($user->data['user_id'] == $row['user_id'])))
 		{
 			$user_info['online_status_img'] = '<a href="' . $user_info['online_status_url'] . '"><img src="' . $images['icon_hidden2'] . '" alt="' . $lang['Hidden'] . '" title="' . $lang['Hidden'] . '" /></a>';
 			$user_info['online_status_lang'] = $lang['Hidden'];
@@ -622,7 +624,7 @@ function get_birthdays_list_email()
 	$time_now = time();
 	$time_now_12 = $time_now + (60 * 60 * 12);
 	$b_h = gmdate('G', $time_now);
-	$timezone_delta = ($b_h == 0) ? 0 : (($b_h < 12) ? -$bh : (24 - $b_h));
+	$timezone_delta = ($b_h == 0) ? 0 : (($b_h < 12) ? -$b_h : (24 - $b_h));
 	$b_y = gmdate('Y', $time_now_12);
 	$b_m = gmdate('n', $time_now_12);
 	$b_d = gmdate('j', $time_now_12);

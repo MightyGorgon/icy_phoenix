@@ -18,12 +18,18 @@ $settings_details = array(
 	'id' => 'captcha_config_general',
 	'name' => 'CAPTCHA_CONFIG_GENERAL',
 	'sort' => 0,
-	'sub_name' => '',
+	'sub_name' => 'Preferences',
 	'sub_sort' => 0,
 	'menu_name' => 'Preferences',
 	'menu_sort' => 0,
 	'clear_cache' => false,
 );
+
+if (defined('IN_ADMIN'))
+{
+	$settings_details['sub_name'] = '';
+}
+
 
 $settings_data = array();
 $settings_data = array(

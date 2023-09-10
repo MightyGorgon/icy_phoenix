@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -136,7 +136,7 @@ else
 	else
 	{
 		$hidden_fields_array = array('save' => 1);
-		$s_hidden_fields = build_hidden_fields($hidden_fields_array, true, STRIP);
+		$s_hidden_fields = build_hidden_fields($hidden_fields_array, true, false);
 
 		foreach ($plugins_list as $plugin)
 		{

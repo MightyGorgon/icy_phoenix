@@ -15,9 +15,7 @@
 *
 */
 
-define('MOD_VERSION', '2.0.5');
-define('MOD_CODE', 1);
-define('IN_ICYPHOENIX', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -25,6 +23,8 @@ if (!empty($setmodules))
 	$module['1610_Users']['100_Jr_Admin'] = $filename;
 	return;
 }
+define('MOD_VERSION', '2.0.5');
+define('MOD_CODE', 1);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));

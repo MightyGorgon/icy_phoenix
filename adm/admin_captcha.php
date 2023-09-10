@@ -8,7 +8,7 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon: force to return until new CAPTCHA is effectively in place!
 return;

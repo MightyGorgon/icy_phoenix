@@ -95,7 +95,7 @@ class ip_functions
 	/**
 	* Read file content
 	*/
-	function file_read($filename)
+	public static function file_read($filename)
 	{
 		$handle = @fopen($filename, 'r');
 		$content = @fread($handle, filesize($filename));
@@ -106,7 +106,7 @@ class ip_functions
 	/**
 	* Write content to file
 	*/
-	function file_write($filename, $content)
+	public static function file_write($filename, $content)
 	{
 		$handle = @fopen($filename, 'w');
 		$result = @fwrite($handle, $content, strlen($content));
@@ -130,7 +130,7 @@ class ip_functions
 	/**
 	* CMS Page Content
 	*/
-	function cms_page_content()
+	public static function cms_page_content()
 	{
 		$content = '';
 		$content .= '<' . '?php' . "\n";
@@ -311,8 +311,6 @@ class ip_functions
 					$result = preg_replace('/[\x80-\xFF]/', '?', $result);
 				}
 			}
-
-			$result = (defined('STRIP') && STRIP) ? stripslashes($result) : $result;
 		}
 	}
 
@@ -1041,7 +1039,7 @@ class ip_page
 		}
 		echo('	<title>' . $page_title . ' :: Icy Phoenix</title>' . "\n");
 		echo('	<link rel="stylesheet" href="style/style.css" type="text/css" />' . "\n");
-		if (!empty($extra_css))
+		if (!empty($extra_css) && is_array($extra_css))
 		{
 			for ($i = 0; $i < sizeof($extra_css); $i++)
 			{
@@ -1050,7 +1048,7 @@ class ip_page
 		}
 		echo('	<link rel="shortcut icon" href="style/favicon.ico" />' . "\n");
 		echo('	<script type="text/javascript" src="style/ip_scripts.js"></script>' . "\n");
-		if (!empty($extra_js))
+		if (!empty($extra_js) && is_array($extra_js))
 		{
 			for ($i = 0; $i < sizeof($extra_js); $i++)
 			{
@@ -1768,9 +1766,9 @@ class ip_page
 		{
 			case 'fix_all':
 				$filename_tmp = IP_ROOT_PATH . 'config.' . PHP_EXT;
-				$content = self::file_read($filename_tmp);
+				$content = ip_functions::file_read($filename_tmp);
 				$content = str_replace('PHPBB_INSTALLED', 'IP_INSTALLED', $content);
-				$result = self::file_write($filename_tmp, $content);
+				$result = ip_functions::file_write($filename_tmp, $content);
 				$color = ($result !== false) ? $this->color_ok : $this->color_error;
 				$img = ($result !== false) ? $img_ok : $img_error;
 				$content_output .= '<li><span class="genmed"><b style="color:' . $color . '">' . $filename_tmp . '</b>&nbsp;' . $img . '</span></li>';
@@ -2104,8 +2102,6 @@ class ip_page
 					$bbcode_uid = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? (!empty($row['user_sig_bbcode_uid']) ? $row['user_sig_bbcode_uid'] : '') :  (!empty($row['bbcode_uid']) ? $row['bbcode_uid'] : '');
 					$post_text_f = in_array($action_mode, array('fix_signatures', 'fix_signatures_ip2')) ? $row['user_sig'] : $row['post_text'];
 
-					//$post_text_f = ((defined('STRIP') && STRIP)? stripslashes($post_text_f) : $post_text_f);
-
 					if (!empty($search_word))
 					{
 						$post_text_f = str_replace($search_word, $replacement_word, $post_text_f);
@@ -2135,8 +2131,6 @@ class ip_page
 						default:
 							die('No mode specified');
 					}
-
-					//$post_text_f = ((defined('STRIP') && STRIP)? addslashes($post_text_f) : $post_text_f);
 
 					$sql_update = "UPDATE " . $db_update_table . " SET " . $db_update_field . " = '" . $db->sql_escape($post_text_f) . "' WHERE " . $db_update_field_id . " = " . $item_id;
 					if (!$result_new = $db->sql_query($sql_update))

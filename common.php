@@ -113,18 +113,12 @@ function deregister_globals()
 }
 
 // If we are on PHP >= 6.0.0 we do not need some code
-if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
+if (version_compare(PHP_VERSION, '6.0.0-dev', '<'))
 {
-	define('STRIP', false);
-}
-else
-{
-	@set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
 	if (@ini_get('register_globals') == '1' || (strtolower(@ini_get('register_globals')) == 'on') || !function_exists('ini_get'))
 	{
 		deregister_globals();
 	}
-	define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
 }
 
 // Load Extensions
@@ -209,7 +203,8 @@ unset($highlight);
 unset($sql);
 
 // Set PHP error handler to ours
-set_error_handler(defined('IP_MSG_HANDLER') ? IP_MSG_HANDLER : 'msg_handler');
+$msg_handler = defined('IP_MSG_HANDLER') ? IP_MSG_HANDLER : 'msg_handler';
+set_error_handler($msg_handler);
 
 // Check if we are in ACP
 if ((defined('IN_ADMIN') || defined('IN_CMS')) && !defined('ACP_MODULES'))

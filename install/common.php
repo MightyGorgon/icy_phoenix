@@ -23,18 +23,12 @@ if (version_compare(PHP_VERSION, '4.3.3') < 0)
 }
 
 // If we are on PHP >= 6.0.0 we do not need some code
-if (version_compare(PHP_VERSION, '6.0.0-dev', '>='))
+if (version_compare(PHP_VERSION, '6.0.0-dev', '<'))
 {
-	define('STRIP', false);
-}
-else
-{
-	@set_magic_quotes_runtime(0);
-	if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on')
+	if (@ini_get('register_globals') == '1' || (strtolower(@ini_get('register_globals')) == 'on') || !function_exists('ini_get'))
 	{
-		$ip_functions->deregister_globals();
+		deregister_globals();
 	}
-	define('STRIP', (@get_magic_quotes_gpc()) ? true : false);
 }
 
 // Try to override some limits - maybe it helps on some servers...

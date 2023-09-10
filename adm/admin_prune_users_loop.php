@@ -8,18 +8,18 @@
 *
 */
 
-define('IN_ADMIN', true);
-// to enable email notification to the user, after deletion, enable this
-define('NOTIFY_USERS', true);
-// to disable confirmation when executing PRUNE_MG
-define('KILL_CONFIRM', false);
-
-define('IN_ICYPHOENIX', true);
+if (!defined('IN_ADMIN')) define('IN_ADMIN', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 if (empty($_POST['mode']) && empty($_GET['mode']))
 {
 	return;
 }
+
+// to enable email notification to the user, after deletion, enable this
+define('NOTIFY_USERS', true);
+// to disable confirmation when executing PRUNE_MG
+define('KILL_CONFIRM', false);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));

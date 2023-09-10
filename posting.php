@@ -430,7 +430,7 @@ switch ($mode)
 
 $result = $db->sql_query($sql);
 $post_info = $db->sql_fetchrow($result);
-if ($result && $post_info)
+if ($result && !empty($post_info))
 {
 	$db->sql_freeresult($result);
 
@@ -851,20 +851,24 @@ if($user->data['session_logged_in'] && $post_data['disp_news'])
 			$news_sel = $row;
 		}
 
-		if($post_data['news_id'] != 0 && $post_data['news_id'] == $row['news_id'])
+		if(($post_data['news_id'] != 0) && ($post_data['news_id'] == $row['news_id']))
 		{
 			$news_sel = $row;
 		}
 		$news_cat[] = $row;
 	}
 
+	$boxstring = '';
 	if(($post_data['news_id'] == 0) && ($news_category == 0))
 	{
 		$boxstring = '<option value="0">' . $lang['Regular_Post'] . '</option>';
 	}
 	else
 	{
-		$boxstring = '<option value="' . $news_sel['news_id'] . '">' . $news_sel['news_category'] . ' (' . $lang['Current_Selection'] . ')</option>';
+		if (!empty($news_sel))
+		{
+			$boxstring .= '<option value="' . $news_sel['news_id'] . '">' . $news_sel['news_category'] . ' (' . $lang['Current_Selection'] . ')</option>';
+		}
 		$boxstring .= '<option value="0">' . $lang['Regular_Post'] . '</option>';
 	}
 
@@ -1037,10 +1041,7 @@ elseif ($mode == 'vote')
 
 		if ($user->data['session_logged_in'] && ($user->data['bot_id'] === false))
 		{
-			if (function_exists('set_cookie'))
-			{
-				set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
-			}
+			$user->set_cookie('poll_' . $topic_id, implode(',', $voted_id), time() + 31536000);
 		}
 
 		$sql = "UPDATE " . TOPICS_TABLE . "
@@ -1172,7 +1173,6 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 				include_once(IP_ROOT_PATH . 'includes/ctracker/engines/ct_visual_confirm.' . PHP_EXT);
 			}
 			// CrackerTracker v5.x
-
 			$username = htmlspecialchars_decode(request_post_var('username', '', true), ENT_COMPAT);
 			$subject = !empty($draft_subject) ? $draft_subject : request_post_var('subject', '', true);
 			$topic_desc = request_post_var('topic_desc', '', true);
@@ -1218,9 +1218,12 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 				'change' => $poll_change
 			);
 
-			$topic_calendar_time = ($topic_calendar_time != $post_data['topic_calendar_time'] && !$is_auth['auth_cal']) ? $post_data['topic_calendar_time'] : $topic_calendar_time;
+			$topic_calendar_time_post = !empty($post_data['topic_calendar_time']) ? $post_data['topic_calendar_time'] : 0;
+			$topic_calendar_duration_post = !empty($post_data['topic_calendar_duration']) ? $post_data['topic_calendar_duration'] : 0;
+
+			$topic_calendar_time = ($topic_calendar_time != $topic_calendar_time_post && !$is_auth['auth_cal']) ? $topic_calendar_time_post : $topic_calendar_time;
 			if (empty($topic_calendar_time)) $topic_calendar_time = 0;
-			$topic_calendar_duration = ($topic_calendar_duration != $post_data['topic_calendar_duration'] && !$is_auth['auth_cal']) ? $post_data['topic_calendar_duration'] : $topic_calendar_duration;
+			$topic_calendar_duration = ($topic_calendar_duration != $topic_calendar_duration_post && !$is_auth['auth_cal']) ? $topic_calendar_duration_post : $topic_calendar_duration;
 			if (!empty($topic_calendar_duration))
 			{
 				$topic_calendar_duration--;
@@ -1380,7 +1383,6 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 					}
 					unset($class_topics_tags);
 				}
-
 				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $topic_type, $bbcode_on, $html_on, $acro_auto_on, $smilies_on, $attach_sig, $username, $subject, $topic_title_clean, $topic_tags, $message, $poll_title, $poll_options, $poll_data, $reg_active, $reg_reset, $reg_max_option1, $reg_max_option2, $reg_max_option3, $reg_length, $news_category, $topic_show_portal, $mark_edit, $topic_desc, $topic_calendar_time, $topic_calendar_duration, $extra_vars);
 			}
 			break;
@@ -1521,6 +1523,7 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 	}
 }
 $notes = '';
+$postreport = '';
 if($refresh || isset($_POST['del_poll_option']) || ($error_msg != ''))
 {
 	$username = htmlspecialchars_decode(request_post_var('username', '', true), ENT_COMPAT);
@@ -1938,7 +1941,7 @@ if (($mode == 'editpost') && (($is_auth['auth_delete'] && $post_data['last_post'
 }
 
 // Lock/Unlock topic selection
-if ((($mode == 'editpost') || ($mode == 'reply') || ($mode == 'quote') || ($mode == 'newtopic')) && ($is_auth['auth_mod']))
+if ((($mode == 'editpost') || ($mode == 'reply') || ($mode == 'quote') || ($mode == 'newtopic')) && ($is_auth['auth_mod']) && !empty($post_info['topic_status']))
 {
 	if ($post_info['topic_status'] == TOPIC_LOCKED)
 	{
@@ -2021,7 +2024,7 @@ if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 
 // Calendar type selection
 $topic_type_cal = '';
-if (($mode == 'newtopic') || ($mode == 'editpost' && $post_data['first_post']))
+if (($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post']))
 {
 	if($is_auth['auth_cal'])
 	{
@@ -2042,9 +2045,12 @@ if (($mode == 'newtopic') || ($mode == 'editpost' && $post_data['first_post']))
 			$lang['datetime']['December'],
 		);
 
+		if($mode == 'editpost')
+		{
 		// get the date
-		$topic_calendar_time = (!isset($_POST['topic_calendar_year']) || (($topic_calendar_time != intval($post_data['topic_calendar_time'])) && !$is_auth['auth_cal'])) ? intval($post_data['topic_calendar_time']) : $topic_calendar_time;
-		$topic_calendar_duration = ((!isset($_POST['topic_calendar_duration_day']) && !isset($_POST['topic_calendar_duration_hour']) && !isset($_POST['topic_calendar_duration_min'])) || (($topic_calendar_duration != intval($post_data['topic_calendar_duration'])) && !$is_auth['auth_cal'])) ? intval($post_data['topic_calendar_duration']) : $topic_calendar_duration;
+			$topic_calendar_time = (!isset($_POST['topic_calendar_year']) || (($topic_calendar_time != intval($post_data['topic_calendar_time'])) && !$is_auth['auth_cal'])) ? intval($post_data['topic_calendar_time']) : $topic_calendar_time;
+			$topic_calendar_duration = ((!isset($_POST['topic_calendar_duration_day']) && !isset($_POST['topic_calendar_duration_hour']) && !isset($_POST['topic_calendar_duration_min'])) || (($topic_calendar_duration != intval($post_data['topic_calendar_duration'])) && !$is_auth['auth_cal'])) ? intval($post_data['topic_calendar_duration']) : $topic_calendar_duration;
+		}
 
 		// get the components of the event date
 		$year = '';
@@ -2110,7 +2116,7 @@ if (($mode == 'newtopic') || ($mode == 'editpost' && $post_data['first_post']))
 		$s_topic_calendar_year = '<select name="topic_calendar_year">';
 
 		$selected = empty($year) ? ' selected="selected"' : '';
-		$s_topic_calendar_year .= '<option value="0"' . $select . '> ---- </option>';
+		$s_topic_calendar_year .= '<option value="0"' . $selected . '> ---- </option>';
 
 		$start_year = ((intval($year) > 1971) && (intval($year) <= gmdate('Y'))) ? intval($year) - 1 : gmdate('Y') - 1;
 		for ($i = $start_year; $i <= gmdate('Y') + 10; $i++)
@@ -2291,7 +2297,7 @@ if ($config['allow_drafts'] == true)
 // MG Drafts - END
 
 // MG Featured Image - BEGIN
-$post_featured_image = $post_info['post_images'];
+$post_featured_images = !empty($post_info['post_images']) ? $post_info['post_images'] : '';
 // MG Featured Image - END
 
 // Convert and clean special chars!
@@ -2329,7 +2335,7 @@ $template->assign_vars(array(
 	'TOPIC_DESCRIPTION' => $topic_desc,
 	'TOPIC_TITLE_CLEAN' => $topic_title_clean,
 	'TOPIC_TAGS' => $topic_tags,
-	'POST_FEATURED_IMAGE' => $post_info['post_images'],
+	'POST_FEATURED_IMAGE' => $post_featured_images,
 	'S_JQUERY_TOPIC_TAGS' => !empty($use_jquery_tags) ? true : false,
 	'MESSAGE' => $message,
 	'HTML_STATUS' => $html_status,
@@ -2466,13 +2472,13 @@ if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll']))
 		$template->assign_block_vars('switch_poll_delete_toggle', array());
 	}
 
-	if(!empty($poll_options))
+	if(!empty($poll_options) && is_array($poll_options))
 	{
 		/*
 		@reset($poll_options);
 		while(list($option_id, $option_text) = each($poll_options))
 		*/
-		foreach($poll_option as $option_id => $option_text)
+		foreach($poll_options as $option_id => $option_text)
 		{
 			if (!empty($option_text))
 			{
@@ -2490,11 +2496,12 @@ if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['edit_poll']))
 
 // Event Registration - BEGIN
 // Registration entry switch/output
+$reg_active = '';
 if((($mode == 'newtopic') || (($mode == 'editpost') && $post_data['first_post'])) && $is_auth['auth_cal'])
 {
 	if($preview)
 	{
-		$reg_active = ($_POST['start_registration'] == 1) ? 'checked="checked"' : '';
+		$reg_active = (isset($_POST['start_registration']) && ($_POST['start_registration'] == 1)) ? 'checked="checked"' : '';
 
 		$reg_max_option1 = (!empty($_POST['reg_max_option1'])) ? $_POST['reg_max_option1'] : '';
 		$reg_max_option2 = (!empty($_POST['reg_max_option2'])) ? $_POST['reg_max_option2'] : '';

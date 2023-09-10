@@ -72,11 +72,14 @@ if (!empty($plugin))
 
 	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'common.' . PHP_EXT);
 	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins'][$plugin_name]['dir'] . 'includes/class_ajax.' . PHP_EXT);
-	$class_ajax = new class_ajax();
-	$class_ajax->mode = $mode;
-	$class_ajax->json = $json;
-	$class_ajax->term = $term;
-	$class_ajax->ajax();
+	if (class_exists('class_ajax'))
+	{
+		$class_ajax = new class_ajax();
+		$class_ajax->mode = $mode;
+		$class_ajax->json = $json;
+		$class_ajax->term = $term;
+		$class_ajax->ajax();
+	}
 }
 
 if ($mode == 'checkusername_post')

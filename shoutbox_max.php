@@ -202,7 +202,6 @@ elseif ($submit || isset($_POST['message']))
 		}
 
 		$message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on);
-		//$message = (!get_magic_quotes_gpc()) ? addslashes($message) : stripslashes($message);
 		$sql = "INSERT INTO " . SHOUTBOX_TABLE. " (shout_text, shout_session_time, shout_user_id, shout_ip, shout_username, enable_bbcode, enable_html, enable_smilies)
 				VALUES ('" . $db->sql_escape($message) . "', '" . time() . "', '" . $user->data['user_id'] . "', '$user_ip', '" . $db->sql_escape($username) . "', $bbcode_on, $html_on, $smilies_on)";
 		$result = $db->sql_query($sql);

@@ -682,7 +682,7 @@ elseif ($group_id)
 	$db->sql_freeresult($result);
 
 	// Get moderator details for this group
-	$sql = "SELECT username, user_id, user_active, user_color, group_id, user_allow_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_icq, user_aim, user_yim, user_msnm, user_allow_viewonline, user_session_time
+	$sql = "SELECT username, user_id, user_active, user_color, user_level, user_avatar, user_avatar_type, user_allowavatar, group_id, user_allow_viewemail, user_posts, user_regdate, user_from, user_website, user_email, user_icq, user_aim, user_yim, user_msnm, user_allow_viewonline, user_session_time
 		FROM " . USERS_TABLE . "
 		WHERE user_id = " . $group_info['group_moderator'];
 	$result = $db->sql_query($sql);
@@ -691,7 +691,7 @@ elseif ($group_id)
 
 	// Get user information for this group
 	// Changed sorting by username_clean instead of username
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.group_id, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.group_id, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, ug.user_pending, u.user_allow_viewonline, u.user_session_time
 		FROM " . USERS_TABLE . " u, " . USER_GROUP_TABLE . " ug
 		WHERE ug.group_id = $group_id
 			AND u.user_id = ug.user_id
@@ -702,7 +702,7 @@ elseif ($group_id)
 	$group_members = $db->sql_fetchrowset($result);
 	$db->sql_freeresult($result);
 
-	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.group_id, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_allow_viewonline, u.user_session_time
+	$sql = "SELECT u.username, u.user_id, u.user_active, u.user_color, u.user_level, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.group_id, u.user_allow_viewemail, u.user_posts, u.user_regdate, u.user_from, u.user_website, u.user_email, u.user_icq, u.user_aim, u.user_yim, u.user_msnm, u.user_allow_viewonline, u.user_session_time
 		FROM " . USER_GROUP_TABLE . " ug, " . USERS_TABLE . " u
 		WHERE ug.group_id = $group_id
 			AND ug.user_pending = 1
@@ -819,7 +819,8 @@ elseif ($group_id)
 	$meta_content['keywords'] = '';
 	$nav_server_url = create_server_url();
 	$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_GROUP_CP) . '">' . $lang['Group_Control_Panel'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="#">' . $group_info['group_name'] . '</a>';
-	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '">' . $lang['LINK_MEMBERLIST'] . '</a>';
+	$breadcrumbs['bottom_right_links'] = (!empty($breadcrumbs['bottom_right_links']) ? ($breadcrumbs['bottom_right_links'] . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '');
+	$breadcrumbs['bottom_right_links'] .= '<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '">' . $lang['LINK_MEMBERLIST'] . '</a>';
 
 	page_header($meta_content['page_title'], true);
 
@@ -938,8 +939,8 @@ elseif ($group_id)
 		'S_GROUP_CLOSED_CHECKED' => ($group_info['group_type'] == GROUP_CLOSED) ? ' checked="checked"' : '',
 		'S_GROUP_HIDDEN_CHECKED' => ($group_info['group_type'] == GROUP_HIDDEN) ? ' checked="checked"' : '',
 		'S_HIDDEN_FIELDS' => $s_hidden_fields,
-		'S_MODE_SELECT' => $select_sort_mode,
-		'S_ORDER_SELECT' => $select_sort_order,
+		'S_MODE_SELECT' => !empty($select_sort_mode) ? $select_sort_mode : '',
+		'S_ORDER_SELECT' => !empty($select_sort_order) ? $select_sort_order : '',
 		'S_GROUPCP_ACTION' => append_sid(CMS_PAGE_GROUP_CP . '?' . POST_GROUPS_URL . '=' . $group_id)
 		)
 	);
@@ -1265,7 +1266,8 @@ else
 		$meta_content['keywords'] = '';
 		$nav_server_url = create_server_url();
 		$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid(CMS_PAGE_GROUP_CP) . '" class="nav-current">' . $lang['Group_Control_Panel'] . '</a>';
-		$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '">' . $lang['LINK_MEMBERLIST'] . '</a>';
+		$breadcrumbs['bottom_right_links'] = (!empty($breadcrumbs['bottom_right_links']) ? ($breadcrumbs['bottom_right_links'] . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '');
+		$breadcrumbs['bottom_right_links'] .= ('<a href="' . append_sid(CMS_PAGE_MEMBERLIST) . '">' . $lang['LINK_MEMBERLIST'] . '</a>');
 
 		page_header($meta_content['page_title'], true);
 
@@ -1296,6 +1298,10 @@ else
 
 		$s_hidden_fields = '<input type="hidden" name="sid" value="' . $user->data['session_id'] . '" />';
 
+		$s_group_list = !empty($s_group_list) ? $s_group_list : false;
+		$s_pending_groups = !empty($s_pending_groups) ? $s_pending_groups : false;
+		$s_member_groups = !empty($s_member_groups) ? $s_member_groups : false;
+		
 		$template->assign_vars(array(
 			'L_GROUP_MEMBERSHIP_DETAILS' => $lang['Group_member_details'],
 			'L_JOIN_A_GROUP' => ($user->data['session_logged_in'] ? $lang['Group_member_join'] : $lang['Usergroups']),

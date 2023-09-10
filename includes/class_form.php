@@ -51,7 +51,6 @@ class class_form
 		$this->time_sep = !empty($lang['NUMBER_FORMAT_TIME_SEP']) ? $lang['NUMBER_FORMAT_TIME_SEP'] : $this->time_sep;
 	}
 
-
 	/*
 	* Create_input
 	*/
@@ -60,10 +59,13 @@ class class_form
 		global $user, $config, $lang;
 
 		$input = '';
-		$default = !empty($properties['default']) ? (is_array($properties['default']) ? array_map('htmlspecialchars', $properties['default']) : htmlspecialchars($properties['default'])) : '';
+		// MUST BE ISSET in PHP8!
+		// !empty doesn't work because $properties['default'] is not a number (for now I would discard the option to cast to int)
+		$default = isset($properties['default']) ? (is_array($properties['default']) ? array_map('htmlspecialchars', $properties['default']) : htmlspecialchars($properties['default'])) : '';
 		$readonly = !empty($properties['readonly']) ? ' readonly="readonly"' : '';
 
-		switch ($properties['type'])
+		$field_type = !empty($properties['type']) ? $properties['type'] : '';
+		switch ($field_type)
 		{
 
 			case 'HIDDEN':
@@ -72,7 +74,7 @@ class class_form
 
 			case 'LIST_CHECKBOX':
 			case 'LIST_FLAGS':
-				if (!is_array($default))
+				if (!empty($default) && !is_array($default))
 				{
 					$default = explode(',', $default);
 				}
@@ -80,11 +82,11 @@ class class_form
 				{
 					if ($properties['type'] == 'LIST_FLAGS')
 					{
-						$selected = ((int) $val & $default) ? ' checked="checked"' : '';
+						$selected = (!empty($default) && in_array((int) $val, $default)) ? ' checked="checked"' : '';
 					}
 					else
 					{
-						$selected = (!empty($default) && is_array($default) && in_array(trim($val), $default)) ? ' checked="checked"' : '';
+						$selected = (!empty($default) && in_array(trim($val), $default)) ? ' checked="checked"' : '';
 					}
 					$l_key = $this->get_lang($key);
 					$input .= '<label><input type="checkbox" name="' . $name . '[]" value="' . $val . '"' . $selected . ' />&nbsp;' . $l_key. '</label><br />';
@@ -125,6 +127,7 @@ class class_form
 			case 'DATE_INPUT':
 			case 'TIME_INPUT':
 			case 'DATE_TIME_INPUT':
+				$current_time = time();
 				$input_time = (!empty($properties['default']) ? $properties['default'] : $current_time);
 				$tf = $this->explode_unix_time($input_time);
 				$select_date = $this->date_input($name, $tf['year'], $tf['month'], $tf['day']);
@@ -255,7 +258,6 @@ class class_form
 					$input = $properties['get_func']($name, $default);
 				}
 				break;
-
 		}
 
 		if (!empty($properties['input_extra']))
@@ -863,6 +865,7 @@ class class_form
 	*/
 	function field_search($name, $default, $search_url, $search_mode)
 	{
+		global $lang;
 		$input = '<input type="text" name="' . $name . '" id="' . $name . '" maxlength="255" size="45" readonly="readonly" class="post" value="' . $default . '" />';
 		$input .= '<input type="submit" name="' . $name . '_search_button" value="' . $lang['Find'] . '" class="mainoption" onclick="window.open(\'' . append_sid($search_url . '?mode=' . $search_mode . '&amp;target_form_name=input_form&amp;target_element_name=' . $name) . '\', \'_field_search\', \'width=400,height=250,resizable=yes\'); return false;" />';
 

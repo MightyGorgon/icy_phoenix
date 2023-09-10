@@ -813,7 +813,7 @@ class class_topics
 		$poll_expired = (!empty($topic_data['poll_length'])) ? ((((int) $topic_data['poll_start'] + (int) $topic_data['poll_length']) < time()) ? true : false) : false;
 		$s_display_results = request_var('vote', '');
 		$s_display_results = ($user_voted || ($s_display_results == 'viewresult')) ? true : false;
-		$s_auth_vote = $is_auth['auth_vote'] ? true : false;
+		$s_auth_vote = !empty($is_auth['auth_vote']) ? true : false;
 		$s_can_vote = (($user->data['user_level'] == ADMIN) || ((!$user_voted || !empty($topic_data['poll_vote_change'])) && !$poll_expired && $s_auth_vote && ($topic_data['topic_status'] != TOPIC_LOCKED))) ? true : false;
 
 		if (!empty($is_cms_block))
@@ -824,8 +824,8 @@ class class_topics
 
 		$template->set_filenames(array('pollbox' => 'viewtopic_poll_result.tpl'));
 
-		$vote_graphic = 0;
-		$vote_graphic_max = sizeof($images['voting_graphic']);
+		$option_graphic = 0;
+		$option_graphic_max = sizeof($images['voting_graphic']);
 
 		foreach ($poll_info as $poll_option)
 		{

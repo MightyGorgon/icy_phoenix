@@ -2,7 +2,7 @@
 <!-- INCLUDE pa_links.tpl -->
 
 <script type="text/javascript">
-<!--
+// <![CDATA[
 function checkForm(formObj) {
 
 	formErrors = false;
@@ -20,7 +20,7 @@ function checkForm(formObj) {
 		return false;
 	}
 }
-//-->
+// ]]>
 </script>
 
 <form action="{S_EMAIL_ACTION}" method="post" onsubmit="return checkForm(this)" name="post">

@@ -77,6 +77,8 @@ if (!empty($chat_room))
 	define('AJAX_CHAT_ROOM', true);
 }
 
+if (!defined('MENU_SEP_CHAR')) define('MENU_SEP_CHAR', '|');
+
 // Show shoutbox with header and footer if the user didn't request anything else
 if (empty($mode))
 {
@@ -137,7 +139,8 @@ else
 	$cms_auth_level_tmp = (isset($cms_config_layouts[$cms_page_id_tmp]['view']) ? $cms_config_layouts[$cms_page_id_tmp]['view'] : AUTH_ALL);
 	check_page_auth($cms_page_id_tmp, $cms_auth_level_tmp);
 
-	$breadcrumbs['bottom_right_links'] = (($ajax_chat_link == true) ? '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>&nbsp;' . MENU_SEP_CHAR . '&nbsp;' : '') . '<a href="' . append_sid('ajax_chat.' . PHP_EXT . '?mode=archive') . '">' . $lang['Ajax_Archive'] . '</a>';
+	$menu_sep_char = defined(MENU_SEP_CHAR) ? MENU_SEP_CHAR : '|';
+	$breadcrumbs['bottom_right_links'] = (($ajax_chat_link == true) ? '<a href="' . append_sid('ajax_chat.' . PHP_EXT) . '">' . $lang['Ajax_Chat'] . '</a>&nbsp;' . $menu_sep_char . '&nbsp;' : '') . '<a href="' . append_sid('ajax_chat.' . PHP_EXT . '?mode=archive') . '">' . $lang['Ajax_Archive'] . '</a>';
 	$template_to_parse = 'ajax_chat_archive.tpl';
 
 	include_once(IP_ROOT_PATH . 'includes/functions_ajax_chat.' . PHP_EXT);
@@ -392,7 +395,7 @@ else
 		for($x = 0; $x < sizeof($row); $x++)
 		{
 			$id = $row[$x]['shout_id'];
-			$time = utf8_encode(create_date($lang['DATE_FORMAT_CHAT'], $row[$x]['shout_time'], $config['board_timezone']));
+			$time = ip_utf8_encode(create_date($lang['DATE_FORMAT_CHAT'], $row[$x]['shout_time'], $config['board_timezone']));
 
 			if ($row[$x]['user_id'] == ANONYMOUS)
 			{

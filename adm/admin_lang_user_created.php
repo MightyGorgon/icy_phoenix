@@ -11,7 +11,7 @@
 /* MG Lang DB - BEGIN */
 /* MG Lang DB - END */
 
-define('IN_ICYPHOENIX', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {

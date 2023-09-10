@@ -93,7 +93,7 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 	$config['login_reset_time'] = (int) $config['login_reset_time'];
 
 	// Check to see if user is allowed to login again... if his tries are exceeded
-	if (!empty($config['max_login_attempts']) && !empty($login_result['user_row']['user_last_login_attempt']) && !empty($config['max_login_attempts']) && ($login_result['user_row']['user_last_login_attempt'] >= (time() - ($config['login_reset_time'] * 60))) && ($login_result['user_row']['user_login_attempts'] >= ($config['max_login_attempts'] + 1)))
+	if (!empty($config['max_login_attempts']) && !empty($row['user_last_login_attempt']) && !empty($config['max_login_attempts']) && ($row['user_last_login_attempt'] >= (time() - ($config['login_reset_time'] * 60))) && ($row['user_login_attempts'] >= ($config['max_login_attempts'] + 1)))
 	{
 		return array(
 			'status' => LOGIN_ERROR_ATTEMPTS,
@@ -126,7 +126,7 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 	// If the last login is more than x minutes ago, then reset the login tries/time
 	if (!empty($config['login_reset_time']) && !empty($row['user_last_login_attempt']) && ($row['user_last_login_attempt'] < (time() - ($config['login_reset_time'] * 60))))
 	{
-		reset_login_attempts($login_result['user_row']['user_id']);
+		reset_login_attempts($row['user_id']);
 		$row['user_last_login_attempt'] = 0;
 		$row['user_login_attempts'] = 0;
 	}
@@ -136,7 +136,6 @@ function login_db(&$username, &$password, $user_id = false, $increase_attempts =
 	{
 		// in phpBB2 passwords were used exactly as they were sent, with addslashes applied
 		$password_old_format = isset($_REQUEST['password']) ? (string) $_REQUEST['password'] : '';
-		$password_old_format = (!STRIP) ? addslashes($password_old_format) : $password_old_format;
 		$password_new_format = '';
 
 		set_var($password_new_format, stripslashes($password_old_format), 'string', true);

@@ -76,7 +76,8 @@ class pafiledb_stats extends pafiledb_public
 			ORDER BY rating ASC";
 		$result = $db->sql_query($sql);
 		$lpopular = $db->sql_fetchrow($result);
-		$total_votes = $total_rating = 0;
+		$total_votes = 0;
+		$total_rating = 0;
 
 		while($row = $db->sql_fetchrow($result))
 		{
@@ -104,6 +105,7 @@ class pafiledb_stats extends pafiledb_public
 			FROM " . PA_FILES_TABLE . "
 			WHERE file_approved = '1'";
 		$result = $db->sql_query($sql);
+		$totaldls = 0;
 
 		while($row = $db->sql_fetchrow($result))
 		{

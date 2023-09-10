@@ -2526,6 +2526,8 @@ $lang = array_merge($lang, array(
 	'News_Print' => 'Print this Topic',
 	'News_Reply' => 'Reply to this News Item',
 
+	'OTHER' => 'Other',
+
 	)
 );
 

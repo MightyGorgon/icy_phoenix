@@ -33,6 +33,11 @@ $settings_details = array(
 	'clear_cache' => false,
 );
 
+if (defined('IN_ADMIN'))
+{
+	$settings_details['sub_name'] = '';
+}
+
 $settings_data = array();
 $settings_data = array(
 

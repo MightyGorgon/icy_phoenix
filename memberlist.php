@@ -156,6 +156,8 @@ $search_params = array('username', 'email', 'icq', 'aim', 'yahoo', 'msn', 'jabbe
 // We validate form and field here, only id/class allowed
 $form = (!preg_match('/^[a-z0-9_-]+$/i', $form)) ? '' : $form;
 $field = (!preg_match('/^[a-z0-9_-]+$/i', $field)) ? '' : $field;
+$s_find_join_time = '';
+$s_find_active_time = '';
 if ((($action == 'searchuser') || sizeof(array_intersect(array_keys($_GET), $search_params)) > 0) && ($user->data['user_level'] == ADMIN))
 {
 	$username = request_var('username', '', true);
@@ -750,7 +752,7 @@ if (sizeof($user_list))
 			'U_DELETE' => $deluser_url,
 
 			// Mighty Gorgon - Multiple Ranks - BEGIN
-			'USER_LEVEL' => $level,
+			'USER_LEVEL' => !empty($level) ? $level : '',
 			'USER_RANK_01' => $user_ranks['rank_01_html'],
 			'USER_RANK_01_IMG' => $user_ranks['rank_01_img_html'],
 			'USER_RANK_02' => $user_ranks['rank_02_html'],
@@ -829,13 +831,13 @@ $template->assign_vars(array(
 	'U_SORT_RANK' => $sort_url . '&amp;sk=m&amp;sd=' . (($sort_key == 'm' && $sort_dir == 'a') ? 'd' : 'a'),
 	'U_LIST_CHAR' => $sort_url . '&amp;sk=a&amp;sd=' . (($sort_key == 'l' && $sort_dir == 'a') ? 'd' : 'a'),
 
-	'S_SORT_OPTIONS' => $s_sort_key,
+	'S_SORT_OPTIONS' => $sort_key,
 	'S_JOINED_TIME_OPTIONS' => $s_find_join_time,
 	'S_ACTIVE_TIME_OPTIONS' => $s_find_active_time,
 	'S_CHAR_OPTIONS' => $s_char_options,
 
-	'S_MODE_SELECT_BB3' => $s_sort_key,
-	'S_ORDER_SELECT_BB3' => $s_sort_dir,
+	'S_MODE_SELECT_BB3' => $sort_key,
+	'S_ORDER_SELECT_BB3' => $sort_dir,
 	'S_MODE_ACTION_BB3' => $pagination_url,
 	// phpBB3 - END
 
@@ -911,8 +913,9 @@ $template->assign_vars(array(
 	)
 );
 
+$breadcrumbs['bottom_right_links'] = (!empty($breadcrumbs['bottom_right_links']) ? ($breadcrumbs['bottom_right_links'] . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '');
+$breadcrumbs['bottom_right_links'] .= ('<a href="' . append_sid(CMS_PAGE_GROUP_CP) . '">' . $lang['LINK_USERGROUPS'] . '</a>');
 
-$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_GROUP_CP) . '">' . $lang['LINK_USERGROUPS'] . '</a>';
 full_page_generation('memberlist_body.tpl', $lang['Memberlist'], '', '');
 
 function _sort_last_active($first, $second)

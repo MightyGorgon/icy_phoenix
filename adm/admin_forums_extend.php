@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 if (!empty($setmodules))
 {
@@ -555,18 +555,19 @@ if (($mode == 'edit') || ($mode == 'create') || ($mode == 'delete'))
 	}
 
 	// status
-	if (!isset($forum_status_list[ $item['status'] ]))
+	if (!isset($forum_status_list[$item['status']]))
 	{
 		@reset($forum_status_list);
 		/*
 		list($status, $value) = @each($forum_status_list);
 		$item['status'] = $status;
 		*/
+		current($forum_status_list);
 		$item['status'] = key($forum_status_list);
 	}
 
 	// auth
-	@reset($forum_auth);
+	//@reset($forum_auth);
 	//while (list($key, $value) = @each($forum_auth))
 	foreach ($forum_auth as $key => $value)
 	{
@@ -1390,7 +1391,7 @@ function add_row($idx, $CH_this, $level, $id)
 		}
 	}
 
-	$color = !$color;
+	$color = !empty($color) ? false : true;
 	if ($selected_id == '') $selected_id = 'Root';
 
 	// Fields for javascript collapsing

@@ -298,7 +298,7 @@ if (!empty($action))
 			for ($x = 0; $x < sizeof($row); $x++)
 			{
 				$id = $row[$x]['shout_id'];
-				$time = utf8_encode(create_date($lang['DATE_FORMAT_CHAT'], $row[$x]['shout_time'], $config['board_timezone']));
+				$time = ip_utf8_encode(create_date($lang['DATE_FORMAT_CHAT'], $row[$x]['shout_time'], $config['board_timezone']));
 
 				if ($row[$x]['shout_room'] != '')
 				{
@@ -412,7 +412,7 @@ if (!empty($action))
 				{
 					// Display error
 					$error = AJAX_SHOUTBOX_ERROR;
-					pseudo_die(SHOUTBOX_ERROR, $lang['Shoutbox_flooderror']);
+					pseudo_die(AJAX_SHOUTBOX_ERROR, $lang['Shoutbox_flooderror']);
 				}
 			}
 		}
@@ -461,7 +461,7 @@ if (!empty($action))
 			// Stop guest shouts if they are not allowed
 			if ($config['shout_allow_guest'] != 1)
 			{
-				pseudo_die(SHOUTBOX_ERROR, $lang['Shoutbox_no_auth']);
+				pseudo_die(AJAX_SHOUTBOX_ERROR, $lang['Shoutbox_no_auth']);
 			}
 
 			if ($shouter == '')
@@ -482,7 +482,7 @@ if (!empty($action))
 				if ($check_name['error'])
 				{
 					$error = AJAX_SHOUTBOX_ERROR;
-					pseudo_die(SHOUTBOX_ERROR, $check_name['error_msg']);
+					pseudo_die(AJAX_SHOUTBOX_ERROR, $check_name['error_msg']);
 				}
 			}
 		}
@@ -503,7 +503,7 @@ if (!empty($action))
 			$db->sql_return_on_error(false);
 			if (!$result)
 			{
-				pseudo_die(SHOUTBOX_ERROR, $lang['Shoutbox_unable']);
+				pseudo_die(AJAX_SHOUTBOX_ERROR, $lang['Shoutbox_unable']);
 			}
 
 			// Only do this if there is a limit.

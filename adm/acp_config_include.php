@@ -64,7 +64,7 @@ $menu_name = $settings_modules_array['menu_keys'][$menu_id];
 $mod_name = $settings_modules_array['mod_keys'][$menu_id][$mod_id];
 
 // sub name
-$sub_name = $settings_modules_array['sub_keys'][$menu_id][$mod_id][$sub_id];
+$sub_name = !empty($settings_modules_array['sub_keys'][$menu_id][$mod_id][$sub_id]) ? $settings_modules_array['sub_keys'][$menu_id][$mod_id][$sub_id] : '';
 
 // buttons
 $submit = isset($_POST['submit']);

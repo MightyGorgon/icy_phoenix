@@ -341,8 +341,6 @@ function obtain_latest_version_info($force_update = false, $warn_fail = false, $
 */
 function prepare_lang_entry($text, $store = true)
 {
-	$text = (STRIP) ? stripslashes($text) : $text;
-
 	// Adjust for storage...
 	if ($store)
 	{

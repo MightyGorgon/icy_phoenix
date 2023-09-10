@@ -34,7 +34,9 @@ if($acp_pane == 'left')
 	define('ACP_MODULES', true);
 
 	$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
-	$module = jr_admin_get_module_list($jr_admin_userdata['user_jr_admin']);
+	$module = array();
+	$jr_admin_userdata_var = !empty($jr_admin_userdata['user_jr_admin']) ? $jr_admin_userdata['user_jr_admin'] : false;
+	$module = jr_admin_get_module_list($jr_admin_userdata_var);
 
 	include('page_header_admin.' . PHP_EXT);
 
@@ -136,7 +138,7 @@ elseif($acp_pane == 'right')
 		$mode = 'deleteedituser';
 	}
 
-	if($mode == 'deleteedituser')
+	if(!empty($mode) && ($mode == 'deleteedituser'))
 	{
 		$sql = "DELETE FROM " . ADMINEDIT_TABLE;
 		$result = $db->sql_query($sql);
@@ -156,7 +158,7 @@ elseif($acp_pane == 'right')
 	$sql = "SELECT * FROM " . ADMINEDIT_TABLE;
 	$result = $db->sql_query($sql);
 
-	$i == '0';
+	$i = '0';
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$i = $i + '1';

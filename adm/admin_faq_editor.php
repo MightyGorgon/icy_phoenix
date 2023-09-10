@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 if(!empty($setmodules))
 {
@@ -136,7 +136,7 @@ if(empty($language))
 
 	$template->assign_vars(array(
 		'L_LANGUAGE' => $lang['faq_select_language'],
-		'LANGUAGE_SELECT' => language_select('language', $config['default_lang'], $phpbb_realpath . 'language'),
+		'LANGUAGE_SELECT' => language_select('language', $config['default_lang'], 'language'),
 		'S_ACTION' => append_sid('admin_faq_editor.' . PHP_EXT . '?file=' . $file),
 		'L_SUBMIT' => $lang['faq_retrieve'],
 		'L_TITLE' => $lang['faq_editor'],
@@ -515,7 +515,7 @@ if(sizeof($blocks) > 0)
 		$template->assign_block_vars('blockrow', array(
 			'BLOCK_TITLE' => $blocks[$i],
 			'BLOCK_NUMBER' => $i,
-			'BLOCK_ANCHOR' => $anchor_code,
+			'BLOCK_ANCHOR' => !empty($anchor_code) ? $anchor_code : '',
 
 			'U_BLOCK_EDIT' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_edit&amp;block=' . $i . '&amp;file=' . $file . '&amp;language=' . $language),
 			'U_BLOCK_MOVE_UP' => append_sid('admin_faq_editor.' . PHP_EXT . '?mode=block_up&amp;block=' . $i . '&amp;file=' . $file . '&amp;language=' . $language),

@@ -104,7 +104,7 @@ $template->assign_vars(array(
 	'S_CONTENT_DIR_RIGHT' => $lang['RIGHT'],
 
 	'SITENAME' => $config['sitename'],
-	'PAGE_TITLE' => $meta_content['page_title'],
+	'PAGE_TITLE' => !empty($meta_content['page_title']) ? $meta_content['page_title'] : '',
 
 	'S_PRINT_SIZE' => (!empty($config['display_print_size']) ? true : false),
 	'S_JQUERY_UI' => (!empty($config['jquery_ui']) ? true : false),

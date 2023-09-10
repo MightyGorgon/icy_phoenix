@@ -77,7 +77,7 @@ else
 }
 
 $nav_server_url = create_server_url();
-$breadcrumbs['address'] = $lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>' . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid(CMS_PAGE_IMAGES) . '">' . $lang['Uploaded_Images_Local'] . '</a>';
+$breadcrumbs['address'] = (!empty($config['plugins']['album']['enabled']) ? ($lang['Nav_Separator'] . '<a href="' . $nav_server_url . append_sid('album.' . PHP_EXT) . '">' . $lang['Album'] . '</a>') : '') . $lang['Nav_Separator'] . '<a class="nav-current" href="' . $nav_server_url . append_sid(CMS_PAGE_IMAGES) . '">' . $lang['Uploaded_Images_Local'] . '</a>';
 
 if (empty($images_data))
 {

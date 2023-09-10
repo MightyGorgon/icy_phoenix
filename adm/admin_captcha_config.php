@@ -15,7 +15,7 @@
 *
 */
 
-define('IN_ICYPHOENIX', true);
+if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 // First we do the setmodules stuff for the admin cp.
 if(!empty($setmodules))

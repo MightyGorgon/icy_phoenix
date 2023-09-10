@@ -117,7 +117,8 @@ if ($mode == 'view')
 		trigger_error('TAGS_NO_TAG', E_USER_NOTICE);
 	}
 
-	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
+	$breadcrumbs['bottom_right_links'] = (!empty($breadcrumbs['bottom_right_links']) ? ($breadcrumbs['bottom_right_links'] . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '');
+	$breadcrumbs['bottom_right_links'] .= '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
 	$breadcrumbs['bottom_right_links'] .= (($user->data['user_level'] == ADMIN) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=replace') . '">' . $lang['TOPIC_TAGS_REPLACE'] . '</a>' : '');
 
 	$template_to_parse = 'tags_view_body.tpl';
@@ -251,7 +252,8 @@ elseif ($mode == 'replace')
 
 	$template_to_parse = 'tags_replace_body.tpl';
 
-	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
+	$breadcrumbs['bottom_right_links'] = (!empty($breadcrumbs['bottom_right_links']) ? ($breadcrumbs['bottom_right_links'] . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '');
+	$breadcrumbs['bottom_right_links'] .= '<a href="' . append_sid(CMS_PAGE_TAGS) . '">' . $lang['TOPIC_TAGS'] . '</a>';
 	$breadcrumbs['bottom_right_links'] .= (($user->data['user_level'] == ADMIN) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=replace') . '">' . $lang['TOPIC_TAGS_REPLACE'] . '</a>';
 
 	$search_replace_submit = false;
@@ -268,7 +270,8 @@ else
 {
 	$template_to_parse = 'tags_list_body.tpl';
 
-	$breadcrumbs['bottom_right_links'] .= (($breadcrumbs['bottom_right_links'] != '') ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=' . (($mode == 'cloud') ? 'list' : 'cloud')) . '">' . (($mode == 'cloud') ? $lang['TOPIC_TAGS_LIST'] : $lang['TOPIC_TAGS_CLOUDS']) . '</a>';
+	$breadcrumbs['bottom_right_links'] = (!empty($breadcrumbs['bottom_right_links']) ? ($breadcrumbs['bottom_right_links'] . '&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '');
+	$breadcrumbs['bottom_right_links'] .= '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=' . (($mode == 'cloud') ? 'list' : 'cloud')) . '">' . (($mode == 'cloud') ? $lang['TOPIC_TAGS_LIST'] : $lang['TOPIC_TAGS_CLOUDS']) . '</a>';
 	$breadcrumbs['bottom_right_links'] .= (($user->data['user_level'] == ADMIN) ? ('&nbsp;' . MENU_SEP_CHAR . '&nbsp;') : '') . '<a href="' . append_sid(CMS_PAGE_TAGS . '?mode=replace') . '">' . $lang['TOPIC_TAGS_REPLACE'] . '</a>';
 
 	$per_page = ($mode == 'cloud') ? $config['word_graph_max_words'] : $per_page;

@@ -1533,6 +1533,8 @@ function make_cat_nav_tree($cur, $pgm = '', $meta_content = '', $nav_class = 'na
 	$id = intval(substr($cur, 1));
 	$topic_title = '';
 	$fcur = '';
+	$sql_from = '';
+	$sql_where = '';
 	if (($type == POST_TOPIC_URL) || ($type == POST_POST_URL))
 	{
 		if ($type == POST_TOPIC_URL)
