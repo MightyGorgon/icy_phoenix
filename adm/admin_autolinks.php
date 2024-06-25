@@ -15,14 +15,13 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
-
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1100_General']['195_Autolinks'] = $file;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // Load default header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');

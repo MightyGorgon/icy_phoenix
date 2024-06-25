@@ -8,14 +8,14 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1200_Forums']['122_Permissions_Adv'] = $filename;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // Load default header
 $no_page_header = true;

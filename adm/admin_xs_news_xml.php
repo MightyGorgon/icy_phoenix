@@ -16,14 +16,14 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1250_News_Admin']['140_XS_News_Tickers'] = $filename;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));

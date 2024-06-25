@@ -397,7 +397,6 @@ function xs_get_style_header($filename, $str = '')
 	$start += 8;
 	$header_size = $data['var1'];
 	$filesize = $data['var2'];
-	//$total = ord($str{$start});
 	$total = ord($str[$start]);
 	$start++;
 	if($total < 3)
@@ -408,7 +407,6 @@ function xs_get_style_header($filename, $str = '')
 	$items_len = array();
 	for($i = 0; $i <$total; $i++)
 	{
-		//$items_len[$i] = ord($str{$i+$start});
 		$items_len[$i] = ord($str[$i+$start]);
 	}
 	$start += $total;

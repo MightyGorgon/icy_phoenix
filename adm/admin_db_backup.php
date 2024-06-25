@@ -8,7 +8,6 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 if (function_exists('check_acp_module_access'))
@@ -21,8 +20,7 @@ if (function_exists('check_acp_module_access'))
 }
 // Mighty Gorgon - ACP Privacy - END
 
-if(!empty($setmodules))
-{
+if(defined('IN_ICYPHOENIX') && !empty($setmodules)) {
 	$filename = basename(__FILE__);
 	$module['1400_DB_Maintenance']['120_Backup_DB'] = $filename . '?mode=backup';
 	$ja_module['1400_DB_Maintenance']['120_Backup_DB'] = false;
@@ -30,6 +28,7 @@ if(!empty($setmodules))
 	$ja_module['1400_DB_Maintenance']['130_Restore_DB'] = false;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // If download action is enabled, don't load header
 if (isset($_GET['action']) && ($_GET['action'] == 'download'))

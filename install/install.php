@@ -250,7 +250,6 @@ elseif (($install_step == 1) || ($admin_pass1 != $admin_pass2) || empty($admin_p
 	$lang_select = $page_framework->build_lang_select($language);
 
 	$dbms_select = '<select name="dbms" onchange="if(this.form.upgrade.options[this.form.upgrade.selectedIndex].value == 1){ this.selectedIndex = 0;}">';
-	//while (list($dbms_name, $details) = @each($available_dbms))
 	foreach ($available_dbms as $dbms_name => $details)
 	{
 		$selected = ($dbms_name == $dbms) ? 'selected="selected"' : '';
@@ -402,7 +401,6 @@ else
 			'upi2db_install_time' => time(),
 		);
 
-		//while (list($config_name, $config_value) = each($update_config))
 		foreach ($update_config as $config_name => $config_value)
 		{
 			$sql = "UPDATE " . $table_prefix . "config

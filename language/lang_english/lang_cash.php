@@ -26,6 +26,11 @@ if (empty($lang) || !is_array($lang))
 	$lang = array();
 }
 
+if (empty($config['plugins']['cash']['enabled']))
+{
+	return;
+}
+
 // Admin menu
 $lang['Cmcat_main'] = 'Main';
 $lang['Cmcat_addons'] = 'Add-ons';

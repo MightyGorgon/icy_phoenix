@@ -2761,6 +2761,10 @@ $lang['month_short'] = array($lang['datetime']['JAN'], $lang['datetime']['FEB'],
 $lang['month_long'] = array($lang['datetime']['January'], $lang['datetime']['February'], $lang['datetime']['March'], $lang['datetime']['April'], $lang['datetime']['May'], $lang['datetime']['June'], $lang['datetime']['July'], $lang['datetime']['August'], $lang['datetime']['September'], $lang['datetime']['October'], $lang['datetime']['November'], $lang['datetime']['December']);
 // Dates And Times - END
 
+
+$lang['CMS_PAGES_PERMISSIONS'] = 'Extra Permissions';
+$lang['CMS_ADS'] = 'Ads &amp; Sponsors';
+
 //====================================================
 // Do not insert anything below this line
 //====================================================

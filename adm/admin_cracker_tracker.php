@@ -17,8 +17,6 @@
 
 // Set constants
 if (!defined('CTRACKER_ACP')) define('CTRACKER_ACP', true);
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
-
 /**
 * <b>Module Number Documentation:</b>
 *
@@ -37,7 +35,7 @@ if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 */
 
 // Generate the Modules we need
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	// 2600_CRACKERTRACKER replaced with 1400_DB_Maintenance, 1610_Users, 1250_News_Admin, 1000_Configuration
@@ -65,6 +63,7 @@ if(!empty($setmodules))
 	//$ja_module['1400_DB_Maintenance']['ctracker_module_11'] = false;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // phpBB Adminsite
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');

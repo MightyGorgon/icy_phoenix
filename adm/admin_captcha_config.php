@@ -15,16 +15,15 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
-
 // First we do the setmodules stuff for the admin cp.
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1000_Configuration']['145_Captcha_Config'] = $filename;
 
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // Load default Header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');

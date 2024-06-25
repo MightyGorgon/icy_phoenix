@@ -15,9 +15,8 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1900_Attachments']['150_Extension_control'] = $filename . '?mode=extensions';
@@ -25,6 +24,7 @@ if(!empty($setmodules))
 	$module['1900_Attachments']['170_Forbidden_extensions'] = $filename . '?mode=forbidden';
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // Load default Header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');

@@ -34,9 +34,8 @@ if($acp_pane == 'left')
 	define('ACP_MODULES', true);
 
 	$jr_admin_userdata = jr_admin_get_user_info($user->data['user_id']);
-	$module = array();
-	$jr_admin_userdata_var = !empty($jr_admin_userdata['user_jr_admin']) ? $jr_admin_userdata['user_jr_admin'] : false;
-	$module = jr_admin_get_module_list($jr_admin_userdata_var);
+	$user_jr_admin = isset($jr_admin_userdata['user_jr_admin']) ? $jr_admin_userdata['user_jr_admin'] : false;
+	$module = jr_admin_get_module_list($user_jr_admin);
 
 	include('page_header_admin.' . PHP_EXT);
 

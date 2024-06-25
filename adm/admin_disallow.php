@@ -15,15 +15,15 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1610_Users']['200_Disallow'] = $filename;
 
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // Include required files, get PHP_EXT and check permissions
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');

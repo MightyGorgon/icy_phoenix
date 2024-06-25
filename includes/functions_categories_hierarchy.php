@@ -106,8 +106,6 @@ function cache_tree_output()
 
 	// keys
 	$cells = array();
-	//@reset($tree['keys']);
-	//while (list($key, $value) = @each($tree['keys']))
 	if (!empty($tree['keys']))
 	{
 		foreach ($tree['keys'] as $key => $value)
@@ -165,8 +163,6 @@ function cache_tree_output()
 		{
 			$template->assign_block_vars('data', array());
 
-			//@reset($tree['data'][$i]);
-			//while (list($key, $value) = @each($tree['data'][$i]))
 			foreach ($tree['data'][$i] as $key => $value)
 			{
 				$nkey = intval($key);
@@ -184,8 +180,6 @@ function cache_tree_output()
 	}
 
 	// subs
-	//@reset($tree['sub']);
-	//while (list($main, $data) = @each($tree['sub']))
 	if (!empty($tree['sub']))
 	{
 		foreach ($tree['sub'] as $main => $data)
@@ -205,8 +199,6 @@ function cache_tree_output()
 	}
 
 	// moderators
-	//@reset($tree['mods']);
-	//while (list($idx, $data) = @each($tree['mods']))
 	if (!empty($tree['mods']))
 	{
 		foreach ($tree['mods'] as $idx => $data)
@@ -267,7 +259,12 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 	global $tree;
 
 	// read all parents
-	$tree_level = array();
+	$tree_level = array(
+		'type' => array(),
+		'id' => array(),
+		'sort' => array(),
+		'data' => array(),
+	);
 
 	// get the forums of the level
 	if (!empty($parents[POST_FORUM_URL][$main]))
@@ -281,8 +278,8 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 			$tree_level['data'][] = $forums[$idx];
 		}
 	}
-	
-		// add the categories of this level
+
+	// add the categories of this level
 	if (!empty($parents[POST_CAT_URL][$main]))
 	{
 		for ($i = 0; $i < sizeof((array) $parents[POST_CAT_URL][$main]); $i++)
@@ -364,6 +361,7 @@ function cache_tree($write = false)
 	$sql = "SELECT * FROM " . FORUMS_TABLE . " WHERE forum_type <> " . FORUM_CAT . " ORDER BY forum_order, forum_id";
 	$result = $db->sql_query($sql, 0, 'forums_', FORUMS_CACHE_FOLDER);
 
+	$forums = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
 		$main_type = (empty($row['main_type'])) ? POST_CAT_URL : $row['main_type'];
@@ -384,7 +382,7 @@ function cache_tree($write = false)
 	$db->sql_freeresult($result);
 
 	// build the tree
-	$tree = array();
+	$tree = array('data' => array());
 	cache_tree_level('Root', $parents, $cats, $forums);
 
 	// Obtain list of moderators of each forum
@@ -490,8 +488,6 @@ function read_tree($force = false)
 			// store the added columns
 			//print_r($tree);
 			$idx = $tree['keys'][POST_FORUM_URL . $row['forum_id']];
-			//@reset($row);
-			//while (list($key, $value) = @each($row))
 			foreach ($row as $key => $value)
 			{
 				$nkey = intval($key);
@@ -544,8 +540,6 @@ function read_tree($force = false)
 				if (!empty($new_topic_data[$forum_id]))
 				{
 					$forum_last_post_time = 0;
-					@reset($new_topic_data[$forum_id]);
-					//while(list($check_topic_id, $check_post_time) = @each($new_topic_data[$forum_id]))
 					foreach ($new_topic_data[$forum_id] as $check_topic_id => $check_post_time)
 					{
 						if (empty($tracking_topics[$check_topic_id]))
@@ -819,8 +813,6 @@ function get_user_tree(&$user_data)
 		$wauth = auth(AUTH_ALL, AUTH_LIST_ALL, $user_data);
 		if (!empty($wauth))
 		{
-			reset($wauth);
-			//while (list($key, $data) = each($wauth))
 			foreach ($wauth as $key => $data)
 			{
 				$tree['auth'][POST_FORUM_URL . $key] = $data;
@@ -905,7 +897,7 @@ function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $aut
 //--------------------------------------------------------------------------------------------------
 // get_max_depth() : return the maximum level in the branch of the tree
 //--------------------------------------------------------------------------------------------------
-function get_max_depth(&$keys, $cur = 'Root', $all = false, $level = -1, $max = -1)
+function get_max_depth($cur = 'Root', $all = false, $level = -1, &$keys = [], $max = -1)
 {
 	global $tree;
 	if (empty($keys['id']))
@@ -928,7 +920,7 @@ function get_max_depth(&$keys, $cur = 'Root', $all = false, $level = -1, $max = 
 //--------------------------------------------------------------------------------------------------
 // build_index() : display a level and its sublevels : use dislay_index() as entry point
 //--------------------------------------------------------------------------------------------------
-function build_index(&$keys, &$forum_moderators, $cur = 'Root', $cat_break = false, $real_level = -1, $max_level = -1)
+function build_index($cur = 'Root', $cat_break = false, &$forum_moderators = [], $real_level = -1, $max_level = -1, &$keys = [])
 {
 	global $template, $db, $cache, $config, $user, $lang, $images, $theme;
 	global $tree, $bbcode, $lofi;
@@ -1125,7 +1117,7 @@ function build_index(&$keys, &$forum_moderators, $cur = 'Root', $cat_break = fal
 			$moderator_list = '';
 			if ($type == POST_FORUM_URL)
 			{
-				if (!empty($forum_moderators[$id]) && sizeof($forum_moderators[$id]) > 0)
+				if (!empty($forum_moderators[$id]))
 				{
 					$l_moderators = (sizeof($forum_moderators[$id]) == 1) ? $lang['Moderator'] : $lang['Moderators'];
 					$moderator_list = implode(', ', $forum_moderators[$id]);
@@ -1461,8 +1453,6 @@ function display_index($cur = 'Root')
 
 	// moderators list
 	$forum_moderators = array();
-	@reset($tree['mods']);
-	//while (list($idx, $data) = @each($tree['mods']))
 	foreach ($tree['mods'] as $idx => $data)
 	{
 		if ($tree['type'][$idx] == POST_FORUM_URL)

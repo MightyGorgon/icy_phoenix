@@ -15,14 +15,13 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
-
-if (!empty($setmodules))
+if (defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1900_Attachments']['100_Control_Panel'] = $filename;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // Load default Header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');

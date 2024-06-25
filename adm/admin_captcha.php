@@ -8,17 +8,17 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon: force to return until new CAPTCHA is effectively in place!
 return;
 
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	$module['1000_Configuration']['140_CAPTCHA'] = $filename;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 // Load default Header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');

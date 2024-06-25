@@ -15,15 +15,15 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$filename = basename(__FILE__);
 	//$module['Users'][$lang['Prune_users']] = $filename;
 	$module['1610_Users']['190_Prune_users'] = $filename;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 // Load default header
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));
