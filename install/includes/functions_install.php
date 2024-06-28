@@ -931,9 +931,8 @@ class ip_sql
 				break; // Just populate $table
 			}
 
-				$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
-				$db->sql_query($sql);
-			}
+			$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
+			$db->sql_query($sql);
 
 			if (!empty($echo_results))
 			{
