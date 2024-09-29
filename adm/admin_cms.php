@@ -8,9 +8,7 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
-
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['1150_CMS']['100_CMS_CUSTOM_PAGES'] = IP_ROOT_PATH . CMS_PAGE_CMS . '?mode=layouts';
@@ -21,7 +19,8 @@ if(!empty($setmodules))
 	$module['1150_CMS']['150_CMS_CONFIG'] = IP_ROOT_PATH . CMS_PAGE_CMS . '?mode=config';
 	$module['1150_CMS']['160_CMS_MENU_PAGE'] = IP_ROOT_PATH . 'cms_menu.' . PHP_EXT;
 	$module['1150_CMS']['170_CMS_ADS'] = IP_ROOT_PATH . 'cms_ads.' . PHP_EXT;
-
+	return;
 }
+define('IN_ICYPHOENIX', true);
 
 ?>

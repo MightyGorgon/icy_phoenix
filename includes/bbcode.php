@@ -4513,16 +4513,16 @@ class bbcode
 				//usort($acronyms, 'acronym_sort');
 				// This use acronym_sort calling it from within BBCode object
 				usort($acronyms, array('BBCode', 'acronym_sort'));
-			}
 
-			for ($i = 0; $i < sizeof($acronyms); $i++)
-			{
-				/* OLD CODE FOR ACRONYMS
-				$orig[] = '#\b(' . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . ')\b#';
-				$orig[] = "/(?<=.\W|\W.|^\W)" . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . "(?=.\W|\W.|\W$)/";
-				*/
-				$orig[] = '#\b(' . str_replace('\*', '\w*?', preg_quote(stripslashes($acronyms[$i]['acronym']), '#')) . ')\b#i';
-				$repl[] = '<abbr title="' . $acronyms[$i]['description'] . '">' . $acronyms[$i]['acronym'] . '</abbr>'; ;
+				for ($i = 0; $i < count($acronyms); $i++)
+				{
+					/* OLD CODE FOR ACRONYMS
+					$orig[] = '#\b(' . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . ')\b#';
+					$orig[] = "/(?<=.\W|\W.|^\W)" . phpbb_preg_quote($acronyms[$i]['acronym'], "/") . "(?=.\W|\W.|\W$)/";
+					*/
+					$orig[] = '#\b(' . str_replace('\*', '\w*?', preg_quote(stripslashes($acronyms[$i]['acronym']), '#')) . ')\b#i';
+					$repl[] = '<abbr title="' . $acronyms[$i]['description'] . '">' . $acronyms[$i]['acronym'] . '</abbr>'; ;
+				}
 			}
 		}
 

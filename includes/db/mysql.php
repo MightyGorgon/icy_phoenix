@@ -36,7 +36,6 @@ class sql_db
 	var $open_queries = array();
 	var $transaction = false;
 	var $transactions = 0;
-	var $persistency = false;
 	var $multi_insert = false;
 
 	var $cache_folder = '';
@@ -87,7 +86,6 @@ class sql_db
 		$this->any_char = chr(0) . '%';
 		$this->one_char = chr(0) . '_';
 
-		$this->persistency = (version_compare(PHP_VERSION, '5.3.0', '>=')) ? $persistency : false;
 		$this->user = $sqluser;
 		$this->password = $sqlpassword;
 		$this->server = ($this->persistency) ? 'p:' . (($sqlserver) ? $sqlserver : 'localhost') : $sqlserver;
@@ -99,7 +97,9 @@ class sql_db
 		// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
 		//$this->open_queries = array();
 
-		$this->db_connect_id = @mysqli_connect($this->server, $this->user, $this->password);
+		$server_and_port = explode(':', $this->server);
+		$port = isset($server_and_port[1]) ? intval($server_and_port[1]) : null;
+		$this->db_connect_id = mysqli_connect($server_and_port[0], $this->user, $this->password, null, $port);
 
 		if($this->db_connect_id)
 		{
@@ -119,7 +119,7 @@ class sql_db
 		}
 		else
 		{
-			$this->sql_error('');
+			$this->sql_error('__CONNECT__');
 			$result = false;
 		}
 
@@ -269,7 +269,7 @@ class sql_db
 
 		$this->sql_start_time = $this->sql_get_time();
 
-		$cache_folder = (empty($cache_folder) ? SQL_CACHE_FOLDER : $cache_folder);
+		$cache_folder = (empty($cache_folder) ? ( defined('SQL_CACHE_FOLDER') ? SQL_CACHE_FOLDER : '' ) : $cache_folder);
 
 		if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 		{
@@ -284,7 +284,7 @@ class sql_db
 		$cache_ttl = empty($cache_prefix) ? 0 : (empty($cache_ttl) ? CACHE_SQL_EXPIRY : $cache_ttl);
 
 		// Cache SQL to the same file plus underscore
-		if (defined('SQL_DEBUG_LOG') && SQL_DEBUG_LOG && !defined('IN_ADMIN'))
+		if (defined('SQL_DEBUG_LOG') && SQL_DEBUG_LOG && !defined('IN_ADMIN') && !defined('IN_INSTALL'))
 		{
 			$f = fopen($this->cache_folder . 'sql_history.' . PHP_EXT, 'a+');
 			@flock($f, LOCK_EX);
@@ -316,15 +316,11 @@ class sql_db
 
 			if ($cache_ttl && method_exists($cache, 'sql_save') && $this->query_result)
 			{
-				// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
-				//$this->open_queries[(int) $this->query_result] = $this->query_result;
 				$this->open_queries[$this->query_result] = $this->query_result;
 				$cache->sql_save($query, $this->query_result, $cache_ttl, $cache_prefix, $cache_folder);
 			}
 			elseif ((strpos($query, 'SELECT') === 0) && ($this->query_result))
 			{
-				// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
-				//$this->open_queries[(int) $this->query_result] = $this->query_result;
 				$this->open_queries[$this->query_result] = $this->query_result;
 			}
 		}
@@ -961,7 +957,7 @@ class sql_db
 
 		$this->sql_error_returned = $this->_sql_error();
 
-		if (!$this->return_on_error && !defined('IN_INSTALL'))
+		if (!$this->return_on_error && (!defined('IN_INSTALL') || $sql === '__CONNECT__'))
 		{
 			$message = '<b>SQL ERROR [ ' . SQL_LAYER . ' ]</b><br /><br />' . $this->sql_error_returned['message'] . ' [' . $this->sql_error_returned['code'] . ']';
 
@@ -970,10 +966,10 @@ class sql_db
 			// The DEBUG_EXTRA constant is for development only!
 			if (defined('IN_INSTALL') || (defined('DEBUG_EXTRA') && DEBUG_EXTRA))
 			{
-				$backtrace = get_backtrace();
+				$backtrace = new Exception();
 
 				$message .= ($sql) ? '<br /><br /><b>SQL</b><br /><br />' . htmlspecialchars($sql) : '';
-				$message .= ($backtrace) ? '<br /><br /><b>BACKTRACE</b><br />' . $backtrace : '';
+				$message .= '<br /><br /><b>BACKTRACE</b><br />' . $backtrace->getTraceAsString();
 				$message .= '<br />';
 			}
 			else
@@ -996,7 +992,7 @@ class sql_db
 			}
 
 			global $msg_code;
-			$msg_code = CRITICAL_MESSAGE;
+			//$msg_code = CRITICAL_MESSAGE;
 			$message = '<div style="text-align: left;">' . $message . '</div>';
 
 			if (strlen($message) > 1024)
@@ -1403,8 +1399,8 @@ class sql_db
 		if (!$this->db_connect_id)
 		{
 			return array(
-				'message' => @mysqli_error(),
-				'code' => @mysqli_errno()
+				'message' => @mysqli_connect_error(),
+				'code' => @mysqli_connect_errno()
 			);
 		}
 

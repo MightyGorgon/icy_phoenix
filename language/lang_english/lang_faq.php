@@ -119,6 +119,8 @@ if (!defined('IN_ADMIN'))
 		$faq[] = array("I would like to let someone know how much I like or dislike their picture. How do I do that?", "When viewing an Album or a pic, there are several options available to users. If the board administrator has allowed it, you will find the links 'Rating' and 'Comments' below each thumbnail or picture which allow you to do this in a couple of ways at any time.");
 	}
 
+if (!empty($images))
+{
 	$faq[] = array("--","Downloads ADV");
 	$faq[] = array("Where can I find the Downloads?", "Links to the Downloads are located in the board navigation and portal navigation. Directlink: [<a href=\"downloads.php\">Downloads</a>]");
 	$faq[] = array("What means <img border=\"0\" src=\"" . $images['Dl_blue'] . "\" alt=\"\" title=\"\" />?", "No download possible. The overall traffic set by the administration for each download or the displayed category is used for this month.");

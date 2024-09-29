@@ -34,7 +34,6 @@ function get_user_news_auth_access($forum_topic)
 	$ignore_forum_sql = '';
 	$auth_sql = '';
 
-	//while(list($key, $value) = each($is_auth_ary))
 	foreach ($is_auth_ary as $key => $value)
 	{
 		if (!$value['auth_read'])

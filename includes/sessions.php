@@ -1616,7 +1616,7 @@ class user extends session
 			$this->lang_name = basename($config['default_lang']);
 			$this->date_format = $config['default_dateformat'];
 			$this->timezone = $config['board_timezone'] * 3600;
-			$this->dst = $config['board_dst'] * 3600;
+			$this->dst = isset($config['board_dst']) ? $config['board_dst'] * 3600 : 0;
 		}
 
 		// If we've had to change the value in any way then let's write it back to the database before we go any further since it means there is something wrong with it

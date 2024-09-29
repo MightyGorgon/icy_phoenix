@@ -400,8 +400,10 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 	}
 	else
 	{
-		/*
-		list($key_type, $type) = each($default);
+		foreach ($default as $key_type => $type)
+		{
+			break; // Just populate $key_type => $type
+		}
 		$type = gettype($type);
 		$key_type = gettype($key_type);
 		*/
@@ -410,10 +412,10 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 		$key_type = gettype(key($default));
 		if ($type == 'array')
 		{
-			reset($default);
-			$default = current($default);
-			/*
-			list($sub_key_type, $sub_type) = each($default);
+			foreach ($type as $sub_key_type => $sub_type)
+			{
+				break; // Just populate $sub_key_type => $sub_type
+			}
 			$sub_type = gettype($sub_type);
 			$sub_type = ($sub_type == 'array') ? 'NULL' : $sub_type;
 			$sub_key_type = gettype($sub_key_type);
@@ -4568,7 +4570,6 @@ function page_header($title = '', $parse_template = false)
 	);
 
 	$nav_links_html = '';
-	//while(list($nav_item, $nav_array) = @each($nav_links))
 	foreach ($nav_links as $nav_item => $nav_array)
 	{
 		if (!empty($nav_array['url']))
@@ -4578,8 +4579,7 @@ function page_header($title = '', $parse_template = false)
 		else
 		{
 			// We have a nested array, used for items like <link rel='chapter'> that can occur more than once.
-			//while(list(,$nested_array) = each($nav_array))
-			foreach ($nav_array as $key => $nested_array)
+			foreach ($nav_array as $nested_array)
 			{
 				$nav_links_html .= '<link rel="' . $nav_item . '" type="text/html" title="' . strip_tags($nested_array['title']) . '" href="' . $nav_base_url . $nested_array['url'] . '" />' . "\n";
 			}
@@ -5191,7 +5191,7 @@ function page_header($title = '', $parse_template = false)
 			/*
 			'L_WHOSONLINE_GAMES' => '<a href="'. append_sid('activity.' . PHP_EXT) .'"><span style="color:#'. str_replace('#', '', $config['ina_online_list_color']) . ';">' . $config['ina_online_list_text'] . '</span></a>',
 			*/
-			'P_ACTIVITY_MOD_PATH' => PLUGINS_PATH . (!empty($config['plugins']['activity']['dir']) ? $config['plugins']['activity']['dir'] : ''),
+			'P_ACTIVITY_MOD_PATH' => !empty($config['plugins']['activity']['dir']) ? PLUGINS_PATH . $config['plugins']['activity']['dir'] : '',
 			'U_ACTIVITY' => append_sid('activity.' . PHP_EXT),
 			'L_ACTIVITY' => $lang['Activity'],
 			// Activity - END
@@ -6196,7 +6196,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 				}
 
 				// Another quick fix for those having gzip compression enabled, but do not flush if the coder wants to catch "something". ;)
-				$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
+				$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : !empty($config['gzip_compress']));
 				if (!empty($config['gzip_compress_runtime']))
 				{
 					if (@extension_loaded('zlib') && !headers_sent() && !ob_get_level())

@@ -276,7 +276,7 @@ class ip_functions
 		return $server_url;
 	}
 
-	public static function ip_realpath($path)
+	static function ip_realpath($path)
 	{
 		return (!@function_exists('realpath') || !@realpath(IP_ROOT_PATH . 'includes/functions.' . PHP_EXT)) ? $path : @realpath($path);
 	}
@@ -341,13 +341,19 @@ class ip_functions
 		}
 		else
 		{
-			$type = gettype(current($default));
-			$key_type = gettype(key($default));
+			foreach ($default as $key_type => $type)
+			{
+				break; // Just populate $key_type => $type
+			}
+			$type = gettype($type);
+			$key_type = gettype($key_type);
 			if ($type == 'array')
 			{
-				reset($default);
-				$default = current($default);
-				$sub_type = gettype(current($default));
+				foreach ($type as $sub_key_type => $sub_type)
+				{
+					break; // Just populate $sub_key_type => $sub_type
+				}
+				$sub_type = gettype($sub_type);
 				$sub_type = ($sub_type == 'array') ? 'NULL' : $sub_type;
 				$sub_key_type = gettype(key($default));
 			}
@@ -920,21 +926,13 @@ class ip_sql
 			$table = reset($row);
 			//echo($table . "\n<br />\n<br />");
 
-			if (!empty($db->sql_escape($table)))
+			foreach ($row as $dummy => $table)
 			{
-				/*
-				$sql = "ALTER TABLE {$db->sql_escape($table)}
-					DEFAULT CHARACTER SET utf8
-					COLLATE utf8_bin";
-				*/
-				//$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
-				//$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
-				$sql = "ALTER TABLE {$db->sql_escape($table)} DEFAULT CHARACTER SET = 'utf8' DEFAULT COLLATE = 'utf8_bin'";
-				$db->sql_query($sql);
-
-				$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
-				$db->sql_query($sql);
+				break; // Just populate $table
 			}
+
+			$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
+			$db->sql_query($sql);
 
 			if (!empty($echo_results))
 			{
@@ -3054,10 +3052,8 @@ class ip_page
 		closedir($dir);
 
 		@asort($lang_options);
-		@reset($lang_options);
 
 		$lang_select = '<select name="lang" onchange="this.form.submit()">';
-		//while (list($displayname, $filename) = @each($lang_options))
 		foreach ($lang_options as $displayname => $filename)
 		{
 			$selected = ($language == $filename) ? ' selected="selected"' : '';

@@ -15,9 +15,8 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
-if(!empty($setmodules))
+if(defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$file = basename(__FILE__);
 	$module['2300_FAQ']['110_FAQ_BBCode'] = $file . '?file=bbcode';
@@ -25,6 +24,7 @@ if(!empty($setmodules))
 	$module['2300_FAQ']['130_FAQ_Rules'] = $file . '?file=rules';
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));

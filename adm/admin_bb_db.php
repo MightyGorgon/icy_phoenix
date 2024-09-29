@@ -15,7 +15,6 @@
 *
 */
 
-if (!defined('IN_ICYPHOENIX')) define('IN_ICYPHOENIX', true);
 
 // Mighty Gorgon - ACP Privacy - BEGIN
 if (function_exists('check_acp_module_access'))
@@ -28,12 +27,13 @@ if (function_exists('check_acp_module_access'))
 }
 // Mighty Gorgon - ACP Privacy - END
 
-if (!empty($setmodules))
+if (defined('IN_ICYPHOENIX') && !empty($setmodules))
 {
 	$module['1400_DB_Maintenance']['110_DB_Admin'] = basename(__FILE__);
 	$ja_module['1400_DB_Maintenance']['110_DB_Admin'] = false;
 	return;
 }
+define('IN_ICYPHOENIX', true);
 
 if (!defined('IP_ROOT_PATH')) define('IP_ROOT_PATH', './../');
 if (!defined('PHP_EXT')) define('PHP_EXT', substr(strrchr(__FILE__, '.'), 1));

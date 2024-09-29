@@ -31,10 +31,10 @@ if(!function_exists('cms_block_wordgraph'))
 
 		$words_array = array();
 
-		$sql = 'SELECT w.word_text, COUNT(*) AS word_count
+		$sql = 'SELECT w.word_id, w.word_text, COUNT(*) AS word_count
 			FROM ' . SEARCH_WORD_TABLE . ' AS w, ' . SEARCH_MATCH_TABLE . ' AS m
 			WHERE m.word_id = w.word_id
-			GROUP BY m.word_id
+			GROUP BY m.word_id, w.word_text
 			ORDER BY word_count DESC LIMIT ' . intval($cms_config_vars['md_wordgraph_words'][$block_id]);
 		$result = $db->sql_query($sql, 0, 'wordgraph_');
 

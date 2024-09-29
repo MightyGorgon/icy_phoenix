@@ -784,14 +784,14 @@ function display_attachments($post_id, $type = 'postrow')
 {
 	global $db, $config, $template, $user, $lang;
 	global $upload_dir, $allowed_extensions, $display_categories, $download_modes, $attachments, $upload_icons, $username_from;
-	$num_attachments = !empty($attachments['_' . $post_id]) ? sizeof($attachments['_' . $post_id]) : 0;
-	if ($num_attachments == 0)
+	if (empty($attachments['_' . $post_id]))
 	{
 		return;
 	}
 
 	$template->assign_block_vars($type . '.attach', array());
 
+	$num_attachments = sizeof($attachments['_' . $post_id]);
 	for ($i = 0; $i < $num_attachments; $i++)
 	{
 		// Some basic things...
