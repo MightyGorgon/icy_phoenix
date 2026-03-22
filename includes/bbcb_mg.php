@@ -53,6 +53,10 @@ if (!empty($config['enable_colorpicker']))
 	$template->assign_var('S_COLORPICKER', true);
 }
 
+if (empty($config))
+{
+	global $config;
+}
 $allowed_langs = array('dutch', 'german', 'italian', 'spanish');
 if (in_array($config['default_lang'], $allowed_langs))
 {

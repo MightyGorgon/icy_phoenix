@@ -26,6 +26,8 @@ if(!function_exists('cms_block_forum_list'))
 	{
 		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $user, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['cat_row.'] = array();
 		$template->_tpldata['forum_row.'] = array();
 
@@ -40,9 +42,9 @@ if(!function_exists('cms_block_forum_list'))
 
 		if(($total_categories = sizeof($category_rows)))
 		{
-			if (!empty($cms_config_vars['md_list_forum_id'][$block_id]))
+			if (!empty($cms_config_vars['blocks'][$block_key]['md_list_forum_id']))
 			{
-				$sql_where = 'AND f.forum_id IN (' . $cms_config_vars['md_list_forum_id'][$block_id] . ')';
+				$sql_where = 'AND f.forum_id IN (' . $cms_config_vars['blocks'][$block_key]['md_list_forum_id'] . ')';
 			}
 			else
 			{

@@ -148,8 +148,6 @@ class class_settings
 		global $db, $cache, $config, $lang;
 
 		$this->modules[$settings_details['menu_name']]['data'][$settings_details['name']]['id'] = array($settings_details['id'] => $settings_details['name']);
-		@reset($settings_data);
-		//while (list($config_key, $config_data) = each($settings_data))
 		foreach ($settings_data as $config_key => $config_data)
 		{
 			if (!isset($config_data['user_only']) || !$config_data['user_only'])

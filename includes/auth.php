@@ -61,6 +61,12 @@ function auth($type, $forum_id, &$user_data, $f_access = '')
 {
 	global $db, $config, $user, $lang, $tree;
 
+	// We need to make sure we have at least the basic lang files included...
+	if (empty($lang))
+	{
+		setup_basic_lang();
+	}
+
 	if (!empty($tree['data']))
 	{
 		$f_access = array();
@@ -530,14 +536,18 @@ function build_exclusion_forums_list($only_auth_view = true)
 	{
 		$exclude_this = false;
 
-		if((!$is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) || ((!$is_auth_ary[$forum_data[$f]['forum_id']]['auth_view']) && $only_auth_view))
+		//PHP 8 EDIT
+		//if((!$is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) || ((!$is_auth_ary[$forum_data[$f]['forum_id']]['auth_view']) && $only_auth_view))
+		if((empty($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read'])) || ((empty($is_auth_ary[$forum_data[$f]['forum_id']]['auth_view'])) && $only_auth_view))
 		{
 			$exclude_this = true;
 		}
 
 		// SELF AUTH - BEGIN
 		// Comment the lines below if you wish to show RESERVED topics for AUTH_SELF.
-		if(((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
+		//PHP 8 EDIT
+		//if(((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF))
+		if(((($user->data['user_level'] != ADMIN) && ($user->data['user_level'] != MOD)) || (($user->data['user_level'] == MOD) && !$config['allow_mods_view_self'])) && (!empty($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) && (intval($is_auth_ary[$forum_data[$f]['forum_id']]['auth_read']) == AUTH_SELF)))
 		{
 			$exclude_this = true;
 		}

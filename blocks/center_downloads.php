@@ -26,6 +26,8 @@ if(!function_exists('cms_block_center_downloads'))
 	{
 		global $db, $cache, $config, $template, $theme, $images, $lang, $table_prefix, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		include(IP_ROOT_PATH . PA_FILE_DB_PATH . 'pafiledb_constants.' . PHP_EXT);
 
 		$template->_tpldata['dlrow.'] = array();
@@ -33,7 +35,7 @@ if(!function_exists('cms_block_center_downloads'))
 
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'
-							ORDER BY file_dls DESC LIMIT 0," . $cms_config_vars['md_num_top_downloads'][$block_id];
+							ORDER BY file_dls DESC LIMIT 0," . $cms_config_vars['blocks'][$block_key]['md_num_top_downloads'];
 		$result = $db->sql_query($sql);
 
 		$i = 1;
@@ -55,7 +57,7 @@ if(!function_exists('cms_block_center_downloads'))
 
 		$sql = "SELECT * FROM " . PA_FILES_TABLE . "
 						WHERE file_approved = '1'
-							ORDER BY file_time DESC LIMIT 0," . $cms_config_vars['md_num_new_downloads'][$block_id];
+							ORDER BY file_time DESC LIMIT 0," . $cms_config_vars['blocks'][$block_key]['md_num_new_downloads'];
 		$result = $db->sql_query($sql);
 
 		$i = 1;

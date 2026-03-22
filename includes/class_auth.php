@@ -21,6 +21,7 @@ class auth
 {
 	var $acl = array();
 	var $cache = array();
+	var $role_cache = array();
 	var $acl_options = array();
 	var $acl_forum_ids = false;
 
@@ -254,7 +255,9 @@ class auth
 		}
 
 		// If we get forum_ids not having this permission, we need to fill the remaining parts
-		if ($negate && sizeof($this->acl_forum_ids))
+		// PHP 8 EDIT
+		//if ($negate && sizeof($this->acl_forum_ids))
+		if ($negate && !empty($this->acl_forum_ids))
 		{
 			foreach ($this->acl_forum_ids as $f)
 			{

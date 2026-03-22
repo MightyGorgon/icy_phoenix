@@ -804,7 +804,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 		case 'cms.' . PHP_EXT:
 			if($_mode == 'layouts')
 			{
-				if (($_GET['action'] == 'edit') && isset($_POST['save']))
+				if (isset($_GET['action']) && ($_GET['action'] == 'edit') && isset($_POST['save']))
 				{
 					$l_id = (intval($_GET['l_id']));
 					$content .= '[CMS Layout Edit: ' . $l_id . ']';
@@ -818,7 +818,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					}
 				$update_log = true;
 				}
-				elseif(($_GET['action'] == 'delete') && $_confirm)
+				elseif(isset($_GET['action']) && ($_GET['action'] == 'delete') && $_confirm)
 				{
 					$l_id = (intval($_GET['l_id']));
 					$content .= '[CMS Layout Delete: ' . $l_id . ']';
@@ -835,7 +835,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 			}
 			if($_mode == 'blocks')
 			{
-				if (($_GET['action'] == 'edit') && isset($_POST['save']))
+				if (isset($_GET['action']) && ($_GET['action'] == 'edit') && isset($_POST['save']))
 				{
 					$b_id = (intval($_GET['b_id']));
 					$l_id = (intval($_GET['l_id']));
@@ -866,7 +866,7 @@ elseif(($page_array['page_dir'] == '') || ($page_array['page_dir'] == './'))
 					}
 				$update_log = true;
 				}
-				elseif(($_GET['action'] == 'delete') && $_confirm)
+				elseif(isset($_GET['action']) && ($_GET['action'] == 'delete') && $_confirm)
 				{
 					$b_id = (intval($_GET['b_id']));
 					$l_id = (intval($_GET['l_id']));

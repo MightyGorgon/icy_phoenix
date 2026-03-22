@@ -529,7 +529,7 @@ class class_topics
 		{
 			if (!class_exists('bbcode')) include(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 			if (empty($bbcode)) $bbcode = new bbcode();
-			$bbcode->allow_smilies = (($config['allow_smilies'] && $topic_data['enable_smilies']) ? true : false);
+			$bbcode->allow_smilies = (!empty($config['allow_smilies']) ? true : false);
 			$topic_title = $bbcode->parse_only_smilies($topic_title);
 		}
 		// SMILEYS IN TITLE - END

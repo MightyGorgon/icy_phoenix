@@ -27,8 +27,10 @@ if(!function_exists('cms_block_jumpbox'))
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars;
 		global $ip_cms;
 
+		$block_key = 'b' . strval($block_id);
+
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
+						WHERE menu_id = '" . intval($cms_config_vars['blocks'][$block_key]['md_menu_id']) . "'
 							LIMIT 1";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
@@ -49,7 +51,7 @@ if(!function_exists('cms_block_jumpbox'))
 		}
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-						WHERE menu_parent_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
+						WHERE menu_parent_id = '" . intval($cms_config_vars['blocks'][$block_key]['md_menu_id']) . "'
 						ORDER BY cat_parent_id ASC, menu_order ASC";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
@@ -144,7 +146,7 @@ if(!function_exists('cms_block_jumpbox'))
 			}
 		}
 		$jumpbox .= '</select>';
-		switch ($cms_config_vars['md_jumpbox_align'][$block_id])
+		switch ($cms_config_vars['blocks'][$block_key]['md_jumpbox_align'])
 		{
 			case '-1':
 				$temp_align = 'left';

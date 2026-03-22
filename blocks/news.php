@@ -25,6 +25,9 @@ if(!function_exists('cms_block_news'))
 	function cms_block_news()
 	{
 		global $db, $cache, $config, $template, $user, $lang, $bbcode, $block_id, $cms_config_var, $cms_config_vars;
+
+		$block_key = 'b' . strval($block_id);
+
 		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'includes/news.' . PHP_EXT);
 
@@ -43,10 +46,10 @@ if(!function_exists('cms_block_news'))
 		$template->_tpldata['comments.'] = array();
 		$template->_tpldata['pagination.'] = array();
 
-		//$cms_config_var['md_news_cat_id'] = $cms_config_vars['md_news_cat_id'][$block_id];
-		$cms_config_var['md_news_number'] = (!empty($cms_config_vars['md_news_number'][$block_id]) && intval($cms_config_vars['md_news_number'][$block_id]) && ($cms_config_vars['md_news_number'][$block_id] > 0)) ? $cms_config_vars['md_news_number'][$block_id] : $config['news_item_num'];
-		$cms_config_var['md_news_sort'] = !empty($cms_config_vars['md_news_sort'][$block_id]) ? '1' : '0';
-		$cms_config_var['md_news_length'] = (!empty($cms_config_vars['md_news_length'][$block_id]) && (int) ($cms_config_vars['md_news_length'][$block_id] >= 0)) ? $cms_config_vars['md_news_length'][$block_id] : $config['news_item_trim'];
+		//$cms_config_var['md_news_cat_id'] = $cms_config_vars['blocks'][$block_key]['md_news_cat_id'];
+		$cms_config_var['md_news_number'] = (!empty($cms_config_vars['blocks'][$block_key]['md_news_number']) && intval($cms_config_vars['blocks'][$block_key]['md_news_number']) && ($cms_config_vars['blocks'][$block_key]['md_news_number'] > 0)) ? $cms_config_vars['blocks'][$block_key]['md_news_number'] : $config['news_item_num'];
+		$cms_config_var['md_news_sort'] = !empty($cms_config_vars['blocks'][$block_key]['md_news_sort']) ? '1' : '0';
+		$cms_config_var['md_news_length'] = (!empty($cms_config_vars['blocks'][$block_key]['md_news_length']) && (int) ($cms_config_vars['blocks'][$block_key]['md_news_length'] >= 0)) ? $cms_config_vars['blocks'][$block_key]['md_news_length'] : $config['news_item_trim'];
 		//unset($cms_config_var);
 
 		//$index_file = CMS_PAGE_HOME;

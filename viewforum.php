@@ -318,8 +318,8 @@ if ($mark_read == 'topics')
 
 			if ($row = $db->sql_fetchrow($result))
 			{
-				$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
-				$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+				$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+				$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 
 				if (((sizeof($tracking_forums) + sizeof($tracking_topics)) >= 150) && empty($tracking_forums[$forum_id]))
 				{
@@ -350,8 +350,8 @@ if ($mark_read == 'topics')
 }
 // End handle marking posts
 
-$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : '';
-$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : '';
+$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : '';
+$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : '';
 
 // Do the forum Prune
 if ($is_auth['auth_mod'] && $config['prune_enable'])

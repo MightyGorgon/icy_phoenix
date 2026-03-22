@@ -37,6 +37,8 @@ if (!function_exists('cms_block_forum_articles'))
 	{
 		global $db, $cache, $config, $template, $images, $lang, $bbcode, $block_id, $cms_config_vars, $meta_content, $breadcrumbs;
 
+		$block_key = 'b' . strval($block_id);
+
 		if (!class_exists('class_topics'))
 		{
 			include(IP_ROOT_PATH . 'includes/class_topics.' . PHP_EXT);
@@ -65,7 +67,7 @@ if (!function_exists('cms_block_forum_articles'))
 
 		$template->set_filenames(array('forum_articles_block' => 'blocks/forum_articles_block.tpl'));
 
-		$title = empty($cms_config_vars['md_posts_title'][$block_id]) ? $meta_content['page_title_clean'] : htmlspecialchars_clean($cms_config_vars['md_posts_title'][$block_id]);
+		$title = empty($cms_config_vars['blocks'][$block_key]['md_posts_title']) ? $meta_content['page_title_clean'] : htmlspecialchars_clean($cms_config_vars['blocks'][$block_key]['md_posts_title']);
 		$template->assign_vars(array(
 			'L_TITLE' => $title,
 			'L_POSTED' => $lang['Posted'],
@@ -77,8 +79,8 @@ if (!function_exists('cms_block_forum_articles'))
 			)
 		);
 
-		// $only_auth_view must have the opposite value of $cms_config_vars['md_ignore_auth_view'][$block_id]
-		$only_auth_view = (!empty($cms_config_vars['md_ignore_auth_view'][$block_id]) || ($cms_config_vars['md_ignore_auth_view'][$block_id] == true)) ? false : true;
+		// $only_auth_view must have the opposite value of $cms_config_vars['blocks'][$block_key]['md_ignore_auth_view']
+		$only_auth_view = (!empty($cms_config_vars['blocks'][$block_key]['md_ignore_auth_view']) || ($cms_config_vars['blocks'][$block_key]['md_ignore_auth_view'] == true)) ? false : true;
 
 		$single_post_id = request_var('post_id', 0);
 		if (!empty($single_post_id)) // single post
@@ -105,7 +107,7 @@ if (!function_exists('cms_block_forum_articles'))
 				);
 				display_attachments($fetchposts[$i]['post_id'], 'articles');
 			}
-			if ($cms_config_vars['md_posts_breadcrumbs'][$block_id])
+			if ($cms_config_vars['blocks'][$block_key]['md_posts_breadcrumbs'])
 			{
 				$meta_content['page_title_clean'] = empty($meta_content['page_title_clean']) ? strip_tags($meta_content['page_title']) : $meta_content['page_title_clean'];
 				$breadcrumbs['address'] = '';
@@ -123,7 +125,7 @@ if (!function_exists('cms_block_forum_articles'))
 		}
 		else // list
 		{
-			$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_posts_forum_id'][$block_id], $cms_config_vars['md_num_posts'][$block_id], -1, $cms_config_vars['md_posts_show_portal'][$block_id], $cms_config_vars['md_posts_random'][$block_id], false, $only_auth_view);
+			$fetchposts = $class_topics->fetch_posts($cms_config_vars['blocks'][$block_key]['md_posts_forum_id'], $cms_config_vars['blocks'][$block_key]['md_num_posts'], -1, $cms_config_vars['blocks'][$block_key]['md_posts_show_portal'], $cms_config_vars['blocks'][$block_key]['md_posts_random'], false, $only_auth_view);
 			for ($i = 0; $i < sizeof($fetchposts); $i++)
 			{
 				// Convert and clean special chars!
@@ -147,7 +149,7 @@ if (!function_exists('cms_block_forum_articles'))
 				'L_VIEWS' => $lang['Views'],
 				)
 			);
-			if ($cms_config_vars['md_posts_breadcrumbs'][$block_id])
+			if ($cms_config_vars['blocks'][$block_key]['md_posts_breadcrumbs'])
 			{
 				$breadcrumbs['address'] = '';
 				if ($meta_content['page_title_clean'] != $config['sitename'])

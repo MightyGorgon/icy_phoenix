@@ -1740,11 +1740,6 @@ $lang = array_merge($lang, array(
 	'LINK_STAFF' => 'Staff',
 // Mighty Gorgon - Nav Links - END
 
-	'Activity' => 'Games',
-	'Games' => 'Games',
-	'Trohpy' => 'Game Trophies',
-	'quick_links_games' => 'Games Menu',
-
 	'By' => 'By',
 	'No_Icon_Image' => 'No Icon',
 	'Change_Style' => 'Style',

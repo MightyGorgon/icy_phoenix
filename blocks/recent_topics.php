@@ -26,6 +26,8 @@ if(!function_exists('cms_block_recent_topics'))
 	{
 		global $db, $cache, $config, $template, $user, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['recent_topic_row.'] = array();
 
 		$except_forums = build_exclusion_forums_list();
@@ -41,7 +43,7 @@ if(!function_exists('cms_block_recent_topics'))
 				AND p.poster_id = u.user_id
 				$extra
 			ORDER BY p.post_time DESC
-			LIMIT " . $cms_config_vars['md_num_recent_topics'][$block_id];
+			LIMIT " . $cms_config_vars['blocks'][$block_key]['md_num_recent_topics'];
 		$result = $db->sql_query($sql);
 		$number_recent_topics = $db->sql_numrows($result);
 		$recent_topic_row = array();
@@ -52,7 +54,7 @@ if(!function_exists('cms_block_recent_topics'))
 		}
 		$db->sql_freeresult($result);
 
-		if($cms_config_vars['md_recent_topics_style'][$block_id])
+		if($cms_config_vars['blocks'][$block_key]['md_recent_topics_style'])
 		{
 			$style_row = 'scroll';
 		}

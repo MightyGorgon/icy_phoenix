@@ -1604,7 +1604,9 @@ CREATE TABLE `phpbb_topic_view` (
 	`topic_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`user_id` MEDIUMINT(8) NOT NULL DEFAULT '0',
 	`view_time` INT(11) NOT NULL DEFAULT '0',
-	`view_count` INT(11) NOT NULL DEFAULT '0'
+	`view_count` INT(11) NOT NULL DEFAULT '0',
+	KEY `topic_id` (`topic_id`),
+	KEY `user_id` (`user_id`)
 );
 
 ## `phpbb_topic_view`
@@ -1687,7 +1689,7 @@ CREATE TABLE `phpbb_topics_labels` (
 	`admin_auth` TINYINT(1) DEFAULT '0',
 	`mod_auth` TINYINT(1) DEFAULT '0',
 	`poster_auth` TINYINT(1) DEFAULT '0',
-	PRIMARY KEY `id` (`id`)
+	PRIMARY KEY (`id`)
 );
 
 ## `phpbb_topics_labels`

@@ -402,6 +402,10 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 	{
 		/*
 		list($key_type, $type) = each($default);
+		foreach ($default as $key_type => $type)
+		{
+			break; // Just populate $key_type => $type
+		}
 		$type = gettype($type);
 		$key_type = gettype($key_type);
 		*/
@@ -418,6 +422,10 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 			$sub_type = ($sub_type == 'array') ? 'NULL' : $sub_type;
 			$sub_key_type = gettype($sub_key_type);
 			*/
+			foreach ($type as $sub_key_type => $sub_type)
+			{
+				break; // Just populate $sub_key_type => $sub_type
+			}
 			$sub_type = gettype(current($default));
 			$sub_type = ($sub_type == 'array') ? 'NULL' : $sub_type;
 			$sub_key_type = gettype(key($default));
@@ -654,7 +662,9 @@ function get_cms_config($from_cache = true)
 	{
 		if ($row['bid'] > 0)
 		{
-			$cms_config_vars[$row['config_name']][$row['bid']] = $row['config_value'];
+			$kcfgname = strval($row['config_name']);
+			$kbid = 'b' . strval($row['bid']);
+			$cms_config_vars['blocks'][$kbid][$kcfgname] = $row['config_value'];
 		}
 		else
 		{
@@ -2584,7 +2594,8 @@ function get_style($style_id, $from_cache = true)
 */
 function setup_style($style_id, $current_default_style)
 {
-	global $db, $config, $template, $images, $all_styles_array;
+	global $db, $config, $template, $images, $color, $all_styles_array;
+	global $user, $lang, $lofi_bots_parsing;
 
 	if (!empty($all_styles_array[$style_id]))
 	{
@@ -4093,13 +4104,13 @@ function build_im_link($im_type, $user_data, $im_icon_type = false, $im_img = fa
 	{
 		if (!empty($im_icon_type) && in_array($im_icon_type, array('icon', 'icon_tpl', 'icon_tpl_vt')))
 		{
-			if ($im_icon_type == 'icon')
+			if (($im_icon_type == 'icon') || empty($images[$available_im[$im_type][$im_icon_type]]))
 			{
 				$im_icon = $images['icon_im_' . $im_type . $im_icon_append];
 			}
 			else
 			{
-				$im_icon = $images[$available_im[$im_type][$im_icon_type]];
+				$im_icon = !empty($images[$available_im[$im_type][$im_icon_type]]) ? $images[$available_im[$im_type][$im_icon_type]] : '';
 			}
 		}
 
@@ -4568,7 +4579,6 @@ function page_header($title = '', $parse_template = false)
 	);
 
 	$nav_links_html = '';
-	//while(list($nav_item, $nav_array) = @each($nav_links))
 	foreach ($nav_links as $nav_item => $nav_array)
 	{
 		if (!empty($nav_array['url']))
@@ -4578,7 +4588,6 @@ function page_header($title = '', $parse_template = false)
 		else
 		{
 			// We have a nested array, used for items like <link rel='chapter'> that can occur more than once.
-			//while(list(,$nested_array) = each($nav_array))
 			foreach ($nav_array as $key => $nested_array)
 			{
 				$nav_links_html .= '<link rel="' . $nav_item . '" type="text/html" title="' . strip_tags($nested_array['title']) . '" href="' . $nav_base_url . $nested_array['url'] . '" />' . "\n";
@@ -5185,16 +5194,7 @@ function page_header($title = '', $parse_template = false)
 			'U_CPL_ZEBRA' => append_sid(CMS_PAGE_PROFILE . '?mode=zebra&amp;zmode=friends'),
 			// Mighty Gorgon - CPL - END
 
-			'SOCIAL_CONNECT_BUTTONS' => $social_connect_buttons,
-
-			// Activity - BEGIN
-			/*
-			'L_WHOSONLINE_GAMES' => '<a href="'. append_sid('activity.' . PHP_EXT) .'"><span style="color:#'. str_replace('#', '', $config['ina_online_list_color']) . ';">' . $config['ina_online_list_text'] . '</span></a>',
-			*/
-			'P_ACTIVITY_MOD_PATH' => PLUGINS_PATH . (!empty($config['plugins']['activity']['dir']) ? $config['plugins']['activity']['dir'] : ''),
-			'U_ACTIVITY' => append_sid('activity.' . PHP_EXT),
-			'L_ACTIVITY' => $lang['Activity'],
-			// Activity - END
+			'SOCIAL_CONNECT_BUTTONS' => $social_connect_buttons
 			)
 		);
 	}
@@ -5231,7 +5231,7 @@ function page_header($title = '', $parse_template = false)
 		'USER_USERNAME' => $user->data['session_logged_in'] ? htmlspecialchars($user->data['username']) : $lang['Guest'],
 
 		// UPI2DB - BEGIN
-		'UPI2DB_FIRST_USE' => $upi2db_first_use,
+		'UPI2DB_FIRST_USE' => !empty($upi2db_first_use) ? $upi2db_first_use : '',
 		// UPI2DB - END
 
 		'L_PAGE_TITLE' => $meta_content['page_title_clean'],
@@ -5542,8 +5542,8 @@ function page_footer($exit = true, $template_to_parse = 'body', $parse_template 
 	$template->assign_vars(array(
 		'TRANSLATION_INFO' => ((isset($lang['TRANSLATION_INFO'])) && ($lang['TRANSLATION_INFO'] != '')) ? ('<br />&nbsp;' . $lang['TRANSLATION_INFO']) : (((isset($lang['TRANSLATION'])) && ($lang['TRANSLATION'] != '')) ? ('<br />&nbsp;' . $lang['TRANSLATION']) : ''),
 
-		'BOTTOM_HTML_BLOCK' => $bottom_html_block_text,
-		'FOOTER_BANNER_BLOCK' => $footer_banner_text,
+		'BOTTOM_HTML_BLOCK' => !empty($bottom_html_block_text) ? $bottom_html_block_text : '',
+		'FOOTER_BANNER_BLOCK' => !empty($footer_banner_text) ? $footer_banner_text : '',
 		'GOOGLE_ANALYTICS' => $config['google_analytics'],
 
 		'CMS_ACP' => (!empty($cms_acp_url) ? $cms_acp_url : ''),
@@ -6196,7 +6196,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 				}
 
 				// Another quick fix for those having gzip compression enabled, but do not flush if the coder wants to catch "something". ;)
-				$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : $config['gzip_compress']);
+				$config['gzip_compress_runtime'] = (isset($config['gzip_compress_runtime']) ? $config['gzip_compress_runtime'] : !empty($config['gzip_compress']));
 				if (!empty($config['gzip_compress_runtime']))
 				{
 					if (@extension_loaded('zlib') && !headers_sent() && !ob_get_level())

@@ -666,6 +666,7 @@ if(!function_exists('search_calc_unread_ip'))
 	{
 		global $config, $user, $lang, $images;
 
+		$forum_id = $searchset[$i]['forum_id'];
 		$post_id = $searchset[$i]['post_id'];
 		$unread_color  = '';
 
@@ -817,7 +818,7 @@ if(!function_exists('sync_database'))
 {
 	function sync_database($user_data)
 	{
-		global $config, $db;
+		global $config, $db, $user;
 
 		$time = time();
 
@@ -853,6 +854,7 @@ if(!function_exists('sync_database'))
 		$auth_forum = ($auth_forum_id) ? 'AND u.forum_id IN ('. $auth_forum_id .')' : '';
 		$max_new_post = ($user_data['user_level'] != ADMIN) ? (($user_data['user_level'] != MOD) ? $config['upi2db_max_new_posts'] : $config['upi2db_max_new_posts_mod']): $config['upi2db_max_new_posts_admin'];
 		// Edited By Mighty Gorgon - BEGIN
+		$max_new_posts = ($user->data['user_level'] != ADMIN) ? (($user->data['user_level'] != MOD) ? $config['upi2db_max_new_posts'] : $config['upi2db_max_new_posts_mod']) : $config['upi2db_max_new_posts_admin'];
 		$max_new_posts = ($max_new_posts == 0) ? UPI2DB_MAX_UNREAD_POSTS : $max_new_posts;
 		$new_post_limit = ($max_new_post > 0) ? 'ORDER BY u.post_time DESC, u.post_edit_time DESC LIMIT ' . $max_new_post : 'ORDER BY u.post_time DESC, u.post_edit_time DESC';
 		// Edited By Mighty Gorgon - END

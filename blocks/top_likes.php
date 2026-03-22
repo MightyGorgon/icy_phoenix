@@ -27,12 +27,14 @@ if(!function_exists('cms_block_top_likes'))
 	{
 		global $db, $cache, $config, $template, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['likes_row.'] = array();
 
-		$topic_likes_hours = (int) $cms_config_vars['md_top_likes_hours'][$block_id];
+		$topic_likes_hours = (int) $cms_config_vars['blocks'][$block_key]['md_top_likes_hours'];
 		$topic_likes_hours = (!empty($topic_likes_hours) ? $topic_likes_hours : 24);
 		$topic_likes_timeframe = $topic_likes_hours * 60 * 60;
-		$topic_likes_topics = (int) $cms_config_vars['md_top_likes_topics'][$block_id];
+		$topic_likes_topics = (int) $cms_config_vars['blocks'][$block_key]['md_top_likes_topics'];
 		$topic_likes_topics = (!empty($topic_likes_topics) ? $topic_likes_topics : 10);
 		$current_time = time();
 		$delta_time = $current_time - $topic_likes_timeframe;
@@ -86,7 +88,7 @@ if(!function_exists('cms_block_top_likes'))
 			'L_TOP_LIKES_DESC_T' => sprintf($lang['TOP_LIKES_DESC'], $topic_likes_hours),
 
 			'S_TOPICS_LIKES' => $switch_topics_likes,
-			'S_TOPICS_LIKES_COUNTER' => (!empty($cms_config_vars['md_top_likes_counter'][$block_id]) ? true : false),
+			'S_TOPICS_LIKES_COUNTER' => (!empty($cms_config_vars['blocks'][$block_key]['md_top_likes_counter']) ? true : false),
 			'S_TOPICS_LIKES_BLOCK_ID' => $block_id,
 			)
 		);

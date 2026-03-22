@@ -27,13 +27,15 @@ if(!function_exists('cms_block_tags'))
 	{
 		global $db, $cache, $config, $template, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['tags_loop.'] = array();
 
 		// This block requires jquery_ui
 		$config['jquery_ui'] = true;
 
-		$sql_sort = (empty($cms_config_vars['md_tags_words'][$block_id]) ? ("l.tag_count DESC, l.tag_text ASC") : ("RAND()"));
-		$sql_limit = (int) $cms_config_vars['md_tags_words'][$block_id];
+		$sql_sort = (empty($cms_config_vars['blocks'][$block_key]['md_tags_words']) ? ("l.tag_count DESC, l.tag_text ASC") : ("RAND()"));
+		$sql_limit = (int) $cms_config_vars['blocks'][$block_key]['md_tags_words'];
 		$sql_limit = (($sql_limit < 0) || ($sql_limit > 500)) ? 50 : $sql_limit;
 
 		$tags = array();
@@ -70,8 +72,8 @@ if(!function_exists('cms_block_tags'))
 			'U_TAGS' => append_sid(CMS_PAGE_TAGS),
 
 			'S_TAGS_BLOCK_ID' => $block_id,
-			'S_TAGS_SEARCH' => !empty($cms_config_vars['md_tags_search'][$block_id]) ? true : false,
-			'S_TAGS_COUNT' => !empty($cms_config_vars['md_tags_count'][$block_id]) ? true : false,
+			'S_TAGS_SEARCH' => !empty($cms_config_vars['blocks'][$block_key]['md_tags_search']) ? true : false,
+			'S_TAGS_COUNT' => !empty($cms_config_vars['blocks'][$block_key]['md_tags_count']) ? true : false,
 			)
 		);
 	}

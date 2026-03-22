@@ -18,10 +18,23 @@ class cms_admin
 	var $root = '';
 	var $mode = false;
 	var $action = false;
-	var $l_id = false; // Layout ID
-	var $ls_id = false; // Layout Special ID
-	var $b_id = false; // Block ID
-	var $bs_id = false; // Block Settings ID
+	var $l_id = 0; // Layout ID
+	var $ls_id = 0; // Layout Special ID
+	var $b_id = 0; // Block ID
+	var $bs_id = 0; // Block Settings ID
+
+	var $table_name = '';
+	var $field_name = '';
+	var $id_var_name = '';
+	var $mode_layout_name = '';
+	var $mode_blocks_name = '';
+	var $block_layout_field = '';
+	var $cms_id = 0;
+	var $block_id = 0;
+	var $id_var_value = 0;
+	var $layout_value = 0;
+	var $layout_special_value = 0;
+	var $tables = array();
 
 	var $gb_pos = array('gh', 'gf', 'gt', 'gb', 'gl', 'gr', 'hh', 'hl', 'hc', 'fc', 'fr', 'ff'); // Global Blocks Positions
 
@@ -32,6 +45,10 @@ class cms_admin
 	var $menu_images_root = 'templates/common/images/menu/';
 
 	var $is_auth = array();
+	var $user_id = 0;
+
+	var $s_hidden_fields = '';
+	var $s_append_url = '';
 
 	/**
 	* Some defaults
@@ -99,7 +116,7 @@ class cms_admin
 			);
 		}
 
-		if (!empty($_REQUEST['mode']) && !empty($_GET['mode']) && ($_POST['mode'] != $_GET['mode']))
+		if (!empty($_REQUEST['mode']) && !empty($_GET['mode']))
 		{
 			$_REQUEST['mode'] = $_GET['mode'];
 			$_POST['mode'] = $_GET['mode'];
@@ -108,7 +125,7 @@ class cms_admin
 		$mode = request_var('mode', '');
 		$this->mode = (in_array($mode, $mode_array) ? $mode : false);
 
-		if (!empty($_REQUEST['action']) && !empty($_GET['action']) && ($_POST['action'] != $_GET['action']))
+		if (!empty($_REQUEST['action']) && !empty($_GET['action']))
 		{
 			$_REQUEST['action'] = $_GET['action'];
 			$_POST['action'] = $_GET['action'];
@@ -405,7 +422,7 @@ class cms_admin
 			'NOT_LOCAL' => (!$b_local) ? 'checked="checked"' : '',
 			'BACKGROUND' => ($b_background) ? 'checked="checked"' : '',
 			'NO_BACKGROUND' => (!$b_background) ? 'checked="checked"' : '',
-			'GROUP' => $group,
+			'GROUP' => !empty($group) ? $group : '',
 			'BLOCK_PARENT' => $b_block_parent,
 
 			'S_BLOCKS_ACTION' => append_sid($this->root . $this->s_append_url),
@@ -981,6 +998,7 @@ class cms_admin
 				}
 
 				$row_class = '';
+				$b_position  = 0;
 				for($i = 0; $i < $b_count; $i++)
 				{
 					if (($b_rows[$i]['layout_special'] != 0) && ($this->action == 'editglobal'))
@@ -993,7 +1011,8 @@ class cms_admin
 						$b_weight = $b_rows[$i]['weight'];
 						$pos_change = (($i == 0) || ($b_position != $b_rows[$i]['bposition'])) ? true : false;
 						$b_position = $b_rows[$i]['bposition'];
-						$b_position_l = !empty($lang['cms_pos_' . $position[$b_position]]) ? $lang['cms_pos_' . $position[$b_position]] : $row['pkey'];
+						//$b_position_l = !empty($lang['cms_pos_' . $position[$b_position]]) ? $lang['cms_pos_' . $position[$b_position]] : $row['pkey'];
+						$b_position_l = !empty($lang['cms_pos_' . $position[$b_position]]) ? $lang['cms_pos_' . $position[$b_position]] : $b_rows[$i]['pkey'];
 						$else_counter++;
 
 						if (($this->l_id == 0) && ($this->id_var_name == 'l_id'))
@@ -1026,9 +1045,9 @@ class cms_admin
 							'TITLEBAR' => ($b_rows[$i]['titlebar']) ? $lang['YES'] : $lang['NO'],
 							'LOCAL' => ($b_rows[$i]['local']) ? $lang['YES'] : $lang['NO'],
 							'BACKGROUND' => ($b_rows[$i]['background']) ? $lang['YES'] : $lang['NO'],
-							'GROUPS' => $groups,
+							'GROUPS' => !empty($groups) ? $groups : '',
 							'CONTENT' => (empty($b_rows[$i]['blockfile'])) ? $lang['B_TEXT'] : $lang['B_FILE'],
-							'VIEW' => $b_view,
+							'VIEW' => !empty($b_view) ? $b_view : '',
 
 							// Query the block's parent, and add informations about it
 							'BLOCK_PARENT' => $bfp_rows[$b_rows[$i]['bs_id']],
@@ -1314,7 +1333,7 @@ class cms_admin
 			'BBCODE' => ($b_type) ? 'checked="checked"' : '',
 			'CONTENT' => htmlspecialchars($message),
 			'BLOCKFILE' => $blockfile,
-			'BLOCK_CONFIG' => $block_config,
+			'BLOCK_CONFIG' => !empty($block_config) ? $block_config : '',
 			'VIEWBY' => $view,
 			'GROUP' => $group,
 			'LOCKED' => (!empty($locked) ? 'checked="checked"' : ''),
@@ -1430,13 +1449,16 @@ class cms_admin
 				}
 
 				$block_var_exists = $this->block_var_exists($block_vars_default[$i]['config_name']);
-
 				if(empty($block_var_exists))
 				{
 					$sql = "INSERT INTO " . $this->tables['block_variable_table'] . " (bid, label, sub_label, config_name, field_options, field_values, type, block)
 						VALUES ('" . $this->bs_id ."', '" . $db->sql_escape($block_vars_default[$i]['label']) . "', '" . $db->sql_escape($block_vars_default[$i]['sub_label']) . "', '" . $db->sql_escape($block_vars_default[$i]['config_name']) . "', '" . $db->sql_escape($block_vars_default[$i]['field_options']) . "', '" . $block_vars_default[$i]['field_values'] . "', '" . $block_vars_default[$i]['type'] . "', '" . $db->sql_escape($block_vars_default[$i]['block']) . "')";
 					$result = $db->sql_query($sql);
+				}
 
+				$block_var_cfg_exists = $this->block_var_cfg_exists($block_vars_default[$i]['config_name']);
+				if(empty($block_var_cfg_exists))
+				{
 					$sql = "INSERT INTO " . $this->tables['block_config_table'] . " (bid, config_name, config_value)
 						VALUES ('" . $this->bs_id ."', '" . $db->sql_escape($block_vars_default[$i]['config_name']) . "', '" . $db->sql_escape($block_vars_default[$i]['config_value']) . "')";
 					$result = $db->sql_query($sql);
@@ -1611,14 +1633,14 @@ class cms_admin
 				if($layout)
 				{
 					// layout
-					$url = $layouts[$layout]['url'];
-					$name = $layouts[$layout]['name'];
+					$url = !empty($layouts[$layout]['url']) ? $layouts[$layout]['url'] : '';
+					$name = !empty($layouts[$layout]['name']) ? $layouts[$layout]['name'] : '';
 				}
 				elseif($special)
 				{
 					// special page
-					$url = $layouts_special[$special]['url'];
-					$name = $layouts_special[$special]['name'];
+					$url = !empty($layouts_special[$special]['url']) ? $layouts_special[$special]['url'] : '';
+					$name = !empty($layouts_special[$special]['name']) ? $layouts_special[$special]['name'] : '';
 				}
 				else
 				{
@@ -1628,9 +1650,16 @@ class cms_admin
 				}
 				// avoid adding duplicates
 				$found = false;
-				for($i = 0; $i < count((array) $list[$bsid]); $i++)
+				if (!empty($list[$bsid]))
 				{
-					if($list[$bsid][$i]['url'] == $url) $found = true;
+					for($i = 0; $i < count((array) $list[$bsid]); $i++)
+					{
+						if($list[$bsid][$i]['url'] == $url)
+						{
+							$found = true;
+							break;
+						}
+					}
 				}
 				if(!$found)
 				{
@@ -2061,7 +2090,7 @@ class cms_admin
 	/*
 	* Delete layout
 	*/
-	function delete_layout()
+	function delete_layout($is_layout_special, $filename = '')
 	{
 		global $db, $lang, $template;
 
@@ -2097,9 +2126,9 @@ class cms_admin
 			{
 				if (!$is_layout_special)
 				{
-					if ((substr($data['filename'], strlen($data['filename']) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) && (file_exists($data['filename'])))
+					if (!empty($filename) && (substr($filename, strlen($filename) - (strlen(PHP_EXT) + 1), (strlen(PHP_EXT) + 1)) == ('.' . PHP_EXT)) && (file_exists($filename)))
 					{
-						@unlink($data['filename']);
+						@unlink($filename);
 					}
 
 					$sql = "DELETE FROM " . $this->tables['block_position_table'] . " WHERE layout = " . $this->id_var_value;
@@ -2293,7 +2322,7 @@ class cms_admin
 	*/
 	function get_layout_edit_auth()
 	{
-		global $db, $user;
+		global $db, $user, $auth;
 
 		// If the user is admin... give immediate access and exit!
 		if ($user->data['user_level'] == ADMIN)
@@ -2347,7 +2376,7 @@ class cms_admin
 
 				$layout_details[$num_layout]['img'] = '<img src="' . $img . '" alt="' . $file . '" title="' . $file . '"/>';
 				$layout_details[$num_layout]['file'] = '<input type="radio" name="' . $layout_field . '" value="' . $file . '"';
-				if(!empty($l_info) && $l_info['template'] == $file)
+				if(!empty($l_info) && (!empty($l_info['template']) && ($l_info['template'] == $file)))
 				{
 					$layout_details[$num_layout]['file'] .= ' checked="checked"';
 				}
@@ -2355,7 +2384,7 @@ class cms_admin
 				$num_layout++;
 			}
 		}
-		@closedir($layout_dir);
+		@closedir($layouts);
 		return $layout_details;
 	}
 
@@ -2376,7 +2405,7 @@ class cms_admin
 				$layouts_array[] = $file;
 			}
 		}
-		@closedir($layout_dir);
+		@closedir($layouts);
 
 		$layout_details = '';
 		foreach ($layouts_array as $k => $v)
@@ -2793,19 +2822,37 @@ class cms_admin
 	}
 
 	/*
-	* Check if a configuration entry exists
+	* Check if a configuration entry exists in block_variable_table
 	*/
 	function block_var_exists($block_variable_name)
 	{
 		global $db;
 
-		$sql = "SELECT count(1) existing FROM " . $this->tables['block_variable_table'] . "
+		$sql = "SELECT * FROM " . $this->tables['block_variable_table'] . "
 			WHERE config_name = '" . $block_variable_name . "'
 				AND bid = '" . $this->bs_id . "'";
 		$result = $db->sql_query($sql);
 		$row = $db->sql_fetchrow($result);
 		$db->sql_freeresult($result);
-		$block_var_exists = $row['existing'];
+		$block_var_exists = !empty($row) ? true : false;
+
+		return $block_var_exists;
+	}
+
+	/*
+	* Check if a configuration entry exists in config table
+	*/
+	function block_var_cfg_exists($block_variable_name)
+	{
+		global $db;
+
+		$sql = "SELECT * FROM " . $this->tables['block_config_table'] . "
+			WHERE config_name = '" . $block_variable_name . "'
+				AND bid = '" . $this->bs_id . "'";
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+		$block_var_exists = !empty($row) ? true : false;
 
 		return $block_var_exists;
 	}

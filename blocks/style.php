@@ -27,6 +27,8 @@ if(!function_exists('cms_block_style'))
 		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page;
 		global $style_select, $default_style;
 
+		$block_key = 'b' . strval($block_id);
+
 		$default_style = $config['default_style'];
 		$select_name = STYLE_URL;
 		$style_select = '<select name="' . $select_name . '" onchange="SetTheme();" class="gensmall">';

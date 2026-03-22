@@ -252,7 +252,10 @@ function topic_attachment_image($switch_attachment)
 {
 	global $config, $is_auth, $lang;
 
-	if (intval($switch_attachment) == 0 || (!($is_auth['auth_download'] && $is_auth['auth_view'])) || intval($config['disable_attachments_mod']) || $config['topic_icon'] == '')
+	$auth_download = (!empty($is_auth) && isset($is_auth['auth_download'])) ? $is_auth['auth_download'] : false;
+	$auth_view = (!empty($is_auth) && isset($is_auth['auth_view'])) ? $is_auth['auth_view'] : false;
+
+	if (intval($switch_attachment) == 0 || (!($auth_download && $auth_view)) || intval($config['disable_attachments_mod']) || $config['topic_icon'] == '')
 	{
 		return '';
 	}
@@ -364,7 +367,7 @@ function init_display_post_attachments($switch_attachment, $article = array(), $
 		return;
 	}
 
-	@reset($attachments);
+	//@reset($attachments);
 
 	for ($i = 0; $i < $num_rows; $i++)
 	{
@@ -785,7 +788,8 @@ function display_attachments($post_id, $type = 'postrow')
 	global $db, $config, $template, $user, $lang;
 	global $upload_dir, $allowed_extensions, $display_categories, $download_modes, $attachments, $upload_icons, $username_from;
 	$num_attachments = !empty($attachments['_' . $post_id]) ? sizeof($attachments['_' . $post_id]) : 0;
-	if ($num_attachments == 0)
+	
+	if (empty($num_attachments))
 	{
 		return;
 	}

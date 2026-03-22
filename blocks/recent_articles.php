@@ -27,10 +27,12 @@ if(!function_exists('cms_block_recent_articles'))
 		// if article approved in the table is equal to 1 the article has been approved, else it is not approved, so don't show it.
 		global $db, $cache, $config, $template, $user, $lang, $table_prefix, $style_row, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['recent_articles.'] = array();
 
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
-		$sql = "SELECT * FROM " . KB_ARTICLES_TABLE . " ORDER BY article_id DESC LIMIT " . $cms_config_vars['md_total_articles'][$block_id];
+		$sql = "SELECT * FROM " . KB_ARTICLES_TABLE . " ORDER BY article_id DESC LIMIT " . $cms_config_vars['blocks'][$block_key]['md_total_articles'];
 		$result = $db->sql_query($sql);
 
 		//now lets get our info
@@ -46,7 +48,7 @@ if(!function_exists('cms_block_recent_articles'))
 					$author = colorize_username ($author_id);
 					$article_category_id = $row['article_id'];
 					$url = append_sid(IP_ROOT_PATH . 'kb.' . PHP_EXT . '?mode=article&amp;k=' . $article_category_id);
-					if($cms_config_vars['md_recent_articles_style'][$block_id] == '1')
+					if($cms_config_vars['blocks'][$block_key]['md_recent_articles_style'] == '1')
 					{
 						$style_row = 'articles_scroll';
 					}

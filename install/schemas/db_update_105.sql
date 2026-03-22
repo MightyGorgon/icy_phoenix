@@ -96,6 +96,13 @@ INSERT INTO `phpbb_config` (`config_name`, `config_value`) VALUES ('auto_refresh
 
 
 
+########################################
+##              BUILD 114             ##
+########################################
+ALTER TABLE `phpbb_topic_view` ADD KEY `topic_id` (`topic_id`);
+ALTER TABLE `phpbb_topic_view` ADD KEY `user_id` (`user_id`);
+
+
 
 
 #####################

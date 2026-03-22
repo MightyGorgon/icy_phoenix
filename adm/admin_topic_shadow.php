@@ -54,7 +54,7 @@ define('MOD_COOKIE_PREF_NAME', 'nivisec_phpbb2_mod_preferences');
 * Also get any saved cookie preferences.
 ******************************************************************************************
 */
-$preference_cookie = (isset($_COOKIE[$config['cookie_name'] . '_' . MOD_COOKIE_PREF_NAME])) ? unserialize(stripslashes($_COOKIE[$config['cookie_name'] . '_' . MOD_COOKIE_PREF_NAME])) : array();
+$preference_cookie = (isset($_COOKIE[$config['cookie_name'] . '_' . MOD_COOKIE_PREF_NAME])) ? unserialize(stripslashes($_COOKIE[$config['cookie_name'] . '_' . MOD_COOKIE_PREF_NAME]), array('allowed_classes' => false)) : array();
 $preference_cookie['test'] = true;
 $params = array(
 	'start' => 0,

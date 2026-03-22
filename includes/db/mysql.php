@@ -39,6 +39,7 @@ class sql_db
 	var $persistency = false;
 	var $multi_insert = false;
 
+	var $sql_layer = '';
 	var $cache_folder = '';
 
 	var $curtime = 0;
@@ -88,10 +89,8 @@ class sql_db
 		$this->one_char = chr(0) . '_';
 
 		$this->persistency = (version_compare(PHP_VERSION, '5.3.0', '>=')) ? $persistency : false;
-		$this->user = $sqluser;
-		$this->password = $sqlpassword;
-		$this->server = ($this->persistency) ? 'p:' . (($sqlserver) ? $sqlserver : 'localhost') : $sqlserver;
-		$this->dbname = $database;
+		$sqlserver = ($this->persistency) ? 'p:' . (($sqlserver) ? $sqlserver : 'localhost') : $sqlserver;
+		$sqldatabase = $database;
 
 		$this->row = new DbObjectStorage();
 		$this->rowset = new DbObjectStorage();
@@ -99,14 +98,17 @@ class sql_db
 		// Mighty Gorgon: DEBUGGING DB OBJECT STORAGE
 		//$this->open_queries = array();
 
-		$this->db_connect_id = @mysqli_connect($this->server, $this->user, $this->password);
+		$sqlserver_and_port = explode(':', $sqlserver);
+		$sqlserver_name = $sqlserver_and_port[0];
+		$sqlserver_port = isset($sqlserver_and_port[1]) ? intval($sqlserver_and_port[1]) : null;
+		//$this->db_connect_id = @mysqli_connect($sqlserver, $sqluser, $sqlpassword);
+		$this->db_connect_id = @mysqli_connect($sqlserver_name, $sqluser, $sqlpassword, null, $sqlserver_port);
 
 		if($this->db_connect_id)
 		{
-			if($database != '')
+			if($sqldatabase != '')
 			{
-				$this->dbname = $database;
-				$dbselect = @mysqli_select_db($this->db_connect_id, $this->dbname);
+				$dbselect = @mysqli_select_db($this->db_connect_id, $sqldatabase);
 
 				if(!$dbselect)
 				{
@@ -119,7 +121,8 @@ class sql_db
 		}
 		else
 		{
-			$this->sql_error('');
+			//$this->sql_error('');
+			$this->sql_error('__CONNECT__');
 			$result = false;
 		}
 
@@ -269,7 +272,7 @@ class sql_db
 
 		$this->sql_start_time = $this->sql_get_time();
 
-		$cache_folder = (empty($cache_folder) ? SQL_CACHE_FOLDER : $cache_folder);
+		$cache_folder = (empty($cache_folder) ? (defined('SQL_CACHE_FOLDER') ? SQL_CACHE_FOLDER : '') : $cache_folder);
 
 		if (defined('DEBUG_EXTRA') && DEBUG_EXTRA)
 		{
@@ -284,11 +287,11 @@ class sql_db
 		$cache_ttl = empty($cache_prefix) ? 0 : (empty($cache_ttl) ? CACHE_SQL_EXPIRY : $cache_ttl);
 
 		// Cache SQL to the same file plus underscore
-		if (defined('SQL_DEBUG_LOG') && SQL_DEBUG_LOG && !defined('IN_ADMIN'))
+		if (defined('SQL_DEBUG_LOG') && !empty(SQL_DEBUG_LOG) && !defined('IN_ADMIN'))
 		{
 			$f = fopen($this->cache_folder . 'sql_history.' . PHP_EXT, 'a+');
 			@flock($f, LOCK_EX);
-			@fwrite($f, gmdate('Y/m/d - H:i:s') . ' => ' . $hash . "\n\n" . $query . "\n\n\n=========================\n\n");
+			@fwrite($f, gmdate('Y/m/d - H:i:s') . ' => ' . "\n\n" . $query . "\n\n\n=========================\n\n");
 			@flock($f, LOCK_UN);
 			@fclose($f);
 		}
@@ -466,7 +469,19 @@ class sql_db
 			$query_id = $this->query_result;
 		}
 
-		return ($query_id) ? @mysqli_field_name($query_id, $offset) : false;
+		if ($query_id)
+		{
+			$finfo = @mysqli_fetch_fields($query_id);
+			foreach ($finfo as $val)
+			{
+				$fname = $val->name;
+			}
+		}
+		else
+		{
+			$fname = false;
+		}
+		return $fname;
 	}
 
 	/**
@@ -479,7 +494,19 @@ class sql_db
 			$query_id = $this->query_result;
 		}
 
-		return ($query_id) ? @mysqli_field_type($query_id, $offset) : false;
+		if ($query_id)
+		{
+			$finfo = @mysqli_fetch_fields($query_id);
+			foreach ($finfo as $val)
+			{
+				$ftype = $val->type;
+			}
+		}
+		else
+		{
+			$ftype = false;
+		}
+		return $ftype;
 	}
 
 	/**
@@ -890,7 +917,7 @@ class sql_db
 				$values = array();
 				foreach ($_sql_ary as $key => $var)
 				{
-					$values[] = $this->_sql_validate_value($var);
+					$values[] = $this->sql_validate_value($var);
 				}
 				$ary[] = '(' . implode(', ', $values) . ')';
 			}
@@ -961,7 +988,8 @@ class sql_db
 
 		$this->sql_error_returned = $this->_sql_error();
 
-		if (!$this->return_on_error && !defined('IN_INSTALL'))
+		//if (!$this->return_on_error && !defined('IN_INSTALL'))
+		if (!$this->return_on_error && (!defined('IN_INSTALL') || ($sql === '__CONNECT__')))
 		{
 			$message = '<b>SQL ERROR [ ' . SQL_LAYER . ' ]</b><br /><br />' . $this->sql_error_returned['message'] . ' [' . $this->sql_error_returned['code'] . ']';
 
@@ -970,10 +998,14 @@ class sql_db
 			// The DEBUG_EXTRA constant is for development only!
 			if (defined('IN_INSTALL') || (defined('DEBUG_EXTRA') && DEBUG_EXTRA))
 			{
-				$backtrace = get_backtrace();
+				// Mighty Gorgon 2024/09/29: To be tested
+				//$backtrace = get_backtrace();
+				$backtrace = new Exception();
 
 				$message .= ($sql) ? '<br /><br /><b>SQL</b><br /><br />' . htmlspecialchars($sql) : '';
-				$message .= ($backtrace) ? '<br /><br /><b>BACKTRACE</b><br />' . $backtrace : '';
+				// Mighty Gorgon 2024/09/29: To be tested
+				//$message .= ($backtrace) ? '<br /><br /><b>BACKTRACE</b><br />' . $backtrace : '';
+				$message .= '<br /><br /><b>BACKTRACE</b><br />' . $backtrace->getTraceAsString();
 				$message .= '<br />';
 			}
 			else
@@ -996,7 +1028,8 @@ class sql_db
 			}
 
 			global $msg_code;
-			$msg_code = CRITICAL_MESSAGE;
+			// Mighty Gorgon 2024/09/29: To be tested
+			//$msg_code = CRITICAL_MESSAGE;
 			$message = '<div style="text-align: left;">' . $message . '</div>';
 
 			if (strlen($message) > 1024)
@@ -1403,8 +1436,13 @@ class sql_db
 		if (!$this->db_connect_id)
 		{
 			return array(
+				// Mighty Gorgon 2024/09/29: To be tested
+				/*
 				'message' => @mysqli_error(),
 				'code' => @mysqli_errno()
+				*/
+				'message' => @mysqli_connect_error(),
+				'code' => @mysqli_connect_errno()
 			);
 		}
 
@@ -1453,10 +1491,10 @@ class sql_db
 					// begin profiling
 					if ($test_prof)
 					{
-						@mysqli_query('SET profiling = 1;', $this->db_connect_id);
+						@mysqli_query($this->db_connect_id, 'SET profiling = 1;');
 					}
 
-					if ($result = @mysqli_query("EXPLAIN $explain_query", $this->db_connect_id))
+					if ($result = @mysqli_query($this->db_connect_id, "EXPLAIN $explain_query"))
 					{
 						while ($row = @mysqli_fetch_assoc($result))
 						{
@@ -1475,7 +1513,7 @@ class sql_db
 						$html_table = false;
 
 						// get the last profile
-						if ($result = @mysqli_query('SHOW PROFILE ALL;', $this->db_connect_id))
+						if ($result = @mysqli_query($this->db_connect_id, 'SHOW PROFILE ALL;'))
 						{
 							$this->html_hold .= '<br />';
 							while ($row = @mysqli_fetch_assoc($result))
@@ -1504,7 +1542,7 @@ class sql_db
 							$this->html_hold .= '</table>';
 						}
 
-						@mysqli_query('SET profiling = 0;', $this->db_connect_id);
+						@mysqli_query($this->db_connect_id, 'SET profiling = 0;');
 					}
 				}
 
@@ -1514,7 +1552,7 @@ class sql_db
 				$endtime = explode(' ', microtime());
 				$endtime = $endtime[0] + $endtime[1];
 
-				$result = @mysqli_query($query, $this->db_connect_id);
+				$result = @mysqli_query($this->db_connect_id, $query);
 				while ($void = @mysqli_fetch_assoc($result))
 				{
 					// Take the time spent on parsing rows into account

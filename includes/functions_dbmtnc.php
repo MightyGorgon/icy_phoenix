@@ -166,31 +166,6 @@ $tables = array(
 	'zebra'
 );
 
-if (!empty($config['plugins']['activity']['enabled']))
-{
-	$tables = array_merge($tables, array(
-		'ina_ban',
-		'ina_categories',
-		'ina_challenge_tracker',
-		'ina_challenge_users',
-		'ina_chat',
-		'ina_cheat_fix',
-		'ina_data',
-		'ina_favorites',
-		'ina_gamble',
-		'ina_gamble_in_progress',
-		'ina_games',
-		'ina_hall_of_fame',
-		'ina_last_game_played',
-		'ina_rating_votes',
-		'ina_scores',
-		'ina_sessions',
-		'ina_top_scores',
-		'ina_trophy_comments',
-		)
-	);
-}
-
 // List of configuration data required
 $config_data = array('dbmtnc_disallow_postcounter', 'dbmtnc_disallow_rebuild', 'dbmtnc_rebuildcfg_maxmemory', 'dbmtnc_rebuildcfg_minposts', 'dbmtnc_rebuildcfg_php3only', 'dbmtnc_rebuildcfg_php3pps', 'dbmtnc_rebuildcfg_php4pps', 'dbmtnc_rebuildcfg_timeoverwrite', 'dbmtnc_rebuildcfg_timelimit', 'dbmtnc_rebuild_end', 'dbmtnc_rebuild_pos');
 

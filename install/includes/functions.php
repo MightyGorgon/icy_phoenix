@@ -395,7 +395,8 @@ function init_userprefs($userdata)
 
 function setup_style($style)
 {
-	global $db, $config, $template, $images;
+	global $db, $config, $template, $images, $color;
+	global $user, $lang, $lofi_bots_parsing;
 
 	$sql = 'SELECT *
 		FROM ' . THEMES_TABLE . '

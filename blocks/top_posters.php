@@ -26,14 +26,16 @@ if(!function_exists('cms_block_top_posters'))
 	{
 		global $db, $cache, $config, $template, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 
-		$top_posters_n = (intval($cms_config_vars['md_total_poster'][$block_id]) ? $cms_config_vars['md_total_poster'][$block_id] : 10);
+		$top_posters_n = (intval($cms_config_vars['blocks'][$block_key]['md_total_poster']) ? $cms_config_vars['blocks'][$block_key]['md_total_poster'] : 10);
 		$show_admins = true;
 		$show_mods = true;
 		$top_posters_array = top_posters($top_posters_n, $show_admins, $show_mods, true);
 
-		$show_avatars = !empty($cms_config_vars['md_show_avatars'][$block_id]) ? true : false;
+		$show_avatars = !empty($cms_config_vars['blocks'][$block_key]['md_show_avatars']) ? true : false;
 		$template->assign_var('S_SHOW_AVATARS', $show_avatars);
 
 		for ($i = 0; $i < sizeof($top_posters_array); $i++)

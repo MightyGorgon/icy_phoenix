@@ -4733,13 +4733,15 @@ if (substr($mode, 0, 6) == 'update')
 
 		/* Updating from IP 2.2.8.113 */
 		case '2.2.8.113':
-
+			$sql[] = "ALTER TABLE `" . $table_prefix . "topic_view` ADD KEY `topic_id` (`topic_id`)";
+			$sql[] = "ALTER TABLE `" . $table_prefix . "topic_view` ADD KEY `user_id` (`user_id`)";
+			
 		/* Updating from IP 2.2.9.114 */
 		case '2.2.9.114':
 
 	}
 
-	$sql[] = "INSERT INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";
+	$sql[] = "INSERT IGNORE INTO " . $table_prefix . "config VALUES ('ip_version', '" . $ip_version . "')";
 	$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '" . $ip_version . "' WHERE config_name = 'ip_version'";
 	$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '" . $phpbb_version . "' WHERE `config_name` = 'version'";
 	$sql[] = "UPDATE " . $table_prefix . "config SET config_value = '2.0.0' WHERE config_name = 'cms_version'";

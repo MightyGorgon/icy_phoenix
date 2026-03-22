@@ -855,9 +855,6 @@ elseif($mode == 'menu_block')
 		$template->assign_vars(array(
 			'L_CMS_MENU_TITLE' => $lang['CMS_MENU_PAGE'],
 			'L_CMS_MENU_EXPLAIN' => $lang['CMS_MENU_PAGE_EXPLAIN'],
-			'L_CMS_ACTIONS' => $lang['CMS_Actions'],
-			'L_CMS_NAME' => $lang['CMS_Name'],
-			'L_CMS_DESCRIPTION' => $lang['CMS_Description'],
 
 			'L_YES' => $lang['Yes'],
 			'L_NO' => $lang['No'],
@@ -1063,9 +1060,6 @@ elseif (($mode == 'menu_list') || ($mode == false))
 			'L_CMS_MENU_TITLE' => $lang['CMS_MENU_PAGE'],
 			'L_CMS_MENU_EXPLAIN' => $lang['CMS_MENU_PAGE_EXPLAIN'],
 			'L_CMS_ID' => $lang['CMS_ID'],
-			'L_CMS_ACTIONS' => $lang['CMS_Actions'],
-			'L_CMS_NAME' => $lang['CMS_Name'],
-			'L_CMS_DESCRIPTION' => $lang['CMS_Description'],
 			'L_CMS_EDIT_MENU_ITEMS' => $lang['CMS_Menu_Edit_menu_links_button'],
 
 			'L_YES' => $lang['Yes'],

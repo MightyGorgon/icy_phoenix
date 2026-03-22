@@ -27,6 +27,8 @@ if(!function_exists('cms_block_global_header'))
 		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $user, $lang, $block_id, $cms_config_vars;
 		global $ip_cms;
 
+		$block_key = 'b' . strval($block_id);
+
 		// Before starting with the loop... let's load the full menu links array!
 		if (!function_exists('cms_menu_default_links_array'))
 		{
@@ -38,7 +40,7 @@ if(!function_exists('cms_block_global_header'))
 		$template->_tpldata['menu.'] = array();
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
+						WHERE menu_id = '" . intval($cms_config_vars['blocks'][$block_key]['md_menu_id']) . "'
 							LIMIT 1";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
@@ -59,7 +61,7 @@ if(!function_exists('cms_block_global_header'))
 		}
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-						WHERE menu_parent_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
+						WHERE menu_parent_id = '" . intval($cms_config_vars['blocks'][$block_key]['md_menu_id']) . "'
 						ORDER BY cat_parent_id ASC, menu_order ASC";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
@@ -112,7 +114,7 @@ if(!function_exists('cms_block_global_header'))
 						$cat_link .= '" target="_blank';
 					}
 				}
-				if ($cms_config_vars['md_show_cats_icon'][$block_id] == true)
+				if ($cms_config_vars['blocks'][$block_key]['md_show_cats_icon'] == true)
 				{
 					$cat_icon = (($cat_item_data['menu_icon'] != '') ? '<img src="' . $cat_item_data['menu_icon'] . '" alt="" title="' . $cat_name . '" style="vertical-align: middle;" />' : '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />');
 				}
@@ -141,7 +143,7 @@ if(!function_exists('cms_block_global_header'))
 					{
 						//echo($menu_cat_item_data['menu_name'] . '<br />');
 						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id, true);
-						if (empty($cms_config_vars['md_show_links_icon'][$block_id]))
+						if (empty($cms_config_vars['blocks'][$block_key]['md_show_links_icon']))
 						{
 							$menu_link['icon'] = '';
 						}

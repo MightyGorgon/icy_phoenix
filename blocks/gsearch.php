@@ -26,14 +26,16 @@ if(!function_exists('cms_block_gsearch'))
 	{
 		global $config, $template, $lang, $block_id, $cms_config_vars;
 
-		$gsearch_style = $cms_config_vars['md_gsearch_style'][$block_id];
+		$block_key = 'b' . strval($block_id);
+
+		$gsearch_style = $cms_config_vars['blocks'][$block_key]['md_gsearch_style'];
 
 		$template->assign_vars(array(
-			'GSEARCH_BANNER' => $cms_config_vars['md_gsearch_banner'][$block_id],
-			'GSEARCH_SITE' => $cms_config_vars['md_gsearch_site'][$block_id],
+			'GSEARCH_BANNER' => $cms_config_vars['blocks'][$block_key]['md_gsearch_banner'],
+			'GSEARCH_SITE' => $cms_config_vars['blocks'][$block_key]['md_gsearch_site'],
 			'GSEARCH_SITENAME' => $config['sitename'],
-			'GSEARCH_HOR' => $cms_config_vars['md_gsearch_style'][$block_id],
-			'GSEARCH_TEXT' => htmlspecialchars($cms_config_vars['md_gsearch_text'][$block_id]),
+			'GSEARCH_HOR' => $cms_config_vars['blocks'][$block_key]['md_gsearch_style'],
+			'GSEARCH_TEXT' => htmlspecialchars($cms_config_vars['blocks'][$block_key]['md_gsearch_text']),
 
 			'L_GSEARCH2' => $lang['GSearch2'],
 			'L_GSEARCH_AT' => $lang['GSearch_At'],

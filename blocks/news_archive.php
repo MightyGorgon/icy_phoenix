@@ -25,6 +25,9 @@ if(!function_exists('cms_block_news_archive'))
 	function cms_block_news_archive()
 	{
 		global $db, $cache, $config, $template, $user, $lang, $bbcode, $block_id, $cms_config_var, $cms_config_vars;
+
+		$block_key = 'b' . strval($block_id);
+
 		@include_once(IP_ROOT_PATH . ATTACH_MOD_PATH . 'displaying.' . PHP_EXT);
 		@include_once(IP_ROOT_PATH . 'includes/news.' . PHP_EXT);
 
@@ -38,7 +41,7 @@ if(!function_exists('cms_block_news_archive'))
 		$template->_tpldata['yes_news.'] = array();
 		$template->_tpldata['no_news.'] = array();
 
-		$img_width = ($cms_config_vars['md_news_images_width'][$block_id] < 20) ? '' : ('width="' . $cms_config_vars['md_news_images_width'][$block_id] . '"');
+		$img_width = ($cms_config_vars['blocks'][$block_key]['md_news_images_width'] < 20) ? '' : ('width="' . $cms_config_vars['blocks'][$block_key]['md_news_images_width'] . '"');
 
 		//$index_file = CMS_PAGE_HOME;
 		$index_file = (!empty($_SERVER['SCRIPT_NAME'])) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
@@ -77,7 +80,7 @@ if(!function_exists('cms_block_news_archive'))
 			)
 		);
 
-		if ($cms_config_vars['md_news_archive_type'][$block_id] == 1)
+		if ($cms_config_vars['blocks'][$block_key]['md_news_archive_type'] == 1)
 		{
 			// View the news categories.
 			$data_access = new NewsDataAccess(IP_ROOT_PATH);
@@ -93,7 +96,7 @@ if(!function_exists('cms_block_news_archive'))
 			{
 				$template->assign_block_vars('yes_news', array());
 			}
-			$img_w = (empty($cms_config_vars['md_news_images_width'][$block_id]) ? '' : (' width: ' . $cms_config_vars['md_news_images_width'][$block_id] . ';'));
+			$img_w = (empty($cms_config_vars['blocks'][$block_key]['md_news_images_width']) ? '' : (' width: ' . $cms_config_vars['blocks'][$block_key]['md_news_images_width'] . ';'));
 			for ($i = 0; $i < sizeof($news_cats); $i++)
 			{
 				$template->assign_block_vars('newsrow', array(

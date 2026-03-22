@@ -135,6 +135,8 @@ $template->vars['SEARCH_VALUE'] = htmlspecialchars($search_value);
 
 
 $error = false;
+$l_box_name = '';
+$user_names_select = '';
 
 // Define the box image links
 $inbox_img = ($folder != 'inbox' || $mode != '') ? '<a href="' . append_sid(CMS_PAGE_PRIVMSG . '?folder=inbox') . '"><img src="' . $images['pm_inbox'] . '" alt="' . $lang['Inbox'] . '" title="' . $lang['Inbox'] . '" /></a>' : '<img src="' . $images['pm_inbox'] . '" alt="' . $lang['Inbox'] . '" title="' . $lang['Inbox'] . '" />';

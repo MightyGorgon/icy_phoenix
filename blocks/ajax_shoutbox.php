@@ -25,6 +25,8 @@ if(!function_exists('cms_block_ajax_shoutbox'))
 	function cms_block_ajax_shoutbox()
 	{
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $bbcode, $block_id, $cms_config_vars, $cms_config_layouts, $cms_page;
+
+		$block_key = 'b' . strval($block_id);
 		$shoutbox_template_parse = false;
 		if(($config['shout_allow_guest'] <= 0) && !$user->data['session_logged_in'])
 		{

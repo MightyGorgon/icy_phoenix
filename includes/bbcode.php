@@ -883,7 +883,7 @@ class bbcode
 
 			foreach ($params as $k => $v)
 			{
-				$params[$k] = $item['params'][$k];
+				$params[$k] = !empty($item['params'][$k]) ? $item['params'][$k] : '';
 			}
 
 			if (empty($params['before']) || empty($params['after']))
@@ -2169,7 +2169,7 @@ class bbcode
 			$str = '<div class="spoiler">';
 			$str .= '<div class="code-header" id="spoilerhdr_' . $spoiler_id . '" style="position: relative;">' . $lang['bbcb_mg_spoiler'] . ': [ <a href="#" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\'); return false;">' . $lang['Show'] . '</a> ]</div>';
 			$str .= '<div class="code-header" id="spoilerhdr2_' . $spoiler_id . '" style="position: relative; display: none;">' . $lang['bbcb_mg_spoiler'] . ': [ <a href="#" onclick="ShowHide(\'spoiler_' . $spoiler_id . '\', \'spoiler2_' . $spoiler_id . '\', \'\'); ShowHide(\'spoilerhdr_' . $spoiler_id . '\', \'spoilerhdr2_' . $spoiler_id . '\', \'\'); return false;">' . $lang['Hide'] . '</a> ]</div>';
-			$str .= '<div class="spoiler-content" id="spoiler2_' . $spoiler_id . '" style="position: relative; display: none;">' . $html;
+			$str .= '<div class="spoiler-content" id="spoiler2_' . $spoiler_id . '" style="position: relative; display: none;">' . (!empty($html) ? $html : '');
 			return array(
 				'valid' => true,
 				'start' => $str,

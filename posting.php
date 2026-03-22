@@ -219,6 +219,7 @@ $user->setup();
 // DNSBL CHECK - BEGIN
 if (!empty($config['check_dnsbl_posting']) && in_array($mode, array('newtopic', 'reply', 'editpost')) && !empty($submit))
 {
+	$error = array();
 	if (($dnsbl = $user->check_dnsbl('post')) !== false)
 	{
 		$error[] = sprintf($lang['IP_BLACKLISTED'], $user->ip, $dnsbl[1], $dnsbl[1]);
@@ -1465,8 +1466,8 @@ elseif ($submit || $confirm || ($draft && $draft_confirm))
 		}
 		if (($mode == 'newtopic') || ($mode == 'reply'))
 		{
-			$tracking_forums = (!empty($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
-			$tracking_topics = (!empty($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+			$tracking_forums = (!empty($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+			$tracking_topics = (!empty($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 
 			if (((sizeof($tracking_topics) + sizeof($tracking_forums)) >= 150) && empty($tracking_topics[$topic_id]))
 			{

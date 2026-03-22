@@ -1,1 +1,35 @@
-Icy Phoenix is a CMS based on phpBB
+Icy Phoenix (IP) is a legacy CMS/forum platform based on phpBB.
+
+Project summary
+- Hybrid architecture: mostly procedural PHP with some OOP components.
+- Main use case: community portal with forum, CMS pages, user profiles, PM, plugins, themes, and admin panel.
+- Historical codebase: compatibility-oriented, with conventions inherited from phpBB/Icy Phoenix.
+
+Core structure
+- Root PHP entry points: index.php, forum.php, posting.php, viewtopic.php, search.php, profile.php, etc.
+- Bootstrap flow: entry point -> common.php -> includes/* core services.
+- Core libraries: includes/.
+- Admin area: adm/.
+- Plugins/extensions: plugins/.
+- Presentation layer: templates/.
+- Technical documentation: docs/ (including docs/ip_coding_standards.html).
+
+Technology stack
+- Runtime: legacy PHP.
+- Web server: Apache (typically via XAMPP on local development).
+- Database: MySQL/MariaDB through the internal DB abstraction layer.
+
+Local development quick start
+1. Start Apache and MySQL from XAMPP.
+2. Open http://localhost/ip/.
+3. Verify local DB credentials in config.php.
+
+Coding conventions (high level)
+- Use tabs for indentation and keep LF line endings.
+- Preserve legacy patterns and avoid large refactors when applying fixes.
+- Prefer request_var() for input normalization.
+- Use internal DB layer ($db) and sql_escape() for string input in SQL.
+
+Reference
+- Additional historical docs: readme.txt
+- Official legacy documentation: http://www.icyphoenix.com/docs/readme_english.html

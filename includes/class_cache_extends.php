@@ -85,7 +85,7 @@ class ip_cache extends acm
 		{
 			if (!empty($config['cms_version']))
 			{
-				$cms_id = $cms_config_vars['id'] ? $cms_config_vars['id'] : 0;
+				$cms_id = !empty($cms_config_vars['id']) ? $cms_config_vars['id'] : 0;
 
 				$sql = "SELECT b.*, s.*
 					FROM " . $ip_cms->tables['blocks_table'] . " AS b,

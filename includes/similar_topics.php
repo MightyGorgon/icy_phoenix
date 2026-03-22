@@ -28,8 +28,8 @@ $template->assign_block_vars('similar', array(
 for($i = 0; $i < $count_similar; $i++)
 {
 	$similar = $similar_topics[$i];
-	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 	$topic_type =  ($similar['topic_type'] == POST_ANNOUNCE) ? $lang['Topic_Announcement'] .' ': '';
 	$topic_type .= ($similar['topic_type'] == POST_STICKY) ? $lang['Topic_Sticky'] .' ': '';
 	$topic_type .= (!empty($similar['poll_start'])) ? $lang['Topic_Poll'] .' ': '';

@@ -25,7 +25,7 @@ if (!defined('IN_ICYPHOENIX'))
 */
 function adm_page_header($page_title)
 {
-	global $config, $db, $user, $template;
+	global $config, $db, $user, $lang, $template;
 	global $phpbb_admin_path, $SID, $_SID;
 
 	if (defined('HEADER_INC'))
@@ -477,7 +477,7 @@ function validate_config_vars($config_vars, &$cfg_array, &$error)
 				// Check if the path is writable
 				if (($config_definition['validate'] == 'wpath') || ($config_definition['validate'] == 'rwpath'))
 				{
-					if (file_exists(IP_ROOT_PATH . $cfg_array[$config_name]) && !phpbb_is_writable(IP_ROOT_PATH . $cfg_array[$config_name]))
+					if (file_exists(IP_ROOT_PATH . $cfg_array[$config_name]) && !is_writable(IP_ROOT_PATH . $cfg_array[$config_name]))
 					{
 						$error[] = sprintf($user->lang['DIRECTORY_NOT_WRITABLE'], $cfg_array[$config_name]);
 					}
@@ -773,8 +773,8 @@ function group_select_options($group_id, $exclude_ids = false, $manage_founder =
 {
 	global $db, $config, $user;
 
-	$exclude_sql = ($exclude_ids !== false && sizeof($exclude_ids)) ? 'WHERE ' . $db->sql_in_set('group_id', array_map('intval', $exclude_ids), true) : '';
-	$sql_and = (($exclude_sql || $sql_and) ? ' AND ' : ' WHERE ') . ' group_single_user = 0 ';
+	$exclude_sql = (($exclude_ids !== false) && sizeof($exclude_ids)) ? ' WHERE ' . $db->sql_in_set('group_id', array_map('intval', $exclude_ids), true) : '';
+	$sql_and = (!empty($exclude_sql) ? ' AND ' : ' WHERE ') . ' group_single_user = 0 ';
 	$sql_founder = '';
 
 	$sql = 'SELECT group_id, group_name
@@ -1333,10 +1333,11 @@ function get_database_size()
 
 		if (preg_match('#(3\.23|[45]\.)#', $version))
 		{
+			/*
 			$db_name = (preg_match('#^(?:3\.23\.(?:[6-9]|[1-9]{2}))|[45]\.#', $version)) ? "`{$db->dbname}`" : $db->dbname;
-
-			$sql = 'SHOW TABLE STATUS
-				FROM ' . $db_name;
+			$sql = 'SHOW TABLE STATUS FROM ' . $db_name;
+			*/
+			$sql = 'SHOW TABLE STATUS;';
 			$result = $db->sql_query($sql, 7200);
 
 			$database_size = 0;

@@ -27,13 +27,6 @@ $auth->acl($user->data);
 $user->setup();
 // End session management
 
-// Activity - BEGIN
-if (!empty($config['plugins']['activity']['enabled']))
-{
-	include(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['activity']['dir'] . 'includes/functions_amod_index.' . PHP_EXT);
-}
-// Activity - END
-
 // UPI2DB - BEGIN
 $mark_always_read = request_var('always_read', '');
 $mark_forum_id = request_var('forum_id', 0);
@@ -119,8 +112,8 @@ if($mark_read == 'forums')
 					$result = $db->sql_query($sql);
 					if ($row = $db->sql_fetchrow($result))
 					{
-						$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
-						$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+						$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+						$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 
 						if (((sizeof($tracking_forums) + sizeof($tracking_topics)) >= 150) && empty($tracking_forums[$forum_id]))
 						{

@@ -446,38 +446,6 @@ $location = ($profiledata['user_from']) ? $profiledata['user_from'] : '&nbsp;' ;
 $flag = (!empty($profiledata['user_from_flag'])) ? '<img src="images/flags/' . $profiledata['user_from_flag'] . '" alt="' . $profiledata['user_from_flag'] . '" title="' . $profiledata['user_from_flag'] . '" />' : '';
 $location .= '&nbsp;' . $flag ;
 
-// Activity - BEGIN
-if (!empty($config['plugins']['activity']['enabled']) && !empty($user->data['session_logged_in']))
-{
-	include_once(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['activity']['dir'] . 'common.' . PHP_EXT);
-	unset($trophy_count, $trophy_holder, $trophy);
-	if (($config['ina_show_view_profile']) && ($profiledata['user_trophies'] > '0') && ($profiledata['user_id'] != ANONYMOUS))
-	{
-		$template->assign_block_vars('trophy', array(
-			'PROFILE_TROPHY' => '<a href="javascript:popup_open(\'' . IP_ROOT_PATH . 'activity_trophy_popup.' . PHP_EXT . '?user=' . $profiledata['user_id'] . '&amp;sid=' . $user->data['session_id'] . '\',\'New_Window\',\'400\',\'380\',\'yes\')" onclick="blur()">' . $lang['Trohpy'] . '</a>:&nbsp;&nbsp;' . $profiledata['user_trophies'],
-			'TROPHY_TITLE' => $lang['Trohpy']
-			)
-		);
-	}
-
-	$template->assign_vars(array(
-		'PROFILE_TIME' => DisplayPlayingTime(2, $profiledata['ina_time_playing']),
-		'PROFILE_TITLE' => $lang['profile_game_time']
-		)
-	);
-
-	if (($config['ina_char_show_viewprofile']) && ($profiledata['ina_char_name']) && ($profile_data['user_id'] != ANONYMOUS))
-	{
-		$template->assign_block_vars('profile_char', array(
-			'CHAR_PROFILE' => AMP_Profile_Char($profiledata['user_id'], '')
-			)
-		);
-	}
-
-	$poster_rank .= Amod_Trophy_King_Image($profiledata['user_id']);
-}
-// Activity - END
-
 $u_search_author = urlencode(strtr($profiledata['username'], array_flip(get_html_translation_table(HTML_ENTITIES))));
 
 // Generate page

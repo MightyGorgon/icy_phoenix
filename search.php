@@ -239,6 +239,11 @@ $start = (empty($page_number) ? $start : (($page_number * $config['topics_per_pa
 
 $sort_by_types = array($lang['Sort_Time'], $lang['Sort_Post_Subject'], $lang['Sort_Topic_Title'], $lang['Sort_Author'], $lang['Sort_Forum']);
 
+// Default values used later in template/output paths.
+$total_match_count = 0;
+$s_hidden_fields = '';
+$l_search_matches = '';
+
 // Start Advanced IP Tools Pack MOD
 // For security reasons, we need to make sure the IP lookup is coming from an admin or mod.
 $search_ip = '';
@@ -1358,8 +1363,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 
 		$highlight_active = urlencode(trim($highlight_active));
 
-		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
-		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+		$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+		$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 
 		if ($show_results == 'posts')
 		{
@@ -1581,6 +1586,8 @@ elseif (($search_keywords != '') || ($search_author != '') || $search_id || ($se
 			else
 			{
 				$message = '';
+				$regoptions = '';
+				$reg_user_own_reg = '';
 
 				$topic_title_data = $class_topics->generate_topic_title($topic_id, $searchset[$i], 255);
 				$topic_title = $topic_title_data['title'];

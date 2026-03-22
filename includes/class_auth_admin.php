@@ -32,6 +32,12 @@ class auth_admin extends auth
 	function __construct()
 	{
 		global $db, $cache;
+		$this->auth_admin_init();
+	}
+
+	function auth_admin_init()
+	{
+		global $db, $cache;
 
 		if (($this->acl_options = $cache->get('_acl_options')) === false)
 		{
@@ -200,11 +206,65 @@ class auth_admin extends auth
 			$compare_options = array_combine($compare_options, array_fill(1, sizeof($compare_options), $acl_fill));
 		}
 
+
+		/**
+		* This is a PHP 8 replacement function for the deprecated create_function function that allows developers to create anonymous functions at runtime using a string of PHP code as input.
+		*
+		* @param string $arg The argument list for the anonymous function.
+		* @param string $body The body of the anonymous function.
+		* @return callable Returns a new anonymous function.
+		*/
+		if (!function_exists('create_function'))
+		{
+			function create_function($arg, $body)
+			{
+				static $cache          = []; // A static array used to store previously created functions.
+				static $max_cache_size = 64; // The maximum size of the cache.
+				static $sorter; // A callback function used to sort the cache by hit count.
+
+				if ($sorter === null)
+				{
+					// Define the sorter callback function.
+					$sorter = function($a, $b)
+					{
+						if ($a->hits == $b->hits)
+						{
+							return 0;
+						}
+						return $a->hits < $b->hits ? 1 : -1;
+					};
+				}
+
+				// Generate a unique key for the current function.
+				$crc = crc32($arg . "\\x00" . $body);
+				if (isset( $cache[$crc] ))
+				{
+					// If the function has already been created and cached, increment the hit count and return the cached function.
+					++$cache[$crc][1];
+					return $cache[$crc][0];
+				}
+
+				if (sizeof($cache) >= $max_cache_size)
+				{
+					// If the cache size limit is reached, sort the cache by hit count and remove the least-used function.
+					uasort($cache, $sorter);
+					array_pop($cache);
+				}
+
+				// Create a new anonymous function using `eval` and store it in the cache along with a hit count of 0.
+				$cache[$crc] = [
+					($cb = eval("return function(" . $arg . "){" . $body . "};")),
+					0,
+				];
+				return $cb;
+			}
+		}
+
 		// Defining the user-function here to save some memory
 		$return_acl_fill = create_function('$value', 'return ' . $acl_fill . ';');
 
 		// Actually fill the gaps
-		if (sizeof($hold_ary))
+		if (!empty(sizeof($hold_ary)))
 		{
 			foreach ($hold_ary as $ug_id => $row)
 			{
@@ -217,7 +277,6 @@ class auth_admin extends auth
 					// array_diff_key function filling the resulting array values with zeros
 					// The differences get merged into $hold_ary (all permissions having $acl_fill set)
 					$hold_ary[$ug_id][$id] = array_merge($options,
-
 						array_map($return_acl_fill,
 							array_flip(
 								array_diff(
@@ -245,7 +304,6 @@ class auth_admin extends auth
 
 		return $hold_ary;
 	}
-
 
 	/**
 	* Sanitize $hold_ary to filter proper local permission in CMS
@@ -493,7 +551,10 @@ class auth_admin extends auth
 			{
 				foreach ($memberships as $row)
 				{
-					$user_groups_custom[$row['user_id']][] = $groups[$row['group_id']]['group_name'];
+					if (!empty($groups[$row['group_id']]['group_name']))
+					{
+						$user_groups_custom[$row['user_id']][] = $groups[$row['group_id']]['group_name'];
+					}
 				}
 			}
 			unset($memberships, $groups);
@@ -883,7 +944,7 @@ class auth_admin extends auth
 
 		// Because we just changed the options and also purged the options cache, we instantly update/regenerate it for later calls to succeed.
 		$this->acl_options = array();
-		$this->auth_admin();
+		$this->auth_admin_init();
 
 		return true;
 	}
@@ -1276,7 +1337,7 @@ class auth_admin extends auth
 	* Building content array from permission rows with explicit key ordering
 	* used by display_mask()
 	*/
-	function build_permission_array(&$permission_row, &$content_array, &$categories, $key_sort_array)
+	public static function build_permission_array(&$permission_row, &$content_array, &$categories, $key_sort_array)
 	{
 		global $user;
 

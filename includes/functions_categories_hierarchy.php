@@ -215,24 +215,36 @@ function cache_tree_output()
 			$s_user_actives = empty($data['user_active']) ? '' : implode(', ', $data['user_active']);
 			$s_group_ids = empty($data['group_id']) ? '' : implode(', ', $data['group_id']);
 			$s_usernames = '';
-			for ($j = 0; $j < sizeof((array) $data['username']); $j++)
+			if (!empty($data['username']))
 			{
-				$s_usernames .= (empty($s_usernames) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['username'][$j]));
+				for ($j = 0; $j < sizeof((array) $data['username']); $j++)
+				{
+					$s_usernames .= (empty($s_usernames) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['username'][$j]));
+				}
 			}
 			$s_user_colors = '';
-			for ($j = 0; $j < sizeof((array) $data['user_color']); $j++)
+			if (!empty($data['user_color']))
 			{
-				$s_user_colors .= (empty($s_user_colors) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['user_color'][$j]));
+				for ($j = 0; $j < sizeof((array) $data['user_color']); $j++)
+				{
+					$s_user_colors .= (empty($s_user_colors) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['user_color'][$j]));
+				}
 			}
 			$s_group_names = '';
-			for ($j = 0; $j < sizeof((array) $data['group_name']); $j++)
+			if (!empty($data['group_name']))
 			{
-				$s_group_names .= (empty($s_group_names) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['group_name'][$j]));
+				for ($j = 0; $j < sizeof((array) $data['group_name']); $j++)
+				{
+					$s_group_names .= (empty($s_group_names) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['group_name'][$j]));
+				}
 			}
 			$s_group_colors = '';
-			for ($j = 0; $j < sizeof((array) $data['group_color']); $j++)
+			if (!empty($data['group_color']))
 			{
-				$s_group_colors .= (empty($s_group_colors) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['group_color'][$j]));
+				for ($j = 0; $j < sizeof((array) $data['group_color']); $j++)
+				{
+					$s_group_colors .= (empty($s_group_colors) ? '' : ', ') . sprintf("'%s'", str_replace("'", "\'", $data['group_color'][$j]));
+				}
 			}
 			$template->assign_block_vars('mods', array(
 				'IDX' => $idx,
@@ -267,7 +279,13 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 	global $tree;
 
 	// read all parents
-	$tree_level = array();
+	//$tree_level = array();
+	$tree_level = array(
+		'type' => array(),
+		'id' => array(),
+		'sort' => array(),
+		'data' => array()
+	);
 
 	// get the forums of the level
 	if (!empty($parents[POST_FORUM_URL][$main]))
@@ -282,7 +300,7 @@ function cache_tree_level($main, &$parents, &$cats, &$forums)
 		}
 	}
 	
-		// add the categories of this level
+	// add the categories of this level
 	if (!empty($parents[POST_CAT_URL][$main]))
 	{
 		for ($i = 0; $i < sizeof((array) $parents[POST_CAT_URL][$main]); $i++)
@@ -333,6 +351,7 @@ function cache_tree($write = false)
 					ORDER BY forum_order, forum_id";
 	$result = $db->sql_query($sql, 0, 'forums_cats_', FORUMS_CACHE_FOLDER);
 
+	$forums = array();
 	while ($row = $db->sql_fetchrow($result))
 	{
 		if ($row['parent_id'] == $row['forum_id'])
@@ -384,7 +403,8 @@ function cache_tree($write = false)
 	$db->sql_freeresult($result);
 
 	// build the tree
-	$tree = array();
+	//$tree = array();
+	$tree = array('data' => array());
 	cache_tree_level('Root', $parents, $cats, $forums);
 
 	// Obtain list of moderators of each forum
@@ -440,8 +460,8 @@ function read_tree($force = false)
 // UPI2DB - END
 
 	// read the user cookie
-	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 	$tracking_all = (isset($_COOKIE[$config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$config['cookie_name'] . '_f_all']) : -1;
 
 	// try the cache
@@ -905,7 +925,8 @@ function get_auth_keys($cur = 'Root', $all = false, $level = -1, $max = -1, $aut
 //--------------------------------------------------------------------------------------------------
 // get_max_depth() : return the maximum level in the branch of the tree
 //--------------------------------------------------------------------------------------------------
-function get_max_depth(&$keys, $cur = 'Root', $all = false, $level = -1, $max = -1)
+//function get_max_depth(&$keys, $cur = 'Root', $all = false, $level = -1, $max = -1)
+function get_max_depth($cur = 'Root', $all = false, $level = -1, &$keys = [], $max = -1)
 {
 	global $tree;
 	if (empty($keys['id']))
@@ -928,7 +949,8 @@ function get_max_depth(&$keys, $cur = 'Root', $all = false, $level = -1, $max = 
 //--------------------------------------------------------------------------------------------------
 // build_index() : display a level and its sublevels : use dislay_index() as entry point
 //--------------------------------------------------------------------------------------------------
-function build_index(&$keys, &$forum_moderators, $cur = 'Root', $cat_break = false, $real_level = -1, $max_level = -1)
+//function build_index(&$keys, &$forum_moderators, $cur = 'Root', $cat_break = false, $real_level = -1, $max_level = -1)
+function build_index($cur = 'Root', $cat_break = false, &$forum_moderators = [], $real_level = -1, $max_level = -1, &$keys = [])
 {
 	global $template, $db, $cache, $config, $user, $lang, $images, $theme;
 	global $tree, $bbcode, $lofi;
@@ -966,7 +988,8 @@ function build_index(&$keys, &$forum_moderators, $cur = 'Root', $cat_break = fal
 		if ($sub_forum == 1) $max = 1;
 		$keys = array();
 		$keys = get_auth_keys($cur, false, -1, $max);
-		$max_level = get_max_depth($keys, $cur, false, -1, $max);
+		//$max_level = get_max_depth($keys, $cur, false, -1, $max);
+		$max_level = get_max_depth($cur, false, -1, $keys, $max);
 	}
 
 	// table header
@@ -1125,7 +1148,9 @@ function build_index(&$keys, &$forum_moderators, $cur = 'Root', $cat_break = fal
 			$moderator_list = '';
 			if ($type == POST_FORUM_URL)
 			{
-				if (!empty($forum_moderators[$id]) && sizeof($forum_moderators[$id]) > 0)
+				// Mighty Gorgon 2024/09/29: To be verified
+				//if (!empty($forum_moderators[$id]) && sizeof($forum_moderators[$id]) > 0)
+				if (!empty($forum_moderators[$id]))
 				{
 					$l_moderators = (sizeof($forum_moderators[$id]) == 1) ? $lang['Moderator'] : $lang['Moderators'];
 					$moderator_list = implode(', ', $forum_moderators[$id]);
@@ -1305,7 +1330,7 @@ function build_index(&$keys, &$forum_moderators, $cur = 'Root', $cat_break = fal
 				$url_viewforum = ($type == POST_FORUM_URL) ? append_sid(CMS_PAGE_VIEWFORUM . '?' . POST_FORUM_URL . '=' . $id) : append_sid(CMS_PAGE_FORUM . '?' . POST_CAT_URL . '=' . $id);
 			}
 			// send to template
-			if ($config['show_rss_forum_icon'] && ($data['forum_index_icons'] == 1) && ($type == POST_FORUM_URL))
+			if ($config['show_rss_forum_icon'] && !empty($data['forum_index_icons']) && ($data['forum_index_icons'] == 1) && ($type == POST_FORUM_URL))
 			{
 				$rss_feed_icon = '';
 				if (!$data['tree.locked'] && $user->data['session_logged_in'])
@@ -1400,7 +1425,8 @@ function build_index(&$keys, &$forum_moderators, $cur = 'Root', $cat_break = fal
 	{
 		for ($i = 0; $i < sizeof($tree['sub'][$cur]); $i++) if (!empty($keys['keys'][$tree['sub'][$cur][$i]]))
 		{
-			$wdisplay = build_index($keys, $forum_moderators, $tree['sub'][$cur][$i], $cat_break, $level + 1, $max_level);
+			//$wdisplay = build_index($keys, $forum_moderators, $tree['sub'][$cur][$i], $cat_break, $level + 1, $max_level);
+			$wdisplay = build_index($tree['sub'][$cur][$i], $cat_break, $forum_moderators, $level + 1, $max_level, $keys);
 			if ($wdisplay)
 			{
 				$display = true;
@@ -1480,7 +1506,8 @@ function display_index($cur = 'Root')
 
 	// let's dump all of this on the template
 	$keys = array();
-	$display = build_index($keys, $forum_moderators, $cur, $config['split_cat'], -1, -1);
+	//$display = build_index($keys, $forum_moderators, $cur, $config['split_cat'], -1, -1);
+	$display = build_index($cur, $config['split_cat'], $forum_moderators, -1, -1, $keys);
 
 	// constants
 	$template->assign_vars(array(

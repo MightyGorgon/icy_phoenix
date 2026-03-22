@@ -27,9 +27,11 @@ if(!function_exists('cms_block_poll'))
 		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 		global $kb_mode_append, $is_auth, $lofi, $bbcode;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['poll_option.'] = array();
 
-		if ($cms_config_vars['md_poll_type'][$block_id] == 0)
+		if ($cms_config_vars['blocks'][$block_key]['md_poll_type'] == 0)
 		{
 			$order_sql = 'ORDER BY t.topic_time DESC';
 		}
@@ -39,13 +41,13 @@ if(!function_exists('cms_block_poll'))
 		}
 
 		$in_sql = '';
-		if (($cms_config_vars['md_poll_type'][$block_id] != 2) && !empty($cms_config_vars['md_poll_forum_id'][$block_id]))
+		if (($cms_config_vars['blocks'][$block_key]['md_poll_type'] != 2) && !empty($cms_config_vars['blocks'][$block_key]['md_poll_forum_id']))
 		{
-			$in_sql = 't.forum_id IN (' . $cms_config_vars['md_poll_forum_id'][$block_id] . ') AND';
+			$in_sql = 't.forum_id IN (' . $cms_config_vars['blocks'][$block_key]['md_poll_forum_id'] . ') AND';
 		}
-		elseif (!empty($cms_config_vars['md_poll_topic_id'][$block_id]))
+		elseif (!empty($cms_config_vars['blocks'][$block_key]['md_poll_topic_id']))
 		{
-			$in_sql = 't.topic_id = ' . intval($cms_config_vars['md_poll_topic_id'][$block_id]) . ' AND';
+			$in_sql = 't.topic_id = ' . intval($cms_config_vars['blocks'][$block_key]['md_poll_topic_id']) . ' AND';
 		}
 
 		$sql = "SELECT t.*
@@ -72,7 +74,7 @@ if(!function_exists('cms_block_poll'))
 			$topic_id_append = POST_TOPIC_URL . '=' . $topic_data['topic_id'];
 
 			// Store temp config value
-			$portal_vote_graphic_length = $cms_config_vars['md_poll_bar_length'][$block_id];
+			$portal_vote_graphic_length = $cms_config_vars['blocks'][$block_key]['md_poll_bar_length'];
 			$config_vote_graphic_length = $config['vote_graphic_length'];
 			$config['vote_graphic_length'] = $portal_vote_graphic_length;
 

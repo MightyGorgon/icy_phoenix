@@ -36,7 +36,6 @@ $acp_icon['2500_STATS'] = '../images/menu/server_install.png';
 
 $acp_icon['3000_Plugins'] = '../images/menu/main.png';
 $acp_icon['3100_CASH'] = '../images/menu/coins.png';
-$acp_icon['3200_ACTIVITY'] = '../images/menu/games.png';
 $acp_icon['3300_Photo_Album'] = '../images/menu/photos.png';
 
 ?>

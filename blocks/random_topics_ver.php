@@ -26,13 +26,15 @@ if(!function_exists('cms_block_random_topics_ver'))
 	{
 		global $db, $cache, $config, $template, $user, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['random_topic_ver_row.'] = array();
 
 		$allowed_forum_id = build_allowed_forums_list();
 
 		if ($allowed_forum_id != '')
 		{
-			$allow_forum_id = $cms_config_vars['md_random_topics_ver_forums'][$block_id];
+			$allow_forum_id = $cms_config_vars['blocks'][$block_key]['md_random_topics_ver_forums'];
 
 			if ($allow_forum_id == '0')
 			{
@@ -79,7 +81,7 @@ if(!function_exists('cms_block_random_topics_ver'))
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
 			ORDER BY RAND()
-			LIMIT " . $cms_config_vars['md_num_random_topics_ver'][$block_id];
+			LIMIT " . $cms_config_vars['blocks'][$block_key]['md_num_random_topics_ver'];
 		$result = $db->sql_query($sql);
 		$number_random_topics = $db->sql_numrows($result);
 		$random_topic_row = array();

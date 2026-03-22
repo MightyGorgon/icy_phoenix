@@ -27,6 +27,8 @@ if(!function_exists('cms_block_global_header_simple'))
 		global $db, $cache, $config, $template, $theme, $images, $table_prefix, $user, $lang, $block_id, $cms_config_vars;
 		global $ip_cms;
 
+		$block_key = 'b' . strval($block_id);
+
 		// Before starting with the loop... let's load the full menu links array!
 		if (!function_exists('cms_menu_default_links_array'))
 		{
@@ -38,7 +40,7 @@ if(!function_exists('cms_block_global_header_simple'))
 		$template->_tpldata['header_desc.'] = array();
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
+						WHERE menu_id = '" . intval($cms_config_vars['blocks'][$block_key]['md_menu_id']) . "'
 							LIMIT 1";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
@@ -59,7 +61,7 @@ if(!function_exists('cms_block_global_header_simple'))
 		}
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-						WHERE menu_parent_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
+						WHERE menu_parent_id = '" . intval($cms_config_vars['blocks'][$block_key]['md_menu_id']) . "'
 						ORDER BY cat_parent_id ASC, menu_order ASC";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
@@ -118,15 +120,15 @@ if(!function_exists('cms_block_global_header_simple'))
 						}
 						else
 						{
-							$menu_sep = ($cms_config_vars['md_show_sep_icon'][$block_id] == true) ? '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />' : '';
+							$menu_sep = ($cms_config_vars['blocks'][$block_key]['md_show_sep_icon'] == true) ? '<img src="' . $images['nav_menu_sep'] . '" alt="" title="" style="vertical-align: middle;" />' : '';
 						}
 
 						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id, true);
-						if (empty($cms_config_vars['md_show_links_icon'][$block_id]))
+						if (empty($cms_config_vars['blocks'][$block_key]['md_show_links_icon']))
 						{
 							$menu_link['icon'] = '';
 						}
-						if (!empty($cms_config_vars['md_show_desc'][$block_id]))
+						if (!empty($cms_config_vars['blocks'][$block_key]['md_show_desc']))
 						{
 							$menu_desc = $menu_cat_item_data['menu_desc'];
 						}
@@ -144,7 +146,7 @@ if(!function_exists('cms_block_global_header_simple'))
 				}
 			}
 		}
-		if ($cms_config_vars['md_show_desc'][$block_id] == true)
+		if ($cms_config_vars['blocks'][$block_key]['md_show_desc'] == true)
 		{
 			$template->assign_block_vars('header_desc', array());
 		}

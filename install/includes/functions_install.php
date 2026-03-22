@@ -341,13 +341,28 @@ class ip_functions
 		}
 		else
 		{
+			/*
 			$type = gettype(current($default));
 			$key_type = gettype(key($default));
+			*/
+			foreach ($default as $key_type => $type)
+			{
+				break; // Just populate $key_type => $type
+			}
+			$type = gettype($type);
+			$key_type = gettype($key_type);
 			if ($type == 'array')
 			{
+				foreach ($type as $sub_key_type => $sub_type)
+				{
+					break; // Just populate $sub_key_type => $sub_type
+				}
+				$sub_type = gettype($sub_type);
+				/*
 				reset($default);
 				$default = current($default);
 				$sub_type = gettype(current($default));
+				*/
 				$sub_type = ($sub_type == 'array') ? 'NULL' : $sub_type;
 				$sub_key_type = gettype(key($default));
 			}
@@ -920,21 +935,29 @@ class ip_sql
 			$table = reset($row);
 			//echo($table . "\n<br />\n<br />");
 
+			// OLD CODE - BEGIN
+			/*
 			if (!empty($db->sql_escape($table)))
 			{
-				/*
-				$sql = "ALTER TABLE {$db->sql_escape($table)}
-					DEFAULT CHARACTER SET utf8
-					COLLATE utf8_bin";
-				*/
-				//$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
-				//$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
 				$sql = "ALTER TABLE {$db->sql_escape($table)} DEFAULT CHARACTER SET = 'utf8' DEFAULT COLLATE = 'utf8_bin'";
 				$db->sql_query($sql);
 
 				$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
 				$db->sql_query($sql);
 			}
+			*/
+			// OLD CODE - END
+
+			// NEW CODE - BEGIN
+			foreach ($row as $dummy => $table)
+			{
+				break; // Just populate $table
+			}
+
+			$sql = "ALTER TABLE {$db->sql_escape($table)} CHARACTER SET 'utf8' COLLATE 'utf8_bin'";
+			$db->sql_query($sql);
+			// NEW CODE - END
+
 
 			if (!empty($echo_results))
 			{

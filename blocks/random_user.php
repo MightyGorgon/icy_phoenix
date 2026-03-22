@@ -26,6 +26,8 @@ if(!function_exists('cms_block_random_user'))
 	{
 		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		// Mighty Gorgon - Multiple Ranks - BEGIN
 		@include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 		$ranks_array = $cache->obtain_ranks(false);

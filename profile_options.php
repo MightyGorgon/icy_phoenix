@@ -56,7 +56,7 @@ else
 	if (!$target_userdata = $db->sql_fetchrow($result))
 	{
 		if (!defined('STATUS_404')) define('STATUS_404', true);
-		message_die(GENERAL_INFO, $lang['NO_USER']);
+		message_die(GENERAL_MESSAGE, $lang['NO_USER']);
 	}
 	$target_userdata['user_level'] = ($target_userdata['user_level'] == JUNIOR_ADMIN) ? ADMIN : $target_userdata['user_level'];
 }
@@ -90,7 +90,7 @@ if ($user_level == MOD)
 // Check auth level
 if (($view_user_id != $user->data['user_id']) && ($user->data['user_level'] != ADMIN))
 {
-	message_die(GENERAL_INFO, $lang['Wrong_Profile']);
+	message_die(GENERAL_MESSAGE, $lang['Wrong_Profile']);
 }
 
 // create entry if NULL: fix isset issue

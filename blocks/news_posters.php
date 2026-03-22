@@ -26,16 +26,18 @@ if(!function_exists('cms_block_news_posters'))
 	{
 		global $db, $cache, $config, $template, $images, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		include_once(IP_ROOT_PATH . 'includes/functions_users.' . PHP_EXT);
 
 		$template->_tpldata['news_poster.'] = array();
 
-		$page_link = htmlspecialchars($cms_config_vars['md_news_posters_page_link'][$block_id]);
+		$page_link = htmlspecialchars($cms_config_vars['blocks'][$block_key]['md_news_posters_page_link']);
 		//0 = alphabetical || 1 = News
 		$list_sort = request_var('list_sort', '');
 		$list_sort = (($list_sort == POST_TOPIC_URL) ? 1 : (($list_sort == POST_USERS_URL) ? 0 : false));
-		$list_sort = ($list_sort === false) ? (($cms_config_vars['md_news_posters_sort'][$block_id] == 1) ? 1 : 0) : $list_sort;
-		$show_avatars = ($cms_config_vars['md_news_posters_avatar'][$block_id] == 1) ? 1 : 0;
+		$list_sort = ($list_sort === false) ? (($cms_config_vars['blocks'][$block_key]['md_news_posters_sort'] == 1) ? 1 : 0) : $list_sort;
+		$show_avatars = ($cms_config_vars['blocks'][$block_key]['md_news_posters_avatar'] == 1) ? 1 : 0;
 
 		$start = request_var('start', 0);
 		$start = ($start < 0) ? 0 : $start;

@@ -311,12 +311,6 @@ function get_online_page($page_id)
 		$location['url'] = 'customicy_avatars.' . PHP_EXT;
 		return $location;
 	}
-	elseif (strpos($page_id, 'activity') !== false)
-	{
-		$location['lang'] = $lang['Activity'];
-		$location['url'] = 'activity.' . PHP_EXT;
-		return $location;
-	}
 	else
 	{
 		$location['lang'] = $lang['Portal'];

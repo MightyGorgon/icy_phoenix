@@ -27,10 +27,12 @@ if(!function_exists('cms_block_calendar_events'))
 	{
 		global $db, $cache, $config, $template, $theme, $user, $lang, $bbcode, $block_id, $cms_config_vars;
 
-		$show_end_date = !empty($cms_config_vars['md_events_end'][$block_id]) ? true : false;
-		$events_number = (int) $cms_config_vars['md_events_num'][$block_id];
+		$block_key = 'b' . strval($block_id);
+
+		$show_end_date = !empty($cms_config_vars['blocks'][$block_key]['md_events_end']) ? true : false;
+		$events_number = (int) $cms_config_vars['blocks'][$block_key]['md_events_num'];
 		$events_number = ($events_number < 2) ? 10 : $events_number;
-		$allow_forum_id = str_replace(' ', '', $cms_config_vars['md_events_forums_id'][$block_id]);
+		$allow_forum_id = str_replace(' ', '', $cms_config_vars['blocks'][$block_key]['md_events_forums_id']);
 		$allow_forum_id_array = explode(',', $allow_forum_id);
 		$allowed_forum_ids = build_allowed_forums_list(true);
 		$allowed_forum_id_array = (!empty($allow_forum_id) ? array_intersect($allowed_forum_ids, $allow_forum_id_array) : $allowed_forum_ids);
@@ -46,7 +48,7 @@ if(!function_exists('cms_block_calendar_events'))
 			$sql = "SELECT t.*, f.forum_name
 				FROM " . FORUMS_TABLE . " AS f, " . TOPICS_TABLE . " AS t
 				WHERE t.topic_status <> 2
-					" . $allowed_forums_sql . "
+					" . $allowed_forum_ids_sql . "
 					AND f.forum_id = t.forum_id
 					AND t.topic_calendar_time > " . time() . "
 				ORDER BY t.topic_calendar_time ASC

@@ -187,15 +187,13 @@ function create_cms_field($config_array)
 			$options = explode(",", $cms_field[$config_array['config_name']]['field_options']);
 			$values = explode(",", $cms_field[$config_array['config_name']]['field_values']);
 			$cms_field[$config_array['config_name']]['output'] = '<select name = "' . $cms_field[$config_array['config_name']]['name'] . '">';
-			$i = 0;
-			while ($options[$i])
+			for ($i = 0; $i < sizeof($options); $i++)
 			{
 				$tmp_option_val = preg_replace('/[^A-Za-z0-9]+/', '_', $options[$i]);
 				$options[$i] = !empty($lang['cms_option_' . $tmp_option_val]) ? $lang['cms_option_' . $tmp_option_val] : $options[$i];
 				$values[$i] = !empty($lang['cms_value_' . $tmp_option_val]) ? $lang['cms_value_' . $tmp_option_val] : $values[$i];
 				$selected = ($cms_field[$config_array['config_name']]['value'] == trim($values[$i])) ? 'selected' : '';
 				$cms_field[$config_array['config_name']]['output'] .= '<option value = "' . trim($values[$i]) . '" ' . $selected . '>' . trim($options[$i]) . '</option>';
-				$i++;
 			}
 			$cms_field[$config_array['config_name']]['output'] .= '</select>';
 			break;
@@ -203,15 +201,13 @@ function create_cms_field($config_array)
 			$options = explode("," , $cms_field[$config_array['config_name']]['field_options']);
 			$values = explode("," , $cms_field[$config_array['config_name']]['field_values']);
 			$cms_field[$config_array['config_name']]['output'] = '';
-			$i = 0;
-			while ($options[$i])
+			for ($i = 0; $i < sizeof($options); $i++)
 			{
 				$tmp_option_val = preg_replace('/[^A-Za-z0-9]+/', '_', $options[$i]);
 				$options[$i] = !empty($lang['cms_option_' . $tmp_option_val]) ? $lang['cms_option_' . $tmp_option_val] : $options[$i];
 				$values[$i] = !empty($lang['cms_value_' . $tmp_option_val]) ? $lang['cms_value_' . $tmp_option_val] : $values[$i];
 				$checked = ($cms_field[$config_array['config_name']]['value'] == trim($values[$i])) ? 'checked="checked"' : '';
 				$cms_field[$config_array['config_name']]['output'] .= '<input type="radio" name = "' . $cms_field[$config_array['config_name']]['name'] . '" value = "' . trim($values[$i]) . '" ' . $checked . ' />' . trim($options[$i]) . '&nbsp;&nbsp;';
-				$i++;
 			}
 			break;
 		case CMS_FIELD_CHECKBOX:

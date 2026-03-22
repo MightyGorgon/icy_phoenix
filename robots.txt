@@ -19,12 +19,6 @@ Disallow: /logs/
 Disallow: /pafiledb/
 Disallow: /plugins/
 Disallow: /templates/
-Disallow: /activity.php
-Disallow: /activity_char.php
-Disallow: /activity_favs.php
-Disallow: /activity_popup.php
-Disallow: /activity_trophy_popup.php
-Disallow: /arcade.php
 Disallow: /ajax.php
 Disallow: /ajax_chat.php
 Disallow: /ajax_shoutbox.php
@@ -57,7 +51,6 @@ Disallow: /drafts.php
 Disallow: /emergency.php
 Disallow: /files_list.php
 Disallow: /flash_news.php
-Disallow: /game.php
 Disallow: /generate_avatar.php
 Disallow: /groupcp.php
 Disallow: /link_register.php
@@ -68,7 +61,6 @@ Disallow: /login_captcha.php
 Disallow: /login_ip.php
 Disallow: /memberlist.php
 Disallow: /modcp.php
-Disallow: /newscore.php
 Disallow: /posting.php
 #Disallow: /printview.php
 Disallow: /privmsg.php

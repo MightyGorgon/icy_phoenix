@@ -26,6 +26,8 @@ if (!defined('IN_ICYPHOENIX'))
 class cms_permissions_roles
 {
 	var $u_action;
+	var $tpl_name = '';
+	var $page_title = '';
 
 	/**
 	* Construct

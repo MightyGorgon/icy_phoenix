@@ -27,14 +27,16 @@ if(!function_exists('cms_block_rss'))
 		global $db, $cache, $config, $template, $lang, $block_id, $cms_config_vars;
 		global $rss_channel, $currently_writing, $main, $item_counter;
 
+		$block_key = 'b' . strval($block_id);
+
 		include_once(IP_ROOT_PATH . 'includes/functions_xs_useless.' . PHP_EXT);
 
 		$xml_id = 'rss_' . $block_id;
 		// $xml_feed = "http://news.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss091.xml";
-		$xml_feed = xsm_unprepare_message($cms_config_vars['md_rss_feeder'][$block_id]);
-		$xml_title = $cms_config_vars['md_rss_title'][$block_id];
-		$xml_style = $cms_config_vars['md_rss_style'][$block_id];
-		$xml_scroll = $cms_config_vars['md_rss_scroll'][$block_id];
+		$xml_feed = xsm_unprepare_message($cms_config_vars['blocks'][$block_key]['md_rss_feeder']);
+		$xml_title = $cms_config_vars['blocks'][$block_key]['md_rss_title'];
+		$xml_style = $cms_config_vars['blocks'][$block_key]['md_rss_style'];
+		$xml_scroll = $cms_config_vars['blocks'][$block_key]['md_rss_scroll'];
 		$xml_speed = '3';
 
 		if ($xml_style)
@@ -128,7 +130,7 @@ if(!function_exists('cms_block_rss'))
 					'RSS_TICKER_ID' => $xml_id,
 					'RSS_TICKER_FROM' => $xml_title,
 					'RSS_TICKER_CONTENTS' => $xml_marquee_start . $rss_ticker_content . $xml_marquee_end,
-					'RSS_TICKER_COLSPAN' => '',
+					'RSS_TICKER_COLSPAN' => ''
 					)
 				);
 			}
@@ -141,11 +143,11 @@ if(!function_exists('cms_block_rss'))
 
 		if($xml_error || $xml_feed_error)
 		{
-			$template->assign_block_vars(array(
+			$template->assign_vars(array(
 				'RSS_TICKER_ID' => $xml_id,
 				'RSS_TICKER_FROM' => $xml_error_msg,
 				'RSS_TICKER_CONTENTS' => '<b>' . $xml_error_msg . '</b>: ' . $xml_feed,
-				'RSS_TICKER_COLSPAN' => 'colspan="2"',
+				'RSS_TICKER_COLSPAN' => 'colspan="2"'
 				)
 			);
 		}

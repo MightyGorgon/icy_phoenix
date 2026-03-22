@@ -27,6 +27,8 @@ if(!function_exists('cms_block_index'))
 		global $db, $cache, $config, $template, $theme, $images, $user, $lang, $table_prefix, $block_id, $cms_config_vars;
 		global $ip_cms;
 
+		$block_key = 'b' . strval($block_id);
+
 		// Before starting with the loop... let's load the full menu links array!
 		if (!function_exists('cms_menu_default_links_array'))
 		{
@@ -40,7 +42,7 @@ if(!function_exists('cms_block_index'))
 		$template->_tpldata['index_items.'] = array();
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-						WHERE menu_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
+						WHERE menu_id = '" . intval($cms_config_vars['blocks'][$block_key]['md_menu_id']) . "'
 							LIMIT 1";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
@@ -61,7 +63,7 @@ if(!function_exists('cms_block_index'))
 		}
 
 		$sql = "SELECT * FROM " . CMS_NAV_MENU_TABLE . "
-						WHERE menu_parent_id = '" . intval($cms_config_vars['md_menu_id'][$block_id]) . "'
+						WHERE menu_parent_id = '" . intval($cms_config_vars['blocks'][$block_key]['md_menu_id']) . "'
 						ORDER BY cat_parent_id ASC, menu_order ASC";
 		$result = $db->sql_query($sql, 0, 'cms_menu_', CMS_CACHE_FOLDER);
 
@@ -104,23 +106,23 @@ if(!function_exists('cms_block_index'))
 			}
 		}
 		$icons = sizeof($print_cat);
-		$row_width = 100 / $cms_config_vars['md_col'][$block_id];
-		for ($i = 0; $i < sizeof($cat_item); $i += $cms_config_vars['md_col'][$block_id])
+		$row_width = 100 / $cms_config_vars['blocks'][$block_key]['md_col'];
+		for ($i = 0; $i < sizeof($cat_item); $i += $cms_config_vars['blocks'][$block_key]['md_col'])
 		{
 			if ($icons > 0)
 			{
 				$template->assign_block_vars('index_row', array());
 			}
-			for ($j = $i; $j < ($i + $cms_config_vars['md_col'][$block_id]); $j++)
+			for ($j = $i; $j < ($i + $cms_config_vars['blocks'][$block_key]['md_col']); $j++)
 			{
 				if($j >= $icons)
 				{
 				 break;
 				}
 				$cat_id = ($print_cat[$j]['cat_id']);
-				$row_class = ($cms_config_vars['md_show_background'][$block_id] == true) ? 'row1' : '';
-				$row_class_h = ($cms_config_vars['md_show_background'][$block_id] == true) ? 'row1h' : '';
-				if ($cms_config_vars['md_show_title'][$block_id] == true)
+				$row_class = ($cms_config_vars['blocks'][$block_key]['md_show_background'] == true) ? 'row1' : '';
+				$row_class_h = ($cms_config_vars['blocks'][$block_key]['md_show_background'] == true) ? 'row1h' : '';
+				if ($cms_config_vars['blocks'][$block_key]['md_show_title'] == true)
 				{
 					if (($print_cat[$j]['menu_name_lang'] != '') && isset($lang['menu_item'][$print_cat[$j]['menu_name_lang']]))
 					{
@@ -169,11 +171,11 @@ if(!function_exists('cms_block_index'))
 					{
 						//echo($menu_cat_item_data['menu_name'] . '<br />');
 						$menu_link = cms_menu_build_link($menu_cat_item_data, $block_id, true);
-						if (empty($cms_config_vars['md_show_links_icon'][$block_id]))
+						if (empty($cms_config_vars['blocks'][$block_key]['md_show_links_icon']))
 						{
 							$menu_link['icon'] = '';
 						}
-						if (!empty($cms_config_vars['md_show_desc'][$block_id]))
+						if (!empty($cms_config_vars['blocks'][$block_key]['md_show_desc']))
 						{
 							$menu_desc = $menu_cat_item_data['menu_desc'];
 						}

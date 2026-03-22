@@ -203,7 +203,11 @@ unset($highlight);
 unset($sql);
 
 // Set PHP error handler to ours
-$msg_handler = defined('IP_MSG_HANDLER') ? IP_MSG_HANDLER : 'msg_handler';
+$msg_handler = 'msg_handler';
+if (defined('IP_MSG_HANDLER'))
+{
+	$msg_handler = IP_MSG_HANDLER;
+}
 set_error_handler($msg_handler);
 
 // Check if we are in ACP

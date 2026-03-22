@@ -26,6 +26,8 @@ if(!function_exists('cms_block_forum'))
 	{
 		global $db, $cache, $config, $template, $images, $lang, $bbcode, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['fetchpost_row.'] = array();
 
 		if (!class_exists('class_topics'))
@@ -55,12 +57,12 @@ if(!function_exists('cms_block_forum'))
 		$article = request_var('article', 0);
 		if(!empty($article))
 		{
-			$cms_config_vars['md_news_length'][$block_id] = 0;
+			$cms_config_vars['blocks'][$block_key]['md_news_length'] = 0;
 		}
 
 		// Mighty Gorgon: edited by JHL, I still need to check the impacts on the auth system
-		//$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_news_forum_id'][$block_id], $cms_config_vars['md_num_news'][$block_id], $cms_config_vars['md_news_length'][$block_id], false, false, false, false);
-		$fetchposts = $class_topics->fetch_posts($cms_config_vars['md_news_forum_id'][$block_id], $cms_config_vars['md_num_news'][$block_id], $cms_config_vars['md_news_length'][$block_id]);
+		//$fetchposts = $class_topics->fetch_posts($cms_config_vars['blocks'][$block_key]['md_news_forum_id'], $cms_config_vars['blocks'][$block_key]['md_num_news'], $cms_config_vars['blocks'][$block_key]['md_news_length'], false, false, false, false);
+		$fetchposts = $class_topics->fetch_posts($cms_config_vars['blocks'][$block_key]['md_news_forum_id'], $cms_config_vars['blocks'][$block_key]['md_num_news'], $cms_config_vars['blocks'][$block_key]['md_news_length']);
 
 		for ($i = 0; $i < sizeof($fetchposts); $i++)
 		{

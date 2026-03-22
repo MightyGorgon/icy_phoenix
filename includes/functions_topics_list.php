@@ -131,8 +131,8 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 	}
 
 	// read the user cookie
-	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 	$tracking_all = (isset($_COOKIE[$config['cookie_name'] . '_f_all'])) ? intval($_COOKIE[$config['cookie_name'] . '_f_all']) : NULL;
 
 	// categories hierarchy v 2 compliancy
@@ -598,7 +598,7 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 
 		// get the calendar dates
 		$topic_calendar_dates = '';
-		if (function_exists(get_calendar_title))
+		if (function_exists('get_calendar_title'))
 		{
 			$topic_calendar_dates = get_calendar_title($topic_rowset[$i]['topic_calendar_time'], $topic_rowset[$i]['topic_calendar_duration']);
 		}
@@ -619,7 +619,10 @@ function topic_list($box, $tpl='', $topic_rowset, $list_title='', $split_type = 
 					$type = POST_PICTURE;
 				}
 			}
-			$icon = get_icon_title($topic_rowset[$i]['topic_icon'], 1, $type);
+			if (function_exists('get_icon_title'))
+			{
+				$icon = get_icon_title($topic_rowset[$i]['topic_icon'], 1, $type);
+			}
 		}
 
 		// UPI2DB - BEGIN

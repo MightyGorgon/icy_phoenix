@@ -40,7 +40,7 @@ define('CRON_REFRESH', 900);
 define('CRON_FILES', '');
 // CRON - END
 
-//@define('SQL_DEBUG_LOG', true); // This will output all SQL to a file in cache... do not use unless strictly needed!!!
+define('SQL_DEBUG_LOG', false); // This will output all SQL to a file in cache... do not use unless strictly needed!!!
 define('CACHE_TREE', true); // Caching Forum Tree ON/OFF => TRUE/FALSE (do not disable this unless you need to debug or you have really good reasons!)
 define('CACHE_TREE_FILE', 'data_full_tree.' . PHP_EXT); // Caching Forum Tree ON/OFF => TRUE/FALSE (do not disable this unless you need to debug or you have really good reasons!)
 define('CACHE_SQL', true); // Caching SQL Queries ON/OFF => TRUE/FALSE
@@ -559,12 +559,6 @@ define('CTRACKER_FILECHK', $table_prefix . 'ctracker_filechk');
 define('CTRACKER_FILESCANNER', $table_prefix . 'ctracker_filescanner');
 define('CTRACKER_BACKUP', $table_prefix . 'ctracker_backup');
 // END CrackerTracker v5.x
-
-// Activity - BEGIN
-define('iNA', $table_prefix . 'ina_data');
-define('iNA_GAMES', $table_prefix . 'ina_games');
-define('iNA_SCORES', $table_prefix . 'ina_scores');
-// Activity - END
 
 // UPI2DB - BEGIN
 define('UPI2DB_ALWAYS_READ_TABLE', $table_prefix . 'upi2db_always_read');

@@ -26,7 +26,8 @@ if(!function_exists('cms_block_ads_tla_new'))
 	{
 		global $db, $cache, $config, $template, $images, $userdata, $lang, $block_id, $cms_config_vars;
 
-		$ads_content = tla_ads($cms_config_vars['md_tla_xml_filename'][$block_id], $cms_config_vars['md_tla_inventory_key'][$block_id], $cms_config_vars['md_tla_display'][$block_id]);
+		$block_key = 'b' . strval($block_id);
+		$ads_content = tla_ads($cms_config_vars['blocks'][$block_key]['md_tla_xml_filename'], $cms_config_vars['blocks'][$block_key]['md_tla_inventory_key'], $cms_config_vars['blocks'][$block_key]['md_tla_display']);
 
 		$template->assign_vars(array(
 			'ADS_CONTENT' => (empty($ads_content) ? '&nbsp;' : $ads_content),
@@ -92,6 +93,7 @@ if(!function_exists('cms_block_ads_tla_new'))
 			$ads_content .= empty($box_type) ? "\n</ul>\n" : '';
 
 			echo "\n<ul>\n";
+			$ads_count = 0;
 			foreach ($links as $link)
 			{
 				if(isset($link['PostID']) && ($link['PostID'] > 0))
@@ -249,7 +251,7 @@ if(!function_exists('cms_block_ads_tla_new'))
 		}
 
 		$arr = array();
-		$count = count($retarr['URL']);
+		$count = sizeof($retarr['URL']);
 		for ($i = 0; $i < $count; $i++)
 		{
 			$arr[] = array(

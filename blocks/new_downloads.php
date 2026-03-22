@@ -26,9 +26,11 @@ if(!function_exists('cms_block_new_downloads'))
 	{
 		global $db, $cache, $config, $template, $theme, $lang, $table_prefix, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->_tpldata['dlrow2.'] = array();
 
-		$sql = "SELECT * FROM " . $table_prefix . "pa_files ORDER BY file_time DESC LIMIT 0," . $cms_config_vars['md_num_new_downloads'][$block_id];
+		$sql = "SELECT * FROM " . $table_prefix . "pa_files ORDER BY file_time DESC LIMIT 0," . $cms_config_vars['blocks'][$block_key]['md_num_new_downloads'];
 		if (!($result = $db->sql_query($sql)))
 		{
 			message_die(GENERAL_ERROR, 'Could not query database for the most downloads');

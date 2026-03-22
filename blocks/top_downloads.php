@@ -26,7 +26,9 @@ if(!function_exists('cms_block_top_downloads'))
 	{
 		global $db, $cache, $template, $theme, $lang, $table_prefix, $block_id, $cms_config_vars;
 
-		$sql = "SELECT * FROM " . $table_prefix . "pa_files ORDER BY file_dls DESC LIMIT 0," . $cms_config_vars['md_num_top_downloads'][$block_id];
+		$block_key = 'b' . strval($block_id);
+
+		$sql = "SELECT * FROM " . $table_prefix . "pa_files ORDER BY file_dls DESC LIMIT 0," . $cms_config_vars['blocks'][$block_key]['md_num_top_downloads'];
 		$result = $db->sql_query($sql);
 
 		$i = 1;

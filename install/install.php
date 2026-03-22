@@ -457,7 +457,7 @@ else
 		$config_data .= '$dbuser = \'' . $dbuser . '\';' . "\n";
 		$config_data .= '$dbpasswd = \'' . $dbpasswd . '\';' . "\n\n";
 		$config_data .= '$table_prefix = \'' . $table_prefix . '\';' . "\n\n";
-		$config_data .= 'define(\'IP_INSTALLED\', true);' . "\n\n";
+		$config_data .= 'if (!defined(\'IP_INSTALLED\')) define(\'IP_INSTALLED\', true);' . "\n\n";
 		$config_data .= '?' . '>';
 
 		@umask(0111);

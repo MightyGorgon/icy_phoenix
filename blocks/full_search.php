@@ -26,11 +26,13 @@ if(!function_exists('cms_block_full_search'))
 	{
 		global $config, $template, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
+
 		$template->assign_vars(array(
 			'L_SEARCH2' => $lang['search2'],
 			'L_SEARCH_AT' => $lang['search_at'],
 			'L_ADVANCED_SEARCH' => $lang['Advanced_search'],
-			'L_FORUM_OPTION' => (!empty($cms_config_vars['md_full_search_option_text'][$block_id])) ? $cms_config_vars['md_full_search_option_text'][$block_id] : $config['sitename']
+			'L_FORUM_OPTION' => (!empty($cms_config_vars['blocks'][$block_key]['md_full_search_option_text'])) ? $cms_config_vars['blocks'][$block_key]['md_full_search_option_text'] : $config['sitename']
 			)
 		);
 	}

@@ -42,6 +42,7 @@ include_once(IP_ROOT_PATH . 'includes/auth_db.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_groups.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_profile.' . PHP_EXT);
 include_once(IP_ROOT_PATH . 'includes/functions_selects.' . PHP_EXT);
+
 $server_url = create_server_url();
 $profile_server_url = $server_url . CMS_PAGE_PROFILE;
 
@@ -1777,6 +1778,7 @@ else
 	// Custom Profile Fields - END
 	// Start Mod User CP Organize: Variables for Handling the creation of deeper switches
 	$cpl_registration_info = '';
+	$cpl_preferences = '';
 	$cpl_avatar_control = '';
 	// Assign profile blocks selected for display
 	if (($cpl_mode == 'reg_info') || ($cpl_mode == 'all'))
@@ -1810,6 +1812,7 @@ else
 				$field_name = !empty($lang['UCP_PF_' . $field_id . '_' . $field_name]) ? $lang['UCP_PF_' . $field_id . '_' . $field_name] : $field['field_name'];
 				$field_description = !empty($lang['UCP_PF_' . $field_id . '_' . $field_name . '_Description']) ? $lang['UCP_PF_' . $field_id . '_' . $field_name . '_Description'] : $field['field_description'];
 				$name = text_to_column($field_name);
+				$value = '';
 
 				if($field['is_required'] == REQUIRED)
 				{
@@ -2048,6 +2051,7 @@ else
 
 				case CHECKBOX:
 					$value_array = explode(',', $user->data[$name]);
+					$value = implode(',', $value_array);
 					$check_list = explode(',', $field['checkbox_values']);
 					$html_list = array();
 					foreach($check_list as $num => $check_name)
@@ -2168,6 +2172,7 @@ else
 	$sql = "SELECT * FROM " . FLAG_TABLE . " ORDER BY flag_name";
 	$flags_result = $db->sql_query($sql, 0, 'flags_');
 	$flag_row = $db->sql_fetchrowset($flags_result);
+	$flag_row = is_array($flag_row) ? $flag_row : array();
 	$num_flags = sizeof($flag_row);
 	$db->sql_freeresult($flags_result);
 

@@ -161,7 +161,7 @@ if($cms_admin->mode == 'block_settings')
 {
 	if($cms_admin->bs_id !== false)
 	{
-		$s_hidden_fields .= '<input type="hidden" name="bs_id" value="' . $cms_admin->bs_id . '" />';
+		$s_hidden_fields = (!empty($s_hidden_fields) ? $s_hidden_fields : '') . ('<input type="hidden" name="bs_id" value="' . $cms_admin->bs_id . '" />');
 		$cms_admin->s_append_url .= '&amp;bs_id=' . $cms_admin->bs_id;
 	}
 
@@ -372,7 +372,7 @@ if (($cms_admin->mode == 'layouts_special') || ($cms_admin->mode == 'layouts'))
 	}
 	elseif($cms_admin->action == 'delete')
 	{
-		$cms_admin->delete_layout();
+		$cms_admin->delete_layout($is_layout_special, '');
 	}
 	elseif(($cms_admin->action == 'clone') && !$is_layout_special)
 	{
@@ -451,6 +451,8 @@ if ($cms_admin->mode == 'auth')
 
 	$roles_admin = request_var('roles_admin', 0);
 
+	$pmode = '';
+	$rmode = '';
 	if (empty($roles_admin))
 	{
 		include_once(IP_ROOT_PATH . 'includes/class_cms_permissions.' . PHP_EXT);
@@ -517,6 +519,7 @@ if (empty($cms_admin->mode))
 	$template->assign_var('CMS_PAGE_TITLE', false);
 }
 
+//die('TEST');
 full_page_generation($template_to_parse, $page_title, '', '');
 
 ?>

@@ -25,6 +25,9 @@ if(!function_exists('cms_block_random_topics'))
 	function cms_block_random_topics()
 	{
 		global $db, $cache, $config, $template, $user, $lang, $bbcode, $block_id, $cms_config_vars;
+
+		$block_key = 'b' . strval($block_id);
+
 		@include_once(IP_ROOT_PATH . 'includes/bbcode.' . PHP_EXT);
 
 		$template->_tpldata['random_topic_row.'] = array();
@@ -37,7 +40,7 @@ if(!function_exists('cms_block_random_topics'))
 
 		if ($allowed_forum_id != '')
 		{
-			$allow_forum_id = $cms_config_vars['md_random_topics_forums'][$block_id];
+			$allow_forum_id = $cms_config_vars['blocks'][$block_key]['md_random_topics_forums'];
 
 			if ($allow_forum_id == '0')
 			{
@@ -84,7 +87,7 @@ if(!function_exists('cms_block_random_topics'))
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
 			ORDER BY RAND()
-			LIMIT " . $cms_config_vars['md_num_random_topics'][$block_id];
+			LIMIT " . $cms_config_vars['blocks'][$block_key]['md_num_random_topics'];
 		$result = $db->sql_query($sql);
 		$number_random_topics = $db->sql_numrows($result);
 		$random_topic_row = array();
@@ -104,7 +107,7 @@ if(!function_exists('cms_block_random_topics'))
 		}
 		else
 		{
-			if($cms_config_vars['md_random_topics_style'][$block_id])
+			if($cms_config_vars['blocks'][$block_key]['md_random_topics_style'])
 			{
 				$style_row = 'scroll';
 			}

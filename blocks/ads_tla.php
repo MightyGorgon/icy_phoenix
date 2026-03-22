@@ -26,7 +26,8 @@ if(!function_exists('cms_block_ads_tla'))
 	{
 		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 
-		$ads_content = tla_ads($cms_config_vars['md_tla_xml_filename'][$block_id], $cms_config_vars['md_tla_inventory_key'][$block_id], $cms_config_vars['md_tla_display'][$block_id]);
+		$block_key = 'b' . strval($block_id);
+		$ads_content = tla_ads($cms_config_vars['blocks'][$block_key]['md_tla_xml_filename'], $cms_config_vars['blocks'][$block_key]['md_tla_inventory_key'], $cms_config_vars['blocks'][$block_key]['md_tla_display']);
 
 		$template->assign_vars(array(
 			'ADS_CONTENT' => (empty($ads_content) ? '&nbsp;' : $ads_content),

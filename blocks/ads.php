@@ -26,11 +26,12 @@ if(!function_exists('cms_block_ads'))
 	{
 		global $db, $cache, $config, $template, $images, $user, $lang, $block_id, $cms_config_vars;
 
+		$block_key = 'b' . strval($block_id);
 		setup_extra_lang(array('lang_main_ads'));
 
 		$banner_var_all = '';
 		$banner_var_guests = '';
-		switch ($cms_config_vars['md_ads_type'][$block_id])
+		switch ($cms_config_vars['blocks'][$block_key]['md_ads_type'])
 		{
 			case 1:
 				$banner_var_all = 'banner_h_s_all';

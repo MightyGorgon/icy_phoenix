@@ -147,17 +147,6 @@ foreach ($select_post_array as $s_key => $s_name)
 
 $sid = request_var('sid', '');
 
-// Activity - BEGIN
-if (!empty($config['plugins']['activity']['enabled']))
-{
-	include_once(IP_ROOT_PATH . PLUGINS_PATH . $config['plugins']['activity']['dir'] . 'common.' . PHP_EXT);
-	$q = "SELECT * FROM " . INA_HOF;
-	$r = $db->sql_query($q);
-	$hof_data = $db->sql_fetchrowset($r);
-	$db->sql_freeresult($r);
-}
-// Activity - END
-
 // Start initial var setup
 $kb_mode = false;
 $kb_mode_append = '';
@@ -630,17 +619,6 @@ else
 	$parse_extra_user_info = false;
 }
 
-// Activity - BEGIN
-if (!empty($config['plugins']['activity']['enabled']) && !$user->data['is_bot'])
-{
-	$activity_sql = ', u.user_trophies, u.ina_char_name';
-}
-else
-{
-	$activity_sql = '';
-}
-// Activity - END
-
 // Go ahead and pull all data for this topic
 // Self AUTH - BEGIN
 $self_sql_tables = (intval($is_auth['auth_read']) == AUTH_SELF) ? ', ' . USERS_TABLE . ' u2' : '';
@@ -654,7 +632,7 @@ foreach ($user_sn_im_array as $k => $v)
 	$sn_im_sql .= ', u.' . $v['field'];
 }
 
-$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_regdate, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $sn_im_sql . $activity_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.topic_label_compiled
+$sql = "SELECT u.username, u.user_id, u.user_active, u.user_mask, u.user_color, u.user_first_name, u.user_last_name, u.user_posts, u.user_from, u.user_from_flag, u.user_website, u.user_email, u.user_regdate, u.user_allow_viewemail, u.user_rank, u.user_rank2, u.user_rank3, u.user_rank4, u.user_rank5, u.user_sig, u.user_avatar, u.user_avatar_type, u.user_allowavatar, u.user_allowsmile, u.user_allow_viewonline, u.user_session_time, u.user_warnings, u.user_level, u.user_birthday, u.user_next_birthday_greeting, u.user_gender, u.user_personal_pics_count, u.user_style, u.user_lang" . $sn_im_sql . $profile_data_sql . ", u.ct_miserable_user, p.*, t.topic_poster, t.topic_label_compiled
 	FROM " . POSTS_TABLE . " p, " . USERS_TABLE . " u, " . TOPICS_TABLE . " t" . $self_sql_tables . "
 	WHERE p.topic_id = $topic_id
 		AND t.topic_id = p.topic_id
@@ -803,8 +781,8 @@ else
 // Set a cookie for this topic
 if ($user->data['session_logged_in'] && !$user->data['is_bot'])
 {
-	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f']) : array();
-	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t']) : array();
+	$tracking_forums = (isset($_COOKIE[$config['cookie_name'] . '_f'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+	$tracking_topics = (isset($_COOKIE[$config['cookie_name'] . '_t'])) ? unserialize($_COOKIE[$config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 
 	if (!empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]))
 	{
@@ -1318,7 +1296,7 @@ $template->assign_vars(array(
 	'U_VIEW_TOPIC' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append . (!empty($start) ? ('&amp;start=' . $start) : '') . $vt_sort_append . (!empty($highlight) ? ('&amp;highlight=' . $highlight) : '') . (($kb_mode == true) ? '&amp;kb=on' : '')),
 	'U_VIEW_TOPIC_BASE' => append_sid(CMS_PAGE_VIEWTOPIC . '?' . $forum_id_append . '&amp;' . $topic_id_append . $kb_mode_append),
 // UPI2DB - BEGIN
-	'U_MARK_ALWAYS_READ' => $mark_always_read,
+	'U_MARK_ALWAYS_READ' => !empty($mark_always_read) ? $mark_always_read : '',
 	'S_MARK_AR' => $s_mark_ar,
 	'S_MARK_AR_IMG' => $s_mark_ar_img,
 // UPI2DB - END
@@ -2128,6 +2106,7 @@ for($i = 0; $i < $total_posts; $i++)
 		$post_edit_max = ($postrow[$i]['post_time'] >= $postrow[$i]['post_edit_time']) ? $postrow[$i]['post_time'] : $postrow[$i]['post_edit_time'];
 		$post_time_max = (empty($config['upi2db_edit_as_new'])) ? $postrow[$i]['post_time'] : $post_edit_max;
 		$post_id = $postrow[$i]['post_id'];
+		$except_time = except_time();
 		$mark_topic_unread_array = mark_post_viewtopic_array($post_time_max, $user->data['upi2db_unread'], $topic_id, $forum_id, $post_id, $except_time, $topic_type);
 	}
 // UPI2DB - END
@@ -2327,10 +2306,6 @@ for($i = 0; $i < $total_posts; $i++)
 
 		'POSTER_STYLE' => $poster_style,
 		'POSTER_LANG' => $poster_lang,
-
-		// Activity - BEGIN
-		'POSTER_TROPHY' => (!empty($config['plugins']['activity']['enabled']) ? Amod_Build_Topics($hof_data, $postrow[$i]['user_id'], $postrow[$i]['user_trophies'], $postrow[$i]['username'], $postrow[$i]['ina_char_name']) : ''),
-		// Activity - END
 
 		'MINI_POST_IMG' => $mini_post_img,
 		'PROFILE_IMG' => $profile_img,
